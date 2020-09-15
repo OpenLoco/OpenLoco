@@ -1,9 +1,9 @@
 #include "../Interop/Interop.hpp"
 #include "../Window.h"
 
-using namespace openloco::interop;
+using namespace OpenLoco::interop;
 
-namespace openloco::ui::scrollview
+namespace OpenLoco::ui::scrollview
 {
     enum class scroll_part : int16_t
     {

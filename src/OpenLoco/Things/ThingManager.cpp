@@ -2,9 +2,9 @@
 #include "../Interop/Interop.hpp"
 #include "../OpenLoco.h"
 
-using namespace openloco::interop;
+using namespace OpenLoco::interop;
 
-namespace openloco::thingmgr
+namespace OpenLoco::thingmgr
 {
     loco_global<thing_id_t[num_thing_lists], 0x00525E40> _heads;
     loco_global<uint16_t[num_thing_lists], 0x00525E4C> _listCounts;

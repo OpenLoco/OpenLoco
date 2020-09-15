@@ -8,10 +8,10 @@
 #include "Utility/Numeric.hpp"
 #include <algorithm>
 
-using namespace openloco::interop;
-using namespace openloco::map;
+using namespace OpenLoco::interop;
+using namespace OpenLoco::map;
 
-namespace openloco
+namespace OpenLoco
 {
     industry_id_t industry::id() const
     {

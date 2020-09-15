@@ -6,13 +6,13 @@
 #include <cstdint>
 #include <limits>
 
-namespace openloco
+namespace OpenLoco
 {
     struct building_object;
     struct industry;
 }
 
-namespace openloco::map
+namespace OpenLoco::map
 {
     constexpr coord_t tile_size = 32;
     constexpr coord_t map_rows = 384;
@@ -319,7 +319,7 @@ namespace openloco::map
         uint8_t _7;
 
     public:
-        openloco::industry* industry();
+        OpenLoco::industry* industry();
     };
 #pragma pack(pop)
 

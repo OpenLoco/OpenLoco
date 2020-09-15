@@ -26,12 +26,12 @@
 #define __HAS_DEFAULT_DEVICE__
 #endif
 
-using namespace openloco::environment;
-using namespace openloco::interop;
-using namespace openloco::ui;
-using namespace openloco::utility;
+using namespace OpenLoco::environment;
+using namespace OpenLoco::interop;
+using namespace OpenLoco::ui;
+using namespace OpenLoco::utility;
 
-namespace openloco::audio
+namespace OpenLoco::audio
 {
 #pragma pack(push, 1)
     struct WAVEFORMATEX

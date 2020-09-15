@@ -8,9 +8,9 @@
 #include <cstdint>
 #include <limits>
 
-namespace openloco
+namespace OpenLoco
 {
-    using namespace openloco::map;
+    using namespace OpenLoco::map;
 
     namespace station_id
     {

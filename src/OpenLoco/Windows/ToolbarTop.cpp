@@ -23,9 +23,9 @@
 #include "ToolbarTopCommon.h"
 #include <map>
 
-using namespace openloco::interop;
+using namespace OpenLoco::interop;
 
-namespace openloco::ui::windows::toolbar_top::game
+namespace OpenLoco::ui::windows::toolbar_top::game
 {
     static loco_global<uint8_t[40], 0x00113DB20> menu_options;
 

@@ -5,9 +5,9 @@
 #include "Objects/ObjectManager.h"
 #include "Things/Thing.h"
 
-using namespace openloco::interop;
+using namespace OpenLoco::interop;
 
-namespace openloco::game_commands
+namespace OpenLoco::game_commands
 {
     enum GameCommandFlag : uint8_t
     {

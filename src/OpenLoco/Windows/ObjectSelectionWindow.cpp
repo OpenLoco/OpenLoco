@@ -2,9 +2,9 @@
 #include "../Ui/WindowManager.h"
 #include "../Window.h"
 
-using namespace openloco::interop;
+using namespace OpenLoco::interop;
 
-namespace openloco::ui::windows::ObjectSelectionWindow
+namespace OpenLoco::ui::windows::ObjectSelectionWindow
 {
     // 0x00472A20
     window* open()

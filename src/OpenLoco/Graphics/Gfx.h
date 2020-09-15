@@ -6,7 +6,7 @@
 #include "Types.h"
 #include <cstdint>
 
-namespace openloco::gfx
+namespace OpenLoco::gfx
 {
 #pragma pack(push, 1)
 

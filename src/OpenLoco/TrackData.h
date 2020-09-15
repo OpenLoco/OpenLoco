@@ -3,7 +3,7 @@
 #include "Types.hpp"
 #include <vector>
 
-namespace openloco::map::TrackData
+namespace OpenLoco::map::TrackData
 {
 
 #pragma pack(push, 1)

@@ -3,20 +3,20 @@
 #include "../Objects/ObjectManager.h"
 #include "ThingManager.h"
 
-using namespace openloco;
-using namespace openloco::objectmgr;
+using namespace OpenLoco;
+using namespace OpenLoco::objectmgr;
 
-steam_object* openloco::exhaust::object() const
+steam_object* OpenLoco::exhaust::object() const
 {
     return objectmgr::get<steam_object>(object_id & 0x7F);
 }
 
 // 0x0044080C
-exhaust* openloco::exhaust::create(loc16 loc, uint8_t type)
+exhaust* OpenLoco::exhaust::create(loc16 loc, uint8_t type)
 {
     if ((uint16_t)loc.x > 12287 || (uint16_t)loc.y > 12287)
         return nullptr;
-    auto surface = openloco::map::tilemgr::get(loc.x & 0xFFE0, loc.y & 0xFFE0).surface();
+    auto surface = OpenLoco::map::tilemgr::get(loc.x & 0xFFE0, loc.y & 0xFFE0).surface();
 
     if (surface == nullptr)
         return nullptr;
@@ -46,7 +46,7 @@ exhaust* openloco::exhaust::create(loc16 loc, uint8_t type)
 }
 
 // 0x00440BEB
-smoke* openloco::smoke::create(loc16 loc)
+smoke* OpenLoco::smoke::create(loc16 loc)
 {
     auto t = static_cast<smoke*>(thingmgr::createThing());
     if (t != nullptr)

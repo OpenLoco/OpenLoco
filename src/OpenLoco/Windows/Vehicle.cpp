@@ -5,9 +5,9 @@
 #include "../Things/ThingManager.h"
 #include "../Ui/WindowManager.h"
 
-using namespace openloco::interop;
+using namespace OpenLoco::interop;
 
-namespace openloco::ui::vehicle
+namespace OpenLoco::ui::vehicle
 {
     namespace main
     {
@@ -48,7 +48,7 @@ namespace openloco::ui::vehicle
 
     namespace main
     {
-        window* open(const openloco::vehicle* vehicle)
+        window* open(const OpenLoco::vehicle* vehicle)
         {
             registers regs{};
             regs.edx = (uint32_t)vehicle;
@@ -74,7 +74,7 @@ namespace openloco::ui::vehicle
                 return;
             }
 
-            auto vehicle = thingmgr::get<openloco::vehicle>(w->number);
+            auto vehicle = thingmgr::get<OpenLoco::vehicle>(w->number);
 
             if (vehicle->tile_x != -1 && (vehicle->var_38 & things::vehicle::flags_38::unk_4) == 0)
             {
@@ -126,7 +126,7 @@ namespace openloco::ui::vehicle
                 return;
             }
 
-            auto vehicle = thingmgr::get<openloco::vehicle>(w->number);
+            auto vehicle = thingmgr::get<OpenLoco::vehicle>(w->number);
             if (vehicle->tile_x != -1 && (vehicle->var_38 & things::vehicle::flags_38::unk_4) == 0)
                 return;
 
@@ -154,7 +154,7 @@ namespace openloco::ui::vehicle
 
             WindowManager::invalidateWidget(WindowType::vehicle, w->number, 8);
 
-            auto vehicle = thingmgr::get<openloco::vehicle>(w->number);
+            auto vehicle = thingmgr::get<OpenLoco::vehicle>(w->number);
             if (vehicle->owner != companymgr::getControllingId())
                 return;
 

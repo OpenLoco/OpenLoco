@@ -5,9 +5,9 @@
 #include "../Ui/WindowManager.h"
 #include "../Window.h"
 
-using namespace openloco::interop;
+using namespace OpenLoco::interop;
 
-namespace openloco::ui::windows
+namespace OpenLoco::ui::windows
 {
     static widget_t widgets[] = {
         { widget_type::end, 0, 0, 0, 0, 0, { 0 }, 0 }
@@ -21,7 +21,7 @@ namespace openloco::ui::windows
     {
         auto width = 512;
         auto height = 16;
-        auto window = openloco::ui::WindowManager::createWindow(
+        auto window = OpenLoco::ui::WindowManager::createWindow(
             WindowType::openLocoVersion,
             gfx::point_t(8, ui::height() - height),
             gfx::ui_size_t(width, height),

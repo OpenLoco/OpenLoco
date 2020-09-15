@@ -1,7 +1,7 @@
 #include <cstdint>
 #include <string>
 
-namespace openloco::input
+namespace OpenLoco::input
 {
     std::string saveScreenshot();
 }

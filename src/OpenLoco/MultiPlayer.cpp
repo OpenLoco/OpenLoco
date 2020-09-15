@@ -1,9 +1,9 @@
 #include "MultiPlayer.h"
 #include "Interop/Interop.hpp"
 
-using namespace openloco::interop;
+using namespace OpenLoco::interop;
 
-namespace openloco::multiplayer
+namespace OpenLoco::multiplayer
 {
     static loco_global<uint16_t, 0x00508F10> _flags;
 

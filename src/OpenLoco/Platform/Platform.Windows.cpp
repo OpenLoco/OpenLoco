@@ -14,7 +14,7 @@
 #include "../Utility/String.hpp"
 #include "Platform.h"
 
-namespace openloco::platform
+namespace OpenLoco::platform
 {
     uint32_t getTime()
     {

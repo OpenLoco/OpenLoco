@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-namespace openloco::stringmgr
+namespace OpenLoco::stringmgr
 {
     class argswrapper
     {

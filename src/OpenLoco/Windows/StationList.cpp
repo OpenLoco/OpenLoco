@@ -17,9 +17,9 @@
 #include "../Ui/WindowManager.h"
 #include "../Widget.h"
 
-using namespace openloco::interop;
+using namespace OpenLoco::interop;
 
-namespace openloco::ui::windows::station_list
+namespace OpenLoco::ui::windows::station_list
 {
     static const gfx::ui_size_t window_size = { 600, 197 };
     static const gfx::ui_size_t max_dimensions = { 640, 1200 };
@@ -144,7 +144,7 @@ namespace openloco::ui::windows::station_list
     }
 
     // 0x004911FD
-    static bool orderByName(const openloco::station& lhs, const openloco::station& rhs)
+    static bool orderByName(const OpenLoco::station& lhs, const OpenLoco::station& rhs)
     {
         char lhsString[256] = { 0 };
         stringmgr::formatString(lhsString, lhs.name, (void*)&lhs.town);
@@ -156,7 +156,7 @@ namespace openloco::ui::windows::station_list
     }
 
     // 0x00491281, 0x00491247
-    static bool orderByQuantity(const openloco::station& lhs, const openloco::station& rhs)
+    static bool orderByQuantity(const OpenLoco::station& lhs, const OpenLoco::station& rhs)
     {
         uint32_t lhsSum = 0;
         for (auto cargo : lhs.cargo_stats)
@@ -174,7 +174,7 @@ namespace openloco::ui::windows::station_list
     }
 
     // 0x004912BB
-    static bool orderByAccepts(const openloco::station& lhs, const openloco::station& rhs)
+    static bool orderByAccepts(const OpenLoco::station& lhs, const OpenLoco::station& rhs)
     {
         char* ptr;
 
@@ -202,7 +202,7 @@ namespace openloco::ui::windows::station_list
     }
 
     // 0x004911FD, 0x00491247, 0x00491281, 0x004912BB
-    static bool getOrder(const SortMode mode, const openloco::station& lhs, const openloco::station& rhs)
+    static bool getOrder(const SortMode mode, const OpenLoco::station& lhs, const OpenLoco::station& rhs)
     {
         switch (mode)
         {

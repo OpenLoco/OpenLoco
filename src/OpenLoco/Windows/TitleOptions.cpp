@@ -8,9 +8,9 @@
 #include "../Ui.h"
 #include "../Ui/WindowManager.h"
 
-using namespace openloco::interop;
+using namespace OpenLoco::interop;
 
-namespace openloco::ui::title_options
+namespace OpenLoco::ui::title_options
 {
     static const gfx::ui_size_t window_size = { 60, 15 };
 

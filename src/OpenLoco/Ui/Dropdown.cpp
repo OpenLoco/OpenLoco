@@ -12,9 +12,9 @@
 #include <cstdarg>
 #include <limits>
 
-using namespace openloco::interop;
+using namespace OpenLoco::interop;
 
-namespace openloco::ui::dropdown
+namespace OpenLoco::ui::dropdown
 {
     static constexpr int bytes_per_item = 8;
 

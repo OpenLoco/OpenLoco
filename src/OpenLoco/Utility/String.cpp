@@ -10,7 +10,7 @@
 #include <locale>
 #endif
 
-namespace openloco::utility
+namespace OpenLoco::utility
 {
     std::string toUtf8(const std::wstring_view& src)
     {

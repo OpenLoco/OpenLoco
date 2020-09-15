@@ -19,10 +19,10 @@
 #include "../ViewportManager.h"
 #include "../Widget.h"
 
-using namespace openloco::interop;
-using namespace openloco::game_commands;
+using namespace OpenLoco::interop;
+using namespace OpenLoco::game_commands;
 
-namespace openloco::ui::windows::industry
+namespace OpenLoco::ui::windows::industry
 {
     static loco_global<string_id, 0x009C68E8> gGameCommandErrorTitle;
 
@@ -237,7 +237,7 @@ namespace openloco::ui::windows::industry
 
             // Figure out the industry's position on the map.
             auto industry = industrymgr::get(self->number);
-            int16_t tileZ = openloco::map::tileElementHeight(industry->x, industry->y).landHeight;
+            int16_t tileZ = OpenLoco::map::tileElementHeight(industry->x, industry->y).landHeight;
 
             // Compute views.
             SavedView view = {
@@ -271,7 +271,7 @@ namespace openloco::ui::windows::industry
             if (self->viewports[0] == nullptr)
             {
                 auto widget = &self->widgets[widx::viewport];
-                auto tile = openloco::map::map_pos3({ industry->x, industry->y, tileZ });
+                auto tile = OpenLoco::map::map_pos3({ industry->x, industry->y, tileZ });
                 auto origin = gfx::point_t(widget->left + self->x + 1, widget->top + self->y + 1);
                 auto size = gfx::ui_size_t(widget->width() - 2, widget->height() - 2);
                 viewportmgr::create(self, 0, origin, size, self->saved_view.zoomLevel, tile);

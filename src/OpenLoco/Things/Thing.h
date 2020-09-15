@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <limits>
 
-namespace openloco
+namespace OpenLoco
 {
     struct Thing;
     struct vehicle_base;

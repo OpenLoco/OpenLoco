@@ -13,9 +13,9 @@
 #include "Interop/Interop.hpp"
 #include "Utility/Yaml.hpp"
 
-using namespace openloco::interop;
+using namespace OpenLoco::interop;
 
-namespace openloco::config
+namespace OpenLoco::config
 {
     static loco_global<config_t, 0x0050AEB4> _config;
     static new_config _new_config;

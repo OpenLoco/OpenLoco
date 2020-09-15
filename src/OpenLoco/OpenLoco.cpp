@@ -52,11 +52,11 @@
 
 #pragma warning(disable : 4611) // interaction between '_setjmp' and C++ object destruction is non - portable
 
-using namespace openloco::interop;
-using namespace openloco::ui;
-using namespace openloco::input;
+using namespace OpenLoco::interop;
+using namespace OpenLoco::ui;
+using namespace OpenLoco::input;
 
-namespace openloco
+namespace OpenLoco
 {
 #ifdef _WIN32
     loco_global<HINSTANCE, 0x0113E0B4> ghInstance;
@@ -934,7 +934,7 @@ namespace openloco
     // 0x00406D13
     void main()
     {
-        auto versionInfo = openloco::getVersionInfo();
+        auto versionInfo = OpenLoco::getVersionInfo();
         std::cout << versionInfo << std::endl;
         try
         {
@@ -975,9 +975,9 @@ extern "C" {
 __declspec(dllexport) int StartOpenLoco(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow);
 __declspec(dllexport) int StartOpenLoco(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-    openloco::glpCmdLine = lpCmdLine;
-    openloco::ghInstance = hInstance;
-    openloco::main();
+    OpenLoco::glpCmdLine = lpCmdLine;
+    OpenLoco::ghInstance = hInstance;
+    OpenLoco::main();
     return 0;
 }
 #endif

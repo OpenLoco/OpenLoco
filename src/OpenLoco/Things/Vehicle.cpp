@@ -14,9 +14,9 @@
 #include <algorithm>
 #include <cassert>
 
-using namespace openloco;
-using namespace openloco::interop;
-using namespace openloco::objectmgr;
+using namespace OpenLoco;
+using namespace OpenLoco::interop;
+using namespace OpenLoco::objectmgr;
 
 loco_global<vehicle_head*, 0x01136118> vehicleUpdate_head;
 loco_global<vehicle_bogie*, 0x01136124> vehicleUpdate_frontBogie;
@@ -190,7 +190,7 @@ void vehicle_head::sub_4BAA76()
 static uint16_t sub_4BE368(uint32_t distance);
 
 // 0x004AA1D0
-int32_t openloco::vehicle_body::update()
+int32_t OpenLoco::vehicle_body::update()
 {
     registers regs;
     regs.esi = (int32_t)this;
@@ -225,7 +225,7 @@ int32_t openloco::vehicle_body::update()
 }
 
 // 0x004AAC4E
-void openloco::vehicle_body::animationUpdate()
+void OpenLoco::vehicle_body::animationUpdate()
 {
     if (var_38 & things::vehicle::flags_38::unk_4)
         return;
@@ -275,7 +275,7 @@ void openloco::vehicle_body::animationUpdate()
 }
 
 // 0x004AAB0B
-void openloco::vehicle_body::sub_4AAB0B()
+void OpenLoco::vehicle_body::sub_4AAB0B()
 {
     int32_t eax = vehicle_var_1136130 >> 3;
     if (var_38 & things::vehicle::flags_38::unk_1)
@@ -373,7 +373,7 @@ void openloco::vehicle_body::sub_4AAB0B()
 }
 
 // 0x004AC255
-void openloco::vehicle_body::sub_4AC255(vehicle_bogie* back_bogie, vehicle_bogie* front_bogie)
+void OpenLoco::vehicle_body::sub_4AC255(vehicle_bogie* back_bogie, vehicle_bogie* front_bogie)
 {
     loc16 loc = {
         static_cast<int16_t>((front_bogie->x + back_bogie->x) / 2),
@@ -442,7 +442,7 @@ static uint16_t sub_4BE368(uint32_t distance)
 }
 
 // 0x004BF4DA
-uint8_t openloco::vehicle_body::updateSpritePitchSteepSlopes(uint16_t xy_offset, int16_t z_offset)
+uint8_t OpenLoco::vehicle_body::updateSpritePitchSteepSlopes(uint16_t xy_offset, int16_t z_offset)
 {
     uint32_t i = 0;
 
@@ -482,7 +482,7 @@ uint8_t openloco::vehicle_body::updateSpritePitchSteepSlopes(uint16_t xy_offset,
 }
 
 // 0x004BF49D
-uint8_t openloco::vehicle_body::updateSpritePitch(uint16_t xy_offset, int16_t z_offset)
+uint8_t OpenLoco::vehicle_body::updateSpritePitch(uint16_t xy_offset, int16_t z_offset)
 {
     uint32_t i = 0;
 
@@ -511,7 +511,7 @@ uint8_t openloco::vehicle_body::updateSpritePitch(uint16_t xy_offset, int16_t z_
 }
 
 // 0x004BF52B
-uint8_t openloco::vehicle_body::updateSpriteYaw0(int16_t x_offset, int16_t y_offset)
+uint8_t OpenLoco::vehicle_body::updateSpriteYaw0(int16_t x_offset, int16_t y_offset)
 {
     uint32_t i = 0;
 
@@ -553,7 +553,7 @@ uint8_t openloco::vehicle_body::updateSpriteYaw0(int16_t x_offset, int16_t y_off
 }
 
 // 0x004BF5B3
-uint8_t openloco::vehicle_body::updateSpriteYaw1(int16_t x_offset, int16_t y_offset)
+uint8_t OpenLoco::vehicle_body::updateSpriteYaw1(int16_t x_offset, int16_t y_offset)
 {
     uint32_t i = 0;
 
@@ -603,7 +603,7 @@ uint8_t openloco::vehicle_body::updateSpriteYaw1(int16_t x_offset, int16_t y_off
 }
 
 // 0x004BF5FB
-uint8_t openloco::vehicle_body::updateSpriteYaw2(int16_t x_offset, int16_t y_offset)
+uint8_t OpenLoco::vehicle_body::updateSpriteYaw2(int16_t x_offset, int16_t y_offset)
 {
     uint32_t i = 0;
 
@@ -672,7 +672,7 @@ uint8_t openloco::vehicle_body::updateSpriteYaw2(int16_t x_offset, int16_t y_off
 }
 
 // 0x004BF657
-uint8_t openloco::vehicle_body::updateSpriteYaw3(int16_t x_offset, int16_t y_offset)
+uint8_t OpenLoco::vehicle_body::updateSpriteYaw3(int16_t x_offset, int16_t y_offset)
 {
     uint32_t i = 0;
 
@@ -782,7 +782,7 @@ uint8_t openloco::vehicle_body::updateSpriteYaw3(int16_t x_offset, int16_t y_off
 }
 
 // 0x004BF6DF
-uint8_t openloco::vehicle_body::updateSpriteYaw4(int16_t x_offset, int16_t y_offset)
+uint8_t OpenLoco::vehicle_body::updateSpriteYaw4(int16_t x_offset, int16_t y_offset)
 {
     uint32_t i = 0;
 
@@ -965,7 +965,7 @@ uint8_t openloco::vehicle_body::updateSpriteYaw4(int16_t x_offset, int16_t y_off
 }
 
 // 0x004AB655
-void openloco::vehicle_body::secondaryAnimationUpdate()
+void OpenLoco::vehicle_body::secondaryAnimationUpdate()
 {
     auto vehicleObject = object();
 
@@ -1006,7 +1006,7 @@ void openloco::vehicle_body::secondaryAnimationUpdate()
 }
 
 // 0x004AB688, 0x004AACA5
-void openloco::vehicle_body::steamPuffsAnimationUpdate(uint8_t num, int32_t var_05)
+void OpenLoco::vehicle_body::steamPuffsAnimationUpdate(uint8_t num, int32_t var_05)
 {
     auto vehicleObject = object();
     vehicle_bogie* frontBogie = vehicleUpdate_frontBogie;
@@ -1171,7 +1171,7 @@ void openloco::vehicle_body::steamPuffsAnimationUpdate(uint8_t num, int32_t var_
 }
 
 // 0x004AB9DD & 0x004AAFFA
-void openloco::vehicle_body::dieselExhaust1AnimationUpdate(uint8_t num, int32_t var_05)
+void OpenLoco::vehicle_body::dieselExhaust1AnimationUpdate(uint8_t num, int32_t var_05)
 {
     vehicle_bogie* frontBogie = vehicleUpdate_frontBogie;
     vehicle_bogie* backBogie = vehicleUpdate_backBogie;
@@ -1257,7 +1257,7 @@ void openloco::vehicle_body::dieselExhaust1AnimationUpdate(uint8_t num, int32_t 
 }
 
 // 0x004ABB5A & 0x004AB177
-void openloco::vehicle_body::dieselExhaust2AnimationUpdate(uint8_t num, int32_t var_05)
+void OpenLoco::vehicle_body::dieselExhaust2AnimationUpdate(uint8_t num, int32_t var_05)
 {
     vehicle_bogie* frontBogie = vehicleUpdate_frontBogie;
     vehicle_bogie* backBogie = vehicleUpdate_backBogie;
@@ -1332,7 +1332,7 @@ void openloco::vehicle_body::dieselExhaust2AnimationUpdate(uint8_t num, int32_t 
 }
 
 // 0x004ABDAD & 0x004AB3CA
-void openloco::vehicle_body::electricSpark1AnimationUpdate(uint8_t num, int32_t var_05)
+void OpenLoco::vehicle_body::electricSpark1AnimationUpdate(uint8_t num, int32_t var_05)
 {
     vehicle_bogie* frontBogie = vehicleUpdate_frontBogie;
     vehicle_bogie* backBogie = vehicleUpdate_backBogie;
@@ -1392,7 +1392,7 @@ void openloco::vehicle_body::electricSpark1AnimationUpdate(uint8_t num, int32_t 
 }
 
 // 0x004ABEC3 & 0x004AB4E0
-void openloco::vehicle_body::electricSpark2AnimationUpdate(uint8_t num, int32_t var_05)
+void OpenLoco::vehicle_body::electricSpark2AnimationUpdate(uint8_t num, int32_t var_05)
 {
     vehicle_bogie* frontBogie = vehicleUpdate_frontBogie;
     vehicle_bogie* backBogie = vehicleUpdate_backBogie;
@@ -1474,7 +1474,7 @@ void openloco::vehicle_body::electricSpark2AnimationUpdate(uint8_t num, int32_t 
 }
 
 // 0x004ABC8A & 0x004AB2A7
-void openloco::vehicle_body::shipWakeAnimationUpdate(uint8_t num, int32_t)
+void OpenLoco::vehicle_body::shipWakeAnimationUpdate(uint8_t num, int32_t)
 {
     vehicle_2* veh_2 = vehicleUpdate_2;
     auto vehicleObject = object();
@@ -1681,7 +1681,7 @@ bool vehicle_head::isVehicleTypeCompatible(const uint16_t vehicleTypeId) // TODO
 
     auto curTotalLength = getVehicleTotalLength();
     auto additionalNewLength = getVehicleTypeLength(vehicleTypeId);
-    if (curTotalLength + additionalNewLength > openloco::things::vehicle::max_vehicle_length)
+    if (curTotalLength + additionalNewLength > OpenLoco::things::vehicle::max_vehicle_length)
     {
         gGameCommandErrorText = string_ids::vehicle_too_long;
         return false;
@@ -1689,11 +1689,11 @@ bool vehicle_head::isVehicleTypeCompatible(const uint16_t vehicleTypeId) // TODO
     return true;
 }
 
-namespace openloco::things::vehicle
+namespace OpenLoco::things::vehicle
 {
     Vehicle::Vehicle(uint16_t _head)
     {
-        auto component = thingmgr::get<openloco::vehicle>(_head);
+        auto component = thingmgr::get<OpenLoco::vehicle>(_head);
         head = component->asVehicleHead();
         component = component->nextVehicleComponent();
         veh1 = component->asVehicle1();

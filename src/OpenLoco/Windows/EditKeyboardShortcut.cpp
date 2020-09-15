@@ -10,10 +10,10 @@
 #include "../Objects/ObjectManager.h"
 #include "../Ui/WindowManager.h"
 
-using namespace openloco::interop;
-using namespace openloco::input;
+using namespace OpenLoco::interop;
+using namespace OpenLoco::input;
 
-namespace openloco::ui::EditKeyboardShortcut
+namespace OpenLoco::ui::EditKeyboardShortcut
 {
     constexpr gfx::ui_size_t windowSize = { 280, 72 };
 

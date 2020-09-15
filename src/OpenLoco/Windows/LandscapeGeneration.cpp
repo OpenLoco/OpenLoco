@@ -15,9 +15,9 @@
 #include "../Ui/WindowManager.h"
 #include "../Widget.h"
 
-using namespace openloco::interop;
+using namespace OpenLoco::interop;
 
-namespace openloco::ui::windows::LandscapeGeneration
+namespace OpenLoco::ui::windows::LandscapeGeneration
 {
     static const gfx::ui_size_t window_size = { 366, 217 };
     static const gfx::ui_size_t land_tab_size = { 366, 232 };
@@ -426,7 +426,7 @@ namespace openloco::ui::windows::LandscapeGeneration
                     continue;
 
                 // Draw tile icon.
-                const uint32_t imageId = landObject->var_16 + openloco::land::image_ids::landscape_generator_tile_icon;
+                const uint32_t imageId = landObject->var_16 + OpenLoco::land::image_ids::landscape_generator_tile_icon;
                 gfx::drawImage(dpi, 2, yPos + 1, imageId);
 
                 // Draw land description.

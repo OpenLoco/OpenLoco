@@ -15,9 +15,9 @@
 #include "../Utility/Numeric.hpp"
 #include "../Widget.h"
 
-using namespace openloco::interop;
+using namespace OpenLoco::interop;
 
-namespace openloco::ui::windows::CompanyList
+namespace OpenLoco::ui::windows::CompanyList
 {
     static loco_global<uint8_t[32], 0x004F9442> _cargoLineColour;
     static loco_global<ui::window_number, 0x00523390> _toolWindowNumber;
@@ -181,7 +181,7 @@ namespace openloco::ui::windows::CompanyList
         }
 
         // 0x00437BA0
-        static bool orderByName(const openloco::company& lhs, const openloco::company& rhs)
+        static bool orderByName(const OpenLoco::company& lhs, const OpenLoco::company& rhs)
         {
             char lhsString[256] = { 0 };
             stringmgr::formatString(lhsString, lhs.name);
@@ -193,7 +193,7 @@ namespace openloco::ui::windows::CompanyList
         }
 
         // 0x00437BE1
-        static bool orderByStatus(const openloco::company& lhs, const openloco::company& rhs)
+        static bool orderByStatus(const OpenLoco::company& lhs, const OpenLoco::company& rhs)
         {
             char lhsString[256] = { 0 };
             {
@@ -213,7 +213,7 @@ namespace openloco::ui::windows::CompanyList
         }
 
         // 0x00437C53
-        static bool orderByPerformance(const openloco::company& lhs, const openloco::company& rhs)
+        static bool orderByPerformance(const OpenLoco::company& lhs, const OpenLoco::company& rhs)
         {
             auto lhsPerformance = lhs.performance_index;
 
@@ -223,7 +223,7 @@ namespace openloco::ui::windows::CompanyList
         }
 
         // 0x00437C67
-        static bool orderByValue(const openloco::company& lhs, const openloco::company& rhs)
+        static bool orderByValue(const OpenLoco::company& lhs, const OpenLoco::company& rhs)
         {
             auto lhsValue = lhs.companyValueHistory[0].var_04;
 
@@ -240,7 +240,7 @@ namespace openloco::ui::windows::CompanyList
         }
 
         // 0x00437BA0, 0x00437BE1, 0x00437C53, 0x00437C67
-        static bool getOrder(const SortMode mode, openloco::company& lhs, openloco::company& rhs)
+        static bool getOrder(const SortMode mode, OpenLoco::company& lhs, OpenLoco::company& rhs)
         {
             switch (mode)
             {

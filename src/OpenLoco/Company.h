@@ -7,7 +7,7 @@
 #include <cstdint>
 #include <limits>
 
-namespace openloco
+namespace OpenLoco
 {
 
     namespace company_id

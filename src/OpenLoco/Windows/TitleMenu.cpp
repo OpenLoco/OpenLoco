@@ -17,9 +17,9 @@
 #include "../Ui/WindowManager.h"
 #include "../ViewportManager.h"
 
-using namespace openloco::interop;
+using namespace OpenLoco::interop;
 
-namespace openloco::ui::windows
+namespace OpenLoco::ui::windows
 {
     static const uint8_t btn_main_size = 74;
     static const uint8_t btn_sub_height = 18;
@@ -153,7 +153,7 @@ namespace openloco::ui::windows
         _events.prepare_draw = prepareDraw;
         _events.draw = draw;
 
-        auto window = openloco::ui::WindowManager::createWindow(
+        auto window = OpenLoco::ui::WindowManager::createWindow(
             WindowType::titleMenu,
             gfx::point_t((ui::width() - ww) / 2, ui::height() - wh - 25),
             { ww, wh },
@@ -190,7 +190,7 @@ namespace openloco::ui::windows
         window->widgets[widx::scenario_editor_btn].right = btn_main_size * 4 - 1;
         window->widgets[widx::chat_btn].type = ui::widget_type::none;
 
-        if (openloco::isNetworked())
+        if (OpenLoco::isNetworked())
         {
             window->widgets[widx::tutorial_btn].type = ui::widget_type::none;
             window->widgets[widx::scenario_editor_btn].type = ui::widget_type::none;
@@ -223,8 +223,8 @@ namespace openloco::ui::windows
                 image_id = globe_spin[((window->var_846 / 2) % globe_spin.size())];
             }
 
-            openloco::gfx::drawImage(dpi, x, y, image_id);
-            openloco::gfx::drawImage(dpi, x, y, image_ids::title_menu_sparkle);
+            OpenLoco::gfx::drawImage(dpi, x, y, image_id);
+            OpenLoco::gfx::drawImage(dpi, x, y, image_ids::title_menu_sparkle);
         }
 
         if (window->widgets[widx::load_game_btn].type != ui::widget_type::none)
@@ -238,8 +238,8 @@ namespace openloco::ui::windows
                 image_id = globe_spin[((window->var_846 / 2) % globe_spin.size())];
             }
 
-            openloco::gfx::drawImage(dpi, x, y, image_id);
-            openloco::gfx::drawImage(dpi, x, y, image_ids::title_menu_save);
+            OpenLoco::gfx::drawImage(dpi, x, y, image_id);
+            OpenLoco::gfx::drawImage(dpi, x, y, image_ids::title_menu_save);
         }
 
         if (window->widgets[widx::tutorial_btn].type != ui::widget_type::none)
@@ -253,10 +253,10 @@ namespace openloco::ui::windows
                 image_id = globe_spin[((window->var_846 / 2) % globe_spin.size())];
             }
 
-            openloco::gfx::drawImage(dpi, x, y, image_id);
+            OpenLoco::gfx::drawImage(dpi, x, y, image_id);
 
             // TODO: base lesson overlay on language
-            openloco::gfx::drawImage(dpi, x, y, image_ids::title_menu_lesson_l);
+            OpenLoco::gfx::drawImage(dpi, x, y, image_ids::title_menu_lesson_l);
         }
 
         if (window->widgets[widx::scenario_editor_btn].type != ui::widget_type::none)
@@ -270,7 +270,7 @@ namespace openloco::ui::windows
                 image_id = globe_construct[((window->var_846 / 2) % globe_construct.size())];
             }
 
-            openloco::gfx::drawImage(dpi, x, y, image_id);
+            OpenLoco::gfx::drawImage(dpi, x, y, image_id);
         }
 
         {
@@ -279,7 +279,7 @@ namespace openloco::ui::windows
 
             string_id string = string_ids::single_player_mode;
 
-            if (openloco::isNetworked())
+            if (OpenLoco::isNetworked())
             {
                 // char[512+1]
                 auto buffer = stringmgr::getString(string_ids::buffer_2039);
@@ -395,13 +395,13 @@ namespace openloco::ui::windows
             (ui::window_event_list*)0x004FA5F8);
         window->widgets = _editorWidgets;
         addr<0x00e3f0b8, int32_t>() = 0; // gCurrentRotation?
-        openloco::ui::viewportmgr::create(
+        OpenLoco::ui::viewportmgr::create(
             window,
             0,
             { window->x, window->y },
             { window->width, window->height },
             ZoomLevel::full,
-            { (openloco::map::map_rows * openloco::map::tile_size) / 2 - 1, (openloco::map::map_rows * openloco::map::tile_size) / 2 - 1, 480 });
+            { (OpenLoco::map::map_rows * OpenLoco::map::tile_size) / 2 - 1, (OpenLoco::map::map_rows * OpenLoco::map::tile_size) / 2 - 1, 480 });
 
         addr<0x00F2533F, int8_t>() = 0; // grid lines
         addr<0x0112C2e1, int8_t>() = 0;

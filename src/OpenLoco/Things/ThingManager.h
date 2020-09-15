@@ -4,7 +4,7 @@
 #include "Vehicle.h"
 #include <cstdio>
 
-namespace openloco::thingmgr
+namespace OpenLoco::thingmgr
 {
     constexpr size_t num_thing_lists = 6;
     constexpr size_t max_things = 20000;

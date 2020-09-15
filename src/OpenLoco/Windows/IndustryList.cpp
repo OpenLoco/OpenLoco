@@ -15,9 +15,9 @@
 #include "../Ui/WindowManager.h"
 #include "../Widget.h"
 
-using namespace openloco::interop;
+using namespace OpenLoco::interop;
 
-namespace openloco::ui::windows::industry_list
+namespace OpenLoco::ui::windows::industry_list
 {
     static loco_global<uint32_t, 0x00E0C39C> dword_E0C39C;
     static loco_global<uint8_t, 0x00E0C3D9> byte_E0C3D9;
@@ -204,7 +204,7 @@ namespace openloco::ui::windows::industry_list
         }
 
         // 0x00457A52
-        static bool orderByName(const openloco::industry& lhs, const openloco::industry& rhs)
+        static bool orderByName(const OpenLoco::industry& lhs, const OpenLoco::industry& rhs)
         {
             char lhsString[256] = { 0 };
             stringmgr::formatString(lhsString, lhs.name, (void*)&lhs.town);
@@ -216,7 +216,7 @@ namespace openloco::ui::windows::industry_list
         }
 
         // 0x00457A9F
-        static bool orderByStatus(openloco::industry& lhs, openloco::industry& rhs)
+        static bool orderByStatus(OpenLoco::industry& lhs, OpenLoco::industry& rhs)
         {
             char lhsString[256] = { 0 };
             const char* lhsBuffer = stringmgr::getString(string_ids::buffer_1250);
@@ -233,7 +233,7 @@ namespace openloco::ui::windows::industry_list
             return strcmp(lhsString, rhsString) < 0;
         }
 
-        static uint8_t getAverageTransportedCargo(const openloco::industry& industry)
+        static uint8_t getAverageTransportedCargo(const OpenLoco::industry& industry)
         {
             auto industryObj = objectmgr::get<industry_object>(industry.object_id);
             uint8_t productionTransported = -1;
@@ -255,7 +255,7 @@ namespace openloco::ui::windows::industry_list
         }
 
         // 0x00457AF3
-        static bool orderByProductionTransported(const openloco::industry& lhs, const openloco::industry& rhs)
+        static bool orderByProductionTransported(const OpenLoco::industry& lhs, const OpenLoco::industry& rhs)
         {
             auto lhsVar = getAverageTransportedCargo(lhs);
 
@@ -265,7 +265,7 @@ namespace openloco::ui::windows::industry_list
         }
 
         // 0x00457A52, 0x00457A9F, 0x00457AF3
-        static bool getOrder(const SortMode mode, openloco::industry& lhs, openloco::industry& rhs)
+        static bool getOrder(const SortMode mode, OpenLoco::industry& lhs, OpenLoco::industry& rhs)
         {
             switch (mode)
             {
@@ -862,7 +862,7 @@ namespace openloco::ui::windows::industry_list
         }
 
         // 0x00458C7F
-        static void drawIndustryThumb(gfx::drawpixelinfo_t* clipped, const openloco::industry_object* industryObj, int16_t x, int16_t y)
+        static void drawIndustryThumb(gfx::drawpixelinfo_t* clipped, const OpenLoco::industry_object* industryObj, int16_t x, int16_t y)
         {
             registers regs;
             regs.cx = x;

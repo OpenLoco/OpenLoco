@@ -16,12 +16,12 @@
 #include <iostream>
 #include <memory>
 
-using namespace openloco::interop;
-using namespace openloco::utility;
-using namespace openloco::drawing;
-using namespace openloco::ui;
+using namespace OpenLoco::interop;
+using namespace OpenLoco::utility;
+using namespace OpenLoco::drawing;
+using namespace OpenLoco::ui;
 
-namespace openloco::gfx
+namespace OpenLoco::gfx
 {
     namespace g1_expected_count
     {

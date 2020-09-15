@@ -19,9 +19,9 @@
 #include "../Ui/WindowManager.h"
 #include <map>
 
-using namespace openloco::interop;
+using namespace OpenLoco::interop;
 
-namespace openloco::ui::windows::PlayerInfoPanel
+namespace OpenLoco::ui::windows::PlayerInfoPanel
 {
     static const gfx::ui_size_t window_size = { 140, 27 };
 

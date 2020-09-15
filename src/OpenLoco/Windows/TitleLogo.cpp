@@ -4,9 +4,9 @@
 #include "../OpenLoco.h"
 #include "../Ui/WindowManager.h"
 
-using namespace openloco::interop;
+using namespace OpenLoco::interop;
 
-namespace openloco::ui::windows
+namespace OpenLoco::ui::windows
 {
     static const gfx::ui_size_t window_size = { 298, 170 };
 
@@ -33,7 +33,7 @@ namespace openloco::ui::windows
         _events.on_mouse_up = onMouseUp;
         _events.draw = draw;
 
-        auto window = openloco::ui::WindowManager::createWindow(
+        auto window = OpenLoco::ui::WindowManager::createWindow(
             WindowType::title_logo,
             { 0, 0 },
             window_size,

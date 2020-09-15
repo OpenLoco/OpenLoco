@@ -47,12 +47,12 @@ struct format_arg
     }
 };
 
-namespace openloco
+namespace OpenLoco
 {
     class FormatArguments;
 }
 
-namespace openloco::ui::dropdown
+namespace OpenLoco::ui::dropdown
 {
     void add(size_t index, string_id title);
     void add(size_t index, string_id title, std::initializer_list<format_arg> l);

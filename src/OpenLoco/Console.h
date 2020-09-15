@@ -1,6 +1,6 @@
 #pragma once
 
-namespace openloco::console
+namespace OpenLoco::console
 {
     void log(const char* format, ...);
     void logVerbose(const char* format, ...);

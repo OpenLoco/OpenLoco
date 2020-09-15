@@ -3,7 +3,7 @@
 #define NAME "OpenLoco"
 #define VERSION "20.07"
 
-namespace openloco
+namespace OpenLoco
 {
     const char version[] = NAME ", "
 #ifdef OPENLOCO_VERSION_TAG

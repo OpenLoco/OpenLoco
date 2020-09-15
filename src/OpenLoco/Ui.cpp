@@ -44,10 +44,10 @@
 #include "Ui/WindowManager.h"
 #include "Utility/String.hpp"
 
-using namespace openloco::interop;
-using namespace openloco::game_commands;
+using namespace OpenLoco::interop;
+using namespace OpenLoco::game_commands;
 
-namespace openloco::ui
+namespace OpenLoco::ui
 {
 #ifdef _LOCO_WIN32_
     constexpr auto WINDOW_CLASS_NAME = "Chris Sawyer's Locomotion";
@@ -840,7 +840,7 @@ namespace openloco::ui
         legacyConfig.resolution_width = newResolution.width;
         legacyConfig.resolution_height = newResolution.height;
 
-        openloco::config::write();
+        OpenLoco::config::write();
         ui::triggerResize();
         gfx::invalidateScreen();
 
@@ -1135,7 +1135,7 @@ namespace openloco::ui
 
         config.scale_factor = newScaleFactor;
 
-        openloco::config::write();
+        OpenLoco::config::write();
         ui::triggerResize();
         gfx::invalidateScreen();
     }

@@ -6,10 +6,10 @@
 #include "Ui/WindowManager.h"
 #include "Window.h"
 
-using namespace openloco::interop;
-using namespace openloco::ui;
+using namespace OpenLoco::interop;
+using namespace OpenLoco::ui;
 
-namespace openloco::stationmgr
+namespace OpenLoco::stationmgr
 {
     static loco_global<station[max_stations], 0x005E6EDC> _stations;
 

@@ -2,7 +2,7 @@
 #include <array>
 #include <cassert>
 
-namespace openloco::map::TrackData
+namespace OpenLoco::map::TrackData
 {
     const std::vector<PreviewTrack> trackPiece0 = {
         PreviewTrack{ 0, 0, 0, 0, 0, 15, 0 },

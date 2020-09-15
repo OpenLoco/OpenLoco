@@ -1,6 +1,6 @@
 #pragma once
 
-namespace openloco::input
+namespace OpenLoco::input
 {
     enum Shortcut
     {

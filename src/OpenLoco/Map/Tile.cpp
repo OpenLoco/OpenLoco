@@ -5,9 +5,9 @@
 #include "../Ui/WindowManager.h"
 #include <cassert>
 
-using namespace openloco;
-using namespace openloco::interop;
-using namespace openloco::ui::WindowManager;
+using namespace OpenLoco;
+using namespace OpenLoco::interop;
+using namespace OpenLoco::ui::WindowManager;
 
 const uint8_t* tile_element_base::data() const
 {
@@ -107,12 +107,12 @@ surface_element* tile::surface()
     return result;
 }
 
-openloco::industry* industry_element::industry()
+OpenLoco::industry* industry_element::industry()
 {
     return industrymgr::get(_industryId);
 }
 
-namespace openloco::map
+namespace OpenLoco::map
 {
     /**
      * Return the absolute height of an element, given its (x, y) coordinates

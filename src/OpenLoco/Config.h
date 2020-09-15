@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <string>
 
-namespace openloco::config
+namespace OpenLoco::config
 {
 #pragma pack(push, 1)
 

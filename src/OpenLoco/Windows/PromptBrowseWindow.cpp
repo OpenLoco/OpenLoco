@@ -17,9 +17,9 @@
 #include <algorithm>
 #include <cstring>
 
-using namespace openloco::interop;
+using namespace OpenLoco::interop;
 
-namespace openloco::ui::prompt_browse
+namespace OpenLoco::ui::prompt_browse
 {
     static fs::path getDirectory(const fs::path& path);
     static std::string getBasename(const fs::path& path);

@@ -4,7 +4,7 @@
 #include <array>
 #include <cstddef>
 
-namespace openloco::stationmgr
+namespace OpenLoco::stationmgr
 {
     constexpr size_t max_stations = 1024;
 

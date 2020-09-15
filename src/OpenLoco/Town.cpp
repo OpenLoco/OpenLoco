@@ -3,9 +3,9 @@
 #include "Localisation/StringIds.h"
 #include <algorithm>
 
-using namespace openloco::interop;
+using namespace OpenLoco::interop;
 
-namespace openloco
+namespace OpenLoco
 {
     constexpr int32_t min_company_rating = -1000;
     constexpr int32_t max_company_rating = 1000;

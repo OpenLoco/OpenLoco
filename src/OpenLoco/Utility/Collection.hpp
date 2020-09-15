@@ -2,7 +2,7 @@
 
 #include <cstddef>
 
-namespace openloco::utility
+namespace OpenLoco::utility
 {
     template<typename T, size_t N>
     static constexpr size_t length(T const (&)[N]) noexcept

@@ -4,7 +4,7 @@
 #include <cstdlib>
 #include <string>
 
-namespace openloco::localisation
+namespace OpenLoco::localisation
 {
     struct EncodingConvertEntry
     {

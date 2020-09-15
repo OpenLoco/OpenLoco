@@ -3,7 +3,7 @@
 #include "../Objects/SteamObject.h"
 #include "Thing.h"
 
-namespace openloco
+namespace OpenLoco
 {
     struct smoke;
     struct exhaust;

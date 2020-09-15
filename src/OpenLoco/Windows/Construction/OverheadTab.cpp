@@ -10,11 +10,11 @@
 #include "../../Ui/Dropdown.h"
 #include "Construction.h"
 
-using namespace openloco::interop;
-using namespace openloco::map;
-using namespace openloco::map::tilemgr;
+using namespace OpenLoco::interop;
+using namespace OpenLoco::map;
+using namespace OpenLoco::map::tilemgr;
 
-namespace openloco::ui::windows::construction::overhead
+namespace OpenLoco::ui::windows::construction::overhead
 {
     static loco_global<int32_t, 0x00E3F0B8> gCurrentRotation;
 

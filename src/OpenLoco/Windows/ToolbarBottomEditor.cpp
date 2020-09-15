@@ -1,9 +1,9 @@
 #include "../Interop/Interop.hpp"
 #include "../Ui/WindowManager.h"
 
-using namespace openloco::interop;
+using namespace OpenLoco::interop;
 
-namespace openloco::ui::windows::toolbar_bottom::editor
+namespace OpenLoco::ui::windows::toolbar_bottom::editor
 {
     // 0x0043CCCD
     void open()

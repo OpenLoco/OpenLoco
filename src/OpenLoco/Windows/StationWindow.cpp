@@ -19,10 +19,10 @@
 #include "../ViewportManager.h"
 #include "../Widget.h"
 
-using namespace openloco::interop;
-using namespace openloco::map;
+using namespace OpenLoco::interop;
+using namespace OpenLoco::map;
 
-namespace openloco::ui::windows::station
+namespace OpenLoco::ui::windows::station
 {
     static loco_global<uint8_t[map_size], 0x00F00484> _byte_F00484;
     static loco_global<uint16_t, 0x00F24484> _mapSelectionFlags;
@@ -250,7 +250,7 @@ namespace openloco::ui::windows::station
             if (self->viewports[0] == nullptr)
             {
                 auto widget = &self->widgets[widx::viewport];
-                auto tile = openloco::map::map_pos3({ station->x, station->y, station->z });
+                auto tile = OpenLoco::map::map_pos3({ station->x, station->y, station->z });
                 auto origin = gfx::point_t(widget->left + self->x + 1, widget->top + self->y + 1);
                 auto size = gfx::ui_size_t(widget->width() - 2, widget->height() - 2);
                 viewportmgr::create(self, 0, origin, size, self->saved_view.zoomLevel, tile);

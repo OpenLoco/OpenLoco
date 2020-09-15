@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-namespace openloco::scenariomgr
+namespace OpenLoco::scenariomgr
 {
     void loadIndex(uint8_t al);
 }

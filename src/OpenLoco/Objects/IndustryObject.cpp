@@ -5,9 +5,9 @@
 #include "ObjectManager.h"
 #include <algorithm>
 
-using namespace openloco::interop;
+using namespace OpenLoco::interop;
 
-namespace openloco
+namespace OpenLoco
 {
     bool industry_object::requiresCargo() const
     {

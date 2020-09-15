@@ -2,9 +2,9 @@
 #include "Interop/Interop.hpp"
 #include "OpenLoco.h"
 
-using namespace openloco::interop;
+using namespace OpenLoco::interop;
 
-namespace openloco::messagemgr
+namespace OpenLoco::messagemgr
 {
     static loco_global<message[max_messages], 0x005271D2> _messages;
 

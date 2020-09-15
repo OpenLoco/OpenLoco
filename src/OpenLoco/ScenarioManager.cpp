@@ -1,9 +1,9 @@
 #include "ScenarioManager.h"
 #include "Interop/Interop.hpp"
 
-using namespace openloco::interop;
+using namespace OpenLoco::interop;
 
-namespace openloco::scenariomgr
+namespace OpenLoco::scenariomgr
 {
     // 0x0044452F
     void loadIndex(uint8_t al)

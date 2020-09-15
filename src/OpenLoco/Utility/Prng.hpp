@@ -3,7 +3,7 @@
 #include "Numeric.hpp"
 #include <cstdint>
 
-namespace openloco::utility
+namespace OpenLoco::utility
 {
 #pragma pack(push, 1)
     struct prng

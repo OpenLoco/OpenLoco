@@ -5,9 +5,9 @@
 #include "WindowManager.h"
 #include <cmath>
 
-using namespace openloco::interop;
+using namespace OpenLoco::interop;
 
-namespace openloco::ui::scrollview
+namespace OpenLoco::ui::scrollview
 {
     static loco_global<ui::scrollview::scroll_part, 0x00523396> _currentScrollArea;
     // TODO: Convert to a scrollIndex when all scroll functions implemented

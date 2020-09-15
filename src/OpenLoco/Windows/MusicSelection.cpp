@@ -10,9 +10,9 @@
 #include "../OpenLoco.h"
 #include "../Ui/WindowManager.h"
 
-using namespace openloco::interop;
+using namespace OpenLoco::interop;
 
-namespace openloco::ui::windows::music_selection
+namespace OpenLoco::ui::windows::music_selection
 {
     static const gfx::ui_size_t window_size = { 360, 238 };
 

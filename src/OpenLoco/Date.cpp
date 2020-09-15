@@ -3,9 +3,9 @@
 #include <limits>
 #include <utility>
 
-using namespace openloco::interop;
+using namespace OpenLoco::interop;
 
-namespace openloco
+namespace OpenLoco
 {
     static loco_global<uint32_t, 0x00525E2C> _current_day;
     static loco_global<uint16_t, 0x00525E30> _day_progression;

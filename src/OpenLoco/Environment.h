@@ -2,7 +2,7 @@
 
 #include "Core/FileSystem.hpp"
 
-namespace openloco::environment
+namespace OpenLoco::environment
 {
     enum class path_id : uint8_t
     {

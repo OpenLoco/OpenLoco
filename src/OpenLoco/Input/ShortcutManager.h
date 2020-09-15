@@ -2,7 +2,7 @@
 #include "Shortcut.h"
 #include <cstddef>
 
-namespace openloco::input::ShortcutManager
+namespace OpenLoco::input::ShortcutManager
 {
     size_t count();
     void execute(Shortcut s);

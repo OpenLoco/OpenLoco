@@ -8,9 +8,9 @@
 #include "../Ui.h"
 #include "../Ui/WindowManager.h"
 
-using namespace openloco::interop;
+using namespace OpenLoco::interop;
 
-namespace openloco::ui::windows
+namespace OpenLoco::ui::windows
 {
     static const gfx::ui_size_t window_size = { 40, 28 };
 
@@ -39,7 +39,7 @@ namespace openloco::ui::windows
         _events.prepare_draw = prepareDraw;
         _events.draw = draw;
 
-        auto window = openloco::ui::WindowManager::createWindow(
+        auto window = OpenLoco::ui::WindowManager::createWindow(
             WindowType::titleExit,
             gfx::point_t(ui::width() - window_size.width, ui::height() - window_size.height),
             window_size,

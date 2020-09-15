@@ -16,9 +16,9 @@
 #include "../Ui/Dropdown.h"
 #include "../Ui/WindowManager.h"
 
-using namespace openloco::interop;
+using namespace OpenLoco::interop;
 
-namespace openloco::ui::TimePanel
+namespace OpenLoco::ui::TimePanel
 {
     static const gfx::ui_size_t window_size = { 140, 27 };
 

@@ -3,9 +3,9 @@
 #include "../Interop/Interop.hpp"
 #include "../ViewportManager.h"
 
-using namespace openloco::interop;
+using namespace OpenLoco::interop;
 
-namespace openloco::map::tilemgr
+namespace OpenLoco::map::tilemgr
 {
     static loco_global<tile_element* [0x30004], 0x00E40134> _tiles;
     static loco_global<coord_t, 0x00F24486> _mapSelectionAX;

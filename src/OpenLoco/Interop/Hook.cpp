@@ -12,7 +12,7 @@
 #endif // _WIN32
 #include "Interop.hpp"
 
-namespace openloco::interop
+namespace OpenLoco::interop
 {
     static void* _hookTableAddress;
     static int32_t _hookTableOffset;

@@ -9,10 +9,10 @@
 #include "Things/Vehicle.h"
 #include "Ui/WindowManager.h"
 
-using namespace openloco::interop;
-using namespace openloco::ui;
+using namespace OpenLoco::interop;
+using namespace OpenLoco::ui;
 
-namespace openloco::companymgr
+namespace OpenLoco::companymgr
 {
     static loco_global<company_id_t[2], 0x00525E3C> _player_company;
     static loco_global<uint8_t, 0x00525FCB> _byte_525FCB;
@@ -158,7 +158,7 @@ namespace openloco::companymgr
     // 0x004383ED
     void updateOwnerStatus()
     {
-        if (openloco::isTitleMode() || openloco::isEditorMode())
+        if (OpenLoco::isTitleMode() || OpenLoco::isEditorMode())
         {
             return;
         }
@@ -180,7 +180,7 @@ namespace openloco::companymgr
             if (w->type != WindowType::vehicle)
                 continue;
 
-            auto vehicle = thingmgr::get<openloco::vehicle>(w->number);
+            auto vehicle = thingmgr::get<OpenLoco::vehicle>(w->number);
             if (vehicle->x == location::null)
                 continue;
 

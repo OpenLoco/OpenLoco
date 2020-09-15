@@ -5,8 +5,8 @@
 #include "../ViewportManager.h"
 #include <algorithm>
 
-using namespace openloco;
-using namespace openloco::interop;
+using namespace OpenLoco;
+using namespace OpenLoco::interop;
 
 // 0x0046FC83
 void thing_base::moveTo(loc16 loc)
@@ -20,7 +20,7 @@ void thing_base::moveTo(loc16 loc)
 }
 
 // 0x004CBB01
-void openloco::thing_base::invalidateSprite()
+void OpenLoco::thing_base::invalidateSprite()
 {
     ui::viewportmgr::invalidate((Thing*)this, ZoomLevel::eighth);
 }

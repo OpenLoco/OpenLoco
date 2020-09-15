@@ -13,9 +13,9 @@
 #include <iostream>
 #include <stdexcept>
 
-using namespace openloco::interop;
+using namespace OpenLoco::interop;
 
-namespace openloco::localisation
+namespace OpenLoco::localisation
 {
     static loco_global<char* [0xFFFF], 0x005183FC> _strings;
 
@@ -28,7 +28,7 @@ namespace openloco::localisation
         { "BIGFONT", control_codes::font_large },
         { "TINYFONT", control_codes::font_small },
         { "NEWLINE_SMALLER", control_codes::newline_smaller },
-        { "OUTLINE", openloco::control_codes::outline },
+        { "OUTLINE", OpenLoco::control_codes::outline },
         { "VELOCITY", control_codes::velocity },
         { "CURRENCY32", control_codes::currency32 },
         { "HEIGHT", control_codes::height },

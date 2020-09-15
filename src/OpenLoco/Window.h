@@ -13,7 +13,7 @@
 #include "Viewport.hpp"
 #include <algorithm>
 
-namespace openloco::ui
+namespace OpenLoco::ui
 {
     using widget_index = int8_t;
     using window_number = uint16_t;
@@ -293,7 +293,7 @@ namespace openloco::ui
             return (flags & (1 << 15)) != 0;
         }
 
-        openloco::map::map_pos3 getPos() const
+        OpenLoco::map::map_pos3 getPos() const
         {
             if (isThingView())
                 return {};
@@ -458,7 +458,7 @@ namespace openloco::ui
         void moveInsideScreenEdges();
         bool moveToCentre();
         widget_index findWidgetAt(int16_t xPos, int16_t yPos);
-        void draw(openloco::gfx::drawpixelinfo_t* dpi);
+        void draw(OpenLoco::gfx::drawpixelinfo_t* dpi);
 
         void callClose();                                                                                // 0
         void callOnMouseUp(widget_index widgetIndex);                                                    // 1

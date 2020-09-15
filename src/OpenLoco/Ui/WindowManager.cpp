@@ -23,9 +23,9 @@
 #include <cinttypes>
 #include <memory>
 
-using namespace openloco::interop;
+using namespace OpenLoco::interop;
 
-namespace openloco::ui::WindowManager
+namespace OpenLoco::ui::WindowManager
 {
     namespace find_flag
     {
@@ -1487,7 +1487,7 @@ namespace openloco::ui::WindowManager
 
         if (input::hasFlag(input::input_flags::flag5))
         {
-            if (openloco::isTitleMode())
+            if (OpenLoco::isTitleMode())
                 return;
 
             auto main = WindowManager::getMainWindow();
@@ -1516,7 +1516,7 @@ namespace openloco::ui::WindowManager
         {
             if (window->type == WindowType::main)
             {
-                if (openloco::isTitleMode())
+                if (OpenLoco::isTitleMode())
                     return;
 
                 if (wheel > 0)
@@ -1978,7 +1978,7 @@ namespace openloco::ui::WindowManager
     }
 }
 
-namespace openloco::ui::windows
+namespace OpenLoco::ui::windows
 {
     static loco_global<uint8_t, 0x00508F09> suppressErrorSound;
     static loco_global<int8_t, 0x00F2533F> _gridlinesState;

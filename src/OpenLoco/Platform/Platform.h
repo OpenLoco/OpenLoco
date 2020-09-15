@@ -5,7 +5,7 @@
 
 #include "../Core/FileSystem.hpp"
 
-namespace openloco::platform
+namespace OpenLoco::platform
 {
     uint32_t getTime();
     fs::path getUserDirectory();

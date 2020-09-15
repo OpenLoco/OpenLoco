@@ -1,9 +1,9 @@
 #include "ProgressBar.h"
 #include "Interop/Interop.hpp"
 
-using namespace openloco::interop;
+using namespace OpenLoco::interop;
 
-namespace openloco::progressbar
+namespace OpenLoco::progressbar
 {
     // 0x004CF5C5
     // eax: maximum

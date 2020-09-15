@@ -3,9 +3,9 @@
 #include "Interop/Interop.hpp"
 #include "OpenLoco.h"
 
-using namespace openloco::interop;
+using namespace OpenLoco::interop;
 
-namespace openloco::industrymgr
+namespace OpenLoco::industrymgr
 {
     static loco_global<industry[max_industries], 0x005C455C> _industries;
 

@@ -2,7 +2,7 @@
 
 #include "Tile.h"
 
-namespace openloco::map
+namespace OpenLoco::map
 {
 #pragma pack(push, 1)
     struct tile_loop
