@@ -91,9 +91,9 @@ namespace openloco
 
 namespace openloco::objectmgr
 {
-    void load_index();
+    void loadIndex();
 
-    constexpr size_t get_max_objects(object_type type)
+    constexpr size_t getMaxObjects(object_type type)
     {
         constexpr size_t counts[] = {
             1,   // interface,
@@ -191,7 +191,7 @@ namespace openloco::objectmgr
         uint8_t var_04[8];
         uint32_t checksum; // 0xC
 
-        constexpr object_type get_type()
+        constexpr object_type getType()
         {
             return static_cast<object_type>(type & 0x3F);
         }

@@ -993,7 +993,7 @@ namespace openloco::ui::windows::industry_list
         static void updateBuildableIndustries(window* self)
         {
             auto industryCount = 0;
-            for (uint16_t i = 0; i < objectmgr::get_max_objects(object_type::industry); i++)
+            for (uint16_t i = 0; i < objectmgr::getMaxObjects(object_type::industry); i++)
             {
                 auto industryObj = objectmgr::get<industry_object>(i);
                 if (industryObj == nullptr)

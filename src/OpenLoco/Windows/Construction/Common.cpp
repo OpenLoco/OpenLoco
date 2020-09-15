@@ -843,7 +843,7 @@ namespace openloco::ui::windows::construction
         {
             auto currentYear = getCurrentYear();
             auto airportCount = 0;
-            for (uint8_t i = 0; i < objectmgr::get_max_objects(object_type::airport); i++)
+            for (uint8_t i = 0; i < objectmgr::getMaxObjects(object_type::airport); i++)
             {
                 auto airportObj = objectmgr::get<airport_object>(i);
                 if (airportObj == nullptr)
@@ -865,7 +865,7 @@ namespace openloco::ui::windows::construction
         {
             auto currentYear = getCurrentYear();
             auto dockCount = 0;
-            for (uint8_t i = 0; i < objectmgr::get_max_objects(object_type::dock); i++)
+            for (uint8_t i = 0; i < objectmgr::getMaxObjects(object_type::dock); i++)
             {
                 auto dockObj = objectmgr::get<dock_object>(i);
                 if (dockObj == nullptr)
@@ -927,7 +927,7 @@ namespace openloco::ui::windows::construction
                 }
             }
 
-            for (uint8_t i = 0; i < objectmgr::get_max_objects(object_type::road_station); i++)
+            for (uint8_t i = 0; i < objectmgr::getMaxObjects(object_type::road_station); i++)
             {
                 uint8_t numCompatible;
                 uint8_t* mods;
@@ -1029,7 +1029,7 @@ namespace openloco::ui::windows::construction
                 }
             }
 
-            for (uint8_t i = 0; i < objectmgr::get_max_objects(object_type::bridge); i++)
+            for (uint8_t i = 0; i < objectmgr::getMaxObjects(object_type::bridge); i++)
             {
                 auto bridgeObj = objectmgr::get<bridge_object>(i);
                 if (bridgeObj == nullptr)
@@ -1094,7 +1094,7 @@ namespace openloco::ui::windows::construction
             modList[3] = 0xFF;
             auto flags = 0;
 
-            for (uint8_t vehicle = 0; vehicle < objectmgr::get_max_objects(object_type::vehicle); vehicle++)
+            for (uint8_t vehicle = 0; vehicle < objectmgr::getMaxObjects(object_type::vehicle); vehicle++)
             {
                 auto vehicleObj = objectmgr::get<vehicle_object>(vehicle);
 
@@ -1204,7 +1204,7 @@ namespace openloco::ui::windows::construction
                 signalCount++;
             }
 
-            for (uint8_t i = 0; i < objectmgr::get_max_objects(object_type::track_signal); i++)
+            for (uint8_t i = 0; i < objectmgr::getMaxObjects(object_type::track_signal); i++)
             {
                 auto signalObj = objectmgr::get<train_signal_object>(i);
                 if (signalObj == nullptr)
