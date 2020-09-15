@@ -105,15 +105,15 @@ namespace OpenLoco::Things::Vehicle
 
     static bool sub_4B0BDD(OpenLoco::vehicle_head* const head)
     {
-        switch (head->var_5D)
+        switch (head->status)
         {
-            case 8:
+            case Status::crashed:
                 gGameCommandErrorText = StringIds::vehicle_has_crashed;
                 return false;
-            case 9:
+            case Status::stuck:
                 gGameCommandErrorText = StringIds::vehicle_is_stuck;
                 return false;
-            case 7:
+            case Status::brokenDown:
                 gGameCommandErrorText = StringIds::vehicle_has_broken_down;
                 return false;
             default:
@@ -132,7 +132,7 @@ namespace OpenLoco::Things::Vehicle
                         return true;
                     }
 
-                    if (head->var_5D != 6 && head->var_5D != 1)
+                    if (head->status != Status::loading && head->status != Status::stopped)
                     {
                         gGameCommandErrorText = StringIds::vehicle_must_be_stopped;
                         return false;
@@ -552,7 +552,7 @@ namespace OpenLoco::Things::Vehicle
         ThingManager::moveSpriteToList(newHead, ThingManager::thing_list::vehicle_head);
         newHead->owner = _updating_company_id;
         newHead->head = newHead->id;
-        newHead->var_0C |= (1 << 1);
+        newHead->var_0C |= Things::Vehicle::Flags0C::unk_1;
         newHead->track_type = trackType;
         newHead->mode = mode;
         newHead->tile_x = -1;
@@ -573,7 +573,7 @@ namespace OpenLoco::Things::Vehicle
         newHead->var_44 = createUniqueTypeNumber(vehicleType);
         newHead->var_52 = 0;
         newHead->var_5C = 0;
-        newHead->var_5D = 0;
+        newHead->status = Status::unk_0;
         newHead->var_54 = -1;
         newHead->var_5F = 0;
         newHead->var_60 = -1;

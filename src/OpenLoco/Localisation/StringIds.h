@@ -253,7 +253,7 @@ namespace OpenLoco::StringIds
 
     constexpr string_id tooltip_sell_or_drag_vehicle = 332;
     constexpr string_id tooltip_build_new_vehicle_for = 333;
-
+    constexpr string_id click_on_view_select_string_id_start = 334;
     constexpr string_id incompatible_vehicle = 335;
     constexpr string_id too_many_vehicles = 336;
     constexpr string_id buffer_337 = 337;
@@ -320,6 +320,7 @@ namespace OpenLoco::StringIds
     constexpr string_id black_tiny_font = 453;
     constexpr string_id red_stringid = 454;
     constexpr string_id black_stringid = 455;
+    constexpr string_id black_stringid_stringid = 456;
 
     constexpr string_id wcolour2_stringid = 457;
     constexpr string_id white_stringid = 458;
@@ -1364,6 +1365,8 @@ namespace OpenLoco::StringIds
     constexpr string_id wcolour2_preferred_owner_name = 1921;
     constexpr string_id preferred_owner_name = 1922;
     constexpr string_id enter_preferred_owner_name = 1923;
+    constexpr string_id tiny_power = 1924;
+    constexpr string_id tiny_brake = 1925;
 
     constexpr string_id tooltip_route_move_order_up = 1926;
     constexpr string_id tooltip_route_move_order_down = 1927;

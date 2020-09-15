@@ -4,9 +4,13 @@
 #include "Map/Tile.h"
 #include "Objects/ObjectManager.h"
 #include "Things/Thing.h"
-#include "Things/ThingManager.h"
 
 using namespace OpenLoco::Interop;
+
+namespace OpenLoco
+{
+    struct vehicle_head;
+}
 
 namespace OpenLoco::GameCommands
 {
@@ -84,13 +88,13 @@ namespace OpenLoco::GameCommands
     }
 
     // Reverse (vehicle)
-    inline void do_3(thing_id_t vehicleHead)
+    inline void do_3(thing_id_t vehicleHead, OpenLoco::vehicle_head* const head)
     {
         registers regs;
         regs.bl = GameCommandFlag::apply;
         regs.dx = vehicleHead;
         // Bug in game command 3 requires to set edi to a vehicle prior to calling
-        regs.edi = reinterpret_cast<uint32_t>(ThingManager::get<vehicle_head>(vehicleHead));
+        regs.edi = reinterpret_cast<uint32_t>(head);
 
         doCommand(static_cast<int32_t>(GameCommand::vehicle_reverse), regs);
     }

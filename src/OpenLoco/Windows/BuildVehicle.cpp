@@ -766,7 +766,7 @@ namespace OpenLoco::Ui::BuildVehicle
         if (_buildTargetVehicle == -1)
         {
             auto vehicle = ThingManager::get<OpenLoco::vehicle>(_113642A);
-            Vehicle::Main::openDetails(vehicle);
+            Vehicle::Details::open(vehicle);
         }
         sub_4B92A5(window);
     }

@@ -279,14 +279,14 @@ namespace OpenLoco::Ui::Vehicle
     namespace Main
     {
         window* open(const OpenLoco::vehicle* vehicle);
-        window* openDetails(const OpenLoco::vehicle* vehicle);
     }
-    namespace vehicle_details
+    namespace Details
     {
-        void scrollDrag(const gfx::point_t& pos);
-        void scrollDragEnd(const gfx::point_t& pos);
+        window* open(const OpenLoco::vehicle* vehicle);
+        void scrollDrag(const Gfx::point_t& pos);
+        void scrollDragEnd(const Gfx::point_t& pos);
     }
-    namespace common
+    namespace Common
     {
         int16_t sub_4B743B(uint8_t al, uint8_t ah, int16_t cx, int16_t dx, vehicle_base* vehicle, Gfx::drawpixelinfo_t* const pDrawpixelinfo);
     }

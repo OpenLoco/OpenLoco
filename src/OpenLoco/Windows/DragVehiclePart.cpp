@@ -36,7 +36,7 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
         WindowManager::invalidate(WindowType::vehicle, car.front->head);
 
         initEvents();
-        uint16_t width = Vehicle::common::sub_4B743B(1, 0, 0, 0, car.front, nullptr);
+        uint16_t width = Vehicle::Common::sub_4B743B(1, 0, 0, 0, car.front, nullptr);
         auto pos = Input::getTooltipMouseLocation();
         pos.y -= 30;
         pos.x -= width / 2;
@@ -51,7 +51,7 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
     static Ui::cursor_id cursor(window* const self, const int16_t widgetIdx, const int16_t x, const int16_t y, const Ui::cursor_id fallback)
     {
         self->height = 0; // Set to zero so that skipped in window find
-        Vehicle::vehicle_details::scrollDrag(Input::getScrollLastLocation());
+        Vehicle::Details::scrollDrag(Input::getScrollLastLocation());
         self->height = 60;
         return cursor_id::unk_26;
     }
@@ -59,7 +59,7 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
     static void onMove(window& self, const int16_t x, const int16_t y)
     {
         self.height = 0; // Set to zero so that skipped in window find
-        Vehicle::vehicle_details::scrollDragEnd(Input::getScrollLastLocation());
+        Vehicle::Details::scrollDragEnd(Input::getScrollLastLocation());
         WindowManager::close(&self);
         _113614E = nullptr;
         WindowManager::invalidate(WindowType::vehicle, _1136156);
@@ -70,7 +70,7 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
         Gfx::drawpixelinfo_t* clipped;
         if (Gfx::clipDrawpixelinfo(&clipped, context, self->x, self->y, self->width, self->height))
         {
-            Vehicle::common::sub_4B743B(0, 0, 0, 19, _113614E, clipped);
+            Vehicle::Common::sub_4B743B(0, 0, 0, 19, _113614E, clipped);
         }
     }
 

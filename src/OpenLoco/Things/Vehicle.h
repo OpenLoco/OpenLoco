@@ -3,6 +3,7 @@
 #include "../Audio/Audio.h"
 #include "../Company.h"
 #include "../Objects/VehicleObject.h"
+#include "../Types.hpp"
 #include "../Ui/WindowType.h"
 #include "../Window.h"
 #include "Thing.h"
@@ -15,6 +16,12 @@ namespace OpenLoco
 
         uint32_t create(const uint8_t flags, const uint16_t vehicleTypeId, const uint16_t vehicleThingId);
 
+        namespace Flags0C // commands?
+        {
+            constexpr uint8_t unk_1 = 1 << 1; // commanded to stop??
+            constexpr uint8_t manualControl = 1 << 6;
+        }
+
         namespace Flags38
         {
             constexpr uint8_t unk_0 = 1 << 0;
@@ -22,6 +29,24 @@ namespace OpenLoco
             constexpr uint8_t unk_3 = 1 << 3;
             constexpr uint8_t unk_4 = 1 << 4;
         }
+
+        enum class Status : uint8_t
+        {
+            unk_0 = 0, // no position (not placed)
+            stopped = 1,
+            unk_2 = 2, // travelling
+            unk_3 = 3, // travelling
+            approaching = 4,
+            unloading = 5,
+            loading = 6,
+            brokenDown = 7,
+            crashed = 8,
+            stuck = 9,
+            landing = 10,
+            taxiing1 = 11,
+            taxiing2 = 12,
+            takingOff = 13,
+        };
     }
 
     struct vehicle_head;
@@ -212,15 +237,15 @@ namespace OpenLoco
         uint8_t pad_5A;
         uint8_t pad_5B;
         uint8_t var_5C;
-        uint8_t var_5D;
-        VehicleType vehicleType; // 0x5E
-        uint8_t var_5F;          // 0x5F
+        Things::Vehicle::Status status; // 0x5D
+        VehicleType vehicleType;        // 0x5E
+        uint8_t var_5F;                 // 0x5F
         uint8_t var_60;
         uint16_t var_61;
         uint8_t pad_63[0x69 - 0x63];
         uint32_t var_69;
         uint8_t pad_6D;
-        int8_t var_6E;
+        int8_t var_6E; // manual speed/brake
         uint8_t pad_6F[0x77 - 0x6F];
         uint16_t var_77; //
         uint8_t var_79;

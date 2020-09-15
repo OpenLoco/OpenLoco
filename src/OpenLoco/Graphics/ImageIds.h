@@ -54,7 +54,9 @@ namespace OpenLoco::ImageIds
     constexpr uint32_t centre_viewport = 2364;
     constexpr uint32_t rotate_object = 2365;
 
-    constexpr uint32_t stop_start = 2369;
+    constexpr uint32_t red_flag = 2369;
+    constexpr uint32_t green_flag = 2370;
+    constexpr uint32_t yellow_flag = 2371;
     constexpr uint32_t airport_pickup = 2372;
     constexpr uint32_t airport_place = 2373;
     constexpr uint32_t pass_signal = 2374;
@@ -70,7 +72,7 @@ namespace OpenLoco::ImageIds
     constexpr uint32_t music_controls_stop = 2383;
     constexpr uint32_t music_controls_play = 2384;
     constexpr uint32_t music_controls_next = 2385;
-    constexpr uint32_t SPR_2386 = 2386;
+    constexpr uint32_t refit_cargo_button = 2386;
     constexpr uint32_t tab_vehicle_background = 2387;
 
     constexpr uint32_t tab_display = 2391;
@@ -251,7 +253,8 @@ namespace OpenLoco::ImageIds
     constexpr uint32_t news_background_new_right = 3542;
     constexpr uint32_t volume_slider_track = 3543;
     constexpr uint32_t volume_slider_thumb = 3544;
-
+    constexpr uint32_t speed_control_track = 3545;
+    constexpr uint32_t speed_control_thumb = 3546;
     constexpr uint32_t title_menu_sparkle = 3547;
     constexpr uint32_t title_menu_save = 3548;
     constexpr uint32_t title_menu_lesson_l = 3549;
