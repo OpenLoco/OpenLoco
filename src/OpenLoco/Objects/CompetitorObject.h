@@ -1,7 +1,7 @@
 #pragma once
 
+#include "../Localisation/StringIds.h"
 #include "../Localisation/StringManager.h"
-#include "../localisation/StringIds.h"
 #include <array>
 
 namespace OpenLoco

@@ -1377,9 +1377,9 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         self->invalidate();
         audio::playSound(audio::sound_id::click_down, input::getMouseLocation().x);
 
-        auto type = objIndex.object._header->get_type();
+        auto type = objIndex.object._header->getType();
 
-        if (objectmgr::get_max_objects(type) == 1)
+        if (objectmgr::getMaxObjects(type) == 1)
         {
             if (!(_50D144[index] & (1 << 0)))
             {
