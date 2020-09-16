@@ -205,7 +205,7 @@ namespace OpenLoco::ui::prompt_browse
             promptTickLoop(
                 []() {
                     input::handleKeyboard();
-                    audio::updateSounds();
+                    Audio::updateSounds();
                     WindowManager::dispatchUpdateAll();
                     input::processKeyboardInput();
                     WindowManager::update();

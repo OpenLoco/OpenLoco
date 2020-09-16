@@ -85,7 +85,7 @@ namespace OpenLoco::game_commands
             {
                 paused_state = paused_state ^ 1;
                 WindowManager::invalidate(WindowType::timeToolbar);
-                audio::unpauseSound();
+                Audio::unpauseSound();
                 _50A004 = _50A004 | 1;
             }
 

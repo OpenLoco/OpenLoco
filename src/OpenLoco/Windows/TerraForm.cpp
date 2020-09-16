@@ -460,7 +460,7 @@ namespace OpenLoco::ui::windows::terraform
 
                     int32_t pan = (self->width >> 1) + self->x;
                     loc16 loc = { xPos, yPos, static_cast<int16_t>(pan) };
-                    audio::playSound(audio::sound_id::click_down, loc, pan);
+                    Audio::playSound(Audio::sound_id::click_down, loc, pan);
                     self->saved_view.mapX = -16;
                     _lastTreeCost = 0x80000000;
                     self->invalidate();
@@ -1986,7 +1986,7 @@ namespace OpenLoco::ui::windows::terraform
 
                     int32_t pan = (self->width >> 1) + self->x;
                     loc16 loc = { xPos, yPos, static_cast<int16_t>(pan) };
-                    audio::playSound(audio::sound_id::click_down, loc, pan);
+                    Audio::playSound(Audio::sound_id::click_down, loc, pan);
                     self->saved_view.mapX = -16;
                     self->invalidate();
                     break;

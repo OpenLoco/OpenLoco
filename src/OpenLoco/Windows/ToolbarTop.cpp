@@ -180,7 +180,7 @@ namespace OpenLoco::ui::windows::toolbar_top::game
         dropdown::add(3, string_ids::menu_music_options);
         dropdown::showBelow(window, widgetIndex, 4, 0);
 
-        if (!audio::isAudioEnabled())
+        if (!Audio::isAudioEnabled())
             dropdown::setItemSelected(0);
 
         if (config::get().music_playing)
@@ -198,7 +198,7 @@ namespace OpenLoco::ui::windows::toolbar_top::game
         switch (itemIndex)
         {
             case 0:
-                audio::toggleSound();
+                Audio::toggleSound();
                 break;
 
             case 1:
@@ -207,7 +207,7 @@ namespace OpenLoco::ui::windows::toolbar_top::game
                 if (config.music_playing)
                 {
                     config.music_playing = false;
-                    audio::stopBackgroundMusic();
+                    Audio::stopBackgroundMusic();
                 }
                 else
                 {
@@ -668,7 +668,7 @@ namespace OpenLoco::ui::windows::toolbar_top::game
     {
         auto interface = objectmgr::get<interface_skin_object>();
 
-        if (!audio::isAudioEnabled())
+        if (!Audio::isAudioEnabled())
         {
             window->activated_widgets |= (1 << common::widx::audio_menu);
             window->widgets[common::widx::audio_menu].image = gfx::recolour(interface->img + interface_skin::image_ids::toolbar_audio_inactive, window->colours[0]);

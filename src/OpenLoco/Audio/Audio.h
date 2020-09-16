@@ -13,7 +13,7 @@ namespace OpenLoco
     struct vehicle_26;
 }
 
-namespace OpenLoco::audio
+namespace OpenLoco::Audio
 {
     struct sample
     {

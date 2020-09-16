@@ -31,7 +31,7 @@ using namespace OpenLoco::interop;
 using namespace OpenLoco::ui;
 using namespace OpenLoco::utility;
 
-namespace OpenLoco::audio
+namespace OpenLoco::Audio
 {
 #pragma pack(push, 1)
     struct WAVEFORMATEX

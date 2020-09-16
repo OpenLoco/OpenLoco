@@ -170,7 +170,7 @@ namespace OpenLoco::ui::windows::toolbar_top::editor
         dropdown::add(0, string_ids::dropdown_without_checkmark, string_ids::menu_mute);
         dropdown::showBelow(window, widgetIndex, 1, 0);
 
-        if (!audio::isAudioEnabled())
+        if (!Audio::isAudioEnabled())
             dropdown::setItemSelected(0);
 
         dropdown::setHighlightedItem(0);
@@ -185,7 +185,7 @@ namespace OpenLoco::ui::windows::toolbar_top::editor
         switch (itemIndex)
         {
             case 0:
-                audio::toggleSound();
+                Audio::toggleSound();
                 break;
         }
     }
@@ -296,7 +296,7 @@ namespace OpenLoco::ui::windows::toolbar_top::editor
         }
 
         auto interface = objectmgr::get<interface_skin_object>();
-        if (!audio::isAudioEnabled())
+        if (!Audio::isAudioEnabled())
         {
             window->activated_widgets |= (1 << common::widx::audio_menu);
             window->widgets[common::widx::audio_menu].image = gfx::recolour(interface->img + interface_skin::image_ids::toolbar_audio_inactive, window->colours[0]);

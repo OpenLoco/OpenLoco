@@ -4,7 +4,7 @@
 #include "../Things/Vehicle.h"
 
 using namespace OpenLoco;
-using namespace OpenLoco::audio;
+using namespace OpenLoco::Audio;
 using namespace OpenLoco::interop;
 
 static std::tuple<sound_id, channel_attributes> sub_48A590(const vehicle* v)
@@ -43,8 +43,8 @@ void vehicle_channel::begin(thing_id_t vid)
     if (v != nullptr)
     {
         auto [sid, sa] = sub_48A590(v);
-        auto loop = audio::shouldSoundLoop(sid);
-        auto sample = audio::getSoundSample(sid);
+        auto loop = Audio::shouldSoundLoop(sid);
+        auto sample = Audio::getSoundSample(sid);
         if (sample != nullptr)
         {
             _vehicle_id = vid;

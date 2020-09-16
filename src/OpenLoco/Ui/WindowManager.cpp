@@ -1082,7 +1082,7 @@ namespace OpenLoco::ui::WindowManager
         if (hasFlag12 || (!stickToBack && !stickToFront && !hasFlag13))
         {
             window.flags |= window_flags::white_border_mask;
-            audio::playSound(audio::sound_id::open_window, origin.x + size.width / 2);
+            Audio::playSound(Audio::sound_id::open_window, origin.x + size.width / 2);
         }
 
         window.event_handlers = events;
