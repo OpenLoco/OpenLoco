@@ -5,11 +5,11 @@
 #include "../../Objects/VehicleObject.h"
 #include "../../Ui/WindowManager.h"
 
-using namespace openloco::interop;
-using namespace openloco::map;
-using namespace openloco::map::tilemgr;
+using namespace OpenLoco::interop;
+using namespace OpenLoco::map;
+using namespace OpenLoco::map::tilemgr;
 
-namespace openloco::ui::windows::construction
+namespace OpenLoco::ui::windows::construction
 {
     static loco_global<uint8_t[31], 0x005045FA> _byte_5045FA;
     static loco_global<uint8_t, 0x00522095> _byte_522095;

@@ -3,9 +3,9 @@
 #include "../Things/ThingManager.h"
 #include "../Things/Vehicle.h"
 
-using namespace openloco;
-using namespace openloco::audio;
-using namespace openloco::interop;
+using namespace OpenLoco;
+using namespace OpenLoco::audio;
+using namespace OpenLoco::interop;
 
 static std::tuple<sound_id, channel_attributes> sub_48A590(const vehicle* v)
 {

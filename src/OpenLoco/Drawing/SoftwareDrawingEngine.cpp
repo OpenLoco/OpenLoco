@@ -4,11 +4,11 @@
 #include "../Ui/WindowManager.h"
 #include <algorithm>
 
-using namespace openloco::interop;
-using namespace openloco::gfx;
-using namespace openloco::ui;
+using namespace OpenLoco::interop;
+using namespace OpenLoco::gfx;
+using namespace OpenLoco::ui;
 
-namespace openloco::drawing
+namespace OpenLoco::drawing
 {
     static loco_global<ui::screen_info_t, 0x0050B884> screen_info;
     static loco_global<uint8_t[1], 0x00E025C4> _E025C4;

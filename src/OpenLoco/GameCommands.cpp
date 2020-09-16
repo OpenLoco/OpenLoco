@@ -11,10 +11,10 @@
 #include "Ui/WindowManager.h"
 #include <cassert>
 
-using namespace openloco::ui;
-using namespace openloco::map;
+using namespace OpenLoco::ui;
+using namespace OpenLoco::map;
 
-namespace openloco::game_commands
+namespace OpenLoco::game_commands
 {
     static loco_global<company_id_t, 0x009C68EB> _updating_company_id;
     static loco_global<uint8_t, 0x00508F08> game_command_nest_level;

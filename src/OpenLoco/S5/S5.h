@@ -3,7 +3,7 @@
 #include "../Objects/ObjectManager.h"
 #include <cstdint>
 
-namespace openloco::s5
+namespace OpenLoco::s5
 {
 #pragma pack(push, 1)
     struct Header

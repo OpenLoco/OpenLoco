@@ -1,6 +1,6 @@
 #pragma once
 
-namespace openloco::intro
+namespace OpenLoco::intro
 {
     enum class intro_state
     {

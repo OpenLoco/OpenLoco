@@ -3,7 +3,7 @@
 #include "Town.h"
 #include <array>
 
-namespace openloco::townmgr
+namespace OpenLoco::townmgr
 {
     constexpr size_t max_towns = 80;
 

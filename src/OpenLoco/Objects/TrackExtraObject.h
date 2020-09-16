@@ -2,7 +2,7 @@
 
 #include "../Types.hpp"
 
-namespace openloco
+namespace OpenLoco
 {
 
 #pragma pack(push, 1)

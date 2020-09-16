@@ -17,11 +17,11 @@
 #include <algorithm>
 #include <cassert>
 
-using namespace openloco::interop;
-using namespace openloco::map;
-using namespace openloco::ui;
+using namespace OpenLoco::interop;
+using namespace OpenLoco::map;
+using namespace OpenLoco::ui;
 
-namespace openloco
+namespace OpenLoco
 {
     constexpr uint8_t min_cargo_rating = 0;
     constexpr uint8_t max_cargo_rating = 200;

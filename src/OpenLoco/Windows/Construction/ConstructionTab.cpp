@@ -11,11 +11,11 @@
 #include "../../Ui/Dropdown.h"
 #include "Construction.h"
 
-using namespace openloco::interop;
-using namespace openloco::map;
-using namespace openloco::map::tilemgr;
+using namespace OpenLoco::interop;
+using namespace OpenLoco::map;
+using namespace OpenLoco::map::tilemgr;
 
-namespace openloco::ui::windows::construction::construction
+namespace OpenLoco::ui::windows::construction::construction
 {
     static loco_global<uint16_t[351][4], 0x004F7B62> _word_4F7B62; // TODO: Not sure on size?
     static loco_global<uint8_t, 0x00508F09> _byte_508F09;
@@ -293,13 +293,13 @@ namespace openloco::ui::windows::construction::construction
             roadId = road->id;
         }
 
-        const auto& roadPiece = openloco::map::TrackData::getRoadPiece(roadId);
+        const auto& roadPiece = OpenLoco::map::TrackData::getRoadPiece(roadId);
         auto posId = 0;
         rotation &= 3;
 
         for (const auto& roadPart : roadPiece)
         {
-            if (roadPart.flags & openloco::map::TrackData::PreviewTrackFlags::diagonal)
+            if (roadPart.flags & OpenLoco::map::TrackData::PreviewTrackFlags::diagonal)
             {
                 continue;
             }
@@ -487,13 +487,13 @@ namespace openloco::ui::windows::construction::construction
             trackId = track->id;
         }
 
-        const auto& trackPiece = openloco::map::TrackData::getTrackPiece(trackId);
+        const auto& trackPiece = OpenLoco::map::TrackData::getTrackPiece(trackId);
         auto posId = 0;
         rotation &= 3;
 
         for (const auto& trackPart : trackPiece)
         {
-            if (trackPart.flags & openloco::map::TrackData::PreviewTrackFlags::diagonal)
+            if (trackPart.flags & OpenLoco::map::TrackData::PreviewTrackFlags::diagonal)
             {
                 continue;
             }
@@ -1697,7 +1697,7 @@ namespace openloco::ui::windows::construction::construction
             auto maxRetries = 0;
             if (input::hasKeyModifier(input::key_modifier::shift) || _byte_113605D != 1)
             {
-                const auto& roadPiece = openloco::map::TrackData::getRoadPiece(_byte_1136065);
+                const auto& roadPiece = OpenLoco::map::TrackData::getRoadPiece(_byte_1136065);
                 auto maxRoadPieceHeight = 0;
 
                 for (const auto& roadPart : roadPiece)
@@ -1800,7 +1800,7 @@ namespace openloco::ui::windows::construction::construction
             auto maxRetries = 0;
             if (input::hasKeyModifier(input::key_modifier::shift) || _byte_113605D != 1)
             {
-                const auto& trackPiece = openloco::map::TrackData::getTrackPiece(_byte_1136065);
+                const auto& trackPiece = OpenLoco::map::TrackData::getTrackPiece(_byte_1136065);
                 auto maxTrackPieceHeight = 0;
 
                 for (const auto& trackPart : trackPiece)
@@ -2012,12 +2012,12 @@ namespace openloco::ui::windows::construction::construction
 
             if (gfx::clipDrawpixelinfo(&clipped, dpi, x, y, width, height))
             {
-                const auto& roadPiece = openloco::map::TrackData::getRoadPiece(_lastSelectedTrackPieceId);
+                const auto& roadPiece = OpenLoco::map::TrackData::getRoadPiece(_lastSelectedTrackPieceId);
                 const auto& lastRoadPart = roadPiece.back();
 
                 map_pos3 pos3D = { lastRoadPart.x, lastRoadPart.y, lastRoadPart.z };
 
-                if (lastRoadPart.flags & openloco::map::TrackData::PreviewTrackFlags::unused)
+                if (lastRoadPart.flags & OpenLoco::map::TrackData::PreviewTrackFlags::unused)
                 {
                     pos3D.x = 0;
                     pos3D.y = 0;
@@ -2062,12 +2062,12 @@ namespace openloco::ui::windows::construction::construction
 
             if (gfx::clipDrawpixelinfo(&clipped, dpi, x, y, width, height))
             {
-                const auto& trackPiece = openloco::map::TrackData::getTrackPiece(_lastSelectedTrackPieceId);
+                const auto& trackPiece = OpenLoco::map::TrackData::getTrackPiece(_lastSelectedTrackPieceId);
                 const auto& lastTrackPart = trackPiece.back();
 
                 map_pos3 pos3D = { lastTrackPart.x, lastTrackPart.y, lastTrackPart.z };
 
-                if (lastTrackPart.flags & openloco::map::TrackData::PreviewTrackFlags::unused)
+                if (lastTrackPart.flags & OpenLoco::map::TrackData::PreviewTrackFlags::unused)
                 {
                     pos3D.x = 0;
                     pos3D.y = 0;

@@ -22,9 +22,9 @@
 #include "../Ui/WindowManager.h"
 #include "../Widget.h"
 
-using namespace openloco::interop;
+using namespace OpenLoco::interop;
 
-namespace openloco::ui::MessageWindow
+namespace OpenLoco::ui::MessageWindow
 {
     static loco_global<ui::window_number, 0x00523390> _toolWindowNumber;
     static loco_global<ui::WindowType, 0x00523392> _toolWindowType;

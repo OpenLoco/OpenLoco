@@ -7,9 +7,9 @@
 #include "../Window.h"
 #include "WindowManager.h"
 
-using namespace openloco::interop;
+using namespace OpenLoco::interop;
 
-namespace openloco::ui::viewport_interaction
+namespace OpenLoco::ui::viewport_interaction
 {
     // 0x004CD658
     InteractionItem getItemLeft(int16_t tempX, int16_t tempY, InteractionArg* arg)

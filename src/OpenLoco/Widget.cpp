@@ -7,9 +7,9 @@
 #include "Window.h"
 #include <cassert>
 
-using namespace openloco::interop;
+using namespace OpenLoco::interop;
 
-namespace openloco::ui
+namespace OpenLoco::ui
 {
     int16_t widget_t::mid_x() const
     {
@@ -32,7 +32,7 @@ namespace openloco::ui
     }
 }
 
-namespace openloco::ui::widget
+namespace OpenLoco::ui::widget
 {
 
     static loco_global<int32_t, 0x112C876> _currentFontSpriteBase;
@@ -119,18 +119,18 @@ namespace openloco::ui::widget
 
             image &= 0x7FFFF;
             uint8_t c;
-            if (colour & openloco::colour::translucent_flag)
+            if (colour & OpenLoco::colour::translucent_flag)
             {
-                c = openloco::colour::getShade(colour & 0x7F, 4);
+                c = OpenLoco::colour::getShade(colour & 0x7F, 4);
                 gfx::drawImageSolid(dpi, x + 1, y + 1, image, c);
-                c = openloco::colour::getShade(colour & 0x7F, 2);
+                c = OpenLoco::colour::getShade(colour & 0x7F, 2);
                 gfx::drawImageSolid(dpi, x, y, image, c);
             }
             else
             {
-                c = openloco::colour::getShade(colour & 0x7F, 6);
+                c = OpenLoco::colour::getShade(colour & 0x7F, 6);
                 gfx::drawImageSolid(dpi, x + 1, y + 1, image, c);
-                c = openloco::colour::getShade(colour & 0x7F, 4);
+                c = OpenLoco::colour::getShade(colour & 0x7F, 4);
                 gfx::drawImageSolid(dpi, x, y, image, c);
             }
 
@@ -184,11 +184,11 @@ namespace openloco::ui::widget
         uint8_t shade;
         if (window->flags & window_flags::flag_11)
         {
-            shade = openloco::colour::getShade(colour, 3);
+            shade = OpenLoco::colour::getShade(colour, 3);
         }
         else
         {
-            shade = openloco::colour::getShade(colour, 1);
+            shade = OpenLoco::colour::getShade(colour, 1);
         }
 
         gfx::fillRect(

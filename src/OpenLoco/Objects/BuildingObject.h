@@ -2,7 +2,7 @@
 
 #include "../Localisation/StringManager.h"
 
-namespace openloco
+namespace OpenLoco
 {
     namespace building_object_flags
     {

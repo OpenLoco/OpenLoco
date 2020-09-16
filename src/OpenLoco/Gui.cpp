@@ -11,13 +11,13 @@
 #include "ViewportManager.h"
 #include "Window.h"
 
-using namespace openloco::interop;
-using namespace openloco::ui;
+using namespace OpenLoco::interop;
+using namespace OpenLoco::ui;
 
-namespace openloco::gui
+namespace OpenLoco::gui
 {
 
-    loco_global<openloco::ui::widget_t[64], 0x00509c20> _mainWindowWidgets;
+    loco_global<OpenLoco::ui::widget_t[64], 0x00509c20> _mainWindowWidgets;
 
     // 0x00438A6C
     void init()
@@ -35,7 +35,7 @@ namespace openloco::gui
             (ui::window_event_list*)0x004FA1F4);
         window->widgets = _mainWindowWidgets;
         addr<0x00e3f0b8, int32_t>() = 0; // gCurrentRotation?
-        openloco::ui::viewportmgr::create(
+        OpenLoco::ui::viewportmgr::create(
             window,
             0,
             { window->x, window->y },
@@ -49,7 +49,7 @@ namespace openloco::gui
         addr<0x009c870F, int8_t>() = 2;
         addr<0x009c8710, int8_t>() = 1;
 
-        if (openloco::isTitleMode())
+        if (OpenLoco::isTitleMode())
         {
             ui::windows::openTitleMenu();
             ui::windows::openTitleExit();
@@ -64,7 +64,7 @@ namespace openloco::gui
             windows::PlayerInfoPanel::open();
             TimePanel::open();
 
-            if (openloco::tutorial::state() != tutorial::tutorial_state::none)
+            if (OpenLoco::tutorial::state() != tutorial::tutorial_state::none)
             {
 
                 window = WindowManager::createWindow(
@@ -76,7 +76,7 @@ namespace openloco::gui
                 window->widgets = (ui::widget_t*)0x509de0;
                 window->initScrollWidgets();
 
-                auto skin = openloco::objectmgr::get<interface_skin_object>();
+                auto skin = OpenLoco::objectmgr::get<interface_skin_object>();
                 if (skin != nullptr)
                 {
                     window->colours[0] = colour::translucent(skin->colour_06);
@@ -94,7 +94,7 @@ namespace openloco::gui
         const int32_t uiWidth = ui::width();
         const int32_t uiHeight = ui::height();
 
-        if (openloco::isEditorMode())
+        if (OpenLoco::isEditorMode())
         {
             call(0x43CD35);
             return;

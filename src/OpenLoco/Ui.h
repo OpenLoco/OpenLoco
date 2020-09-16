@@ -4,14 +4,14 @@
 #include <string>
 #include <vector>
 
-namespace openloco::config
+namespace OpenLoco::config
 {
     enum class screen_mode;
     struct display_config;
     struct resolution_t;
 }
 
-namespace openloco::ui
+namespace OpenLoco::ui
 {
 
     struct screen_info_t

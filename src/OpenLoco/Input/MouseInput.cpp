@@ -14,14 +14,14 @@
 #include "../Ui/ScrollView.h"
 #include <map>
 
-using namespace openloco::interop;
-using namespace openloco::ui;
-using namespace openloco::ui::scrollview;
-using namespace openloco::ui::viewport_interaction;
+using namespace OpenLoco::interop;
+using namespace OpenLoco::ui;
+using namespace OpenLoco::ui::scrollview;
+using namespace OpenLoco::ui::viewport_interaction;
 
 #define DROPDOWN_ITEM_UNDEFINED -1
 
-namespace openloco::input
+namespace OpenLoco::input
 {
     static void stateScrollLeft(mouse_button cx, widget_index edx, ui::window* window, ui::widget_t* widget, int16_t x, int16_t y);
     static void stateScrollRight(const mouse_button button, const int16_t x, const int16_t y);
@@ -502,7 +502,7 @@ namespace openloco::input
                             auto veh = _thing->asVehicle();
                             if (veh != nullptr)
                             {
-                                ui::vehicle::main::open(reinterpret_cast<openloco::vehicle*>(veh));
+                                ui::vehicle::main::open(reinterpret_cast<OpenLoco::vehicle*>(veh));
                             }
                             break;
                         }
@@ -729,7 +729,7 @@ namespace openloco::input
                                 auto veh = _thing->asVehicle();
                                 if (veh != nullptr)
                                 {
-                                    auto head = thingmgr::get<vehicle>(reinterpret_cast<openloco::vehicle*>(veh)->head);
+                                    auto head = thingmgr::get<vehicle>(reinterpret_cast<OpenLoco::vehicle*>(veh)->head);
                                     ui::windows::vehicle_list::open(head->owner, static_cast<uint8_t>(head->vehicleType));
                                 }
                                 break;

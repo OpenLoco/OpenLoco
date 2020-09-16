@@ -11,9 +11,9 @@
 #include <iterator>
 #include <vector>
 
-using namespace openloco::interop;
+using namespace OpenLoco::interop;
 
-namespace openloco::tutorial
+namespace OpenLoco::tutorial
 {
     static loco_global<uint8_t, 0x00508F19> _state;
 

@@ -2,7 +2,7 @@
 
 #include "../Types.hpp"
 
-namespace openloco
+namespace OpenLoco
 {
     namespace road_station_flags
     {

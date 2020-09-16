@@ -1,9 +1,9 @@
 #include "S5.h"
 #include "../Interop/Interop.hpp"
 
-using namespace openloco::interop;
+using namespace OpenLoco::interop;
 
-namespace openloco::s5
+namespace OpenLoco::s5
 {
     static loco_global<Options, 0x009C8714> _activeOptions;
     static loco_global<Header, 0x009CCA34> _header;

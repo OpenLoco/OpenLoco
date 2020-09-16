@@ -17,9 +17,9 @@
 #include "../Utility/Numeric.hpp"
 #include "../Widget.h"
 
-using namespace openloco::interop;
+using namespace OpenLoco::interop;
 
-namespace openloco::ui::windows::town_list
+namespace OpenLoco::ui::windows::town_list
 {
     static loco_global<uint32_t, 0x01135C34> dword_1135C34;
     static loco_global<colour_t, 0x01135C61> _buildingColour;
@@ -286,7 +286,7 @@ namespace openloco::ui::windows::town_list
         }
 
         // 0x00499EC9
-        static bool orderByName(const openloco::town& lhs, const openloco::town& rhs)
+        static bool orderByName(const OpenLoco::town& lhs, const OpenLoco::town& rhs)
         {
             char lhsString[256] = { 0 };
             stringmgr::formatString(lhsString, lhs.name);
@@ -298,7 +298,7 @@ namespace openloco::ui::windows::town_list
         }
 
         // 0x00499F28
-        static bool orderByPopulation(const openloco::town& lhs, const openloco::town& rhs)
+        static bool orderByPopulation(const OpenLoco::town& lhs, const OpenLoco::town& rhs)
         {
             auto lhsPopulation = lhs.population;
 
@@ -308,7 +308,7 @@ namespace openloco::ui::windows::town_list
         }
 
         // 0x00499F0A Left this in to match the x86 code. can be replaced with orderByPopulation
-        static bool orderByType(const openloco::town& lhs, const openloco::town& rhs)
+        static bool orderByType(const OpenLoco::town& lhs, const OpenLoco::town& rhs)
         {
             auto lhsSize = lhs.size;
 
@@ -325,7 +325,7 @@ namespace openloco::ui::windows::town_list
         }
 
         // 0x00499F3B
-        static bool orderByStations(const openloco::town& lhs, const openloco::town& rhs)
+        static bool orderByStations(const OpenLoco::town& lhs, const OpenLoco::town& rhs)
         {
             auto lhsStations = lhs.num_stations;
 
@@ -335,7 +335,7 @@ namespace openloco::ui::windows::town_list
         }
 
         // 0x00499EC9, 0x00499F0A, 0x00499F28, 0x00499F3B
-        static bool getOrder(const SortMode mode, openloco::town& lhs, openloco::town& rhs)
+        static bool getOrder(const SortMode mode, OpenLoco::town& lhs, OpenLoco::town& rhs)
         {
             switch (mode)
             {
@@ -1047,7 +1047,7 @@ namespace openloco::ui::windows::town_list
         }
 
         // 0x0042DB95
-        static void drawBuildingThumb(gfx::drawpixelinfo_t* clipped, const openloco::building_object* buildingObj, uint8_t buildingRotation, int16_t x, int16_t y, colour_t colour)
+        static void drawBuildingThumb(gfx::drawpixelinfo_t* clipped, const OpenLoco::building_object* buildingObj, uint8_t buildingRotation, int16_t x, int16_t y, colour_t colour)
         {
             registers regs;
             regs.cx = x;

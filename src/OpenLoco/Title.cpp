@@ -6,9 +6,9 @@
 #include "OpenLoco.h"
 #include "Ui/WindowManager.h"
 
-using namespace openloco::interop;
+using namespace OpenLoco::interop;
 
-namespace openloco::title
+namespace OpenLoco::title
 {
     static loco_global<uint16_t, 0x00508F12> _screenAge;
     static loco_global<uint8_t, 0x00508F14> _screenFlags;

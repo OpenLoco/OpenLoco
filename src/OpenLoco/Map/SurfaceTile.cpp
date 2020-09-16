@@ -5,9 +5,9 @@
 #include "Tile.h"
 #include "TileManager.h"
 
-using namespace openloco;
-using namespace openloco::interop;
-using namespace openloco::ui;
+using namespace OpenLoco;
+using namespace OpenLoco::interop;
+using namespace OpenLoco::ui;
 
 #pragma pack(push, 1)
 struct unk1

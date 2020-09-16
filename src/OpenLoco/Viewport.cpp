@@ -4,9 +4,9 @@
 #include "Map/Tile.h"
 #include "Window.h"
 
-using namespace openloco::interop;
+using namespace OpenLoco::interop;
 
-namespace openloco::ui
+namespace OpenLoco::ui
 {
     // 0x0045A0E7
     void viewport::render(gfx::drawpixelinfo_t* dpi)

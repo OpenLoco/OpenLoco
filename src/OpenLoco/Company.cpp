@@ -8,9 +8,9 @@
 #include <array>
 #include <map>
 
-using namespace openloco::interop;
+using namespace OpenLoco::interop;
 
-namespace openloco
+namespace OpenLoco
 {
     static loco_global<company_id_t[2], 0x00525E3C> _player_company[2];
 

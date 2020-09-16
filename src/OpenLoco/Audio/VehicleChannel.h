@@ -4,7 +4,7 @@
 #include "Audio.h"
 #include "Channel.h"
 
-namespace openloco::audio
+namespace OpenLoco::audio
 {
     struct channel_attributes
     {

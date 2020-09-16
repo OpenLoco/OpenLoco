@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-namespace openloco
+namespace OpenLoco
 {
     using colour_t = uint8_t;
     using palette_index_t = uint8_t;

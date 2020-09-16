@@ -13,9 +13,9 @@
 #include "../Ui/WindowManager.h"
 #include "../Widget.h"
 
-using namespace openloco::interop;
+using namespace OpenLoco::interop;
 
-namespace openloco::ui::windows::ScenarioOptions
+namespace OpenLoco::ui::windows::ScenarioOptions
 {
     static const gfx::ui_size_t challengeWindowSize = { 366, 197 };
     static const gfx::ui_size_t companiesWindowSize = { 366, 327 };

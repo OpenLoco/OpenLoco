@@ -2,7 +2,7 @@
 
 #include <istream>
 
-namespace openloco::utility
+namespace OpenLoco::utility
 {
     template<typename T1, typename T2, typename T3>
     std::basic_istream<T1, T2>& readData(std::basic_istream<T1, T2>& stream, T3* dst, size_t count)

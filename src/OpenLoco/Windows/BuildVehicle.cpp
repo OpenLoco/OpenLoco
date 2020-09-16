@@ -19,9 +19,9 @@
 #include "../Ui/WindowManager.h"
 #include "../Widget.h"
 
-using namespace openloco::interop;
+using namespace OpenLoco::interop;
 
-namespace openloco::ui::BuildVehicle
+namespace OpenLoco::ui::BuildVehicle
 {
     static const gfx::ui_size_t window_size = { 380, 233 };
 
@@ -240,7 +240,7 @@ namespace openloco::ui::BuildVehicle
     static void resetTrackTypeTabSelection(ui::window* window);
     static void setTopToolbarLastTrack(uint8_t trackType, bool isRoad);
     static void setTransportTypeTabs(ui::window* window);
-    static void sub_4B60CC(openloco::vehicle* vehicle);
+    static void sub_4B60CC(OpenLoco::vehicle* vehicle);
     static void drawVehicleOverview(gfx::drawpixelinfo_t* dpi, int16_t vehicleTypeIdx, company_id_t company, uint8_t eax, uint8_t esi, gfx::point_t offset);
     static int16_t drawVehicleInline(gfx::drawpixelinfo_t* dpi, int16_t vehicleTypeIdx, uint8_t unk_1, company_id_t company, gfx::point_t loc);
     static void drawTransportTypeTabs(ui::window* window, gfx::drawpixelinfo_t* dpi);
@@ -258,7 +258,7 @@ namespace openloco::ui::BuildVehicle
         window->enabled_widgets = (1 << widx::close_button) | (1 << widx::tab_build_new_trains) | (1 << widx::tab_build_new_buses) | (1 << widx::tab_build_new_trucks) | (1 << widx::tab_build_new_trams) | (1 << widx::tab_build_new_aircraft) | (1 << widx::tab_build_new_ships) | (1 << widx::tab_track_type_0) | (1 << widx::tab_track_type_1) | (1 << widx::tab_track_type_2) | (1 << widx::tab_track_type_3) | (1 << widx::tab_track_type_4) | (1 << widx::tab_track_type_5) | (1 << widx::tab_track_type_6) | (1 << widx::tab_track_type_7) | (1 << widx::scrollview_vehicle_selection);
         window->owner = companymgr::getControllingId();
         window->frame_no = 0;
-        auto skin = openloco::objectmgr::get<interface_skin_object>();
+        auto skin = OpenLoco::objectmgr::get<interface_skin_object>();
         if (skin != nullptr)
         {
             window->colours[1] = skin->colour_0A;
@@ -279,7 +279,7 @@ namespace openloco::ui::BuildVehicle
             widget_index tab = widx::tab_build_new_trains;
             if (!tabMode)
             {
-                auto veh = thingmgr::get<openloco::vehicle>(vehicle);
+                auto veh = thingmgr::get<OpenLoco::vehicle>(vehicle);
                 tab += static_cast<uint8_t>(veh->vehicleType);
             }
             else
@@ -307,7 +307,7 @@ namespace openloco::ui::BuildVehicle
             if (!tabMode)
             {
                 _buildTargetVehicle = vehicle;
-                auto veh = thingmgr::get<openloco::vehicle>(vehicle);
+                auto veh = thingmgr::get<OpenLoco::vehicle>(vehicle);
                 window->current_tab = static_cast<uint8_t>(veh->vehicleType);
             }
             else
@@ -339,7 +339,7 @@ namespace openloco::ui::BuildVehicle
         {
             return window;
         }
-        auto veh = thingmgr::get<openloco::vehicle>(_buildTargetVehicle);
+        auto veh = thingmgr::get<OpenLoco::vehicle>(_buildTargetVehicle);
         if (veh == nullptr)
         {
             return window;
@@ -393,7 +393,7 @@ namespace openloco::ui::BuildVehicle
     /* 0x4B9165
      * Works out which vehicles are able to be built for this vehicle_type or vehicle
      */
-    static void generateBuildableVehiclesArray(VehicleType vehicleType, uint8_t trackType, openloco::vehicle* vehicle)
+    static void generateBuildableVehiclesArray(VehicleType vehicleType, uint8_t trackType, OpenLoco::vehicle* vehicle)
     {
         if (trackType != 0xFF && (trackType & (1 << 7)))
         {
@@ -506,7 +506,7 @@ namespace openloco::ui::BuildVehicle
             if (w->current_tab != 1)
                 continue;
 
-            auto vehicle = thingmgr::get<openloco::vehicle>(w->number);
+            auto vehicle = thingmgr::get<OpenLoco::vehicle>(w->number);
             if (vehicle->owner != companymgr::getControllingId())
                 continue;
 
@@ -540,10 +540,10 @@ namespace openloco::ui::BuildVehicle
         VehicleType vehicleType = _transportTypeTabInformation[window->current_tab].type;
         uint8_t trackType = _TrackTypesForTab[window->current_secondary_tab];
 
-        openloco::vehicle* veh = nullptr;
+        OpenLoco::vehicle* veh = nullptr;
         if (_buildTargetVehicle != -1)
         {
-            veh = thingmgr::get<openloco::vehicle>(_buildTargetVehicle);
+            veh = thingmgr::get<OpenLoco::vehicle>(_buildTargetVehicle);
         }
 
         generateBuildableVehiclesArray(vehicleType, trackType, veh);
@@ -753,7 +753,7 @@ namespace openloco::ui::BuildVehicle
         gGameCommandErrorTitle = string_ids::cant_build_pop_5_string_id;
         if (_buildTargetVehicle != -1)
         {
-            auto vehicle = thingmgr::get<openloco::vehicle>(_buildTargetVehicle);
+            auto vehicle = thingmgr::get<OpenLoco::vehicle>(_buildTargetVehicle);
             args.push(vehicle->var_22);
             args.push(vehicle->var_44);
             gGameCommandErrorTitle = string_ids::cant_add_pop_5_string_id_string_id;
@@ -766,7 +766,7 @@ namespace openloco::ui::BuildVehicle
 
         if (_buildTargetVehicle == -1)
         {
-            auto vehicle = thingmgr::get<openloco::vehicle>(_113642A);
+            auto vehicle = thingmgr::get<OpenLoco::vehicle>(_113642A);
             sub_4B60CC(vehicle);
         }
         sub_4B92A5(window);
@@ -912,7 +912,7 @@ namespace openloco::ui::BuildVehicle
             FormatArguments args{};
             if (_buildTargetVehicle != -1)
             {
-                auto vehicle = thingmgr::get<openloco::vehicle>(_buildTargetVehicle);
+                auto vehicle = thingmgr::get<OpenLoco::vehicle>(_buildTargetVehicle);
                 args.push(vehicle->var_22);
                 args.push(vehicle->var_44);
                 bottomLeftMessage = string_ids::select_vehicle_to_add_to_string_id;
@@ -1138,7 +1138,7 @@ namespace openloco::ui::BuildVehicle
                     FormatArguments args{};
                     if (_buildTargetVehicle != -1)
                     {
-                        auto vehicle = thingmgr::get<openloco::vehicle>(_buildTargetVehicle);
+                        auto vehicle = thingmgr::get<OpenLoco::vehicle>(_buildTargetVehicle);
                         defaultMessage = string_ids::no_compatible_vehicles_available;
                         args.push(vehicle->var_22);
                         args.push(vehicle->var_44);
@@ -1398,7 +1398,7 @@ namespace openloco::ui::BuildVehicle
     /* 0x4B60CC
      * Opens vehicle window and clicks???
      */
-    static void sub_4B60CC(openloco::vehicle* vehicle)
+    static void sub_4B60CC(OpenLoco::vehicle* vehicle)
     {
         registers regs;
         regs.edx = (int32_t)vehicle;

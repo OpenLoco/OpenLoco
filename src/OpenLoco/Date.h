@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-namespace openloco
+namespace OpenLoco
 {
     enum class month_id : uint8_t
     {

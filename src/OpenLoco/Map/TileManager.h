@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <tuple>
 
-namespace openloco::map::tilemgr
+namespace OpenLoco::map::tilemgr
 {
     enum MapSelectFlag : uint16_t
     {

@@ -4,9 +4,9 @@
 #include "../../Interop/Interop.hpp"
 #include "../../Ui/WindowManager.h"
 
-using namespace openloco::interop;
+using namespace OpenLoco::interop;
 
-namespace openloco::ui::NewsWindow
+namespace OpenLoco::ui::NewsWindow
 {
 #pragma pack(push, 1)
     struct messageItemType

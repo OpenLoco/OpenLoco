@@ -12,10 +12,10 @@
 
 #pragma warning(disable : 4611) // interaction between '_setjmp' and C++ object destruction is non-portable
 
-using namespace openloco::interop;
-using namespace openloco::ui;
+using namespace OpenLoco::interop;
+using namespace OpenLoco::ui;
 
-namespace openloco::input
+namespace OpenLoco::input
 {
     static void pngWriteData(png_structp png_ptr, png_bytep data, png_size_t length)
     {

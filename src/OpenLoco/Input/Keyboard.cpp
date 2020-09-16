@@ -26,11 +26,11 @@
 #include <windows.h>
 #endif
 
-using namespace openloco::interop;
-using namespace openloco::ui;
-using namespace openloco::game_commands;
+using namespace OpenLoco::interop;
+using namespace OpenLoco::ui;
+using namespace OpenLoco::game_commands;
 
-namespace openloco::input
+namespace OpenLoco::input
 {
 
 #pragma pack(push, 1)
@@ -90,7 +90,7 @@ namespace openloco::input
             if (w->type != WindowType::vehicle)
                 continue;
 
-            auto t = thingmgr::get<openloco::vehicle>(w->number);
+            auto t = thingmgr::get<OpenLoco::vehicle>(w->number);
             if (t->owner != companymgr::getControllingId())
                 continue;
 
@@ -157,7 +157,7 @@ namespace openloco::input
 
     static bool tryShortcut(Shortcut sc, uint32_t keyCode, uint8_t modifiers)
     {
-        auto cfg = openloco::config::get();
+        auto cfg = OpenLoco::config::get();
         if (cfg.keyboard_shortcuts[sc].var_0 == keyCode && cfg.keyboard_shortcuts[sc].var_1 == modifiers)
         {
             ShortcutManager::execute(sc);
@@ -397,7 +397,7 @@ namespace openloco::input
         if ((main->flags & window_flags::viewport_no_scrolling) != 0)
             return;
 
-        if (openloco::isTitleMode())
+        if (OpenLoco::isTitleMode())
             return;
 
         auto viewport = main->viewports[0];
@@ -443,7 +443,7 @@ namespace openloco::input
         if ((main->flags & window_flags::viewport_no_scrolling) != 0)
             return;
 
-        if (openloco::isTitleMode())
+        if (OpenLoco::isTitleMode())
             return;
 
         auto viewport = main->viewports[0];

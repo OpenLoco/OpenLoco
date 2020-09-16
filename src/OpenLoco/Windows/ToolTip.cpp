@@ -9,9 +9,9 @@
 #include <algorithm>
 #include <cstring>
 
-using namespace openloco::interop;
+using namespace OpenLoco::interop;
 
-namespace openloco::ui::tooltip
+namespace OpenLoco::ui::tooltip
 {
     static loco_global<char[513], 0x0050ED4B> _str0337;
 

@@ -9,10 +9,10 @@
 #include "../Objects/ObjectManager.h"
 #include "../Ui/WindowManager.h"
 
-using namespace openloco::interop;
-using namespace openloco::input;
+using namespace OpenLoco::interop;
+using namespace OpenLoco::input;
 
-namespace openloco::ui::KeyboardShortcuts
+namespace OpenLoco::ui::KeyboardShortcuts
 {
 
     static const int rowHeight = 10; // CJK: 13
@@ -159,7 +159,7 @@ namespace openloco::ui::KeyboardShortcuts
     static void loc_4BE832(window* self)
     {
         call(0x004BE3F3);
-        openloco::config::write();
+        OpenLoco::config::write();
         self->invalidate();
     }
 

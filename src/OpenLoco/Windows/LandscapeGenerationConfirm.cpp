@@ -8,9 +8,9 @@
 #include "../Scenario.h"
 #include "../Ui/WindowManager.h"
 
-using namespace openloco::interop;
+using namespace OpenLoco::interop;
 
-namespace openloco::ui::windows::LandscapeGenerationConfirm
+namespace OpenLoco::ui::windows::LandscapeGenerationConfirm
 {
     static const gfx::ui_size_t window_size = { 280, 92 };
 

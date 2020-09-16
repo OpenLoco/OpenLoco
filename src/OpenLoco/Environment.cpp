@@ -9,9 +9,9 @@
 #include <fstream>
 #include <iostream>
 
-using namespace openloco::interop;
+using namespace OpenLoco::interop;
 
-namespace openloco::environment
+namespace OpenLoco::environment
 {
     loco_global<char[260], 0x009D118E> _path_buffer;
     loco_global<char[257], 0x0050B0CE> _path_install;

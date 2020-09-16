@@ -21,9 +21,9 @@
 #undef interface
 #endif
 
-using namespace openloco::interop;
+using namespace OpenLoco::interop;
 
-namespace openloco::ui::textinput
+namespace OpenLoco::ui::textinput
 {
     constexpr int16_t textboxPadding = 4;
 

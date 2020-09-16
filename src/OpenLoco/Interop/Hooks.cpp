@@ -27,7 +27,7 @@
 #include "../ViewportManager.h"
 #include "Interop.hpp"
 
-using namespace openloco;
+using namespace OpenLoco;
 
 #define STUB() console::logVerbose(__FUNCTION__)
 
@@ -490,7 +490,7 @@ static void STDCALL lib_PostQuitMessage(int32_t exitCode)
 
 static void registerMemoryHooks()
 {
-    using namespace openloco::interop;
+    using namespace OpenLoco::interop;
 
     // Hook Locomotion's alloc / free routines so that we don't
     // allocate a block in one module and freeing it in another.
@@ -502,7 +502,7 @@ static void registerMemoryHooks()
 #ifdef _NO_LOCO_WIN32_
 static void registerNoWin32Hooks()
 {
-    using namespace openloco::interop;
+    using namespace OpenLoco::interop;
 
     writeJmp(0x40447f, (void*)&fn_40447f);
     writeJmp(0x404b68, (void*)&fn_404b68);
@@ -555,7 +555,7 @@ static void registerNoWin32Hooks()
 }
 #endif // _NO_LOCO_WIN32_
 
-void openloco::interop::loadSections()
+void OpenLoco::interop::loadSections()
 {
 #ifndef _WIN32
     int32_t err = mprotect((void*)0x401000, 0x4d7000 - 0x401000, PROT_READ | PROT_WRITE | PROT_EXEC);
@@ -574,7 +574,7 @@ void openloco::interop::loadSections()
 
 static void registerAudioHooks()
 {
-    using namespace openloco::interop;
+    using namespace OpenLoco::interop;
 
     writeJmp(0x0040194E, (void*)&audioLoadChannel);
     writeJmp(0x00401999, (void*)&audioPlayChannel);
@@ -616,9 +616,9 @@ static void registerAudioHooks()
         });
 }
 
-void openloco::interop::registerHooks()
+void OpenLoco::interop::registerHooks()
 {
-    using namespace openloco::ui::windows;
+    using namespace OpenLoco::ui::windows;
 
     registerMemoryHooks();
 
@@ -633,7 +633,7 @@ void openloco::interop::registerHooks()
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
 
-            openloco::sub_431695(0);
+            OpenLoco::sub_431695(0);
             regs = backup;
             return 0;
         });
@@ -641,7 +641,7 @@ void openloco::interop::registerHooks()
     registerHook(
         0x004416B5,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            using namespace openloco::environment;
+            using namespace OpenLoco::environment;
 
             auto buffer = (char*)0x009D0D72;
             auto path = getPath((path_id)regs.ebx);
@@ -680,7 +680,7 @@ void openloco::interop::registerHooks()
     registerHook(
         0x00407231,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            openloco::input::sub_407231();
+            OpenLoco::input::sub_407231();
             return 0;
         });
 
@@ -717,7 +717,7 @@ void openloco::interop::registerHooks()
     registerHook(
         0x004BA8D4,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            auto v = (openloco::vehicle_head*)regs.esi;
+            auto v = (OpenLoco::vehicle_head*)regs.esi;
             v->sub_4BA8D4();
             return 0;
         });
@@ -789,7 +789,7 @@ void openloco::interop::registerHooks()
             int16_t x = regs.eax;
             int16_t i = regs.ebx / 6;
             int16_t y = regs.ecx;
-            openloco::map::surface_element* surface = (openloco::map::surface_element*)regs.esi;
+            OpenLoco::map::surface_element* surface = (OpenLoco::map::surface_element*)regs.esi;
 
             surface->createWave(x, y, i);
 
@@ -800,7 +800,7 @@ void openloco::interop::registerHooks()
     registerHook(
         0x004AB655,
         [](registers& regs) -> uint8_t {
-            auto v = (openloco::vehicle*)regs.esi;
+            auto v = (OpenLoco::vehicle*)regs.esi;
             v->asVehicleBody()->secondaryAnimationUpdate();
 
             return 0;

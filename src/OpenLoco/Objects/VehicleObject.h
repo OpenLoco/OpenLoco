@@ -2,7 +2,7 @@
 
 #include "../Localisation/StringManager.h"
 
-namespace openloco
+namespace OpenLoco
 {
     enum class TransportMode : uint8_t
     {

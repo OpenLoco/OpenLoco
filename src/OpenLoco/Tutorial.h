@@ -2,7 +2,7 @@
 
 #include "Types.hpp"
 
-namespace openloco::tutorial
+namespace OpenLoco::tutorial
 {
     enum class tutorial_state
     {

@@ -4,7 +4,7 @@
 #include "Message.h"
 #include <cstdint>
 
-namespace openloco
+namespace OpenLoco
 {
     enum class messageType
     {
@@ -26,7 +26,7 @@ namespace openloco
     };
 }
 
-namespace openloco::messagemgr
+namespace OpenLoco::messagemgr
 {
     constexpr size_t max_messages = 199;
 

@@ -2,7 +2,7 @@
 
 #include "../Types.hpp"
 
-namespace openloco
+namespace OpenLoco
 {
     namespace flags_22
     {

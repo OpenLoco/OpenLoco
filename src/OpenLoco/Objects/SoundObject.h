@@ -2,7 +2,7 @@
 
 #include "../Localisation/StringManager.h"
 
-namespace openloco
+namespace OpenLoco
 {
     namespace sound_object_id
     {

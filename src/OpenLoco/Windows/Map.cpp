@@ -20,10 +20,10 @@
 #include "../Ui/WindowManager.h"
 #include "../Widget.h"
 
-using namespace openloco::interop;
-using namespace openloco::ui::WindowManager;
+using namespace OpenLoco::interop;
+using namespace OpenLoco::ui::WindowManager;
 
-namespace openloco::ui::windows::map
+namespace OpenLoco::ui::windows::map
 {
     static loco_global<int32_t, 0x00523338> _cursorX2;
     static loco_global<int32_t, 0x0052333C> _cursorY2;

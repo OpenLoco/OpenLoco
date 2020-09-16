@@ -3,7 +3,7 @@
 #include "Localisation/StringManager.h"
 #include <cstdint>
 
-namespace openloco::progressbar
+namespace OpenLoco::progressbar
 {
     void begin(string_id stringId, int32_t edx);
     void setProgress(int32_t value);

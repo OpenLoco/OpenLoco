@@ -19,10 +19,10 @@
 #include "../ViewportManager.h"
 #include "../Widget.h"
 
-using namespace openloco::interop;
-using namespace openloco::game_commands;
+using namespace OpenLoco::interop;
+using namespace OpenLoco::game_commands;
 
-namespace openloco::ui::windows::town
+namespace OpenLoco::ui::windows::town
 {
     static const gfx::ui_size_t windowSize = { 223, 161 };
 
@@ -210,7 +210,7 @@ namespace openloco::ui::windows::town
                     town->history[town->history_size - 1] = historyEntry;
 
                     // Play construction sound at the town centre.
-                    int16_t tileZ = openloco::map::tileElementHeight(town->x, town->y).landHeight;
+                    int16_t tileZ = OpenLoco::map::tileElementHeight(town->x, town->y).landHeight;
                     audio::playSound(audio::sound_id::construct, loc16(town->x + 16, town->y + 16, tileZ));
                     break;
                 }
@@ -275,7 +275,7 @@ namespace openloco::ui::windows::town
 
             // Figure out the town's position on the map.
             auto town = townmgr::get(self->number);
-            int16_t tileZ = openloco::map::tileElementHeight(town->x, town->y).landHeight;
+            int16_t tileZ = OpenLoco::map::tileElementHeight(town->x, town->y).landHeight;
 
             // Compute views.
             SavedView view = {
@@ -309,7 +309,7 @@ namespace openloco::ui::windows::town
             if (self->viewports[0] == nullptr)
             {
                 auto widget = &self->widgets[widx::viewport];
-                auto tile = openloco::map::map_pos3({ town->x, town->y, tileZ });
+                auto tile = OpenLoco::map::map_pos3({ town->x, town->y, tileZ });
                 auto origin = gfx::point_t(widget->left + self->x + 1, widget->top + self->y + 1);
                 auto size = gfx::ui_size_t(widget->width() - 2, widget->height() - 2);
                 viewportmgr::create(self, 0, origin, size, self->saved_view.zoomLevel, tile);

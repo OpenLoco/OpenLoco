@@ -9,10 +9,10 @@
 #include "../Ui/WindowManager.h"
 #include <array>
 
-using namespace openloco::interop;
-using namespace openloco::ui;
+using namespace OpenLoco::interop;
+using namespace OpenLoco::ui;
 
-namespace openloco::input::ShortcutManager
+namespace OpenLoco::input::ShortcutManager
 {
     static constexpr size_t _count = 35;
 

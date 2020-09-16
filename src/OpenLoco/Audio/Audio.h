@@ -8,12 +8,12 @@
 
 struct Mix_Chunk;
 
-namespace openloco
+namespace OpenLoco
 {
     struct vehicle_26;
 }
 
-namespace openloco::audio
+namespace OpenLoco::audio
 {
     struct sample
     {

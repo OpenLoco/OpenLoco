@@ -7,7 +7,7 @@
 #include "Window.h"
 #include <array>
 
-namespace openloco::ui::viewportmgr
+namespace OpenLoco::ui::viewportmgr
 {
     constexpr int16_t viewportsPerWindow = 2;
 

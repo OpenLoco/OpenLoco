@@ -5,7 +5,7 @@
 #include <functional>
 #include <string>
 
-namespace openloco
+namespace OpenLoco
 {
     using string_id = uint16_t;
     namespace screen_flags
@@ -44,5 +44,5 @@ namespace openloco
     void sub_431695(uint16_t var_F253A0);
     void main();
     void promptTickLoop(std::function<bool()> tickAction);
-    void exitWithError(openloco::string_id message, uint32_t errorCode);
+    void exitWithError(OpenLoco::string_id message, uint32_t errorCode);
 }

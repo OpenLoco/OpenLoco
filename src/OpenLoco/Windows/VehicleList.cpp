@@ -3,9 +3,9 @@
 #include "../Ui/WindowManager.h"
 #include <stdexcept>
 
-using namespace openloco::interop;
+using namespace OpenLoco::interop;
 
-namespace openloco::ui::windows::vehicle_list
+namespace OpenLoco::ui::windows::vehicle_list
 {
     enum widx
     {

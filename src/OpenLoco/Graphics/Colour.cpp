@@ -3,9 +3,9 @@
 #include "Gfx.h"
 #include <cassert>
 
-using namespace openloco::interop;
+using namespace OpenLoco::interop;
 
-namespace openloco::colour
+namespace OpenLoco::colour
 {
 
     loco_global<uint8_t[32][8], 0x01136BA0> _colour_map_a;

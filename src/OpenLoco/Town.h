@@ -6,7 +6,7 @@
 #include <cstdint>
 #include <limits>
 
-namespace openloco
+namespace OpenLoco
 {
     using town_id_t = uint16_t;
 

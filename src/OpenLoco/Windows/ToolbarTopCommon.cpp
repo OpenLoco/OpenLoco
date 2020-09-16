@@ -22,9 +22,9 @@
 #include "../Ui/Dropdown.h"
 #include <map>
 
-using namespace openloco::interop;
+using namespace OpenLoco::interop;
 
-namespace openloco::ui::windows::toolbar_top::common
+namespace OpenLoco::ui::windows::toolbar_top::common
 {
     static loco_global<uint8_t, 0x00525FAB> last_road_option;
 

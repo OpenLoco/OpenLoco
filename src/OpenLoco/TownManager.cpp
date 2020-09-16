@@ -5,9 +5,9 @@
 #include "Ui/WindowManager.h"
 #include "Utility/Numeric.hpp"
 
-using namespace openloco::interop;
+using namespace OpenLoco::interop;
 
-namespace openloco::townmgr
+namespace OpenLoco::townmgr
 {
     static loco_global<town[max_towns], 0x005B825C> _towns;
 

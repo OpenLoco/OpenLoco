@@ -7,7 +7,7 @@
 #include "../Window.h"
 #include "Thing.h"
 
-namespace openloco
+namespace OpenLoco
 {
     namespace things::vehicle
     {
@@ -459,7 +459,7 @@ namespace openloco
             vehicle_bogie* front = nullptr;
             vehicle_bogie* back = nullptr;
             vehicle_body* body = nullptr;
-            CarComponent(openloco::vehicle*& component)
+            CarComponent(OpenLoco::vehicle*& component)
             {
                 front = component->asVehicleBogie();
                 component = component->nextVehicleComponent();
@@ -477,7 +477,7 @@ namespace openloco
             {
             private:
                 CarComponent current;
-                openloco::vehicle* nextVehicleComponent = nullptr;
+                OpenLoco::vehicle* nextVehicleComponent = nullptr;
 
             public:
                 CarComponentIter(const CarComponent* carComponent)
@@ -488,7 +488,7 @@ namespace openloco
                         return;
                     }
                     current = *carComponent;
-                    nextVehicleComponent = reinterpret_cast<openloco::vehicle*>(current.body)->nextVehicleComponent();
+                    nextVehicleComponent = reinterpret_cast<OpenLoco::vehicle*>(current.body)->nextVehicleComponent();
                 }
 
                 CarComponentIter& operator++()
@@ -549,7 +549,7 @@ namespace openloco
                 return CarComponentIter(nullptr);
             }
 
-            Car(openloco::vehicle*& component)
+            Car(OpenLoco::vehicle*& component)
                 : CarComponent(component)
             {
             }
@@ -565,7 +565,7 @@ namespace openloco
                 {
                 private:
                     Car current;
-                    openloco::vehicle* nextVehicleComponent = nullptr;
+                    OpenLoco::vehicle* nextVehicleComponent = nullptr;
 
                 public:
                     CarIter(const Car* carComponent)
@@ -576,7 +576,7 @@ namespace openloco
                             return;
                         }
                         current = *carComponent;
-                        nextVehicleComponent = reinterpret_cast<openloco::vehicle*>(current.body)->nextVehicleComponent();
+                        nextVehicleComponent = reinterpret_cast<OpenLoco::vehicle*>(current.body)->nextVehicleComponent();
                     }
 
                     CarIter& operator++()

@@ -12,10 +12,10 @@
 #include <cassert>
 #include <memory>
 
-using namespace openloco::ui;
-using namespace openloco::interop;
+using namespace OpenLoco::ui;
+using namespace OpenLoco::interop;
 
-namespace openloco::ui::viewportmgr
+namespace OpenLoco::ui::viewportmgr
 {
     static std::vector<std::unique_ptr<viewport>> _viewports;
 
@@ -55,7 +55,7 @@ namespace openloco::ui::viewportmgr
         vp->zoom = static_cast<uint8_t>(zoom);
         vp->flags = 0;
 
-        auto& cfg = openloco::config::get();
+        auto& cfg = OpenLoco::config::get();
         if ((cfg.flags & config::flags::gridlines_on_landscape) != 0)
         {
             vp->flags |= viewport_flags::gridlines_on_landscape;

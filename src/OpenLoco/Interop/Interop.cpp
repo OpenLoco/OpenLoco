@@ -27,7 +27,7 @@
 #define DISABLE_OPT
 #endif // defined(__GNUC__)
 
-namespace openloco::interop
+namespace OpenLoco::interop
 {
     // This variable serves a purpose of identifying a crash if it has happened inside original code.
     // When switching to original code, stack frame pointer is modified and prevents breakpad from providing stack trace.
@@ -96,7 +96,7 @@ namespace openloco::interop
     static int32_t DISABLE_OPT callByRef(int32_t address, int32_t* _eax, int32_t* _ebx, int32_t* _ecx, int32_t* _edx, int32_t* _esi, int32_t* _edi, int32_t* _ebp)
     {
 #ifdef _LOG_INTEROP_CALLS_
-        openloco::console::group("0x%x", address);
+        OpenLoco::console::group("0x%x", address);
 #endif
         int32_t result = 0;
         _originalAddress = address;
@@ -253,7 +253,7 @@ namespace openloco::interop
         _originalAddress = 0;
 
 #ifdef _LOG_INTEROP_CALLS_
-        openloco::console::groupEnd();
+        OpenLoco::console::groupEnd();
 #endif
         // lahf only modifies ah, zero out the rest
         return result & 0xFF00;

@@ -21,13 +21,13 @@
 
 int main(int argc, const char** argv)
 {
-    openloco::interop::loadSections();
-    openloco::lpCmdLine((char*)argv[0]);
-    openloco::main();
+    OpenLoco::interop::loadSections();
+    OpenLoco::lpCmdLine((char*)argv[0]);
+    OpenLoco::main();
     return 0;
 }
 
-namespace openloco::platform
+namespace OpenLoco::platform
 {
     uint32_t getTime()
     {

@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-namespace openloco
+namespace OpenLoco
 {
     using coord_t = int16_t;
     using company_id_t = uint8_t;

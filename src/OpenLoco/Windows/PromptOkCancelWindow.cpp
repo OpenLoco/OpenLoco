@@ -7,9 +7,9 @@
 #include "../Ui/WindowManager.h"
 #include <cstring>
 
-using namespace openloco::interop;
+using namespace OpenLoco::interop;
 
-namespace openloco::ui::windows
+namespace OpenLoco::ui::windows
 {
 #pragma pack(push, 1)
     struct text_buffers_t

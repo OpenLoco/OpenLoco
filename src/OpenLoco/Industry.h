@@ -9,7 +9,7 @@
 #include <cstdint>
 #include <limits>
 
-namespace openloco
+namespace OpenLoco
 {
     using namespace map;
     using industry_id_t = uint8_t;

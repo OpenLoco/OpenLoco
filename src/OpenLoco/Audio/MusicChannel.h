@@ -8,7 +8,7 @@
 struct _Mix_Music;
 typedef struct _Mix_Music Mix_Music;
 
-namespace openloco::audio
+namespace OpenLoco::audio
 {
     class music_channel
     {

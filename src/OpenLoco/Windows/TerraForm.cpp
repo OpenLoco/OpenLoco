@@ -19,11 +19,11 @@
 #include "../Utility/Numeric.hpp"
 #include "../Widget.h"
 
-using namespace openloco::interop;
-using namespace openloco::map;
-using namespace openloco::game_commands;
+using namespace OpenLoco::interop;
+using namespace OpenLoco::map;
+using namespace OpenLoco::game_commands;
 
-namespace openloco::ui::windows::terraform
+namespace OpenLoco::ui::windows::terraform
 {
     static loco_global<std::uint8_t[10], 0x00500775> _byte_500775;
     static loco_global<int16_t, 0x0052337A> _dragLastY;
@@ -1444,7 +1444,7 @@ namespace openloco::ui::windows::terraform
 
                 auto landObj = objectmgr::get<land_object>(_lastSelectedLand);
 
-                self->widgets[widx::land_material].image = landObj->var_16 + openloco::land::image_ids::landscape_generator_tile_icon;
+                self->widgets[widx::land_material].image = landObj->var_16 + OpenLoco::land::image_ids::landscape_generator_tile_icon;
             }
 
             common::repositionTabs(self);

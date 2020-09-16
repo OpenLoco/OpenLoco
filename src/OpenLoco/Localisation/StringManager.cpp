@@ -14,9 +14,9 @@
 #include <map>
 #include <stdexcept>
 
-using namespace openloco::interop;
+using namespace OpenLoco::interop;
 
-namespace openloco::stringmgr
+namespace OpenLoco::stringmgr
 {
     const uint16_t NUM_USER_STRINGS = 2048;
     const uint8_t USER_STRING_SIZE = 32;

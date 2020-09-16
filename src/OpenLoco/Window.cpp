@@ -15,11 +15,11 @@
 #include <cassert>
 #include <cinttypes>
 
-using namespace openloco;
-using namespace openloco::interop;
-using namespace openloco::map;
+using namespace OpenLoco;
+using namespace OpenLoco::interop;
+using namespace OpenLoco::map;
 
-namespace openloco::ui
+namespace OpenLoco::ui
 {
     template<typename T>
     static bool isInteropEvent(T e)

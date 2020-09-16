@@ -7,7 +7,7 @@
 #error "small is defined, likely by windows.h"
 #endif
 
-namespace openloco
+namespace OpenLoco
 {
     namespace string_ids
     {
@@ -106,7 +106,7 @@ namespace openloco
     }
 }
 
-namespace openloco::stringmgr
+namespace OpenLoco::stringmgr
 {
     const char* getString(string_id id);
     char* formatString(char* buffer, string_id id, const void* args = nullptr);

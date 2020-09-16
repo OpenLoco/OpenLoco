@@ -8,10 +8,10 @@
 #include "../../Objects/ObjectManager.h"
 #include "News.h"
 
-using namespace openloco::interop;
-using namespace openloco::config;
+using namespace OpenLoco::interop;
+using namespace OpenLoco::config;
 
-namespace openloco::ui::NewsWindow
+namespace OpenLoco::ui::NewsWindow
 {
     static void createNewsWindow(gfx::ui_size_t windowSize, widget_t* widgets, uint8_t colour, bool isOld, uint32_t flags)
     {

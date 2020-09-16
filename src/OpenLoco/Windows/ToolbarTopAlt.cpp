@@ -23,9 +23,9 @@
 #include "../Ui/WindowManager.h"
 #include "ToolbarTopCommon.h"
 
-using namespace openloco::interop;
+using namespace OpenLoco::interop;
 
-namespace openloco::ui::windows::toolbar_top::editor
+namespace OpenLoco::ui::windows::toolbar_top::editor
 {
     static loco_global<uint8_t, 0x00525FAB> last_road_option;
     static loco_global<uint8_t, 0x009C870C> last_town_option;

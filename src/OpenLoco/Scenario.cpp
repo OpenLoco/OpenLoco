@@ -4,9 +4,9 @@
 #include "S5/S5.h"
 #include "Ui/WindowManager.h"
 
-using namespace openloco::interop;
+using namespace OpenLoco::interop;
 
-namespace openloco::scenario
+namespace OpenLoco::scenario
 {
     // 0x0043EDAD
     void eraseLandscape()

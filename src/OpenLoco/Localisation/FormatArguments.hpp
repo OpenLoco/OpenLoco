@@ -2,9 +2,9 @@
 
 #include "../Interop/Interop.hpp"
 
-using namespace openloco::interop;
+using namespace OpenLoco::interop;
 
-namespace openloco
+namespace OpenLoco
 {
 
     class FormatArguments

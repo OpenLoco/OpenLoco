@@ -5,7 +5,7 @@
 #include <cstdio>
 #include <vector>
 
-namespace openloco
+namespace OpenLoco
 {
     enum class object_type
     {
@@ -89,7 +89,7 @@ namespace openloco
     };
 }
 
-namespace openloco::objectmgr
+namespace OpenLoco::objectmgr
 {
     void loadIndex();
 

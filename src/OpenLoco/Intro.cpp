@@ -1,9 +1,9 @@
 #include "Intro.h"
 #include "Interop/Interop.hpp"
 
-using namespace openloco::interop;
+using namespace OpenLoco::interop;
 
-namespace openloco::intro
+namespace OpenLoco::intro
 {
     loco_global<uint8_t, 0x0050C195> _state;
 

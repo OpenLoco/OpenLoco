@@ -8,9 +8,9 @@
 #include "../Objects/ObjectManager.h"
 #include "../Ui/WindowManager.h"
 
-using namespace openloco::interop;
+using namespace OpenLoco::interop;
 
-namespace openloco::ui::AboutMusic
+namespace OpenLoco::ui::AboutMusic
 {
     constexpr gfx::ui_size_t windowSize = { 500, 312 };
 

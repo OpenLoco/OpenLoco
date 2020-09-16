@@ -11,9 +11,9 @@
 #include "../OpenLoco.h"
 #include "../Ui/WindowManager.h"
 
-using namespace openloco::interop;
+using namespace OpenLoco::interop;
 
-namespace openloco::ui::windows::error
+namespace OpenLoco::ui::windows::error
 {
     static loco_global<uint8_t, 0x00508F09> _suppressErrorSound;
     static loco_global<ui::widget_t[1], 0x00508F1C> _widgets;

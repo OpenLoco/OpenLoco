@@ -18,11 +18,11 @@
 #include "../../Widget.h"
 #include "Construction.h"
 
-using namespace openloco::interop;
-using namespace openloco::map;
-using namespace openloco::map::tilemgr;
+using namespace OpenLoco::interop;
+using namespace OpenLoco::map;
+using namespace OpenLoco::map::tilemgr;
 
-namespace openloco::ui::windows::construction
+namespace OpenLoco::ui::windows::construction
 {
     static loco_global<ui::window_number, 0x00523390> _toolWindowNumber;
 

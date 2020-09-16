@@ -4,7 +4,7 @@
 #include "Map/Tile.h"
 #include <limits>
 
-namespace openloco
+namespace OpenLoco
 {
 
     using message_id_t = uint16_t;

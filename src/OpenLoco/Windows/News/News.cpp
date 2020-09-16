@@ -17,9 +17,9 @@
 #include "../../ViewportManager.h"
 #include "../../Window.h"
 
-using namespace openloco::interop;
+using namespace OpenLoco::interop;
 
-namespace openloco::ui::NewsWindow
+namespace OpenLoco::ui::NewsWindow
 {
     namespace news1
     {
@@ -93,7 +93,7 @@ namespace openloco::ui::NewsWindow
 
                             case newsItemSubTypes::vehicle:
                             {
-                                auto vehicle = thingmgr::get<openloco::vehicle>(itemId);
+                                auto vehicle = thingmgr::get<OpenLoco::vehicle>(itemId);
 
                                 // ui::vehicle::open
                                 registers regs;
@@ -507,7 +507,7 @@ namespace openloco::ui::NewsWindow
 
                 case newsItemSubTypes::vehicle:
                 {
-                    auto vehicle = thingmgr::get<openloco::vehicle>(itemIndex);
+                    auto vehicle = thingmgr::get<OpenLoco::vehicle>(itemIndex);
                     auto company = companymgr::get(vehicle->owner);
                     if (isPlayerCompany(vehicle->owner))
                     {

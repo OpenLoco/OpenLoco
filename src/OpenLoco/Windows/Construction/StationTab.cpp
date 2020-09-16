@@ -14,11 +14,11 @@
 #include "../../Ui/Dropdown.h"
 #include "Construction.h"
 
-using namespace openloco::interop;
-using namespace openloco::map;
-using namespace openloco::map::tilemgr;
+using namespace OpenLoco::interop;
+using namespace OpenLoco::map;
+using namespace OpenLoco::map::tilemgr;
 
-namespace openloco::ui::windows::construction::station
+namespace OpenLoco::ui::windows::construction::station
 {
     widget_t widgets[] = {
         commonWidgets(138, 190, string_ids::stringid_2),
