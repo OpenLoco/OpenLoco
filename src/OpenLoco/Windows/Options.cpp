@@ -790,7 +790,7 @@ namespace OpenLoco::ui::options
         {
             if (itemIndex != -1)
             {
-                Audio::set_device(itemIndex);
+                Audio::setDevice(itemIndex);
                 WindowManager::invalidateWidget(w->type, w->number, widx::audio_device);
             }
         }

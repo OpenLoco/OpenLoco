@@ -390,7 +390,7 @@ namespace OpenLoco::Audio
         return getDeviceIndex(cfg.audio.device);
     }
 
-    void set_device(size_t index)
+    void setDevice(size_t index)
     {
         if (index < _devices.size())
         {
