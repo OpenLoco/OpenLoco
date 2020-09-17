@@ -4,7 +4,7 @@
 #include <SDL2/SDL_mixer.h>
 #include <utility>
 
-using namespace OpenLoco::audio;
+using namespace OpenLoco::Audio;
 
 channel::channel(int32_t cid)
     : _id(cid)

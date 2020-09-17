@@ -1154,7 +1154,7 @@ namespace OpenLoco::ui::windows::town_list
                     int32_t pan = (self->width >> 1) + self->x;
                     loc16 loc = { xPos, yPos, static_cast<int16_t>(pan) };
 
-                    audio::playSound(audio::sound_id::click_down, loc, pan);
+                    Audio::playSound(Audio::sound_id::click_down, loc, pan);
                     self->saved_view.mapX = -16;
                     dword_1135C34 = 0x80000000;
                     byte_1135C65 = 0;

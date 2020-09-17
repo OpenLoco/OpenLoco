@@ -4,7 +4,7 @@
 
 struct Mix_Chunk;
 
-namespace OpenLoco::audio
+namespace OpenLoco::Audio
 {
     struct sample;
 

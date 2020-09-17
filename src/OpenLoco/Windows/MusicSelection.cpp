@@ -83,7 +83,7 @@ namespace OpenLoco::ui::windows::music_selection
         window->colours[0] = interface->colour_0B;
         window->colours[1] = interface->colour_10;
 
-        window->row_count = audio::num_music_tracks;
+        window->row_count = Audio::num_music_tracks;
         window->row_hover = -1;
 
         return window;
@@ -124,7 +124,7 @@ namespace OpenLoco::ui::windows::music_selection
                 gfx::drawString_494B3F(*dpi, 2, y, window->colours[1], string_ids::wcolour2_stringid, (void*)&string_ids::checkmark);
 
             // Draw track name.
-            string_id music_title_id = audio::getMusicInfo(i)->title_id;
+            string_id music_title_id = Audio::getMusicInfo(i)->title_id;
             gfx::drawString_494B3F(*dpi, 15, y, window->colours[1], text_colour_id, (void*)&music_title_id);
 
             y += rowHeight;
@@ -134,7 +134,7 @@ namespace OpenLoco::ui::windows::music_selection
     // 0x004C176C
     static void getScrollSize(ui::window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
-        *scrollHeight = rowHeight * audio::num_music_tracks;
+        *scrollHeight = rowHeight * Audio::num_music_tracks;
     }
 
     // 0x004C1757
@@ -162,7 +162,7 @@ namespace OpenLoco::ui::windows::music_selection
 
         // Are any tracks enabled?
         uint8_t anyEnabled = 0;
-        for (uint8_t i = 0; i < audio::num_music_tracks; i++)
+        for (uint8_t i = 0; i < Audio::num_music_tracks; i++)
             anyEnabled |= config.enabled_music[i];
 
         // Ensure at least this track is enabled.
@@ -170,7 +170,7 @@ namespace OpenLoco::ui::windows::music_selection
             config.enabled_music[currentTrack] = true;
 
         config::write();
-        audio::revalidateCurrentTrack();
+        Audio::revalidateCurrentTrack();
         window->invalidate();
     }
 

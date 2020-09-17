@@ -1,7 +1,7 @@
 #include "MusicChannel.h"
 #include <SDL2/SDL_mixer.h>
 
-using namespace OpenLoco::audio;
+using namespace OpenLoco::Audio;
 
 music_channel::~music_channel()
 {

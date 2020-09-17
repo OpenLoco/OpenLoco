@@ -692,7 +692,7 @@ namespace OpenLoco::ui::options
 
             FormatArguments args = {};
 
-            auto audioDeviceName = audio::getCurrentDeviceName();
+            auto audioDeviceName = Audio::getCurrentDeviceName();
             if (audioDeviceName != nullptr)
             {
                 args.push(string_ids::stringptr);
@@ -766,7 +766,7 @@ namespace OpenLoco::ui::options
         // 0x004C043D
         static void audioDeviceMouseDown(ui::window* w)
         {
-            const auto& devices = audio::getDevices();
+            const auto& devices = Audio::getDevices();
             if (devices.size() != 0)
             {
                 widget_t dropdown = w->widgets[widx::audio_device];
@@ -777,7 +777,7 @@ namespace OpenLoco::ui::options
                     dropdown::add(i, string_ids::dropdown_stringid, { string_ids::stringptr, name });
                 }
 
-                auto currentDevice = audio::getCurrentDevice();
+                auto currentDevice = Audio::getCurrentDevice();
                 if (currentDevice != std::numeric_limits<size_t>().max())
                 {
                     dropdown::setItemSelected((int16_t)currentDevice);
@@ -790,7 +790,7 @@ namespace OpenLoco::ui::options
         {
             if (itemIndex != -1)
             {
-                audio::set_device(itemIndex);
+                Audio::setDevice(itemIndex);
                 WindowManager::invalidateWidget(w->type, w->number, widx::audio_device);
             }
         }
@@ -803,7 +803,7 @@ namespace OpenLoco::ui::options
             cfg.audio.play_title_music = !cfg.audio.play_title_music;
             config::write();
 
-            audio::playTitleScreenMusic();
+            Audio::playTitleScreenMusic();
 
             w->invalidate();
         }
@@ -894,7 +894,7 @@ namespace OpenLoco::ui::options
             string_id songName = string_ids::music_none;
             if (_currentSong != -1)
             {
-                songName = audio::getMusicInfo(_currentSong)->title_id;
+                songName = Audio::getMusicInfo(_currentSong)->title_id;
             }
 
             FormatArguments args = {};
@@ -1041,7 +1041,7 @@ namespace OpenLoco::ui::options
             cfg.music_playing = 0;
             config::write();
 
-            audio::stopBackgroundMusic();
+            Audio::stopBackgroundMusic();
 
             _currentSong = -1;
 
@@ -1067,7 +1067,7 @@ namespace OpenLoco::ui::options
             if (config::get().music_playing == 0)
                 return;
 
-            audio::stopBackgroundMusic();
+            Audio::stopBackgroundMusic();
 
             _currentSong = -1;
 
@@ -1101,7 +1101,7 @@ namespace OpenLoco::ui::options
 
             w->invalidate();
 
-            audio::revalidateCurrentTrack();
+            Audio::revalidateCurrentTrack();
 
             WindowManager::close(WindowType::musicSelection);
         }
@@ -1115,9 +1115,9 @@ namespace OpenLoco::ui::options
             if (config::get().music_playlist == config::music_playlist_type::current_era)
             {
                 uint16_t year = getCurrentYear();
-                for (int i = 0; i < audio::num_music_tracks; i++)
+                for (int i = 0; i < Audio::num_music_tracks; i++)
                 {
-                    auto info = audio::getMusicInfo(i);
+                    auto info = Audio::getMusicInfo(i);
                     if (year >= info->start_year && year <= info->end_year)
                     {
                         vector.push_back(i);
@@ -1126,14 +1126,14 @@ namespace OpenLoco::ui::options
             }
             else if (config::get().music_playlist == config::music_playlist_type::all)
             {
-                for (int i = 0; i < audio::num_music_tracks; i++)
+                for (int i = 0; i < Audio::num_music_tracks; i++)
                 {
                     vector.push_back(i);
                 }
             }
             else if (config::get().music_playlist == config::music_playlist_type::custom)
             {
-                for (int i = 0; i < audio::num_music_tracks; i++)
+                for (int i = 0; i < Audio::num_music_tracks; i++)
                 {
                     if (config::get().enabled_music[i] & 1)
                     {
@@ -1143,7 +1143,7 @@ namespace OpenLoco::ui::options
 
                 if (vector.size() == 0)
                 {
-                    for (int i = 0; i < audio::num_music_tracks; i++)
+                    for (int i = 0; i < Audio::num_music_tracks; i++)
                     {
                         vector.push_back(i);
                     }
@@ -1165,7 +1165,7 @@ namespace OpenLoco::ui::options
             for (auto track : tracks)
             {
                 index++;
-                dropdown::add(index, string_ids::dropdown_stringid, audio::getMusicInfo(track)->title_id);
+                dropdown::add(index, string_ids::dropdown_stringid, Audio::getMusicInfo(track)->title_id);
                 if (track == _currentSong)
                 {
                     dropdown::setItemSelected(index);
@@ -1184,7 +1184,7 @@ namespace OpenLoco::ui::options
             if (track == _currentSong)
                 return;
 
-            audio::stopBackgroundMusic();
+            Audio::stopBackgroundMusic();
 
             _currentSong = track;
             _50D435 = track;

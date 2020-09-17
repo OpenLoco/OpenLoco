@@ -31,7 +31,7 @@ using namespace OpenLoco::interop;
 using namespace OpenLoco::ui;
 using namespace OpenLoco::utility;
 
-namespace OpenLoco::audio
+namespace OpenLoco::Audio
 {
 #pragma pack(push, 1)
     struct WAVEFORMATEX
@@ -390,7 +390,7 @@ namespace OpenLoco::audio
         return getDeviceIndex(cfg.audio.device);
     }
 
-    void set_device(size_t index)
+    void setDevice(size_t index)
     {
         if (index < _devices.size())
         {

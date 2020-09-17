@@ -13,7 +13,7 @@ namespace OpenLoco
     struct vehicle_26;
 }
 
-namespace OpenLoco::audio
+namespace OpenLoco::Audio
 {
     struct sample
     {
@@ -87,7 +87,7 @@ namespace OpenLoco::audio
     const std::vector<std::string>& getDevices();
     const char* getCurrentDeviceName();
     size_t getCurrentDevice();
-    void set_device(size_t index);
+    void setDevice(size_t index);
 
     sample* getSoundSample(sound_id id);
     bool shouldSoundLoop(sound_id id);

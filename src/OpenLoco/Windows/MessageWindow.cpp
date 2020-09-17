@@ -169,7 +169,7 @@ namespace OpenLoco::ui::MessageWindow
             NewsWindow::open(messageIndex);
 
             int32_t pan = self->width / 2 + self->x;
-            audio::playSound(audio::sound_id::click_down, pan);
+            Audio::playSound(Audio::sound_id::click_down, pan);
         }
 
         // 0x0042A87C

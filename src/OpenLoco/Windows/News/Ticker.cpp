@@ -119,7 +119,7 @@ namespace OpenLoco::ui::NewsWindow::ticker
                     {
                         if (newsStringChar != 0)
                         {
-                            audio::playSound(audio::sound_id::ticker, ui::width());
+                            Audio::playSound(Audio::sound_id::ticker, ui::width());
                         }
                     }
                 }
