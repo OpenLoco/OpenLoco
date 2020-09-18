@@ -210,7 +210,7 @@ namespace OpenLoco::ui::tooltip
         gfx::drawRect(dpi, x + 1, y + height - 1 - 1, 1, 1, 0x2000000 | 46);
         gfx::drawRect(dpi, x + width - 1 - 1, y + height - 1 - 1, 1, 1, 0x2000000 | 46);
 
-        gfx::drawStringCentredRaw(*dpi, ((width + 1) / 2) + x - 1, y + 1, _lineBreakCount, colour::black, &_text[0]);
+        gfx::drawStringCentredRaw(*dpi, ((width + 1) / 2) + x - 1, y + 1, _lineBreakCount, Colour::black, &_text[0]);
     }
 
     // 0x004C94F7

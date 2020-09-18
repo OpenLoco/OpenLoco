@@ -141,7 +141,7 @@ namespace OpenLoco::ui::NewsWindow
                 window->initScrollWidgets();
 
                 auto skin = objectmgr::get<interface_skin_object>();
-                window->colours[0] = colour::translucent(skin->colour_0C);
+                window->colours[0] = Colour::translucent(skin->colour_0C);
 
                 window->var_852 = 0;
 
@@ -203,12 +203,12 @@ namespace OpenLoco::ui::NewsWindow
         {
             uint32_t flags = window_flags::stick_to_front | window_flags::viewport_no_scrolling | window_flags::transparent | window_flags::no_background;
 
-            createNewsWindow(news2::windowSize, news2::widgets, colour::grey, isOld, flags);
+            createNewsWindow(news2::windowSize, news2::widgets, Colour::grey, isOld, flags);
         }
         else
         {
             uint32_t flags = window_flags::stick_to_front | window_flags::viewport_no_scrolling | window_flags::transparent;
-            auto colour = colour::translucent(colour::salmon_pink);
+            auto colour = Colour::translucent(Colour::salmon_pink);
 
             createNewsWindow(news1::windowSize, news1::widgets, colour, isOld, flags);
         }

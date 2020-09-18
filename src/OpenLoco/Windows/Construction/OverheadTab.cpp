@@ -287,7 +287,7 @@ namespace OpenLoco::ui::windows::construction::overhead
             auto args = FormatArguments();
             args.push<uint32_t>(_modCost);
 
-            gfx::drawStringCentred(*dpi, xPos, yPos, colour::black, string_ids::build_cost, &args);
+            gfx::drawStringCentred(*dpi, xPos, yPos, Colour::black, string_ids::build_cost, &args);
         }
     }
 

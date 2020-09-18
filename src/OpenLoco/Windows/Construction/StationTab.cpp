@@ -303,7 +303,7 @@ namespace OpenLoco::ui::windows::construction::station
             auto args = FormatArguments();
             args.push<uint32_t>(_stationCost);
 
-            gfx::drawStringCentred(*dpi, xPos, yPos, colour::black, string_ids::build_cost, &args);
+            gfx::drawStringCentred(*dpi, xPos, yPos, Colour::black, string_ids::build_cost, &args);
         }
 
         xPos = self->x + 3;
@@ -330,17 +330,17 @@ namespace OpenLoco::ui::windows::construction::station
         xPos = self->x + 69;
         yPos = self->widgets[widx::image].bottom + self->y + 18;
         width = self->width - 4;
-        gfx::drawStringCentredClipped(*dpi, xPos, yPos, width, colour::black, string_ids::new_station_buffer, &args);
+        gfx::drawStringCentredClipped(*dpi, xPos, yPos, width, Colour::black, string_ids::new_station_buffer, &args);
 
         xPos = self->x + 2;
         yPos = self->widgets[widx::image].bottom + self->y + 29;
         gfx::point_t origin = { xPos, yPos };
 
-        gfx::drawString_494B3F(*dpi, &origin, colour::black, string_ids::catchment_area_accepts);
+        gfx::drawString_494B3F(*dpi, &origin, Colour::black, string_ids::catchment_area_accepts);
 
         if (_constructingStationAcceptedCargoTypes == 0)
         {
-            gfx::drawString_494B3F(*dpi, origin.x, origin.y, colour::black, string_ids::catchment_area_nothing);
+            gfx::drawString_494B3F(*dpi, origin.x, origin.y, Colour::black, string_ids::catchment_area_nothing);
         }
         else
         {
@@ -365,11 +365,11 @@ namespace OpenLoco::ui::windows::construction::station
         yPos = self->widgets[widx::image].bottom + self->y + 49;
         origin = { xPos, yPos };
 
-        gfx::drawString_494B3F(*dpi, &origin, colour::black, string_ids::catchment_area_produces);
+        gfx::drawString_494B3F(*dpi, &origin, Colour::black, string_ids::catchment_area_produces);
 
         if (_constructingStationProducedCargoTypes == 0)
         {
-            gfx::drawString_494B3F(*dpi, origin.x, origin.y, colour::black, string_ids::catchment_area_nothing);
+            gfx::drawString_494B3F(*dpi, origin.x, origin.y, Colour::black, string_ids::catchment_area_nothing);
         }
         else
         {

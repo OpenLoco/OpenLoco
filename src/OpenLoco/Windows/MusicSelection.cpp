@@ -99,7 +99,7 @@ namespace OpenLoco::ui::windows::music_selection
     // 0x004C1663
     static void drawScroll(ui::window* window, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
     {
-        auto shade = colour::getShade(window->colours[1], 4);
+        auto shade = Colour::getShade(window->colours[1], 4);
         gfx::clearSingle(*dpi, shade);
 
         auto config = config::get();

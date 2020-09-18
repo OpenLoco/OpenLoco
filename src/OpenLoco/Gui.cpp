@@ -79,8 +79,8 @@ namespace OpenLoco::gui
                 auto skin = OpenLoco::objectmgr::get<interface_skin_object>();
                 if (skin != nullptr)
                 {
-                    window->colours[0] = colour::translucent(skin->colour_06);
-                    window->colours[1] = colour::translucent(skin->colour_07);
+                    window->colours[0] = Colour::translucent(skin->colour_06);
+                    window->colours[1] = Colour::translucent(skin->colour_07);
                 }
             }
         }

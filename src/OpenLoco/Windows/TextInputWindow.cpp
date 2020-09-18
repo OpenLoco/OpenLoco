@@ -281,7 +281,7 @@ namespace OpenLoco::ui::textinput
         *((string_id*)(&_commonFormatArgs[0])) = string_ids::buffer_2039;
         position = { _xOffset, 1 };
         gfx::drawString_494B3F(*clipped, &position, 0, string_ids::black_stringid, _commonFormatArgs);
-        gfx::fillRect(clipped, position.x, position.y, position.x, position.y + 9, colour::getShade(window->colours[1], 9));
+        gfx::fillRect(clipped, position.x, position.y, position.x, position.y + 9, Colour::getShade(window->colours[1], 9));
     }
 
     // 0x004CE8B6

@@ -39,6 +39,6 @@ namespace OpenLoco::ui::windows
     static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi)
     {
         auto versionInfo = getVersionInfo();
-        gfx::drawString(dpi, window->x, window->y, colour::white | format_flags::textflag_5, (void*)versionInfo.c_str());
+        gfx::drawString(dpi, window->x, window->y, Colour::white | format_flags::textflag_5, (void*)versionInfo.c_str());
     }
 }

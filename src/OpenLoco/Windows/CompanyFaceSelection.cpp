@@ -252,7 +252,7 @@ namespace OpenLoco::ui::windows::CompanyFaceSelection
         }
 
         {
-            const auto colour = colour::getShade(self->colours[1], 0);
+            const auto colour = Colour::getShade(self->colours[1], 0);
             const auto l = self->x + 1 + self->widgets[widx::face_frame].left;
             const auto t = self->y + 1 + self->widgets[widx::face_frame].top;
             const auto r = self->x - 1 + self->widgets[widx::face_frame].right;
@@ -271,7 +271,7 @@ namespace OpenLoco::ui::windows::CompanyFaceSelection
             auto str = const_cast<char*>(stringmgr::getString(string_ids::buffer_2039));
             *str++ = control_codes::window_colour_2;
             strcpy(str, self->object);
-            gfx::drawStringCentredClipped(*dpi, x, y, width, colour::black, string_ids::buffer_2039);
+            gfx::drawStringCentredClipped(*dpi, x, y, width, Colour::black, string_ids::buffer_2039);
         }
 
         // There was code for displaying competitor stats if window opened with none
@@ -281,7 +281,7 @@ namespace OpenLoco::ui::windows::CompanyFaceSelection
     // 0x00435152
     static void drawScroll(window* const self, gfx::drawpixelinfo_t* const dpi, const uint32_t scrollIndex)
     {
-        gfx::clearSingle(*dpi, colour::getShade(self->colours[1], 4));
+        gfx::clearSingle(*dpi, Colour::getShade(self->colours[1], 4));
 
         auto index = 0;
         for (const auto& object : objectmgr::getAvailableObjects(object_type::competitor))
@@ -299,11 +299,11 @@ namespace OpenLoco::ui::windows::CompanyFaceSelection
             name.insert(0, 1, inlineColour);
 
             _currentFontSpriteBase = font::medium_bold;
-            auto stringColour = colour::black;
+            auto stringColour = Colour::black;
             if (isInUseCompetitor(object.first))
             {
                 _currentFontSpriteBase = font::m1;
-                stringColour = colour::opaque(self->colours[1]) | (1 << 6);
+                stringColour = Colour::opaque(self->colours[1]) | (1 << 6);
             }
             gfx::drawString(dpi, 0, y - 1, stringColour, const_cast<char*>(name.c_str()));
 

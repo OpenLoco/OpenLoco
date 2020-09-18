@@ -88,10 +88,10 @@ namespace OpenLoco::ui::windows::toolbar_top::editor
         window->widgets = _widgets;
         window->enabled_widgets = (1 << common::widx::loadsave_menu) | (1 << common::widx::audio_menu) | (1 << common::widx::zoom_menu) | (1 << common::widx::rotate_menu) | (1 << common::widx::view_menu) | (1 << common::widx::terraform_menu) | (1 << widx::map_generation_menu) | (1 << common::widx::road_menu) | (1 << common::widx::towns_menu);
         window->initScrollWidgets();
-        window->colours[0] = colour::grey;
-        window->colours[1] = colour::grey;
-        window->colours[2] = colour::grey;
-        window->colours[3] = colour::grey;
+        window->colours[0] = Colour::grey;
+        window->colours[1] = Colour::grey;
+        window->colours[2] = Colour::grey;
+        window->colours[3] = Colour::grey;
 
         auto skin = objectmgr::get<interface_skin_object>();
         if (skin != nullptr)

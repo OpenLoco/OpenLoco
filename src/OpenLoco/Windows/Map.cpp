@@ -507,7 +507,7 @@ namespace OpenLoco::ui::windows::map
                 else
                     imageId += vehicleImageIds[0];
 
-                auto colour = colour::black;
+                auto colour = Colour::black;
 
                 if (!isEditorMode())
                 {
@@ -600,7 +600,7 @@ namespace OpenLoco::ui::windows::map
                 stringId = string_ids::small_white_string;
             }
 
-            gfx::drawString_494BBF(*dpi, x + 6, *y, 94, colour::black, stringId, &args);
+            gfx::drawString_494BBF(*dpi, x + 6, *y, 94, Colour::black, stringId, &args);
 
             *y += 10;
         }
@@ -646,7 +646,7 @@ namespace OpenLoco::ui::windows::map
                 stringId = string_ids::small_white_string;
             }
 
-            gfx::drawString_494BBF(*dpi, x + 6, *y, 94, colour::black, stringId, &args);
+            gfx::drawString_494BBF(*dpi, x + 6, *y, 94, Colour::black, stringId, &args);
 
             *y += 10;
         }
@@ -713,7 +713,7 @@ namespace OpenLoco::ui::windows::map
                 stringId = string_ids::small_white_string;
             }
 
-            gfx::drawString_494BBF(*dpi, x + 6, *y, 94, colour::black, stringId, &args);
+            gfx::drawString_494BBF(*dpi, x + 6, *y, 94, Colour::black, stringId, &args);
 
             *y += 10;
         }
@@ -763,7 +763,7 @@ namespace OpenLoco::ui::windows::map
                 stringId = string_ids::small_white_string;
             }
 
-            gfx::drawString_494BBF(*dpi, x + 6, *y, 94, colour::black, stringId, &args);
+            gfx::drawString_494BBF(*dpi, x + 6, *y, 94, Colour::black, stringId, &args);
 
             *y += 10;
         }
@@ -780,7 +780,7 @@ namespace OpenLoco::ui::windows::map
             }
 
             auto index = company.id();
-            auto colour = colour::getShade(company.mainColours.primary, 6);
+            auto colour = Colour::getShade(company.mainColours.primary, 6);
 
             if (!(self->var_854 & (1 << index)) || !(mapFrameNumber & (1 << 2)))
             {
@@ -797,7 +797,7 @@ namespace OpenLoco::ui::windows::map
                 stringId = string_ids::small_white_string;
             }
 
-            gfx::drawString_494BBF(*dpi, x + 6, *y, 94, colour::black, stringId, &args);
+            gfx::drawString_494BBF(*dpi, x + 6, *y, 94, Colour::black, stringId, &args);
 
             *y += 10;
         }
@@ -1002,7 +1002,7 @@ namespace OpenLoco::ui::windows::map
         auto y = self->y + self->widgets[widx::statusBar].top - 1;
         auto width = self->widgets[widx::statusBar].width();
 
-        gfx::drawString_494BBF(*dpi, x, y, width, colour::black, string_ids::black_stringid, &args);
+        gfx::drawString_494BBF(*dpi, x, y, width, Colour::black, string_ids::black_stringid, &args);
     }
 
     // 0x0046BF0F based on
@@ -1144,7 +1144,7 @@ namespace OpenLoco::ui::windows::map
         if (widgetIndex == widx::tabOwnership || widgetIndex == widx::tabVehicles)
         {
             uint8_t index = car.front->owner;
-            colour = colour::getShade(_companyColours[index], 7);
+            colour = Colour::getShade(_companyColours[index], 7);
 
             if (widgetIndex == widx::tabVehicles)
             {
@@ -1422,7 +1422,7 @@ namespace OpenLoco::ui::windows::map
             townPos.y -= 3;
 
             _currentFontSpriteBase = font::small;
-            gfx::drawString(dpi, townPos.x, townPos.y, colour::outline(colour::bright_purple), _stringFormatBuffer);
+            gfx::drawString(dpi, townPos.x, townPos.y, Colour::outline(Colour::bright_purple), _stringFormatBuffer);
         }
     }
 

@@ -137,7 +137,7 @@ namespace OpenLoco::ui::windows::town_list
         // 0x0049A0F8
         static void drawScroll(ui::window* self, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
         {
-            auto shade = colour::getShade(self->colours[1], 3);
+            auto shade = Colour::getShade(self->colours[1], 3);
             gfx::clearSingle(*dpi, shade);
 
             uint16_t yPos = 0;
@@ -170,14 +170,14 @@ namespace OpenLoco::ui::windows::town_list
                     auto args = FormatArguments();
                     args.push(town->name);
 
-                    gfx::drawString_494BBF(*dpi, 0, yPos, 198, colour::black, text_colour_id, &args);
+                    gfx::drawString_494BBF(*dpi, 0, yPos, 198, Colour::black, text_colour_id, &args);
                 }
                 // Town Type
                 {
                     auto args = FormatArguments();
                     args.push(town->getTownSizeString());
 
-                    gfx::drawString_494BBF(*dpi, 200, yPos, 278, colour::black, text_colour_id, &args);
+                    gfx::drawString_494BBF(*dpi, 200, yPos, 278, Colour::black, text_colour_id, &args);
                 }
                 // Town Population
                 {
@@ -185,7 +185,7 @@ namespace OpenLoco::ui::windows::town_list
                     args.push(string_ids::int_32);
                     args.push(town->population);
 
-                    gfx::drawString_494BBF(*dpi, 280, yPos, 68, colour::black, text_colour_id, &args);
+                    gfx::drawString_494BBF(*dpi, 280, yPos, 68, Colour::black, text_colour_id, &args);
                 }
                 // Town Stations
                 {
@@ -193,7 +193,7 @@ namespace OpenLoco::ui::windows::town_list
                     args.push(string_ids::int_32);
                     args.push(town->num_stations);
 
-                    gfx::drawString_494BBF(*dpi, 350, yPos, 68, colour::black, text_colour_id, &args);
+                    gfx::drawString_494BBF(*dpi, 350, yPos, 68, Colour::black, text_colour_id, &args);
                 }
                 yPos += rowHeight;
             }
@@ -214,7 +214,7 @@ namespace OpenLoco::ui::windows::town_list
                 args.push(string_ids::status_towns_plural);
             args.push(self->var_83C);
 
-            gfx::drawString_494B3F(*dpi, xPos, yPos, colour::black, string_ids::black_stringid, &args);
+            gfx::drawString_494B3F(*dpi, xPos, yPos, Colour::black, string_ids::black_stringid, &args);
         }
 
         // 0x0049A27F
@@ -627,9 +627,9 @@ namespace OpenLoco::ui::windows::town_list
             self->draw(dpi);
             common::drawTabs(self, dpi);
 
-            gfx::drawString_494B3F(*dpi, self->x + 3, self->y + self->widgets[widx::current_size].top + 1, colour::black, string_ids::town_size_label);
+            gfx::drawString_494B3F(*dpi, self->x + 3, self->y + self->widgets[widx::current_size].top + 1, Colour::black, string_ids::town_size_label);
 
-            gfx::drawString_494B3F(*dpi, self->x + 3, self->y + self->height - 13, colour::black, string_ids::select_town_size);
+            gfx::drawString_494B3F(*dpi, self->x + 3, self->y + self->height - 13, Colour::black, string_ids::select_town_size);
         }
 
         // 0x0049A675
@@ -838,7 +838,7 @@ namespace OpenLoco::ui::windows::town_list
 
             auto buildingObj = objectmgr::get<building_object>(buildingId);
 
-            gfx::drawString_494BBF(*dpi, self->x + 3, self->y + self->height - 13, self->width - 19, colour::black, string_ids::black_stringid, &buildingObj->name);
+            gfx::drawString_494BBF(*dpi, self->x + 3, self->y + self->height - 13, self->width - 19, Colour::black, string_ids::black_stringid, &buildingObj->name);
         }
 
         // 0x0049AB31
@@ -1062,7 +1062,7 @@ namespace OpenLoco::ui::windows::town_list
         // 0x0049AA1C
         static void drawScroll(ui::window* self, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
         {
-            auto shade = colour::getShade(self->colours[1], 3);
+            auto shade = Colour::getShade(self->colours[1], 3);
             gfx::clearSingle(*dpi, shade);
 
             uint16_t xPos = 0;
@@ -1073,12 +1073,12 @@ namespace OpenLoco::ui::windows::town_list
                 {
                     if (self->row_info[i] == self->var_846)
                     {
-                        gfx::drawRectInset(dpi, xPos, yPos, 112, 112, self->colours[1], colour::translucent_flag);
+                        gfx::drawRectInset(dpi, xPos, yPos, 112, 112, self->colours[1], Colour::translucent_flag);
                     }
                 }
                 else
                 {
-                    gfx::drawRectInset(dpi, xPos, yPos, 112, 112, self->colours[1], (colour::translucent_flag | colour::outline_flag));
+                    gfx::drawRectInset(dpi, xPos, yPos, 112, 112, self->colours[1], (Colour::translucent_flag | Colour::outline_flag));
                 }
 
                 auto buildingObj = objectmgr::get<building_object>(self->row_info[i]);

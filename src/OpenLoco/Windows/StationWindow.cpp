@@ -133,7 +133,7 @@ namespace OpenLoco::ui::windows::station
             const auto x = self->x + widget.left - 1;
             const auto y = self->y + widget.top - 1;
             const auto width = widget.width() - 1;
-            gfx::drawString_494BBF(*dpi, x, y, width, colour::black, string_ids::black_stringid, &args);
+            gfx::drawString_494BBF(*dpi, x, y, width, Colour::black, string_ids::black_stringid, &args);
         }
 
         // 0x0048E4D4
@@ -409,7 +409,7 @@ namespace OpenLoco::ui::windows::station
             const auto y = self->y + widget.top - 1;
             const auto width = widget.width();
 
-            gfx::drawString_494BBF(*dpi, x, y, width, colour::black, string_ids::buffer_1250);
+            gfx::drawString_494BBF(*dpi, x, y, width, Colour::black, string_ids::buffer_1250);
         }
 
         // 0x0048EB0B
@@ -476,7 +476,7 @@ namespace OpenLoco::ui::windows::station
         // 0x0048E986
         static void drawScroll(window* self, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
         {
-            gfx::clearSingle(*dpi, colour::getShade(self->colours[1], 4));
+            gfx::clearSingle(*dpi, Colour::getShade(self->colours[1], 4));
 
             const auto station = stationmgr::get(self->number);
             int16_t y = 1;
@@ -523,7 +523,7 @@ namespace OpenLoco::ui::windows::station
                 const auto& widget = self->widgets[widx::scrollview];
                 auto xPos = widget.width() - 14;
 
-                gfx::drawString_494C78(*dpi, xPos, y, colour::outline(colour::black), cargoStr, &args);
+                gfx::drawString_494C78(*dpi, xPos, y, Colour::outline(Colour::black), cargoStr, &args);
                 y += 10;
                 if (cargo.origin != self->number)
                 {
@@ -532,7 +532,7 @@ namespace OpenLoco::ui::windows::station
                     args2.push(originStation->name);
                     args2.push(originStation->town);
 
-                    gfx::drawString_494C78(*dpi, xPos, y, colour::outline(colour::black), string_ids::station_cargo_en_route_end, &args2);
+                    gfx::drawString_494C78(*dpi, xPos, y, Colour::outline(Colour::black), string_ids::station_cargo_en_route_end, &args2);
                     y += 10;
                 }
                 y += 2;
@@ -547,7 +547,7 @@ namespace OpenLoco::ui::windows::station
             {
                 auto args = FormatArguments();
                 args.push(string_ids::nothing_waiting);
-                gfx::drawString_494B3F(*dpi, 1, 0, colour::black, string_ids::black_stringid, &args);
+                gfx::drawString_494B3F(*dpi, 1, 0, Colour::black, string_ids::black_stringid, &args);
             }
         }
 
@@ -680,7 +680,7 @@ namespace OpenLoco::ui::windows::station
         // 0x0048ED2F
         static void drawScroll(window* self, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
         {
-            gfx::clearSingle(*dpi, colour::getShade(self->colours[1], 4));
+            gfx::clearSingle(*dpi, Colour::getShade(self->colours[1], 4));
 
             const auto station = stationmgr::get(self->number);
             int16_t y = 0;
@@ -698,13 +698,13 @@ namespace OpenLoco::ui::windows::station
                 gfx::drawString_494BBF(*dpi, 1, y, 98, 0, string_ids::wcolour2_stringid, &cargoObj->name);
 
                 auto rating = cargo.rating;
-                auto colour = colour::moss_green;
+                auto colour = Colour::moss_green;
                 if (rating < 100)
                 {
-                    colour = colour::dark_olive_green;
+                    colour = Colour::dark_olive_green;
                     if (rating < 50)
                     {
-                        colour = colour::saturated_red;
+                        colour = Colour::saturated_red;
                     }
                 }
 
@@ -1002,16 +1002,16 @@ namespace OpenLoco::ui::windows::station
                     {
                         gfx::fillRect(dpi, xOffset, yOffset, xOffset + 22, yOffset + 1, (1 << 25) | palette_index::index_30);
 
-                        auto ratingColour = colour::moss_green;
+                        auto ratingColour = Colour::moss_green;
                         if (cargo.rating < 100)
                         {
-                            ratingColour = colour::dark_olive_green;
+                            ratingColour = Colour::dark_olive_green;
                             if (cargo.rating < 50)
-                                ratingColour = colour::saturated_red;
+                                ratingColour = Colour::saturated_red;
                         }
 
                         auto ratingBarLength = (cargo.rating * 30) / 256;
-                        gfx::fillRect(dpi, xOffset, yOffset, xOffset - 1 + ratingBarLength, yOffset + 1, colour::getShade(ratingColour, 6));
+                        gfx::fillRect(dpi, xOffset, yOffset, xOffset - 1 + ratingBarLength, yOffset + 1, Colour::getShade(ratingColour, 6));
 
                         yOffset += 3;
                         totalRatingBars++;

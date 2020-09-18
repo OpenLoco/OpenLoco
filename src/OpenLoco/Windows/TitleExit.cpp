@@ -51,8 +51,8 @@ namespace OpenLoco::ui::windows
 
         window->initScrollWidgets();
 
-        window->colours[0] = colour::translucent(colour::saturated_green);
-        window->colours[1] = colour::translucent(colour::saturated_green);
+        window->colours[0] = Colour::translucent(Colour::saturated_green);
+        window->colours[1] = Colour::translucent(Colour::saturated_green);
 
         return window;
     }
@@ -74,7 +74,7 @@ namespace OpenLoco::ui::windows
         int16_t x = window->x + window->width / 2;
         int16_t y = window->y + window->widgets[widx::exit_button].top + 8;
         gfx::point_t origin = { x, y };
-        gfx::drawStringCentredWrapped(dpi, &origin, window->width, colour::black, string_ids::title_exit_game);
+        gfx::drawStringCentredWrapped(dpi, &origin, window->width, Colour::black, string_ids::title_exit_game);
     }
 
     // 0x00439268

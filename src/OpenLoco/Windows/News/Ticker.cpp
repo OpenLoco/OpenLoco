@@ -169,11 +169,11 @@ namespace OpenLoco::ui::NewsWindow::ticker
         if (clipped == nullptr)
             return;
 
-        auto colour = colour::getShade(colour::white, 5);
+        auto colour = Colour::getShade(Colour::white, 5);
 
         if (!(_word_4F8BE4[news->type] & (1 << 1)))
         {
-            colour = colour::getShade(colour::salmon_pink, 5);
+            colour = Colour::getShade(Colour::salmon_pink, 5);
         }
 
         gfx::clearSingle(*clipped, colour);

@@ -1906,7 +1906,7 @@ namespace OpenLoco::ui::windows::construction::construction
         auto y = self->widgets[widx::construct].bottom + self->y - 23;
 
         if (_constructionHover != 1)
-            gfx::drawStringCentred(*dpi, x, y, colour::black, string_ids::build_this);
+            gfx::drawStringCentred(*dpi, x, y, Colour::black, string_ids::build_this);
 
         y += 11;
 
@@ -1916,7 +1916,7 @@ namespace OpenLoco::ui::windows::construction::construction
             {
                 auto args = FormatArguments();
                 args.push<uint32_t>(_trackCost);
-                gfx::drawStringCentred(*dpi, x, y, colour::black, string_ids::build_cost, &args);
+                gfx::drawStringCentred(*dpi, x, y, Colour::black, string_ids::build_cost, &args);
             }
         }
     }

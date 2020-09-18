@@ -106,8 +106,8 @@ namespace OpenLoco::ui::TimePanel
         auto skin = objectmgr::get<interface_skin_object>();
         if (skin != nullptr)
         {
-            window->colours[0] = colour::translucent(skin->colour_17);
-            window->colours[1] = colour::translucent(skin->colour_17);
+            window->colours[0] = Colour::translucent(skin->colour_17);
+            window->colours[1] = Colour::translucent(skin->colour_17);
         }
 
         return window;
@@ -195,10 +195,10 @@ namespace OpenLoco::ui::TimePanel
             }
         }
 
-        colour_t c = colour::opaque(self->colours[0]);
+        colour_t c = Colour::opaque(self->colours[0]);
         if (input::isHovering(WindowType::timeToolbar, 0, widx::date_btn))
         {
-            c = colour::white;
+            c = Colour::white;
         }
         gfx::drawStringCentred(*dpi, self->x + _widgets[widx::date_btn].mid_x(), self->y + _widgets[widx::date_btn].top + 1, c, format, &*_common_format_args);
 

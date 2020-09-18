@@ -198,8 +198,8 @@ namespace OpenLoco::ui::prompt_browse
             addr<0x009DA285, uint8_t>() = 0;
             sub_4CEB67(addr<0x0050ADAC, int16_t>() - addr<0x0050ADAA, int16_t>());
 
-            window->colours[0] = colour::black;
-            window->colours[1] = colour::saturated_green;
+            window->colours[0] = Colour::black;
+            window->colours[1] = Colour::saturated_green;
 
             WindowManager::setCurrentModalType(WindowType::fileBrowserPrompt);
             promptTickLoop(
@@ -442,14 +442,14 @@ namespace OpenLoco::ui::prompt_browse
 
         // Company
         setCommonArgsStringptr(saveInfo.company);
-        y = gfx::drawString_495224(dpi, x, y, maxWidth, colour::black, string_ids::window_browse_company, _commonFormatArgs);
+        y = gfx::drawString_495224(dpi, x, y, maxWidth, Colour::black, string_ids::window_browse_company, _commonFormatArgs);
 
         // Owner
         setCommonArgsStringptr(saveInfo.owner);
-        y = gfx::drawString_495224(dpi, x, y, maxWidth, colour::black, string_ids::owner_label, _commonFormatArgs);
+        y = gfx::drawString_495224(dpi, x, y, maxWidth, Colour::black, string_ids::owner_label, _commonFormatArgs);
 
         // Date
-        y = gfx::drawString_495224(dpi, x, y, maxWidth, colour::black, string_ids::window_browse_date, &saveInfo.date);
+        y = gfx::drawString_495224(dpi, x, y, maxWidth, Colour::black, string_ids::window_browse_date, &saveInfo.date);
 
         // Challenge progress
         auto flags = saveInfo.challenge_flags;
@@ -466,7 +466,7 @@ namespace OpenLoco::ui::prompt_browse
                     progress = saveInfo.challenge_progress;
                 }
             }
-            gfx::drawString_495224(dpi, x, y, maxWidth, colour::black, stringId, &progress);
+            gfx::drawString_495224(dpi, x, y, maxWidth, Colour::black, stringId, &progress);
         }
     }
 
@@ -544,7 +544,7 @@ namespace OpenLoco::ui::prompt_browse
         static std::string _nameBuffer;
 
         // Background
-        gfx::clearSingle(*dpi, colour::getShade(window->colours[1], 4));
+        gfx::clearSingle(*dpi, Colour::getShade(window->colours[1], 4));
 
         // Directories / files
         auto y = 0;

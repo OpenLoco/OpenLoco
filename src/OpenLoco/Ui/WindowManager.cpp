@@ -1168,10 +1168,10 @@ namespace OpenLoco::ui::WindowManager
 
         loco_global<uint8_t[4], 0x1136594> windowColours;
         // Text colouring
-        windowColours[0] = colour::opaque(w->colours[0]);
-        windowColours[1] = colour::opaque(w->colours[1]);
-        windowColours[2] = colour::opaque(w->colours[2]);
-        windowColours[3] = colour::opaque(w->colours[3]);
+        windowColours[0] = Colour::opaque(w->colours[0]);
+        windowColours[1] = Colour::opaque(w->colours[1]);
+        windowColours[2] = Colour::opaque(w->colours[2]);
+        windowColours[3] = Colour::opaque(w->colours[3]);
 
         w->callPrepareDraw();
         w->callDraw(&dpi);

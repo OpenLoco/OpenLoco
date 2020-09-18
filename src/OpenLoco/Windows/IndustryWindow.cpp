@@ -147,7 +147,7 @@ namespace OpenLoco::ui::windows::industry
             auto x = self->x + widget->left - 1;
             auto y = self->y + widget->top - 1;
             auto width = widget->width();
-            gfx::drawString_494BBF(*dpi, x, y, width, colour::black, string_ids::black_stringid, &args);
+            gfx::drawString_494BBF(*dpi, x, y, width, Colour::black, string_ids::black_stringid, &args);
         }
 
         // 0x00455C86
@@ -464,7 +464,7 @@ namespace OpenLoco::ui::windows::industry
             {
                 origin.x += 4;
                 origin.y += 10;
-                gfx::drawString_494B3F(*dpi, xPos, yPos, colour::black, string_ids::received_cargo);
+                gfx::drawString_494B3F(*dpi, xPos, yPos, Colour::black, string_ids::received_cargo);
 
                 auto cargoNumber = 0;
                 for (const auto& receivedCargoType : industryObj->required_cargo_type)
@@ -484,7 +484,7 @@ namespace OpenLoco::ui::windows::industry
                         }
                         args.push<uint32_t>(industry->required_cargo_quantity[cargoNumber]);
 
-                        origin.y = gfx::drawString_495224(*dpi, origin.x, origin.y, 290, colour::black, string_ids::black_stringid, &args);
+                        origin.y = gfx::drawString_495224(*dpi, origin.x, origin.y, 290, Colour::black, string_ids::black_stringid, &args);
                     }
                     cargoNumber++;
                 }
@@ -495,7 +495,7 @@ namespace OpenLoco::ui::windows::industry
             // Draw Last Months produced cargo stats
             if (industry->canProduceCargo())
             {
-                gfx::drawString_494B3F(*dpi, origin.x, origin.y, colour::black, string_ids::produced_cargo);
+                gfx::drawString_494B3F(*dpi, origin.x, origin.y, Colour::black, string_ids::produced_cargo);
                 origin.y += 10;
                 origin.x += 4;
 
@@ -518,7 +518,7 @@ namespace OpenLoco::ui::windows::industry
                         args.push<uint32_t>(industry->produced_cargo_quantity[cargoNumber]);
                         args.push<uint16_t>(industry->produced_cargo_transported[cargoNumber]);
 
-                        origin.y = gfx::drawString_495224(*dpi, origin.x, origin.y, 290, colour::black, string_ids::transported_cargo, &args);
+                        origin.y = gfx::drawString_495224(*dpi, origin.x, origin.y, 290, Colour::black, string_ids::transported_cargo, &args);
                     }
                     cargoNumber++;
                 }
@@ -593,7 +593,7 @@ namespace OpenLoco::ui::windows::industry
                 int16_t x = self->x + 2;
                 int16_t y = self->y - 24 + 68;
 
-                gfx::drawString_494B3F(*dpi, x, y, colour::black, string_ids::production_graph_label, &args);
+                gfx::drawString_494B3F(*dpi, x, y, Colour::black, string_ids::production_graph_label, &args);
             }
 
             // Draw Y label and grid lines.
@@ -604,9 +604,9 @@ namespace OpenLoco::ui::windows::industry
                 auto args = FormatArguments();
                 args.push(yTick);
 
-                gfx::drawRect(dpi, self->x + 41, yPos, 239, 1, colour::getShade(self->colours[1], 4));
+                gfx::drawRect(dpi, self->x + 41, yPos, 239, 1, Colour::getShade(self->colours[1], 4));
 
-                gfx::drawString_494C78(*dpi, self->x + 39, yPos - 6, colour::black, string_ids::population_graph_people, &args);
+                gfx::drawString_494C78(*dpi, self->x + 39, yPos - 6, Colour::black, string_ids::population_graph_people, &args);
 
                 yTick += 1000;
             }
@@ -631,10 +631,10 @@ namespace OpenLoco::ui::windows::industry
                         auto args = FormatArguments();
                         args.push(year);
 
-                        gfx::drawStringCentred(*dpi, xPos, yPos, colour::black, string_ids::population_graph_year, &args);
+                        gfx::drawStringCentred(*dpi, xPos, yPos, Colour::black, string_ids::population_graph_year, &args);
                     }
 
-                    gfx::drawRect(dpi, xPos, yPos + 11, 1, self->height - 74, colour::getShade(self->colours[1], 4));
+                    gfx::drawRect(dpi, xPos, yPos + 11, 1, self->height - 74, Colour::getShade(self->colours[1], 4));
                 }
 
                 const auto history = productionTabWidx == widx::tab_production ? industry->history_1 : industry->history_2;
@@ -649,7 +649,7 @@ namespace OpenLoco::ui::windows::industry
                     {
                         if (yPos2 <= graphBottom)
                         {
-                            gfx::drawLine(dpi, xPos, yPos1, xPos + 1, yPos2, colour::getShade(self->colours[1], 7));
+                            gfx::drawLine(dpi, xPos, yPos1, xPos + 1, yPos2, Colour::getShade(self->colours[1], 7));
                         }
                     }
                 }

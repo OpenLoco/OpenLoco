@@ -179,7 +179,7 @@ namespace OpenLoco::ui::windows::LandscapeGeneration
                 *dpi,
                 window->x + 10,
                 window->y + window->widgets[widx::start_year].top,
-                colour::black,
+                Colour::black,
                 string_ids::start_year);
         }
 
@@ -378,28 +378,28 @@ namespace OpenLoco::ui::windows::LandscapeGeneration
                 *dpi,
                 window->x + 10,
                 window->y + window->widgets[widx::sea_level].top,
-                colour::black,
+                Colour::black,
                 string_ids::sea_level);
 
             gfx::drawString_494B3F(
                 *dpi,
                 window->x + 10,
                 window->y + window->widgets[widx::min_land_height].top,
-                colour::black,
+                Colour::black,
                 string_ids::min_land_height);
 
             gfx::drawString_494B3F(
                 *dpi,
                 window->x + 10,
                 window->y + window->widgets[widx::topography_style].top,
-                colour::black,
+                Colour::black,
                 string_ids::topography_style);
 
             gfx::drawString_494B3F(
                 *dpi,
                 window->x + 10,
                 window->y + window->widgets[widx::hill_density].top,
-                colour::black,
+                Colour::black,
                 string_ids::hill_density);
         }
 
@@ -431,7 +431,7 @@ namespace OpenLoco::ui::windows::LandscapeGeneration
 
                 // Draw land description.
                 commonFormatArgs[0] = landObject->name;
-                gfx::drawString_494BBF(*dpi, 24, yPos + 5, 121, colour::black, string_ids::wcolour2_stringid, &*commonFormatArgs);
+                gfx::drawString_494BBF(*dpi, 24, yPos + 5, 121, Colour::black, string_ids::wcolour2_stringid, &*commonFormatArgs);
 
                 // Draw rectangle.
                 gfx::fillRectInset(dpi, 150, yPos + 5, 340, yPos + 16, window->colours[1], 0b110000);
@@ -439,14 +439,14 @@ namespace OpenLoco::ui::windows::LandscapeGeneration
                 // Draw current distribution setting.
                 const string_id distributionId = landDistributionLabelIds[s5::getOptions().landDistributionPatterns[i]];
                 commonFormatArgs[0] = distributionId;
-                gfx::drawString_494BBF(*dpi, 151, yPos + 5, 177, colour::black, string_ids::black_stringid, &*commonFormatArgs);
+                gfx::drawString_494BBF(*dpi, 151, yPos + 5, 177, Colour::black, string_ids::black_stringid, &*commonFormatArgs);
 
                 // Draw rectangle (knob).
                 const uint8_t flags = window->row_hover == i ? 0b110000 : 0;
                 gfx::fillRectInset(dpi, 329, yPos + 6, 339, yPos + 15, window->colours[1], flags);
 
                 // Draw triangle (knob).
-                gfx::drawString_494B3F(*dpi, 330, yPos + 6, colour::black, string_ids::dropdown, nullptr);
+                gfx::drawString_494B3F(*dpi, 330, yPos + 6, Colour::black, string_ids::dropdown, nullptr);
 
                 yPos += rowHeight;
             }
@@ -726,56 +726,56 @@ namespace OpenLoco::ui::windows::LandscapeGeneration
                 *dpi,
                 window->x + 10,
                 window->y + window->widgets[widx::number_of_forests].top,
-                colour::black,
+                Colour::black,
                 string_ids::number_of_forests);
 
             gfx::drawString_494B3F(
                 *dpi,
                 window->x + 10,
                 window->y + window->widgets[widx::min_forest_radius].top,
-                colour::black,
+                Colour::black,
                 string_ids::min_forest_radius);
 
             gfx::drawString_494B3F(
                 *dpi,
                 window->x + 10,
                 window->y + window->widgets[widx::max_forest_radius].top,
-                colour::black,
+                Colour::black,
                 string_ids::max_forest_radius);
 
             gfx::drawString_494B3F(
                 *dpi,
                 window->x + 10,
                 window->y + window->widgets[widx::min_forest_density].top,
-                colour::black,
+                Colour::black,
                 string_ids::min_forest_density);
 
             gfx::drawString_494B3F(
                 *dpi,
                 window->x + 10,
                 window->y + window->widgets[widx::max_forest_density].top,
-                colour::black,
+                Colour::black,
                 string_ids::max_forest_density);
 
             gfx::drawString_494B3F(
                 *dpi,
                 window->x + 10,
                 window->y + window->widgets[widx::number_random_trees].top,
-                colour::black,
+                Colour::black,
                 string_ids::number_random_trees);
 
             gfx::drawString_494B3F(
                 *dpi,
                 window->x + 10,
                 window->y + window->widgets[widx::min_altitude_for_trees].top,
-                colour::black,
+                Colour::black,
                 string_ids::min_altitude_for_trees);
 
             gfx::drawString_494B3F(
                 *dpi,
                 window->x + 10,
                 window->y + window->widgets[widx::max_altitude_for_trees].top,
-                colour::black,
+                Colour::black,
                 string_ids::max_altitude_for_trees);
         }
 
@@ -965,14 +965,14 @@ namespace OpenLoco::ui::windows::LandscapeGeneration
                 *dpi,
                 window->x + 10,
                 window->y + window->widgets[widx::number_of_towns].top,
-                colour::black,
+                Colour::black,
                 string_ids::number_of_towns);
 
             gfx::drawString_494B3F(
                 *dpi,
                 window->x + 10,
                 window->y + window->widgets[widx::max_town_size].top,
-                colour::black,
+                Colour::black,
                 string_ids::max_town_size);
         }
 
@@ -1107,7 +1107,7 @@ namespace OpenLoco::ui::windows::LandscapeGeneration
                 *dpi,
                 window->x + 10,
                 window->y + window->widgets[widx::num_industries].top,
-                colour::black,
+                Colour::black,
                 string_ids::number_of_industries);
         }
 

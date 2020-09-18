@@ -5,7 +5,7 @@
 
 using namespace OpenLoco::interop;
 
-namespace OpenLoco::colour
+namespace OpenLoco::Colour
 {
 
     loco_global<uint8_t[32][8], 0x01136BA0> _colour_map_a;

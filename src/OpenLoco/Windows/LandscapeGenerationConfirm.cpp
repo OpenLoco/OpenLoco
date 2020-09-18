@@ -44,7 +44,7 @@ namespace OpenLoco::ui::windows::LandscapeGenerationConfirm
         *commonFormatArgs = prompt;
 
         auto origin = gfx::point_t(window->x + (window->width / 2), window->y + 41);
-        gfx::drawStringCentredWrapped(dpi, &origin, window->width, colour::black, string_ids::wcolour2_stringid, (const char*)&*commonFormatArgs);
+        gfx::drawStringCentredWrapped(dpi, &origin, window->width, Colour::black, string_ids::wcolour2_stringid, (const char*)&*commonFormatArgs);
     }
 
     // 0x004C18E4
@@ -85,8 +85,8 @@ namespace OpenLoco::ui::windows::LandscapeGenerationConfirm
             window->widgets = widgets;
             window->enabled_widgets = (1 << widx::close_button) | (1 << widx::button_ok) | (1 << widx::button_cancel);
             window->initScrollWidgets();
-            window->colours[0] = colour::translucent(colour::salmon_pink);
-            window->colours[1] = colour::translucent(colour::salmon_pink);
+            window->colours[0] = Colour::translucent(Colour::salmon_pink);
+            window->colours[1] = Colour::translucent(Colour::salmon_pink);
             window->flags |= window_flags::transparent;
 
             // TODO(avgeffen): only needs to be called once.

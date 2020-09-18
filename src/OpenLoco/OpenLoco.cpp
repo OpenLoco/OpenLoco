@@ -300,7 +300,7 @@ namespace OpenLoco
         _mapTooltipFormatArguments = string_ids::null;
         _mapTooltipOwner = company_id::null;
 
-        colour::initColourMap();
+        Colour::initColourMap();
         ui::WindowManager::init();
         ui::viewportmgr::init();
 

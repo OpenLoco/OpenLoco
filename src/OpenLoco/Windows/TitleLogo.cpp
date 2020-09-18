@@ -45,8 +45,8 @@ namespace OpenLoco::ui::windows
 
         window->initScrollWidgets();
 
-        window->colours[0] = colour::translucent(colour::grey);
-        window->colours[1] = colour::translucent(colour::grey);
+        window->colours[0] = Colour::translucent(Colour::grey);
+        window->colours[1] = Colour::translucent(Colour::grey);
 
         return window;
     }

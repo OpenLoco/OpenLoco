@@ -144,7 +144,7 @@ namespace OpenLoco::ui::windows::town
             const auto x = self->x + widget.left - 1;
             const auto y = self->y + widget.top - 1;
             const auto width = widget.width() - 1;
-            gfx::drawString_494BBF(*dpi, x, y, width, colour::black, string_ids::status_town_population, &args);
+            gfx::drawString_494BBF(*dpi, x, y, width, Colour::black, string_ids::status_town_population, &args);
         }
 
         // 0x00499079
@@ -424,9 +424,9 @@ namespace OpenLoco::ui::windows::town
                 args.push(yTick);
 
                 const uint16_t xPos = 39;
-                gfx::drawRect(clipped, xPos, yPos, 241, 1, colour::getShade(self->colours[1], 4));
+                gfx::drawRect(clipped, xPos, yPos, 241, 1, Colour::getShade(self->colours[1], 4));
 
-                gfx::drawString_494C78(*clipped, xPos, yPos - 6, colour::black, string_ids::population_graph_people, &args);
+                gfx::drawString_494C78(*clipped, xPos, yPos - 6, Colour::black, string_ids::population_graph_people, &args);
 
                 yTick += 1000;
             }
@@ -448,10 +448,10 @@ namespace OpenLoco::ui::windows::town
                         auto args = FormatArguments();
                         args.push(year);
 
-                        gfx::drawStringCentred(*clipped, xPos, yPos, colour::black, string_ids::population_graph_year, &args);
+                        gfx::drawStringCentred(*clipped, xPos, yPos, Colour::black, string_ids::population_graph_year, &args);
                     }
 
-                    gfx::drawRect(clipped, xPos, 11, 1, self->height - 66, colour::getShade(self->colours[1], 4));
+                    gfx::drawRect(clipped, xPos, 11, 1, self->height - 66, Colour::getShade(self->colours[1], 4));
                 }
 
                 // Draw population graph
@@ -460,7 +460,7 @@ namespace OpenLoco::ui::windows::town
 
                 // Do not draw current segment yet; it may be zeroed.
                 if (i < town->history_size - 1)
-                    gfx::drawLine(clipped, xPos, yPos1, xPos + 1, yPos2, colour::getShade(self->colours[1], 7));
+                    gfx::drawLine(clipped, xPos, yPos1, xPos + 1, yPos2, Colour::getShade(self->colours[1], 7));
 
                 month--;
                 if (month < 0)
@@ -538,7 +538,7 @@ namespace OpenLoco::ui::windows::town
 
             uint16_t xPos = self->x + 4;
             uint16_t yPos = self->y + 46;
-            gfx::drawString_494B3F(*dpi, xPos, yPos, colour::black, string_ids::local_authority_ratings_transport_companies);
+            gfx::drawString_494B3F(*dpi, xPos, yPos, Colour::black, string_ids::local_authority_ratings_transport_companies);
 
             xPos += 4;
             yPos += 14;
@@ -567,7 +567,7 @@ namespace OpenLoco::ui::windows::town
                 args.push(rating);
                 args.push(rank);
 
-                gfx::drawString_494BBF(*dpi, xPos, yPos, self->width - 12, colour::black, string_ids::town_rating_company_percentage_rank, &args);
+                gfx::drawString_494BBF(*dpi, xPos, yPos, self->width - 12, Colour::black, string_ids::town_rating_company_percentage_rank, &args);
 
                 yPos += 10;
             }

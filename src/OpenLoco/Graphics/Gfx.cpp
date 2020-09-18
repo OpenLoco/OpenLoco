@@ -386,19 +386,19 @@ namespace OpenLoco::gfx
                 case control_codes::window_colour_1:
                 {
                     int hue = _windowColours[0];
-                    setTextColours(colour::getShade(hue, 7), palette_index::index_0A, palette_index::index_0A);
+                    setTextColours(Colour::getShade(hue, 7), palette_index::index_0A, palette_index::index_0A);
                     break;
                 }
                 case control_codes::window_colour_2:
                 {
                     int hue = _windowColours[1];
-                    setTextColours(colour::getShade(hue, 9), palette_index::index_0A, palette_index::index_0A);
+                    setTextColours(Colour::getShade(hue, 9), palette_index::index_0A, palette_index::index_0A);
                     break;
                 }
                 case control_codes::window_colour_3:
                 {
                     int hue = _windowColours[2];
-                    setTextColours(colour::getShade(hue, 9), palette_index::index_0A, palette_index::index_0A);
+                    setTextColours(Colour::getShade(hue, 9), palette_index::index_0A, palette_index::index_0A);
                     break;
                 }
 
@@ -557,9 +557,9 @@ namespace OpenLoco::gfx
         }
 
         _textColours[0] = palette_index::transparent;
-        _textColours[1] = colour::getShade(colour::dark_purple, 5);
-        _textColours[2] = colour::getShade(colour::bright_pink, 5);
-        _textColours[3] = colour::getShade(colour::light_blue, 5);
+        _textColours[1] = Colour::getShade(Colour::dark_purple, 5);
+        _textColours[2] = Colour::getShade(Colour::bright_pink, 5);
+        _textColours[3] = Colour::getShade(Colour::light_blue, 5);
 
         if (colour & format_flags::textflag_5)
         {
@@ -577,26 +577,26 @@ namespace OpenLoco::gfx
         {
             if ((_currentFontFlags & text_draw_flags::dark) != 0 && (_currentFontFlags & text_draw_flags::extra_dark) != 0)
             {
-                _textColours[1] = colour::getShade(colour, 2);
+                _textColours[1] = Colour::getShade(colour, 2);
                 _textColours[2] = palette_index::transparent;
-                _textColours[3] = colour::getShade(colour, 4);
+                _textColours[3] = Colour::getShade(colour, 4);
             }
             else if ((_currentFontFlags & text_draw_flags::dark) != 0)
             {
-                _textColours[1] = colour::getShade(colour, 3);
+                _textColours[1] = Colour::getShade(colour, 3);
                 _textColours[2] = palette_index::transparent;
-                _textColours[3] = colour::getShade(colour, 5);
+                _textColours[3] = Colour::getShade(colour, 5);
             }
             else
             {
-                _textColours[1] = colour::getShade(colour, 4);
+                _textColours[1] = Colour::getShade(colour, 4);
                 _textColours[2] = palette_index::transparent;
-                _textColours[3] = colour::getShade(colour, 6);
+                _textColours[3] = Colour::getShade(colour, 6);
             }
         }
         else
         {
-            setTextColours(colour::getShade(colour, 9), palette_index::index_0A, palette_index::index_0A);
+            setTextColours(Colour::getShade(colour, 9), palette_index::index_0A, palette_index::index_0A);
         }
 
         return loopNewline(context, origin, (uint8_t*)str);

@@ -7,7 +7,7 @@ namespace OpenLoco
     using colour_t = uint8_t;
     using palette_index_t = uint8_t;
 
-    namespace colour
+    namespace Colour
     {
         constexpr uint8_t outline_flag = 1 << 5;
         constexpr uint8_t inset_flag = 1 << 6;

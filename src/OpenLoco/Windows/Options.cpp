@@ -595,26 +595,26 @@ namespace OpenLoco::ui::options
 
             int16_t x = w->x + 10;
             int16_t y = w->y + display::_widgets[display::widx::screen_mode].top + 1;
-            drawString_494B3F(*dpi, x, y, colour::black, string_ids::options_screen_mode, nullptr);
+            drawString_494B3F(*dpi, x, y, Colour::black, string_ids::options_screen_mode, nullptr);
 
             y = w->y + display::_widgets[display::widx::display_resolution].top + 1;
-            drawString_494B3F(*dpi, x + 14, y, colour::black, string_ids::display_resolution, nullptr);
+            drawString_494B3F(*dpi, x + 14, y, Colour::black, string_ids::display_resolution, nullptr);
 
             y = w->y + display::_widgets[display::widx::construction_marker].top + 1;
-            drawString_494B3F(*dpi, x, y, colour::black, string_ids::construction_marker, nullptr);
+            drawString_494B3F(*dpi, x, y, Colour::black, string_ids::construction_marker, nullptr);
 
             y = w->y + display::_widgets[display::widx::vehicles_min_scale].top + 1;
-            drawString_494B3F(*dpi, x, y, colour::black, string_ids::vehicles_min_scale, nullptr);
+            drawString_494B3F(*dpi, x, y, Colour::black, string_ids::vehicles_min_scale, nullptr);
 
             y = w->y + display::_widgets[display::widx::station_names_min_scale].top + 1;
-            drawString_494B3F(*dpi, x, y, colour::black, string_ids::station_names_min_scale, nullptr);
+            drawString_494B3F(*dpi, x, y, Colour::black, string_ids::station_names_min_scale, nullptr);
 
             y = w->y + display::_widgets[display::widx::display_scale].top + 1;
-            drawString_494B3F(*dpi, x + 14, y, colour::black, string_ids::window_scale_factor, nullptr);
+            drawString_494B3F(*dpi, x + 14, y, Colour::black, string_ids::window_scale_factor, nullptr);
 
             int scale = (int)(config::getNew().scale_factor * 100);
             auto& scale_widget = w->widgets[widx::display_scale];
-            drawString_494B3F(*dpi, w->x + scale_widget.left + 1, w->y + scale_widget.top + 1, colour::black, string_ids::scale_formatted, &scale);
+            drawString_494B3F(*dpi, w->x + scale_widget.left + 1, w->y + scale_widget.top + 1, Colour::black, string_ids::scale_formatted, &scale);
         }
 
         static void applyScreenModeRestrictions(window* w)

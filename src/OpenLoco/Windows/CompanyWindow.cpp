@@ -195,7 +195,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
                     *dpi,
                     self->x + (widget.left + widget.right) / 2,
                     self->y + widget.top - 12,
-                    colour::black,
+                    Colour::black,
                     string_ids::window_owner,
                     nullptr);
             }
@@ -227,7 +227,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
                     dpi,
                     &origin,
                     widget.right - widget.left,
-                    colour::black,
+                    Colour::black,
                     string_ids::black_stringid,
                     &args);
             }
@@ -249,7 +249,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
                     self->x + widget.left - 1,
                     self->y + widget.top - 1,
                     widget.right - widget.left,
-                    colour::black,
+                    Colour::black,
                     string_ids::black_stringid,
                     &args);
             }
@@ -757,21 +757,21 @@ namespace OpenLoco::ui::windows::CompanyWindow
                 FormatArguments args{};
                 args.push<uint16_t>(competitor->intelligence);
                 args.push(aiRatingToLevel(competitor->intelligence));
-                gfx::drawString_494B3F(dpi, x, y, colour::black, string_ids::company_details_intelligence, &args);
+                gfx::drawString_494B3F(dpi, x, y, Colour::black, string_ids::company_details_intelligence, &args);
                 y += 10;
             }
             {
                 FormatArguments args{};
                 args.push<uint16_t>(competitor->agressiveness);
                 args.push(aiRatingToLevel(competitor->agressiveness));
-                gfx::drawString_494B3F(dpi, x, y, colour::black, string_ids::company_details_aggressiveness, &args);
+                gfx::drawString_494B3F(dpi, x, y, Colour::black, string_ids::company_details_aggressiveness, &args);
                 y += 10;
             }
             {
                 FormatArguments args{};
                 args.push<uint16_t>(competitor->competitiveness);
                 args.push(aiRatingToLevel(competitor->competitiveness));
-                gfx::drawString_494B3F(dpi, x, y, colour::black, string_ids::company_details_competitiveness, &args);
+                gfx::drawString_494B3F(dpi, x, y, Colour::black, string_ids::company_details_competitiveness, &args);
                 y += 10;
             }
         }
@@ -800,7 +800,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
             {
                 FormatArguments args{};
                 args.push(company->startedDate);
-                gfx::drawString_494B3F(*dpi, x, y, colour::black, string_ids::company_details_started, &args);
+                gfx::drawString_494B3F(*dpi, x, y, Colour::black, string_ids::company_details_started, &args);
                 y += 10;
             }
 
@@ -817,14 +817,14 @@ namespace OpenLoco::ui::windows::CompanyWindow
                 {
                     formatId = string_ids::company_details_performance_increasing;
                 }
-                gfx::drawString_494B3F(*dpi, x, y, colour::black, formatId, &args);
+                gfx::drawString_494B3F(*dpi, x, y, Colour::black, formatId, &args);
                 y += 25;
             }
 
             {
                 FormatArguments args{};
                 args.push(company->owner_name);
-                gfx::drawString_494BBF(*dpi, x, y, 213, colour::black, string_ids::owner_label, &args);
+                gfx::drawString_494BBF(*dpi, x, y, 213, Colour::black, string_ids::owner_label, &args);
                 y += 10;
             }
 
@@ -842,7 +842,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
                     {
                         FormatArguments args{};
                         args.push(count);
-                        gfx::drawString_494B3F(*dpi, x, y, colour::black, transportTypeCountString[i], &args);
+                        gfx::drawString_494B3F(*dpi, x, y, Colour::black, transportTypeCountString[i], &args);
                         y += 10;
                     }
                 }
@@ -851,7 +851,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
             {
                 x = self->x + (self->widgets[widx::viewport].left + self->widgets[widx::viewport].right) / 2;
                 y = self->y + self->widgets[widx::viewport].top - 12;
-                gfx::drawStringCentred(*dpi, x, y, colour::black, string_ids::headquarters);
+                gfx::drawStringCentred(*dpi, x, y, Colour::black, string_ids::headquarters);
             }
 
             if (company->headquarters_x == -1)
@@ -862,7 +862,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
                     static_cast<int16_t>(self->y + self->widgets[widx::viewport].top + self->widgets[widx::viewport].height() / 2 - 5)
                 };
                 width -= 2;
-                gfx::drawStringCentredWrapped(dpi, &loc, width, colour::black, string_ids::not_yet_constructed);
+                gfx::drawStringCentredWrapped(dpi, &loc, width, Colour::black, string_ids::not_yet_constructed);
             }
 
             if (self->viewports[0] != nullptr)
@@ -1361,7 +1361,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
                 *dpi,
                 x,
                 y,
-                colour::black,
+                Colour::black,
                 string_ids::main_colour_scheme);
 
             // 'Special colour schemes used for'
@@ -1370,7 +1370,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
                 *dpi,
                 x,
                 y,
-                colour::black,
+                Colour::black,
                 string_ids::special_colour_schemes_used_for);
         }
 
@@ -1652,7 +1652,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
                     *dpi,
                     self->x + 5,
                     self->y + 47,
-                    colour::black,
+                    Colour::black,
                     string_ids::expenditure_income,
                     nullptr);
             }
@@ -1683,7 +1683,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
                 // Add zebra stripes to even labels.
                 if (i % 2 == 0)
                 {
-                    auto colour = colour::getShade(self->colours[1], 6) | 0x1000000;
+                    auto colour = Colour::getShade(self->colours[1], 6) | 0x1000000;
                     gfx::fillRect(dpi, self->x + 4, y, self->x + 129, y + 9, colour);
                 }
 
@@ -1693,7 +1693,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
                     *dpi,
                     self->x + 5,
                     y - 1,
-                    colour::black,
+                    Colour::black,
                     string_ids::wcolour2_stringid,
                     &args);
 
@@ -1706,7 +1706,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
                     *dpi,
                     self->x + 7,
                     self->y + self->widgets[widx::current_loan].top,
-                    colour::black,
+                    Colour::black,
                     string_ids::company_current_loan);
             }
 
@@ -1719,7 +1719,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
                     *dpi,
                     self->x + self->widgets[widx::current_loan].right + 3,
                     self->y + self->widgets[widx::current_loan].top + 1,
-                    colour::black,
+                    Colour::black,
                     string_ids::interest_per_year,
                     &args);
             }
@@ -1740,7 +1740,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
                     *dpi,
                     self->x + 7,
                     self->y + self->widgets[widx::current_loan].top + 13,
-                    colour::black,
+                    Colour::black,
                     cash_format,
                     &args);
             }
@@ -1755,7 +1755,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
                     *dpi,
                     self->x + 7,
                     self->y + self->widgets[widx::current_loan].top + 26,
-                    colour::black,
+                    Colour::black,
                     string_ids::company_value,
                     &args);
             }
@@ -1770,7 +1770,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
                     *dpi,
                     self->x + 7,
                     self->y + self->widgets[widx::current_loan].top + 39,
-                    colour::black,
+                    Colour::black,
                     string_ids::profit_from_vehicles,
                     &args);
             }
@@ -1792,7 +1792,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
                 *context,
                 x,
                 y,
-                colour::black,
+                Colour::black,
                 format,
                 &args);
             y += 14;
@@ -1825,7 +1825,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
                         *context,
                         x,
                         y,
-                        colour::black,
+                        Colour::black,
                         mainFormat,
                         &args);
                 }
@@ -1850,9 +1850,9 @@ namespace OpenLoco::ui::windows::CompanyWindow
 
             y += 4;
 
-            gfx::drawString_494C78(*context, x, y, colour::black, mainFormat, &args);
+            gfx::drawString_494C78(*context, x, y, Colour::black, mainFormat, &args);
 
-            gfx::fillRect(context, x - expenditureColumnWidth + 10, y - 2, x, y - 2, colour::aquamarine);
+            gfx::fillRect(context, x - expenditureColumnWidth + 10, y - 2, x, y - 2, Colour::aquamarine);
         }
 
         // 0x0043361E
@@ -1865,7 +1865,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
                 // Add zebra stripes to even labels.
                 if (i % 2 == 0)
                 {
-                    auto colour = colour::getShade(self->colours[1], 6) | 0x1000000;
+                    auto colour = Colour::getShade(self->colours[1], 6) | 0x1000000;
                     gfx::fillRect(context, 0, y, expenditureColumnWidth * 17, y + 9, colour);
                 }
 
@@ -2128,7 +2128,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
                 *dpi,
                 self->x + 5,
                 y,
-                colour::black,
+                Colour::black,
                 string_ids::cargo_delivered);
 
             y += 10;
@@ -2153,7 +2153,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
                     *dpi,
                     self->x + 10,
                     y,
-                    colour::black,
+                    Colour::black,
                     string_ids::black_stringid,
                     &args);
 
@@ -2168,7 +2168,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
                     *dpi,
                     self->x + 10,
                     y,
-                    colour::black,
+                    Colour::black,
                     string_ids::cargo_delivered_none);
             }
         }

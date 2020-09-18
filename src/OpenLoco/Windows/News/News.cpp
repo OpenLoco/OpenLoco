@@ -552,7 +552,7 @@ namespace OpenLoco::ui::NewsWindow
                 case newsItemSubTypes::company:
                 case newsItemSubTypes::vehicleTab:
                 {
-                    gfx::drawStringCentredClipped(*dpi, x, y, width, colour::black, string_ids::black_tiny_font, &args);
+                    gfx::drawStringCentredClipped(*dpi, x, y, width, Colour::black, string_ids::black_tiny_font, &args);
                     break;
                 }
 
@@ -589,13 +589,13 @@ namespace OpenLoco::ui::NewsWindow
             int16_t y = self->y + 38;
             gfx::point_t origin = { x, y };
 
-            gfx::drawStringCentredWrapped(dpi, &origin, 352, colour::black, string_ids::buffer_2039);
+            gfx::drawStringCentredWrapped(dpi, &origin, 352, Colour::black, string_ids::buffer_2039);
 
             x = self->x + 1;
             y = self->y + 1;
             origin = { x, y };
 
-            gfx::drawString_494B3F(*dpi, &origin, colour::black, string_ids::news_date, &news->date);
+            gfx::drawString_494B3F(*dpi, &origin, Colour::black, string_ids::news_date, &news->date);
 
             self->drawViewports(dpi);
 
@@ -669,12 +669,12 @@ namespace OpenLoco::ui::NewsWindow
             int16_t y = self->y + 38;
             gfx::point_t origin = { x, y };
 
-            gfx::drawStringCentredWrapped(dpi, &origin, 352, colour::black, string_ids::buffer_2039);
+            gfx::drawStringCentredWrapped(dpi, &origin, 352, Colour::black, string_ids::buffer_2039);
 
             origin.x = self->x + 4;
             origin.y = self->y + 5;
 
-            gfx::drawString_494B3F(*dpi, &origin, colour::black, string_ids::news_date, &news->date);
+            gfx::drawString_494B3F(*dpi, &origin, Colour::black, string_ids::news_date, &news->date);
 
             self->drawViewports(dpi);
 
@@ -712,7 +712,7 @@ namespace OpenLoco::ui::NewsWindow
             int16_t y = self->y + 17;
             gfx::point_t origin = { x, y };
 
-            gfx::drawStringCentredWrapped(dpi, &origin, 338, colour::black, string_ids::buffer_2039);
+            gfx::drawStringCentredWrapped(dpi, &origin, 338, Colour::black, string_ids::buffer_2039);
 
             self->drawViewports(dpi);
 

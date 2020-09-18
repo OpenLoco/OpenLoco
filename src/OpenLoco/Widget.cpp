@@ -70,7 +70,7 @@ namespace OpenLoco::ui::widget
             if (input::isPressed(window->type, window->number, widgetIndex))
                 flags = 0x20;
 
-            gfx::drawRectInset(dpi, widget.left + window->x, widget.top + window->y, widget.width(), widget.height(), colour::translucent(window->colours[1]), flags);
+            gfx::drawRectInset(dpi, widget.left + window->x, widget.top + window->y, widget.width(), widget.height(), Colour::translucent(window->colours[1]), flags);
         }
 
         gfx::drawImage(dpi, widget.left + window->x, widget.top + window->y, gfx::recolour(image_ids::centre_viewport, window->colours[1]));
@@ -119,18 +119,18 @@ namespace OpenLoco::ui::widget
 
             image &= 0x7FFFF;
             uint8_t c;
-            if (colour & OpenLoco::colour::translucent_flag)
+            if (colour & OpenLoco::Colour::translucent_flag)
             {
-                c = OpenLoco::colour::getShade(colour & 0x7F, 4);
+                c = OpenLoco::Colour::getShade(colour & 0x7F, 4);
                 gfx::drawImageSolid(dpi, x + 1, y + 1, image, c);
-                c = OpenLoco::colour::getShade(colour & 0x7F, 2);
+                c = OpenLoco::Colour::getShade(colour & 0x7F, 2);
                 gfx::drawImageSolid(dpi, x, y, image, c);
             }
             else
             {
-                c = OpenLoco::colour::getShade(colour & 0x7F, 6);
+                c = OpenLoco::Colour::getShade(colour & 0x7F, 6);
                 gfx::drawImageSolid(dpi, x + 1, y + 1, image, c);
-                c = OpenLoco::colour::getShade(colour & 0x7F, 4);
+                c = OpenLoco::Colour::getShade(colour & 0x7F, 4);
                 gfx::drawImageSolid(dpi, x, y, image, c);
             }
 
@@ -184,11 +184,11 @@ namespace OpenLoco::ui::widget
         uint8_t shade;
         if (window->flags & window_flags::flag_11)
         {
-            shade = OpenLoco::colour::getShade(colour, 3);
+            shade = OpenLoco::Colour::getShade(colour, 3);
         }
         else
         {
-            shade = OpenLoco::colour::getShade(colour, 1);
+            shade = OpenLoco::Colour::getShade(colour, 1);
         }
 
         gfx::fillRect(
@@ -468,7 +468,7 @@ namespace OpenLoco::ui::widget
         int16_t y = widget->top + window->y + 1;
         int16_t x = widget->left + window->x + 2 + (width / 2);
 
-        gfx::drawStringCentredClipped(*dpi, x, y, width, colour::white | format_flags::textflag_5, widget->text, _commonFormatArgs);
+        gfx::drawStringCentredClipped(*dpi, x, y, width, Colour::white | format_flags::textflag_5, widget->text, _commonFormatArgs);
     }
 
     // 0x004CA750
@@ -488,7 +488,7 @@ namespace OpenLoco::ui::widget
 
         sub_4CF3EB(dpi, window, widget, x, y, colour, width);
 
-        gfx::drawString(dpi, x, y, colour::black, stringFormatBuffer);
+        gfx::drawString(dpi, x, y, Colour::black, stringFormatBuffer);
     }
 
     // 0x004CA7F6
@@ -505,7 +505,7 @@ namespace OpenLoco::ui::widget
         int16_t stringWidth = gfx::clipString(width - 8, stringFormatBuffer);
         x -= (stringWidth - 1) / 2;
 
-        gfx::drawString(dpi, x, window->y + widget->top + 1, format_flags::textflag_5 | colour::black, stringFormatBuffer);
+        gfx::drawString(dpi, x, window->y + widget->top + 1, format_flags::textflag_5 | Colour::black, stringFormatBuffer);
     }
 
     // 0x004CA88B
@@ -522,7 +522,7 @@ namespace OpenLoco::ui::widget
         int16_t stringWidth = gfx::clipString(width - 8, stringFormatBuffer);
         x -= (stringWidth - 1) / 2;
 
-        gfx::drawString(dpi, x, window->y + widget->top + 1, format_flags::textflag_5 | colour::black, stringFormatBuffer);
+        gfx::drawString(dpi, x, window->y + widget->top + 1, format_flags::textflag_5 | Colour::black, stringFormatBuffer);
     }
 
     static void draw_hscroll(gfx::drawpixelinfo_t* dpi, window* window, widget_t* widget, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated, bool hovered, int16_t scrollview_index)
@@ -552,7 +552,7 @@ namespace OpenLoco::ui::widget
         // popa
 
         // pusha
-        gfx::drawString(dpi, ax + 2, cx, colour::black, (char*)0x005045F2);
+        gfx::drawString(dpi, ax + 2, cx, Colour::black, (char*)0x005045F2);
         // popa
 
         // pusha
@@ -565,19 +565,19 @@ namespace OpenLoco::ui::widget
         // popa
 
         // pusha
-        gfx::drawString(dpi, bx - 6 - 1, cx, colour::black, (char*)0x005045F5);
+        gfx::drawString(dpi, bx - 6 - 1, cx, Colour::black, (char*)0x005045F5);
         // popa
 
         // pusha
-        gfx::fillRect(dpi, ax + 10, cx, bx - 10, dx, colour::getShade(colour, 7));
-        gfx::fillRect(dpi, ax + 10, cx, bx - 10, dx, 0x1000000 | colour::getShade(colour, 3));
+        gfx::fillRect(dpi, ax + 10, cx, bx - 10, dx, Colour::getShade(colour, 7));
+        gfx::fillRect(dpi, ax + 10, cx, bx - 10, dx, 0x1000000 | Colour::getShade(colour, 3));
         // popa
 
         // pusha
-        gfx::fillRect(dpi, ax + 10, cx + 2, bx - 10, cx + 2, colour::getShade(colour, 3));
-        gfx::fillRect(dpi, ax + 10, cx + 3, bx - 10, cx + 3, colour::getShade(colour, 7));
-        gfx::fillRect(dpi, ax + 10, cx + 7, bx - 10, cx + 7, colour::getShade(colour, 3));
-        gfx::fillRect(dpi, ax + 10, cx + 8, bx - 10, cx + 8, colour::getShade(colour, 7));
+        gfx::fillRect(dpi, ax + 10, cx + 2, bx - 10, cx + 2, Colour::getShade(colour, 3));
+        gfx::fillRect(dpi, ax + 10, cx + 3, bx - 10, cx + 3, Colour::getShade(colour, 7));
+        gfx::fillRect(dpi, ax + 10, cx + 7, bx - 10, cx + 7, Colour::getShade(colour, 3));
+        gfx::fillRect(dpi, ax + 10, cx + 8, bx - 10, cx + 8, Colour::getShade(colour, 7));
         // popa
 
         // pusha
@@ -617,7 +617,7 @@ namespace OpenLoco::ui::widget
         // popa
 
         // pusha
-        gfx::drawString(dpi, ax + 1, cx - 1, colour::black, (char*)0x005045EC);
+        gfx::drawString(dpi, ax + 1, cx - 1, Colour::black, (char*)0x005045EC);
         // popa
 
         // pusha
@@ -630,19 +630,19 @@ namespace OpenLoco::ui::widget
         // popa
 
         // pusha
-        gfx::drawString(dpi, ax + 1, dx - 8 - 1, colour::black, (char*)0x005045EF);
+        gfx::drawString(dpi, ax + 1, dx - 8 - 1, Colour::black, (char*)0x005045EF);
         // popa
 
         // pusha
-        gfx::fillRect(dpi, ax, cx + 10, bx, dx - 10, colour::getShade(colour, 7));
-        gfx::fillRect(dpi, ax, cx + 10, bx, dx - 10, 0x1000000 | colour::getShade(colour, 3));
+        gfx::fillRect(dpi, ax, cx + 10, bx, dx - 10, Colour::getShade(colour, 7));
+        gfx::fillRect(dpi, ax, cx + 10, bx, dx - 10, 0x1000000 | Colour::getShade(colour, 3));
         // popa
 
         // pusha
-        gfx::fillRect(dpi, ax + 2, cx + 10, ax + 2, dx - 10, colour::getShade(colour, 3));
-        gfx::fillRect(dpi, ax + 3, cx + 10, ax + 3, dx - 10, colour::getShade(colour, 7));
-        gfx::fillRect(dpi, ax + 7, cx + 10, ax + 7, dx - 10, colour::getShade(colour, 3));
-        gfx::fillRect(dpi, ax + 8, cx + 10, ax + 8, dx - 10, colour::getShade(colour, 7));
+        gfx::fillRect(dpi, ax + 2, cx + 10, ax + 2, dx - 10, Colour::getShade(colour, 3));
+        gfx::fillRect(dpi, ax + 3, cx + 10, ax + 3, dx - 10, Colour::getShade(colour, 7));
+        gfx::fillRect(dpi, ax + 7, cx + 10, ax + 7, dx - 10, Colour::getShade(colour, 3));
+        gfx::fillRect(dpi, ax + 8, cx + 10, ax + 8, dx - 10, Colour::getShade(colour, 7));
         // popa
 
         // pusha
@@ -778,7 +778,7 @@ namespace OpenLoco::ui::widget
         int right = window->x + widget->right;
         int top = window->y + widget->top;
         int bottom = window->y + widget->bottom;
-        gfx::fillRect(dpi, left, top, right, bottom, colour::getShade(colour::black, 5));
+        gfx::fillRect(dpi, left, top, right, bottom, Colour::getShade(Colour::black, 5));
     }
 
     // 0x004CF194
@@ -824,7 +824,7 @@ namespace OpenLoco::ui::widget
                 gfx::drawImage(ctx, pos.x, pos.y + 1, imageId);
             }
             gfx::drawImage(ctx, pos.x, pos.y, (1 << 30) | (51 << 19) | image_ids::tab);
-            gfx::drawRect(ctx, pos.x, pos.y + 26, 31, 1, colour::getShade(w->colours[1], 7));
+            gfx::drawRect(ctx, pos.x, pos.y + 26, 31, 1, Colour::getShade(w->colours[1], 7));
         }
     }
 }

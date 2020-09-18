@@ -459,13 +459,13 @@ namespace OpenLoco::ui::windows::CompanyList
 
             auto xPos = self->x + 3;
             auto yPos = self->y + self->height - 13;
-            gfx::drawString_494B3F(*dpi, xPos, yPos, colour::black, string_ids::black_stringid, &args);
+            gfx::drawString_494B3F(*dpi, xPos, yPos, Colour::black, string_ids::black_stringid, &args);
         }
 
         // 0x00435EA7
         static void drawScroll(window* self, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
         {
-            auto colour = colour::getShade(self->colours[1], 3);
+            auto colour = Colour::getShade(self->colours[1], 3);
             gfx::clearSingle(*dpi, colour);
 
             auto yBottom = 0;
@@ -505,7 +505,7 @@ namespace OpenLoco::ui::windows::CompanyList
                     args.push(imageId);
                     args.push(company->name);
 
-                    gfx::drawString_494BBF(*dpi, 0, yBottom - 1, 173, colour::black, stringId, &args);
+                    gfx::drawString_494BBF(*dpi, 0, yBottom - 1, 173, Colour::black, stringId, &args);
                 }
 
                 {
@@ -516,7 +516,7 @@ namespace OpenLoco::ui::windows::CompanyList
                     args.push(ownerStatus.argument1);
                     args.push(ownerStatus.argument2);
 
-                    gfx::drawString_494BBF(*dpi, 175, yBottom + 7, 208, colour::black, stringId, &args);
+                    gfx::drawString_494BBF(*dpi, 175, yBottom + 7, 208, Colour::black, stringId, &args);
                 }
 
                 auto performanceStringId = string_ids::performance_index;
@@ -537,7 +537,7 @@ namespace OpenLoco::ui::windows::CompanyList
                     args.push(performanceStringId);
                     formatPerformanceIndex(company->performance_index, args);
 
-                    gfx::drawString_494BBF(*dpi, 385, yBottom - 1, 143, colour::black, stringId, &args);
+                    gfx::drawString_494BBF(*dpi, 385, yBottom - 1, 143, Colour::black, stringId, &args);
                 }
 
                 {
@@ -546,7 +546,7 @@ namespace OpenLoco::ui::windows::CompanyList
                     args.push(string_ids::company_value_currency);
                     args.push(company->companyValueHistory[0]);
 
-                    gfx::drawString_494BBF(*dpi, 530, yBottom - 1, 98, colour::black, stringId, &args);
+                    gfx::drawString_494BBF(*dpi, 530, yBottom - 1, 98, Colour::black, stringId, &args);
                 }
             }
         }
@@ -703,7 +703,7 @@ namespace OpenLoco::ui::windows::CompanyList
 
                 _graphYData[count] = reinterpret_cast<uint32_t>(&company.performance_index_history[0]);
                 _graphDataStart[count] = maxHistorySize - company.history_size;
-                _graphLineColour[count] = colour::getShade(companyColour, 6);
+                _graphLineColour[count] = Colour::getShade(companyColour, 6);
                 _graphItemId[count] = companyId;
                 count++;
             }
@@ -800,7 +800,7 @@ namespace OpenLoco::ui::windows::CompanyList
 
                 _graphYData[count] = reinterpret_cast<uint32_t>(&company.cargo_units_delivered_history[0]);
                 _graphDataStart[count] = maxHistorySize - company.history_size;
-                _graphLineColour[count] = colour::getShade(companyColour, 6);
+                _graphLineColour[count] = Colour::getShade(companyColour, 6);
                 _graphItemId[count] = companyId;
                 count++;
             }
@@ -897,7 +897,7 @@ namespace OpenLoco::ui::windows::CompanyList
 
                 _graphYData[count] = reinterpret_cast<uint32_t>(&company.cargo_units_distance_history[0]);
                 _graphDataStart[count] = maxHistorySize - company.history_size;
-                _graphLineColour[count] = colour::getShade(companyColour, 6);
+                _graphLineColour[count] = Colour::getShade(companyColour, 6);
                 _graphItemId[count] = companyId;
                 count++;
             }
@@ -994,7 +994,7 @@ namespace OpenLoco::ui::windows::CompanyList
 
                 _graphYData[count] = reinterpret_cast<uint32_t>(&company.companyValueHistory[0]);
                 _graphDataStart[count] = maxHistorySize - company.history_size;
-                _graphLineColour[count] = colour::getShade(companyColour, 6);
+                _graphLineColour[count] = Colour::getShade(companyColour, 6);
                 _graphItemId[count] = companyId;
                 count++;
             }
@@ -1064,7 +1064,7 @@ namespace OpenLoco::ui::windows::CompanyList
                     continue;
 
                 auto colour = _cargoLineColour[i];
-                colour = colour::getShade(colour, 6);
+                colour = Colour::getShade(colour, 6);
                 auto stringId = string_ids::small_black_string;
 
                 if (self->var_854 & (1 << cargoCount))
@@ -1080,7 +1080,7 @@ namespace OpenLoco::ui::windows::CompanyList
                 auto args = FormatArguments();
                 args.push(cargo->name);
 
-                gfx::drawString_494BBF(*dpi, x + 6, y, 94, colour::black, stringId, &args);
+                gfx::drawString_494BBF(*dpi, x + 6, y, 94, Colour::black, stringId, &args);
 
                 y += 10;
                 cargoCount++;
@@ -1113,7 +1113,7 @@ namespace OpenLoco::ui::windows::CompanyList
 
                 _graphYData[count] = reinterpret_cast<uint32_t>(&_deliveredCargoPayment[i][0]);
                 _graphDataStart[count] = 0;
-                _graphLineColour[count] = colour::getShade(colour, 6);
+                _graphLineColour[count] = Colour::getShade(colour, 6);
                 _graphItemId[count] = i;
                 count++;
             }
@@ -1165,12 +1165,12 @@ namespace OpenLoco::ui::windows::CompanyList
             args.push<uint16_t>(100);
             args.push<uint16_t>(10);
 
-            gfx::drawString_494B3F(*dpi, x, y, colour::black, string_ids::cargo_deliver_graph_title, &args);
+            gfx::drawString_494B3F(*dpi, x, y, Colour::black, string_ids::cargo_deliver_graph_title, &args);
 
             x = self->x + 160;
             y = self->height + self->y - 13;
 
-            gfx::drawString_494B3F(*dpi, x, y, colour::black, string_ids::cargo_transit_time);
+            gfx::drawString_494B3F(*dpi, x, y, Colour::black, string_ids::cargo_transit_time);
         }
 
         static void sub_4375F7()
@@ -1244,7 +1244,7 @@ namespace OpenLoco::ui::windows::CompanyList
                     };
 
                     auto x = self->x + 4;
-                    gfx::drawString_494B3F(*dpi, x, y, colour::black, string[i], &args);
+                    gfx::drawString_494B3F(*dpi, x, y, Colour::black, string[i], &args);
                 }
                 y += 11;
 
@@ -1269,7 +1269,7 @@ namespace OpenLoco::ui::windows::CompanyList
                     args.push<uint16_t>(0);
                     args.push(_dword_526258[i]);
 
-                    gfx::drawString_494B3F(*dpi, x, y, colour::black, string_ids::record_date_achieved, &args);
+                    gfx::drawString_494B3F(*dpi, x, y, Colour::black, string_ids::record_date_achieved, &args);
                     y += 17;
                 }
 
@@ -1572,7 +1572,7 @@ namespace OpenLoco::ui::windows::CompanyList
                 {
                     auto x = self->widgets[widx::tab_values].left + self->x + 28;
                     auto y = self->widgets[widx::tab_values].top + self->y + 14 + 1;
-                    gfx::drawString_494C78(*dpi, x, y, colour::black, string_ids::currency_symbol);
+                    gfx::drawString_494C78(*dpi, x, y, Colour::black, string_ids::currency_symbol);
                 }
             }
 
@@ -1588,7 +1588,7 @@ namespace OpenLoco::ui::windows::CompanyList
                 {
                     auto x = self->widgets[widx::tab_payment_rates].left + self->x + 28;
                     auto y = self->widgets[widx::tab_payment_rates].top + self->y + 14 + 1;
-                    gfx::drawString_494C78(*dpi, x, y, colour::black, string_ids::currency_symbol);
+                    gfx::drawString_494C78(*dpi, x, y, Colour::black, string_ids::currency_symbol);
                 }
             }
 
@@ -1636,7 +1636,7 @@ namespace OpenLoco::ui::windows::CompanyList
                     continue;
 
                 auto companyColour = companymgr::getCompanyColour(company.id());
-                auto colour = colour::getShade(companyColour, 6);
+                auto colour = Colour::getShade(companyColour, 6);
                 auto stringId = string_ids::small_black_string;
 
                 if (self->var_854 & (1 << companyCount))
@@ -1652,7 +1652,7 @@ namespace OpenLoco::ui::windows::CompanyList
                 auto args = FormatArguments();
                 args.push(company.name);
 
-                gfx::drawString_494BBF(*dpi, x + 6, y, 94, colour::black, stringId, &args);
+                gfx::drawString_494BBF(*dpi, x + 6, y, 94, Colour::black, stringId, &args);
 
                 y += 10;
                 companyCount++;

@@ -215,7 +215,7 @@ namespace OpenLoco::ui::MessageWindow
         // 0x0042A5D7
         static void drawScroll(ui::window* self, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
         {
-            auto colour = colour::getShade(self->colours[1], 4);
+            auto colour = Colour::getShade(self->colours[1], 4);
 
             gfx::clearSingle(*dpi, colour);
 
@@ -253,14 +253,14 @@ namespace OpenLoco::ui::MessageWindow
                     args.push(string_ids::tiny_font_date);
                     args.push(message->date);
 
-                    gfx::drawString_494B3F(*dpi, 0, height, colour::black, stringId, &args);
+                    gfx::drawString_494B3F(*dpi, 0, height, Colour::black, stringId, &args);
                 }
                 {
                     auto args = FormatArguments();
                     args.push(string_ids::buffer_2039);
 
                     auto width = self->widgets[widx::scrollview].width() - 14;
-                    gfx::drawString_495224(*dpi, 0, height + 6, width, colour::black, stringId, &args);
+                    gfx::drawString_495224(*dpi, 0, height + 6, width, Colour::black, stringId, &args);
                     height += messageHeight;
                 }
             }
@@ -532,7 +532,7 @@ namespace OpenLoco::ui::MessageWindow
                     auto args = FormatArguments();
                     args.push(newsStringIds[i]);
 
-                    gfx::drawString_494B3F(*dpi, self->x + 4, yPos, colour::black, string_ids::wcolour2_stringid, &args);
+                    gfx::drawString_494B3F(*dpi, self->x + 4, yPos, Colour::black, string_ids::wcolour2_stringid, &args);
                 }
 
                 {
@@ -540,7 +540,7 @@ namespace OpenLoco::ui::MessageWindow
                     auto args = FormatArguments();
                     args.push(newsDropdownStringIds[static_cast<uint8_t>(config::get().news_settings[i])]);
 
-                    gfx::drawString_494B3F(*dpi, xPos, yPos, colour::black, string_ids::black_stringid, &args);
+                    gfx::drawString_494B3F(*dpi, xPos, yPos, Colour::black, string_ids::black_stringid, &args);
                 }
                 yPos += 15;
             }

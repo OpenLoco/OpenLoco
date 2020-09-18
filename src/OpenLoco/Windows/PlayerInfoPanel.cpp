@@ -195,8 +195,8 @@ namespace OpenLoco::ui::windows::PlayerInfoPanel
         auto skin = objectmgr::get<interface_skin_object>();
         if (skin != nullptr)
         {
-            window->colours[0] = colour::translucent(skin->colour_16);
-            window->colours[1] = colour::translucent(skin->colour_16);
+            window->colours[0] = Colour::translucent(skin->colour_16);
+            window->colours[1] = Colour::translucent(skin->colour_16);
         }
 
         return window;
@@ -239,10 +239,10 @@ namespace OpenLoco::ui::windows::PlayerInfoPanel
                 }
             }
 
-            auto colour = colour::opaque(window->colours[0]);
+            auto colour = Colour::opaque(window->colours[0]);
             if (input::isHovering(WindowType::playerInfoToolbar, 0, widx::company_value))
             {
-                colour = colour::white;
+                colour = Colour::white;
             }
             auto args = FormatArguments();
             args.push(playerCompany->cash.var_00);
@@ -265,7 +265,7 @@ namespace OpenLoco::ui::windows::PlayerInfoPanel
             auto colour = window->colours[0] & 0x7F;
             if (input::isHovering(WindowType::playerInfoToolbar, 0, widx::performance_index))
             {
-                colour = colour::white;
+                colour = Colour::white;
             }
 
             auto args = FormatArguments();

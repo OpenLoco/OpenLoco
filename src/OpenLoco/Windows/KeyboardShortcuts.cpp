@@ -102,7 +102,7 @@ namespace OpenLoco::ui::KeyboardShortcuts
     static void drawScroll(ui::window* self, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
     {
         auto colour = self->colours[1];
-        auto shade = colour::getShade(colour, 4);
+        auto shade = Colour::getShade(colour, 4);
         gfx::clearSingle(*dpi, shade);
 
         auto yPos = 0;
@@ -135,7 +135,7 @@ namespace OpenLoco::ui::KeyboardShortcuts
 
             _commonFormatArgs[0] = string_ids::keyboard_shortcut_list_format;
 
-            gfx::drawString_494B3F(*dpi, 0, yPos - 1, colour::black, format, _commonFormatArgs);
+            gfx::drawString_494B3F(*dpi, 0, yPos - 1, Colour::black, format, _commonFormatArgs);
             yPos += rowHeight;
         }
     }

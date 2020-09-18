@@ -228,7 +228,7 @@ namespace OpenLoco::ui::windows::error
 
             if (_errorCompetitorId == 0xFF)
             {
-                gfx::drawStringCentredRaw(*dpi, ((width + 1) / 2) + x - 1, y + 1, _word_9C66B3, colour::black, &_byte_9C64B3[0]);
+                gfx::drawStringCentredRaw(*dpi, ((width + 1) / 2) + x - 1, y + 1, _word_9C66B3, Colour::black, &_byte_9C64B3[0]);
             }
             else
             {
@@ -249,7 +249,7 @@ namespace OpenLoco::ui::windows::error
                     gfx::drawImage(dpi, xPos, yPos, image_ids::owner_jailed);
                 }
 
-                gfx::drawStringCentredRaw(*dpi, self->x + 156, self->y + 20, _word_9C66B3, colour::black, &_byte_9C64B3[0]);
+                gfx::drawStringCentredRaw(*dpi, self->x + 156, self->y + 20, _word_9C66B3, Colour::black, &_byte_9C64B3[0]);
             }
         }
 
