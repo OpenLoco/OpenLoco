@@ -311,6 +311,11 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     window* open();
 }
 
+namespace OpenLoco::Ui::Windows::ScenarioSelect
+{
+    window* open();
+}
+
 namespace OpenLoco::Ui::TimePanel
 {
     window* open();

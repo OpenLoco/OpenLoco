@@ -217,6 +217,7 @@ namespace OpenLoco::ImageIds
     constexpr uint32_t atari_logo_small = UNUSED_IMG(3623);
 
     constexpr uint32_t locomotion_logo = 3624;
+    constexpr uint32_t wide_tab = 3625;
 
     constexpr uint32_t owner_jailed = 3630;
 }

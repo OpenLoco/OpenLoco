@@ -374,6 +374,7 @@ namespace OpenLoco::StringIds
     constexpr string_id month_long_december = 646;
 
     constexpr string_id tooltip_daymonthyear_challenge = 647;
+    constexpr string_id select_scenario_for_new_game = 648;
 
     constexpr string_id sound_quality = UNUSED_STR(650);
     constexpr string_id sound_quality_low = UNUSED_STR(651);
