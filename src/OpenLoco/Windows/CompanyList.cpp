@@ -490,7 +490,7 @@ namespace OpenLoco::ui::windows::CompanyList
 
                 if (rowItem == self->row_hover)
                 {
-                    gfx::drawRect(dpi, 0, yBottom, self->width, 24, (1 << 25) | palette_index::index_30);
+                    gfx::drawRect(dpi, 0, yBottom, self->width, 24, (1 << 25) | PaletteIndex::index_30);
 
                     stringId = string_ids::wcolour2_stringid;
                 }

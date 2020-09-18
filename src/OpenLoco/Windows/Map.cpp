@@ -331,7 +331,7 @@ namespace OpenLoco::ui::windows::map
     // 0x0046B69C
     static void clearMap()
     {
-        std::fill(static_cast<uint8_t*>(_dword_F253A8), _dword_F253A8 + 0x120000, palette_index::index_0A);
+        std::fill(static_cast<uint8_t*>(_dword_F253A8), _dword_F253A8 + 0x120000, PaletteIndex::index_0A);
     }
 
     // 0x00F2541D
@@ -566,12 +566,12 @@ namespace OpenLoco::ui::windows::map
     static void drawGraphKeyOverall(window* self, gfx::drawpixelinfo_t* dpi, uint16_t x, uint16_t* y)
     {
         static const palette_index_t overallColours[] = {
-            palette_index::index_41,
-            palette_index::index_7D,
-            palette_index::index_0C,
-            palette_index::index_11,
-            palette_index::index_BA,
-            palette_index::index_64,
+            PaletteIndex::index_41,
+            PaletteIndex::index_7D,
+            PaletteIndex::index_0C,
+            PaletteIndex::index_11,
+            PaletteIndex::index_BA,
+            PaletteIndex::index_64,
         };
 
         static const string_id lineNames[] = {
@@ -608,12 +608,12 @@ namespace OpenLoco::ui::windows::map
 
     // 0x004FDD62
     static const palette_index_t vehicleTypeColours[] = {
-        palette_index::index_AD,
-        palette_index::index_67,
-        palette_index::index_A2,
-        palette_index::index_BC,
-        palette_index::index_15,
-        palette_index::index_B8, // changed from 136 to make ships more viewable on the map
+        PaletteIndex::index_AD,
+        PaletteIndex::index_67,
+        PaletteIndex::index_A2,
+        PaletteIndex::index_BC,
+        PaletteIndex::index_15,
+        PaletteIndex::index_B8, // changed from 136 to make ships more viewable on the map
     };
 
     // 0x0046D379
@@ -656,37 +656,37 @@ namespace OpenLoco::ui::windows::map
     static void drawGraphKeyIndustries(window* self, gfx::drawpixelinfo_t* dpi, uint16_t x, uint16_t* y)
     {
         static const palette_index_t industryColours[] = {
-            palette_index::index_0A,
-            palette_index::index_0E,
-            palette_index::index_15,
-            palette_index::index_1F,
-            palette_index::index_29,
-            palette_index::index_35,
-            palette_index::index_38,
-            palette_index::index_3F,
-            palette_index::index_43,
-            palette_index::index_4B,
-            palette_index::index_50,
-            palette_index::index_58,
-            palette_index::index_66,
-            palette_index::index_71,
-            palette_index::index_7D,
-            palette_index::index_85,
-            palette_index::index_89,
-            palette_index::index_9D,
-            palette_index::index_A1,
-            palette_index::index_A3,
-            palette_index::index_AC,
-            palette_index::index_B8,
-            palette_index::index_BB,
-            palette_index::index_C3,
-            palette_index::index_C6,
-            palette_index::index_D0,
-            palette_index::index_D3,
-            palette_index::index_DB,
-            palette_index::index_DE,
-            palette_index::index_24,
-            palette_index::index_12,
+            PaletteIndex::index_0A,
+            PaletteIndex::index_0E,
+            PaletteIndex::index_15,
+            PaletteIndex::index_1F,
+            PaletteIndex::index_29,
+            PaletteIndex::index_35,
+            PaletteIndex::index_38,
+            PaletteIndex::index_3F,
+            PaletteIndex::index_43,
+            PaletteIndex::index_4B,
+            PaletteIndex::index_50,
+            PaletteIndex::index_58,
+            PaletteIndex::index_66,
+            PaletteIndex::index_71,
+            PaletteIndex::index_7D,
+            PaletteIndex::index_85,
+            PaletteIndex::index_89,
+            PaletteIndex::index_9D,
+            PaletteIndex::index_A1,
+            PaletteIndex::index_A3,
+            PaletteIndex::index_AC,
+            PaletteIndex::index_B8,
+            PaletteIndex::index_BB,
+            PaletteIndex::index_C3,
+            PaletteIndex::index_C6,
+            PaletteIndex::index_D0,
+            PaletteIndex::index_D3,
+            PaletteIndex::index_DB,
+            PaletteIndex::index_DE,
+            PaletteIndex::index_24,
+            PaletteIndex::index_12,
         };
 
         for (uint8_t i = 0; i < objectmgr::getMaxObjects(object_type::industry); i++)
@@ -1139,7 +1139,7 @@ namespace OpenLoco::ui::windows::map
     // 0x0046C426
     static uint8_t getVehicleColour(widget_index widgetIndex, things::vehicle::Vehicle train, things::vehicle::Car car)
     {
-        auto colour = palette_index::index_15;
+        auto colour = PaletteIndex::index_15;
 
         if (widgetIndex == widx::tabOwnership || widgetIndex == widx::tabVehicles)
         {
@@ -1247,7 +1247,7 @@ namespace OpenLoco::ui::windows::map
         right += _4FDC4C[getCurrentRotation()];
         bottom += _4FDC4E[getCurrentRotation()];
 
-        uint32_t colour = (1 << 24) | palette_index::index_0A;
+        uint32_t colour = (1 << 24) | PaletteIndex::index_0A;
 
         drawRectOnMap(dpi, left, top, right, bottom, colour);
     }
@@ -1266,7 +1266,7 @@ namespace OpenLoco::ui::windows::map
         right += rightOffset;
         bottom += bottomOffset;
 
-        uint32_t colour = palette_index::index_0A;
+        uint32_t colour = PaletteIndex::index_0A;
 
         drawRectOnMap(dpi, left, top, right, bottom, colour);
     }
@@ -1432,7 +1432,7 @@ namespace OpenLoco::ui::windows::map
         if (!(_dword_525E28 & (1 << 0)))
             return;
 
-        gfx::clearSingle(*dpi, palette_index::index_0A);
+        gfx::clearSingle(*dpi, PaletteIndex::index_0A);
 
         auto element = gfx::getG1Element(0);
         auto backupElement = *element;

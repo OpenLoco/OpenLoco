@@ -70,7 +70,7 @@ namespace OpenLoco
         palette_index_t getShade(colour_t colour, uint8_t shade);
     }
 
-    namespace palette_index
+    namespace PaletteIndex
     {
         constexpr palette_index_t transparent = 0;
         constexpr palette_index_t index_0A = 0x0A;

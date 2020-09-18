@@ -615,7 +615,7 @@ namespace OpenLoco::ui::NewsWindow
                         auto y = self->widgets[common::widx::viewport1].top + self->y;
                         auto width = self->widgets[common::widx::viewport1].width() + 1;
                         auto height = self->widgets[common::widx::viewport1].height() + 1;
-                        auto colour = (1 << 25) | palette_index::index_35;
+                        auto colour = (1 << 25) | PaletteIndex::index_35;
                         gfx::drawRect(dpi, x, y, width, height, colour);
                     }
                 }
@@ -631,7 +631,7 @@ namespace OpenLoco::ui::NewsWindow
                         auto y = self->widgets[common::widx::viewport2].top + self->y;
                         auto width = self->widgets[common::widx::viewport2].width() + 1;
                         auto height = self->widgets[common::widx::viewport2].height() + 1;
-                        auto colour = (1 << 25) | palette_index::index_35;
+                        auto colour = (1 << 25) | PaletteIndex::index_35;
                         gfx::drawRect(dpi, x, y, width, height, colour);
                     }
                 }
@@ -641,11 +641,11 @@ namespace OpenLoco::ui::NewsWindow
         // 0x004299E7
         static void drawEarlyNews(window* self, gfx::drawpixelinfo_t* dpi, message* news)
         {
-            auto imageId = gfx::recolour(image_ids::news_background_old_left, palette_index::index_68);
+            auto imageId = gfx::recolour(image_ids::news_background_old_left, PaletteIndex::index_68);
 
             gfx::drawImage(dpi, self->x, self->y, imageId);
 
-            imageId = gfx::recolour(image_ids::news_background_old_right, palette_index::index_68);
+            imageId = gfx::recolour(image_ids::news_background_old_right, PaletteIndex::index_68);
 
             gfx::drawImage(dpi, self->x + (windowSize.width / 2), self->y, imageId);
 
@@ -684,14 +684,14 @@ namespace OpenLoco::ui::NewsWindow
             y = self->y + 5;
             auto width = self->width - 6;
             auto height = self->height;
-            auto colour = (1 << 25) | palette_index::index_68;
+            auto colour = (1 << 25) | PaletteIndex::index_68;
             gfx::drawRect(dpi, x, y, width, height, colour);
 
             x = self->widgets[common::widx::viewport1].left + self->x;
             y = self->widgets[common::widx::viewport1].top + self->y;
             width = self->widgets[common::widx::viewport1].width();
             height = self->widgets[common::widx::viewport1].height();
-            colour = (1 << 25) | palette_index::index_68;
+            colour = (1 << 25) | PaletteIndex::index_68;
             gfx::drawRect(dpi, x, y, width, height, colour);
         }
 
@@ -726,7 +726,7 @@ namespace OpenLoco::ui::NewsWindow
                         y = self->widgets[common::widx::viewport1].top + self->y;
                         auto width = self->widgets[common::widx::viewport1].width();
                         auto height = self->widgets[common::widx::viewport1].height();
-                        auto colour = (1 << 25) | palette_index::index_35;
+                        auto colour = (1 << 25) | PaletteIndex::index_35;
                         gfx::drawRect(dpi, x, y, width, height, colour);
                     }
                 }
@@ -742,7 +742,7 @@ namespace OpenLoco::ui::NewsWindow
                         y = self->widgets[common::widx::viewport2].top + self->y;
                         auto width = self->widgets[common::widx::viewport2].width();
                         auto height = self->widgets[common::widx::viewport2].height();
-                        auto colour = (1 << 25) | palette_index::index_35;
+                        auto colour = (1 << 25) | PaletteIndex::index_35;
                         gfx::drawRect(dpi, x, y, width, height, colour);
                     }
                 }

@@ -266,8 +266,8 @@ namespace OpenLoco::gfx
             return;
 
         _textColours[1] = pal1;
-        _textColours[2] = palette_index::transparent;
-        _textColours[3] = palette_index::transparent;
+        _textColours[2] = PaletteIndex::transparent;
+        _textColours[3] = PaletteIndex::transparent;
         if ((_currentFontFlags & text_draw_flags::outline) != 0)
         {
             _textColours[2] = pal2;
@@ -386,19 +386,19 @@ namespace OpenLoco::gfx
                 case control_codes::window_colour_1:
                 {
                     int hue = _windowColours[0];
-                    setTextColours(Colour::getShade(hue, 7), palette_index::index_0A, palette_index::index_0A);
+                    setTextColours(Colour::getShade(hue, 7), PaletteIndex::index_0A, PaletteIndex::index_0A);
                     break;
                 }
                 case control_codes::window_colour_2:
                 {
                     int hue = _windowColours[1];
-                    setTextColours(Colour::getShade(hue, 9), palette_index::index_0A, palette_index::index_0A);
+                    setTextColours(Colour::getShade(hue, 9), PaletteIndex::index_0A, PaletteIndex::index_0A);
                     break;
                 }
                 case control_codes::window_colour_3:
                 {
                     int hue = _windowColours[2];
-                    setTextColours(Colour::getShade(hue, 9), palette_index::index_0A, palette_index::index_0A);
+                    setTextColours(Colour::getShade(hue, 9), PaletteIndex::index_0A, PaletteIndex::index_0A);
                     break;
                 }
 
@@ -556,7 +556,7 @@ namespace OpenLoco::gfx
             _currentFontFlags = _currentFontFlags | text_draw_flags::extra_dark;
         }
 
-        _textColours[0] = palette_index::transparent;
+        _textColours[0] = PaletteIndex::transparent;
         _textColours[1] = Colour::getShade(Colour::dark_purple, 5);
         _textColours[2] = Colour::getShade(Colour::bright_pink, 5);
         _textColours[3] = Colour::getShade(Colour::light_blue, 5);
@@ -578,25 +578,25 @@ namespace OpenLoco::gfx
             if ((_currentFontFlags & text_draw_flags::dark) != 0 && (_currentFontFlags & text_draw_flags::extra_dark) != 0)
             {
                 _textColours[1] = Colour::getShade(colour, 2);
-                _textColours[2] = palette_index::transparent;
+                _textColours[2] = PaletteIndex::transparent;
                 _textColours[3] = Colour::getShade(colour, 4);
             }
             else if ((_currentFontFlags & text_draw_flags::dark) != 0)
             {
                 _textColours[1] = Colour::getShade(colour, 3);
-                _textColours[2] = palette_index::transparent;
+                _textColours[2] = PaletteIndex::transparent;
                 _textColours[3] = Colour::getShade(colour, 5);
             }
             else
             {
                 _textColours[1] = Colour::getShade(colour, 4);
-                _textColours[2] = palette_index::transparent;
+                _textColours[2] = PaletteIndex::transparent;
                 _textColours[3] = Colour::getShade(colour, 6);
             }
         }
         else
         {
-            setTextColours(Colour::getShade(colour, 9), palette_index::index_0A, palette_index::index_0A);
+            setTextColours(Colour::getShade(colour, 9), PaletteIndex::index_0A, PaletteIndex::index_0A);
         }
 
         return loopNewline(context, origin, (uint8_t*)str);

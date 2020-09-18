@@ -198,7 +198,7 @@ namespace OpenLoco::ui::dropdown
                     {
                         auto x = _windowDropdownOnpaintCellX * _dropdownItemWidth + self->x + 2;
                         auto y = _windowDropdownOnpaintCellY * _dropdownItemHeight + self->y + 2;
-                        gfx::drawRect(dpi, x, y, _dropdownItemWidth, _dropdownItemHeight, (1 << 25) | palette_index::index_2E);
+                        gfx::drawRect(dpi, x, y, _dropdownItemWidth, _dropdownItemHeight, (1 << 25) | PaletteIndex::index_2E);
                     }
 
                     auto args = FormatArguments();
