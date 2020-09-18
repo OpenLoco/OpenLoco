@@ -46,11 +46,11 @@ namespace OpenLoco::ui::windows::town
 #define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                          \
     makeWidget({ 0, 0 }, { frameWidth, frameHeight }, widget_type::frame, 0),                                                            \
         makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, widget_type::caption_25, 0, windowCaptionId),                                       \
-        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window), \
+        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, string_ids::tooltip_close_window), \
         makeWidget({ 0, 41 }, { frameWidth, 120 }, widget_type::panel, 1),                                                               \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_town),                          \
-        makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_population_graph),             \
-        makeRemapWidget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_town_ratings_each_company)
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_town),                          \
+        makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_population_graph),             \
+        makeRemapWidget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_town_ratings_each_company)
 
         // Defined at the bottom of this file.
         static void prepareDraw(window* self);
@@ -78,9 +78,9 @@ namespace OpenLoco::ui::windows::town
             commonWidgets(223, 161, string_ids::title_town),
             makeWidget({ 3, 44 }, { 195, 104 }, widget_type::viewport, 1, 0xFFFFFFFE),
             makeWidget({ 3, 139 }, { 195, 21 }, widget_type::wt_13, 1),
-            makeWidget({ 0, 0 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::null, string_ids::move_main_view_to_show_this),
-            makeWidget({ 198, 44 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::town_expand, string_ids::expand_this_town),
-            makeWidget({ 198, 68 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::rubbish_bin, string_ids::demolish_this_town),
+            makeWidget({ 0, 0 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::null, string_ids::move_main_view_to_show_this),
+            makeWidget({ 198, 44 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::town_expand, string_ids::expand_this_town),
+            makeWidget({ 198, 68 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::rubbish_bin, string_ids::demolish_this_town),
             widgetEnd(),
         };
 

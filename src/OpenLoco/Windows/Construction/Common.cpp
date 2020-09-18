@@ -456,7 +456,7 @@ namespace OpenLoco::ui::windows::construction
             }
             // Station Tab
             {
-                widget::draw_tab(self, dpi, image_ids::null, widx::tab_station);
+                widget::draw_tab(self, dpi, ImageIds::null, widx::tab_station);
                 if (!self->isDisabled(widx::tab_station))
                 {
                     auto x = self->widgets[widx::tab_station].left + self->x + 1;
@@ -492,7 +492,7 @@ namespace OpenLoco::ui::windows::construction
             }
             // Overhead tab
             {
-                widget::draw_tab(self, dpi, image_ids::null, widx::tab_overhead);
+                widget::draw_tab(self, dpi, ImageIds::null, widx::tab_overhead);
                 if (!self->isDisabled(widx::tab_station))
                 {
                     auto x = self->widgets[widx::tab_overhead].left + self->x + 2;
@@ -548,7 +548,7 @@ namespace OpenLoco::ui::windows::construction
                     }
                     else
                     {
-                        widget::draw_tab(self, dpi, image_ids::null, widx::tab_station);
+                        widget::draw_tab(self, dpi, ImageIds::null, widx::tab_station);
                         if (!self->isDisabled(widx::tab_station))
                         {
                             auto x = self->widgets[widx::tab_station].left + self->x + 1;
@@ -586,7 +586,7 @@ namespace OpenLoco::ui::windows::construction
             }
             // Signal Tab
             {
-                widget::draw_tab(self, dpi, image_ids::null, widx::tab_signal);
+                widget::draw_tab(self, dpi, ImageIds::null, widx::tab_signal);
                 if (!self->isDisabled(widx::tab_signal))
                 {
                     auto x = self->widgets[widx::tab_signal].left + self->x + 1;
@@ -629,7 +629,7 @@ namespace OpenLoco::ui::windows::construction
             }
             // Overhead Tab
             {
-                widget::draw_tab(self, dpi, image_ids::null, widx::tab_overhead);
+                widget::draw_tab(self, dpi, ImageIds::null, widx::tab_overhead);
                 if (!self->isDisabled(widx::tab_station))
                 {
                     auto x = self->widgets[widx::tab_overhead].left + self->x + 2;

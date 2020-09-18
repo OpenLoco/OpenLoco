@@ -49,15 +49,15 @@ namespace OpenLoco::ui::windows::CompanyWindow
 #define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                              \
     makeWidget({ 0, 0 }, { frameWidth, frameHeight }, widget_type::frame, 0),                                                                \
         makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, widget_type::caption_24, 0, windowCaptionId),                                           \
-        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window),     \
+        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, string_ids::tooltip_close_window),     \
         makeWidget({ 0, 41 }, { frameWidth, 120 }, widget_type::panel, 1),                                                                   \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_company_owner_and_status),          \
-        makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_company_headquarters_and_details), \
-        makeRemapWidget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_company_colour_scheme),            \
-        makeRemapWidget({ 96, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_company_finances),                 \
-        makeRemapWidget({ 127, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_cargo_delivered),                 \
-        makeRemapWidget({ 158, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_company_challenge_for_this_game), \
-        makeWidget({ 0, 14 }, { 26, 26 }, widget_type::wt_9, 0, image_ids::null, string_ids::tooltip_select_company)
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_company_owner_and_status),          \
+        makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_company_headquarters_and_details), \
+        makeRemapWidget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_company_colour_scheme),            \
+        makeRemapWidget({ 96, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_company_finances),                 \
+        makeRemapWidget({ 127, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_cargo_delivered),                 \
+        makeRemapWidget({ 158, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_company_challenge_for_this_game), \
+        makeWidget({ 0, 14 }, { 26, 26 }, widget_type::wt_9, 0, ImageIds::null, string_ids::tooltip_select_company)
 
         // 0x004343FC
         static void disableChallengeTab(window* self)
@@ -109,9 +109,9 @@ namespace OpenLoco::ui::windows::CompanyWindow
             commonWidgets(270, 182, string_ids::title_company),
             makeWidget({ 3, 160 }, { 242, 21 }, widget_type::wt_13, 1),
             makeWidget({ 3, 44 }, { 96, 120 }, widget_type::viewport, 1, -2),
-            makeWidget({ 0, 0 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::null, string_ids::move_main_view_to_show_this),
-            makeWidget({ 178, 57 }, { 66, 66 }, widget_type::wt_9, 1, image_ids::null),
-            makeWidget({ 154, 124 }, { 112, 22 }, widget_type::wt_9, 1, image_ids::null, string_ids::tooltip_change_owner_name),
+            makeWidget({ 0, 0 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::null, string_ids::move_main_view_to_show_this),
+            makeWidget({ 178, 57 }, { 66, 66 }, widget_type::wt_9, 1, ImageIds::null),
+            makeWidget({ 154, 124 }, { 112, 22 }, widget_type::wt_9, 1, ImageIds::null, string_ids::tooltip_change_owner_name),
             widgetEnd(),
         };
 
@@ -211,7 +211,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
             // If the owner's been naughty, draw some jail bars over them.
             if (company->jail_status != 0)
             {
-                const uint32_t image = image_ids::owner_jailed;
+                const uint32_t image = ImageIds::owner_jailed;
                 const uint16_t x = self->x + self->widgets[widx::face].left + 1;
                 const uint16_t y = self->y + self->widgets[widx::face].top + 1;
                 Gfx::drawImage(dpi, x, y, image);
@@ -671,8 +671,8 @@ namespace OpenLoco::ui::windows::CompanyWindow
         static widget_t widgets[] = {
             commonWidgets(340, 194, string_ids::title_company_details),
             makeWidget({ 219, 54 }, { 96, 120 }, widget_type::viewport, 1, -2),
-            makeWidget({ 315, 92 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::null, string_ids::tooltip_build_or_move_headquarters),
-            makeWidget({ 0, 0 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::null, string_ids::move_main_view_to_show_this),
+            makeWidget({ 315, 92 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::null, string_ids::tooltip_build_or_move_headquarters),
+            makeWidget({ 0, 0 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::null, string_ids::move_main_view_to_show_this),
             widgetEnd(),
         };
 
@@ -1233,28 +1233,28 @@ namespace OpenLoco::ui::windows::CompanyWindow
             makeWidget({ 15, 200 }, { 204, 12 }, widget_type::checkbox, 1, string_ids::colour_trucks, string_ids::tooltip_toggle_vehicle_colour_scheme),
             makeWidget({ 15, 217 }, { 204, 12 }, widget_type::checkbox, 1, string_ids::colour_aircraft, string_ids::tooltip_toggle_vehicle_colour_scheme),
             makeWidget({ 15, 234 }, { 204, 12 }, widget_type::checkbox, 1, string_ids::colour_ships, string_ids::tooltip_toggle_vehicle_colour_scheme),
-            makeWidget({ 221, 48 }, { 16, 16 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_select_main_colour),
-            makeWidget({ 221, 78 }, { 16, 16 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_select_main_colour),
-            makeWidget({ 221, 95 }, { 16, 16 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_select_main_colour),
-            makeWidget({ 221, 112 }, { 16, 16 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_select_main_colour),
-            makeWidget({ 221, 129 }, { 16, 16 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_select_main_colour),
-            makeWidget({ 221, 146 }, { 16, 16 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_select_main_colour),
-            makeWidget({ 221, 163 }, { 16, 16 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_select_main_colour),
-            makeWidget({ 221, 180 }, { 16, 16 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_select_main_colour),
-            makeWidget({ 221, 197 }, { 16, 16 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_select_main_colour),
-            makeWidget({ 221, 214 }, { 16, 16 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_select_main_colour),
-            makeWidget({ 221, 231 }, { 16, 16 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_select_main_colour),
-            makeWidget({ 239, 48 }, { 16, 16 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_select_secondary_colour),
-            makeWidget({ 239, 78 }, { 16, 16 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_select_secondary_colour),
-            makeWidget({ 239, 95 }, { 16, 16 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_select_secondary_colour),
-            makeWidget({ 239, 112 }, { 16, 16 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_select_secondary_colour),
-            makeWidget({ 239, 129 }, { 16, 16 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_select_secondary_colour),
-            makeWidget({ 239, 146 }, { 16, 16 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_select_secondary_colour),
-            makeWidget({ 239, 163 }, { 16, 16 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_select_secondary_colour),
-            makeWidget({ 239, 180 }, { 16, 16 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_select_secondary_colour),
-            makeWidget({ 239, 197 }, { 16, 16 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_select_secondary_colour),
-            makeWidget({ 239, 214 }, { 16, 16 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_select_secondary_colour),
-            makeWidget({ 239, 231 }, { 16, 16 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_select_secondary_colour),
+            makeWidget({ 221, 48 }, { 16, 16 }, widget_type::wt_10, 1, ImageIds::null, string_ids::tooltip_select_main_colour),
+            makeWidget({ 221, 78 }, { 16, 16 }, widget_type::wt_10, 1, ImageIds::null, string_ids::tooltip_select_main_colour),
+            makeWidget({ 221, 95 }, { 16, 16 }, widget_type::wt_10, 1, ImageIds::null, string_ids::tooltip_select_main_colour),
+            makeWidget({ 221, 112 }, { 16, 16 }, widget_type::wt_10, 1, ImageIds::null, string_ids::tooltip_select_main_colour),
+            makeWidget({ 221, 129 }, { 16, 16 }, widget_type::wt_10, 1, ImageIds::null, string_ids::tooltip_select_main_colour),
+            makeWidget({ 221, 146 }, { 16, 16 }, widget_type::wt_10, 1, ImageIds::null, string_ids::tooltip_select_main_colour),
+            makeWidget({ 221, 163 }, { 16, 16 }, widget_type::wt_10, 1, ImageIds::null, string_ids::tooltip_select_main_colour),
+            makeWidget({ 221, 180 }, { 16, 16 }, widget_type::wt_10, 1, ImageIds::null, string_ids::tooltip_select_main_colour),
+            makeWidget({ 221, 197 }, { 16, 16 }, widget_type::wt_10, 1, ImageIds::null, string_ids::tooltip_select_main_colour),
+            makeWidget({ 221, 214 }, { 16, 16 }, widget_type::wt_10, 1, ImageIds::null, string_ids::tooltip_select_main_colour),
+            makeWidget({ 221, 231 }, { 16, 16 }, widget_type::wt_10, 1, ImageIds::null, string_ids::tooltip_select_main_colour),
+            makeWidget({ 239, 48 }, { 16, 16 }, widget_type::wt_10, 1, ImageIds::null, string_ids::tooltip_select_secondary_colour),
+            makeWidget({ 239, 78 }, { 16, 16 }, widget_type::wt_10, 1, ImageIds::null, string_ids::tooltip_select_secondary_colour),
+            makeWidget({ 239, 95 }, { 16, 16 }, widget_type::wt_10, 1, ImageIds::null, string_ids::tooltip_select_secondary_colour),
+            makeWidget({ 239, 112 }, { 16, 16 }, widget_type::wt_10, 1, ImageIds::null, string_ids::tooltip_select_secondary_colour),
+            makeWidget({ 239, 129 }, { 16, 16 }, widget_type::wt_10, 1, ImageIds::null, string_ids::tooltip_select_secondary_colour),
+            makeWidget({ 239, 146 }, { 16, 16 }, widget_type::wt_10, 1, ImageIds::null, string_ids::tooltip_select_secondary_colour),
+            makeWidget({ 239, 163 }, { 16, 16 }, widget_type::wt_10, 1, ImageIds::null, string_ids::tooltip_select_secondary_colour),
+            makeWidget({ 239, 180 }, { 16, 16 }, widget_type::wt_10, 1, ImageIds::null, string_ids::tooltip_select_secondary_colour),
+            makeWidget({ 239, 197 }, { 16, 16 }, widget_type::wt_10, 1, ImageIds::null, string_ids::tooltip_select_secondary_colour),
+            makeWidget({ 239, 214 }, { 16, 16 }, widget_type::wt_10, 1, ImageIds::null, string_ids::tooltip_select_secondary_colour),
+            makeWidget({ 239, 231 }, { 16, 16 }, widget_type::wt_10, 1, ImageIds::null, string_ids::tooltip_select_secondary_colour),
             widgetEnd(),
         };
 
@@ -1289,10 +1289,10 @@ namespace OpenLoco::ui::windows::CompanyWindow
             common::repositionTabs(self);
 
             // Set company's main colour
-            self->widgets[widx::main_colour_scheme].image = (1 << 30) | Gfx::recolour(image_ids::colour_swatch_recolourable, company->mainColours.primary);
+            self->widgets[widx::main_colour_scheme].image = (1 << 30) | Gfx::recolour(ImageIds::colour_swatch_recolourable, company->mainColours.primary);
 
             // Set company's secondary colour
-            self->widgets[widx::secondary_colour_scheme].image = (1 << 30) | Gfx::recolour(image_ids::colour_swatch_recolourable, company->mainColours.secondary);
+            self->widgets[widx::secondary_colour_scheme].image = (1 << 30) | Gfx::recolour(ImageIds::colour_swatch_recolourable, company->mainColours.secondary);
 
             struct ColourSchemeTuple
             {
@@ -1324,8 +1324,8 @@ namespace OpenLoco::ui::windows::CompanyWindow
                 {
                     self->activated_widgets |= (1ULL << tuples[i].checkbox);
 
-                    self->widgets[tuples[i].primary].image = (1ULL << 30) | Gfx::recolour(image_ids::colour_swatch_recolourable, company->vehicleColours[i].primary);
-                    self->widgets[tuples[i].secondary].image = (1ULL << 30) | Gfx::recolour(image_ids::colour_swatch_recolourable, company->vehicleColours[i].secondary);
+                    self->widgets[tuples[i].primary].image = (1ULL << 30) | Gfx::recolour(ImageIds::colour_swatch_recolourable, company->vehicleColours[i].primary);
+                    self->widgets[tuples[i].secondary].image = (1ULL << 30) | Gfx::recolour(ImageIds::colour_swatch_recolourable, company->vehicleColours[i].secondary);
 
                     self->widgets[tuples[i].primary].type = widget_type::wt_10;
                     self->widgets[tuples[i].secondary].type = widget_type::wt_10;

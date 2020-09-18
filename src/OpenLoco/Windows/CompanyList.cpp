@@ -75,15 +75,15 @@ namespace OpenLoco::ui::windows::CompanyList
 #define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                          \
     makeWidget({ 0, 0 }, { frameWidth, frameHeight }, widget_type::frame, 0),                                                            \
         makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, widget_type::caption_25, 0, windowCaptionId),                                       \
-        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window), \
+        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, string_ids::tooltip_close_window), \
         makeWidget({ 0, 41 }, { frameWidth, 231 }, widget_type::panel, 1),                                                               \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tab_compare_companies),                 \
-        makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tab_company_performance),              \
-        makeRemapWidget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tab_cargo_graphs),                     \
-        makeRemapWidget({ 96, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tab_cargo_distance_graphs),            \
-        makeRemapWidget({ 127, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tab_company_values),                  \
-        makeRemapWidget({ 158, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tab_cargo_payment_rates),             \
-        makeRemapWidget({ 189, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tab_speed_records)
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tab_compare_companies),                 \
+        makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tab_company_performance),              \
+        makeRemapWidget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tab_cargo_graphs),                     \
+        makeRemapWidget({ 96, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tab_cargo_distance_graphs),            \
+        makeRemapWidget({ 127, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tab_company_values),                  \
+        makeRemapWidget({ 158, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tab_cargo_payment_rates),             \
+        makeRemapWidget({ 189, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tab_speed_records)
 
         static void onMouseUp(window* self, widget_index widgetIndex);
         static void onUpdate(window* self);
@@ -117,10 +117,10 @@ namespace OpenLoco::ui::windows::CompanyList
 
         widget_t widgets[] = {
             commonWidgets(640, 272, string_ids::title_company_list),
-            makeWidget({ 4, 43 }, { 175, 12 }, widget_type::wt_14, 1, image_ids::null, string_ids::tooltip_sort_company_name),
-            makeWidget({ 179, 43 }, { 210, 12 }, widget_type::wt_14, 1, image_ids::null, string_ids::tooltip_sort_company_status),
-            makeWidget({ 389, 43 }, { 145, 12 }, widget_type::wt_14, 1, image_ids::null, string_ids::tooltip_sort_company_performance),
-            makeWidget({ 534, 43 }, { 100, 12 }, widget_type::wt_14, 1, image_ids::null, string_ids::tooltip_sort_company_value),
+            makeWidget({ 4, 43 }, { 175, 12 }, widget_type::wt_14, 1, ImageIds::null, string_ids::tooltip_sort_company_name),
+            makeWidget({ 179, 43 }, { 210, 12 }, widget_type::wt_14, 1, ImageIds::null, string_ids::tooltip_sort_company_status),
+            makeWidget({ 389, 43 }, { 145, 12 }, widget_type::wt_14, 1, ImageIds::null, string_ids::tooltip_sort_company_performance),
+            makeWidget({ 534, 43 }, { 100, 12 }, widget_type::wt_14, 1, ImageIds::null, string_ids::tooltip_sort_company_value),
             makeWidget({ 3, 56 }, { 634, 201 }, widget_type::scrollview, 1, vertical),
             widgetEnd(),
         };

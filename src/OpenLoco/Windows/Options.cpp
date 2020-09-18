@@ -74,26 +74,26 @@ namespace OpenLoco::ui::options
 
         static void drawTabs(window* w, Gfx::drawpixelinfo_t* ctx)
         {
-            widget::draw_tab(w, ctx, image_ids::tab_display, widx::tab_display);
-            widget::draw_tab(w, ctx, image_ids::tab_sound, widx::tab_sound);
+            widget::draw_tab(w, ctx, ImageIds::tab_display, widx::tab_display);
+            widget::draw_tab(w, ctx, ImageIds::tab_sound, widx::tab_sound);
 
             static const uint32_t music_tab_ids[] = {
-                image_ids::tab_music_0,
-                image_ids::tab_music_1,
-                image_ids::tab_music_2,
-                image_ids::tab_music_3,
-                image_ids::tab_music_4,
-                image_ids::tab_music_5,
-                image_ids::tab_music_6,
-                image_ids::tab_music_7,
-                image_ids::tab_music_8,
-                image_ids::tab_music_9,
-                image_ids::tab_music_10,
-                image_ids::tab_music_11,
-                image_ids::tab_music_12,
-                image_ids::tab_music_13,
-                image_ids::tab_music_14,
-                image_ids::tab_music_15,
+                ImageIds::tab_music_0,
+                ImageIds::tab_music_1,
+                ImageIds::tab_music_2,
+                ImageIds::tab_music_3,
+                ImageIds::tab_music_4,
+                ImageIds::tab_music_5,
+                ImageIds::tab_music_6,
+                ImageIds::tab_music_7,
+                ImageIds::tab_music_8,
+                ImageIds::tab_music_9,
+                ImageIds::tab_music_10,
+                ImageIds::tab_music_11,
+                ImageIds::tab_music_12,
+                ImageIds::tab_music_13,
+                ImageIds::tab_music_14,
+                ImageIds::tab_music_15,
             };
             uint32_t imageId = music_tab_ids[0];
             if (w->current_tab == tab::music)
@@ -103,61 +103,61 @@ namespace OpenLoco::ui::options
             widget::draw_tab(w, ctx, imageId, widx::tab_music);
 
             static const uint32_t globe_tab_ids[] = {
-                image_ids::tab_globe_0,
-                image_ids::tab_globe_1,
-                image_ids::tab_globe_2,
-                image_ids::tab_globe_3,
-                image_ids::tab_globe_4,
-                image_ids::tab_globe_5,
-                image_ids::tab_globe_6,
-                image_ids::tab_globe_7,
-                image_ids::tab_globe_8,
-                image_ids::tab_globe_9,
-                image_ids::tab_globe_10,
-                image_ids::tab_globe_11,
-                image_ids::tab_globe_12,
-                image_ids::tab_globe_13,
-                image_ids::tab_globe_14,
-                image_ids::tab_globe_15,
-                image_ids::tab_globe_16,
-                image_ids::tab_globe_17,
-                image_ids::tab_globe_18,
-                image_ids::tab_globe_19,
-                image_ids::tab_globe_20,
-                image_ids::tab_globe_21,
-                image_ids::tab_globe_22,
-                image_ids::tab_globe_23,
-                image_ids::tab_globe_24,
-                image_ids::tab_globe_25,
-                image_ids::tab_globe_26,
-                image_ids::tab_globe_27,
-                image_ids::tab_globe_28,
-                image_ids::tab_globe_29,
-                image_ids::tab_globe_30,
-                image_ids::tab_globe_31,
+                ImageIds::tab_globe_0,
+                ImageIds::tab_globe_1,
+                ImageIds::tab_globe_2,
+                ImageIds::tab_globe_3,
+                ImageIds::tab_globe_4,
+                ImageIds::tab_globe_5,
+                ImageIds::tab_globe_6,
+                ImageIds::tab_globe_7,
+                ImageIds::tab_globe_8,
+                ImageIds::tab_globe_9,
+                ImageIds::tab_globe_10,
+                ImageIds::tab_globe_11,
+                ImageIds::tab_globe_12,
+                ImageIds::tab_globe_13,
+                ImageIds::tab_globe_14,
+                ImageIds::tab_globe_15,
+                ImageIds::tab_globe_16,
+                ImageIds::tab_globe_17,
+                ImageIds::tab_globe_18,
+                ImageIds::tab_globe_19,
+                ImageIds::tab_globe_20,
+                ImageIds::tab_globe_21,
+                ImageIds::tab_globe_22,
+                ImageIds::tab_globe_23,
+                ImageIds::tab_globe_24,
+                ImageIds::tab_globe_25,
+                ImageIds::tab_globe_26,
+                ImageIds::tab_globe_27,
+                ImageIds::tab_globe_28,
+                ImageIds::tab_globe_29,
+                ImageIds::tab_globe_30,
+                ImageIds::tab_globe_31,
             };
-            imageId = image_ids::tab_globe_0;
+            imageId = ImageIds::tab_globe_0;
             if (w->current_tab == tab::regional)
             {
                 imageId = globe_tab_ids[(w->frame_no / 2) % 32];
             }
             widget::draw_tab(w, ctx, imageId, widx::tab_regional);
 
-            widget::draw_tab(w, ctx, image_ids::tab_control, widx::tab_controls);
-            widget::draw_tab(w, ctx, image_ids::tab_miscellaneous, widx::tab_miscellaneous);
+            widget::draw_tab(w, ctx, ImageIds::tab_control, widx::tab_controls);
+            widget::draw_tab(w, ctx, ImageIds::tab_miscellaneous, widx::tab_miscellaneous);
         }
 
 #define common_options_widgets(window_size, window_caption_id)                                                                                             \
     makeWidget({ 0, 0 }, window_size, widget_type::frame, 0),                                                                                              \
         makeWidget({ 1, 1 }, { (uint16_t)(window_size.width - 2), 13 }, widget_type::caption_25, 0, window_caption_id),                                    \
-        makeWidget({ (int16_t)(window_size.width - 15), 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window), \
+        makeWidget({ (int16_t)(window_size.width - 15), 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, string_ids::tooltip_close_window), \
         makeWidget({ 0, 41 }, { window_size.width, 102 }, widget_type::panel, 1),                                                                          \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::display_options),                                         \
-        makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::sound_options),                                          \
-        makeRemapWidget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::music_options),                                          \
-        makeRemapWidget({ 96, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::regional_options),                                       \
-        makeRemapWidget({ 127, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::control_options),                                       \
-        makeRemapWidget({ 158, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::miscellaneous_options)
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::display_options),                                         \
+        makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::sound_options),                                          \
+        makeRemapWidget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::music_options),                                          \
+        makeRemapWidget({ 96, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::regional_options),                                       \
+        makeRemapWidget({ 127, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::control_options),                                       \
+        makeRemapWidget({ 158, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::miscellaneous_options)
 
         static constexpr int tabWidgets = (1 << widx::tab_display) | (1 << widx::tab_sound) | (1 << widx::tab_music) | (1 << widx::tab_regional) | (1 << widx::tab_controls) | (1 << widx::tab_miscellaneous);
 
@@ -854,9 +854,9 @@ namespace OpenLoco::ui::options
             common_options_widgets(_window_size, string_ids::options_title_music),
             makeWidget({ 160, 49 }, { 196, 12 }, widget_type::wt_18, 1, string_ids::stringid),
             makeWidget({ 344, 50 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
-            makeWidget({ 10, 64 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::music_controls_stop, string_ids::music_controls_stop_tip),
-            makeWidget({ 34, 64 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::music_controls_play, string_ids::music_controls_play_tip),
-            makeWidget({ 58, 64 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::music_controls_next, string_ids::music_controls_next_tip),
+            makeWidget({ 10, 64 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::music_controls_stop, string_ids::music_controls_stop_tip),
+            makeWidget({ 34, 64 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::music_controls_play, string_ids::music_controls_play_tip),
+            makeWidget({ 58, 64 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::music_controls_next, string_ids::music_controls_next_tip),
             makeWidget({ 256, 64 }, { 109, 24 }, widget_type::wt_5, 1, -1, string_ids::set_volume_tip),
             makeWidget({ 10, 93 }, { 346, 12 }, widget_type::wt_18, 1, string_ids::arg2_stringid),
             makeWidget({ 344, 94 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
@@ -941,10 +941,10 @@ namespace OpenLoco::ui::options
 
             Gfx::drawString_494B3F(*dpi, w->x + 183, w->y + w->widgets[widx::volume].top + 7, 0, string_ids::volume, nullptr);
 
-            Gfx::drawImage(dpi, w->x + w->widgets[widx::volume].left, w->y + w->widgets[widx::volume].top, 0x20000000 | (w->colours[1] << 19) | image_ids::volume_slider_track);
+            Gfx::drawImage(dpi, w->x + w->widgets[widx::volume].left, w->y + w->widgets[widx::volume].top, 0x20000000 | (w->colours[1] << 19) | ImageIds::volume_slider_track);
 
             int16_t x = 90 + (config::get().volume / 32);
-            Gfx::drawImage(dpi, w->x + w->widgets[widx::volume].left + x, w->y + w->widgets[widx::volume].top, 0x20000000 | (w->colours[1] << 19) | image_ids::volume_slider_thumb);
+            Gfx::drawImage(dpi, w->x + w->widgets[widx::volume].left + x, w->y + w->widgets[widx::volume].top, 0x20000000 | (w->colours[1] << 19) | ImageIds::volume_slider_thumb);
         }
 
         static void onMouseUp(window* w, widget_index wi)

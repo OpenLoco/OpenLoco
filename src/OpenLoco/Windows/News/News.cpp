@@ -565,9 +565,9 @@ namespace OpenLoco::ui::NewsWindow
         // 0x00429872
         static void drawLateNews(window* self, Gfx::drawpixelinfo_t* dpi, message* news)
         {
-            Gfx::drawImage(dpi, self->x, self->y, image_ids::news_background_new_left);
+            Gfx::drawImage(dpi, self->x, self->y, ImageIds::news_background_new_left);
 
-            Gfx::drawImage(dpi, self->x + (windowSize.width / 2), self->y, image_ids::news_background_new_right);
+            Gfx::drawImage(dpi, self->x + (windowSize.width / 2), self->y, ImageIds::news_background_new_right);
 
             self->draw(dpi);
 
@@ -641,11 +641,11 @@ namespace OpenLoco::ui::NewsWindow
         // 0x004299E7
         static void drawEarlyNews(window* self, Gfx::drawpixelinfo_t* dpi, message* news)
         {
-            auto imageId = Gfx::recolour(image_ids::news_background_old_left, PaletteIndex::index_68);
+            auto imageId = Gfx::recolour(ImageIds::news_background_old_left, PaletteIndex::index_68);
 
             Gfx::drawImage(dpi, self->x, self->y, imageId);
 
-            imageId = Gfx::recolour(image_ids::news_background_old_right, PaletteIndex::index_68);
+            imageId = Gfx::recolour(ImageIds::news_background_old_right, PaletteIndex::index_68);
 
             Gfx::drawImage(dpi, self->x + (windowSize.width / 2), self->y, imageId);
 

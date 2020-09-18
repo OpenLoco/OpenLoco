@@ -42,7 +42,7 @@ namespace OpenLoco::ui::windows::CompanyFaceSelection
     static widget_t widgets[] = {
         makeWidget({ 0, 0 }, windowSize, widget_type::frame, 0),
         makeWidget({ 1, 1 }, { 398, 13 }, widget_type::caption_24, 0, string_ids::company_face_selection_title),
-        makeWidget({ 385, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window),
+        makeWidget({ 385, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, string_ids::tooltip_close_window),
         makeWidget({ 0, 15 }, { 400, 257 }, widget_type::panel, 1),
         makeWidget({ 4, 19 }, { 188, 248 }, widget_type::scrollview, 1, vertical, string_ids::tooltip_company_face_selection),
         makeWidget({ 265, 23 }, { 66, 66 }, widget_type::wt_5, 1),

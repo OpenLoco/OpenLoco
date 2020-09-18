@@ -246,7 +246,7 @@ namespace OpenLoco::ui::windows::error
 
                 if (company->jail_status != 0)
                 {
-                    Gfx::drawImage(dpi, xPos, yPos, image_ids::owner_jailed);
+                    Gfx::drawImage(dpi, xPos, yPos, ImageIds::owner_jailed);
                 }
 
                 Gfx::drawStringCentredRaw(*dpi, self->x + 156, self->y + 20, _word_9C66B3, Colour::black, &_byte_9C64B3[0]);

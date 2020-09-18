@@ -25,7 +25,7 @@ namespace OpenLoco::ui::about
     static widget_t _widgets[] = {
         makeWidget({ 0, 0 }, windowSize, widget_type::frame, 0),
         makeWidget({ 1, 1 }, { windowSize.width - 2, 13 }, widget_type::caption_25, 0, string_ids::about_locomotion_caption),
-        makeWidget({ windowSize.width - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window),
+        makeWidget({ windowSize.width - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, string_ids::tooltip_close_window),
         makeWidget({ 0, 15 }, { windowSize.width, 245 }, widget_type::panel, 1),
         makeWidget({ 100, 234 }, { windowSize.width / 2, 12 }, widget_type::wt_11, 1, string_ids::music_acknowledgements_btn),
         widgetEnd(),
@@ -88,7 +88,7 @@ namespace OpenLoco::ui::about
         drawStringCentred(*dpi, x, y, Colour::black, string_ids::about_locomotion_70, nullptr);
 
         // Chris Sawyer logo
-        drawImage(dpi, window->x + 92, window->y + 52, image_ids::chris_sawyer_logo_small);
+        drawImage(dpi, window->x + 92, window->y + 52, ImageIds::chris_sawyer_logo_small);
 
         y += 79;
         drawStringCentred(*dpi, x, y, Colour::black, string_ids::about_locomotion_71, nullptr);

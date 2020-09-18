@@ -31,7 +31,7 @@ namespace OpenLoco::ui::AboutMusic
     static widget_t _widgets[] = {
         makeWidget({ 0, 0 }, windowSize, widget_type::frame, 0),
         makeWidget({ 1, 1 }, { windowSize.width - 2, 13 }, widget_type::caption_25, 0, string_ids::music_acknowledgements_caption),
-        makeWidget({ windowSize.width - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window),
+        makeWidget({ windowSize.width - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, string_ids::tooltip_close_window),
         makeWidget({ 0, 15 }, { windowSize.width, 297 }, widget_type::panel, 1),
         makeWidget({ 4, 18 }, { windowSize.width - 8, 289 }, widget_type::scrollview, 1, ui::scrollbars::vertical),
         widgetEnd(),

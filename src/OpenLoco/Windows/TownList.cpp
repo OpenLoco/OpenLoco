@@ -50,12 +50,12 @@ namespace OpenLoco::ui::windows::town_list
 #define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                          \
     makeWidget({ 0, 0 }, { frameWidth, frameHeight }, widget_type::frame, 0),                                                            \
         makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, widget_type::caption_25, 0, windowCaptionId),                                       \
-        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window), \
+        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, string_ids::tooltip_close_window), \
         makeWidget({ 0, 41 }, { frameWidth, 155 }, widget_type::panel, 1),                                                               \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_town_list),                     \
-        makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_build_town),                   \
-        makeRemapWidget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_build_buildings),              \
-        makeRemapWidget({ 96, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_build_misc_buildings)
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_town_list),                     \
+        makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_build_town),                   \
+        makeRemapWidget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_build_buildings),              \
+        makeRemapWidget({ 96, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_build_misc_buildings)
 
         static void prepareDraw(window* self);
         static void repositionTabs(window* self);
@@ -87,10 +87,10 @@ namespace OpenLoco::ui::windows::town_list
 
         widget_t widgets[] = {
             commonWidgets(600, 197, string_ids::title_towns),
-            makeWidget({ 4, 43 }, { 200, 12 }, widget_type::wt_14, 1, image_ids::null, string_ids::tooltip_sort_by_name),
-            makeWidget({ 204, 43 }, { 80, 12 }, widget_type::wt_14, 1, image_ids::null, string_ids::tooltip_sort_town_type),
-            makeWidget({ 284, 43 }, { 70, 12 }, widget_type::wt_14, 1, image_ids::null, string_ids::tooltip_sort_population),
-            makeWidget({ 354, 43 }, { 70, 12 }, widget_type::wt_14, 1, image_ids::null, string_ids::tooltip_sort_stations),
+            makeWidget({ 4, 43 }, { 200, 12 }, widget_type::wt_14, 1, ImageIds::null, string_ids::tooltip_sort_by_name),
+            makeWidget({ 204, 43 }, { 80, 12 }, widget_type::wt_14, 1, ImageIds::null, string_ids::tooltip_sort_town_type),
+            makeWidget({ 284, 43 }, { 70, 12 }, widget_type::wt_14, 1, ImageIds::null, string_ids::tooltip_sort_population),
+            makeWidget({ 354, 43 }, { 70, 12 }, widget_type::wt_14, 1, ImageIds::null, string_ids::tooltip_sort_stations),
             makeWidget({ 3, 56 }, { 594, 126 }, widget_type::scrollview, 1, 2),
             widgetEnd(),
         };
@@ -592,7 +592,7 @@ namespace OpenLoco::ui::windows::town_list
 
         widget_t widgets[] = {
             commonWidgets(220, 87, string_ids::title_build_new_towns),
-            makeWidget({ 100, 45 }, { 117, 12 }, widget_type::wt_18, 1, image_ids::null, string_ids::tooltip_select_town_size),
+            makeWidget({ 100, 45 }, { 117, 12 }, widget_type::wt_18, 1, ImageIds::null, string_ids::tooltip_select_town_size),
             makeWidget({ 205, 46 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
             widgetEnd(),
         };
@@ -781,8 +781,8 @@ namespace OpenLoco::ui::windows::town_list
         widget_t widgets[] = {
             commonWidgets(640, 172, string_ids::title_build_new_buildings),
             makeWidget({ 2, 45 }, { 573, 112 }, widget_type::scrollview, 1, 2),
-            makeWidget({ 575, 46 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::rotate_object, string_ids::rotate_object_90),
-            makeWidget({ 579, 91 }, { 16, 16 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_object_colour),
+            makeWidget({ 575, 46 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::rotate_object, string_ids::rotate_object_90),
+            makeWidget({ 579, 91 }, { 16, 16 }, widget_type::wt_10, 1, ImageIds::null, string_ids::tooltip_object_colour),
             widgetEnd(),
         };
 
@@ -791,7 +791,7 @@ namespace OpenLoco::ui::windows::town_list
         // 0x0049A8A6
         static void prepareDraw(ui::window* self)
         {
-            self->widgets[widx::object_colour].image = (1 << 30) | Gfx::recolour(image_ids::colour_swatch_recolourable, _buildingColour);
+            self->widgets[widx::object_colour].image = (1 << 30) | Gfx::recolour(ImageIds::colour_swatch_recolourable, _buildingColour);
             self->widgets[widx::object_colour].type = widget_type::none;
 
             if (self->row_hover != -1)

@@ -52,11 +52,11 @@ namespace OpenLoco::ui::windows::station
 #define commonWidgets(frameWidth, frameHeight)                                                                                           \
     makeWidget({ 0, 0 }, { frameWidth, frameHeight }, widget_type::frame, 0),                                                            \
         makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, widget_type::caption_23, 0, string_ids::title_station),                             \
-        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window), \
+        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, string_ids::tooltip_close_window), \
         makeWidget({ 0, 41 }, { frameWidth, 95 }, widget_type::panel, 1),                                                                \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_station),                       \
-        makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_station_cargo),                \
-        makeRemapWidget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_station_cargo_ratings)
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_station),                       \
+        makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_station_cargo),                \
+        makeRemapWidget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_station_cargo_ratings)
 
         // Defined at the bottom of this file.
         static void prepareDraw(window* self);
@@ -86,7 +86,7 @@ namespace OpenLoco::ui::windows::station
             commonWidgets(223, 136),
             makeWidget({ 3, 44 }, { 195, 80 }, widget_type::viewport, 1, 0xFFFFFFFE),
             makeWidget({ 3, 115 }, { 195, 21 }, widget_type::wt_13, 1),
-            makeWidget({ 0, 0 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::null, string_ids::move_main_view_to_show_this),
+            makeWidget({ 0, 0 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::null, string_ids::move_main_view_to_show_this),
             widgetEnd(),
         };
 
@@ -340,7 +340,7 @@ namespace OpenLoco::ui::windows::station
             commonWidgets(223, 136),
             makeWidget({ 3, 44 }, { 217, 80 }, widget_type::scrollview, 1, 2),
             makeWidget({ 3, 125 }, { 195, 10 }, widget_type::wt_13, 1),
-            makeWidget({ 198, 44 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::show_station_catchment, string_ids::station_catchment),
+            makeWidget({ 198, 44 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::show_station_catchment, string_ids::station_catchment),
             widgetEnd(),
         };
 

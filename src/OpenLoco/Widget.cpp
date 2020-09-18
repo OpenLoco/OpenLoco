@@ -73,7 +73,7 @@ namespace OpenLoco::ui::widget
             Gfx::drawRectInset(dpi, widget.left + window->x, widget.top + window->y, widget.width(), widget.height(), Colour::translucent(window->colours[1]), flags);
         }
 
-        Gfx::drawImage(dpi, widget.left + window->x, widget.top + window->y, Gfx::recolour(image_ids::centre_viewport, window->colours[1]));
+        Gfx::drawImage(dpi, widget.left + window->x, widget.top + window->y, Gfx::recolour(ImageIds::centre_viewport, window->colours[1]));
     }
 
     // 0x004CAB8E
@@ -823,7 +823,7 @@ namespace OpenLoco::ui::widget
             {
                 Gfx::drawImage(ctx, pos.x, pos.y + 1, imageId);
             }
-            Gfx::drawImage(ctx, pos.x, pos.y, (1 << 30) | (51 << 19) | image_ids::tab);
+            Gfx::drawImage(ctx, pos.x, pos.y, (1 << 30) | (51 << 19) | ImageIds::tab);
             Gfx::drawRect(ctx, pos.x, pos.y + 26, 31, 1, Colour::getShade(w->colours[1], 7));
         }
     }

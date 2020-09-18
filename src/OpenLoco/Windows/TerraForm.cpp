@@ -82,13 +82,13 @@ namespace OpenLoco::ui::windows::terraform
 #define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                          \
     makeWidget({ 0, 0 }, { frameWidth, frameHeight }, widget_type::frame, 0),                                                            \
         makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, widget_type::caption_24, 0, windowCaptionId),                                       \
-        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window), \
+        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, string_ids::tooltip_close_window), \
         makeWidget({ 0, 41 }, { 130, 74 }, widget_type::panel, 1),                                                                       \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_6, 1, image_ids::tab, string_ids::tooltip_clear_land),                    \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_6, 1, image_ids::tab, string_ids::tooltip_adjust_land),                   \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_6, 1, image_ids::tab, string_ids::tooltip_adjust_water),                  \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_6, 1, image_ids::tab, string_ids::tooltip_plant_trees),                   \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_6, 1, image_ids::tab, string_ids::tooltip_build_walls)
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_6, 1, ImageIds::tab, string_ids::tooltip_clear_land),                    \
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_6, 1, ImageIds::tab, string_ids::tooltip_adjust_land),                   \
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_6, 1, ImageIds::tab, string_ids::tooltip_adjust_water),                  \
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_6, 1, ImageIds::tab, string_ids::tooltip_plant_trees),                   \
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_6, 1, ImageIds::tab, string_ids::tooltip_build_walls)
 
         static window_event_list _events;
 
@@ -125,10 +125,10 @@ namespace OpenLoco::ui::windows::terraform
         widget_t widgets[] = {
             commonWidgets(634, 162, string_ids::title_plant_trees),
             makeWidget({ 3, 45 }, { 605, 101 }, widget_type::scrollview, 1, scrollbars::vertical),
-            makeWidget({ 609, 46 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::rotate_object, string_ids::rotate_object_90),
-            makeWidget({ 609, 70 }, { 24, 24 }, widget_type::wt_10, 1, image_ids::null, string_ids::tooltip_object_colour),
-            makeWidget({ 609, 94 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::plant_cluster_selected_tree, string_ids::plant_cluster_selected_tree),
-            makeWidget({ 609, 118 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::plant_cluster_random_tree, string_ids::plant_cluster_random_tree),
+            makeWidget({ 609, 46 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::rotate_object, string_ids::rotate_object_90),
+            makeWidget({ 609, 70 }, { 24, 24 }, widget_type::wt_10, 1, ImageIds::null, string_ids::tooltip_object_colour),
+            makeWidget({ 609, 94 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::plant_cluster_selected_tree, string_ids::plant_cluster_selected_tree),
+            makeWidget({ 609, 118 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::plant_cluster_random_tree, string_ids::plant_cluster_random_tree),
             widgetEnd(),
         };
 
@@ -521,7 +521,7 @@ namespace OpenLoco::ui::windows::terraform
                     if (treeObj->colours != 0)
                     {
 
-                        self->widgets[widx::object_colour].image = (1 << 30) | Gfx::recolour(image_ids::colour_swatch_recolourable, _treeColour);
+                        self->widgets[widx::object_colour].image = (1 << 30) | Gfx::recolour(ImageIds::colour_swatch_recolourable, _treeColour);
                         self->widgets[widx::object_colour].type = widget_type::wt_10;
                     }
                 }
@@ -758,9 +758,9 @@ namespace OpenLoco::ui::windows::terraform
 
         widget_t widgets[] = {
             commonWidgets(130, 105, string_ids::clear_area),
-            makeWidget({ 33 + 16, 45 }, { 64, 44 }, widget_type::wt_3, 1, image_ids::tool_area, string_ids::tooltip_clear_area),
-            makeWidget({ 34 + 16, 46 }, { 16, 16 }, widget_type::wt_7, 1, Gfx::recolour(image_ids::decrease_tool_area, Colour::white), string_ids::tooltip_decrease_clear_area),
-            makeWidget({ 80 + 16, 72 }, { 16, 16 }, widget_type::wt_7, 1, Gfx::recolour(image_ids::increase_tool_area, Colour::white), string_ids::tooltip_increase_clear_area),
+            makeWidget({ 33 + 16, 45 }, { 64, 44 }, widget_type::wt_3, 1, ImageIds::tool_area, string_ids::tooltip_clear_area),
+            makeWidget({ 34 + 16, 46 }, { 16, 16 }, widget_type::wt_7, 1, Gfx::recolour(ImageIds::decrease_tool_area, Colour::white), string_ids::tooltip_decrease_clear_area),
+            makeWidget({ 80 + 16, 72 }, { 16, 16 }, widget_type::wt_7, 1, Gfx::recolour(ImageIds::increase_tool_area, Colour::white), string_ids::tooltip_increase_clear_area),
             widgetEnd(),
         };
 
@@ -882,7 +882,7 @@ namespace OpenLoco::ui::windows::terraform
 
             self->activated_widgets |= (1ULL << widx::tool_area);
 
-            self->widgets[widx::tool_area].image = _adjustToolSize + image_ids::tool_area;
+            self->widgets[widx::tool_area].image = _adjustToolSize + ImageIds::tool_area;
 
             common::repositionTabs(self);
         }
@@ -940,9 +940,9 @@ namespace OpenLoco::ui::windows::terraform
 
         widget_t widgets[] = {
             commonWidgets(130, 105, string_ids::title_adjust_land),
-            makeWidget({ 33 + 16, 45 }, { 64, 44 }, widget_type::wt_3, 1, image_ids::tool_area, string_ids::tooltip_adjust_land_tool),
-            makeWidget({ 34 + 16, 46 }, { 16, 16 }, widget_type::wt_7, 1, Gfx::recolour(image_ids::decrease_tool_area, Colour::white), string_ids::tooltip_decrease_adjust_land_area),
-            makeWidget({ 80 + 16, 72 }, { 16, 16 }, widget_type::wt_7, 1, Gfx::recolour(image_ids::increase_tool_area, Colour::white), string_ids::tooltip_increase_adjust_land_area),
+            makeWidget({ 33 + 16, 45 }, { 64, 44 }, widget_type::wt_3, 1, ImageIds::tool_area, string_ids::tooltip_adjust_land_tool),
+            makeWidget({ 34 + 16, 46 }, { 16, 16 }, widget_type::wt_7, 1, Gfx::recolour(ImageIds::decrease_tool_area, Colour::white), string_ids::tooltip_decrease_adjust_land_area),
+            makeWidget({ 80 + 16, 72 }, { 16, 16 }, widget_type::wt_7, 1, Gfx::recolour(ImageIds::increase_tool_area, Colour::white), string_ids::tooltip_increase_adjust_land_area),
             makeWidget({ 55 + 16, 92 }, { 20, 20 }, widget_type::wt_6, 0),
             widgetEnd(),
         };
@@ -1433,7 +1433,7 @@ namespace OpenLoco::ui::windows::terraform
 
             self->activated_widgets |= (1ULL << widx::tool_area);
 
-            self->widgets[widx::tool_area].image = _adjustToolSize + image_ids::tool_area;
+            self->widgets[widx::tool_area].image = _adjustToolSize + ImageIds::tool_area;
 
             self->widgets[widx::land_material].type = widget_type::none;
 
@@ -1514,9 +1514,9 @@ namespace OpenLoco::ui::windows::terraform
 
         widget_t widgets[] = {
             commonWidgets(130, 105, string_ids::title_adjust_water),
-            makeWidget({ 33 + 16, 45 }, { 64, 44 }, widget_type::wt_3, 1, image_ids::tool_area, string_ids::tooltip_adjust_water_tool),
-            makeWidget({ 34 + 16, 46 }, { 16, 16 }, widget_type::wt_7, 1, Gfx::recolour(image_ids::decrease_tool_area, Colour::white), string_ids::tooltip_decrease_adjust_water_area),
-            makeWidget({ 80 + 16, 72 }, { 16, 16 }, widget_type::wt_7, 1, Gfx::recolour(image_ids::increase_tool_area, Colour::white), string_ids::tooltip_increase_adjust_water_area),
+            makeWidget({ 33 + 16, 45 }, { 64, 44 }, widget_type::wt_3, 1, ImageIds::tool_area, string_ids::tooltip_adjust_water_tool),
+            makeWidget({ 34 + 16, 46 }, { 16, 16 }, widget_type::wt_7, 1, Gfx::recolour(ImageIds::decrease_tool_area, Colour::white), string_ids::tooltip_decrease_adjust_water_area),
+            makeWidget({ 80 + 16, 72 }, { 16, 16 }, widget_type::wt_7, 1, Gfx::recolour(ImageIds::increase_tool_area, Colour::white), string_ids::tooltip_increase_adjust_water_area),
             widgetEnd(),
         };
 
@@ -1681,7 +1681,7 @@ namespace OpenLoco::ui::windows::terraform
 
             self->activated_widgets |= (1ULL << widx::tool_area);
 
-            self->widgets[widx::tool_area].image = _adjustToolSize + image_ids::tool_area;
+            self->widgets[widx::tool_area].image = _adjustToolSize + ImageIds::tool_area;
 
             common::repositionTabs(self);
         }

@@ -46,11 +46,11 @@ namespace OpenLoco::ui::TimePanel
         makeWidget({ 0, 0 }, { 140, 29 }, widget_type::wt_3, 0),                                                                                          // 0,
         makeWidget({ 2, 2 }, { 136, 25 }, widget_type::wt_3, 0),                                                                                          // 1,
         makeWidget({ 113, 1 }, { 26, 26 }, widget_type::wt_9, 0),                                                                                         // 2,
-        makeWidget({ 2, 2 }, { 111, 12 }, widget_type::wt_9, 0, image_ids::null, string_ids::tooltip_daymonthyear_challenge),                             // 3,
-        makeRemapWidget({ 18, 15 }, { 20, 12 }, widget_type::wt_9, 0, image_ids::speed_pause, string_ids::tooltip_speed_pause),                           // 4,
-        makeRemapWidget({ 38, 15 }, { 20, 12 }, widget_type::wt_9, 0, image_ids::speed_normal, string_ids::tooltip_speed_normal),                         // 5,
-        makeRemapWidget({ 58, 15 }, { 20, 12 }, widget_type::wt_9, 0, image_ids::speed_fast_forward, string_ids::tooltip_speed_fast_forward),             // 6,
-        makeRemapWidget({ 78, 15 }, { 20, 12 }, widget_type::wt_9, 0, image_ids::speed_extra_fast_forward, string_ids::tooltip_speed_extra_fast_forward), // 7,
+        makeWidget({ 2, 2 }, { 111, 12 }, widget_type::wt_9, 0, ImageIds::null, string_ids::tooltip_daymonthyear_challenge),                             // 3,
+        makeRemapWidget({ 18, 15 }, { 20, 12 }, widget_type::wt_9, 0, ImageIds::speed_pause, string_ids::tooltip_speed_pause),                           // 4,
+        makeRemapWidget({ 38, 15 }, { 20, 12 }, widget_type::wt_9, 0, ImageIds::speed_normal, string_ids::tooltip_speed_normal),                         // 5,
+        makeRemapWidget({ 58, 15 }, { 20, 12 }, widget_type::wt_9, 0, ImageIds::speed_fast_forward, string_ids::tooltip_speed_fast_forward),             // 6,
+        makeRemapWidget({ 78, 15 }, { 20, 12 }, widget_type::wt_9, 0, ImageIds::speed_extra_fast_forward, string_ids::tooltip_speed_extra_fast_forward), // 7,
         widgetEnd(),
     };
 
@@ -117,26 +117,26 @@ namespace OpenLoco::ui::TimePanel
     static void prepareDraw(window* window)
     {
         _widgets[widx::inner_frame].type = widget_type::none;
-        _widgets[widx::pause_btn].image = Gfx::recolour(image_ids::speed_pause);
-        _widgets[widx::normal_speed_btn].image = Gfx::recolour(image_ids::speed_normal);
-        _widgets[widx::fast_forward_btn].image = Gfx::recolour(image_ids::speed_fast_forward);
-        _widgets[widx::extra_fast_forward_btn].image = Gfx::recolour(image_ids::speed_extra_fast_forward);
+        _widgets[widx::pause_btn].image = Gfx::recolour(ImageIds::speed_pause);
+        _widgets[widx::normal_speed_btn].image = Gfx::recolour(ImageIds::speed_normal);
+        _widgets[widx::fast_forward_btn].image = Gfx::recolour(ImageIds::speed_fast_forward);
+        _widgets[widx::extra_fast_forward_btn].image = Gfx::recolour(ImageIds::speed_extra_fast_forward);
 
         if (isPaused())
         {
-            _widgets[widx::pause_btn].image = Gfx::recolour(image_ids::speed_pause_active);
+            _widgets[widx::pause_btn].image = Gfx::recolour(ImageIds::speed_pause_active);
         }
         else if (game_speed == 0)
         {
-            _widgets[widx::normal_speed_btn].image = Gfx::recolour(image_ids::speed_normal_active);
+            _widgets[widx::normal_speed_btn].image = Gfx::recolour(ImageIds::speed_normal_active);
         }
         else if (game_speed == 1)
         {
-            _widgets[widx::fast_forward_btn].image = Gfx::recolour(image_ids::speed_fast_forward_active);
+            _widgets[widx::fast_forward_btn].image = Gfx::recolour(ImageIds::speed_fast_forward_active);
         }
         else if (game_speed == 2)
         {
-            _widgets[widx::extra_fast_forward_btn].image = Gfx::recolour(image_ids::speed_extra_fast_forward_active);
+            _widgets[widx::extra_fast_forward_btn].image = Gfx::recolour(ImageIds::speed_extra_fast_forward_active);
         }
 
         if (isNetworked())

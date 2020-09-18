@@ -47,8 +47,8 @@ namespace OpenLoco::ui::windows::PlayerInfoPanel
         makeWidget({ 0, 0 }, { 140, 29 }, widget_type::wt_3, 0),
         makeWidget({ 2, 2 }, { 136, 25 }, widget_type::wt_3, 0),
         makeWidget({ 1, 1 }, { 26, 26 }, widget_type::wt_9, 0),
-        makeWidget({ 27, 2 }, { 111, 12 }, widget_type::wt_9, 0, image_ids::null, string_ids::tooltip_company_value),
-        makeWidget({ 27, 14 }, { 111, 12 }, widget_type::wt_9, 0, image_ids::null, string_ids::tooltip_performance_index),
+        makeWidget({ 27, 2 }, { 111, 12 }, widget_type::wt_9, 0, ImageIds::null, string_ids::tooltip_company_value),
+        makeWidget({ 27, 14 }, { 111, 12 }, widget_type::wt_9, 0, ImageIds::null, string_ids::tooltip_performance_index),
         widgetEnd(),
     };
 
@@ -131,7 +131,7 @@ namespace OpenLoco::ui::windows::PlayerInfoPanel
             index++;
         }
 
-        dropdown::add(index++, string_ids::dropdown_companies_list, image_ids::company_list_dropdown_icon);
+        dropdown::add(index++, string_ids::dropdown_companies_list, ImageIds::company_list_dropdown_icon);
         dropdown::showBelow(self, widgetIndex, index, 25, (1 << 6));
         if (highlightIndex != -1)
         {

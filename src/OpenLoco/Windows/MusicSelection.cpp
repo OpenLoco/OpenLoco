@@ -30,7 +30,7 @@ namespace OpenLoco::ui::windows::music_selection
     static widget_t _widgets[] = {
         makeWidget({ 0, 0 }, { 360, 238 }, widget_type::frame, 0),
         makeWidget({ 1, 1 }, { 358, 13 }, widget_type::caption_25, 0, string_ids::music_selection_title),
-        makeWidget({ 345, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window),
+        makeWidget({ 345, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, string_ids::tooltip_close_window),
         makeWidget({ 0, 15 }, { 360, 223 }, widget_type::panel, 1),
         makeWidget({ 4, 19 }, { 352, 218 }, widget_type::scrollview, 1, scrollbars::vertical, string_ids::music_selection_tooltip),
         widgetEnd(),

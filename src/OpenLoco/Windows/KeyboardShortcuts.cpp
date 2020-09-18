@@ -23,7 +23,7 @@ namespace OpenLoco::ui::KeyboardShortcuts
     static widget_t _widgets[] = {
         makeWidget({ 0, 0 }, { 360, 238 }, widget_type::frame, 0),
         makeWidget({ 1, 1 }, { 358, 13 }, widget_type::caption_25, 0, string_ids::keyboard_shortcuts),
-        makeWidget({ 345, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window),
+        makeWidget({ 345, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, string_ids::tooltip_close_window),
         makeWidget({ 0, 15 }, { 360, 223 }, widget_type::panel, 1),
         makeWidget({ 4, 19 }, { 352, 202 }, widget_type::scrollview, 1, vertical, string_ids::keyboard_shortcut_list_tip),
         makeWidget({ 4, 223 }, { 150, 12 }, widget_type::wt_11, 1, string_ids::reset_keys, string_ids::reset_keys_tip),

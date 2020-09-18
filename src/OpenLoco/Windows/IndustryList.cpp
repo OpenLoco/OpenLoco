@@ -45,10 +45,10 @@ namespace OpenLoco::ui::windows::industry_list
 #define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                          \
     makeWidget({ 0, 0 }, { frameWidth, frameHeight }, widget_type::frame, 0),                                                            \
         makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, widget_type::caption_25, 0, windowCaptionId),                                       \
-        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window), \
+        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, string_ids::tooltip_close_window), \
         makeWidget({ 0, 41 }, { frameWidth, 154 }, widget_type::panel, 1),                                                               \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_industries_list),               \
-        makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_fund_new_industries)
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_industries_list),               \
+        makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_fund_new_industries)
 
         static window_event_list _events;
 
@@ -79,9 +79,9 @@ namespace OpenLoco::ui::windows::industry_list
 
         widget_t widgets[] = {
             commonWidgets(600, 197, string_ids::title_industries),
-            makeWidget({ 4, 44 }, { 199, 11 }, widget_type::wt_14, 1, image_ids::null, string_ids::sort_industry_name),
-            makeWidget({ 204, 44 }, { 204, 11 }, widget_type::wt_14, 1, image_ids::null, string_ids::sort_industry_status),
-            makeWidget({ 444, 44 }, { 159, 11 }, widget_type::wt_14, 1, image_ids::null, string_ids::sort_industry_production_transported),
+            makeWidget({ 4, 44 }, { 199, 11 }, widget_type::wt_14, 1, ImageIds::null, string_ids::sort_industry_name),
+            makeWidget({ 204, 44 }, { 204, 11 }, widget_type::wt_14, 1, ImageIds::null, string_ids::sort_industry_status),
+            makeWidget({ 444, 44 }, { 159, 11 }, widget_type::wt_14, 1, ImageIds::null, string_ids::sort_industry_production_transported),
             makeWidget({ 3, 56 }, { 593, 125 }, widget_type::scrollview, 1, scrollbars::vertical),
             widgetEnd(),
         };

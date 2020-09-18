@@ -86,9 +86,9 @@ namespace OpenLoco::ui::prompt_browse
     static widget_t widgets[] = {
         makeWidget({ 0, 0 }, { 500, 380 }, widget_type::frame, 0),
         makeWidget({ 1, 1 }, { 498, 13 }, widget_type::caption_25, 0, string_ids::buffer_2039),
-        makeWidget({ 485, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window),
+        makeWidget({ 485, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, string_ids::tooltip_close_window),
         makeWidget({ 0, 15 }, { 500, 365 }, widget_type::panel, 1),
-        makeWidget({ 473, 18 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::icon_parent_folder, string_ids::window_browse_parent_folder_tooltip),
+        makeWidget({ 473, 18 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::icon_parent_folder, string_ids::window_browse_parent_folder_tooltip),
         makeWidget({ 88, 348 }, { 408, 14 }, widget_type::wt_17, 1),
         makeWidget({ 426, 364 }, { 70, 12 }, widget_type::wt_11, 1, string_ids::label_button_ok),
         makeWidget({ 3, 45 }, { 494, 323 }, widget_type::scrollview, 1, vertical),
@@ -490,13 +490,13 @@ namespace OpenLoco::ui::prompt_browse
                 Gfx::drawImage(&dpi, x + 1, y + 1, imageId);
                 *g1 = backupg1;
 
-                Gfx::drawImage(&dpi, x, y + 1, image_ids::height_map_compass);
+                Gfx::drawImage(&dpi, x, y + 1, ImageIds::height_map_compass);
             }
         }
         else
         {
             // Randomly generated landscape
-            auto imageId = image_ids::random_map_watermark | (window.colours[1] << 19) | 0x20000000;
+            auto imageId = ImageIds::random_map_watermark | (window.colours[1] << 19) | 0x20000000;
             Gfx::drawImage(&dpi, x, y, imageId);
             Gfx::point_t origin = { (int16_t)(x + 64), (int16_t)(y + 60) };
             Gfx::drawStringCentredWrapped(&dpi, &origin, 128, 0, string_ids::randomly_generated_landscape);
@@ -567,7 +567,7 @@ namespace OpenLoco::ui::prompt_browse
                 auto x = 1;
                 if (file.is_directory())
                 {
-                    Gfx::drawImage(dpi, x, y, image_ids::icon_folder);
+                    Gfx::drawImage(dpi, x, y, ImageIds::icon_folder);
                     x += 14;
                 }
 
