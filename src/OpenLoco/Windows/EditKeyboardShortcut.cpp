@@ -23,7 +23,7 @@ namespace OpenLoco::ui::EditKeyboardShortcut
     static widget_t _widgets[] = {
         makeWidget({ 0, 0 }, windowSize, widget_type::frame, 0, 0xFFFFFFFF),                                                  // 0,
         makeWidget({ 1, 1 }, { windowSize.width - 2, 13 }, widget_type::caption_25, 0, string_ids::change_keyboard_shortcut), // 1,
-        makeWidget({ 265, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, string_ids::tooltip_close_window),  // 2,
+        makeWidget({ 265, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, string_ids::tooltip_close_window),   // 2,
         makeWidget({ 0, 15 }, { windowSize.width, 57 }, widget_type::panel, 1, 0xFFFFFFFF),                                   // 3,
         widgetEnd(),
     };

@@ -46,11 +46,11 @@ namespace OpenLoco::ui::windows::CompanyWindow
 
         constexpr uint64_t enabledWidgets = (1 << widx::caption) | (1 << widx::close_button) | (1 << widx::tab_status) | (1 << widx::tab_details) | (1 << widx::tab_colour_scheme) | (1 << widx::tab_finances) | (1 << widx::tab_cargo_delivered) | (1 << widx::tab_challenge);
 
-#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                              \
-    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, widget_type::frame, 0),                                                                \
-        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, widget_type::caption_24, 0, windowCaptionId),                                           \
+#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                             \
+    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, widget_type::frame, 0),                                                               \
+        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, widget_type::caption_24, 0, windowCaptionId),                                          \
         makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, string_ids::tooltip_close_window),     \
-        makeWidget({ 0, 41 }, { frameWidth, 120 }, widget_type::panel, 1),                                                                   \
+        makeWidget({ 0, 41 }, { frameWidth, 120 }, widget_type::panel, 1),                                                                  \
         makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_company_owner_and_status),          \
         makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_company_headquarters_and_details), \
         makeRemapWidget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_company_colour_scheme),            \

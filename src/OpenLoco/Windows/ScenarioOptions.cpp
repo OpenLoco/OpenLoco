@@ -65,10 +65,10 @@ namespace OpenLoco::ui::windows::ScenarioOptions
 
         const uint64_t enabledWidgets = (1 << widx::tab_challenge) | (1 << widx::tab_companies) | (1 << widx::tab_finances) | (1 << widx::tab_scenario);
 
-#define commonWidgets(frameHeight, windowCaptionId)                                                                           \
-    makeWidget({ 0, 0 }, { 366, frameHeight }, widget_type::frame, 0),                                                        \
-        makeWidget({ 1, 1 }, { 364, 13 }, widget_type::caption_25, 0, windowCaptionId),                                       \
-        makeWidget({ 0, 41 }, { 366, 175 }, widget_type::panel, 1),                                                           \
+#define commonWidgets(frameHeight, windowCaptionId)                                                                          \
+    makeWidget({ 0, 0 }, { 366, frameHeight }, widget_type::frame, 0),                                                       \
+        makeWidget({ 1, 1 }, { 364, 13 }, widget_type::caption_25, 0, windowCaptionId),                                      \
+        makeWidget({ 0, 41 }, { 366, 175 }, widget_type::panel, 1),                                                          \
         makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_scenario_challenge), \
         makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_company_options),   \
         makeRemapWidget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_financial_options), \
