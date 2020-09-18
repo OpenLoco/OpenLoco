@@ -18,7 +18,7 @@
 
 using namespace OpenLoco::interop;
 using namespace OpenLoco::utility;
-using namespace OpenLoco::drawing;
+using namespace OpenLoco::Drawing;
 using namespace OpenLoco::ui;
 
 namespace OpenLoco::gfx
@@ -983,7 +983,7 @@ namespace OpenLoco::gfx
         setDirtyBlocks(0, 0, ui::width(), ui::height());
     }
 
-    drawing::SoftwareDrawingEngine* engine;
+    Drawing::SoftwareDrawingEngine* engine;
 
     /**
      * 0x004C5C69
@@ -996,7 +996,7 @@ namespace OpenLoco::gfx
     void setDirtyBlocks(int32_t left, int32_t top, int32_t right, int32_t bottom)
     {
         if (engine == nullptr)
-            engine = new drawing::SoftwareDrawingEngine();
+            engine = new Drawing::SoftwareDrawingEngine();
 
         engine->setDirtyBlocks(left, top, right, bottom);
     }
@@ -1005,7 +1005,7 @@ namespace OpenLoco::gfx
     void drawDirtyBlocks()
     {
         if (engine == nullptr)
-            engine = new drawing::SoftwareDrawingEngine();
+            engine = new Drawing::SoftwareDrawingEngine();
 
         engine->drawDirtyBlocks();
     }
@@ -1017,7 +1017,7 @@ namespace OpenLoco::gfx
     void render()
     {
         if (engine == nullptr)
-            engine = new drawing::SoftwareDrawingEngine();
+            engine = new Drawing::SoftwareDrawingEngine();
 
         char backup1[512] = { 0 };
         char backup2[512] = { 0 };
