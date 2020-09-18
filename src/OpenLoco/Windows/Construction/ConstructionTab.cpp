@@ -1245,7 +1245,7 @@ namespace OpenLoco::ui::windows::construction::construction
             auto bridgeObj = objectmgr::get<bridge_object>(bridge);
             auto company = companymgr::get(_playerCompany);
             auto companyColour = company->mainColours.primary;
-            auto imageId = gfx::recolour(bridgeObj->var_16, companyColour);
+            auto imageId = Gfx::recolour(bridgeObj->var_16, companyColour);
 
             auto args = FormatArguments();
             args.push(imageId);
@@ -1899,14 +1899,14 @@ namespace OpenLoco::ui::windows::construction::construction
     }
 
     // 0x0049D38A and 0x0049D16B
-    static void drawCostString(window* self, gfx::drawpixelinfo_t* dpi)
+    static void drawCostString(window* self, Gfx::drawpixelinfo_t* dpi)
     {
         auto x = self->widgets[widx::construct].mid_x();
         x += self->x;
         auto y = self->widgets[widx::construct].bottom + self->y - 23;
 
         if (_constructionHover != 1)
-            gfx::drawStringCentred(*dpi, x, y, Colour::black, string_ids::build_this);
+            Gfx::drawStringCentred(*dpi, x, y, Colour::black, string_ids::build_this);
 
         y += 11;
 
@@ -1916,13 +1916,13 @@ namespace OpenLoco::ui::windows::construction::construction
             {
                 auto args = FormatArguments();
                 args.push<uint32_t>(_trackCost);
-                gfx::drawStringCentred(*dpi, x, y, Colour::black, string_ids::build_cost, &args);
+                Gfx::drawStringCentred(*dpi, x, y, Colour::black, string_ids::build_cost, &args);
             }
         }
     }
 
     // 0x0049D106
-    static void drawTrackCost(window* self, gfx::drawpixelinfo_t* clipped, gfx::drawpixelinfo_t* dpi, xy32 pos, uint16_t width, uint16_t height)
+    static void drawTrackCost(window* self, Gfx::drawpixelinfo_t* clipped, Gfx::drawpixelinfo_t* dpi, xy32 pos, uint16_t width, uint16_t height)
     {
         width >>= 1;
         height >>= 1;
@@ -1943,7 +1943,7 @@ namespace OpenLoco::ui::windows::construction::construction
     }
 
     // 0x0049D325
-    static void drawRoadCost(window* self, gfx::drawpixelinfo_t* clipped, gfx::drawpixelinfo_t* dpi, xy32 pos, uint16_t width, uint16_t height)
+    static void drawRoadCost(window* self, Gfx::drawpixelinfo_t* clipped, Gfx::drawpixelinfo_t* dpi, xy32 pos, uint16_t width, uint16_t height)
     {
         width >>= 1;
         height >>= 1;
@@ -1964,7 +1964,7 @@ namespace OpenLoco::ui::windows::construction::construction
     }
 
     // 0x0049CF36
-    static void draw(window* self, gfx::drawpixelinfo_t* dpi)
+    static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
     {
         self->draw(dpi);
         common::drawTabs(self, dpi);
@@ -1977,11 +1977,11 @@ namespace OpenLoco::ui::windows::construction::construction
                 if (bridgeObj != nullptr)
                 {
                     auto company = companymgr::get(_playerCompany);
-                    auto imageId = gfx::recolour(bridgeObj->var_16, company->mainColours.primary);
+                    auto imageId = Gfx::recolour(bridgeObj->var_16, company->mainColours.primary);
                     auto x = self->x + self->widgets[widx::bridge].left + 2;
                     auto y = self->y + self->widgets[widx::bridge].top + 1;
 
-                    gfx::drawImage(dpi, x, y, imageId);
+                    Gfx::drawImage(dpi, x, y, imageId);
                 }
             }
         }
@@ -2008,9 +2008,9 @@ namespace OpenLoco::ui::windows::construction::construction
             auto width = self->widgets[widx::construct].width();
             auto height = self->widgets[widx::construct].height();
 
-            gfx::drawpixelinfo_t* clipped = nullptr;
+            Gfx::drawpixelinfo_t* clipped = nullptr;
 
-            if (gfx::clipDrawpixelinfo(&clipped, dpi, x, y, width, height))
+            if (Gfx::clipDrawpixelinfo(&clipped, dpi, x, y, width, height))
             {
                 const auto& roadPiece = OpenLoco::map::TrackData::getRoadPiece(_lastSelectedTrackPieceId);
                 const auto& lastRoadPart = roadPiece.back();
@@ -2058,9 +2058,9 @@ namespace OpenLoco::ui::windows::construction::construction
             auto width = self->widgets[widx::construct].width();
             auto height = self->widgets[widx::construct].height();
 
-            gfx::drawpixelinfo_t* clipped = nullptr;
+            Gfx::drawpixelinfo_t* clipped = nullptr;
 
-            if (gfx::clipDrawpixelinfo(&clipped, dpi, x, y, width, height))
+            if (Gfx::clipDrawpixelinfo(&clipped, dpi, x, y, width, height))
             {
                 const auto& trackPiece = OpenLoco::map::TrackData::getTrackPiece(_lastSelectedTrackPieceId);
                 const auto& lastTrackPart = trackPiece.back();

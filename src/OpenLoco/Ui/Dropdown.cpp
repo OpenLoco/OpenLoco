@@ -170,21 +170,21 @@ namespace OpenLoco::ui::dropdown
         }
 
         // 0x00494BF6
-        static void sub_494BF6(window* self, gfx::drawpixelinfo_t* dpi, string_id stringId, int16_t x, int16_t y, int16_t width, colour_t colour, FormatArguments args)
+        static void sub_494BF6(window* self, Gfx::drawpixelinfo_t* dpi, string_id stringId, int16_t x, int16_t y, int16_t width, colour_t colour, FormatArguments args)
         {
             stringmgr::formatString(_byte_112CC04, stringId, &args);
 
             _currentFontSpriteBase = font::medium_bold;
 
-            gfx::clipString(width, _byte_112CC04);
+            Gfx::clipString(width, _byte_112CC04);
 
             _currentFontSpriteBase = font::m1;
 
-            gfx::drawString(dpi, x, y, colour, _byte_112CC04);
+            Gfx::drawString(dpi, x, y, colour, _byte_112CC04);
         }
 
         // 0x004CD00E
-        static void draw(window* self, gfx::drawpixelinfo_t* dpi)
+        static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
         {
             self->draw(dpi);
             _windowDropdownOnpaintCellX = 0;
@@ -198,7 +198,7 @@ namespace OpenLoco::ui::dropdown
                     {
                         auto x = _windowDropdownOnpaintCellX * _dropdownItemWidth + self->x + 2;
                         auto y = _windowDropdownOnpaintCellY * _dropdownItemHeight + self->y + 2;
-                        gfx::drawRect(dpi, x, y, _dropdownItemWidth, _dropdownItemHeight, (1 << 25) | PaletteIndex::index_2E);
+                        Gfx::drawRect(dpi, x, y, _dropdownItemWidth, _dropdownItemHeight, (1 << 25) | PaletteIndex::index_2E);
                     }
 
                     auto args = FormatArguments();
@@ -251,7 +251,7 @@ namespace OpenLoco::ui::dropdown
                         {
                             imageId++;
                         }
-                        gfx::drawImage(dpi, x, y, imageId);
+                        Gfx::drawImage(dpi, x, y, imageId);
                     }
                 }
                 else
@@ -261,16 +261,16 @@ namespace OpenLoco::ui::dropdown
 
                     if (!(self->colours[0] & Colour::translucent_flag))
                     {
-                        gfx::drawRect(dpi, x, y, _dropdownItemWidth - 1, 1, Colour::getShade(self->colours[0], 3));
-                        gfx::drawRect(dpi, x, y + 1, _dropdownItemWidth - 1, 1, Colour::getShade(self->colours[0], 7));
+                        Gfx::drawRect(dpi, x, y, _dropdownItemWidth - 1, 1, Colour::getShade(self->colours[0], 3));
+                        Gfx::drawRect(dpi, x, y + 1, _dropdownItemWidth - 1, 1, Colour::getShade(self->colours[0], 7));
                     }
                     else
                     {
                         uint32_t colour = _byte_5045FA[Colour::opaque(self->colours[0])] | (1 << 25);
                         colour++;
-                        gfx::drawRect(dpi, x, y, _dropdownItemWidth - 1, 1, colour);
+                        Gfx::drawRect(dpi, x, y, _dropdownItemWidth - 1, 1, colour);
                         colour++;
-                        gfx::drawRect(dpi, x, y + 1, _dropdownItemWidth - 1, 1, colour);
+                        Gfx::drawRect(dpi, x, y + 1, _dropdownItemWidth - 1, 1, colour);
                     }
                 }
 
@@ -290,7 +290,7 @@ namespace OpenLoco::ui::dropdown
         }
 
         // 0x004CCF1E
-        static void open(gfx::point_t origin, gfx::ui_size_t size, colour_t colour)
+        static void open(Gfx::point_t origin, Gfx::ui_size_t size, colour_t colour)
         {
             auto window = WindowManager::createWindow(WindowType::dropdown, origin, size, window_flags::stick_to_front, &common::events);
 
@@ -381,8 +381,8 @@ namespace OpenLoco::ui::dropdown
             widgets[0].bottom = dropdownHeight;
             dropdownHeight++;
 
-            gfx::ui_size_t size = { static_cast<uint16_t>(_dropdownItemWidth), dropdownHeight };
-            gfx::point_t origin = { x, y };
+            Gfx::ui_size_t size = { static_cast<uint16_t>(_dropdownItemWidth), dropdownHeight };
+            Gfx::point_t origin = { x, y };
             origin.y += height;
 
             if ((size.height + origin.y) > ui::height() || origin.y < 0)
@@ -474,8 +474,8 @@ namespace OpenLoco::ui::dropdown
         int16_t dropdownHeight = (static_cast<int16_t>(count) * _dropdownItemHeight) + 3;
         common::widgets[0].bottom = dropdownHeight;
         dropdownHeight++;
-        gfx::ui_size_t size = { static_cast<uint16_t>(width), static_cast<uint16_t>(height) };
-        gfx::point_t origin = { x, y };
+        Gfx::ui_size_t size = { static_cast<uint16_t>(width), static_cast<uint16_t>(height) };
+        Gfx::point_t origin = { x, y };
         origin.y += height;
 
         size.height = dropdownHeight;
@@ -576,8 +576,8 @@ namespace OpenLoco::ui::dropdown
         common::widgets[0].bottom = dropdownHeight;
         dropdownHeight++;
 
-        gfx::ui_size_t size = { dropdownWidth, dropdownHeight };
-        gfx::point_t origin = { x, y };
+        Gfx::ui_size_t size = { dropdownWidth, dropdownHeight };
+        Gfx::point_t origin = { x, y };
         origin.y += heightOffset;
 
         size.height = dropdownHeight;
@@ -744,8 +744,8 @@ namespace OpenLoco::ui::dropdown
         common::widgets[0].bottom = dropdownHeight;
         dropdownHeight++;
 
-        gfx::ui_size_t size = { static_cast<uint16_t>(width), static_cast<uint16_t>(height) };
-        gfx::point_t origin = { x, y };
+        Gfx::ui_size_t size = { static_cast<uint16_t>(width), static_cast<uint16_t>(height) };
+        Gfx::point_t origin = { x, y };
         origin.y += height;
 
         size.height = dropdownHeight;
@@ -829,7 +829,7 @@ namespace OpenLoco::ui::dropdown
             auto competitorObj = objectmgr::get<competitor_object>(company->competitor_id);
             auto ownerEmotion = company->owner_emotion;
             auto imageId = competitorObj->images[ownerEmotion];
-            imageId = gfx::recolour(imageId, company->mainColours.primary);
+            imageId = Gfx::recolour(imageId, company->mainColours.primary);
 
             add(index, string_ids::dropdown_company_select, { imageId, company->name });
         }

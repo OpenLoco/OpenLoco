@@ -89,7 +89,7 @@ namespace OpenLoco::ui
         both = (1 << 0) | (1 << 1),
     };
 
-    static constexpr widget_t makeWidget(gfx::point_t origin, gfx::ui_size_t size, widget_type type, uint8_t colour, uint32_t content = 0xFFFFFFFF, string_id tooltip = string_ids::null)
+    static constexpr widget_t makeWidget(Gfx::point_t origin, Gfx::ui_size_t size, widget_type type, uint8_t colour, uint32_t content = 0xFFFFFFFF, string_id tooltip = string_ids::null)
     {
         widget_t out = {};
         out.left = origin.x;
@@ -104,7 +104,7 @@ namespace OpenLoco::ui
         return out;
     }
 
-    constexpr widget_t makeRemapWidget(gfx::point_t origin, gfx::ui_size_t size, widget_type type, uint8_t colour, uint32_t content = 0xFFFFFFFF, string_id tooltip = string_ids::null)
+    constexpr widget_t makeRemapWidget(Gfx::point_t origin, Gfx::ui_size_t size, widget_type type, uint8_t colour, uint32_t content = 0xFFFFFFFF, string_id tooltip = string_ids::null)
     {
         widget_t out = makeWidget(origin, size, type, colour, content, tooltip);
 
@@ -119,7 +119,7 @@ namespace OpenLoco::ui
         makeStepperDecreaseWidget(__VA_ARGS__), \
         makeStepperIncreaseWidget(__VA_ARGS__)
 
-    [[maybe_unused]] static constexpr widget_t makeStepperDecreaseWidget(gfx::point_t origin, gfx::ui_size_t size, [[maybe_unused]] widget_type type, uint8_t colour, [[maybe_unused]] uint32_t content = 0xFFFFFFFF, [[maybe_unused]] string_id tooltip = string_ids::null)
+    [[maybe_unused]] static constexpr widget_t makeStepperDecreaseWidget(Gfx::point_t origin, Gfx::ui_size_t size, [[maybe_unused]] widget_type type, uint8_t colour, [[maybe_unused]] uint32_t content = 0xFFFFFFFF, [[maybe_unused]] string_id tooltip = string_ids::null)
     {
         const int16_t xPos = origin.x + size.width - 26;
         const int16_t yPos = origin.y + 1;
@@ -129,7 +129,7 @@ namespace OpenLoco::ui
         return makeWidget({ xPos, yPos }, { width, height }, widget_type::wt_11, colour, string_ids::stepper_minus);
     }
 
-    [[maybe_unused]] static constexpr widget_t makeStepperIncreaseWidget(gfx::point_t origin, gfx::ui_size_t size, [[maybe_unused]] widget_type type, uint8_t colour, [[maybe_unused]] uint32_t content = 0xFFFFFFFF, [[maybe_unused]] string_id tooltip = string_ids::null)
+    [[maybe_unused]] static constexpr widget_t makeStepperIncreaseWidget(Gfx::point_t origin, Gfx::ui_size_t size, [[maybe_unused]] widget_type type, uint8_t colour, [[maybe_unused]] uint32_t content = 0xFFFFFFFF, [[maybe_unused]] string_id tooltip = string_ids::null)
     {
         const int16_t xPos = origin.x + size.width - 13;
         const int16_t yPos = origin.y + 1;
@@ -139,7 +139,7 @@ namespace OpenLoco::ui
         return makeWidget({ xPos, yPos }, { width, height }, widget_type::wt_11, colour, string_ids::stepper_plus);
     }
 
-    constexpr widget_t makeTextWidget(gfx::point_t origin, gfx::ui_size_t size, widget_type type, uint8_t colour, string_id content, string_id tooltip = string_ids::null)
+    constexpr widget_t makeTextWidget(Gfx::point_t origin, Gfx::ui_size_t size, widget_type type, uint8_t colour, string_id content, string_id tooltip = string_ids::null)
     {
         widget_t out = {};
         out.left = origin.x;
@@ -234,8 +234,8 @@ namespace OpenLoco::ui
                 ui::cursor_id (*cursor)(window*, int16_t, int16_t, int16_t, ui::cursor_id);
                 uint32_t on_move;
                 void (*prepare_draw)(window*);
-                void (*draw)(window*, gfx::drawpixelinfo_t*);
-                void (*draw_scroll)(window*, gfx::drawpixelinfo_t*, uint32_t scrollIndex);
+                void (*draw)(window*, Gfx::drawpixelinfo_t*);
+                void (*draw_scroll)(window*, Gfx::drawpixelinfo_t*, uint32_t scrollIndex);
             };
         };
 
@@ -374,9 +374,9 @@ namespace OpenLoco::ui
         int16_t var_88A;
         int16_t var_88C;
 
-        window(gfx::point_t position, gfx::ui_size_t size);
+        window(Gfx::point_t position, Gfx::ui_size_t size);
 
-        constexpr bool setSize(gfx::ui_size_t minSize, gfx::ui_size_t maxSize)
+        constexpr bool setSize(Gfx::ui_size_t minSize, Gfx::ui_size_t maxSize)
         {
             bool hasResized = false;
 
@@ -414,7 +414,7 @@ namespace OpenLoco::ui
             return hasResized;
         }
 
-        constexpr void setSize(gfx::ui_size_t size)
+        constexpr void setSize(Gfx::ui_size_t size)
         {
             setSize(size, size);
         }
@@ -442,7 +442,7 @@ namespace OpenLoco::ui
         void initScrollWidgets();
         int8_t getScrollDataIndex(widget_index index);
         void setDisabledWidgetsAndInvalidate(uint32_t _disabled_widgets);
-        void drawViewports(gfx::drawpixelinfo_t* dpi);
+        void drawViewports(Gfx::drawpixelinfo_t* dpi);
         void viewportSetUndergroundFlag(bool underground, ui::viewport* vp);
         void viewportGetMapCoordsByCursor(int16_t* map_x, int16_t* map_y, int16_t* offset_x, int16_t* offset_y);
         void moveWindowToLocation(viewport_pos pos);
@@ -458,7 +458,7 @@ namespace OpenLoco::ui
         void moveInsideScreenEdges();
         bool moveToCentre();
         widget_index findWidgetAt(int16_t xPos, int16_t yPos);
-        void draw(OpenLoco::gfx::drawpixelinfo_t* dpi);
+        void draw(OpenLoco::Gfx::drawpixelinfo_t* dpi);
 
         void callClose();                                                                                // 0
         void callOnMouseUp(widget_index widgetIndex);                                                    // 1
@@ -486,8 +486,8 @@ namespace OpenLoco::ui
         ui::cursor_id callCursor(int16_t widgetIdx, int16_t xPos, int16_t yPos, ui::cursor_id fallback); // 24
         void callOnMove(int16_t xPos, int16_t yPos);                                                     // 25
         void callPrepareDraw();                                                                          // 26
-        void callDraw(gfx::drawpixelinfo_t* dpi);                                                        // 27
-        void callDrawScroll(gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex);                            // 28
+        void callDraw(Gfx::drawpixelinfo_t* dpi);                                                        // 27
+        void callDrawScroll(Gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex);                            // 28
     };
     static_assert(sizeof(window) == 0x88E);
 

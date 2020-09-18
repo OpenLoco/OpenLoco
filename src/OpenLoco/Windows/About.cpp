@@ -8,7 +8,7 @@
 
 namespace OpenLoco::ui::about
 {
-    constexpr gfx::ui_size_t windowSize = { 400, 260 };
+    constexpr Gfx::ui_size_t windowSize = { 400, 260 };
 
     namespace widx
     {
@@ -74,7 +74,7 @@ namespace OpenLoco::ui::about
     }
 
     // 0x0043B2E4
-    static void draw(ui::window* const window, gfx::drawpixelinfo_t* const dpi)
+    static void draw(ui::window* const window, Gfx::drawpixelinfo_t* const dpi)
     {
         // Draw widgets.
         window->draw(dpi);

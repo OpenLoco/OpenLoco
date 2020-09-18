@@ -12,7 +12,7 @@ using namespace OpenLoco::interop;
 
 namespace OpenLoco::ui::AboutMusic
 {
-    constexpr gfx::ui_size_t windowSize = { 500, 312 };
+    constexpr Gfx::ui_size_t windowSize = { 500, 312 };
 
     constexpr uint16_t numSongs = 31;
 
@@ -88,14 +88,14 @@ namespace OpenLoco::ui::AboutMusic
     }
 
     // 0x0043B8B8
-    static void draw(ui::window* const window, gfx::drawpixelinfo_t* const dpi)
+    static void draw(ui::window* const window, Gfx::drawpixelinfo_t* const dpi)
     {
         // Draw widgets.
         window->draw(dpi);
     }
 
     // 0x0043B8BE
-    static void drawScroll(ui::window*, gfx::drawpixelinfo_t* const dpi, uint32_t)
+    static void drawScroll(ui::window*, Gfx::drawpixelinfo_t* const dpi, uint32_t)
     {
         static const std::pair<string_id, string_id> stringsToDraw[numSongs] = {
             { string_ids::locomotion_title, string_ids::locomotion_title_credit },

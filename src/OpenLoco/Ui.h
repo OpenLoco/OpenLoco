@@ -16,7 +16,7 @@ namespace OpenLoco::ui
 
     struct screen_info_t
     {
-        gfx::drawpixelinfo_t dpi;
+        Gfx::drawpixelinfo_t dpi;
         int16_t width;
         int16_t height;
         int16_t width_2;

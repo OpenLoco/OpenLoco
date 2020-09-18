@@ -9,11 +9,11 @@ namespace OpenLoco::ui
     class Rect
     {
     public:
-        gfx::ui_size_t size;
-        gfx::point_t origin;
+        Gfx::ui_size_t size;
+        Gfx::point_t origin;
         Rect(int16_t x, int16_t y, uint16_t width, uint16_t height)
-            : size(gfx::ui_size_t(width, height))
-            , origin(gfx::point_t(x, y))
+            : size(Gfx::ui_size_t(width, height))
+            , origin(Gfx::point_t(x, y))
         {
         }
 

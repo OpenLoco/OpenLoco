@@ -199,7 +199,7 @@ namespace OpenLoco::companymgr
         if (viewport == nullptr)
             return;
 
-        gfx::point_t screenPosition;
+        Gfx::point_t screenPosition;
         screenPosition.x = viewport->x + viewport->width / 2;
         screenPosition.y = viewport->y + viewport->height / 2;
 

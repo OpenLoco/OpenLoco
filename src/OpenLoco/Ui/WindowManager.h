@@ -36,7 +36,7 @@ namespace OpenLoco::ui::WindowManager
     window* find(WindowType type);
     window* find(WindowType type, window_number number);
     window* findAt(int16_t x, int16_t y);
-    window* findAt(gfx::point_t point);
+    window* findAt(Gfx::point_t point);
     window* findAtAlt(int16_t x, int16_t y);
     window* bringToFront(window* window);
     window* bringToFront(WindowType type, uint16_t id = 0);
@@ -47,11 +47,11 @@ namespace OpenLoco::ui::WindowManager
     void close(WindowType type);
     void close(WindowType type, uint16_t id);
     void close(window* window);
-    window* createWindow(WindowType type, gfx::ui_size_t size, uint32_t flags, window_event_list* events);
-    window* createWindow(WindowType type, gfx::point_t origin, gfx::ui_size_t size, uint32_t flags, window_event_list* events);
-    window* createWindowCentred(WindowType type, gfx::ui_size_t size, uint32_t flags, window_event_list* events);
-    window* createWindow(WindowType type, gfx::ui_size_t size, uint32_t flags, window_event_list* events);
-    void drawSingle(gfx::drawpixelinfo_t* dpi, window* w, int32_t left, int32_t top, int32_t right, int32_t bottom);
+    window* createWindow(WindowType type, Gfx::ui_size_t size, uint32_t flags, window_event_list* events);
+    window* createWindow(WindowType type, Gfx::point_t origin, Gfx::ui_size_t size, uint32_t flags, window_event_list* events);
+    window* createWindowCentred(WindowType type, Gfx::ui_size_t size, uint32_t flags, window_event_list* events);
+    window* createWindow(WindowType type, Gfx::ui_size_t size, uint32_t flags, window_event_list* events);
+    void drawSingle(Gfx::drawpixelinfo_t* dpi, window* w, int32_t left, int32_t top, int32_t right, int32_t bottom);
     void dispatchUpdateAll();
     void callEvent8OnAllWindows();
     void callEvent9OnAllWindows();

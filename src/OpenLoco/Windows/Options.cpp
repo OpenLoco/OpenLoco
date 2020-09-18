@@ -72,7 +72,7 @@ namespace OpenLoco::ui::options
             miscellaneous,
         };
 
-        static void drawTabs(window* w, gfx::drawpixelinfo_t* ctx)
+        static void drawTabs(window* w, Gfx::drawpixelinfo_t* ctx)
         {
             widget::draw_tab(w, ctx, image_ids::tab_display, widx::tab_display);
             widget::draw_tab(w, ctx, image_ids::tab_sound, widx::tab_sound);
@@ -166,7 +166,7 @@ namespace OpenLoco::ui::options
 
     namespace display
     {
-        static const gfx::ui_size_t _window_size = { 400, 184 };
+        static const Gfx::ui_size_t _window_size = { 400, 184 };
 
         namespace widx
         {
@@ -243,7 +243,7 @@ namespace OpenLoco::ui::options
                         cfg.flags |= config::flags::landscape_smoothing;
                     }
                     OpenLoco::config::write();
-                    gfx::invalidateScreen();
+                    Gfx::invalidateScreen();
                     return;
                 }
 
@@ -259,7 +259,7 @@ namespace OpenLoco::ui::options
                         cfg.flags |= config::flags::gridlines_on_landscape;
                     }
                     OpenLoco::config::write();
-                    gfx::invalidateScreen();
+                    Gfx::invalidateScreen();
 
                     auto main = WindowManager::getMainWindow();
                     if (main != nullptr)
@@ -302,7 +302,7 @@ namespace OpenLoco::ui::options
             auto& cfg = OpenLoco::config::get();
             cfg.construction_marker = ax;
             OpenLoco::config::write();
-            gfx::invalidateScreen();
+            Gfx::invalidateScreen();
         }
 
 #pragma mark - Vehicle zoom (Widget 15)
@@ -332,7 +332,7 @@ namespace OpenLoco::ui::options
             auto& cfg = OpenLoco::config::get();
             cfg.vehicles_min_scale = ax;
             OpenLoco::config::write();
-            gfx::invalidateScreen();
+            Gfx::invalidateScreen();
         }
 
 #pragma mark - Station names minimum scale (Widget 17)
@@ -362,7 +362,7 @@ namespace OpenLoco::ui::options
             auto& cfg = OpenLoco::config::get();
             cfg.station_names_min_scale = ax;
             OpenLoco::config::write();
-            gfx::invalidateScreen();
+            Gfx::invalidateScreen();
         }
 
 #if !(defined(__APPLE__) && defined(__MACH__))
@@ -586,7 +586,7 @@ namespace OpenLoco::ui::options
         }
 
         // 0x004BFAF9
-        static void draw(window* w, gfx::drawpixelinfo_t* dpi)
+        static void draw(window* w, Gfx::drawpixelinfo_t* dpi)
         {
             // Draw widgets.
             w->draw(dpi);
@@ -645,7 +645,7 @@ namespace OpenLoco::ui::options
 
     namespace sound
     {
-        static const gfx::ui_size_t _window_size = { 366, 84 };
+        static const Gfx::ui_size_t _window_size = { 366, 84 };
 
         namespace widx
         {
@@ -710,7 +710,7 @@ namespace OpenLoco::ui::options
         }
 
         // 0x004C02F5
-        static void draw(window* w, gfx::drawpixelinfo_t* dpi)
+        static void draw(window* w, Gfx::drawpixelinfo_t* dpi)
         {
             // Draw widgets.
             w->draw(dpi);
@@ -830,7 +830,7 @@ namespace OpenLoco::ui::options
 
     namespace music
     {
-        static const gfx::ui_size_t _window_size = { 366, 129 };
+        static const Gfx::ui_size_t _window_size = { 366, 129 };
 
         namespace widx
         {
@@ -930,21 +930,21 @@ namespace OpenLoco::ui::options
         }
 
         // 0x004C05F9
-        static void draw(window* w, gfx::drawpixelinfo_t* dpi)
+        static void draw(window* w, Gfx::drawpixelinfo_t* dpi)
         {
             // Draw widgets.
             w->draw(dpi);
 
             common::drawTabs(w, dpi);
 
-            gfx::drawString_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::currently_playing_btn].top, 0, string_ids::currently_playing, nullptr);
+            Gfx::drawString_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::currently_playing_btn].top, 0, string_ids::currently_playing, nullptr);
 
-            gfx::drawString_494B3F(*dpi, w->x + 183, w->y + w->widgets[widx::volume].top + 7, 0, string_ids::volume, nullptr);
+            Gfx::drawString_494B3F(*dpi, w->x + 183, w->y + w->widgets[widx::volume].top + 7, 0, string_ids::volume, nullptr);
 
-            gfx::drawImage(dpi, w->x + w->widgets[widx::volume].left, w->y + w->widgets[widx::volume].top, 0x20000000 | (w->colours[1] << 19) | image_ids::volume_slider_track);
+            Gfx::drawImage(dpi, w->x + w->widgets[widx::volume].left, w->y + w->widgets[widx::volume].top, 0x20000000 | (w->colours[1] << 19) | image_ids::volume_slider_track);
 
             int16_t x = 90 + (config::get().volume / 32);
-            gfx::drawImage(dpi, w->x + w->widgets[widx::volume].left + x, w->y + w->widgets[widx::volume].top, 0x20000000 | (w->colours[1] << 19) | image_ids::volume_slider_thumb);
+            Gfx::drawImage(dpi, w->x + w->widgets[widx::volume].left + x, w->y + w->widgets[widx::volume].top, 0x20000000 | (w->colours[1] << 19) | image_ids::volume_slider_thumb);
         }
 
         static void onMouseUp(window* w, widget_index wi)
@@ -1215,7 +1215,7 @@ namespace OpenLoco::ui::options
 
     namespace regional
     {
-        static const gfx::ui_size_t _window_size = { 366, 167 };
+        static const Gfx::ui_size_t _window_size = { 366, 167 };
 
         namespace widx
         {
@@ -1335,17 +1335,17 @@ namespace OpenLoco::ui::options
         }
 
         // 0x004C0B5B
-        static void draw(window* w, gfx::drawpixelinfo_t* dpi)
+        static void draw(window* w, Gfx::drawpixelinfo_t* dpi)
         {
             // Draw widgets.
             w->draw(dpi);
             common::drawTabs(w, dpi);
 
-            gfx::drawString_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::language].top + 1, 0, string_ids::options_language, nullptr);
-            gfx::drawString_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::distance_speed].top + 1, 0, string_ids::distance_and_speed, nullptr);
-            gfx::drawString_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::heights].top + 1, 0, string_ids::heights, nullptr);
-            gfx::drawString_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::currency].top + 1, 0, string_ids::current_game_currency, nullptr);
-            gfx::drawString_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::preferred_currency].top + 1, 0, string_ids::new_game_currency, nullptr);
+            Gfx::drawString_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::language].top + 1, 0, string_ids::options_language, nullptr);
+            Gfx::drawString_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::distance_speed].top + 1, 0, string_ids::distance_and_speed, nullptr);
+            Gfx::drawString_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::heights].top + 1, 0, string_ids::heights, nullptr);
+            Gfx::drawString_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::currency].top + 1, 0, string_ids::current_game_currency, nullptr);
+            Gfx::drawString_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::preferred_currency].top + 1, 0, string_ids::new_game_currency, nullptr);
         }
 
         static void onMouseUp(window* w, widget_index wi)
@@ -1460,7 +1460,7 @@ namespace OpenLoco::ui::options
             config::getNew().language = ld.locale;
             config::write();
             localisation::loadLanguageFile();
-            gfx::invalidateScreen();
+            Gfx::invalidateScreen();
         }
 
         // 0x004C0C73
@@ -1639,7 +1639,7 @@ namespace OpenLoco::ui::options
             }
 
             config::write();
-            gfx::invalidateScreen();
+            Gfx::invalidateScreen();
         }
 
         // 0x004C0FFA
@@ -1681,7 +1681,7 @@ namespace OpenLoco::ui::options
             }
 
             config::write();
-            gfx::invalidateScreen();
+            Gfx::invalidateScreen();
         }
 
         // 0x004C1195
@@ -1718,7 +1718,7 @@ namespace OpenLoco::ui::options
 
         static constexpr uint64_t enabledWidgets = common::enabledWidgets | (1 << controls::widx::edge_scrolling) | (1 << controls::widx::customize_keys) | (1 << controls::widx::zoom_to_cursor);
 
-        static const gfx::ui_size_t _window_size = { 366, 99 };
+        static const Gfx::ui_size_t _window_size = { 366, 99 };
 
         static widget_t _widgets[] = {
             common_options_widgets(_window_size, string_ids::options_title_controls),
@@ -1764,7 +1764,7 @@ namespace OpenLoco::ui::options
         }
 
         // 0x004C113F
-        static void draw(window* w, gfx::drawpixelinfo_t* dpi)
+        static void draw(window* w, Gfx::drawpixelinfo_t* dpi)
         {
             w->draw(dpi);
             common::drawTabs(w, dpi);
@@ -1847,7 +1847,7 @@ namespace OpenLoco::ui::options
 
     namespace misc
     {
-        static const gfx::ui_size_t _window_size = { 420, 139 };
+        static const Gfx::ui_size_t _window_size = { 420, 139 };
 
         namespace widx
         {
@@ -1935,7 +1935,7 @@ namespace OpenLoco::ui::options
         }
 
         // 0x004C1282
-        static void draw(window* w, gfx::drawpixelinfo_t* dpi)
+        static void draw(window* w, Gfx::drawpixelinfo_t* dpi)
         {
             w->draw(dpi);
             common::drawTabs(w, dpi);
@@ -1947,7 +1947,7 @@ namespace OpenLoco::ui::options
 
             FormatArguments args = {};
             args.push(string_ids::buffer_2039);
-            gfx::drawString_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::change_btn].top + 1, 0, string_ids::wcolour2_preferred_owner_name, &args);
+            Gfx::drawString_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::change_btn].top + 1, 0, string_ids::wcolour2_preferred_owner_name, &args);
         }
 
         // 0x004C12D2
@@ -2214,7 +2214,7 @@ namespace OpenLoco::ui::options
     {
         widget_t* widgets;
         window_event_list* events;
-        gfx::ui_size_t windowSize;
+        Gfx::ui_size_t windowSize;
         const uint64_t* enabledWidgets;
     };
 

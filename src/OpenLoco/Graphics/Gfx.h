@@ -6,7 +6,7 @@
 #include "Types.h"
 #include <cstdint>
 
-namespace OpenLoco::gfx
+namespace OpenLoco::Gfx
 {
 #pragma pack(push, 1)
 
@@ -75,7 +75,7 @@ namespace OpenLoco::gfx
     int16_t clipString(int16_t width, char* string);
     uint16_t getStringWidth(const char* buffer);
 
-    gfx::point_t drawString(drawpixelinfo_t* context, int16_t x, int16_t y, uint8_t colour, void* str);
+    Gfx::point_t drawString(drawpixelinfo_t* context, int16_t x, int16_t y, uint8_t colour, void* str);
 
     int16_t drawString_495224(
         drawpixelinfo_t& dpi,
@@ -159,14 +159,14 @@ namespace OpenLoco::gfx
     uint16_t getStringWidthNewLined(const char* buffer);
     std::pair<uint16_t, uint16_t> wrapString(const char* buffer, uint16_t stringWidth);
 
-    void fillRect(gfx::drawpixelinfo_t* dpi, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t colour);
-    void drawRect(gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, uint16_t dx, uint16_t dy, uint32_t colour);
-    void fillRectInset(gfx::drawpixelinfo_t* dpi, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t colour, uint8_t flags);
-    void drawRectInset(gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, uint16_t dx, uint16_t dy, uint32_t colour, uint8_t flags);
-    void drawLine(gfx::drawpixelinfo_t* dpi, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t colour);
-    void drawImage(gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, uint32_t image);
-    void drawImageSolid(gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, uint32_t image, uint8_t palette_index);
-    void drawImagePaletteSet(gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, uint32_t image, uint8_t* palette);
+    void fillRect(Gfx::drawpixelinfo_t* dpi, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t colour);
+    void drawRect(Gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, uint16_t dx, uint16_t dy, uint32_t colour);
+    void fillRectInset(Gfx::drawpixelinfo_t* dpi, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t colour, uint8_t flags);
+    void drawRectInset(Gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, uint16_t dx, uint16_t dy, uint32_t colour, uint8_t flags);
+    void drawLine(Gfx::drawpixelinfo_t* dpi, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t colour);
+    void drawImage(Gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, uint32_t image);
+    void drawImageSolid(Gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, uint32_t image, uint8_t palette_index);
+    void drawImagePaletteSet(Gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, uint32_t image, uint8_t* palette);
     uint32_t recolour(uint32_t image);
     uint32_t recolour(uint32_t image, uint8_t colour);
 
@@ -178,6 +178,6 @@ namespace OpenLoco::gfx
     void redrawScreenRect(ui::Rect rect);
     void redrawScreenRect(int16_t left, int16_t top, int16_t right, int16_t bottom);
 
-    bool clipDrawpixelinfo(gfx::drawpixelinfo_t** dst, gfx::drawpixelinfo_t* src, int16_t x, int16_t y, int16_t width, int16_t height);
+    bool clipDrawpixelinfo(Gfx::drawpixelinfo_t** dst, Gfx::drawpixelinfo_t* src, int16_t x, int16_t y, int16_t width, int16_t height);
     g1_element* getG1Element(uint32_t id);
 }

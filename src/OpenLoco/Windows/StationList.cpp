@@ -21,9 +21,9 @@ using namespace OpenLoco::interop;
 
 namespace OpenLoco::ui::windows::station_list
 {
-    static const gfx::ui_size_t window_size = { 600, 197 };
-    static const gfx::ui_size_t max_dimensions = { 640, 1200 };
-    static const gfx::ui_size_t min_dimensions = { 192, 100 };
+    static const Gfx::ui_size_t window_size = { 600, 197 };
+    static const Gfx::ui_size_t max_dimensions = { 640, 1200 };
+    static const Gfx::ui_size_t min_dimensions = { 192, 100 };
 
     static const uint8_t rowHeight = 10; // CJK: 13
 
@@ -94,8 +94,8 @@ namespace OpenLoco::ui::windows::station_list
     loco_global<uint16_t[4], 0x112C826> _common_format_args;
 
     static ui::cursor_id cursor(window* window, int16_t widgetIdx, int16_t xPos, int16_t yPos, ui::cursor_id fallback);
-    static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi);
-    static void drawScroll(ui::window* window, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex);
+    static void draw(ui::window* window, Gfx::drawpixelinfo_t* dpi);
+    static void drawScroll(ui::window* window, Gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex);
     static void event_08(window* window);
     static void event_09(window* window);
     static void getScrollSize(ui::window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
@@ -469,10 +469,10 @@ namespace OpenLoco::ui::windows::station_list
     }
 
     // 0x0049157F
-    static void drawScroll(ui::window* window, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
+    static void drawScroll(ui::window* window, Gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
     {
         auto shade = Colour::getShade(window->colours[1], 4);
-        gfx::clearSingle(*dpi, shade);
+        Gfx::clearSingle(*dpi, shade);
 
         uint16_t yPos = 0;
         for (uint16_t i = 0; i < window->var_83C; i++)
@@ -491,7 +491,7 @@ namespace OpenLoco::ui::windows::station_list
             // Highlight selection.
             if (stationId == window->row_hover)
             {
-                gfx::drawRect(dpi, 0, yPos, window->width, rowHeight, 0x2000030);
+                Gfx::drawRect(dpi, 0, yPos, window->width, rowHeight, 0x2000030);
                 text_colour_id = string_ids::wcolour2_stringid;
             }
 
@@ -522,14 +522,14 @@ namespace OpenLoco::ui::windows::station_list
             _common_format_args[2] = station->town;
             _common_format_args[3] = label_icons[station->flags & 0x0F];
 
-            gfx::drawString_494BBF(*dpi, 0, yPos, 198, Colour::black, text_colour_id, &*_common_format_args);
+            Gfx::drawString_494BBF(*dpi, 0, yPos, 198, Colour::black, text_colour_id, &*_common_format_args);
 
             // Then the station's current status.
             const char* buffer = stringmgr::getString(string_ids::buffer_1250);
             station->getStatusString((char*)buffer);
 
             _common_format_args[0] = string_ids::buffer_1250;
-            gfx::drawString_494BBF(*dpi, 200, yPos, 198, Colour::black, text_colour_id, &*_common_format_args);
+            Gfx::drawString_494BBF(*dpi, 200, yPos, 198, Colour::black, text_colour_id, &*_common_format_args);
 
             // Total units waiting.
             uint16_t totalUnits = 0;
@@ -538,7 +538,7 @@ namespace OpenLoco::ui::windows::station_list
 
             _common_format_args[0] = string_ids::num_units;
             *(uint32_t*)&_common_format_args[1] = totalUnits;
-            gfx::drawString_494BBF(*dpi, 400, yPos, 88, Colour::black, text_colour_id, &*_common_format_args);
+            Gfx::drawString_494BBF(*dpi, 400, yPos, 88, Colour::black, text_colour_id, &*_common_format_args);
 
             // And, finally, what goods the station accepts.
             char* ptr = (char*)buffer;
@@ -558,27 +558,27 @@ namespace OpenLoco::ui::windows::station_list
             }
 
             _common_format_args[0] = string_ids::buffer_1250;
-            gfx::drawString_494BBF(*dpi, 490, yPos, 118, Colour::black, text_colour_id, &*_common_format_args);
+            Gfx::drawString_494BBF(*dpi, 490, yPos, 118, Colour::black, text_colour_id, &*_common_format_args);
 
             yPos += rowHeight;
         }
     }
 
     // 00491A76
-    static void drawTabs(ui::window* window, gfx::drawpixelinfo_t* dpi)
+    static void drawTabs(ui::window* window, Gfx::drawpixelinfo_t* dpi)
     {
         auto skin = objectmgr::get<interface_skin_object>();
         auto companyColour = companymgr::getCompanyColour(window->number);
 
         for (auto tab : tabInformationByType)
         {
-            uint32_t image = gfx::recolour(skin->img + tab.imageId, companyColour);
+            uint32_t image = Gfx::recolour(skin->img + tab.imageId, companyColour);
             widget::draw_tab(window, dpi, image, tab.widgetIndex);
         }
     }
 
     // 0x004914D8
-    static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi)
+    static void draw(ui::window* window, Gfx::drawpixelinfo_t* dpi)
     {
         // Draw widgets and tabs.
         window->draw(dpi);
@@ -587,18 +587,18 @@ namespace OpenLoco::ui::windows::station_list
         // Draw company owner image.
         auto company = companymgr::get(window->number);
         auto competitor = objectmgr::get<competitor_object>(company->competitor_id);
-        uint32_t image = gfx::recolour(competitor->images[company->owner_emotion], company->mainColours.primary);
+        uint32_t image = Gfx::recolour(competitor->images[company->owner_emotion], company->mainColours.primary);
         uint16_t x = window->x + window->widgets[widx::company_select].left + 1;
         uint16_t y = window->y + window->widgets[widx::company_select].top + 1;
-        gfx::drawImage(dpi, x, y, image);
+        Gfx::drawImage(dpi, x, y, image);
 
         // TODO: locale-based pluralisation.
         _common_format_args[0] = window->var_83C == 1 ? string_ids::status_num_stations_singular : string_ids::status_num_stations_plural;
         _common_format_args[1] = window->var_83C;
 
         // Draw number of stations.
-        auto origin = gfx::point_t(window->x + 4, window->y + window->height - 12);
-        gfx::drawString_494B3F(*dpi, &origin, Colour::black, string_ids::black_stringid, &*_common_format_args);
+        auto origin = Gfx::point_t(window->x + 4, window->y + window->height - 12);
+        Gfx::drawString_494B3F(*dpi, &origin, Colour::black, string_ids::black_stringid, &*_common_format_args);
     }
 
     // 0x004917BB

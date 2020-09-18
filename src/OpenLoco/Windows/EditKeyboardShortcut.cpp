@@ -15,7 +15,7 @@ using namespace OpenLoco::input;
 
 namespace OpenLoco::ui::EditKeyboardShortcut
 {
-    constexpr gfx::ui_size_t windowSize = { 280, 72 };
+    constexpr Gfx::ui_size_t windowSize = { 280, 72 };
 
     static window_event_list events;
     static loco_global<uint8_t, 0x011364A4> _11364A4;
@@ -64,14 +64,14 @@ namespace OpenLoco::ui::EditKeyboardShortcut
     }
 
     // 0x004BE8DF
-    static void draw(ui::window* const self, gfx::drawpixelinfo_t* const ctx)
+    static void draw(ui::window* const self, Gfx::drawpixelinfo_t* const ctx)
     {
         self->draw(ctx);
 
         FormatArguments args{};
         args.push(ShortcutManager::getName(static_cast<Shortcut>(*_11364A4)));
-        auto point = gfx::point_t(self->x + 140, self->y + 32);
-        gfx::drawStringCentredWrapped(ctx, &point, 272, 0, string_ids::change_keyboard_shortcut_desc, &args);
+        auto point = Gfx::point_t(self->x + 140, self->y + 32);
+        Gfx::drawStringCentredWrapped(ctx, &point, 272, 0, string_ids::change_keyboard_shortcut_desc, &args);
     }
 
     // 0x004BE821

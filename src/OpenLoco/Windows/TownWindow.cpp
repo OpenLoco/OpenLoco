@@ -24,7 +24,7 @@ using namespace OpenLoco::game_commands;
 
 namespace OpenLoco::ui::windows::town
 {
-    static const gfx::ui_size_t windowSize = { 223, 161 };
+    static const Gfx::ui_size_t windowSize = { 223, 161 };
 
     static loco_global<uint16_t[10], 0x0112C826> commonFormatArgs;
 
@@ -59,7 +59,7 @@ namespace OpenLoco::ui::windows::town
         static void renameTownPrompt(window* self, widget_index widgetIndex);
         static void repositionTabs(window* self);
         static void switchTab(window* self, widget_index widgetIndex);
-        static void drawTabs(window* self, gfx::drawpixelinfo_t* dpi);
+        static void drawTabs(window* self, Gfx::drawpixelinfo_t* dpi);
         static void initEvents();
     }
 
@@ -127,7 +127,7 @@ namespace OpenLoco::ui::windows::town
         }
 
         // 0x00498FFE
-        static void draw(window* self, gfx::drawpixelinfo_t* dpi)
+        static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
         {
             self->draw(dpi);
             common::drawTabs(self, dpi);
@@ -144,7 +144,7 @@ namespace OpenLoco::ui::windows::town
             const auto x = self->x + widget.left - 1;
             const auto y = self->y + widget.top - 1;
             const auto width = widget.width() - 1;
-            gfx::drawString_494BBF(*dpi, x, y, width, Colour::black, string_ids::status_town_population, &args);
+            Gfx::drawString_494BBF(*dpi, x, y, width, Colour::black, string_ids::status_town_population, &args);
         }
 
         // 0x00499079
@@ -241,7 +241,7 @@ namespace OpenLoco::ui::windows::town
         {
             // Call to sub_498E9B has been deliberately omitted.
 
-            self->setSize(gfx::ui_size_t(192, 161), gfx::ui_size_t(600, 440));
+            self->setSize(Gfx::ui_size_t(192, 161), Gfx::ui_size_t(600, 440));
 
             if (self->viewports[0] != nullptr)
             {
@@ -310,8 +310,8 @@ namespace OpenLoco::ui::windows::town
             {
                 auto widget = &self->widgets[widx::viewport];
                 auto tile = OpenLoco::map::map_pos3({ town->x, town->y, tileZ });
-                auto origin = gfx::point_t(widget->left + self->x + 1, widget->top + self->y + 1);
-                auto size = gfx::ui_size_t(widget->width() - 2, widget->height() - 2);
+                auto origin = Gfx::point_t(widget->left + self->x + 1, widget->top + self->y + 1);
+                auto size = Gfx::ui_size_t(widget->width() - 2, widget->height() - 2);
                 viewportmgr::create(self, 0, origin, size, self->saved_view.zoomLevel, tile);
                 self->invalidate();
                 self->flags |= window_flags::viewport_no_scrolling;
@@ -405,13 +405,13 @@ namespace OpenLoco::ui::windows::town
         }
 
         // 0x004994F9
-        static void draw(window* self, gfx::drawpixelinfo_t* dpi)
+        static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
         {
             self->draw(dpi);
             common::drawTabs(self, dpi);
 
-            gfx::drawpixelinfo_t* clipped = nullptr;
-            if (!gfx::clipDrawpixelinfo(&clipped, dpi, self->x, self->y + 44, self->width, self->height - 44))
+            Gfx::drawpixelinfo_t* clipped = nullptr;
+            if (!Gfx::clipDrawpixelinfo(&clipped, dpi, self->x, self->y + 44, self->width, self->height - 44))
                 return;
 
             auto town = townmgr::get(self->number);
@@ -424,9 +424,9 @@ namespace OpenLoco::ui::windows::town
                 args.push(yTick);
 
                 const uint16_t xPos = 39;
-                gfx::drawRect(clipped, xPos, yPos, 241, 1, Colour::getShade(self->colours[1], 4));
+                Gfx::drawRect(clipped, xPos, yPos, 241, 1, Colour::getShade(self->colours[1], 4));
 
-                gfx::drawString_494C78(*clipped, xPos, yPos - 6, Colour::black, string_ids::population_graph_people, &args);
+                Gfx::drawString_494C78(*clipped, xPos, yPos - 6, Colour::black, string_ids::population_graph_people, &args);
 
                 yTick += 1000;
             }
@@ -448,10 +448,10 @@ namespace OpenLoco::ui::windows::town
                         auto args = FormatArguments();
                         args.push(year);
 
-                        gfx::drawStringCentred(*clipped, xPos, yPos, Colour::black, string_ids::population_graph_year, &args);
+                        Gfx::drawStringCentred(*clipped, xPos, yPos, Colour::black, string_ids::population_graph_year, &args);
                     }
 
-                    gfx::drawRect(clipped, xPos, 11, 1, self->height - 66, Colour::getShade(self->colours[1], 4));
+                    Gfx::drawRect(clipped, xPos, 11, 1, self->height - 66, Colour::getShade(self->colours[1], 4));
                 }
 
                 // Draw population graph
@@ -460,7 +460,7 @@ namespace OpenLoco::ui::windows::town
 
                 // Do not draw current segment yet; it may be zeroed.
                 if (i < town->history_size - 1)
-                    gfx::drawLine(clipped, xPos, yPos1, xPos + 1, yPos2, Colour::getShade(self->colours[1], 7));
+                    Gfx::drawLine(clipped, xPos, yPos1, xPos + 1, yPos2, Colour::getShade(self->colours[1], 7));
 
                 month--;
                 if (month < 0)
@@ -501,7 +501,7 @@ namespace OpenLoco::ui::windows::town
         {
             // Call to sub_498E9B has been deliberately omitted.
 
-            self->setSize(gfx::ui_size_t(299, 172), gfx::ui_size_t(299, 327));
+            self->setSize(Gfx::ui_size_t(299, 172), Gfx::ui_size_t(299, 327));
         }
 
         static void initEvents()
@@ -531,14 +531,14 @@ namespace OpenLoco::ui::windows::town
         }
 
         // 0x004997F1
-        static void draw(window* self, gfx::drawpixelinfo_t* dpi)
+        static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
         {
             self->draw(dpi);
             common::drawTabs(self, dpi);
 
             uint16_t xPos = self->x + 4;
             uint16_t yPos = self->y + 46;
-            gfx::drawString_494B3F(*dpi, xPos, yPos, Colour::black, string_ids::local_authority_ratings_transport_companies);
+            Gfx::drawString_494B3F(*dpi, xPos, yPos, Colour::black, string_ids::local_authority_ratings_transport_companies);
 
             xPos += 4;
             yPos += 14;
@@ -567,7 +567,7 @@ namespace OpenLoco::ui::windows::town
                 args.push(rating);
                 args.push(rank);
 
-                gfx::drawString_494BBF(*dpi, xPos, yPos, self->width - 12, Colour::black, string_ids::town_rating_company_percentage_rank, &args);
+                Gfx::drawString_494BBF(*dpi, xPos, yPos, self->width - 12, Colour::black, string_ids::town_rating_company_percentage_rank, &args);
 
                 yPos += 10;
             }
@@ -599,7 +599,7 @@ namespace OpenLoco::ui::windows::town
         {
             // Call to sub_498E9B has been deliberately omitted.
 
-            self->setSize(gfx::ui_size_t(340, 208), gfx::ui_size_t(340, 208));
+            self->setSize(Gfx::ui_size_t(340, 208), Gfx::ui_size_t(340, 208));
         }
 
         static void initEvents()
@@ -747,7 +747,7 @@ namespace OpenLoco::ui::windows::town
         }
 
         // 0x004999E1
-        static void drawTabs(window* self, gfx::drawpixelinfo_t* dpi)
+        static void drawTabs(window* self, Gfx::drawpixelinfo_t* dpi)
         {
             auto skin = objectmgr::get<interface_skin_object>();
 
@@ -770,7 +770,7 @@ namespace OpenLoco::ui::windows::town
                     interface_skin::image_ids::tab_population_frame7,
                 };
 
-                uint32_t imageId = gfx::recolour(skin->img, self->colours[1]);
+                uint32_t imageId = Gfx::recolour(skin->img, self->colours[1]);
                 if (self->current_tab == widx::tab_population - widx::tab_town)
                     imageId += populationTabImageIds[(self->frame_no / 4) % std::size(populationTabImageIds)];
                 else

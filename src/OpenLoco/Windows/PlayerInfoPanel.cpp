@@ -23,7 +23,7 @@ using namespace OpenLoco::interop;
 
 namespace OpenLoco::ui::windows::PlayerInfoPanel
 {
-    static const gfx::ui_size_t window_size = { 140, 27 };
+    static const Gfx::ui_size_t window_size = { 140, 27 };
 
     namespace widx
     {
@@ -62,7 +62,7 @@ namespace OpenLoco::ui::windows::PlayerInfoPanel
     static loco_global<uint16_t, 0x0113DC78> _113DC78; // dropdown flags?
 
     static void prepareDraw(window* window);
-    static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi);
+    static void draw(ui::window* window, Gfx::drawpixelinfo_t* dpi);
     static void onMouseUp(ui::window* window, widget_index widgetIndex);
     static void onMouseDown(ui::window* window, widget_index widgetIndex);
     static void onDropdown(window* w, widget_index widgetIndex, int16_t item_index);
@@ -116,7 +116,7 @@ namespace OpenLoco::ui::windows::PlayerInfoPanel
 
             auto args = FormatArguments();
             args.push(positionArray[index]);
-            args.push(gfx::recolour(competitorObj->images[company->owner_emotion], company->mainColours.primary));
+            args.push(Gfx::recolour(competitorObj->images[company->owner_emotion], company->mainColours.primary));
             args.push(company->name);
             args.push<uint16_t>(0); // Needed after a user string id
             formatPerformanceIndex(company->performance_index, args);
@@ -183,8 +183,8 @@ namespace OpenLoco::ui::windows::PlayerInfoPanel
 
         auto window = WindowManager::createWindow(
             WindowType::playerInfoToolbar,
-            gfx::point_t(0, ui::height() - window_size.height),
-            gfx::ui_size_t(window_size.width, window_size.height),
+            Gfx::point_t(0, ui::height() - window_size.height),
+            Gfx::ui_size_t(window_size.width, window_size.height),
             ui::window_flags::stick_to_front | ui::window_flags::transparent | ui::window_flags::no_background,
             &_events);
         window->widgets = _widgets;
@@ -209,10 +209,10 @@ namespace OpenLoco::ui::windows::PlayerInfoPanel
     }
 
     // 0x43944B
-    static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi)
+    static void draw(ui::window* window, Gfx::drawpixelinfo_t* dpi)
     {
         widget_t& frame = _widgets[widx::outer_frame];
-        gfx::drawRect(dpi, window->x + frame.left, window->y + frame.top, frame.width(), frame.height(), 0x2000000 | 52);
+        Gfx::drawRect(dpi, window->x + frame.left, window->y + frame.top, frame.width(), frame.height(), 0x2000000 | 52);
 
         // Draw widgets.
         window->draw(dpi);
@@ -221,8 +221,8 @@ namespace OpenLoco::ui::windows::PlayerInfoPanel
 
         auto playerCompany = companymgr::get(companymgr::getControllingId());
         auto competitor = objectmgr::get<competitor_object>(playerCompany->competitor_id);
-        auto image = gfx::recolour(competitor->images[playerCompany->owner_emotion], playerCompany->mainColours.primary);
-        gfx::drawImage(dpi, window->x + frame.left + 2, window->y + frame.top + 2, image);
+        auto image = Gfx::recolour(competitor->images[playerCompany->owner_emotion], playerCompany->mainColours.primary);
+        Gfx::drawImage(dpi, window->x + frame.left + 2, window->y + frame.top + 2, image);
 
         auto x = window->x + frame.width() / 2 + 12;
         {
@@ -247,7 +247,7 @@ namespace OpenLoco::ui::windows::PlayerInfoPanel
             auto args = FormatArguments();
             args.push(playerCompany->cash.var_00);
             args.push(playerCompany->cash.var_04);
-            gfx::drawStringCentred(*dpi, x, window->y + frame.top + 2, colour, companyValueString, &args);
+            Gfx::drawStringCentred(*dpi, x, window->y + frame.top + 2, colour, companyValueString, &args);
         }
 
         {
@@ -270,7 +270,7 @@ namespace OpenLoco::ui::windows::PlayerInfoPanel
 
             auto args = FormatArguments();
             args.push(playerCompany->performance_index);
-            gfx::drawStringCentred(*dpi, x, window->y + frame.top + 14, colour, performanceString, &args);
+            Gfx::drawStringCentred(*dpi, x, window->y + frame.top + 14, colour, performanceString, &args);
         }
     }
 

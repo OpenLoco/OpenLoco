@@ -28,7 +28,7 @@ namespace OpenLoco::ui::windows::toolbar_top::common
         };
     }
 
-    void draw(window* window, gfx::drawpixelinfo_t* dpi);
+    void draw(window* window, Gfx::drawpixelinfo_t* dpi);
 
     void zoomMenuMouseDown(window* window, widget_index widgetIndex);
     void rotateMenuMouseDown(window* window, widget_index widgetIndex);

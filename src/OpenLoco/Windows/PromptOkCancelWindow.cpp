@@ -62,7 +62,7 @@ namespace OpenLoco::ui::windows
                     input::processKeyboardInput();
                     WindowManager::update();
                     ui::minimalHandleInput();
-                    gfx::render();
+                    Gfx::render();
                     return WindowManager::find(WindowType::confirmationPrompt) != nullptr;
                 });
             WindowManager::setCurrentModalType(originalModal);

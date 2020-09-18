@@ -135,7 +135,7 @@ namespace OpenLoco::ui::NewsWindow::ticker
     }
 
     // 0x004950EF
-    static void sub_4950EF(gfx::drawpixelinfo_t* clipped, string_id buffer, uint32_t eax, uint32_t ebp, int16_t x, int16_t y)
+    static void sub_4950EF(Gfx::drawpixelinfo_t* clipped, string_id buffer, uint32_t eax, uint32_t ebp, int16_t x, int16_t y)
     {
         registers regs;
         regs.bx = buffer;
@@ -148,7 +148,7 @@ namespace OpenLoco::ui::NewsWindow::ticker
     }
 
     // 0x00429DAA
-    static void draw(ui::window* self, gfx::drawpixelinfo_t* dpi)
+    static void draw(ui::window* self, Gfx::drawpixelinfo_t* dpi)
     {
         if (self->var_852 != 0)
             return;
@@ -162,9 +162,9 @@ namespace OpenLoco::ui::NewsWindow::ticker
         auto y = self->y;
         auto width = self->width;
         auto height = self->height;
-        gfx::drawpixelinfo_t* clipped = nullptr;
+        Gfx::drawpixelinfo_t* clipped = nullptr;
 
-        gfx::clipDrawpixelinfo(&clipped, dpi, x, y, width, height);
+        Gfx::clipDrawpixelinfo(&clipped, dpi, x, y, width, height);
 
         if (clipped == nullptr)
             return;
@@ -176,7 +176,7 @@ namespace OpenLoco::ui::NewsWindow::ticker
             colour = Colour::getShade(Colour::salmon_pink, 5);
         }
 
-        gfx::clearSingle(*clipped, colour);
+        Gfx::clearSingle(*clipped, colour);
 
         char* newsString = news->messageString;
         auto buffer = const_cast<char*>(stringmgr::getString(string_ids::buffer_2039));

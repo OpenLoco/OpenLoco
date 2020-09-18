@@ -12,7 +12,7 @@ using namespace OpenLoco::interop;
 
 namespace OpenLoco::ui::windows::LandscapeGenerationConfirm
 {
-    static const gfx::ui_size_t window_size = { 280, 92 };
+    static const Gfx::ui_size_t window_size = { 280, 92 };
 
     enum widx
     {
@@ -35,7 +35,7 @@ namespace OpenLoco::ui::windows::LandscapeGenerationConfirm
     static window_event_list events;
 
     // 0x004C18A5
-    static void draw(window* window, gfx::drawpixelinfo_t* dpi)
+    static void draw(window* window, Gfx::drawpixelinfo_t* dpi)
     {
         window->draw(dpi);
 
@@ -43,8 +43,8 @@ namespace OpenLoco::ui::windows::LandscapeGenerationConfirm
         string_id prompt = window->var_846 == 0 ? string_ids::prompt_confirm_generate_landscape : string_ids::prompt_confirm_random_landscape;
         *commonFormatArgs = prompt;
 
-        auto origin = gfx::point_t(window->x + (window->width / 2), window->y + 41);
-        gfx::drawStringCentredWrapped(dpi, &origin, window->width, Colour::black, string_ids::wcolour2_stringid, (const char*)&*commonFormatArgs);
+        auto origin = Gfx::point_t(window->x + (window->width / 2), window->y + 41);
+        Gfx::drawStringCentredWrapped(dpi, &origin, window->width, Colour::black, string_ids::wcolour2_stringid, (const char*)&*commonFormatArgs);
     }
 
     // 0x004C18E4

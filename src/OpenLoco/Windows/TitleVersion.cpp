@@ -15,7 +15,7 @@ namespace OpenLoco::ui::windows
 
     static ui::window_event_list _events;
 
-    static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi);
+    static void draw(ui::window* window, Gfx::drawpixelinfo_t* dpi);
 
     window* openTitleVersion()
     {
@@ -23,8 +23,8 @@ namespace OpenLoco::ui::windows
         auto height = 16;
         auto window = OpenLoco::ui::WindowManager::createWindow(
             WindowType::openLocoVersion,
-            gfx::point_t(8, ui::height() - height),
-            gfx::ui_size_t(width, height),
+            Gfx::point_t(8, ui::height() - height),
+            Gfx::ui_size_t(width, height),
             window_flags::stick_to_front | window_flags::transparent | window_flags::no_background | window_flags::flag_6,
             &_events);
         window->widgets = widgets;
@@ -36,9 +36,9 @@ namespace OpenLoco::ui::windows
     }
 
     // 0x00439236
-    static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi)
+    static void draw(ui::window* window, Gfx::drawpixelinfo_t* dpi)
     {
         auto versionInfo = getVersionInfo();
-        gfx::drawString(dpi, window->x, window->y, Colour::white | format_flags::textflag_5, (void*)versionInfo.c_str());
+        Gfx::drawString(dpi, window->x, window->y, Colour::white | format_flags::textflag_5, (void*)versionInfo.c_str());
     }
 }

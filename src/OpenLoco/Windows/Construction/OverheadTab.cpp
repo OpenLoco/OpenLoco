@@ -232,25 +232,25 @@ namespace OpenLoco::ui::windows::construction::overhead
     }
 
     // 0x0049EA3E
-    static void draw(window* self, gfx::drawpixelinfo_t* dpi)
+    static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
     {
         self->draw(dpi);
         common::drawTabs(self, dpi);
         if (_lastSelectedMods & 0xF)
         {
-            gfx::drawpixelinfo_t* clipped = nullptr;
+            Gfx::drawpixelinfo_t* clipped = nullptr;
             auto xPos = self->x + self->widgets[widx::image].left + 1;
             auto yPos = self->y + self->widgets[widx::image].top + 1;
             auto width = self->widgets[widx::image].width();
             auto height = self->widgets[widx::image].height();
 
-            if (gfx::clipDrawpixelinfo(&clipped, dpi, xPos, yPos, width, height))
+            if (Gfx::clipDrawpixelinfo(&clipped, dpi, xPos, yPos, width, height))
             {
                 coord_t x = 0x2010;
                 coord_t y = 0x2010;
 
                 auto rotCoord = rotate2dCoordinate({ x, y }, gCurrentRotation);
-                gfx::point_t screenPos = { static_cast<int16_t>(rotCoord.y - rotCoord.x), static_cast<int16_t>(((rotCoord.x + rotCoord.y) >> 1) - 460) };
+                Gfx::point_t screenPos = { static_cast<int16_t>(rotCoord.y - rotCoord.x), static_cast<int16_t>(((rotCoord.x + rotCoord.y) >> 1) - 460) };
 
                 screenPos.x -= (self->widgets[widx::image].width() / 2);
                 screenPos.y -= ((self->widgets[widx::image].width() / 2) + 16);
@@ -287,7 +287,7 @@ namespace OpenLoco::ui::windows::construction::overhead
             auto args = FormatArguments();
             args.push<uint32_t>(_modCost);
 
-            gfx::drawStringCentred(*dpi, xPos, yPos, Colour::black, string_ids::build_cost, &args);
+            Gfx::drawStringCentred(*dpi, xPos, yPos, Colour::black, string_ids::build_cost, &args);
         }
     }
 

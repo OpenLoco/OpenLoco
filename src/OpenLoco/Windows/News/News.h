@@ -66,7 +66,7 @@ namespace OpenLoco::ui::NewsWindow
 
     namespace news1
     {
-        static const gfx::ui_size_t windowSize = { 360, 117 };
+        static const Gfx::ui_size_t windowSize = { 360, 117 };
 
         extern widget_t widgets[7];
 
@@ -88,14 +88,14 @@ namespace OpenLoco::ui::NewsWindow
 
     namespace news2
     {
-        static const gfx::ui_size_t windowSize = { 360, 159 };
+        static const Gfx::ui_size_t windowSize = { 360, 159 };
 
         extern widget_t widgets[7];
     }
 
     namespace ticker
     {
-        static const gfx::ui_size_t windowSize = { 111, 26 };
+        static const Gfx::ui_size_t windowSize = { 111, 26 };
 
         enum widx
         {

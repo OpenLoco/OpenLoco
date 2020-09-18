@@ -12,7 +12,7 @@ using namespace OpenLoco::interop;
 
 namespace OpenLoco::ui::title_options
 {
-    static const gfx::ui_size_t window_size = { 60, 15 };
+    static const Gfx::ui_size_t window_size = { 60, 15 };
 
     namespace widx
     {
@@ -30,7 +30,7 @@ namespace OpenLoco::ui::title_options
     static window_event_list _events;
 
     static void onMouseUp(window* window, widget_index widgetIndex);
-    static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi);
+    static void draw(ui::window* window, Gfx::drawpixelinfo_t* dpi);
 
     window* open()
     {
@@ -39,7 +39,7 @@ namespace OpenLoco::ui::title_options
 
         auto window = WindowManager::createWindow(
             WindowType::titleOptions,
-            gfx::point_t(ui::width() - window_size.width, 0),
+            Gfx::point_t(ui::width() - window_size.width, 0),
             window_size,
             window_flags::stick_to_front | window_flags::transparent | window_flags::no_background | window_flags::flag_6,
             &_events);
@@ -55,16 +55,16 @@ namespace OpenLoco::ui::title_options
         return window;
     }
 
-    static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi)
+    static void draw(ui::window* window, Gfx::drawpixelinfo_t* dpi)
     {
         // Draw widgets.
         window->draw(dpi);
 
         int16_t x = window->x + window->width / 2;
         int16_t y = window->y + window->widgets[widx::options_button].top + 2;
-        gfx::point_t origin = { x, y };
+        Gfx::point_t origin = { x, y };
 
-        gfx::drawStringCentredWrapped(dpi, &origin, window->width, Colour::white, string_ids::outlined_wcolour2_stringid, (const char*)&string_ids::options);
+        Gfx::drawStringCentredWrapped(dpi, &origin, window->width, Colour::white, string_ids::outlined_wcolour2_stringid, (const char*)&string_ids::options);
     }
 
     static void onMouseUp(window* window, widget_index widgetIndex)

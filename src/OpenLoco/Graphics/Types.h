@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-namespace OpenLoco::gfx
+namespace OpenLoco::Gfx
 {
     struct point_t
     {

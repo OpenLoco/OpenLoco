@@ -20,7 +20,7 @@ using namespace OpenLoco::interop;
 
 namespace OpenLoco::ui::TimePanel
 {
-    static const gfx::ui_size_t window_size = { 140, 27 };
+    static const Gfx::ui_size_t window_size = { 140, 27 };
 
     namespace widx
     {
@@ -57,7 +57,7 @@ namespace OpenLoco::ui::TimePanel
     static window_event_list _events;
 
     static void prepareDraw(window* window);
-    static void draw(ui::window* self, gfx::drawpixelinfo_t* dpi);
+    static void draw(ui::window* self, Gfx::drawpixelinfo_t* dpi);
     static void onMouseUp(ui::window* window, widget_index widgetIndex);
     static void onMouseDown(ui::window* window, widget_index widgetIndex);
     static void textInput(window* w, widget_index widgetIndex, char* str);
@@ -93,8 +93,8 @@ namespace OpenLoco::ui::TimePanel
 
         auto window = WindowManager::createWindow(
             WindowType::timeToolbar,
-            gfx::point_t(ui::width() - window_size.width, ui::height() - window_size.height),
-            gfx::ui_size_t(window_size.width, window_size.height),
+            Gfx::point_t(ui::width() - window_size.width, ui::height() - window_size.height),
+            Gfx::ui_size_t(window_size.width, window_size.height),
             ui::window_flags::stick_to_front | ui::window_flags::transparent | ui::window_flags::no_background,
             &_events);
         window->widgets = _widgets;
@@ -117,26 +117,26 @@ namespace OpenLoco::ui::TimePanel
     static void prepareDraw(window* window)
     {
         _widgets[widx::inner_frame].type = widget_type::none;
-        _widgets[widx::pause_btn].image = gfx::recolour(image_ids::speed_pause);
-        _widgets[widx::normal_speed_btn].image = gfx::recolour(image_ids::speed_normal);
-        _widgets[widx::fast_forward_btn].image = gfx::recolour(image_ids::speed_fast_forward);
-        _widgets[widx::extra_fast_forward_btn].image = gfx::recolour(image_ids::speed_extra_fast_forward);
+        _widgets[widx::pause_btn].image = Gfx::recolour(image_ids::speed_pause);
+        _widgets[widx::normal_speed_btn].image = Gfx::recolour(image_ids::speed_normal);
+        _widgets[widx::fast_forward_btn].image = Gfx::recolour(image_ids::speed_fast_forward);
+        _widgets[widx::extra_fast_forward_btn].image = Gfx::recolour(image_ids::speed_extra_fast_forward);
 
         if (isPaused())
         {
-            _widgets[widx::pause_btn].image = gfx::recolour(image_ids::speed_pause_active);
+            _widgets[widx::pause_btn].image = Gfx::recolour(image_ids::speed_pause_active);
         }
         else if (game_speed == 0)
         {
-            _widgets[widx::normal_speed_btn].image = gfx::recolour(image_ids::speed_normal_active);
+            _widgets[widx::normal_speed_btn].image = Gfx::recolour(image_ids::speed_normal_active);
         }
         else if (game_speed == 1)
         {
-            _widgets[widx::fast_forward_btn].image = gfx::recolour(image_ids::speed_fast_forward_active);
+            _widgets[widx::fast_forward_btn].image = Gfx::recolour(image_ids::speed_fast_forward_active);
         }
         else if (game_speed == 2)
         {
-            _widgets[widx::extra_fast_forward_btn].image = gfx::recolour(image_ids::speed_extra_fast_forward_active);
+            _widgets[widx::extra_fast_forward_btn].image = Gfx::recolour(image_ids::speed_extra_fast_forward_active);
         }
 
         if (isNetworked())
@@ -174,15 +174,15 @@ namespace OpenLoco::ui::TimePanel
     };
 
     // 0x004397BE
-    static void draw(ui::window* self, gfx::drawpixelinfo_t* dpi)
+    static void draw(ui::window* self, Gfx::drawpixelinfo_t* dpi)
     {
         widget_t& frame = _widgets[widx::outer_frame];
-        gfx::drawRect(dpi, self->x + frame.left, self->y + frame.top, frame.width(), frame.height(), 0x2000000 | 52);
+        Gfx::drawRect(dpi, self->x + frame.left, self->y + frame.top, frame.width(), frame.height(), 0x2000000 | 52);
 
         // Draw widgets.
         self->draw(dpi);
 
-        gfx::drawRectInset(dpi, self->x + frame.left + 1, self->y + frame.top + 1, frame.width() - 2, frame.height() - 2, self->colours[1], 0x30);
+        Gfx::drawRectInset(dpi, self->x + frame.left + 1, self->y + frame.top + 1, frame.width() - 2, frame.height() - 2, self->colours[1], 0x30);
 
         *(uint32_t*)&_common_format_args[0] = getCurrentDay();
         string_id format = string_ids::date_monthyear;
@@ -200,10 +200,10 @@ namespace OpenLoco::ui::TimePanel
         {
             c = Colour::white;
         }
-        gfx::drawStringCentred(*dpi, self->x + _widgets[widx::date_btn].mid_x(), self->y + _widgets[widx::date_btn].top + 1, c, format, &*_common_format_args);
+        Gfx::drawStringCentred(*dpi, self->x + _widgets[widx::date_btn].mid_x(), self->y + _widgets[widx::date_btn].top + 1, c, format, &*_common_format_args);
 
         auto skin = objectmgr::get<interface_skin_object>();
-        gfx::drawImage(dpi, self->x + _widgets[widx::map_chat_menu].left - 2, self->y + _widgets[widx::map_chat_menu].top - 1, skin->img + map_sprites_by_rotation[gCurrentRotation]);
+        Gfx::drawImage(dpi, self->x + _widgets[widx::map_chat_menu].left - 2, self->y + _widgets[widx::map_chat_menu].top - 1, skin->img + map_sprites_by_rotation[gCurrentRotation]);
     }
 
     // 0x004398FB

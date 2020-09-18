@@ -129,7 +129,7 @@ namespace OpenLoco::ui
             return { viewport_x, viewport_y };
         }
 
-        void render(gfx::drawpixelinfo_t* dpi);
+        void render(Gfx::drawpixelinfo_t* dpi);
         static viewport_pos mapFrom3d(loc16 loc, int32_t rotation);
         void centre2dCoordinates(int16_t x, int16_t y, int16_t z, int16_t* outX, int16_t* outY);
     };

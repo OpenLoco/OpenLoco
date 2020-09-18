@@ -5,7 +5,7 @@
 #include <algorithm>
 
 using namespace OpenLoco::interop;
-using namespace OpenLoco::gfx;
+using namespace OpenLoco::Gfx;
 using namespace OpenLoco::ui;
 
 namespace OpenLoco::Drawing
@@ -15,7 +15,7 @@ namespace OpenLoco::Drawing
 
     static void windowDraw(drawpixelinfo_t* dpi, ui::window* w, Rect rect);
     static void windowDraw(drawpixelinfo_t* dpi, ui::window* w, int16_t left, int16_t top, int16_t right, int16_t bottom);
-    static bool windowDrawSplit(gfx::drawpixelinfo_t* dpi, ui::window* w, int16_t left, int16_t top, int16_t right, int16_t bottom);
+    static bool windowDrawSplit(Gfx::drawpixelinfo_t* dpi, ui::window* w, int16_t left, int16_t top, int16_t right, int16_t bottom);
 
     // T[m][n]
     template<typename T>
@@ -251,7 +251,7 @@ namespace OpenLoco::Drawing
      * @param bottom @<bp>
      * @return
      */
-    static bool windowDrawSplit(gfx::drawpixelinfo_t* dpi, ui::window* w, int16_t left, int16_t top, int16_t right, int16_t bottom)
+    static bool windowDrawSplit(Gfx::drawpixelinfo_t* dpi, ui::window* w, int16_t left, int16_t top, int16_t right, int16_t bottom)
     {
         // Divide the draws up for only the visible regions of the window recursively
         for (uint32_t index = ui::WindowManager::indexOf(w) + 1; index < ui::WindowManager::count(); index++)

@@ -8,7 +8,7 @@ using namespace OpenLoco::interop;
 
 namespace OpenLoco::ui::windows
 {
-    static const gfx::ui_size_t window_size = { 298, 170 };
+    static const Gfx::ui_size_t window_size = { 298, 170 };
 
     namespace widx
     {
@@ -26,7 +26,7 @@ namespace OpenLoco::ui::windows
     static window_event_list _events;
 
     static void onMouseUp(window* window, widget_index widgetIndex);
-    static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi);
+    static void draw(ui::window* window, Gfx::drawpixelinfo_t* dpi);
 
     ui::window* openTitleLogo()
     {
@@ -52,9 +52,9 @@ namespace OpenLoco::ui::windows
     }
 
     // 0x00439298
-    static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi)
+    static void draw(ui::window* window, Gfx::drawpixelinfo_t* dpi)
     {
-        gfx::drawImage(dpi, window->x, window->y, image_ids::locomotion_logo);
+        Gfx::drawImage(dpi, window->x, window->y, image_ids::locomotion_logo);
     }
 
     // 0x004392AD
