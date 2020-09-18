@@ -147,11 +147,11 @@ namespace OpenLoco::ui::options
             widget::draw_tab(w, ctx, ImageIds::tab_miscellaneous, widx::tab_miscellaneous);
         }
 
-#define common_options_widgets(window_size, window_caption_id)                                                                                             \
-    makeWidget({ 0, 0 }, window_size, widget_type::frame, 0),                                                                                              \
-        makeWidget({ 1, 1 }, { (uint16_t)(window_size.width - 2), 13 }, widget_type::caption_25, 0, window_caption_id),                                    \
+#define common_options_widgets(window_size, window_caption_id)                                                                                            \
+    makeWidget({ 0, 0 }, window_size, widget_type::frame, 0),                                                                                             \
+        makeWidget({ 1, 1 }, { (uint16_t)(window_size.width - 2), 13 }, widget_type::caption_25, 0, window_caption_id),                                   \
         makeWidget({ (int16_t)(window_size.width - 15), 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, string_ids::tooltip_close_window), \
-        makeWidget({ 0, 41 }, { window_size.width, 102 }, widget_type::panel, 1),                                                                          \
+        makeWidget({ 0, 41 }, { window_size.width, 102 }, widget_type::panel, 1),                                                                         \
         makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::display_options),                                         \
         makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::sound_options),                                          \
         makeRemapWidget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::music_options),                                          \
