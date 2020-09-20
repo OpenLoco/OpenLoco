@@ -55,6 +55,14 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         call(0x00443807);
     }
 
+    // 0x00443946
+    static void initList(window* self)
+    {
+        registers regs;
+        regs.esi = (int32_t)self;
+        call(0x00443946, regs);
+    }
+
     // 0x00443868
     window* open()
     {
@@ -87,6 +95,8 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         // auto& config = config::get();
         // config.scenario_selected_tab;
 
+        initList(self);
+
         return self;
     }
 
@@ -100,8 +110,34 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     // 0x004439AF
     static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
     {
+        Gfx::drawRectInset(dpi, self->x, self->y + 20, self->width - 1, 1, self->colours[0], 0);
+
         // Draw widgets.
         self->draw(dpi);
+
+        static const string_id scenarioGroupIds[] = {
+            StringIds::scenario_group_beginner,
+            StringIds::scenario_group_easy,
+            StringIds::scenario_group_medium,
+            StringIds::scenario_group_challenging,
+            StringIds::scenario_group_expert,
+        };
+
+        // Draw tab captions.
+        for (int i = 0; i < 5; i++)
+        {
+            widget_t& widget = self->widgets[widx::tab0 + i];
+            if (widget.type == widget_type::none)
+                continue;
+
+            const auto offset = self->current_tab == i ? 1 : 0;
+            auto origin = Gfx::point_t(widget.mid_x() + self->x, widget.mid_y() + self->y - 3 - offset);
+            const string_id caption = scenarioGroupIds[i];
+
+            Gfx::drawStringCentredWrapped(dpi, &origin, widget.width() - 4, Colour::black, StringIds::wcolour2_stringid, &caption);
+        }
+
+        // Load currency object.
     }
 
     // 0x00443D02
