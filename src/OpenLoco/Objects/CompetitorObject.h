@@ -25,16 +25,16 @@ namespace OpenLoco
 
     static std::array<string_id, 10> aiRatingToLevelArray = {
         {
-            string_ids::low,
-            string_ids::low,
-            string_ids::low,
-            string_ids::low,
-            string_ids::medium,
-            string_ids::medium,
-            string_ids::medium,
-            string_ids::high,
-            string_ids::high,
-            string_ids::high,
+            StringIds::low,
+            StringIds::low,
+            StringIds::low,
+            StringIds::low,
+            StringIds::medium,
+            StringIds::medium,
+            StringIds::medium,
+            StringIds::high,
+            StringIds::high,
+            StringIds::high,
         }
     };
 

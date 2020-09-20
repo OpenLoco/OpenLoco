@@ -1245,7 +1245,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             auto bridgeObj = ObjectManager::get<bridge_object>(bridge);
             auto company = CompanyManager::get(_playerCompany);
             auto companyColour = company->mainColours.primary;
-            auto imageId = gfx::recolour(bridgeObj->image, companyColour);
+            auto imageId = Gfx::recolour(bridgeObj->image, companyColour);
 
             auto args = FormatArguments();
             args.push(imageId);
@@ -1976,8 +1976,8 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 auto bridgeObj = ObjectManager::get<bridge_object>(_lastSelectedBridge);
                 if (bridgeObj != nullptr)
                 {
-                    auto company = companymgr::get(_playerCompany);
-                    auto imageId = gfx::recolour(bridgeObj->image, company->mainColours.primary);
+                    auto company = CompanyManager::get(_playerCompany);
+                    auto imageId = Gfx::recolour(bridgeObj->image, company->mainColours.primary);
                     auto x = self->x + self->widgets[widx::bridge].left + 2;
                     auto y = self->y + self->widgets[widx::bridge].top + 1;
 

@@ -52,13 +52,13 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
             bool isRoad = last_road_option & (1 << 7);
             if (isRoad)
             {
-                auto obj = objectmgr::get<road_object>(last_road_option & ~(1 << 7));
-                fgImage = gfx::recolour(obj->image, company_colour);
+                auto obj = ObjectManager::get<road_object>(last_road_option & ~(1 << 7));
+                fgImage = Gfx::recolour(obj->image, company_colour);
             }
             else
             {
-                auto obj = objectmgr::get<track_object>(last_road_option);
-                fgImage = gfx::recolour(obj->image, company_colour);
+                auto obj = ObjectManager::get<track_object>(last_road_option);
+                fgImage = Gfx::recolour(obj->image, company_colour);
             }
 
             y--;
@@ -175,17 +175,17 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
     // 0x0043A3C3
     void terraformMenuMouseDown(window* window, widget_index widgetIndex)
     {
-        auto interface = objectmgr::get<interface_skin_object>();
-        auto land = objectmgr::get<land_object>(addr<0x00525FB6, uint8_t>());
-        auto water = objectmgr::get<water_object>();
+        auto interface = ObjectManager::get<interface_skin_object>();
+        auto land = ObjectManager::get<land_object>(addr<0x00525FB6, uint8_t>());
+        auto water = ObjectManager::get<water_object>();
 
-        dropdown::add(0, string_ids::menu_sprite_stringid, { interface->img + interface_skin::image_ids::toolbar_menu_bulldozer, string_ids::menu_clear_area });
-        dropdown::add(1, string_ids::menu_sprite_stringid, { land->var_16 + land::image_ids::toolbar_terraform_land, string_ids::menu_adjust_land });
-        dropdown::add(2, string_ids::menu_sprite_stringid, { water->image + water::image_ids::toolbar_terraform_water, string_ids::menu_adjust_water });
-        dropdown::add(3, string_ids::menu_sprite_stringid, { interface->img + interface_skin::image_ids::toolbar_menu_plant_trees, string_ids::menu_plant_trees });
-        dropdown::add(4, string_ids::menu_sprite_stringid, { interface->img + interface_skin::image_ids::toolbar_menu_build_walls, string_ids::menu_build_walls });
-        dropdown::showBelow(window, widgetIndex, 5, 25, (1 << 6));
-        dropdown::setHighlightedItem(0);
+        Dropdown::add(0, StringIds::menu_sprite_stringid, { interface->img + InterfaceSkin::ImageIds::toolbar_menu_bulldozer, StringIds::menu_clear_area });
+        Dropdown::add(1, StringIds::menu_sprite_stringid, { land->var_16 + Land::ImageIds::toolbar_terraform_land, StringIds::menu_adjust_land });
+        Dropdown::add(2, StringIds::menu_sprite_stringid, { water->image + Water::ImageIds::toolbar_terraform_water, StringIds::menu_adjust_water });
+        Dropdown::add(3, StringIds::menu_sprite_stringid, { interface->img + InterfaceSkin::ImageIds::toolbar_menu_plant_trees, StringIds::menu_plant_trees });
+        Dropdown::add(4, StringIds::menu_sprite_stringid, { interface->img + InterfaceSkin::ImageIds::toolbar_menu_build_walls, StringIds::menu_build_walls });
+        Dropdown::showBelow(window, widgetIndex, 5, 25, (1 << 6));
+        Dropdown::setHighlightedItem(0);
     }
 
     // 0x0043A19F
@@ -217,13 +217,13 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
             {
                 auto road = ObjectManager::get<road_object>(objIndex & 0x7F);
                 obj_string_id = road->name;
-                obj_image = gfx::recolour(road->image, company_colour);
+                obj_image = Gfx::recolour(road->image, company_colour);
             }
             else
             {
                 auto track = ObjectManager::get<track_object>(objIndex);
                 obj_string_id = track->name;
-                obj_image = gfx::recolour(track->image, company_colour);
+                obj_image = Gfx::recolour(track->image, company_colour);
             }
 
             Dropdown::add(i, StringIds::menu_sprite_stringid_construction, { obj_image, obj_string_id });

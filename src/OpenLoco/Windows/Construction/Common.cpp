@@ -475,16 +475,16 @@ namespace OpenLoco::Ui::Windows::Construction
                         clipped->height <<= 1;
                         clipped->x <<= 1;
                         clipped->y <<= 1;
-                        auto roadStationObj = objectmgr::get<road_station_object>(_lastSelectedStationType);
-                        auto imageId = gfx::recolour(roadStationObj->image, companyColour);
-                        gfx::drawImage(clipped, -4, -10, imageId);
+                        auto roadStationObj = ObjectManager::get<road_station_object>(_lastSelectedStationType);
+                        auto imageId = Gfx::recolour(roadStationObj->image, companyColour);
+                        Gfx::drawImage(clipped, -4, -10, imageId);
                         auto colour = _byte_5045FA[companyColour];
                         if (!(roadStationObj->flags & RoadStationFlags::recolourable))
                         {
                             colour = 46;
                         }
-                        imageId = gfx::recolour(roadStationObj->image, colour) + 1;
-                        gfx::drawImage(clipped, -4, -10, imageId);
+                        imageId = Gfx::recolour(roadStationObj->image, colour) + 1;
+                        Gfx::drawImage(clipped, -4, -10, imageId);
                     }
 
                     Widget::draw_tab(self, dpi, -2, widx::tab_station);
@@ -567,9 +567,9 @@ namespace OpenLoco::Ui::Windows::Construction
                                 clipped->height *= 2;
                                 clipped->x *= 2;
                                 clipped->y *= 2;
-                                auto trainStationObj = objectmgr::get<train_station_object>(_lastSelectedStationType);
-                                auto imageId = gfx::recolour(trainStationObj->image, companyColour);
-                                gfx::drawImage(clipped, -4, -9, imageId);
+                                auto trainStationObj = ObjectManager::get<train_station_object>(_lastSelectedStationType);
+                                auto imageId = Gfx::recolour(trainStationObj->image, companyColour);
+                                Gfx::drawImage(clipped, -4, -9, imageId);
                                 auto colour = _byte_5045FA[companyColour];
                                 if (!(trainStationObj->flags & TrainStationFlags::recolourable))
                                 {
@@ -598,9 +598,9 @@ namespace OpenLoco::Ui::Windows::Construction
 
                     Gfx::drawpixelinfo_t* clipped = nullptr;
 
-                    if (gfx::clipDrawpixelinfo(&clipped, dpi, x, y, width, height))
+                    if (Gfx::clipDrawpixelinfo(&clipped, dpi, x, y, width, height))
                     {
-                        auto trainSignalObject = objectmgr::get<train_signal_object>(_lastSelectedSignal);
+                        auto trainSignalObject = ObjectManager::get<train_signal_object>(_lastSelectedSignal);
                         auto imageId = trainSignalObject->image;
                         if (self->current_tab == widx::tab_signal - widx::tab_construction)
                         {

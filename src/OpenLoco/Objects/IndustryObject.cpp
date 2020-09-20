@@ -85,7 +85,7 @@ namespace OpenLoco
     }
 
     // 0x00458C7F
-    void industry_object::drawIndustry(gfx::drawpixelinfo_t* clipped, int16_t x, int16_t y)
+    void industry_object::drawIndustry(Gfx::drawpixelinfo_t* clipped, int16_t x, int16_t y)
     {
         registers regs;
         regs.cx = x;

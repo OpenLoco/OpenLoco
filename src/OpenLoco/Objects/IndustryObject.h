@@ -43,7 +43,7 @@ namespace OpenLoco
         bool producesCargo() const;
         char* getProducedCargoString(const char* buffer);
         char* getRequiredCargoString(const char* buffer);
-        void drawIndustry(gfx::drawpixelinfo_t* clipped, int16_t x, int16_t y);
+        void drawIndustry(Gfx::drawpixelinfo_t* clipped, int16_t x, int16_t y);
     };
 #pragma pack(pop)
 }

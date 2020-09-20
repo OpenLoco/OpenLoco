@@ -1,12 +1,12 @@
 #include "BuildingObject.h"
 #include "../Interop/Interop.hpp"
 
-using namespace OpenLoco::interop;
+using namespace OpenLoco::Interop;
 
 namespace OpenLoco
 {
     // 0x0042DB95
-    void building_object::drawBuilding(gfx::drawpixelinfo_t* clipped, uint8_t buildingRotation, int16_t x, int16_t y, colour_t colour)
+    void building_object::drawBuilding(Gfx::drawpixelinfo_t* clipped, uint8_t buildingRotation, int16_t x, int16_t y, colour_t colour)
     {
         registers regs;
         regs.cx = x;

@@ -1376,7 +1376,7 @@ namespace OpenLoco::Ui::BuildVehicle
             else if (type & (1 << 7)) // is_road
             {
                 type &= ~(1 << 7);
-                auto roadObj = objectmgr::get<road_object>(type);
+                auto roadObj = ObjectManager::get<road_object>(type);
                 img = roadObj->image;
                 if (window->current_secondary_tab == tab)
                 {
@@ -1386,7 +1386,7 @@ namespace OpenLoco::Ui::BuildVehicle
             }
             else
             {
-                auto trackObj = objectmgr::get<track_object>(type);
+                auto trackObj = ObjectManager::get<track_object>(type);
                 img = trackObj->image;
                 if (window->current_secondary_tab == tab)
                 {

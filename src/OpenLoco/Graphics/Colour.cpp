@@ -39,7 +39,7 @@ namespace OpenLoco::Colour
 
     uint8_t getShade(colour_t colour, uint8_t shade)
     {
-        colour &= ~colour::inset_flag;
+        colour &= ~Colour::inset_flag;
         assert(colour <= 31);
 
         if (shade < 8)

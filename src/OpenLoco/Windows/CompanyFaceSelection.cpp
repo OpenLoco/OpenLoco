@@ -232,11 +232,11 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
             const auto x = self->x + self->widgets[widx::face_frame].mid_x();
             const auto y = self->y + self->widgets[widx::face_frame].bottom + 3;
             const auto width = self->width - self->widgets[widx::scrollview].right - 6;
-            auto str = const_cast<char*>(stringmgr::getString(string_ids::buffer_2039));
-            *str++ = control_codes::window_colour_2;
+            auto str = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
+            *str++ = ControlCodes::window_colour_2;
             auto objectPtr = self->object;
-            strcpy(str, objectmgr::object_index_entry::read(&objectPtr)._name);
-            gfx::drawStringCentredClipped(*dpi, x, y, width, colour::black, string_ids::buffer_2039);
+            strcpy(str, ObjectManager::object_index_entry::read(&objectPtr)._name);
+            Gfx::drawStringCentredClipped(*dpi, x, y, width, Colour::black, StringIds::buffer_2039);
         }
 
         // There was code for displaying competitor stats if window opened with none

@@ -30,7 +30,7 @@ namespace OpenLoco
         uint8_t var_A6[2];
         uint8_t var_A8[2];
 
-        void drawBuilding(gfx::drawpixelinfo_t* clipped, uint8_t buildingRotation, int16_t x, int16_t y, colour_t colour);
+        void drawBuilding(Gfx::drawpixelinfo_t* clipped, uint8_t buildingRotation, int16_t x, int16_t y, colour_t colour);
     };
 #pragma pack(pop)
 }

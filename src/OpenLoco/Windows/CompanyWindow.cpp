@@ -730,7 +730,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             Common::repositionTabs(self);
         }
 
-        static void drawAIdetails(gfx::drawpixelinfo_t& dpi, const int32_t x, int32_t& y, const OpenLoco::company& company)
+        static void drawAIdetails(Gfx::drawpixelinfo_t& dpi, const int32_t x, int32_t& y, const OpenLoco::company& company)
         {
             const auto competitor = ObjectManager::get<competitor_object>(company.competitor_id);
             {
@@ -744,7 +744,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 FormatArguments args{};
                 args.push<uint16_t>(competitor->aggressiveness);
                 args.push(aiRatingToLevel(competitor->aggressiveness));
-                gfx::drawString_494B3F(dpi, x, y, colour::black, string_ids::company_details_aggressiveness, &args);
+                Gfx::drawString_494B3F(dpi, x, y, Colour::black, StringIds::company_details_aggressiveness, &args);
                 y += 10;
             }
             {

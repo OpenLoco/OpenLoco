@@ -1500,7 +1500,7 @@ namespace OpenLoco::Ui::Options
                 index++;
                 if (index == ax)
                 {
-                    auto ebp = objectmgr::getActiveObject(object_type::currency, _11364A0);
+                    auto ebp = ObjectManager::getActiveObject(object_type::currency, _11364A0);
 
                     if (ebp.index != -1)
                     {
