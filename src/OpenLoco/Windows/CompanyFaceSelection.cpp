@@ -53,20 +53,6 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
 
     static std::vector<uint32_t> _inUseCompetitors;
 
-    // Object free?
-    static void sub_471B95()
-    {
-        call(0x00471B95);
-    }
-
-    // Object load?
-    static void sub_47176D(ObjectManager::header& object)
-    {
-        registers regs;
-        regs.ebp = reinterpret_cast<int32_t>(&object);
-        call(0x0047176D, regs);
-    }
-
     // 0x004720EB
     // Returns std::nullopt if not loaded
     static std::optional<uint32_t> getLoadedObjectIndex(const ObjectManager::object_index_entry& object)
@@ -142,7 +128,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     // 0x004352A4
     static void onClose(window* const self)
     {
-        sub_471B95();
+        ObjectManager::freeScenarioText();
     }
 
     // 0x435299
@@ -167,14 +153,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
         return std::find(_inUseCompetitors.begin(), _inUseCompetitors.end(), objIndex) != _inUseCompetitors.end();
     }
 
-    struct ObjIndexPair
-    {
-        int16_t index;
-        ObjectManager::object_index_entry object;
-    };
-
-    // 0x004354A6 sort of, very different
-    static ObjIndexPair getObjectFromSelection(const int16_t& y)
+    static ObjectManager::ObjIndexPair getObjectFromSelection(const int16_t& y)
     {
         const int16_t rowIndex = y / rowHeight;
         const auto objects = ObjectManager::getAvailableObjects(object_type::competitor);
@@ -212,17 +191,17 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     // 0x004352C7
     static void scrollMouseOver(window* const self, const int16_t x, const int16_t y, const uint8_t scroll_index)
     {
-        const auto [rowIndex, object] = getObjectFromSelection(y);
+        auto [rowIndex, object] = getObjectFromSelection(y);
         if (self->row_hover == rowIndex)
         {
             return;
         }
         self->row_hover = rowIndex;
         self->object = object._name;
-        sub_471B95();
+        ObjectManager::freeScenarioText();
         if (object._header)
         {
-            sub_47176D(*object._header);
+            ObjectManager::getScenarioText(*object._header);
         }
         self->invalidate();
     }

@@ -216,8 +216,17 @@ namespace OpenLoco::ObjectManager
 
         static object_index_entry read(std::byte** ptr);
     };
+
+    struct ObjIndexPair
+    {
+        int16_t index;
+        object_index_entry object;
+    };
 #pragma pack(pop)
 
     uint32_t getNumInstalledObjects();
     std::vector<std::pair<uint32_t, object_index_entry>> getAvailableObjects(object_type type);
+    void freeScenarioText();
+    void getScenarioText(header& object);
+    ObjIndexPair getActiveObject(object_type objectType, uint8_t* edi);
 }

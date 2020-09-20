@@ -322,4 +322,34 @@ namespace OpenLoco::ObjectManager
 
         return list;
     }
+
+    // 0x00471B95
+    void freeScenarioText()
+    {
+        call(0x00471B95);
+    }
+
+    // 0x0047176D
+    void getScenarioText(header& object)
+    {
+        registers regs;
+        regs.ebp = reinterpret_cast<int32_t>(&object);
+        call(0x0047176D, regs);
+    }
+
+    // 0x00472AFE
+    ObjIndexPair getActiveObject(object_type objectType, uint8_t* edi)
+    {
+        const auto objects = getAvailableObjects(objectType);
+
+        for (auto [index, object] : objects)
+        {
+            if (edi[index] & (1 << 0))
+            {
+                return { static_cast<int16_t>(index), object };
+            }
+        }
+
+        return { -1, object_index_entry{} };
+    }
 }
