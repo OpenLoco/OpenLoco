@@ -53,21 +53,6 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
 
     static std::vector<uint32_t> _inUseCompetitors;
 
-    // 0x004720EB
-    // Returns std::nullopt if not loaded
-    static std::optional<uint32_t> getLoadedObjectIndex(const ObjectManager::object_index_entry& object)
-    {
-        registers regs;
-        regs.ebp = reinterpret_cast<uint32_t>(&object._header->type);
-        const bool success = !(call(0x004720EB, regs) & (X86_FLAG_CARRY << 8));
-        // Object type is also returned on ecx
-        if (success)
-        {
-            return { regs.ebx };
-        }
-        return std::nullopt;
-    }
-
     // 0x004353F4
     static void findAllInUseCompetitors(const company_id_t id)
     {
@@ -83,7 +68,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
         _inUseCompetitors.clear();
         for (const auto& object : ObjectManager::getAvailableObjects(object_type::competitor))
         {
-            auto competitorId = getLoadedObjectIndex(object.second);
+            auto competitorId = ObjectManager::getLoadedObjectIndex(object.second);
             if (competitorId)
             {
                 auto res = std::find(takenCompetitorIds.begin(), takenCompetitorIds.end(), *competitorId);
