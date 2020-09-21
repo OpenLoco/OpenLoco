@@ -43,7 +43,7 @@ namespace OpenLoco
 
         void isAccepted(bool value)
         {
-            flags = utility::setMask<uint8_t>(flags, 1, value);
+            flags = Utility::setMask<uint8_t>(flags, 1, value);
         }
     };
 

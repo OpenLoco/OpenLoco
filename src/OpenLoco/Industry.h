@@ -34,7 +34,7 @@ namespace OpenLoco
         coord_t x;                  // 0x02
         coord_t y;                  // 0x04
         uint16_t flags;             // 0x06
-        utility::prng prng;         // 0x08
+        Utility::prng prng;         // 0x08
         uint8_t object_id;          // 0x10
         uint8_t under_construction; // 0x11 (0xFF = Finished)
         uint8_t pad_12[0xD5 - 0x12];

@@ -78,7 +78,7 @@ namespace OpenLoco
     static loco_global<company_id_t, 0x0050A040> _mapTooltipOwner;
     static loco_global<int32_t, 0x0052339C> _52339C;
     static loco_global<int8_t, 0x0052336E> _52336E; // bool
-    loco_global<utility::prng, 0x00525E18> _prng;
+    loco_global<Utility::prng, 0x00525E18> _prng;
     static loco_global<company_id_t[2], 0x00525E3C> _player_company;
     loco_global<uint32_t, 0x00525F5E> _scenario_ticks;
     static loco_global<int16_t, 0x00525F62> _525F62;
@@ -185,7 +185,7 @@ namespace OpenLoco
         return _scenario_ticks;
     }
 
-    utility::prng& gPrng()
+    Utility::prng& gPrng()
     {
         return _prng;
     }

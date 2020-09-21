@@ -22,7 +22,7 @@ namespace OpenLoco::ui::windows::industry_list
     static loco_global<uint32_t, 0x00E0C39C> dword_E0C39C;
     static loco_global<uint8_t, 0x00E0C3D9> byte_E0C3D9;
     static loco_global<uint8_t, 0x00525FC7> _lastSelectedIndustry;
-    static loco_global<utility::prng, 0x00525E20> _prng;
+    static loco_global<Utility::prng, 0x00525E20> _prng;
     static loco_global<uint32_t, 0x00E0C394> _dword_E0C394;
     static loco_global<uint32_t, 0x00E0C398> _dword_E0C398;
 

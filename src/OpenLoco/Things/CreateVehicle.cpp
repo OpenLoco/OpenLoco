@@ -291,7 +291,7 @@ namespace OpenLoco::things::vehicle
             {
                 newBogie->max_cargo = vehObject.max_secondary_cargo;
                 newBogie->accepted_cargo_types = vehObject.secondary_cargo_types;
-                auto cargoType = utility::bitScanForward(newBogie->accepted_cargo_types);
+                auto cargoType = Utility::bitScanForward(newBogie->accepted_cargo_types);
                 if (cargoType != -1)
                 {
                     newBogie->cargo_type = cargoType;
@@ -370,7 +370,7 @@ namespace OpenLoco::things::vehicle
             {
                 newBody->max_cargo = vehObject.max_primary_cargo;
                 newBody->accepted_cargo_types = vehObject.primary_cargo_types;
-                auto cargoType = utility::bitScanForward(newBody->accepted_cargo_types);
+                auto cargoType = Utility::bitScanForward(newBody->accepted_cargo_types);
                 if (cargoType != -1)
                 {
                     newBody->cargo_type = cargoType;

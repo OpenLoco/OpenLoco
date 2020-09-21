@@ -1090,7 +1090,7 @@ namespace OpenLoco::ui::windows::town_list
                     colour_t colour = _buildingColour;
                     if (self->row_hover != self->row_info[i])
                     {
-                        colour = utility::bitScanReverse(buildingObj->colours);
+                        colour = Utility::bitScanReverse(buildingObj->colours);
                         if (colour == 0xFF)
                             colour = 0;
                     }
@@ -1116,7 +1116,7 @@ namespace OpenLoco::ui::windows::town_list
                 auto buildingObj = objectmgr::get<building_object>(self->row_hover);
                 if (buildingObj->colours != 0)
                 {
-                    colour_t colour = utility::bitScanReverse(buildingObj->colours);
+                    colour_t colour = Utility::bitScanReverse(buildingObj->colours);
                     if (colour == 0xFF)
                         colour = 0;
                     _buildingColour = colour;

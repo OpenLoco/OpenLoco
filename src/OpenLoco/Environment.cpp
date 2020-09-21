@@ -126,7 +126,7 @@ namespace OpenLoco::environment
             for (auto& item : fs::directory_iterator(directory))
             {
                 auto& p = item.path();
-                if (utility::iequals(p.filename().generic_string(), expectedFilename))
+                if (Utility::iequals(p.filename().generic_string(), expectedFilename))
                 {
                     return p;
                 }
@@ -169,7 +169,7 @@ namespace OpenLoco::environment
     template<typename T>
     static void setDirectory(T& buffer, fs::path path)
     {
-        utility::strcpy_safe(buffer, path.make_preferred().u8string().c_str());
+        Utility::strcpy_safe(buffer, path.make_preferred().u8string().c_str());
     }
 
     // 0x004412CE
@@ -261,7 +261,7 @@ namespace OpenLoco::environment
         };
 
         size_t index = (size_t)id;
-        if (index >= utility::length(paths))
+        if (index >= Utility::length(paths))
         {
             throw std::runtime_error("Invalid path_id: " + std::to_string((int32_t)id));
         }

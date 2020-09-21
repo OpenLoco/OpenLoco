@@ -249,7 +249,7 @@ static Session* CDECL fn_FindFirstFile(char* lpFileName, FindFileData* out)
         ++iter;
     }
 
-    utility::strcpy_safe(out->cFilename, data->fileList[0].filename().u8string().c_str());
+    Utility::strcpy_safe(out->cFilename, data->fileList[0].filename().u8string().c_str());
     if (fs::is_directory(data->fileList[0]))
     {
         out->dwFileAttributes = FILE_ATTRIBUTE_DIRECTORY;
@@ -272,7 +272,7 @@ static bool CDECL fn_FindNextFile(Session* data, FindFileData* out)
         return false;
     }
 
-    utility::strcpy_safe(out->cFilename, data->fileList[0].filename().u8string().c_str());
+    Utility::strcpy_safe(out->cFilename, data->fileList[0].filename().u8string().c_str());
     if (fs::is_directory(data->fileList[0]))
     {
         out->dwFileAttributes = FILE_ATTRIBUTE_DIRECTORY;
@@ -646,7 +646,7 @@ void OpenLoco::Interop::registerHooks()
             auto buffer = (char*)0x009D0D72;
             auto path = getPath((path_id)regs.ebx);
 
-            // TODO: use utility::strlcpy with the buffer size instead of std::strcpy, if possible
+            // TODO: use Utility::strlcpy with the buffer size instead of std::strcpy, if possible
             std::strcpy(buffer, path.make_preferred().u8string().c_str());
 
             regs.ebx = (int32_t)buffer;

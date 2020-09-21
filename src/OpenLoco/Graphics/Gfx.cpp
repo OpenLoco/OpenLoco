@@ -17,7 +17,7 @@
 #include <memory>
 
 using namespace OpenLoco::Interop;
-using namespace OpenLoco::utility;
+using namespace OpenLoco::Utility;
 using namespace OpenLoco::Drawing;
 using namespace OpenLoco::ui;
 

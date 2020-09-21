@@ -10,7 +10,7 @@
 #include <limits.h>
 #include <type_traits>
 
-namespace OpenLoco::utility
+namespace OpenLoco::Utility
 {
     // Finds the first bit set in a 32-bits numeral and returns its index, or -1 if no bit is set.
     int32_t bitScanForward(uint32_t source)

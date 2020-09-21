@@ -1025,7 +1025,7 @@ namespace OpenLoco::ui::BuildVehicle
         if (vehicleObj->num_simultaneous_cargo_types != 0)
         {
             {
-                auto cargoType = utility::bitScanForward(vehicleObj->primary_cargo_types);
+                auto cargoType = Utility::bitScanForward(vehicleObj->primary_cargo_types);
                 if (cargoType != -1)
                 {
                     auto cargoTypes = vehicleObj->primary_cargo_types & ~(1 << cargoType);
@@ -1041,12 +1041,12 @@ namespace OpenLoco::ui::BuildVehicle
                         args.push<uint16_t>(vehicleObj->max_primary_cargo);
                         buffer = stringmgr::formatString(buffer, string_ids::stats_capacity, &args);
                     }
-                    cargoType = utility::bitScanForward(cargoTypes);
+                    cargoType = Utility::bitScanForward(cargoTypes);
                     if (cargoType != -1)
                     {
                         strcpy(buffer, " (");
                         buffer += 2;
-                        for (; cargoType != -1; cargoType = utility::bitScanForward(cargoTypes))
+                        for (; cargoType != -1; cargoType = Utility::bitScanForward(cargoTypes))
                         {
                             cargoTypes &= ~(1 << cargoType);
                             if (buffer[-1] != '(')
@@ -1074,7 +1074,7 @@ namespace OpenLoco::ui::BuildVehicle
 
             if (vehicleObj->num_simultaneous_cargo_types > 1)
             {
-                auto cargoType = utility::bitScanForward(vehicleObj->secondary_cargo_types);
+                auto cargoType = Utility::bitScanForward(vehicleObj->secondary_cargo_types);
                 if (cargoType != -1)
                 {
                     auto cargoTypes = vehicleObj->secondary_cargo_types & ~(1 << cargoType);
@@ -1091,12 +1091,12 @@ namespace OpenLoco::ui::BuildVehicle
                         buffer = stringmgr::formatString(buffer, string_ids::stats_plus_string, &args);
                     }
 
-                    cargoType = utility::bitScanForward(cargoTypes);
+                    cargoType = Utility::bitScanForward(cargoTypes);
                     if (cargoType != -1)
                     {
                         strcpy(buffer, " (");
                         buffer += 2;
-                        for (; cargoType != -1; cargoType = utility::bitScanForward(cargoTypes))
+                        for (; cargoType != -1; cargoType = Utility::bitScanForward(cargoTypes))
                         {
                             cargoTypes &= ~(1 << cargoType);
                             if (buffer[-1] != '(')
@@ -1209,7 +1209,7 @@ namespace OpenLoco::ui::BuildVehicle
                 buffer = stringmgr::formatString(buffer, vehicleObj->name);
                 auto usableCargoTypes = vehicleObj->primary_cargo_types | vehicleObj->secondary_cargo_types;
 
-                for (auto cargoTypes = utility::bitScanForward(usableCargoTypes); cargoTypes != -1; cargoTypes = utility::bitScanForward(usableCargoTypes))
+                for (auto cargoTypes = Utility::bitScanForward(usableCargoTypes); cargoTypes != -1; cargoTypes = Utility::bitScanForward(usableCargoTypes))
                 {
                     usableCargoTypes &= ~(1 << cargoTypes);
                     auto cargoObj = objectmgr::get<cargo_object>(cargoTypes);
@@ -1276,7 +1276,7 @@ namespace OpenLoco::ui::BuildVehicle
 
         widget_index trackTypeTab = tab_track_type_0;
         auto trackType = 0;
-        for (trackType = utility::bitScanForward(railTrackTypes); trackType != -1 && trackTypeTab <= tab_track_type_7; trackType = utility::bitScanForward(railTrackTypes))
+        for (trackType = Utility::bitScanForward(railTrackTypes); trackType != -1 && trackTypeTab <= tab_track_type_7; trackType = Utility::bitScanForward(railTrackTypes))
         {
             railTrackTypes &= ~(1 << trackType);
             window->widgets[trackTypeTab].type = widget_type::wt_8;
@@ -1286,7 +1286,7 @@ namespace OpenLoco::ui::BuildVehicle
 
         if (trackType == -1 && trackTypeTab <= tab_track_type_7)
         {
-            for (trackType = utility::bitScanForward(roadTrackTypes); trackType != -1 && trackTypeTab <= tab_track_type_7; trackType = utility::bitScanForward(roadTrackTypes))
+            for (trackType = Utility::bitScanForward(roadTrackTypes); trackType != -1 && trackTypeTab <= tab_track_type_7; trackType = Utility::bitScanForward(roadTrackTypes))
             {
                 roadTrackTypes &= ~(1 << trackType);
                 window->widgets[trackTypeTab].type = widget_type::wt_8;
