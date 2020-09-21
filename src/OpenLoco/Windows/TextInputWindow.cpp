@@ -63,7 +63,7 @@ namespace OpenLoco::ui::textinput
     static widget_t _widgets[] = {
         makeWidget({ 0, 0 }, { 330, 90 }, widget_type::frame, 0),
         makeWidget({ 1, 1 }, { 328, 13 }, widget_type::caption_25, 0),
-        makeWidget({ 315, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window),
+        makeWidget({ 315, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, string_ids::tooltip_close_window),
         makeWidget({ 0, 15 }, { 330, 75 }, widget_type::panel, 1),
         makeWidget({ 4, 58 }, { 322, 14 }, widget_type::wt_17, 1),
         makeTextWidget({ 256, 74 }, { 70, 12 }, widget_type::wt_11, 1, string_ids::label_button_ok),
@@ -101,7 +101,7 @@ namespace OpenLoco::ui::textinput
     }
 
     static void prepareDraw(ui::window* window);
-    static void draw(ui::window* window, gfx::drawpixelinfo_t* context);
+    static void draw(ui::window* window, Gfx::drawpixelinfo_t* context);
     static void onMouseUp(ui::window* window, widget_index widgetIndex);
     static void onUpdate(ui::window* window);
 
@@ -245,19 +245,19 @@ namespace OpenLoco::ui::textinput
      * @param window @<esi>
      * @param context @<edi>
      */
-    static void draw(ui::window* window, gfx::drawpixelinfo_t* context)
+    static void draw(ui::window* window, Gfx::drawpixelinfo_t* context)
     {
         window->draw(context);
 
         *((string_id*)(&_commonFormatArgs[0])) = _message;
         memcpy(&_commonFormatArgs[2], _formatArgs + 8, 8);
 
-        gfx::point_t position = { (int16_t)(window->x + window->width / 2), (int16_t)(window->y + 30) };
-        gfx::drawStringCentredWrapped(context, &position, window->width - 8, 0, string_ids::wcolour2_stringid, &_commonFormatArgs[0]);
+        Gfx::point_t position = { (int16_t)(window->x + window->width / 2), (int16_t)(window->y + 30) };
+        Gfx::drawStringCentredWrapped(context, &position, window->width - 8, 0, string_ids::wcolour2_stringid, &_commonFormatArgs[0]);
 
         auto widget = &_widgets[widx::input];
-        gfx::drawpixelinfo_t* clipped = nullptr;
-        if (!gfx::clipDrawpixelinfo(&clipped, context, widget->left + 1 + window->x, widget->top + 1 + window->y, widget->width() - 2, widget->height() - 2))
+        Gfx::drawpixelinfo_t* clipped = nullptr;
+        if (!Gfx::clipDrawpixelinfo(&clipped, context, widget->left + 1 + window->x, widget->top + 1 + window->y, widget->width() - 2, widget->height() - 2))
         {
             return;
         }
@@ -268,7 +268,7 @@ namespace OpenLoco::ui::textinput
         *((string_id*)(&_commonFormatArgs[0])) = string_ids::buffer_2039;
 
         position = { _xOffset, 1 };
-        gfx::drawString_494B3F(*clipped, &position, 0, string_ids::black_stringid, _commonFormatArgs);
+        Gfx::drawString_494B3F(*clipped, &position, 0, string_ids::black_stringid, _commonFormatArgs);
 
         if ((_cursorFrame % 32) >= 16)
         {
@@ -280,8 +280,8 @@ namespace OpenLoco::ui::textinput
 
         *((string_id*)(&_commonFormatArgs[0])) = string_ids::buffer_2039;
         position = { _xOffset, 1 };
-        gfx::drawString_494B3F(*clipped, &position, 0, string_ids::black_stringid, _commonFormatArgs);
-        gfx::fillRect(clipped, position.x, position.y, position.x, position.y + 9, colour::getShade(window->colours[1], 9));
+        Gfx::drawString_494B3F(*clipped, &position, 0, string_ids::black_stringid, _commonFormatArgs);
+        Gfx::fillRect(clipped, position.x, position.y, position.x, position.y + 9, Colour::getShade(window->colours[1], 9));
     }
 
     // 0x004CE8B6
@@ -413,8 +413,8 @@ namespace OpenLoco::ui::textinput
         std::string cursorStr = _buffer.substr(0, cursor_position);
 
         _currentFontSpriteBase = font::medium_bold;
-        auto stringWidth = gfx::getStringWidth(_buffer.data());
-        auto cursorX = gfx::getStringWidth(cursorStr.data());
+        auto stringWidth = Gfx::getStringWidth(_buffer.data());
+        auto cursorX = Gfx::getStringWidth(cursorStr.data());
 
         int x = _xOffset + cursorX;
 
@@ -440,8 +440,8 @@ namespace OpenLoco::ui::textinput
         std::string cursorStr = _buffer.substr(0, cursor_position);
 
         _currentFontSpriteBase = font::medium_bold;
-        auto stringWidth = gfx::getStringWidth(_buffer.data());
-        auto cursorX = gfx::getStringWidth(cursorStr.data());
+        auto stringWidth = Gfx::getStringWidth(_buffer.data());
+        auto cursorX = Gfx::getStringWidth(cursorStr.data());
 
         auto midX = containerWidth / 2;
 

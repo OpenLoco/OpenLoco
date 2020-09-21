@@ -30,7 +30,7 @@ namespace OpenLoco::gui
         auto window = WindowManager::createWindow(
             WindowType::main,
             { 0, 0 },
-            gfx::ui_size_t(uiWidth, uiHeight),
+            Gfx::ui_size_t(uiWidth, uiHeight),
             ui::window_flags::stick_to_back,
             (ui::window_event_list*)0x004FA1F4);
         window->widgets = _mainWindowWidgets;
@@ -69,8 +69,8 @@ namespace OpenLoco::gui
 
                 window = WindowManager::createWindow(
                     WindowType::tutorial,
-                    gfx::point_t(140, uiHeight - 27),
-                    gfx::ui_size_t(uiWidth - 280, 27),
+                    Gfx::point_t(140, uiHeight - 27),
+                    Gfx::ui_size_t(uiWidth - 280, 27),
                     ui::window_flags::stick_to_front | ui::window_flags::transparent | ui::window_flags::no_background,
                     (ui::window_event_list*)0x4fa10c);
                 window->widgets = (ui::widget_t*)0x509de0;
@@ -79,8 +79,8 @@ namespace OpenLoco::gui
                 auto skin = OpenLoco::objectmgr::get<interface_skin_object>();
                 if (skin != nullptr)
                 {
-                    window->colours[0] = colour::translucent(skin->colour_06);
-                    window->colours[1] = colour::translucent(skin->colour_07);
+                    window->colours[0] = Colour::translucent(skin->colour_06);
+                    window->colours[1] = Colour::translucent(skin->colour_07);
                 }
             }
         }

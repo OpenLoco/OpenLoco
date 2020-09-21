@@ -72,28 +72,28 @@ namespace OpenLoco::ui::options
             miscellaneous,
         };
 
-        static void drawTabs(window* w, gfx::drawpixelinfo_t* ctx)
+        static void drawTabs(window* w, Gfx::drawpixelinfo_t* ctx)
         {
-            widget::draw_tab(w, ctx, image_ids::tab_display, widx::tab_display);
-            widget::draw_tab(w, ctx, image_ids::tab_sound, widx::tab_sound);
+            widget::draw_tab(w, ctx, ImageIds::tab_display, widx::tab_display);
+            widget::draw_tab(w, ctx, ImageIds::tab_sound, widx::tab_sound);
 
             static const uint32_t music_tab_ids[] = {
-                image_ids::tab_music_0,
-                image_ids::tab_music_1,
-                image_ids::tab_music_2,
-                image_ids::tab_music_3,
-                image_ids::tab_music_4,
-                image_ids::tab_music_5,
-                image_ids::tab_music_6,
-                image_ids::tab_music_7,
-                image_ids::tab_music_8,
-                image_ids::tab_music_9,
-                image_ids::tab_music_10,
-                image_ids::tab_music_11,
-                image_ids::tab_music_12,
-                image_ids::tab_music_13,
-                image_ids::tab_music_14,
-                image_ids::tab_music_15,
+                ImageIds::tab_music_0,
+                ImageIds::tab_music_1,
+                ImageIds::tab_music_2,
+                ImageIds::tab_music_3,
+                ImageIds::tab_music_4,
+                ImageIds::tab_music_5,
+                ImageIds::tab_music_6,
+                ImageIds::tab_music_7,
+                ImageIds::tab_music_8,
+                ImageIds::tab_music_9,
+                ImageIds::tab_music_10,
+                ImageIds::tab_music_11,
+                ImageIds::tab_music_12,
+                ImageIds::tab_music_13,
+                ImageIds::tab_music_14,
+                ImageIds::tab_music_15,
             };
             uint32_t imageId = music_tab_ids[0];
             if (w->current_tab == tab::music)
@@ -103,61 +103,61 @@ namespace OpenLoco::ui::options
             widget::draw_tab(w, ctx, imageId, widx::tab_music);
 
             static const uint32_t globe_tab_ids[] = {
-                image_ids::tab_globe_0,
-                image_ids::tab_globe_1,
-                image_ids::tab_globe_2,
-                image_ids::tab_globe_3,
-                image_ids::tab_globe_4,
-                image_ids::tab_globe_5,
-                image_ids::tab_globe_6,
-                image_ids::tab_globe_7,
-                image_ids::tab_globe_8,
-                image_ids::tab_globe_9,
-                image_ids::tab_globe_10,
-                image_ids::tab_globe_11,
-                image_ids::tab_globe_12,
-                image_ids::tab_globe_13,
-                image_ids::tab_globe_14,
-                image_ids::tab_globe_15,
-                image_ids::tab_globe_16,
-                image_ids::tab_globe_17,
-                image_ids::tab_globe_18,
-                image_ids::tab_globe_19,
-                image_ids::tab_globe_20,
-                image_ids::tab_globe_21,
-                image_ids::tab_globe_22,
-                image_ids::tab_globe_23,
-                image_ids::tab_globe_24,
-                image_ids::tab_globe_25,
-                image_ids::tab_globe_26,
-                image_ids::tab_globe_27,
-                image_ids::tab_globe_28,
-                image_ids::tab_globe_29,
-                image_ids::tab_globe_30,
-                image_ids::tab_globe_31,
+                ImageIds::tab_globe_0,
+                ImageIds::tab_globe_1,
+                ImageIds::tab_globe_2,
+                ImageIds::tab_globe_3,
+                ImageIds::tab_globe_4,
+                ImageIds::tab_globe_5,
+                ImageIds::tab_globe_6,
+                ImageIds::tab_globe_7,
+                ImageIds::tab_globe_8,
+                ImageIds::tab_globe_9,
+                ImageIds::tab_globe_10,
+                ImageIds::tab_globe_11,
+                ImageIds::tab_globe_12,
+                ImageIds::tab_globe_13,
+                ImageIds::tab_globe_14,
+                ImageIds::tab_globe_15,
+                ImageIds::tab_globe_16,
+                ImageIds::tab_globe_17,
+                ImageIds::tab_globe_18,
+                ImageIds::tab_globe_19,
+                ImageIds::tab_globe_20,
+                ImageIds::tab_globe_21,
+                ImageIds::tab_globe_22,
+                ImageIds::tab_globe_23,
+                ImageIds::tab_globe_24,
+                ImageIds::tab_globe_25,
+                ImageIds::tab_globe_26,
+                ImageIds::tab_globe_27,
+                ImageIds::tab_globe_28,
+                ImageIds::tab_globe_29,
+                ImageIds::tab_globe_30,
+                ImageIds::tab_globe_31,
             };
-            imageId = image_ids::tab_globe_0;
+            imageId = ImageIds::tab_globe_0;
             if (w->current_tab == tab::regional)
             {
                 imageId = globe_tab_ids[(w->frame_no / 2) % 32];
             }
             widget::draw_tab(w, ctx, imageId, widx::tab_regional);
 
-            widget::draw_tab(w, ctx, image_ids::tab_control, widx::tab_controls);
-            widget::draw_tab(w, ctx, image_ids::tab_miscellaneous, widx::tab_miscellaneous);
+            widget::draw_tab(w, ctx, ImageIds::tab_control, widx::tab_controls);
+            widget::draw_tab(w, ctx, ImageIds::tab_miscellaneous, widx::tab_miscellaneous);
         }
 
-#define common_options_widgets(window_size, window_caption_id)                                                                                             \
-    makeWidget({ 0, 0 }, window_size, widget_type::frame, 0),                                                                                              \
-        makeWidget({ 1, 1 }, { (uint16_t)(window_size.width - 2), 13 }, widget_type::caption_25, 0, window_caption_id),                                    \
-        makeWidget({ (int16_t)(window_size.width - 15), 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window), \
-        makeWidget({ 0, 41 }, { window_size.width, 102 }, widget_type::panel, 1),                                                                          \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::display_options),                                         \
-        makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::sound_options),                                          \
-        makeRemapWidget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::music_options),                                          \
-        makeRemapWidget({ 96, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::regional_options),                                       \
-        makeRemapWidget({ 127, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::control_options),                                       \
-        makeRemapWidget({ 158, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::miscellaneous_options)
+#define common_options_widgets(window_size, window_caption_id)                                                                                            \
+    makeWidget({ 0, 0 }, window_size, widget_type::frame, 0),                                                                                             \
+        makeWidget({ 1, 1 }, { (uint16_t)(window_size.width - 2), 13 }, widget_type::caption_25, 0, window_caption_id),                                   \
+        makeWidget({ (int16_t)(window_size.width - 15), 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, string_ids::tooltip_close_window), \
+        makeWidget({ 0, 41 }, { window_size.width, 102 }, widget_type::panel, 1),                                                                         \
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::display_options),                                         \
+        makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::sound_options),                                          \
+        makeRemapWidget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::music_options),                                          \
+        makeRemapWidget({ 96, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::regional_options),                                       \
+        makeRemapWidget({ 127, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::control_options),                                       \
+        makeRemapWidget({ 158, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::miscellaneous_options)
 
         static constexpr int tabWidgets = (1 << widx::tab_display) | (1 << widx::tab_sound) | (1 << widx::tab_music) | (1 << widx::tab_regional) | (1 << widx::tab_controls) | (1 << widx::tab_miscellaneous);
 
@@ -166,7 +166,7 @@ namespace OpenLoco::ui::options
 
     namespace display
     {
-        static const gfx::ui_size_t _window_size = { 400, 184 };
+        static const Gfx::ui_size_t _window_size = { 400, 184 };
 
         namespace widx
         {
@@ -243,7 +243,7 @@ namespace OpenLoco::ui::options
                         cfg.flags |= config::flags::landscape_smoothing;
                     }
                     OpenLoco::config::write();
-                    gfx::invalidateScreen();
+                    Gfx::invalidateScreen();
                     return;
                 }
 
@@ -259,7 +259,7 @@ namespace OpenLoco::ui::options
                         cfg.flags |= config::flags::gridlines_on_landscape;
                     }
                     OpenLoco::config::write();
-                    gfx::invalidateScreen();
+                    Gfx::invalidateScreen();
 
                     auto main = WindowManager::getMainWindow();
                     if (main != nullptr)
@@ -302,7 +302,7 @@ namespace OpenLoco::ui::options
             auto& cfg = OpenLoco::config::get();
             cfg.construction_marker = ax;
             OpenLoco::config::write();
-            gfx::invalidateScreen();
+            Gfx::invalidateScreen();
         }
 
 #pragma mark - Vehicle zoom (Widget 15)
@@ -332,7 +332,7 @@ namespace OpenLoco::ui::options
             auto& cfg = OpenLoco::config::get();
             cfg.vehicles_min_scale = ax;
             OpenLoco::config::write();
-            gfx::invalidateScreen();
+            Gfx::invalidateScreen();
         }
 
 #pragma mark - Station names minimum scale (Widget 17)
@@ -362,7 +362,7 @@ namespace OpenLoco::ui::options
             auto& cfg = OpenLoco::config::get();
             cfg.station_names_min_scale = ax;
             OpenLoco::config::write();
-            gfx::invalidateScreen();
+            Gfx::invalidateScreen();
         }
 
 #if !(defined(__APPLE__) && defined(__MACH__))
@@ -586,7 +586,7 @@ namespace OpenLoco::ui::options
         }
 
         // 0x004BFAF9
-        static void draw(window* w, gfx::drawpixelinfo_t* dpi)
+        static void draw(window* w, Gfx::drawpixelinfo_t* dpi)
         {
             // Draw widgets.
             w->draw(dpi);
@@ -595,26 +595,26 @@ namespace OpenLoco::ui::options
 
             int16_t x = w->x + 10;
             int16_t y = w->y + display::_widgets[display::widx::screen_mode].top + 1;
-            drawString_494B3F(*dpi, x, y, colour::black, string_ids::options_screen_mode, nullptr);
+            drawString_494B3F(*dpi, x, y, Colour::black, string_ids::options_screen_mode, nullptr);
 
             y = w->y + display::_widgets[display::widx::display_resolution].top + 1;
-            drawString_494B3F(*dpi, x + 14, y, colour::black, string_ids::display_resolution, nullptr);
+            drawString_494B3F(*dpi, x + 14, y, Colour::black, string_ids::display_resolution, nullptr);
 
             y = w->y + display::_widgets[display::widx::construction_marker].top + 1;
-            drawString_494B3F(*dpi, x, y, colour::black, string_ids::construction_marker, nullptr);
+            drawString_494B3F(*dpi, x, y, Colour::black, string_ids::construction_marker, nullptr);
 
             y = w->y + display::_widgets[display::widx::vehicles_min_scale].top + 1;
-            drawString_494B3F(*dpi, x, y, colour::black, string_ids::vehicles_min_scale, nullptr);
+            drawString_494B3F(*dpi, x, y, Colour::black, string_ids::vehicles_min_scale, nullptr);
 
             y = w->y + display::_widgets[display::widx::station_names_min_scale].top + 1;
-            drawString_494B3F(*dpi, x, y, colour::black, string_ids::station_names_min_scale, nullptr);
+            drawString_494B3F(*dpi, x, y, Colour::black, string_ids::station_names_min_scale, nullptr);
 
             y = w->y + display::_widgets[display::widx::display_scale].top + 1;
-            drawString_494B3F(*dpi, x + 14, y, colour::black, string_ids::window_scale_factor, nullptr);
+            drawString_494B3F(*dpi, x + 14, y, Colour::black, string_ids::window_scale_factor, nullptr);
 
             int scale = (int)(config::getNew().scale_factor * 100);
             auto& scale_widget = w->widgets[widx::display_scale];
-            drawString_494B3F(*dpi, w->x + scale_widget.left + 1, w->y + scale_widget.top + 1, colour::black, string_ids::scale_formatted, &scale);
+            drawString_494B3F(*dpi, w->x + scale_widget.left + 1, w->y + scale_widget.top + 1, Colour::black, string_ids::scale_formatted, &scale);
         }
 
         static void applyScreenModeRestrictions(window* w)
@@ -645,7 +645,7 @@ namespace OpenLoco::ui::options
 
     namespace sound
     {
-        static const gfx::ui_size_t _window_size = { 366, 84 };
+        static const Gfx::ui_size_t _window_size = { 366, 84 };
 
         namespace widx
         {
@@ -710,7 +710,7 @@ namespace OpenLoco::ui::options
         }
 
         // 0x004C02F5
-        static void draw(window* w, gfx::drawpixelinfo_t* dpi)
+        static void draw(window* w, Gfx::drawpixelinfo_t* dpi)
         {
             // Draw widgets.
             w->draw(dpi);
@@ -830,7 +830,7 @@ namespace OpenLoco::ui::options
 
     namespace music
     {
-        static const gfx::ui_size_t _window_size = { 366, 129 };
+        static const Gfx::ui_size_t _window_size = { 366, 129 };
 
         namespace widx
         {
@@ -854,9 +854,9 @@ namespace OpenLoco::ui::options
             common_options_widgets(_window_size, string_ids::options_title_music),
             makeWidget({ 160, 49 }, { 196, 12 }, widget_type::wt_18, 1, string_ids::stringid),
             makeWidget({ 344, 50 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
-            makeWidget({ 10, 64 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::music_controls_stop, string_ids::music_controls_stop_tip),
-            makeWidget({ 34, 64 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::music_controls_play, string_ids::music_controls_play_tip),
-            makeWidget({ 58, 64 }, { 24, 24 }, widget_type::wt_9, 1, image_ids::music_controls_next, string_ids::music_controls_next_tip),
+            makeWidget({ 10, 64 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::music_controls_stop, string_ids::music_controls_stop_tip),
+            makeWidget({ 34, 64 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::music_controls_play, string_ids::music_controls_play_tip),
+            makeWidget({ 58, 64 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::music_controls_next, string_ids::music_controls_next_tip),
             makeWidget({ 256, 64 }, { 109, 24 }, widget_type::wt_5, 1, -1, string_ids::set_volume_tip),
             makeWidget({ 10, 93 }, { 346, 12 }, widget_type::wt_18, 1, string_ids::arg2_stringid),
             makeWidget({ 344, 94 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
@@ -930,21 +930,21 @@ namespace OpenLoco::ui::options
         }
 
         // 0x004C05F9
-        static void draw(window* w, gfx::drawpixelinfo_t* dpi)
+        static void draw(window* w, Gfx::drawpixelinfo_t* dpi)
         {
             // Draw widgets.
             w->draw(dpi);
 
             common::drawTabs(w, dpi);
 
-            gfx::drawString_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::currently_playing_btn].top, 0, string_ids::currently_playing, nullptr);
+            Gfx::drawString_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::currently_playing_btn].top, 0, string_ids::currently_playing, nullptr);
 
-            gfx::drawString_494B3F(*dpi, w->x + 183, w->y + w->widgets[widx::volume].top + 7, 0, string_ids::volume, nullptr);
+            Gfx::drawString_494B3F(*dpi, w->x + 183, w->y + w->widgets[widx::volume].top + 7, 0, string_ids::volume, nullptr);
 
-            gfx::drawImage(dpi, w->x + w->widgets[widx::volume].left, w->y + w->widgets[widx::volume].top, 0x20000000 | (w->colours[1] << 19) | image_ids::volume_slider_track);
+            Gfx::drawImage(dpi, w->x + w->widgets[widx::volume].left, w->y + w->widgets[widx::volume].top, 0x20000000 | (w->colours[1] << 19) | ImageIds::volume_slider_track);
 
             int16_t x = 90 + (config::get().volume / 32);
-            gfx::drawImage(dpi, w->x + w->widgets[widx::volume].left + x, w->y + w->widgets[widx::volume].top, 0x20000000 | (w->colours[1] << 19) | image_ids::volume_slider_thumb);
+            Gfx::drawImage(dpi, w->x + w->widgets[widx::volume].left + x, w->y + w->widgets[widx::volume].top, 0x20000000 | (w->colours[1] << 19) | ImageIds::volume_slider_thumb);
         }
 
         static void onMouseUp(window* w, widget_index wi)
@@ -1215,7 +1215,7 @@ namespace OpenLoco::ui::options
 
     namespace regional
     {
-        static const gfx::ui_size_t _window_size = { 366, 167 };
+        static const Gfx::ui_size_t _window_size = { 366, 167 };
 
         namespace widx
         {
@@ -1335,17 +1335,17 @@ namespace OpenLoco::ui::options
         }
 
         // 0x004C0B5B
-        static void draw(window* w, gfx::drawpixelinfo_t* dpi)
+        static void draw(window* w, Gfx::drawpixelinfo_t* dpi)
         {
             // Draw widgets.
             w->draw(dpi);
             common::drawTabs(w, dpi);
 
-            gfx::drawString_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::language].top + 1, 0, string_ids::options_language, nullptr);
-            gfx::drawString_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::distance_speed].top + 1, 0, string_ids::distance_and_speed, nullptr);
-            gfx::drawString_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::heights].top + 1, 0, string_ids::heights, nullptr);
-            gfx::drawString_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::currency].top + 1, 0, string_ids::current_game_currency, nullptr);
-            gfx::drawString_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::preferred_currency].top + 1, 0, string_ids::new_game_currency, nullptr);
+            Gfx::drawString_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::language].top + 1, 0, string_ids::options_language, nullptr);
+            Gfx::drawString_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::distance_speed].top + 1, 0, string_ids::distance_and_speed, nullptr);
+            Gfx::drawString_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::heights].top + 1, 0, string_ids::heights, nullptr);
+            Gfx::drawString_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::currency].top + 1, 0, string_ids::current_game_currency, nullptr);
+            Gfx::drawString_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::preferred_currency].top + 1, 0, string_ids::new_game_currency, nullptr);
         }
 
         static void onMouseUp(window* w, widget_index wi)
@@ -1460,7 +1460,7 @@ namespace OpenLoco::ui::options
             config::getNew().language = ld.locale;
             config::write();
             localisation::loadLanguageFile();
-            gfx::invalidateScreen();
+            Gfx::invalidateScreen();
         }
 
         // 0x004C0C73
@@ -1639,7 +1639,7 @@ namespace OpenLoco::ui::options
             }
 
             config::write();
-            gfx::invalidateScreen();
+            Gfx::invalidateScreen();
         }
 
         // 0x004C0FFA
@@ -1681,7 +1681,7 @@ namespace OpenLoco::ui::options
             }
 
             config::write();
-            gfx::invalidateScreen();
+            Gfx::invalidateScreen();
         }
 
         // 0x004C1195
@@ -1718,7 +1718,7 @@ namespace OpenLoco::ui::options
 
         static constexpr uint64_t enabledWidgets = common::enabledWidgets | (1 << controls::widx::edge_scrolling) | (1 << controls::widx::customize_keys) | (1 << controls::widx::zoom_to_cursor);
 
-        static const gfx::ui_size_t _window_size = { 366, 99 };
+        static const Gfx::ui_size_t _window_size = { 366, 99 };
 
         static widget_t _widgets[] = {
             common_options_widgets(_window_size, string_ids::options_title_controls),
@@ -1764,7 +1764,7 @@ namespace OpenLoco::ui::options
         }
 
         // 0x004C113F
-        static void draw(window* w, gfx::drawpixelinfo_t* dpi)
+        static void draw(window* w, Gfx::drawpixelinfo_t* dpi)
         {
             w->draw(dpi);
             common::drawTabs(w, dpi);
@@ -1847,7 +1847,7 @@ namespace OpenLoco::ui::options
 
     namespace misc
     {
-        static const gfx::ui_size_t _window_size = { 420, 139 };
+        static const Gfx::ui_size_t _window_size = { 420, 139 };
 
         namespace widx
         {
@@ -1935,7 +1935,7 @@ namespace OpenLoco::ui::options
         }
 
         // 0x004C1282
-        static void draw(window* w, gfx::drawpixelinfo_t* dpi)
+        static void draw(window* w, Gfx::drawpixelinfo_t* dpi)
         {
             w->draw(dpi);
             common::drawTabs(w, dpi);
@@ -1947,7 +1947,7 @@ namespace OpenLoco::ui::options
 
             FormatArguments args = {};
             args.push(string_ids::buffer_2039);
-            gfx::drawString_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::change_btn].top + 1, 0, string_ids::wcolour2_preferred_owner_name, &args);
+            Gfx::drawString_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::change_btn].top + 1, 0, string_ids::wcolour2_preferred_owner_name, &args);
         }
 
         // 0x004C12D2
@@ -2214,7 +2214,7 @@ namespace OpenLoco::ui::options
     {
         widget_t* widgets;
         window_event_list* events;
-        gfx::ui_size_t windowSize;
+        Gfx::ui_size_t windowSize;
         const uint64_t* enabledWidgets;
     };
 

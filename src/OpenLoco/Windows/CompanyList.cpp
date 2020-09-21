@@ -72,35 +72,35 @@ namespace OpenLoco::ui::windows::CompanyList
 
         const uint64_t enabledWidgets = (1 << widx::close_button) | (1 << widx::tab_company_list) | (1 << widx::tab_performance) | (1 << widx::tab_cargo_units) | (1 << widx::tab_cargo_distance) | (1 << widx::tab_values) | (1 << widx::tab_payment_rates) | (1 << widx::tab_speed_records);
 
-#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                          \
-    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, widget_type::frame, 0),                                                            \
-        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, widget_type::caption_25, 0, windowCaptionId),                                       \
-        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window), \
-        makeWidget({ 0, 41 }, { frameWidth, 231 }, widget_type::panel, 1),                                                               \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tab_compare_companies),                 \
-        makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tab_company_performance),              \
-        makeRemapWidget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tab_cargo_graphs),                     \
-        makeRemapWidget({ 96, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tab_cargo_distance_graphs),            \
-        makeRemapWidget({ 127, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tab_company_values),                  \
-        makeRemapWidget({ 158, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tab_cargo_payment_rates),             \
-        makeRemapWidget({ 189, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tab_speed_records)
+#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                         \
+    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, widget_type::frame, 0),                                                           \
+        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, widget_type::caption_25, 0, windowCaptionId),                                      \
+        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, string_ids::tooltip_close_window), \
+        makeWidget({ 0, 41 }, { frameWidth, 231 }, widget_type::panel, 1),                                                              \
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tab_compare_companies),                 \
+        makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tab_company_performance),              \
+        makeRemapWidget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tab_cargo_graphs),                     \
+        makeRemapWidget({ 96, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tab_cargo_distance_graphs),            \
+        makeRemapWidget({ 127, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tab_company_values),                  \
+        makeRemapWidget({ 158, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tab_cargo_payment_rates),             \
+        makeRemapWidget({ 189, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tab_speed_records)
 
         static void onMouseUp(window* self, widget_index widgetIndex);
         static void onUpdate(window* self);
         static void prepareDraw(window* self);
         static void switchTab(window* self, widget_index widgetIndex);
         static void refreshCompanyList(window* self);
-        static void drawTabs(window* self, gfx::drawpixelinfo_t* dpi);
-        static void drawGraph(window* self, gfx::drawpixelinfo_t* dpi);
-        static void drawGraphAndKey(window* self, gfx::drawpixelinfo_t* dpi);
+        static void drawTabs(window* self, Gfx::drawpixelinfo_t* dpi);
+        static void drawGraph(window* self, Gfx::drawpixelinfo_t* dpi);
+        static void drawGraphAndKey(window* self, Gfx::drawpixelinfo_t* dpi);
         static void initEvents();
     }
 
     namespace CompanyList
     {
-        static const gfx::ui_size_t maxWindowSize = { 640, 470 };
-        static const gfx::ui_size_t minWindowSize = { 300, 272 };
-        static const gfx::ui_size_t windowSize = { 640, 272 };
+        static const Gfx::ui_size_t maxWindowSize = { 640, 470 };
+        static const Gfx::ui_size_t minWindowSize = { 300, 272 };
+        static const Gfx::ui_size_t windowSize = { 640, 272 };
 
         static const uint8_t rowHeight = 25;
 
@@ -117,10 +117,10 @@ namespace OpenLoco::ui::windows::CompanyList
 
         widget_t widgets[] = {
             commonWidgets(640, 272, string_ids::title_company_list),
-            makeWidget({ 4, 43 }, { 175, 12 }, widget_type::wt_14, 1, image_ids::null, string_ids::tooltip_sort_company_name),
-            makeWidget({ 179, 43 }, { 210, 12 }, widget_type::wt_14, 1, image_ids::null, string_ids::tooltip_sort_company_status),
-            makeWidget({ 389, 43 }, { 145, 12 }, widget_type::wt_14, 1, image_ids::null, string_ids::tooltip_sort_company_performance),
-            makeWidget({ 534, 43 }, { 100, 12 }, widget_type::wt_14, 1, image_ids::null, string_ids::tooltip_sort_company_value),
+            makeWidget({ 4, 43 }, { 175, 12 }, widget_type::wt_14, 1, ImageIds::null, string_ids::tooltip_sort_company_name),
+            makeWidget({ 179, 43 }, { 210, 12 }, widget_type::wt_14, 1, ImageIds::null, string_ids::tooltip_sort_company_status),
+            makeWidget({ 389, 43 }, { 145, 12 }, widget_type::wt_14, 1, ImageIds::null, string_ids::tooltip_sort_company_performance),
+            makeWidget({ 534, 43 }, { 100, 12 }, widget_type::wt_14, 1, ImageIds::null, string_ids::tooltip_sort_company_value),
             makeWidget({ 3, 56 }, { 634, 201 }, widget_type::scrollview, 1, vertical),
             widgetEnd(),
         };
@@ -444,7 +444,7 @@ namespace OpenLoco::ui::windows::CompanyList
         }
 
         // 0x00435E56
-        static void draw(window* self, gfx::drawpixelinfo_t* dpi)
+        static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
         {
             self->draw(dpi);
             common::drawTabs(self, dpi);
@@ -459,14 +459,14 @@ namespace OpenLoco::ui::windows::CompanyList
 
             auto xPos = self->x + 3;
             auto yPos = self->y + self->height - 13;
-            gfx::drawString_494B3F(*dpi, xPos, yPos, colour::black, string_ids::black_stringid, &args);
+            Gfx::drawString_494B3F(*dpi, xPos, yPos, Colour::black, string_ids::black_stringid, &args);
         }
 
         // 0x00435EA7
-        static void drawScroll(window* self, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
+        static void drawScroll(window* self, Gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
         {
-            auto colour = colour::getShade(self->colours[1], 3);
-            gfx::clearSingle(*dpi, colour);
+            auto colour = Colour::getShade(self->colours[1], 3);
+            Gfx::clearSingle(*dpi, colour);
 
             auto yBottom = 0;
             for (auto i = 0; i < self->var_83C; i++, yBottom += 25)
@@ -490,14 +490,14 @@ namespace OpenLoco::ui::windows::CompanyList
 
                 if (rowItem == self->row_hover)
                 {
-                    gfx::drawRect(dpi, 0, yBottom, self->width, 24, (1 << 25) | palette_index::index_30);
+                    Gfx::drawRect(dpi, 0, yBottom, self->width, 24, (1 << 25) | PaletteIndex::index_30);
 
                     stringId = string_ids::wcolour2_stringid;
                 }
 
                 auto company = companymgr::get(rowItem);
                 auto competitorObj = objectmgr::get<competitor_object>(company->competitor_id);
-                auto imageId = gfx::recolour(competitorObj->images[company->owner_emotion], company->mainColours.primary);
+                auto imageId = Gfx::recolour(competitorObj->images[company->owner_emotion], company->mainColours.primary);
 
                 {
                     auto args = FormatArguments();
@@ -505,7 +505,7 @@ namespace OpenLoco::ui::windows::CompanyList
                     args.push(imageId);
                     args.push(company->name);
 
-                    gfx::drawString_494BBF(*dpi, 0, yBottom - 1, 173, colour::black, stringId, &args);
+                    Gfx::drawString_494BBF(*dpi, 0, yBottom - 1, 173, Colour::black, stringId, &args);
                 }
 
                 {
@@ -516,7 +516,7 @@ namespace OpenLoco::ui::windows::CompanyList
                     args.push(ownerStatus.argument1);
                     args.push(ownerStatus.argument2);
 
-                    gfx::drawString_494BBF(*dpi, 175, yBottom + 7, 208, colour::black, stringId, &args);
+                    Gfx::drawString_494BBF(*dpi, 175, yBottom + 7, 208, Colour::black, stringId, &args);
                 }
 
                 auto performanceStringId = string_ids::performance_index;
@@ -537,7 +537,7 @@ namespace OpenLoco::ui::windows::CompanyList
                     args.push(performanceStringId);
                     formatPerformanceIndex(company->performance_index, args);
 
-                    gfx::drawString_494BBF(*dpi, 385, yBottom - 1, 143, colour::black, stringId, &args);
+                    Gfx::drawString_494BBF(*dpi, 385, yBottom - 1, 143, Colour::black, stringId, &args);
                 }
 
                 {
@@ -546,7 +546,7 @@ namespace OpenLoco::ui::windows::CompanyList
                     args.push(string_ids::company_value_currency);
                     args.push(company->companyValueHistory[0]);
 
-                    gfx::drawString_494BBF(*dpi, 530, yBottom - 1, 98, colour::black, stringId, &args);
+                    Gfx::drawString_494BBF(*dpi, 530, yBottom - 1, 98, Colour::black, stringId, &args);
                 }
             }
         }
@@ -599,7 +599,7 @@ namespace OpenLoco::ui::windows::CompanyList
 
         if (window == nullptr)
         {
-            gfx::ui_size_t windowSize = { 640, 272 };
+            Gfx::ui_size_t windowSize = { 640, 272 };
 
             window = WindowManager::createWindow(WindowType::companyList, windowSize, 0, &CompanyList::events);
 
@@ -648,7 +648,7 @@ namespace OpenLoco::ui::windows::CompanyList
 
     namespace CompanyPerformance
     {
-        static const gfx::ui_size_t windowSize = { 635, 322 };
+        static const Gfx::ui_size_t windowSize = { 635, 322 };
 
         const uint64_t enabledWidgets = common::enabledWidgets;
 
@@ -666,7 +666,7 @@ namespace OpenLoco::ui::windows::CompanyList
         }
 
         // 0x00436490
-        static void draw(window* self, gfx::drawpixelinfo_t* dpi)
+        static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
         {
             self->draw(dpi);
             common::drawTabs(self, dpi);
@@ -703,7 +703,7 @@ namespace OpenLoco::ui::windows::CompanyList
 
                 _graphYData[count] = reinterpret_cast<uint32_t>(&company.performance_index_history[0]);
                 _graphDataStart[count] = maxHistorySize - company.history_size;
-                _graphLineColour[count] = colour::getShade(companyColour, 6);
+                _graphLineColour[count] = Colour::getShade(companyColour, 6);
                 _graphItemId[count] = companyId;
                 count++;
             }
@@ -745,7 +745,7 @@ namespace OpenLoco::ui::windows::CompanyList
 
     namespace CargoUnits
     {
-        static const gfx::ui_size_t windowSize = { 640, 272 };
+        static const Gfx::ui_size_t windowSize = { 640, 272 };
 
         const uint64_t enabledWidgets = common::enabledWidgets;
 
@@ -763,7 +763,7 @@ namespace OpenLoco::ui::windows::CompanyList
         }
 
         // 0x004367B4
-        static void draw(window* self, gfx::drawpixelinfo_t* dpi)
+        static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
         {
             self->draw(dpi);
             common::drawTabs(self, dpi);
@@ -800,7 +800,7 @@ namespace OpenLoco::ui::windows::CompanyList
 
                 _graphYData[count] = reinterpret_cast<uint32_t>(&company.cargo_units_delivered_history[0]);
                 _graphDataStart[count] = maxHistorySize - company.history_size;
-                _graphLineColour[count] = colour::getShade(companyColour, 6);
+                _graphLineColour[count] = Colour::getShade(companyColour, 6);
                 _graphItemId[count] = companyId;
                 count++;
             }
@@ -842,7 +842,7 @@ namespace OpenLoco::ui::windows::CompanyList
 
     namespace CargoDistance
     {
-        static const gfx::ui_size_t windowSize = { 660, 272 };
+        static const Gfx::ui_size_t windowSize = { 660, 272 };
 
         const uint64_t enabledWidgets = common::enabledWidgets;
 
@@ -860,7 +860,7 @@ namespace OpenLoco::ui::windows::CompanyList
         }
 
         // 0x00436AD8
-        static void draw(window* self, gfx::drawpixelinfo_t* dpi)
+        static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
         {
             self->draw(dpi);
             common::drawTabs(self, dpi);
@@ -897,7 +897,7 @@ namespace OpenLoco::ui::windows::CompanyList
 
                 _graphYData[count] = reinterpret_cast<uint32_t>(&company.cargo_units_distance_history[0]);
                 _graphDataStart[count] = maxHistorySize - company.history_size;
-                _graphLineColour[count] = colour::getShade(companyColour, 6);
+                _graphLineColour[count] = Colour::getShade(companyColour, 6);
                 _graphItemId[count] = companyId;
                 count++;
             }
@@ -939,7 +939,7 @@ namespace OpenLoco::ui::windows::CompanyList
 
     namespace CompanyValues
     {
-        static const gfx::ui_size_t windowSize = { 685, 322 };
+        static const Gfx::ui_size_t windowSize = { 685, 322 };
 
         const uint64_t enabledWidgets = common::enabledWidgets;
 
@@ -957,7 +957,7 @@ namespace OpenLoco::ui::windows::CompanyList
         }
 
         // 0x00436DFC
-        static void draw(window* self, gfx::drawpixelinfo_t* dpi)
+        static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
         {
             self->draw(dpi);
             common::drawTabs(self, dpi);
@@ -994,7 +994,7 @@ namespace OpenLoco::ui::windows::CompanyList
 
                 _graphYData[count] = reinterpret_cast<uint32_t>(&company.companyValueHistory[0]);
                 _graphDataStart[count] = maxHistorySize - company.history_size;
-                _graphLineColour[count] = colour::getShade(companyColour, 6);
+                _graphLineColour[count] = Colour::getShade(companyColour, 6);
                 _graphItemId[count] = companyId;
                 count++;
             }
@@ -1036,7 +1036,7 @@ namespace OpenLoco::ui::windows::CompanyList
 
     namespace CargoPaymentRates
     {
-        static const gfx::ui_size_t windowSize = { 495, 342 };
+        static const Gfx::ui_size_t windowSize = { 495, 342 };
 
         const uint64_t enabledWidgets = common::enabledWidgets;
 
@@ -1054,7 +1054,7 @@ namespace OpenLoco::ui::windows::CompanyList
         }
 
         // 0x00437949
-        static void drawGraphKey(window* self, gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y)
+        static void drawGraphKey(window* self, Gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y)
         {
             auto cargoCount = 0;
             for (uint8_t i = 0; i < objectmgr::getMaxObjects(object_type::cargo); i++)
@@ -1064,7 +1064,7 @@ namespace OpenLoco::ui::windows::CompanyList
                     continue;
 
                 auto colour = _cargoLineColour[i];
-                colour = colour::getShade(colour, 6);
+                colour = Colour::getShade(colour, 6);
                 auto stringId = string_ids::small_black_string;
 
                 if (self->var_854 & (1 << cargoCount))
@@ -1074,13 +1074,13 @@ namespace OpenLoco::ui::windows::CompanyList
 
                 if (!(self->var_854 & (1 << cargoCount)) || !(_word_9C68C7 & (1 << 2)))
                 {
-                    gfx::fillRect(dpi, x, y + 3, x + 4, y + 7, colour);
+                    Gfx::fillRect(dpi, x, y + 3, x + 4, y + 7, colour);
                 }
 
                 auto args = FormatArguments();
                 args.push(cargo->name);
 
-                gfx::drawString_494BBF(*dpi, x + 6, y, 94, colour::black, stringId, &args);
+                Gfx::drawString_494BBF(*dpi, x + 6, y, 94, Colour::black, stringId, &args);
 
                 y += 10;
                 cargoCount++;
@@ -1088,7 +1088,7 @@ namespace OpenLoco::ui::windows::CompanyList
         }
 
         // 0x00437120
-        static void draw(window* self, gfx::drawpixelinfo_t* dpi)
+        static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
         {
             self->draw(dpi);
             common::drawTabs(self, dpi);
@@ -1113,7 +1113,7 @@ namespace OpenLoco::ui::windows::CompanyList
 
                 _graphYData[count] = reinterpret_cast<uint32_t>(&_deliveredCargoPayment[i][0]);
                 _graphDataStart[count] = 0;
-                _graphLineColour[count] = colour::getShade(colour, 6);
+                _graphLineColour[count] = Colour::getShade(colour, 6);
                 _graphItemId[count] = i;
                 count++;
             }
@@ -1165,12 +1165,12 @@ namespace OpenLoco::ui::windows::CompanyList
             args.push<uint16_t>(100);
             args.push<uint16_t>(10);
 
-            gfx::drawString_494B3F(*dpi, x, y, colour::black, string_ids::cargo_deliver_graph_title, &args);
+            Gfx::drawString_494B3F(*dpi, x, y, Colour::black, string_ids::cargo_deliver_graph_title, &args);
 
             x = self->x + 160;
             y = self->height + self->y - 13;
 
-            gfx::drawString_494B3F(*dpi, x, y, colour::black, string_ids::cargo_transit_time);
+            Gfx::drawString_494B3F(*dpi, x, y, Colour::black, string_ids::cargo_transit_time);
         }
 
         static void sub_4375F7()
@@ -1203,7 +1203,7 @@ namespace OpenLoco::ui::windows::CompanyList
 
     namespace CompanySpeedRecords
     {
-        static const gfx::ui_size_t windowSize = { 495, 169 };
+        static const Gfx::ui_size_t windowSize = { 495, 169 };
 
         const uint64_t enabledWidgets = common::enabledWidgets;
 
@@ -1221,7 +1221,7 @@ namespace OpenLoco::ui::windows::CompanyList
         }
 
         // 0x0043745A
-        static void draw(window* self, gfx::drawpixelinfo_t* dpi)
+        static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
         {
             self->draw(dpi);
             common::drawTabs(self, dpi);
@@ -1244,7 +1244,7 @@ namespace OpenLoco::ui::windows::CompanyList
                     };
 
                     auto x = self->x + 4;
-                    gfx::drawString_494B3F(*dpi, x, y, colour::black, string[i], &args);
+                    Gfx::drawString_494B3F(*dpi, x, y, Colour::black, string[i], &args);
                 }
                 y += 11;
 
@@ -1256,10 +1256,10 @@ namespace OpenLoco::ui::windows::CompanyList
                     auto competitorObj = objectmgr::get<competitor_object>(company->competitor_id);
 
                     auto imageId = competitorObj->images[company->owner_emotion];
-                    imageId = gfx::recolour(imageId, company->mainColours.primary);
+                    imageId = Gfx::recolour(imageId, company->mainColours.primary);
 
                     auto x = self->x + 4;
-                    gfx::drawImage(dpi, x, y, imageId);
+                    Gfx::drawImage(dpi, x, y, imageId);
 
                     x = self->x + 33;
                     y += 7;
@@ -1269,7 +1269,7 @@ namespace OpenLoco::ui::windows::CompanyList
                     args.push<uint16_t>(0);
                     args.push(_dword_526258[i]);
 
-                    gfx::drawString_494B3F(*dpi, x, y, colour::black, string_ids::record_date_achieved, &args);
+                    Gfx::drawString_494B3F(*dpi, x, y, Colour::black, string_ids::record_date_achieved, &args);
                     y += 17;
                 }
 
@@ -1461,7 +1461,7 @@ namespace OpenLoco::ui::windows::CompanyList
         }
 
         // 0x00437637
-        static void drawTabs(window* self, gfx::drawpixelinfo_t* dpi)
+        static void drawTabs(window* self, Gfx::drawpixelinfo_t* dpi)
         {
             auto skin = objectmgr::get<interface_skin_object>();
 
@@ -1492,7 +1492,7 @@ namespace OpenLoco::ui::windows::CompanyList
                 else
                     imageId += performanceImageIds[0];
 
-                imageId = gfx::recolour(imageId, self->colours[1]);
+                imageId = Gfx::recolour(imageId, self->colours[1]);
 
                 widget::draw_tab(self, dpi, imageId, widx::tab_performance);
             }
@@ -1516,7 +1516,7 @@ namespace OpenLoco::ui::windows::CompanyList
                 else
                     imageId += cargoUnitsImageIds[0];
 
-                imageId = gfx::recolour(imageId, self->colours[1]);
+                imageId = Gfx::recolour(imageId, self->colours[1]);
 
                 widget::draw_tab(self, dpi, imageId, widx::tab_cargo_units);
             }
@@ -1540,7 +1540,7 @@ namespace OpenLoco::ui::windows::CompanyList
                 else
                     imageId += cargoDistanceImageIds[0];
 
-                imageId = gfx::recolour(imageId, self->colours[1]);
+                imageId = Gfx::recolour(imageId, self->colours[1]);
 
                 widget::draw_tab(self, dpi, imageId, widx::tab_cargo_distance);
             }
@@ -1564,7 +1564,7 @@ namespace OpenLoco::ui::windows::CompanyList
                 else
                     imageId += companyValuesImageIds[0];
 
-                imageId = gfx::recolour(imageId, self->colours[1]);
+                imageId = Gfx::recolour(imageId, self->colours[1]);
 
                 widget::draw_tab(self, dpi, imageId, widx::tab_values);
 
@@ -1572,7 +1572,7 @@ namespace OpenLoco::ui::windows::CompanyList
                 {
                     auto x = self->widgets[widx::tab_values].left + self->x + 28;
                     auto y = self->widgets[widx::tab_values].top + self->y + 14 + 1;
-                    gfx::drawString_494C78(*dpi, x, y, colour::black, string_ids::currency_symbol);
+                    Gfx::drawString_494C78(*dpi, x, y, Colour::black, string_ids::currency_symbol);
                 }
             }
 
@@ -1588,7 +1588,7 @@ namespace OpenLoco::ui::windows::CompanyList
                 {
                     auto x = self->widgets[widx::tab_payment_rates].left + self->x + 28;
                     auto y = self->widgets[widx::tab_payment_rates].top + self->y + 14 + 1;
-                    gfx::drawString_494C78(*dpi, x, y, colour::black, string_ids::currency_symbol);
+                    Gfx::drawString_494C78(*dpi, x, y, Colour::black, string_ids::currency_symbol);
                 }
             }
 
@@ -1597,7 +1597,7 @@ namespace OpenLoco::ui::windows::CompanyList
                 uint32_t imageId = skin->img;
                 imageId += interface_skin::image_ids::tab_awards;
 
-                imageId = gfx::recolour(imageId, self->colours[1]);
+                imageId = Gfx::recolour(imageId, self->colours[1]);
 
                 widget::draw_tab(self, dpi, imageId, widx::tab_speed_records);
             }
@@ -1618,7 +1618,7 @@ namespace OpenLoco::ui::windows::CompanyList
         }
 
         // 0x004CF824
-        static void drawGraph(window* self, gfx::drawpixelinfo_t* dpi)
+        static void drawGraph(window* self, Gfx::drawpixelinfo_t* dpi)
         {
             registers regs;
             regs.esi = (uint32_t)self;
@@ -1627,7 +1627,7 @@ namespace OpenLoco::ui::windows::CompanyList
         }
 
         // 0x00437810
-        static void drawGraphKey(window* self, gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y)
+        static void drawGraphKey(window* self, Gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y)
         {
             auto companyCount = 0;
             for (auto& company : companymgr::companies())
@@ -1636,7 +1636,7 @@ namespace OpenLoco::ui::windows::CompanyList
                     continue;
 
                 auto companyColour = companymgr::getCompanyColour(company.id());
-                auto colour = colour::getShade(companyColour, 6);
+                auto colour = Colour::getShade(companyColour, 6);
                 auto stringId = string_ids::small_black_string;
 
                 if (self->var_854 & (1 << companyCount))
@@ -1646,13 +1646,13 @@ namespace OpenLoco::ui::windows::CompanyList
 
                 if (!(self->var_854 & (1 << companyCount)) || !(_word_9C68C7 & (1 << 2)))
                 {
-                    gfx::fillRect(dpi, x, y + 3, x + 4, y + 7, colour);
+                    Gfx::fillRect(dpi, x, y + 3, x + 4, y + 7, colour);
                 }
 
                 auto args = FormatArguments();
                 args.push(company.name);
 
-                gfx::drawString_494BBF(*dpi, x + 6, y, 94, colour::black, stringId, &args);
+                Gfx::drawString_494BBF(*dpi, x + 6, y, 94, Colour::black, stringId, &args);
 
                 y += 10;
                 companyCount++;
@@ -1660,7 +1660,7 @@ namespace OpenLoco::ui::windows::CompanyList
         }
 
         // 0x004365E4
-        static void drawGraphAndKey(window* self, gfx::drawpixelinfo_t* dpi)
+        static void drawGraphAndKey(window* self, Gfx::drawpixelinfo_t* dpi)
         {
             auto totalMonths = (getCurrentYear() * 12) + static_cast<uint16_t>(getCurrentMonth());
 

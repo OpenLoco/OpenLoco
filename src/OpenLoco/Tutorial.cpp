@@ -151,7 +151,7 @@ namespace OpenLoco::tutorial
     void stop()
     {
         *_state = static_cast<uint8_t>(tutorial_state::none);
-        gfx::invalidateScreen();
+        Gfx::invalidateScreen();
         gui::resize();
     }
 

@@ -358,7 +358,7 @@ namespace OpenLoco::ui
 
         int32_t pitch = surface->pitch;
 
-        gfx::drawpixelinfo_t dpi{};
+        Gfx::drawpixelinfo_t dpi{};
         dpi.bits = new uint8_t[surface->pitch * height];
         dpi.width = width;
         dpi.height = height;
@@ -396,7 +396,7 @@ namespace OpenLoco::ui
     {
         update(width, height);
         gui::resize();
-        gfx::invalidateScreen();
+        Gfx::invalidateScreen();
 
         // Save window size to config if NOT maximized
         auto wf = SDL_GetWindowFlags(window);
@@ -433,7 +433,7 @@ namespace OpenLoco::ui
             }
 
             // Copy pixels from the virtual screen buffer to the surface
-            auto& dpi = gfx::screenDpi();
+            auto& dpi = Gfx::screenDpi();
             if (dpi.bits != nullptr)
             {
                 std::memcpy(surface->pixels, dpi.bits, surface->pitch * surface->h);
@@ -842,7 +842,7 @@ namespace OpenLoco::ui
 
         OpenLoco::config::write();
         ui::triggerResize();
-        gfx::invalidateScreen();
+        Gfx::invalidateScreen();
 
         return true;
     }
@@ -1137,7 +1137,7 @@ namespace OpenLoco::ui
 
         OpenLoco::config::write();
         ui::triggerResize();
-        gfx::invalidateScreen();
+        Gfx::invalidateScreen();
     }
 
     void adjustWindowScale(float adjust_by)

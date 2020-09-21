@@ -9,7 +9,7 @@ using namespace OpenLoco::interop;
 namespace OpenLoco::ui
 {
     // 0x0045A0E7
-    void viewport::render(gfx::drawpixelinfo_t* dpi)
+    void viewport::render(Gfx::drawpixelinfo_t* dpi)
     {
         registers regs;
         regs.ax = dpi->x;

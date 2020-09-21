@@ -12,7 +12,7 @@ using namespace OpenLoco::interop;
 
 namespace OpenLoco::ui::AboutMusic
 {
-    constexpr gfx::ui_size_t windowSize = { 500, 312 };
+    constexpr Gfx::ui_size_t windowSize = { 500, 312 };
 
     constexpr uint16_t numSongs = 31;
 
@@ -31,7 +31,7 @@ namespace OpenLoco::ui::AboutMusic
     static widget_t _widgets[] = {
         makeWidget({ 0, 0 }, windowSize, widget_type::frame, 0),
         makeWidget({ 1, 1 }, { windowSize.width - 2, 13 }, widget_type::caption_25, 0, string_ids::music_acknowledgements_caption),
-        makeWidget({ windowSize.width - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window),
+        makeWidget({ windowSize.width - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, string_ids::tooltip_close_window),
         makeWidget({ 0, 15 }, { windowSize.width, 297 }, widget_type::panel, 1),
         makeWidget({ 4, 18 }, { windowSize.width - 8, 289 }, widget_type::scrollview, 1, ui::scrollbars::vertical),
         widgetEnd(),
@@ -88,14 +88,14 @@ namespace OpenLoco::ui::AboutMusic
     }
 
     // 0x0043B8B8
-    static void draw(ui::window* const window, gfx::drawpixelinfo_t* const dpi)
+    static void draw(ui::window* const window, Gfx::drawpixelinfo_t* const dpi)
     {
         // Draw widgets.
         window->draw(dpi);
     }
 
     // 0x0043B8BE
-    static void drawScroll(ui::window*, gfx::drawpixelinfo_t* const dpi, uint32_t)
+    static void drawScroll(ui::window*, Gfx::drawpixelinfo_t* const dpi, uint32_t)
     {
         static const std::pair<string_id, string_id> stringsToDraw[numSongs] = {
             { string_ids::locomotion_title, string_ids::locomotion_title_credit },
@@ -139,15 +139,15 @@ namespace OpenLoco::ui::AboutMusic
             // TODO: optimisation: don't draw past fold.
 
             // Song name
-            drawStringCentred(*dpi, x, y, colour::black, songStrings.first, nullptr);
+            drawStringCentred(*dpi, x, y, Colour::black, songStrings.first, nullptr);
             y += 10;
 
             // Credit line
-            drawStringCentred(*dpi, x, y, colour::black, songStrings.second, nullptr);
+            drawStringCentred(*dpi, x, y, Colour::black, songStrings.second, nullptr);
             y += 10;
 
             // Show CS' copyright after every two lines.
-            drawStringCentred(*dpi, x, y, colour::black, string_ids::music_copyright, nullptr);
+            drawStringCentred(*dpi, x, y, Colour::black, string_ids::music_copyright, nullptr);
             y += 14;
         }
     }

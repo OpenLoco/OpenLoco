@@ -4,7 +4,7 @@
 
 #define UNUSED_IMG(x) (x)
 
-namespace OpenLoco::image_ids
+namespace OpenLoco::ImageIds
 {
     constexpr uint32_t null = 0xFFFFFFFF;
 

@@ -34,7 +34,7 @@ namespace OpenLoco::ui::tooltip
 
     static loco_global<int32_t, 0x01136F98> _currentTooltipStringId;
 
-    static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi);
+    static void draw(ui::window* window, Gfx::drawpixelinfo_t* dpi);
     static void onClose(ui::window* window);
     static void update(ui::window* window);
 
@@ -55,7 +55,7 @@ namespace OpenLoco::ui::tooltip
         registerHook(
             0x004C9397,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                draw((ui::window*)regs.esi, (gfx::drawpixelinfo_t*)regs.edi);
+                draw((ui::window*)regs.esi, (Gfx::drawpixelinfo_t*)regs.edi);
                 return 0;
             });
         registerHook(
@@ -119,8 +119,8 @@ namespace OpenLoco::ui::tooltip
 
         auto tooltip = WindowManager::createWindow(
             WindowType::tooltip,
-            gfx::point_t(x, y),
-            gfx::ui_size_t(width, height),
+            Gfx::point_t(x, y),
+            Gfx::ui_size_t(width, height),
             window_flags::stick_to_front | window_flags::transparent | window_flags::flag_7,
             (ui::window_event_list*)0x504774);
         tooltip->widgets = _widgets;
@@ -190,27 +190,27 @@ namespace OpenLoco::ui::tooltip
     }
 
     // 0x004C9397
-    static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi)
+    static void draw(ui::window* window, Gfx::drawpixelinfo_t* dpi)
     {
         uint16_t x = window->x;
         uint16_t y = window->y;
         uint16_t width = window->width;
         uint16_t height = window->height;
 
-        gfx::drawRect(dpi, x + 1, y + 1, width - 2, height - 2, 0x2000000 | 45);
-        gfx::drawRect(dpi, x + 1, y + 1, width - 2, height - 2, 0x2000000 | (116 + objectmgr::get<interface_skin_object>()->colour_08));
+        Gfx::drawRect(dpi, x + 1, y + 1, width - 2, height - 2, 0x2000000 | 45);
+        Gfx::drawRect(dpi, x + 1, y + 1, width - 2, height - 2, 0x2000000 | (116 + objectmgr::get<interface_skin_object>()->colour_08));
 
-        gfx::drawRect(dpi, x, y + 2, 1, height - 4, 0x2000000 | 46);
-        gfx::drawRect(dpi, x + width - 1, y + 2, 1, height - 4, 0x2000000 | 46);
-        gfx::drawRect(dpi, x + 2, y + height - 1, width - 4, 1, 0x2000000 | 46);
-        gfx::drawRect(dpi, x + 2, y, width - 4, 1, 0x2000000 | 46);
+        Gfx::drawRect(dpi, x, y + 2, 1, height - 4, 0x2000000 | 46);
+        Gfx::drawRect(dpi, x + width - 1, y + 2, 1, height - 4, 0x2000000 | 46);
+        Gfx::drawRect(dpi, x + 2, y + height - 1, width - 4, 1, 0x2000000 | 46);
+        Gfx::drawRect(dpi, x + 2, y, width - 4, 1, 0x2000000 | 46);
 
-        gfx::drawRect(dpi, x + 1, y + 1, 1, 1, 0x2000000 | 46);
-        gfx::drawRect(dpi, x + width - 1 - 1, y + 1, 1, 1, 0x2000000 | 46);
-        gfx::drawRect(dpi, x + 1, y + height - 1 - 1, 1, 1, 0x2000000 | 46);
-        gfx::drawRect(dpi, x + width - 1 - 1, y + height - 1 - 1, 1, 1, 0x2000000 | 46);
+        Gfx::drawRect(dpi, x + 1, y + 1, 1, 1, 0x2000000 | 46);
+        Gfx::drawRect(dpi, x + width - 1 - 1, y + 1, 1, 1, 0x2000000 | 46);
+        Gfx::drawRect(dpi, x + 1, y + height - 1 - 1, 1, 1, 0x2000000 | 46);
+        Gfx::drawRect(dpi, x + width - 1 - 1, y + height - 1 - 1, 1, 1, 0x2000000 | 46);
 
-        gfx::drawStringCentredRaw(*dpi, ((width + 1) / 2) + x - 1, y + 1, _lineBreakCount, colour::black, &_text[0]);
+        Gfx::drawStringCentredRaw(*dpi, ((width + 1) / 2) + x - 1, y + 1, _lineBreakCount, Colour::black, &_text[0]);
     }
 
     // 0x004C94F7

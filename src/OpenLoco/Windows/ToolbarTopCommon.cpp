@@ -35,7 +35,7 @@ namespace OpenLoco::ui::windows::toolbar_top::common
     static loco_global<int8_t[18], 0x0050A006> available_objects;
 
     // 0x00439DE4
-    void draw(window* self, gfx::drawpixelinfo_t* dpi)
+    void draw(window* self, Gfx::drawpixelinfo_t* dpi)
     {
         // Draw widgets.
         self->draw(dpi);
@@ -53,17 +53,17 @@ namespace OpenLoco::ui::windows::toolbar_top::common
             if (isRoad)
             {
                 auto obj = objectmgr::get<road_object>(last_road_option & ~(1 << 7));
-                fgImage = gfx::recolour(obj->var_0E, company_colour);
+                fgImage = Gfx::recolour(obj->var_0E, company_colour);
             }
             else
             {
                 auto obj = objectmgr::get<track_object>(last_road_option);
-                fgImage = gfx::recolour(obj->var_1E, company_colour);
+                fgImage = Gfx::recolour(obj->var_1E, company_colour);
             }
 
             y--;
             auto interface = objectmgr::get<interface_skin_object>();
-            uint32_t bgImage = gfx::recolour(interface->img + interface_skin::image_ids::toolbar_empty_transparent, self->colours[2]);
+            uint32_t bgImage = Gfx::recolour(interface->img + interface_skin::image_ids::toolbar_empty_transparent, self->colours[2]);
 
             if (input::isDropdownActive(ui::WindowType::topToolbar, widx::road_menu))
             {
@@ -71,10 +71,10 @@ namespace OpenLoco::ui::windows::toolbar_top::common
                 bgImage++;
             }
 
-            gfx::drawImage(dpi, x, y, fgImage);
+            Gfx::drawImage(dpi, x, y, fgImage);
 
             y = self->widgets[widx::road_menu].top + self->y;
-            gfx::drawImage(dpi, x, y, bgImage);
+            Gfx::drawImage(dpi, x, y, bgImage);
         }
     }
 
@@ -217,13 +217,13 @@ namespace OpenLoco::ui::windows::toolbar_top::common
             {
                 auto road = objectmgr::get<road_object>(objIndex & 0x7F);
                 obj_string_id = road->name;
-                obj_image = gfx::recolour(road->var_0E, company_colour);
+                obj_image = Gfx::recolour(road->var_0E, company_colour);
             }
             else
             {
                 auto track = objectmgr::get<track_object>(objIndex);
                 obj_string_id = track->name;
-                obj_image = gfx::recolour(track->var_1E, company_colour);
+                obj_image = Gfx::recolour(track->var_1E, company_colour);
             }
 
             dropdown::add(i, string_ids::menu_sprite_stringid_construction, { obj_image, obj_string_id });

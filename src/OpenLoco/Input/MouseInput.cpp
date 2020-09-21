@@ -1952,17 +1952,17 @@ namespace OpenLoco::input
         }
     }
 
-    gfx::point_t getMouseLocation()
+    Gfx::point_t getMouseLocation()
     {
-        return gfx::point_t(_cursorX, _cursorY);
+        return Gfx::point_t(_cursorX, _cursorY);
     }
 
-    gfx::point_t getTooltipMouseLocation()
+    Gfx::point_t getTooltipMouseLocation()
     {
-        return gfx::point_t(_tooltipCursorX, _tooltipCursorY);
+        return Gfx::point_t(_tooltipCursorX, _tooltipCursorY);
     }
 
-    void setTooltipMouseLocation(const gfx::point_t& loc)
+    void setTooltipMouseLocation(const Gfx::point_t& loc)
     {
         _tooltipCursorX = loc.x;
         _tooltipCursorY = loc.y;

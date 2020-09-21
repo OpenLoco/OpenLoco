@@ -46,27 +46,27 @@ namespace OpenLoco::ui::MessageWindow
 
         const uint64_t enabledWidgets = (1 << widx::close_button) | (1 << widx::tab_messages) | (1 << widx::tab_settings);
 
-#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                          \
-    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, widget_type::frame, 0),                                                            \
-        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, widget_type::caption_24, 0, windowCaptionId),                                       \
-        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window), \
-        makeWidget({ 0, 41 }, { 366, 175 }, widget_type::panel, 1),                                                                      \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_recent_messages),               \
-        makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_message_options)
+#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                         \
+    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, widget_type::frame, 0),                                                           \
+        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, widget_type::caption_24, 0, windowCaptionId),                                      \
+        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, string_ids::tooltip_close_window), \
+        makeWidget({ 0, 41 }, { 366, 175 }, widget_type::panel, 1),                                                                     \
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_recent_messages),               \
+        makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_message_options)
 
         static window_event_list _events;
 
         static void prepareDraw(window* self);
         static void switchTab(window* self, widget_index widgetIndex);
         static void onUpdate(window* self);
-        static void drawTabs(window* self, gfx::drawpixelinfo_t* dpi);
+        static void drawTabs(window* self, Gfx::drawpixelinfo_t* dpi);
         static void initEvents();
     }
 
     namespace messages
     {
-        static const gfx::ui_size_t minWindowSize = { 366, 217 };
-        static const gfx::ui_size_t maxWindowSize = { 366, 1200 };
+        static const Gfx::ui_size_t minWindowSize = { 366, 217 };
+        static const Gfx::ui_size_t maxWindowSize = { 366, 1200 };
         static int8_t messageHeight = 39;
 
         enum widx
@@ -206,18 +206,18 @@ namespace OpenLoco::ui::MessageWindow
         }
 
         // 0x0042A5CC
-        static void draw(window* self, gfx::drawpixelinfo_t* dpi)
+        static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
         {
             self->draw(dpi);
             common::drawTabs(self, dpi);
         }
 
         // 0x0042A5D7
-        static void drawScroll(ui::window* self, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
+        static void drawScroll(ui::window* self, Gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
         {
-            auto colour = colour::getShade(self->colours[1], 4);
+            auto colour = Colour::getShade(self->colours[1], 4);
 
-            gfx::clearSingle(*dpi, colour);
+            Gfx::clearSingle(*dpi, colour);
 
             auto height = 0;
             for (auto i = 0; i < _messageCount; i++)
@@ -244,7 +244,7 @@ namespace OpenLoco::ui::MessageWindow
 
                 if (self->row_hover == i)
                 {
-                    gfx::drawRect(dpi, 0, height, self->width, 38, (1 << 25) | palette_index::index_30);
+                    Gfx::drawRect(dpi, 0, height, self->width, 38, (1 << 25) | PaletteIndex::index_30);
                     stringId = string_ids::wcolour2_stringid;
                 }
 
@@ -253,14 +253,14 @@ namespace OpenLoco::ui::MessageWindow
                     args.push(string_ids::tiny_font_date);
                     args.push(message->date);
 
-                    gfx::drawString_494B3F(*dpi, 0, height, colour::black, stringId, &args);
+                    Gfx::drawString_494B3F(*dpi, 0, height, Colour::black, stringId, &args);
                 }
                 {
                     auto args = FormatArguments();
                     args.push(string_ids::buffer_2039);
 
                     auto width = self->widgets[widx::scrollview].width() - 14;
-                    gfx::drawString_495224(*dpi, 0, height + 6, width, colour::black, stringId, &args);
+                    Gfx::drawString_495224(*dpi, 0, height + 6, width, Colour::black, stringId, &args);
                     height += messageHeight;
                 }
             }
@@ -314,7 +314,7 @@ namespace OpenLoco::ui::MessageWindow
         {
             int16_t y = 29;
             int16_t x = ui::width() - 366;
-            gfx::point_t origin = { x, y };
+            Gfx::point_t origin = { x, y };
 
             window = WindowManager::createWindow(
                 WindowType::messages,
@@ -376,7 +376,7 @@ namespace OpenLoco::ui::MessageWindow
 
     namespace settings
     {
-        static const gfx::ui_size_t windowSize = { 366, 139 };
+        static const Gfx::ui_size_t windowSize = { 366, 139 };
 
         enum widx
         {
@@ -497,7 +497,7 @@ namespace OpenLoco::ui::MessageWindow
                     {
                         config::get().news_settings[dropdownIndex] = static_cast<config::newsType>(itemIndex);
                         config::write();
-                        gfx::invalidateScreen();
+                        Gfx::invalidateScreen();
                     }
                     break;
                 }
@@ -505,7 +505,7 @@ namespace OpenLoco::ui::MessageWindow
         }
 
         // 0x0042AA02
-        static void draw(window* self, gfx::drawpixelinfo_t* dpi)
+        static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
         {
             self->draw(dpi);
             common::drawTabs(self, dpi);
@@ -532,7 +532,7 @@ namespace OpenLoco::ui::MessageWindow
                     auto args = FormatArguments();
                     args.push(newsStringIds[i]);
 
-                    gfx::drawString_494B3F(*dpi, self->x + 4, yPos, colour::black, string_ids::wcolour2_stringid, &args);
+                    Gfx::drawString_494B3F(*dpi, self->x + 4, yPos, Colour::black, string_ids::wcolour2_stringid, &args);
                 }
 
                 {
@@ -540,7 +540,7 @@ namespace OpenLoco::ui::MessageWindow
                     auto args = FormatArguments();
                     args.push(newsDropdownStringIds[static_cast<uint8_t>(config::get().news_settings[i])]);
 
-                    gfx::drawString_494B3F(*dpi, xPos, yPos, colour::black, string_ids::black_stringid, &args);
+                    Gfx::drawString_494B3F(*dpi, xPos, yPos, Colour::black, string_ids::black_stringid, &args);
                 }
                 yPos += 15;
             }
@@ -649,7 +649,7 @@ namespace OpenLoco::ui::MessageWindow
         }
 
         // 0x0042AB92
-        static void drawTabs(window* self, gfx::drawpixelinfo_t* dpi)
+        static void drawTabs(window* self, Gfx::drawpixelinfo_t* dpi)
         {
             auto skin = objectmgr::get<interface_skin_object>();
 

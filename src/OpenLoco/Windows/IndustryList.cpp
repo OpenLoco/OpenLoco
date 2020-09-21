@@ -42,28 +42,28 @@ namespace OpenLoco::ui::windows::industry_list
 
         const uint64_t enabledWidgets = (1 << widx::close_button) | (1 << widx::tab_industry_list) | (1 << widx::tab_new_industry);
 
-#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                          \
-    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, widget_type::frame, 0),                                                            \
-        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, widget_type::caption_25, 0, windowCaptionId),                                       \
-        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window), \
-        makeWidget({ 0, 41 }, { frameWidth, 154 }, widget_type::panel, 1),                                                               \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_industries_list),               \
-        makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tooltip_fund_new_industries)
+#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                         \
+    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, widget_type::frame, 0),                                                           \
+        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, widget_type::caption_25, 0, windowCaptionId),                                      \
+        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, string_ids::tooltip_close_window), \
+        makeWidget({ 0, 41 }, { frameWidth, 154 }, widget_type::panel, 1),                                                              \
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_industries_list),               \
+        makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_fund_new_industries)
 
         static window_event_list _events;
 
         static void initEvents();
         static void refreshIndustryList(window* self);
-        static void drawTabs(window* self, gfx::drawpixelinfo_t* dpi);
+        static void drawTabs(window* self, Gfx::drawpixelinfo_t* dpi);
         static void prepareDraw(window* self);
         static void switchTab(window* self, widget_index widgetIndex);
     }
 
     namespace industry_list
     {
-        static const gfx::ui_size_t windowSize = { 600, 197 };
-        static const gfx::ui_size_t maxDimensions = { 600, 900 };
-        static const gfx::ui_size_t minDimensions = { 192, 100 };
+        static const Gfx::ui_size_t windowSize = { 600, 197 };
+        static const Gfx::ui_size_t maxDimensions = { 600, 900 };
+        static const Gfx::ui_size_t minDimensions = { 192, 100 };
 
         static const uint8_t rowHeight = 10;
 
@@ -79,9 +79,9 @@ namespace OpenLoco::ui::windows::industry_list
 
         widget_t widgets[] = {
             commonWidgets(600, 197, string_ids::title_industries),
-            makeWidget({ 4, 44 }, { 199, 11 }, widget_type::wt_14, 1, image_ids::null, string_ids::sort_industry_name),
-            makeWidget({ 204, 44 }, { 204, 11 }, widget_type::wt_14, 1, image_ids::null, string_ids::sort_industry_status),
-            makeWidget({ 444, 44 }, { 159, 11 }, widget_type::wt_14, 1, image_ids::null, string_ids::sort_industry_production_transported),
+            makeWidget({ 4, 44 }, { 199, 11 }, widget_type::wt_14, 1, ImageIds::null, string_ids::sort_industry_name),
+            makeWidget({ 204, 44 }, { 204, 11 }, widget_type::wt_14, 1, ImageIds::null, string_ids::sort_industry_status),
+            makeWidget({ 444, 44 }, { 159, 11 }, widget_type::wt_14, 1, ImageIds::null, string_ids::sort_industry_production_transported),
             makeWidget({ 3, 56 }, { 593, 125 }, widget_type::scrollview, 1, scrollbars::vertical),
             widgetEnd(),
         };
@@ -124,7 +124,7 @@ namespace OpenLoco::ui::windows::industry_list
         }
 
         // 0x00457CD9
-        static void draw(window* self, gfx::drawpixelinfo_t* dpi)
+        static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
         {
             self->draw(dpi);
             common::drawTabs(self, dpi);
@@ -138,7 +138,7 @@ namespace OpenLoco::ui::windows::industry_list
                 args.push(string_ids::status_num_industries_plural);
             args.push(self->var_83C);
 
-            gfx::drawString_494B3F(*dpi, xPos, yPos, colour::black, string_ids::black_stringid, &args);
+            Gfx::drawString_494B3F(*dpi, xPos, yPos, Colour::black, string_ids::black_stringid, &args);
         }
 
         // 0x00457EC4
@@ -374,10 +374,10 @@ namespace OpenLoco::ui::windows::industry_list
         }
 
         // 0x00457D2A
-        static void drawScroll(ui::window* self, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
+        static void drawScroll(ui::window* self, Gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
         {
-            auto shade = colour::getShade(self->colours[1], 4);
-            gfx::clearSingle(*dpi, shade);
+            auto shade = Colour::getShade(self->colours[1], 4);
+            Gfx::clearSingle(*dpi, shade);
 
             uint16_t yPos = 0;
             for (uint16_t i = 0; i < self->var_83C; i++)
@@ -396,7 +396,7 @@ namespace OpenLoco::ui::windows::industry_list
                 // Highlight selection.
                 if (industryId == self->row_hover)
                 {
-                    gfx::drawRect(dpi, 0, yPos, self->width, rowHeight, 0x2000030);
+                    Gfx::drawRect(dpi, 0, yPos, self->width, rowHeight, 0x2000030);
                     text_colour_id = string_ids::wcolour2_stringid;
                 }
 
@@ -410,7 +410,7 @@ namespace OpenLoco::ui::windows::industry_list
                     args.push(industry->name);
                     args.push(industry->town);
 
-                    gfx::drawString_494BBF(*dpi, 0, yPos, 198, colour::black, text_colour_id, &args);
+                    Gfx::drawString_494BBF(*dpi, 0, yPos, 198, Colour::black, text_colour_id, &args);
                 }
                 // Industry Status
                 {
@@ -420,7 +420,7 @@ namespace OpenLoco::ui::windows::industry_list
                     auto args = FormatArguments();
                     args.push(string_ids::buffer_1250);
 
-                    gfx::drawString_494BBF(*dpi, 200, yPos, 238, colour::black, text_colour_id, &args);
+                    Gfx::drawString_494BBF(*dpi, 200, yPos, 238, Colour::black, text_colour_id, &args);
                 }
                 // Industry Production Delivered
                 {
@@ -435,7 +435,7 @@ namespace OpenLoco::ui::windows::industry_list
                     auto args = FormatArguments();
                     args.push<uint16_t>(productionTransported);
 
-                    gfx::drawString_494BBF(*dpi, 440, yPos, 138, colour::black, string_ids::production_transported_percent, &args);
+                    Gfx::drawString_494BBF(*dpi, 440, yPos, 138, Colour::black, string_ids::production_transported_percent, &args);
                 }
                 yPos += rowHeight;
             }
@@ -513,7 +513,7 @@ namespace OpenLoco::ui::windows::industry_list
         else
         {
             // 0x00457878
-            auto origin = gfx::point_t(ui::width() - industry_list::windowSize.width, 30);
+            auto origin = Gfx::point_t(ui::width() - industry_list::windowSize.width, 30);
 
             window = WindowManager::createWindow(
                 WindowType::industryList,
@@ -569,7 +569,7 @@ namespace OpenLoco::ui::windows::industry_list
     namespace new_industries
     {
 
-        static const gfx::ui_size_t window_size = { 578, 172 };
+        static const Gfx::ui_size_t window_size = { 578, 172 };
 
         static const uint8_t rowHeight = 112;
 
@@ -609,7 +609,7 @@ namespace OpenLoco::ui::windows::industry_list
         }
 
         // 0x0045826C
-        static void draw(window* self, gfx::drawpixelinfo_t* dpi)
+        static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
         {
             self->draw(dpi);
             common::drawTabs(self, dpi);
@@ -619,7 +619,7 @@ namespace OpenLoco::ui::windows::industry_list
                 auto xPos = self->x + 3;
                 auto yPos = self->y + self->height - 13;
                 auto width = self->width - 19;
-                gfx::drawString_494BBF(*dpi, xPos, yPos, width, colour::black, string_ids::no_industry_available);
+                Gfx::drawString_494BBF(*dpi, xPos, yPos, width, Colour::black, string_ids::no_industry_available);
                 return;
             }
 
@@ -654,14 +654,14 @@ namespace OpenLoco::ui::windows::industry_list
                 auto yPos = self->y + self->height - 13;
                 widthOffset = 138;
 
-                gfx::drawString_494C78(*dpi, xPos, yPos, colour::black, string_ids::build_cost, &args);
+                Gfx::drawString_494C78(*dpi, xPos, yPos, Colour::black, string_ids::build_cost, &args);
             }
 
             auto xPos = self->x + 3;
             auto yPos = self->y + self->height - 13;
             auto width = self->width - 19 - widthOffset;
 
-            gfx::drawString_494BBF(*dpi, xPos, yPos, width, colour::black, string_ids::black_stringid, &industryObj->name);
+            Gfx::drawString_494BBF(*dpi, xPos, yPos, width, Colour::black, string_ids::black_stringid, &industryObj->name);
         }
 
         // 0x0045843A
@@ -862,7 +862,7 @@ namespace OpenLoco::ui::windows::industry_list
         }
 
         // 0x00458C7F
-        static void drawIndustryThumb(gfx::drawpixelinfo_t* clipped, const OpenLoco::industry_object* industryObj, int16_t x, int16_t y)
+        static void drawIndustryThumb(Gfx::drawpixelinfo_t* clipped, const OpenLoco::industry_object* industryObj, int16_t x, int16_t y)
         {
             registers regs;
             regs.cx = x;
@@ -873,10 +873,10 @@ namespace OpenLoco::ui::windows::industry_list
         }
 
         // 0x00458352
-        static void drawScroll(ui::window* self, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
+        static void drawScroll(ui::window* self, Gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
         {
-            auto shade = colour::getShade(self->colours[1], 4);
-            gfx::clearSingle(*dpi, shade);
+            auto shade = Colour::getShade(self->colours[1], 4);
+            Gfx::clearSingle(*dpi, shade);
 
             loco_global<uint16_t, 0x00E0C3C6> word_E0C3C6;
             uint16_t xPos = 0;
@@ -888,21 +888,21 @@ namespace OpenLoco::ui::windows::industry_list
                 {
                     if (self->row_info[i] == self->var_846)
                     {
-                        word_E0C3C6 = colour::translucent_flag;
-                        gfx::drawRectInset(dpi, xPos, yPos, rowHeight, rowHeight, self->colours[1], colour::translucent_flag);
+                        word_E0C3C6 = Colour::translucent_flag;
+                        Gfx::drawRectInset(dpi, xPos, yPos, rowHeight, rowHeight, self->colours[1], Colour::translucent_flag);
                     }
                 }
                 else
                 {
-                    word_E0C3C6 = colour::translucent_flag | colour::outline_flag;
-                    gfx::drawRectInset(dpi, xPos, yPos, rowHeight, rowHeight, self->colours[1], (colour::translucent_flag | colour::outline_flag));
+                    word_E0C3C6 = Colour::translucent_flag | Colour::outline_flag;
+                    Gfx::drawRectInset(dpi, xPos, yPos, rowHeight, rowHeight, self->colours[1], (Colour::translucent_flag | Colour::outline_flag));
                 }
 
                 auto industryObj = objectmgr::get<industry_object>(self->row_info[i]);
 
-                gfx::drawpixelinfo_t* clipped = nullptr;
+                Gfx::drawpixelinfo_t* clipped = nullptr;
 
-                if (gfx::clipDrawpixelinfo(&clipped, dpi, xPos + 1, yPos + 1, 110, 110))
+                if (Gfx::clipDrawpixelinfo(&clipped, dpi, xPos + 1, yPos + 1, 110, 110))
                     drawIndustryThumb(clipped, industryObj, 56, 96);
 
                 xPos += rowHeight;
@@ -1064,8 +1064,8 @@ namespace OpenLoco::ui::windows::industry_list
         static void onResize(window* self)
         {
             self->invalidate();
-            gfx::ui_size_t minWindowSize = { self->min_width, self->min_height };
-            gfx::ui_size_t maxWindowSize = { self->max_width, self->max_height };
+            Gfx::ui_size_t minWindowSize = { self->min_width, self->min_height };
+            Gfx::ui_size_t maxWindowSize = { self->max_width, self->max_height };
             bool hasResized = self->setSize(minWindowSize, maxWindowSize);
             if (hasResized)
                 updateActiveThumb(self);
@@ -1170,7 +1170,7 @@ namespace OpenLoco::ui::windows::industry_list
         }
 
         // 0x00458A57
-        static void drawTabs(window* self, gfx::drawpixelinfo_t* dpi)
+        static void drawTabs(window* self, Gfx::drawpixelinfo_t* dpi)
         {
             auto skin = objectmgr::get<interface_skin_object>();
 

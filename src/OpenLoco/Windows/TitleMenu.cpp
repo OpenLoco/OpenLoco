@@ -27,73 +27,73 @@ namespace OpenLoco::ui::windows
     static const uint16_t wh = btn_main_size + btn_sub_height;
 
     static const std::vector<uint32_t> globe_spin = {
-        image_ids::title_menu_globe_spin_0,
-        image_ids::title_menu_globe_spin_1,
-        image_ids::title_menu_globe_spin_2,
-        image_ids::title_menu_globe_spin_3,
-        image_ids::title_menu_globe_spin_4,
-        image_ids::title_menu_globe_spin_5,
-        image_ids::title_menu_globe_spin_6,
-        image_ids::title_menu_globe_spin_7,
-        image_ids::title_menu_globe_spin_8,
-        image_ids::title_menu_globe_spin_9,
-        image_ids::title_menu_globe_spin_10,
-        image_ids::title_menu_globe_spin_11,
-        image_ids::title_menu_globe_spin_12,
-        image_ids::title_menu_globe_spin_13,
-        image_ids::title_menu_globe_spin_14,
-        image_ids::title_menu_globe_spin_15,
-        image_ids::title_menu_globe_spin_16,
-        image_ids::title_menu_globe_spin_17,
-        image_ids::title_menu_globe_spin_18,
-        image_ids::title_menu_globe_spin_19,
-        image_ids::title_menu_globe_spin_20,
-        image_ids::title_menu_globe_spin_21,
-        image_ids::title_menu_globe_spin_22,
-        image_ids::title_menu_globe_spin_23,
-        image_ids::title_menu_globe_spin_24,
-        image_ids::title_menu_globe_spin_25,
-        image_ids::title_menu_globe_spin_26,
-        image_ids::title_menu_globe_spin_27,
-        image_ids::title_menu_globe_spin_28,
-        image_ids::title_menu_globe_spin_29,
-        image_ids::title_menu_globe_spin_30,
-        image_ids::title_menu_globe_spin_31,
+        ImageIds::title_menu_globe_spin_0,
+        ImageIds::title_menu_globe_spin_1,
+        ImageIds::title_menu_globe_spin_2,
+        ImageIds::title_menu_globe_spin_3,
+        ImageIds::title_menu_globe_spin_4,
+        ImageIds::title_menu_globe_spin_5,
+        ImageIds::title_menu_globe_spin_6,
+        ImageIds::title_menu_globe_spin_7,
+        ImageIds::title_menu_globe_spin_8,
+        ImageIds::title_menu_globe_spin_9,
+        ImageIds::title_menu_globe_spin_10,
+        ImageIds::title_menu_globe_spin_11,
+        ImageIds::title_menu_globe_spin_12,
+        ImageIds::title_menu_globe_spin_13,
+        ImageIds::title_menu_globe_spin_14,
+        ImageIds::title_menu_globe_spin_15,
+        ImageIds::title_menu_globe_spin_16,
+        ImageIds::title_menu_globe_spin_17,
+        ImageIds::title_menu_globe_spin_18,
+        ImageIds::title_menu_globe_spin_19,
+        ImageIds::title_menu_globe_spin_20,
+        ImageIds::title_menu_globe_spin_21,
+        ImageIds::title_menu_globe_spin_22,
+        ImageIds::title_menu_globe_spin_23,
+        ImageIds::title_menu_globe_spin_24,
+        ImageIds::title_menu_globe_spin_25,
+        ImageIds::title_menu_globe_spin_26,
+        ImageIds::title_menu_globe_spin_27,
+        ImageIds::title_menu_globe_spin_28,
+        ImageIds::title_menu_globe_spin_29,
+        ImageIds::title_menu_globe_spin_30,
+        ImageIds::title_menu_globe_spin_31,
     };
 
     static const std::vector<uint32_t> globe_construct = {
-        image_ids::title_menu_globe_construct_0,
-        image_ids::title_menu_globe_construct_1,
-        image_ids::title_menu_globe_construct_2,
-        image_ids::title_menu_globe_construct_3,
-        image_ids::title_menu_globe_construct_4,
-        image_ids::title_menu_globe_construct_5,
-        image_ids::title_menu_globe_construct_6,
-        image_ids::title_menu_globe_construct_7,
-        image_ids::title_menu_globe_construct_8,
-        image_ids::title_menu_globe_construct_9,
-        image_ids::title_menu_globe_construct_10,
-        image_ids::title_menu_globe_construct_11,
-        image_ids::title_menu_globe_construct_12,
-        image_ids::title_menu_globe_construct_13,
-        image_ids::title_menu_globe_construct_14,
-        image_ids::title_menu_globe_construct_15,
-        image_ids::title_menu_globe_construct_16,
-        image_ids::title_menu_globe_construct_17,
-        image_ids::title_menu_globe_construct_18,
-        image_ids::title_menu_globe_construct_19,
-        image_ids::title_menu_globe_construct_20,
-        image_ids::title_menu_globe_construct_21,
-        image_ids::title_menu_globe_construct_22,
-        image_ids::title_menu_globe_construct_23,
-        image_ids::title_menu_globe_construct_24,
-        image_ids::title_menu_globe_construct_25,
-        image_ids::title_menu_globe_construct_26,
-        image_ids::title_menu_globe_construct_27,
-        image_ids::title_menu_globe_construct_28,
-        image_ids::title_menu_globe_construct_29,
-        image_ids::title_menu_globe_construct_30,
-        image_ids::title_menu_globe_construct_31,
+        ImageIds::title_menu_globe_construct_0,
+        ImageIds::title_menu_globe_construct_1,
+        ImageIds::title_menu_globe_construct_2,
+        ImageIds::title_menu_globe_construct_3,
+        ImageIds::title_menu_globe_construct_4,
+        ImageIds::title_menu_globe_construct_5,
+        ImageIds::title_menu_globe_construct_6,
+        ImageIds::title_menu_globe_construct_7,
+        ImageIds::title_menu_globe_construct_8,
+        ImageIds::title_menu_globe_construct_9,
+        ImageIds::title_menu_globe_construct_10,
+        ImageIds::title_menu_globe_construct_11,
+        ImageIds::title_menu_globe_construct_12,
+        ImageIds::title_menu_globe_construct_13,
+        ImageIds::title_menu_globe_construct_14,
+        ImageIds::title_menu_globe_construct_15,
+        ImageIds::title_menu_globe_construct_16,
+        ImageIds::title_menu_globe_construct_17,
+        ImageIds::title_menu_globe_construct_18,
+        ImageIds::title_menu_globe_construct_19,
+        ImageIds::title_menu_globe_construct_20,
+        ImageIds::title_menu_globe_construct_21,
+        ImageIds::title_menu_globe_construct_22,
+        ImageIds::title_menu_globe_construct_23,
+        ImageIds::title_menu_globe_construct_24,
+        ImageIds::title_menu_globe_construct_25,
+        ImageIds::title_menu_globe_construct_26,
+        ImageIds::title_menu_globe_construct_27,
+        ImageIds::title_menu_globe_construct_28,
+        ImageIds::title_menu_globe_construct_29,
+        ImageIds::title_menu_globe_construct_30,
+        ImageIds::title_menu_globe_construct_31,
     };
 
     namespace widx
@@ -137,7 +137,7 @@ namespace OpenLoco::ui::windows
     static void onUpdate(window* window);
     static void onTextInput(window* window, widget_index widgetIndex, char* input);
     static ui::cursor_id onCursor(window* window, int16_t widgetIdx, int16_t xPos, int16_t yPos, ui::cursor_id fallback);
-    static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi);
+    static void draw(ui::window* window, Gfx::drawpixelinfo_t* dpi);
     static void prepareDraw(ui::window* window);
 
     // static loco_global<window_event_list[1], 0x004f9ec8> _events;
@@ -155,7 +155,7 @@ namespace OpenLoco::ui::windows
 
         auto window = OpenLoco::ui::WindowManager::createWindow(
             WindowType::titleMenu,
-            gfx::point_t((ui::width() - ww) / 2, ui::height() - wh - 25),
+            Gfx::point_t((ui::width() - ww) / 2, ui::height() - wh - 25),
             { ww, wh },
             window_flags::stick_to_front | window_flags::transparent | window_flags::no_background | window_flags::flag_6,
             &_events);
@@ -165,8 +165,8 @@ namespace OpenLoco::ui::windows
 
         window->initScrollWidgets();
 
-        window->colours[0] = colour::translucent(colour::saturated_green);
-        window->colours[1] = colour::translucent(colour::saturated_green);
+        window->colours[0] = Colour::translucent(Colour::saturated_green);
+        window->colours[1] = Colour::translucent(Colour::saturated_green);
         window->var_846 = 0;
 
         return window;
@@ -207,7 +207,7 @@ namespace OpenLoco::ui::windows
     }
 
     // 0x00438EC7
-    static void draw(ui::window* window, gfx::drawpixelinfo_t* dpi)
+    static void draw(ui::window* window, Gfx::drawpixelinfo_t* dpi)
     {
         // Draw widgets.
         window->draw(dpi);
@@ -217,14 +217,14 @@ namespace OpenLoco::ui::windows
             int16_t x = window->widgets[widx::scenario_list_btn].left + window->x;
             int16_t y = window->widgets[widx::scenario_list_btn].top + window->y;
 
-            uint32_t image_id = image_ids::title_menu_globe_spin_0;
+            uint32_t image_id = ImageIds::title_menu_globe_spin_0;
             if (input::isHovering(WindowType::titleMenu, 0, widx::scenario_list_btn))
             {
                 image_id = globe_spin[((window->var_846 / 2) % globe_spin.size())];
             }
 
-            OpenLoco::gfx::drawImage(dpi, x, y, image_id);
-            OpenLoco::gfx::drawImage(dpi, x, y, image_ids::title_menu_sparkle);
+            OpenLoco::Gfx::drawImage(dpi, x, y, image_id);
+            OpenLoco::Gfx::drawImage(dpi, x, y, ImageIds::title_menu_sparkle);
         }
 
         if (window->widgets[widx::load_game_btn].type != ui::widget_type::none)
@@ -232,14 +232,14 @@ namespace OpenLoco::ui::windows
             int16_t x = window->widgets[widx::load_game_btn].left + window->x;
             int16_t y = window->widgets[widx::load_game_btn].top + window->y;
 
-            uint32_t image_id = image_ids::title_menu_globe_spin_0;
+            uint32_t image_id = ImageIds::title_menu_globe_spin_0;
             if (input::isHovering(WindowType::titleMenu, 0, widx::load_game_btn))
             {
                 image_id = globe_spin[((window->var_846 / 2) % globe_spin.size())];
             }
 
-            OpenLoco::gfx::drawImage(dpi, x, y, image_id);
-            OpenLoco::gfx::drawImage(dpi, x, y, image_ids::title_menu_save);
+            OpenLoco::Gfx::drawImage(dpi, x, y, image_id);
+            OpenLoco::Gfx::drawImage(dpi, x, y, ImageIds::title_menu_save);
         }
 
         if (window->widgets[widx::tutorial_btn].type != ui::widget_type::none)
@@ -247,16 +247,16 @@ namespace OpenLoco::ui::windows
             int16_t x = window->widgets[widx::tutorial_btn].left + window->x;
             int16_t y = window->widgets[widx::tutorial_btn].top + window->y;
 
-            uint32_t image_id = image_ids::title_menu_globe_spin_0;
+            uint32_t image_id = ImageIds::title_menu_globe_spin_0;
             if (input::isHovering(WindowType::titleMenu, 0, widx::tutorial_btn))
             {
                 image_id = globe_spin[((window->var_846 / 2) % globe_spin.size())];
             }
 
-            OpenLoco::gfx::drawImage(dpi, x, y, image_id);
+            OpenLoco::Gfx::drawImage(dpi, x, y, image_id);
 
             // TODO: base lesson overlay on language
-            OpenLoco::gfx::drawImage(dpi, x, y, image_ids::title_menu_lesson_l);
+            OpenLoco::Gfx::drawImage(dpi, x, y, ImageIds::title_menu_lesson_l);
         }
 
         if (window->widgets[widx::scenario_editor_btn].type != ui::widget_type::none)
@@ -264,13 +264,13 @@ namespace OpenLoco::ui::windows
             int16_t x = window->widgets[widx::scenario_editor_btn].left + window->x;
             int16_t y = window->widgets[widx::scenario_editor_btn].top + window->y;
 
-            uint32_t image_id = image_ids::title_menu_globe_construct_24;
+            uint32_t image_id = ImageIds::title_menu_globe_construct_24;
             if (input::isHovering(WindowType::titleMenu, 0, widx::scenario_editor_btn))
             {
                 image_id = globe_construct[((window->var_846 / 2) % globe_construct.size())];
             }
 
-            OpenLoco::gfx::drawImage(dpi, x, y, image_id);
+            OpenLoco::Gfx::drawImage(dpi, x, y, image_id);
         }
 
         {
@@ -292,7 +292,7 @@ namespace OpenLoco::ui::windows
                 string = string_ids::two_player_mode_connected;
             }
 
-            drawStringCentredClipped(*dpi, x, y, ww - 4, colour::black, string, (char*)0x112c826);
+            drawStringCentredClipped(*dpi, x, y, ww - 4, Colour::black, string, (char*)0x112c826);
         }
     }
 
@@ -390,7 +390,7 @@ namespace OpenLoco::ui::windows
         auto window = WindowManager::createWindow(
             WindowType::main,
             { 0, 0 },
-            gfx::ui_size_t(uiWidth, uiHeight),
+            Gfx::ui_size_t(uiWidth, uiHeight),
             ui::window_flags::stick_to_back,
             (ui::window_event_list*)0x004FA5F8);
         window->widgets = _editorWidgets;
@@ -430,7 +430,7 @@ namespace OpenLoco::ui::windows
             window->y + widget->top,
             widget->width(),
             widget->height(),
-            colour::translucent(window->colours[0]),
+            Colour::translucent(window->colours[0]),
             3,
             0x80);
     }

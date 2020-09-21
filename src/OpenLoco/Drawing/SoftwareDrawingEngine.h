@@ -5,7 +5,7 @@
 #include <algorithm>
 #include <cstddef>
 
-namespace OpenLoco::drawing
+namespace OpenLoco::Drawing
 {
     class SoftwareDrawingEngine
     {

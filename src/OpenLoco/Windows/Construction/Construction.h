@@ -27,7 +27,7 @@ namespace OpenLoco::ui::windows::construction
     static loco_global<uint8_t, 0x00525FAC> _lastAirport;
     static loco_global<uint8_t, 0x00525FAD> _lastShipPort;
     static loco_global<uint8_t, 0x00525FAE> _byte_525FAE;
-    static loco_global<gfx::drawpixelinfo_t*, 0x00E0C3E0> _dword_E0C3E0;
+    static loco_global<Gfx::drawpixelinfo_t*, 0x00E0C3E0> _dword_E0C3E0;
     static loco_global<uint16_t, 0x00F24484> _mapSelectionFlags;
     constexpr uint16_t mapSelectedTilesSize = 300;
     static loco_global<map_pos[mapSelectedTilesSize], 0x00F24490> _mapSelectedTiles;
@@ -95,22 +95,22 @@ namespace OpenLoco::ui::windows::construction
             tab_overhead,
         };
 
-#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                          \
-    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, widget_type::frame, 0),                                                            \
-        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, widget_type::caption_24, 0, windowCaptionId),                                       \
-        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window), \
-        makeWidget({ 0, 41 }, { frameWidth, 235 }, widget_type::wt_3, 1),                                                                \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tab_track_road_construction),           \
-        makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tab_station_construction),             \
-        makeRemapWidget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tab_signal_construction),              \
-        makeRemapWidget({ 96, 15 }, { 31, 27 }, widget_type::wt_8, 1, image_ids::tab, string_ids::tab_electrification_construction)
+#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                         \
+    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, widget_type::frame, 0),                                                           \
+        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, widget_type::caption_24, 0, windowCaptionId),                                      \
+        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, string_ids::tooltip_close_window), \
+        makeWidget({ 0, 41 }, { frameWidth, 235 }, widget_type::wt_3, 1),                                                               \
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tab_track_road_construction),           \
+        makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tab_station_construction),             \
+        makeRemapWidget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tab_signal_construction),              \
+        makeRemapWidget({ 96, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tab_electrification_construction)
 
         constexpr uint64_t enabledWidgets = (1 << widx::caption) | (1 << widx::close_button) | (1 << widx::tab_construction) | (1 << widx::tab_station) | (1 << widx::tab_signal) | (1 << widx::tab_overhead);
 
         void prepareDraw(window* self);
         void switchTab(window* self, widget_index widgetIndex);
         void repositionTabs(window* self);
-        void drawTabs(window* self, gfx::drawpixelinfo_t* dpi);
+        void drawTabs(window* self, Gfx::drawpixelinfo_t* dpi);
         void initEvents();
         void sub_49FEC7();
         void onClose(window* self);
@@ -130,7 +130,7 @@ namespace OpenLoco::ui::windows::construction
 
     namespace construction
     {
-        static const gfx::ui_size_t windowSize = { 138, 276 };
+        static const Gfx::ui_size_t windowSize = { 138, 276 };
 
         enum widx
         {

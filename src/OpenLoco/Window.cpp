@@ -27,7 +27,7 @@ namespace OpenLoco::ui
         return (uint32_t)e < 0x004D7000;
     }
 
-    window::window(gfx::point_t position, gfx::ui_size_t size)
+    window::window(Gfx::point_t position, Gfx::ui_size_t size)
         : x(position.x)
         , y(position.y)
         , width(size.width)
@@ -108,7 +108,7 @@ namespace OpenLoco::ui
     }
 
     // 0x0045A0B3
-    void window::drawViewports(gfx::drawpixelinfo_t* dpi)
+    void window::drawViewports(Gfx::drawpixelinfo_t* dpi)
     {
         if (viewports[0] != nullptr)
             viewports[0]->render(dpi);
@@ -234,7 +234,7 @@ namespace OpenLoco::ui
         if (vp->flags & viewport_flags::hide_foreground_tracks_roads || vp->flags & viewport_flags::hide_foreground_scenery_buildings || w->flags & window_flags::flag_8)
         {
             auto rect = ui::Rect(vp->x, vp->y, vp->width, vp->height);
-            gfx::redrawScreenRect(rect);
+            Gfx::redrawScreenRect(rect);
             return;
         }
 
@@ -412,7 +412,7 @@ namespace OpenLoco::ui
     // input: regs.esi - window (this)
     void window::invalidate()
     {
-        gfx::setDirtyBlocks(x, y, x + width, y + height);
+        Gfx::setDirtyBlocks(x, y, x + width, y + height);
     }
 
     // 0x004CA115
@@ -747,7 +747,7 @@ namespace OpenLoco::ui
     // 0x004CD320
     void window::moveInsideScreenEdges()
     {
-        gfx::point_t offset = { 0, 0 };
+        Gfx::point_t offset = { 0, 0 };
 
         const int16_t xOvershoot = this->x + this->width - ui::width();
 
@@ -1301,7 +1301,7 @@ namespace OpenLoco::ui
         event_handlers->prepare_draw(this);
     }
 
-    void window::callDraw(gfx::drawpixelinfo_t* dpi)
+    void window::callDraw(Gfx::drawpixelinfo_t* dpi)
     {
         if (event_handlers->draw == nullptr)
             return;
@@ -1318,7 +1318,7 @@ namespace OpenLoco::ui
         event_handlers->draw(this, dpi);
     }
 
-    void window::callDrawScroll(gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
+    void window::callDrawScroll(Gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
     {
         if (event_handlers->draw_scroll == nullptr)
             return;
@@ -1337,11 +1337,11 @@ namespace OpenLoco::ui
     }
 
     // 0x004CA4DF
-    void window::draw(gfx::drawpixelinfo_t* dpi)
+    void window::draw(Gfx::drawpixelinfo_t* dpi)
     {
         if ((this->flags & window_flags::transparent) && !(this->flags & window_flags::no_background))
         {
-            gfx::fillRect(dpi, this->x, this->y, this->x + this->width - 1, this->y + this->height - 1, 0x2000000 | 52);
+            Gfx::fillRect(dpi, this->x, this->y, this->x + this->width - 1, this->y + this->height - 1, 0x2000000 | 52);
         }
 
         uint64_t pressed_widget = 0;
@@ -1515,13 +1515,13 @@ namespace OpenLoco::ui
 
         if (this->flags & window_flags::white_border_mask)
         {
-            gfx::fillRectInset(
+            Gfx::fillRectInset(
                 dpi,
                 this->x,
                 this->y,
                 this->x + this->width - 1,
                 this->y + this->height - 1,
-                colour::white,
+                Colour::white,
                 0x10);
         }
     }

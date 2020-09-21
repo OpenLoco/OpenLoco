@@ -61,7 +61,7 @@ namespace OpenLoco::input
     input_state state();
     void state(input_state);
 
-    gfx::point_t getMouseLocation();
+    Gfx::point_t getMouseLocation();
     bool isHovering(ui::WindowType);
     bool isHovering(ui::WindowType, ui::window_number);
     bool isHovering(ui::WindowType type, ui::window_number number, ui::widget_index widgetIndex);
@@ -96,8 +96,8 @@ namespace OpenLoco::input
     void processMouseOver(int16_t x, int16_t y);
     void processKeyboardInput();
 
-    gfx::point_t getTooltipMouseLocation();
-    void setTooltipMouseLocation(const gfx::point_t& loc);
+    Gfx::point_t getTooltipMouseLocation();
+    void setTooltipMouseLocation(const Gfx::point_t& loc);
     uint16_t getTooltipTimeout();
     void setTooltipTimeout(uint16_t tooltipTimeout);
 }

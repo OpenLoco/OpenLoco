@@ -47,8 +47,8 @@ namespace OpenLoco::ui::windows
             window->widgets = (widget_t*)0x0050AE00;
             window->enabled_widgets = (1 << 2) | (1 << 3) | (1 << 4);
             window->initScrollWidgets();
-            window->colours[0] = colour::translucent(colour::salmon_pink);
-            window->colours[1] = colour::translucent(colour::salmon_pink);
+            window->colours[0] = Colour::translucent(Colour::salmon_pink);
+            window->colours[1] = Colour::translucent(Colour::salmon_pink);
             window->flags |= ui::window_flags::transparent;
             _result = 0;
 
@@ -62,7 +62,7 @@ namespace OpenLoco::ui::windows
                     input::processKeyboardInput();
                     WindowManager::update();
                     ui::minimalHandleInput();
-                    gfx::render();
+                    Gfx::render();
                     return WindowManager::find(WindowType::confirmationPrompt) != nullptr;
                 });
             WindowManager::setCurrentModalType(originalModal);

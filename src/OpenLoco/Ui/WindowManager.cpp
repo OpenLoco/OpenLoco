@@ -39,7 +39,7 @@ namespace OpenLoco::ui::WindowManager
     static loco_global<WindowType, 0x00523364> _callingWindowType;
     static loco_global<uint16_t, 0x0052338C> _tooltipNotShownTicks;
     static loco_global<uint16_t, 0x00508F10> __508F10;
-    static loco_global<gfx::drawpixelinfo_t, 0x0050B884> _screen_dpi;
+    static loco_global<Gfx::drawpixelinfo_t, 0x0050B884> _screen_dpi;
     static loco_global<uint16_t, 0x00523390> _toolWindowNumber;
     static loco_global<ui::WindowType, 0x00523392> _toolWindowType;
     static loco_global<uint16_t, 0x00523394> _toolWidgetIdx;
@@ -205,7 +205,7 @@ namespace OpenLoco::ui::WindowManager
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
                 const char* buffer = (const char*)regs.esi;
-                uint16_t width = gfx::getStringWidth(buffer);
+                uint16_t width = Gfx::getStringWidth(buffer);
                 regs = backup;
                 regs.cx = width;
 
@@ -269,7 +269,7 @@ namespace OpenLoco::ui::WindowManager
             0x004C5C69,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                gfx::setDirtyBlocks(regs.ax, regs.bx, regs.dx, regs.bp);
+                Gfx::setDirtyBlocks(regs.ax, regs.bx, regs.dx, regs.bp);
                 regs = backup;
 
                 return 0;
@@ -446,7 +446,7 @@ namespace OpenLoco::ui::WindowManager
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
 
-                auto w = createWindow((WindowType)regs.cl, gfx::point_t(regs.ax, regs.eax >> 16), gfx::ui_size_t(regs.bx, regs.ebx >> 16), regs.ecx >> 8, (window_event_list*)regs.edx);
+                auto w = createWindow((WindowType)regs.cl, Gfx::point_t(regs.ax, regs.eax >> 16), Gfx::ui_size_t(regs.bx, regs.ebx >> 16), regs.ecx >> 8, (window_event_list*)regs.edx);
                 regs = backup;
 
                 regs.esi = (uintptr_t)w;
@@ -458,7 +458,7 @@ namespace OpenLoco::ui::WindowManager
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
 
-                auto w = createWindow((WindowType)regs.cl, gfx::ui_size_t(regs.bx, (((uint32_t)regs.ebx) >> 16)), regs.ecx >> 8, (window_event_list*)regs.edx);
+                auto w = createWindow((WindowType)regs.cl, Gfx::ui_size_t(regs.bx, (((uint32_t)regs.ebx) >> 16)), regs.ecx >> 8, (window_event_list*)regs.edx);
                 regs = backup;
 
                 regs.esi = (uintptr_t)w;
@@ -540,7 +540,7 @@ namespace OpenLoco::ui::WindowManager
 
         if (!intro::isActive())
         {
-            gfx::drawDirtyBlocks();
+            Gfx::drawDirtyBlocks();
         }
 
         for (ui::window* w = &_windows[0]; w != _windowsEnd; w++)
@@ -649,7 +649,7 @@ namespace OpenLoco::ui::WindowManager
         return nullptr;
     }
 
-    window* findAt(gfx::point_t point)
+    window* findAt(Gfx::point_t point)
     {
         return findAt(point.x, point.y);
     }
@@ -732,7 +732,7 @@ namespace OpenLoco::ui::WindowManager
 
             if (widget.left != -2)
             {
-                gfx::setDirtyBlocks(
+                Gfx::setDirtyBlocks(
                     w->x + widget.left,
                     w->y + widget.top,
                     w->x + widget.right + 1,
@@ -818,7 +818,7 @@ namespace OpenLoco::ui::WindowManager
      * @param width @<bx>
      * @param height @<cx>
      */
-    static bool windowFitsWithinSpace(gfx::point_t position, gfx::ui_size_t size)
+    static bool windowFitsWithinSpace(Gfx::point_t position, Gfx::ui_size_t size)
     {
         if (position.x < 0)
             return false;
@@ -854,8 +854,8 @@ namespace OpenLoco::ui::WindowManager
     // 0x004C9F27
     static window* createWindowOnScreen(
         WindowType type,
-        gfx::point_t origin,
-        gfx::ui_size_t size,
+        Gfx::point_t origin,
+        Gfx::ui_size_t size,
         uint32_t flags,
         window_event_list* events)
     {
@@ -865,7 +865,7 @@ namespace OpenLoco::ui::WindowManager
     }
 
     // 0x004C9BA2
-    static bool windowFitsOnScreen(gfx::point_t origin, gfx::ui_size_t size)
+    static bool windowFitsOnScreen(Gfx::point_t origin, Gfx::ui_size_t size)
     {
         if (origin.x < -(size.width / 4))
             return false;
@@ -892,11 +892,11 @@ namespace OpenLoco::ui::WindowManager
      */
     window* createWindow(
         WindowType type,
-        gfx::ui_size_t size,
+        Gfx::ui_size_t size,
         uint32_t flags,
         window_event_list* events)
     {
-        gfx::point_t position{};
+        Gfx::point_t position{};
 
         position.x = 0;  // dx
         position.y = 30; // ax
@@ -1020,8 +1020,8 @@ namespace OpenLoco::ui::WindowManager
      */
     window* createWindow(
         WindowType type,
-        gfx::point_t origin,
-        gfx::ui_size_t size,
+        Gfx::point_t origin,
+        Gfx::ui_size_t size,
         uint32_t flags,
         window_event_list* events)
     {
@@ -1097,15 +1097,15 @@ namespace OpenLoco::ui::WindowManager
         return &_windows[dstIndex];
     }
 
-    window* createWindowCentred(WindowType type, gfx::ui_size_t size, uint32_t flags, window_event_list* events)
+    window* createWindowCentred(WindowType type, Gfx::ui_size_t size, uint32_t flags, window_event_list* events)
     {
         auto x = (ui::width() / 2) - (size.width / 2);
         auto y = std::max(28, (ui::height() / 2) - (size.height / 2));
-        return createWindow(type, gfx::point_t(x, y), size, flags, events);
+        return createWindow(type, Gfx::point_t(x, y), size, flags, events);
     }
 
     // 0x004C5FC8
-    void drawSingle(gfx::drawpixelinfo_t* _dpi, window* w, int32_t left, int32_t top, int32_t right, int32_t bottom)
+    void drawSingle(Gfx::drawpixelinfo_t* _dpi, window* w, int32_t left, int32_t top, int32_t right, int32_t bottom)
     {
         // Copy dpi so we can crop it
         auto dpi = *_dpi;
@@ -1168,10 +1168,10 @@ namespace OpenLoco::ui::WindowManager
 
         loco_global<uint8_t[4], 0x1136594> windowColours;
         // Text colouring
-        windowColours[0] = colour::opaque(w->colours[0]);
-        windowColours[1] = colour::opaque(w->colours[1]);
-        windowColours[2] = colour::opaque(w->colours[2]);
-        windowColours[3] = colour::opaque(w->colours[3]);
+        windowColours[0] = Colour::opaque(w->colours[0]);
+        windowColours[1] = Colour::opaque(w->colours[1]);
+        windowColours[2] = Colour::opaque(w->colours[2]);
+        windowColours[3] = Colour::opaque(w->colours[3]);
 
         w->callPrepareDraw();
         w->callDraw(&dpi);
@@ -1509,7 +1509,7 @@ namespace OpenLoco::ui::WindowManager
             return;
         }
 
-        const gfx::point_t cursorPosition = input::getMouseLocation();
+        const Gfx::point_t cursorPosition = input::getMouseLocation();
         auto window = findAt(cursorPosition);
 
         if (window != nullptr)
@@ -1672,7 +1672,7 @@ namespace OpenLoco::ui::WindowManager
 
             if (left < right && top < bottom)
             {
-                gfx::redrawScreenRect(left, top, right, bottom);
+                Gfx::redrawScreenRect(left, top, right, bottom);
             }
         }
 
@@ -1687,7 +1687,7 @@ namespace OpenLoco::ui::WindowManager
 
         auto _width = ui::width();
         auto _height = ui::height();
-        gfx::drawpixelinfo_t& _bitsDPI = _screen_dpi;
+        Gfx::drawpixelinfo_t& _bitsDPI = _screen_dpi;
 
         // Adjust for move off screen
         // NOTE: when zooming, there can be x, y, dx, dy combinations that go off the
@@ -1810,7 +1810,7 @@ namespace OpenLoco::ui::WindowManager
             if (std::abs(x) >= viewport->width || std::abs(y) >= viewport->width)
             {
                 // redraw whole viewport
-                gfx::redrawScreenRect(left, top, right, bottom);
+                Gfx::redrawScreenRect(left, top, right, bottom);
             }
             else
             {
@@ -1821,14 +1821,14 @@ namespace OpenLoco::ui::WindowManager
                 {
                     // draw left
                     int16_t _right = left + x;
-                    gfx::redrawScreenRect(left, top, _right, bottom);
+                    Gfx::redrawScreenRect(left, top, _right, bottom);
                     left += x;
                 }
                 else if (x < 0)
                 {
                     // draw right
                     int16_t _left = right + x;
-                    gfx::redrawScreenRect(_left, top, right, bottom);
+                    Gfx::redrawScreenRect(_left, top, right, bottom);
                     right += x;
                 }
 
@@ -1836,13 +1836,13 @@ namespace OpenLoco::ui::WindowManager
                 {
                     // draw top
                     bottom = top + y;
-                    gfx::redrawScreenRect(left, top, right, bottom);
+                    Gfx::redrawScreenRect(left, top, right, bottom);
                 }
                 else if (y < 0)
                 {
                     // draw bottom
                     top = bottom + y;
-                    gfx::redrawScreenRect(left, top, right, bottom);
+                    Gfx::redrawScreenRect(left, top, right, bottom);
                 }
             }
         }

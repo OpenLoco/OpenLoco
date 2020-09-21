@@ -688,7 +688,7 @@ void OpenLoco::interop::registerHooks()
         0x00451025,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
-            auto pos = gfx::drawString((gfx::drawpixelinfo_t*)regs.edi, regs.cx, regs.dx, regs.al, (uint8_t*)regs.esi);
+            auto pos = Gfx::drawString((Gfx::drawpixelinfo_t*)regs.edi, regs.cx, regs.dx, regs.al, (uint8_t*)regs.esi);
             regs = backup;
             regs.cx = pos.x;
             regs.dx = pos.y;
@@ -752,7 +752,7 @@ void OpenLoco::interop::registerHooks()
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
             auto window = (ui::window*)regs.esi;
-            auto dpi = (gfx::drawpixelinfo_t*)regs.edi;
+            auto dpi = (Gfx::drawpixelinfo_t*)regs.edi;
             window->draw(dpi);
             regs = backup;
             return 0;
@@ -762,7 +762,7 @@ void OpenLoco::interop::registerHooks()
         0x004CF63B,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
-            gfx::render();
+            Gfx::render();
             regs = backup;
             return 0;
         });
@@ -884,7 +884,7 @@ void OpenLoco::interop::registerHooks()
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
 
-            gfx::redrawScreenRect(regs.ax, regs.bx, regs.dx, regs.bp);
+            Gfx::redrawScreenRect(regs.ax, regs.bx, regs.dx, regs.bp);
 
             regs = backup;
             return 0;

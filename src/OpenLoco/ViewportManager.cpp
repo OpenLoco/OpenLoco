@@ -41,7 +41,7 @@ namespace OpenLoco::ui::viewportmgr
             _viewports.end());
     }
 
-    static viewport* initViewport(gfx::point_t origin, gfx::ui_size_t size, ZoomLevel zoom)
+    static viewport* initViewport(Gfx::point_t origin, Gfx::ui_size_t size, ZoomLevel zoom)
     {
         auto vp = _viewports.emplace_back(std::make_unique<viewport>()).get();
 
@@ -141,7 +141,7 @@ namespace OpenLoco::ui::viewportmgr
      * 2.
      * dx : thing_id
      */
-    viewport* create(window* window, int viewportIndex, gfx::point_t origin, gfx::ui_size_t size, ZoomLevel zoom, thing_id_t thing_id)
+    viewport* create(window* window, int viewportIndex, Gfx::point_t origin, Gfx::ui_size_t size, ZoomLevel zoom, thing_id_t thing_id)
     {
         viewport* viewport = initViewport(origin, size, zoom);
 
@@ -170,7 +170,7 @@ namespace OpenLoco::ui::viewportmgr
      * 2.
      * dx : thing_id
      */
-    viewport* create(window* window, int viewportIndex, gfx::point_t origin, gfx::ui_size_t size, ZoomLevel zoom, map::map_pos3 tile)
+    viewport* create(window* window, int viewportIndex, Gfx::point_t origin, Gfx::ui_size_t size, ZoomLevel zoom, map::map_pos3 tile)
     {
         viewport* viewport = initViewport(origin, size, zoom);
 
@@ -224,7 +224,7 @@ namespace OpenLoco::ui::viewportmgr
             top += viewport->y;
             bottom += viewport->y;
 
-            gfx::setDirtyBlocks(left, top, right, bottom);
+            Gfx::setDirtyBlocks(left, top, right, bottom);
         }
 
         if (doGarbageCollect)
@@ -281,7 +281,7 @@ namespace OpenLoco::ui::viewportmgr
             top += viewport->y;
             bottom += viewport->y;
 
-            gfx::setDirtyBlocks(left, top, right, bottom);
+            Gfx::setDirtyBlocks(left, top, right, bottom);
         }
 
         if (doGarbageCollect)

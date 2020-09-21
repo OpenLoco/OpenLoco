@@ -8,7 +8,7 @@
 
 namespace OpenLoco::ui::about
 {
-    constexpr gfx::ui_size_t windowSize = { 400, 260 };
+    constexpr Gfx::ui_size_t windowSize = { 400, 260 };
 
     namespace widx
     {
@@ -25,7 +25,7 @@ namespace OpenLoco::ui::about
     static widget_t _widgets[] = {
         makeWidget({ 0, 0 }, windowSize, widget_type::frame, 0),
         makeWidget({ 1, 1 }, { windowSize.width - 2, 13 }, widget_type::caption_25, 0, string_ids::about_locomotion_caption),
-        makeWidget({ windowSize.width - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window),
+        makeWidget({ windowSize.width - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, string_ids::tooltip_close_window),
         makeWidget({ 0, 15 }, { windowSize.width, 245 }, widget_type::panel, 1),
         makeWidget({ 100, 234 }, { windowSize.width / 2, 12 }, widget_type::wt_11, 1, string_ids::music_acknowledgements_btn),
         widgetEnd(),
@@ -74,7 +74,7 @@ namespace OpenLoco::ui::about
     }
 
     // 0x0043B2E4
-    static void draw(ui::window* const window, gfx::drawpixelinfo_t* const dpi)
+    static void draw(ui::window* const window, Gfx::drawpixelinfo_t* const dpi)
     {
         // Draw widgets.
         window->draw(dpi);
@@ -82,38 +82,38 @@ namespace OpenLoco::ui::about
         const int16_t x = window->x + windowSize.width / 2;
         int16_t y = window->y + 25;
 
-        drawStringCentred(*dpi, x, y, colour::black, string_ids::about_locomotion_69, nullptr);
+        drawStringCentred(*dpi, x, y, Colour::black, string_ids::about_locomotion_69, nullptr);
 
         y += 10;
-        drawStringCentred(*dpi, x, y, colour::black, string_ids::about_locomotion_70, nullptr);
+        drawStringCentred(*dpi, x, y, Colour::black, string_ids::about_locomotion_70, nullptr);
 
         // Chris Sawyer logo
-        drawImage(dpi, window->x + 92, window->y + 52, image_ids::chris_sawyer_logo_small);
+        drawImage(dpi, window->x + 92, window->y + 52, ImageIds::chris_sawyer_logo_small);
 
         y += 79;
-        drawStringCentred(*dpi, x, y, colour::black, string_ids::about_locomotion_71, nullptr);
+        drawStringCentred(*dpi, x, y, Colour::black, string_ids::about_locomotion_71, nullptr);
 
         y += 10;
-        drawStringCentred(*dpi, x, y, colour::black, string_ids::about_locomotion_72, nullptr);
+        drawStringCentred(*dpi, x, y, Colour::black, string_ids::about_locomotion_72, nullptr);
 
         y += 10;
-        drawStringCentred(*dpi, x, y, colour::black, string_ids::about_locomotion_73, nullptr);
+        drawStringCentred(*dpi, x, y, Colour::black, string_ids::about_locomotion_73, nullptr);
 
         y += 10;
-        drawStringCentred(*dpi, x, y, colour::black, string_ids::about_locomotion_74, nullptr);
+        drawStringCentred(*dpi, x, y, Colour::black, string_ids::about_locomotion_74, nullptr);
 
         y += 13;
-        drawStringCentred(*dpi, x, y, colour::black, string_ids::about_locomotion_75, nullptr);
+        drawStringCentred(*dpi, x, y, Colour::black, string_ids::about_locomotion_75, nullptr);
 
         y += 25;
-        drawStringCentred(*dpi, x, y, colour::black, string_ids::about_locomotion_76, nullptr);
+        drawStringCentred(*dpi, x, y, Colour::black, string_ids::about_locomotion_76, nullptr);
 
         y += 10;
-        drawStringCentred(*dpi, x, y, colour::black, string_ids::about_locomotion_77, nullptr);
+        drawStringCentred(*dpi, x, y, Colour::black, string_ids::about_locomotion_77, nullptr);
 
         // Licenced to Atari
         y += 25;
-        drawStringCentred(*dpi, x, y, colour::black, string_ids::licenced_to_atari_inc, nullptr);
+        drawStringCentred(*dpi, x, y, Colour::black, string_ids::licenced_to_atari_inc, nullptr);
     }
 
     static void initEvents()

@@ -23,7 +23,7 @@ namespace OpenLoco::ui::KeyboardShortcuts
     static widget_t _widgets[] = {
         makeWidget({ 0, 0 }, { 360, 238 }, widget_type::frame, 0),
         makeWidget({ 1, 1 }, { 358, 13 }, widget_type::caption_25, 0, string_ids::keyboard_shortcuts),
-        makeWidget({ 345, 2 }, { 13, 13 }, widget_type::wt_9, 0, image_ids::close_button, string_ids::tooltip_close_window),
+        makeWidget({ 345, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, string_ids::tooltip_close_window),
         makeWidget({ 0, 15 }, { 360, 223 }, widget_type::panel, 1),
         makeWidget({ 4, 19 }, { 352, 202 }, widget_type::scrollview, 1, vertical, string_ids::keyboard_shortcut_list_tip),
         makeWidget({ 4, 223 }, { 150, 12 }, widget_type::wt_11, 1, string_ids::reset_keys, string_ids::reset_keys_tip),
@@ -43,8 +43,8 @@ namespace OpenLoco::ui::KeyboardShortcuts
         };
     }
 
-    static void draw(ui::window* self, gfx::drawpixelinfo_t* dpi);
-    static void drawScroll(ui::window* self, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex);
+    static void draw(ui::window* self, Gfx::drawpixelinfo_t* dpi);
+    static void drawScroll(ui::window* self, Gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex);
     static void onMouseUp(window* self, widget_index widgetIndex);
     static void loc_4BE832(window* self);
     static void tooltip(FormatArguments& args, window*, widget_index);
@@ -92,18 +92,18 @@ namespace OpenLoco::ui::KeyboardShortcuts
     }
 
     // 0x004BE726
-    static void draw(ui::window* self, gfx::drawpixelinfo_t* dpi)
+    static void draw(ui::window* self, Gfx::drawpixelinfo_t* dpi)
     {
         // Draw widgets.
         self->draw(dpi);
     }
 
     // 0x004BE72C
-    static void drawScroll(ui::window* self, gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
+    static void drawScroll(ui::window* self, Gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
     {
         auto colour = self->colours[1];
-        auto shade = colour::getShade(colour, 4);
-        gfx::clearSingle(*dpi, shade);
+        auto shade = Colour::getShade(colour, 4);
+        Gfx::clearSingle(*dpi, shade);
 
         auto yPos = 0;
         for (auto i = 0; i < self->row_count; i++)
@@ -111,7 +111,7 @@ namespace OpenLoco::ui::KeyboardShortcuts
             string_id format = string_ids::black_stringid;
             if (i == self->row_hover)
             {
-                gfx::drawRect(dpi, 0, yPos, 800, rowHeight, 0x2000030);
+                Gfx::drawRect(dpi, 0, yPos, 800, rowHeight, 0x2000030);
                 format = string_ids::wcolour2_stringid;
             }
 
@@ -135,7 +135,7 @@ namespace OpenLoco::ui::KeyboardShortcuts
 
             _commonFormatArgs[0] = string_ids::keyboard_shortcut_list_format;
 
-            gfx::drawString_494B3F(*dpi, 0, yPos - 1, colour::black, format, _commonFormatArgs);
+            Gfx::drawString_494B3F(*dpi, 0, yPos - 1, Colour::black, format, _commonFormatArgs);
             yPos += rowHeight;
         }
     }

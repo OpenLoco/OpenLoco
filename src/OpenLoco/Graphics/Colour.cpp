@@ -5,7 +5,7 @@
 
 using namespace OpenLoco::interop;
 
-namespace OpenLoco::colour
+namespace OpenLoco::Colour
 {
 
     loco_global<uint8_t[32][8], 0x01136BA0> _colour_map_a;
@@ -18,7 +18,7 @@ namespace OpenLoco::colour
         for (uint32_t i = 0; i < 31; i++)
         {
             assert(i + 2170 < 2201);
-            auto image = gfx::getG1Element(2170 + i);
+            auto image = Gfx::getG1Element(2170 + i);
             _colour_map_a[i][0] = image->offset[9];
 
             _colour_map_a[i][1] = image->offset[246];
