@@ -105,7 +105,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     static void prepareDraw(window* self)
     {
         self->activated_widgets &= ~((1 << widx::tab0) | (1 << widx::tab1) | (1 << widx::tab2) | (1 << widx::tab3) | (1 << widx::tab4));
-        self->activated_widgets |= (1 << (self->current_tab + static_cast<uint8_t>(widx::tab0)));
+        self->activated_widgets |= (1ULL << (self->current_tab + static_cast<uint8_t>(widx::tab0)));
     }
 
     // 0x004439AF
