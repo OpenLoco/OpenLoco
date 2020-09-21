@@ -14,7 +14,7 @@
 #include "../Ui/ScrollView.h"
 #include <map>
 
-using namespace OpenLoco::interop;
+using namespace OpenLoco::Interop;
 using namespace OpenLoco::ui;
 using namespace OpenLoco::ui::scrollview;
 using namespace OpenLoco::ui::viewport_interaction;

@@ -23,7 +23,7 @@
 #include <cinttypes>
 #include <memory>
 
-using namespace OpenLoco::interop;
+using namespace OpenLoco::Interop;
 
 namespace OpenLoco::ui::WindowManager
 {

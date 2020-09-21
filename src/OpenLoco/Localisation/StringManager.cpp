@@ -14,7 +14,7 @@
 #include <map>
 #include <stdexcept>
 
-using namespace OpenLoco::interop;
+using namespace OpenLoco::Interop;
 
 namespace OpenLoco::stringmgr
 {

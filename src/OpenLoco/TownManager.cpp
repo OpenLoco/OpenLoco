@@ -5,7 +5,7 @@
 #include "Ui/WindowManager.h"
 #include "Utility/Numeric.hpp"
 
-using namespace OpenLoco::interop;
+using namespace OpenLoco::Interop;
 
 namespace OpenLoco::townmgr
 {

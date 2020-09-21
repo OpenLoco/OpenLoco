@@ -6,7 +6,7 @@
 #include <algorithm>
 
 using namespace OpenLoco;
-using namespace OpenLoco::interop;
+using namespace OpenLoco::Interop;
 
 // 0x0046FC83
 void thing_base::moveTo(loc16 loc)

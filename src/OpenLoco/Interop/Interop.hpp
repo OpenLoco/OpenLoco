@@ -17,7 +17,7 @@
 
 constexpr int32_t DEFAULT_REG_VAL = 0xCCCCCCCC;
 
-namespace OpenLoco::interop
+namespace OpenLoco::Interop
 {
 #pragma pack(push, 1)
     /**
@@ -384,19 +384,19 @@ namespace OpenLoco::interop
 namespace OpenLoco::utility
 {
     template<size_t TCount, uintptr_t TAddress>
-    void strcpy_safe(OpenLoco::interop::loco_global<char[TCount], TAddress>& dest, const char* src)
+    void strcpy_safe(OpenLoco::Interop::loco_global<char[TCount], TAddress>& dest, const char* src)
     {
         (void)strlcpy(dest, src, dest.size());
     }
 
     template<size_t TCount, uintptr_t TAddress>
-    void strcat_safe(OpenLoco::interop::loco_global<char[TCount], TAddress>& dest, const char* src)
+    void strcat_safe(OpenLoco::Interop::loco_global<char[TCount], TAddress>& dest, const char* src)
     {
         (void)strlcat(dest, src, dest.size());
     }
 
     template<size_t TCount, uintptr_t TAddress, typename... Args>
-    int sprintf_safe(OpenLoco::interop::loco_global<char[TCount], TAddress>& dest, const char* fmt, Args&&... args)
+    int sprintf_safe(OpenLoco::Interop::loco_global<char[TCount], TAddress>& dest, const char* fmt, Args&&... args)
     {
         return std::snprintf(dest, TCount, fmt, std::forward<Args>(args)...);
     }

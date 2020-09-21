@@ -2,7 +2,7 @@
 #include "../Interop/Interop.hpp"
 #include "../OpenLoco.h"
 
-using namespace OpenLoco::interop;
+using namespace OpenLoco::Interop;
 
 namespace OpenLoco::thingmgr
 {

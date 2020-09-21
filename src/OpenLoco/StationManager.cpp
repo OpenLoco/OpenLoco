@@ -6,7 +6,7 @@
 #include "Ui/WindowManager.h"
 #include "Window.h"
 
-using namespace OpenLoco::interop;
+using namespace OpenLoco::Interop;
 using namespace OpenLoco::ui;
 
 namespace OpenLoco::stationmgr

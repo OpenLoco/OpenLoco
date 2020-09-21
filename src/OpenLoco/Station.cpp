@@ -17,7 +17,7 @@
 #include <algorithm>
 #include <cassert>
 
-using namespace OpenLoco::interop;
+using namespace OpenLoco::Interop;
 using namespace OpenLoco::map;
 using namespace OpenLoco::ui;
 

@@ -8,7 +8,7 @@
 #include "Utility/Numeric.hpp"
 #include <algorithm>
 
-using namespace OpenLoco::interop;
+using namespace OpenLoco::Interop;
 using namespace OpenLoco::map;
 
 namespace OpenLoco

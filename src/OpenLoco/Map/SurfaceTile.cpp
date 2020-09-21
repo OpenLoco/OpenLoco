@@ -6,7 +6,7 @@
 #include "TileManager.h"
 
 using namespace OpenLoco;
-using namespace OpenLoco::interop;
+using namespace OpenLoco::Interop;
 using namespace OpenLoco::ui;
 
 #pragma pack(push, 1)

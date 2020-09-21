@@ -13,7 +13,7 @@
 #include <memory>
 
 using namespace OpenLoco::ui;
-using namespace OpenLoco::interop;
+using namespace OpenLoco::Interop;
 
 namespace OpenLoco::ui::viewportmgr
 {

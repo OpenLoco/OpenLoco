@@ -4,7 +4,7 @@
 #include "S5/S5.h"
 #include "Ui/WindowManager.h"
 
-using namespace OpenLoco::interop;
+using namespace OpenLoco::Interop;
 
 namespace OpenLoco::scenario
 {

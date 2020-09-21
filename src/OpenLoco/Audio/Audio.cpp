@@ -27,7 +27,7 @@
 #endif
 
 using namespace OpenLoco::environment;
-using namespace OpenLoco::interop;
+using namespace OpenLoco::Interop;
 using namespace OpenLoco::ui;
 using namespace OpenLoco::utility;
 

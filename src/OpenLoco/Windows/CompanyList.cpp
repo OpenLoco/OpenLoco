@@ -15,7 +15,7 @@
 #include "../Utility/Numeric.hpp"
 #include "../Widget.h"
 
-using namespace OpenLoco::interop;
+using namespace OpenLoco::Interop;
 
 namespace OpenLoco::ui::windows::CompanyList
 {

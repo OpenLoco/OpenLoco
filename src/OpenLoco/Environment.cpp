@@ -9,7 +9,7 @@
 #include <fstream>
 #include <iostream>
 
-using namespace OpenLoco::interop;
+using namespace OpenLoco::Interop;
 
 namespace OpenLoco::environment
 {

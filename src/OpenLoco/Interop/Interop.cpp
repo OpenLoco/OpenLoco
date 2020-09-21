@@ -27,7 +27,7 @@
 #define DISABLE_OPT
 #endif // defined(__GNUC__)
 
-namespace OpenLoco::interop
+namespace OpenLoco::Interop
 {
     // This variable serves a purpose of identifying a crash if it has happened inside original code.
     // When switching to original code, stack frame pointer is modified and prevents breakpad from providing stack trace.
@@ -329,7 +329,7 @@ namespace OpenLoco::interop
 
     void save_state::reset()
     {
-        interop::writeMemory(begin, state.data(), state.size());
+        Interop::writeMemory(begin, state.data(), state.size());
     }
 
     void save_state::logDiff(const save_state& lhs, const save_state& rhs)
