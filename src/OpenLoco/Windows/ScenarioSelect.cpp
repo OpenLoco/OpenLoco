@@ -6,6 +6,7 @@
 #include "../Localisation/FormatArguments.hpp"
 #include "../Localisation/StringIds.h"
 #include "../Objects/ObjectManager.h"
+#include "../ScenarioManager.h"
 #include "../Ui/WindowManager.h"
 
 using namespace OpenLoco::Interop;
@@ -137,6 +138,10 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             Gfx::drawStringCentredWrapped(dpi, &origin, widget.width() - 4, Colour::black, StringIds::wcolour2_stringid, &caption);
         }
 
+        // Scenario selected?
+        if (reinterpret_cast<uint32_t>(self->object) == 0xFFFFFFFF)
+            return;
+
         // Load currency object.
     }
 
@@ -159,11 +164,37 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     // 0x00443EA6
     static void onMouseDown(window* self, widget_index widgetIndex)
     {
+        switch (widgetIndex)
+        {
+            case widx::tab0:
+            case widx::tab1:
+            case widx::tab2:
+            case widx::tab3:
+            case widx::tab4:
+            {
+                uint8_t selectedCategory = widgetIndex - widx::tab0;
+                self->current_tab = selectedCategory;
+
+                auto& config = Config::get();
+                config.scenario_selected_tab = selectedCategory;
+                Config::write();
+
+                self->object = reinterpret_cast<char*>(0xFFFFFFFF);
+                self->callOnResize();
+                self->callPrepareDraw();
+                self->initScrollWidgets();
+                self->invalidate();
+
+                initList(self);
+                break;
+            }
+        }
     }
 
     // 0x00443EF6
-    static void getScrollSize(window*, uint32_t, uint16_t*, uint16_t* const scrollHeight)
+    static void getScrollSize(window* self, uint32_t, uint16_t*, uint16_t* const scrollHeight)
     {
+        *scrollHeight = scenariomgr::getNumScenariosByCategory(self->current_tab) * 24;
     }
 
     // 0x00443F32
