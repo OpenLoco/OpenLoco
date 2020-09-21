@@ -919,7 +919,7 @@ namespace OpenLoco::ui::windows::terraform
             events.on_update = common::onUpdate;
             events.on_tool_update = onToolUpdate;
             events.on_tool_down = onToolDown;
-            events.event_12 = (void (*)(window&, const widget_index))0x004BC682;
+            events.event_12 = (void (*)(window&, const widget_index, const int16_t, const int16_t))0x004BC682;
             events.event_13 = (void (*)(window&, const widget_index))0x004BC701;
             events.prepare_draw = prepareDraw;
             events.draw = draw;
@@ -1494,7 +1494,7 @@ namespace OpenLoco::ui::windows::terraform
             events.on_update = common::onUpdate;
             events.on_tool_update = onToolUpdate;
             events.on_tool_down = onToolDown;
-            events.event_12 = (void (*)(window&, const widget_index))0x004BC9E2;
+            events.event_12 = (void (*)(window&, const widget_index, const int16_t, const int16_t))0x004BC9E2;
             events.event_13 = (void (*)(window&, const widget_index))0x004BCA5D;
             events.prepare_draw = prepareDraw;
             events.draw = draw;
@@ -1731,7 +1731,7 @@ namespace OpenLoco::ui::windows::terraform
             events.on_update = common::onUpdate;
             events.on_tool_update = onToolUpdate;
             events.on_tool_down = onToolDown;
-            events.event_12 = (void (*)(window&, const widget_index))0x004BCDBF;
+            events.event_12 = (void (*)(window&, const widget_index, const int16_t, const int16_t))0x004BCDBF;
             events.event_13 = (void (*)(window&, const widget_index))0x004BCDE8;
             events.prepare_draw = prepareDraw;
             events.draw = draw;

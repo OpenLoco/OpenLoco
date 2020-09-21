@@ -219,7 +219,7 @@ namespace OpenLoco::ui
                 void (*event_09)(window*);
                 void (*on_tool_update)(window&, const widget_index, const int16_t, const int16_t);
                 void (*on_tool_down)(window&, const widget_index, const int16_t, const int16_t);
-                void (*event_12)(window&, const widget_index);
+                void (*event_12)(window&, const widget_index, const int16_t, const int16_t);
                 void (*event_13)(window&, const widget_index);
                 void (*on_tool_abort)(window&, const widget_index);
                 uint32_t event_15;
@@ -472,7 +472,7 @@ namespace OpenLoco::ui
         void call_9();                                                                                   // 9
         void callToolUpdate(int16_t widget_index, int16_t xPos, int16_t yPos);                           // 10
         void callToolDown(int16_t widget_index, int16_t xPos, int16_t yPos);                             // 11
-        void call_12(const int16_t widget_index);                                                        // 12
+        void call_12(const int16_t widget_index, const int16_t xPos, const int16_t yPos);                // 12
         void call_13(const int16_t widget_index);                                                        // 13
         void callToolAbort(int16_t widget_index);                                                        // 14
         ui::cursor_id call_15(int16_t xPos, int16_t yPos, ui::cursor_id fallback, bool* out);            // 15

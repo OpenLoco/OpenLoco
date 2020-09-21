@@ -467,7 +467,7 @@ namespace OpenLoco::input
                         auto tool = WindowManager::find(_toolWindowType, _toolWindowNumber);
                         if (tool != nullptr)
                         {
-                            tool->call_12(_toolWidgetIndex);
+                            tool->call_12(_toolWidgetIndex, x, y);
                         }
                     }
                 }

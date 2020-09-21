@@ -961,7 +961,7 @@ namespace OpenLoco::ui
         event_handlers->on_tool_down(*this, widget_index, xPos, yPos);
     }
 
-    void window::call_12(const int16_t widget_index)
+    void window::call_12(const int16_t widget_index, const int16_t xPos, const int16_t yPos)
     {
         if (event_handlers->event_12 == nullptr)
             return;
@@ -969,13 +969,15 @@ namespace OpenLoco::ui
         if (isInteropEvent(event_handlers->event_12))
         {
             registers regs;
+            regs.ax = xPos;
+            regs.bx = yPos;
             regs.dx = widget_index;
             regs.esi = (int32_t)this;
             call((uint32_t)this->event_handlers->event_12, regs);
             return;
         }
 
-        event_handlers->event_12(*this, widget_index);
+        event_handlers->event_12(*this, widget_index, xPos, yPos);
     }
 
     void window::call_13(const int16_t widget_index)
