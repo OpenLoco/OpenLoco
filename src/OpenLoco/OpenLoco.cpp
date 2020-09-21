@@ -54,7 +54,7 @@
 
 using namespace OpenLoco::interop;
 using namespace OpenLoco::ui;
-using namespace OpenLoco::input;
+using namespace OpenLoco::Input;
 
 namespace OpenLoco
 {
@@ -304,8 +304,8 @@ namespace OpenLoco
         ui::WindowManager::init();
         ui::viewportmgr::init();
 
-        input::init();
-        input::initMouse();
+        Input::init();
+        Input::initMouse();
 
         // rain-related
         _52339C = -1;
@@ -400,7 +400,7 @@ namespace OpenLoco
                 WindowManager::dispatchUpdateAll();
             }
 
-            input::processKeyboardInput();
+            Input::processKeyboardInput();
             WindowManager::update();
             ui::handleInput();
             companymgr::updateOwnerStatus();
@@ -425,7 +425,7 @@ namespace OpenLoco
                 WindowManager::dispatchUpdateAll();
             }
 
-            input::processKeyboardInput();
+            Input::processKeyboardInput();
             WindowManager::update();
             WindowManager::update();
             ui::handleInput();
@@ -461,7 +461,7 @@ namespace OpenLoco
                 WindowManager::dispatchUpdateAll();
             }
 
-            input::processKeyboardInput();
+            Input::processKeyboardInput();
             WindowManager::update();
             WindowManager::update();
             ui::handleInput();
@@ -612,7 +612,7 @@ namespace OpenLoco
                 multiplayer::setFlag(multiplayer::flags::flag_1);
             }
 
-            input::handleKeyboard();
+            Input::handleKeyboard();
             Audio::updateSounds();
 
             addr<0x0050C1AE, int32_t>()++;
@@ -638,14 +638,14 @@ namespace OpenLoco
                 }
                 else
                 {
-                    switch (input::state())
+                    switch (Input::state())
                     {
                         case input_state::reset:
                         case input_state::normal:
                         case input_state::dropdown_active:
-                            if (input::hasFlag(input_flags::viewport_scrolling))
+                            if (Input::hasFlag(input_flags::viewport_scrolling))
                             {
-                                input::resetFlag(input_flags::viewport_scrolling);
+                                Input::resetFlag(input_flags::viewport_scrolling);
                                 numUpdates = 1;
                             }
                             break;

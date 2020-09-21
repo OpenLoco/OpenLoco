@@ -108,8 +108,8 @@ namespace OpenLoco::ui::windows::construction::station
             }
             case widx::image:
             {
-                input::toolCancel();
-                input::toolSet(self, widgetIndex, 44);
+                Input::toolCancel();
+                Input::toolSet(self, widgetIndex, 44);
                 break;
             }
         }

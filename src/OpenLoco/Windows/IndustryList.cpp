@@ -779,9 +779,9 @@ namespace OpenLoco::ui::windows::industry_list
         // 0x004585B8
         static void onUpdate(window* self)
         {
-            if (!input::hasFlag(input::input_flags::flag5))
+            if (!Input::hasFlag(Input::input_flags::flag5))
             {
-                auto cursor = input::getMouseLocation();
+                auto cursor = Input::getMouseLocation();
                 auto xPos = cursor.x;
                 auto yPos = cursor.y;
                 window* activeWindow = WindowManager::findAt(xPos, yPos);
@@ -814,7 +814,7 @@ namespace OpenLoco::ui::windows::industry_list
                             }
                             else
                             {
-                                if (input::state() != input::input_state::scroll_left)
+                                if (Input::state() != Input::input_state::scroll_left)
                                 {
                                     self->min_width = window_size.width;
                                     self->min_height = window_size.height;
@@ -828,7 +828,7 @@ namespace OpenLoco::ui::windows::industry_list
                 else
                 {
                     self->saved_view.mapX = 0;
-                    if (input::state() != input::input_state::scroll_left)
+                    if (Input::state() != Input::input_state::scroll_left)
                     {
                         self->min_width = window_size.width;
                         self->min_height = window_size.height;
@@ -842,7 +842,7 @@ namespace OpenLoco::ui::windows::industry_list
             self->callPrepareDraw();
             WindowManager::invalidateWidget(WindowType::industryList, self->number, self->current_tab + common::widx::tab_industry_list);
 
-            if (!input::isToolActive(self->type, self->number))
+            if (!Input::isToolActive(self->type, self->number))
                 WindowManager::close(self);
         }
 
@@ -962,8 +962,8 @@ namespace OpenLoco::ui::windows::industry_list
         // 0x0045845F
         static void onClose(window* self)
         {
-            if (input::isToolActive(self->type, self->number))
-                input::toolCancel();
+            if (Input::isToolActive(self->type, self->number))
+                Input::toolCancel();
         }
 
         // 0x00458B51
@@ -1042,9 +1042,9 @@ namespace OpenLoco::ui::windows::industry_list
             self->min_height = new_industries::window_size.height;
             self->max_width = new_industries::window_size.width;
             self->max_height = new_industries::window_size.height;
-            input::toolSet(self, common::widx::tab_new_industry, 40);
+            Input::toolSet(self, common::widx::tab_new_industry, 40);
 
-            input::setFlag(input::input_flags::flag6);
+            Input::setFlag(Input::input_flags::flag6);
             ui::windows::showGridlines();
             byte_E0C3D9 = 0;
             dword_E0C39C = 0x80000000;
@@ -1136,8 +1136,8 @@ namespace OpenLoco::ui::windows::industry_list
         // 0x00457F27
         static void switchTab(window* self, widget_index widgetIndex)
         {
-            if (input::isToolActive(self->type, self->number))
-                input::toolCancel();
+            if (Input::isToolActive(self->type, self->number))
+                Input::toolCancel();
 
             self->current_tab = widgetIndex - widx::tab_industry_list;
             self->frame_no = 0;

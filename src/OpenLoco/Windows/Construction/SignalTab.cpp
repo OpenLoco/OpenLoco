@@ -77,16 +77,16 @@ namespace OpenLoco::ui::windows::construction::signal
             case widx::both_directions:
             {
                 _isSignalBothDirections = 1;
-                input::toolCancel();
-                input::toolSet(self, widgetIndex, 42);
+                Input::toolCancel();
+                Input::toolSet(self, widgetIndex, 42);
                 break;
             }
 
             case widx::single_direction:
             {
                 _isSignalBothDirections = 0;
-                input::toolCancel();
-                input::toolSet(self, widgetIndex, 42);
+                Input::toolCancel();
+                Input::toolSet(self, widgetIndex, 42);
                 break;
             }
         }

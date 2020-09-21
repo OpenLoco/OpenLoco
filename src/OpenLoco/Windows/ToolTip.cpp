@@ -237,7 +237,7 @@ namespace OpenLoco::ui::tooltip
     void closeAndReset()
     {
         ui::WindowManager::close(WindowType::tooltip, 0);
-        input::setTooltipTimeout(0);
+        Input::setTooltipTimeout(0);
         _tooltipWindowType = WindowType::undefined;
         _currentTooltipStringId = -1;
         set_52336E(false);

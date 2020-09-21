@@ -3,7 +3,7 @@
 #include "Ui/WindowManager.h"
 #include "Window.h"
 
-namespace OpenLoco::input
+namespace OpenLoco::Input
 {
     enum class mouse_button : uint16_t
     {

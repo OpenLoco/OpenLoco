@@ -240,7 +240,7 @@ namespace OpenLoco::ui::windows::PlayerInfoPanel
             }
 
             auto colour = Colour::opaque(window->colours[0]);
-            if (input::isHovering(WindowType::playerInfoToolbar, 0, widx::company_value))
+            if (Input::isHovering(WindowType::playerInfoToolbar, 0, widx::company_value))
             {
                 colour = Colour::white;
             }
@@ -263,7 +263,7 @@ namespace OpenLoco::ui::windows::PlayerInfoPanel
             }
 
             auto colour = window->colours[0] & 0x7F;
-            if (input::isHovering(WindowType::playerInfoToolbar, 0, widx::performance_index))
+            if (Input::isHovering(WindowType::playerInfoToolbar, 0, widx::performance_index))
             {
                 colour = Colour::white;
             }

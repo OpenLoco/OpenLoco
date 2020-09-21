@@ -30,7 +30,7 @@ using namespace OpenLoco::interop;
 using namespace OpenLoco::ui;
 using namespace OpenLoco::game_commands;
 
-namespace OpenLoco::input
+namespace OpenLoco::Input
 {
 
 #pragma pack(push, 1)
@@ -369,7 +369,7 @@ namespace OpenLoco::input
         if (config::get().edge_scrolling == 0)
             return;
 
-        if (input::state() != input_state::normal && input::state() != input_state::dropdown_active)
+        if (Input::state() != input_state::normal && Input::state() != input_state::dropdown_active)
             return;
 
         if (hasKeyModifier(key_modifier::shift) || hasKeyModifier(key_modifier::control))
@@ -408,7 +408,7 @@ namespace OpenLoco::input
         delta.y *= 1 << viewport->zoom;
         main->viewport_configurations[0].saved_view_x += delta.x;
         main->viewport_configurations[0].saved_view_y += delta.y;
-        input::setFlag(input_flags::viewport_scrolling);
+        Input::setFlag(input_flags::viewport_scrolling);
     }
 
     static void keyScroll()
@@ -454,7 +454,7 @@ namespace OpenLoco::input
         delta.y *= 1 << viewport->zoom;
         main->viewport_configurations[0].saved_view_x += delta.x;
         main->viewport_configurations[0].saved_view_y += delta.y;
-        input::setFlag(input_flags::viewport_scrolling);
+        Input::setFlag(input_flags::viewport_scrolling);
     }
 
     // 0x004BE92A

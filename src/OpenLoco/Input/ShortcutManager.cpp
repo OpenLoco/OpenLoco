@@ -12,7 +12,7 @@
 using namespace OpenLoco::interop;
 using namespace OpenLoco::ui;
 
-namespace OpenLoco::input::ShortcutManager
+namespace OpenLoco::Input::ShortcutManager
 {
     static constexpr size_t _count = 35;
 

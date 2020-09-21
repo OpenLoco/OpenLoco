@@ -597,7 +597,7 @@ namespace OpenLoco::ui::windows::toolbar_top::game
             uint32_t bg_image = Gfx::recolour(interface->img + interface_skin::image_ids::toolbar_empty_transparent, window->colours[2]);
 
             y--;
-            if (input::isDropdownActive(ui::WindowType::topToolbar, widx::railroad_menu))
+            if (Input::isDropdownActive(ui::WindowType::topToolbar, widx::railroad_menu))
             {
                 y++;
                 bg_image++;
@@ -627,7 +627,7 @@ namespace OpenLoco::ui::windows::toolbar_top::game
             uint32_t bg_image = Gfx::recolour(interface->img + interface_skin::image_ids::toolbar_empty_transparent, window->colours[3]);
 
             y--;
-            if (input::isDropdownActive(ui::WindowType::topToolbar, common::widx::vehicles_menu))
+            if (Input::isDropdownActive(ui::WindowType::topToolbar, common::widx::vehicles_menu))
             {
                 y++;
                 bg_image++;
@@ -656,7 +656,7 @@ namespace OpenLoco::ui::windows::toolbar_top::game
             auto interface = objectmgr::get<interface_skin_object>();
             uint32_t fg_image = Gfx::recolour(interface->img + build_vehicle_images[last_build_vehicles_option], company_colour);
 
-            if (input::isDropdownActive(ui::WindowType::topToolbar, common::widx::build_vehicles_menu))
+            if (Input::isDropdownActive(ui::WindowType::topToolbar, common::widx::build_vehicles_menu))
                 fg_image++;
 
             Gfx::drawImage(dpi, x, y, fg_image);

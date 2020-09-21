@@ -191,7 +191,7 @@ namespace OpenLoco::map::tilemgr
     // 0x004610F2
     void mapInvalidateSelectionRect()
     {
-        if ((input::getMapSelectionFlags() & MapSelectFlag::enable) != 0)
+        if ((Input::getMapSelectionFlags() & MapSelectFlag::enable) != 0)
         {
             for (coord_t x = _mapSelectionAX; x <= _mapSelectionBX; x += 32)
             {
@@ -214,7 +214,7 @@ namespace OpenLoco::map::tilemgr
     // 0x0046112C
     void mapInvalidateMapSelectionTiles()
     {
-        if ((input::getMapSelectionFlags() & MapSelectFlag::enableConstruct) == 0)
+        if ((Input::getMapSelectionFlags() & MapSelectFlag::enableConstruct) == 0)
             return;
 
         for (uint16_t index = 0; index < mapSelectedTilesSize; ++index)

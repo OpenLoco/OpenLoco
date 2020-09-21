@@ -303,9 +303,9 @@ namespace OpenLoco::ui::MessageWindow
 
         if (window != nullptr)
         {
-            if (input::isToolActive(window->type, window->number))
+            if (Input::isToolActive(window->type, window->number))
             {
-                input::toolCancel();
+                Input::toolCancel();
                 window = WindowManager::bringToFront(WindowType::messages);
             }
         }
@@ -612,8 +612,8 @@ namespace OpenLoco::ui::MessageWindow
         // 0x0042A716
         static void switchTab(window* self, widget_index widgetIndex)
         {
-            if (input::isToolActive(self->type, self->number))
-                input::toolCancel();
+            if (Input::isToolActive(self->type, self->number))
+                Input::toolCancel();
 
             self->current_tab = widgetIndex - widx::tab_messages;
             self->frame_no = 0;

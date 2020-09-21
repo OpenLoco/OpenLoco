@@ -11,7 +11,7 @@
 #include "../Ui/WindowManager.h"
 
 using namespace OpenLoco::interop;
-using namespace OpenLoco::input;
+using namespace OpenLoco::Input;
 
 namespace OpenLoco::ui::EditKeyboardShortcut
 {
