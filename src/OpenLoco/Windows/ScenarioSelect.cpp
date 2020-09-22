@@ -216,11 +216,89 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             auto origin = Gfx::point_t(x, y);
             Gfx::drawStringCentredWrapped(dpi, &origin, 128, Colour::black, StringIds::wcolour2_stringid, &args);
         }
+
+        // Description
+        {
+            const int16_t x = self->x + self->widgets[widx::list].right + 4;
+            const int16_t y = self->y + self->widgets[widx::panel].top + 155;
+
+            auto str = const_cast<char*>(stringmgr::getString(StringIds::buffer_2039));
+            strncpy(str, scenarioInfo->description, std::size(scenarioInfo->description));
+
+            auto args = FormatArguments();
+            args.push(StringIds::buffer_2039);
+            Gfx::drawString_495224(*dpi, x, y, 170, Colour::black, StringIds::black_stringid, &args);
+        }
+
+        // Challenge header
     }
 
     // 0x00443D02
-    static void drawScroll(window*, Gfx::drawpixelinfo_t* const dpi, uint32_t)
+    static void drawScroll(window* self, Gfx::drawpixelinfo_t* const dpi, uint32_t)
     {
+        auto colour = Colour::getShade(self->colours[1], 4);
+        Gfx::clearSingle(*dpi, colour);
+
+        using namespace scenariomgr;
+        auto numScenarios = getNumScenariosByCategory(self->current_tab);
+
+        int16_t y = 0;
+        for (auto i = 0; i < numScenarios; i++)
+        {
+            auto* scenarioInfo = getNthScenarioFromCategory(self->current_tab, i);
+            if (scenarioInfo == nullptr)
+                continue;
+
+            if (y + ROW_HEIGHT < dpi->y || y >= dpi->y + dpi->height + ROW_HEIGHT)
+                continue;
+
+            // Highlight selected item
+            auto formatStringId = StringIds::black_stringid;
+            if (scenarioInfo == reinterpret_cast<ScenarioIndexEntry*>(self->info))
+            {
+                Gfx::drawRect(dpi, 0, y, self->width, ROW_HEIGHT - 1, 0x2000000 | 48);
+                formatStringId = StringIds::wcolour2_stringid;
+            }
+
+            // Scenario name
+            {
+                auto str = const_cast<char*>(stringmgr::getString(StringIds::buffer_2039));
+                strncpy(str, scenarioInfo->scenarioName, std::size(scenarioInfo->scenarioName));
+
+                auto args = FormatArguments();
+                args.push(StringIds::buffer_2039);
+
+                const int16_t x = 210;
+                Gfx::drawStringCentred(*dpi, x, y + 1, Colour::black, formatStringId, &args);
+            }
+
+            // Completed?
+            if (!scenarioInfo->hasFlag(ScenarioIndexFlags::completed))
+            {
+                y += ROW_HEIGHT;
+                continue;
+            }
+
+            // Draw checkmark to indicate completion
+            Gfx::drawImage(dpi, 395, y + 1, 3629);
+
+            // 'Completed by' info
+            {
+                auto str = const_cast<char*>(stringmgr::getString(StringIds::buffer_2039));
+                strncpy(str, scenarioInfo->highscoreName, std::size(scenarioInfo->highscoreName));
+
+                auto args = FormatArguments();
+                args.push(StringIds::completed_by_name_in_years_months);
+                args.push(StringIds::buffer_2039);
+                args.push<uint16_t>(scenarioInfo->completedMonths / 12);
+                args.push<uint16_t>(scenarioInfo->completedMonths % 12);
+
+                const int16_t x = 210;
+                Gfx::drawStringCentred(*dpi, x, y + 10, Colour::black, formatStringId, &args);
+            }
+
+            y += ROW_HEIGHT;
+        }
     }
 
     // 0x00443E9B

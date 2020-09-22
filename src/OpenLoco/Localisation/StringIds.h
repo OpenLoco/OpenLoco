@@ -1179,6 +1179,7 @@ namespace OpenLoco::StringIds
     constexpr string_id challenge_performance_index = 1858;
     constexpr string_id challenge_delivered_cargo = 1859;
     constexpr string_id time_limit_years_value = 1860;
+    constexpr string_id completed_by_name_in_years_months = 1861;
 
     constexpr string_id cargo_delivered = 1867;
     constexpr string_id cargo_delivered_none = 1868;

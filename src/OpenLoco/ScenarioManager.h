@@ -7,6 +7,7 @@ namespace OpenLoco::ScenarioManager
 {
     enum ScenarioIndexFlags : uint8_t
     {
+        completed = 1 << 1,
         hasPreviewImage = 1 << 2,
     };
 
@@ -14,7 +15,8 @@ namespace OpenLoco::ScenarioManager
     {
         char filename[0x100];           // 0x000
         uint8_t category;               // 0x100
-        uint8_t pad_101[0x124 - 0x101]; // 0x101
+        uint8_t pad_101[0x122 - 0x101]; // 0x101
+        uint16_t completedMonths;       // 0x122
         char scenarioName[0x40];        // 0x124
         char description[0x100];        // 0x164
         uint32_t flags;                 // 0x264
