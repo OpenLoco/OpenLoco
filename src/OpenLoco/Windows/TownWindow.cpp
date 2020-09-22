@@ -343,8 +343,8 @@ namespace OpenLoco::ui::windows::town
         auto window = WindowManager::bringToFront(WindowType::town, townId);
         if (window != nullptr)
         {
-            if (input::isToolActive(window->type, window->number))
-                input::toolCancel();
+            if (Input::isToolActive(window->type, window->number))
+                Input::toolCancel();
 
             window = WindowManager::bringToFront(WindowType::town, townId);
         }
@@ -711,8 +711,8 @@ namespace OpenLoco::ui::windows::town
         // 0x004991BC
         static void switchTab(window* self, widget_index widgetIndex)
         {
-            if (input::isToolActive(self->type, self->number))
-                input::toolCancel();
+            if (Input::isToolActive(self->type, self->number))
+                Input::toolCancel();
 
             textinput::sub_4CE6C9(self->type, self->number);
 

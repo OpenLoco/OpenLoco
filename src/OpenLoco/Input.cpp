@@ -10,7 +10,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::input
+namespace OpenLoco::Input
 {
     loco_global<uint32_t, 0x00523368> _flags;
     static loco_global<uint8_t, 0x0052336D> _state;

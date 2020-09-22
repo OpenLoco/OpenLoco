@@ -65,7 +65,7 @@ namespace OpenLoco::ui::windows::toolbar_top::common
             auto interface = objectmgr::get<interface_skin_object>();
             uint32_t bgImage = Gfx::recolour(interface->img + interface_skin::image_ids::toolbar_empty_transparent, self->colours[2]);
 
-            if (input::isDropdownActive(ui::WindowType::topToolbar, widx::road_menu))
+            if (Input::isDropdownActive(ui::WindowType::topToolbar, widx::road_menu))
             {
                 y++;
                 bgImage++;
@@ -279,10 +279,10 @@ namespace OpenLoco::ui::windows::toolbar_top::common
         if (itemIndex == -1)
             itemIndex = dropdown::getHighlightedItem();
 
-        auto mouseButtonUsed = input::getLastKnownButtonState();
+        auto mouseButtonUsed = Input::getLastKnownButtonState();
         window = WindowManager::getMainWindow();
 
-        if (itemIndex == 1 || mouseButtonUsed == input::mouse_button::right_pressed)
+        if (itemIndex == 1 || mouseButtonUsed == Input::mouse_button::right_pressed)
         {
             window->viewportRotateLeft();
             townmgr::updateLabels();

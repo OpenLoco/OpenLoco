@@ -229,8 +229,8 @@ namespace OpenLoco::ui::windows::terraform
         // 0x004BBC7D
         static void tabReset(window* self)
         {
-            input::toolSet(self, common::widx::panel, 8);
-            input::setFlag(input::input_flags::flag6);
+            Input::toolSet(self, common::widx::panel, 8);
+            Input::setFlag(Input::input_flags::flag6);
             _byte_113649A = 0;
             _lastTreeCost = 0x80000000;
             self->var_83C = 0;
@@ -324,15 +324,15 @@ namespace OpenLoco::ui::windows::terraform
         // 0x004BBDA5
         static void onUpdate(window* self)
         {
-            if (!input::hasFlag(input::input_flags::tool_active))
+            if (!Input::hasFlag(Input::input_flags::tool_active))
                 WindowManager::close(self);
 
             if (_toolWindowType != WindowType::terraform)
                 WindowManager::close(self);
 
-            if (!input::hasFlag(input::input_flags::flag5))
+            if (!Input::hasFlag(Input::input_flags::flag5))
             {
-                auto cursor = input::getMouseLocation();
+                auto cursor = Input::getMouseLocation();
                 auto xPos = cursor.x;
                 auto yPos = cursor.y;
                 window* activeWindow = WindowManager::findAt(xPos, yPos);
@@ -365,7 +365,7 @@ namespace OpenLoco::ui::windows::terraform
                             }
                             else
                             {
-                                if (input::state() != input::input_state::scroll_left)
+                                if (Input::state() != Input::input_state::scroll_left)
                                 {
                                     self->min_width = windowSize.width;
                                     self->min_height = windowSize.height;
@@ -379,7 +379,7 @@ namespace OpenLoco::ui::windows::terraform
                 else
                 {
                     self->saved_view.mapX = 0;
-                    if (input::state() != input::input_state::scroll_left)
+                    if (Input::state() != Input::input_state::scroll_left)
                     {
                         self->min_width = windowSize.width;
                         self->min_height = windowSize.height;
@@ -738,9 +738,9 @@ namespace OpenLoco::ui::windows::terraform
 
             plant_trees::refreshTreeList(window);
 
-            input::toolSet(window, common::widx::panel, 18);
+            Input::toolSet(window, common::widx::panel, 18);
 
-            input::setFlag(input::input_flags::flag6);
+            Input::setFlag(Input::input_flags::flag6);
         }
         return window;
     }
@@ -775,8 +775,8 @@ namespace OpenLoco::ui::windows::terraform
         // 0x004BBBC7
         static void tabReset(window* self)
         {
-            input::toolSet(self, common::widx::panel, 41);
-            input::setFlag(input::input_flags::flag6);
+            Input::toolSet(self, common::widx::panel, 41);
+            Input::setFlag(Input::input_flags::flag6);
             _raiseLandCost = 0x80000000;
             _adjustToolSize = _clearAreaToolSize;
         }
@@ -958,8 +958,8 @@ namespace OpenLoco::ui::windows::terraform
         // 0x004BBBF7
         static void tabReset(window* self)
         {
-            input::toolSet(self, common::widx::panel, 18);
-            input::setFlag(input::input_flags::flag6);
+            Input::toolSet(self, common::widx::panel, 18);
+            Input::setFlag(Input::input_flags::flag6);
             for (auto i = 0; i < 32; i++)
             {
                 auto landObj = objectmgr::get<land_object>(i);
@@ -1531,8 +1531,8 @@ namespace OpenLoco::ui::windows::terraform
         // 0x004BBC46
         static void tabReset(window* self)
         {
-            input::toolSet(self, common::widx::panel, 19);
-            input::setFlag(input::input_flags::flag6);
+            Input::toolSet(self, common::widx::panel, 19);
+            Input::setFlag(Input::input_flags::flag6);
             _raiseWaterCost = 0x80000000;
             _lowerWaterCost = 0x80000000;
             _adjustToolSize = _adjustWaterToolSize;
@@ -1830,8 +1830,8 @@ namespace OpenLoco::ui::windows::terraform
         // 0x004BBCBF
         static void tabReset(window* self)
         {
-            input::toolSet(self, common::widx::panel, 15);
-            input::setFlag(input::input_flags::flag6);
+            Input::toolSet(self, common::widx::panel, 15);
+            Input::setFlag(Input::input_flags::flag6);
             _byte_113649A = 0;
             self->var_83C = 0;
             self->row_hover = -1;
@@ -1852,15 +1852,15 @@ namespace OpenLoco::ui::windows::terraform
         // 0x004BC23D
         static void onUpdate(window* self)
         {
-            if (!input::hasFlag(input::input_flags::tool_active))
+            if (!Input::hasFlag(Input::input_flags::tool_active))
                 WindowManager::close(self);
 
             if (_toolWindowType != WindowType::terraform)
                 WindowManager::close(self);
 
-            if (!input::hasFlag(input::input_flags::flag5))
+            if (!Input::hasFlag(Input::input_flags::flag5))
             {
-                auto cursor = input::getMouseLocation();
+                auto cursor = Input::getMouseLocation();
                 auto xPos = cursor.x;
                 auto yPos = cursor.y;
                 window* activeWindow = WindowManager::findAt(xPos, yPos);
@@ -1893,7 +1893,7 @@ namespace OpenLoco::ui::windows::terraform
                             }
                             else
                             {
-                                if (input::state() != input::input_state::scroll_left)
+                                if (Input::state() != Input::input_state::scroll_left)
                                 {
                                     self->min_width = windowSize.width;
                                     self->min_height = windowSize.height;
@@ -1907,7 +1907,7 @@ namespace OpenLoco::ui::windows::terraform
                 else
                 {
                     self->saved_view.mapX = 0;
-                    if (input::state() != input::input_state::scroll_left)
+                    if (Input::state() != Input::input_state::scroll_left)
                     {
                         self->min_width = windowSize.width;
                         self->min_height = windowSize.height;
@@ -2146,7 +2146,7 @@ namespace OpenLoco::ui::windows::terraform
         // 0x004BC78A, 0x004BCB0B
         static void onUpdate(window* self)
         {
-            if (!input::hasFlag(input::input_flags::tool_active))
+            if (!Input::hasFlag(Input::input_flags::tool_active))
                 WindowManager::close(self);
 
             if (_toolWindowType != WindowType::terraform)
@@ -2277,8 +2277,8 @@ namespace OpenLoco::ui::windows::terraform
         // 0x004BBB2B
         static void switchTab(window* self, widget_index widgetIndex)
         {
-            if (input::isToolActive(self->type, self->number))
-                input::toolCancel();
+            if (Input::isToolActive(self->type, self->number))
+                Input::toolCancel();
 
             self->current_tab = widgetIndex - widx::tab_clear_area;
             self->frame_no = 0;

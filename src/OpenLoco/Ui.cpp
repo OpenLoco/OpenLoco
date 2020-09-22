@@ -646,7 +646,7 @@ namespace OpenLoco::ui
 #ifdef _LOCO_WIN32_
         return ((bool (*)())0x0040726D)();
 #else
-        using namespace input;
+        using namespace Input;
 
         SDL_Event e;
         while (SDL_PollEvent(&e))
@@ -673,7 +673,7 @@ namespace OpenLoco::ui
                     auto y = (int32_t)(e.motion.y / scale_factor);
                     auto xrel = (int32_t)(e.motion.xrel / scale_factor);
                     auto yrel = (int32_t)(e.motion.yrel / scale_factor);
-                    input::moveMouse(x, y, xrel, yrel);
+                    Input::moveMouse(x, y, xrel, yrel);
                     break;
                 }
                 case SDL_MOUSEWHEEL:
@@ -688,11 +688,11 @@ namespace OpenLoco::ui
                     switch (e.button.button)
                     {
                         case SDL_BUTTON_LEFT:
-                            input::enqueueMouseButton(1);
+                            Input::enqueueMouseButton(1);
                             addr<0x0113E8A0, int32_t>() = 1;
                             break;
                         case SDL_BUTTON_RIGHT:
-                            input::enqueueMouseButton(2);
+                            Input::enqueueMouseButton(2);
                             addr<0x0113E0C0, int32_t>() = 1;
                             addr<0x005251C8, int32_t>() = 1;
                             addr<0x01140845, uint8_t>() = 0x80;
@@ -709,11 +709,11 @@ namespace OpenLoco::ui
                     switch (e.button.button)
                     {
                         case SDL_BUTTON_LEFT:
-                            input::enqueueMouseButton(3);
+                            Input::enqueueMouseButton(3);
                             addr<0x0113E8A0, int32_t>() = 0;
                             break;
                         case SDL_BUTTON_RIGHT:
-                            input::enqueueMouseButton(4);
+                            Input::enqueueMouseButton(4);
                             addr<0x0113E0C0, int32_t>() = 0;
                             addr<0x005251C8, int32_t>() = 0;
                             addr<0x01140845, uint8_t>() = 0;
@@ -953,7 +953,7 @@ namespace OpenLoco::ui
 #endif
 
     // 0x004C6EE6
-    static input::mouse_button gameGetNextInput(uint32_t* x, int16_t* y)
+    static Input::mouse_button gameGetNextInput(uint32_t* x, int16_t* y)
     {
         registers regs;
         call(0x004c6ee6, regs);
@@ -961,13 +961,13 @@ namespace OpenLoco::ui
         *x = regs.eax;
         *y = regs.bx;
 
-        return (input::mouse_button)regs.cx;
+        return (Input::mouse_button)regs.cx;
     }
 
     // 0x004CD422
     static void processMouseTool(int16_t x, int16_t y)
     {
-        if (!input::hasFlag(input::input_flags::tool_active))
+        if (!Input::hasFlag(Input::input_flags::tool_active))
         {
             return;
         }
@@ -979,7 +979,7 @@ namespace OpenLoco::ui
         }
         else
         {
-            input::toolCancel();
+            Input::toolCancel();
         }
     }
 
@@ -1053,14 +1053,14 @@ namespace OpenLoco::ui
             WindowManager::callEvent8OnAllWindows();
 
             WindowManager::invalidateAllWindowsAfterInput();
-            input::updateCursorPosition();
+            Input::updateCursorPosition();
 
             uint32_t x;
             int16_t y;
-            input::mouse_button state;
-            while ((state = gameGetNextInput(&x, &y)) != input::mouse_button::released)
+            Input::mouse_button state;
+            while ((state = gameGetNextInput(&x, &y)) != Input::mouse_button::released)
             {
-                if (isTitleMode() && intro::isActive() && state == input::mouse_button::left_pressed)
+                if (isTitleMode() && intro::isActive() && state == Input::mouse_button::left_pressed)
                 {
                     if (intro::state() == intro::intro_state::state_9)
                     {
@@ -1072,20 +1072,20 @@ namespace OpenLoco::ui
                         intro::state(intro::intro_state::state_8);
                     }
                 }
-                input::handleMouse(x, y, state);
+                Input::handleMouse(x, y, state);
             }
 
-            if (input::hasFlag(input::input_flags::flag5))
+            if (Input::hasFlag(Input::input_flags::flag5))
             {
-                input::handleMouse(x, y, state);
+                Input::handleMouse(x, y, state);
             }
             else if (x != 0x80000000)
             {
                 x = std::clamp<int16_t>(x, 0, ui::width() - 1);
                 y = std::clamp<int16_t>(y, 0, ui::height() - 1);
 
-                input::handleMouse(x, y, state);
-                input::processMouseOver(x, y);
+                Input::handleMouse(x, y, state);
+                Input::processMouseOver(x, y);
                 processMouseTool(x, y);
             }
         }
@@ -1099,27 +1099,27 @@ namespace OpenLoco::ui
         WindowManager::callEvent8OnAllWindows();
 
         WindowManager::invalidateAllWindowsAfterInput();
-        input::updateCursorPosition();
+        Input::updateCursorPosition();
 
         uint32_t x;
         int16_t y;
-        input::mouse_button state;
-        while ((state = gameGetNextInput(&x, &y)) != input::mouse_button::released)
+        Input::mouse_button state;
+        while ((state = gameGetNextInput(&x, &y)) != Input::mouse_button::released)
         {
-            input::handleMouse(x, y, state);
+            Input::handleMouse(x, y, state);
         }
 
-        if (input::hasFlag(input::input_flags::flag5))
+        if (Input::hasFlag(Input::input_flags::flag5))
         {
-            input::handleMouse(x, y, state);
+            Input::handleMouse(x, y, state);
         }
         else if (x != 0x80000000)
         {
             x = std::clamp<int16_t>(x, 0, ui::width() - 1);
             y = std::clamp<int16_t>(y, 0, ui::height() - 1);
 
-            input::handleMouse(x, y, state);
-            input::processMouseOver(x, y);
+            Input::handleMouse(x, y, state);
+            Input::processMouseOver(x, y);
             processMouseTool(x, y);
         }
 

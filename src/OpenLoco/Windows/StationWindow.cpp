@@ -284,8 +284,8 @@ namespace OpenLoco::ui::windows::station
         auto window = WindowManager::bringToFront(WindowType::station, stationId);
         if (window != nullptr)
         {
-            if (input::isToolActive(window->type, window->number))
-                input::toolCancel();
+            if (Input::isToolActive(window->type, window->number))
+                Input::toolCancel();
 
             window = WindowManager::bringToFront(WindowType::station, stationId);
         }
@@ -758,11 +758,11 @@ namespace OpenLoco::ui::windows::station
 
         if (oldStationId != station_id::null)
         {
-            if (input::hasMapSelectionFlag(input::map_selection_flags::catchment_area))
+            if (Input::hasMapSelectionFlag(Input::map_selection_flags::catchment_area))
             {
                 WindowManager::invalidate(WindowType::station, oldStationId);
                 sub_491BC6();
-                input::resetMapSelectionFlag(input::map_selection_flags::catchment_area);
+                Input::resetMapSelectionFlag(Input::map_selection_flags::catchment_area);
             }
         }
 
@@ -774,7 +774,7 @@ namespace OpenLoco::ui::windows::station
             auto station = stationmgr::get(_lastSelectedStation);
 
             station->setCatchmentDisplay(0);
-            input::setMapSelectionFlags(input::map_selection_flags::catchment_area);
+            Input::setMapSelectionFlags(Input::map_selection_flags::catchment_area);
 
             WindowManager::invalidate(WindowType::station, newStationId);
 
@@ -918,8 +918,8 @@ namespace OpenLoco::ui::windows::station
                 }
             }
 
-            if (input::isToolActive(self->type, self->number))
-                input::toolCancel();
+            if (Input::isToolActive(self->type, self->number))
+                Input::toolCancel();
 
             textinput::sub_4CE6C9(self->type, self->number);
 

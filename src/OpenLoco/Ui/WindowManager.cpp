@@ -411,7 +411,7 @@ namespace OpenLoco::ui::WindowManager
             0x004CE3D6,
             [](registers& regs) -> uint8_t {
                 registers backup = regs;
-                input::toolCancel();
+                Input::toolCancel();
                 regs = backup;
 
                 return 0;
@@ -1378,7 +1378,7 @@ namespace OpenLoco::ui::WindowManager
     {
         close(WindowType::construction);
         close(WindowType::companyFaceSelection);
-        input::toolCancel();
+        Input::toolCancel();
         addr<0x00522096, uint8_t>() = 0;
     }
 
@@ -1485,7 +1485,7 @@ namespace OpenLoco::ui::WindowManager
         if (tutorial::state() != tutorial::tutorial_state::none)
             return;
 
-        if (input::hasFlag(input::input_flags::flag5))
+        if (Input::hasFlag(Input::input_flags::flag5))
         {
             if (OpenLoco::isTitleMode())
                 return;
@@ -1509,7 +1509,7 @@ namespace OpenLoco::ui::WindowManager
             return;
         }
 
-        const Gfx::point_t cursorPosition = input::getMouseLocation();
+        const Gfx::point_t cursorPosition = Input::getMouseLocation();
         auto window = findAt(cursorPosition);
 
         if (window != nullptr)

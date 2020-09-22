@@ -204,10 +204,10 @@ namespace OpenLoco::ui::prompt_browse
             WindowManager::setCurrentModalType(WindowType::fileBrowserPrompt);
             promptTickLoop(
                 []() {
-                    input::handleKeyboard();
+                    Input::handleKeyboard();
                     Audio::updateSounds();
                     WindowManager::dispatchUpdateAll();
-                    input::processKeyboardInput();
+                    Input::processKeyboardInput();
                     WindowManager::update();
                     ui::minimalHandleInput();
                     Gfx::render();

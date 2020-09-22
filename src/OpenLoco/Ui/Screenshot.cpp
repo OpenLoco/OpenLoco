@@ -15,7 +15,7 @@
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::ui;
 
-namespace OpenLoco::input
+namespace OpenLoco::Input
 {
     static void pngWriteData(png_structp png_ptr, png_bytep data, png_size_t length)
     {

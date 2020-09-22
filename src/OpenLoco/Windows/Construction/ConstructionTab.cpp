@@ -169,8 +169,8 @@ namespace OpenLoco::ui::windows::construction::construction
                 }
                 common::sub_49FEC7();
                 WindowManager::viewportSetVisibility(WindowManager::viewport_visibility::overgroundView);
-                input::toolSet(self, widx::construct, 12);
-                input::setFlag(input::input_flags::flag6);
+                Input::toolSet(self, widx::construct, 12);
+                Input::setFlag(Input::input_flags::flag6);
 
                 _constructionHover = 1;
                 _byte_113607E = 0;
@@ -1426,13 +1426,13 @@ namespace OpenLoco::ui::windows::construction::construction
 
         if (_constructionHover == 1)
         {
-            if (!input::isToolActive(WindowType::construction, self->number) || _toolWidgetIndex != widx::construct)
+            if (!Input::isToolActive(WindowType::construction, self->number) || _toolWidgetIndex != widx::construct)
                 WindowManager::close(self);
         }
         if (_constructionHover == 0)
         {
-            if (input::isToolActive(WindowType::construction, self->number))
-                input::toolCancel();
+            if (Input::isToolActive(WindowType::construction, self->number))
+                Input::toolCancel();
         }
         sub_49FD66();
     }
@@ -1578,7 +1578,7 @@ namespace OpenLoco::ui::windows::construction::construction
                         height -= 16;
                         if (height >= 0)
                         {
-                            if (input::hasKeyModifier(input::key_modifier::shift))
+                            if (Input::hasKeyModifier(Input::key_modifier::shift))
                             {
                                 continue;
                             }
@@ -1600,7 +1600,7 @@ namespace OpenLoco::ui::windows::construction::construction
 
             onMouseUp(window, widx::rotate_90);
 
-            Audio::playSound(Audio::sound_id::error, int32_t(input::getMouseLocation().x));
+            Audio::playSound(Audio::sound_id::error, int32_t(Input::getMouseLocation().x));
 
             return;
         }
@@ -1692,10 +1692,10 @@ namespace OpenLoco::ui::windows::construction::construction
 
                 _byte_113605D = 0;
             }
-            input::toolCancel();
+            Input::toolCancel();
 
             auto maxRetries = 0;
-            if (input::hasKeyModifier(input::key_modifier::shift) || _byte_113605D != 1)
+            if (Input::hasKeyModifier(Input::key_modifier::shift) || _byte_113605D != 1)
             {
                 const auto& roadPiece = OpenLoco::map::TrackData::getRoadPiece(_byte_1136065);
                 auto maxRoadPieceHeight = 0;
@@ -1710,7 +1710,7 @@ namespace OpenLoco::ui::windows::construction::construction
                 roadHeight -= 16;
                 maxRetries = 2;
 
-                if (input::hasKeyModifier(input::key_modifier::shift))
+                if (Input::hasKeyModifier(Input::key_modifier::shift))
                 {
                     maxRetries = 0x80000008;
                     roadHeight -= 16;
@@ -1795,10 +1795,10 @@ namespace OpenLoco::ui::windows::construction::construction
 
                 _byte_113605D = 0;
             }
-            input::toolCancel();
+            Input::toolCancel();
 
             auto maxRetries = 0;
-            if (input::hasKeyModifier(input::key_modifier::shift) || _byte_113605D != 1)
+            if (Input::hasKeyModifier(Input::key_modifier::shift) || _byte_113605D != 1)
             {
                 const auto& trackPiece = OpenLoco::map::TrackData::getTrackPiece(_byte_1136065);
                 auto maxTrackPieceHeight = 0;
@@ -1813,7 +1813,7 @@ namespace OpenLoco::ui::windows::construction::construction
                 trackHeight -= 16;
                 maxRetries = 2;
 
-                if (input::hasKeyModifier(input::key_modifier::shift))
+                if (Input::hasKeyModifier(Input::key_modifier::shift))
                 {
                     maxRetries = 0x80000008;
                     trackHeight -= 16;

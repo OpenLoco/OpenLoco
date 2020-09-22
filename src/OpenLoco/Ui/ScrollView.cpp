@@ -399,18 +399,18 @@ namespace OpenLoco::ui::scrollview
         auto scrollIndex = getCurrentScrollIndex();
         if (_currentScrollArea == scrollview::scroll_part::hscrollbar_thumb)
         {
-            auto toolTipLoc = input::getTooltipMouseLocation();
+            auto toolTipLoc = Input::getTooltipMouseLocation();
             int16_t deltaX = x - toolTipLoc.x;
             toolTipLoc.x = x;
-            input::setTooltipMouseLocation(toolTipLoc);
+            Input::setTooltipMouseLocation(toolTipLoc);
             scrollview::horizontalFollow(w, widget, widgetIndex, scrollIndex, deltaX);
         }
         else if (_currentScrollArea == scrollview::scroll_part::vscrollbar_thumb)
         {
-            auto toolTipLoc = input::getTooltipMouseLocation();
+            auto toolTipLoc = Input::getTooltipMouseLocation();
             int16_t deltaY = y - toolTipLoc.y;
             toolTipLoc.y = y;
-            input::setTooltipMouseLocation(toolTipLoc);
+            Input::setTooltipMouseLocation(toolTipLoc);
             scrollview::verticalFollow(w, widget, widgetIndex, scrollIndex, deltaY);
         }
         else

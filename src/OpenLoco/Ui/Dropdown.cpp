@@ -309,7 +309,7 @@ namespace OpenLoco::ui::dropdown
             _dropdownHighlightedIndex = -1;
             _dropdownDisabledItems = 0;
             _dropdownSelection = 0;
-            input::state(input::input_state::dropdown_active);
+            Input::state(Input::input_state::dropdown_active);
         }
 
         // 0x004CC807 based on
@@ -321,12 +321,12 @@ namespace OpenLoco::ui::dropdown
                 colour = Colour::translucent(colour);
             }
 
-            input::resetFlag(input::input_flags::flag1);
-            input::resetFlag(input::input_flags::flag2);
+            Input::resetFlag(Input::input_flags::flag1);
+            Input::resetFlag(Input::input_flags::flag2);
 
             if (flags & (1 << 7))
             {
-                input::setFlag(input::input_flags::flag1);
+                Input::setFlag(Input::input_flags::flag1);
             }
 
             flags &= ~(1 << 7);
@@ -630,7 +630,7 @@ namespace OpenLoco::ui::dropdown
         WindowManager::close(WindowType::dropdown, 0);
         _word_113DC78 = 0;
 
-        if (input::state() != input::input_state::widget_pressed || input::hasFlag(input::input_flags::widget_pressed))
+        if (Input::state() != Input::input_state::widget_pressed || Input::hasFlag(Input::input_flags::widget_pressed))
         {
             _word_113DC78 = _word_113DC78 | 1;
         }
@@ -658,12 +658,12 @@ namespace OpenLoco::ui::dropdown
             colour = Colour::translucent(colour);
         }
 
-        input::resetFlag(input::input_flags::flag1);
-        input::resetFlag(input::input_flags::flag2);
+        Input::resetFlag(Input::input_flags::flag1);
+        Input::resetFlag(Input::input_flags::flag2);
 
         if (flags & (1 << 7))
         {
-            input::setFlag(input::input_flags::flag1);
+            Input::setFlag(Input::input_flags::flag1);
         }
 
         flags &= ~(1 << 7);
