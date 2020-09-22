@@ -4,7 +4,7 @@
 
 #define UNUSED_STR(x) (x)
 
-namespace OpenLoco::string_ids
+namespace OpenLoco::StringIds
 {
     constexpr string_id empty = 0;
     constexpr string_id empty_pop = 1;

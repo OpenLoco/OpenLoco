@@ -137,7 +137,7 @@ namespace OpenLoco::ui::tooltip
         }
 
         window->callPrepareDraw();
-        if (window->widgets[widgetIndex].tooltip == string_ids::null)
+        if (window->widgets[widgetIndex].tooltip == StringIds::null)
         {
             return;
         }

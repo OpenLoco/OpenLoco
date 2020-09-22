@@ -179,7 +179,7 @@ namespace OpenLoco::ui::NewsWindow::ticker
         Gfx::clearSingle(*clipped, colour);
 
         char* newsString = news->messageString;
-        auto buffer = const_cast<char*>(StringManager::getString(string_ids::buffer_2039));
+        auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
 
         *buffer = control_codes::colour_black;
         buffer++;
@@ -220,7 +220,7 @@ namespace OpenLoco::ui::NewsWindow::ticker
         }
         uint32_t ebp = (((_word_525CE0 & ~(1 << 15)) >> 2) << 16) | 109;
 
-        sub_4950EF(clipped, string_ids::buffer_2039, (1 << 18), ebp, 55, 0);
+        sub_4950EF(clipped, StringIds::buffer_2039, (1 << 18), ebp, 55, 0);
     }
 
     void initEvents()

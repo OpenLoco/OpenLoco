@@ -69,30 +69,30 @@ namespace OpenLoco::ui::windows::construction::construction
     };
 
     widget_t widgets[] = {
-        commonWidgets(138, 276, string_ids::stringid_2),
-        makeWidget({ 3, 45 }, { 22, 24 }, widget_type::wt_9, 1, ImageIds::construction_left_hand_curve_very_small, string_ids::tooltip_left_hand_curve_very_small),
-        makeWidget({ 3, 45 }, { 22, 24 }, widget_type::wt_9, 1, ImageIds::construction_left_hand_curve_small, string_ids::tooltip_left_hand_curve_small),
-        makeWidget({ 25, 45 }, { 22, 24 }, widget_type::wt_9, 1, ImageIds::construction_left_hand_curve, string_ids::tooltip_left_hand_curve),
-        makeWidget({ 47, 45 }, { 22, 24 }, widget_type::wt_9, 1, ImageIds::construction_left_hand_curve_large, string_ids::tooltip_left_hand_curve_large),
-        makeWidget({ 69, 45 }, { 22, 24 }, widget_type::wt_9, 1, ImageIds::construction_right_hand_curve_large, string_ids::tooltip_right_hand_curve_large),
-        makeWidget({ 91, 45 }, { 22, 24 }, widget_type::wt_9, 1, ImageIds::construction_right_hand_curve, string_ids::tooltip_right_hand_curve),
-        makeWidget({ 113, 45 }, { 22, 24 }, widget_type::wt_9, 1, ImageIds::construction_right_hand_curve_small, string_ids::tooltip_right_hand_curve_small),
-        makeWidget({ 113, 45 }, { 22, 24 }, widget_type::wt_9, 1, ImageIds::construction_right_hand_curve_very_small, string_ids::tooltip_right_hand_curve_very_small),
-        makeWidget({ 9, 69 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::construction_s_bend_dual_track_left, string_ids::tooltip_s_bend_left_dual_track),
-        makeWidget({ 33, 69 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::construction_s_bend_left, string_ids::tooltip_s_bend_left),
-        makeWidget({ 57, 69 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::construction_straight, string_ids::tooltip_straight),
-        makeWidget({ 81, 69 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::construction_s_bend_right, string_ids::tooltip_s_bend_right),
-        makeWidget({ 105, 69 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::construction_s_bend_dual_track_right, string_ids::tooltip_s_bend_right_dual_track),
-        makeWidget({ 9, 96 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::construction_steep_slope_down, string_ids::tooltip_steep_slope_down),
-        makeWidget({ 33, 96 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::construction_slope_down, string_ids::tooltip_slope_down),
-        makeWidget({ 57, 96 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::construction_level, string_ids::tooltip_level),
-        makeWidget({ 81, 96 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::construction_slope_up, string_ids::tooltip_slope_up),
-        makeWidget({ 105, 96 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::construction_steep_slope_up, string_ids::tooltip_steep_slope_up),
-        makeWidget({ 40, 123 }, { 58, 20 }, widget_type::wt_18, 1, string_ids::empty, string_ids::tooltip_bridge_stats),
-        makeWidget({ 86, 124 }, { 11, 18 }, widget_type::wt_11, 1, string_ids::dropdown, string_ids::tooltip_bridge_stats),
-        makeWidget({ 3, 145 }, { 132, 100 }, widget_type::wt_5, 1, 0xFFFFFFFF, string_ids::tooltip_construct),
-        makeWidget({ 6, 248 }, { 46, 24 }, widget_type::wt_9, 1, ImageIds::construction_remove, string_ids::tooltip_remove),
-        makeWidget({ 57, 248 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::rotate_object, string_ids::rotate_90),
+        commonWidgets(138, 276, StringIds::stringid_2),
+        makeWidget({ 3, 45 }, { 22, 24 }, widget_type::wt_9, 1, ImageIds::construction_left_hand_curve_very_small, StringIds::tooltip_left_hand_curve_very_small),
+        makeWidget({ 3, 45 }, { 22, 24 }, widget_type::wt_9, 1, ImageIds::construction_left_hand_curve_small, StringIds::tooltip_left_hand_curve_small),
+        makeWidget({ 25, 45 }, { 22, 24 }, widget_type::wt_9, 1, ImageIds::construction_left_hand_curve, StringIds::tooltip_left_hand_curve),
+        makeWidget({ 47, 45 }, { 22, 24 }, widget_type::wt_9, 1, ImageIds::construction_left_hand_curve_large, StringIds::tooltip_left_hand_curve_large),
+        makeWidget({ 69, 45 }, { 22, 24 }, widget_type::wt_9, 1, ImageIds::construction_right_hand_curve_large, StringIds::tooltip_right_hand_curve_large),
+        makeWidget({ 91, 45 }, { 22, 24 }, widget_type::wt_9, 1, ImageIds::construction_right_hand_curve, StringIds::tooltip_right_hand_curve),
+        makeWidget({ 113, 45 }, { 22, 24 }, widget_type::wt_9, 1, ImageIds::construction_right_hand_curve_small, StringIds::tooltip_right_hand_curve_small),
+        makeWidget({ 113, 45 }, { 22, 24 }, widget_type::wt_9, 1, ImageIds::construction_right_hand_curve_very_small, StringIds::tooltip_right_hand_curve_very_small),
+        makeWidget({ 9, 69 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::construction_s_bend_dual_track_left, StringIds::tooltip_s_bend_left_dual_track),
+        makeWidget({ 33, 69 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::construction_s_bend_left, StringIds::tooltip_s_bend_left),
+        makeWidget({ 57, 69 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::construction_straight, StringIds::tooltip_straight),
+        makeWidget({ 81, 69 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::construction_s_bend_right, StringIds::tooltip_s_bend_right),
+        makeWidget({ 105, 69 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::construction_s_bend_dual_track_right, StringIds::tooltip_s_bend_right_dual_track),
+        makeWidget({ 9, 96 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::construction_steep_slope_down, StringIds::tooltip_steep_slope_down),
+        makeWidget({ 33, 96 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::construction_slope_down, StringIds::tooltip_slope_down),
+        makeWidget({ 57, 96 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::construction_level, StringIds::tooltip_level),
+        makeWidget({ 81, 96 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::construction_slope_up, StringIds::tooltip_slope_up),
+        makeWidget({ 105, 96 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::construction_steep_slope_up, StringIds::tooltip_steep_slope_up),
+        makeWidget({ 40, 123 }, { 58, 20 }, widget_type::wt_18, 1, StringIds::empty, StringIds::tooltip_bridge_stats),
+        makeWidget({ 86, 124 }, { 11, 18 }, widget_type::wt_11, 1, StringIds::dropdown, StringIds::tooltip_bridge_stats),
+        makeWidget({ 3, 145 }, { 132, 100 }, widget_type::wt_5, 1, 0xFFFFFFFF, StringIds::tooltip_construct),
+        makeWidget({ 6, 248 }, { 46, 24 }, widget_type::wt_9, 1, ImageIds::construction_remove, StringIds::tooltip_remove),
+        makeWidget({ 57, 248 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::rotate_object, StringIds::rotate_90),
         widgetEnd(),
     };
 
@@ -369,7 +369,7 @@ namespace OpenLoco::ui::windows::construction::construction
         {
             window->widgets[widx::s_bend_dual_track_left].type = widget_type::wt_9;
             window->widgets[widx::s_bend_dual_track_left].image = ImageIds::construction_right_turnaround;
-            window->widgets[widx::s_bend_dual_track_left].tooltip = string_ids::tooltip_turnaround;
+            window->widgets[widx::s_bend_dual_track_left].tooltip = StringIds::tooltip_turnaround;
 
             if (_byte_525FAE == 0)
                 window->widgets[widx::s_bend_dual_track_left].image = ImageIds::construction_left_turnaround;
@@ -411,19 +411,19 @@ namespace OpenLoco::ui::windows::construction::construction
         if (_constructionHover == 1)
         {
             window->widgets[widx::construct].type = widget_type::wt_5;
-            window->widgets[widx::construct].tooltip = string_ids::tooltip_start_construction;
+            window->widgets[widx::construct].tooltip = StringIds::tooltip_start_construction;
             window->widgets[widx::remove].type = widget_type::none;
             window->widgets[widx::rotate_90].type = widget_type::wt_9;
             window->widgets[widx::rotate_90].image = ImageIds::rotate_object;
-            window->widgets[widx::rotate_90].tooltip = string_ids::rotate_90;
+            window->widgets[widx::rotate_90].tooltip = StringIds::rotate_90;
         }
         else if (_constructionHover == 0)
         {
             window->widgets[widx::construct].type = widget_type::wt_3;
-            window->widgets[widx::construct].tooltip = string_ids::tooltip_construct;
+            window->widgets[widx::construct].tooltip = StringIds::tooltip_construct;
             window->widgets[widx::rotate_90].type = widget_type::wt_9;
             window->widgets[widx::rotate_90].image = ImageIds::construction_new_position;
-            window->widgets[widx::rotate_90].tooltip = string_ids::new_construction_position;
+            window->widgets[widx::rotate_90].tooltip = StringIds::new_construction_position;
         }
         if (_constructionHover == 0 || _constructionHover == 1)
         {
@@ -575,8 +575,8 @@ namespace OpenLoco::ui::windows::construction::construction
             window->widgets[widx::s_bend_dual_track_right].type = widget_type::wt_9;
             window->widgets[widx::s_bend_dual_track_left].image = ImageIds::construction_s_bend_dual_track_left;
             window->widgets[widx::s_bend_dual_track_right].image = ImageIds::construction_s_bend_dual_track_right;
-            window->widgets[widx::s_bend_dual_track_left].tooltip = string_ids::tooltip_s_bend_left_dual_track;
-            window->widgets[widx::s_bend_dual_track_right].tooltip = string_ids::tooltip_s_bend_right_dual_track;
+            window->widgets[widx::s_bend_dual_track_left].tooltip = StringIds::tooltip_s_bend_left_dual_track;
+            window->widgets[widx::s_bend_dual_track_right].tooltip = StringIds::tooltip_s_bend_right_dual_track;
 
             _byte_522090 = 16;
             _byte_522091 = 20;
@@ -585,16 +585,16 @@ namespace OpenLoco::ui::windows::construction::construction
             {
                 window->widgets[widx::s_bend_dual_track_left].image = ImageIds::construction_right_turnaround;
                 window->widgets[widx::s_bend_dual_track_right].image = ImageIds::construction_s_bend_to_single_track_left;
-                window->widgets[widx::s_bend_dual_track_left].tooltip = string_ids::tooltip_turnaround;
-                window->widgets[widx::s_bend_dual_track_right].tooltip = string_ids::tooltip_s_bend_to_single_track;
+                window->widgets[widx::s_bend_dual_track_left].tooltip = StringIds::tooltip_turnaround;
+                window->widgets[widx::s_bend_dual_track_right].tooltip = StringIds::tooltip_s_bend_to_single_track;
                 _byte_522090 = 20;
                 _byte_522092 = 16;
                 if (_constructionRotation >= 8)
                 {
                     window->widgets[widx::s_bend_dual_track_left].image = ImageIds::construction_s_bend_to_single_track_right;
                     window->widgets[widx::s_bend_dual_track_right].image = ImageIds::construction_left_turnaround;
-                    window->widgets[widx::s_bend_dual_track_left].tooltip = string_ids::tooltip_s_bend_to_single_track;
-                    window->widgets[widx::s_bend_dual_track_right].tooltip = string_ids::tooltip_turnaround;
+                    window->widgets[widx::s_bend_dual_track_left].tooltip = StringIds::tooltip_s_bend_to_single_track;
+                    window->widgets[widx::s_bend_dual_track_right].tooltip = StringIds::tooltip_turnaround;
                     _byte_522091 = 16;
                     _byte_522092 = 20;
                 }
@@ -636,19 +636,19 @@ namespace OpenLoco::ui::windows::construction::construction
         if (_constructionHover == 1)
         {
             window->widgets[widx::construct].type = widget_type::wt_5;
-            window->widgets[widx::construct].tooltip = string_ids::tooltip_start_construction;
+            window->widgets[widx::construct].tooltip = StringIds::tooltip_start_construction;
             window->widgets[widx::remove].type = widget_type::none;
             window->widgets[widx::rotate_90].type = widget_type::wt_9;
             window->widgets[widx::rotate_90].image = ImageIds::rotate_object;
-            window->widgets[widx::rotate_90].tooltip = string_ids::rotate_90;
+            window->widgets[widx::rotate_90].tooltip = StringIds::rotate_90;
         }
         else if (_constructionHover == 0)
         {
             window->widgets[widx::construct].type = widget_type::wt_3;
-            window->widgets[widx::construct].tooltip = string_ids::tooltip_construct;
+            window->widgets[widx::construct].tooltip = StringIds::tooltip_construct;
             window->widgets[widx::rotate_90].type = widget_type::wt_9;
             window->widgets[widx::rotate_90].image = ImageIds::construction_new_position;
-            window->widgets[widx::rotate_90].tooltip = string_ids::new_construction_position;
+            window->widgets[widx::rotate_90].tooltip = StringIds::new_construction_position;
         }
         if (_constructionHover == 0 || _constructionHover == 1)
         {
@@ -1252,17 +1252,17 @@ namespace OpenLoco::ui::windows::construction::construction
 
             if (bridgeObj->max_speed == 0xFFFF)
             {
-                args.push(string_ids::unlimited_speed);
+                args.push(StringIds::unlimited_speed);
                 args.push<uint16_t>(0);
             }
             else
             {
-                args.push(string_ids::velocity);
+                args.push(StringIds::velocity);
                 args.push(bridgeObj->max_speed);
             }
             args.push<uint16_t>(bridgeObj->max_height);
 
-            dropdown::add(i, string_ids::dropdown_bridge_stats, args);
+            dropdown::add(i, StringIds::dropdown_bridge_stats, args);
         }
     }
 
@@ -1570,7 +1570,7 @@ namespace OpenLoco::ui::windows::construction::construction
 
             if (_dword_1135F42 == 0x80000000)
             {
-                if (gGameCommandErrorText != string_ids::error_can_only_build_above_ground)
+                if (gGameCommandErrorText != StringIds::error_can_only_build_above_ground)
                 {
                     maxRetries--;
                     if (maxRetries != 0)
@@ -1860,12 +1860,12 @@ namespace OpenLoco::ui::windows::construction::construction
                 args.push(bridgeObj->name);
                 if (bridgeObj->max_speed == 0xFFFF)
                 {
-                    args.push(string_ids::unlimited_speed);
+                    args.push(StringIds::unlimited_speed);
                     args.push<uint16_t>(0);
                 }
                 else
                 {
-                    args.push(string_ids::velocity);
+                    args.push(StringIds::velocity);
                     args.push(bridgeObj->max_speed);
                 }
                 args.push<uint16_t>(bridgeObj->max_height);
@@ -1906,7 +1906,7 @@ namespace OpenLoco::ui::windows::construction::construction
         auto y = self->widgets[widx::construct].bottom + self->y - 23;
 
         if (_constructionHover != 1)
-            Gfx::drawStringCentred(*dpi, x, y, Colour::black, string_ids::build_this);
+            Gfx::drawStringCentred(*dpi, x, y, Colour::black, StringIds::build_this);
 
         y += 11;
 
@@ -1916,7 +1916,7 @@ namespace OpenLoco::ui::windows::construction::construction
             {
                 auto args = FormatArguments();
                 args.push<uint32_t>(_trackCost);
-                Gfx::drawStringCentred(*dpi, x, y, Colour::black, string_ids::build_cost, &args);
+                Gfx::drawStringCentred(*dpi, x, y, Colour::black, StringIds::build_cost, &args);
             }
         }
     }

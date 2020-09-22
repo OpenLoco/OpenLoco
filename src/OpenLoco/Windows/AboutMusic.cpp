@@ -30,8 +30,8 @@ namespace OpenLoco::ui::AboutMusic
 
     static widget_t _widgets[] = {
         makeWidget({ 0, 0 }, windowSize, widget_type::frame, 0),
-        makeWidget({ 1, 1 }, { windowSize.width - 2, 13 }, widget_type::caption_25, 0, string_ids::music_acknowledgements_caption),
-        makeWidget({ windowSize.width - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, string_ids::tooltip_close_window),
+        makeWidget({ 1, 1 }, { windowSize.width - 2, 13 }, widget_type::caption_25, 0, StringIds::music_acknowledgements_caption),
+        makeWidget({ windowSize.width - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window),
         makeWidget({ 0, 15 }, { windowSize.width, 297 }, widget_type::panel, 1),
         makeWidget({ 4, 18 }, { windowSize.width - 8, 289 }, widget_type::scrollview, 1, ui::scrollbars::vertical),
         widgetEnd(),
@@ -84,7 +84,7 @@ namespace OpenLoco::ui::AboutMusic
     // 0x0043BFC0
     static void tooltip(FormatArguments& args, ui::window*, widget_index)
     {
-        args.push(string_ids::tooltip_scroll_credits_list);
+        args.push(StringIds::tooltip_scroll_credits_list);
     }
 
     // 0x0043B8B8
@@ -98,37 +98,37 @@ namespace OpenLoco::ui::AboutMusic
     static void drawScroll(ui::window*, Gfx::drawpixelinfo_t* const dpi, uint32_t)
     {
         static const std::pair<string_id, string_id> stringsToDraw[numSongs] = {
-            { string_ids::locomotion_title, string_ids::locomotion_title_credit },
-            { string_ids::long_dusty_road, string_ids::long_dusty_road_credit },
-            { string_ids::flying_high, string_ids::flying_high_credit },
-            { string_ids::gettin_on_the_gas, string_ids::gettin_on_the_gas_credit },
-            { string_ids::jumpin_the_rails, string_ids::jumpin_the_rails_credit },
-            { string_ids::smooth_running, string_ids::smooth_running_credit },
-            { string_ids::traffic_jam, string_ids::traffic_jam_credit },
-            { string_ids::never_stop_til_you_get_there, string_ids::never_stop_til_you_get_there_credit },
-            { string_ids::soaring_away, string_ids::soaring_away_credit },
-            { string_ids::techno_torture, string_ids::techno_torture_credit },
-            { string_ids::everlasting_high_rise, string_ids::everlasting_high_rise_credit },
-            { string_ids::solace, string_ids::solace_credit },
-            { string_ids::chrysanthemum, string_ids::chrysanthemum_credit },
-            { string_ids::eugenia, string_ids::eugenia_credit },
-            { string_ids::the_ragtime_dance, string_ids::the_ragtime_dance_credit },
-            { string_ids::easy_winners, string_ids::easy_winners_credit },
-            { string_ids::setting_off, string_ids::setting_off_credit },
-            { string_ids::a_travellers_seranade, string_ids::a_travellers_seranade_credit },
-            { string_ids::latino_trip, string_ids::latino_trip_credit },
-            { string_ids::a_good_head_of_steam, string_ids::a_good_head_of_steam_credit },
-            { string_ids::hop_to_the_bop, string_ids::hop_to_the_bop_credit },
-            { string_ids::the_city_lights, string_ids::the_city_lights_credit },
-            { string_ids::steamin_down_town, string_ids::steamin_down_town_credit },
-            { string_ids::bright_expectations, string_ids::bright_expectations_credit },
-            { string_ids::mo_station, string_ids::mo_station_credit },
-            { string_ids::far_out, string_ids::far_out_credit },
-            { string_ids::running_on_time, string_ids::running_on_time_credit },
-            { string_ids::get_me_to_gladstone_bay, string_ids::get_me_to_gladstone_bay_credit },
-            { string_ids::chuggin_along, string_ids::chuggin_along_credit },
-            { string_ids::dont_lose_your_rag, string_ids::dont_lose_your_rag_credit },
-            { string_ids::sandy_track_blues, string_ids::sandy_track_blues_credit },
+            { StringIds::locomotion_title, StringIds::locomotion_title_credit },
+            { StringIds::long_dusty_road, StringIds::long_dusty_road_credit },
+            { StringIds::flying_high, StringIds::flying_high_credit },
+            { StringIds::gettin_on_the_gas, StringIds::gettin_on_the_gas_credit },
+            { StringIds::jumpin_the_rails, StringIds::jumpin_the_rails_credit },
+            { StringIds::smooth_running, StringIds::smooth_running_credit },
+            { StringIds::traffic_jam, StringIds::traffic_jam_credit },
+            { StringIds::never_stop_til_you_get_there, StringIds::never_stop_til_you_get_there_credit },
+            { StringIds::soaring_away, StringIds::soaring_away_credit },
+            { StringIds::techno_torture, StringIds::techno_torture_credit },
+            { StringIds::everlasting_high_rise, StringIds::everlasting_high_rise_credit },
+            { StringIds::solace, StringIds::solace_credit },
+            { StringIds::chrysanthemum, StringIds::chrysanthemum_credit },
+            { StringIds::eugenia, StringIds::eugenia_credit },
+            { StringIds::the_ragtime_dance, StringIds::the_ragtime_dance_credit },
+            { StringIds::easy_winners, StringIds::easy_winners_credit },
+            { StringIds::setting_off, StringIds::setting_off_credit },
+            { StringIds::a_travellers_seranade, StringIds::a_travellers_seranade_credit },
+            { StringIds::latino_trip, StringIds::latino_trip_credit },
+            { StringIds::a_good_head_of_steam, StringIds::a_good_head_of_steam_credit },
+            { StringIds::hop_to_the_bop, StringIds::hop_to_the_bop_credit },
+            { StringIds::the_city_lights, StringIds::the_city_lights_credit },
+            { StringIds::steamin_down_town, StringIds::steamin_down_town_credit },
+            { StringIds::bright_expectations, StringIds::bright_expectations_credit },
+            { StringIds::mo_station, StringIds::mo_station_credit },
+            { StringIds::far_out, StringIds::far_out_credit },
+            { StringIds::running_on_time, StringIds::running_on_time_credit },
+            { StringIds::get_me_to_gladstone_bay, StringIds::get_me_to_gladstone_bay_credit },
+            { StringIds::chuggin_along, StringIds::chuggin_along_credit },
+            { StringIds::dont_lose_your_rag, StringIds::dont_lose_your_rag_credit },
+            { StringIds::sandy_track_blues, StringIds::sandy_track_blues_credit },
         };
 
         const int16_t x = 240;
@@ -147,7 +147,7 @@ namespace OpenLoco::ui::AboutMusic
             y += 10;
 
             // Show CS' copyright after every two lines.
-            drawStringCentred(*dpi, x, y, Colour::black, string_ids::music_copyright, nullptr);
+            drawStringCentred(*dpi, x, y, Colour::black, StringIds::music_copyright, nullptr);
             y += 14;
         }
     }

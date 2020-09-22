@@ -546,7 +546,7 @@ namespace OpenLoco
                 continue;
 
             if (*buffer != '\0')
-                ptr = StringManager::formatString(ptr, string_ids::waiting_cargo_separator);
+                ptr = StringManager::formatString(ptr, StringIds::waiting_cargo_separator);
 
             loco_global<uint32_t, 0x112C826> _common_format_args;
             *_common_format_args = stats.quantity;
@@ -556,7 +556,7 @@ namespace OpenLoco
             ptr = StringManager::formatString(ptr, unit_name, &*_common_format_args);
         }
 
-        string_id suffix = *buffer == '\0' ? string_ids::nothing_waiting : string_ids::waiting;
+        string_id suffix = *buffer == '\0' ? StringIds::nothing_waiting : StringIds::waiting;
         ptr = StringManager::formatString(ptr, suffix);
     }
 

@@ -85,12 +85,12 @@ namespace OpenLoco::ui::prompt_browse
 
     static widget_t widgets[] = {
         makeWidget({ 0, 0 }, { 500, 380 }, widget_type::frame, 0),
-        makeWidget({ 1, 1 }, { 498, 13 }, widget_type::caption_25, 0, string_ids::buffer_2039),
-        makeWidget({ 485, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, string_ids::tooltip_close_window),
+        makeWidget({ 1, 1 }, { 498, 13 }, widget_type::caption_25, 0, StringIds::buffer_2039),
+        makeWidget({ 485, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window),
         makeWidget({ 0, 15 }, { 500, 365 }, widget_type::panel, 1),
-        makeWidget({ 473, 18 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::icon_parent_folder, string_ids::window_browse_parent_folder_tooltip),
+        makeWidget({ 473, 18 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::icon_parent_folder, StringIds::window_browse_parent_folder_tooltip),
         makeWidget({ 88, 348 }, { 408, 14 }, widget_type::wt_17, 1),
-        makeWidget({ 426, 364 }, { 70, 12 }, widget_type::wt_11, 1, string_ids::label_button_ok),
+        makeWidget({ 426, 364 }, { 70, 12 }, widget_type::wt_11, 1, StringIds::label_button_ok),
         makeWidget({ 3, 45 }, { 494, 323 }, widget_type::scrollview, 1, vertical),
         widgetEnd(),
     };
@@ -278,14 +278,14 @@ namespace OpenLoco::ui::prompt_browse
     // 0x004467D7
     static void tooltip(FormatArguments& args, ui::window* window, widget_index widgetIndex)
     {
-        args.push(string_ids::tooltip_scroll_list);
+        args.push(StringIds::tooltip_scroll_list);
     }
 
     // 0x00445C8F
     static void prepareDraw(ui::window* self)
     {
         // TODO: replace with a fixed length!
-        char* buffer = (char*)StringManager::getString(string_ids::buffer_2039);
+        char* buffer = (char*)StringManager::getString(StringIds::buffer_2039);
         strcpy(buffer, _title);
 
         self->widgets[widx::frame].right = self->width - 1;
@@ -339,7 +339,7 @@ namespace OpenLoco::ui::prompt_browse
     static void setCommonArgsStringptr(const char* buffer)
     {
         loco_global<char[16], 0x0112C826> _commonFormatArgs;
-        auto stringptrId = string_ids::stringptr;
+        auto stringptrId = StringIds::stringptr;
         std::memcpy(_commonFormatArgs, &stringptrId, sizeof(stringptrId));
         std::memcpy(_commonFormatArgs + 2, &buffer, sizeof(buffer));
     }
@@ -354,7 +354,7 @@ namespace OpenLoco::ui::prompt_browse
 
         auto folder = (const char*)0x9DA084;
         setCommonArgsStringptr(folder);
-        Gfx::drawString_494B3F(*dpi, window->x + 3, window->y + window->widgets[widx::parent_button].top + 6, 0, string_ids::window_browse_folder, _commonFormatArgs);
+        Gfx::drawString_494B3F(*dpi, window->x + 3, window->y + window->widgets[widx::parent_button].top + 6, 0, StringIds::window_browse_folder, _commonFormatArgs);
 
         auto selectedIndex = window->var_85A;
         if (selectedIndex != -1)
@@ -376,7 +376,7 @@ namespace OpenLoco::ui::prompt_browse
                     y,
                     width,
                     0,
-                    string_ids::wcolour2_stringid,
+                    StringIds::wcolour2_stringid,
                     _commonFormatArgs);
                 y += 12;
 
@@ -400,7 +400,7 @@ namespace OpenLoco::ui::prompt_browse
         if (filenameBox.type != widget_type::none)
         {
             // Draw filename label
-            Gfx::drawString_494B3F(*dpi, window->x + 3, window->y + filenameBox.top + 2, 0, string_ids::window_browse_filename, nullptr);
+            Gfx::drawString_494B3F(*dpi, window->x + 3, window->y + filenameBox.top + 2, 0, StringIds::window_browse_filename, nullptr);
 
             // Clip to text box
             Gfx::drawpixelinfo_t* dpi2;
@@ -442,27 +442,27 @@ namespace OpenLoco::ui::prompt_browse
 
         // Company
         setCommonArgsStringptr(saveInfo.company);
-        y = Gfx::drawString_495224(dpi, x, y, maxWidth, Colour::black, string_ids::window_browse_company, _commonFormatArgs);
+        y = Gfx::drawString_495224(dpi, x, y, maxWidth, Colour::black, StringIds::window_browse_company, _commonFormatArgs);
 
         // Owner
         setCommonArgsStringptr(saveInfo.owner);
-        y = Gfx::drawString_495224(dpi, x, y, maxWidth, Colour::black, string_ids::owner_label, _commonFormatArgs);
+        y = Gfx::drawString_495224(dpi, x, y, maxWidth, Colour::black, StringIds::owner_label, _commonFormatArgs);
 
         // Date
-        y = Gfx::drawString_495224(dpi, x, y, maxWidth, Colour::black, string_ids::window_browse_date, &saveInfo.date);
+        y = Gfx::drawString_495224(dpi, x, y, maxWidth, Colour::black, StringIds::window_browse_date, &saveInfo.date);
 
         // Challenge progress
         auto flags = saveInfo.challenge_flags;
         if (!(flags & company_flags::challenge_beaten_by_opponent))
         {
-            auto stringId = string_ids::window_browse_challenge_completed;
+            auto stringId = StringIds::window_browse_challenge_completed;
             int16_t progress = 0;
             if (!(flags & company_flags::challenge_completed))
             {
-                stringId = string_ids::window_browse_challenge_failed;
+                stringId = StringIds::window_browse_challenge_failed;
                 if (!(flags & company_flags::challenge_failed))
                 {
-                    stringId = string_ids::window_browse_challenge_progress;
+                    stringId = StringIds::window_browse_challenge_progress;
                     progress = saveInfo.challenge_progress;
                 }
             }
@@ -499,7 +499,7 @@ namespace OpenLoco::ui::prompt_browse
             auto imageId = ImageIds::random_map_watermark | (window.colours[1] << 19) | 0x20000000;
             Gfx::drawImage(&dpi, x, y, imageId);
             Gfx::point_t origin = { (int16_t)(x + 64), (int16_t)(y + 60) };
-            Gfx::drawStringCentredWrapped(&dpi, &origin, 128, 0, string_ids::randomly_generated_landscape);
+            Gfx::drawStringCentredWrapped(&dpi, &origin, 128, 0, StringIds::randomly_generated_landscape);
         }
     }
 
@@ -512,14 +512,14 @@ namespace OpenLoco::ui::prompt_browse
         // Draw text box text
         Gfx::point_t origin = { 0, 1 };
         setCommonArgsStringptr(text);
-        Gfx::drawString_494B3F(dpi, &origin, 0, string_ids::black_stringid, _commonFormatArgs);
+        Gfx::drawString_494B3F(dpi, &origin, 0, StringIds::black_stringid, _commonFormatArgs);
 
         if (showCaret)
         {
             if (caret == -1)
             {
                 // Draw horizontal caret
-                Gfx::drawString_494B3F(dpi, &origin, 0, string_ids::window_browse_input_caret, nullptr);
+                Gfx::drawString_494B3F(dpi, &origin, 0, StringIds::window_browse_input_caret, nullptr);
             }
             else
             {
@@ -528,7 +528,7 @@ namespace OpenLoco::ui::prompt_browse
                 gbuffer = std::string_view(text, caret);
                 setCommonArgsStringptr(gbuffer.c_str());
                 origin = { 0, 1 };
-                Gfx::drawString_494B3F(dpi, &origin, 0, string_ids::black_stringid, _commonFormatArgs);
+                Gfx::drawString_494B3F(dpi, &origin, 0, StringIds::black_stringid, _commonFormatArgs);
 
                 // Draw vertical caret
                 Gfx::drawRect(&dpi, origin.x, origin.y, 1, 9, byte_1136C99[window->colours[1] * 8]);
@@ -556,11 +556,11 @@ namespace OpenLoco::ui::prompt_browse
                 auto file = _files[i];
 
                 // Draw the row highlight
-                auto stringId = string_ids::black_stringid;
+                auto stringId = StringIds::black_stringid;
                 if (i == window->var_85A)
                 {
                     Gfx::drawRect(dpi, 0, y, window->width, lineHeight, 0x2000000 | 48);
-                    stringId = string_ids::wcolour2_stringid;
+                    stringId = StringIds::wcolour2_stringid;
                 }
 
                 // Draw the folder icon
@@ -781,7 +781,7 @@ namespace OpenLoco::ui::prompt_browse
         {
             if (filenameContainsInvalidChars())
             {
-                windows::showError(string_ids::error_invalid_filename);
+                windows::showError(StringIds::error_invalid_filename);
             }
             else
             {

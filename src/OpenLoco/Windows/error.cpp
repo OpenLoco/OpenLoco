@@ -66,14 +66,14 @@ namespace OpenLoco::ui::windows::error
         ptr[0] = control_codes::colour_black;
         ptr++;
 
-        if (title != string_ids::null)
+        if (title != StringIds::null)
         {
             ptr = StringManager::formatString(ptr, title, &args);
         }
 
-        if (message != string_ids::null)
+        if (message != StringIds::null)
         {
-            if (title != string_ids::null)
+            if (title != StringIds::null)
             {
 
                 *ptr = control_codes::newline;

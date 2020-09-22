@@ -79,16 +79,16 @@ namespace OpenLoco::ui::windows::terraform
 
         const uint64_t enabledWidgets = (1 << widx::close_button) | (1 << widx::tab_adjust_land) | (1 << widx::tab_adjust_water) | (1 << widx::tab_build_walls) | (1 << widx::tab_clear_area) | (1 << widx::tab_plant_trees);
 
-#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                         \
-    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, widget_type::frame, 0),                                                           \
-        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, widget_type::caption_24, 0, windowCaptionId),                                      \
-        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, string_ids::tooltip_close_window), \
-        makeWidget({ 0, 41 }, { 130, 74 }, widget_type::panel, 1),                                                                      \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_6, 1, ImageIds::tab, string_ids::tooltip_clear_land),                    \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_6, 1, ImageIds::tab, string_ids::tooltip_adjust_land),                   \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_6, 1, ImageIds::tab, string_ids::tooltip_adjust_water),                  \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_6, 1, ImageIds::tab, string_ids::tooltip_plant_trees),                   \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_6, 1, ImageIds::tab, string_ids::tooltip_build_walls)
+#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                        \
+    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, widget_type::frame, 0),                                                          \
+        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, widget_type::caption_24, 0, windowCaptionId),                                     \
+        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window), \
+        makeWidget({ 0, 41 }, { 130, 74 }, widget_type::panel, 1),                                                                     \
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_6, 1, ImageIds::tab, StringIds::tooltip_clear_land),                    \
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_6, 1, ImageIds::tab, StringIds::tooltip_adjust_land),                   \
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_6, 1, ImageIds::tab, StringIds::tooltip_adjust_water),                  \
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_6, 1, ImageIds::tab, StringIds::tooltip_plant_trees),                   \
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_6, 1, ImageIds::tab, StringIds::tooltip_build_walls)
 
         static window_event_list _events;
 
@@ -123,12 +123,12 @@ namespace OpenLoco::ui::windows::terraform
         const uint64_t enabledWidgets = common::enabledWidgets | (1 << scrollview) | (1 << rotate_object) | (1 << object_colour) | (1 << plant_cluster_selected) | (1 << plant_cluster_random);
 
         widget_t widgets[] = {
-            commonWidgets(634, 162, string_ids::title_plant_trees),
+            commonWidgets(634, 162, StringIds::title_plant_trees),
             makeWidget({ 3, 45 }, { 605, 101 }, widget_type::scrollview, 1, scrollbars::vertical),
-            makeWidget({ 609, 46 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::rotate_object, string_ids::rotate_object_90),
-            makeWidget({ 609, 70 }, { 24, 24 }, widget_type::wt_10, 1, ImageIds::null, string_ids::tooltip_object_colour),
-            makeWidget({ 609, 94 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::plant_cluster_selected_tree, string_ids::plant_cluster_selected_tree),
-            makeWidget({ 609, 118 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::plant_cluster_random_tree, string_ids::plant_cluster_random_tree),
+            makeWidget({ 609, 46 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::rotate_object, StringIds::rotate_object_90),
+            makeWidget({ 609, 70 }, { 24, 24 }, widget_type::wt_10, 1, ImageIds::null, StringIds::tooltip_object_colour),
+            makeWidget({ 609, 94 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::plant_cluster_selected_tree, StringIds::plant_cluster_selected_tree),
+            makeWidget({ 609, 118 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::plant_cluster_random_tree, StringIds::plant_cluster_random_tree),
             widgetEnd(),
         };
 
@@ -491,7 +491,7 @@ namespace OpenLoco::ui::windows::terraform
         // 0x004BBB00
         static void tooltip(FormatArguments& args, window* self, widget_index widgetIndex)
         {
-            args.push(string_ids::tooltip_scroll_trees_list);
+            args.push(StringIds::tooltip_scroll_trees_list);
         }
 
         // 0x004BB756
@@ -579,12 +579,12 @@ namespace OpenLoco::ui::windows::terraform
             {
                 auto xPos = self->x + 3 + self->width - 17;
                 auto yPos = self->y + self->height - 13;
-                Gfx::drawString_494C78(*dpi, xPos, yPos, Colour::black, string_ids::build_cost, &args);
+                Gfx::drawString_494C78(*dpi, xPos, yPos, Colour::black, StringIds::build_cost, &args);
             }
             auto xPos = self->x + 3;
             auto yPos = self->y + self->height - 13;
             auto width = self->width - 19 - xPos;
-            Gfx::drawString_494BBF(*dpi, xPos, yPos, width, Colour::black, string_ids::black_stringid, &treeObj->name);
+            Gfx::drawString_494BBF(*dpi, xPos, yPos, width, Colour::black, StringIds::black_stringid, &treeObj->name);
         }
 
         static void drawTreeThumb(tree_object* treeObj, Gfx::drawpixelinfo_t* clipped)
@@ -757,10 +757,10 @@ namespace OpenLoco::ui::windows::terraform
         const uint64_t enabledWidgets = common::enabledWidgets | (1 << tool_area) | (1 << decrease_area) | (1 << increase_area);
 
         widget_t widgets[] = {
-            commonWidgets(130, 105, string_ids::clear_area),
-            makeWidget({ 33 + 16, 45 }, { 64, 44 }, widget_type::wt_3, 1, ImageIds::tool_area, string_ids::tooltip_clear_area),
-            makeWidget({ 34 + 16, 46 }, { 16, 16 }, widget_type::wt_7, 1, Gfx::recolour(ImageIds::decrease_tool_area, Colour::white), string_ids::tooltip_decrease_clear_area),
-            makeWidget({ 80 + 16, 72 }, { 16, 16 }, widget_type::wt_7, 1, Gfx::recolour(ImageIds::increase_tool_area, Colour::white), string_ids::tooltip_increase_clear_area),
+            commonWidgets(130, 105, StringIds::clear_area),
+            makeWidget({ 33 + 16, 45 }, { 64, 44 }, widget_type::wt_3, 1, ImageIds::tool_area, StringIds::tooltip_clear_area),
+            makeWidget({ 34 + 16, 46 }, { 16, 16 }, widget_type::wt_7, 1, Gfx::recolour(ImageIds::decrease_tool_area, Colour::white), StringIds::tooltip_decrease_clear_area),
+            makeWidget({ 80 + 16, 72 }, { 16, 16 }, widget_type::wt_7, 1, Gfx::recolour(ImageIds::increase_tool_area, Colour::white), StringIds::tooltip_increase_clear_area),
             widgetEnd(),
         };
 
@@ -836,7 +836,7 @@ namespace OpenLoco::ui::windows::terraform
                 map_pos centre = { x, y };
                 map_pos pointA = { _mapSelectionAX, _mapSelectionAY };
                 map_pos pointB = { _mapSelectionBX, _mapSelectionBY };
-                _gGameCommandErrorTitle = string_ids::error_cant_clear_entire_area;
+                _gGameCommandErrorTitle = StringIds::error_cant_clear_entire_area;
 
                 game_commands::do_66(centre, pointA, pointB, flags);
             }
@@ -907,7 +907,7 @@ namespace OpenLoco::ui::windows::terraform
             auto args = FormatArguments();
             args.push<uint32_t>(_raiseLandCost);
 
-            Gfx::drawStringCentred(*dpi, xPos, yPos, Colour::black, string_ids::clear_land_cost, &args);
+            Gfx::drawStringCentred(*dpi, xPos, yPos, Colour::black, StringIds::clear_land_cost, &args);
         }
 
         static void initEvents()
@@ -939,10 +939,10 @@ namespace OpenLoco::ui::windows::terraform
         const uint64_t enabledWidgets = common::enabledWidgets | (1 << tool_area) | (1 << decrease_area) | (1 << increase_area) | (1 << land_material);
 
         widget_t widgets[] = {
-            commonWidgets(130, 105, string_ids::title_adjust_land),
-            makeWidget({ 33 + 16, 45 }, { 64, 44 }, widget_type::wt_3, 1, ImageIds::tool_area, string_ids::tooltip_adjust_land_tool),
-            makeWidget({ 34 + 16, 46 }, { 16, 16 }, widget_type::wt_7, 1, Gfx::recolour(ImageIds::decrease_tool_area, Colour::white), string_ids::tooltip_decrease_adjust_land_area),
-            makeWidget({ 80 + 16, 72 }, { 16, 16 }, widget_type::wt_7, 1, Gfx::recolour(ImageIds::increase_tool_area, Colour::white), string_ids::tooltip_increase_adjust_land_area),
+            commonWidgets(130, 105, StringIds::title_adjust_land),
+            makeWidget({ 33 + 16, 45 }, { 64, 44 }, widget_type::wt_3, 1, ImageIds::tool_area, StringIds::tooltip_adjust_land_tool),
+            makeWidget({ 34 + 16, 46 }, { 16, 16 }, widget_type::wt_7, 1, Gfx::recolour(ImageIds::decrease_tool_area, Colour::white), StringIds::tooltip_decrease_adjust_land_area),
+            makeWidget({ 80 + 16, 72 }, { 16, 16 }, widget_type::wt_7, 1, Gfx::recolour(ImageIds::increase_tool_area, Colour::white), StringIds::tooltip_increase_adjust_land_area),
             makeWidget({ 55 + 16, 92 }, { 20, 20 }, widget_type::wt_6, 0),
             widgetEnd(),
         };
@@ -1085,7 +1085,7 @@ namespace OpenLoco::ui::windows::terraform
             map_pos centre = { x, y };
             map_pos pointA = { _mapSelectionAX, _mapSelectionAY };
             map_pos pointB = { _mapSelectionBX, _mapSelectionBY };
-            _gGameCommandErrorTitle = string_ids::error_cant_lower_land_here;
+            _gGameCommandErrorTitle = StringIds::error_cant_lower_land_here;
 
             if (_adjustToolSize == 0)
             {
@@ -1114,7 +1114,7 @@ namespace OpenLoco::ui::windows::terraform
             map_pos centre = { x, y };
             map_pos pointA = { _mapSelectionAX, _mapSelectionAY };
             map_pos pointB = { _mapSelectionBX, _mapSelectionBY };
-            _gGameCommandErrorTitle = string_ids::error_cant_raise_land_here;
+            _gGameCommandErrorTitle = StringIds::error_cant_raise_land_here;
 
             if (_adjustToolSize == 0)
             {
@@ -1355,7 +1355,7 @@ namespace OpenLoco::ui::windows::terraform
             {
                 if (_lastSelectedLand != 0xFF)
                 {
-                    _gGameCommandErrorTitle = string_ids::error_cant_change_land_type;
+                    _gGameCommandErrorTitle = StringIds::error_cant_change_land_type;
                     map_pos pointA = { _mapSelectionAX, _mapSelectionAY };
                     map_pos pointB = { _mapSelectionBX, _mapSelectionBY };
 
@@ -1467,7 +1467,7 @@ namespace OpenLoco::ui::windows::terraform
                 {
                     auto args = FormatArguments();
                     args.push<uint32_t>(_raiseLandCost);
-                    Gfx::drawStringCentred(*dpi, xPos, yPos, Colour::black, string_ids::increase_height_cost, &args);
+                    Gfx::drawStringCentred(*dpi, xPos, yPos, Colour::black, StringIds::increase_height_cost, &args);
                 }
             }
 
@@ -1479,7 +1479,7 @@ namespace OpenLoco::ui::windows::terraform
                 {
                     auto args = FormatArguments();
                     args.push<uint32_t>(_lowerLandCost);
-                    Gfx::drawStringCentred(*dpi, xPos, yPos, Colour::black, string_ids::decrease_height_cost, &args);
+                    Gfx::drawStringCentred(*dpi, xPos, yPos, Colour::black, StringIds::decrease_height_cost, &args);
                 }
             }
         }
@@ -1513,10 +1513,10 @@ namespace OpenLoco::ui::windows::terraform
         const uint64_t enabledWidgets = common::enabledWidgets | (1 << tool_area) | (1 << decrease_area) | (1 << increase_area);
 
         widget_t widgets[] = {
-            commonWidgets(130, 105, string_ids::title_adjust_water),
-            makeWidget({ 33 + 16, 45 }, { 64, 44 }, widget_type::wt_3, 1, ImageIds::tool_area, string_ids::tooltip_adjust_water_tool),
-            makeWidget({ 34 + 16, 46 }, { 16, 16 }, widget_type::wt_7, 1, Gfx::recolour(ImageIds::decrease_tool_area, Colour::white), string_ids::tooltip_decrease_adjust_water_area),
-            makeWidget({ 80 + 16, 72 }, { 16, 16 }, widget_type::wt_7, 1, Gfx::recolour(ImageIds::increase_tool_area, Colour::white), string_ids::tooltip_increase_adjust_water_area),
+            commonWidgets(130, 105, StringIds::title_adjust_water),
+            makeWidget({ 33 + 16, 45 }, { 64, 44 }, widget_type::wt_3, 1, ImageIds::tool_area, StringIds::tooltip_adjust_water_tool),
+            makeWidget({ 34 + 16, 46 }, { 16, 16 }, widget_type::wt_7, 1, Gfx::recolour(ImageIds::decrease_tool_area, Colour::white), StringIds::tooltip_decrease_adjust_water_area),
+            makeWidget({ 80 + 16, 72 }, { 16, 16 }, widget_type::wt_7, 1, Gfx::recolour(ImageIds::increase_tool_area, Colour::white), StringIds::tooltip_increase_adjust_water_area),
             widgetEnd(),
         };
 
@@ -1596,7 +1596,7 @@ namespace OpenLoco::ui::windows::terraform
         static void raiseWater(uint8_t flags)
         {
             common::sub_4A69DD();
-            _gGameCommandErrorTitle = string_ids::error_cant_raise_water_here;
+            _gGameCommandErrorTitle = StringIds::error_cant_raise_water_here;
             map_pos pointA = { _mapSelectionAX, _mapSelectionAY };
             map_pos pointB = { _mapSelectionBX, _mapSelectionBY };
 
@@ -1606,7 +1606,7 @@ namespace OpenLoco::ui::windows::terraform
         static void lowerWater(uint8_t flags)
         {
             common::sub_4A69DD();
-            _gGameCommandErrorTitle = string_ids::error_cant_raise_water_here;
+            _gGameCommandErrorTitle = StringIds::error_cant_raise_water_here;
             map_pos pointA = { _mapSelectionAX, _mapSelectionAY };
             map_pos pointB = { _mapSelectionBX, _mapSelectionBY };
 
@@ -1704,7 +1704,7 @@ namespace OpenLoco::ui::windows::terraform
                     auto args = FormatArguments();
                     args.push<uint32_t>(_raiseWaterCost);
 
-                    Gfx::drawStringCentred(*dpi, xPos, yPos, Colour::black, string_ids::increase_height_cost, &args);
+                    Gfx::drawStringCentred(*dpi, xPos, yPos, Colour::black, StringIds::increase_height_cost, &args);
                 }
             }
 
@@ -1717,7 +1717,7 @@ namespace OpenLoco::ui::windows::terraform
                     auto args = FormatArguments();
                     args.push<uint32_t>(_lowerWaterCost);
 
-                    Gfx::drawStringCentred(*dpi, xPos, yPos, Colour::black, string_ids::decrease_height_cost, &args);
+                    Gfx::drawStringCentred(*dpi, xPos, yPos, Colour::black, StringIds::decrease_height_cost, &args);
                 }
             }
         }
@@ -1752,7 +1752,7 @@ namespace OpenLoco::ui::windows::terraform
         const uint64_t enabledWidgets = common::enabledWidgets | (1 << scrollview);
 
         widget_t widgets[] = {
-            commonWidgets(418, 108, string_ids::title_build_walls),
+            commonWidgets(418, 108, StringIds::title_build_walls),
             makeWidget({ 2, 45 }, { 391, 48 }, widget_type::scrollview, 1, scrollbars::vertical),
             widgetEnd(),
         };
@@ -2017,7 +2017,7 @@ namespace OpenLoco::ui::windows::terraform
         // 0x004BC212
         static void tooltip(FormatArguments& args, window* self, widget_index widgetIndex)
         {
-            args.push(string_ids::tooltip_scroll_walls_list);
+            args.push(StringIds::tooltip_scroll_walls_list);
         }
 
         // 0x004BC029
@@ -2050,7 +2050,7 @@ namespace OpenLoco::ui::windows::terraform
             auto yPos = self->y + self->height - 13;
             auto width = self->width - 19;
 
-            Gfx::drawString_494BBF(*dpi, xPos, yPos, width, Colour::black, string_ids::black_stringid, &wallObj->name);
+            Gfx::drawString_494BBF(*dpi, xPos, yPos, width, Colour::black, StringIds::black_stringid, &wallObj->name);
         }
 
         // 0x004BC11C

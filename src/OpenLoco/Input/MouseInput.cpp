@@ -120,16 +120,16 @@ namespace OpenLoco::Input
     static loco_global<uint16_t, 0x0113DC78> _113DC78;
 
     static std::map<ui::scrollview::scroll_part, string_id> scroll_widget_tooltips = {
-        { ui::scrollview::scroll_part::hscrollbar_button_left, string_ids::tooltip_scroll_left },
-        { ui::scrollview::scroll_part::hscrollbar_button_right, string_ids::tooltip_scroll_right },
-        { ui::scrollview::scroll_part::hscrollbar_track_left, string_ids::tooltip_scroll_left_fast },
-        { ui::scrollview::scroll_part::hscrollbar_track_right, string_ids::tooltip_scroll_right_fast },
-        { ui::scrollview::scroll_part::hscrollbar_thumb, string_ids::tooltip_scroll_left_right },
-        { ui::scrollview::scroll_part::vscrollbar_button_top, string_ids::tooltip_scroll_up },
-        { ui::scrollview::scroll_part::vscrollbar_button_bottom, string_ids::tooltip_scroll_down },
-        { ui::scrollview::scroll_part::vscrollbar_track_top, string_ids::tooltip_scroll_up_fast },
-        { ui::scrollview::scroll_part::vscrollbar_track_bottom, string_ids::tooltip_scroll_down_fast },
-        { ui::scrollview::scroll_part::vscrollbar_thumb, string_ids::tooltip_scroll_up_down },
+        { ui::scrollview::scroll_part::hscrollbar_button_left, StringIds::tooltip_scroll_left },
+        { ui::scrollview::scroll_part::hscrollbar_button_right, StringIds::tooltip_scroll_right },
+        { ui::scrollview::scroll_part::hscrollbar_track_left, StringIds::tooltip_scroll_left_fast },
+        { ui::scrollview::scroll_part::hscrollbar_track_right, StringIds::tooltip_scroll_right_fast },
+        { ui::scrollview::scroll_part::hscrollbar_thumb, StringIds::tooltip_scroll_left_right },
+        { ui::scrollview::scroll_part::vscrollbar_button_top, StringIds::tooltip_scroll_up },
+        { ui::scrollview::scroll_part::vscrollbar_button_bottom, StringIds::tooltip_scroll_down },
+        { ui::scrollview::scroll_part::vscrollbar_track_top, StringIds::tooltip_scroll_up_fast },
+        { ui::scrollview::scroll_part::vscrollbar_track_bottom, StringIds::tooltip_scroll_down_fast },
+        { ui::scrollview::scroll_part::vscrollbar_thumb, StringIds::tooltip_scroll_up_down },
     };
 
     void initMouse()
@@ -1477,7 +1477,7 @@ namespace OpenLoco::Input
             }
         }
 
-        string_id tooltipStringId = string_ids::null;
+        string_id tooltipStringId = StringIds::null;
         if (window != nullptr && widgetIndex != -1)
         {
             if (widget->type == ui::widget_type::scrollview)
@@ -1540,7 +1540,7 @@ namespace OpenLoco::Input
                 return;
             }
 
-            if (tooltipStringId == string_ids::null)
+            if (tooltipStringId == StringIds::null)
             {
                 ui::tooltip::open(window, widgetIndex, x, y);
             }
@@ -1828,7 +1828,7 @@ namespace OpenLoco::Input
         bool skipItem = false;
         ui::cursor_id cursorId = ui::cursor_id::pointer;
 
-        _mapTooltipFormatArguments = string_ids::null;
+        _mapTooltipFormatArguments = StringIds::null;
         _mapTooltipOwner = company_id::null;
 
         if (_mapSelectionFlags & (1 << 6))

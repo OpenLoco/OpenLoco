@@ -127,9 +127,9 @@ namespace OpenLoco::tutorial
 
             // Set the first string to show.
             static const string_id openingStringIds[] = {
-                string_ids::tutorial_1_string_1,
-                string_ids::tutorial_2_string_1,
-                string_ids::tutorial_3_string_1,
+                StringIds::tutorial_1_string_1,
+                StringIds::tutorial_2_string_1,
+                StringIds::tutorial_3_string_1,
             };
 
             *_state = static_cast<uint8_t>(tutorial_state::playing);

@@ -72,18 +72,18 @@ namespace OpenLoco::ui::windows::CompanyList
 
         const uint64_t enabledWidgets = (1 << widx::close_button) | (1 << widx::tab_company_list) | (1 << widx::tab_performance) | (1 << widx::tab_cargo_units) | (1 << widx::tab_cargo_distance) | (1 << widx::tab_values) | (1 << widx::tab_payment_rates) | (1 << widx::tab_speed_records);
 
-#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                         \
-    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, widget_type::frame, 0),                                                           \
-        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, widget_type::caption_25, 0, windowCaptionId),                                      \
-        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, string_ids::tooltip_close_window), \
-        makeWidget({ 0, 41 }, { frameWidth, 231 }, widget_type::panel, 1),                                                              \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tab_compare_companies),                 \
-        makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tab_company_performance),              \
-        makeRemapWidget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tab_cargo_graphs),                     \
-        makeRemapWidget({ 96, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tab_cargo_distance_graphs),            \
-        makeRemapWidget({ 127, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tab_company_values),                  \
-        makeRemapWidget({ 158, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tab_cargo_payment_rates),             \
-        makeRemapWidget({ 189, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tab_speed_records)
+#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                        \
+    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, widget_type::frame, 0),                                                          \
+        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, widget_type::caption_25, 0, windowCaptionId),                                     \
+        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window), \
+        makeWidget({ 0, 41 }, { frameWidth, 231 }, widget_type::panel, 1),                                                             \
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tab_compare_companies),                 \
+        makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tab_company_performance),              \
+        makeRemapWidget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tab_cargo_graphs),                     \
+        makeRemapWidget({ 96, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tab_cargo_distance_graphs),            \
+        makeRemapWidget({ 127, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tab_company_values),                  \
+        makeRemapWidget({ 158, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tab_cargo_payment_rates),             \
+        makeRemapWidget({ 189, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tab_speed_records)
 
         static void onMouseUp(window* self, widget_index widgetIndex);
         static void onUpdate(window* self);
@@ -116,11 +116,11 @@ namespace OpenLoco::ui::windows::CompanyList
         const uint64_t enabledWidgets = common::enabledWidgets | (1 << sort_name) | (1 << sort_status) | (1 << sort_performance) | (1 << sort_value) | (1 << scrollview);
 
         widget_t widgets[] = {
-            commonWidgets(640, 272, string_ids::title_company_list),
-            makeWidget({ 4, 43 }, { 175, 12 }, widget_type::wt_14, 1, ImageIds::null, string_ids::tooltip_sort_company_name),
-            makeWidget({ 179, 43 }, { 210, 12 }, widget_type::wt_14, 1, ImageIds::null, string_ids::tooltip_sort_company_status),
-            makeWidget({ 389, 43 }, { 145, 12 }, widget_type::wt_14, 1, ImageIds::null, string_ids::tooltip_sort_company_performance),
-            makeWidget({ 534, 43 }, { 100, 12 }, widget_type::wt_14, 1, ImageIds::null, string_ids::tooltip_sort_company_value),
+            commonWidgets(640, 272, StringIds::title_company_list),
+            makeWidget({ 4, 43 }, { 175, 12 }, widget_type::wt_14, 1, ImageIds::null, StringIds::tooltip_sort_company_name),
+            makeWidget({ 179, 43 }, { 210, 12 }, widget_type::wt_14, 1, ImageIds::null, StringIds::tooltip_sort_company_status),
+            makeWidget({ 389, 43 }, { 145, 12 }, widget_type::wt_14, 1, ImageIds::null, StringIds::tooltip_sort_company_performance),
+            makeWidget({ 534, 43 }, { 100, 12 }, widget_type::wt_14, 1, ImageIds::null, StringIds::tooltip_sort_company_value),
             makeWidget({ 3, 56 }, { 634, 201 }, widget_type::scrollview, 1, vertical),
             widgetEnd(),
         };
@@ -400,7 +400,7 @@ namespace OpenLoco::ui::windows::CompanyList
         // 0x004362B6
         static void tooltip(FormatArguments& args, window* self, widget_index widgetIndex)
         {
-            args.push(string_ids::tooltip_scroll_company_list);
+            args.push(StringIds::tooltip_scroll_company_list);
         }
 
         // 0x0043632C
@@ -437,10 +437,10 @@ namespace OpenLoco::ui::windows::CompanyList
             self->widgets[widx::sort_value].right = std::min(633, self->width - 8);
 
             // Set header button captions
-            self->widgets[widx::sort_name].text = self->sort_mode == SortMode::Name ? string_ids::table_header_company_name_desc : string_ids::table_header_company_name;
-            self->widgets[widx::sort_status].text = self->sort_mode == SortMode::Status ? string_ids::table_header_company_status_desc : string_ids::table_header_company_status;
-            self->widgets[widx::sort_performance].text = self->sort_mode == SortMode::Performance ? string_ids::table_header_company_performance_desc : string_ids::table_header_company_performance;
-            self->widgets[widx::sort_value].text = self->sort_mode == SortMode::Value ? string_ids::table_header_company_value_desc : string_ids::table_header_company_value;
+            self->widgets[widx::sort_name].text = self->sort_mode == SortMode::Name ? StringIds::table_header_company_name_desc : StringIds::table_header_company_name;
+            self->widgets[widx::sort_status].text = self->sort_mode == SortMode::Status ? StringIds::table_header_company_status_desc : StringIds::table_header_company_status;
+            self->widgets[widx::sort_performance].text = self->sort_mode == SortMode::Performance ? StringIds::table_header_company_performance_desc : StringIds::table_header_company_performance;
+            self->widgets[widx::sort_value].text = self->sort_mode == SortMode::Value ? StringIds::table_header_company_value_desc : StringIds::table_header_company_value;
         }
 
         // 0x00435E56
@@ -451,15 +451,15 @@ namespace OpenLoco::ui::windows::CompanyList
 
             auto args = FormatArguments();
             if (self->var_83C == 1)
-                args.push(string_ids::company_singular);
+                args.push(StringIds::company_singular);
             else
-                args.push(string_ids::companies_plural);
+                args.push(StringIds::companies_plural);
 
             args.push(self->var_83C);
 
             auto xPos = self->x + 3;
             auto yPos = self->y + self->height - 13;
-            Gfx::drawString_494B3F(*dpi, xPos, yPos, Colour::black, string_ids::black_stringid, &args);
+            Gfx::drawString_494B3F(*dpi, xPos, yPos, Colour::black, StringIds::black_stringid, &args);
         }
 
         // 0x00435EA7
@@ -486,13 +486,13 @@ namespace OpenLoco::ui::windows::CompanyList
                 if (rowItem == -1)
                     continue;
 
-                auto stringId = string_ids::black_stringid;
+                auto stringId = StringIds::black_stringid;
 
                 if (rowItem == self->row_hover)
                 {
                     Gfx::drawRect(dpi, 0, yBottom, self->width, 24, (1 << 25) | PaletteIndex::index_30);
 
-                    stringId = string_ids::wcolour2_stringid;
+                    stringId = StringIds::wcolour2_stringid;
                 }
 
                 auto company = companymgr::get(rowItem);
@@ -501,7 +501,7 @@ namespace OpenLoco::ui::windows::CompanyList
 
                 {
                     auto args = FormatArguments();
-                    args.push(string_ids::table_item_company);
+                    args.push(StringIds::table_item_company);
                     args.push(imageId);
                     args.push(company->name);
 
@@ -519,15 +519,15 @@ namespace OpenLoco::ui::windows::CompanyList
                     Gfx::drawString_494BBF(*dpi, 175, yBottom + 7, 208, Colour::black, stringId, &args);
                 }
 
-                auto performanceStringId = string_ids::performance_index;
+                auto performanceStringId = StringIds::performance_index;
 
                 if ((company->challenge_flags & company_flags::increased_performance) && (company->challenge_flags & company_flags::decreased_performance))
                 {
-                    performanceStringId = string_ids::performance_index_decrease;
+                    performanceStringId = StringIds::performance_index_decrease;
 
                     if (company->challenge_flags & company_flags::increased_performance)
                     {
-                        performanceStringId = string_ids::performance_index_increase;
+                        performanceStringId = StringIds::performance_index_increase;
                     }
                 }
 
@@ -543,7 +543,7 @@ namespace OpenLoco::ui::windows::CompanyList
                 {
                     auto args = FormatArguments();
 
-                    args.push(string_ids::company_value_currency);
+                    args.push(StringIds::company_value_currency);
                     args.push(company->companyValueHistory[0]);
 
                     Gfx::drawString_494BBF(*dpi, 530, yBottom - 1, 98, Colour::black, stringId, &args);
@@ -653,7 +653,7 @@ namespace OpenLoco::ui::windows::CompanyList
         const uint64_t enabledWidgets = common::enabledWidgets;
 
         widget_t widgets[] = {
-            commonWidgets(635, 322, string_ids::title_company_performance),
+            commonWidgets(635, 322, StringIds::title_company_performance),
             widgetEnd(),
         };
 
@@ -711,8 +711,8 @@ namespace OpenLoco::ui::windows::CompanyList
             _graphLineCount = count;
             _graphDataEnd = maxHistorySize;
             _dword_113DD0C = 2;
-            _graphXLabel = string_ids::rawdate_short;
-            _graphYLabel = string_ids::percentage_one_decimal_place;
+            _graphXLabel = StringIds::rawdate_short;
+            _graphYLabel = StringIds::percentage_one_decimal_place;
             _word_113DD80 = 4;
             _graphXAxisLabelIncrement = 12;
             _dword_113DD86 = 0;
@@ -750,7 +750,7 @@ namespace OpenLoco::ui::windows::CompanyList
         const uint64_t enabledWidgets = common::enabledWidgets;
 
         widget_t widgets[] = {
-            commonWidgets(635, 322, string_ids::title_company_cargo_units),
+            commonWidgets(635, 322, StringIds::title_company_cargo_units),
             widgetEnd(),
         };
 
@@ -808,8 +808,8 @@ namespace OpenLoco::ui::windows::CompanyList
             _graphLineCount = count;
             _graphDataEnd = maxHistorySize;
             _dword_113DD0C = 4;
-            _graphXLabel = string_ids::rawdate_short;
-            _graphYLabel = string_ids::cargo_units_delivered;
+            _graphXLabel = StringIds::rawdate_short;
+            _graphYLabel = StringIds::cargo_units_delivered;
             _word_113DD80 = 4;
             _graphXAxisLabelIncrement = 12;
             _dword_113DD86 = 0;
@@ -847,7 +847,7 @@ namespace OpenLoco::ui::windows::CompanyList
         const uint64_t enabledWidgets = common::enabledWidgets;
 
         widget_t widgets[] = {
-            commonWidgets(635, 322, string_ids::title_cargo_distance_graphs),
+            commonWidgets(635, 322, StringIds::title_cargo_distance_graphs),
             widgetEnd(),
         };
 
@@ -905,8 +905,8 @@ namespace OpenLoco::ui::windows::CompanyList
             _graphLineCount = count;
             _graphDataEnd = maxHistorySize;
             _dword_113DD0C = 4;
-            _graphXLabel = string_ids::rawdate_short;
-            _graphYLabel = string_ids::cargo_units_delivered;
+            _graphXLabel = StringIds::rawdate_short;
+            _graphYLabel = StringIds::cargo_units_delivered;
             _word_113DD80 = 4;
             _graphXAxisLabelIncrement = 12;
             _dword_113DD86 = 0;
@@ -944,7 +944,7 @@ namespace OpenLoco::ui::windows::CompanyList
         const uint64_t enabledWidgets = common::enabledWidgets;
 
         widget_t widgets[] = {
-            commonWidgets(685, 322, string_ids::title_company_values),
+            commonWidgets(685, 322, StringIds::title_company_values),
             widgetEnd(),
         };
 
@@ -1002,8 +1002,8 @@ namespace OpenLoco::ui::windows::CompanyList
             _graphLineCount = count;
             _graphDataEnd = maxHistorySize;
             _dword_113DD0C = 4;
-            _graphXLabel = string_ids::rawdate_short;
-            _graphYLabel = string_ids::small_company_value_currency;
+            _graphXLabel = StringIds::rawdate_short;
+            _graphYLabel = StringIds::small_company_value_currency;
             _word_113DD80 = 4;
             _graphXAxisLabelIncrement = 12;
             _dword_113DD86 = 0;
@@ -1041,7 +1041,7 @@ namespace OpenLoco::ui::windows::CompanyList
         const uint64_t enabledWidgets = common::enabledWidgets;
 
         widget_t widgets[] = {
-            commonWidgets(495, 342, string_ids::title_cargo_payment_rates),
+            commonWidgets(495, 342, StringIds::title_cargo_payment_rates),
             widgetEnd(),
         };
 
@@ -1065,11 +1065,11 @@ namespace OpenLoco::ui::windows::CompanyList
 
                 auto colour = _cargoLineColour[i];
                 colour = Colour::getShade(colour, 6);
-                auto stringId = string_ids::small_black_string;
+                auto stringId = StringIds::small_black_string;
 
                 if (self->var_854 & (1 << cargoCount))
                 {
-                    stringId = string_ids::small_white_string;
+                    stringId = StringIds::small_white_string;
                 }
 
                 if (!(self->var_854 & (1 << cargoCount)) || !(_word_9C68C7 & (1 << 2)))
@@ -1121,8 +1121,8 @@ namespace OpenLoco::ui::windows::CompanyList
             _graphLineCount = count;
             _graphDataEnd = 60;
             _dword_113DD0C = 4;
-            _graphXLabel = string_ids::cargo_delivered_days;
-            _graphYLabel = string_ids::cargo_delivered_currency;
+            _graphXLabel = StringIds::cargo_delivered_days;
+            _graphYLabel = StringIds::cargo_delivered_currency;
             _word_113DD80 = 5;
             _graphXAxisLabelIncrement = 20;
             _dword_113DD86 = 0;
@@ -1165,12 +1165,12 @@ namespace OpenLoco::ui::windows::CompanyList
             args.push<uint16_t>(100);
             args.push<uint16_t>(10);
 
-            Gfx::drawString_494B3F(*dpi, x, y, Colour::black, string_ids::cargo_deliver_graph_title, &args);
+            Gfx::drawString_494B3F(*dpi, x, y, Colour::black, StringIds::cargo_deliver_graph_title, &args);
 
             x = self->x + 160;
             y = self->height + self->y - 13;
 
-            Gfx::drawString_494B3F(*dpi, x, y, Colour::black, string_ids::cargo_transit_time);
+            Gfx::drawString_494B3F(*dpi, x, y, Colour::black, StringIds::cargo_transit_time);
         }
 
         static void sub_4375F7()
@@ -1208,7 +1208,7 @@ namespace OpenLoco::ui::windows::CompanyList
         const uint64_t enabledWidgets = common::enabledWidgets;
 
         widget_t widgets[] = {
-            commonWidgets(495, 169, string_ids::title_speed_records),
+            commonWidgets(495, 169, StringIds::title_speed_records),
             widgetEnd(),
         };
 
@@ -1238,9 +1238,9 @@ namespace OpenLoco::ui::windows::CompanyList
                     args.push(recordType);
 
                     const string_id string[] = {
-                        string_ids::land_speed_record,
-                        string_ids::air_speed_record,
-                        string_ids::water_speed_record,
+                        StringIds::land_speed_record,
+                        StringIds::air_speed_record,
+                        StringIds::water_speed_record,
                     };
 
                     auto x = self->x + 4;
@@ -1269,7 +1269,7 @@ namespace OpenLoco::ui::windows::CompanyList
                     args.push<uint16_t>(0);
                     args.push(_dword_526258[i]);
 
-                    Gfx::drawString_494B3F(*dpi, x, y, Colour::black, string_ids::record_date_achieved, &args);
+                    Gfx::drawString_494B3F(*dpi, x, y, Colour::black, StringIds::record_date_achieved, &args);
                     y += 17;
                 }
 
@@ -1572,7 +1572,7 @@ namespace OpenLoco::ui::windows::CompanyList
                 {
                     auto x = self->widgets[widx::tab_values].left + self->x + 28;
                     auto y = self->widgets[widx::tab_values].top + self->y + 14 + 1;
-                    Gfx::drawString_494C78(*dpi, x, y, Colour::black, string_ids::currency_symbol);
+                    Gfx::drawString_494C78(*dpi, x, y, Colour::black, StringIds::currency_symbol);
                 }
             }
 
@@ -1588,7 +1588,7 @@ namespace OpenLoco::ui::windows::CompanyList
                 {
                     auto x = self->widgets[widx::tab_payment_rates].left + self->x + 28;
                     auto y = self->widgets[widx::tab_payment_rates].top + self->y + 14 + 1;
-                    Gfx::drawString_494C78(*dpi, x, y, Colour::black, string_ids::currency_symbol);
+                    Gfx::drawString_494C78(*dpi, x, y, Colour::black, StringIds::currency_symbol);
                 }
             }
 
@@ -1637,11 +1637,11 @@ namespace OpenLoco::ui::windows::CompanyList
 
                 auto companyColour = companymgr::getCompanyColour(company.id());
                 auto colour = Colour::getShade(companyColour, 6);
-                auto stringId = string_ids::small_black_string;
+                auto stringId = StringIds::small_black_string;
 
                 if (self->var_854 & (1 << companyCount))
                 {
-                    stringId = string_ids::small_white_string;
+                    stringId = StringIds::small_white_string;
                 }
 
                 if (!(self->var_854 & (1 << companyCount)) || !(_word_9C68C7 & (1 << 2)))

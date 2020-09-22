@@ -95,7 +95,7 @@ namespace OpenLoco
         uint8_t var_3B1;
         uint8_t pad_3B2[0x3D2 - 0x3B2];
 
-        bool empty() const { return name == string_ids::null; }
+        bool empty() const { return name == StringIds::null; }
         station_id_t id() const;
         void update();
         uint32_t calcAcceptedCargo(CargoSearchState& cargoSearchState, const map_pos& location = { -1, -1 }, const uint32_t filter = 0);

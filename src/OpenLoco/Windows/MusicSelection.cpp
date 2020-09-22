@@ -29,10 +29,10 @@ namespace OpenLoco::ui::windows::music_selection
 
     static widget_t _widgets[] = {
         makeWidget({ 0, 0 }, { 360, 238 }, widget_type::frame, 0),
-        makeWidget({ 1, 1 }, { 358, 13 }, widget_type::caption_25, 0, string_ids::music_selection_title),
-        makeWidget({ 345, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, string_ids::tooltip_close_window),
+        makeWidget({ 1, 1 }, { 358, 13 }, widget_type::caption_25, 0, StringIds::music_selection_title),
+        makeWidget({ 345, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window),
         makeWidget({ 0, 15 }, { 360, 223 }, widget_type::panel, 1),
-        makeWidget({ 4, 19 }, { 352, 218 }, widget_type::scrollview, 1, scrollbars::vertical, string_ids::music_selection_tooltip),
+        makeWidget({ 4, 19 }, { 352, 218 }, widget_type::scrollview, 1, scrollbars::vertical, StringIds::music_selection_tooltip),
         widgetEnd(),
     };
 
@@ -107,13 +107,13 @@ namespace OpenLoco::ui::windows::music_selection
         uint16_t y = 0;
         for (uint16_t i = 0; i < window->row_count; i++)
         {
-            string_id text_colour_id = string_ids::black_stringid;
+            string_id text_colour_id = StringIds::black_stringid;
 
             // Draw hovered track
             if (i == window->row_hover)
             {
                 Gfx::drawRect(dpi, 0, y, 800, rowHeight, 0x2000030);
-                text_colour_id = string_ids::wcolour2_stringid;
+                text_colour_id = StringIds::wcolour2_stringid;
             }
 
             // Draw checkbox.
@@ -121,7 +121,7 @@ namespace OpenLoco::ui::windows::music_selection
 
             // Draw checkmark if track is enabled.
             if (config.enabled_music[i])
-                Gfx::drawString_494B3F(*dpi, 2, y, window->colours[1], string_ids::wcolour2_stringid, (void*)&string_ids::checkmark);
+                Gfx::drawString_494B3F(*dpi, 2, y, window->colours[1], StringIds::wcolour2_stringid, (void*)&StringIds::checkmark);
 
             // Draw track name.
             string_id music_title_id = Audio::getMusicInfo(i)->title_id;
@@ -199,6 +199,6 @@ namespace OpenLoco::ui::windows::music_selection
     // 0x004C1762
     static void tooltip(FormatArguments& args, ui::window* window, widget_index widgetIndex)
     {
-        args.push(string_ids::tooltip_scroll_list);
+        args.push(StringIds::tooltip_scroll_list);
     }
 }

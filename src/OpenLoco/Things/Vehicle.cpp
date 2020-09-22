@@ -1553,7 +1553,7 @@ static bool sub_4B90F0(const uint16_t newVehicleTypeId, const uint16_t sourceVeh
 
     if ((newObject->flags & flags_E0::can_couple) && (sourceObject->flags & flags_E0::can_couple))
     {
-        gGameCommandErrorText = string_ids::incompatible_vehicle;
+        gGameCommandErrorText = StringIds::incompatible_vehicle;
         return false;
     }
 
@@ -1583,7 +1583,7 @@ static bool sub_4B90F0(const uint16_t newVehicleTypeId, const uint16_t sourceVeh
 
     if ((newObject->num_compat != 0) || (sourceObject->num_compat != 0))
     {
-        gGameCommandErrorText = string_ids::incompatible_vehicle;
+        gGameCommandErrorText = StringIds::incompatible_vehicle;
         return false;
     }
 
@@ -1633,7 +1633,7 @@ bool vehicle_head::isVehicleTypeCompatible(const uint16_t vehicleTypeId) // TODO
         things::vehicle::Vehicle train(this);
         if (!train.cars.empty())
         {
-            gGameCommandErrorText = string_ids::incompatible_vehicle;
+            gGameCommandErrorText = StringIds::incompatible_vehicle;
             return false;
         }
     }
@@ -1641,20 +1641,20 @@ bool vehicle_head::isVehicleTypeCompatible(const uint16_t vehicleTypeId) // TODO
     {
         if (newObject->track_type != track_type)
         {
-            gGameCommandErrorText = string_ids::incompatible_vehicle;
+            gGameCommandErrorText = StringIds::incompatible_vehicle;
             return false;
         }
     }
 
     if (newObject->mode != mode)
     {
-        gGameCommandErrorText = string_ids::incompatible_vehicle;
+        gGameCommandErrorText = StringIds::incompatible_vehicle;
         return false;
     }
 
     if (newObject->type != vehicleType)
     {
-        gGameCommandErrorText = string_ids::incompatible_vehicle;
+        gGameCommandErrorText = StringIds::incompatible_vehicle;
         return false;
     }
 
@@ -1683,7 +1683,7 @@ bool vehicle_head::isVehicleTypeCompatible(const uint16_t vehicleTypeId) // TODO
     auto additionalNewLength = getVehicleTypeLength(vehicleTypeId);
     if (curTotalLength + additionalNewLength > OpenLoco::things::vehicle::max_vehicle_length)
     {
-        gGameCommandErrorText = string_ids::vehicle_too_long;
+        gGameCommandErrorText = StringIds::vehicle_too_long;
         return false;
     }
     return true;

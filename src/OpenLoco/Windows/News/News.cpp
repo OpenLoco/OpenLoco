@@ -511,11 +511,11 @@ namespace OpenLoco::ui::NewsWindow
                     auto company = companymgr::get(vehicle->owner);
                     if (isPlayerCompany(vehicle->owner))
                     {
-                        args.push(string_ids::company_vehicle);
+                        args.push(StringIds::company_vehicle);
                     }
                     else
                     {
-                        args.push(string_ids::competitor_vehicle);
+                        args.push(StringIds::competitor_vehicle);
                     }
                     args.push(company->name);
                     args.skip(2);
@@ -552,7 +552,7 @@ namespace OpenLoco::ui::NewsWindow
                 case newsItemSubTypes::company:
                 case newsItemSubTypes::vehicleTab:
                 {
-                    Gfx::drawStringCentredClipped(*dpi, x, y, width, Colour::black, string_ids::black_tiny_font, &args);
+                    Gfx::drawStringCentredClipped(*dpi, x, y, width, Colour::black, StringIds::black_tiny_font, &args);
                     break;
                 }
 
@@ -572,7 +572,7 @@ namespace OpenLoco::ui::NewsWindow
             self->draw(dpi);
 
             char* newsString = news->messageString;
-            auto buffer = const_cast<char*>(StringManager::getString(string_ids::buffer_2039));
+            auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
 
             if (!(_word_4F8BE4[news->type] & (1 << 5)))
             {
@@ -589,13 +589,13 @@ namespace OpenLoco::ui::NewsWindow
             int16_t y = self->y + 38;
             Gfx::point_t origin = { x, y };
 
-            Gfx::drawStringCentredWrapped(dpi, &origin, 352, Colour::black, string_ids::buffer_2039);
+            Gfx::drawStringCentredWrapped(dpi, &origin, 352, Colour::black, StringIds::buffer_2039);
 
             x = self->x + 1;
             y = self->y + 1;
             origin = { x, y };
 
-            Gfx::drawString_494B3F(*dpi, &origin, Colour::black, string_ids::news_date, &news->date);
+            Gfx::drawString_494B3F(*dpi, &origin, Colour::black, StringIds::news_date, &news->date);
 
             self->drawViewports(dpi);
 
@@ -652,7 +652,7 @@ namespace OpenLoco::ui::NewsWindow
             self->draw(dpi);
 
             char* newsString = news->messageString;
-            auto buffer = const_cast<char*>(StringManager::getString(string_ids::buffer_2039));
+            auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
 
             if (!(_word_4F8BE4[news->type] & (1 << 5)))
             {
@@ -669,12 +669,12 @@ namespace OpenLoco::ui::NewsWindow
             int16_t y = self->y + 38;
             Gfx::point_t origin = { x, y };
 
-            Gfx::drawStringCentredWrapped(dpi, &origin, 352, Colour::black, string_ids::buffer_2039);
+            Gfx::drawStringCentredWrapped(dpi, &origin, 352, Colour::black, StringIds::buffer_2039);
 
             origin.x = self->x + 4;
             origin.y = self->y + 5;
 
-            Gfx::drawString_494B3F(*dpi, &origin, Colour::black, string_ids::news_date, &news->date);
+            Gfx::drawString_494B3F(*dpi, &origin, Colour::black, StringIds::news_date, &news->date);
 
             self->drawViewports(dpi);
 
@@ -701,7 +701,7 @@ namespace OpenLoco::ui::NewsWindow
             self->draw(dpi);
 
             char* newsString = news->messageString;
-            auto buffer = const_cast<char*>(StringManager::getString(string_ids::buffer_2039));
+            auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
 
             *buffer = control_codes::colour_black;
             buffer++;
@@ -712,7 +712,7 @@ namespace OpenLoco::ui::NewsWindow
             int16_t y = self->y + 17;
             Gfx::point_t origin = { x, y };
 
-            Gfx::drawStringCentredWrapped(dpi, &origin, 338, Colour::black, string_ids::buffer_2039);
+            Gfx::drawStringCentredWrapped(dpi, &origin, 338, Colour::black, StringIds::buffer_2039);
 
             self->drawViewports(dpi);
 

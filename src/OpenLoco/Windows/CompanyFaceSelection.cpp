@@ -41,10 +41,10 @@ namespace OpenLoco::ui::windows::CompanyFaceSelection
     // 0x509680
     static widget_t widgets[] = {
         makeWidget({ 0, 0 }, windowSize, widget_type::frame, 0),
-        makeWidget({ 1, 1 }, { 398, 13 }, widget_type::caption_24, 0, string_ids::company_face_selection_title),
-        makeWidget({ 385, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, string_ids::tooltip_close_window),
+        makeWidget({ 1, 1 }, { 398, 13 }, widget_type::caption_24, 0, StringIds::company_face_selection_title),
+        makeWidget({ 385, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window),
         makeWidget({ 0, 15 }, { 400, 257 }, widget_type::panel, 1),
-        makeWidget({ 4, 19 }, { 188, 248 }, widget_type::scrollview, 1, vertical, string_ids::tooltip_company_face_selection),
+        makeWidget({ 4, 19 }, { 188, 248 }, widget_type::scrollview, 1, vertical, StringIds::tooltip_company_face_selection),
         makeWidget({ 265, 23 }, { 66, 66 }, widget_type::wt_5, 1),
         widgetEnd(),
     };
@@ -201,7 +201,7 @@ namespace OpenLoco::ui::windows::CompanyFaceSelection
         }
         self->invalidate();
         Audio::playSound(Audio::sound_id::click_down, _cursorX);
-        gGameCommandErrorTitle = string_ids::cant_select_face;
+        gGameCommandErrorTitle = StringIds::cant_select_face;
         const auto result = game_commands::do_65(*objIndex.object._header, self->owner);
         if (result)
         {
@@ -230,7 +230,7 @@ namespace OpenLoco::ui::windows::CompanyFaceSelection
     // 0x4352B1
     static void tooltip(FormatArguments& args, window* const self, const widget_index)
     {
-        args.push(string_ids::tooltip_scroll_list);
+        args.push(StringIds::tooltip_scroll_list);
     }
 
     // 0x434FE8
@@ -268,10 +268,10 @@ namespace OpenLoco::ui::windows::CompanyFaceSelection
             const auto x = self->x + self->widgets[widx::face_frame].mid_x();
             const auto y = self->y + self->widgets[widx::face_frame].bottom + 3;
             const auto width = self->width - self->widgets[widx::scrollview].right - 6;
-            auto str = const_cast<char*>(StringManager::getString(string_ids::buffer_2039));
+            auto str = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
             *str++ = control_codes::window_colour_2;
             strcpy(str, self->object);
-            Gfx::drawStringCentredClipped(*dpi, x, y, width, Colour::black, string_ids::buffer_2039);
+            Gfx::drawStringCentredClipped(*dpi, x, y, width, Colour::black, StringIds::buffer_2039);
         }
 
         // There was code for displaying competitor stats if window opened with none

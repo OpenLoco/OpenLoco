@@ -224,8 +224,8 @@ namespace OpenLoco::Localisation
 
     static bool stringIsBuffer(int id)
     {
-        return id == string_ids::buffer_337 || id == string_ids::buffer_338 || id == string_ids::buffer_1250 || id == string_ids::preferred_currency_buffer || id == string_ids::buffer_1719
-            || id == string_ids::buffer_2039 || id == string_ids::buffer_2040 || id == string_ids::buffer_2042 || id == string_ids::buffer_2045;
+        return id == StringIds::buffer_337 || id == StringIds::buffer_338 || id == StringIds::buffer_1250 || id == StringIds::preferred_currency_buffer || id == StringIds::buffer_1719
+            || id == StringIds::buffer_2039 || id == StringIds::buffer_2040 || id == StringIds::buffer_2042 || id == StringIds::buffer_2045;
     }
 
     static bool loadLanguageStringTable(fs::path languageFile)

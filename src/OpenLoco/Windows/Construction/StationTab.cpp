@@ -21,11 +21,11 @@ using namespace OpenLoco::map::tilemgr;
 namespace OpenLoco::ui::windows::construction::station
 {
     widget_t widgets[] = {
-        commonWidgets(138, 190, string_ids::stringid_2),
-        makeWidget({ 3, 45 }, { 132, 12 }, widget_type::wt_18, 1, 0xFFFFFFFF, string_ids::tooltip_select_station_type),
-        makeWidget({ 123, 46 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown, string_ids::tooltip_select_station_type),
+        commonWidgets(138, 190, StringIds::stringid_2),
+        makeWidget({ 3, 45 }, { 132, 12 }, widget_type::wt_18, 1, 0xFFFFFFFF, StringIds::tooltip_select_station_type),
+        makeWidget({ 123, 46 }, { 11, 10 }, widget_type::wt_11, 1, StringIds::dropdown, StringIds::tooltip_select_station_type),
         makeWidget({ 35, 60 }, { 68, 68 }, widget_type::wt_3, 1),
-        makeWidget({ 112, 104 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::rotate_object, string_ids::rotate_90),
+        makeWidget({ 112, 104 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::rotate_object, StringIds::rotate_90),
         widgetEnd(),
     };
 
@@ -193,7 +193,7 @@ namespace OpenLoco::ui::windows::construction::station
 
             self->widgets[widx::station].text = airportObj->name;
 
-            args.push(string_ids::title_airport);
+            args.push(StringIds::title_airport);
         }
         else if (_byte_1136063 & (1 << 6))
         {
@@ -201,7 +201,7 @@ namespace OpenLoco::ui::windows::construction::station
 
             self->widgets[widx::station].text = dockObj->name;
 
-            args.push(string_ids::title_ship_port);
+            args.push(StringIds::title_ship_port);
         }
         else if (_trackType & (1 << 7))
         {
@@ -303,7 +303,7 @@ namespace OpenLoco::ui::windows::construction::station
             auto args = FormatArguments();
             args.push<uint32_t>(_stationCost);
 
-            Gfx::drawStringCentred(*dpi, xPos, yPos, Colour::black, string_ids::build_cost, &args);
+            Gfx::drawStringCentred(*dpi, xPos, yPos, Colour::black, StringIds::build_cost, &args);
         }
 
         xPos = self->x + 3;
@@ -318,7 +318,7 @@ namespace OpenLoco::ui::windows::construction::station
 
         if (_constructingStationId == 0xFFFFFFFF)
         {
-            args.push(string_ids::new_station);
+            args.push(StringIds::new_station);
         }
         else
         {
@@ -330,17 +330,17 @@ namespace OpenLoco::ui::windows::construction::station
         xPos = self->x + 69;
         yPos = self->widgets[widx::image].bottom + self->y + 18;
         width = self->width - 4;
-        Gfx::drawStringCentredClipped(*dpi, xPos, yPos, width, Colour::black, string_ids::new_station_buffer, &args);
+        Gfx::drawStringCentredClipped(*dpi, xPos, yPos, width, Colour::black, StringIds::new_station_buffer, &args);
 
         xPos = self->x + 2;
         yPos = self->widgets[widx::image].bottom + self->y + 29;
         Gfx::point_t origin = { xPos, yPos };
 
-        Gfx::drawString_494B3F(*dpi, &origin, Colour::black, string_ids::catchment_area_accepts);
+        Gfx::drawString_494B3F(*dpi, &origin, Colour::black, StringIds::catchment_area_accepts);
 
         if (_constructingStationAcceptedCargoTypes == 0)
         {
-            Gfx::drawString_494B3F(*dpi, origin.x, origin.y, Colour::black, string_ids::catchment_area_nothing);
+            Gfx::drawString_494B3F(*dpi, origin.x, origin.y, Colour::black, StringIds::catchment_area_nothing);
         }
         else
         {
@@ -365,11 +365,11 @@ namespace OpenLoco::ui::windows::construction::station
         yPos = self->widgets[widx::image].bottom + self->y + 49;
         origin = { xPos, yPos };
 
-        Gfx::drawString_494B3F(*dpi, &origin, Colour::black, string_ids::catchment_area_produces);
+        Gfx::drawString_494B3F(*dpi, &origin, Colour::black, StringIds::catchment_area_produces);
 
         if (_constructingStationProducedCargoTypes == 0)
         {
-            Gfx::drawString_494B3F(*dpi, origin.x, origin.y, Colour::black, string_ids::catchment_area_nothing);
+            Gfx::drawString_494B3F(*dpi, origin.x, origin.y, Colour::black, StringIds::catchment_area_nothing);
         }
         else
         {

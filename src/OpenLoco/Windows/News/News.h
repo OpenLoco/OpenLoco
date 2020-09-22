@@ -55,7 +55,7 @@ namespace OpenLoco::ui::NewsWindow
 
 #define commonWidgets(frameWidth, frameHeight, frameType)                                                                               \
     makeWidget({ 0, 0 }, { frameWidth, frameHeight }, frameType, 0),                                                                    \
-        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, string_ids::tooltip_close_window), \
+        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window), \
         makeWidget({ 2, frameHeight - 73 }, { 168, 64 }, widget_type::viewport, 0, 0xFFFFFFFE),                                         \
         makeWidget({ 180, frameHeight - 73 }, { 168, 64 }, widget_type::viewport, 0, 0xFFFFFFFE),                                       \
         makeWidget({ 2, frameHeight - 75 }, { 180, 75 }, widget_type::wt_9, 0),                                                         \

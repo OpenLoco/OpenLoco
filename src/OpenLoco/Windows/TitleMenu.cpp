@@ -110,12 +110,12 @@ namespace OpenLoco::ui::windows
     }
 
     static widget_t _widgets[] = {
-        makeWidget({ 0, 0 }, { btn_main_size, btn_main_size }, widget_type::wt_9, 1, string_ids::null, string_ids::title_menu_new_game),
-        makeWidget({ btn_main_size, 0 }, { btn_main_size, btn_main_size }, widget_type::wt_9, 1, string_ids::null, string_ids::title_menu_load_game),
-        makeWidget({ btn_main_size * 2, 0 }, { btn_main_size, btn_main_size }, widget_type::wt_9, 1, string_ids::null, string_ids::title_menu_show_tutorial),
-        makeWidget({ btn_main_size * 3, 0 }, { btn_main_size, btn_main_size }, widget_type::wt_9, 1, string_ids::null, string_ids::title_menu_scenario_editor),
-        makeWidget({ btn_main_size * 4 - 31, btn_main_size - 27 }, { 31, 27 }, widget_type::wt_9, 1, string_ids::null, string_ids::title_menu_chat_tooltip),
-        makeWidget({ 0, btn_main_size }, { ww, btn_sub_height }, widget_type::wt_9, 1, string_ids::null, string_ids::title_multiplayer_toggle_tooltip),
+        makeWidget({ 0, 0 }, { btn_main_size, btn_main_size }, widget_type::wt_9, 1, StringIds::null, StringIds::title_menu_new_game),
+        makeWidget({ btn_main_size, 0 }, { btn_main_size, btn_main_size }, widget_type::wt_9, 1, StringIds::null, StringIds::title_menu_load_game),
+        makeWidget({ btn_main_size * 2, 0 }, { btn_main_size, btn_main_size }, widget_type::wt_9, 1, StringIds::null, StringIds::title_menu_show_tutorial),
+        makeWidget({ btn_main_size * 3, 0 }, { btn_main_size, btn_main_size }, widget_type::wt_9, 1, StringIds::null, StringIds::title_menu_scenario_editor),
+        makeWidget({ btn_main_size * 4 - 31, btn_main_size - 27 }, { 31, 27 }, widget_type::wt_9, 1, StringIds::null, StringIds::title_menu_chat_tooltip),
+        makeWidget({ 0, btn_main_size }, { ww, btn_sub_height }, widget_type::wt_9, 1, StringIds::null, StringIds::title_multiplayer_toggle_tooltip),
         widgetEnd(),
     };
 
@@ -277,19 +277,19 @@ namespace OpenLoco::ui::windows
             int16_t y = window->widgets[widx::multiplayer_toggle_btn].top + 3 + window->y;
             int16_t x = window->width / 2 + window->x;
 
-            string_id string = string_ids::single_player_mode;
+            string_id string = StringIds::single_player_mode;
 
             if (OpenLoco::isNetworked())
             {
                 // char[512+1]
-                auto buffer = StringManager::getString(string_ids::buffer_2039);
+                auto buffer = StringManager::getString(StringIds::buffer_2039);
 
                 char* playerName = (char*)0xF254D0;
 
                 strcpy((char*)buffer, playerName);
 
-                addr<0x112C826, string_id>() = string_ids::buffer_2039;
-                string = string_ids::two_player_mode_connected;
+                addr<0x112C826, string_id>() = StringIds::buffer_2039;
+                string = StringIds::two_player_mode_connected;
             }
 
             drawStringCentredClipped(*dpi, x, y, ww - 4, Colour::black, string, (char*)0x112c826);
@@ -420,9 +420,9 @@ namespace OpenLoco::ui::windows
 
     static void sub_439112(window* window)
     {
-        dropdown::add(0, string_ids::tutorial_1_title);
-        dropdown::add(1, string_ids::tutorial_2_title);
-        dropdown::add(2, string_ids::tutorial_3_title);
+        dropdown::add(0, StringIds::tutorial_1_title);
+        dropdown::add(1, StringIds::tutorial_2_title);
+        dropdown::add(2, StringIds::tutorial_3_title);
 
         widget_t* widget = &window->widgets[widx::tutorial_btn];
         dropdown::showText(
@@ -439,15 +439,15 @@ namespace OpenLoco::ui::windows
     {
         WindowManager::close(WindowType::multiplayer);
 
-        addr<0x112C826 + 8, string_id>() = string_ids::the_other_player;
+        addr<0x112C826 + 8, string_id>() = StringIds::the_other_player;
 
         // TODO: convert this to a builder pattern, with chainable functions to set the different string ids and arguments
-        textinput::openTextinput(callingWindow, string_ids::chat_title, string_ids::chat_instructions, string_ids::empty, callingWidget, (void*)0x112C826);
+        textinput::openTextinput(callingWindow, StringIds::chat_title, StringIds::chat_instructions, StringIds::empty, callingWidget, (void*)0x112C826);
     }
 
     static void sub_43918F(char string[512])
     {
-        addr<0x009C68E8, string_id>() = string_ids::empty;
+        addr<0x009C68E8, string_id>() = StringIds::empty;
 
         for (int i = 0; i < 32; i++)
         {

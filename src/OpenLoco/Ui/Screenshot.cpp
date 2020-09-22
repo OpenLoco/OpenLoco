@@ -36,7 +36,7 @@ namespace OpenLoco::Input
         std::string scenarioName = s5::getOptions().scenarioName;
 
         if (scenarioName.length() == 0)
-            scenarioName = StringManager::getString(string_ids::screenshot_filename_template);
+            scenarioName = StringManager::getString(StringIds::screenshot_filename_template);
 
         std::string fileName = std::string(scenarioName) + ".png";
         fs::path path;

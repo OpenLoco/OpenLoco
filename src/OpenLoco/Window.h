@@ -89,7 +89,7 @@ namespace OpenLoco::ui
         both = (1 << 0) | (1 << 1),
     };
 
-    static constexpr widget_t makeWidget(Gfx::point_t origin, Gfx::ui_size_t size, widget_type type, uint8_t colour, uint32_t content = 0xFFFFFFFF, string_id tooltip = string_ids::null)
+    static constexpr widget_t makeWidget(Gfx::point_t origin, Gfx::ui_size_t size, widget_type type, uint8_t colour, uint32_t content = 0xFFFFFFFF, string_id tooltip = StringIds::null)
     {
         widget_t out = {};
         out.left = origin.x;
@@ -104,7 +104,7 @@ namespace OpenLoco::ui
         return out;
     }
 
-    constexpr widget_t makeRemapWidget(Gfx::point_t origin, Gfx::ui_size_t size, widget_type type, uint8_t colour, uint32_t content = 0xFFFFFFFF, string_id tooltip = string_ids::null)
+    constexpr widget_t makeRemapWidget(Gfx::point_t origin, Gfx::ui_size_t size, widget_type type, uint8_t colour, uint32_t content = 0xFFFFFFFF, string_id tooltip = StringIds::null)
     {
         widget_t out = makeWidget(origin, size, type, colour, content, tooltip);
 
@@ -119,27 +119,27 @@ namespace OpenLoco::ui
         makeStepperDecreaseWidget(__VA_ARGS__), \
         makeStepperIncreaseWidget(__VA_ARGS__)
 
-    [[maybe_unused]] static constexpr widget_t makeStepperDecreaseWidget(Gfx::point_t origin, Gfx::ui_size_t size, [[maybe_unused]] widget_type type, uint8_t colour, [[maybe_unused]] uint32_t content = 0xFFFFFFFF, [[maybe_unused]] string_id tooltip = string_ids::null)
+    [[maybe_unused]] static constexpr widget_t makeStepperDecreaseWidget(Gfx::point_t origin, Gfx::ui_size_t size, [[maybe_unused]] widget_type type, uint8_t colour, [[maybe_unused]] uint32_t content = 0xFFFFFFFF, [[maybe_unused]] string_id tooltip = StringIds::null)
     {
         const int16_t xPos = origin.x + size.width - 26;
         const int16_t yPos = origin.y + 1;
         const uint16_t width = 13;
         const uint16_t height = size.height - 2;
 
-        return makeWidget({ xPos, yPos }, { width, height }, widget_type::wt_11, colour, string_ids::stepper_minus);
+        return makeWidget({ xPos, yPos }, { width, height }, widget_type::wt_11, colour, StringIds::stepper_minus);
     }
 
-    [[maybe_unused]] static constexpr widget_t makeStepperIncreaseWidget(Gfx::point_t origin, Gfx::ui_size_t size, [[maybe_unused]] widget_type type, uint8_t colour, [[maybe_unused]] uint32_t content = 0xFFFFFFFF, [[maybe_unused]] string_id tooltip = string_ids::null)
+    [[maybe_unused]] static constexpr widget_t makeStepperIncreaseWidget(Gfx::point_t origin, Gfx::ui_size_t size, [[maybe_unused]] widget_type type, uint8_t colour, [[maybe_unused]] uint32_t content = 0xFFFFFFFF, [[maybe_unused]] string_id tooltip = StringIds::null)
     {
         const int16_t xPos = origin.x + size.width - 13;
         const int16_t yPos = origin.y + 1;
         const uint16_t width = 12;
         const uint16_t height = size.height - 2;
 
-        return makeWidget({ xPos, yPos }, { width, height }, widget_type::wt_11, colour, string_ids::stepper_plus);
+        return makeWidget({ xPos, yPos }, { width, height }, widget_type::wt_11, colour, StringIds::stepper_plus);
     }
 
-    constexpr widget_t makeTextWidget(Gfx::point_t origin, Gfx::ui_size_t size, widget_type type, uint8_t colour, string_id content, string_id tooltip = string_ids::null)
+    constexpr widget_t makeTextWidget(Gfx::point_t origin, Gfx::ui_size_t size, widget_type type, uint8_t colour, string_id content, string_id tooltip = StringIds::null)
     {
         widget_t out = {};
         out.left = origin.x;

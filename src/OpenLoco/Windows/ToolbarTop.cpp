@@ -113,15 +113,15 @@ namespace OpenLoco::ui::windows::toolbar_top::game
     // 0x0043B0F7
     static void loadsaveMenuMouseDown(window* window, widget_index widgetIndex)
     {
-        dropdown::add(0, string_ids::menu_load_game);
-        dropdown::add(1, string_ids::menu_save_game);
+        dropdown::add(0, StringIds::menu_load_game);
+        dropdown::add(1, StringIds::menu_save_game);
         dropdown::add(2, 0);
-        dropdown::add(3, string_ids::menu_about);
-        dropdown::add(4, string_ids::options);
-        dropdown::add(5, string_ids::menu_screenshot);
+        dropdown::add(3, StringIds::menu_about);
+        dropdown::add(4, StringIds::options);
+        dropdown::add(5, StringIds::menu_screenshot);
         dropdown::add(6, 0);
-        dropdown::add(7, string_ids::menu_quit_to_menu);
-        dropdown::add(8, string_ids::menu_exit_openloco);
+        dropdown::add(7, StringIds::menu_quit_to_menu);
+        dropdown::add(8, StringIds::menu_exit_openloco);
         dropdown::showBelow(window, widgetIndex, 9, 0);
         dropdown::setHighlightedItem(1);
     }
@@ -174,10 +174,10 @@ namespace OpenLoco::ui::windows::toolbar_top::game
     // 0x0043B04B
     static void audioMenuMouseDown(window* window, widget_index widgetIndex)
     {
-        dropdown::add(0, string_ids::dropdown_without_checkmark, string_ids::menu_mute);
-        dropdown::add(1, string_ids::dropdown_without_checkmark, string_ids::menu_play_music);
+        dropdown::add(0, StringIds::dropdown_without_checkmark, StringIds::menu_mute);
+        dropdown::add(1, StringIds::dropdown_without_checkmark, StringIds::menu_play_music);
         dropdown::add(2, 0);
-        dropdown::add(3, string_ids::menu_music_options);
+        dropdown::add(3, StringIds::menu_music_options);
         dropdown::showBelow(window, widgetIndex, 4, 0);
 
         if (!Audio::isAudioEnabled())
@@ -261,7 +261,7 @@ namespace OpenLoco::ui::windows::toolbar_top::game
                 obj_image = Gfx::recolour(track->var_1E, company_colour);
             }
 
-            dropdown::add(i, string_ids::menu_sprite_stringid_construction, { obj_image, obj_string_id });
+            dropdown::add(i, StringIds::menu_sprite_stringid_construction, { obj_image, obj_string_id });
 
             if (objIndex == last_railroad_option)
                 highlighted_item = i;
@@ -291,14 +291,14 @@ namespace OpenLoco::ui::windows::toolbar_top::game
         auto interface = objectmgr::get<interface_skin_object>();
         if (addr<0x525FAC, int8_t>() != -1)
         {
-            dropdown::add(ddIndex, string_ids::menu_sprite_stringid_construction, { interface->img + interface_skin::image_ids::toolbar_menu_airport, string_ids::menu_airport });
+            dropdown::add(ddIndex, StringIds::menu_sprite_stringid_construction, { interface->img + interface_skin::image_ids::toolbar_menu_airport, StringIds::menu_airport });
             menu_options[ddIndex] = 0;
             ddIndex++;
         }
 
         if (addr<0x525FAD, int8_t>() != -1)
         {
-            dropdown::add(ddIndex, string_ids::menu_sprite_stringid_construction, { interface->img + interface_skin::image_ids::toolbar_menu_ship_port, string_ids::menu_ship_port });
+            dropdown::add(ddIndex, StringIds::menu_sprite_stringid_construction, { interface->img + interface_skin::image_ids::toolbar_menu_ship_port, StringIds::menu_ship_port });
             menu_options[ddIndex] = 1;
             ddIndex++;
         }
@@ -343,12 +343,12 @@ namespace OpenLoco::ui::windows::toolbar_top::game
     };
 
     static const std::map<VehicleType, VehicleTypeInterfaceParam> VehicleTypeInterfaceParameters{
-        { VehicleType::bus, { interface_skin::image_ids::vehicle_bus, interface_skin::image_ids::build_vehicle_bus_frame_0, string_ids::build_buses, string_ids::num_buses_singular, string_ids::num_buses_plural } },
-        { VehicleType::plane, { interface_skin::image_ids::vehicle_aircraft, interface_skin::image_ids::build_vehicle_aircraft_frame_0, string_ids::build_aircraft, string_ids::num_aircrafts_singular, string_ids::num_aircrafts_plural } },
-        { VehicleType::ship, { interface_skin::image_ids::vehicle_ship, interface_skin::image_ids::build_vehicle_ship_frame_0, string_ids::build_ships, string_ids::num_ships_singular, string_ids::num_ships_plural } },
-        { VehicleType::train, { interface_skin::image_ids::vehicle_train_frame_0, interface_skin::image_ids::build_vehicle_train_frame_0, string_ids::build_trains, string_ids::num_trains_singular, string_ids::num_trains_plural } },
-        { VehicleType::tram, { interface_skin::image_ids::vehicle_tram, interface_skin::image_ids::build_vehicle_tram_frame_0, string_ids::build_trams, string_ids::num_trams_singular, string_ids::num_trams_plural } },
-        { VehicleType::truck, { interface_skin::image_ids::vehicle_truck, interface_skin::image_ids::build_vehicle_truck_frame_0, string_ids::build_trucks, string_ids::num_trucks_singular, string_ids::num_trucks_plural } },
+        { VehicleType::bus, { interface_skin::image_ids::vehicle_bus, interface_skin::image_ids::build_vehicle_bus_frame_0, StringIds::build_buses, StringIds::num_buses_singular, StringIds::num_buses_plural } },
+        { VehicleType::plane, { interface_skin::image_ids::vehicle_aircraft, interface_skin::image_ids::build_vehicle_aircraft_frame_0, StringIds::build_aircraft, StringIds::num_aircrafts_singular, StringIds::num_aircrafts_plural } },
+        { VehicleType::ship, { interface_skin::image_ids::vehicle_ship, interface_skin::image_ids::build_vehicle_ship_frame_0, StringIds::build_ships, StringIds::num_ships_singular, StringIds::num_ships_plural } },
+        { VehicleType::train, { interface_skin::image_ids::vehicle_train_frame_0, interface_skin::image_ids::build_vehicle_train_frame_0, StringIds::build_trains, StringIds::num_trains_singular, StringIds::num_trains_plural } },
+        { VehicleType::tram, { interface_skin::image_ids::vehicle_tram, interface_skin::image_ids::build_vehicle_tram_frame_0, StringIds::build_trams, StringIds::num_trams_singular, StringIds::num_trams_plural } },
+        { VehicleType::truck, { interface_skin::image_ids::vehicle_truck, interface_skin::image_ids::build_vehicle_truck_frame_0, StringIds::build_trucks, StringIds::num_trucks_singular, StringIds::num_trucks_plural } },
     };
 
     // 0x0043AD1F
@@ -370,7 +370,7 @@ namespace OpenLoco::ui::windows::toolbar_top::game
 
             uint32_t vehicle_image = Gfx::recolour(interface_param.build_image, company_colour);
 
-            dropdown::add(ddIndex, string_ids::menu_sprite_stringid, { interface->img + vehicle_image, interface_param.build_string });
+            dropdown::add(ddIndex, StringIds::menu_sprite_stringid, { interface->img + vehicle_image, interface_param.build_string });
             menu_options[ddIndex] = vehicleType;
             ddIndex++;
         }
@@ -434,7 +434,7 @@ namespace OpenLoco::ui::windows::toolbar_top::game
             else
                 vehicle_string_id = interface_param.num_plural;
 
-            dropdown::add(ddIndex, string_ids::menu_sprite_stringid, { interface->img + vehicle_image, vehicle_string_id, vehicle_count });
+            dropdown::add(ddIndex, StringIds::menu_sprite_stringid, { interface->img + vehicle_image, vehicle_string_id, vehicle_count });
             menu_options[ddIndex] = vehicleType;
             ddIndex++;
         }
@@ -468,11 +468,11 @@ namespace OpenLoco::ui::windows::toolbar_top::game
         uint32_t company_colour = companymgr::getPlayerCompanyColour();
         sprite_base = Gfx::recolour(sprite_base, company_colour);
 
-        dropdown::add(0, string_ids::menu_sprite_stringid, { sprite_base + interface_skin::image_ids::all_stations, string_ids::all_stations });
-        dropdown::add(1, string_ids::menu_sprite_stringid, { sprite_base + interface_skin::image_ids::rail_stations, string_ids::rail_stations });
-        dropdown::add(2, string_ids::menu_sprite_stringid, { sprite_base + interface_skin::image_ids::road_stations, string_ids::road_stations });
-        dropdown::add(3, string_ids::menu_sprite_stringid, { sprite_base + interface_skin::image_ids::airports, string_ids::airports });
-        dropdown::add(4, string_ids::menu_sprite_stringid, { sprite_base + interface_skin::image_ids::ship_ports, string_ids::ship_ports });
+        dropdown::add(0, StringIds::menu_sprite_stringid, { sprite_base + interface_skin::image_ids::all_stations, StringIds::all_stations });
+        dropdown::add(1, StringIds::menu_sprite_stringid, { sprite_base + interface_skin::image_ids::rail_stations, StringIds::rail_stations });
+        dropdown::add(2, StringIds::menu_sprite_stringid, { sprite_base + interface_skin::image_ids::road_stations, StringIds::road_stations });
+        dropdown::add(3, StringIds::menu_sprite_stringid, { sprite_base + interface_skin::image_ids::airports, StringIds::airports });
+        dropdown::add(4, StringIds::menu_sprite_stringid, { sprite_base + interface_skin::image_ids::ship_ports, StringIds::ship_ports });
         dropdown::showBelow(window, widgetIndex, 5, 25, (1 << 6));
         dropdown::setHighlightedItem(0);
     }

@@ -92,13 +92,13 @@ namespace OpenLoco::ui::windows::map
     widget_t widgets[] = {
         makeWidget({ 0, 0 }, { 350, 272 }, widget_type::frame, 0),
         makeWidget({ 1, 1 }, { 348, 13 }, widget_type::caption_25, 0),
-        makeWidget({ 335, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, string_ids::tooltip_close_window),
+        makeWidget({ 335, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window),
         makeWidget({ 0, 41 }, { 350, 230 }, widget_type::panel, 1),
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_6, 1, ImageIds::tab, string_ids::tab_map_overall),
-        makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_6, 1, ImageIds::tab, string_ids::tab_map_vehicles),
-        makeRemapWidget({ 65, 15 }, { 31, 27 }, widget_type::wt_6, 1, ImageIds::tab, string_ids::tab_map_industries),
-        makeRemapWidget({ 96, 15 }, { 31, 27 }, widget_type::wt_6, 1, ImageIds::tab, string_ids::tab_map_routes),
-        makeRemapWidget({ 158, 15 }, { 31, 27 }, widget_type::wt_6, 1, ImageIds::tab, string_ids::tab_map_ownership),
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_6, 1, ImageIds::tab, StringIds::tab_map_overall),
+        makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_6, 1, ImageIds::tab, StringIds::tab_map_vehicles),
+        makeRemapWidget({ 65, 15 }, { 31, 27 }, widget_type::wt_6, 1, ImageIds::tab, StringIds::tab_map_industries),
+        makeRemapWidget({ 96, 15 }, { 31, 27 }, widget_type::wt_6, 1, ImageIds::tab, StringIds::tab_map_routes),
+        makeRemapWidget({ 158, 15 }, { 31, 27 }, widget_type::wt_6, 1, ImageIds::tab, StringIds::tab_map_ownership),
         makeWidget({ 3, 44 }, { 240, 215 }, widget_type::scrollview, 1, horizontal | vertical),
         makeWidget({ 3, 250 }, { 322, 21 }, widget_type::wt_13, 1),
         widgetEnd()
@@ -400,7 +400,7 @@ namespace OpenLoco::ui::windows::map
     // 0x0046B946
     static void tooltip(FormatArguments& args, window* self, widget_index widgetIndex)
     {
-        args.push(string_ids::tooltip_scroll_map);
+        args.push(StringIds::tooltip_scroll_map);
     }
 
     // 0x0046D223
@@ -431,11 +431,11 @@ namespace OpenLoco::ui::windows::map
     static void prepareDraw(window* self)
     {
         const string_id captionText[] = {
-            string_ids::title_map,
-            string_ids::title_map_vehicles,
-            string_ids::title_map_industries,
-            string_ids::title_map_routes,
-            string_ids::title_map_companies,
+            StringIds::title_map,
+            StringIds::title_map_vehicles,
+            StringIds::title_map_industries,
+            StringIds::title_map_routes,
+            StringIds::title_map_companies,
         };
 
         widgets[widx::caption].text = captionText[self->current_tab];
@@ -575,12 +575,12 @@ namespace OpenLoco::ui::windows::map
         };
 
         static const string_id lineNames[] = {
-            string_ids::map_key_towns,
-            string_ids::map_key_industries,
-            string_ids::map_key_roads,
-            string_ids::map_key_railways,
-            string_ids::map_key_stations,
-            string_ids::map_key_vegetation,
+            StringIds::map_key_towns,
+            StringIds::map_key_industries,
+            StringIds::map_key_roads,
+            StringIds::map_key_railways,
+            StringIds::map_key_stations,
+            StringIds::map_key_vegetation,
         };
 
         for (auto i = 0; i < overallGraphKeySize; i++)
@@ -593,11 +593,11 @@ namespace OpenLoco::ui::windows::map
             auto args = FormatArguments();
             args.push(lineNames[i]);
 
-            auto stringId = string_ids::small_black_string;
+            auto stringId = StringIds::small_black_string;
 
             if (self->var_854 & (1 << i))
             {
-                stringId = string_ids::small_white_string;
+                stringId = StringIds::small_white_string;
             }
 
             Gfx::drawString_494BBF(*dpi, x + 6, *y, 94, Colour::black, stringId, &args);
@@ -620,12 +620,12 @@ namespace OpenLoco::ui::windows::map
     static void drawGraphKeyVehicles(window* self, Gfx::drawpixelinfo_t* dpi, uint16_t x, uint16_t* y)
     {
         static const string_id lineNames[] = {
-            string_ids::forbid_trains,
-            string_ids::forbid_buses,
-            string_ids::forbid_trucks,
-            string_ids::forbid_trams,
-            string_ids::forbid_aircraft,
-            string_ids::forbid_ships,
+            StringIds::forbid_trains,
+            StringIds::forbid_buses,
+            StringIds::forbid_trucks,
+            StringIds::forbid_trams,
+            StringIds::forbid_aircraft,
+            StringIds::forbid_ships,
         };
 
         for (uint8_t i = 0; i < std::size(_vehicleTypeCounts); i++)
@@ -639,11 +639,11 @@ namespace OpenLoco::ui::windows::map
             auto args = FormatArguments();
             args.push(lineNames[i]);
 
-            auto stringId = string_ids::small_black_string;
+            auto stringId = StringIds::small_black_string;
 
             if (self->var_854 & (1 << i))
             {
-                stringId = string_ids::small_white_string;
+                stringId = StringIds::small_white_string;
             }
 
             Gfx::drawString_494BBF(*dpi, x + 6, *y, 94, Colour::black, stringId, &args);
@@ -706,11 +706,11 @@ namespace OpenLoco::ui::windows::map
             auto args = FormatArguments();
             args.push(industry->name);
 
-            auto stringId = string_ids::small_black_string;
+            auto stringId = StringIds::small_black_string;
 
             if (self->var_854 & (1 << i))
             {
-                stringId = string_ids::small_white_string;
+                stringId = StringIds::small_white_string;
             }
 
             Gfx::drawString_494BBF(*dpi, x + 6, *y, 94, Colour::black, stringId, &args);
@@ -732,11 +732,11 @@ namespace OpenLoco::ui::windows::map
                 Gfx::drawRect(dpi, x, *y + 3, 5, 5, colour);
             }
 
-            auto routeType = string_ids::map_routes_aircraft;
+            auto routeType = StringIds::map_routes_aircraft;
 
             if (index != 0xFE)
             {
-                routeType = string_ids::map_routes_ships;
+                routeType = StringIds::map_routes_ships;
 
                 if (index != 0xFD)
                 {
@@ -756,11 +756,11 @@ namespace OpenLoco::ui::windows::map
             auto args = FormatArguments();
             args.push(routeType);
 
-            auto stringId = string_ids::small_black_string;
+            auto stringId = StringIds::small_black_string;
 
             if (self->var_854 & (1 << i))
             {
-                stringId = string_ids::small_white_string;
+                stringId = StringIds::small_white_string;
             }
 
             Gfx::drawString_494BBF(*dpi, x + 6, *y, 94, Colour::black, stringId, &args);
@@ -790,11 +790,11 @@ namespace OpenLoco::ui::windows::map
             auto args = FormatArguments();
             args.push(company.name);
 
-            auto stringId = string_ids::small_black_string;
+            auto stringId = StringIds::small_black_string;
 
             if (self->var_854 & (1 << index))
             {
-                stringId = string_ids::small_white_string;
+                stringId = StringIds::small_white_string;
             }
 
             Gfx::drawString_494BBF(*dpi, x + 6, *y, 94, Colour::black, stringId, &args);
@@ -807,26 +807,26 @@ namespace OpenLoco::ui::windows::map
     static void formatVehicleString(window* self, FormatArguments args)
     {
         static const string_id vehicleStringSingular[] = {
-            string_ids::num_trains_singular,
-            string_ids::num_buses_singular,
-            string_ids::num_trucks_singular,
-            string_ids::num_trams_singular,
-            string_ids::num_aircrafts_singular,
-            string_ids::num_ships_singular,
+            StringIds::num_trains_singular,
+            StringIds::num_buses_singular,
+            StringIds::num_trucks_singular,
+            StringIds::num_trams_singular,
+            StringIds::num_aircrafts_singular,
+            StringIds::num_ships_singular,
         };
 
         static const string_id vehicleStringPlural[] = {
-            string_ids::num_trains_plural,
-            string_ids::num_buses_plural,
-            string_ids::num_trucks_plural,
-            string_ids::num_trams_plural,
-            string_ids::num_aircrafts_plural,
-            string_ids::num_ships_plural,
+            StringIds::num_trains_plural,
+            StringIds::num_buses_plural,
+            StringIds::num_trucks_plural,
+            StringIds::num_trams_plural,
+            StringIds::num_aircrafts_plural,
+            StringIds::num_ships_plural,
         };
 
         int16_t vehicleIndex = Utility::bitScanForward(self->var_854);
         uint16_t totalVehicleCount = 0;
-        auto stringId = string_ids::status_num_vehicles_plural;
+        auto stringId = StringIds::status_num_vehicles_plural;
 
         if (vehicleIndex == -1)
         {
@@ -837,7 +837,7 @@ namespace OpenLoco::ui::windows::map
 
             if (totalVehicleCount == 1)
             {
-                stringId = string_ids::status_num_vehicles_singular;
+                stringId = StringIds::status_num_vehicles_singular;
             }
         }
         else
@@ -871,11 +871,11 @@ namespace OpenLoco::ui::windows::map
                 industryCount++;
             }
 
-            auto stringId = string_ids::status_num_industries_plural;
+            auto stringId = StringIds::status_num_industries_plural;
 
             if (industryCount == 1)
             {
-                stringId = string_ids::status_num_industries_singular;
+                stringId = StringIds::status_num_industries_singular;
             }
 
             args.push(stringId);
@@ -903,7 +903,7 @@ namespace OpenLoco::ui::windows::map
                 stringId = industryObj->nameSingular;
             }
 
-            auto buffer = StringManager::getString(string_ids::buffer_1250);
+            auto buffer = StringManager::getString(StringIds::buffer_1250);
             char* ptr = const_cast<char*>(buffer);
 
             ptr = StringManager::formatString(ptr, stringId, &industryCount);
@@ -913,20 +913,20 @@ namespace OpenLoco::ui::windows::map
 
             if (industryObj->requiresCargo())
             {
-                ptr = StringManager::formatString(ptr, string_ids::industry_require);
+                ptr = StringManager::formatString(ptr, StringIds::industry_require);
 
                 ptr = industryObj->getRequiredCargoString(ptr);
 
                 if (industryObj->producesCargo())
                 {
-                    ptr = StringManager::formatString(ptr, string_ids::cargo_to_produce);
+                    ptr = StringManager::formatString(ptr, StringIds::cargo_to_produce);
 
                     ptr = industryObj->getProducedCargoString(ptr);
                 }
             }
             else if (industryObj->producesCargo())
             {
-                ptr = StringManager::formatString(ptr, string_ids::industry_produce);
+                ptr = StringManager::formatString(ptr, StringIds::industry_produce);
 
                 ptr = industryObj->getProducedCargoString(ptr);
             }
@@ -934,7 +934,7 @@ namespace OpenLoco::ui::windows::map
             *ptr++ = ')';
             *ptr = '\0';
 
-            args.push(string_ids::buffer_1250);
+            args.push(StringIds::buffer_1250);
             args.push(industryCount);
         }
     }
@@ -986,7 +986,7 @@ namespace OpenLoco::ui::windows::map
             case widx::tabOverall:
             case widx::tabRoutes:
             case widx::tabOwnership:
-                args.push(string_ids::empty);
+                args.push(StringIds::empty);
                 break;
 
             case widx::tabVehicles:
@@ -1002,7 +1002,7 @@ namespace OpenLoco::ui::windows::map
         auto y = self->y + self->widgets[widx::statusBar].top - 1;
         auto width = self->widgets[widx::statusBar].width();
 
-        Gfx::drawString_494BBF(*dpi, x, y, width, Colour::black, string_ids::black_stringid, &args);
+        Gfx::drawString_494BBF(*dpi, x, y, width, Colour::black, StringIds::black_stringid, &args);
     }
 
     // 0x0046BF0F based on

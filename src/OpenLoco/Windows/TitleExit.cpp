@@ -23,7 +23,7 @@ namespace OpenLoco::ui::windows
     }
 
     static widget_t _widgets[] = {
-        makeWidget({ 0, 0 }, window_size, widget_type::wt_9, 1, -1, string_ids::title_menu_exit_from_game),
+        makeWidget({ 0, 0 }, window_size, widget_type::wt_9, 1, -1, StringIds::title_menu_exit_from_game),
         widgetEnd(),
     };
 
@@ -59,7 +59,7 @@ namespace OpenLoco::ui::windows
 
     static void prepareDraw(ui::window* self)
     {
-        auto exitString = StringManager::getString(string_ids::title_exit_game);
+        auto exitString = StringManager::getString(StringIds::title_exit_game);
         self->width = Gfx::getStringWidthNewLined(exitString) + 10;
         self->x = ui::width() - self->width;
         self->widgets[widx::exit_button].right = self->width;
@@ -74,7 +74,7 @@ namespace OpenLoco::ui::windows
         int16_t x = window->x + window->width / 2;
         int16_t y = window->y + window->widgets[widx::exit_button].top + 8;
         Gfx::point_t origin = { x, y };
-        Gfx::drawStringCentredWrapped(dpi, &origin, window->width, Colour::black, string_ids::title_exit_game);
+        Gfx::drawStringCentredWrapped(dpi, &origin, window->width, Colour::black, StringIds::title_exit_game);
     }
 
     // 0x00439268

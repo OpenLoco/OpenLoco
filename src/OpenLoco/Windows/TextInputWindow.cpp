@@ -63,10 +63,10 @@ namespace OpenLoco::ui::textinput
     static widget_t _widgets[] = {
         makeWidget({ 0, 0 }, { 330, 90 }, widget_type::frame, 0),
         makeWidget({ 1, 1 }, { 328, 13 }, widget_type::caption_25, 0),
-        makeWidget({ 315, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, string_ids::tooltip_close_window),
+        makeWidget({ 315, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window),
         makeWidget({ 0, 15 }, { 330, 75 }, widget_type::panel, 1),
         makeWidget({ 4, 58 }, { 322, 14 }, widget_type::wt_17, 1),
-        makeTextWidget({ 256, 74 }, { 70, 12 }, widget_type::wt_11, 1, string_ids::label_button_ok),
+        makeTextWidget({ 256, 74 }, { 70, 12 }, widget_type::wt_11, 1, StringIds::label_button_ok),
         widgetEnd(),
     };
 
@@ -253,7 +253,7 @@ namespace OpenLoco::ui::textinput
         memcpy(&_commonFormatArgs[2], _formatArgs + 8, 8);
 
         Gfx::point_t position = { (int16_t)(window->x + window->width / 2), (int16_t)(window->y + 30) };
-        Gfx::drawStringCentredWrapped(context, &position, window->width - 8, 0, string_ids::wcolour2_stringid, &_commonFormatArgs[0]);
+        Gfx::drawStringCentredWrapped(context, &position, window->width - 8, 0, StringIds::wcolour2_stringid, &_commonFormatArgs[0]);
 
         auto widget = &_widgets[widx::input];
         Gfx::drawpixelinfo_t* clipped = nullptr;
@@ -262,13 +262,13 @@ namespace OpenLoco::ui::textinput
             return;
         }
 
-        char* drawnBuffer = (char*)StringManager::getString(string_ids::buffer_2039);
+        char* drawnBuffer = (char*)StringManager::getString(StringIds::buffer_2039);
         strcpy(drawnBuffer, _buffer.data());
 
-        *((string_id*)(&_commonFormatArgs[0])) = string_ids::buffer_2039;
+        *((string_id*)(&_commonFormatArgs[0])) = StringIds::buffer_2039;
 
         position = { _xOffset, 1 };
-        Gfx::drawString_494B3F(*clipped, &position, 0, string_ids::black_stringid, _commonFormatArgs);
+        Gfx::drawString_494B3F(*clipped, &position, 0, StringIds::black_stringid, _commonFormatArgs);
 
         if ((_cursorFrame % 32) >= 16)
         {
@@ -278,9 +278,9 @@ namespace OpenLoco::ui::textinput
         strncpy(drawnBuffer, _buffer.data(), cursor_position);
         drawnBuffer[cursor_position] = '\0';
 
-        *((string_id*)(&_commonFormatArgs[0])) = string_ids::buffer_2039;
+        *((string_id*)(&_commonFormatArgs[0])) = StringIds::buffer_2039;
         position = { _xOffset, 1 };
-        Gfx::drawString_494B3F(*clipped, &position, 0, string_ids::black_stringid, _commonFormatArgs);
+        Gfx::drawString_494B3F(*clipped, &position, 0, StringIds::black_stringid, _commonFormatArgs);
         Gfx::fillRect(clipped, position.x, position.y, position.x, position.y + 9, Colour::getShade(window->colours[1], 9));
     }
 

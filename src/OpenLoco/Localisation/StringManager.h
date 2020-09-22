@@ -9,7 +9,7 @@
 
 namespace OpenLoco
 {
-    namespace string_ids
+    namespace StringIds
     {
         constexpr string_id null = 0xFFFF;
     }

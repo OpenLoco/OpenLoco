@@ -1270,7 +1270,7 @@ namespace OpenLoco::ui
             regs.ax = widget_index;
             regs.esi = (int32_t)this;
             call((int32_t)this->event_handlers->tooltip, regs);
-            return regs.ax != (int16_t)string_ids::null;
+            return regs.ax != (int16_t)StringIds::null;
         }
 
         auto args = FormatArguments();

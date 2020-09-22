@@ -189,22 +189,22 @@ namespace OpenLoco::ui::BuildVehicle
     static widget_t _widgets[] = {
         makeWidget({ 0, 0 }, { 380, 233 }, widget_type::frame, 0),
         makeWidget({ 1, 1 }, { 378, 13 }, widget_type::caption_24, 0),
-        makeWidget({ 365, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, string_ids::tooltip_close_window),
+        makeWidget({ 365, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window),
         makeWidget({ 0, 41 }, { 380, 192 }, widget_type::panel, 1),
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_build_new_train_vehicles),
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_build_new_buses),
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_build_new_trucks),
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_build_new_trams),
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_build_new_aircraft),
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_build_new_ships),
-        makeRemapWidget({ 5, 43 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_vehicles_for),
-        makeRemapWidget({ 36, 43 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_vehicles_for),
-        makeRemapWidget({ 67, 43 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_vehicles_for),
-        makeRemapWidget({ 98, 43 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_vehicles_for),
-        makeRemapWidget({ 129, 43 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_vehicles_for),
-        makeRemapWidget({ 160, 43 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_vehicles_for),
-        makeRemapWidget({ 191, 43 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_vehicles_for),
-        makeRemapWidget({ 222, 43 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_vehicles_for),
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_build_new_train_vehicles),
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_build_new_buses),
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_build_new_trucks),
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_build_new_trams),
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_build_new_aircraft),
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_build_new_ships),
+        makeRemapWidget({ 5, 43 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_vehicles_for),
+        makeRemapWidget({ 36, 43 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_vehicles_for),
+        makeRemapWidget({ 67, 43 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_vehicles_for),
+        makeRemapWidget({ 98, 43 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_vehicles_for),
+        makeRemapWidget({ 129, 43 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_vehicles_for),
+        makeRemapWidget({ 160, 43 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_vehicles_for),
+        makeRemapWidget({ 191, 43 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_vehicles_for),
+        makeRemapWidget({ 222, 43 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_vehicles_for),
         makeWidget({ 3, 72 }, { 374, 146 }, widget_type::scrollview, 1, scrollbars::vertical),
         makeWidget({ 250, 44 }, { 180, 66 }, widget_type::scrollview, 1, scrollbars::none),
         widgetEnd(),
@@ -750,13 +750,13 @@ namespace OpenLoco::ui::BuildVehicle
         // Skip 5 * 2 bytes
         args.skip(10);
         args.push(vehicleObj->name);
-        gGameCommandErrorTitle = string_ids::cant_build_pop_5_string_id;
+        gGameCommandErrorTitle = StringIds::cant_build_pop_5_string_id;
         if (_buildTargetVehicle != -1)
         {
             auto vehicle = thingmgr::get<OpenLoco::vehicle>(_buildTargetVehicle);
             args.push(vehicle->var_22);
             args.push(vehicle->var_44);
-            gGameCommandErrorTitle = string_ids::cant_add_pop_5_string_id_string_id;
+            gGameCommandErrorTitle = StringIds::cant_add_pop_5_string_id_string_id;
         }
 
         if (!game_commands::do_5(item, _buildTargetVehicle))
@@ -799,7 +799,7 @@ namespace OpenLoco::ui::BuildVehicle
     {
         if (widgetIndex < widx::tab_track_type_0 || widgetIndex >= widx::scrollview_vehicle_selection)
         {
-            args.push(string_ids::tooltip_scroll_new_vehicle_list);
+            args.push(StringIds::tooltip_scroll_new_vehicle_list);
         }
         else
         {
@@ -810,11 +810,11 @@ namespace OpenLoco::ui::BuildVehicle
                 if (_transportTypeTabInformation[window->current_tab].type == VehicleType::plane)
                 {
 
-                    args.push(string_ids::airport);
+                    args.push(StringIds::airport);
                 }
                 else
                 {
-                    args.push(string_ids::docks);
+                    args.push(StringIds::docks);
                 }
             }
             else
@@ -873,7 +873,7 @@ namespace OpenLoco::ui::BuildVehicle
         activeWidgets |= 1ULL << (window->current_secondary_tab + widx::tab_track_type_0);
         window->activated_widgets = activeWidgets;
 
-        window->widgets[widx::caption].text = window->current_tab + string_ids::build_trains;
+        window->widgets[widx::caption].text = window->current_tab + StringIds::build_trains;
 
         auto width = window->width;
         auto height = window->height;
@@ -908,14 +908,14 @@ namespace OpenLoco::ui::BuildVehicle
         {
             auto x = window->x + 2;
             auto y = window->y + window->height - 13;
-            auto bottomLeftMessage = string_ids::select_new_vehicle;
+            auto bottomLeftMessage = StringIds::select_new_vehicle;
             FormatArguments args{};
             if (_buildTargetVehicle != -1)
             {
                 auto vehicle = thingmgr::get<OpenLoco::vehicle>(_buildTargetVehicle);
                 args.push(vehicle->var_22);
                 args.push(vehicle->var_44);
-                bottomLeftMessage = string_ids::select_vehicle_to_add_to_string_id;
+                bottomLeftMessage = StringIds::select_vehicle_to_add_to_string_id;
             }
 
             Gfx::drawString_494BBF(*dpi, x, y, window->width - 186, Colour::black, bottomLeftMessage, &args);
@@ -927,33 +927,33 @@ namespace OpenLoco::ui::BuildVehicle
         }
 
         auto vehicleObj = objectmgr::get<vehicle_object>(window->row_hover);
-        auto buffer = const_cast<char*>(StringManager::getString(string_ids::buffer_1250));
+        auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
 
         {
             auto cost = (vehicleObj->cost_factor * currencyMultiplicationFactor[vehicleObj->cost_index]) / 64;
             FormatArguments args{};
             args.push(cost);
-            buffer = StringManager::formatString(buffer, string_ids::stats_cost, &args);
+            buffer = StringManager::formatString(buffer, StringIds::stats_cost, &args);
         }
 
         {
             auto runningCost = (vehicleObj->run_cost_factor * currencyMultiplicationFactor[vehicleObj->run_cost_index]) / 1024;
             FormatArguments args{};
             args.push(runningCost);
-            buffer = StringManager::formatString(buffer, string_ids::stats_running_cost, &args);
+            buffer = StringManager::formatString(buffer, StringIds::stats_running_cost, &args);
         }
 
         if (vehicleObj->designed != 0)
         {
             FormatArguments args{};
             args.push(vehicleObj->designed);
-            buffer = StringManager::formatString(buffer, string_ids::stats_designed, &args);
+            buffer = StringManager::formatString(buffer, StringIds::stats_designed, &args);
         }
 
         if (vehicleObj->mode == TransportMode::rail || vehicleObj->mode == TransportMode::road)
         {
-            buffer = StringManager::formatString(buffer, string_ids::stats_requires);
-            auto trackName = string_ids::road;
+            buffer = StringManager::formatString(buffer, StringIds::stats_requires);
+            auto trackName = StringIds::road;
             if (vehicleObj->mode == TransportMode::road)
             {
                 if (vehicleObj->track_type != 0xFF)
@@ -989,7 +989,7 @@ namespace OpenLoco::ui::BuildVehicle
                 auto trackExtraObj = objectmgr::get<track_extra_object>(vehicleObj->rack_rail_type);
                 FormatArguments args{};
                 args.push(trackExtraObj->name);
-                buffer = StringManager::formatString(buffer, string_ids::stats_string_steep_slope, &args);
+                buffer = StringManager::formatString(buffer, StringIds::stats_string_steep_slope, &args);
             }
         }
 
@@ -999,19 +999,19 @@ namespace OpenLoco::ui::BuildVehicle
             {
                 FormatArguments args{};
                 args.push(vehicleObj->power);
-                buffer = StringManager::formatString(buffer, string_ids::stats_power, &args);
+                buffer = StringManager::formatString(buffer, StringIds::stats_power, &args);
             }
         }
 
         {
             FormatArguments args{};
             args.push(vehicleObj->weight);
-            buffer = StringManager::formatString(buffer, string_ids::stats_weight, &args);
+            buffer = StringManager::formatString(buffer, StringIds::stats_weight, &args);
         }
         {
             FormatArguments args{};
             args.push(vehicleObj->speed);
-            buffer = StringManager::formatString(buffer, string_ids::stats_max_speed, &args);
+            buffer = StringManager::formatString(buffer, StringIds::stats_max_speed, &args);
         }
         if (vehicleObj->flags & flags_E0::rack_rail)
         {
@@ -1019,7 +1019,7 @@ namespace OpenLoco::ui::BuildVehicle
             FormatArguments args{};
             args.push(vehicleObj->rack_speed);
             args.push(trackExtraObj->name);
-            buffer = StringManager::formatString(buffer, string_ids::stats_velocity_on_string, &args);
+            buffer = StringManager::formatString(buffer, StringIds::stats_velocity_on_string, &args);
         }
 
         if (vehicleObj->num_simultaneous_cargo_types != 0)
@@ -1039,7 +1039,7 @@ namespace OpenLoco::ui::BuildVehicle
                         }
                         args.push(cargoUnitName);
                         args.push<uint16_t>(vehicleObj->max_primary_cargo);
-                        buffer = StringManager::formatString(buffer, string_ids::stats_capacity, &args);
+                        buffer = StringManager::formatString(buffer, StringIds::stats_capacity, &args);
                     }
                     cargoType = Utility::bitScanForward(cargoTypes);
                     if (cargoType != -1)
@@ -1058,7 +1058,7 @@ namespace OpenLoco::ui::BuildVehicle
                             auto cargoObj = objectmgr::get<cargo_object>(cargoType);
                             FormatArguments args{};
                             args.push(cargoObj->name);
-                            buffer = StringManager::formatString(buffer, string_ids::stats_or_string, &args);
+                            buffer = StringManager::formatString(buffer, StringIds::stats_or_string, &args);
                             strcpy(buffer, " ");
                             buffer++;
                         }
@@ -1069,7 +1069,7 @@ namespace OpenLoco::ui::BuildVehicle
 
             if (vehicleObj->flags & flags_E0::refittable)
             {
-                buffer = StringManager::formatString(buffer, string_ids::stats_refittable);
+                buffer = StringManager::formatString(buffer, StringIds::stats_refittable);
             }
 
             if (vehicleObj->num_simultaneous_cargo_types > 1)
@@ -1088,7 +1088,7 @@ namespace OpenLoco::ui::BuildVehicle
                         }
                         args.push(cargoUnitName);
                         args.push<uint16_t>(vehicleObj->max_secondary_cargo);
-                        buffer = StringManager::formatString(buffer, string_ids::stats_plus_string, &args);
+                        buffer = StringManager::formatString(buffer, StringIds::stats_plus_string, &args);
                     }
 
                     cargoType = Utility::bitScanForward(cargoTypes);
@@ -1108,7 +1108,7 @@ namespace OpenLoco::ui::BuildVehicle
                             auto cargoObj = objectmgr::get<cargo_object>(cargoType);
                             FormatArguments args{};
                             args.push(cargoObj->name);
-                            buffer = StringManager::formatString(buffer, string_ids::stats_or_string, &args);
+                            buffer = StringManager::formatString(buffer, StringIds::stats_or_string, &args);
                             strcpy(buffer, " ");
                             buffer++;
                         }
@@ -1120,7 +1120,7 @@ namespace OpenLoco::ui::BuildVehicle
 
         auto x = window->widgets[widx::scrollview_vehicle_selection].right + window->x + 2;
         auto y = window->widgets[widx::scrollview_vehicle_preview].bottom + window->y + 2;
-        Gfx::drawString_495224(*dpi, x, y, 180, Colour::black, string_ids::buffer_1250);
+        Gfx::drawString_495224(*dpi, x, y, 180, Colour::black, StringIds::buffer_1250);
     }
 
     // 0x4C3307
@@ -1134,12 +1134,12 @@ namespace OpenLoco::ui::BuildVehicle
                 Gfx::clear(*dpi, colour * 0x01010101);
                 if (window->var_83C == 0)
                 {
-                    auto defaultMessage = string_ids::no_vehicles_available;
+                    auto defaultMessage = StringIds::no_vehicles_available;
                     FormatArguments args{};
                     if (_buildTargetVehicle != -1)
                     {
                         auto vehicle = thingmgr::get<OpenLoco::vehicle>(_buildTargetVehicle);
-                        defaultMessage = string_ids::no_compatible_vehicles_available;
+                        defaultMessage = StringIds::no_compatible_vehicles_available;
                         args.push(vehicle->var_22);
                         args.push(vehicle->var_44);
                     }
@@ -1170,11 +1170,11 @@ namespace OpenLoco::ui::BuildVehicle
                             continue;
                         }
 
-                        auto colouredString = string_ids::black_stringid;
+                        auto colouredString = StringIds::black_stringid;
                         if (window->row_hover == vehicleType)
                         {
                             Gfx::fillRect(dpi, 0, y, window->width, y + window->row_height - 1, 0x2000030);
-                            colouredString = string_ids::wcolour2_stringid;
+                            colouredString = StringIds::wcolour2_stringid;
                         }
 
                         int16_t half = (window->row_height - 22) / 2;
@@ -1205,7 +1205,7 @@ namespace OpenLoco::ui::BuildVehicle
                 drawVehicleOverview(dpi, window->row_hover, companymgr::getControllingId(), unk1, unk2, { 90, 37 });
 
                 auto vehicleObj = objectmgr::get<vehicle_object>(window->row_hover);
-                auto buffer = const_cast<char*>(StringManager::getString(string_ids::buffer_1250));
+                auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
                 buffer = StringManager::formatString(buffer, vehicleObj->name);
                 auto usableCargoTypes = vehicleObj->primary_cargo_types | vehicleObj->secondary_cargo_types;
 
@@ -1221,8 +1221,8 @@ namespace OpenLoco::ui::BuildVehicle
 
                 *buffer++ = '\0';
                 FormatArguments args{};
-                args.push(string_ids::buffer_1250);
-                Gfx::drawStringCentredClipped(*dpi, 89, 52, 177, 0x20, string_ids::wcolour2_stringid, &args);
+                args.push(StringIds::buffer_1250);
+                Gfx::drawStringCentredClipped(*dpi, 89, 52, 177, 0x20, StringIds::wcolour2_stringid, &args);
                 break;
             }
         }

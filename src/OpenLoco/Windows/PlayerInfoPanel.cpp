@@ -47,8 +47,8 @@ namespace OpenLoco::ui::windows::PlayerInfoPanel
         makeWidget({ 0, 0 }, { 140, 29 }, widget_type::wt_3, 0),
         makeWidget({ 2, 2 }, { 136, 25 }, widget_type::wt_3, 0),
         makeWidget({ 1, 1 }, { 26, 26 }, widget_type::wt_9, 0),
-        makeWidget({ 27, 2 }, { 111, 12 }, widget_type::wt_9, 0, ImageIds::null, string_ids::tooltip_company_value),
-        makeWidget({ 27, 14 }, { 111, 12 }, widget_type::wt_9, 0, ImageIds::null, string_ids::tooltip_performance_index),
+        makeWidget({ 27, 2 }, { 111, 12 }, widget_type::wt_9, 0, ImageIds::null, StringIds::tooltip_company_value),
+        makeWidget({ 27, 14 }, { 111, 12 }, widget_type::wt_9, 0, ImageIds::null, StringIds::tooltip_performance_index),
         widgetEnd(),
     };
 
@@ -91,21 +91,21 @@ namespace OpenLoco::ui::windows::PlayerInfoPanel
             });
 
         const string_id positionArray[15] = {
-            string_ids::position_1st,
-            string_ids::position_2nd,
-            string_ids::position_3rd,
-            string_ids::position_4th,
-            string_ids::position_5th,
-            string_ids::position_6th,
-            string_ids::position_7th,
-            string_ids::position_8th,
-            string_ids::position_9th,
-            string_ids::position_10th,
-            string_ids::position_11th,
-            string_ids::position_12th,
-            string_ids::position_13th,
-            string_ids::position_14th,
-            string_ids::position_15th,
+            StringIds::position_1st,
+            StringIds::position_2nd,
+            StringIds::position_3rd,
+            StringIds::position_4th,
+            StringIds::position_5th,
+            StringIds::position_6th,
+            StringIds::position_7th,
+            StringIds::position_8th,
+            StringIds::position_9th,
+            StringIds::position_10th,
+            StringIds::position_11th,
+            StringIds::position_12th,
+            StringIds::position_13th,
+            StringIds::position_14th,
+            StringIds::position_15th,
         };
 
         int index = 0;
@@ -121,7 +121,7 @@ namespace OpenLoco::ui::windows::PlayerInfoPanel
             args.push<uint16_t>(0); // Needed after a user string id
             formatPerformanceIndex(company->performance_index, args);
 
-            dropdown::add(index, string_ids::dropdown_company_performance, args);
+            dropdown::add(index, StringIds::dropdown_company_performance, args);
 
             if (isPlayerCompany(company->id()))
             {
@@ -131,7 +131,7 @@ namespace OpenLoco::ui::windows::PlayerInfoPanel
             index++;
         }
 
-        dropdown::add(index++, string_ids::dropdown_companies_list, ImageIds::company_list_dropdown_icon);
+        dropdown::add(index++, StringIds::dropdown_companies_list, ImageIds::company_list_dropdown_icon);
         dropdown::showBelow(self, widgetIndex, index, 25, (1 << 6));
         if (highlightIndex != -1)
         {
@@ -226,16 +226,16 @@ namespace OpenLoco::ui::windows::PlayerInfoPanel
 
         auto x = window->x + frame.width() / 2 + 12;
         {
-            auto companyValueString = string_ids::player_info_bankrupt;
+            auto companyValueString = StringIds::player_info_bankrupt;
             if (!(playerCompany->challenge_flags & company_flags::bankrupt))
             {
                 if (static_cast<int16_t>(playerCompany->cash.var_04) < 0)
                 {
-                    companyValueString = string_ids::player_info_company_value_negative;
+                    companyValueString = StringIds::player_info_company_value_negative;
                 }
                 else
                 {
-                    companyValueString = string_ids::player_info_company_value;
+                    companyValueString = StringIds::player_info_company_value;
                 }
             }
 
@@ -251,15 +251,15 @@ namespace OpenLoco::ui::windows::PlayerInfoPanel
         }
 
         {
-            auto performanceString = string_ids::player_info_performance;
+            auto performanceString = StringIds::player_info_performance;
 
             if (playerCompany->challenge_flags & company_flags::increased_performance)
             {
-                performanceString = string_ids::player_info_performance_increase;
+                performanceString = StringIds::player_info_performance_increase;
             }
             else if (playerCompany->challenge_flags & (company_flags::decreased_performance))
             {
-                performanceString = string_ids::player_info_performance_decrease;
+                performanceString = StringIds::player_info_performance_decrease;
             }
 
             auto colour = window->colours[0] & 0x7F;
