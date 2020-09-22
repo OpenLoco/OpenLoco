@@ -174,11 +174,11 @@ namespace OpenLoco::ui::dropdown
         {
             StringManager::formatString(_byte_112CC04, stringId, &args);
 
-            _currentFontSpriteBase = font::medium_bold;
+            _currentFontSpriteBase = Font::medium_bold;
 
             Gfx::clipString(width, _byte_112CC04);
 
-            _currentFontSpriteBase = font::m1;
+            _currentFontSpriteBase = Font::m1;
 
             Gfx::drawString(dpi, x, y, colour, _byte_112CC04);
         }
@@ -365,7 +365,7 @@ namespace OpenLoco::ui::dropdown
 
                 StringManager::formatString(_byte_112CC04, _dropdownItemFormats[itemCount], &args);
 
-                _currentFontSpriteBase = font::medium_bold;
+                _currentFontSpriteBase = Font::medium_bold;
 
                 auto stringWidth = getStringWidth(_byte_112CC04);
 

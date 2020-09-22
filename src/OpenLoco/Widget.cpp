@@ -480,7 +480,7 @@ namespace OpenLoco::ui::widget
         int16_t width = widget->right - widget->left - 4 - 14;
         int16_t x = widget->left + window->x + 2 + (width / 2);
 
-        _currentFontSpriteBase = font::medium_bold;
+        _currentFontSpriteBase = Font::medium_bold;
         width = Gfx::clipString(width - 8, stringFormatBuffer);
 
         x -= width / 2;
@@ -501,7 +501,7 @@ namespace OpenLoco::ui::widget
         int16_t width = widget->right - widget->left - 4 - 14;
         x = x + (width / 2);
 
-        _currentFontSpriteBase = font::medium_bold;
+        _currentFontSpriteBase = Font::medium_bold;
         int16_t stringWidth = Gfx::clipString(width - 8, stringFormatBuffer);
         x -= (stringWidth - 1) / 2;
 
@@ -518,7 +518,7 @@ namespace OpenLoco::ui::widget
         int16_t width = widget->right - widget->left - 4 - 14;
         x = x + (width / 2);
 
-        _currentFontSpriteBase = font::medium_bold;
+        _currentFontSpriteBase = Font::medium_bold;
         int16_t stringWidth = Gfx::clipString(width - 8, stringFormatBuffer);
         x -= (stringWidth - 1) / 2;
 
@@ -672,7 +672,7 @@ namespace OpenLoco::ui::widget
 
         ui::scroll_area_t* scroll_area = &window->scroll_areas[scrollview_index];
 
-        _currentFontSpriteBase = font::medium_bold;
+        _currentFontSpriteBase = Font::medium_bold;
         if (scroll_area->flags & ui::scrollview::scroll_flags::HSCROLLBAR_VISIBLE)
         {
             draw_hscroll(dpi, window, widget, flags, colour, enabled, disabled, activated, hovered, scrollview_index);
@@ -748,7 +748,7 @@ namespace OpenLoco::ui::widget
 
         if (activated)
         {
-            _currentFontSpriteBase = font::medium_bold;
+            _currentFontSpriteBase = Font::medium_bold;
             Gfx::drawString(dpi, window->x + widget->left, window->y + widget->top, colour & 0x7F, _strCheckmark);
         }
     }

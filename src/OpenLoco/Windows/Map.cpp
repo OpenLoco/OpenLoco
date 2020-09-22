@@ -1412,7 +1412,7 @@ namespace OpenLoco::ui::windows::map
             auto townPos = locationToMapWindowPos({ town.x, town.y });
 
             StringManager::formatString(_stringFormatBuffer, town.name);
-            _currentFontSpriteBase = font::small;
+            _currentFontSpriteBase = Font::small;
 
             auto strWidth = Gfx::getStringWidth(_stringFormatBuffer);
 
@@ -1421,7 +1421,7 @@ namespace OpenLoco::ui::windows::map
             townPos.x -= strWidth;
             townPos.y -= 3;
 
-            _currentFontSpriteBase = font::small;
+            _currentFontSpriteBase = Font::small;
             Gfx::drawString(dpi, townPos.x, townPos.y, Colour::outline(Colour::bright_purple), _stringFormatBuffer);
         }
     }

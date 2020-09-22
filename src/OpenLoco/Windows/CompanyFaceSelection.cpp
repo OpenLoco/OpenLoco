@@ -298,11 +298,11 @@ namespace OpenLoco::ui::windows::CompanyFaceSelection
             std::string name(object.second._name);
             name.insert(0, 1, inlineColour);
 
-            _currentFontSpriteBase = font::medium_bold;
+            _currentFontSpriteBase = Font::medium_bold;
             auto stringColour = Colour::black;
             if (isInUseCompetitor(object.first))
             {
-                _currentFontSpriteBase = font::m1;
+                _currentFontSpriteBase = Font::m1;
                 stringColour = Colour::opaque(self->colours[1]) | (1 << 6);
             }
             Gfx::drawString(dpi, 0, y - 1, stringColour, const_cast<char*>(name.c_str()));

@@ -97,7 +97,7 @@ namespace OpenLoco::ui::windows::error
 
         if (buffer != &_byte_9C64B3[0])
         {
-            gCurrentFontSpriteBase = font::medium_bold;
+            gCurrentFontSpriteBase = Font::medium_bold;
             int16_t strWidth;
             {
                 strWidth = Gfx::getStringWidthNewLined(&_byte_9C64B3[0]);
@@ -105,7 +105,7 @@ namespace OpenLoco::ui::windows::error
 
             strWidth = std::min<int16_t>(strWidth, 196);
 
-            gCurrentFontSpriteBase = font::medium_bold;
+            gCurrentFontSpriteBase = Font::medium_bold;
             {
                 uint16_t breakLineCount = 0;
                 std::tie(strWidth, breakLineCount) = Gfx::wrapString(&_byte_9C64B3[0], strWidth);

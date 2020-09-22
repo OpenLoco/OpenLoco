@@ -212,19 +212,19 @@ namespace OpenLoco::Gfx
                     continue;
 
                 case control_codes::font_small:
-                    fontSpriteBase = font::small;
+                    fontSpriteBase = Font::small;
                     break;
 
                 case control_codes::font_large:
-                    fontSpriteBase = font::large;
+                    fontSpriteBase = Font::large;
                     break;
 
                 case control_codes::font_bold:
-                    fontSpriteBase = font::medium_bold;
+                    fontSpriteBase = Font::medium_bold;
                     break;
 
                 case control_codes::font_regular:
-                    fontSpriteBase = font::medium_normal;
+                    fontSpriteBase = Font::medium_normal;
                     break;
 
                 case control_codes::outline:
@@ -313,15 +313,15 @@ namespace OpenLoco::Gfx
 
                 case control_codes::newline_smaller:
                     pos.x = origin.x;
-                    if (_currentFontSpriteBase == font::medium_normal || _currentFontSpriteBase == font::medium_bold)
+                    if (_currentFontSpriteBase == Font::medium_normal || _currentFontSpriteBase == Font::medium_bold)
                     {
                         pos.y += 5;
                     }
-                    else if (_currentFontSpriteBase == font::small)
+                    else if (_currentFontSpriteBase == Font::small)
                     {
                         pos.y += 3;
                     }
-                    else if (_currentFontSpriteBase == font::large)
+                    else if (_currentFontSpriteBase == Font::large)
                     {
                         pos.y += 9;
                     }
@@ -329,15 +329,15 @@ namespace OpenLoco::Gfx
 
                 case control_codes::newline:
                     pos.x = origin.x;
-                    if (_currentFontSpriteBase == font::medium_normal || _currentFontSpriteBase == font::medium_bold)
+                    if (_currentFontSpriteBase == Font::medium_normal || _currentFontSpriteBase == Font::medium_bold)
                     {
                         pos.y += 10;
                     }
-                    else if (_currentFontSpriteBase == font::small)
+                    else if (_currentFontSpriteBase == Font::small)
                     {
                         pos.y += 6;
                     }
-                    else if (_currentFontSpriteBase == font::large)
+                    else if (_currentFontSpriteBase == Font::large)
                     {
                         pos.y += 18;
                     }
@@ -366,16 +366,16 @@ namespace OpenLoco::Gfx
                 }
 
                 case control_codes::font_small:
-                    _currentFontSpriteBase = font::small;
+                    _currentFontSpriteBase = Font::small;
                     break;
                 case control_codes::font_large:
-                    _currentFontSpriteBase = font::large;
+                    _currentFontSpriteBase = Font::large;
                     break;
                 case control_codes::font_regular:
-                    _currentFontSpriteBase = font::medium_normal;
+                    _currentFontSpriteBase = Font::medium_normal;
                     break;
                 case control_codes::font_bold:
-                    _currentFontSpriteBase = font::medium_bold;
+                    _currentFontSpriteBase = Font::medium_bold;
                     break;
                 case control_codes::outline:
                     _currentFontFlags = _currentFontFlags | text_draw_flags::outline;
@@ -544,14 +544,14 @@ namespace OpenLoco::Gfx
         }
 
         _currentFontFlags = 0;
-        if (_currentFontSpriteBase == font::m1)
+        if (_currentFontSpriteBase == Font::m1)
         {
-            _currentFontSpriteBase = font::medium_bold;
+            _currentFontSpriteBase = Font::medium_bold;
             _currentFontFlags = _currentFontFlags | text_draw_flags::dark;
         }
-        else if (_currentFontSpriteBase == font::m2)
+        else if (_currentFontSpriteBase == Font::m2)
         {
-            _currentFontSpriteBase = font::medium_bold;
+            _currentFontSpriteBase = Font::medium_bold;
             _currentFontFlags = _currentFontFlags | text_draw_flags::dark;
             _currentFontFlags = _currentFontFlags | text_draw_flags::extra_dark;
         }

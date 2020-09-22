@@ -14,7 +14,7 @@ namespace OpenLoco
         constexpr string_id null = 0xFFFF;
     }
 
-    namespace font
+    namespace Font
     {
         constexpr int16_t m1 = -1;
         constexpr int16_t m2 = -2;
