@@ -514,12 +514,12 @@ namespace OpenLoco::Gfx
         // 0x00E04348, 0x00E0434A
         Gfx::point_t origin = { x, y };
 
-        if (colour == format_flags::fe)
+        if (colour == FormatFlags::fe)
         {
             return loopNewline(context, origin, (uint8_t*)str);
         }
 
-        if (colour == format_flags::fd)
+        if (colour == FormatFlags::fd)
         {
             _currentFontFlags = 0;
             setTextColour(0);
@@ -538,7 +538,7 @@ namespace OpenLoco::Gfx
         if (y < context->y - 90)
             return origin;
 
-        if (colour == format_flags::ff)
+        if (colour == FormatFlags::ff)
         {
             return loopNewline(context, origin, (uint8_t*)str);
         }
@@ -561,15 +561,15 @@ namespace OpenLoco::Gfx
         _textColours[2] = Colour::getShade(Colour::bright_pink, 5);
         _textColours[3] = Colour::getShade(Colour::light_blue, 5);
 
-        if (colour & format_flags::textflag_5)
+        if (colour & FormatFlags::textflag_5)
         {
-            colour &= ~format_flags::textflag_5;
+            colour &= ~FormatFlags::textflag_5;
             _currentFontFlags = _currentFontFlags | text_draw_flags::outline;
         }
 
-        if (colour & format_flags::textflag_6)
+        if (colour & FormatFlags::textflag_6)
         {
-            colour &= ~format_flags::textflag_6;
+            colour &= ~FormatFlags::textflag_6;
             _currentFontFlags = _currentFontFlags | text_draw_flags::inset;
         }
 

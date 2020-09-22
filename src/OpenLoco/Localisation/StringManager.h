@@ -25,7 +25,7 @@ namespace OpenLoco
         constexpr int16_t large = 672;
     }
 
-    namespace format_flags
+    namespace FormatFlags
     {
         constexpr uint8_t textflag_5 = (1ULL << 5); // 0x20
         constexpr uint8_t textflag_6 = (1ULL << 6); // 0x40

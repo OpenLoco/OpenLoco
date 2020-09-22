@@ -408,7 +408,7 @@ namespace OpenLoco::ui::widget
         colour &= 0x7F;
         if (disabled)
         {
-            colour |= format_flags::textflag_6;
+            colour |= FormatFlags::textflag_6;
         }
 
         int16_t centreX = window->x + (widget->left + widget->right + 1) / 2 - 1;
@@ -424,7 +424,7 @@ namespace OpenLoco::ui::widget
         colour &= 0x7F;
         if (disabled)
         {
-            colour |= format_flags::textflag_6;
+            colour |= FormatFlags::textflag_6;
         }
 
         int width = widget->right - widget->left - 2;
@@ -439,10 +439,10 @@ namespace OpenLoco::ui::widget
             return;
         }
 
-        uint8_t c = format_flags::fd;
+        uint8_t c = FormatFlags::fd;
         if (disabled)
         {
-            c = colour | format_flags::textflag_6;
+            c = colour | FormatFlags::textflag_6;
         }
 
         drawString_494B3F(*dpi, window->x + widget->left + 1, window->y + widget->top, c, widget->text, _commonFormatArgs);
@@ -468,7 +468,7 @@ namespace OpenLoco::ui::widget
         int16_t y = widget->top + window->y + 1;
         int16_t x = widget->left + window->x + 2 + (width / 2);
 
-        Gfx::drawStringCentredClipped(*dpi, x, y, width, Colour::white | format_flags::textflag_5, widget->text, _commonFormatArgs);
+        Gfx::drawStringCentredClipped(*dpi, x, y, width, Colour::white | FormatFlags::textflag_5, widget->text, _commonFormatArgs);
     }
 
     // 0x004CA750
@@ -505,7 +505,7 @@ namespace OpenLoco::ui::widget
         int16_t stringWidth = Gfx::clipString(width - 8, stringFormatBuffer);
         x -= (stringWidth - 1) / 2;
 
-        Gfx::drawString(dpi, x, window->y + widget->top + 1, format_flags::textflag_5 | Colour::black, stringFormatBuffer);
+        Gfx::drawString(dpi, x, window->y + widget->top + 1, FormatFlags::textflag_5 | Colour::black, stringFormatBuffer);
     }
 
     // 0x004CA88B
@@ -522,7 +522,7 @@ namespace OpenLoco::ui::widget
         int16_t stringWidth = Gfx::clipString(width - 8, stringFormatBuffer);
         x -= (stringWidth - 1) / 2;
 
-        Gfx::drawString(dpi, x, window->y + widget->top + 1, format_flags::textflag_5 | Colour::black, stringFormatBuffer);
+        Gfx::drawString(dpi, x, window->y + widget->top + 1, FormatFlags::textflag_5 | Colour::black, stringFormatBuffer);
     }
 
     static void draw_hscroll(Gfx::drawpixelinfo_t* dpi, window* window, widget_t* widget, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated, bool hovered, int16_t scrollview_index)
@@ -765,7 +765,7 @@ namespace OpenLoco::ui::widget
 
         if (disabled)
         {
-            colour |= format_flags::textflag_6;
+            colour |= FormatFlags::textflag_6;
         }
 
         Gfx::drawString_494B3F(*dpi, window->x + widget->left + 14, window->y + widget->top, colour, widget->text, _commonFormatArgs);
