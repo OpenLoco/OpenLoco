@@ -572,7 +572,7 @@ namespace OpenLoco::ui::NewsWindow
             self->draw(dpi);
 
             char* newsString = news->messageString;
-            auto buffer = const_cast<char*>(stringmgr::getString(string_ids::buffer_2039));
+            auto buffer = const_cast<char*>(StringManager::getString(string_ids::buffer_2039));
 
             if (!(_word_4F8BE4[news->type] & (1 << 5)))
             {
@@ -652,7 +652,7 @@ namespace OpenLoco::ui::NewsWindow
             self->draw(dpi);
 
             char* newsString = news->messageString;
-            auto buffer = const_cast<char*>(stringmgr::getString(string_ids::buffer_2039));
+            auto buffer = const_cast<char*>(StringManager::getString(string_ids::buffer_2039));
 
             if (!(_word_4F8BE4[news->type] & (1 << 5)))
             {
@@ -701,7 +701,7 @@ namespace OpenLoco::ui::NewsWindow
             self->draw(dpi);
 
             char* newsString = news->messageString;
-            auto buffer = const_cast<char*>(stringmgr::getString(string_ids::buffer_2039));
+            auto buffer = const_cast<char*>(StringManager::getString(string_ids::buffer_2039));
 
             *buffer = control_codes::colour_black;
             buffer++;

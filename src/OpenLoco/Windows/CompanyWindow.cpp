@@ -358,14 +358,14 @@ namespace OpenLoco::ui::windows::CompanyWindow
 
             // Temporarily store the new name in buffer string 2039.
             // TODO: replace with a fixed length!
-            char* buffer = const_cast<char*>(stringmgr::getString(string_ids::buffer_2039));
+            char* buffer = const_cast<char*>(StringManager::getString(string_ids::buffer_2039));
             strcpy(buffer, input);
 
             FormatArguments args = {};
             args.push(string_ids::buffer_2039);
 
             // Add the ' Transport' suffix to the company name, and rename the company.
-            stringmgr::formatString(input, string_ids::company_owner_name_transport, const_cast<void*>(&args));
+            StringManager::formatString(input, string_ids::company_owner_name_transport, const_cast<void*>(&args));
             common::renameCompany(self, input);
         }
 

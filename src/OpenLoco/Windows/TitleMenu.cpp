@@ -282,7 +282,7 @@ namespace OpenLoco::ui::windows
             if (OpenLoco::isNetworked())
             {
                 // char[512+1]
-                auto buffer = stringmgr::getString(string_ids::buffer_2039);
+                auto buffer = StringManager::getString(string_ids::buffer_2039);
 
                 char* playerName = (char*)0xF254D0;
 

@@ -74,7 +74,7 @@ namespace OpenLoco::ui::tooltip
 
     static void common(const window* window, int32_t widgetIndex, string_id stringId, int16_t cursorX, int16_t cursorY)
     {
-        stringmgr::formatString(byte_112CC04, stringId, _commonFormatArgs);
+        StringManager::formatString(byte_112CC04, stringId, _commonFormatArgs);
 
         gCurrentFontSpriteBase = font::medium_bold;
         int16_t strWidth;

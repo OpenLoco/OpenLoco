@@ -341,7 +341,7 @@ namespace OpenLoco::Audio
 #ifdef __HAS_DEFAULT_DEVICE__
     static const char* getDefaultDeviceName()
     {
-        return stringmgr::getString(string_ids::default_audio_device_name);
+        return StringManager::getString(string_ids::default_audio_device_name);
     }
 #endif
 

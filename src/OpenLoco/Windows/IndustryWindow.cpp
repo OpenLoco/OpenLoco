@@ -136,7 +136,7 @@ namespace OpenLoco::ui::windows::industry
             self->drawViewports(dpi);
             widget::drawViewportCentreButton(dpi, self, widx::centre_on_viewport);
 
-            const char* buffer = stringmgr::getString(string_ids::buffer_1250);
+            const char* buffer = StringManager::getString(string_ids::buffer_1250);
             auto industry = industrymgr::get(self->number);
             industry->getStatusString(const_cast<char*>(buffer));
 

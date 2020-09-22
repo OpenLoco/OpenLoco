@@ -285,7 +285,7 @@ namespace OpenLoco::ui::prompt_browse
     static void prepareDraw(ui::window* self)
     {
         // TODO: replace with a fixed length!
-        char* buffer = (char*)stringmgr::getString(string_ids::buffer_2039);
+        char* buffer = (char*)StringManager::getString(string_ids::buffer_2039);
         strcpy(buffer, _title);
 
         self->widgets[widx::frame].right = self->width - 1;

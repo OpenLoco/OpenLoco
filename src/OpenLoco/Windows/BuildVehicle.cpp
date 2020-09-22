@@ -927,32 +927,32 @@ namespace OpenLoco::ui::BuildVehicle
         }
 
         auto vehicleObj = objectmgr::get<vehicle_object>(window->row_hover);
-        auto buffer = const_cast<char*>(stringmgr::getString(string_ids::buffer_1250));
+        auto buffer = const_cast<char*>(StringManager::getString(string_ids::buffer_1250));
 
         {
             auto cost = (vehicleObj->cost_factor * currencyMultiplicationFactor[vehicleObj->cost_index]) / 64;
             FormatArguments args{};
             args.push(cost);
-            buffer = stringmgr::formatString(buffer, string_ids::stats_cost, &args);
+            buffer = StringManager::formatString(buffer, string_ids::stats_cost, &args);
         }
 
         {
             auto runningCost = (vehicleObj->run_cost_factor * currencyMultiplicationFactor[vehicleObj->run_cost_index]) / 1024;
             FormatArguments args{};
             args.push(runningCost);
-            buffer = stringmgr::formatString(buffer, string_ids::stats_running_cost, &args);
+            buffer = StringManager::formatString(buffer, string_ids::stats_running_cost, &args);
         }
 
         if (vehicleObj->designed != 0)
         {
             FormatArguments args{};
             args.push(vehicleObj->designed);
-            buffer = stringmgr::formatString(buffer, string_ids::stats_designed, &args);
+            buffer = StringManager::formatString(buffer, string_ids::stats_designed, &args);
         }
 
         if (vehicleObj->mode == TransportMode::rail || vehicleObj->mode == TransportMode::road)
         {
-            buffer = stringmgr::formatString(buffer, string_ids::stats_requires);
+            buffer = StringManager::formatString(buffer, string_ids::stats_requires);
             auto trackName = string_ids::road;
             if (vehicleObj->mode == TransportMode::road)
             {
@@ -966,7 +966,7 @@ namespace OpenLoco::ui::BuildVehicle
                 trackName = objectmgr::get<track_object>(vehicleObj->track_type)->name;
             }
 
-            buffer = stringmgr::formatString(buffer, trackName);
+            buffer = StringManager::formatString(buffer, trackName);
 
             for (auto i = 0; i < vehicleObj->num_mods; ++i)
             {
@@ -975,12 +975,12 @@ namespace OpenLoco::ui::BuildVehicle
                 if (vehicleObj->mode == TransportMode::road)
                 {
                     auto roadExtraObj = objectmgr::get<road_extra_object>(vehicleObj->required_track_extras[i]);
-                    buffer = stringmgr::formatString(buffer, roadExtraObj->name);
+                    buffer = StringManager::formatString(buffer, roadExtraObj->name);
                 }
                 else
                 {
                     auto trackExtraObj = objectmgr::get<track_extra_object>(vehicleObj->required_track_extras[i]);
-                    buffer = stringmgr::formatString(buffer, trackExtraObj->name);
+                    buffer = StringManager::formatString(buffer, trackExtraObj->name);
                 }
             }
 
@@ -989,7 +989,7 @@ namespace OpenLoco::ui::BuildVehicle
                 auto trackExtraObj = objectmgr::get<track_extra_object>(vehicleObj->rack_rail_type);
                 FormatArguments args{};
                 args.push(trackExtraObj->name);
-                buffer = stringmgr::formatString(buffer, string_ids::stats_string_steep_slope, &args);
+                buffer = StringManager::formatString(buffer, string_ids::stats_string_steep_slope, &args);
             }
         }
 
@@ -999,19 +999,19 @@ namespace OpenLoco::ui::BuildVehicle
             {
                 FormatArguments args{};
                 args.push(vehicleObj->power);
-                buffer = stringmgr::formatString(buffer, string_ids::stats_power, &args);
+                buffer = StringManager::formatString(buffer, string_ids::stats_power, &args);
             }
         }
 
         {
             FormatArguments args{};
             args.push(vehicleObj->weight);
-            buffer = stringmgr::formatString(buffer, string_ids::stats_weight, &args);
+            buffer = StringManager::formatString(buffer, string_ids::stats_weight, &args);
         }
         {
             FormatArguments args{};
             args.push(vehicleObj->speed);
-            buffer = stringmgr::formatString(buffer, string_ids::stats_max_speed, &args);
+            buffer = StringManager::formatString(buffer, string_ids::stats_max_speed, &args);
         }
         if (vehicleObj->flags & flags_E0::rack_rail)
         {
@@ -1019,7 +1019,7 @@ namespace OpenLoco::ui::BuildVehicle
             FormatArguments args{};
             args.push(vehicleObj->rack_speed);
             args.push(trackExtraObj->name);
-            buffer = stringmgr::formatString(buffer, string_ids::stats_velocity_on_string, &args);
+            buffer = StringManager::formatString(buffer, string_ids::stats_velocity_on_string, &args);
         }
 
         if (vehicleObj->num_simultaneous_cargo_types != 0)
@@ -1039,7 +1039,7 @@ namespace OpenLoco::ui::BuildVehicle
                         }
                         args.push(cargoUnitName);
                         args.push<uint16_t>(vehicleObj->max_primary_cargo);
-                        buffer = stringmgr::formatString(buffer, string_ids::stats_capacity, &args);
+                        buffer = StringManager::formatString(buffer, string_ids::stats_capacity, &args);
                     }
                     cargoType = Utility::bitScanForward(cargoTypes);
                     if (cargoType != -1)
@@ -1058,7 +1058,7 @@ namespace OpenLoco::ui::BuildVehicle
                             auto cargoObj = objectmgr::get<cargo_object>(cargoType);
                             FormatArguments args{};
                             args.push(cargoObj->name);
-                            buffer = stringmgr::formatString(buffer, string_ids::stats_or_string, &args);
+                            buffer = StringManager::formatString(buffer, string_ids::stats_or_string, &args);
                             strcpy(buffer, " ");
                             buffer++;
                         }
@@ -1069,7 +1069,7 @@ namespace OpenLoco::ui::BuildVehicle
 
             if (vehicleObj->flags & flags_E0::refittable)
             {
-                buffer = stringmgr::formatString(buffer, string_ids::stats_refittable);
+                buffer = StringManager::formatString(buffer, string_ids::stats_refittable);
             }
 
             if (vehicleObj->num_simultaneous_cargo_types > 1)
@@ -1088,7 +1088,7 @@ namespace OpenLoco::ui::BuildVehicle
                         }
                         args.push(cargoUnitName);
                         args.push<uint16_t>(vehicleObj->max_secondary_cargo);
-                        buffer = stringmgr::formatString(buffer, string_ids::stats_plus_string, &args);
+                        buffer = StringManager::formatString(buffer, string_ids::stats_plus_string, &args);
                     }
 
                     cargoType = Utility::bitScanForward(cargoTypes);
@@ -1108,7 +1108,7 @@ namespace OpenLoco::ui::BuildVehicle
                             auto cargoObj = objectmgr::get<cargo_object>(cargoType);
                             FormatArguments args{};
                             args.push(cargoObj->name);
-                            buffer = stringmgr::formatString(buffer, string_ids::stats_or_string, &args);
+                            buffer = StringManager::formatString(buffer, string_ids::stats_or_string, &args);
                             strcpy(buffer, " ");
                             buffer++;
                         }
@@ -1205,8 +1205,8 @@ namespace OpenLoco::ui::BuildVehicle
                 drawVehicleOverview(dpi, window->row_hover, companymgr::getControllingId(), unk1, unk2, { 90, 37 });
 
                 auto vehicleObj = objectmgr::get<vehicle_object>(window->row_hover);
-                auto buffer = const_cast<char*>(stringmgr::getString(string_ids::buffer_1250));
-                buffer = stringmgr::formatString(buffer, vehicleObj->name);
+                auto buffer = const_cast<char*>(StringManager::getString(string_ids::buffer_1250));
+                buffer = StringManager::formatString(buffer, vehicleObj->name);
                 auto usableCargoTypes = vehicleObj->primary_cargo_types | vehicleObj->secondary_cargo_types;
 
                 for (auto cargoTypes = Utility::bitScanForward(usableCargoTypes); cargoTypes != -1; cargoTypes = Utility::bitScanForward(usableCargoTypes))

@@ -133,7 +133,7 @@ namespace OpenLoco::ui::textinput
         memcpy(_formatArgs, _commonFormatArgs, 16);
 
         char temp[200];
-        stringmgr::formatString(temp, value, valueArgs);
+        StringManager::formatString(temp, value, valueArgs);
         _buffer = temp;
 
         _events.draw = draw;
@@ -262,7 +262,7 @@ namespace OpenLoco::ui::textinput
             return;
         }
 
-        char* drawnBuffer = (char*)stringmgr::getString(string_ids::buffer_2039);
+        char* drawnBuffer = (char*)StringManager::getString(string_ids::buffer_2039);
         strcpy(drawnBuffer, _buffer.data());
 
         *((string_id*)(&_commonFormatArgs[0])) = string_ids::buffer_2039;

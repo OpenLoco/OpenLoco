@@ -59,7 +59,7 @@ namespace OpenLoco::ui::windows
 
     static void prepareDraw(ui::window* self)
     {
-        auto exitString = stringmgr::getString(string_ids::title_exit_game);
+        auto exitString = StringManager::getString(string_ids::title_exit_game);
         self->width = Gfx::getStringWidthNewLined(exitString) + 10;
         self->x = ui::width() - self->width;
         self->widgets[widx::exit_button].right = self->width;

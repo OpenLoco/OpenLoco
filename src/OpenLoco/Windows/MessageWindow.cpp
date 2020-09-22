@@ -235,7 +235,7 @@ namespace OpenLoco::ui::MessageWindow
                 }
                 auto message = messagemgr::get(i);
                 char* buffer = message->messageString;
-                auto str = const_cast<char*>(stringmgr::getString(string_ids::buffer_2039));
+                auto str = const_cast<char*>(StringManager::getString(string_ids::buffer_2039));
 
                 const size_t bufferLength = 512;
                 strncpy(str, buffer, bufferLength);

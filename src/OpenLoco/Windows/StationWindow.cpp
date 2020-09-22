@@ -123,7 +123,7 @@ namespace OpenLoco::ui::windows::station
             widget::drawViewportCentreButton(dpi, self, widx::centre_on_viewport);
 
             auto station = stationmgr::get(self->number);
-            const char* buffer = stringmgr::getString(string_ids::buffer_1250);
+            const char* buffer = StringManager::getString(string_ids::buffer_1250);
             station->getStatusString((char*)buffer);
 
             auto args = FormatArguments();
@@ -376,8 +376,8 @@ namespace OpenLoco::ui::windows::station
             self->draw(dpi);
             common::drawTabs(self, dpi);
 
-            auto buffer = const_cast<char*>(stringmgr::getString(string_ids::buffer_1250));
-            buffer = stringmgr::formatString(buffer, string_ids::accepted_cargo_separator);
+            auto buffer = const_cast<char*>(StringManager::getString(string_ids::buffer_1250));
+            buffer = StringManager::formatString(buffer, string_ids::accepted_cargo_separator);
 
             auto station = stationmgr::get(self->number);
             uint8_t cargoTypeCount = 0;
@@ -399,7 +399,7 @@ namespace OpenLoco::ui::windows::station
 
             if (cargoTypeCount == 0)
             {
-                buffer = stringmgr::formatString(buffer, string_ids::cargo_nothing_accepted);
+                buffer = StringManager::formatString(buffer, string_ids::cargo_nothing_accepted);
             }
 
             *buffer++ = '\0';

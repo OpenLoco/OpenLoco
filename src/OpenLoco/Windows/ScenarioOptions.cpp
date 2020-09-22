@@ -1000,7 +1000,7 @@ namespace OpenLoco::ui::windows::ScenarioOptions
 
             {
                 // Prepare scenario name text.
-                char* buffer = (char*)stringmgr::getString(string_ids::buffer_2039);
+                char* buffer = (char*)StringManager::getString(string_ids::buffer_2039);
                 strncpy(buffer, s5::getOptions().scenarioName, 512);
                 commonFormatArgs[0] = string_ids::buffer_2039;
 
@@ -1028,7 +1028,7 @@ namespace OpenLoco::ui::windows::ScenarioOptions
 
             {
                 // Prepare scenario details text.
-                char* buffer = (char*)stringmgr::getString(string_ids::buffer_2039);
+                char* buffer = (char*)StringManager::getString(string_ids::buffer_2039);
                 strncpy(buffer, s5::getOptions().scenarioDetails, 512);
                 commonFormatArgs[0] = string_ids::buffer_2039;
 
@@ -1088,7 +1088,7 @@ namespace OpenLoco::ui::windows::ScenarioOptions
 
                 case widx::change_name_btn:
                 {
-                    char* buffer = (char*)stringmgr::getString(string_ids::buffer_2039);
+                    char* buffer = (char*)StringManager::getString(string_ids::buffer_2039);
                     strncpy(buffer, s5::getOptions().scenarioName, 512);
 
                     textinput::openTextinput(self, string_ids::scenario_name_title, string_ids::enter_name_for_scenario, string_ids::buffer_2039, widgetIndex, nullptr);
@@ -1097,7 +1097,7 @@ namespace OpenLoco::ui::windows::ScenarioOptions
 
                 case widx::change_details_btn:
                 {
-                    char* buffer = (char*)stringmgr::getString(string_ids::buffer_2039);
+                    char* buffer = (char*)StringManager::getString(string_ids::buffer_2039);
                     strncpy(buffer, s5::getOptions().scenarioDetails, 512);
 
                     textinput::openTextinput(self, string_ids::scenario_details_title, string_ids::enter_description_of_this_scenario, string_ids::buffer_2039, widgetIndex, nullptr);

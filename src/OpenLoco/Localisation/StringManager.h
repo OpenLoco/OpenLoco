@@ -106,7 +106,7 @@ namespace OpenLoco
     }
 }
 
-namespace OpenLoco::stringmgr
+namespace OpenLoco::StringManager
 {
     const char* getString(string_id id);
     char* formatString(char* buffer, string_id id, const void* args = nullptr);
