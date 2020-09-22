@@ -467,7 +467,7 @@ namespace OpenLoco::input
                         auto tool = WindowManager::find(_toolWindowType, _toolWindowNumber);
                         if (tool != nullptr)
                         {
-                            tool->call_12(_toolWidgetIndex, x, y);
+                            tool->callToolDragContinue(_toolWidgetIndex, x, y);
                         }
                     }
                 }
@@ -486,7 +486,7 @@ namespace OpenLoco::input
                     auto tool = WindowManager::find(_toolWindowType, _toolWindowNumber);
                     if (tool != nullptr)
                     {
-                        tool->call_13(_toolWidgetIndex);
+                        tool->callToolDragEnd(_toolWidgetIndex);
                     }
                 }
                 else if (!hasFlag(input_flags::flag4))
