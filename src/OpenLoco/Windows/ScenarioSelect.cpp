@@ -145,7 +145,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             return;
 
         using namespace scenariomgr;
-        auto info = reinterpret_cast<ScenarioIndexEntry*>(self->info);
+        auto scenarioInfo = reinterpret_cast<ScenarioIndexEntry*>(self->info);
 
         // Load currency object.
         // TODO loc_443A5F
@@ -158,7 +158,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             const int16_t y = self->y + self->widgets[widx::panel].top + 5;
 
             auto str = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
-            strncpy(str, info->scenarioName, std::size(info->scenarioName));
+            strncpy(str, scenarioInfo->scenarioName, std::size(scenarioInfo->scenarioName));
 
             auto args = FormatArguments();
             args.push(StringIds::buffer_2039);
@@ -174,12 +174,26 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         }
 
         // Preview image?
-        if (info->hasFlag(ScenarioIndexFlags::hasPreviewImage))
+        if (scenarioInfo->hasFlag(ScenarioIndexFlags::hasPreviewImage))
         {
-            const int16_t x = self->x + self->widgets[widx::list].right + 4;
+            const int16_t x = self->x + self->widgets[widx::list].right + 25;
             const int16_t y = self->y + self->widgets[widx::panel].top + 20;
 
-            // TODO
+            const auto imageId = 0;
+            const auto g1 = Gfx::getG1Element(imageId);
+            if (g1 != nullptr)
+            {
+                // Temporarily substitute a G1 image with the data in the scenario index
+                const auto backupG1 = *g1;
+                *g1 = {};
+                g1->offset = reinterpret_cast<uint8_t*>(scenarioInfo->preview);
+                g1->width = 128;
+                g1->height = 128;
+
+                // Draw preview image and restore original G1 image.
+                Gfx::drawImage(dpi, x, y, imageId);
+                *g1 = backupG1;
+            }
         }
         else
         {
