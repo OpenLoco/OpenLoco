@@ -15,7 +15,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::localisation
+namespace OpenLoco::Localisation
 {
     static loco_global<char* [0xFFFF], 0x005183FC> _strings;
 

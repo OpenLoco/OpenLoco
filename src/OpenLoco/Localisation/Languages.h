@@ -1,7 +1,7 @@
 #include <string>
 #include <vector>
 
-namespace OpenLoco::localisation
+namespace OpenLoco::Localisation
 {
     enum class loco_language_id : uint8_t
     {

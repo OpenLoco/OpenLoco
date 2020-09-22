@@ -1,6 +1,6 @@
 #include <cstdint>
 
-namespace OpenLoco::localisation
+namespace OpenLoco::Localisation
 {
     void loadLanguageFile();
 }

@@ -1289,7 +1289,7 @@ namespace OpenLoco::ui::options
 
             FormatArguments args = {};
 
-            auto& language = localisation::getDescriptorForLanguage(config::getNew().language);
+            auto& language = Localisation::getDescriptorForLanguage(config::getNew().language);
             args.push(language.native_name.c_str());
 
             string_id current_height_units = string_ids::height_units;
@@ -1429,7 +1429,7 @@ namespace OpenLoco::ui::options
 
         static void languageMouseDown(window* w)
         {
-            auto& lds = localisation::getLanguageDescriptors();
+            auto& lds = Localisation::getLanguageDescriptors();
             uint8_t num_languages = static_cast<uint8_t>(lds.size());
 
             widget_t dropdown = w->widgets[widx::language];
@@ -1455,11 +1455,11 @@ namespace OpenLoco::ui::options
                 return;
             }
 
-            auto& lds = localisation::getLanguageDescriptors();
+            auto& lds = Localisation::getLanguageDescriptors();
             auto& ld = lds[ax + 1];
             config::getNew().language = ld.locale;
             config::write();
-            localisation::loadLanguageFile();
+            Localisation::loadLanguageFile();
             Gfx::invalidateScreen();
         }
 

@@ -1,7 +1,7 @@
 #include "Unicode.h"
 #include <cstdint>
 
-namespace OpenLoco::localisation
+namespace OpenLoco::Localisation
 {
     utf32_t readCodePoint(utf8_t** string)
     {

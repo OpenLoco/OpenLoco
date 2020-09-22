@@ -1,6 +1,6 @@
 #include <cstdint>
 
-namespace OpenLoco::localisation
+namespace OpenLoco::Localisation
 {
     using utf8_t = uint8_t;
     using utf32_t = uint32_t;

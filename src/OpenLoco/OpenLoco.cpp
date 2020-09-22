@@ -326,8 +326,8 @@ namespace OpenLoco
         call(0x004078BE);
         call(0x004BF476);
         environment::resolvePaths();
-        localisation::enumerateLanguages();
-        localisation::loadLanguageFile();
+        Localisation::enumerateLanguages();
+        Localisation::loadLanguageFile();
         progressbar::begin(string_ids::loading, 0);
         progressbar::setProgress(30);
         startupChecks();
