@@ -5,7 +5,7 @@
 #include <cstring>
 #include <string>
 
-namespace OpenLoco::utility
+namespace OpenLoco::Utility
 {
     std::string toUtf8(const std::wstring_view& src);
     std::wstring toUtf16(const std::string_view& src);

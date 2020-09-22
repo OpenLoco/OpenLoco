@@ -29,7 +29,7 @@
 using namespace OpenLoco::environment;
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::ui;
-using namespace OpenLoco::utility;
+using namespace OpenLoco::Utility;
 
 namespace OpenLoco::Audio
 {

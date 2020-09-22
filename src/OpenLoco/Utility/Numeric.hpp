@@ -5,7 +5,7 @@
 #include <limits.h>
 #include <type_traits>
 
-namespace OpenLoco::utility
+namespace OpenLoco::Utility
 {
     int32_t bitScanForward(uint32_t source);
 

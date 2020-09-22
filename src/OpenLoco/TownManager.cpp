@@ -121,7 +121,7 @@ namespace OpenLoco::townmgr
             uint32_t cargoFlags = currTown.cargo_influence_flags;
             while (cargoFlags != 0)
             {
-                uint32_t cargoId = utility::bitScanForward(cargoFlags);
+                uint32_t cargoId = Utility::bitScanForward(cargoFlags);
                 cargoFlags &= ~(1 << cargoId);
 
                 maxCargoDelivered = std::max(maxCargoDelivered, currTown.monthly_cargo_delivered[cargoId]);
