@@ -17,7 +17,7 @@
 #include <algorithm>
 #include <cstring>
 
-using namespace OpenLoco::interop;
+using namespace OpenLoco::Interop;
 
 namespace OpenLoco::ui::prompt_browse
 {
@@ -164,15 +164,15 @@ namespace OpenLoco::ui::prompt_browse
 
         *_type = type;
         *_fileType = browse_file_type::saved_game;
-        if (utility::iequals(filter, "*.sc5"))
+        if (Utility::iequals(filter, "*.sc5"))
         {
             *_fileType = browse_file_type::landscape;
         }
-        utility::strcpy_safe(_title, title);
-        utility::strcpy_safe(_filter, filter);
+        Utility::strcpy_safe(_title, title);
+        Utility::strcpy_safe(_filter, filter);
 
-        utility::strcpy_safe(_directory, directory.make_preferred().u8string().c_str());
-        utility::strcpy_safe(_text_input_buffer, baseName.c_str());
+        Utility::strcpy_safe(_directory, directory.make_preferred().u8string().c_str());
+        Utility::strcpy_safe(_text_input_buffer, baseName.c_str());
 
         refreshDirectoryList();
 
@@ -214,7 +214,7 @@ namespace OpenLoco::ui::prompt_browse
                     return WindowManager::find(WindowType::fileBrowserPrompt) != nullptr;
                 });
             WindowManager::setCurrentModalType(WindowType::undefined);
-            // TODO: use utility::strlcpy with the buffer size instead of std::strcpy, if possible
+            // TODO: use Utility::strlcpy with the buffer size instead of std::strcpy, if possible
             std::strcpy(szPath, _directory);
             if (szPath[0] != '\0')
             {
@@ -648,7 +648,7 @@ namespace OpenLoco::ui::prompt_browse
                         if (f.is_regular_file())
                         {
                             auto extension = f.path().extension().u8string();
-                            if (!utility::iequals(extension, filterExtension))
+                            if (!Utility::iequals(extension, filterExtension))
                             {
                                 continue;
                             }

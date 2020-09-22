@@ -5,7 +5,7 @@
 #include "WindowManager.h"
 #include <cmath>
 
-using namespace OpenLoco::interop;
+using namespace OpenLoco::Interop;
 
 namespace OpenLoco::ui::scrollview
 {

@@ -10,7 +10,7 @@
 #include "../Objects/ObjectManager.h"
 #include "../Ui/WindowManager.h"
 
-using namespace OpenLoco::interop;
+using namespace OpenLoco::Interop;
 using namespace OpenLoco::Input;
 
 namespace OpenLoco::ui::EditKeyboardShortcut

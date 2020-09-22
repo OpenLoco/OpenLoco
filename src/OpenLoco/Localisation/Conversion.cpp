@@ -68,7 +68,7 @@ namespace OpenLoco::localisation
 
     uint8_t convertUnicodeToLoco(utf32_t unicode)
     {
-        EncodingConvertEntry* entry = (EncodingConvertEntry*)std::bsearch(&unicode, UnicodeToLocoTable, utility::length(UnicodeToLocoTable), sizeof(EncodingConvertEntry), searchCompare);
+        EncodingConvertEntry* entry = (EncodingConvertEntry*)std::bsearch(&unicode, UnicodeToLocoTable, Utility::length(UnicodeToLocoTable), sizeof(EncodingConvertEntry), searchCompare);
         if (entry != nullptr)
             return entry->loco_code;
         else if (unicode < 256)

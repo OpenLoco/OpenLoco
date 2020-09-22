@@ -15,7 +15,7 @@
 #include <cassert>
 
 using namespace OpenLoco;
-using namespace OpenLoco::interop;
+using namespace OpenLoco::Interop;
 using namespace OpenLoco::objectmgr;
 
 loco_global<vehicle_head*, 0x01136118> vehicleUpdate_head;

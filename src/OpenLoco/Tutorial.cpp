@@ -11,7 +11,7 @@
 #include <iterator>
 #include <vector>
 
-using namespace OpenLoco::interop;
+using namespace OpenLoco::Interop;
 
 namespace OpenLoco::tutorial
 {

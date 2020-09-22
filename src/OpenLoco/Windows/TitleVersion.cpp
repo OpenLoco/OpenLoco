@@ -5,7 +5,7 @@
 #include "../Ui/WindowManager.h"
 #include "../Window.h"
 
-using namespace OpenLoco::interop;
+using namespace OpenLoco::Interop;
 
 namespace OpenLoco::ui::windows
 {

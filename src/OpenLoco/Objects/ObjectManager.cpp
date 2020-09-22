@@ -2,7 +2,7 @@
 #include "../Interop/Interop.hpp"
 #include <vector>
 
-using namespace OpenLoco::interop;
+using namespace OpenLoco::Interop;
 
 namespace OpenLoco::objectmgr
 {

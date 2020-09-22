@@ -103,7 +103,7 @@ struct palette_entry_t
 };
 #pragma pack(pop)
 using set_palette_func = void (*)(const palette_entry_t* palette, int32_t index, int32_t count);
-static interop::loco_global<set_palette_func, 0x0052524C> set_palette_callback;
+static Interop::loco_global<set_palette_func, 0x0052524C> set_palette_callback;
 
 #ifdef _NO_LOCO_WIN32_
 FORCE_ALIGN_ARG_POINTER
@@ -249,7 +249,7 @@ static Session* CDECL fn_FindFirstFile(char* lpFileName, FindFileData* out)
         ++iter;
     }
 
-    utility::strcpy_safe(out->cFilename, data->fileList[0].filename().u8string().c_str());
+    Utility::strcpy_safe(out->cFilename, data->fileList[0].filename().u8string().c_str());
     if (fs::is_directory(data->fileList[0]))
     {
         out->dwFileAttributes = FILE_ATTRIBUTE_DIRECTORY;
@@ -272,7 +272,7 @@ static bool CDECL fn_FindNextFile(Session* data, FindFileData* out)
         return false;
     }
 
-    utility::strcpy_safe(out->cFilename, data->fileList[0].filename().u8string().c_str());
+    Utility::strcpy_safe(out->cFilename, data->fileList[0].filename().u8string().c_str());
     if (fs::is_directory(data->fileList[0]))
     {
         out->dwFileAttributes = FILE_ATTRIBUTE_DIRECTORY;
@@ -490,7 +490,7 @@ static void STDCALL lib_PostQuitMessage(int32_t exitCode)
 
 static void registerMemoryHooks()
 {
-    using namespace OpenLoco::interop;
+    using namespace OpenLoco::Interop;
 
     // Hook Locomotion's alloc / free routines so that we don't
     // allocate a block in one module and freeing it in another.
@@ -502,7 +502,7 @@ static void registerMemoryHooks()
 #ifdef _NO_LOCO_WIN32_
 static void registerNoWin32Hooks()
 {
-    using namespace OpenLoco::interop;
+    using namespace OpenLoco::Interop;
 
     writeJmp(0x40447f, (void*)&fn_40447f);
     writeJmp(0x404b68, (void*)&fn_404b68);
@@ -555,7 +555,7 @@ static void registerNoWin32Hooks()
 }
 #endif // _NO_LOCO_WIN32_
 
-void OpenLoco::interop::loadSections()
+void OpenLoco::Interop::loadSections()
 {
 #ifndef _WIN32
     int32_t err = mprotect((void*)0x401000, 0x4d7000 - 0x401000, PROT_READ | PROT_WRITE | PROT_EXEC);
@@ -574,7 +574,7 @@ void OpenLoco::interop::loadSections()
 
 static void registerAudioHooks()
 {
-    using namespace OpenLoco::interop;
+    using namespace OpenLoco::Interop;
 
     writeJmp(0x0040194E, (void*)&audioLoadChannel);
     writeJmp(0x00401999, (void*)&audioPlayChannel);
@@ -616,7 +616,7 @@ static void registerAudioHooks()
         });
 }
 
-void OpenLoco::interop::registerHooks()
+void OpenLoco::Interop::registerHooks()
 {
     using namespace OpenLoco::ui::windows;
 
@@ -646,7 +646,7 @@ void OpenLoco::interop::registerHooks()
             auto buffer = (char*)0x009D0D72;
             auto path = getPath((path_id)regs.ebx);
 
-            // TODO: use utility::strlcpy with the buffer size instead of std::strcpy, if possible
+            // TODO: use Utility::strlcpy with the buffer size instead of std::strcpy, if possible
             std::strcpy(buffer, path.make_preferred().u8string().c_str());
 
             regs.ebx = (int32_t)buffer;

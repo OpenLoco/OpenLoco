@@ -18,7 +18,7 @@
 #include "../../Widget.h"
 #include "Construction.h"
 
-using namespace OpenLoco::interop;
+using namespace OpenLoco::Interop;
 using namespace OpenLoco::map;
 using namespace OpenLoco::map::tilemgr;
 
@@ -1190,7 +1190,7 @@ namespace OpenLoco::ui::windows::construction
             auto var_0E = trackObj->var_0E;
             while (var_0E > 0)
             {
-                auto ecx = utility::bitScanForward(var_0E);
+                auto ecx = Utility::bitScanForward(var_0E);
                 if (ecx == -1)
                     break;
                 var_0E &= ~(1 << ecx);

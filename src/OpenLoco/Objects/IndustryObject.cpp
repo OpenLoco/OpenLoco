@@ -5,7 +5,7 @@
 #include "ObjectManager.h"
 #include <algorithm>
 
-using namespace OpenLoco::interop;
+using namespace OpenLoco::Interop;
 
 namespace OpenLoco
 {

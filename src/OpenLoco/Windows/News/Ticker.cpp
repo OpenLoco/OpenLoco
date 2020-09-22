@@ -5,7 +5,7 @@
 #include "../../MessageManager.h"
 #include "News.h"
 
-using namespace OpenLoco::interop;
+using namespace OpenLoco::Interop;
 
 namespace OpenLoco::ui::NewsWindow::ticker
 {

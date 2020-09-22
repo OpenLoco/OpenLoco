@@ -19,7 +19,7 @@
 #include "../ViewportManager.h"
 #include "../Widget.h"
 
-using namespace OpenLoco::interop;
+using namespace OpenLoco::Interop;
 using namespace OpenLoco::map;
 
 namespace OpenLoco::ui::windows::station

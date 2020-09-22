@@ -6,7 +6,7 @@
 #include "TileManager.h"
 
 using namespace OpenLoco;
-using namespace OpenLoco::interop;
+using namespace OpenLoco::Interop;
 using namespace OpenLoco::ui;
 
 #pragma pack(push, 1)
@@ -18,7 +18,7 @@ struct unk1
 };
 #pragma pack(pop)
 
-static loco_global<utility::prng, 0x00525E20> _prng;
+static loco_global<Utility::prng, 0x00525E20> _prng;
 static loco_global<unk1[64], 0x009586DC> _9586DC;
 static loco_global<int32_t, 0x00e3f0b8> gCurrentRotation;
 

@@ -38,7 +38,7 @@ namespace OpenLoco
     uint8_t getPauseFlags();
     void togglePause(bool value);
     uint32_t scenarioTicks();
-    utility::prng& gPrng();
+    Utility::prng& gPrng();
     void initialiseViewports();
 
     void sub_431695(uint16_t var_F253A0);

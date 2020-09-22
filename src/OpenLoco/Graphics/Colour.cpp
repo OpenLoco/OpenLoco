@@ -3,7 +3,7 @@
 #include "Gfx.h"
 #include <cassert>
 
-using namespace OpenLoco::interop;
+using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Colour
 {

@@ -8,7 +8,7 @@
 #include "../../Objects/ObjectManager.h"
 #include "News.h"
 
-using namespace OpenLoco::interop;
+using namespace OpenLoco::Interop;
 using namespace OpenLoco::config;
 
 namespace OpenLoco::ui::NewsWindow

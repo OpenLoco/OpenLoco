@@ -5,7 +5,7 @@
 #include "Objects/ObjectManager.h"
 #include "Things/Thing.h"
 
-using namespace OpenLoco::interop;
+using namespace OpenLoco::Interop;
 
 namespace OpenLoco::game_commands
 {

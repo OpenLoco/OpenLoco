@@ -13,7 +13,7 @@
 #include "Interop/Interop.hpp"
 #include "Utility/Yaml.hpp"
 
-using namespace OpenLoco::interop;
+using namespace OpenLoco::Interop;
 
 namespace OpenLoco::config
 {
