@@ -1,3 +1,4 @@
+#include "../Audio/Audio.h"
 #include "../Config.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/Gfx.h"
@@ -6,6 +7,7 @@
 #include "../Localisation/FormatArguments.hpp"
 #include "../Localisation/StringIds.h"
 #include "../Objects/ObjectManager.h"
+#include "../Scenario.h"
 #include "../ScenarioManager.h"
 #include "../Ui/WindowManager.h"
 
@@ -272,6 +274,26 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     static void onScrollMouseDown(window* self, int16_t x, int16_t y, uint8_t scroll_index)
     {
         auto numScenarios = scenariomgr::getNumScenariosByCategory(self->current_tab);
+
+        // Mouse click sound
+        Audio::playSound(Audio::sound_id::click_down, self->x + (self->width / 2));
+
+        auto index = y / ROW_HEIGHT;
+        if (index > numScenarios)
+            return;
+
+        auto* scenarioInfo = scenariomgr::getNthScenarioFromCategory(self->current_tab, index);
+        if (scenarioInfo == nullptr)
+            return;
+
+        if (isNetworked())
+        {
+            // game command 67
+        }
+        else
+        {
+            scenario::start(scenarioInfo->filename);
+        }
     }
 
     // 0x00443FB2

@@ -92,5 +92,5 @@ namespace OpenLoco::Scenario
 
     void eraseLandscape();
     void generateLandscape();
-    void start(int32_t ebx);
+    void start(const char* ebx);
 }

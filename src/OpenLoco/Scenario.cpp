@@ -25,10 +25,10 @@ namespace OpenLoco::Scenario
     }
 
     // 0x0044400C
-    void start(int32_t ebx)
+    void start(const char* ebx)
     {
         registers regs;
-        regs.ebx = ebx;
+        regs.ebx = reinterpret_cast<int32_t>(ebx);
         call(0x0044400C, regs);
     }
 }
