@@ -360,6 +360,7 @@ namespace OpenLoco::Ui
                 int16_t var_85A;
                 int16_t var_85C;
             };
+            uintptr_t info;
         };
         uint8_t pad_85E[0x870 - 0x85E];
         uint16_t current_tab = 0;                   // 0x870

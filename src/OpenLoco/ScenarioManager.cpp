@@ -27,6 +27,24 @@ namespace OpenLoco::ScenarioManager
         return numScenariosInCategory;
     }
 
+    ScenarioIndexEntry* getNthScenarioFromCategory(uint8_t category, uint8_t index)
+    {
+        uint8_t j = 0;
+        for (auto i = 0; i < numScenarios; i++)
+        {
+            ScenarioIndexEntry& entry = scenarioList[i];
+            if (entry.category != category)
+                continue;
+
+            if (j == index)
+                return &entry;
+
+            j++;
+        }
+
+        return nullptr;
+    }
+
     // 0x0044452F
     void loadIndex(uint8_t al)
     {

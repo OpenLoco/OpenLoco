@@ -46,6 +46,8 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         widgetEnd(),
     };
 
+    constexpr auto ROW_HEIGHT = 24;
+
     static window_event_list _events;
 
     static void initEvents();
@@ -139,10 +141,65 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         }
 
         // Scenario selected?
-        if (reinterpret_cast<uint32_t>(self->object) == 0xFFFFFFFF)
+        if (self->info == 0 || self->info == 0xFFFFFFFF)
             return;
 
+        using namespace scenariomgr;
+        auto info = reinterpret_cast<ScenarioIndexEntry*>(self->info);
+
         // Load currency object.
+        // TODO loc_443A5F
+        // objectmgr::getLoadedObjectIndex(self->object);
+
+        // loc_443A8A
+        // Scenario name
+        {
+            const int16_t x = self->x + self->widgets[widx::list].right + 89;
+            const int16_t y = self->y + self->widgets[widx::panel].top + 5;
+
+            auto str = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
+            strncpy(str, info->scenarioName, std::size(info->scenarioName));
+
+            auto args = FormatArguments();
+            args.push(StringIds::buffer_2039);
+            Gfx::drawStringCentredClipped(*dpi, x, y, 170, Colour::black, StringIds::wcolour2_stringid, &args);
+        }
+
+        // Outline for preview image
+        {
+            const int16_t x = self->x + self->widgets[widx::list].right + 24;
+            const int16_t y = self->y + self->widgets[widx::panel].top + 19;
+
+            Gfx::drawRectInset(dpi, x, y, 130, 130, self->colours[1], 0x30);
+        }
+
+        // Preview image?
+        if (info->hasFlag(ScenarioIndexFlags::hasPreviewImage))
+        {
+            const int16_t x = self->x + self->widgets[widx::list].right + 4;
+            const int16_t y = self->y + self->widgets[widx::panel].top + 20;
+
+            // TODO
+        }
+        else
+        {
+            int16_t x = self->x + self->widgets[widx::list].right + 25;
+            int16_t y = self->y + self->widgets[widx::panel].top + 21;
+
+            // No preview image -- a placeholder will have to do.
+            auto image = Gfx::recolour(ImageIds::random_map_watermark, self->colours[1]);
+            Gfx::drawImage(dpi, x, y, image);
+
+            x += 64;
+            y += 59;
+
+            auto args = FormatArguments();
+            args.push(StringIds::randomly_generated_landscape);
+
+            // Overlay random map note.
+            auto origin = Gfx::point_t(x, y);
+            Gfx::drawStringCentredWrapped(dpi, &origin, 128, Colour::black, StringIds::wcolour2_stringid, &args);
+        }
     }
 
     // 0x00443D02
@@ -194,17 +251,30 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     // 0x00443EF6
     static void getScrollSize(window* self, uint32_t, uint16_t*, uint16_t* const scrollHeight)
     {
-        *scrollHeight = scenariomgr::getNumScenariosByCategory(self->current_tab) * 24;
+        *scrollHeight = scenariomgr::getNumScenariosByCategory(self->current_tab) * ROW_HEIGHT;
     }
 
     // 0x00443F32
     static void onScrollMouseDown(window* self, int16_t x, int16_t y, uint8_t scroll_index)
     {
+        auto numScenarios = scenariomgr::getNumScenariosByCategory(self->current_tab);
     }
 
     // 0x00443FB2
     static void onScrollMouseOver(window* self, int16_t x, int16_t y, uint8_t scroll_index)
     {
+        auto numScenarios = scenariomgr::getNumScenariosByCategory(self->current_tab);
+
+        auto index = y / ROW_HEIGHT;
+        if (index > numScenarios)
+            return;
+
+        auto* scenarioEntry = scenariomgr::getNthScenarioFromCategory(self->current_tab, index);
+        if (scenarioEntry == nullptr)
+            return;
+
+        self->info = reinterpret_cast<uintptr_t>(scenarioEntry);
+        self->invalidate();
     }
 
     // 0x00444001

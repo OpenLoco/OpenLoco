@@ -5,6 +5,11 @@
 
 namespace OpenLoco::ScenarioManager
 {
+    enum ScenarioIndexFlags : uint8_t
+    {
+        hasPreviewImage = 1 << 2,
+    };
+
     struct ScenarioIndexEntry
     {
         char filename[0x100];           // 0x000
@@ -19,6 +24,11 @@ namespace OpenLoco::ScenarioManager
         char currencyObjectId[8];       // 0x46C
         uint8_t pad_268[0x478 - 0x474]; // 0x474
         uint8_t preview[128][128];      // 0x478
+
+        bool hasFlag(ScenarioIndexFlags flag)
+        {
+            return (flags & flag) != 0;
+        }
     };
 
     static_assert(offsetof(ScenarioIndexEntry, category) == 0x100);
@@ -26,5 +36,6 @@ namespace OpenLoco::ScenarioManager
     static_assert(sizeof(ScenarioIndexEntry) == 0x4478);
 
     uint16_t getNumScenariosByCategory(uint8_t category);
+    ScenarioIndexEntry* getNthScenarioFromCategory(uint8_t category, uint8_t index);
     void loadIndex(uint8_t al);
 }
