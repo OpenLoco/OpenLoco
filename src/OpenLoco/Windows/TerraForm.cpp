@@ -851,7 +851,7 @@ namespace OpenLoco::ui::windows::terraform
         }
 
         // 0x004BC682
-        static void event_12(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
+        static void toolDragContinue(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
         {
             if (widgetIndex != common::widx::panel)
                 return;
@@ -864,7 +864,7 @@ namespace OpenLoco::ui::windows::terraform
         }
 
         // 0x004BC701
-        static void event_13(window& self, const widget_index widgetIndex)
+        static void toolDragEnd(window& self, const widget_index widgetIndex)
         {
             if (widgetIndex == common::widx::panel)
             {
@@ -919,8 +919,8 @@ namespace OpenLoco::ui::windows::terraform
             events.on_update = common::onUpdate;
             events.on_tool_update = onToolUpdate;
             events.on_tool_down = onToolDown;
-            events.event_12 = (void (*)(window&, const widget_index))0x004BC682;
-            events.event_13 = (void (*)(window&, const widget_index))0x004BC701;
+            events.toolDragContinue = (void (*)(window&, const widget_index, const int16_t, const int16_t))0x004BC682;
+            events.toolDragEnd = (void (*)(window&, const widget_index))0x004BC701;
             events.prepare_draw = prepareDraw;
             events.draw = draw;
         }
@@ -1367,7 +1367,7 @@ namespace OpenLoco::ui::windows::terraform
         }
 
         // 0x004BC9E2
-        static void event_12(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
+        static void toolDragContinue(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
         {
             if (widgetIndex != common::widx::panel)
                 return;
@@ -1414,7 +1414,7 @@ namespace OpenLoco::ui::windows::terraform
         }
 
         // 0x004BCA5D
-        static void event_13(window& self, const widget_index widgetIndex)
+        static void toolDragEnd(window& self, const widget_index widgetIndex)
         {
             if (widgetIndex == common::widx::panel)
             {
@@ -1494,8 +1494,8 @@ namespace OpenLoco::ui::windows::terraform
             events.on_update = common::onUpdate;
             events.on_tool_update = onToolUpdate;
             events.on_tool_down = onToolDown;
-            events.event_12 = (void (*)(window&, const widget_index))0x004BC9E2;
-            events.event_13 = (void (*)(window&, const widget_index))0x004BCA5D;
+            events.toolDragContinue = (void (*)(window&, const widget_index, const int16_t, const int16_t))0x004BC9E2;
+            events.toolDragEnd = (void (*)(window&, const widget_index))0x004BCA5D;
             events.prepare_draw = prepareDraw;
             events.draw = draw;
         }
@@ -1614,7 +1614,7 @@ namespace OpenLoco::ui::windows::terraform
         }
 
         // 0x004BCDBF
-        static void event_12(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
+        static void toolDragContinue(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
         {
             if (widgetIndex != common::widx::panel)
                 return;
@@ -1662,7 +1662,7 @@ namespace OpenLoco::ui::windows::terraform
         }
 
         // 0x004BCDE8
-        static void event_13(window& self, const widget_index widgetIndex)
+        static void toolDragEnd(window& self, const widget_index widgetIndex)
         {
             if (widgetIndex == common::widx::panel)
             {
@@ -1731,8 +1731,8 @@ namespace OpenLoco::ui::windows::terraform
             events.on_update = common::onUpdate;
             events.on_tool_update = onToolUpdate;
             events.on_tool_down = onToolDown;
-            events.event_12 = (void (*)(window&, const widget_index))0x004BCDBF;
-            events.event_13 = (void (*)(window&, const widget_index))0x004BCDE8;
+            events.toolDragContinue = (void (*)(window&, const widget_index, const int16_t, const int16_t))0x004BCDBF;
+            events.toolDragEnd = (void (*)(window&, const widget_index))0x004BCDE8;
             events.prepare_draw = prepareDraw;
             events.draw = draw;
         }
@@ -2394,7 +2394,7 @@ namespace OpenLoco::ui::windows::terraform
             0x004BC9E2,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                adjust_land::event_12((ui::window&)regs.esi, (widget_index)regs.dx, (int16_t)regs.ax, (int16_t)regs.bx);
+                adjust_land::toolDragContinue((ui::window&)regs.esi, (widget_index)regs.dx, (int16_t)regs.ax, (int16_t)regs.bx);
                 regs = backup;
                 return 0;
             });
@@ -2403,7 +2403,7 @@ namespace OpenLoco::ui::windows::terraform
             0x004BCA5D,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                adjust_land::event_13((ui::window&)regs.esi, (widget_index)regs.dx);
+                adjust_land::toolDragEnd((ui::window&)regs.esi, (widget_index)regs.dx);
                 regs = backup;
                 return 0;
             });
@@ -2412,7 +2412,7 @@ namespace OpenLoco::ui::windows::terraform
             0x004BCDBF,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                adjust_water::event_12((ui::window&)regs.esi, (widget_index)regs.dx, (int16_t)regs.ax, (int16_t)regs.bx);
+                adjust_water::toolDragContinue((ui::window&)regs.esi, (widget_index)regs.dx, (int16_t)regs.ax, (int16_t)regs.bx);
                 regs = backup;
                 return 0;
             });
@@ -2421,7 +2421,7 @@ namespace OpenLoco::ui::windows::terraform
             0x004BCDE8,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                adjust_water::event_13((ui::window&)regs.esi, (widget_index)regs.dx);
+                adjust_water::toolDragEnd((ui::window&)regs.esi, (widget_index)regs.dx);
                 regs = backup;
                 return 0;
             });
@@ -2430,7 +2430,7 @@ namespace OpenLoco::ui::windows::terraform
             0x004BC682,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                clear_area::event_12((ui::window&)regs.esi, (widget_index)regs.dx, (int16_t)regs.ax, (int16_t)regs.bx);
+                clear_area::toolDragContinue((ui::window&)regs.esi, (widget_index)regs.dx, (int16_t)regs.ax, (int16_t)regs.bx);
                 regs = backup;
                 return 0;
             });
@@ -2439,7 +2439,7 @@ namespace OpenLoco::ui::windows::terraform
             0x004BC701,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                clear_area::event_13((ui::window&)regs.esi, (widget_index)regs.dx);
+                clear_area::toolDragEnd((ui::window&)regs.esi, (widget_index)regs.dx);
                 regs = backup;
                 return 0;
             });

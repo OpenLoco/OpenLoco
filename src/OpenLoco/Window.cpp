@@ -961,38 +961,40 @@ namespace OpenLoco::ui
         event_handlers->on_tool_down(*this, widget_index, xPos, yPos);
     }
 
-    void window::call_12(const int16_t widget_index)
+    void window::callToolDragContinue(const int16_t widget_index, const int16_t xPos, const int16_t yPos)
     {
-        if (event_handlers->event_12 == nullptr)
+        if (event_handlers->toolDragContinue == nullptr)
             return;
 
-        if (isInteropEvent(event_handlers->event_12))
+        if (isInteropEvent(event_handlers->toolDragContinue))
         {
             registers regs;
+            regs.ax = xPos;
+            regs.bx = yPos;
             regs.dx = widget_index;
             regs.esi = (int32_t)this;
-            call((uint32_t)this->event_handlers->event_12, regs);
+            call((uint32_t)this->event_handlers->toolDragContinue, regs);
             return;
         }
 
-        event_handlers->event_12(*this, widget_index);
+        event_handlers->toolDragContinue(*this, widget_index, xPos, yPos);
     }
 
-    void window::call_13(const int16_t widget_index)
+    void window::callToolDragEnd(const int16_t widget_index)
     {
-        if (event_handlers->event_13 == nullptr)
+        if (event_handlers->toolDragEnd == nullptr)
             return;
 
-        if (isInteropEvent(event_handlers->event_13))
+        if (isInteropEvent(event_handlers->toolDragEnd))
         {
             registers regs;
             regs.dx = widget_index;
             regs.esi = (int32_t)this;
-            call((uint32_t)this->event_handlers->event_13, regs);
+            call((uint32_t)this->event_handlers->toolDragEnd, regs);
             return;
         }
 
-        event_handlers->event_13(*this, widget_index);
+        event_handlers->toolDragEnd(*this, widget_index);
     }
 
     void window::callToolAbort(int16_t widget_index)
