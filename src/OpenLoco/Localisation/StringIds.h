@@ -1157,6 +1157,11 @@ namespace OpenLoco::StringIds
     constexpr string_id tooltip_speed_fast_forward = 1819;
     constexpr string_id tooltip_speed_extra_fast_forward = 1820;
     constexpr string_id randomly_generated_landscape = 1821;
+    constexpr string_id challenge_start_date = 1822;
+    constexpr string_id challenge_competing_companies_none = 1823;
+    constexpr string_id challenge_competing_companies_up_to = 1824;
+    constexpr string_id competition_not_starting_for_month = 1825;
+    constexpr string_id competition_not_starting_for_months = 1826;
 
     constexpr string_id local_authority_ratings_transport_companies = 1833;
     constexpr string_id town_rating_appalling = 1834;

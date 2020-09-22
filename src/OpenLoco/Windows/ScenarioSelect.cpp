@@ -220,20 +220,54 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             Gfx::drawStringCentredWrapped(dpi, &origin, 128, Colour::black, StringIds::wcolour2_stringid, &args);
         }
 
-        // Description
         {
             const int16_t x = self->x + self->widgets[widx::list].right + 4;
-            const int16_t y = self->y + self->widgets[widx::panel].top + 155;
+            int16_t y = self->y + self->widgets[widx::panel].top + 155;
 
-            auto str = const_cast<char*>(stringmgr::getString(StringIds::buffer_2039));
+            // Description
+            auto str = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
             strncpy(str, scenarioInfo->description, std::size(scenarioInfo->description));
 
             auto args = FormatArguments();
             args.push(StringIds::buffer_2039);
-            Gfx::drawString_495224(*dpi, x, y, 170, Colour::black, StringIds::black_stringid, &args);
-        }
+            y = Gfx::drawString_495224(*dpi, x, y, 170, Colour::black, StringIds::black_stringid, &args);
 
-        // Challenge header
+            // Challenge header
+            y += 5;
+            auto origin = Gfx::point_t(x, y);
+            Gfx::drawString_494B3F(*dpi, &origin, Colour::black, StringIds::challenge_label, nullptr);
+
+            // Challenge text
+            str = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
+            strncpy(str, scenarioInfo->objective, std::size(scenarioInfo->objective));
+
+            y += 10;
+            args = FormatArguments();
+            args.push(StringIds::buffer_1250);
+            y = Gfx::drawString_495224(*dpi, x, y, 170, Colour::black, StringIds::challenge_value, &args);
+
+            // Start year
+            y += 5;
+            args = FormatArguments();
+            args.push(scenarioInfo->startYear);
+            Gfx::drawString_494B3F(*dpi, x, y, Colour::black, StringIds::challenge_start_date, &args);
+
+            // Competing companies
+            y += 10;
+            args = FormatArguments();
+            args.push<uint16_t>(scenarioInfo->numCompetingCompanies);
+            string_id competitionStringId = scenarioInfo->numCompetingCompanies == 0 ? StringIds::challenge_competing_companies_none : StringIds::challenge_competing_companies_up_to;
+            y = Gfx::drawString_495224(*dpi, x, y, 170, Colour::black, competitionStringId, &args);
+
+            if (scenarioInfo->numCompetingCompanies == 0 || scenarioInfo->competingCompanyDelay == 0)
+                return;
+
+            // Delayed start for competing companies
+            args = FormatArguments();
+            args.push<uint16_t>(scenarioInfo->competingCompanyDelay);
+            competitionStringId = scenarioInfo->numCompetingCompanies == 1 ? StringIds::competition_not_starting_for_month : StringIds::competition_not_starting_for_months;
+            Gfx::drawString_494B3F(*dpi, x, y, Colour::black, competitionStringId, &args);
+        }
     }
 
     // 0x00443D02
@@ -265,7 +299,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
 
             // Scenario name
             {
-                auto str = const_cast<char*>(stringmgr::getString(StringIds::buffer_2039));
+                auto str = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
                 strncpy(str, scenarioInfo->scenarioName, std::size(scenarioInfo->scenarioName));
 
                 auto args = FormatArguments();
@@ -287,7 +321,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
 
             // 'Completed by' info
             {
-                auto str = const_cast<char*>(stringmgr::getString(StringIds::buffer_2039));
+                auto str = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
                 strncpy(str, scenarioInfo->highscoreName, std::size(scenarioInfo->highscoreName));
 
                 auto args = FormatArguments();

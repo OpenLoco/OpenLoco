@@ -15,7 +15,10 @@ namespace OpenLoco::ScenarioManager
     {
         char filename[0x100];           // 0x000
         uint8_t category;               // 0x100
-        uint8_t pad_101[0x122 - 0x101]; // 0x101
+        uint8_t numCompetingCompanies;  // 0x101
+        uint8_t competingCompanyDelay;  // 0x102
+        uint8_t pad_103[0x120 - 0x103]; // 0x103
+        uint16_t startYear;             // 0x120
         uint16_t completedMonths;       // 0x122
         char scenarioName[0x40];        // 0x124
         char description[0x100];        // 0x164
