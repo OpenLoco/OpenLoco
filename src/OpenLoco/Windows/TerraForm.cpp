@@ -19,7 +19,7 @@
 #include "../Utility/Numeric.hpp"
 #include "../Widget.h"
 
-using namespace OpenLoco::interop;
+using namespace OpenLoco::Interop;
 using namespace OpenLoco::map;
 using namespace OpenLoco::game_commands;
 

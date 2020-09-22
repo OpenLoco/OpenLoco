@@ -26,7 +26,7 @@
 #include <windows.h>
 #endif
 
-using namespace OpenLoco::interop;
+using namespace OpenLoco::Interop;
 using namespace OpenLoco::ui;
 using namespace OpenLoco::game_commands;
 

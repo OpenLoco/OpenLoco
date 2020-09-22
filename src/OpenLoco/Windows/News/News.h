@@ -4,7 +4,7 @@
 #include "../../Interop/Interop.hpp"
 #include "../../Ui/WindowManager.h"
 
-using namespace OpenLoco::interop;
+using namespace OpenLoco::Interop;
 
 namespace OpenLoco::ui::NewsWindow
 {

@@ -1,7 +1,7 @@
 #include "Intro.h"
 #include "Interop/Interop.hpp"
 
-using namespace OpenLoco::interop;
+using namespace OpenLoco::Interop;
 
 namespace OpenLoco::intro
 {

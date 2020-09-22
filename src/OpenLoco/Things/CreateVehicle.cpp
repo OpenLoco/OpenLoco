@@ -18,7 +18,7 @@
 #include <utility>
 
 using namespace OpenLoco;
-using namespace OpenLoco::interop;
+using namespace OpenLoco::Interop;
 using namespace OpenLoco::objectmgr;
 using namespace OpenLoco::game_commands;
 

@@ -21,7 +21,7 @@
 #undef interface
 #endif
 
-using namespace OpenLoco::interop;
+using namespace OpenLoco::Interop;
 
 namespace OpenLoco::ui::textinput
 {

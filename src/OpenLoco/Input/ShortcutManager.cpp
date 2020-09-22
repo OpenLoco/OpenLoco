@@ -9,7 +9,7 @@
 #include "../Ui/WindowManager.h"
 #include <array>
 
-using namespace OpenLoco::interop;
+using namespace OpenLoco::Interop;
 using namespace OpenLoco::ui;
 
 namespace OpenLoco::input::ShortcutManager

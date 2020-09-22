@@ -15,7 +15,7 @@
 #include "../Ui/WindowManager.h"
 #include "../Widget.h"
 
-using namespace OpenLoco::interop;
+using namespace OpenLoco::Interop;
 
 namespace OpenLoco::ui::windows::industry_list
 {

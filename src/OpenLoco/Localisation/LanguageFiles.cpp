@@ -13,7 +13,7 @@
 #include <iostream>
 #include <stdexcept>
 
-using namespace OpenLoco::interop;
+using namespace OpenLoco::Interop;
 
 namespace OpenLoco::localisation
 {

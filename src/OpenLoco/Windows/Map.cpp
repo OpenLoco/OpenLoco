@@ -20,7 +20,7 @@
 #include "../Ui/WindowManager.h"
 #include "../Widget.h"
 
-using namespace OpenLoco::interop;
+using namespace OpenLoco::Interop;
 using namespace OpenLoco::ui::WindowManager;
 
 namespace OpenLoco::ui::windows::map

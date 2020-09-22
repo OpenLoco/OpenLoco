@@ -5,7 +5,7 @@
 #include "../../Objects/VehicleObject.h"
 #include "../../Ui/WindowManager.h"
 
-using namespace OpenLoco::interop;
+using namespace OpenLoco::Interop;
 using namespace OpenLoco::map;
 using namespace OpenLoco::map::tilemgr;
 

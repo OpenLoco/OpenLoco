@@ -3,7 +3,7 @@
 #include <limits>
 #include <utility>
 
-using namespace OpenLoco::interop;
+using namespace OpenLoco::Interop;
 
 namespace OpenLoco
 {

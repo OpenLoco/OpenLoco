@@ -6,7 +6,7 @@
 #include <cassert>
 
 using namespace OpenLoco;
-using namespace OpenLoco::interop;
+using namespace OpenLoco::Interop;
 using namespace OpenLoco::ui::WindowManager;
 
 const uint8_t* tile_element_base::data() const

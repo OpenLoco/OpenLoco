@@ -8,7 +8,7 @@
 #include "../Ui.h"
 #include "../Ui/WindowManager.h"
 
-using namespace OpenLoco::interop;
+using namespace OpenLoco::Interop;
 
 namespace OpenLoco::ui::title_options
 {

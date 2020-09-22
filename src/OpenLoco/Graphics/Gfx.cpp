@@ -16,7 +16,7 @@
 #include <iostream>
 #include <memory>
 
-using namespace OpenLoco::interop;
+using namespace OpenLoco::Interop;
 using namespace OpenLoco::utility;
 using namespace OpenLoco::Drawing;
 using namespace OpenLoco::ui;

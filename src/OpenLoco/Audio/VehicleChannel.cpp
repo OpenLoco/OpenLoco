@@ -5,7 +5,7 @@
 
 using namespace OpenLoco;
 using namespace OpenLoco::Audio;
-using namespace OpenLoco::interop;
+using namespace OpenLoco::Interop;
 
 static std::tuple<sound_id, channel_attributes> sub_48A590(const vehicle* v)
 {

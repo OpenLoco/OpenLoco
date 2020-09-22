@@ -3,7 +3,7 @@
 #include "../Interop/Interop.hpp"
 #include "../ViewportManager.h"
 
-using namespace OpenLoco::interop;
+using namespace OpenLoco::Interop;
 
 namespace OpenLoco::map::tilemgr
 {

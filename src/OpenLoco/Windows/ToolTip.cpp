@@ -9,7 +9,7 @@
 #include <algorithm>
 #include <cstring>
 
-using namespace OpenLoco::interop;
+using namespace OpenLoco::Interop;
 
 namespace OpenLoco::ui::tooltip
 {

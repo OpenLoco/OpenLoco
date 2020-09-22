@@ -9,7 +9,7 @@
 #include "Things/Vehicle.h"
 #include "Ui/WindowManager.h"
 
-using namespace OpenLoco::interop;
+using namespace OpenLoco::Interop;
 using namespace OpenLoco::ui;
 
 namespace OpenLoco::companymgr

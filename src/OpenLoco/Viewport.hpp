@@ -106,7 +106,7 @@ namespace OpenLoco::ui
 
         constexpr int getRotation()
         {
-            return interop::addr<0x00e3f0b8, int32_t>();
+            return Interop::addr<0x00e3f0b8, int32_t>();
         }
 
         /**
