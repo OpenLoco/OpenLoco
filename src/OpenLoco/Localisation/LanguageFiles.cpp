@@ -151,7 +151,7 @@ namespace OpenLoco::Localisation
                     *out++ = (char)ControlCodes::date;
                     if (commands.size() == 3 && commands[1] == "MY" && commands[2] == "SHORT")
                     {
-                        *out++ = date_modifier::raw_my_abbr;
+                        *out++ = DateModifier::raw_my_abbr;
                     }
                 }
                 else if (commands[0] == "DATE" && commands.size() == 2)
@@ -159,11 +159,11 @@ namespace OpenLoco::Localisation
                     *out++ = (char)ControlCodes::date;
                     if (commands[1] == "DMY")
                     {
-                        *out++ = date_modifier::dmy_full;
+                        *out++ = DateModifier::dmy_full;
                     }
                     else if (commands[1] == "MY")
                     {
-                        *out++ = date_modifier::my_full;
+                        *out++ = DateModifier::my_full;
                     }
                 }
                 else if (commands[0] == "COLOUR")

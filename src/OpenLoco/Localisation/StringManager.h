@@ -97,7 +97,7 @@ namespace OpenLoco
         constexpr uint8_t colour_palesilver = 157;
     }
 
-    namespace date_modifier
+    namespace DateModifier
     {
         constexpr uint8_t dmy_full = 0;
         constexpr uint8_t my_full = 4;
