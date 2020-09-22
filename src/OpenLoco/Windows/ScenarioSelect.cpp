@@ -195,6 +195,9 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
                 // Draw preview image and restore original G1 image.
                 Gfx::drawImage(dpi, x, y, imageId);
                 *g1 = backupG1;
+
+                // Draw compass
+                Gfx::drawImage(dpi, x, y, ImageIds::height_map_compass);
             }
         }
         else
