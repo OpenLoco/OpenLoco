@@ -390,7 +390,7 @@ namespace OpenLoco::ui::windows::station
                     continue;
 
                 *buffer++ = ' ';
-                *buffer++ = control_codes::inline_sprite_str;
+                *buffer++ = ControlCodes::inline_sprite_str;
                 *(reinterpret_cast<uint32_t*>(buffer)) = objectmgr::get<cargo_object>(cargoId)->unit_inline_sprite;
                 buffer += 4;
 

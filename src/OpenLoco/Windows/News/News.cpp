@@ -576,11 +576,11 @@ namespace OpenLoco::ui::NewsWindow
 
             if (!(_word_4F8BE4[news->type] & (1 << 5)))
             {
-                *buffer = control_codes::font_large;
+                *buffer = ControlCodes::font_large;
                 buffer++;
             }
 
-            *buffer = control_codes::colour_black;
+            *buffer = ControlCodes::colour_black;
             buffer++;
 
             strncpy(buffer, newsString, 512);
@@ -656,11 +656,11 @@ namespace OpenLoco::ui::NewsWindow
 
             if (!(_word_4F8BE4[news->type] & (1 << 5)))
             {
-                *buffer = control_codes::font_large;
+                *buffer = ControlCodes::font_large;
                 buffer++;
             }
 
-            *buffer = control_codes::colour_black;
+            *buffer = ControlCodes::colour_black;
             buffer++;
 
             strncpy(buffer, newsString, 512);
@@ -703,7 +703,7 @@ namespace OpenLoco::ui::NewsWindow
             char* newsString = news->messageString;
             auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
 
-            *buffer = control_codes::colour_black;
+            *buffer = ControlCodes::colour_black;
             buffer++;
 
             strncpy(buffer, newsString, 512);

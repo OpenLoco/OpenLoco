@@ -63,7 +63,7 @@ namespace OpenLoco::ui::windows::error
     static char* formatErrorString(string_id title, string_id message, FormatArguments args, char* buffer)
     {
         char* ptr = (char*)buffer;
-        ptr[0] = control_codes::colour_black;
+        ptr[0] = ControlCodes::colour_black;
         ptr++;
 
         if (title != StringIds::null)
@@ -76,7 +76,7 @@ namespace OpenLoco::ui::windows::error
             if (title != StringIds::null)
             {
 
-                *ptr = control_codes::newline;
+                *ptr = ControlCodes::newline;
                 ptr++;
             }
             StringManager::formatString(ptr, message, &args);

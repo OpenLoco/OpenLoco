@@ -35,7 +35,7 @@ namespace OpenLoco
         constexpr uint8_t ff = 0xFF;
     }
 
-    namespace control_codes
+    namespace ControlCodes
     {
         // Arguments: uint8_t
         constexpr uint8_t move_x = 1;

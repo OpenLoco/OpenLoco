@@ -269,7 +269,7 @@ namespace OpenLoco::ui::windows::CompanyFaceSelection
             const auto y = self->y + self->widgets[widx::face_frame].bottom + 3;
             const auto width = self->width - self->widgets[widx::scrollview].right - 6;
             auto str = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
-            *str++ = control_codes::window_colour_2;
+            *str++ = ControlCodes::window_colour_2;
             strcpy(str, self->object);
             Gfx::drawStringCentredClipped(*dpi, x, y, width, Colour::black, StringIds::buffer_2039);
         }
@@ -287,11 +287,11 @@ namespace OpenLoco::ui::windows::CompanyFaceSelection
         for (const auto& object : objectmgr::getAvailableObjects(object_type::competitor))
         {
             const auto y = index * rowHeight;
-            uint8_t inlineColour = control_codes::colour_black;
+            uint8_t inlineColour = ControlCodes::colour_black;
 
             if (index == self->row_hover)
             {
-                inlineColour = control_codes::window_colour_2;
+                inlineColour = ControlCodes::window_colour_2;
                 Gfx::fillRect(dpi, 0, y, self->width, y + 9, 0x2000000 | 48);
             }
 

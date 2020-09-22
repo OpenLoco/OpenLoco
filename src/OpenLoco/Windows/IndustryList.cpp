@@ -755,8 +755,8 @@ namespace OpenLoco::ui::windows::industry_list
             char* ptr = (char*)buffer;
 
             *ptr = '\0';
-            *ptr++ = control_codes::font_regular;
-            *ptr++ = control_codes::colour_black;
+            *ptr++ = ControlCodes::font_regular;
+            *ptr++ = ControlCodes::colour_black;
 
             if (industryObj->producesCargo())
             {

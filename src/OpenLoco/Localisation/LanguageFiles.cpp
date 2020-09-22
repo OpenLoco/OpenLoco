@@ -20,34 +20,34 @@ namespace OpenLoco::Localisation
     static loco_global<char* [0xFFFF], 0x005183FC> _strings;
 
     static std::map<std::string, uint8_t, std::less<>> basicCommands = {
-        { "INT16_1DP", control_codes::int16_decimals },
-        { "INT32_1DP", control_codes::int32_decimals },
-        { "INT16", control_codes::int16_grouped },
-        { "UINT16", control_codes::uint16_ungrouped },
-        { "SMALLFONT", control_codes::font_regular },
-        { "BIGFONT", control_codes::font_large },
-        { "TINYFONT", control_codes::font_small },
-        { "NEWLINE_SMALLER", control_codes::newline_smaller },
-        { "OUTLINE", OpenLoco::control_codes::outline },
-        { "VELOCITY", control_codes::velocity },
-        { "CURRENCY32", control_codes::currency32 },
-        { "HEIGHT", control_codes::height },
-        { "CURRENCY48", control_codes::currency48 },
-        { "STRING", control_codes::string_ptr },
-        { "POP16", control_codes::pop16 },
-        { "POWER", control_codes::power },
+        { "INT16_1DP", ControlCodes::int16_decimals },
+        { "INT32_1DP", ControlCodes::int32_decimals },
+        { "INT16", ControlCodes::int16_grouped },
+        { "UINT16", ControlCodes::uint16_ungrouped },
+        { "SMALLFONT", ControlCodes::font_regular },
+        { "BIGFONT", ControlCodes::font_large },
+        { "TINYFONT", ControlCodes::font_small },
+        { "NEWLINE_SMALLER", ControlCodes::newline_smaller },
+        { "OUTLINE", OpenLoco::ControlCodes::outline },
+        { "VELOCITY", ControlCodes::velocity },
+        { "CURRENCY32", ControlCodes::currency32 },
+        { "HEIGHT", ControlCodes::height },
+        { "CURRENCY48", ControlCodes::currency48 },
+        { "STRING", ControlCodes::string_ptr },
+        { "POP16", ControlCodes::pop16 },
+        { "POWER", ControlCodes::power },
     };
 
     static std::map<std::string, uint8_t, std::less<>> textColourNames = {
-        { "BLACK", control_codes::colour_black },
-        { "WINDOW_1", control_codes::window_colour_1 },
-        { "WINDOW_2", control_codes::window_colour_2 },
-        { "WINDOW_3", control_codes::window_colour_3 },
-        { "WHITE", control_codes::colour_white },
-        { "YELLOW", control_codes::colour_yellow },
-        { "TOPAZ", control_codes::colour_topaz },
-        { "RED", control_codes::colour_red },
-        { "GREEN", control_codes::colour_green },
+        { "BLACK", ControlCodes::colour_black },
+        { "WINDOW_1", ControlCodes::window_colour_1 },
+        { "WINDOW_2", ControlCodes::window_colour_2 },
+        { "WINDOW_3", ControlCodes::window_colour_3 },
+        { "WHITE", ControlCodes::colour_white },
+        { "YELLOW", ControlCodes::colour_yellow },
+        { "TOPAZ", ControlCodes::colour_topaz },
+        { "RED", ControlCodes::colour_red },
+        { "GREEN", ControlCodes::colour_green },
     };
 
     static char* readString(const char* value, size_t size)
@@ -108,7 +108,7 @@ namespace OpenLoco::Localisation
                 {
                     if (commands.size() == 1)
                     {
-                        *out = (char)control_codes::stringid_args;
+                        *out = (char)ControlCodes::stringid_args;
                         out++;
                     }
                     else
@@ -118,18 +118,18 @@ namespace OpenLoco::Localisation
                 }
                 else if (commands[0] == "UINT16")
                 {
-                    *out = (char)control_codes::uint16_ungrouped;
+                    *out = (char)ControlCodes::uint16_ungrouped;
                     out++;
                 }
                 else if (commands[0] == "SPRITE")
                 {
                     if (commands.size() == 1)
                     {
-                        *out++ = (char)control_codes::inline_sprite_args;
+                        *out++ = (char)ControlCodes::inline_sprite_args;
                     }
                     else
                     {
-                        *out++ = (char)control_codes::inline_sprite_str;
+                        *out++ = (char)ControlCodes::inline_sprite_str;
                         int32_t sprite_id = std::atoi(commands[1].data());
                         *((uint32_t*)out) = sprite_id;
                         out += 4;
@@ -139,16 +139,16 @@ namespace OpenLoco::Localisation
                 {
                     if (commands.size() == 2 && commands[1] == "RAW")
                     {
-                        *out++ = (char)control_codes::int32_ungrouped;
+                        *out++ = (char)ControlCodes::int32_ungrouped;
                     }
                     else
                     {
-                        *out++ = (char)control_codes::int32_grouped;
+                        *out++ = (char)ControlCodes::int32_grouped;
                     }
                 }
                 else if (commands[0] == "RAWDATE" && commands.size() >= 2)
                 {
-                    *out++ = (char)control_codes::date;
+                    *out++ = (char)ControlCodes::date;
                     if (commands.size() == 3 && commands[1] == "MY" && commands[2] == "SHORT")
                     {
                         *out++ = date_modifier::raw_my_abbr;
@@ -156,7 +156,7 @@ namespace OpenLoco::Localisation
                 }
                 else if (commands[0] == "DATE" && commands.size() == 2)
                 {
-                    *out++ = (char)control_codes::date;
+                    *out++ = (char)ControlCodes::date;
                     if (commands[1] == "DMY")
                     {
                         *out++ = date_modifier::dmy_full;
@@ -181,7 +181,7 @@ namespace OpenLoco::Localisation
                 }
                 else if (commands[0] == "MOVE_X")
                 {
-                    *out++ = (char)control_codes::move_x;
+                    *out++ = (char)ControlCodes::move_x;
                     uint8_t pixels_to_move_by = std::atoi(commands[1].data());
                     *out++ = pixels_to_move_by;
                 }
@@ -189,11 +189,11 @@ namespace OpenLoco::Localisation
                 {
                     if (commands.size() == 1)
                     {
-                        *out++ = (char)control_codes::newline;
+                        *out++ = (char)ControlCodes::newline;
                     }
                     else if (commands.size() == 3)
                     {
-                        *out++ = (char)control_codes::newline_x_y;
+                        *out++ = (char)ControlCodes::newline_x_y;
 
                         uint8_t x_pixels_to_move_by = std::atoi(commands[1].data());
                         *out++ = x_pixels_to_move_by;

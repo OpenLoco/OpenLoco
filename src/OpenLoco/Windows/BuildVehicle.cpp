@@ -1214,7 +1214,7 @@ namespace OpenLoco::ui::BuildVehicle
                     usableCargoTypes &= ~(1 << cargoTypes);
                     auto cargoObj = objectmgr::get<cargo_object>(cargoTypes);
                     *buffer++ = ' ';
-                    *buffer++ = control_codes::inline_sprite_str;
+                    *buffer++ = ControlCodes::inline_sprite_str;
                     *(reinterpret_cast<uint32_t*>(buffer)) = cargoObj->unit_inline_sprite;
                     buffer += 4;
                 }

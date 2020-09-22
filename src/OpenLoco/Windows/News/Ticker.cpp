@@ -89,7 +89,7 @@ namespace OpenLoco::ui::NewsWindow::ticker
                     while (true)
                     {
                         newsStringChar = *newsString;
-                        if (newsStringChar == control_codes::newline)
+                        if (newsStringChar == ControlCodes::newline)
                         {
                             newsStringChar = ' ';
                             cx--;
@@ -181,9 +181,9 @@ namespace OpenLoco::ui::NewsWindow::ticker
         char* newsString = news->messageString;
         auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
 
-        *buffer = control_codes::colour_black;
+        *buffer = ControlCodes::colour_black;
         buffer++;
-        *buffer = control_codes::font_small;
+        *buffer = ControlCodes::font_small;
         buffer++;
 
         auto newsStringChar = *newsString;
@@ -192,7 +192,7 @@ namespace OpenLoco::ui::NewsWindow::ticker
         while (true)
         {
             newsStringChar = *newsString;
-            if (newsStringChar == control_codes::newline)
+            if (newsStringChar == ControlCodes::newline)
             {
                 newsStringChar = ' ';
                 *buffer = newsStringChar;

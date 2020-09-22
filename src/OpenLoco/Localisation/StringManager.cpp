@@ -281,56 +281,56 @@ namespace OpenLoco::StringManager
 
                 switch (ch)
                 {
-                    case control_codes::int32_grouped:
+                    case ControlCodes::int32_grouped:
                     {
                         int32_t value = args.popS32();
                         buffer = formatInt32Grouped(value, buffer);
                         break;
                     }
 
-                    case control_codes::int32_ungrouped:
+                    case ControlCodes::int32_ungrouped:
                     {
                         int32_t value = args.popS32();
                         buffer = formatInt32Ungrouped(value, buffer);
                         break;
                     }
 
-                    case control_codes::int16_decimals:
+                    case ControlCodes::int16_decimals:
                     {
                         int16_t value = args.popS16();
                         buffer = formatShortWithDecimals(value, buffer);
                         break;
                     }
 
-                    case control_codes::int32_decimals:
+                    case ControlCodes::int32_decimals:
                     {
                         int32_t value = args.popS32();
                         buffer = formatIntWithDecimals(value, buffer);
                         break;
                     }
 
-                    case control_codes::int16_grouped:
+                    case ControlCodes::int16_grouped:
                     {
                         int16_t value = args.popS16();
                         buffer = formatInt32Grouped(value, buffer);
                         break;
                     }
 
-                    case control_codes::uint16_ungrouped:
+                    case ControlCodes::uint16_ungrouped:
                     {
                         int32_t value = args.pop16();
                         buffer = formatInt32Ungrouped(value, buffer);
                         break;
                     }
 
-                    case control_codes::currency32:
+                    case ControlCodes::currency32:
                     {
                         int32_t value = args.pop32();
                         buffer = formatCurrency(value, buffer);
                         break;
                     }
 
-                    case control_codes::currency48:
+                    case ControlCodes::currency48:
                     {
                         uint32_t value_low = (uint32_t)args.pop32();
                         int32_t value_high = args.popS16();
@@ -339,14 +339,14 @@ namespace OpenLoco::StringManager
                         break;
                     }
 
-                    case control_codes::stringid_args:
+                    case ControlCodes::stringid_args:
                     {
                         string_id id = args.pop16();
                         buffer = formatString(buffer, id, args);
                         break;
                     }
 
-                    case control_codes::stringid_str:
+                    case ControlCodes::stringid_str:
                     {
                         string_id id = *(string_id*)sourceStr;
                         sourceStr += 2;
@@ -354,7 +354,7 @@ namespace OpenLoco::StringManager
                         break;
                     }
 
-                    case control_codes::string_ptr:
+                    case ControlCodes::string_ptr:
                     {
                         const char* str = (char*)args.pop32();
                         strcpy(buffer, str);
@@ -362,7 +362,7 @@ namespace OpenLoco::StringManager
                         break;
                     }
 
-                    case control_codes::date:
+                    case ControlCodes::date:
                     {
                         char modifier = *sourceStr;
                         uint32_t totalDays = args.pop32();
@@ -393,7 +393,7 @@ namespace OpenLoco::StringManager
                         break;
                     }
 
-                    case control_codes::velocity:
+                    case ControlCodes::velocity:
                     {
                         auto measurement_format = config::get().measurement_format;
 
@@ -418,21 +418,21 @@ namespace OpenLoco::StringManager
                         break;
                     }
 
-                    case control_codes::pop16:
+                    case ControlCodes::pop16:
                         args.skip16();
                         break;
 
-                    case control_codes::push16:
+                    case ControlCodes::push16:
                         args.push16();
                         break;
 
-                    case control_codes::timeMS:
+                    case ControlCodes::timeMS:
                         throw std::runtime_error("Unimplemented format string: 15");
 
-                    case control_codes::timeHM:
+                    case ControlCodes::timeHM:
                         throw std::runtime_error("Unimplemented format string: 16");
 
-                    case control_codes::distance:
+                    case ControlCodes::distance:
                     {
                         uint32_t value = args.pop16();
                         auto measurement_format = config::get().measurement_format;
@@ -456,7 +456,7 @@ namespace OpenLoco::StringManager
                         break;
                     }
 
-                    case control_codes::height:
+                    case ControlCodes::height:
                     {
                         int32_t value = args.popS16();
 
@@ -487,7 +487,7 @@ namespace OpenLoco::StringManager
                         break;
                     }
 
-                    case control_codes::power:
+                    case ControlCodes::power:
                     {
                         uint32_t value = args.pop16();
                         auto measurement_format = config::get().measurement_format;
@@ -511,9 +511,9 @@ namespace OpenLoco::StringManager
                         break;
                     }
 
-                    case control_codes::inline_sprite_args:
+                    case ControlCodes::inline_sprite_args:
                     {
-                        *buffer = control_codes::inline_sprite_str;
+                        *buffer = ControlCodes::inline_sprite_str;
                         uint32_t value = args.pop32();
                         uint32_t* sprite_ptr = (uint32_t*)(buffer + 1);
                         *sprite_ptr = value;
