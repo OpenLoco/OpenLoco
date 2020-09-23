@@ -81,7 +81,7 @@ namespace OpenLoco::ui::viewportmgr
         viewport->view_y = dest_y;
     }
 
-    static void focusViewportOn(window* w, int index, map::map_pos3 tile)
+    static void focusViewportOn(window* w, int index, Map::map_pos3 tile)
     {
         assert(index >= 0 && index < viewportsPerWindow);
         viewport* viewport = w->viewports[index];
@@ -118,7 +118,7 @@ namespace OpenLoco::ui::viewportmgr
         }
         else
         {
-            map::map_pos3 tile;
+            Map::map_pos3 tile;
             tile.x = regs.dx;
             tile.y = regs.edx >> 16;
             tile.z = regs.ecx >> 16;
@@ -170,7 +170,7 @@ namespace OpenLoco::ui::viewportmgr
      * 2.
      * dx : thing_id
      */
-    viewport* create(window* window, int viewportIndex, Gfx::point_t origin, Gfx::ui_size_t size, ZoomLevel zoom, map::map_pos3 tile)
+    viewport* create(window* window, int viewportIndex, Gfx::point_t origin, Gfx::ui_size_t size, ZoomLevel zoom, Map::map_pos3 tile)
     {
         viewport* viewport = initViewport(origin, size, zoom);
 
@@ -314,12 +314,12 @@ namespace OpenLoco::ui::viewportmgr
         invalidate(rect, level);
     }
 
-    void invalidate(const map::map_pos pos, coord_t zMin, coord_t zMax, ZoomLevel zoom, int radius)
+    void invalidate(const Map::map_pos pos, coord_t zMin, coord_t zMax, ZoomLevel zoom, int radius)
     {
-        auto axbx = map::coordinate3dTo2d(pos.x + 16, pos.y + 16, zMax, currentRotation);
+        auto axbx = Map::coordinate3dTo2d(pos.x + 16, pos.y + 16, zMax, currentRotation);
         axbx.x -= radius;
         axbx.y -= radius;
-        auto dxbp = map::coordinate3dTo2d(pos.x + 16, pos.y + 16, zMin, currentRotation);
+        auto dxbp = Map::coordinate3dTo2d(pos.x + 16, pos.y + 16, zMin, currentRotation);
         dxbp.x += radius;
         dxbp.y += radius;
 
@@ -338,7 +338,7 @@ namespace OpenLoco::ui::viewportmgr
             0x0046112C,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                map::tilemgr::mapInvalidateMapSelectionTiles();
+                Map::tilemgr::mapInvalidateMapSelectionTiles();
                 regs = backup;
                 return 0;
             });
@@ -393,42 +393,42 @@ namespace OpenLoco::ui::viewportmgr
         registerHook(
             0x004CBE5F,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                auto pos = map::map_pos(regs.ax, regs.cx);
-                map::tilemgr::mapInvalidateTileFull(pos);
+                auto pos = Map::map_pos(regs.ax, regs.cx);
+                Map::tilemgr::mapInvalidateTileFull(pos);
                 return 0;
             });
         registerHook(
             0x004CBFBF,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                auto pos = map::map_pos(regs.ax, regs.cx);
+                auto pos = Map::map_pos(regs.ax, regs.cx);
                 invalidate(pos, regs.di, regs.si, ZoomLevel::eighth, 56);
                 return 0;
             });
         registerHook(
             0x004CC098,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                auto pos = map::map_pos(regs.ax, regs.cx);
+                auto pos = Map::map_pos(regs.ax, regs.cx);
                 invalidate(pos, regs.di, regs.si, ZoomLevel::eighth);
                 return 0;
             });
         registerHook(
             0x004CC20F,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                auto pos = map::map_pos(regs.ax, regs.cx);
+                auto pos = Map::map_pos(regs.ax, regs.cx);
                 invalidate(pos, regs.di, regs.si, ZoomLevel::full);
                 return 0;
             });
         registerHook(
             0x004CC390,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                auto pos = map::map_pos(regs.ax, regs.cx);
+                auto pos = Map::map_pos(regs.ax, regs.cx);
                 invalidate(pos, regs.di, regs.si, ZoomLevel::half);
                 return 0;
             });
         registerHook(
             0x004CC511,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                auto pos = map::map_pos(regs.ax, regs.cx);
+                auto pos = Map::map_pos(regs.ax, regs.cx);
                 invalidate(pos, regs.di, regs.si, ZoomLevel::quarter);
                 return 0;
             });

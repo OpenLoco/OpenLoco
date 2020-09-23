@@ -9,7 +9,7 @@
 #include <algorithm>
 
 using namespace OpenLoco::Interop;
-using namespace OpenLoco::map;
+using namespace OpenLoco::Map;
 
 namespace OpenLoco
 {
@@ -187,7 +187,7 @@ namespace OpenLoco
             {
                 if (prng.randBool())
                 {
-                    map::map_pos randTile{ static_cast<coord_t>(x + (prng.randNext(-15, 16) * 32)), static_cast<coord_t>(y + (prng.randNext(-15, 16) * 32)) };
+                    Map::map_pos randTile{ static_cast<coord_t>(x + (prng.randNext(-15, 16) * 32)), static_cast<coord_t>(y + (prng.randNext(-15, 16) * 32)) };
                     uint8_t bl = obj->var_ED;
                     uint8_t bh = obj->var_EE;
                     if (obj->var_EF != 0xFF && prng.randBool())

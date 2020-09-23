@@ -30,7 +30,7 @@ static map_pos _offsets[4] = {
 };
 
 // 0x0046959C
-void map::surface_element::createWave(int16_t x, int16_t y, int animationIndex)
+void Map::surface_element::createWave(int16_t x, int16_t y, int animationIndex)
 {
     auto coord2D = coordinate3dTo2d(x + 16, y + 16, this->water() * 16, gCurrentRotation);
     auto w = WindowManager::findWindowShowing(coord2D);
@@ -48,7 +48,7 @@ void map::surface_element::createWave(int16_t x, int16_t y, int animationIndex)
             return;
         if (y + offset.y > 0x2FFF)
             return;
-        auto tile = map::tilemgr::get(x + offset.x, y + offset.y);
+        auto tile = Map::tilemgr::get(x + offset.x, y + offset.y);
         if (tile.isNull())
             return;
         auto surface = tile.surface();

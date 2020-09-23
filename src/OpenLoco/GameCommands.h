@@ -33,7 +33,7 @@ namespace OpenLoco::game_commands
 
     void registerHooks();
     uint32_t doCommand(int esi, const registers& registers);
-    bool sub_431E6A(const company_id_t company, map::tile_element* const tile = nullptr);
+    bool sub_431E6A(const company_id_t company, Map::tile_element* const tile = nullptr);
 
     // Build vehicle
     inline bool do_5(uint16_t vehicle_type, uint16_t vehicle_id = 0xFFFF)
@@ -110,7 +110,7 @@ namespace OpenLoco::game_commands
     }
 
     // Change Land Material
-    inline void do_24(map::map_pos pointA, map::map_pos pointB, uint8_t landType, uint8_t flags)
+    inline void do_24(Map::map_pos pointA, Map::map_pos pointB, uint8_t landType, uint8_t flags)
     {
         registers regs;
         regs.ax = pointA.x;
@@ -123,7 +123,7 @@ namespace OpenLoco::game_commands
     }
 
     // Raise Land
-    inline uint32_t do_25(map::map_pos centre, map::map_pos pointA, map::map_pos pointB, uint16_t di, uint8_t flags)
+    inline uint32_t do_25(Map::map_pos centre, Map::map_pos pointA, Map::map_pos pointB, uint16_t di, uint8_t flags)
     {
         registers regs;
         regs.ax = centre.x;
@@ -136,7 +136,7 @@ namespace OpenLoco::game_commands
     }
 
     // Lower Land
-    inline uint32_t do_26(map::map_pos centre, map::map_pos pointA, map::map_pos pointB, uint16_t di, uint8_t flags)
+    inline uint32_t do_26(Map::map_pos centre, Map::map_pos pointA, Map::map_pos pointB, uint16_t di, uint8_t flags)
     {
         registers regs;
         regs.ax = centre.x;
@@ -149,7 +149,7 @@ namespace OpenLoco::game_commands
     }
 
     // Lower/Raise Land Mountain
-    inline uint32_t do_27(map::map_pos centre, map::map_pos pointA, map::map_pos pointB, uint16_t di, uint8_t flags)
+    inline uint32_t do_27(Map::map_pos centre, Map::map_pos pointA, Map::map_pos pointB, uint16_t di, uint8_t flags)
     {
         registers regs;
         regs.ax = centre.x;
@@ -162,7 +162,7 @@ namespace OpenLoco::game_commands
     }
 
     // Raise Water
-    inline uint32_t do_28(map::map_pos pointA, map::map_pos pointB, uint8_t flags)
+    inline uint32_t do_28(Map::map_pos pointA, Map::map_pos pointB, uint8_t flags)
     {
         registers regs;
         regs.ax = pointA.x;
@@ -174,7 +174,7 @@ namespace OpenLoco::game_commands
     }
 
     // Lower Water
-    inline uint32_t do_29(map::map_pos pointA, map::map_pos pointB, uint8_t flags)
+    inline uint32_t do_29(Map::map_pos pointA, Map::map_pos pointB, uint8_t flags)
     {
         registers regs;
         regs.ax = pointA.x;
@@ -284,7 +284,7 @@ namespace OpenLoco::game_commands
     }
 
     // Clear Land
-    inline void do_66(map::map_pos centre, map::map_pos pointA, map::map_pos pointB, uint8_t flags)
+    inline void do_66(Map::map_pos centre, Map::map_pos pointA, Map::map_pos pointB, uint8_t flags)
     {
         registers regs;
         regs.ax = centre.x;
@@ -319,7 +319,7 @@ namespace OpenLoco::game_commands
     }
 
     // Update owner status
-    inline void do_73(map::map_pos position)
+    inline void do_73(Map::map_pos position)
     {
         registers regs;
         regs.bl = GameCommandFlag::apply;

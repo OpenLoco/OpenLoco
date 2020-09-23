@@ -20,7 +20,7 @@
 #include "../Widget.h"
 
 using namespace OpenLoco::Interop;
-using namespace OpenLoco::map;
+using namespace OpenLoco::Map;
 using namespace OpenLoco::game_commands;
 
 namespace OpenLoco::ui::windows::terraform

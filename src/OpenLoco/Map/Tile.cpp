@@ -112,7 +112,7 @@ OpenLoco::industry* industry_element::industry()
     return industrymgr::get(_industryId);
 }
 
-namespace OpenLoco::map
+namespace OpenLoco::Map
 {
     /**
      * Return the absolute height of an element, given its (x, y) coordinates

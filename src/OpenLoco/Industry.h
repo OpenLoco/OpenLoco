@@ -11,7 +11,7 @@
 
 namespace OpenLoco
 {
-    using namespace map;
+    using namespace Map;
     using industry_id_t = uint8_t;
 
     namespace industry_id
@@ -39,7 +39,7 @@ namespace OpenLoco
         uint8_t under_construction; // 0x11 (0xFF = Finished)
         uint8_t pad_12[0xD5 - 0x12];
         town_id_t town;           // 0xD5
-        map::tile_loop tile_loop; // 0xD7
+        Map::tile_loop tile_loop; // 0xD7
         int16_t var_DB;
         int16_t var_DD;
         uint8_t var_DF;

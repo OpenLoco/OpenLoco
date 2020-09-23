@@ -10,7 +10,7 @@
 
 namespace OpenLoco
 {
-    using namespace OpenLoco::map;
+    using namespace OpenLoco::Map;
 
     namespace station_id
     {

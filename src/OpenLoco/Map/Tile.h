@@ -12,7 +12,7 @@ namespace OpenLoco
     struct industry;
 }
 
-namespace OpenLoco::map
+namespace OpenLoco::Map
 {
     constexpr coord_t tile_size = 32;
     constexpr coord_t map_rows = 384;

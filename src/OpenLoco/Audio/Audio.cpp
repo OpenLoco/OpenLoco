@@ -494,11 +494,11 @@ namespace OpenLoco::Audio
         }
     }
 
-    static int32_t calculateVolumeFromViewport(sound_id id, const map::map_pos3& mpos, const viewport& viewport)
+    static int32_t calculateVolumeFromViewport(sound_id id, const Map::map_pos3& mpos, const viewport& viewport)
     {
         auto volume = 0;
         auto zVol = 0;
-        auto tile = map::tilemgr::get(mpos);
+        auto tile = Map::tilemgr::get(mpos);
         if (!tile.isNull())
         {
             auto surface = tile.surface();

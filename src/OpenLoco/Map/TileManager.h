@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <tuple>
 
-namespace OpenLoco::map::tilemgr
+namespace OpenLoco::Map::tilemgr
 {
     enum MapSelectFlag : uint16_t
     {
@@ -16,6 +16,6 @@ namespace OpenLoco::map::tilemgr
     tile get(coord_t x, coord_t y);
     std::tuple<int16_t, int16_t> getHeight(coord_t x, coord_t y);
     void mapInvalidateSelectionRect();
-    void mapInvalidateTileFull(map::map_pos pos);
+    void mapInvalidateTileFull(Map::map_pos pos);
     void mapInvalidateMapSelectionTiles();
 }

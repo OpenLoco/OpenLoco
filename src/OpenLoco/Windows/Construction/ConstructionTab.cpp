@@ -12,8 +12,8 @@
 #include "Construction.h"
 
 using namespace OpenLoco::Interop;
-using namespace OpenLoco::map;
-using namespace OpenLoco::map::tilemgr;
+using namespace OpenLoco::Map;
+using namespace OpenLoco::Map::tilemgr;
 
 namespace OpenLoco::ui::windows::construction::construction
 {
@@ -293,13 +293,13 @@ namespace OpenLoco::ui::windows::construction::construction
             roadId = road->id;
         }
 
-        const auto& roadPiece = OpenLoco::map::TrackData::getRoadPiece(roadId);
+        const auto& roadPiece = OpenLoco::Map::TrackData::getRoadPiece(roadId);
         auto posId = 0;
         rotation &= 3;
 
         for (const auto& roadPart : roadPiece)
         {
-            if (roadPart.flags & OpenLoco::map::TrackData::PreviewTrackFlags::diagonal)
+            if (roadPart.flags & OpenLoco::Map::TrackData::PreviewTrackFlags::diagonal)
             {
                 continue;
             }
@@ -487,13 +487,13 @@ namespace OpenLoco::ui::windows::construction::construction
             trackId = track->id;
         }
 
-        const auto& trackPiece = OpenLoco::map::TrackData::getTrackPiece(trackId);
+        const auto& trackPiece = OpenLoco::Map::TrackData::getTrackPiece(trackId);
         auto posId = 0;
         rotation &= 3;
 
         for (const auto& trackPart : trackPiece)
         {
-            if (trackPart.flags & OpenLoco::map::TrackData::PreviewTrackFlags::diagonal)
+            if (trackPart.flags & OpenLoco::Map::TrackData::PreviewTrackFlags::diagonal)
             {
                 continue;
             }
@@ -1697,7 +1697,7 @@ namespace OpenLoco::ui::windows::construction::construction
             auto maxRetries = 0;
             if (Input::hasKeyModifier(Input::key_modifier::shift) || _byte_113605D != 1)
             {
-                const auto& roadPiece = OpenLoco::map::TrackData::getRoadPiece(_byte_1136065);
+                const auto& roadPiece = OpenLoco::Map::TrackData::getRoadPiece(_byte_1136065);
                 auto maxRoadPieceHeight = 0;
 
                 for (const auto& roadPart : roadPiece)
@@ -1800,7 +1800,7 @@ namespace OpenLoco::ui::windows::construction::construction
             auto maxRetries = 0;
             if (Input::hasKeyModifier(Input::key_modifier::shift) || _byte_113605D != 1)
             {
-                const auto& trackPiece = OpenLoco::map::TrackData::getTrackPiece(_byte_1136065);
+                const auto& trackPiece = OpenLoco::Map::TrackData::getTrackPiece(_byte_1136065);
                 auto maxTrackPieceHeight = 0;
 
                 for (const auto& trackPart : trackPiece)
@@ -2012,12 +2012,12 @@ namespace OpenLoco::ui::windows::construction::construction
 
             if (Gfx::clipDrawpixelinfo(&clipped, dpi, x, y, width, height))
             {
-                const auto& roadPiece = OpenLoco::map::TrackData::getRoadPiece(_lastSelectedTrackPieceId);
+                const auto& roadPiece = OpenLoco::Map::TrackData::getRoadPiece(_lastSelectedTrackPieceId);
                 const auto& lastRoadPart = roadPiece.back();
 
                 map_pos3 pos3D = { lastRoadPart.x, lastRoadPart.y, lastRoadPart.z };
 
-                if (lastRoadPart.flags & OpenLoco::map::TrackData::PreviewTrackFlags::unused)
+                if (lastRoadPart.flags & OpenLoco::Map::TrackData::PreviewTrackFlags::unused)
                 {
                     pos3D.x = 0;
                     pos3D.y = 0;
@@ -2062,12 +2062,12 @@ namespace OpenLoco::ui::windows::construction::construction
 
             if (Gfx::clipDrawpixelinfo(&clipped, dpi, x, y, width, height))
             {
-                const auto& trackPiece = OpenLoco::map::TrackData::getTrackPiece(_lastSelectedTrackPieceId);
+                const auto& trackPiece = OpenLoco::Map::TrackData::getTrackPiece(_lastSelectedTrackPieceId);
                 const auto& lastTrackPart = trackPiece.back();
 
                 map_pos3 pos3D = { lastTrackPart.x, lastTrackPart.y, lastTrackPart.z };
 
-                if (lastTrackPart.flags & OpenLoco::map::TrackData::PreviewTrackFlags::unused)
+                if (lastTrackPart.flags & OpenLoco::Map::TrackData::PreviewTrackFlags::unused)
                 {
                     pos3D.x = 0;
                     pos3D.y = 0;

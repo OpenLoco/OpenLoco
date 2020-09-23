@@ -5,7 +5,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::map::tilemgr
+namespace OpenLoco::Map::tilemgr
 {
     static loco_global<tile_element* [0x30004], 0x00E40134> _tiles;
     static loco_global<coord_t, 0x00F24486> _mapSelectionAX;
@@ -206,7 +206,7 @@ namespace OpenLoco::map::tilemgr
     // 0x004CBE5F
     // regs.ax: pos.x
     // regs.cx: pos.y
-    void mapInvalidateTileFull(map::map_pos pos)
+    void mapInvalidateTileFull(Map::map_pos pos)
     {
         ui::viewportmgr::invalidate(pos, 0, 1120, ZoomLevel::eighth);
     }
