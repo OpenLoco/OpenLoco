@@ -76,11 +76,11 @@ namespace OpenLoco::ui::windows::station_list
     };
 
     static TabDetails tabInformationByType[] = {
-        { tab_all_stations, StringIds::stringid_all_stations, InterfaceSkin::image_ids::all_stations, station_mask_all_modes },
-        { tab_rail_stations, StringIds::stringid_rail_stations, InterfaceSkin::image_ids::rail_stations, station_flags::transport_mode_rail },
-        { tab_road_stations, StringIds::stringid_road_stations, InterfaceSkin::image_ids::road_stations, station_flags::transport_mode_road },
-        { tab_airports, StringIds::stringid_airports, InterfaceSkin::image_ids::airports, station_flags::transport_mode_air },
-        { tab_ship_ports, StringIds::stringid_ship_ports, InterfaceSkin::image_ids::ship_ports, station_flags::transport_mode_water }
+        { tab_all_stations, StringIds::stringid_all_stations, InterfaceSkin::ImageIds::all_stations, station_mask_all_modes },
+        { tab_rail_stations, StringIds::stringid_rail_stations, InterfaceSkin::ImageIds::rail_stations, station_flags::transport_mode_rail },
+        { tab_road_stations, StringIds::stringid_road_stations, InterfaceSkin::ImageIds::road_stations, station_flags::transport_mode_road },
+        { tab_airports, StringIds::stringid_airports, InterfaceSkin::ImageIds::airports, station_flags::transport_mode_air },
+        { tab_ship_ports, StringIds::stringid_ship_ports, InterfaceSkin::ImageIds::ship_ports, station_flags::transport_mode_water }
     };
 
     enum SortMode : uint16_t

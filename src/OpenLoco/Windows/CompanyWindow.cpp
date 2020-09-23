@@ -691,7 +691,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
             args.push(company->name);
             auto companyColour = companymgr::getCompanyColour(self->number);
             auto skin = objectmgr::get<interface_skin_object>();
-            uint32_t image = skin->img + InterfaceSkin::image_ids::build_headquarters;
+            uint32_t image = skin->img + InterfaceSkin::ImageIds::build_headquarters;
             self->widgets[widx::build_hq].image = Gfx::recolour(image, companyColour) | (1 << 30);
 
             self->disabled_widgets &= ~(1 << widx::centre_on_viewport);
@@ -2582,27 +2582,27 @@ namespace OpenLoco::ui::windows::CompanyWindow
 
             // Status tab
             {
-                const uint32_t imageId = skin->img + InterfaceSkin::image_ids::tab_company;
+                const uint32_t imageId = skin->img + InterfaceSkin::ImageIds::tab_company;
                 widget::draw_tab(self, dpi, imageId, widx::tab_status);
             }
 
             // Details tab
             {
-                const uint32_t imageId = Gfx::recolour(skin->img + InterfaceSkin::image_ids::tab_company_details, self->colours[0]);
+                const uint32_t imageId = Gfx::recolour(skin->img + InterfaceSkin::ImageIds::tab_company_details, self->colours[0]);
                 widget::draw_tab(self, dpi, imageId, widx::tab_details);
             }
 
             // Colour scheme tab
             {
                 static const uint32_t colourSchemeTabImageIds[] = {
-                    InterfaceSkin::image_ids::tab_colour_scheme_frame0,
-                    InterfaceSkin::image_ids::tab_colour_scheme_frame1,
-                    InterfaceSkin::image_ids::tab_colour_scheme_frame2,
-                    InterfaceSkin::image_ids::tab_colour_scheme_frame3,
-                    InterfaceSkin::image_ids::tab_colour_scheme_frame4,
-                    InterfaceSkin::image_ids::tab_colour_scheme_frame5,
-                    InterfaceSkin::image_ids::tab_colour_scheme_frame6,
-                    InterfaceSkin::image_ids::tab_colour_scheme_frame7,
+                    InterfaceSkin::ImageIds::tab_colour_scheme_frame0,
+                    InterfaceSkin::ImageIds::tab_colour_scheme_frame1,
+                    InterfaceSkin::ImageIds::tab_colour_scheme_frame2,
+                    InterfaceSkin::ImageIds::tab_colour_scheme_frame3,
+                    InterfaceSkin::ImageIds::tab_colour_scheme_frame4,
+                    InterfaceSkin::ImageIds::tab_colour_scheme_frame5,
+                    InterfaceSkin::ImageIds::tab_colour_scheme_frame6,
+                    InterfaceSkin::ImageIds::tab_colour_scheme_frame7,
                 };
 
                 uint32_t imageId = skin->img;
@@ -2617,22 +2617,22 @@ namespace OpenLoco::ui::windows::CompanyWindow
             // Finances tab
             {
                 static const uint32_t financesTabImageIds[] = {
-                    InterfaceSkin::image_ids::tab_finances_frame0,
-                    InterfaceSkin::image_ids::tab_finances_frame1,
-                    InterfaceSkin::image_ids::tab_finances_frame2,
-                    InterfaceSkin::image_ids::tab_finances_frame3,
-                    InterfaceSkin::image_ids::tab_finances_frame4,
-                    InterfaceSkin::image_ids::tab_finances_frame5,
-                    InterfaceSkin::image_ids::tab_finances_frame6,
-                    InterfaceSkin::image_ids::tab_finances_frame7,
-                    InterfaceSkin::image_ids::tab_finances_frame8,
-                    InterfaceSkin::image_ids::tab_finances_frame9,
-                    InterfaceSkin::image_ids::tab_finances_frame10,
-                    InterfaceSkin::image_ids::tab_finances_frame11,
-                    InterfaceSkin::image_ids::tab_finances_frame12,
-                    InterfaceSkin::image_ids::tab_finances_frame13,
-                    InterfaceSkin::image_ids::tab_finances_frame14,
-                    InterfaceSkin::image_ids::tab_finances_frame15,
+                    InterfaceSkin::ImageIds::tab_finances_frame0,
+                    InterfaceSkin::ImageIds::tab_finances_frame1,
+                    InterfaceSkin::ImageIds::tab_finances_frame2,
+                    InterfaceSkin::ImageIds::tab_finances_frame3,
+                    InterfaceSkin::ImageIds::tab_finances_frame4,
+                    InterfaceSkin::ImageIds::tab_finances_frame5,
+                    InterfaceSkin::ImageIds::tab_finances_frame6,
+                    InterfaceSkin::ImageIds::tab_finances_frame7,
+                    InterfaceSkin::ImageIds::tab_finances_frame8,
+                    InterfaceSkin::ImageIds::tab_finances_frame9,
+                    InterfaceSkin::ImageIds::tab_finances_frame10,
+                    InterfaceSkin::ImageIds::tab_finances_frame11,
+                    InterfaceSkin::ImageIds::tab_finances_frame12,
+                    InterfaceSkin::ImageIds::tab_finances_frame13,
+                    InterfaceSkin::ImageIds::tab_finances_frame14,
+                    InterfaceSkin::ImageIds::tab_finances_frame15,
                 };
 
                 uint32_t imageId = skin->img;
@@ -2647,10 +2647,10 @@ namespace OpenLoco::ui::windows::CompanyWindow
             // Cargo delivered tab
             {
                 static const uint32_t cargoDeliveredTabImageIds[] = {
-                    InterfaceSkin::image_ids::tab_cargo_delivered_frame0,
-                    InterfaceSkin::image_ids::tab_cargo_delivered_frame1,
-                    InterfaceSkin::image_ids::tab_cargo_delivered_frame2,
-                    InterfaceSkin::image_ids::tab_cargo_delivered_frame3,
+                    InterfaceSkin::ImageIds::tab_cargo_delivered_frame0,
+                    InterfaceSkin::ImageIds::tab_cargo_delivered_frame1,
+                    InterfaceSkin::ImageIds::tab_cargo_delivered_frame2,
+                    InterfaceSkin::ImageIds::tab_cargo_delivered_frame3,
                 };
 
                 uint32_t imageId = skin->img;
@@ -2665,22 +2665,22 @@ namespace OpenLoco::ui::windows::CompanyWindow
             // Challenge tab
             {
                 static const uint32_t challengeTabImageIds[] = {
-                    InterfaceSkin::image_ids::tab_cup_frame0,
-                    InterfaceSkin::image_ids::tab_cup_frame1,
-                    InterfaceSkin::image_ids::tab_cup_frame2,
-                    InterfaceSkin::image_ids::tab_cup_frame3,
-                    InterfaceSkin::image_ids::tab_cup_frame4,
-                    InterfaceSkin::image_ids::tab_cup_frame5,
-                    InterfaceSkin::image_ids::tab_cup_frame6,
-                    InterfaceSkin::image_ids::tab_cup_frame7,
-                    InterfaceSkin::image_ids::tab_cup_frame8,
-                    InterfaceSkin::image_ids::tab_cup_frame9,
-                    InterfaceSkin::image_ids::tab_cup_frame10,
-                    InterfaceSkin::image_ids::tab_cup_frame11,
-                    InterfaceSkin::image_ids::tab_cup_frame12,
-                    InterfaceSkin::image_ids::tab_cup_frame13,
-                    InterfaceSkin::image_ids::tab_cup_frame14,
-                    InterfaceSkin::image_ids::tab_cup_frame15,
+                    InterfaceSkin::ImageIds::tab_cup_frame0,
+                    InterfaceSkin::ImageIds::tab_cup_frame1,
+                    InterfaceSkin::ImageIds::tab_cup_frame2,
+                    InterfaceSkin::ImageIds::tab_cup_frame3,
+                    InterfaceSkin::ImageIds::tab_cup_frame4,
+                    InterfaceSkin::ImageIds::tab_cup_frame5,
+                    InterfaceSkin::ImageIds::tab_cup_frame6,
+                    InterfaceSkin::ImageIds::tab_cup_frame7,
+                    InterfaceSkin::ImageIds::tab_cup_frame8,
+                    InterfaceSkin::ImageIds::tab_cup_frame9,
+                    InterfaceSkin::ImageIds::tab_cup_frame10,
+                    InterfaceSkin::ImageIds::tab_cup_frame11,
+                    InterfaceSkin::ImageIds::tab_cup_frame12,
+                    InterfaceSkin::ImageIds::tab_cup_frame13,
+                    InterfaceSkin::ImageIds::tab_cup_frame14,
+                    InterfaceSkin::ImageIds::tab_cup_frame15,
                 };
 
                 uint32_t imageId = skin->img;

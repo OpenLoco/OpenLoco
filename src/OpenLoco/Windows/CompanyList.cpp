@@ -1468,7 +1468,7 @@ namespace OpenLoco::ui::windows::CompanyList
             // Company List Tab
             {
                 uint32_t imageId = skin->img;
-                imageId += InterfaceSkin::image_ids::tab_companies;
+                imageId += InterfaceSkin::ImageIds::tab_companies;
 
                 widget::draw_tab(self, dpi, imageId, widx::tab_company_list);
             }
@@ -1476,14 +1476,14 @@ namespace OpenLoco::ui::windows::CompanyList
             // Performance Index Tab
             {
                 static const uint32_t performanceImageIds[] = {
-                    InterfaceSkin::image_ids::tab_performance_index_frame0,
-                    InterfaceSkin::image_ids::tab_performance_index_frame1,
-                    InterfaceSkin::image_ids::tab_performance_index_frame2,
-                    InterfaceSkin::image_ids::tab_performance_index_frame3,
-                    InterfaceSkin::image_ids::tab_performance_index_frame4,
-                    InterfaceSkin::image_ids::tab_performance_index_frame5,
-                    InterfaceSkin::image_ids::tab_performance_index_frame6,
-                    InterfaceSkin::image_ids::tab_performance_index_frame7,
+                    InterfaceSkin::ImageIds::tab_performance_index_frame0,
+                    InterfaceSkin::ImageIds::tab_performance_index_frame1,
+                    InterfaceSkin::ImageIds::tab_performance_index_frame2,
+                    InterfaceSkin::ImageIds::tab_performance_index_frame3,
+                    InterfaceSkin::ImageIds::tab_performance_index_frame4,
+                    InterfaceSkin::ImageIds::tab_performance_index_frame5,
+                    InterfaceSkin::ImageIds::tab_performance_index_frame6,
+                    InterfaceSkin::ImageIds::tab_performance_index_frame7,
                 };
 
                 uint32_t imageId = skin->img;
@@ -1500,14 +1500,14 @@ namespace OpenLoco::ui::windows::CompanyList
             // Cargo Unit Tab
             {
                 static const uint32_t cargoUnitsImageIds[] = {
-                    InterfaceSkin::image_ids::tab_cargo_units_frame0,
-                    InterfaceSkin::image_ids::tab_cargo_units_frame1,
-                    InterfaceSkin::image_ids::tab_cargo_units_frame2,
-                    InterfaceSkin::image_ids::tab_cargo_units_frame3,
-                    InterfaceSkin::image_ids::tab_cargo_units_frame4,
-                    InterfaceSkin::image_ids::tab_cargo_units_frame5,
-                    InterfaceSkin::image_ids::tab_cargo_units_frame6,
-                    InterfaceSkin::image_ids::tab_cargo_units_frame7,
+                    InterfaceSkin::ImageIds::tab_cargo_units_frame0,
+                    InterfaceSkin::ImageIds::tab_cargo_units_frame1,
+                    InterfaceSkin::ImageIds::tab_cargo_units_frame2,
+                    InterfaceSkin::ImageIds::tab_cargo_units_frame3,
+                    InterfaceSkin::ImageIds::tab_cargo_units_frame4,
+                    InterfaceSkin::ImageIds::tab_cargo_units_frame5,
+                    InterfaceSkin::ImageIds::tab_cargo_units_frame6,
+                    InterfaceSkin::ImageIds::tab_cargo_units_frame7,
                 };
 
                 uint32_t imageId = skin->img;
@@ -1524,14 +1524,14 @@ namespace OpenLoco::ui::windows::CompanyList
             // Cargo Distance Tab
             {
                 static const uint32_t cargoDistanceImageIds[] = {
-                    InterfaceSkin::image_ids::tab_cargo_distance_frame0,
-                    InterfaceSkin::image_ids::tab_cargo_distance_frame1,
-                    InterfaceSkin::image_ids::tab_cargo_distance_frame2,
-                    InterfaceSkin::image_ids::tab_cargo_distance_frame3,
-                    InterfaceSkin::image_ids::tab_cargo_distance_frame4,
-                    InterfaceSkin::image_ids::tab_cargo_distance_frame5,
-                    InterfaceSkin::image_ids::tab_cargo_distance_frame6,
-                    InterfaceSkin::image_ids::tab_cargo_distance_frame7,
+                    InterfaceSkin::ImageIds::tab_cargo_distance_frame0,
+                    InterfaceSkin::ImageIds::tab_cargo_distance_frame1,
+                    InterfaceSkin::ImageIds::tab_cargo_distance_frame2,
+                    InterfaceSkin::ImageIds::tab_cargo_distance_frame3,
+                    InterfaceSkin::ImageIds::tab_cargo_distance_frame4,
+                    InterfaceSkin::ImageIds::tab_cargo_distance_frame5,
+                    InterfaceSkin::ImageIds::tab_cargo_distance_frame6,
+                    InterfaceSkin::ImageIds::tab_cargo_distance_frame7,
                 };
 
                 uint32_t imageId = skin->img;
@@ -1548,14 +1548,14 @@ namespace OpenLoco::ui::windows::CompanyList
             // Company Values Tab
             {
                 static const uint32_t companyValuesImageIds[] = {
-                    InterfaceSkin::image_ids::tab_production_frame0,
-                    InterfaceSkin::image_ids::tab_production_frame1,
-                    InterfaceSkin::image_ids::tab_production_frame2,
-                    InterfaceSkin::image_ids::tab_production_frame3,
-                    InterfaceSkin::image_ids::tab_production_frame4,
-                    InterfaceSkin::image_ids::tab_production_frame5,
-                    InterfaceSkin::image_ids::tab_production_frame6,
-                    InterfaceSkin::image_ids::tab_production_frame7,
+                    InterfaceSkin::ImageIds::tab_production_frame0,
+                    InterfaceSkin::ImageIds::tab_production_frame1,
+                    InterfaceSkin::ImageIds::tab_production_frame2,
+                    InterfaceSkin::ImageIds::tab_production_frame3,
+                    InterfaceSkin::ImageIds::tab_production_frame4,
+                    InterfaceSkin::ImageIds::tab_production_frame5,
+                    InterfaceSkin::ImageIds::tab_production_frame6,
+                    InterfaceSkin::ImageIds::tab_production_frame7,
                 };
 
                 uint32_t imageId = skin->img;
@@ -1580,7 +1580,7 @@ namespace OpenLoco::ui::windows::CompanyList
             {
 
                 uint32_t imageId = skin->img;
-                imageId += InterfaceSkin::image_ids::tab_cargo_payment_rates;
+                imageId += InterfaceSkin::ImageIds::tab_cargo_payment_rates;
 
                 widget::draw_tab(self, dpi, imageId, widx::tab_payment_rates);
 
@@ -1595,7 +1595,7 @@ namespace OpenLoco::ui::windows::CompanyList
             // Speed Records Tab
             {
                 uint32_t imageId = skin->img;
-                imageId += InterfaceSkin::image_ids::tab_awards;
+                imageId += InterfaceSkin::ImageIds::tab_awards;
 
                 imageId = Gfx::recolour(imageId, self->colours[1]);
 

@@ -481,7 +481,7 @@ namespace OpenLoco::ui::windows::map
         // tabOverall
         {
             uint32_t imageId = skin->img;
-            imageId += InterfaceSkin::image_ids::toolbar_menu_map_north;
+            imageId += InterfaceSkin::ImageIds::toolbar_menu_map_north;
 
             widget::draw_tab(self, dpi, imageId, widx::tabOverall);
         }
@@ -491,14 +491,14 @@ namespace OpenLoco::ui::windows::map
             if (!(self->disabled_widgets & (1 << widx::tabVehicles)))
             {
                 static const uint32_t vehicleImageIds[] = {
-                    InterfaceSkin::image_ids::vehicle_train_frame_0,
-                    InterfaceSkin::image_ids::vehicle_train_frame_1,
-                    InterfaceSkin::image_ids::vehicle_train_frame_2,
-                    InterfaceSkin::image_ids::vehicle_train_frame_3,
-                    InterfaceSkin::image_ids::vehicle_train_frame_4,
-                    InterfaceSkin::image_ids::vehicle_train_frame_5,
-                    InterfaceSkin::image_ids::vehicle_train_frame_6,
-                    InterfaceSkin::image_ids::vehicle_train_frame_7,
+                    InterfaceSkin::ImageIds::vehicle_train_frame_0,
+                    InterfaceSkin::ImageIds::vehicle_train_frame_1,
+                    InterfaceSkin::ImageIds::vehicle_train_frame_2,
+                    InterfaceSkin::ImageIds::vehicle_train_frame_3,
+                    InterfaceSkin::ImageIds::vehicle_train_frame_4,
+                    InterfaceSkin::ImageIds::vehicle_train_frame_5,
+                    InterfaceSkin::ImageIds::vehicle_train_frame_6,
+                    InterfaceSkin::ImageIds::vehicle_train_frame_7,
                 };
 
                 uint32_t imageId = skin->img;
@@ -524,7 +524,7 @@ namespace OpenLoco::ui::windows::map
         // tabIndustries,
         {
             uint32_t imageId = skin->img;
-            imageId += InterfaceSkin::image_ids::toolbar_menu_industries;
+            imageId += InterfaceSkin::ImageIds::toolbar_menu_industries;
 
             widget::draw_tab(self, dpi, imageId, widx::tabIndustries);
         }
@@ -534,10 +534,10 @@ namespace OpenLoco::ui::windows::map
             if (!(self->disabled_widgets & (1 << widx::tabRoutes)))
             {
                 static const uint32_t routeImageIds[] = {
-                    InterfaceSkin::image_ids::tab_routes_frame_0,
-                    InterfaceSkin::image_ids::tab_routes_frame_1,
-                    InterfaceSkin::image_ids::tab_routes_frame_2,
-                    InterfaceSkin::image_ids::tab_routes_frame_3,
+                    InterfaceSkin::ImageIds::tab_routes_frame_0,
+                    InterfaceSkin::ImageIds::tab_routes_frame_1,
+                    InterfaceSkin::ImageIds::tab_routes_frame_2,
+                    InterfaceSkin::ImageIds::tab_routes_frame_3,
                 };
 
                 uint32_t imageId = skin->img;
@@ -555,7 +555,7 @@ namespace OpenLoco::ui::windows::map
             if (!(self->disabled_widgets & (1 << widx::tabOwnership)))
             {
                 uint32_t imageId = skin->img;
-                imageId += InterfaceSkin::image_ids::tab_companies;
+                imageId += InterfaceSkin::ImageIds::tab_companies;
 
                 widget::draw_tab(self, dpi, imageId, widx::tabOwnership);
             }

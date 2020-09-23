@@ -202,7 +202,7 @@ namespace OpenLoco::ui::windows
 
             window->widgets[widx::chat_btn].type = ui::widget_type::wt_9;
             interface_skin_object* skin = objectmgr::get<interface_skin_object>();
-            window->widgets[widx::chat_btn].image = skin->img + InterfaceSkin::image_ids::phone;
+            window->widgets[widx::chat_btn].image = skin->img + InterfaceSkin::ImageIds::phone;
         }
     }
 

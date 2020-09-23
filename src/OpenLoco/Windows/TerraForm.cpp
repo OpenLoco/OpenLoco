@@ -2231,7 +2231,7 @@ namespace OpenLoco::ui::windows::terraform
             // Clear Land Tab
             {
                 uint32_t imageId = skin->img;
-                imageId += InterfaceSkin::image_ids::toolbar_menu_bulldozer;
+                imageId += InterfaceSkin::ImageIds::toolbar_menu_bulldozer;
 
                 widget::draw_tab(self, dpi, imageId, widx::tab_clear_area);
             }
@@ -2254,14 +2254,14 @@ namespace OpenLoco::ui::windows::terraform
             // Plant Trees Tab
             {
                 uint32_t imageId = skin->img;
-                imageId += InterfaceSkin::image_ids::toolbar_menu_plant_trees;
+                imageId += InterfaceSkin::ImageIds::toolbar_menu_plant_trees;
 
                 widget::draw_tab(self, dpi, imageId, widx::tab_plant_trees);
             }
             // Build Walls Tab
             {
                 uint32_t imageId = skin->img;
-                imageId += InterfaceSkin::image_ids::toolbar_menu_build_walls;
+                imageId += InterfaceSkin::ImageIds::toolbar_menu_build_walls;
 
                 widget::draw_tab(self, dpi, imageId, widx::tab_build_walls);
             }

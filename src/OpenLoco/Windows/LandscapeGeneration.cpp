@@ -75,10 +75,10 @@ namespace OpenLoco::ui::windows::LandscapeGeneration
             // Options tab
             {
                 static const uint32_t optionTabImageIds[] = {
-                    InterfaceSkin::image_ids::tab_cogs_frame0,
-                    InterfaceSkin::image_ids::tab_cogs_frame1,
-                    InterfaceSkin::image_ids::tab_cogs_frame2,
-                    InterfaceSkin::image_ids::tab_cogs_frame3,
+                    InterfaceSkin::ImageIds::tab_cogs_frame0,
+                    InterfaceSkin::ImageIds::tab_cogs_frame1,
+                    InterfaceSkin::ImageIds::tab_cogs_frame2,
+                    InterfaceSkin::ImageIds::tab_cogs_frame3,
                 };
 
                 uint32_t imageId = skin->img;
@@ -99,19 +99,19 @@ namespace OpenLoco::ui::windows::LandscapeGeneration
 
             // Forest tab
             {
-                const uint32_t imageId = skin->img + InterfaceSkin::image_ids::toolbar_menu_plant_trees;
+                const uint32_t imageId = skin->img + InterfaceSkin::ImageIds::toolbar_menu_plant_trees;
                 widget::draw_tab(window, dpi, imageId, widx::tab_forests);
             }
 
             // Towns tab
             {
-                const uint32_t imageId = skin->img + InterfaceSkin::image_ids::toolbar_menu_towns;
+                const uint32_t imageId = skin->img + InterfaceSkin::ImageIds::toolbar_menu_towns;
                 widget::draw_tab(window, dpi, imageId, widx::tab_towns);
             }
 
             // Industries tab
             {
-                const uint32_t imageId = skin->img + InterfaceSkin::image_ids::toolbar_menu_industries;
+                const uint32_t imageId = skin->img + InterfaceSkin::ImageIds::toolbar_menu_industries;
                 widget::draw_tab(window, dpi, imageId, widx::tab_industries);
             }
         }

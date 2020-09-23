@@ -1377,7 +1377,7 @@ namespace OpenLoco::ui::windows::town_list
             // Town List Tab
             {
                 uint32_t imageId = skin->img;
-                imageId += InterfaceSkin::image_ids::toolbar_menu_towns;
+                imageId += InterfaceSkin::ImageIds::toolbar_menu_towns;
 
                 widget::draw_tab(self, dpi, imageId, widx::tab_town_list);
             }
@@ -1385,22 +1385,22 @@ namespace OpenLoco::ui::windows::town_list
             // Build New Towns Tab
             {
                 static const uint32_t buildNewTownsImageIds[] = {
-                    InterfaceSkin::image_ids::build_town_frame_0,
-                    InterfaceSkin::image_ids::build_town_frame_1,
-                    InterfaceSkin::image_ids::build_town_frame_2,
-                    InterfaceSkin::image_ids::build_town_frame_3,
-                    InterfaceSkin::image_ids::build_town_frame_4,
-                    InterfaceSkin::image_ids::build_town_frame_5,
-                    InterfaceSkin::image_ids::build_town_frame_6,
-                    InterfaceSkin::image_ids::build_town_frame_7,
-                    InterfaceSkin::image_ids::build_town_frame_8,
-                    InterfaceSkin::image_ids::build_town_frame_9,
-                    InterfaceSkin::image_ids::build_town_frame_10,
-                    InterfaceSkin::image_ids::build_town_frame_11,
-                    InterfaceSkin::image_ids::build_town_frame_12,
-                    InterfaceSkin::image_ids::build_town_frame_13,
-                    InterfaceSkin::image_ids::build_town_frame_14,
-                    InterfaceSkin::image_ids::build_town_frame_15,
+                    InterfaceSkin::ImageIds::build_town_frame_0,
+                    InterfaceSkin::ImageIds::build_town_frame_1,
+                    InterfaceSkin::ImageIds::build_town_frame_2,
+                    InterfaceSkin::ImageIds::build_town_frame_3,
+                    InterfaceSkin::ImageIds::build_town_frame_4,
+                    InterfaceSkin::ImageIds::build_town_frame_5,
+                    InterfaceSkin::ImageIds::build_town_frame_6,
+                    InterfaceSkin::ImageIds::build_town_frame_7,
+                    InterfaceSkin::ImageIds::build_town_frame_8,
+                    InterfaceSkin::ImageIds::build_town_frame_9,
+                    InterfaceSkin::ImageIds::build_town_frame_10,
+                    InterfaceSkin::ImageIds::build_town_frame_11,
+                    InterfaceSkin::ImageIds::build_town_frame_12,
+                    InterfaceSkin::ImageIds::build_town_frame_13,
+                    InterfaceSkin::ImageIds::build_town_frame_14,
+                    InterfaceSkin::ImageIds::build_town_frame_15,
                 };
                 uint32_t imageId = skin->img;
                 if (self->current_tab == widx::tab_build_town - widx::tab_town_list)
@@ -1414,22 +1414,22 @@ namespace OpenLoco::ui::windows::town_list
             // Build New Buildings Tab
             {
                 static const uint32_t buildBuildingsImageIds[] = {
-                    InterfaceSkin::image_ids::build_buildings_frame_0,
-                    InterfaceSkin::image_ids::build_buildings_frame_1,
-                    InterfaceSkin::image_ids::build_buildings_frame_2,
-                    InterfaceSkin::image_ids::build_buildings_frame_3,
-                    InterfaceSkin::image_ids::build_buildings_frame_4,
-                    InterfaceSkin::image_ids::build_buildings_frame_5,
-                    InterfaceSkin::image_ids::build_buildings_frame_6,
-                    InterfaceSkin::image_ids::build_buildings_frame_7,
-                    InterfaceSkin::image_ids::build_buildings_frame_8,
-                    InterfaceSkin::image_ids::build_buildings_frame_9,
-                    InterfaceSkin::image_ids::build_buildings_frame_10,
-                    InterfaceSkin::image_ids::build_buildings_frame_11,
-                    InterfaceSkin::image_ids::build_buildings_frame_12,
-                    InterfaceSkin::image_ids::build_buildings_frame_13,
-                    InterfaceSkin::image_ids::build_buildings_frame_14,
-                    InterfaceSkin::image_ids::build_buildings_frame_15,
+                    InterfaceSkin::ImageIds::build_buildings_frame_0,
+                    InterfaceSkin::ImageIds::build_buildings_frame_1,
+                    InterfaceSkin::ImageIds::build_buildings_frame_2,
+                    InterfaceSkin::ImageIds::build_buildings_frame_3,
+                    InterfaceSkin::ImageIds::build_buildings_frame_4,
+                    InterfaceSkin::ImageIds::build_buildings_frame_5,
+                    InterfaceSkin::ImageIds::build_buildings_frame_6,
+                    InterfaceSkin::ImageIds::build_buildings_frame_7,
+                    InterfaceSkin::ImageIds::build_buildings_frame_8,
+                    InterfaceSkin::ImageIds::build_buildings_frame_9,
+                    InterfaceSkin::ImageIds::build_buildings_frame_10,
+                    InterfaceSkin::ImageIds::build_buildings_frame_11,
+                    InterfaceSkin::ImageIds::build_buildings_frame_12,
+                    InterfaceSkin::ImageIds::build_buildings_frame_13,
+                    InterfaceSkin::ImageIds::build_buildings_frame_14,
+                    InterfaceSkin::ImageIds::build_buildings_frame_15,
                 };
                 uint32_t imageId = skin->img;
                 if (self->current_tab == widx::tab_build_buildings - widx::tab_town_list)
@@ -1443,22 +1443,22 @@ namespace OpenLoco::ui::windows::town_list
             // Build New Misc Buildings Tab
             {
                 static const uint32_t buildMiscBuildingsImageIds[] = {
-                    InterfaceSkin::image_ids::build_misc_buildings_frame_0,
-                    InterfaceSkin::image_ids::build_misc_buildings_frame_1,
-                    InterfaceSkin::image_ids::build_misc_buildings_frame_2,
-                    InterfaceSkin::image_ids::build_misc_buildings_frame_3,
-                    InterfaceSkin::image_ids::build_misc_buildings_frame_4,
-                    InterfaceSkin::image_ids::build_misc_buildings_frame_5,
-                    InterfaceSkin::image_ids::build_misc_buildings_frame_6,
-                    InterfaceSkin::image_ids::build_misc_buildings_frame_7,
-                    InterfaceSkin::image_ids::build_misc_buildings_frame_8,
-                    InterfaceSkin::image_ids::build_misc_buildings_frame_9,
-                    InterfaceSkin::image_ids::build_misc_buildings_frame_10,
-                    InterfaceSkin::image_ids::build_misc_buildings_frame_11,
-                    InterfaceSkin::image_ids::build_misc_buildings_frame_12,
-                    InterfaceSkin::image_ids::build_misc_buildings_frame_13,
-                    InterfaceSkin::image_ids::build_misc_buildings_frame_14,
-                    InterfaceSkin::image_ids::build_misc_buildings_frame_15,
+                    InterfaceSkin::ImageIds::build_misc_buildings_frame_0,
+                    InterfaceSkin::ImageIds::build_misc_buildings_frame_1,
+                    InterfaceSkin::ImageIds::build_misc_buildings_frame_2,
+                    InterfaceSkin::ImageIds::build_misc_buildings_frame_3,
+                    InterfaceSkin::ImageIds::build_misc_buildings_frame_4,
+                    InterfaceSkin::ImageIds::build_misc_buildings_frame_5,
+                    InterfaceSkin::ImageIds::build_misc_buildings_frame_6,
+                    InterfaceSkin::ImageIds::build_misc_buildings_frame_7,
+                    InterfaceSkin::ImageIds::build_misc_buildings_frame_8,
+                    InterfaceSkin::ImageIds::build_misc_buildings_frame_9,
+                    InterfaceSkin::ImageIds::build_misc_buildings_frame_10,
+                    InterfaceSkin::ImageIds::build_misc_buildings_frame_11,
+                    InterfaceSkin::ImageIds::build_misc_buildings_frame_12,
+                    InterfaceSkin::ImageIds::build_misc_buildings_frame_13,
+                    InterfaceSkin::ImageIds::build_misc_buildings_frame_14,
+                    InterfaceSkin::ImageIds::build_misc_buildings_frame_15,
                 };
                 uint32_t imageId = skin->img;
                 if (self->current_tab == widx::tab_build_misc_buildings - widx::tab_town_list)

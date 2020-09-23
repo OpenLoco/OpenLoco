@@ -167,10 +167,10 @@ namespace OpenLoco::ui::TimePanel
 
     // TODO: use same list as top toolbar
     static const uint32_t map_sprites_by_rotation[] = {
-        InterfaceSkin::image_ids::toolbar_menu_map_north,
-        InterfaceSkin::image_ids::toolbar_menu_map_west,
-        InterfaceSkin::image_ids::toolbar_menu_map_south,
-        InterfaceSkin::image_ids::toolbar_menu_map_east,
+        InterfaceSkin::ImageIds::toolbar_menu_map_north,
+        InterfaceSkin::ImageIds::toolbar_menu_map_west,
+        InterfaceSkin::ImageIds::toolbar_menu_map_south,
+        InterfaceSkin::ImageIds::toolbar_menu_map_east,
     };
 
     // 0x004397BE
@@ -236,7 +236,7 @@ namespace OpenLoco::ui::TimePanel
 
         if (isNetworked())
         {
-            dropdown::add(0, StringIds::menu_sprite_stringid, { (uint32_t)skin->img + InterfaceSkin::image_ids::phone, StringIds::chat_send_message });
+            dropdown::add(0, StringIds::menu_sprite_stringid, { (uint32_t)skin->img + InterfaceSkin::ImageIds::phone, StringIds::chat_send_message });
             dropdown::add(1, StringIds::menu_sprite_stringid, { (uint32_t)skin->img + map_sprites_by_rotation[gCurrentRotation], StringIds::menu_map });
             dropdown::showBelow(self, widgetIndex, 2, 25, (1 << 6));
             dropdown::setHighlightedItem(1);
