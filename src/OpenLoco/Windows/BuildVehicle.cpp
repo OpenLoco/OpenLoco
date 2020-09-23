@@ -1353,7 +1353,7 @@ namespace OpenLoco::ui::BuildVehicle
         else
         {
             auto rail_obj = ObjectManager::get<track_object>(trackType);
-            if (rail_obj && !(rail_obj->flags & flags_22::unk_02))
+            if (rail_obj && !(rail_obj->flags & Flags22::unk_02))
             {
                 setRail = true;
             }

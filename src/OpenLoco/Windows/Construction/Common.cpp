@@ -755,7 +755,7 @@ namespace OpenLoco::ui::windows::construction
             else
             {
                 auto trackObj = ObjectManager::get<track_object>(newTrackType);
-                if (!(trackObj->flags & flags_22::unk_02))
+                if (!(trackObj->flags & Flags22::unk_02))
                     _lastRailroadOption = trackType;
                 else
                     _lastRoadOption = trackType;

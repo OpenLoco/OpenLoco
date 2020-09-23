@@ -4,7 +4,7 @@
 
 namespace OpenLoco
 {
-    namespace flags_22
+    namespace Flags22
     {
         constexpr uint8_t unk_02 = 1 << 2;
     }
