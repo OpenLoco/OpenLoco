@@ -479,7 +479,7 @@ namespace OpenLoco::ui::windows::construction
                         auto imageId = Gfx::recolour(roadStationObj->var_0C, companyColour);
                         Gfx::drawImage(clipped, -4, -10, imageId);
                         auto colour = _byte_5045FA[companyColour];
-                        if (!(roadStationObj->flags & road_station_flags::recolourable))
+                        if (!(roadStationObj->flags & RoadStationFlags::recolourable))
                         {
                             colour = 46;
                         }
