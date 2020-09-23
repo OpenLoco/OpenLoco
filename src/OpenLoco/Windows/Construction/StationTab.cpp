@@ -285,7 +285,7 @@ namespace OpenLoco::ui::windows::construction::station
 
             auto colour = _byte_5045FA[companyColour];
 
-            if (!(trainStationObj->flags & train_station_flags::recolourable))
+            if (!(trainStationObj->flags & TrainStationFlags::recolourable))
             {
                 colour = 46;
             }

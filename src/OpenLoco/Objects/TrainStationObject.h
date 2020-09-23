@@ -4,7 +4,7 @@
 
 namespace OpenLoco
 {
-    namespace train_station_flags
+    namespace TrainStationFlags
     {
         constexpr uint8_t recolourable = 1 << 0;
     }

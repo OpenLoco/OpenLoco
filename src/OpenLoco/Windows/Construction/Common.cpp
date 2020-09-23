@@ -571,7 +571,7 @@ namespace OpenLoco::ui::windows::construction
                                 auto imageId = Gfx::recolour(trainStationObj->var_0E, companyColour);
                                 Gfx::drawImage(clipped, -4, -9, imageId);
                                 auto colour = _byte_5045FA[companyColour];
-                                if (!(trainStationObj->flags & train_station_flags::recolourable))
+                                if (!(trainStationObj->flags & TrainStationFlags::recolourable))
                                 {
                                     colour = 46;
                                 }
