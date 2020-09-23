@@ -171,7 +171,7 @@ namespace OpenLoco::Map
     };
     static_assert(sizeof(tile_element) == 8);
 
-    namespace surface_slope
+    namespace SurfaceSlope
     {
         constexpr uint8_t flat = 0x00;
         constexpr uint8_t all_corners_up = 0x0F;
@@ -205,7 +205,7 @@ namespace OpenLoco::Map
         uint8_t _industry;
 
     public:
-        bool isSlopeDoubleHeight() const { return _slope & surface_slope::double_height; }
+        bool isSlopeDoubleHeight() const { return _slope & SurfaceSlope::double_height; }
         uint8_t slopeCorners() const { return _slope & 0x0F; }
         uint8_t slope() const { return _slope & 0x1F; }
         uint8_t var_4_E0() const { return _slope & 0xE0; }
