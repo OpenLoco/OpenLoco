@@ -533,7 +533,7 @@ namespace OpenLoco::ui::windows::construction::construction
         window->widgets[widx::right_hand_curve].left = 91;
         window->widgets[widx::right_hand_curve].right = 112;
 
-        if (trackObj->track_pieces & track_piece_flags::very_small_curve)
+        if (trackObj->track_pieces & TrackPieceFlags::very_small_curve)
         {
             window->widgets[widx::left_hand_curve_small].left = 25;
             window->widgets[widx::left_hand_curve_small].right = 46;
@@ -548,19 +548,19 @@ namespace OpenLoco::ui::windows::construction::construction
             window->widgets[widx::right_hand_curve_very_small].type = widget_type::wt_9;
         }
 
-        if (trackObj->track_pieces & track_piece_flags::large_curve)
+        if (trackObj->track_pieces & TrackPieceFlags::large_curve)
         {
             window->widgets[widx::left_hand_curve_large].type = widget_type::wt_9;
             window->widgets[widx::right_hand_curve_large].type = widget_type::wt_9;
         }
 
-        if (trackObj->track_pieces & track_piece_flags::normal_curve)
+        if (trackObj->track_pieces & TrackPieceFlags::normal_curve)
         {
             window->widgets[widx::left_hand_curve].type = widget_type::wt_9;
             window->widgets[widx::right_hand_curve].type = widget_type::wt_9;
         }
 
-        if (trackObj->track_pieces & track_piece_flags::small_curve)
+        if (trackObj->track_pieces & TrackPieceFlags::small_curve)
         {
             window->widgets[widx::left_hand_curve_small].type = widget_type::wt_9;
             window->widgets[widx::right_hand_curve_small].type = widget_type::wt_9;
@@ -569,7 +569,7 @@ namespace OpenLoco::ui::windows::construction::construction
         window->widgets[widx::s_bend_dual_track_left].type = widget_type::none;
         window->widgets[widx::s_bend_dual_track_right].type = widget_type::none;
 
-        if (trackObj->track_pieces & track_piece_flags::one_sided)
+        if (trackObj->track_pieces & TrackPieceFlags::one_sided)
         {
             window->widgets[widx::s_bend_dual_track_left].type = widget_type::wt_9;
             window->widgets[widx::s_bend_dual_track_right].type = widget_type::wt_9;
@@ -605,13 +605,13 @@ namespace OpenLoco::ui::windows::construction::construction
         window->widgets[widx::slope_up].type = widget_type::none;
         window->widgets[widx::steep_slope_up].type = widget_type::none;
 
-        if (trackObj->track_pieces & track_piece_flags::slope)
+        if (trackObj->track_pieces & TrackPieceFlags::slope)
         {
             window->widgets[widx::slope_down].type = widget_type::wt_9;
             window->widgets[widx::slope_up].type = widget_type::wt_9;
         }
 
-        if (trackObj->track_pieces & track_piece_flags::steep_slope)
+        if (trackObj->track_pieces & TrackPieceFlags::steep_slope)
         {
             window->widgets[widx::steep_slope_down].type = widget_type::wt_9;
             window->widgets[widx::steep_slope_up].type = widget_type::wt_9;
