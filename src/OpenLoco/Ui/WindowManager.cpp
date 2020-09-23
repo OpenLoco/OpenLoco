@@ -184,7 +184,7 @@ namespace OpenLoco::ui::WindowManager
             0x004610F2,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                map::tilemgr::mapInvalidateSelectionRect();
+                Map::TileManager::mapInvalidateSelectionRect();
                 regs = backup;
 
                 return 0;

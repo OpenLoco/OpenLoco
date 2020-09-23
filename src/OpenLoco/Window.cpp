@@ -17,7 +17,7 @@
 
 using namespace OpenLoco;
 using namespace OpenLoco::Interop;
-using namespace OpenLoco::map;
+using namespace OpenLoco::Map;
 
 namespace OpenLoco::ui
 {
@@ -124,7 +124,7 @@ namespace OpenLoco::ui
     // regs.bp:  z
     // Output:
     // {x: regs.ax, y: regs.bx}
-    std::optional<map::map_pos> screenGetMapXyWithZ(const xy32& mouse, const int16_t z)
+    std::optional<Map::map_pos> screenGetMapXyWithZ(const xy32& mouse, const int16_t z)
     {
         window* w = WindowManager::findAt(mouse.x, mouse.y);
         if (w == nullptr)
@@ -141,7 +141,7 @@ namespace OpenLoco::ui
         if (vp->containsUi(mouse))
         {
             viewport_pos vpos = vp->uiToMap(mouse);
-            map::map_pos position = viewportCoordToMapCoord(vpos.x, vpos.y, z, WindowManager::getCurrentRotation());
+            Map::map_pos position = viewportCoordToMapCoord(vpos.x, vpos.y, z, WindowManager::getCurrentRotation());
             if (position.x <= 0x2FFF && position.y <= 0x2FFF)
             {
                 return position;
@@ -160,9 +160,9 @@ namespace OpenLoco::ui
     // Output:
     // {x: regs.ax, y: regs.bx}
     // Note: in the original code: regs.dx: x/2 (probably not used anywhere)
-    map::map_pos viewportCoordToMapCoord(int16_t x, int16_t y, int16_t z, int32_t rotation)
+    Map::map_pos viewportCoordToMapCoord(int16_t x, int16_t y, int16_t z, int32_t rotation)
     {
-        map::map_pos ret{};
+        Map::map_pos ret{};
         switch (rotation)
         {
             case 0:
@@ -320,7 +320,7 @@ namespace OpenLoco::ui
                 int16_t midX = config->saved_view_x + (viewport->view_width / 2);
                 int16_t midY = config->saved_view_y + (viewport->view_height / 2);
 
-                map::map_pos mapCoord = viewportCoordToMapCoord(midX, midY, 128, viewport->getRotation());
+                Map::map_pos mapCoord = viewportCoordToMapCoord(midX, midY, 128, viewport->getRotation());
                 viewportSetUndergroundFlag(false, viewport);
 
                 bool atMapEdge = false;
@@ -545,7 +545,7 @@ namespace OpenLoco::ui
         getMapCoordinatesFromPos(mouse_x, mouse_y, 0, map_x, map_y);
 
         // Get viewport coordinates centring around the tile.
-        int32_t base_height = map::tileElementHeight(*map_x, *map_y).landHeight;
+        int32_t base_height = Map::tileElementHeight(*map_x, *map_y).landHeight;
         int16_t dest_x, dest_y;
         viewport* v = this->viewports[0];
         v->centre2dCoordinates(*map_x, *map_y, base_height, &dest_x, &dest_y);
@@ -575,7 +575,7 @@ namespace OpenLoco::ui
     }
 
     // 0x004C6827
-    void window::viewportCentreOnTile(const map::map_pos3& loc)
+    void window::viewportCentreOnTile(const Map::map_pos3& loc)
     {
         auto viewport = this->viewports[0];
         if (viewport == nullptr)
@@ -615,7 +615,7 @@ namespace OpenLoco::ui
     {
         // Get viewport coordinates centring around the tile.
         int16_t dest_x, dest_y;
-        int32_t base_height = map::tileElementHeight(map_x, map_y).landHeight;
+        int32_t base_height = Map::tileElementHeight(map_x, map_y).landHeight;
         viewport* v = this->viewports[0];
         v->centre2dCoordinates(map_x, map_y, base_height, &dest_x, &dest_y);
 

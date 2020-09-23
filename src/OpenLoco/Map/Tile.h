@@ -12,7 +12,7 @@ namespace OpenLoco
     struct industry;
 }
 
-namespace OpenLoco::map
+namespace OpenLoco::Map
 {
     constexpr coord_t tile_size = 32;
     constexpr coord_t map_rows = 384;
@@ -103,7 +103,7 @@ namespace OpenLoco::map
         industry, // 0x20
     };
 
-    namespace element_flags
+    namespace ElementFlags
     {
         constexpr uint8_t flag_4 = 1 << 4;
         constexpr uint8_t flag_5 = 1 << 5;
@@ -139,9 +139,9 @@ namespace OpenLoco::map
         uint8_t clearZ() const { return _clear_z; }
 
         bool hasHighTypeFlag() const { return _type & 0x80; }
-        bool isFlag4() const { return _flags & element_flags::flag_4; }
-        bool isFlag5() const { return _flags & element_flags::flag_5; }
-        void setFlag6() { _flags |= element_flags::flag_6; }
+        bool isFlag4() const { return _flags & ElementFlags::flag_4; }
+        bool isFlag5() const { return _flags & ElementFlags::flag_5; }
+        void setFlag6() { _flags |= ElementFlags::flag_6; }
         bool isLast() const;
     };
 
@@ -171,7 +171,7 @@ namespace OpenLoco::map
     };
     static_assert(sizeof(tile_element) == 8);
 
-    namespace surface_slope
+    namespace SurfaceSlope
     {
         constexpr uint8_t flat = 0x00;
         constexpr uint8_t all_corners_up = 0x0F;
@@ -205,7 +205,7 @@ namespace OpenLoco::map
         uint8_t _industry;
 
     public:
-        bool isSlopeDoubleHeight() const { return _slope & surface_slope::double_height; }
+        bool isSlopeDoubleHeight() const { return _slope & SurfaceSlope::double_height; }
         uint8_t slopeCorners() const { return _slope & 0x0F; }
         uint8_t slope() const { return _slope & 0x1F; }
         uint8_t var_4_E0() const { return _slope & 0xE0; }

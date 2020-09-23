@@ -401,7 +401,7 @@ namespace OpenLoco::ui::windows
             { window->x, window->y },
             { window->width, window->height },
             ZoomLevel::full,
-            { (OpenLoco::map::map_rows * OpenLoco::map::tile_size) / 2 - 1, (OpenLoco::map::map_rows * OpenLoco::map::tile_size) / 2 - 1, 480 });
+            { (OpenLoco::Map::map_rows * OpenLoco::Map::tile_size) / 2 - 1, (OpenLoco::Map::map_rows * OpenLoco::Map::tile_size) / 2 - 1, 480 });
 
         addr<0x00F2533F, int8_t>() = 0; // grid lines
         addr<0x0112C2e1, int8_t>() = 0;

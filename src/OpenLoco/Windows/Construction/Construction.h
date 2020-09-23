@@ -6,8 +6,8 @@
 #include "../../Ui/WindowManager.h"
 
 using namespace OpenLoco::Interop;
-using namespace OpenLoco::map;
-using namespace OpenLoco::map::tilemgr;
+using namespace OpenLoco::Map;
+using namespace OpenLoco::Map::TileManager;
 
 namespace OpenLoco::ui::windows::construction
 {

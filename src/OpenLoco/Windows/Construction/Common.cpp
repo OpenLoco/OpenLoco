@@ -19,8 +19,8 @@
 #include "Construction.h"
 
 using namespace OpenLoco::Interop;
-using namespace OpenLoco::map;
-using namespace OpenLoco::map::tilemgr;
+using namespace OpenLoco::Map;
+using namespace OpenLoco::Map::TileManager;
 
 namespace OpenLoco::ui::windows::construction
 {
@@ -399,7 +399,7 @@ namespace OpenLoco::ui::windows::construction
             }
 
             common::sub_49FEC7();
-            tilemgr::mapInvalidateMapSelectionTiles();
+            TileManager::mapInvalidateMapSelectionTiles();
             _mapSelectionFlags = _mapSelectionFlags & ~MapSelectFlag::enableConstruct;
             _trackCost = 0x80000000;
             _signalCost = 0x80000000;
@@ -698,7 +698,7 @@ namespace OpenLoco::ui::windows::construction
         {
             sub_49FEC7();
             WindowManager::viewportSetVisibility(WindowManager::viewport_visibility::reset);
-            tilemgr::mapInvalidateMapSelectionTiles();
+            TileManager::mapInvalidateMapSelectionTiles();
             _mapSelectionFlags = _mapSelectionFlags & ~MapSelectFlag::enableConstruct;
             windows::hideDirectionArrows();
             windows::hideGridlines();

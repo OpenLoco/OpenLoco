@@ -12,7 +12,7 @@
 #include <cassert>
 
 using namespace OpenLoco::ui;
-using namespace OpenLoco::map;
+using namespace OpenLoco::Map;
 
 namespace OpenLoco::game_commands
 {
@@ -308,7 +308,7 @@ namespace OpenLoco::game_commands
     // 0x00431E6A
     // al  : company
     // esi : tile
-    bool sub_431E6A(const company_id_t company, map::tile_element* const tile /*= nullptr*/)
+    bool sub_431E6A(const company_id_t company, Map::tile_element* const tile /*= nullptr*/)
     {
         if (company == company_id::neutral)
         {
@@ -320,7 +320,7 @@ namespace OpenLoco::game_commands
         }
         gGameCommandErrorText = -2;
         _errorCompanyId = company;
-        _9C68D0 = tile == nullptr ? reinterpret_cast<map::tile_element*>(-1) : tile;
+        _9C68D0 = tile == nullptr ? reinterpret_cast<Map::tile_element*>(-1) : tile;
         return false;
     }
 }

@@ -1092,7 +1092,7 @@ void OpenLoco::vehicle_body::steamPuffsAnimationUpdate(uint8_t num, int32_t var_
     // Looking for a bridge? or something on top
     if (steam_obj->var_08 & (1 << 2))
     {
-        auto tile = map::tilemgr::get(frontBogie->tile_x, frontBogie->tile_y);
+        auto tile = Map::TileManager::get(frontBogie->tile_x, frontBogie->tile_y);
 
         for (auto& el : tile)
         {
@@ -1129,7 +1129,7 @@ void OpenLoco::vehicle_body::steamPuffsAnimationUpdate(uint8_t num, int32_t var_
 
         int32_t volume = 0 - (veh_2->var_56 >> 9);
 
-        auto height = std::get<0>(map::tilemgr::getHeight(loc.x, loc.y));
+        auto height = std::get<0>(Map::TileManager::getHeight(loc.x, loc.y));
 
         if (loc.z <= height)
         {
@@ -1153,7 +1153,7 @@ void OpenLoco::vehicle_body::steamPuffsAnimationUpdate(uint8_t num, int32_t var_
 
         int32_t volume = 0 - (veh_2->var_56 >> 9);
 
-        auto height = std::get<0>(map::tilemgr::getHeight(loc.x, loc.y));
+        auto height = std::get<0>(Map::TileManager::getHeight(loc.x, loc.y));
 
         if (loc.z <= height)
         {

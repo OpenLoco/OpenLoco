@@ -41,7 +41,7 @@ namespace OpenLoco::things::vehicle
     static loco_global<string_id, 0x009C68E6> gGameCommandErrorText;
     static loco_global<uint8_t, 0x009C68EA> gGameCommandExpenditureType; // premultiplied by 4
     static loco_global<uint8_t, 0x009C68EE> _errorCompanyId;
-    static loco_global<map::tile_element*, 0x009C68D0> _9C68D0;
+    static loco_global<Map::tile_element*, 0x009C68D0> _9C68D0;
     static loco_global<ColourScheme, 0x01136140> _1136140; // primary colour
     static loco_global<int32_t, 0x011360FC> _11360FC;
     static loco_global<OpenLoco::vehicle_head*, 0x01136240> _backupVeh0;

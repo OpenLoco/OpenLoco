@@ -21,7 +21,7 @@ element_type tile_element_base::type() const
 
 bool tile_element_base::isLast() const
 {
-    return (_flags & element_flags::last) != 0;
+    return (_flags & ElementFlags::last) != 0;
 }
 
 building_object* building_element::object() const
@@ -112,7 +112,7 @@ OpenLoco::industry* industry_element::industry()
     return industrymgr::get(_industryId);
 }
 
-namespace OpenLoco::map
+namespace OpenLoco::Map
 {
     /**
      * Return the absolute height of an element, given its (x, y) coordinates

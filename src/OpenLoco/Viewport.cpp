@@ -25,7 +25,7 @@ namespace OpenLoco::ui
     // 0x004CA444
     void viewport::centre2dCoordinates(int16_t _x, int16_t _y, int16_t _z, int16_t* outX, int16_t* outY)
     {
-        auto centre = map::coordinate3dTo2d(_x, _y, _z, getRotation());
+        auto centre = Map::coordinate3dTo2d(_x, _y, _z, getRotation());
 
         *outX = centre.x - view_width / 2;
         *outY = centre.y - view_height / 2;

@@ -20,7 +20,7 @@
 #include "../Widget.h"
 
 using namespace OpenLoco::Interop;
-using namespace OpenLoco::map;
+using namespace OpenLoco::Map;
 
 namespace OpenLoco::ui::windows::station
 {
@@ -250,7 +250,7 @@ namespace OpenLoco::ui::windows::station
             if (self->viewports[0] == nullptr)
             {
                 auto widget = &self->widgets[widx::viewport];
-                auto tile = OpenLoco::map::map_pos3({ station->x, station->y, station->z });
+                auto tile = OpenLoco::Map::map_pos3({ station->x, station->y, station->z });
                 auto origin = Gfx::point_t(widget->left + self->x + 1, widget->top + self->y + 1);
                 auto size = Gfx::ui_size_t(widget->width() - 2, widget->height() - 2);
                 viewportmgr::create(self, 0, origin, size, self->saved_view.zoomLevel, tile);
@@ -741,7 +741,7 @@ namespace OpenLoco::ui::windows::station
         {
             if (_byte_F00484[posId] & (1 << 0))
             {
-                tilemgr::mapInvalidateTileFull(tileLoop.current());
+                TileManager::mapInvalidateTileFull(tileLoop.current());
             }
             tileLoop.next();
         }

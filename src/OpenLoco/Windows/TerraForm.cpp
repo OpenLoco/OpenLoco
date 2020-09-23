@@ -20,7 +20,7 @@
 #include "../Widget.h"
 
 using namespace OpenLoco::Interop;
-using namespace OpenLoco::map;
+using namespace OpenLoco::Map;
 using namespace OpenLoco::game_commands;
 
 namespace OpenLoco::ui::windows::terraform
@@ -868,7 +868,7 @@ namespace OpenLoco::ui::windows::terraform
         {
             if (widgetIndex == common::widx::panel)
             {
-                tilemgr::mapInvalidateSelectionRect();
+                TileManager::mapInvalidateSelectionRect();
 
                 // Reset map selection
                 _mapSelectionFlags = _mapSelectionFlags & ~(1 << 0);
@@ -1216,7 +1216,7 @@ namespace OpenLoco::ui::windows::terraform
                     count++;
                 }
 
-                tilemgr::mapInvalidateSelectionRect();
+                TileManager::mapInvalidateSelectionRect();
 
                 return count;
             }
@@ -1279,7 +1279,7 @@ namespace OpenLoco::ui::windows::terraform
                     count++;
                 }
 
-                tilemgr::mapInvalidateSelectionRect();
+                TileManager::mapInvalidateSelectionRect();
 
                 return count;
             }
@@ -1293,7 +1293,7 @@ namespace OpenLoco::ui::windows::terraform
             if (widgetIndex != common::widx::panel)
                 return;
 
-            tilemgr::mapInvalidateSelectionRect();
+            TileManager::mapInvalidateSelectionRect();
 
             if (_currentTool != 3)
             {
@@ -1418,7 +1418,7 @@ namespace OpenLoco::ui::windows::terraform
         {
             if (widgetIndex == common::widx::panel)
             {
-                tilemgr::mapInvalidateSelectionRect();
+                TileManager::mapInvalidateSelectionRect();
 
                 // Reset map selection
                 _mapSelectionFlags = _mapSelectionFlags & ~(1 << 0);
@@ -1666,7 +1666,7 @@ namespace OpenLoco::ui::windows::terraform
         {
             if (widgetIndex == common::widx::panel)
             {
-                tilemgr::mapInvalidateSelectionRect();
+                TileManager::mapInvalidateSelectionRect();
 
                 // Reset map selection
                 _mapSelectionFlags = _mapSelectionFlags & ~(1 << 0);

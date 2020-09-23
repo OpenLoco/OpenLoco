@@ -5,7 +5,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::map::tilemgr
+namespace OpenLoco::Map::TileManager
 {
     static loco_global<tile_element* [0x30004], 0x00E40134> _tiles;
     static loco_global<coord_t, 0x00F24486> _mapSelectionAX;
@@ -83,20 +83,20 @@ namespace OpenLoco::map::tilemgr
         // We arbitrarily take the SW corner to be closest to the viewer
 
         // One corner up
-        if (slope == surface_slope::n_corner_up || slope == surface_slope::e_corner_up || slope == surface_slope::s_corner_up || slope == surface_slope::w_corner_up)
+        if (slope == SurfaceSlope::n_corner_up || slope == SurfaceSlope::e_corner_up || slope == SurfaceSlope::s_corner_up || slope == SurfaceSlope::w_corner_up)
         {
             switch (slope)
             {
-                case surface_slope::n_corner_up:
+                case SurfaceSlope::n_corner_up:
                     quad = xl + yl - TILE_SIZE;
                     break;
-                case surface_slope::e_corner_up:
+                case SurfaceSlope::e_corner_up:
                     quad = xl - yl;
                     break;
-                case surface_slope::s_corner_up:
+                case SurfaceSlope::s_corner_up:
                     quad = TILE_SIZE - yl - xl;
                     break;
-                case surface_slope::w_corner_up:
+                case SurfaceSlope::w_corner_up:
                     quad = yl - xl;
                     break;
             }
@@ -110,39 +110,39 @@ namespace OpenLoco::map::tilemgr
         // One side up
         switch (slope)
         {
-            case surface_slope::ne_side_up:
+            case SurfaceSlope::ne_side_up:
                 height += xl / 2 + 1;
                 break;
-            case surface_slope::se_side_up:
+            case SurfaceSlope::se_side_up:
                 height += (TILE_SIZE - yl) / 2;
                 break;
-            case surface_slope::nw_side_up:
+            case SurfaceSlope::nw_side_up:
                 height += yl / 2;
                 height++;
                 break;
-            case surface_slope::sw_side_up:
+            case SurfaceSlope::sw_side_up:
                 height += (TILE_SIZE - xl) / 2;
                 break;
         }
 
         // One corner down
-        if ((slope == surface_slope::w_corner_dn) || (slope == surface_slope::s_corner_dn) || (slope == surface_slope::e_corner_dn) || (slope == surface_slope::n_corner_dn))
+        if ((slope == SurfaceSlope::w_corner_dn) || (slope == SurfaceSlope::s_corner_dn) || (slope == SurfaceSlope::e_corner_dn) || (slope == SurfaceSlope::n_corner_dn))
         {
             switch (slope)
             {
-                case surface_slope::w_corner_dn:
+                case SurfaceSlope::w_corner_dn:
                     quad_extra = xl + TILE_SIZE - yl;
                     quad = xl - yl;
                     break;
-                case surface_slope::s_corner_dn:
+                case SurfaceSlope::s_corner_dn:
                     quad_extra = xl + yl;
                     quad = xl + yl - TILE_SIZE - 1;
                     break;
-                case surface_slope::e_corner_dn:
+                case SurfaceSlope::e_corner_dn:
                     quad_extra = TILE_SIZE - xl + yl;
                     quad = yl - xl;
                     break;
-                case surface_slope::n_corner_dn:
+                case SurfaceSlope::n_corner_dn:
                     quad_extra = (TILE_SIZE - xl) + (TILE_SIZE - yl);
                     quad = TILE_SIZE - yl - xl - 1;
                     break;
@@ -164,18 +164,18 @@ namespace OpenLoco::map::tilemgr
         }
 
         // Valleys
-        if ((slope == surface_slope::w_e_valley) || (slope == surface_slope::n_s_valley))
+        if ((slope == SurfaceSlope::w_e_valley) || (slope == SurfaceSlope::n_s_valley))
         {
             switch (slope)
             {
-                case surface_slope::w_e_valley:
+                case SurfaceSlope::w_e_valley:
                     if (xl + yl <= TILE_SIZE + 1)
                     {
                         return std::make_tuple(height, waterHeight);
                     }
                     quad = TILE_SIZE - xl - yl;
                     break;
-                case surface_slope::n_s_valley:
+                case SurfaceSlope::n_s_valley:
                     quad = xl - yl;
                     break;
             }
@@ -206,7 +206,7 @@ namespace OpenLoco::map::tilemgr
     // 0x004CBE5F
     // regs.ax: pos.x
     // regs.cx: pos.y
-    void mapInvalidateTileFull(map::map_pos pos)
+    void mapInvalidateTileFull(Map::map_pos pos)
     {
         ui::viewportmgr::invalidate(pos, 0, 1120, ZoomLevel::eighth);
     }

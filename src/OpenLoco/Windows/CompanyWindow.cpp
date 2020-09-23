@@ -488,7 +488,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
                 // Observing a certain location?
                 if (company->observation_x != -1)
                 {
-                    auto tileZAndWater = OpenLoco::map::tileElementHeight(company->observation_x, company->observation_y);
+                    auto tileZAndWater = OpenLoco::Map::tileElementHeight(company->observation_x, company->observation_y);
                     coord_t tileZ = tileZAndWater.landHeight;
                     coord_t waterZ = tileZAndWater.waterHeight;
                     if (waterZ != 0)
@@ -1078,7 +1078,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
                 return;
             }
             int8_t rotation = static_cast<int8_t>(self->viewports[0]->getRotation());
-            OpenLoco::map::map_pos3 loc = {
+            OpenLoco::Map::map_pos3 loc = {
                 static_cast<coord_t>(company->headquarters_x + 32),
                 static_cast<coord_t>(company->headquarters_y + 32),
                 static_cast<coord_t>((company->headquarters_z + 8) * 4)
