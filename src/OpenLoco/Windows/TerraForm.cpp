@@ -1018,7 +1018,7 @@ namespace OpenLoco::ui::windows::terraform
                     dropdown::setHighlightedItem(landIndex);
 
                 auto args = FormatArguments();
-                args.push(landObj->var_16 + land::image_ids::landscape_generator_tile_icon);
+                args.push(landObj->var_16 + Land::image_ids::landscape_generator_tile_icon);
                 args.push<uint16_t>(i);
 
                 dropdown::add(landIndex, 0xFFFE, args);
@@ -1444,7 +1444,7 @@ namespace OpenLoco::ui::windows::terraform
 
                 auto landObj = objectmgr::get<land_object>(_lastSelectedLand);
 
-                self->widgets[widx::land_material].image = landObj->var_16 + OpenLoco::land::image_ids::landscape_generator_tile_icon;
+                self->widgets[widx::land_material].image = landObj->var_16 + OpenLoco::Land::image_ids::landscape_generator_tile_icon;
             }
 
             common::repositionTabs(self);
@@ -2238,7 +2238,7 @@ namespace OpenLoco::ui::windows::terraform
             // Adjust Land Tab
             {
                 auto landObj = objectmgr::get<land_object>(_grassLand);
-                uint32_t imageId = landObj->var_16 + land::image_ids::toolbar_terraform_land;
+                uint32_t imageId = landObj->var_16 + Land::image_ids::toolbar_terraform_land;
 
                 widget::draw_tab(self, dpi, imageId, widx::tab_adjust_land);
             }
