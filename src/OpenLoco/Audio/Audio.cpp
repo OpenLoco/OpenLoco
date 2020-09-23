@@ -498,7 +498,7 @@ namespace OpenLoco::Audio
     {
         auto volume = 0;
         auto zVol = 0;
-        auto tile = Map::tilemgr::get(mpos);
+        auto tile = Map::TileManager::get(mpos);
         if (!tile.isNull())
         {
             auto surface = tile.surface();

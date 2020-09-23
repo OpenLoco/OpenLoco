@@ -13,7 +13,7 @@
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Map;
-using namespace OpenLoco::Map::tilemgr;
+using namespace OpenLoco::Map::TileManager;
 
 namespace OpenLoco::ui::windows::construction::construction
 {
@@ -271,7 +271,7 @@ namespace OpenLoco::ui::windows::construction::construction
 
     static void activateSelectedRoadWidgets(window* window)
     {
-        tilemgr::mapInvalidateMapSelectionTiles();
+        TileManager::mapInvalidateMapSelectionTiles();
         _mapSelectionFlags = _mapSelectionFlags | (1 << 3) | (1 << 1);
 
         auto road = getRoadPieceId(_lastSelectedTrackPiece, _lastSelectedTrackGradient, _constructionRotation);
@@ -466,7 +466,7 @@ namespace OpenLoco::ui::windows::construction::construction
 
     static void activateSelectedTrackWidgets(window* window)
     {
-        tilemgr::mapInvalidateMapSelectionTiles();
+        TileManager::mapInvalidateMapSelectionTiles();
         _mapSelectionFlags = _mapSelectionFlags | (1 << 3) | (1 << 1);
 
         auto track = getTrackPieceId(_lastSelectedTrackPiece, _lastSelectedTrackGradient, _constructionRotation);
@@ -1440,7 +1440,7 @@ namespace OpenLoco::ui::windows::construction::construction
     // 0x004A2395
     static std::optional<int16_t> getConstructionHeight(const map_pos& mapPos, int16_t height, bool isSelected)
     {
-        auto tile = tilemgr::get(mapPos);
+        auto tile = TileManager::get(mapPos);
 
         auto surfaceTile = tile.surface();
 

@@ -741,7 +741,7 @@ namespace OpenLoco::ui::windows::station
         {
             if (_byte_F00484[posId] & (1 << 0))
             {
-                tilemgr::mapInvalidateTileFull(tileLoop.current());
+                TileManager::mapInvalidateTileFull(tileLoop.current());
             }
             tileLoop.next();
         }

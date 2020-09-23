@@ -307,7 +307,7 @@ namespace OpenLoco
                 if (cargoSearchState.mapHas2(tx, ty))
                 {
                     auto pos = map_pos(tx * tile_size, ty * tile_size);
-                    auto tile = tilemgr::get(pos);
+                    auto tile = TileManager::get(pos);
 
                     for (auto& el : tile)
                     {
@@ -720,7 +720,7 @@ namespace OpenLoco
     // 0x0048F6D4
     static station_element* getStationElement(const map_pos3& pos)
     {
-        auto tile = tilemgr::get(pos.x, pos.y);
+        auto tile = TileManager::get(pos.x, pos.y);
         auto baseZ = pos.z / 4;
 
         for (auto& element : tile)

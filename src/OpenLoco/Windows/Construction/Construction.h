@@ -7,7 +7,7 @@
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Map;
-using namespace OpenLoco::Map::tilemgr;
+using namespace OpenLoco::Map::TileManager;
 
 namespace OpenLoco::ui::windows::construction
 {

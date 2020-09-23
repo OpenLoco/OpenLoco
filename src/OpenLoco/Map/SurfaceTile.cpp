@@ -48,7 +48,7 @@ void Map::surface_element::createWave(int16_t x, int16_t y, int animationIndex)
             return;
         if (y + offset.y > 0x2FFF)
             return;
-        auto tile = Map::tilemgr::get(x + offset.x, y + offset.y);
+        auto tile = Map::TileManager::get(x + offset.x, y + offset.y);
         if (tile.isNull())
             return;
         auto surface = tile.surface();

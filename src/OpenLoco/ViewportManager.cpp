@@ -338,7 +338,7 @@ namespace OpenLoco::ui::viewportmgr
             0x0046112C,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                Map::tilemgr::mapInvalidateMapSelectionTiles();
+                Map::TileManager::mapInvalidateMapSelectionTiles();
                 regs = backup;
                 return 0;
             });
@@ -394,7 +394,7 @@ namespace OpenLoco::ui::viewportmgr
             0x004CBE5F,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 auto pos = Map::map_pos(regs.ax, regs.cx);
-                Map::tilemgr::mapInvalidateTileFull(pos);
+                Map::TileManager::mapInvalidateTileFull(pos);
                 return 0;
             });
         registerHook(

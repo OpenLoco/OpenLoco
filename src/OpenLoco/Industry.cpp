@@ -136,7 +136,7 @@ namespace OpenLoco
     // 0x0045329B
     void industry::sub_45329B(const map_pos& pos)
     {
-        const auto& surface = tilemgr::get(pos).surface();
+        const auto& surface = TileManager::get(pos).surface();
         if (surface != nullptr)
         {
             if (surface->hasHighTypeFlag())
