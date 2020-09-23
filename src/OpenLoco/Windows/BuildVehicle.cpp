@@ -984,7 +984,7 @@ namespace OpenLoco::ui::BuildVehicle
                 }
             }
 
-            if (vehicleObj->flags & flags_E0::rack_rail)
+            if (vehicleObj->flags & FlagsE0::rack_rail)
             {
                 auto trackExtraObj = ObjectManager::get<track_extra_object>(vehicleObj->rack_rail_type);
                 FormatArguments args{};
@@ -1013,7 +1013,7 @@ namespace OpenLoco::ui::BuildVehicle
             args.push(vehicleObj->speed);
             buffer = StringManager::formatString(buffer, StringIds::stats_max_speed, &args);
         }
-        if (vehicleObj->flags & flags_E0::rack_rail)
+        if (vehicleObj->flags & FlagsE0::rack_rail)
         {
             auto trackExtraObj = ObjectManager::get<track_extra_object>(vehicleObj->rack_rail_type);
             FormatArguments args{};
@@ -1067,7 +1067,7 @@ namespace OpenLoco::ui::BuildVehicle
                 }
             }
 
-            if (vehicleObj->flags & flags_E0::refittable)
+            if (vehicleObj->flags & FlagsE0::refittable)
             {
                 buffer = StringManager::formatString(buffer, StringIds::stats_refittable);
             }

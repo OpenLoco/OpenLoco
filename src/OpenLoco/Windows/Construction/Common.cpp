@@ -1117,7 +1117,7 @@ namespace OpenLoco::ui::windows::construction
                     flags |= 1ULL << vehicleObj->required_track_extras[i];
                 }
 
-                if (!(vehicleObj->flags & flags_E0::rack_rail))
+                if (!(vehicleObj->flags & FlagsE0::rack_rail))
                     continue;
 
                 flags |= 1ULL << vehicleObj->rack_rail_type;

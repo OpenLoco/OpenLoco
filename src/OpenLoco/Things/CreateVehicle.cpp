@@ -403,12 +403,12 @@ namespace OpenLoco::things::vehicle
 
         newBody->colour_scheme = colourScheme; // same as create bogie
 
-        if (bodyNumber == 0 && vehObject.flags & flags_E0::flag_02)
+        if (bodyNumber == 0 && vehObject.flags & FlagsE0::flag_02)
         {
             newBody->var_38 |= flags_38::unk_3;
         }
 
-        if (bodyNumber + 1 == vehObject.var_04 && vehObject.flags & flags_E0::flag_03)
+        if (bodyNumber + 1 == vehObject.var_04 && vehObject.flags & FlagsE0::flag_03)
         {
             newBody->var_38 |= flags_38::unk_3;
         }

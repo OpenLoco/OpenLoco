@@ -1551,7 +1551,7 @@ static bool sub_4B90F0(const uint16_t newVehicleTypeId, const uint16_t sourceVeh
     auto newObject = ObjectManager::get<vehicle_object>(newVehicleTypeId);       //edi
     auto sourceObject = ObjectManager::get<vehicle_object>(sourceVehicleTypeId); // esi
 
-    if ((newObject->flags & flags_E0::can_couple) && (sourceObject->flags & flags_E0::can_couple))
+    if ((newObject->flags & FlagsE0::can_couple) && (sourceObject->flags & FlagsE0::can_couple))
     {
         gGameCommandErrorText = StringIds::incompatible_vehicle;
         return false;
