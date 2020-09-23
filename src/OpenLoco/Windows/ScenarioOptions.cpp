@@ -93,22 +93,22 @@ namespace OpenLoco::ui::windows::ScenarioOptions
             // Challenge tab
             {
                 static const uint32_t challengeTabImageIds[] = {
-                    interface_skin::image_ids::tab_cup_frame0,
-                    interface_skin::image_ids::tab_cup_frame1,
-                    interface_skin::image_ids::tab_cup_frame2,
-                    interface_skin::image_ids::tab_cup_frame3,
-                    interface_skin::image_ids::tab_cup_frame4,
-                    interface_skin::image_ids::tab_cup_frame5,
-                    interface_skin::image_ids::tab_cup_frame6,
-                    interface_skin::image_ids::tab_cup_frame7,
-                    interface_skin::image_ids::tab_cup_frame8,
-                    interface_skin::image_ids::tab_cup_frame9,
-                    interface_skin::image_ids::tab_cup_frame10,
-                    interface_skin::image_ids::tab_cup_frame11,
-                    interface_skin::image_ids::tab_cup_frame12,
-                    interface_skin::image_ids::tab_cup_frame13,
-                    interface_skin::image_ids::tab_cup_frame14,
-                    interface_skin::image_ids::tab_cup_frame15,
+                    InterfaceSkin::image_ids::tab_cup_frame0,
+                    InterfaceSkin::image_ids::tab_cup_frame1,
+                    InterfaceSkin::image_ids::tab_cup_frame2,
+                    InterfaceSkin::image_ids::tab_cup_frame3,
+                    InterfaceSkin::image_ids::tab_cup_frame4,
+                    InterfaceSkin::image_ids::tab_cup_frame5,
+                    InterfaceSkin::image_ids::tab_cup_frame6,
+                    InterfaceSkin::image_ids::tab_cup_frame7,
+                    InterfaceSkin::image_ids::tab_cup_frame8,
+                    InterfaceSkin::image_ids::tab_cup_frame9,
+                    InterfaceSkin::image_ids::tab_cup_frame10,
+                    InterfaceSkin::image_ids::tab_cup_frame11,
+                    InterfaceSkin::image_ids::tab_cup_frame12,
+                    InterfaceSkin::image_ids::tab_cup_frame13,
+                    InterfaceSkin::image_ids::tab_cup_frame14,
+                    InterfaceSkin::image_ids::tab_cup_frame15,
                 };
 
                 uint32_t imageId = skin->img;
@@ -122,29 +122,29 @@ namespace OpenLoco::ui::windows::ScenarioOptions
 
             // Companies tab
             {
-                const uint32_t imageId = skin->img + interface_skin::image_ids::tab_companies;
+                const uint32_t imageId = skin->img + InterfaceSkin::image_ids::tab_companies;
                 widget::draw_tab(window, dpi, imageId, widx::tab_companies);
             }
 
             // Finances tab
             {
                 static const uint32_t financesTabImageIds[] = {
-                    interface_skin::image_ids::tab_finances_frame0,
-                    interface_skin::image_ids::tab_finances_frame1,
-                    interface_skin::image_ids::tab_finances_frame2,
-                    interface_skin::image_ids::tab_finances_frame3,
-                    interface_skin::image_ids::tab_finances_frame4,
-                    interface_skin::image_ids::tab_finances_frame5,
-                    interface_skin::image_ids::tab_finances_frame6,
-                    interface_skin::image_ids::tab_finances_frame7,
-                    interface_skin::image_ids::tab_finances_frame8,
-                    interface_skin::image_ids::tab_finances_frame9,
-                    interface_skin::image_ids::tab_finances_frame10,
-                    interface_skin::image_ids::tab_finances_frame11,
-                    interface_skin::image_ids::tab_finances_frame12,
-                    interface_skin::image_ids::tab_finances_frame13,
-                    interface_skin::image_ids::tab_finances_frame14,
-                    interface_skin::image_ids::tab_finances_frame15,
+                    InterfaceSkin::image_ids::tab_finances_frame0,
+                    InterfaceSkin::image_ids::tab_finances_frame1,
+                    InterfaceSkin::image_ids::tab_finances_frame2,
+                    InterfaceSkin::image_ids::tab_finances_frame3,
+                    InterfaceSkin::image_ids::tab_finances_frame4,
+                    InterfaceSkin::image_ids::tab_finances_frame5,
+                    InterfaceSkin::image_ids::tab_finances_frame6,
+                    InterfaceSkin::image_ids::tab_finances_frame7,
+                    InterfaceSkin::image_ids::tab_finances_frame8,
+                    InterfaceSkin::image_ids::tab_finances_frame9,
+                    InterfaceSkin::image_ids::tab_finances_frame10,
+                    InterfaceSkin::image_ids::tab_finances_frame11,
+                    InterfaceSkin::image_ids::tab_finances_frame12,
+                    InterfaceSkin::image_ids::tab_finances_frame13,
+                    InterfaceSkin::image_ids::tab_finances_frame14,
+                    InterfaceSkin::image_ids::tab_finances_frame15,
                 };
 
                 uint32_t imageId = skin->img;
@@ -158,7 +158,7 @@ namespace OpenLoco::ui::windows::ScenarioOptions
 
             // Scenario details tab
             {
-                const uint32_t imageId = skin->img + interface_skin::image_ids::tab_scenario_details;
+                const uint32_t imageId = skin->img + InterfaceSkin::image_ids::tab_scenario_details;
                 widget::draw_tab(window, dpi, imageId, widx::tab_scenario);
             }
         }

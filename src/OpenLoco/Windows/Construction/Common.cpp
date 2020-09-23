@@ -534,7 +534,7 @@ namespace OpenLoco::ui::windows::construction
             {
                 if (_byte_1136063 & (1 << 7))
                 {
-                    auto imageId = objectmgr::get<interface_skin_object>()->img + interface_skin::image_ids::toolbar_menu_airport;
+                    auto imageId = objectmgr::get<interface_skin_object>()->img + InterfaceSkin::image_ids::toolbar_menu_airport;
 
                     widget::draw_tab(self, dpi, imageId, widx::tab_station);
                 }
@@ -542,7 +542,7 @@ namespace OpenLoco::ui::windows::construction
                 {
                     if (_byte_1136063 & (1 << 6))
                     {
-                        auto imageId = objectmgr::get<interface_skin_object>()->img + interface_skin::image_ids::toolbar_menu_ship_port;
+                        auto imageId = objectmgr::get<interface_skin_object>()->img + InterfaceSkin::image_ids::toolbar_menu_ship_port;
 
                         widget::draw_tab(self, dpi, imageId, widx::tab_station);
                     }

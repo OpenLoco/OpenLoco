@@ -963,17 +963,17 @@ namespace OpenLoco::ui::windows::station
             // Station tab
             {
                 uint32_t imageId = Gfx::recolour(skin->img, companyColour);
-                imageId += interface_skin::image_ids::toolbar_menu_stations;
+                imageId += InterfaceSkin::image_ids::toolbar_menu_stations;
                 widget::draw_tab(self, dpi, imageId, widx::tab_station);
             }
 
             // Cargo tab
             {
                 static const uint32_t cargoTabImageIds[] = {
-                    interface_skin::image_ids::tab_cargo_delivered_frame0,
-                    interface_skin::image_ids::tab_cargo_delivered_frame1,
-                    interface_skin::image_ids::tab_cargo_delivered_frame2,
-                    interface_skin::image_ids::tab_cargo_delivered_frame3,
+                    InterfaceSkin::image_ids::tab_cargo_delivered_frame0,
+                    InterfaceSkin::image_ids::tab_cargo_delivered_frame1,
+                    InterfaceSkin::image_ids::tab_cargo_delivered_frame2,
+                    InterfaceSkin::image_ids::tab_cargo_delivered_frame3,
                 };
 
                 uint32_t imageId = skin->img;
@@ -987,7 +987,7 @@ namespace OpenLoco::ui::windows::station
 
             // Cargo ratings tab
             {
-                const uint32_t imageId = skin->img + interface_skin::image_ids::tab_cargo_ratings;
+                const uint32_t imageId = skin->img + InterfaceSkin::image_ids::tab_cargo_ratings;
                 widget::draw_tab(self, dpi, imageId, widx::tab_cargo_ratings);
 
                 auto widget = self->widgets[widx::tab_cargo_ratings];

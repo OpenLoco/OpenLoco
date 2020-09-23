@@ -1177,7 +1177,7 @@ namespace OpenLoco::ui::windows::industry_list
             // Industry List Tab
             {
                 uint32_t imageId = skin->img;
-                imageId += interface_skin::image_ids::toolbar_menu_industries;
+                imageId += InterfaceSkin::image_ids::toolbar_menu_industries;
 
                 widget::draw_tab(self, dpi, imageId, widx::tab_industry_list);
             }
@@ -1185,22 +1185,22 @@ namespace OpenLoco::ui::windows::industry_list
             // Fund New Industries Tab
             {
                 static const uint32_t fundNewIndustriesImageIds[] = {
-                    interface_skin::image_ids::build_industry_frame_0,
-                    interface_skin::image_ids::build_industry_frame_1,
-                    interface_skin::image_ids::build_industry_frame_2,
-                    interface_skin::image_ids::build_industry_frame_3,
-                    interface_skin::image_ids::build_industry_frame_4,
-                    interface_skin::image_ids::build_industry_frame_5,
-                    interface_skin::image_ids::build_industry_frame_6,
-                    interface_skin::image_ids::build_industry_frame_7,
-                    interface_skin::image_ids::build_industry_frame_8,
-                    interface_skin::image_ids::build_industry_frame_9,
-                    interface_skin::image_ids::build_industry_frame_10,
-                    interface_skin::image_ids::build_industry_frame_11,
-                    interface_skin::image_ids::build_industry_frame_12,
-                    interface_skin::image_ids::build_industry_frame_13,
-                    interface_skin::image_ids::build_industry_frame_14,
-                    interface_skin::image_ids::build_industry_frame_15,
+                    InterfaceSkin::image_ids::build_industry_frame_0,
+                    InterfaceSkin::image_ids::build_industry_frame_1,
+                    InterfaceSkin::image_ids::build_industry_frame_2,
+                    InterfaceSkin::image_ids::build_industry_frame_3,
+                    InterfaceSkin::image_ids::build_industry_frame_4,
+                    InterfaceSkin::image_ids::build_industry_frame_5,
+                    InterfaceSkin::image_ids::build_industry_frame_6,
+                    InterfaceSkin::image_ids::build_industry_frame_7,
+                    InterfaceSkin::image_ids::build_industry_frame_8,
+                    InterfaceSkin::image_ids::build_industry_frame_9,
+                    InterfaceSkin::image_ids::build_industry_frame_10,
+                    InterfaceSkin::image_ids::build_industry_frame_11,
+                    InterfaceSkin::image_ids::build_industry_frame_12,
+                    InterfaceSkin::image_ids::build_industry_frame_13,
+                    InterfaceSkin::image_ids::build_industry_frame_14,
+                    InterfaceSkin::image_ids::build_industry_frame_15,
                 };
                 uint32_t imageId = skin->img;
                 if (self->current_tab == widx::tab_new_industry - widx::tab_industry_list)

@@ -829,14 +829,14 @@ namespace OpenLoco::ui::windows::industry
         static void drawProductionTab(window* self, Gfx::drawpixelinfo_t* dpi, uint8_t productionTabNumber)
         {
             static const uint32_t productionTabImageIds[] = {
-                interface_skin::image_ids::tab_production_frame0,
-                interface_skin::image_ids::tab_production_frame1,
-                interface_skin::image_ids::tab_production_frame2,
-                interface_skin::image_ids::tab_production_frame3,
-                interface_skin::image_ids::tab_production_frame4,
-                interface_skin::image_ids::tab_production_frame5,
-                interface_skin::image_ids::tab_production_frame6,
-                interface_skin::image_ids::tab_production_frame7,
+                InterfaceSkin::image_ids::tab_production_frame0,
+                InterfaceSkin::image_ids::tab_production_frame1,
+                InterfaceSkin::image_ids::tab_production_frame2,
+                InterfaceSkin::image_ids::tab_production_frame3,
+                InterfaceSkin::image_ids::tab_production_frame4,
+                InterfaceSkin::image_ids::tab_production_frame5,
+                InterfaceSkin::image_ids::tab_production_frame6,
+                InterfaceSkin::image_ids::tab_production_frame7,
             };
 
             auto industry = industrymgr::get(self->number);
@@ -881,7 +881,7 @@ namespace OpenLoco::ui::windows::industry
             // Industry tab
             {
                 uint32_t imageId = skin->img;
-                imageId += interface_skin::image_ids::toolbar_menu_industries;
+                imageId += InterfaceSkin::image_ids::toolbar_menu_industries;
                 widget::draw_tab(self, dpi, imageId, widx::tab_industry);
             }
 
@@ -898,13 +898,13 @@ namespace OpenLoco::ui::windows::industry
             // Transported Tab
             {
                 static const uint32_t transportedTabImageIds[] = {
-                    interface_skin::image_ids::tab_transported_frame0,
-                    interface_skin::image_ids::tab_transported_frame1,
-                    interface_skin::image_ids::tab_transported_frame2,
-                    interface_skin::image_ids::tab_transported_frame3,
-                    interface_skin::image_ids::tab_transported_frame4,
-                    interface_skin::image_ids::tab_transported_frame5,
-                    interface_skin::image_ids::tab_transported_frame6,
+                    InterfaceSkin::image_ids::tab_transported_frame0,
+                    InterfaceSkin::image_ids::tab_transported_frame1,
+                    InterfaceSkin::image_ids::tab_transported_frame2,
+                    InterfaceSkin::image_ids::tab_transported_frame3,
+                    InterfaceSkin::image_ids::tab_transported_frame4,
+                    InterfaceSkin::image_ids::tab_transported_frame5,
+                    InterfaceSkin::image_ids::tab_transported_frame6,
                 };
 
                 uint32_t imageId = skin->img;

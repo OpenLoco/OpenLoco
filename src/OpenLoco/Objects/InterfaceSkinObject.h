@@ -30,7 +30,7 @@ namespace OpenLoco
     };
 #pragma pack(pop)
 
-    namespace interface_skin::image_ids
+    namespace InterfaceSkin::image_ids
     {
         constexpr uint32_t toolbar_loadsave = 3;
         constexpr uint32_t toolbar_loadsave_hover = 4;
