@@ -71,7 +71,7 @@ namespace OpenLoco
 
                 if (requiredCargoCount > 1)
                 {
-                    if ((flags & industry_object_flags::requires_all_cargo) != 0)
+                    if ((flags & IndustryObjectFlags::requires_all_cargo) != 0)
                         ptr = StringManager::formatString(ptr, StringIds::cargo_and);
                     else
                         ptr = StringManager::formatString(ptr, StringIds::cargo_or);

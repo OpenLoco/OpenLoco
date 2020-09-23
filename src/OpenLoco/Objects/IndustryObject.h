@@ -4,7 +4,7 @@
 
 namespace OpenLoco
 {
-    namespace industry_object_flags
+    namespace IndustryObjectFlags
     {
         constexpr uint32_t built_on_water = 1 << 8;
         constexpr uint32_t can_be_founded_by_user = 1 << 16;

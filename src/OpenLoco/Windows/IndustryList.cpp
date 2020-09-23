@@ -1000,7 +1000,7 @@ namespace OpenLoco::ui::windows::industry_list
                     break;
                 if (!isEditorMode())
                 {
-                    if (!(industryObj->flags & industry_object_flags::can_be_founded_by_user))
+                    if (!(industryObj->flags & IndustryObjectFlags::can_be_founded_by_user))
                         continue;
                     if (getCurrentYear() < industryObj->designedYear)
                         continue;
