@@ -31,7 +31,7 @@ namespace OpenLoco::s5
         uint8_t landDistributionPatterns[32];      // 0x0A
         char scenarioName[64];                     // 0x2A
         char scenarioDetails[256];                 // 0x6A
-        objectmgr::header scenarioText;            // 0x16A
+        ObjectManager::header scenarioText;            // 0x16A
         uint16_t numberOfForests;                  // 0x17a
         uint8_t minForestRadius;                   // 0x17C
         uint8_t maxForestRadius;                   // 0x17D
@@ -57,8 +57,8 @@ namespace OpenLoco::s5
         uint8_t objectiveDeliveredCargoType;       // 0x4197
         uint32_t objectiveDeliveredCargoAmount;    // 0x4198
         uint8_t objectiveTimeLimitYears;           // 0x419C
-        objectmgr::header objectiveDeliveredCargo; // 0x419D
-        objectmgr::header currency;                // 0x41AD
+        ObjectManager::header objectiveDeliveredCargo; // 0x419D
+        ObjectManager::header currency;                // 0x41AD
         std::byte pad_41BD[349];
     };
 #pragma pack(pop)

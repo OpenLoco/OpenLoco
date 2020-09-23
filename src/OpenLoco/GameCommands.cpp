@@ -244,7 +244,7 @@ namespace OpenLoco::game_commands
                     if (trackElement == nullptr)
                         break; // throw exception?
 
-                    track_object* pObject = objectmgr::get<track_object>(trackElement->trackObjectId());
+                    track_object* pObject = ObjectManager::get<track_object>(trackElement->trackObjectId());
                     if (pObject == nullptr)
                         break;
 
@@ -260,7 +260,7 @@ namespace OpenLoco::game_commands
                     if (roadElement == nullptr)
                         break; // throw exception?
 
-                    road_object* pObject = objectmgr::get<road_object>(roadElement->roadObjectId());
+                    road_object* pObject = ObjectManager::get<road_object>(roadElement->roadObjectId());
                     if (pObject == nullptr)
                         break;
 

@@ -60,7 +60,7 @@ namespace OpenLoco::ui::windows::CompanyFaceSelection
     }
 
     // Object load?
-    static void sub_47176D(objectmgr::header& object)
+    static void sub_47176D(ObjectManager::header& object)
     {
         registers regs;
         regs.ebp = reinterpret_cast<int32_t>(&object);
@@ -69,7 +69,7 @@ namespace OpenLoco::ui::windows::CompanyFaceSelection
 
     // 0x004720EB
     // Returns std::nullopt if not loaded
-    static std::optional<uint32_t> getLoadedObjectIndex(const objectmgr::object_index_entry& object)
+    static std::optional<uint32_t> getLoadedObjectIndex(const ObjectManager::object_index_entry& object)
     {
         registers regs;
         regs.ebp = reinterpret_cast<uint32_t>(&object._header->type);
@@ -95,7 +95,7 @@ namespace OpenLoco::ui::windows::CompanyFaceSelection
         }
 
         _inUseCompetitors.clear();
-        for (const auto& object : objectmgr::getAvailableObjects(object_type::competitor))
+        for (const auto& object : ObjectManager::getAvailableObjects(object_type::competitor))
         {
             auto competitorId = getLoadedObjectIndex(object.second);
             if (competitorId)
@@ -130,7 +130,7 @@ namespace OpenLoco::ui::windows::CompanyFaceSelection
             self->initScrollWidgets();
             _9C68F2 = id;
             self->owner = id;
-            const auto* skin = objectmgr::get<interface_skin_object>();
+            const auto* skin = ObjectManager::get<interface_skin_object>();
             self->colours[1] = skin->colour_0A;
             findAllInUseCompetitors(id);
             self->row_count = _numberCompetitorObjects;
@@ -170,22 +170,22 @@ namespace OpenLoco::ui::windows::CompanyFaceSelection
     struct ObjIndexPair
     {
         int16_t index;
-        objectmgr::object_index_entry object;
+        ObjectManager::object_index_entry object;
     };
 
     // 0x004354A6 sort of, very different
     static ObjIndexPair getObjectFromSelection(const int16_t& y)
     {
         const int16_t rowIndex = y / rowHeight;
-        const auto objects = objectmgr::getAvailableObjects(object_type::competitor);
+        const auto objects = ObjectManager::getAvailableObjects(object_type::competitor);
         if (rowIndex < 0 || static_cast<uint16_t>(rowIndex) >= objects.size())
         {
-            return { -1, objectmgr::object_index_entry{} };
+            return { -1, ObjectManager::object_index_entry{} };
         }
 
         if (isInUseCompetitor(objects[rowIndex].first))
         {
-            return { -1, objectmgr::object_index_entry{} };
+            return { -1, ObjectManager::object_index_entry{} };
         }
         return { rowIndex, objects[rowIndex].second };
     }
@@ -284,7 +284,7 @@ namespace OpenLoco::ui::windows::CompanyFaceSelection
         Gfx::clearSingle(*dpi, Colour::getShade(self->colours[1], 4));
 
         auto index = 0;
-        for (const auto& object : objectmgr::getAvailableObjects(object_type::competitor))
+        for (const auto& object : ObjectManager::getAvailableObjects(object_type::competitor))
         {
             const auto y = index * rowHeight;
             uint8_t inlineColour = ControlCodes::colour_black;

@@ -277,7 +277,7 @@ namespace OpenLoco
 
                 if (stationElement->stationType() == stationType::roadStation)
                 {
-                    auto obj = objectmgr::get<road_station_object>(stationElement->objectId());
+                    auto obj = ObjectManager::get<road_station_object>(stationElement->objectId());
 
                     if (obj->flags & road_station_flags::passenger)
                     {
@@ -457,7 +457,7 @@ namespace OpenLoco
             {
                 case stationType::airport:
                 {
-                    auto airportObject = objectmgr::get<airport_object>(stationElement->objectId());
+                    auto airportObject = ObjectManager::get<airport_object>(stationElement->objectId());
 
                     map_pos minPos, maxPos;
                     minPos.x = airportObject->min_x;
@@ -551,7 +551,7 @@ namespace OpenLoco
             loco_global<uint32_t, 0x112C826> _common_format_args;
             *_common_format_args = stats.quantity;
 
-            auto cargo = objectmgr::get<cargo_object>(cargoId);
+            auto cargo = ObjectManager::get<cargo_object>(cargoId);
             string_id unit_name = stats.quantity == 1 ? cargo->unit_name_singular : cargo->unit_name_plural;
             ptr = StringManager::formatString(ptr, unit_name, &*_common_format_args);
         }

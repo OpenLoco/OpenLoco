@@ -4,7 +4,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::objectmgr
+namespace OpenLoco::ObjectManager
 {
     loco_global<object_repository_item[64], 0x4FE0B8> object_repository;
     loco_global<interface_skin_object* [1], 0x0050C3D0> _interfaceObjects;

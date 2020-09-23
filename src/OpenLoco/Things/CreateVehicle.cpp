@@ -19,7 +19,7 @@
 
 using namespace OpenLoco;
 using namespace OpenLoco::Interop;
-using namespace OpenLoco::objectmgr;
+using namespace OpenLoco::ObjectManager;
 using namespace OpenLoco::game_commands;
 
 namespace OpenLoco::things::vehicle
@@ -451,7 +451,7 @@ namespace OpenLoco::things::vehicle
             lastVeh = reinterpret_cast<OpenLoco::vehicle*>(train.veh2);
         }
 
-        const auto vehObject = objectmgr::get<vehicle_object>(vehicleTypeId);
+        const auto vehObject = ObjectManager::get<vehicle_object>(vehicleTypeId);
         const auto company = companymgr::get(_updating_company_id);
         _1136140 = company->mainColours; // Copy to global variable. Can be removed when all global uses confirmed
         auto colourScheme = company->mainColours;
@@ -818,7 +818,7 @@ namespace OpenLoco::things::vehicle
 
         if (flags & game_commands::GameCommandFlag::apply)
         {
-            auto vehObject = objectmgr::get<vehicle_object>(vehicleTypeId);
+            auto vehObject = ObjectManager::get<vehicle_object>(vehicleTypeId);
 
             auto head = createBaseVehicle(vehObject->mode, vehObject->type, vehObject->track_type);
             if (!head)
@@ -851,7 +851,7 @@ namespace OpenLoco::things::vehicle
             }
         }
         // 0x4AE733
-        auto vehObject = objectmgr::get<vehicle_object>(vehicleTypeId);
+        auto vehObject = ObjectManager::get<vehicle_object>(vehicleTypeId);
         // TODO: use FixedPoint with 6 {(1 << 6) == 64} decimals for cost_index
         auto cost = (vehObject->cost_factor * currencyMultiplicationFactor[vehObject->cost_index]) / 64;
         return cost;
@@ -921,7 +921,7 @@ namespace OpenLoco::things::vehicle
             }
         }
         // 0x4AE733
-        auto vehObject = objectmgr::get<vehicle_object>(vehicleTypeId);
+        auto vehObject = ObjectManager::get<vehicle_object>(vehicleTypeId);
         // TODO: use FixedPoint with 6 {(1 << 6) == 64} decimals for cost_index
         auto cost = (vehObject->cost_factor * currencyMultiplicationFactor[vehObject->cost_index]) / 64;
         return cost;

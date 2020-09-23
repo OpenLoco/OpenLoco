@@ -93,7 +93,7 @@ namespace OpenLoco::ui::windows::toolbar_top::editor
         window->colours[2] = Colour::grey;
         window->colours[3] = Colour::grey;
 
-        auto skin = objectmgr::get<interface_skin_object>();
+        auto skin = ObjectManager::get<interface_skin_object>();
         if (skin != nullptr)
         {
             window->colours[0] = skin->colour_12;
@@ -295,7 +295,7 @@ namespace OpenLoco::ui::windows::toolbar_top::editor
             window->widgets[common::widx::towns_menu].type = widget_type::none;
         }
 
-        auto interface = objectmgr::get<interface_skin_object>();
+        auto interface = ObjectManager::get<interface_skin_object>();
         if (!Audio::isAudioEnabled())
         {
             window->activated_widgets |= (1 << common::widx::audio_menu);

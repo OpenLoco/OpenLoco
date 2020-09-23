@@ -235,7 +235,7 @@ namespace OpenLoco::ui::windows::industry_list
 
         static uint8_t getAverageTransportedCargo(const OpenLoco::industry& industry)
         {
-            auto industryObj = objectmgr::get<industry_object>(industry.object_id);
+            auto industryObj = ObjectManager::get<industry_object>(industry.object_id);
             uint8_t productionTransported = -1;
 
             if (industryObj->producesCargo())
@@ -539,7 +539,7 @@ namespace OpenLoco::ui::windows::industry_list
             window->max_height = industry_list::maxDimensions.height;
             window->flags |= window_flags::resizable;
 
-            auto skin = objectmgr::get<interface_skin_object>();
+            auto skin = ObjectManager::get<interface_skin_object>();
             window->colours[0] = skin->colour_0B;
             window->colours[1] = skin->colour_0C;
 
@@ -633,7 +633,7 @@ namespace OpenLoco::ui::windows::industry_list
                     return;
             }
 
-            auto industryObj = objectmgr::get<industry_object>(industryObjId);
+            auto industryObj = ObjectManager::get<industry_object>(industryObjId);
             auto industryCost = 0;
 
             if (self->var_846 == 0xFFFF)
@@ -750,7 +750,7 @@ namespace OpenLoco::ui::windows::industry_list
             if (rowInfo == 0xFFFF)
                 return;
 
-            auto industryObj = objectmgr::get<industry_object>(rowInfo);
+            auto industryObj = ObjectManager::get<industry_object>(rowInfo);
             auto buffer = const_cast<char*>(StringManager::getString(string));
             char* ptr = (char*)buffer;
 
@@ -898,7 +898,7 @@ namespace OpenLoco::ui::windows::industry_list
                     Gfx::drawRectInset(dpi, xPos, yPos, rowHeight, rowHeight, self->colours[1], (Colour::translucent_flag | Colour::outline_flag));
                 }
 
-                auto industryObj = objectmgr::get<industry_object>(self->row_info[i]);
+                auto industryObj = ObjectManager::get<industry_object>(self->row_info[i]);
 
                 Gfx::drawpixelinfo_t* clipped = nullptr;
 
@@ -993,9 +993,9 @@ namespace OpenLoco::ui::windows::industry_list
         static void updateBuildableIndustries(window* self)
         {
             auto industryCount = 0;
-            for (uint16_t i = 0; i < objectmgr::getMaxObjects(object_type::industry); i++)
+            for (uint16_t i = 0; i < ObjectManager::getMaxObjects(object_type::industry); i++)
             {
-                auto industryObj = objectmgr::get<industry_object>(i);
+                auto industryObj = ObjectManager::get<industry_object>(i);
                 if (industryObj == nullptr)
                     break;
                 if (!isEditorMode())
@@ -1172,7 +1172,7 @@ namespace OpenLoco::ui::windows::industry_list
         // 0x00458A57
         static void drawTabs(window* self, Gfx::drawpixelinfo_t* dpi)
         {
-            auto skin = objectmgr::get<interface_skin_object>();
+            auto skin = ObjectManager::get<interface_skin_object>();
 
             // Industry List Tab
             {

@@ -216,7 +216,7 @@ namespace OpenLoco::ui::BuildVehicle
     }
 
     static loco_global<int16_t, 0x01136268> _numAvailableVehicles;
-    static loco_global<uint16_t[objectmgr::getMaxObjects(object_type::vehicle)], 0x0113626A> _availableVehicles;
+    static loco_global<uint16_t[ObjectManager::getMaxObjects(object_type::vehicle)], 0x0113626A> _availableVehicles;
     static loco_global<uint16_t, 0x0113642A> _113642A;
     static loco_global<int32_t, 0x011364E8> _buildTargetVehicle; // -1 for no target
     static loco_global<uint32_t, 0x011364EC> _numTrackTypeTabs;
@@ -258,7 +258,7 @@ namespace OpenLoco::ui::BuildVehicle
         window->enabled_widgets = (1 << widx::close_button) | (1 << widx::tab_build_new_trains) | (1 << widx::tab_build_new_buses) | (1 << widx::tab_build_new_trucks) | (1 << widx::tab_build_new_trams) | (1 << widx::tab_build_new_aircraft) | (1 << widx::tab_build_new_ships) | (1 << widx::tab_track_type_0) | (1 << widx::tab_track_type_1) | (1 << widx::tab_track_type_2) | (1 << widx::tab_track_type_3) | (1 << widx::tab_track_type_4) | (1 << widx::tab_track_type_5) | (1 << widx::tab_track_type_6) | (1 << widx::tab_track_type_7) | (1 << widx::scrollview_vehicle_selection);
         window->owner = companymgr::getControllingId();
         window->frame_no = 0;
-        auto skin = OpenLoco::objectmgr::get<interface_skin_object>();
+        auto skin = OpenLoco::ObjectManager::get<interface_skin_object>();
         if (skin != nullptr)
         {
             window->colours[1] = skin->colour_0A;
@@ -398,7 +398,7 @@ namespace OpenLoco::ui::BuildVehicle
         if (trackType != 0xFF && (trackType & (1 << 7)))
         {
             auto trackIdx = trackType & ~(1 << 7);
-            auto roadObj = objectmgr::get<road_object>(trackIdx);
+            auto roadObj = ObjectManager::get<road_object>(trackIdx);
             if (roadObj->flags & flags_12::unk_03)
             {
                 trackType = 0xFE;
@@ -419,9 +419,9 @@ namespace OpenLoco::ui::BuildVehicle
         };
         std::vector<build_item> buildableVehicles;
 
-        for (uint16_t vehicleObjIndex = 0; vehicleObjIndex < objectmgr::getMaxObjects(object_type::vehicle); ++vehicleObjIndex)
+        for (uint16_t vehicleObjIndex = 0; vehicleObjIndex < ObjectManager::getMaxObjects(object_type::vehicle); ++vehicleObjIndex)
         {
-            auto vehicleObj = objectmgr::get<vehicle_object>(vehicleObjIndex);
+            auto vehicleObj = ObjectManager::get<vehicle_object>(vehicleObjIndex);
             if (vehicleObj == nullptr)
             {
                 continue;
@@ -745,7 +745,7 @@ namespace OpenLoco::ui::BuildVehicle
         auto pan = window->width / 2 + window->x;
         Audio::playSound(Audio::sound_id::click_down, loc16{ x, y, static_cast<int16_t>(pan) }, pan);
         auto item = window->row_info[scrollItem];
-        auto vehicleObj = objectmgr::get<vehicle_object>(item);
+        auto vehicleObj = ObjectManager::get<vehicle_object>(item);
         FormatArguments args{};
         // Skip 5 * 2 bytes
         args.skip(10);
@@ -823,12 +823,12 @@ namespace OpenLoco::ui::BuildVehicle
                 type &= ~(1 << 7);
                 if (is_road)
                 {
-                    auto roadObj = objectmgr::get<road_object>(type);
+                    auto roadObj = ObjectManager::get<road_object>(type);
                     args.push(roadObj->name);
                 }
                 else
                 {
-                    auto trackObj = objectmgr::get<track_object>(type);
+                    auto trackObj = ObjectManager::get<track_object>(type);
                     args.push(trackObj->name);
                 }
             }
@@ -926,7 +926,7 @@ namespace OpenLoco::ui::BuildVehicle
             return;
         }
 
-        auto vehicleObj = objectmgr::get<vehicle_object>(window->row_hover);
+        auto vehicleObj = ObjectManager::get<vehicle_object>(window->row_hover);
         auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
 
         {
@@ -958,12 +958,12 @@ namespace OpenLoco::ui::BuildVehicle
             {
                 if (vehicleObj->track_type != 0xFF)
                 {
-                    trackName = objectmgr::get<road_object>(vehicleObj->track_type)->name;
+                    trackName = ObjectManager::get<road_object>(vehicleObj->track_type)->name;
                 }
             }
             else
             {
-                trackName = objectmgr::get<track_object>(vehicleObj->track_type)->name;
+                trackName = ObjectManager::get<track_object>(vehicleObj->track_type)->name;
             }
 
             buffer = StringManager::formatString(buffer, trackName);
@@ -974,19 +974,19 @@ namespace OpenLoco::ui::BuildVehicle
                 buffer += 3;
                 if (vehicleObj->mode == TransportMode::road)
                 {
-                    auto roadExtraObj = objectmgr::get<road_extra_object>(vehicleObj->required_track_extras[i]);
+                    auto roadExtraObj = ObjectManager::get<road_extra_object>(vehicleObj->required_track_extras[i]);
                     buffer = StringManager::formatString(buffer, roadExtraObj->name);
                 }
                 else
                 {
-                    auto trackExtraObj = objectmgr::get<track_extra_object>(vehicleObj->required_track_extras[i]);
+                    auto trackExtraObj = ObjectManager::get<track_extra_object>(vehicleObj->required_track_extras[i]);
                     buffer = StringManager::formatString(buffer, trackExtraObj->name);
                 }
             }
 
             if (vehicleObj->flags & flags_E0::rack_rail)
             {
-                auto trackExtraObj = objectmgr::get<track_extra_object>(vehicleObj->rack_rail_type);
+                auto trackExtraObj = ObjectManager::get<track_extra_object>(vehicleObj->rack_rail_type);
                 FormatArguments args{};
                 args.push(trackExtraObj->name);
                 buffer = StringManager::formatString(buffer, StringIds::stats_string_steep_slope, &args);
@@ -1015,7 +1015,7 @@ namespace OpenLoco::ui::BuildVehicle
         }
         if (vehicleObj->flags & flags_E0::rack_rail)
         {
-            auto trackExtraObj = objectmgr::get<track_extra_object>(vehicleObj->rack_rail_type);
+            auto trackExtraObj = ObjectManager::get<track_extra_object>(vehicleObj->rack_rail_type);
             FormatArguments args{};
             args.push(vehicleObj->rack_speed);
             args.push(trackExtraObj->name);
@@ -1030,7 +1030,7 @@ namespace OpenLoco::ui::BuildVehicle
                 {
                     auto cargoTypes = vehicleObj->primary_cargo_types & ~(1 << cargoType);
                     {
-                        auto cargoObj = objectmgr::get<cargo_object>(cargoType);
+                        auto cargoObj = ObjectManager::get<cargo_object>(cargoType);
                         FormatArguments args{};
                         auto cargoUnitName = cargoObj->unit_name_plural;
                         if (vehicleObj->max_primary_cargo == 1)
@@ -1055,7 +1055,7 @@ namespace OpenLoco::ui::BuildVehicle
                                 buffer++;
                             }
 
-                            auto cargoObj = objectmgr::get<cargo_object>(cargoType);
+                            auto cargoObj = ObjectManager::get<cargo_object>(cargoType);
                             FormatArguments args{};
                             args.push(cargoObj->name);
                             buffer = StringManager::formatString(buffer, StringIds::stats_or_string, &args);
@@ -1079,7 +1079,7 @@ namespace OpenLoco::ui::BuildVehicle
                 {
                     auto cargoTypes = vehicleObj->secondary_cargo_types & ~(1 << cargoType);
                     {
-                        auto cargoObj = objectmgr::get<cargo_object>(cargoType);
+                        auto cargoObj = ObjectManager::get<cargo_object>(cargoType);
                         FormatArguments args{};
                         auto cargoUnitName = cargoObj->unit_name_plural;
                         if (vehicleObj->max_secondary_cargo == 1)
@@ -1105,7 +1105,7 @@ namespace OpenLoco::ui::BuildVehicle
                                 buffer++;
                             }
 
-                            auto cargoObj = objectmgr::get<cargo_object>(cargoType);
+                            auto cargoObj = ObjectManager::get<cargo_object>(cargoType);
                             FormatArguments args{};
                             args.push(cargoObj->name);
                             buffer = StringManager::formatString(buffer, StringIds::stats_or_string, &args);
@@ -1180,7 +1180,7 @@ namespace OpenLoco::ui::BuildVehicle
                         int16_t half = (window->row_height - 22) / 2;
                         auto x = drawVehicleInline(dpi, vehicleType, 0, companymgr::getControllingId(), { 0, static_cast<int16_t>(y + half) });
 
-                        auto vehicleObj = objectmgr::get<vehicle_object>(vehicleType);
+                        auto vehicleObj = ObjectManager::get<vehicle_object>(vehicleType);
                         FormatArguments args{};
                         args.push(vehicleObj->name);
                         half = (window->row_height - 10) / 2;
@@ -1204,7 +1204,7 @@ namespace OpenLoco::ui::BuildVehicle
                 uint8_t unk2 = ((_52622E + 2) / 4) & 0x3F;
                 drawVehicleOverview(dpi, window->row_hover, companymgr::getControllingId(), unk1, unk2, { 90, 37 });
 
-                auto vehicleObj = objectmgr::get<vehicle_object>(window->row_hover);
+                auto vehicleObj = ObjectManager::get<vehicle_object>(window->row_hover);
                 auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
                 buffer = StringManager::formatString(buffer, vehicleObj->name);
                 auto usableCargoTypes = vehicleObj->primary_cargo_types | vehicleObj->secondary_cargo_types;
@@ -1212,7 +1212,7 @@ namespace OpenLoco::ui::BuildVehicle
                 for (auto cargoTypes = Utility::bitScanForward(usableCargoTypes); cargoTypes != -1; cargoTypes = Utility::bitScanForward(usableCargoTypes))
                 {
                     usableCargoTypes &= ~(1 << cargoTypes);
-                    auto cargoObj = objectmgr::get<cargo_object>(cargoTypes);
+                    auto cargoObj = ObjectManager::get<cargo_object>(cargoTypes);
                     *buffer++ = ' ';
                     *buffer++ = ControlCodes::inline_sprite_str;
                     *(reinterpret_cast<uint32_t*>(buffer)) = cargoObj->unit_inline_sprite;
@@ -1247,7 +1247,7 @@ namespace OpenLoco::ui::BuildVehicle
         auto roadTrackTypes = 0;
         for (auto i = 0; i < _numAvailableVehicles; i++)
         {
-            auto vehicleObj = objectmgr::get<vehicle_object>(_availableVehicles[i]);
+            auto vehicleObj = ObjectManager::get<vehicle_object>(_availableVehicles[i]);
             if (vehicleObj && vehicleObj->mode == TransportMode::rail)
             {
                 railTrackTypes |= (1 << vehicleObj->track_type);
@@ -1344,7 +1344,7 @@ namespace OpenLoco::ui::BuildVehicle
         bool setRail = false;
         if (isRoad)
         {
-            auto road_obj = objectmgr::get<road_object>(trackType);
+            auto road_obj = ObjectManager::get<road_object>(trackType);
             if (road_obj && road_obj->flags & flags_12::unk_01)
             {
                 setRail = true;
@@ -1352,7 +1352,7 @@ namespace OpenLoco::ui::BuildVehicle
         }
         else
         {
-            auto rail_obj = objectmgr::get<track_object>(trackType);
+            auto rail_obj = ObjectManager::get<track_object>(trackType);
             if (rail_obj && !(rail_obj->flags & flags_22::unk_02))
             {
                 setRail = true;
@@ -1408,7 +1408,7 @@ namespace OpenLoco::ui::BuildVehicle
     // 0x4C2BFD
     static void drawTransportTypeTabs(ui::window* window, Gfx::drawpixelinfo_t* dpi)
     {
-        auto skin = objectmgr::get<interface_skin_object>();
+        auto skin = ObjectManager::get<interface_skin_object>();
         auto companyColour = companymgr::getCompanyColour(window->number);
 
         for (auto tab : _transportTypeTabInformation)
@@ -1426,7 +1426,7 @@ namespace OpenLoco::ui::BuildVehicle
     // 0x4C28F1
     static void drawTrackTypeTabs(ui::window* window, Gfx::drawpixelinfo_t* dpi)
     {
-        auto skin = objectmgr::get<interface_skin_object>();
+        auto skin = ObjectManager::get<interface_skin_object>();
         auto companyColour = companymgr::getCompanyColour(window->number);
 
         auto left = window->x;
@@ -1470,7 +1470,7 @@ namespace OpenLoco::ui::BuildVehicle
             else if (type & (1 << 7)) // is_road
             {
                 type &= ~(1 << 7);
-                auto roadObj = objectmgr::get<road_object>(type);
+                auto roadObj = ObjectManager::get<road_object>(type);
                 img = roadObj->var_0E;
                 if (window->current_secondary_tab == tab)
                 {
@@ -1480,7 +1480,7 @@ namespace OpenLoco::ui::BuildVehicle
             }
             else
             {
-                auto trackObj = objectmgr::get<track_object>(type);
+                auto trackObj = ObjectManager::get<track_object>(type);
                 img = trackObj->var_1E;
                 if (window->current_secondary_tab == tab)
                 {

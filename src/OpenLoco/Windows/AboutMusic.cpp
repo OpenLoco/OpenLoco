@@ -59,7 +59,7 @@ namespace OpenLoco::ui::AboutMusic
         window->enabled_widgets = 1 << widx::close;
         window->initScrollWidgets();
 
-        const auto interface = objectmgr::get<interface_skin_object>();
+        const auto interface = ObjectManager::get<interface_skin_object>();
         window->colours[0] = interface->colour_0B;
         window->colours[1] = interface->colour_10;
     }

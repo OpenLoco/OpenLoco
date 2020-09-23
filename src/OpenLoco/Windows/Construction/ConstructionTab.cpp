@@ -319,7 +319,7 @@ namespace OpenLoco::ui::windows::construction::construction
         window->holdable_widgets = (1 << widx::construct) | (1 << widx::remove);
 
         auto trackType = _trackType & ~(1 << 7);
-        auto roadObj = objectmgr::get<road_object>(trackType);
+        auto roadObj = ObjectManager::get<road_object>(trackType);
 
         window->widgets[widx::s_bend_left].type = widget_type::none;
         window->widgets[widx::s_bend_right].type = widget_type::none;
@@ -511,7 +511,7 @@ namespace OpenLoco::ui::windows::construction::construction
         mapInvalidateMapSelectionTiles();
         window->holdable_widgets = (1 << widx::construct) | (1 << widx::remove);
 
-        auto trackObj = objectmgr::get<track_object>(_trackType);
+        auto trackObj = ObjectManager::get<track_object>(_trackType);
 
         window->widgets[widx::s_bend_left].type = widget_type::wt_9;
         window->widgets[widx::s_bend_right].type = widget_type::wt_9;
@@ -1160,7 +1160,7 @@ namespace OpenLoco::ui::windows::construction::construction
         }
         else
         {
-            auto trackObj = objectmgr::get<track_object>(trackType);
+            auto trackObj = ObjectManager::get<track_object>(trackType);
             if (_lastSelectedTrackPiece == 0xFF)
             {
                 disableUnusedTrackPieces(self, *trackObj, disabledWidgets);
@@ -1242,7 +1242,7 @@ namespace OpenLoco::ui::windows::construction::construction
             if (bridge == _lastSelectedBridge)
                 dropdown::setHighlightedItem(i);
 
-            auto bridgeObj = objectmgr::get<bridge_object>(bridge);
+            auto bridgeObj = ObjectManager::get<bridge_object>(bridge);
             auto company = companymgr::get(_playerCompany);
             auto companyColour = company->mainColours.primary;
             auto imageId = Gfx::recolour(bridgeObj->var_16, companyColour);
@@ -1844,17 +1844,17 @@ namespace OpenLoco::ui::windows::construction::construction
         auto args = FormatArguments();
         if (_trackType & (1 << 7))
         {
-            auto roadObj = objectmgr::get<road_object>(_trackType & ~(1 << 7));
+            auto roadObj = ObjectManager::get<road_object>(_trackType & ~(1 << 7));
             args.push(roadObj->name);
         }
         else
         {
-            auto trackObj = objectmgr::get<track_object>(_trackType);
+            auto trackObj = ObjectManager::get<track_object>(_trackType);
             args.push(trackObj->name);
         }
         if (_lastSelectedBridge != 0xFF)
         {
-            auto bridgeObj = objectmgr::get<bridge_object>(_lastSelectedBridge);
+            auto bridgeObj = ObjectManager::get<bridge_object>(_lastSelectedBridge);
             if (bridgeObj != nullptr)
             {
                 args.push(bridgeObj->name);
@@ -1973,7 +1973,7 @@ namespace OpenLoco::ui::windows::construction::construction
         {
             if (_lastSelectedBridge != 0xFF)
             {
-                auto bridgeObj = objectmgr::get<bridge_object>(_lastSelectedBridge);
+                auto bridgeObj = ObjectManager::get<bridge_object>(_lastSelectedBridge);
                 if (bridgeObj != nullptr)
                 {
                     auto company = companymgr::get(_playerCompany);

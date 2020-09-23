@@ -186,7 +186,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
             common::drawTabs(self, dpi);
             common::drawCompanySelect(self, dpi);
             const auto company = companymgr::get(self->number);
-            const auto competitor = objectmgr::get<competitor_object>(company->competitor_id);
+            const auto competitor = ObjectManager::get<competitor_object>(company->competitor_id);
 
             // Draw 'owner' label
             {
@@ -592,7 +592,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
         window->frame_no = 0;
         window->saved_view.clear();
 
-        auto skin = objectmgr::get<interface_skin_object>();
+        auto skin = ObjectManager::get<interface_skin_object>();
         window->colours[1] = skin->colour_0A;
 
         window->flags |= window_flags::resizable;
@@ -690,7 +690,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
             FormatArguments args{};
             args.push(company->name);
             auto companyColour = companymgr::getCompanyColour(self->number);
-            auto skin = objectmgr::get<interface_skin_object>();
+            auto skin = ObjectManager::get<interface_skin_object>();
             uint32_t image = skin->img + InterfaceSkin::ImageIds::build_headquarters;
             self->widgets[widx::build_hq].image = Gfx::recolour(image, companyColour) | (1 << 30);
 
@@ -752,7 +752,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
 
         static void drawAIdetails(Gfx::drawpixelinfo_t& dpi, const int32_t x, int32_t& y, const OpenLoco::company& company)
         {
-            const auto competitor = objectmgr::get<competitor_object>(company.competitor_id);
+            const auto competitor = ObjectManager::get<competitor_object>(company.competitor_id);
             {
                 FormatArguments args{};
                 args.push<uint16_t>(competitor->intelligence);
@@ -2137,7 +2137,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
             const auto company = companymgr::get(self->number);
             for (uint8_t i = 0; i < static_cast<uint8_t>(std::size(company->cargoDelivered)); i++)
             {
-                auto cargo = objectmgr::get<cargo_object>(i);
+                auto cargo = ObjectManager::get<cargo_object>(i);
                 if (cargo == nullptr || company->cargoDelivered[i] == 0)
                     continue;
 
@@ -2237,7 +2237,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
             const auto company = companymgr::get(self->number);
             for (uint8_t i = 0; i < static_cast<uint8_t>(std::size(company->cargoDelivered)); i++)
             {
-                auto cargo = objectmgr::get<cargo_object>(i);
+                auto cargo = ObjectManager::get<cargo_object>(i);
                 if (cargo == nullptr || company->cargoDelivered[i] == 0)
                     continue;
 
@@ -2566,7 +2566,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
         static void drawCompanySelect(const window* const self, Gfx::drawpixelinfo_t* const dpi)
         {
             const auto company = companymgr::get(self->number);
-            const auto competitor = objectmgr::get<competitor_object>(company->competitor_id);
+            const auto competitor = ObjectManager::get<competitor_object>(company->competitor_id);
 
             // Draw company owner face.
             const uint32_t image = Gfx::recolour(competitor->images[company->owner_emotion], company->mainColours.primary);
@@ -2578,7 +2578,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
         // 0x00434413
         static void drawTabs(window* self, Gfx::drawpixelinfo_t* dpi)
         {
-            auto skin = objectmgr::get<interface_skin_object>();
+            auto skin = ObjectManager::get<interface_skin_object>();
 
             // Status tab
             {

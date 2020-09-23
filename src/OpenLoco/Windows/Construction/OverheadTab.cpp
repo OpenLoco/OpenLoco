@@ -166,7 +166,7 @@ namespace OpenLoco::ui::windows::construction::overhead
         if (_trackType & (1 << 7))
         {
             auto trackType = _trackType & ~(1 << 7);
-            auto roadObj = objectmgr::get<road_object>(trackType);
+            auto roadObj = ObjectManager::get<road_object>(trackType);
 
             auto args = FormatArguments();
             args.push(roadObj->name);
@@ -175,14 +175,14 @@ namespace OpenLoco::ui::windows::construction::overhead
             {
                 if (_modList[i] != 0xFF)
                 {
-                    auto extraName = objectmgr::get<road_extra_object>(_modList[i])->name;
+                    auto extraName = ObjectManager::get<road_extra_object>(_modList[i])->name;
                     setCheckbox(self, i, extraName);
                 }
             }
         }
         else
         {
-            auto trackObj = objectmgr::get<track_object>(_trackType);
+            auto trackObj = ObjectManager::get<track_object>(_trackType);
 
             auto args = FormatArguments();
             args.push(trackObj->name);
@@ -191,7 +191,7 @@ namespace OpenLoco::ui::windows::construction::overhead
             {
                 if (_modList[i] != 0xFF)
                 {
-                    auto extraName = objectmgr::get<track_extra_object>(_modList[i])->name;
+                    auto extraName = ObjectManager::get<track_extra_object>(_modList[i])->name;
                     setCheckbox(self, i, extraName);
                 }
             }

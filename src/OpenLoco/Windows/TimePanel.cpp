@@ -103,7 +103,7 @@ namespace OpenLoco::ui::TimePanel
         window->var_856 = 0;
         window->initScrollWidgets();
 
-        auto skin = objectmgr::get<interface_skin_object>();
+        auto skin = ObjectManager::get<interface_skin_object>();
         if (skin != nullptr)
         {
             window->colours[0] = Colour::translucent(skin->colour_17);
@@ -202,7 +202,7 @@ namespace OpenLoco::ui::TimePanel
         }
         Gfx::drawStringCentred(*dpi, self->x + _widgets[widx::date_btn].mid_x(), self->y + _widgets[widx::date_btn].top + 1, c, format, &*_common_format_args);
 
-        auto skin = objectmgr::get<interface_skin_object>();
+        auto skin = ObjectManager::get<interface_skin_object>();
         Gfx::drawImage(dpi, self->x + _widgets[widx::map_chat_menu].left - 2, self->y + _widgets[widx::map_chat_menu].top - 1, skin->img + map_sprites_by_rotation[gCurrentRotation]);
     }
 
@@ -232,7 +232,7 @@ namespace OpenLoco::ui::TimePanel
     // 0x0043A67F
     static void mapMouseDown(ui::window* self, widget_index widgetIndex)
     {
-        auto skin = objectmgr::get<interface_skin_object>();
+        auto skin = ObjectManager::get<interface_skin_object>();
 
         if (isNetworked())
         {

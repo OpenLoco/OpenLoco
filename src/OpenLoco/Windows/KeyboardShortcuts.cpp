@@ -81,7 +81,7 @@ namespace OpenLoco::ui::KeyboardShortcuts
         window->enabled_widgets = (1 << widx::close_button) | (1 << widx::reset_keys_btn);
         window->initScrollWidgets();
 
-        auto skin = objectmgr::get<interface_skin_object>();
+        auto skin = ObjectManager::get<interface_skin_object>();
         window->colours[0] = skin->colour_0B;
         window->colours[1] = skin->colour_10;
 

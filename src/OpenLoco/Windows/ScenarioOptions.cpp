@@ -88,7 +88,7 @@ namespace OpenLoco::ui::windows::ScenarioOptions
         // 0x004400A4
         static void drawTabs(window* window, Gfx::drawpixelinfo_t* dpi)
         {
-            auto skin = objectmgr::get<interface_skin_object>();
+            auto skin = ObjectManager::get<interface_skin_object>();
 
             // Challenge tab
             {
@@ -233,7 +233,7 @@ namespace OpenLoco::ui::windows::ScenarioOptions
             StringIds::objective_deliver_a_certain_amount_of_cargo,
         };
 
-        static const uint8_t maxCargoObjects = static_cast<uint8_t>(objectmgr::getMaxObjects(object_type::cargo));
+        static const uint8_t maxCargoObjects = static_cast<uint8_t>(ObjectManager::getMaxObjects(object_type::cargo));
         static int16_t cargoByDropdownIndex[maxCargoObjects] = { -1 };
 
         // 0x0043FD51
@@ -357,7 +357,7 @@ namespace OpenLoco::ui::windows::ScenarioOptions
                     uint16_t numCargoObjects = 0;
                     for (uint16_t cargoIdx = 0; cargoIdx < maxCargoObjects; cargoIdx++)
                     {
-                        auto cargoObject = objectmgr::get<cargo_object>(cargoIdx);
+                        auto cargoObject = ObjectManager::get<cargo_object>(cargoIdx);
                         if (cargoObject != nullptr)
                             numCargoObjects++;
                     }
@@ -368,7 +368,7 @@ namespace OpenLoco::ui::windows::ScenarioOptions
                     uint16_t dropdownIndex = 0;
                     for (uint16_t cargoIdx = 0; cargoIdx < maxCargoObjects; cargoIdx++)
                     {
-                        auto cargoObject = objectmgr::get<cargo_object>(cargoIdx);
+                        auto cargoObject = ObjectManager::get<cargo_object>(cargoIdx);
                         if (cargoObject == nullptr)
                             continue;
 
@@ -460,7 +460,7 @@ namespace OpenLoco::ui::windows::ScenarioOptions
                     *(int32_t*)&*commonFormatArgs = *objectiveDeliveredCargoAmount;
                     widgets[widx::objective_value].text = StringIds::challenge_delivered_cargo;
 
-                    auto cargo = objectmgr::get<cargo_object>(*objectiveDeliveredCargoType);
+                    auto cargo = ObjectManager::get<cargo_object>(*objectiveDeliveredCargoType);
                     widgets[widx::objective_cargo].text = cargo->name;
                     widgets[widx::objective_cargo].type = widget_type::wt_18;
                     widgets[widx::objective_cargo_btn].type = widget_type::wt_11;
@@ -518,7 +518,7 @@ namespace OpenLoco::ui::windows::ScenarioOptions
             window->current_tab = 0;
             window->frame_no = 0;
 
-            auto skin = objectmgr::get<interface_skin_object>();
+            auto skin = ObjectManager::get<interface_skin_object>();
             if (skin != nullptr)
             {
                 window->colours[0] = skin->colour_0B;
@@ -1004,7 +1004,7 @@ namespace OpenLoco::ui::windows::ScenarioOptions
                 strncpy(buffer, s5::getOptions().scenarioName, 512);
                 commonFormatArgs[0] = StringIds::buffer_2039;
 
-                auto* stex = objectmgr::get<scenario_text_object>();
+                auto* stex = ObjectManager::get<scenario_text_object>();
                 if (stex != nullptr)
                     commonFormatArgs[0] = stex->name;
 
@@ -1032,7 +1032,7 @@ namespace OpenLoco::ui::windows::ScenarioOptions
                 strncpy(buffer, s5::getOptions().scenarioDetails, 512);
                 commonFormatArgs[0] = StringIds::buffer_2039;
 
-                auto* stex = objectmgr::get<scenario_text_object>();
+                auto* stex = ObjectManager::get<scenario_text_object>();
                 if (stex != nullptr)
                     commonFormatArgs[0] = stex->details;
 
