@@ -300,7 +300,7 @@ namespace OpenLoco::things::vehicle
         }
 
         newBogie->object_sprite_type = vehObject.var_24[bodyNumber].front_bogie_sprite_ind;
-        if (newBogie->object_sprite_type != sprite_ind::null)
+        if (newBogie->object_sprite_type != SpriteIndex::null)
         {
             newBogie->var_14 = vehObject.bogie_sprites[newBogie->object_sprite_type].var_02;
             newBogie->var_09 = vehObject.bogie_sprites[newBogie->object_sprite_type].var_03;
@@ -319,7 +319,7 @@ namespace OpenLoco::things::vehicle
         }
         newBogie->var_38 = flags_38::unk_1;
         newBogie->object_sprite_type = vehObject.var_24[bodyNumber].back_bogie_sprite_ind;
-        if (newBogie->object_sprite_type != sprite_ind::null)
+        if (newBogie->object_sprite_type != SpriteIndex::null)
         {
             newBogie->var_14 = vehObject.bogie_sprites[newBogie->object_sprite_type].var_02;
             newBogie->var_09 = vehObject.bogie_sprites[newBogie->object_sprite_type].var_03;
@@ -384,17 +384,17 @@ namespace OpenLoco::things::vehicle
 
         // different onwards to create bogie
         auto spriteType = vehObject.var_24[bodyNumber].body_sprite_ind;
-        if (spriteType != sprite_ind::null)
+        if (spriteType != SpriteIndex::null)
         {
-            if (spriteType & sprite_ind::flag_unk7)
+            if (spriteType & SpriteIndex::flag_unk7)
             {
                 newBody->var_38 |= flags_38::unk_1;
-                spriteType &= ~sprite_ind::flag_unk7;
+                spriteType &= ~SpriteIndex::flag_unk7;
             }
         }
         newBody->object_sprite_type = spriteType;
 
-        if (newBody->object_sprite_type != sprite_ind::null)
+        if (newBody->object_sprite_type != SpriteIndex::null)
         {
             newBody->var_14 = vehObject.sprites[newBody->object_sprite_type].var_08;
             newBody->var_09 = vehObject.sprites[newBody->object_sprite_type].var_09;

@@ -37,7 +37,7 @@ namespace OpenLoco
         ship_wake
     };
 
-    namespace sprite_ind
+    namespace SpriteIndex
     {
         constexpr uint8_t null = 0xFF;
         constexpr uint8_t flag_unk7 = (1 << 7); // Set on electric multiple unit
