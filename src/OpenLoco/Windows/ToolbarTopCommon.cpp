@@ -181,7 +181,7 @@ namespace OpenLoco::ui::windows::toolbar_top::common
 
         dropdown::add(0, StringIds::menu_sprite_stringid, { interface->img + InterfaceSkin::ImageIds::toolbar_menu_bulldozer, StringIds::menu_clear_area });
         dropdown::add(1, StringIds::menu_sprite_stringid, { land->var_16 + Land::ImageIds::toolbar_terraform_land, StringIds::menu_adjust_land });
-        dropdown::add(2, StringIds::menu_sprite_stringid, { water->var_06 + Water::image_ids::toolbar_terraform_water, StringIds::menu_adjust_water });
+        dropdown::add(2, StringIds::menu_sprite_stringid, { water->var_06 + Water::ImageIds::toolbar_terraform_water, StringIds::menu_adjust_water });
         dropdown::add(3, StringIds::menu_sprite_stringid, { interface->img + InterfaceSkin::ImageIds::toolbar_menu_plant_trees, StringIds::menu_plant_trees });
         dropdown::add(4, StringIds::menu_sprite_stringid, { interface->img + InterfaceSkin::ImageIds::toolbar_menu_build_walls, StringIds::menu_build_walls });
         dropdown::showBelow(window, widgetIndex, 5, 25, (1 << 6));

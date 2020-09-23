@@ -2245,7 +2245,7 @@ namespace OpenLoco::ui::windows::terraform
             // Adjust Water Tab
             {
                 auto waterObj = ObjectManager::get<water_object>();
-                uint32_t imageId = waterObj->var_06 + Water::image_ids::toolbar_terraform_water;
+                uint32_t imageId = waterObj->var_06 + Water::ImageIds::toolbar_terraform_water;
                 if (self->current_tab == widx::tab_adjust_water - widx::tab_clear_area)
                     imageId += (self->frame_no / 2) % 16;
 
