@@ -4,7 +4,7 @@
 
 namespace OpenLoco
 {
-    namespace building_object_flags
+    namespace BuildingObjectFlags
     {
         constexpr uint32_t large_tile = 1 << 0; // 2x2 tile
         constexpr uint32_t misc_building = 1 << 1;

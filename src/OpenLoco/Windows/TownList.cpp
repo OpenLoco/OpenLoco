@@ -1211,14 +1211,14 @@ namespace OpenLoco::ui::windows::town_list
                     continue;
                 if (self->current_tab == common::widx::tab_build_misc_buildings - common::widx::tab_town_list)
                 {
-                    if (!(buildingObj->flags & building_object_flags::misc_building))
+                    if (!(buildingObj->flags & BuildingObjectFlags::misc_building))
                         continue;
-                    if ((buildingObj->flags & building_object_flags::is_headquarters) != 0)
+                    if ((buildingObj->flags & BuildingObjectFlags::is_headquarters) != 0)
                         continue;
                 }
                 else
                 {
-                    if ((buildingObj->flags & building_object_flags::misc_building) != 0)
+                    if ((buildingObj->flags & BuildingObjectFlags::misc_building) != 0)
                         continue;
                 }
                 self->row_info[buildingCount] = i;

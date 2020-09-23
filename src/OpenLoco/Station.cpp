@@ -390,7 +390,7 @@ namespace OpenLoco
                                 }
 
                                 // Multi tile buildings should only be counted once so remove the other tiles from the search
-                                if (obj->flags & building_object_flags::large_tile)
+                                if (obj->flags & BuildingObjectFlags::large_tile)
                                 {
                                     // 0x004F9296, 0x4F9298
                                     static const map_pos offsets[4] = { { 0, 0 }, { 0, 32 }, { 32, 32 }, { 32, 0 } };
