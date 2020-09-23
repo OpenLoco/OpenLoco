@@ -778,7 +778,7 @@ namespace OpenLoco::Input
                             auto owner = road->owner();
 
                             auto roadObject = ObjectManager::get<road_object>(road->roadObjectId());
-                            if (owner == companymgr::getControllingId() || owner == company_id::neutral || (roadObject->flags & flags_12::unk_03))
+                            if (owner == companymgr::getControllingId() || owner == company_id::neutral || (roadObject->flags & Flags12::unk_03))
                             {
                                 ui::windows::construction::openAtRoad(window, road, { ptr.x, ptr.y });
                             }

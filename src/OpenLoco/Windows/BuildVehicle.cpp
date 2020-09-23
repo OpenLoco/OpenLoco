@@ -399,7 +399,7 @@ namespace OpenLoco::ui::BuildVehicle
         {
             auto trackIdx = trackType & ~(1 << 7);
             auto roadObj = ObjectManager::get<road_object>(trackIdx);
-            if (roadObj->flags & flags_12::unk_03)
+            if (roadObj->flags & Flags12::unk_03)
             {
                 trackType = 0xFE;
             }
@@ -1345,7 +1345,7 @@ namespace OpenLoco::ui::BuildVehicle
         if (isRoad)
         {
             auto road_obj = ObjectManager::get<road_object>(trackType);
-            if (road_obj && road_obj->flags & flags_12::unk_01)
+            if (road_obj && road_obj->flags & Flags12::unk_01)
             {
                 setRail = true;
             }

@@ -268,14 +268,14 @@ namespace OpenLoco::ui::windows::construction
                 auto trackType = flags & ~(1 << 7);
                 auto roadObj = ObjectManager::get<road_object>(trackType);
 
-                if (roadObj->flags & flags_12::unk_03)
+                if (roadObj->flags & Flags12::unk_03)
                 {
                     if (_trackType & (1 << 7))
                     {
                         trackType = _trackType & ~(1 << 7);
                         roadObj = ObjectManager::get<road_object>(trackType);
 
-                        if (roadObj->flags & flags_12::unk_03)
+                        if (roadObj->flags & Flags12::unk_03)
                         {
                             _trackType = static_cast<uint8_t>(flags);
 
@@ -747,7 +747,7 @@ namespace OpenLoco::ui::windows::construction
             {
                 newTrackType &= ~(1 << 7);
                 auto roadObj = ObjectManager::get<road_object>(newTrackType);
-                if (!(roadObj->flags & flags_12::unk_01))
+                if (!(roadObj->flags & Flags12::unk_01))
                     _lastRoadOption = trackType;
                 else
                     _lastRailroadOption = trackType;
