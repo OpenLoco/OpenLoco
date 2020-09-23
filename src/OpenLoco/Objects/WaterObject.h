@@ -16,7 +16,7 @@ namespace OpenLoco
     };
 #pragma pack(pop)
 
-    namespace water::image_ids
+    namespace Water::image_ids
     {
         constexpr uint32_t toolbar_terraform_water = 42;
     }
