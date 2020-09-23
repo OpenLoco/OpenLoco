@@ -93,7 +93,7 @@ namespace OpenLoco::ui::windows::LandscapeGeneration
             // Land tab
             {
                 auto land = objectmgr::get<land_object>(*primaryLandObjectIndex);
-                const uint32_t imageId = land->var_16 + Land::image_ids::toolbar_terraform_land;
+                const uint32_t imageId = land->var_16 + Land::ImageIds::toolbar_terraform_land;
                 widget::draw_tab(window, dpi, imageId, widx::tab_land);
             }
 
@@ -426,7 +426,7 @@ namespace OpenLoco::ui::windows::LandscapeGeneration
                     continue;
 
                 // Draw tile icon.
-                const uint32_t imageId = landObject->var_16 + OpenLoco::Land::image_ids::landscape_generator_tile_icon;
+                const uint32_t imageId = landObject->var_16 + OpenLoco::Land::ImageIds::landscape_generator_tile_icon;
                 Gfx::drawImage(dpi, 2, yPos + 1, imageId);
 
                 // Draw land description.
