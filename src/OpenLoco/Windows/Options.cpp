@@ -2127,7 +2127,7 @@ namespace OpenLoco::Ui::Options
             w->disabled_widgets |= 1 << common::widx::tab_music;
         }
 
-        if (isEditorMode() && s5::getOptions().editorStep == 0)
+        if (isEditorMode() && S5::getOptions().editorStep == 0)
         {
             w->disabled_widgets |= 1 << common::widx::tab_regional;
         }

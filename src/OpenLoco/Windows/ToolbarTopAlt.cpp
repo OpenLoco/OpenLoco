@@ -267,7 +267,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
         x -= 11;
         common::rightAlignTabs(window, x, { common::widx::road_menu, widx::map_generation_menu, common::widx::terraform_menu });
 
-        if (s5::getOptions().editorStep == 1)
+        if (S5::getOptions().editorStep == 1)
         {
             window->widgets[common::widx::zoom_menu].type = widget_type::wt_7;
             window->widgets[common::widx::rotate_menu].type = widget_type::wt_7;

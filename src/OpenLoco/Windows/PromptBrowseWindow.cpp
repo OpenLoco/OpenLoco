@@ -118,7 +118,7 @@ namespace OpenLoco::Ui::PromptBrowse
     static void tooltip(FormatArguments& args, Ui::window* window, widget_index widgetIndex);
     static void prepareDraw(window* window);
     static void draw(Ui::window* window, Gfx::drawpixelinfo_t* dpi);
-    static void drawSavePreview(Ui::window& window, Gfx::drawpixelinfo_t& dpi, int32_t x, int32_t y, int32_t width, int32_t height, const s5::SaveDetails& saveInfo);
+    static void drawSavePreview(Ui::window& window, Gfx::drawpixelinfo_t& dpi, int32_t x, int32_t y, int32_t width, int32_t height, const S5::SaveDetails& saveInfo);
     static void drawLandscapePreview(Ui::window& window, Gfx::drawpixelinfo_t& dpi, int32_t x, int32_t y, int32_t width, int32_t height);
     static void drawTextInput(Ui::window* window, Gfx::drawpixelinfo_t& dpi, const char* text, int32_t caret, bool showCaret);
     static void drawScroll(Ui::window* window, Gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex);
@@ -383,7 +383,7 @@ namespace OpenLoco::Ui::PromptBrowse
                 if (*_fileType == browse_file_type::saved_game)
                 {
                     // Preview image
-                    auto saveInfo = *((const s5::SaveDetails**)0x50AEA8);
+                    auto saveInfo = *((const S5::SaveDetails**)0x50AEA8);
                     if (saveInfo != (void*)-1)
                     {
                         drawSavePreview(*window, *dpi, x, y, width, 201, *saveInfo);
@@ -417,7 +417,7 @@ namespace OpenLoco::Ui::PromptBrowse
         }
     }
 
-    static void drawSavePreview(Ui::window& window, Gfx::drawpixelinfo_t& dpi, int32_t x, int32_t y, int32_t width, int32_t height, const s5::SaveDetails& saveInfo)
+    static void drawSavePreview(Ui::window& window, Gfx::drawpixelinfo_t& dpi, int32_t x, int32_t y, int32_t width, int32_t height, const S5::SaveDetails& saveInfo)
     {
         loco_global<char[16], 0x0112C826> _commonFormatArgs;
 
@@ -474,7 +474,7 @@ namespace OpenLoco::Ui::PromptBrowse
     {
         Gfx::fillRectInset(&dpi, x, y, x + width, y + height, window.colours[1], 0x30);
 
-        if (s5::getPreviewOptions().scenarioFlags & scenario::flags::landscape_generation_done)
+        if (S5::getPreviewOptions().scenarioFlags & scenario::flags::landscape_generation_done)
         {
             // Height map
             auto imageId = 0;

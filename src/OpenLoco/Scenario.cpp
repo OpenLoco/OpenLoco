@@ -11,10 +11,10 @@ namespace OpenLoco::scenario
     // 0x0043EDAD
     void eraseLandscape()
     {
-        s5::getOptions().scenarioFlags &= ~(scenario::flags::landscape_generation_done);
+        S5::getOptions().scenarioFlags &= ~(scenario::flags::landscape_generation_done);
         Ui::WindowManager::invalidate(Ui::WindowType::landscapeGeneration, 0);
         call(0x0043C88C);
-        s5::getOptions().madeAnyChanges = 0;
+        S5::getOptions().madeAnyChanges = 0;
         addr<0x00F25374, uint8_t>() = 0;
         Gfx::invalidateScreen();
     }
