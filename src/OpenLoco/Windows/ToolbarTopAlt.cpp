@@ -106,15 +106,15 @@ namespace OpenLoco::ui::windows::toolbar_top::editor
     // 0x0043D638
     static void loadsaveMenuMouseDown(window* window, widget_index widgetIndex)
     {
-        dropdown::add(0, string_ids::load_landscape);
-        dropdown::add(1, string_ids::save_landscape);
+        dropdown::add(0, StringIds::load_landscape);
+        dropdown::add(1, StringIds::save_landscape);
         dropdown::add(2, 0);
-        dropdown::add(3, string_ids::menu_about);
-        dropdown::add(4, string_ids::options);
-        dropdown::add(5, string_ids::menu_screenshot);
+        dropdown::add(3, StringIds::menu_about);
+        dropdown::add(4, StringIds::options);
+        dropdown::add(5, StringIds::menu_screenshot);
         dropdown::add(6, 0);
-        dropdown::add(7, string_ids::menu_quit_to_menu);
-        dropdown::add(8, string_ids::menu_exit_openloco);
+        dropdown::add(7, StringIds::menu_quit_to_menu);
+        dropdown::add(8, StringIds::menu_exit_openloco);
         dropdown::showBelow(window, widgetIndex, 9, 0);
         dropdown::setHighlightedItem(1);
     }
@@ -167,7 +167,7 @@ namespace OpenLoco::ui::windows::toolbar_top::editor
     // 0x0043D789
     static void audioMenuMouseDown(window* window, widget_index widgetIndex)
     {
-        dropdown::add(0, string_ids::dropdown_without_checkmark, string_ids::menu_mute);
+        dropdown::add(0, StringIds::dropdown_without_checkmark, StringIds::menu_mute);
         dropdown::showBelow(window, widgetIndex, 1, 0);
 
         if (!Audio::isAudioEnabled())
@@ -193,7 +193,7 @@ namespace OpenLoco::ui::windows::toolbar_top::editor
     // 0x004402BC
     static void mapGenerationMenuMouseDown(window* window, widget_index widgetIndex)
     {
-        dropdown::add(0, string_ids::landscape_generation_options);
+        dropdown::add(0, StringIds::landscape_generation_options);
         dropdown::showBelow(window, widgetIndex, 1, 0);
         dropdown::setHighlightedItem(0);
     }

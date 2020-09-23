@@ -74,9 +74,9 @@ namespace OpenLoco::ui::tooltip
 
     static void common(const window* window, int32_t widgetIndex, string_id stringId, int16_t cursorX, int16_t cursorY)
     {
-        stringmgr::formatString(byte_112CC04, stringId, _commonFormatArgs);
+        StringManager::formatString(byte_112CC04, stringId, _commonFormatArgs);
 
-        gCurrentFontSpriteBase = font::medium_bold;
+        gCurrentFontSpriteBase = Font::medium_bold;
         int16_t strWidth;
         {
             // gfx_get_string_width_new_lined
@@ -87,7 +87,7 @@ namespace OpenLoco::ui::tooltip
         }
         strWidth = std::max<int16_t>(strWidth, 196);
 
-        gCurrentFontSpriteBase = font::medium_bold;
+        gCurrentFontSpriteBase = Font::medium_bold;
         {
             // gfx_wrap_string
             registers regs;
@@ -137,7 +137,7 @@ namespace OpenLoco::ui::tooltip
         }
 
         window->callPrepareDraw();
-        if (window->widgets[widgetIndex].tooltip == string_ids::null)
+        if (window->widgets[widgetIndex].tooltip == StringIds::null)
         {
             return;
         }

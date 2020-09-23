@@ -8,7 +8,7 @@
 #include <algorithm>
 #include <fstream>
 
-namespace OpenLoco::localisation
+namespace OpenLoco::Localisation
 {
     std::vector<language_descriptor> language_descriptors;
 

@@ -42,13 +42,13 @@ namespace OpenLoco::ui::windows::industry_list
 
         const uint64_t enabledWidgets = (1 << widx::close_button) | (1 << widx::tab_industry_list) | (1 << widx::tab_new_industry);
 
-#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                         \
-    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, widget_type::frame, 0),                                                           \
-        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, widget_type::caption_25, 0, windowCaptionId),                                      \
-        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, string_ids::tooltip_close_window), \
-        makeWidget({ 0, 41 }, { frameWidth, 154 }, widget_type::panel, 1),                                                              \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_industries_list),               \
-        makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_fund_new_industries)
+#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                        \
+    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, widget_type::frame, 0),                                                          \
+        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, widget_type::caption_25, 0, windowCaptionId),                                     \
+        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window), \
+        makeWidget({ 0, 41 }, { frameWidth, 154 }, widget_type::panel, 1),                                                             \
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_industries_list),               \
+        makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_fund_new_industries)
 
         static window_event_list _events;
 
@@ -78,10 +78,10 @@ namespace OpenLoco::ui::windows::industry_list
         const uint64_t enabledWidgets = common::enabledWidgets | (1 << sort_industry_name) | (1 << sort_industry_status) | (1 << sort_industry_production_transported) | (1 << scrollview);
 
         widget_t widgets[] = {
-            commonWidgets(600, 197, string_ids::title_industries),
-            makeWidget({ 4, 44 }, { 199, 11 }, widget_type::wt_14, 1, ImageIds::null, string_ids::sort_industry_name),
-            makeWidget({ 204, 44 }, { 204, 11 }, widget_type::wt_14, 1, ImageIds::null, string_ids::sort_industry_status),
-            makeWidget({ 444, 44 }, { 159, 11 }, widget_type::wt_14, 1, ImageIds::null, string_ids::sort_industry_production_transported),
+            commonWidgets(600, 197, StringIds::title_industries),
+            makeWidget({ 4, 44 }, { 199, 11 }, widget_type::wt_14, 1, ImageIds::null, StringIds::sort_industry_name),
+            makeWidget({ 204, 44 }, { 204, 11 }, widget_type::wt_14, 1, ImageIds::null, StringIds::sort_industry_status),
+            makeWidget({ 444, 44 }, { 159, 11 }, widget_type::wt_14, 1, ImageIds::null, StringIds::sort_industry_production_transported),
             makeWidget({ 3, 56 }, { 593, 125 }, widget_type::scrollview, 1, scrollbars::vertical),
             widgetEnd(),
         };
@@ -113,14 +113,14 @@ namespace OpenLoco::ui::windows::industry_list
             self->widgets[widx::sort_industry_production_transported].right = std::min(self->width - 4, 603);
 
             // Set header button captions.
-            self->widgets[widx::sort_industry_name].text = self->sort_mode == SortMode::Name ? string_ids::industry_table_header_desc : string_ids::industry_table_header;
-            self->widgets[widx::sort_industry_status].text = self->sort_mode == SortMode::Status ? string_ids::industry_table_header_status_desc : string_ids::industry_table_header_status;
-            self->widgets[widx::sort_industry_production_transported].text = self->sort_mode == SortMode::ProductionTransported ? string_ids::industry_table_header_production_desc : string_ids::industry_table_header_production;
+            self->widgets[widx::sort_industry_name].text = self->sort_mode == SortMode::Name ? StringIds::industry_table_header_desc : StringIds::industry_table_header;
+            self->widgets[widx::sort_industry_status].text = self->sort_mode == SortMode::Status ? StringIds::industry_table_header_status_desc : StringIds::industry_table_header_status;
+            self->widgets[widx::sort_industry_production_transported].text = self->sort_mode == SortMode::ProductionTransported ? StringIds::industry_table_header_production_desc : StringIds::industry_table_header_production;
 
             if (isEditorMode())
-                self->widgets[common::widx::tab_new_industry].tooltip = string_ids::tooltip_build_new_industries;
+                self->widgets[common::widx::tab_new_industry].tooltip = StringIds::tooltip_build_new_industries;
             else
-                self->widgets[common::widx::tab_new_industry].tooltip = string_ids::tooltip_fund_new_industries;
+                self->widgets[common::widx::tab_new_industry].tooltip = StringIds::tooltip_fund_new_industries;
         }
 
         // 0x00457CD9
@@ -133,12 +133,12 @@ namespace OpenLoco::ui::windows::industry_list
             auto yPos = self->y + self->height - 12;
 
             if (self->var_83C == 1)
-                args.push(string_ids::status_num_industries_singular);
+                args.push(StringIds::status_num_industries_singular);
             else
-                args.push(string_ids::status_num_industries_plural);
+                args.push(StringIds::status_num_industries_plural);
             args.push(self->var_83C);
 
-            Gfx::drawString_494B3F(*dpi, xPos, yPos, Colour::black, string_ids::black_stringid, &args);
+            Gfx::drawString_494B3F(*dpi, xPos, yPos, Colour::black, StringIds::black_stringid, &args);
         }
 
         // 0x00457EC4
@@ -207,10 +207,10 @@ namespace OpenLoco::ui::windows::industry_list
         static bool orderByName(const OpenLoco::industry& lhs, const OpenLoco::industry& rhs)
         {
             char lhsString[256] = { 0 };
-            stringmgr::formatString(lhsString, lhs.name, (void*)&lhs.town);
+            StringManager::formatString(lhsString, lhs.name, (void*)&lhs.town);
 
             char rhsString[256] = { 0 };
-            stringmgr::formatString(rhsString, rhs.name, (void*)&rhs.town);
+            StringManager::formatString(rhsString, rhs.name, (void*)&rhs.town);
 
             return strcmp(lhsString, rhsString) < 0;
         }
@@ -219,16 +219,16 @@ namespace OpenLoco::ui::windows::industry_list
         static bool orderByStatus(OpenLoco::industry& lhs, OpenLoco::industry& rhs)
         {
             char lhsString[256] = { 0 };
-            const char* lhsBuffer = stringmgr::getString(string_ids::buffer_1250);
+            const char* lhsBuffer = StringManager::getString(StringIds::buffer_1250);
             lhs.getStatusString((char*)lhsBuffer);
 
-            stringmgr::formatString(lhsString, string_ids::buffer_1250);
+            StringManager::formatString(lhsString, StringIds::buffer_1250);
 
             char rhsString[256] = { 0 };
-            const char* rhsBuffer = stringmgr::getString(string_ids::buffer_1250);
+            const char* rhsBuffer = StringManager::getString(StringIds::buffer_1250);
             rhs.getStatusString((char*)rhsBuffer);
 
-            stringmgr::formatString(rhsString, string_ids::buffer_1250);
+            StringManager::formatString(rhsString, StringIds::buffer_1250);
 
             return strcmp(lhsString, rhsString) < 0;
         }
@@ -364,7 +364,7 @@ namespace OpenLoco::ui::windows::industry_list
         // 0x00457EE8
         static void tooltip(FormatArguments& args, ui::window* self, widget_index widgetIndex)
         {
-            args.push(string_ids::tooltip_scroll_industry_list);
+            args.push(StringIds::tooltip_scroll_industry_list);
         }
 
         // 0x00458108
@@ -391,13 +391,13 @@ namespace OpenLoco::ui::windows::industry_list
                     continue;
                 }
 
-                string_id text_colour_id = string_ids::black_stringid;
+                string_id text_colour_id = StringIds::black_stringid;
 
                 // Highlight selection.
                 if (industryId == self->row_hover)
                 {
                     Gfx::drawRect(dpi, 0, yPos, self->width, rowHeight, 0x2000030);
-                    text_colour_id = string_ids::wcolour2_stringid;
+                    text_colour_id = StringIds::wcolour2_stringid;
                 }
 
                 if (industryId == industry_id::null)
@@ -414,11 +414,11 @@ namespace OpenLoco::ui::windows::industry_list
                 }
                 // Industry Status
                 {
-                    const char* buffer = stringmgr::getString(string_ids::buffer_1250);
+                    const char* buffer = StringManager::getString(StringIds::buffer_1250);
                     industry->getStatusString((char*)buffer);
 
                     auto args = FormatArguments();
-                    args.push(string_ids::buffer_1250);
+                    args.push(StringIds::buffer_1250);
 
                     Gfx::drawString_494BBF(*dpi, 200, yPos, 238, Colour::black, text_colour_id, &args);
                 }
@@ -435,7 +435,7 @@ namespace OpenLoco::ui::windows::industry_list
                     auto args = FormatArguments();
                     args.push<uint16_t>(productionTransported);
 
-                    Gfx::drawString_494BBF(*dpi, 440, yPos, 138, Colour::black, string_ids::production_transported_percent, &args);
+                    Gfx::drawString_494BBF(*dpi, 440, yPos, 138, Colour::black, StringIds::production_transported_percent, &args);
                 }
                 yPos += rowHeight;
             }
@@ -581,7 +581,7 @@ namespace OpenLoco::ui::windows::industry_list
         const uint64_t enabledWidgets = common::enabledWidgets | (1 << scrollview);
 
         widget_t widgets[] = {
-            commonWidgets(577, 171, string_ids::title_fund_new_industries),
+            commonWidgets(577, 171, StringIds::title_fund_new_industries),
             makeWidget({ 3, 45 }, { 549, 111 }, widget_type::scrollview, 1, scrollbars::vertical),
             widgetEnd(),
         };
@@ -598,13 +598,13 @@ namespace OpenLoco::ui::windows::industry_list
 
             if (isEditorMode())
             {
-                self->widgets[common::widx::caption].text = string_ids::title_build_new_industries;
-                self->widgets[common::widx::tab_new_industry].tooltip = string_ids::tooltip_build_new_industries;
+                self->widgets[common::widx::caption].text = StringIds::title_build_new_industries;
+                self->widgets[common::widx::tab_new_industry].tooltip = StringIds::tooltip_build_new_industries;
             }
             else
             {
-                self->widgets[common::widx::caption].text = string_ids::title_fund_new_industries;
-                self->widgets[common::widx::tab_new_industry].tooltip = string_ids::tooltip_fund_new_industries;
+                self->widgets[common::widx::caption].text = StringIds::title_fund_new_industries;
+                self->widgets[common::widx::tab_new_industry].tooltip = StringIds::tooltip_fund_new_industries;
             }
         }
 
@@ -619,7 +619,7 @@ namespace OpenLoco::ui::windows::industry_list
                 auto xPos = self->x + 3;
                 auto yPos = self->y + self->height - 13;
                 auto width = self->width - 19;
-                Gfx::drawString_494BBF(*dpi, xPos, yPos, width, Colour::black, string_ids::no_industry_available);
+                Gfx::drawString_494BBF(*dpi, xPos, yPos, width, Colour::black, StringIds::no_industry_available);
                 return;
             }
 
@@ -654,14 +654,14 @@ namespace OpenLoco::ui::windows::industry_list
                 auto yPos = self->y + self->height - 13;
                 widthOffset = 138;
 
-                Gfx::drawString_494C78(*dpi, xPos, yPos, Colour::black, string_ids::build_cost, &args);
+                Gfx::drawString_494C78(*dpi, xPos, yPos, Colour::black, StringIds::build_cost, &args);
             }
 
             auto xPos = self->x + 3;
             auto yPos = self->y + self->height - 13;
             auto width = self->width - 19 - widthOffset;
 
-            Gfx::drawString_494BBF(*dpi, xPos, yPos, width, Colour::black, string_ids::black_stringid, &industryObj->name);
+            Gfx::drawString_494BBF(*dpi, xPos, yPos, width, Colour::black, StringIds::black_stringid, &industryObj->name);
         }
 
         // 0x0045843A
@@ -730,12 +730,12 @@ namespace OpenLoco::ui::windows::industry_list
                 rowInfo = 0xFFFF;
             self->var_846 = rowInfo;
             self->invalidate();
-            auto string = string_ids::buffer_337;
+            auto string = StringIds::buffer_337;
 
             if (rowInfo == 0xFFFF)
-                string = string_ids::null;
+                string = StringIds::null;
 
-            if (stringmgr::getString(string_ids::buffer_337)[0] != '\0')
+            if (StringManager::getString(StringIds::buffer_337)[0] != '\0')
             {
                 if (string == self->widgets[widx::scrollview].tooltip)
                 {
@@ -751,27 +751,27 @@ namespace OpenLoco::ui::windows::industry_list
                 return;
 
             auto industryObj = objectmgr::get<industry_object>(rowInfo);
-            auto buffer = const_cast<char*>(stringmgr::getString(string));
+            auto buffer = const_cast<char*>(StringManager::getString(string));
             char* ptr = (char*)buffer;
 
             *ptr = '\0';
-            *ptr++ = control_codes::font_regular;
-            *ptr++ = control_codes::colour_black;
+            *ptr++ = ControlCodes::font_regular;
+            *ptr++ = ControlCodes::colour_black;
 
             if (industryObj->producesCargo())
             {
-                ptr = stringmgr::formatString(ptr, string_ids::industry_produces);
+                ptr = StringManager::formatString(ptr, StringIds::industry_produces);
                 ptr = industryObj->getProducedCargoString(ptr);
 
                 if (industryObj->requiresCargo())
                 {
-                    ptr = stringmgr::formatString(ptr, string_ids::cargo_comma);
+                    ptr = StringManager::formatString(ptr, StringIds::cargo_comma);
                 }
             }
 
             if (industryObj->requiresCargo())
             {
-                ptr = stringmgr::formatString(ptr, string_ids::industry_requires);
+                ptr = StringManager::formatString(ptr, StringIds::industry_requires);
                 ptr = industryObj->getRequiredCargoString(ptr);
             }
         }
@@ -849,7 +849,7 @@ namespace OpenLoco::ui::windows::industry_list
         // 0x00458455
         static void tooltip(FormatArguments& args, ui::window* self, widget_index widgetIndex)
         {
-            args.push(string_ids::tooltip_scroll_new_industry_list);
+            args.push(StringIds::tooltip_scroll_new_industry_list);
         }
 
         // 0x004586EA

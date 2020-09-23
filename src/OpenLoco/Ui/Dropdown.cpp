@@ -172,13 +172,13 @@ namespace OpenLoco::ui::dropdown
         // 0x00494BF6
         static void sub_494BF6(window* self, Gfx::drawpixelinfo_t* dpi, string_id stringId, int16_t x, int16_t y, int16_t width, colour_t colour, FormatArguments args)
         {
-            stringmgr::formatString(_byte_112CC04, stringId, &args);
+            StringManager::formatString(_byte_112CC04, stringId, &args);
 
-            _currentFontSpriteBase = font::medium_bold;
+            _currentFontSpriteBase = Font::medium_bold;
 
             Gfx::clipString(width, _byte_112CC04);
 
-            _currentFontSpriteBase = font::m1;
+            _currentFontSpriteBase = Font::m1;
 
             Gfx::drawString(dpi, x, y, colour, _byte_112CC04);
         }
@@ -192,7 +192,7 @@ namespace OpenLoco::ui::dropdown
 
             for (auto itemCount = 0; itemCount < _dropdownItemCount; itemCount++)
             {
-                if (_dropdownItemFormats[itemCount] != string_ids::empty)
+                if (_dropdownItemFormats[itemCount] != StringIds::empty)
                 {
                     if (itemCount == _dropdownHighlightedIndex)
                     {
@@ -209,7 +209,7 @@ namespace OpenLoco::ui::dropdown
 
                     if (dropdownItemFormat != (string_id)-2)
                     {
-                        if (dropdownItemFormat != string_ids::null)
+                        if (dropdownItemFormat != StringIds::null)
                         {
                             if (itemCount < 32)
                             {
@@ -241,7 +241,7 @@ namespace OpenLoco::ui::dropdown
                         }
                     }
 
-                    if (dropdownItemFormat == (string_id)-2 || dropdownItemFormat == string_ids::null)
+                    if (dropdownItemFormat == (string_id)-2 || dropdownItemFormat == StringIds::null)
                     {
                         auto x = _windowDropdownOnpaintCellX * _dropdownItemWidth + self->x + 2;
                         auto y = _windowDropdownOnpaintCellY * _dropdownItemHeight + self->y + 2;
@@ -363,9 +363,9 @@ namespace OpenLoco::ui::dropdown
 
                 dropdownFormatArgsToFormatArgs(itemCount, args);
 
-                stringmgr::formatString(_byte_112CC04, _dropdownItemFormats[itemCount], &args);
+                StringManager::formatString(_byte_112CC04, _dropdownItemFormats[itemCount], &args);
 
-                _currentFontSpriteBase = font::medium_bold;
+                _currentFontSpriteBase = Font::medium_bold;
 
                 auto stringWidth = getStringWidth(_byte_112CC04);
 
@@ -518,7 +518,7 @@ namespace OpenLoco::ui::dropdown
 
         for (auto i = 0; i < _dropdownItemCount; i++)
         {
-            _dropdownItemFormats[i] = string_ids::empty;
+            _dropdownItemFormats[i] = StringIds::empty;
         }
     }
 
@@ -618,7 +618,7 @@ namespace OpenLoco::ui::dropdown
 
         for (auto i = 0; i < _dropdownItemCount; i++)
         {
-            _dropdownItemFormats[i] = string_ids::empty;
+            _dropdownItemFormats[i] = StringIds::empty;
         }
     }
 
@@ -822,7 +822,7 @@ namespace OpenLoco::ui::dropdown
                 break;
 
             companyOrdered[companyId] |= 1;
-            _dropdownItemFormats[index] = string_ids::dropdown_company_select;
+            _dropdownItemFormats[index] = StringIds::dropdown_company_select;
             _menuOptions[index] = companyId;
 
             auto company = companymgr::get(companyId);
@@ -831,7 +831,7 @@ namespace OpenLoco::ui::dropdown
             auto imageId = competitorObj->images[ownerEmotion];
             imageId = Gfx::recolour(imageId, company->mainColours.primary);
 
-            add(index, string_ids::dropdown_company_select, { imageId, company->name });
+            add(index, StringIds::dropdown_company_select, { imageId, company->name });
         }
         auto x = widget->left + window->x;
         auto y = widget->top + window->y;

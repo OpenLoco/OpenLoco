@@ -22,11 +22,11 @@ namespace OpenLoco::ui::KeyboardShortcuts
 
     static widget_t _widgets[] = {
         makeWidget({ 0, 0 }, { 360, 238 }, widget_type::frame, 0),
-        makeWidget({ 1, 1 }, { 358, 13 }, widget_type::caption_25, 0, string_ids::keyboard_shortcuts),
-        makeWidget({ 345, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, string_ids::tooltip_close_window),
+        makeWidget({ 1, 1 }, { 358, 13 }, widget_type::caption_25, 0, StringIds::keyboard_shortcuts),
+        makeWidget({ 345, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window),
         makeWidget({ 0, 15 }, { 360, 223 }, widget_type::panel, 1),
-        makeWidget({ 4, 19 }, { 352, 202 }, widget_type::scrollview, 1, vertical, string_ids::keyboard_shortcut_list_tip),
-        makeWidget({ 4, 223 }, { 150, 12 }, widget_type::wt_11, 1, string_ids::reset_keys, string_ids::reset_keys_tip),
+        makeWidget({ 4, 19 }, { 352, 202 }, widget_type::scrollview, 1, vertical, StringIds::keyboard_shortcut_list_tip),
+        makeWidget({ 4, 223 }, { 150, 12 }, widget_type::wt_11, 1, StringIds::reset_keys, StringIds::reset_keys_tip),
         widgetEnd(),
     };
 
@@ -108,32 +108,32 @@ namespace OpenLoco::ui::KeyboardShortcuts
         auto yPos = 0;
         for (auto i = 0; i < self->row_count; i++)
         {
-            string_id format = string_ids::black_stringid;
+            string_id format = StringIds::black_stringid;
             if (i == self->row_hover)
             {
                 Gfx::drawRect(dpi, 0, yPos, 800, rowHeight, 0x2000030);
-                format = string_ids::wcolour2_stringid;
+                format = StringIds::wcolour2_stringid;
             }
 
             _commonFormatArgs[1] = ShortcutManager::getName(static_cast<Shortcut>(i));
-            _commonFormatArgs[2] = string_ids::empty;
-            _commonFormatArgs[3] = string_ids::empty;
+            _commonFormatArgs[2] = StringIds::empty;
+            _commonFormatArgs[3] = StringIds::empty;
 
             if (config::get().keyboard_shortcuts[i].var_0 != 0xFF)
             {
-                _commonFormatArgs[3] = string_ids::shortcut_key_base + config::get().keyboard_shortcuts[i].var_0;
+                _commonFormatArgs[3] = StringIds::shortcut_key_base + config::get().keyboard_shortcuts[i].var_0;
 
                 if (config::get().keyboard_shortcuts[i].var_1 != 0)
                 {
-                    _commonFormatArgs[2] = string_ids::keyboard_shortcut_modifier_shift;
+                    _commonFormatArgs[2] = StringIds::keyboard_shortcut_modifier_shift;
                     if (config::get().keyboard_shortcuts[i].var_1 != 1)
                     {
-                        _commonFormatArgs[2] = string_ids::keyboard_shortcut_modifier_ctrl;
+                        _commonFormatArgs[2] = StringIds::keyboard_shortcut_modifier_ctrl;
                     }
                 }
             }
 
-            _commonFormatArgs[0] = string_ids::keyboard_shortcut_list_format;
+            _commonFormatArgs[0] = StringIds::keyboard_shortcut_list_format;
 
             Gfx::drawString_494B3F(*dpi, 0, yPos - 1, Colour::black, format, _commonFormatArgs);
             yPos += rowHeight;
@@ -166,7 +166,7 @@ namespace OpenLoco::ui::KeyboardShortcuts
     // 0x004BE844
     static void tooltip(FormatArguments& args, window*, widget_index)
     {
-        args.push(string_ids::tooltip_scroll_list);
+        args.push(StringIds::tooltip_scroll_list);
     }
 
     // 0x004BE84E

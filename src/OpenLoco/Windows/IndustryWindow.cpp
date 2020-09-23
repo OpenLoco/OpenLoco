@@ -42,15 +42,15 @@ namespace OpenLoco::ui::windows::industry
 
         const uint64_t enabledWidgets = (1 << widx::caption) | (1 << widx::close_button) | (1 << widx::tab_industry) | (1 << widx::tab_production) | (1 << widx::tab_production_2) | (1 << widx::tab_transported);
 
-#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                         \
-    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, widget_type::frame, 0),                                                           \
-        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, widget_type::caption_25, 0, windowCaptionId),                                      \
-        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, string_ids::tooltip_close_window), \
-        makeWidget({ 0, 41 }, { frameWidth, 95 }, widget_type::panel, 1),                                                               \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_industry),                      \
-        makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_production_graph),             \
-        makeRemapWidget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_production_graph),             \
-        makeRemapWidget({ 96, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_statistics)
+#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                        \
+    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, widget_type::frame, 0),                                                          \
+        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, widget_type::caption_25, 0, windowCaptionId),                                     \
+        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window), \
+        makeWidget({ 0, 41 }, { frameWidth, 95 }, widget_type::panel, 1),                                                              \
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_industry),                      \
+        makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_production_graph),             \
+        makeRemapWidget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_production_graph),             \
+        makeRemapWidget({ 96, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_statistics)
 
         // Defined at the bottom of this file.
         static void prepareDraw(window* self);
@@ -83,11 +83,11 @@ namespace OpenLoco::ui::windows::industry
         };
 
         static widget_t widgets[] = {
-            commonWidgets(223, 137, string_ids::title_town),
+            commonWidgets(223, 137, StringIds::title_town),
             makeWidget({ 3, 44 }, { 195, 80 }, widget_type::viewport, 1, 0xFFFFFFFE),
             makeWidget({ 3, 115 }, { 195, 21 }, widget_type::wt_13, 1),
-            makeWidget({ 0, 0 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::null, string_ids::move_main_view_to_show_this),
-            makeWidget({ 198, 44 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::rubbish_bin, string_ids::demolish_this_industry),
+            makeWidget({ 0, 0 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::null, StringIds::move_main_view_to_show_this),
+            makeWidget({ 198, 44 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::rubbish_bin, StringIds::demolish_this_industry),
             widgetEnd(),
         };
 
@@ -136,18 +136,18 @@ namespace OpenLoco::ui::windows::industry
             self->drawViewports(dpi);
             widget::drawViewportCentreButton(dpi, self, widx::centre_on_viewport);
 
-            const char* buffer = stringmgr::getString(string_ids::buffer_1250);
+            const char* buffer = StringManager::getString(StringIds::buffer_1250);
             auto industry = industrymgr::get(self->number);
             industry->getStatusString(const_cast<char*>(buffer));
 
             auto args = FormatArguments();
-            args.push(string_ids::buffer_1250);
+            args.push(StringIds::buffer_1250);
 
             auto widget = &self->widgets[widx::status_bar];
             auto x = self->x + widget->left - 1;
             auto y = self->y + widget->top - 1;
             auto width = widget->width();
-            Gfx::drawString_494BBF(*dpi, x, y, width, Colour::black, string_ids::black_stringid, &args);
+            Gfx::drawString_494BBF(*dpi, x, y, width, Colour::black, StringIds::black_stringid, &args);
         }
 
         // 0x00455C86
@@ -395,7 +395,7 @@ namespace OpenLoco::ui::windows::industry
         static const Gfx::ui_size_t maxWindowSize = { 299, 337 };
 
         static widget_t widgets[] = {
-            commonWidgets(222, 136, string_ids::title_industry_monthly_production),
+            commonWidgets(222, 136, StringIds::title_industry_monthly_production),
             widgetEnd(),
         };
 
@@ -433,7 +433,7 @@ namespace OpenLoco::ui::windows::industry
         static const Gfx::ui_size_t windowSize = { 300, 127 };
 
         static widget_t widgets[] = {
-            commonWidgets(300, 126, string_ids::title_statistics),
+            commonWidgets(300, 126, StringIds::title_statistics),
             widgetEnd(),
         };
 
@@ -464,7 +464,7 @@ namespace OpenLoco::ui::windows::industry
             {
                 origin.x += 4;
                 origin.y += 10;
-                Gfx::drawString_494B3F(*dpi, xPos, yPos, Colour::black, string_ids::received_cargo);
+                Gfx::drawString_494B3F(*dpi, xPos, yPos, Colour::black, StringIds::received_cargo);
 
                 auto cargoNumber = 0;
                 for (const auto& receivedCargoType : industryObj->required_cargo_type)
@@ -484,7 +484,7 @@ namespace OpenLoco::ui::windows::industry
                         }
                         args.push<uint32_t>(industry->required_cargo_quantity[cargoNumber]);
 
-                        origin.y = Gfx::drawString_495224(*dpi, origin.x, origin.y, 290, Colour::black, string_ids::black_stringid, &args);
+                        origin.y = Gfx::drawString_495224(*dpi, origin.x, origin.y, 290, Colour::black, StringIds::black_stringid, &args);
                     }
                     cargoNumber++;
                 }
@@ -495,7 +495,7 @@ namespace OpenLoco::ui::windows::industry
             // Draw Last Months produced cargo stats
             if (industry->canProduceCargo())
             {
-                Gfx::drawString_494B3F(*dpi, origin.x, origin.y, Colour::black, string_ids::produced_cargo);
+                Gfx::drawString_494B3F(*dpi, origin.x, origin.y, Colour::black, StringIds::produced_cargo);
                 origin.y += 10;
                 origin.x += 4;
 
@@ -518,7 +518,7 @@ namespace OpenLoco::ui::windows::industry
                         args.push<uint32_t>(industry->produced_cargo_quantity[cargoNumber]);
                         args.push<uint16_t>(industry->produced_cargo_transported[cargoNumber]);
 
-                        origin.y = Gfx::drawString_495224(*dpi, origin.x, origin.y, 290, Colour::black, string_ids::transported_cargo, &args);
+                        origin.y = Gfx::drawString_495224(*dpi, origin.x, origin.y, 290, Colour::black, StringIds::transported_cargo, &args);
                     }
                     cargoNumber++;
                 }
@@ -593,7 +593,7 @@ namespace OpenLoco::ui::windows::industry
                 int16_t x = self->x + 2;
                 int16_t y = self->y - 24 + 68;
 
-                Gfx::drawString_494B3F(*dpi, x, y, Colour::black, string_ids::production_graph_label, &args);
+                Gfx::drawString_494B3F(*dpi, x, y, Colour::black, StringIds::production_graph_label, &args);
             }
 
             // Draw Y label and grid lines.
@@ -606,7 +606,7 @@ namespace OpenLoco::ui::windows::industry
 
                 Gfx::drawRect(dpi, self->x + 41, yPos, 239, 1, Colour::getShade(self->colours[1], 4));
 
-                Gfx::drawString_494C78(*dpi, self->x + 39, yPos - 6, Colour::black, string_ids::population_graph_people, &args);
+                Gfx::drawString_494C78(*dpi, self->x + 39, yPos - 6, Colour::black, StringIds::population_graph_people, &args);
 
                 yTick += 1000;
             }
@@ -631,7 +631,7 @@ namespace OpenLoco::ui::windows::industry
                         auto args = FormatArguments();
                         args.push(year);
 
-                        Gfx::drawStringCentred(*dpi, xPos, yPos, Colour::black, string_ids::population_graph_year, &args);
+                        Gfx::drawStringCentred(*dpi, xPos, yPos, Colour::black, StringIds::population_graph_year, &args);
                     }
 
                     Gfx::drawRect(dpi, xPos, yPos + 11, 1, self->height - 74, Colour::getShade(self->colours[1], 4));
@@ -735,7 +735,7 @@ namespace OpenLoco::ui::windows::industry
             if (strlen(input) == 0)
                 return;
 
-            gGameCommandErrorTitle = string_ids::error_cant_rename_industry;
+            gGameCommandErrorTitle = StringIds::error_cant_rename_industry;
 
             uint32_t* buffer = (uint32_t*)input;
             game_commands::do_79(self->number, 1, buffer[0], buffer[1], buffer[2]);
@@ -767,7 +767,7 @@ namespace OpenLoco::ui::windows::industry
             args.push(industry->name);
             args.push(industry->town);
 
-            textinput::openTextinput(self, string_ids::title_industry_name, string_ids::prompt_enter_new_industry_name, industry->name, widgetIndex, &industry->town);
+            textinput::openTextinput(self, StringIds::title_industry_name, StringIds::prompt_enter_new_industry_name, industry->name, widgetIndex, &industry->town);
         }
 
         // 0x00456A5E, 0x00456A64

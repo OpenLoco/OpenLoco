@@ -89,7 +89,7 @@ namespace OpenLoco::ui::NewsWindow::ticker
                     while (true)
                     {
                         newsStringChar = *newsString;
-                        if (newsStringChar == control_codes::newline)
+                        if (newsStringChar == ControlCodes::newline)
                         {
                             newsStringChar = ' ';
                             cx--;
@@ -179,11 +179,11 @@ namespace OpenLoco::ui::NewsWindow::ticker
         Gfx::clearSingle(*clipped, colour);
 
         char* newsString = news->messageString;
-        auto buffer = const_cast<char*>(stringmgr::getString(string_ids::buffer_2039));
+        auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
 
-        *buffer = control_codes::colour_black;
+        *buffer = ControlCodes::colour_black;
         buffer++;
-        *buffer = control_codes::font_small;
+        *buffer = ControlCodes::font_small;
         buffer++;
 
         auto newsStringChar = *newsString;
@@ -192,7 +192,7 @@ namespace OpenLoco::ui::NewsWindow::ticker
         while (true)
         {
             newsStringChar = *newsString;
-            if (newsStringChar == control_codes::newline)
+            if (newsStringChar == ControlCodes::newline)
             {
                 newsStringChar = ' ';
                 *buffer = newsStringChar;
@@ -220,7 +220,7 @@ namespace OpenLoco::ui::NewsWindow::ticker
         }
         uint32_t ebp = (((_word_525CE0 & ~(1 << 15)) >> 2) << 16) | 109;
 
-        sub_4950EF(clipped, string_ids::buffer_2039, (1 << 18), ebp, 55, 0);
+        sub_4950EF(clipped, StringIds::buffer_2039, (1 << 18), ebp, 55, 0);
     }
 
     void initEvents()

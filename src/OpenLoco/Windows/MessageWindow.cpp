@@ -46,13 +46,13 @@ namespace OpenLoco::ui::MessageWindow
 
         const uint64_t enabledWidgets = (1 << widx::close_button) | (1 << widx::tab_messages) | (1 << widx::tab_settings);
 
-#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                         \
-    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, widget_type::frame, 0),                                                           \
-        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, widget_type::caption_24, 0, windowCaptionId),                                      \
-        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, string_ids::tooltip_close_window), \
-        makeWidget({ 0, 41 }, { 366, 175 }, widget_type::panel, 1),                                                                     \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_recent_messages),               \
-        makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_message_options)
+#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                        \
+    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, widget_type::frame, 0),                                                          \
+        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, widget_type::caption_24, 0, windowCaptionId),                                     \
+        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window), \
+        makeWidget({ 0, 41 }, { 366, 175 }, widget_type::panel, 1),                                                                    \
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_recent_messages),               \
+        makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_message_options)
 
         static window_event_list _events;
 
@@ -77,7 +77,7 @@ namespace OpenLoco::ui::MessageWindow
         const uint64_t enabledWidgets = common::enabledWidgets | (1 << scrollview);
 
         widget_t widgets[] = {
-            commonWidgets(366, 217, string_ids::title_messages),
+            commonWidgets(366, 217, StringIds::title_messages),
             makeWidget({ 3, 45 }, { 360, 146 }, widget_type::scrollview, 1, scrollbars::vertical),
             widgetEnd(),
         };
@@ -193,7 +193,7 @@ namespace OpenLoco::ui::MessageWindow
         // 0x0042A70C
         static void tooltip(FormatArguments& args, ui::window* self, widget_index widgetIndex)
         {
-            args.push(string_ids::tooltip_scroll_message_list);
+            args.push(StringIds::tooltip_scroll_message_list);
         }
 
         // 0x0042A545
@@ -235,29 +235,29 @@ namespace OpenLoco::ui::MessageWindow
                 }
                 auto message = messagemgr::get(i);
                 char* buffer = message->messageString;
-                auto str = const_cast<char*>(stringmgr::getString(string_ids::buffer_2039));
+                auto str = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
 
                 const size_t bufferLength = 512;
                 strncpy(str, buffer, bufferLength);
 
-                auto stringId = string_ids::black_stringid;
+                auto stringId = StringIds::black_stringid;
 
                 if (self->row_hover == i)
                 {
                     Gfx::drawRect(dpi, 0, height, self->width, 38, (1 << 25) | PaletteIndex::index_30);
-                    stringId = string_ids::wcolour2_stringid;
+                    stringId = StringIds::wcolour2_stringid;
                 }
 
                 {
                     auto args = FormatArguments();
-                    args.push(string_ids::tiny_font_date);
+                    args.push(StringIds::tiny_font_date);
                     args.push(message->date);
 
                     Gfx::drawString_494B3F(*dpi, 0, height, Colour::black, stringId, &args);
                 }
                 {
                     auto args = FormatArguments();
-                    args.push(string_ids::buffer_2039);
+                    args.push(StringIds::buffer_2039);
 
                     auto width = self->widgets[widx::scrollview].width() - 14;
                     Gfx::drawString_495224(*dpi, 0, height + 6, width, Colour::black, stringId, &args);
@@ -397,19 +397,19 @@ namespace OpenLoco::ui::MessageWindow
         static constexpr uint64_t enabledWidgets = common::enabledWidgets | (1 << widx::company_major_news) | (1 << widx::company_major_news_dropdown) | (1 << widx::competitor_major_news) | (1 << widx::competitor_major_news_dropdown) | (1 << widx::company_minor_news) | (1 << widx::company_minor_news_dropdown) | (1 << widx::competitor_minor_news) | (1 << widx::competitor_minor_news_dropdown) | (1 << widx::general_news) | (1 << widx::general_news_dropdown) | (1 << widx::advice) | (1 << widx::advice_dropdown);
 
         widget_t widgets[] = {
-            commonWidgets(366, 217, string_ids::title_messages),
+            commonWidgets(366, 217, StringIds::title_messages),
             makeWidget({ 236, 47 }, { 124, 12 }, widget_type::wt_18, 1),
-            makeWidget({ 348, 48 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
+            makeWidget({ 348, 48 }, { 11, 10 }, widget_type::wt_11, 1, StringIds::dropdown),
             makeWidget({ 236, 62 }, { 124, 12 }, widget_type::wt_18, 1),
-            makeWidget({ 348, 63 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
+            makeWidget({ 348, 63 }, { 11, 10 }, widget_type::wt_11, 1, StringIds::dropdown),
             makeWidget({ 236, 77 }, { 124, 12 }, widget_type::wt_18, 1),
-            makeWidget({ 348, 78 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
+            makeWidget({ 348, 78 }, { 11, 10 }, widget_type::wt_11, 1, StringIds::dropdown),
             makeWidget({ 236, 92 }, { 124, 12 }, widget_type::wt_18, 1),
-            makeWidget({ 348, 93 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
+            makeWidget({ 348, 93 }, { 11, 10 }, widget_type::wt_11, 1, StringIds::dropdown),
             makeWidget({ 236, 107 }, { 124, 12 }, widget_type::wt_18, 1),
-            makeWidget({ 348, 108 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
+            makeWidget({ 348, 108 }, { 11, 10 }, widget_type::wt_11, 1, StringIds::dropdown),
             makeWidget({ 236, 122 }, { 124, 12 }, widget_type::wt_18, 1),
-            makeWidget({ 348, 123 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
+            makeWidget({ 348, 123 }, { 11, 10 }, widget_type::wt_11, 1, StringIds::dropdown),
             widgetEnd(),
         };
 
@@ -458,9 +458,9 @@ namespace OpenLoco::ui::MessageWindow
 
                     dropdown::show(xPos, yPos, width, height, self->colours[1], 3, flags);
 
-                    dropdown::add(0, string_ids::dropdown_stringid, string_ids::message_off);
-                    dropdown::add(1, string_ids::dropdown_stringid, string_ids::message_ticker);
-                    dropdown::add(2, string_ids::dropdown_stringid, string_ids::message_window);
+                    dropdown::add(0, StringIds::dropdown_stringid, StringIds::message_off);
+                    dropdown::add(1, StringIds::dropdown_stringid, StringIds::message_ticker);
+                    dropdown::add(2, StringIds::dropdown_stringid, StringIds::message_window);
 
                     auto dropdownIndex = config::get().news_settings[(widgetIndex - 7) / 2];
 
@@ -512,18 +512,18 @@ namespace OpenLoco::ui::MessageWindow
             auto yPos = self->widgets[widx::company_major_news].top + self->y;
 
             const string_id newsStringIds[] = {
-                string_ids::company_major_news,
-                string_ids::competitor_major_news,
-                string_ids::company_minor_news,
-                string_ids::competitor_minor_news,
-                string_ids::general_news,
-                string_ids::advice,
+                StringIds::company_major_news,
+                StringIds::competitor_major_news,
+                StringIds::company_minor_news,
+                StringIds::competitor_minor_news,
+                StringIds::general_news,
+                StringIds::advice,
             };
 
             const string_id newsDropdownStringIds[] = {
-                string_ids::message_off,
-                string_ids::message_ticker,
-                string_ids::message_window,
+                StringIds::message_off,
+                StringIds::message_ticker,
+                StringIds::message_window,
             };
 
             for (auto i = 0; i < 6; i++)
@@ -532,7 +532,7 @@ namespace OpenLoco::ui::MessageWindow
                     auto args = FormatArguments();
                     args.push(newsStringIds[i]);
 
-                    Gfx::drawString_494B3F(*dpi, self->x + 4, yPos, Colour::black, string_ids::wcolour2_stringid, &args);
+                    Gfx::drawString_494B3F(*dpi, self->x + 4, yPos, Colour::black, StringIds::wcolour2_stringid, &args);
                 }
 
                 {
@@ -540,7 +540,7 @@ namespace OpenLoco::ui::MessageWindow
                     auto args = FormatArguments();
                     args.push(newsDropdownStringIds[static_cast<uint8_t>(config::get().news_settings[i])]);
 
-                    Gfx::drawString_494B3F(*dpi, xPos, yPos, Colour::black, string_ids::black_stringid, &args);
+                    Gfx::drawString_494B3F(*dpi, xPos, yPos, Colour::black, StringIds::black_stringid, &args);
                 }
                 yPos += 15;
             }

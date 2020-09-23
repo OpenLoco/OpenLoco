@@ -51,16 +51,16 @@ namespace OpenLoco::ui::windows::LandscapeGeneration
 
         const uint64_t enabled_widgets = (1 << widx::close_button) | (1 << tab_options) | (1 << tab_land) | (1 << tab_forests) | (1 << tab_towns) | (1 << tab_industries);
 
-#define common_options_widgets(frame_height, window_caption_id)                                                                         \
-    makeWidget({ 0, 0 }, { 366, frame_height }, widget_type::frame, 0),                                                                 \
-        makeWidget({ 1, 1 }, { 364, 13 }, widget_type::caption_25, 0, window_caption_id),                                               \
-        makeWidget({ 351, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, string_ids::tooltip_close_window),             \
-        makeWidget({ 0, 41 }, { 366, 175 }, widget_type::panel, 1),                                                                     \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_landscape_generation_options),  \
-        makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_landscape_generation_land),    \
-        makeRemapWidget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_landscape_generation_forests), \
-        makeRemapWidget({ 96, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_landscape_generation_towns),   \
-        makeRemapWidget({ 127, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_landscape_generation_industries)
+#define common_options_widgets(frame_height, window_caption_id)                                                                        \
+    makeWidget({ 0, 0 }, { 366, frame_height }, widget_type::frame, 0),                                                                \
+        makeWidget({ 1, 1 }, { 364, 13 }, widget_type::caption_25, 0, window_caption_id),                                              \
+        makeWidget({ 351, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window),             \
+        makeWidget({ 0, 41 }, { 366, 175 }, widget_type::panel, 1),                                                                    \
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_landscape_generation_options),  \
+        makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_landscape_generation_land),    \
+        makeRemapWidget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_landscape_generation_forests), \
+        makeRemapWidget({ 96, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_landscape_generation_towns),   \
+        makeRemapWidget({ 127, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_landscape_generation_industries)
 
         // Defined at the bottom of this file.
         static void initEvents();
@@ -161,10 +161,10 @@ namespace OpenLoco::ui::windows::LandscapeGeneration
         const uint64_t holdable_widgets = (1 << widx::start_year_up) | (1 << widx::start_year_down);
 
         static widget_t widgets[] = {
-            common_options_widgets(217, string_ids::title_landscape_generation_options),
-            makeStepperWidgets({ 256, 52 }, { 100, 12 }, widget_type::wt_18, 1, string_ids::start_year_value),
-            makeWidget({ 10, 68 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::label_generate_random_landscape_when_game_starts, string_ids::tooltip_generate_random_landscape_when_game_starts),
-            makeWidget({ 196, 200 }, { 160, 12 }, widget_type::wt_11, 1, string_ids::button_generate_landscape, string_ids::tooltip_generate_random_landscape),
+            common_options_widgets(217, StringIds::title_landscape_generation_options),
+            makeStepperWidgets({ 256, 52 }, { 100, 12 }, widget_type::wt_18, 1, StringIds::start_year_value),
+            makeWidget({ 10, 68 }, { 346, 12 }, widget_type::checkbox, 1, StringIds::label_generate_random_landscape_when_game_starts, StringIds::tooltip_generate_random_landscape_when_game_starts),
+            makeWidget({ 196, 200 }, { 160, 12 }, widget_type::wt_11, 1, StringIds::button_generate_landscape, StringIds::tooltip_generate_random_landscape),
             widgetEnd()
         };
 
@@ -180,7 +180,7 @@ namespace OpenLoco::ui::windows::LandscapeGeneration
                 window->x + 10,
                 window->y + window->widgets[widx::start_year].top,
                 Colour::black,
-                string_ids::start_year);
+                StringIds::start_year);
         }
 
         // 0x0043DB76
@@ -356,13 +356,13 @@ namespace OpenLoco::ui::windows::LandscapeGeneration
         const uint64_t holdable_widgets = (1 << widx::sea_level_up) | (1 << widx::sea_level_down) | (1 << widx::min_land_height_up) | (1 << widx::min_land_height_down) | (1 << widx::hill_density_up) | (1 << widx::hill_density_down);
 
         static widget_t widgets[] = {
-            common_options_widgets(232, string_ids::title_landscape_generation_land),
-            makeStepperWidgets({ 256, 52 }, { 100, 12 }, widget_type::wt_18, 1, string_ids::sea_level_units),
-            makeStepperWidgets({ 256, 67 }, { 100, 12 }, widget_type::wt_18, 1, string_ids::min_land_height_units),
+            common_options_widgets(232, StringIds::title_landscape_generation_land),
+            makeStepperWidgets({ 256, 52 }, { 100, 12 }, widget_type::wt_18, 1, StringIds::sea_level_units),
+            makeStepperWidgets({ 256, 67 }, { 100, 12 }, widget_type::wt_18, 1, StringIds::min_land_height_units),
             makeWidget({ 176, 82 }, { 180, 12 }, widget_type::wt_18, 1),
-            makeWidget({ 344, 83 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
-            makeStepperWidgets({ 256, 97 }, { 100, 12 }, widget_type::wt_18, 1, string_ids::hill_density_percent),
-            makeWidget({ 10, 113 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::create_hills_right_up_to_edge_of_map),
+            makeWidget({ 344, 83 }, { 11, 10 }, widget_type::wt_11, 1, StringIds::dropdown),
+            makeStepperWidgets({ 256, 97 }, { 100, 12 }, widget_type::wt_18, 1, StringIds::hill_density_percent),
+            makeWidget({ 10, 113 }, { 346, 12 }, widget_type::checkbox, 1, StringIds::create_hills_right_up_to_edge_of_map),
             makeWidget({ 4, 127 }, { 358, 100 }, widget_type::scrollview, 1, scrollbars::vertical),
             widgetEnd()
         };
@@ -379,40 +379,40 @@ namespace OpenLoco::ui::windows::LandscapeGeneration
                 window->x + 10,
                 window->y + window->widgets[widx::sea_level].top,
                 Colour::black,
-                string_ids::sea_level);
+                StringIds::sea_level);
 
             Gfx::drawString_494B3F(
                 *dpi,
                 window->x + 10,
                 window->y + window->widgets[widx::min_land_height].top,
                 Colour::black,
-                string_ids::min_land_height);
+                StringIds::min_land_height);
 
             Gfx::drawString_494B3F(
                 *dpi,
                 window->x + 10,
                 window->y + window->widgets[widx::topography_style].top,
                 Colour::black,
-                string_ids::topography_style);
+                StringIds::topography_style);
 
             Gfx::drawString_494B3F(
                 *dpi,
                 window->x + 10,
                 window->y + window->widgets[widx::hill_density].top,
                 Colour::black,
-                string_ids::hill_density);
+                StringIds::hill_density);
         }
 
         static const string_id landDistributionLabelIds[] = {
-            string_ids::land_distribution_everywhere,
-            string_ids::land_distribution_nowhere,
-            string_ids::land_distribution_far_from_water,
-            string_ids::land_distribution_near_water,
-            string_ids::land_distribution_on_mountains,
-            string_ids::land_distribution_far_from_mountains,
-            string_ids::land_distribution_in_small_random_areas,
-            string_ids::land_distribution_in_large_random_areas,
-            string_ids::land_distribution_around_cliffs,
+            StringIds::land_distribution_everywhere,
+            StringIds::land_distribution_nowhere,
+            StringIds::land_distribution_far_from_water,
+            StringIds::land_distribution_near_water,
+            StringIds::land_distribution_on_mountains,
+            StringIds::land_distribution_far_from_mountains,
+            StringIds::land_distribution_in_small_random_areas,
+            StringIds::land_distribution_in_large_random_areas,
+            StringIds::land_distribution_around_cliffs,
         };
 
         // 0x0043E01C
@@ -431,7 +431,7 @@ namespace OpenLoco::ui::windows::LandscapeGeneration
 
                 // Draw land description.
                 commonFormatArgs[0] = landObject->name;
-                Gfx::drawString_494BBF(*dpi, 24, yPos + 5, 121, Colour::black, string_ids::wcolour2_stringid, &*commonFormatArgs);
+                Gfx::drawString_494BBF(*dpi, 24, yPos + 5, 121, Colour::black, StringIds::wcolour2_stringid, &*commonFormatArgs);
 
                 // Draw rectangle.
                 Gfx::fillRectInset(dpi, 150, yPos + 5, 340, yPos + 16, window->colours[1], 0b110000);
@@ -439,14 +439,14 @@ namespace OpenLoco::ui::windows::LandscapeGeneration
                 // Draw current distribution setting.
                 const string_id distributionId = landDistributionLabelIds[s5::getOptions().landDistributionPatterns[i]];
                 commonFormatArgs[0] = distributionId;
-                Gfx::drawString_494BBF(*dpi, 151, yPos + 5, 177, Colour::black, string_ids::black_stringid, &*commonFormatArgs);
+                Gfx::drawString_494BBF(*dpi, 151, yPos + 5, 177, Colour::black, StringIds::black_stringid, &*commonFormatArgs);
 
                 // Draw rectangle (knob).
                 const uint8_t flags = window->row_hover == i ? 0b110000 : 0;
                 Gfx::fillRectInset(dpi, 329, yPos + 6, 339, yPos + 15, window->colours[1], flags);
 
                 // Draw triangle (knob).
-                Gfx::drawString_494B3F(*dpi, 330, yPos + 6, Colour::black, string_ids::dropdown, nullptr);
+                Gfx::drawString_494B3F(*dpi, 330, yPos + 6, Colour::black, StringIds::dropdown, nullptr);
 
                 yPos += rowHeight;
             }
@@ -468,11 +468,11 @@ namespace OpenLoco::ui::windows::LandscapeGeneration
         }
 
         static const string_id topographyStyleIds[] = {
-            string_ids::flat_land,
-            string_ids::small_hills,
-            string_ids::mountains,
-            string_ids::half_mountains_half_hills,
-            string_ids::half_mountains_half_flat,
+            StringIds::flat_land,
+            StringIds::small_hills,
+            StringIds::mountains,
+            StringIds::half_mountains_half_hills,
+            StringIds::half_mountains_half_flat,
         };
 
         // 0x0043E1BA
@@ -611,7 +611,7 @@ namespace OpenLoco::ui::windows::LandscapeGeneration
             dropdown::show(dropdownX, dropdownY, 188, 12, window->colours[1], std::size(landDistributionLabelIds), 0x80);
 
             for (size_t i = 0; i < std::size(landDistributionLabelIds); i++)
-                dropdown::add(i, string_ids::dropdown_stringid, landDistributionLabelIds[i]);
+                dropdown::add(i, StringIds::dropdown_stringid, landDistributionLabelIds[i]);
 
             dropdown::setItemSelected(s5::getOptions().landDistributionPatterns[landIndex]);
         }
@@ -637,7 +637,7 @@ namespace OpenLoco::ui::windows::LandscapeGeneration
         // 0x0043E2A2
         static void tooltip(FormatArguments& args, ui::window* window, widget_index widgetIndex)
         {
-            args.push(string_ids::tooltip_scroll_list);
+            args.push(StringIds::tooltip_scroll_list);
         }
 
         // 0x0043E3D9
@@ -703,15 +703,15 @@ namespace OpenLoco::ui::windows::LandscapeGeneration
         const uint64_t holdable_widgets = (1 << widx::number_of_forests_up) | (1 << widx::number_of_forests_down) | (1 << widx::min_forest_radius_up) | (1 << widx::min_forest_radius_down) | (1 << widx::max_forest_radius_up) | (1 << widx::max_forest_radius_down) | (1 << widx::min_forest_density_up) | (1 << widx::min_forest_density_down) | (1 << widx::max_forest_density_up) | (1 << widx::max_forest_density_down) | (1 << widx::number_random_trees_up) | (1 << widx::number_random_trees_down) | (1 << widx::min_altitude_for_trees_up) | (1 << widx::min_altitude_for_trees_down) | (1 << widx::max_altitude_for_trees_down);                          // | (1 << widx::max_altitude_for_trees_up);
 
         static widget_t widgets[] = {
-            common_options_widgets(217, string_ids::title_landscape_generation_forests),
-            makeStepperWidgets({ 256, 52 }, { 100, 12 }, widget_type::wt_18, 1, string_ids::number_of_forests_value),
-            makeStepperWidgets({ 256, 67 }, { 100, 12 }, widget_type::wt_18, 1, string_ids::min_forest_radius_blocks),
-            makeStepperWidgets({ 256, 82 }, { 100, 12 }, widget_type::wt_18, 1, string_ids::max_forest_radius_blocks),
-            makeStepperWidgets({ 256, 97 }, { 100, 12 }, widget_type::wt_18, 1, string_ids::min_forest_density_percent),
-            makeStepperWidgets({ 256, 112 }, { 100, 12 }, widget_type::wt_18, 1, string_ids::max_forest_density_percent),
-            makeStepperWidgets({ 256, 127 }, { 100, 12 }, widget_type::wt_18, 1, string_ids::number_random_trees_value),
-            makeStepperWidgets({ 256, 142 }, { 100, 12 }, widget_type::wt_18, 1, string_ids::min_altitude_for_trees_height),
-            makeStepperWidgets({ 256, 157 }, { 100, 12 }, widget_type::wt_18, 1, string_ids::max_altitude_for_trees_height),
+            common_options_widgets(217, StringIds::title_landscape_generation_forests),
+            makeStepperWidgets({ 256, 52 }, { 100, 12 }, widget_type::wt_18, 1, StringIds::number_of_forests_value),
+            makeStepperWidgets({ 256, 67 }, { 100, 12 }, widget_type::wt_18, 1, StringIds::min_forest_radius_blocks),
+            makeStepperWidgets({ 256, 82 }, { 100, 12 }, widget_type::wt_18, 1, StringIds::max_forest_radius_blocks),
+            makeStepperWidgets({ 256, 97 }, { 100, 12 }, widget_type::wt_18, 1, StringIds::min_forest_density_percent),
+            makeStepperWidgets({ 256, 112 }, { 100, 12 }, widget_type::wt_18, 1, StringIds::max_forest_density_percent),
+            makeStepperWidgets({ 256, 127 }, { 100, 12 }, widget_type::wt_18, 1, StringIds::number_random_trees_value),
+            makeStepperWidgets({ 256, 142 }, { 100, 12 }, widget_type::wt_18, 1, StringIds::min_altitude_for_trees_height),
+            makeStepperWidgets({ 256, 157 }, { 100, 12 }, widget_type::wt_18, 1, StringIds::max_altitude_for_trees_height),
             widgetEnd()
         };
 
@@ -727,56 +727,56 @@ namespace OpenLoco::ui::windows::LandscapeGeneration
                 window->x + 10,
                 window->y + window->widgets[widx::number_of_forests].top,
                 Colour::black,
-                string_ids::number_of_forests);
+                StringIds::number_of_forests);
 
             Gfx::drawString_494B3F(
                 *dpi,
                 window->x + 10,
                 window->y + window->widgets[widx::min_forest_radius].top,
                 Colour::black,
-                string_ids::min_forest_radius);
+                StringIds::min_forest_radius);
 
             Gfx::drawString_494B3F(
                 *dpi,
                 window->x + 10,
                 window->y + window->widgets[widx::max_forest_radius].top,
                 Colour::black,
-                string_ids::max_forest_radius);
+                StringIds::max_forest_radius);
 
             Gfx::drawString_494B3F(
                 *dpi,
                 window->x + 10,
                 window->y + window->widgets[widx::min_forest_density].top,
                 Colour::black,
-                string_ids::min_forest_density);
+                StringIds::min_forest_density);
 
             Gfx::drawString_494B3F(
                 *dpi,
                 window->x + 10,
                 window->y + window->widgets[widx::max_forest_density].top,
                 Colour::black,
-                string_ids::max_forest_density);
+                StringIds::max_forest_density);
 
             Gfx::drawString_494B3F(
                 *dpi,
                 window->x + 10,
                 window->y + window->widgets[widx::number_random_trees].top,
                 Colour::black,
-                string_ids::number_random_trees);
+                StringIds::number_random_trees);
 
             Gfx::drawString_494B3F(
                 *dpi,
                 window->x + 10,
                 window->y + window->widgets[widx::min_altitude_for_trees].top,
                 Colour::black,
-                string_ids::min_altitude_for_trees);
+                StringIds::min_altitude_for_trees);
 
             Gfx::drawString_494B3F(
                 *dpi,
                 window->x + 10,
                 window->y + window->widgets[widx::max_altitude_for_trees].top,
                 Colour::black,
-                string_ids::max_altitude_for_trees);
+                StringIds::max_altitude_for_trees);
         }
 
         // 0x0043E670
@@ -947,10 +947,10 @@ namespace OpenLoco::ui::windows::LandscapeGeneration
         const uint64_t holdable_widgets = (1 << widx::number_of_towns_up) | (1 << widx::number_of_towns_down);
 
         static widget_t widgets[] = {
-            common_options_widgets(217, string_ids::title_landscape_generation_towns),
-            makeStepperWidgets({ 256, 52 }, { 100, 12 }, widget_type::wt_18, 1, string_ids::number_of_towns_value),
+            common_options_widgets(217, StringIds::title_landscape_generation_towns),
+            makeStepperWidgets({ 256, 52 }, { 100, 12 }, widget_type::wt_18, 1, StringIds::number_of_towns_value),
             makeWidget({ 176, 67 }, { 180, 12 }, widget_type::wt_18, 1),
-            makeWidget({ 344, 68 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
+            makeWidget({ 344, 68 }, { 11, 10 }, widget_type::wt_11, 1, StringIds::dropdown),
             widgetEnd()
         };
 
@@ -966,25 +966,25 @@ namespace OpenLoco::ui::windows::LandscapeGeneration
                 window->x + 10,
                 window->y + window->widgets[widx::number_of_towns].top,
                 Colour::black,
-                string_ids::number_of_towns);
+                StringIds::number_of_towns);
 
             Gfx::drawString_494B3F(
                 *dpi,
                 window->x + 10,
                 window->y + window->widgets[widx::max_town_size].top,
                 Colour::black,
-                string_ids::max_town_size);
+                StringIds::max_town_size);
         }
 
         static const string_id townSizeLabels[] = {
-            string_ids::town_size_1,
-            string_ids::town_size_2,
-            string_ids::town_size_3,
-            string_ids::town_size_4,
-            string_ids::town_size_5,
-            string_ids::town_size_6,
-            string_ids::town_size_7,
-            string_ids::town_size_8,
+            StringIds::town_size_1,
+            StringIds::town_size_2,
+            StringIds::town_size_3,
+            StringIds::town_size_4,
+            StringIds::town_size_5,
+            StringIds::town_size_6,
+            StringIds::town_size_7,
+            StringIds::town_size_8,
         };
 
         // 0x0043EBF8
@@ -1088,11 +1088,11 @@ namespace OpenLoco::ui::windows::LandscapeGeneration
         const uint64_t holdable_widgets = 0;
 
         static widget_t widgets[] = {
-            common_options_widgets(217, string_ids::title_landscape_generation_industries),
+            common_options_widgets(217, StringIds::title_landscape_generation_industries),
             makeWidget({ 176, 52 }, { 180, 12 }, widget_type::wt_18, 1),
-            makeWidget({ 344, 53 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
-            makeWidget({ 10, 68 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::allow_industries_to_close_down_during_game),
-            makeWidget({ 10, 83 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::allow_new_industries_to_start_up_during_game),
+            makeWidget({ 344, 53 }, { 11, 10 }, widget_type::wt_11, 1, StringIds::dropdown),
+            makeWidget({ 10, 68 }, { 346, 12 }, widget_type::checkbox, 1, StringIds::allow_industries_to_close_down_during_game),
+            makeWidget({ 10, 83 }, { 346, 12 }, widget_type::checkbox, 1, StringIds::allow_new_industries_to_start_up_during_game),
             widgetEnd()
         };
 
@@ -1108,13 +1108,13 @@ namespace OpenLoco::ui::windows::LandscapeGeneration
                 window->x + 10,
                 window->y + window->widgets[widx::num_industries].top,
                 Colour::black,
-                string_ids::number_of_industries);
+                StringIds::number_of_industries);
         }
 
         static const string_id numIndustriesLabels[] = {
-            string_ids::industry_size_low,
-            string_ids::industry_size_medium,
-            string_ids::industry_size_high,
+            StringIds::industry_size_low,
+            StringIds::industry_size_medium,
+            StringIds::industry_size_high,
         };
 
         // 0x0043EBF8

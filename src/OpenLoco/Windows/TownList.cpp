@@ -47,15 +47,15 @@ namespace OpenLoco::ui::windows::town_list
 
         const uint64_t enabledWidgets = (1 << widx::close_button) | (1 << widx::tab_town_list) | (1 << widx::tab_build_town) | (1 << widx::tab_build_buildings) | (1 << widx::tab_build_misc_buildings);
 
-#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                         \
-    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, widget_type::frame, 0),                                                           \
-        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, widget_type::caption_25, 0, windowCaptionId),                                      \
-        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, string_ids::tooltip_close_window), \
-        makeWidget({ 0, 41 }, { frameWidth, 155 }, widget_type::panel, 1),                                                              \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_town_list),                     \
-        makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_build_town),                   \
-        makeRemapWidget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_build_buildings),              \
-        makeRemapWidget({ 96, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_build_misc_buildings)
+#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                        \
+    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, widget_type::frame, 0),                                                          \
+        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, widget_type::caption_25, 0, windowCaptionId),                                     \
+        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window), \
+        makeWidget({ 0, 41 }, { frameWidth, 155 }, widget_type::panel, 1),                                                             \
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_town_list),                     \
+        makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_build_town),                   \
+        makeRemapWidget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_build_buildings),              \
+        makeRemapWidget({ 96, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_build_misc_buildings)
 
         static void prepareDraw(window* self);
         static void repositionTabs(window* self);
@@ -86,11 +86,11 @@ namespace OpenLoco::ui::windows::town_list
         const uint64_t enabledWidgets = common::enabledWidgets | (1 << sort_town_name) | (1 << sort_town_type) | (1 << sort_town_population) | (1 << sort_town_stations) | (1 << scrollview);
 
         widget_t widgets[] = {
-            commonWidgets(600, 197, string_ids::title_towns),
-            makeWidget({ 4, 43 }, { 200, 12 }, widget_type::wt_14, 1, ImageIds::null, string_ids::tooltip_sort_by_name),
-            makeWidget({ 204, 43 }, { 80, 12 }, widget_type::wt_14, 1, ImageIds::null, string_ids::tooltip_sort_town_type),
-            makeWidget({ 284, 43 }, { 70, 12 }, widget_type::wt_14, 1, ImageIds::null, string_ids::tooltip_sort_population),
-            makeWidget({ 354, 43 }, { 70, 12 }, widget_type::wt_14, 1, ImageIds::null, string_ids::tooltip_sort_stations),
+            commonWidgets(600, 197, StringIds::title_towns),
+            makeWidget({ 4, 43 }, { 200, 12 }, widget_type::wt_14, 1, ImageIds::null, StringIds::tooltip_sort_by_name),
+            makeWidget({ 204, 43 }, { 80, 12 }, widget_type::wt_14, 1, ImageIds::null, StringIds::tooltip_sort_town_type),
+            makeWidget({ 284, 43 }, { 70, 12 }, widget_type::wt_14, 1, ImageIds::null, StringIds::tooltip_sort_population),
+            makeWidget({ 354, 43 }, { 70, 12 }, widget_type::wt_14, 1, ImageIds::null, StringIds::tooltip_sort_stations),
             makeWidget({ 3, 56 }, { 594, 126 }, widget_type::scrollview, 1, 2),
             widgetEnd(),
         };
@@ -126,10 +126,10 @@ namespace OpenLoco::ui::windows::town_list
             self->widgets[widx::sort_town_stations].right = std::min(423, self->width - 8);
 
             // Set header button captions
-            self->widgets[widx::sort_town_name].text = self->sort_mode == SortMode::Name ? string_ids::table_header_name_desc : string_ids::table_header_name;
-            self->widgets[widx::sort_town_type].text = self->sort_mode == SortMode::Type ? string_ids::table_header_town_type_desc : string_ids::table_header_town_type;
-            self->widgets[widx::sort_town_population].text = self->sort_mode == SortMode::Population ? string_ids::table_header_population_desc : string_ids::table_header_population;
-            self->widgets[widx::sort_town_stations].text = self->sort_mode == SortMode::Stations ? string_ids::table_header_stations_desc : string_ids::table_header_stations;
+            self->widgets[widx::sort_town_name].text = self->sort_mode == SortMode::Name ? StringIds::table_header_name_desc : StringIds::table_header_name;
+            self->widgets[widx::sort_town_type].text = self->sort_mode == SortMode::Type ? StringIds::table_header_town_type_desc : StringIds::table_header_town_type;
+            self->widgets[widx::sort_town_population].text = self->sort_mode == SortMode::Population ? StringIds::table_header_population_desc : StringIds::table_header_population;
+            self->widgets[widx::sort_town_stations].text = self->sort_mode == SortMode::Stations ? StringIds::table_header_stations_desc : StringIds::table_header_stations;
 
             common::repositionTabs(self);
         }
@@ -152,13 +152,13 @@ namespace OpenLoco::ui::windows::town_list
                     continue;
                 }
 
-                string_id text_colour_id = string_ids::black_stringid;
+                string_id text_colour_id = StringIds::black_stringid;
 
                 // Highlight selection.
                 if (townId == self->row_hover)
                 {
                     Gfx::drawRect(dpi, 0, yPos, self->width, rowHeight, 0x2000030);
-                    text_colour_id = string_ids::wcolour2_stringid;
+                    text_colour_id = StringIds::wcolour2_stringid;
                 }
 
                 if (townId == 0xFFFF)
@@ -182,7 +182,7 @@ namespace OpenLoco::ui::windows::town_list
                 // Town Population
                 {
                     auto args = FormatArguments();
-                    args.push(string_ids::int_32);
+                    args.push(StringIds::int_32);
                     args.push(town->population);
 
                     Gfx::drawString_494BBF(*dpi, 280, yPos, 68, Colour::black, text_colour_id, &args);
@@ -190,7 +190,7 @@ namespace OpenLoco::ui::windows::town_list
                 // Town Stations
                 {
                     auto args = FormatArguments();
-                    args.push(string_ids::int_32);
+                    args.push(StringIds::int_32);
                     args.push(town->num_stations);
 
                     Gfx::drawString_494BBF(*dpi, 350, yPos, 68, Colour::black, text_colour_id, &args);
@@ -209,12 +209,12 @@ namespace OpenLoco::ui::windows::town_list
             auto yPos = self->y + self->height - 12;
 
             if (self->var_83C == 1)
-                args.push(string_ids::status_towns_singular);
+                args.push(StringIds::status_towns_singular);
             else
-                args.push(string_ids::status_towns_plural);
+                args.push(StringIds::status_towns_plural);
             args.push(self->var_83C);
 
-            Gfx::drawString_494B3F(*dpi, xPos, yPos, Colour::black, string_ids::black_stringid, &args);
+            Gfx::drawString_494B3F(*dpi, xPos, yPos, Colour::black, StringIds::black_stringid, &args);
         }
 
         // 0x0049A27F
@@ -289,10 +289,10 @@ namespace OpenLoco::ui::windows::town_list
         static bool orderByName(const OpenLoco::town& lhs, const OpenLoco::town& rhs)
         {
             char lhsString[256] = { 0 };
-            stringmgr::formatString(lhsString, lhs.name);
+            StringManager::formatString(lhsString, lhs.name);
 
             char rhsString[256] = { 0 };
-            stringmgr::formatString(rhsString, rhs.name);
+            StringManager::formatString(rhsString, rhs.name);
 
             return strcmp(lhsString, rhsString) < 0;
         }
@@ -461,7 +461,7 @@ namespace OpenLoco::ui::windows::town_list
         // 0x00491841
         static void tooltip(FormatArguments& args, ui::window* window, widget_index widgetIndex)
         {
-            args.push(string_ids::tooltip_scroll_town_list);
+            args.push(StringIds::tooltip_scroll_town_list);
         }
 
         // 0x004919A4
@@ -591,9 +591,9 @@ namespace OpenLoco::ui::windows::town_list
         const uint64_t enabledWidgets = common::enabledWidgets | (1 << current_size) | (1 << select_size);
 
         widget_t widgets[] = {
-            commonWidgets(220, 87, string_ids::title_build_new_towns),
-            makeWidget({ 100, 45 }, { 117, 12 }, widget_type::wt_18, 1, ImageIds::null, string_ids::tooltip_select_town_size),
-            makeWidget({ 205, 46 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
+            commonWidgets(220, 87, StringIds::title_build_new_towns),
+            makeWidget({ 100, 45 }, { 117, 12 }, widget_type::wt_18, 1, ImageIds::null, StringIds::tooltip_select_town_size),
+            makeWidget({ 205, 46 }, { 11, 10 }, widget_type::wt_11, 1, StringIds::dropdown),
             widgetEnd(),
         };
 
@@ -607,15 +607,15 @@ namespace OpenLoco::ui::windows::town_list
             common::repositionTabs(self);
 
             static string_id townSizeNames[9] = {
-                string_ids::tooltip_select_town_size,
-                string_ids::town_size_1,
-                string_ids::town_size_2,
-                string_ids::town_size_3,
-                string_ids::town_size_4,
-                string_ids::town_size_5,
-                string_ids::town_size_6,
-                string_ids::town_size_7,
-                string_ids::town_size_8,
+                StringIds::tooltip_select_town_size,
+                StringIds::town_size_1,
+                StringIds::town_size_2,
+                StringIds::town_size_3,
+                StringIds::town_size_4,
+                StringIds::town_size_5,
+                StringIds::town_size_6,
+                StringIds::town_size_7,
+                StringIds::town_size_8,
             };
 
             self->widgets[widx::current_size].text = townSizeNames[_townSize];
@@ -627,9 +627,9 @@ namespace OpenLoco::ui::windows::town_list
             self->draw(dpi);
             common::drawTabs(self, dpi);
 
-            Gfx::drawString_494B3F(*dpi, self->x + 3, self->y + self->widgets[widx::current_size].top + 1, Colour::black, string_ids::town_size_label);
+            Gfx::drawString_494B3F(*dpi, self->x + 3, self->y + self->widgets[widx::current_size].top + 1, Colour::black, StringIds::town_size_label);
 
-            Gfx::drawString_494B3F(*dpi, self->x + 3, self->y + self->height - 13, Colour::black, string_ids::select_town_size);
+            Gfx::drawString_494B3F(*dpi, self->x + 3, self->y + self->height - 13, Colour::black, StringIds::select_town_size);
         }
 
         // 0x0049A675
@@ -779,10 +779,10 @@ namespace OpenLoco::ui::windows::town_list
         const uint64_t enabledWidgets = common::enabledWidgets | (1 << scrollview) | (1 << rotate_object) | (1 << object_colour);
 
         widget_t widgets[] = {
-            commonWidgets(640, 172, string_ids::title_build_new_buildings),
+            commonWidgets(640, 172, StringIds::title_build_new_buildings),
             makeWidget({ 2, 45 }, { 573, 112 }, widget_type::scrollview, 1, 2),
-            makeWidget({ 575, 46 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::rotate_object, string_ids::rotate_object_90),
-            makeWidget({ 579, 91 }, { 16, 16 }, widget_type::wt_10, 1, ImageIds::null, string_ids::tooltip_object_colour),
+            makeWidget({ 575, 46 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::rotate_object, StringIds::rotate_object_90),
+            makeWidget({ 579, 91 }, { 16, 16 }, widget_type::wt_10, 1, ImageIds::null, StringIds::tooltip_object_colour),
             widgetEnd(),
         };
 
@@ -812,10 +812,10 @@ namespace OpenLoco::ui::windows::town_list
             self->widgets[widx::object_colour].left = self->width - 21;
             self->widgets[widx::object_colour].right = self->width - 6;
 
-            self->widgets[common::widx::caption].text = string_ids::title_build_new_buildings;
+            self->widgets[common::widx::caption].text = StringIds::title_build_new_buildings;
 
             if (self->current_tab == common::widx::tab_build_misc_buildings - common::widx::tab_town_list)
-                self->widgets[common::widx::caption].text = string_ids::title_build_new_misc_buildings;
+                self->widgets[common::widx::caption].text = StringIds::title_build_new_misc_buildings;
 
             common::repositionTabs(self);
         }
@@ -838,7 +838,7 @@ namespace OpenLoco::ui::windows::town_list
 
             auto buildingObj = objectmgr::get<building_object>(buildingId);
 
-            Gfx::drawString_494BBF(*dpi, self->x + 3, self->y + self->height - 13, self->width - 19, Colour::black, string_ids::black_stringid, &buildingObj->name);
+            Gfx::drawString_494BBF(*dpi, self->x + 3, self->y + self->height - 13, self->width - 19, Colour::black, StringIds::black_stringid, &buildingObj->name);
         }
 
         // 0x0049AB31
@@ -1043,7 +1043,7 @@ namespace OpenLoco::ui::windows::town_list
         // 0x0049ABBB
         static void tooltip(FormatArguments& args, ui::window* window, widget_index widgetIndex)
         {
-            args.push(string_ids::tooltip_scroll_building_list);
+            args.push(StringIds::tooltip_scroll_building_list);
         }
 
         // 0x0042DB95

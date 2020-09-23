@@ -12,7 +12,7 @@ namespace OpenLoco
 
     bool town::empty() const
     {
-        return name == string_ids::null;
+        return name == StringIds::null;
     }
 
     // 0x0049742F
@@ -35,17 +35,17 @@ namespace OpenLoco
     string_id town::getTownSizeString() const
     {
         static string_id townSizeNames[5] = {
-            string_ids::town_size_hamlet,
-            string_ids::town_size_village,
-            string_ids::town_size_town,
-            string_ids::town_size_city,
-            string_ids::town_size_metropolis
+            StringIds::town_size_hamlet,
+            StringIds::town_size_village,
+            StringIds::town_size_town,
+            StringIds::town_size_city,
+            StringIds::town_size_metropolis
         };
 
         if (static_cast<uint8_t>(size) < std::size(townSizeNames))
         {
             return townSizeNames[static_cast<uint8_t>(size)];
         }
-        return string_ids::town_size_hamlet;
+        return StringIds::town_size_hamlet;
     }
 }

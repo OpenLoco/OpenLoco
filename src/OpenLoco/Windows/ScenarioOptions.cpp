@@ -65,14 +65,14 @@ namespace OpenLoco::ui::windows::ScenarioOptions
 
         const uint64_t enabledWidgets = (1 << widx::tab_challenge) | (1 << widx::tab_companies) | (1 << widx::tab_finances) | (1 << widx::tab_scenario);
 
-#define commonWidgets(frameHeight, windowCaptionId)                                                                          \
-    makeWidget({ 0, 0 }, { 366, frameHeight }, widget_type::frame, 0),                                                       \
-        makeWidget({ 1, 1 }, { 364, 13 }, widget_type::caption_25, 0, windowCaptionId),                                      \
-        makeWidget({ 0, 41 }, { 366, 175 }, widget_type::panel, 1),                                                          \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_scenario_challenge), \
-        makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_company_options),   \
-        makeRemapWidget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_financial_options), \
-        makeRemapWidget({ 96, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_scenario_options)
+#define commonWidgets(frameHeight, windowCaptionId)                                                                         \
+    makeWidget({ 0, 0 }, { 366, frameHeight }, widget_type::frame, 0),                                                      \
+        makeWidget({ 1, 1 }, { 364, 13 }, widget_type::caption_25, 0, windowCaptionId),                                     \
+        makeWidget({ 0, 41 }, { 366, 175 }, widget_type::panel, 1),                                                         \
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_scenario_challenge), \
+        makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_company_options),   \
+        makeRemapWidget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_financial_options), \
+        makeRemapWidget({ 96, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_scenario_options)
 
         // Defined at the bottom of this file.
         static void initEvents();
@@ -197,16 +197,16 @@ namespace OpenLoco::ui::windows::ScenarioOptions
         const uint64_t holdableWidgets = (1 << widx::objective_value_down) | (1 << widx::objective_value_up) | (1 << widx::time_limit_value_down) | (1 << widx::time_limit_value_up);
 
         static widget_t widgets[] = {
-            commonWidgets(197, string_ids::title_scenario_challenge),
+            commonWidgets(197, StringIds::title_scenario_challenge),
             makeWidget({ 10, 52 }, { 346, 12 }, widget_type::wt_18, 1),
-            makeWidget({ 344, 53 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
+            makeWidget({ 344, 53 }, { 11, 10 }, widget_type::wt_11, 1, StringIds::dropdown),
             makeStepperWidgets({ 10, 67 }, { 163, 12 }, widget_type::wt_17, 1),
             makeWidget({ 193, 67 }, { 163, 12 }, widget_type::wt_18, 1),
-            makeWidget({ 344, 68 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
-            makeWidget({ 10, 83 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::and_be_the_top_company),
-            makeWidget({ 10, 98 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::and_be_within_the_top_companies),
-            makeWidget({ 10, 113 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::with_a_time_limit),
-            makeStepperWidgets({ 256, 112 }, { 100, 12 }, widget_type::wt_17, 1, string_ids::time_limit_years_value),
+            makeWidget({ 344, 68 }, { 11, 10 }, widget_type::wt_11, 1, StringIds::dropdown),
+            makeWidget({ 10, 83 }, { 346, 12 }, widget_type::checkbox, 1, StringIds::and_be_the_top_company),
+            makeWidget({ 10, 98 }, { 346, 12 }, widget_type::checkbox, 1, StringIds::and_be_within_the_top_companies),
+            makeWidget({ 10, 113 }, { 346, 12 }, widget_type::checkbox, 1, StringIds::with_a_time_limit),
+            makeStepperWidgets({ 256, 112 }, { 100, 12 }, widget_type::wt_17, 1, StringIds::time_limit_years_value),
             widgetEnd(),
         };
 
@@ -219,18 +219,18 @@ namespace OpenLoco::ui::windows::ScenarioOptions
 
             const int16_t xPos = window->x + 5;
             int16_t yPos = window->y + widgets[widx::check_time_limit].bottom + 10;
-            Gfx::drawString_494B3F(*dpi, xPos, yPos, Colour::black, string_ids::challenge_label);
+            Gfx::drawString_494B3F(*dpi, xPos, yPos, Colour::black, StringIds::challenge_label);
 
             call(0x004384E9);
             yPos += 10;
-            Gfx::drawString_495224(*dpi, xPos, yPos, window->width - 10, Colour::black, string_ids::challenge_value, &*commonFormatArgs);
+            Gfx::drawString_495224(*dpi, xPos, yPos, window->width - 10, Colour::black, StringIds::challenge_value, &*commonFormatArgs);
         }
 
         static const string_id objectiveTypeLabelIds[] = {
-            string_ids::objective_achieve_a_certain_company_value,
-            string_ids::objective_achieve_a_certain_monthly_profit_from_vehicles,
-            string_ids::objective_achieve_a_certain_performance_index,
-            string_ids::objective_deliver_a_certain_amount_of_cargo,
+            StringIds::objective_achieve_a_certain_company_value,
+            StringIds::objective_achieve_a_certain_monthly_profit_from_vehicles,
+            StringIds::objective_achieve_a_certain_performance_index,
+            StringIds::objective_deliver_a_certain_amount_of_cargo,
         };
 
         static const uint8_t maxCargoObjects = static_cast<uint8_t>(objectmgr::getMaxObjects(object_type::cargo));
@@ -268,7 +268,7 @@ namespace OpenLoco::ui::windows::ScenarioOptions
                     dropdown::show(self->x + target.left, self->y + target.top, target.width() - 4, target.height(), self->colours[1], std::size(objectiveTypeLabelIds), 0x80);
 
                     for (size_t i = 0; i < std::size(objectiveTypeLabelIds); i++)
-                        dropdown::add(i, string_ids::dropdown_stringid, objectiveTypeLabelIds[i]);
+                        dropdown::add(i, StringIds::dropdown_stringid, objectiveTypeLabelIds[i]);
 
                     dropdown::setItemSelected(*objectiveType);
                     break;
@@ -372,7 +372,7 @@ namespace OpenLoco::ui::windows::ScenarioOptions
                         if (cargoObject == nullptr)
                             continue;
 
-                        dropdown::add(dropdownIndex, string_ids::dropdown_stringid, cargoObject->name);
+                        dropdown::add(dropdownIndex, StringIds::dropdown_stringid, cargoObject->name);
                         cargoByDropdownIndex[dropdownIndex] = cargoIdx;
 
                         if (cargoIdx == *objectiveDeliveredCargoType)
@@ -443,22 +443,22 @@ namespace OpenLoco::ui::windows::ScenarioOptions
             {
                 case scenario::objective_type::company_value:
                     *(int32_t*)&*commonFormatArgs = *objectiveCompanyValue;
-                    widgets[widx::objective_value].text = string_ids::challenge_monetary_value;
+                    widgets[widx::objective_value].text = StringIds::challenge_monetary_value;
                     break;
 
                 case scenario::objective_type::vehicle_profit:
                     *(int32_t*)&*commonFormatArgs = *objectiveMonthlyVehicleProfit;
-                    widgets[widx::objective_value].text = string_ids::challenge_monetary_value;
+                    widgets[widx::objective_value].text = StringIds::challenge_monetary_value;
                     break;
 
                 case scenario::objective_type::performance_index:
                     *(int16_t*)&*commonFormatArgs = *objectivePerformanceIndex;
-                    widgets[widx::objective_value].text = string_ids::challenge_performance_index;
+                    widgets[widx::objective_value].text = StringIds::challenge_performance_index;
                     break;
 
                 case scenario::objective_type::cargo_delivery:
                     *(int32_t*)&*commonFormatArgs = *objectiveDeliveredCargoAmount;
-                    widgets[widx::objective_value].text = string_ids::challenge_delivered_cargo;
+                    widgets[widx::objective_value].text = StringIds::challenge_delivered_cargo;
 
                     auto cargo = objectmgr::get<cargo_object>(*objectiveDeliveredCargoType);
                     widgets[widx::objective_cargo].text = cargo->name;
@@ -580,27 +580,27 @@ namespace OpenLoco::ui::windows::ScenarioOptions
         };
 
         static widget_t widgets[] = {
-            commonWidgets(327, string_ids::title_company_options),
-            makeStepperWidgets({ 256, 52 }, { 100, 12 }, widget_type::wt_17, 1, string_ids::max_competing_companies_value),
-            makeStepperWidgets({ 256, 67 }, { 100, 12 }, widget_type::wt_17, 1, string_ids::delay_before_competing_companies_start_months),
+            commonWidgets(327, StringIds::title_company_options),
+            makeStepperWidgets({ 256, 52 }, { 100, 12 }, widget_type::wt_17, 1, StringIds::max_competing_companies_value),
+            makeStepperWidgets({ 256, 67 }, { 100, 12 }, widget_type::wt_17, 1, StringIds::delay_before_competing_companies_start_months),
             makeWidget({ 246, 102 }, { 110, 12 }, widget_type::wt_18, 1),
-            makeWidget({ 344, 103 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
+            makeWidget({ 344, 103 }, { 11, 10 }, widget_type::wt_11, 1, StringIds::dropdown),
             makeWidget({ 246, 117 }, { 110, 12 }, widget_type::wt_18, 1),
-            makeWidget({ 344, 118 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
+            makeWidget({ 344, 118 }, { 11, 10 }, widget_type::wt_11, 1, StringIds::dropdown),
             makeWidget({ 246, 132 }, { 110, 12 }, widget_type::wt_18, 1),
-            makeWidget({ 344, 133 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
-            makeWidget({ 15, 160 }, { 341, 12 }, widget_type::checkbox, 1, string_ids::forbid_trains),
-            makeWidget({ 15, 172 }, { 341, 12 }, widget_type::checkbox, 1, string_ids::forbid_buses),
-            makeWidget({ 15, 184 }, { 341, 12 }, widget_type::checkbox, 1, string_ids::forbid_trucks),
-            makeWidget({ 15, 196 }, { 341, 12 }, widget_type::checkbox, 1, string_ids::forbid_trams),
-            makeWidget({ 15, 208 }, { 341, 12 }, widget_type::checkbox, 1, string_ids::forbid_aircraft),
-            makeWidget({ 15, 220 }, { 341, 12 }, widget_type::checkbox, 1, string_ids::forbid_ships),
-            makeWidget({ 15, 247 }, { 341, 12 }, widget_type::checkbox, 1, string_ids::forbid_trains),
-            makeWidget({ 15, 259 }, { 341, 12 }, widget_type::checkbox, 1, string_ids::forbid_buses),
-            makeWidget({ 15, 271 }, { 341, 12 }, widget_type::checkbox, 1, string_ids::forbid_trucks),
-            makeWidget({ 15, 283 }, { 341, 12 }, widget_type::checkbox, 1, string_ids::forbid_trams),
-            makeWidget({ 15, 295 }, { 341, 12 }, widget_type::checkbox, 1, string_ids::forbid_aircraft),
-            makeWidget({ 15, 307 }, { 341, 12 }, widget_type::checkbox, 1, string_ids::forbid_ships),
+            makeWidget({ 344, 133 }, { 11, 10 }, widget_type::wt_11, 1, StringIds::dropdown),
+            makeWidget({ 15, 160 }, { 341, 12 }, widget_type::checkbox, 1, StringIds::forbid_trains),
+            makeWidget({ 15, 172 }, { 341, 12 }, widget_type::checkbox, 1, StringIds::forbid_buses),
+            makeWidget({ 15, 184 }, { 341, 12 }, widget_type::checkbox, 1, StringIds::forbid_trucks),
+            makeWidget({ 15, 196 }, { 341, 12 }, widget_type::checkbox, 1, StringIds::forbid_trams),
+            makeWidget({ 15, 208 }, { 341, 12 }, widget_type::checkbox, 1, StringIds::forbid_aircraft),
+            makeWidget({ 15, 220 }, { 341, 12 }, widget_type::checkbox, 1, StringIds::forbid_ships),
+            makeWidget({ 15, 247 }, { 341, 12 }, widget_type::checkbox, 1, StringIds::forbid_trains),
+            makeWidget({ 15, 259 }, { 341, 12 }, widget_type::checkbox, 1, StringIds::forbid_buses),
+            makeWidget({ 15, 271 }, { 341, 12 }, widget_type::checkbox, 1, StringIds::forbid_trucks),
+            makeWidget({ 15, 283 }, { 341, 12 }, widget_type::checkbox, 1, StringIds::forbid_trams),
+            makeWidget({ 15, 295 }, { 341, 12 }, widget_type::checkbox, 1, StringIds::forbid_aircraft),
+            makeWidget({ 15, 307 }, { 341, 12 }, widget_type::checkbox, 1, StringIds::forbid_ships),
             widgetEnd(),
         };
 
@@ -617,57 +617,57 @@ namespace OpenLoco::ui::windows::ScenarioOptions
             {
                 const int16_t xPos = window->x + 10;
                 int16_t yPos = window->y + widgets[widx::max_competing_companies].top + 1;
-                Gfx::drawString_494B3F(*dpi, xPos, yPos, Colour::black, string_ids::max_competing_companies);
+                Gfx::drawString_494B3F(*dpi, xPos, yPos, Colour::black, StringIds::max_competing_companies);
             }
 
             {
                 const int16_t xPos = window->x + 10;
                 int16_t yPos = window->y + widgets[widx::delay_before_competing_companies_start].top + 1;
-                Gfx::drawString_494B3F(*dpi, xPos, yPos, Colour::black, string_ids::delay_before_competing_companies_start);
+                Gfx::drawString_494B3F(*dpi, xPos, yPos, Colour::black, StringIds::delay_before_competing_companies_start);
             }
 
             {
                 const int16_t xPos = window->x + 15;
                 int16_t yPos = window->y + widgets[widx::preferred_intelligence].top - 14;
-                Gfx::drawString_494B3F(*dpi, xPos, yPos, Colour::black, string_ids::selection_of_competing_companies);
+                Gfx::drawString_494B3F(*dpi, xPos, yPos, Colour::black, StringIds::selection_of_competing_companies);
             }
 
             {
                 const int16_t xPos = window->x + 10;
                 int16_t yPos = window->y + widgets[widx::preferred_intelligence].top + 1;
-                Gfx::drawString_494B3F(*dpi, xPos, yPos, Colour::black, string_ids::preferred_intelligence);
+                Gfx::drawString_494B3F(*dpi, xPos, yPos, Colour::black, StringIds::preferred_intelligence);
             }
 
             {
                 const int16_t xPos = window->x + 10;
                 int16_t yPos = window->y + widgets[widx::preferred_aggressiveness].top + 1;
-                Gfx::drawString_494B3F(*dpi, xPos, yPos, Colour::black, string_ids::preferred_aggressiveness);
+                Gfx::drawString_494B3F(*dpi, xPos, yPos, Colour::black, StringIds::preferred_aggressiveness);
             }
 
             {
                 const int16_t xPos = window->x + 10;
                 int16_t yPos = window->y + widgets[widx::preferred_competitiveness].top + 1;
-                Gfx::drawString_494B3F(*dpi, xPos, yPos, Colour::black, string_ids::preferred_competitiveness);
+                Gfx::drawString_494B3F(*dpi, xPos, yPos, Colour::black, StringIds::preferred_competitiveness);
             }
 
             {
                 const int16_t xPos = window->x + 10;
                 int16_t yPos = window->y + widgets[widx::competitor_forbid_trains].top - 12;
-                Gfx::drawString_494B3F(*dpi, xPos, yPos, Colour::black, string_ids::forbid_competing_companies_from_using);
+                Gfx::drawString_494B3F(*dpi, xPos, yPos, Colour::black, StringIds::forbid_competing_companies_from_using);
             }
 
             {
                 const int16_t xPos = window->x + 10;
                 int16_t yPos = window->y + widgets[widx::player_forbid_trains].top - 12;
-                Gfx::drawString_494B3F(*dpi, xPos, yPos, Colour::black, string_ids::forbid_player_companies_from_using);
+                Gfx::drawString_494B3F(*dpi, xPos, yPos, Colour::black, StringIds::forbid_player_companies_from_using);
             }
         }
 
         static string_id preferenceLabelIds[] = {
-            string_ids::preference_any,
-            string_ids::preference_low,
-            string_ids::preference_medium,
-            string_ids::preference_high,
+            StringIds::preference_any,
+            StringIds::preference_low,
+            StringIds::preference_medium,
+            StringIds::preference_high,
         };
 
         // 0x0043F67C
@@ -725,7 +725,7 @@ namespace OpenLoco::ui::windows::ScenarioOptions
                     dropdown::show(self->x + target.left, self->y + target.top, target.width() - 4, target.height(), self->colours[1], std::size(preferenceLabelIds), 0x80);
 
                     for (size_t i = 0; i < std::size(preferenceLabelIds); i++)
-                        dropdown::add(i, string_ids::dropdown_stringid, preferenceLabelIds[i]);
+                        dropdown::add(i, StringIds::dropdown_stringid, preferenceLabelIds[i]);
 
                     dropdown::setItemSelected(*preferredAIIntelligence);
                     break;
@@ -737,7 +737,7 @@ namespace OpenLoco::ui::windows::ScenarioOptions
                     dropdown::show(self->x + target.left, self->y + target.top, target.width() - 4, target.height(), self->colours[1], std::size(preferenceLabelIds), 0x80);
 
                     for (size_t i = 0; i < std::size(preferenceLabelIds); i++)
-                        dropdown::add(i, string_ids::dropdown_stringid, preferenceLabelIds[i]);
+                        dropdown::add(i, StringIds::dropdown_stringid, preferenceLabelIds[i]);
 
                     dropdown::setItemSelected(*preferredAIAggressiveness);
                     break;
@@ -749,7 +749,7 @@ namespace OpenLoco::ui::windows::ScenarioOptions
                     dropdown::show(self->x + target.left, self->y + target.top, target.width() - 4, target.height(), self->colours[1], std::size(preferenceLabelIds), 0x80);
 
                     for (size_t i = 0; i < std::size(preferenceLabelIds); i++)
-                        dropdown::add(i, string_ids::dropdown_stringid, preferenceLabelIds[i]);
+                        dropdown::add(i, StringIds::dropdown_stringid, preferenceLabelIds[i]);
 
                     dropdown::setItemSelected(*preferredAICompetitiveness);
                     break;
@@ -853,10 +853,10 @@ namespace OpenLoco::ui::windows::ScenarioOptions
         };
 
         static widget_t widgets[] = {
-            commonWidgets(217, string_ids::title_financial_options),
-            makeStepperWidgets({ 256, 52 }, { 100, 12 }, widget_type::wt_17, 1, string_ids::starting_loan_value),
-            makeStepperWidgets({ 256, 67 }, { 100, 12 }, widget_type::wt_17, 1, string_ids::max_loan_size_value),
-            makeStepperWidgets({ 256, 82 }, { 100, 12 }, widget_type::wt_17, 1, string_ids::loan_interest_rate_value),
+            commonWidgets(217, StringIds::title_financial_options),
+            makeStepperWidgets({ 256, 52 }, { 100, 12 }, widget_type::wt_17, 1, StringIds::starting_loan_value),
+            makeStepperWidgets({ 256, 67 }, { 100, 12 }, widget_type::wt_17, 1, StringIds::max_loan_size_value),
+            makeStepperWidgets({ 256, 82 }, { 100, 12 }, widget_type::wt_17, 1, StringIds::loan_interest_rate_value),
             widgetEnd(),
         };
 
@@ -873,19 +873,19 @@ namespace OpenLoco::ui::windows::ScenarioOptions
             {
                 const int16_t xPos = window->x + 10;
                 int16_t yPos = window->y + widgets[widx::starting_loan].top + 1;
-                Gfx::drawString_494B3F(*dpi, xPos, yPos, Colour::black, string_ids::starting_loan);
+                Gfx::drawString_494B3F(*dpi, xPos, yPos, Colour::black, StringIds::starting_loan);
             }
 
             {
                 const int16_t xPos = window->x + 10;
                 int16_t yPos = window->y + widgets[widx::max_loan_size].top + 1;
-                Gfx::drawString_494B3F(*dpi, xPos, yPos, Colour::black, string_ids::max_loan_size);
+                Gfx::drawString_494B3F(*dpi, xPos, yPos, Colour::black, StringIds::max_loan_size);
             }
 
             {
                 const int16_t xPos = window->x + 10;
                 int16_t yPos = window->y + widgets[widx::loan_interest_rate].top + 1;
-                Gfx::drawString_494B3F(*dpi, xPos, yPos, Colour::black, string_ids::loan_interest_rate);
+                Gfx::drawString_494B3F(*dpi, xPos, yPos, Colour::black, StringIds::loan_interest_rate);
             }
         }
 
@@ -980,11 +980,11 @@ namespace OpenLoco::ui::windows::ScenarioOptions
         };
 
         static widget_t widgets[] = {
-            commonWidgets(217, string_ids::title_scenario_options),
-            makeWidget({ 281, 52 }, { 75, 12 }, widget_type::wt_11, 1, string_ids::change),
-            makeWidget({ 196, 67 }, { 160, 12 }, widget_type::wt_18, 1, string_ids::empty),
-            makeWidget({ 344, 68 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
-            makeWidget({ 281, 82 }, { 75, 12 }, widget_type::wt_11, 1, string_ids::change),
+            commonWidgets(217, StringIds::title_scenario_options),
+            makeWidget({ 281, 52 }, { 75, 12 }, widget_type::wt_11, 1, StringIds::change),
+            makeWidget({ 196, 67 }, { 160, 12 }, widget_type::wt_18, 1, StringIds::empty),
+            makeWidget({ 344, 68 }, { 11, 10 }, widget_type::wt_11, 1, StringIds::dropdown),
+            makeWidget({ 281, 82 }, { 75, 12 }, widget_type::wt_11, 1, StringIds::change),
             widgetEnd(),
         };
 
@@ -1000,9 +1000,9 @@ namespace OpenLoco::ui::windows::ScenarioOptions
 
             {
                 // Prepare scenario name text.
-                char* buffer = (char*)stringmgr::getString(string_ids::buffer_2039);
+                char* buffer = (char*)StringManager::getString(StringIds::buffer_2039);
                 strncpy(buffer, s5::getOptions().scenarioName, 512);
-                commonFormatArgs[0] = string_ids::buffer_2039;
+                commonFormatArgs[0] = StringIds::buffer_2039;
 
                 auto* stex = objectmgr::get<scenario_text_object>();
                 if (stex != nullptr)
@@ -1011,42 +1011,42 @@ namespace OpenLoco::ui::windows::ScenarioOptions
                 const int16_t xPos = window->x + 10;
                 int16_t yPos = window->y + widgets[widx::change_name_btn].top + 1;
                 int16_t width = widgets[widx::change_name_btn].left - 20;
-                Gfx::drawString_494BBF(*dpi, xPos, yPos, width, Colour::black, string_ids::scenario_name_stringid, &*commonFormatArgs);
+                Gfx::drawString_494BBF(*dpi, xPos, yPos, width, Colour::black, StringIds::scenario_name_stringid, &*commonFormatArgs);
             }
 
             {
                 const int16_t xPos = window->x + 10;
                 int16_t yPos = window->y + widgets[widx::scenario_group].top + 1;
-                Gfx::drawString_494B3F(*dpi, xPos, yPos, Colour::black, string_ids::scenario_group);
+                Gfx::drawString_494B3F(*dpi, xPos, yPos, Colour::black, StringIds::scenario_group);
             }
 
             {
                 const int16_t xPos = window->x + 10;
                 int16_t yPos = window->y + widgets[widx::change_details_btn].top + 1;
-                Gfx::drawString_494B3F(*dpi, xPos, yPos, Colour::black, string_ids::scenario_details);
+                Gfx::drawString_494B3F(*dpi, xPos, yPos, Colour::black, StringIds::scenario_details);
             }
 
             {
                 // Prepare scenario details text.
-                char* buffer = (char*)stringmgr::getString(string_ids::buffer_2039);
+                char* buffer = (char*)StringManager::getString(StringIds::buffer_2039);
                 strncpy(buffer, s5::getOptions().scenarioDetails, 512);
-                commonFormatArgs[0] = string_ids::buffer_2039;
+                commonFormatArgs[0] = StringIds::buffer_2039;
 
                 auto* stex = objectmgr::get<scenario_text_object>();
                 if (stex != nullptr)
                     commonFormatArgs[0] = stex->details;
 
                 auto& target = window->widgets[widx::change_details_btn];
-                Gfx::drawString_495224(*dpi, window->x + 16, window->y + 12 + target.top, target.left - 26, Colour::black, string_ids::black_stringid, &*commonFormatArgs);
+                Gfx::drawString_495224(*dpi, window->x + 16, window->y + 12 + target.top, target.left - 26, Colour::black, StringIds::black_stringid, &*commonFormatArgs);
             }
         }
 
         static string_id scenarioGroupLabelIds[] = {
-            string_ids::scenario_group_beginner,
-            string_ids::scenario_group_easy,
-            string_ids::scenario_group_medium,
-            string_ids::scenario_group_challenging,
-            string_ids::scenario_group_expert,
+            StringIds::scenario_group_beginner,
+            StringIds::scenario_group_easy,
+            StringIds::scenario_group_medium,
+            StringIds::scenario_group_challenging,
+            StringIds::scenario_group_expert,
         };
 
         // 0x0043F14B
@@ -1068,7 +1068,7 @@ namespace OpenLoco::ui::windows::ScenarioOptions
                 dropdown::show(self->x + target.left, self->y + target.top, target.width() - 4, target.height(), self->colours[1], std::size(scenarioGroupLabelIds), 0x80);
 
                 for (size_t i = 0; i < std::size(scenarioGroupLabelIds); i++)
-                    dropdown::add(i, string_ids::dropdown_stringid, scenarioGroupLabelIds[i]);
+                    dropdown::add(i, StringIds::dropdown_stringid, scenarioGroupLabelIds[i]);
 
                 dropdown::setItemSelected(s5::getOptions().difficulty);
             }
@@ -1088,19 +1088,19 @@ namespace OpenLoco::ui::windows::ScenarioOptions
 
                 case widx::change_name_btn:
                 {
-                    char* buffer = (char*)stringmgr::getString(string_ids::buffer_2039);
+                    char* buffer = (char*)StringManager::getString(StringIds::buffer_2039);
                     strncpy(buffer, s5::getOptions().scenarioName, 512);
 
-                    textinput::openTextinput(self, string_ids::scenario_name_title, string_ids::enter_name_for_scenario, string_ids::buffer_2039, widgetIndex, nullptr);
+                    textinput::openTextinput(self, StringIds::scenario_name_title, StringIds::enter_name_for_scenario, StringIds::buffer_2039, widgetIndex, nullptr);
                     break;
                 }
 
                 case widx::change_details_btn:
                 {
-                    char* buffer = (char*)stringmgr::getString(string_ids::buffer_2039);
+                    char* buffer = (char*)StringManager::getString(StringIds::buffer_2039);
                     strncpy(buffer, s5::getOptions().scenarioDetails, 512);
 
-                    textinput::openTextinput(self, string_ids::scenario_details_title, string_ids::enter_description_of_this_scenario, string_ids::buffer_2039, widgetIndex, nullptr);
+                    textinput::openTextinput(self, StringIds::scenario_details_title, StringIds::enter_description_of_this_scenario, StringIds::buffer_2039, widgetIndex, nullptr);
                     break;
                 }
             }

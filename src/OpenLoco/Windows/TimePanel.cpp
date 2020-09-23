@@ -43,14 +43,14 @@ namespace OpenLoco::ui::TimePanel
     static void changeGameSpeed(window* w, uint8_t speed);
 
     static widget_t _widgets[] = {
-        makeWidget({ 0, 0 }, { 140, 29 }, widget_type::wt_3, 0),                                                                                         // 0,
-        makeWidget({ 2, 2 }, { 136, 25 }, widget_type::wt_3, 0),                                                                                         // 1,
-        makeWidget({ 113, 1 }, { 26, 26 }, widget_type::wt_9, 0),                                                                                        // 2,
-        makeWidget({ 2, 2 }, { 111, 12 }, widget_type::wt_9, 0, ImageIds::null, string_ids::tooltip_daymonthyear_challenge),                             // 3,
-        makeRemapWidget({ 18, 15 }, { 20, 12 }, widget_type::wt_9, 0, ImageIds::speed_pause, string_ids::tooltip_speed_pause),                           // 4,
-        makeRemapWidget({ 38, 15 }, { 20, 12 }, widget_type::wt_9, 0, ImageIds::speed_normal, string_ids::tooltip_speed_normal),                         // 5,
-        makeRemapWidget({ 58, 15 }, { 20, 12 }, widget_type::wt_9, 0, ImageIds::speed_fast_forward, string_ids::tooltip_speed_fast_forward),             // 6,
-        makeRemapWidget({ 78, 15 }, { 20, 12 }, widget_type::wt_9, 0, ImageIds::speed_extra_fast_forward, string_ids::tooltip_speed_extra_fast_forward), // 7,
+        makeWidget({ 0, 0 }, { 140, 29 }, widget_type::wt_3, 0),                                                                                        // 0,
+        makeWidget({ 2, 2 }, { 136, 25 }, widget_type::wt_3, 0),                                                                                        // 1,
+        makeWidget({ 113, 1 }, { 26, 26 }, widget_type::wt_9, 0),                                                                                       // 2,
+        makeWidget({ 2, 2 }, { 111, 12 }, widget_type::wt_9, 0, ImageIds::null, StringIds::tooltip_daymonthyear_challenge),                             // 3,
+        makeRemapWidget({ 18, 15 }, { 20, 12 }, widget_type::wt_9, 0, ImageIds::speed_pause, StringIds::tooltip_speed_pause),                           // 4,
+        makeRemapWidget({ 38, 15 }, { 20, 12 }, widget_type::wt_9, 0, ImageIds::speed_normal, StringIds::tooltip_speed_normal),                         // 5,
+        makeRemapWidget({ 58, 15 }, { 20, 12 }, widget_type::wt_9, 0, ImageIds::speed_fast_forward, StringIds::tooltip_speed_fast_forward),             // 6,
+        makeRemapWidget({ 78, 15 }, { 20, 12 }, widget_type::wt_9, 0, ImageIds::speed_extra_fast_forward, StringIds::tooltip_speed_extra_fast_forward), // 7,
         widgetEnd(),
     };
 
@@ -185,13 +185,13 @@ namespace OpenLoco::ui::TimePanel
         Gfx::drawRectInset(dpi, self->x + frame.left + 1, self->y + frame.top + 1, frame.width() - 2, frame.height() - 2, self->colours[1], 0x30);
 
         *(uint32_t*)&_common_format_args[0] = getCurrentDay();
-        string_id format = string_ids::date_monthyear;
+        string_id format = StringIds::date_monthyear;
 
         if (isPaused() && (getPauseFlags() & (1 << 2)) == 0)
         {
             if (self->var_856 >= 30)
             {
-                format = string_ids::toolbar_status_paused;
+                format = StringIds::toolbar_status_paused;
             }
         }
 
@@ -236,14 +236,14 @@ namespace OpenLoco::ui::TimePanel
 
         if (isNetworked())
         {
-            dropdown::add(0, string_ids::menu_sprite_stringid, { (uint32_t)skin->img + interface_skin::image_ids::phone, string_ids::chat_send_message });
-            dropdown::add(1, string_ids::menu_sprite_stringid, { (uint32_t)skin->img + map_sprites_by_rotation[gCurrentRotation], string_ids::menu_map });
+            dropdown::add(0, StringIds::menu_sprite_stringid, { (uint32_t)skin->img + interface_skin::image_ids::phone, StringIds::chat_send_message });
+            dropdown::add(1, StringIds::menu_sprite_stringid, { (uint32_t)skin->img + map_sprites_by_rotation[gCurrentRotation], StringIds::menu_map });
             dropdown::showBelow(self, widgetIndex, 2, 25, (1 << 6));
             dropdown::setHighlightedItem(1);
         }
         else
         {
-            dropdown::add(0, string_ids::menu_sprite_stringid, { (uint32_t)skin->img + map_sprites_by_rotation[gCurrentRotation], string_ids::menu_map });
+            dropdown::add(0, StringIds::menu_sprite_stringid, { (uint32_t)skin->img + map_sprites_by_rotation[gCurrentRotation], StringIds::menu_map });
             dropdown::showBelow(self, widgetIndex, 1, 25, (1 << 6));
             dropdown::setHighlightedItem(0);
         }
@@ -263,7 +263,7 @@ namespace OpenLoco::ui::TimePanel
                 {
                     auto opponent = companymgr::getOpponent();
                     _common_format_args[4] = opponent->owner_name;
-                    ui::textinput::openTextinput(self, string_ids::chat_title, string_ids::chat_instructions, string_ids::empty, widgetIndex, &*_common_format_args);
+                    ui::textinput::openTextinput(self, StringIds::chat_title, StringIds::chat_instructions, StringIds::empty, widgetIndex, &*_common_format_args);
                     break;
                 }
                 case 1:
@@ -337,19 +337,19 @@ namespace OpenLoco::ui::TimePanel
 
         if ((playerCompany->challenge_flags & company_flags::challenge_completed) != 0)
         {
-            args.push(string_ids::challenge_completed);
+            args.push(StringIds::challenge_completed);
         }
         else if ((playerCompany->challenge_flags & company_flags::challenge_failed) != 0)
         {
-            args.push(string_ids::challenge_failed);
+            args.push(StringIds::challenge_failed);
         }
         else if ((playerCompany->challenge_flags & company_flags::challenge_beaten_by_opponent) != 0)
         {
-            args.push(string_ids::empty);
+            args.push(StringIds::empty);
         }
         else
         {
-            args.push(string_ids::challenge_progress);
+            args.push(StringIds::challenge_progress);
             args.push<uint16_t>(playerCompany->var_8C4E);
 
             if (objectiveFlags & 4)
@@ -357,13 +357,13 @@ namespace OpenLoco::ui::TimePanel
                 uint16_t monthsLeft = (*objectiveTimeLimitYears * 12 - _526243);
                 uint16_t yearsLeft = monthsLeft / 12;
                 monthsLeft = monthsLeft % 12;
-                args.push(string_ids::challenge_time_left);
+                args.push(StringIds::challenge_time_left);
                 args.push(yearsLeft);
                 args.push(monthsLeft);
             }
             else
             {
-                args.push(string_ids::empty);
+                args.push(StringIds::empty);
             }
         }
     }
@@ -382,7 +382,7 @@ namespace OpenLoco::ui::TimePanel
     // 0x00439A1C
     static void processChatMessage(char string[512])
     {
-        addr<0x009C68E8, string_id>() = string_ids::empty;
+        addr<0x009C68E8, string_id>() = StringIds::empty;
 
         for (uint8_t i = 0; i < 32; i++)
         {

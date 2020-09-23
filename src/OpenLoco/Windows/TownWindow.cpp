@@ -43,14 +43,14 @@ namespace OpenLoco::ui::windows::town
 
         const uint64_t enabledWidgets = (1 << widx::caption) | (1 << widx::close_button) | (1 << widx::tab_town) | (1 << widx::tab_population) | (1 << widx::tab_company_ratings);
 
-#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                         \
-    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, widget_type::frame, 0),                                                           \
-        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, widget_type::caption_25, 0, windowCaptionId),                                      \
-        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, string_ids::tooltip_close_window), \
-        makeWidget({ 0, 41 }, { frameWidth, 120 }, widget_type::panel, 1),                                                              \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_town),                          \
-        makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_population_graph),             \
-        makeRemapWidget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_town_ratings_each_company)
+#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                        \
+    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, widget_type::frame, 0),                                                          \
+        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, widget_type::caption_25, 0, windowCaptionId),                                     \
+        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window), \
+        makeWidget({ 0, 41 }, { frameWidth, 120 }, widget_type::panel, 1),                                                             \
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_town),                          \
+        makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_population_graph),             \
+        makeRemapWidget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_town_ratings_each_company)
 
         // Defined at the bottom of this file.
         static void prepareDraw(window* self);
@@ -75,12 +75,12 @@ namespace OpenLoco::ui::windows::town
         };
 
         static widget_t widgets[] = {
-            commonWidgets(223, 161, string_ids::title_town),
+            commonWidgets(223, 161, StringIds::title_town),
             makeWidget({ 3, 44 }, { 195, 104 }, widget_type::viewport, 1, 0xFFFFFFFE),
             makeWidget({ 3, 139 }, { 195, 21 }, widget_type::wt_13, 1),
-            makeWidget({ 0, 0 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::null, string_ids::move_main_view_to_show_this),
-            makeWidget({ 198, 44 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::town_expand, string_ids::expand_this_town),
-            makeWidget({ 198, 68 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::rubbish_bin, string_ids::demolish_this_town),
+            makeWidget({ 0, 0 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::null, StringIds::move_main_view_to_show_this),
+            makeWidget({ 198, 44 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::town_expand, StringIds::expand_this_town),
+            makeWidget({ 198, 68 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::rubbish_bin, StringIds::demolish_this_town),
             widgetEnd(),
         };
 
@@ -144,7 +144,7 @@ namespace OpenLoco::ui::windows::town
             const auto x = self->x + widget.left - 1;
             const auto y = self->y + widget.top - 1;
             const auto width = widget.width() - 1;
-            Gfx::drawString_494BBF(*dpi, x, y, width, Colour::black, string_ids::status_town_population, &args);
+            Gfx::drawString_494BBF(*dpi, x, y, width, Colour::black, StringIds::status_town_population, &args);
         }
 
         // 0x00499079
@@ -219,7 +219,7 @@ namespace OpenLoco::ui::windows::town
                 case widx::demolish_town:
                 {
                     loco_global<string_id, 0x009C68E8> gameErrorString;
-                    gameErrorString = string_ids::cant_remove_town;
+                    gameErrorString = StringIds::cant_remove_town;
                     bool success = game_commands::do_50(self->number);
                     if (!success)
                         break;
@@ -392,7 +392,7 @@ namespace OpenLoco::ui::windows::town
     namespace population
     {
         static widget_t widgets[] = {
-            commonWidgets(223, 161, string_ids::title_town_population),
+            commonWidgets(223, 161, StringIds::title_town_population),
             widgetEnd(),
         };
 
@@ -426,7 +426,7 @@ namespace OpenLoco::ui::windows::town
                 const uint16_t xPos = 39;
                 Gfx::drawRect(clipped, xPos, yPos, 241, 1, Colour::getShade(self->colours[1], 4));
 
-                Gfx::drawString_494C78(*clipped, xPos, yPos - 6, Colour::black, string_ids::population_graph_people, &args);
+                Gfx::drawString_494C78(*clipped, xPos, yPos - 6, Colour::black, StringIds::population_graph_people, &args);
 
                 yTick += 1000;
             }
@@ -448,7 +448,7 @@ namespace OpenLoco::ui::windows::town
                         auto args = FormatArguments();
                         args.push(year);
 
-                        Gfx::drawStringCentred(*clipped, xPos, yPos, Colour::black, string_ids::population_graph_year, &args);
+                        Gfx::drawStringCentred(*clipped, xPos, yPos, Colour::black, StringIds::population_graph_year, &args);
                     }
 
                     Gfx::drawRect(clipped, xPos, 11, 1, self->height - 66, Colour::getShade(self->colours[1], 4));
@@ -518,7 +518,7 @@ namespace OpenLoco::ui::windows::town
     namespace company_ratings
     {
         static widget_t widgets[] = {
-            commonWidgets(340, 208, string_ids::title_town_local_authority),
+            commonWidgets(340, 208, StringIds::title_town_local_authority),
             widgetEnd(),
         };
 
@@ -538,7 +538,7 @@ namespace OpenLoco::ui::windows::town
 
             uint16_t xPos = self->x + 4;
             uint16_t yPos = self->y + 46;
-            Gfx::drawString_494B3F(*dpi, xPos, yPos, Colour::black, string_ids::local_authority_ratings_transport_companies);
+            Gfx::drawString_494B3F(*dpi, xPos, yPos, Colour::black, StringIds::local_authority_ratings_transport_companies);
 
             xPos += 4;
             yPos += 14;
@@ -551,15 +551,15 @@ namespace OpenLoco::ui::windows::town
                 int16_t rating = (std::clamp<int16_t>(town->company_ratings[i], -1000, 1000) + 1000) / 20;
                 string_id rank{};
                 if (rating >= 70)
-                    rank = string_ids::town_rating_excellent;
+                    rank = StringIds::town_rating_excellent;
                 else if (rating >= 60)
-                    rank = string_ids::town_rating_good;
+                    rank = StringIds::town_rating_good;
                 else if (rating >= 50)
-                    rank = string_ids::town_rating_average;
+                    rank = StringIds::town_rating_average;
                 else if (rating >= 25)
-                    rank = string_ids::town_rating_poor;
+                    rank = StringIds::town_rating_poor;
                 else
-                    rank = string_ids::town_rating_appalling;
+                    rank = StringIds::town_rating_appalling;
 
                 auto args = FormatArguments();
                 args.push(companymgr::get(i)->name);
@@ -567,7 +567,7 @@ namespace OpenLoco::ui::windows::town
                 args.push(rating);
                 args.push(rank);
 
-                Gfx::drawString_494BBF(*dpi, xPos, yPos, self->width - 12, Colour::black, string_ids::town_rating_company_percentage_rank, &args);
+                Gfx::drawString_494BBF(*dpi, xPos, yPos, self->width - 12, Colour::black, StringIds::town_rating_company_percentage_rank, &args);
 
                 yPos += 10;
             }
@@ -669,7 +669,7 @@ namespace OpenLoco::ui::windows::town
             if (strlen(input) == 0)
                 return;
 
-            addr<0x009C68E8, string_id>() = string_ids::error_cant_rename_town;
+            addr<0x009C68E8, string_id>() = StringIds::error_cant_rename_town;
 
             uint32_t* buffer = (uint32_t*)input;
             game_commands::do_46(self->number, 1, buffer[0], buffer[1], buffer[2]);
@@ -688,7 +688,7 @@ namespace OpenLoco::ui::windows::town
         {
             auto town = townmgr::get(self->number);
             commonFormatArgs[2] = town->name;
-            textinput::openTextinput(self, string_ids::title_town_name, string_ids::prompt_type_new_town_name, town->name, widgetIndex, &commonFormatArgs[2]);
+            textinput::openTextinput(self, StringIds::title_town_name, StringIds::prompt_type_new_town_name, town->name, widgetIndex, &commonFormatArgs[2]);
         }
 
         // 0x004999A7, 0x004999AD

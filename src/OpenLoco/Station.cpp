@@ -546,18 +546,18 @@ namespace OpenLoco
                 continue;
 
             if (*buffer != '\0')
-                ptr = stringmgr::formatString(ptr, string_ids::waiting_cargo_separator);
+                ptr = StringManager::formatString(ptr, StringIds::waiting_cargo_separator);
 
             loco_global<uint32_t, 0x112C826> _common_format_args;
             *_common_format_args = stats.quantity;
 
             auto cargo = objectmgr::get<cargo_object>(cargoId);
             string_id unit_name = stats.quantity == 1 ? cargo->unit_name_singular : cargo->unit_name_plural;
-            ptr = stringmgr::formatString(ptr, unit_name, &*_common_format_args);
+            ptr = StringManager::formatString(ptr, unit_name, &*_common_format_args);
         }
 
-        string_id suffix = *buffer == '\0' ? string_ids::nothing_waiting : string_ids::waiting;
-        ptr = stringmgr::formatString(ptr, suffix);
+        string_id suffix = *buffer == '\0' ? StringIds::nothing_waiting : StringIds::waiting;
+        ptr = StringManager::formatString(ptr, suffix);
     }
 
     // 0x00492793

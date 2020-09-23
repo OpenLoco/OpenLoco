@@ -49,14 +49,14 @@ namespace OpenLoco::ui::windows::station
 
         const uint64_t enabledWidgets = (1 << widx::caption) | (1 << widx::close_button) | (1 << widx::tab_station) | (1 << widx::tab_cargo) | (1 << widx::tab_cargo_ratings);
 
-#define commonWidgets(frameWidth, frameHeight)                                                                                          \
-    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, widget_type::frame, 0),                                                           \
-        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, widget_type::caption_23, 0, string_ids::title_station),                            \
-        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, string_ids::tooltip_close_window), \
-        makeWidget({ 0, 41 }, { frameWidth, 95 }, widget_type::panel, 1),                                                               \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_station),                       \
-        makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_station_cargo),                \
-        makeRemapWidget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_station_cargo_ratings)
+#define commonWidgets(frameWidth, frameHeight)                                                                                         \
+    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, widget_type::frame, 0),                                                          \
+        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, widget_type::caption_23, 0, StringIds::title_station),                            \
+        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window), \
+        makeWidget({ 0, 41 }, { frameWidth, 95 }, widget_type::panel, 1),                                                              \
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_station),                       \
+        makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_station_cargo),                \
+        makeRemapWidget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_station_cargo_ratings)
 
         // Defined at the bottom of this file.
         static void prepareDraw(window* self);
@@ -86,7 +86,7 @@ namespace OpenLoco::ui::windows::station
             commonWidgets(223, 136),
             makeWidget({ 3, 44 }, { 195, 80 }, widget_type::viewport, 1, 0xFFFFFFFE),
             makeWidget({ 3, 115 }, { 195, 21 }, widget_type::wt_13, 1),
-            makeWidget({ 0, 0 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::null, string_ids::move_main_view_to_show_this),
+            makeWidget({ 0, 0 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::null, StringIds::move_main_view_to_show_this),
             widgetEnd(),
         };
 
@@ -123,17 +123,17 @@ namespace OpenLoco::ui::windows::station
             widget::drawViewportCentreButton(dpi, self, widx::centre_on_viewport);
 
             auto station = stationmgr::get(self->number);
-            const char* buffer = stringmgr::getString(string_ids::buffer_1250);
+            const char* buffer = StringManager::getString(StringIds::buffer_1250);
             station->getStatusString((char*)buffer);
 
             auto args = FormatArguments();
-            args.push(string_ids::buffer_1250);
+            args.push(StringIds::buffer_1250);
 
             const auto& widget = self->widgets[widx::status_bar];
             const auto x = self->x + widget.left - 1;
             const auto y = self->y + widget.top - 1;
             const auto width = widget.width() - 1;
-            Gfx::drawString_494BBF(*dpi, x, y, width, Colour::black, string_ids::black_stringid, &args);
+            Gfx::drawString_494BBF(*dpi, x, y, width, Colour::black, StringIds::black_stringid, &args);
         }
 
         // 0x0048E4D4
@@ -340,7 +340,7 @@ namespace OpenLoco::ui::windows::station
             commonWidgets(223, 136),
             makeWidget({ 3, 44 }, { 217, 80 }, widget_type::scrollview, 1, 2),
             makeWidget({ 3, 125 }, { 195, 10 }, widget_type::wt_13, 1),
-            makeWidget({ 198, 44 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::show_station_catchment, string_ids::station_catchment),
+            makeWidget({ 198, 44 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::show_station_catchment, StringIds::station_catchment),
             widgetEnd(),
         };
 
@@ -376,8 +376,8 @@ namespace OpenLoco::ui::windows::station
             self->draw(dpi);
             common::drawTabs(self, dpi);
 
-            auto buffer = const_cast<char*>(stringmgr::getString(string_ids::buffer_1250));
-            buffer = stringmgr::formatString(buffer, string_ids::accepted_cargo_separator);
+            auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
+            buffer = StringManager::formatString(buffer, StringIds::accepted_cargo_separator);
 
             auto station = stationmgr::get(self->number);
             uint8_t cargoTypeCount = 0;
@@ -390,7 +390,7 @@ namespace OpenLoco::ui::windows::station
                     continue;
 
                 *buffer++ = ' ';
-                *buffer++ = control_codes::inline_sprite_str;
+                *buffer++ = ControlCodes::inline_sprite_str;
                 *(reinterpret_cast<uint32_t*>(buffer)) = objectmgr::get<cargo_object>(cargoId)->unit_inline_sprite;
                 buffer += 4;
 
@@ -399,7 +399,7 @@ namespace OpenLoco::ui::windows::station
 
             if (cargoTypeCount == 0)
             {
-                buffer = stringmgr::formatString(buffer, string_ids::cargo_nothing_accepted);
+                buffer = StringManager::formatString(buffer, StringIds::cargo_nothing_accepted);
             }
 
             *buffer++ = '\0';
@@ -409,7 +409,7 @@ namespace OpenLoco::ui::windows::station
             const auto y = self->y + widget.top - 1;
             const auto width = widget.width();
 
-            Gfx::drawString_494BBF(*dpi, x, y, width, Colour::black, string_ids::buffer_1250);
+            Gfx::drawString_494BBF(*dpi, x, y, width, Colour::black, StringIds::buffer_1250);
         }
 
         // 0x0048EB0B
@@ -470,7 +470,7 @@ namespace OpenLoco::ui::windows::station
         // 0x0048EB4F
         static void tooltip(FormatArguments& args, ui::window* window, widget_index widgetIndex)
         {
-            args.push(string_ids::tooltip_scroll_cargo_list);
+            args.push(StringIds::tooltip_scroll_cargo_list);
         }
 
         // 0x0048E986
@@ -516,10 +516,10 @@ namespace OpenLoco::ui::windows::station
                 auto args = FormatArguments();
                 args.push(cargoName);
                 args.push<uint32_t>(cargo.quantity);
-                auto cargoStr = string_ids::station_cargo;
+                auto cargoStr = StringIds::station_cargo;
 
                 if (cargo.origin != self->number)
-                    cargoStr = string_ids::station_cargo_en_route_start;
+                    cargoStr = StringIds::station_cargo_en_route_start;
                 const auto& widget = self->widgets[widx::scrollview];
                 auto xPos = widget.width() - 14;
 
@@ -532,7 +532,7 @@ namespace OpenLoco::ui::windows::station
                     args2.push(originStation->name);
                     args2.push(originStation->town);
 
-                    Gfx::drawString_494C78(*dpi, xPos, y, Colour::outline(Colour::black), string_ids::station_cargo_en_route_end, &args2);
+                    Gfx::drawString_494C78(*dpi, xPos, y, Colour::outline(Colour::black), StringIds::station_cargo_en_route_end, &args2);
                     y += 10;
                 }
                 y += 2;
@@ -546,8 +546,8 @@ namespace OpenLoco::ui::windows::station
             if (totalUnits == 0)
             {
                 auto args = FormatArguments();
-                args.push(string_ids::nothing_waiting);
-                Gfx::drawString_494B3F(*dpi, 1, 0, Colour::black, string_ids::black_stringid, &args);
+                args.push(StringIds::nothing_waiting);
+                Gfx::drawString_494B3F(*dpi, 1, 0, Colour::black, StringIds::black_stringid, &args);
             }
         }
 
@@ -662,7 +662,7 @@ namespace OpenLoco::ui::windows::station
         // 0x0048EE73
         static void tooltip(FormatArguments& args, ui::window* window, widget_index widgetIndex)
         {
-            args.push(string_ids::tooltip_scroll_ratings_list);
+            args.push(StringIds::tooltip_scroll_ratings_list);
         }
 
         // 0x0048EF02
@@ -695,7 +695,7 @@ namespace OpenLoco::ui::windows::station
                 }
 
                 auto cargoObj = objectmgr::get<cargo_object>(cargoId);
-                Gfx::drawString_494BBF(*dpi, 1, y, 98, 0, string_ids::wcolour2_stringid, &cargoObj->name);
+                Gfx::drawString_494BBF(*dpi, 1, y, 98, 0, StringIds::wcolour2_stringid, &cargoObj->name);
 
                 auto rating = cargo.rating;
                 auto colour = Colour::moss_green;
@@ -712,7 +712,7 @@ namespace OpenLoco::ui::windows::station
                 drawRatingBar(self, dpi, 100, y, amount, colour);
 
                 uint16_t percent = rating / 2;
-                Gfx::drawString_494B3F(*dpi, 201, y, 0, string_ids::station_cargo_rating_percent, &percent);
+                Gfx::drawString_494B3F(*dpi, 201, y, 0, StringIds::station_cargo_rating_percent, &percent);
                 y += 10;
                 cargoId++;
             }
@@ -818,22 +818,22 @@ namespace OpenLoco::ui::windows::station
             auto station = stationmgr::get(self->number);
 
             uint32_t stationTypeImages[16] = {
-                string_ids::label_icons_none,
-                string_ids::label_icons_rail,
-                string_ids::label_icons_road,
-                string_ids::label_icons_rail_road,
-                string_ids::label_icons_air,
-                string_ids::label_icons_rail_air,
-                string_ids::label_icons_road_air,
-                string_ids::label_icons_rail_road_air,
-                string_ids::label_icons_water,
-                string_ids::label_icons_rail_water,
-                string_ids::label_icons_road_water,
-                string_ids::label_icons_rail_road_water,
-                string_ids::label_icons_air_water,
-                string_ids::label_icons_rail_air_water,
-                string_ids::label_icons_road_air_water,
-                string_ids::label_icons_rail_road_air_water
+                StringIds::label_icons_none,
+                StringIds::label_icons_rail,
+                StringIds::label_icons_road,
+                StringIds::label_icons_rail_road,
+                StringIds::label_icons_air,
+                StringIds::label_icons_rail_air,
+                StringIds::label_icons_road_air,
+                StringIds::label_icons_rail_road_air,
+                StringIds::label_icons_water,
+                StringIds::label_icons_rail_water,
+                StringIds::label_icons_road_water,
+                StringIds::label_icons_rail_road_water,
+                StringIds::label_icons_air_water,
+                StringIds::label_icons_rail_air_water,
+                StringIds::label_icons_road_air_water,
+                StringIds::label_icons_rail_road_air_water
             };
             auto args = FormatArguments();
             args.push(station->name);
@@ -862,7 +862,7 @@ namespace OpenLoco::ui::windows::station
             if (strlen(input) == 0)
                 return;
 
-            gGameCommandErrorTitle = string_ids::error_cant_rename_station;
+            gGameCommandErrorTitle = StringIds::error_cant_rename_station;
 
             uint32_t* buffer = (uint32_t*)input;
             game_commands::do_11(self->number, 1, buffer[0], buffer[1], buffer[2]);
@@ -887,7 +887,7 @@ namespace OpenLoco::ui::windows::station
             args.push(station->name);
             args.push(station->town);
 
-            textinput::openTextinput(self, string_ids::title_station_name, string_ids::prompt_type_new_station_name, station->name, widgetIndex, &station->town);
+            textinput::openTextinput(self, StringIds::title_station_name, StringIds::prompt_type_new_station_name, station->name, widgetIndex, &station->town);
         }
 
         // 0x0048EF82, 0x0048EF88

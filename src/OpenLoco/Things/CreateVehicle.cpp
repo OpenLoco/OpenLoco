@@ -76,7 +76,7 @@ namespace OpenLoco::things::vehicle
 
         if (totalAiVehicles > max_ai_vehicles)
         {
-            gGameCommandErrorText = string_ids::too_many_vehicles;
+            gGameCommandErrorText = StringIds::too_many_vehicles;
             return false;
         }
 
@@ -99,7 +99,7 @@ namespace OpenLoco::things::vehicle
                 return true;
             }
         }
-        gGameCommandErrorText = string_ids::too_many_vehicles;
+        gGameCommandErrorText = StringIds::too_many_vehicles;
         return false;
     }
 
@@ -108,13 +108,13 @@ namespace OpenLoco::things::vehicle
         switch (head->var_5D)
         {
             case 8:
-                gGameCommandErrorText = string_ids::vehicle_has_crashed;
+                gGameCommandErrorText = StringIds::vehicle_has_crashed;
                 return false;
             case 9:
-                gGameCommandErrorText = string_ids::vehicle_is_stuck;
+                gGameCommandErrorText = StringIds::vehicle_is_stuck;
                 return false;
             case 7:
-                gGameCommandErrorText = string_ids::vehicle_has_broken_down;
+                gGameCommandErrorText = StringIds::vehicle_has_broken_down;
                 return false;
             default:
             {
@@ -123,7 +123,7 @@ namespace OpenLoco::things::vehicle
                 {
                     if (train.veh2->var_73 & (1 << 0))
                     {
-                        gGameCommandErrorText = string_ids::vehicle_has_broken_down;
+                        gGameCommandErrorText = StringIds::vehicle_has_broken_down;
                         return false;
                     }
 
@@ -134,14 +134,14 @@ namespace OpenLoco::things::vehicle
 
                     if (head->var_5D != 6 && head->var_5D != 1)
                     {
-                        gGameCommandErrorText = string_ids::vehicle_must_be_stopped;
+                        gGameCommandErrorText = StringIds::vehicle_must_be_stopped;
                         return false;
                     }
                     if (train.veh2->var_56 == 0)
                     {
                         return true;
                     }
-                    gGameCommandErrorText = string_ids::vehicle_must_be_stopped;
+                    gGameCommandErrorText = StringIds::vehicle_must_be_stopped;
                     return false;
                 }
                 else
@@ -159,7 +159,7 @@ namespace OpenLoco::things::vehicle
                     {
                         return true;
                     }
-                    gGameCommandErrorText = string_ids::vehicle_must_be_stopped;
+                    gGameCommandErrorText = StringIds::vehicle_must_be_stopped;
                     return false;
                 }
             }
@@ -508,7 +508,7 @@ namespace OpenLoco::things::vehicle
                 return { i };
             }
         }
-        gGameCommandErrorText = string_ids::too_many_vehicles;
+        gGameCommandErrorText = StringIds::too_many_vehicles;
         return {};
     }
 
@@ -687,7 +687,7 @@ namespace OpenLoco::things::vehicle
 
         if (_525FB8 >= max_orders)
         {
-            gGameCommandErrorText = string_ids::no_space_for_more_vehicle_orders;
+            gGameCommandErrorText = StringIds::no_space_for_more_vehicle_orders;
             return {};
         }
 

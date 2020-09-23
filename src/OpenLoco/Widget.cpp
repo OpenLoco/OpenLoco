@@ -408,7 +408,7 @@ namespace OpenLoco::ui::widget
         colour &= 0x7F;
         if (disabled)
         {
-            colour |= format_flags::textflag_6;
+            colour |= FormatFlags::textflag_6;
         }
 
         int16_t centreX = window->x + (widget->left + widget->right + 1) / 2 - 1;
@@ -424,7 +424,7 @@ namespace OpenLoco::ui::widget
         colour &= 0x7F;
         if (disabled)
         {
-            colour |= format_flags::textflag_6;
+            colour |= FormatFlags::textflag_6;
         }
 
         int width = widget->right - widget->left - 2;
@@ -439,10 +439,10 @@ namespace OpenLoco::ui::widget
             return;
         }
 
-        uint8_t c = format_flags::fd;
+        uint8_t c = FormatFlags::fd;
         if (disabled)
         {
-            c = colour | format_flags::textflag_6;
+            c = colour | FormatFlags::textflag_6;
         }
 
         drawString_494B3F(*dpi, window->x + widget->left + 1, window->y + widget->top, c, widget->text, _commonFormatArgs);
@@ -468,19 +468,19 @@ namespace OpenLoco::ui::widget
         int16_t y = widget->top + window->y + 1;
         int16_t x = widget->left + window->x + 2 + (width / 2);
 
-        Gfx::drawStringCentredClipped(*dpi, x, y, width, Colour::white | format_flags::textflag_5, widget->text, _commonFormatArgs);
+        Gfx::drawStringCentredClipped(*dpi, x, y, width, Colour::white | FormatFlags::textflag_5, widget->text, _commonFormatArgs);
     }
 
     // 0x004CA750
     void draw_23_caption(Gfx::drawpixelinfo_t* dpi, window* window, widget_t* widget, uint16_t flags, uint8_t colour)
     {
-        stringFormatBuffer[0] = control_codes::colour_black;
-        stringmgr::formatString(&stringFormatBuffer[1], widget->text, _commonFormatArgs);
+        stringFormatBuffer[0] = ControlCodes::colour_black;
+        StringManager::formatString(&stringFormatBuffer[1], widget->text, _commonFormatArgs);
 
         int16_t width = widget->right - widget->left - 4 - 14;
         int16_t x = widget->left + window->x + 2 + (width / 2);
 
-        _currentFontSpriteBase = font::medium_bold;
+        _currentFontSpriteBase = Font::medium_bold;
         width = Gfx::clipString(width - 8, stringFormatBuffer);
 
         x -= width / 2;
@@ -494,35 +494,35 @@ namespace OpenLoco::ui::widget
     // 0x004CA7F6
     void draw_24_caption(Gfx::drawpixelinfo_t* dpi, window* window, widget_t* widget, uint16_t flags, uint8_t colour)
     {
-        stringFormatBuffer[0] = control_codes::window_colour_1;
-        stringmgr::formatString(&stringFormatBuffer[1], widget->text, _commonFormatArgs);
+        stringFormatBuffer[0] = ControlCodes::window_colour_1;
+        StringManager::formatString(&stringFormatBuffer[1], widget->text, _commonFormatArgs);
 
         int16_t x = widget->left + window->x + 2;
         int16_t width = widget->right - widget->left - 4 - 14;
         x = x + (width / 2);
 
-        _currentFontSpriteBase = font::medium_bold;
+        _currentFontSpriteBase = Font::medium_bold;
         int16_t stringWidth = Gfx::clipString(width - 8, stringFormatBuffer);
         x -= (stringWidth - 1) / 2;
 
-        Gfx::drawString(dpi, x, window->y + widget->top + 1, format_flags::textflag_5 | Colour::black, stringFormatBuffer);
+        Gfx::drawString(dpi, x, window->y + widget->top + 1, FormatFlags::textflag_5 | Colour::black, stringFormatBuffer);
     }
 
     // 0x004CA88B
     void draw_25_caption(Gfx::drawpixelinfo_t* dpi, window* window, widget_t* widget, uint16_t flags, uint8_t colour)
     {
-        stringFormatBuffer[0] = control_codes::colour_white;
-        stringmgr::formatString(&stringFormatBuffer[1], widget->text, _commonFormatArgs);
+        stringFormatBuffer[0] = ControlCodes::colour_white;
+        StringManager::formatString(&stringFormatBuffer[1], widget->text, _commonFormatArgs);
 
         int16_t x = widget->left + window->x + 2;
         int16_t width = widget->right - widget->left - 4 - 14;
         x = x + (width / 2);
 
-        _currentFontSpriteBase = font::medium_bold;
+        _currentFontSpriteBase = Font::medium_bold;
         int16_t stringWidth = Gfx::clipString(width - 8, stringFormatBuffer);
         x -= (stringWidth - 1) / 2;
 
-        Gfx::drawString(dpi, x, window->y + widget->top + 1, format_flags::textflag_5 | Colour::black, stringFormatBuffer);
+        Gfx::drawString(dpi, x, window->y + widget->top + 1, FormatFlags::textflag_5 | Colour::black, stringFormatBuffer);
     }
 
     static void draw_hscroll(Gfx::drawpixelinfo_t* dpi, window* window, widget_t* widget, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated, bool hovered, int16_t scrollview_index)
@@ -672,7 +672,7 @@ namespace OpenLoco::ui::widget
 
         ui::scroll_area_t* scroll_area = &window->scroll_areas[scrollview_index];
 
-        _currentFontSpriteBase = font::medium_bold;
+        _currentFontSpriteBase = Font::medium_bold;
         if (scroll_area->flags & ui::scrollview::scroll_flags::HSCROLLBAR_VISIBLE)
         {
             draw_hscroll(dpi, window, widget, flags, colour, enabled, disabled, activated, hovered, scrollview_index);
@@ -748,7 +748,7 @@ namespace OpenLoco::ui::widget
 
         if (activated)
         {
-            _currentFontSpriteBase = font::medium_bold;
+            _currentFontSpriteBase = Font::medium_bold;
             Gfx::drawString(dpi, window->x + widget->left, window->y + widget->top, colour & 0x7F, _strCheckmark);
         }
     }
@@ -765,7 +765,7 @@ namespace OpenLoco::ui::widget
 
         if (disabled)
         {
-            colour |= format_flags::textflag_6;
+            colour |= FormatFlags::textflag_6;
         }
 
         Gfx::drawString_494B3F(*dpi, window->x + widget->left + 14, window->y + widget->top, colour, widget->text, _commonFormatArgs);

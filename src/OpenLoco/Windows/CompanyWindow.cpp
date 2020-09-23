@@ -46,18 +46,18 @@ namespace OpenLoco::ui::windows::CompanyWindow
 
         constexpr uint64_t enabledWidgets = (1 << widx::caption) | (1 << widx::close_button) | (1 << widx::tab_status) | (1 << widx::tab_details) | (1 << widx::tab_colour_scheme) | (1 << widx::tab_finances) | (1 << widx::tab_cargo_delivered) | (1 << widx::tab_challenge);
 
-#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                             \
-    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, widget_type::frame, 0),                                                               \
-        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, widget_type::caption_24, 0, windowCaptionId),                                          \
-        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, string_ids::tooltip_close_window),     \
-        makeWidget({ 0, 41 }, { frameWidth, 120 }, widget_type::panel, 1),                                                                  \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_company_owner_and_status),          \
-        makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_company_headquarters_and_details), \
-        makeRemapWidget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_company_colour_scheme),            \
-        makeRemapWidget({ 96, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_company_finances),                 \
-        makeRemapWidget({ 127, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_cargo_delivered),                 \
-        makeRemapWidget({ 158, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_company_challenge_for_this_game), \
-        makeWidget({ 0, 14 }, { 26, 26 }, widget_type::wt_9, 0, ImageIds::null, string_ids::tooltip_select_company)
+#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                            \
+    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, widget_type::frame, 0),                                                              \
+        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, widget_type::caption_24, 0, windowCaptionId),                                         \
+        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window),     \
+        makeWidget({ 0, 41 }, { frameWidth, 120 }, widget_type::panel, 1),                                                                 \
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_company_owner_and_status),          \
+        makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_company_headquarters_and_details), \
+        makeRemapWidget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_company_colour_scheme),            \
+        makeRemapWidget({ 96, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_company_finances),                 \
+        makeRemapWidget({ 127, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_cargo_delivered),                 \
+        makeRemapWidget({ 158, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_company_challenge_for_this_game), \
+        makeWidget({ 0, 14 }, { 26, 26 }, widget_type::wt_9, 0, ImageIds::null, StringIds::tooltip_select_company)
 
         // 0x004343FC
         static void disableChallengeTab(window* self)
@@ -106,12 +106,12 @@ namespace OpenLoco::ui::windows::CompanyWindow
         };
 
         static widget_t widgets[] = {
-            commonWidgets(270, 182, string_ids::title_company),
+            commonWidgets(270, 182, StringIds::title_company),
             makeWidget({ 3, 160 }, { 242, 21 }, widget_type::wt_13, 1),
             makeWidget({ 3, 44 }, { 96, 120 }, widget_type::viewport, 1, -2),
-            makeWidget({ 0, 0 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::null, string_ids::move_main_view_to_show_this),
+            makeWidget({ 0, 0 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::null, StringIds::move_main_view_to_show_this),
             makeWidget({ 178, 57 }, { 66, 66 }, widget_type::wt_9, 1, ImageIds::null),
-            makeWidget({ 154, 124 }, { 112, 22 }, widget_type::wt_9, 1, ImageIds::null, string_ids::tooltip_change_owner_name),
+            makeWidget({ 154, 124 }, { 112, 22 }, widget_type::wt_9, 1, ImageIds::null, StringIds::tooltip_change_owner_name),
             widgetEnd(),
         };
 
@@ -196,7 +196,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
                     self->x + (widget.left + widget.right) / 2,
                     self->y + widget.top - 12,
                     Colour::black,
-                    string_ids::window_owner,
+                    StringIds::window_owner,
                     nullptr);
             }
 
@@ -228,7 +228,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
                     &origin,
                     widget.right - widget.left,
                     Colour::black,
-                    string_ids::black_stringid,
+                    StringIds::black_stringid,
                     &args);
             }
 
@@ -250,7 +250,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
                     self->y + widget.top - 1,
                     widget.right - widget.left,
                     Colour::black,
-                    string_ids::black_stringid,
+                    StringIds::black_stringid,
                     &args);
             }
 
@@ -311,7 +311,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
                 case widx::change_owner_name:
                 {
                     auto company = companymgr::get(self->number);
-                    textinput::openTextinput(self, string_ids::title_name_owner, string_ids::prompt_enter_new_name_for_owner, company->owner_name, widgetIndex, nullptr);
+                    textinput::openTextinput(self, StringIds::title_name_owner, StringIds::prompt_enter_new_name_for_owner, company->owner_name, widgetIndex, nullptr);
                     break;
                 }
             }
@@ -337,7 +337,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
             if (strlen(input) == 0)
                 return;
 
-            gGameCommandErrorTitle = string_ids::cannot_change_owner_name;
+            gGameCommandErrorTitle = StringIds::cannot_change_owner_name;
 
             bool success = false;
             {
@@ -353,19 +353,19 @@ namespace OpenLoco::ui::windows::CompanyWindow
 
             // Only name company after owner if this is a new company.
             const auto& company = companymgr::get(self->number);
-            if (company->name != string_ids::new_company)
+            if (company->name != StringIds::new_company)
                 return;
 
             // Temporarily store the new name in buffer string 2039.
             // TODO: replace with a fixed length!
-            char* buffer = const_cast<char*>(stringmgr::getString(string_ids::buffer_2039));
+            char* buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
             strcpy(buffer, input);
 
             FormatArguments args = {};
-            args.push(string_ids::buffer_2039);
+            args.push(StringIds::buffer_2039);
 
             // Add the ' Transport' suffix to the company name, and rename the company.
-            stringmgr::formatString(input, string_ids::company_owner_name_transport, const_cast<void*>(&args));
+            StringManager::formatString(input, StringIds::company_owner_name_transport, const_cast<void*>(&args));
             common::renameCompany(self, input);
         }
 
@@ -669,10 +669,10 @@ namespace OpenLoco::ui::windows::CompanyWindow
         };
 
         static widget_t widgets[] = {
-            commonWidgets(340, 194, string_ids::title_company_details),
+            commonWidgets(340, 194, StringIds::title_company_details),
             makeWidget({ 219, 54 }, { 96, 120 }, widget_type::viewport, 1, -2),
-            makeWidget({ 315, 92 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::null, string_ids::tooltip_build_or_move_headquarters),
-            makeWidget({ 0, 0 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::null, string_ids::move_main_view_to_show_this),
+            makeWidget({ 315, 92 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::null, StringIds::tooltip_build_or_move_headquarters),
+            makeWidget({ 0, 0 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::null, StringIds::move_main_view_to_show_this),
             widgetEnd(),
         };
 
@@ -732,16 +732,16 @@ namespace OpenLoco::ui::windows::CompanyWindow
 
         static std::array<string_id, 10> aiRatingToLevelArray = {
             {
-                string_ids::low,
-                string_ids::low,
-                string_ids::low,
-                string_ids::low,
-                string_ids::medium,
-                string_ids::medium,
-                string_ids::medium,
-                string_ids::high,
-                string_ids::high,
-                string_ids::high,
+                StringIds::low,
+                StringIds::low,
+                StringIds::low,
+                StringIds::low,
+                StringIds::medium,
+                StringIds::medium,
+                StringIds::medium,
+                StringIds::high,
+                StringIds::high,
+                StringIds::high,
             }
         };
 
@@ -757,33 +757,33 @@ namespace OpenLoco::ui::windows::CompanyWindow
                 FormatArguments args{};
                 args.push<uint16_t>(competitor->intelligence);
                 args.push(aiRatingToLevel(competitor->intelligence));
-                Gfx::drawString_494B3F(dpi, x, y, Colour::black, string_ids::company_details_intelligence, &args);
+                Gfx::drawString_494B3F(dpi, x, y, Colour::black, StringIds::company_details_intelligence, &args);
                 y += 10;
             }
             {
                 FormatArguments args{};
                 args.push<uint16_t>(competitor->agressiveness);
                 args.push(aiRatingToLevel(competitor->agressiveness));
-                Gfx::drawString_494B3F(dpi, x, y, Colour::black, string_ids::company_details_aggressiveness, &args);
+                Gfx::drawString_494B3F(dpi, x, y, Colour::black, StringIds::company_details_aggressiveness, &args);
                 y += 10;
             }
             {
                 FormatArguments args{};
                 args.push<uint16_t>(competitor->competitiveness);
                 args.push(aiRatingToLevel(competitor->competitiveness));
-                Gfx::drawString_494B3F(dpi, x, y, Colour::black, string_ids::company_details_competitiveness, &args);
+                Gfx::drawString_494B3F(dpi, x, y, Colour::black, StringIds::company_details_competitiveness, &args);
                 y += 10;
             }
         }
 
         static std::array<string_id, 6> transportTypeCountString = {
             {
-                string_ids::company_details_trains_count,
-                string_ids::company_details_buses_count,
-                string_ids::company_details_trucks_count,
-                string_ids::company_details_trams_count,
-                string_ids::company_details_aircraft_count,
-                string_ids::company_details_ships_count,
+                StringIds::company_details_trains_count,
+                StringIds::company_details_buses_count,
+                StringIds::company_details_trucks_count,
+                StringIds::company_details_trams_count,
+                StringIds::company_details_aircraft_count,
+                StringIds::company_details_ships_count,
             }
         };
 
@@ -800,7 +800,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
             {
                 FormatArguments args{};
                 args.push(company->startedDate);
-                Gfx::drawString_494B3F(*dpi, x, y, Colour::black, string_ids::company_details_started, &args);
+                Gfx::drawString_494B3F(*dpi, x, y, Colour::black, StringIds::company_details_started, &args);
                 y += 10;
             }
 
@@ -808,14 +808,14 @@ namespace OpenLoco::ui::windows::CompanyWindow
                 FormatArguments args{};
                 formatPerformanceIndex(company->performance_index, args);
 
-                string_id formatId = string_ids::company_details_performance;
+                string_id formatId = StringIds::company_details_performance;
                 if (company->challenge_flags & company_flags::decreased_performance)
                 {
-                    formatId = string_ids::company_details_performance_decreasing;
+                    formatId = StringIds::company_details_performance_decreasing;
                 }
                 else if (company->challenge_flags & company_flags::increased_performance)
                 {
-                    formatId = string_ids::company_details_performance_increasing;
+                    formatId = StringIds::company_details_performance_increasing;
                 }
                 Gfx::drawString_494B3F(*dpi, x, y, Colour::black, formatId, &args);
                 y += 25;
@@ -824,7 +824,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
             {
                 FormatArguments args{};
                 args.push(company->owner_name);
-                Gfx::drawString_494BBF(*dpi, x, y, 213, Colour::black, string_ids::owner_label, &args);
+                Gfx::drawString_494BBF(*dpi, x, y, 213, Colour::black, StringIds::owner_label, &args);
                 y += 10;
             }
 
@@ -851,7 +851,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
             {
                 x = self->x + (self->widgets[widx::viewport].left + self->widgets[widx::viewport].right) / 2;
                 y = self->y + self->widgets[widx::viewport].top - 12;
-                Gfx::drawStringCentred(*dpi, x, y, Colour::black, string_ids::headquarters);
+                Gfx::drawStringCentred(*dpi, x, y, Colour::black, StringIds::headquarters);
             }
 
             if (company->headquarters_x == -1)
@@ -862,7 +862,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
                     static_cast<int16_t>(self->y + self->widgets[widx::viewport].top + self->widgets[widx::viewport].height() / 2 - 5)
                 };
                 width -= 2;
-                Gfx::drawStringCentredWrapped(dpi, &loc, width, Colour::black, string_ids::not_yet_constructed);
+                Gfx::drawStringCentredWrapped(dpi, &loc, width, Colour::black, StringIds::not_yet_constructed);
             }
 
             if (self->viewports[0] != nullptr)
@@ -1008,7 +1008,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
                 return;
             }
 
-            gGameCommandErrorTitle = string_ids::error_cant_build_this_here;
+            gGameCommandErrorTitle = StringIds::error_cant_build_this_here;
             uint8_t flags = game_commands::GameCommandFlag::apply | game_commands::GameCommandFlag::flag_1;
             auto commandResult = game_commands::do_54(flags, tileY, tileX, tileZ, dx);
             if (commandResult != game_commands::FAILURE)
@@ -1222,39 +1222,39 @@ namespace OpenLoco::ui::windows::CompanyWindow
         // clang-format on
 
         static widget_t widgets[] = {
-            commonWidgets(265, 252, string_ids::title_company_colour_scheme),
-            makeWidget({ 15, 81 }, { 204, 12 }, widget_type::checkbox, 1, string_ids::colour_steam_locomotives, string_ids::tooltip_toggle_vehicle_colour_scheme),
-            makeWidget({ 15, 98 }, { 204, 12 }, widget_type::checkbox, 1, string_ids::colour_diesel_locomotives, string_ids::tooltip_toggle_vehicle_colour_scheme),
-            makeWidget({ 15, 115 }, { 204, 12 }, widget_type::checkbox, 1, string_ids::colour_electric_locomotives, string_ids::tooltip_toggle_vehicle_colour_scheme),
-            makeWidget({ 15, 132 }, { 204, 12 }, widget_type::checkbox, 1, string_ids::colour_multiple_units, string_ids::tooltip_toggle_vehicle_colour_scheme),
-            makeWidget({ 15, 149 }, { 204, 12 }, widget_type::checkbox, 1, string_ids::colour_passenger_vehicles, string_ids::tooltip_toggle_vehicle_colour_scheme),
-            makeWidget({ 15, 166 }, { 204, 12 }, widget_type::checkbox, 1, string_ids::colour_freight_vehicles, string_ids::tooltip_toggle_vehicle_colour_scheme),
-            makeWidget({ 15, 183 }, { 204, 12 }, widget_type::checkbox, 1, string_ids::colour_buses, string_ids::tooltip_toggle_vehicle_colour_scheme),
-            makeWidget({ 15, 200 }, { 204, 12 }, widget_type::checkbox, 1, string_ids::colour_trucks, string_ids::tooltip_toggle_vehicle_colour_scheme),
-            makeWidget({ 15, 217 }, { 204, 12 }, widget_type::checkbox, 1, string_ids::colour_aircraft, string_ids::tooltip_toggle_vehicle_colour_scheme),
-            makeWidget({ 15, 234 }, { 204, 12 }, widget_type::checkbox, 1, string_ids::colour_ships, string_ids::tooltip_toggle_vehicle_colour_scheme),
-            makeWidget({ 221, 48 }, { 16, 16 }, widget_type::wt_10, 1, ImageIds::null, string_ids::tooltip_select_main_colour),
-            makeWidget({ 221, 78 }, { 16, 16 }, widget_type::wt_10, 1, ImageIds::null, string_ids::tooltip_select_main_colour),
-            makeWidget({ 221, 95 }, { 16, 16 }, widget_type::wt_10, 1, ImageIds::null, string_ids::tooltip_select_main_colour),
-            makeWidget({ 221, 112 }, { 16, 16 }, widget_type::wt_10, 1, ImageIds::null, string_ids::tooltip_select_main_colour),
-            makeWidget({ 221, 129 }, { 16, 16 }, widget_type::wt_10, 1, ImageIds::null, string_ids::tooltip_select_main_colour),
-            makeWidget({ 221, 146 }, { 16, 16 }, widget_type::wt_10, 1, ImageIds::null, string_ids::tooltip_select_main_colour),
-            makeWidget({ 221, 163 }, { 16, 16 }, widget_type::wt_10, 1, ImageIds::null, string_ids::tooltip_select_main_colour),
-            makeWidget({ 221, 180 }, { 16, 16 }, widget_type::wt_10, 1, ImageIds::null, string_ids::tooltip_select_main_colour),
-            makeWidget({ 221, 197 }, { 16, 16 }, widget_type::wt_10, 1, ImageIds::null, string_ids::tooltip_select_main_colour),
-            makeWidget({ 221, 214 }, { 16, 16 }, widget_type::wt_10, 1, ImageIds::null, string_ids::tooltip_select_main_colour),
-            makeWidget({ 221, 231 }, { 16, 16 }, widget_type::wt_10, 1, ImageIds::null, string_ids::tooltip_select_main_colour),
-            makeWidget({ 239, 48 }, { 16, 16 }, widget_type::wt_10, 1, ImageIds::null, string_ids::tooltip_select_secondary_colour),
-            makeWidget({ 239, 78 }, { 16, 16 }, widget_type::wt_10, 1, ImageIds::null, string_ids::tooltip_select_secondary_colour),
-            makeWidget({ 239, 95 }, { 16, 16 }, widget_type::wt_10, 1, ImageIds::null, string_ids::tooltip_select_secondary_colour),
-            makeWidget({ 239, 112 }, { 16, 16 }, widget_type::wt_10, 1, ImageIds::null, string_ids::tooltip_select_secondary_colour),
-            makeWidget({ 239, 129 }, { 16, 16 }, widget_type::wt_10, 1, ImageIds::null, string_ids::tooltip_select_secondary_colour),
-            makeWidget({ 239, 146 }, { 16, 16 }, widget_type::wt_10, 1, ImageIds::null, string_ids::tooltip_select_secondary_colour),
-            makeWidget({ 239, 163 }, { 16, 16 }, widget_type::wt_10, 1, ImageIds::null, string_ids::tooltip_select_secondary_colour),
-            makeWidget({ 239, 180 }, { 16, 16 }, widget_type::wt_10, 1, ImageIds::null, string_ids::tooltip_select_secondary_colour),
-            makeWidget({ 239, 197 }, { 16, 16 }, widget_type::wt_10, 1, ImageIds::null, string_ids::tooltip_select_secondary_colour),
-            makeWidget({ 239, 214 }, { 16, 16 }, widget_type::wt_10, 1, ImageIds::null, string_ids::tooltip_select_secondary_colour),
-            makeWidget({ 239, 231 }, { 16, 16 }, widget_type::wt_10, 1, ImageIds::null, string_ids::tooltip_select_secondary_colour),
+            commonWidgets(265, 252, StringIds::title_company_colour_scheme),
+            makeWidget({ 15, 81 }, { 204, 12 }, widget_type::checkbox, 1, StringIds::colour_steam_locomotives, StringIds::tooltip_toggle_vehicle_colour_scheme),
+            makeWidget({ 15, 98 }, { 204, 12 }, widget_type::checkbox, 1, StringIds::colour_diesel_locomotives, StringIds::tooltip_toggle_vehicle_colour_scheme),
+            makeWidget({ 15, 115 }, { 204, 12 }, widget_type::checkbox, 1, StringIds::colour_electric_locomotives, StringIds::tooltip_toggle_vehicle_colour_scheme),
+            makeWidget({ 15, 132 }, { 204, 12 }, widget_type::checkbox, 1, StringIds::colour_multiple_units, StringIds::tooltip_toggle_vehicle_colour_scheme),
+            makeWidget({ 15, 149 }, { 204, 12 }, widget_type::checkbox, 1, StringIds::colour_passenger_vehicles, StringIds::tooltip_toggle_vehicle_colour_scheme),
+            makeWidget({ 15, 166 }, { 204, 12 }, widget_type::checkbox, 1, StringIds::colour_freight_vehicles, StringIds::tooltip_toggle_vehicle_colour_scheme),
+            makeWidget({ 15, 183 }, { 204, 12 }, widget_type::checkbox, 1, StringIds::colour_buses, StringIds::tooltip_toggle_vehicle_colour_scheme),
+            makeWidget({ 15, 200 }, { 204, 12 }, widget_type::checkbox, 1, StringIds::colour_trucks, StringIds::tooltip_toggle_vehicle_colour_scheme),
+            makeWidget({ 15, 217 }, { 204, 12 }, widget_type::checkbox, 1, StringIds::colour_aircraft, StringIds::tooltip_toggle_vehicle_colour_scheme),
+            makeWidget({ 15, 234 }, { 204, 12 }, widget_type::checkbox, 1, StringIds::colour_ships, StringIds::tooltip_toggle_vehicle_colour_scheme),
+            makeWidget({ 221, 48 }, { 16, 16 }, widget_type::wt_10, 1, ImageIds::null, StringIds::tooltip_select_main_colour),
+            makeWidget({ 221, 78 }, { 16, 16 }, widget_type::wt_10, 1, ImageIds::null, StringIds::tooltip_select_main_colour),
+            makeWidget({ 221, 95 }, { 16, 16 }, widget_type::wt_10, 1, ImageIds::null, StringIds::tooltip_select_main_colour),
+            makeWidget({ 221, 112 }, { 16, 16 }, widget_type::wt_10, 1, ImageIds::null, StringIds::tooltip_select_main_colour),
+            makeWidget({ 221, 129 }, { 16, 16 }, widget_type::wt_10, 1, ImageIds::null, StringIds::tooltip_select_main_colour),
+            makeWidget({ 221, 146 }, { 16, 16 }, widget_type::wt_10, 1, ImageIds::null, StringIds::tooltip_select_main_colour),
+            makeWidget({ 221, 163 }, { 16, 16 }, widget_type::wt_10, 1, ImageIds::null, StringIds::tooltip_select_main_colour),
+            makeWidget({ 221, 180 }, { 16, 16 }, widget_type::wt_10, 1, ImageIds::null, StringIds::tooltip_select_main_colour),
+            makeWidget({ 221, 197 }, { 16, 16 }, widget_type::wt_10, 1, ImageIds::null, StringIds::tooltip_select_main_colour),
+            makeWidget({ 221, 214 }, { 16, 16 }, widget_type::wt_10, 1, ImageIds::null, StringIds::tooltip_select_main_colour),
+            makeWidget({ 221, 231 }, { 16, 16 }, widget_type::wt_10, 1, ImageIds::null, StringIds::tooltip_select_main_colour),
+            makeWidget({ 239, 48 }, { 16, 16 }, widget_type::wt_10, 1, ImageIds::null, StringIds::tooltip_select_secondary_colour),
+            makeWidget({ 239, 78 }, { 16, 16 }, widget_type::wt_10, 1, ImageIds::null, StringIds::tooltip_select_secondary_colour),
+            makeWidget({ 239, 95 }, { 16, 16 }, widget_type::wt_10, 1, ImageIds::null, StringIds::tooltip_select_secondary_colour),
+            makeWidget({ 239, 112 }, { 16, 16 }, widget_type::wt_10, 1, ImageIds::null, StringIds::tooltip_select_secondary_colour),
+            makeWidget({ 239, 129 }, { 16, 16 }, widget_type::wt_10, 1, ImageIds::null, StringIds::tooltip_select_secondary_colour),
+            makeWidget({ 239, 146 }, { 16, 16 }, widget_type::wt_10, 1, ImageIds::null, StringIds::tooltip_select_secondary_colour),
+            makeWidget({ 239, 163 }, { 16, 16 }, widget_type::wt_10, 1, ImageIds::null, StringIds::tooltip_select_secondary_colour),
+            makeWidget({ 239, 180 }, { 16, 16 }, widget_type::wt_10, 1, ImageIds::null, StringIds::tooltip_select_secondary_colour),
+            makeWidget({ 239, 197 }, { 16, 16 }, widget_type::wt_10, 1, ImageIds::null, StringIds::tooltip_select_secondary_colour),
+            makeWidget({ 239, 214 }, { 16, 16 }, widget_type::wt_10, 1, ImageIds::null, StringIds::tooltip_select_secondary_colour),
+            makeWidget({ 239, 231 }, { 16, 16 }, widget_type::wt_10, 1, ImageIds::null, StringIds::tooltip_select_secondary_colour),
             widgetEnd(),
         };
 
@@ -1362,7 +1362,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
                 x,
                 y,
                 Colour::black,
-                string_ids::main_colour_scheme);
+                StringIds::main_colour_scheme);
 
             // 'Special colour schemes used for'
             y += 17;
@@ -1371,7 +1371,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
                 x,
                 y,
                 Colour::black,
-                string_ids::special_colour_schemes_used_for);
+                StringIds::special_colour_schemes_used_for);
         }
 
         // 0x00433032
@@ -1411,7 +1411,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
                     const auto company = companymgr::get(self->number);
                     const auto newMode = (company->customVehicleColoursSet & (1 << vehicleType)) == 0 ? 1 : 0;
 
-                    gGameCommandErrorTitle = string_ids::error_cant_change_colour_scheme;
+                    gGameCommandErrorTitle = StringIds::error_cant_change_colour_scheme;
 
                     game_commands::do_19(0, newMode, vehicleType, 1, self->number);
 
@@ -1503,7 +1503,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
                     if (itemIndex == -1)
                         return;
 
-                    gGameCommandErrorTitle = string_ids::error_cant_change_colour_scheme;
+                    gGameCommandErrorTitle = StringIds::error_cant_change_colour_scheme;
 
                     const int8_t colour = dropdown::getItemArgument(itemIndex, 2);
                     const auto vehicleType = widgetIndex - widx::main_colour_scheme;
@@ -1527,7 +1527,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
                     if (itemIndex == -1)
                         return;
 
-                    gGameCommandErrorTitle = string_ids::error_cant_change_colour_scheme;
+                    gGameCommandErrorTitle = StringIds::error_cant_change_colour_scheme;
 
                     const int8_t colour = dropdown::getItemArgument(itemIndex, 2);
                     const auto vehicleType = widgetIndex - widx::secondary_colour_scheme;
@@ -1581,9 +1581,9 @@ namespace OpenLoco::ui::windows::CompanyWindow
         constexpr uint16_t expenditureColumnWidth = 128;
 
         static widget_t widgets[] = {
-            commonWidgets(636, 319, string_ids::title_company_finances),
+            commonWidgets(636, 319, StringIds::title_company_finances),
             makeWidget({ 133, 45 }, { 499, 215 }, widget_type::scrollview, 1, horizontal),
-            makeStepperWidgets({ 87, 264 }, { 100, 12 }, widget_type::wt_17, 1, string_ids::company_current_loan_value),
+            makeStepperWidgets({ 87, 264 }, { 100, 12 }, widget_type::wt_17, 1, StringIds::company_current_loan_value),
             widgetEnd(),
         };
 
@@ -1653,28 +1653,28 @@ namespace OpenLoco::ui::windows::CompanyWindow
                     self->x + 5,
                     self->y + 47,
                     Colour::black,
-                    string_ids::expenditure_income,
+                    StringIds::expenditure_income,
                     nullptr);
             }
 
             const string_id ExpenditureLabels[] = {
-                string_ids::train_income,
-                string_ids::train_running_costs,
-                string_ids::bus_income,
-                string_ids::bus_running_costs,
-                string_ids::truck_income,
-                string_ids::truck_running_costs,
-                string_ids::tram_income,
-                string_ids::tram_running_costs,
-                string_ids::aircraft_income,
-                string_ids::aircraft_running_costs,
-                string_ids::ship_income,
-                string_ids::ship_running_costs,
-                string_ids::construction,
-                string_ids::vehicle_purchases,
-                string_ids::vehicle_disposals,
-                string_ids::loan_interest,
-                string_ids::miscellaneous,
+                StringIds::train_income,
+                StringIds::train_running_costs,
+                StringIds::bus_income,
+                StringIds::bus_running_costs,
+                StringIds::truck_income,
+                StringIds::truck_running_costs,
+                StringIds::tram_income,
+                StringIds::tram_running_costs,
+                StringIds::aircraft_income,
+                StringIds::aircraft_running_costs,
+                StringIds::ship_income,
+                StringIds::ship_running_costs,
+                StringIds::construction,
+                StringIds::vehicle_purchases,
+                StringIds::vehicle_disposals,
+                StringIds::loan_interest,
+                StringIds::miscellaneous,
             };
 
             uint16_t y = self->y + 62;
@@ -1694,7 +1694,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
                     self->x + 5,
                     y - 1,
                     Colour::black,
-                    string_ids::wcolour2_stringid,
+                    StringIds::wcolour2_stringid,
                     &args);
 
                 y += 10;
@@ -1707,7 +1707,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
                     self->x + 7,
                     self->y + self->widgets[widx::current_loan].top,
                     Colour::black,
-                    string_ids::company_current_loan);
+                    StringIds::company_current_loan);
             }
 
             // '@ X% interest per' label
@@ -1720,7 +1720,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
                     self->x + self->widgets[widx::current_loan].right + 3,
                     self->y + self->widgets[widx::current_loan].top + 1,
                     Colour::black,
-                    string_ids::interest_per_year,
+                    StringIds::interest_per_year,
                     &args);
             }
 
@@ -1730,11 +1730,11 @@ namespace OpenLoco::ui::windows::CompanyWindow
                 FormatArguments args{};
                 args.push(company->cash);
 
-                string_id cash_format = string_ids::cash_positive;
+                string_id cash_format = StringIds::cash_positive;
                 if ((company->challenge_flags & company_flags::bankrupt) != 0)
-                    cash_format = string_ids::cash_bankrupt;
+                    cash_format = StringIds::cash_bankrupt;
                 if (company->cash.var_04 < 0)
-                    cash_format = string_ids::cash_negative;
+                    cash_format = StringIds::cash_negative;
 
                 Gfx::drawString_494B3F(
                     *dpi,
@@ -1756,7 +1756,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
                     self->x + 7,
                     self->y + self->widgets[widx::current_loan].top + 26,
                     Colour::black,
-                    string_ids::company_value,
+                    StringIds::company_value,
                     &args);
             }
 
@@ -1771,7 +1771,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
                     self->x + 7,
                     self->y + self->widgets[widx::current_loan].top + 39,
                     Colour::black,
-                    string_ids::profit_from_vehicles,
+                    StringIds::profit_from_vehicles,
                     &args);
             }
         }
@@ -1779,13 +1779,13 @@ namespace OpenLoco::ui::windows::CompanyWindow
         static void drawFinanceYear(Gfx::drawpixelinfo_t* context, int16_t x, int16_t& y, uint16_t columnYear, uint16_t currentYear)
         {
             FormatArguments args = {};
-            args.push(string_ids::uint16_raw);
+            args.push(StringIds::uint16_raw);
             args.push(columnYear);
 
-            string_id format = string_ids::wcolour2_stringid;
+            string_id format = StringIds::wcolour2_stringid;
             if (columnYear != currentYear)
             {
-                format = string_ids::black_stringid;
+                format = StringIds::black_stringid;
             }
 
             Gfx::drawStringUnderline(
@@ -1806,12 +1806,12 @@ namespace OpenLoco::ui::windows::CompanyWindow
                 currency48_t expenditures = company.expenditures[columnIndex][j];
                 sum += expenditures;
 
-                string_id mainFormat = string_ids::black_stringid;
-                string_id currFormat = string_ids::plus_currency48;
+                string_id mainFormat = StringIds::black_stringid;
+                string_id currFormat = StringIds::plus_currency48;
                 if (expenditures < 0)
                 {
-                    mainFormat = string_ids::red_stringid;
-                    currFormat = string_ids::currency48;
+                    mainFormat = StringIds::red_stringid;
+                    currFormat = StringIds::currency48;
                 }
 
                 if (expenditures != 0)
@@ -1838,12 +1838,12 @@ namespace OpenLoco::ui::windows::CompanyWindow
         {
             FormatArguments args{};
 
-            auto mainFormat = string_ids::black_stringid;
-            auto sumFormat = string_ids::plus_currency48;
+            auto mainFormat = StringIds::black_stringid;
+            auto sumFormat = StringIds::plus_currency48;
             if (sum < 0)
             {
-                mainFormat = string_ids::red_stringid;
-                sumFormat = string_ids::currency48;
+                mainFormat = StringIds::red_stringid;
+                sumFormat = StringIds::currency48;
             }
             args.push(sumFormat);
             args.push(sum);
@@ -1944,7 +1944,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
 
                     auto newLoan = std::max<currency32_t>(0, company->current_loan - stepSize);
 
-                    gGameCommandErrorTitle = string_ids::cant_pay_back_loan;
+                    gGameCommandErrorTitle = StringIds::cant_pay_back_loan;
                     game_commands::do_9(newLoan);
                     break;
                 }
@@ -1960,7 +1960,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
                         stepSize = 100000;
 
                     currency32_t newLoan = companymgr::get(self->number)->current_loan + stepSize;
-                    gGameCommandErrorTitle = string_ids::cant_borrow_any_more_money;
+                    gGameCommandErrorTitle = StringIds::cant_borrow_any_more_money;
                     game_commands::do_9(newLoan);
                     break;
                 }
@@ -2004,7 +2004,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
         // 0x00433887
         static void tooltip(FormatArguments& args, ui::window* window, widget_index widgetIndex)
         {
-            args.push(string_ids::tooltip_scroll_list);
+            args.push(StringIds::tooltip_scroll_list);
         }
 
         // 0x0043399D
@@ -2083,7 +2083,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
         const Gfx::ui_size_t windowSize = { 240, 382 };
 
         static widget_t widgets[] = {
-            commonWidgets(240, 382, string_ids::title_company_cargo_delivered),
+            commonWidgets(240, 382, StringIds::title_company_cargo_delivered),
             widgetEnd(),
         };
 
@@ -2129,7 +2129,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
                 self->x + 5,
                 y,
                 Colour::black,
-                string_ids::cargo_delivered);
+                StringIds::cargo_delivered);
 
             y += 10;
 
@@ -2154,7 +2154,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
                     self->x + 10,
                     y,
                     Colour::black,
-                    string_ids::black_stringid,
+                    StringIds::black_stringid,
                     &args);
 
                 numPrinted++;
@@ -2169,7 +2169,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
                     self->x + 10,
                     y,
                     Colour::black,
-                    string_ids::cargo_delivered_none);
+                    StringIds::cargo_delivered_none);
             }
         }
 
@@ -2267,7 +2267,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
         const Gfx::ui_size_t windowSize = { 320, 182 };
 
         static widget_t widgets[] = {
-            commonWidgets(320, 182, string_ids::title_company_challenge),
+            commonWidgets(320, 182, StringIds::title_company_challenge),
             widgetEnd(),
         };
 
@@ -2456,7 +2456,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
 
             // If not, we'll turn this window into a window for the company selected.
             auto company = companymgr::get(companyId);
-            if (company->name == string_ids::empty)
+            if (company->name == StringIds::empty)
                 return;
 
             self->number = companyId;
@@ -2546,7 +2546,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
         static void renameCompanyPrompt(window* self, widget_index widgetIndex)
         {
             auto company = companymgr::get(self->number);
-            textinput::openTextinput(self, string_ids::title_name_company, string_ids::prompt_enter_new_company_name, company->name, widgetIndex, nullptr);
+            textinput::openTextinput(self, StringIds::title_name_company, StringIds::prompt_enter_new_company_name, company->name, widgetIndex, nullptr);
         }
 
         // 0x0043254F
@@ -2555,7 +2555,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
             if (strlen(input) == 0)
                 return;
 
-            gGameCommandErrorTitle = string_ids::cannot_rename_this_company;
+            gGameCommandErrorTitle = StringIds::cannot_rename_this_company;
 
             uint32_t* buffer = (uint32_t*)input;
             game_commands::do_30(self->number, 1, buffer[0], buffer[1], buffer[2]);

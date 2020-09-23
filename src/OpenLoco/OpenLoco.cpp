@@ -285,7 +285,7 @@ namespace OpenLoco
     {
         if (isAlreadyRunning("Locomotion"))
         {
-            exitWithError(string_ids::game_init_failure, string_ids::loco_already_running);
+            exitWithError(StringIds::game_init_failure, StringIds::loco_already_running);
         }
 
         // Originally the game would check that all the game
@@ -297,7 +297,7 @@ namespace OpenLoco
     // 0x004C57C0
     void initialiseViewports()
     {
-        _mapTooltipFormatArguments = string_ids::null;
+        _mapTooltipFormatArguments = StringIds::null;
         _mapTooltipOwner = company_id::null;
 
         Colour::initColourMap();
@@ -315,8 +315,8 @@ namespace OpenLoco
 
         ui::textinput::cancel();
 
-        stringmgr::formatString(_11367A0, string_ids::label_button_ok);
-        stringmgr::formatString(_11368A0, string_ids::label_button_cancel);
+        StringManager::formatString(_11367A0, StringIds::label_button_ok);
+        StringManager::formatString(_11368A0, StringIds::label_button_cancel);
     }
 
     static void initialise()
@@ -326,9 +326,9 @@ namespace OpenLoco
         call(0x004078BE);
         call(0x004BF476);
         environment::resolvePaths();
-        localisation::enumerateLanguages();
-        localisation::loadLanguageFile();
-        progressbar::begin(string_ids::loading, 0);
+        Localisation::enumerateLanguages();
+        Localisation::loadLanguageFile();
+        progressbar::begin(StringIds::loading, 0);
         progressbar::setProgress(30);
         startupChecks();
         progressbar::setProgress(40);
@@ -337,7 +337,7 @@ namespace OpenLoco
         config::read();
         objectmgr::loadIndex();
         scenariomgr::loadIndex(0);
-        progressbar::begin(string_ids::loading, 0);
+        progressbar::begin(StringIds::loading, 0);
         progressbar::setProgress(60);
         Gfx::loadG1();
         progressbar::setProgress(220);
@@ -780,12 +780,12 @@ namespace OpenLoco
         s5::getOptions().madeAnyChanges = addr<0x00F25374, uint8_t>();
         if (_50C197 != 0)
         {
-            auto title = string_ids::error_unable_to_load_saved_game;
+            auto title = StringIds::error_unable_to_load_saved_game;
             auto message = _50C198;
             if (_50C197 == -2)
             {
                 title = _50C198;
-                message = string_ids::null;
+                message = StringIds::null;
             }
             _50C197 = 0;
             ui::windows::showError(title, message);

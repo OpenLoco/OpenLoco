@@ -147,17 +147,17 @@ namespace OpenLoco::ui::options
             widget::draw_tab(w, ctx, ImageIds::tab_miscellaneous, widx::tab_miscellaneous);
         }
 
-#define common_options_widgets(window_size, window_caption_id)                                                                                            \
-    makeWidget({ 0, 0 }, window_size, widget_type::frame, 0),                                                                                             \
-        makeWidget({ 1, 1 }, { (uint16_t)(window_size.width - 2), 13 }, widget_type::caption_25, 0, window_caption_id),                                   \
-        makeWidget({ (int16_t)(window_size.width - 15), 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, string_ids::tooltip_close_window), \
-        makeWidget({ 0, 41 }, { window_size.width, 102 }, widget_type::panel, 1),                                                                         \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::display_options),                                         \
-        makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::sound_options),                                          \
-        makeRemapWidget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::music_options),                                          \
-        makeRemapWidget({ 96, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::regional_options),                                       \
-        makeRemapWidget({ 127, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::control_options),                                       \
-        makeRemapWidget({ 158, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::miscellaneous_options)
+#define common_options_widgets(window_size, window_caption_id)                                                                                           \
+    makeWidget({ 0, 0 }, window_size, widget_type::frame, 0),                                                                                            \
+        makeWidget({ 1, 1 }, { (uint16_t)(window_size.width - 2), 13 }, widget_type::caption_25, 0, window_caption_id),                                  \
+        makeWidget({ (int16_t)(window_size.width - 15), 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window), \
+        makeWidget({ 0, 41 }, { window_size.width, 102 }, widget_type::panel, 1),                                                                        \
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::display_options),                                         \
+        makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::sound_options),                                          \
+        makeRemapWidget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::music_options),                                          \
+        makeRemapWidget({ 96, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::regional_options),                                       \
+        makeRemapWidget({ 127, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::control_options),                                       \
+        makeRemapWidget({ 158, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::miscellaneous_options)
 
         static constexpr int tabWidgets = (1 << widx::tab_display) | (1 << widx::tab_sound) | (1 << widx::tab_music) | (1 << widx::tab_regional) | (1 << widx::tab_controls) | (1 << widx::tab_miscellaneous);
 
@@ -191,20 +191,20 @@ namespace OpenLoco::ui::options
         }
 
         static widget_t _widgets[] = {
-            common_options_widgets(_window_size, string_ids::options_title_display),
-            makeWidget({ 235, 49 }, { 156, 12 }, widget_type::wt_18, 1, string_ids::empty),
-            makeWidget({ 379, 50 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
-            makeWidget({ 235, 64 }, { 156, 12 }, widget_type::wt_18, 1, string_ids::display_resolution_label_format),
-            makeWidget({ 379, 65 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
-            makeStepperWidgets({ 235, 79 }, { 156, 12 }, widget_type::wt_17, 1, string_ids::empty),
-            makeWidget({ 10, 99 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::landscape_smoothing, string_ids::landscape_smoothing_tip),
-            makeWidget({ 10, 114 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::gridlines_on_landscape, string_ids::gridlines_on_landscape_tip),
-            makeWidget({ 235, 133 }, { 156, 12 }, widget_type::wt_18, 1, string_ids::empty, string_ids::vehicles_min_scale_tip),
-            makeWidget({ 379, 134 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown, string_ids::vehicles_min_scale_tip),
-            makeWidget({ 235, 148 }, { 156, 12 }, widget_type::wt_18, 1, string_ids::empty, string_ids::station_names_min_scale_tip),
-            makeWidget({ 379, 149 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown, string_ids::station_names_min_scale_tip),
-            makeWidget({ 235, 163 }, { 156, 12 }, widget_type::wt_18, 1, string_ids::empty),
-            makeWidget({ 379, 164 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
+            common_options_widgets(_window_size, StringIds::options_title_display),
+            makeWidget({ 235, 49 }, { 156, 12 }, widget_type::wt_18, 1, StringIds::empty),
+            makeWidget({ 379, 50 }, { 11, 10 }, widget_type::wt_11, 1, StringIds::dropdown),
+            makeWidget({ 235, 64 }, { 156, 12 }, widget_type::wt_18, 1, StringIds::display_resolution_label_format),
+            makeWidget({ 379, 65 }, { 11, 10 }, widget_type::wt_11, 1, StringIds::dropdown),
+            makeStepperWidgets({ 235, 79 }, { 156, 12 }, widget_type::wt_17, 1, StringIds::empty),
+            makeWidget({ 10, 99 }, { 346, 12 }, widget_type::checkbox, 1, StringIds::landscape_smoothing, StringIds::landscape_smoothing_tip),
+            makeWidget({ 10, 114 }, { 346, 12 }, widget_type::checkbox, 1, StringIds::gridlines_on_landscape, StringIds::gridlines_on_landscape_tip),
+            makeWidget({ 235, 133 }, { 156, 12 }, widget_type::wt_18, 1, StringIds::empty, StringIds::vehicles_min_scale_tip),
+            makeWidget({ 379, 134 }, { 11, 10 }, widget_type::wt_11, 1, StringIds::dropdown, StringIds::vehicles_min_scale_tip),
+            makeWidget({ 235, 148 }, { 156, 12 }, widget_type::wt_18, 1, StringIds::empty, StringIds::station_names_min_scale_tip),
+            makeWidget({ 379, 149 }, { 11, 10 }, widget_type::wt_11, 1, StringIds::dropdown, StringIds::station_names_min_scale_tip),
+            makeWidget({ 235, 163 }, { 156, 12 }, widget_type::wt_18, 1, StringIds::empty),
+            makeWidget({ 379, 164 }, { 11, 10 }, widget_type::wt_11, 1, StringIds::dropdown),
             widgetEnd(),
         };
 
@@ -285,8 +285,8 @@ namespace OpenLoco::ui::options
             widget_t dropdown = w->widgets[widx::construction_marker];
             dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], 2, 0x80);
 
-            dropdown::add(0, string_ids::dropdown_stringid, string_ids::white);
-            dropdown::add(1, string_ids::dropdown_stringid, string_ids::translucent);
+            dropdown::add(0, StringIds::dropdown_stringid, StringIds::white);
+            dropdown::add(1, StringIds::dropdown_stringid, StringIds::translucent);
             dropdown::setItemSelected(config::get().construction_marker);
         }
 
@@ -313,10 +313,10 @@ namespace OpenLoco::ui::options
             widget_t dropdown = w->widgets[widx::vehicles_min_scale];
             dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], 4, 0x80);
 
-            dropdown::add(0, string_ids::dropdown_stringid, string_ids::full_scale);
-            dropdown::add(1, string_ids::dropdown_stringid, string_ids::half_scale);
-            dropdown::add(2, string_ids::dropdown_stringid, string_ids::quarter_scale);
-            dropdown::add(3, string_ids::dropdown_stringid, string_ids::eighth_scale);
+            dropdown::add(0, StringIds::dropdown_stringid, StringIds::full_scale);
+            dropdown::add(1, StringIds::dropdown_stringid, StringIds::half_scale);
+            dropdown::add(2, StringIds::dropdown_stringid, StringIds::quarter_scale);
+            dropdown::add(3, StringIds::dropdown_stringid, StringIds::eighth_scale);
             dropdown::setItemSelected(config::get().vehicles_min_scale);
         }
 
@@ -343,10 +343,10 @@ namespace OpenLoco::ui::options
             widget_t dropdown = w->widgets[widx::station_names_min_scale];
             dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], 4, 0x80);
 
-            dropdown::add(0, string_ids::dropdown_stringid, string_ids::full_scale);
-            dropdown::add(1, string_ids::dropdown_stringid, string_ids::half_scale);
-            dropdown::add(2, string_ids::dropdown_stringid, string_ids::quarter_scale);
-            dropdown::add(3, string_ids::dropdown_stringid, string_ids::eighth_scale);
+            dropdown::add(0, StringIds::dropdown_stringid, StringIds::full_scale);
+            dropdown::add(1, StringIds::dropdown_stringid, StringIds::half_scale);
+            dropdown::add(2, StringIds::dropdown_stringid, StringIds::quarter_scale);
+            dropdown::add(3, StringIds::dropdown_stringid, StringIds::eighth_scale);
             dropdown::setItemSelected(config::get().station_names_min_scale);
         }
 
@@ -386,9 +386,9 @@ namespace OpenLoco::ui::options
             widget_t dropdown = w->widgets[widx::screen_mode];
             dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], 3, 0x80);
 
-            dropdown::add(0, string_ids::dropdown_stringid, string_ids::options_mode_windowed);
-            dropdown::add(1, string_ids::dropdown_stringid, string_ids::options_mode_fullscreen);
-            dropdown::add(2, string_ids::dropdown_stringid, string_ids::options_mode_fullscreen_window);
+            dropdown::add(0, StringIds::dropdown_stringid, StringIds::options_mode_windowed);
+            dropdown::add(1, StringIds::dropdown_stringid, StringIds::options_mode_fullscreen);
+            dropdown::add(2, StringIds::dropdown_stringid, StringIds::options_mode_fullscreen_window);
 
             auto selection = static_cast<uint16_t>(config::getNew().display.mode);
             dropdown::setItemSelected(selection);
@@ -421,7 +421,7 @@ namespace OpenLoco::ui::options
             auto& cfg = config::getNew();
             for (size_t i = 0; i < resolutions.size(); i++)
             {
-                dropdown::add(i, string_ids::dropdown_stringid, { string_ids::display_resolution_dropdown_format, (uint16_t)resolutions[i].width, (uint16_t)resolutions[i].height });
+                dropdown::add(i, StringIds::dropdown_stringid, { StringIds::display_resolution_dropdown_format, (uint16_t)resolutions[i].width, (uint16_t)resolutions[i].height });
                 if (cfg.display.fullscreen_resolution.width == resolutions[i].width && cfg.display.fullscreen_resolution.height == resolutions[i].height)
                     dropdown::setItemSelected((int16_t)i);
             }
@@ -520,17 +520,17 @@ namespace OpenLoco::ui::options
             w->widgets[common::widx::close_button].left = w->width - 15;
             w->widgets[common::widx::close_button].right = w->width - 15 + 12;
 
-            string_id screen_mode_string_id = string_ids::empty;
+            string_id screen_mode_string_id = StringIds::empty;
             switch (config::getNew().display.mode)
             {
                 case config::screen_mode::window:
-                    screen_mode_string_id = string_ids::options_mode_windowed;
+                    screen_mode_string_id = StringIds::options_mode_windowed;
                     break;
                 case config::screen_mode::fullscreen:
-                    screen_mode_string_id = string_ids::options_mode_fullscreen;
+                    screen_mode_string_id = StringIds::options_mode_fullscreen;
                     break;
                 case config::screen_mode::fullscreen_borderless:
-                    screen_mode_string_id = string_ids::options_mode_fullscreen_window;
+                    screen_mode_string_id = StringIds::options_mode_fullscreen_window;
                     break;
             }
             w->widgets[widx::screen_mode].text = screen_mode_string_id;
@@ -542,15 +542,15 @@ namespace OpenLoco::ui::options
             args.push<uint16_t>(resolution.height);
 
             if (config::get().construction_marker)
-                w->widgets[widx::construction_marker].text = string_ids::translucent;
+                w->widgets[widx::construction_marker].text = StringIds::translucent;
             else
-                w->widgets[widx::construction_marker].text = string_ids::white;
+                w->widgets[widx::construction_marker].text = StringIds::white;
 
             static const string_id scale_string_ids[] = {
-                string_ids::full_scale,
-                string_ids::half_scale,
-                string_ids::quarter_scale,
-                string_ids::eighth_scale,
+                StringIds::full_scale,
+                StringIds::half_scale,
+                StringIds::quarter_scale,
+                StringIds::eighth_scale,
             };
 
             w->widgets[widx::vehicles_min_scale].text = scale_string_ids[config::get().vehicles_min_scale];
@@ -595,26 +595,26 @@ namespace OpenLoco::ui::options
 
             int16_t x = w->x + 10;
             int16_t y = w->y + display::_widgets[display::widx::screen_mode].top + 1;
-            drawString_494B3F(*dpi, x, y, Colour::black, string_ids::options_screen_mode, nullptr);
+            drawString_494B3F(*dpi, x, y, Colour::black, StringIds::options_screen_mode, nullptr);
 
             y = w->y + display::_widgets[display::widx::display_resolution].top + 1;
-            drawString_494B3F(*dpi, x + 14, y, Colour::black, string_ids::display_resolution, nullptr);
+            drawString_494B3F(*dpi, x + 14, y, Colour::black, StringIds::display_resolution, nullptr);
 
             y = w->y + display::_widgets[display::widx::construction_marker].top + 1;
-            drawString_494B3F(*dpi, x, y, Colour::black, string_ids::construction_marker, nullptr);
+            drawString_494B3F(*dpi, x, y, Colour::black, StringIds::construction_marker, nullptr);
 
             y = w->y + display::_widgets[display::widx::vehicles_min_scale].top + 1;
-            drawString_494B3F(*dpi, x, y, Colour::black, string_ids::vehicles_min_scale, nullptr);
+            drawString_494B3F(*dpi, x, y, Colour::black, StringIds::vehicles_min_scale, nullptr);
 
             y = w->y + display::_widgets[display::widx::station_names_min_scale].top + 1;
-            drawString_494B3F(*dpi, x, y, Colour::black, string_ids::station_names_min_scale, nullptr);
+            drawString_494B3F(*dpi, x, y, Colour::black, StringIds::station_names_min_scale, nullptr);
 
             y = w->y + display::_widgets[display::widx::display_scale].top + 1;
-            drawString_494B3F(*dpi, x + 14, y, Colour::black, string_ids::window_scale_factor, nullptr);
+            drawString_494B3F(*dpi, x + 14, y, Colour::black, StringIds::window_scale_factor, nullptr);
 
             int scale = (int)(config::getNew().scale_factor * 100);
             auto& scale_widget = w->widgets[widx::display_scale];
-            drawString_494B3F(*dpi, w->x + scale_widget.left + 1, w->y + scale_widget.top + 1, Colour::black, string_ids::scale_formatted, &scale);
+            drawString_494B3F(*dpi, w->x + scale_widget.left + 1, w->y + scale_widget.top + 1, Colour::black, StringIds::scale_formatted, &scale);
         }
 
         static void applyScreenModeRestrictions(window* w)
@@ -660,10 +660,10 @@ namespace OpenLoco::ui::options
         static constexpr uint64_t enabledWidgets = common::enabledWidgets | (1 << sound::widx::audio_device) | (1 << sound::widx::audio_device_btn) | (1 << sound::widx::play_title_music);
 
         static widget_t _widgets[] = {
-            common_options_widgets(_window_size, string_ids::options_title_sound),
-            makeWidget({ 10, 49 }, { 346, 12 }, widget_type::wt_18, 1, string_ids::stringid),
-            makeWidget({ 344, 50 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
-            makeWidget({ 10, 65 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::play_title_music),
+            common_options_widgets(_window_size, StringIds::options_title_sound),
+            makeWidget({ 10, 49 }, { 346, 12 }, widget_type::wt_18, 1, StringIds::stringid),
+            makeWidget({ 344, 50 }, { 11, 10 }, widget_type::wt_11, 1, StringIds::dropdown),
+            makeWidget({ 10, 65 }, { 346, 12 }, widget_type::checkbox, 1, StringIds::play_title_music),
             widgetEnd(),
         };
 
@@ -695,11 +695,11 @@ namespace OpenLoco::ui::options
             auto audioDeviceName = Audio::getCurrentDeviceName();
             if (audioDeviceName != nullptr)
             {
-                args.push(string_ids::stringptr);
+                args.push(StringIds::stringptr);
                 args.push(audioDeviceName);
             }
             else
-                args.push(string_ids::audio_device_none);
+                args.push(StringIds::audio_device_none);
 
             if (config::getNew().audio.play_title_music)
                 w->activated_widgets |= (1 << widx::play_title_music);
@@ -774,7 +774,7 @@ namespace OpenLoco::ui::options
                 for (size_t i = 0; i < devices.size(); i++)
                 {
                     auto name = devices[i].c_str();
-                    dropdown::add(i, string_ids::dropdown_stringid, { string_ids::stringptr, name });
+                    dropdown::add(i, StringIds::dropdown_stringid, { StringIds::stringptr, name });
                 }
 
                 auto currentDevice = Audio::getCurrentDevice();
@@ -851,16 +851,16 @@ namespace OpenLoco::ui::options
         static constexpr uint64_t enabledWidgets = common::enabledWidgets | (1 << music::widx::currently_playing) | (1 << music::widx::currently_playing_btn) | (1 << music::widx::music_controls_stop) | (1 << music::widx::music_controls_play) | (1 << music::widx::music_controls_next) | (1 << music::widx::volume) | (1 << music::widx::music_playlist) | (1 << music::widx::music_playlist_btn) | (1 << music::widx::edit_selection);
 
         static widget_t _widgets[] = {
-            common_options_widgets(_window_size, string_ids::options_title_music),
-            makeWidget({ 160, 49 }, { 196, 12 }, widget_type::wt_18, 1, string_ids::stringid),
-            makeWidget({ 344, 50 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
-            makeWidget({ 10, 64 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::music_controls_stop, string_ids::music_controls_stop_tip),
-            makeWidget({ 34, 64 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::music_controls_play, string_ids::music_controls_play_tip),
-            makeWidget({ 58, 64 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::music_controls_next, string_ids::music_controls_next_tip),
-            makeWidget({ 256, 64 }, { 109, 24 }, widget_type::wt_5, 1, -1, string_ids::set_volume_tip),
-            makeWidget({ 10, 93 }, { 346, 12 }, widget_type::wt_18, 1, string_ids::arg2_stringid),
-            makeWidget({ 344, 94 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
-            makeWidget({ 183, 108 }, { 173, 12 }, widget_type::wt_11, 1, string_ids::edit_music_selection, string_ids::edit_music_selection_tip),
+            common_options_widgets(_window_size, StringIds::options_title_music),
+            makeWidget({ 160, 49 }, { 196, 12 }, widget_type::wt_18, 1, StringIds::stringid),
+            makeWidget({ 344, 50 }, { 11, 10 }, widget_type::wt_11, 1, StringIds::dropdown),
+            makeWidget({ 10, 64 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::music_controls_stop, StringIds::music_controls_stop_tip),
+            makeWidget({ 34, 64 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::music_controls_play, StringIds::music_controls_play_tip),
+            makeWidget({ 58, 64 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::music_controls_next, StringIds::music_controls_next_tip),
+            makeWidget({ 256, 64 }, { 109, 24 }, widget_type::wt_5, 1, -1, StringIds::set_volume_tip),
+            makeWidget({ 10, 93 }, { 346, 12 }, widget_type::wt_18, 1, StringIds::arg2_stringid),
+            makeWidget({ 344, 94 }, { 11, 10 }, widget_type::wt_11, 1, StringIds::dropdown),
+            makeWidget({ 183, 108 }, { 173, 12 }, widget_type::wt_11, 1, StringIds::edit_music_selection, StringIds::edit_music_selection_tip),
             widgetEnd(),
         };
 
@@ -891,7 +891,7 @@ namespace OpenLoco::ui::options
             w->widgets[common::widx::close_button].left = w->width - 15;
             w->widgets[common::widx::close_button].right = w->width - 15 + 12;
 
-            string_id songName = string_ids::music_none;
+            string_id songName = StringIds::music_none;
             if (_currentSong != -1)
             {
                 songName = Audio::getMusicInfo(_currentSong)->title_id;
@@ -901,9 +901,9 @@ namespace OpenLoco::ui::options
             args.push(songName);
 
             static const string_id playlist_string_ids[] = {
-                string_ids::play_only_music_from_current_era,
-                string_ids::play_all_music,
-                string_ids::play_custom_music_selection,
+                StringIds::play_only_music_from_current_era,
+                StringIds::play_all_music,
+                StringIds::play_custom_music_selection,
             };
 
             string_id currentSongStringId = playlist_string_ids[(uint8_t)config::get().music_playlist];
@@ -937,9 +937,9 @@ namespace OpenLoco::ui::options
 
             common::drawTabs(w, dpi);
 
-            Gfx::drawString_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::currently_playing_btn].top, 0, string_ids::currently_playing, nullptr);
+            Gfx::drawString_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::currently_playing_btn].top, 0, StringIds::currently_playing, nullptr);
 
-            Gfx::drawString_494B3F(*dpi, w->x + 183, w->y + w->widgets[widx::volume].top + 7, 0, string_ids::volume, nullptr);
+            Gfx::drawString_494B3F(*dpi, w->x + 183, w->y + w->widgets[widx::volume].top + 7, 0, StringIds::volume, nullptr);
 
             Gfx::drawImage(dpi, w->x + w->widgets[widx::volume].left, w->y + w->widgets[widx::volume].top, 0x20000000 | (w->colours[1] << 19) | ImageIds::volume_slider_track);
 
@@ -1082,9 +1082,9 @@ namespace OpenLoco::ui::options
             widget_t dropdown = w->widgets[widx::music_playlist];
             dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], 3, 0x80);
 
-            dropdown::add(0, string_ids::dropdown_stringid, string_ids::play_only_music_from_current_era);
-            dropdown::add(1, string_ids::dropdown_stringid, string_ids::play_all_music);
-            dropdown::add(2, string_ids::dropdown_stringid, string_ids::play_custom_music_selection);
+            dropdown::add(0, StringIds::dropdown_stringid, StringIds::play_only_music_from_current_era);
+            dropdown::add(1, StringIds::dropdown_stringid, StringIds::play_all_music);
+            dropdown::add(2, StringIds::dropdown_stringid, StringIds::play_custom_music_selection);
 
             dropdown::setItemSelected((uint8_t)config::get().music_playlist);
         }
@@ -1165,7 +1165,7 @@ namespace OpenLoco::ui::options
             for (auto track : tracks)
             {
                 index++;
-                dropdown::add(index, string_ids::dropdown_stringid, Audio::getMusicInfo(track)->title_id);
+                dropdown::add(index, StringIds::dropdown_stringid, Audio::getMusicInfo(track)->title_id);
                 if (track == _currentSong)
                 {
                     dropdown::setItemSelected(index);
@@ -1239,19 +1239,19 @@ namespace OpenLoco::ui::options
         static constexpr uint64_t enabledWidgets = common::enabledWidgets | (1 << regional::widx::language) | (1 << regional::widx::language_btn) | (1 << regional::widx::distance_speed) | (1 << regional::widx::distance_speed_btn) | (1 << regional::widx::heights) | (1 << regional::widx::heights_btn) | (1 << regional::widx::currency) | (1 << regional::widx::currency_btn) | (1 << regional::widx::preferred_currency) | (1 << regional::widx::preferred_currency_btn) | (1 << regional::widx::preferred_currency_for_new_games) | (1 << regional::widx::preferred_currency_always);
 
         static widget_t _widgets[] = {
-            common_options_widgets(_window_size, string_ids::options_title_regional),
-            makeWidget({ 183, 49 }, { 173, 12 }, widget_type::wt_18, 1, string_ids::stringptr),
-            makeWidget({ 344, 50 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
-            makeWidget({ 183, 69 }, { 173, 12 }, widget_type::wt_18, 1, string_ids::arg12_stringid),
-            makeWidget({ 344, 70 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
-            makeWidget({ 183, 84 }, { 173, 12 }, widget_type::wt_18, 1, string_ids::arg6_stringid),
-            makeWidget({ 344, 85 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown),
-            makeWidget({ 183, 104 }, { 173, 12 }, widget_type::wt_18, 1, string_ids::arg10_stringid, string_ids::current_game_currency_tip),
-            makeWidget({ 344, 105 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown, string_ids::current_game_currency_tip),
-            makeWidget({ 183, 119 }, { 173, 12 }, widget_type::wt_18, 1, string_ids::preferred_currency_buffer, string_ids::new_game_currency_tip),
-            makeWidget({ 344, 120 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown, string_ids::new_game_currency_tip),
-            makeWidget({ 10, 134 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::use_preferred_currency_new_game, string_ids::use_preferred_currency_new_game_tip),
-            makeWidget({ 10, 148 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::use_preferred_currency_always, string_ids::use_preferred_currency_always_tip),
+            common_options_widgets(_window_size, StringIds::options_title_regional),
+            makeWidget({ 183, 49 }, { 173, 12 }, widget_type::wt_18, 1, StringIds::stringptr),
+            makeWidget({ 344, 50 }, { 11, 10 }, widget_type::wt_11, 1, StringIds::dropdown),
+            makeWidget({ 183, 69 }, { 173, 12 }, widget_type::wt_18, 1, StringIds::arg12_stringid),
+            makeWidget({ 344, 70 }, { 11, 10 }, widget_type::wt_11, 1, StringIds::dropdown),
+            makeWidget({ 183, 84 }, { 173, 12 }, widget_type::wt_18, 1, StringIds::arg6_stringid),
+            makeWidget({ 344, 85 }, { 11, 10 }, widget_type::wt_11, 1, StringIds::dropdown),
+            makeWidget({ 183, 104 }, { 173, 12 }, widget_type::wt_18, 1, StringIds::arg10_stringid, StringIds::current_game_currency_tip),
+            makeWidget({ 344, 105 }, { 11, 10 }, widget_type::wt_11, 1, StringIds::dropdown, StringIds::current_game_currency_tip),
+            makeWidget({ 183, 119 }, { 173, 12 }, widget_type::wt_18, 1, StringIds::preferred_currency_buffer, StringIds::new_game_currency_tip),
+            makeWidget({ 344, 120 }, { 11, 10 }, widget_type::wt_11, 1, StringIds::dropdown, StringIds::new_game_currency_tip),
+            makeWidget({ 10, 134 }, { 346, 12 }, widget_type::checkbox, 1, StringIds::use_preferred_currency_new_game, StringIds::use_preferred_currency_new_game_tip),
+            makeWidget({ 10, 148 }, { 346, 12 }, widget_type::checkbox, 1, StringIds::use_preferred_currency_always, StringIds::use_preferred_currency_always_tip),
             widgetEnd(),
         };
 
@@ -1289,22 +1289,22 @@ namespace OpenLoco::ui::options
 
             FormatArguments args = {};
 
-            auto& language = localisation::getDescriptorForLanguage(config::getNew().language);
+            auto& language = Localisation::getDescriptorForLanguage(config::getNew().language);
             args.push(language.native_name.c_str());
 
-            string_id current_height_units = string_ids::height_units;
+            string_id current_height_units = StringIds::height_units;
             if ((OpenLoco::config::get().flags & config::flags::show_height_as_units) == 0)
             {
-                current_height_units = string_ids::height_real_values;
+                current_height_units = StringIds::height_real_values;
             }
 
             args.skip(0x2);
             args.push(current_height_units);
 
-            string_id current_measurement_format = string_ids::imperial;
+            string_id current_measurement_format = StringIds::imperial;
             if (OpenLoco::config::get().measurement_format)
             {
-                current_measurement_format = string_ids::metric;
+                current_measurement_format = StringIds::metric;
             }
 
             args.skip(0x2);
@@ -1341,11 +1341,11 @@ namespace OpenLoco::ui::options
             w->draw(dpi);
             common::drawTabs(w, dpi);
 
-            Gfx::drawString_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::language].top + 1, 0, string_ids::options_language, nullptr);
-            Gfx::drawString_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::distance_speed].top + 1, 0, string_ids::distance_and_speed, nullptr);
-            Gfx::drawString_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::heights].top + 1, 0, string_ids::heights, nullptr);
-            Gfx::drawString_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::currency].top + 1, 0, string_ids::current_game_currency, nullptr);
-            Gfx::drawString_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::preferred_currency].top + 1, 0, string_ids::new_game_currency, nullptr);
+            Gfx::drawString_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::language].top + 1, 0, StringIds::options_language, nullptr);
+            Gfx::drawString_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::distance_speed].top + 1, 0, StringIds::distance_and_speed, nullptr);
+            Gfx::drawString_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::heights].top + 1, 0, StringIds::heights, nullptr);
+            Gfx::drawString_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::currency].top + 1, 0, StringIds::current_game_currency, nullptr);
+            Gfx::drawString_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::preferred_currency].top + 1, 0, StringIds::new_game_currency, nullptr);
         }
 
         static void onMouseUp(window* w, widget_index wi)
@@ -1429,7 +1429,7 @@ namespace OpenLoco::ui::options
 
         static void languageMouseDown(window* w)
         {
-            auto& lds = localisation::getLanguageDescriptors();
+            auto& lds = Localisation::getLanguageDescriptors();
             uint8_t num_languages = static_cast<uint8_t>(lds.size());
 
             widget_t dropdown = w->widgets[widx::language];
@@ -1440,7 +1440,7 @@ namespace OpenLoco::ui::options
             for (uint8_t index = 1; index < num_languages; index++)
             {
                 auto& ld = lds[index];
-                dropdown::add(index - 1, string_ids::dropdown_stringptr, (char*)ld.native_name.c_str());
+                dropdown::add(index - 1, StringIds::dropdown_stringptr, (char*)ld.native_name.c_str());
 
                 if (ld.locale == current_language)
                     dropdown::setItemSelected(index - 1);
@@ -1455,11 +1455,11 @@ namespace OpenLoco::ui::options
                 return;
             }
 
-            auto& lds = localisation::getLanguageDescriptors();
+            auto& lds = Localisation::getLanguageDescriptors();
             auto& ld = lds[ax + 1];
             config::getNew().language = ld.locale;
             config::write();
-            localisation::loadLanguageFile();
+            Localisation::loadLanguageFile();
             Gfx::invalidateScreen();
         }
 
@@ -1474,7 +1474,7 @@ namespace OpenLoco::ui::options
             for (auto object : objectmgr::getAvailableObjects(object_type::currency))
             {
                 index++;
-                dropdown::add(index, string_ids::dropdown_stringptr, object.second._name);
+                dropdown::add(index, StringIds::dropdown_stringptr, object.second._name);
 
                 if (_11364A0[object.first] & 1)
                 {
@@ -1537,7 +1537,7 @@ namespace OpenLoco::ui::options
             for (auto object : objectmgr::getAvailableObjects(object_type::currency))
             {
                 index++;
-                dropdown::add(index, string_ids::dropdown_stringptr, object.second._name);
+                dropdown::add(index, StringIds::dropdown_stringptr, object.second._name);
 
                 // TODO: Mark current value as selected
             }
@@ -1617,8 +1617,8 @@ namespace OpenLoco::ui::options
             widget_t dropdown = w->widgets[widx::distance_speed];
             dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], 2, 0x80);
 
-            dropdown::add(0, string_ids::dropdown_stringid, string_ids::imperial);
-            dropdown::add(1, string_ids::dropdown_stringid, string_ids::metric);
+            dropdown::add(0, StringIds::dropdown_stringid, StringIds::imperial);
+            dropdown::add(1, StringIds::dropdown_stringid, StringIds::metric);
             dropdown::setItemSelected(config::get().measurement_format);
         }
 
@@ -1648,8 +1648,8 @@ namespace OpenLoco::ui::options
             widget_t dropdown = w->widgets[widx::heights];
             dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], 2, 0x80);
 
-            dropdown::add(0, string_ids::dropdown_stringid, string_ids::height_units);
-            dropdown::add(1, string_ids::dropdown_stringid, string_ids::height_real_values);
+            dropdown::add(0, StringIds::dropdown_stringid, StringIds::height_units);
+            dropdown::add(1, StringIds::dropdown_stringid, StringIds::height_real_values);
 
             int selectedItem = 0;
             if ((config::get().flags & config::flags::show_height_as_units) == 0)
@@ -1721,10 +1721,10 @@ namespace OpenLoco::ui::options
         static const Gfx::ui_size_t _window_size = { 366, 99 };
 
         static widget_t _widgets[] = {
-            common_options_widgets(_window_size, string_ids::options_title_controls),
-            makeWidget({ 10, 49 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::scroll_screen_edge, string_ids::scroll_screen_edge_tip),
-            makeWidget({ 10, 64 }, { 346, 12 }, widget_type::checkbox, 1, string_ids::zoom_to_cursor, string_ids::zoom_to_cursor_tip),
-            makeWidget({ 26, 79 }, { 160, 12 }, widget_type::wt_11, 1, string_ids::customise_keys, string_ids::customise_keys_tip),
+            common_options_widgets(_window_size, StringIds::options_title_controls),
+            makeWidget({ 10, 49 }, { 346, 12 }, widget_type::checkbox, 1, StringIds::scroll_screen_edge, StringIds::scroll_screen_edge_tip),
+            makeWidget({ 10, 64 }, { 346, 12 }, widget_type::checkbox, 1, StringIds::zoom_to_cursor, StringIds::zoom_to_cursor_tip),
+            makeWidget({ 26, 79 }, { 160, 12 }, widget_type::wt_11, 1, StringIds::customise_keys, StringIds::customise_keys_tip),
             widgetEnd(),
         };
 
@@ -1864,12 +1864,12 @@ namespace OpenLoco::ui::options
         static constexpr uint64_t enabledWidgets = common::enabledWidgets | (1 << misc::widx::disable_vehicle_breakdowns) | (1 << widx::disableAICompanies) | (1 << misc::widx::use_preferred_owner_name) | (1 << misc::widx::change_btn) | (1 << misc::widx::export_plugin_objects);
 
         static widget_t _widgets[] = {
-            common_options_widgets(_window_size, string_ids::options_title_miscellaneous),
-            makeWidget({ 10, 49 }, { 400, 12 }, widget_type::checkbox, 1, string_ids::disable_vehicle_breakdowns, string_ids::null),
-            makeWidget({ 10, 64 }, { 400, 12 }, widget_type::checkbox, 1, string_ids::disableAICompanies, string_ids::disableAICompanies_tip),
-            makeWidget({ 10, 79 }, { 400, 12 }, widget_type::checkbox, 1, string_ids::use_preferred_owner_name, string_ids::use_preferred_owner_name_tip),
-            makeWidget({ 335, 94 }, { 75, 12 }, widget_type::wt_11, 1, string_ids::change),
-            makeWidget({ 10, 109 }, { 400, 12 }, widget_type::checkbox, 1, string_ids::export_plugin_objects, string_ids::export_plugin_objects_tip),
+            common_options_widgets(_window_size, StringIds::options_title_miscellaneous),
+            makeWidget({ 10, 49 }, { 400, 12 }, widget_type::checkbox, 1, StringIds::disable_vehicle_breakdowns, StringIds::null),
+            makeWidget({ 10, 64 }, { 400, 12 }, widget_type::checkbox, 1, StringIds::disableAICompanies, StringIds::disableAICompanies_tip),
+            makeWidget({ 10, 79 }, { 400, 12 }, widget_type::checkbox, 1, StringIds::use_preferred_owner_name, StringIds::use_preferred_owner_name_tip),
+            makeWidget({ 335, 94 }, { 75, 12 }, widget_type::wt_11, 1, StringIds::change),
+            makeWidget({ 10, 109 }, { 400, 12 }, widget_type::checkbox, 1, StringIds::export_plugin_objects, StringIds::export_plugin_objects_tip),
             widgetEnd(),
         };
 
@@ -1940,14 +1940,14 @@ namespace OpenLoco::ui::options
             w->draw(dpi);
             common::drawTabs(w, dpi);
 
-            auto buffer = (char*)stringmgr::getString(string_ids::buffer_2039);
+            auto buffer = (char*)StringManager::getString(StringIds::buffer_2039);
             char* playerName = config::get().preferred_name;
             strcpy(buffer, playerName);
             buffer[strlen(playerName)] = '\0';
 
             FormatArguments args = {};
-            args.push(string_ids::buffer_2039);
-            Gfx::drawString_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::change_btn].top + 1, 0, string_ids::wcolour2_preferred_owner_name, &args);
+            args.push(StringIds::buffer_2039);
+            Gfx::drawString_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::change_btn].top + 1, 0, StringIds::wcolour2_preferred_owner_name, &args);
         }
 
         // 0x004C12D2
@@ -2004,12 +2004,12 @@ namespace OpenLoco::ui::options
         // 0x004C1319
         static void changePreferredName(window* w)
         {
-            auto buffer = (char*)stringmgr::getString(string_ids::buffer_2039);
+            auto buffer = (char*)StringManager::getString(StringIds::buffer_2039);
             char* playerName = config::get().preferred_name;
             strcpy(buffer, playerName);
             buffer[strlen(playerName)] = '\0';
 
-            textinput::openTextinput(w, string_ids::preferred_owner_name, string_ids::enter_preferred_owner_name, string_ids::buffer_2039, widx::use_preferred_owner_name, nullptr);
+            textinput::openTextinput(w, StringIds::preferred_owner_name, StringIds::enter_preferred_owner_name, StringIds::buffer_2039, widx::use_preferred_owner_name, nullptr);
         }
 
         // 0x004C1342

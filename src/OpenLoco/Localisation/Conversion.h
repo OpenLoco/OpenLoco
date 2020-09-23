@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <string>
 
-namespace OpenLoco::localisation
+namespace OpenLoco::Localisation
 {
     utf32_t convertLocoToUnicode(uint8_t loco_char);
     uint8_t convertUnicodeToLoco(utf32_t unicode);

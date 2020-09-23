@@ -86,7 +86,7 @@ namespace OpenLoco::thingmgr
     {
         if (thingmgr::getListCount(thingmgr::thing_list::null) <= numNewThings)
         {
-            gGameCommandErrorText = string_ids::too_many_objects_in_game;
+            gGameCommandErrorText = StringIds::too_many_objects_in_game;
             return false;
         }
         return true;

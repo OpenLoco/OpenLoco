@@ -26,9 +26,9 @@ namespace OpenLoco::ui::windows::LandscapeGenerationConfirm
     static widget_t widgets[] = {
         makeWidget({ 0, 0 }, { 280, 92 }, widget_type::panel, 0),
         makeWidget({ 1, 1 }, { 278, 13 }, widget_type::caption_22, 0),
-        makeWidget({ 267, 2 }, { 11, 11 }, widget_type::wt_11, 0, string_ids::close_window_cross, string_ids::tooltip_close_window),
-        makeWidget({ 20, 77 }, { 100, 12 }, widget_type::wt_11, 0, string_ids::label_ok),
-        makeWidget({ 160, 77 }, { 100, 12 }, widget_type::wt_11, 0, string_ids::label_button_cancel),
+        makeWidget({ 267, 2 }, { 11, 11 }, widget_type::wt_11, 0, StringIds::close_window_cross, StringIds::tooltip_close_window),
+        makeWidget({ 20, 77 }, { 100, 12 }, widget_type::wt_11, 0, StringIds::label_ok),
+        makeWidget({ 160, 77 }, { 100, 12 }, widget_type::wt_11, 0, StringIds::label_button_cancel),
         widgetEnd()
     };
 
@@ -40,11 +40,11 @@ namespace OpenLoco::ui::windows::LandscapeGenerationConfirm
         window->draw(dpi);
 
         static loco_global<string_id, 0x0112C826> commonFormatArgs;
-        string_id prompt = window->var_846 == 0 ? string_ids::prompt_confirm_generate_landscape : string_ids::prompt_confirm_random_landscape;
+        string_id prompt = window->var_846 == 0 ? StringIds::prompt_confirm_generate_landscape : StringIds::prompt_confirm_random_landscape;
         *commonFormatArgs = prompt;
 
         auto origin = Gfx::point_t(window->x + (window->width / 2), window->y + 41);
-        Gfx::drawStringCentredWrapped(dpi, &origin, window->width, Colour::black, string_ids::wcolour2_stringid, (const char*)&*commonFormatArgs);
+        Gfx::drawStringCentredWrapped(dpi, &origin, window->width, Colour::black, StringIds::wcolour2_stringid, (const char*)&*commonFormatArgs);
     }
 
     // 0x004C18E4
@@ -95,9 +95,9 @@ namespace OpenLoco::ui::windows::LandscapeGenerationConfirm
 
         window->var_846 = prompt_type;
         if (prompt_type == 0)
-            window->widgets[widx::caption].text = string_ids::title_generate_new_landscape;
+            window->widgets[widx::caption].text = StringIds::title_generate_new_landscape;
         else
-            window->widgets[widx::caption].text = string_ids::title_random_landscape_option;
+            window->widgets[widx::caption].text = StringIds::title_random_landscape_option;
 
         return window;
     }

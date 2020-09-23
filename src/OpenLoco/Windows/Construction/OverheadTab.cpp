@@ -19,14 +19,14 @@ namespace OpenLoco::ui::windows::construction::overhead
     static loco_global<int32_t, 0x00E3F0B8> gCurrentRotation;
 
     widget_t widgets[] = {
-        commonWidgets(138, 192, string_ids::stringid_2),
-        makeWidget({ 3, 45 }, { 132, 12 }, widget_type::checkbox, 1, string_ids::empty, string_ids::tooltip_select_track_mod),
-        makeWidget({ 3, 57 }, { 132, 12 }, widget_type::checkbox, 1, string_ids::empty, string_ids::tooltip_select_track_mod),
-        makeWidget({ 3, 69 }, { 132, 12 }, widget_type::checkbox, 1, string_ids::empty, string_ids::tooltip_select_track_mod),
-        makeWidget({ 3, 81 }, { 132, 12 }, widget_type::checkbox, 1, string_ids::empty, string_ids::tooltip_select_track_mod),
+        commonWidgets(138, 192, StringIds::stringid_2),
+        makeWidget({ 3, 45 }, { 132, 12 }, widget_type::checkbox, 1, StringIds::empty, StringIds::tooltip_select_track_mod),
+        makeWidget({ 3, 57 }, { 132, 12 }, widget_type::checkbox, 1, StringIds::empty, StringIds::tooltip_select_track_mod),
+        makeWidget({ 3, 69 }, { 132, 12 }, widget_type::checkbox, 1, StringIds::empty, StringIds::tooltip_select_track_mod),
+        makeWidget({ 3, 81 }, { 132, 12 }, widget_type::checkbox, 1, StringIds::empty, StringIds::tooltip_select_track_mod),
         makeWidget({ 35, 110 }, { 66, 66 }, widget_type::wt_3, 1),
-        makeWidget({ 3, 95 }, { 132, 12 }, widget_type::wt_18, 1, 0xFFFFFFFF, string_ids::tooltip_select_track_to_upgrade),
-        makeWidget({ 123, 96 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown, string_ids::tooltip_select_track_to_upgrade),
+        makeWidget({ 3, 95 }, { 132, 12 }, widget_type::wt_18, 1, 0xFFFFFFFF, StringIds::tooltip_select_track_to_upgrade),
+        makeWidget({ 123, 96 }, { 11, 10 }, widget_type::wt_11, 1, StringIds::dropdown, StringIds::tooltip_select_track_to_upgrade),
         widgetEnd(),
     };
 
@@ -83,9 +83,9 @@ namespace OpenLoco::ui::windows::construction::overhead
 
                 dropdown::show(xPos, yPos, width, height, self->colours[1], modCount, (1 << 7));
 
-                dropdown::add(0, string_ids::single_section);
-                dropdown::add(1, string_ids::block_section);
-                dropdown::add(2, string_ids::all_connected_track);
+                dropdown::add(0, StringIds::single_section);
+                dropdown::add(1, StringIds::block_section);
+                dropdown::add(2, StringIds::all_connected_track);
 
                 dropdown::setHighlightedItem(_lastSelectedTrackModSection);
                 break;
@@ -203,7 +203,7 @@ namespace OpenLoco::ui::windows::construction::overhead
         self->widgets[widx::track].type = widget_type::none;
         self->widgets[widx::track_dropdown].type = widget_type::none;
 
-        self->widgets[widx::image].tooltip = string_ids::null;
+        self->widgets[widx::image].tooltip = StringIds::null;
 
         if (_lastSelectedMods & 0xF)
         {
@@ -211,19 +211,19 @@ namespace OpenLoco::ui::windows::construction::overhead
             self->widgets[widx::track].type = widget_type::wt_18;
             self->widgets[widx::track_dropdown].type = widget_type::wt_11;
 
-            self->widgets[widx::image].tooltip = string_ids::upgrade_track_with_mods;
+            self->widgets[widx::image].tooltip = StringIds::upgrade_track_with_mods;
 
             if (isTrackUpgradeMode())
             {
                 if (_toolWindowType == WindowType::construction)
-                    self->widgets[widx::image].tooltip = string_ids::click_track_to_upgrade;
+                    self->widgets[widx::image].tooltip = StringIds::click_track_to_upgrade;
             }
         }
 
         static string_id modString[] = {
-            string_ids::single_section,
-            string_ids::block_section,
-            string_ids::all_connected_track,
+            StringIds::single_section,
+            StringIds::block_section,
+            StringIds::all_connected_track,
         };
 
         self->widgets[widx::track].text = modString[_lastSelectedTrackModSection];
@@ -287,7 +287,7 @@ namespace OpenLoco::ui::windows::construction::overhead
             auto args = FormatArguments();
             args.push<uint32_t>(_modCost);
 
-            Gfx::drawStringCentred(*dpi, xPos, yPos, Colour::black, string_ids::build_cost, &args);
+            Gfx::drawStringCentred(*dpi, xPos, yPos, Colour::black, StringIds::build_cost, &args);
         }
     }
 

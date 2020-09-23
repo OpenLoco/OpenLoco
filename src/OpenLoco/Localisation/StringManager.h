@@ -9,12 +9,12 @@
 
 namespace OpenLoco
 {
-    namespace string_ids
+    namespace StringIds
     {
         constexpr string_id null = 0xFFFF;
     }
 
-    namespace font
+    namespace Font
     {
         constexpr int16_t m1 = -1;
         constexpr int16_t m2 = -2;
@@ -25,7 +25,7 @@ namespace OpenLoco
         constexpr int16_t large = 672;
     }
 
-    namespace format_flags
+    namespace FormatFlags
     {
         constexpr uint8_t textflag_5 = (1ULL << 5); // 0x20
         constexpr uint8_t textflag_6 = (1ULL << 6); // 0x40
@@ -35,7 +35,7 @@ namespace OpenLoco
         constexpr uint8_t ff = 0xFF;
     }
 
-    namespace control_codes
+    namespace ControlCodes
     {
         // Arguments: uint8_t
         constexpr uint8_t move_x = 1;
@@ -97,7 +97,7 @@ namespace OpenLoco
         constexpr uint8_t colour_palesilver = 157;
     }
 
-    namespace date_modifier
+    namespace DateModifier
     {
         constexpr uint8_t dmy_full = 0;
         constexpr uint8_t my_full = 4;
@@ -106,7 +106,7 @@ namespace OpenLoco
     }
 }
 
-namespace OpenLoco::stringmgr
+namespace OpenLoco::StringManager
 {
     const char* getString(string_id id);
     char* formatString(char* buffer, string_id id, const void* args = nullptr);

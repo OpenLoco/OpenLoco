@@ -82,7 +82,7 @@ namespace OpenLoco::ui::windows
 
     bool promptOkCancel(string_id okButtonStringId);
 
-    void showError(string_id title, string_id message = string_ids::null, bool sound = true);
+    void showError(string_id title, string_id message = StringIds::null, bool sound = true);
 
     void editorInit();
 

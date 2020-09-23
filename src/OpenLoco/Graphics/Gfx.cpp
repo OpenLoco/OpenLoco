@@ -196,46 +196,46 @@ namespace OpenLoco::Gfx
 
             switch (chr)
             {
-                case control_codes::move_x:
+                case ControlCodes::move_x:
                     width = *str;
                     str++;
                     break;
 
-                case control_codes::adjust_palette:
+                case ControlCodes::adjust_palette:
                 case 3:
                 case 4:
                     str++;
                     break;
 
-                case control_codes::newline:
-                case control_codes::newline_smaller:
+                case ControlCodes::newline:
+                case ControlCodes::newline_smaller:
                     continue;
 
-                case control_codes::font_small:
-                    fontSpriteBase = font::small;
+                case ControlCodes::font_small:
+                    fontSpriteBase = Font::small;
                     break;
 
-                case control_codes::font_large:
-                    fontSpriteBase = font::large;
+                case ControlCodes::font_large:
+                    fontSpriteBase = Font::large;
                     break;
 
-                case control_codes::font_bold:
-                    fontSpriteBase = font::medium_bold;
+                case ControlCodes::font_bold:
+                    fontSpriteBase = Font::medium_bold;
                     break;
 
-                case control_codes::font_regular:
-                    fontSpriteBase = font::medium_normal;
+                case ControlCodes::font_regular:
+                    fontSpriteBase = Font::medium_normal;
                     break;
 
-                case control_codes::outline:
-                case control_codes::outline_off:
-                case control_codes::window_colour_1:
-                case control_codes::window_colour_2:
-                case control_codes::window_colour_3:
+                case ControlCodes::outline:
+                case ControlCodes::outline_off:
+                case ControlCodes::window_colour_1:
+                case ControlCodes::window_colour_2:
+                case ControlCodes::window_colour_3:
                 case 0x10:
                     break;
 
-                case control_codes::inline_sprite_str:
+                case ControlCodes::inline_sprite_str:
                 {
                     const uint32_t image = reinterpret_cast<const uint32_t*>(str)[0];
                     const uint32_t imageId = image & 0x7FFFF;
@@ -305,45 +305,45 @@ namespace OpenLoco::Gfx
                 case '\0':
                     return pos;
 
-                case control_codes::adjust_palette:
+                case ControlCodes::adjust_palette:
                     // This control character does not appear in the localisation files
                     assert(false);
                     str++;
                     break;
 
-                case control_codes::newline_smaller:
+                case ControlCodes::newline_smaller:
                     pos.x = origin.x;
-                    if (_currentFontSpriteBase == font::medium_normal || _currentFontSpriteBase == font::medium_bold)
+                    if (_currentFontSpriteBase == Font::medium_normal || _currentFontSpriteBase == Font::medium_bold)
                     {
                         pos.y += 5;
                     }
-                    else if (_currentFontSpriteBase == font::small)
+                    else if (_currentFontSpriteBase == Font::small)
                     {
                         pos.y += 3;
                     }
-                    else if (_currentFontSpriteBase == font::large)
+                    else if (_currentFontSpriteBase == Font::large)
                     {
                         pos.y += 9;
                     }
                     break;
 
-                case control_codes::newline:
+                case ControlCodes::newline:
                     pos.x = origin.x;
-                    if (_currentFontSpriteBase == font::medium_normal || _currentFontSpriteBase == font::medium_bold)
+                    if (_currentFontSpriteBase == Font::medium_normal || _currentFontSpriteBase == Font::medium_bold)
                     {
                         pos.y += 10;
                     }
-                    else if (_currentFontSpriteBase == font::small)
+                    else if (_currentFontSpriteBase == Font::small)
                     {
                         pos.y += 6;
                     }
-                    else if (_currentFontSpriteBase == font::large)
+                    else if (_currentFontSpriteBase == Font::large)
                     {
                         pos.y += 18;
                     }
                     break;
 
-                case control_codes::move_x:
+                case ControlCodes::move_x:
                 {
                     uint8_t offset = *str;
                     str++;
@@ -352,7 +352,7 @@ namespace OpenLoco::Gfx
                     break;
                 }
 
-                case control_codes::newline_x_y:
+                case ControlCodes::newline_x_y:
                 {
                     uint8_t offset = *str;
                     str++;
@@ -365,44 +365,44 @@ namespace OpenLoco::Gfx
                     break;
                 }
 
-                case control_codes::font_small:
-                    _currentFontSpriteBase = font::small;
+                case ControlCodes::font_small:
+                    _currentFontSpriteBase = Font::small;
                     break;
-                case control_codes::font_large:
-                    _currentFontSpriteBase = font::large;
+                case ControlCodes::font_large:
+                    _currentFontSpriteBase = Font::large;
                     break;
-                case control_codes::font_regular:
-                    _currentFontSpriteBase = font::medium_normal;
+                case ControlCodes::font_regular:
+                    _currentFontSpriteBase = Font::medium_normal;
                     break;
-                case control_codes::font_bold:
-                    _currentFontSpriteBase = font::medium_bold;
+                case ControlCodes::font_bold:
+                    _currentFontSpriteBase = Font::medium_bold;
                     break;
-                case control_codes::outline:
+                case ControlCodes::outline:
                     _currentFontFlags = _currentFontFlags | text_draw_flags::outline;
                     break;
-                case control_codes::outline_off:
+                case ControlCodes::outline_off:
                     _currentFontFlags = _currentFontFlags & ~text_draw_flags::outline;
                     break;
-                case control_codes::window_colour_1:
+                case ControlCodes::window_colour_1:
                 {
                     int hue = _windowColours[0];
                     setTextColours(Colour::getShade(hue, 7), PaletteIndex::index_0A, PaletteIndex::index_0A);
                     break;
                 }
-                case control_codes::window_colour_2:
+                case ControlCodes::window_colour_2:
                 {
                     int hue = _windowColours[1];
                     setTextColours(Colour::getShade(hue, 9), PaletteIndex::index_0A, PaletteIndex::index_0A);
                     break;
                 }
-                case control_codes::window_colour_3:
+                case ControlCodes::window_colour_3:
                 {
                     int hue = _windowColours[2];
                     setTextColours(Colour::getShade(hue, 9), PaletteIndex::index_0A, PaletteIndex::index_0A);
                     break;
                 }
 
-                case control_codes::inline_sprite_str:
+                case ControlCodes::inline_sprite_str:
                 {
                     uint32_t image = ((uint32_t*)str)[0];
                     uint32_t imageId = image & 0x7FFFF;
@@ -422,59 +422,59 @@ namespace OpenLoco::Gfx
                     break;
                 }
 
-                case control_codes::colour_black:
+                case ControlCodes::colour_black:
                     setTextColour(0);
                     break;
 
-                case control_codes::colour_grey:
+                case ControlCodes::colour_grey:
                     setTextColour(1);
                     break;
 
-                case control_codes::colour_white:
+                case ControlCodes::colour_white:
                     setTextColour(2);
                     break;
 
-                case control_codes::colour_red:
+                case ControlCodes::colour_red:
                     setTextColour(3);
                     break;
 
-                case control_codes::colour_green:
+                case ControlCodes::colour_green:
                     setTextColour(4);
                     break;
 
-                case control_codes::colour_yellow:
+                case ControlCodes::colour_yellow:
                     setTextColour(5);
                     break;
 
-                case control_codes::colour_topaz:
+                case ControlCodes::colour_topaz:
                     setTextColour(6);
                     break;
 
-                case control_codes::colour_celadon:
+                case ControlCodes::colour_celadon:
                     setTextColour(7);
                     break;
 
-                case control_codes::colour_babyblue:
+                case ControlCodes::colour_babyblue:
                     setTextColour(8);
                     break;
 
-                case control_codes::colour_palelavender:
+                case ControlCodes::colour_palelavender:
                     setTextColour(9);
                     break;
 
-                case control_codes::colour_palegold:
+                case ControlCodes::colour_palegold:
                     setTextColour(10);
                     break;
 
-                case control_codes::colour_lightpink:
+                case ControlCodes::colour_lightpink:
                     setTextColour(11);
                     break;
 
-                case control_codes::colour_pearlaqua:
+                case ControlCodes::colour_pearlaqua:
                     setTextColour(12);
                     break;
 
-                case control_codes::colour_palesilver:
+                case ControlCodes::colour_palesilver:
                     setTextColour(13);
                     break;
 
@@ -514,12 +514,12 @@ namespace OpenLoco::Gfx
         // 0x00E04348, 0x00E0434A
         Gfx::point_t origin = { x, y };
 
-        if (colour == format_flags::fe)
+        if (colour == FormatFlags::fe)
         {
             return loopNewline(context, origin, (uint8_t*)str);
         }
 
-        if (colour == format_flags::fd)
+        if (colour == FormatFlags::fd)
         {
             _currentFontFlags = 0;
             setTextColour(0);
@@ -538,20 +538,20 @@ namespace OpenLoco::Gfx
         if (y < context->y - 90)
             return origin;
 
-        if (colour == format_flags::ff)
+        if (colour == FormatFlags::ff)
         {
             return loopNewline(context, origin, (uint8_t*)str);
         }
 
         _currentFontFlags = 0;
-        if (_currentFontSpriteBase == font::m1)
+        if (_currentFontSpriteBase == Font::m1)
         {
-            _currentFontSpriteBase = font::medium_bold;
+            _currentFontSpriteBase = Font::medium_bold;
             _currentFontFlags = _currentFontFlags | text_draw_flags::dark;
         }
-        else if (_currentFontSpriteBase == font::m2)
+        else if (_currentFontSpriteBase == Font::m2)
         {
-            _currentFontSpriteBase = font::medium_bold;
+            _currentFontSpriteBase = Font::medium_bold;
             _currentFontFlags = _currentFontFlags | text_draw_flags::dark;
             _currentFontFlags = _currentFontFlags | text_draw_flags::extra_dark;
         }
@@ -561,15 +561,15 @@ namespace OpenLoco::Gfx
         _textColours[2] = Colour::getShade(Colour::bright_pink, 5);
         _textColours[3] = Colour::getShade(Colour::light_blue, 5);
 
-        if (colour & format_flags::textflag_5)
+        if (colour & FormatFlags::textflag_5)
         {
-            colour &= ~format_flags::textflag_5;
+            colour &= ~FormatFlags::textflag_5;
             _currentFontFlags = _currentFontFlags | text_draw_flags::outline;
         }
 
-        if (colour & format_flags::textflag_6)
+        if (colour & FormatFlags::textflag_6)
         {
-            colour &= ~format_flags::textflag_6;
+            colour &= ~FormatFlags::textflag_6;
             _currentFontFlags = _currentFontFlags | text_draw_flags::inset;
         }
 

@@ -16,7 +16,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::stringmgr
+namespace OpenLoco::StringManager
 {
     const uint16_t NUM_USER_STRINGS = 2048;
     const uint8_t USER_STRING_SIZE = 32;
@@ -31,52 +31,52 @@ namespace OpenLoco::stringmgr
     static loco_global<char[NUM_USER_STRINGS][USER_STRING_SIZE], 0x0095885C> _userStrings;
 
     static std::map<int32_t, string_id> day_to_string = {
-        { 1, string_ids::day_1st },
-        { 2, string_ids::day_2nd },
-        { 3, string_ids::day_3rd },
-        { 4, string_ids::day_4th },
-        { 5, string_ids::day_5th },
-        { 6, string_ids::day_6th },
-        { 7, string_ids::day_7th },
-        { 8, string_ids::day_8th },
-        { 9, string_ids::day_9th },
-        { 10, string_ids::day_10th },
-        { 11, string_ids::day_11th },
-        { 12, string_ids::day_12th },
-        { 13, string_ids::day_13th },
-        { 14, string_ids::day_14th },
-        { 15, string_ids::day_15th },
-        { 16, string_ids::day_16th },
-        { 17, string_ids::day_17th },
-        { 18, string_ids::day_18th },
-        { 19, string_ids::day_19th },
-        { 20, string_ids::day_20th },
-        { 21, string_ids::day_21st },
-        { 22, string_ids::day_22nd },
-        { 23, string_ids::day_23rd },
-        { 24, string_ids::day_24th },
-        { 25, string_ids::day_25th },
-        { 26, string_ids::day_26th },
-        { 27, string_ids::day_27th },
-        { 28, string_ids::day_28th },
-        { 29, string_ids::day_29th },
-        { 30, string_ids::day_30th },
-        { 31, string_ids::day_31st },
+        { 1, StringIds::day_1st },
+        { 2, StringIds::day_2nd },
+        { 3, StringIds::day_3rd },
+        { 4, StringIds::day_4th },
+        { 5, StringIds::day_5th },
+        { 6, StringIds::day_6th },
+        { 7, StringIds::day_7th },
+        { 8, StringIds::day_8th },
+        { 9, StringIds::day_9th },
+        { 10, StringIds::day_10th },
+        { 11, StringIds::day_11th },
+        { 12, StringIds::day_12th },
+        { 13, StringIds::day_13th },
+        { 14, StringIds::day_14th },
+        { 15, StringIds::day_15th },
+        { 16, StringIds::day_16th },
+        { 17, StringIds::day_17th },
+        { 18, StringIds::day_18th },
+        { 19, StringIds::day_19th },
+        { 20, StringIds::day_20th },
+        { 21, StringIds::day_21st },
+        { 22, StringIds::day_22nd },
+        { 23, StringIds::day_23rd },
+        { 24, StringIds::day_24th },
+        { 25, StringIds::day_25th },
+        { 26, StringIds::day_26th },
+        { 27, StringIds::day_27th },
+        { 28, StringIds::day_28th },
+        { 29, StringIds::day_29th },
+        { 30, StringIds::day_30th },
+        { 31, StringIds::day_31st },
     };
 
     static std::map<month_id, std::pair<string_id, string_id>> month_to_string = {
-        { month_id::january, { string_ids::month_short_january, string_ids::month_long_january } },
-        { month_id::february, { string_ids::month_short_february, string_ids::month_long_february } },
-        { month_id::march, { string_ids::month_short_march, string_ids::month_long_march } },
-        { month_id::april, { string_ids::month_short_april, string_ids::month_long_april } },
-        { month_id::may, { string_ids::month_short_may, string_ids::month_long_may } },
-        { month_id::june, { string_ids::month_short_june, string_ids::month_long_june } },
-        { month_id::july, { string_ids::month_short_july, string_ids::month_long_july } },
-        { month_id::august, { string_ids::month_short_august, string_ids::month_long_august } },
-        { month_id::september, { string_ids::month_short_september, string_ids::month_long_september } },
-        { month_id::october, { string_ids::month_short_october, string_ids::month_long_october } },
-        { month_id::november, { string_ids::month_short_november, string_ids::month_long_november } },
-        { month_id::december, { string_ids::month_short_december, string_ids::month_long_december } },
+        { month_id::january, { StringIds::month_short_january, StringIds::month_long_january } },
+        { month_id::february, { StringIds::month_short_february, StringIds::month_long_february } },
+        { month_id::march, { StringIds::month_short_march, StringIds::month_long_march } },
+        { month_id::april, { StringIds::month_short_april, StringIds::month_long_april } },
+        { month_id::may, { StringIds::month_short_may, StringIds::month_long_may } },
+        { month_id::june, { StringIds::month_short_june, StringIds::month_long_june } },
+        { month_id::july, { StringIds::month_short_july, StringIds::month_long_july } },
+        { month_id::august, { StringIds::month_short_august, StringIds::month_long_august } },
+        { month_id::september, { StringIds::month_short_september, StringIds::month_long_september } },
+        { month_id::october, { StringIds::month_short_october, StringIds::month_long_october } },
+        { month_id::november, { StringIds::month_short_november, StringIds::month_long_november } },
+        { month_id::december, { StringIds::month_short_december, StringIds::month_long_december } },
     };
 
     const char* getString(string_id id)
@@ -281,56 +281,56 @@ namespace OpenLoco::stringmgr
 
                 switch (ch)
                 {
-                    case control_codes::int32_grouped:
+                    case ControlCodes::int32_grouped:
                     {
                         int32_t value = args.popS32();
                         buffer = formatInt32Grouped(value, buffer);
                         break;
                     }
 
-                    case control_codes::int32_ungrouped:
+                    case ControlCodes::int32_ungrouped:
                     {
                         int32_t value = args.popS32();
                         buffer = formatInt32Ungrouped(value, buffer);
                         break;
                     }
 
-                    case control_codes::int16_decimals:
+                    case ControlCodes::int16_decimals:
                     {
                         int16_t value = args.popS16();
                         buffer = formatShortWithDecimals(value, buffer);
                         break;
                     }
 
-                    case control_codes::int32_decimals:
+                    case ControlCodes::int32_decimals:
                     {
                         int32_t value = args.popS32();
                         buffer = formatIntWithDecimals(value, buffer);
                         break;
                     }
 
-                    case control_codes::int16_grouped:
+                    case ControlCodes::int16_grouped:
                     {
                         int16_t value = args.popS16();
                         buffer = formatInt32Grouped(value, buffer);
                         break;
                     }
 
-                    case control_codes::uint16_ungrouped:
+                    case ControlCodes::uint16_ungrouped:
                     {
                         int32_t value = args.pop16();
                         buffer = formatInt32Ungrouped(value, buffer);
                         break;
                     }
 
-                    case control_codes::currency32:
+                    case ControlCodes::currency32:
                     {
                         int32_t value = args.pop32();
                         buffer = formatCurrency(value, buffer);
                         break;
                     }
 
-                    case control_codes::currency48:
+                    case ControlCodes::currency48:
                     {
                         uint32_t value_low = (uint32_t)args.pop32();
                         int32_t value_high = args.popS16();
@@ -339,14 +339,14 @@ namespace OpenLoco::stringmgr
                         break;
                     }
 
-                    case control_codes::stringid_args:
+                    case ControlCodes::stringid_args:
                     {
                         string_id id = args.pop16();
                         buffer = formatString(buffer, id, args);
                         break;
                     }
 
-                    case control_codes::stringid_str:
+                    case ControlCodes::stringid_str:
                     {
                         string_id id = *(string_id*)sourceStr;
                         sourceStr += 2;
@@ -354,7 +354,7 @@ namespace OpenLoco::stringmgr
                         break;
                     }
 
-                    case control_codes::string_ptr:
+                    case ControlCodes::string_ptr:
                     {
                         const char* str = (char*)args.pop32();
                         strcpy(buffer, str);
@@ -362,7 +362,7 @@ namespace OpenLoco::stringmgr
                         break;
                     }
 
-                    case control_codes::date:
+                    case ControlCodes::date:
                     {
                         char modifier = *sourceStr;
                         uint32_t totalDays = args.pop32();
@@ -370,19 +370,19 @@ namespace OpenLoco::stringmgr
 
                         switch (modifier)
                         {
-                            case date_modifier::dmy_full:
+                            case DateModifier::dmy_full:
                                 buffer = formatDateDMYFull(totalDays, buffer);
                                 break;
 
-                            case date_modifier::my_full:
+                            case DateModifier::my_full:
                                 buffer = formatDateMYFull(totalDays, buffer);
                                 break;
 
-                            case date_modifier::my_abbr:
+                            case DateModifier::my_abbr:
                                 buffer = formatDateMYAbbrev(totalDays, buffer);
                                 break;
 
-                            case date_modifier::raw_my_abbr:
+                            case DateModifier::raw_my_abbr:
                                 buffer = formatRawDateMYAbbrev(totalDays, buffer);
                                 break;
 
@@ -393,7 +393,7 @@ namespace OpenLoco::stringmgr
                         break;
                     }
 
-                    case control_codes::velocity:
+                    case ControlCodes::velocity:
                     {
                         auto measurement_format = config::get().measurement_format;
 
@@ -402,11 +402,11 @@ namespace OpenLoco::stringmgr
                         const char* unit;
                         if (measurement_format == config::measurement_format::imperial)
                         {
-                            unit = getString(string_ids::unit_mph);
+                            unit = getString(StringIds::unit_mph);
                         }
                         else
                         {
-                            unit = getString(string_ids::unit_kmh);
+                            unit = getString(StringIds::unit_kmh);
                             value = std::round(value * 1.609375);
                         }
 
@@ -418,21 +418,21 @@ namespace OpenLoco::stringmgr
                         break;
                     }
 
-                    case control_codes::pop16:
+                    case ControlCodes::pop16:
                         args.skip16();
                         break;
 
-                    case control_codes::push16:
+                    case ControlCodes::push16:
                         args.push16();
                         break;
 
-                    case control_codes::timeMS:
+                    case ControlCodes::timeMS:
                         throw std::runtime_error("Unimplemented format string: 15");
 
-                    case control_codes::timeHM:
+                    case ControlCodes::timeHM:
                         throw std::runtime_error("Unimplemented format string: 16");
 
-                    case control_codes::distance:
+                    case ControlCodes::distance:
                     {
                         uint32_t value = args.pop16();
                         auto measurement_format = config::get().measurement_format;
@@ -440,12 +440,12 @@ namespace OpenLoco::stringmgr
                         const char* unit;
                         if (measurement_format == config::measurement_format::imperial)
                         {
-                            unit = getString(string_ids::unit_ft);
+                            unit = getString(StringIds::unit_ft);
                             value = std::round(value * 3.28125);
                         }
                         else
                         {
-                            unit = getString(string_ids::unit_m);
+                            unit = getString(StringIds::unit_m);
                         }
 
                         buffer = formatInt32Grouped(value, buffer);
@@ -456,7 +456,7 @@ namespace OpenLoco::stringmgr
                         break;
                     }
 
-                    case control_codes::height:
+                    case ControlCodes::height:
                     {
                         int32_t value = args.popS16();
 
@@ -466,16 +466,16 @@ namespace OpenLoco::stringmgr
 
                         if (show_height_as_units)
                         {
-                            unit = getString(string_ids::unit_units);
+                            unit = getString(StringIds::unit_units);
                         }
                         else if (measurement_format == config::measurement_format::imperial)
                         {
-                            unit = getString(string_ids::unit_ft);
+                            unit = getString(StringIds::unit_ft);
                             value *= 16;
                         }
                         else
                         {
-                            unit = getString(string_ids::unit_m);
+                            unit = getString(StringIds::unit_m);
                             value *= 5;
                         }
 
@@ -487,7 +487,7 @@ namespace OpenLoco::stringmgr
                         break;
                     }
 
-                    case control_codes::power:
+                    case ControlCodes::power:
                     {
                         uint32_t value = args.pop16();
                         auto measurement_format = config::get().measurement_format;
@@ -495,11 +495,11 @@ namespace OpenLoco::stringmgr
                         const char* unit;
                         if (measurement_format == config::measurement_format::imperial)
                         {
-                            unit = getString(string_ids::unit_hp);
+                            unit = getString(StringIds::unit_hp);
                         }
                         else
                         {
-                            unit = getString(string_ids::unit_kW);
+                            unit = getString(StringIds::unit_kW);
                             value = std::round(value * 0.746);
                         }
 
@@ -511,9 +511,9 @@ namespace OpenLoco::stringmgr
                         break;
                     }
 
-                    case control_codes::inline_sprite_args:
+                    case ControlCodes::inline_sprite_args:
                     {
-                        *buffer = control_codes::inline_sprite_str;
+                        *buffer = ControlCodes::inline_sprite_str;
                         uint32_t value = args.pop32();
                         uint32_t* sprite_ptr = (uint32_t*)(buffer + 1);
                         *sprite_ptr = value;

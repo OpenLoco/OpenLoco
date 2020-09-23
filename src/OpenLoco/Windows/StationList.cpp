@@ -48,19 +48,19 @@ namespace OpenLoco::ui::windows::station_list
 
     static widget_t _widgets[] = {
         makeWidget({ 0, 0 }, { 600, 197 }, widget_type::frame, 0),
-        makeWidget({ 1, 1 }, { 598, 13 }, widget_type::caption_24, 0, string_ids::stringid_all_stations),
-        makeWidget({ 585, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, string_ids::tooltip_close_window),
+        makeWidget({ 1, 1 }, { 598, 13 }, widget_type::caption_24, 0, StringIds::stringid_all_stations),
+        makeWidget({ 585, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window),
         makeWidget({ 0, 41 }, { 600, 155 }, widget_type::panel, 1),
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_all_stations),
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_rail_stations),
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_road_stations),
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_airports),
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, string_ids::tooltip_ship_ports),
-        makeWidget({ 0, 14 }, { 26, 26 }, widget_type::wt_9, 0, string_ids::null, string_ids::tooltip_select_company),
-        makeWidget({ 4, 43 }, { 200, 12 }, widget_type::wt_14, 1, string_ids::null, string_ids::tooltip_sort_by_name),
-        makeWidget({ 204, 43 }, { 200, 12 }, widget_type::wt_14, 1, string_ids::null, string_ids::tooltip_sort_by_station_status),
-        makeWidget({ 404, 43 }, { 90, 12 }, widget_type::wt_14, 1, string_ids::null, string_ids::tooltip_sort_by_total_units_waiting),
-        makeWidget({ 494, 43 }, { 120, 12 }, widget_type::wt_14, 1, string_ids::null, string_ids::tooltip_sort_by_cargo_accepted),
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_all_stations),
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_rail_stations),
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_road_stations),
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_airports),
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_ship_ports),
+        makeWidget({ 0, 14 }, { 26, 26 }, widget_type::wt_9, 0, StringIds::null, StringIds::tooltip_select_company),
+        makeWidget({ 4, 43 }, { 200, 12 }, widget_type::wt_14, 1, StringIds::null, StringIds::tooltip_sort_by_name),
+        makeWidget({ 204, 43 }, { 200, 12 }, widget_type::wt_14, 1, StringIds::null, StringIds::tooltip_sort_by_station_status),
+        makeWidget({ 404, 43 }, { 90, 12 }, widget_type::wt_14, 1, StringIds::null, StringIds::tooltip_sort_by_total_units_waiting),
+        makeWidget({ 494, 43 }, { 120, 12 }, widget_type::wt_14, 1, StringIds::null, StringIds::tooltip_sort_by_cargo_accepted),
         makeWidget({ 3, 56 }, { 594, 126 }, widget_type::scrollview, 1, scrollbars::vertical),
         widgetEnd(),
     };
@@ -76,11 +76,11 @@ namespace OpenLoco::ui::windows::station_list
     };
 
     static TabDetails tabInformationByType[] = {
-        { tab_all_stations, string_ids::stringid_all_stations, interface_skin::image_ids::all_stations, station_mask_all_modes },
-        { tab_rail_stations, string_ids::stringid_rail_stations, interface_skin::image_ids::rail_stations, station_flags::transport_mode_rail },
-        { tab_road_stations, string_ids::stringid_road_stations, interface_skin::image_ids::road_stations, station_flags::transport_mode_road },
-        { tab_airports, string_ids::stringid_airports, interface_skin::image_ids::airports, station_flags::transport_mode_air },
-        { tab_ship_ports, string_ids::stringid_ship_ports, interface_skin::image_ids::ship_ports, station_flags::transport_mode_water }
+        { tab_all_stations, StringIds::stringid_all_stations, interface_skin::image_ids::all_stations, station_mask_all_modes },
+        { tab_rail_stations, StringIds::stringid_rail_stations, interface_skin::image_ids::rail_stations, station_flags::transport_mode_rail },
+        { tab_road_stations, StringIds::stringid_road_stations, interface_skin::image_ids::road_stations, station_flags::transport_mode_road },
+        { tab_airports, StringIds::stringid_airports, interface_skin::image_ids::airports, station_flags::transport_mode_air },
+        { tab_ship_ports, StringIds::stringid_ship_ports, interface_skin::image_ids::ship_ports, station_flags::transport_mode_water }
     };
 
     enum SortMode : uint16_t
@@ -147,10 +147,10 @@ namespace OpenLoco::ui::windows::station_list
     static bool orderByName(const OpenLoco::station& lhs, const OpenLoco::station& rhs)
     {
         char lhsString[256] = { 0 };
-        stringmgr::formatString(lhsString, lhs.name, (void*)&lhs.town);
+        StringManager::formatString(lhsString, lhs.name, (void*)&lhs.town);
 
         char rhsString[256] = { 0 };
-        stringmgr::formatString(rhsString, rhs.name, (void*)&rhs.town);
+        StringManager::formatString(rhsString, rhs.name, (void*)&rhs.town);
 
         return strcmp(lhsString, rhsString) < 0;
     }
@@ -184,7 +184,7 @@ namespace OpenLoco::ui::windows::station_list
         {
             if (lhs.cargo_stats[cargoId].isAccepted())
             {
-                ptr = stringmgr::formatString(ptr, objectmgr::get<cargo_object>(cargoId)->name);
+                ptr = StringManager::formatString(ptr, objectmgr::get<cargo_object>(cargoId)->name);
             }
         }
 
@@ -194,7 +194,7 @@ namespace OpenLoco::ui::windows::station_list
         {
             if (rhs.cargo_stats[cargoId].isAccepted())
             {
-                ptr = stringmgr::formatString(ptr, objectmgr::get<cargo_object>(cargoId)->name);
+                ptr = StringManager::formatString(ptr, objectmgr::get<cargo_object>(cargoId)->name);
             }
         }
 
@@ -446,10 +446,10 @@ namespace OpenLoco::ui::windows::station_list
         window->widgets[widx::company_select].right = window->width - 3;
 
         // Set header button captions.
-        window->widgets[widx::sort_name].text = window->sort_mode == SortMode::Name ? string_ids::table_header_name_desc : string_ids::table_header_name;
-        window->widgets[widx::sort_status].text = window->sort_mode == SortMode::Status ? string_ids::table_header_status_desc : string_ids::table_header_status;
-        window->widgets[widx::sort_total_waiting].text = window->sort_mode == SortMode::TotalUnitsWaiting ? string_ids::table_header_total_waiting_desc : string_ids::table_header_total_waiting;
-        window->widgets[widx::sort_accepts].text = window->sort_mode == SortMode::CargoAccepted ? string_ids::table_header_accepts_desc : string_ids::table_header_accepts;
+        window->widgets[widx::sort_name].text = window->sort_mode == SortMode::Name ? StringIds::table_header_name_desc : StringIds::table_header_name;
+        window->widgets[widx::sort_status].text = window->sort_mode == SortMode::Status ? StringIds::table_header_status_desc : StringIds::table_header_status;
+        window->widgets[widx::sort_total_waiting].text = window->sort_mode == SortMode::TotalUnitsWaiting ? StringIds::table_header_total_waiting_desc : StringIds::table_header_total_waiting;
+        window->widgets[widx::sort_accepts].text = window->sort_mode == SortMode::CargoAccepted ? StringIds::table_header_accepts_desc : StringIds::table_header_accepts;
 
         // Reposition tabs (0x00491A39 / 0x00491A3F)
         int16_t new_tab_x = window->widgets[widx::tab_all_stations].left;
@@ -486,38 +486,38 @@ namespace OpenLoco::ui::windows::station_list
                 continue;
             }
 
-            string_id text_colour_id = string_ids::black_stringid;
+            string_id text_colour_id = StringIds::black_stringid;
 
             // Highlight selection.
             if (stationId == window->row_hover)
             {
                 Gfx::drawRect(dpi, 0, yPos, window->width, rowHeight, 0x2000030);
-                text_colour_id = string_ids::wcolour2_stringid;
+                text_colour_id = StringIds::wcolour2_stringid;
             }
 
             auto station = stationmgr::get(stationId);
 
             // First, draw the town name.
             static const string_id label_icons[] = {
-                string_ids::label_icons_none,
-                string_ids::label_icons_rail,
-                string_ids::label_icons_road,
-                string_ids::label_icons_rail_road,
-                string_ids::label_icons_air,
-                string_ids::label_icons_rail_air,
-                string_ids::label_icons_road_air,
-                string_ids::label_icons_rail_road_air,
-                string_ids::label_icons_water,
-                string_ids::label_icons_rail_water,
-                string_ids::label_icons_road_water,
-                string_ids::label_icons_rail_road_water,
-                string_ids::label_icons_air_water,
-                string_ids::label_icons_rail_air_water,
-                string_ids::label_icons_road_air_water,
-                string_ids::label_icons_rail_road_air_water,
+                StringIds::label_icons_none,
+                StringIds::label_icons_rail,
+                StringIds::label_icons_road,
+                StringIds::label_icons_rail_road,
+                StringIds::label_icons_air,
+                StringIds::label_icons_rail_air,
+                StringIds::label_icons_road_air,
+                StringIds::label_icons_rail_road_air,
+                StringIds::label_icons_water,
+                StringIds::label_icons_rail_water,
+                StringIds::label_icons_road_water,
+                StringIds::label_icons_rail_road_water,
+                StringIds::label_icons_air_water,
+                StringIds::label_icons_rail_air_water,
+                StringIds::label_icons_road_air_water,
+                StringIds::label_icons_rail_road_air_water,
             };
 
-            _common_format_args[0] = string_ids::stringid_stringid;
+            _common_format_args[0] = StringIds::stringid_stringid;
             _common_format_args[1] = station->name;
             _common_format_args[2] = station->town;
             _common_format_args[3] = label_icons[station->flags & 0x0F];
@@ -525,10 +525,10 @@ namespace OpenLoco::ui::windows::station_list
             Gfx::drawString_494BBF(*dpi, 0, yPos, 198, Colour::black, text_colour_id, &*_common_format_args);
 
             // Then the station's current status.
-            const char* buffer = stringmgr::getString(string_ids::buffer_1250);
+            const char* buffer = StringManager::getString(StringIds::buffer_1250);
             station->getStatusString((char*)buffer);
 
-            _common_format_args[0] = string_ids::buffer_1250;
+            _common_format_args[0] = StringIds::buffer_1250;
             Gfx::drawString_494BBF(*dpi, 200, yPos, 198, Colour::black, text_colour_id, &*_common_format_args);
 
             // Total units waiting.
@@ -536,7 +536,7 @@ namespace OpenLoco::ui::windows::station_list
             for (auto stats : station->cargo_stats)
                 totalUnits += stats.quantity;
 
-            _common_format_args[0] = string_ids::num_units;
+            _common_format_args[0] = StringIds::num_units;
             *(uint32_t*)&_common_format_args[1] = totalUnits;
             Gfx::drawString_494BBF(*dpi, 400, yPos, 88, Colour::black, text_colour_id, &*_common_format_args);
 
@@ -552,12 +552,12 @@ namespace OpenLoco::ui::windows::station_list
                     continue;
 
                 if (*buffer != '\0')
-                    ptr = stringmgr::formatString(ptr, string_ids::unit_separator);
+                    ptr = StringManager::formatString(ptr, StringIds::unit_separator);
 
-                ptr = stringmgr::formatString(ptr, objectmgr::get<cargo_object>(cargoId)->name);
+                ptr = StringManager::formatString(ptr, objectmgr::get<cargo_object>(cargoId)->name);
             }
 
-            _common_format_args[0] = string_ids::buffer_1250;
+            _common_format_args[0] = StringIds::buffer_1250;
             Gfx::drawString_494BBF(*dpi, 490, yPos, 118, Colour::black, text_colour_id, &*_common_format_args);
 
             yPos += rowHeight;
@@ -593,12 +593,12 @@ namespace OpenLoco::ui::windows::station_list
         Gfx::drawImage(dpi, x, y, image);
 
         // TODO: locale-based pluralisation.
-        _common_format_args[0] = window->var_83C == 1 ? string_ids::status_num_stations_singular : string_ids::status_num_stations_plural;
+        _common_format_args[0] = window->var_83C == 1 ? StringIds::status_num_stations_singular : StringIds::status_num_stations_plural;
         _common_format_args[1] = window->var_83C;
 
         // Draw number of stations.
         auto origin = Gfx::point_t(window->x + 4, window->y + window->height - 12);
-        Gfx::drawString_494B3F(*dpi, &origin, Colour::black, string_ids::black_stringid, &*_common_format_args);
+        Gfx::drawString_494B3F(*dpi, &origin, Colour::black, StringIds::black_stringid, &*_common_format_args);
     }
 
     // 0x004917BB
@@ -619,7 +619,7 @@ namespace OpenLoco::ui::windows::station_list
 
         // If not, we'll turn this window into a window for the company selected.
         auto company = companymgr::get(companyId);
-        if (company->name == string_ids::empty)
+        if (company->name == StringIds::empty)
             return;
 
         window->number = companyId;
@@ -755,6 +755,6 @@ namespace OpenLoco::ui::windows::station_list
     // 0x00491841
     static void tooltip(FormatArguments& args, ui::window* window, widget_index widgetIndex)
     {
-        args.push(string_ids::tooltip_scroll_station_list);
+        args.push(StringIds::tooltip_scroll_station_list);
     }
 }

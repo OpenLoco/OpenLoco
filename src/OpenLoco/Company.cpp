@@ -32,7 +32,7 @@ namespace OpenLoco
 
     bool company::empty() const
     {
-        return name == string_ids::empty;
+        return name == StringIds::empty;
     }
 
     // 0x00430762
@@ -72,16 +72,16 @@ namespace OpenLoco
     }
 
     static std::map<CorporateRating, string_id> _ratingNames = {
-        { CorporateRating::platelayer, string_ids::corporate_rating_platelayer },
-        { CorporateRating::engineer, string_ids::corporate_rating_engineer },
-        { CorporateRating::trafficManager, string_ids::corporate_rating_traffic_manager },
-        { CorporateRating::transportCoordinator, string_ids::corporate_rating_transport_coordinator },
-        { CorporateRating::routeSupervisor, string_ids::corporate_rating_route_supervisor },
-        { CorporateRating::director, string_ids::corporate_rating_director },
-        { CorporateRating::chiefExecutive, string_ids::corporate_rating_chief_executive },
-        { CorporateRating::chairman, string_ids::corporate_rating_chairman },
-        { CorporateRating::president, string_ids::corporate_rating_president },
-        { CorporateRating::tycoon, string_ids::corporate_rating_tycoon },
+        { CorporateRating::platelayer, StringIds::corporate_rating_platelayer },
+        { CorporateRating::engineer, StringIds::corporate_rating_engineer },
+        { CorporateRating::trafficManager, StringIds::corporate_rating_traffic_manager },
+        { CorporateRating::transportCoordinator, StringIds::corporate_rating_transport_coordinator },
+        { CorporateRating::routeSupervisor, StringIds::corporate_rating_route_supervisor },
+        { CorporateRating::director, StringIds::corporate_rating_director },
+        { CorporateRating::chiefExecutive, StringIds::corporate_rating_chief_executive },
+        { CorporateRating::chairman, StringIds::corporate_rating_chairman },
+        { CorporateRating::president, StringIds::corporate_rating_president },
+        { CorporateRating::tycoon, StringIds::corporate_rating_tycoon },
     };
 
     static string_id getCorporateRatingAsStringId(CorporateRating rating)
@@ -91,7 +91,7 @@ namespace OpenLoco
         {
             return it->second;
         }
-        return string_ids::corporate_rating_platelayer;
+        return StringIds::corporate_rating_platelayer;
     }
 
     void formatPerformanceIndex(const int16_t performanceIndex, FormatArguments& args)

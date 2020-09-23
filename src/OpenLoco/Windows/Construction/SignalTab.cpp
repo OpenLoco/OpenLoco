@@ -14,11 +14,11 @@ using namespace OpenLoco::map::tilemgr;
 namespace OpenLoco::ui::windows::construction::signal
 {
     widget_t widgets[] = {
-        commonWidgets(138, 167, string_ids::stringid_2),
-        makeWidget({ 3, 45 }, { 132, 12 }, widget_type::wt_18, 1, 0xFFFFFFFF, string_ids::tooltip_select_signal_type),
-        makeWidget({ 123, 46 }, { 11, 10 }, widget_type::wt_11, 1, string_ids::dropdown, string_ids::tooltip_select_signal_type),
-        makeWidget({ 27, 110 }, { 40, 40 }, widget_type::wt_9, 1, 0xFFFFFFFF, string_ids::tooltip_signal_both_directions),
-        makeWidget({ 71, 110 }, { 40, 40 }, widget_type::wt_9, 1, 0xFFFFFFFF, string_ids::tooltip_signal_single_direction),
+        commonWidgets(138, 167, StringIds::stringid_2),
+        makeWidget({ 3, 45 }, { 132, 12 }, widget_type::wt_18, 1, 0xFFFFFFFF, StringIds::tooltip_select_signal_type),
+        makeWidget({ 123, 46 }, { 11, 10 }, widget_type::wt_11, 1, StringIds::dropdown, StringIds::tooltip_select_signal_type),
+        makeWidget({ 27, 110 }, { 40, 40 }, widget_type::wt_9, 1, 0xFFFFFFFF, StringIds::tooltip_signal_both_directions),
+        makeWidget({ 71, 110 }, { 40, 40 }, widget_type::wt_9, 1, 0xFFFFFFFF, StringIds::tooltip_signal_single_direction),
         widgetEnd(),
     };
 
@@ -167,7 +167,7 @@ namespace OpenLoco::ui::windows::construction::signal
             auto args = FormatArguments();
             args.push(trainSignalObject->var_0C);
 
-            Gfx::drawString_495224(*dpi, xPos, yPos, width, Colour::black, string_ids::signal_black, &args);
+            Gfx::drawString_495224(*dpi, xPos, yPos, width, Colour::black, StringIds::signal_black, &args);
         }
 
         auto imageId = trainSignalObject->var_0E;
@@ -192,7 +192,7 @@ namespace OpenLoco::ui::windows::construction::signal
             xPos = self->x + 69;
             yPos = self->widgets[widx::single_direction].bottom + self->y + 5;
 
-            Gfx::drawStringCentred(*dpi, xPos, yPos, Colour::black, string_ids::build_cost, &args);
+            Gfx::drawStringCentred(*dpi, xPos, yPos, Colour::black, StringIds::build_cost, &args);
         }
     }
 
