@@ -4,7 +4,7 @@
 
 namespace OpenLoco
 {
-    namespace sound_object_id
+    namespace SoundObjectId
     {
         constexpr sound_object_id_t null = 0xFF;
     }

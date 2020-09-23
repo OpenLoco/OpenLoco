@@ -790,7 +790,7 @@ namespace OpenLoco::Audio
         if (v == nullptr)
             return;
 
-        if (v->sound_id == sound_object_id::null)
+        if (v->sound_id == SoundObjectId::null)
             return;
 
         // TODO: left or top?
