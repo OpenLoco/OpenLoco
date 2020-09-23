@@ -103,7 +103,7 @@ namespace OpenLoco::Map
         industry, // 0x20
     };
 
-    namespace element_flags
+    namespace ElementFlags
     {
         constexpr uint8_t flag_4 = 1 << 4;
         constexpr uint8_t flag_5 = 1 << 5;
@@ -139,9 +139,9 @@ namespace OpenLoco::Map
         uint8_t clearZ() const { return _clear_z; }
 
         bool hasHighTypeFlag() const { return _type & 0x80; }
-        bool isFlag4() const { return _flags & element_flags::flag_4; }
-        bool isFlag5() const { return _flags & element_flags::flag_5; }
-        void setFlag6() { _flags |= element_flags::flag_6; }
+        bool isFlag4() const { return _flags & ElementFlags::flag_4; }
+        bool isFlag5() const { return _flags & ElementFlags::flag_5; }
+        void setFlag6() { _flags |= ElementFlags::flag_6; }
         bool isLast() const;
     };
 
