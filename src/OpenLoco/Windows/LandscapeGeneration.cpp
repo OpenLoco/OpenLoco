@@ -333,7 +333,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         return window;
     }
 
-    namespace land
+    namespace Land
     {
         enum widx
         {
@@ -1201,7 +1201,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         static void initEvents()
         {
             Options::initEvents();
-            land::initEvents();
+            Land::initEvents();
             forests::initEvents();
             towns::initEvents();
             industries::initEvents();
@@ -1213,7 +1213,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
             static widget_t* widgetCollectionsByTabId[] = {
                 Options::widgets,
-                land::widgets,
+                Land::widgets,
                 forests::widgets,
                 towns::widgets,
                 industries::widgets,
@@ -1251,7 +1251,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
             static const uint64_t* enabledWidgetsByTab[] = {
                 &Options::enabled_widgets,
-                &land::enabled_widgets,
+                &Land::enabled_widgets,
                 &forests::enabled_widgets,
                 &towns::enabled_widgets,
                 &industries::enabled_widgets,
@@ -1261,7 +1261,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
             static const uint64_t* holdableWidgetsByTab[] = {
                 &Options::holdable_widgets,
-                &land::holdable_widgets,
+                &Land::holdable_widgets,
                 &forests::holdable_widgets,
                 &towns::holdable_widgets,
                 &industries::holdable_widgets,
@@ -1271,7 +1271,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
             static window_event_list* eventsByTab[] = {
                 &Options::events,
-                &land::events,
+                &Land::events,
                 &forests::events,
                 &towns::events,
                 &industries::events,
