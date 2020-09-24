@@ -63,7 +63,7 @@ namespace OpenLoco::Ui::MessageWindow
         static void initEvents();
     }
 
-    namespace messages
+    namespace Messages
     {
         static const Gfx::ui_size_t minWindowSize = { 366, 217 };
         static const Gfx::ui_size_t maxWindowSize = { 366, 1200 };
@@ -321,9 +321,9 @@ namespace OpenLoco::Ui::MessageWindow
                 origin,
                 { 366, 217 },
                 window_flags::flag_11,
-                &messages::events);
+                &Messages::events);
 
-            window->enabled_widgets = messages::enabledWidgets;
+            window->enabled_widgets = Messages::enabledWidgets;
             window->number = 0;
             window->current_tab = 0;
             window->frame_no = 0;
@@ -332,27 +332,27 @@ namespace OpenLoco::Ui::MessageWindow
 
             WindowManager::sub_4CEE0B(window);
 
-            window->min_width = messages::minWindowSize.width;
-            window->min_height = messages::minWindowSize.height;
-            window->max_width = messages::maxWindowSize.width;
-            window->max_height = messages::maxWindowSize.height;
+            window->min_width = Messages::minWindowSize.width;
+            window->min_height = Messages::minWindowSize.height;
+            window->max_width = Messages::maxWindowSize.width;
+            window->max_height = Messages::maxWindowSize.height;
             window->flags |= window_flags::resizable;
 
             window->owner = _playerCompany;
             auto skin = ObjectManager::get<interface_skin_object>();
             window->colours[1] = skin->colour_0A;
 
-            window->width = messages::minWindowSize.width;
-            window->height = messages::minWindowSize.height;
+            window->width = Messages::minWindowSize.width;
+            window->height = Messages::minWindowSize.height;
         }
 
         window->current_tab = 0;
         window->invalidate();
 
-        window->widgets = messages::widgets;
-        window->enabled_widgets = messages::enabledWidgets;
+        window->widgets = Messages::widgets;
+        window->enabled_widgets = Messages::enabledWidgets;
         window->holdable_widgets = 0;
-        window->event_handlers = &messages::events;
+        window->event_handlers = &Messages::events;
         window->disabled_widgets = 0;
 
         Common::initEvents();
@@ -364,14 +364,14 @@ namespace OpenLoco::Ui::MessageWindow
         uint16_t scrollHeight = 0;
         window->callGetScrollSize(0, 0, &scrollHeight);
 
-        scrollHeight -= window->widgets[messages::widx::scrollview].height();
+        scrollHeight -= window->widgets[Messages::widx::scrollview].height();
 
         if (static_cast<int16_t>(scrollHeight) < 0)
             scrollHeight = 0;
 
         window->scroll_areas[0].contentOffsetY = scrollHeight;
 
-        Ui::ScrollView::updateThumbs(window, messages::widx::scrollview);
+        Ui::ScrollView::updateThumbs(window, Messages::widx::scrollview);
     }
 
     namespace settings
@@ -579,7 +579,7 @@ namespace OpenLoco::Ui::MessageWindow
         };
 
         static TabInformation tabInformationByTabOffset[] = {
-            { messages::widgets, widx::tab_messages, &messages::events, messages::enabledWidgets },
+            { Messages::widgets, widx::tab_messages, &Messages::events, Messages::enabledWidgets },
             { settings::widgets, widx::tab_settings, &settings::events, settings::enabledWidgets },
         };
 
@@ -637,7 +637,7 @@ namespace OpenLoco::Ui::MessageWindow
             self->invalidate();
 
             if (self->current_tab == widx::tab_messages - widx::tab_messages)
-                messages::tabReset(self);
+                Messages::tabReset(self);
             if (self->current_tab == widx::tab_settings - widx::tab_messages)
                 settings::tabReset(self);
 
@@ -680,7 +680,7 @@ namespace OpenLoco::Ui::MessageWindow
 
         static void initEvents()
         {
-            messages::initEvents();
+            Messages::initEvents();
             settings::initEvents();
         }
     }
