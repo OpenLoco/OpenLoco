@@ -62,23 +62,23 @@ namespace OpenLoco::Input
     void state(input_state);
 
     Gfx::point_t getMouseLocation();
-    bool isHovering(ui::WindowType);
-    bool isHovering(ui::WindowType, ui::window_number);
-    bool isHovering(ui::WindowType type, ui::window_number number, ui::widget_index widgetIndex);
-    ui::widget_index getHoveredWidgetIndex();
+    bool isHovering(Ui::WindowType);
+    bool isHovering(Ui::WindowType, Ui::window_number);
+    bool isHovering(Ui::WindowType type, Ui::window_number number, Ui::widget_index widgetIndex);
+    Ui::widget_index getHoveredWidgetIndex();
 
-    bool isDropdownActive(ui::WindowType type, ui::widget_index index);
+    bool isDropdownActive(Ui::WindowType type, Ui::widget_index index);
 
-    bool isPressed(ui::WindowType type, ui::window_number number);
-    bool isPressed(ui::WindowType type, ui::window_number number, ui::widget_index index);
-    ui::widget_index getPressedWidgetIndex();
+    bool isPressed(Ui::WindowType type, Ui::window_number number);
+    bool isPressed(Ui::WindowType type, Ui::window_number number, Ui::widget_index index);
+    Ui::widget_index getPressedWidgetIndex();
 
     void updateCursorPosition();
 
-    bool isToolActive(ui::WindowType, ui::window_number);
-    bool toolSet(ui::window* w, int16_t widgetIndex, uint8_t tool);
+    bool isToolActive(Ui::WindowType, Ui::window_number);
+    bool toolSet(Ui::window* w, int16_t widgetIndex, uint8_t tool);
     void toolCancel();
-    void toolCancel(ui::WindowType, ui::window_number);
+    void toolCancel(Ui::WindowType, Ui::window_number);
 
     bool hasKeyModifier(uint8_t modifier);
     uint16_t getMapSelectionFlags();

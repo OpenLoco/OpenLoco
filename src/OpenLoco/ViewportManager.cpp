@@ -12,10 +12,10 @@
 #include <cassert>
 #include <memory>
 
-using namespace OpenLoco::ui;
+using namespace OpenLoco::Ui;
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::ui::viewportmgr
+namespace OpenLoco::Ui::viewportmgr
 {
     static std::vector<std::unique_ptr<viewport>> _viewports;
 
@@ -98,7 +98,7 @@ namespace OpenLoco::ui::viewportmgr
 
     static viewport* create(registers regs, int index)
     {
-        ui::window* window = (ui::window*)regs.esi;
+        Ui::window* window = (Ui::window*)regs.esi;
         ZoomLevel zoom = ZoomLevel::full;
         if (regs.edx & (1 << 30))
         {

@@ -23,7 +23,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::ui::windows::CompanyWindow
+namespace OpenLoco::Ui::windows::CompanyWindow
 {
     static loco_global<string_id, 0x009C68E8> gGameCommandErrorTitle;
 
@@ -2002,7 +2002,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
         }
 
         // 0x00433887
-        static void tooltip(FormatArguments& args, ui::window* window, widget_index widgetIndex)
+        static void tooltip(FormatArguments& args, Ui::window* window, widget_index widgetIndex)
         {
             args.push(StringIds::tooltip_scroll_list);
         }

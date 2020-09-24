@@ -22,7 +22,7 @@
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Map;
 
-namespace OpenLoco::ui::windows::station
+namespace OpenLoco::Ui::windows::station
 {
     static loco_global<uint8_t[map_size], 0x00F00484> _byte_F00484;
     static loco_global<uint16_t, 0x00F24484> _mapSelectionFlags;
@@ -468,7 +468,7 @@ namespace OpenLoco::ui::windows::station
         }
 
         // 0x0048EB4F
-        static void tooltip(FormatArguments& args, ui::window* window, widget_index widgetIndex)
+        static void tooltip(FormatArguments& args, Ui::window* window, widget_index widgetIndex)
         {
             args.push(StringIds::tooltip_scroll_cargo_list);
         }
@@ -660,7 +660,7 @@ namespace OpenLoco::ui::windows::station
         }
 
         // 0x0048EE73
-        static void tooltip(FormatArguments& args, ui::window* window, widget_index widgetIndex)
+        static void tooltip(FormatArguments& args, Ui::window* window, widget_index widgetIndex)
         {
             args.push(StringIds::tooltip_scroll_ratings_list);
         }
@@ -770,7 +770,7 @@ namespace OpenLoco::ui::windows::station
 
         if (newStationId != station_id::null)
         {
-            ui::windows::construction::sub_4A6FAC();
+            Ui::windows::construction::sub_4A6FAC();
             auto station = stationmgr::get(_lastSelectedStation);
 
             station->setCatchmentDisplay(0);

@@ -5,7 +5,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::ui::windows::vehicle_list
+namespace OpenLoco::Ui::windows::vehicle_list
 {
     enum widx
     {

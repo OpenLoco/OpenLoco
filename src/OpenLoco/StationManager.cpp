@@ -7,7 +7,7 @@
 #include "Window.h"
 
 using namespace OpenLoco::Interop;
-using namespace OpenLoco::ui;
+using namespace OpenLoco::Ui;
 
 namespace OpenLoco::stationmgr
 {

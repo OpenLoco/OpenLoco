@@ -9,12 +9,12 @@ using namespace OpenLoco::Interop;
 using namespace OpenLoco::Map;
 using namespace OpenLoco::Map::TileManager;
 
-namespace OpenLoco::ui::windows::construction
+namespace OpenLoco::Ui::windows::construction
 {
     static loco_global<uint8_t[31], 0x005045FA> _byte_5045FA;
     static loco_global<uint8_t, 0x00522095> _byte_522095;
     static loco_global<uint8_t, 0x00522096> _byte_522096;
-    static loco_global<ui::WindowType, 0x00523392> _toolWindowType;
+    static loco_global<Ui::WindowType, 0x00523392> _toolWindowType;
     static loco_global<company_id_t, 0x00525E3C> _playerCompany;
     static loco_global<uint8_t[8], 0x0525F72> _scenarioSignals;
     static loco_global<uint8_t[8], 0x0525F7A> _scenarioBridges;

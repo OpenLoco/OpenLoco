@@ -12,18 +12,18 @@
 #include "Window.h"
 
 using namespace OpenLoco::Interop;
-using namespace OpenLoco::ui;
+using namespace OpenLoco::Ui;
 
 namespace OpenLoco::gui
 {
 
-    loco_global<OpenLoco::ui::widget_t[64], 0x00509c20> _mainWindowWidgets;
+    loco_global<OpenLoco::Ui::widget_t[64], 0x00509c20> _mainWindowWidgets;
 
     // 0x00438A6C
     void init()
     {
-        const int32_t uiWidth = ui::width();
-        const int32_t uiHeight = ui::height();
+        const int32_t uiWidth = Ui::width();
+        const int32_t uiHeight = Ui::height();
 
         _mainWindowWidgets[0].bottom = uiHeight;
         _mainWindowWidgets[0].right = uiWidth;
@@ -31,11 +31,11 @@ namespace OpenLoco::gui
             WindowType::main,
             { 0, 0 },
             Gfx::ui_size_t(uiWidth, uiHeight),
-            ui::window_flags::stick_to_back,
-            (ui::window_event_list*)0x004FA1F4);
+            Ui::window_flags::stick_to_back,
+            (Ui::window_event_list*)0x004FA1F4);
         window->widgets = _mainWindowWidgets;
         addr<0x00e3f0b8, int32_t>() = 0; // gCurrentRotation?
-        OpenLoco::ui::viewportmgr::create(
+        OpenLoco::Ui::viewportmgr::create(
             window,
             0,
             { window->x, window->y },
@@ -51,11 +51,11 @@ namespace OpenLoco::gui
 
         if (OpenLoco::isTitleMode())
         {
-            ui::windows::openTitleMenu();
-            ui::windows::openTitleExit();
-            ui::windows::openTitleLogo();
-            ui::windows::openTitleVersion();
-            ui::title_options::open();
+            Ui::windows::openTitleMenu();
+            Ui::windows::openTitleExit();
+            Ui::windows::openTitleLogo();
+            Ui::windows::openTitleVersion();
+            Ui::title_options::open();
         }
         else
         {
@@ -71,9 +71,9 @@ namespace OpenLoco::gui
                     WindowType::tutorial,
                     Gfx::point_t(140, uiHeight - 27),
                     Gfx::ui_size_t(uiWidth - 280, 27),
-                    ui::window_flags::stick_to_front | ui::window_flags::transparent | ui::window_flags::no_background,
-                    (ui::window_event_list*)0x4fa10c);
-                window->widgets = (ui::widget_t*)0x509de0;
+                    Ui::window_flags::stick_to_front | Ui::window_flags::transparent | Ui::window_flags::no_background,
+                    (Ui::window_event_list*)0x4fa10c);
+                window->widgets = (Ui::widget_t*)0x509de0;
                 window->initScrollWidgets();
 
                 auto skin = OpenLoco::ObjectManager::get<interface_skin_object>();
@@ -91,8 +91,8 @@ namespace OpenLoco::gui
     // 0x004392BD
     void resize()
     {
-        const int32_t uiWidth = ui::width();
-        const int32_t uiHeight = ui::height();
+        const int32_t uiWidth = Ui::width();
+        const int32_t uiHeight = Ui::height();
 
         if (OpenLoco::isEditorMode())
         {

@@ -19,7 +19,7 @@
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Utility;
 using namespace OpenLoco::Drawing;
-using namespace OpenLoco::ui;
+using namespace OpenLoco::Ui;
 
 namespace OpenLoco::Gfx
 {
@@ -980,7 +980,7 @@ namespace OpenLoco::Gfx
     // 0x004CD406
     void invalidateScreen()
     {
-        setDirtyBlocks(0, 0, ui::width(), ui::height());
+        setDirtyBlocks(0, 0, Ui::width(), Ui::height());
     }
 
     Drawing::SoftwareDrawingEngine* engine;
@@ -1025,7 +1025,7 @@ namespace OpenLoco::Gfx
         std::memcpy(backup1, byte_112CC04, 512);
         std::memcpy(backup2, byte_112CE04, 512);
 
-        if (ui::dirtyBlocksInitialised())
+        if (Ui::dirtyBlocksInitialised())
         {
             engine->drawDirtyBlocks();
         }
@@ -1036,7 +1036,7 @@ namespace OpenLoco::Gfx
         }
         else
         {
-            ui::processMessages();
+            Ui::processMessages();
         }
 
         if (addr<0x005252AC, uint32_t>() != 0)

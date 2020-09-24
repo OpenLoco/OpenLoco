@@ -47,7 +47,7 @@
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::GameCommands;
 
-namespace OpenLoco::ui
+namespace OpenLoco::Ui
 {
 #ifdef _LOCO_WIN32_
     constexpr auto WINDOW_CLASS_NAME = "Chris Sawyer's Locomotion";
@@ -79,7 +79,7 @@ namespace OpenLoco::ui
 #endif // _WIN32
     loco_global<screen_info_t, 0x0050B884> screen_info;
     static loco_global<uint16_t, 0x00523390> _toolWindowNumber;
-    static loco_global<ui::WindowType, 0x00523392> _toolWindowType;
+    static loco_global<Ui::WindowType, 0x00523392> _toolWindowType;
     static loco_global<uint16_t, 0x00523394> _toolWidgetIdx;
     loco_global<set_palette_func, 0x0052524C> set_palette_callback;
     static loco_global<uint32_t, 0x00525E28> _525E28;
@@ -784,7 +784,7 @@ namespace OpenLoco::ui
 
     config::resolution_t getResolution()
     {
-        return { ui::width(), ui::height() };
+        return { Ui::width(), Ui::height() };
     }
 
     config::resolution_t getDesktopResolution()
@@ -841,7 +841,7 @@ namespace OpenLoco::ui
         legacyConfig.resolution_height = newResolution.height;
 
         OpenLoco::config::write();
-        ui::triggerResize();
+        Ui::triggerResize();
         Gfx::invalidateScreen();
 
         return true;
@@ -1048,7 +1048,7 @@ namespace OpenLoco::ui
             GameCommands::do_21(0, 2);
         }
 
-        if (ui::dirtyBlocksInitialised())
+        if (Ui::dirtyBlocksInitialised())
         {
             WindowManager::callEvent8OnAllWindows();
 
@@ -1081,8 +1081,8 @@ namespace OpenLoco::ui
             }
             else if (x != 0x80000000)
             {
-                x = std::clamp<int16_t>(x, 0, ui::width() - 1);
-                y = std::clamp<int16_t>(y, 0, ui::height() - 1);
+                x = std::clamp<int16_t>(x, 0, Ui::width() - 1);
+                y = std::clamp<int16_t>(y, 0, Ui::height() - 1);
 
                 Input::handleMouse(x, y, state);
                 Input::processMouseOver(x, y);
@@ -1115,8 +1115,8 @@ namespace OpenLoco::ui
         }
         else if (x != 0x80000000)
         {
-            x = std::clamp<int16_t>(x, 0, ui::width() - 1);
-            y = std::clamp<int16_t>(y, 0, ui::height() - 1);
+            x = std::clamp<int16_t>(x, 0, Ui::width() - 1);
+            y = std::clamp<int16_t>(y, 0, Ui::height() - 1);
 
             Input::handleMouse(x, y, state);
             Input::processMouseOver(x, y);
@@ -1136,7 +1136,7 @@ namespace OpenLoco::ui
         config.scale_factor = newScaleFactor;
 
         OpenLoco::config::write();
-        ui::triggerResize();
+        Ui::triggerResize();
         Gfx::invalidateScreen();
     }
 

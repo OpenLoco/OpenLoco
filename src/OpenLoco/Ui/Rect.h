@@ -4,7 +4,7 @@
 #include <algorithm>
 #include <cstddef>
 
-namespace OpenLoco::ui
+namespace OpenLoco::Ui
 {
     class Rect
     {

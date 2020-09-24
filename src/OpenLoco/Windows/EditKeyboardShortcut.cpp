@@ -13,7 +13,7 @@
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Input;
 
-namespace OpenLoco::ui::EditKeyboardShortcut
+namespace OpenLoco::Ui::EditKeyboardShortcut
 {
     constexpr Gfx::ui_size_t windowSize = { 280, 72 };
 
@@ -64,7 +64,7 @@ namespace OpenLoco::ui::EditKeyboardShortcut
     }
 
     // 0x004BE8DF
-    static void draw(ui::window* const self, Gfx::drawpixelinfo_t* const ctx)
+    static void draw(Ui::window* const self, Gfx::drawpixelinfo_t* const ctx)
     {
         self->draw(ctx);
 

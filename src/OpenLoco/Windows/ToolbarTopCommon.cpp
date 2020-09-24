@@ -24,7 +24,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::ui::windows::toolbar_top::common
+namespace OpenLoco::Ui::windows::toolbar_top::common
 {
     static loco_global<uint8_t, 0x00525FAB> last_road_option;
 
@@ -65,7 +65,7 @@ namespace OpenLoco::ui::windows::toolbar_top::common
             auto interface = ObjectManager::get<interface_skin_object>();
             uint32_t bgImage = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_transparent, self->colours[2]);
 
-            if (Input::isDropdownActive(ui::WindowType::topToolbar, widx::road_menu))
+            if (Input::isDropdownActive(Ui::WindowType::topToolbar, widx::road_menu))
             {
                 y++;
                 bgImage++;

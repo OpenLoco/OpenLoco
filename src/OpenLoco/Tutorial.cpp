@@ -94,21 +94,21 @@ namespace OpenLoco::tutorial
             if (config.scale_factor > 1.0)
             {
                 newResolution *= config.scale_factor;
-                config::resolution_t desktopResolution = ui::getDesktopResolution();
+                config::resolution_t desktopResolution = Ui::getDesktopResolution();
 
                 // Don't scale if it means the new window won't fit the desktop.
                 if (newResolution > desktopResolution)
                 {
-                    ui::setWindowScaling(1.0);
+                    Ui::setWindowScaling(1.0);
                     newResolution = tutorialResolution;
                 }
             }
 
             // Ensure that we're in windowed mode, using dimensions 1024x768.
-            auto currentResolution = ui::getResolution();
+            auto currentResolution = Ui::getResolution();
             if (config.display.mode != config::screen_mode::window || currentResolution != newResolution)
             {
-                if (!ui::setDisplayMode(config::screen_mode::window, newResolution))
+                if (!Ui::setDisplayMode(config::screen_mode::window, newResolution))
                     return;
             }
 

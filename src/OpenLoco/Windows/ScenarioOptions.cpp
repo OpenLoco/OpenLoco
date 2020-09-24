@@ -15,7 +15,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::ui::windows::ScenarioOptions
+namespace OpenLoco::Ui::windows::ScenarioOptions
 {
     static const Gfx::ui_size_t challengeWindowSize = { 366, 197 };
     static const Gfx::ui_size_t companiesWindowSize = { 366, 327 };
@@ -213,7 +213,7 @@ namespace OpenLoco::ui::windows::ScenarioOptions
         static window_event_list events;
 
         // 0x0043FC91
-        static void draw(ui::window* window, Gfx::drawpixelinfo_t* dpi)
+        static void draw(Ui::window* window, Gfx::drawpixelinfo_t* dpi)
         {
             common::draw(window, dpi);
 
@@ -610,7 +610,7 @@ namespace OpenLoco::ui::windows::ScenarioOptions
         static window_event_list events;
 
         // 0x0043F4EB
-        static void draw(ui::window* window, Gfx::drawpixelinfo_t* dpi)
+        static void draw(Ui::window* window, Gfx::drawpixelinfo_t* dpi)
         {
             common::draw(window, dpi);
 
@@ -866,7 +866,7 @@ namespace OpenLoco::ui::windows::ScenarioOptions
         static window_event_list events;
 
         // 0x0043F97D
-        static void draw(ui::window* window, Gfx::drawpixelinfo_t* dpi)
+        static void draw(Ui::window* window, Gfx::drawpixelinfo_t* dpi)
         {
             common::draw(window, dpi);
 
@@ -994,7 +994,7 @@ namespace OpenLoco::ui::windows::ScenarioOptions
         static window_event_list events;
 
         // 0x0043F004
-        static void draw(ui::window* window, Gfx::drawpixelinfo_t* dpi)
+        static void draw(Ui::window* window, Gfx::drawpixelinfo_t* dpi)
         {
             common::draw(window, dpi);
 

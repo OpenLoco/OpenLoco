@@ -10,7 +10,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::ui::windows
+namespace OpenLoco::Ui::windows
 {
     static const Gfx::ui_size_t window_size = { 40, 28 };
 
@@ -30,8 +30,8 @@ namespace OpenLoco::ui::windows
     static window_event_list _events;
 
     static void onMouseUp(window* window, widget_index widgetIndex);
-    static void prepareDraw(ui::window* self);
-    static void draw(ui::window* window, Gfx::drawpixelinfo_t* dpi);
+    static void prepareDraw(Ui::window* self);
+    static void draw(Ui::window* window, Gfx::drawpixelinfo_t* dpi);
 
     window* openTitleExit()
     {
@@ -39,9 +39,9 @@ namespace OpenLoco::ui::windows
         _events.prepare_draw = prepareDraw;
         _events.draw = draw;
 
-        auto window = OpenLoco::ui::WindowManager::createWindow(
+        auto window = OpenLoco::Ui::WindowManager::createWindow(
             WindowType::titleExit,
-            Gfx::point_t(ui::width() - window_size.width, ui::height() - window_size.height),
+            Gfx::point_t(Ui::width() - window_size.width, Ui::height() - window_size.height),
             window_size,
             window_flags::stick_to_front | window_flags::transparent | window_flags::no_background | window_flags::flag_6,
             &_events);
@@ -57,16 +57,16 @@ namespace OpenLoco::ui::windows
         return window;
     }
 
-    static void prepareDraw(ui::window* self)
+    static void prepareDraw(Ui::window* self)
     {
         auto exitString = StringManager::getString(StringIds::title_exit_game);
         self->width = Gfx::getStringWidthNewLined(exitString) + 10;
-        self->x = ui::width() - self->width;
+        self->x = Ui::width() - self->width;
         self->widgets[widx::exit_button].right = self->width;
     }
 
     // 0x00439236
-    static void draw(ui::window* window, Gfx::drawpixelinfo_t* dpi)
+    static void draw(Ui::window* window, Gfx::drawpixelinfo_t* dpi)
     {
         // Draw widgets.
         window->draw(dpi);

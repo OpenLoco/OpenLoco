@@ -25,7 +25,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::ui::windows::toolbar_top::editor
+namespace OpenLoco::Ui::windows::toolbar_top::editor
 {
     static loco_global<uint8_t, 0x00525FAB> last_road_option;
     static loco_global<uint8_t, 0x009C870C> last_town_option;
@@ -82,7 +82,7 @@ namespace OpenLoco::ui::windows::toolbar_top::editor
         auto window = WindowManager::createWindow(
             WindowType::topToolbar,
             { 0, 0 },
-            Gfx::ui_size_t(ui::width(), 28),
+            Gfx::ui_size_t(Ui::width(), 28),
             window_flags::stick_to_front | window_flags::transparent | window_flags::no_background,
             &_events);
         window->widgets = _widgets;
@@ -261,7 +261,7 @@ namespace OpenLoco::ui::windows::toolbar_top::editor
     // 0x0043D2F3
     static void prepareDraw(window* window)
     {
-        uint32_t x = std::max(640, ui::width()) - 1;
+        uint32_t x = std::max(640, Ui::width()) - 1;
 
         common::rightAlignTabs(window, x, { common::widx::towns_menu });
         x -= 11;

@@ -6,7 +6,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::ui::NewsWindow
+namespace OpenLoco::Ui::NewsWindow
 {
 #pragma pack(push, 1)
     struct messageItemType

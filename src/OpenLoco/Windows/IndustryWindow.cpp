@@ -22,7 +22,7 @@
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::GameCommands;
 
-namespace OpenLoco::ui::windows::industry
+namespace OpenLoco::Ui::windows::industry
 {
     static loco_global<string_id, 0x009C68E8> gGameCommandErrorTitle;
 
@@ -793,7 +793,7 @@ namespace OpenLoco::ui::windows::industry
             if (Input::isToolActive(self->type, self->number))
                 Input::toolCancel();
 
-            ui::textinput::sub_4CE6C9(self->type, self->number);
+            Ui::textinput::sub_4CE6C9(self->type, self->number);
 
             self->current_tab = widgetIndex - widx::tab_industry;
             self->frame_no = 0;

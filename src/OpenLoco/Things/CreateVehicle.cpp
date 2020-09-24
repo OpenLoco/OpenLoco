@@ -799,7 +799,7 @@ namespace OpenLoco::Things::Vehicle
             placeDownVehicle(_backupVeh0, _backupX, _backupY, _backupZ, _backup2C, _backup2E);
         }
 
-        ui::WindowManager::invalidate(ui::WindowType::vehicleList, head->owner);
+        Ui::WindowManager::invalidate(Ui::WindowType::vehicleList, head->owner);
     }
 
     // 0x004AE74E

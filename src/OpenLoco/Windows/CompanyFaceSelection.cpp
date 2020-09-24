@@ -15,7 +15,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::ui::windows::CompanyFaceSelection
+namespace OpenLoco::Ui::windows::CompanyFaceSelection
 {
     static loco_global<company_id_t, 0x9C68F2> _9C68F2; // Use in a game command??
     static loco_global<uint16_t, 0x112C1C1> _numberCompetitorObjects;

@@ -23,11 +23,11 @@ using namespace OpenLoco::Interop;
 using namespace OpenLoco::Map;
 using namespace OpenLoco::GameCommands;
 
-namespace OpenLoco::ui::windows::terraform
+namespace OpenLoco::Ui::windows::terraform
 {
     static loco_global<std::uint8_t[10], 0x00500775> _byte_500775;
     static loco_global<int16_t, 0x0052337A> _dragLastY;
-    static loco_global<ui::WindowType, 0x00523392> _toolWindowType;
+    static loco_global<Ui::WindowType, 0x00523392> _toolWindowType;
     static loco_global<int8_t, 0x00523393> _currentTool;
     static loco_global<company_id_t, 0x00525E3C> _player_company;
     static loco_global<uint32_t[32], 0x00525E5E> _currencyMultiplicationFactor;
@@ -177,7 +177,7 @@ namespace OpenLoco::ui::windows::terraform
             i = (i / 9) * rowHeight;
 
             self->scroll_areas[0].contentOffsetY = i;
-            ui::scrollview::updateThumbs(self, widx::scrollview);
+            Ui::scrollview::updateThumbs(self, widx::scrollview);
         }
 
         // 0x004BB63F
@@ -223,7 +223,7 @@ namespace OpenLoco::ui::windows::terraform
         static void onClose(window* self)
         {
             common::sub_4BD297();
-            ui::windows::hideGridlines();
+            Ui::windows::hideGridlines();
         }
 
         // 0x004BBC7D
@@ -354,7 +354,7 @@ namespace OpenLoco::ui::windows::terraform
                             if (self->saved_view.mapX >= 8)
                             {
                                 auto y = std::min(self->scroll_areas[0].contentHeight - 1 + 60, 562);
-                                if (ui::height() < 600)
+                                if (Ui::height() < 600)
                                 {
                                     y = std::min(y, 358);
                                 }
@@ -684,7 +684,7 @@ namespace OpenLoco::ui::windows::terraform
         else
         {
             // 0x004BB586
-            auto origin = Gfx::point_t(ui::width() - plant_trees::windowSize.width, 30);
+            auto origin = Gfx::point_t(Ui::width() - plant_trees::windowSize.width, 30);
 
             window = WindowManager::createWindow(
                 WindowType::terraform,
@@ -715,7 +715,7 @@ namespace OpenLoco::ui::windows::terraform
 
             // End of 0x004BB586
 
-            ui::windows::showGridlines();
+            Ui::windows::showGridlines();
             _treeRotation = 2;
 
             common::initEvents();
@@ -769,7 +769,7 @@ namespace OpenLoco::ui::windows::terraform
         // 0x004BC671
         static void onClose(window* self)
         {
-            ui::windows::hideGridlines();
+            Ui::windows::hideGridlines();
         }
 
         // 0x004BBBC7
@@ -952,7 +952,7 @@ namespace OpenLoco::ui::windows::terraform
         // 0x004BC9D1
         static void onClose(window* self)
         {
-            ui::windows::hideGridlines();
+            Ui::windows::hideGridlines();
         }
 
         // 0x004BBBF7
@@ -1525,7 +1525,7 @@ namespace OpenLoco::ui::windows::terraform
         // 0x004BCDAE
         static void onClose(window* self)
         {
-            ui::windows::hideGridlines();
+            Ui::windows::hideGridlines();
         }
 
         // 0x004BBC46
@@ -1779,7 +1779,7 @@ namespace OpenLoco::ui::windows::terraform
             i = (i / 10) * rowHeight;
 
             self->scroll_areas[0].contentOffsetY = i;
-            ui::scrollview::updateThumbs(self, widx::scrollview);
+            Ui::scrollview::updateThumbs(self, widx::scrollview);
         }
 
         // 0x004BB6D5
@@ -1824,7 +1824,7 @@ namespace OpenLoco::ui::windows::terraform
         static void onClose(window* self)
         {
             common::sub_4BD297();
-            ui::windows::hideGridlines();
+            Ui::windows::hideGridlines();
         }
 
         // 0x004BBCBF
@@ -1882,7 +1882,7 @@ namespace OpenLoco::ui::windows::terraform
                             if (self->saved_view.mapX >= 8)
                             {
                                 auto y = std::min(self->scroll_areas[0].contentHeight - 1 + 60, 562);
-                                if (ui::height() < 600)
+                                if (Ui::height() < 600)
                                 {
                                     y = std::min(y, 358);
                                 }
@@ -2394,7 +2394,7 @@ namespace OpenLoco::ui::windows::terraform
             0x004BC9E2,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                adjust_land::toolDragContinue((ui::window&)regs.esi, (widget_index)regs.dx, (int16_t)regs.ax, (int16_t)regs.bx);
+                adjust_land::toolDragContinue((Ui::window&)regs.esi, (widget_index)regs.dx, (int16_t)regs.ax, (int16_t)regs.bx);
                 regs = backup;
                 return 0;
             });
@@ -2403,7 +2403,7 @@ namespace OpenLoco::ui::windows::terraform
             0x004BCA5D,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                adjust_land::toolDragEnd((ui::window&)regs.esi, (widget_index)regs.dx);
+                adjust_land::toolDragEnd((Ui::window&)regs.esi, (widget_index)regs.dx);
                 regs = backup;
                 return 0;
             });
@@ -2412,7 +2412,7 @@ namespace OpenLoco::ui::windows::terraform
             0x004BCDBF,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                adjust_water::toolDragContinue((ui::window&)regs.esi, (widget_index)regs.dx, (int16_t)regs.ax, (int16_t)regs.bx);
+                adjust_water::toolDragContinue((Ui::window&)regs.esi, (widget_index)regs.dx, (int16_t)regs.ax, (int16_t)regs.bx);
                 regs = backup;
                 return 0;
             });
@@ -2421,7 +2421,7 @@ namespace OpenLoco::ui::windows::terraform
             0x004BCDE8,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                adjust_water::toolDragEnd((ui::window&)regs.esi, (widget_index)regs.dx);
+                adjust_water::toolDragEnd((Ui::window&)regs.esi, (widget_index)regs.dx);
                 regs = backup;
                 return 0;
             });
@@ -2430,7 +2430,7 @@ namespace OpenLoco::ui::windows::terraform
             0x004BC682,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                clear_area::toolDragContinue((ui::window&)regs.esi, (widget_index)regs.dx, (int16_t)regs.ax, (int16_t)regs.bx);
+                clear_area::toolDragContinue((Ui::window&)regs.esi, (widget_index)regs.dx, (int16_t)regs.ax, (int16_t)regs.bx);
                 regs = backup;
                 return 0;
             });
@@ -2439,7 +2439,7 @@ namespace OpenLoco::ui::windows::terraform
             0x004BC701,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                clear_area::toolDragEnd((ui::window&)regs.esi, (widget_index)regs.dx);
+                clear_area::toolDragEnd((Ui::window&)regs.esi, (widget_index)regs.dx);
                 regs = backup;
                 return 0;
             });

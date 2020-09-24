@@ -3,7 +3,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::ui::scrollview
+namespace OpenLoco::Ui::scrollview
 {
     enum class scroll_part : int16_t
     {
@@ -38,8 +38,8 @@ namespace OpenLoco::ui::scrollview
     constexpr uint8_t buttonClickStep = 3;
 
     void getPart(
-        ui::window* window,
-        ui::widget_t* widget,
+        Ui::window* window,
+        Ui::widget_t* widget,
         int16_t x,
         int16_t y,
         int16_t* output_x,
@@ -47,10 +47,10 @@ namespace OpenLoco::ui::scrollview
         scroll_part* output_scroll_area,
         size_t* scrollIndex);
     void updateThumbs(window* window, widget_index widgetIndex);
-    void scrollLeftBegin(const int16_t x, const int16_t y, ui::window* const w, ui::widget_t* const widget, const widget_index widgetIndex);
-    void scrollLeftContinue(const int16_t x, const int16_t y, ui::window* const w, ui::widget_t* const widget, const widget_index widgetIndex);
-    void scrollModalRight(const int16_t x, const int16_t y, ui::window* const w, ui::widget_t* const widget, const widget_index widgetIndex);
+    void scrollLeftBegin(const int16_t x, const int16_t y, Ui::window* const w, Ui::widget_t* const widget, const widget_index widgetIndex);
+    void scrollLeftContinue(const int16_t x, const int16_t y, Ui::window* const w, Ui::widget_t* const widget, const widget_index widgetIndex);
+    void scrollModalRight(const int16_t x, const int16_t y, Ui::window* const w, Ui::widget_t* const widget, const widget_index widgetIndex);
     void clearPressedButtons(const WindowType type, const window_number number, const widget_index widgetIndex);
-    void horizontalDragFollow(ui::window* const w, ui::widget_t* const widget, const widget_index dragWidgetIndex, const size_t dragScrollIndex, const int16_t deltaX);
-    void verticalDragFollow(ui::window* const w, ui::widget_t* const widget, const widget_index dragWidgetIndex, const size_t dragScrollIndex, const int16_t deltaY);
+    void horizontalDragFollow(Ui::window* const w, Ui::widget_t* const widget, const widget_index dragWidgetIndex, const size_t dragScrollIndex, const int16_t deltaX);
+    void verticalDragFollow(Ui::window* const w, Ui::widget_t* const widget, const widget_index dragWidgetIndex, const size_t dragScrollIndex, const int16_t deltaY);
 }

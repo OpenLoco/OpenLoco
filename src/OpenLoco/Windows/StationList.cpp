@@ -19,7 +19,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::ui::windows::station_list
+namespace OpenLoco::Ui::windows::station_list
 {
     static const Gfx::ui_size_t window_size = { 600, 197 };
     static const Gfx::ui_size_t max_dimensions = { 640, 1200 };
@@ -93,20 +93,20 @@ namespace OpenLoco::ui::windows::station_list
 
     loco_global<uint16_t[4], 0x112C826> _common_format_args;
 
-    static ui::cursor_id cursor(window* window, int16_t widgetIdx, int16_t xPos, int16_t yPos, ui::cursor_id fallback);
-    static void draw(ui::window* window, Gfx::drawpixelinfo_t* dpi);
-    static void drawScroll(ui::window* window, Gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex);
+    static Ui::cursor_id cursor(window* window, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::cursor_id fallback);
+    static void draw(Ui::window* window, Gfx::drawpixelinfo_t* dpi);
+    static void drawScroll(Ui::window* window, Gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex);
     static void event_08(window* window);
     static void event_09(window* window);
-    static void getScrollSize(ui::window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
-    static void onDropdown(ui::window* window, widget_index widgetIndex, int16_t itemIndex);
-    static void onMouseDown(ui::window* window, widget_index widgetIndex);
-    static void onMouseUp(ui::window* window, widget_index widgetIndex);
-    static void onScrollMouseDown(ui::window* window, int16_t x, int16_t y, uint8_t scroll_index);
-    static void onScrollMouseOver(ui::window* window, int16_t x, int16_t y, uint8_t scroll_index);
+    static void getScrollSize(Ui::window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
+    static void onDropdown(Ui::window* window, widget_index widgetIndex, int16_t itemIndex);
+    static void onMouseDown(Ui::window* window, widget_index widgetIndex);
+    static void onMouseUp(Ui::window* window, widget_index widgetIndex);
+    static void onScrollMouseDown(Ui::window* window, int16_t x, int16_t y, uint8_t scroll_index);
+    static void onScrollMouseOver(Ui::window* window, int16_t x, int16_t y, uint8_t scroll_index);
     static void onUpdate(window* window);
-    static void prepareDraw(ui::window* window);
-    static void tooltip(FormatArguments& args, ui::window* window, widget_index widgetIndex);
+    static void prepareDraw(Ui::window* window);
+    static void tooltip(FormatArguments& args, Ui::window* window, widget_index widgetIndex);
 
     static void initEvents()
     {
@@ -369,7 +369,7 @@ namespace OpenLoco::ui::windows::station_list
     }
 
     // 0x004919A4
-    static ui::cursor_id cursor(window* window, int16_t widgetIdx, int16_t xPos, int16_t yPos, ui::cursor_id fallback)
+    static Ui::cursor_id cursor(window* window, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::cursor_id fallback)
     {
         if (widgetIdx != widx::scrollview)
             return fallback;
@@ -401,7 +401,7 @@ namespace OpenLoco::ui::windows::station_list
     }
 
     // 0x00491344
-    static void prepareDraw(ui::window* window)
+    static void prepareDraw(Ui::window* window)
     {
         // Reset active tab.
         window->activated_widgets &= ~((1 << tab_all_stations) | (1 << tab_rail_stations) | (1 << tab_road_stations) | (1 << tab_airports) | (1 << tab_ship_ports));
@@ -469,7 +469,7 @@ namespace OpenLoco::ui::windows::station_list
     }
 
     // 0x0049157F
-    static void drawScroll(ui::window* window, Gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
+    static void drawScroll(Ui::window* window, Gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
     {
         auto shade = Colour::getShade(window->colours[1], 4);
         Gfx::clearSingle(*dpi, shade);
@@ -565,7 +565,7 @@ namespace OpenLoco::ui::windows::station_list
     }
 
     // 00491A76
-    static void drawTabs(ui::window* window, Gfx::drawpixelinfo_t* dpi)
+    static void drawTabs(Ui::window* window, Gfx::drawpixelinfo_t* dpi)
     {
         auto skin = ObjectManager::get<interface_skin_object>();
         auto companyColour = companymgr::getCompanyColour(window->number);
@@ -578,7 +578,7 @@ namespace OpenLoco::ui::windows::station_list
     }
 
     // 0x004914D8
-    static void draw(ui::window* window, Gfx::drawpixelinfo_t* dpi)
+    static void draw(Ui::window* window, Gfx::drawpixelinfo_t* dpi)
     {
         // Draw widgets and tabs.
         window->draw(dpi);
@@ -602,7 +602,7 @@ namespace OpenLoco::ui::windows::station_list
     }
 
     // 0x004917BB
-    static void onDropdown(ui::window* window, widget_index widgetIndex, int16_t itemIndex)
+    static void onDropdown(Ui::window* window, widget_index widgetIndex, int16_t itemIndex)
     {
         if (widgetIndex != widx::company_select)
             return;
@@ -639,14 +639,14 @@ namespace OpenLoco::ui::windows::station_list
     }
 
     // 0x004917B0
-    static void onMouseDown(ui::window* window, widget_index widgetIndex)
+    static void onMouseDown(Ui::window* window, widget_index widgetIndex)
     {
         if (widgetIndex == widx::company_select)
             dropdown::populateCompanySelect(window, &window->widgets[widgetIndex]);
     }
 
     // 0x00491785
-    static void onMouseUp(ui::window* window, widget_index widgetIndex)
+    static void onMouseUp(Ui::window* window, widget_index widgetIndex)
     {
         switch (widgetIndex)
         {
@@ -701,7 +701,7 @@ namespace OpenLoco::ui::windows::station_list
     }
 
     // 0x00491A0C
-    static void onScrollMouseDown(ui::window* window, int16_t x, int16_t y, uint8_t scroll_index)
+    static void onScrollMouseDown(Ui::window* window, int16_t x, int16_t y, uint8_t scroll_index)
     {
         uint16_t currentRow = y / rowHeight;
         if (currentRow > window->var_83C)
@@ -715,7 +715,7 @@ namespace OpenLoco::ui::windows::station_list
     }
 
     // 0x004919D1
-    static void onScrollMouseOver(ui::window* window, int16_t x, int16_t y, uint8_t scroll_index)
+    static void onScrollMouseOver(Ui::window* window, int16_t x, int16_t y, uint8_t scroll_index)
     {
         window->flags &= ~(window_flags::not_scroll_view);
 
@@ -747,13 +747,13 @@ namespace OpenLoco::ui::windows::station_list
     }
 
     // 0x00491999
-    static void getScrollSize(ui::window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+    static void getScrollSize(Ui::window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
         *scrollHeight = rowHeight * window->var_83C;
     }
 
     // 0x00491841
-    static void tooltip(FormatArguments& args, ui::window* window, widget_index widgetIndex)
+    static void tooltip(FormatArguments& args, Ui::window* window, widget_index widgetIndex)
     {
         args.push(StringIds::tooltip_scroll_station_list);
     }

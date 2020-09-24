@@ -7,7 +7,7 @@
 
 using namespace OpenLoco;
 using namespace OpenLoco::Interop;
-using namespace OpenLoco::ui;
+using namespace OpenLoco::Ui;
 
 #pragma pack(push, 1)
 struct unk1

@@ -17,7 +17,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::ui::windows::LandscapeGeneration
+namespace OpenLoco::Ui::windows::LandscapeGeneration
 {
     static const Gfx::ui_size_t window_size = { 366, 217 };
     static const Gfx::ui_size_t land_tab_size = { 366, 232 };
@@ -416,7 +416,7 @@ namespace OpenLoco::ui::windows::LandscapeGeneration
         };
 
         // 0x0043E01C
-        static void drawScroll(ui::window* window, Gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
+        static void drawScroll(Ui::window* window, Gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
         {
             uint16_t yPos = 0;
             for (uint16_t i = 0; i < maxLandObjects; i++)
@@ -453,7 +453,7 @@ namespace OpenLoco::ui::windows::LandscapeGeneration
         }
 
         // 0x0043E2AC
-        static void getScrollSize(ui::window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+        static void getScrollSize(Ui::window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
         {
             *scrollHeight = 0;
 
@@ -635,7 +635,7 @@ namespace OpenLoco::ui::windows::LandscapeGeneration
         }
 
         // 0x0043E2A2
-        static void tooltip(FormatArguments& args, ui::window* window, widget_index widgetIndex)
+        static void tooltip(FormatArguments& args, Ui::window* window, widget_index widgetIndex)
         {
             args.push(StringIds::tooltip_scroll_list);
         }

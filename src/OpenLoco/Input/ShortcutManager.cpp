@@ -10,7 +10,7 @@
 #include <array>
 
 using namespace OpenLoco::Interop;
-using namespace OpenLoco::ui;
+using namespace OpenLoco::Ui;
 
 namespace OpenLoco::Input::ShortcutManager
 {

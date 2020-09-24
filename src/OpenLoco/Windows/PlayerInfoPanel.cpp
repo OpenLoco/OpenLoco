@@ -21,7 +21,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::ui::windows::PlayerInfoPanel
+namespace OpenLoco::Ui::windows::PlayerInfoPanel
 {
     static const Gfx::ui_size_t window_size = { 140, 27 };
 
@@ -62,16 +62,16 @@ namespace OpenLoco::ui::windows::PlayerInfoPanel
     static loco_global<uint16_t, 0x0113DC78> _113DC78; // dropdown flags?
 
     static void prepareDraw(window* window);
-    static void draw(ui::window* window, Gfx::drawpixelinfo_t* dpi);
-    static void onMouseUp(ui::window* window, widget_index widgetIndex);
-    static void onMouseDown(ui::window* window, widget_index widgetIndex);
+    static void draw(Ui::window* window, Gfx::drawpixelinfo_t* dpi);
+    static void onMouseUp(Ui::window* window, widget_index widgetIndex);
+    static void onMouseDown(Ui::window* window, widget_index widgetIndex);
     static void onDropdown(window* w, widget_index widgetIndex, int16_t item_index);
-    static ui::cursor_id onCursor(ui::window* window, int16_t widgetIdx, int16_t xPos, int16_t yPos, ui::cursor_id fallback);
-    static void tooltip(FormatArguments& args, ui::window* window, widget_index widgetIndex);
+    static Ui::cursor_id onCursor(Ui::window* window, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::cursor_id fallback);
+    static void tooltip(FormatArguments& args, Ui::window* window, widget_index widgetIndex);
     static void onUpdate(window* w);
 
     // 0x43AA4C
-    static void playerMouseDown(ui::window* self, widget_index widgetIndex)
+    static void playerMouseDown(Ui::window* self, widget_index widgetIndex)
     {
         _sortedCompanies.clear();
 
@@ -183,9 +183,9 @@ namespace OpenLoco::ui::windows::PlayerInfoPanel
 
         auto window = WindowManager::createWindow(
             WindowType::playerInfoToolbar,
-            Gfx::point_t(0, ui::height() - window_size.height),
+            Gfx::point_t(0, Ui::height() - window_size.height),
             Gfx::ui_size_t(window_size.width, window_size.height),
-            ui::window_flags::stick_to_front | ui::window_flags::transparent | ui::window_flags::no_background,
+            Ui::window_flags::stick_to_front | Ui::window_flags::transparent | Ui::window_flags::no_background,
             &_events);
         window->widgets = _widgets;
         window->enabled_widgets = (1 << widx::player) | (1 << widx::company_value) | (1 << widx::performance_index);
@@ -209,7 +209,7 @@ namespace OpenLoco::ui::windows::PlayerInfoPanel
     }
 
     // 0x43944B
-    static void draw(ui::window* window, Gfx::drawpixelinfo_t* dpi)
+    static void draw(Ui::window* window, Gfx::drawpixelinfo_t* dpi)
     {
         widget_t& frame = _widgets[widx::outer_frame];
         Gfx::drawRect(dpi, window->x + frame.left, window->y + frame.top, frame.width(), frame.height(), 0x2000000 | 52);
@@ -275,7 +275,7 @@ namespace OpenLoco::ui::windows::PlayerInfoPanel
     }
 
     // 0x004395A4
-    static void onMouseUp(ui::window* window, widget_index widgetIndex)
+    static void onMouseUp(Ui::window* window, widget_index widgetIndex)
     {
         switch (widgetIndex)
         {
@@ -289,7 +289,7 @@ namespace OpenLoco::ui::windows::PlayerInfoPanel
     }
 
     // 0x004395B1
-    static void onMouseDown(ui::window* window, widget_index widgetIndex)
+    static void onMouseDown(Ui::window* window, widget_index widgetIndex)
     {
         switch (widgetIndex)
         {
@@ -323,7 +323,7 @@ namespace OpenLoco::ui::windows::PlayerInfoPanel
     }
 
     // 0x004395DE
-    static ui::cursor_id onCursor(ui::window* window, int16_t widgetIndex, int16_t xPos, int16_t yPos, ui::cursor_id fallback)
+    static Ui::cursor_id onCursor(Ui::window* window, int16_t widgetIndex, int16_t xPos, int16_t yPos, Ui::cursor_id fallback)
     {
         switch (widgetIndex)
         {
@@ -336,7 +336,7 @@ namespace OpenLoco::ui::windows::PlayerInfoPanel
     }
 
     // 0x004395F5
-    static void tooltip(FormatArguments& args, ui::window* window, widget_index widgetIndex)
+    static void tooltip(FormatArguments& args, Ui::window* window, widget_index widgetIndex)
     {
         switch (widgetIndex)
         {

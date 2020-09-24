@@ -134,6 +134,6 @@ namespace OpenLoco::townmgr
             memset(&currTown.monthly_cargo_delivered, 0, sizeof(currTown.monthly_cargo_delivered));
         }
 
-        ui::WindowManager::invalidate(ui::WindowType::town);
+        Ui::WindowManager::invalidate(Ui::WindowType::town);
     }
 }

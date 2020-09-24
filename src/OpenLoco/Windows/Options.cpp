@@ -21,7 +21,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::ui::options
+namespace OpenLoco::Ui::options
 {
     static void tabOnMouseUp(window* w, widget_index wi);
     static void sub_4C13BE(window* w);
@@ -404,7 +404,7 @@ namespace OpenLoco::ui::options
                 return;
 
 #if !(defined(__APPLE__) && defined(__MACH__))
-            ui::setDisplayMode(new_mode);
+            Ui::setDisplayMode(new_mode);
 #endif
         }
 
@@ -433,14 +433,14 @@ namespace OpenLoco::ui::options
             if (index == -1)
                 return;
             std::vector<Resolution> resolutions = getFullscreenResolutions();
-            ui::setDisplayMode(config::screen_mode::fullscreen, { resolutions[index].width, resolutions[index].height });
+            Ui::setDisplayMode(config::screen_mode::fullscreen, { resolutions[index].width, resolutions[index].height });
         }
 
 #pragma mark -
 
         static void displayScaleMouseDown(window* w, widget_index wi, float adjust_by)
         {
-            OpenLoco::ui::adjustWindowScale(adjust_by);
+            OpenLoco::Ui::adjustWindowScale(adjust_by);
         }
 
         // 0x004BFBB7
@@ -464,10 +464,10 @@ namespace OpenLoco::ui::options
                     stationNamesScaleMouseDown(w, wi);
                     break;
                 case widx::display_scale_down_btn:
-                    displayScaleMouseDown(w, wi, -OpenLoco::ui::ScaleFactor::step);
+                    displayScaleMouseDown(w, wi, -OpenLoco::Ui::ScaleFactor::step);
                     break;
                 case widx::display_scale_up_btn:
-                    displayScaleMouseDown(w, wi, OpenLoco::ui::ScaleFactor::step);
+                    displayScaleMouseDown(w, wi, OpenLoco::Ui::ScaleFactor::step);
                     break;
             }
         }
@@ -568,12 +568,12 @@ namespace OpenLoco::ui::options
                 w->activated_widgets |= (1 << widx::gridlines_on_landscape);
             }
 
-            if (config::getNew().scale_factor <= OpenLoco::ui::ScaleFactor::min)
+            if (config::getNew().scale_factor <= OpenLoco::Ui::ScaleFactor::min)
                 w->disabled_widgets |= (1 << widx::display_scale_down_btn);
             else
                 w->disabled_widgets &= ~(1 << widx::display_scale_down_btn);
 
-            if (config::getNew().scale_factor >= OpenLoco::ui::ScaleFactor::max)
+            if (config::getNew().scale_factor >= OpenLoco::Ui::ScaleFactor::max)
                 w->disabled_widgets |= (1 << widx::display_scale_up_btn);
             else
                 w->disabled_widgets &= ~(1 << widx::display_scale_up_btn);
@@ -669,9 +669,9 @@ namespace OpenLoco::ui::options
 
         static window_event_list _events;
 
-        static void audioDeviceMouseDown(ui::window* window);
-        static void audioDeviceDropdown(ui::window* window, int16_t itemIndex);
-        static void playTitleMusicOnMouseUp(ui::window* window);
+        static void audioDeviceMouseDown(Ui::window* window);
+        static void audioDeviceDropdown(Ui::window* window, int16_t itemIndex);
+        static void playTitleMusicOnMouseUp(Ui::window* window);
 
         // 0x004C0217
         static void prepareDraw(window* w)
@@ -751,7 +751,7 @@ namespace OpenLoco::ui::options
             }
         }
 
-        static void onDropdown(ui::window* window, widget_index widgetIndex, int16_t itemIndex)
+        static void onDropdown(Ui::window* window, widget_index widgetIndex, int16_t itemIndex)
         {
             switch (widgetIndex)
             {
@@ -764,7 +764,7 @@ namespace OpenLoco::ui::options
 #pragma mark - Widget 11
 
         // 0x004C043D
-        static void audioDeviceMouseDown(ui::window* w)
+        static void audioDeviceMouseDown(Ui::window* w)
         {
             const auto& devices = Audio::getDevices();
             if (devices.size() != 0)
@@ -786,7 +786,7 @@ namespace OpenLoco::ui::options
         }
 
         // 0x004C04CA
-        static void audioDeviceDropdown(ui::window* w, int16_t itemIndex)
+        static void audioDeviceDropdown(Ui::window* w, int16_t itemIndex)
         {
             if (itemIndex != -1)
             {
@@ -1000,7 +1000,7 @@ namespace OpenLoco::ui::options
         }
 
         // 0x004C070D
-        static void onDropdown(ui::window* window, widget_index widgetIndex, int16_t itemIndex)
+        static void onDropdown(Ui::window* window, widget_index widgetIndex, int16_t itemIndex)
         {
             switch (widgetIndex)
             {
@@ -1399,7 +1399,7 @@ namespace OpenLoco::ui::options
         }
 
         // 0x004C0C4A
-        static void onDropdown(ui::window* window, widget_index widgetIndex, int16_t itemIndex)
+        static void onDropdown(Ui::window* window, widget_index widgetIndex, int16_t itemIndex)
         {
             switch (widgetIndex)
             {

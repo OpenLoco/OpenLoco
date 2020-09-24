@@ -15,7 +15,7 @@ using namespace OpenLoco::Interop;
 using namespace OpenLoco::Map;
 using namespace OpenLoco::Map::TileManager;
 
-namespace OpenLoco::ui::windows::construction::construction
+namespace OpenLoco::Ui::windows::construction::construction
 {
     static loco_global<uint16_t[351][4], 0x004F7B62> _word_4F7B62; // TODO: Not sure on size?
     static loco_global<uint8_t, 0x00508F09> _byte_508F09;
@@ -1830,7 +1830,7 @@ namespace OpenLoco::ui::windows::construction::construction
     }
 
     // 0x0049D4F5
-    static ui::cursor_id cursor(window* self, int16_t widgetIndex, int16_t xPos, int16_t yPos, ui::cursor_id fallback)
+    static Ui::cursor_id cursor(window* self, int16_t widgetIndex, int16_t xPos, int16_t yPos, Ui::cursor_id fallback)
     {
         if (widgetIndex == widx::bridge || widgetIndex == widx::bridge_dropdown)
             _tooltipTimeout = 2000;

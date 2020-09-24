@@ -17,7 +17,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::ui::windows::industry_list
+namespace OpenLoco::Ui::windows::industry_list
 {
     static loco_global<uint32_t, 0x00E0C39C> dword_E0C39C;
     static loco_global<uint8_t, 0x00E0C3D9> byte_E0C3D9;
@@ -175,7 +175,7 @@ namespace OpenLoco::ui::windows::industry_list
         }
 
         //0x00458172
-        static void onScrollMouseDown(ui::window* self, int16_t x, int16_t y, uint8_t scroll_index)
+        static void onScrollMouseDown(Ui::window* self, int16_t x, int16_t y, uint8_t scroll_index)
         {
             uint16_t currentRow = y / rowHeight;
             if (currentRow > self->var_83C)
@@ -189,7 +189,7 @@ namespace OpenLoco::ui::windows::industry_list
         }
 
         // 0x00458140
-        static void onScrollMouseOver(ui::window* self, int16_t x, int16_t y, uint8_t scroll_index)
+        static void onScrollMouseOver(Ui::window* self, int16_t x, int16_t y, uint8_t scroll_index)
         {
             self->flags &= ~(window_flags::not_scroll_view);
 
@@ -362,7 +362,7 @@ namespace OpenLoco::ui::windows::industry_list
         }
 
         // 0x00457EE8
-        static void tooltip(FormatArguments& args, ui::window* self, widget_index widgetIndex)
+        static void tooltip(FormatArguments& args, Ui::window* self, widget_index widgetIndex)
         {
             args.push(StringIds::tooltip_scroll_industry_list);
         }
@@ -374,7 +374,7 @@ namespace OpenLoco::ui::windows::industry_list
         }
 
         // 0x00457D2A
-        static void drawScroll(ui::window* self, Gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
+        static void drawScroll(Ui::window* self, Gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
         {
             auto shade = Colour::getShade(self->colours[1], 4);
             Gfx::clearSingle(*dpi, shade);
@@ -442,7 +442,7 @@ namespace OpenLoco::ui::windows::industry_list
         }
 
         // 0x00458113
-        static ui::cursor_id cursor(window* self, int16_t widgetIdx, int16_t xPos, int16_t yPos, ui::cursor_id fallback)
+        static Ui::cursor_id cursor(window* self, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::cursor_id fallback)
         {
             if (widgetIdx != widx::scrollview)
                 return fallback;
@@ -513,7 +513,7 @@ namespace OpenLoco::ui::windows::industry_list
         else
         {
             // 0x00457878
-            auto origin = Gfx::point_t(ui::width() - industry_list::windowSize.width, 30);
+            auto origin = Gfx::point_t(Ui::width() - industry_list::windowSize.width, 30);
 
             window = WindowManager::createWindow(
                 WindowType::industryList,
@@ -686,7 +686,7 @@ namespace OpenLoco::ui::windows::industry_list
         }
 
         //0x00458966
-        static void onScrollMouseDown(ui::window* self, int16_t x, int16_t y, uint8_t scrollIndex)
+        static void onScrollMouseDown(Ui::window* self, int16_t x, int16_t y, uint8_t scrollIndex)
         {
             int16_t xPos = (x / rowHeight);
             int16_t yPos = (y / rowHeight) * 5;
@@ -713,7 +713,7 @@ namespace OpenLoco::ui::windows::industry_list
         }
 
         // 0x00458721
-        static void onScrollMouseOver(ui::window* self, int16_t x, int16_t y, uint8_t scrollIndex)
+        static void onScrollMouseOver(Ui::window* self, int16_t x, int16_t y, uint8_t scrollIndex)
         {
             auto index = getRowIndex(x, y);
             uint16_t rowInfo = 0xFFFF;
@@ -803,7 +803,7 @@ namespace OpenLoco::ui::windows::industry_list
                             if (self->saved_view.mapX >= 8)
                             {
                                 auto y = std::min(self->scroll_areas[0].contentHeight - 1 + 60, 500);
-                                if (ui::height() < 600)
+                                if (Ui::height() < 600)
                                 {
                                     y = std::min(y, 276);
                                 }
@@ -847,7 +847,7 @@ namespace OpenLoco::ui::windows::industry_list
         }
 
         // 0x00458455
-        static void tooltip(FormatArguments& args, ui::window* self, widget_index widgetIndex)
+        static void tooltip(FormatArguments& args, Ui::window* self, widget_index widgetIndex)
         {
             args.push(StringIds::tooltip_scroll_new_industry_list);
         }
@@ -873,7 +873,7 @@ namespace OpenLoco::ui::windows::industry_list
         }
 
         // 0x00458352
-        static void drawScroll(ui::window* self, Gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
+        static void drawScroll(Ui::window* self, Gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
         {
             auto shade = Colour::getShade(self->colours[1], 4);
             Gfx::clearSingle(*dpi, shade);
@@ -956,7 +956,7 @@ namespace OpenLoco::ui::windows::industry_list
         static void onToolAbort(window& self, const widget_index widgetIndex)
         {
             sub_458C09();
-            ui::windows::hideGridlines();
+            Ui::windows::hideGridlines();
         }
 
         // 0x0045845F
@@ -986,7 +986,7 @@ namespace OpenLoco::ui::windows::industry_list
             i = (i / 5) * rowHeight;
 
             self->scroll_areas[0].contentOffsetY = i;
-            ui::scrollview::updateThumbs(self, widx::scrollview);
+            Ui::scrollview::updateThumbs(self, widx::scrollview);
         }
 
         // 0x00458AAF
@@ -1045,7 +1045,7 @@ namespace OpenLoco::ui::windows::industry_list
             Input::toolSet(self, common::widx::tab_new_industry, 40);
 
             Input::setFlag(Input::input_flags::flag6);
-            ui::windows::showGridlines();
+            Ui::windows::showGridlines();
             byte_E0C3D9 = 0;
             dword_E0C39C = 0x80000000;
 

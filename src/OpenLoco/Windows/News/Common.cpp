@@ -11,21 +11,21 @@
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::config;
 
-namespace OpenLoco::ui::NewsWindow
+namespace OpenLoco::Ui::NewsWindow
 {
     static void createNewsWindow(Gfx::ui_size_t windowSize, widget_t* widgets, uint8_t colour, bool isOld, uint32_t flags)
     {
         _word_525CE0 = 5;
 
-        int16_t y = ui::height() - _word_525CE0;
+        int16_t y = Ui::height() - _word_525CE0;
 
         if (_gameSpeed != 0 || isOld)
         {
-            y = ui::height() - windowSize.height;
+            y = Ui::height() - windowSize.height;
             _word_525CE0 = windowSize.height;
         }
 
-        int16_t x = (ui::width() / 2) - (windowSize.width / 2);
+        int16_t x = (Ui::width() / 2) - (windowSize.width / 2);
         Gfx::point_t origin = { x, y };
 
         auto window = WindowManager::createWindow(WindowType::news, origin, windowSize, flags, &news1::events);
@@ -126,8 +126,8 @@ namespace OpenLoco::ui::NewsWindow
             if (newsSettings == newsType::ticker)
             {
                 _word_525CE0 = 0;
-                int16_t x = ui::width() - 138;
-                int16_t y = ui::height() - 25;
+                int16_t x = Ui::width() - 138;
+                int16_t y = Ui::height() - 25;
                 Gfx::point_t origin = { x, y };
                 uint32_t flags = window_flags::stick_to_front | window_flags::viewport_no_scrolling | window_flags::transparent | window_flags::flag_7;
 
@@ -194,7 +194,7 @@ namespace OpenLoco::ui::NewsWindow
 
             if (soundId != Audio::sound_id::null)
             {
-                int32_t pan = ui::width() / 2;
+                int32_t pan = Ui::width() / 2;
                 Audio::playSound(soundId, pan);
             }
         }

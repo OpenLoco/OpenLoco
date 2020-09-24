@@ -11,7 +11,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::ui::tooltip
+namespace OpenLoco::Ui::tooltip
 {
     static loco_global<char[513], 0x0050ED4B> _str0337;
 
@@ -23,7 +23,7 @@ namespace OpenLoco::ui::tooltip
 
     static loco_global<uint16_t, 0x0052338C> _tooltipNotShownTicks;
 
-    static loco_global<ui::widget_t[1], 0x005234CC> _widgets;
+    static loco_global<Ui::widget_t[1], 0x005234CC> _widgets;
 
     static loco_global<char[1], 0x112C826> _commonFormatArgs;
     static loco_global<int32_t, 0x112C876> gCurrentFontSpriteBase;
@@ -34,40 +34,40 @@ namespace OpenLoco::ui::tooltip
 
     static loco_global<int32_t, 0x01136F98> _currentTooltipStringId;
 
-    static void draw(ui::window* window, Gfx::drawpixelinfo_t* dpi);
-    static void onClose(ui::window* window);
-    static void update(ui::window* window);
+    static void draw(Ui::window* window, Gfx::drawpixelinfo_t* dpi);
+    static void onClose(Ui::window* window);
+    static void update(Ui::window* window);
 
     void registerHooks()
     {
         registerHook(
             0x004C906B,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                ui::tooltip::open((ui::window*)regs.esi, regs.edx, regs.ax, regs.bx);
+                Ui::tooltip::open((Ui::window*)regs.esi, regs.edx, regs.ax, regs.bx);
                 return 0;
             });
         registerHook(
             0x004C9216,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                ui::tooltip::update((ui::window*)regs.esi, regs.edx, regs.di, regs.ax, regs.bx);
+                Ui::tooltip::update((Ui::window*)regs.esi, regs.edx, regs.di, regs.ax, regs.bx);
                 return 0;
             });
         registerHook(
             0x004C9397,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                draw((ui::window*)regs.esi, (Gfx::drawpixelinfo_t*)regs.edi);
+                draw((Ui::window*)regs.esi, (Gfx::drawpixelinfo_t*)regs.edi);
                 return 0;
             });
         registerHook(
             0x004C94F7,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                onClose((ui::window*)regs.esi);
+                onClose((Ui::window*)regs.esi);
                 return 0;
             });
         registerHook(
             0x004C94FF,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                update((ui::window*)regs.esi);
+                update((Ui::window*)regs.esi);
                 return 0;
             });
     }
@@ -107,7 +107,7 @@ namespace OpenLoco::ui::tooltip
 
         int x, y;
 
-        int maxY = ui::height() - height;
+        int maxY = Ui::height() - height;
         y = cursorY + 26; // Normally, we'd display the tooltip 26 lower
         if (y > maxY)
             // If y is too large, the tooltip could be forced below the cursor if we'd just clamped y,
@@ -115,20 +115,20 @@ namespace OpenLoco::ui::tooltip
             y -= height + 40;
         y = std::clamp(y, 22, maxY);
 
-        x = width <= ui::width() ? std::clamp(cursorX - (width / 2), 0, ui::width() - width) : 0;
+        x = width <= Ui::width() ? std::clamp(cursorX - (width / 2), 0, Ui::width() - width) : 0;
 
         auto tooltip = WindowManager::createWindow(
             WindowType::tooltip,
             Gfx::point_t(x, y),
             Gfx::ui_size_t(width, height),
             window_flags::stick_to_front | window_flags::transparent | window_flags::flag_7,
-            (ui::window_event_list*)0x504774);
+            (Ui::window_event_list*)0x504774);
         tooltip->widgets = _widgets;
         _tooltipNotShownTicks = 0;
     }
 
     // 0x004C906B
-    void open(ui::window* window, int32_t widgetIndex, int16_t cursorX, int16_t cursorY)
+    void open(Ui::window* window, int32_t widgetIndex, int16_t cursorX, int16_t cursorY)
     {
         WindowManager::close(WindowType::tooltip, 0);
         if (window == nullptr || widgetIndex == -1)
@@ -164,7 +164,7 @@ namespace OpenLoco::ui::tooltip
     }
 
     // 0x004C9216
-    void update(ui::window* window, int32_t widgetIndex, string_id stringId, int16_t cursorX, int16_t cursorY)
+    void update(Ui::window* window, int32_t widgetIndex, string_id stringId, int16_t cursorX, int16_t cursorY)
     {
         WindowManager::close(WindowType::tooltip, 0);
 
@@ -190,7 +190,7 @@ namespace OpenLoco::ui::tooltip
     }
 
     // 0x004C9397
-    static void draw(ui::window* window, Gfx::drawpixelinfo_t* dpi)
+    static void draw(Ui::window* window, Gfx::drawpixelinfo_t* dpi)
     {
         uint16_t x = window->x;
         uint16_t y = window->y;
@@ -214,13 +214,13 @@ namespace OpenLoco::ui::tooltip
     }
 
     // 0x004C94F7
-    static void onClose(ui::window* window)
+    static void onClose(Ui::window* window)
     {
         _str0337[0] = '\0';
     }
 
     // 0x004C94FF
-    static void update(ui::window* window)
+    static void update(Ui::window* window)
     {
         if (_52336E == false)
         {
@@ -236,7 +236,7 @@ namespace OpenLoco::ui::tooltip
     // 0x004C87B5
     void closeAndReset()
     {
-        ui::WindowManager::close(WindowType::tooltip, 0);
+        Ui::WindowManager::close(WindowType::tooltip, 0);
         Input::setTooltipTimeout(0);
         _tooltipWindowType = WindowType::undefined;
         _currentTooltipStringId = -1;

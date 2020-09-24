@@ -19,7 +19,7 @@ using namespace OpenLoco;
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Map;
 
-namespace OpenLoco::ui
+namespace OpenLoco::Ui
 {
     template<typename T>
     static bool isInteropEvent(T e)
@@ -102,7 +102,7 @@ namespace OpenLoco::ui
         return (this->activated_widgets & (1ULL << index)) != 0;
     }
 
-    bool window::isHoldable(ui::widget_index index)
+    bool window::isHoldable(Ui::widget_index index)
     {
         return (this->holdable_widgets & (1ULL << index)) != 0;
     }
@@ -189,7 +189,7 @@ namespace OpenLoco::ui
     // regs.dl:  underground
     // regs.esi: w
     // regs.edi: vp
-    static void viewportSetUndergroundFlag(bool underground, ui::window* w, ui::viewport* vp)
+    static void viewportSetUndergroundFlag(bool underground, Ui::window* w, Ui::viewport* vp)
     {
         if (w->type == WindowType::main)
             return;
@@ -209,13 +209,13 @@ namespace OpenLoco::ui
             w->invalidate();
     }
 
-    void window::viewportSetUndergroundFlag(bool underground, ui::viewport* vp)
+    void window::viewportSetUndergroundFlag(bool underground, Ui::viewport* vp)
     {
-        ui::viewportSetUndergroundFlag(underground, this, vp);
+        Ui::viewportSetUndergroundFlag(underground, this, vp);
     }
 
     // 0x004C68E4
-    static void viewportMove(int16_t x, int16_t y, ui::window* w, ui::viewport* vp)
+    static void viewportMove(int16_t x, int16_t y, Ui::window* w, Ui::viewport* vp)
     {
         int origX = vp->view_x >> vp->zoom;
         int origY = vp->view_y >> vp->zoom;
@@ -233,7 +233,7 @@ namespace OpenLoco::ui
 
         if (vp->flags & viewport_flags::hide_foreground_tracks_roads || vp->flags & viewport_flags::hide_foreground_scenery_buildings || w->flags & window_flags::flag_8)
         {
-            auto rect = ui::Rect(vp->x, vp->y, vp->width, vp->height);
+            auto rect = Ui::Rect(vp->x, vp->y, vp->width, vp->height);
             Gfx::redrawScreenRect(rect);
             return;
         }
@@ -249,7 +249,7 @@ namespace OpenLoco::ui
             vp->x = 0;
         }
 
-        int32_t eax = vp->x + vp->width - ui::width();
+        int32_t eax = vp->x + vp->width - Ui::width();
         if (eax > 0)
         {
             vp->width -= eax;
@@ -270,7 +270,7 @@ namespace OpenLoco::ui
             vp->y = 0;
         }
 
-        eax = vp->y + vp->height - ui::height();
+        eax = vp->y + vp->height - Ui::height();
         if (eax > 0)
         {
             vp->height -= eax;
@@ -421,7 +421,7 @@ namespace OpenLoco::ui
         uint32_t s = 0;
         for (int w = 0;; ++w)
         {
-            ui::widget_t* widget = &this->widgets[w];
+            Ui::widget_t* widget = &this->widgets[w];
 
             if (widget->type == widget_type::end)
                 break;
@@ -454,7 +454,7 @@ namespace OpenLoco::ui
 
             if (invalidate)
             {
-                ui::scrollview::updateThumbs(this, w);
+                Ui::scrollview::updateThumbs(this, w);
                 this->invalidate();
             }
 
@@ -468,7 +468,7 @@ namespace OpenLoco::ui
         uint32_t s = 0;
         for (int w = 0;; ++w)
         {
-            ui::widget_t* widget = &this->widgets[w];
+            Ui::widget_t* widget = &this->widgets[w];
 
             if (widget->type == widget_type::end)
                 break;
@@ -487,14 +487,14 @@ namespace OpenLoco::ui
 
             if (widget->content & scrollbars::horizontal)
             {
-                this->scroll_areas[s].flags |= ui::scrollview::scroll_flags::HSCROLLBAR_VISIBLE;
+                this->scroll_areas[s].flags |= Ui::scrollview::scroll_flags::HSCROLLBAR_VISIBLE;
             }
             if (widget->content & scrollbars::vertical)
             {
-                this->scroll_areas[s].flags |= ui::scrollview::scroll_flags::VSCROLLBAR_VISIBLE;
+                this->scroll_areas[s].flags |= Ui::scrollview::scroll_flags::VSCROLLBAR_VISIBLE;
             }
 
-            ui::scrollview::updateThumbs(this, w);
+            Ui::scrollview::updateThumbs(this, w);
             s++;
         }
     }
@@ -504,7 +504,7 @@ namespace OpenLoco::ui
         int8_t scrollIndex = 0;
         for (int i = 0; i < index; i++)
         {
-            if (this->widgets[i].type == ui::widget_type::scrollview)
+            if (this->widgets[i].type == Ui::widget_type::scrollview)
             {
                 scrollIndex++;
             }
@@ -539,7 +539,7 @@ namespace OpenLoco::ui
     {
         // Get mouse position to offset against.
         int32_t mouse_x, mouse_y;
-        ui::getCursorPos(mouse_x, mouse_y);
+        Ui::getCursorPos(mouse_x, mouse_y);
 
         // Compute map coordinate by mouse position.
         getMapCoordinatesFromPos(mouse_x, mouse_y, 0, map_x, map_y);
@@ -621,7 +621,7 @@ namespace OpenLoco::ui
 
         // Get mouse position to offset against.
         int32_t mouse_x, mouse_y;
-        ui::getCursorPos(mouse_x, mouse_y);
+        Ui::getCursorPos(mouse_x, mouse_y);
 
         // Rebase mouse position onto centre of window, and compensate for zoom level.
         int16_t rebased_x = ((this->width >> 1) - mouse_x) * (1 << v->zoom),
@@ -749,7 +749,7 @@ namespace OpenLoco::ui
     {
         Gfx::point_t offset = { 0, 0 };
 
-        const int16_t xOvershoot = this->x + this->width - ui::width();
+        const int16_t xOvershoot = this->x + this->width - Ui::width();
 
         // Over the edge on the right?
         if (xOvershoot > 0)
@@ -759,7 +759,7 @@ namespace OpenLoco::ui
         if (this->x < 0)
             offset.x -= this->x;
 
-        const int16_t yOvershoot = this->y + this->height - (ui::height() - 27);
+        const int16_t yOvershoot = this->y + this->height - (Ui::height() - 27);
 
         // Over the edge at the bottom?
         if (yOvershoot > 0)
@@ -792,8 +792,8 @@ namespace OpenLoco::ui
 
     bool window::moveToCentre()
     {
-        int16_t dx = ((ui::width() - this->width) / 2);
-        int16_t dy = ((ui::height() - this->height) / 2);
+        int16_t dx = ((Ui::width() - this->width) / 2);
+        int16_t dy = ((Ui::height() - this->height) / 2);
         dx = dx - this->x;
         dy = dy - this->y;
 
@@ -808,7 +808,7 @@ namespace OpenLoco::ui
         widget_index activeWidget = -1;
 
         widget_index widgetIndex = -1;
-        for (ui::widget_t* widget = &this->widgets[0]; widget->type != widget_type::end; widget++)
+        for (Ui::widget_t* widget = &this->widgets[0]; widget->type != widget_type::end; widget++)
         {
             widgetIndex++;
 
@@ -1014,7 +1014,7 @@ namespace OpenLoco::ui
         event_handlers->on_tool_abort(*this, widget_index);
     }
 
-    ui::cursor_id window::call_15(int16_t xPos, int16_t yPos, ui::cursor_id fallback, bool* out)
+    Ui::cursor_id window::call_15(int16_t xPos, int16_t yPos, Ui::cursor_id fallback, bool* out)
     {
         registers regs;
         regs.ax = xPos;
@@ -1029,7 +1029,7 @@ namespace OpenLoco::ui
         return (cursor_id)regs.edi;
     }
 
-    ui::cursor_id window::callCursor(int16_t widgetIdx, int16_t xPos, int16_t yPos, ui::cursor_id fallback)
+    Ui::cursor_id window::callCursor(int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::cursor_id fallback)
     {
         if (event_handlers->cursor == nullptr)
             return fallback;
@@ -1077,7 +1077,7 @@ namespace OpenLoco::ui
         event_handlers->on_mouse_up(this, widgetIndex);
     }
 
-    ui::window* window::callOnResize()
+    Ui::window* window::callOnResize()
     {
         if (event_handlers->on_resize == nullptr)
             return this;
@@ -1112,7 +1112,7 @@ namespace OpenLoco::ui
         event_handlers->event_03(this, widget_index);
     }
 
-    void window::callOnMouseDown(ui::widget_index widget_index)
+    void window::callOnMouseDown(Ui::widget_index widget_index)
     {
         if (event_handlers->on_mouse_down == nullptr)
             return;
@@ -1130,7 +1130,7 @@ namespace OpenLoco::ui
         event_handlers->on_mouse_down(this, widget_index);
     }
 
-    void window::callOnDropdown(ui::widget_index widget_index, int16_t item_index)
+    void window::callOnDropdown(Ui::widget_index widget_index, int16_t item_index)
     {
         if (event_handlers->on_dropdown == nullptr)
             return;

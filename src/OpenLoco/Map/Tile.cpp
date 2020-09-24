@@ -7,7 +7,7 @@
 
 using namespace OpenLoco;
 using namespace OpenLoco::Interop;
-using namespace OpenLoco::ui::WindowManager;
+using namespace OpenLoco::Ui::WindowManager;
 
 const uint8_t* tile_element_base::data() const
 {
@@ -147,9 +147,9 @@ namespace OpenLoco::Map
      * @param rotation
      * @return
      */
-    ui::viewport_pos coordinate3dTo2d(int16_t x, int16_t y, int16_t z, int rotation)
+    Ui::viewport_pos coordinate3dTo2d(int16_t x, int16_t y, int16_t z, int rotation)
     {
-        ui::viewport_pos coordinate_2d;
+        Ui::viewport_pos coordinate_2d;
 
         switch (rotation)
         {

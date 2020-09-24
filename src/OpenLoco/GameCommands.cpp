@@ -11,7 +11,7 @@
 #include "Ui/WindowManager.h"
 #include <cassert>
 
-using namespace OpenLoco::ui;
+using namespace OpenLoco::Ui;
 using namespace OpenLoco::Map;
 
 namespace OpenLoco::GameCommands

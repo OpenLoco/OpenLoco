@@ -11,7 +11,7 @@ namespace OpenLoco::config
     struct resolution_t;
 }
 
-namespace OpenLoco::ui
+namespace OpenLoco::Ui
 {
 
     struct screen_info_t

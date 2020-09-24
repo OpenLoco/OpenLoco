@@ -6,7 +6,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::ui
+namespace OpenLoco::Ui
 {
     // 0x0045A0E7
     void viewport::render(Gfx::drawpixelinfo_t* dpi)
@@ -33,7 +33,7 @@ namespace OpenLoco::ui
 
     viewport_pos viewport::mapFrom3d(loc16 loc, int32_t rotation)
     {
-        ui::viewport_pos result;
+        Ui::viewport_pos result;
         switch (rotation & 3)
         {
             case 0:

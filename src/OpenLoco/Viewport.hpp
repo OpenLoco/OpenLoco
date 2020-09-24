@@ -5,7 +5,7 @@
 #include "Types.hpp"
 #include <algorithm>
 
-namespace OpenLoco::ui
+namespace OpenLoco::Ui
 {
 
     struct viewport_pos

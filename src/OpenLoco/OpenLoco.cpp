@@ -53,7 +53,7 @@
 #pragma warning(disable : 4611) // interaction between '_setjmp' and C++ object destruction is non - portable
 
 using namespace OpenLoco::Interop;
-using namespace OpenLoco::ui;
+using namespace OpenLoco::Ui;
 using namespace OpenLoco::Input;
 
 namespace OpenLoco
@@ -301,8 +301,8 @@ namespace OpenLoco
         _mapTooltipOwner = company_id::null;
 
         Colour::initColourMap();
-        ui::WindowManager::init();
-        ui::viewportmgr::init();
+        Ui::WindowManager::init();
+        Ui::viewportmgr::init();
 
         Input::init();
         Input::initMouse();
@@ -313,7 +313,7 @@ namespace OpenLoco
         // tooltip-related
         _52336E = 0;
 
-        ui::textinput::cancel();
+        Ui::textinput::cancel();
 
         StringManager::formatString(_11367A0, StringIds::label_button_ok);
         StringManager::formatString(_11368A0, StringIds::label_button_cancel);
@@ -344,9 +344,9 @@ namespace OpenLoco
         call(0x004949BC);
         progressbar::setProgress(235);
         progressbar::setProgress(250);
-        ui::initialiseCursors();
+        Ui::initialiseCursors();
         progressbar::end();
-        ui::initialise();
+        Ui::initialise();
         initialiseViewports();
         call(0x004284C8);
         call(0x004969DA);
@@ -402,7 +402,7 @@ namespace OpenLoco
 
             Input::processKeyboardInput();
             WindowManager::update();
-            ui::handleInput();
+            Ui::handleInput();
             companymgr::updateOwnerStatus();
             return;
         }
@@ -428,7 +428,7 @@ namespace OpenLoco
             Input::processKeyboardInput();
             WindowManager::update();
             WindowManager::update();
-            ui::handleInput();
+            Ui::handleInput();
             companymgr::updateOwnerStatus();
             sub_46E388();
 
@@ -464,7 +464,7 @@ namespace OpenLoco
             Input::processKeyboardInput();
             WindowManager::update();
             WindowManager::update();
-            ui::handleInput();
+            Ui::handleInput();
             companymgr::updateOwnerStatus();
             sub_46E388();
         }
@@ -557,7 +557,7 @@ namespace OpenLoco
             time_since_last_tick = 31;
         }
         game_command_nest_level = 0;
-        ui::update();
+        Ui::update();
 
         addr<0x005233AE, int32_t>() += addr<0x0114084C, int32_t>();
         addr<0x005233B2, int32_t>() += addr<0x01140840, int32_t>();
@@ -566,7 +566,7 @@ namespace OpenLoco
         if (config::get().var_72 == 0)
         {
             config::get().var_72 = 16;
-            ui::getCursorPos(addr<0x00F2538C, int32_t>(), addr<0x00F25390, int32_t>());
+            Ui::getCursorPos(addr<0x00F2538C, int32_t>(), addr<0x00F25390, int32_t>());
             Gfx::clear(Gfx::screenDpi(), 0);
             addr<0x00F2539C, int32_t>() = 0;
         }
@@ -588,7 +588,7 @@ namespace OpenLoco
                         call(0x00403575);
                     }
                 }
-                ui::setCursorPos(addr<0x00F2538C, int32_t>(), addr<0x00F25390, int32_t>());
+                Ui::setCursorPos(addr<0x00F2538C, int32_t>(), addr<0x00F25390, int32_t>());
                 Gfx::invalidateScreen();
                 if (config::get().var_72 != 96)
                 {
@@ -623,7 +623,7 @@ namespace OpenLoco
             else
             {
                 uint16_t numUpdates = std::clamp<uint16_t>(time_since_last_tick / (uint16_t)31, 1, 3);
-                if (WindowManager::find(ui::WindowType::multiplayer, 0) != nullptr)
+                if (WindowManager::find(Ui::WindowType::multiplayer, 0) != nullptr)
                 {
                     numUpdates = 1;
                 }
@@ -712,8 +712,8 @@ namespace OpenLoco
             if (config::get().var_72 == 2)
             {
                 addr<0x005252DC, int32_t>() = 1;
-                ui::getCursorPos(addr<0x00F2538C, int32_t>(), addr<0x00F25390, int32_t>());
-                ui::setCursorPos(addr<0x00F2538C, int32_t>(), addr<0x00F25390, int32_t>());
+                Ui::getCursorPos(addr<0x00F2538C, int32_t>(), addr<0x00F25390, int32_t>());
+                Ui::setCursorPos(addr<0x00F2538C, int32_t>(), addr<0x00F25390, int32_t>());
             }
         }
 
@@ -788,7 +788,7 @@ namespace OpenLoco
                 message = StringIds::null;
             }
             _50C197 = 0;
-            ui::windows::showError(title, message);
+            Ui::windows::showError(title, message);
         }
     }
 
@@ -875,11 +875,11 @@ namespace OpenLoco
         {
             auto startTime = platform::getTime();
             time_since_last_tick = 31;
-            if (!ui::processMessages() || !tickAction())
+            if (!Ui::processMessages() || !tickAction())
             {
                 break;
             }
-            ui::render();
+            Ui::render();
             do
             {
                 // Idle loop for a 40 FPS
@@ -909,12 +909,12 @@ namespace OpenLoco
         }
 #endif
 
-        // Call tick before ui::processMessages to ensure initialise is called
+        // Call tick before Ui::processMessages to ensure initialise is called
         // otherwise window events can end up using an uninitialised window manager.
         // This can be removed when initialise is moved out of tick().
         tick();
 
-        while (ui::processMessages())
+        while (Ui::processMessages())
         {
             if (addr<0x005252AC, uint32_t>() != 0)
             {
@@ -922,7 +922,7 @@ namespace OpenLoco
             }
             sub_4062E0();
             tick();
-            ui::render();
+            Ui::render();
         }
         sub_40567E();
 
@@ -944,15 +944,15 @@ namespace OpenLoco
             registerHooks();
             if (sub_4054B9())
             {
-                ui::createWindow(cfg.display);
+                Ui::createWindow(cfg.display);
                 call(0x004078FE);
                 call(0x00407B26);
-                ui::initialiseInput();
+                Ui::initialiseInput();
                 Audio::initialiseDSound();
                 run();
                 Audio::disposeDSound();
-                ui::disposeCursors();
-                ui::disposeInput();
+                Ui::disposeCursors();
+                Ui::disposeInput();
 
                 // TODO extra clean up code
             }

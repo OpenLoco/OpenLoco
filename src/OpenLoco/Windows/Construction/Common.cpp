@@ -22,9 +22,9 @@ using namespace OpenLoco::Interop;
 using namespace OpenLoco::Map;
 using namespace OpenLoco::Map::TileManager;
 
-namespace OpenLoco::ui::windows::construction
+namespace OpenLoco::Ui::windows::construction
 {
-    static loco_global<ui::window_number, 0x00523390> _toolWindowNumber;
+    static loco_global<Ui::window_number, 0x00523390> _toolWindowNumber;
 
     static window* nonTrackWindow()
     {
@@ -390,7 +390,7 @@ namespace OpenLoco::ui::windows::construction
 
             if (widgetIndex == widx::tab_station)
             {
-                ui::windows::station::showStationCatchment(station_id::null);
+                Ui::windows::station::showStationCatchment(station_id::null);
             }
 
             if (widgetIndex == widx::tab_construction)
@@ -808,8 +808,8 @@ namespace OpenLoco::ui::windows::construction
             window->colours[1] = skin->colour_0D;
 
             WindowManager::sub_4CEE0B(window);
-            ui::windows::showDirectionArrows();
-            ui::windows::showGridlines();
+            Ui::windows::showDirectionArrows();
+            Ui::windows::showGridlines();
 
             common::initEvents();
         }
@@ -1252,7 +1252,7 @@ namespace OpenLoco::ui::windows::construction
         //    0x0049DC97,
         //    [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
         //        registers backup = regs;
-        //        construction::on_tool_down(*((ui::window*)regs.esi), regs.dx, regs.ax, regs.cx);
+        //        construction::on_tool_down(*((Ui::window*)regs.esi), regs.dx, regs.ax, regs.cx);
         //        regs = backup;
         //        return 0;
         //    });

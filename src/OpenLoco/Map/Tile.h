@@ -87,7 +87,7 @@ namespace OpenLoco::Map
     };
 
     tileHeight tileElementHeight(int16_t x, int16_t y);
-    ui::viewport_pos coordinate3dTo2d(int16_t x, int16_t y, int16_t z, int rotation);
+    Ui::viewport_pos coordinate3dTo2d(int16_t x, int16_t y, int16_t z, int rotation);
     map_pos rotate2dCoordinate(map_pos pos, uint8_t rotation);
 
     enum class element_type

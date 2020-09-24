@@ -25,7 +25,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::ui::windows::toolbar_top::game
+namespace OpenLoco::Ui::windows::toolbar_top::game
 {
     static loco_global<uint8_t[40], 0x00113DB20> menu_options;
 
@@ -93,7 +93,7 @@ namespace OpenLoco::ui::windows::toolbar_top::game
         auto window = WindowManager::createWindow(
             WindowType::topToolbar,
             { 0, 0 },
-            Gfx::ui_size_t(ui::width(), 28),
+            Gfx::ui_size_t(Ui::width(), 28),
             window_flags::stick_to_front | window_flags::transparent | window_flags::no_background,
             &_events);
         window->widgets = _widgets;
@@ -597,7 +597,7 @@ namespace OpenLoco::ui::windows::toolbar_top::game
             uint32_t bg_image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_transparent, window->colours[2]);
 
             y--;
-            if (Input::isDropdownActive(ui::WindowType::topToolbar, widx::railroad_menu))
+            if (Input::isDropdownActive(Ui::WindowType::topToolbar, widx::railroad_menu))
             {
                 y++;
                 bg_image++;
@@ -627,7 +627,7 @@ namespace OpenLoco::ui::windows::toolbar_top::game
             uint32_t bg_image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_transparent, window->colours[3]);
 
             y--;
-            if (Input::isDropdownActive(ui::WindowType::topToolbar, common::widx::vehicles_menu))
+            if (Input::isDropdownActive(Ui::WindowType::topToolbar, common::widx::vehicles_menu))
             {
                 y++;
                 bg_image++;
@@ -656,7 +656,7 @@ namespace OpenLoco::ui::windows::toolbar_top::game
             auto interface = ObjectManager::get<interface_skin_object>();
             uint32_t fg_image = Gfx::recolour(interface->img + build_vehicle_images[last_build_vehicles_option], company_colour);
 
-            if (Input::isDropdownActive(ui::WindowType::topToolbar, common::widx::build_vehicles_menu))
+            if (Input::isDropdownActive(Ui::WindowType::topToolbar, common::widx::build_vehicles_menu))
                 fg_image++;
 
             Gfx::drawImage(dpi, x, y, fg_image);
@@ -721,7 +721,7 @@ namespace OpenLoco::ui::windows::toolbar_top::game
         else
             window->widgets[common::widx::port_menu].type = widget_type::none;
 
-        uint32_t x = std::max(640, ui::width()) - 1;
+        uint32_t x = std::max(640, Ui::width()) - 1;
         common::rightAlignTabs(window, x, { common::widx::towns_menu, common::widx::stations_menu, common::widx::vehicles_menu });
         x -= 11;
         common::rightAlignTabs(window, x, { common::widx::build_vehicles_menu });

@@ -18,7 +18,7 @@ using namespace OpenLoco::Interop;
 using namespace OpenLoco::Map;
 using namespace OpenLoco::Map::TileManager;
 
-namespace OpenLoco::ui::windows::construction::station
+namespace OpenLoco::Ui::windows::construction::station
 {
     widget_t widgets[] = {
         commonWidgets(138, 190, StringIds::stringid_2),

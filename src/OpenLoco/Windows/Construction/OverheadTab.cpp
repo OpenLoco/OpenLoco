@@ -14,7 +14,7 @@ using namespace OpenLoco::Interop;
 using namespace OpenLoco::Map;
 using namespace OpenLoco::Map::TileManager;
 
-namespace OpenLoco::ui::windows::construction::overhead
+namespace OpenLoco::Ui::windows::construction::overhead
 {
     static loco_global<int32_t, 0x00E3F0B8> gCurrentRotation;
 

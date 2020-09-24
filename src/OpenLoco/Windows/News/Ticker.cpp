@@ -7,7 +7,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::ui::NewsWindow::ticker
+namespace OpenLoco::Ui::NewsWindow::ticker
 {
     widget_t widgets[] = {
         makeWidget({ 0, 0 }, { 111, 26 }, widget_type::wt_3, 0),
@@ -38,8 +38,8 @@ namespace OpenLoco::ui::NewsWindow::ticker
     // 0x00429FE4
     static void onResize(window* self)
     {
-        auto y = ui::height() - windowSize.height + 1;
-        auto x = ui::width() - windowSize.width - 27;
+        auto y = Ui::height() - windowSize.height + 1;
+        auto x = Ui::width() - windowSize.width - 27;
         auto height = windowSize.height - 1;
 
         if (y != self->y || x != self->x || windowSize.width != self->width || height != self->height)
@@ -119,7 +119,7 @@ namespace OpenLoco::ui::NewsWindow::ticker
                     {
                         if (newsStringChar != 0)
                         {
-                            Audio::playSound(Audio::sound_id::ticker, ui::width());
+                            Audio::playSound(Audio::sound_id::ticker, Ui::width());
                         }
                     }
                 }
@@ -148,7 +148,7 @@ namespace OpenLoco::ui::NewsWindow::ticker
     }
 
     // 0x00429DAA
-    static void draw(ui::window* self, Gfx::drawpixelinfo_t* dpi)
+    static void draw(Ui::window* self, Gfx::drawpixelinfo_t* dpi)
     {
         if (self->var_852 != 0)
             return;
