@@ -13,7 +13,7 @@ namespace OpenLoco::Ui::Vehicle
     {
         static void onUpdate(window* w);
     }
-    namespace vehicle_details
+    namespace VehicleDetails
     {
         static void onUpdate(window* w);
     }
@@ -32,7 +32,7 @@ namespace OpenLoco::Ui::Vehicle
     void registerHooks()
     {
         _mainEvents->on_update = Main::onUpdate;
-        _vehicleDetailsEvents->on_update = vehicle_details::onUpdate;
+        _vehicleDetailsEvents->on_update = VehicleDetails::onUpdate;
         _routeDetailsEvents->on_update = route_details::onUpdate;
     }
 
@@ -94,7 +94,7 @@ namespace OpenLoco::Ui::Vehicle
         }
     }
 
-    namespace vehicle_details
+    namespace VehicleDetails
     {
         // 0x004B3C45
         // "Show <vehicle> design details and options" tab in vehicle window
