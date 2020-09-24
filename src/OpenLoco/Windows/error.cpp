@@ -32,7 +32,7 @@ namespace OpenLoco::Ui::Windows::Error
         static void onPeriodicUpdate(Ui::window* self);
         static void initEvents();
     }
-    namespace error
+    namespace Error
     {
         enum widx
         {
@@ -154,11 +154,11 @@ namespace OpenLoco::Ui::Windows::Error
             }
             else
             {
-                error->widgets = error::widgets;
+                error->widgets = Error::widgets;
             }
 
-            error->widgets[error::widx::frame].right = frameWidth;
-            error->widgets[error::widx::frame].bottom = frameHeight;
+            error->widgets[Error::widx::frame].right = frameWidth;
+            error->widgets[Error::widx::frame].bottom = frameHeight;
             error->var_846 = 0;
 
             if (!(_suppressErrorSound & (1 << 0)))
