@@ -1036,7 +1036,7 @@ namespace OpenLoco::ui::windows::map
         return std::make_pair(startPos, endPos);
     }
 
-    static std::optional<uint8_t> getRouteColour(things::vehicle::Vehicle train)
+    static std::optional<uint8_t> getRouteColour(Things::vehicle::Vehicle train)
     {
         uint8_t colour;
         if (train.head->vehicleType == VehicleType::plane)
@@ -1078,7 +1078,7 @@ namespace OpenLoco::ui::windows::map
     }
 
     // 0x0046C18D
-    static void drawRoutesOnMap(Gfx::drawpixelinfo_t* dpi, things::vehicle::Vehicle train)
+    static void drawRoutesOnMap(Gfx::drawpixelinfo_t* dpi, Things::vehicle::Vehicle train)
     {
         auto colour = getRouteColour(train);
 
@@ -1137,7 +1137,7 @@ namespace OpenLoco::ui::windows::map
     }
 
     // 0x0046C426
-    static uint8_t getVehicleColour(widget_index widgetIndex, things::vehicle::Vehicle train, things::vehicle::Car car)
+    static uint8_t getVehicleColour(widget_index widgetIndex, Things::vehicle::Vehicle train, Things::vehicle::Car car)
     {
         auto colour = PaletteIndex::index_15;
 
@@ -1174,7 +1174,7 @@ namespace OpenLoco::ui::windows::map
 
         for (auto vehicle : thingmgr::VehicleList())
         {
-            things::vehicle::Vehicle train(vehicle);
+            Things::vehicle::Vehicle train(vehicle);
 
             if (train.head->var_38 & (1 << 4))
                 continue;
@@ -1192,7 +1192,7 @@ namespace OpenLoco::ui::windows::map
     {
         for (auto vehicle : thingmgr::VehicleList())
         {
-            things::vehicle::Vehicle train(vehicle);
+            Things::vehicle::Vehicle train(vehicle);
 
             if (train.head->var_38 & (1 << 4))
                 continue;

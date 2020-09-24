@@ -9,7 +9,7 @@
 
 namespace OpenLoco
 {
-    namespace things::vehicle
+    namespace Things::vehicle
     {
         constexpr auto max_vehicle_length = 176; // TODO: Units?
 
@@ -452,7 +452,7 @@ namespace OpenLoco
     static_assert(sizeof(vehicle_tail) == 0x4F); // Can't use offset_of change this to last field if more found
 
 #pragma pack(pop)
-    namespace things::vehicle
+    namespace Things::vehicle
     {
         struct CarComponent
         {

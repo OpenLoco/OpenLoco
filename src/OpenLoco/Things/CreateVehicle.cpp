@@ -22,7 +22,7 @@ using namespace OpenLoco::Interop;
 using namespace OpenLoco::ObjectManager;
 using namespace OpenLoco::GameCommands;
 
-namespace OpenLoco::things::vehicle
+namespace OpenLoco::Things::vehicle
 {
     constexpr uint32_t max_orders = 256000;
     constexpr auto max_num_vehicles = 1000;
@@ -118,7 +118,7 @@ namespace OpenLoco::things::vehicle
                 return false;
             default:
             {
-                things::vehicle::Vehicle train(head);
+                Things::vehicle::Vehicle train(head);
                 if (head->vehicleType == VehicleType::plane || head->vehicleType == VehicleType::ship)
                 {
                     if (train.veh2->var_73 & (1 << 0))

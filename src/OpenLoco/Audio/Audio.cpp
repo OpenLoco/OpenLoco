@@ -888,7 +888,7 @@ namespace OpenLoco::Audio
 
         for (auto v : thingmgr::VehicleList())
         {
-            things::vehicle::Vehicle train(v);
+            Things::vehicle::Vehicle train(v);
             off_4FEB58(reinterpret_cast<vehicle_26*>(train.veh2), x);
             off_4FEB58(reinterpret_cast<vehicle_26*>(train.tail), x);
         }
