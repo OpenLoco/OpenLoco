@@ -14,7 +14,7 @@ using namespace OpenLoco::Interop;
 using namespace OpenLoco::Map;
 using namespace OpenLoco::Map::TileManager;
 
-namespace OpenLoco::Ui::Windows::Construction::overhead
+namespace OpenLoco::Ui::Windows::Construction::Overhead
 {
     static loco_global<int32_t, 0x00E3F0B8> gCurrentRotation;
 
@@ -293,7 +293,7 @@ namespace OpenLoco::Ui::Windows::Construction::overhead
 
     void tabReset(window* self)
     {
-        self->callOnMouseDown(overhead::widx::image);
+        self->callOnMouseDown(Overhead::widx::image);
     }
 
     void initEvents()

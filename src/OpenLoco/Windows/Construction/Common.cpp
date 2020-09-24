@@ -364,7 +364,7 @@ namespace OpenLoco::Ui::Windows::Construction
             { Construction::widgets, widx::tab_construction, &Construction::events, Construction::enabledWidgets, &Construction::tabReset },
             { Station::widgets, widx::tab_station, &Station::events, Station::enabledWidgets, &Station::tabReset },
             { Signal::widgets, widx::tab_signal, &Signal::events, Signal::enabledWidgets, &Signal::tabReset },
-            { overhead::widgets, widx::tab_overhead, &overhead::events, overhead::enabledWidgets, &overhead::tabReset },
+            { Overhead::widgets, widx::tab_overhead, &Overhead::events, Overhead::enabledWidgets, &Overhead::tabReset },
         };
 
         void prepareDraw(window* self)
@@ -725,7 +725,7 @@ namespace OpenLoco::Ui::Windows::Construction
             Construction::initEvents();
             Station::initEvents();
             Signal::initEvents();
-            overhead::initEvents();
+            Overhead::initEvents();
         }
 
         // 0x004CD454

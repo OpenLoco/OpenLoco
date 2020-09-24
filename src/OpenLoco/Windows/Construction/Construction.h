@@ -241,7 +241,7 @@ namespace OpenLoco::Ui::Windows::Construction
         void initEvents();
     }
 
-    namespace overhead
+    namespace Overhead
     {
         enum widx
         {
