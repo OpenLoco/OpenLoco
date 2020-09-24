@@ -66,7 +66,7 @@ namespace OpenLoco::Ui::Windows::Industry
         static void initEvents();
     }
 
-    namespace industry
+    namespace Industry
     {
         static const Gfx::ui_size_t windowSize = { 223, 137 };
 
@@ -314,7 +314,7 @@ namespace OpenLoco::Ui::Windows::Industry
         {
             // 0x00456DBC start
             const uint32_t newFlags = window_flags::flag_8 | window_flags::resizable;
-            window = WindowManager::createWindow(WindowType::industry, industry::windowSize, newFlags, &industry::events);
+            window = WindowManager::createWindow(WindowType::industry, Industry::windowSize, newFlags, &Industry::events);
             window->number = industryId;
             window->min_width = 192;
             window->min_height = 137;
@@ -338,16 +338,16 @@ namespace OpenLoco::Ui::Windows::Industry
         window->current_tab = Common::widx::tab_industry - Common::widx::tab_industry;
         window->invalidate();
 
-        window->widgets = industry::widgets;
-        window->enabled_widgets = industry::enabledWidgets;
+        window->widgets = Industry::widgets;
+        window->enabled_widgets = Industry::enabledWidgets;
         window->holdable_widgets = 0;
-        window->event_handlers = &industry::events;
+        window->event_handlers = &Industry::events;
         window->activated_widgets = 0;
 
         Common::setDisabledWidgets(window);
 
         window->initScrollWidgets();
-        industry::initViewport(window);
+        Industry::initViewport(window);
 
         return window;
     }
@@ -555,7 +555,7 @@ namespace OpenLoco::Ui::Windows::Industry
         };
 
         static TabInformation tabInformationByTabOffset[] = {
-            { industry::widgets, widx::tab_industry, &industry::events, &industry::enabledWidgets },
+            { Industry::widgets, widx::tab_industry, &Industry::events, &Industry::enabledWidgets },
             { production_2::widgets, widx::tab_production, &production::events, &Common::enabledWidgets },
             { production_2::widgets, widx::tab_production_2, &production_2::events, &Common::enabledWidgets },
             { transported::widgets, widx::tab_transported, &transported::events, &Common::enabledWidgets }
@@ -818,7 +818,7 @@ namespace OpenLoco::Ui::Windows::Industry
 
             self->invalidate();
 
-            self->setSize(industry::windowSize);
+            self->setSize(Industry::windowSize);
             self->callOnResize();
             self->callPrepareDraw();
             self->initScrollWidgets();
@@ -918,7 +918,7 @@ namespace OpenLoco::Ui::Windows::Industry
 
         static void initEvents()
         {
-            industry::initEvents();
+            Industry::initEvents();
             production::initEvents();
             production_2::initEvents();
             transported::initEvents();
