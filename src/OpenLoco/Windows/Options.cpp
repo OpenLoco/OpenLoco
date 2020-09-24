@@ -647,7 +647,7 @@ namespace OpenLoco::Ui::Options
     {
         static const Gfx::ui_size_t _window_size = { 366, 84 };
 
-        namespace widx
+        namespace Widx
         {
             enum
             {
@@ -657,7 +657,7 @@ namespace OpenLoco::Ui::Options
             };
         }
 
-        static constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Sound::widx::audio_device) | (1 << Sound::widx::audio_device_btn) | (1 << Sound::widx::play_title_music);
+        static constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Sound::Widx::audio_device) | (1 << Sound::Widx::audio_device_btn) | (1 << Sound::Widx::play_title_music);
 
         static widget_t _widgets[] = {
             common_options_widgets(_window_size, StringIds::options_title_sound),
@@ -702,9 +702,9 @@ namespace OpenLoco::Ui::Options
                 args.push(StringIds::audio_device_none);
 
             if (Config::getNew().audio.play_title_music)
-                w->activated_widgets |= (1 << widx::play_title_music);
+                w->activated_widgets |= (1 << Widx::play_title_music);
             else
-                w->activated_widgets &= ~(1 << widx::play_title_music);
+                w->activated_widgets &= ~(1 << Widx::play_title_music);
 
             sub_4C13BE(w);
         }
@@ -735,7 +735,7 @@ namespace OpenLoco::Ui::Options
                     Options::tabOnMouseUp(w, wi);
                     return;
 
-                case widx::play_title_music:
+                case Widx::play_title_music:
                     playTitleMusicOnMouseUp(w);
                     return;
             }
@@ -745,7 +745,7 @@ namespace OpenLoco::Ui::Options
         {
             switch (wi)
             {
-                case widx::audio_device_btn:
+                case Widx::audio_device_btn:
                     audioDeviceMouseDown(w);
                     break;
             }
@@ -755,7 +755,7 @@ namespace OpenLoco::Ui::Options
         {
             switch (widgetIndex)
             {
-                case widx::audio_device_btn:
+                case Widx::audio_device_btn:
                     audioDeviceDropdown(window, itemIndex);
                     break;
             }
@@ -769,7 +769,7 @@ namespace OpenLoco::Ui::Options
             const auto& devices = Audio::getDevices();
             if (devices.size() != 0)
             {
-                widget_t dropdown = w->widgets[widx::audio_device];
+                widget_t dropdown = w->widgets[Widx::audio_device];
                 Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], devices.size(), 0x80);
                 for (size_t i = 0; i < devices.size(); i++)
                 {
@@ -791,7 +791,7 @@ namespace OpenLoco::Ui::Options
             if (itemIndex != -1)
             {
                 Audio::setDevice(itemIndex);
-                WindowManager::invalidateWidget(w->type, w->number, widx::audio_device);
+                WindowManager::invalidateWidget(w->type, w->number, Widx::audio_device);
             }
         }
 
