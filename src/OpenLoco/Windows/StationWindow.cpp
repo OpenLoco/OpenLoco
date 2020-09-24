@@ -327,7 +327,7 @@ namespace OpenLoco::Ui::Windows::Station
         return window;
     }
 
-    namespace cargo
+    namespace Cargo
     {
         enum widx
         {
@@ -794,7 +794,7 @@ namespace OpenLoco::Ui::Windows::Station
 
         static TabInformation tabInformationByTabOffset[] = {
             { Station::widgets, widx::tab_station, &Station::events, &Station::enabledWidgets },
-            { cargo::widgets, widx::tab_cargo, &cargo::events, &cargo::enabledWidgets },
+            { Cargo::widgets, widx::tab_cargo, &Cargo::events, &Cargo::enabledWidgets },
             { cargo_ratings::widgets, widx::tab_cargo_ratings, &cargo_ratings::events, &Common::enabledWidgets }
         };
 
@@ -1042,7 +1042,7 @@ namespace OpenLoco::Ui::Windows::Station
         static void initEvents()
         {
             Station::initEvents();
-            cargo::initEvents();
+            Cargo::initEvents();
             cargo_ratings::initEvents();
         }
     }
