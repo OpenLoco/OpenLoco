@@ -1217,7 +1217,7 @@ namespace OpenLoco::Ui::Options
     {
         static const Gfx::ui_size_t _window_size = { 366, 167 };
 
-        namespace widx
+        namespace Widx
         {
             enum
             {
@@ -1236,7 +1236,7 @@ namespace OpenLoco::Ui::Options
             };
         }
 
-        static constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Regional::widx::language) | (1 << Regional::widx::language_btn) | (1 << Regional::widx::distance_speed) | (1 << Regional::widx::distance_speed_btn) | (1 << Regional::widx::heights) | (1 << Regional::widx::heights_btn) | (1 << Regional::widx::currency) | (1 << Regional::widx::currency_btn) | (1 << Regional::widx::preferred_currency) | (1 << Regional::widx::preferred_currency_btn) | (1 << Regional::widx::preferred_currency_for_new_games) | (1 << Regional::widx::preferred_currency_always);
+        static constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Regional::Widx::language) | (1 << Regional::Widx::language_btn) | (1 << Regional::Widx::distance_speed) | (1 << Regional::Widx::distance_speed_btn) | (1 << Regional::Widx::heights) | (1 << Regional::Widx::heights_btn) | (1 << Regional::Widx::currency) | (1 << Regional::Widx::currency_btn) | (1 << Regional::Widx::preferred_currency) | (1 << Regional::Widx::preferred_currency_btn) | (1 << Regional::Widx::preferred_currency_for_new_games) | (1 << Regional::Widx::preferred_currency_always);
 
         static widget_t _widgets[] = {
             common_options_widgets(_window_size, StringIds::options_title_regional),
@@ -1311,24 +1311,24 @@ namespace OpenLoco::Ui::Options
             args.push(ObjectManager::get<currency_object>()->name);
             args.push(current_measurement_format);
 
-            w->activated_widgets &= ~(1 << widx::preferred_currency_for_new_games);
+            w->activated_widgets &= ~(1 << Widx::preferred_currency_for_new_games);
             if (Config::get().flags & Config::flags::preferred_currency_for_new_games)
             {
-                w->activated_widgets |= (1 << widx::preferred_currency_for_new_games);
+                w->activated_widgets |= (1 << Widx::preferred_currency_for_new_games);
             }
 
-            w->activated_widgets &= ~(1 << widx::preferred_currency_always);
+            w->activated_widgets &= ~(1 << Widx::preferred_currency_always);
             if (Config::get().flags & Config::flags::preferred_currency_always)
             {
-                w->activated_widgets |= (1 << widx::preferred_currency_always);
+                w->activated_widgets |= (1 << Widx::preferred_currency_always);
             }
 
-            w->disabled_widgets &= ~(1 << widx::currency);
-            w->disabled_widgets &= ~(1 << widx::currency_btn);
+            w->disabled_widgets &= ~(1 << Widx::currency);
+            w->disabled_widgets &= ~(1 << Widx::currency_btn);
             if (Config::get().flags & Config::flags::preferred_currency_always)
             {
-                w->disabled_widgets |= (1 << widx::currency);
-                w->disabled_widgets |= (1 << widx::currency_btn);
+                w->disabled_widgets |= (1 << Widx::currency);
+                w->disabled_widgets |= (1 << Widx::currency_btn);
             }
 
             sub_4C13BE(w);
@@ -1341,11 +1341,11 @@ namespace OpenLoco::Ui::Options
             w->draw(dpi);
             Common::drawTabs(w, dpi);
 
-            Gfx::drawString_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::language].top + 1, 0, StringIds::options_language, nullptr);
-            Gfx::drawString_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::distance_speed].top + 1, 0, StringIds::distance_and_speed, nullptr);
-            Gfx::drawString_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::heights].top + 1, 0, StringIds::heights, nullptr);
-            Gfx::drawString_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::currency].top + 1, 0, StringIds::current_game_currency, nullptr);
-            Gfx::drawString_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::preferred_currency].top + 1, 0, StringIds::new_game_currency, nullptr);
+            Gfx::drawString_494B3F(*dpi, w->x + 10, w->y + w->widgets[Widx::language].top + 1, 0, StringIds::options_language, nullptr);
+            Gfx::drawString_494B3F(*dpi, w->x + 10, w->y + w->widgets[Widx::distance_speed].top + 1, 0, StringIds::distance_and_speed, nullptr);
+            Gfx::drawString_494B3F(*dpi, w->x + 10, w->y + w->widgets[Widx::heights].top + 1, 0, StringIds::heights, nullptr);
+            Gfx::drawString_494B3F(*dpi, w->x + 10, w->y + w->widgets[Widx::currency].top + 1, 0, StringIds::current_game_currency, nullptr);
+            Gfx::drawString_494B3F(*dpi, w->x + 10, w->y + w->widgets[Widx::preferred_currency].top + 1, 0, StringIds::new_game_currency, nullptr);
         }
 
         static void onMouseUp(window* w, widget_index wi)
@@ -1365,11 +1365,11 @@ namespace OpenLoco::Ui::Options
                     Options::tabOnMouseUp(w, wi);
                     return;
 
-                case widx::preferred_currency_for_new_games:
+                case Widx::preferred_currency_for_new_games:
                     preferredCurrencyNewGameMouseUp(w);
                     return;
 
-                case widx::preferred_currency_always:
+                case Widx::preferred_currency_always:
                     preferredCurrencyAlwaysMouseUp(w);
                     return;
             }
@@ -1380,19 +1380,19 @@ namespace OpenLoco::Ui::Options
         {
             switch (wi)
             {
-                case widx::language_btn:
+                case Widx::language_btn:
                     languageMouseDown(w);
                     break;
-                case widx::heights_btn:
+                case Widx::heights_btn:
                     heightsLabelsMouseDown(w);
                     break;
-                case widx::distance_speed_btn:
+                case Widx::distance_speed_btn:
                     distanceSpeedMouseDown(w);
                     break;
-                case widx::currency_btn:
+                case Widx::currency_btn:
                     currencyMouseDown(w);
                     break;
-                case widx::preferred_currency_btn:
+                case Widx::preferred_currency_btn:
                     preferredCurrencyMouseDown(w);
                     break;
             }
@@ -1403,23 +1403,23 @@ namespace OpenLoco::Ui::Options
         {
             switch (widgetIndex)
             {
-                case widx::language_btn:
+                case Widx::language_btn:
                     languageDropdown(window, itemIndex);
                     break;
 
-                case widx::heights_btn:
+                case Widx::heights_btn:
                     heightsLabelsDropdown(window, itemIndex);
                     break;
 
-                case widx::distance_speed_btn:
+                case Widx::distance_speed_btn:
                     distanceSpeedDropdown(window, itemIndex);
                     break;
 
-                case widx::currency_btn:
+                case Widx::currency_btn:
                     currencyDropdown(window, itemIndex);
                     break;
 
-                case widx::preferred_currency_btn:
+                case Widx::preferred_currency_btn:
                     preferredCurrencyDropdown(window, itemIndex);
                     break;
             }
@@ -1432,7 +1432,7 @@ namespace OpenLoco::Ui::Options
             auto& lds = Localisation::getLanguageDescriptors();
             uint8_t num_languages = static_cast<uint8_t>(lds.size());
 
-            widget_t dropdown = w->widgets[widx::language];
+            widget_t dropdown = w->widgets[Widx::language];
             Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], num_languages - 1, 0x80);
 
             std::string& current_language = Config::getNew().language;
@@ -1468,7 +1468,7 @@ namespace OpenLoco::Ui::Options
         {
             uint8_t* _11364A0 = (uint8_t*)*__11364A0;
 
-            widget_t dropdown = w->widgets[widx::currency];
+            widget_t dropdown = w->widgets[Widx::currency];
             Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], _112C185, 0x80);
             int index = -1;
             for (auto object : ObjectManager::getAvailableObjects(object_type::currency))
@@ -1530,7 +1530,7 @@ namespace OpenLoco::Ui::Options
         // 0x004C0DCF
         static void preferredCurrencyMouseDown(window* w)
         {
-            widget_t dropdown = w->widgets[widx::preferred_currency];
+            widget_t dropdown = w->widgets[Widx::preferred_currency];
             Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], _112C185, 0x80);
 
             int index = -1;
@@ -1614,7 +1614,7 @@ namespace OpenLoco::Ui::Options
         // 0x004C0F49
         static void distanceSpeedMouseDown(window* w)
         {
-            widget_t dropdown = w->widgets[widx::distance_speed];
+            widget_t dropdown = w->widgets[Widx::distance_speed];
             Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], 2, 0x80);
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::imperial);
@@ -1645,7 +1645,7 @@ namespace OpenLoco::Ui::Options
         // 0x004C0FFA
         static void heightsLabelsMouseDown(window* w)
         {
-            widget_t dropdown = w->widgets[widx::heights];
+            widget_t dropdown = w->widgets[Widx::heights];
             Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], 2, 0x80);
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::height_units);
