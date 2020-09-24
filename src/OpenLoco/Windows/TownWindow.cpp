@@ -515,7 +515,7 @@ namespace OpenLoco::Ui::Windows::Town
         }
     }
 
-    namespace company_ratings
+    namespace CompanyRatings
     {
         static widget_t widgets[] = {
             commonWidgets(340, 208, StringIds::title_town_local_authority),
@@ -626,7 +626,7 @@ namespace OpenLoco::Ui::Windows::Town
         static TabInformation tabInformationByTabOffset[] = {
             { Town::widgets, widx::tab_town, &Town::events, &Town::enabledWidgets },
             { Population::widgets, widx::tab_population, &Population::events, &Common::enabledWidgets },
-            { company_ratings::widgets, widx::tab_company_ratings, &company_ratings::events, &Common::enabledWidgets }
+            { CompanyRatings::widgets, widx::tab_company_ratings, &CompanyRatings::events, &Common::enabledWidgets }
         };
 
         static void prepareDraw(window* self)
@@ -814,7 +814,7 @@ namespace OpenLoco::Ui::Windows::Town
         {
             Town::initEvents();
             Population::initEvents();
-            company_ratings::initEvents();
+            CompanyRatings::initEvents();
         }
     }
 }
