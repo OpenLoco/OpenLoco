@@ -575,7 +575,7 @@ namespace OpenLoco::Ui::Windows::Station
         }
     }
 
-    namespace cargo_ratings
+    namespace CargoRatings
     {
         static const Gfx::ui_size_t windowSize = { 249, 136 };
 
@@ -795,7 +795,7 @@ namespace OpenLoco::Ui::Windows::Station
         static TabInformation tabInformationByTabOffset[] = {
             { Station::widgets, widx::tab_station, &Station::events, &Station::enabledWidgets },
             { Cargo::widgets, widx::tab_cargo, &Cargo::events, &Cargo::enabledWidgets },
-            { cargo_ratings::widgets, widx::tab_cargo_ratings, &cargo_ratings::events, &Common::enabledWidgets }
+            { CargoRatings::widgets, widx::tab_cargo_ratings, &CargoRatings::events, &Common::enabledWidgets }
         };
 
         // 0x0048E352, 0x0048E7C0 and 0x0048EC3B
@@ -1043,7 +1043,7 @@ namespace OpenLoco::Ui::Windows::Station
         {
             Station::initEvents();
             Cargo::initEvents();
-            cargo_ratings::initEvents();
+            CargoRatings::initEvents();
         }
     }
 }
