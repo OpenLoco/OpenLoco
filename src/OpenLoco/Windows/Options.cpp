@@ -832,7 +832,7 @@ namespace OpenLoco::Ui::Options
     {
         static const Gfx::ui_size_t _window_size = { 366, 129 };
 
-        namespace widx
+        namespace Widx
         {
             enum
             {
@@ -848,7 +848,7 @@ namespace OpenLoco::Ui::Options
             };
         }
 
-        static constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Music::widx::currently_playing) | (1 << Music::widx::currently_playing_btn) | (1 << Music::widx::music_controls_stop) | (1 << Music::widx::music_controls_play) | (1 << Music::widx::music_controls_next) | (1 << Music::widx::volume) | (1 << Music::widx::music_playlist) | (1 << Music::widx::music_playlist_btn) | (1 << Music::widx::edit_selection);
+        static constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Music::Widx::currently_playing) | (1 << Music::Widx::currently_playing_btn) | (1 << Music::Widx::music_controls_stop) | (1 << Music::Widx::music_controls_play) | (1 << Music::Widx::music_controls_next) | (1 << Music::Widx::volume) | (1 << Music::Widx::music_playlist) | (1 << Music::Widx::music_playlist_btn) | (1 << Music::Widx::edit_selection);
 
         static widget_t _widgets[] = {
             common_options_widgets(_window_size, StringIds::options_title_music),
@@ -909,21 +909,21 @@ namespace OpenLoco::Ui::Options
             string_id currentSongStringId = playlist_string_ids[(uint8_t)Config::get().music_playlist];
             args.push(currentSongStringId);
 
-            w->activated_widgets &= ~((1 << widx::music_controls_stop) | (1 << widx::music_controls_play));
-            w->activated_widgets |= (1 << widx::music_controls_stop);
+            w->activated_widgets &= ~((1 << Widx::music_controls_stop) | (1 << Widx::music_controls_play));
+            w->activated_widgets |= (1 << Widx::music_controls_stop);
             if (_currentSong != -1)
             {
                 if (Config::get().music_playing)
                 {
-                    w->activated_widgets &= ~((1 << widx::music_controls_stop) | (1 << widx::music_controls_play));
-                    w->activated_widgets |= (1 << widx::music_controls_play);
+                    w->activated_widgets &= ~((1 << Widx::music_controls_stop) | (1 << Widx::music_controls_play));
+                    w->activated_widgets |= (1 << Widx::music_controls_play);
                 }
             }
 
-            w->disabled_widgets |= (1 << widx::edit_selection);
+            w->disabled_widgets |= (1 << Widx::edit_selection);
             if (Config::get().music_playlist == Config::music_playlist_type::custom)
             {
-                w->disabled_widgets &= ~(1 << widx::edit_selection);
+                w->disabled_widgets &= ~(1 << Widx::edit_selection);
             }
 
             sub_4C13BE(w);
@@ -937,14 +937,14 @@ namespace OpenLoco::Ui::Options
 
             Common::drawTabs(w, dpi);
 
-            Gfx::drawString_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::currently_playing_btn].top, 0, StringIds::currently_playing, nullptr);
+            Gfx::drawString_494B3F(*dpi, w->x + 10, w->y + w->widgets[Widx::currently_playing_btn].top, 0, StringIds::currently_playing, nullptr);
 
-            Gfx::drawString_494B3F(*dpi, w->x + 183, w->y + w->widgets[widx::volume].top + 7, 0, StringIds::volume, nullptr);
+            Gfx::drawString_494B3F(*dpi, w->x + 183, w->y + w->widgets[Widx::volume].top + 7, 0, StringIds::volume, nullptr);
 
-            Gfx::drawImage(dpi, w->x + w->widgets[widx::volume].left, w->y + w->widgets[widx::volume].top, 0x20000000 | (w->colours[1] << 19) | ImageIds::volume_slider_track);
+            Gfx::drawImage(dpi, w->x + w->widgets[Widx::volume].left, w->y + w->widgets[Widx::volume].top, 0x20000000 | (w->colours[1] << 19) | ImageIds::volume_slider_track);
 
             int16_t x = 90 + (Config::get().volume / 32);
-            Gfx::drawImage(dpi, w->x + w->widgets[widx::volume].left + x, w->y + w->widgets[widx::volume].top, 0x20000000 | (w->colours[1] << 19) | ImageIds::volume_slider_thumb);
+            Gfx::drawImage(dpi, w->x + w->widgets[Widx::volume].left + x, w->y + w->widgets[Widx::volume].top, 0x20000000 | (w->colours[1] << 19) | ImageIds::volume_slider_thumb);
         }
 
         static void onMouseUp(window* w, widget_index wi)
@@ -964,19 +964,19 @@ namespace OpenLoco::Ui::Options
                     Options::tabOnMouseUp(w, wi);
                     return;
 
-                case widx::music_controls_stop:
+                case Widx::music_controls_stop:
                     stopMusic(w);
                     return;
 
-                case widx::music_controls_play:
+                case Widx::music_controls_play:
                     playMusic(w);
                     return;
 
-                case widx::music_controls_next:
+                case Widx::music_controls_next:
                     playNextSong(w);
                     return;
 
-                case widx::edit_selection:
+                case Widx::edit_selection:
                     Windows::MusicSelection::open();
                     return;
             }
@@ -987,13 +987,13 @@ namespace OpenLoco::Ui::Options
         {
             switch (wi)
             {
-                case widx::music_playlist_btn:
+                case Widx::music_playlist_btn:
                     musicPlaylistMouseDown(w);
                     break;
-                case widx::currently_playing_btn:
+                case Widx::currently_playing_btn:
                     currentlyPlayingMouseDown(w);
                     break;
-                case widx::volume:
+                case Widx::volume:
                     volumeMouseDown(w);
                     break;
             }
@@ -1004,10 +1004,10 @@ namespace OpenLoco::Ui::Options
         {
             switch (widgetIndex)
             {
-                case widx::music_playlist_btn:
+                case Widx::music_playlist_btn:
                     musicPlaylistDropdown(window, itemIndex);
                     break;
-                case widx::currently_playing_btn:
+                case Widx::currently_playing_btn:
                     currentlyPlayingDropdown(window, itemIndex);
                     break;
             }
@@ -1021,7 +1021,7 @@ namespace OpenLoco::Ui::Options
         {
             _clickRepeatTicks = 31;
 
-            int x = _5233A4 - w->x - w->widgets[widx::volume].left - 10;
+            int x = _5233A4 - w->x - w->widgets[Widx::volume].left - 10;
             x = std::clamp(x, 0, 80);
 
             registers regs;
@@ -1079,7 +1079,7 @@ namespace OpenLoco::Ui::Options
         // 0x004C07E4
         static void musicPlaylistMouseDown(window* w)
         {
-            widget_t dropdown = w->widgets[widx::music_playlist];
+            widget_t dropdown = w->widgets[Widx::music_playlist];
             Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], 3, 0x80);
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::play_only_music_from_current_era);
@@ -1158,7 +1158,7 @@ namespace OpenLoco::Ui::Options
         {
             auto tracks = get_available_tracks();
 
-            widget_t dropdown = w->widgets[widx::currently_playing];
+            widget_t dropdown = w->widgets[Widx::currently_playing];
             Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], tracks.size(), 0x80);
 
             int index = -1;
@@ -2257,7 +2257,7 @@ namespace OpenLoco::Ui::Options
             Display::applyScreenModeRestrictions(w);
 
         else if ((Common::tab)w->current_tab == Common::tab::music)
-            w->holdable_widgets = (1 << Music::widx::volume);
+            w->holdable_widgets = (1 << Music::Widx::volume);
 
         w->callOnResize();
         w->callPrepareDraw();
