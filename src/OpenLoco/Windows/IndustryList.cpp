@@ -566,7 +566,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         return window;
     }
 
-    namespace new_industries
+    namespace NewIndustries
     {
 
         static const Gfx::ui_size_t window_size = { 578, 172 };
@@ -1038,10 +1038,10 @@ namespace OpenLoco::Ui::Windows::IndustryList
         // 0x00457FFE
         static void tabReset(window* self)
         {
-            self->min_width = new_industries::window_size.width;
-            self->min_height = new_industries::window_size.height;
-            self->max_width = new_industries::window_size.width;
-            self->max_height = new_industries::window_size.height;
+            self->min_width = NewIndustries::window_size.width;
+            self->min_height = NewIndustries::window_size.height;
+            self->max_width = NewIndustries::window_size.width;
+            self->max_height = NewIndustries::window_size.height;
             Input::toolSet(self, Common::widx::tab_new_industry, 40);
 
             Input::setFlag(Input::input_flags::flag6);
@@ -1103,7 +1103,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
         static TabInformation tabInformationByTabOffset[] = {
             { IndustryList::widgets, widx::tab_industry_list, &IndustryList::events, IndustryList::enabledWidgets },
-            { new_industries::widgets, widx::tab_new_industry, &new_industries::events, new_industries::enabledWidgets },
+            { NewIndustries::widgets, widx::tab_new_industry, &NewIndustries::events, NewIndustries::enabledWidgets },
         };
 
         // 0x00457B94
@@ -1160,7 +1160,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
             if (self->current_tab == widx::tab_industry_list - widx::tab_industry_list)
                 IndustryList::tabReset(self);
             if (self->current_tab == widx::tab_new_industry - widx::tab_industry_list)
-                new_industries::tabReset(self);
+                NewIndustries::tabReset(self);
 
             self->callOnResize();
             self->callPrepareDraw();
@@ -1229,7 +1229,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         static void initEvents()
         {
             IndustryList::initEvents();
-            new_industries::initEvents();
+            NewIndustries::initEvents();
         }
     }
 }
