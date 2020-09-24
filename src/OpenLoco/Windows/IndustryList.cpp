@@ -59,7 +59,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         static void switchTab(window* self, widget_index widgetIndex);
     }
 
-    namespace industry_list
+    namespace IndustryList
     {
         static const Gfx::ui_size_t windowSize = { 600, 197 };
         static const Gfx::ui_size_t maxDimensions = { 600, 900 };
@@ -513,14 +513,14 @@ namespace OpenLoco::Ui::Windows::IndustryList
         else
         {
             // 0x00457878
-            auto origin = Gfx::point_t(Ui::width() - industry_list::windowSize.width, 30);
+            auto origin = Gfx::point_t(Ui::width() - IndustryList::windowSize.width, 30);
 
             window = WindowManager::createWindow(
                 WindowType::industryList,
                 origin,
-                industry_list::windowSize,
+                IndustryList::windowSize,
                 window_flags::flag_8,
-                &industry_list::events);
+                &IndustryList::events);
 
             window->number = 0;
             window->current_tab = 0;
@@ -533,10 +533,10 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
             WindowManager::sub_4CEE0B(window);
 
-            window->min_width = industry_list::minDimensions.width;
-            window->min_height = industry_list::minDimensions.height;
-            window->max_width = industry_list::maxDimensions.width;
-            window->max_height = industry_list::maxDimensions.height;
+            window->min_width = IndustryList::minDimensions.width;
+            window->min_height = IndustryList::minDimensions.height;
+            window->max_width = IndustryList::maxDimensions.width;
+            window->max_height = IndustryList::maxDimensions.height;
             window->flags |= window_flags::resizable;
 
             auto skin = ObjectManager::get<interface_skin_object>();
@@ -546,15 +546,15 @@ namespace OpenLoco::Ui::Windows::IndustryList
             // 0x00457878 end
 
             // TODO: only needs to be called once.
-            window->width = industry_list::windowSize.width;
-            window->height = industry_list::windowSize.height;
+            window->width = IndustryList::windowSize.width;
+            window->height = IndustryList::windowSize.height;
 
             Common::initEvents();
 
             window->invalidate();
 
-            window->widgets = industry_list::widgets;
-            window->enabled_widgets = industry_list::enabledWidgets;
+            window->widgets = IndustryList::widgets;
+            window->enabled_widgets = IndustryList::enabledWidgets;
 
             window->activated_widgets = 0;
             window->holdable_widgets = 0;
@@ -1102,7 +1102,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         };
 
         static TabInformation tabInformationByTabOffset[] = {
-            { industry_list::widgets, widx::tab_industry_list, &industry_list::events, industry_list::enabledWidgets },
+            { IndustryList::widgets, widx::tab_industry_list, &IndustryList::events, IndustryList::enabledWidgets },
             { new_industries::widgets, widx::tab_new_industry, &new_industries::events, new_industries::enabledWidgets },
         };
 
@@ -1158,7 +1158,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
             self->widgets = tabInfo.widgets;
 
             if (self->current_tab == widx::tab_industry_list - widx::tab_industry_list)
-                industry_list::tabReset(self);
+                IndustryList::tabReset(self);
             if (self->current_tab == widx::tab_new_industry - widx::tab_industry_list)
                 new_industries::tabReset(self);
 
@@ -1228,7 +1228,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
         static void initEvents()
         {
-            industry_list::initEvents();
+            IndustryList::initEvents();
             new_industries::initEvents();
         }
     }
