@@ -30,7 +30,7 @@ namespace OpenLoco::Ui::Windows::Station
 
     static loco_global<string_id, 0x009C68E8> gGameCommandErrorTitle;
 
-    namespace common
+    namespace Common
     {
         static const Gfx::ui_size_t minWindowSize = { 192, 136 };
 
@@ -90,14 +90,14 @@ namespace OpenLoco::Ui::Windows::Station
             widgetEnd(),
         };
 
-        const uint64_t enabledWidgets = common::enabledWidgets | (1 << centre_on_viewport);
+        const uint64_t enabledWidgets = Common::enabledWidgets | (1 << centre_on_viewport);
 
         static window_event_list events;
 
         // 0x0048E352
         static void prepareDraw(window* self)
         {
-            common::prepareDraw(self);
+            Common::prepareDraw(self);
 
             self->widgets[widx::viewport].right = self->width - 4;
             self->widgets[widx::viewport].bottom = self->height - 14;
@@ -111,14 +111,14 @@ namespace OpenLoco::Ui::Windows::Station
             self->widgets[widx::centre_on_viewport].left = self->widgets[widx::viewport].right - 24;
             self->widgets[widx::centre_on_viewport].top = self->widgets[widx::viewport].bottom - 24;
 
-            common::repositionTabs(self);
+            Common::repositionTabs(self);
         }
 
         // 0x0048E470
         static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
         {
             self->draw(dpi);
-            common::drawTabs(self, dpi);
+            Common::drawTabs(self, dpi);
             self->drawViewports(dpi);
             widget::drawViewportCentreButton(dpi, self, widx::centre_on_viewport);
 
@@ -141,18 +141,18 @@ namespace OpenLoco::Ui::Windows::Station
         {
             switch (widgetIndex)
             {
-                case common::widx::caption:
-                    common::renameStationPrompt(self, widgetIndex);
+                case Common::widx::caption:
+                    Common::renameStationPrompt(self, widgetIndex);
                     break;
 
-                case common::widx::close_button:
+                case Common::widx::close_button:
                     WindowManager::close(self);
                     break;
 
-                case common::widx::tab_station:
-                case common::widx::tab_cargo:
-                case common::widx::tab_cargo_ratings:
-                    common::switchTab(self, widgetIndex);
+                case Common::widx::tab_station:
+                case Common::widx::tab_cargo:
+                case Common::widx::tab_cargo_ratings:
+                    Common::switchTab(self, widgetIndex);
                     break;
 
                 // 0x0049932D
@@ -180,9 +180,9 @@ namespace OpenLoco::Ui::Windows::Station
         // 0x0048E70B
         static void onResize(window* self)
         {
-            common::enableRenameByCaption(self);
+            Common::enableRenameByCaption(self);
 
-            self->setSize(windowSize, common::maxWindowSize);
+            self->setSize(windowSize, Common::maxWindowSize);
 
             if (self->viewports[0] != nullptr)
             {
@@ -271,9 +271,9 @@ namespace OpenLoco::Ui::Windows::Station
             events.draw = draw;
             events.on_mouse_up = onMouseUp;
             events.on_resize = onResize;
-            events.on_update = common::update;
+            events.on_update = Common::update;
             events.prepare_draw = prepareDraw;
-            events.text_input = common::textInput;
+            events.text_input = Common::textInput;
             events.viewport_rotate = initViewport;
         }
     }
@@ -298,10 +298,10 @@ namespace OpenLoco::Ui::Windows::Station
             window->number = stationId;
             auto station = stationmgr::get(stationId);
             window->owner = station->owner;
-            window->min_width = common::minWindowSize.width;
-            window->min_height = common::minWindowSize.height;
-            window->max_width = common::maxWindowSize.width;
-            window->max_height = common::maxWindowSize.height;
+            window->min_width = Common::minWindowSize.width;
+            window->min_height = Common::minWindowSize.height;
+            window->max_width = Common::maxWindowSize.width;
+            window->max_height = Common::maxWindowSize.height;
 
             window->saved_view.clear();
 
@@ -310,9 +310,9 @@ namespace OpenLoco::Ui::Windows::Station
             // 0x0048F29F end
         }
         // TODO(avgeffen): only needs to be called once.
-        common::initEvents();
+        Common::initEvents();
 
-        window->current_tab = common::widx::tab_station - common::widx::tab_station;
+        window->current_tab = Common::widx::tab_station - Common::widx::tab_station;
         window->invalidate();
 
         window->widgets = station::widgets;
@@ -346,12 +346,12 @@ namespace OpenLoco::Ui::Windows::Station
 
         static window_event_list events;
 
-        const uint64_t enabledWidgets = common::enabledWidgets | (1 << station_catchment);
+        const uint64_t enabledWidgets = Common::enabledWidgets | (1 << station_catchment);
 
         // 0x0048E7C0
         static void prepareDraw(window* self)
         {
-            common::prepareDraw(self);
+            Common::prepareDraw(self);
 
             self->widgets[widx::scrollview].right = self->width - 24;
             self->widgets[widx::scrollview].bottom = self->height - 14;
@@ -363,7 +363,7 @@ namespace OpenLoco::Ui::Windows::Station
             self->widgets[widx::station_catchment].right = self->width - 2;
             self->widgets[widx::station_catchment].left = self->width - 25;
 
-            common::repositionTabs(self);
+            Common::repositionTabs(self);
 
             self->activated_widgets &= ~(1 << widx::station_catchment);
             if (self->number == _lastSelectedStation)
@@ -374,7 +374,7 @@ namespace OpenLoco::Ui::Windows::Station
         static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
         {
             self->draw(dpi);
-            common::drawTabs(self, dpi);
+            Common::drawTabs(self, dpi);
 
             auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
             buffer = StringManager::formatString(buffer, StringIds::accepted_cargo_separator);
@@ -417,18 +417,18 @@ namespace OpenLoco::Ui::Windows::Station
         {
             switch (widgetIndex)
             {
-                case common::widx::caption:
-                    common::renameStationPrompt(self, widgetIndex);
+                case Common::widx::caption:
+                    Common::renameStationPrompt(self, widgetIndex);
                     break;
 
-                case common::widx::close_button:
+                case Common::widx::close_button:
                     WindowManager::close(self);
                     break;
 
-                case common::widx::tab_station:
-                case common::widx::tab_cargo:
-                case common::widx::tab_cargo_ratings:
-                    common::switchTab(self, widgetIndex);
+                case Common::widx::tab_station:
+                case Common::widx::tab_cargo:
+                case Common::widx::tab_cargo_ratings:
+                    Common::switchTab(self, widgetIndex);
                     break;
 
                 case widx::station_catchment:
@@ -446,9 +446,9 @@ namespace OpenLoco::Ui::Windows::Station
         // 0x0048EBB7
         static void onResize(window* self)
         {
-            common::enableRenameByCaption(self);
+            Common::enableRenameByCaption(self);
 
-            self->setSize(common::minWindowSize, common::maxWindowSize);
+            self->setSize(Common::minWindowSize, Common::maxWindowSize);
         }
 
         // 0x0048EB64
@@ -566,9 +566,9 @@ namespace OpenLoco::Ui::Windows::Station
             events.draw = draw;
             events.on_mouse_up = onMouseUp;
             events.on_resize = onResize;
-            events.on_update = common::update;
+            events.on_update = Common::update;
             events.prepare_draw = prepareDraw;
-            events.text_input = common::textInput;
+            events.text_input = Common::textInput;
             events.get_scroll_size = getScrollSize;
             events.tooltip = tooltip;
             events.draw_scroll = drawScroll;
@@ -599,7 +599,7 @@ namespace OpenLoco::Ui::Windows::Station
         // 0x0048EC3B
         static void prepareDraw(window* self)
         {
-            common::prepareDraw(self);
+            Common::prepareDraw(self);
 
             self->widgets[widx::scrollview].right = self->width - 4;
             self->widgets[widx::scrollview].bottom = self->height - 14;
@@ -608,14 +608,14 @@ namespace OpenLoco::Ui::Windows::Station
             self->widgets[widx::status_bar].bottom = self->height - 3;
             self->widgets[widx::status_bar].right = self->width - 14;
 
-            common::repositionTabs(self);
+            Common::repositionTabs(self);
         }
 
         // 0x0048ED24
         static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
         {
             self->draw(dpi);
-            common::drawTabs(self, dpi);
+            Common::drawTabs(self, dpi);
         }
 
         // 0x0048EE1A
@@ -623,18 +623,18 @@ namespace OpenLoco::Ui::Windows::Station
         {
             switch (widgetIndex)
             {
-                case common::widx::caption:
-                    common::renameStationPrompt(self, widgetIndex);
+                case Common::widx::caption:
+                    Common::renameStationPrompt(self, widgetIndex);
                     break;
 
-                case common::widx::close_button:
+                case Common::widx::close_button:
                     WindowManager::close(self);
                     break;
 
-                case common::widx::tab_station:
-                case common::widx::tab_cargo:
-                case common::widx::tab_cargo_ratings:
-                    common::switchTab(self, widgetIndex);
+                case Common::widx::tab_station:
+                case Common::widx::tab_cargo:
+                case Common::widx::tab_cargo_ratings:
+                    Common::switchTab(self, widgetIndex);
                     break;
             }
         }
@@ -642,7 +642,7 @@ namespace OpenLoco::Ui::Windows::Station
         // 0x0048EE97
         static void onResize(window* self)
         {
-            common::enableRenameByCaption(self);
+            Common::enableRenameByCaption(self);
 
             self->setSize(windowSize, maxWindowSize);
         }
@@ -723,9 +723,9 @@ namespace OpenLoco::Ui::Windows::Station
             events.draw = draw;
             events.on_mouse_up = onMouseUp;
             events.on_resize = onResize;
-            events.on_update = common::update;
+            events.on_update = Common::update;
             events.prepare_draw = prepareDraw;
-            events.text_input = common::textInput;
+            events.text_input = Common::textInput;
             events.get_scroll_size = getScrollSize;
             events.tooltip = tooltip;
             events.draw_scroll = drawScroll;
@@ -782,7 +782,7 @@ namespace OpenLoco::Ui::Windows::Station
         }
     }
 
-    namespace common
+    namespace Common
     {
         struct TabInformation
         {
@@ -795,7 +795,7 @@ namespace OpenLoco::Ui::Windows::Station
         static TabInformation tabInformationByTabOffset[] = {
             { station::widgets, widx::tab_station, &station::events, &station::enabledWidgets },
             { cargo::widgets, widx::tab_cargo, &cargo::events, &cargo::enabledWidgets },
-            { cargo_ratings::widgets, widx::tab_cargo_ratings, &cargo_ratings::events, &common::enabledWidgets }
+            { cargo_ratings::widgets, widx::tab_cargo_ratings, &cargo_ratings::events, &Common::enabledWidgets }
         };
 
         // 0x0048E352, 0x0048E7C0 and 0x0048EC3B
@@ -841,22 +841,22 @@ namespace OpenLoco::Ui::Windows::Station
             args.push(stationTypeImages[(station->flags & 0xF)]);
 
             // Resize common widgets.
-            self->widgets[common::widx::frame].right = self->width - 1;
-            self->widgets[common::widx::frame].bottom = self->height - 1;
+            self->widgets[Common::widx::frame].right = self->width - 1;
+            self->widgets[Common::widx::frame].bottom = self->height - 1;
 
-            self->widgets[common::widx::caption].right = self->width - 2;
+            self->widgets[Common::widx::caption].right = self->width - 2;
 
-            self->widgets[common::widx::close_button].left = self->width - 15;
-            self->widgets[common::widx::close_button].right = self->width - 3;
+            self->widgets[Common::widx::close_button].left = self->width - 15;
+            self->widgets[Common::widx::close_button].right = self->width - 3;
 
-            self->widgets[common::widx::panel].right = self->width - 1;
-            self->widgets[common::widx::panel].bottom = self->height - 1;
+            self->widgets[Common::widx::panel].right = self->width - 1;
+            self->widgets[Common::widx::panel].bottom = self->height - 1;
         }
 
         // 0x0048E5DF
         static void textInput(window* self, widget_index callingWidget, char* input)
         {
-            if (callingWidget != common::widx::caption)
+            if (callingWidget != Common::widx::caption)
                 return;
 
             if (strlen(input) == 0)
@@ -1030,11 +1030,11 @@ namespace OpenLoco::Ui::Windows::Station
             {
                 if (isPlayerCompany(station->owner))
                 {
-                    self->enabled_widgets |= (1 << common::widx::caption);
+                    self->enabled_widgets |= (1 << Common::widx::caption);
                 }
                 else
                 {
-                    self->enabled_widgets &= ~(1 << common::widx::caption);
+                    self->enabled_widgets &= ~(1 << Common::widx::caption);
                 }
             }
         }
