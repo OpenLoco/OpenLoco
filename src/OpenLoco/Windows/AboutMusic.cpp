@@ -16,7 +16,7 @@ namespace OpenLoco::Ui::AboutMusic
 
     constexpr uint16_t numSongs = 31;
 
-    namespace widx
+    namespace Widx
     {
         enum
         {
@@ -56,7 +56,7 @@ namespace OpenLoco::Ui::AboutMusic
             &_events);
 
         window->widgets = _widgets;
-        window->enabled_widgets = 1 << widx::close;
+        window->enabled_widgets = 1 << Widx::close;
         window->initScrollWidgets();
 
         const auto interface = ObjectManager::get<interface_skin_object>();
@@ -69,7 +69,7 @@ namespace OpenLoco::Ui::AboutMusic
     {
         switch (widgetIndex)
         {
-            case widx::close:
+            case Widx::close:
                 WindowManager::close(window->type);
                 break;
         }
