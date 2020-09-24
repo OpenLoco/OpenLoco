@@ -383,7 +383,7 @@ namespace OpenLoco::Ui::Windows::toolbar_top::common
         }
         else if (itemIndex == 1)
         {
-            Windows::industry_list::open();
+            Windows::IndustryList::open();
             last_town_option = 1;
         }
     }

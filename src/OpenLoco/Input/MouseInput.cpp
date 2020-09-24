@@ -744,7 +744,7 @@ namespace OpenLoco::Input
                                 break;
                             }
                             case InteractionItem::industry:
-                                Ui::Windows::industry_list::open();
+                                Ui::Windows::IndustryList::open();
                                 break;
                             default:
                                 break;

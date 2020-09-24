@@ -127,7 +127,7 @@ namespace OpenLoco::Ui::Windows::Industry
     window* open(industry_id_t id);
 }
 
-namespace OpenLoco::Ui::Windows::industry_list
+namespace OpenLoco::Ui::Windows::IndustryList
 {
     window* open();
 }

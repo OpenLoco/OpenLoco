@@ -238,7 +238,7 @@ namespace OpenLoco::Ui::WindowManager
             0x004577FF,
             [](registers& regs) -> uint8_t {
                 registers backup = regs;
-                auto window = Windows::industry_list::open();
+                auto window = Windows::IndustryList::open();
                 regs = backup;
                 regs.esi = (uintptr_t)window;
 

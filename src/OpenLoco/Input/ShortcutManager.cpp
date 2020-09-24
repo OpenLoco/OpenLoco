@@ -420,7 +420,7 @@ namespace OpenLoco::Input::ShortcutManager
         if (isEditorMode() && s5::getOptions().editorStep == 0)
             return;
 
-        Windows::industry_list::open();
+        Windows::IndustryList::open();
     }
 
     // 0x004BF33E
