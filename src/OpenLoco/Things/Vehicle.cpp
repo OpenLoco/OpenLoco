@@ -153,7 +153,7 @@ void vehicle_head::sub_4BA8D4()
     Things::Vehicle::Vehicle train(this);
     for (auto car : train.cars)
     {
-        if (car.front->var_5F & flags_5f::broken_down)
+        if (car.front->var_5F & Flags5F::broken_down)
         {
             if ((scenarioTicks() & 3) == 0)
             {
@@ -162,13 +162,13 @@ void vehicle_head::sub_4BA8D4()
             }
         }
 
-        if ((car.front->var_5F & flags_5f::breakdown_pending) && !isTitleMode())
+        if ((car.front->var_5F & Flags5F::breakdown_pending) && !isTitleMode())
         {
             auto newConfig = config::getNew();
             if (!newConfig.breakdowns_disabled)
             {
-                car.front->var_5F &= ~flags_5f::breakdown_pending;
-                car.front->var_5F |= flags_5f::broken_down;
+                car.front->var_5F &= ~Flags5F::breakdown_pending;
+                car.front->var_5F |= Flags5F::broken_down;
                 car.front->var_6A = 5;
                 sub_4BAA76();
 
@@ -1011,7 +1011,7 @@ void OpenLoco::vehicle_body::steamPuffsAnimationUpdate(uint8_t num, int32_t var_
     auto vehicleObject = object();
     vehicle_bogie* frontBogie = vehicleUpdate_frontBogie;
     vehicle_bogie* backBogie = vehicleUpdate_backBogie;
-    if (frontBogie->var_5F & flags_5f::broken_down)
+    if (frontBogie->var_5F & Flags5F::broken_down)
         return;
 
     vehicle_2* veh_2 = vehicleUpdate_2;
@@ -1175,7 +1175,7 @@ void OpenLoco::vehicle_body::dieselExhaust1AnimationUpdate(uint8_t num, int32_t 
 {
     vehicle_bogie* frontBogie = vehicleUpdate_frontBogie;
     vehicle_bogie* backBogie = vehicleUpdate_backBogie;
-    if (frontBogie->var_5F & flags_5f::broken_down)
+    if (frontBogie->var_5F & Flags5F::broken_down)
         return;
 
     vehicle_head* headVeh = vehicleUpdate_head;
@@ -1261,7 +1261,7 @@ void OpenLoco::vehicle_body::dieselExhaust2AnimationUpdate(uint8_t num, int32_t 
 {
     vehicle_bogie* frontBogie = vehicleUpdate_frontBogie;
     vehicle_bogie* backBogie = vehicleUpdate_backBogie;
-    if (frontBogie->var_5F & flags_5f::broken_down)
+    if (frontBogie->var_5F & Flags5F::broken_down)
         return;
 
     vehicle_2* veh_2 = vehicleUpdate_2;
@@ -1336,7 +1336,7 @@ void OpenLoco::vehicle_body::electricSpark1AnimationUpdate(uint8_t num, int32_t 
 {
     vehicle_bogie* frontBogie = vehicleUpdate_frontBogie;
     vehicle_bogie* backBogie = vehicleUpdate_backBogie;
-    if (frontBogie->var_5F & flags_5f::broken_down)
+    if (frontBogie->var_5F & Flags5F::broken_down)
         return;
 
     vehicle_2* veh_2 = vehicleUpdate_2;
@@ -1396,7 +1396,7 @@ void OpenLoco::vehicle_body::electricSpark2AnimationUpdate(uint8_t num, int32_t 
 {
     vehicle_bogie* frontBogie = vehicleUpdate_frontBogie;
     vehicle_bogie* backBogie = vehicleUpdate_backBogie;
-    if (frontBogie->var_5F & flags_5f::broken_down)
+    if (frontBogie->var_5F & Flags5F::broken_down)
         return;
 
     vehicle_2* veh_2 = vehicleUpdate_2;

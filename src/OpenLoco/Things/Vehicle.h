@@ -33,7 +33,7 @@ namespace OpenLoco
 
     struct vehicle_26;
 
-    namespace flags_5f
+    namespace Flags5F
     {
         constexpr uint8_t breakdown_pending = 1 << 1;
         constexpr uint8_t broken_down = 1 << 2;
