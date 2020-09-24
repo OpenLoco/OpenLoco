@@ -50,7 +50,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
     static loco_global<uint16_t[10], 0x0112C826> commonFormatArgs;
 
-    namespace common
+    namespace Common
     {
         enum widx
         {
@@ -193,7 +193,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             time_limit_value_up,
         };
 
-        const uint64_t enabledWidgets = common::enabledWidgets | (1 << widx::objective_type) | (1 << widx::objective_type_btn) | (1 << widx::objective_value_down) | (1 << widx::objective_value_up) | (1 << widx::objective_cargo) | (1 << widx::objective_cargo_btn) | (1 << widx::check_be_top_company) | (1 << widx::check_be_within_top_three_companies) | (1 << widx::check_time_limit) | (1 << widx::time_limit_value_down) | (1 << widx::time_limit_value_up);
+        const uint64_t enabledWidgets = Common::enabledWidgets | (1 << widx::objective_type) | (1 << widx::objective_type_btn) | (1 << widx::objective_value_down) | (1 << widx::objective_value_up) | (1 << widx::objective_cargo) | (1 << widx::objective_cargo_btn) | (1 << widx::check_be_top_company) | (1 << widx::check_be_within_top_three_companies) | (1 << widx::check_time_limit) | (1 << widx::time_limit_value_down) | (1 << widx::time_limit_value_up);
         const uint64_t holdableWidgets = (1 << widx::objective_value_down) | (1 << widx::objective_value_up) | (1 << widx::time_limit_value_down) | (1 << widx::time_limit_value_up);
 
         static widget_t widgets[] = {
@@ -215,7 +215,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         // 0x0043FC91
         static void draw(Ui::window* window, Gfx::drawpixelinfo_t* dpi)
         {
-            common::draw(window, dpi);
+            Common::draw(window, dpi);
 
             const int16_t xPos = window->x + 5;
             int16_t yPos = window->y + widgets[widx::check_time_limit].bottom + 10;
@@ -404,11 +404,11 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         {
             switch (widgetIndex)
             {
-                case common::widx::tab_challenge:
-                case common::widx::tab_companies:
-                case common::widx::tab_finances:
-                case common::widx::tab_scenario:
-                    common::switchTab(self, widgetIndex);
+                case Common::widx::tab_challenge:
+                case Common::widx::tab_companies:
+                case Common::widx::tab_finances:
+                case Common::widx::tab_scenario:
+                    Common::switchTab(self, widgetIndex);
                     break;
 
                 case check_be_top_company:
@@ -430,7 +430,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
         static void prepareDraw(window* self)
         {
-            common::prepareDraw(self);
+            Common::prepareDraw(self);
 
             widgets[widx::objective_type].text = objectiveTypeLabelIds[*objectiveType];
             widgets[widx::objective_cargo].type = widget_type::none;
@@ -491,7 +491,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             events.on_dropdown = onDropdown;
             events.on_mouse_down = onMouseDown;
             events.on_mouse_up = onMouseUp;
-            events.on_update = common::update;
+            events.on_update = Common::update;
             events.prepare_draw = prepareDraw;
         }
     }
@@ -531,7 +531,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         }
 
         // TODO(avgeffen): only needs to be called once.
-        common::initEvents();
+        Common::initEvents();
 
         window->current_tab = 0;
         window->invalidate();
@@ -604,7 +604,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             widgetEnd(),
         };
 
-        const uint64_t enabledWidgets = common::enabledWidgets | (1 << widx::max_competing_companies_down) | (1 << widx::max_competing_companies_up) | (1 << widx::delay_before_competing_companies_start_down) | (1 << widx::delay_before_competing_companies_start_up) | (1 << widx::preferred_intelligence) | (1 << widx::preferred_intelligence_btn) | (1 << widx::preferred_aggressiveness) | (1 << widx::preferred_aggressiveness_btn) | (1 << widx::preferred_competitiveness) | (1 << widx::preferred_competitiveness_btn) | (1 << widx::competitor_forbid_trains) | (1 << widx::competitor_forbid_buses) | (1 << widx::competitor_forbid_trucks) | (1 << widx::competitor_forbid_trams) | (1 << widx::competitor_forbid_aircraft) | (1 << widx::competitor_forbid_ships) | (1 << widx::player_forbid_trains) | (1 << widx::player_forbid_buses) | (1 << widx::player_forbid_trucks) | (1 << widx::player_forbid_trams) | (1 << widx::player_forbid_aircraft) | (1 << widx::player_forbid_ships);
+        const uint64_t enabledWidgets = Common::enabledWidgets | (1 << widx::max_competing_companies_down) | (1 << widx::max_competing_companies_up) | (1 << widx::delay_before_competing_companies_start_down) | (1 << widx::delay_before_competing_companies_start_up) | (1 << widx::preferred_intelligence) | (1 << widx::preferred_intelligence_btn) | (1 << widx::preferred_aggressiveness) | (1 << widx::preferred_aggressiveness_btn) | (1 << widx::preferred_competitiveness) | (1 << widx::preferred_competitiveness_btn) | (1 << widx::competitor_forbid_trains) | (1 << widx::competitor_forbid_buses) | (1 << widx::competitor_forbid_trucks) | (1 << widx::competitor_forbid_trams) | (1 << widx::competitor_forbid_aircraft) | (1 << widx::competitor_forbid_ships) | (1 << widx::player_forbid_trains) | (1 << widx::player_forbid_buses) | (1 << widx::player_forbid_trucks) | (1 << widx::player_forbid_trams) | (1 << widx::player_forbid_aircraft) | (1 << widx::player_forbid_ships);
         const uint64_t holdableWidgets = (1 << widx::max_competing_companies_down) | (1 << widx::max_competing_companies_up) | (1 << widx::delay_before_competing_companies_start_down) | (1 << widx::delay_before_competing_companies_start_up);
 
         static window_event_list events;
@@ -612,7 +612,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         // 0x0043F4EB
         static void draw(Ui::window* window, Gfx::drawpixelinfo_t* dpi)
         {
-            common::draw(window, dpi);
+            Common::draw(window, dpi);
 
             {
                 const int16_t xPos = window->x + 10;
@@ -762,11 +762,11 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         {
             switch (widgetIndex)
             {
-                case common::widx::tab_challenge:
-                case common::widx::tab_companies:
-                case common::widx::tab_finances:
-                case common::widx::tab_scenario:
-                    common::switchTab(self, widgetIndex);
+                case Common::widx::tab_challenge:
+                case Common::widx::tab_companies:
+                case Common::widx::tab_finances:
+                case Common::widx::tab_scenario:
+                    Common::switchTab(self, widgetIndex);
                     break;
 
                 case widx::competitor_forbid_trains:
@@ -810,7 +810,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         // 0x0043F40C
         static void prepareDraw(window* self)
         {
-            common::prepareDraw(self);
+            Common::prepareDraw(self);
 
             commonFormatArgs[0] = *maxCompetingCompanies;
             commonFormatArgs[1] = *competitorStartDelay;
@@ -832,7 +832,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             events.on_dropdown = onDropdown;
             events.on_mouse_down = onMouseDown;
             events.on_mouse_up = onMouseUp;
-            events.on_update = common::update;
+            events.on_update = Common::update;
             events.prepare_draw = prepareDraw;
         }
     }
@@ -860,7 +860,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             widgetEnd(),
         };
 
-        const uint64_t enabledWidgets = common::enabledWidgets | (1 << widx::starting_loan_down) | (1 << widx::starting_loan_up) | (1 << widx::max_loan_size_down) | (1 << widx::max_loan_size_up) | (1 << widx::loan_interest_rate_down) | (1 << widx::loan_interest_rate_up);
+        const uint64_t enabledWidgets = Common::enabledWidgets | (1 << widx::starting_loan_down) | (1 << widx::starting_loan_up) | (1 << widx::max_loan_size_down) | (1 << widx::max_loan_size_up) | (1 << widx::loan_interest_rate_down) | (1 << widx::loan_interest_rate_up);
         const uint64_t holdableWidgets = (1 << widx::starting_loan_down) | (1 << widx::starting_loan_up) | (1 << widx::max_loan_size_down) | (1 << widx::max_loan_size_up) | (1 << widx::loan_interest_rate_down) | (1 << widx::loan_interest_rate_up);
 
         static window_event_list events;
@@ -868,7 +868,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         // 0x0043F97D
         static void draw(Ui::window* window, Gfx::drawpixelinfo_t* dpi)
         {
-            common::draw(window, dpi);
+            Common::draw(window, dpi);
 
             {
                 const int16_t xPos = window->x + 10;
@@ -929,11 +929,11 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         {
             switch (widgetIndex)
             {
-                case common::widx::tab_challenge:
-                case common::widx::tab_companies:
-                case common::widx::tab_finances:
-                case common::widx::tab_scenario:
-                    common::switchTab(self, widgetIndex);
+                case Common::widx::tab_challenge:
+                case Common::widx::tab_companies:
+                case Common::widx::tab_finances:
+                case Common::widx::tab_scenario:
+                    Common::switchTab(self, widgetIndex);
                     break;
             }
         }
@@ -948,7 +948,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         // 0x0043F8CF
         static void prepareDraw(window* self)
         {
-            common::prepareDraw(self);
+            Common::prepareDraw(self);
 
             uint32_t loanSizeInCurrency = getLoanSizeInCurrency();
             *(uint32_t*)&commonFormatArgs[0] = loanSizeInCurrency;
@@ -964,7 +964,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             events.draw = draw;
             events.on_mouse_down = onMouseDown;
             events.on_mouse_up = onMouseUp;
-            events.on_update = common::update;
+            events.on_update = Common::update;
             events.prepare_draw = prepareDraw;
         }
     }
@@ -988,7 +988,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             widgetEnd(),
         };
 
-        const uint64_t enabledWidgets = common::enabledWidgets | (1 << widx::change_name_btn) | (1 << widx::scenario_group) | (1 << widx::scenario_group_btn) | (1 << widx::change_details_btn);
+        const uint64_t enabledWidgets = Common::enabledWidgets | (1 << widx::change_name_btn) | (1 << widx::scenario_group) | (1 << widx::scenario_group_btn) | (1 << widx::change_details_btn);
         const uint64_t holdableWidgets = 0;
 
         static window_event_list events;
@@ -996,7 +996,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         // 0x0043F004
         static void draw(Ui::window* window, Gfx::drawpixelinfo_t* dpi)
         {
-            common::draw(window, dpi);
+            Common::draw(window, dpi);
 
             {
                 // Prepare scenario name text.
@@ -1079,11 +1079,11 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         {
             switch (widgetIndex)
             {
-                case common::widx::tab_challenge:
-                case common::widx::tab_companies:
-                case common::widx::tab_finances:
-                case common::widx::tab_scenario:
-                    common::switchTab(self, widgetIndex);
+                case Common::widx::tab_challenge:
+                case Common::widx::tab_companies:
+                case Common::widx::tab_finances:
+                case Common::widx::tab_scenario:
+                    Common::switchTab(self, widgetIndex);
                     break;
 
                 case widx::change_name_btn:
@@ -1109,7 +1109,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         // 0x0043EF8B
         static void prepareDraw(window* self)
         {
-            common::prepareDraw(self);
+            Common::prepareDraw(self);
 
             widgets[widx::scenario_group].text = scenarioGroupLabelIds[s5::getOptions().difficulty];
         }
@@ -1143,13 +1143,13 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             events.on_dropdown = onDropdown;
             events.on_mouse_down = onMouseDown;
             events.on_mouse_up = onMouseUp;
-            events.on_update = common::update;
+            events.on_update = Common::update;
             events.prepare_draw = prepareDraw;
             events.text_input = textInput;
         }
     }
 
-    namespace common
+    namespace Common
     {
         struct TabInformation
         {
@@ -1183,13 +1183,13 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             self->activated_widgets |= (1ULL << widgetIndex);
 
             // Resize common widgets.
-            self->widgets[common::widx::frame].right = self->width - 1;
-            self->widgets[common::widx::frame].bottom = self->height - 1;
+            self->widgets[Common::widx::frame].right = self->width - 1;
+            self->widgets[Common::widx::frame].bottom = self->height - 1;
 
-            self->widgets[common::widx::caption].right = self->width - 2;
+            self->widgets[Common::widx::caption].right = self->width - 2;
 
-            self->widgets[common::widx::panel].right = self->width - 1;
-            self->widgets[common::widx::panel].bottom = self->height - 1;
+            self->widgets[Common::widx::panel].right = self->width - 1;
+            self->widgets[Common::widx::panel].bottom = self->height - 1;
         }
 
         // 0x0043F16B
