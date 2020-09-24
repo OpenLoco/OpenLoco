@@ -131,10 +131,10 @@ namespace OpenLoco::Ui::NewsWindow
                 Gfx::point_t origin = { x, y };
                 uint32_t flags = window_flags::stick_to_front | window_flags::viewport_no_scrolling | window_flags::transparent | window_flags::flag_7;
 
-                auto window = WindowManager::createWindow(WindowType::news, origin, ticker::windowSize, flags, &ticker::events);
+                auto window = WindowManager::createWindow(WindowType::news, origin, Ticker::windowSize, flags, &Ticker::events);
 
-                window->widgets = ticker::widgets;
-                window->enabled_widgets = ticker::enabledWidgets;
+                window->widgets = Ticker::widgets;
+                window->enabled_widgets = Ticker::enabledWidgets;
 
                 Common::initEvents();
 
@@ -218,7 +218,7 @@ namespace OpenLoco::Ui::NewsWindow
     {
         void initEvents()
         {
-            ticker::initEvents();
+            Ticker::initEvents();
             News1::initEvents();
         }
     }

@@ -93,7 +93,7 @@ namespace OpenLoco::Ui::NewsWindow
         extern widget_t widgets[7];
     }
 
-    namespace ticker
+    namespace Ticker
     {
         static const Gfx::ui_size_t windowSize = { 111, 26 };
 
