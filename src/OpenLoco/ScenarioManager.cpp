@@ -15,11 +15,8 @@ namespace OpenLoco::ScenarioManager
         for (auto i = 0; i < numScenarios; i++)
         {
             ScenarioIndexEntry& entry = scenarioList[i];
-            if (entry.category != category)
+            if (entry.category != category || !entry.hasFlag(ScenarioIndexFlags::flag_1))
                 continue;
-
-            // test    dword ptr [ebx+264h], 1
-            // jz      short loc_443F28
 
             numScenariosInCategory++;
         }
@@ -33,7 +30,7 @@ namespace OpenLoco::ScenarioManager
         for (auto i = 0; i < numScenarios; i++)
         {
             ScenarioIndexEntry& entry = scenarioList[i];
-            if (entry.category != category)
+            if (entry.category != category || !entry.hasFlag(ScenarioIndexFlags::flag_1))
                 continue;
 
             if (j == index)
