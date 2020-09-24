@@ -626,7 +626,7 @@ namespace OpenLoco::Ui::Options
             w->enabled_widgets |= (1 << Display::Widx::screen_mode) | (1 << Display::Widx::screen_mode_btn);
             Display::screenModeToggleEnabled(w);
 #else
-            w->disabled_widgets |= (1 << display::Widx::screen_mode) | (1 << display::Widx::screen_mode_btn) | (1 << display::Widx::display_resolution) | (1 << display::Widx::display_resolution_btn);
+            w->disabled_widgets |= (1 << Display::Widx::screen_mode) | (1 << Display::Widx::screen_mode_btn) | (1 << Display::Widx::display_resolution) | (1 << Display::Widx::display_resolution_btn);
 #endif
         }
 
