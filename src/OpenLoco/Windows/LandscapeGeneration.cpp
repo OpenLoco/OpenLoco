@@ -1074,7 +1074,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         }
     }
 
-    namespace industries
+    namespace Industries
     {
         enum widx
         {
@@ -1204,7 +1204,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             Land::initEvents();
             Forests::initEvents();
             Towns::initEvents();
-            industries::initEvents();
+            Industries::initEvents();
         }
 
         static void switchTabWidgets(window* window)
@@ -1216,7 +1216,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 Land::widgets,
                 Forests::widgets,
                 Towns::widgets,
-                industries::widgets,
+                Industries::widgets,
             };
 
             widget_t* newWidgets = widgetCollectionsByTabId[window->current_tab];
@@ -1254,7 +1254,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 &Land::enabled_widgets,
                 &Forests::enabled_widgets,
                 &Towns::enabled_widgets,
-                &industries::enabled_widgets,
+                &Industries::enabled_widgets,
             };
 
             window->enabled_widgets = *enabledWidgetsByTab[window->current_tab];
@@ -1264,7 +1264,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 &Land::holdable_widgets,
                 &Forests::holdable_widgets,
                 &Towns::holdable_widgets,
-                &industries::holdable_widgets,
+                &Industries::holdable_widgets,
             };
 
             window->holdable_widgets = *holdableWidgetsByTab[window->current_tab];
@@ -1274,7 +1274,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 &Land::events,
                 &Forests::events,
                 &Towns::events,
-                &industries::events,
+                &Industries::events,
             };
 
             window->event_handlers = eventsByTab[window->current_tab];
