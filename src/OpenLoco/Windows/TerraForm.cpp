@@ -317,7 +317,7 @@ namespace OpenLoco::Ui::windows::terraform
             if (itemIndex == -1)
                 return;
 
-            _treeColour = dropdown::getHighlightedItem();
+            _treeColour = Dropdown::getHighlightedItem();
             self->invalidate();
         }
 
@@ -983,7 +983,7 @@ namespace OpenLoco::Ui::windows::terraform
             }
             else
             {
-                // CHANGE: Resizes window to allow dropdown and cost string to be drawn seperately
+                // CHANGE: Resizes window to allow Dropdown and cost string to be drawn seperately
                 common::onResize(self, 140);
             }
         }
@@ -1003,9 +1003,9 @@ namespace OpenLoco::Ui::windows::terraform
             auto yPos = self->widgets[widgetIndex].bottom + self->y;
             auto heightOffset = self->widgets[widgetIndex].height() - 18;
             auto colour = self->colours[1] | 0x80;
-            auto count = dropdown::getItemsPerRow(landCount);
+            auto count = Dropdown::getItemsPerRow(landCount);
 
-            dropdown::showImage(xPos, yPos, 20, 20, heightOffset, colour, count, landCount);
+            Dropdown::showImage(xPos, yPos, 20, 20, heightOffset, colour, count, landCount);
 
             auto landIndex = 0;
             for (uint16_t i = 0; i < ObjectManager::getMaxObjects(object_type::land); i++)
@@ -1015,13 +1015,13 @@ namespace OpenLoco::Ui::windows::terraform
                     continue;
 
                 if (landObj->name == _lastSelectedLand)
-                    dropdown::setHighlightedItem(landIndex);
+                    Dropdown::setHighlightedItem(landIndex);
 
                 auto args = FormatArguments();
                 args.push(landObj->var_16 + Land::ImageIds::landscape_generator_tile_icon);
                 args.push<uint16_t>(i);
 
-                dropdown::add(landIndex, 0xFFFE, args);
+                Dropdown::add(landIndex, 0xFFFE, args);
 
                 landIndex++;
             }
@@ -1067,7 +1067,7 @@ namespace OpenLoco::Ui::windows::terraform
                 return;
             if (itemIndex == -1)
                 return;
-            _lastSelectedLand = dropdown::getHighlightedItem();
+            _lastSelectedLand = Dropdown::getHighlightedItem();
             self->invalidate();
         }
 

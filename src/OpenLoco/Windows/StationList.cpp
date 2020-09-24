@@ -610,7 +610,7 @@ namespace OpenLoco::Ui::windows::station_list
         if (itemIndex == -1)
             return;
 
-        company_id_t companyId = dropdown::getCompanyIdFromSelection(itemIndex);
+        company_id_t companyId = Dropdown::getCompanyIdFromSelection(itemIndex);
 
         // Try to find an open station list for this company.
         auto companyWindow = WindowManager::bringToFront(WindowType::stationList, companyId);
@@ -642,7 +642,7 @@ namespace OpenLoco::Ui::windows::station_list
     static void onMouseDown(Ui::window* window, widget_index widgetIndex)
     {
         if (widgetIndex == widx::company_select)
-            dropdown::populateCompanySelect(window, &window->widgets[widgetIndex]);
+            Dropdown::populateCompanySelect(window, &window->widgets[widgetIndex]);
     }
 
     // 0x00491785

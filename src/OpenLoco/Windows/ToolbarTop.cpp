@@ -113,24 +113,24 @@ namespace OpenLoco::Ui::windows::toolbar_top::game
     // 0x0043B0F7
     static void loadsaveMenuMouseDown(window* window, widget_index widgetIndex)
     {
-        dropdown::add(0, StringIds::menu_load_game);
-        dropdown::add(1, StringIds::menu_save_game);
-        dropdown::add(2, 0);
-        dropdown::add(3, StringIds::menu_about);
-        dropdown::add(4, StringIds::options);
-        dropdown::add(5, StringIds::menu_screenshot);
-        dropdown::add(6, 0);
-        dropdown::add(7, StringIds::menu_quit_to_menu);
-        dropdown::add(8, StringIds::menu_exit_openloco);
-        dropdown::showBelow(window, widgetIndex, 9, 0);
-        dropdown::setHighlightedItem(1);
+        Dropdown::add(0, StringIds::menu_load_game);
+        Dropdown::add(1, StringIds::menu_save_game);
+        Dropdown::add(2, 0);
+        Dropdown::add(3, StringIds::menu_about);
+        Dropdown::add(4, StringIds::options);
+        Dropdown::add(5, StringIds::menu_screenshot);
+        Dropdown::add(6, 0);
+        Dropdown::add(7, StringIds::menu_quit_to_menu);
+        Dropdown::add(8, StringIds::menu_exit_openloco);
+        Dropdown::showBelow(window, widgetIndex, 9, 0);
+        Dropdown::setHighlightedItem(1);
     }
 
     // 0x0043B154
     static void loadsaveMenuDropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
-            itemIndex = dropdown::getHighlightedItem();
+            itemIndex = Dropdown::getHighlightedItem();
 
         switch (itemIndex)
         {
@@ -174,26 +174,26 @@ namespace OpenLoco::Ui::windows::toolbar_top::game
     // 0x0043B04B
     static void audioMenuMouseDown(window* window, widget_index widgetIndex)
     {
-        dropdown::add(0, StringIds::dropdown_without_checkmark, StringIds::menu_mute);
-        dropdown::add(1, StringIds::dropdown_without_checkmark, StringIds::menu_play_music);
-        dropdown::add(2, 0);
-        dropdown::add(3, StringIds::menu_music_options);
-        dropdown::showBelow(window, widgetIndex, 4, 0);
+        Dropdown::add(0, StringIds::dropdown_without_checkmark, StringIds::menu_mute);
+        Dropdown::add(1, StringIds::dropdown_without_checkmark, StringIds::menu_play_music);
+        Dropdown::add(2, 0);
+        Dropdown::add(3, StringIds::menu_music_options);
+        Dropdown::showBelow(window, widgetIndex, 4, 0);
 
         if (!Audio::isAudioEnabled())
-            dropdown::setItemSelected(0);
+            Dropdown::setItemSelected(0);
 
         if (config::get().music_playing)
-            dropdown::setItemSelected(1);
+            Dropdown::setItemSelected(1);
 
-        dropdown::setHighlightedItem(0);
+        Dropdown::setHighlightedItem(0);
     }
 
     // 0x0043B0B8
     static void audioMenuDropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
-            itemIndex = dropdown::getHighlightedItem();
+            itemIndex = Dropdown::getHighlightedItem();
 
         switch (itemIndex)
         {
@@ -240,7 +240,7 @@ namespace OpenLoco::Ui::windows::toolbar_top::game
 
         auto company_colour = companymgr::getPlayerCompanyColour();
 
-        // Add available objects to dropdown.
+        // Add available objects to Dropdown.
         uint16_t highlighted_item = 0;
         for (i = 0; available_objects[i] != -1 && i < std::size(available_objects); i++)
         {
@@ -261,21 +261,21 @@ namespace OpenLoco::Ui::windows::toolbar_top::game
                 obj_image = Gfx::recolour(track->var_1E, company_colour);
             }
 
-            dropdown::add(i, StringIds::menu_sprite_stringid_construction, { obj_image, obj_string_id });
+            Dropdown::add(i, StringIds::menu_sprite_stringid_construction, { obj_image, obj_string_id });
 
             if (objIndex == last_railroad_option)
                 highlighted_item = i;
         }
 
-        dropdown::showBelow(window, widgetIndex, i, 25, (1 << 6));
-        dropdown::setHighlightedItem(highlighted_item);
+        Dropdown::showBelow(window, widgetIndex, i, 25, (1 << 6));
+        Dropdown::setHighlightedItem(highlighted_item);
     }
 
     // 0x0043A39F
     static void railroadMenuDropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
-            itemIndex = dropdown::getHighlightedItem();
+            itemIndex = Dropdown::getHighlightedItem();
 
         if (itemIndex == -1)
             return;
@@ -291,14 +291,14 @@ namespace OpenLoco::Ui::windows::toolbar_top::game
         auto interface = ObjectManager::get<interface_skin_object>();
         if (addr<0x525FAC, int8_t>() != -1)
         {
-            dropdown::add(ddIndex, StringIds::menu_sprite_stringid_construction, { interface->img + InterfaceSkin::ImageIds::toolbar_menu_airport, StringIds::menu_airport });
+            Dropdown::add(ddIndex, StringIds::menu_sprite_stringid_construction, { interface->img + InterfaceSkin::ImageIds::toolbar_menu_airport, StringIds::menu_airport });
             menu_options[ddIndex] = 0;
             ddIndex++;
         }
 
         if (addr<0x525FAD, int8_t>() != -1)
         {
-            dropdown::add(ddIndex, StringIds::menu_sprite_stringid_construction, { interface->img + InterfaceSkin::ImageIds::toolbar_menu_ship_port, StringIds::menu_ship_port });
+            Dropdown::add(ddIndex, StringIds::menu_sprite_stringid_construction, { interface->img + InterfaceSkin::ImageIds::toolbar_menu_ship_port, StringIds::menu_ship_port });
             menu_options[ddIndex] = 1;
             ddIndex++;
         }
@@ -306,20 +306,20 @@ namespace OpenLoco::Ui::windows::toolbar_top::game
         if (ddIndex == 0)
             return;
 
-        dropdown::showBelow(window, widgetIndex, ddIndex, 25, (1 << 6));
+        Dropdown::showBelow(window, widgetIndex, ddIndex, 25, (1 << 6));
 
         ddIndex = 0;
         if (last_port_option != menu_options[0])
             ddIndex++;
 
-        dropdown::setHighlightedItem(ddIndex);
+        Dropdown::setHighlightedItem(ddIndex);
     }
 
     // 0x0043AA0A
     static void portMenuDropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
-            itemIndex = dropdown::getHighlightedItem();
+            itemIndex = Dropdown::getHighlightedItem();
 
         last_port_option = menu_options[itemIndex];
 
@@ -370,20 +370,20 @@ namespace OpenLoco::Ui::windows::toolbar_top::game
 
             uint32_t vehicle_image = Gfx::recolour(interface_param.build_image, company_colour);
 
-            dropdown::add(ddIndex, StringIds::menu_sprite_stringid, { interface->img + vehicle_image, interface_param.build_string });
+            Dropdown::add(ddIndex, StringIds::menu_sprite_stringid, { interface->img + vehicle_image, interface_param.build_string });
             menu_options[ddIndex] = vehicleType;
             ddIndex++;
         }
 
-        dropdown::showBelow(window, widgetIndex, ddIndex, 25, (1 << 6));
-        dropdown::setHighlightedItem(last_build_vehicles_option);
+        Dropdown::showBelow(window, widgetIndex, ddIndex, 25, (1 << 6));
+        Dropdown::setHighlightedItem(last_build_vehicles_option);
     }
 
     // 0x0043ADC7
     static void buildVehiclesMenuDropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
-            itemIndex = dropdown::getHighlightedItem();
+            itemIndex = Dropdown::getHighlightedItem();
 
         if (itemIndex == -1)
             return;
@@ -434,20 +434,20 @@ namespace OpenLoco::Ui::windows::toolbar_top::game
             else
                 vehicle_string_id = interface_param.num_plural;
 
-            dropdown::add(ddIndex, StringIds::menu_sprite_stringid, { interface->img + vehicle_image, vehicle_string_id, vehicle_count });
+            Dropdown::add(ddIndex, StringIds::menu_sprite_stringid, { interface->img + vehicle_image, vehicle_string_id, vehicle_count });
             menu_options[ddIndex] = vehicleType;
             ddIndex++;
         }
 
-        dropdown::showBelow(window, widgetIndex, ddIndex, 25, (1 << 6));
-        dropdown::setHighlightedItem(last_vehicles_option);
+        Dropdown::showBelow(window, widgetIndex, ddIndex, 25, (1 << 6));
+        Dropdown::setHighlightedItem(last_vehicles_option);
     }
 
     // 0x0043ACEF
     static void vehiclesMenuDropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
-            itemIndex = dropdown::getHighlightedItem();
+            itemIndex = Dropdown::getHighlightedItem();
 
         if (itemIndex == -1)
             return;
@@ -468,20 +468,20 @@ namespace OpenLoco::Ui::windows::toolbar_top::game
         uint32_t company_colour = companymgr::getPlayerCompanyColour();
         sprite_base = Gfx::recolour(sprite_base, company_colour);
 
-        dropdown::add(0, StringIds::menu_sprite_stringid, { sprite_base + InterfaceSkin::ImageIds::all_stations, StringIds::all_stations });
-        dropdown::add(1, StringIds::menu_sprite_stringid, { sprite_base + InterfaceSkin::ImageIds::rail_stations, StringIds::rail_stations });
-        dropdown::add(2, StringIds::menu_sprite_stringid, { sprite_base + InterfaceSkin::ImageIds::road_stations, StringIds::road_stations });
-        dropdown::add(3, StringIds::menu_sprite_stringid, { sprite_base + InterfaceSkin::ImageIds::airports, StringIds::airports });
-        dropdown::add(4, StringIds::menu_sprite_stringid, { sprite_base + InterfaceSkin::ImageIds::ship_ports, StringIds::ship_ports });
-        dropdown::showBelow(window, widgetIndex, 5, 25, (1 << 6));
-        dropdown::setHighlightedItem(0);
+        Dropdown::add(0, StringIds::menu_sprite_stringid, { sprite_base + InterfaceSkin::ImageIds::all_stations, StringIds::all_stations });
+        Dropdown::add(1, StringIds::menu_sprite_stringid, { sprite_base + InterfaceSkin::ImageIds::rail_stations, StringIds::rail_stations });
+        Dropdown::add(2, StringIds::menu_sprite_stringid, { sprite_base + InterfaceSkin::ImageIds::road_stations, StringIds::road_stations });
+        Dropdown::add(3, StringIds::menu_sprite_stringid, { sprite_base + InterfaceSkin::ImageIds::airports, StringIds::airports });
+        Dropdown::add(4, StringIds::menu_sprite_stringid, { sprite_base + InterfaceSkin::ImageIds::ship_ports, StringIds::ship_ports });
+        Dropdown::showBelow(window, widgetIndex, 5, 25, (1 << 6));
+        Dropdown::setHighlightedItem(0);
     }
 
     // 0x0043A596
     static void stationsMenuDropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
-            itemIndex = dropdown::getHighlightedItem();
+            itemIndex = Dropdown::getHighlightedItem();
 
         if (itemIndex > 4)
             return;

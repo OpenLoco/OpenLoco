@@ -14,7 +14,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::Ui::dropdown
+namespace OpenLoco::Ui::Dropdown
 {
     static constexpr int bytes_per_item = 8;
 
@@ -443,7 +443,7 @@ namespace OpenLoco::Ui::dropdown
      * @param count
      * @param itemHeight
      * @param flags
-     * Custom dropdown height if flags & (1<<6) is true
+     * Custom Dropdown height if flags & (1<<6) is true
      */
     void show(int16_t x, int16_t y, int16_t width, int16_t height, colour_t colour, size_t count, uint8_t itemHeight, uint8_t flags)
     {
@@ -687,7 +687,7 @@ namespace OpenLoco::Ui::dropdown
      * itemHeight @ <ah>
      * count @<bl>
      * flags @<bh>
-     * Custom dropdown height if flags & (1<<6) is true
+     * Custom Dropdown height if flags & (1<<6) is true
      */
     void showText(int16_t x, int16_t y, int16_t width, int16_t height, uint8_t itemHeight, colour_t colour, size_t count, uint8_t flags)
     {

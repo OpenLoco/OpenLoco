@@ -524,12 +524,12 @@ namespace OpenLoco::Ui::windows::LandscapeGeneration
                 case widx::topography_style_btn:
                 {
                     widget_t& target = window->widgets[widx::topography_style];
-                    dropdown::show(window->x + target.left, window->y + target.top, target.width() - 4, target.height(), window->colours[1], std::size(topographyStyleIds), 0x80);
+                    Dropdown::show(window->x + target.left, window->y + target.top, target.width() - 4, target.height(), window->colours[1], std::size(topographyStyleIds), 0x80);
 
                     for (size_t i = 0; i < std::size(topographyStyleIds); i++)
-                        dropdown::add(i, topographyStyleIds[i]);
+                        Dropdown::add(i, topographyStyleIds[i]);
 
-                    dropdown::setHighlightedItem(options.topographyStyle);
+                    Dropdown::setHighlightedItem(options.topographyStyle);
                     break;
                 }
 
@@ -608,12 +608,12 @@ namespace OpenLoco::Ui::windows::LandscapeGeneration
             const widget_t& target = window->widgets[widx::scrollview];
             const int16_t dropdownX = window->x + target.left + 151;
             const int16_t dropdownY = window->y + target.top + 6 + landIndex * rowHeight - window->scroll_areas[0].contentOffsetY;
-            dropdown::show(dropdownX, dropdownY, 188, 12, window->colours[1], std::size(landDistributionLabelIds), 0x80);
+            Dropdown::show(dropdownX, dropdownY, 188, 12, window->colours[1], std::size(landDistributionLabelIds), 0x80);
 
             for (size_t i = 0; i < std::size(landDistributionLabelIds); i++)
-                dropdown::add(i, StringIds::dropdown_stringid, landDistributionLabelIds[i]);
+                Dropdown::add(i, StringIds::dropdown_stringid, landDistributionLabelIds[i]);
 
-            dropdown::setItemSelected(s5::getOptions().landDistributionPatterns[landIndex]);
+            Dropdown::setItemSelected(s5::getOptions().landDistributionPatterns[landIndex]);
         }
 
         // 0x0043DEBF
@@ -1023,12 +1023,12 @@ namespace OpenLoco::Ui::windows::LandscapeGeneration
                 case widx::max_town_size_btn:
                 {
                     widget_t& target = window->widgets[widx::max_town_size];
-                    dropdown::show(window->x + target.left, window->y + target.top, target.width() - 4, target.height(), window->colours[1], std::size(townSizeLabels), 0x80);
+                    Dropdown::show(window->x + target.left, window->y + target.top, target.width() - 4, target.height(), window->colours[1], std::size(townSizeLabels), 0x80);
 
                     for (size_t i = 0; i < std::size(townSizeLabels); i++)
-                        dropdown::add(i, townSizeLabels[i]);
+                        Dropdown::add(i, townSizeLabels[i]);
 
-                    dropdown::setHighlightedItem(options.maxTownSize);
+                    Dropdown::setHighlightedItem(options.maxTownSize);
                     break;
                 }
             }
@@ -1134,12 +1134,12 @@ namespace OpenLoco::Ui::windows::LandscapeGeneration
                 return;
 
             widget_t& target = window->widgets[widx::num_industries];
-            dropdown::show(window->x + target.left, window->y + target.top, target.width() - 4, target.height(), window->colours[1], std::size(numIndustriesLabels), 0x80);
+            Dropdown::show(window->x + target.left, window->y + target.top, target.width() - 4, target.height(), window->colours[1], std::size(numIndustriesLabels), 0x80);
 
             for (size_t i = 0; i < std::size(numIndustriesLabels); i++)
-                dropdown::add(i, numIndustriesLabels[i]);
+                Dropdown::add(i, numIndustriesLabels[i]);
 
-            dropdown::setHighlightedItem(s5::getOptions().numberOfIndustries);
+            Dropdown::setHighlightedItem(s5::getOptions().numberOfIndustries);
         }
 
         // 0x0043EBCA

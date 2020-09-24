@@ -420,12 +420,12 @@ namespace OpenLoco::Ui::windows
 
     static void sub_439112(window* window)
     {
-        dropdown::add(0, StringIds::tutorial_1_title);
-        dropdown::add(1, StringIds::tutorial_2_title);
-        dropdown::add(2, StringIds::tutorial_3_title);
+        Dropdown::add(0, StringIds::tutorial_1_title);
+        Dropdown::add(1, StringIds::tutorial_2_title);
+        Dropdown::add(2, StringIds::tutorial_3_title);
 
         widget_t* widget = &window->widgets[widx::tutorial_btn];
-        dropdown::showText(
+        Dropdown::showText(
             window->x + widget->left,
             window->y + widget->top,
             widget->width(),

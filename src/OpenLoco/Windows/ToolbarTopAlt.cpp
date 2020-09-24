@@ -106,24 +106,24 @@ namespace OpenLoco::Ui::windows::toolbar_top::editor
     // 0x0043D638
     static void loadsaveMenuMouseDown(window* window, widget_index widgetIndex)
     {
-        dropdown::add(0, StringIds::load_landscape);
-        dropdown::add(1, StringIds::save_landscape);
-        dropdown::add(2, 0);
-        dropdown::add(3, StringIds::menu_about);
-        dropdown::add(4, StringIds::options);
-        dropdown::add(5, StringIds::menu_screenshot);
-        dropdown::add(6, 0);
-        dropdown::add(7, StringIds::menu_quit_to_menu);
-        dropdown::add(8, StringIds::menu_exit_openloco);
-        dropdown::showBelow(window, widgetIndex, 9, 0);
-        dropdown::setHighlightedItem(1);
+        Dropdown::add(0, StringIds::load_landscape);
+        Dropdown::add(1, StringIds::save_landscape);
+        Dropdown::add(2, 0);
+        Dropdown::add(3, StringIds::menu_about);
+        Dropdown::add(4, StringIds::options);
+        Dropdown::add(5, StringIds::menu_screenshot);
+        Dropdown::add(6, 0);
+        Dropdown::add(7, StringIds::menu_quit_to_menu);
+        Dropdown::add(8, StringIds::menu_exit_openloco);
+        Dropdown::showBelow(window, widgetIndex, 9, 0);
+        Dropdown::setHighlightedItem(1);
     }
 
     // 0x0043D695
     static void loadsaveMenuDropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
-            itemIndex = dropdown::getHighlightedItem();
+            itemIndex = Dropdown::getHighlightedItem();
 
         switch (itemIndex)
         {
@@ -167,20 +167,20 @@ namespace OpenLoco::Ui::windows::toolbar_top::editor
     // 0x0043D789
     static void audioMenuMouseDown(window* window, widget_index widgetIndex)
     {
-        dropdown::add(0, StringIds::dropdown_without_checkmark, StringIds::menu_mute);
-        dropdown::showBelow(window, widgetIndex, 1, 0);
+        Dropdown::add(0, StringIds::dropdown_without_checkmark, StringIds::menu_mute);
+        Dropdown::showBelow(window, widgetIndex, 1, 0);
 
         if (!Audio::isAudioEnabled())
-            dropdown::setItemSelected(0);
+            Dropdown::setItemSelected(0);
 
-        dropdown::setHighlightedItem(0);
+        Dropdown::setHighlightedItem(0);
     }
 
     // 0x0043D7C1
     static void audioMenuDropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
-            itemIndex = dropdown::getHighlightedItem();
+            itemIndex = Dropdown::getHighlightedItem();
 
         switch (itemIndex)
         {
@@ -193,16 +193,16 @@ namespace OpenLoco::Ui::windows::toolbar_top::editor
     // 0x004402BC
     static void mapGenerationMenuMouseDown(window* window, widget_index widgetIndex)
     {
-        dropdown::add(0, StringIds::landscape_generation_options);
-        dropdown::showBelow(window, widgetIndex, 1, 0);
-        dropdown::setHighlightedItem(0);
+        Dropdown::add(0, StringIds::landscape_generation_options);
+        Dropdown::showBelow(window, widgetIndex, 1, 0);
+        Dropdown::setHighlightedItem(0);
     }
 
     // 0x004402DA
     static void mapGenerationMenuDropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
-            itemIndex = dropdown::getHighlightedItem();
+            itemIndex = Dropdown::getHighlightedItem();
 
         switch (itemIndex)
         {

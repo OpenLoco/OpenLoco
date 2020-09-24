@@ -1231,7 +1231,7 @@ namespace OpenLoco::Ui::windows::construction::construction
         auto width = 155;
         auto height = widget.height();
 
-        dropdown::show(x, y, width, height, self->colours[1], bridgeCount, 22, flags);
+        Dropdown::show(x, y, width, height, self->colours[1], bridgeCount, 22, flags);
         for (auto i = 0; i < 9; i++)
         {
             auto bridge = _bridgeList[i];
@@ -1240,7 +1240,7 @@ namespace OpenLoco::Ui::windows::construction::construction
                 return;
 
             if (bridge == _lastSelectedBridge)
-                dropdown::setHighlightedItem(i);
+                Dropdown::setHighlightedItem(i);
 
             auto bridgeObj = ObjectManager::get<bridge_object>(bridge);
             auto company = companymgr::get(_playerCompany);
@@ -1262,7 +1262,7 @@ namespace OpenLoco::Ui::windows::construction::construction
             }
             args.push<uint16_t>(bridgeObj->max_height);
 
-            dropdown::add(i, StringIds::dropdown_bridge_stats, args);
+            Dropdown::add(i, StringIds::dropdown_bridge_stats, args);
         }
     }
 

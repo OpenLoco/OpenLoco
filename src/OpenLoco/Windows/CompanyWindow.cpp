@@ -321,7 +321,7 @@ namespace OpenLoco::Ui::windows::CompanyWindow
         static void onMouseDown(window* self, widget_index widgetIndex)
         {
             if (widgetIndex == common::widx::company_select)
-                dropdown::populateCompanySelect(self, &self->widgets[widgetIndex]);
+                Dropdown::populateCompanySelect(self, &self->widgets[widgetIndex]);
         }
 
         // 0x0043228E
@@ -915,7 +915,7 @@ namespace OpenLoco::Ui::windows::CompanyWindow
             switch (widgetIndex)
             {
                 case common::widx::company_select:
-                    dropdown::populateCompanySelect(self, &self->widgets[widgetIndex]);
+                    Dropdown::populateCompanySelect(self, &self->widgets[widgetIndex]);
                     break;
 
                 case widx::build_hq:
@@ -1425,7 +1425,7 @@ namespace OpenLoco::Ui::windows::CompanyWindow
             switch (widgetIndex)
             {
                 case common::widx::company_select:
-                    dropdown::populateCompanySelect(self, &self->widgets[widgetIndex]);
+                    Dropdown::populateCompanySelect(self, &self->widgets[widgetIndex]);
                     break;
 
                 case main_colour_scheme:
@@ -1505,7 +1505,7 @@ namespace OpenLoco::Ui::windows::CompanyWindow
 
                     gGameCommandErrorTitle = StringIds::error_cant_change_colour_scheme;
 
-                    const int8_t colour = dropdown::getItemArgument(itemIndex, 2);
+                    const int8_t colour = Dropdown::getItemArgument(itemIndex, 2);
                     const auto vehicleType = widgetIndex - widx::main_colour_scheme;
 
                     GameCommands::do_19(0, colour, vehicleType, 0, self->number);
@@ -1529,7 +1529,7 @@ namespace OpenLoco::Ui::windows::CompanyWindow
 
                     gGameCommandErrorTitle = StringIds::error_cant_change_colour_scheme;
 
-                    const int8_t colour = dropdown::getItemArgument(itemIndex, 2);
+                    const int8_t colour = Dropdown::getItemArgument(itemIndex, 2);
                     const auto vehicleType = widgetIndex - widx::secondary_colour_scheme;
 
                     GameCommands::do_19(1, colour, vehicleType, 0, self->number);
@@ -1925,7 +1925,7 @@ namespace OpenLoco::Ui::windows::CompanyWindow
             switch (widgetIndex)
             {
                 case common::widx::company_select:
-                    dropdown::populateCompanySelect(self, &self->widgets[widgetIndex]);
+                    Dropdown::populateCompanySelect(self, &self->widgets[widgetIndex]);
                     break;
 
                 case widx::loan_decrease:
@@ -2201,7 +2201,7 @@ namespace OpenLoco::Ui::windows::CompanyWindow
         static void onMouseDown(window* self, widget_index widgetIndex)
         {
             if (widgetIndex == common::widx::company_select)
-                dropdown::populateCompanySelect(self, &self->widgets[widgetIndex]);
+                Dropdown::populateCompanySelect(self, &self->widgets[widgetIndex]);
         }
 
         // 0x00433C16
@@ -2447,7 +2447,7 @@ namespace OpenLoco::Ui::windows::CompanyWindow
             if (itemIndex == -1)
                 return;
 
-            company_id_t companyId = dropdown::getCompanyIdFromSelection(itemIndex);
+            company_id_t companyId = Dropdown::getCompanyIdFromSelection(itemIndex);
 
             // Try to find an open company window for this company.
             auto companyWindow = WindowManager::bringToFront(WindowType::company, companyId);

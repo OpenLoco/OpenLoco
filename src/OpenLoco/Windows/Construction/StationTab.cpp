@@ -63,10 +63,10 @@ namespace OpenLoco::Ui::windows::construction::station
         {
             auto station = _stationList[stationIndex];
             if (station == _lastSelectedStationType)
-                dropdown::setHighlightedItem(stationIndex);
+                Dropdown::setHighlightedItem(stationIndex);
 
             auto obj = ObjectManager::get<obj_type>(station);
-            dropdown::add(stationIndex, obj->name);
+            Dropdown::add(stationIndex, obj->name);
         }
     }
 
@@ -86,7 +86,7 @@ namespace OpenLoco::Ui::windows::construction::station
                 auto yPos = widget.top + self->y;
                 auto width = widget.width() + 2;
                 auto height = widget.height();
-                dropdown::show(xPos, yPos, width, height, self->colours[1], stationCount, (1 << 7));
+                Dropdown::show(xPos, yPos, width, height, self->colours[1], stationCount, (1 << 7));
 
                 if (_byte_1136063 & (1 << 7))
                 {

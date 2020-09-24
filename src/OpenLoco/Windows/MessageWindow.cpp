@@ -456,15 +456,15 @@ namespace OpenLoco::Ui::MessageWindow
                     auto height = widget.height() + 2;
                     auto flags = 1 << 7;
 
-                    dropdown::show(xPos, yPos, width, height, self->colours[1], 3, flags);
+                    Dropdown::show(xPos, yPos, width, height, self->colours[1], 3, flags);
 
-                    dropdown::add(0, StringIds::dropdown_stringid, StringIds::message_off);
-                    dropdown::add(1, StringIds::dropdown_stringid, StringIds::message_ticker);
-                    dropdown::add(2, StringIds::dropdown_stringid, StringIds::message_window);
+                    Dropdown::add(0, StringIds::dropdown_stringid, StringIds::message_off);
+                    Dropdown::add(1, StringIds::dropdown_stringid, StringIds::message_ticker);
+                    Dropdown::add(2, StringIds::dropdown_stringid, StringIds::message_window);
 
                     auto dropdownIndex = config::get().news_settings[(widgetIndex - 7) / 2];
 
-                    dropdown::setItemSelected(static_cast<size_t>(dropdownIndex));
+                    Dropdown::setItemSelected(static_cast<size_t>(dropdownIndex));
                     break;
                 }
             }

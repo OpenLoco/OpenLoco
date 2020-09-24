@@ -52,7 +52,7 @@ namespace OpenLoco
     class FormatArguments;
 }
 
-namespace OpenLoco::Ui::dropdown
+namespace OpenLoco::Ui::Dropdown
 {
     void add(size_t index, string_id title);
     void add(size_t index, string_id title, std::initializer_list<format_arg> l);

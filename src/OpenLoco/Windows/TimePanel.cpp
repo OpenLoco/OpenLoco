@@ -236,16 +236,16 @@ namespace OpenLoco::Ui::TimePanel
 
         if (isNetworked())
         {
-            dropdown::add(0, StringIds::menu_sprite_stringid, { (uint32_t)skin->img + InterfaceSkin::ImageIds::phone, StringIds::chat_send_message });
-            dropdown::add(1, StringIds::menu_sprite_stringid, { (uint32_t)skin->img + map_sprites_by_rotation[gCurrentRotation], StringIds::menu_map });
-            dropdown::showBelow(self, widgetIndex, 2, 25, (1 << 6));
-            dropdown::setHighlightedItem(1);
+            Dropdown::add(0, StringIds::menu_sprite_stringid, { (uint32_t)skin->img + InterfaceSkin::ImageIds::phone, StringIds::chat_send_message });
+            Dropdown::add(1, StringIds::menu_sprite_stringid, { (uint32_t)skin->img + map_sprites_by_rotation[gCurrentRotation], StringIds::menu_map });
+            Dropdown::showBelow(self, widgetIndex, 2, 25, (1 << 6));
+            Dropdown::setHighlightedItem(1);
         }
         else
         {
-            dropdown::add(0, StringIds::menu_sprite_stringid, { (uint32_t)skin->img + map_sprites_by_rotation[gCurrentRotation], StringIds::menu_map });
-            dropdown::showBelow(self, widgetIndex, 1, 25, (1 << 6));
-            dropdown::setHighlightedItem(0);
+            Dropdown::add(0, StringIds::menu_sprite_stringid, { (uint32_t)skin->img + map_sprites_by_rotation[gCurrentRotation], StringIds::menu_map });
+            Dropdown::showBelow(self, widgetIndex, 1, 25, (1 << 6));
+            Dropdown::setHighlightedItem(0);
         }
     }
 
@@ -253,7 +253,7 @@ namespace OpenLoco::Ui::TimePanel
     static void mapDropdown(window* self, widget_index widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
-            itemIndex = dropdown::getHighlightedItem();
+            itemIndex = Dropdown::getHighlightedItem();
 
         if (isNetworked())
         {

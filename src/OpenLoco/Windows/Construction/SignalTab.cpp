@@ -59,17 +59,17 @@ namespace OpenLoco::Ui::windows::construction::signal
                 auto width = widget.width() + 2;
                 auto height = widget.height();
 
-                dropdown::show(xPos, yPos, width, height, self->colours[1], signalCount, (1 << 7));
+                Dropdown::show(xPos, yPos, width, height, self->colours[1], signalCount, (1 << 7));
 
                 for (auto signalIndex = 0; signalIndex < signalCount; signalIndex++)
                 {
                     auto signal = _signalList[signalIndex];
                     if (signal == _lastSelectedSignal)
-                        dropdown::setHighlightedItem(signalIndex);
+                        Dropdown::setHighlightedItem(signalIndex);
 
                     auto trainSignalObj = ObjectManager::get<train_signal_object>(signal);
 
-                    dropdown::add(signalIndex, trainSignalObj->name);
+                    Dropdown::add(signalIndex, trainSignalObj->name);
                 }
                 break;
             }

@@ -59,7 +59,7 @@ namespace OpenLoco::Ui::windows::PlayerInfoPanel
     static loco_global<uint16_t, 0x0052338A> _tooltipTimeout;
     static loco_global<int32_t, 0x00e3f0b8> gCurrentRotation;
     static loco_global<uint8_t, 0x00508F1A> game_speed;
-    static loco_global<uint16_t, 0x0113DC78> _113DC78; // dropdown flags?
+    static loco_global<uint16_t, 0x0113DC78> _113DC78; // Dropdown flags?
 
     static void prepareDraw(window* window);
     static void draw(Ui::window* window, Gfx::drawpixelinfo_t* dpi);
@@ -121,7 +121,7 @@ namespace OpenLoco::Ui::windows::PlayerInfoPanel
             args.push<uint16_t>(0); // Needed after a user string id
             formatPerformanceIndex(company->performance_index, args);
 
-            dropdown::add(index, StringIds::dropdown_company_performance, args);
+            Dropdown::add(index, StringIds::dropdown_company_performance, args);
 
             if (isPlayerCompany(company->id()))
             {
@@ -131,11 +131,11 @@ namespace OpenLoco::Ui::windows::PlayerInfoPanel
             index++;
         }
 
-        dropdown::add(index++, StringIds::dropdown_companies_list, ImageIds::company_list_dropdown_icon);
-        dropdown::showBelow(self, widgetIndex, index, 25, (1 << 6));
+        Dropdown::add(index++, StringIds::dropdown_companies_list, ImageIds::company_list_dropdown_icon);
+        Dropdown::showBelow(self, widgetIndex, index, 25, (1 << 6));
         if (highlightIndex != -1)
         {
-            dropdown::setHighlightedItem(highlightIndex);
+            Dropdown::setHighlightedItem(highlightIndex);
         }
         _113DC78 = _113DC78 | (1 << 1);
     }
@@ -145,7 +145,7 @@ namespace OpenLoco::Ui::windows::PlayerInfoPanel
     {
         if (itemIndex == -1)
         {
-            itemIndex = dropdown::getHighlightedItem();
+            itemIndex = Dropdown::getHighlightedItem();
         }
 
         // If its index is bigger than the list then its the company list extra item
