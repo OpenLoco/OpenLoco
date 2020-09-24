@@ -352,7 +352,7 @@ namespace OpenLoco::Ui::Windows::Industry
         return window;
     }
 
-    namespace production
+    namespace Production
     {
 
         static const Gfx::ui_size_t minWindowSize = { 299, 282 };
@@ -556,7 +556,7 @@ namespace OpenLoco::Ui::Windows::Industry
 
         static TabInformation tabInformationByTabOffset[] = {
             { Industry::widgets, widx::tab_industry, &Industry::events, &Industry::enabledWidgets },
-            { production_2::widgets, widx::tab_production, &production::events, &Common::enabledWidgets },
+            { production_2::widgets, widx::tab_production, &Production::events, &Common::enabledWidgets },
             { production_2::widgets, widx::tab_production_2, &production_2::events, &Common::enabledWidgets },
             { transported::widgets, widx::tab_transported, &transported::events, &Common::enabledWidgets }
         };
@@ -919,7 +919,7 @@ namespace OpenLoco::Ui::Windows::Industry
         static void initEvents()
         {
             Industry::initEvents();
-            production::initEvents();
+            Production::initEvents();
             production_2::initEvents();
             transported::initEvents();
         }
