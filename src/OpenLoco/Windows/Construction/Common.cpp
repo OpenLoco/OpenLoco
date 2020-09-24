@@ -32,14 +32,14 @@ namespace OpenLoco::Ui::Windows::Construction
 
         if (window != nullptr)
         {
-            common::setDisabledWidgets(window);
+            Common::setDisabledWidgets(window);
         }
 
         window = WindowManager::find(WindowType::construction);
 
         if (window != nullptr)
         {
-            window->callOnMouseUp(common::widx::tab_station);
+            window->callOnMouseUp(Common::widx::tab_station);
         }
         return window;
     }
@@ -50,7 +50,7 @@ namespace OpenLoco::Ui::Windows::Construction
 
         if (window != nullptr)
         {
-            common::setDisabledWidgets(window);
+            Common::setDisabledWidgets(window);
         }
 
         construction::activateSelectedConstructionWidgets();
@@ -66,9 +66,9 @@ namespace OpenLoco::Ui::Windows::Construction
 
     static window* createTrackConstructionWindow()
     {
-        common::createConstructionWindow();
+        Common::createConstructionWindow();
 
-        common::refreshSignalList(_signalList, _trackType);
+        Common::refreshSignalList(_signalList, _trackType);
 
         auto lastSignal = _scenarioSignals[_trackType];
 
@@ -77,7 +77,7 @@ namespace OpenLoco::Ui::Windows::Construction
 
         _lastSelectedSignal = lastSignal;
 
-        common::refreshStationList(_stationList, _trackType, TransportMode::rail);
+        Common::refreshStationList(_stationList, _trackType, TransportMode::rail);
 
         auto lastStation = _scenarioTrainStations[_trackType];
 
@@ -86,7 +86,7 @@ namespace OpenLoco::Ui::Windows::Construction
 
         _lastSelectedStationType = lastStation;
 
-        common::refreshBridgeList(_bridgeList, _trackType, TransportMode::rail);
+        Common::refreshBridgeList(_bridgeList, _trackType, TransportMode::rail);
 
         auto lastBridge = _scenarioBridges[_trackType];
 
@@ -95,7 +95,7 @@ namespace OpenLoco::Ui::Windows::Construction
 
         _lastSelectedBridge = lastBridge;
 
-        common::refreshModList(_modList, _trackType, TransportMode::rail);
+        Common::refreshModList(_modList, _trackType, TransportMode::rail);
 
         auto lastMod = _scenarioTrackMods[_trackType];
 
@@ -110,11 +110,11 @@ namespace OpenLoco::Ui::Windows::Construction
 
     static window* createRoadConstructionWindow()
     {
-        common::createConstructionWindow();
+        Common::createConstructionWindow();
 
         _lastSelectedSignal = 0xFF;
 
-        common::refreshStationList(_stationList, _trackType, TransportMode::road);
+        Common::refreshStationList(_stationList, _trackType, TransportMode::road);
 
         auto lastStation = _scenarioRoadStations[(_trackType & ~(1ULL << 7))];
 
@@ -123,7 +123,7 @@ namespace OpenLoco::Ui::Windows::Construction
 
         _lastSelectedStationType = lastStation;
 
-        common::refreshBridgeList(_bridgeList, _trackType, TransportMode::road);
+        Common::refreshBridgeList(_bridgeList, _trackType, TransportMode::road);
 
         auto lastBridge = _scenarioBridges[(_trackType & ~(1ULL << 7))];
 
@@ -132,7 +132,7 @@ namespace OpenLoco::Ui::Windows::Construction
 
         _lastSelectedBridge = lastBridge;
 
-        common::refreshModList(_modList, _trackType, TransportMode::road);
+        Common::refreshModList(_modList, _trackType, TransportMode::road);
 
         auto lastMod = _scenarioRoadMods[(_trackType & ~(1ULL << 7))];
 
@@ -147,7 +147,7 @@ namespace OpenLoco::Ui::Windows::Construction
 
     static window* createDockConstructionWindow()
     {
-        common::createConstructionWindow();
+        Common::createConstructionWindow();
 
         _lastSelectedSignal = 0xFF;
 
@@ -159,7 +159,7 @@ namespace OpenLoco::Ui::Windows::Construction
         _lastSelectedMods = 0;
         _lastSelectedBridge = 0xFF;
 
-        common::refreshDockList(_stationList);
+        Common::refreshDockList(_stationList);
 
         if (_lastShipPort == 0xFF)
         {
@@ -175,7 +175,7 @@ namespace OpenLoco::Ui::Windows::Construction
 
     static window* createAirportConstructionWindow()
     {
-        common::createConstructionWindow();
+        Common::createConstructionWindow();
 
         _lastSelectedSignal = 0xFF;
         _modList[0] = 0xFF;
@@ -185,7 +185,7 @@ namespace OpenLoco::Ui::Windows::Construction
         _lastSelectedMods = 0;
         _lastSelectedBridge = 0xFF;
 
-        common::refreshAirportList(_stationList);
+        Common::refreshAirportList(_stationList);
 
         if (_lastAirport == 0xFF)
         {
@@ -279,7 +279,7 @@ namespace OpenLoco::Ui::Windows::Construction
                         {
                             _trackType = static_cast<uint8_t>(flags);
 
-                            common::sub_4A3A50();
+                            Common::sub_4A3A50();
 
                             _lastSelectedTrackPiece = 0;
                             _lastSelectedTrackGradient = 0;
@@ -292,7 +292,7 @@ namespace OpenLoco::Ui::Windows::Construction
         }
 
         WindowManager::closeConstructionWindows();
-        common::sub_4CD454();
+        Common::sub_4CD454();
 
         mainWindow = WindowManager::getMainWindow();
 
@@ -316,7 +316,7 @@ namespace OpenLoco::Ui::Windows::Construction
         _lastSelectedTrackGradient = 0;
         _lastSelectedTrackModSection = 0;
 
-        common::setTrackOptions(flags);
+        Common::setTrackOptions(flags);
 
         if (flags & (1 << 31))
         {
@@ -340,16 +340,16 @@ namespace OpenLoco::Ui::Windows::Construction
         auto window = WindowManager::find(WindowType::construction);
         if (window == nullptr)
             return;
-        if (window->current_tab == common::widx::tab_station - common::widx::tab_construction)
+        if (window->current_tab == Common::widx::tab_station - Common::widx::tab_construction)
         {
             if (_byte_1136063 & ((1 << 7) | (1 << 6)))
                 WindowManager::close(window);
             else
-                window->callOnMouseUp(common::widx::tab_construction);
+                window->callOnMouseUp(Common::widx::tab_construction);
         }
     }
 
-    namespace common
+    namespace Common
     {
         struct TabInformation
         {
@@ -379,7 +379,7 @@ namespace OpenLoco::Ui::Windows::Construction
 
             // Activate the current tab
             self->activated_widgets &= ~((1ULL << tab_construction) | (1ULL << tab_overhead) | (1ULL << tab_signal) | (1ULL << tab_station));
-            self->activated_widgets |= (1ULL << common::tabInformationByTabOffset[self->current_tab].widgetIndex);
+            self->activated_widgets |= (1ULL << Common::tabInformationByTabOffset[self->current_tab].widgetIndex);
         }
 
         // 0x0049D93A
@@ -398,7 +398,7 @@ namespace OpenLoco::Ui::Windows::Construction
                 construction::activateSelectedConstructionWidgets();
             }
 
-            common::sub_49FEC7();
+            Common::sub_49FEC7();
             TileManager::mapInvalidateMapSelectionTiles();
             _mapSelectionFlags = _mapSelectionFlags & ~MapSelectFlag::enableConstruct;
             _trackCost = 0x80000000;
@@ -709,7 +709,7 @@ namespace OpenLoco::Ui::Windows::Construction
         {
             self->frame_no++;
             self->callPrepareDraw();
-            WindowManager::invalidateWidget(WindowType::construction, self->number, self->current_tab + common::widx::tab_construction);
+            WindowManager::invalidateWidget(WindowType::construction, self->number, self->current_tab + Common::widx::tab_construction);
 
             if (Input::isToolActive(WindowType::construction, self->number))
                 return;
@@ -768,19 +768,19 @@ namespace OpenLoco::Ui::Windows::Construction
         {
             auto disabledWidgets = 0;
             if (isEditorMode())
-                disabledWidgets |= (1ULL << common::widx::tab_station);
+                disabledWidgets |= (1ULL << Common::widx::tab_station);
 
             if (_byte_1136063 & (1 << 7 | 1 << 6))
-                disabledWidgets |= (1ULL << common::widx::tab_construction);
+                disabledWidgets |= (1ULL << Common::widx::tab_construction);
 
             if (_lastSelectedSignal == 0xFF)
-                disabledWidgets |= (1ULL << common::widx::tab_signal);
+                disabledWidgets |= (1ULL << Common::widx::tab_signal);
 
             if (_modList[0] == 0xFF && _modList[1] == 0xFF && _modList[2] == 0xFF && _modList[3] == 0xFF)
-                disabledWidgets |= (1ULL << common::widx::tab_overhead);
+                disabledWidgets |= (1ULL << Common::widx::tab_overhead);
 
             if (_lastSelectedStationType == 0xFF)
-                disabledWidgets |= (1ULL << common::widx::tab_station);
+                disabledWidgets |= (1ULL << Common::widx::tab_station);
 
             self->disabled_widgets = disabledWidgets;
         }
@@ -811,7 +811,7 @@ namespace OpenLoco::Ui::Windows::Construction
             Ui::Windows::showDirectionArrows();
             Ui::Windows::showGridlines();
 
-            common::initEvents();
+            Common::initEvents();
         }
 
         // 0x004723BD
@@ -1149,7 +1149,7 @@ namespace OpenLoco::Ui::Windows::Construction
         // 0x004A3A50
         void sub_4A3A50()
         {
-            common::sub_49FEC7();
+            Common::sub_49FEC7();
             setTrackOptions(_trackType);
             refreshStationList(_stationList, _trackType, TransportMode::road);
 

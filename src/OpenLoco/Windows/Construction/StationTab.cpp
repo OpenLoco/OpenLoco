@@ -36,15 +36,15 @@ namespace OpenLoco::Ui::Windows::Construction::station
     {
         switch (widgetIndex)
         {
-            case common::widx::close_button:
+            case Common::widx::close_button:
                 WindowManager::close(self);
                 break;
 
-            case common::widx::tab_construction:
-            case common::widx::tab_overhead:
-            case common::widx::tab_signal:
-            case common::widx::tab_station:
-                common::switchTab(self, widgetIndex);
+            case Common::widx::tab_construction:
+            case Common::widx::tab_overhead:
+            case Common::widx::tab_signal:
+            case Common::widx::tab_station:
+                Common::switchTab(self, widgetIndex);
                 break;
 
             case widx::rotate:
@@ -151,7 +151,7 @@ namespace OpenLoco::Ui::Windows::Construction::station
     // 0x0049E437
     static void onUpdate(window* self)
     {
-        common::onUpdate(self, (1 << 3));
+        Common::onUpdate(self, (1 << 3));
     }
 
     // 0x0049E421
@@ -179,7 +179,7 @@ namespace OpenLoco::Ui::Windows::Construction::station
     // 0x0049DD39
     static void prepareDraw(window* self)
     {
-        common::prepareDraw(self);
+        Common::prepareDraw(self);
 
         self->widgets[widx::rotate].type = widget_type::none;
 
@@ -226,14 +226,14 @@ namespace OpenLoco::Ui::Windows::Construction::station
             self->widgets[widx::station].text = trainStationObject->name;
         }
 
-        common::repositionTabs(self);
+        Common::repositionTabs(self);
     }
 
     // 0x0049DE40
     static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
     {
         self->draw(dpi);
-        common::drawTabs(self, dpi);
+        Common::drawTabs(self, dpi);
 
         auto company = companymgr::get(_playerCompany);
         auto companyColour = company->mainColours.primary;
@@ -398,7 +398,7 @@ namespace OpenLoco::Ui::Windows::Construction::station
 
     void initEvents()
     {
-        events.on_close = common::onClose;
+        events.on_close = Common::onClose;
         events.on_mouse_up = onMouseUp;
         events.on_mouse_down = onMouseDown;
         events.on_dropdown = onDropdown;

@@ -138,15 +138,15 @@ namespace OpenLoco::Ui::Windows::Construction::construction
     {
         switch (widgetIndex)
         {
-            case common::widx::close_button:
+            case Common::widx::close_button:
                 WindowManager::close(self);
                 break;
 
-            case common::widx::tab_construction:
-            case common::widx::tab_overhead:
-            case common::widx::tab_signal:
-            case common::widx::tab_station:
-                common::switchTab(self, widgetIndex);
+            case Common::widx::tab_construction:
+            case Common::widx::tab_overhead:
+            case Common::widx::tab_signal:
+            case Common::widx::tab_station:
+                Common::switchTab(self, widgetIndex);
                 break;
 
             case widx::construct:
@@ -167,7 +167,7 @@ namespace OpenLoco::Ui::Windows::Construction::construction
                     activateSelectedConstructionWidgets();
                     break;
                 }
-                common::sub_49FEC7();
+                Common::sub_49FEC7();
                 WindowManager::viewportSetVisibility(WindowManager::viewport_visibility::overgroundView);
                 Input::toolSet(self, widx::construct, 12);
                 Input::setFlag(Input::input_flags::flag6);
@@ -697,7 +697,7 @@ namespace OpenLoco::Ui::Windows::Construction::construction
         if (window == nullptr)
             return;
 
-        if (window->current_tab == common::widx::tab_construction - common::widx::tab_construction)
+        if (window->current_tab == Common::widx::tab_construction - Common::widx::tab_construction)
         {
             if (_trackType & (1 << 7))
             {
@@ -1118,7 +1118,7 @@ namespace OpenLoco::Ui::Windows::Construction::construction
             self->enabled_widgets |= (1 << widx::construct);
 
         auto disabledWidgets = self->disabled_widgets;
-        disabledWidgets &= (1 << common::widx::tab_construction | 1 << common::widx::tab_overhead | 1 << common::widx::tab_signal | 1 << common::widx::tab_station);
+        disabledWidgets &= (1 << Common::widx::tab_construction | 1 << Common::widx::tab_overhead | 1 << Common::widx::tab_signal | 1 << Common::widx::tab_station);
         uint8_t trackType = _trackType;
 
         if (trackType & (1 << 7))
@@ -1203,7 +1203,7 @@ namespace OpenLoco::Ui::Windows::Construction::construction
     static void changeTrackPiece(uint8_t trackPiece, bool slope)
     {
         _byte_113603A = 0xFF;
-        common::sub_49FEC7();
+        Common::sub_49FEC7();
 
         if (slope)
             _lastSelectedTrackGradient = trackPiece;
@@ -1318,7 +1318,7 @@ namespace OpenLoco::Ui::Windows::Construction::construction
             case widx::s_bend_dual_track_left:
             {
                 _byte_113603A = 0xFF;
-                common::sub_49FEC7();
+                Common::sub_49FEC7();
                 _lastSelectedTrackPiece = TrackPiece::s_bend_to_dual_track;
                 _trackCost = 0x80000000;
                 if (self->widgets[widx::s_bend_dual_track_left].image != ImageIds::construction_s_bend_dual_track_left)
@@ -1337,7 +1337,7 @@ namespace OpenLoco::Ui::Windows::Construction::construction
             case widx::s_bend_dual_track_right:
             {
                 _byte_113603A = 0xFF;
-                common::sub_49FEC7();
+                Common::sub_49FEC7();
                 _lastSelectedTrackPiece = TrackPiece::s_bend_to_single_track;
                 _trackCost = 0x80000000;
                 if (self->widgets[widx::s_bend_dual_track_right].image != ImageIds::construction_s_bend_dual_track_right)
@@ -1404,7 +1404,7 @@ namespace OpenLoco::Ui::Windows::Construction::construction
 
                 // TODO: & ~(1 << 7) added to prevent crashing when selecting bridges for road/trams
                 _scenarioBridges[_trackType & ~(1 << 7)] = bridge;
-                common::sub_49FEC7();
+                Common::sub_49FEC7();
                 _trackCost = 0x80000000;
                 activateSelectedConstructionWidgets();
             }
@@ -1626,7 +1626,7 @@ namespace OpenLoco::Ui::Windows::Construction::construction
         if (_trackType & (1 << 7))
         {
             mapInvalidateMapSelectionTiles();
-            common::sub_49FEC7();
+            Common::sub_49FEC7();
 
             auto road = getRoadPieceId(_lastSelectedTrackPiece, _lastSelectedTrackGradient, _constructionRotation);
 
@@ -1727,7 +1727,7 @@ namespace OpenLoco::Ui::Windows::Construction::construction
         else
         {
             mapInvalidateMapSelectionTiles();
-            common::sub_49FEC7();
+            Common::sub_49FEC7();
 
             auto track = getTrackPieceId(_lastSelectedTrackPiece, _lastSelectedTrackGradient, _constructionRotation);
 
@@ -1840,7 +1840,7 @@ namespace OpenLoco::Ui::Windows::Construction::construction
     // 0x0049CE79
     static void prepareDraw(window* self)
     {
-        common::prepareDraw(self);
+        Common::prepareDraw(self);
         auto args = FormatArguments();
         if (_trackType & (1 << 7))
         {
@@ -1871,7 +1871,7 @@ namespace OpenLoco::Ui::Windows::Construction::construction
                 args.push<uint16_t>(bridgeObj->max_height);
             }
         }
-        common::repositionTabs(self);
+        Common::repositionTabs(self);
     }
 
     // 0x004A0AE5
@@ -1967,7 +1967,7 @@ namespace OpenLoco::Ui::Windows::Construction::construction
     static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
     {
         self->draw(dpi);
-        common::drawTabs(self, dpi);
+        Common::drawTabs(self, dpi);
 
         if (self->widgets[widx::bridge].type != widget_type::none)
         {
@@ -2103,7 +2103,7 @@ namespace OpenLoco::Ui::Windows::Construction::construction
 
     void initEvents()
     {
-        events.on_close = common::onClose;
+        events.on_close = Common::onClose;
         events.on_mouse_up = onMouseUp;
         events.on_resize = onResize;
         events.on_mouse_down = onMouseDown;
