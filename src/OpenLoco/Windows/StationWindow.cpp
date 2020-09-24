@@ -70,7 +70,7 @@ namespace OpenLoco::Ui::Windows::Station
         static void initEvents();
     }
 
-    namespace station
+    namespace Station
     {
         static const Gfx::ui_size_t windowSize = { 223, 136 };
 
@@ -294,7 +294,7 @@ namespace OpenLoco::Ui::Windows::Station
         {
             // 0x0048F29F start
             const uint32_t newFlags = window_flags::resizable | window_flags::flag_11;
-            window = WindowManager::createWindow(WindowType::station, station::windowSize, newFlags, &station::events);
+            window = WindowManager::createWindow(WindowType::station, Station::windowSize, newFlags, &Station::events);
             window->number = stationId;
             auto station = stationmgr::get(stationId);
             window->owner = station->owner;
@@ -315,14 +315,14 @@ namespace OpenLoco::Ui::Windows::Station
         window->current_tab = Common::widx::tab_station - Common::widx::tab_station;
         window->invalidate();
 
-        window->widgets = station::widgets;
-        window->enabled_widgets = station::enabledWidgets;
+        window->widgets = Station::widgets;
+        window->enabled_widgets = Station::enabledWidgets;
         window->holdable_widgets = 0;
-        window->event_handlers = &station::events;
+        window->event_handlers = &Station::events;
         window->activated_widgets = 0;
         window->disabled_widgets = 0;
         window->initScrollWidgets();
-        station::initViewport(window);
+        Station::initViewport(window);
 
         return window;
     }
@@ -793,7 +793,7 @@ namespace OpenLoco::Ui::Windows::Station
         };
 
         static TabInformation tabInformationByTabOffset[] = {
-            { station::widgets, widx::tab_station, &station::events, &station::enabledWidgets },
+            { Station::widgets, widx::tab_station, &Station::events, &Station::enabledWidgets },
             { cargo::widgets, widx::tab_cargo, &cargo::events, &cargo::enabledWidgets },
             { cargo_ratings::widgets, widx::tab_cargo_ratings, &cargo_ratings::events, &Common::enabledWidgets }
         };
@@ -945,7 +945,7 @@ namespace OpenLoco::Ui::Windows::Station
 
             self->invalidate();
 
-            self->setSize(station::windowSize);
+            self->setSize(Station::windowSize);
             self->callOnResize();
             self->callPrepareDraw();
             self->initScrollWidgets();
@@ -1041,7 +1041,7 @@ namespace OpenLoco::Ui::Windows::Station
 
         static void initEvents()
         {
-            station::initEvents();
+            Station::initEvents();
             cargo::initEvents();
             cargo_ratings::initEvents();
         }
