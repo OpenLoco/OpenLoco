@@ -454,7 +454,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         static void noViewportPresent(window* const self, const SavedView& view)
         {
             uint16_t vpFlags = 0;
-            if (config::get().flags & config::flags::gridlines_on_landscape)
+            if (Config::get().flags & Config::flags::gridlines_on_landscape)
             {
                 vpFlags |= viewport_flags::gridlines_on_landscape;
             }
@@ -646,7 +646,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         window* self = open(companyId);
 
         // Allow setting company owner name if no preferred owner name has been set.
-        if ((config::get().flags & config::flags::use_preferred_owner_name) == 0)
+        if ((Config::get().flags & Config::flags::use_preferred_owner_name) == 0)
             status::onMouseUp(self, status::widx::change_owner_name);
 
         return self;
@@ -1095,7 +1095,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             uint16_t vpFlags = 0;
             if (self->viewports[0] == nullptr)
             {
-                if (config::get().flags & config::flags::gridlines_on_landscape)
+                if (Config::get().flags & Config::flags::gridlines_on_landscape)
                 {
                     vpFlags |= viewport_flags::gridlines_on_landscape;
                 }

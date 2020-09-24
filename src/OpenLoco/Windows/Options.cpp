@@ -232,33 +232,33 @@ namespace OpenLoco::Ui::Options
 
                 case widx::landscape_smoothing:
                 {
-                    auto& cfg = OpenLoco::config::get();
+                    auto& cfg = OpenLoco::Config::get();
                     // TODO: is there a better way to toggle a flag?
-                    if (cfg.flags & config::flags::landscape_smoothing)
+                    if (cfg.flags & Config::flags::landscape_smoothing)
                     {
-                        cfg.flags &= ~config::flags::landscape_smoothing;
+                        cfg.flags &= ~Config::flags::landscape_smoothing;
                     }
                     else
                     {
-                        cfg.flags |= config::flags::landscape_smoothing;
+                        cfg.flags |= Config::flags::landscape_smoothing;
                     }
-                    OpenLoco::config::write();
+                    OpenLoco::Config::write();
                     Gfx::invalidateScreen();
                     return;
                 }
 
                 case widx::gridlines_on_landscape:
                 {
-                    auto& cfg = OpenLoco::config::get();
-                    if (cfg.flags & config::flags::gridlines_on_landscape)
+                    auto& cfg = OpenLoco::Config::get();
+                    if (cfg.flags & Config::flags::gridlines_on_landscape)
                     {
-                        cfg.flags &= ~config::flags::gridlines_on_landscape;
+                        cfg.flags &= ~Config::flags::gridlines_on_landscape;
                     }
                     else
                     {
-                        cfg.flags |= config::flags::gridlines_on_landscape;
+                        cfg.flags |= Config::flags::gridlines_on_landscape;
                     }
-                    OpenLoco::config::write();
+                    OpenLoco::Config::write();
                     Gfx::invalidateScreen();
 
                     auto main = WindowManager::getMainWindow();
@@ -266,7 +266,7 @@ namespace OpenLoco::Ui::Options
                     {
                         main->viewports[0]->flags &= ~viewport_flags::gridlines_on_landscape;
 
-                        if ((cfg.flags & config::flags::gridlines_on_landscape) != 0)
+                        if ((cfg.flags & Config::flags::gridlines_on_landscape) != 0)
                         {
                             main->viewports[0]->flags |= viewport_flags::gridlines_on_landscape;
                         }
@@ -287,7 +287,7 @@ namespace OpenLoco::Ui::Options
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::white);
             Dropdown::add(1, StringIds::dropdown_stringid, StringIds::translucent);
-            Dropdown::setItemSelected(config::get().construction_marker);
+            Dropdown::setItemSelected(Config::get().construction_marker);
         }
 
         // 0x004BFE98
@@ -296,12 +296,12 @@ namespace OpenLoco::Ui::Options
             if (ax == -1)
                 return;
 
-            if (ax == config::get().construction_marker)
+            if (ax == Config::get().construction_marker)
                 return;
 
-            auto& cfg = OpenLoco::config::get();
+            auto& cfg = OpenLoco::Config::get();
             cfg.construction_marker = ax;
-            OpenLoco::config::write();
+            OpenLoco::Config::write();
             Gfx::invalidateScreen();
         }
 
@@ -317,7 +317,7 @@ namespace OpenLoco::Ui::Options
             Dropdown::add(1, StringIds::dropdown_stringid, StringIds::half_scale);
             Dropdown::add(2, StringIds::dropdown_stringid, StringIds::quarter_scale);
             Dropdown::add(3, StringIds::dropdown_stringid, StringIds::eighth_scale);
-            Dropdown::setItemSelected(config::get().vehicles_min_scale);
+            Dropdown::setItemSelected(Config::get().vehicles_min_scale);
         }
 
         // 0x004BFF4C
@@ -326,12 +326,12 @@ namespace OpenLoco::Ui::Options
             if (ax == -1)
                 return;
 
-            if (ax == config::get().vehicles_min_scale)
+            if (ax == Config::get().vehicles_min_scale)
                 return;
 
-            auto& cfg = OpenLoco::config::get();
+            auto& cfg = OpenLoco::Config::get();
             cfg.vehicles_min_scale = ax;
-            OpenLoco::config::write();
+            OpenLoco::Config::write();
             Gfx::invalidateScreen();
         }
 
@@ -347,7 +347,7 @@ namespace OpenLoco::Ui::Options
             Dropdown::add(1, StringIds::dropdown_stringid, StringIds::half_scale);
             Dropdown::add(2, StringIds::dropdown_stringid, StringIds::quarter_scale);
             Dropdown::add(3, StringIds::dropdown_stringid, StringIds::eighth_scale);
-            Dropdown::setItemSelected(config::get().station_names_min_scale);
+            Dropdown::setItemSelected(Config::get().station_names_min_scale);
         }
 
         // 0x004C0000
@@ -356,19 +356,19 @@ namespace OpenLoco::Ui::Options
             if (ax == -1)
                 return;
 
-            if (ax == config::get().station_names_min_scale)
+            if (ax == Config::get().station_names_min_scale)
                 return;
 
-            auto& cfg = OpenLoco::config::get();
+            auto& cfg = OpenLoco::Config::get();
             cfg.station_names_min_scale = ax;
-            OpenLoco::config::write();
+            OpenLoco::Config::write();
             Gfx::invalidateScreen();
         }
 
 #if !(defined(__APPLE__) && defined(__MACH__))
         static void screenModeToggleEnabled(window* w)
         {
-            if (config::getNew().display.mode == config::screen_mode::fullscreen)
+            if (Config::getNew().display.mode == Config::screen_mode::fullscreen)
             {
                 w->enabled_widgets |= (1 << widx::display_resolution) | (1 << widx::display_resolution_btn);
                 w->disabled_widgets &= ~((1 << widx::display_resolution) | (1 << widx::display_resolution_btn));
@@ -390,7 +390,7 @@ namespace OpenLoco::Ui::Options
             Dropdown::add(1, StringIds::dropdown_stringid, StringIds::options_mode_fullscreen);
             Dropdown::add(2, StringIds::dropdown_stringid, StringIds::options_mode_fullscreen_window);
 
-            auto selection = static_cast<uint16_t>(config::getNew().display.mode);
+            auto selection = static_cast<uint16_t>(Config::getNew().display.mode);
             Dropdown::setItemSelected(selection);
         }
 
@@ -399,8 +399,8 @@ namespace OpenLoco::Ui::Options
             if (selection == -1)
                 return;
 
-            auto new_mode = static_cast<config::screen_mode>(selection);
-            if (new_mode == config::getNew().display.mode)
+            auto new_mode = static_cast<Config::screen_mode>(selection);
+            if (new_mode == Config::getNew().display.mode)
                 return;
 
 #if !(defined(__APPLE__) && defined(__MACH__))
@@ -418,7 +418,7 @@ namespace OpenLoco::Ui::Options
             widget_t dropdown = w->widgets[widx::display_resolution];
             Dropdown::showText2(w->x + dropdown.left, w->y + dropdown.top, dropdown.width(), dropdown.height(), w->colours[1], resolutions.size(), 0x80);
 
-            auto& cfg = config::getNew();
+            auto& cfg = Config::getNew();
             for (size_t i = 0; i < resolutions.size(); i++)
             {
                 Dropdown::add(i, StringIds::dropdown_stringid, { StringIds::display_resolution_dropdown_format, (uint16_t)resolutions[i].width, (uint16_t)resolutions[i].height });
@@ -433,7 +433,7 @@ namespace OpenLoco::Ui::Options
             if (index == -1)
                 return;
             std::vector<Resolution> resolutions = getFullscreenResolutions();
-            Ui::setDisplayMode(config::screen_mode::fullscreen, { resolutions[index].width, resolutions[index].height });
+            Ui::setDisplayMode(Config::screen_mode::fullscreen, { resolutions[index].width, resolutions[index].height });
         }
 
 #pragma mark -
@@ -521,15 +521,15 @@ namespace OpenLoco::Ui::Options
             w->widgets[common::widx::close_button].right = w->width - 15 + 12;
 
             string_id screen_mode_string_id = StringIds::empty;
-            switch (config::getNew().display.mode)
+            switch (Config::getNew().display.mode)
             {
-                case config::screen_mode::window:
+                case Config::screen_mode::window:
                     screen_mode_string_id = StringIds::options_mode_windowed;
                     break;
-                case config::screen_mode::fullscreen:
+                case Config::screen_mode::fullscreen:
                     screen_mode_string_id = StringIds::options_mode_fullscreen;
                     break;
-                case config::screen_mode::fullscreen_borderless:
+                case Config::screen_mode::fullscreen_borderless:
                     screen_mode_string_id = StringIds::options_mode_fullscreen_window;
                     break;
             }
@@ -537,11 +537,11 @@ namespace OpenLoco::Ui::Options
 
             FormatArguments args = {};
             args.skip(0x10);
-            auto& resolution = config::getNew().display.fullscreen_resolution;
+            auto& resolution = Config::getNew().display.fullscreen_resolution;
             args.push<uint16_t>(resolution.width);
             args.push<uint16_t>(resolution.height);
 
-            if (config::get().construction_marker)
+            if (Config::get().construction_marker)
                 w->widgets[widx::construction_marker].text = StringIds::translucent;
             else
                 w->widgets[widx::construction_marker].text = StringIds::white;
@@ -553,27 +553,27 @@ namespace OpenLoco::Ui::Options
                 StringIds::eighth_scale,
             };
 
-            w->widgets[widx::vehicles_min_scale].text = scale_string_ids[config::get().vehicles_min_scale];
-            w->widgets[widx::station_names_min_scale].text = scale_string_ids[config::get().station_names_min_scale];
+            w->widgets[widx::vehicles_min_scale].text = scale_string_ids[Config::get().vehicles_min_scale];
+            w->widgets[widx::station_names_min_scale].text = scale_string_ids[Config::get().station_names_min_scale];
 
             w->activated_widgets &= ~(1 << widx::landscape_smoothing);
-            if ((config::get().flags & config::flags::landscape_smoothing) == 0)
+            if ((Config::get().flags & Config::flags::landscape_smoothing) == 0)
             {
                 w->activated_widgets |= (1 << widx::landscape_smoothing);
             }
 
             w->activated_widgets &= ~(1 << widx::gridlines_on_landscape);
-            if (config::get().flags & config::flags::gridlines_on_landscape)
+            if (Config::get().flags & Config::flags::gridlines_on_landscape)
             {
                 w->activated_widgets |= (1 << widx::gridlines_on_landscape);
             }
 
-            if (config::getNew().scale_factor <= OpenLoco::Ui::ScaleFactor::min)
+            if (Config::getNew().scale_factor <= OpenLoco::Ui::ScaleFactor::min)
                 w->disabled_widgets |= (1 << widx::display_scale_down_btn);
             else
                 w->disabled_widgets &= ~(1 << widx::display_scale_down_btn);
 
-            if (config::getNew().scale_factor >= OpenLoco::Ui::ScaleFactor::max)
+            if (Config::getNew().scale_factor >= OpenLoco::Ui::ScaleFactor::max)
                 w->disabled_widgets |= (1 << widx::display_scale_up_btn);
             else
                 w->disabled_widgets &= ~(1 << widx::display_scale_up_btn);
@@ -612,14 +612,14 @@ namespace OpenLoco::Ui::Options
             y = w->y + display::_widgets[display::widx::display_scale].top + 1;
             drawString_494B3F(*dpi, x + 14, y, Colour::black, StringIds::window_scale_factor, nullptr);
 
-            int scale = (int)(config::getNew().scale_factor * 100);
+            int scale = (int)(Config::getNew().scale_factor * 100);
             auto& scale_widget = w->widgets[widx::display_scale];
             drawString_494B3F(*dpi, w->x + scale_widget.left + 1, w->y + scale_widget.top + 1, Colour::black, StringIds::scale_formatted, &scale);
         }
 
         static void applyScreenModeRestrictions(window* w)
         {
-            if (config::getNew().display.mode != config::screen_mode::fullscreen)
+            if (Config::getNew().display.mode != Config::screen_mode::fullscreen)
                 w->disabled_widgets = (1 << display::widx::display_resolution) | (1 << display::widx::display_resolution_btn);
 
 #if !(defined(__APPLE__) && defined(__MACH__))
@@ -701,7 +701,7 @@ namespace OpenLoco::Ui::Options
             else
                 args.push(StringIds::audio_device_none);
 
-            if (config::getNew().audio.play_title_music)
+            if (Config::getNew().audio.play_title_music)
                 w->activated_widgets |= (1 << widx::play_title_music);
             else
                 w->activated_widgets &= ~(1 << widx::play_title_music);
@@ -799,9 +799,9 @@ namespace OpenLoco::Ui::Options
 
         static void playTitleMusicOnMouseUp(window* w)
         {
-            auto& cfg = config::getNew();
+            auto& cfg = Config::getNew();
             cfg.audio.play_title_music = !cfg.audio.play_title_music;
-            config::write();
+            Config::write();
 
             Audio::playTitleScreenMusic();
 
@@ -906,14 +906,14 @@ namespace OpenLoco::Ui::Options
                 StringIds::play_custom_music_selection,
             };
 
-            string_id currentSongStringId = playlist_string_ids[(uint8_t)config::get().music_playlist];
+            string_id currentSongStringId = playlist_string_ids[(uint8_t)Config::get().music_playlist];
             args.push(currentSongStringId);
 
             w->activated_widgets &= ~((1 << widx::music_controls_stop) | (1 << widx::music_controls_play));
             w->activated_widgets |= (1 << widx::music_controls_stop);
             if (_currentSong != -1)
             {
-                if (config::get().music_playing)
+                if (Config::get().music_playing)
                 {
                     w->activated_widgets &= ~((1 << widx::music_controls_stop) | (1 << widx::music_controls_play));
                     w->activated_widgets |= (1 << widx::music_controls_play);
@@ -921,7 +921,7 @@ namespace OpenLoco::Ui::Options
             }
 
             w->disabled_widgets |= (1 << widx::edit_selection);
-            if (config::get().music_playlist == config::music_playlist_type::custom)
+            if (Config::get().music_playlist == Config::music_playlist_type::custom)
             {
                 w->disabled_widgets &= ~(1 << widx::edit_selection);
             }
@@ -943,7 +943,7 @@ namespace OpenLoco::Ui::Options
 
             Gfx::drawImage(dpi, w->x + w->widgets[widx::volume].left, w->y + w->widgets[widx::volume].top, 0x20000000 | (w->colours[1] << 19) | ImageIds::volume_slider_track);
 
-            int16_t x = 90 + (config::get().volume / 32);
+            int16_t x = 90 + (Config::get().volume / 32);
             Gfx::drawImage(dpi, w->x + w->widgets[widx::volume].left + x, w->y + w->widgets[widx::volume].top, 0x20000000 | (w->colours[1] << 19) | ImageIds::volume_slider_thumb);
         }
 
@@ -1034,12 +1034,12 @@ namespace OpenLoco::Ui::Options
         // 0x004C0778
         static void stopMusic(window* w)
         {
-            if (config::get().music_playing == 0)
+            if (Config::get().music_playing == 0)
                 return;
 
-            auto& cfg = config::get();
+            auto& cfg = Config::get();
             cfg.music_playing = 0;
-            config::write();
+            Config::write();
 
             Audio::stopBackgroundMusic();
 
@@ -1051,12 +1051,12 @@ namespace OpenLoco::Ui::Options
         // 0x004C07A4
         static void playMusic(window* w)
         {
-            if (config::get().music_playing != 0)
+            if (Config::get().music_playing != 0)
                 return;
 
-            auto& cfg = config::get();
+            auto& cfg = Config::get();
             cfg.music_playing = 1;
-            config::write();
+            Config::write();
 
             w->invalidate();
         }
@@ -1064,7 +1064,7 @@ namespace OpenLoco::Ui::Options
         // 0x004C07C4
         static void playNextSong(window* w)
         {
-            if (config::get().music_playing == 0)
+            if (Config::get().music_playing == 0)
                 return;
 
             Audio::stopBackgroundMusic();
@@ -1086,7 +1086,7 @@ namespace OpenLoco::Ui::Options
             Dropdown::add(1, StringIds::dropdown_stringid, StringIds::play_all_music);
             Dropdown::add(2, StringIds::dropdown_stringid, StringIds::play_custom_music_selection);
 
-            Dropdown::setItemSelected((uint8_t)config::get().music_playlist);
+            Dropdown::setItemSelected((uint8_t)Config::get().music_playlist);
         }
 
         // 0x004C084A
@@ -1095,9 +1095,9 @@ namespace OpenLoco::Ui::Options
             if (ax == -1)
                 return;
 
-            auto& cfg = OpenLoco::config::get();
-            cfg.music_playlist = (config::music_playlist_type)ax;
-            config::write();
+            auto& cfg = OpenLoco::Config::get();
+            cfg.music_playlist = (Config::music_playlist_type)ax;
+            Config::write();
 
             w->invalidate();
 
@@ -1112,7 +1112,7 @@ namespace OpenLoco::Ui::Options
         {
             auto vector = std::vector<int>();
 
-            if (config::get().music_playlist == config::music_playlist_type::current_era)
+            if (Config::get().music_playlist == Config::music_playlist_type::current_era)
             {
                 uint16_t year = getCurrentYear();
                 for (int i = 0; i < Audio::num_music_tracks; i++)
@@ -1124,18 +1124,18 @@ namespace OpenLoco::Ui::Options
                     }
                 }
             }
-            else if (config::get().music_playlist == config::music_playlist_type::all)
+            else if (Config::get().music_playlist == Config::music_playlist_type::all)
             {
                 for (int i = 0; i < Audio::num_music_tracks; i++)
                 {
                     vector.push_back(i);
                 }
             }
-            else if (config::get().music_playlist == config::music_playlist_type::custom)
+            else if (Config::get().music_playlist == Config::music_playlist_type::custom)
             {
                 for (int i = 0; i < Audio::num_music_tracks; i++)
                 {
-                    if (config::get().enabled_music[i] & 1)
+                    if (Config::get().enabled_music[i] & 1)
                     {
                         vector.push_back(i);
                     }
@@ -1289,11 +1289,11 @@ namespace OpenLoco::Ui::Options
 
             FormatArguments args = {};
 
-            auto& language = Localisation::getDescriptorForLanguage(config::getNew().language);
+            auto& language = Localisation::getDescriptorForLanguage(Config::getNew().language);
             args.push(language.native_name.c_str());
 
             string_id current_height_units = StringIds::height_units;
-            if ((OpenLoco::config::get().flags & config::flags::show_height_as_units) == 0)
+            if ((OpenLoco::Config::get().flags & Config::flags::show_height_as_units) == 0)
             {
                 current_height_units = StringIds::height_real_values;
             }
@@ -1302,7 +1302,7 @@ namespace OpenLoco::Ui::Options
             args.push(current_height_units);
 
             string_id current_measurement_format = StringIds::imperial;
-            if (OpenLoco::config::get().measurement_format)
+            if (OpenLoco::Config::get().measurement_format)
             {
                 current_measurement_format = StringIds::metric;
             }
@@ -1312,20 +1312,20 @@ namespace OpenLoco::Ui::Options
             args.push(current_measurement_format);
 
             w->activated_widgets &= ~(1 << widx::preferred_currency_for_new_games);
-            if (config::get().flags & config::flags::preferred_currency_for_new_games)
+            if (Config::get().flags & Config::flags::preferred_currency_for_new_games)
             {
                 w->activated_widgets |= (1 << widx::preferred_currency_for_new_games);
             }
 
             w->activated_widgets &= ~(1 << widx::preferred_currency_always);
-            if (config::get().flags & config::flags::preferred_currency_always)
+            if (Config::get().flags & Config::flags::preferred_currency_always)
             {
                 w->activated_widgets |= (1 << widx::preferred_currency_always);
             }
 
             w->disabled_widgets &= ~(1 << widx::currency);
             w->disabled_widgets &= ~(1 << widx::currency_btn);
-            if (config::get().flags & config::flags::preferred_currency_always)
+            if (Config::get().flags & Config::flags::preferred_currency_always)
             {
                 w->disabled_widgets |= (1 << widx::currency);
                 w->disabled_widgets |= (1 << widx::currency_btn);
@@ -1435,7 +1435,7 @@ namespace OpenLoco::Ui::Options
             widget_t dropdown = w->widgets[widx::language];
             Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], num_languages - 1, 0x80);
 
-            std::string& current_language = config::getNew().language;
+            std::string& current_language = Config::getNew().language;
 
             for (uint8_t index = 1; index < num_languages; index++)
             {
@@ -1457,8 +1457,8 @@ namespace OpenLoco::Ui::Options
 
             auto& lds = Localisation::getLanguageDescriptors();
             auto& ld = lds[ax + 1];
-            config::getNew().language = ld.locale;
-            config::write();
+            Config::getNew().language = ld.locale;
+            Config::write();
             Localisation::loadLanguageFile();
             Gfx::invalidateScreen();
         }
@@ -1559,11 +1559,11 @@ namespace OpenLoco::Ui::Options
 
                 if (index == ax)
                 {
-                    auto& cfg = OpenLoco::config::get();
+                    auto& cfg = OpenLoco::Config::get();
                     memcpy(cfg.preferred_currency, object.second._header, 0x10);
 
                     sub_4C1519();
-                    config::write();
+                    Config::write();
                     call(0x004C153B);
                     sub_4BF935();
 
@@ -1577,16 +1577,16 @@ namespace OpenLoco::Ui::Options
         // 0x004C0F14
         static void preferredCurrencyNewGameMouseUp(window* w)
         {
-            auto& cfg = OpenLoco::config::get();
-            if (cfg.flags & config::flags::preferred_currency_for_new_games)
+            auto& cfg = OpenLoco::Config::get();
+            if (cfg.flags & Config::flags::preferred_currency_for_new_games)
             {
-                cfg.flags &= ~config::flags::preferred_currency_for_new_games;
+                cfg.flags &= ~Config::flags::preferred_currency_for_new_games;
             }
             else
             {
-                cfg.flags |= config::flags::preferred_currency_for_new_games;
+                cfg.flags |= Config::flags::preferred_currency_for_new_games;
             }
-            config::write();
+            Config::write();
 
             w->invalidate();
         }
@@ -1594,16 +1594,16 @@ namespace OpenLoco::Ui::Options
         // 0x004C0F27
         static void preferredCurrencyAlwaysMouseUp(window* w)
         {
-            auto& cfg = OpenLoco::config::get();
-            if (cfg.flags & config::flags::preferred_currency_always)
+            auto& cfg = OpenLoco::Config::get();
+            if (cfg.flags & Config::flags::preferred_currency_always)
             {
-                cfg.flags &= ~config::flags::preferred_currency_always;
+                cfg.flags &= ~Config::flags::preferred_currency_always;
             }
             else
             {
-                cfg.flags |= config::flags::preferred_currency_always;
+                cfg.flags |= Config::flags::preferred_currency_always;
             }
-            config::write();
+            Config::write();
 
             call(0x004C153B);
             sub_4BF935();
@@ -1619,7 +1619,7 @@ namespace OpenLoco::Ui::Options
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::imperial);
             Dropdown::add(1, StringIds::dropdown_stringid, StringIds::metric);
-            Dropdown::setItemSelected(config::get().measurement_format);
+            Dropdown::setItemSelected(Config::get().measurement_format);
         }
 
         // 0x004C0FB3
@@ -1628,17 +1628,17 @@ namespace OpenLoco::Ui::Options
             if (ax == -1)
                 return;
 
-            auto& cfg = config::get();
+            auto& cfg = Config::get();
             cfg.measurement_format = ax;
 
             // 0x004C0FC2
             cfg.height_marker_offset = 0;
-            if ((cfg.flags & config::flags::show_height_as_units) == 0)
+            if ((cfg.flags & Config::flags::show_height_as_units) == 0)
             {
                 cfg.height_marker_offset = 0x100 + cfg.measurement_format * 0x100;
             }
 
-            config::write();
+            Config::write();
             Gfx::invalidateScreen();
         }
 
@@ -1652,7 +1652,7 @@ namespace OpenLoco::Ui::Options
             Dropdown::add(1, StringIds::dropdown_stringid, StringIds::height_real_values);
 
             int selectedItem = 0;
-            if ((config::get().flags & config::flags::show_height_as_units) == 0)
+            if ((Config::get().flags & Config::flags::show_height_as_units) == 0)
             {
                 selectedItem = 1;
             }
@@ -1665,22 +1665,22 @@ namespace OpenLoco::Ui::Options
             if (ax == -1)
                 return;
 
-            auto& cfg = config::get();
-            cfg.flags &= ~config::flags::show_height_as_units;
+            auto& cfg = Config::get();
+            cfg.flags &= ~Config::flags::show_height_as_units;
 
             if (ax == 0)
             {
-                cfg.flags |= config::flags::show_height_as_units;
+                cfg.flags |= Config::flags::show_height_as_units;
             }
 
             // 0x004C0FC2
             cfg.height_marker_offset = 0;
-            if ((cfg.flags & config::flags::show_height_as_units) == 0)
+            if ((cfg.flags & Config::flags::show_height_as_units) == 0)
             {
                 cfg.height_marker_offset = 0x100 + cfg.measurement_format * 0x100;
             }
 
-            config::write();
+            Config::write();
             Gfx::invalidateScreen();
         }
 
@@ -1751,11 +1751,11 @@ namespace OpenLoco::Ui::Options
             w->widgets[common::widx::close_button].right = w->width - 15 + 12;
 
             w->activated_widgets &= ~(1 << widx::edge_scrolling | 1 << widx::zoom_to_cursor);
-            if (config::get().edge_scrolling)
+            if (Config::get().edge_scrolling)
             {
                 w->activated_widgets |= (1 << widx::edge_scrolling);
             }
-            if (config::getNew().zoom_to_cursor)
+            if (Config::getNew().zoom_to_cursor)
             {
                 w->activated_widgets |= (1 << widx::zoom_to_cursor);
             }
@@ -1805,18 +1805,18 @@ namespace OpenLoco::Ui::Options
         // 0x004C117A
         static void edgeScrollingMouseUp(window* w)
         {
-            auto& cfg = OpenLoco::config::get();
+            auto& cfg = OpenLoco::Config::get();
             cfg.edge_scrolling = !cfg.edge_scrolling;
-            config::write();
+            Config::write();
 
             w->invalidate();
         }
 
         static void zoomToCursorMouseUp(window* w)
         {
-            auto& cfg = OpenLoco::config::getNew();
+            auto& cfg = OpenLoco::Config::getNew();
             cfg.zoom_to_cursor = !cfg.zoom_to_cursor;
-            config::write();
+            Config::write();
 
             w->invalidate();
         }
@@ -1901,25 +1901,25 @@ namespace OpenLoco::Ui::Options
             w->widgets[common::widx::close_button].left = w->width - 15;
             w->widgets[common::widx::close_button].right = w->width - 15 + 12;
 
-            if (config::getNew().breakdowns_disabled)
+            if (Config::getNew().breakdowns_disabled)
                 w->activated_widgets |= (1 << widx::disable_vehicle_breakdowns);
             else
                 w->activated_widgets &= ~(1 << widx::disable_vehicle_breakdowns);
 
-            if (config::getNew().companyAIDisabled)
+            if (Config::getNew().companyAIDisabled)
                 w->activated_widgets |= (1 << widx::disableAICompanies);
             else
                 w->activated_widgets &= ~(1 << widx::disableAICompanies);
 
             w->activated_widgets &= ~(1 << widx::export_plugin_objects);
-            if (config::get().flags & config::flags::export_objects_with_saves)
+            if (Config::get().flags & Config::flags::export_objects_with_saves)
             {
                 w->activated_widgets |= (1 << widx::export_plugin_objects);
             }
 
             w->activated_widgets &= ~(1 << widx::use_preferred_owner_name);
             w->disabled_widgets |= (1 << widx::change_btn);
-            if (config::get().flags & config::flags::use_preferred_owner_name)
+            if (Config::get().flags & Config::flags::use_preferred_owner_name)
             {
                 w->activated_widgets |= (1 << widx::use_preferred_owner_name);
                 w->disabled_widgets &= ~(1 << widx::change_btn);
@@ -1941,7 +1941,7 @@ namespace OpenLoco::Ui::Options
             common::drawTabs(w, dpi);
 
             auto buffer = (char*)StringManager::getString(StringIds::buffer_2039);
-            char* playerName = config::get().preferred_name;
+            char* playerName = Config::get().preferred_name;
             strcpy(buffer, playerName);
             buffer[strlen(playerName)] = '\0';
 
@@ -2005,7 +2005,7 @@ namespace OpenLoco::Ui::Options
         static void changePreferredName(window* w)
         {
             auto buffer = (char*)StringManager::getString(StringIds::buffer_2039);
-            char* playerName = config::get().preferred_name;
+            char* playerName = Config::get().preferred_name;
             strcpy(buffer, playerName);
             buffer[strlen(playerName)] = '\0';
 
@@ -2015,15 +2015,15 @@ namespace OpenLoco::Ui::Options
         // 0x004C1342
         static void setPreferredName(window* w, char* str)
         {
-            auto& cfg = OpenLoco::config::get();
+            auto& cfg = OpenLoco::Config::get();
 
             if (strlen(str) == 0)
-                cfg.flags &= ~config::flags::use_preferred_owner_name;
+                cfg.flags &= ~Config::flags::use_preferred_owner_name;
 
             strcpy(cfg.preferred_name, str);
             cfg.preferred_name[strlen(str)] = '\0';
 
-            config::write();
+            Config::write();
 
             w->invalidate();
         }
@@ -2031,20 +2031,20 @@ namespace OpenLoco::Ui::Options
         // 0x004C135F
         static void usePreferredOwnerNameMouseUp(window* w)
         {
-            auto& cfg = OpenLoco::config::get();
-            if (cfg.flags & config::flags::use_preferred_owner_name)
+            auto& cfg = OpenLoco::Config::get();
+            if (cfg.flags & Config::flags::use_preferred_owner_name)
             {
-                cfg.flags &= ~config::flags::use_preferred_owner_name;
+                cfg.flags &= ~Config::flags::use_preferred_owner_name;
             }
             else
             {
-                cfg.flags |= config::flags::use_preferred_owner_name;
+                cfg.flags |= Config::flags::use_preferred_owner_name;
             }
-            config::write();
+            Config::write();
 
             w->invalidate();
 
-            if (cfg.flags & config::flags::use_preferred_owner_name)
+            if (cfg.flags & Config::flags::use_preferred_owner_name)
             {
                 if (strlen(cfg.preferred_name) == 0)
                 {
@@ -2055,32 +2055,32 @@ namespace OpenLoco::Ui::Options
 
         static void disableVehicleBreakdownsMouseUp(window* w)
         {
-            auto& cfg = OpenLoco::config::getNew();
+            auto& cfg = OpenLoco::Config::getNew();
             cfg.breakdowns_disabled = !cfg.breakdowns_disabled;
-            config::write();
+            Config::write();
             w->invalidate();
         }
 
         static void disableAICompaniesMouseUp(window* w)
         {
-            auto& cfg = OpenLoco::config::getNew();
+            auto& cfg = OpenLoco::Config::getNew();
             cfg.companyAIDisabled = !cfg.companyAIDisabled;
-            config::write();
+            Config::write();
             w->invalidate();
         }
 
         static void exportPluginObjectsMouseUp(window* w)
         {
-            auto& cfg = OpenLoco::config::get();
-            if (cfg.flags & config::flags::export_objects_with_saves)
+            auto& cfg = OpenLoco::Config::get();
+            if (cfg.flags & Config::flags::export_objects_with_saves)
             {
-                cfg.flags &= ~config::flags::export_objects_with_saves;
+                cfg.flags &= ~Config::flags::export_objects_with_saves;
             }
             else
             {
-                cfg.flags |= config::flags::export_objects_with_saves;
+                cfg.flags |= Config::flags::export_objects_with_saves;
             }
-            config::write();
+            Config::write();
 
             w->invalidate();
         }

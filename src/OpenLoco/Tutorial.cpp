@@ -27,7 +27,7 @@ namespace OpenLoco::tutorial
     static std::vector<uint16_t> _tutorialData;
     static std::vector<uint16_t>::const_iterator _tutorialIt;
 
-    constexpr config::resolution_t tutorialResolution = { 1024, 768 };
+    constexpr Config::resolution_t tutorialResolution = { 1024, 768 };
 
     tutorial_state state()
     {
@@ -89,12 +89,12 @@ namespace OpenLoco::tutorial
         // This can be removed when scenerio::start has been implemented.
         {
             // Figure out what dimensions to use for the tutorial, and whether we can continue using scaling.
-            const auto& config = config::getNew();
-            config::resolution_t newResolution = tutorialResolution;
+            const auto& config = Config::getNew();
+            Config::resolution_t newResolution = tutorialResolution;
             if (config.scale_factor > 1.0)
             {
                 newResolution *= config.scale_factor;
-                config::resolution_t desktopResolution = Ui::getDesktopResolution();
+                Config::resolution_t desktopResolution = Ui::getDesktopResolution();
 
                 // Don't scale if it means the new window won't fit the desktop.
                 if (newResolution > desktopResolution)
@@ -106,9 +106,9 @@ namespace OpenLoco::tutorial
 
             // Ensure that we're in windowed mode, using dimensions 1024x768.
             auto currentResolution = Ui::getResolution();
-            if (config.display.mode != config::screen_mode::window || currentResolution != newResolution)
+            if (config.display.mode != Config::screen_mode::window || currentResolution != newResolution)
             {
-                if (!Ui::setDisplayMode(config::screen_mode::window, newResolution))
+                if (!Ui::setDisplayMode(Config::screen_mode::window, newResolution))
                     return;
             }
 

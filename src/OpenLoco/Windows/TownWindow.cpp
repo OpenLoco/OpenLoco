@@ -299,7 +299,7 @@ namespace OpenLoco::Ui::Windows::Town
             }
             else
             {
-                if ((config::get().flags & config::flags::gridlines_on_landscape) != 0)
+                if ((Config::get().flags & Config::flags::gridlines_on_landscape) != 0)
                     flags |= viewport_flags::gridlines_on_landscape;
             }
 

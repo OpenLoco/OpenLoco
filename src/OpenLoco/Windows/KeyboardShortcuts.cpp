@@ -119,14 +119,14 @@ namespace OpenLoco::Ui::KeyboardShortcuts
             _commonFormatArgs[2] = StringIds::empty;
             _commonFormatArgs[3] = StringIds::empty;
 
-            if (config::get().keyboard_shortcuts[i].var_0 != 0xFF)
+            if (Config::get().keyboard_shortcuts[i].var_0 != 0xFF)
             {
-                _commonFormatArgs[3] = StringIds::shortcut_key_base + config::get().keyboard_shortcuts[i].var_0;
+                _commonFormatArgs[3] = StringIds::shortcut_key_base + Config::get().keyboard_shortcuts[i].var_0;
 
-                if (config::get().keyboard_shortcuts[i].var_1 != 0)
+                if (Config::get().keyboard_shortcuts[i].var_1 != 0)
                 {
                     _commonFormatArgs[2] = StringIds::keyboard_shortcut_modifier_shift;
-                    if (config::get().keyboard_shortcuts[i].var_1 != 1)
+                    if (Config::get().keyboard_shortcuts[i].var_1 != 1)
                     {
                         _commonFormatArgs[2] = StringIds::keyboard_shortcut_modifier_ctrl;
                     }
@@ -159,7 +159,7 @@ namespace OpenLoco::Ui::KeyboardShortcuts
     static void loc_4BE832(window* self)
     {
         call(0x004BE3F3);
-        OpenLoco::config::write();
+        OpenLoco::Config::write();
         self->invalidate();
     }
 

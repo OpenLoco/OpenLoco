@@ -647,7 +647,7 @@ namespace OpenLoco::Ui
         int16_t saved_map_y = 0;
         int16_t offset_x = 0;
         int16_t offset_y = 0;
-        if (toCursor && config::getNew().zoom_to_cursor)
+        if (toCursor && Config::getNew().zoom_to_cursor)
         {
             this->viewportGetMapCoordsByCursor(&saved_map_x, &saved_map_y, &offset_x, &offset_y);
         }
@@ -673,7 +673,7 @@ namespace OpenLoco::Ui
         }
 
         // Zooming to cursor? Centre around the tile we were hovering over just now.
-        if (toCursor && config::getNew().zoom_to_cursor)
+        if (toCursor && Config::getNew().zoom_to_cursor)
         {
             this->viewportCentreTileAroundCursor(saved_map_x, saved_map_y, offset_x, offset_y);
         }

@@ -462,7 +462,7 @@ namespace OpenLoco::Ui::MessageWindow
                     Dropdown::add(1, StringIds::dropdown_stringid, StringIds::message_ticker);
                     Dropdown::add(2, StringIds::dropdown_stringid, StringIds::message_window);
 
-                    auto dropdownIndex = config::get().news_settings[(widgetIndex - 7) / 2];
+                    auto dropdownIndex = Config::get().news_settings[(widgetIndex - 7) / 2];
 
                     Dropdown::setItemSelected(static_cast<size_t>(dropdownIndex));
                     break;
@@ -493,10 +493,10 @@ namespace OpenLoco::Ui::MessageWindow
 
                     auto dropdownIndex = (widgetIndex - 7) / 2;
 
-                    if (static_cast<config::newsType>(itemIndex) != config::get().news_settings[dropdownIndex])
+                    if (static_cast<Config::newsType>(itemIndex) != Config::get().news_settings[dropdownIndex])
                     {
-                        config::get().news_settings[dropdownIndex] = static_cast<config::newsType>(itemIndex);
-                        config::write();
+                        Config::get().news_settings[dropdownIndex] = static_cast<Config::newsType>(itemIndex);
+                        Config::write();
                         Gfx::invalidateScreen();
                     }
                     break;
@@ -538,7 +538,7 @@ namespace OpenLoco::Ui::MessageWindow
                 {
                     auto xPos = self->widgets[widx::company_major_news].left + self->x + 1;
                     auto args = FormatArguments();
-                    args.push(newsDropdownStringIds[static_cast<uint8_t>(config::get().news_settings[i])]);
+                    args.push(newsDropdownStringIds[static_cast<uint8_t>(Config::get().news_settings[i])]);
 
                     Gfx::drawString_494B3F(*dpi, xPos, yPos, Colour::black, StringIds::black_stringid, &args);
                 }

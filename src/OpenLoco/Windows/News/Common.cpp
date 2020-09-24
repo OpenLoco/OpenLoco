@@ -9,7 +9,7 @@
 #include "News.h"
 
 using namespace OpenLoco::Interop;
-using namespace OpenLoco::config;
+using namespace OpenLoco::Config;
 
 namespace OpenLoco::Ui::NewsWindow
 {
@@ -115,7 +115,7 @@ namespace OpenLoco::Ui::NewsWindow
                 }
             }
 
-            auto newsSettings = config::get().news_settings[static_cast<uint8_t>(messageSubType)];
+            auto newsSettings = Config::get().news_settings[static_cast<uint8_t>(messageSubType)];
 
             if (newsSettings == newsType::none)
             {
