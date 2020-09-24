@@ -316,7 +316,7 @@ namespace OpenLoco::Ui::TimePanel
     window* open();
 }
 
-namespace OpenLoco::Ui::Windows::toolbar_bottom::editor
+namespace OpenLoco::Ui::Windows::ToolbarBottom::editor
 {
     void open();
 }

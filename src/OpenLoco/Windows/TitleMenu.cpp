@@ -410,7 +410,7 @@ namespace OpenLoco::Ui::Windows
         addr<0x009c8710, int8_t>() = 1;
 
         ToolbarTop::Editor::open();
-        toolbar_bottom::editor::open();
+        ToolbarBottom::editor::open();
     }
 
     static void sub_43910A()
