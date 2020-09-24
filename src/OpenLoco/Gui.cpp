@@ -59,7 +59,7 @@ namespace OpenLoco::gui
         }
         else
         {
-            Windows::ToolbarTop::game::open();
+            Windows::ToolbarTop::Game::open();
 
             Windows::PlayerInfoPanel::open();
             TimePanel::open();
