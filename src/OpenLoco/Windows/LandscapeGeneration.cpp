@@ -932,7 +932,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         }
     }
 
-    namespace towns
+    namespace Towns
     {
         enum widx
         {
@@ -1203,7 +1203,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             Options::initEvents();
             Land::initEvents();
             Forests::initEvents();
-            towns::initEvents();
+            Towns::initEvents();
             industries::initEvents();
         }
 
@@ -1215,7 +1215,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 Options::widgets,
                 Land::widgets,
                 Forests::widgets,
-                towns::widgets,
+                Towns::widgets,
                 industries::widgets,
             };
 
@@ -1253,7 +1253,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 &Options::enabled_widgets,
                 &Land::enabled_widgets,
                 &Forests::enabled_widgets,
-                &towns::enabled_widgets,
+                &Towns::enabled_widgets,
                 &industries::enabled_widgets,
             };
 
@@ -1263,7 +1263,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 &Options::holdable_widgets,
                 &Land::holdable_widgets,
                 &Forests::holdable_widgets,
-                &towns::holdable_widgets,
+                &Towns::holdable_widgets,
                 &industries::holdable_widgets,
             };
 
@@ -1273,7 +1273,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 &Options::events,
                 &Land::events,
                 &Forests::events,
-                &towns::events,
+                &Towns::events,
                 &industries::events,
             };
 
