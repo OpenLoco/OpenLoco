@@ -643,7 +643,7 @@ namespace OpenLoco::Ui::Options
         }
     }
 
-    namespace sound
+    namespace Sound
     {
         static const Gfx::ui_size_t _window_size = { 366, 84 };
 
@@ -657,7 +657,7 @@ namespace OpenLoco::Ui::Options
             };
         }
 
-        static constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << sound::widx::audio_device) | (1 << sound::widx::audio_device_btn) | (1 << sound::widx::play_title_music);
+        static constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Sound::widx::audio_device) | (1 << Sound::widx::audio_device_btn) | (1 << Sound::widx::play_title_music);
 
         static widget_t _widgets[] = {
             common_options_widgets(_window_size, StringIds::options_title_sound),
@@ -2160,7 +2160,7 @@ namespace OpenLoco::Ui::Options
 
         // TODO: only needs to be called once
         Display::initEvents();
-        sound::initEvents();
+        Sound::initEvents();
         music::initEvents();
         regional::initEvents();
         controls::initEvents();
@@ -2220,7 +2220,7 @@ namespace OpenLoco::Ui::Options
 
     static TabInformation tabInformationByTabOffset[] = {
         { Display::_widgets, &Display::_events, Display::_window_size, &Display::enabledWidgets },
-        { sound::_widgets, &sound::_events, sound::_window_size, &sound::enabledWidgets },
+        { Sound::_widgets, &Sound::_events, Sound::_window_size, &Sound::enabledWidgets },
         { music::_widgets, &music::_events, music::_window_size, &music::enabledWidgets },
         { regional::_widgets, &regional::_events, regional::_window_size, &regional::enabledWidgets },
         { controls::_widgets, &controls::_events, controls::_window_size, &controls::enabledWidgets },
