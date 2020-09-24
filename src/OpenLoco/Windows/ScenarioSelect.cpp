@@ -184,11 +184,31 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         using namespace scenariomgr;
         auto scenarioInfo = reinterpret_cast<ScenarioIndexEntry*>(self->info);
 
-        // Load currency object.
-        // TODO loc_443A5F
-        // objectmgr::getLoadedObjectIndex(self->object);
+        // Check if current currency object needs to be changed.
+        // TODO: this segfaults.
+        registers regs;
+        regs.ebp = scenarioInfo->currentObjectPtr;
+        printf("Pointer: %p\n", (void*)scenarioInfo->currentObjectPtr);
+        bool notLoaded = call(0x004720EB, regs) & (X86_FLAG_SIGN << 8);
+        printf("Requires reload? %d\n", notLoaded);
+        return;
 
-        // loc_443A8A
+        // Load currency object if needed.
+        if (notLoaded)
+        {
+            // Unload current object
+            registers regs2;
+            regs2.ebp = 0x0011264A4; // currencyMeta
+            call(0x00471FF8, regs2); // unload object
+
+            // Load required object
+            registers regs3;
+            regs3.ebp = (uintptr_t)scenarioInfo->currencyObjectId;
+            call(0x00471BCE, regs3);
+            call(0x0047237D); // reset_loaded_objects
+            call(0x0046E07B); // load currency gfx
+        }
+
         // Scenario name
         {
             const int16_t x = self->x + self->widgets[widx::list].right + 89;

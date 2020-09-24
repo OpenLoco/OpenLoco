@@ -26,7 +26,7 @@ namespace OpenLoco::ScenarioManager
         uint32_t flags;                 // 0x264
         char highscoreName[0x100];      // 0x268
         char objective[0x100];          // 0x368
-        uint8_t pad_469[0x46C - 0x469]; // 0x469
+        uint32_t currentObjectPtr;      // 0x468
         char currencyObjectId[8];       // 0x46C
         uint8_t pad_268[0x478 - 0x474]; // 0x474
         uint8_t preview[128][128];      // 0x478
