@@ -378,7 +378,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::common
 
         if (itemIndex == 0)
         {
-            Windows::town_list::open();
+            Windows::TownList::open();
             last_town_option = 0;
         }
         else if (itemIndex == 1)

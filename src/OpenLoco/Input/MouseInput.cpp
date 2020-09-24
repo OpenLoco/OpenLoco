@@ -735,7 +735,7 @@ namespace OpenLoco::Input
                                 break;
                             }
                             case InteractionItem::town:
-                                Ui::Windows::town_list::open();
+                                Ui::Windows::TownList::open();
                                 break;
                             case InteractionItem::station:
                             {

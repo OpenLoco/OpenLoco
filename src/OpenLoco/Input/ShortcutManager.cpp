@@ -411,7 +411,7 @@ namespace OpenLoco::Input::ShortcutManager
         if (isEditorMode() && s5::getOptions().editorStep == 0)
             return;
 
-        Windows::town_list::open();
+        Windows::TownList::open();
     }
 
     // 0x004BF323

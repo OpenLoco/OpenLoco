@@ -19,7 +19,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::Ui::Windows::town_list
+namespace OpenLoco::Ui::Windows::TownList
 {
     static loco_global<uint32_t, 0x01135C34> dword_1135C34;
     static loco_global<colour_t, 0x01135C61> _buildingColour;

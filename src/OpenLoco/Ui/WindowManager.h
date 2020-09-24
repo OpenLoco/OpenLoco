@@ -246,7 +246,7 @@ namespace OpenLoco::Ui::Windows::Town
     window* open(uint16_t townId);
 }
 
-namespace OpenLoco::Ui::Windows::town_list
+namespace OpenLoco::Ui::Windows::TownList
 {
     window* open();
 }
