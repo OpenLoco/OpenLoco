@@ -164,7 +164,7 @@ namespace OpenLoco::Ui::Options
         static constexpr int enabledWidgets = (1 << Widx::close_button) | tabWidgets;
     }
 
-    namespace display
+    namespace Display
     {
         static const Gfx::ui_size_t _window_size = { 400, 184 };
 
@@ -210,7 +210,7 @@ namespace OpenLoco::Ui::Options
 
         static window_event_list _events;
 
-        static constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << display::widx::landscape_smoothing) | (1 << display::widx::gridlines_on_landscape) | (1 << display::widx::vehicles_min_scale) | (1 << display::widx::vehicles_min_scale_btn) | (1 << display::widx::station_names_min_scale) | (1 << display::widx::station_names_min_scale_btn) | (1 << display::widx::construction_marker) | (1 << display::widx::construction_marker_btn) | (1 << display::widx::display_scale_up_btn) | (1 << display::widx::display_scale_down_btn);
+        static constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Display::widx::landscape_smoothing) | (1 << Display::widx::gridlines_on_landscape) | (1 << Display::widx::vehicles_min_scale) | (1 << Display::widx::vehicles_min_scale_btn) | (1 << Display::widx::station_names_min_scale) | (1 << Display::widx::station_names_min_scale_btn) | (1 << Display::widx::construction_marker) | (1 << Display::widx::construction_marker_btn) | (1 << Display::widx::display_scale_up_btn) | (1 << Display::widx::display_scale_down_btn);
 
         // 0x004BFB8C
         static void onMouseUp(window* w, widget_index wi)
@@ -594,22 +594,22 @@ namespace OpenLoco::Ui::Options
             Common::drawTabs(w, dpi);
 
             int16_t x = w->x + 10;
-            int16_t y = w->y + display::_widgets[display::widx::screen_mode].top + 1;
+            int16_t y = w->y + Display::_widgets[Display::widx::screen_mode].top + 1;
             drawString_494B3F(*dpi, x, y, Colour::black, StringIds::options_screen_mode, nullptr);
 
-            y = w->y + display::_widgets[display::widx::display_resolution].top + 1;
+            y = w->y + Display::_widgets[Display::widx::display_resolution].top + 1;
             drawString_494B3F(*dpi, x + 14, y, Colour::black, StringIds::display_resolution, nullptr);
 
-            y = w->y + display::_widgets[display::widx::construction_marker].top + 1;
+            y = w->y + Display::_widgets[Display::widx::construction_marker].top + 1;
             drawString_494B3F(*dpi, x, y, Colour::black, StringIds::construction_marker, nullptr);
 
-            y = w->y + display::_widgets[display::widx::vehicles_min_scale].top + 1;
+            y = w->y + Display::_widgets[Display::widx::vehicles_min_scale].top + 1;
             drawString_494B3F(*dpi, x, y, Colour::black, StringIds::vehicles_min_scale, nullptr);
 
-            y = w->y + display::_widgets[display::widx::station_names_min_scale].top + 1;
+            y = w->y + Display::_widgets[Display::widx::station_names_min_scale].top + 1;
             drawString_494B3F(*dpi, x, y, Colour::black, StringIds::station_names_min_scale, nullptr);
 
-            y = w->y + display::_widgets[display::widx::display_scale].top + 1;
+            y = w->y + Display::_widgets[Display::widx::display_scale].top + 1;
             drawString_494B3F(*dpi, x + 14, y, Colour::black, StringIds::window_scale_factor, nullptr);
 
             int scale = (int)(Config::getNew().scale_factor * 100);
@@ -620,11 +620,11 @@ namespace OpenLoco::Ui::Options
         static void applyScreenModeRestrictions(window* w)
         {
             if (Config::getNew().display.mode != Config::screen_mode::fullscreen)
-                w->disabled_widgets = (1 << display::widx::display_resolution) | (1 << display::widx::display_resolution_btn);
+                w->disabled_widgets = (1 << Display::widx::display_resolution) | (1 << Display::widx::display_resolution_btn);
 
 #if !(defined(__APPLE__) && defined(__MACH__))
-            w->enabled_widgets |= (1 << display::widx::screen_mode) | (1 << display::widx::screen_mode_btn);
-            display::screenModeToggleEnabled(w);
+            w->enabled_widgets |= (1 << Display::widx::screen_mode) | (1 << Display::widx::screen_mode_btn);
+            Display::screenModeToggleEnabled(w);
 #else
             w->disabled_widgets |= (1 << display::Widx::screen_mode) | (1 << display::Widx::screen_mode_btn) | (1 << display::Widx::display_resolution) | (1 << display::Widx::display_resolution_btn);
 #endif
@@ -2159,7 +2159,7 @@ namespace OpenLoco::Ui::Options
             return window;
 
         // TODO: only needs to be called once
-        display::initEvents();
+        Display::initEvents();
         sound::initEvents();
         music::initEvents();
         regional::initEvents();
@@ -2169,11 +2169,11 @@ namespace OpenLoco::Ui::Options
         // 0x004BF833 (create_options_window)
         window = WindowManager::createWindowCentred(
             WindowType::options,
-            display::_window_size,
+            Display::_window_size,
             0,
-            &display::_events);
+            &Display::_events);
 
-        window->widgets = display::_widgets;
+        window->widgets = Display::_widgets;
         window->number = 0;
         window->current_tab = 0;
         window->frame_no = 0;
@@ -2186,11 +2186,11 @@ namespace OpenLoco::Ui::Options
         sub_4BF8CD();
         sub_4C1519();
 
-        window->enabled_widgets = display::enabledWidgets;
-        display::applyScreenModeRestrictions(window);
+        window->enabled_widgets = Display::enabledWidgets;
+        Display::applyScreenModeRestrictions(window);
 
         window->holdable_widgets = 0;
-        window->event_handlers = &display::_events;
+        window->event_handlers = &Display::_events;
         window->activated_widgets = 0;
 
         window->callOnResize();
@@ -2219,7 +2219,7 @@ namespace OpenLoco::Ui::Options
     };
 
     static TabInformation tabInformationByTabOffset[] = {
-        { display::_widgets, &display::_events, display::_window_size, &display::enabledWidgets },
+        { Display::_widgets, &Display::_events, Display::_window_size, &Display::enabledWidgets },
         { sound::_widgets, &sound::_events, sound::_window_size, &sound::enabledWidgets },
         { music::_widgets, &music::_events, music::_window_size, &music::enabledWidgets },
         { regional::_widgets, &regional::_events, regional::_window_size, &regional::enabledWidgets },
@@ -2254,7 +2254,7 @@ namespace OpenLoco::Ui::Options
         w->setSize(tabInfo.windowSize);
 
         if ((Common::tab)w->current_tab == Common::tab::display)
-            display::applyScreenModeRestrictions(w);
+            Display::applyScreenModeRestrictions(w);
 
         else if ((Common::tab)w->current_tab == Common::tab::music)
             w->holdable_widgets = (1 << music::widx::volume);
