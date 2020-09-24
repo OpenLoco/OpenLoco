@@ -14,7 +14,7 @@ namespace OpenLoco::Ui::TitleOptions
 {
     static const Gfx::ui_size_t window_size = { 60, 15 };
 
-    namespace widx
+    namespace Widx
     {
         enum
         {
@@ -45,7 +45,7 @@ namespace OpenLoco::Ui::TitleOptions
             &_events);
 
         window->widgets = _widgets;
-        window->enabled_widgets = (1 << widx::options_button);
+        window->enabled_widgets = (1 << Widx::options_button);
 
         window->initScrollWidgets();
 
@@ -61,7 +61,7 @@ namespace OpenLoco::Ui::TitleOptions
         window->draw(dpi);
 
         int16_t x = window->x + window->width / 2;
-        int16_t y = window->y + window->widgets[widx::options_button].top + 2;
+        int16_t y = window->y + window->widgets[Widx::options_button].top + 2;
         Gfx::point_t origin = { x, y };
 
         Gfx::drawStringCentredWrapped(dpi, &origin, window->width, Colour::white, StringIds::outlined_wcolour2_stringid, (const char*)&StringIds::options);
@@ -76,7 +76,7 @@ namespace OpenLoco::Ui::TitleOptions
 
         switch (widgetIndex)
         {
-            case widx::options_button:
+            case Widx::options_button:
                 Ui::Options::open();
                 break;
         }
