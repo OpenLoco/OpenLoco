@@ -926,7 +926,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
     }
 
-    namespace adjust_land
+    namespace AdjustLand
     {
         enum widx
         {
@@ -2123,7 +2123,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
         static TabInformation tabInformationByTabOffset[] = {
             { ClearArea::widgets, widx::tab_clear_area, &ClearArea::events, ClearArea::enabledWidgets },
-            { adjust_land::widgets, widx::tab_adjust_land, &adjust_land::events, adjust_land::enabledWidgets },
+            { AdjustLand::widgets, widx::tab_adjust_land, &AdjustLand::events, AdjustLand::enabledWidgets },
             { adjust_water::widgets, widx::tab_adjust_water, &adjust_water::events, adjust_water::enabledWidgets },
             { PlantTrees::widgets, widx::tab_plant_trees, &PlantTrees::events, PlantTrees::enabledWidgets },
             { build_walls::widgets, widx::tab_build_walls, &build_walls::events, build_walls::enabledWidgets },
@@ -2309,7 +2309,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             switch (widgetIndex)
             {
                 case Common::widx::tab_adjust_land:
-                    adjust_land::tabReset(self);
+                    AdjustLand::tabReset(self);
                     break;
 
                 case Common::widx::tab_adjust_water:
@@ -2347,7 +2347,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         {
             PlantTrees::initEvents();
             ClearArea::initEvents();
-            adjust_land::initEvents();
+            AdjustLand::initEvents();
             adjust_water::initEvents();
             build_walls::initEvents();
         }
@@ -2394,7 +2394,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             0x004BC9E2,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                adjust_land::toolDragContinue((Ui::window&)regs.esi, (widget_index)regs.dx, (int16_t)regs.ax, (int16_t)regs.bx);
+                AdjustLand::toolDragContinue((Ui::window&)regs.esi, (widget_index)regs.dx, (int16_t)regs.ax, (int16_t)regs.bx);
                 regs = backup;
                 return 0;
             });
@@ -2403,7 +2403,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             0x004BCA5D,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                adjust_land::toolDragEnd((Ui::window&)regs.esi, (widget_index)regs.dx);
+                AdjustLand::toolDragEnd((Ui::window&)regs.esi, (widget_index)regs.dx);
                 regs = backup;
                 return 0;
             });
