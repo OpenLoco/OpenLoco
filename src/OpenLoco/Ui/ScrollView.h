@@ -3,7 +3,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::Ui::scrollview
+namespace OpenLoco::Ui::ScrollView
 {
     enum class scroll_part : int16_t
     {

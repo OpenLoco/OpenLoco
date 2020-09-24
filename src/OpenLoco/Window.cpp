@@ -454,7 +454,7 @@ namespace OpenLoco::Ui
 
             if (invalidate)
             {
-                Ui::scrollview::updateThumbs(this, w);
+                Ui::ScrollView::updateThumbs(this, w);
                 this->invalidate();
             }
 
@@ -487,14 +487,14 @@ namespace OpenLoco::Ui
 
             if (widget->content & scrollbars::horizontal)
             {
-                this->scroll_areas[s].flags |= Ui::scrollview::scroll_flags::HSCROLLBAR_VISIBLE;
+                this->scroll_areas[s].flags |= Ui::ScrollView::scroll_flags::HSCROLLBAR_VISIBLE;
             }
             if (widget->content & scrollbars::vertical)
             {
-                this->scroll_areas[s].flags |= Ui::scrollview::scroll_flags::VSCROLLBAR_VISIBLE;
+                this->scroll_areas[s].flags |= Ui::ScrollView::scroll_flags::VSCROLLBAR_VISIBLE;
             }
 
-            Ui::scrollview::updateThumbs(this, w);
+            Ui::ScrollView::updateThumbs(this, w);
             s++;
         }
     }

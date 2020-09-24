@@ -688,7 +688,7 @@ namespace OpenLoco::Ui::BuildVehicle
         if (scrollPosition < window->scroll_areas[scrollIdx::vehicle_selection].contentOffsetY)
         {
             window->scroll_areas[scrollIdx::vehicle_selection].contentOffsetY = scrollPosition;
-            Ui::scrollview::updateThumbs(window, widx::scrollview_vehicle_selection);
+            Ui::ScrollView::updateThumbs(window, widx::scrollview_vehicle_selection);
         }
 
         if (window->row_hover != -1)

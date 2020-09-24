@@ -16,7 +16,7 @@
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui;
-using namespace OpenLoco::Ui::scrollview;
+using namespace OpenLoco::Ui::ScrollView;
 using namespace OpenLoco::Ui::viewport_interaction;
 
 #define DROPDOWN_ITEM_UNDEFINED -1
@@ -119,17 +119,17 @@ namespace OpenLoco::Input
     static loco_global<uint32_t, 0x0113DC74> _dropdownRowCount;
     static loco_global<uint16_t, 0x0113DC78> _113DC78;
 
-    static std::map<Ui::scrollview::scroll_part, string_id> scroll_widget_tooltips = {
-        { Ui::scrollview::scroll_part::hscrollbar_button_left, StringIds::tooltip_scroll_left },
-        { Ui::scrollview::scroll_part::hscrollbar_button_right, StringIds::tooltip_scroll_right },
-        { Ui::scrollview::scroll_part::hscrollbar_track_left, StringIds::tooltip_scroll_left_fast },
-        { Ui::scrollview::scroll_part::hscrollbar_track_right, StringIds::tooltip_scroll_right_fast },
-        { Ui::scrollview::scroll_part::hscrollbar_thumb, StringIds::tooltip_scroll_left_right },
-        { Ui::scrollview::scroll_part::vscrollbar_button_top, StringIds::tooltip_scroll_up },
-        { Ui::scrollview::scroll_part::vscrollbar_button_bottom, StringIds::tooltip_scroll_down },
-        { Ui::scrollview::scroll_part::vscrollbar_track_top, StringIds::tooltip_scroll_up_fast },
-        { Ui::scrollview::scroll_part::vscrollbar_track_bottom, StringIds::tooltip_scroll_down_fast },
-        { Ui::scrollview::scroll_part::vscrollbar_thumb, StringIds::tooltip_scroll_up_down },
+    static std::map<Ui::ScrollView::scroll_part, string_id> scroll_widget_tooltips = {
+        { Ui::ScrollView::scroll_part::hscrollbar_button_left, StringIds::tooltip_scroll_left },
+        { Ui::ScrollView::scroll_part::hscrollbar_button_right, StringIds::tooltip_scroll_right },
+        { Ui::ScrollView::scroll_part::hscrollbar_track_left, StringIds::tooltip_scroll_left_fast },
+        { Ui::ScrollView::scroll_part::hscrollbar_track_right, StringIds::tooltip_scroll_right_fast },
+        { Ui::ScrollView::scroll_part::hscrollbar_thumb, StringIds::tooltip_scroll_left_right },
+        { Ui::ScrollView::scroll_part::vscrollbar_button_top, StringIds::tooltip_scroll_up },
+        { Ui::ScrollView::scroll_part::vscrollbar_button_bottom, StringIds::tooltip_scroll_down },
+        { Ui::ScrollView::scroll_part::vscrollbar_track_top, StringIds::tooltip_scroll_up_fast },
+        { Ui::ScrollView::scroll_part::vscrollbar_track_bottom, StringIds::tooltip_scroll_down_fast },
+        { Ui::ScrollView::scroll_part::vscrollbar_thumb, StringIds::tooltip_scroll_up_down },
     };
 
     void initMouse()
@@ -907,10 +907,10 @@ namespace OpenLoco::Input
             {
                 if (widgetIndex != _pressedWidgetIndex || window->type != _pressedWindowType || window->number != _pressedWindowNumber)
                 {
-                    scrollview::clearPressedButtons(_pressedWindowType, _pressedWindowNumber, _pressedWidgetIndex);
+                    ScrollView::clearPressedButtons(_pressedWindowType, _pressedWindowNumber, _pressedWidgetIndex);
                     return;
                 }
-                scrollview::scrollLeftContinue(x, y, window, widget, widgetIndex);
+                ScrollView::scrollLeftContinue(x, y, window, widget, widgetIndex);
 
                 break;
             }
@@ -918,7 +918,7 @@ namespace OpenLoco::Input
             case mouse_button::left_released:
             {
                 Input::state(input_state::reset);
-                scrollview::clearPressedButtons(_pressedWindowType, _pressedWindowNumber, _pressedWidgetIndex);
+                ScrollView::clearPressedButtons(_pressedWindowType, _pressedWindowNumber, _pressedWidgetIndex);
                 break;
             }
 
@@ -949,8 +949,8 @@ namespace OpenLoco::Input
                 {
                     _ticksSinceDragStart = 1000;
                     Ui::widget_t* widget = &window->widgets[_dragWidgetIndex];
-                    Ui::scrollview::horizontalDragFollow(window, widget, _dragWidgetIndex, _dragScrollIndex, x);
-                    Ui::scrollview::verticalDragFollow(window, widget, _dragWidgetIndex, _dragScrollIndex, y);
+                    Ui::ScrollView::horizontalDragFollow(window, widget, _dragWidgetIndex, _dragScrollIndex, x);
+                    Ui::ScrollView::verticalDragFollow(window, widget, _dragWidgetIndex, _dragScrollIndex, y);
                 }
 
                 break;
@@ -1482,15 +1482,15 @@ namespace OpenLoco::Input
         {
             if (widget->type == Ui::widget_type::scrollview)
             {
-                Ui::scrollview::scroll_part scrollArea;
+                Ui::ScrollView::scroll_part scrollArea;
                 int16_t scrollX, scrollY;
                 size_t scrollIndex;
-                Ui::scrollview::getPart(window, widget, x, y, &scrollX, &scrollY, &scrollArea, &scrollIndex);
+                Ui::ScrollView::getPart(window, widget, x, y, &scrollX, &scrollY, &scrollArea, &scrollIndex);
 
-                if (scrollArea == Ui::scrollview::scroll_part::none)
+                if (scrollArea == Ui::ScrollView::scroll_part::none)
                 {
                 }
-                else if (scrollArea == Ui::scrollview::scroll_part::view)
+                else if (scrollArea == Ui::ScrollView::scroll_part::view)
                 {
                     window->callScrollMouseOver(scrollX, scrollY, static_cast<uint8_t>(scrollIndex));
                 }
@@ -1628,7 +1628,7 @@ namespace OpenLoco::Input
                 _pressedWindowNumber = window->number;
                 _tooltipCursorX = x;
                 _tooltipCursorY = y;
-                Ui::scrollview::scrollLeftBegin(x, y, window, widget, widgetIndex);
+                Ui::ScrollView::scrollLeftBegin(x, y, window, widget, widgetIndex);
                 break;
 
             default:
@@ -1684,7 +1684,7 @@ namespace OpenLoco::Input
         {
             if (*_modalWindowType == window->type)
             {
-                Ui::scrollview::scrollModalRight(x, y, window, widget, widgetIndex);
+                Ui::ScrollView::scrollModalRight(x, y, window, widget, widgetIndex);
             }
 
             return;
@@ -1876,10 +1876,10 @@ namespace OpenLoco::Input
                     case Ui::widget_type::scrollview:
                         _5233A4 = x;
                         _5233A6 = y;
-                        Ui::scrollview::scroll_part output_scroll_area;
+                        Ui::ScrollView::scroll_part output_scroll_area;
                         size_t scroll_id;
                         int16_t scroll_x, scroll_y;
-                        Ui::scrollview::getPart(
+                        Ui::ScrollView::getPart(
                             window,
                             &window->widgets[widgetIdx],
                             x,
@@ -1889,7 +1889,7 @@ namespace OpenLoco::Input
                             &output_scroll_area,
                             &scroll_id);
 
-                        if (output_scroll_area == Ui::scrollview::scroll_part::view)
+                        if (output_scroll_area == Ui::ScrollView::scroll_part::view)
                         {
 
                             cursorId = window->callCursor(widgetIdx, scroll_x, scroll_y, cursorId);

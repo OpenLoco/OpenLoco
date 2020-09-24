@@ -986,7 +986,7 @@ namespace OpenLoco::Ui::windows::industry_list
             i = (i / 5) * rowHeight;
 
             self->scroll_areas[0].contentOffsetY = i;
-            Ui::scrollview::updateThumbs(self, widx::scrollview);
+            Ui::ScrollView::updateThumbs(self, widx::scrollview);
         }
 
         // 0x00458AAF

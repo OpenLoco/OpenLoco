@@ -1017,7 +1017,7 @@ namespace OpenLoco::Ui::windows::town_list
 
             self->scroll_areas[0].contentOffsetY = i;
 
-            Ui::scrollview::updateThumbs(self, widx::scrollview);
+            Ui::ScrollView::updateThumbs(self, widx::scrollview);
         }
 
         // 0x0049AF98
