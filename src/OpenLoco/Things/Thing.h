@@ -10,7 +10,7 @@ namespace OpenLoco
     struct vehicle_base;
     struct misc_thing;
 
-    namespace thing_id
+    namespace ThingId
     {
         constexpr thing_id_t null = std::numeric_limits<thing_id_t>::max();
     }

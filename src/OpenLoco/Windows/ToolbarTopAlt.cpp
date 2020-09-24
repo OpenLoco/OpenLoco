@@ -129,7 +129,7 @@ namespace OpenLoco::ui::windows::toolbar_top::editor
         {
             case 0:
                 // Load Landscape
-                game_commands::do_21(0, 0);
+                GameCommands::do_21(0, 0);
                 break;
 
             case 1:
@@ -154,12 +154,12 @@ namespace OpenLoco::ui::windows::toolbar_top::editor
 
             case 7:
                 // Return to title screen
-                game_commands::do_21(0, 1);
+                GameCommands::do_21(0, 1);
                 break;
 
             case 8:
                 // Exit to desktop
-                game_commands::do_21(0, 2);
+                GameCommands::do_21(0, 2);
                 break;
         }
     }

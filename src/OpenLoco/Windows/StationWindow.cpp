@@ -163,7 +163,7 @@ namespace OpenLoco::ui::windows::station
                     auto main = WindowManager::getMainWindow();
                     if (self->saved_view.isThingView())
                     {
-                        auto thing = thingmgr::get<Thing>(self->saved_view.thingId);
+                        auto thing = ThingManager::get<Thing>(self->saved_view.thingId);
                         main->viewportCentreOnTile({ thing->x, thing->y, thing->z });
                     }
                     else
@@ -865,9 +865,9 @@ namespace OpenLoco::ui::windows::station
             gGameCommandErrorTitle = StringIds::error_cant_rename_station;
 
             uint32_t* buffer = (uint32_t*)input;
-            game_commands::do_11(self->number, 1, buffer[0], buffer[1], buffer[2]);
-            game_commands::do_11(0, 2, buffer[3], buffer[4], buffer[5]);
-            game_commands::do_11(0, 0, buffer[6], buffer[7], buffer[8]);
+            GameCommands::do_11(self->number, 1, buffer[0], buffer[1], buffer[2]);
+            GameCommands::do_11(0, 2, buffer[3], buffer[4], buffer[5]);
+            GameCommands::do_11(0, 0, buffer[6], buffer[7], buffer[8]);
         }
 
         // 0x0048E6F1

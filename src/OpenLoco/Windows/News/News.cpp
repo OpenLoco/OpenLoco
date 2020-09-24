@@ -93,7 +93,7 @@ namespace OpenLoco::ui::NewsWindow
 
                             case newsItemSubTypes::vehicle:
                             {
-                                auto vehicle = thingmgr::get<OpenLoco::vehicle>(itemId);
+                                auto vehicle = ThingManager::get<OpenLoco::vehicle>(itemId);
 
                                 // ui::vehicle::open
                                 registers regs;
@@ -227,7 +227,7 @@ namespace OpenLoco::ui::NewsWindow
 
                 case newsItemSubTypes::vehicle:
                 {
-                    things::vehicle::Vehicle train(itemId);
+                    Things::Vehicle::Vehicle train(itemId);
                     if (train.head->tile_x == -1)
                         break;
 
@@ -507,7 +507,7 @@ namespace OpenLoco::ui::NewsWindow
 
                 case newsItemSubTypes::vehicle:
                 {
-                    auto vehicle = thingmgr::get<OpenLoco::vehicle>(itemIndex);
+                    auto vehicle = ThingManager::get<OpenLoco::vehicle>(itemIndex);
                     auto company = companymgr::get(vehicle->owner);
                     if (isPlayerCompany(vehicle->owner))
                     {

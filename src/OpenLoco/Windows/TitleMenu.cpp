@@ -451,7 +451,7 @@ namespace OpenLoco::ui::windows
 
         for (int i = 0; i < 32; i++)
         {
-            game_commands::do_71(i, &string[i * 16]);
+            GameCommands::do_71(i, &string[i * 16]);
         }
     }
 
@@ -471,7 +471,7 @@ namespace OpenLoco::ui::windows
 
     static void sub_4391E2()
     {
-        game_commands::do_21(0, 0);
+        GameCommands::do_21(0, 0);
     }
 
     static void sub_46E328()

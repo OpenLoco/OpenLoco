@@ -20,9 +20,9 @@
 using namespace OpenLoco;
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::ObjectManager;
-using namespace OpenLoco::game_commands;
+using namespace OpenLoco::GameCommands;
 
-namespace OpenLoco::things::vehicle
+namespace OpenLoco::Things::Vehicle
 {
     constexpr uint32_t max_orders = 256000;
     constexpr auto max_num_vehicles = 1000;
@@ -94,7 +94,7 @@ namespace OpenLoco::things::vehicle
         for (auto i = 0; i < max_num_vehicles; i++)
         {
             auto id = _96885C[i][0];
-            if (id == thing_id::null)
+            if (id == ThingId::null)
             {
                 return true;
             }
@@ -118,7 +118,7 @@ namespace OpenLoco::things::vehicle
                 return false;
             default:
             {
-                things::vehicle::Vehicle train(head);
+                Things::Vehicle::Vehicle train(head);
                 if (head->vehicleType == VehicleType::plane || head->vehicleType == VehicleType::ship)
                 {
                     if (train.veh2->var_73 & (1 << 0))
@@ -317,7 +317,7 @@ namespace OpenLoco::things::vehicle
         {
             return nullptr;
         }
-        newBogie->var_38 = flags_38::unk_1;
+        newBogie->var_38 = Flags38::unk_1;
         newBogie->object_sprite_type = vehObject.var_24[bodyNumber].back_bogie_sprite_ind;
         if (newBogie->object_sprite_type != SpriteIndex::null)
         {
@@ -345,7 +345,7 @@ namespace OpenLoco::things::vehicle
         newBody->var_2E = 0;
         newBody->var_2C = 0;
         newBody->var_36 = lastVeh->var_36;
-        newBody->var_38 = flags_38::unk_0; // different to create bogie
+        newBody->var_38 = Flags38::unk_0; // different to create bogie
         newBody->object_id = vehicleTypeId;
 
         auto& prng = gPrng();
@@ -388,7 +388,7 @@ namespace OpenLoco::things::vehicle
         {
             if (spriteType & SpriteIndex::flag_unk7)
             {
-                newBody->var_38 |= flags_38::unk_1;
+                newBody->var_38 |= Flags38::unk_1;
                 spriteType &= ~SpriteIndex::flag_unk7;
             }
         }
@@ -405,12 +405,12 @@ namespace OpenLoco::things::vehicle
 
         if (bodyNumber == 0 && vehObject.flags & FlagsE0::flag_02)
         {
-            newBody->var_38 |= flags_38::unk_3;
+            newBody->var_38 |= Flags38::unk_3;
         }
 
         if (bodyNumber + 1 == vehObject.var_04 && vehObject.flags & FlagsE0::flag_03)
         {
-            newBody->var_38 |= flags_38::unk_3;
+            newBody->var_38 |= Flags38::unk_3;
         }
 
         lastVeh->next_car_id = newBody->id; // same as create bogie
@@ -427,7 +427,7 @@ namespace OpenLoco::things::vehicle
     // 0x004AE86D
     static bool createCar(OpenLoco::vehicle_head* const head, const uint16_t vehicleTypeId)
     {
-        if (!thingmgr::checkNumFreeThings(max_num_vehicle_components_in_car))
+        if (!ThingManager::checkNumFreeThings(max_num_vehicle_components_in_car))
         {
             return false;
         }
@@ -499,7 +499,7 @@ namespace OpenLoco::things::vehicle
         for (auto i = 0; i < max_num_vehicles; i++)
         {
             auto id = _96885C[i][0];
-            if (id == thing_id::null)
+            if (id == ThingId::null)
             {
                 for (auto j = 0; j < max_num_routing_steps; ++j)
                 {
@@ -525,7 +525,7 @@ namespace OpenLoco::things::vehicle
     static uint16_t createUniqueTypeNumber(const VehicleType type)
     {
         std::array<bool, max_num_vehicles> _unkArr{};
-        for (auto v : thingmgr::VehicleList())
+        for (auto v : ThingManager::VehicleList())
         {
             if (v->owner == _updating_company_id && v->vehicleType == type)
             {
@@ -549,7 +549,7 @@ namespace OpenLoco::things::vehicle
     static OpenLoco::vehicle_head* createHead(const uint8_t trackType, const TransportMode mode, const uint16_t orderId, const VehicleType vehicleType)
     {
         auto* const newHead = createVehicleThing<vehicle_head>();
-        thingmgr::moveSpriteToList(newHead, thingmgr::thing_list::vehicle_head);
+        ThingManager::moveSpriteToList(newHead, ThingManager::thing_list::vehicle_head);
         newHead->owner = _updating_company_id;
         newHead->head = newHead->id;
         newHead->var_0C |= (1 << 1);
@@ -674,13 +674,13 @@ namespace OpenLoco::things::vehicle
         newTail->var_48 = -1;
         newTail->var_4A = 0;
         lastVeh->next_car_id = newTail->id;
-        newTail->next_car_id = thing_id::null;
+        newTail->next_car_id = ThingId::null;
         return newTail;
     }
     // 0x004AE318
     static std::optional<OpenLoco::vehicle_head*> createBaseVehicle(const TransportMode mode, const VehicleType type, const uint8_t trackType)
     {
-        if (!thingmgr::checkNumFreeThings(num_vehicle_components_in_base))
+        if (!ThingManager::checkNumFreeThings(num_vehicle_components_in_base))
         {
             return {};
         }
@@ -751,13 +751,13 @@ namespace OpenLoco::things::vehicle
         uint16_t baseOrderId = (orderId & ~(0x3F)) / max_num_routing_steps;
         for (auto i = 0; i < max_num_routing_steps; ++i)
         {
-            _96885C[baseOrderId][i] = thing_id::null;
+            _96885C[baseOrderId][i] = ThingId::null;
         }
     }
 
     static void sub_470795(const uint32_t var46, const int16_t var4C)
     {
-        for (auto head : thingmgr::VehicleList())
+        for (auto head : ThingManager::VehicleList())
         {
             if (head->length_of_var_4C >= var46)
             {
@@ -806,7 +806,7 @@ namespace OpenLoco::things::vehicle
     static uint32_t createNewVehicle(const uint8_t flags, const uint16_t vehicleTypeId)
     {
         gameCommandMapX = location::null;
-        if (!thingmgr::checkNumFreeThings(max_num_vehicle_components_in_car + num_vehicle_components_in_base))
+        if (!ThingManager::checkNumFreeThings(max_num_vehicle_components_in_car + num_vehicle_components_in_base))
         {
             return FAILURE;
         }
@@ -816,7 +816,7 @@ namespace OpenLoco::things::vehicle
             return FAILURE;
         }
 
-        if (flags & game_commands::GameCommandFlag::apply)
+        if (flags & GameCommands::GameCommandFlag::apply)
         {
             auto vehObject = ObjectManager::get<vehicle_object>(vehicleTypeId);
 
@@ -843,10 +843,10 @@ namespace OpenLoco::things::vehicle
                 auto veh2 = veh1->nextVehicleComponent();
                 auto tail = veh2->nextVehicleComponent();
                 // Get all vehicles before freeing
-                thingmgr::freeThing(_head);
-                thingmgr::freeThing(veh1);
-                thingmgr::freeThing(veh2);
-                thingmgr::freeThing(tail);
+                ThingManager::freeThing(_head);
+                ThingManager::freeThing(veh1);
+                ThingManager::freeThing(veh2);
+                ThingManager::freeThing(tail);
                 return FAILURE;
             }
         }
@@ -880,12 +880,12 @@ namespace OpenLoco::things::vehicle
             return FAILURE;
         }
 
-        if (!thingmgr::checkNumFreeThings(max_num_vehicle_components_in_car))
+        if (!ThingManager::checkNumFreeThings(max_num_vehicle_components_in_car))
         {
             return FAILURE;
         }
 
-        if (flags & game_commands::GameCommandFlag::apply)
+        if (flags & GameCommands::GameCommandFlag::apply)
         {
             if (train.head->tile_x != -1)
             {

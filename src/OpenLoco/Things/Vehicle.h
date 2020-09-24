@@ -9,13 +9,13 @@
 
 namespace OpenLoco
 {
-    namespace things::vehicle
+    namespace Things::Vehicle
     {
         constexpr auto max_vehicle_length = 176; // TODO: Units?
 
         uint32_t create(const uint8_t flags, const uint16_t vehicleTypeId, const uint16_t vehicleThingId);
 
-        namespace flags_38
+        namespace Flags38
         {
             constexpr uint8_t unk_0 = 1 << 0;
             constexpr uint8_t unk_1 = 1 << 1;
@@ -33,7 +33,7 @@ namespace OpenLoco
 
     struct vehicle_26;
 
-    namespace flags_5f
+    namespace Flags5F
     {
         constexpr uint8_t breakdown_pending = 1 << 1;
         constexpr uint8_t broken_down = 1 << 2;
@@ -452,7 +452,7 @@ namespace OpenLoco
     static_assert(sizeof(vehicle_tail) == 0x4F); // Can't use offset_of change this to last field if more found
 
 #pragma pack(pop)
-    namespace things::vehicle
+    namespace Things::Vehicle
     {
         struct CarComponent
         {

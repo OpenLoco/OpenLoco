@@ -292,7 +292,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
                     auto main = WindowManager::getMainWindow();
                     if (self->saved_view.isThingView())
                     {
-                        auto thing = thingmgr::get<Thing>(self->saved_view.thingId);
+                        auto thing = ThingManager::get<Thing>(self->saved_view.thingId);
                         main->viewportCentreOnTile({ thing->x, thing->y, thing->z });
                     }
                     else
@@ -342,9 +342,9 @@ namespace OpenLoco::ui::windows::CompanyWindow
             bool success = false;
             {
                 uint32_t* buffer = (uint32_t*)input;
-                game_commands::do_31(self->number, 1, buffer[0], buffer[1], buffer[2]);
-                game_commands::do_31(0, 2, buffer[3], buffer[4], buffer[5]);
-                success = game_commands::do_31(0, 0, buffer[6], buffer[7], buffer[8]);
+                GameCommands::do_31(self->number, 1, buffer[0], buffer[1], buffer[2]);
+                GameCommands::do_31(0, 2, buffer[3], buffer[4], buffer[5]);
+                success = GameCommands::do_31(0, 0, buffer[6], buffer[7], buffer[8]);
             }
 
             // No need to propate the name if it could not be set.
@@ -483,7 +483,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
 
             const auto& company = companymgr::get(self->number);
 
-            if (company->observation_thing == thing_id::null)
+            if (company->observation_thing == ThingId::null)
             {
                 // Observing a certain location?
                 if (company->observation_x != -1)
@@ -535,7 +535,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
             else
             {
                 // loc_434170
-                auto thing = thingmgr::get<OpenLoco::vehicle_head>(company->observation_thing);
+                auto thing = ThingManager::get<OpenLoco::vehicle_head>(company->observation_thing);
 
                 if (thing->base_type != thing_base_type::vehicle || thing->type != VehicleThingType::head || (thing->x == location::null))
                 {
@@ -543,7 +543,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
                     return;
                 }
 
-                things::vehicle::Vehicle train(thing);
+                Things::Vehicle::Vehicle train(thing);
 
                 int8_t rotation = static_cast<int8_t>(self->viewports[0]->getRotation());
                 SavedView view(
@@ -946,8 +946,8 @@ namespace OpenLoco::ui::windows::CompanyWindow
             if (_9C68EF & (1 << 0))
             {
                 _9C68EF = _9C68EF & ~(1 << 0);
-                auto flags = game_commands::GameCommandFlag::apply | game_commands::GameCommandFlag::flag_3 | game_commands::GameCommandFlag::flag_5 | game_commands::GameCommandFlag::flag_6;
-                game_commands::do_55(flags, _9C68D6, _9C68D8, _9C68DA);
+                auto flags = GameCommands::GameCommandFlag::apply | GameCommands::GameCommandFlag::flag_3 | GameCommands::GameCommandFlag::flag_5 | GameCommands::GameCommandFlag::flag_6;
+                GameCommands::do_55(flags, _9C68D6, _9C68D8, _9C68DA);
             }
         }
 
@@ -1009,9 +1009,9 @@ namespace OpenLoco::ui::windows::CompanyWindow
             }
 
             gGameCommandErrorTitle = StringIds::error_cant_build_this_here;
-            uint8_t flags = game_commands::GameCommandFlag::apply | game_commands::GameCommandFlag::flag_1;
-            auto commandResult = game_commands::do_54(flags, tileY, tileX, tileZ, dx);
-            if (commandResult != game_commands::FAILURE)
+            uint8_t flags = GameCommands::GameCommandFlag::apply | GameCommands::GameCommandFlag::flag_1;
+            auto commandResult = GameCommands::do_54(flags, tileY, tileX, tileZ, dx);
+            if (commandResult != GameCommands::FAILURE)
             {
                 Input::toolCancel();
             }
@@ -1413,7 +1413,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
 
                     gGameCommandErrorTitle = StringIds::error_cant_change_colour_scheme;
 
-                    game_commands::do_19(0, newMode, vehicleType, 1, self->number);
+                    GameCommands::do_19(0, newMode, vehicleType, 1, self->number);
 
                     break;
             }
@@ -1508,7 +1508,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
                     const int8_t colour = dropdown::getItemArgument(itemIndex, 2);
                     const auto vehicleType = widgetIndex - widx::main_colour_scheme;
 
-                    game_commands::do_19(0, colour, vehicleType, 0, self->number);
+                    GameCommands::do_19(0, colour, vehicleType, 0, self->number);
                     break;
                 }
 
@@ -1532,7 +1532,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
                     const int8_t colour = dropdown::getItemArgument(itemIndex, 2);
                     const auto vehicleType = widgetIndex - widx::secondary_colour_scheme;
 
-                    game_commands::do_19(1, colour, vehicleType, 0, self->number);
+                    GameCommands::do_19(1, colour, vehicleType, 0, self->number);
                     break;
                 }
             }
@@ -1945,7 +1945,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
                     auto newLoan = std::max<currency32_t>(0, company->current_loan - stepSize);
 
                     gGameCommandErrorTitle = StringIds::cant_pay_back_loan;
-                    game_commands::do_9(newLoan);
+                    GameCommands::do_9(newLoan);
                     break;
                 }
 
@@ -1961,7 +1961,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
 
                     currency32_t newLoan = companymgr::get(self->number)->current_loan + stepSize;
                     gGameCommandErrorTitle = StringIds::cant_borrow_any_more_money;
-                    game_commands::do_9(newLoan);
+                    GameCommands::do_9(newLoan);
                     break;
                 }
             }
@@ -2558,9 +2558,9 @@ namespace OpenLoco::ui::windows::CompanyWindow
             gGameCommandErrorTitle = StringIds::cannot_rename_this_company;
 
             uint32_t* buffer = (uint32_t*)input;
-            game_commands::do_30(self->number, 1, buffer[0], buffer[1], buffer[2]);
-            game_commands::do_30(0, 2, buffer[3], buffer[4], buffer[5]);
-            game_commands::do_30(0, 0, buffer[6], buffer[7], buffer[8]);
+            GameCommands::do_30(self->number, 1, buffer[0], buffer[1], buffer[2]);
+            GameCommands::do_30(0, 2, buffer[3], buffer[4], buffer[5]);
+            GameCommands::do_30(0, 0, buffer[6], buffer[7], buffer[8]);
         }
 
         static void drawCompanySelect(const window* const self, Gfx::drawpixelinfo_t* const dpi)

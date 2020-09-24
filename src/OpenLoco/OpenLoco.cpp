@@ -766,10 +766,10 @@ namespace OpenLoco
         call(0x004C56F6);
         townmgr::update();
         industrymgr::update();
-        thingmgr::updateVehicles();
+        ThingManager::updateVehicles();
         sub_46FFCA();
         stationmgr::update();
-        thingmgr::updateMiscThings();
+        ThingManager::updateMiscThings();
         sub_46FFCA();
         companymgr::update();
         invalidate_map_animations();

@@ -65,12 +65,12 @@ constexpr int16_t factor503B50[] = {
 
 vehicle* vehicle::nextVehicle()
 {
-    return thingmgr::get<vehicle>(next_thing_id);
+    return ThingManager::get<vehicle>(next_thing_id);
 }
 
 vehicle* vehicle::nextVehicleComponent()
 {
-    return thingmgr::get<vehicle>(next_car_id);
+    return ThingManager::get<vehicle>(next_car_id);
 }
 
 vehicle_object* vehicle::object() const
@@ -150,10 +150,10 @@ void vehicle_head::sub_4BA8D4()
         case 9:
             return;
     }
-    things::vehicle::Vehicle train(this);
+    Things::Vehicle::Vehicle train(this);
     for (auto car : train.cars)
     {
-        if (car.front->var_5F & flags_5f::broken_down)
+        if (car.front->var_5F & Flags5F::broken_down)
         {
             if ((scenarioTicks() & 3) == 0)
             {
@@ -162,13 +162,13 @@ void vehicle_head::sub_4BA8D4()
             }
         }
 
-        if ((car.front->var_5F & flags_5f::breakdown_pending) && !isTitleMode())
+        if ((car.front->var_5F & Flags5F::breakdown_pending) && !isTitleMode())
         {
             auto newConfig = config::getNew();
             if (!newConfig.breakdowns_disabled)
             {
-                car.front->var_5F &= ~flags_5f::breakdown_pending;
-                car.front->var_5F |= flags_5f::broken_down;
+                car.front->var_5F &= ~Flags5F::breakdown_pending;
+                car.front->var_5F |= Flags5F::broken_down;
                 car.front->var_6A = 5;
                 sub_4BAA76();
 
@@ -227,7 +227,7 @@ int32_t OpenLoco::vehicle_body::update()
 // 0x004AAC4E
 void OpenLoco::vehicle_body::animationUpdate()
 {
-    if (var_38 & things::vehicle::flags_38::unk_4)
+    if (var_38 & Things::Vehicle::Flags38::unk_4)
         return;
 
     vehicle_head* headVeh = vehicleUpdate_head;
@@ -278,7 +278,7 @@ void OpenLoco::vehicle_body::animationUpdate()
 void OpenLoco::vehicle_body::sub_4AAB0B()
 {
     int32_t eax = vehicle_var_1136130 >> 3;
-    if (var_38 & things::vehicle::flags_38::unk_1)
+    if (var_38 & Things::Vehicle::Flags38::unk_1)
     {
         eax = -eax;
     }
@@ -318,7 +318,7 @@ void OpenLoco::vehicle_body::sub_4AAB0B()
 
             if (ah < 0)
             {
-                if (var_38 & things::vehicle::flags_38::unk_1)
+                if (var_38 & Things::Vehicle::Flags38::unk_1)
                 {
                     ah = 2;
                     if (al != 0 && al != ah)
@@ -337,7 +337,7 @@ void OpenLoco::vehicle_body::sub_4AAB0B()
             }
             else if (ah > 0)
             {
-                if (var_38 & things::vehicle::flags_38::unk_1)
+                if (var_38 & Things::Vehicle::Flags38::unk_1)
                 {
                     ah = 1;
                     if (al != 0 && al != ah)
@@ -1011,7 +1011,7 @@ void OpenLoco::vehicle_body::steamPuffsAnimationUpdate(uint8_t num, int32_t var_
     auto vehicleObject = object();
     vehicle_bogie* frontBogie = vehicleUpdate_frontBogie;
     vehicle_bogie* backBogie = vehicleUpdate_backBogie;
-    if (frontBogie->var_5F & flags_5f::broken_down)
+    if (frontBogie->var_5F & Flags5F::broken_down)
         return;
 
     vehicle_2* veh_2 = vehicleUpdate_2;
@@ -1028,7 +1028,7 @@ void OpenLoco::vehicle_body::steamPuffsAnimationUpdate(uint8_t num, int32_t var_
 
     auto _var_44 = var_44;
     // Reversing
-    if (var_38 & things::vehicle::flags_38::unk_1)
+    if (var_38 & Things::Vehicle::Flags38::unk_1)
     {
         var_05 = -var_05;
         _var_44 = -_var_44;
@@ -1175,7 +1175,7 @@ void OpenLoco::vehicle_body::dieselExhaust1AnimationUpdate(uint8_t num, int32_t 
 {
     vehicle_bogie* frontBogie = vehicleUpdate_frontBogie;
     vehicle_bogie* backBogie = vehicleUpdate_backBogie;
-    if (frontBogie->var_5F & flags_5f::broken_down)
+    if (frontBogie->var_5F & Flags5F::broken_down)
         return;
 
     vehicle_head* headVeh = vehicleUpdate_head;
@@ -1187,7 +1187,7 @@ void OpenLoco::vehicle_body::dieselExhaust1AnimationUpdate(uint8_t num, int32_t 
         if (veh_2->var_56 == 0)
             return;
 
-        if (var_38 & things::vehicle::flags_38::unk_1)
+        if (var_38 & Things::Vehicle::Flags38::unk_1)
         {
             var_05 = -var_05;
         }
@@ -1212,7 +1212,7 @@ void OpenLoco::vehicle_body::dieselExhaust1AnimationUpdate(uint8_t num, int32_t 
         if (veh_2->var_5A != 1)
             return;
 
-        if (var_38 & things::vehicle::flags_38::unk_1)
+        if (var_38 & Things::Vehicle::Flags38::unk_1)
         {
             var_05 = -var_05;
         }
@@ -1261,7 +1261,7 @@ void OpenLoco::vehicle_body::dieselExhaust2AnimationUpdate(uint8_t num, int32_t 
 {
     vehicle_bogie* frontBogie = vehicleUpdate_frontBogie;
     vehicle_bogie* backBogie = vehicleUpdate_backBogie;
-    if (frontBogie->var_5F & flags_5f::broken_down)
+    if (frontBogie->var_5F & Flags5F::broken_down)
         return;
 
     vehicle_2* veh_2 = vehicleUpdate_2;
@@ -1273,7 +1273,7 @@ void OpenLoco::vehicle_body::dieselExhaust2AnimationUpdate(uint8_t num, int32_t 
     if (veh_2->var_56 > 917504)
         return;
 
-    if (var_38 & things::vehicle::flags_38::unk_1)
+    if (var_38 & Things::Vehicle::Flags38::unk_1)
     {
         var_05 = -var_05;
     }
@@ -1336,7 +1336,7 @@ void OpenLoco::vehicle_body::electricSpark1AnimationUpdate(uint8_t num, int32_t 
 {
     vehicle_bogie* frontBogie = vehicleUpdate_frontBogie;
     vehicle_bogie* backBogie = vehicleUpdate_backBogie;
-    if (frontBogie->var_5F & flags_5f::broken_down)
+    if (frontBogie->var_5F & Flags5F::broken_down)
         return;
 
     vehicle_2* veh_2 = vehicleUpdate_2;
@@ -1346,7 +1346,7 @@ void OpenLoco::vehicle_body::electricSpark1AnimationUpdate(uint8_t num, int32_t 
         return;
 
     auto _var_44 = var_44;
-    if (var_38 & things::vehicle::flags_38::unk_1)
+    if (var_38 & Things::Vehicle::Flags38::unk_1)
     {
         var_05 = -var_05;
         _var_44 = -var_44;
@@ -1396,7 +1396,7 @@ void OpenLoco::vehicle_body::electricSpark2AnimationUpdate(uint8_t num, int32_t 
 {
     vehicle_bogie* frontBogie = vehicleUpdate_frontBogie;
     vehicle_bogie* backBogie = vehicleUpdate_backBogie;
-    if (frontBogie->var_5F & flags_5f::broken_down)
+    if (frontBogie->var_5F & Flags5F::broken_down)
         return;
 
     vehicle_2* veh_2 = vehicleUpdate_2;
@@ -1406,7 +1406,7 @@ void OpenLoco::vehicle_body::electricSpark2AnimationUpdate(uint8_t num, int32_t 
         return;
 
     auto _var_44 = var_44;
-    if (var_38 & things::vehicle::flags_38::unk_1)
+    if (var_38 & Things::Vehicle::Flags38::unk_1)
     {
         var_05 = -var_05;
         _var_44 = -var_44;
@@ -1449,7 +1449,7 @@ void OpenLoco::vehicle_body::electricSpark2AnimationUpdate(uint8_t num, int32_t 
     loc.y += yFactor;
 
     auto yaw = (sprite_yaw + 16) & 0x3F;
-    auto firstBogie = var_38 & things::vehicle::flags_38::unk_1 ? backBogie : frontBogie;
+    auto firstBogie = var_38 & Things::Vehicle::Flags38::unk_1 ? backBogie : frontBogie;
     xyFactor = 5;
     if (!(vehicle_arr_4F8A7C[firstBogie->var_2C / 8] & 1))
     {
@@ -1614,7 +1614,7 @@ static uint32_t getVehicleTypeLength(const uint16_t vehicleTypeId)
 uint32_t vehicle_head::getVehicleTotalLength() // TODO: const
 {
     auto totalLength = 0;
-    things::vehicle::Vehicle train(this);
+    Things::Vehicle::Vehicle train(this);
     for (const auto& car : train.cars)
     {
         totalLength += getVehicleTypeLength(car.body->object_id);
@@ -1630,7 +1630,7 @@ bool vehicle_head::isVehicleTypeCompatible(const uint16_t vehicleTypeId) // TODO
     auto newObject = ObjectManager::get<vehicle_object>(vehicleTypeId);
     if (newObject->mode == TransportMode::air || newObject->mode == TransportMode::water)
     {
-        things::vehicle::Vehicle train(this);
+        Things::Vehicle::Vehicle train(this);
         if (!train.cars.empty())
         {
             gGameCommandErrorText = StringIds::incompatible_vehicle;
@@ -1659,7 +1659,7 @@ bool vehicle_head::isVehicleTypeCompatible(const uint16_t vehicleTypeId) // TODO
     }
 
     {
-        things::vehicle::Vehicle train(this);
+        Things::Vehicle::Vehicle train(this);
         for (const auto& car : train.cars)
         {
             // The object_id is the same for all vehicle components and car components of a car
@@ -1681,7 +1681,7 @@ bool vehicle_head::isVehicleTypeCompatible(const uint16_t vehicleTypeId) // TODO
 
     auto curTotalLength = getVehicleTotalLength();
     auto additionalNewLength = getVehicleTypeLength(vehicleTypeId);
-    if (curTotalLength + additionalNewLength > OpenLoco::things::vehicle::max_vehicle_length)
+    if (curTotalLength + additionalNewLength > OpenLoco::Things::Vehicle::max_vehicle_length)
     {
         gGameCommandErrorText = StringIds::vehicle_too_long;
         return false;
@@ -1689,11 +1689,11 @@ bool vehicle_head::isVehicleTypeCompatible(const uint16_t vehicleTypeId) // TODO
     return true;
 }
 
-namespace OpenLoco::things::vehicle
+namespace OpenLoco::Things::Vehicle
 {
     Vehicle::Vehicle(uint16_t _head)
     {
-        auto component = thingmgr::get<OpenLoco::vehicle>(_head);
+        auto component = ThingManager::get<OpenLoco::vehicle>(_head);
         head = component->asVehicleHead();
         component = component->nextVehicleComponent();
         veh1 = component->asVehicle1();

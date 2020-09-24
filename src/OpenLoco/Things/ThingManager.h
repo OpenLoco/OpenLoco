@@ -4,7 +4,7 @@
 #include "Vehicle.h"
 #include <cstdio>
 
-namespace OpenLoco::thingmgr
+namespace OpenLoco::ThingManager
 {
     constexpr size_t num_thing_lists = 6;
     constexpr size_t max_things = 20000;
@@ -47,7 +47,7 @@ namespace OpenLoco::thingmgr
     {
     private:
         vehicle_head* head = nullptr;
-        thing_id_t nextHeadId = thing_id::null;
+        thing_id_t nextHeadId = ThingId::null;
 
     public:
         VehicleHeadIterator(const uint16_t _headId)
@@ -97,13 +97,13 @@ namespace OpenLoco::thingmgr
     class ThingList
     {
     private:
-        uint16_t firstId = thing_id::null;
+        uint16_t firstId = ThingId::null;
         using thingListIterator = T;
 
     public:
         ThingList()
         {
-            firstId = thingmgr::firstId(list);
+            firstId = ThingManager::firstId(list);
         }
 
         T begin()
@@ -112,7 +112,7 @@ namespace OpenLoco::thingmgr
         }
         T end()
         {
-            return T(thing_id::null);
+            return T(ThingId::null);
         }
     };
 

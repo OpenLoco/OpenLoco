@@ -21,7 +21,7 @@
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Map;
-using namespace OpenLoco::game_commands;
+using namespace OpenLoco::GameCommands;
 
 namespace OpenLoco::ui::windows::terraform
 {
@@ -838,7 +838,7 @@ namespace OpenLoco::ui::windows::terraform
                 map_pos pointB = { _mapSelectionBX, _mapSelectionBY };
                 _gGameCommandErrorTitle = StringIds::error_cant_clear_entire_area;
 
-                game_commands::do_66(centre, pointA, pointB, flags);
+                GameCommands::do_66(centre, pointA, pointB, flags);
             }
         }
 
@@ -1090,12 +1090,12 @@ namespace OpenLoco::ui::windows::terraform
             if (_adjustToolSize == 0)
             {
                 uint16_t di = 0xFFFF;
-                cost = game_commands::do_27(centre, pointA, pointB, di, flags);
+                cost = GameCommands::do_27(centre, pointA, pointB, di, flags);
             }
             else
             {
                 uint16_t di = _word_F2448E;
-                cost = game_commands::do_26(centre, pointA, pointB, di, flags);
+                cost = GameCommands::do_26(centre, pointA, pointB, di, flags);
             }
             return cost;
         }
@@ -1119,12 +1119,12 @@ namespace OpenLoco::ui::windows::terraform
             if (_adjustToolSize == 0)
             {
                 uint16_t di = 1;
-                cost = game_commands::do_27(centre, pointA, pointB, di, flags);
+                cost = GameCommands::do_27(centre, pointA, pointB, di, flags);
             }
             else
             {
                 uint16_t di = _word_F2448E;
-                cost = game_commands::do_25(centre, pointA, pointB, di, flags);
+                cost = GameCommands::do_25(centre, pointA, pointB, di, flags);
             }
             return cost;
         }
@@ -1359,7 +1359,7 @@ namespace OpenLoco::ui::windows::terraform
                     map_pos pointA = { _mapSelectionAX, _mapSelectionAY };
                     map_pos pointB = { _mapSelectionBX, _mapSelectionBY };
 
-                    game_commands::do_24(pointA, pointB, _lastSelectedLand, GameCommandFlag::apply);
+                    GameCommands::do_24(pointA, pointB, _lastSelectedLand, GameCommandFlag::apply);
                 }
             }
 
@@ -1600,7 +1600,7 @@ namespace OpenLoco::ui::windows::terraform
             map_pos pointA = { _mapSelectionAX, _mapSelectionAY };
             map_pos pointB = { _mapSelectionBX, _mapSelectionBY };
 
-            game_commands::do_28(pointA, pointB, flags);
+            GameCommands::do_28(pointA, pointB, flags);
         }
 
         static void lowerWater(uint8_t flags)
@@ -1610,7 +1610,7 @@ namespace OpenLoco::ui::windows::terraform
             map_pos pointA = { _mapSelectionAX, _mapSelectionAY };
             map_pos pointB = { _mapSelectionBX, _mapSelectionBY };
 
-            game_commands::do_29(pointA, pointB, flags);
+            GameCommands::do_29(pointA, pointB, flags);
         }
 
         // 0x004BCDBF

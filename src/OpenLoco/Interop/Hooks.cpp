@@ -777,7 +777,7 @@ void OpenLoco::Interop::registerHooks()
     ui::windows::construction::registerHooks();
     ui::WindowManager::registerHooks();
     ui::viewportmgr::registerHooks();
-    game_commands::registerHooks();
+    GameCommands::registerHooks();
     title::registerHooks();
     tutorial::registerHooks();
 

@@ -136,7 +136,7 @@ namespace OpenLoco::ui::windows::toolbar_top::game
         {
             case 0:
                 // Load game
-                game_commands::do_21(0, 0);
+                GameCommands::do_21(0, 0);
                 break;
 
             case 1:
@@ -161,12 +161,12 @@ namespace OpenLoco::ui::windows::toolbar_top::game
 
             case 7:
                 // Return to title screen
-                game_commands::do_21(0, 1);
+                GameCommands::do_21(0, 1);
                 break;
 
             case 8:
                 // Exit to desktop
-                game_commands::do_21(0, 2);
+                GameCommands::do_21(0, 2);
                 break;
         }
     }
@@ -405,12 +405,12 @@ namespace OpenLoco::ui::windows::toolbar_top::game
         auto interface = ObjectManager::get<interface_skin_object>();
 
         uint16_t vehicle_counts[vehicleTypeCount]{ 0 };
-        for (auto v : thingmgr::VehicleList())
+        for (auto v : ThingManager::VehicleList())
         {
             if (v->owner != player_company_id)
                 continue;
 
-            if ((v->var_38 & things::vehicle::flags_38::unk_4) != 0)
+            if ((v->var_38 & Things::Vehicle::Flags38::unk_4) != 0)
                 continue;
 
             vehicle_counts[static_cast<uint8_t>(v->vehicleType)]++;

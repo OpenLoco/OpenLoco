@@ -14,7 +14,7 @@
 using namespace OpenLoco::ui;
 using namespace OpenLoco::Map;
 
-namespace OpenLoco::game_commands
+namespace OpenLoco::GameCommands
 {
     static loco_global<company_id_t, 0x009C68EB> _updating_company_id;
     static loco_global<uint8_t, 0x00508F08> game_command_nest_level;
@@ -52,7 +52,7 @@ namespace OpenLoco::game_commands
             0x004AE5E4,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                auto ebx = things::vehicle::create(regs.bl, regs.dx, regs.di);
+                auto ebx = Things::Vehicle::create(regs.bl, regs.dx, regs.di);
 
                 regs = backup;
                 regs.ebx = ebx;

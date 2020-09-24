@@ -306,7 +306,7 @@ namespace OpenLoco::ui
 
             if (config->viewport_target_sprite != 0xFFFF)
             {
-                auto thing = thingmgr::get<Thing>(config->viewport_target_sprite);
+                auto thing = ThingManager::get<Thing>(config->viewport_target_sprite);
 
                 int z = (tileElementHeight(thing->x, thing->y).landHeight) - 16;
                 bool underground = (thing->z < z);
@@ -563,7 +563,7 @@ namespace OpenLoco::ui
     // 0x004C6801
     void window::moveWindowToLocation(viewport_pos pos)
     {
-        if (this->viewport_configurations->viewport_target_sprite != thing_id::null)
+        if (this->viewport_configurations->viewport_target_sprite != ThingId::null)
             return;
 
         if (this->flags & window_flags::viewport_no_scrolling)
