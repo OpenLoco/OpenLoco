@@ -260,7 +260,7 @@ namespace OpenLoco::Ui::Vehicle
     }
 }
 
-namespace OpenLoco::Ui::Windows::vehicle_list
+namespace OpenLoco::Ui::Windows::VehicleList
 {
     window* open(uint16_t companyId, uint8_t type);
 }

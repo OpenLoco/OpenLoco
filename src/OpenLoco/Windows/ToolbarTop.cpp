@@ -455,7 +455,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         auto vehicleType = menu_options[itemIndex];
         last_vehicles_option = vehicleType;
 
-        Windows::vehicle_list::open(companymgr::getControllingId(), vehicleType);
+        Windows::VehicleList::open(companymgr::getControllingId(), vehicleType);
     }
 
     // 0x0043A4E9

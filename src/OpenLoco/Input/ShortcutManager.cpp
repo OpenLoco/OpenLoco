@@ -393,7 +393,7 @@ namespace OpenLoco::Input::ShortcutManager
             return;
 
         loco_global<uint8_t, 0x00525FAF> last_vehicles_option;
-        Windows::vehicle_list::open(companymgr::getControllingId(), *last_vehicles_option);
+        Windows::VehicleList::open(companymgr::getControllingId(), *last_vehicles_option);
     }
 
     // 0x004BF2F0
