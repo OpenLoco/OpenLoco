@@ -9,7 +9,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Vehicle
 {
-    namespace main
+    namespace Main
     {
         static void onUpdate(window* w);
     }
@@ -31,7 +31,7 @@ namespace OpenLoco::Ui::Vehicle
 
     void registerHooks()
     {
-        _mainEvents->on_update = main::onUpdate;
+        _mainEvents->on_update = Main::onUpdate;
         _vehicleDetailsEvents->on_update = vehicle_details::onUpdate;
         _routeDetailsEvents->on_update = route_details::onUpdate;
     }
@@ -46,7 +46,7 @@ namespace OpenLoco::Ui::Vehicle
         call(0x004B28E2, regs);
     }
 
-    namespace main
+    namespace Main
     {
         window* open(const OpenLoco::vehicle* vehicle)
         {
