@@ -53,12 +53,12 @@ namespace OpenLoco::Ui::Windows::Construction
             Common::setDisabledWidgets(window);
         }
 
-        construction::activateSelectedConstructionWidgets();
+        Construction::activateSelectedConstructionWidgets();
         window = WindowManager::find(WindowType::construction);
 
         if (window != nullptr)
         {
-            window->callOnMouseUp(construction::widx::rotate_90);
+            window->callOnMouseUp(Construction::widx::rotate_90);
         }
 
         return window;
@@ -361,7 +361,7 @@ namespace OpenLoco::Ui::Windows::Construction
         };
 
         static TabInformation tabInformationByTabOffset[] = {
-            { construction::widgets, widx::tab_construction, &construction::events, construction::enabledWidgets, &construction::tabReset },
+            { Construction::widgets, widx::tab_construction, &Construction::events, Construction::enabledWidgets, &Construction::tabReset },
             { station::widgets, widx::tab_station, &station::events, station::enabledWidgets, &station::tabReset },
             { signal::widgets, widx::tab_signal, &signal::events, signal::enabledWidgets, &signal::tabReset },
             { overhead::widgets, widx::tab_overhead, &overhead::events, overhead::enabledWidgets, &overhead::tabReset },
@@ -395,7 +395,7 @@ namespace OpenLoco::Ui::Windows::Construction
 
             if (widgetIndex == widx::tab_construction)
             {
-                construction::activateSelectedConstructionWidgets();
+                Construction::activateSelectedConstructionWidgets();
             }
 
             Common::sub_49FEC7();
@@ -722,7 +722,7 @@ namespace OpenLoco::Ui::Windows::Construction
 
         void initEvents()
         {
-            construction::initEvents();
+            Construction::initEvents();
             station::initEvents();
             signal::initEvents();
             overhead::initEvents();
@@ -790,13 +790,13 @@ namespace OpenLoco::Ui::Windows::Construction
         {
             auto window = WindowManager::createWindow(
                 WindowType::construction,
-                construction::windowSize,
+                Construction::windowSize,
                 window_flags::flag_11 | window_flags::no_auto_close,
-                &construction::events);
+                &Construction::events);
 
-            window->widgets = construction::widgets;
+            window->widgets = Construction::widgets;
             window->current_tab = 0;
-            window->enabled_widgets = construction::enabledWidgets;
+            window->enabled_widgets = Construction::enabledWidgets;
             window->activated_widgets = 0;
 
             setDisabledWidgets(window);
@@ -1178,7 +1178,7 @@ namespace OpenLoco::Ui::Windows::Construction
             {
                 setDisabledWidgets(window);
             }
-            construction::activateSelectedConstructionWidgets();
+            Construction::activateSelectedConstructionWidgets();
         }
 
         // 0x00488B4D
@@ -1243,7 +1243,7 @@ namespace OpenLoco::Ui::Windows::Construction
             0x0049F1B5,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                construction::activateSelectedConstructionWidgets();
+                Construction::activateSelectedConstructionWidgets();
                 regs = backup;
                 return 0;
             });

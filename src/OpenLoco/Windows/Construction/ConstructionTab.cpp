@@ -15,7 +15,7 @@ using namespace OpenLoco::Interop;
 using namespace OpenLoco::Map;
 using namespace OpenLoco::Map::TileManager;
 
-namespace OpenLoco::Ui::Windows::Construction::construction
+namespace OpenLoco::Ui::Windows::Construction::Construction
 {
     static loco_global<uint16_t[351][4], 0x004F7B62> _word_4F7B62; // TODO: Not sure on size?
     static loco_global<uint8_t, 0x00508F09> _byte_508F09;
@@ -402,7 +402,7 @@ namespace OpenLoco::Ui::Windows::Construction::construction
         }
 
         auto activatedWidgets = window->activated_widgets;
-        activatedWidgets &= ~(construction::allTrack);
+        activatedWidgets &= ~(Construction::allTrack);
 
         window->widgets[widx::construct].type = widget_type::none;
         window->widgets[widx::remove].type = widget_type::wt_9;
@@ -627,7 +627,7 @@ namespace OpenLoco::Ui::Windows::Construction::construction
         }
 
         auto activatedWidgets = window->activated_widgets;
-        activatedWidgets &= ~(construction::allTrack);
+        activatedWidgets &= ~(Construction::allTrack);
 
         window->widgets[widx::construct].type = widget_type::none;
         window->widgets[widx::remove].type = widget_type::wt_9;

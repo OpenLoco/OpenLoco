@@ -269,11 +269,11 @@ namespace OpenLoco::Ui::Windows::Construction::overhead
                 if (_trackType & (1 << 7))
                 {
                     uint8_t trackType = _trackType & ~(1 << 7);
-                    construction::drawRoad(x, y, _lastSelectedMods, 0x1D0, trackType, 0, companyColour, gCurrentRotation);
+                    Construction::drawRoad(x, y, _lastSelectedMods, 0x1D0, trackType, 0, companyColour, gCurrentRotation);
                 }
                 else
                 {
-                    construction::drawTrack(x, y, _lastSelectedMods, 0x1D0, _trackType, 0, companyColour, gCurrentRotation);
+                    Construction::drawTrack(x, y, _lastSelectedMods, 0x1D0, _trackType, 0, companyColour, gCurrentRotation);
                 }
                 _byte_522095 = _byte_522095 & ~(1 << 0);
             }

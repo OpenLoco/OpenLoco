@@ -128,7 +128,7 @@ namespace OpenLoco::Ui::Windows::Construction
         void refreshSignalList(uint8_t* signalList, uint8_t trackType);
     }
 
-    namespace construction
+    namespace Construction
     {
         static const Gfx::ui_size_t windowSize = { 138, 276 };
 
