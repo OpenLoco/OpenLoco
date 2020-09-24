@@ -174,7 +174,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         static void switchTab(window* self, widget_index widgetIndex);
     }
 
-    namespace challenge
+    namespace Challenge
     {
         enum widx
         {
@@ -511,9 +511,9 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         if (window == nullptr)
         {
             // 0x0043EEFF start
-            window = WindowManager::createWindowCentred(WindowType::scenarioOptions, otherWindowSize, 0, &challenge::events);
-            window->widgets = challenge::widgets;
-            window->enabled_widgets = challenge::enabledWidgets;
+            window = WindowManager::createWindowCentred(WindowType::scenarioOptions, otherWindowSize, 0, &Challenge::events);
+            window->widgets = Challenge::widgets;
+            window->enabled_widgets = Challenge::enabledWidgets;
             window->number = 0;
             window->current_tab = 0;
             window->frame_no = 0;
@@ -536,10 +536,10 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         window->current_tab = 0;
         window->invalidate();
 
-        window->widgets = challenge::widgets;
-        window->enabled_widgets = challenge::enabledWidgets;
-        window->holdable_widgets = challenge::holdableWidgets;
-        window->event_handlers = &challenge::events;
+        window->widgets = Challenge::widgets;
+        window->enabled_widgets = Challenge::enabledWidgets;
+        window->holdable_widgets = Challenge::holdableWidgets;
+        window->event_handlers = &Challenge::events;
         window->activated_widgets = 0;
 
         window->callOnResize();
@@ -1161,7 +1161,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         };
 
         static TabInformation tabInformationByTabOffset[] = {
-            { challenge::widgets, widx::tab_challenge, &challenge::events, &challenge::enabledWidgets, &challenge::holdableWidgets },
+            { Challenge::widgets, widx::tab_challenge, &Challenge::events, &Challenge::enabledWidgets, &Challenge::holdableWidgets },
             { companies::widgets, widx::tab_companies, &companies::events, &companies::enabledWidgets, &companies::holdableWidgets },
             { finances::widgets, widx::tab_finances, &finances::events, &finances::enabledWidgets, &finances::holdableWidgets },
             { scenario::widgets, widx::tab_scenario, &scenario::events, &scenario::enabledWidgets, &scenario::holdableWidgets }
@@ -1233,7 +1233,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
         static void initEvents()
         {
-            challenge::initEvents();
+            Challenge::initEvents();
             companies::initEvents();
             finances::initEvents();
             scenario::initEvents();
