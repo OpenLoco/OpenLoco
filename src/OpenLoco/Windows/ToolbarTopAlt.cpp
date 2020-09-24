@@ -142,7 +142,7 @@ namespace OpenLoco::Ui::Windows::toolbar_top::editor
                 break;
 
             case 4:
-                options::open();
+                Options::open();
                 break;
 
             case 5:

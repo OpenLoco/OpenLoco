@@ -189,7 +189,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
     static void onUpdate(window* window)
     {
         auto optionsWindow = WindowManager::find(WindowType::options);
-        if (optionsWindow == nullptr || optionsWindow->current_tab != options::tab_offset_music)
+        if (optionsWindow == nullptr || optionsWindow->current_tab != Options::tab_offset_music)
         {
             WindowManager::close(window);
             return;

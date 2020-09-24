@@ -77,7 +77,7 @@ namespace OpenLoco::Ui::title_options
         switch (widgetIndex)
         {
             case widx::options_button:
-                Ui::options::open();
+                Ui::Options::open();
                 break;
         }
     }

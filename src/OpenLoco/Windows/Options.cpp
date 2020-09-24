@@ -21,7 +21,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::Ui::options
+namespace OpenLoco::Ui::Options
 {
     static void tabOnMouseUp(window* w, widget_index wi);
     static void sub_4C13BE(window* w);
@@ -227,7 +227,7 @@ namespace OpenLoco::Ui::options
                 case common::widx::tab_regional:
                 case common::widx::tab_controls:
                 case common::widx::tab_miscellaneous:
-                    options::tabOnMouseUp(w, wi);
+                    Options::tabOnMouseUp(w, wi);
                     return;
 
                 case widx::landscape_smoothing:
@@ -732,7 +732,7 @@ namespace OpenLoco::Ui::options
                 case common::widx::tab_regional:
                 case common::widx::tab_controls:
                 case common::widx::tab_miscellaneous:
-                    options::tabOnMouseUp(w, wi);
+                    Options::tabOnMouseUp(w, wi);
                     return;
 
                 case widx::play_title_music:
@@ -961,7 +961,7 @@ namespace OpenLoco::Ui::options
                 case common::widx::tab_regional:
                 case common::widx::tab_controls:
                 case common::widx::tab_miscellaneous:
-                    options::tabOnMouseUp(w, wi);
+                    Options::tabOnMouseUp(w, wi);
                     return;
 
                 case widx::music_controls_stop:
@@ -1362,7 +1362,7 @@ namespace OpenLoco::Ui::options
                 case common::widx::tab_regional:
                 case common::widx::tab_controls:
                 case common::widx::tab_miscellaneous:
-                    options::tabOnMouseUp(w, wi);
+                    Options::tabOnMouseUp(w, wi);
                     return;
 
                 case widx::preferred_currency_for_new_games:
@@ -1785,7 +1785,7 @@ namespace OpenLoco::Ui::options
                 case common::widx::tab_regional:
                 case common::widx::tab_controls:
                 case common::widx::tab_miscellaneous:
-                    options::tabOnMouseUp(w, wi);
+                    Options::tabOnMouseUp(w, wi);
                     return;
 
                 case widx::customize_keys:
@@ -1965,7 +1965,7 @@ namespace OpenLoco::Ui::options
                 case common::widx::tab_regional:
                 case common::widx::tab_controls:
                 case common::widx::tab_miscellaneous:
-                    options::tabOnMouseUp(w, wi);
+                    Options::tabOnMouseUp(w, wi);
                     return;
 
                 case widx::disable_vehicle_breakdowns:

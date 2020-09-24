@@ -160,7 +160,7 @@ namespace OpenLoco::Ui::Windows::Error
     void registerHooks();
 }
 
-namespace OpenLoco::Ui::options
+namespace OpenLoco::Ui::Options
 {
     window* open();
     window* openMusicSettings();

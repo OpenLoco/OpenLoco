@@ -149,7 +149,7 @@ namespace OpenLoco::Ui::Windows::toolbar_top::game
                 break;
 
             case 4:
-                options::open();
+                Options::open();
                 break;
 
             case 5:
@@ -218,7 +218,7 @@ namespace OpenLoco::Ui::Windows::toolbar_top::game
             }
 
             case 3:
-                options::openMusicSettings();
+                Options::openMusicSettings();
                 break;
         }
     }

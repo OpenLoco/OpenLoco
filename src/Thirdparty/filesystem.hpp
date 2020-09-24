@@ -4842,9 +4842,9 @@ public:
 class directory_iterator::impl
 {
 public:
-    impl(const path& path, directory_options options)
+    impl(const path& path, directory_options Options)
         : _base(path)
-        , _options(options)
+        , _options(Options)
         , _dir(nullptr)
         , _entry(nullptr)
     {
@@ -4855,7 +4855,7 @@ public:
             if (!_dir) {
                 auto Error = errno;
                 _base = filesystem::path();
-                if (Error != EACCES || (options & directory_options::skip_permission_denied) == directory_options::none) {
+                if (Error != EACCES || (Options & directory_options::skip_permission_denied) == directory_options::none) {
                     _ec = detail::make_system_error();
                 }
             }
