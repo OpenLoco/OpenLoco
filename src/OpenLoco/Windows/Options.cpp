@@ -1213,7 +1213,7 @@ namespace OpenLoco::Ui::Options
         }
     }
 
-    namespace regional
+    namespace Regional
     {
         static const Gfx::ui_size_t _window_size = { 366, 167 };
 
@@ -1236,7 +1236,7 @@ namespace OpenLoco::Ui::Options
             };
         }
 
-        static constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << regional::widx::language) | (1 << regional::widx::language_btn) | (1 << regional::widx::distance_speed) | (1 << regional::widx::distance_speed_btn) | (1 << regional::widx::heights) | (1 << regional::widx::heights_btn) | (1 << regional::widx::currency) | (1 << regional::widx::currency_btn) | (1 << regional::widx::preferred_currency) | (1 << regional::widx::preferred_currency_btn) | (1 << regional::widx::preferred_currency_for_new_games) | (1 << regional::widx::preferred_currency_always);
+        static constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Regional::widx::language) | (1 << Regional::widx::language_btn) | (1 << Regional::widx::distance_speed) | (1 << Regional::widx::distance_speed_btn) | (1 << Regional::widx::heights) | (1 << Regional::widx::heights_btn) | (1 << Regional::widx::currency) | (1 << Regional::widx::currency_btn) | (1 << Regional::widx::preferred_currency) | (1 << Regional::widx::preferred_currency_btn) | (1 << Regional::widx::preferred_currency_for_new_games) | (1 << Regional::widx::preferred_currency_always);
 
         static widget_t _widgets[] = {
             common_options_widgets(_window_size, StringIds::options_title_regional),
@@ -2162,7 +2162,7 @@ namespace OpenLoco::Ui::Options
         Display::initEvents();
         Sound::initEvents();
         Music::initEvents();
-        regional::initEvents();
+        Regional::initEvents();
         controls::initEvents();
         misc::initEvents();
 
@@ -2222,7 +2222,7 @@ namespace OpenLoco::Ui::Options
         { Display::_widgets, &Display::_events, Display::_window_size, &Display::enabledWidgets },
         { Sound::_widgets, &Sound::_events, Sound::_window_size, &Sound::enabledWidgets },
         { Music::_widgets, &Music::_events, Music::_window_size, &Music::enabledWidgets },
-        { regional::_widgets, &regional::_events, regional::_window_size, &regional::enabledWidgets },
+        { Regional::_widgets, &Regional::_events, Regional::_window_size, &Regional::enabledWidgets },
         { controls::_widgets, &controls::_events, controls::_window_size, &controls::enabledWidgets },
         { misc::_widgets, &misc::_events, misc::_window_size, &misc::enabledWidgets },
     };
