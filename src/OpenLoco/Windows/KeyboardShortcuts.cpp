@@ -30,7 +30,7 @@ namespace OpenLoco::Ui::KeyboardShortcuts
         widgetEnd(),
     };
 
-    namespace widx
+    namespace Widx
     {
         enum
         {
@@ -78,7 +78,7 @@ namespace OpenLoco::Ui::KeyboardShortcuts
         window = WindowManager::createWindowCentred(WindowType::keyboardShortcuts, { 360, 238 }, 0, &_events);
 
         window->widgets = _widgets;
-        window->enabled_widgets = (1 << widx::close_button) | (1 << widx::reset_keys_btn);
+        window->enabled_widgets = (1 << Widx::close_button) | (1 << Widx::reset_keys_btn);
         window->initScrollWidgets();
 
         auto skin = ObjectManager::get<interface_skin_object>();
@@ -145,11 +145,11 @@ namespace OpenLoco::Ui::KeyboardShortcuts
     {
         switch (widgetIndex)
         {
-            case widx::close_button:
+            case Widx::close_button:
                 WindowManager::close(self);
                 return;
 
-            case widx::reset_keys_btn:
+            case Widx::reset_keys_btn:
                 loc_4BE832(self);
                 return;
         }
