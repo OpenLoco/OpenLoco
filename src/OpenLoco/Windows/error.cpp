@@ -24,7 +24,7 @@ namespace OpenLoco::Ui::Windows::Error
     static loco_global<int32_t, 0x0113E72C> _cursorX;
     static loco_global<int32_t, 0x0113E730> _cursorY;
 
-    namespace common
+    namespace Common
     {
         static window_event_list events;
 
@@ -144,9 +144,9 @@ namespace OpenLoco::Ui::Windows::Error
                 Gfx::point_t(x, y),
                 windowSize,
                 window_flags::stick_to_front | window_flags::transparent | window_flags::flag_7,
-                &common::events);
+                &Common::events);
 
-            common::initEvents();
+            Common::initEvents();
 
             if (_errorCompetitorId != 0xFF)
             {
@@ -202,7 +202,7 @@ namespace OpenLoco::Ui::Windows::Error
             });
     }
 
-    namespace common
+    namespace Common
     {
         // 0x00431C05
         static void draw(Ui::window* self, Gfx::drawpixelinfo_t* dpi)
@@ -265,8 +265,8 @@ namespace OpenLoco::Ui::Windows::Error
 
         static void initEvents()
         {
-            events.draw = common::draw;
-            events.on_periodic_update = common::onPeriodicUpdate;
+            events.draw = Common::draw;
+            events.on_periodic_update = Common::onPeriodicUpdate;
         }
     }
 }
