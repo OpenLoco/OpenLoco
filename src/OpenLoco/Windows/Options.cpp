@@ -828,7 +828,7 @@ namespace OpenLoco::Ui::Options
         }
     }
 
-    namespace music
+    namespace Music
     {
         static const Gfx::ui_size_t _window_size = { 366, 129 };
 
@@ -848,7 +848,7 @@ namespace OpenLoco::Ui::Options
             };
         }
 
-        static constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << music::widx::currently_playing) | (1 << music::widx::currently_playing_btn) | (1 << music::widx::music_controls_stop) | (1 << music::widx::music_controls_play) | (1 << music::widx::music_controls_next) | (1 << music::widx::volume) | (1 << music::widx::music_playlist) | (1 << music::widx::music_playlist_btn) | (1 << music::widx::edit_selection);
+        static constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Music::widx::currently_playing) | (1 << Music::widx::currently_playing_btn) | (1 << Music::widx::music_controls_stop) | (1 << Music::widx::music_controls_play) | (1 << Music::widx::music_controls_next) | (1 << Music::widx::volume) | (1 << Music::widx::music_playlist) | (1 << Music::widx::music_playlist_btn) | (1 << Music::widx::edit_selection);
 
         static widget_t _widgets[] = {
             common_options_widgets(_window_size, StringIds::options_title_music),
@@ -2161,7 +2161,7 @@ namespace OpenLoco::Ui::Options
         // TODO: only needs to be called once
         Display::initEvents();
         Sound::initEvents();
-        music::initEvents();
+        Music::initEvents();
         regional::initEvents();
         controls::initEvents();
         misc::initEvents();
@@ -2221,7 +2221,7 @@ namespace OpenLoco::Ui::Options
     static TabInformation tabInformationByTabOffset[] = {
         { Display::_widgets, &Display::_events, Display::_window_size, &Display::enabledWidgets },
         { Sound::_widgets, &Sound::_events, Sound::_window_size, &Sound::enabledWidgets },
-        { music::_widgets, &music::_events, music::_window_size, &music::enabledWidgets },
+        { Music::_widgets, &Music::_events, Music::_window_size, &Music::enabledWidgets },
         { regional::_widgets, &regional::_events, regional::_window_size, &regional::enabledWidgets },
         { controls::_widgets, &controls::_events, controls::_window_size, &controls::enabledWidgets },
         { misc::_widgets, &misc::_events, misc::_window_size, &misc::enabledWidgets },
@@ -2257,7 +2257,7 @@ namespace OpenLoco::Ui::Options
             Display::applyScreenModeRestrictions(w);
 
         else if ((Common::tab)w->current_tab == Common::tab::music)
-            w->holdable_widgets = (1 << music::widx::volume);
+            w->holdable_widgets = (1 << Music::widx::volume);
 
         w->callOnResize();
         w->callPrepareDraw();
