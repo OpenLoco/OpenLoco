@@ -10,7 +10,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::Ui::title_options
+namespace OpenLoco::Ui::TitleOptions
 {
     static const Gfx::ui_size_t window_size = { 60, 15 };
 

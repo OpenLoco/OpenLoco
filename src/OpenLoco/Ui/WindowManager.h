@@ -217,7 +217,7 @@ namespace OpenLoco::Ui::TextInput
     void sub_4CE6FF();
 }
 
-namespace OpenLoco::Ui::title_options
+namespace OpenLoco::Ui::TitleOptions
 {
     window* open();
 }
