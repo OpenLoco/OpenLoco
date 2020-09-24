@@ -222,12 +222,12 @@ namespace OpenLoco::Ui::TitleOptions
     window* open();
 }
 
-namespace OpenLoco::Ui::Windows::toolbar_top::game
+namespace OpenLoco::Ui::Windows::ToolbarTop::game
 {
     void open();
 }
 
-namespace OpenLoco::Ui::Windows::toolbar_top::editor
+namespace OpenLoco::Ui::Windows::ToolbarTop::editor
 {
     void open();
 }

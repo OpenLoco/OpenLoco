@@ -25,7 +25,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::Ui::Windows::toolbar_top::game
+namespace OpenLoco::Ui::Windows::ToolbarTop::game
 {
     static loco_global<uint8_t[40], 0x00113DB20> menu_options;
 

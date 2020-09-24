@@ -4,7 +4,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::Ui::Windows::toolbar_top::common
+namespace OpenLoco::Ui::Windows::ToolbarTop::common
 {
     namespace widx
     {

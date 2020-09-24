@@ -24,7 +24,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::Ui::Windows::toolbar_top::common
+namespace OpenLoco::Ui::Windows::ToolbarTop::common
 {
     static loco_global<uint8_t, 0x00525FAB> last_road_option;
 

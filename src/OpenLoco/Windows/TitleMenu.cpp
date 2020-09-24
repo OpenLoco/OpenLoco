@@ -409,7 +409,7 @@ namespace OpenLoco::Ui::Windows
         addr<0x009c870F, int8_t>() = 2;
         addr<0x009c8710, int8_t>() = 1;
 
-        toolbar_top::editor::open();
+        ToolbarTop::editor::open();
         toolbar_bottom::editor::open();
     }
 
