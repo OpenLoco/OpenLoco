@@ -428,7 +428,7 @@ namespace OpenLoco::Ui::Windows::Industry
         }
     }
 
-    namespace transported
+    namespace Transported
     {
         static const Gfx::ui_size_t windowSize = { 300, 127 };
 
@@ -558,7 +558,7 @@ namespace OpenLoco::Ui::Windows::Industry
             { Industry::widgets, widx::tab_industry, &Industry::events, &Industry::enabledWidgets },
             { Production2::widgets, widx::tab_production, &Production::events, &Common::enabledWidgets },
             { Production2::widgets, widx::tab_production_2, &Production2::events, &Common::enabledWidgets },
-            { transported::widgets, widx::tab_transported, &transported::events, &Common::enabledWidgets }
+            { Transported::widgets, widx::tab_transported, &Transported::events, &Common::enabledWidgets }
         };
 
         static void setDisabledWidgets(window* self)
@@ -921,7 +921,7 @@ namespace OpenLoco::Ui::Windows::Industry
             Industry::initEvents();
             Production::initEvents();
             Production2::initEvents();
-            transported::initEvents();
+            Transported::initEvents();
         }
     }
 }
