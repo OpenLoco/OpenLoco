@@ -543,7 +543,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
                     return;
                 }
 
-                Things::vehicle::Vehicle train(thing);
+                Things::Vehicle::Vehicle train(thing);
 
                 int8_t rotation = static_cast<int8_t>(self->viewports[0]->getRotation());
                 SavedView view(

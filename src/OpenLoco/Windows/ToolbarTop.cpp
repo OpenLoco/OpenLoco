@@ -410,7 +410,7 @@ namespace OpenLoco::ui::windows::toolbar_top::game
             if (v->owner != player_company_id)
                 continue;
 
-            if ((v->var_38 & Things::vehicle::flags_38::unk_4) != 0)
+            if ((v->var_38 & Things::Vehicle::flags_38::unk_4) != 0)
                 continue;
 
             vehicle_counts[static_cast<uint8_t>(v->vehicleType)]++;

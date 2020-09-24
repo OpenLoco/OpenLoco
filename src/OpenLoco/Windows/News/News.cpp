@@ -227,7 +227,7 @@ namespace OpenLoco::ui::NewsWindow
 
                 case newsItemSubTypes::vehicle:
                 {
-                    Things::vehicle::Vehicle train(itemId);
+                    Things::Vehicle::Vehicle train(itemId);
                     if (train.head->tile_x == -1)
                         break;
 

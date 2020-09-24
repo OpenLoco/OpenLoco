@@ -52,7 +52,7 @@ namespace OpenLoco::GameCommands
             0x004AE5E4,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                auto ebx = Things::vehicle::create(regs.bl, regs.dx, regs.di);
+                auto ebx = Things::Vehicle::create(regs.bl, regs.dx, regs.di);
 
                 regs = backup;
                 regs.ebx = ebx;
