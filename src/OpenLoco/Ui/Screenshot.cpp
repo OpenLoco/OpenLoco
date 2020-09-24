@@ -33,7 +33,7 @@ namespace OpenLoco::Input
     std::string saveScreenshot()
     {
         auto basePath = platform::getUserDirectory();
-        std::string scenarioName = s5::getOptions().scenarioName;
+        std::string scenarioName = S5::getOptions().scenarioName;
 
         if (scenarioName.length() == 0)
             scenarioName = StringManager::getString(StringIds::screenshot_filename_template);

@@ -188,9 +188,9 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         {
             common::prepareDraw(window);
 
-            commonFormatArgs[0] = s5::getOptions().scenarioStartYear;
+            commonFormatArgs[0] = S5::getOptions().scenarioStartYear;
 
-            if ((s5::getOptions().scenarioFlags & scenario::flags::landscape_generation_done) == 0)
+            if ((S5::getOptions().scenarioFlags & scenario::flags::landscape_generation_done) == 0)
             {
                 window->activated_widgets |= (1 << widx::generate_when_game_starts);
                 window->disabled_widgets |= (1 << widx::generate_now);
@@ -204,7 +204,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
         static void confirmResetLandscape(int32_t promptType)
         {
-            if (s5::getOptions().madeAnyChanges)
+            if (S5::getOptions().madeAnyChanges)
             {
                 LandscapeGenerationConfirm::open(promptType);
             }
@@ -222,7 +222,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         // 0x0043DC83
         static void onMouseDown(window* window, widget_index widgetIndex)
         {
-            auto& options = s5::getOptions();
+            auto& options = S5::getOptions();
 
             switch (widgetIndex)
             {
@@ -258,9 +258,9 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     break;
 
                 case widx::generate_when_game_starts:
-                    if ((s5::getOptions().scenarioFlags & scenario::landscape_generation_done) == 0)
+                    if ((S5::getOptions().scenarioFlags & scenario::landscape_generation_done) == 0)
                     {
-                        s5::getOptions().scenarioFlags |= scenario::landscape_generation_done;
+                        S5::getOptions().scenarioFlags |= scenario::landscape_generation_done;
                         scenario::generateLandscape();
                     }
                     else
@@ -437,7 +437,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 Gfx::fillRectInset(dpi, 150, yPos + 5, 340, yPos + 16, window->colours[1], 0b110000);
 
                 // Draw current distribution setting.
-                const string_id distributionId = landDistributionLabelIds[s5::getOptions().landDistributionPatterns[i]];
+                const string_id distributionId = landDistributionLabelIds[S5::getOptions().landDistributionPatterns[i]];
                 commonFormatArgs[0] = distributionId;
                 Gfx::drawString_494BBF(*dpi, 151, yPos + 5, 177, Colour::black, StringIds::black_stringid, &*commonFormatArgs);
 
@@ -483,7 +483,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 case widx::topography_style_btn:
                     if (itemIndex != -1)
                     {
-                        s5::getOptions().topographyStyle = itemIndex;
+                        S5::getOptions().topographyStyle = itemIndex;
                         window->invalidate();
                     }
                     break;
@@ -491,7 +491,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 case widx::scrollview:
                     if (itemIndex != -1 && window->row_hover != -1)
                     {
-                        s5::getOptions().landDistributionPatterns[window->row_hover] = itemIndex;
+                        S5::getOptions().landDistributionPatterns[window->row_hover] = itemIndex;
                         window->invalidate();
                     }
                     break;
@@ -501,7 +501,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         // 0x0043E173
         static void onMouseDown(window* window, widget_index widgetIndex)
         {
-            auto& options = s5::getOptions();
+            auto& options = S5::getOptions();
 
             switch (widgetIndex)
             {
@@ -568,7 +568,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     break;
 
                 case widx::hills_edge_of_map:
-                    s5::getOptions().scenarioFlags ^= scenario::flags::hills_edge_of_map;
+                    S5::getOptions().scenarioFlags ^= scenario::flags::hills_edge_of_map;
                     window->invalidate();
                     break;
             }
@@ -613,7 +613,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             for (size_t i = 0; i < std::size(landDistributionLabelIds); i++)
                 Dropdown::add(i, StringIds::dropdown_stringid, landDistributionLabelIds[i]);
 
-            Dropdown::setItemSelected(s5::getOptions().landDistributionPatterns[landIndex]);
+            Dropdown::setItemSelected(S5::getOptions().landDistributionPatterns[landIndex]);
         }
 
         // 0x0043DEBF
@@ -622,7 +622,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             common::prepareDraw(window);
 
             commonFormatArgs[0] = *seaLevel;
-            auto& options = s5::getOptions();
+            auto& options = S5::getOptions();
             commonFormatArgs[1] = options.minLandHeight;
             commonFormatArgs[2] = options.hillDensity;
 
@@ -782,7 +782,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         // 0x0043E670
         static void onMouseDown(window* window, widget_index widgetIndex)
         {
-            auto& options = s5::getOptions();
+            auto& options = S5::getOptions();
 
             switch (widgetIndex)
             {
@@ -911,7 +911,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         {
             common::prepareDraw(window);
 
-            auto& options = s5::getOptions();
+            auto& options = S5::getOptions();
             commonFormatArgs[0] = options.numberOfForests;
             commonFormatArgs[1] = options.minForestRadius;
             commonFormatArgs[2] = options.maxForestRadius;
@@ -993,14 +993,14 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             if (widgetIndex != widx::max_town_size_btn || itemIndex == -1)
                 return;
 
-            s5::getOptions().maxTownSize = itemIndex;
+            S5::getOptions().maxTownSize = itemIndex;
             window->invalidate();
         }
 
         // 0x0043EBF1
         static void onMouseDown(window* window, widget_index widgetIndex)
         {
-            auto& options = s5::getOptions();
+            auto& options = S5::getOptions();
 
             switch (widgetIndex)
             {
@@ -1058,9 +1058,9 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         {
             common::prepareDraw(window);
 
-            commonFormatArgs[0] = s5::getOptions().numberOfTowns;
+            commonFormatArgs[0] = S5::getOptions().numberOfTowns;
 
-            widgets[widx::max_town_size].text = townSizeLabels[s5::getOptions().maxTownSize];
+            widgets[widx::max_town_size].text = townSizeLabels[S5::getOptions().maxTownSize];
         }
 
         static void initEvents()
@@ -1123,7 +1123,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             if (widgetIndex != widx::num_industries_btn || itemIndex == -1)
                 return;
 
-            s5::getOptions().numberOfIndustries = itemIndex;
+            S5::getOptions().numberOfIndustries = itemIndex;
             window->invalidate();
         }
 
@@ -1139,7 +1139,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             for (size_t i = 0; i < std::size(numIndustriesLabels); i++)
                 Dropdown::add(i, numIndustriesLabels[i]);
 
-            Dropdown::setHighlightedItem(s5::getOptions().numberOfIndustries);
+            Dropdown::setHighlightedItem(S5::getOptions().numberOfIndustries);
         }
 
         // 0x0043EBCA
@@ -1176,7 +1176,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         {
             common::prepareDraw(window);
 
-            widgets[widx::num_industries].text = numIndustriesLabels[s5::getOptions().numberOfIndustries];
+            widgets[widx::num_industries].text = numIndustriesLabels[S5::getOptions().numberOfIndustries];
 
             window->activated_widgets &= ~((1 << widx::check_allow_industries_close_down) | (1 << widx::check_allow_industries_start_up));
             if (!(industryFlags & scenario::industry_flags::disallow_industries_close_down))
