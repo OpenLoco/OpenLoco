@@ -2262,7 +2262,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
     }
 
-    namespace challenge
+    namespace Challenge
     {
         const Gfx::ui_size_t windowSize = { 320, 182 };
 
@@ -2395,14 +2395,14 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         Common::initEvents();
 
         window->current_tab = Common::tab_challenge - Common::tab_status;
-        window->width = challenge::windowSize.width;
-        window->height = challenge::windowSize.height;
+        window->width = Challenge::windowSize.width;
+        window->height = Challenge::windowSize.height;
         window->invalidate();
 
-        window->widgets = challenge::widgets;
-        window->enabled_widgets = challenge::enabledWidgets;
+        window->widgets = Challenge::widgets;
+        window->enabled_widgets = Challenge::enabledWidgets;
         window->holdable_widgets = 0;
-        window->event_handlers = &challenge::events;
+        window->event_handlers = &Challenge::events;
         window->activated_widgets = 0;
 
         Common::disableChallengeTab(window);
@@ -2429,7 +2429,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             { ColourScheme::widgets, widx::tab_colour_scheme, &ColourScheme::events, &ColourScheme::enabledWidgets, &ColourScheme::windowSize },
             { Finances::widgets, widx::tab_finances, &Finances::events, &Finances::enabledWidgets, &Finances::windowSize },
             { CargoDelivered::widgets, widx::tab_cargo_delivered, &CargoDelivered::events, &CargoDelivered::enabledWidgets, &CargoDelivered::windowSize },
-            { challenge::widgets, widx::tab_challenge, &challenge::events, &challenge::enabledWidgets, &challenge::windowSize }
+            { Challenge::widgets, widx::tab_challenge, &Challenge::events, &Challenge::enabledWidgets, &Challenge::windowSize }
         };
 
         static void initEvents()
@@ -2439,7 +2439,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             ColourScheme::initEvents();
             Finances::initEvents();
             CargoDelivered::initEvents();
-            challenge::initEvents();
+            Challenge::initEvents();
         }
 
         static void switchCompany(window* self, int16_t itemIndex)
@@ -2476,7 +2476,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 ColourScheme::widgets,
                 Finances::widgets,
                 CargoDelivered::widgets,
-                challenge::widgets,
+                Challenge::widgets,
             };
 
             widget_t* newWidgets = widgetCollectionsByTabId[self->current_tab];
