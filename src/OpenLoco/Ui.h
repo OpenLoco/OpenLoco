@@ -91,7 +91,7 @@ namespace OpenLoco::Ui
     void setWindowScaling(float newScaleFactor);
     void adjustWindowScale(float adjust_by);
 
-    namespace viewport_interaction
+    namespace ViewportInteraction
     {
         struct InteractionArg
         {

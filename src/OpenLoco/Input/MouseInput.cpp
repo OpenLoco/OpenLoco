@@ -17,7 +17,7 @@
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui;
 using namespace OpenLoco::Ui::ScrollView;
-using namespace OpenLoco::Ui::viewport_interaction;
+using namespace OpenLoco::Ui::ViewportInteraction;
 
 #define DROPDOWN_ITEM_UNDEFINED -1
 
@@ -491,9 +491,9 @@ namespace OpenLoco::Input
                 }
                 else if (!hasFlag(input_flags::flag4))
                 {
-                    viewport_interaction::InteractionArg ptr{};
+                    ViewportInteraction::InteractionArg ptr{};
 
-                    auto interactionItem = viewport_interaction::getItemLeft(x, y, &ptr);
+                    auto interactionItem = ViewportInteraction::getItemLeft(x, y, &ptr);
                     switch (interactionItem)
                     {
                         case InteractionItem::thing:
@@ -712,15 +712,15 @@ namespace OpenLoco::Input
                 }
 
                 Input::state(input_state::reset);
-                viewport_interaction::InteractionArg ptr{};
-                auto item = viewport_interaction::rightOver(_dragLastX, _dragLastY, &ptr);
+                ViewportInteraction::InteractionArg ptr{};
+                auto item = ViewportInteraction::rightOver(_dragLastX, _dragLastY, &ptr);
 
                 switch (item)
                 {
                     case InteractionItem::t_0:
                     default:
                     {
-                        auto item2 = viewport_interaction::getItemLeft(_dragLastX, _dragLastY, &ptr);
+                        auto item2 = ViewportInteraction::getItemLeft(_dragLastX, _dragLastY, &ptr);
                         switch (item2)
                         {
                             case InteractionItem::thing:
@@ -1915,7 +1915,7 @@ namespace OpenLoco::Input
                         }
                         else
                         {
-                            switch (viewport_interaction::getItemLeft(x, y, nullptr))
+                            switch (ViewportInteraction::getItemLeft(x, y, nullptr))
                             {
                                 case InteractionItem::thing:
                                 case InteractionItem::town:
@@ -1937,7 +1937,7 @@ namespace OpenLoco::Input
 
         if (!skipItem)
         {
-            viewport_interaction::rightOver(x, y, nullptr);
+            ViewportInteraction::rightOver(x, y, nullptr);
         }
 
         if (Input::state() == Input::input_state::resizing)
