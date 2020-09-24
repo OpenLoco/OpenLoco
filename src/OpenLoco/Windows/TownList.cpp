@@ -578,7 +578,7 @@ namespace OpenLoco::Ui::Windows::TownList
         return window;
     }
 
-    namespace build_towns
+    namespace BuildTowns
     {
         static const Gfx::ui_size_t windowSize = { 220, 87 };
 
@@ -1319,7 +1319,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
         static TabInformation tabInformationByTabOffset[] = {
             { TownList::widgets, widx::tab_town_list, &TownList::events, TownList::enabledWidgets },
-            { build_towns::widgets, widx::tab_build_town, &build_towns::events, build_towns::enabledWidgets },
+            { BuildTowns::widgets, widx::tab_build_town, &BuildTowns::events, BuildTowns::enabledWidgets },
             { build_buildings::widgets, widx::tab_build_buildings, &build_buildings::events, build_buildings::enabledWidgets },
             { build_buildings::widgets, widx::tab_build_misc_buildings, &build_buildings::events, build_buildings::enabledWidgets },
         };
@@ -1504,7 +1504,7 @@ namespace OpenLoco::Ui::Windows::TownList
             if (self->current_tab == widx::tab_town_list - widx::tab_town_list)
                 TownList::tabReset(self);
             if (self->current_tab == widx::tab_build_town - widx::tab_town_list)
-                build_towns::tabReset(self);
+                BuildTowns::tabReset(self);
             if (self->current_tab == widx::tab_build_buildings - widx::tab_town_list || self->current_tab == widx::tab_build_misc_buildings - widx::tab_town_list)
                 build_buildings::tabReset(self);
 
@@ -1532,7 +1532,7 @@ namespace OpenLoco::Ui::Windows::TownList
         static void initEvents()
         {
             TownList::initEvents();
-            build_towns::initEvents();
+            BuildTowns::initEvents();
             build_buildings::initEvents();
         }
     }
