@@ -66,7 +66,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
     }
 
-    namespace town_list
+    namespace TownList
     {
         static const Gfx::ui_size_t windowSize = { 600, 197 };
         static const Gfx::ui_size_t maxDimensions = { 600, 900 };
@@ -520,14 +520,14 @@ namespace OpenLoco::Ui::Windows::TownList
         else
         {
             // 0x00499CFC
-            auto origin = Gfx::point_t(Ui::width() - town_list::windowSize.width, 30);
+            auto origin = Gfx::point_t(Ui::width() - TownList::windowSize.width, 30);
 
             window = WindowManager::createWindow(
                 WindowType::townList,
                 origin,
-                town_list::windowSize,
+                TownList::windowSize,
                 window_flags::resizable,
-                &town_list::events);
+                &TownList::events);
 
             window->number = 0;
             window->current_tab = 0;
@@ -540,10 +540,10 @@ namespace OpenLoco::Ui::Windows::TownList
 
             WindowManager::sub_4CEE0B(window);
 
-            window->min_width = town_list::minDimensions.width;
-            window->min_height = town_list::minDimensions.height;
-            window->max_width = town_list::maxDimensions.width;
-            window->max_height = town_list::maxDimensions.height;
+            window->min_width = TownList::minDimensions.width;
+            window->min_height = TownList::minDimensions.height;
+            window->max_width = TownList::maxDimensions.width;
+            window->max_height = TownList::maxDimensions.height;
             window->flags |= window_flags::resizable;
 
             auto skin = ObjectManager::get<interface_skin_object>();
@@ -553,15 +553,15 @@ namespace OpenLoco::Ui::Windows::TownList
             // 0x00499CFC end
 
             // TODO: only needs to be called once.
-            window->width = town_list::windowSize.width;
-            window->height = town_list::windowSize.height;
+            window->width = TownList::windowSize.width;
+            window->height = TownList::windowSize.height;
 
             Common::initEvents();
 
             window->invalidate();
 
-            window->widgets = town_list::widgets;
-            window->enabled_widgets = town_list::enabledWidgets;
+            window->widgets = TownList::widgets;
+            window->enabled_widgets = TownList::enabledWidgets;
 
             if (isEditorMode())
                 window->disabled_widgets = 0;
@@ -1318,7 +1318,7 @@ namespace OpenLoco::Ui::Windows::TownList
         };
 
         static TabInformation tabInformationByTabOffset[] = {
-            { town_list::widgets, widx::tab_town_list, &town_list::events, town_list::enabledWidgets },
+            { TownList::widgets, widx::tab_town_list, &TownList::events, TownList::enabledWidgets },
             { build_towns::widgets, widx::tab_build_town, &build_towns::events, build_towns::enabledWidgets },
             { build_buildings::widgets, widx::tab_build_buildings, &build_buildings::events, build_buildings::enabledWidgets },
             { build_buildings::widgets, widx::tab_build_misc_buildings, &build_buildings::events, build_buildings::enabledWidgets },
@@ -1502,7 +1502,7 @@ namespace OpenLoco::Ui::Windows::TownList
             self->invalidate();
 
             if (self->current_tab == widx::tab_town_list - widx::tab_town_list)
-                town_list::tabReset(self);
+                TownList::tabReset(self);
             if (self->current_tab == widx::tab_build_town - widx::tab_town_list)
                 build_towns::tabReset(self);
             if (self->current_tab == widx::tab_build_buildings - widx::tab_town_list || self->current_tab == widx::tab_build_misc_buildings - widx::tab_town_list)
@@ -1531,7 +1531,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
         static void initEvents()
         {
-            town_list::initEvents();
+            TownList::initEvents();
             build_towns::initEvents();
             build_buildings::initEvents();
         }
