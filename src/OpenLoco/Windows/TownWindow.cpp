@@ -688,7 +688,7 @@ namespace OpenLoco::Ui::Windows::town
         {
             auto town = townmgr::get(self->number);
             commonFormatArgs[2] = town->name;
-            textinput::openTextinput(self, StringIds::title_town_name, StringIds::prompt_type_new_town_name, town->name, widgetIndex, &commonFormatArgs[2]);
+            TextInput::openTextinput(self, StringIds::title_town_name, StringIds::prompt_type_new_town_name, town->name, widgetIndex, &commonFormatArgs[2]);
         }
 
         // 0x004999A7, 0x004999AD
@@ -714,7 +714,7 @@ namespace OpenLoco::Ui::Windows::town
             if (Input::isToolActive(self->type, self->number))
                 Input::toolCancel();
 
-            textinput::sub_4CE6C9(self->type, self->number);
+            TextInput::sub_4CE6C9(self->type, self->number);
 
             self->current_tab = widgetIndex - widx::tab_town;
             self->frame_no = 0;

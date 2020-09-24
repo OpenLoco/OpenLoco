@@ -887,7 +887,7 @@ namespace OpenLoco::Ui::Windows::Station
             args.push(station->name);
             args.push(station->town);
 
-            textinput::openTextinput(self, StringIds::title_station_name, StringIds::prompt_type_new_station_name, station->name, widgetIndex, &station->town);
+            TextInput::openTextinput(self, StringIds::title_station_name, StringIds::prompt_type_new_station_name, station->name, widgetIndex, &station->town);
         }
 
         // 0x0048EF82, 0x0048EF88
@@ -921,7 +921,7 @@ namespace OpenLoco::Ui::Windows::Station
             if (Input::isToolActive(self->type, self->number))
                 Input::toolCancel();
 
-            textinput::sub_4CE6C9(self->type, self->number);
+            TextInput::sub_4CE6C9(self->type, self->number);
 
             self->current_tab = widgetIndex - widx::tab_station;
             self->frame_no = 0;

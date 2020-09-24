@@ -1188,7 +1188,7 @@ namespace OpenLoco::Ui::WindowManager
             w->callUpdate();
         }
 
-        Ui::textinput::sub_4CE6FF();
+        Ui::TextInput::sub_4CE6FF();
         call(0x4CEEA7);
     }
 

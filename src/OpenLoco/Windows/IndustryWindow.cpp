@@ -767,7 +767,7 @@ namespace OpenLoco::Ui::Windows::Industry
             args.push(industry->name);
             args.push(industry->town);
 
-            textinput::openTextinput(self, StringIds::title_industry_name, StringIds::prompt_enter_new_industry_name, industry->name, widgetIndex, &industry->town);
+            TextInput::openTextinput(self, StringIds::title_industry_name, StringIds::prompt_enter_new_industry_name, industry->name, widgetIndex, &industry->town);
         }
 
         // 0x00456A5E, 0x00456A64
@@ -793,7 +793,7 @@ namespace OpenLoco::Ui::Windows::Industry
             if (Input::isToolActive(self->type, self->number))
                 Input::toolCancel();
 
-            Ui::textinput::sub_4CE6C9(self->type, self->number);
+            Ui::TextInput::sub_4CE6C9(self->type, self->number);
 
             self->current_tab = widgetIndex - widx::tab_industry;
             self->frame_no = 0;

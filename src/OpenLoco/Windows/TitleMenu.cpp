@@ -442,7 +442,7 @@ namespace OpenLoco::Ui::Windows
         addr<0x112C826 + 8, string_id>() = StringIds::the_other_player;
 
         // TODO: convert this to a builder pattern, with chainable functions to set the different string ids and arguments
-        textinput::openTextinput(callingWindow, StringIds::chat_title, StringIds::chat_instructions, StringIds::empty, callingWidget, (void*)0x112C826);
+        TextInput::openTextinput(callingWindow, StringIds::chat_title, StringIds::chat_instructions, StringIds::empty, callingWidget, (void*)0x112C826);
     }
 
     static void sub_43918F(char string[512])

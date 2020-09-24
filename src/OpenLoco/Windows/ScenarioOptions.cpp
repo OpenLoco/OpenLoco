@@ -1091,7 +1091,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                     char* buffer = (char*)StringManager::getString(StringIds::buffer_2039);
                     strncpy(buffer, s5::getOptions().scenarioName, 512);
 
-                    textinput::openTextinput(self, StringIds::scenario_name_title, StringIds::enter_name_for_scenario, StringIds::buffer_2039, widgetIndex, nullptr);
+                    TextInput::openTextinput(self, StringIds::scenario_name_title, StringIds::enter_name_for_scenario, StringIds::buffer_2039, widgetIndex, nullptr);
                     break;
                 }
 
@@ -1100,7 +1100,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                     char* buffer = (char*)StringManager::getString(StringIds::buffer_2039);
                     strncpy(buffer, s5::getOptions().scenarioDetails, 512);
 
-                    textinput::openTextinput(self, StringIds::scenario_details_title, StringIds::enter_description_of_this_scenario, StringIds::buffer_2039, widgetIndex, nullptr);
+                    TextInput::openTextinput(self, StringIds::scenario_details_title, StringIds::enter_description_of_this_scenario, StringIds::buffer_2039, widgetIndex, nullptr);
                     break;
                 }
             }
@@ -1198,7 +1198,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             if (Input::isToolActive(self->type, self->number))
                 Input::toolCancel();
 
-            textinput::sub_4CE6C9(self->type, self->number);
+            TextInput::sub_4CE6C9(self->type, self->number);
 
             self->current_tab = widgetIndex - widx::tab_challenge;
             self->frame_no = 0;

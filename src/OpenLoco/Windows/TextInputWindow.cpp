@@ -23,7 +23,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::Ui::textinput
+namespace OpenLoco::Ui::TextInput
 {
     constexpr int16_t textboxPadding = 4;
 

@@ -287,7 +287,7 @@ namespace OpenLoco::Input
                 if (tryShortcut(Shortcut::screenshot, eax->keyCode, _keyModifier))
                     continue;
 
-                Ui::textinput::sub_4CE910(eax->charCode, eax->keyCode);
+                Ui::TextInput::sub_4CE910(eax->charCode, eax->keyCode);
                 continue;
             }
 

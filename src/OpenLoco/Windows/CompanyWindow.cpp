@@ -311,7 +311,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 case widx::change_owner_name:
                 {
                     auto company = companymgr::get(self->number);
-                    textinput::openTextinput(self, StringIds::title_name_owner, StringIds::prompt_enter_new_name_for_owner, company->owner_name, widgetIndex, nullptr);
+                    TextInput::openTextinput(self, StringIds::title_name_owner, StringIds::prompt_enter_new_name_for_owner, company->owner_name, widgetIndex, nullptr);
                     break;
                 }
             }
@@ -2505,7 +2505,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             if (Input::isToolActive(self->type, self->number))
                 Input::toolCancel();
 
-            textinput::sub_4CE6C9(self->type, self->number);
+            TextInput::sub_4CE6C9(self->type, self->number);
 
             self->current_tab = widgetIndex - widx::tab_status;
             self->frame_no = 0;
@@ -2546,7 +2546,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         static void renameCompanyPrompt(window* self, widget_index widgetIndex)
         {
             auto company = companymgr::get(self->number);
-            textinput::openTextinput(self, StringIds::title_name_company, StringIds::prompt_enter_new_company_name, company->name, widgetIndex, nullptr);
+            TextInput::openTextinput(self, StringIds::title_name_company, StringIds::prompt_enter_new_company_name, company->name, widgetIndex, nullptr);
         }
 
         // 0x0043254F
