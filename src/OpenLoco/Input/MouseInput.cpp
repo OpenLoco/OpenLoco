@@ -509,7 +509,7 @@ namespace OpenLoco::Input
 
                         case InteractionItem::town:
                         {
-                            Ui::Windows::town::open(ptr.value);
+                            Ui::Windows::Town::open(ptr.value);
                             break;
                         }
 

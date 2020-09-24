@@ -88,7 +88,7 @@ namespace OpenLoco::Ui::NewsWindow
                                 break;
 
                             case newsItemSubTypes::town:
-                                Ui::Windows::town::open(itemId);
+                                Ui::Windows::Town::open(itemId);
                                 break;
 
                             case newsItemSubTypes::vehicle:

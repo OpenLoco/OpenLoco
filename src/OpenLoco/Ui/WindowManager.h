@@ -241,7 +241,7 @@ namespace OpenLoco::Ui::ToolTip
     void closeAndReset();
 }
 
-namespace OpenLoco::Ui::Windows::town
+namespace OpenLoco::Ui::Windows::Town
 {
     window* open(uint16_t townId);
 }
