@@ -1738,7 +1738,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
     }
 
-    namespace build_walls
+    namespace BuildWalls
     {
         static const Gfx::ui_size_t windowSize = { 418, 108 };
 
@@ -2126,7 +2126,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             { AdjustLand::widgets, widx::tab_adjust_land, &AdjustLand::events, AdjustLand::enabledWidgets },
             { AdjustWater::widgets, widx::tab_adjust_water, &AdjustWater::events, AdjustWater::enabledWidgets },
             { PlantTrees::widgets, widx::tab_plant_trees, &PlantTrees::events, PlantTrees::enabledWidgets },
-            { build_walls::widgets, widx::tab_build_walls, &build_walls::events, build_walls::enabledWidgets },
+            { BuildWalls::widgets, widx::tab_build_walls, &BuildWalls::events, BuildWalls::enabledWidgets },
         };
 
         static void onResize(window* self, uint8_t height)
@@ -2317,7 +2317,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                     break;
 
                 case Common::widx::tab_build_walls:
-                    build_walls::tabReset(self);
+                    BuildWalls::tabReset(self);
                     break;
 
                 case Common::widx::tab_clear_area:
@@ -2349,7 +2349,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             ClearArea::initEvents();
             AdjustLand::initEvents();
             AdjustWater::initEvents();
-            build_walls::initEvents();
+            BuildWalls::initEvents();
         }
     }
 
