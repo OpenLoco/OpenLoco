@@ -63,7 +63,7 @@ namespace OpenLoco::Ui::Windows::Town
         static void initEvents();
     }
 
-    namespace town
+    namespace Town
     {
         enum widx
         {
@@ -353,7 +353,7 @@ namespace OpenLoco::Ui::Windows::Town
         {
             // 0x00499C0D start
             const uint32_t newFlags = window_flags::flag_8 | window_flags::resizable;
-            window = WindowManager::createWindow(WindowType::town, windowSize, newFlags, &town::events);
+            window = WindowManager::createWindow(WindowType::town, windowSize, newFlags, &Town::events);
             window->number = townId;
             window->min_width = 192;
             window->min_height = 161;
@@ -377,14 +377,14 @@ namespace OpenLoco::Ui::Windows::Town
         window->current_tab = 0;
         window->invalidate();
 
-        window->widgets = town::widgets;
-        window->enabled_widgets = town::enabledWidgets;
+        window->widgets = Town::widgets;
+        window->enabled_widgets = Town::enabledWidgets;
         window->holdable_widgets = 0;
-        window->event_handlers = &town::events;
+        window->event_handlers = &Town::events;
         window->activated_widgets = 0;
         window->disabled_widgets = 0;
         window->initScrollWidgets();
-        town::initViewport(window);
+        Town::initViewport(window);
 
         return window;
     }
@@ -624,7 +624,7 @@ namespace OpenLoco::Ui::Windows::Town
         };
 
         static TabInformation tabInformationByTabOffset[] = {
-            { town::widgets, widx::tab_town, &town::events, &town::enabledWidgets },
+            { Town::widgets, widx::tab_town, &Town::events, &Town::enabledWidgets },
             { population::widgets, widx::tab_population, &population::events, &Common::enabledWidgets },
             { company_ratings::widgets, widx::tab_company_ratings, &company_ratings::events, &Common::enabledWidgets }
         };
@@ -812,7 +812,7 @@ namespace OpenLoco::Ui::Windows::Town
 
         static void initEvents()
         {
-            town::initEvents();
+            Town::initEvents();
             population::initEvents();
             company_ratings::initEvents();
         }
