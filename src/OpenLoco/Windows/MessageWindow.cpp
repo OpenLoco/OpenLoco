@@ -374,7 +374,7 @@ namespace OpenLoco::Ui::MessageWindow
         Ui::ScrollView::updateThumbs(window, Messages::widx::scrollview);
     }
 
-    namespace settings
+    namespace Settings
     {
         static const Gfx::ui_size_t windowSize = { 366, 139 };
 
@@ -580,7 +580,7 @@ namespace OpenLoco::Ui::MessageWindow
 
         static TabInformation tabInformationByTabOffset[] = {
             { Messages::widgets, widx::tab_messages, &Messages::events, Messages::enabledWidgets },
-            { settings::widgets, widx::tab_settings, &settings::events, settings::enabledWidgets },
+            { Settings::widgets, widx::tab_settings, &Settings::events, Settings::enabledWidgets },
         };
 
         static void prepareDraw(window* self)
@@ -639,7 +639,7 @@ namespace OpenLoco::Ui::MessageWindow
             if (self->current_tab == widx::tab_messages - widx::tab_messages)
                 Messages::tabReset(self);
             if (self->current_tab == widx::tab_settings - widx::tab_messages)
-                settings::tabReset(self);
+                Settings::tabReset(self);
 
             self->callOnResize();
             self->callPrepareDraw();
@@ -681,7 +681,7 @@ namespace OpenLoco::Ui::MessageWindow
         static void initEvents()
         {
             Messages::initEvents();
-            settings::initEvents();
+            Settings::initEvents();
         }
     }
 }
