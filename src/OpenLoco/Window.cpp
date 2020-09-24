@@ -487,11 +487,11 @@ namespace OpenLoco::Ui
 
             if (widget->content & scrollbars::horizontal)
             {
-                this->scroll_areas[s].flags |= Ui::ScrollView::scroll_flags::HSCROLLBAR_VISIBLE;
+                this->scroll_areas[s].flags |= Ui::ScrollView::ScrollFlags::HSCROLLBAR_VISIBLE;
             }
             if (widget->content & scrollbars::vertical)
             {
-                this->scroll_areas[s].flags |= Ui::ScrollView::scroll_flags::VSCROLLBAR_VISIBLE;
+                this->scroll_areas[s].flags |= Ui::ScrollView::ScrollFlags::VSCROLLBAR_VISIBLE;
             }
 
             Ui::ScrollView::updateThumbs(this, w);

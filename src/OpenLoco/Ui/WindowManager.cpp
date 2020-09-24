@@ -1406,18 +1406,18 @@ namespace OpenLoco::Ui::WindowManager
         scroll_area_t* scroll = &window->scroll_areas[scrollIndex];
         Ui::widget_t* widget = &window->widgets[widgetIndex];
 
-        if (window->scroll_areas[scrollIndex].flags & ScrollView::scroll_flags::VSCROLLBAR_VISIBLE)
+        if (window->scroll_areas[scrollIndex].flags & ScrollView::ScrollFlags::VSCROLLBAR_VISIBLE)
         {
             int size = widget->bottom - widget->top - 1;
-            if (scroll->flags & ScrollView::scroll_flags::HSCROLLBAR_VISIBLE)
+            if (scroll->flags & ScrollView::ScrollFlags::HSCROLLBAR_VISIBLE)
                 size -= 11;
             size = std::max(0, scroll->contentHeight - size);
             scroll->contentOffsetY = std::clamp(scroll->contentOffsetY + wheel, 0, size);
         }
-        else if (window->scroll_areas[scrollIndex].flags & ScrollView::scroll_flags::HSCROLLBAR_VISIBLE)
+        else if (window->scroll_areas[scrollIndex].flags & ScrollView::ScrollFlags::HSCROLLBAR_VISIBLE)
         {
             int size = widget->right - widget->left - 1;
-            if (scroll->flags & ScrollView::scroll_flags::VSCROLLBAR_VISIBLE)
+            if (scroll->flags & ScrollView::ScrollFlags::VSCROLLBAR_VISIBLE)
                 size -= 11;
             size = std::max(0, scroll->contentWidth - size);
             scroll->contentOffsetX = std::clamp(scroll->contentOffsetX + wheel, 0, size);
@@ -1440,7 +1440,7 @@ namespace OpenLoco::Ui::WindowManager
                 continue;
 
             scrollIndex++;
-            constexpr uint16_t scrollbarFlags = ScrollView::scroll_flags::HSCROLLBAR_VISIBLE | ScrollView::scroll_flags::VSCROLLBAR_VISIBLE;
+            constexpr uint16_t scrollbarFlags = ScrollView::ScrollFlags::HSCROLLBAR_VISIBLE | ScrollView::ScrollFlags::VSCROLLBAR_VISIBLE;
             if (window->scroll_areas[scrollIndex].flags & scrollbarFlags)
             {
                 windowScrollWheelInput(window, widgetIndex, wheel);
@@ -1540,7 +1540,7 @@ namespace OpenLoco::Ui::WindowManager
                     if (window->widgets[widgetIndex].type == widget_type::scrollview)
                     {
                         auto scrollIndex = window->getScrollDataIndex(widgetIndex);
-                        constexpr uint16_t scrollbarFlags = ScrollView::scroll_flags::HSCROLLBAR_VISIBLE | ScrollView::scroll_flags::VSCROLLBAR_VISIBLE;
+                        constexpr uint16_t scrollbarFlags = ScrollView::ScrollFlags::HSCROLLBAR_VISIBLE | ScrollView::ScrollFlags::VSCROLLBAR_VISIBLE;
                         if (window->scroll_areas[scrollIndex].flags & scrollbarFlags)
                         {
                             windowScrollWheelInput(window, widgetIndex, wheel);

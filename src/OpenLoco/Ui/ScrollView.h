@@ -21,7 +21,7 @@ namespace OpenLoco::Ui::ScrollView
         vscrollbar_thumb = 10,
     };
 
-    namespace scroll_flags
+    namespace ScrollFlags
     {
         constexpr uint16_t HSCROLLBAR_VISIBLE = 1 << 0;
         constexpr uint16_t HSCROLLBAR_THUMB_PRESSED = 1 << 1;
