@@ -210,7 +210,7 @@ namespace OpenLoco::Ui::TextInput
 {
     void registerHooks();
 
-    void openTextinput(Ui::window* w, string_id title, string_id message, string_id value, int callingWidget, void* valueArgs);
+    void openTextInput(Ui::window* w, string_id title, string_id message, string_id value, int callingWidget, void* valueArgs);
     void sub_4CE6C9(WindowType type, window_number number);
     void cancel();
     void sub_4CE910(int eax, int ebx);

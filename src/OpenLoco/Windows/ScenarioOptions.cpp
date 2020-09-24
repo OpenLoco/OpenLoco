@@ -1091,7 +1091,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                     char* buffer = (char*)StringManager::getString(StringIds::buffer_2039);
                     strncpy(buffer, s5::getOptions().scenarioName, 512);
 
-                    TextInput::openTextinput(self, StringIds::scenario_name_title, StringIds::enter_name_for_scenario, StringIds::buffer_2039, widgetIndex, nullptr);
+                    TextInput::openTextInput(self, StringIds::scenario_name_title, StringIds::enter_name_for_scenario, StringIds::buffer_2039, widgetIndex, nullptr);
                     break;
                 }
 
@@ -1100,7 +1100,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                     char* buffer = (char*)StringManager::getString(StringIds::buffer_2039);
                     strncpy(buffer, s5::getOptions().scenarioDetails, 512);
 
-                    TextInput::openTextinput(self, StringIds::scenario_details_title, StringIds::enter_description_of_this_scenario, StringIds::buffer_2039, widgetIndex, nullptr);
+                    TextInput::openTextInput(self, StringIds::scenario_details_title, StringIds::enter_description_of_this_scenario, StringIds::buffer_2039, widgetIndex, nullptr);
                     break;
                 }
             }

@@ -2009,7 +2009,7 @@ namespace OpenLoco::Ui::Options
             strcpy(buffer, playerName);
             buffer[strlen(playerName)] = '\0';
 
-            TextInput::openTextinput(w, StringIds::preferred_owner_name, StringIds::enter_preferred_owner_name, StringIds::buffer_2039, widx::use_preferred_owner_name, nullptr);
+            TextInput::openTextInput(w, StringIds::preferred_owner_name, StringIds::enter_preferred_owner_name, StringIds::buffer_2039, widx::use_preferred_owner_name, nullptr);
         }
 
         // 0x004C1342
