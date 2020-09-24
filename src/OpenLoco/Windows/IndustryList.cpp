@@ -17,7 +17,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::Ui::windows::industry_list
+namespace OpenLoco::Ui::Windows::industry_list
 {
     static loco_global<uint32_t, 0x00E0C39C> dword_E0C39C;
     static loco_global<uint8_t, 0x00E0C3D9> byte_E0C3D9;
@@ -185,7 +185,7 @@ namespace OpenLoco::Ui::windows::industry_list
             if (currentIndustry == -1)
                 return;
 
-            windows::industry::open(currentIndustry);
+            Windows::industry::open(currentIndustry);
         }
 
         // 0x00458140
@@ -956,7 +956,7 @@ namespace OpenLoco::Ui::windows::industry_list
         static void onToolAbort(window& self, const widget_index widgetIndex)
         {
             sub_458C09();
-            Ui::windows::hideGridlines();
+            Ui::Windows::hideGridlines();
         }
 
         // 0x0045845F
@@ -1045,7 +1045,7 @@ namespace OpenLoco::Ui::windows::industry_list
             Input::toolSet(self, common::widx::tab_new_industry, 40);
 
             Input::setFlag(Input::input_flags::flag6);
-            Ui::windows::showGridlines();
+            Ui::Windows::showGridlines();
             byte_E0C3D9 = 0;
             dword_E0C39C = 0x80000000;
 

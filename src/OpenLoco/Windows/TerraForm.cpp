@@ -23,7 +23,7 @@ using namespace OpenLoco::Interop;
 using namespace OpenLoco::Map;
 using namespace OpenLoco::GameCommands;
 
-namespace OpenLoco::Ui::windows::terraform
+namespace OpenLoco::Ui::Windows::terraform
 {
     static loco_global<std::uint8_t[10], 0x00500775> _byte_500775;
     static loco_global<int16_t, 0x0052337A> _dragLastY;
@@ -223,7 +223,7 @@ namespace OpenLoco::Ui::windows::terraform
         static void onClose(window* self)
         {
             common::sub_4BD297();
-            Ui::windows::hideGridlines();
+            Ui::Windows::hideGridlines();
         }
 
         // 0x004BBC7D
@@ -715,7 +715,7 @@ namespace OpenLoco::Ui::windows::terraform
 
             // End of 0x004BB586
 
-            Ui::windows::showGridlines();
+            Ui::Windows::showGridlines();
             _treeRotation = 2;
 
             common::initEvents();
@@ -769,7 +769,7 @@ namespace OpenLoco::Ui::windows::terraform
         // 0x004BC671
         static void onClose(window* self)
         {
-            Ui::windows::hideGridlines();
+            Ui::Windows::hideGridlines();
         }
 
         // 0x004BBBC7
@@ -952,7 +952,7 @@ namespace OpenLoco::Ui::windows::terraform
         // 0x004BC9D1
         static void onClose(window* self)
         {
-            Ui::windows::hideGridlines();
+            Ui::Windows::hideGridlines();
         }
 
         // 0x004BBBF7
@@ -1525,7 +1525,7 @@ namespace OpenLoco::Ui::windows::terraform
         // 0x004BCDAE
         static void onClose(window* self)
         {
-            Ui::windows::hideGridlines();
+            Ui::Windows::hideGridlines();
         }
 
         // 0x004BBC46
@@ -1824,7 +1824,7 @@ namespace OpenLoco::Ui::windows::terraform
         static void onClose(window* self)
         {
             common::sub_4BD297();
-            Ui::windows::hideGridlines();
+            Ui::Windows::hideGridlines();
         }
 
         // 0x004BBCBF

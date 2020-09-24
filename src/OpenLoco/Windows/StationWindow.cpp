@@ -22,7 +22,7 @@
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Map;
 
-namespace OpenLoco::Ui::windows::station
+namespace OpenLoco::Ui::Windows::station
 {
     static loco_global<uint8_t[map_size], 0x00F00484> _byte_F00484;
     static loco_global<uint16_t, 0x00F24484> _mapSelectionFlags;
@@ -770,7 +770,7 @@ namespace OpenLoco::Ui::windows::station
 
         if (newStationId != station_id::null)
         {
-            Ui::windows::construction::sub_4A6FAC();
+            Ui::Windows::construction::sub_4A6FAC();
             auto station = stationmgr::get(_lastSelectedStation);
 
             station->setCatchmentDisplay(0);

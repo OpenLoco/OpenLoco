@@ -7,7 +7,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::Ui::windows
+namespace OpenLoco::Ui::Windows
 {
     static widget_t widgets[] = {
         { widget_type::end, 0, 0, 0, 0, 0, { 0 }, 0 }

@@ -509,13 +509,13 @@ namespace OpenLoco::Input
 
                         case InteractionItem::town:
                         {
-                            Ui::windows::town::open(ptr.value);
+                            Ui::Windows::town::open(ptr.value);
                             break;
                         }
 
                         case InteractionItem::station:
                         {
-                            Ui::windows::station::open(ptr.value);
+                            Ui::Windows::station::open(ptr.value);
                             break;
                         }
 
@@ -539,7 +539,7 @@ namespace OpenLoco::Input
                                         && company.headquarters_y == pos.y
                                         && company.headquarters_z == z)
                                     {
-                                        Ui::windows::CompanyWindow::open(company.id());
+                                        Ui::Windows::CompanyWindow::open(company.id());
                                         break;
                                     }
                                 }
@@ -549,7 +549,7 @@ namespace OpenLoco::Input
 
                         case InteractionItem::industry:
                         {
-                            Ui::windows::industry::open(ptr.value);
+                            Ui::Windows::industry::open(ptr.value);
                             break;
                         }
 
@@ -730,21 +730,21 @@ namespace OpenLoco::Input
                                 if (veh != nullptr)
                                 {
                                     auto head = ThingManager::get<vehicle>(reinterpret_cast<OpenLoco::vehicle*>(veh)->head);
-                                    Ui::windows::vehicle_list::open(head->owner, static_cast<uint8_t>(head->vehicleType));
+                                    Ui::Windows::vehicle_list::open(head->owner, static_cast<uint8_t>(head->vehicleType));
                                 }
                                 break;
                             }
                             case InteractionItem::town:
-                                Ui::windows::town_list::open();
+                                Ui::Windows::town_list::open();
                                 break;
                             case InteractionItem::station:
                             {
                                 auto station = stationmgr::get(ptr.value);
-                                Ui::windows::station_list::open(station->owner);
+                                Ui::Windows::station_list::open(station->owner);
                                 break;
                             }
                             case InteractionItem::industry:
-                                Ui::windows::industry_list::open();
+                                Ui::Windows::industry_list::open();
                                 break;
                             default:
                                 break;
@@ -760,11 +760,11 @@ namespace OpenLoco::Input
                         {
                             if (track->owner() == companymgr::getControllingId())
                             {
-                                Ui::windows::construction::openAtTrack(window, track, { ptr.x, ptr.y });
+                                Ui::Windows::construction::openAtTrack(window, track, { ptr.x, ptr.y });
                             }
                             else
                             {
-                                Ui::windows::CompanyWindow::open(track->owner());
+                                Ui::Windows::CompanyWindow::open(track->owner());
                             }
                         }
                         break;
@@ -780,11 +780,11 @@ namespace OpenLoco::Input
                             auto roadObject = ObjectManager::get<road_object>(road->roadObjectId());
                             if (owner == companymgr::getControllingId() || owner == company_id::neutral || (roadObject->flags & Flags12::unk_03))
                             {
-                                Ui::windows::construction::openAtRoad(window, road, { ptr.x, ptr.y });
+                                Ui::Windows::construction::openAtRoad(window, road, { ptr.x, ptr.y });
                             }
                             else
                             {
-                                Ui::windows::CompanyWindow::open(owner);
+                                Ui::Windows::CompanyWindow::open(owner);
                             }
                         }
                         break;
@@ -794,7 +794,7 @@ namespace OpenLoco::Input
                         auto track = ((Map::tile_element*)ptr.object)->asTrack();
                         if (track != nullptr)
                         {
-                            Ui::windows::construction::setToTrackExtra(window, track, ptr.unkBh, { ptr.x, ptr.y });
+                            Ui::Windows::construction::setToTrackExtra(window, track, ptr.unkBh, { ptr.x, ptr.y });
                         }
                         break;
                     }
@@ -803,7 +803,7 @@ namespace OpenLoco::Input
                         auto road = ((Map::tile_element*)ptr.object)->asRoad();
                         if (road != nullptr)
                         {
-                            Ui::windows::construction::setToRoadExtra(window, road, ptr.unkBh, { ptr.x, ptr.y });
+                            Ui::Windows::construction::setToRoadExtra(window, road, ptr.unkBh, { ptr.x, ptr.y });
                         }
                         break;
                     }

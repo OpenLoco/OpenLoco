@@ -24,7 +24,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::Ui::windows::toolbar_top::common
+namespace OpenLoco::Ui::Windows::toolbar_top::common
 {
     static loco_global<uint8_t, 0x00525FAB> last_road_option;
 
@@ -269,7 +269,7 @@ namespace OpenLoco::Ui::windows::toolbar_top::common
         }
         else if (itemIndex == 2)
         {
-            windows::map::open();
+            Windows::map::open();
         }
     }
 
@@ -287,14 +287,14 @@ namespace OpenLoco::Ui::windows::toolbar_top::common
             window->viewportRotateLeft();
             townmgr::updateLabels();
             stationmgr::updateLabels();
-            windows::map::centerOnViewPoint();
+            Windows::map::centerOnViewPoint();
         }
         else if (itemIndex == 0)
         {
             window->viewportRotateRight();
             townmgr::updateLabels();
             stationmgr::updateLabels();
-            windows::map::centerOnViewPoint();
+            Windows::map::centerOnViewPoint();
         }
     }
 
@@ -336,23 +336,23 @@ namespace OpenLoco::Ui::windows::toolbar_top::common
         switch (itemIndex)
         {
             case 0:
-                windows::terraform::openClearArea();
+                Windows::terraform::openClearArea();
                 break;
 
             case 1:
-                windows::terraform::openAdjustLand();
+                Windows::terraform::openAdjustLand();
                 break;
 
             case 2:
-                windows::terraform::openAdjustWater();
+                Windows::terraform::openAdjustWater();
                 break;
 
             case 3:
-                windows::terraform::openPlantTrees();
+                Windows::terraform::openPlantTrees();
                 break;
 
             case 4:
-                windows::terraform::openBuildWalls();
+                Windows::terraform::openBuildWalls();
                 break;
         }
     }
@@ -378,12 +378,12 @@ namespace OpenLoco::Ui::windows::toolbar_top::common
 
         if (itemIndex == 0)
         {
-            windows::town_list::open();
+            Windows::town_list::open();
             last_town_option = 0;
         }
         else if (itemIndex == 1)
         {
-            windows::industry_list::open();
+            Windows::industry_list::open();
             last_town_option = 1;
         }
     }

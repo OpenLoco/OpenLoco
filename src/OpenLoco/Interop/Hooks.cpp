@@ -618,7 +618,7 @@ static void registerAudioHooks()
 
 void OpenLoco::Interop::registerHooks()
 {
-    using namespace OpenLoco::Ui::windows;
+    using namespace OpenLoco::Ui::Windows;
 
     registerMemoryHooks();
 
@@ -700,7 +700,7 @@ void OpenLoco::Interop::registerHooks()
     registerHook(
         0x00490F6C,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            Ui::windows::station_list::open(regs.ax);
+            Ui::Windows::station_list::open(regs.ax);
             return 0;
         });
 
@@ -772,9 +772,9 @@ void OpenLoco::Interop::registerHooks()
     Ui::tooltip::registerHooks();
     Ui::vehicle::registerHooks();
     Ui::BuildVehicle::registerHooks();
-    Ui::windows::terraform::registerHooks();
-    Ui::windows::error::registerHooks();
-    Ui::windows::construction::registerHooks();
+    Ui::Windows::terraform::registerHooks();
+    Ui::Windows::error::registerHooks();
+    Ui::Windows::construction::registerHooks();
     Ui::WindowManager::registerHooks();
     Ui::viewportmgr::registerHooks();
     GameCommands::registerHooks();

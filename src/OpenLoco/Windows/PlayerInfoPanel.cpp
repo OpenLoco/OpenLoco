@@ -21,7 +21,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::Ui::windows::PlayerInfoPanel
+namespace OpenLoco::Ui::Windows::PlayerInfoPanel
 {
     static const Gfx::ui_size_t window_size = { 140, 27 };
 
@@ -151,14 +151,14 @@ namespace OpenLoco::Ui::windows::PlayerInfoPanel
         // If its index is bigger than the list then its the company list extra item
         if (static_cast<uint16_t>(itemIndex) >= _sortedCompanies.size())
         {
-            windows::CompanyList::open();
+            Windows::CompanyList::open();
         }
         else
         {
             auto company = _sortedCompanies[itemIndex];
             if (!company->empty())
             {
-                windows::CompanyWindow::open(company->id());
+                Windows::CompanyWindow::open(company->id());
             }
         }
     }
@@ -313,13 +313,13 @@ namespace OpenLoco::Ui::windows::PlayerInfoPanel
     // 0x4395C7
     static void companyValueMouseUp()
     {
-        windows::CompanyWindow::openFinances(companymgr::getControllingId());
+        Windows::CompanyWindow::openFinances(companymgr::getControllingId());
     }
 
     // 0x4395D6
     static void performanceIndexMouseUp()
     {
-        windows::CompanyList::openPerformanceIndexes();
+        Windows::CompanyList::openPerformanceIndexes();
     }
 
     // 0x004395DE

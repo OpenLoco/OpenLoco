@@ -22,7 +22,7 @@
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::GameCommands;
 
-namespace OpenLoco::Ui::windows::town
+namespace OpenLoco::Ui::Windows::town
 {
     static const Gfx::ui_size_t windowSize = { 223, 161 };
 

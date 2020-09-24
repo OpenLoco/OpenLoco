@@ -9,7 +9,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::Ui::windows
+namespace OpenLoco::Ui::Windows
 {
 #pragma pack(push, 1)
     struct text_buffers_t

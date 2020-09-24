@@ -17,7 +17,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::Ui::windows::CompanyList
+namespace OpenLoco::Ui::Windows::CompanyList
 {
     static loco_global<uint8_t[32], 0x004F9442> _cargoLineColour;
     static loco_global<Ui::window_number, 0x00523390> _toolWindowNumber;
@@ -376,7 +376,7 @@ namespace OpenLoco::Ui::windows::CompanyList
             if (currentCompany == -1)
                 return;
 
-            windows::CompanyWindow::open(currentCompany);
+            Windows::CompanyWindow::open(currentCompany);
         }
 
         // 0x00436361

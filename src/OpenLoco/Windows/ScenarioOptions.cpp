@@ -15,7 +15,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::Ui::windows::ScenarioOptions
+namespace OpenLoco::Ui::Windows::ScenarioOptions
 {
     static const Gfx::ui_size_t challengeWindowSize = { 366, 197 };
     static const Gfx::ui_size_t companiesWindowSize = { 366, 327 };

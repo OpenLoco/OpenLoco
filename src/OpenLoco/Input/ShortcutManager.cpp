@@ -204,7 +204,7 @@ namespace OpenLoco::Input::ShortcutManager
         main->viewportRotateRight();
         townmgr::updateLabels();
         stationmgr::updateLabels();
-        windows::map::centerOnViewPoint();
+        Windows::map::centerOnViewPoint();
     }
 
     // 0x004BF148
@@ -291,7 +291,7 @@ namespace OpenLoco::Input::ShortcutManager
         if (isEditorMode() && s5::getOptions().editorStep == 0)
             return;
 
-        windows::terraform::openAdjustLand();
+        Windows::terraform::openAdjustLand();
     }
 
     // 0x004BF1E1
@@ -300,7 +300,7 @@ namespace OpenLoco::Input::ShortcutManager
         if (isEditorMode() && s5::getOptions().editorStep == 0)
             return;
 
-        windows::terraform::openAdjustWater();
+        Windows::terraform::openAdjustWater();
     }
 
     // 0x004BF1FC
@@ -309,7 +309,7 @@ namespace OpenLoco::Input::ShortcutManager
         if (isEditorMode() && s5::getOptions().editorStep == 0)
             return;
 
-        windows::terraform::openPlantTrees();
+        Windows::terraform::openPlantTrees();
     }
 
     // 0x004BF217
@@ -318,7 +318,7 @@ namespace OpenLoco::Input::ShortcutManager
         if (isEditorMode() && s5::getOptions().editorStep == 0)
             return;
 
-        windows::terraform::openClearArea();
+        Windows::terraform::openClearArea();
     }
 
     // 0x004BF232
@@ -331,7 +331,7 @@ namespace OpenLoco::Input::ShortcutManager
         if (last_railroad_option == 0xFF)
             return;
 
-        windows::construction::openWithFlags(*last_railroad_option);
+        Windows::construction::openWithFlags(*last_railroad_option);
     }
 
     // 0x004BF24F
@@ -344,7 +344,7 @@ namespace OpenLoco::Input::ShortcutManager
         if (last_road_option == 0xFF)
             return;
 
-        windows::construction::openWithFlags(*last_road_option);
+        Windows::construction::openWithFlags(*last_road_option);
     }
 
     // 0x004BF276
@@ -357,7 +357,7 @@ namespace OpenLoco::Input::ShortcutManager
         if (have_airports == 0xFF)
             return;
 
-        windows::construction::openWithFlags(1 << 31);
+        Windows::construction::openWithFlags(1 << 31);
     }
 
     // 0x004BF295
@@ -370,7 +370,7 @@ namespace OpenLoco::Input::ShortcutManager
         if (have_ship_ports == 0xFF)
             return;
 
-        windows::construction::openWithFlags(1 << 30);
+        Windows::construction::openWithFlags(1 << 30);
     }
 
     // 0x004BF2B4
@@ -393,7 +393,7 @@ namespace OpenLoco::Input::ShortcutManager
             return;
 
         loco_global<uint8_t, 0x00525FAF> last_vehicles_option;
-        windows::vehicle_list::open(companymgr::getControllingId(), *last_vehicles_option);
+        Windows::vehicle_list::open(companymgr::getControllingId(), *last_vehicles_option);
     }
 
     // 0x004BF2F0
@@ -402,7 +402,7 @@ namespace OpenLoco::Input::ShortcutManager
         if (isEditorMode())
             return;
 
-        windows::station_list::open(companymgr::getControllingId(), 0);
+        Windows::station_list::open(companymgr::getControllingId(), 0);
     }
 
     // 0x004BF308
@@ -411,7 +411,7 @@ namespace OpenLoco::Input::ShortcutManager
         if (isEditorMode() && s5::getOptions().editorStep == 0)
             return;
 
-        windows::town_list::open();
+        Windows::town_list::open();
     }
 
     // 0x004BF323
@@ -420,7 +420,7 @@ namespace OpenLoco::Input::ShortcutManager
         if (isEditorMode() && s5::getOptions().editorStep == 0)
             return;
 
-        windows::industry_list::open();
+        Windows::industry_list::open();
     }
 
     // 0x004BF33E
@@ -429,7 +429,7 @@ namespace OpenLoco::Input::ShortcutManager
         if (isEditorMode() && s5::getOptions().editorStep == 0)
             return;
 
-        windows::map::open();
+        Windows::map::open();
     }
 
     // 0x004BF359
@@ -450,7 +450,7 @@ namespace OpenLoco::Input::ShortcutManager
         if (isEditorMode())
             return;
 
-        windows::CompanyWindow::openFinances(companymgr::getControllingId());
+        Windows::CompanyWindow::openFinances(companymgr::getControllingId());
     }
 
     // 0x004BF39A

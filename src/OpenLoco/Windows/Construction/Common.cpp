@@ -22,7 +22,7 @@ using namespace OpenLoco::Interop;
 using namespace OpenLoco::Map;
 using namespace OpenLoco::Map::TileManager;
 
-namespace OpenLoco::Ui::windows::construction
+namespace OpenLoco::Ui::Windows::construction
 {
     static loco_global<Ui::window_number, 0x00523390> _toolWindowNumber;
 
@@ -390,7 +390,7 @@ namespace OpenLoco::Ui::windows::construction
 
             if (widgetIndex == widx::tab_station)
             {
-                Ui::windows::station::showStationCatchment(station_id::null);
+                Ui::Windows::station::showStationCatchment(station_id::null);
             }
 
             if (widgetIndex == widx::tab_construction)
@@ -700,8 +700,8 @@ namespace OpenLoco::Ui::windows::construction
             WindowManager::viewportSetVisibility(WindowManager::viewport_visibility::reset);
             TileManager::mapInvalidateMapSelectionTiles();
             _mapSelectionFlags = _mapSelectionFlags & ~MapSelectFlag::enableConstruct;
-            windows::hideDirectionArrows();
-            windows::hideGridlines();
+            Windows::hideDirectionArrows();
+            Windows::hideGridlines();
         }
 
         // 0x0049E437, 0x0049E76F, 0x0049ECD1
@@ -808,8 +808,8 @@ namespace OpenLoco::Ui::windows::construction
             window->colours[1] = skin->colour_0D;
 
             WindowManager::sub_4CEE0B(window);
-            Ui::windows::showDirectionArrows();
-            Ui::windows::showGridlines();
+            Ui::Windows::showDirectionArrows();
+            Ui::Windows::showGridlines();
 
             common::initEvents();
         }

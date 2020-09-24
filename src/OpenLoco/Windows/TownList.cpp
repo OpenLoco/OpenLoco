@@ -19,7 +19,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::Ui::windows::town_list
+namespace OpenLoco::Ui::Windows::town_list
 {
     static loco_global<uint32_t, 0x01135C34> dword_1135C34;
     static loco_global<colour_t, 0x01135C61> _buildingColour;
@@ -264,7 +264,7 @@ namespace OpenLoco::Ui::windows::town_list
             if (currentTown == -1)
                 return;
 
-            windows::town::open(currentTown);
+            Windows::town::open(currentTown);
         }
 
         // 0x0049A532
@@ -678,7 +678,7 @@ namespace OpenLoco::Ui::windows::town_list
         // 0x0049A7C1
         static void onToolAbort(window& self, const widget_index widgetIndex)
         {
-            Ui::windows::hideGridlines();
+            Ui::Windows::hideGridlines();
         }
 
         // 0x0049A710
@@ -744,7 +744,7 @@ namespace OpenLoco::Ui::windows::town_list
             self->height = windowSize.height;
             Input::toolSet(self, common::widx::tab_build_town, 38);
             Input::setFlag(Input::input_flags::flag6);
-            Ui::windows::showGridlines();
+            Ui::Windows::showGridlines();
         }
 
         static void initEvents()
@@ -958,7 +958,7 @@ namespace OpenLoco::Ui::windows::town_list
         static void onToolAbort(window& self, const widget_index widgetIndex)
         {
             sub_49B37F();
-            Ui::windows::hideGridlines();
+            Ui::Windows::hideGridlines();
         }
 
         // 0x0049ABF0
@@ -1270,7 +1270,7 @@ namespace OpenLoco::Ui::windows::town_list
 
             Input::toolSet(self, tab, 39);
             Input::setFlag(Input::input_flags::flag6);
-            Ui::windows::showGridlines();
+            Ui::Windows::showGridlines();
 
             static loco_global<uint8_t, 0x01135C60> byte_1135C60;
             byte_1135C60 = 0;

@@ -977,7 +977,7 @@ namespace OpenLoco::Ui::options
                     return;
 
                 case widx::edit_selection:
-                    windows::music_selection::open();
+                    Windows::music_selection::open();
                     return;
             }
         }

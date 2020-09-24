@@ -80,15 +80,15 @@ namespace OpenLoco::Ui::NewsWindow
                         switch (itemType)
                         {
                             case newsItemSubTypes::industry:
-                                Ui::windows::industry::open(itemId);
+                                Ui::Windows::industry::open(itemId);
                                 break;
 
                             case newsItemSubTypes::station:
-                                Ui::windows::station::open(itemId);
+                                Ui::Windows::station::open(itemId);
                                 break;
 
                             case newsItemSubTypes::town:
-                                Ui::windows::town::open(itemId);
+                                Ui::Windows::town::open(itemId);
                                 break;
 
                             case newsItemSubTypes::vehicle:
@@ -104,7 +104,7 @@ namespace OpenLoco::Ui::NewsWindow
                             }
 
                             case newsItemSubTypes::company:
-                                Ui::windows::CompanyWindow::open(itemId);
+                                Ui::Windows::CompanyWindow::open(itemId);
                                 break;
 
                             case 5:

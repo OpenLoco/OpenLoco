@@ -51,17 +51,17 @@ namespace OpenLoco::gui
 
         if (OpenLoco::isTitleMode())
         {
-            Ui::windows::openTitleMenu();
-            Ui::windows::openTitleExit();
-            Ui::windows::openTitleLogo();
-            Ui::windows::openTitleVersion();
+            Ui::Windows::openTitleMenu();
+            Ui::Windows::openTitleExit();
+            Ui::Windows::openTitleLogo();
+            Ui::Windows::openTitleVersion();
             Ui::title_options::open();
         }
         else
         {
-            windows::toolbar_top::game::open();
+            Windows::toolbar_top::game::open();
 
-            windows::PlayerInfoPanel::open();
+            Windows::PlayerInfoPanel::open();
             TimePanel::open();
 
             if (OpenLoco::tutorial::state() != tutorial::tutorial_state::none)

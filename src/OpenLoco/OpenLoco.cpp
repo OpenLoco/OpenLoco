@@ -480,7 +480,7 @@ namespace OpenLoco
         {
             case 0:
                 if (WindowManager::find(WindowType::objectSelection) == nullptr)
-                    windows::ObjectSelectionWindow::open();
+                    Windows::ObjectSelectionWindow::open();
                 break;
 
             case 1:
@@ -489,12 +489,12 @@ namespace OpenLoco
                     return;
 
                 if (WindowManager::find(WindowType::landscapeGeneration) == nullptr)
-                    windows::LandscapeGeneration::open();
+                    Windows::LandscapeGeneration::open();
                 break;
 
             case 2:
                 if (WindowManager::find(WindowType::scenarioOptions) == nullptr)
-                    windows::ScenarioOptions::open();
+                    Windows::ScenarioOptions::open();
                 break;
 
             case 3:
@@ -788,7 +788,7 @@ namespace OpenLoco
                 message = StringIds::null;
             }
             _50C197 = 0;
-            Ui::windows::showError(title, message);
+            Ui::Windows::showError(title, message);
         }
     }
 

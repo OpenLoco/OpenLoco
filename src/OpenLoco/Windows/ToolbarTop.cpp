@@ -25,7 +25,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::Ui::windows::toolbar_top::game
+namespace OpenLoco::Ui::Windows::toolbar_top::game
 {
     static loco_global<uint8_t[40], 0x00113DB20> menu_options;
 
@@ -455,7 +455,7 @@ namespace OpenLoco::Ui::windows::toolbar_top::game
         auto vehicleType = menu_options[itemIndex];
         last_vehicles_option = vehicleType;
 
-        windows::vehicle_list::open(companymgr::getControllingId(), vehicleType);
+        Windows::vehicle_list::open(companymgr::getControllingId(), vehicleType);
     }
 
     // 0x0043A4E9
@@ -486,7 +486,7 @@ namespace OpenLoco::Ui::windows::toolbar_top::game
         if (itemIndex > 4)
             return;
 
-        windows::station_list::open(companymgr::getControllingId(), itemIndex);
+        Windows::station_list::open(companymgr::getControllingId(), itemIndex);
     }
 
     // 0x0043A071

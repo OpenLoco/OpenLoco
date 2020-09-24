@@ -19,7 +19,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::Ui::windows
+namespace OpenLoco::Ui::Windows
 {
     static const uint8_t btn_main_size = 74;
     static const uint8_t btn_sub_height = 18;

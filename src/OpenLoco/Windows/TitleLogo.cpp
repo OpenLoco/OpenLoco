@@ -6,7 +6,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::Ui::windows
+namespace OpenLoco::Ui::Windows
 {
     static const Gfx::ui_size_t window_size = { 298, 170 };
 

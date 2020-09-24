@@ -67,7 +67,7 @@ namespace OpenLoco::Ui::WindowManager
             0x0043454F,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                windows::CompanyWindow::open(regs.ax);
+                Windows::CompanyWindow::open(regs.ax);
                 regs = backup;
 
                 return 0;
@@ -77,7 +77,7 @@ namespace OpenLoco::Ui::WindowManager
             0x004345EE,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                windows::CompanyWindow::openFinances(regs.ax);
+                Windows::CompanyWindow::openFinances(regs.ax);
                 regs = backup;
 
                 return 0;
@@ -87,7 +87,7 @@ namespace OpenLoco::Ui::WindowManager
             0x00434731,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                windows::CompanyWindow::openChallenge(regs.ax);
+                Windows::CompanyWindow::openChallenge(regs.ax);
                 regs = backup;
 
                 return 0;
@@ -97,7 +97,7 @@ namespace OpenLoco::Ui::WindowManager
             0x00435ACC,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                windows::CompanyWindow::openAndSetName();
+                Windows::CompanyWindow::openAndSetName();
                 regs = backup;
 
                 return 0;
@@ -106,7 +106,7 @@ namespace OpenLoco::Ui::WindowManager
         registerHook(
             0x0043CB9F,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                windows::editorInit();
+                Windows::editorInit();
 
                 return 0;
             });
@@ -115,7 +115,7 @@ namespace OpenLoco::Ui::WindowManager
             0x0043DA43,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                windows::LandscapeGeneration::open();
+                Windows::LandscapeGeneration::open();
                 regs = backup;
 
                 return 0;
@@ -125,7 +125,7 @@ namespace OpenLoco::Ui::WindowManager
             0x0043EE58,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                windows::ScenarioOptions::open();
+                Windows::ScenarioOptions::open();
                 regs = backup;
 
                 return 0;
@@ -194,7 +194,7 @@ namespace OpenLoco::Ui::WindowManager
             0x00456D2D,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                windows::industry::open(regs.dx);
+                Windows::industry::open(regs.dx);
                 regs = backup;
 
                 return 0;
@@ -216,7 +216,7 @@ namespace OpenLoco::Ui::WindowManager
             0x00499B7E,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                auto window = windows::town::open(regs.dx);
+                auto window = Windows::town::open(regs.dx);
                 regs = backup;
                 regs.esi = (uintptr_t)window;
 
@@ -227,7 +227,7 @@ namespace OpenLoco::Ui::WindowManager
             0x0048F210,
             [](registers& regs) -> uint8_t {
                 registers backup = regs;
-                auto window = windows::station::open(regs.dx);
+                auto window = Windows::station::open(regs.dx);
                 regs = backup;
                 regs.esi = (uintptr_t)window;
 
@@ -238,7 +238,7 @@ namespace OpenLoco::Ui::WindowManager
             0x004577FF,
             [](registers& regs) -> uint8_t {
                 registers backup = regs;
-                auto window = windows::industry_list::open();
+                auto window = Windows::industry_list::open();
                 regs = backup;
                 regs.esi = (uintptr_t)window;
 
@@ -1503,7 +1503,7 @@ namespace OpenLoco::Ui::WindowManager
                 }
                 townmgr::updateLabels();
                 stationmgr::updateLabels();
-                windows::map::centerOnViewPoint();
+                Windows::map::centerOnViewPoint();
             }
 
             return;
@@ -1978,7 +1978,7 @@ namespace OpenLoco::Ui::WindowManager
     }
 }
 
-namespace OpenLoco::Ui::windows
+namespace OpenLoco::Ui::Windows
 {
     static loco_global<uint8_t, 0x00508F09> suppressErrorSound;
     static loco_global<int8_t, 0x00F2533F> _gridlinesState;
@@ -1992,7 +1992,7 @@ namespace OpenLoco::Ui::windows
             suppressErrorSound = true;
         }
 
-        windows::error::open(title, message);
+        Windows::error::open(title, message);
 
         suppressErrorSound = false;
     }

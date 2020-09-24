@@ -17,7 +17,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::Ui::windows::LandscapeGeneration
+namespace OpenLoco::Ui::Windows::LandscapeGeneration
 {
     static const Gfx::ui_size_t window_size = { 366, 217 };
     static const Gfx::ui_size_t land_tab_size = { 366, 232 };

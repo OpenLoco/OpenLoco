@@ -72,7 +72,7 @@ namespace OpenLoco::Ui::WindowManager
     void viewportSetVisibility(viewport_visibility flags);
 }
 
-namespace OpenLoco::Ui::windows
+namespace OpenLoco::Ui::Windows
 {
     window* openTitleVersion();
     window* openTitleExit();
@@ -112,7 +112,7 @@ namespace OpenLoco::Ui::AboutMusic
     void open();
 }
 
-namespace OpenLoco::Ui::windows::construction
+namespace OpenLoco::Ui::Windows::construction
 {
     window* openWithFlags(uint32_t flags);
     window* openAtTrack(window* main, OpenLoco::Map::track_element* track, const OpenLoco::Map::map_pos pos);
@@ -123,38 +123,38 @@ namespace OpenLoco::Ui::windows::construction
     void registerHooks();
 }
 
-namespace OpenLoco::Ui::windows::industry
+namespace OpenLoco::Ui::Windows::industry
 {
     window* open(industry_id_t id);
 }
 
-namespace OpenLoco::Ui::windows::industry_list
+namespace OpenLoco::Ui::Windows::industry_list
 {
     window* open();
 }
 
-namespace OpenLoco::Ui::windows::LandscapeGeneration
+namespace OpenLoco::Ui::Windows::LandscapeGeneration
 {
     window* open();
 }
 
-namespace OpenLoco::Ui::windows::LandscapeGenerationConfirm
+namespace OpenLoco::Ui::Windows::LandscapeGenerationConfirm
 {
     window* open(int32_t prompt_type);
 }
 
-namespace OpenLoco::Ui::windows::map
+namespace OpenLoco::Ui::Windows::map
 {
     void open();
     void centerOnViewPoint();
 }
 
-namespace OpenLoco::Ui::windows::music_selection
+namespace OpenLoco::Ui::Windows::music_selection
 {
     window* open();
 }
 
-namespace OpenLoco::Ui::windows::error
+namespace OpenLoco::Ui::Windows::error
 {
     void open(string_id title, string_id message);
     void openWithCompetitor(string_id title, string_id message, uint8_t competitorId);
@@ -179,24 +179,24 @@ namespace OpenLoco::Ui::prompt_browse
     void registerHooks();
 }
 
-namespace OpenLoco::Ui::windows::ScenarioOptions
+namespace OpenLoco::Ui::Windows::ScenarioOptions
 {
     window* open();
 }
 
-namespace OpenLoco::Ui::windows::station
+namespace OpenLoco::Ui::Windows::station
 {
     window* open(uint16_t id);
     void showStationCatchment(uint16_t windowNumber);
 }
 
-namespace OpenLoco::Ui::windows::station_list
+namespace OpenLoco::Ui::Windows::station_list
 {
     window* open(company_id_t companyId);
     window* open(company_id_t companyId, uint8_t type);
 }
 
-namespace OpenLoco::Ui::windows::terraform
+namespace OpenLoco::Ui::Windows::terraform
 {
     window* open();
     void openClearArea();
@@ -223,12 +223,12 @@ namespace OpenLoco::Ui::title_options
     window* open();
 }
 
-namespace OpenLoco::Ui::windows::toolbar_top::game
+namespace OpenLoco::Ui::Windows::toolbar_top::game
 {
     void open();
 }
 
-namespace OpenLoco::Ui::windows::toolbar_top::editor
+namespace OpenLoco::Ui::Windows::toolbar_top::editor
 {
     void open();
 }
@@ -242,12 +242,12 @@ namespace OpenLoco::Ui::tooltip
     void closeAndReset();
 }
 
-namespace OpenLoco::Ui::windows::town
+namespace OpenLoco::Ui::Windows::town
 {
     window* open(uint16_t townId);
 }
 
-namespace OpenLoco::Ui::windows::town_list
+namespace OpenLoco::Ui::Windows::town_list
 {
     window* open();
 }
@@ -261,7 +261,7 @@ namespace OpenLoco::Ui::vehicle
     }
 }
 
-namespace OpenLoco::Ui::windows::vehicle_list
+namespace OpenLoco::Ui::Windows::vehicle_list
 {
     window* open(uint16_t companyId, uint8_t type);
 }
@@ -283,18 +283,18 @@ namespace OpenLoco::Ui::NewsWindow
     void open(uint16_t messageIndex);
 }
 
-namespace OpenLoco::Ui::windows::CompanyFaceSelection
+namespace OpenLoco::Ui::Windows::CompanyFaceSelection
 {
     void open(company_id_t id);
 }
 
-namespace OpenLoco::Ui::windows::CompanyList
+namespace OpenLoco::Ui::Windows::CompanyList
 {
     void openPerformanceIndexes();
     window* open();
 }
 
-namespace OpenLoco::Ui::windows::CompanyWindow
+namespace OpenLoco::Ui::Windows::CompanyWindow
 {
     window* open(company_id_t companyId);
     window* openAndSetName();
@@ -302,12 +302,12 @@ namespace OpenLoco::Ui::windows::CompanyWindow
     window* openFinances(company_id_t companyId);
 }
 
-namespace OpenLoco::Ui::windows::ObjectSelectionWindow
+namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 {
     window* open();
 }
 
-namespace OpenLoco::Ui::windows::PlayerInfoPanel
+namespace OpenLoco::Ui::Windows::PlayerInfoPanel
 {
     window* open();
 }
@@ -317,7 +317,7 @@ namespace OpenLoco::Ui::TimePanel
     window* open();
 }
 
-namespace OpenLoco::Ui::windows::toolbar_bottom::editor
+namespace OpenLoco::Ui::Windows::toolbar_bottom::editor
 {
     void open();
 }

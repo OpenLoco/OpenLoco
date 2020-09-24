@@ -25,7 +25,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::Ui::windows::toolbar_top::editor
+namespace OpenLoco::Ui::Windows::toolbar_top::editor
 {
     static loco_global<uint8_t, 0x00525FAB> last_road_option;
     static loco_global<uint8_t, 0x009C870C> last_town_option;

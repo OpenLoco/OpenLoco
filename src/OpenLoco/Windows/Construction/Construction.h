@@ -9,7 +9,7 @@ using namespace OpenLoco::Interop;
 using namespace OpenLoco::Map;
 using namespace OpenLoco::Map::TileManager;
 
-namespace OpenLoco::Ui::windows::construction
+namespace OpenLoco::Ui::Windows::construction
 {
     static loco_global<uint8_t[31], 0x005045FA> _byte_5045FA;
     static loco_global<uint8_t, 0x00522095> _byte_522095;

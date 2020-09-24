@@ -469,11 +469,11 @@ namespace OpenLoco::Input
                 {
                     std::string fileName = saveScreenshot();
                     *((const char**)(&_commonFormatArgs[0])) = fileName.c_str();
-                    windows::showError(StringIds::screenshot_saved_as, StringIds::null, false);
+                    Windows::showError(StringIds::screenshot_saved_as, StringIds::null, false);
                 }
                 catch (const std::exception&)
                 {
-                    windows::showError(StringIds::screenshot_failed);
+                    Windows::showError(StringIds::screenshot_failed);
                 }
             }
         }
