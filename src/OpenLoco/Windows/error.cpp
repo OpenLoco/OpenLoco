@@ -45,7 +45,7 @@ namespace OpenLoco::Ui::Windows::Error
         };
     }
 
-    namespace errorCompetitor
+    namespace ErrorCompetitor
     {
         enum widx
         {
@@ -150,7 +150,7 @@ namespace OpenLoco::Ui::Windows::Error
 
             if (_errorCompetitorId != 0xFF)
             {
-                error->widgets = errorCompetitor::widgets;
+                error->widgets = ErrorCompetitor::widgets;
             }
             else
             {
@@ -232,8 +232,8 @@ namespace OpenLoco::Ui::Windows::Error
             }
             else
             {
-                auto xPos = self->widgets[errorCompetitor::widx::innerFrame].left + self->x;
-                auto yPos = self->widgets[errorCompetitor::widx::innerFrame].top + self->y;
+                auto xPos = self->widgets[ErrorCompetitor::widx::innerFrame].left + self->x;
+                auto yPos = self->widgets[ErrorCompetitor::widx::innerFrame].top + self->y;
 
                 auto company = companymgr::get(_errorCompetitorId);
                 auto companyObj = ObjectManager::get<competitor_object>(company->id());
