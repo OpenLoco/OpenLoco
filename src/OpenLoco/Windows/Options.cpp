@@ -1704,7 +1704,7 @@ namespace OpenLoco::Ui::Options
         }
     }
 
-    namespace controls
+    namespace Controls
     {
         namespace widx
         {
@@ -1716,7 +1716,7 @@ namespace OpenLoco::Ui::Options
             };
         }
 
-        static constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << controls::widx::edge_scrolling) | (1 << controls::widx::customize_keys) | (1 << controls::widx::zoom_to_cursor);
+        static constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Controls::widx::edge_scrolling) | (1 << Controls::widx::customize_keys) | (1 << Controls::widx::zoom_to_cursor);
 
         static const Gfx::ui_size_t _window_size = { 366, 99 };
 
@@ -2163,7 +2163,7 @@ namespace OpenLoco::Ui::Options
         Sound::initEvents();
         Music::initEvents();
         Regional::initEvents();
-        controls::initEvents();
+        Controls::initEvents();
         misc::initEvents();
 
         // 0x004BF833 (create_options_window)
@@ -2223,7 +2223,7 @@ namespace OpenLoco::Ui::Options
         { Sound::_widgets, &Sound::_events, Sound::_window_size, &Sound::enabledWidgets },
         { Music::_widgets, &Music::_events, Music::_window_size, &Music::enabledWidgets },
         { Regional::_widgets, &Regional::_events, Regional::_window_size, &Regional::enabledWidgets },
-        { controls::_widgets, &controls::_events, controls::_window_size, &controls::enabledWidgets },
+        { Controls::_widgets, &Controls::_events, Controls::_window_size, &Controls::enabledWidgets },
         { misc::_widgets, &misc::_events, misc::_window_size, &misc::enabledWidgets },
     };
 
