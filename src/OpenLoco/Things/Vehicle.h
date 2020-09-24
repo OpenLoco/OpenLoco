@@ -15,7 +15,7 @@ namespace OpenLoco
 
         uint32_t create(const uint8_t flags, const uint16_t vehicleTypeId, const uint16_t vehicleThingId);
 
-        namespace flags_38
+        namespace Flags38
         {
             constexpr uint8_t unk_0 = 1 << 0;
             constexpr uint8_t unk_1 = 1 << 1;
