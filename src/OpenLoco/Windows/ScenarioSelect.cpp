@@ -76,9 +76,17 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     // 0x00443946
     static void initList(window* self)
     {
-        registers regs;
-        regs.esi = (int32_t)self;
-        call(0x00443946, regs);
+        if (self->info == 0xFFFFFFFF)
+            return;
+
+        using namespace scenariomgr;
+        auto scenarioInfo = reinterpret_cast<ScenarioIndexEntry*>(self->info);
+        if (hasScenarioInCategory(self->current_tab, scenarioInfo))
+            return;
+
+        // Reset currently selected scenario if it is not in the current category.
+        self->info = 0xFFFFFFFF;
+        self->invalidate();
     }
 
     // 0x00443868
@@ -388,6 +396,9 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             case widx::tab4:
             {
                 uint8_t selectedCategory = widgetIndex - widx::tab0;
+                if (self->current_tab == selectedCategory)
+                    return;
+
                 self->current_tab = selectedCategory;
 
                 auto& config = Config::get();

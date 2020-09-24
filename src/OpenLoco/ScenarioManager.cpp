@@ -23,6 +23,27 @@ namespace OpenLoco::ScenarioManager
         return false;
     }
 
+    bool hasScenarioInCategory(uint8_t category, ScenarioIndexEntry* scenario)
+    {
+        for (auto i = 0; i < numScenarios; i++)
+        {
+            ScenarioIndexEntry* entry = &scenarioList[i];
+
+            if (entry->category != category || !entry->hasFlag(ScenarioIndexFlags::flag_1))
+            {
+                if (entry == scenario)
+                    return false;
+                else
+                    continue;
+            }
+
+            if (entry == scenario)
+                return true;
+        }
+
+        return false;
+    }
+
     // 0x00443EF6, kind of
     uint16_t getNumScenariosByCategory(uint8_t category)
     {
