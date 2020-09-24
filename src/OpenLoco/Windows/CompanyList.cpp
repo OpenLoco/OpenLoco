@@ -53,7 +53,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
     static loco_global<uint8_t, 0x0113DD99> _byte_113DD99;
     static loco_global<uint16_t[32], 0x0113DD9A> _graphItemId;
 
-    namespace common
+    namespace Common
     {
         enum widx
         {
@@ -113,7 +113,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             scrollview,
         };
 
-        const uint64_t enabledWidgets = common::enabledWidgets | (1 << sort_name) | (1 << sort_status) | (1 << sort_performance) | (1 << sort_value) | (1 << scrollview);
+        const uint64_t enabledWidgets = Common::enabledWidgets | (1 << sort_name) | (1 << sort_status) | (1 << sort_performance) | (1 << sort_value) | (1 << scrollview);
 
         widget_t widgets[] = {
             commonWidgets(640, 272, StringIds::title_company_list),
@@ -140,18 +140,18 @@ namespace OpenLoco::Ui::Windows::CompanyList
         {
             switch (widgetIndex)
             {
-                case common::widx::close_button:
+                case Common::widx::close_button:
                     WindowManager::close(self);
                     break;
 
-                case common::widx::tab_company_list:
-                case common::widx::tab_performance:
-                case common::widx::tab_cargo_units:
-                case common::widx::tab_cargo_distance:
-                case common::widx::tab_values:
-                case common::widx::tab_payment_rates:
-                case common::widx::tab_speed_records:
-                    common::switchTab(self, widgetIndex);
+                case Common::widx::tab_company_list:
+                case Common::widx::tab_performance:
+                case Common::widx::tab_cargo_units:
+                case Common::widx::tab_cargo_distance:
+                case Common::widx::tab_values:
+                case Common::widx::tab_payment_rates:
+                case Common::widx::tab_speed_records:
+                    Common::switchTab(self, widgetIndex);
                     break;
 
                 case sort_name:
@@ -168,7 +168,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                     self->var_83C = 0;
                     self->row_hover = -1;
 
-                    common::refreshCompanyList(self);
+                    Common::refreshCompanyList(self);
                     break;
                 }
             }
@@ -320,7 +320,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                     self->invalidate();
                 }
 
-                common::refreshCompanyList(self);
+                Common::refreshCompanyList(self);
             }
         }
 
@@ -330,7 +330,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             self->frame_no++;
 
             self->callPrepareDraw();
-            WindowManager::invalidateWidget(WindowType::companyList, self->number, self->current_tab + common::widx::tab_company_list);
+            WindowManager::invalidateWidget(WindowType::companyList, self->number, self->current_tab + Common::widx::tab_company_list);
 
             _word_9C68C7++;
 
@@ -419,7 +419,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x00435D07
         static void prepareDraw(window* self)
         {
-            common::prepareDraw(self);
+            Common::prepareDraw(self);
 
             self->widgets[widx::scrollview].right = self->width - 4;
             self->widgets[widx::scrollview].bottom = self->height - 14;
@@ -447,7 +447,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
         {
             self->draw(dpi);
-            common::drawTabs(self, dpi);
+            Common::drawTabs(self, dpi);
 
             auto args = FormatArguments();
             if (self->var_83C == 1)
@@ -562,7 +562,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             self->height = windowSize.height;
             self->var_83C = 0;
             self->row_hover = -1;
-            common::refreshCompanyList(self);
+            Common::refreshCompanyList(self);
         }
 
         static void initEvents()
@@ -610,7 +610,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             window->var_83C = 0;
             window->row_hover = -1;
 
-            common::refreshCompanyList(window);
+            Common::refreshCompanyList(window);
 
             auto skin = ObjectManager::get<interface_skin_object>();
             window->colours[0] = skin->colour_0B;
@@ -627,7 +627,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
         window->invalidate();
 
-        common::initEvents();
+        Common::initEvents();
 
         window->widgets = CompanyList::widgets;
         window->enabled_widgets = CompanyList::enabledWidgets;
@@ -643,14 +643,14 @@ namespace OpenLoco::Ui::Windows::CompanyList
     void openPerformanceIndexes()
     {
         auto window = open();
-        window->callOnMouseUp(common::widx::tab_performance);
+        window->callOnMouseUp(Common::widx::tab_performance);
     }
 
     namespace CompanyPerformance
     {
         static const Gfx::ui_size_t windowSize = { 635, 322 };
 
-        const uint64_t enabledWidgets = common::enabledWidgets;
+        const uint64_t enabledWidgets = Common::enabledWidgets;
 
         widget_t widgets[] = {
             commonWidgets(635, 322, StringIds::title_company_performance),
@@ -669,12 +669,12 @@ namespace OpenLoco::Ui::Windows::CompanyList
         static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
         {
             self->draw(dpi);
-            common::drawTabs(self, dpi);
+            Common::drawTabs(self, dpi);
 
             _graphLeft = self->x + 4;
-            _graphTop = self->y + self->widgets[common::widx::panel].top + 4;
+            _graphTop = self->y + self->widgets[Common::widx::panel].top + 4;
             _graphRight = 520;
-            _graphBottom = self->height - self->widgets[common::widx::panel].top - 8;
+            _graphBottom = self->height - self->widgets[Common::widx::panel].top - 8;
             _graphYOffset = 17;
             _graphXOffset = 40;
             _graphYAxisLabelIncrement = 20;
@@ -719,7 +719,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             _dword_113DD8A = 100;
             _dword_113DD8E = 2;
 
-            common::drawGraphAndKey(self, dpi);
+            Common::drawGraphAndKey(self, dpi);
         }
 
         // 0x004361D8
@@ -735,10 +735,10 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
         static void initEvents()
         {
-            events.on_mouse_up = common::onMouseUp;
+            events.on_mouse_up = Common::onMouseUp;
             events.on_resize = onResize;
-            events.on_update = common::onUpdate;
-            events.prepare_draw = common::prepareDraw;
+            events.on_update = Common::onUpdate;
+            events.prepare_draw = Common::prepareDraw;
             events.draw = draw;
         }
     }
@@ -747,7 +747,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
     {
         static const Gfx::ui_size_t windowSize = { 640, 272 };
 
-        const uint64_t enabledWidgets = common::enabledWidgets;
+        const uint64_t enabledWidgets = Common::enabledWidgets;
 
         widget_t widgets[] = {
             commonWidgets(635, 322, StringIds::title_company_cargo_units),
@@ -766,12 +766,12 @@ namespace OpenLoco::Ui::Windows::CompanyList
         static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
         {
             self->draw(dpi);
-            common::drawTabs(self, dpi);
+            Common::drawTabs(self, dpi);
 
             _graphLeft = self->x + 4;
-            _graphTop = self->y + self->widgets[common::widx::panel].top + 4;
+            _graphTop = self->y + self->widgets[Common::widx::panel].top + 4;
             _graphRight = 525;
-            _graphBottom = self->height - self->widgets[common::widx::panel].top - 8;
+            _graphBottom = self->height - self->widgets[Common::widx::panel].top - 8;
             _graphYOffset = 17;
             _graphXOffset = 45;
             _graphYAxisLabelIncrement = 25;
@@ -816,7 +816,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             _dword_113DD8A = 1000;
             _dword_113DD8E = 2;
 
-            common::drawGraphAndKey(self, dpi);
+            Common::drawGraphAndKey(self, dpi);
         }
 
         // 0x00436201
@@ -832,10 +832,10 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
         static void initEvents()
         {
-            events.on_mouse_up = common::onMouseUp;
+            events.on_mouse_up = Common::onMouseUp;
             events.on_resize = onResize;
-            events.on_update = common::onUpdate;
-            events.prepare_draw = common::prepareDraw;
+            events.on_update = Common::onUpdate;
+            events.prepare_draw = Common::prepareDraw;
             events.draw = draw;
         }
     }
@@ -844,7 +844,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
     {
         static const Gfx::ui_size_t windowSize = { 660, 272 };
 
-        const uint64_t enabledWidgets = common::enabledWidgets;
+        const uint64_t enabledWidgets = Common::enabledWidgets;
 
         widget_t widgets[] = {
             commonWidgets(635, 322, StringIds::title_cargo_distance_graphs),
@@ -863,12 +863,12 @@ namespace OpenLoco::Ui::Windows::CompanyList
         static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
         {
             self->draw(dpi);
-            common::drawTabs(self, dpi);
+            Common::drawTabs(self, dpi);
 
             _graphLeft = self->x + 4;
-            _graphTop = self->y + self->widgets[common::widx::panel].top + 4;
+            _graphTop = self->y + self->widgets[Common::widx::panel].top + 4;
             _graphRight = 545;
-            _graphBottom = self->height - self->widgets[common::widx::panel].top - 8;
+            _graphBottom = self->height - self->widgets[Common::widx::panel].top - 8;
             _graphYOffset = 17;
             _graphXOffset = 65;
             _graphYAxisLabelIncrement = 25;
@@ -913,7 +913,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             _dword_113DD8A = 1000;
             _dword_113DD8E = 2;
 
-            common::drawGraphAndKey(self, dpi);
+            Common::drawGraphAndKey(self, dpi);
         }
 
         // 0x00436227
@@ -929,10 +929,10 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
         static void initEvents()
         {
-            events.on_mouse_up = common::onMouseUp;
+            events.on_mouse_up = Common::onMouseUp;
             events.on_resize = onResize;
-            events.on_update = common::onUpdate;
-            events.prepare_draw = common::prepareDraw;
+            events.on_update = Common::onUpdate;
+            events.prepare_draw = Common::prepareDraw;
             events.draw = draw;
         }
     }
@@ -941,7 +941,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
     {
         static const Gfx::ui_size_t windowSize = { 685, 322 };
 
-        const uint64_t enabledWidgets = common::enabledWidgets;
+        const uint64_t enabledWidgets = Common::enabledWidgets;
 
         widget_t widgets[] = {
             commonWidgets(685, 322, StringIds::title_company_values),
@@ -960,12 +960,12 @@ namespace OpenLoco::Ui::Windows::CompanyList
         static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
         {
             self->draw(dpi);
-            common::drawTabs(self, dpi);
+            Common::drawTabs(self, dpi);
 
             _graphLeft = self->x + 4;
-            _graphTop = self->y + self->widgets[common::widx::panel].top + 4;
+            _graphTop = self->y + self->widgets[Common::widx::panel].top + 4;
             _graphRight = 570;
-            _graphBottom = self->height - self->widgets[common::widx::panel].top - 8;
+            _graphBottom = self->height - self->widgets[Common::widx::panel].top - 8;
             _graphYOffset = 17;
             _graphXOffset = 90;
             _graphYAxisLabelIncrement = 25;
@@ -1010,7 +1010,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             _dword_113DD8A = 10000;
             _dword_113DD8E = 2;
 
-            common::drawGraphAndKey(self, dpi);
+            Common::drawGraphAndKey(self, dpi);
         }
 
         // 0x0043624D
@@ -1026,10 +1026,10 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
         static void initEvents()
         {
-            events.on_mouse_up = common::onMouseUp;
+            events.on_mouse_up = Common::onMouseUp;
             events.on_resize = onResize;
-            events.on_update = common::onUpdate;
-            events.prepare_draw = common::prepareDraw;
+            events.on_update = Common::onUpdate;
+            events.prepare_draw = Common::prepareDraw;
             events.draw = draw;
         }
     }
@@ -1038,7 +1038,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
     {
         static const Gfx::ui_size_t windowSize = { 495, 342 };
 
-        const uint64_t enabledWidgets = common::enabledWidgets;
+        const uint64_t enabledWidgets = Common::enabledWidgets;
 
         widget_t widgets[] = {
             commonWidgets(495, 342, StringIds::title_cargo_payment_rates),
@@ -1091,12 +1091,12 @@ namespace OpenLoco::Ui::Windows::CompanyList
         static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
         {
             self->draw(dpi);
-            common::drawTabs(self, dpi);
+            Common::drawTabs(self, dpi);
 
             _graphLeft = self->x + 4;
-            _graphTop = self->y + self->widgets[common::widx::panel].top + 14;
+            _graphTop = self->y + self->widgets[Common::widx::panel].top + 14;
             _graphRight = 380;
-            _graphBottom = self->height - self->widgets[common::widx::panel].top - 28;
+            _graphBottom = self->height - self->widgets[Common::widx::panel].top - 28;
             _graphYOffset = 17;
             _graphXOffset = 80;
             _graphYAxisLabelIncrement = 25;
@@ -1133,7 +1133,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             _dword_113DD7C = 2;
             _byte_113DD99 = 1;
 
-            common::drawGraph(self, dpi);
+            Common::drawGraph(self, dpi);
 
             if (self->var_854 != 0)
             {
@@ -1150,7 +1150,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
                 _dword_113DD8E = _dword_113DD8E | (1 << 2);
 
-                common::drawGraph(self, dpi);
+                Common::drawGraph(self, dpi);
             }
 
             auto x = self->width + self->x - 104;
@@ -1159,7 +1159,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             drawGraphKey(self, dpi, x, y);
 
             x = self->x + 8;
-            y = self->widgets[common::widx::panel].top + self->y + 1;
+            y = self->widgets[Common::widx::panel].top + self->y + 1;
 
             auto args = FormatArguments();
             args.push<uint16_t>(100);
@@ -1193,10 +1193,10 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
         static void initEvents()
         {
-            events.on_mouse_up = common::onMouseUp;
+            events.on_mouse_up = Common::onMouseUp;
             events.on_resize = onResize;
-            events.on_update = common::onUpdate;
-            events.prepare_draw = common::prepareDraw;
+            events.on_update = Common::onUpdate;
+            events.prepare_draw = Common::prepareDraw;
             events.draw = draw;
         }
     }
@@ -1205,7 +1205,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
     {
         static const Gfx::ui_size_t windowSize = { 495, 169 };
 
-        const uint64_t enabledWidgets = common::enabledWidgets;
+        const uint64_t enabledWidgets = Common::enabledWidgets;
 
         widget_t widgets[] = {
             commonWidgets(495, 169, StringIds::title_speed_records),
@@ -1224,7 +1224,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
         {
             self->draw(dpi);
-            common::drawTabs(self, dpi);
+            Common::drawTabs(self, dpi);
 
             auto y = self->y + 47;
 
@@ -1279,15 +1279,15 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
         static void initEvents()
         {
-            events.on_mouse_up = common::onMouseUp;
+            events.on_mouse_up = Common::onMouseUp;
             events.on_resize = onResize;
-            events.on_update = common::onUpdate;
-            events.prepare_draw = common::prepareDraw;
+            events.on_update = Common::onUpdate;
+            events.prepare_draw = Common::prepareDraw;
             events.draw = draw;
         }
     }
 
-    namespace common
+    namespace Common
     {
         struct TabInformation
         {
@@ -1312,18 +1312,18 @@ namespace OpenLoco::Ui::Windows::CompanyList
         {
             switch (widgetIndex)
             {
-                case common::widx::close_button:
+                case Common::widx::close_button:
                     WindowManager::close(self);
                     break;
 
-                case common::widx::tab_company_list:
-                case common::widx::tab_performance:
-                case common::widx::tab_cargo_units:
-                case common::widx::tab_cargo_distance:
-                case common::widx::tab_values:
-                case common::widx::tab_payment_rates:
-                case common::widx::tab_speed_records:
-                    common::switchTab(self, widgetIndex);
+                case Common::widx::tab_company_list:
+                case Common::widx::tab_performance:
+                case Common::widx::tab_cargo_units:
+                case Common::widx::tab_cargo_distance:
+                case Common::widx::tab_values:
+                case Common::widx::tab_payment_rates:
+                case Common::widx::tab_speed_records:
+                    Common::switchTab(self, widgetIndex);
                     break;
             }
         }
@@ -1351,7 +1351,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         {
             self->frame_no++;
             self->callPrepareDraw();
-            WindowManager::invalidateWidget(WindowType::townList, self->number, self->current_tab + common::widx::tab_company_list);
+            WindowManager::invalidateWidget(WindowType::townList, self->number, self->current_tab + Common::widx::tab_company_list);
 
             auto x = self->width - 104 + self->x;
             auto y = self->y + 52;
@@ -1391,18 +1391,18 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             // Activate the current tab
             self->activated_widgets &= ~((1ULL << tab_cargo_distance) | (1ULL << tab_cargo_units) | (1ULL << tab_company_list) | (1ULL << tab_payment_rates) | (1ULL << tab_performance) | (1ULL << tab_speed_records) | (1ULL << tab_values));
-            self->activated_widgets |= (1ULL << common::tabInformationByTabOffset[self->current_tab].widgetIndex);
+            self->activated_widgets |= (1ULL << Common::tabInformationByTabOffset[self->current_tab].widgetIndex);
 
-            self->widgets[common::widx::frame].right = self->width - 1;
-            self->widgets[common::widx::frame].bottom = self->height - 1;
+            self->widgets[Common::widx::frame].right = self->width - 1;
+            self->widgets[Common::widx::frame].bottom = self->height - 1;
 
-            self->widgets[common::widx::panel].right = self->width - 1;
-            self->widgets[common::widx::panel].bottom = self->height - 1;
+            self->widgets[Common::widx::panel].right = self->width - 1;
+            self->widgets[Common::widx::panel].bottom = self->height - 1;
 
-            self->widgets[common::widx::caption].right = self->width - 2;
+            self->widgets[Common::widx::caption].right = self->width - 2;
 
-            self->widgets[common::widx::close_button].left = self->width - 15;
-            self->widgets[common::widx::close_button].right = self->width - 3;
+            self->widgets[Common::widx::close_button].left = self->width - 15;
+            self->widgets[Common::widx::close_button].right = self->width - 3;
         }
 
         //0x004360FA
@@ -1668,7 +1668,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             _dword_113DD7C = 1;
             _byte_113DD99 = 1;
 
-            common::drawGraph(self, dpi);
+            Common::drawGraph(self, dpi);
 
             if (self->var_854 != 0)
             {
@@ -1686,13 +1686,13 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
                 _dword_113DD8E = _dword_113DD8E | (1 << 2);
 
-                common::drawGraph(self, dpi);
+                Common::drawGraph(self, dpi);
             }
 
             auto x = self->width + self->x - 104;
             auto y = self->y + 52;
 
-            common::drawGraphKey(self, dpi, x, y);
+            Common::drawGraphKey(self, dpi, x, y);
         }
         static void initEvents()
         {
