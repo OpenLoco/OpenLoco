@@ -104,7 +104,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         static void sub_4A69DD();
     }
 
-    namespace plant_trees
+    namespace PlantTrees
     {
         static const Gfx::ui_size_t windowSize = { 634, 162 };
 
@@ -684,14 +684,14 @@ namespace OpenLoco::Ui::Windows::Terraform
         else
         {
             // 0x004BB586
-            auto origin = Gfx::point_t(Ui::width() - plant_trees::windowSize.width, 30);
+            auto origin = Gfx::point_t(Ui::width() - PlantTrees::windowSize.width, 30);
 
             window = WindowManager::createWindow(
                 WindowType::terraform,
                 origin,
-                plant_trees::windowSize,
+                PlantTrees::windowSize,
                 window_flags::flag_11,
-                &plant_trees::events);
+                &PlantTrees::events);
 
             window->number = 0;
             window->current_tab = Common::widx::tab_plant_trees - Common::widx::tab_clear_area;
@@ -701,14 +701,14 @@ namespace OpenLoco::Ui::Windows::Terraform
             window->owner = _player_company;
             window->var_846 = 0xFFFF;
             window->saved_view.mapX = 0;
-            _treeClusterType = plant_trees::treeCluster::none;
+            _treeClusterType = PlantTrees::treeCluster::none;
 
             WindowManager::sub_4CEE0B(window);
 
-            window->min_width = plant_trees::windowSize.width;
-            window->min_height = plant_trees::windowSize.height;
-            window->max_width = plant_trees::windowSize.width;
-            window->max_height = plant_trees::windowSize.height;
+            window->min_width = PlantTrees::windowSize.width;
+            window->min_height = PlantTrees::windowSize.height;
+            window->max_width = PlantTrees::windowSize.width;
+            window->max_height = PlantTrees::windowSize.height;
 
             auto skin = ObjectManager::get<interface_skin_object>();
             window->colours[1] = skin->colour_0E;
@@ -722,8 +722,8 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             window->invalidate();
 
-            window->widgets = plant_trees::widgets;
-            window->enabled_widgets = plant_trees::enabledWidgets;
+            window->widgets = PlantTrees::widgets;
+            window->enabled_widgets = PlantTrees::enabledWidgets;
             window->holdable_widgets = 0;
             window->activated_widgets = 0;
 
@@ -736,7 +736,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             window->var_83C = 0;
             window->row_hover = -1;
 
-            plant_trees::refreshTreeList(window);
+            PlantTrees::refreshTreeList(window);
 
             Input::toolSet(window, Common::widx::panel, 18);
 
@@ -2125,7 +2125,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             { clear_area::widgets, widx::tab_clear_area, &clear_area::events, clear_area::enabledWidgets },
             { adjust_land::widgets, widx::tab_adjust_land, &adjust_land::events, adjust_land::enabledWidgets },
             { adjust_water::widgets, widx::tab_adjust_water, &adjust_water::events, adjust_water::enabledWidgets },
-            { plant_trees::widgets, widx::tab_plant_trees, &plant_trees::events, plant_trees::enabledWidgets },
+            { PlantTrees::widgets, widx::tab_plant_trees, &PlantTrees::events, PlantTrees::enabledWidgets },
             { build_walls::widgets, widx::tab_build_walls, &build_walls::events, build_walls::enabledWidgets },
         };
 
@@ -2325,7 +2325,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                     break;
 
                 case Common::widx::tab_plant_trees:
-                    plant_trees::tabReset(self);
+                    PlantTrees::tabReset(self);
                     break;
             }
 
@@ -2345,7 +2345,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
         static void initEvents()
         {
-            plant_trees::initEvents();
+            PlantTrees::initEvents();
             clear_area::initEvents();
             adjust_land::initEvents();
             adjust_water::initEvents();
