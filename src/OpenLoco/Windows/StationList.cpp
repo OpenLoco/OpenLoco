@@ -19,7 +19,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::Ui::Windows::station_list
+namespace OpenLoco::Ui::Windows::StationList
 {
     static const Gfx::ui_size_t window_size = { 600, 197 };
     static const Gfx::ui_size_t max_dimensions = { 640, 1200 };

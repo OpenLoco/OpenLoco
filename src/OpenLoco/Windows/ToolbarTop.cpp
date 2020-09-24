@@ -486,7 +486,7 @@ namespace OpenLoco::Ui::Windows::toolbar_top::game
         if (itemIndex > 4)
             return;
 
-        Windows::station_list::open(companymgr::getControllingId(), itemIndex);
+        Windows::StationList::open(companymgr::getControllingId(), itemIndex);
     }
 
     // 0x0043A071

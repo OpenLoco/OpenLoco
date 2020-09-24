@@ -189,7 +189,7 @@ namespace OpenLoco::Ui::Windows::Station
     void showStationCatchment(uint16_t windowNumber);
 }
 
-namespace OpenLoco::Ui::Windows::station_list
+namespace OpenLoco::Ui::Windows::StationList
 {
     window* open(company_id_t companyId);
     window* open(company_id_t companyId, uint8_t type);

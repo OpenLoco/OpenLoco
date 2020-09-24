@@ -402,7 +402,7 @@ namespace OpenLoco::Input::ShortcutManager
         if (isEditorMode())
             return;
 
-        Windows::station_list::open(companymgr::getControllingId(), 0);
+        Windows::StationList::open(companymgr::getControllingId(), 0);
     }
 
     // 0x004BF308

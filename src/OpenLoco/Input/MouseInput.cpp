@@ -740,7 +740,7 @@ namespace OpenLoco::Input
                             case InteractionItem::station:
                             {
                                 auto station = stationmgr::get(ptr.value);
-                                Ui::Windows::station_list::open(station->owner);
+                                Ui::Windows::StationList::open(station->owner);
                                 break;
                             }
                             case InteractionItem::industry:

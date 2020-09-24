@@ -700,7 +700,7 @@ void OpenLoco::Interop::registerHooks()
     registerHook(
         0x00490F6C,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            Ui::Windows::station_list::open(regs.ax);
+            Ui::Windows::StationList::open(regs.ax);
             return 0;
         });
 
