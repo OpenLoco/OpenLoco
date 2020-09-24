@@ -745,7 +745,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         return window;
     }
 
-    namespace clear_area
+    namespace ClearArea
     {
         enum widx
         {
@@ -2122,7 +2122,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         };
 
         static TabInformation tabInformationByTabOffset[] = {
-            { clear_area::widgets, widx::tab_clear_area, &clear_area::events, clear_area::enabledWidgets },
+            { ClearArea::widgets, widx::tab_clear_area, &ClearArea::events, ClearArea::enabledWidgets },
             { adjust_land::widgets, widx::tab_adjust_land, &adjust_land::events, adjust_land::enabledWidgets },
             { adjust_water::widgets, widx::tab_adjust_water, &adjust_water::events, adjust_water::enabledWidgets },
             { PlantTrees::widgets, widx::tab_plant_trees, &PlantTrees::events, PlantTrees::enabledWidgets },
@@ -2321,7 +2321,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                     break;
 
                 case Common::widx::tab_clear_area:
-                    clear_area::tabReset(self);
+                    ClearArea::tabReset(self);
                     break;
 
                 case Common::widx::tab_plant_trees:
@@ -2346,7 +2346,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         static void initEvents()
         {
             PlantTrees::initEvents();
-            clear_area::initEvents();
+            ClearArea::initEvents();
             adjust_land::initEvents();
             adjust_water::initEvents();
             build_walls::initEvents();
@@ -2430,7 +2430,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             0x004BC682,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                clear_area::toolDragContinue((Ui::window&)regs.esi, (widget_index)regs.dx, (int16_t)regs.ax, (int16_t)regs.bx);
+                ClearArea::toolDragContinue((Ui::window&)regs.esi, (widget_index)regs.dx, (int16_t)regs.ax, (int16_t)regs.bx);
                 regs = backup;
                 return 0;
             });
@@ -2439,7 +2439,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             0x004BC701,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                clear_area::toolDragEnd((Ui::window&)regs.esi, (widget_index)regs.dx);
+                ClearArea::toolDragEnd((Ui::window&)regs.esi, (widget_index)regs.dx);
                 regs = backup;
                 return 0;
             });
