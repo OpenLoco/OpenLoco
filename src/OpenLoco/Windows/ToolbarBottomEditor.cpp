@@ -3,7 +3,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::Ui::Windows::ToolbarBottom::editor
+namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
 {
     // 0x0043CCCD
     void open()
