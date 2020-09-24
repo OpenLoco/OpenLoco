@@ -763,7 +763,7 @@ namespace OpenLoco::Ui::Windows::TownList
         }
     }
 
-    namespace build_buildings
+    namespace BuildBuildings
     {
         static const Gfx::ui_size_t windowSize = { 600, 172 };
 
@@ -1320,8 +1320,8 @@ namespace OpenLoco::Ui::Windows::TownList
         static TabInformation tabInformationByTabOffset[] = {
             { TownList::widgets, widx::tab_town_list, &TownList::events, TownList::enabledWidgets },
             { BuildTowns::widgets, widx::tab_build_town, &BuildTowns::events, BuildTowns::enabledWidgets },
-            { build_buildings::widgets, widx::tab_build_buildings, &build_buildings::events, build_buildings::enabledWidgets },
-            { build_buildings::widgets, widx::tab_build_misc_buildings, &build_buildings::events, build_buildings::enabledWidgets },
+            { BuildBuildings::widgets, widx::tab_build_buildings, &BuildBuildings::events, BuildBuildings::enabledWidgets },
+            { BuildBuildings::widgets, widx::tab_build_misc_buildings, &BuildBuildings::events, BuildBuildings::enabledWidgets },
         };
 
         static void prepareDraw(window* self)
@@ -1506,7 +1506,7 @@ namespace OpenLoco::Ui::Windows::TownList
             if (self->current_tab == widx::tab_build_town - widx::tab_town_list)
                 BuildTowns::tabReset(self);
             if (self->current_tab == widx::tab_build_buildings - widx::tab_town_list || self->current_tab == widx::tab_build_misc_buildings - widx::tab_town_list)
-                build_buildings::tabReset(self);
+                BuildBuildings::tabReset(self);
 
             self->callOnResize();
             self->callPrepareDraw();
@@ -1533,7 +1533,7 @@ namespace OpenLoco::Ui::Windows::TownList
         {
             TownList::initEvents();
             BuildTowns::initEvents();
-            build_buildings::initEvents();
+            BuildBuildings::initEvents();
         }
     }
 }
