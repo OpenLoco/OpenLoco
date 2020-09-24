@@ -34,7 +34,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
     static loco_global<uint16_t[10], 0x0112C826> commonFormatArgs;
 
-    namespace common
+    namespace Common
     {
         enum widx
         {
@@ -157,7 +157,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             generate_now,
         };
 
-        const uint64_t enabled_widgets = common::enabled_widgets | (1 << widx::start_year_up) | (1 << widx::start_year_down) | (1 << widx::generate_when_game_starts) | (1 << widx::generate_now);
+        const uint64_t enabled_widgets = Common::enabled_widgets | (1 << widx::start_year_up) | (1 << widx::start_year_down) | (1 << widx::generate_when_game_starts) | (1 << widx::generate_now);
         const uint64_t holdable_widgets = (1 << widx::start_year_up) | (1 << widx::start_year_down);
 
         static widget_t widgets[] = {
@@ -173,7 +173,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         // 0x0043DC30
         static void draw(window* window, Gfx::drawpixelinfo_t* dpi)
         {
-            common::draw(window, dpi);
+            Common::draw(window, dpi);
 
             Gfx::drawString_494B3F(
                 *dpi,
@@ -186,7 +186,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         // 0x0043DB76
         static void prepareDraw(window* window)
         {
-            common::prepareDraw(window);
+            Common::prepareDraw(window);
 
             commonFormatArgs[0] = s5::getOptions().scenarioStartYear;
 
@@ -245,16 +245,16 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         {
             switch (widgetIndex)
             {
-                case common::widx::close_button:
+                case Common::widx::close_button:
                     WindowManager::close(window);
                     break;
 
-                case common::widx::tab_options:
-                case common::widx::tab_land:
-                case common::widx::tab_forests:
-                case common::widx::tab_towns:
-                case common::widx::tab_industries:
-                    common::switchTab(window, widgetIndex);
+                case Common::widx::tab_options:
+                case Common::widx::tab_land:
+                case Common::widx::tab_forests:
+                case Common::widx::tab_towns:
+                case Common::widx::tab_industries:
+                    Common::switchTab(window, widgetIndex);
                     break;
 
                 case widx::generate_when_game_starts:
@@ -282,7 +282,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             events.prepare_draw = prepareDraw;
             events.on_mouse_down = onMouseDown;
             events.on_mouse_up = onMouseUp;
-            events.on_update = common::update;
+            events.on_update = Common::update;
         }
     }
 
@@ -299,7 +299,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         }
 
         // TODO(avgeffen): only needs to be called once.
-        common::initEvents();
+        Common::initEvents();
 
         // Start of 0x0043DAEA
         if (window == nullptr)
@@ -352,7 +352,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             scrollview,
         };
 
-        const uint64_t enabled_widgets = common::enabled_widgets | (1 << widx::sea_level_up) | (1 << widx::sea_level_down) | (1 << widx::min_land_height_up) | (1 << widx::min_land_height_down) | (1 << widx::topography_style) | (1 << widx::topography_style_btn) | (1 << widx::hill_density_up) | (1 << widx::hill_density_down) | (1 << widx::hills_edge_of_map);
+        const uint64_t enabled_widgets = Common::enabled_widgets | (1 << widx::sea_level_up) | (1 << widx::sea_level_down) | (1 << widx::min_land_height_up) | (1 << widx::min_land_height_down) | (1 << widx::topography_style) | (1 << widx::topography_style_btn) | (1 << widx::hill_density_up) | (1 << widx::hill_density_down) | (1 << widx::hills_edge_of_map);
         const uint64_t holdable_widgets = (1 << widx::sea_level_up) | (1 << widx::sea_level_down) | (1 << widx::min_land_height_up) | (1 << widx::min_land_height_down) | (1 << widx::hill_density_up) | (1 << widx::hill_density_down);
 
         static widget_t widgets[] = {
@@ -372,7 +372,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         // 0x0043DF89
         static void draw(window* window, Gfx::drawpixelinfo_t* dpi)
         {
-            common::draw(window, dpi);
+            Common::draw(window, dpi);
 
             Gfx::drawString_494B3F(
                 *dpi,
@@ -555,16 +555,16 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         {
             switch (widgetIndex)
             {
-                case common::widx::close_button:
+                case Common::widx::close_button:
                     WindowManager::close(window);
                     break;
 
-                case common::widx::tab_options:
-                case common::widx::tab_land:
-                case common::widx::tab_forests:
-                case common::widx::tab_towns:
-                case common::widx::tab_industries:
-                    common::switchTab(window, widgetIndex);
+                case Common::widx::tab_options:
+                case Common::widx::tab_land:
+                case Common::widx::tab_forests:
+                case Common::widx::tab_towns:
+                case Common::widx::tab_industries:
+                    Common::switchTab(window, widgetIndex);
                     break;
 
                 case widx::hills_edge_of_map:
@@ -619,7 +619,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         // 0x0043DEBF
         static void prepareDraw(window* window)
         {
-            common::prepareDraw(window);
+            Common::prepareDraw(window);
 
             commonFormatArgs[0] = *seaLevel;
             auto& options = s5::getOptions();
@@ -643,7 +643,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         // 0x0043E3D9
         static void update(window* window)
         {
-            common::update(window);
+            Common::update(window);
 
             auto dropdown = WindowManager::find(WindowType::dropdown, 0);
             if (dropdown == nullptr && window->row_hover != -1)
@@ -699,7 +699,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         };
 
         // TODO(avgeffen) shift overflow for last widget. Should fit in uint64_t, but problematic on 32-bits arch?
-        const uint64_t enabled_widgets = common::enabled_widgets | (1 << widx::number_of_forests_up) | (1 << widx::number_of_forests_down) | (1 << widx::min_forest_radius_up) | (1 << widx::min_forest_radius_down) | (1 << widx::max_forest_radius_up) | (1 << widx::max_forest_radius_down) | (1 << widx::min_forest_density_up) | (1 << widx::min_forest_density_down) | (1 << widx::max_forest_density_up) | (1 << widx::max_forest_density_down) | (1 << widx::number_random_trees_up) | (1 << widx::number_random_trees_down) | (1 << widx::min_altitude_for_trees_up) | (1 << widx::min_altitude_for_trees_down) | (1 << widx::max_altitude_for_trees_down); // | (1 << widx::max_altitude_for_trees_up);
+        const uint64_t enabled_widgets = Common::enabled_widgets | (1 << widx::number_of_forests_up) | (1 << widx::number_of_forests_down) | (1 << widx::min_forest_radius_up) | (1 << widx::min_forest_radius_down) | (1 << widx::max_forest_radius_up) | (1 << widx::max_forest_radius_down) | (1 << widx::min_forest_density_up) | (1 << widx::min_forest_density_down) | (1 << widx::max_forest_density_up) | (1 << widx::max_forest_density_down) | (1 << widx::number_random_trees_up) | (1 << widx::number_random_trees_down) | (1 << widx::min_altitude_for_trees_up) | (1 << widx::min_altitude_for_trees_down) | (1 << widx::max_altitude_for_trees_down); // | (1 << widx::max_altitude_for_trees_up);
         const uint64_t holdable_widgets = (1 << widx::number_of_forests_up) | (1 << widx::number_of_forests_down) | (1 << widx::min_forest_radius_up) | (1 << widx::min_forest_radius_down) | (1 << widx::max_forest_radius_up) | (1 << widx::max_forest_radius_down) | (1 << widx::min_forest_density_up) | (1 << widx::min_forest_density_down) | (1 << widx::max_forest_density_up) | (1 << widx::max_forest_density_down) | (1 << widx::number_random_trees_up) | (1 << widx::number_random_trees_down) | (1 << widx::min_altitude_for_trees_up) | (1 << widx::min_altitude_for_trees_down) | (1 << widx::max_altitude_for_trees_down);                          // | (1 << widx::max_altitude_for_trees_up);
 
         static widget_t widgets[] = {
@@ -720,7 +720,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         // 0x0043E53A
         static void draw(window* window, Gfx::drawpixelinfo_t* dpi)
         {
-            common::draw(window, dpi);
+            Common::draw(window, dpi);
 
             Gfx::drawString_494B3F(
                 *dpi,
@@ -892,16 +892,16 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         {
             switch (widgetIndex)
             {
-                case common::widx::close_button:
+                case Common::widx::close_button:
                     WindowManager::close(window);
                     break;
 
-                case common::widx::tab_options:
-                case common::widx::tab_land:
-                case common::widx::tab_forests:
-                case common::widx::tab_towns:
-                case common::widx::tab_industries:
-                    common::switchTab(window, widgetIndex);
+                case Common::widx::tab_options:
+                case Common::widx::tab_land:
+                case Common::widx::tab_forests:
+                case Common::widx::tab_towns:
+                case Common::widx::tab_industries:
+                    Common::switchTab(window, widgetIndex);
                     break;
             }
         }
@@ -909,7 +909,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         // 0x0043E44F
         static void prepareDraw(window* window)
         {
-            common::prepareDraw(window);
+            Common::prepareDraw(window);
 
             auto& options = s5::getOptions();
             commonFormatArgs[0] = options.numberOfForests;
@@ -928,7 +928,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             events.prepare_draw = prepareDraw;
             events.on_mouse_down = onMouseDown;
             events.on_mouse_up = onMouseUp;
-            events.on_update = common::update;
+            events.on_update = Common::update;
         }
     }
 
@@ -943,7 +943,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             max_town_size_btn,
         };
 
-        const uint64_t enabled_widgets = common::enabled_widgets | (1 << widx::number_of_towns_up) | (1 << widx::number_of_towns_down) | (1 << widx::max_town_size) | (1 << widx::max_town_size_btn);
+        const uint64_t enabled_widgets = Common::enabled_widgets | (1 << widx::number_of_towns_up) | (1 << widx::number_of_towns_down) | (1 << widx::max_town_size) | (1 << widx::max_town_size_btn);
         const uint64_t holdable_widgets = (1 << widx::number_of_towns_up) | (1 << widx::number_of_towns_down);
 
         static widget_t widgets[] = {
@@ -959,7 +959,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         // 0x0043E9A3
         static void draw(window* window, Gfx::drawpixelinfo_t* dpi)
         {
-            common::draw(window, dpi);
+            Common::draw(window, dpi);
 
             Gfx::drawString_494B3F(
                 *dpi,
@@ -1039,16 +1039,16 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         {
             switch (widgetIndex)
             {
-                case common::widx::close_button:
+                case Common::widx::close_button:
                     WindowManager::close(window);
                     break;
 
-                case common::widx::tab_options:
-                case common::widx::tab_land:
-                case common::widx::tab_forests:
-                case common::widx::tab_towns:
-                case common::widx::tab_industries:
-                    common::switchTab(window, widgetIndex);
+                case Common::widx::tab_options:
+                case Common::widx::tab_land:
+                case Common::widx::tab_forests:
+                case Common::widx::tab_towns:
+                case Common::widx::tab_industries:
+                    Common::switchTab(window, widgetIndex);
                     break;
             }
         }
@@ -1056,7 +1056,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         // 0x0043EAEB
         static void prepareDraw(window* window)
         {
-            common::prepareDraw(window);
+            Common::prepareDraw(window);
 
             commonFormatArgs[0] = s5::getOptions().numberOfTowns;
 
@@ -1070,7 +1070,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             events.on_dropdown = onDropdown;
             events.on_mouse_down = onMouseDown;
             events.on_mouse_up = onMouseUp;
-            events.on_update = common::update;
+            events.on_update = Common::update;
         }
     }
 
@@ -1084,7 +1084,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             check_allow_industries_start_up,
         };
 
-        const uint64_t enabled_widgets = common::enabled_widgets | (1 << widx::num_industries) | (1 << widx::num_industries_btn) | (1 << widx::check_allow_industries_close_down) | (1 << widx::check_allow_industries_start_up);
+        const uint64_t enabled_widgets = Common::enabled_widgets | (1 << widx::num_industries) | (1 << widx::num_industries_btn) | (1 << widx::check_allow_industries_close_down) | (1 << widx::check_allow_industries_start_up);
         const uint64_t holdable_widgets = 0;
 
         static widget_t widgets[] = {
@@ -1101,7 +1101,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         // 0x0043EB9D
         static void draw(window* window, Gfx::drawpixelinfo_t* dpi)
         {
-            common::draw(window, dpi);
+            Common::draw(window, dpi);
 
             Gfx::drawString_494B3F(
                 *dpi,
@@ -1147,16 +1147,16 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         {
             switch (widgetIndex)
             {
-                case common::widx::close_button:
+                case Common::widx::close_button:
                     WindowManager::close(window);
                     break;
 
-                case common::widx::tab_options:
-                case common::widx::tab_land:
-                case common::widx::tab_forests:
-                case common::widx::tab_towns:
-                case common::widx::tab_industries:
-                    common::switchTab(window, widgetIndex);
+                case Common::widx::tab_options:
+                case Common::widx::tab_land:
+                case Common::widx::tab_forests:
+                case Common::widx::tab_towns:
+                case Common::widx::tab_industries:
+                    Common::switchTab(window, widgetIndex);
                     break;
 
                 case widx::check_allow_industries_close_down:
@@ -1174,7 +1174,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         // 0x0043EAEB
         static void prepareDraw(window* window)
         {
-            common::prepareDraw(window);
+            Common::prepareDraw(window);
 
             widgets[widx::num_industries].text = numIndustriesLabels[s5::getOptions().numberOfIndustries];
 
@@ -1192,11 +1192,11 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             events.on_dropdown = onDropdown;
             events.on_mouse_down = onMouseDown;
             events.on_mouse_up = onMouseUp;
-            events.on_update = common::update;
+            events.on_update = Common::update;
         }
     };
 
-    namespace common
+    namespace Common
     {
         static void initEvents()
         {
