@@ -5,7 +5,7 @@
 #include "Window.h"
 #include <cstdint>
 
-namespace OpenLoco::ui::widget
+namespace OpenLoco::Ui::widget
 {
     void sub_4CADE8(Gfx::drawpixelinfo_t* dpi, const window* window, const widget_t* widget, uint8_t colour, bool enabled, bool disabled, bool activated);
     void drawViewportCentreButton(Gfx::drawpixelinfo_t* dpi, const window* window, const widget_index widgetIndex);

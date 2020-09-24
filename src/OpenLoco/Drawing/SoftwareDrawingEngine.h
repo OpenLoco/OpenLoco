@@ -11,7 +11,7 @@ namespace OpenLoco::Drawing
     {
     public:
         void drawDirtyBlocks();
-        void drawRect(const ui::Rect& rect);
+        void drawRect(const Ui::Rect& rect);
         void setDirtyBlocks(int32_t left, int32_t top, int32_t right, int32_t bottom);
 
     private:

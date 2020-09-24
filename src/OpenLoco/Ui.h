@@ -11,7 +11,7 @@ namespace OpenLoco::config
     struct resolution_t;
 }
 
-namespace OpenLoco::ui
+namespace OpenLoco::Ui
 {
 
     struct screen_info_t
@@ -91,7 +91,7 @@ namespace OpenLoco::ui
     void setWindowScaling(float newScaleFactor);
     void adjustWindowScale(float adjust_by);
 
-    namespace viewport_interaction
+    namespace ViewportInteraction
     {
         struct InteractionArg
         {

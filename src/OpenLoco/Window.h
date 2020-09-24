@@ -13,7 +13,7 @@
 #include "Viewport.hpp"
 #include <algorithm>
 
-namespace OpenLoco::ui
+namespace OpenLoco::Ui
 {
     using widget_index = int8_t;
     using window_number = uint16_t;
@@ -224,14 +224,14 @@ namespace OpenLoco::ui
                 void (*on_tool_abort)(window&, const widget_index);
                 uint32_t event_15;
                 void (*get_scroll_size)(window*, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
-                void (*scroll_mouse_down)(ui::window*, int16_t x, int16_t y, uint8_t scroll_index);
-                void (*scroll_mouse_drag)(ui::window*, int16_t x, int16_t y, uint8_t scroll_index);
-                void (*scroll_mouse_over)(ui::window* window, int16_t x, int16_t y, uint8_t scroll_index);
+                void (*scroll_mouse_down)(Ui::window*, int16_t x, int16_t y, uint8_t scroll_index);
+                void (*scroll_mouse_drag)(Ui::window*, int16_t x, int16_t y, uint8_t scroll_index);
+                void (*scroll_mouse_over)(Ui::window* window, int16_t x, int16_t y, uint8_t scroll_index);
                 void (*text_input)(window*, widget_index, char*);
                 void (*viewport_rotate)(window*);
                 uint32_t event_22;
                 void (*tooltip)(FormatArguments& args, window*, widget_index);
-                ui::cursor_id (*cursor)(window*, int16_t, int16_t, int16_t, ui::cursor_id);
+                Ui::cursor_id (*cursor)(window*, int16_t, int16_t, int16_t, Ui::cursor_id);
                 uint32_t on_move;
                 void (*prepare_draw)(window*);
                 void (*draw)(window*, Gfx::drawpixelinfo_t*);
@@ -321,7 +321,7 @@ namespace OpenLoco::ui
     struct window
     {
         window_event_list* event_handlers;                 // 0x00
-        ui::viewport* viewports[2] = { nullptr, nullptr }; // 0x04
+        Ui::viewport* viewports[2] = { nullptr, nullptr }; // 0x04
         uint64_t enabled_widgets = 0;                      // 0x0C
         uint64_t disabled_widgets = 0;                     // 0x14
         uint64_t activated_widgets = 0;                    // 0x1C
@@ -443,7 +443,7 @@ namespace OpenLoco::ui
         int8_t getScrollDataIndex(widget_index index);
         void setDisabledWidgetsAndInvalidate(uint32_t _disabled_widgets);
         void drawViewports(Gfx::drawpixelinfo_t* dpi);
-        void viewportSetUndergroundFlag(bool underground, ui::viewport* vp);
+        void viewportSetUndergroundFlag(bool underground, Ui::viewport* vp);
         void viewportGetMapCoordsByCursor(int16_t* map_x, int16_t* map_y, int16_t* offset_x, int16_t* offset_y);
         void moveWindowToLocation(viewport_pos pos);
         void viewportCentreOnTile(const Map::map_pos3& loc);
@@ -462,7 +462,7 @@ namespace OpenLoco::ui
 
         void callClose();                                                                                // 0
         void callOnMouseUp(widget_index widgetIndex);                                                    // 1
-        ui::window* callOnResize();                                                                      // 2
+        Ui::window* callOnResize();                                                                      // 2
         void call_3(int8_t widget_index);                                                                // 3
         void callOnMouseDown(int8_t widget_index);                                                       // 4
         void callOnDropdown(widget_index widget_index, int16_t item_index);                              // 5
@@ -475,7 +475,7 @@ namespace OpenLoco::ui
         void callToolDragContinue(const int16_t widget_index, const int16_t xPos, const int16_t yPos);   // 12
         void callToolDragEnd(const int16_t widget_index);                                                // 13
         void callToolAbort(int16_t widget_index);                                                        // 14
-        ui::cursor_id call_15(int16_t xPos, int16_t yPos, ui::cursor_id fallback, bool* out);            // 15
+        Ui::cursor_id call_15(int16_t xPos, int16_t yPos, Ui::cursor_id fallback, bool* out);            // 15
         void callGetScrollSize(uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);     // 16
         void callScrollMouseDown(int16_t x, int16_t y, uint8_t scroll_index);                            // 17
         void callScrollMouseDrag(int16_t x, int16_t y, uint8_t scroll_index);                            // 18
@@ -483,7 +483,7 @@ namespace OpenLoco::ui
         void callTextInput(widget_index caller, char* buffer);                                           // 20
         void callViewportRotate();                                                                       // 21
         bool callTooltip(int16_t widget_index);                                                          // 23
-        ui::cursor_id callCursor(int16_t widgetIdx, int16_t xPos, int16_t yPos, ui::cursor_id fallback); // 24
+        Ui::cursor_id callCursor(int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::cursor_id fallback); // 24
         void callOnMove(int16_t xPos, int16_t yPos);                                                     // 25
         void callPrepareDraw();                                                                          // 26
         void callDraw(Gfx::drawpixelinfo_t* dpi);                                                        // 27

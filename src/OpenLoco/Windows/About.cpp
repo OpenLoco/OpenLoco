@@ -6,7 +6,7 @@
 #include "../Objects/ObjectManager.h"
 #include "../Ui/WindowManager.h"
 
-namespace OpenLoco::ui::about
+namespace OpenLoco::Ui::About
 {
     constexpr Gfx::ui_size_t windowSize = { 400, 260 };
 
@@ -59,7 +59,7 @@ namespace OpenLoco::ui::about
     }
 
     // 0x0043B4AF
-    static void onMouseUp(ui::window* const window, const widget_index widgetIndex)
+    static void onMouseUp(Ui::window* const window, const widget_index widgetIndex)
     {
         switch (widgetIndex)
         {
@@ -74,7 +74,7 @@ namespace OpenLoco::ui::about
     }
 
     // 0x0043B2E4
-    static void draw(ui::window* const window, Gfx::drawpixelinfo_t* const dpi)
+    static void draw(Ui::window* const window, Gfx::drawpixelinfo_t* const dpi)
     {
         // Draw widgets.
         window->draw(dpi);

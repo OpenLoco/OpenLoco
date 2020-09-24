@@ -19,7 +19,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::ui::NewsWindow
+namespace OpenLoco::Ui::NewsWindow
 {
     namespace news1
     {
@@ -80,22 +80,22 @@ namespace OpenLoco::ui::NewsWindow
                         switch (itemType)
                         {
                             case newsItemSubTypes::industry:
-                                ui::windows::industry::open(itemId);
+                                Ui::Windows::Industry::open(itemId);
                                 break;
 
                             case newsItemSubTypes::station:
-                                ui::windows::station::open(itemId);
+                                Ui::Windows::Station::open(itemId);
                                 break;
 
                             case newsItemSubTypes::town:
-                                ui::windows::town::open(itemId);
+                                Ui::Windows::Town::open(itemId);
                                 break;
 
                             case newsItemSubTypes::vehicle:
                             {
                                 auto vehicle = ThingManager::get<OpenLoco::vehicle>(itemId);
 
-                                // ui::vehicle::open
+                                // Ui::vehicle::open
                                 registers regs;
                                 regs.edx = (int32_t)vehicle;
                                 call(0x004B6033, regs);
@@ -104,7 +104,7 @@ namespace OpenLoco::ui::NewsWindow
                             }
 
                             case newsItemSubTypes::company:
-                                ui::windows::CompanyWindow::open(itemId);
+                                Ui::Windows::CompanyWindow::open(itemId);
                                 break;
 
                             case 5:
@@ -113,7 +113,7 @@ namespace OpenLoco::ui::NewsWindow
 
                             case newsItemSubTypes::vehicleTab:
                                 auto vehicleObj = ObjectManager::get<vehicle_object>(itemId);
-                                auto window = ui::BuildVehicle::open(static_cast<uint32_t>(vehicleObj->type), (1 << 31));
+                                auto window = Ui::BuildVehicle::open(static_cast<uint32_t>(vehicleObj->type), (1 << 31));
                                 window->row_hover = itemId;
                                 if (vehicleObj->mode == TransportMode::rail || vehicleObj->mode == TransportMode::road)
                                 {
@@ -133,7 +133,7 @@ namespace OpenLoco::ui::NewsWindow
 
                                 auto rowHover = window->row_hover;
 
-                                ui::BuildVehicle::sub_4B92A5(window);
+                                Ui::BuildVehicle::sub_4B92A5(window);
 
                                 window->row_hover = rowHover;
                                 break;
@@ -150,8 +150,8 @@ namespace OpenLoco::ui::NewsWindow
 
             _word_525CE0 = std::min(height, self->height);
 
-            height = ui::height() - _word_525CE0 - self->y;
-            auto width = (ui::width() / 2) - (windowSize.width / 2) - self->x;
+            height = Ui::height() - _word_525CE0 - self->y;
+            auto width = (Ui::width() / 2) - (windowSize.width / 2) - self->x;
 
             if (width != 0 || height != 0)
             {
@@ -750,7 +750,7 @@ namespace OpenLoco::ui::NewsWindow
         }
 
         // 0x00429739
-        static void draw(ui::window* self, Gfx::drawpixelinfo_t* dpi)
+        static void draw(Ui::window* self, Gfx::drawpixelinfo_t* dpi)
         {
             auto news = messagemgr::get(_activeMessageIndex);
 

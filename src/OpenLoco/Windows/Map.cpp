@@ -21,9 +21,9 @@
 #include "../Widget.h"
 
 using namespace OpenLoco::Interop;
-using namespace OpenLoco::ui::WindowManager;
+using namespace OpenLoco::Ui::WindowManager;
 
-namespace OpenLoco::ui::windows::map
+namespace OpenLoco::Ui::Windows::Map
 {
     static loco_global<int32_t, 0x00523338> _cursorX2;
     static loco_global<int32_t, 0x0052333C> _cursorY2;
@@ -1607,6 +1607,6 @@ namespace OpenLoco::ui::windows::map
         window->scroll_areas[0].contentOffsetX = x;
         window->scroll_areas[0].contentOffsetY = y;
 
-        ui::scrollview::updateThumbs(window, widx::scrollview);
+        Ui::ScrollView::updateThumbs(window, widx::scrollview);
     }
 }

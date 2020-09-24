@@ -24,7 +24,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::ui::windows::toolbar_top::common
+namespace OpenLoco::Ui::Windows::ToolbarTop::common
 {
     static loco_global<uint8_t, 0x00525FAB> last_road_option;
 
@@ -65,7 +65,7 @@ namespace OpenLoco::ui::windows::toolbar_top::common
             auto interface = ObjectManager::get<interface_skin_object>();
             uint32_t bgImage = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_transparent, self->colours[2]);
 
-            if (Input::isDropdownActive(ui::WindowType::topToolbar, widx::road_menu))
+            if (Input::isDropdownActive(Ui::WindowType::topToolbar, widx::road_menu))
             {
                 y++;
                 bgImage++;
@@ -83,8 +83,8 @@ namespace OpenLoco::ui::windows::toolbar_top::common
     {
         auto interface = ObjectManager::get<interface_skin_object>();
 
-        dropdown::add(0, StringIds::menu_sprite_stringid, { interface->img + InterfaceSkin::ImageIds::toolbar_menu_zoom_in, StringIds::menu_zoom_in });
-        dropdown::add(1, StringIds::menu_sprite_stringid, { interface->img + InterfaceSkin::ImageIds::toolbar_menu_zoom_out, StringIds::menu_zoom_out });
+        Dropdown::add(0, StringIds::menu_sprite_stringid, { interface->img + InterfaceSkin::ImageIds::toolbar_menu_zoom_in, StringIds::menu_zoom_in });
+        Dropdown::add(1, StringIds::menu_sprite_stringid, { interface->img + InterfaceSkin::ImageIds::toolbar_menu_zoom_out, StringIds::menu_zoom_out });
 
         static const uint32_t map_sprites_by_rotation[] = {
             InterfaceSkin::ImageIds::toolbar_menu_map_north,
@@ -96,25 +96,25 @@ namespace OpenLoco::ui::windows::toolbar_top::common
         loco_global<int32_t, 0x00e3f0b8> current_rotation;
         uint32_t map_sprite = map_sprites_by_rotation[current_rotation];
 
-        dropdown::add(2, StringIds::menu_sprite_stringid, { interface->img + map_sprite, StringIds::menu_map });
-        dropdown::showBelow(window, widgetIndex, 3, 25, (1 << 6));
-        dropdown::setHighlightedItem(0);
+        Dropdown::add(2, StringIds::menu_sprite_stringid, { interface->img + map_sprite, StringIds::menu_map });
+        Dropdown::showBelow(window, widgetIndex, 3, 25, (1 << 6));
+        Dropdown::setHighlightedItem(0);
 
         auto mainWindow = WindowManager::getMainWindow();
         if (mainWindow->viewports[0]->zoom == 0)
         {
-            dropdown::setItemDisabled(0);
-            dropdown::setHighlightedItem(1);
+            Dropdown::setItemDisabled(0);
+            Dropdown::setHighlightedItem(1);
         }
 
         if (mainWindow->viewports[0]->zoom == 3)
         {
-            dropdown::setItemDisabled(1);
+            Dropdown::setItemDisabled(1);
             zoom_ticks = 1000;
         }
 
         if (mainWindow->viewports[0]->zoom != 3 && zoom_ticks <= 32)
-            dropdown::setHighlightedItem(1);
+            Dropdown::setHighlightedItem(1);
     }
 
     // 0x0043A5C5
@@ -122,54 +122,54 @@ namespace OpenLoco::ui::windows::toolbar_top::common
     {
         auto interface = ObjectManager::get<interface_skin_object>();
 
-        dropdown::add(0, StringIds::menu_sprite_stringid, { interface->img + InterfaceSkin::ImageIds::toolbar_menu_rotate_clockwise, StringIds::menu_rotate_clockwise });
-        dropdown::add(1, StringIds::menu_sprite_stringid, { interface->img + InterfaceSkin::ImageIds::toolbar_menu_rotate_anti_clockwise, StringIds::menu_rotate_anti_clockwise });
-        dropdown::showBelow(window, widgetIndex, 2, 25, (1 << 6));
-        dropdown::setHighlightedItem(0);
+        Dropdown::add(0, StringIds::menu_sprite_stringid, { interface->img + InterfaceSkin::ImageIds::toolbar_menu_rotate_clockwise, StringIds::menu_rotate_clockwise });
+        Dropdown::add(1, StringIds::menu_sprite_stringid, { interface->img + InterfaceSkin::ImageIds::toolbar_menu_rotate_anti_clockwise, StringIds::menu_rotate_anti_clockwise });
+        Dropdown::showBelow(window, widgetIndex, 2, 25, (1 << 6));
+        Dropdown::setHighlightedItem(0);
     }
 
     // 0x0043ADF6
     void viewMenuMouseDown(window* window, widget_index widgetIndex)
     {
-        dropdown::add(0, StringIds::dropdown_without_checkmark, StringIds::menu_underground_view);
-        dropdown::add(1, StringIds::dropdown_without_checkmark, StringIds::menu_hide_foreground_tracks_roads);
-        dropdown::add(2, StringIds::dropdown_without_checkmark, StringIds::menu_hide_foreground_scenery_buildings);
-        dropdown::add(3, 0);
-        dropdown::add(4, StringIds::dropdown_without_checkmark, StringIds::menu_height_marks_on_land);
-        dropdown::add(5, StringIds::dropdown_without_checkmark, StringIds::menu_height_marks_on_tracks_roads);
-        dropdown::add(6, StringIds::dropdown_without_checkmark, StringIds::menu_one_way_direction_arrows);
-        dropdown::add(7, 0);
-        dropdown::add(8, StringIds::dropdown_without_checkmark, StringIds::menu_town_names_displayed);
-        dropdown::add(9, StringIds::dropdown_without_checkmark, StringIds::menu_station_names_displayed);
-        dropdown::showBelow(window, widgetIndex, 10, 0);
+        Dropdown::add(0, StringIds::dropdown_without_checkmark, StringIds::menu_underground_view);
+        Dropdown::add(1, StringIds::dropdown_without_checkmark, StringIds::menu_hide_foreground_tracks_roads);
+        Dropdown::add(2, StringIds::dropdown_without_checkmark, StringIds::menu_hide_foreground_scenery_buildings);
+        Dropdown::add(3, 0);
+        Dropdown::add(4, StringIds::dropdown_without_checkmark, StringIds::menu_height_marks_on_land);
+        Dropdown::add(5, StringIds::dropdown_without_checkmark, StringIds::menu_height_marks_on_tracks_roads);
+        Dropdown::add(6, StringIds::dropdown_without_checkmark, StringIds::menu_one_way_direction_arrows);
+        Dropdown::add(7, 0);
+        Dropdown::add(8, StringIds::dropdown_without_checkmark, StringIds::menu_town_names_displayed);
+        Dropdown::add(9, StringIds::dropdown_without_checkmark, StringIds::menu_station_names_displayed);
+        Dropdown::showBelow(window, widgetIndex, 10, 0);
 
         uint32_t current_viewport_flags = WindowManager::getMainWindow()->viewports[0]->flags;
 
         if (current_viewport_flags & viewport_flags::underground_view)
-            dropdown::setItemSelected(0);
+            Dropdown::setItemSelected(0);
 
         if (current_viewport_flags & viewport_flags::hide_foreground_tracks_roads)
-            dropdown::setItemSelected(1);
+            Dropdown::setItemSelected(1);
 
         if (current_viewport_flags & viewport_flags::hide_foreground_scenery_buildings)
-            dropdown::setItemSelected(2);
+            Dropdown::setItemSelected(2);
 
         if (current_viewport_flags & viewport_flags::height_marks_on_tracks_roads)
-            dropdown::setItemSelected(4);
+            Dropdown::setItemSelected(4);
 
         if (current_viewport_flags & viewport_flags::height_marks_on_land)
-            dropdown::setItemSelected(5);
+            Dropdown::setItemSelected(5);
 
         if (current_viewport_flags & viewport_flags::one_way_direction_arrows)
-            dropdown::setItemSelected(6);
+            Dropdown::setItemSelected(6);
 
         if (!(current_viewport_flags & viewport_flags::town_names_displayed))
-            dropdown::setItemSelected(8);
+            Dropdown::setItemSelected(8);
 
         if (!(current_viewport_flags & viewport_flags::station_names_displayed))
-            dropdown::setItemSelected(9);
+            Dropdown::setItemSelected(9);
 
-        dropdown::setHighlightedItem(0);
+        Dropdown::setHighlightedItem(0);
     }
 
     // 0x0043A3C3
@@ -179,13 +179,13 @@ namespace OpenLoco::ui::windows::toolbar_top::common
         auto land = ObjectManager::get<land_object>(addr<0x00525FB6, uint8_t>());
         auto water = ObjectManager::get<water_object>();
 
-        dropdown::add(0, StringIds::menu_sprite_stringid, { interface->img + InterfaceSkin::ImageIds::toolbar_menu_bulldozer, StringIds::menu_clear_area });
-        dropdown::add(1, StringIds::menu_sprite_stringid, { land->var_16 + Land::ImageIds::toolbar_terraform_land, StringIds::menu_adjust_land });
-        dropdown::add(2, StringIds::menu_sprite_stringid, { water->var_06 + Water::ImageIds::toolbar_terraform_water, StringIds::menu_adjust_water });
-        dropdown::add(3, StringIds::menu_sprite_stringid, { interface->img + InterfaceSkin::ImageIds::toolbar_menu_plant_trees, StringIds::menu_plant_trees });
-        dropdown::add(4, StringIds::menu_sprite_stringid, { interface->img + InterfaceSkin::ImageIds::toolbar_menu_build_walls, StringIds::menu_build_walls });
-        dropdown::showBelow(window, widgetIndex, 5, 25, (1 << 6));
-        dropdown::setHighlightedItem(0);
+        Dropdown::add(0, StringIds::menu_sprite_stringid, { interface->img + InterfaceSkin::ImageIds::toolbar_menu_bulldozer, StringIds::menu_clear_area });
+        Dropdown::add(1, StringIds::menu_sprite_stringid, { land->var_16 + Land::ImageIds::toolbar_terraform_land, StringIds::menu_adjust_land });
+        Dropdown::add(2, StringIds::menu_sprite_stringid, { water->var_06 + Water::ImageIds::toolbar_terraform_water, StringIds::menu_adjust_water });
+        Dropdown::add(3, StringIds::menu_sprite_stringid, { interface->img + InterfaceSkin::ImageIds::toolbar_menu_plant_trees, StringIds::menu_plant_trees });
+        Dropdown::add(4, StringIds::menu_sprite_stringid, { interface->img + InterfaceSkin::ImageIds::toolbar_menu_build_walls, StringIds::menu_build_walls });
+        Dropdown::showBelow(window, widgetIndex, 5, 25, (1 << 6));
+        Dropdown::setHighlightedItem(0);
     }
 
     // 0x0043A19F
@@ -205,7 +205,7 @@ namespace OpenLoco::ui::windows::toolbar_top::common
 
         auto company_colour = companymgr::getPlayerCompanyColour();
 
-        // Add available objects to dropdown.
+        // Add available objects to Dropdown.
         uint16_t highlighted_item = 0;
         for (i = 0; available_objects[i] != -1 && i < std::size(available_objects); i++)
         {
@@ -226,31 +226,31 @@ namespace OpenLoco::ui::windows::toolbar_top::common
                 obj_image = Gfx::recolour(track->var_1E, company_colour);
             }
 
-            dropdown::add(i, StringIds::menu_sprite_stringid_construction, { obj_image, obj_string_id });
+            Dropdown::add(i, StringIds::menu_sprite_stringid_construction, { obj_image, obj_string_id });
 
             if (objIndex == last_road_option)
                 highlighted_item = i;
         }
 
-        dropdown::showBelow(window, widgetIndex, i, 25, (1 << 6));
-        dropdown::setHighlightedItem(highlighted_item);
+        Dropdown::showBelow(window, widgetIndex, i, 25, (1 << 6));
+        Dropdown::setHighlightedItem(highlighted_item);
     }
 
     // 0x0043A8CE
     void townsMenuMouseDown(window* window, widget_index widgetIndex)
     {
         auto interface = ObjectManager::get<interface_skin_object>();
-        dropdown::add(0, StringIds::menu_sprite_stringid, { interface->img + InterfaceSkin::ImageIds::toolbar_menu_towns, StringIds::menu_towns });
-        dropdown::add(1, StringIds::menu_sprite_stringid, { interface->img + InterfaceSkin::ImageIds::toolbar_menu_industries, StringIds::menu_industries });
-        dropdown::showBelow(window, widgetIndex, 2, 25, (1 << 6));
-        dropdown::setHighlightedItem(last_town_option);
+        Dropdown::add(0, StringIds::menu_sprite_stringid, { interface->img + InterfaceSkin::ImageIds::toolbar_menu_towns, StringIds::menu_towns });
+        Dropdown::add(1, StringIds::menu_sprite_stringid, { interface->img + InterfaceSkin::ImageIds::toolbar_menu_industries, StringIds::menu_industries });
+        Dropdown::showBelow(window, widgetIndex, 2, 25, (1 << 6));
+        Dropdown::setHighlightedItem(last_town_option);
     }
 
     // 0x0043A86D
     void zoomMenuDropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
-            itemIndex = dropdown::getHighlightedItem();
+            itemIndex = Dropdown::getHighlightedItem();
 
         window = WindowManager::getMainWindow();
 
@@ -269,7 +269,7 @@ namespace OpenLoco::ui::windows::toolbar_top::common
         }
         else if (itemIndex == 2)
         {
-            windows::map::open();
+            Windows::Map::open();
         }
     }
 
@@ -277,7 +277,7 @@ namespace OpenLoco::ui::windows::toolbar_top::common
     void rotateMenuDropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
-            itemIndex = dropdown::getHighlightedItem();
+            itemIndex = Dropdown::getHighlightedItem();
 
         auto mouseButtonUsed = Input::getLastKnownButtonState();
         window = WindowManager::getMainWindow();
@@ -287,14 +287,14 @@ namespace OpenLoco::ui::windows::toolbar_top::common
             window->viewportRotateLeft();
             townmgr::updateLabels();
             stationmgr::updateLabels();
-            windows::map::centerOnViewPoint();
+            Windows::Map::centerOnViewPoint();
         }
         else if (itemIndex == 0)
         {
             window->viewportRotateRight();
             townmgr::updateLabels();
             stationmgr::updateLabels();
-            windows::map::centerOnViewPoint();
+            Windows::Map::centerOnViewPoint();
         }
     }
 
@@ -302,7 +302,7 @@ namespace OpenLoco::ui::windows::toolbar_top::common
     void viewMenuDropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
-            itemIndex = dropdown::getHighlightedItem();
+            itemIndex = Dropdown::getHighlightedItem();
 
         window = WindowManager::getMainWindow();
         auto viewport = WindowManager::getMainWindow()->viewports[0];
@@ -331,28 +331,28 @@ namespace OpenLoco::ui::windows::toolbar_top::common
     void terraformMenuDropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
-            itemIndex = dropdown::getHighlightedItem();
+            itemIndex = Dropdown::getHighlightedItem();
 
         switch (itemIndex)
         {
             case 0:
-                windows::terraform::openClearArea();
+                Windows::Terraform::openClearArea();
                 break;
 
             case 1:
-                windows::terraform::openAdjustLand();
+                Windows::Terraform::openAdjustLand();
                 break;
 
             case 2:
-                windows::terraform::openAdjustWater();
+                Windows::Terraform::openAdjustWater();
                 break;
 
             case 3:
-                windows::terraform::openPlantTrees();
+                Windows::Terraform::openPlantTrees();
                 break;
 
             case 4:
-                windows::terraform::openBuildWalls();
+                Windows::Terraform::openBuildWalls();
                 break;
         }
     }
@@ -361,29 +361,29 @@ namespace OpenLoco::ui::windows::toolbar_top::common
     void roadMenuDropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
-            itemIndex = dropdown::getHighlightedItem();
+            itemIndex = Dropdown::getHighlightedItem();
 
         if (itemIndex == -1)
             return;
 
         uint8_t objIndex = available_objects[itemIndex];
-        construction::openWithFlags(objIndex);
+        Construction::openWithFlags(objIndex);
     }
 
     // 0x0043A932
     void townsMenuDropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
-            itemIndex = dropdown::getHighlightedItem();
+            itemIndex = Dropdown::getHighlightedItem();
 
         if (itemIndex == 0)
         {
-            windows::town_list::open();
+            Windows::TownList::open();
             last_town_option = 0;
         }
         else if (itemIndex == 1)
         {
-            windows::industry_list::open();
+            Windows::IndustryList::open();
             last_town_option = 1;
         }
     }

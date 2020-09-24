@@ -10,7 +10,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::ui::title_options
+namespace OpenLoco::Ui::TitleOptions
 {
     static const Gfx::ui_size_t window_size = { 60, 15 };
 
@@ -30,7 +30,7 @@ namespace OpenLoco::ui::title_options
     static window_event_list _events;
 
     static void onMouseUp(window* window, widget_index widgetIndex);
-    static void draw(ui::window* window, Gfx::drawpixelinfo_t* dpi);
+    static void draw(Ui::window* window, Gfx::drawpixelinfo_t* dpi);
 
     window* open()
     {
@@ -39,7 +39,7 @@ namespace OpenLoco::ui::title_options
 
         auto window = WindowManager::createWindow(
             WindowType::titleOptions,
-            Gfx::point_t(ui::width() - window_size.width, 0),
+            Gfx::point_t(Ui::width() - window_size.width, 0),
             window_size,
             window_flags::stick_to_front | window_flags::transparent | window_flags::no_background | window_flags::flag_6,
             &_events);
@@ -55,7 +55,7 @@ namespace OpenLoco::ui::title_options
         return window;
     }
 
-    static void draw(ui::window* window, Gfx::drawpixelinfo_t* dpi)
+    static void draw(Ui::window* window, Gfx::drawpixelinfo_t* dpi)
     {
         // Draw widgets.
         window->draw(dpi);
@@ -77,7 +77,7 @@ namespace OpenLoco::ui::title_options
         switch (widgetIndex)
         {
             case widx::options_button:
-                ui::options::open();
+                Ui::Options::open();
                 break;
         }
     }

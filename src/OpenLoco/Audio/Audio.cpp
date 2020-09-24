@@ -28,7 +28,7 @@
 
 using namespace OpenLoco::environment;
 using namespace OpenLoco::Interop;
-using namespace OpenLoco::ui;
+using namespace OpenLoco::Ui;
 using namespace OpenLoco::Utility;
 
 namespace OpenLoco::Audio
@@ -613,7 +613,7 @@ namespace OpenLoco::Audio
             }
             else if (pan != 0)
             {
-                auto uiWidth = std::max(64, ui::width());
+                auto uiWidth = std::max(64, Ui::width());
                 pan = (((pan << 16) / uiWidth) - 0x8000) >> 4;
             }
 

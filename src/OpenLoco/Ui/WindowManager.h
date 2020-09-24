@@ -13,7 +13,7 @@ namespace OpenLoco
     struct vehicle;
 }
 
-namespace OpenLoco::ui::WindowManager
+namespace OpenLoco::Ui::WindowManager
 {
     enum class viewport_visibility
     {
@@ -62,23 +62,22 @@ namespace OpenLoco::ui::WindowManager
     void closeConstructionWindows();
     void closeTopmost();
     void allWheelInput();
-    bool isInFront(ui::window* w);
-    bool isInFrontAlt(ui::window* w);
-    ui::window* findWindowShowing(const viewport_pos& position);
+    bool isInFront(Ui::window* w);
+    bool isInFrontAlt(Ui::window* w);
+    Ui::window* findWindowShowing(const viewport_pos& position);
     void closeAllFloatingWindows();
     int32_t getCurrentRotation();
 
-    void viewportShiftPixels(ui::window* window, ui::viewport* viewport, int16_t dX, int16_t dY);
+    void viewportShiftPixels(Ui::window* window, Ui::viewport* viewport, int16_t dX, int16_t dY);
     void viewportSetVisibility(viewport_visibility flags);
 }
 
-namespace OpenLoco::ui::windows
+namespace OpenLoco::Ui::Windows
 {
     window* openTitleVersion();
     window* openTitleExit();
     window* openTitleMenu();
     window* openTitleLogo();
-    void open_about_window();
 
     bool promptOkCancel(string_id okButtonStringId);
 
@@ -92,27 +91,27 @@ namespace OpenLoco::ui::windows
     void hideDirectionArrows();
 }
 
-namespace OpenLoco::ui::about
+namespace OpenLoco::Ui::About
 {
     void open();
 }
 
-namespace OpenLoco::ui::KeyboardShortcuts
+namespace OpenLoco::Ui::KeyboardShortcuts
 {
     window* open();
 }
 
-namespace OpenLoco::ui::EditKeyboardShortcut
+namespace OpenLoco::Ui::EditKeyboardShortcut
 {
     window* open(uint8_t shortcutIndex);
 }
 
-namespace OpenLoco::ui::AboutMusic
+namespace OpenLoco::Ui::AboutMusic
 {
     void open();
 }
 
-namespace OpenLoco::ui::windows::construction
+namespace OpenLoco::Ui::Windows::Construction
 {
     window* openWithFlags(uint32_t flags);
     window* openAtTrack(window* main, OpenLoco::Map::track_element* track, const OpenLoco::Map::map_pos pos);
@@ -123,52 +122,52 @@ namespace OpenLoco::ui::windows::construction
     void registerHooks();
 }
 
-namespace OpenLoco::ui::windows::industry
+namespace OpenLoco::Ui::Windows::Industry
 {
     window* open(industry_id_t id);
 }
 
-namespace OpenLoco::ui::windows::industry_list
+namespace OpenLoco::Ui::Windows::IndustryList
 {
     window* open();
 }
 
-namespace OpenLoco::ui::windows::LandscapeGeneration
+namespace OpenLoco::Ui::Windows::LandscapeGeneration
 {
     window* open();
 }
 
-namespace OpenLoco::ui::windows::LandscapeGenerationConfirm
+namespace OpenLoco::Ui::Windows::LandscapeGenerationConfirm
 {
     window* open(int32_t prompt_type);
 }
 
-namespace OpenLoco::ui::windows::map
+namespace OpenLoco::Ui::Windows::Map
 {
     void open();
     void centerOnViewPoint();
 }
 
-namespace OpenLoco::ui::windows::music_selection
+namespace OpenLoco::Ui::Windows::MusicSelection
 {
     window* open();
 }
 
-namespace OpenLoco::ui::windows::error
+namespace OpenLoco::Ui::Windows::Error
 {
     void open(string_id title, string_id message);
     void openWithCompetitor(string_id title, string_id message, uint8_t competitorId);
     void registerHooks();
 }
 
-namespace OpenLoco::ui::options
+namespace OpenLoco::Ui::Options
 {
     window* open();
     window* openMusicSettings();
     constexpr uint8_t tab_offset_music = 2;
 }
 
-namespace OpenLoco::ui::prompt_browse
+namespace OpenLoco::Ui::PromptBrowse
 {
     enum browse_type : uint8_t
     {
@@ -179,24 +178,24 @@ namespace OpenLoco::ui::prompt_browse
     void registerHooks();
 }
 
-namespace OpenLoco::ui::windows::ScenarioOptions
+namespace OpenLoco::Ui::Windows::ScenarioOptions
 {
     window* open();
 }
 
-namespace OpenLoco::ui::windows::station
+namespace OpenLoco::Ui::Windows::Station
 {
     window* open(uint16_t id);
     void showStationCatchment(uint16_t windowNumber);
 }
 
-namespace OpenLoco::ui::windows::station_list
+namespace OpenLoco::Ui::Windows::StationList
 {
     window* open(company_id_t companyId);
     window* open(company_id_t companyId, uint8_t type);
 }
 
-namespace OpenLoco::ui::windows::terraform
+namespace OpenLoco::Ui::Windows::Terraform
 {
     window* open();
     void openClearArea();
@@ -207,52 +206,52 @@ namespace OpenLoco::ui::windows::terraform
     void registerHooks();
 }
 
-namespace OpenLoco::ui::textinput
+namespace OpenLoco::Ui::TextInput
 {
     void registerHooks();
 
-    void openTextinput(ui::window* w, string_id title, string_id message, string_id value, int callingWidget, void* valueArgs);
+    void openTextInput(Ui::window* w, string_id title, string_id message, string_id value, int callingWidget, void* valueArgs);
     void sub_4CE6C9(WindowType type, window_number number);
     void cancel();
     void sub_4CE910(int eax, int ebx);
     void sub_4CE6FF();
 }
 
-namespace OpenLoco::ui::title_options
+namespace OpenLoco::Ui::TitleOptions
 {
     window* open();
 }
 
-namespace OpenLoco::ui::windows::toolbar_top::game
+namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 {
     void open();
 }
 
-namespace OpenLoco::ui::windows::toolbar_top::editor
+namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
 {
     void open();
 }
 
-namespace OpenLoco::ui::tooltip
+namespace OpenLoco::Ui::ToolTip
 {
     void registerHooks();
-    void open(ui::window* window, int32_t widgetIndex, int16_t x, int16_t y);
-    void update(ui::window* window, int32_t widgetIndex, string_id stringId, int16_t x, int16_t y);
+    void open(Ui::window* window, int32_t widgetIndex, int16_t x, int16_t y);
+    void update(Ui::window* window, int32_t widgetIndex, string_id stringId, int16_t x, int16_t y);
     void set_52336E(bool value);
     void closeAndReset();
 }
 
-namespace OpenLoco::ui::windows::town
+namespace OpenLoco::Ui::Windows::Town
 {
     window* open(uint16_t townId);
 }
 
-namespace OpenLoco::ui::windows::town_list
+namespace OpenLoco::Ui::Windows::TownList
 {
     window* open();
 }
 
-namespace OpenLoco::ui::vehicle
+namespace OpenLoco::Ui::Vehicle
 {
     void registerHooks();
     namespace main
@@ -261,40 +260,40 @@ namespace OpenLoco::ui::vehicle
     }
 }
 
-namespace OpenLoco::ui::windows::vehicle_list
+namespace OpenLoco::Ui::Windows::VehicleList
 {
     window* open(uint16_t companyId, uint8_t type);
 }
 
-namespace OpenLoco::ui::BuildVehicle
+namespace OpenLoco::Ui::BuildVehicle
 {
     window* open(uint32_t vehicle, uint32_t flags);
-    void sub_4B92A5(ui::window* window);
+    void sub_4B92A5(Ui::window* window);
     void registerHooks();
 }
 
-namespace OpenLoco::ui::MessageWindow
+namespace OpenLoco::Ui::MessageWindow
 {
     void open();
 }
 
-namespace OpenLoco::ui::NewsWindow
+namespace OpenLoco::Ui::NewsWindow
 {
     void open(uint16_t messageIndex);
 }
 
-namespace OpenLoco::ui::windows::CompanyFaceSelection
+namespace OpenLoco::Ui::Windows::CompanyFaceSelection
 {
     void open(company_id_t id);
 }
 
-namespace OpenLoco::ui::windows::CompanyList
+namespace OpenLoco::Ui::Windows::CompanyList
 {
     void openPerformanceIndexes();
     window* open();
 }
 
-namespace OpenLoco::ui::windows::CompanyWindow
+namespace OpenLoco::Ui::Windows::CompanyWindow
 {
     window* open(company_id_t companyId);
     window* openAndSetName();
@@ -302,22 +301,22 @@ namespace OpenLoco::ui::windows::CompanyWindow
     window* openFinances(company_id_t companyId);
 }
 
-namespace OpenLoco::ui::windows::ObjectSelectionWindow
+namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 {
     window* open();
 }
 
-namespace OpenLoco::ui::windows::PlayerInfoPanel
+namespace OpenLoco::Ui::Windows::PlayerInfoPanel
 {
     window* open();
 }
 
-namespace OpenLoco::ui::TimePanel
+namespace OpenLoco::Ui::TimePanel
 {
     window* open();
 }
 
-namespace OpenLoco::ui::windows::toolbar_bottom::editor
+namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
 {
     void open();
 }

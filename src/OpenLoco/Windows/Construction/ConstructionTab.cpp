@@ -15,7 +15,7 @@ using namespace OpenLoco::Interop;
 using namespace OpenLoco::Map;
 using namespace OpenLoco::Map::TileManager;
 
-namespace OpenLoco::ui::windows::construction::construction
+namespace OpenLoco::Ui::Windows::Construction::construction
 {
     static loco_global<uint16_t[351][4], 0x004F7B62> _word_4F7B62; // TODO: Not sure on size?
     static loco_global<uint8_t, 0x00508F09> _byte_508F09;
@@ -1231,7 +1231,7 @@ namespace OpenLoco::ui::windows::construction::construction
         auto width = 155;
         auto height = widget.height();
 
-        dropdown::show(x, y, width, height, self->colours[1], bridgeCount, 22, flags);
+        Dropdown::show(x, y, width, height, self->colours[1], bridgeCount, 22, flags);
         for (auto i = 0; i < 9; i++)
         {
             auto bridge = _bridgeList[i];
@@ -1240,7 +1240,7 @@ namespace OpenLoco::ui::windows::construction::construction
                 return;
 
             if (bridge == _lastSelectedBridge)
-                dropdown::setHighlightedItem(i);
+                Dropdown::setHighlightedItem(i);
 
             auto bridgeObj = ObjectManager::get<bridge_object>(bridge);
             auto company = companymgr::get(_playerCompany);
@@ -1262,7 +1262,7 @@ namespace OpenLoco::ui::windows::construction::construction
             }
             args.push<uint16_t>(bridgeObj->max_height);
 
-            dropdown::add(i, StringIds::dropdown_bridge_stats, args);
+            Dropdown::add(i, StringIds::dropdown_bridge_stats, args);
         }
     }
 
@@ -1830,7 +1830,7 @@ namespace OpenLoco::ui::windows::construction::construction
     }
 
     // 0x0049D4F5
-    static ui::cursor_id cursor(window* self, int16_t widgetIndex, int16_t xPos, int16_t yPos, ui::cursor_id fallback)
+    static Ui::cursor_id cursor(window* self, int16_t widgetIndex, int16_t xPos, int16_t yPos, Ui::cursor_id fallback)
     {
         if (widgetIndex == widx::bridge || widgetIndex == widx::bridge_dropdown)
             _tooltipTimeout = 2000;

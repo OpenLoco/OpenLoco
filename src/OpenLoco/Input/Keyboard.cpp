@@ -27,7 +27,7 @@
 #endif
 
 using namespace OpenLoco::Interop;
-using namespace OpenLoco::ui;
+using namespace OpenLoco::Ui;
 using namespace OpenLoco::GameCommands;
 
 namespace OpenLoco::Input
@@ -50,7 +50,7 @@ namespace OpenLoco::Input
     static loco_global<uint8_t, 0x00508F14> _screenFlags;
     static loco_global<int8_t, 0x00508F16> _screenshotCountdown;
     static loco_global<uint8_t, 0x00508F18> _keyModifier;
-    static loco_global<ui::WindowType, 0x005233B6> _modalWindowType;
+    static loco_global<Ui::WindowType, 0x005233B6> _modalWindowType;
     static loco_global<char[16], 0x0112C826> _commonFormatArgs;
     static std::string _cheatBuffer; // 0x0011364A5
     static loco_global<uint8_t[256], 0x01140740> _keyboardState;
@@ -72,7 +72,7 @@ namespace OpenLoco::Input
     {
         _screenFlags |= screen_flags::unknown_6;
 
-        Audio::playSound(Audio::sound_id::click_press, ui::width() / 2);
+        Audio::playSound(Audio::sound_id::click_press, Ui::width() / 2);
     }
 
     static void loc_4BED04()
@@ -101,7 +101,7 @@ namespace OpenLoco::Input
             regs.cx = w->number;
             regs.bl = GameCommandFlag::apply;
             GameCommands::doCommand(77, regs);
-            Audio::playSound(Audio::sound_id::click_press, ui::width() / 2);
+            Audio::playSound(Audio::sound_id::click_press, Ui::width() / 2);
 
             return;
         }
@@ -113,7 +113,7 @@ namespace OpenLoco::Input
         regs.bl = GameCommandFlag::apply;
         GameCommands::doCommand(78, regs);
 
-        Audio::playSound(Audio::sound_id::click_press, ui::width() / 2);
+        Audio::playSound(Audio::sound_id::click_press, Ui::width() / 2);
     }
 
     static void loc_4BEFEF()
@@ -130,13 +130,13 @@ namespace OpenLoco::Input
                 if ((_keyModifier & key_modifier::unknown) == 0)
                     return;
 
-                tooltip::closeAndReset();
+                ToolTip::closeAndReset();
 
                 auto tutStringId = tutorial::nextString();
                 auto main = WindowManager::getMainWindow();
                 auto cursor = getMouseLocation();
 
-                tooltip::update(main, 0, tutStringId, cursor.x, cursor.y);
+                ToolTip::update(main, 0, tutStringId, cursor.x, cursor.y);
                 break;
             }
 
@@ -287,7 +287,7 @@ namespace OpenLoco::Input
                 if (tryShortcut(Shortcut::screenshot, eax->keyCode, _keyModifier))
                     continue;
 
-                ui::textinput::sub_4CE910(eax->charCode, eax->keyCode);
+                Ui::TextInput::sub_4CE910(eax->charCode, eax->keyCode);
                 continue;
             }
 
@@ -381,13 +381,13 @@ namespace OpenLoco::Input
         if (cursor.x == 0)
             delta.x -= 12;
 
-        if (cursor.x == ui::width() - 1)
+        if (cursor.x == Ui::width() - 1)
             delta.x += 12;
 
         if (cursor.y == 0)
             delta.y -= 12;
 
-        if (cursor.y == ui::height() - 1)
+        if (cursor.y == Ui::height() - 1)
             delta.y += 12;
 
         if (delta.x == 0 && delta.y == 0)
@@ -469,11 +469,11 @@ namespace OpenLoco::Input
                 {
                     std::string fileName = saveScreenshot();
                     *((const char**)(&_commonFormatArgs[0])) = fileName.c_str();
-                    windows::showError(StringIds::screenshot_saved_as, StringIds::null, false);
+                    Windows::showError(StringIds::screenshot_saved_as, StringIds::null, false);
                 }
                 catch (const std::exception&)
                 {
-                    windows::showError(StringIds::screenshot_failed);
+                    Windows::showError(StringIds::screenshot_failed);
                 }
             }
         }

@@ -21,7 +21,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::ui::options
+namespace OpenLoco::Ui::Options
 {
     static void tabOnMouseUp(window* w, widget_index wi);
     static void sub_4C13BE(window* w);
@@ -227,7 +227,7 @@ namespace OpenLoco::ui::options
                 case common::widx::tab_regional:
                 case common::widx::tab_controls:
                 case common::widx::tab_miscellaneous:
-                    options::tabOnMouseUp(w, wi);
+                    Options::tabOnMouseUp(w, wi);
                     return;
 
                 case widx::landscape_smoothing:
@@ -283,11 +283,11 @@ namespace OpenLoco::ui::options
         static void constructionMarkerMouseDown(window* w, widget_index wi)
         {
             widget_t dropdown = w->widgets[widx::construction_marker];
-            dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], 2, 0x80);
+            Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], 2, 0x80);
 
-            dropdown::add(0, StringIds::dropdown_stringid, StringIds::white);
-            dropdown::add(1, StringIds::dropdown_stringid, StringIds::translucent);
-            dropdown::setItemSelected(config::get().construction_marker);
+            Dropdown::add(0, StringIds::dropdown_stringid, StringIds::white);
+            Dropdown::add(1, StringIds::dropdown_stringid, StringIds::translucent);
+            Dropdown::setItemSelected(config::get().construction_marker);
         }
 
         // 0x004BFE98
@@ -311,13 +311,13 @@ namespace OpenLoco::ui::options
         static void vehicleZoomMouseDown(window* w, widget_index wi)
         {
             widget_t dropdown = w->widgets[widx::vehicles_min_scale];
-            dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], 4, 0x80);
+            Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], 4, 0x80);
 
-            dropdown::add(0, StringIds::dropdown_stringid, StringIds::full_scale);
-            dropdown::add(1, StringIds::dropdown_stringid, StringIds::half_scale);
-            dropdown::add(2, StringIds::dropdown_stringid, StringIds::quarter_scale);
-            dropdown::add(3, StringIds::dropdown_stringid, StringIds::eighth_scale);
-            dropdown::setItemSelected(config::get().vehicles_min_scale);
+            Dropdown::add(0, StringIds::dropdown_stringid, StringIds::full_scale);
+            Dropdown::add(1, StringIds::dropdown_stringid, StringIds::half_scale);
+            Dropdown::add(2, StringIds::dropdown_stringid, StringIds::quarter_scale);
+            Dropdown::add(3, StringIds::dropdown_stringid, StringIds::eighth_scale);
+            Dropdown::setItemSelected(config::get().vehicles_min_scale);
         }
 
         // 0x004BFF4C
@@ -341,13 +341,13 @@ namespace OpenLoco::ui::options
         static void stationNamesScaleMouseDown(window* w, widget_index wi)
         {
             widget_t dropdown = w->widgets[widx::station_names_min_scale];
-            dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], 4, 0x80);
+            Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], 4, 0x80);
 
-            dropdown::add(0, StringIds::dropdown_stringid, StringIds::full_scale);
-            dropdown::add(1, StringIds::dropdown_stringid, StringIds::half_scale);
-            dropdown::add(2, StringIds::dropdown_stringid, StringIds::quarter_scale);
-            dropdown::add(3, StringIds::dropdown_stringid, StringIds::eighth_scale);
-            dropdown::setItemSelected(config::get().station_names_min_scale);
+            Dropdown::add(0, StringIds::dropdown_stringid, StringIds::full_scale);
+            Dropdown::add(1, StringIds::dropdown_stringid, StringIds::half_scale);
+            Dropdown::add(2, StringIds::dropdown_stringid, StringIds::quarter_scale);
+            Dropdown::add(3, StringIds::dropdown_stringid, StringIds::eighth_scale);
+            Dropdown::setItemSelected(config::get().station_names_min_scale);
         }
 
         // 0x004C0000
@@ -384,14 +384,14 @@ namespace OpenLoco::ui::options
         static void screenModeMouseDown(window* w, widget_index wi)
         {
             widget_t dropdown = w->widgets[widx::screen_mode];
-            dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], 3, 0x80);
+            Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], 3, 0x80);
 
-            dropdown::add(0, StringIds::dropdown_stringid, StringIds::options_mode_windowed);
-            dropdown::add(1, StringIds::dropdown_stringid, StringIds::options_mode_fullscreen);
-            dropdown::add(2, StringIds::dropdown_stringid, StringIds::options_mode_fullscreen_window);
+            Dropdown::add(0, StringIds::dropdown_stringid, StringIds::options_mode_windowed);
+            Dropdown::add(1, StringIds::dropdown_stringid, StringIds::options_mode_fullscreen);
+            Dropdown::add(2, StringIds::dropdown_stringid, StringIds::options_mode_fullscreen_window);
 
             auto selection = static_cast<uint16_t>(config::getNew().display.mode);
-            dropdown::setItemSelected(selection);
+            Dropdown::setItemSelected(selection);
         }
 
         static void screenModeDropdown(window* w, int16_t selection)
@@ -404,7 +404,7 @@ namespace OpenLoco::ui::options
                 return;
 
 #if !(defined(__APPLE__) && defined(__MACH__))
-            ui::setDisplayMode(new_mode);
+            Ui::setDisplayMode(new_mode);
 #endif
         }
 
@@ -416,14 +416,14 @@ namespace OpenLoco::ui::options
             std::vector<Resolution> resolutions = getFullscreenResolutions();
 
             widget_t dropdown = w->widgets[widx::display_resolution];
-            dropdown::showText2(w->x + dropdown.left, w->y + dropdown.top, dropdown.width(), dropdown.height(), w->colours[1], resolutions.size(), 0x80);
+            Dropdown::showText2(w->x + dropdown.left, w->y + dropdown.top, dropdown.width(), dropdown.height(), w->colours[1], resolutions.size(), 0x80);
 
             auto& cfg = config::getNew();
             for (size_t i = 0; i < resolutions.size(); i++)
             {
-                dropdown::add(i, StringIds::dropdown_stringid, { StringIds::display_resolution_dropdown_format, (uint16_t)resolutions[i].width, (uint16_t)resolutions[i].height });
+                Dropdown::add(i, StringIds::dropdown_stringid, { StringIds::display_resolution_dropdown_format, (uint16_t)resolutions[i].width, (uint16_t)resolutions[i].height });
                 if (cfg.display.fullscreen_resolution.width == resolutions[i].width && cfg.display.fullscreen_resolution.height == resolutions[i].height)
-                    dropdown::setItemSelected((int16_t)i);
+                    Dropdown::setItemSelected((int16_t)i);
             }
         }
 
@@ -433,14 +433,14 @@ namespace OpenLoco::ui::options
             if (index == -1)
                 return;
             std::vector<Resolution> resolutions = getFullscreenResolutions();
-            ui::setDisplayMode(config::screen_mode::fullscreen, { resolutions[index].width, resolutions[index].height });
+            Ui::setDisplayMode(config::screen_mode::fullscreen, { resolutions[index].width, resolutions[index].height });
         }
 
 #pragma mark -
 
         static void displayScaleMouseDown(window* w, widget_index wi, float adjust_by)
         {
-            OpenLoco::ui::adjustWindowScale(adjust_by);
+            OpenLoco::Ui::adjustWindowScale(adjust_by);
         }
 
         // 0x004BFBB7
@@ -464,10 +464,10 @@ namespace OpenLoco::ui::options
                     stationNamesScaleMouseDown(w, wi);
                     break;
                 case widx::display_scale_down_btn:
-                    displayScaleMouseDown(w, wi, -OpenLoco::ui::ScaleFactor::step);
+                    displayScaleMouseDown(w, wi, -OpenLoco::Ui::ScaleFactor::step);
                     break;
                 case widx::display_scale_up_btn:
-                    displayScaleMouseDown(w, wi, OpenLoco::ui::ScaleFactor::step);
+                    displayScaleMouseDown(w, wi, OpenLoco::Ui::ScaleFactor::step);
                     break;
             }
         }
@@ -568,12 +568,12 @@ namespace OpenLoco::ui::options
                 w->activated_widgets |= (1 << widx::gridlines_on_landscape);
             }
 
-            if (config::getNew().scale_factor <= OpenLoco::ui::ScaleFactor::min)
+            if (config::getNew().scale_factor <= OpenLoco::Ui::ScaleFactor::min)
                 w->disabled_widgets |= (1 << widx::display_scale_down_btn);
             else
                 w->disabled_widgets &= ~(1 << widx::display_scale_down_btn);
 
-            if (config::getNew().scale_factor >= OpenLoco::ui::ScaleFactor::max)
+            if (config::getNew().scale_factor >= OpenLoco::Ui::ScaleFactor::max)
                 w->disabled_widgets |= (1 << widx::display_scale_up_btn);
             else
                 w->disabled_widgets &= ~(1 << widx::display_scale_up_btn);
@@ -669,9 +669,9 @@ namespace OpenLoco::ui::options
 
         static window_event_list _events;
 
-        static void audioDeviceMouseDown(ui::window* window);
-        static void audioDeviceDropdown(ui::window* window, int16_t itemIndex);
-        static void playTitleMusicOnMouseUp(ui::window* window);
+        static void audioDeviceMouseDown(Ui::window* window);
+        static void audioDeviceDropdown(Ui::window* window, int16_t itemIndex);
+        static void playTitleMusicOnMouseUp(Ui::window* window);
 
         // 0x004C0217
         static void prepareDraw(window* w)
@@ -732,7 +732,7 @@ namespace OpenLoco::ui::options
                 case common::widx::tab_regional:
                 case common::widx::tab_controls:
                 case common::widx::tab_miscellaneous:
-                    options::tabOnMouseUp(w, wi);
+                    Options::tabOnMouseUp(w, wi);
                     return;
 
                 case widx::play_title_music:
@@ -751,7 +751,7 @@ namespace OpenLoco::ui::options
             }
         }
 
-        static void onDropdown(ui::window* window, widget_index widgetIndex, int16_t itemIndex)
+        static void onDropdown(Ui::window* window, widget_index widgetIndex, int16_t itemIndex)
         {
             switch (widgetIndex)
             {
@@ -764,29 +764,29 @@ namespace OpenLoco::ui::options
 #pragma mark - Widget 11
 
         // 0x004C043D
-        static void audioDeviceMouseDown(ui::window* w)
+        static void audioDeviceMouseDown(Ui::window* w)
         {
             const auto& devices = Audio::getDevices();
             if (devices.size() != 0)
             {
                 widget_t dropdown = w->widgets[widx::audio_device];
-                dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], devices.size(), 0x80);
+                Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], devices.size(), 0x80);
                 for (size_t i = 0; i < devices.size(); i++)
                 {
                     auto name = devices[i].c_str();
-                    dropdown::add(i, StringIds::dropdown_stringid, { StringIds::stringptr, name });
+                    Dropdown::add(i, StringIds::dropdown_stringid, { StringIds::stringptr, name });
                 }
 
                 auto currentDevice = Audio::getCurrentDevice();
                 if (currentDevice != std::numeric_limits<size_t>().max())
                 {
-                    dropdown::setItemSelected((int16_t)currentDevice);
+                    Dropdown::setItemSelected((int16_t)currentDevice);
                 }
             }
         }
 
         // 0x004C04CA
-        static void audioDeviceDropdown(ui::window* w, int16_t itemIndex)
+        static void audioDeviceDropdown(Ui::window* w, int16_t itemIndex)
         {
             if (itemIndex != -1)
             {
@@ -961,7 +961,7 @@ namespace OpenLoco::ui::options
                 case common::widx::tab_regional:
                 case common::widx::tab_controls:
                 case common::widx::tab_miscellaneous:
-                    options::tabOnMouseUp(w, wi);
+                    Options::tabOnMouseUp(w, wi);
                     return;
 
                 case widx::music_controls_stop:
@@ -977,7 +977,7 @@ namespace OpenLoco::ui::options
                     return;
 
                 case widx::edit_selection:
-                    windows::music_selection::open();
+                    Windows::MusicSelection::open();
                     return;
             }
         }
@@ -1000,7 +1000,7 @@ namespace OpenLoco::ui::options
         }
 
         // 0x004C070D
-        static void onDropdown(ui::window* window, widget_index widgetIndex, int16_t itemIndex)
+        static void onDropdown(Ui::window* window, widget_index widgetIndex, int16_t itemIndex)
         {
             switch (widgetIndex)
             {
@@ -1080,13 +1080,13 @@ namespace OpenLoco::ui::options
         static void musicPlaylistMouseDown(window* w)
         {
             widget_t dropdown = w->widgets[widx::music_playlist];
-            dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], 3, 0x80);
+            Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], 3, 0x80);
 
-            dropdown::add(0, StringIds::dropdown_stringid, StringIds::play_only_music_from_current_era);
-            dropdown::add(1, StringIds::dropdown_stringid, StringIds::play_all_music);
-            dropdown::add(2, StringIds::dropdown_stringid, StringIds::play_custom_music_selection);
+            Dropdown::add(0, StringIds::dropdown_stringid, StringIds::play_only_music_from_current_era);
+            Dropdown::add(1, StringIds::dropdown_stringid, StringIds::play_all_music);
+            Dropdown::add(2, StringIds::dropdown_stringid, StringIds::play_custom_music_selection);
 
-            dropdown::setItemSelected((uint8_t)config::get().music_playlist);
+            Dropdown::setItemSelected((uint8_t)config::get().music_playlist);
         }
 
         // 0x004C084A
@@ -1159,16 +1159,16 @@ namespace OpenLoco::ui::options
             auto tracks = get_available_tracks();
 
             widget_t dropdown = w->widgets[widx::currently_playing];
-            dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], tracks.size(), 0x80);
+            Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], tracks.size(), 0x80);
 
             int index = -1;
             for (auto track : tracks)
             {
                 index++;
-                dropdown::add(index, StringIds::dropdown_stringid, Audio::getMusicInfo(track)->title_id);
+                Dropdown::add(index, StringIds::dropdown_stringid, Audio::getMusicInfo(track)->title_id);
                 if (track == _currentSong)
                 {
-                    dropdown::setItemSelected(index);
+                    Dropdown::setItemSelected(index);
                 }
             }
         }
@@ -1362,7 +1362,7 @@ namespace OpenLoco::ui::options
                 case common::widx::tab_regional:
                 case common::widx::tab_controls:
                 case common::widx::tab_miscellaneous:
-                    options::tabOnMouseUp(w, wi);
+                    Options::tabOnMouseUp(w, wi);
                     return;
 
                 case widx::preferred_currency_for_new_games:
@@ -1399,7 +1399,7 @@ namespace OpenLoco::ui::options
         }
 
         // 0x004C0C4A
-        static void onDropdown(ui::window* window, widget_index widgetIndex, int16_t itemIndex)
+        static void onDropdown(Ui::window* window, widget_index widgetIndex, int16_t itemIndex)
         {
             switch (widgetIndex)
             {
@@ -1433,17 +1433,17 @@ namespace OpenLoco::ui::options
             uint8_t num_languages = static_cast<uint8_t>(lds.size());
 
             widget_t dropdown = w->widgets[widx::language];
-            dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], num_languages - 1, 0x80);
+            Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], num_languages - 1, 0x80);
 
             std::string& current_language = config::getNew().language;
 
             for (uint8_t index = 1; index < num_languages; index++)
             {
                 auto& ld = lds[index];
-                dropdown::add(index - 1, StringIds::dropdown_stringptr, (char*)ld.native_name.c_str());
+                Dropdown::add(index - 1, StringIds::dropdown_stringptr, (char*)ld.native_name.c_str());
 
                 if (ld.locale == current_language)
-                    dropdown::setItemSelected(index - 1);
+                    Dropdown::setItemSelected(index - 1);
             }
         }
 
@@ -1469,16 +1469,16 @@ namespace OpenLoco::ui::options
             uint8_t* _11364A0 = (uint8_t*)*__11364A0;
 
             widget_t dropdown = w->widgets[widx::currency];
-            dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], _112C185, 0x80);
+            Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], _112C185, 0x80);
             int index = -1;
             for (auto object : ObjectManager::getAvailableObjects(object_type::currency))
             {
                 index++;
-                dropdown::add(index, StringIds::dropdown_stringptr, object.second._name);
+                Dropdown::add(index, StringIds::dropdown_stringptr, object.second._name);
 
                 if (_11364A0[object.first] & 1)
                 {
-                    dropdown::setItemSelected(index);
+                    Dropdown::setItemSelected(index);
                 }
             }
         }
@@ -1531,13 +1531,13 @@ namespace OpenLoco::ui::options
         static void preferredCurrencyMouseDown(window* w)
         {
             widget_t dropdown = w->widgets[widx::preferred_currency];
-            dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], _112C185, 0x80);
+            Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], _112C185, 0x80);
 
             int index = -1;
             for (auto object : ObjectManager::getAvailableObjects(object_type::currency))
             {
                 index++;
-                dropdown::add(index, StringIds::dropdown_stringptr, object.second._name);
+                Dropdown::add(index, StringIds::dropdown_stringptr, object.second._name);
 
                 // TODO: Mark current value as selected
             }
@@ -1615,11 +1615,11 @@ namespace OpenLoco::ui::options
         static void distanceSpeedMouseDown(window* w)
         {
             widget_t dropdown = w->widgets[widx::distance_speed];
-            dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], 2, 0x80);
+            Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], 2, 0x80);
 
-            dropdown::add(0, StringIds::dropdown_stringid, StringIds::imperial);
-            dropdown::add(1, StringIds::dropdown_stringid, StringIds::metric);
-            dropdown::setItemSelected(config::get().measurement_format);
+            Dropdown::add(0, StringIds::dropdown_stringid, StringIds::imperial);
+            Dropdown::add(1, StringIds::dropdown_stringid, StringIds::metric);
+            Dropdown::setItemSelected(config::get().measurement_format);
         }
 
         // 0x004C0FB3
@@ -1646,17 +1646,17 @@ namespace OpenLoco::ui::options
         static void heightsLabelsMouseDown(window* w)
         {
             widget_t dropdown = w->widgets[widx::heights];
-            dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], 2, 0x80);
+            Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], 2, 0x80);
 
-            dropdown::add(0, StringIds::dropdown_stringid, StringIds::height_units);
-            dropdown::add(1, StringIds::dropdown_stringid, StringIds::height_real_values);
+            Dropdown::add(0, StringIds::dropdown_stringid, StringIds::height_units);
+            Dropdown::add(1, StringIds::dropdown_stringid, StringIds::height_real_values);
 
             int selectedItem = 0;
             if ((config::get().flags & config::flags::show_height_as_units) == 0)
             {
                 selectedItem = 1;
             }
-            dropdown::setItemSelected(selectedItem);
+            Dropdown::setItemSelected(selectedItem);
         }
 
         // 0x004C106C
@@ -1785,7 +1785,7 @@ namespace OpenLoco::ui::options
                 case common::widx::tab_regional:
                 case common::widx::tab_controls:
                 case common::widx::tab_miscellaneous:
-                    options::tabOnMouseUp(w, wi);
+                    Options::tabOnMouseUp(w, wi);
                     return;
 
                 case widx::customize_keys:
@@ -1965,7 +1965,7 @@ namespace OpenLoco::ui::options
                 case common::widx::tab_regional:
                 case common::widx::tab_controls:
                 case common::widx::tab_miscellaneous:
-                    options::tabOnMouseUp(w, wi);
+                    Options::tabOnMouseUp(w, wi);
                     return;
 
                 case widx::disable_vehicle_breakdowns:
@@ -2009,7 +2009,7 @@ namespace OpenLoco::ui::options
             strcpy(buffer, playerName);
             buffer[strlen(playerName)] = '\0';
 
-            textinput::openTextinput(w, StringIds::preferred_owner_name, StringIds::enter_preferred_owner_name, StringIds::buffer_2039, widx::use_preferred_owner_name, nullptr);
+            TextInput::openTextInput(w, StringIds::preferred_owner_name, StringIds::enter_preferred_owner_name, StringIds::buffer_2039, widx::use_preferred_owner_name, nullptr);
         }
 
         // 0x004C1342
@@ -2232,7 +2232,7 @@ namespace OpenLoco::ui::options
     {
         Input::toolCancel(w->type, w->number);
 
-        textinput::sub_4CE6C9(w->type, w->number);
+        TextInput::sub_4CE6C9(w->type, w->number);
         w->current_tab = wi - common::widx::tab_display;
         w->frame_no = 0;
         w->flags &= ~(window_flags::flag_16);

@@ -13,10 +13,10 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::ui::windows::error
+namespace OpenLoco::Ui::Windows::Error
 {
     static loco_global<uint8_t, 0x00508F09> _suppressErrorSound;
-    static loco_global<ui::widget_t[1], 0x00508F1C> _widgets;
+    static loco_global<Ui::widget_t[1], 0x00508F1C> _widgets;
     static loco_global<char[512], 0x009C64B3> _byte_9C64B3;
     static loco_global<uint16_t, 0x009C66B3> _word_9C66B3;
     static loco_global<uint8_t, 0x009C68EC> _errorCompetitorId;
@@ -28,8 +28,8 @@ namespace OpenLoco::ui::windows::error
     {
         static window_event_list events;
 
-        static void draw(ui::window* self, Gfx::drawpixelinfo_t* dpi);
-        static void onPeriodicUpdate(ui::window* self);
+        static void draw(Ui::window* self, Gfx::drawpixelinfo_t* dpi);
+        static void onPeriodicUpdate(Ui::window* self);
         static void initEvents();
     }
     namespace error
@@ -125,7 +125,7 @@ namespace OpenLoco::ui::windows::error
 
             int x, y;
 
-            int maxY = ui::height() - height;
+            int maxY = Ui::height() - height;
             y = _cursorY + 26; // Normally, we'd display the tooltip 26 lower
             if (y > maxY)
             {
@@ -135,7 +135,7 @@ namespace OpenLoco::ui::windows::error
             }
             y = std::clamp(y, 22, maxY);
 
-            x = std::clamp(_cursorX - (width / 2), 0, ui::width() - width);
+            x = std::clamp(_cursorX - (width / 2), 0, Ui::width() - width);
 
             Gfx::ui_size_t windowSize = { width, height };
 
@@ -190,14 +190,14 @@ namespace OpenLoco::ui::windows::error
         registerHook(
             0x00431A8A,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                ui::windows::error::open(regs.bx, regs.dx);
+                Ui::Windows::Error::open(regs.bx, regs.dx);
                 return 0;
             });
 
         registerHook(
             0x00431908,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                ui::windows::error::openWithCompetitor(regs.bx, regs.dx, regs.al);
+                Ui::Windows::Error::openWithCompetitor(regs.bx, regs.dx, regs.al);
                 return 0;
             });
     }
@@ -205,7 +205,7 @@ namespace OpenLoco::ui::windows::error
     namespace common
     {
         // 0x00431C05
-        static void draw(ui::window* self, Gfx::drawpixelinfo_t* dpi)
+        static void draw(Ui::window* self, Gfx::drawpixelinfo_t* dpi)
         {
             uint16_t x = self->x;
             uint16_t y = self->y;
@@ -254,7 +254,7 @@ namespace OpenLoco::ui::windows::error
         }
 
         // 0x00431E1B
-        static void onPeriodicUpdate(ui::window* self)
+        static void onPeriodicUpdate(Ui::window* self)
         {
             self->var_846++;
             if (self->var_846 >= 7)

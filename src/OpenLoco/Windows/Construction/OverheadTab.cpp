@@ -14,7 +14,7 @@ using namespace OpenLoco::Interop;
 using namespace OpenLoco::Map;
 using namespace OpenLoco::Map::TileManager;
 
-namespace OpenLoco::ui::windows::construction::overhead
+namespace OpenLoco::Ui::Windows::Construction::overhead
 {
     static loco_global<int32_t, 0x00E3F0B8> gCurrentRotation;
 
@@ -81,13 +81,13 @@ namespace OpenLoco::ui::windows::construction::overhead
                 auto width = widget.width() + 2;
                 auto height = widget.height();
 
-                dropdown::show(xPos, yPos, width, height, self->colours[1], modCount, (1 << 7));
+                Dropdown::show(xPos, yPos, width, height, self->colours[1], modCount, (1 << 7));
 
-                dropdown::add(0, StringIds::single_section);
-                dropdown::add(1, StringIds::block_section);
-                dropdown::add(2, StringIds::all_connected_track);
+                Dropdown::add(0, StringIds::single_section);
+                Dropdown::add(1, StringIds::block_section);
+                Dropdown::add(2, StringIds::all_connected_track);
 
-                dropdown::setHighlightedItem(_lastSelectedTrackModSection);
+                Dropdown::setHighlightedItem(_lastSelectedTrackModSection);
                 break;
             }
 

@@ -19,7 +19,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::ui::windows::town_list
+namespace OpenLoco::Ui::Windows::TownList
 {
     static loco_global<uint32_t, 0x01135C34> dword_1135C34;
     static loco_global<colour_t, 0x01135C61> _buildingColour;
@@ -28,7 +28,7 @@ namespace OpenLoco::ui::windows::town_list
     static loco_global<uint8_t, 0x01135C66> _townSize;
     static loco_global<uint8_t, 0x00525FC8> _lastSelectedBuilding;
     static loco_global<uint8_t, 0x00525FC9> _lastSelectedMiscBuilding;
-    static loco_global<ui::WindowType, 0x00523392> _toolWindowType;
+    static loco_global<Ui::WindowType, 0x00523392> _toolWindowType;
     static loco_global<uint16_t, 0x00523390> _toolWindowNumber;
 
     namespace common
@@ -106,7 +106,7 @@ namespace OpenLoco::ui::windows::town_list
         };
 
         // 0x00499F53
-        static void prepareDraw(ui::window* self)
+        static void prepareDraw(Ui::window* self)
         {
             common::prepareDraw(self);
 
@@ -135,7 +135,7 @@ namespace OpenLoco::ui::windows::town_list
         }
 
         // 0x0049A0F8
-        static void drawScroll(ui::window* self, Gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
+        static void drawScroll(Ui::window* self, Gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
         {
             auto shade = Colour::getShade(self->colours[1], 3);
             Gfx::clearSingle(*dpi, shade);
@@ -200,7 +200,7 @@ namespace OpenLoco::ui::windows::town_list
         }
 
         // 0x0049A0A7
-        static void draw(ui::window* self, Gfx::drawpixelinfo_t* dpi)
+        static void draw(Ui::window* self, Gfx::drawpixelinfo_t* dpi)
         {
             self->draw(dpi);
             common::drawTabs(self, dpi);
@@ -218,7 +218,7 @@ namespace OpenLoco::ui::windows::town_list
         }
 
         // 0x0049A27F
-        static void onMouseUp(ui::window* self, widget_index widgetIndex)
+        static void onMouseUp(Ui::window* self, widget_index widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -254,7 +254,7 @@ namespace OpenLoco::ui::windows::town_list
         }
 
         // 0x0049A56D
-        static void onScrollMouseDown(ui::window* self, int16_t x, int16_t y, uint8_t scroll_index)
+        static void onScrollMouseDown(Ui::window* self, int16_t x, int16_t y, uint8_t scroll_index)
         {
             uint16_t currentRow = y / rowHeight;
             if (currentRow > self->var_83C)
@@ -264,11 +264,11 @@ namespace OpenLoco::ui::windows::town_list
             if (currentTown == -1)
                 return;
 
-            windows::town::open(currentTown);
+            Windows::Town::open(currentTown);
         }
 
         // 0x0049A532
-        static void onScrollMouseOver(ui::window* self, int16_t x, int16_t y, uint8_t scroll_index)
+        static void onScrollMouseOver(Ui::window* self, int16_t x, int16_t y, uint8_t scroll_index)
         {
             self->flags &= ~(window_flags::not_scroll_view);
 
@@ -453,19 +453,19 @@ namespace OpenLoco::ui::windows::town_list
         }
 
         // 0x0049A4FA
-        static void getScrollSize(ui::window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+        static void getScrollSize(Ui::window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
         {
             *scrollHeight = rowHeight * self->var_83C;
         }
 
         // 0x00491841
-        static void tooltip(FormatArguments& args, ui::window* window, widget_index widgetIndex)
+        static void tooltip(FormatArguments& args, Ui::window* window, widget_index widgetIndex)
         {
             args.push(StringIds::tooltip_scroll_town_list);
         }
 
         // 0x004919A4
-        static ui::cursor_id cursor(window* self, int16_t widgetIdx, int16_t xPos, int16_t yPos, ui::cursor_id fallback)
+        static Ui::cursor_id cursor(window* self, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::cursor_id fallback)
         {
             if (widgetIdx != widx::scrollview)
                 return fallback;
@@ -520,7 +520,7 @@ namespace OpenLoco::ui::windows::town_list
         else
         {
             // 0x00499CFC
-            auto origin = Gfx::point_t(ui::width() - town_list::windowSize.width, 30);
+            auto origin = Gfx::point_t(Ui::width() - town_list::windowSize.width, 30);
 
             window = WindowManager::createWindow(
                 WindowType::townList,
@@ -600,7 +600,7 @@ namespace OpenLoco::ui::windows::town_list
         static window_event_list events;
 
         // 0x0049A59A
-        static void prepareDraw(ui::window* self)
+        static void prepareDraw(Ui::window* self)
         {
             common::prepareDraw(self);
 
@@ -622,7 +622,7 @@ namespace OpenLoco::ui::windows::town_list
         }
 
         // 0x0049A627
-        static void draw(ui::window* self, Gfx::drawpixelinfo_t* dpi)
+        static void draw(Ui::window* self, Gfx::drawpixelinfo_t* dpi)
         {
             self->draw(dpi);
             common::drawTabs(self, dpi);
@@ -633,7 +633,7 @@ namespace OpenLoco::ui::windows::town_list
         }
 
         // 0x0049A675
-        static void onMouseUp(ui::window* self, widget_index widgetIndex)
+        static void onMouseUp(Ui::window* self, widget_index widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -663,7 +663,7 @@ namespace OpenLoco::ui::windows::town_list
         }
 
         // 0x0049A697
-        static void onDropdown(window* self, ui::widget_index widgetIndex, int16_t itemIndex)
+        static void onDropdown(window* self, Ui::widget_index widgetIndex, int16_t itemIndex)
         {
             if (widgetIndex != widx::select_size)
                 return;
@@ -678,7 +678,7 @@ namespace OpenLoco::ui::windows::town_list
         // 0x0049A7C1
         static void onToolAbort(window& self, const widget_index widgetIndex)
         {
-            ui::windows::hideGridlines();
+            Ui::Windows::hideGridlines();
         }
 
         // 0x0049A710
@@ -744,7 +744,7 @@ namespace OpenLoco::ui::windows::town_list
             self->height = windowSize.height;
             Input::toolSet(self, common::widx::tab_build_town, 38);
             Input::setFlag(Input::input_flags::flag6);
-            ui::windows::showGridlines();
+            Ui::Windows::showGridlines();
         }
 
         static void initEvents()
@@ -789,7 +789,7 @@ namespace OpenLoco::ui::windows::town_list
         static window_event_list events;
 
         // 0x0049A8A6
-        static void prepareDraw(ui::window* self)
+        static void prepareDraw(Ui::window* self)
         {
             self->widgets[widx::object_colour].image = (1 << 30) | Gfx::recolour(ImageIds::colour_swatch_recolourable, _buildingColour);
             self->widgets[widx::object_colour].type = widget_type::none;
@@ -821,7 +821,7 @@ namespace OpenLoco::ui::windows::town_list
         }
 
         // 0x0049A9C2
-        static void draw(ui::window* self, Gfx::drawpixelinfo_t* dpi)
+        static void draw(Ui::window* self, Gfx::drawpixelinfo_t* dpi)
         {
             self->draw(dpi);
             common::drawTabs(self, dpi);
@@ -842,7 +842,7 @@ namespace OpenLoco::ui::windows::town_list
         }
 
         // 0x0049AB31
-        static void onMouseUp(ui::window* self, widget_index widgetIndex)
+        static void onMouseUp(Ui::window* self, widget_index widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -893,7 +893,7 @@ namespace OpenLoco::ui::windows::town_list
                             if (self->saved_view.mapX >= 8)
                             {
                                 auto y = std::min(self->scroll_areas[0].contentHeight - 1 + 60, 500);
-                                if (ui::height() < 600)
+                                if (Ui::height() < 600)
                                 {
                                     y = std::min(y, 276);
                                 }
@@ -936,14 +936,14 @@ namespace OpenLoco::ui::windows::town_list
         }
 
         // 0x0049AB59
-        static void onDropdown(window* self, ui::widget_index widgetIndex, int16_t itemIndex)
+        static void onDropdown(window* self, Ui::widget_index widgetIndex, int16_t itemIndex)
         {
             if (widgetIndex != widx::object_colour)
                 return;
             if (itemIndex == -1)
                 return;
 
-            _buildingColour = dropdown::getItemArgument(itemIndex, 4);
+            _buildingColour = Dropdown::getItemArgument(itemIndex, 4);
             self->invalidate();
         }
 
@@ -958,7 +958,7 @@ namespace OpenLoco::ui::windows::town_list
         static void onToolAbort(window& self, const widget_index widgetIndex)
         {
             sub_49B37F();
-            ui::windows::hideGridlines();
+            Ui::Windows::hideGridlines();
         }
 
         // 0x0049ABF0
@@ -1017,7 +1017,7 @@ namespace OpenLoco::ui::windows::town_list
 
             self->scroll_areas[0].contentOffsetY = i;
 
-            ui::scrollview::updateThumbs(self, widx::scrollview);
+            Ui::ScrollView::updateThumbs(self, widx::scrollview);
         }
 
         // 0x0049AF98
@@ -1032,7 +1032,7 @@ namespace OpenLoco::ui::windows::town_list
         }
 
         // 0x0049AE83
-        static void getScrollSize(ui::window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+        static void getScrollSize(Ui::window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
         {
             *scrollHeight = (4 + self->var_83C) / 5;
             if (*scrollHeight == 0)
@@ -1041,7 +1041,7 @@ namespace OpenLoco::ui::windows::town_list
         }
 
         // 0x0049ABBB
-        static void tooltip(FormatArguments& args, ui::window* window, widget_index widgetIndex)
+        static void tooltip(FormatArguments& args, Ui::window* window, widget_index widgetIndex)
         {
             args.push(StringIds::tooltip_scroll_building_list);
         }
@@ -1060,7 +1060,7 @@ namespace OpenLoco::ui::windows::town_list
         }
 
         // 0x0049AA1C
-        static void drawScroll(ui::window* self, Gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
+        static void drawScroll(Ui::window* self, Gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
         {
             auto shade = Colour::getShade(self->colours[1], 3);
             Gfx::clearSingle(*dpi, shade);
@@ -1130,7 +1130,7 @@ namespace OpenLoco::ui::windows::town_list
         }
 
         // 0x0049AEFD
-        static void onScrollMouseDown(ui::window* self, int16_t x, int16_t y, uint8_t scroll_index)
+        static void onScrollMouseDown(Ui::window* self, int16_t x, int16_t y, uint8_t scroll_index)
         {
             int16_t xPos = (x / 112);
             int16_t yPos = (y / 112) * 5;
@@ -1165,7 +1165,7 @@ namespace OpenLoco::ui::windows::town_list
         }
 
         // 0x0049AEBA
-        static void onScrollMouseOver(ui::window* self, int16_t x, int16_t y, uint8_t scroll_index)
+        static void onScrollMouseOver(Ui::window* self, int16_t x, int16_t y, uint8_t scroll_index)
         {
             auto index = getRowIndex(x, y);
             uint16_t rowInfo = y;
@@ -1270,7 +1270,7 @@ namespace OpenLoco::ui::windows::town_list
 
             Input::toolSet(self, tab, 39);
             Input::setFlag(Input::input_flags::flag6);
-            ui::windows::showGridlines();
+            Ui::Windows::showGridlines();
 
             static loco_global<uint8_t, 0x01135C60> byte_1135C60;
             byte_1135C60 = 0;

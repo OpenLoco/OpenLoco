@@ -10,7 +10,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::ui::windows::LandscapeGenerationConfirm
+namespace OpenLoco::Ui::Windows::LandscapeGenerationConfirm
 {
     static const Gfx::ui_size_t window_size = { 280, 92 };
 

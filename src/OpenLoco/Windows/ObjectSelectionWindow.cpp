@@ -4,7 +4,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::ui::windows::ObjectSelectionWindow
+namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 {
     // 0x00472A20
     window* open()

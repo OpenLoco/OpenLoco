@@ -23,7 +23,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::ui::windows::CompanyWindow
+namespace OpenLoco::Ui::Windows::CompanyWindow
 {
     static loco_global<string_id, 0x009C68E8> gGameCommandErrorTitle;
 
@@ -311,7 +311,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
                 case widx::change_owner_name:
                 {
                     auto company = companymgr::get(self->number);
-                    textinput::openTextinput(self, StringIds::title_name_owner, StringIds::prompt_enter_new_name_for_owner, company->owner_name, widgetIndex, nullptr);
+                    TextInput::openTextInput(self, StringIds::title_name_owner, StringIds::prompt_enter_new_name_for_owner, company->owner_name, widgetIndex, nullptr);
                     break;
                 }
             }
@@ -321,7 +321,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
         static void onMouseDown(window* self, widget_index widgetIndex)
         {
             if (widgetIndex == common::widx::company_select)
-                dropdown::populateCompanySelect(self, &self->widgets[widgetIndex]);
+                Dropdown::populateCompanySelect(self, &self->widgets[widgetIndex]);
         }
 
         // 0x0043228E
@@ -915,7 +915,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
             switch (widgetIndex)
             {
                 case common::widx::company_select:
-                    dropdown::populateCompanySelect(self, &self->widgets[widgetIndex]);
+                    Dropdown::populateCompanySelect(self, &self->widgets[widgetIndex]);
                     break;
 
                 case widx::build_hq:
@@ -1425,7 +1425,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
             switch (widgetIndex)
             {
                 case common::widx::company_select:
-                    dropdown::populateCompanySelect(self, &self->widgets[widgetIndex]);
+                    Dropdown::populateCompanySelect(self, &self->widgets[widgetIndex]);
                     break;
 
                 case main_colour_scheme:
@@ -1505,7 +1505,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
 
                     gGameCommandErrorTitle = StringIds::error_cant_change_colour_scheme;
 
-                    const int8_t colour = dropdown::getItemArgument(itemIndex, 2);
+                    const int8_t colour = Dropdown::getItemArgument(itemIndex, 2);
                     const auto vehicleType = widgetIndex - widx::main_colour_scheme;
 
                     GameCommands::do_19(0, colour, vehicleType, 0, self->number);
@@ -1529,7 +1529,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
 
                     gGameCommandErrorTitle = StringIds::error_cant_change_colour_scheme;
 
-                    const int8_t colour = dropdown::getItemArgument(itemIndex, 2);
+                    const int8_t colour = Dropdown::getItemArgument(itemIndex, 2);
                     const auto vehicleType = widgetIndex - widx::secondary_colour_scheme;
 
                     GameCommands::do_19(1, colour, vehicleType, 0, self->number);
@@ -1925,7 +1925,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
             switch (widgetIndex)
             {
                 case common::widx::company_select:
-                    dropdown::populateCompanySelect(self, &self->widgets[widgetIndex]);
+                    Dropdown::populateCompanySelect(self, &self->widgets[widgetIndex]);
                     break;
 
                 case widx::loan_decrease:
@@ -2002,7 +2002,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
         }
 
         // 0x00433887
-        static void tooltip(FormatArguments& args, ui::window* window, widget_index widgetIndex)
+        static void tooltip(FormatArguments& args, Ui::window* window, widget_index widgetIndex)
         {
             args.push(StringIds::tooltip_scroll_list);
         }
@@ -2201,7 +2201,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
         static void onMouseDown(window* self, widget_index widgetIndex)
         {
             if (widgetIndex == common::widx::company_select)
-                dropdown::populateCompanySelect(self, &self->widgets[widgetIndex]);
+                Dropdown::populateCompanySelect(self, &self->widgets[widgetIndex]);
         }
 
         // 0x00433C16
@@ -2447,7 +2447,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
             if (itemIndex == -1)
                 return;
 
-            company_id_t companyId = dropdown::getCompanyIdFromSelection(itemIndex);
+            company_id_t companyId = Dropdown::getCompanyIdFromSelection(itemIndex);
 
             // Try to find an open company window for this company.
             auto companyWindow = WindowManager::bringToFront(WindowType::company, companyId);
@@ -2505,7 +2505,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
             if (Input::isToolActive(self->type, self->number))
                 Input::toolCancel();
 
-            textinput::sub_4CE6C9(self->type, self->number);
+            TextInput::sub_4CE6C9(self->type, self->number);
 
             self->current_tab = widgetIndex - widx::tab_status;
             self->frame_no = 0;
@@ -2546,7 +2546,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
         static void renameCompanyPrompt(window* self, widget_index widgetIndex)
         {
             auto company = companymgr::get(self->number);
-            textinput::openTextinput(self, StringIds::title_name_company, StringIds::prompt_enter_new_company_name, company->name, widgetIndex, nullptr);
+            TextInput::openTextInput(self, StringIds::title_name_company, StringIds::prompt_enter_new_company_name, company->name, widgetIndex, nullptr);
         }
 
         // 0x0043254F

@@ -80,7 +80,7 @@ namespace OpenLoco::platform
 
         // SHBrowseForFolderW might minimize the main window,
         // so make sure that it's visible again.
-        ShowWindow((HWND)ui::hwnd(), SW_RESTORE);
+        ShowWindow((HWND)Ui::hwnd(), SW_RESTORE);
 
         return result;
     }

@@ -61,7 +61,7 @@ namespace OpenLoco
             }
         }
 
-        ui::WindowManager::invalidate(ui::WindowType::company, companyId);
+        Ui::WindowManager::invalidate(Ui::WindowType::company, companyId);
     }
 
     // Converts performance index to rating

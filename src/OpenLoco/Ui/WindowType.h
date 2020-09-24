@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-namespace OpenLoco::ui
+namespace OpenLoco::Ui
 {
     enum class WindowType : uint8_t
     {

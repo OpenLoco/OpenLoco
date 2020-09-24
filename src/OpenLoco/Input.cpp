@@ -60,8 +60,8 @@ namespace OpenLoco::Input
         if (_cursor_drag_state == 0)
         {
             _cursor_drag_state = 1;
-            ui::getCursorPos(_cursor_drag_start_x, _cursor_drag_start_y);
-            ui::hideCursor();
+            Ui::getCursorPos(_cursor_drag_start_x, _cursor_drag_start_y);
+            Ui::hideCursor();
         }
     }
 
@@ -70,8 +70,8 @@ namespace OpenLoco::Input
         if (_cursor_drag_state != 0)
         {
             _cursor_drag_state = 0;
-            ui::setCursorPos(_cursor_drag_start_x, _cursor_drag_start_y);
-            ui::showCursor();
+            Ui::setCursorPos(_cursor_drag_start_x, _cursor_drag_start_y);
+            Ui::showCursor();
         }
     }
 }

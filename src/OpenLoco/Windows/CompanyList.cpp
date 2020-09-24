@@ -17,11 +17,11 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::ui::windows::CompanyList
+namespace OpenLoco::Ui::Windows::CompanyList
 {
     static loco_global<uint8_t[32], 0x004F9442> _cargoLineColour;
-    static loco_global<ui::window_number, 0x00523390> _toolWindowNumber;
-    static loco_global<ui::WindowType, 0x00523392> _toolWindowType;
+    static loco_global<Ui::window_number, 0x00523390> _toolWindowNumber;
+    static loco_global<Ui::WindowType, 0x00523392> _toolWindowType;
     static loco_global<uint16_t[3], 0x0052624E> _word_52624E;
     static loco_global<company_id_t[3], 0x00526254> _byte_526254;
     static loco_global<uint32_t[3], 0x00526258> _dword_526258;
@@ -376,7 +376,7 @@ namespace OpenLoco::ui::windows::CompanyList
             if (currentCompany == -1)
                 return;
 
-            windows::CompanyWindow::open(currentCompany);
+            Windows::CompanyWindow::open(currentCompany);
         }
 
         // 0x00436361
@@ -404,7 +404,7 @@ namespace OpenLoco::ui::windows::CompanyList
         }
 
         // 0x0043632C
-        static ui::cursor_id cursor(window* self, int16_t widgetIdx, int16_t xPos, int16_t yPos, ui::cursor_id fallback)
+        static Ui::cursor_id cursor(window* self, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::cursor_id fallback)
         {
             if (widgetIdx != widx::scrollview)
                 return fallback;

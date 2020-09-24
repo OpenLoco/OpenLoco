@@ -169,8 +169,8 @@ namespace OpenLoco
         sound_object_id_t sound_id; // 0x44
         uint8_t pad_45[0x4A - 0x45];
         uint16_t var_4A;                       // sound-related flag(s)
-        ui::window_number sound_window_number; // 0x4C
-        ui::WindowType sound_window_type;      // 0x4E
+        Ui::window_number sound_window_number; // 0x4C
+        Ui::WindowType sound_window_type;      // 0x4E
         uint8_t pad_4F[0x56 - 0x4F];
         uint32_t var_56;
         uint8_t pad_5A[0x73 - 0x53];
@@ -294,8 +294,8 @@ namespace OpenLoco
         uint8_t pad_45[0x48 - 0x45];
         int16_t var_48;
         uint16_t var_4A;                       // sound-related flag(s) common with tail
-        ui::window_number sound_window_number; // 0x4C common with tail
-        ui::WindowType sound_window_type;      // 0x4E common with tail
+        Ui::window_number sound_window_number; // 0x4C common with tail
+        Ui::WindowType sound_window_type;      // 0x4E common with tail
         uint8_t pad_4F[0x56 - 0x4F];
         uint32_t var_56;
         uint8_t var_5A;
@@ -446,8 +446,8 @@ namespace OpenLoco
         uint8_t pad_45[0x48 - 0x45];
         int16_t var_48;
         uint16_t var_4A;                       // sound-related flag(s) common with veh_2
-        ui::window_number sound_window_number; // 0x4C common with veh_2
-        ui::WindowType sound_window_type;      // 0x4E common with veh_2
+        Ui::window_number sound_window_number; // 0x4C common with veh_2
+        Ui::WindowType sound_window_type;      // 0x4E common with veh_2
     };
     static_assert(sizeof(vehicle_tail) == 0x4F); // Can't use offset_of change this to last field if more found
 

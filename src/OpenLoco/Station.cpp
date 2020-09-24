@@ -19,7 +19,7 @@
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Map;
-using namespace OpenLoco::ui;
+using namespace OpenLoco::Ui;
 
 namespace OpenLoco
 {
@@ -709,7 +709,7 @@ namespace OpenLoco
     // 0x004CBA2D
     void station::invalidate()
     {
-        ui::viewportmgr::invalidate(this);
+        Ui::viewportmgr::invalidate(this);
     }
 
     void station::invalidateWindow()

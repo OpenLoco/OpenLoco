@@ -24,10 +24,10 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::ui::MessageWindow
+namespace OpenLoco::Ui::MessageWindow
 {
-    static loco_global<ui::window_number, 0x00523390> _toolWindowNumber;
-    static loco_global<ui::WindowType, 0x00523392> _toolWindowType;
+    static loco_global<Ui::window_number, 0x00523390> _toolWindowNumber;
+    static loco_global<Ui::WindowType, 0x00523392> _toolWindowType;
     static loco_global<company_id_t, 0x00525E3C> _playerCompany;
     static loco_global<uint16_t, 0x005271CE> _messageCount;
     static loco_global<uint16_t, 0x005271D0> _activeMessageIndex;
@@ -112,7 +112,7 @@ namespace OpenLoco::ui::MessageWindow
             if (y < scrollarea.contentOffsetY)
             {
                 scrollarea.contentOffsetY = y;
-                ui::scrollview::updateThumbs(self, widx::scrollview);
+                Ui::ScrollView::updateThumbs(self, widx::scrollview);
                 self->invalidate();
             }
         }
@@ -143,7 +143,7 @@ namespace OpenLoco::ui::MessageWindow
         }
 
         // 0x0042A8B9
-        static void scrollMouseDown(ui::window* self, int16_t x, int16_t y, uint8_t scrollIndex)
+        static void scrollMouseDown(Ui::window* self, int16_t x, int16_t y, uint8_t scrollIndex)
         {
             auto messageIndex = y / messageHeight;
 
@@ -173,7 +173,7 @@ namespace OpenLoco::ui::MessageWindow
         }
 
         // 0x0042A87C
-        static void scrollMouseOver(ui::window* self, int16_t x, int16_t y, uint8_t scrollIndex)
+        static void scrollMouseOver(Ui::window* self, int16_t x, int16_t y, uint8_t scrollIndex)
         {
             self->flags &= ~(window_flags::not_scroll_view);
 
@@ -191,7 +191,7 @@ namespace OpenLoco::ui::MessageWindow
         }
 
         // 0x0042A70C
-        static void tooltip(FormatArguments& args, ui::window* self, widget_index widgetIndex)
+        static void tooltip(FormatArguments& args, Ui::window* self, widget_index widgetIndex)
         {
             args.push(StringIds::tooltip_scroll_message_list);
         }
@@ -213,7 +213,7 @@ namespace OpenLoco::ui::MessageWindow
         }
 
         // 0x0042A5D7
-        static void drawScroll(ui::window* self, Gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
+        static void drawScroll(Ui::window* self, Gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
         {
             auto colour = Colour::getShade(self->colours[1], 4);
 
@@ -313,7 +313,7 @@ namespace OpenLoco::ui::MessageWindow
         if (window == nullptr)
         {
             int16_t y = 29;
-            int16_t x = ui::width() - 366;
+            int16_t x = Ui::width() - 366;
             Gfx::point_t origin = { x, y };
 
             window = WindowManager::createWindow(
@@ -371,7 +371,7 @@ namespace OpenLoco::ui::MessageWindow
 
         window->scroll_areas[0].contentOffsetY = scrollHeight;
 
-        ui::scrollview::updateThumbs(window, messages::widx::scrollview);
+        Ui::ScrollView::updateThumbs(window, messages::widx::scrollview);
     }
 
     namespace settings
@@ -456,22 +456,22 @@ namespace OpenLoco::ui::MessageWindow
                     auto height = widget.height() + 2;
                     auto flags = 1 << 7;
 
-                    dropdown::show(xPos, yPos, width, height, self->colours[1], 3, flags);
+                    Dropdown::show(xPos, yPos, width, height, self->colours[1], 3, flags);
 
-                    dropdown::add(0, StringIds::dropdown_stringid, StringIds::message_off);
-                    dropdown::add(1, StringIds::dropdown_stringid, StringIds::message_ticker);
-                    dropdown::add(2, StringIds::dropdown_stringid, StringIds::message_window);
+                    Dropdown::add(0, StringIds::dropdown_stringid, StringIds::message_off);
+                    Dropdown::add(1, StringIds::dropdown_stringid, StringIds::message_ticker);
+                    Dropdown::add(2, StringIds::dropdown_stringid, StringIds::message_window);
 
                     auto dropdownIndex = config::get().news_settings[(widgetIndex - 7) / 2];
 
-                    dropdown::setItemSelected(static_cast<size_t>(dropdownIndex));
+                    Dropdown::setItemSelected(static_cast<size_t>(dropdownIndex));
                     break;
                 }
             }
         }
 
         // 0x0042AAAC
-        static void onDropdown(window* self, ui::widget_index widgetIndex, int16_t itemIndex)
+        static void onDropdown(window* self, Ui::widget_index widgetIndex, int16_t itemIndex)
         {
             switch (widgetIndex)
             {

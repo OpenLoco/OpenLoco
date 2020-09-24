@@ -6,16 +6,16 @@
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Gfx;
-using namespace OpenLoco::ui;
+using namespace OpenLoco::Ui;
 
 namespace OpenLoco::Drawing
 {
-    static loco_global<ui::screen_info_t, 0x0050B884> screen_info;
+    static loco_global<Ui::screen_info_t, 0x0050B884> screen_info;
     static loco_global<uint8_t[1], 0x00E025C4> _E025C4;
 
-    static void windowDraw(drawpixelinfo_t* dpi, ui::window* w, Rect rect);
-    static void windowDraw(drawpixelinfo_t* dpi, ui::window* w, int16_t left, int16_t top, int16_t right, int16_t bottom);
-    static bool windowDrawSplit(Gfx::drawpixelinfo_t* dpi, ui::window* w, int16_t left, int16_t top, int16_t right, int16_t bottom);
+    static void windowDraw(drawpixelinfo_t* dpi, Ui::window* w, Rect rect);
+    static void windowDraw(drawpixelinfo_t* dpi, Ui::window* w, int16_t left, int16_t top, int16_t right, int16_t bottom);
+    static bool windowDrawSplit(Gfx::drawpixelinfo_t* dpi, Ui::window* w, int16_t left, int16_t top, int16_t right, int16_t bottom);
 
     // T[m][n]
     template<typename T>
@@ -156,7 +156,7 @@ namespace OpenLoco::Drawing
 
     void SoftwareDrawingEngine::drawRect(const Rect& _rect)
     {
-        auto max = Rect(0, 0, ui::width(), ui::height());
+        auto max = Rect(0, 0, Ui::width(), Ui::height());
         auto rect = _rect.intersection(max);
 
         registers regs;
@@ -175,9 +175,9 @@ namespace OpenLoco::Drawing
         windowDPI.pitch = screen_info->dpi.width + screen_info->dpi.pitch - rect.width();
         windowDPI.zoom_level = 0;
 
-        for (size_t i = 0; i < ui::WindowManager::count(); i++)
+        for (size_t i = 0; i < Ui::WindowManager::count(); i++)
         {
-            auto w = ui::WindowManager::get(i);
+            auto w = Ui::WindowManager::get(i);
 
             if (w->isTranslucent())
                 continue;
@@ -192,7 +192,7 @@ namespace OpenLoco::Drawing
         }
     }
 
-    static void windowDraw(drawpixelinfo_t* dpi, ui::window* w, Rect rect)
+    static void windowDraw(drawpixelinfo_t* dpi, Ui::window* w, Rect rect)
     {
         windowDraw(dpi, w, rect.left(), rect.top(), rect.right(), rect.bottom());
     }
@@ -206,7 +206,7 @@ namespace OpenLoco::Drawing
      * @param right @<dx>
      * @param bottom @<bp>
      */
-    static void windowDraw(drawpixelinfo_t* dpi, ui::window* w, int16_t left, int16_t top, int16_t right, int16_t bottom)
+    static void windowDraw(drawpixelinfo_t* dpi, Ui::window* w, int16_t left, int16_t top, int16_t right, int16_t bottom)
     {
         if (!w->isVisible())
             return;
@@ -226,17 +226,17 @@ namespace OpenLoco::Drawing
             return;
 
         // Draw the window in this region
-        ui::WindowManager::drawSingle(dpi, w, left, top, right, bottom);
+        Ui::WindowManager::drawSingle(dpi, w, left, top, right, bottom);
 
-        for (uint32_t index = ui::WindowManager::indexOf(w) + 1; index < ui::WindowManager::count(); index++)
+        for (uint32_t index = Ui::WindowManager::indexOf(w) + 1; index < Ui::WindowManager::count(); index++)
         {
-            auto v = ui::WindowManager::get(index);
+            auto v = Ui::WindowManager::get(index);
 
             // Don't draw overlapping opaque windows, they won't have changed
-            if ((v->flags & ui::window_flags::transparent) == 0)
+            if ((v->flags & Ui::window_flags::transparent) == 0)
                 continue;
 
-            ui::WindowManager::drawSingle(dpi, v, left, top, right, bottom);
+            Ui::WindowManager::drawSingle(dpi, v, left, top, right, bottom);
         }
     }
 
@@ -251,12 +251,12 @@ namespace OpenLoco::Drawing
      * @param bottom @<bp>
      * @return
      */
-    static bool windowDrawSplit(Gfx::drawpixelinfo_t* dpi, ui::window* w, int16_t left, int16_t top, int16_t right, int16_t bottom)
+    static bool windowDrawSplit(Gfx::drawpixelinfo_t* dpi, Ui::window* w, int16_t left, int16_t top, int16_t right, int16_t bottom)
     {
         // Divide the draws up for only the visible regions of the window recursively
-        for (uint32_t index = ui::WindowManager::indexOf(w) + 1; index < ui::WindowManager::count(); index++)
+        for (uint32_t index = Ui::WindowManager::indexOf(w) + 1; index < Ui::WindowManager::count(); index++)
         {
-            auto topwindow = ui::WindowManager::get(index);
+            auto topwindow = Ui::WindowManager::get(index);
 
             // Check if this window overlaps w
             if (topwindow->x >= right || topwindow->y >= bottom)

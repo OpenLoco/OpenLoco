@@ -175,7 +175,7 @@ namespace OpenLoco::Gfx
     void drawDirtyBlocks();
     void render();
 
-    void redrawScreenRect(ui::Rect rect);
+    void redrawScreenRect(Ui::Rect rect);
     void redrawScreenRect(int16_t left, int16_t top, int16_t right, int16_t bottom);
 
     bool clipDrawpixelinfo(Gfx::drawpixelinfo_t** dst, Gfx::drawpixelinfo_t* src, int16_t x, int16_t y, int16_t width, int16_t height);

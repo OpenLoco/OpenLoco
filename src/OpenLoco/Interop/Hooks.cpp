@@ -618,7 +618,7 @@ static void registerAudioHooks()
 
 void OpenLoco::Interop::registerHooks()
 {
-    using namespace OpenLoco::ui::windows;
+    using namespace OpenLoco::Ui::Windows;
 
     registerMemoryHooks();
 
@@ -653,19 +653,19 @@ void OpenLoco::Interop::registerHooks()
             return 0;
         });
 
-    // Replace ui::update() with our own
+    // Replace Ui::update() with our own
     registerHook(
         0x004524C1,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            ui::update();
+            Ui::update();
             return 0;
         });
 
     registerHook(
         0x00407BA3,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            auto cursor = (ui::cursor_id)regs.edx;
-            ui::setCursor(cursor);
+            auto cursor = (Ui::cursor_id)regs.edx;
+            Ui::setCursor(cursor);
             return 0;
         });
 
@@ -700,7 +700,7 @@ void OpenLoco::Interop::registerHooks()
     registerHook(
         0x00490F6C,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            ui::windows::station_list::open(regs.ax);
+            Ui::Windows::StationList::open(regs.ax);
             return 0;
         });
 
@@ -751,7 +751,7 @@ void OpenLoco::Interop::registerHooks()
         0x004CA4DF,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
-            auto window = (ui::window*)regs.esi;
+            auto window = (Ui::window*)regs.esi;
             auto dpi = (Gfx::drawpixelinfo_t*)regs.edi;
             window->draw(dpi);
             regs = backup;
@@ -767,16 +767,16 @@ void OpenLoco::Interop::registerHooks()
             return 0;
         });
 
-    ui::prompt_browse::registerHooks();
-    ui::textinput::registerHooks();
-    ui::tooltip::registerHooks();
-    ui::vehicle::registerHooks();
-    ui::BuildVehicle::registerHooks();
-    ui::windows::terraform::registerHooks();
-    ui::windows::error::registerHooks();
-    ui::windows::construction::registerHooks();
-    ui::WindowManager::registerHooks();
-    ui::viewportmgr::registerHooks();
+    Ui::PromptBrowse::registerHooks();
+    Ui::TextInput::registerHooks();
+    Ui::ToolTip::registerHooks();
+    Ui::Vehicle::registerHooks();
+    Ui::BuildVehicle::registerHooks();
+    Ui::Windows::Terraform::registerHooks();
+    Ui::Windows::Error::registerHooks();
+    Ui::Windows::Construction::registerHooks();
+    Ui::WindowManager::registerHooks();
+    Ui::viewportmgr::registerHooks();
     GameCommands::registerHooks();
     title::registerHooks();
     tutorial::registerHooks();
@@ -817,7 +817,7 @@ void OpenLoco::Interop::registerHooks()
         0x004C6456,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
-            auto window = (ui::window*)regs.esi;
+            auto window = (Ui::window*)regs.esi;
             window->viewportsUpdatePosition();
             regs = backup;
             return 0;
@@ -827,7 +827,7 @@ void OpenLoco::Interop::registerHooks()
         0x004C9513,
         [](registers& regs) -> uint8_t {
             registers backup = regs;
-            auto window = (ui::window*)regs.esi;
+            auto window = (Ui::window*)regs.esi;
             int16_t x = regs.ax;
             int16_t y = regs.bx;
 
@@ -851,7 +851,7 @@ void OpenLoco::Interop::registerHooks()
         0x004CA115,
         [](registers& regs) -> uint8_t {
             registers backup = regs;
-            auto window = (ui::window*)regs.esi;
+            auto window = (Ui::window*)regs.esi;
             window->updateScrollWidgets();
             regs = backup;
 
@@ -862,7 +862,7 @@ void OpenLoco::Interop::registerHooks()
         0x004CA17F,
         [](registers& regs) -> uint8_t {
             registers backup = regs;
-            auto window = (ui::window*)regs.esi;
+            auto window = (Ui::window*)regs.esi;
             window->initScrollWidgets();
             regs = backup;
 

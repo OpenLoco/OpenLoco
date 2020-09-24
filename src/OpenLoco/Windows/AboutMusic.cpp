@@ -10,7 +10,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::ui::AboutMusic
+namespace OpenLoco::Ui::AboutMusic
 {
     constexpr Gfx::ui_size_t windowSize = { 500, 312 };
 
@@ -33,7 +33,7 @@ namespace OpenLoco::ui::AboutMusic
         makeWidget({ 1, 1 }, { windowSize.width - 2, 13 }, widget_type::caption_25, 0, StringIds::music_acknowledgements_caption),
         makeWidget({ windowSize.width - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window),
         makeWidget({ 0, 15 }, { windowSize.width, 297 }, widget_type::panel, 1),
-        makeWidget({ 4, 18 }, { windowSize.width - 8, 289 }, widget_type::scrollview, 1, ui::scrollbars::vertical),
+        makeWidget({ 4, 18 }, { windowSize.width - 8, 289 }, widget_type::scrollview, 1, Ui::scrollbars::vertical),
         widgetEnd(),
     };
 
@@ -65,7 +65,7 @@ namespace OpenLoco::ui::AboutMusic
     }
 
     // 0x0043BFB0
-    static void onMouseUp(ui::window* const window, const widget_index widgetIndex)
+    static void onMouseUp(Ui::window* const window, const widget_index widgetIndex)
     {
         switch (widgetIndex)
         {
@@ -76,26 +76,26 @@ namespace OpenLoco::ui::AboutMusic
     }
 
     // 0x0043BFBB
-    static void getScrollSize(ui::window*, uint32_t, uint16_t*, uint16_t* const scrollHeight)
+    static void getScrollSize(Ui::window*, uint32_t, uint16_t*, uint16_t* const scrollHeight)
     {
         *scrollHeight = numSongs * (10 + 10 + 14);
     }
 
     // 0x0043BFC0
-    static void tooltip(FormatArguments& args, ui::window*, widget_index)
+    static void tooltip(FormatArguments& args, Ui::window*, widget_index)
     {
         args.push(StringIds::tooltip_scroll_credits_list);
     }
 
     // 0x0043B8B8
-    static void draw(ui::window* const window, Gfx::drawpixelinfo_t* const dpi)
+    static void draw(Ui::window* const window, Gfx::drawpixelinfo_t* const dpi)
     {
         // Draw widgets.
         window->draw(dpi);
     }
 
     // 0x0043B8BE
-    static void drawScroll(ui::window*, Gfx::drawpixelinfo_t* const dpi, uint32_t)
+    static void drawScroll(Ui::window*, Gfx::drawpixelinfo_t* const dpi, uint32_t)
     {
         static const std::pair<string_id, string_id> stringsToDraw[numSongs] = {
             { StringIds::locomotion_title, StringIds::locomotion_title_credit },

@@ -14,15 +14,15 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::ui::dropdown
+namespace OpenLoco::Ui::Dropdown
 {
     static constexpr int bytes_per_item = 8;
 
     static loco_global<uint8_t[31], 0x005045FA> _byte_5045FA;
     static loco_global<uint8_t[31], 0x00504619> _byte_504619;
     static loco_global<std::uint8_t[33], 0x005046FA> _appropriateImageDropdownItemsPerRow;
-    static loco_global<ui::WindowType, 0x0052336F> _pressedWindowType;
-    static loco_global<ui::window_number, 0x00523370> _pressedWindowNumber;
+    static loco_global<Ui::WindowType, 0x0052336F> _pressedWindowType;
+    static loco_global<Ui::window_number, 0x00523370> _pressedWindowNumber;
     static loco_global<int32_t, 0x00523372> _pressedWidgetIndex;
     static loco_global<int16_t, 0x112C876> _currentFontSpriteBase;
     static loco_global<char[512], 0x0112CC04> _byte_112CC04;
@@ -385,7 +385,7 @@ namespace OpenLoco::ui::dropdown
             Gfx::point_t origin = { x, y };
             origin.y += height;
 
-            if ((size.height + origin.y) > ui::height() || origin.y < 0)
+            if ((size.height + origin.y) > Ui::height() || origin.y < 0)
             {
                 origin.y -= (height + size.height);
                 auto dropdownBottom = origin.y;
@@ -395,12 +395,12 @@ namespace OpenLoco::ui::dropdown
                     dropdownBottom = origin.y + size.height;
                 }
 
-                if (origin.y < 0 || dropdownBottom > ui::height())
+                if (origin.y < 0 || dropdownBottom > Ui::height())
                 {
                     origin.x += width;
                     origin.x += maxStringWidth;
 
-                    if (origin.x > ui::width())
+                    if (origin.x > Ui::width())
                     {
                         origin.x = x;
                         origin.x -= (maxStringWidth + 4);
@@ -421,9 +421,9 @@ namespace OpenLoco::ui::dropdown
 
             origin.x += size.width;
 
-            if (origin.x > ui::width())
+            if (origin.x > Ui::width())
             {
-                origin.x = ui::width();
+                origin.x = Ui::width();
             }
 
             origin.x -= size.width;
@@ -443,7 +443,7 @@ namespace OpenLoco::ui::dropdown
      * @param count
      * @param itemHeight
      * @param flags
-     * Custom dropdown height if flags & (1<<6) is true
+     * Custom Dropdown height if flags & (1<<6) is true
      */
     void show(int16_t x, int16_t y, int16_t width, int16_t height, colour_t colour, size_t count, uint8_t itemHeight, uint8_t flags)
     {
@@ -479,7 +479,7 @@ namespace OpenLoco::ui::dropdown
         origin.y += height;
 
         size.height = dropdownHeight;
-        if ((size.height + origin.y) > ui::height() || origin.y < 0)
+        if ((size.height + origin.y) > Ui::height() || origin.y < 0)
         {
             origin.y -= (height + dropdownHeight);
             auto dropdownBottom = origin.y;
@@ -489,7 +489,7 @@ namespace OpenLoco::ui::dropdown
                 dropdownBottom = origin.y + dropdownHeight;
             }
 
-            if (origin.y < 0 || dropdownBottom > ui::height())
+            if (origin.y < 0 || dropdownBottom > Ui::height())
             {
                 origin.x += width + 3;
                 origin.y = 0;
@@ -507,9 +507,9 @@ namespace OpenLoco::ui::dropdown
 
         origin.x += size.width;
 
-        if (origin.x > ui::width())
+        if (origin.x > Ui::width())
         {
-            origin.x = ui::width();
+            origin.x = Ui::width();
         }
 
         origin.x -= size.width;
@@ -581,7 +581,7 @@ namespace OpenLoco::ui::dropdown
         origin.y += heightOffset;
 
         size.height = dropdownHeight;
-        if ((size.height + origin.y) > ui::height() || origin.y < 0)
+        if ((size.height + origin.y) > Ui::height() || origin.y < 0)
         {
             origin.y -= (heightOffset + dropdownHeight);
             auto dropdownBottom = origin.y;
@@ -591,7 +591,7 @@ namespace OpenLoco::ui::dropdown
                 dropdownBottom = origin.y + dropdownHeight;
             }
 
-            if (origin.y < 0 || dropdownBottom > ui::height())
+            if (origin.y < 0 || dropdownBottom > Ui::height())
             {
                 origin.x += common::widgets[0].right;
                 origin.y = 0;
@@ -607,9 +607,9 @@ namespace OpenLoco::ui::dropdown
 
         origin.x += size.width;
 
-        if (origin.x > ui::width())
+        if (origin.x > Ui::width())
         {
-            origin.x = ui::width();
+            origin.x = Ui::width();
         }
 
         origin.x -= size.width;
@@ -687,7 +687,7 @@ namespace OpenLoco::ui::dropdown
      * itemHeight @ <ah>
      * count @<bl>
      * flags @<bh>
-     * Custom dropdown height if flags & (1<<6) is true
+     * Custom Dropdown height if flags & (1<<6) is true
      */
     void showText(int16_t x, int16_t y, int16_t width, int16_t height, uint8_t itemHeight, colour_t colour, size_t count, uint8_t flags)
     {
@@ -749,7 +749,7 @@ namespace OpenLoco::ui::dropdown
         origin.y += height;
 
         size.height = dropdownHeight;
-        if ((size.height + origin.y) > ui::height() || origin.y < 0)
+        if ((size.height + origin.y) > Ui::height() || origin.y < 0)
         {
             origin.y -= (height + dropdownHeight);
             auto dropdownBottom = origin.y;
@@ -759,7 +759,7 @@ namespace OpenLoco::ui::dropdown
                 dropdownBottom = origin.y + dropdownHeight;
             }
 
-            if (origin.y < 0 || dropdownBottom > ui::height())
+            if (origin.y < 0 || dropdownBottom > Ui::height())
             {
                 origin.x += width + 3;
                 origin.y = 0;
@@ -777,9 +777,9 @@ namespace OpenLoco::ui::dropdown
 
         origin.x += size.width;
 
-        if (origin.x > ui::width())
+        if (origin.x > Ui::width())
         {
-            origin.x = ui::width();
+            origin.x = Ui::width();
         }
 
         origin.x -= size.width;

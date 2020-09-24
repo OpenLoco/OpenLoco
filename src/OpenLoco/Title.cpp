@@ -91,7 +91,7 @@ namespace OpenLoco::title
 
         auto screenFlags = _screenFlags;
         _screenFlags = screenFlags & ~screen_flags::networked;
-        ui::WindowManager::closeAllFloatingWindows();
+        Ui::WindowManager::closeAllFloatingWindows();
         _screenFlags = screenFlags;
         _screenFlags |= screen_flags::title;
         _gameSpeed = 0;
