@@ -745,7 +745,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
             }
             self->widgets[widx::scrollview].tooltip = string;
             self->var_85C = rowInfo;
-            tooltip::closeAndReset();
+            ToolTip::closeAndReset();
 
             if (rowInfo == 0xFFFF)
                 return;

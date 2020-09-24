@@ -11,7 +11,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::Ui::tooltip
+namespace OpenLoco::Ui::ToolTip
 {
     static loco_global<char[513], 0x0050ED4B> _str0337;
 
@@ -43,13 +43,13 @@ namespace OpenLoco::Ui::tooltip
         registerHook(
             0x004C906B,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                Ui::tooltip::open((Ui::window*)regs.esi, regs.edx, regs.ax, regs.bx);
+                Ui::ToolTip::open((Ui::window*)regs.esi, regs.edx, regs.ax, regs.bx);
                 return 0;
             });
         registerHook(
             0x004C9216,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                Ui::tooltip::update((Ui::window*)regs.esi, regs.edx, regs.di, regs.ax, regs.bx);
+                Ui::ToolTip::update((Ui::window*)regs.esi, regs.edx, regs.di, regs.ax, regs.bx);
                 return 0;
             });
         registerHook(

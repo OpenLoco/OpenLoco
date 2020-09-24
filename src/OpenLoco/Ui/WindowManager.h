@@ -232,7 +232,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
     void open();
 }
 
-namespace OpenLoco::Ui::tooltip
+namespace OpenLoco::Ui::ToolTip
 {
     void registerHooks();
     void open(Ui::window* window, int32_t widgetIndex, int16_t x, int16_t y);

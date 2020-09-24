@@ -1501,7 +1501,7 @@ namespace OpenLoco::Input
                     {
                         if (tooltipStringId != _currentTooltipStringId)
                         {
-                            Ui::tooltip::closeAndReset();
+                            Ui::ToolTip::closeAndReset();
                         }
                     }
                 }
@@ -1520,7 +1520,7 @@ namespace OpenLoco::Input
             }
             else
             {
-                Ui::tooltip::closeAndReset();
+                Ui::ToolTip::closeAndReset();
             }
 
             return;
@@ -1542,11 +1542,11 @@ namespace OpenLoco::Input
 
             if (tooltipStringId == StringIds::null)
             {
-                Ui::tooltip::open(window, widgetIndex, x, y);
+                Ui::ToolTip::open(window, widgetIndex, x, y);
             }
             else
             {
-                Ui::tooltip::update(window, widgetIndex, tooltipStringId, x, y);
+                Ui::ToolTip::update(window, widgetIndex, tooltipStringId, x, y);
             }
         }
 

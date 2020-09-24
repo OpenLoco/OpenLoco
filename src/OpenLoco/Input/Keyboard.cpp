@@ -130,13 +130,13 @@ namespace OpenLoco::Input
                 if ((_keyModifier & key_modifier::unknown) == 0)
                     return;
 
-                tooltip::closeAndReset();
+                ToolTip::closeAndReset();
 
                 auto tutStringId = tutorial::nextString();
                 auto main = WindowManager::getMainWindow();
                 auto cursor = getMouseLocation();
 
-                tooltip::update(main, 0, tutStringId, cursor.x, cursor.y);
+                ToolTip::update(main, 0, tutStringId, cursor.x, cursor.y);
                 break;
             }
 
