@@ -1503,7 +1503,7 @@ namespace OpenLoco::Ui::WindowManager
                 }
                 townmgr::updateLabels();
                 stationmgr::updateLabels();
-                Windows::map::centerOnViewPoint();
+                Windows::Map::centerOnViewPoint();
             }
 
             return;

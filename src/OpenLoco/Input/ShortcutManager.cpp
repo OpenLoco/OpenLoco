@@ -204,7 +204,7 @@ namespace OpenLoco::Input::ShortcutManager
         main->viewportRotateRight();
         townmgr::updateLabels();
         stationmgr::updateLabels();
-        Windows::map::centerOnViewPoint();
+        Windows::Map::centerOnViewPoint();
     }
 
     // 0x004BF148
@@ -429,7 +429,7 @@ namespace OpenLoco::Input::ShortcutManager
         if (isEditorMode() && s5::getOptions().editorStep == 0)
             return;
 
-        Windows::map::open();
+        Windows::Map::open();
     }
 
     // 0x004BF359

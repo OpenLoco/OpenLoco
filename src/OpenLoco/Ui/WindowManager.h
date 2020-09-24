@@ -142,7 +142,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGenerationConfirm
     window* open(int32_t prompt_type);
 }
 
-namespace OpenLoco::Ui::Windows::map
+namespace OpenLoco::Ui::Windows::Map
 {
     void open();
     void centerOnViewPoint();

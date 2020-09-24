@@ -267,7 +267,7 @@ namespace OpenLoco::Ui::TimePanel
                     break;
                 }
                 case 1:
-                    Windows::map::open();
+                    Windows::Map::open();
                     break;
             }
         }
@@ -276,7 +276,7 @@ namespace OpenLoco::Ui::TimePanel
             switch (itemIndex)
             {
                 case 0:
-                    Windows::map::open();
+                    Windows::Map::open();
                     break;
             }
         }

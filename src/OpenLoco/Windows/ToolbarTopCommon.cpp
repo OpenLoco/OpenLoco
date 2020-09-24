@@ -269,7 +269,7 @@ namespace OpenLoco::Ui::Windows::toolbar_top::common
         }
         else if (itemIndex == 2)
         {
-            Windows::map::open();
+            Windows::Map::open();
         }
     }
 
@@ -287,14 +287,14 @@ namespace OpenLoco::Ui::Windows::toolbar_top::common
             window->viewportRotateLeft();
             townmgr::updateLabels();
             stationmgr::updateLabels();
-            Windows::map::centerOnViewPoint();
+            Windows::Map::centerOnViewPoint();
         }
         else if (itemIndex == 0)
         {
             window->viewportRotateRight();
             townmgr::updateLabels();
             stationmgr::updateLabels();
-            Windows::map::centerOnViewPoint();
+            Windows::Map::centerOnViewPoint();
         }
     }
 
