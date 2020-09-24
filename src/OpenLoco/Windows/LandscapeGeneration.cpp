@@ -146,7 +146,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         }
     }
 
-    namespace options
+    namespace Options
     {
         enum widx
         {
@@ -304,9 +304,9 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         // Start of 0x0043DAEA
         if (window == nullptr)
         {
-            window = WindowManager::createWindowCentred(WindowType::landscapeGeneration, window_size, 0, &options::events);
-            window->widgets = options::widgets;
-            window->enabled_widgets = options::enabled_widgets;
+            window = WindowManager::createWindowCentred(WindowType::landscapeGeneration, window_size, 0, &Options::events);
+            window->widgets = Options::widgets;
+            window->enabled_widgets = Options::enabled_widgets;
             window->number = 0;
             window->current_tab = 0;
             window->frame_no = 0;
@@ -324,7 +324,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         window->invalidate();
 
         window->activated_widgets = 0;
-        window->holdable_widgets = options::holdable_widgets;
+        window->holdable_widgets = Options::holdable_widgets;
 
         window->callOnResize();
         window->callPrepareDraw();
@@ -1200,7 +1200,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
     {
         static void initEvents()
         {
-            options::initEvents();
+            Options::initEvents();
             land::initEvents();
             forests::initEvents();
             towns::initEvents();
@@ -1212,7 +1212,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             window->activated_widgets = 0;
 
             static widget_t* widgetCollectionsByTabId[] = {
-                options::widgets,
+                Options::widgets,
                 land::widgets,
                 forests::widgets,
                 towns::widgets,
@@ -1250,7 +1250,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             window->disabled_widgets = 0;
 
             static const uint64_t* enabledWidgetsByTab[] = {
-                &options::enabled_widgets,
+                &Options::enabled_widgets,
                 &land::enabled_widgets,
                 &forests::enabled_widgets,
                 &towns::enabled_widgets,
@@ -1260,7 +1260,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             window->enabled_widgets = *enabledWidgetsByTab[window->current_tab];
 
             static const uint64_t* holdableWidgetsByTab[] = {
-                &options::holdable_widgets,
+                &Options::holdable_widgets,
                 &land::holdable_widgets,
                 &forests::holdable_widgets,
                 &towns::holdable_widgets,
@@ -1270,7 +1270,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             window->holdable_widgets = *holdableWidgetsByTab[window->current_tab];
 
             static window_event_list* eventsByTab[] = {
-                &options::events,
+                &Options::events,
                 &land::events,
                 &forests::events,
                 &towns::events,
