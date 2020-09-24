@@ -63,7 +63,7 @@ namespace OpenLoco::Ui::Windows
         switch (widgetIndex)
         {
             case widx::logo:
-                about::open();
+                About::open();
                 break;
         }
     }

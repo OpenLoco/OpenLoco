@@ -92,7 +92,7 @@ namespace OpenLoco::Ui::Windows
     void hideDirectionArrows();
 }
 
-namespace OpenLoco::Ui::about
+namespace OpenLoco::Ui::About
 {
     void open();
 }

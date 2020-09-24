@@ -145,7 +145,7 @@ namespace OpenLoco::Ui::Windows::toolbar_top::game
                 break;
 
             case 3:
-                about::open();
+                About::open();
                 break;
 
             case 4:
