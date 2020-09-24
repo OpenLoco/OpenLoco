@@ -306,7 +306,7 @@ namespace OpenLoco::ui
 
             if (config->viewport_target_sprite != 0xFFFF)
             {
-                auto thing = thingmgr::get<Thing>(config->viewport_target_sprite);
+                auto thing = ThingManager::get<Thing>(config->viewport_target_sprite);
 
                 int z = (tileElementHeight(thing->x, thing->y).landHeight) - 16;
                 bool underground = (thing->z < z);

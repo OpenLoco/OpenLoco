@@ -65,12 +65,12 @@ constexpr int16_t factor503B50[] = {
 
 vehicle* vehicle::nextVehicle()
 {
-    return thingmgr::get<vehicle>(next_thing_id);
+    return ThingManager::get<vehicle>(next_thing_id);
 }
 
 vehicle* vehicle::nextVehicleComponent()
 {
-    return thingmgr::get<vehicle>(next_car_id);
+    return ThingManager::get<vehicle>(next_car_id);
 }
 
 vehicle_object* vehicle::object() const
@@ -1693,7 +1693,7 @@ namespace OpenLoco::Things::Vehicle
 {
     Vehicle::Vehicle(uint16_t _head)
     {
-        auto component = thingmgr::get<OpenLoco::vehicle>(_head);
+        auto component = ThingManager::get<OpenLoco::vehicle>(_head);
         head = component->asVehicleHead();
         component = component->nextVehicleComponent();
         veh1 = component->asVehicle1();

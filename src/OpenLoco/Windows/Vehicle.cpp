@@ -74,7 +74,7 @@ namespace OpenLoco::ui::vehicle
                 return;
             }
 
-            auto vehicle = thingmgr::get<OpenLoco::vehicle>(w->number);
+            auto vehicle = ThingManager::get<OpenLoco::vehicle>(w->number);
 
             if (vehicle->tile_x != -1 && (vehicle->var_38 & Things::Vehicle::flags_38::unk_4) == 0)
             {
@@ -126,7 +126,7 @@ namespace OpenLoco::ui::vehicle
                 return;
             }
 
-            auto vehicle = thingmgr::get<OpenLoco::vehicle>(w->number);
+            auto vehicle = ThingManager::get<OpenLoco::vehicle>(w->number);
             if (vehicle->tile_x != -1 && (vehicle->var_38 & Things::Vehicle::flags_38::unk_4) == 0)
                 return;
 
@@ -154,7 +154,7 @@ namespace OpenLoco::ui::vehicle
 
             WindowManager::invalidateWidget(WindowType::vehicle, w->number, 8);
 
-            auto vehicle = thingmgr::get<OpenLoco::vehicle>(w->number);
+            auto vehicle = ThingManager::get<OpenLoco::vehicle>(w->number);
             if (vehicle->owner != companymgr::getControllingId())
                 return;
 

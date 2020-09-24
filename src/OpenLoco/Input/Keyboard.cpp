@@ -90,7 +90,7 @@ namespace OpenLoco::Input
             if (w->type != WindowType::vehicle)
                 continue;
 
-            auto t = thingmgr::get<OpenLoco::vehicle>(w->number);
+            auto t = ThingManager::get<OpenLoco::vehicle>(w->number);
             if (t->owner != companymgr::getControllingId())
                 continue;
 

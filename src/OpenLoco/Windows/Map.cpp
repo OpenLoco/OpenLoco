@@ -1172,7 +1172,7 @@ namespace OpenLoco::ui::windows::map
             _vehicleTypeCounts[i] = 0;
         }
 
-        for (auto vehicle : thingmgr::VehicleList())
+        for (auto vehicle : ThingManager::VehicleList())
         {
             Things::Vehicle::Vehicle train(vehicle);
 
@@ -1190,7 +1190,7 @@ namespace OpenLoco::ui::windows::map
     // 0x0046BE6E, 0x0046C35A
     static void drawVehiclesOnMap(Gfx::drawpixelinfo_t* dpi, widget_index widgetIndex)
     {
-        for (auto vehicle : thingmgr::VehicleList())
+        for (auto vehicle : ThingManager::VehicleList())
         {
             Things::Vehicle::Vehicle train(vehicle);
 

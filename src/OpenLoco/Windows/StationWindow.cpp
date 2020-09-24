@@ -163,7 +163,7 @@ namespace OpenLoco::ui::windows::station
                     auto main = WindowManager::getMainWindow();
                     if (self->saved_view.isThingView())
                     {
-                        auto thing = thingmgr::get<Thing>(self->saved_view.thingId);
+                        auto thing = ThingManager::get<Thing>(self->saved_view.thingId);
                         main->viewportCentreOnTile({ thing->x, thing->y, thing->z });
                     }
                     else

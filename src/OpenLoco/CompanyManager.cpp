@@ -180,7 +180,7 @@ namespace OpenLoco::companymgr
             if (w->type != WindowType::vehicle)
                 continue;
 
-            auto vehicle = thingmgr::get<OpenLoco::vehicle>(w->number);
+            auto vehicle = ThingManager::get<OpenLoco::vehicle>(w->number);
             if (vehicle->x == location::null)
                 continue;
 

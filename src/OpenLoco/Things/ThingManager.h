@@ -4,7 +4,7 @@
 #include "Vehicle.h"
 #include <cstdio>
 
-namespace OpenLoco::thingmgr
+namespace OpenLoco::ThingManager
 {
     constexpr size_t num_thing_lists = 6;
     constexpr size_t max_things = 20000;
@@ -103,7 +103,7 @@ namespace OpenLoco::thingmgr
     public:
         ThingList()
         {
-            firstId = thingmgr::firstId(list);
+            firstId = ThingManager::firstId(list);
         }
 
         T begin()

@@ -39,7 +39,7 @@ vehicle_channel& vehicle_channel::operator=(vehicle_channel&& other)
 
 void vehicle_channel::begin(thing_id_t vid)
 {
-    auto v = thingmgr::get<vehicle>(vid);
+    auto v = ThingManager::get<vehicle>(vid);
     if (v != nullptr)
     {
         auto [sid, sa] = sub_48A590(v);
@@ -64,7 +64,7 @@ void vehicle_channel::update()
 {
     if (!isFree())
     {
-        auto v = thingmgr::get<vehicle>(_vehicle_id);
+        auto v = ThingManager::get<vehicle>(_vehicle_id);
         if (v != nullptr && v->base_type == thing_base_type::vehicle && (v->type == VehicleThingType::vehicle_2 || v->type == VehicleThingType::tail) && (v->var_4A & 1))
         {
             auto [sid, sa] = sub_48A590(v);

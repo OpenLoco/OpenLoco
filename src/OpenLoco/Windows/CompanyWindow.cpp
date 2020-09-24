@@ -292,7 +292,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
                     auto main = WindowManager::getMainWindow();
                     if (self->saved_view.isThingView())
                     {
-                        auto thing = thingmgr::get<Thing>(self->saved_view.thingId);
+                        auto thing = ThingManager::get<Thing>(self->saved_view.thingId);
                         main->viewportCentreOnTile({ thing->x, thing->y, thing->z });
                     }
                     else
@@ -535,7 +535,7 @@ namespace OpenLoco::ui::windows::CompanyWindow
             else
             {
                 // loc_434170
-                auto thing = thingmgr::get<OpenLoco::vehicle_head>(company->observation_thing);
+                auto thing = ThingManager::get<OpenLoco::vehicle_head>(company->observation_thing);
 
                 if (thing->base_type != thing_base_type::vehicle || thing->type != VehicleThingType::head || (thing->x == location::null))
                 {
