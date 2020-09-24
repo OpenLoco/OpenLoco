@@ -837,7 +837,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         }
     }
 
-    namespace finances
+    namespace Finances
     {
         enum widx
         {
@@ -1163,7 +1163,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         static TabInformation tabInformationByTabOffset[] = {
             { Challenge::widgets, widx::tab_challenge, &Challenge::events, &Challenge::enabledWidgets, &Challenge::holdableWidgets },
             { Companies::widgets, widx::tab_companies, &Companies::events, &Companies::enabledWidgets, &Companies::holdableWidgets },
-            { finances::widgets, widx::tab_finances, &finances::events, &finances::enabledWidgets, &finances::holdableWidgets },
+            { Finances::widgets, widx::tab_finances, &Finances::events, &Finances::enabledWidgets, &Finances::holdableWidgets },
             { scenario::widgets, widx::tab_scenario, &scenario::events, &scenario::enabledWidgets, &scenario::holdableWidgets }
         };
 
@@ -1235,7 +1235,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         {
             Challenge::initEvents();
             Companies::initEvents();
-            finances::initEvents();
+            Finances::initEvents();
             scenario::initEvents();
         }
     }
