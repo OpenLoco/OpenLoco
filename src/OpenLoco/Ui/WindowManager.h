@@ -148,7 +148,7 @@ namespace OpenLoco::Ui::Windows::Map
     void centerOnViewPoint();
 }
 
-namespace OpenLoco::Ui::Windows::music_selection
+namespace OpenLoco::Ui::Windows::MusicSelection
 {
     window* open();
 }

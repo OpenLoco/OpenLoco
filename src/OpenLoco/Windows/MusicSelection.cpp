@@ -12,7 +12,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::Ui::Windows::music_selection
+namespace OpenLoco::Ui::Windows::MusicSelection
 {
     static const Gfx::ui_size_t window_size = { 360, 238 };
 
