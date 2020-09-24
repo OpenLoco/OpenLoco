@@ -363,7 +363,7 @@ namespace OpenLoco::Ui::Windows::Construction
         static TabInformation tabInformationByTabOffset[] = {
             { Construction::widgets, widx::tab_construction, &Construction::events, Construction::enabledWidgets, &Construction::tabReset },
             { Station::widgets, widx::tab_station, &Station::events, Station::enabledWidgets, &Station::tabReset },
-            { signal::widgets, widx::tab_signal, &signal::events, signal::enabledWidgets, &signal::tabReset },
+            { Signal::widgets, widx::tab_signal, &Signal::events, Signal::enabledWidgets, &Signal::tabReset },
             { overhead::widgets, widx::tab_overhead, &overhead::events, overhead::enabledWidgets, &overhead::tabReset },
         };
 
@@ -724,7 +724,7 @@ namespace OpenLoco::Ui::Windows::Construction
         {
             Construction::initEvents();
             Station::initEvents();
-            signal::initEvents();
+            Signal::initEvents();
             overhead::initEvents();
         }
 

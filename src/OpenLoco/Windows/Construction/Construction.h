@@ -222,7 +222,7 @@ namespace OpenLoco::Ui::Windows::Construction
         void initEvents();
     }
 
-    namespace signal
+    namespace Signal
     {
         enum widx
         {

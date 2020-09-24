@@ -11,7 +11,7 @@ using namespace OpenLoco::Interop;
 using namespace OpenLoco::Map;
 using namespace OpenLoco::Map::TileManager;
 
-namespace OpenLoco::Ui::Windows::Construction::signal
+namespace OpenLoco::Ui::Windows::Construction::Signal
 {
     widget_t widgets[] = {
         commonWidgets(138, 167, StringIds::stringid_2),
@@ -198,7 +198,7 @@ namespace OpenLoco::Ui::Windows::Construction::signal
 
     void tabReset(window* self)
     {
-        self->callOnMouseDown(signal::widx::both_directions);
+        self->callOnMouseDown(Signal::widx::both_directions);
     }
 
     void initEvents()
