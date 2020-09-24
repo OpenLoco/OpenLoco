@@ -8,6 +8,21 @@ namespace OpenLoco::ScenarioManager
     loco_global<ScenarioIndexEntry*, 0x0050AE8C> scenarioList;
     loco_global<int32_t, 0x0050AEA0> numScenarios;
 
+    bool hasScenariosForCategory(uint8_t category)
+    {
+        for (auto i = 0; i < numScenarios; i++)
+        {
+            ScenarioIndexEntry& entry = scenarioList[i];
+            if (!entry.hasFlag(ScenarioIndexFlags::flag_1))
+                continue;
+
+            if (entry.category == category)
+                return true;
+        }
+
+        return false;
+    }
+
     // 0x00443EF6, kind of
     uint16_t getNumScenariosByCategory(uint8_t category)
     {

@@ -55,9 +55,22 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     static void initEvents();
 
     // 0x00443807
-    static void initTabs()
+    static void initTabs(window* self)
     {
-        call(0x00443807);
+        uint16_t xPos = 3;
+        for (int i = 0; i < 5; i++)
+        {
+            widget_t& widget = self->widgets[widx::tab0 + i];
+            if (scenariomgr::hasScenariosForCategory(i))
+            {
+                widget.type = widget_type::wt_8;
+                widget.left = xPos;
+                xPos += 90;
+                widget.right = xPos++;
+            }
+            else
+                widget.type = widget_type::none;
+        }
     }
 
     // 0x00443946
@@ -95,10 +108,24 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         self->var_846 = 0xFFFF;
         self->var_85A = static_cast<int32_t>(0xFFFFFFFF);
 
-        initTabs();
+        initTabs(self);
 
-        // auto& config = config::get();
-        // config.scenario_selected_tab;
+        // Select the last tab used, or the first available one.
+        uint8_t selectedTab = Config::get().scenario_selected_tab;
+        if (self->widgets[widx::tab0 + selectedTab].type == widget_type::none)
+        {
+            selectedTab = 0;
+            for (int i = 0; i < 5; i++)
+            {
+                if (self->widgets[widx::tab0 + i].type == widget_type::none)
+                {
+                    selectedTab = i;
+                    break;
+                }
+            }
+        }
+
+        self->current_tab = selectedTab;
 
         initList(self);
 
