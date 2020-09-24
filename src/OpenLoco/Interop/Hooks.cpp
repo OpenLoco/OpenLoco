@@ -770,7 +770,7 @@ void OpenLoco::Interop::registerHooks()
     Ui::PromptBrowse::registerHooks();
     Ui::TextInput::registerHooks();
     Ui::ToolTip::registerHooks();
-    Ui::vehicle::registerHooks();
+    Ui::Vehicle::registerHooks();
     Ui::BuildVehicle::registerHooks();
     Ui::Windows::Terraform::registerHooks();
     Ui::Windows::Error::registerHooks();

@@ -7,7 +7,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::Ui::vehicle
+namespace OpenLoco::Ui::Vehicle
 {
     namespace main
     {

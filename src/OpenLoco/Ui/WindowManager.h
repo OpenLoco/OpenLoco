@@ -251,7 +251,7 @@ namespace OpenLoco::Ui::Windows::TownList
     window* open();
 }
 
-namespace OpenLoco::Ui::vehicle
+namespace OpenLoco::Ui::Vehicle
 {
     void registerHooks();
     namespace main
