@@ -389,7 +389,7 @@ namespace OpenLoco::Ui::Windows::Town
         return window;
     }
 
-    namespace population
+    namespace Population
     {
         static widget_t widgets[] = {
             commonWidgets(223, 161, StringIds::title_town_population),
@@ -625,7 +625,7 @@ namespace OpenLoco::Ui::Windows::Town
 
         static TabInformation tabInformationByTabOffset[] = {
             { Town::widgets, widx::tab_town, &Town::events, &Town::enabledWidgets },
-            { population::widgets, widx::tab_population, &population::events, &Common::enabledWidgets },
+            { Population::widgets, widx::tab_population, &Population::events, &Common::enabledWidgets },
             { company_ratings::widgets, widx::tab_company_ratings, &company_ratings::events, &Common::enabledWidgets }
         };
 
@@ -813,7 +813,7 @@ namespace OpenLoco::Ui::Windows::Town
         static void initEvents()
         {
             Town::initEvents();
-            population::initEvents();
+            Population::initEvents();
             company_ratings::initEvents();
         }
     }
