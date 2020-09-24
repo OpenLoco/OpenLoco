@@ -1845,7 +1845,7 @@ namespace OpenLoco::Ui::Options
         }
     }
 
-    namespace misc
+    namespace Misc
     {
         static const Gfx::ui_size_t _window_size = { 420, 139 };
 
@@ -1861,7 +1861,7 @@ namespace OpenLoco::Ui::Options
             };
         }
 
-        static constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << misc::widx::disable_vehicle_breakdowns) | (1 << widx::disableAICompanies) | (1 << misc::widx::use_preferred_owner_name) | (1 << misc::widx::change_btn) | (1 << misc::widx::export_plugin_objects);
+        static constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Misc::widx::disable_vehicle_breakdowns) | (1 << widx::disableAICompanies) | (1 << Misc::widx::use_preferred_owner_name) | (1 << Misc::widx::change_btn) | (1 << Misc::widx::export_plugin_objects);
 
         static widget_t _widgets[] = {
             common_options_widgets(_window_size, StringIds::options_title_miscellaneous),
@@ -2164,7 +2164,7 @@ namespace OpenLoco::Ui::Options
         Music::initEvents();
         Regional::initEvents();
         Controls::initEvents();
-        misc::initEvents();
+        Misc::initEvents();
 
         // 0x004BF833 (create_options_window)
         window = WindowManager::createWindowCentred(
@@ -2224,7 +2224,7 @@ namespace OpenLoco::Ui::Options
         { Music::_widgets, &Music::_events, Music::_window_size, &Music::enabledWidgets },
         { Regional::_widgets, &Regional::_events, Regional::_window_size, &Regional::enabledWidgets },
         { Controls::_widgets, &Controls::_events, Controls::_window_size, &Controls::enabledWidgets },
-        { misc::_widgets, &misc::_events, misc::_window_size, &misc::enabledWidgets },
+        { Misc::_widgets, &Misc::_events, Misc::_window_size, &Misc::enabledWidgets },
     };
 
     // 0x004BFC11
