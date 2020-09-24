@@ -1138,7 +1138,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
     }
 
-    namespace colour_scheme
+    namespace ColourScheme
     {
         const Gfx::ui_size_t windowSize = { 265, 252 };
 
@@ -2426,7 +2426,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         static TabInformation tabInformationByTabOffset[] = {
             { Status::widgets, widx::tab_status, &Status::events, &Status::enabledWidgets, &Status::windowSize },
             { Details::widgets, widx::tab_details, &Details::events, &Details::enabledWidgets, &Details::windowSize },
-            { colour_scheme::widgets, widx::tab_colour_scheme, &colour_scheme::events, &colour_scheme::enabledWidgets, &colour_scheme::windowSize },
+            { ColourScheme::widgets, widx::tab_colour_scheme, &ColourScheme::events, &ColourScheme::enabledWidgets, &ColourScheme::windowSize },
             { finances::widgets, widx::tab_finances, &finances::events, &finances::enabledWidgets, &finances::windowSize },
             { CargoDelivered::widgets, widx::tab_cargo_delivered, &CargoDelivered::events, &CargoDelivered::enabledWidgets, &CargoDelivered::windowSize },
             { challenge::widgets, widx::tab_challenge, &challenge::events, &challenge::enabledWidgets, &challenge::windowSize }
@@ -2436,7 +2436,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         {
             Status::initEvents();
             Details::initEvents();
-            colour_scheme::initEvents();
+            ColourScheme::initEvents();
             finances::initEvents();
             CargoDelivered::initEvents();
             challenge::initEvents();
@@ -2473,7 +2473,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             static widget_t* widgetCollectionsByTabId[] = {
                 Status::widgets,
                 Details::widgets,
-                colour_scheme::widgets,
+                ColourScheme::widgets,
                 finances::widgets,
                 CargoDelivered::widgets,
                 challenge::widgets,
