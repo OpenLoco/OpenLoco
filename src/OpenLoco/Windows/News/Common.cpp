@@ -28,7 +28,7 @@ namespace OpenLoco::Ui::NewsWindow
         int16_t x = (Ui::width() / 2) - (windowSize.width / 2);
         Gfx::point_t origin = { x, y };
 
-        auto window = WindowManager::createWindow(WindowType::news, origin, windowSize, flags, &news1::events);
+        auto window = WindowManager::createWindow(WindowType::news, origin, windowSize, flags, &News1::events);
 
         window->widgets = widgets;
         window->enabled_widgets = Common::enabledWidgets;
@@ -43,7 +43,7 @@ namespace OpenLoco::Ui::NewsWindow
         _dword_525CD8 = 0xFFFFFFFF;
         _dword_525CDC = 0xFFFFFFFF;
 
-        news1::initViewport(window);
+        News1::initViewport(window);
     }
 
     // 0x00428F8B
@@ -210,7 +210,7 @@ namespace OpenLoco::Ui::NewsWindow
             uint32_t flags = window_flags::stick_to_front | window_flags::viewport_no_scrolling | window_flags::transparent;
             auto colour = Colour::translucent(Colour::salmon_pink);
 
-            createNewsWindow(news1::windowSize, news1::widgets, colour, isOld, flags);
+            createNewsWindow(News1::windowSize, News1::widgets, colour, isOld, flags);
         }
     }
 
@@ -219,7 +219,7 @@ namespace OpenLoco::Ui::NewsWindow
         void initEvents()
         {
             ticker::initEvents();
-            news1::initEvents();
+            News1::initEvents();
         }
     }
 }

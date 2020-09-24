@@ -21,7 +21,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::NewsWindow
 {
-    namespace news1
+    namespace News1
     {
         widget_t widgets[] = {
             commonWidgets(360, 117, widget_type::wt_3),
