@@ -86,7 +86,7 @@ namespace OpenLoco::Ui::NewsWindow
         void initViewport(window* self);
     }
 
-    namespace news2
+    namespace News2
     {
         static const Gfx::ui_size_t windowSize = { 360, 159 };
 

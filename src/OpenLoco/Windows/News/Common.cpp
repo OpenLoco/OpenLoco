@@ -203,7 +203,7 @@ namespace OpenLoco::Ui::NewsWindow
         {
             uint32_t flags = window_flags::stick_to_front | window_flags::viewport_no_scrolling | window_flags::transparent | window_flags::no_background;
 
-            createNewsWindow(news2::windowSize, news2::widgets, Colour::grey, isOld, flags);
+            createNewsWindow(News2::windowSize, News2::widgets, Colour::grey, isOld, flags);
         }
         else
         {

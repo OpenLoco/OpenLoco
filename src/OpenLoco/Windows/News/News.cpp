@@ -811,7 +811,7 @@ namespace OpenLoco::Ui::NewsWindow
         }
     }
 
-    namespace news2
+    namespace News2
     {
         widget_t widgets[] = {
             commonWidgets(360, 159, widget_type::wt_5),
