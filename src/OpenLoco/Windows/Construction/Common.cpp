@@ -22,7 +22,7 @@ using namespace OpenLoco::Interop;
 using namespace OpenLoco::Map;
 using namespace OpenLoco::Map::TileManager;
 
-namespace OpenLoco::Ui::Windows::construction
+namespace OpenLoco::Ui::Windows::Construction
 {
     static loco_global<Ui::window_number, 0x00523390> _toolWindowNumber;
 

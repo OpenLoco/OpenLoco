@@ -111,7 +111,7 @@ namespace OpenLoco::Ui::AboutMusic
     void open();
 }
 
-namespace OpenLoco::Ui::Windows::construction
+namespace OpenLoco::Ui::Windows::Construction
 {
     window* openWithFlags(uint32_t flags);
     window* openAtTrack(window* main, OpenLoco::Map::track_element* track, const OpenLoco::Map::map_pos pos);

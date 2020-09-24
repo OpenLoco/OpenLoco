@@ -331,7 +331,7 @@ namespace OpenLoco::Input::ShortcutManager
         if (last_railroad_option == 0xFF)
             return;
 
-        Windows::construction::openWithFlags(*last_railroad_option);
+        Windows::Construction::openWithFlags(*last_railroad_option);
     }
 
     // 0x004BF24F
@@ -344,7 +344,7 @@ namespace OpenLoco::Input::ShortcutManager
         if (last_road_option == 0xFF)
             return;
 
-        Windows::construction::openWithFlags(*last_road_option);
+        Windows::Construction::openWithFlags(*last_road_option);
     }
 
     // 0x004BF276
@@ -357,7 +357,7 @@ namespace OpenLoco::Input::ShortcutManager
         if (have_airports == 0xFF)
             return;
 
-        Windows::construction::openWithFlags(1 << 31);
+        Windows::Construction::openWithFlags(1 << 31);
     }
 
     // 0x004BF295
@@ -370,7 +370,7 @@ namespace OpenLoco::Input::ShortcutManager
         if (have_ship_ports == 0xFF)
             return;
 
-        Windows::construction::openWithFlags(1 << 30);
+        Windows::Construction::openWithFlags(1 << 30);
     }
 
     // 0x004BF2B4

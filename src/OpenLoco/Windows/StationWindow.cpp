@@ -770,7 +770,7 @@ namespace OpenLoco::Ui::Windows::station
 
         if (newStationId != station_id::null)
         {
-            Ui::Windows::construction::sub_4A6FAC();
+            Ui::Windows::Construction::sub_4A6FAC();
             auto station = stationmgr::get(_lastSelectedStation);
 
             station->setCatchmentDisplay(0);

@@ -760,7 +760,7 @@ namespace OpenLoco::Input
                         {
                             if (track->owner() == companymgr::getControllingId())
                             {
-                                Ui::Windows::construction::openAtTrack(window, track, { ptr.x, ptr.y });
+                                Ui::Windows::Construction::openAtTrack(window, track, { ptr.x, ptr.y });
                             }
                             else
                             {
@@ -780,7 +780,7 @@ namespace OpenLoco::Input
                             auto roadObject = ObjectManager::get<road_object>(road->roadObjectId());
                             if (owner == companymgr::getControllingId() || owner == company_id::neutral || (roadObject->flags & Flags12::unk_03))
                             {
-                                Ui::Windows::construction::openAtRoad(window, road, { ptr.x, ptr.y });
+                                Ui::Windows::Construction::openAtRoad(window, road, { ptr.x, ptr.y });
                             }
                             else
                             {
@@ -794,7 +794,7 @@ namespace OpenLoco::Input
                         auto track = ((Map::tile_element*)ptr.object)->asTrack();
                         if (track != nullptr)
                         {
-                            Ui::Windows::construction::setToTrackExtra(window, track, ptr.unkBh, { ptr.x, ptr.y });
+                            Ui::Windows::Construction::setToTrackExtra(window, track, ptr.unkBh, { ptr.x, ptr.y });
                         }
                         break;
                     }
@@ -803,7 +803,7 @@ namespace OpenLoco::Input
                         auto road = ((Map::tile_element*)ptr.object)->asRoad();
                         if (road != nullptr)
                         {
-                            Ui::Windows::construction::setToRoadExtra(window, road, ptr.unkBh, { ptr.x, ptr.y });
+                            Ui::Windows::Construction::setToRoadExtra(window, road, ptr.unkBh, { ptr.x, ptr.y });
                         }
                         break;
                     }

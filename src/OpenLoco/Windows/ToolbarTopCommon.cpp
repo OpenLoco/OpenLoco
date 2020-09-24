@@ -367,7 +367,7 @@ namespace OpenLoco::Ui::Windows::toolbar_top::common
             return;
 
         uint8_t objIndex = available_objects[itemIndex];
-        construction::openWithFlags(objIndex);
+        Construction::openWithFlags(objIndex);
     }
 
     // 0x0043A932

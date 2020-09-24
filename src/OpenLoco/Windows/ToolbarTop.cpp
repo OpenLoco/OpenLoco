@@ -281,7 +281,7 @@ namespace OpenLoco::Ui::Windows::toolbar_top::game
             return;
 
         uint8_t objIndex = available_objects[itemIndex];
-        construction::openWithFlags(objIndex);
+        Construction::openWithFlags(objIndex);
     }
 
     // 0x0043A965
@@ -325,11 +325,11 @@ namespace OpenLoco::Ui::Windows::toolbar_top::game
 
         if (last_port_option == 0)
         {
-            construction::openWithFlags(1 << 31);
+            Construction::openWithFlags(1 << 31);
         }
         else if (last_port_option == 1)
         {
-            construction::openWithFlags(1 << 30);
+            Construction::openWithFlags(1 << 30);
         }
     }
 
