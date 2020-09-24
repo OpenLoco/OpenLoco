@@ -92,7 +92,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         static void repositionTabs(window* self);
     }
 
-    namespace status
+    namespace Status
     {
         static const Gfx::ui_size_t windowSize = { 270, 182 };
 
@@ -395,7 +395,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         {
             Common::enableRenameByCaption(self);
 
-            self->setSize(status::windowSize, Gfx::ui_size_t(640, 400));
+            self->setSize(Status::windowSize, Gfx::ui_size_t(640, 400));
 
             if (self->viewports[0] != nullptr)
             {
@@ -585,7 +585,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
     static window* create(company_id_t companyId)
     {
         const uint32_t newFlags = window_flags::flag_8 | window_flags::flag_11;
-        auto window = WindowManager::createWindow(WindowType::company, status::windowSize, newFlags, &status::events);
+        auto window = WindowManager::createWindow(WindowType::company, Status::windowSize, newFlags, &Status::events);
         window->number = companyId;
         window->owner = companyId;
         window->current_tab = 0;
@@ -622,14 +622,14 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         Common::initEvents();
 
         window->current_tab = 0;
-        window->width = status::windowSize.width;
-        window->height = status::windowSize.height;
+        window->width = Status::windowSize.width;
+        window->height = Status::windowSize.height;
         window->invalidate();
 
-        window->widgets = status::widgets;
-        window->enabled_widgets = status::enabledWidgets;
+        window->widgets = Status::widgets;
+        window->enabled_widgets = Status::enabledWidgets;
         window->holdable_widgets = 0;
-        window->event_handlers = &status::events;
+        window->event_handlers = &Status::events;
         window->activated_widgets = 0;
 
         Common::disableChallengeTab(window);
@@ -647,7 +647,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
         // Allow setting company owner name if no preferred owner name has been set.
         if ((Config::get().flags & Config::flags::use_preferred_owner_name) == 0)
-            status::onMouseUp(self, status::widx::change_owner_name);
+            Status::onMouseUp(self, Status::widx::change_owner_name);
 
         return self;
     }
@@ -2424,7 +2424,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         };
 
         static TabInformation tabInformationByTabOffset[] = {
-            { status::widgets, widx::tab_status, &status::events, &status::enabledWidgets, &status::windowSize },
+            { Status::widgets, widx::tab_status, &Status::events, &Status::enabledWidgets, &Status::windowSize },
             { details::widgets, widx::tab_details, &details::events, &details::enabledWidgets, &details::windowSize },
             { colour_scheme::widgets, widx::tab_colour_scheme, &colour_scheme::events, &colour_scheme::enabledWidgets, &colour_scheme::windowSize },
             { finances::widgets, widx::tab_finances, &finances::events, &finances::enabledWidgets, &finances::windowSize },
@@ -2434,7 +2434,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
         static void initEvents()
         {
-            status::initEvents();
+            Status::initEvents();
             details::initEvents();
             colour_scheme::initEvents();
             finances::initEvents();
@@ -2471,7 +2471,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             self->activated_widgets = 0;
 
             static widget_t* widgetCollectionsByTabId[] = {
-                status::widgets,
+                Status::widgets,
                 details::widgets,
                 colour_scheme::widgets,
                 finances::widgets,
