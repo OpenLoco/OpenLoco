@@ -227,7 +227,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     void open();
 }
 
-namespace OpenLoco::Ui::Windows::ToolbarTop::editor
+namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
 {
     void open();
 }
