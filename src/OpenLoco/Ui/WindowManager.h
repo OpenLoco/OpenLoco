@@ -153,7 +153,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
     window* open();
 }
 
-namespace OpenLoco::Ui::Windows::error
+namespace OpenLoco::Ui::Windows::Error
 {
     void open(string_id title, string_id message);
     void openWithCompetitor(string_id title, string_id message, uint8_t competitorId);

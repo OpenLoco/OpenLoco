@@ -1992,7 +1992,7 @@ namespace OpenLoco::Ui::Windows
             suppressErrorSound = true;
         }
 
-        Windows::error::open(title, message);
+        Windows::Error::open(title, message);
 
         suppressErrorSound = false;
     }

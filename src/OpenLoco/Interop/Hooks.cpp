@@ -773,7 +773,7 @@ void OpenLoco::Interop::registerHooks()
     Ui::vehicle::registerHooks();
     Ui::BuildVehicle::registerHooks();
     Ui::Windows::terraform::registerHooks();
-    Ui::Windows::error::registerHooks();
+    Ui::Windows::Error::registerHooks();
     Ui::Windows::Construction::registerHooks();
     Ui::WindowManager::registerHooks();
     Ui::viewportmgr::registerHooks();

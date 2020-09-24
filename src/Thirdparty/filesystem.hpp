@@ -4107,8 +4107,8 @@ GHC_INLINE bool remove(const path& p, std::error_code& ec) noexcept
     }
 #else
     if (::remove(p.c_str()) == -1) {
-        auto error = errno;
-        if (error == ENOENT) {
+        auto Error = errno;
+        if (Error == ENOENT) {
             return false;
         }
         ec = detail::make_system_error();
@@ -4853,9 +4853,9 @@ public:
         }
         if (!path.empty()) {
             if (!_dir) {
-                auto error = errno;
+                auto Error = errno;
                 _base = filesystem::path();
-                if (error != EACCES || (options & directory_options::skip_permission_denied) == directory_options::none) {
+                if (Error != EACCES || (options & directory_options::skip_permission_denied) == directory_options::none) {
                     _ec = detail::make_system_error();
                 }
             }

@@ -13,7 +13,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::Ui::Windows::error
+namespace OpenLoco::Ui::Windows::Error
 {
     static loco_global<uint8_t, 0x00508F09> _suppressErrorSound;
     static loco_global<Ui::widget_t[1], 0x00508F1C> _widgets;
@@ -190,14 +190,14 @@ namespace OpenLoco::Ui::Windows::error
         registerHook(
             0x00431A8A,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                Ui::Windows::error::open(regs.bx, regs.dx);
+                Ui::Windows::Error::open(regs.bx, regs.dx);
                 return 0;
             });
 
         registerHook(
             0x00431908,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                Ui::Windows::error::openWithCompetitor(regs.bx, regs.dx, regs.al);
+                Ui::Windows::Error::openWithCompetitor(regs.bx, regs.dx, regs.al);
                 return 0;
             });
     }
