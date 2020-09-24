@@ -22,7 +22,7 @@
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::GameCommands;
 
-namespace OpenLoco::Ui::Windows::industry
+namespace OpenLoco::Ui::Windows::Industry
 {
     static loco_global<string_id, 0x009C68E8> gGameCommandErrorTitle;
 

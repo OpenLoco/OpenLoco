@@ -80,7 +80,7 @@ namespace OpenLoco::Ui::NewsWindow
                         switch (itemType)
                         {
                             case newsItemSubTypes::industry:
-                                Ui::Windows::industry::open(itemId);
+                                Ui::Windows::Industry::open(itemId);
                                 break;
 
                             case newsItemSubTypes::station:

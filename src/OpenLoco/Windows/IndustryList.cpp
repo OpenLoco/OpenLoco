@@ -185,7 +185,7 @@ namespace OpenLoco::Ui::Windows::industry_list
             if (currentIndustry == -1)
                 return;
 
-            Windows::industry::open(currentIndustry);
+            Windows::Industry::open(currentIndustry);
         }
 
         // 0x00458140

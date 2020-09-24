@@ -122,7 +122,7 @@ namespace OpenLoco::Ui::Windows::Construction
     void registerHooks();
 }
 
-namespace OpenLoco::Ui::Windows::industry
+namespace OpenLoco::Ui::Windows::Industry
 {
     window* open(industry_id_t id);
 }

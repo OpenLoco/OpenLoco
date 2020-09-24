@@ -549,7 +549,7 @@ namespace OpenLoco::Input
 
                         case InteractionItem::industry:
                         {
-                            Ui::Windows::industry::open(ptr.value);
+                            Ui::Windows::Industry::open(ptr.value);
                             break;
                         }
 
