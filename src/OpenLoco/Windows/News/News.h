@@ -39,7 +39,7 @@ namespace OpenLoco::Ui::NewsWindow
     static loco_global<uint32_t, 0x011364EC> _numTrackTypeTabs;
     static loco_global<int8_t[8], 0x011364F0> _trackTypesForTab;
 
-    namespace common
+    namespace Common
     {
         enum widx
         {

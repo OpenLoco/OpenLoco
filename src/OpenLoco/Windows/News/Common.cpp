@@ -31,9 +31,9 @@ namespace OpenLoco::Ui::NewsWindow
         auto window = WindowManager::createWindow(WindowType::news, origin, windowSize, flags, &news1::events);
 
         window->widgets = widgets;
-        window->enabled_widgets = common::enabledWidgets;
+        window->enabled_widgets = Common::enabledWidgets;
 
-        common::initEvents();
+        Common::initEvents();
 
         window->initScrollWidgets();
         window->colours[0] = colour;
@@ -136,7 +136,7 @@ namespace OpenLoco::Ui::NewsWindow
                 window->widgets = ticker::widgets;
                 window->enabled_widgets = ticker::enabledWidgets;
 
-                common::initEvents();
+                Common::initEvents();
 
                 window->initScrollWidgets();
 
@@ -214,7 +214,7 @@ namespace OpenLoco::Ui::NewsWindow
         }
     }
 
-    namespace common
+    namespace Common
     {
         void initEvents()
         {
