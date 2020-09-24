@@ -291,7 +291,7 @@ namespace OpenLoco::Input::ShortcutManager
         if (isEditorMode() && s5::getOptions().editorStep == 0)
             return;
 
-        Windows::terraform::openAdjustLand();
+        Windows::Terraform::openAdjustLand();
     }
 
     // 0x004BF1E1
@@ -300,7 +300,7 @@ namespace OpenLoco::Input::ShortcutManager
         if (isEditorMode() && s5::getOptions().editorStep == 0)
             return;
 
-        Windows::terraform::openAdjustWater();
+        Windows::Terraform::openAdjustWater();
     }
 
     // 0x004BF1FC
@@ -309,7 +309,7 @@ namespace OpenLoco::Input::ShortcutManager
         if (isEditorMode() && s5::getOptions().editorStep == 0)
             return;
 
-        Windows::terraform::openPlantTrees();
+        Windows::Terraform::openPlantTrees();
     }
 
     // 0x004BF217
@@ -318,7 +318,7 @@ namespace OpenLoco::Input::ShortcutManager
         if (isEditorMode() && s5::getOptions().editorStep == 0)
             return;
 
-        Windows::terraform::openClearArea();
+        Windows::Terraform::openClearArea();
     }
 
     // 0x004BF232

@@ -195,7 +195,7 @@ namespace OpenLoco::Ui::Windows::StationList
     window* open(company_id_t companyId, uint8_t type);
 }
 
-namespace OpenLoco::Ui::Windows::terraform
+namespace OpenLoco::Ui::Windows::Terraform
 {
     window* open();
     void openClearArea();

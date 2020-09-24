@@ -23,7 +23,7 @@ using namespace OpenLoco::Interop;
 using namespace OpenLoco::Map;
 using namespace OpenLoco::GameCommands;
 
-namespace OpenLoco::Ui::Windows::terraform
+namespace OpenLoco::Ui::Windows::Terraform
 {
     static loco_global<std::uint8_t[10], 0x00500775> _byte_500775;
     static loco_global<int16_t, 0x0052337A> _dragLastY;

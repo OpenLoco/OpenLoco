@@ -336,23 +336,23 @@ namespace OpenLoco::Ui::Windows::toolbar_top::common
         switch (itemIndex)
         {
             case 0:
-                Windows::terraform::openClearArea();
+                Windows::Terraform::openClearArea();
                 break;
 
             case 1:
-                Windows::terraform::openAdjustLand();
+                Windows::Terraform::openAdjustLand();
                 break;
 
             case 2:
-                Windows::terraform::openAdjustWater();
+                Windows::Terraform::openAdjustWater();
                 break;
 
             case 3:
-                Windows::terraform::openPlantTrees();
+                Windows::Terraform::openPlantTrees();
                 break;
 
             case 4:
-                Windows::terraform::openBuildWalls();
+                Windows::Terraform::openBuildWalls();
                 break;
         }
     }
