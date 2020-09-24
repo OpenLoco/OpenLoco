@@ -20,7 +20,7 @@
 #include "../Widget.h"
 
 using namespace OpenLoco::Interop;
-using namespace OpenLoco::game_commands;
+using namespace OpenLoco::GameCommands;
 
 namespace OpenLoco::ui::windows::industry
 {
@@ -184,7 +184,7 @@ namespace OpenLoco::ui::windows::industry
                 // 0x00455E59
                 case widx::demolish_industry:
                 {
-                    bool success = game_commands::do_48(self->number);
+                    bool success = GameCommands::do_48(self->number);
                     if (!success)
                         break;
 
@@ -738,9 +738,9 @@ namespace OpenLoco::ui::windows::industry
             gGameCommandErrorTitle = StringIds::error_cant_rename_industry;
 
             uint32_t* buffer = (uint32_t*)input;
-            game_commands::do_79(self->number, 1, buffer[0], buffer[1], buffer[2]);
-            game_commands::do_79(0, 2, buffer[3], buffer[4], buffer[5]);
-            game_commands::do_79(0, 0, buffer[6], buffer[7], buffer[8]);
+            GameCommands::do_79(self->number, 1, buffer[0], buffer[1], buffer[2]);
+            GameCommands::do_79(0, 2, buffer[3], buffer[4], buffer[5]);
+            GameCommands::do_79(0, 0, buffer[6], buffer[7], buffer[8]);
         }
 
         static void update(window* self)

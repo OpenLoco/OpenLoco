@@ -20,7 +20,7 @@
 using namespace OpenLoco;
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::ObjectManager;
-using namespace OpenLoco::game_commands;
+using namespace OpenLoco::GameCommands;
 
 namespace OpenLoco::things::vehicle
 {
@@ -816,7 +816,7 @@ namespace OpenLoco::things::vehicle
             return FAILURE;
         }
 
-        if (flags & game_commands::GameCommandFlag::apply)
+        if (flags & GameCommands::GameCommandFlag::apply)
         {
             auto vehObject = ObjectManager::get<vehicle_object>(vehicleTypeId);
 
@@ -885,7 +885,7 @@ namespace OpenLoco::things::vehicle
             return FAILURE;
         }
 
-        if (flags & game_commands::GameCommandFlag::apply)
+        if (flags & GameCommands::GameCommandFlag::apply)
         {
             if (train.head->tile_x != -1)
             {

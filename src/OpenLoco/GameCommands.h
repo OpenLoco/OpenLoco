@@ -7,7 +7,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::game_commands
+namespace OpenLoco::GameCommands
 {
     enum GameCommandFlag : uint8_t
     {

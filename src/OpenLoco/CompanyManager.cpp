@@ -187,7 +187,7 @@ namespace OpenLoco::companymgr
             if (vehicle->owner != _updating_company_id)
                 continue;
 
-            game_commands::do_73(vehicle->id);
+            GameCommands::do_73(vehicle->id);
             return;
         }
 
@@ -224,6 +224,6 @@ namespace OpenLoco::companymgr
             mapPosition.y = r2.bx;
         }
 
-        game_commands::do_73(mapPosition);
+        GameCommands::do_73(mapPosition);
     }
 }

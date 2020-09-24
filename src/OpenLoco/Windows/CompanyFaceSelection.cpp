@@ -202,7 +202,7 @@ namespace OpenLoco::ui::windows::CompanyFaceSelection
         self->invalidate();
         Audio::playSound(Audio::sound_id::click_down, _cursorX);
         gGameCommandErrorTitle = StringIds::cant_select_face;
-        const auto result = game_commands::do_65(*objIndex.object._header, self->owner);
+        const auto result = GameCommands::do_65(*objIndex.object._header, self->owner);
         if (result)
         {
             WindowManager::close(self);

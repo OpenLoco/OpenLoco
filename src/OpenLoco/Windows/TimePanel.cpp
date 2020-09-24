@@ -386,13 +386,13 @@ namespace OpenLoco::ui::TimePanel
 
         for (uint8_t i = 0; i < 32; i++)
         {
-            game_commands::do_71(i, &string[i * 16]);
+            GameCommands::do_71(i, &string[i * 16]);
         }
     }
 
     static void togglePaused()
     {
-        game_commands::do_20();
+        GameCommands::do_20();
     }
 
     // 0x00439A70 (speed: 0)
@@ -402,7 +402,7 @@ namespace OpenLoco::ui::TimePanel
     {
         if (getPauseFlags() & 1)
         {
-            game_commands::do_20();
+            GameCommands::do_20();
         }
 
         game_speed = speed;

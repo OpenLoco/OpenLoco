@@ -89,7 +89,7 @@ namespace OpenLoco::ui::windows
         {
             case widx::exit_button:
                 // Exit to desktop
-                game_commands::do_21(0, 2);
+                GameCommands::do_21(0, 2);
                 break;
         }
     }

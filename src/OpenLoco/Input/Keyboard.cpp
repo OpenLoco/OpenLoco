@@ -28,7 +28,7 @@
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::ui;
-using namespace OpenLoco::game_commands;
+using namespace OpenLoco::GameCommands;
 
 namespace OpenLoco::Input
 {
@@ -100,7 +100,7 @@ namespace OpenLoco::Input
             registers regs;
             regs.cx = w->number;
             regs.bl = GameCommandFlag::apply;
-            game_commands::doCommand(77, regs);
+            GameCommands::doCommand(77, regs);
             Audio::playSound(Audio::sound_id::click_press, ui::width() / 2);
 
             return;
@@ -111,7 +111,7 @@ namespace OpenLoco::Input
     {
         registers regs;
         regs.bl = GameCommandFlag::apply;
-        game_commands::doCommand(78, regs);
+        GameCommands::doCommand(78, regs);
 
         Audio::playSound(Audio::sound_id::click_press, ui::width() / 2);
     }
