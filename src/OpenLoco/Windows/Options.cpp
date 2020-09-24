@@ -168,7 +168,7 @@ namespace OpenLoco::Ui::Options
     {
         static const Gfx::ui_size_t _window_size = { 400, 184 };
 
-        namespace widx
+        namespace Widx
         {
             enum
             {
@@ -210,7 +210,7 @@ namespace OpenLoco::Ui::Options
 
         static window_event_list _events;
 
-        static constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Display::widx::landscape_smoothing) | (1 << Display::widx::gridlines_on_landscape) | (1 << Display::widx::vehicles_min_scale) | (1 << Display::widx::vehicles_min_scale_btn) | (1 << Display::widx::station_names_min_scale) | (1 << Display::widx::station_names_min_scale_btn) | (1 << Display::widx::construction_marker) | (1 << Display::widx::construction_marker_btn) | (1 << Display::widx::display_scale_up_btn) | (1 << Display::widx::display_scale_down_btn);
+        static constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Display::Widx::landscape_smoothing) | (1 << Display::Widx::gridlines_on_landscape) | (1 << Display::Widx::vehicles_min_scale) | (1 << Display::Widx::vehicles_min_scale_btn) | (1 << Display::Widx::station_names_min_scale) | (1 << Display::Widx::station_names_min_scale_btn) | (1 << Display::Widx::construction_marker) | (1 << Display::Widx::construction_marker_btn) | (1 << Display::Widx::display_scale_up_btn) | (1 << Display::Widx::display_scale_down_btn);
 
         // 0x004BFB8C
         static void onMouseUp(window* w, widget_index wi)
@@ -230,7 +230,7 @@ namespace OpenLoco::Ui::Options
                     Options::tabOnMouseUp(w, wi);
                     return;
 
-                case widx::landscape_smoothing:
+                case Widx::landscape_smoothing:
                 {
                     auto& cfg = OpenLoco::Config::get();
                     // TODO: is there a better way to toggle a flag?
@@ -247,7 +247,7 @@ namespace OpenLoco::Ui::Options
                     return;
                 }
 
-                case widx::gridlines_on_landscape:
+                case Widx::gridlines_on_landscape:
                 {
                     auto& cfg = OpenLoco::Config::get();
                     if (cfg.flags & Config::flags::gridlines_on_landscape)
@@ -282,7 +282,7 @@ namespace OpenLoco::Ui::Options
         // 0x004BFE2E
         static void constructionMarkerMouseDown(window* w, widget_index wi)
         {
-            widget_t dropdown = w->widgets[widx::construction_marker];
+            widget_t dropdown = w->widgets[Widx::construction_marker];
             Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], 2, 0x80);
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::white);
@@ -310,7 +310,7 @@ namespace OpenLoco::Ui::Options
         // 0x004BFEBE
         static void vehicleZoomMouseDown(window* w, widget_index wi)
         {
-            widget_t dropdown = w->widgets[widx::vehicles_min_scale];
+            widget_t dropdown = w->widgets[Widx::vehicles_min_scale];
             Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], 4, 0x80);
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::full_scale);
@@ -340,7 +340,7 @@ namespace OpenLoco::Ui::Options
         // 0x004BFF72
         static void stationNamesScaleMouseDown(window* w, widget_index wi)
         {
-            widget_t dropdown = w->widgets[widx::station_names_min_scale];
+            widget_t dropdown = w->widgets[Widx::station_names_min_scale];
             Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], 4, 0x80);
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::full_scale);
@@ -370,20 +370,20 @@ namespace OpenLoco::Ui::Options
         {
             if (Config::getNew().display.mode == Config::screen_mode::fullscreen)
             {
-                w->enabled_widgets |= (1 << widx::display_resolution) | (1 << widx::display_resolution_btn);
-                w->disabled_widgets &= ~((1 << widx::display_resolution) | (1 << widx::display_resolution_btn));
+                w->enabled_widgets |= (1 << Widx::display_resolution) | (1 << Widx::display_resolution_btn);
+                w->disabled_widgets &= ~((1 << Widx::display_resolution) | (1 << Widx::display_resolution_btn));
             }
             else
             {
-                w->enabled_widgets &= ~((1 << widx::display_resolution) | (1 << widx::display_resolution_btn));
-                w->disabled_widgets |= (1 << widx::display_resolution) | (1 << widx::display_resolution_btn);
+                w->enabled_widgets &= ~((1 << Widx::display_resolution) | (1 << Widx::display_resolution_btn));
+                w->disabled_widgets |= (1 << Widx::display_resolution) | (1 << Widx::display_resolution_btn);
             }
         }
 #endif
 
         static void screenModeMouseDown(window* w, widget_index wi)
         {
-            widget_t dropdown = w->widgets[widx::screen_mode];
+            widget_t dropdown = w->widgets[Widx::screen_mode];
             Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], 3, 0x80);
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::options_mode_windowed);
@@ -415,7 +415,7 @@ namespace OpenLoco::Ui::Options
         {
             std::vector<Resolution> resolutions = getFullscreenResolutions();
 
-            widget_t dropdown = w->widgets[widx::display_resolution];
+            widget_t dropdown = w->widgets[Widx::display_resolution];
             Dropdown::showText2(w->x + dropdown.left, w->y + dropdown.top, dropdown.width(), dropdown.height(), w->colours[1], resolutions.size(), 0x80);
 
             auto& cfg = Config::getNew();
@@ -448,25 +448,25 @@ namespace OpenLoco::Ui::Options
         {
             switch (wi)
             {
-                case widx::screen_mode_btn:
+                case Widx::screen_mode_btn:
                     screenModeMouseDown(w, wi);
                     break;
-                case widx::display_resolution_btn:
+                case Widx::display_resolution_btn:
                     resolutionMouseDown(w, wi);
                     break;
-                case widx::construction_marker_btn:
+                case Widx::construction_marker_btn:
                     constructionMarkerMouseDown(w, wi);
                     break;
-                case widx::vehicles_min_scale_btn:
+                case Widx::vehicles_min_scale_btn:
                     vehicleZoomMouseDown(w, wi);
                     break;
-                case widx::station_names_min_scale_btn:
+                case Widx::station_names_min_scale_btn:
                     stationNamesScaleMouseDown(w, wi);
                     break;
-                case widx::display_scale_down_btn:
+                case Widx::display_scale_down_btn:
                     displayScaleMouseDown(w, wi, -OpenLoco::Ui::ScaleFactor::step);
                     break;
-                case widx::display_scale_up_btn:
+                case Widx::display_scale_up_btn:
                     displayScaleMouseDown(w, wi, OpenLoco::Ui::ScaleFactor::step);
                     break;
             }
@@ -477,19 +477,19 @@ namespace OpenLoco::Ui::Options
         {
             switch (wi)
             {
-                case widx::screen_mode_btn:
+                case Widx::screen_mode_btn:
                     screenModeDropdown(w, item_index);
                     break;
-                case widx::display_resolution_btn:
+                case Widx::display_resolution_btn:
                     resolutionDropdown(w, item_index);
                     break;
-                case widx::construction_marker_btn:
+                case Widx::construction_marker_btn:
                     constructionMarkerDropdown(item_index);
                     break;
-                case widx::vehicles_min_scale_btn:
+                case Widx::vehicles_min_scale_btn:
                     vehicleZoomDropdown(item_index);
                     break;
-                case widx::station_names_min_scale_btn:
+                case Widx::station_names_min_scale_btn:
                     stationNamesScaleDropdown(item_index);
                     break;
             }
@@ -533,7 +533,7 @@ namespace OpenLoco::Ui::Options
                     screen_mode_string_id = StringIds::options_mode_fullscreen_window;
                     break;
             }
-            w->widgets[widx::screen_mode].text = screen_mode_string_id;
+            w->widgets[Widx::screen_mode].text = screen_mode_string_id;
 
             FormatArguments args = {};
             args.skip(0x10);
@@ -542,9 +542,9 @@ namespace OpenLoco::Ui::Options
             args.push<uint16_t>(resolution.height);
 
             if (Config::get().construction_marker)
-                w->widgets[widx::construction_marker].text = StringIds::translucent;
+                w->widgets[Widx::construction_marker].text = StringIds::translucent;
             else
-                w->widgets[widx::construction_marker].text = StringIds::white;
+                w->widgets[Widx::construction_marker].text = StringIds::white;
 
             static const string_id scale_string_ids[] = {
                 StringIds::full_scale,
@@ -553,30 +553,30 @@ namespace OpenLoco::Ui::Options
                 StringIds::eighth_scale,
             };
 
-            w->widgets[widx::vehicles_min_scale].text = scale_string_ids[Config::get().vehicles_min_scale];
-            w->widgets[widx::station_names_min_scale].text = scale_string_ids[Config::get().station_names_min_scale];
+            w->widgets[Widx::vehicles_min_scale].text = scale_string_ids[Config::get().vehicles_min_scale];
+            w->widgets[Widx::station_names_min_scale].text = scale_string_ids[Config::get().station_names_min_scale];
 
-            w->activated_widgets &= ~(1 << widx::landscape_smoothing);
+            w->activated_widgets &= ~(1 << Widx::landscape_smoothing);
             if ((Config::get().flags & Config::flags::landscape_smoothing) == 0)
             {
-                w->activated_widgets |= (1 << widx::landscape_smoothing);
+                w->activated_widgets |= (1 << Widx::landscape_smoothing);
             }
 
-            w->activated_widgets &= ~(1 << widx::gridlines_on_landscape);
+            w->activated_widgets &= ~(1 << Widx::gridlines_on_landscape);
             if (Config::get().flags & Config::flags::gridlines_on_landscape)
             {
-                w->activated_widgets |= (1 << widx::gridlines_on_landscape);
+                w->activated_widgets |= (1 << Widx::gridlines_on_landscape);
             }
 
             if (Config::getNew().scale_factor <= OpenLoco::Ui::ScaleFactor::min)
-                w->disabled_widgets |= (1 << widx::display_scale_down_btn);
+                w->disabled_widgets |= (1 << Widx::display_scale_down_btn);
             else
-                w->disabled_widgets &= ~(1 << widx::display_scale_down_btn);
+                w->disabled_widgets &= ~(1 << Widx::display_scale_down_btn);
 
             if (Config::getNew().scale_factor >= OpenLoco::Ui::ScaleFactor::max)
-                w->disabled_widgets |= (1 << widx::display_scale_up_btn);
+                w->disabled_widgets |= (1 << Widx::display_scale_up_btn);
             else
-                w->disabled_widgets &= ~(1 << widx::display_scale_up_btn);
+                w->disabled_widgets &= ~(1 << Widx::display_scale_up_btn);
 
 #if !(defined(__APPLE__) && defined(__MACH__))
             screenModeToggleEnabled(w);
@@ -594,36 +594,36 @@ namespace OpenLoco::Ui::Options
             Common::drawTabs(w, dpi);
 
             int16_t x = w->x + 10;
-            int16_t y = w->y + Display::_widgets[Display::widx::screen_mode].top + 1;
+            int16_t y = w->y + Display::_widgets[Display::Widx::screen_mode].top + 1;
             drawString_494B3F(*dpi, x, y, Colour::black, StringIds::options_screen_mode, nullptr);
 
-            y = w->y + Display::_widgets[Display::widx::display_resolution].top + 1;
+            y = w->y + Display::_widgets[Display::Widx::display_resolution].top + 1;
             drawString_494B3F(*dpi, x + 14, y, Colour::black, StringIds::display_resolution, nullptr);
 
-            y = w->y + Display::_widgets[Display::widx::construction_marker].top + 1;
+            y = w->y + Display::_widgets[Display::Widx::construction_marker].top + 1;
             drawString_494B3F(*dpi, x, y, Colour::black, StringIds::construction_marker, nullptr);
 
-            y = w->y + Display::_widgets[Display::widx::vehicles_min_scale].top + 1;
+            y = w->y + Display::_widgets[Display::Widx::vehicles_min_scale].top + 1;
             drawString_494B3F(*dpi, x, y, Colour::black, StringIds::vehicles_min_scale, nullptr);
 
-            y = w->y + Display::_widgets[Display::widx::station_names_min_scale].top + 1;
+            y = w->y + Display::_widgets[Display::Widx::station_names_min_scale].top + 1;
             drawString_494B3F(*dpi, x, y, Colour::black, StringIds::station_names_min_scale, nullptr);
 
-            y = w->y + Display::_widgets[Display::widx::display_scale].top + 1;
+            y = w->y + Display::_widgets[Display::Widx::display_scale].top + 1;
             drawString_494B3F(*dpi, x + 14, y, Colour::black, StringIds::window_scale_factor, nullptr);
 
             int scale = (int)(Config::getNew().scale_factor * 100);
-            auto& scale_widget = w->widgets[widx::display_scale];
+            auto& scale_widget = w->widgets[Widx::display_scale];
             drawString_494B3F(*dpi, w->x + scale_widget.left + 1, w->y + scale_widget.top + 1, Colour::black, StringIds::scale_formatted, &scale);
         }
 
         static void applyScreenModeRestrictions(window* w)
         {
             if (Config::getNew().display.mode != Config::screen_mode::fullscreen)
-                w->disabled_widgets = (1 << Display::widx::display_resolution) | (1 << Display::widx::display_resolution_btn);
+                w->disabled_widgets = (1 << Display::Widx::display_resolution) | (1 << Display::Widx::display_resolution_btn);
 
 #if !(defined(__APPLE__) && defined(__MACH__))
-            w->enabled_widgets |= (1 << Display::widx::screen_mode) | (1 << Display::widx::screen_mode_btn);
+            w->enabled_widgets |= (1 << Display::Widx::screen_mode) | (1 << Display::Widx::screen_mode_btn);
             Display::screenModeToggleEnabled(w);
 #else
             w->disabled_widgets |= (1 << display::Widx::screen_mode) | (1 << display::Widx::screen_mode_btn) | (1 << display::Widx::display_resolution) | (1 << display::Widx::display_resolution_btn);
