@@ -1566,7 +1566,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
     }
 
-    namespace finances
+    namespace Finances
     {
         const Gfx::ui_size_t windowSize = { 636, 319 };
 
@@ -2060,20 +2060,20 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         Common::initEvents();
 
         window->current_tab = Common::tab_finances - Common::tab_status;
-        window->width = finances::windowSize.width;
-        window->height = finances::windowSize.height;
+        window->width = Finances::windowSize.width;
+        window->height = Finances::windowSize.height;
         window->invalidate();
 
-        window->widgets = finances::widgets;
-        window->enabled_widgets = finances::enabledWidgets;
-        window->holdable_widgets = finances::holdableWidgets;
-        window->event_handlers = &finances::events;
+        window->widgets = Finances::widgets;
+        window->enabled_widgets = Finances::enabledWidgets;
+        window->holdable_widgets = Finances::holdableWidgets;
+        window->event_handlers = &Finances::events;
         window->activated_widgets = 0;
 
         Common::disableChallengeTab(window);
         window->initScrollWidgets();
         window->moveInsideScreenEdges();
-        finances::sub_4C8DBF(window);
+        Finances::sub_4C8DBF(window);
 
         return window;
     }
@@ -2427,7 +2427,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             { Status::widgets, widx::tab_status, &Status::events, &Status::enabledWidgets, &Status::windowSize },
             { Details::widgets, widx::tab_details, &Details::events, &Details::enabledWidgets, &Details::windowSize },
             { ColourScheme::widgets, widx::tab_colour_scheme, &ColourScheme::events, &ColourScheme::enabledWidgets, &ColourScheme::windowSize },
-            { finances::widgets, widx::tab_finances, &finances::events, &finances::enabledWidgets, &finances::windowSize },
+            { Finances::widgets, widx::tab_finances, &Finances::events, &Finances::enabledWidgets, &Finances::windowSize },
             { CargoDelivered::widgets, widx::tab_cargo_delivered, &CargoDelivered::events, &CargoDelivered::enabledWidgets, &CargoDelivered::windowSize },
             { challenge::widgets, widx::tab_challenge, &challenge::events, &challenge::enabledWidgets, &challenge::windowSize }
         };
@@ -2437,7 +2437,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             Status::initEvents();
             Details::initEvents();
             ColourScheme::initEvents();
-            finances::initEvents();
+            Finances::initEvents();
             CargoDelivered::initEvents();
             challenge::initEvents();
         }
@@ -2474,7 +2474,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 Status::widgets,
                 Details::widgets,
                 ColourScheme::widgets,
-                finances::widgets,
+                Finances::widgets,
                 CargoDelivered::widgets,
                 challenge::widgets,
             };
@@ -2527,7 +2527,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             self->widgets = tabInfo.widgets;
 
             if (tabInfo.widgetIndex == widx::tab_finances)
-                self->holdable_widgets = finances::holdableWidgets;
+                self->holdable_widgets = Finances::holdableWidgets;
 
             Common::disableChallengeTab(self);
             self->invalidate();
@@ -2539,7 +2539,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             self->moveInsideScreenEdges();
 
             if (tabInfo.widgetIndex == widx::tab_finances)
-                finances::sub_4C8DBF(self);
+                Finances::sub_4C8DBF(self);
         }
 
         // 0x0043252E
