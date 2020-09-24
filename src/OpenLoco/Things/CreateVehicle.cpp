@@ -94,7 +94,7 @@ namespace OpenLoco::Things::Vehicle
         for (auto i = 0; i < max_num_vehicles; i++)
         {
             auto id = _96885C[i][0];
-            if (id == thing_id::null)
+            if (id == ThingId::null)
             {
                 return true;
             }
@@ -499,7 +499,7 @@ namespace OpenLoco::Things::Vehicle
         for (auto i = 0; i < max_num_vehicles; i++)
         {
             auto id = _96885C[i][0];
-            if (id == thing_id::null)
+            if (id == ThingId::null)
             {
                 for (auto j = 0; j < max_num_routing_steps; ++j)
                 {
@@ -674,7 +674,7 @@ namespace OpenLoco::Things::Vehicle
         newTail->var_48 = -1;
         newTail->var_4A = 0;
         lastVeh->next_car_id = newTail->id;
-        newTail->next_car_id = thing_id::null;
+        newTail->next_car_id = ThingId::null;
         return newTail;
     }
     // 0x004AE318
@@ -751,7 +751,7 @@ namespace OpenLoco::Things::Vehicle
         uint16_t baseOrderId = (orderId & ~(0x3F)) / max_num_routing_steps;
         for (auto i = 0; i < max_num_routing_steps; ++i)
         {
-            _96885C[baseOrderId][i] = thing_id::null;
+            _96885C[baseOrderId][i] = ThingId::null;
         }
     }
 

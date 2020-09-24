@@ -22,7 +22,7 @@ vehicle_channel::vehicle_channel(channel&& c)
 
 vehicle_channel::vehicle_channel(vehicle_channel&& vc)
     : _channel(std::exchange(vc._channel, {}))
-    , _vehicle_id(std::exchange(vc._vehicle_id, thing_id::null))
+    , _vehicle_id(std::exchange(vc._vehicle_id, ThingId::null))
     , _sound_id(std::exchange(vc._sound_id, {}))
     , _attributes(std::exchange(vc._attributes, {}))
 {
@@ -94,5 +94,5 @@ void vehicle_channel::update()
 void vehicle_channel::stop()
 {
     _channel.stop();
-    _vehicle_id = thing_id::null;
+    _vehicle_id = ThingId::null;
 }

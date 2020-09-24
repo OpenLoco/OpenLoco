@@ -563,7 +563,7 @@ namespace OpenLoco::ui
     // 0x004C6801
     void window::moveWindowToLocation(viewport_pos pos)
     {
-        if (this->viewport_configurations->viewport_target_sprite != thing_id::null)
+        if (this->viewport_configurations->viewport_target_sprite != ThingId::null)
             return;
 
         if (this->flags & window_flags::viewport_no_scrolling)

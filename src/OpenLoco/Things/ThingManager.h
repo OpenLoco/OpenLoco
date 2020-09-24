@@ -47,7 +47,7 @@ namespace OpenLoco::thingmgr
     {
     private:
         vehicle_head* head = nullptr;
-        thing_id_t nextHeadId = thing_id::null;
+        thing_id_t nextHeadId = ThingId::null;
 
     public:
         VehicleHeadIterator(const uint16_t _headId)
@@ -97,7 +97,7 @@ namespace OpenLoco::thingmgr
     class ThingList
     {
     private:
-        uint16_t firstId = thing_id::null;
+        uint16_t firstId = ThingId::null;
         using thingListIterator = T;
 
     public:
@@ -112,7 +112,7 @@ namespace OpenLoco::thingmgr
         }
         T end()
         {
-            return T(thing_id::null);
+            return T(ThingId::null);
         }
     };
 
