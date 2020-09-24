@@ -203,7 +203,7 @@ namespace OpenLoco::Ui::Windows::Construction
         void drawRoad(uint16_t x, uint16_t y, uint16_t selectedMods, uint16_t di, uint8_t trackType, uint8_t trackPieceId, uint16_t colour, uint8_t bh);
     }
 
-    namespace station
+    namespace Station
     {
         enum widx
         {
