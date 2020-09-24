@@ -390,7 +390,7 @@ namespace OpenLoco::Ui::Windows::Construction
 
             if (widgetIndex == widx::tab_station)
             {
-                Ui::Windows::station::showStationCatchment(station_id::null);
+                Ui::Windows::Station::showStationCatchment(station_id::null);
             }
 
             if (widgetIndex == widx::tab_construction)

@@ -515,7 +515,7 @@ namespace OpenLoco::Input
 
                         case InteractionItem::station:
                         {
-                            Ui::Windows::station::open(ptr.value);
+                            Ui::Windows::Station::open(ptr.value);
                             break;
                         }
 

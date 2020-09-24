@@ -711,7 +711,7 @@ namespace OpenLoco::Ui::Windows::station_list
         if (currentStation == -1)
             return;
 
-        Windows::station::open(currentStation);
+        Windows::Station::open(currentStation);
     }
 
     // 0x004919D1

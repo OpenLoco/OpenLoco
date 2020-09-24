@@ -183,7 +183,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
     window* open();
 }
 
-namespace OpenLoco::Ui::Windows::station
+namespace OpenLoco::Ui::Windows::Station
 {
     window* open(uint16_t id);
     void showStationCatchment(uint16_t windowNumber);
