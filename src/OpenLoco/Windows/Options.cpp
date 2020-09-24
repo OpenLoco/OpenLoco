@@ -1849,7 +1849,7 @@ namespace OpenLoco::Ui::Options
     {
         static const Gfx::ui_size_t _window_size = { 420, 139 };
 
-        namespace widx
+        namespace Widx
         {
             enum
             {
@@ -1861,7 +1861,7 @@ namespace OpenLoco::Ui::Options
             };
         }
 
-        static constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Misc::widx::disable_vehicle_breakdowns) | (1 << widx::disableAICompanies) | (1 << Misc::widx::use_preferred_owner_name) | (1 << Misc::widx::change_btn) | (1 << Misc::widx::export_plugin_objects);
+        static constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Misc::Widx::disable_vehicle_breakdowns) | (1 << Widx::disableAICompanies) | (1 << Misc::Widx::use_preferred_owner_name) | (1 << Misc::Widx::change_btn) | (1 << Misc::Widx::export_plugin_objects);
 
         static widget_t _widgets[] = {
             common_options_widgets(_window_size, StringIds::options_title_miscellaneous),
@@ -1902,33 +1902,33 @@ namespace OpenLoco::Ui::Options
             w->widgets[Common::Widx::close_button].right = w->width - 15 + 12;
 
             if (Config::getNew().breakdowns_disabled)
-                w->activated_widgets |= (1 << widx::disable_vehicle_breakdowns);
+                w->activated_widgets |= (1 << Widx::disable_vehicle_breakdowns);
             else
-                w->activated_widgets &= ~(1 << widx::disable_vehicle_breakdowns);
+                w->activated_widgets &= ~(1 << Widx::disable_vehicle_breakdowns);
 
             if (Config::getNew().companyAIDisabled)
-                w->activated_widgets |= (1 << widx::disableAICompanies);
+                w->activated_widgets |= (1 << Widx::disableAICompanies);
             else
-                w->activated_widgets &= ~(1 << widx::disableAICompanies);
+                w->activated_widgets &= ~(1 << Widx::disableAICompanies);
 
-            w->activated_widgets &= ~(1 << widx::export_plugin_objects);
+            w->activated_widgets &= ~(1 << Widx::export_plugin_objects);
             if (Config::get().flags & Config::flags::export_objects_with_saves)
             {
-                w->activated_widgets |= (1 << widx::export_plugin_objects);
+                w->activated_widgets |= (1 << Widx::export_plugin_objects);
             }
 
-            w->activated_widgets &= ~(1 << widx::use_preferred_owner_name);
-            w->disabled_widgets |= (1 << widx::change_btn);
+            w->activated_widgets &= ~(1 << Widx::use_preferred_owner_name);
+            w->disabled_widgets |= (1 << Widx::change_btn);
             if (Config::get().flags & Config::flags::use_preferred_owner_name)
             {
-                w->activated_widgets |= (1 << widx::use_preferred_owner_name);
-                w->disabled_widgets &= ~(1 << widx::change_btn);
+                w->activated_widgets |= (1 << Widx::use_preferred_owner_name);
+                w->disabled_widgets &= ~(1 << Widx::change_btn);
             }
 
-            w->widgets[widx::export_plugin_objects].type = widget_type::none;
+            w->widgets[Widx::export_plugin_objects].type = widget_type::none;
             if (_112A17E)
             {
-                w->widgets[widx::export_plugin_objects].type = widget_type::checkbox;
+                w->widgets[Widx::export_plugin_objects].type = widget_type::checkbox;
             }
 
             sub_4C13BE(w);
@@ -1947,7 +1947,7 @@ namespace OpenLoco::Ui::Options
 
             FormatArguments args = {};
             args.push(StringIds::buffer_2039);
-            Gfx::drawString_494B3F(*dpi, w->x + 10, w->y + w->widgets[widx::change_btn].top + 1, 0, StringIds::wcolour2_preferred_owner_name, &args);
+            Gfx::drawString_494B3F(*dpi, w->x + 10, w->y + w->widgets[Widx::change_btn].top + 1, 0, StringIds::wcolour2_preferred_owner_name, &args);
         }
 
         // 0x004C12D2
@@ -1968,23 +1968,23 @@ namespace OpenLoco::Ui::Options
                     Options::tabOnMouseUp(w, wi);
                     return;
 
-                case widx::disable_vehicle_breakdowns:
+                case Widx::disable_vehicle_breakdowns:
                     disableVehicleBreakdownsMouseUp(w);
                     break;
 
-                case widx::disableAICompanies:
+                case Widx::disableAICompanies:
                     disableAICompaniesMouseUp(w);
                     break;
 
-                case widx::export_plugin_objects:
+                case Widx::export_plugin_objects:
                     exportPluginObjectsMouseUp(w);
                     break;
 
-                case widx::use_preferred_owner_name:
+                case Widx::use_preferred_owner_name:
                     usePreferredOwnerNameMouseUp(w);
                     break;
 
-                case widx::change_btn:
+                case Widx::change_btn:
                     changePreferredName(w);
                     break;
             }
@@ -1995,7 +1995,7 @@ namespace OpenLoco::Ui::Options
         {
             switch (i)
             {
-                case widx::use_preferred_owner_name:
+                case Widx::use_preferred_owner_name:
                     setPreferredName(w, str);
                     break;
             }
@@ -2009,7 +2009,7 @@ namespace OpenLoco::Ui::Options
             strcpy(buffer, playerName);
             buffer[strlen(playerName)] = '\0';
 
-            TextInput::openTextInput(w, StringIds::preferred_owner_name, StringIds::enter_preferred_owner_name, StringIds::buffer_2039, widx::use_preferred_owner_name, nullptr);
+            TextInput::openTextInput(w, StringIds::preferred_owner_name, StringIds::enter_preferred_owner_name, StringIds::buffer_2039, Widx::use_preferred_owner_name, nullptr);
         }
 
         // 0x004C1342
