@@ -1706,7 +1706,7 @@ namespace OpenLoco::Ui::Options
 
     namespace Controls
     {
-        namespace widx
+        namespace Widx
         {
             enum
             {
@@ -1716,7 +1716,7 @@ namespace OpenLoco::Ui::Options
             };
         }
 
-        static constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Controls::widx::edge_scrolling) | (1 << Controls::widx::customize_keys) | (1 << Controls::widx::zoom_to_cursor);
+        static constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Controls::Widx::edge_scrolling) | (1 << Controls::Widx::customize_keys) | (1 << Controls::Widx::zoom_to_cursor);
 
         static const Gfx::ui_size_t _window_size = { 366, 99 };
 
@@ -1750,14 +1750,14 @@ namespace OpenLoco::Ui::Options
             w->widgets[Common::Widx::close_button].left = w->width - 15;
             w->widgets[Common::Widx::close_button].right = w->width - 15 + 12;
 
-            w->activated_widgets &= ~(1 << widx::edge_scrolling | 1 << widx::zoom_to_cursor);
+            w->activated_widgets &= ~(1 << Widx::edge_scrolling | 1 << Widx::zoom_to_cursor);
             if (Config::get().edge_scrolling)
             {
-                w->activated_widgets |= (1 << widx::edge_scrolling);
+                w->activated_widgets |= (1 << Widx::edge_scrolling);
             }
             if (Config::getNew().zoom_to_cursor)
             {
-                w->activated_widgets |= (1 << widx::zoom_to_cursor);
+                w->activated_widgets |= (1 << Widx::zoom_to_cursor);
             }
 
             sub_4C13BE(w);
@@ -1788,15 +1788,15 @@ namespace OpenLoco::Ui::Options
                     Options::tabOnMouseUp(w, wi);
                     return;
 
-                case widx::customize_keys:
+                case Widx::customize_keys:
                     openKeyboardShortcuts();
                     break;
 
-                case widx::edge_scrolling:
+                case Widx::edge_scrolling:
                     edgeScrollingMouseUp(w);
                     break;
 
-                case widx::zoom_to_cursor:
+                case Widx::zoom_to_cursor:
                     zoomToCursorMouseUp(w);
                     break;
             }
