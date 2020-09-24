@@ -28,7 +28,7 @@ namespace OpenLoco::Ui::Windows::Town
 
     static loco_global<uint16_t[10], 0x0112C826> commonFormatArgs;
 
-    namespace common
+    namespace Common
     {
         enum widx
         {
@@ -84,14 +84,14 @@ namespace OpenLoco::Ui::Windows::Town
             widgetEnd(),
         };
 
-        const uint64_t enabledWidgets = common::enabledWidgets | (1 << centre_on_viewport) | (1 << expand_town) | (1 << demolish_town);
+        const uint64_t enabledWidgets = Common::enabledWidgets | (1 << centre_on_viewport) | (1 << expand_town) | (1 << demolish_town);
 
         static window_event_list events;
 
         // 0x00498EAF
         static void prepareDraw(window* self)
         {
-            common::prepareDraw(self);
+            Common::prepareDraw(self);
 
             self->widgets[widx::viewport].right = self->width - 26;
             self->widgets[widx::viewport].bottom = self->height - 14;
@@ -123,14 +123,14 @@ namespace OpenLoco::Ui::Windows::Town
             self->widgets[widx::centre_on_viewport].left = self->widgets[widx::viewport].right - 24;
             self->widgets[widx::centre_on_viewport].top = self->widgets[widx::viewport].bottom - 24;
 
-            common::repositionTabs(self);
+            Common::repositionTabs(self);
         }
 
         // 0x00498FFE
         static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
         {
             self->draw(dpi);
-            common::drawTabs(self, dpi);
+            Common::drawTabs(self, dpi);
             self->drawViewports(dpi);
             widget::drawViewportCentreButton(dpi, self, widx::centre_on_viewport);
 
@@ -152,18 +152,18 @@ namespace OpenLoco::Ui::Windows::Town
         {
             switch (widgetIndex)
             {
-                case common::widx::caption:
-                    common::renameTownPrompt(self, widgetIndex);
+                case Common::widx::caption:
+                    Common::renameTownPrompt(self, widgetIndex);
                     break;
 
-                case common::widx::close_button:
+                case Common::widx::close_button:
                     WindowManager::close(self);
                     break;
 
-                case common::widx::tab_town:
-                case common::widx::tab_population:
-                case common::widx::tab_company_ratings:
-                    common::switchTab(self, widgetIndex);
+                case Common::widx::tab_town:
+                case Common::widx::tab_population:
+                case Common::widx::tab_company_ratings:
+                    Common::switchTab(self, widgetIndex);
                     break;
 
                 // 0x0049932D
@@ -330,9 +330,9 @@ namespace OpenLoco::Ui::Windows::Town
             events.draw = draw;
             events.on_mouse_up = onMouseUp;
             events.on_resize = onResize;
-            events.on_update = common::update;
+            events.on_update = Common::update;
             events.prepare_draw = prepareDraw;
-            events.text_input = common::textInput;
+            events.text_input = Common::textInput;
             events.viewport_rotate = initViewport;
         }
     }
@@ -372,7 +372,7 @@ namespace OpenLoco::Ui::Windows::Town
         }
 
         // TODO(avgeffen): only needs to be called once.
-        common::initEvents();
+        Common::initEvents();
 
         window->current_tab = 0;
         window->invalidate();
@@ -401,14 +401,14 @@ namespace OpenLoco::Ui::Windows::Town
         // 0x00499469
         static void prepareDraw(window* self)
         {
-            common::prepareDraw(self);
+            Common::prepareDraw(self);
         }
 
         // 0x004994F9
         static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
         {
             self->draw(dpi);
-            common::drawTabs(self, dpi);
+            Common::drawTabs(self, dpi);
 
             Gfx::drawpixelinfo_t* clipped = nullptr;
             if (!Gfx::clipDrawpixelinfo(&clipped, dpi, self->x, self->y + 44, self->width, self->height - 44))
@@ -480,18 +480,18 @@ namespace OpenLoco::Ui::Windows::Town
         {
             switch (widgetIndex)
             {
-                case common::widx::caption:
-                    common::renameTownPrompt(self, widgetIndex);
+                case Common::widx::caption:
+                    Common::renameTownPrompt(self, widgetIndex);
                     break;
 
-                case common::widx::close_button:
+                case Common::widx::close_button:
                     WindowManager::close(self);
                     break;
 
-                case common::widx::tab_town:
-                case common::widx::tab_population:
-                case common::widx::tab_company_ratings:
-                    common::switchTab(self, widgetIndex);
+                case Common::widx::tab_town:
+                case Common::widx::tab_population:
+                case Common::widx::tab_company_ratings:
+                    Common::switchTab(self, widgetIndex);
                     break;
             }
         }
@@ -509,9 +509,9 @@ namespace OpenLoco::Ui::Windows::Town
             events.draw = draw;
             events.on_mouse_up = onMouseUp;
             events.on_resize = onResize;
-            events.on_update = common::update;
+            events.on_update = Common::update;
             events.prepare_draw = prepareDraw;
-            events.text_input = common::textInput;
+            events.text_input = Common::textInput;
         }
     }
 
@@ -527,14 +527,14 @@ namespace OpenLoco::Ui::Windows::Town
         // 0x00499761
         static void prepareDraw(window* self)
         {
-            common::prepareDraw(self);
+            Common::prepareDraw(self);
         }
 
         // 0x004997F1
         static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
         {
             self->draw(dpi);
-            common::drawTabs(self, dpi);
+            Common::drawTabs(self, dpi);
 
             uint16_t xPos = self->x + 4;
             uint16_t yPos = self->y + 46;
@@ -578,18 +578,18 @@ namespace OpenLoco::Ui::Windows::Town
         {
             switch (widgetIndex)
             {
-                case common::widx::caption:
-                    common::renameTownPrompt(self, widgetIndex);
+                case Common::widx::caption:
+                    Common::renameTownPrompt(self, widgetIndex);
                     break;
 
-                case common::widx::close_button:
+                case Common::widx::close_button:
                     WindowManager::close(self);
                     break;
 
-                case common::widx::tab_town:
-                case common::widx::tab_population:
-                case common::widx::tab_company_ratings:
-                    common::switchTab(self, widgetIndex);
+                case Common::widx::tab_town:
+                case Common::widx::tab_population:
+                case Common::widx::tab_company_ratings:
+                    Common::switchTab(self, widgetIndex);
                     break;
             }
         }
@@ -607,13 +607,13 @@ namespace OpenLoco::Ui::Windows::Town
             events.draw = draw;
             events.on_mouse_up = onMouseUp;
             events.on_resize = onResize;
-            events.on_update = common::update;
+            events.on_update = Common::update;
             events.prepare_draw = prepareDraw;
-            events.text_input = common::textInput;
+            events.text_input = Common::textInput;
         }
     }
 
-    namespace common
+    namespace Common
     {
         struct TabInformation
         {
@@ -625,8 +625,8 @@ namespace OpenLoco::Ui::Windows::Town
 
         static TabInformation tabInformationByTabOffset[] = {
             { town::widgets, widx::tab_town, &town::events, &town::enabledWidgets },
-            { population::widgets, widx::tab_population, &population::events, &common::enabledWidgets },
-            { company_ratings::widgets, widx::tab_company_ratings, &company_ratings::events, &common::enabledWidgets }
+            { population::widgets, widx::tab_population, &population::events, &Common::enabledWidgets },
+            { company_ratings::widgets, widx::tab_company_ratings, &company_ratings::events, &Common::enabledWidgets }
         };
 
         static void prepareDraw(window* self)
@@ -648,22 +648,22 @@ namespace OpenLoco::Ui::Windows::Town
             commonFormatArgs[0] = townmgr::get(self->number)->name;
 
             // Resize common widgets.
-            self->widgets[common::widx::frame].right = self->width - 1;
-            self->widgets[common::widx::frame].bottom = self->height - 1;
+            self->widgets[Common::widx::frame].right = self->width - 1;
+            self->widgets[Common::widx::frame].bottom = self->height - 1;
 
-            self->widgets[common::widx::caption].right = self->width - 2;
+            self->widgets[Common::widx::caption].right = self->width - 2;
 
-            self->widgets[common::widx::close_button].left = self->width - 15;
-            self->widgets[common::widx::close_button].right = self->width - 3;
+            self->widgets[Common::widx::close_button].left = self->width - 15;
+            self->widgets[Common::widx::close_button].right = self->width - 3;
 
-            self->widgets[common::widx::panel].right = self->width - 1;
-            self->widgets[common::widx::panel].bottom = self->height - 1;
+            self->widgets[Common::widx::panel].right = self->width - 1;
+            self->widgets[Common::widx::panel].bottom = self->height - 1;
         }
 
         // 0x00499287
         static void textInput(window* self, widget_index callingWidget, char* input)
         {
-            if (callingWidget != common::widx::caption)
+            if (callingWidget != Common::widx::caption)
                 return;
 
             if (strlen(input) == 0)
