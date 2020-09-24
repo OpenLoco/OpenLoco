@@ -19,7 +19,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::Ui::prompt_browse
+namespace OpenLoco::Ui::PromptBrowse
 {
     static fs::path getDirectory(const fs::path& path);
     static std::string getBasename(const fs::path& path);

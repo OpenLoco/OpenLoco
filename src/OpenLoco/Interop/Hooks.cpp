@@ -767,7 +767,7 @@ void OpenLoco::Interop::registerHooks()
             return 0;
         });
 
-    Ui::prompt_browse::registerHooks();
+    Ui::PromptBrowse::registerHooks();
     Ui::textinput::registerHooks();
     Ui::tooltip::registerHooks();
     Ui::vehicle::registerHooks();

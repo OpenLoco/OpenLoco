@@ -167,7 +167,7 @@ namespace OpenLoco::Ui::Options
     constexpr uint8_t tab_offset_music = 2;
 }
 
-namespace OpenLoco::Ui::prompt_browse
+namespace OpenLoco::Ui::PromptBrowse
 {
     enum browse_type : uint8_t
     {
