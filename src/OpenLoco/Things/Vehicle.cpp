@@ -16,7 +16,7 @@
 
 using namespace OpenLoco;
 using namespace OpenLoco::Interop;
-using namespace OpenLoco::objectmgr;
+using namespace OpenLoco::ObjectManager;
 
 loco_global<vehicle_head*, 0x01136118> vehicleUpdate_head;
 loco_global<vehicle_bogie*, 0x01136124> vehicleUpdate_frontBogie;
@@ -75,12 +75,12 @@ vehicle* vehicle::nextVehicleComponent()
 
 vehicle_object* vehicle::object() const
 {
-    return objectmgr::get<vehicle_object>(object_id);
+    return ObjectManager::get<vehicle_object>(object_id);
 }
 
 vehicle_object* vehicle_body::object() const
 {
-    return objectmgr::get<vehicle_object>(object_id);
+    return ObjectManager::get<vehicle_object>(object_id);
 }
 
 void vehicle_head::updateVehicle()
@@ -1081,7 +1081,7 @@ void OpenLoco::vehicle_body::steamPuffsAnimationUpdate(uint8_t num, int32_t var_
         return;
 
     var_55++;
-    steam_object* steam_obj = objectmgr::get<steam_object>(vehicleObject->animation[num].object_id);
+    steam_object* steam_obj = ObjectManager::get<steam_object>(vehicleObject->animation[num].object_id);
     if (var_55 >= ((uint8_t)vehicleObject->animation[num].type) + 1)
     {
         var_55 = 0;
@@ -1548,10 +1548,10 @@ void OpenLoco::vehicle_body::shipWakeAnimationUpdate(uint8_t num, int32_t)
 // ebx : sourceVehicleTypeId;
 static bool sub_4B90F0(const uint16_t newVehicleTypeId, const uint16_t sourceVehicleTypeId)
 {
-    auto newObject = objectmgr::get<vehicle_object>(newVehicleTypeId);       //edi
-    auto sourceObject = objectmgr::get<vehicle_object>(sourceVehicleTypeId); // esi
+    auto newObject = ObjectManager::get<vehicle_object>(newVehicleTypeId);       //edi
+    auto sourceObject = ObjectManager::get<vehicle_object>(sourceVehicleTypeId); // esi
 
-    if ((newObject->flags & flags_E0::can_couple) && (sourceObject->flags & flags_E0::can_couple))
+    if ((newObject->flags & FlagsE0::can_couple) && (sourceObject->flags & FlagsE0::can_couple))
     {
         gGameCommandErrorText = StringIds::incompatible_vehicle;
         return false;
@@ -1594,7 +1594,7 @@ static bool sub_4B90F0(const uint16_t newVehicleTypeId, const uint16_t sourceVeh
 // used by road vehicles only maybe??
 static uint32_t getVehicleTypeLength(const uint16_t vehicleTypeId)
 {
-    auto vehObject = objectmgr::get<vehicle_object>(vehicleTypeId);
+    auto vehObject = ObjectManager::get<vehicle_object>(vehicleTypeId);
     auto length = 0;
     for (auto i = 0; i < vehObject->var_04; ++i)
     {
@@ -1627,7 +1627,7 @@ uint32_t vehicle_head::getVehicleTotalLength() // TODO: const
 // ax  : vehicleTypeId
 bool vehicle_head::isVehicleTypeCompatible(const uint16_t vehicleTypeId) // TODO: const
 {
-    auto newObject = objectmgr::get<vehicle_object>(vehicleTypeId);
+    auto newObject = ObjectManager::get<vehicle_object>(vehicleTypeId);
     if (newObject->mode == TransportMode::air || newObject->mode == TransportMode::water)
     {
         things::vehicle::Vehicle train(this);

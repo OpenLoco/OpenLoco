@@ -4,12 +4,12 @@
 
 namespace OpenLoco
 {
-    namespace flags_22
+    namespace Flags22
     {
         constexpr uint8_t unk_02 = 1 << 2;
     }
 
-    namespace track_piece_flags
+    namespace TrackPieceFlags
     {
         constexpr uint16_t diagonal = 1 << 0;
         constexpr uint16_t large_curve = 1 << 1;

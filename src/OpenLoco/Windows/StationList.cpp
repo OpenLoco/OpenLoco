@@ -76,11 +76,11 @@ namespace OpenLoco::ui::windows::station_list
     };
 
     static TabDetails tabInformationByType[] = {
-        { tab_all_stations, StringIds::stringid_all_stations, interface_skin::image_ids::all_stations, station_mask_all_modes },
-        { tab_rail_stations, StringIds::stringid_rail_stations, interface_skin::image_ids::rail_stations, station_flags::transport_mode_rail },
-        { tab_road_stations, StringIds::stringid_road_stations, interface_skin::image_ids::road_stations, station_flags::transport_mode_road },
-        { tab_airports, StringIds::stringid_airports, interface_skin::image_ids::airports, station_flags::transport_mode_air },
-        { tab_ship_ports, StringIds::stringid_ship_ports, interface_skin::image_ids::ship_ports, station_flags::transport_mode_water }
+        { tab_all_stations, StringIds::stringid_all_stations, InterfaceSkin::ImageIds::all_stations, station_mask_all_modes },
+        { tab_rail_stations, StringIds::stringid_rail_stations, InterfaceSkin::ImageIds::rail_stations, station_flags::transport_mode_rail },
+        { tab_road_stations, StringIds::stringid_road_stations, InterfaceSkin::ImageIds::road_stations, station_flags::transport_mode_road },
+        { tab_airports, StringIds::stringid_airports, InterfaceSkin::ImageIds::airports, station_flags::transport_mode_air },
+        { tab_ship_ports, StringIds::stringid_ship_ports, InterfaceSkin::ImageIds::ship_ports, station_flags::transport_mode_water }
     };
 
     enum SortMode : uint16_t
@@ -184,7 +184,7 @@ namespace OpenLoco::ui::windows::station_list
         {
             if (lhs.cargo_stats[cargoId].isAccepted())
             {
-                ptr = StringManager::formatString(ptr, objectmgr::get<cargo_object>(cargoId)->name);
+                ptr = StringManager::formatString(ptr, ObjectManager::get<cargo_object>(cargoId)->name);
             }
         }
 
@@ -194,7 +194,7 @@ namespace OpenLoco::ui::windows::station_list
         {
             if (rhs.cargo_stats[cargoId].isAccepted())
             {
-                ptr = StringManager::formatString(ptr, objectmgr::get<cargo_object>(cargoId)->name);
+                ptr = StringManager::formatString(ptr, ObjectManager::get<cargo_object>(cargoId)->name);
             }
         }
 
@@ -333,7 +333,7 @@ namespace OpenLoco::ui::windows::station_list
             window->max_height = max_dimensions.height;
             window->flags |= window_flags::resizable;
 
-            auto interface = objectmgr::get<interface_skin_object>();
+            auto interface = ObjectManager::get<interface_skin_object>();
             window->colours[1] = interface->colour_0A;
         }
 
@@ -554,7 +554,7 @@ namespace OpenLoco::ui::windows::station_list
                 if (*buffer != '\0')
                     ptr = StringManager::formatString(ptr, StringIds::unit_separator);
 
-                ptr = StringManager::formatString(ptr, objectmgr::get<cargo_object>(cargoId)->name);
+                ptr = StringManager::formatString(ptr, ObjectManager::get<cargo_object>(cargoId)->name);
             }
 
             _common_format_args[0] = StringIds::buffer_1250;
@@ -567,7 +567,7 @@ namespace OpenLoco::ui::windows::station_list
     // 00491A76
     static void drawTabs(ui::window* window, Gfx::drawpixelinfo_t* dpi)
     {
-        auto skin = objectmgr::get<interface_skin_object>();
+        auto skin = ObjectManager::get<interface_skin_object>();
         auto companyColour = companymgr::getCompanyColour(window->number);
 
         for (auto tab : tabInformationByType)
@@ -586,7 +586,7 @@ namespace OpenLoco::ui::windows::station_list
 
         // Draw company owner image.
         auto company = companymgr::get(window->number);
-        auto competitor = objectmgr::get<competitor_object>(company->competitor_id);
+        auto competitor = ObjectManager::get<competitor_object>(company->competitor_id);
         uint32_t image = Gfx::recolour(competitor->images[company->owner_emotion], company->mainColours.primary);
         uint16_t x = window->x + window->widgets[widx::company_select].left + 1;
         uint16_t y = window->y + window->widgets[widx::company_select].top + 1;

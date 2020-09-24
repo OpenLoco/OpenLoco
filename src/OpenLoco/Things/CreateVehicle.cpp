@@ -19,7 +19,7 @@
 
 using namespace OpenLoco;
 using namespace OpenLoco::Interop;
-using namespace OpenLoco::objectmgr;
+using namespace OpenLoco::ObjectManager;
 using namespace OpenLoco::game_commands;
 
 namespace OpenLoco::things::vehicle
@@ -300,7 +300,7 @@ namespace OpenLoco::things::vehicle
         }
 
         newBogie->object_sprite_type = vehObject.var_24[bodyNumber].front_bogie_sprite_ind;
-        if (newBogie->object_sprite_type != sprite_ind::null)
+        if (newBogie->object_sprite_type != SpriteIndex::null)
         {
             newBogie->var_14 = vehObject.bogie_sprites[newBogie->object_sprite_type].var_02;
             newBogie->var_09 = vehObject.bogie_sprites[newBogie->object_sprite_type].var_03;
@@ -319,7 +319,7 @@ namespace OpenLoco::things::vehicle
         }
         newBogie->var_38 = flags_38::unk_1;
         newBogie->object_sprite_type = vehObject.var_24[bodyNumber].back_bogie_sprite_ind;
-        if (newBogie->object_sprite_type != sprite_ind::null)
+        if (newBogie->object_sprite_type != SpriteIndex::null)
         {
             newBogie->var_14 = vehObject.bogie_sprites[newBogie->object_sprite_type].var_02;
             newBogie->var_09 = vehObject.bogie_sprites[newBogie->object_sprite_type].var_03;
@@ -384,17 +384,17 @@ namespace OpenLoco::things::vehicle
 
         // different onwards to create bogie
         auto spriteType = vehObject.var_24[bodyNumber].body_sprite_ind;
-        if (spriteType != sprite_ind::null)
+        if (spriteType != SpriteIndex::null)
         {
-            if (spriteType & sprite_ind::flag_unk7)
+            if (spriteType & SpriteIndex::flag_unk7)
             {
                 newBody->var_38 |= flags_38::unk_1;
-                spriteType &= ~sprite_ind::flag_unk7;
+                spriteType &= ~SpriteIndex::flag_unk7;
             }
         }
         newBody->object_sprite_type = spriteType;
 
-        if (newBody->object_sprite_type != sprite_ind::null)
+        if (newBody->object_sprite_type != SpriteIndex::null)
         {
             newBody->var_14 = vehObject.sprites[newBody->object_sprite_type].var_08;
             newBody->var_09 = vehObject.sprites[newBody->object_sprite_type].var_09;
@@ -403,12 +403,12 @@ namespace OpenLoco::things::vehicle
 
         newBody->colour_scheme = colourScheme; // same as create bogie
 
-        if (bodyNumber == 0 && vehObject.flags & flags_E0::flag_02)
+        if (bodyNumber == 0 && vehObject.flags & FlagsE0::flag_02)
         {
             newBody->var_38 |= flags_38::unk_3;
         }
 
-        if (bodyNumber + 1 == vehObject.var_04 && vehObject.flags & flags_E0::flag_03)
+        if (bodyNumber + 1 == vehObject.var_04 && vehObject.flags & FlagsE0::flag_03)
         {
             newBody->var_38 |= flags_38::unk_3;
         }
@@ -451,7 +451,7 @@ namespace OpenLoco::things::vehicle
             lastVeh = reinterpret_cast<OpenLoco::vehicle*>(train.veh2);
         }
 
-        const auto vehObject = objectmgr::get<vehicle_object>(vehicleTypeId);
+        const auto vehObject = ObjectManager::get<vehicle_object>(vehicleTypeId);
         const auto company = companymgr::get(_updating_company_id);
         _1136140 = company->mainColours; // Copy to global variable. Can be removed when all global uses confirmed
         auto colourScheme = company->mainColours;
@@ -637,7 +637,7 @@ namespace OpenLoco::things::vehicle
         newVeh2->var_56 = 0;
         newVeh2->var_5A = 0;
         newVeh2->var_5B = 0;
-        newVeh2->soundId = sound_object_id::null;
+        newVeh2->soundId = SoundObjectId::null;
         newVeh2->var_48 = -1;
         newVeh2->var_4A = 0;
         newVeh2->var_5E = 0;
@@ -670,7 +670,7 @@ namespace OpenLoco::things::vehicle
         newTail->var_09 = 0;
         newTail->var_15 = 0;
         newTail->var_38 = 0;
-        newTail->soundId = sound_object_id::null;
+        newTail->soundId = SoundObjectId::null;
         newTail->var_48 = -1;
         newTail->var_4A = 0;
         lastVeh->next_car_id = newTail->id;
@@ -818,7 +818,7 @@ namespace OpenLoco::things::vehicle
 
         if (flags & game_commands::GameCommandFlag::apply)
         {
-            auto vehObject = objectmgr::get<vehicle_object>(vehicleTypeId);
+            auto vehObject = ObjectManager::get<vehicle_object>(vehicleTypeId);
 
             auto head = createBaseVehicle(vehObject->mode, vehObject->type, vehObject->track_type);
             if (!head)
@@ -851,7 +851,7 @@ namespace OpenLoco::things::vehicle
             }
         }
         // 0x4AE733
-        auto vehObject = objectmgr::get<vehicle_object>(vehicleTypeId);
+        auto vehObject = ObjectManager::get<vehicle_object>(vehicleTypeId);
         // TODO: use FixedPoint with 6 {(1 << 6) == 64} decimals for cost_index
         auto cost = (vehObject->cost_factor * currencyMultiplicationFactor[vehObject->cost_index]) / 64;
         return cost;
@@ -921,7 +921,7 @@ namespace OpenLoco::things::vehicle
             }
         }
         // 0x4AE733
-        auto vehObject = objectmgr::get<vehicle_object>(vehicleTypeId);
+        auto vehObject = ObjectManager::get<vehicle_object>(vehicleTypeId);
         // TODO: use FixedPoint with 6 {(1 << 6) == 64} decimals for cost_index
         auto cost = (vehObject->cost_factor * currencyMultiplicationFactor[vehObject->cost_index]) / 64;
         return cost;

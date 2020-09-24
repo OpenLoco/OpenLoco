@@ -112,7 +112,7 @@ namespace OpenLoco::ui::NewsWindow
                                 break;
 
                             case newsItemSubTypes::vehicleTab:
-                                auto vehicleObj = objectmgr::get<vehicle_object>(itemId);
+                                auto vehicleObj = ObjectManager::get<vehicle_object>(itemId);
                                 auto window = ui::BuildVehicle::open(static_cast<uint32_t>(vehicleObj->type), (1 << 31));
                                 window->row_hover = itemId;
                                 if (vehicleObj->mode == TransportMode::rail || vehicleObj->mode == TransportMode::road)
@@ -537,7 +537,7 @@ namespace OpenLoco::ui::NewsWindow
 
                 case newsItemSubTypes::vehicleTab:
                 {
-                    auto vehicleObj = objectmgr::get<vehicle_object>(itemIndex);
+                    auto vehicleObj = ObjectManager::get<vehicle_object>(itemIndex);
                     args.push(vehicleObj->name);
                     break;
                 }

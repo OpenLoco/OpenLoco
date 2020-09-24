@@ -235,7 +235,7 @@ namespace OpenLoco::ui::windows::industry_list
 
         static uint8_t getAverageTransportedCargo(const OpenLoco::industry& industry)
         {
-            auto industryObj = objectmgr::get<industry_object>(industry.object_id);
+            auto industryObj = ObjectManager::get<industry_object>(industry.object_id);
             uint8_t productionTransported = -1;
 
             if (industryObj->producesCargo())
@@ -539,7 +539,7 @@ namespace OpenLoco::ui::windows::industry_list
             window->max_height = industry_list::maxDimensions.height;
             window->flags |= window_flags::resizable;
 
-            auto skin = objectmgr::get<interface_skin_object>();
+            auto skin = ObjectManager::get<interface_skin_object>();
             window->colours[0] = skin->colour_0B;
             window->colours[1] = skin->colour_0C;
 
@@ -633,7 +633,7 @@ namespace OpenLoco::ui::windows::industry_list
                     return;
             }
 
-            auto industryObj = objectmgr::get<industry_object>(industryObjId);
+            auto industryObj = ObjectManager::get<industry_object>(industryObjId);
             auto industryCost = 0;
 
             if (self->var_846 == 0xFFFF)
@@ -750,7 +750,7 @@ namespace OpenLoco::ui::windows::industry_list
             if (rowInfo == 0xFFFF)
                 return;
 
-            auto industryObj = objectmgr::get<industry_object>(rowInfo);
+            auto industryObj = ObjectManager::get<industry_object>(rowInfo);
             auto buffer = const_cast<char*>(StringManager::getString(string));
             char* ptr = (char*)buffer;
 
@@ -898,7 +898,7 @@ namespace OpenLoco::ui::windows::industry_list
                     Gfx::drawRectInset(dpi, xPos, yPos, rowHeight, rowHeight, self->colours[1], (Colour::translucent_flag | Colour::outline_flag));
                 }
 
-                auto industryObj = objectmgr::get<industry_object>(self->row_info[i]);
+                auto industryObj = ObjectManager::get<industry_object>(self->row_info[i]);
 
                 Gfx::drawpixelinfo_t* clipped = nullptr;
 
@@ -993,14 +993,14 @@ namespace OpenLoco::ui::windows::industry_list
         static void updateBuildableIndustries(window* self)
         {
             auto industryCount = 0;
-            for (uint16_t i = 0; i < objectmgr::getMaxObjects(object_type::industry); i++)
+            for (uint16_t i = 0; i < ObjectManager::getMaxObjects(object_type::industry); i++)
             {
-                auto industryObj = objectmgr::get<industry_object>(i);
+                auto industryObj = ObjectManager::get<industry_object>(i);
                 if (industryObj == nullptr)
                     break;
                 if (!isEditorMode())
                 {
-                    if (!(industryObj->flags & industry_object_flags::can_be_founded_by_user))
+                    if (!(industryObj->flags & IndustryObjectFlags::can_be_founded_by_user))
                         continue;
                     if (getCurrentYear() < industryObj->designedYear)
                         continue;
@@ -1172,12 +1172,12 @@ namespace OpenLoco::ui::windows::industry_list
         // 0x00458A57
         static void drawTabs(window* self, Gfx::drawpixelinfo_t* dpi)
         {
-            auto skin = objectmgr::get<interface_skin_object>();
+            auto skin = ObjectManager::get<interface_skin_object>();
 
             // Industry List Tab
             {
                 uint32_t imageId = skin->img;
-                imageId += interface_skin::image_ids::toolbar_menu_industries;
+                imageId += InterfaceSkin::ImageIds::toolbar_menu_industries;
 
                 widget::draw_tab(self, dpi, imageId, widx::tab_industry_list);
             }
@@ -1185,22 +1185,22 @@ namespace OpenLoco::ui::windows::industry_list
             // Fund New Industries Tab
             {
                 static const uint32_t fundNewIndustriesImageIds[] = {
-                    interface_skin::image_ids::build_industry_frame_0,
-                    interface_skin::image_ids::build_industry_frame_1,
-                    interface_skin::image_ids::build_industry_frame_2,
-                    interface_skin::image_ids::build_industry_frame_3,
-                    interface_skin::image_ids::build_industry_frame_4,
-                    interface_skin::image_ids::build_industry_frame_5,
-                    interface_skin::image_ids::build_industry_frame_6,
-                    interface_skin::image_ids::build_industry_frame_7,
-                    interface_skin::image_ids::build_industry_frame_8,
-                    interface_skin::image_ids::build_industry_frame_9,
-                    interface_skin::image_ids::build_industry_frame_10,
-                    interface_skin::image_ids::build_industry_frame_11,
-                    interface_skin::image_ids::build_industry_frame_12,
-                    interface_skin::image_ids::build_industry_frame_13,
-                    interface_skin::image_ids::build_industry_frame_14,
-                    interface_skin::image_ids::build_industry_frame_15,
+                    InterfaceSkin::ImageIds::build_industry_frame_0,
+                    InterfaceSkin::ImageIds::build_industry_frame_1,
+                    InterfaceSkin::ImageIds::build_industry_frame_2,
+                    InterfaceSkin::ImageIds::build_industry_frame_3,
+                    InterfaceSkin::ImageIds::build_industry_frame_4,
+                    InterfaceSkin::ImageIds::build_industry_frame_5,
+                    InterfaceSkin::ImageIds::build_industry_frame_6,
+                    InterfaceSkin::ImageIds::build_industry_frame_7,
+                    InterfaceSkin::ImageIds::build_industry_frame_8,
+                    InterfaceSkin::ImageIds::build_industry_frame_9,
+                    InterfaceSkin::ImageIds::build_industry_frame_10,
+                    InterfaceSkin::ImageIds::build_industry_frame_11,
+                    InterfaceSkin::ImageIds::build_industry_frame_12,
+                    InterfaceSkin::ImageIds::build_industry_frame_13,
+                    InterfaceSkin::ImageIds::build_industry_frame_14,
+                    InterfaceSkin::ImageIds::build_industry_frame_15,
                 };
                 uint32_t imageId = skin->img;
                 if (self->current_tab == widx::tab_new_industry - widx::tab_industry_list)

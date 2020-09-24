@@ -165,7 +165,7 @@ namespace OpenLoco::ui::textinput
 
         if (caller->type == WindowType::titleMenu)
         {
-            interface_skin_object* interface = objectmgr::get<interface_skin_object>();
+            interface_skin_object* interface = ObjectManager::get<interface_skin_object>();
             window->colours[0] = interface->colour_0B;
             window->colours[1] = interface->colour_0C;
             window->owner = company_id::null;
@@ -173,7 +173,7 @@ namespace OpenLoco::ui::textinput
 
         if (caller->type == WindowType::timeToolbar)
         {
-            interface_skin_object* interface = objectmgr::get<interface_skin_object>();
+            interface_skin_object* interface = ObjectManager::get<interface_skin_object>();
             window->colours[1] = interface->colour_0A;
             window->owner = companymgr::getControllingId();
         }

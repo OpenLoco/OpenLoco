@@ -76,7 +76,7 @@ namespace OpenLoco::gui
                 window->widgets = (ui::widget_t*)0x509de0;
                 window->initScrollWidgets();
 
-                auto skin = OpenLoco::objectmgr::get<interface_skin_object>();
+                auto skin = OpenLoco::ObjectManager::get<interface_skin_object>();
                 if (skin != nullptr)
                 {
                     window->colours[0] = Colour::translucent(skin->colour_06);

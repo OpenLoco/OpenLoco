@@ -546,7 +546,7 @@ namespace OpenLoco::ui::windows::town_list
             window->max_height = town_list::maxDimensions.height;
             window->flags |= window_flags::resizable;
 
-            auto skin = objectmgr::get<interface_skin_object>();
+            auto skin = ObjectManager::get<interface_skin_object>();
             window->colours[0] = skin->colour_0B;
             window->colours[1] = skin->colour_0C;
 
@@ -796,7 +796,7 @@ namespace OpenLoco::ui::windows::town_list
 
             if (self->row_hover != -1)
             {
-                auto buildingObj = objectmgr::get<building_object>(self->row_hover);
+                auto buildingObj = ObjectManager::get<building_object>(self->row_hover);
                 if (buildingObj->colours != 0)
                     self->widgets[widx::object_colour].type = widget_type::wt_10;
             }
@@ -836,7 +836,7 @@ namespace OpenLoco::ui::windows::town_list
                     return;
             }
 
-            auto buildingObj = objectmgr::get<building_object>(buildingId);
+            auto buildingObj = ObjectManager::get<building_object>(buildingId);
 
             Gfx::drawString_494BBF(*dpi, self->x + 3, self->y + self->height - 13, self->width - 19, Colour::black, StringIds::black_stringid, &buildingObj->name);
         }
@@ -1081,7 +1081,7 @@ namespace OpenLoco::ui::windows::town_list
                     Gfx::drawRectInset(dpi, xPos, yPos, 112, 112, self->colours[1], (Colour::translucent_flag | Colour::outline_flag));
                 }
 
-                auto buildingObj = objectmgr::get<building_object>(self->row_info[i]);
+                auto buildingObj = ObjectManager::get<building_object>(self->row_info[i]);
 
                 Gfx::drawpixelinfo_t* clipped = nullptr;
 
@@ -1113,7 +1113,7 @@ namespace OpenLoco::ui::windows::town_list
         {
             if (self->row_hover != -1)
             {
-                auto buildingObj = objectmgr::get<building_object>(self->row_hover);
+                auto buildingObj = ObjectManager::get<building_object>(self->row_hover);
                 if (buildingObj->colours != 0)
                 {
                     colour_t colour = Utility::bitScanReverse(buildingObj->colours);
@@ -1206,19 +1206,19 @@ namespace OpenLoco::ui::windows::town_list
             auto buildingCount = 0;
             for (auto i = 0; i < 128; i++)
             {
-                auto buildingObj = objectmgr::get<building_object>(i);
+                auto buildingObj = ObjectManager::get<building_object>(i);
                 if (buildingObj == nullptr)
                     continue;
                 if (self->current_tab == common::widx::tab_build_misc_buildings - common::widx::tab_town_list)
                 {
-                    if (!(buildingObj->flags & building_object_flags::misc_building))
+                    if (!(buildingObj->flags & BuildingObjectFlags::misc_building))
                         continue;
-                    if ((buildingObj->flags & building_object_flags::is_headquarters) != 0)
+                    if ((buildingObj->flags & BuildingObjectFlags::is_headquarters) != 0)
                         continue;
                 }
                 else
                 {
-                    if ((buildingObj->flags & building_object_flags::misc_building) != 0)
+                    if ((buildingObj->flags & BuildingObjectFlags::misc_building) != 0)
                         continue;
                 }
                 self->row_info[buildingCount] = i;
@@ -1372,12 +1372,12 @@ namespace OpenLoco::ui::windows::town_list
         // 0x0049B054
         static void drawTabs(window* self, Gfx::drawpixelinfo_t* dpi)
         {
-            auto skin = objectmgr::get<interface_skin_object>();
+            auto skin = ObjectManager::get<interface_skin_object>();
 
             // Town List Tab
             {
                 uint32_t imageId = skin->img;
-                imageId += interface_skin::image_ids::toolbar_menu_towns;
+                imageId += InterfaceSkin::ImageIds::toolbar_menu_towns;
 
                 widget::draw_tab(self, dpi, imageId, widx::tab_town_list);
             }
@@ -1385,22 +1385,22 @@ namespace OpenLoco::ui::windows::town_list
             // Build New Towns Tab
             {
                 static const uint32_t buildNewTownsImageIds[] = {
-                    interface_skin::image_ids::build_town_frame_0,
-                    interface_skin::image_ids::build_town_frame_1,
-                    interface_skin::image_ids::build_town_frame_2,
-                    interface_skin::image_ids::build_town_frame_3,
-                    interface_skin::image_ids::build_town_frame_4,
-                    interface_skin::image_ids::build_town_frame_5,
-                    interface_skin::image_ids::build_town_frame_6,
-                    interface_skin::image_ids::build_town_frame_7,
-                    interface_skin::image_ids::build_town_frame_8,
-                    interface_skin::image_ids::build_town_frame_9,
-                    interface_skin::image_ids::build_town_frame_10,
-                    interface_skin::image_ids::build_town_frame_11,
-                    interface_skin::image_ids::build_town_frame_12,
-                    interface_skin::image_ids::build_town_frame_13,
-                    interface_skin::image_ids::build_town_frame_14,
-                    interface_skin::image_ids::build_town_frame_15,
+                    InterfaceSkin::ImageIds::build_town_frame_0,
+                    InterfaceSkin::ImageIds::build_town_frame_1,
+                    InterfaceSkin::ImageIds::build_town_frame_2,
+                    InterfaceSkin::ImageIds::build_town_frame_3,
+                    InterfaceSkin::ImageIds::build_town_frame_4,
+                    InterfaceSkin::ImageIds::build_town_frame_5,
+                    InterfaceSkin::ImageIds::build_town_frame_6,
+                    InterfaceSkin::ImageIds::build_town_frame_7,
+                    InterfaceSkin::ImageIds::build_town_frame_8,
+                    InterfaceSkin::ImageIds::build_town_frame_9,
+                    InterfaceSkin::ImageIds::build_town_frame_10,
+                    InterfaceSkin::ImageIds::build_town_frame_11,
+                    InterfaceSkin::ImageIds::build_town_frame_12,
+                    InterfaceSkin::ImageIds::build_town_frame_13,
+                    InterfaceSkin::ImageIds::build_town_frame_14,
+                    InterfaceSkin::ImageIds::build_town_frame_15,
                 };
                 uint32_t imageId = skin->img;
                 if (self->current_tab == widx::tab_build_town - widx::tab_town_list)
@@ -1414,22 +1414,22 @@ namespace OpenLoco::ui::windows::town_list
             // Build New Buildings Tab
             {
                 static const uint32_t buildBuildingsImageIds[] = {
-                    interface_skin::image_ids::build_buildings_frame_0,
-                    interface_skin::image_ids::build_buildings_frame_1,
-                    interface_skin::image_ids::build_buildings_frame_2,
-                    interface_skin::image_ids::build_buildings_frame_3,
-                    interface_skin::image_ids::build_buildings_frame_4,
-                    interface_skin::image_ids::build_buildings_frame_5,
-                    interface_skin::image_ids::build_buildings_frame_6,
-                    interface_skin::image_ids::build_buildings_frame_7,
-                    interface_skin::image_ids::build_buildings_frame_8,
-                    interface_skin::image_ids::build_buildings_frame_9,
-                    interface_skin::image_ids::build_buildings_frame_10,
-                    interface_skin::image_ids::build_buildings_frame_11,
-                    interface_skin::image_ids::build_buildings_frame_12,
-                    interface_skin::image_ids::build_buildings_frame_13,
-                    interface_skin::image_ids::build_buildings_frame_14,
-                    interface_skin::image_ids::build_buildings_frame_15,
+                    InterfaceSkin::ImageIds::build_buildings_frame_0,
+                    InterfaceSkin::ImageIds::build_buildings_frame_1,
+                    InterfaceSkin::ImageIds::build_buildings_frame_2,
+                    InterfaceSkin::ImageIds::build_buildings_frame_3,
+                    InterfaceSkin::ImageIds::build_buildings_frame_4,
+                    InterfaceSkin::ImageIds::build_buildings_frame_5,
+                    InterfaceSkin::ImageIds::build_buildings_frame_6,
+                    InterfaceSkin::ImageIds::build_buildings_frame_7,
+                    InterfaceSkin::ImageIds::build_buildings_frame_8,
+                    InterfaceSkin::ImageIds::build_buildings_frame_9,
+                    InterfaceSkin::ImageIds::build_buildings_frame_10,
+                    InterfaceSkin::ImageIds::build_buildings_frame_11,
+                    InterfaceSkin::ImageIds::build_buildings_frame_12,
+                    InterfaceSkin::ImageIds::build_buildings_frame_13,
+                    InterfaceSkin::ImageIds::build_buildings_frame_14,
+                    InterfaceSkin::ImageIds::build_buildings_frame_15,
                 };
                 uint32_t imageId = skin->img;
                 if (self->current_tab == widx::tab_build_buildings - widx::tab_town_list)
@@ -1443,22 +1443,22 @@ namespace OpenLoco::ui::windows::town_list
             // Build New Misc Buildings Tab
             {
                 static const uint32_t buildMiscBuildingsImageIds[] = {
-                    interface_skin::image_ids::build_misc_buildings_frame_0,
-                    interface_skin::image_ids::build_misc_buildings_frame_1,
-                    interface_skin::image_ids::build_misc_buildings_frame_2,
-                    interface_skin::image_ids::build_misc_buildings_frame_3,
-                    interface_skin::image_ids::build_misc_buildings_frame_4,
-                    interface_skin::image_ids::build_misc_buildings_frame_5,
-                    interface_skin::image_ids::build_misc_buildings_frame_6,
-                    interface_skin::image_ids::build_misc_buildings_frame_7,
-                    interface_skin::image_ids::build_misc_buildings_frame_8,
-                    interface_skin::image_ids::build_misc_buildings_frame_9,
-                    interface_skin::image_ids::build_misc_buildings_frame_10,
-                    interface_skin::image_ids::build_misc_buildings_frame_11,
-                    interface_skin::image_ids::build_misc_buildings_frame_12,
-                    interface_skin::image_ids::build_misc_buildings_frame_13,
-                    interface_skin::image_ids::build_misc_buildings_frame_14,
-                    interface_skin::image_ids::build_misc_buildings_frame_15,
+                    InterfaceSkin::ImageIds::build_misc_buildings_frame_0,
+                    InterfaceSkin::ImageIds::build_misc_buildings_frame_1,
+                    InterfaceSkin::ImageIds::build_misc_buildings_frame_2,
+                    InterfaceSkin::ImageIds::build_misc_buildings_frame_3,
+                    InterfaceSkin::ImageIds::build_misc_buildings_frame_4,
+                    InterfaceSkin::ImageIds::build_misc_buildings_frame_5,
+                    InterfaceSkin::ImageIds::build_misc_buildings_frame_6,
+                    InterfaceSkin::ImageIds::build_misc_buildings_frame_7,
+                    InterfaceSkin::ImageIds::build_misc_buildings_frame_8,
+                    InterfaceSkin::ImageIds::build_misc_buildings_frame_9,
+                    InterfaceSkin::ImageIds::build_misc_buildings_frame_10,
+                    InterfaceSkin::ImageIds::build_misc_buildings_frame_11,
+                    InterfaceSkin::ImageIds::build_misc_buildings_frame_12,
+                    InterfaceSkin::ImageIds::build_misc_buildings_frame_13,
+                    InterfaceSkin::ImageIds::build_misc_buildings_frame_14,
+                    InterfaceSkin::ImageIds::build_misc_buildings_frame_15,
                 };
                 uint32_t imageId = skin->img;
                 if (self->current_tab == widx::tab_build_misc_buildings - widx::tab_town_list)

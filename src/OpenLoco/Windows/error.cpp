@@ -211,7 +211,7 @@ namespace OpenLoco::ui::windows::error
             uint16_t y = self->y;
             uint16_t width = self->width;
             uint16_t height = self->height;
-            auto skin = objectmgr::get<interface_skin_object>()->colour_09;
+            auto skin = ObjectManager::get<interface_skin_object>()->colour_09;
 
             Gfx::drawRect(dpi, x + 1, y + 1, width - 2, height - 2, 0x2000000 | 45);
             Gfx::drawRect(dpi, x + 1, y + 1, width - 2, height - 2, 0x2000000 | (116 + skin));
@@ -236,7 +236,7 @@ namespace OpenLoco::ui::windows::error
                 auto yPos = self->widgets[errorCompetitor::widx::innerFrame].top + self->y;
 
                 auto company = companymgr::get(_errorCompetitorId);
-                auto companyObj = objectmgr::get<competitor_object>(company->id());
+                auto companyObj = ObjectManager::get<competitor_object>(company->id());
 
                 auto imageId = companyObj->images[company->owner_emotion];
                 imageId = Gfx::recolour(imageId, company->mainColours.primary);

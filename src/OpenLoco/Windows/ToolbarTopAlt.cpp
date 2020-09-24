@@ -93,7 +93,7 @@ namespace OpenLoco::ui::windows::toolbar_top::editor
         window->colours[2] = Colour::grey;
         window->colours[3] = Colour::grey;
 
-        auto skin = objectmgr::get<interface_skin_object>();
+        auto skin = ObjectManager::get<interface_skin_object>();
         if (skin != nullptr)
         {
             window->colours[0] = skin->colour_12;
@@ -295,30 +295,30 @@ namespace OpenLoco::ui::windows::toolbar_top::editor
             window->widgets[common::widx::towns_menu].type = widget_type::none;
         }
 
-        auto interface = objectmgr::get<interface_skin_object>();
+        auto interface = ObjectManager::get<interface_skin_object>();
         if (!Audio::isAudioEnabled())
         {
             window->activated_widgets |= (1 << common::widx::audio_menu);
-            window->widgets[common::widx::audio_menu].image = Gfx::recolour(interface->img + interface_skin::image_ids::toolbar_audio_inactive, window->colours[0]);
+            window->widgets[common::widx::audio_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_audio_inactive, window->colours[0]);
         }
         else
         {
             window->activated_widgets &= ~(1 << common::widx::audio_menu);
-            window->widgets[common::widx::audio_menu].image = Gfx::recolour(interface->img + interface_skin::image_ids::toolbar_audio_active, window->colours[0]);
+            window->widgets[common::widx::audio_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_audio_active, window->colours[0]);
         }
 
-        window->widgets[common::widx::loadsave_menu].image = Gfx::recolour(interface->img + interface_skin::image_ids::toolbar_loadsave, 0);
-        window->widgets[common::widx::zoom_menu].image = Gfx::recolour(interface->img + interface_skin::image_ids::toolbar_zoom, 0);
-        window->widgets[common::widx::rotate_menu].image = Gfx::recolour(interface->img + interface_skin::image_ids::toolbar_rotate, 0);
-        window->widgets[common::widx::view_menu].image = Gfx::recolour(interface->img + interface_skin::image_ids::toolbar_view, 0);
+        window->widgets[common::widx::loadsave_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_loadsave, 0);
+        window->widgets[common::widx::zoom_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_zoom, 0);
+        window->widgets[common::widx::rotate_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_rotate, 0);
+        window->widgets[common::widx::view_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_view, 0);
 
-        window->widgets[common::widx::terraform_menu].image = Gfx::recolour(interface->img + interface_skin::image_ids::toolbar_terraform, 0);
-        window->widgets[widx::map_generation_menu].image = Gfx::recolour(interface->img + interface_skin::image_ids::toolbar_map_generation, 0);
-        window->widgets[common::widx::road_menu].image = Gfx::recolour(interface->img + interface_skin::image_ids::toolbar_empty_opaque, 0);
+        window->widgets[common::widx::terraform_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_terraform, 0);
+        window->widgets[widx::map_generation_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_map_generation, 0);
+        window->widgets[common::widx::road_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_opaque, 0);
 
         if (last_town_option == 0)
-            window->widgets[common::widx::towns_menu].image = Gfx::recolour(interface->img + interface_skin::image_ids::toolbar_towns, 0);
+            window->widgets[common::widx::towns_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_towns, 0);
         else
-            window->widgets[common::widx::towns_menu].image = Gfx::recolour(interface->img + interface_skin::image_ids::toolbar_industries, 0);
+            window->widgets[common::widx::towns_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_industries, 0);
     }
 }

@@ -4,11 +4,11 @@
 #include "ThingManager.h"
 
 using namespace OpenLoco;
-using namespace OpenLoco::objectmgr;
+using namespace OpenLoco::ObjectManager;
 
 steam_object* OpenLoco::exhaust::object() const
 {
-    return objectmgr::get<steam_object>(object_id & 0x7F);
+    return ObjectManager::get<steam_object>(object_id & 0x7F);
 }
 
 // 0x0044080C

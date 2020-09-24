@@ -4,7 +4,7 @@
 
 namespace OpenLoco
 {
-    namespace road_station_flags
+    namespace RoadStationFlags
     {
         constexpr uint8_t recolourable = 1 << 0;
         constexpr uint8_t passenger = 1 << 1;

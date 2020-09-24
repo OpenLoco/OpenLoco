@@ -319,7 +319,7 @@ namespace OpenLoco::ui::windows::construction::construction
         window->holdable_widgets = (1 << widx::construct) | (1 << widx::remove);
 
         auto trackType = _trackType & ~(1 << 7);
-        auto roadObj = objectmgr::get<road_object>(trackType);
+        auto roadObj = ObjectManager::get<road_object>(trackType);
 
         window->widgets[widx::s_bend_left].type = widget_type::none;
         window->widgets[widx::s_bend_right].type = widget_type::none;
@@ -341,7 +341,7 @@ namespace OpenLoco::ui::windows::construction::construction
         window->widgets[widx::right_hand_curve].left = 91;
         window->widgets[widx::right_hand_curve].right = 112;
 
-        if (roadObj->road_pieces & road_piece_flags::track)
+        if (roadObj->road_pieces & RoadPieceFlags::track)
         {
             window->widgets[widx::left_hand_curve_small].left = 25;
             window->widgets[widx::left_hand_curve_small].right = 46;
@@ -356,7 +356,7 @@ namespace OpenLoco::ui::windows::construction::construction
             window->widgets[widx::right_hand_curve_very_small].type = widget_type::wt_9;
         }
 
-        if (roadObj->road_pieces & road_piece_flags::one_way)
+        if (roadObj->road_pieces & RoadPieceFlags::one_way)
         {
             window->widgets[widx::left_hand_curve_small].type = widget_type::wt_9;
             window->widgets[widx::right_hand_curve_small].type = widget_type::wt_9;
@@ -365,7 +365,7 @@ namespace OpenLoco::ui::windows::construction::construction
         window->widgets[widx::s_bend_dual_track_left].type = widget_type::none;
         window->widgets[widx::s_bend_dual_track_right].type = widget_type::none;
 
-        if (roadObj->road_pieces & road_piece_flags::one_sided)
+        if (roadObj->road_pieces & RoadPieceFlags::one_sided)
         {
             window->widgets[widx::s_bend_dual_track_left].type = widget_type::wt_9;
             window->widgets[widx::s_bend_dual_track_left].image = ImageIds::construction_right_turnaround;
@@ -380,13 +380,13 @@ namespace OpenLoco::ui::windows::construction::construction
         window->widgets[widx::slope_up].type = widget_type::none;
         window->widgets[widx::steep_slope_up].type = widget_type::none;
 
-        if (roadObj->road_pieces & road_piece_flags::slope)
+        if (roadObj->road_pieces & RoadPieceFlags::slope)
         {
             window->widgets[widx::slope_down].type = widget_type::wt_9;
             window->widgets[widx::slope_up].type = widget_type::wt_9;
         }
 
-        if (roadObj->road_pieces & road_piece_flags::steep_slope)
+        if (roadObj->road_pieces & RoadPieceFlags::steep_slope)
         {
             window->widgets[widx::steep_slope_down].type = widget_type::wt_9;
             window->widgets[widx::steep_slope_up].type = widget_type::wt_9;
@@ -511,7 +511,7 @@ namespace OpenLoco::ui::windows::construction::construction
         mapInvalidateMapSelectionTiles();
         window->holdable_widgets = (1 << widx::construct) | (1 << widx::remove);
 
-        auto trackObj = objectmgr::get<track_object>(_trackType);
+        auto trackObj = ObjectManager::get<track_object>(_trackType);
 
         window->widgets[widx::s_bend_left].type = widget_type::wt_9;
         window->widgets[widx::s_bend_right].type = widget_type::wt_9;
@@ -533,7 +533,7 @@ namespace OpenLoco::ui::windows::construction::construction
         window->widgets[widx::right_hand_curve].left = 91;
         window->widgets[widx::right_hand_curve].right = 112;
 
-        if (trackObj->track_pieces & track_piece_flags::very_small_curve)
+        if (trackObj->track_pieces & TrackPieceFlags::very_small_curve)
         {
             window->widgets[widx::left_hand_curve_small].left = 25;
             window->widgets[widx::left_hand_curve_small].right = 46;
@@ -548,19 +548,19 @@ namespace OpenLoco::ui::windows::construction::construction
             window->widgets[widx::right_hand_curve_very_small].type = widget_type::wt_9;
         }
 
-        if (trackObj->track_pieces & track_piece_flags::large_curve)
+        if (trackObj->track_pieces & TrackPieceFlags::large_curve)
         {
             window->widgets[widx::left_hand_curve_large].type = widget_type::wt_9;
             window->widgets[widx::right_hand_curve_large].type = widget_type::wt_9;
         }
 
-        if (trackObj->track_pieces & track_piece_flags::normal_curve)
+        if (trackObj->track_pieces & TrackPieceFlags::normal_curve)
         {
             window->widgets[widx::left_hand_curve].type = widget_type::wt_9;
             window->widgets[widx::right_hand_curve].type = widget_type::wt_9;
         }
 
-        if (trackObj->track_pieces & track_piece_flags::small_curve)
+        if (trackObj->track_pieces & TrackPieceFlags::small_curve)
         {
             window->widgets[widx::left_hand_curve_small].type = widget_type::wt_9;
             window->widgets[widx::right_hand_curve_small].type = widget_type::wt_9;
@@ -569,7 +569,7 @@ namespace OpenLoco::ui::windows::construction::construction
         window->widgets[widx::s_bend_dual_track_left].type = widget_type::none;
         window->widgets[widx::s_bend_dual_track_right].type = widget_type::none;
 
-        if (trackObj->track_pieces & track_piece_flags::one_sided)
+        if (trackObj->track_pieces & TrackPieceFlags::one_sided)
         {
             window->widgets[widx::s_bend_dual_track_left].type = widget_type::wt_9;
             window->widgets[widx::s_bend_dual_track_right].type = widget_type::wt_9;
@@ -605,13 +605,13 @@ namespace OpenLoco::ui::windows::construction::construction
         window->widgets[widx::slope_up].type = widget_type::none;
         window->widgets[widx::steep_slope_up].type = widget_type::none;
 
-        if (trackObj->track_pieces & track_piece_flags::slope)
+        if (trackObj->track_pieces & TrackPieceFlags::slope)
         {
             window->widgets[widx::slope_down].type = widget_type::wt_9;
             window->widgets[widx::slope_up].type = widget_type::wt_9;
         }
 
-        if (trackObj->track_pieces & track_piece_flags::steep_slope)
+        if (trackObj->track_pieces & TrackPieceFlags::steep_slope)
         {
             window->widgets[widx::steep_slope_down].type = widget_type::wt_9;
             window->widgets[widx::steep_slope_up].type = widget_type::wt_9;
@@ -1160,7 +1160,7 @@ namespace OpenLoco::ui::windows::construction::construction
         }
         else
         {
-            auto trackObj = objectmgr::get<track_object>(trackType);
+            auto trackObj = ObjectManager::get<track_object>(trackType);
             if (_lastSelectedTrackPiece == 0xFF)
             {
                 disableUnusedTrackPieces(self, *trackObj, disabledWidgets);
@@ -1242,7 +1242,7 @@ namespace OpenLoco::ui::windows::construction::construction
             if (bridge == _lastSelectedBridge)
                 dropdown::setHighlightedItem(i);
 
-            auto bridgeObj = objectmgr::get<bridge_object>(bridge);
+            auto bridgeObj = ObjectManager::get<bridge_object>(bridge);
             auto company = companymgr::get(_playerCompany);
             auto companyColour = company->mainColours.primary;
             auto imageId = Gfx::recolour(bridgeObj->var_16, companyColour);
@@ -1844,17 +1844,17 @@ namespace OpenLoco::ui::windows::construction::construction
         auto args = FormatArguments();
         if (_trackType & (1 << 7))
         {
-            auto roadObj = objectmgr::get<road_object>(_trackType & ~(1 << 7));
+            auto roadObj = ObjectManager::get<road_object>(_trackType & ~(1 << 7));
             args.push(roadObj->name);
         }
         else
         {
-            auto trackObj = objectmgr::get<track_object>(_trackType);
+            auto trackObj = ObjectManager::get<track_object>(_trackType);
             args.push(trackObj->name);
         }
         if (_lastSelectedBridge != 0xFF)
         {
-            auto bridgeObj = objectmgr::get<bridge_object>(_lastSelectedBridge);
+            auto bridgeObj = ObjectManager::get<bridge_object>(_lastSelectedBridge);
             if (bridgeObj != nullptr)
             {
                 args.push(bridgeObj->name);
@@ -1973,7 +1973,7 @@ namespace OpenLoco::ui::windows::construction::construction
         {
             if (_lastSelectedBridge != 0xFF)
             {
-                auto bridgeObj = objectmgr::get<bridge_object>(_lastSelectedBridge);
+                auto bridgeObj = ObjectManager::get<bridge_object>(_lastSelectedBridge);
                 if (bridgeObj != nullptr)
                 {
                     auto company = companymgr::get(_playerCompany);

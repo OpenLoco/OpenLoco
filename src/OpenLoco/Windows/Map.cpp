@@ -253,7 +253,7 @@ namespace OpenLoco::ui::windows::map
         {
             overallGraphKeySize,
             std::size(_vehicleTypeCounts),
-            objectmgr::getMaxObjects(object_type::industry),
+            ObjectManager::getMaxObjects(object_type::industry),
             0,
             companymgr::max_companies,
         }
@@ -299,7 +299,7 @@ namespace OpenLoco::ui::windows::map
                             {
                                 if (self->current_tab == (widx::tabIndustries - widx::tabOverall))
                                 {
-                                    auto industryObj = objectmgr::get<industry_object>(i);
+                                    auto industryObj = ObjectManager::get<industry_object>(i);
 
                                     if (industryObj == nullptr)
                                         continue;
@@ -476,12 +476,12 @@ namespace OpenLoco::ui::windows::map
     // 0x0046D0E0
     static void drawTabs(window* self, Gfx::drawpixelinfo_t* dpi)
     {
-        auto skin = objectmgr::get<interface_skin_object>();
+        auto skin = ObjectManager::get<interface_skin_object>();
 
         // tabOverall
         {
             uint32_t imageId = skin->img;
-            imageId += interface_skin::image_ids::toolbar_menu_map_north;
+            imageId += InterfaceSkin::ImageIds::toolbar_menu_map_north;
 
             widget::draw_tab(self, dpi, imageId, widx::tabOverall);
         }
@@ -491,14 +491,14 @@ namespace OpenLoco::ui::windows::map
             if (!(self->disabled_widgets & (1 << widx::tabVehicles)))
             {
                 static const uint32_t vehicleImageIds[] = {
-                    interface_skin::image_ids::vehicle_train_frame_0,
-                    interface_skin::image_ids::vehicle_train_frame_1,
-                    interface_skin::image_ids::vehicle_train_frame_2,
-                    interface_skin::image_ids::vehicle_train_frame_3,
-                    interface_skin::image_ids::vehicle_train_frame_4,
-                    interface_skin::image_ids::vehicle_train_frame_5,
-                    interface_skin::image_ids::vehicle_train_frame_6,
-                    interface_skin::image_ids::vehicle_train_frame_7,
+                    InterfaceSkin::ImageIds::vehicle_train_frame_0,
+                    InterfaceSkin::ImageIds::vehicle_train_frame_1,
+                    InterfaceSkin::ImageIds::vehicle_train_frame_2,
+                    InterfaceSkin::ImageIds::vehicle_train_frame_3,
+                    InterfaceSkin::ImageIds::vehicle_train_frame_4,
+                    InterfaceSkin::ImageIds::vehicle_train_frame_5,
+                    InterfaceSkin::ImageIds::vehicle_train_frame_6,
+                    InterfaceSkin::ImageIds::vehicle_train_frame_7,
                 };
 
                 uint32_t imageId = skin->img;
@@ -524,7 +524,7 @@ namespace OpenLoco::ui::windows::map
         // tabIndustries,
         {
             uint32_t imageId = skin->img;
-            imageId += interface_skin::image_ids::toolbar_menu_industries;
+            imageId += InterfaceSkin::ImageIds::toolbar_menu_industries;
 
             widget::draw_tab(self, dpi, imageId, widx::tabIndustries);
         }
@@ -534,10 +534,10 @@ namespace OpenLoco::ui::windows::map
             if (!(self->disabled_widgets & (1 << widx::tabRoutes)))
             {
                 static const uint32_t routeImageIds[] = {
-                    interface_skin::image_ids::tab_routes_frame_0,
-                    interface_skin::image_ids::tab_routes_frame_1,
-                    interface_skin::image_ids::tab_routes_frame_2,
-                    interface_skin::image_ids::tab_routes_frame_3,
+                    InterfaceSkin::ImageIds::tab_routes_frame_0,
+                    InterfaceSkin::ImageIds::tab_routes_frame_1,
+                    InterfaceSkin::ImageIds::tab_routes_frame_2,
+                    InterfaceSkin::ImageIds::tab_routes_frame_3,
                 };
 
                 uint32_t imageId = skin->img;
@@ -555,7 +555,7 @@ namespace OpenLoco::ui::windows::map
             if (!(self->disabled_widgets & (1 << widx::tabOwnership)))
             {
                 uint32_t imageId = skin->img;
-                imageId += interface_skin::image_ids::tab_companies;
+                imageId += InterfaceSkin::ImageIds::tab_companies;
 
                 widget::draw_tab(self, dpi, imageId, widx::tabOwnership);
             }
@@ -689,9 +689,9 @@ namespace OpenLoco::ui::windows::map
             PaletteIndex::index_12,
         };
 
-        for (uint8_t i = 0; i < objectmgr::getMaxObjects(object_type::industry); i++)
+        for (uint8_t i = 0; i < ObjectManager::getMaxObjects(object_type::industry); i++)
         {
-            auto industry = objectmgr::get<industry_object>(i);
+            auto industry = ObjectManager::get<industry_object>(i);
 
             if (industry == nullptr)
                 continue;
@@ -742,12 +742,12 @@ namespace OpenLoco::ui::windows::map
                 {
                     if (index & (1 << 7))
                     {
-                        auto roadObj = objectmgr::get<road_object>(index & ~(1 << 7));
+                        auto roadObj = ObjectManager::get<road_object>(index & ~(1 << 7));
                         routeType = roadObj->name;
                     }
                     else
                     {
-                        auto trackObj = objectmgr::get<track_object>(index);
+                        auto trackObj = ObjectManager::get<track_object>(index);
                         routeType = trackObj->name;
                     }
                 }
@@ -895,7 +895,7 @@ namespace OpenLoco::ui::windows::map
                 }
             }
 
-            auto industryObj = objectmgr::get<industry_object>(industryIndex);
+            auto industryObj = ObjectManager::get<industry_object>(industryIndex);
             auto stringId = industryObj->namePlural;
 
             if (industryCount == 1)
@@ -1530,7 +1530,7 @@ namespace OpenLoco::ui::windows::map
             window->flags |= (_lastMapWindowFlags & window_flags::flag_16);
         }
 
-        auto skin = objectmgr::get<interface_skin_object>();
+        auto skin = ObjectManager::get<interface_skin_object>();
         window->colours[0] = skin->colour_0B;
         window->colours[1] = skin->colour_0F;
 

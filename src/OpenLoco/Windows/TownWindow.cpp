@@ -360,7 +360,7 @@ namespace OpenLoco::ui::windows::town
             window->max_width = 600;
             window->max_height = 440;
 
-            auto skin = objectmgr::get<interface_skin_object>();
+            auto skin = ObjectManager::get<interface_skin_object>();
             if (skin != nullptr)
             {
                 window->colours[0] = skin->colour_0B;
@@ -749,25 +749,25 @@ namespace OpenLoco::ui::windows::town
         // 0x004999E1
         static void drawTabs(window* self, Gfx::drawpixelinfo_t* dpi)
         {
-            auto skin = objectmgr::get<interface_skin_object>();
+            auto skin = ObjectManager::get<interface_skin_object>();
 
             // Town tab
             {
-                const uint32_t imageId = skin->img + interface_skin::image_ids::toolbar_menu_towns;
+                const uint32_t imageId = skin->img + InterfaceSkin::ImageIds::toolbar_menu_towns;
                 widget::draw_tab(self, dpi, imageId, widx::tab_town);
             }
 
             // Population tab
             {
                 static const uint32_t populationTabImageIds[] = {
-                    interface_skin::image_ids::tab_population_frame0,
-                    interface_skin::image_ids::tab_population_frame1,
-                    interface_skin::image_ids::tab_population_frame2,
-                    interface_skin::image_ids::tab_population_frame3,
-                    interface_skin::image_ids::tab_population_frame4,
-                    interface_skin::image_ids::tab_population_frame5,
-                    interface_skin::image_ids::tab_population_frame6,
-                    interface_skin::image_ids::tab_population_frame7,
+                    InterfaceSkin::ImageIds::tab_population_frame0,
+                    InterfaceSkin::ImageIds::tab_population_frame1,
+                    InterfaceSkin::ImageIds::tab_population_frame2,
+                    InterfaceSkin::ImageIds::tab_population_frame3,
+                    InterfaceSkin::ImageIds::tab_population_frame4,
+                    InterfaceSkin::ImageIds::tab_population_frame5,
+                    InterfaceSkin::ImageIds::tab_population_frame6,
+                    InterfaceSkin::ImageIds::tab_population_frame7,
                 };
 
                 uint32_t imageId = Gfx::recolour(skin->img, self->colours[1]);
@@ -782,22 +782,22 @@ namespace OpenLoco::ui::windows::town
             // Company ratings tab
             {
                 static const uint32_t ratingsTabImageIds[] = {
-                    interface_skin::image_ids::tab_ratings_frame0,
-                    interface_skin::image_ids::tab_ratings_frame1,
-                    interface_skin::image_ids::tab_ratings_frame2,
-                    interface_skin::image_ids::tab_ratings_frame3,
-                    interface_skin::image_ids::tab_ratings_frame4,
-                    interface_skin::image_ids::tab_ratings_frame5,
-                    interface_skin::image_ids::tab_ratings_frame6,
-                    interface_skin::image_ids::tab_ratings_frame7,
-                    interface_skin::image_ids::tab_ratings_frame8,
-                    interface_skin::image_ids::tab_ratings_frame9,
-                    interface_skin::image_ids::tab_ratings_frame10,
-                    interface_skin::image_ids::tab_ratings_frame11,
-                    interface_skin::image_ids::tab_ratings_frame12,
-                    interface_skin::image_ids::tab_ratings_frame13,
-                    interface_skin::image_ids::tab_ratings_frame14,
-                    interface_skin::image_ids::tab_ratings_frame15,
+                    InterfaceSkin::ImageIds::tab_ratings_frame0,
+                    InterfaceSkin::ImageIds::tab_ratings_frame1,
+                    InterfaceSkin::ImageIds::tab_ratings_frame2,
+                    InterfaceSkin::ImageIds::tab_ratings_frame3,
+                    InterfaceSkin::ImageIds::tab_ratings_frame4,
+                    InterfaceSkin::ImageIds::tab_ratings_frame5,
+                    InterfaceSkin::ImageIds::tab_ratings_frame6,
+                    InterfaceSkin::ImageIds::tab_ratings_frame7,
+                    InterfaceSkin::ImageIds::tab_ratings_frame8,
+                    InterfaceSkin::ImageIds::tab_ratings_frame9,
+                    InterfaceSkin::ImageIds::tab_ratings_frame10,
+                    InterfaceSkin::ImageIds::tab_ratings_frame11,
+                    InterfaceSkin::ImageIds::tab_ratings_frame12,
+                    InterfaceSkin::ImageIds::tab_ratings_frame13,
+                    InterfaceSkin::ImageIds::tab_ratings_frame14,
+                    InterfaceSkin::ImageIds::tab_ratings_frame15,
                 };
 
                 uint32_t imageId = skin->img;

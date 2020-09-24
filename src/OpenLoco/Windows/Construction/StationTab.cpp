@@ -65,7 +65,7 @@ namespace OpenLoco::ui::windows::construction::station
             if (station == _lastSelectedStationType)
                 dropdown::setHighlightedItem(stationIndex);
 
-            auto obj = objectmgr::get<obj_type>(station);
+            auto obj = ObjectManager::get<obj_type>(station);
             dropdown::add(stationIndex, obj->name);
         }
     }
@@ -189,7 +189,7 @@ namespace OpenLoco::ui::windows::construction::station
         {
             self->widgets[widx::rotate].type = widget_type::wt_9;
 
-            auto airportObj = objectmgr::get<airport_object>(_lastSelectedStationType);
+            auto airportObj = ObjectManager::get<airport_object>(_lastSelectedStationType);
 
             self->widgets[widx::station].text = airportObj->name;
 
@@ -197,7 +197,7 @@ namespace OpenLoco::ui::windows::construction::station
         }
         else if (_byte_1136063 & (1 << 6))
         {
-            auto dockObj = objectmgr::get<dock_object>(_lastSelectedStationType);
+            auto dockObj = ObjectManager::get<dock_object>(_lastSelectedStationType);
 
             self->widgets[widx::station].text = dockObj->name;
 
@@ -207,21 +207,21 @@ namespace OpenLoco::ui::windows::construction::station
         {
             auto trackType = _trackType & ~(1 << 7);
 
-            auto roadObj = objectmgr::get<road_object>(trackType);
+            auto roadObj = ObjectManager::get<road_object>(trackType);
 
             args.push(roadObj->name);
 
-            auto roadStationObject = objectmgr::get<road_station_object>(_lastSelectedStationType);
+            auto roadStationObject = ObjectManager::get<road_station_object>(_lastSelectedStationType);
 
             self->widgets[widx::station].text = roadStationObject->name;
         }
         else
         {
-            auto trackObj = objectmgr::get<track_object>(_trackType);
+            auto trackObj = ObjectManager::get<track_object>(_trackType);
 
             args.push(trackObj->name);
 
-            auto trainStationObject = objectmgr::get<train_station_object>(_lastSelectedStationType);
+            auto trainStationObject = ObjectManager::get<train_station_object>(_lastSelectedStationType);
 
             self->widgets[widx::station].text = trainStationObject->name;
         }
@@ -242,7 +242,7 @@ namespace OpenLoco::ui::windows::construction::station
 
         if (_byte_1136063 & (1 << 7))
         {
-            auto airportObj = objectmgr::get<airport_object>(_lastSelectedStationType);
+            auto airportObj = ObjectManager::get<airport_object>(_lastSelectedStationType);
 
             auto imageId = Gfx::recolour(airportObj->var_08, companyColour);
 
@@ -250,7 +250,7 @@ namespace OpenLoco::ui::windows::construction::station
         }
         else if (_byte_1136063 & (1 << 6))
         {
-            auto dockObj = objectmgr::get<dock_object>(_lastSelectedStationType);
+            auto dockObj = ObjectManager::get<dock_object>(_lastSelectedStationType);
 
             auto imageId = Gfx::recolour(dockObj->var_08, companyColour);
 
@@ -258,7 +258,7 @@ namespace OpenLoco::ui::windows::construction::station
         }
         else if (_trackType & (1 << 7))
         {
-            auto roadStationObj = objectmgr::get<road_station_object>(_lastSelectedStationType);
+            auto roadStationObj = ObjectManager::get<road_station_object>(_lastSelectedStationType);
 
             auto imageId = Gfx::recolour(roadStationObj->var_0C, companyColour);
 
@@ -266,7 +266,7 @@ namespace OpenLoco::ui::windows::construction::station
 
             auto colour = _byte_5045FA[companyColour];
 
-            if (!(roadStationObj->flags & road_station_flags::recolourable))
+            if (!(roadStationObj->flags & RoadStationFlags::recolourable))
             {
                 colour = 46;
             }
@@ -277,7 +277,7 @@ namespace OpenLoco::ui::windows::construction::station
         }
         else
         {
-            auto trainStationObj = objectmgr::get<train_station_object>(_lastSelectedStationType);
+            auto trainStationObj = ObjectManager::get<train_station_object>(_lastSelectedStationType);
 
             auto imageId = Gfx::recolour(trainStationObj->var_0E, companyColour);
 
@@ -285,7 +285,7 @@ namespace OpenLoco::ui::windows::construction::station
 
             auto colour = _byte_5045FA[companyColour];
 
-            if (!(trainStationObj->flags & train_station_flags::recolourable))
+            if (!(trainStationObj->flags & TrainStationFlags::recolourable))
             {
                 colour = 46;
             }
@@ -345,14 +345,14 @@ namespace OpenLoco::ui::windows::construction::station
         else
         {
             yPos--;
-            for (uint8_t i = 0; i < objectmgr::getMaxObjects(object_type::cargo); i++)
+            for (uint8_t i = 0; i < ObjectManager::getMaxObjects(object_type::cargo); i++)
             {
                 if (_constructingStationAcceptedCargoTypes & (1 << i))
                 {
                     auto xPosMax = self->x + self->width - 12;
                     if (origin.x <= xPosMax)
                     {
-                        auto cargoObj = objectmgr::get<cargo_object>(i);
+                        auto cargoObj = ObjectManager::get<cargo_object>(i);
 
                         Gfx::drawImage(dpi, origin.x, origin.y, cargoObj->unit_inline_sprite);
                         origin.x += 10;
@@ -374,14 +374,14 @@ namespace OpenLoco::ui::windows::construction::station
         else
         {
             yPos--;
-            for (uint8_t i = 0; i < objectmgr::getMaxObjects(object_type::cargo); i++)
+            for (uint8_t i = 0; i < ObjectManager::getMaxObjects(object_type::cargo); i++)
             {
                 if (_constructingStationProducedCargoTypes & (1 << i))
                 {
                     auto xPosMax = self->x + self->width - 12;
                     if (origin.x <= xPosMax)
                     {
-                        auto cargoObj = objectmgr::get<cargo_object>(i);
+                        auto cargoObj = ObjectManager::get<cargo_object>(i);
 
                         Gfx::drawImage(dpi, origin.x, origin.y, cargoObj->unit_inline_sprite);
                         origin.x += 10;

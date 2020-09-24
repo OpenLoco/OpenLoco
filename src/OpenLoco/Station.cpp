@@ -277,13 +277,13 @@ namespace OpenLoco
 
                 if (stationElement->stationType() == stationType::roadStation)
                 {
-                    auto obj = objectmgr::get<road_station_object>(stationElement->objectId());
+                    auto obj = ObjectManager::get<road_station_object>(stationElement->objectId());
 
-                    if (obj->flags & road_station_flags::passenger)
+                    if (obj->flags & RoadStationFlags::passenger)
                     {
                         cargoSearchState.filter(cargoSearchState.filter() | (1 << obj->var_2C));
                     }
-                    else if (obj->flags & road_station_flags::freight)
+                    else if (obj->flags & RoadStationFlags::freight)
                     {
                         cargoSearchState.filter(cargoSearchState.filter() | ~(1 << obj->var_2C));
                     }
@@ -390,7 +390,7 @@ namespace OpenLoco
                                 }
 
                                 // Multi tile buildings should only be counted once so remove the other tiles from the search
-                                if (obj->flags & building_object_flags::large_tile)
+                                if (obj->flags & BuildingObjectFlags::large_tile)
                                 {
                                     // 0x004F9296, 0x4F9298
                                     static const map_pos offsets[4] = { { 0, 0 }, { 0, 32 }, { 32, 32 }, { 32, 0 } };
@@ -457,7 +457,7 @@ namespace OpenLoco
             {
                 case stationType::airport:
                 {
-                    auto airportObject = objectmgr::get<airport_object>(stationElement->objectId());
+                    auto airportObject = ObjectManager::get<airport_object>(stationElement->objectId());
 
                     map_pos minPos, maxPos;
                     minPos.x = airportObject->min_x;
@@ -551,7 +551,7 @@ namespace OpenLoco
             loco_global<uint32_t, 0x112C826> _common_format_args;
             *_common_format_args = stats.quantity;
 
-            auto cargo = objectmgr::get<cargo_object>(cargoId);
+            auto cargo = ObjectManager::get<cargo_object>(cargoId);
             string_id unit_name = stats.quantity == 1 ? cargo->unit_name_singular : cargo->unit_name_plural;
             ptr = StringManager::formatString(ptr, unit_name, &*_common_format_args);
         }

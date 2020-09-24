@@ -67,7 +67,7 @@ namespace OpenLoco::ui::windows::construction::signal
                     if (signal == _lastSelectedSignal)
                         dropdown::setHighlightedItem(signalIndex);
 
-                    auto trainSignalObj = objectmgr::get<train_signal_object>(signal);
+                    auto trainSignalObj = ObjectManager::get<train_signal_object>(signal);
 
                     dropdown::add(signalIndex, trainSignalObj->name);
                 }
@@ -139,12 +139,12 @@ namespace OpenLoco::ui::windows::construction::signal
     {
         common::prepareDraw(self);
 
-        auto trackObj = objectmgr::get<track_object>(_trackType);
+        auto trackObj = ObjectManager::get<track_object>(_trackType);
 
         auto args = FormatArguments();
         args.push(trackObj->name);
 
-        auto trainSignalObject = objectmgr::get<train_signal_object>(_lastSelectedSignal);
+        auto trainSignalObject = ObjectManager::get<train_signal_object>(_lastSelectedSignal);
 
         self->widgets[widx::signal].text = trainSignalObject->name;
 
@@ -157,7 +157,7 @@ namespace OpenLoco::ui::windows::construction::signal
         self->draw(dpi);
         common::drawTabs(self, dpi);
 
-        auto trainSignalObject = objectmgr::get<train_signal_object>(_lastSelectedSignal);
+        auto trainSignalObject = ObjectManager::get<train_signal_object>(_lastSelectedSignal);
 
         auto xPos = self->x + 3;
         auto yPos = self->y + 63;

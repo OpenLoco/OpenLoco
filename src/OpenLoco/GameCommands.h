@@ -270,7 +270,7 @@ namespace OpenLoco::game_commands
     }
 
     // Change company face
-    inline bool do_65(const objectmgr::header& object, uint8_t company)
+    inline bool do_65(const ObjectManager::header& object, uint8_t company)
     {
         auto objPtr = reinterpret_cast<const int32_t*>(&object);
         registers regs;

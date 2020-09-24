@@ -339,7 +339,7 @@ namespace OpenLoco::ui::MessageWindow
             window->flags |= window_flags::resizable;
 
             window->owner = _playerCompany;
-            auto skin = objectmgr::get<interface_skin_object>();
+            auto skin = ObjectManager::get<interface_skin_object>();
             window->colours[1] = skin->colour_0A;
 
             window->width = messages::minWindowSize.width;
@@ -651,12 +651,12 @@ namespace OpenLoco::ui::MessageWindow
         // 0x0042AB92
         static void drawTabs(window* self, Gfx::drawpixelinfo_t* dpi)
         {
-            auto skin = objectmgr::get<interface_skin_object>();
+            auto skin = ObjectManager::get<interface_skin_object>();
 
             // Message Tab
             {
                 uint32_t imageId = skin->img;
-                imageId += interface_skin::image_ids::tab_messages;
+                imageId += InterfaceSkin::ImageIds::tab_messages;
 
                 widget::draw_tab(self, dpi, imageId, widx::tab_messages);
             }
@@ -664,7 +664,7 @@ namespace OpenLoco::ui::MessageWindow
             // Setting Tab
             {
                 uint32_t imageId = skin->img;
-                imageId += interface_skin::image_ids::tab_message_settings;
+                imageId += InterfaceSkin::ImageIds::tab_message_settings;
 
                 widget::draw_tab(self, dpi, imageId, widx::tab_settings);
             }

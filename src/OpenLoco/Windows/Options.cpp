@@ -1308,7 +1308,7 @@ namespace OpenLoco::ui::options
             }
 
             args.skip(0x2);
-            args.push(objectmgr::get<currency_object>()->name);
+            args.push(ObjectManager::get<currency_object>()->name);
             args.push(current_measurement_format);
 
             w->activated_widgets &= ~(1 << widx::preferred_currency_for_new_games);
@@ -1471,7 +1471,7 @@ namespace OpenLoco::ui::options
             widget_t dropdown = w->widgets[widx::currency];
             dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], _112C185, 0x80);
             int index = -1;
-            for (auto object : objectmgr::getAvailableObjects(object_type::currency))
+            for (auto object : ObjectManager::getAvailableObjects(object_type::currency))
             {
                 index++;
                 dropdown::add(index, StringIds::dropdown_stringptr, object.second._name);
@@ -1495,7 +1495,7 @@ namespace OpenLoco::ui::options
             uint8_t* _11364A0 = (uint8_t*)*__11364A0;
 
             int index = -1;
-            for (auto object : objectmgr::getAvailableObjects(object_type::currency))
+            for (auto object : ObjectManager::getAvailableObjects(object_type::currency))
             {
                 index++;
                 if (index == ax)
@@ -1534,7 +1534,7 @@ namespace OpenLoco::ui::options
             dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], _112C185, 0x80);
 
             int index = -1;
-            for (auto object : objectmgr::getAvailableObjects(object_type::currency))
+            for (auto object : ObjectManager::getAvailableObjects(object_type::currency))
             {
                 index++;
                 dropdown::add(index, StringIds::dropdown_stringptr, object.second._name);
@@ -1553,7 +1553,7 @@ namespace OpenLoco::ui::options
             }
 
             int index = -1;
-            for (auto object : objectmgr::getAvailableObjects(object_type::currency))
+            for (auto object : ObjectManager::getAvailableObjects(object_type::currency))
             {
                 index++;
 
@@ -2106,7 +2106,7 @@ namespace OpenLoco::ui::options
 
     static void sub_4BF8CD()
     {
-        auto ptr = malloc(objectmgr::getNumInstalledObjects());
+        auto ptr = malloc(ObjectManager::getNumInstalledObjects());
         // TODO: reimplement nullptr check?
 
         __11364A0 = ptr;
@@ -2179,7 +2179,7 @@ namespace OpenLoco::ui::options
         window->frame_no = 0;
         window->row_hover = -1;
 
-        auto interface = objectmgr::get<interface_skin_object>();
+        auto interface = ObjectManager::get<interface_skin_object>();
         window->colours[0] = interface->colour_0B;
         window->colours[1] = interface->colour_10;
 

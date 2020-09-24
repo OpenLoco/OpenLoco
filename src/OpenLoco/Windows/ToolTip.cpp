@@ -198,7 +198,7 @@ namespace OpenLoco::ui::tooltip
         uint16_t height = window->height;
 
         Gfx::drawRect(dpi, x + 1, y + 1, width - 2, height - 2, 0x2000000 | 45);
-        Gfx::drawRect(dpi, x + 1, y + 1, width - 2, height - 2, 0x2000000 | (116 + objectmgr::get<interface_skin_object>()->colour_08));
+        Gfx::drawRect(dpi, x + 1, y + 1, width - 2, height - 2, 0x2000000 | (116 + ObjectManager::get<interface_skin_object>()->colour_08));
 
         Gfx::drawRect(dpi, x, y + 2, 1, height - 4, 0x2000000 | 46);
         Gfx::drawRect(dpi, x + width - 1, y + 2, 1, height - 4, 0x2000000 | 46);

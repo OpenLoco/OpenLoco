@@ -88,27 +88,27 @@ namespace OpenLoco::ui::windows::ScenarioOptions
         // 0x004400A4
         static void drawTabs(window* window, Gfx::drawpixelinfo_t* dpi)
         {
-            auto skin = objectmgr::get<interface_skin_object>();
+            auto skin = ObjectManager::get<interface_skin_object>();
 
             // Challenge tab
             {
                 static const uint32_t challengeTabImageIds[] = {
-                    interface_skin::image_ids::tab_cup_frame0,
-                    interface_skin::image_ids::tab_cup_frame1,
-                    interface_skin::image_ids::tab_cup_frame2,
-                    interface_skin::image_ids::tab_cup_frame3,
-                    interface_skin::image_ids::tab_cup_frame4,
-                    interface_skin::image_ids::tab_cup_frame5,
-                    interface_skin::image_ids::tab_cup_frame6,
-                    interface_skin::image_ids::tab_cup_frame7,
-                    interface_skin::image_ids::tab_cup_frame8,
-                    interface_skin::image_ids::tab_cup_frame9,
-                    interface_skin::image_ids::tab_cup_frame10,
-                    interface_skin::image_ids::tab_cup_frame11,
-                    interface_skin::image_ids::tab_cup_frame12,
-                    interface_skin::image_ids::tab_cup_frame13,
-                    interface_skin::image_ids::tab_cup_frame14,
-                    interface_skin::image_ids::tab_cup_frame15,
+                    InterfaceSkin::ImageIds::tab_cup_frame0,
+                    InterfaceSkin::ImageIds::tab_cup_frame1,
+                    InterfaceSkin::ImageIds::tab_cup_frame2,
+                    InterfaceSkin::ImageIds::tab_cup_frame3,
+                    InterfaceSkin::ImageIds::tab_cup_frame4,
+                    InterfaceSkin::ImageIds::tab_cup_frame5,
+                    InterfaceSkin::ImageIds::tab_cup_frame6,
+                    InterfaceSkin::ImageIds::tab_cup_frame7,
+                    InterfaceSkin::ImageIds::tab_cup_frame8,
+                    InterfaceSkin::ImageIds::tab_cup_frame9,
+                    InterfaceSkin::ImageIds::tab_cup_frame10,
+                    InterfaceSkin::ImageIds::tab_cup_frame11,
+                    InterfaceSkin::ImageIds::tab_cup_frame12,
+                    InterfaceSkin::ImageIds::tab_cup_frame13,
+                    InterfaceSkin::ImageIds::tab_cup_frame14,
+                    InterfaceSkin::ImageIds::tab_cup_frame15,
                 };
 
                 uint32_t imageId = skin->img;
@@ -122,29 +122,29 @@ namespace OpenLoco::ui::windows::ScenarioOptions
 
             // Companies tab
             {
-                const uint32_t imageId = skin->img + interface_skin::image_ids::tab_companies;
+                const uint32_t imageId = skin->img + InterfaceSkin::ImageIds::tab_companies;
                 widget::draw_tab(window, dpi, imageId, widx::tab_companies);
             }
 
             // Finances tab
             {
                 static const uint32_t financesTabImageIds[] = {
-                    interface_skin::image_ids::tab_finances_frame0,
-                    interface_skin::image_ids::tab_finances_frame1,
-                    interface_skin::image_ids::tab_finances_frame2,
-                    interface_skin::image_ids::tab_finances_frame3,
-                    interface_skin::image_ids::tab_finances_frame4,
-                    interface_skin::image_ids::tab_finances_frame5,
-                    interface_skin::image_ids::tab_finances_frame6,
-                    interface_skin::image_ids::tab_finances_frame7,
-                    interface_skin::image_ids::tab_finances_frame8,
-                    interface_skin::image_ids::tab_finances_frame9,
-                    interface_skin::image_ids::tab_finances_frame10,
-                    interface_skin::image_ids::tab_finances_frame11,
-                    interface_skin::image_ids::tab_finances_frame12,
-                    interface_skin::image_ids::tab_finances_frame13,
-                    interface_skin::image_ids::tab_finances_frame14,
-                    interface_skin::image_ids::tab_finances_frame15,
+                    InterfaceSkin::ImageIds::tab_finances_frame0,
+                    InterfaceSkin::ImageIds::tab_finances_frame1,
+                    InterfaceSkin::ImageIds::tab_finances_frame2,
+                    InterfaceSkin::ImageIds::tab_finances_frame3,
+                    InterfaceSkin::ImageIds::tab_finances_frame4,
+                    InterfaceSkin::ImageIds::tab_finances_frame5,
+                    InterfaceSkin::ImageIds::tab_finances_frame6,
+                    InterfaceSkin::ImageIds::tab_finances_frame7,
+                    InterfaceSkin::ImageIds::tab_finances_frame8,
+                    InterfaceSkin::ImageIds::tab_finances_frame9,
+                    InterfaceSkin::ImageIds::tab_finances_frame10,
+                    InterfaceSkin::ImageIds::tab_finances_frame11,
+                    InterfaceSkin::ImageIds::tab_finances_frame12,
+                    InterfaceSkin::ImageIds::tab_finances_frame13,
+                    InterfaceSkin::ImageIds::tab_finances_frame14,
+                    InterfaceSkin::ImageIds::tab_finances_frame15,
                 };
 
                 uint32_t imageId = skin->img;
@@ -158,7 +158,7 @@ namespace OpenLoco::ui::windows::ScenarioOptions
 
             // Scenario details tab
             {
-                const uint32_t imageId = skin->img + interface_skin::image_ids::tab_scenario_details;
+                const uint32_t imageId = skin->img + InterfaceSkin::ImageIds::tab_scenario_details;
                 widget::draw_tab(window, dpi, imageId, widx::tab_scenario);
             }
         }
@@ -233,7 +233,7 @@ namespace OpenLoco::ui::windows::ScenarioOptions
             StringIds::objective_deliver_a_certain_amount_of_cargo,
         };
 
-        static const uint8_t maxCargoObjects = static_cast<uint8_t>(objectmgr::getMaxObjects(object_type::cargo));
+        static const uint8_t maxCargoObjects = static_cast<uint8_t>(ObjectManager::getMaxObjects(object_type::cargo));
         static int16_t cargoByDropdownIndex[maxCargoObjects] = { -1 };
 
         // 0x0043FD51
@@ -357,7 +357,7 @@ namespace OpenLoco::ui::windows::ScenarioOptions
                     uint16_t numCargoObjects = 0;
                     for (uint16_t cargoIdx = 0; cargoIdx < maxCargoObjects; cargoIdx++)
                     {
-                        auto cargoObject = objectmgr::get<cargo_object>(cargoIdx);
+                        auto cargoObject = ObjectManager::get<cargo_object>(cargoIdx);
                         if (cargoObject != nullptr)
                             numCargoObjects++;
                     }
@@ -368,7 +368,7 @@ namespace OpenLoco::ui::windows::ScenarioOptions
                     uint16_t dropdownIndex = 0;
                     for (uint16_t cargoIdx = 0; cargoIdx < maxCargoObjects; cargoIdx++)
                     {
-                        auto cargoObject = objectmgr::get<cargo_object>(cargoIdx);
+                        auto cargoObject = ObjectManager::get<cargo_object>(cargoIdx);
                         if (cargoObject == nullptr)
                             continue;
 
@@ -460,7 +460,7 @@ namespace OpenLoco::ui::windows::ScenarioOptions
                     *(int32_t*)&*commonFormatArgs = *objectiveDeliveredCargoAmount;
                     widgets[widx::objective_value].text = StringIds::challenge_delivered_cargo;
 
-                    auto cargo = objectmgr::get<cargo_object>(*objectiveDeliveredCargoType);
+                    auto cargo = ObjectManager::get<cargo_object>(*objectiveDeliveredCargoType);
                     widgets[widx::objective_cargo].text = cargo->name;
                     widgets[widx::objective_cargo].type = widget_type::wt_18;
                     widgets[widx::objective_cargo_btn].type = widget_type::wt_11;
@@ -518,7 +518,7 @@ namespace OpenLoco::ui::windows::ScenarioOptions
             window->current_tab = 0;
             window->frame_no = 0;
 
-            auto skin = objectmgr::get<interface_skin_object>();
+            auto skin = ObjectManager::get<interface_skin_object>();
             if (skin != nullptr)
             {
                 window->colours[0] = skin->colour_0B;
@@ -1004,7 +1004,7 @@ namespace OpenLoco::ui::windows::ScenarioOptions
                 strncpy(buffer, s5::getOptions().scenarioName, 512);
                 commonFormatArgs[0] = StringIds::buffer_2039;
 
-                auto* stex = objectmgr::get<scenario_text_object>();
+                auto* stex = ObjectManager::get<scenario_text_object>();
                 if (stex != nullptr)
                     commonFormatArgs[0] = stex->name;
 
@@ -1032,7 +1032,7 @@ namespace OpenLoco::ui::windows::ScenarioOptions
                 strncpy(buffer, s5::getOptions().scenarioDetails, 512);
                 commonFormatArgs[0] = StringIds::buffer_2039;
 
-                auto* stex = objectmgr::get<scenario_text_object>();
+                auto* stex = ObjectManager::get<scenario_text_object>();
                 if (stex != nullptr)
                     commonFormatArgs[0] = stex->details;
 

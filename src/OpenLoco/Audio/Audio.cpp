@@ -445,7 +445,7 @@ namespace OpenLoco::Audio
     static sound_object* getSoundObject(sound_id id)
     {
         auto idx = (int32_t)id & ~0x8000;
-        return objectmgr::get<sound_object>(idx);
+        return ObjectManager::get<sound_object>(idx);
     }
 
     static viewport* findBestViewportForSound(viewport_pos vpos)
@@ -790,7 +790,7 @@ namespace OpenLoco::Audio
         if (v == nullptr)
             return;
 
-        if (v->sound_id == sound_object_id::null)
+        if (v->sound_id == SoundObjectId::null)
             return;
 
         // TODO: left or top?

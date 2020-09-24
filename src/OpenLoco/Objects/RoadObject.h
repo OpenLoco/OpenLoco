@@ -4,13 +4,13 @@
 
 namespace OpenLoco
 {
-    namespace flags_12
+    namespace Flags12
     {
         constexpr uint8_t unk_01 = 1 << 1;
         constexpr uint8_t unk_03 = 1 << 3;
     }
 
-    namespace road_piece_flags
+    namespace RoadPieceFlags
     {
         constexpr uint16_t one_way = 1 << 0;
         constexpr uint16_t track = 1 << 1;

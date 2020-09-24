@@ -89,7 +89,7 @@ namespace OpenLoco
     };
 }
 
-namespace OpenLoco::objectmgr
+namespace OpenLoco::ObjectManager
 {
     void loadIndex();
 

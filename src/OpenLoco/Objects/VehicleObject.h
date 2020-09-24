@@ -37,7 +37,7 @@ namespace OpenLoco
         ship_wake
     };
 
-    namespace sprite_ind
+    namespace SpriteIndex
     {
         constexpr uint8_t null = 0xFF;
         constexpr uint8_t flag_unk7 = (1 << 7); // Set on electric multiple unit
@@ -138,7 +138,7 @@ namespace OpenLoco
         uint8_t pad_0F[0x1E - 0xF];
     };
 
-    namespace flags_E0
+    namespace FlagsE0
     {
         constexpr uint16_t flag_02 = 1 << 2; // rollable? APT Passenger carriage
         constexpr uint16_t flag_03 = 1 << 3; // rollable? APT Driving carriage

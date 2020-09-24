@@ -305,7 +305,7 @@ namespace OpenLoco::ui::windows::station
 
             window->saved_view.clear();
 
-            auto skin = objectmgr::get<interface_skin_object>();
+            auto skin = ObjectManager::get<interface_skin_object>();
             window->colours[1] = skin->colour_0A;
             // 0x0048F29F end
         }
@@ -391,7 +391,7 @@ namespace OpenLoco::ui::windows::station
 
                 *buffer++ = ' ';
                 *buffer++ = ControlCodes::inline_sprite_str;
-                *(reinterpret_cast<uint32_t*>(buffer)) = objectmgr::get<cargo_object>(cargoId)->unit_inline_sprite;
+                *(reinterpret_cast<uint32_t*>(buffer)) = ObjectManager::get<cargo_object>(cargoId)->unit_inline_sprite;
                 buffer += 4;
 
                 cargoTypeCount++;
@@ -496,7 +496,7 @@ namespace OpenLoco::ui::windows::station
 
                 auto units = (quantity + 9) / 10;
 
-                auto cargoObj = objectmgr::get<cargo_object>(cargoId);
+                auto cargoObj = ObjectManager::get<cargo_object>(cargoId);
                 if (units != 0)
                 {
                     uint16_t xPos = 1;
@@ -694,7 +694,7 @@ namespace OpenLoco::ui::windows::station
                     continue;
                 }
 
-                auto cargoObj = objectmgr::get<cargo_object>(cargoId);
+                auto cargoObj = ObjectManager::get<cargo_object>(cargoId);
                 Gfx::drawString_494BBF(*dpi, 1, y, 98, 0, StringIds::wcolour2_stringid, &cargoObj->name);
 
                 auto rating = cargo.rating;
@@ -956,24 +956,24 @@ namespace OpenLoco::ui::windows::station
         // 0x0048EFBC
         static void drawTabs(window* self, Gfx::drawpixelinfo_t* dpi)
         {
-            auto skin = objectmgr::get<interface_skin_object>();
+            auto skin = ObjectManager::get<interface_skin_object>();
             auto station = stationmgr::get(self->number);
             auto companyColour = companymgr::getCompanyColour(station->owner);
 
             // Station tab
             {
                 uint32_t imageId = Gfx::recolour(skin->img, companyColour);
-                imageId += interface_skin::image_ids::toolbar_menu_stations;
+                imageId += InterfaceSkin::ImageIds::toolbar_menu_stations;
                 widget::draw_tab(self, dpi, imageId, widx::tab_station);
             }
 
             // Cargo tab
             {
                 static const uint32_t cargoTabImageIds[] = {
-                    interface_skin::image_ids::tab_cargo_delivered_frame0,
-                    interface_skin::image_ids::tab_cargo_delivered_frame1,
-                    interface_skin::image_ids::tab_cargo_delivered_frame2,
-                    interface_skin::image_ids::tab_cargo_delivered_frame3,
+                    InterfaceSkin::ImageIds::tab_cargo_delivered_frame0,
+                    InterfaceSkin::ImageIds::tab_cargo_delivered_frame1,
+                    InterfaceSkin::ImageIds::tab_cargo_delivered_frame2,
+                    InterfaceSkin::ImageIds::tab_cargo_delivered_frame3,
                 };
 
                 uint32_t imageId = skin->img;
@@ -987,7 +987,7 @@ namespace OpenLoco::ui::windows::station
 
             // Cargo ratings tab
             {
-                const uint32_t imageId = skin->img + interface_skin::image_ids::tab_cargo_ratings;
+                const uint32_t imageId = skin->img + InterfaceSkin::ImageIds::tab_cargo_ratings;
                 widget::draw_tab(self, dpi, imageId, widx::tab_cargo_ratings);
 
                 auto widget = self->widgets[widx::tab_cargo_ratings];
