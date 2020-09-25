@@ -758,11 +758,11 @@ namespace OpenLoco::Ui::Windows::Station
 
         if (oldStationId != station_id::null)
         {
-            if (Input::hasMapSelectionFlag(Input::map_selection_flags::catchment_area))
+            if (Input::hasMapSelectionFlag(Input::MapSelectionFlags::catchment_area))
             {
                 WindowManager::invalidate(WindowType::station, oldStationId);
                 sub_491BC6();
-                Input::resetMapSelectionFlag(Input::map_selection_flags::catchment_area);
+                Input::resetMapSelectionFlag(Input::MapSelectionFlags::catchment_area);
             }
         }
 
@@ -774,7 +774,7 @@ namespace OpenLoco::Ui::Windows::Station
             auto station = stationmgr::get(_lastSelectedStation);
 
             station->setCatchmentDisplay(0);
-            Input::setMapSelectionFlags(Input::map_selection_flags::catchment_area);
+            Input::setMapSelectionFlags(Input::MapSelectionFlags::catchment_area);
 
             WindowManager::invalidate(WindowType::station, newStationId);
 

@@ -40,7 +40,7 @@ namespace OpenLoco::Input
         viewport_scrolling = 1 << 7,
     };
 
-    namespace map_selection_flags
+    namespace MapSelectionFlags
     {
         constexpr uint8_t catchment_area = 1 << 5;
     };
