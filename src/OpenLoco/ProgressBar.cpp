@@ -3,7 +3,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::progressbar
+namespace OpenLoco::ProgressBar
 {
     // 0x004CF5C5
     // eax: maximum
