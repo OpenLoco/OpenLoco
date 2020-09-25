@@ -15,7 +15,7 @@
 using namespace OpenLoco::Ui;
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::Ui::viewportmgr
+namespace OpenLoco::Ui::ViewportManager
 {
     static std::vector<std::unique_ptr<viewport>> _viewports;
 

@@ -368,11 +368,11 @@ namespace OpenLoco::Ui::NewsWindow
 
                     if (view.isThingView())
                     {
-                        viewportmgr::create(self, 0, origin, viewportSize, view.zoomLevel, view.thingId);
+                        ViewportManager::create(self, 0, origin, viewportSize, view.zoomLevel, view.thingId);
                     }
                     else
                     {
-                        viewportmgr::create(self, 0, origin, viewportSize, view.zoomLevel, view.getPos());
+                        ViewportManager::create(self, 0, origin, viewportSize, view.zoomLevel, view.getPos());
                     }
                     self->invalidate();
                 }
@@ -458,7 +458,7 @@ namespace OpenLoco::Ui::NewsWindow
                         viewportSize = { viewportWidth, viewportHeight };
                     }
 
-                    viewportmgr::create(self, 1, origin, viewportSize, view.zoomLevel, view.getPos());
+                    ViewportManager::create(self, 1, origin, viewportSize, view.zoomLevel, view.getPos());
 
                     self->invalidate();
                 }

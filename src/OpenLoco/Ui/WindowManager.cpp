@@ -1233,7 +1233,7 @@ namespace OpenLoco::Ui::WindowManager
             memmove(window, window + 1, windowCount * sizeof(Ui::window));
         }
 
-        viewportmgr::collectGarbage();
+        ViewportManager::collectGarbage();
     }
 
     void callEvent8OnAllWindows()

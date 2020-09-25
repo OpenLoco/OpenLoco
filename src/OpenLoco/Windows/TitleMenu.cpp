@@ -395,7 +395,7 @@ namespace OpenLoco::Ui::Windows
             (Ui::window_event_list*)0x004FA5F8);
         window->widgets = _editorWidgets;
         addr<0x00e3f0b8, int32_t>() = 0; // gCurrentRotation?
-        OpenLoco::Ui::viewportmgr::create(
+        OpenLoco::Ui::ViewportManager::create(
             window,
             0,
             { window->x, window->y },

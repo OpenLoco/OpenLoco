@@ -709,7 +709,7 @@ namespace OpenLoco
     // 0x004CBA2D
     void station::invalidate()
     {
-        Ui::viewportmgr::invalidate(this);
+        Ui::ViewportManager::invalidate(this);
     }
 
     void station::invalidateWindow()

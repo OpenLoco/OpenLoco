@@ -426,11 +426,11 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             auto size = Gfx::ui_size_t(widget.width() - 2, widget.height() - 2);
             if (view.isThingView())
             {
-                viewportmgr::create(self, 0, origin, size, self->saved_view.zoomLevel, view.thingId);
+                ViewportManager::create(self, 0, origin, size, self->saved_view.zoomLevel, view.thingId);
             }
             else
             {
-                viewportmgr::create(self, 0, origin, size, self->saved_view.zoomLevel, view.getPos());
+                ViewportManager::create(self, 0, origin, size, self->saved_view.zoomLevel, view.getPos());
             }
         }
 
@@ -447,7 +447,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             auto vpFlags = self->viewports[0]->flags;
             self->viewports[0]->width = 0;
             self->viewports[0] = nullptr;
-            viewportmgr::collectGarbage();
+            ViewportManager::collectGarbage();
             sub_434223(self, view, vpFlags);
         }
 
@@ -1051,7 +1051,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             auto origin = Gfx::point_t(widget.left + self->x + 1, widget.top + self->y + 1);
             auto size = Gfx::ui_size_t(widget.width() - 2, widget.height() - 2);
 
-            viewportmgr::create(self, 0, origin, size, self->saved_view.zoomLevel, view.getPos());
+            ViewportManager::create(self, 0, origin, size, self->saved_view.zoomLevel, view.getPos());
             self->flags |= WindowFlags::viewport_no_scrolling;
             self->invalidate();
         }
@@ -1105,7 +1105,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 vpFlags = self->viewports[0]->flags;
                 self->viewports[0]->width = 0;
                 self->viewports[0] = nullptr;
-                viewportmgr::collectGarbage();
+                ViewportManager::collectGarbage();
             }
             else
             {

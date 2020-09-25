@@ -302,7 +302,7 @@ namespace OpenLoco
 
         Colour::initColourMap();
         Ui::WindowManager::init();
-        Ui::viewportmgr::init();
+        Ui::ViewportManager::init();
 
         Input::init();
         Input::initMouse();

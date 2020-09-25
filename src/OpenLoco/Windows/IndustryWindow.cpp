@@ -258,7 +258,7 @@ namespace OpenLoco::Ui::Windows::Industry
                 flags = self->viewports[0]->flags;
                 self->viewports[0]->width = 0;
                 self->viewports[0] = nullptr;
-                viewportmgr::collectGarbage();
+                ViewportManager::collectGarbage();
             }
             else
             {
@@ -274,7 +274,7 @@ namespace OpenLoco::Ui::Windows::Industry
                 auto tile = OpenLoco::Map::map_pos3({ industry->x, industry->y, tileZ });
                 auto origin = Gfx::point_t(widget->left + self->x + 1, widget->top + self->y + 1);
                 auto size = Gfx::ui_size_t(widget->width() - 2, widget->height() - 2);
-                viewportmgr::create(self, 0, origin, size, self->saved_view.zoomLevel, tile);
+                ViewportManager::create(self, 0, origin, size, self->saved_view.zoomLevel, tile);
                 self->invalidate();
                 self->flags |= WindowFlags::viewport_no_scrolling;
             }
