@@ -188,7 +188,7 @@ namespace OpenLoco::Ui::NewsWindow
             {
                 case newsItemSubTypes::industry:
                 {
-                    auto industry = industrymgr::get(itemId);
+                    auto industry = IndustryManager::get(itemId);
 
                     view.mapX = industry->x;
                     view.mapY = industry->y;
@@ -484,7 +484,7 @@ namespace OpenLoco::Ui::NewsWindow
             {
                 case newsItemSubTypes::industry:
                 {
-                    auto industry = industrymgr::get(itemIndex);
+                    auto industry = IndustryManager::get(itemIndex);
                     args.push(industry->name);
                     args.push(industry->town);
                     break;

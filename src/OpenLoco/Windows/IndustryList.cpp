@@ -289,7 +289,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
             auto i = -1;
 
-            for (auto& industry : industrymgr::industries())
+            for (auto& industry : IndustryManager::industries())
             {
                 i++;
                 if (industry.empty())
@@ -304,7 +304,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                     continue;
                 }
 
-                if (getOrder(SortMode(self->sort_mode), industry, *industrymgr::get(chosenIndustry)))
+                if (getOrder(SortMode(self->sort_mode), industry, *IndustryManager::get(chosenIndustry)))
                 {
                     chosenIndustry = i;
                 }
@@ -314,7 +314,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
             {
                 bool shouldInvalidate = false;
 
-                industrymgr::get(chosenIndustry)->flags |= IndustryFlags::sorted;
+                IndustryManager::get(chosenIndustry)->flags |= IndustryFlags::sorted;
 
                 auto ebp = self->row_count;
                 if (chosenIndustry != self->row_info[ebp])
@@ -402,7 +402,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
                 if (industryId == IndustryId::null)
                     continue;
-                auto industry = industrymgr::get(industryId);
+                auto industry = IndustryManager::get(industryId);
 
                 // Industry Name
                 {
@@ -1217,7 +1217,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         {
             window->row_count = 0;
 
-            for (auto& industry : industrymgr::industries())
+            for (auto& industry : IndustryManager::industries())
             {
                 if (industry.empty())
                     continue;

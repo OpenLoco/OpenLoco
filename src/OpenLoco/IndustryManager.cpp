@@ -5,7 +5,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::industrymgr
+namespace OpenLoco::IndustryManager
 {
     static loco_global<industry[max_industries], 0x005C455C> _industries;
 

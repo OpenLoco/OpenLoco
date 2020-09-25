@@ -765,7 +765,7 @@ namespace OpenLoco
         call(0x00463ABA);
         call(0x004C56F6);
         townmgr::update();
-        industrymgr::update();
+        IndustryManager::update();
         ThingManager::updateVehicles();
         sub_46FFCA();
         stationmgr::update();

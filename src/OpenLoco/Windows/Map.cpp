@@ -863,7 +863,7 @@ namespace OpenLoco::Ui::Windows::Map
         if (industryIndex == -1)
         {
             auto industryCount = 0;
-            for (const auto& industry : industrymgr::industries())
+            for (const auto& industry : IndustryManager::industries())
             {
                 if (industry.empty())
                     continue;
@@ -884,7 +884,7 @@ namespace OpenLoco::Ui::Windows::Map
         else
         {
             auto industryCount = 0;
-            for (const auto& industry : industrymgr::industries())
+            for (const auto& industry : IndustryManager::industries())
             {
                 if (industry.empty())
                     continue;
