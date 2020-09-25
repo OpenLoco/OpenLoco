@@ -80,7 +80,7 @@ namespace OpenLoco::Ui::Windows
     // 0x00439268
     static void onMouseUp(window* window, widget_index widgetIndex)
     {
-        if (intro::isActive())
+        if (Intro::isActive())
         {
             return;
         }

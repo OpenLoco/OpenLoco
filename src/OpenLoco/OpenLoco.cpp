@@ -353,9 +353,9 @@ namespace OpenLoco
         call(0x0043C88C);
         _screen_flags = _screen_flags | screen_flags::unknown_5;
 #ifdef _SHOW_INTRO_
-        intro::state(intro::intro_state::begin);
+        Intro::state(Intro::intro_state::begin);
 #else
-        intro::state(intro::intro_state::end);
+        Intro::state(Intro::intro_state::end);
 #endif
         title::start();
         Gui::init();
@@ -616,9 +616,9 @@ namespace OpenLoco
             Audio::updateSounds();
 
             addr<0x0050C1AE, int32_t>()++;
-            if (intro::isActive())
+            if (Intro::isActive())
             {
-                intro::update();
+                Intro::update();
             }
             else
             {

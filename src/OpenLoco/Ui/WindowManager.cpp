@@ -538,7 +538,7 @@ namespace OpenLoco::Ui::WindowManager
             return;
         }
 
-        if (!intro::isActive())
+        if (!Intro::isActive())
         {
             Gfx::drawDirtyBlocks();
         }

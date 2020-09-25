@@ -342,15 +342,15 @@ namespace OpenLoco::Input
                 continue;
             }
 
-            if (intro::state() == (intro::intro_state)9)
+            if (Intro::state() == (Intro::intro_state)9)
             {
-                intro::state(intro::intro_state::end);
+                Intro::state(Intro::intro_state::end);
                 continue;
             }
 
-            if (intro::state() != intro::intro_state::none)
+            if (Intro::state() != Intro::intro_state::none)
             {
-                intro::state((intro::intro_state)8);
+                Intro::state((Intro::intro_state)8);
             }
 
             if (tryShortcut(Shortcut::sendMessage, eax->keyCode, _keyModifier))
