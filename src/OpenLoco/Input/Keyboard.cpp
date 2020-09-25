@@ -127,7 +127,7 @@ namespace OpenLoco::Input
             {
                 const uint16_t next = tutorial::nextInput();
                 _keyModifier = next;
-                if ((_keyModifier & key_modifier::unknown) == 0)
+                if ((_keyModifier & KeyModifier::unknown) == 0)
                     return;
 
                 ToolTip::closeAndReset();
@@ -180,22 +180,22 @@ namespace OpenLoco::Input
         // Used to handle INSERT cheat
         if ((_keyboardState[DIK_INSERT] & 0x80) != 0)
         {
-            if ((_keyModifier & key_modifier::cheat) != 0)
+            if ((_keyModifier & KeyModifier::cheat) != 0)
             {
                 return;
             }
             else
             {
-                _keyModifier |= key_modifier::cheat;
+                _keyModifier |= KeyModifier::cheat;
                 _cheatBuffer.clear();
                 return;
             }
         }
 
-        if ((_keyModifier & key_modifier::cheat) == 0)
+        if ((_keyModifier & KeyModifier::cheat) == 0)
             return;
 
-        _keyModifier = _keyModifier & (~key_modifier::cheat);
+        _keyModifier = _keyModifier & (~KeyModifier::cheat);
 
         if (isTitleMode())
             return;
@@ -266,7 +266,7 @@ namespace OpenLoco::Input
             if (eax->keyCode == 0x11) // VK_CONTROL
                 continue;
 
-            if ((_keyModifier & key_modifier::cheat) != 0)
+            if ((_keyModifier & KeyModifier::cheat) != 0)
             {
                 if (eax->charCode >= 'a' && eax->charCode <= 'z')
                 {
@@ -372,7 +372,7 @@ namespace OpenLoco::Input
         if (Input::state() != input_state::normal && Input::state() != input_state::dropdown_active)
             return;
 
-        if (hasKeyModifier(key_modifier::shift) || hasKeyModifier(key_modifier::control))
+        if (hasKeyModifier(KeyModifier::shift) || hasKeyModifier(KeyModifier::control))
             return;
 
         Gfx::point_t delta = { 0, 0 };
@@ -480,7 +480,7 @@ namespace OpenLoco::Input
 
         edgeScroll();
 
-        _keyModifier = _keyModifier & ~(key_modifier::shift | key_modifier::control | key_modifier::unknown);
+        _keyModifier = _keyModifier & ~(KeyModifier::shift | KeyModifier::control | KeyModifier::unknown);
 
         if (addr<0x005251CC, uint8_t>() != 1)
         {
@@ -488,16 +488,16 @@ namespace OpenLoco::Input
         }
 
         if (_keyboardState[DIK_LSHIFT] & 0x80)
-            _keyModifier |= key_modifier::shift;
+            _keyModifier |= KeyModifier::shift;
 
         if (_keyboardState[DIK_RSHIFT] & 0x80)
-            _keyModifier |= key_modifier::shift;
+            _keyModifier |= KeyModifier::shift;
 
         if (_keyboardState[DIK_LCONTROL] & 0x80)
-            _keyModifier |= key_modifier::control;
+            _keyModifier |= KeyModifier::control;
 
         if (_keyboardState[DIK_RCONTROL] & 0x80)
-            _keyModifier |= key_modifier::control;
+            _keyModifier |= KeyModifier::control;
 
         keyScroll();
     }
