@@ -8,7 +8,7 @@
 namespace OpenLoco
 {
     using string_id = uint16_t;
-    namespace screen_flags
+    namespace ScreenFlags
     {
         constexpr uint8_t title = 1 << 0;
         constexpr uint8_t editor = 1 << 1;

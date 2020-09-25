@@ -70,14 +70,14 @@ namespace OpenLoco::Input
 
     static void loc_4BECDE()
     {
-        _screenFlags |= screen_flags::unknown_6;
+        _screenFlags |= ScreenFlags::unknown_6;
 
         Audio::playSound(Audio::sound_id::click_press, Ui::width() / 2);
     }
 
     static void loc_4BED04()
     {
-        if ((_screenFlags & screen_flags::unknown_6) == 0)
+        if ((_screenFlags & ScreenFlags::unknown_6) == 0)
         {
             return;
             // Only works when DRIVER mode is active

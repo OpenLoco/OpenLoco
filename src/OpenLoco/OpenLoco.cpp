@@ -132,32 +132,32 @@ namespace OpenLoco
 
     bool isEditorMode()
     {
-        return (_screen_flags & screen_flags::editor) != 0;
+        return (_screen_flags & ScreenFlags::editor) != 0;
     }
 
     bool isTitleMode()
     {
-        return (_screen_flags & screen_flags::title) != 0;
+        return (_screen_flags & ScreenFlags::title) != 0;
     }
 
     bool isNetworked()
     {
-        return (_screen_flags & screen_flags::networked) != 0;
+        return (_screen_flags & ScreenFlags::networked) != 0;
     }
 
     bool isTrackUpgradeMode()
     {
-        return (_screen_flags & screen_flags::trackUpgrade) != 0;
+        return (_screen_flags & ScreenFlags::trackUpgrade) != 0;
     }
 
     bool isUnknown4Mode()
     {
-        return (_screen_flags & screen_flags::unknown_4) != 0;
+        return (_screen_flags & ScreenFlags::unknown_4) != 0;
     }
 
     bool isUnknown5Mode()
     {
-        return (_screen_flags & screen_flags::unknown_5) != 0;
+        return (_screen_flags & ScreenFlags::unknown_5) != 0;
     }
 
     bool isPaused()
@@ -351,7 +351,7 @@ namespace OpenLoco
         call(0x004284C8);
         call(0x004969DA);
         call(0x0043C88C);
-        _screen_flags = _screen_flags | screen_flags::unknown_5;
+        _screen_flags = _screen_flags | ScreenFlags::unknown_5;
 #ifdef _SHOW_INTRO_
         Intro::state(Intro::intro_state::begin);
 #else
