@@ -986,7 +986,7 @@ namespace OpenLoco::Ui
     // 0x004C96E7
     void handleInput()
     {
-        if (multiplayer::resetFlag(multiplayer::flags::flag_10))
+        if (MultiPlayer::resetFlag(MultiPlayer::flags::flag_10))
         {
             call(0x00435ACC);
         }
@@ -1004,14 +1004,14 @@ namespace OpenLoco::Ui
             }
         }
 
-        if (multiplayer::resetFlag(multiplayer::flags::flag_5))
+        if (MultiPlayer::resetFlag(MultiPlayer::flags::flag_5))
         {
             GameCommands::do_21(2, 1);
         }
 
-        if (!multiplayer::hasFlag(multiplayer::flags::flag_0) && !multiplayer::hasFlag(multiplayer::flags::flag_4))
+        if (!MultiPlayer::hasFlag(MultiPlayer::flags::flag_0) && !MultiPlayer::hasFlag(MultiPlayer::flags::flag_4))
         {
-            if (multiplayer::resetFlag(multiplayer::flags::flag_2))
+            if (MultiPlayer::resetFlag(MultiPlayer::flags::flag_2))
             {
                 WindowManager::closeConstructionWindows();
                 call(0x004CF456);
@@ -1020,7 +1020,7 @@ namespace OpenLoco::Ui
                 GameCommands::doCommand(69, regs);
             }
 
-            if (multiplayer::resetFlag(multiplayer::flags::flag_3))
+            if (MultiPlayer::resetFlag(MultiPlayer::flags::flag_3))
             {
                 WindowManager::closeConstructionWindows();
                 call(0x004CF456);
@@ -1030,20 +1030,20 @@ namespace OpenLoco::Ui
             }
         }
 
-        if (multiplayer::resetFlag(multiplayer::flags::flag_4))
+        if (MultiPlayer::resetFlag(MultiPlayer::flags::flag_4))
         {
             registers regs;
             regs.bl = GameCommandFlag::apply;
             GameCommands::doCommand(72, regs);
         }
 
-        if (multiplayer::resetFlag(multiplayer::flags::flag_0))
+        if (MultiPlayer::resetFlag(MultiPlayer::flags::flag_0))
         {
             WindowManager::closeConstructionWindows();
             call(0x004CF456);
         }
 
-        if (multiplayer::resetFlag(multiplayer::flags::flag_1))
+        if (MultiPlayer::resetFlag(MultiPlayer::flags::flag_1))
         {
             GameCommands::do_21(0, 2);
         }

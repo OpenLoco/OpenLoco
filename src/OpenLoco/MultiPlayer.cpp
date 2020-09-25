@@ -3,7 +3,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::multiplayer
+namespace OpenLoco::MultiPlayer
 {
     static loco_global<uint16_t, 0x00508F10> _flags;
 
