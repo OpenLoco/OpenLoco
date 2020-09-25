@@ -145,7 +145,7 @@ namespace OpenLoco
 
         void resetIndustryMap()
         {
-            std::fill_n(_industry.get(), max_cargo_stats, industry_id::null);
+            std::fill_n(_industry.get(), max_cargo_stats, IndustryId::null);
         }
 
         industry_id_t getIndustry(const uint8_t cargo) const

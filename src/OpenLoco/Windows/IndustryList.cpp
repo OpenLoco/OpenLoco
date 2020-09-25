@@ -385,7 +385,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 industry_id_t industryId = self->row_info[i];
 
                 // Skip items outside of view, or irrelevant to the current filter.
-                if (yPos + rowHeight < dpi->y || yPos >= yPos + rowHeight + dpi->height || industryId == industry_id::null)
+                if (yPos + rowHeight < dpi->y || yPos >= yPos + rowHeight + dpi->height || industryId == IndustryId::null)
                 {
                     yPos += rowHeight;
                     continue;
@@ -400,7 +400,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                     text_colour_id = StringIds::wcolour2_stringid;
                 }
 
-                if (industryId == industry_id::null)
+                if (industryId == IndustryId::null)
                     continue;
                 auto industry = industrymgr::get(industryId);
 

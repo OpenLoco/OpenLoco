@@ -14,7 +14,7 @@ namespace OpenLoco
     using namespace Map;
     using industry_id_t = uint8_t;
 
-    namespace industry_id
+    namespace IndustryId
     {
         constexpr industry_id_t null = std::numeric_limits<industry_id_t>::max();
     }
