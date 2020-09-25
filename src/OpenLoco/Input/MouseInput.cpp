@@ -688,7 +688,7 @@ namespace OpenLoco::Input
                     return;
                 }
 
-                if (window->flags & window_flags::viewport_no_scrolling)
+                if (window->flags & WindowFlags::viewport_no_scrolling)
                 {
                     return;
                 }
@@ -999,17 +999,17 @@ namespace OpenLoco::Input
                 _tooltipWindowType = _dragWindowType;
                 _tooltipWindowNumber = _dragWindowNumber;
 
-                if (w->flags & Ui::window_flags::flag_15)
+                if (w->flags & Ui::WindowFlags::flag_15)
                 {
                     doDefault = true;
                     break;
                 }
 
-                if (w->flags & Ui::window_flags::flag_16)
+                if (w->flags & Ui::WindowFlags::flag_16)
                 {
                     x = window->var_88A - window->width + _dragLastX;
                     y = window->var_88C - window->height + _dragLastY;
-                    w->flags &= ~Ui::window_flags::flag_16;
+                    w->flags &= ~Ui::WindowFlags::flag_16;
                     doDefault = true;
                     break;
                 }
@@ -1018,7 +1018,7 @@ namespace OpenLoco::Input
                 window->var_88C = window->height;
                 x = _dragLastX - window->x - window->width + Ui::width();
                 y = _dragLastY - window->y - window->height + Ui::height() - 27;
-                w->flags |= Ui::window_flags::flag_16;
+                w->flags |= Ui::WindowFlags::flag_16;
                 if (y >= Ui::height() - 2)
                 {
                     _dragLastX = x;
@@ -1061,14 +1061,14 @@ namespace OpenLoco::Input
                 return;
             }
 
-            w->flags &= ~Ui::window_flags::flag_16;
+            w->flags &= ~Ui::WindowFlags::flag_16;
         }
 
         w->invalidate();
 
         w->width = std::clamp<uint16_t>(w->width + dx, w->min_width, w->max_width);
         w->height = std::clamp<uint16_t>(w->height + dy, w->min_height, w->max_height);
-        w->flags |= Ui::window_flags::flag_15;
+        w->flags |= Ui::WindowFlags::flag_15;
         w->callOnResize();
         w->callPrepareDraw();
         w->scroll_areas[0].contentWidth = -1;
@@ -1758,14 +1758,14 @@ namespace OpenLoco::Input
         _dragLastY = y;
         _dragWindowType = window->type;
         _dragWindowNumber = window->number;
-        window->flags &= ~Ui::window_flags::flag_15;
+        window->flags &= ~Ui::WindowFlags::flag_15;
     }
 
 #pragma mark - Viewport dragging
 
     static void viewportDragBegin(window* w)
     {
-        w->flags &= ~Ui::window_flags::scrolling_to_location;
+        w->flags &= ~Ui::WindowFlags::scrolling_to_location;
         state(input_state::viewport_right);
         _dragWindowType = w->type;
         _dragWindowNumber = w->number;
@@ -1854,7 +1854,7 @@ namespace OpenLoco::Input
                 {
                     case Ui::widget_type::panel:
                     case Ui::widget_type::frame:
-                        if (window->flags & Ui::window_flags::resizable)
+                        if (window->flags & Ui::WindowFlags::resizable)
                         {
                             if (window->min_width != window->max_width || window->min_height != window->max_height)
                             {

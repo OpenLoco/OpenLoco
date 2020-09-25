@@ -40,7 +40,7 @@ namespace OpenLoco::Ui::Windows
         auto window = WindowManager::createWindowCentred(
             WindowType::confirmationPrompt,
             { 280, 92 },
-            Ui::window_flags::flag_12 | Ui::window_flags::stick_to_front,
+            Ui::WindowFlags::flag_12 | Ui::WindowFlags::stick_to_front,
             (Ui::window_event_list*)0x004FB37C);
         if (window != nullptr)
         {
@@ -49,7 +49,7 @@ namespace OpenLoco::Ui::Windows
             window->initScrollWidgets();
             window->colours[0] = Colour::translucent(Colour::salmon_pink);
             window->colours[1] = Colour::translucent(Colour::salmon_pink);
-            window->flags |= Ui::window_flags::transparent;
+            window->flags |= Ui::WindowFlags::transparent;
             _result = 0;
 
             auto originalModal = WindowManager::getCurrentModalType();

@@ -83,7 +83,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
             WindowType::topToolbar,
             { 0, 0 },
             Gfx::ui_size_t(Ui::width(), 28),
-            window_flags::stick_to_front | window_flags::transparent | window_flags::no_background,
+            WindowFlags::stick_to_front | WindowFlags::transparent | WindowFlags::no_background,
             &_events);
         window->widgets = _widgets;
         window->enabled_widgets = (1 << Common::Widx::loadsave_menu) | (1 << Common::Widx::audio_menu) | (1 << Common::Widx::zoom_menu) | (1 << Common::Widx::rotate_menu) | (1 << Common::Widx::view_menu) | (1 << Common::Widx::terraform_menu) | (1 << Widx::map_generation_menu) | (1 << Common::Widx::road_menu) | (1 << Common::Widx::towns_menu);

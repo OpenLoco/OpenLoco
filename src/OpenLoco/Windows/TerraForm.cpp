@@ -690,7 +690,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 WindowType::terraform,
                 origin,
                 PlantTrees::windowSize,
-                window_flags::flag_11,
+                WindowFlags::flag_11,
                 &PlantTrees::events);
 
             window->number = 0;
@@ -2131,7 +2131,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
         static void onResize(window* self, uint8_t height)
         {
-            self->flags |= window_flags::resizable;
+            self->flags |= WindowFlags::resizable;
 
             /*auto width = 130;
             if (isEditorMode)

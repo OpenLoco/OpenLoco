@@ -343,13 +343,13 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x004362F7
         static void event_08(window* self)
         {
-            self->flags |= window_flags::not_scroll_view;
+            self->flags |= WindowFlags::not_scroll_view;
         }
 
         // 0x004362FF
         static void event_09(window* self)
         {
-            if (!(self->flags & window_flags::not_scroll_view))
+            if (!(self->flags & WindowFlags::not_scroll_view))
                 return;
 
             if (self->row_hover == -1)
@@ -382,7 +382,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x00436361
         static void onScrollMouseOver(window* self, int16_t x, int16_t y, uint8_t scroll_index)
         {
-            self->flags &= ~(window_flags::not_scroll_view);
+            self->flags &= ~(WindowFlags::not_scroll_view);
 
             uint16_t currentRow = y / rowHeight;
             int16_t currentCompany = -1;
@@ -605,7 +605,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             window->frame_no = 0;
             window->saved_view.clear();
-            window->flags |= window_flags::resizable;
+            window->flags |= WindowFlags::resizable;
             window->sort_mode = 2;
             window->var_83C = 0;
             window->row_hover = -1;
@@ -1413,7 +1413,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             self->current_tab = widgetIndex - widx::tab_company_list;
             self->frame_no = 0;
-            self->flags &= ~(window_flags::flag_16);
+            self->flags &= ~(WindowFlags::flag_16);
 
             if (self->viewports[0] != nullptr)
             {

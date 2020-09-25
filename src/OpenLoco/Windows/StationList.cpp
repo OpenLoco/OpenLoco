@@ -314,7 +314,7 @@ namespace OpenLoco::Ui::Windows::StationList
             window = WindowManager::createWindow(
                 WindowType::stationList,
                 window_size,
-                window_flags::flag_11,
+                WindowFlags::flag_11,
                 &_events);
 
             window->number = companyId;
@@ -331,7 +331,7 @@ namespace OpenLoco::Ui::Windows::StationList
             window->min_height = min_dimensions.height;
             window->max_width = max_dimensions.width;
             window->max_height = max_dimensions.height;
-            window->flags |= window_flags::resizable;
+            window->flags |= WindowFlags::resizable;
 
             auto interface = ObjectManager::get<interface_skin_object>();
             window->colours[1] = interface->colour_0A;
@@ -384,13 +384,13 @@ namespace OpenLoco::Ui::Windows::StationList
     // 0x0049196F
     static void event_08(window* window)
     {
-        window->flags |= window_flags::not_scroll_view;
+        window->flags |= WindowFlags::not_scroll_view;
     }
 
     // 0x00491977
     static void event_09(window* window)
     {
-        if ((window->flags & window_flags::not_scroll_view) == 0)
+        if ((window->flags & WindowFlags::not_scroll_view) == 0)
             return;
 
         if (window->row_hover == -1)
@@ -717,7 +717,7 @@ namespace OpenLoco::Ui::Windows::StationList
     // 0x004919D1
     static void onScrollMouseOver(Ui::window* window, int16_t x, int16_t y, uint8_t scroll_index)
     {
-        window->flags &= ~(window_flags::not_scroll_view);
+        window->flags &= ~(WindowFlags::not_scroll_view);
 
         uint16_t currentRow = y / rowHeight;
         int16_t currentStation = -1;

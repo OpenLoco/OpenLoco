@@ -144,7 +144,7 @@ namespace OpenLoco::Ui::TextInput
         auto window = WindowManager::createWindowCentred(
             WindowType::textInput,
             { 330, 90 },
-            window_flags::stick_to_front | window_flags::flag_12,
+            WindowFlags::stick_to_front | WindowFlags::flag_12,
             &_events);
         window->widgets = _widgets;
         window->enabled_widgets |= 1ULL << Widx::close;
@@ -181,7 +181,7 @@ namespace OpenLoco::Ui::TextInput
         _widgets[Widx::title].type = widget_type::caption_25;
         if (window->owner != CompanyId::null)
         {
-            window->flags |= window_flags::flag_11;
+            window->flags |= WindowFlags::flag_11;
             _widgets[Widx::title].type = widget_type::caption_24;
         }
     }

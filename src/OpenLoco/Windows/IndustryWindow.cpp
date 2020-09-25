@@ -276,7 +276,7 @@ namespace OpenLoco::Ui::Windows::Industry
                 auto size = Gfx::ui_size_t(widget->width() - 2, widget->height() - 2);
                 viewportmgr::create(self, 0, origin, size, self->saved_view.zoomLevel, tile);
                 self->invalidate();
-                self->flags |= window_flags::viewport_no_scrolling;
+                self->flags |= WindowFlags::viewport_no_scrolling;
             }
 
             if (self->viewports[0] != nullptr)
@@ -313,7 +313,7 @@ namespace OpenLoco::Ui::Windows::Industry
         if (window == nullptr)
         {
             // 0x00456DBC start
-            const uint32_t newFlags = window_flags::flag_8 | window_flags::resizable;
+            const uint32_t newFlags = WindowFlags::flag_8 | WindowFlags::resizable;
             window = WindowManager::createWindow(WindowType::industry, Industry::windowSize, newFlags, &Industry::events);
             window->number = industryId;
             window->min_width = 192;
@@ -797,7 +797,7 @@ namespace OpenLoco::Ui::Windows::Industry
 
             self->current_tab = widgetIndex - widx::tab_industry;
             self->frame_no = 0;
-            self->flags &= ~(window_flags::flag_16);
+            self->flags &= ~(WindowFlags::flag_16);
             self->var_85C = -1;
 
             if (self->viewports[0] != nullptr)

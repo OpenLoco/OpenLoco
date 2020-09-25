@@ -41,7 +41,7 @@ namespace OpenLoco::Ui::TitleOptions
             WindowType::titleOptions,
             Gfx::point_t(Ui::width() - window_size.width, 0),
             window_size,
-            window_flags::stick_to_front | window_flags::transparent | window_flags::no_background | window_flags::flag_6,
+            WindowFlags::stick_to_front | WindowFlags::transparent | WindowFlags::no_background | WindowFlags::flag_6,
             &_events);
 
         window->widgets = _widgets;

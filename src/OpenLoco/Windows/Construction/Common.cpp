@@ -412,7 +412,7 @@ namespace OpenLoco::Ui::Windows::Construction
 
             self->current_tab = widgetIndex - widx::tab_construction;
             self->frame_no = 0;
-            self->flags &= ~(window_flags::flag_16);
+            self->flags &= ~(WindowFlags::flag_16);
 
             auto tabInfo = tabInformationByTabOffset[widgetIndex - widx::tab_construction];
 
@@ -791,7 +791,7 @@ namespace OpenLoco::Ui::Windows::Construction
             auto window = WindowManager::createWindow(
                 WindowType::construction,
                 Construction::windowSize,
-                window_flags::flag_11 | window_flags::no_auto_close,
+                WindowFlags::flag_11 | WindowFlags::no_auto_close,
                 &Construction::events);
 
             window->widgets = Construction::widgets;

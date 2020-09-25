@@ -41,7 +41,7 @@ namespace OpenLoco::Ui
 
     bool window::canResize()
     {
-        return (this->flags & window_flags::resizable) && (this->min_width != this->max_width || this->min_height != this->max_height);
+        return (this->flags & WindowFlags::resizable) && (this->min_width != this->max_width || this->min_height != this->max_height);
     }
 
     void window::capSize(int32_t minWidth, int32_t minHeight, int32_t maxWidth, int32_t maxHeight)
@@ -231,7 +231,7 @@ namespace OpenLoco::Ui
         if (diffX == 0 && diffY == 0)
             return;
 
-        if (vp->flags & viewport_flags::hide_foreground_tracks_roads || vp->flags & viewport_flags::hide_foreground_scenery_buildings || w->flags & window_flags::flag_8)
+        if (vp->flags & viewport_flags::hide_foreground_tracks_roads || vp->flags & viewport_flags::hide_foreground_scenery_buildings || w->flags & WindowFlags::flag_8)
         {
             auto rect = Ui::Rect(vp->x, vp->y, vp->width, vp->height);
             Gfx::redrawScreenRect(rect);
@@ -356,7 +356,7 @@ namespace OpenLoco::Ui
                 centreX = config->saved_view_x;
                 centreY = config->saved_view_y;
 
-                if (this->flags & window_flags::scrolling_to_location)
+                if (this->flags & WindowFlags::scrolling_to_location)
                 {
                     bool flippedX = false;
                     centreX -= viewport->view_x;
@@ -379,7 +379,7 @@ namespace OpenLoco::Ui
 
                     if (centreX == 0 && centreY == 0)
                     {
-                        this->flags &= ~window_flags::scrolling_to_location;
+                        this->flags &= ~WindowFlags::scrolling_to_location;
                     }
 
                     if (flippedX)
@@ -566,12 +566,12 @@ namespace OpenLoco::Ui
         if (this->viewport_configurations->viewport_target_sprite != ThingId::null)
             return;
 
-        if (this->flags & window_flags::viewport_no_scrolling)
+        if (this->flags & WindowFlags::viewport_no_scrolling)
             return;
 
         this->viewport_configurations->saved_view_x = pos.x;
         this->viewport_configurations->saved_view_y = pos.y;
-        this->flags |= window_flags::scrolling_to_location;
+        this->flags |= WindowFlags::scrolling_to_location;
     }
 
     // 0x004C6827
@@ -1341,7 +1341,7 @@ namespace OpenLoco::Ui
     // 0x004CA4DF
     void window::draw(Gfx::drawpixelinfo_t* dpi)
     {
-        if ((this->flags & window_flags::transparent) && !(this->flags & window_flags::no_background))
+        if ((this->flags & WindowFlags::transparent) && !(this->flags & WindowFlags::no_background))
         {
             Gfx::fillRect(dpi, this->x, this->y, this->x + this->width - 1, this->y + this->height - 1, 0x2000000 | 52);
         }
@@ -1378,7 +1378,7 @@ namespace OpenLoco::Ui
                 break;
             }
 
-            if ((this->flags & window_flags::no_background) == 0)
+            if ((this->flags & WindowFlags::no_background) == 0)
             {
                 // Check if widget is outside the draw region
                 if (this->x + widget->left >= dpi->x + dpi->width && this->x + widget->right < dpi->x)
@@ -1391,7 +1391,7 @@ namespace OpenLoco::Ui
             }
 
             uint16_t widgetFlags = 0;
-            if (widget->colour == 0 && this->flags & window_flags::flag_11)
+            if (widget->colour == 0 && this->flags & WindowFlags::flag_11)
             {
                 widgetFlags = 0x80;
             }
@@ -1515,7 +1515,7 @@ namespace OpenLoco::Ui
             }
         }
 
-        if (this->flags & window_flags::white_border_mask)
+        if (this->flags & WindowFlags::white_border_mask)
         {
             Gfx::fillRectInset(
                 dpi,

@@ -255,7 +255,7 @@ namespace OpenLoco::Ui::Windows::Station
                 auto size = Gfx::ui_size_t(widget->width() - 2, widget->height() - 2);
                 viewportmgr::create(self, 0, origin, size, self->saved_view.zoomLevel, tile);
                 self->invalidate();
-                self->flags |= window_flags::viewport_no_scrolling;
+                self->flags |= WindowFlags::viewport_no_scrolling;
             }
             // 0x0048F1CB end
 
@@ -293,7 +293,7 @@ namespace OpenLoco::Ui::Windows::Station
         if (window == nullptr)
         {
             // 0x0048F29F start
-            const uint32_t newFlags = window_flags::resizable | window_flags::flag_11;
+            const uint32_t newFlags = WindowFlags::resizable | WindowFlags::flag_11;
             window = WindowManager::createWindow(WindowType::station, Station::windowSize, newFlags, &Station::events);
             window->number = stationId;
             auto station = stationmgr::get(stationId);
@@ -925,7 +925,7 @@ namespace OpenLoco::Ui::Windows::Station
 
             self->current_tab = widgetIndex - widx::tab_station;
             self->frame_no = 0;
-            self->flags &= ~(window_flags::flag_16);
+            self->flags &= ~(WindowFlags::flag_16);
             self->var_85C = -1;
 
             if (self->viewports[0] != nullptr)

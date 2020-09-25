@@ -143,7 +143,7 @@ namespace OpenLoco::Ui::Windows::Error
                 WindowType::error,
                 Gfx::point_t(x, y),
                 windowSize,
-                window_flags::stick_to_front | window_flags::transparent | window_flags::flag_7,
+                WindowFlags::stick_to_front | WindowFlags::transparent | WindowFlags::flag_7,
                 &Common::events);
 
             Common::initEvents();

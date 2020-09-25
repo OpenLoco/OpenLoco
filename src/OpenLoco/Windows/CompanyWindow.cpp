@@ -584,7 +584,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
     // 0x004347D0
     static window* create(company_id_t companyId)
     {
-        const uint32_t newFlags = window_flags::flag_8 | window_flags::flag_11;
+        const uint32_t newFlags = WindowFlags::flag_8 | WindowFlags::flag_11;
         auto window = WindowManager::createWindow(WindowType::company, Status::windowSize, newFlags, &Status::events);
         window->number = companyId;
         window->owner = companyId;
@@ -595,7 +595,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         auto skin = ObjectManager::get<interface_skin_object>();
         window->colours[1] = skin->colour_0A;
 
-        window->flags |= window_flags::resizable;
+        window->flags |= WindowFlags::resizable;
 
         return window;
     }
@@ -1052,7 +1052,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             auto size = Gfx::ui_size_t(widget.width() - 2, widget.height() - 2);
 
             viewportmgr::create(self, 0, origin, size, self->saved_view.zoomLevel, view.getPos());
-            self->flags |= window_flags::viewport_no_scrolling;
+            self->flags |= WindowFlags::viewport_no_scrolling;
             self->invalidate();
         }
 
@@ -2509,7 +2509,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             self->current_tab = widgetIndex - widx::tab_status;
             self->frame_no = 0;
-            self->flags &= ~(window_flags::flag_16);
+            self->flags &= ~(WindowFlags::flag_16);
 
             if (self->viewports[0] != nullptr)
             {

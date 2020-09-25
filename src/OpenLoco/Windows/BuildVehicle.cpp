@@ -252,7 +252,7 @@ namespace OpenLoco::Ui::BuildVehicle
     static window* create(company_id_t company)
     {
         initEvents();
-        auto window = WindowManager::createWindow(WindowType::buildVehicle, window_size, window_flags::flag_11, &_events);
+        auto window = WindowManager::createWindow(WindowType::buildVehicle, window_size, WindowFlags::flag_11, &_events);
         window->widgets = _widgets;
         window->number = company;
         window->enabled_widgets = (1 << widx::close_button) | (1 << widx::tab_build_new_trains) | (1 << widx::tab_build_new_buses) | (1 << widx::tab_build_new_trucks) | (1 << widx::tab_build_new_trams) | (1 << widx::tab_build_new_aircraft) | (1 << widx::tab_build_new_ships) | (1 << widx::tab_track_type_0) | (1 << widx::tab_track_type_1) | (1 << widx::tab_track_type_2) | (1 << widx::tab_track_type_3) | (1 << widx::tab_track_type_4) | (1 << widx::tab_track_type_5) | (1 << widx::tab_track_type_6) | (1 << widx::tab_track_type_7) | (1 << widx::scrollview_vehicle_selection);
@@ -659,7 +659,7 @@ namespace OpenLoco::Ui::BuildVehicle
     // 0x4C3929
     static void onResize(window* window)
     {
-        window->flags |= window_flags::resizable;
+        window->flags |= WindowFlags::resizable;
         auto minWidth = std::max<int16_t>(_numTrackTypeTabs * 31 + 195, 380);
         window->min_width = minWidth;
         window->max_width = 520;

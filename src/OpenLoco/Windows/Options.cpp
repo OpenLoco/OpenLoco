@@ -2235,7 +2235,7 @@ namespace OpenLoco::Ui::Options
         TextInput::sub_4CE6C9(w->type, w->number);
         w->current_tab = wi - Common::Widx::tab_display;
         w->frame_no = 0;
-        w->flags &= ~(window_flags::flag_16);
+        w->flags &= ~(WindowFlags::flag_16);
         w->disabled_widgets = 0;
         w->holdable_widgets = 0;
         w->activated_widgets = 0;

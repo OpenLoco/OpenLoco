@@ -191,7 +191,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         // 0x00458140
         static void onScrollMouseOver(Ui::window* self, int16_t x, int16_t y, uint8_t scroll_index)
         {
-            self->flags &= ~(window_flags::not_scroll_view);
+            self->flags &= ~(WindowFlags::not_scroll_view);
 
             uint16_t currentRow = y / rowHeight;
             int16_t currentIndustry = -1;
@@ -457,13 +457,13 @@ namespace OpenLoco::Ui::Windows::IndustryList
         // 0x004580DE
         static void event_08(window* self)
         {
-            self->flags |= window_flags::not_scroll_view;
+            self->flags |= WindowFlags::not_scroll_view;
         }
 
         // 0x004580E6
         static void event_09(window* self)
         {
-            if ((self->flags & window_flags::not_scroll_view) == 0)
+            if ((self->flags & WindowFlags::not_scroll_view) == 0)
                 return;
 
             if (self->row_hover == -1)
@@ -519,7 +519,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 WindowType::industryList,
                 origin,
                 IndustryList::windowSize,
-                window_flags::flag_8,
+                WindowFlags::flag_8,
                 &IndustryList::events);
 
             window->number = 0;
@@ -537,7 +537,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
             window->min_height = IndustryList::minDimensions.height;
             window->max_width = IndustryList::maxDimensions.width;
             window->max_height = IndustryList::maxDimensions.height;
-            window->flags |= window_flags::resizable;
+            window->flags |= WindowFlags::resizable;
 
             auto skin = ObjectManager::get<interface_skin_object>();
             window->colours[0] = skin->colour_0B;
@@ -1141,7 +1141,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
             self->current_tab = widgetIndex - widx::tab_industry_list;
             self->frame_no = 0;
-            self->flags &= ~(window_flags::flag_16);
+            self->flags &= ~(WindowFlags::flag_16);
 
             if (self->viewports[0] != nullptr)
             {

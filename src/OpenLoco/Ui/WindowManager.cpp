@@ -562,11 +562,11 @@ namespace OpenLoco::Ui::WindowManager
         // Border flash invalidation
         for (Ui::window* w = _windowsEnd - 1; w >= _windows; w--)
         {
-            if ((w->flags & window_flags::white_border_mask) != 0)
+            if ((w->flags & WindowFlags::white_border_mask) != 0)
             {
                 // TODO: Replace with countdown
-                w->flags -= window_flags::white_border_one;
-                if ((w->flags & window_flags::white_border_mask) == 0)
+                w->flags -= WindowFlags::white_border_one;
+                if ((w->flags & WindowFlags::white_border_mask) == 0)
                 {
                     w->invalidate();
                 }
@@ -626,10 +626,10 @@ namespace OpenLoco::Ui::WindowManager
             if (y >= (w->y + w->height))
                 continue;
 
-            if ((w->flags & window_flags::flag_7) != 0)
+            if ((w->flags & WindowFlags::flag_7) != 0)
                 continue;
 
-            if ((w->flags & window_flags::no_background) != 0)
+            if ((w->flags & WindowFlags::no_background) != 0)
             {
                 auto index = w->findWidgetAt(x, y);
                 if (index == -1)
@@ -670,7 +670,7 @@ namespace OpenLoco::Ui::WindowManager
             if (y >= (w->y + w->height))
                 continue;
 
-            if ((w->flags & window_flags::no_background) != 0)
+            if ((w->flags & WindowFlags::no_background) != 0)
             {
                 auto index = w->findWidgetAt(x, y);
                 if (index == -1)
@@ -804,7 +804,7 @@ namespace OpenLoco::Ui::WindowManager
         if (window == nullptr)
             return nullptr;
 
-        window->flags |= window_flags::white_border_mask;
+        window->flags |= WindowFlags::white_border_mask;
         window->invalidate();
 
         return bringToFront(window);
@@ -834,7 +834,7 @@ namespace OpenLoco::Ui::WindowManager
 
         for (Ui::window* w = &_windows[0]; w != _windowsEnd; w++)
         {
-            if ((w->flags & window_flags::stick_to_back) != 0)
+            if ((w->flags & WindowFlags::stick_to_back) != 0)
                 continue;
             if (position.x + size.width <= w->x)
                 continue;
@@ -920,7 +920,7 @@ namespace OpenLoco::Ui::WindowManager
 
         for (Ui::window* w = &_windows[0]; w != _windowsEnd; w++)
         {
-            if (w->flags & window_flags::stick_to_back)
+            if (w->flags & WindowFlags::stick_to_back)
                 continue;
 
             position.x = w->x + w->width + 2;
@@ -961,7 +961,7 @@ namespace OpenLoco::Ui::WindowManager
 
         for (Ui::window* w = &_windows[0]; w != _windowsEnd; w++)
         {
-            if (w->flags & window_flags::stick_to_back)
+            if (w->flags & WindowFlags::stick_to_back)
                 continue;
 
             position.x = w->x + w->width + 2;
@@ -1029,13 +1029,13 @@ namespace OpenLoco::Ui::WindowManager
         {
             for (Ui::window* w = &_windows[0]; w != _windowsEnd; w++)
             {
-                if ((w->flags & window_flags::stick_to_back) != 0)
+                if ((w->flags & WindowFlags::stick_to_back) != 0)
                     continue;
 
-                if ((w->flags & window_flags::stick_to_front) != 0)
+                if ((w->flags & WindowFlags::stick_to_front) != 0)
                     continue;
 
-                if ((w->flags & window_flags::no_auto_close) != 0)
+                if ((w->flags & WindowFlags::no_auto_close) != 0)
                     continue;
 
                 close(w);
@@ -1043,10 +1043,10 @@ namespace OpenLoco::Ui::WindowManager
             }
         }
 
-        bool stickToBack = (flags & window_flags::stick_to_back) != 0;
-        bool stickToFront = (flags & window_flags::stick_to_front) != 0;
-        bool hasFlag12 = (flags & window_flags::flag_12) != 0;
-        bool hasFlag13 = (flags & window_flags::flag_13) != 0;
+        bool stickToBack = (flags & WindowFlags::stick_to_back) != 0;
+        bool stickToFront = (flags & WindowFlags::stick_to_front) != 0;
+        bool hasFlag12 = (flags & WindowFlags::flag_12) != 0;
+        bool hasFlag13 = (flags & WindowFlags::flag_13) != 0;
 
         // Find right position to insert new window
         size_t dstIndex = 0;
@@ -1054,7 +1054,7 @@ namespace OpenLoco::Ui::WindowManager
         {
             for (size_t i = 0; i < count(); i++)
             {
-                if ((_windows[i].flags & window_flags::stick_to_back) != 0)
+                if ((_windows[i].flags & WindowFlags::stick_to_back) != 0)
                 {
                     dstIndex = i;
                 }
@@ -1068,7 +1068,7 @@ namespace OpenLoco::Ui::WindowManager
         {
             for (int i = (int)count(); i > 0; i--)
             {
-                if ((_windows[i - 1].flags & window_flags::stick_to_front) == 0)
+                if ((_windows[i - 1].flags & WindowFlags::stick_to_front) == 0)
                 {
                     dstIndex = i;
                     break;
@@ -1081,7 +1081,7 @@ namespace OpenLoco::Ui::WindowManager
         window.flags = flags;
         if (hasFlag12 || (!stickToBack && !stickToFront && !hasFlag13))
         {
-            window.flags |= window_flags::white_border_mask;
+            window.flags |= WindowFlags::white_border_mask;
             Audio::playSound(Audio::sound_id::open_window, origin.x + size.width / 2);
         }
 
@@ -1270,7 +1270,7 @@ namespace OpenLoco::Ui::WindowManager
             // Work out if the window requires moving
             bool extendsX = (w->x + 10) >= Ui::width();
             bool extendsY = (w->y + 10) >= Ui::height();
-            if ((w->flags & window_flags::stick_to_back) != 0 || (w->flags & window_flags::stick_to_front) != 0)
+            if ((w->flags & WindowFlags::stick_to_back) != 0 || (w->flags & WindowFlags::stick_to_front) != 0)
             {
                 // toolbars are 27px high
                 extendsY = (w->y + 10 - 27) >= Ui::height();
@@ -1316,10 +1316,10 @@ namespace OpenLoco::Ui::WindowManager
             if (w == self)
                 continue;
 
-            if (w->flags & window_flags::stick_to_back)
+            if (w->flags & WindowFlags::stick_to_back)
                 continue;
 
-            if (w->flags & window_flags::stick_to_front)
+            if (w->flags & WindowFlags::stick_to_front)
                 continue;
 
             if (w->x >= right)
@@ -1389,10 +1389,10 @@ namespace OpenLoco::Ui::WindowManager
 
         for (Ui::window* w = _windowsEnd - 1; w >= _windows; w--)
         {
-            if (w->flags & window_flags::stick_to_back)
+            if (w->flags & WindowFlags::stick_to_back)
                 continue;
 
-            if (w->flags & window_flags::stick_to_front)
+            if (w->flags & WindowFlags::stick_to_front)
                 continue;
 
             close(w);
@@ -1569,7 +1569,7 @@ namespace OpenLoco::Ui::WindowManager
     {
         for (Ui::window* w = window + 1; w != _windowsEnd; w++)
         {
-            if ((w->flags & window_flags::stick_to_front) != 0)
+            if ((w->flags & WindowFlags::stick_to_front) != 0)
                 continue;
 
             return false;
@@ -1582,7 +1582,7 @@ namespace OpenLoco::Ui::WindowManager
     {
         for (Ui::window* w = window + 1; w != _windowsEnd; w++)
         {
-            if ((w->flags & window_flags::stick_to_front) != 0)
+            if ((w->flags & WindowFlags::stick_to_front) != 0)
                 continue;
 
             if (w->type == WindowType::buildVehicle)
@@ -1625,7 +1625,7 @@ namespace OpenLoco::Ui::WindowManager
     {
         for (auto w = window; w < _windowsEnd; w++)
         {
-            if ((w->flags & window_flags::transparent) == 0)
+            if ((w->flags & WindowFlags::transparent) == 0)
                 continue;
 
             if (viewport == w->viewports[0])
@@ -1957,10 +1957,10 @@ namespace OpenLoco::Ui::WindowManager
             changed = false;
             for (Ui::window* w = _windowsEnd - 1; w >= _windows; w--)
             {
-                if ((w->flags & window_flags::stick_to_back) != 0)
+                if ((w->flags & WindowFlags::stick_to_back) != 0)
                     continue;
 
-                if ((w->flags & window_flags::stick_to_front) != 0)
+                if ((w->flags & WindowFlags::stick_to_front) != 0)
                     continue;
 
                 close(w);

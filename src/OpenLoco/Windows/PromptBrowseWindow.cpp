@@ -179,7 +179,7 @@ namespace OpenLoco::Ui::PromptBrowse
         auto window = WindowManager::createWindowCentred(
             WindowType::fileBrowserPrompt,
             { 500, 380 },
-            Ui::window_flags::stick_to_front | Ui::window_flags::resizable | Ui::window_flags::flag_12,
+            Ui::WindowFlags::stick_to_front | Ui::WindowFlags::resizable | Ui::WindowFlags::flag_12,
             &_events);
 
         if (window != nullptr)

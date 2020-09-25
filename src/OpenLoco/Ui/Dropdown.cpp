@@ -292,13 +292,13 @@ namespace OpenLoco::Ui::Dropdown
         // 0x004CCF1E
         static void open(Gfx::point_t origin, Gfx::ui_size_t size, colour_t colour)
         {
-            auto window = WindowManager::createWindow(WindowType::dropdown, origin, size, window_flags::stick_to_front, &common::events);
+            auto window = WindowManager::createWindow(WindowType::dropdown, origin, size, WindowFlags::stick_to_front, &common::events);
 
             window->widgets = common::widgets;
 
             if (colour & Colour::translucent_flag)
             {
-                window->flags |= window_flags::transparent;
+                window->flags |= WindowFlags::transparent;
             }
 
             common::initEvents();

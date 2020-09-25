@@ -157,7 +157,7 @@ namespace OpenLoco::Ui::Windows
             WindowType::titleMenu,
             Gfx::point_t((Ui::width() - ww) / 2, Ui::height() - wh - 25),
             { ww, wh },
-            window_flags::stick_to_front | window_flags::transparent | window_flags::no_background | window_flags::flag_6,
+            WindowFlags::stick_to_front | WindowFlags::transparent | WindowFlags::no_background | WindowFlags::flag_6,
             &_events);
 
         window->widgets = _widgets;
@@ -391,7 +391,7 @@ namespace OpenLoco::Ui::Windows
             WindowType::main,
             { 0, 0 },
             Gfx::ui_size_t(uiWidth, uiHeight),
-            Ui::window_flags::stick_to_back,
+            Ui::WindowFlags::stick_to_back,
             (Ui::window_event_list*)0x004FA5F8);
         window->widgets = _editorWidgets;
         addr<0x00e3f0b8, int32_t>() = 0; // gCurrentRotation?

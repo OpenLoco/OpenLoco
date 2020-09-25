@@ -1246,7 +1246,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
             window->current_tab = widgetIndex - widx::tab_options;
             window->frame_no = 0;
-            window->flags &= ~(window_flags::flag_16);
+            window->flags &= ~(WindowFlags::flag_16);
             window->disabled_widgets = 0;
 
             static const uint64_t* enabledWidgetsByTab[] = {

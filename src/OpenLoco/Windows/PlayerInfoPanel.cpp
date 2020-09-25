@@ -185,7 +185,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
             WindowType::playerInfoToolbar,
             Gfx::point_t(0, Ui::height() - window_size.height),
             Gfx::ui_size_t(window_size.width, window_size.height),
-            Ui::window_flags::stick_to_front | Ui::window_flags::transparent | Ui::window_flags::no_background,
+            Ui::WindowFlags::stick_to_front | Ui::WindowFlags::transparent | Ui::WindowFlags::no_background,
             &_events);
         window->widgets = _widgets;
         window->enabled_widgets = (1 << Widx::player) | (1 << Widx::company_value) | (1 << Widx::performance_index);

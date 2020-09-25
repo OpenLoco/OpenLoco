@@ -129,7 +129,7 @@ namespace OpenLoco::Ui::NewsWindow
                 int16_t x = Ui::width() - 138;
                 int16_t y = Ui::height() - 25;
                 Gfx::point_t origin = { x, y };
-                uint32_t flags = window_flags::stick_to_front | window_flags::viewport_no_scrolling | window_flags::transparent | window_flags::flag_7;
+                uint32_t flags = WindowFlags::stick_to_front | WindowFlags::viewport_no_scrolling | WindowFlags::transparent | WindowFlags::flag_7;
 
                 auto window = WindowManager::createWindow(WindowType::news, origin, Ticker::windowSize, flags, &Ticker::events);
 
@@ -201,13 +201,13 @@ namespace OpenLoco::Ui::NewsWindow
 
         if (_word_4F8BE4[activeMessage] & (1 << 1))
         {
-            uint32_t flags = window_flags::stick_to_front | window_flags::viewport_no_scrolling | window_flags::transparent | window_flags::no_background;
+            uint32_t flags = WindowFlags::stick_to_front | WindowFlags::viewport_no_scrolling | WindowFlags::transparent | WindowFlags::no_background;
 
             createNewsWindow(News2::windowSize, News2::widgets, Colour::grey, isOld, flags);
         }
         else
         {
-            uint32_t flags = window_flags::stick_to_front | window_flags::viewport_no_scrolling | window_flags::transparent;
+            uint32_t flags = WindowFlags::stick_to_front | WindowFlags::viewport_no_scrolling | WindowFlags::transparent;
             auto colour = Colour::translucent(Colour::salmon_pink);
 
             createNewsWindow(News1::windowSize, News1::widgets, colour, isOld, flags);

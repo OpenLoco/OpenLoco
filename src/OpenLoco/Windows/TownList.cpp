@@ -270,7 +270,7 @@ namespace OpenLoco::Ui::Windows::TownList
         // 0x0049A532
         static void onScrollMouseOver(Ui::window* self, int16_t x, int16_t y, uint8_t scroll_index)
         {
-            self->flags &= ~(window_flags::not_scroll_view);
+            self->flags &= ~(WindowFlags::not_scroll_view);
 
             uint16_t currentRow = y / rowHeight;
             int16_t currentTown = -1;
@@ -436,13 +436,13 @@ namespace OpenLoco::Ui::Windows::TownList
         // 0x0049A4D0
         static void event_08(window* self)
         {
-            self->flags |= window_flags::not_scroll_view;
+            self->flags |= WindowFlags::not_scroll_view;
         }
 
         // 0x0049A4D8
         static void event_09(window* self)
         {
-            if (!(self->flags & window_flags::not_scroll_view))
+            if (!(self->flags & WindowFlags::not_scroll_view))
                 return;
 
             if (self->row_hover == -1)
@@ -526,7 +526,7 @@ namespace OpenLoco::Ui::Windows::TownList
                 WindowType::townList,
                 origin,
                 TownList::windowSize,
-                window_flags::resizable,
+                WindowFlags::resizable,
                 &TownList::events);
 
             window->number = 0;
@@ -544,7 +544,7 @@ namespace OpenLoco::Ui::Windows::TownList
             window->min_height = TownList::minDimensions.height;
             window->max_width = TownList::maxDimensions.width;
             window->max_height = TownList::maxDimensions.height;
-            window->flags |= window_flags::resizable;
+            window->flags |= WindowFlags::resizable;
 
             auto skin = ObjectManager::get<interface_skin_object>();
             window->colours[0] = skin->colour_0B;
@@ -1478,7 +1478,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
             self->current_tab = widgetIndex - widx::tab_town_list;
             self->frame_no = 0;
-            self->flags &= ~(window_flags::flag_16);
+            self->flags &= ~(WindowFlags::flag_16);
 
             if (self->viewports[0] != nullptr)
             {

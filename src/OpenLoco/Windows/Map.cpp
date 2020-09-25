@@ -164,7 +164,7 @@ namespace OpenLoco::Ui::Windows::Map
         _lastMapWindowSize = Gfx::ui_size_t(self->width, self->height);
         _lastMapWindowVar88A = self->var_88A;
         _lastMapWindowVar88C = self->var_88C;
-        _lastMapWindowFlags = self->flags | window_flags::flag_31;
+        _lastMapWindowFlags = self->flags | WindowFlags::flag_31;
 
         free(_dword_F253A8);
     }
@@ -201,7 +201,7 @@ namespace OpenLoco::Ui::Windows::Map
     // 0x0046B9F7
     static void onResize(window* self)
     {
-        self->flags |= window_flags::resizable;
+        self->flags |= WindowFlags::resizable;
         self->min_width = 350;
         self->max_width = 800;
         self->max_height = 800;
@@ -1527,7 +1527,7 @@ namespace OpenLoco::Ui::Windows::Map
         {
             window->var_88A = _lastMapWindowVar88A;
             window->var_88C = _lastMapWindowVar88C;
-            window->flags |= (_lastMapWindowFlags & window_flags::flag_16);
+            window->flags |= (_lastMapWindowFlags & WindowFlags::flag_16);
         }
 
         auto skin = ObjectManager::get<interface_skin_object>();
