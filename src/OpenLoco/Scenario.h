@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-namespace OpenLoco::scenario
+namespace OpenLoco::Scenario
 {
     enum flags
     {

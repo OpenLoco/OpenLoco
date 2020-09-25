@@ -141,7 +141,7 @@ namespace OpenLoco::tutorial
             addr<0x0050AE87, uint32_t>() = 0x9ABCDEF0;
         }
 
-        scenario::start(-1);
+        Scenario::start(-1);
 
         // Unreachable?
         stop();

@@ -62,9 +62,9 @@ namespace OpenLoco::Ui::Windows::LandscapeGenerationConfirm
                 WindowManager::close(window);
 
                 if (status == 0)
-                    scenario::generateLandscape();
+                    Scenario::generateLandscape();
                 else
-                    scenario::eraseLandscape();
+                    Scenario::eraseLandscape();
                 break;
         }
     }
