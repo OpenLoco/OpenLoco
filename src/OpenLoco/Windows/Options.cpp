@@ -264,11 +264,11 @@ namespace OpenLoco::Ui::Options
                     auto main = WindowManager::getMainWindow();
                     if (main != nullptr)
                     {
-                        main->viewports[0]->flags &= ~viewport_flags::gridlines_on_landscape;
+                        main->viewports[0]->flags &= ~ViewportFlags::gridlines_on_landscape;
 
                         if ((cfg.flags & Config::flags::gridlines_on_landscape) != 0)
                         {
-                            main->viewports[0]->flags |= viewport_flags::gridlines_on_landscape;
+                            main->viewports[0]->flags |= ViewportFlags::gridlines_on_landscape;
                         }
                     }
 

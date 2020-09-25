@@ -221,7 +221,7 @@ namespace OpenLoco::Input::ShortcutManager
             return;
 
         auto viewport = WindowManager::getMainWindow()->viewports[0];
-        viewport->flags ^= viewport_flags::underground_view;
+        viewport->flags ^= ViewportFlags::underground_view;
         window->invalidate();
     }
 
@@ -233,7 +233,7 @@ namespace OpenLoco::Input::ShortcutManager
             return;
 
         auto viewport = WindowManager::getMainWindow()->viewports[0];
-        viewport->flags ^= viewport_flags::hide_foreground_tracks_roads;
+        viewport->flags ^= ViewportFlags::hide_foreground_tracks_roads;
         window->invalidate();
     }
 
@@ -245,7 +245,7 @@ namespace OpenLoco::Input::ShortcutManager
             return;
 
         auto viewport = WindowManager::getMainWindow()->viewports[0];
-        viewport->flags ^= viewport_flags::hide_foreground_scenery_buildings;
+        viewport->flags ^= ViewportFlags::hide_foreground_scenery_buildings;
         window->invalidate();
     }
 
@@ -257,7 +257,7 @@ namespace OpenLoco::Input::ShortcutManager
             return;
 
         auto viewport = WindowManager::getMainWindow()->viewports[0];
-        viewport->flags ^= viewport_flags::height_marks_on_land;
+        viewport->flags ^= ViewportFlags::height_marks_on_land;
         window->invalidate();
     }
 
@@ -269,7 +269,7 @@ namespace OpenLoco::Input::ShortcutManager
             return;
 
         auto viewport = WindowManager::getMainWindow()->viewports[0];
-        viewport->flags ^= viewport_flags::height_marks_on_tracks_roads;
+        viewport->flags ^= ViewportFlags::height_marks_on_tracks_roads;
         window->invalidate();
     }
 
@@ -281,7 +281,7 @@ namespace OpenLoco::Input::ShortcutManager
             return;
 
         auto viewport = WindowManager::getMainWindow()->viewports[0];
-        viewport->flags ^= viewport_flags::one_way_direction_arrows;
+        viewport->flags ^= ViewportFlags::one_way_direction_arrows;
         window->invalidate();
     }
 

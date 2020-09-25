@@ -197,13 +197,13 @@ namespace OpenLoco::Ui
         bool shouldInvalidate;
         if (!underground)
         {
-            shouldInvalidate = !(vp->flags & viewport_flags::underground_view);
-            vp->flags &= ~viewport_flags::underground_view;
+            shouldInvalidate = !(vp->flags & ViewportFlags::underground_view);
+            vp->flags &= ~ViewportFlags::underground_view;
         }
         else
         {
-            shouldInvalidate = vp->flags & viewport_flags::underground_view;
-            vp->flags |= viewport_flags::underground_view;
+            shouldInvalidate = vp->flags & ViewportFlags::underground_view;
+            vp->flags |= ViewportFlags::underground_view;
         }
         if (shouldInvalidate)
             w->invalidate();
@@ -231,7 +231,7 @@ namespace OpenLoco::Ui
         if (diffX == 0 && diffY == 0)
             return;
 
-        if (vp->flags & viewport_flags::hide_foreground_tracks_roads || vp->flags & viewport_flags::hide_foreground_scenery_buildings || w->flags & WindowFlags::flag_8)
+        if (vp->flags & ViewportFlags::hide_foreground_tracks_roads || vp->flags & ViewportFlags::hide_foreground_scenery_buildings || w->flags & WindowFlags::flag_8)
         {
             auto rect = Ui::Rect(vp->x, vp->y, vp->width, vp->height);
             Gfx::redrawScreenRect(rect);
@@ -586,21 +586,21 @@ namespace OpenLoco::Ui
 
         if (loc.z < tileHeight)
         {
-            if (!(viewport->flags & viewport_flags::underground_view))
+            if (!(viewport->flags & ViewportFlags::underground_view))
             {
                 this->invalidate();
             }
 
-            viewport->flags |= viewport_flags::underground_view;
+            viewport->flags |= ViewportFlags::underground_view;
         }
         else
         {
-            if (viewport->flags & viewport_flags::underground_view)
+            if (viewport->flags & ViewportFlags::underground_view)
             {
                 this->invalidate();
             }
 
-            viewport->flags &= ~viewport_flags::underground_view;
+            viewport->flags &= ~ViewportFlags::underground_view;
         }
 
         auto pos = coordinate3dTo2d(loc.x, loc.y, loc.z, WindowManager::getCurrentRotation());

@@ -300,7 +300,7 @@ namespace OpenLoco::Ui::Windows::Town
             else
             {
                 if ((Config::get().flags & Config::flags::gridlines_on_landscape) != 0)
-                    flags |= viewport_flags::gridlines_on_landscape;
+                    flags |= ViewportFlags::gridlines_on_landscape;
             }
 
             self->saved_view = view;

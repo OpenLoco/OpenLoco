@@ -456,7 +456,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             uint16_t vpFlags = 0;
             if (Config::get().flags & Config::flags::gridlines_on_landscape)
             {
-                vpFlags |= viewport_flags::gridlines_on_landscape;
+                vpFlags |= ViewportFlags::gridlines_on_landscape;
             }
             sub_434223(self, view, vpFlags);
         }
@@ -1097,7 +1097,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             {
                 if (Config::get().flags & Config::flags::gridlines_on_landscape)
                 {
-                    vpFlags |= viewport_flags::gridlines_on_landscape;
+                    vpFlags |= ViewportFlags::gridlines_on_landscape;
                 }
             }
             else if (self->saved_view != view)

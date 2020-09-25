@@ -1867,9 +1867,9 @@ namespace OpenLoco::Ui::WindowManager
         {
             case viewport_visibility::undergroundView:
             {
-                if (!(viewport->flags & (viewport_flags::underground_view)))
+                if (!(viewport->flags & (ViewportFlags::underground_view)))
                 {
-                    viewport->flags |= (viewport_flags::underground_view);
+                    viewport->flags |= (ViewportFlags::underground_view);
                     flagsChanged = true;
                 }
                 break;
@@ -1877,9 +1877,9 @@ namespace OpenLoco::Ui::WindowManager
 
             case viewport_visibility::heightMarksOnLand:
             {
-                if (!(viewport->flags & (viewport_flags::height_marks_on_land)))
+                if (!(viewport->flags & (ViewportFlags::height_marks_on_land)))
                 {
-                    viewport->flags |= (viewport_flags::height_marks_on_land);
+                    viewport->flags |= (ViewportFlags::height_marks_on_land);
                     flagsChanged = true;
                 }
                 break;
@@ -1887,9 +1887,9 @@ namespace OpenLoco::Ui::WindowManager
 
             case viewport_visibility::overgroundView:
             {
-                if ((viewport->flags & (viewport_flags::underground_view)))
+                if ((viewport->flags & (ViewportFlags::underground_view)))
                 {
-                    viewport->flags &= ~(viewport_flags::underground_view);
+                    viewport->flags &= ~(ViewportFlags::underground_view);
                     flagsChanged = true;
                 }
                 break;
@@ -1897,45 +1897,45 @@ namespace OpenLoco::Ui::WindowManager
 
             default:
             {
-                if (viewport->flags & (viewport_flags::underground_view))
+                if (viewport->flags & (ViewportFlags::underground_view))
                 {
-                    viewport->flags &= ~(viewport_flags::underground_view);
+                    viewport->flags &= ~(ViewportFlags::underground_view);
                     flagsChanged = true;
                 }
 
-                if (viewport->flags & (viewport_flags::flag_7))
+                if (viewport->flags & (ViewportFlags::flag_7))
                 {
-                    viewport->flags &= ~(viewport_flags::flag_7);
+                    viewport->flags &= ~(ViewportFlags::flag_7);
                     flagsChanged = true;
                 }
 
-                if (viewport->flags & (viewport_flags::flag_8))
+                if (viewport->flags & (ViewportFlags::flag_8))
                 {
-                    viewport->flags &= ~(viewport_flags::flag_8);
+                    viewport->flags &= ~(ViewportFlags::flag_8);
                     flagsChanged = true;
                 }
 
-                if (viewport->flags & (viewport_flags::hide_foreground_tracks_roads))
+                if (viewport->flags & (ViewportFlags::hide_foreground_tracks_roads))
                 {
-                    viewport->flags &= ~(viewport_flags::hide_foreground_tracks_roads);
+                    viewport->flags &= ~(ViewportFlags::hide_foreground_tracks_roads);
                     flagsChanged = true;
                 }
 
-                if (viewport->flags & (viewport_flags::hide_foreground_scenery_buildings))
+                if (viewport->flags & (ViewportFlags::hide_foreground_scenery_buildings))
                 {
-                    viewport->flags &= ~(viewport_flags::hide_foreground_scenery_buildings);
+                    viewport->flags &= ~(ViewportFlags::hide_foreground_scenery_buildings);
                     flagsChanged = true;
                 }
 
-                if (viewport->flags & (viewport_flags::height_marks_on_land))
+                if (viewport->flags & (ViewportFlags::height_marks_on_land))
                 {
-                    viewport->flags &= ~(viewport_flags::height_marks_on_land);
+                    viewport->flags &= ~(ViewportFlags::height_marks_on_land);
                     flagsChanged = true;
                 }
 
-                if (viewport->flags & (viewport_flags::height_marks_on_tracks_roads))
+                if (viewport->flags & (ViewportFlags::height_marks_on_tracks_roads))
                 {
-                    viewport->flags &= ~(viewport_flags::height_marks_on_tracks_roads);
+                    viewport->flags &= ~(ViewportFlags::height_marks_on_tracks_roads);
                     flagsChanged = true;
                 }
                 break;
@@ -2005,11 +2005,11 @@ namespace OpenLoco::Ui::Windows
             auto window = WindowManager::getMainWindow();
             if (window != nullptr)
             {
-                if (!(window->viewports[0]->flags & viewport_flags::gridlines_on_landscape))
+                if (!(window->viewports[0]->flags & ViewportFlags::gridlines_on_landscape))
                 {
                     window->invalidate();
                 }
-                window->viewports[0]->flags |= viewport_flags::gridlines_on_landscape;
+                window->viewports[0]->flags |= ViewportFlags::gridlines_on_landscape;
             }
         }
         _gridlinesState++;
@@ -2026,11 +2026,11 @@ namespace OpenLoco::Ui::Windows
                 auto window = WindowManager::getMainWindow();
                 if (window != nullptr)
                 {
-                    if ((window->viewports[0]->flags & viewport_flags::gridlines_on_landscape) != 0)
+                    if ((window->viewports[0]->flags & ViewportFlags::gridlines_on_landscape) != 0)
                     {
                         window->invalidate();
                     }
-                    window->viewports[0]->flags &= ~viewport_flags::gridlines_on_landscape;
+                    window->viewports[0]->flags &= ~ViewportFlags::gridlines_on_landscape;
                 }
             }
         }
@@ -2044,9 +2044,9 @@ namespace OpenLoco::Ui::Windows
             auto mainWindow = WindowManager::getMainWindow();
             if (mainWindow != nullptr)
             {
-                if (!(mainWindow->viewports[0]->flags & viewport_flags::one_way_direction_arrows))
+                if (!(mainWindow->viewports[0]->flags & ViewportFlags::one_way_direction_arrows))
                 {
-                    mainWindow->viewports[0]->flags |= viewport_flags::one_way_direction_arrows;
+                    mainWindow->viewports[0]->flags |= ViewportFlags::one_way_direction_arrows;
                     mainWindow->invalidate();
                 }
             }
@@ -2063,9 +2063,9 @@ namespace OpenLoco::Ui::Windows
             auto mainWindow = WindowManager::getMainWindow();
             if (mainWindow != nullptr)
             {
-                if ((mainWindow->viewports[0]->flags & viewport_flags::one_way_direction_arrows))
+                if ((mainWindow->viewports[0]->flags & ViewportFlags::one_way_direction_arrows))
                 {
-                    mainWindow->viewports[0]->flags &= ~viewport_flags::one_way_direction_arrows;
+                    mainWindow->viewports[0]->flags &= ~ViewportFlags::one_way_direction_arrows;
                     mainWindow->invalidate();
                 }
             }
