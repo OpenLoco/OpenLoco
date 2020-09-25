@@ -10,7 +10,7 @@ namespace OpenLoco
 {
     using town_id_t = uint16_t;
 
-    namespace town_id
+    namespace TownId
     {
         constexpr town_id_t null = std::numeric_limits<town_id_t>::max();
     }
