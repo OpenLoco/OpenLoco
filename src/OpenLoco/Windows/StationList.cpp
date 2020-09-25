@@ -131,7 +131,7 @@ namespace OpenLoco::Ui::Windows::StationList
     {
         window->row_count = 0;
 
-        for (auto& station : stationmgr::stations())
+        for (auto& station : StationManager::stations())
         {
             if (station.empty())
                 continue;
@@ -227,7 +227,7 @@ namespace OpenLoco::Ui::Windows::StationList
 
         auto i = -1;
 
-        for (auto& station : stationmgr::stations())
+        for (auto& station : StationManager::stations())
         {
             i++;
             if (station.empty())
@@ -252,7 +252,7 @@ namespace OpenLoco::Ui::Windows::StationList
                 continue;
             }
 
-            if (getOrder(SortMode(window->sort_mode), station, *stationmgr::get(edi)))
+            if (getOrder(SortMode(window->sort_mode), station, *StationManager::get(edi)))
             {
                 edi = i;
             }
@@ -262,7 +262,7 @@ namespace OpenLoco::Ui::Windows::StationList
         {
             bool dl = false;
 
-            stationmgr::get(edi)->flags |= station_flags::flag_4;
+            StationManager::get(edi)->flags |= station_flags::flag_4;
 
             auto ebp = window->row_count;
             if (edi != window->row_info[ebp])
@@ -495,7 +495,7 @@ namespace OpenLoco::Ui::Windows::StationList
                 text_colour_id = StringIds::wcolour2_stringid;
             }
 
-            auto station = stationmgr::get(stationId);
+            auto station = StationManager::get(stationId);
 
             // First, draw the town name.
             static const string_id label_icons[] = {

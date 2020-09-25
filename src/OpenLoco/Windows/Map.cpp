@@ -1118,7 +1118,7 @@ namespace OpenLoco::Ui::Windows::Map
                 order <<= 2;
                 order |= _dword_987C5C[index + 1];
 
-                auto station = stationmgr::get(order);
+                auto station = StationManager::get(order);
                 map_pos stationPos = { station->x, station->y };
 
                 auto routePos = drawRouteLine(dpi, startPos, endPos, stationPos, *colour);

@@ -9,7 +9,7 @@
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui;
 
-namespace OpenLoco::stationmgr
+namespace OpenLoco::StationManager
 {
     static loco_global<station[max_stations], 0x005E6EDC> _stations;
 

@@ -322,7 +322,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         }
         else
         {
-            auto station = stationmgr::get(_constructingStationId);
+            auto station = StationManager::get(_constructingStationId);
             args.push(station->name);
             args.push(station->town);
         }

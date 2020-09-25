@@ -739,7 +739,7 @@ namespace OpenLoco::Input
                                 break;
                             case InteractionItem::station:
                             {
-                                auto station = stationmgr::get(ptr.value);
+                                auto station = StationManager::get(ptr.value);
                                 Ui::Windows::StationList::open(station->owner);
                                 break;
                             }
@@ -1834,7 +1834,7 @@ namespace OpenLoco::Input
         if (_mapSelectionFlags & (1 << 6))
         {
             _mapSelectionFlags &= (uint16_t) ~(1 << 6);
-            auto station = stationmgr::get(_hoveredStationId);
+            auto station = StationManager::get(_hoveredStationId);
             if (!station->empty())
             {
                 station->invalidate();

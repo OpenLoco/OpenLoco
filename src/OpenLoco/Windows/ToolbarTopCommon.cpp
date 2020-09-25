@@ -258,14 +258,14 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
         {
             window->viewportZoomIn(false);
             townmgr::updateLabels();
-            stationmgr::updateLabels();
+            StationManager::updateLabels();
         }
         else if (itemIndex == 1)
         {
             zoom_ticks = 0;
             window->viewportZoomOut(false);
             townmgr::updateLabels();
-            stationmgr::updateLabels();
+            StationManager::updateLabels();
         }
         else if (itemIndex == 2)
         {
@@ -286,14 +286,14 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
         {
             window->viewportRotateLeft();
             townmgr::updateLabels();
-            stationmgr::updateLabels();
+            StationManager::updateLabels();
             Windows::Map::centerOnViewPoint();
         }
         else if (itemIndex == 0)
         {
             window->viewportRotateRight();
             townmgr::updateLabels();
-            stationmgr::updateLabels();
+            StationManager::updateLabels();
             Windows::Map::centerOnViewPoint();
         }
     }

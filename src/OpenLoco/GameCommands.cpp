@@ -276,7 +276,7 @@ namespace OpenLoco::GameCommands
                     if (stationElement == nullptr)
                         break; // throw exception?
 
-                    station* pStation = stationmgr::get(stationElement->stationId());
+                    station* pStation = StationManager::get(stationElement->stationId());
                     if (pStation == nullptr)
                         break;
 

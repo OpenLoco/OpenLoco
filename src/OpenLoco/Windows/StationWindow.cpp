@@ -122,7 +122,7 @@ namespace OpenLoco::Ui::Windows::Station
             self->drawViewports(dpi);
             widget::drawViewportCentreButton(dpi, self, widx::centre_on_viewport);
 
-            auto station = stationmgr::get(self->number);
+            auto station = StationManager::get(self->number);
             const char* buffer = StringManager::getString(StringIds::buffer_1250);
             station->getStatusString((char*)buffer);
 
@@ -212,7 +212,7 @@ namespace OpenLoco::Ui::Windows::Station
             self->callPrepareDraw();
 
             // Figure out the station's position on the map.
-            auto station = stationmgr::get(self->number);
+            auto station = StationManager::get(self->number);
 
             // Compute views.
 
@@ -296,7 +296,7 @@ namespace OpenLoco::Ui::Windows::Station
             const uint32_t newFlags = WindowFlags::resizable | WindowFlags::flag_11;
             window = WindowManager::createWindow(WindowType::station, Station::windowSize, newFlags, &Station::events);
             window->number = stationId;
-            auto station = stationmgr::get(stationId);
+            auto station = StationManager::get(stationId);
             window->owner = station->owner;
             window->min_width = Common::minWindowSize.width;
             window->min_height = Common::minWindowSize.height;
@@ -379,7 +379,7 @@ namespace OpenLoco::Ui::Windows::Station
             auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
             buffer = StringManager::formatString(buffer, StringIds::accepted_cargo_separator);
 
-            auto station = stationmgr::get(self->number);
+            auto station = StationManager::get(self->number);
             uint8_t cargoTypeCount = 0;
 
             for (uint32_t cargoId = 0; cargoId < max_cargo_stats; cargoId++)
@@ -454,7 +454,7 @@ namespace OpenLoco::Ui::Windows::Station
         // 0x0048EB64
         static void getScrollSize(window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
         {
-            auto station = stationmgr::get(self->number);
+            auto station = StationManager::get(self->number);
             *scrollHeight = 0;
             for (const auto& cargoStats : station->cargo_stats)
             {
@@ -478,7 +478,7 @@ namespace OpenLoco::Ui::Windows::Station
         {
             Gfx::clearSingle(*dpi, Colour::getShade(self->colours[1], 4));
 
-            const auto station = stationmgr::get(self->number);
+            const auto station = StationManager::get(self->number);
             int16_t y = 1;
             auto cargoId = 0;
             for (const auto& cargoStats : station->cargo_stats)
@@ -527,7 +527,7 @@ namespace OpenLoco::Ui::Windows::Station
                 y += 10;
                 if (cargo.origin != self->number)
                 {
-                    auto originStation = stationmgr::get(cargo.origin);
+                    auto originStation = StationManager::get(cargo.origin);
                     auto args2 = FormatArguments();
                     args2.push(originStation->name);
                     args2.push(originStation->town);
@@ -650,7 +650,7 @@ namespace OpenLoco::Ui::Windows::Station
         // 0x0048EE4A
         static void getScrollSize(window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
         {
-            auto station = stationmgr::get(self->number);
+            auto station = StationManager::get(self->number);
             *scrollHeight = 0;
             for (uint8_t i = 0; i < 32; i++)
             {
@@ -682,7 +682,7 @@ namespace OpenLoco::Ui::Windows::Station
         {
             Gfx::clearSingle(*dpi, Colour::getShade(self->colours[1], 4));
 
-            const auto station = stationmgr::get(self->number);
+            const auto station = StationManager::get(self->number);
             int16_t y = 0;
             auto cargoId = 0;
             for (const auto& cargoStats : station->cargo_stats)
@@ -771,7 +771,7 @@ namespace OpenLoco::Ui::Windows::Station
         if (newStationId != StationId::null)
         {
             Ui::Windows::Construction::sub_4A6FAC();
-            auto station = stationmgr::get(_lastSelectedStation);
+            auto station = StationManager::get(_lastSelectedStation);
 
             station->setCatchmentDisplay(0);
             Input::setMapSelectionFlags(Input::MapSelectionFlags::catchment_area);
@@ -815,7 +815,7 @@ namespace OpenLoco::Ui::Windows::Station
             self->activated_widgets |= (1ULL << widgetIndex);
 
             // Put station and town name in place.
-            auto station = stationmgr::get(self->number);
+            auto station = StationManager::get(self->number);
 
             uint32_t stationTypeImages[16] = {
                 StringIds::label_icons_none,
@@ -881,7 +881,7 @@ namespace OpenLoco::Ui::Windows::Station
         // 0x0048E5E7
         static void renameStationPrompt(window* self, widget_index widgetIndex)
         {
-            auto station = stationmgr::get(self->number);
+            auto station = StationManager::get(self->number);
             auto args = FormatArguments();
             args.push<int64_t>(0);
             args.push(station->name);
@@ -957,7 +957,7 @@ namespace OpenLoco::Ui::Windows::Station
         static void drawTabs(window* self, Gfx::drawpixelinfo_t* dpi)
         {
             auto skin = ObjectManager::get<interface_skin_object>();
-            auto station = stationmgr::get(self->number);
+            auto station = StationManager::get(self->number);
             auto companyColour = CompanyManager::getCompanyColour(station->owner);
 
             // Station tab
@@ -1025,7 +1025,7 @@ namespace OpenLoco::Ui::Windows::Station
         // 0x0048E32C
         static void enableRenameByCaption(window* self)
         {
-            auto station = stationmgr::get(self->number);
+            auto station = StationManager::get(self->number);
             if (station->owner != 255)
             {
                 if (isPlayerCompany(station->owner))

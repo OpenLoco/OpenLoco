@@ -201,7 +201,7 @@ namespace OpenLoco::Ui::NewsWindow
 
                 case newsItemSubTypes::station:
                 {
-                    auto station = stationmgr::get(itemId);
+                    auto station = StationManager::get(itemId);
 
                     view.mapX = station->x;
                     view.mapY = station->y;
@@ -492,7 +492,7 @@ namespace OpenLoco::Ui::NewsWindow
 
                 case newsItemSubTypes::station:
                 {
-                    auto station = stationmgr::get(itemIndex);
+                    auto station = StationManager::get(itemIndex);
                     args.push(station->name);
                     args.push(station->town);
                     break;

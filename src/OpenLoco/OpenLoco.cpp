@@ -768,7 +768,7 @@ namespace OpenLoco
         IndustryManager::update();
         ThingManager::updateVehicles();
         sub_46FFCA();
-        stationmgr::update();
+        StationManager::update();
         ThingManager::updateMiscThings();
         sub_46FFCA();
         CompanyManager::update();
@@ -807,7 +807,7 @@ namespace OpenLoco
         {
             if (updateDayCounter())
             {
-                stationmgr::updateDaily();
+                StationManager::updateDaily();
                 call(0x004B94CF);
                 call(0x00453487);
                 call(0x004284DB);

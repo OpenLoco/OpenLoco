@@ -1502,7 +1502,7 @@ namespace OpenLoco::Ui::WindowManager
                     main->viewportRotateLeft();
                 }
                 townmgr::updateLabels();
-                stationmgr::updateLabels();
+                StationManager::updateLabels();
                 Windows::Map::centerOnViewPoint();
             }
 
@@ -1528,7 +1528,7 @@ namespace OpenLoco::Ui::WindowManager
                     window->viewportZoomIn(true);
                 }
                 townmgr::updateLabels();
-                stationmgr::updateLabels();
+                StationManager::updateLabels();
 
                 return;
             }
