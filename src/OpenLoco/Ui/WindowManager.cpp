@@ -1160,7 +1160,7 @@ namespace OpenLoco::Ui::WindowManager
         // Company colour
         if (w->owner != CompanyId::null)
         {
-            w->colours[0] = companymgr::getCompanyColour(w->owner);
+            w->colours[0] = CompanyManager::getCompanyColour(w->owner);
         }
 
         addr<0x1136F9C, int16_t>() = w->x;
@@ -1181,7 +1181,7 @@ namespace OpenLoco::Ui::WindowManager
     void dispatchUpdateAll()
     {
         _523508++;
-        companymgr::updatingCompanyId(companymgr::getControllingId());
+        CompanyManager::updatingCompanyId(CompanyManager::getControllingId());
 
         for (Ui::window* w = _windowsEnd - 1; w >= _windows; w--)
         {

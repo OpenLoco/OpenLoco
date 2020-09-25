@@ -1243,7 +1243,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 Dropdown::setHighlightedItem(i);
 
             auto bridgeObj = ObjectManager::get<bridge_object>(bridge);
-            auto company = companymgr::get(_playerCompany);
+            auto company = CompanyManager::get(_playerCompany);
             auto companyColour = company->mainColours.primary;
             auto imageId = Gfx::recolour(bridgeObj->var_16, companyColour);
 
@@ -1976,7 +1976,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 auto bridgeObj = ObjectManager::get<bridge_object>(_lastSelectedBridge);
                 if (bridgeObj != nullptr)
                 {
-                    auto company = companymgr::get(_playerCompany);
+                    auto company = CompanyManager::get(_playerCompany);
                     auto imageId = Gfx::recolour(bridgeObj->var_16, company->mainColours.primary);
                     auto x = self->x + self->widgets[widx::bridge].left + 2;
                     auto y = self->y + self->widgets[widx::bridge].top + 1;

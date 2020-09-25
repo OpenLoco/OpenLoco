@@ -508,7 +508,7 @@ namespace OpenLoco::Ui::NewsWindow
                 case newsItemSubTypes::vehicle:
                 {
                     auto vehicle = ThingManager::get<OpenLoco::vehicle>(itemIndex);
-                    auto company = companymgr::get(vehicle->owner);
+                    auto company = CompanyManager::get(vehicle->owner);
                     if (isPlayerCompany(vehicle->owner))
                     {
                         args.push(StringIds::company_vehicle);
@@ -526,7 +526,7 @@ namespace OpenLoco::Ui::NewsWindow
 
                 case newsItemSubTypes::company:
                 {
-                    auto company = companymgr::get(itemIndex);
+                    auto company = CompanyManager::get(itemIndex);
                     args.push(company->name);
                     break;
                 }

@@ -530,7 +530,7 @@ namespace OpenLoco::Input
                                 pos.y -= _4F9296[index].y;
 
                                 auto z = building->baseZ();
-                                for (auto& company : companymgr::companies())
+                                for (auto& company : CompanyManager::companies())
                                 {
                                     if (company.empty())
                                         continue;
@@ -758,7 +758,7 @@ namespace OpenLoco::Input
                         auto track = ((Map::tile_element*)ptr.object)->asTrack();
                         if (track != nullptr)
                         {
-                            if (track->owner() == companymgr::getControllingId())
+                            if (track->owner() == CompanyManager::getControllingId())
                             {
                                 Ui::Windows::Construction::openAtTrack(window, track, { ptr.x, ptr.y });
                             }
@@ -778,7 +778,7 @@ namespace OpenLoco::Input
                             auto owner = road->owner();
 
                             auto roadObject = ObjectManager::get<road_object>(road->roadObjectId());
-                            if (owner == companymgr::getControllingId() || owner == CompanyId::neutral || (roadObject->flags & Flags12::unk_03))
+                            if (owner == CompanyManager::getControllingId() || owner == CompanyId::neutral || (roadObject->flags & Flags12::unk_03))
                             {
                                 Ui::Windows::Construction::openAtRoad(window, road, { ptr.x, ptr.y });
                             }

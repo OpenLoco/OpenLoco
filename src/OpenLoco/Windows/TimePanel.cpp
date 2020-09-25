@@ -261,7 +261,7 @@ namespace OpenLoco::Ui::TimePanel
             {
                 case 0:
                 {
-                    auto opponent = companymgr::getOpponent();
+                    auto opponent = CompanyManager::getOpponent();
                     _common_format_args[4] = opponent->owner_name;
                     Ui::TextInput::openTextInput(self, StringIds::chat_title, StringIds::chat_instructions, StringIds::empty, widgetIndex, &*_common_format_args);
                     break;
@@ -333,7 +333,7 @@ namespace OpenLoco::Ui::TimePanel
     {
         args.push(getCurrentDay());
 
-        auto playerCompany = companymgr::get(companymgr::getControllingId());
+        auto playerCompany = CompanyManager::get(CompanyManager::getControllingId());
 
         if ((playerCompany->challenge_flags & company_flags::challenge_completed) != 0)
         {

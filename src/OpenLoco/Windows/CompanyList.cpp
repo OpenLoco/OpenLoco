@@ -198,14 +198,14 @@ namespace OpenLoco::Ui::Windows::CompanyList
             char lhsString[256] = { 0 };
             {
                 auto args = FormatArguments();
-                auto statusString = companymgr::getOwnerStatus(lhs.id(), args);
+                auto statusString = CompanyManager::getOwnerStatus(lhs.id(), args);
                 StringManager::formatString(lhsString, statusString, &args);
             }
 
             char rhsString[256] = { 0 };
             {
                 auto args = FormatArguments();
-                auto statusString = companymgr::getOwnerStatus(lhs.id(), args);
+                auto statusString = CompanyManager::getOwnerStatus(lhs.id(), args);
                 StringManager::formatString(rhsString, statusString, &args);
             }
 
@@ -267,7 +267,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             auto i = -1;
 
-            for (auto& company : companymgr::companies())
+            for (auto& company : CompanyManager::companies())
             {
                 i++;
                 if (company.empty())
@@ -282,7 +282,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                     continue;
                 }
 
-                if (getOrder(SortMode(self->sort_mode), company, *companymgr::get(chosenCompany)))
+                if (getOrder(SortMode(self->sort_mode), company, *CompanyManager::get(chosenCompany)))
                 {
                     chosenCompany = i;
                 }
@@ -292,7 +292,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             {
                 bool shouldInvalidate = false;
 
-                companymgr::get(chosenCompany)->challenge_flags |= company_flags::sorted;
+                CompanyManager::get(chosenCompany)->challenge_flags |= company_flags::sorted;
 
                 if (chosenCompany != self->row_info[self->row_count])
                 {
@@ -495,7 +495,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                     stringId = StringIds::wcolour2_stringid;
                 }
 
-                auto company = companymgr::get(rowItem);
+                auto company = CompanyManager::get(rowItem);
                 auto competitorObj = ObjectManager::get<competitor_object>(company->competitor_id);
                 auto imageId = Gfx::recolour(competitorObj->images[company->owner_emotion], company->mainColours.primary);
 
@@ -511,7 +511,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 {
 
                     auto args = FormatArguments();
-                    companymgr::owner_status ownerStatus = companymgr::getOwnerStatus(company->id());
+                    CompanyManager::owner_status ownerStatus = CompanyManager::getOwnerStatus(company->id());
                     args.push(ownerStatus.string);
                     args.push(ownerStatus.argument1);
                     args.push(ownerStatus.argument2);
@@ -682,7 +682,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             uint16_t maxHistorySize = 1;
 
-            for (auto& company : companymgr::companies())
+            for (auto& company : CompanyManager::companies())
             {
                 if (company.empty())
                     continue;
@@ -693,13 +693,13 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             uint8_t count = 0;
 
-            for (auto& company : companymgr::companies())
+            for (auto& company : CompanyManager::companies())
             {
                 if (company.empty())
                     continue;
 
                 auto companyId = company.id();
-                auto companyColour = companymgr::getCompanyColour(companyId);
+                auto companyColour = CompanyManager::getCompanyColour(companyId);
 
                 _graphYData[count] = reinterpret_cast<uint32_t>(&company.performance_index_history[0]);
                 _graphDataStart[count] = maxHistorySize - company.history_size;
@@ -779,7 +779,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             uint16_t maxHistorySize = 1;
 
-            for (auto& company : companymgr::companies())
+            for (auto& company : CompanyManager::companies())
             {
                 if (company.empty())
                     continue;
@@ -790,13 +790,13 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             uint8_t count = 0;
 
-            for (auto& company : companymgr::companies())
+            for (auto& company : CompanyManager::companies())
             {
                 if (company.empty())
                     continue;
 
                 auto companyId = company.id();
-                auto companyColour = companymgr::getCompanyColour(companyId);
+                auto companyColour = CompanyManager::getCompanyColour(companyId);
 
                 _graphYData[count] = reinterpret_cast<uint32_t>(&company.cargo_units_delivered_history[0]);
                 _graphDataStart[count] = maxHistorySize - company.history_size;
@@ -876,7 +876,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             uint16_t maxHistorySize = 1;
 
-            for (auto& company : companymgr::companies())
+            for (auto& company : CompanyManager::companies())
             {
                 if (company.empty())
                     continue;
@@ -887,13 +887,13 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             uint8_t count = 0;
 
-            for (auto& company : companymgr::companies())
+            for (auto& company : CompanyManager::companies())
             {
                 if (company.empty())
                     continue;
 
                 auto companyId = company.id();
-                auto companyColour = companymgr::getCompanyColour(companyId);
+                auto companyColour = CompanyManager::getCompanyColour(companyId);
 
                 _graphYData[count] = reinterpret_cast<uint32_t>(&company.cargo_units_distance_history[0]);
                 _graphDataStart[count] = maxHistorySize - company.history_size;
@@ -973,7 +973,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             uint16_t maxHistorySize = 1;
 
-            for (auto& company : companymgr::companies())
+            for (auto& company : CompanyManager::companies())
             {
                 if (company.empty())
                     continue;
@@ -984,13 +984,13 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             uint8_t count = 0;
 
-            for (auto& company : companymgr::companies())
+            for (auto& company : CompanyManager::companies())
             {
                 if (company.empty())
                     continue;
 
                 auto companyId = company.id();
-                auto companyColour = companymgr::getCompanyColour(companyId);
+                auto companyColour = CompanyManager::getCompanyColour(companyId);
 
                 _graphYData[count] = reinterpret_cast<uint32_t>(&company.companyValueHistory[0]);
                 _graphDataStart[count] = maxHistorySize - company.history_size;
@@ -1252,7 +1252,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
                 if (companyId != CompanyId::null)
                 {
-                    auto company = companymgr::get(companyId);
+                    auto company = CompanyManager::get(companyId);
                     auto competitorObj = ObjectManager::get<competitor_object>(company->competitor_id);
 
                     auto imageId = competitorObj->images[company->owner_emotion];
@@ -1608,7 +1608,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         {
             self->row_count = 0;
 
-            for (auto& company : companymgr::companies())
+            for (auto& company : CompanyManager::companies())
             {
                 if (company.empty())
                     continue;
@@ -1630,12 +1630,12 @@ namespace OpenLoco::Ui::Windows::CompanyList
         static void drawGraphKey(window* self, Gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y)
         {
             auto companyCount = 0;
-            for (auto& company : companymgr::companies())
+            for (auto& company : CompanyManager::companies())
             {
                 if (company.empty())
                     continue;
 
-                auto companyColour = companymgr::getCompanyColour(company.id());
+                auto companyColour = CompanyManager::getCompanyColour(company.id());
                 auto colour = Colour::getShade(companyColour, 6);
                 auto stringId = StringIds::small_black_string;
 

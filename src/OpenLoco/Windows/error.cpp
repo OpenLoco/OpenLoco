@@ -235,7 +235,7 @@ namespace OpenLoco::Ui::Windows::Error
                 auto xPos = self->widgets[ErrorCompetitor::widx::innerFrame].left + self->x;
                 auto yPos = self->widgets[ErrorCompetitor::widx::innerFrame].top + self->y;
 
-                auto company = companymgr::get(_errorCompetitorId);
+                auto company = CompanyManager::get(_errorCompetitorId);
                 auto companyObj = ObjectManager::get<competitor_object>(company->id());
 
                 auto imageId = companyObj->images[company->owner_emotion];

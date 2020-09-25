@@ -393,7 +393,7 @@ namespace OpenLoco
     {
         if (!isNetworked())
         {
-            _updating_company_id = companymgr::getControllingId();
+            _updating_company_id = CompanyManager::getControllingId();
             for (auto i = 0; i < var_F253A0; i++)
             {
                 sub_428E47();
@@ -403,7 +403,7 @@ namespace OpenLoco
             Input::processKeyboardInput();
             WindowManager::update();
             Ui::handleInput();
-            companymgr::updateOwnerStatus();
+            CompanyManager::updateOwnerStatus();
             return;
         }
 
@@ -416,7 +416,7 @@ namespace OpenLoco
         // Host/client?
         if (isTrackUpgradeMode())
         {
-            _updating_company_id = companymgr::getControllingId();
+            _updating_company_id = CompanyManager::getControllingId();
 
             // run twice as often as var_F253A0
             for (auto i = 0; i < var_F253A0 * 2; i++)
@@ -429,7 +429,7 @@ namespace OpenLoco
             WindowManager::update();
             WindowManager::update();
             Ui::handleInput();
-            companymgr::updateOwnerStatus();
+            CompanyManager::updateOwnerStatus();
             sub_46E388();
 
             _updating_company_id = _player_company[1];
@@ -444,8 +444,8 @@ namespace OpenLoco
             if (!isTitleMode())
             {
                 auto edx = _prng->srand_0();
-                edx ^= companymgr::get(0)->cash.var_00;
-                edx ^= companymgr::get(1)->cash.var_00;
+                edx ^= CompanyManager::get(0)->cash.var_00;
+                edx ^= CompanyManager::get(1)->cash.var_00;
                 if (edx != eax)
                 {
                     // disconnect?
@@ -465,7 +465,7 @@ namespace OpenLoco
             WindowManager::update();
             WindowManager::update();
             Ui::handleInput();
-            companymgr::updateOwnerStatus();
+            CompanyManager::updateOwnerStatus();
             sub_46E388();
         }
     }
@@ -771,7 +771,7 @@ namespace OpenLoco
         stationmgr::update();
         ThingManager::updateMiscThings();
         sub_46FFCA();
-        companymgr::update();
+        CompanyManager::update();
         invalidate_map_animations();
         Audio::updateVehicleNoise();
         Audio::updateAmbientNoise();

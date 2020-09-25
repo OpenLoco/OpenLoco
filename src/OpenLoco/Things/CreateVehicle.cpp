@@ -65,7 +65,7 @@ namespace OpenLoco::Things::Vehicle
             return true;
         }
 
-        const auto& companies = companymgr::companies();
+        const auto& companies = CompanyManager::companies();
         auto totalAiVehicles = std::accumulate(companies.begin(), companies.end(), 0, [](int32_t& total, const auto& company) {
             if (company.empty())
                 return total;
@@ -452,7 +452,7 @@ namespace OpenLoco::Things::Vehicle
         }
 
         const auto vehObject = ObjectManager::get<vehicle_object>(vehicleTypeId);
-        const auto company = companymgr::get(_updating_company_id);
+        const auto company = CompanyManager::get(_updating_company_id);
         _1136140 = company->mainColours; // Copy to global variable. Can be removed when all global uses confirmed
         auto colourScheme = company->mainColours;
         if (company->customVehicleColoursSet & (1 << vehObject->colour_type))
@@ -791,7 +791,7 @@ namespace OpenLoco::Things::Vehicle
     static void updateWholeVehicle(vehicle_head* const head)
     {
         sub_4AF7A4(head);
-        auto company = companymgr::get(_updating_company_id);
+        auto company = CompanyManager::get(_updating_company_id);
         company->recalculateTransportCounts();
 
         if (_backupVeh0 != reinterpret_cast<OpenLoco::vehicle_head*>(-1))

@@ -202,7 +202,7 @@ namespace OpenLoco
 
         if (originallyAcceptedCargo != currentAcceptedCargo)
         {
-            if (owner == companymgr::getControllingId())
+            if (owner == CompanyManager::getControllingId())
             {
                 alertCargoAcceptanceChange(originallyAcceptedCargo, currentAcceptedCargo);
             }

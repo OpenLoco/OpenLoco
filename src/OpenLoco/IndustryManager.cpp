@@ -29,7 +29,7 @@ namespace OpenLoco::industrymgr
     {
         if ((addr<0x00525E28, uint32_t>() & 1) && !isEditorMode())
         {
-            companymgr::updatingCompanyId(CompanyId::neutral);
+            CompanyManager::updatingCompanyId(CompanyId::neutral);
             for (auto& industry : industries())
             {
                 if (!industry.empty())

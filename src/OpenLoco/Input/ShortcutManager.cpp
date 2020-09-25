@@ -393,7 +393,7 @@ namespace OpenLoco::Input::ShortcutManager
             return;
 
         loco_global<uint8_t, 0x00525FAF> last_vehicles_option;
-        Windows::VehicleList::open(companymgr::getControllingId(), *last_vehicles_option);
+        Windows::VehicleList::open(CompanyManager::getControllingId(), *last_vehicles_option);
     }
 
     // 0x004BF2F0
@@ -402,7 +402,7 @@ namespace OpenLoco::Input::ShortcutManager
         if (isEditorMode())
             return;
 
-        Windows::StationList::open(companymgr::getControllingId(), 0);
+        Windows::StationList::open(CompanyManager::getControllingId(), 0);
     }
 
     // 0x004BF308
@@ -450,7 +450,7 @@ namespace OpenLoco::Input::ShortcutManager
         if (isEditorMode())
             return;
 
-        Windows::CompanyWindow::openFinances(companymgr::getControllingId());
+        Windows::CompanyWindow::openFinances(CompanyManager::getControllingId());
     }
 
     // 0x004BF39A

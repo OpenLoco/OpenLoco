@@ -12,7 +12,7 @@
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui;
 
-namespace OpenLoco::companymgr
+namespace OpenLoco::CompanyManager
 {
     static loco_global<company_id_t[2], 0x00525E3C> _player_company;
     static loco_global<uint8_t, 0x00525FCB> _byte_525FCB;
@@ -163,7 +163,7 @@ namespace OpenLoco::companymgr
             return;
         }
 
-        auto company = companymgr::get(_updating_company_id);
+        auto company = CompanyManager::get(_updating_company_id);
         if (company == nullptr)
         {
             return;

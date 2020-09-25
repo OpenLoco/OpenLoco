@@ -408,7 +408,7 @@ namespace OpenLoco::Ui::Windows::StationList
         window->activated_widgets |= (1ULL << tabInformationByType[window->current_tab].widgetIndex);
 
         // Set company name.
-        auto company = companymgr::get(window->number);
+        auto company = CompanyManager::get(window->number);
         *_common_format_args = company->name;
 
         // Set window title.
@@ -568,7 +568,7 @@ namespace OpenLoco::Ui::Windows::StationList
     static void drawTabs(Ui::window* window, Gfx::drawpixelinfo_t* dpi)
     {
         auto skin = ObjectManager::get<interface_skin_object>();
-        auto companyColour = companymgr::getCompanyColour(window->number);
+        auto companyColour = CompanyManager::getCompanyColour(window->number);
 
         for (auto tab : tabInformationByType)
         {
@@ -585,7 +585,7 @@ namespace OpenLoco::Ui::Windows::StationList
         drawTabs(window, dpi);
 
         // Draw company owner image.
-        auto company = companymgr::get(window->number);
+        auto company = CompanyManager::get(window->number);
         auto competitor = ObjectManager::get<competitor_object>(company->competitor_id);
         uint32_t image = Gfx::recolour(competitor->images[company->owner_emotion], company->mainColours.primary);
         uint16_t x = window->x + window->widgets[widx::company_select].left + 1;
@@ -618,7 +618,7 @@ namespace OpenLoco::Ui::Windows::StationList
             return;
 
         // If not, we'll turn this window into a window for the company selected.
-        auto company = companymgr::get(companyId);
+        auto company = CompanyManager::get(companyId);
         if (company->name == StringIds::empty)
             return;
 

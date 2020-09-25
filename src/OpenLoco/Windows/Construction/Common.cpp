@@ -442,7 +442,7 @@ namespace OpenLoco::Ui::Windows::Construction
         // 0x0049EFEF
         static void drawRoadTabs(window* self, Gfx::drawpixelinfo_t* dpi)
         {
-            auto company = companymgr::get(_playerCompany);
+            auto company = CompanyManager::get(_playerCompany);
             auto companyColour = company->mainColours.primary;
             auto roadObj = ObjectManager::get<road_object>(_trackType & ~(1 << 7));
             // Construction Tab
@@ -518,7 +518,7 @@ namespace OpenLoco::Ui::Windows::Construction
         // 0x0049ED40
         static void drawTrackTabs(window* self, Gfx::drawpixelinfo_t* dpi)
         {
-            auto company = companymgr::get(_playerCompany);
+            auto company = CompanyManager::get(_playerCompany);
             auto companyColour = company->mainColours.primary;
             auto trackObj = ObjectManager::get<track_object>(_trackType);
             // Construction Tab
@@ -1086,7 +1086,7 @@ namespace OpenLoco::Ui::Windows::Construction
                 trackType &= ~(1 << 7);
             }
 
-            auto companyId = companymgr::updatingCompanyId();
+            auto companyId = CompanyManager::updatingCompanyId();
 
             modList[0] = 0xFF;
             modList[1] = 0xFF;
@@ -1107,7 +1107,7 @@ namespace OpenLoco::Ui::Windows::Construction
                 if (trackType != vehicleObj->track_type)
                     continue;
 
-                auto company = companymgr::get(companyId);
+                auto company = CompanyManager::get(companyId);
 
                 if (!company->isVehicleIndexUnlocked(vehicle))
                     continue;

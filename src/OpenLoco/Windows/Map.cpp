@@ -68,7 +68,7 @@ namespace OpenLoco::Ui::Windows::Map
     static loco_global<company_id_t, 0x00525E3C> _playerCompanyId;
     constexpr uint32_t max_orders = 256000;
     static loco_global<uint8_t[max_orders], 0x00987C5C> _dword_987C5C; // ?orders? ?routing related?
-    static loco_global<uint8_t[companymgr::max_companies + 1], 0x009C645C> _companyColours;
+    static loco_global<uint8_t[CompanyManager::max_companies + 1], 0x009C645C> _companyColours;
     static loco_global<int16_t, 0x112C876> _currentFontSpriteBase;
     static loco_global<char[512], 0x0112CC04> _stringFormatBuffer;
 
@@ -255,7 +255,7 @@ namespace OpenLoco::Ui::Windows::Map
             std::size(_vehicleTypeCounts),
             ObjectManager::getMaxObjects(object_type::industry),
             0,
-            companymgr::max_companies,
+            CompanyManager::max_companies,
         }
     };
 
@@ -306,7 +306,7 @@ namespace OpenLoco::Ui::Windows::Map
                                 }
                                 else if (self->current_tab == (widx::tabOwnership - widx::tabOverall))
                                 {
-                                    auto company = companymgr::get(i);
+                                    auto company = CompanyManager::get(i);
 
                                     if (company->empty())
                                         continue;
@@ -511,7 +511,7 @@ namespace OpenLoco::Ui::Windows::Map
 
                 if (!isEditorMode())
                 {
-                    auto company = companymgr::get(_playerCompanyId);
+                    auto company = CompanyManager::get(_playerCompanyId);
                     colour = company->mainColours.primary;
                 }
 
@@ -772,7 +772,7 @@ namespace OpenLoco::Ui::Windows::Map
     // 0x0046D6E1
     static void drawGraphKeyCompanies(window* self, Gfx::drawpixelinfo_t* dpi, uint16_t x, uint16_t* y)
     {
-        for (const auto& company : companymgr::companies())
+        for (const auto& company : CompanyManager::companies())
         {
             if (company.empty())
             {

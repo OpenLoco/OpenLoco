@@ -86,7 +86,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     static void findAllInUseCompetitors(const company_id_t id)
     {
         std::vector<uint8_t> takenCompetitorIds;
-        for (const auto& c : companymgr::companies())
+        for (const auto& c : CompanyManager::companies())
         {
             if (!c.empty() && c.id() != id)
             {
@@ -236,7 +236,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     // 0x434FE8
     static void prepareDraw(window* const self)
     {
-        const auto company = companymgr::get(self->owner);
+        const auto company = CompanyManager::get(self->owner);
 
         FormatArguments args{};
         args.push(company->name);

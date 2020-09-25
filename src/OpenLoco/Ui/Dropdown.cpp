@@ -800,10 +800,10 @@ namespace OpenLoco::Ui::Dropdown
         company_id_t companyId = CompanyId::null;
 
         size_t index = 0;
-        for (; index < companymgr::max_companies; index++)
+        for (; index < CompanyManager::max_companies; index++)
         {
             int16_t maxPerformanceIndex = -1;
-            for (const auto& company : companymgr::companies())
+            for (const auto& company : CompanyManager::companies())
             {
                 if (company.empty())
                     continue;
@@ -825,7 +825,7 @@ namespace OpenLoco::Ui::Dropdown
             _dropdownItemFormats[index] = StringIds::dropdown_company_select;
             _menuOptions[index] = companyId;
 
-            auto company = companymgr::get(companyId);
+            auto company = CompanyManager::get(companyId);
             auto competitorObj = ObjectManager::get<competitor_object>(company->competitor_id);
             auto ownerEmotion = company->owner_emotion;
             auto imageId = competitorObj->images[ownerEmotion];
@@ -845,7 +845,7 @@ namespace OpenLoco::Ui::Dropdown
         {
             highlightedIndex++;
 
-            if (highlightedIndex > companymgr::max_companies)
+            if (highlightedIndex > CompanyManager::max_companies)
             {
                 highlightedIndex = -1;
                 break;
@@ -865,7 +865,7 @@ namespace OpenLoco::Ui::Dropdown
         }
 
         auto companyId = _menuOptions[itemIndex];
-        auto company = companymgr::get(companyId);
+        auto company = CompanyManager::get(companyId);
 
         if (company->empty())
         {
