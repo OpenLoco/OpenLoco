@@ -73,7 +73,7 @@ namespace OpenLoco
         auto industryObj = object();
 
         // Closing Down
-        if (flags & industry_flags::closing_down)
+        if (flags & IndustryFlags::closing_down)
         {
             ptr = StringManager::formatString(ptr, StringIds::industry_closing_down);
             return;
@@ -116,7 +116,7 @@ namespace OpenLoco
     // 0x00453275
     void industry::update()
     {
-        if (!(flags & industry_flags::flag_01) && under_construction == 0xFF)
+        if (!(flags & IndustryFlags::flag_01) && under_construction == 0xFF)
         {
             // Run tile loop for 100 iterations
             for (int i = 0; i < 100; i++)

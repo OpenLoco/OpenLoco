@@ -295,7 +295,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 if (industry.empty())
                     continue;
 
-                if ((industry.flags & industry_flags::sorted) != 0)
+                if ((industry.flags & IndustryFlags::sorted) != 0)
                     continue;
 
                 if (chosenIndustry == -1)
@@ -314,7 +314,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
             {
                 bool shouldInvalidate = false;
 
-                industrymgr::get(chosenIndustry)->flags |= industry_flags::sorted;
+                industrymgr::get(chosenIndustry)->flags |= IndustryFlags::sorted;
 
                 auto ebp = self->row_count;
                 if (chosenIndustry != self->row_info[ebp])
@@ -1222,7 +1222,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 if (industry.empty())
                     continue;
 
-                industry.flags &= ~industry_flags::sorted;
+                industry.flags &= ~IndustryFlags::sorted;
             }
         }
 
