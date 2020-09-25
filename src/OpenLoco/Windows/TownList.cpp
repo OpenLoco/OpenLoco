@@ -368,7 +368,7 @@ namespace OpenLoco::Ui::Windows::TownList
                 if (town.empty())
                     continue;
 
-                if ((town.flags & town_flags::sorted) != 0)
+                if ((town.flags & TownFlags::sorted) != 0)
                     continue;
 
                 if (chosenTown == -1)
@@ -387,7 +387,7 @@ namespace OpenLoco::Ui::Windows::TownList
             {
                 bool shouldInvalidate = false;
 
-                townmgr::get(chosenTown)->flags |= town_flags::sorted;
+                townmgr::get(chosenTown)->flags |= TownFlags::sorted;
 
                 if (chosenTown != self->row_info[self->row_count])
                 {
@@ -1525,7 +1525,7 @@ namespace OpenLoco::Ui::Windows::TownList
                 if (town.empty())
                     continue;
 
-                town.flags &= ~town_flags::sorted;
+                town.flags &= ~TownFlags::sorted;
             }
         }
 

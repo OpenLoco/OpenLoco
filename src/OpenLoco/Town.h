@@ -15,7 +15,7 @@ namespace OpenLoco
         constexpr town_id_t null = std::numeric_limits<town_id_t>::max();
     }
 
-    namespace town_flags
+    namespace TownFlags
     {
         constexpr uint16_t sorted = 1 << 0;
         constexpr uint16_t rating_adjusted = 1 << 1;
