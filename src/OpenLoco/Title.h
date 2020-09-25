@@ -1,6 +1,6 @@
 #pragma once
 
-namespace OpenLoco::title
+namespace OpenLoco::Title
 {
     void registerHooks();
     void start();

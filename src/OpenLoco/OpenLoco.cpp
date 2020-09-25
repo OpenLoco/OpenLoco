@@ -357,7 +357,7 @@ namespace OpenLoco
 #else
         Intro::state(Intro::intro_state::end);
 #endif
-        title::start();
+        Title::start();
         Gui::init();
         Gfx::clear(Gfx::screenDpi(), 0x0A0A0A0A);
     }
