@@ -7,7 +7,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::townmgr
+namespace OpenLoco::TownManager
 {
     static loco_global<town[max_towns], 0x005B825C> _towns;
 

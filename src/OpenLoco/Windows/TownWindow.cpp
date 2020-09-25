@@ -134,7 +134,7 @@ namespace OpenLoco::Ui::Windows::Town
             self->drawViewports(dpi);
             widget::drawViewportCentreButton(dpi, self, widx::centre_on_viewport);
 
-            auto town = townmgr::get(self->number);
+            auto town = TownManager::get(self->number);
 
             auto args = FormatArguments();
             args.push(town->getTownSizeString());
@@ -180,7 +180,7 @@ namespace OpenLoco::Ui::Windows::Town
                 // 0x004990B9
                 case widx::expand_town:
                 {
-                    auto town = townmgr::get(self->number);
+                    auto town = TownManager::get(self->number);
 
                     const uint32_t ebx = (town->var_38 >> 3) + 5;
                     const int16_t currentYear = getCurrentYear();
@@ -274,7 +274,7 @@ namespace OpenLoco::Ui::Windows::Town
             self->callPrepareDraw();
 
             // Figure out the town's position on the map.
-            auto town = townmgr::get(self->number);
+            auto town = TownManager::get(self->number);
             int16_t tileZ = OpenLoco::Map::tileElementHeight(town->x, town->y).landHeight;
 
             // Compute views.
@@ -414,7 +414,7 @@ namespace OpenLoco::Ui::Windows::Town
             if (!Gfx::clipDrawpixelinfo(&clipped, dpi, self->x, self->y + 44, self->width, self->height - 44))
                 return;
 
-            auto town = townmgr::get(self->number);
+            auto town = TownManager::get(self->number);
 
             // Draw Y label and grid lines.
             int32_t yTick = town->history_min_population;
@@ -542,7 +542,7 @@ namespace OpenLoco::Ui::Windows::Town
 
             xPos += 4;
             yPos += 14;
-            auto town = townmgr::get(self->number);
+            auto town = TownManager::get(self->number);
             for (company_id_t i = 0; i < std::size(town->company_ratings); i++)
             {
                 if ((town->companies_with_rating & (1 << i)) == 0)
@@ -645,7 +645,7 @@ namespace OpenLoco::Ui::Windows::Town
             self->activated_widgets |= (1ULL << widgetIndex);
 
             // Put town name in place.
-            commonFormatArgs[0] = townmgr::get(self->number)->name;
+            commonFormatArgs[0] = TownManager::get(self->number)->name;
 
             // Resize common widgets.
             self->widgets[Common::widx::frame].right = self->width - 1;
@@ -686,7 +686,7 @@ namespace OpenLoco::Ui::Windows::Town
 
         static void renameTownPrompt(window* self, widget_index widgetIndex)
         {
-            auto town = townmgr::get(self->number);
+            auto town = TownManager::get(self->number);
             commonFormatArgs[2] = town->name;
             TextInput::openTextInput(self, StringIds::title_town_name, StringIds::prompt_type_new_town_name, town->name, widgetIndex, &commonFormatArgs[2]);
         }

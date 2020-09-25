@@ -1404,7 +1404,7 @@ namespace OpenLoco::Ui::Windows::Map
     // 0x0046C481
     static void drawTownNames(Gfx::drawpixelinfo_t* dpi)
     {
-        for (const auto& town : townmgr::towns())
+        for (const auto& town : TownManager::towns())
         {
             if (town.empty())
                 continue;

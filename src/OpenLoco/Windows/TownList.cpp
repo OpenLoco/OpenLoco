@@ -163,7 +163,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
                 if (townId == 0xFFFF)
                     continue;
-                auto town = townmgr::get(townId);
+                auto town = TownManager::get(townId);
 
                 // Town Name
                 {
@@ -362,7 +362,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
             auto i = -1;
 
-            for (auto& town : townmgr::towns())
+            for (auto& town : TownManager::towns())
             {
                 i++;
                 if (town.empty())
@@ -377,7 +377,7 @@ namespace OpenLoco::Ui::Windows::TownList
                     continue;
                 }
 
-                if (getOrder(SortMode(self->sort_mode), town, *townmgr::get(chosenTown)))
+                if (getOrder(SortMode(self->sort_mode), town, *TownManager::get(chosenTown)))
                 {
                     chosenTown = i;
                 }
@@ -387,7 +387,7 @@ namespace OpenLoco::Ui::Windows::TownList
             {
                 bool shouldInvalidate = false;
 
-                townmgr::get(chosenTown)->flags |= TownFlags::sorted;
+                TownManager::get(chosenTown)->flags |= TownFlags::sorted;
 
                 if (chosenTown != self->row_info[self->row_count])
                 {
@@ -1520,7 +1520,7 @@ namespace OpenLoco::Ui::Windows::TownList
         {
             self->row_count = 0;
 
-            for (auto& town : townmgr::towns())
+            for (auto& town : TownManager::towns())
             {
                 if (town.empty())
                     continue;

@@ -75,7 +75,7 @@ namespace OpenLoco::StationManager
     // 0x0048B244
     void updateDaily()
     {
-        for (auto& town : townmgr::towns())
+        for (auto& town : TownManager::towns())
         {
             if (!town.empty())
             {
@@ -107,7 +107,7 @@ namespace OpenLoco::StationManager
                 }
                 if (station.updateCargo())
                 {
-                    auto town = townmgr::get(station.town);
+                    auto town = TownManager::get(station.town);
                     if (town != nullptr && !(town->flags & TownFlags::rating_adjusted))
                     {
                         town->flags |= TownFlags::rating_adjusted;

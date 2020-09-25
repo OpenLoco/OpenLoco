@@ -178,7 +178,7 @@ namespace OpenLoco::Input::ShortcutManager
             return;
 
         main->viewportZoomOut(false);
-        townmgr::updateLabels();
+        TownManager::updateLabels();
         StationManager::updateLabels();
     }
 
@@ -190,7 +190,7 @@ namespace OpenLoco::Input::ShortcutManager
             return;
 
         main->viewportZoomIn(false);
-        townmgr::updateLabels();
+        TownManager::updateLabels();
         StationManager::updateLabels();
     }
 
@@ -202,7 +202,7 @@ namespace OpenLoco::Input::ShortcutManager
             return;
 
         main->viewportRotateRight();
-        townmgr::updateLabels();
+        TownManager::updateLabels();
         StationManager::updateLabels();
         Windows::Map::centerOnViewPoint();
     }

@@ -764,7 +764,7 @@ namespace OpenLoco
         dateTick();
         call(0x00463ABA);
         call(0x004C56F6);
-        townmgr::update();
+        TownManager::update();
         IndustryManager::update();
         ThingManager::updateVehicles();
         sub_46FFCA();
@@ -823,7 +823,7 @@ namespace OpenLoco
                     // End of every month
                     addr<0x0050A004, uint16_t>() += 2;
                     addr<0x00526243, uint16_t>()++;
-                    townmgr::updateMonthly();
+                    TownManager::updateMonthly();
                     call(0x0045383B);
                     call(0x0043037B);
                     call(0x0042F213);
