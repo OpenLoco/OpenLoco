@@ -552,7 +552,7 @@ namespace OpenLoco
         {
             addr<0x0050C1A2, uint32_t>() += time_since_last_tick;
         }
-        if (tutorial::state() != tutorial::tutorial_state::none)
+        if (Tutorial::state() != Tutorial::tutorial_state::none)
         {
             time_since_last_tick = 31;
         }
@@ -687,9 +687,9 @@ namespace OpenLoco
                     Audio::stopTitleMusic();
                 }
 
-                if (tutorial::state() != tutorial::tutorial_state::none && addr<0x0052532C, int32_t>() != 0 && addr<0x0113E2E4, int32_t>() < 0x40)
+                if (Tutorial::state() != Tutorial::tutorial_state::none && addr<0x0052532C, int32_t>() != 0 && addr<0x0113E2E4, int32_t>() < 0x40)
                 {
-                    tutorial::stop();
+                    Tutorial::stop();
 
                     // This ends with a premature tick termination
                     call(0x0043C0FD);

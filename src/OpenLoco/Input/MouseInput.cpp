@@ -217,24 +217,24 @@ namespace OpenLoco::Input
     // 0x004C6E65
     void updateCursorPosition()
     {
-        switch (tutorial::state())
+        switch (Tutorial::state())
         {
-            case tutorial::tutorial_state::none:
+            case Tutorial::tutorial_state::none:
             {
                 _cursorX2 = _cursorX;
                 _cursorY2 = _cursorY;
                 break;
             }
 
-            case tutorial::tutorial_state::playing:
+            case Tutorial::tutorial_state::playing:
             {
-                _cursorX2 = tutorial::nextInput();
-                _cursorY2 = tutorial::nextInput();
+                _cursorX2 = Tutorial::nextInput();
+                _cursorY2 = Tutorial::nextInput();
                 Ui::setCursorPos(*_cursorX2, *_cursorY2);
                 break;
             }
 
-            case tutorial::tutorial_state::recording:
+            case Tutorial::tutorial_state::recording:
             {
                 call(0x004C6EC3);
                 break;

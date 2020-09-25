@@ -997,7 +997,7 @@ namespace OpenLoco::Ui
         {
             if (!isTitleMode() && !isEditorMode())
             {
-                if (tutorial::state() == tutorial::tutorial_state::none)
+                if (Tutorial::state() == Tutorial::tutorial_state::none)
                 {
                     call(0x4C95A6);
                 }

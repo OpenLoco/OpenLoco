@@ -118,21 +118,21 @@ namespace OpenLoco::Input
 
     static void loc_4BEFEF()
     {
-        switch (tutorial::state())
+        switch (Tutorial::state())
         {
-            case tutorial::tutorial_state::none:
+            case Tutorial::tutorial_state::none:
                 break;
 
-            case tutorial::tutorial_state::playing:
+            case Tutorial::tutorial_state::playing:
             {
-                const uint16_t next = tutorial::nextInput();
+                const uint16_t next = Tutorial::nextInput();
                 _keyModifier = next;
                 if ((_keyModifier & KeyModifier::unknown) == 0)
                     return;
 
                 ToolTip::closeAndReset();
 
-                auto tutStringId = tutorial::nextString();
+                auto tutStringId = Tutorial::nextString();
                 auto main = WindowManager::getMainWindow();
                 auto cursor = getMouseLocation();
 
@@ -140,7 +140,7 @@ namespace OpenLoco::Input
                 break;
             }
 
-            case tutorial::tutorial_state::recording:
+            case Tutorial::tutorial_state::recording:
             {
                 call(0x004BF005);
                 break;
@@ -326,9 +326,9 @@ namespace OpenLoco::Input
                 continue;
             }
 
-            if (tutorial::state() == tutorial::tutorial_state::playing)
+            if (Tutorial::state() == Tutorial::tutorial_state::playing)
             {
-                tutorial::stop();
+                Tutorial::stop();
                 continue;
             }
 
@@ -363,7 +363,7 @@ namespace OpenLoco::Input
 
     static void edgeScroll()
     {
-        if (tutorial::state() != tutorial::tutorial_state::none)
+        if (Tutorial::state() != Tutorial::tutorial_state::none)
             return;
 
         if (Config::get().edge_scrolling == 0)
@@ -413,7 +413,7 @@ namespace OpenLoco::Input
 
     static void keyScroll()
     {
-        if (tutorial::state() != tutorial::tutorial_state::none)
+        if (Tutorial::state() != Tutorial::tutorial_state::none)
             return;
 
         if (*_modalWindowType != WindowType::undefined)

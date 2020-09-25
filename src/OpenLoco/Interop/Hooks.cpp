@@ -779,7 +779,7 @@ void OpenLoco::Interop::registerHooks()
     Ui::viewportmgr::registerHooks();
     GameCommands::registerHooks();
     Title::registerHooks();
-    tutorial::registerHooks();
+    Tutorial::registerHooks();
 
     // Part of 0x004691FA
     registerHook(
