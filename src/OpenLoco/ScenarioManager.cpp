@@ -3,7 +3,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::scenariomgr
+namespace OpenLoco::ScenarioManager
 {
     // 0x0044452F
     void loadIndex(uint8_t al)
