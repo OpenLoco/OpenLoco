@@ -102,7 +102,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
         auto shade = Colour::getShade(window->colours[1], 4);
         Gfx::clearSingle(*dpi, shade);
 
-        auto config = config::get();
+        auto config = Config::get();
 
         uint16_t y = 0;
         for (uint16_t i = 0; i < window->row_count; i++)
@@ -155,7 +155,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
         if (currentTrack > window->row_count)
             return;
 
-        auto& config = config::get();
+        auto& config = Config::get();
 
         // Toggle the track in question.
         config.enabled_music[currentTrack] = !config.enabled_music[currentTrack];
@@ -169,7 +169,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
         if (!anyEnabled)
             config.enabled_music[currentTrack] = true;
 
-        config::write();
+        Config::write();
         Audio::revalidateCurrentTrack();
         window->invalidate();
     }

@@ -334,7 +334,7 @@ namespace OpenLoco
         progressbar::setProgress(40);
         call(0x004BE5DE);
         progressbar::end();
-        config::read();
+        Config::read();
         ObjectManager::loadIndex();
         scenariomgr::loadIndex(0);
         progressbar::begin(StringIds::loading, 0);
@@ -563,19 +563,19 @@ namespace OpenLoco
         addr<0x005233B2, int32_t>() += addr<0x01140840, int32_t>();
         addr<0x0114084C, int32_t>() = 0;
         addr<0x01140840, int32_t>() = 0;
-        if (config::get().var_72 == 0)
+        if (Config::get().var_72 == 0)
         {
-            config::get().var_72 = 16;
+            Config::get().var_72 = 16;
             Ui::getCursorPos(addr<0x00F2538C, int32_t>(), addr<0x00F25390, int32_t>());
             Gfx::clear(Gfx::screenDpi(), 0);
             addr<0x00F2539C, int32_t>() = 0;
         }
         else
         {
-            if (config::get().var_72 >= 16)
+            if (Config::get().var_72 >= 16)
             {
-                config::get().var_72++;
-                if (config::get().var_72 >= 48)
+                Config::get().var_72++;
+                if (Config::get().var_72 >= 48)
                 {
                     if (sub_4034FC(addr<0x00F25394, int32_t>(), addr<0x00F25398, int32_t>()))
                     {
@@ -590,17 +590,17 @@ namespace OpenLoco
                 }
                 Ui::setCursorPos(addr<0x00F2538C, int32_t>(), addr<0x00F25390, int32_t>());
                 Gfx::invalidateScreen();
-                if (config::get().var_72 != 96)
+                if (Config::get().var_72 != 96)
                 {
                     tickWait();
                     return;
                 }
-                config::get().var_72 = 1;
+                Config::get().var_72 = 1;
                 if (addr<0x00F2539C, int32_t>() != 0)
                 {
-                    config::get().var_72 = 2;
+                    Config::get().var_72 = 2;
                 }
-                config::write();
+                Config::write();
             }
 
             call(0x00452D1A);
@@ -699,17 +699,17 @@ namespace OpenLoco
                 sub_431695(var_F253A0);
                 call(0x00452B5F);
                 sub_46FFCA();
-                if (config::get().countdown != 0xFF)
+                if (Config::get().countdown != 0xFF)
                 {
-                    config::get().countdown++;
-                    if (config::get().countdown != 0xFF)
+                    Config::get().countdown++;
+                    if (Config::get().countdown != 0xFF)
                     {
-                        config::write();
+                        Config::write();
                     }
                 }
             }
 
-            if (config::get().var_72 == 2)
+            if (Config::get().var_72 == 2)
             {
                 addr<0x005252DC, int32_t>() = 1;
                 Ui::getCursorPos(addr<0x00F2538C, int32_t>(), addr<0x00F25390, int32_t>());
@@ -938,7 +938,7 @@ namespace OpenLoco
         std::cout << versionInfo << std::endl;
         try
         {
-            const auto& cfg = config::readNewConfig();
+            const auto& cfg = Config::readNewConfig();
             environment::resolvePaths();
 
             registerHooks();

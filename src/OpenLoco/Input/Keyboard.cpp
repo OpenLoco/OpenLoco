@@ -157,7 +157,7 @@ namespace OpenLoco::Input
 
     static bool tryShortcut(Shortcut sc, uint32_t keyCode, uint8_t modifiers)
     {
-        auto cfg = OpenLoco::config::get();
+        auto cfg = OpenLoco::Config::get();
         if (cfg.keyboard_shortcuts[sc].var_0 == keyCode && cfg.keyboard_shortcuts[sc].var_1 == modifiers)
         {
             ShortcutManager::execute(sc);
@@ -227,7 +227,7 @@ namespace OpenLoco::Input
         if (k->keyCode == VK_RWIN)
             return;
 
-        auto& cfg = config::get();
+        auto& cfg = Config::get();
         for (int i = 0; i < 35; i++)
         {
             if (cfg.keyboard_shortcuts[i].var_0 == k->keyCode && cfg.keyboard_shortcuts[i].var_1 == _keyModifier)
@@ -242,7 +242,7 @@ namespace OpenLoco::Input
 
         WindowManager::close(WindowType::editKeyboardShortcut);
         WindowManager::invalidate(WindowType::keyboardShortcuts);
-        config::write();
+        Config::write();
     }
 
     // 0x004BEDA0
@@ -366,7 +366,7 @@ namespace OpenLoco::Input
         if (tutorial::state() != tutorial::tutorial_state::none)
             return;
 
-        if (config::get().edge_scrolling == 0)
+        if (Config::get().edge_scrolling == 0)
             return;
 
         if (Input::state() != input_state::normal && Input::state() != input_state::dropdown_active)

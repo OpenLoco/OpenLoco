@@ -9,15 +9,15 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Vehicle
 {
-    namespace main
+    namespace Main
     {
         static void onUpdate(window* w);
     }
-    namespace vehicle_details
+    namespace VehicleDetails
     {
         static void onUpdate(window* w);
     }
-    namespace route_details
+    namespace RouteDetails
     {
         static void onUpdate(window* w);
     }
@@ -31,9 +31,9 @@ namespace OpenLoco::Ui::Vehicle
 
     void registerHooks()
     {
-        _mainEvents->on_update = main::onUpdate;
-        _vehicleDetailsEvents->on_update = vehicle_details::onUpdate;
-        _routeDetailsEvents->on_update = route_details::onUpdate;
+        _mainEvents->on_update = Main::onUpdate;
+        _vehicleDetailsEvents->on_update = VehicleDetails::onUpdate;
+        _routeDetailsEvents->on_update = RouteDetails::onUpdate;
     }
 
     static void sub_4B28E2(window* w, int dx)
@@ -46,7 +46,7 @@ namespace OpenLoco::Ui::Vehicle
         call(0x004B28E2, regs);
     }
 
-    namespace main
+    namespace Main
     {
         window* open(const OpenLoco::vehicle* vehicle)
         {
@@ -94,7 +94,7 @@ namespace OpenLoco::Ui::Vehicle
         }
     }
 
-    namespace vehicle_details
+    namespace VehicleDetails
     {
         // 0x004B3C45
         // "Show <vehicle> design details and options" tab in vehicle window
@@ -143,7 +143,7 @@ namespace OpenLoco::Ui::Vehicle
         }
     }
 
-    namespace route_details
+    namespace RouteDetails
     {
         // 0x004B55D1
         // "Show <vehicle> route details" tab in vehicle window

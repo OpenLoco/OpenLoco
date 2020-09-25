@@ -70,7 +70,7 @@ namespace OpenLoco::companymgr
     // 0x00430319
     void update()
     {
-        if (!isEditorMode() && !config::getNew().companyAIDisabled)
+        if (!isEditorMode() && !Config::getNew().companyAIDisabled)
         {
             company_id_t id = scenarioTicks() & 0x0F;
             auto company = get(id);

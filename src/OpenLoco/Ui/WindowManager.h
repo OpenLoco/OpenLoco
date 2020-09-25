@@ -254,7 +254,7 @@ namespace OpenLoco::Ui::Windows::TownList
 namespace OpenLoco::Ui::Vehicle
 {
     void registerHooks();
-    namespace main
+    namespace Main
     {
         window* open(const OpenLoco::vehicle* vehicle);
     }

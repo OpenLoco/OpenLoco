@@ -24,7 +24,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::Ui::Windows::ToolbarTop::common
+namespace OpenLoco::Ui::Windows::ToolbarTop::Common
 {
     static loco_global<uint8_t, 0x00525FAB> last_road_option;
 
@@ -42,10 +42,10 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::common
 
         uint32_t company_colour = companymgr::getPlayerCompanyColour();
 
-        if (self->widgets[widx::road_menu].type != widget_type::none && last_road_option != 0xFF)
+        if (self->widgets[Widx::road_menu].type != widget_type::none && last_road_option != 0xFF)
         {
-            uint32_t x = self->widgets[widx::road_menu].left + self->x;
-            uint32_t y = self->widgets[widx::road_menu].top + self->y;
+            uint32_t x = self->widgets[Widx::road_menu].left + self->x;
+            uint32_t y = self->widgets[Widx::road_menu].top + self->y;
             uint32_t fgImage = 0;
 
             // Figure out what icon to show on the button face.
@@ -65,7 +65,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::common
             auto interface = ObjectManager::get<interface_skin_object>();
             uint32_t bgImage = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_transparent, self->colours[2]);
 
-            if (Input::isDropdownActive(Ui::WindowType::topToolbar, widx::road_menu))
+            if (Input::isDropdownActive(Ui::WindowType::topToolbar, Widx::road_menu))
             {
                 y++;
                 bgImage++;
@@ -73,7 +73,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::common
 
             Gfx::drawImage(dpi, x, y, fgImage);
 
-            y = self->widgets[widx::road_menu].top + self->y;
+            y = self->widgets[Widx::road_menu].top + self->y;
             Gfx::drawImage(dpi, x, y, bgImage);
         }
     }
@@ -392,27 +392,27 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::common
     {
         switch (widgetIndex)
         {
-            case widx::zoom_menu:
+            case Widx::zoom_menu:
                 zoomMenuDropdown(window, widgetIndex, itemIndex);
                 break;
 
-            case widx::rotate_menu:
+            case Widx::rotate_menu:
                 rotateMenuDropdown(window, widgetIndex, itemIndex);
                 break;
 
-            case widx::view_menu:
+            case Widx::view_menu:
                 viewMenuDropdown(window, widgetIndex, itemIndex);
                 break;
 
-            case widx::terraform_menu:
+            case Widx::terraform_menu:
                 terraformMenuDropdown(window, widgetIndex, itemIndex);
                 break;
 
-            case widx::road_menu:
+            case Widx::road_menu:
                 roadMenuDropdown(window, widgetIndex, itemIndex);
                 break;
 
-            case widx::towns_menu:
+            case Widx::towns_menu:
                 townsMenuDropdown(window, widgetIndex, itemIndex);
                 break;
         }
@@ -423,27 +423,27 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::common
     {
         switch (widgetIndex)
         {
-            case widx::zoom_menu:
+            case Widx::zoom_menu:
                 zoomMenuMouseDown(window, widgetIndex);
                 break;
 
-            case widx::rotate_menu:
+            case Widx::rotate_menu:
                 rotateMenuMouseDown(window, widgetIndex);
                 break;
 
-            case widx::view_menu:
+            case Widx::view_menu:
                 viewMenuMouseDown(window, widgetIndex);
                 break;
 
-            case widx::terraform_menu:
+            case Widx::terraform_menu:
                 terraformMenuMouseDown(window, widgetIndex);
                 break;
 
-            case widx::road_menu:
+            case Widx::road_menu:
                 roadMenuMouseDown(window, widgetIndex);
                 break;
 
-            case widx::towns_menu:
+            case Widx::towns_menu:
                 townsMenuMouseDown(window, widgetIndex);
                 break;
         }
@@ -459,7 +459,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::common
     {
         auto main = WindowManager::getMainWindow();
         if (main == nullptr)
-            window->setDisabledWidgetsAndInvalidate(widx::zoom_menu | widx::rotate_menu);
+            window->setDisabledWidgetsAndInvalidate(Widx::zoom_menu | Widx::rotate_menu);
         else
             window->setDisabledWidgetsAndInvalidate(0);
     }

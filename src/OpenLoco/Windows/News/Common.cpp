@@ -9,7 +9,7 @@
 #include "News.h"
 
 using namespace OpenLoco::Interop;
-using namespace OpenLoco::config;
+using namespace OpenLoco::Config;
 
 namespace OpenLoco::Ui::NewsWindow
 {
@@ -28,12 +28,12 @@ namespace OpenLoco::Ui::NewsWindow
         int16_t x = (Ui::width() / 2) - (windowSize.width / 2);
         Gfx::point_t origin = { x, y };
 
-        auto window = WindowManager::createWindow(WindowType::news, origin, windowSize, flags, &news1::events);
+        auto window = WindowManager::createWindow(WindowType::news, origin, windowSize, flags, &News1::events);
 
         window->widgets = widgets;
-        window->enabled_widgets = common::enabledWidgets;
+        window->enabled_widgets = Common::enabledWidgets;
 
-        common::initEvents();
+        Common::initEvents();
 
         window->initScrollWidgets();
         window->colours[0] = colour;
@@ -43,7 +43,7 @@ namespace OpenLoco::Ui::NewsWindow
         _dword_525CD8 = 0xFFFFFFFF;
         _dword_525CDC = 0xFFFFFFFF;
 
-        news1::initViewport(window);
+        News1::initViewport(window);
     }
 
     // 0x00428F8B
@@ -115,7 +115,7 @@ namespace OpenLoco::Ui::NewsWindow
                 }
             }
 
-            auto newsSettings = config::get().news_settings[static_cast<uint8_t>(messageSubType)];
+            auto newsSettings = Config::get().news_settings[static_cast<uint8_t>(messageSubType)];
 
             if (newsSettings == newsType::none)
             {
@@ -131,12 +131,12 @@ namespace OpenLoco::Ui::NewsWindow
                 Gfx::point_t origin = { x, y };
                 uint32_t flags = window_flags::stick_to_front | window_flags::viewport_no_scrolling | window_flags::transparent | window_flags::flag_7;
 
-                auto window = WindowManager::createWindow(WindowType::news, origin, ticker::windowSize, flags, &ticker::events);
+                auto window = WindowManager::createWindow(WindowType::news, origin, Ticker::windowSize, flags, &Ticker::events);
 
-                window->widgets = ticker::widgets;
-                window->enabled_widgets = ticker::enabledWidgets;
+                window->widgets = Ticker::widgets;
+                window->enabled_widgets = Ticker::enabledWidgets;
 
-                common::initEvents();
+                Common::initEvents();
 
                 window->initScrollWidgets();
 
@@ -203,23 +203,23 @@ namespace OpenLoco::Ui::NewsWindow
         {
             uint32_t flags = window_flags::stick_to_front | window_flags::viewport_no_scrolling | window_flags::transparent | window_flags::no_background;
 
-            createNewsWindow(news2::windowSize, news2::widgets, Colour::grey, isOld, flags);
+            createNewsWindow(News2::windowSize, News2::widgets, Colour::grey, isOld, flags);
         }
         else
         {
             uint32_t flags = window_flags::stick_to_front | window_flags::viewport_no_scrolling | window_flags::transparent;
             auto colour = Colour::translucent(Colour::salmon_pink);
 
-            createNewsWindow(news1::windowSize, news1::widgets, colour, isOld, flags);
+            createNewsWindow(News1::windowSize, News1::widgets, colour, isOld, flags);
         }
     }
 
-    namespace common
+    namespace Common
     {
         void initEvents()
         {
-            ticker::initEvents();
-            news1::initEvents();
+            Ticker::initEvents();
+            News1::initEvents();
         }
     }
 }

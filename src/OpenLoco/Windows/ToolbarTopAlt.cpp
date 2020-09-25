@@ -30,11 +30,11 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
     static loco_global<uint8_t, 0x00525FAB> last_road_option;
     static loco_global<uint8_t, 0x009C870C> last_town_option;
 
-    namespace widx
+    namespace Widx
     {
         enum
         {
-            map_generation_menu = common::widx::w6,
+            map_generation_menu = Common::Widx::w6,
         };
     }
 
@@ -65,13 +65,13 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
 
     static void initEvents()
     {
-        _events.on_resize = common::onResize;
+        _events.on_resize = Common::onResize;
         _events.event_03 = onMouseDown;
         _events.on_mouse_down = onMouseDown;
         _events.on_dropdown = onDropdown;
-        _events.on_update = common::onUpdate;
+        _events.on_update = Common::onUpdate;
         _events.prepare_draw = prepareDraw;
-        _events.draw = common::draw;
+        _events.draw = Common::draw;
     }
 
     // 0x0043CC2C
@@ -86,7 +86,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
             window_flags::stick_to_front | window_flags::transparent | window_flags::no_background,
             &_events);
         window->widgets = _widgets;
-        window->enabled_widgets = (1 << common::widx::loadsave_menu) | (1 << common::widx::audio_menu) | (1 << common::widx::zoom_menu) | (1 << common::widx::rotate_menu) | (1 << common::widx::view_menu) | (1 << common::widx::terraform_menu) | (1 << widx::map_generation_menu) | (1 << common::widx::road_menu) | (1 << common::widx::towns_menu);
+        window->enabled_widgets = (1 << Common::Widx::loadsave_menu) | (1 << Common::Widx::audio_menu) | (1 << Common::Widx::zoom_menu) | (1 << Common::Widx::rotate_menu) | (1 << Common::Widx::view_menu) | (1 << Common::Widx::terraform_menu) | (1 << Widx::map_generation_menu) | (1 << Common::Widx::road_menu) | (1 << Common::Widx::towns_menu);
         window->initScrollWidgets();
         window->colours[0] = Colour::grey;
         window->colours[1] = Colour::grey;
@@ -217,20 +217,20 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
     {
         switch (widgetIndex)
         {
-            case common::widx::loadsave_menu:
+            case Common::Widx::loadsave_menu:
                 loadsaveMenuMouseDown(window, widgetIndex);
                 break;
 
-            case common::widx::audio_menu:
+            case Common::Widx::audio_menu:
                 audioMenuMouseDown(window, widgetIndex);
                 break;
 
-            case widx::map_generation_menu:
+            case Widx::map_generation_menu:
                 mapGenerationMenuMouseDown(window, widgetIndex);
                 break;
 
             default:
-                common::onMouseDown(window, widgetIndex);
+                Common::onMouseDown(window, widgetIndex);
                 break;
         }
     }
@@ -240,20 +240,20 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
     {
         switch (widgetIndex)
         {
-            case common::widx::loadsave_menu:
+            case Common::Widx::loadsave_menu:
                 loadsaveMenuDropdown(window, widgetIndex, itemIndex);
                 break;
 
-            case common::widx::audio_menu:
+            case Common::Widx::audio_menu:
                 audioMenuDropdown(window, widgetIndex, itemIndex);
                 break;
 
-            case widx::map_generation_menu:
+            case Widx::map_generation_menu:
                 mapGenerationMenuDropdown(window, widgetIndex, itemIndex);
                 break;
 
             default:
-                common::onDropdown(window, widgetIndex, itemIndex);
+                Common::onDropdown(window, widgetIndex, itemIndex);
                 break;
         }
     }
@@ -263,62 +263,62 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
     {
         uint32_t x = std::max(640, Ui::width()) - 1;
 
-        common::rightAlignTabs(window, x, { common::widx::towns_menu });
+        Common::rightAlignTabs(window, x, { Common::Widx::towns_menu });
         x -= 11;
-        common::rightAlignTabs(window, x, { common::widx::road_menu, widx::map_generation_menu, common::widx::terraform_menu });
+        Common::rightAlignTabs(window, x, { Common::Widx::road_menu, Widx::map_generation_menu, Common::Widx::terraform_menu });
 
         if (S5::getOptions().editorStep == 1)
         {
-            window->widgets[common::widx::zoom_menu].type = widget_type::wt_7;
-            window->widgets[common::widx::rotate_menu].type = widget_type::wt_7;
-            window->widgets[common::widx::view_menu].type = widget_type::wt_7;
-            window->widgets[common::widx::terraform_menu].type = widget_type::wt_7;
-            window->widgets[widx::map_generation_menu].type = widget_type::wt_7;
-            window->widgets[common::widx::towns_menu].type = widget_type::wt_7;
+            window->widgets[Common::Widx::zoom_menu].type = widget_type::wt_7;
+            window->widgets[Common::Widx::rotate_menu].type = widget_type::wt_7;
+            window->widgets[Common::Widx::view_menu].type = widget_type::wt_7;
+            window->widgets[Common::Widx::terraform_menu].type = widget_type::wt_7;
+            window->widgets[Widx::map_generation_menu].type = widget_type::wt_7;
+            window->widgets[Common::Widx::towns_menu].type = widget_type::wt_7;
             if (last_road_option != 0xFF)
             {
-                window->widgets[common::widx::road_menu].type = widget_type::wt_7;
+                window->widgets[Common::Widx::road_menu].type = widget_type::wt_7;
             }
             else
             {
-                window->widgets[common::widx::road_menu].type = widget_type::none;
+                window->widgets[Common::Widx::road_menu].type = widget_type::none;
             }
         }
         else
         {
-            window->widgets[common::widx::zoom_menu].type = widget_type::none;
-            window->widgets[common::widx::rotate_menu].type = widget_type::none;
-            window->widgets[common::widx::view_menu].type = widget_type::none;
-            window->widgets[common::widx::terraform_menu].type = widget_type::none;
-            window->widgets[widx::map_generation_menu].type = widget_type::none;
-            window->widgets[common::widx::road_menu].type = widget_type::none;
-            window->widgets[common::widx::towns_menu].type = widget_type::none;
+            window->widgets[Common::Widx::zoom_menu].type = widget_type::none;
+            window->widgets[Common::Widx::rotate_menu].type = widget_type::none;
+            window->widgets[Common::Widx::view_menu].type = widget_type::none;
+            window->widgets[Common::Widx::terraform_menu].type = widget_type::none;
+            window->widgets[Widx::map_generation_menu].type = widget_type::none;
+            window->widgets[Common::Widx::road_menu].type = widget_type::none;
+            window->widgets[Common::Widx::towns_menu].type = widget_type::none;
         }
 
         auto interface = ObjectManager::get<interface_skin_object>();
         if (!Audio::isAudioEnabled())
         {
-            window->activated_widgets |= (1 << common::widx::audio_menu);
-            window->widgets[common::widx::audio_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_audio_inactive, window->colours[0]);
+            window->activated_widgets |= (1 << Common::Widx::audio_menu);
+            window->widgets[Common::Widx::audio_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_audio_inactive, window->colours[0]);
         }
         else
         {
-            window->activated_widgets &= ~(1 << common::widx::audio_menu);
-            window->widgets[common::widx::audio_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_audio_active, window->colours[0]);
+            window->activated_widgets &= ~(1 << Common::Widx::audio_menu);
+            window->widgets[Common::Widx::audio_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_audio_active, window->colours[0]);
         }
 
-        window->widgets[common::widx::loadsave_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_loadsave, 0);
-        window->widgets[common::widx::zoom_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_zoom, 0);
-        window->widgets[common::widx::rotate_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_rotate, 0);
-        window->widgets[common::widx::view_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_view, 0);
+        window->widgets[Common::Widx::loadsave_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_loadsave, 0);
+        window->widgets[Common::Widx::zoom_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_zoom, 0);
+        window->widgets[Common::Widx::rotate_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_rotate, 0);
+        window->widgets[Common::Widx::view_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_view, 0);
 
-        window->widgets[common::widx::terraform_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_terraform, 0);
-        window->widgets[widx::map_generation_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_map_generation, 0);
-        window->widgets[common::widx::road_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_opaque, 0);
+        window->widgets[Common::Widx::terraform_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_terraform, 0);
+        window->widgets[Widx::map_generation_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_map_generation, 0);
+        window->widgets[Common::Widx::road_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_opaque, 0);
 
         if (last_town_option == 0)
-            window->widgets[common::widx::towns_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_towns, 0);
+            window->widgets[Common::Widx::towns_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_towns, 0);
         else
-            window->widgets[common::widx::towns_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_industries, 0);
+            window->widgets[Common::Widx::towns_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_industries, 0);
     }
 }

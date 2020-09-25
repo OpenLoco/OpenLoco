@@ -39,7 +39,7 @@ namespace OpenLoco::Ui::NewsWindow
     static loco_global<uint32_t, 0x011364EC> _numTrackTypeTabs;
     static loco_global<int8_t[8], 0x011364F0> _trackTypesForTab;
 
-    namespace common
+    namespace Common
     {
         enum widx
         {
@@ -64,7 +64,7 @@ namespace OpenLoco::Ui::NewsWindow
         void initEvents();
     }
 
-    namespace news1
+    namespace News1
     {
         static const Gfx::ui_size_t windowSize = { 360, 117 };
 
@@ -86,14 +86,14 @@ namespace OpenLoco::Ui::NewsWindow
         void initViewport(window* self);
     }
 
-    namespace news2
+    namespace News2
     {
         static const Gfx::ui_size_t windowSize = { 360, 159 };
 
         extern widget_t widgets[7];
     }
 
-    namespace ticker
+    namespace Ticker
     {
         static const Gfx::ui_size_t windowSize = { 111, 26 };
 

@@ -30,7 +30,7 @@ namespace OpenLoco::Ui::KeyboardShortcuts
         widgetEnd(),
     };
 
-    namespace widx
+    namespace Widx
     {
         enum
         {
@@ -78,7 +78,7 @@ namespace OpenLoco::Ui::KeyboardShortcuts
         window = WindowManager::createWindowCentred(WindowType::keyboardShortcuts, { 360, 238 }, 0, &_events);
 
         window->widgets = _widgets;
-        window->enabled_widgets = (1 << widx::close_button) | (1 << widx::reset_keys_btn);
+        window->enabled_widgets = (1 << Widx::close_button) | (1 << Widx::reset_keys_btn);
         window->initScrollWidgets();
 
         auto skin = ObjectManager::get<interface_skin_object>();
@@ -119,14 +119,14 @@ namespace OpenLoco::Ui::KeyboardShortcuts
             _commonFormatArgs[2] = StringIds::empty;
             _commonFormatArgs[3] = StringIds::empty;
 
-            if (config::get().keyboard_shortcuts[i].var_0 != 0xFF)
+            if (Config::get().keyboard_shortcuts[i].var_0 != 0xFF)
             {
-                _commonFormatArgs[3] = StringIds::shortcut_key_base + config::get().keyboard_shortcuts[i].var_0;
+                _commonFormatArgs[3] = StringIds::shortcut_key_base + Config::get().keyboard_shortcuts[i].var_0;
 
-                if (config::get().keyboard_shortcuts[i].var_1 != 0)
+                if (Config::get().keyboard_shortcuts[i].var_1 != 0)
                 {
                     _commonFormatArgs[2] = StringIds::keyboard_shortcut_modifier_shift;
-                    if (config::get().keyboard_shortcuts[i].var_1 != 1)
+                    if (Config::get().keyboard_shortcuts[i].var_1 != 1)
                     {
                         _commonFormatArgs[2] = StringIds::keyboard_shortcut_modifier_ctrl;
                     }
@@ -145,11 +145,11 @@ namespace OpenLoco::Ui::KeyboardShortcuts
     {
         switch (widgetIndex)
         {
-            case widx::close_button:
+            case Widx::close_button:
                 WindowManager::close(self);
                 return;
 
-            case widx::reset_keys_btn:
+            case Widx::reset_keys_btn:
                 loc_4BE832(self);
                 return;
         }
@@ -159,7 +159,7 @@ namespace OpenLoco::Ui::KeyboardShortcuts
     static void loc_4BE832(window* self)
     {
         call(0x004BE3F3);
-        OpenLoco::config::write();
+        OpenLoco::Config::write();
         self->invalidate();
     }
 

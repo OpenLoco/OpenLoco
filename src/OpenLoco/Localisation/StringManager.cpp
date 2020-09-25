@@ -395,12 +395,12 @@ namespace OpenLoco::StringManager
 
                     case ControlCodes::velocity:
                     {
-                        auto measurement_format = config::get().measurement_format;
+                        auto measurement_format = Config::get().measurement_format;
 
                         int32_t value = args.popS16();
 
                         const char* unit;
-                        if (measurement_format == config::measurement_format::imperial)
+                        if (measurement_format == Config::measurement_format::imperial)
                         {
                             unit = getString(StringIds::unit_mph);
                         }
@@ -435,10 +435,10 @@ namespace OpenLoco::StringManager
                     case ControlCodes::distance:
                     {
                         uint32_t value = args.pop16();
-                        auto measurement_format = config::get().measurement_format;
+                        auto measurement_format = Config::get().measurement_format;
 
                         const char* unit;
-                        if (measurement_format == config::measurement_format::imperial)
+                        if (measurement_format == Config::measurement_format::imperial)
                         {
                             unit = getString(StringIds::unit_ft);
                             value = std::round(value * 3.28125);
@@ -460,15 +460,15 @@ namespace OpenLoco::StringManager
                     {
                         int32_t value = args.popS16();
 
-                        bool show_height_as_units = config::get().flags & config::flags::show_height_as_units;
-                        uint8_t measurement_format = config::get().measurement_format;
+                        bool show_height_as_units = Config::get().flags & Config::flags::show_height_as_units;
+                        uint8_t measurement_format = Config::get().measurement_format;
                         const char* unit;
 
                         if (show_height_as_units)
                         {
                             unit = getString(StringIds::unit_units);
                         }
-                        else if (measurement_format == config::measurement_format::imperial)
+                        else if (measurement_format == Config::measurement_format::imperial)
                         {
                             unit = getString(StringIds::unit_ft);
                             value *= 16;
@@ -490,10 +490,10 @@ namespace OpenLoco::StringManager
                     case ControlCodes::power:
                     {
                         uint32_t value = args.pop16();
-                        auto measurement_format = config::get().measurement_format;
+                        auto measurement_format = Config::get().measurement_format;
 
                         const char* unit;
-                        if (measurement_format == config::measurement_format::imperial)
+                        if (measurement_format == Config::measurement_format::imperial)
                         {
                             unit = getString(StringIds::unit_hp);
                         }

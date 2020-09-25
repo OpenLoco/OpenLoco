@@ -69,13 +69,13 @@ namespace OpenLoco::environment
 
     static fs::path resolveLocoInstallPath()
     {
-        auto& cfg = config::getNew();
+        auto& cfg = Config::getNew();
         auto path = fs::path(cfg.loco_install_path);
         if (!path.empty())
         {
             if (validateLocoInstallPath(path))
             {
-                config::writeNewConfig();
+                Config::writeNewConfig();
                 return path;
             }
             std::cerr << "Configured install path for Locomotion is missing Data/g1.DAT." << std::endl;
@@ -85,7 +85,7 @@ namespace OpenLoco::environment
         if (!path.empty())
         {
             cfg.loco_install_path = path.make_preferred().u8string();
-            config::writeNewConfig();
+            Config::writeNewConfig();
             return path;
         }
         else
@@ -97,7 +97,7 @@ namespace OpenLoco::environment
             if (validateLocoInstallPath(path))
             {
                 cfg.loco_install_path = path.make_preferred().u8string();
-                config::writeNewConfig();
+                Config::writeNewConfig();
                 return path;
             }
 

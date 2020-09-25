@@ -24,7 +24,7 @@ namespace OpenLoco::Ui::Windows::Error
     static loco_global<int32_t, 0x0113E72C> _cursorX;
     static loco_global<int32_t, 0x0113E730> _cursorY;
 
-    namespace common
+    namespace Common
     {
         static window_event_list events;
 
@@ -32,7 +32,7 @@ namespace OpenLoco::Ui::Windows::Error
         static void onPeriodicUpdate(Ui::window* self);
         static void initEvents();
     }
-    namespace error
+    namespace Error
     {
         enum widx
         {
@@ -45,7 +45,7 @@ namespace OpenLoco::Ui::Windows::Error
         };
     }
 
-    namespace errorCompetitor
+    namespace ErrorCompetitor
     {
         enum widx
         {
@@ -144,21 +144,21 @@ namespace OpenLoco::Ui::Windows::Error
                 Gfx::point_t(x, y),
                 windowSize,
                 window_flags::stick_to_front | window_flags::transparent | window_flags::flag_7,
-                &common::events);
+                &Common::events);
 
-            common::initEvents();
+            Common::initEvents();
 
             if (_errorCompetitorId != 0xFF)
             {
-                error->widgets = errorCompetitor::widgets;
+                error->widgets = ErrorCompetitor::widgets;
             }
             else
             {
-                error->widgets = error::widgets;
+                error->widgets = Error::widgets;
             }
 
-            error->widgets[error::widx::frame].right = frameWidth;
-            error->widgets[error::widx::frame].bottom = frameHeight;
+            error->widgets[Error::widx::frame].right = frameWidth;
+            error->widgets[Error::widx::frame].bottom = frameHeight;
             error->var_846 = 0;
 
             if (!(_suppressErrorSound & (1 << 0)))
@@ -202,7 +202,7 @@ namespace OpenLoco::Ui::Windows::Error
             });
     }
 
-    namespace common
+    namespace Common
     {
         // 0x00431C05
         static void draw(Ui::window* self, Gfx::drawpixelinfo_t* dpi)
@@ -232,8 +232,8 @@ namespace OpenLoco::Ui::Windows::Error
             }
             else
             {
-                auto xPos = self->widgets[errorCompetitor::widx::innerFrame].left + self->x;
-                auto yPos = self->widgets[errorCompetitor::widx::innerFrame].top + self->y;
+                auto xPos = self->widgets[ErrorCompetitor::widx::innerFrame].left + self->x;
+                auto yPos = self->widgets[ErrorCompetitor::widx::innerFrame].top + self->y;
 
                 auto company = companymgr::get(_errorCompetitorId);
                 auto companyObj = ObjectManager::get<competitor_object>(company->id());
@@ -265,8 +265,8 @@ namespace OpenLoco::Ui::Windows::Error
 
         static void initEvents()
         {
-            events.draw = common::draw;
-            events.on_periodic_update = common::onPeriodicUpdate;
+            events.draw = Common::draw;
+            events.on_periodic_update = Common::onPeriodicUpdate;
         }
     }
 }

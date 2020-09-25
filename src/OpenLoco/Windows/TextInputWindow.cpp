@@ -47,7 +47,7 @@ namespace OpenLoco::Ui::TextInput
 
     static window_event_list _events;
 
-    namespace widx
+    namespace Widx
     {
         enum
         {
@@ -147,15 +147,15 @@ namespace OpenLoco::Ui::TextInput
             window_flags::stick_to_front | window_flags::flag_12,
             &_events);
         window->widgets = _widgets;
-        window->enabled_widgets |= 1ULL << widx::close;
-        window->enabled_widgets |= 1ULL << widx::ok;
+        window->enabled_widgets |= 1ULL << Widx::close;
+        window->enabled_widgets |= 1ULL << Widx::ok;
         window->initScrollWidgets();
 
         cursor_position = _buffer.length();
         _cursorFrame = 0;
 
         _xOffset = 0;
-        calculateTextOffset(_widgets[widx::input].width() - 2);
+        calculateTextOffset(_widgets[Widx::input].width() - 2);
 
         caller = WindowManager::find(_callingWindowType, _callingWindowNumber);
 
@@ -178,11 +178,11 @@ namespace OpenLoco::Ui::TextInput
             window->owner = companymgr::getControllingId();
         }
 
-        _widgets[widx::title].type = widget_type::caption_25;
+        _widgets[Widx::title].type = widget_type::caption_25;
         if (window->owner != company_id::null)
         {
             window->flags |= window_flags::flag_11;
-            _widgets[widx::title].type = widget_type::caption_24;
+            _widgets[Widx::title].type = widget_type::caption_24;
         }
     }
 
@@ -235,7 +235,7 @@ namespace OpenLoco::Ui::TextInput
      */
     static void prepareDraw(Ui::window* window)
     {
-        _widgets[widx::title].text = _title;
+        _widgets[Widx::title].text = _title;
         memcpy(_commonFormatArgs, _formatArgs, 16);
     }
 
@@ -255,7 +255,7 @@ namespace OpenLoco::Ui::TextInput
         Gfx::point_t position = { (int16_t)(window->x + window->width / 2), (int16_t)(window->y + 30) };
         Gfx::drawStringCentredWrapped(context, &position, window->width - 8, 0, StringIds::wcolour2_stringid, &_commonFormatArgs[0]);
 
-        auto widget = &_widgets[widx::input];
+        auto widget = &_widgets[Widx::input];
         Gfx::drawpixelinfo_t* clipped = nullptr;
         if (!Gfx::clipDrawpixelinfo(&clipped, context, widget->left + 1 + window->x, widget->top + 1 + window->y, widget->width() - 2, widget->height() - 2))
         {
@@ -289,10 +289,10 @@ namespace OpenLoco::Ui::TextInput
     {
         switch (widgetIndex)
         {
-            case widx::close:
+            case Widx::close:
                 WindowManager::close(window);
                 break;
-            case widx::ok:
+            case Widx::ok:
                 sanitizeInput();
                 auto caller = WindowManager::find(_callingWindowType, _callingWindowNumber);
                 if (caller != nullptr)
@@ -361,12 +361,12 @@ namespace OpenLoco::Ui::TextInput
         }
         else if (eax == VK_RETURN)
         {
-            w->callOnMouseUp(widx::ok);
+            w->callOnMouseUp(Widx::ok);
             return;
         }
         else if (eax == VK_ESCAPE)
         {
-            w->callOnMouseUp(widx::close);
+            w->callOnMouseUp(Widx::close);
             return;
         }
         else if (ebx == VK_HOME)
@@ -401,7 +401,7 @@ namespace OpenLoco::Ui::TextInput
         WindowManager::invalidate(WindowType::textInput, 0);
         _cursorFrame = 0;
 
-        int containerWidth = _widgets[widx::input].width() - 2;
+        int containerWidth = _widgets[Widx::input].width() - 2;
         if (needsReoffsetting(containerWidth))
         {
             calculateTextOffset(containerWidth);

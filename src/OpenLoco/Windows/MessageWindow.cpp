@@ -32,7 +32,7 @@ namespace OpenLoco::Ui::MessageWindow
     static loco_global<uint16_t, 0x005271CE> _messageCount;
     static loco_global<uint16_t, 0x005271D0> _activeMessageIndex;
 
-    namespace common
+    namespace Common
     {
         enum widx
         {
@@ -63,7 +63,7 @@ namespace OpenLoco::Ui::MessageWindow
         static void initEvents();
     }
 
-    namespace messages
+    namespace Messages
     {
         static const Gfx::ui_size_t minWindowSize = { 366, 217 };
         static const Gfx::ui_size_t maxWindowSize = { 366, 1200 };
@@ -74,7 +74,7 @@ namespace OpenLoco::Ui::MessageWindow
             scrollview = 6,
         };
 
-        const uint64_t enabledWidgets = common::enabledWidgets | (1 << scrollview);
+        const uint64_t enabledWidgets = Common::enabledWidgets | (1 << scrollview);
 
         widget_t widgets[] = {
             commonWidgets(366, 217, StringIds::title_messages),
@@ -89,13 +89,13 @@ namespace OpenLoco::Ui::MessageWindow
         {
             switch (widgetIndex)
             {
-                case common::widx::close_button:
+                case Common::widx::close_button:
                     WindowManager::close(self);
                     break;
 
-                case common::widx::tab_messages:
-                case common::widx::tab_settings:
-                    common::switchTab(self, widgetIndex);
+                case Common::widx::tab_messages:
+                case Common::widx::tab_settings:
+                    Common::switchTab(self, widgetIndex);
                     break;
             }
         }
@@ -199,7 +199,7 @@ namespace OpenLoco::Ui::MessageWindow
         // 0x0042A545
         static void prepareDraw(window* self)
         {
-            common::prepareDraw(self);
+            Common::prepareDraw(self);
 
             self->widgets[widx::scrollview].right = self->width - 4;
             self->widgets[widx::scrollview].bottom = self->height - 14;
@@ -209,7 +209,7 @@ namespace OpenLoco::Ui::MessageWindow
         static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
         {
             self->draw(dpi);
-            common::drawTabs(self, dpi);
+            Common::drawTabs(self, dpi);
         }
 
         // 0x0042A5D7
@@ -282,7 +282,7 @@ namespace OpenLoco::Ui::MessageWindow
         {
             events.on_mouse_up = onMouseUp;
             events.on_resize = onResize;
-            events.on_update = common::onUpdate;
+            events.on_update = Common::onUpdate;
             events.event_08 = event_08;
             events.event_09 = event_09;
             events.get_scroll_size = getScrollSize;
@@ -321,9 +321,9 @@ namespace OpenLoco::Ui::MessageWindow
                 origin,
                 { 366, 217 },
                 window_flags::flag_11,
-                &messages::events);
+                &Messages::events);
 
-            window->enabled_widgets = messages::enabledWidgets;
+            window->enabled_widgets = Messages::enabledWidgets;
             window->number = 0;
             window->current_tab = 0;
             window->frame_no = 0;
@@ -332,30 +332,30 @@ namespace OpenLoco::Ui::MessageWindow
 
             WindowManager::sub_4CEE0B(window);
 
-            window->min_width = messages::minWindowSize.width;
-            window->min_height = messages::minWindowSize.height;
-            window->max_width = messages::maxWindowSize.width;
-            window->max_height = messages::maxWindowSize.height;
+            window->min_width = Messages::minWindowSize.width;
+            window->min_height = Messages::minWindowSize.height;
+            window->max_width = Messages::maxWindowSize.width;
+            window->max_height = Messages::maxWindowSize.height;
             window->flags |= window_flags::resizable;
 
             window->owner = _playerCompany;
             auto skin = ObjectManager::get<interface_skin_object>();
             window->colours[1] = skin->colour_0A;
 
-            window->width = messages::minWindowSize.width;
-            window->height = messages::minWindowSize.height;
+            window->width = Messages::minWindowSize.width;
+            window->height = Messages::minWindowSize.height;
         }
 
         window->current_tab = 0;
         window->invalidate();
 
-        window->widgets = messages::widgets;
-        window->enabled_widgets = messages::enabledWidgets;
+        window->widgets = Messages::widgets;
+        window->enabled_widgets = Messages::enabledWidgets;
         window->holdable_widgets = 0;
-        window->event_handlers = &messages::events;
+        window->event_handlers = &Messages::events;
         window->disabled_widgets = 0;
 
-        common::initEvents();
+        Common::initEvents();
 
         window->callOnResize();
         window->callPrepareDraw();
@@ -364,17 +364,17 @@ namespace OpenLoco::Ui::MessageWindow
         uint16_t scrollHeight = 0;
         window->callGetScrollSize(0, 0, &scrollHeight);
 
-        scrollHeight -= window->widgets[messages::widx::scrollview].height();
+        scrollHeight -= window->widgets[Messages::widx::scrollview].height();
 
         if (static_cast<int16_t>(scrollHeight) < 0)
             scrollHeight = 0;
 
         window->scroll_areas[0].contentOffsetY = scrollHeight;
 
-        Ui::ScrollView::updateThumbs(window, messages::widx::scrollview);
+        Ui::ScrollView::updateThumbs(window, Messages::widx::scrollview);
     }
 
-    namespace settings
+    namespace Settings
     {
         static const Gfx::ui_size_t windowSize = { 366, 139 };
 
@@ -394,7 +394,7 @@ namespace OpenLoco::Ui::MessageWindow
             advice_dropdown,
         };
 
-        static constexpr uint64_t enabledWidgets = common::enabledWidgets | (1 << widx::company_major_news) | (1 << widx::company_major_news_dropdown) | (1 << widx::competitor_major_news) | (1 << widx::competitor_major_news_dropdown) | (1 << widx::company_minor_news) | (1 << widx::company_minor_news_dropdown) | (1 << widx::competitor_minor_news) | (1 << widx::competitor_minor_news_dropdown) | (1 << widx::general_news) | (1 << widx::general_news_dropdown) | (1 << widx::advice) | (1 << widx::advice_dropdown);
+        static constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << widx::company_major_news) | (1 << widx::company_major_news_dropdown) | (1 << widx::competitor_major_news) | (1 << widx::competitor_major_news_dropdown) | (1 << widx::company_minor_news) | (1 << widx::company_minor_news_dropdown) | (1 << widx::competitor_minor_news) | (1 << widx::competitor_minor_news_dropdown) | (1 << widx::general_news) | (1 << widx::general_news_dropdown) | (1 << widx::advice) | (1 << widx::advice_dropdown);
 
         widget_t widgets[] = {
             commonWidgets(366, 217, StringIds::title_messages),
@@ -420,13 +420,13 @@ namespace OpenLoco::Ui::MessageWindow
         {
             switch (widgetIndex)
             {
-                case common::widx::close_button:
+                case Common::widx::close_button:
                     WindowManager::close(self);
                     break;
 
-                case common::widx::tab_messages:
-                case common::widx::tab_settings:
-                    common::switchTab(self, widgetIndex);
+                case Common::widx::tab_messages:
+                case Common::widx::tab_settings:
+                    Common::switchTab(self, widgetIndex);
                     break;
             }
         }
@@ -462,7 +462,7 @@ namespace OpenLoco::Ui::MessageWindow
                     Dropdown::add(1, StringIds::dropdown_stringid, StringIds::message_ticker);
                     Dropdown::add(2, StringIds::dropdown_stringid, StringIds::message_window);
 
-                    auto dropdownIndex = config::get().news_settings[(widgetIndex - 7) / 2];
+                    auto dropdownIndex = Config::get().news_settings[(widgetIndex - 7) / 2];
 
                     Dropdown::setItemSelected(static_cast<size_t>(dropdownIndex));
                     break;
@@ -493,10 +493,10 @@ namespace OpenLoco::Ui::MessageWindow
 
                     auto dropdownIndex = (widgetIndex - 7) / 2;
 
-                    if (static_cast<config::newsType>(itemIndex) != config::get().news_settings[dropdownIndex])
+                    if (static_cast<Config::newsType>(itemIndex) != Config::get().news_settings[dropdownIndex])
                     {
-                        config::get().news_settings[dropdownIndex] = static_cast<config::newsType>(itemIndex);
-                        config::write();
+                        Config::get().news_settings[dropdownIndex] = static_cast<Config::newsType>(itemIndex);
+                        Config::write();
                         Gfx::invalidateScreen();
                     }
                     break;
@@ -508,7 +508,7 @@ namespace OpenLoco::Ui::MessageWindow
         static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
         {
             self->draw(dpi);
-            common::drawTabs(self, dpi);
+            Common::drawTabs(self, dpi);
             auto yPos = self->widgets[widx::company_major_news].top + self->y;
 
             const string_id newsStringIds[] = {
@@ -538,7 +538,7 @@ namespace OpenLoco::Ui::MessageWindow
                 {
                     auto xPos = self->widgets[widx::company_major_news].left + self->x + 1;
                     auto args = FormatArguments();
-                    args.push(newsDropdownStringIds[static_cast<uint8_t>(config::get().news_settings[i])]);
+                    args.push(newsDropdownStringIds[static_cast<uint8_t>(Config::get().news_settings[i])]);
 
                     Gfx::drawString_494B3F(*dpi, xPos, yPos, Colour::black, StringIds::black_stringid, &args);
                 }
@@ -562,13 +562,13 @@ namespace OpenLoco::Ui::MessageWindow
             events.on_mouse_up = onMouseUp;
             events.on_mouse_down = onMouseDown;
             events.on_dropdown = onDropdown;
-            events.on_update = common::onUpdate;
-            events.prepare_draw = common::prepareDraw;
+            events.on_update = Common::onUpdate;
+            events.prepare_draw = Common::prepareDraw;
             events.draw = draw;
         }
     }
 
-    namespace common
+    namespace Common
     {
         struct TabInformation
         {
@@ -579,8 +579,8 @@ namespace OpenLoco::Ui::MessageWindow
         };
 
         static TabInformation tabInformationByTabOffset[] = {
-            { messages::widgets, widx::tab_messages, &messages::events, messages::enabledWidgets },
-            { settings::widgets, widx::tab_settings, &settings::events, settings::enabledWidgets },
+            { Messages::widgets, widx::tab_messages, &Messages::events, Messages::enabledWidgets },
+            { Settings::widgets, widx::tab_settings, &Settings::events, Settings::enabledWidgets },
         };
 
         static void prepareDraw(window* self)
@@ -597,16 +597,16 @@ namespace OpenLoco::Ui::MessageWindow
             self->activated_widgets &= ~((1ULL << tab_messages) | (1ULL << tab_settings));
             self->activated_widgets |= (1ULL << tabInformationByTabOffset[self->current_tab].widgetIndex);
 
-            self->widgets[common::widx::frame].right = self->width - 1;
-            self->widgets[common::widx::frame].bottom = self->height - 1;
+            self->widgets[Common::widx::frame].right = self->width - 1;
+            self->widgets[Common::widx::frame].bottom = self->height - 1;
 
-            self->widgets[common::widx::panel].right = self->width - 1;
-            self->widgets[common::widx::panel].bottom = self->height - 1;
+            self->widgets[Common::widx::panel].right = self->width - 1;
+            self->widgets[Common::widx::panel].bottom = self->height - 1;
 
-            self->widgets[common::widx::caption].right = self->width - 2;
+            self->widgets[Common::widx::caption].right = self->width - 2;
 
-            self->widgets[common::widx::close_button].left = self->width - 15;
-            self->widgets[common::widx::close_button].right = self->width - 3;
+            self->widgets[Common::widx::close_button].left = self->width - 15;
+            self->widgets[Common::widx::close_button].right = self->width - 3;
         }
 
         // 0x0042A716
@@ -637,9 +637,9 @@ namespace OpenLoco::Ui::MessageWindow
             self->invalidate();
 
             if (self->current_tab == widx::tab_messages - widx::tab_messages)
-                messages::tabReset(self);
+                Messages::tabReset(self);
             if (self->current_tab == widx::tab_settings - widx::tab_messages)
-                settings::tabReset(self);
+                Settings::tabReset(self);
 
             self->callOnResize();
             self->callPrepareDraw();
@@ -675,13 +675,13 @@ namespace OpenLoco::Ui::MessageWindow
         {
             self->frame_no++;
             self->callPrepareDraw();
-            WindowManager::invalidateWidget(WindowType::messages, self->number, self->current_tab + common::widx::tab_messages);
+            WindowManager::invalidateWidget(WindowType::messages, self->number, self->current_tab + Common::widx::tab_messages);
         }
 
         static void initEvents()
         {
-            messages::initEvents();
-            settings::initEvents();
+            Messages::initEvents();
+            Settings::initEvents();
         }
     }
 }

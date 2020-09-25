@@ -30,7 +30,7 @@ namespace OpenLoco::Ui::EditKeyboardShortcut
 
     static void initEvents();
 
-    namespace widx
+    namespace Widx
     {
         enum
         {
@@ -53,7 +53,7 @@ namespace OpenLoco::Ui::EditKeyboardShortcut
         auto window = WindowManager::createWindow(WindowType::editKeyboardShortcut, windowSize, 0, &events);
 
         window->widgets = _widgets;
-        window->enabled_widgets = 1 << widx::close;
+        window->enabled_widgets = 1 << Widx::close;
         window->initScrollWidgets();
 
         const auto skin = ObjectManager::get<interface_skin_object>();
@@ -79,7 +79,7 @@ namespace OpenLoco::Ui::EditKeyboardShortcut
     {
         switch (widgetIndex)
         {
-            case widx::close:
+            case Widx::close:
                 WindowManager::close(self);
                 return;
         }

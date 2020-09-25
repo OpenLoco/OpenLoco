@@ -27,7 +27,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 {
     static loco_global<string_id, 0x009C68E8> gGameCommandErrorTitle;
 
-    namespace common
+    namespace Common
     {
         enum widx
         {
@@ -92,7 +92,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         static void repositionTabs(window* self);
     }
 
-    namespace status
+    namespace Status
     {
         static const Gfx::ui_size_t windowSize = { 270, 182 };
 
@@ -115,14 +115,14 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             widgetEnd(),
         };
 
-        constexpr uint64_t enabledWidgets = common::enabledWidgets | (1 << common::widx::company_select) | (1 << widx::centre_on_viewport) | (1 << widx::face) | (1 << widx::change_owner_name);
+        constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Common::widx::company_select) | (1 << widx::centre_on_viewport) | (1 << widx::face) | (1 << widx::change_owner_name);
 
         static window_event_list events;
 
         // 0x00431EBB
         static void prepareDraw(window* self)
         {
-            common::switchTabWidgets(self);
+            Common::switchTabWidgets(self);
 
             // Set company name in title.
             auto company = companymgr::get(self->number);
@@ -139,16 +139,16 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             if (self->number != companymgr::getControllingId() && !isEditorMode())
                 self->disabled_widgets |= (1 << widx::face);
 
-            self->widgets[common::widx::frame].right = self->width - 1;
-            self->widgets[common::widx::frame].bottom = self->height - 1;
+            self->widgets[Common::widx::frame].right = self->width - 1;
+            self->widgets[Common::widx::frame].bottom = self->height - 1;
 
-            self->widgets[common::widx::panel].right = self->width - 1;
-            self->widgets[common::widx::panel].bottom = self->height - 1;
+            self->widgets[Common::widx::panel].right = self->width - 1;
+            self->widgets[Common::widx::panel].bottom = self->height - 1;
 
-            self->widgets[common::widx::caption].right = self->width - 2;
+            self->widgets[Common::widx::caption].right = self->width - 2;
 
-            self->widgets[common::widx::close_button].left = self->width - 15;
-            self->widgets[common::widx::close_button].right = self->width - 3;
+            self->widgets[Common::widx::close_button].left = self->width - 15;
+            self->widgets[Common::widx::close_button].right = self->width - 3;
 
             self->widgets[widx::viewport].right = self->width - 119;
             self->widgets[widx::viewport].bottom = self->height - 14;
@@ -163,8 +163,8 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             self->widgets[widx::face].right = self->width - 28;
             self->widgets[widx::face].left = self->width - 93;
 
-            self->widgets[common::widx::company_select].right = self->width - 3;
-            self->widgets[common::widx::company_select].left = self->width - 28;
+            self->widgets[Common::widx::company_select].right = self->width - 3;
+            self->widgets[Common::widx::company_select].left = self->width - 28;
 
             if (self->number == companymgr::getControllingId())
                 self->widgets[widx::change_owner_name].type = widget_type::wt_9;
@@ -176,15 +176,15 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             self->widgets[widx::centre_on_viewport].left = self->widgets[widx::viewport].right - 24;
             self->widgets[widx::centre_on_viewport].top = self->widgets[widx::viewport].bottom - 24;
 
-            common::repositionTabs(self);
+            Common::repositionTabs(self);
         }
 
         // 0x00432055
         static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
         {
             self->draw(dpi);
-            common::drawTabs(self, dpi);
-            common::drawCompanySelect(self, dpi);
+            Common::drawTabs(self, dpi);
+            Common::drawCompanySelect(self, dpi);
             const auto company = companymgr::get(self->number);
             const auto competitor = ObjectManager::get<competitor_object>(company->competitor_id);
 
@@ -266,21 +266,21 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         {
             switch (widgetIndex)
             {
-                case common::widx::caption:
-                    common::renameCompanyPrompt(self, widgetIndex);
+                case Common::widx::caption:
+                    Common::renameCompanyPrompt(self, widgetIndex);
                     break;
 
-                case common::widx::close_button:
+                case Common::widx::close_button:
                     WindowManager::close(self);
                     break;
 
-                case common::widx::tab_status:
-                case common::widx::tab_details:
-                case common::widx::tab_colour_scheme:
-                case common::widx::tab_finances:
-                case common::widx::tab_cargo_delivered:
-                case common::widx::tab_challenge:
-                    common::switchTab(self, widgetIndex);
+                case Common::widx::tab_status:
+                case Common::widx::tab_details:
+                case Common::widx::tab_colour_scheme:
+                case Common::widx::tab_finances:
+                case Common::widx::tab_cargo_delivered:
+                case Common::widx::tab_challenge:
+                    Common::switchTab(self, widgetIndex);
                     break;
 
                 case widx::centre_on_viewport:
@@ -320,15 +320,15 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // 0x00432283
         static void onMouseDown(window* self, widget_index widgetIndex)
         {
-            if (widgetIndex == common::widx::company_select)
+            if (widgetIndex == Common::widx::company_select)
                 Dropdown::populateCompanySelect(self, &self->widgets[widgetIndex]);
         }
 
         // 0x0043228E
         static void onDropdown(window* self, widget_index widgetIndex, int16_t itemIndex)
         {
-            if (widgetIndex == common::widx::company_select)
-                common::switchCompany(self, itemIndex);
+            if (widgetIndex == Common::widx::company_select)
+                Common::switchCompany(self, itemIndex);
         }
 
         // 0x004325DF
@@ -366,15 +366,15 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             // Add the ' Transport' suffix to the company name, and rename the company.
             StringManager::formatString(input, StringIds::company_owner_name_transport, const_cast<void*>(&args));
-            common::renameCompany(self, input);
+            Common::renameCompany(self, input);
         }
 
         // 0x004322F6
         static void textInput(window* self, widget_index callingWidget, char* input)
         {
-            if (callingWidget == common::widx::caption)
+            if (callingWidget == Common::widx::caption)
             {
-                common::renameCompany(self, input);
+                Common::renameCompany(self, input);
             }
             else if (callingWidget == widx::change_owner_name)
             {
@@ -393,9 +393,9 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // 0x00432724
         static void onResize(window* self)
         {
-            common::enableRenameByCaption(self);
+            Common::enableRenameByCaption(self);
 
-            self->setSize(status::windowSize, Gfx::ui_size_t(640, 400));
+            self->setSize(Status::windowSize, Gfx::ui_size_t(640, 400));
 
             if (self->viewports[0] != nullptr)
             {
@@ -454,7 +454,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         static void noViewportPresent(window* const self, const SavedView& view)
         {
             uint16_t vpFlags = 0;
-            if (config::get().flags & config::flags::gridlines_on_landscape)
+            if (Config::get().flags & Config::flags::gridlines_on_landscape)
             {
                 vpFlags |= viewport_flags::gridlines_on_landscape;
             }
@@ -585,7 +585,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
     static window* create(company_id_t companyId)
     {
         const uint32_t newFlags = window_flags::flag_8 | window_flags::flag_11;
-        auto window = WindowManager::createWindow(WindowType::company, status::windowSize, newFlags, &status::events);
+        auto window = WindowManager::createWindow(WindowType::company, Status::windowSize, newFlags, &Status::events);
         window->number = companyId;
         window->owner = companyId;
         window->current_tab = 0;
@@ -619,20 +619,20 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // TODO(avgeffen): only needs to be called once.
-        common::initEvents();
+        Common::initEvents();
 
         window->current_tab = 0;
-        window->width = status::windowSize.width;
-        window->height = status::windowSize.height;
+        window->width = Status::windowSize.width;
+        window->height = Status::windowSize.height;
         window->invalidate();
 
-        window->widgets = status::widgets;
-        window->enabled_widgets = status::enabledWidgets;
+        window->widgets = Status::widgets;
+        window->enabled_widgets = Status::enabledWidgets;
         window->holdable_widgets = 0;
-        window->event_handlers = &status::events;
+        window->event_handlers = &Status::events;
         window->activated_widgets = 0;
 
-        common::disableChallengeTab(window);
+        Common::disableChallengeTab(window);
         window->initScrollWidgets();
         window->moveInsideScreenEdges();
 
@@ -646,13 +646,13 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         window* self = open(companyId);
 
         // Allow setting company owner name if no preferred owner name has been set.
-        if ((config::get().flags & config::flags::use_preferred_owner_name) == 0)
-            status::onMouseUp(self, status::widx::change_owner_name);
+        if ((Config::get().flags & Config::flags::use_preferred_owner_name) == 0)
+            Status::onMouseUp(self, Status::widx::change_owner_name);
 
         return self;
     }
 
-    namespace details
+    namespace Details
     {
         const Gfx::ui_size_t windowSize = { 340, 194 };
 
@@ -676,14 +676,14 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             widgetEnd(),
         };
 
-        constexpr uint64_t enabledWidgets = common::enabledWidgets | (1 << common::widx::company_select) | (1 << build_hq) | (1 << centre_on_viewport);
+        constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Common::widx::company_select) | (1 << build_hq) | (1 << centre_on_viewport);
 
         static window_event_list events;
 
         // 0x004327CF
         static void prepareDraw(window* self)
         {
-            common::switchTabWidgets(self);
+            Common::switchTabWidgets(self);
 
             // Set company name.
             auto company = companymgr::get(self->number);
@@ -700,22 +700,22 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 self->disabled_widgets |= (1 << widx::centre_on_viewport);
             }
 
-            self->widgets[common::widx::frame].right = self->width - 1;
-            self->widgets[common::widx::frame].bottom = self->height - 1;
+            self->widgets[Common::widx::frame].right = self->width - 1;
+            self->widgets[Common::widx::frame].bottom = self->height - 1;
 
-            self->widgets[common::widx::panel].right = self->width - 1;
-            self->widgets[common::widx::panel].bottom = self->height - 1;
+            self->widgets[Common::widx::panel].right = self->width - 1;
+            self->widgets[Common::widx::panel].bottom = self->height - 1;
 
-            self->widgets[common::widx::caption].right = self->width - 2;
+            self->widgets[Common::widx::caption].right = self->width - 2;
 
-            self->widgets[common::widx::close_button].left = self->width - 15;
-            self->widgets[common::widx::close_button].right = self->width - 3;
+            self->widgets[Common::widx::close_button].left = self->width - 15;
+            self->widgets[Common::widx::close_button].right = self->width - 3;
 
             self->widgets[widx::viewport].right = self->width - 26;
             self->widgets[widx::viewport].bottom = self->height - 14;
 
-            self->widgets[common::widx::company_select].right = self->width - 3;
-            self->widgets[common::widx::company_select].left = self->width - 28;
+            self->widgets[Common::widx::company_select].right = self->width - 3;
+            self->widgets[Common::widx::company_select].left = self->width - 28;
 
             if (self->number == companymgr::getControllingId())
                 self->widgets[widx::build_hq].type = widget_type::wt_9;
@@ -727,7 +727,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             self->widgets[widx::centre_on_viewport].left = self->widgets[widx::viewport].right - 24;
             self->widgets[widx::centre_on_viewport].top = self->widgets[widx::viewport].bottom - 24;
 
-            common::repositionTabs(self);
+            Common::repositionTabs(self);
         }
 
         static std::array<string_id, 10> aiRatingToLevelArray = {
@@ -791,8 +791,8 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
         {
             self->draw(dpi);
-            common::drawTabs(self, dpi);
-            common::drawCompanySelect(self, dpi);
+            Common::drawTabs(self, dpi);
+            Common::drawCompanySelect(self, dpi);
 
             auto company = companymgr::get(self->number);
             auto x = self->x + 3;
@@ -877,21 +877,21 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         {
             switch (widgetIndex)
             {
-                case common::widx::caption:
-                    common::renameCompanyPrompt(self, widgetIndex);
+                case Common::widx::caption:
+                    Common::renameCompanyPrompt(self, widgetIndex);
                     break;
 
-                case common::widx::close_button:
+                case Common::widx::close_button:
                     WindowManager::close(self);
                     break;
 
-                case common::widx::tab_status:
-                case common::widx::tab_details:
-                case common::widx::tab_colour_scheme:
-                case common::widx::tab_finances:
-                case common::widx::tab_cargo_delivered:
-                case common::widx::tab_challenge:
-                    common::switchTab(self, widgetIndex);
+                case Common::widx::tab_status:
+                case Common::widx::tab_details:
+                case Common::widx::tab_colour_scheme:
+                case Common::widx::tab_finances:
+                case Common::widx::tab_cargo_delivered:
+                case Common::widx::tab_challenge:
+                    Common::switchTab(self, widgetIndex);
                     break;
 
                 case widx::centre_on_viewport:
@@ -914,7 +914,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         {
             switch (widgetIndex)
             {
-                case common::widx::company_select:
+                case Common::widx::company_select:
                     Dropdown::populateCompanySelect(self, &self->widgets[widgetIndex]);
                     break;
 
@@ -928,16 +928,16 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // 0x00432C19
         static void onDropdown(window* self, widget_index widgetIndex, int16_t itemIndex)
         {
-            if (widgetIndex == common::widx::company_select)
-                common::switchCompany(self, itemIndex);
+            if (widgetIndex == Common::widx::company_select)
+                Common::switchCompany(self, itemIndex);
         }
 
         // 0x00432C24
         static void textInput(window* self, widget_index callingWidget, char* input)
         {
-            if (callingWidget == common::widx::caption)
+            if (callingWidget == Common::widx::caption)
             {
-                common::renameCompany(self, input);
+                Common::renameCompany(self, input);
             }
         }
 
@@ -1035,7 +1035,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // 0x00432D9F
         static void onResize(window* self)
         {
-            common::enableRenameByCaption(self);
+            Common::enableRenameByCaption(self);
             self->setSize(windowSize);
             self->callViewportRotate();
         }
@@ -1059,7 +1059,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // 0x00432E08
         static void viewportRotate(window* self)
         {
-            if (self->current_tab != common::tab_details - common::tab_status)
+            if (self->current_tab != Common::tab_details - Common::tab_status)
                 return;
 
             self->callPrepareDraw();
@@ -1095,7 +1095,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             uint16_t vpFlags = 0;
             if (self->viewports[0] == nullptr)
             {
-                if (config::get().flags & config::flags::gridlines_on_landscape)
+                if (Config::get().flags & Config::flags::gridlines_on_landscape)
                 {
                     vpFlags |= viewport_flags::gridlines_on_landscape;
                 }
@@ -1138,7 +1138,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
     }
 
-    namespace colour_scheme
+    namespace ColourScheme
     {
         const Gfx::ui_size_t windowSize = { 265, 252 };
 
@@ -1258,35 +1258,35 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             widgetEnd(),
         };
 
-        constexpr uint64_t enabledWidgets = common::enabledWidgets | (1 << common::widx::company_select) | allMainColours | allSecondaryColours | allColourChecks;
+        constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Common::widx::company_select) | allMainColours | allSecondaryColours | allColourChecks;
 
         static window_event_list events;
 
         // 0x00432E0F
         static void prepareDraw(window* self)
         {
-            common::switchTabWidgets(self);
+            Common::switchTabWidgets(self);
 
             // Set company name.
             auto company = companymgr::get(self->number);
             FormatArguments args{};
             args.push(company->name);
 
-            self->widgets[common::widx::frame].right = self->width - 1;
-            self->widgets[common::widx::frame].bottom = self->height - 1;
+            self->widgets[Common::widx::frame].right = self->width - 1;
+            self->widgets[Common::widx::frame].bottom = self->height - 1;
 
-            self->widgets[common::widx::panel].right = self->width - 1;
-            self->widgets[common::widx::panel].bottom = self->height - 1;
+            self->widgets[Common::widx::panel].right = self->width - 1;
+            self->widgets[Common::widx::panel].bottom = self->height - 1;
 
-            self->widgets[common::widx::caption].right = self->width - 2;
+            self->widgets[Common::widx::caption].right = self->width - 2;
 
-            self->widgets[common::widx::close_button].left = self->width - 15;
-            self->widgets[common::widx::close_button].right = self->width - 3;
+            self->widgets[Common::widx::close_button].left = self->width - 15;
+            self->widgets[Common::widx::close_button].right = self->width - 3;
 
-            self->widgets[common::widx::company_select].right = self->width - 3;
-            self->widgets[common::widx::company_select].left = self->width - 28;
+            self->widgets[Common::widx::company_select].right = self->width - 3;
+            self->widgets[Common::widx::company_select].left = self->width - 28;
 
-            common::repositionTabs(self);
+            Common::repositionTabs(self);
 
             // Set company's main colour
             self->widgets[widx::main_colour_scheme].image = (1 << 30) | Gfx::recolour(ImageIds::colour_swatch_recolourable, company->mainColours.primary);
@@ -1349,8 +1349,8 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
         {
             self->draw(dpi);
-            common::drawTabs(self, dpi);
-            common::drawCompanySelect(self, dpi);
+            Common::drawTabs(self, dpi);
+            Common::drawCompanySelect(self, dpi);
 
             const auto& widget = self->widgets[widx::main_colour_scheme];
             const uint16_t x = self->x + 6;
@@ -1379,21 +1379,21 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         {
             switch (widgetIndex)
             {
-                case common::widx::caption:
-                    common::renameCompanyPrompt(self, widgetIndex);
+                case Common::widx::caption:
+                    Common::renameCompanyPrompt(self, widgetIndex);
                     break;
 
-                case common::widx::close_button:
+                case Common::widx::close_button:
                     WindowManager::close(self);
                     break;
 
-                case common::widx::tab_status:
-                case common::widx::tab_details:
-                case common::widx::tab_colour_scheme:
-                case common::widx::tab_finances:
-                case common::widx::tab_cargo_delivered:
-                case common::widx::tab_challenge:
-                    common::switchTab(self, widgetIndex);
+                case Common::widx::tab_status:
+                case Common::widx::tab_details:
+                case Common::widx::tab_colour_scheme:
+                case Common::widx::tab_finances:
+                case Common::widx::tab_cargo_delivered:
+                case Common::widx::tab_challenge:
+                    Common::switchTab(self, widgetIndex);
                     break;
 
                 case widx::check_steam_locomotives:
@@ -1424,7 +1424,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         {
             switch (widgetIndex)
             {
-                case common::widx::company_select:
+                case Common::widx::company_select:
                     Dropdown::populateCompanySelect(self, &self->widgets[widgetIndex]);
                     break;
 
@@ -1473,9 +1473,9 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // 0x00433092
         static void textInput(window* self, widget_index callingWidget, char* input)
         {
-            if (callingWidget == common::widx::caption)
+            if (callingWidget == Common::widx::caption)
             {
-                common::renameCompany(self, input);
+                Common::renameCompany(self, input);
             }
         }
 
@@ -1484,8 +1484,8 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         {
             switch (widgetIndex)
             {
-                case common::widx::company_select:
-                    common::switchCompany(self, itemIndex);
+                case Common::widx::company_select:
+                    Common::switchCompany(self, itemIndex);
                     break;
 
                 case widx::main_colour_scheme:
@@ -1549,7 +1549,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // 0x00433279
         static void onResize(window* self)
         {
-            common::enableRenameByCaption(self);
+            Common::enableRenameByCaption(self);
             self->setSize(windowSize);
         }
 
@@ -1566,7 +1566,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
     }
 
-    namespace finances
+    namespace Finances
     {
         const Gfx::ui_size_t windowSize = { 636, 319 };
 
@@ -1587,7 +1587,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             widgetEnd(),
         };
 
-        constexpr uint64_t enabledWidgets = common::enabledWidgets | (1 << common::widx::company_select) | (1 << widx::loan_decrease) | (1 << widx::loan_increase);
+        constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Common::widx::company_select) | (1 << widx::loan_decrease) | (1 << widx::loan_increase);
 
         const uint64_t holdableWidgets = (1 << widx::loan_decrease) | (1 << widx::loan_increase);
 
@@ -1596,7 +1596,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // 0x004332E4
         static void prepareDraw(window* self)
         {
-            common::switchTabWidgets(self);
+            Common::switchTabWidgets(self);
 
             // Set company name.
             auto company = companymgr::get(self->number);
@@ -1607,19 +1607,19 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             // Used for the loan stepper current value at offset 4
             args.push(company->current_loan);
 
-            self->widgets[common::widx::frame].right = self->width - 1;
-            self->widgets[common::widx::frame].bottom = self->height - 1;
+            self->widgets[Common::widx::frame].right = self->width - 1;
+            self->widgets[Common::widx::frame].bottom = self->height - 1;
 
-            self->widgets[common::widx::panel].right = self->width - 1;
-            self->widgets[common::widx::panel].bottom = self->height - 1;
+            self->widgets[Common::widx::panel].right = self->width - 1;
+            self->widgets[Common::widx::panel].bottom = self->height - 1;
 
-            self->widgets[common::widx::caption].right = self->width - 2;
+            self->widgets[Common::widx::caption].right = self->width - 2;
 
-            self->widgets[common::widx::close_button].left = self->width - 15;
-            self->widgets[common::widx::close_button].right = self->width - 3;
+            self->widgets[Common::widx::close_button].left = self->width - 15;
+            self->widgets[Common::widx::close_button].right = self->width - 3;
 
-            self->widgets[common::widx::company_select].right = self->width - 3;
-            self->widgets[common::widx::company_select].left = self->width - 28;
+            self->widgets[Common::widx::company_select].right = self->width - 3;
+            self->widgets[Common::widx::company_select].left = self->width - 28;
 
             if (self->number == companymgr::getControllingId())
             {
@@ -1634,15 +1634,15 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 self->widgets[widx::loan_increase].type = widget_type::none;
             }
 
-            common::repositionTabs(self);
+            Common::repositionTabs(self);
         }
 
         // 0x004333D0
         static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
         {
             self->draw(dpi);
-            common::drawTabs(self, dpi);
-            common::drawCompanySelect(self, dpi);
+            Common::drawTabs(self, dpi);
+            Common::drawCompanySelect(self, dpi);
 
             const auto company = companymgr::get(self->number);
 
@@ -1898,21 +1898,21 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         {
             switch (widgetIndex)
             {
-                case common::widx::caption:
-                    common::renameCompanyPrompt(self, widgetIndex);
+                case Common::widx::caption:
+                    Common::renameCompanyPrompt(self, widgetIndex);
                     break;
 
-                case common::widx::close_button:
+                case Common::widx::close_button:
                     WindowManager::close(self);
                     break;
 
-                case common::widx::tab_status:
-                case common::widx::tab_details:
-                case common::widx::tab_colour_scheme:
-                case common::widx::tab_finances:
-                case common::widx::tab_cargo_delivered:
-                case common::widx::tab_challenge:
-                    common::switchTab(self, widgetIndex);
+                case Common::widx::tab_status:
+                case Common::widx::tab_details:
+                case Common::widx::tab_colour_scheme:
+                case Common::widx::tab_finances:
+                case Common::widx::tab_cargo_delivered:
+                case Common::widx::tab_challenge:
+                    Common::switchTab(self, widgetIndex);
                     break;
             }
         }
@@ -1924,7 +1924,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             switch (widgetIndex)
             {
-                case common::widx::company_select:
+                case Common::widx::company_select:
                     Dropdown::populateCompanySelect(self, &self->widgets[widgetIndex]);
                     break;
 
@@ -1970,9 +1970,9 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // 0x0043385D
         static void textInput(window* self, widget_index callingWidget, char* input)
         {
-            if (callingWidget == common::widx::caption)
+            if (callingWidget == Common::widx::caption)
             {
-                common::renameCompany(self, input);
+                Common::renameCompany(self, input);
             }
         }
 
@@ -1986,9 +1986,9 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // 0x00433868
         static void onDropdown(window* self, widget_index widgetIndex, int16_t itemIndex)
         {
-            if (widgetIndex == common::widx::company_select)
+            if (widgetIndex == Common::widx::company_select)
             {
-                common::switchCompany(self, itemIndex);
+                Common::switchCompany(self, itemIndex);
                 sub_4C8DBF(self);
                 self->invalidate();
             }
@@ -2018,7 +2018,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // 0x004339B7
         static void onResize(window* self)
         {
-            common::enableRenameByCaption(self);
+            Common::enableRenameByCaption(self);
             self->setSize(windowSize);
         }
 
@@ -2057,23 +2057,23 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // TODO(avgeffen): only needs to be called once.
-        common::initEvents();
+        Common::initEvents();
 
-        window->current_tab = common::tab_finances - common::tab_status;
-        window->width = finances::windowSize.width;
-        window->height = finances::windowSize.height;
+        window->current_tab = Common::tab_finances - Common::tab_status;
+        window->width = Finances::windowSize.width;
+        window->height = Finances::windowSize.height;
         window->invalidate();
 
-        window->widgets = finances::widgets;
-        window->enabled_widgets = finances::enabledWidgets;
-        window->holdable_widgets = finances::holdableWidgets;
-        window->event_handlers = &finances::events;
+        window->widgets = Finances::widgets;
+        window->enabled_widgets = Finances::enabledWidgets;
+        window->holdable_widgets = Finances::holdableWidgets;
+        window->event_handlers = &Finances::events;
         window->activated_widgets = 0;
 
-        common::disableChallengeTab(window);
+        Common::disableChallengeTab(window);
         window->initScrollWidgets();
         window->moveInsideScreenEdges();
-        finances::sub_4C8DBF(window);
+        Finances::sub_4C8DBF(window);
 
         return window;
     }
@@ -2087,39 +2087,39 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             widgetEnd(),
         };
 
-        constexpr uint64_t enabledWidgets = common::enabledWidgets | (1 << common::widx::company_select);
+        constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Common::widx::company_select);
 
         static window_event_list events;
 
         // 0x00433A22
         static void prepareDraw(window* self)
         {
-            common::switchTabWidgets(self);
+            Common::switchTabWidgets(self);
 
             // Set company name.
             auto company = companymgr::get(self->number);
             FormatArguments args{};
             args.push(company->name);
 
-            self->widgets[common::widx::frame].right = self->width - 1;
-            self->widgets[common::widx::frame].bottom = self->height - 1;
+            self->widgets[Common::widx::frame].right = self->width - 1;
+            self->widgets[Common::widx::frame].bottom = self->height - 1;
 
-            self->widgets[common::widx::panel].right = self->width - 1;
-            self->widgets[common::widx::panel].bottom = self->height - 1;
+            self->widgets[Common::widx::panel].right = self->width - 1;
+            self->widgets[Common::widx::panel].bottom = self->height - 1;
 
-            self->widgets[common::widx::caption].right = self->width - 2;
+            self->widgets[Common::widx::caption].right = self->width - 2;
 
-            self->widgets[common::widx::close_button].left = self->width - 15;
-            self->widgets[common::widx::close_button].right = self->width - 3;
+            self->widgets[Common::widx::close_button].left = self->width - 15;
+            self->widgets[Common::widx::close_button].right = self->width - 3;
 
-            common::repositionTabs(self);
+            Common::repositionTabs(self);
         }
 
         // 0x00433ACD
         static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
         {
             self->draw(dpi);
-            common::drawTabs(self, dpi);
+            Common::drawTabs(self, dpi);
 
             uint16_t y = self->y + 47;
 
@@ -2178,21 +2178,21 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         {
             switch (widgetIndex)
             {
-                case common::widx::caption:
-                    common::renameCompanyPrompt(self, widgetIndex);
+                case Common::widx::caption:
+                    Common::renameCompanyPrompt(self, widgetIndex);
                     break;
 
-                case common::widx::close_button:
+                case Common::widx::close_button:
                     WindowManager::close(self);
                     break;
 
-                case common::widx::tab_status:
-                case common::widx::tab_details:
-                case common::widx::tab_colour_scheme:
-                case common::widx::tab_finances:
-                case common::widx::tab_cargo_delivered:
-                case common::widx::tab_challenge:
-                    common::switchTab(self, widgetIndex);
+                case Common::widx::tab_status:
+                case Common::widx::tab_details:
+                case Common::widx::tab_colour_scheme:
+                case Common::widx::tab_finances:
+                case Common::widx::tab_cargo_delivered:
+                case Common::widx::tab_challenge:
+                    Common::switchTab(self, widgetIndex);
                     break;
             }
         }
@@ -2200,24 +2200,24 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // 0x00433C0B
         static void onMouseDown(window* self, widget_index widgetIndex)
         {
-            if (widgetIndex == common::widx::company_select)
+            if (widgetIndex == Common::widx::company_select)
                 Dropdown::populateCompanySelect(self, &self->widgets[widgetIndex]);
         }
 
         // 0x00433C16
         static void textInput(window* self, widget_index callingWidget, char* input)
         {
-            if (callingWidget == common::widx::caption)
+            if (callingWidget == Common::widx::caption)
             {
-                common::renameCompany(self, input);
+                Common::renameCompany(self, input);
             }
         }
 
         // 0x00433C21
         static void onDropdown(window* self, widget_index widgetIndex, int16_t itemIndex)
         {
-            if (widgetIndex == common::widx::company_select)
-                common::switchCompany(self, itemIndex);
+            if (widgetIndex == Common::widx::company_select)
+                Common::switchCompany(self, itemIndex);
         }
 
         // 0x00433C7D
@@ -2231,7 +2231,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // 0x00433C97
         static void onResize(window* self)
         {
-            common::enableRenameByCaption(self);
+            Common::enableRenameByCaption(self);
 
             uint16_t cargoHeight = 0;
             const auto company = companymgr::get(self->number);
@@ -2262,7 +2262,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
     }
 
-    namespace challenge
+    namespace Challenge
     {
         const Gfx::ui_size_t windowSize = { 320, 182 };
 
@@ -2271,43 +2271,43 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             widgetEnd(),
         };
 
-        constexpr uint64_t enabledWidgets = common::enabledWidgets;
+        constexpr uint64_t enabledWidgets = Common::enabledWidgets;
 
         static window_event_list events;
 
         // 0x00433D39
         static void prepareDraw(window* self)
         {
-            common::switchTabWidgets(self);
+            Common::switchTabWidgets(self);
 
             // Set company name.
             auto company = companymgr::get(self->number);
             FormatArguments args{};
             args.push(company->name);
 
-            self->widgets[common::widx::frame].right = self->width - 1;
-            self->widgets[common::widx::frame].bottom = self->height - 1;
+            self->widgets[Common::widx::frame].right = self->width - 1;
+            self->widgets[Common::widx::frame].bottom = self->height - 1;
 
-            self->widgets[common::widx::panel].right = self->width - 1;
-            self->widgets[common::widx::panel].bottom = self->height - 1;
+            self->widgets[Common::widx::panel].right = self->width - 1;
+            self->widgets[Common::widx::panel].bottom = self->height - 1;
 
-            self->widgets[common::widx::caption].right = self->width - 2;
+            self->widgets[Common::widx::caption].right = self->width - 2;
 
-            self->widgets[common::widx::close_button].left = self->width - 15;
-            self->widgets[common::widx::close_button].right = self->width - 3;
+            self->widgets[Common::widx::close_button].left = self->width - 15;
+            self->widgets[Common::widx::close_button].right = self->width - 3;
 
-            self->widgets[common::widx::company_select].right = self->width - 3;
-            self->widgets[common::widx::company_select].left = self->width - 28;
-            self->widgets[common::widx::company_select].type = widget_type::none;
+            self->widgets[Common::widx::company_select].right = self->width - 3;
+            self->widgets[Common::widx::company_select].left = self->width - 28;
+            self->widgets[Common::widx::company_select].type = widget_type::none;
 
-            common::repositionTabs(self);
+            Common::repositionTabs(self);
         }
 
         // 0x00433DEB
         static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
         {
             self->draw(dpi);
-            common::drawTabs(self, dpi);
+            Common::drawTabs(self, dpi);
 
             registers regs;
             regs.edi = (int32_t)dpi;
@@ -2320,21 +2320,21 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         {
             switch (widgetIndex)
             {
-                case common::widx::caption:
-                    common::renameCompanyPrompt(self, widgetIndex);
+                case Common::widx::caption:
+                    Common::renameCompanyPrompt(self, widgetIndex);
                     break;
 
-                case common::widx::close_button:
+                case Common::widx::close_button:
                     WindowManager::close(self);
                     break;
 
-                case common::widx::tab_status:
-                case common::widx::tab_details:
-                case common::widx::tab_colour_scheme:
-                case common::widx::tab_finances:
-                case common::widx::tab_cargo_delivered:
-                case common::widx::tab_challenge:
-                    common::switchTab(self, widgetIndex);
+                case Common::widx::tab_status:
+                case Common::widx::tab_details:
+                case Common::widx::tab_colour_scheme:
+                case Common::widx::tab_finances:
+                case Common::widx::tab_cargo_delivered:
+                case Common::widx::tab_challenge:
+                    Common::switchTab(self, widgetIndex);
                     break;
             }
         }
@@ -2342,9 +2342,9 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // 0x00434023
         static void textInput(window* self, widget_index callingWidget, char* input)
         {
-            if (callingWidget == common::widx::caption)
+            if (callingWidget == Common::widx::caption)
             {
-                common::renameCompany(self, input);
+                Common::renameCompany(self, input);
             }
         }
 
@@ -2392,27 +2392,27 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // TODO(avgeffen): only needs to be called once.
-        common::initEvents();
+        Common::initEvents();
 
-        window->current_tab = common::tab_challenge - common::tab_status;
-        window->width = challenge::windowSize.width;
-        window->height = challenge::windowSize.height;
+        window->current_tab = Common::tab_challenge - Common::tab_status;
+        window->width = Challenge::windowSize.width;
+        window->height = Challenge::windowSize.height;
         window->invalidate();
 
-        window->widgets = challenge::widgets;
-        window->enabled_widgets = challenge::enabledWidgets;
+        window->widgets = Challenge::widgets;
+        window->enabled_widgets = Challenge::enabledWidgets;
         window->holdable_widgets = 0;
-        window->event_handlers = &challenge::events;
+        window->event_handlers = &Challenge::events;
         window->activated_widgets = 0;
 
-        common::disableChallengeTab(window);
+        Common::disableChallengeTab(window);
         window->initScrollWidgets();
         window->moveInsideScreenEdges();
 
         return window;
     }
 
-    namespace common
+    namespace Common
     {
         struct TabInformation
         {
@@ -2424,22 +2424,22 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         };
 
         static TabInformation tabInformationByTabOffset[] = {
-            { status::widgets, widx::tab_status, &status::events, &status::enabledWidgets, &status::windowSize },
-            { details::widgets, widx::tab_details, &details::events, &details::enabledWidgets, &details::windowSize },
-            { colour_scheme::widgets, widx::tab_colour_scheme, &colour_scheme::events, &colour_scheme::enabledWidgets, &colour_scheme::windowSize },
-            { finances::widgets, widx::tab_finances, &finances::events, &finances::enabledWidgets, &finances::windowSize },
+            { Status::widgets, widx::tab_status, &Status::events, &Status::enabledWidgets, &Status::windowSize },
+            { Details::widgets, widx::tab_details, &Details::events, &Details::enabledWidgets, &Details::windowSize },
+            { ColourScheme::widgets, widx::tab_colour_scheme, &ColourScheme::events, &ColourScheme::enabledWidgets, &ColourScheme::windowSize },
+            { Finances::widgets, widx::tab_finances, &Finances::events, &Finances::enabledWidgets, &Finances::windowSize },
             { CargoDelivered::widgets, widx::tab_cargo_delivered, &CargoDelivered::events, &CargoDelivered::enabledWidgets, &CargoDelivered::windowSize },
-            { challenge::widgets, widx::tab_challenge, &challenge::events, &challenge::enabledWidgets, &challenge::windowSize }
+            { Challenge::widgets, widx::tab_challenge, &Challenge::events, &Challenge::enabledWidgets, &Challenge::windowSize }
         };
 
         static void initEvents()
         {
-            status::initEvents();
-            details::initEvents();
-            colour_scheme::initEvents();
-            finances::initEvents();
+            Status::initEvents();
+            Details::initEvents();
+            ColourScheme::initEvents();
+            Finances::initEvents();
             CargoDelivered::initEvents();
-            challenge::initEvents();
+            Challenge::initEvents();
         }
 
         static void switchCompany(window* self, int16_t itemIndex)
@@ -2462,7 +2462,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             self->number = companyId;
             self->owner = companyId;
 
-            common::disableChallengeTab(self);
+            Common::disableChallengeTab(self);
             self->invalidate();
         }
 
@@ -2471,12 +2471,12 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             self->activated_widgets = 0;
 
             static widget_t* widgetCollectionsByTabId[] = {
-                status::widgets,
-                details::widgets,
-                colour_scheme::widgets,
-                finances::widgets,
+                Status::widgets,
+                Details::widgets,
+                ColourScheme::widgets,
+                Finances::widgets,
                 CargoDelivered::widgets,
-                challenge::widgets,
+                Challenge::widgets,
             };
 
             widget_t* newWidgets = widgetCollectionsByTabId[self->current_tab];
@@ -2527,9 +2527,9 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             self->widgets = tabInfo.widgets;
 
             if (tabInfo.widgetIndex == widx::tab_finances)
-                self->holdable_widgets = finances::holdableWidgets;
+                self->holdable_widgets = Finances::holdableWidgets;
 
-            common::disableChallengeTab(self);
+            Common::disableChallengeTab(self);
             self->invalidate();
             self->setSize(*tabInfo.windowSize);
             self->callOnResize();
@@ -2539,7 +2539,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             self->moveInsideScreenEdges();
 
             if (tabInfo.widgetIndex == widx::tab_finances)
-                finances::sub_4C8DBF(self);
+                Finances::sub_4C8DBF(self);
         }
 
         // 0x0043252E
@@ -2570,8 +2570,8 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             // Draw company owner face.
             const uint32_t image = Gfx::recolour(competitor->images[company->owner_emotion], company->mainColours.primary);
-            const uint16_t x = self->x + self->widgets[common::widx::company_select].left + 1;
-            const uint16_t y = self->y + self->widgets[common::widx::company_select].top + 1;
+            const uint16_t x = self->x + self->widgets[Common::widx::company_select].left + 1;
+            const uint16_t y = self->y + self->widgets[Common::widx::company_select].top + 1;
             Gfx::drawImage(dpi, x, y, image);
         }
 

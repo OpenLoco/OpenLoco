@@ -289,7 +289,7 @@ namespace OpenLoco::Audio
     void initialiseDSound()
     {
         const char* deviceName = nullptr;
-        const auto& cfg = config::getNew();
+        const auto& cfg = Config::getNew();
         if (!cfg.audio.device.empty())
         {
             deviceName = cfg.audio.device.c_str();
@@ -380,13 +380,13 @@ namespace OpenLoco::Audio
 #endif
         }
 
-        const auto& cfg = config::getNew();
+        const auto& cfg = Config::getNew();
         return cfg.audio.device.c_str();
     }
 
     size_t getCurrentDevice()
     {
-        const auto& cfg = config::getNew();
+        const auto& cfg = Config::getNew();
         return getDeviceIndex(cfg.audio.device);
     }
 
@@ -394,7 +394,7 @@ namespace OpenLoco::Audio
     {
         if (index < _devices.size())
         {
-            auto& cfg = config::getNew();
+            auto& cfg = Config::getNew();
 #ifdef __HAS_DEFAULT_DEVICE__
             if (index == 0)
             {
@@ -405,7 +405,7 @@ namespace OpenLoco::Audio
             {
                 cfg.audio.device = _devices[index];
             }
-            config::writeNewConfig();
+            Config::writeNewConfig();
             reinitialise();
         }
     }
@@ -421,7 +421,7 @@ namespace OpenLoco::Audio
         stopBackgroundMusic();
         stopAmbientNoise();
         stopTitleMusic();
-        config::write();
+        Config::write();
     }
 
     // 0x00489C34
@@ -606,7 +606,7 @@ namespace OpenLoco::Audio
                 pan = 0;
             }
 
-            const auto& cfg = config::get();
+            const auto& cfg = Config::get();
             if (cfg.var_1E == 0)
             {
                 pan = 0;
@@ -797,7 +797,7 @@ namespace OpenLoco::Audio
         if (v->sprite_left == location::null)
             return;
 
-        if (_numActiveVehicleSounds >= config::get().max_vehicle_sounds)
+        if (_numActiveVehicleSounds >= Config::get().max_vehicle_sounds)
             return;
 
         auto spritePosition = viewport_pos(v->sprite_left, v->sprite_top);
@@ -945,8 +945,8 @@ namespace OpenLoco::Audio
     // 0x0048AA0C
     void revalidateCurrentTrack()
     {
-        using music_playlist_type = config::music_playlist_type;
-        auto cfg = config::get();
+        using music_playlist_type = Config::music_playlist_type;
+        auto cfg = Config::get();
 
         if (_currentSong == no_song)
             return;
@@ -982,12 +982,12 @@ namespace OpenLoco::Audio
 
     static int32_t chooseNextMusicTrack(int32_t excludeTrack)
     {
-        using music_playlist_type = config::music_playlist_type;
+        using music_playlist_type = Config::music_playlist_type;
 
         static std::vector<uint8_t> playlist;
         playlist.clear();
 
-        auto cfg = config::get();
+        auto cfg = Config::get();
         switch (cfg.music_playlist)
         {
             case music_playlist_type::current_era:
@@ -1062,7 +1062,7 @@ namespace OpenLoco::Audio
             return;
         }
 
-        auto cfg = config::get();
+        auto cfg = Config::get();
         if (cfg.music_playing == 0 || isTitleMode() || isEditorMode())
         {
             return;
@@ -1104,7 +1104,7 @@ namespace OpenLoco::Audio
     // 0x0048AC66
     void playTitleScreenMusic()
     {
-        if (isTitleMode() && _audio_initialised && _audioIsEnabled && config::getNew().audio.play_title_music)
+        if (isTitleMode() && _audio_initialised && _audioIsEnabled && Config::getNew().audio.play_title_music)
         {
             if (!isChannelPlaying(channel_id::title))
             {

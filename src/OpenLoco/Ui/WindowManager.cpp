@@ -2021,7 +2021,7 @@ namespace OpenLoco::Ui::Windows
         _gridlinesState--;
         if (!_gridlinesState)
         {
-            if (!(config::get().flags & config::flags::gridlines_on_landscape))
+            if (!(Config::get().flags & Config::flags::gridlines_on_landscape))
             {
                 auto window = WindowManager::getMainWindow();
                 if (window != nullptr)

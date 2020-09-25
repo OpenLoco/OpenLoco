@@ -62,7 +62,7 @@ namespace OpenLoco::Ui::Windows::Terraform
     static loco_global<uint32_t, 0x0113652C> _raiseWaterCost;
     static loco_global<uint32_t, 0x01136528> _lowerWaterCost;
 
-    namespace common
+    namespace Common
     {
         enum widx
         {
@@ -104,7 +104,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         static void sub_4A69DD();
     }
 
-    namespace plant_trees
+    namespace PlantTrees
     {
         static const Gfx::ui_size_t windowSize = { 634, 162 };
 
@@ -120,7 +120,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             plant_cluster_random,
         };
 
-        const uint64_t enabledWidgets = common::enabledWidgets | (1 << scrollview) | (1 << rotate_object) | (1 << object_colour) | (1 << plant_cluster_selected) | (1 << plant_cluster_random);
+        const uint64_t enabledWidgets = Common::enabledWidgets | (1 << scrollview) | (1 << rotate_object) | (1 << object_colour) | (1 << plant_cluster_selected) | (1 << plant_cluster_random);
 
         widget_t widgets[] = {
             commonWidgets(634, 162, StringIds::title_plant_trees),
@@ -222,14 +222,14 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BBB0A
         static void onClose(window* self)
         {
-            common::sub_4BD297();
+            Common::sub_4BD297();
             Ui::Windows::hideGridlines();
         }
 
         // 0x004BBC7D
         static void tabReset(window* self)
         {
-            Input::toolSet(self, common::widx::panel, 8);
+            Input::toolSet(self, Common::widx::panel, 8);
             Input::setFlag(Input::input_flags::flag6);
             _byte_113649A = 0;
             _lastTreeCost = 0x80000000;
@@ -244,16 +244,16 @@ namespace OpenLoco::Ui::Windows::Terraform
         {
             switch (widgetIndex)
             {
-                case common::widx::close_button:
+                case Common::widx::close_button:
                     WindowManager::close(self);
                     break;
 
-                case common::widx::tab_adjust_land:
-                case common::widx::tab_adjust_water:
-                case common::widx::tab_build_walls:
-                case common::widx::tab_clear_area:
-                case common::widx::tab_plant_trees:
-                    common::switchTab(self, widgetIndex);
+                case Common::widx::tab_adjust_land:
+                case Common::widx::tab_adjust_water:
+                case Common::widx::tab_build_walls:
+                case Common::widx::tab_clear_area:
+                case Common::widx::tab_plant_trees:
+                    Common::switchTab(self, widgetIndex);
                     break;
 
                 case widx::rotate_object:
@@ -348,7 +348,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                         yPos = cursor.y;
                         widget_index activeWidget = self->findWidgetAt(xPos, yPos);
 
-                        if (activeWidget > common::widx::panel)
+                        if (activeWidget > Common::widx::panel)
                         {
                             self->saved_view.mapX += 1;
                             if (self->saved_view.mapX >= 8)
@@ -391,7 +391,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             self->frame_no++;
 
             self->callPrepareDraw();
-            WindowManager::invalidateWidget(WindowType::terraform, self->number, self->current_tab + common::widx::tab_clear_area);
+            WindowManager::invalidateWidget(WindowType::terraform, self->number, self->current_tab + Common::widx::tab_clear_area);
         }
 
         // 0x004BBEDF
@@ -497,7 +497,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BB756
         static void prepareDraw(window* self)
         {
-            common::prepareDraw(self);
+            Common::prepareDraw(self);
 
             self->activated_widgets &= ~((1ULL << widx::plant_cluster_selected) | (1ULL << widx::plant_cluster_random));
 
@@ -540,14 +540,14 @@ namespace OpenLoco::Ui::Windows::Terraform
             self->widgets[widx::plant_cluster_selected].right = self->width - 2;
             self->widgets[widx::plant_cluster_random].right = self->width - 2;
 
-            common::repositionTabs(self);
+            Common::repositionTabs(self);
         }
 
         // 0x004BB8C9
         static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
         {
             self->draw(dpi);
-            common::drawTabs(self, dpi);
+            Common::drawTabs(self, dpi);
 
             auto treeId = self->var_846;
             if (treeId == 0xFFFF)
@@ -679,36 +679,36 @@ namespace OpenLoco::Ui::Windows::Terraform
         auto window = WindowManager::bringToFront(WindowType::terraform, 0);
         if (window != nullptr)
         {
-            window->callOnMouseUp(common::widx::tab_plant_trees);
+            window->callOnMouseUp(Common::widx::tab_plant_trees);
         }
         else
         {
             // 0x004BB586
-            auto origin = Gfx::point_t(Ui::width() - plant_trees::windowSize.width, 30);
+            auto origin = Gfx::point_t(Ui::width() - PlantTrees::windowSize.width, 30);
 
             window = WindowManager::createWindow(
                 WindowType::terraform,
                 origin,
-                plant_trees::windowSize,
+                PlantTrees::windowSize,
                 window_flags::flag_11,
-                &plant_trees::events);
+                &PlantTrees::events);
 
             window->number = 0;
-            window->current_tab = common::widx::tab_plant_trees - common::widx::tab_clear_area;
+            window->current_tab = Common::widx::tab_plant_trees - Common::widx::tab_clear_area;
             window->frame_no = 0;
             _byte_113649A = 0;
             _lastTreeCost = 0x80000000;
             window->owner = _player_company;
             window->var_846 = 0xFFFF;
             window->saved_view.mapX = 0;
-            _treeClusterType = plant_trees::treeCluster::none;
+            _treeClusterType = PlantTrees::treeCluster::none;
 
             WindowManager::sub_4CEE0B(window);
 
-            window->min_width = plant_trees::windowSize.width;
-            window->min_height = plant_trees::windowSize.height;
-            window->max_width = plant_trees::windowSize.width;
-            window->max_height = plant_trees::windowSize.height;
+            window->min_width = PlantTrees::windowSize.width;
+            window->min_height = PlantTrees::windowSize.height;
+            window->max_width = PlantTrees::windowSize.width;
+            window->max_height = PlantTrees::windowSize.height;
 
             auto skin = ObjectManager::get<interface_skin_object>();
             window->colours[1] = skin->colour_0E;
@@ -718,12 +718,12 @@ namespace OpenLoco::Ui::Windows::Terraform
             Ui::Windows::showGridlines();
             _treeRotation = 2;
 
-            common::initEvents();
+            Common::initEvents();
 
             window->invalidate();
 
-            window->widgets = plant_trees::widgets;
-            window->enabled_widgets = plant_trees::enabledWidgets;
+            window->widgets = PlantTrees::widgets;
+            window->enabled_widgets = PlantTrees::enabledWidgets;
             window->holdable_widgets = 0;
             window->activated_widgets = 0;
 
@@ -736,16 +736,16 @@ namespace OpenLoco::Ui::Windows::Terraform
             window->var_83C = 0;
             window->row_hover = -1;
 
-            plant_trees::refreshTreeList(window);
+            PlantTrees::refreshTreeList(window);
 
-            Input::toolSet(window, common::widx::panel, 18);
+            Input::toolSet(window, Common::widx::panel, 18);
 
             Input::setFlag(Input::input_flags::flag6);
         }
         return window;
     }
 
-    namespace clear_area
+    namespace ClearArea
     {
         enum widx
         {
@@ -754,7 +754,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             increase_area,
         };
 
-        const uint64_t enabledWidgets = common::enabledWidgets | (1 << tool_area) | (1 << decrease_area) | (1 << increase_area);
+        const uint64_t enabledWidgets = Common::enabledWidgets | (1 << tool_area) | (1 << decrease_area) | (1 << increase_area);
 
         widget_t widgets[] = {
             commonWidgets(130, 105, StringIds::clear_area),
@@ -775,7 +775,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BBBC7
         static void tabReset(window* self)
         {
-            Input::toolSet(self, common::widx::panel, 41);
+            Input::toolSet(self, Common::widx::panel, 41);
             Input::setFlag(Input::input_flags::flag6);
             _raiseLandCost = 0x80000000;
             _adjustToolSize = _clearAreaToolSize;
@@ -784,7 +784,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BC7C6
         static void onResize(window* self)
         {
-            common::onResize(self, 105);
+            Common::onResize(self, 105);
         }
 
         // 0x004BC65C
@@ -845,7 +845,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BC689
         static void onToolDown(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
         {
-            if (widgetIndex != common::widx::panel)
+            if (widgetIndex != Common::widx::panel)
                 return;
             clearLand(GameCommandFlag::apply);
         }
@@ -853,7 +853,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BC682
         static void toolDragContinue(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
         {
-            if (widgetIndex != common::widx::panel)
+            if (widgetIndex != Common::widx::panel)
                 return;
 
             auto window = WindowManager::find(WindowType::error);
@@ -866,7 +866,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BC701
         static void toolDragEnd(window& self, const widget_index widgetIndex)
         {
-            if (widgetIndex == common::widx::panel)
+            if (widgetIndex == Common::widx::panel)
             {
                 TileManager::mapInvalidateSelectionRect();
 
@@ -878,20 +878,20 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BC555
         static void prepareDraw(window* self)
         {
-            common::prepareDraw(self);
+            Common::prepareDraw(self);
 
             self->activated_widgets |= (1ULL << widx::tool_area);
 
             self->widgets[widx::tool_area].image = _adjustToolSize + ImageIds::tool_area;
 
-            common::repositionTabs(self);
+            Common::repositionTabs(self);
         }
 
         // 0x004BC5E7
         static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
         {
             self->draw(dpi);
-            common::drawTabs(self, dpi);
+            Common::drawTabs(self, dpi);
 
             if (_raiseLandCost == 0x80000000)
                 return;
@@ -913,10 +913,10 @@ namespace OpenLoco::Ui::Windows::Terraform
         static void initEvents()
         {
             events.on_close = onClose;
-            events.on_mouse_up = common::onMouseUp;
+            events.on_mouse_up = Common::onMouseUp;
             events.on_resize = onResize;
             events.on_mouse_down = onMouseDown;
-            events.on_update = common::onUpdate;
+            events.on_update = Common::onUpdate;
             events.on_tool_update = onToolUpdate;
             events.on_tool_down = onToolDown;
             events.toolDragContinue = (void (*)(window&, const widget_index, const int16_t, const int16_t))0x004BC682;
@@ -926,7 +926,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
     }
 
-    namespace adjust_land
+    namespace AdjustLand
     {
         enum widx
         {
@@ -936,7 +936,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             land_material,
         };
 
-        const uint64_t enabledWidgets = common::enabledWidgets | (1 << tool_area) | (1 << decrease_area) | (1 << increase_area) | (1 << land_material);
+        const uint64_t enabledWidgets = Common::enabledWidgets | (1 << tool_area) | (1 << decrease_area) | (1 << increase_area) | (1 << land_material);
 
         widget_t widgets[] = {
             commonWidgets(130, 105, StringIds::title_adjust_land),
@@ -958,7 +958,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BBBF7
         static void tabReset(window* self)
         {
-            Input::toolSet(self, common::widx::panel, 18);
+            Input::toolSet(self, Common::widx::panel, 18);
             Input::setFlag(Input::input_flags::flag6);
             for (auto i = 0; i < 32; i++)
             {
@@ -979,12 +979,12 @@ namespace OpenLoco::Ui::Windows::Terraform
         {
             if (isEditorMode())
             {
-                common::onResize(self, 115);
+                Common::onResize(self, 115);
             }
             else
             {
                 // CHANGE: Resizes window to allow Dropdown and cost string to be drawn seperately
-                common::onResize(self, 140);
+                Common::onResize(self, 140);
             }
         }
 
@@ -1076,7 +1076,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         {
             uint32_t cost;
             if ((flags & 1))
-                common::sub_4A69DD();
+                Common::sub_4A69DD();
 
             int16_t x = _mapSelectionAX + _mapSelectionBX;
             int16_t y = _mapSelectionAY + _mapSelectionBY;
@@ -1105,7 +1105,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         {
             uint32_t cost;
             if ((flags & 1))
-                common::sub_4A69DD();
+                Common::sub_4A69DD();
 
             int16_t x = _mapSelectionAX + _mapSelectionBX;
             int16_t y = _mapSelectionAY + _mapSelectionBY;
@@ -1290,7 +1290,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         static void onToolUpdate(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
         {
             uint16_t xPos = 0;
-            if (widgetIndex != common::widx::panel)
+            if (widgetIndex != Common::widx::panel)
                 return;
 
             TileManager::mapInvalidateSelectionRect();
@@ -1345,7 +1345,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BC9ED
         static void onToolDown(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
         {
-            if (widgetIndex != common::widx::panel)
+            if (widgetIndex != Common::widx::panel)
                 return;
             if (!(_mapSelectionFlags & 1))
                 return;
@@ -1369,7 +1369,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BC9E2
         static void toolDragContinue(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
         {
-            if (widgetIndex != common::widx::panel)
+            if (widgetIndex != Common::widx::panel)
                 return;
 
             auto window = WindowManager::findAt(x, y);
@@ -1416,7 +1416,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BCA5D
         static void toolDragEnd(window& self, const widget_index widgetIndex)
         {
-            if (widgetIndex == common::widx::panel)
+            if (widgetIndex == Common::widx::panel)
             {
                 TileManager::mapInvalidateSelectionRect();
 
@@ -1429,7 +1429,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BC83B
         static void prepareDraw(window* self)
         {
-            common::prepareDraw(self);
+            Common::prepareDraw(self);
 
             self->activated_widgets |= (1ULL << widx::tool_area);
 
@@ -1447,14 +1447,14 @@ namespace OpenLoco::Ui::Windows::Terraform
                 self->widgets[widx::land_material].image = landObj->var_16 + OpenLoco::Land::ImageIds::landscape_generator_tile_icon;
             }
 
-            common::repositionTabs(self);
+            Common::repositionTabs(self);
         }
 
         // 0x004BC909
         static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
         {
             self->draw(dpi);
-            common::drawTabs(self, dpi);
+            Common::drawTabs(self, dpi);
 
             auto xPos = self->widgets[widx::tool_area].left + self->widgets[widx::tool_area].right;
             xPos /= 2;
@@ -1487,11 +1487,11 @@ namespace OpenLoco::Ui::Windows::Terraform
         static void initEvents()
         {
             events.on_close = onClose;
-            events.on_mouse_up = common::onMouseUp;
+            events.on_mouse_up = Common::onMouseUp;
             events.on_resize = onResize;
             events.on_mouse_down = onMouseDown;
             events.on_dropdown = onDropdown;
-            events.on_update = common::onUpdate;
+            events.on_update = Common::onUpdate;
             events.on_tool_update = onToolUpdate;
             events.on_tool_down = onToolDown;
             events.toolDragContinue = (void (*)(window&, const widget_index, const int16_t, const int16_t))0x004BC9E2;
@@ -1501,7 +1501,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
     }
 
-    namespace adjust_water
+    namespace AdjustWater
     {
         enum widx
         {
@@ -1510,7 +1510,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             increase_area,
         };
 
-        const uint64_t enabledWidgets = common::enabledWidgets | (1 << tool_area) | (1 << decrease_area) | (1 << increase_area);
+        const uint64_t enabledWidgets = Common::enabledWidgets | (1 << tool_area) | (1 << decrease_area) | (1 << increase_area);
 
         widget_t widgets[] = {
             commonWidgets(130, 105, StringIds::title_adjust_water),
@@ -1531,7 +1531,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BBC46
         static void tabReset(window* self)
         {
-            Input::toolSet(self, common::widx::panel, 19);
+            Input::toolSet(self, Common::widx::panel, 19);
             Input::setFlag(Input::input_flags::flag6);
             _raiseWaterCost = 0x80000000;
             _lowerWaterCost = 0x80000000;
@@ -1541,7 +1541,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BCEB4
         static void onResize(window* self)
         {
-            common::onResize(self, 115);
+            Common::onResize(self, 115);
         }
 
         // 0x004BCD9D
@@ -1595,7 +1595,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
         static void raiseWater(uint8_t flags)
         {
-            common::sub_4A69DD();
+            Common::sub_4A69DD();
             _gGameCommandErrorTitle = StringIds::error_cant_raise_water_here;
             map_pos pointA = { _mapSelectionAX, _mapSelectionAY };
             map_pos pointB = { _mapSelectionBX, _mapSelectionBY };
@@ -1605,7 +1605,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
         static void lowerWater(uint8_t flags)
         {
-            common::sub_4A69DD();
+            Common::sub_4A69DD();
             _gGameCommandErrorTitle = StringIds::error_cant_raise_water_here;
             map_pos pointA = { _mapSelectionAX, _mapSelectionAY };
             map_pos pointB = { _mapSelectionBX, _mapSelectionBY };
@@ -1616,7 +1616,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BCDBF
         static void toolDragContinue(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
         {
-            if (widgetIndex != common::widx::panel)
+            if (widgetIndex != Common::widx::panel)
                 return;
 
             auto window = WindowManager::findAt(x, y);
@@ -1664,7 +1664,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BCDE8
         static void toolDragEnd(window& self, const widget_index widgetIndex)
         {
-            if (widgetIndex == common::widx::panel)
+            if (widgetIndex == Common::widx::panel)
             {
                 TileManager::mapInvalidateSelectionRect();
 
@@ -1677,20 +1677,20 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BCC6D
         static void prepareDraw(window* self)
         {
-            common::prepareDraw(self);
+            Common::prepareDraw(self);
 
             self->activated_widgets |= (1ULL << widx::tool_area);
 
             self->widgets[widx::tool_area].image = _adjustToolSize + ImageIds::tool_area;
 
-            common::repositionTabs(self);
+            Common::repositionTabs(self);
         }
 
         // 0x004BCCFF
         static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
         {
             self->draw(dpi);
-            common::drawTabs(self, dpi);
+            Common::drawTabs(self, dpi);
 
             auto xPos = self->widgets[widx::tool_area].left + self->widgets[widx::tool_area].right;
             xPos /= 2;
@@ -1725,10 +1725,10 @@ namespace OpenLoco::Ui::Windows::Terraform
         static void initEvents()
         {
             events.on_close = onClose;
-            events.on_mouse_up = common::onMouseUp;
+            events.on_mouse_up = Common::onMouseUp;
             events.on_resize = onResize;
             events.on_mouse_down = onMouseDown;
-            events.on_update = common::onUpdate;
+            events.on_update = Common::onUpdate;
             events.on_tool_update = onToolUpdate;
             events.on_tool_down = onToolDown;
             events.toolDragContinue = (void (*)(window&, const widget_index, const int16_t, const int16_t))0x004BCDBF;
@@ -1738,7 +1738,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
     }
 
-    namespace build_walls
+    namespace BuildWalls
     {
         static const Gfx::ui_size_t windowSize = { 418, 108 };
 
@@ -1749,7 +1749,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             scrollview = 9,
         };
 
-        const uint64_t enabledWidgets = common::enabledWidgets | (1 << scrollview);
+        const uint64_t enabledWidgets = Common::enabledWidgets | (1 << scrollview);
 
         widget_t widgets[] = {
             commonWidgets(418, 108, StringIds::title_build_walls),
@@ -1823,14 +1823,14 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BC21C
         static void onClose(window* self)
         {
-            common::sub_4BD297();
+            Common::sub_4BD297();
             Ui::Windows::hideGridlines();
         }
 
         // 0x004BBCBF
         static void tabReset(window* self)
         {
-            Input::toolSet(self, common::widx::panel, 15);
+            Input::toolSet(self, Common::widx::panel, 15);
             Input::setFlag(Input::input_flags::flag6);
             _byte_113649A = 0;
             self->var_83C = 0;
@@ -1876,7 +1876,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                         yPos = cursor.y;
                         widget_index activeWidget = self->findWidgetAt(xPos, yPos);
 
-                        if (activeWidget > common::widx::panel)
+                        if (activeWidget > Common::widx::panel)
                         {
                             self->saved_view.mapX += 1;
                             if (self->saved_view.mapX >= 8)
@@ -1919,7 +1919,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             self->frame_no++;
 
             self->callPrepareDraw();
-            WindowManager::invalidateWidget(WindowType::terraform, self->number, self->current_tab + common::widx::tab_clear_area);
+            WindowManager::invalidateWidget(WindowType::terraform, self->number, self->current_tab + Common::widx::tab_clear_area);
         }
 
         // 0x004BC377
@@ -2023,19 +2023,19 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BC029
         static void prepareDraw(window* self)
         {
-            common::prepareDraw(self);
+            Common::prepareDraw(self);
 
             self->widgets[widx::scrollview].right = self->width - 4;
             self->widgets[widx::scrollview].bottom = self->height - 14;
 
-            common::repositionTabs(self);
+            Common::repositionTabs(self);
         }
 
         // 0x004BC0C2
         static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
         {
             self->draw(dpi);
-            common::drawTabs(self, dpi);
+            Common::drawTabs(self, dpi);
 
             auto wallId = self->var_846;
             if (wallId == 0xFFFF)
@@ -2095,7 +2095,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         static void initEvents()
         {
             events.on_close = onClose;
-            events.on_mouse_up = common::onMouseUp;
+            events.on_mouse_up = Common::onMouseUp;
             events.on_resize = onResize;
             events.on_update = onUpdate;
             events.event_08 = event_08;
@@ -2111,7 +2111,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
     }
 
-    namespace common
+    namespace Common
     {
         struct TabInformation
         {
@@ -2122,11 +2122,11 @@ namespace OpenLoco::Ui::Windows::Terraform
         };
 
         static TabInformation tabInformationByTabOffset[] = {
-            { clear_area::widgets, widx::tab_clear_area, &clear_area::events, clear_area::enabledWidgets },
-            { adjust_land::widgets, widx::tab_adjust_land, &adjust_land::events, adjust_land::enabledWidgets },
-            { adjust_water::widgets, widx::tab_adjust_water, &adjust_water::events, adjust_water::enabledWidgets },
-            { plant_trees::widgets, widx::tab_plant_trees, &plant_trees::events, plant_trees::enabledWidgets },
-            { build_walls::widgets, widx::tab_build_walls, &build_walls::events, build_walls::enabledWidgets },
+            { ClearArea::widgets, widx::tab_clear_area, &ClearArea::events, ClearArea::enabledWidgets },
+            { AdjustLand::widgets, widx::tab_adjust_land, &AdjustLand::events, AdjustLand::enabledWidgets },
+            { AdjustWater::widgets, widx::tab_adjust_water, &AdjustWater::events, AdjustWater::enabledWidgets },
+            { PlantTrees::widgets, widx::tab_plant_trees, &PlantTrees::events, PlantTrees::enabledWidgets },
+            { BuildWalls::widgets, widx::tab_build_walls, &BuildWalls::events, BuildWalls::enabledWidgets },
         };
 
         static void onResize(window* self, uint8_t height)
@@ -2154,7 +2154,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             self->frame_no++;
             self->callPrepareDraw();
-            WindowManager::invalidateWidget(WindowType::terraform, self->number, self->current_tab + common::widx::tab_clear_area);
+            WindowManager::invalidateWidget(WindowType::terraform, self->number, self->current_tab + Common::widx::tab_clear_area);
         }
 
         // 0x004BCD82
@@ -2162,16 +2162,16 @@ namespace OpenLoco::Ui::Windows::Terraform
         {
             switch (widgetIndex)
             {
-                case common::widx::close_button:
+                case Common::widx::close_button:
                     WindowManager::close(self);
                     break;
 
-                case common::widx::tab_adjust_land:
-                case common::widx::tab_adjust_water:
-                case common::widx::tab_build_walls:
-                case common::widx::tab_clear_area:
-                case common::widx::tab_plant_trees:
-                    common::switchTab(self, widgetIndex);
+                case Common::widx::tab_adjust_land:
+                case Common::widx::tab_adjust_water:
+                case Common::widx::tab_build_walls:
+                case Common::widx::tab_clear_area:
+                case Common::widx::tab_plant_trees:
+                    Common::switchTab(self, widgetIndex);
                     break;
             }
         }
@@ -2308,24 +2308,24 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             switch (widgetIndex)
             {
-                case common::widx::tab_adjust_land:
-                    adjust_land::tabReset(self);
+                case Common::widx::tab_adjust_land:
+                    AdjustLand::tabReset(self);
                     break;
 
-                case common::widx::tab_adjust_water:
-                    adjust_water::tabReset(self);
+                case Common::widx::tab_adjust_water:
+                    AdjustWater::tabReset(self);
                     break;
 
-                case common::widx::tab_build_walls:
-                    build_walls::tabReset(self);
+                case Common::widx::tab_build_walls:
+                    BuildWalls::tabReset(self);
                     break;
 
-                case common::widx::tab_clear_area:
-                    clear_area::tabReset(self);
+                case Common::widx::tab_clear_area:
+                    ClearArea::tabReset(self);
                     break;
 
-                case common::widx::tab_plant_trees:
-                    plant_trees::tabReset(self);
+                case Common::widx::tab_plant_trees:
+                    PlantTrees::tabReset(self);
                     break;
             }
 
@@ -2345,11 +2345,11 @@ namespace OpenLoco::Ui::Windows::Terraform
 
         static void initEvents()
         {
-            plant_trees::initEvents();
-            clear_area::initEvents();
-            adjust_land::initEvents();
-            adjust_water::initEvents();
-            build_walls::initEvents();
+            PlantTrees::initEvents();
+            ClearArea::initEvents();
+            AdjustLand::initEvents();
+            AdjustWater::initEvents();
+            BuildWalls::initEvents();
         }
     }
 
@@ -2357,35 +2357,35 @@ namespace OpenLoco::Ui::Windows::Terraform
     void openClearArea()
     {
         auto terraform_window = open();
-        terraform_window->callOnMouseUp(common::widx::tab_clear_area);
+        terraform_window->callOnMouseUp(Common::widx::tab_clear_area);
     }
 
     // 0x004BB546
     void openAdjustLand()
     {
         auto terraform_window = open();
-        terraform_window->callOnMouseUp(common::widx::tab_adjust_land);
+        terraform_window->callOnMouseUp(Common::widx::tab_adjust_land);
     }
 
     // 0x004BB556
     void openAdjustWater()
     {
         auto terraform_window = open();
-        terraform_window->callOnMouseUp(common::widx::tab_adjust_water);
+        terraform_window->callOnMouseUp(Common::widx::tab_adjust_water);
     }
 
     // 0x004BB4A3
     void openPlantTrees()
     {
         auto terraform_window = open();
-        terraform_window->callOnMouseUp(common::widx::tab_plant_trees);
+        terraform_window->callOnMouseUp(Common::widx::tab_plant_trees);
     }
 
     // 0x004BB576
     void openBuildWalls()
     {
         auto terraform_window = open();
-        terraform_window->callOnMouseUp(common::widx::tab_build_walls);
+        terraform_window->callOnMouseUp(Common::widx::tab_build_walls);
     }
 
     void registerHooks()
@@ -2394,7 +2394,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             0x004BC9E2,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                adjust_land::toolDragContinue((Ui::window&)regs.esi, (widget_index)regs.dx, (int16_t)regs.ax, (int16_t)regs.bx);
+                AdjustLand::toolDragContinue((Ui::window&)regs.esi, (widget_index)regs.dx, (int16_t)regs.ax, (int16_t)regs.bx);
                 regs = backup;
                 return 0;
             });
@@ -2403,7 +2403,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             0x004BCA5D,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                adjust_land::toolDragEnd((Ui::window&)regs.esi, (widget_index)regs.dx);
+                AdjustLand::toolDragEnd((Ui::window&)regs.esi, (widget_index)regs.dx);
                 regs = backup;
                 return 0;
             });
@@ -2412,7 +2412,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             0x004BCDBF,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                adjust_water::toolDragContinue((Ui::window&)regs.esi, (widget_index)regs.dx, (int16_t)regs.ax, (int16_t)regs.bx);
+                AdjustWater::toolDragContinue((Ui::window&)regs.esi, (widget_index)regs.dx, (int16_t)regs.ax, (int16_t)regs.bx);
                 regs = backup;
                 return 0;
             });
@@ -2421,7 +2421,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             0x004BCDE8,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                adjust_water::toolDragEnd((Ui::window&)regs.esi, (widget_index)regs.dx);
+                AdjustWater::toolDragEnd((Ui::window&)regs.esi, (widget_index)regs.dx);
                 regs = backup;
                 return 0;
             });
@@ -2430,7 +2430,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             0x004BC682,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                clear_area::toolDragContinue((Ui::window&)regs.esi, (widget_index)regs.dx, (int16_t)regs.ax, (int16_t)regs.bx);
+                ClearArea::toolDragContinue((Ui::window&)regs.esi, (widget_index)regs.dx, (int16_t)regs.ax, (int16_t)regs.bx);
                 regs = backup;
                 return 0;
             });
@@ -2439,7 +2439,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             0x004BC701,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                clear_area::toolDragEnd((Ui::window&)regs.esi, (widget_index)regs.dx);
+                ClearArea::toolDragEnd((Ui::window&)regs.esi, (widget_index)regs.dx);
                 regs = backup;
                 return 0;
             });

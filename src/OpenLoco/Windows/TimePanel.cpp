@@ -22,7 +22,7 @@ namespace OpenLoco::Ui::TimePanel
 {
     static const Gfx::ui_size_t window_size = { 140, 27 };
 
-    namespace widx
+    namespace Widx
     {
         enum
         {
@@ -98,7 +98,7 @@ namespace OpenLoco::Ui::TimePanel
             Ui::window_flags::stick_to_front | Ui::window_flags::transparent | Ui::window_flags::no_background,
             &_events);
         window->widgets = _widgets;
-        window->enabled_widgets = (1 << widx::map_chat_menu) | (1 << widx::date_btn) | (1 << widx::pause_btn) | (1 << widx::normal_speed_btn) | (1 << widx::fast_forward_btn) | (1 << widx::extra_fast_forward_btn);
+        window->enabled_widgets = (1 << Widx::map_chat_menu) | (1 << Widx::date_btn) | (1 << Widx::pause_btn) | (1 << Widx::normal_speed_btn) | (1 << Widx::fast_forward_btn) | (1 << Widx::extra_fast_forward_btn);
         window->var_854 = 0;
         window->var_856 = 0;
         window->initScrollWidgets();
@@ -116,52 +116,52 @@ namespace OpenLoco::Ui::TimePanel
     // 0x004396A4
     static void prepareDraw(window* window)
     {
-        _widgets[widx::inner_frame].type = widget_type::none;
-        _widgets[widx::pause_btn].image = Gfx::recolour(ImageIds::speed_pause);
-        _widgets[widx::normal_speed_btn].image = Gfx::recolour(ImageIds::speed_normal);
-        _widgets[widx::fast_forward_btn].image = Gfx::recolour(ImageIds::speed_fast_forward);
-        _widgets[widx::extra_fast_forward_btn].image = Gfx::recolour(ImageIds::speed_extra_fast_forward);
+        _widgets[Widx::inner_frame].type = widget_type::none;
+        _widgets[Widx::pause_btn].image = Gfx::recolour(ImageIds::speed_pause);
+        _widgets[Widx::normal_speed_btn].image = Gfx::recolour(ImageIds::speed_normal);
+        _widgets[Widx::fast_forward_btn].image = Gfx::recolour(ImageIds::speed_fast_forward);
+        _widgets[Widx::extra_fast_forward_btn].image = Gfx::recolour(ImageIds::speed_extra_fast_forward);
 
         if (isPaused())
         {
-            _widgets[widx::pause_btn].image = Gfx::recolour(ImageIds::speed_pause_active);
+            _widgets[Widx::pause_btn].image = Gfx::recolour(ImageIds::speed_pause_active);
         }
         else if (game_speed == 0)
         {
-            _widgets[widx::normal_speed_btn].image = Gfx::recolour(ImageIds::speed_normal_active);
+            _widgets[Widx::normal_speed_btn].image = Gfx::recolour(ImageIds::speed_normal_active);
         }
         else if (game_speed == 1)
         {
-            _widgets[widx::fast_forward_btn].image = Gfx::recolour(ImageIds::speed_fast_forward_active);
+            _widgets[Widx::fast_forward_btn].image = Gfx::recolour(ImageIds::speed_fast_forward_active);
         }
         else if (game_speed == 2)
         {
-            _widgets[widx::extra_fast_forward_btn].image = Gfx::recolour(ImageIds::speed_extra_fast_forward_active);
+            _widgets[Widx::extra_fast_forward_btn].image = Gfx::recolour(ImageIds::speed_extra_fast_forward_active);
         }
 
         if (isNetworked())
         {
-            _widgets[widx::fast_forward_btn].type = widget_type::none;
-            _widgets[widx::extra_fast_forward_btn].type = widget_type::none;
+            _widgets[Widx::fast_forward_btn].type = widget_type::none;
+            _widgets[Widx::extra_fast_forward_btn].type = widget_type::none;
 
-            _widgets[widx::pause_btn].left = 38;
-            _widgets[widx::pause_btn].right = 57;
-            _widgets[widx::normal_speed_btn].left = 58;
-            _widgets[widx::normal_speed_btn].right = 77;
+            _widgets[Widx::pause_btn].left = 38;
+            _widgets[Widx::pause_btn].right = 57;
+            _widgets[Widx::normal_speed_btn].left = 58;
+            _widgets[Widx::normal_speed_btn].right = 77;
         }
         else
         {
-            _widgets[widx::fast_forward_btn].type = widget_type::wt_9;
-            _widgets[widx::extra_fast_forward_btn].type = widget_type::wt_9;
+            _widgets[Widx::fast_forward_btn].type = widget_type::wt_9;
+            _widgets[Widx::extra_fast_forward_btn].type = widget_type::wt_9;
 
-            _widgets[widx::pause_btn].left = 18;
-            _widgets[widx::pause_btn].right = 37;
-            _widgets[widx::normal_speed_btn].left = 38;
-            _widgets[widx::normal_speed_btn].right = 57;
-            _widgets[widx::fast_forward_btn].left = 58;
-            _widgets[widx::fast_forward_btn].right = 77;
-            _widgets[widx::extra_fast_forward_btn].left = 78;
-            _widgets[widx::extra_fast_forward_btn].right = 97;
+            _widgets[Widx::pause_btn].left = 18;
+            _widgets[Widx::pause_btn].right = 37;
+            _widgets[Widx::normal_speed_btn].left = 38;
+            _widgets[Widx::normal_speed_btn].right = 57;
+            _widgets[Widx::fast_forward_btn].left = 58;
+            _widgets[Widx::fast_forward_btn].right = 77;
+            _widgets[Widx::extra_fast_forward_btn].left = 78;
+            _widgets[Widx::extra_fast_forward_btn].right = 97;
         }
     }
 
@@ -176,7 +176,7 @@ namespace OpenLoco::Ui::TimePanel
     // 0x004397BE
     static void draw(Ui::window* self, Gfx::drawpixelinfo_t* dpi)
     {
-        widget_t& frame = _widgets[widx::outer_frame];
+        widget_t& frame = _widgets[Widx::outer_frame];
         Gfx::drawRect(dpi, self->x + frame.left, self->y + frame.top, frame.width(), frame.height(), 0x2000000 | 52);
 
         // Draw widgets.
@@ -196,14 +196,14 @@ namespace OpenLoco::Ui::TimePanel
         }
 
         colour_t c = Colour::opaque(self->colours[0]);
-        if (Input::isHovering(WindowType::timeToolbar, 0, widx::date_btn))
+        if (Input::isHovering(WindowType::timeToolbar, 0, Widx::date_btn))
         {
             c = Colour::white;
         }
-        Gfx::drawStringCentred(*dpi, self->x + _widgets[widx::date_btn].mid_x(), self->y + _widgets[widx::date_btn].top + 1, c, format, &*_common_format_args);
+        Gfx::drawStringCentred(*dpi, self->x + _widgets[Widx::date_btn].mid_x(), self->y + _widgets[Widx::date_btn].top + 1, c, format, &*_common_format_args);
 
         auto skin = ObjectManager::get<interface_skin_object>();
-        Gfx::drawImage(dpi, self->x + _widgets[widx::map_chat_menu].left - 2, self->y + _widgets[widx::map_chat_menu].top - 1, skin->img + map_sprites_by_rotation[gCurrentRotation]);
+        Gfx::drawImage(dpi, self->x + _widgets[Widx::map_chat_menu].left - 2, self->y + _widgets[Widx::map_chat_menu].top - 1, skin->img + map_sprites_by_rotation[gCurrentRotation]);
     }
 
     // 0x004398FB
@@ -211,19 +211,19 @@ namespace OpenLoco::Ui::TimePanel
     {
         switch (widgetIndex)
         {
-            case widx::date_btn:
+            case Widx::date_btn:
                 MessageWindow::open();
                 break;
-            case widx::pause_btn:
+            case Widx::pause_btn:
                 togglePaused();
                 break;
-            case widx::normal_speed_btn:
+            case Widx::normal_speed_btn:
                 changeGameSpeed(window, 0);
                 break;
-            case widx::fast_forward_btn:
+            case Widx::fast_forward_btn:
                 changeGameSpeed(window, 1);
                 break;
-            case widx::extra_fast_forward_btn:
+            case Widx::extra_fast_forward_btn:
                 changeGameSpeed(window, 2);
                 break;
         }
@@ -287,7 +287,7 @@ namespace OpenLoco::Ui::TimePanel
     {
         switch (widgetIndex)
         {
-            case widx::map_chat_menu:
+            case Widx::map_chat_menu:
                 mapMouseDown(window, widgetIndex);
                 break;
         }
@@ -298,7 +298,7 @@ namespace OpenLoco::Ui::TimePanel
     {
         switch (widgetIndex)
         {
-            case widx::map_chat_menu:
+            case Widx::map_chat_menu:
                 mapDropdown(w, widgetIndex, item_index);
                 break;
         }
@@ -309,7 +309,7 @@ namespace OpenLoco::Ui::TimePanel
     {
         switch (widgetIdx)
         {
-            case widx::date_btn:
+            case Widx::date_btn:
                 _tooltipTimeout = 2000;
                 break;
         }
@@ -322,7 +322,7 @@ namespace OpenLoco::Ui::TimePanel
     {
         switch (widgetIndex)
         {
-            case widx::date_btn:
+            case Widx::date_btn:
                 formatChallenge(args);
                 break;
         }
@@ -373,7 +373,7 @@ namespace OpenLoco::Ui::TimePanel
     {
         switch (widgetIndex)
         {
-            case widx::map_chat_menu:
+            case Widx::map_chat_menu:
                 processChatMessage(str);
                 break;
         }
@@ -427,12 +427,12 @@ namespace OpenLoco::Ui::TimePanel
         if (_50A004 & (1 << 1))
         {
             _50A004 = _50A004 & ~(1 << 1);
-            WindowManager::invalidateWidget(WindowType::timeToolbar, 0, widx::inner_frame);
+            WindowManager::invalidateWidget(WindowType::timeToolbar, 0, Widx::inner_frame);
         }
 
         if (isPaused())
         {
-            WindowManager::invalidateWidget(WindowType::timeToolbar, 0, widx::inner_frame);
+            WindowManager::invalidateWidget(WindowType::timeToolbar, 0, Widx::inner_frame);
         }
     }
 }

@@ -81,7 +81,7 @@ namespace OpenLoco::Ui::Windows::Construction
     static loco_global<uint8_t, 0x01136079> _lastSelectedTrackPieceId;
     static loco_global<uint8_t, 0x0113607E> _byte_113607E;
 
-    namespace common
+    namespace Common
     {
         enum widx
         {
@@ -128,7 +128,7 @@ namespace OpenLoco::Ui::Windows::Construction
         void refreshSignalList(uint8_t* signalList, uint8_t trackType);
     }
 
-    namespace construction
+    namespace Construction
     {
         static const Gfx::ui_size_t windowSize = { 138, 276 };
 
@@ -194,7 +194,7 @@ namespace OpenLoco::Ui::Windows::Construction
         extern widget_t widgets[32];
 
         extern window_event_list events;
-        constexpr uint64_t enabledWidgets = common::enabledWidgets | allConstruction;
+        constexpr uint64_t enabledWidgets = Common::enabledWidgets | allConstruction;
 
         void activateSelectedConstructionWidgets();
         void tabReset(window* self);
@@ -203,7 +203,7 @@ namespace OpenLoco::Ui::Windows::Construction
         void drawRoad(uint16_t x, uint16_t y, uint16_t selectedMods, uint16_t di, uint8_t trackType, uint8_t trackPieceId, uint16_t colour, uint8_t bh);
     }
 
-    namespace station
+    namespace Station
     {
         enum widx
         {
@@ -215,14 +215,14 @@ namespace OpenLoco::Ui::Windows::Construction
 
         extern widget_t widgets[13];
 
-        const uint64_t enabledWidgets = common::enabledWidgets | (1 << station) | (1 << station_dropdown) | (1 << image) | (1 << rotate);
+        const uint64_t enabledWidgets = Common::enabledWidgets | (1 << station) | (1 << station_dropdown) | (1 << image) | (1 << rotate);
 
         extern window_event_list events;
         void tabReset(window* self);
         void initEvents();
     }
 
-    namespace signal
+    namespace Signal
     {
         enum widx
         {
@@ -234,14 +234,14 @@ namespace OpenLoco::Ui::Windows::Construction
 
         extern widget_t widgets[13];
 
-        const uint64_t enabledWidgets = common::enabledWidgets | (1 << signal) | (1 << signal_dropdown) | (1 << both_directions) | (1 << single_direction);
+        const uint64_t enabledWidgets = Common::enabledWidgets | (1 << signal) | (1 << signal_dropdown) | (1 << both_directions) | (1 << single_direction);
 
         extern window_event_list events;
         void tabReset(window* self);
         void initEvents();
     }
 
-    namespace overhead
+    namespace Overhead
     {
         enum widx
         {
@@ -256,7 +256,7 @@ namespace OpenLoco::Ui::Windows::Construction
 
         extern widget_t widgets[16];
 
-        const uint64_t enabledWidgets = common::enabledWidgets | (1 << checkbox_1) | (1 << checkbox_2) | (1 << checkbox_3) | (1 << checkbox_4) | (1 << image) | (1 << track) | (1 << track_dropdown);
+        const uint64_t enabledWidgets = Common::enabledWidgets | (1 << checkbox_1) | (1 << checkbox_2) | (1 << checkbox_3) | (1 << checkbox_4) | (1 << image) | (1 << track) | (1 << track_dropdown);
 
         extern window_event_list events;
         void tabReset(window* self);

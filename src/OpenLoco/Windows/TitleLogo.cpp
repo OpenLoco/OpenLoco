@@ -10,7 +10,7 @@ namespace OpenLoco::Ui::Windows
 {
     static const Gfx::ui_size_t window_size = { 298, 170 };
 
-    namespace widx
+    namespace Widx
     {
         enum
         {
@@ -41,7 +41,7 @@ namespace OpenLoco::Ui::Windows
             &_events);
 
         window->widgets = _widgets;
-        window->enabled_widgets = 1 << widx::logo;
+        window->enabled_widgets = 1 << Widx::logo;
 
         window->initScrollWidgets();
 
@@ -62,7 +62,7 @@ namespace OpenLoco::Ui::Windows
     {
         switch (widgetIndex)
         {
-            case widx::logo:
+            case Widx::logo:
                 About::open();
                 break;
         }

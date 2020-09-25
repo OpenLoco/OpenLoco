@@ -10,7 +10,7 @@
 
 namespace YAML
 {
-    using namespace OpenLoco::config;
+    using namespace OpenLoco::Config;
 
     template<typename T>
     using convert_pair_vector = std::vector<std::pair<T, const char*>>;

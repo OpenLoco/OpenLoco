@@ -11,7 +11,7 @@ using namespace OpenLoco::Interop;
 using namespace OpenLoco::Map;
 using namespace OpenLoco::Map::TileManager;
 
-namespace OpenLoco::Ui::Windows::Construction::signal
+namespace OpenLoco::Ui::Windows::Construction::Signal
 {
     widget_t widgets[] = {
         commonWidgets(138, 167, StringIds::stringid_2),
@@ -29,15 +29,15 @@ namespace OpenLoco::Ui::Windows::Construction::signal
     {
         switch (widgetIndex)
         {
-            case common::widx::close_button:
+            case Common::widx::close_button:
                 WindowManager::close(self);
                 break;
 
-            case common::widx::tab_construction:
-            case common::widx::tab_overhead:
-            case common::widx::tab_signal:
-            case common::widx::tab_station:
-                common::switchTab(self, widgetIndex);
+            case Common::widx::tab_construction:
+            case Common::widx::tab_overhead:
+            case Common::widx::tab_signal:
+            case Common::widx::tab_station:
+                Common::switchTab(self, widgetIndex);
                 break;
         }
     }
@@ -109,7 +109,7 @@ namespace OpenLoco::Ui::Windows::Construction::signal
     // 0x0049E76F
     static void onUpdate(window* self)
     {
-        common::onUpdate(self, (1 << 2));
+        Common::onUpdate(self, (1 << 2));
     }
 
     // 0x0049E745
@@ -137,7 +137,7 @@ namespace OpenLoco::Ui::Windows::Construction::signal
     // 0x0049E499
     static void prepareDraw(window* self)
     {
-        common::prepareDraw(self);
+        Common::prepareDraw(self);
 
         auto trackObj = ObjectManager::get<track_object>(_trackType);
 
@@ -148,14 +148,14 @@ namespace OpenLoco::Ui::Windows::Construction::signal
 
         self->widgets[widx::signal].text = trainSignalObject->name;
 
-        common::repositionTabs(self);
+        Common::repositionTabs(self);
     }
 
     // 0x0049E501
     static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
     {
         self->draw(dpi);
-        common::drawTabs(self, dpi);
+        Common::drawTabs(self, dpi);
 
         auto trainSignalObject = ObjectManager::get<train_signal_object>(_lastSelectedSignal);
 
@@ -198,12 +198,12 @@ namespace OpenLoco::Ui::Windows::Construction::signal
 
     void tabReset(window* self)
     {
-        self->callOnMouseDown(signal::widx::both_directions);
+        self->callOnMouseDown(Signal::widx::both_directions);
     }
 
     void initEvents()
     {
-        events.on_close = common::onClose;
+        events.on_close = Common::onClose;
         events.on_mouse_up = onMouseUp;
         events.on_mouse_down = onMouseDown;
         events.on_dropdown = onDropdown;
