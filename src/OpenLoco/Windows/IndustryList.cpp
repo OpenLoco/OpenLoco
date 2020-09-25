@@ -1179,7 +1179,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 uint32_t imageId = skin->img;
                 imageId += InterfaceSkin::ImageIds::toolbar_menu_industries;
 
-                widget::draw_tab(self, dpi, imageId, widx::tab_industry_list);
+                Widget::draw_tab(self, dpi, imageId, widx::tab_industry_list);
             }
 
             // Fund New Industries Tab
@@ -1208,7 +1208,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 else
                     imageId += fundNewIndustriesImageIds[0];
 
-                widget::draw_tab(self, dpi, imageId, widx::tab_new_industry);
+                Widget::draw_tab(self, dpi, imageId, widx::tab_new_industry);
             }
         }
 

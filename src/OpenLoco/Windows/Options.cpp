@@ -74,8 +74,8 @@ namespace OpenLoco::Ui::Options
 
         static void drawTabs(window* w, Gfx::drawpixelinfo_t* ctx)
         {
-            widget::draw_tab(w, ctx, ImageIds::tab_display, Widx::tab_display);
-            widget::draw_tab(w, ctx, ImageIds::tab_sound, Widx::tab_sound);
+            Widget::draw_tab(w, ctx, ImageIds::tab_display, Widx::tab_display);
+            Widget::draw_tab(w, ctx, ImageIds::tab_sound, Widx::tab_sound);
 
             static const uint32_t music_tab_ids[] = {
                 ImageIds::tab_music_0,
@@ -100,7 +100,7 @@ namespace OpenLoco::Ui::Options
             {
                 imageId = music_tab_ids[(w->frame_no / 4) % 16];
             }
-            widget::draw_tab(w, ctx, imageId, Widx::tab_music);
+            Widget::draw_tab(w, ctx, imageId, Widx::tab_music);
 
             static const uint32_t globe_tab_ids[] = {
                 ImageIds::tab_globe_0,
@@ -141,10 +141,10 @@ namespace OpenLoco::Ui::Options
             {
                 imageId = globe_tab_ids[(w->frame_no / 2) % 32];
             }
-            widget::draw_tab(w, ctx, imageId, Widx::tab_regional);
+            Widget::draw_tab(w, ctx, imageId, Widx::tab_regional);
 
-            widget::draw_tab(w, ctx, ImageIds::tab_control, Widx::tab_controls);
-            widget::draw_tab(w, ctx, ImageIds::tab_miscellaneous, Widx::tab_miscellaneous);
+            Widget::draw_tab(w, ctx, ImageIds::tab_control, Widx::tab_controls);
+            Widget::draw_tab(w, ctx, ImageIds::tab_miscellaneous, Widx::tab_miscellaneous);
         }
 
 #define common_options_widgets(window_size, window_caption_id)                                                                                           \

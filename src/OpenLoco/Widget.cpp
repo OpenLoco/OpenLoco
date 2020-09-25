@@ -32,7 +32,7 @@ namespace OpenLoco::Ui
     }
 }
 
-namespace OpenLoco::Ui::widget
+namespace OpenLoco::Ui::Widget
 {
 
     static loco_global<int32_t, 0x112C876> _currentFontSpriteBase;
@@ -247,7 +247,7 @@ namespace OpenLoco::Ui::widget
 
         if (!disabled)
         {
-            widget::sub_4CADE8(dpi, window, widget, colour, enabled, disabled, activated);
+            Widget::sub_4CADE8(dpi, window, widget, colour, enabled, disabled, activated);
             return;
         }
 
@@ -258,7 +258,7 @@ namespace OpenLoco::Ui::widget
 
         if (widget->type != widget_type::wt_7)
         {
-            widget::sub_4CADE8(dpi, window, widget, colour, enabled, disabled, activated);
+            Widget::sub_4CADE8(dpi, window, widget, colour, enabled, disabled, activated);
             return;
         }
 
@@ -283,7 +283,7 @@ namespace OpenLoco::Ui::widget
         if (!disabled && hovered)
         {
             // TODO: Fix mixed windows
-            widget::draw_3(dpi, window, widget, flags, colour, enabled, disabled, activated);
+            Widget::draw_3(dpi, window, widget, flags, colour, enabled, disabled, activated);
             return;
         }
 
@@ -313,7 +313,7 @@ namespace OpenLoco::Ui::widget
             return;
         }
 
-        widget::sub_4CADE8(dpi, window, widget, colour, enabled, disabled, activated);
+        Widget::sub_4CADE8(dpi, window, widget, colour, enabled, disabled, activated);
     }
 
     // 0x004CAC5F

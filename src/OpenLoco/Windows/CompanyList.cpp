@@ -1470,7 +1470,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 uint32_t imageId = skin->img;
                 imageId += InterfaceSkin::ImageIds::tab_companies;
 
-                widget::draw_tab(self, dpi, imageId, widx::tab_company_list);
+                Widget::draw_tab(self, dpi, imageId, widx::tab_company_list);
             }
 
             // Performance Index Tab
@@ -1494,7 +1494,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
                 imageId = Gfx::recolour(imageId, self->colours[1]);
 
-                widget::draw_tab(self, dpi, imageId, widx::tab_performance);
+                Widget::draw_tab(self, dpi, imageId, widx::tab_performance);
             }
 
             // Cargo Unit Tab
@@ -1518,7 +1518,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
                 imageId = Gfx::recolour(imageId, self->colours[1]);
 
-                widget::draw_tab(self, dpi, imageId, widx::tab_cargo_units);
+                Widget::draw_tab(self, dpi, imageId, widx::tab_cargo_units);
             }
 
             // Cargo Distance Tab
@@ -1542,7 +1542,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
                 imageId = Gfx::recolour(imageId, self->colours[1]);
 
-                widget::draw_tab(self, dpi, imageId, widx::tab_cargo_distance);
+                Widget::draw_tab(self, dpi, imageId, widx::tab_cargo_distance);
             }
 
             // Company Values Tab
@@ -1566,7 +1566,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
                 imageId = Gfx::recolour(imageId, self->colours[1]);
 
-                widget::draw_tab(self, dpi, imageId, widx::tab_values);
+                Widget::draw_tab(self, dpi, imageId, widx::tab_values);
 
                 if (!(self->isDisabled(widx::tab_values)))
                 {
@@ -1582,7 +1582,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 uint32_t imageId = skin->img;
                 imageId += InterfaceSkin::ImageIds::tab_cargo_payment_rates;
 
-                widget::draw_tab(self, dpi, imageId, widx::tab_payment_rates);
+                Widget::draw_tab(self, dpi, imageId, widx::tab_payment_rates);
 
                 if (!(self->isDisabled(widx::tab_payment_rates)))
                 {
@@ -1599,7 +1599,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
                 imageId = Gfx::recolour(imageId, self->colours[1]);
 
-                widget::draw_tab(self, dpi, imageId, widx::tab_speed_records);
+                Widget::draw_tab(self, dpi, imageId, widx::tab_speed_records);
             }
         }
 

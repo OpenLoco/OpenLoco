@@ -117,13 +117,13 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                 else
                     imageId += challengeTabImageIds[0];
 
-                widget::draw_tab(window, dpi, imageId, widx::tab_challenge);
+                Widget::draw_tab(window, dpi, imageId, widx::tab_challenge);
             }
 
             // Companies tab
             {
                 const uint32_t imageId = skin->img + InterfaceSkin::ImageIds::tab_companies;
-                widget::draw_tab(window, dpi, imageId, widx::tab_companies);
+                Widget::draw_tab(window, dpi, imageId, widx::tab_companies);
             }
 
             // Finances tab
@@ -153,13 +153,13 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                 else
                     imageId += financesTabImageIds[0];
 
-                widget::draw_tab(window, dpi, imageId, widx::tab_finances);
+                Widget::draw_tab(window, dpi, imageId, widx::tab_finances);
             }
 
             // Scenario details tab
             {
                 const uint32_t imageId = skin->img + InterfaceSkin::ImageIds::tab_scenario_details;
-                widget::draw_tab(window, dpi, imageId, widx::tab_scenario);
+                Widget::draw_tab(window, dpi, imageId, widx::tab_scenario);
             }
         }
 

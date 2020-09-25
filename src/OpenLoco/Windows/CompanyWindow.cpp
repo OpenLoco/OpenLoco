@@ -257,7 +257,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             if (self->viewports[0] != nullptr)
             {
                 self->drawViewports(dpi);
-                widget::drawViewportCentreButton(dpi, self, (widget_index)widx::centre_on_viewport);
+                Widget::drawViewportCentreButton(dpi, self, (widget_index)widx::centre_on_viewport);
             }
         }
 
@@ -868,7 +868,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             if (self->viewports[0] != nullptr)
             {
                 self->drawViewports(dpi);
-                widget::drawViewportCentreButton(dpi, self, widx::centre_on_viewport);
+                Widget::drawViewportCentreButton(dpi, self, widx::centre_on_viewport);
             }
         }
 
@@ -2583,13 +2583,13 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             // Status tab
             {
                 const uint32_t imageId = skin->img + InterfaceSkin::ImageIds::tab_company;
-                widget::draw_tab(self, dpi, imageId, widx::tab_status);
+                Widget::draw_tab(self, dpi, imageId, widx::tab_status);
             }
 
             // Details tab
             {
                 const uint32_t imageId = Gfx::recolour(skin->img + InterfaceSkin::ImageIds::tab_company_details, self->colours[0]);
-                widget::draw_tab(self, dpi, imageId, widx::tab_details);
+                Widget::draw_tab(self, dpi, imageId, widx::tab_details);
             }
 
             // Colour scheme tab
@@ -2611,7 +2611,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 else
                     imageId += colourSchemeTabImageIds[0];
 
-                widget::draw_tab(self, dpi, imageId, widx::tab_colour_scheme);
+                Widget::draw_tab(self, dpi, imageId, widx::tab_colour_scheme);
             }
 
             // Finances tab
@@ -2641,7 +2641,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 else
                     imageId += financesTabImageIds[0];
 
-                widget::draw_tab(self, dpi, imageId, widx::tab_finances);
+                Widget::draw_tab(self, dpi, imageId, widx::tab_finances);
             }
 
             // Cargo delivered tab
@@ -2659,7 +2659,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 else
                     imageId += cargoDeliveredTabImageIds[0];
 
-                widget::draw_tab(self, dpi, imageId, widx::tab_cargo_delivered);
+                Widget::draw_tab(self, dpi, imageId, widx::tab_cargo_delivered);
             }
 
             // Challenge tab
@@ -2689,7 +2689,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 else
                     imageId += challengeTabImageIds[0];
 
-                widget::draw_tab(self, dpi, imageId, widx::tab_challenge);
+                Widget::draw_tab(self, dpi, imageId, widx::tab_challenge);
             }
         }
 

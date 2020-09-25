@@ -1412,15 +1412,15 @@ namespace OpenLoco::Ui
                     break;
 
                 case widget_type::panel:
-                    widget::drawPanel(dpi, this, widget, widgetFlags, colour);
+                    Widget::drawPanel(dpi, this, widget, widgetFlags, colour);
                     break;
 
                 case widget_type::frame:
-                    widget::drawFrame(dpi, this, widget, widgetFlags, colour);
+                    Widget::drawFrame(dpi, this, widget, widgetFlags, colour);
                     break;
 
                 case widget_type::wt_3:
-                    widget::draw_3(dpi, this, widget, widgetFlags, colour, enabled, disabled, activated);
+                    Widget::draw_3(dpi, this, widget, widgetFlags, colour, enabled, disabled, activated);
                     break;
 
                 case widget_type::wt_4:
@@ -1431,15 +1431,15 @@ namespace OpenLoco::Ui
                 case widget_type::wt_6:
                 case widget_type::wt_7:
                 case widget_type::wt_8:
-                    widget::draw_5(dpi, this, widget, widgetFlags, colour, enabled, disabled, activated);
+                    Widget::draw_5(dpi, this, widget, widgetFlags, colour, enabled, disabled, activated);
                     break;
 
                 case widget_type::wt_9:
-                    widget::draw_9(dpi, this, widget, widgetFlags, colour, enabled, disabled, activated, hovered);
+                    Widget::draw_9(dpi, this, widget, widgetFlags, colour, enabled, disabled, activated, hovered);
                     break;
 
                 case widget_type::wt_10:
-                    widget::draw_10(dpi, this, widget, widgetFlags, colour, enabled, disabled, activated, hovered);
+                    Widget::draw_10(dpi, this, widget, widgetFlags, colour, enabled, disabled, activated, hovered);
                     break;
 
                 case widget_type::wt_11:
@@ -1449,16 +1449,16 @@ namespace OpenLoco::Ui
                     {
                         assert(false); // Unused
                     }
-                    widget::draw_11_a(dpi, this, widget, widgetFlags, colour, enabled, disabled, activated);
-                    widget::draw_13(dpi, this, widget, widgetFlags, colour, enabled, disabled, activated);
+                    Widget::draw_11_a(dpi, this, widget, widgetFlags, colour, enabled, disabled, activated);
+                    Widget::draw_13(dpi, this, widget, widgetFlags, colour, enabled, disabled, activated);
                     break;
 
                 case widget_type::wt_13:
-                    widget::draw_13(dpi, this, widget, widgetFlags, colour, enabled, disabled, activated);
+                    Widget::draw_13(dpi, this, widget, widgetFlags, colour, enabled, disabled, activated);
                     break;
 
                 case widget_type::wt_15:
-                    widget::draw_15(dpi, this, widget, widgetFlags, colour, disabled);
+                    Widget::draw_15(dpi, this, widget, widgetFlags, colour, disabled);
                     break;
 
                 case widget_type::wt_16:
@@ -1468,8 +1468,8 @@ namespace OpenLoco::Ui
                 case widget_type::wt_17:
                 case widget_type::wt_18:
                 case widget_type::viewport:
-                    widget::draw_17(dpi, this, widget, widgetFlags, colour);
-                    widget::draw_15(dpi, this, widget, widgetFlags, colour, disabled);
+                    Widget::draw_17(dpi, this, widget, widgetFlags, colour);
+                    Widget::draw_15(dpi, this, widget, widgetFlags, colour, disabled);
                     break;
 
                 case widget_type::wt_20:
@@ -1478,39 +1478,39 @@ namespace OpenLoco::Ui
                     break;
 
                 case widget_type::caption_22:
-                    widget::draw_22_caption(dpi, this, widget, widgetFlags, colour);
+                    Widget::draw_22_caption(dpi, this, widget, widgetFlags, colour);
                     break;
 
                 case widget_type::caption_23:
-                    widget::draw_23_caption(dpi, this, widget, widgetFlags, colour);
+                    Widget::draw_23_caption(dpi, this, widget, widgetFlags, colour);
                     break;
 
                 case widget_type::caption_24:
-                    widget::draw_24_caption(dpi, this, widget, widgetFlags, colour);
+                    Widget::draw_24_caption(dpi, this, widget, widgetFlags, colour);
                     break;
 
                 case widget_type::caption_25:
-                    widget::draw_25_caption(dpi, this, widget, widgetFlags, colour);
+                    Widget::draw_25_caption(dpi, this, widget, widgetFlags, colour);
                     break;
 
                 case widget_type::scrollview:
-                    widget::drawScrollview(dpi, this, widget, widgetFlags, colour, enabled, disabled, activated, hovered, scrollviewIndex);
+                    Widget::drawScrollview(dpi, this, widget, widgetFlags, colour, enabled, disabled, activated, hovered, scrollviewIndex);
                     scrollviewIndex++;
                     break;
 
                 case widget_type::checkbox:
-                    widget::draw_27_checkbox(dpi, this, widget, widgetFlags, colour, enabled, disabled, activated);
-                    widget::draw_27_label(dpi, this, widget, widgetFlags, colour, disabled);
+                    Widget::draw_27_checkbox(dpi, this, widget, widgetFlags, colour, enabled, disabled, activated);
+                    Widget::draw_27_label(dpi, this, widget, widgetFlags, colour, disabled);
                     break;
 
                 case widget_type::wt_28:
                     assert(false); // Unused
-                    widget::draw_27_label(dpi, this, widget, widgetFlags, colour, disabled);
+                    Widget::draw_27_label(dpi, this, widget, widgetFlags, colour, disabled);
                     break;
 
                 case widget_type::wt_29:
                     assert(false); // Unused
-                    widget::draw_29(dpi, this, widget);
+                    Widget::draw_29(dpi, this, widget);
                     break;
             }
         }

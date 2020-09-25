@@ -1419,7 +1419,7 @@ namespace OpenLoco::Ui::BuildVehicle
                 frameNo = (window->frame_no / 2) & 0xF;
             }
             uint32_t image = Gfx::recolour(skin->img + tab.imageIds[frameNo], companyColour);
-            widget::draw_tab(window, dpi, image, tab.widgetIndex);
+            Widget::draw_tab(window, dpi, image, tab.widgetIndex);
         }
     }
 
@@ -1489,7 +1489,7 @@ namespace OpenLoco::Ui::BuildVehicle
                 img = Gfx::recolour(img, companyColour);
             }
 
-            widget::draw_tab(window, dpi, img, tab + widx::tab_track_type_0);
+            Widget::draw_tab(window, dpi, img, tab + widx::tab_track_type_0);
         }
     }
 

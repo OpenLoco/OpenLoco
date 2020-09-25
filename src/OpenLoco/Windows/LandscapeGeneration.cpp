@@ -87,32 +87,32 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 else
                     imageId += optionTabImageIds[0];
 
-                widget::draw_tab(window, dpi, imageId, widx::tab_options);
+                Widget::draw_tab(window, dpi, imageId, widx::tab_options);
             }
 
             // Land tab
             {
                 auto land = ObjectManager::get<land_object>(*primaryLandObjectIndex);
                 const uint32_t imageId = land->var_16 + Land::ImageIds::toolbar_terraform_land;
-                widget::draw_tab(window, dpi, imageId, widx::tab_land);
+                Widget::draw_tab(window, dpi, imageId, widx::tab_land);
             }
 
             // Forest tab
             {
                 const uint32_t imageId = skin->img + InterfaceSkin::ImageIds::toolbar_menu_plant_trees;
-                widget::draw_tab(window, dpi, imageId, widx::tab_forests);
+                Widget::draw_tab(window, dpi, imageId, widx::tab_forests);
             }
 
             // Towns tab
             {
                 const uint32_t imageId = skin->img + InterfaceSkin::ImageIds::toolbar_menu_towns;
-                widget::draw_tab(window, dpi, imageId, widx::tab_towns);
+                Widget::draw_tab(window, dpi, imageId, widx::tab_towns);
             }
 
             // Industries tab
             {
                 const uint32_t imageId = skin->img + InterfaceSkin::ImageIds::toolbar_menu_industries;
-                widget::draw_tab(window, dpi, imageId, widx::tab_industries);
+                Widget::draw_tab(window, dpi, imageId, widx::tab_industries);
             }
         }
 

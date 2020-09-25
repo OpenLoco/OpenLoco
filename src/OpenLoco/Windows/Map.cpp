@@ -483,7 +483,7 @@ namespace OpenLoco::Ui::Windows::Map
             uint32_t imageId = skin->img;
             imageId += InterfaceSkin::ImageIds::toolbar_menu_map_north;
 
-            widget::draw_tab(self, dpi, imageId, widx::tabOverall);
+            Widget::draw_tab(self, dpi, imageId, widx::tabOverall);
         }
 
         // tabVehicles,
@@ -517,7 +517,7 @@ namespace OpenLoco::Ui::Windows::Map
 
                 imageId = Gfx::recolour(imageId, colour);
 
-                widget::draw_tab(self, dpi, imageId, widx::tabVehicles);
+                Widget::draw_tab(self, dpi, imageId, widx::tabVehicles);
             }
         }
 
@@ -526,7 +526,7 @@ namespace OpenLoco::Ui::Windows::Map
             uint32_t imageId = skin->img;
             imageId += InterfaceSkin::ImageIds::toolbar_menu_industries;
 
-            widget::draw_tab(self, dpi, imageId, widx::tabIndustries);
+            Widget::draw_tab(self, dpi, imageId, widx::tabIndustries);
         }
 
         // tabRoutes,
@@ -546,7 +546,7 @@ namespace OpenLoco::Ui::Windows::Map
                 else
                     imageId += routeImageIds[0];
 
-                widget::draw_tab(self, dpi, imageId, widx::tabRoutes);
+                Widget::draw_tab(self, dpi, imageId, widx::tabRoutes);
             }
         }
 
@@ -557,7 +557,7 @@ namespace OpenLoco::Ui::Windows::Map
                 uint32_t imageId = skin->img;
                 imageId += InterfaceSkin::ImageIds::tab_companies;
 
-                widget::draw_tab(self, dpi, imageId, widx::tabOwnership);
+                Widget::draw_tab(self, dpi, imageId, widx::tabOwnership);
             }
         }
     }

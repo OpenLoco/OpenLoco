@@ -1379,7 +1379,7 @@ namespace OpenLoco::Ui::Windows::TownList
                 uint32_t imageId = skin->img;
                 imageId += InterfaceSkin::ImageIds::toolbar_menu_towns;
 
-                widget::draw_tab(self, dpi, imageId, widx::tab_town_list);
+                Widget::draw_tab(self, dpi, imageId, widx::tab_town_list);
             }
 
             // Build New Towns Tab
@@ -1408,7 +1408,7 @@ namespace OpenLoco::Ui::Windows::TownList
                 else
                     imageId += buildNewTownsImageIds[0];
 
-                widget::draw_tab(self, dpi, imageId, widx::tab_build_town);
+                Widget::draw_tab(self, dpi, imageId, widx::tab_build_town);
             }
 
             // Build New Buildings Tab
@@ -1437,7 +1437,7 @@ namespace OpenLoco::Ui::Windows::TownList
                 else
                     imageId += buildBuildingsImageIds[0];
 
-                widget::draw_tab(self, dpi, imageId, widx::tab_build_buildings);
+                Widget::draw_tab(self, dpi, imageId, widx::tab_build_buildings);
             }
 
             // Build New Misc Buildings Tab
@@ -1466,7 +1466,7 @@ namespace OpenLoco::Ui::Windows::TownList
                 else
                     imageId += buildMiscBuildingsImageIds[0];
 
-                widget::draw_tab(self, dpi, imageId, widx::tab_build_misc_buildings);
+                Widget::draw_tab(self, dpi, imageId, widx::tab_build_misc_buildings);
             }
         }
 

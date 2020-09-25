@@ -120,7 +120,7 @@ namespace OpenLoco::Ui::Windows::Station
             self->draw(dpi);
             Common::drawTabs(self, dpi);
             self->drawViewports(dpi);
-            widget::drawViewportCentreButton(dpi, self, widx::centre_on_viewport);
+            Widget::drawViewportCentreButton(dpi, self, widx::centre_on_viewport);
 
             auto station = StationManager::get(self->number);
             const char* buffer = StringManager::getString(StringIds::buffer_1250);
@@ -964,7 +964,7 @@ namespace OpenLoco::Ui::Windows::Station
             {
                 uint32_t imageId = Gfx::recolour(skin->img, companyColour);
                 imageId += InterfaceSkin::ImageIds::toolbar_menu_stations;
-                widget::draw_tab(self, dpi, imageId, widx::tab_station);
+                Widget::draw_tab(self, dpi, imageId, widx::tab_station);
             }
 
             // Cargo tab
@@ -982,13 +982,13 @@ namespace OpenLoco::Ui::Windows::Station
                 else
                     imageId += cargoTabImageIds[0];
 
-                widget::draw_tab(self, dpi, imageId, widx::tab_cargo);
+                Widget::draw_tab(self, dpi, imageId, widx::tab_cargo);
             }
 
             // Cargo ratings tab
             {
                 const uint32_t imageId = skin->img + InterfaceSkin::ImageIds::tab_cargo_ratings;
-                widget::draw_tab(self, dpi, imageId, widx::tab_cargo_ratings);
+                Widget::draw_tab(self, dpi, imageId, widx::tab_cargo_ratings);
 
                 auto widget = self->widgets[widx::tab_cargo_ratings];
                 auto yOffset = widget.top + self->y + 14;

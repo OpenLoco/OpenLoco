@@ -658,7 +658,7 @@ namespace OpenLoco::Ui::MessageWindow
                 uint32_t imageId = skin->img;
                 imageId += InterfaceSkin::ImageIds::tab_messages;
 
-                widget::draw_tab(self, dpi, imageId, widx::tab_messages);
+                Widget::draw_tab(self, dpi, imageId, widx::tab_messages);
             }
 
             // Setting Tab
@@ -666,7 +666,7 @@ namespace OpenLoco::Ui::MessageWindow
                 uint32_t imageId = skin->img;
                 imageId += InterfaceSkin::ImageIds::tab_message_settings;
 
-                widget::draw_tab(self, dpi, imageId, widx::tab_settings);
+                Widget::draw_tab(self, dpi, imageId, widx::tab_settings);
             }
         }
 

@@ -132,7 +132,7 @@ namespace OpenLoco::Ui::Windows::Town
             self->draw(dpi);
             Common::drawTabs(self, dpi);
             self->drawViewports(dpi);
-            widget::drawViewportCentreButton(dpi, self, widx::centre_on_viewport);
+            Widget::drawViewportCentreButton(dpi, self, widx::centre_on_viewport);
 
             auto town = TownManager::get(self->number);
 
@@ -754,7 +754,7 @@ namespace OpenLoco::Ui::Windows::Town
             // Town tab
             {
                 const uint32_t imageId = skin->img + InterfaceSkin::ImageIds::toolbar_menu_towns;
-                widget::draw_tab(self, dpi, imageId, widx::tab_town);
+                Widget::draw_tab(self, dpi, imageId, widx::tab_town);
             }
 
             // Population tab
@@ -776,7 +776,7 @@ namespace OpenLoco::Ui::Windows::Town
                 else
                     imageId += populationTabImageIds[0];
 
-                widget::draw_tab(self, dpi, imageId, widx::tab_population);
+                Widget::draw_tab(self, dpi, imageId, widx::tab_population);
             }
 
             // Company ratings tab
@@ -806,7 +806,7 @@ namespace OpenLoco::Ui::Windows::Town
                 else
                     imageId += ratingsTabImageIds[0];
 
-                widget::draw_tab(self, dpi, imageId, widx::tab_company_ratings);
+                Widget::draw_tab(self, dpi, imageId, widx::tab_company_ratings);
             }
         }
 

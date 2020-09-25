@@ -134,7 +134,7 @@ namespace OpenLoco::Ui::Windows::Industry
             self->draw(dpi);
             Common::drawTabs(self, dpi);
             self->drawViewports(dpi);
-            widget::drawViewportCentreButton(dpi, self, widx::centre_on_viewport);
+            Widget::drawViewportCentreButton(dpi, self, widx::centre_on_viewport);
 
             const char* buffer = StringManager::getString(StringIds::buffer_1250);
             auto industry = IndustryManager::get(self->number);
@@ -869,7 +869,7 @@ namespace OpenLoco::Ui::Windows::Industry
                 auto caroObj = ObjectManager::get<cargo_object>(industryObj->produced_cargo_type[productionTabNumber]);
                 Gfx::drawImage(dpi, xPos + 18, yPos + 14, caroObj->unit_inline_sprite);
 
-                widget::draw_tab(self, dpi, -2, tab);
+                Widget::draw_tab(self, dpi, -2, tab);
             }
         }
 
@@ -882,7 +882,7 @@ namespace OpenLoco::Ui::Windows::Industry
             {
                 uint32_t imageId = skin->img;
                 imageId += InterfaceSkin::ImageIds::toolbar_menu_industries;
-                widget::draw_tab(self, dpi, imageId, widx::tab_industry);
+                Widget::draw_tab(self, dpi, imageId, widx::tab_industry);
             }
 
             // Production Tab
@@ -912,7 +912,7 @@ namespace OpenLoco::Ui::Windows::Industry
                     imageId += transportedTabImageIds[(self->frame_no / 4) % std::size(transportedTabImageIds)];
                 else
                     imageId += transportedTabImageIds[0];
-                widget::draw_tab(self, dpi, imageId, widx::tab_transported);
+                Widget::draw_tab(self, dpi, imageId, widx::tab_transported);
             }
         }
 
