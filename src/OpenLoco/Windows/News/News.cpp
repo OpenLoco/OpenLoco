@@ -37,11 +37,11 @@ namespace OpenLoco::Ui::NewsWindow
             {
                 case Common::widx::close_button:
                 {
-                    if (_activeMessageIndex != message_id::null)
+                    if (_activeMessageIndex != MessageId::null)
                     {
                         auto news = messagemgr::get(_activeMessageIndex);
-                        news->var_C8 = message_id::null;
-                        _activeMessageIndex = message_id::null;
+                        news->var_C8 = MessageId::null;
+                        _activeMessageIndex = MessageId::null;
                     }
                     WindowManager::close(self);
                     break;
@@ -50,7 +50,7 @@ namespace OpenLoco::Ui::NewsWindow
                 case Common::widx::viewport1Button:
                 case Common::widx::viewport2Button:
                 {
-                    if (_activeMessageIndex != message_id::null)
+                    if (_activeMessageIndex != MessageId::null)
                     {
                         auto news = messagemgr::get(_activeMessageIndex);
                         if (widgetIndex == Common::widx::viewport1Button)
