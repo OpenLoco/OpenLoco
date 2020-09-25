@@ -170,7 +170,7 @@ namespace OpenLoco
         auto index = (size_t)(this - _stations);
         if (index > 1024)
         {
-            index = station_id::null;
+            index = StationId::null;
         }
         return (station_id_t)index;
     }

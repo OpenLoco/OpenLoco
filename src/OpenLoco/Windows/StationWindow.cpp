@@ -435,7 +435,7 @@ namespace OpenLoco::Ui::Windows::Station
                 {
                     station_id_t windowNumber = self->number;
                     if (windowNumber == _lastSelectedStation)
-                        windowNumber = station_id::null;
+                        windowNumber = StationId::null;
 
                     showStationCatchment(windowNumber);
                     break;
@@ -556,7 +556,7 @@ namespace OpenLoco::Ui::Windows::Station
         {
             if (self->number == _lastSelectedStation)
             {
-                showStationCatchment(station_id::null);
+                showStationCatchment(StationId::null);
             }
         }
 
@@ -654,7 +654,7 @@ namespace OpenLoco::Ui::Windows::Station
             *scrollHeight = 0;
             for (uint8_t i = 0; i < 32; i++)
             {
-                if (station->cargo_stats[i].origin != station_id::null)
+                if (station->cargo_stats[i].origin != StationId::null)
                     *scrollHeight += 10;
             }
         }
@@ -756,7 +756,7 @@ namespace OpenLoco::Ui::Windows::Station
         uint16_t oldStationId = _lastSelectedStation;
         _lastSelectedStation = stationId;
 
-        if (oldStationId != station_id::null)
+        if (oldStationId != StationId::null)
         {
             if (Input::hasMapSelectionFlag(Input::MapSelectionFlags::catchment_area))
             {
@@ -768,7 +768,7 @@ namespace OpenLoco::Ui::Windows::Station
 
         auto newStationId = _lastSelectedStation;
 
-        if (newStationId != station_id::null)
+        if (newStationId != StationId::null)
         {
             Ui::Windows::Construction::sub_4A6FAC();
             auto station = stationmgr::get(_lastSelectedStation);
@@ -914,7 +914,7 @@ namespace OpenLoco::Ui::Windows::Station
             {
                 if (self->number == _lastSelectedStation)
                 {
-                    showStationCatchment(station_id::null);
+                    showStationCatchment(StationId::null);
                 }
             }
 

@@ -12,7 +12,7 @@ namespace OpenLoco
 {
     using namespace OpenLoco::Map;
 
-    namespace station_id
+    namespace StationId
     {
         constexpr station_id_t null = std::numeric_limits<station_id_t>::max();
     }
@@ -33,7 +33,7 @@ namespace OpenLoco
 
         bool empty() const
         {
-            return origin == station_id::null;
+            return origin == StationId::null;
         }
 
         bool isAccepted() const
