@@ -325,7 +325,7 @@ namespace OpenLoco
         addr<0x0050C18C, int32_t>() = addr<0x00525348, int32_t>();
         call(0x004078BE);
         call(0x004BF476);
-        environment::resolvePaths();
+        Environment::resolvePaths();
         Localisation::enumerateLanguages();
         Localisation::loadLanguageFile();
         progressbar::begin(StringIds::loading, 0);
@@ -939,7 +939,7 @@ namespace OpenLoco
         try
         {
             const auto& cfg = Config::readNewConfig();
-            environment::resolvePaths();
+            Environment::resolvePaths();
 
             registerHooks();
             if (sub_4054B9())

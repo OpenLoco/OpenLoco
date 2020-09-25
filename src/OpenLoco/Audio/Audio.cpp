@@ -26,7 +26,7 @@
 #define __HAS_DEFAULT_DEVICE__
 #endif
 
-using namespace OpenLoco::environment;
+using namespace OpenLoco::Environment;
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui;
 using namespace OpenLoco::Utility;
@@ -322,7 +322,7 @@ namespace OpenLoco::Audio
             _vehicle_channels[i] = vehicle_channel(channel(4 + i));
         }
 
-        auto css1path = environment::getPath(environment::path_id::css1);
+        auto css1path = Environment::getPath(Environment::path_id::css1);
         _samples = loadSoundsFromCSS(css1path);
         _audio_initialised = 1;
     }
@@ -1074,7 +1074,7 @@ namespace OpenLoco::Audio
             _lastSong = _currentSong;
 
             const auto& mi = MusicInfo[_currentSong];
-            auto path = environment::getPath((path_id)mi.path_id);
+            auto path = Environment::getPath((path_id)mi.path_id);
             if (_music_channel.load(path))
             {
                 _music_current_channel = channel_id::bgm;
@@ -1108,7 +1108,7 @@ namespace OpenLoco::Audio
         {
             if (!isChannelPlaying(channel_id::title))
             {
-                auto path = environment::getPath(path_id::css5);
+                auto path = Environment::getPath(path_id::css5);
                 if (loadChannel(channel_id::title, path, 0))
                 {
                     playChannel(channel_id::title, 1, -500, 0, 0);

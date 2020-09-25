@@ -641,7 +641,7 @@ void OpenLoco::Interop::registerHooks()
     registerHook(
         0x004416B5,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            using namespace OpenLoco::environment;
+            using namespace OpenLoco::Environment;
 
             auto buffer = (char*)0x009D0D72;
             auto path = getPath((path_id)regs.ebx);
