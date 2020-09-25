@@ -152,7 +152,7 @@ namespace OpenLoco::tutorial
     {
         *_state = static_cast<uint8_t>(tutorial_state::none);
         Gfx::invalidateScreen();
-        gui::resize();
+        Gui::resize();
     }
 
     // 0x0043C7A2

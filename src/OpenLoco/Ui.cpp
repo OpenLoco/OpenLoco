@@ -395,7 +395,7 @@ namespace OpenLoco::Ui
     void resize(int32_t width, int32_t height)
     {
         update(width, height);
-        gui::resize();
+        Gui::resize();
         Gfx::invalidateScreen();
 
         // Save window size to config if NOT maximized

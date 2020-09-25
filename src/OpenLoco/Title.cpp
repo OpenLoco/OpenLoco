@@ -104,7 +104,7 @@ namespace OpenLoco::title
         sub_43C88C();
         initialiseViewports();
         sub_4284C8();
-        gui::init();
+        Gui::init();
         sub_444357();
         Gfx::invalidateScreen();
         _screenAge = 0;

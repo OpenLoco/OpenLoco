@@ -14,7 +14,7 @@
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui;
 
-namespace OpenLoco::gui
+namespace OpenLoco::Gui
 {
 
     loco_global<OpenLoco::Ui::widget_t[64], 0x00509c20> _mainWindowWidgets;

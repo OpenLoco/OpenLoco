@@ -725,7 +725,7 @@ void OpenLoco::Interop::registerHooks()
     registerHook(
         0x00438A6C,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            gui::init();
+            Gui::init();
             return 0;
         });
 
@@ -809,7 +809,7 @@ void OpenLoco::Interop::registerHooks()
     registerHook(
         0x004392BD,
         [](registers& regs) -> uint8_t {
-            gui::resize();
+            Gui::resize();
             return 0;
         });
 

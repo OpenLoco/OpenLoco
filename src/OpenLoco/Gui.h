@@ -1,6 +1,6 @@
 #pragma once
 
-namespace OpenLoco::gui
+namespace OpenLoco::Gui
 {
     void init();
     void resize();
