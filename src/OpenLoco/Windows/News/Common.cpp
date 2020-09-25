@@ -153,7 +153,7 @@ namespace OpenLoco::Ui::NewsWindow
         {
             Audio::sound_id soundId = Audio::sound_id::notification;
 
-            if (news->companyId == company_id::null || news->companyId == _playerCompany)
+            if (news->companyId == CompanyId::null || news->companyId == _playerCompany)
             {
                 Audio::sound_id messageSounds[31] = {
                     Audio::sound_id::notification,

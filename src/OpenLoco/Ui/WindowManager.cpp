@@ -1158,7 +1158,7 @@ namespace OpenLoco::Ui::WindowManager
         }
 
         // Company colour
-        if (w->owner != company_id::null)
+        if (w->owner != CompanyId::null)
         {
             w->colours[0] = companymgr::getCompanyColour(w->owner);
         }

@@ -298,7 +298,7 @@ namespace OpenLoco
     void initialiseViewports()
     {
         _mapTooltipFormatArguments = StringIds::null;
-        _mapTooltipOwner = company_id::null;
+        _mapTooltipOwner = CompanyId::null;
 
         Colour::initColourMap();
         Ui::WindowManager::init();

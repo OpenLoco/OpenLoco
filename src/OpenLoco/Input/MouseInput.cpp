@@ -778,7 +778,7 @@ namespace OpenLoco::Input
                             auto owner = road->owner();
 
                             auto roadObject = ObjectManager::get<road_object>(road->roadObjectId());
-                            if (owner == companymgr::getControllingId() || owner == company_id::neutral || (roadObject->flags & Flags12::unk_03))
+                            if (owner == companymgr::getControllingId() || owner == CompanyId::neutral || (roadObject->flags & Flags12::unk_03))
                             {
                                 Ui::Windows::Construction::openAtRoad(window, road, { ptr.x, ptr.y });
                             }
@@ -1829,7 +1829,7 @@ namespace OpenLoco::Input
         Ui::cursor_id cursorId = Ui::cursor_id::pointer;
 
         _mapTooltipFormatArguments = StringIds::null;
-        _mapTooltipOwner = company_id::null;
+        _mapTooltipOwner = CompanyId::null;
 
         if (_mapSelectionFlags & (1 << 6))
         {

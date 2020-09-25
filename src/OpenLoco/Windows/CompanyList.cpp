@@ -1250,7 +1250,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
                 auto companyId = _byte_526254[i];
 
-                if (companyId != company_id::null)
+                if (companyId != CompanyId::null)
                 {
                     auto company = companymgr::get(companyId);
                     auto competitorObj = ObjectManager::get<competitor_object>(company->competitor_id);

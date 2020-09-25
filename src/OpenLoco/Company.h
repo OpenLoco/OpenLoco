@@ -10,7 +10,7 @@
 namespace OpenLoco
 {
 
-    namespace company_id
+    namespace CompanyId
     {
         constexpr company_id_t neutral = 15;
         constexpr company_id_t null = std::numeric_limits<company_id_t>::max();

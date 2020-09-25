@@ -310,11 +310,11 @@ namespace OpenLoco::GameCommands
     // esi : tile
     bool sub_431E6A(const company_id_t company, Map::tile_element* const tile /*= nullptr*/)
     {
-        if (company == company_id::neutral)
+        if (company == CompanyId::neutral)
         {
             return true;
         }
-        if (_updating_company_id == company || _updating_company_id == company_id::neutral)
+        if (_updating_company_id == company || _updating_company_id == CompanyId::neutral)
         {
             return true;
         }

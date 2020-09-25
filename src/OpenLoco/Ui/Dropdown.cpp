@@ -797,7 +797,7 @@ namespace OpenLoco::Ui::Dropdown
     {
         std::array<bool, 16> companyOrdered = {};
 
-        company_id_t companyId = company_id::null;
+        company_id_t companyId = CompanyId::null;
 
         size_t index = 0;
         for (; index < companymgr::max_companies; index++)
@@ -869,7 +869,7 @@ namespace OpenLoco::Ui::Dropdown
 
         if (company->empty())
         {
-            companyId = company_id::null;
+            companyId = CompanyId::null;
         }
 
         return companyId;
