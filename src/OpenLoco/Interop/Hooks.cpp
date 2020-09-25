@@ -29,7 +29,7 @@
 
 using namespace OpenLoco;
 
-#define STUB() console::logVerbose(__FUNCTION__)
+#define STUB() Console::logVerbose(__FUNCTION__)
 
 #ifdef _MSC_VER
 #define STDCALL __stdcall
@@ -155,23 +155,23 @@ static void STDCALL fn_407b26()
 
 static void CDECL fn_4080bb(char* lpWindowName, uint32_t a1)
 {
-    console::log("Create progress bar");
+    Console::log("Create progress bar");
 }
 
 static void CDECL fn_408163()
 {
-    console::log("Destroy progress bar");
+    Console::log("Destroy progress bar");
 }
 
 static void CDECL fn_40817b(uint16_t arg0)
 {
-    console::log("SendMessage(PBM_SETRANGE, %d)", arg0);
-    console::log("SendMessage(PBM_SETSTEP, %d)", 1);
+    Console::log("SendMessage(PBM_SETRANGE, %d)", arg0);
+    Console::log("SendMessage(PBM_SETSTEP, %d)", 1);
 }
 
 static void CDECL fn_4081ad(int32_t wParam)
 {
-    console::log("SendMessage(PBM_SETPOS, %d)", wParam);
+    Console::log("SendMessage(PBM_SETPOS, %d)", wParam);
 }
 
 ///endregion
@@ -179,7 +179,7 @@ static void CDECL fn_4081ad(int32_t wParam)
 FORCE_ALIGN_ARG_POINTER
 static uint32_t CDECL fn_FileSeekSet(FILE* a0, int32_t distance)
 {
-    console::logVerbose("seek %d bytes from start", distance);
+    Console::logVerbose("seek %d bytes from start", distance);
     fseek(a0, distance, SEEK_SET);
     return ftell(a0);
 }
@@ -187,7 +187,7 @@ static uint32_t CDECL fn_FileSeekSet(FILE* a0, int32_t distance)
 FORCE_ALIGN_ARG_POINTER
 static uint32_t CDECL fn_FileSeekFromCurrent(FILE* a0, int32_t distance)
 {
-    console::logVerbose("seek %d bytes from current", distance);
+    Console::logVerbose("seek %d bytes from current", distance);
     fseek(a0, distance, SEEK_CUR);
     return ftell(a0);
 }
@@ -195,7 +195,7 @@ static uint32_t CDECL fn_FileSeekFromCurrent(FILE* a0, int32_t distance)
 FORCE_ALIGN_ARG_POINTER
 static uint32_t CDECL fn_FileSeekFromEnd(FILE* a0, int32_t distance)
 {
-    console::logVerbose("seek %d bytes from end", distance);
+    Console::logVerbose("seek %d bytes from end", distance);
     fseek(a0, distance, SEEK_END);
     return ftell(a0);
 }
@@ -203,7 +203,7 @@ static uint32_t CDECL fn_FileSeekFromEnd(FILE* a0, int32_t distance)
 FORCE_ALIGN_ARG_POINTER
 static int32_t CDECL fn_FileRead(FILE* a0, char* buffer, int32_t size)
 {
-    console::logVerbose("read %d bytes (%d)", size, fileno(a0));
+    Console::logVerbose("read %d bytes (%d)", size, fileno(a0));
     size = fread(buffer, 1, size, a0);
 
     return size;
@@ -234,7 +234,7 @@ public:
 FORCE_ALIGN_ARG_POINTER
 static Session* CDECL fn_FindFirstFile(char* lpFileName, FindFileData* out)
 {
-    console::logVerbose("%s (%s)", __FUNCTION__, lpFileName);
+    Console::logVerbose("%s (%s)", __FUNCTION__, lpFileName);
 
     Session* data = new Session;
 
@@ -346,7 +346,7 @@ static void CDECL fn_free(void* block)
 #ifdef _NO_LOCO_WIN32_
 static void STDCALL fn_dump(uint32_t address)
 {
-    console::log("Missing hook: 0x%x", address);
+    Console::log("Missing hook: 0x%x", address);
 }
 
 enum
@@ -357,7 +357,7 @@ enum
 
 static uint32_t STDCALL lib_DirectSoundCreate(void* lpGuid, void* ppDS, void* pUnkOuter)
 {
-    console::log("lib_DirectSoundCreate(%lx, %lx, %lx)", (uintptr_t)lpGuid, (uintptr_t)ppDS, (uintptr_t)pUnkOuter);
+    Console::log("lib_DirectSoundCreate(%lx, %lx, %lx)", (uintptr_t)lpGuid, (uintptr_t)ppDS, (uintptr_t)pUnkOuter);
 
     return DSERR_NODRIVER;
 }
@@ -365,26 +365,26 @@ static uint32_t STDCALL lib_DirectSoundCreate(void* lpGuid, void* ppDS, void* pU
 FORCE_ALIGN_ARG_POINTER
 static uint32_t STDCALL lib_CreateRectRgn(int x1, int y1, int x2, int y2)
 {
-    console::log("CreateRectRgn(%d, %d, %d, %d)", x1, y1, x2, y2);
+    Console::log("CreateRectRgn(%d, %d, %d, %d)", x1, y1, x2, y2);
     return 0;
 }
 
 static uint32_t STDCALL lib_GetUpdateRgn(uintptr_t hWnd, uintptr_t hRgn, bool bErase)
 {
-    console::log("GetUpdateRgn(%lx, %lx, %d)", hWnd, hRgn, bErase);
+    Console::log("GetUpdateRgn(%lx, %lx, %d)", hWnd, hRgn, bErase);
     return 0;
 }
 
 static void* STDCALL lib_OpenMutexA(uint32_t dwDesiredAccess, bool bInheritHandle, char* lpName)
 {
-    console::log("OpenMutexA(0x%x, %d, %s)", dwDesiredAccess, bInheritHandle, lpName);
+    Console::log("OpenMutexA(0x%x, %d, %s)", dwDesiredAccess, bInheritHandle, lpName);
 
     return nullptr;
 }
 
 static bool STDCALL lib_DeleteFileA(char* lpFileName)
 {
-    console::log("DeleteFileA(%s)", lpFileName);
+    Console::log("DeleteFileA(%s)", lpFileName);
 
     return false;
 }
@@ -398,7 +398,7 @@ static bool STDCALL lib_WriteFile(
     uintptr_t lpOverlapped)
 {
     *lpNumberOfBytesWritten = fwrite(buffer, 1, nNumberOfBytesToWrite, hFile);
-    console::logVerbose("WriteFile(%s)", buffer);
+    Console::logVerbose("WriteFile(%s)", buffer);
 
     return true;
 }
@@ -422,7 +422,7 @@ static int32_t STDCALL lib_CreateFileA(
     uint32_t dwFlagsAndAttributes,
     uintptr_t hTemplateFile)
 {
-    console::logVerbose("CreateFile(%s, 0x%x, 0x%x)", lpFileName, dwDesiredAccess, dwCreationDisposition);
+    Console::logVerbose("CreateFile(%s, 0x%x, 0x%x)", lpFileName, dwDesiredAccess, dwCreationDisposition);
 
     FILE* pFILE = nullptr;
     if (dwDesiredAccess == GENERIC_READ && dwCreationDisposition == OPEN_EXISTING)
@@ -451,7 +451,7 @@ static bool STDCALL lib_SetFileAttributesA(char* lpFileName, uint32_t dwFileAttr
 {
     // FILE_ATTRIBUTE_NORMAL = 0x80
     assert(dwFileAttributes == 0x80);
-    console::log("SetFileAttributes(%s, %x)", lpFileName, dwFileAttributes);
+    Console::log("SetFileAttributes(%s, %x)", lpFileName, dwFileAttributes);
 
     std::error_code ec;
     auto path = fs::path(lpFileName);
@@ -466,7 +466,7 @@ static bool STDCALL lib_SetFileAttributesA(char* lpFileName, uint32_t dwFileAttr
 
 static void* STDCALL lib_CreateMutexA(uintptr_t lmMutexAttributes, bool bInitialOwner, char* lpName)
 {
-    console::log("CreateMutexA(0x%lx, %d, %s)", lmMutexAttributes, bInitialOwner, lpName);
+    Console::log("CreateMutexA(0x%lx, %d, %s)", lmMutexAttributes, bInitialOwner, lpName);
 
     return nullptr;
 }
@@ -482,7 +482,7 @@ static bool STDCALL lib_CloseHandle(void* hObject)
 FORCE_ALIGN_ARG_POINTER
 static void STDCALL lib_PostQuitMessage(int32_t exitCode)
 {
-    console::log("lib_PostQuitMessage(%d)", exitCode);
+    Console::log("lib_PostQuitMessage(%d)", exitCode);
     exit(exitCode);
 }
 #endif // _NO_LOCO_WIN32_

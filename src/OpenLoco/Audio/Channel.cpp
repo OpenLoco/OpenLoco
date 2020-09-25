@@ -53,7 +53,7 @@ bool channel::play(bool loop)
         int loops = loop ? -1 : 0;
         if (Mix_PlayChannel(_id, _chunk, loops) == -1)
         {
-            console::log("Error during Mix_PlayChannel: %s", Mix_GetError());
+            Console::log("Error during Mix_PlayChannel: %s", Mix_GetError());
             return false;
         }
         return true;

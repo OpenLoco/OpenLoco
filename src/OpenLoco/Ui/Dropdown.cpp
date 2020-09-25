@@ -86,7 +86,7 @@ namespace OpenLoco::Ui::Dropdown
                 }
 
                 default:
-                    console::error("Unknown format: %d", arg.type);
+                    Console::error("Unknown format: %d", arg.type);
                     break;
             }
         }

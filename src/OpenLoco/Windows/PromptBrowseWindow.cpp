@@ -663,7 +663,7 @@ namespace OpenLoco::Ui::PromptBrowse
                 }
                 catch (const fs::filesystem_error& err)
                 {
-                    console::error("Invalid directory or file: %s", err.what());
+                    Console::error("Invalid directory or file: %s", err.what());
                 }
             }
         }

@@ -450,7 +450,7 @@ namespace OpenLoco::Ui
             {
                 if (SDL_BlitSurface(surface, nullptr, SDL_GetWindowSurface(window), nullptr))
                 {
-                    console::error("SDL_BlitSurface %s", SDL_GetError());
+                    Console::error("SDL_BlitSurface %s", SDL_GetError());
                     exit(1);
                 }
             }
@@ -459,14 +459,14 @@ namespace OpenLoco::Ui
                 // first blit to rgba surface to change the pixel format
                 if (SDL_BlitSurface(surface, nullptr, RGBASurface, nullptr))
                 {
-                    console::error("SDL_BlitSurface %s", SDL_GetError());
+                    Console::error("SDL_BlitSurface %s", SDL_GetError());
                     exit(1);
                 }
                 // then scale to window size. Without changing to RGBA first, SDL complains
                 // about blit configurations being incompatible.
                 if (SDL_BlitScaled(RGBASurface, nullptr, SDL_GetWindowSurface(window), nullptr))
                 {
-                    console::error("SDL_BlitScaled %s", SDL_GetError());
+                    Console::error("SDL_BlitScaled %s", SDL_GetError());
                     exit(1);
                 }
             }
@@ -822,7 +822,7 @@ namespace OpenLoco::Ui
         // Set the window fullscreen mode.
         if (SDL_SetWindowFullscreen(window, flags) != 0)
         {
-            console::error("SDL_SetWindowFullscreen failed: %s", SDL_GetError());
+            Console::error("SDL_SetWindowFullscreen failed: %s", SDL_GetError());
             return false;
         }
 
