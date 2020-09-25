@@ -1008,7 +1008,7 @@ namespace OpenLoco::Ui::Windows::Map
     // 0x0046BF0F based on
     static void drawVehicleOnMap(Gfx::drawpixelinfo_t* dpi, vehicle_base* vehicle, uint8_t colour)
     {
-        if (vehicle->x == location::null)
+        if (vehicle->x == Location::null)
             return;
 
         auto trainPos = locationToMapWindowPos({ vehicle->x, vehicle->y });
@@ -1021,14 +1021,14 @@ namespace OpenLoco::Ui::Windows::Map
     {
         auto newStartPos = locationToMapWindowPos({ stationPos.x, stationPos.y });
 
-        if (endPos.x != location::null)
+        if (endPos.x != Location::null)
         {
             Gfx::drawLine(dpi, endPos.x, endPos.y, newStartPos.x, newStartPos.y, colour);
         }
 
         endPos = newStartPos;
 
-        if (startPos.x == location::null)
+        if (startPos.x == Location::null)
         {
             startPos = newStartPos;
         }
@@ -1105,8 +1105,8 @@ namespace OpenLoco::Ui::Windows::Map
             1,
         };
 
-        xy32 startPos = { location::null, 0 };
-        xy32 endPos = { location::null, 0 };
+        xy32 startPos = { Location::null, 0 };
+        xy32 endPos = { Location::null, 0 };
         auto index = train.head->length_of_var_4C;
         auto lastOrder = _dword_987C5C[index] & 0x7;
 
@@ -1130,7 +1130,7 @@ namespace OpenLoco::Ui::Windows::Map
             lastOrder = _dword_987C5C[index] & 0x7;
         }
 
-        if (startPos.x == location::null || endPos.x == location::null)
+        if (startPos.x == Location::null || endPos.x == Location::null)
             return;
 
         Gfx::drawLine(dpi, startPos.x, startPos.y, endPos.x, endPos.y, *colour);
@@ -1179,7 +1179,7 @@ namespace OpenLoco::Ui::Windows::Map
             if (train.head->var_38 & (1 << 4))
                 continue;
 
-            if (train.head->x == location::null)
+            if (train.head->x == Location::null)
                 continue;
 
             auto vehicleType = train.head->vehicleType;
@@ -1197,7 +1197,7 @@ namespace OpenLoco::Ui::Windows::Map
             if (train.head->var_38 & (1 << 4))
                 continue;
 
-            if (train.head->x == location::null)
+            if (train.head->x == Location::null)
                 continue;
 
             for (auto& car : train.cars)

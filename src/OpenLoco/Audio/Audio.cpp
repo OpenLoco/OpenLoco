@@ -794,7 +794,7 @@ namespace OpenLoco::Audio
             return;
 
         // TODO: left or top?
-        if (v->sprite_left == location::null)
+        if (v->sprite_left == Location::null)
             return;
 
         if (_numActiveVehicleSounds >= Config::get().max_vehicle_sounds)

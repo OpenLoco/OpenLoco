@@ -537,7 +537,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 // loc_434170
                 auto thing = ThingManager::get<OpenLoco::vehicle_head>(company->observation_thing);
 
-                if (thing->base_type != thing_base_type::vehicle || thing->type != VehicleThingType::head || (thing->x == location::null))
+                if (thing->base_type != thing_base_type::vehicle || thing->type != VehicleThingType::head || (thing->x == Location::null))
                 {
                     invalidViewport(self);
                     return;
@@ -1003,7 +1003,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             coord_t tileX, tileY, tileZ;
             int16_t dx;
             sub_434EC7(mouseX, mouseY, tileX, tileY, tileZ, dx);
-            if (tileY == location::null)
+            if (tileY == Location::null)
             {
                 return;
             }

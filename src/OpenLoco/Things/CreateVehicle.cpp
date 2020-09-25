@@ -805,7 +805,7 @@ namespace OpenLoco::Things::Vehicle
     // 0x004AE74E
     static uint32_t createNewVehicle(const uint8_t flags, const uint16_t vehicleTypeId)
     {
-        gameCommandMapX = location::null;
+        gameCommandMapX = Location::null;
         if (!ThingManager::checkNumFreeThings(max_num_vehicle_components_in_car + num_vehicle_components_in_base))
         {
             return FAILURE;

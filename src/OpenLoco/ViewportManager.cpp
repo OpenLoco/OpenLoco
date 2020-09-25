@@ -301,7 +301,7 @@ namespace OpenLoco::Ui::viewportmgr
      */
     void invalidate(Thing* t, ZoomLevel zoom)
     {
-        if (t->sprite_left == location::null)
+        if (t->sprite_left == Location::null)
             return;
 
         ViewportRect rect;
