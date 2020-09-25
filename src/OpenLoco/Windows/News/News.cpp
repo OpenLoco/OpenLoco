@@ -39,7 +39,7 @@ namespace OpenLoco::Ui::NewsWindow
                 {
                     if (_activeMessageIndex != MessageId::null)
                     {
-                        auto news = messagemgr::get(_activeMessageIndex);
+                        auto news = MessageManager::get(_activeMessageIndex);
                         news->var_C8 = MessageId::null;
                         _activeMessageIndex = MessageId::null;
                     }
@@ -52,7 +52,7 @@ namespace OpenLoco::Ui::NewsWindow
                 {
                     if (_activeMessageIndex != MessageId::null)
                     {
-                        auto news = messagemgr::get(_activeMessageIndex);
+                        auto news = MessageManager::get(_activeMessageIndex);
                         if (widgetIndex == Common::widx::viewport1Button)
                         {
                             if (!(_word_4F8BE4[news->type] & (1 << 2)))
@@ -282,7 +282,7 @@ namespace OpenLoco::Ui::NewsWindow
             view.rotation = -1;
             view.zoomLevel = (ZoomLevel)-1;
             view.thingId = 0xFFFF;
-            auto news = messagemgr::get(_activeMessageIndex);
+            auto news = MessageManager::get(_activeMessageIndex);
 
             bool selectable = false;
 
@@ -752,7 +752,7 @@ namespace OpenLoco::Ui::NewsWindow
         // 0x00429739
         static void draw(Ui::window* self, Gfx::drawpixelinfo_t* dpi)
         {
-            auto news = messagemgr::get(_activeMessageIndex);
+            auto news = MessageManager::get(_activeMessageIndex);
 
             if (_word_4F8BE4[news->type] & (1 << 1))
             {

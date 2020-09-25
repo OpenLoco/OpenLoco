@@ -152,7 +152,7 @@ namespace OpenLoco::Ui::MessageWindow
 
             if (_activeMessageIndex != 0xFFFF)
             {
-                auto message = messagemgr::get(_activeMessageIndex);
+                auto message = MessageManager::get(_activeMessageIndex);
                 if (message->var_C8 != 0xFFFF)
                 {
                     if (message->var_C8 & (1 << 15))
@@ -163,7 +163,7 @@ namespace OpenLoco::Ui::MessageWindow
             _activeMessageIndex = 0xFFFF;
             WindowManager::close(WindowType::news, 0);
 
-            auto message = messagemgr::get(messageIndex);
+            auto message = MessageManager::get(messageIndex);
             message->var_C8 = (1 << 15) | (1 << 0);
 
             NewsWindow::open(messageIndex);
@@ -233,7 +233,7 @@ namespace OpenLoco::Ui::MessageWindow
                     height += messageHeight;
                     continue;
                 }
-                auto message = messagemgr::get(i);
+                auto message = MessageManager::get(i);
                 char* buffer = message->messageString;
                 auto str = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
 

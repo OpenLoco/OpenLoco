@@ -26,7 +26,7 @@ namespace OpenLoco
     };
 }
 
-namespace OpenLoco::messagemgr
+namespace OpenLoco::MessageManager
 {
     constexpr size_t max_messages = 199;
 

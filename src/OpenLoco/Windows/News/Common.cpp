@@ -50,7 +50,7 @@ namespace OpenLoco::Ui::NewsWindow
     void open(uint16_t messageIndex)
     {
         bool isOld = false;
-        auto news = messagemgr::get(messageIndex);
+        auto news = MessageManager::get(messageIndex);
 
         if ((news->var_C8 != 0) && (getScreenAge() >= 10))
         {

@@ -219,7 +219,7 @@ namespace OpenLoco
             bool acceptedNow = (newCargoAcc & (1 << cargoId)) != 0;
             if (acceptedBefore && !acceptedNow)
             {
-                messagemgr::post(
+                MessageManager::post(
                     messageType::cargoNoLongerAccepted,
                     owner,
                     id(),
@@ -227,7 +227,7 @@ namespace OpenLoco
             }
             else if (!acceptedBefore && acceptedNow)
             {
-                messagemgr::post(
+                MessageManager::post(
                     messageType::cargoNowAccepted,
                     owner,
                     id(),

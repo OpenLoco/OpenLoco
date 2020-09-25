@@ -4,7 +4,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::messagemgr
+namespace OpenLoco::MessageManager
 {
     static loco_global<message[max_messages], 0x005271D2> _messages;
 

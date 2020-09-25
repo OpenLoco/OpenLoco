@@ -25,7 +25,7 @@ namespace OpenLoco::Ui::NewsWindow::Ticker
         if (_activeMessageIndex == 0xFFFF)
             return;
 
-        auto news = messagemgr::get(_activeMessageIndex);
+        auto news = MessageManager::get(_activeMessageIndex);
         news->var_C8 = 1;
 
         auto activeMessageIndex = _activeMessageIndex;
@@ -81,7 +81,7 @@ namespace OpenLoco::Ui::NewsWindow::Ticker
             {
                 if (_activeMessageIndex != 0xFFFF)
                 {
-                    auto news = messagemgr::get(_activeMessageIndex);
+                    auto news = MessageManager::get(_activeMessageIndex);
                     auto cx = _word_525CE0 >> 2;
                     char* newsString = news->messageString;
                     auto newsStringChar = *newsString;
@@ -156,7 +156,7 @@ namespace OpenLoco::Ui::NewsWindow::Ticker
         if (getPauseFlags() & (1 << 2))
             return;
 
-        auto news = messagemgr::get(_activeMessageIndex);
+        auto news = MessageManager::get(_activeMessageIndex);
 
         auto x = self->x;
         auto y = self->y;
