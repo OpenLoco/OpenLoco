@@ -185,16 +185,12 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         auto scenarioInfo = reinterpret_cast<ScenarioIndexEntry*>(self->info);
 
         // Check if current currency object needs to be changed.
-        // TODO: this segfaults.
         registers regs;
-        regs.ebp = scenarioInfo->currentObjectPtr;
-        printf("Pointer: %p\n", (void*)scenarioInfo->currentObjectPtr);
-        bool notLoaded = call(0x004720EB, regs) & (X86_FLAG_SIGN << 8);
-        printf("Requires reload? %d\n", notLoaded);
-        return;
+        regs.ebp = reinterpret_cast<int32_t>(&scenarioInfo->currency);
+        bool changeCurrency = (call(0x004720EB, regs) & (X86_FLAG_CARRY << 8)) == 0;
 
         // Load currency object if needed.
-        if (notLoaded)
+        if (changeCurrency)
         {
             // Unload current object
             registers regs2;
@@ -203,7 +199,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
 
             // Load required object
             registers regs3;
-            regs3.ebp = (uintptr_t)scenarioInfo->currencyObjectId;
+            regs3.ebp = (uintptr_t)scenarioInfo->currency.var_04;
             call(0x00471BCE, regs3);
             call(0x0047237D); // reset_loaded_objects
             call(0x0046E07B); // load currency gfx
