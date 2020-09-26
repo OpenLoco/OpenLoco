@@ -65,8 +65,8 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             {
                 widget.type = widget_type::wt_8;
                 widget.left = xPos;
-                xPos += 90;
-                widget.right = xPos++;
+                widget.right = xPos + 90;
+                xPos += 91;
             }
             else
                 widget.type = widget_type::none;
@@ -103,15 +103,15 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             Gfx::point_t({ static_cast<int16_t>(width() / 2 - windowSize.width / 2),
                            std::max<int16_t>(height() / 2 - windowSize.height / 2, 28) }),
             windowSize,
-            window_flags::transparent,
+            window_flags::stick_to_front | window_flags::flag_12,
             &_events);
 
         self->widgets = _widgets;
         self->enabled_widgets = (1 << widx::close) | (1 << widx::tab0) | (1 << widx::tab1) | (1 << widx::tab2) | (1 << widx::tab3) | (1 << widx::tab4);
         self->initScrollWidgets();
 
-        self->colours[0] = PaletteIndex::transparent;
-        self->colours[1] = PaletteIndex::index_0B;
+        self->colours[0] = Colour::black;
+        self->colours[1] = Colour::saturated_green;
 
         self->var_846 = 0xFFFF;
         self->var_85A = static_cast<int32_t>(0xFFFFFFFF);
@@ -150,7 +150,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     // 0x004439AF
     static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
     {
-        Gfx::drawRectInset(dpi, self->x, self->y + 20, self->width - 1, 1, self->colours[0], 0);
+        Gfx::drawRectInset(dpi, self->x, self->y + 20, self->width, 41, self->colours[0], 0);
 
         // Draw widgets.
         self->draw(dpi);
