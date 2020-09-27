@@ -419,7 +419,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
                 config.scenario_selected_tab = selectedCategory;
                 Config::write();
 
-                self->info = reinterpret_cast<uintptr_t>(0xFFFFFFFF);
+                self->info = 0xFFFFFFFF;
                 self->invalidate();
                 self->callOnResize();
                 self->callPrepareDraw();
