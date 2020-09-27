@@ -1,5 +1,6 @@
 #include "../Audio/Audio.h"
 #include "../Config.h"
+#include "../GameCommands.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/Gfx.h"
 #include "../Graphics/ImageIds.h"
@@ -455,7 +456,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
 
         if (isNetworked())
         {
-            // game command 67
+            GameCommands::do_67(scenarioInfo->filename);
         }
         else
         {

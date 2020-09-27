@@ -295,6 +295,15 @@ namespace OpenLoco::GameCommands
         doCommand(66, regs);
     }
 
+    // Load multiplayer map
+    inline void do_67(const char* filename)
+    {
+        registers regs;
+        regs.bl = GameCommandFlag::apply;
+        regs.ebp = reinterpret_cast<int32_t>(filename);
+        doCommand(67, regs);
+    }
+
     // Send chat message
     inline void do_71(int32_t ax, char* string)
     {
