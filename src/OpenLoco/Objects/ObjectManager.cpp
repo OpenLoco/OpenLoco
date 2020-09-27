@@ -339,10 +339,10 @@ namespace OpenLoco::ObjectManager
 
     // 0x004720EB
     // Returns std::nullopt if not loaded
-    std::optional<uint32_t> getLoadedObjectIndex(const object_index_entry& object)
+    std::optional<uint32_t> getLoadedObjectIndex(const header* header)
     {
         registers regs;
-        regs.ebp = reinterpret_cast<uint32_t>(&object._header->type);
+        regs.ebp = reinterpret_cast<uint32_t>(&header->type);
         const bool success = !(call(0x004720EB, regs) & (X86_FLAG_CARRY << 8));
         // Object type is also returned on ecx
         if (success)
@@ -350,6 +350,13 @@ namespace OpenLoco::ObjectManager
             return { regs.ebx };
         }
         return std::nullopt;
+    }
+
+    // 0x004720EB
+    // Returns std::nullopt if not loaded
+    std::optional<uint32_t> getLoadedObjectIndex(const object_index_entry& object)
+    {
+        return getLoadedObjectIndex(object._header);
     }
 
     // 0x00472AFE

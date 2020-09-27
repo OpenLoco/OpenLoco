@@ -230,6 +230,7 @@ namespace OpenLoco::ObjectManager
     std::vector<std::pair<uint32_t, object_index_entry>> getAvailableObjects(object_type type);
     void freeScenarioText();
     void getScenarioText(header& object);
+    std::optional<uint32_t> getLoadedObjectIndex(const header* header);
     std::optional<uint32_t> getLoadedObjectIndex(const object_index_entry& object);
     ObjIndexPair getActiveObject(object_type objectType, uint8_t* edi);
 }
