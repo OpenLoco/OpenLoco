@@ -9,7 +9,7 @@ namespace OpenLoco::ScenarioManager
 {
     enum ScenarioIndexFlags : uint8_t
     {
-        flag_1 = 1 << 0,
+        flag_0 = 1 << 0,
         completed = 1 << 1,
         hasPreviewImage = 1 << 2,
     };

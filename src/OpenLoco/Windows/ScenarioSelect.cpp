@@ -9,6 +9,7 @@
 #include "../Objects/ObjectManager.h"
 #include "../Scenario.h"
 #include "../ScenarioManager.h"
+#include "../Ui/ScrollView.h"
 #include "../Ui/WindowManager.h"
 
 using namespace OpenLoco::Interop;
@@ -364,7 +365,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             }
 
             // Draw checkmark to indicate completion
-            Gfx::drawImage(dpi, 395, y + 1, ImageIds::scenario_completed_tick);
+            Gfx::drawImage(dpi, self->widgets[widx::list].width() - ScrollView::barWidth - 25, y + 1, ImageIds::scenario_completed_tick);
 
             // 'Completed by' info
             {
@@ -377,7 +378,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
                 args.push<uint16_t>(scenarioInfo->completedMonths / 12);
                 args.push<uint16_t>(scenarioInfo->completedMonths % 12);
 
-                const int16_t x = 210;
+                const int16_t x = (self->widgets[widx::list].width() - ScrollView::barWidth) / 2;
                 Gfx::drawStringCentred(*dpi, x, y + 10, Colour::black, formatStringId, &args);
             }
 

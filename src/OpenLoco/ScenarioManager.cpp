@@ -13,7 +13,7 @@ namespace OpenLoco::ScenarioManager
         for (auto i = 0; i < numScenarios; i++)
         {
             ScenarioIndexEntry& entry = scenarioList[i];
-            if (!entry.hasFlag(ScenarioIndexFlags::flag_1))
+            if (!entry.hasFlag(ScenarioIndexFlags::flag_0))
                 continue;
 
             if (entry.category == category)
@@ -29,7 +29,7 @@ namespace OpenLoco::ScenarioManager
         {
             ScenarioIndexEntry* entry = &scenarioList[i];
 
-            if (entry->category != category || !entry->hasFlag(ScenarioIndexFlags::flag_1))
+            if (entry->category != category || !entry->hasFlag(ScenarioIndexFlags::flag_0))
             {
                 if (entry == scenario)
                     return false;
@@ -51,7 +51,7 @@ namespace OpenLoco::ScenarioManager
         for (auto i = 0; i < numScenarios; i++)
         {
             ScenarioIndexEntry& entry = scenarioList[i];
-            if (entry.category != category || !entry.hasFlag(ScenarioIndexFlags::flag_1))
+            if (entry.category != category || !entry.hasFlag(ScenarioIndexFlags::flag_0))
                 continue;
 
             numScenariosInCategory++;
@@ -66,7 +66,7 @@ namespace OpenLoco::ScenarioManager
         for (auto i = 0; i < numScenarios; i++)
         {
             ScenarioIndexEntry& entry = scenarioList[i];
-            if (entry.category != category || !entry.hasFlag(ScenarioIndexFlags::flag_1))
+            if (entry.category != category || !entry.hasFlag(ScenarioIndexFlags::flag_0))
                 continue;
 
             if (j == index)
