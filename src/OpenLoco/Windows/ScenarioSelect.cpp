@@ -63,7 +63,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         for (int i = 0; i < 5; i++)
         {
             widget_t& widget = self->widgets[widx::tab0 + i];
-            if (scenariomgr::hasScenariosForCategory(i))
+            if (ScenarioManager::hasScenariosForCategory(i))
             {
                 widget.type = widget_type::wt_8;
                 widget.left = xPos;
@@ -81,7 +81,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         if (self->info == 0xFFFFFFFF)
             return;
 
-        using namespace scenariomgr;
+        using namespace ScenarioManager;
         auto scenarioInfo = reinterpret_cast<ScenarioIndexEntry*>(self->info);
         if (hasScenarioInCategory(self->current_tab, scenarioInfo))
             return;
@@ -105,7 +105,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             Gfx::point_t({ static_cast<int16_t>(width() / 2 - windowSize.width / 2),
                            std::max<int16_t>(height() / 2 - windowSize.height / 2, 28) }),
             windowSize,
-            window_flags::stick_to_front | window_flags::flag_12,
+            WindowFlags::stick_to_front | WindowFlags::flag_12,
             &_events);
 
         self->widgets = _widgets;
@@ -183,7 +183,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         if (self->info == 0 || self->info == 0xFFFFFFFF)
             return;
 
-        using namespace scenariomgr;
+        using namespace ScenarioManager;
         auto scenarioInfo = reinterpret_cast<ScenarioIndexEntry*>(self->info);
 
         // Check if current currency object needs to be changed.
@@ -325,7 +325,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         auto colour = Colour::getShade(self->colours[1], 4);
         Gfx::clearSingle(*dpi, colour);
 
-        using namespace scenariomgr;
+        using namespace ScenarioManager;
         auto numScenarios = getNumScenariosByCategory(self->current_tab);
 
         int16_t y = 0;
@@ -435,19 +435,19 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     // 0x00443EF6
     static void getScrollSize(window* self, uint32_t, uint16_t*, uint16_t* const scrollHeight)
     {
-        *scrollHeight = scenariomgr::getNumScenariosByCategory(self->current_tab) * ROW_HEIGHT;
+        *scrollHeight = ScenarioManager::getNumScenariosByCategory(self->current_tab) * ROW_HEIGHT;
     }
 
     // 0x00443F32
     static void onScrollMouseDown(window* self, int16_t x, int16_t y, uint8_t scroll_index)
     {
-        auto numScenarios = scenariomgr::getNumScenariosByCategory(self->current_tab);
+        auto numScenarios = ScenarioManager::getNumScenariosByCategory(self->current_tab);
 
         auto index = y / ROW_HEIGHT;
         if (index > numScenarios)
             return;
 
-        auto* scenarioInfo = scenariomgr::getNthScenarioFromCategory(self->current_tab, index);
+        auto* scenarioInfo = ScenarioManager::getNthScenarioFromCategory(self->current_tab, index);
         if (scenarioInfo == nullptr)
             return;
 
@@ -460,20 +460,20 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         }
         else
         {
-            scenario::start(scenarioInfo->filename);
+            Scenario::start(scenarioInfo->filename);
         }
     }
 
     // 0x00443FB2
     static void onScrollMouseOver(window* self, int16_t x, int16_t y, uint8_t scroll_index)
     {
-        auto numScenarios = scenariomgr::getNumScenariosByCategory(self->current_tab);
+        auto numScenarios = ScenarioManager::getNumScenariosByCategory(self->current_tab);
 
         auto index = y / ROW_HEIGHT;
         if (index > numScenarios)
             return;
 
-        auto* scenarioEntry = scenariomgr::getNthScenarioFromCategory(self->current_tab, index);
+        auto* scenarioEntry = ScenarioManager::getNthScenarioFromCategory(self->current_tab, index);
         if (scenarioEntry == nullptr)
             return;
 
