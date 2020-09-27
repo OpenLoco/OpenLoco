@@ -208,7 +208,7 @@ namespace OpenLoco::Map::TileManager
     // regs.cx: pos.y
     void mapInvalidateTileFull(Map::map_pos pos)
     {
-        Ui::viewportmgr::invalidate(pos, 0, 1120, ZoomLevel::eighth);
+        Ui::ViewportManager::invalidate(pos, 0, 1120, ZoomLevel::eighth);
     }
 
     // 0x0046112C

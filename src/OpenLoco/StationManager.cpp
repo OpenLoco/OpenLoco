@@ -9,7 +9,7 @@
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui;
 
-namespace OpenLoco::stationmgr
+namespace OpenLoco::StationManager
 {
     static loco_global<station[max_stations], 0x005E6EDC> _stations;
 
@@ -55,7 +55,7 @@ namespace OpenLoco::stationmgr
     static void sub_437F29(company_id_t cid, uint8_t arg1)
     {
         constexpr uint8_t byte_4F9462[] = { 0, 31, 10, 7, 31, 10, 31, 31, 11 };
-        auto company = companymgr::get(cid);
+        auto company = CompanyManager::get(cid);
         company->var_8BB0[arg1] = byte_4F9462[arg1];
     }
 
@@ -75,11 +75,11 @@ namespace OpenLoco::stationmgr
     // 0x0048B244
     void updateDaily()
     {
-        for (auto& town : townmgr::towns())
+        for (auto& town : TownManager::towns())
         {
             if (!town.empty())
             {
-                town.flags &= ~town_flags::rating_adjusted;
+                town.flags &= ~TownFlags::rating_adjusted;
             }
         }
 
@@ -107,10 +107,10 @@ namespace OpenLoco::stationmgr
                 }
                 if (station.updateCargo())
                 {
-                    auto town = townmgr::get(station.town);
-                    if (town != nullptr && !(town->flags & town_flags::rating_adjusted))
+                    auto town = TownManager::get(station.town);
+                    if (town != nullptr && !(town->flags & TownFlags::rating_adjusted))
                     {
-                        town->flags |= town_flags::rating_adjusted;
+                        town->flags |= TownFlags::rating_adjusted;
                         town->adjustCompanyRating(station.owner, 1);
                     }
                 }

@@ -163,7 +163,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
                 if (townId == 0xFFFF)
                     continue;
-                auto town = townmgr::get(townId);
+                auto town = TownManager::get(townId);
 
                 // Town Name
                 {
@@ -270,7 +270,7 @@ namespace OpenLoco::Ui::Windows::TownList
         // 0x0049A532
         static void onScrollMouseOver(Ui::window* self, int16_t x, int16_t y, uint8_t scroll_index)
         {
-            self->flags &= ~(window_flags::not_scroll_view);
+            self->flags &= ~(WindowFlags::not_scroll_view);
 
             uint16_t currentRow = y / rowHeight;
             int16_t currentTown = -1;
@@ -362,13 +362,13 @@ namespace OpenLoco::Ui::Windows::TownList
 
             auto i = -1;
 
-            for (auto& town : townmgr::towns())
+            for (auto& town : TownManager::towns())
             {
                 i++;
                 if (town.empty())
                     continue;
 
-                if ((town.flags & town_flags::sorted) != 0)
+                if ((town.flags & TownFlags::sorted) != 0)
                     continue;
 
                 if (chosenTown == -1)
@@ -377,7 +377,7 @@ namespace OpenLoco::Ui::Windows::TownList
                     continue;
                 }
 
-                if (getOrder(SortMode(self->sort_mode), town, *townmgr::get(chosenTown)))
+                if (getOrder(SortMode(self->sort_mode), town, *TownManager::get(chosenTown)))
                 {
                     chosenTown = i;
                 }
@@ -387,7 +387,7 @@ namespace OpenLoco::Ui::Windows::TownList
             {
                 bool shouldInvalidate = false;
 
-                townmgr::get(chosenTown)->flags |= town_flags::sorted;
+                TownManager::get(chosenTown)->flags |= TownFlags::sorted;
 
                 if (chosenTown != self->row_info[self->row_count])
                 {
@@ -436,13 +436,13 @@ namespace OpenLoco::Ui::Windows::TownList
         // 0x0049A4D0
         static void event_08(window* self)
         {
-            self->flags |= window_flags::not_scroll_view;
+            self->flags |= WindowFlags::not_scroll_view;
         }
 
         // 0x0049A4D8
         static void event_09(window* self)
         {
-            if (!(self->flags & window_flags::not_scroll_view))
+            if (!(self->flags & WindowFlags::not_scroll_view))
                 return;
 
             if (self->row_hover == -1)
@@ -526,7 +526,7 @@ namespace OpenLoco::Ui::Windows::TownList
                 WindowType::townList,
                 origin,
                 TownList::windowSize,
-                window_flags::resizable,
+                WindowFlags::resizable,
                 &TownList::events);
 
             window->number = 0;
@@ -544,7 +544,7 @@ namespace OpenLoco::Ui::Windows::TownList
             window->min_height = TownList::minDimensions.height;
             window->max_width = TownList::maxDimensions.width;
             window->max_height = TownList::maxDimensions.height;
-            window->flags |= window_flags::resizable;
+            window->flags |= WindowFlags::resizable;
 
             auto skin = ObjectManager::get<interface_skin_object>();
             window->colours[0] = skin->colour_0B;
@@ -1379,7 +1379,7 @@ namespace OpenLoco::Ui::Windows::TownList
                 uint32_t imageId = skin->img;
                 imageId += InterfaceSkin::ImageIds::toolbar_menu_towns;
 
-                widget::draw_tab(self, dpi, imageId, widx::tab_town_list);
+                Widget::draw_tab(self, dpi, imageId, widx::tab_town_list);
             }
 
             // Build New Towns Tab
@@ -1408,7 +1408,7 @@ namespace OpenLoco::Ui::Windows::TownList
                 else
                     imageId += buildNewTownsImageIds[0];
 
-                widget::draw_tab(self, dpi, imageId, widx::tab_build_town);
+                Widget::draw_tab(self, dpi, imageId, widx::tab_build_town);
             }
 
             // Build New Buildings Tab
@@ -1437,7 +1437,7 @@ namespace OpenLoco::Ui::Windows::TownList
                 else
                     imageId += buildBuildingsImageIds[0];
 
-                widget::draw_tab(self, dpi, imageId, widx::tab_build_buildings);
+                Widget::draw_tab(self, dpi, imageId, widx::tab_build_buildings);
             }
 
             // Build New Misc Buildings Tab
@@ -1466,7 +1466,7 @@ namespace OpenLoco::Ui::Windows::TownList
                 else
                     imageId += buildMiscBuildingsImageIds[0];
 
-                widget::draw_tab(self, dpi, imageId, widx::tab_build_misc_buildings);
+                Widget::draw_tab(self, dpi, imageId, widx::tab_build_misc_buildings);
             }
         }
 
@@ -1478,7 +1478,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
             self->current_tab = widgetIndex - widx::tab_town_list;
             self->frame_no = 0;
-            self->flags &= ~(window_flags::flag_16);
+            self->flags &= ~(WindowFlags::flag_16);
 
             if (self->viewports[0] != nullptr)
             {
@@ -1520,12 +1520,12 @@ namespace OpenLoco::Ui::Windows::TownList
         {
             self->row_count = 0;
 
-            for (auto& town : townmgr::towns())
+            for (auto& town : TownManager::towns())
             {
                 if (town.empty())
                     continue;
 
-                town.flags &= ~town_flags::sorted;
+                town.flags &= ~TownFlags::sorted;
             }
         }
 

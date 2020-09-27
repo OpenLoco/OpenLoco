@@ -144,7 +144,7 @@ namespace OpenLoco::Ui::TextInput
         auto window = WindowManager::createWindowCentred(
             WindowType::textInput,
             { 330, 90 },
-            window_flags::stick_to_front | window_flags::flag_12,
+            WindowFlags::stick_to_front | WindowFlags::flag_12,
             &_events);
         window->widgets = _widgets;
         window->enabled_widgets |= 1ULL << Widx::close;
@@ -168,20 +168,20 @@ namespace OpenLoco::Ui::TextInput
             interface_skin_object* interface = ObjectManager::get<interface_skin_object>();
             window->colours[0] = interface->colour_0B;
             window->colours[1] = interface->colour_0C;
-            window->owner = company_id::null;
+            window->owner = CompanyId::null;
         }
 
         if (caller->type == WindowType::timeToolbar)
         {
             interface_skin_object* interface = ObjectManager::get<interface_skin_object>();
             window->colours[1] = interface->colour_0A;
-            window->owner = companymgr::getControllingId();
+            window->owner = CompanyManager::getControllingId();
         }
 
         _widgets[Widx::title].type = widget_type::caption_25;
-        if (window->owner != company_id::null)
+        if (window->owner != CompanyId::null)
         {
-            window->flags |= window_flags::flag_11;
+            window->flags |= WindowFlags::flag_11;
             _widgets[Widx::title].type = widget_type::caption_24;
         }
     }

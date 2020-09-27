@@ -175,7 +175,7 @@ namespace OpenLoco::Ui
         uint16_t v_thumb_bottom; // 0x10
     };
 
-    namespace window_flags
+    namespace WindowFlags
     {
         constexpr uint32_t stick_to_back = 1 << 0;
         constexpr uint32_t stick_to_front = 1 << 1;
@@ -195,7 +195,7 @@ namespace OpenLoco::Ui
         constexpr uint32_t flag_15 = 1 << 15;
         constexpr uint32_t flag_16 = 1 << 16;
         constexpr uint32_t white_border_one = (1 << 17);
-        constexpr uint32_t white_border_mask = window_flags::white_border_one | (1 << 18);
+        constexpr uint32_t white_border_mask = WindowFlags::white_border_one | (1 << 18);
         constexpr uint32_t flag_19 = 1 << 19;
         constexpr uint32_t flag_31 = 1 << 31;
     }
@@ -368,7 +368,7 @@ namespace OpenLoco::Ui
         viewport_config viewport_configurations[2]; // 0x876
         WindowType type;                            // 0x882
         uint8_t pad_883[1];
-        company_id_t owner = company_id::null; // 0x884
+        company_id_t owner = CompanyId::null; // 0x884
         uint8_t var_885 = 0xFF;
         uint8_t colours[4]; // 0x886
         int16_t var_88A;
@@ -426,7 +426,7 @@ namespace OpenLoco::Ui
 
         bool isTranslucent()
         {
-            return (this->flags & window_flags::transparent) != 0;
+            return (this->flags & WindowFlags::transparent) != 0;
         }
 
         bool isEnabled(int8_t widget_index);

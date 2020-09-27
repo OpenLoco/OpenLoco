@@ -179,7 +179,7 @@ namespace OpenLoco::Ui::PromptBrowse
         auto window = WindowManager::createWindowCentred(
             WindowType::fileBrowserPrompt,
             { 500, 380 },
-            Ui::window_flags::stick_to_front | Ui::window_flags::resizable | Ui::window_flags::flag_12,
+            Ui::WindowFlags::stick_to_front | Ui::WindowFlags::resizable | Ui::WindowFlags::flag_12,
             &_events);
 
         if (window != nullptr)
@@ -474,7 +474,7 @@ namespace OpenLoco::Ui::PromptBrowse
     {
         Gfx::fillRectInset(&dpi, x, y, x + width, y + height, window.colours[1], 0x30);
 
-        if (S5::getPreviewOptions().scenarioFlags & scenario::flags::landscape_generation_done)
+        if (S5::getPreviewOptions().scenarioFlags & Scenario::flags::landscape_generation_done)
         {
             // Height map
             auto imageId = 0;
@@ -663,7 +663,7 @@ namespace OpenLoco::Ui::PromptBrowse
                 }
                 catch (const fs::filesystem_error& err)
                 {
-                    console::error("Invalid directory or file: %s", err.what());
+                    Console::error("Invalid directory or file: %s", err.what());
                 }
             }
         }

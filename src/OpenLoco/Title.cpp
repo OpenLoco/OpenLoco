@@ -8,7 +8,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::title
+namespace OpenLoco::Title
 {
     static loco_global<uint16_t, 0x00508F12> _screenAge;
     static loco_global<uint8_t, 0x00508F14> _screenFlags;
@@ -83,17 +83,17 @@ namespace OpenLoco::title
     // 0x0046AD7D
     void start()
     {
-        companymgr::updatingCompanyId(companymgr::getControllingId());
+        CompanyManager::updatingCompanyId(CompanyManager::getControllingId());
         if (isPaused())
         {
             togglePause(true);
         }
 
         auto screenFlags = _screenFlags;
-        _screenFlags = screenFlags & ~screen_flags::networked;
+        _screenFlags = screenFlags & ~ScreenFlags::networked;
         Ui::WindowManager::closeAllFloatingWindows();
         _screenFlags = screenFlags;
-        _screenFlags |= screen_flags::title;
+        _screenFlags |= ScreenFlags::title;
         _gameSpeed = 0;
         sub_472031();
         sub_473A95(1);
@@ -104,7 +104,7 @@ namespace OpenLoco::title
         sub_43C88C();
         initialiseViewports();
         sub_4284C8();
-        gui::init();
+        Gui::init();
         sub_444357();
         Gfx::invalidateScreen();
         _screenAge = 0;

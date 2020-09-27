@@ -9,7 +9,7 @@ namespace OpenLoco
 
     using message_id_t = uint16_t;
 
-    namespace message_id
+    namespace MessageId
     {
         constexpr message_id_t null = std::numeric_limits<message_id_t>::max();
     }

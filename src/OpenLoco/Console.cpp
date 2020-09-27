@@ -2,7 +2,7 @@
 #include "Utility/String.hpp"
 #include <stdarg.h>
 
-namespace OpenLoco::console
+namespace OpenLoco::Console
 {
     static int _group = 0;
 

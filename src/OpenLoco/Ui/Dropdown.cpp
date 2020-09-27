@@ -86,7 +86,7 @@ namespace OpenLoco::Ui::Dropdown
                 }
 
                 default:
-                    console::error("Unknown format: %d", arg.type);
+                    Console::error("Unknown format: %d", arg.type);
                     break;
             }
         }
@@ -292,13 +292,13 @@ namespace OpenLoco::Ui::Dropdown
         // 0x004CCF1E
         static void open(Gfx::point_t origin, Gfx::ui_size_t size, colour_t colour)
         {
-            auto window = WindowManager::createWindow(WindowType::dropdown, origin, size, window_flags::stick_to_front, &common::events);
+            auto window = WindowManager::createWindow(WindowType::dropdown, origin, size, WindowFlags::stick_to_front, &common::events);
 
             window->widgets = common::widgets;
 
             if (colour & Colour::translucent_flag)
             {
-                window->flags |= window_flags::transparent;
+                window->flags |= WindowFlags::transparent;
             }
 
             common::initEvents();
@@ -797,13 +797,13 @@ namespace OpenLoco::Ui::Dropdown
     {
         std::array<bool, 16> companyOrdered = {};
 
-        company_id_t companyId = company_id::null;
+        company_id_t companyId = CompanyId::null;
 
         size_t index = 0;
-        for (; index < companymgr::max_companies; index++)
+        for (; index < CompanyManager::max_companies; index++)
         {
             int16_t maxPerformanceIndex = -1;
-            for (const auto& company : companymgr::companies())
+            for (const auto& company : CompanyManager::companies())
             {
                 if (company.empty())
                     continue;
@@ -825,7 +825,7 @@ namespace OpenLoco::Ui::Dropdown
             _dropdownItemFormats[index] = StringIds::dropdown_company_select;
             _menuOptions[index] = companyId;
 
-            auto company = companymgr::get(companyId);
+            auto company = CompanyManager::get(companyId);
             auto competitorObj = ObjectManager::get<competitor_object>(company->competitor_id);
             auto ownerEmotion = company->owner_emotion;
             auto imageId = competitorObj->images[ownerEmotion];
@@ -845,7 +845,7 @@ namespace OpenLoco::Ui::Dropdown
         {
             highlightedIndex++;
 
-            if (highlightedIndex > companymgr::max_companies)
+            if (highlightedIndex > CompanyManager::max_companies)
             {
                 highlightedIndex = -1;
                 break;
@@ -865,11 +865,11 @@ namespace OpenLoco::Ui::Dropdown
         }
 
         auto companyId = _menuOptions[itemIndex];
-        auto company = companymgr::get(companyId);
+        auto company = CompanyManager::get(companyId);
 
         if (company->empty())
         {
-            companyId = company_id::null;
+            companyId = CompanyId::null;
         }
 
         return companyId;

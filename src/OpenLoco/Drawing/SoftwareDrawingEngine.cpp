@@ -233,7 +233,7 @@ namespace OpenLoco::Drawing
             auto v = Ui::WindowManager::get(index);
 
             // Don't draw overlapping opaque windows, they won't have changed
-            if ((v->flags & Ui::window_flags::transparent) == 0)
+            if ((v->flags & Ui::WindowFlags::transparent) == 0)
                 continue;
 
             Ui::WindowManager::drawSingle(dpi, v, left, top, right, bottom);

@@ -5,7 +5,7 @@
 #include <array>
 #include <cstddef>
 
-namespace OpenLoco::companymgr
+namespace OpenLoco::CompanyManager
 {
     constexpr size_t max_companies = 15;
 

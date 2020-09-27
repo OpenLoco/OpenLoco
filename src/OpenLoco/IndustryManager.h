@@ -4,7 +4,7 @@
 #include <array>
 #include <cstddef>
 
-namespace OpenLoco::industrymgr
+namespace OpenLoco::IndustryManager
 {
     constexpr size_t max_industries = 128;
 

@@ -117,13 +117,13 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                 else
                     imageId += challengeTabImageIds[0];
 
-                widget::draw_tab(window, dpi, imageId, widx::tab_challenge);
+                Widget::draw_tab(window, dpi, imageId, widx::tab_challenge);
             }
 
             // Companies tab
             {
                 const uint32_t imageId = skin->img + InterfaceSkin::ImageIds::tab_companies;
-                widget::draw_tab(window, dpi, imageId, widx::tab_companies);
+                Widget::draw_tab(window, dpi, imageId, widx::tab_companies);
             }
 
             // Finances tab
@@ -153,13 +153,13 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                 else
                     imageId += financesTabImageIds[0];
 
-                widget::draw_tab(window, dpi, imageId, widx::tab_finances);
+                Widget::draw_tab(window, dpi, imageId, widx::tab_finances);
             }
 
             // Scenario details tab
             {
                 const uint32_t imageId = skin->img + InterfaceSkin::ImageIds::tab_scenario_details;
-                widget::draw_tab(window, dpi, imageId, widx::tab_scenario);
+                Widget::draw_tab(window, dpi, imageId, widx::tab_scenario);
             }
         }
 
@@ -278,19 +278,19 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                 {
                     switch (*objectiveType)
                     {
-                        case scenario::objective_type::company_value:
-                            *objectiveCompanyValue = std::max<uint32_t>(*objectiveCompanyValue - 100000, scenario::min_objective_company_value);
+                        case Scenario::objective_type::company_value:
+                            *objectiveCompanyValue = std::max<uint32_t>(*objectiveCompanyValue - 100000, Scenario::min_objective_company_value);
                             break;
 
-                        case scenario::objective_type::vehicle_profit:
-                            *objectiveMonthlyVehicleProfit = std::max<uint32_t>(*objectiveMonthlyVehicleProfit - 1000, scenario::min_objective_monthly_profit_from_vehicles);
+                        case Scenario::objective_type::vehicle_profit:
+                            *objectiveMonthlyVehicleProfit = std::max<uint32_t>(*objectiveMonthlyVehicleProfit - 1000, Scenario::min_objective_monthly_profit_from_vehicles);
                             break;
 
-                        case scenario::objective_type::performance_index:
-                            *objectivePerformanceIndex = std::max<uint8_t>(*objectivePerformanceIndex - 5, scenario::min_objective_performance_index);
+                        case Scenario::objective_type::performance_index:
+                            *objectivePerformanceIndex = std::max<uint8_t>(*objectivePerformanceIndex - 5, Scenario::min_objective_performance_index);
                             break;
 
-                        case scenario::objective_type::cargo_delivery:
+                        case Scenario::objective_type::cargo_delivery:
                         {
                             uint16_t stepSize{};
                             if (*_clickRepeatTicks < 100)
@@ -304,7 +304,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                             uint16_t cargoFactor = (*objectiveDeliveredCargoAmount - stepSize) / stepSize;
                             uint32_t newDeliveredCargoAmount = cargoFactor * stepSize;
 
-                            *objectiveDeliveredCargoAmount = std::max<uint32_t>(newDeliveredCargoAmount, scenario::min_objective_delivered_cargo);
+                            *objectiveDeliveredCargoAmount = std::max<uint32_t>(newDeliveredCargoAmount, Scenario::min_objective_delivered_cargo);
                             break;
                         }
                     }
@@ -317,19 +317,19 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                 {
                     switch (*objectiveType)
                     {
-                        case scenario::objective_type::company_value:
-                            *objectiveCompanyValue = std::min<uint32_t>(*objectiveCompanyValue + 100000, scenario::max_objective_company_value);
+                        case Scenario::objective_type::company_value:
+                            *objectiveCompanyValue = std::min<uint32_t>(*objectiveCompanyValue + 100000, Scenario::max_objective_company_value);
                             break;
 
-                        case scenario::objective_type::vehicle_profit:
-                            *objectiveMonthlyVehicleProfit = std::min<uint32_t>(*objectiveMonthlyVehicleProfit + 1000, scenario::max_objective_monthly_profit_from_vehicles);
+                        case Scenario::objective_type::vehicle_profit:
+                            *objectiveMonthlyVehicleProfit = std::min<uint32_t>(*objectiveMonthlyVehicleProfit + 1000, Scenario::max_objective_monthly_profit_from_vehicles);
                             break;
 
-                        case scenario::objective_type::performance_index:
-                            *objectivePerformanceIndex = std::min<uint8_t>(*objectivePerformanceIndex + 5, scenario::max_objective_performance_index);
+                        case Scenario::objective_type::performance_index:
+                            *objectivePerformanceIndex = std::min<uint8_t>(*objectivePerformanceIndex + 5, Scenario::max_objective_performance_index);
                             break;
 
-                        case scenario::objective_type::cargo_delivery:
+                        case Scenario::objective_type::cargo_delivery:
                         {
                             uint16_t stepSize{};
                             if (*_clickRepeatTicks < 100)
@@ -343,7 +343,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                             uint16_t cargoFactor = (*objectiveDeliveredCargoAmount + stepSize) / stepSize;
                             uint32_t newDeliveredCargoAmount = cargoFactor * stepSize;
 
-                            *objectiveDeliveredCargoAmount = std::max<uint32_t>(newDeliveredCargoAmount, scenario::min_objective_delivered_cargo);
+                            *objectiveDeliveredCargoAmount = std::max<uint32_t>(newDeliveredCargoAmount, Scenario::min_objective_delivered_cargo);
                             break;
                         }
                     }
@@ -385,14 +385,14 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
                 case widx::time_limit_value_down:
                 {
-                    *objectiveTimeLimitYears = std::max<uint8_t>(*objectiveTimeLimitYears - 1, scenario::min_objective_year_limit);
+                    *objectiveTimeLimitYears = std::max<uint8_t>(*objectiveTimeLimitYears - 1, Scenario::min_objective_year_limit);
                     self->invalidate();
                     break;
                 }
 
                 case widx::time_limit_value_up:
                 {
-                    *objectiveTimeLimitYears = std::min<uint8_t>(*objectiveTimeLimitYears + 1, scenario::max_objective_year_limit);
+                    *objectiveTimeLimitYears = std::min<uint8_t>(*objectiveTimeLimitYears + 1, Scenario::max_objective_year_limit);
                     self->invalidate();
                     break;
                 }
@@ -412,17 +412,17 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                     break;
 
                 case check_be_top_company:
-                    *objectiveFlags ^= scenario::objective_flags::be_top_company;
+                    *objectiveFlags ^= Scenario::objective_flags::be_top_company;
                     self->invalidate();
                     break;
 
                 case check_be_within_top_three_companies:
-                    *objectiveFlags ^= scenario::objective_flags::be_within_top_three_companies;
+                    *objectiveFlags ^= Scenario::objective_flags::be_within_top_three_companies;
                     self->invalidate();
                     break;
 
                 case check_time_limit:
-                    *objectiveFlags ^= scenario::objective_flags::within_time_limit;
+                    *objectiveFlags ^= Scenario::objective_flags::within_time_limit;
                     self->invalidate();
                     break;
             }
@@ -441,22 +441,22 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
             switch (*objectiveType)
             {
-                case scenario::objective_type::company_value:
+                case Scenario::objective_type::company_value:
                     *(int32_t*)&*commonFormatArgs = *objectiveCompanyValue;
                     widgets[widx::objective_value].text = StringIds::challenge_monetary_value;
                     break;
 
-                case scenario::objective_type::vehicle_profit:
+                case Scenario::objective_type::vehicle_profit:
                     *(int32_t*)&*commonFormatArgs = *objectiveMonthlyVehicleProfit;
                     widgets[widx::objective_value].text = StringIds::challenge_monetary_value;
                     break;
 
-                case scenario::objective_type::performance_index:
+                case Scenario::objective_type::performance_index:
                     *(int16_t*)&*commonFormatArgs = *objectivePerformanceIndex;
                     widgets[widx::objective_value].text = StringIds::challenge_performance_index;
                     break;
 
-                case scenario::objective_type::cargo_delivery:
+                case Scenario::objective_type::cargo_delivery:
                     *(int32_t*)&*commonFormatArgs = *objectiveDeliveredCargoAmount;
                     widgets[widx::objective_value].text = StringIds::challenge_delivered_cargo;
 
@@ -469,13 +469,13 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
             self->activated_widgets &= ~((1 << widx::check_be_top_company) | (1 << widx::check_be_within_top_three_companies) | (1 << widx::check_time_limit));
 
-            if ((*objectiveFlags & scenario::objective_flags::be_top_company) != 0)
+            if ((*objectiveFlags & Scenario::objective_flags::be_top_company) != 0)
                 self->activated_widgets |= 1 << widx::check_be_top_company;
 
-            if ((*objectiveFlags & scenario::objective_flags::be_within_top_three_companies) != 0)
+            if ((*objectiveFlags & Scenario::objective_flags::be_within_top_three_companies) != 0)
                 self->activated_widgets |= 1 << widx::check_be_within_top_three_companies;
 
-            if ((*objectiveFlags & scenario::objective_flags::within_time_limit) != 0)
+            if ((*objectiveFlags & Scenario::objective_flags::within_time_limit) != 0)
             {
                 self->activated_widgets |= 1 << widx::check_time_limit;
                 widgets[widx::time_limit_value].type = widget_type::wt_17;
@@ -700,22 +700,22 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             switch (widgetIndex)
             {
                 case widx::max_competing_companies_down:
-                    *maxCompetingCompanies = std::max<int8_t>(*maxCompetingCompanies - 1, scenario::min_competing_companies);
+                    *maxCompetingCompanies = std::max<int8_t>(*maxCompetingCompanies - 1, Scenario::min_competing_companies);
                     self->invalidate();
                     break;
 
                 case widx::max_competing_companies_up:
-                    *maxCompetingCompanies = std::min<uint8_t>(*maxCompetingCompanies + 1, scenario::max_competing_companies);
+                    *maxCompetingCompanies = std::min<uint8_t>(*maxCompetingCompanies + 1, Scenario::max_competing_companies);
                     self->invalidate();
                     break;
 
                 case widx::delay_before_competing_companies_start_down:
-                    *competitorStartDelay = std::max<int8_t>(*competitorStartDelay - 1, scenario::min_competitor_start_delay);
+                    *competitorStartDelay = std::max<int8_t>(*competitorStartDelay - 1, Scenario::min_competitor_start_delay);
                     self->invalidate();
                     break;
 
                 case widx::delay_before_competing_companies_start_up:
-                    *competitorStartDelay = std::min<uint8_t>(*competitorStartDelay + 1, scenario::max_competitor_start_delay);
+                    *competitorStartDelay = std::min<uint8_t>(*competitorStartDelay + 1, Scenario::max_competitor_start_delay);
                     self->invalidate();
                     break;
 
@@ -894,31 +894,31 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             switch (widgetIndex)
             {
                 case widx::starting_loan_down:
-                    *startingLoanSize = std::max<int16_t>(*startingLoanSize - 50, scenario::min_start_loan_units);
+                    *startingLoanSize = std::max<int16_t>(*startingLoanSize - 50, Scenario::min_start_loan_units);
                     break;
 
                 case widx::starting_loan_up:
-                    *startingLoanSize = std::min<uint16_t>(*startingLoanSize + 50, scenario::max_start_loan_units);
+                    *startingLoanSize = std::min<uint16_t>(*startingLoanSize + 50, Scenario::max_start_loan_units);
                     if (*startingLoanSize > *maxLoanSize)
                         *maxLoanSize = *startingLoanSize;
                     break;
 
                 case widx::max_loan_size_down:
-                    *maxLoanSize = std::max<int16_t>(*maxLoanSize - 50, scenario::min_loan_size_units);
+                    *maxLoanSize = std::max<int16_t>(*maxLoanSize - 50, Scenario::min_loan_size_units);
                     if (*startingLoanSize > *maxLoanSize)
                         *startingLoanSize = *maxLoanSize;
                     break;
 
                 case widx::max_loan_size_up:
-                    *maxLoanSize = std::min<uint16_t>(*maxLoanSize + 50, scenario::max_loan_size_units);
+                    *maxLoanSize = std::min<uint16_t>(*maxLoanSize + 50, Scenario::max_loan_size_units);
                     break;
 
                 case widx::loan_interest_rate_down:
-                    *loanInterestRate = std::max<int16_t>(*loanInterestRate - 1, scenario::min_loan_interest_units);
+                    *loanInterestRate = std::max<int16_t>(*loanInterestRate - 1, Scenario::min_loan_interest_units);
                     break;
 
                 case widx::loan_interest_rate_up:
-                    *loanInterestRate = std::min<uint16_t>(*loanInterestRate + 1, scenario::max_loan_interest_units);
+                    *loanInterestRate = std::min<uint16_t>(*loanInterestRate + 1, Scenario::max_loan_interest_units);
                     break;
             }
 
@@ -1202,7 +1202,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
             self->current_tab = widgetIndex - widx::tab_challenge;
             self->frame_no = 0;
-            self->flags &= ~(window_flags::flag_16);
+            self->flags &= ~(WindowFlags::flag_16);
             self->disabled_widgets = 0;
 
             auto tabInfo = tabInformationByTabOffset[widgetIndex - widx::tab_challenge];

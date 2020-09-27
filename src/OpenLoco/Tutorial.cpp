@@ -13,7 +13,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::tutorial
+namespace OpenLoco::Tutorial
 {
     static loco_global<uint8_t, 0x00508F19> _state;
 
@@ -113,15 +113,15 @@ namespace OpenLoco::tutorial
             }
 
             // Get the environment file for this tutorial.
-            static const environment::path_id tutorialFileIds[] = {
-                environment::path_id::tut1024_1,
-                environment::path_id::tut1024_2,
-                environment::path_id::tut1024_3,
+            static const Environment::path_id tutorialFileIds[] = {
+                Environment::path_id::tut1024_1,
+                Environment::path_id::tut1024_2,
+                Environment::path_id::tut1024_3,
             };
 
             auto fileId = tutorialFileIds[tutorialNumber];
 
-            auto tutPath = environment::getPath(fileId);
+            auto tutPath = Environment::getPath(fileId);
             _tutorialData = readTutorialFile(tutPath);
             _tutorialIt = _tutorialData.cbegin();
 
@@ -141,7 +141,7 @@ namespace OpenLoco::tutorial
             addr<0x0050AE87, uint32_t>() = 0x9ABCDEF0;
         }
 
-        scenario::start(-1);
+        Scenario::start(-1);
 
         // Unreachable?
         stop();
@@ -152,7 +152,7 @@ namespace OpenLoco::tutorial
     {
         *_state = static_cast<uint8_t>(tutorial_state::none);
         Gfx::invalidateScreen();
-        gui::resize();
+        Gui::resize();
     }
 
     // 0x0043C7A2
@@ -181,7 +181,7 @@ namespace OpenLoco::tutorial
     static void getTutorialScenarioFilename()
     {
         static loco_global<char[512], 0x00112CE04> scenarioFilename;
-        auto bbPath = environment::getPath(environment::path_id::boulder_breakers);
+        auto bbPath = Environment::getPath(Environment::path_id::boulder_breakers);
 
         strncpy(&*scenarioFilename, bbPath.make_preferred().u8string().c_str(), 512);
     }

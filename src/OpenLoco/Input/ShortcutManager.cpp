@@ -178,8 +178,8 @@ namespace OpenLoco::Input::ShortcutManager
             return;
 
         main->viewportZoomOut(false);
-        townmgr::updateLabels();
-        stationmgr::updateLabels();
+        TownManager::updateLabels();
+        StationManager::updateLabels();
     }
 
     // 0x004BF115
@@ -190,8 +190,8 @@ namespace OpenLoco::Input::ShortcutManager
             return;
 
         main->viewportZoomIn(false);
-        townmgr::updateLabels();
-        stationmgr::updateLabels();
+        TownManager::updateLabels();
+        StationManager::updateLabels();
     }
 
     // 0x004BF12C
@@ -202,8 +202,8 @@ namespace OpenLoco::Input::ShortcutManager
             return;
 
         main->viewportRotateRight();
-        townmgr::updateLabels();
-        stationmgr::updateLabels();
+        TownManager::updateLabels();
+        StationManager::updateLabels();
         Windows::Map::centerOnViewPoint();
     }
 
@@ -221,7 +221,7 @@ namespace OpenLoco::Input::ShortcutManager
             return;
 
         auto viewport = WindowManager::getMainWindow()->viewports[0];
-        viewport->flags ^= viewport_flags::underground_view;
+        viewport->flags ^= ViewportFlags::underground_view;
         window->invalidate();
     }
 
@@ -233,7 +233,7 @@ namespace OpenLoco::Input::ShortcutManager
             return;
 
         auto viewport = WindowManager::getMainWindow()->viewports[0];
-        viewport->flags ^= viewport_flags::hide_foreground_tracks_roads;
+        viewport->flags ^= ViewportFlags::hide_foreground_tracks_roads;
         window->invalidate();
     }
 
@@ -245,7 +245,7 @@ namespace OpenLoco::Input::ShortcutManager
             return;
 
         auto viewport = WindowManager::getMainWindow()->viewports[0];
-        viewport->flags ^= viewport_flags::hide_foreground_scenery_buildings;
+        viewport->flags ^= ViewportFlags::hide_foreground_scenery_buildings;
         window->invalidate();
     }
 
@@ -257,7 +257,7 @@ namespace OpenLoco::Input::ShortcutManager
             return;
 
         auto viewport = WindowManager::getMainWindow()->viewports[0];
-        viewport->flags ^= viewport_flags::height_marks_on_land;
+        viewport->flags ^= ViewportFlags::height_marks_on_land;
         window->invalidate();
     }
 
@@ -269,7 +269,7 @@ namespace OpenLoco::Input::ShortcutManager
             return;
 
         auto viewport = WindowManager::getMainWindow()->viewports[0];
-        viewport->flags ^= viewport_flags::height_marks_on_tracks_roads;
+        viewport->flags ^= ViewportFlags::height_marks_on_tracks_roads;
         window->invalidate();
     }
 
@@ -281,7 +281,7 @@ namespace OpenLoco::Input::ShortcutManager
             return;
 
         auto viewport = WindowManager::getMainWindow()->viewports[0];
-        viewport->flags ^= viewport_flags::one_way_direction_arrows;
+        viewport->flags ^= ViewportFlags::one_way_direction_arrows;
         window->invalidate();
     }
 
@@ -393,7 +393,7 @@ namespace OpenLoco::Input::ShortcutManager
             return;
 
         loco_global<uint8_t, 0x00525FAF> last_vehicles_option;
-        Windows::VehicleList::open(companymgr::getControllingId(), *last_vehicles_option);
+        Windows::VehicleList::open(CompanyManager::getControllingId(), *last_vehicles_option);
     }
 
     // 0x004BF2F0
@@ -402,7 +402,7 @@ namespace OpenLoco::Input::ShortcutManager
         if (isEditorMode())
             return;
 
-        Windows::StationList::open(companymgr::getControllingId(), 0);
+        Windows::StationList::open(CompanyManager::getControllingId(), 0);
     }
 
     // 0x004BF308
@@ -450,7 +450,7 @@ namespace OpenLoco::Input::ShortcutManager
         if (isEditorMode())
             return;
 
-        Windows::CompanyWindow::openFinances(companymgr::getControllingId());
+        Windows::CompanyWindow::openFinances(CompanyManager::getControllingId());
     }
 
     // 0x004BF39A

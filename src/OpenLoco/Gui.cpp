@@ -14,7 +14,7 @@
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui;
 
-namespace OpenLoco::gui
+namespace OpenLoco::Gui
 {
 
     loco_global<OpenLoco::Ui::widget_t[64], 0x00509c20> _mainWindowWidgets;
@@ -31,11 +31,11 @@ namespace OpenLoco::gui
             WindowType::main,
             { 0, 0 },
             Gfx::ui_size_t(uiWidth, uiHeight),
-            Ui::window_flags::stick_to_back,
+            Ui::WindowFlags::stick_to_back,
             (Ui::window_event_list*)0x004FA1F4);
         window->widgets = _mainWindowWidgets;
         addr<0x00e3f0b8, int32_t>() = 0; // gCurrentRotation?
-        OpenLoco::Ui::viewportmgr::create(
+        OpenLoco::Ui::ViewportManager::create(
             window,
             0,
             { window->x, window->y },
@@ -64,14 +64,14 @@ namespace OpenLoco::gui
             Windows::PlayerInfoPanel::open();
             TimePanel::open();
 
-            if (OpenLoco::tutorial::state() != tutorial::tutorial_state::none)
+            if (OpenLoco::Tutorial::state() != Tutorial::tutorial_state::none)
             {
 
                 window = WindowManager::createWindow(
                     WindowType::tutorial,
                     Gfx::point_t(140, uiHeight - 27),
                     Gfx::ui_size_t(uiWidth - 280, 27),
-                    Ui::window_flags::stick_to_front | Ui::window_flags::transparent | Ui::window_flags::no_background,
+                    Ui::WindowFlags::stick_to_front | Ui::WindowFlags::transparent | Ui::WindowFlags::no_background,
                     (Ui::window_event_list*)0x4fa10c);
                 window->widgets = (Ui::widget_t*)0x509de0;
                 window->initScrollWidgets();
@@ -167,7 +167,7 @@ namespace OpenLoco::gui
         window = WindowManager::find(WindowType::tutorial);
         if (window)
         {
-            if (tutorial::state() == tutorial::tutorial_state::none)
+            if (Tutorial::state() == Tutorial::tutorial_state::none)
             {
                 WindowManager::close(window);
             }

@@ -12,7 +12,7 @@
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui;
 
-namespace OpenLoco::companymgr
+namespace OpenLoco::CompanyManager
 {
     static loco_global<company_id_t[2], 0x00525E3C> _player_company;
     static loco_global<uint8_t, 0x00525FCB> _byte_525FCB;
@@ -163,7 +163,7 @@ namespace OpenLoco::companymgr
             return;
         }
 
-        auto company = companymgr::get(_updating_company_id);
+        auto company = CompanyManager::get(_updating_company_id);
         if (company == nullptr)
         {
             return;
@@ -181,7 +181,7 @@ namespace OpenLoco::companymgr
                 continue;
 
             auto vehicle = ThingManager::get<OpenLoco::vehicle>(w->number);
-            if (vehicle->x == location::null)
+            if (vehicle->x == Location::null)
                 continue;
 
             if (vehicle->owner != _updating_company_id)
@@ -211,7 +211,7 @@ namespace OpenLoco::companymgr
         auto mapPosition = Map::map_pos(r1.ax, r1.bx);
 
         // Happens if center of viewport is obstructed. Probably estimates the centre location
-        if (mapPosition.x == location::null || viewport != vp)
+        if (mapPosition.x == Location::null || viewport != vp)
         {
             registers r2;
 

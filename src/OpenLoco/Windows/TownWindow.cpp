@@ -132,9 +132,9 @@ namespace OpenLoco::Ui::Windows::Town
             self->draw(dpi);
             Common::drawTabs(self, dpi);
             self->drawViewports(dpi);
-            widget::drawViewportCentreButton(dpi, self, widx::centre_on_viewport);
+            Widget::drawViewportCentreButton(dpi, self, widx::centre_on_viewport);
 
-            auto town = townmgr::get(self->number);
+            auto town = TownManager::get(self->number);
 
             auto args = FormatArguments();
             args.push(town->getTownSizeString());
@@ -180,7 +180,7 @@ namespace OpenLoco::Ui::Windows::Town
                 // 0x004990B9
                 case widx::expand_town:
                 {
-                    auto town = townmgr::get(self->number);
+                    auto town = TownManager::get(self->number);
 
                     const uint32_t ebx = (town->var_38 >> 3) + 5;
                     const int16_t currentYear = getCurrentYear();
@@ -274,7 +274,7 @@ namespace OpenLoco::Ui::Windows::Town
             self->callPrepareDraw();
 
             // Figure out the town's position on the map.
-            auto town = townmgr::get(self->number);
+            auto town = TownManager::get(self->number);
             int16_t tileZ = OpenLoco::Map::tileElementHeight(town->x, town->y).landHeight;
 
             // Compute views.
@@ -295,12 +295,12 @@ namespace OpenLoco::Ui::Windows::Town
                 flags = self->viewports[0]->flags;
                 self->viewports[0]->width = 0;
                 self->viewports[0] = nullptr;
-                viewportmgr::collectGarbage();
+                ViewportManager::collectGarbage();
             }
             else
             {
                 if ((Config::get().flags & Config::flags::gridlines_on_landscape) != 0)
-                    flags |= viewport_flags::gridlines_on_landscape;
+                    flags |= ViewportFlags::gridlines_on_landscape;
             }
 
             self->saved_view = view;
@@ -312,9 +312,9 @@ namespace OpenLoco::Ui::Windows::Town
                 auto tile = OpenLoco::Map::map_pos3({ town->x, town->y, tileZ });
                 auto origin = Gfx::point_t(widget->left + self->x + 1, widget->top + self->y + 1);
                 auto size = Gfx::ui_size_t(widget->width() - 2, widget->height() - 2);
-                viewportmgr::create(self, 0, origin, size, self->saved_view.zoomLevel, tile);
+                ViewportManager::create(self, 0, origin, size, self->saved_view.zoomLevel, tile);
                 self->invalidate();
-                self->flags |= window_flags::viewport_no_scrolling;
+                self->flags |= WindowFlags::viewport_no_scrolling;
             }
             // 0x00499B39 end
 
@@ -352,7 +352,7 @@ namespace OpenLoco::Ui::Windows::Town
         if (window == nullptr)
         {
             // 0x00499C0D start
-            const uint32_t newFlags = window_flags::flag_8 | window_flags::resizable;
+            const uint32_t newFlags = WindowFlags::flag_8 | WindowFlags::resizable;
             window = WindowManager::createWindow(WindowType::town, windowSize, newFlags, &Town::events);
             window->number = townId;
             window->min_width = 192;
@@ -414,7 +414,7 @@ namespace OpenLoco::Ui::Windows::Town
             if (!Gfx::clipDrawpixelinfo(&clipped, dpi, self->x, self->y + 44, self->width, self->height - 44))
                 return;
 
-            auto town = townmgr::get(self->number);
+            auto town = TownManager::get(self->number);
 
             // Draw Y label and grid lines.
             int32_t yTick = town->history_min_population;
@@ -542,7 +542,7 @@ namespace OpenLoco::Ui::Windows::Town
 
             xPos += 4;
             yPos += 14;
-            auto town = townmgr::get(self->number);
+            auto town = TownManager::get(self->number);
             for (company_id_t i = 0; i < std::size(town->company_ratings); i++)
             {
                 if ((town->companies_with_rating & (1 << i)) == 0)
@@ -562,7 +562,7 @@ namespace OpenLoco::Ui::Windows::Town
                     rank = StringIds::town_rating_appalling;
 
                 auto args = FormatArguments();
-                args.push(companymgr::get(i)->name);
+                args.push(CompanyManager::get(i)->name);
                 args.push<int16_t>(0);
                 args.push(rating);
                 args.push(rank);
@@ -645,7 +645,7 @@ namespace OpenLoco::Ui::Windows::Town
             self->activated_widgets |= (1ULL << widgetIndex);
 
             // Put town name in place.
-            commonFormatArgs[0] = townmgr::get(self->number)->name;
+            commonFormatArgs[0] = TownManager::get(self->number)->name;
 
             // Resize common widgets.
             self->widgets[Common::widx::frame].right = self->width - 1;
@@ -686,7 +686,7 @@ namespace OpenLoco::Ui::Windows::Town
 
         static void renameTownPrompt(window* self, widget_index widgetIndex)
         {
-            auto town = townmgr::get(self->number);
+            auto town = TownManager::get(self->number);
             commonFormatArgs[2] = town->name;
             TextInput::openTextInput(self, StringIds::title_town_name, StringIds::prompt_type_new_town_name, town->name, widgetIndex, &commonFormatArgs[2]);
         }
@@ -718,7 +718,7 @@ namespace OpenLoco::Ui::Windows::Town
 
             self->current_tab = widgetIndex - widx::tab_town;
             self->frame_no = 0;
-            self->flags &= ~(window_flags::flag_16);
+            self->flags &= ~(WindowFlags::flag_16);
             self->var_85C = -1;
 
             if (self->viewports[0] != nullptr)
@@ -754,7 +754,7 @@ namespace OpenLoco::Ui::Windows::Town
             // Town tab
             {
                 const uint32_t imageId = skin->img + InterfaceSkin::ImageIds::toolbar_menu_towns;
-                widget::draw_tab(self, dpi, imageId, widx::tab_town);
+                Widget::draw_tab(self, dpi, imageId, widx::tab_town);
             }
 
             // Population tab
@@ -776,7 +776,7 @@ namespace OpenLoco::Ui::Windows::Town
                 else
                     imageId += populationTabImageIds[0];
 
-                widget::draw_tab(self, dpi, imageId, widx::tab_population);
+                Widget::draw_tab(self, dpi, imageId, widx::tab_population);
             }
 
             // Company ratings tab
@@ -806,7 +806,7 @@ namespace OpenLoco::Ui::Windows::Town
                 else
                     imageId += ratingsTabImageIds[0];
 
-                widget::draw_tab(self, dpi, imageId, widx::tab_company_ratings);
+                Widget::draw_tab(self, dpi, imageId, widx::tab_company_ratings);
             }
         }
 

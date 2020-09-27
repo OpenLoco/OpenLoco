@@ -132,32 +132,32 @@ namespace OpenLoco
 
     bool isEditorMode()
     {
-        return (_screen_flags & screen_flags::editor) != 0;
+        return (_screen_flags & ScreenFlags::editor) != 0;
     }
 
     bool isTitleMode()
     {
-        return (_screen_flags & screen_flags::title) != 0;
+        return (_screen_flags & ScreenFlags::title) != 0;
     }
 
     bool isNetworked()
     {
-        return (_screen_flags & screen_flags::networked) != 0;
+        return (_screen_flags & ScreenFlags::networked) != 0;
     }
 
     bool isTrackUpgradeMode()
     {
-        return (_screen_flags & screen_flags::trackUpgrade) != 0;
+        return (_screen_flags & ScreenFlags::trackUpgrade) != 0;
     }
 
     bool isUnknown4Mode()
     {
-        return (_screen_flags & screen_flags::unknown_4) != 0;
+        return (_screen_flags & ScreenFlags::unknown_4) != 0;
     }
 
     bool isUnknown5Mode()
     {
-        return (_screen_flags & screen_flags::unknown_5) != 0;
+        return (_screen_flags & ScreenFlags::unknown_5) != 0;
     }
 
     bool isPaused()
@@ -298,11 +298,11 @@ namespace OpenLoco
     void initialiseViewports()
     {
         _mapTooltipFormatArguments = StringIds::null;
-        _mapTooltipOwner = company_id::null;
+        _mapTooltipOwner = CompanyId::null;
 
         Colour::initColourMap();
         Ui::WindowManager::init();
-        Ui::viewportmgr::init();
+        Ui::ViewportManager::init();
 
         Input::init();
         Input::initMouse();
@@ -325,40 +325,40 @@ namespace OpenLoco
         addr<0x0050C18C, int32_t>() = addr<0x00525348, int32_t>();
         call(0x004078BE);
         call(0x004BF476);
-        environment::resolvePaths();
+        Environment::resolvePaths();
         Localisation::enumerateLanguages();
         Localisation::loadLanguageFile();
-        progressbar::begin(StringIds::loading, 0);
-        progressbar::setProgress(30);
+        ProgressBar::begin(StringIds::loading, 0);
+        ProgressBar::setProgress(30);
         startupChecks();
-        progressbar::setProgress(40);
+        ProgressBar::setProgress(40);
         call(0x004BE5DE);
-        progressbar::end();
+        ProgressBar::end();
         Config::read();
         ObjectManager::loadIndex();
-        scenariomgr::loadIndex(0);
-        progressbar::begin(StringIds::loading, 0);
-        progressbar::setProgress(60);
+        ScenarioManager::loadIndex(0);
+        ProgressBar::begin(StringIds::loading, 0);
+        ProgressBar::setProgress(60);
         Gfx::loadG1();
-        progressbar::setProgress(220);
+        ProgressBar::setProgress(220);
         call(0x004949BC);
-        progressbar::setProgress(235);
-        progressbar::setProgress(250);
+        ProgressBar::setProgress(235);
+        ProgressBar::setProgress(250);
         Ui::initialiseCursors();
-        progressbar::end();
+        ProgressBar::end();
         Ui::initialise();
         initialiseViewports();
         call(0x004284C8);
         call(0x004969DA);
         call(0x0043C88C);
-        _screen_flags = _screen_flags | screen_flags::unknown_5;
+        _screen_flags = _screen_flags | ScreenFlags::unknown_5;
 #ifdef _SHOW_INTRO_
-        intro::state(intro::intro_state::begin);
+        Intro::state(Intro::intro_state::begin);
 #else
-        intro::state(intro::intro_state::end);
+        Intro::state(Intro::intro_state::end);
 #endif
-        title::start();
-        gui::init();
+        Title::start();
+        Gui::init();
         Gfx::clear(Gfx::screenDpi(), 0x0A0A0A0A);
     }
 
@@ -393,7 +393,7 @@ namespace OpenLoco
     {
         if (!isNetworked())
         {
-            _updating_company_id = companymgr::getControllingId();
+            _updating_company_id = CompanyManager::getControllingId();
             for (auto i = 0; i < var_F253A0; i++)
             {
                 sub_428E47();
@@ -403,7 +403,7 @@ namespace OpenLoco
             Input::processKeyboardInput();
             WindowManager::update();
             Ui::handleInput();
-            companymgr::updateOwnerStatus();
+            CompanyManager::updateOwnerStatus();
             return;
         }
 
@@ -416,7 +416,7 @@ namespace OpenLoco
         // Host/client?
         if (isTrackUpgradeMode())
         {
-            _updating_company_id = companymgr::getControllingId();
+            _updating_company_id = CompanyManager::getControllingId();
 
             // run twice as often as var_F253A0
             for (auto i = 0; i < var_F253A0 * 2; i++)
@@ -429,7 +429,7 @@ namespace OpenLoco
             WindowManager::update();
             WindowManager::update();
             Ui::handleInput();
-            companymgr::updateOwnerStatus();
+            CompanyManager::updateOwnerStatus();
             sub_46E388();
 
             _updating_company_id = _player_company[1];
@@ -444,8 +444,8 @@ namespace OpenLoco
             if (!isTitleMode())
             {
                 auto edx = _prng->srand_0();
-                edx ^= companymgr::get(0)->cash.var_00;
-                edx ^= companymgr::get(1)->cash.var_00;
+                edx ^= CompanyManager::get(0)->cash.var_00;
+                edx ^= CompanyManager::get(1)->cash.var_00;
                 if (edx != eax)
                 {
                     // disconnect?
@@ -465,7 +465,7 @@ namespace OpenLoco
             WindowManager::update();
             WindowManager::update();
             Ui::handleInput();
-            companymgr::updateOwnerStatus();
+            CompanyManager::updateOwnerStatus();
             sub_46E388();
         }
     }
@@ -552,7 +552,7 @@ namespace OpenLoco
         {
             addr<0x0050C1A2, uint32_t>() += time_since_last_tick;
         }
-        if (tutorial::state() != tutorial::tutorial_state::none)
+        if (Tutorial::state() != Tutorial::tutorial_state::none)
         {
             time_since_last_tick = 31;
         }
@@ -609,16 +609,16 @@ namespace OpenLoco
             if (addr<0x00525340, int32_t>() == 1)
             {
                 addr<0x00525340, int32_t>() = 0;
-                multiplayer::setFlag(multiplayer::flags::flag_1);
+                MultiPlayer::setFlag(MultiPlayer::flags::flag_1);
             }
 
             Input::handleKeyboard();
             Audio::updateSounds();
 
             addr<0x0050C1AE, int32_t>()++;
-            if (intro::isActive())
+            if (Intro::isActive())
             {
-                intro::update();
+                Intro::update();
             }
             else
             {
@@ -687,9 +687,9 @@ namespace OpenLoco
                     Audio::stopTitleMusic();
                 }
 
-                if (tutorial::state() != tutorial::tutorial_state::none && addr<0x0052532C, int32_t>() != 0 && addr<0x0113E2E4, int32_t>() < 0x40)
+                if (Tutorial::state() != Tutorial::tutorial_state::none && addr<0x0052532C, int32_t>() != 0 && addr<0x0113E2E4, int32_t>() < 0x40)
                 {
-                    tutorial::stop();
+                    Tutorial::stop();
 
                     // This ends with a premature tick termination
                     call(0x0043C0FD);
@@ -764,14 +764,14 @@ namespace OpenLoco
         dateTick();
         call(0x00463ABA);
         call(0x004C56F6);
-        townmgr::update();
-        industrymgr::update();
+        TownManager::update();
+        IndustryManager::update();
         ThingManager::updateVehicles();
         sub_46FFCA();
-        stationmgr::update();
+        StationManager::update();
         ThingManager::updateMiscThings();
         sub_46FFCA();
-        companymgr::update();
+        CompanyManager::update();
         invalidate_map_animations();
         Audio::updateVehicleNoise();
         Audio::updateAmbientNoise();
@@ -807,7 +807,7 @@ namespace OpenLoco
         {
             if (updateDayCounter())
             {
-                stationmgr::updateDaily();
+                StationManager::updateDaily();
                 call(0x004B94CF);
                 call(0x00453487);
                 call(0x004284DB);
@@ -823,7 +823,7 @@ namespace OpenLoco
                     // End of every month
                     addr<0x0050A004, uint16_t>() += 2;
                     addr<0x00526243, uint16_t>()++;
-                    townmgr::updateMonthly();
+                    TownManager::updateMonthly();
                     call(0x0045383B);
                     call(0x0043037B);
                     call(0x0042F213);
@@ -939,7 +939,7 @@ namespace OpenLoco
         try
         {
             const auto& cfg = Config::readNewConfig();
-            environment::resolvePaths();
+            Environment::resolvePaths();
 
             registerHooks();
             if (sub_4054B9())

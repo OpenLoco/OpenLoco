@@ -37,7 +37,7 @@ namespace OpenLoco::Ui::Windows
             WindowType::title_logo,
             { 0, 0 },
             window_size,
-            window_flags::stick_to_front | window_flags::transparent,
+            WindowFlags::stick_to_front | WindowFlags::transparent,
             &_events);
 
         window->widgets = _widgets;

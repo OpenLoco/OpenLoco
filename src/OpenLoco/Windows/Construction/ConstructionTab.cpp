@@ -1243,7 +1243,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 Dropdown::setHighlightedItem(i);
 
             auto bridgeObj = ObjectManager::get<bridge_object>(bridge);
-            auto company = companymgr::get(_playerCompany);
+            auto company = CompanyManager::get(_playerCompany);
             auto companyColour = company->mainColours.primary;
             auto imageId = Gfx::recolour(bridgeObj->var_16, companyColour);
 
@@ -1578,7 +1578,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                         height -= 16;
                         if (height >= 0)
                         {
-                            if (Input::hasKeyModifier(Input::key_modifier::shift))
+                            if (Input::hasKeyModifier(Input::KeyModifier::shift))
                             {
                                 continue;
                             }
@@ -1695,7 +1695,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             Input::toolCancel();
 
             auto maxRetries = 0;
-            if (Input::hasKeyModifier(Input::key_modifier::shift) || _byte_113605D != 1)
+            if (Input::hasKeyModifier(Input::KeyModifier::shift) || _byte_113605D != 1)
             {
                 const auto& roadPiece = OpenLoco::Map::TrackData::getRoadPiece(_byte_1136065);
                 auto maxRoadPieceHeight = 0;
@@ -1710,7 +1710,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 roadHeight -= 16;
                 maxRetries = 2;
 
-                if (Input::hasKeyModifier(Input::key_modifier::shift))
+                if (Input::hasKeyModifier(Input::KeyModifier::shift))
                 {
                     maxRetries = 0x80000008;
                     roadHeight -= 16;
@@ -1798,7 +1798,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             Input::toolCancel();
 
             auto maxRetries = 0;
-            if (Input::hasKeyModifier(Input::key_modifier::shift) || _byte_113605D != 1)
+            if (Input::hasKeyModifier(Input::KeyModifier::shift) || _byte_113605D != 1)
             {
                 const auto& trackPiece = OpenLoco::Map::TrackData::getTrackPiece(_byte_1136065);
                 auto maxTrackPieceHeight = 0;
@@ -1813,7 +1813,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 trackHeight -= 16;
                 maxRetries = 2;
 
-                if (Input::hasKeyModifier(Input::key_modifier::shift))
+                if (Input::hasKeyModifier(Input::KeyModifier::shift))
                 {
                     maxRetries = 0x80000008;
                     trackHeight -= 16;
@@ -1976,7 +1976,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 auto bridgeObj = ObjectManager::get<bridge_object>(_lastSelectedBridge);
                 if (bridgeObj != nullptr)
                 {
-                    auto company = companymgr::get(_playerCompany);
+                    auto company = CompanyManager::get(_playerCompany);
                     auto imageId = Gfx::recolour(bridgeObj->var_16, company->mainColours.primary);
                     auto x = self->x + self->widgets[widx::bridge].left + 2;
                     auto y = self->y + self->widgets[widx::bridge].top + 1;

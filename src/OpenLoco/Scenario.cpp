@@ -6,12 +6,12 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::scenario
+namespace OpenLoco::Scenario
 {
     // 0x0043EDAD
     void eraseLandscape()
     {
-        S5::getOptions().scenarioFlags &= ~(scenario::flags::landscape_generation_done);
+        S5::getOptions().scenarioFlags &= ~(Scenario::flags::landscape_generation_done);
         Ui::WindowManager::invalidate(Ui::WindowType::landscapeGeneration, 0);
         call(0x0043C88C);
         S5::getOptions().madeAnyChanges = 0;

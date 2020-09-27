@@ -5,7 +5,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::industrymgr
+namespace OpenLoco::IndustryManager
 {
     static loco_global<industry[max_industries], 0x005C455C> _industries;
 
@@ -29,7 +29,7 @@ namespace OpenLoco::industrymgr
     {
         if ((addr<0x00525E28, uint32_t>() & 1) && !isEditorMode())
         {
-            companymgr::updatingCompanyId(company_id::neutral);
+            CompanyManager::updatingCompanyId(CompanyId::neutral);
             for (auto& industry : industries())
             {
                 if (!industry.empty())

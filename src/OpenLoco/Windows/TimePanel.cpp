@@ -95,7 +95,7 @@ namespace OpenLoco::Ui::TimePanel
             WindowType::timeToolbar,
             Gfx::point_t(Ui::width() - window_size.width, Ui::height() - window_size.height),
             Gfx::ui_size_t(window_size.width, window_size.height),
-            Ui::window_flags::stick_to_front | Ui::window_flags::transparent | Ui::window_flags::no_background,
+            Ui::WindowFlags::stick_to_front | Ui::WindowFlags::transparent | Ui::WindowFlags::no_background,
             &_events);
         window->widgets = _widgets;
         window->enabled_widgets = (1 << Widx::map_chat_menu) | (1 << Widx::date_btn) | (1 << Widx::pause_btn) | (1 << Widx::normal_speed_btn) | (1 << Widx::fast_forward_btn) | (1 << Widx::extra_fast_forward_btn);
@@ -261,7 +261,7 @@ namespace OpenLoco::Ui::TimePanel
             {
                 case 0:
                 {
-                    auto opponent = companymgr::getOpponent();
+                    auto opponent = CompanyManager::getOpponent();
                     _common_format_args[4] = opponent->owner_name;
                     Ui::TextInput::openTextInput(self, StringIds::chat_title, StringIds::chat_instructions, StringIds::empty, widgetIndex, &*_common_format_args);
                     break;
@@ -333,7 +333,7 @@ namespace OpenLoco::Ui::TimePanel
     {
         args.push(getCurrentDay());
 
-        auto playerCompany = companymgr::get(companymgr::getControllingId());
+        auto playerCompany = CompanyManager::get(CompanyManager::getControllingId());
 
         if ((playerCompany->challenge_flags & company_flags::challenge_completed) != 0)
         {

@@ -252,11 +252,11 @@ namespace OpenLoco::Ui::BuildVehicle
     static window* create(company_id_t company)
     {
         initEvents();
-        auto window = WindowManager::createWindow(WindowType::buildVehicle, window_size, window_flags::flag_11, &_events);
+        auto window = WindowManager::createWindow(WindowType::buildVehicle, window_size, WindowFlags::flag_11, &_events);
         window->widgets = _widgets;
         window->number = company;
         window->enabled_widgets = (1 << widx::close_button) | (1 << widx::tab_build_new_trains) | (1 << widx::tab_build_new_buses) | (1 << widx::tab_build_new_trucks) | (1 << widx::tab_build_new_trams) | (1 << widx::tab_build_new_aircraft) | (1 << widx::tab_build_new_ships) | (1 << widx::tab_track_type_0) | (1 << widx::tab_track_type_1) | (1 << widx::tab_track_type_2) | (1 << widx::tab_track_type_3) | (1 << widx::tab_track_type_4) | (1 << widx::tab_track_type_5) | (1 << widx::tab_track_type_6) | (1 << widx::tab_track_type_7) | (1 << widx::scrollview_vehicle_selection);
-        window->owner = companymgr::getControllingId();
+        window->owner = CompanyManager::getControllingId();
         window->frame_no = 0;
         auto skin = OpenLoco::ObjectManager::get<interface_skin_object>();
         if (skin != nullptr)
@@ -272,7 +272,7 @@ namespace OpenLoco::Ui::BuildVehicle
      */
     window* open(uint32_t vehicle, uint32_t flags)
     {
-        auto window = WindowManager::bringToFront(WindowType::buildVehicle, companymgr::getControllingId());
+        auto window = WindowManager::bringToFront(WindowType::buildVehicle, CompanyManager::getControllingId());
         bool tabMode = flags & (1 << 31);
         if (window)
         {
@@ -300,7 +300,7 @@ namespace OpenLoco::Ui::BuildVehicle
         }
         else
         {
-            window = create(companymgr::getControllingId());
+            window = create(CompanyManager::getControllingId());
             window->width = window_size.width;
             window->height = window_size.height;
             _buildTargetVehicle = -1;
@@ -405,7 +405,7 @@ namespace OpenLoco::Ui::BuildVehicle
             }
         }
 
-        auto companyId = companymgr::getControllingId();
+        auto companyId = CompanyManager::getControllingId();
         if (vehicle != nullptr)
         {
             companyId = vehicle->owner;
@@ -442,7 +442,7 @@ namespace OpenLoco::Ui::BuildVehicle
             }
 
             // Is vehicle type unlocked
-            if (!(companymgr::get(companyId)->unlocked_vehicles[vehicleObjIndex >> 5] & (1 << (vehicleObjIndex & 0x1F))))
+            if (!(CompanyManager::get(companyId)->unlocked_vehicles[vehicleObjIndex >> 5] & (1 << (vehicleObjIndex & 0x1F))))
             {
                 continue;
             }
@@ -507,7 +507,7 @@ namespace OpenLoco::Ui::BuildVehicle
                 continue;
 
             auto vehicle = ThingManager::get<OpenLoco::vehicle>(w->number);
-            if (vehicle->owner != companymgr::getControllingId())
+            if (vehicle->owner != CompanyManager::getControllingId())
                 continue;
 
             return w;
@@ -659,7 +659,7 @@ namespace OpenLoco::Ui::BuildVehicle
     // 0x4C3929
     static void onResize(window* window)
     {
-        window->flags |= window_flags::resizable;
+        window->flags |= WindowFlags::resizable;
         auto minWidth = std::max<int16_t>(_numTrackTypeTabs * 31 + 195, 380);
         window->min_width = minWidth;
         window->max_width = 520;
@@ -1178,7 +1178,7 @@ namespace OpenLoco::Ui::BuildVehicle
                         }
 
                         int16_t half = (window->row_height - 22) / 2;
-                        auto x = drawVehicleInline(dpi, vehicleType, 0, companymgr::getControllingId(), { 0, static_cast<int16_t>(y + half) });
+                        auto x = drawVehicleInline(dpi, vehicleType, 0, CompanyManager::getControllingId(), { 0, static_cast<int16_t>(y + half) });
 
                         auto vehicleObj = ObjectManager::get<vehicle_object>(vehicleType);
                         FormatArguments args{};
@@ -1202,7 +1202,7 @@ namespace OpenLoco::Ui::BuildVehicle
 
                 uint8_t unk1 = _52622E & 0x3F;
                 uint8_t unk2 = ((_52622E + 2) / 4) & 0x3F;
-                drawVehicleOverview(dpi, window->row_hover, companymgr::getControllingId(), unk1, unk2, { 90, 37 });
+                drawVehicleOverview(dpi, window->row_hover, CompanyManager::getControllingId(), unk1, unk2, { 90, 37 });
 
                 auto vehicleObj = ObjectManager::get<vehicle_object>(window->row_hover);
                 auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
@@ -1231,7 +1231,7 @@ namespace OpenLoco::Ui::BuildVehicle
     // 0x4C28D2
     static void setDisabledTransportTabs(Ui::window* window)
     {
-        auto availableVehicles = companymgr::companies()[window->number].available_vehicles;
+        auto availableVehicles = CompanyManager::companies()[window->number].available_vehicles;
         // By shifting by 4 the available_vehicles flags align with the tabs flags
         auto disabledTabs = (availableVehicles << 4) ^ ((1 << widx::tab_build_new_trains) | (1 << widx::tab_build_new_buses) | (1 << widx::tab_build_new_trucks) | (1 << widx::tab_build_new_trams) | (1 << widx::tab_build_new_aircraft) | (1 << widx::tab_build_new_ships));
         window->disabled_widgets = disabledTabs;
@@ -1409,7 +1409,7 @@ namespace OpenLoco::Ui::BuildVehicle
     static void drawTransportTypeTabs(Ui::window* window, Gfx::drawpixelinfo_t* dpi)
     {
         auto skin = ObjectManager::get<interface_skin_object>();
-        auto companyColour = companymgr::getCompanyColour(window->number);
+        auto companyColour = CompanyManager::getCompanyColour(window->number);
 
         for (auto tab : _transportTypeTabInformation)
         {
@@ -1419,7 +1419,7 @@ namespace OpenLoco::Ui::BuildVehicle
                 frameNo = (window->frame_no / 2) & 0xF;
             }
             uint32_t image = Gfx::recolour(skin->img + tab.imageIds[frameNo], companyColour);
-            widget::draw_tab(window, dpi, image, tab.widgetIndex);
+            Widget::draw_tab(window, dpi, image, tab.widgetIndex);
         }
     }
 
@@ -1427,7 +1427,7 @@ namespace OpenLoco::Ui::BuildVehicle
     static void drawTrackTypeTabs(Ui::window* window, Gfx::drawpixelinfo_t* dpi)
     {
         auto skin = ObjectManager::get<interface_skin_object>();
-        auto companyColour = companymgr::getCompanyColour(window->number);
+        auto companyColour = CompanyManager::getCompanyColour(window->number);
 
         auto left = window->x;
         auto top = window->y + 69;
@@ -1489,7 +1489,7 @@ namespace OpenLoco::Ui::BuildVehicle
                 img = Gfx::recolour(img, companyColour);
             }
 
-            widget::draw_tab(window, dpi, img, tab + widx::tab_track_type_0);
+            Widget::draw_tab(window, dpi, img, tab + widx::tab_track_type_0);
         }
     }
 

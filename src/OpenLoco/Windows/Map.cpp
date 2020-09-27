@@ -68,7 +68,7 @@ namespace OpenLoco::Ui::Windows::Map
     static loco_global<company_id_t, 0x00525E3C> _playerCompanyId;
     constexpr uint32_t max_orders = 256000;
     static loco_global<uint8_t[max_orders], 0x00987C5C> _dword_987C5C; // ?orders? ?routing related?
-    static loco_global<uint8_t[companymgr::max_companies + 1], 0x009C645C> _companyColours;
+    static loco_global<uint8_t[CompanyManager::max_companies + 1], 0x009C645C> _companyColours;
     static loco_global<int16_t, 0x112C876> _currentFontSpriteBase;
     static loco_global<char[512], 0x0112CC04> _stringFormatBuffer;
 
@@ -164,7 +164,7 @@ namespace OpenLoco::Ui::Windows::Map
         _lastMapWindowSize = Gfx::ui_size_t(self->width, self->height);
         _lastMapWindowVar88A = self->var_88A;
         _lastMapWindowVar88C = self->var_88C;
-        _lastMapWindowFlags = self->flags | window_flags::flag_31;
+        _lastMapWindowFlags = self->flags | WindowFlags::flag_31;
 
         free(_dword_F253A8);
     }
@@ -201,7 +201,7 @@ namespace OpenLoco::Ui::Windows::Map
     // 0x0046B9F7
     static void onResize(window* self)
     {
-        self->flags |= window_flags::resizable;
+        self->flags |= WindowFlags::resizable;
         self->min_width = 350;
         self->max_width = 800;
         self->max_height = 800;
@@ -255,7 +255,7 @@ namespace OpenLoco::Ui::Windows::Map
             std::size(_vehicleTypeCounts),
             ObjectManager::getMaxObjects(object_type::industry),
             0,
-            companymgr::max_companies,
+            CompanyManager::max_companies,
         }
     };
 
@@ -306,7 +306,7 @@ namespace OpenLoco::Ui::Windows::Map
                                 }
                                 else if (self->current_tab == (widx::tabOwnership - widx::tabOverall))
                                 {
-                                    auto company = companymgr::get(i);
+                                    auto company = CompanyManager::get(i);
 
                                     if (company->empty())
                                         continue;
@@ -483,7 +483,7 @@ namespace OpenLoco::Ui::Windows::Map
             uint32_t imageId = skin->img;
             imageId += InterfaceSkin::ImageIds::toolbar_menu_map_north;
 
-            widget::draw_tab(self, dpi, imageId, widx::tabOverall);
+            Widget::draw_tab(self, dpi, imageId, widx::tabOverall);
         }
 
         // tabVehicles,
@@ -511,13 +511,13 @@ namespace OpenLoco::Ui::Windows::Map
 
                 if (!isEditorMode())
                 {
-                    auto company = companymgr::get(_playerCompanyId);
+                    auto company = CompanyManager::get(_playerCompanyId);
                     colour = company->mainColours.primary;
                 }
 
                 imageId = Gfx::recolour(imageId, colour);
 
-                widget::draw_tab(self, dpi, imageId, widx::tabVehicles);
+                Widget::draw_tab(self, dpi, imageId, widx::tabVehicles);
             }
         }
 
@@ -526,7 +526,7 @@ namespace OpenLoco::Ui::Windows::Map
             uint32_t imageId = skin->img;
             imageId += InterfaceSkin::ImageIds::toolbar_menu_industries;
 
-            widget::draw_tab(self, dpi, imageId, widx::tabIndustries);
+            Widget::draw_tab(self, dpi, imageId, widx::tabIndustries);
         }
 
         // tabRoutes,
@@ -546,7 +546,7 @@ namespace OpenLoco::Ui::Windows::Map
                 else
                     imageId += routeImageIds[0];
 
-                widget::draw_tab(self, dpi, imageId, widx::tabRoutes);
+                Widget::draw_tab(self, dpi, imageId, widx::tabRoutes);
             }
         }
 
@@ -557,7 +557,7 @@ namespace OpenLoco::Ui::Windows::Map
                 uint32_t imageId = skin->img;
                 imageId += InterfaceSkin::ImageIds::tab_companies;
 
-                widget::draw_tab(self, dpi, imageId, widx::tabOwnership);
+                Widget::draw_tab(self, dpi, imageId, widx::tabOwnership);
             }
         }
     }
@@ -772,7 +772,7 @@ namespace OpenLoco::Ui::Windows::Map
     // 0x0046D6E1
     static void drawGraphKeyCompanies(window* self, Gfx::drawpixelinfo_t* dpi, uint16_t x, uint16_t* y)
     {
-        for (const auto& company : companymgr::companies())
+        for (const auto& company : CompanyManager::companies())
         {
             if (company.empty())
             {
@@ -863,7 +863,7 @@ namespace OpenLoco::Ui::Windows::Map
         if (industryIndex == -1)
         {
             auto industryCount = 0;
-            for (const auto& industry : industrymgr::industries())
+            for (const auto& industry : IndustryManager::industries())
             {
                 if (industry.empty())
                     continue;
@@ -884,7 +884,7 @@ namespace OpenLoco::Ui::Windows::Map
         else
         {
             auto industryCount = 0;
-            for (const auto& industry : industrymgr::industries())
+            for (const auto& industry : IndustryManager::industries())
             {
                 if (industry.empty())
                     continue;
@@ -1008,7 +1008,7 @@ namespace OpenLoco::Ui::Windows::Map
     // 0x0046BF0F based on
     static void drawVehicleOnMap(Gfx::drawpixelinfo_t* dpi, vehicle_base* vehicle, uint8_t colour)
     {
-        if (vehicle->x == location::null)
+        if (vehicle->x == Location::null)
             return;
 
         auto trainPos = locationToMapWindowPos({ vehicle->x, vehicle->y });
@@ -1021,14 +1021,14 @@ namespace OpenLoco::Ui::Windows::Map
     {
         auto newStartPos = locationToMapWindowPos({ stationPos.x, stationPos.y });
 
-        if (endPos.x != location::null)
+        if (endPos.x != Location::null)
         {
             Gfx::drawLine(dpi, endPos.x, endPos.y, newStartPos.x, newStartPos.y, colour);
         }
 
         endPos = newStartPos;
 
-        if (startPos.x == location::null)
+        if (startPos.x == Location::null)
         {
             startPos = newStartPos;
         }
@@ -1105,8 +1105,8 @@ namespace OpenLoco::Ui::Windows::Map
             1,
         };
 
-        xy32 startPos = { location::null, 0 };
-        xy32 endPos = { location::null, 0 };
+        xy32 startPos = { Location::null, 0 };
+        xy32 endPos = { Location::null, 0 };
         auto index = train.head->length_of_var_4C;
         auto lastOrder = _dword_987C5C[index] & 0x7;
 
@@ -1118,7 +1118,7 @@ namespace OpenLoco::Ui::Windows::Map
                 order <<= 2;
                 order |= _dword_987C5C[index + 1];
 
-                auto station = stationmgr::get(order);
+                auto station = StationManager::get(order);
                 map_pos stationPos = { station->x, station->y };
 
                 auto routePos = drawRouteLine(dpi, startPos, endPos, stationPos, *colour);
@@ -1130,7 +1130,7 @@ namespace OpenLoco::Ui::Windows::Map
             lastOrder = _dword_987C5C[index] & 0x7;
         }
 
-        if (startPos.x == location::null || endPos.x == location::null)
+        if (startPos.x == Location::null || endPos.x == Location::null)
             return;
 
         Gfx::drawLine(dpi, startPos.x, startPos.y, endPos.x, endPos.y, *colour);
@@ -1179,7 +1179,7 @@ namespace OpenLoco::Ui::Windows::Map
             if (train.head->var_38 & (1 << 4))
                 continue;
 
-            if (train.head->x == location::null)
+            if (train.head->x == Location::null)
                 continue;
 
             auto vehicleType = train.head->vehicleType;
@@ -1197,7 +1197,7 @@ namespace OpenLoco::Ui::Windows::Map
             if (train.head->var_38 & (1 << 4))
                 continue;
 
-            if (train.head->x == location::null)
+            if (train.head->x == Location::null)
                 continue;
 
             for (auto& car : train.cars)
@@ -1404,7 +1404,7 @@ namespace OpenLoco::Ui::Windows::Map
     // 0x0046C481
     static void drawTownNames(Gfx::drawpixelinfo_t* dpi)
     {
-        for (const auto& town : townmgr::towns())
+        for (const auto& town : TownManager::towns())
         {
             if (town.empty())
                 continue;
@@ -1527,7 +1527,7 @@ namespace OpenLoco::Ui::Windows::Map
         {
             window->var_88A = _lastMapWindowVar88A;
             window->var_88C = _lastMapWindowVar88C;
-            window->flags |= (_lastMapWindowFlags & window_flags::flag_16);
+            window->flags |= (_lastMapWindowFlags & WindowFlags::flag_16);
         }
 
         auto skin = ObjectManager::get<interface_skin_object>();

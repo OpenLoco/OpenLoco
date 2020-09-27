@@ -37,11 +37,11 @@ namespace OpenLoco::Ui::NewsWindow
             {
                 case Common::widx::close_button:
                 {
-                    if (_activeMessageIndex != message_id::null)
+                    if (_activeMessageIndex != MessageId::null)
                     {
-                        auto news = messagemgr::get(_activeMessageIndex);
-                        news->var_C8 = message_id::null;
-                        _activeMessageIndex = message_id::null;
+                        auto news = MessageManager::get(_activeMessageIndex);
+                        news->var_C8 = MessageId::null;
+                        _activeMessageIndex = MessageId::null;
                     }
                     WindowManager::close(self);
                     break;
@@ -50,9 +50,9 @@ namespace OpenLoco::Ui::NewsWindow
                 case Common::widx::viewport1Button:
                 case Common::widx::viewport2Button:
                 {
-                    if (_activeMessageIndex != message_id::null)
+                    if (_activeMessageIndex != MessageId::null)
                     {
-                        auto news = messagemgr::get(_activeMessageIndex);
+                        auto news = MessageManager::get(_activeMessageIndex);
                         if (widgetIndex == Common::widx::viewport1Button)
                         {
                             if (!(_word_4F8BE4[news->type] & (1 << 2)))
@@ -188,7 +188,7 @@ namespace OpenLoco::Ui::NewsWindow
             {
                 case newsItemSubTypes::industry:
                 {
-                    auto industry = industrymgr::get(itemId);
+                    auto industry = IndustryManager::get(itemId);
 
                     view.mapX = industry->x;
                     view.mapY = industry->y;
@@ -201,7 +201,7 @@ namespace OpenLoco::Ui::NewsWindow
 
                 case newsItemSubTypes::station:
                 {
-                    auto station = stationmgr::get(itemId);
+                    auto station = StationManager::get(itemId);
 
                     view.mapX = station->x;
                     view.mapY = station->y;
@@ -214,7 +214,7 @@ namespace OpenLoco::Ui::NewsWindow
 
                 case newsItemSubTypes::town:
                 {
-                    auto town = townmgr::get(itemId);
+                    auto town = TownManager::get(itemId);
 
                     view.mapX = town->x;
                     view.mapY = town->y;
@@ -282,7 +282,7 @@ namespace OpenLoco::Ui::NewsWindow
             view.rotation = -1;
             view.zoomLevel = (ZoomLevel)-1;
             view.thingId = 0xFFFF;
-            auto news = messagemgr::get(_activeMessageIndex);
+            auto news = MessageManager::get(_activeMessageIndex);
 
             bool selectable = false;
 
@@ -368,11 +368,11 @@ namespace OpenLoco::Ui::NewsWindow
 
                     if (view.isThingView())
                     {
-                        viewportmgr::create(self, 0, origin, viewportSize, view.zoomLevel, view.thingId);
+                        ViewportManager::create(self, 0, origin, viewportSize, view.zoomLevel, view.thingId);
                     }
                     else
                     {
-                        viewportmgr::create(self, 0, origin, viewportSize, view.zoomLevel, view.getPos());
+                        ViewportManager::create(self, 0, origin, viewportSize, view.zoomLevel, view.getPos());
                     }
                     self->invalidate();
                 }
@@ -458,7 +458,7 @@ namespace OpenLoco::Ui::NewsWindow
                         viewportSize = { viewportWidth, viewportHeight };
                     }
 
-                    viewportmgr::create(self, 1, origin, viewportSize, view.zoomLevel, view.getPos());
+                    ViewportManager::create(self, 1, origin, viewportSize, view.zoomLevel, view.getPos());
 
                     self->invalidate();
                 }
@@ -484,7 +484,7 @@ namespace OpenLoco::Ui::NewsWindow
             {
                 case newsItemSubTypes::industry:
                 {
-                    auto industry = industrymgr::get(itemIndex);
+                    auto industry = IndustryManager::get(itemIndex);
                     args.push(industry->name);
                     args.push(industry->town);
                     break;
@@ -492,7 +492,7 @@ namespace OpenLoco::Ui::NewsWindow
 
                 case newsItemSubTypes::station:
                 {
-                    auto station = stationmgr::get(itemIndex);
+                    auto station = StationManager::get(itemIndex);
                     args.push(station->name);
                     args.push(station->town);
                     break;
@@ -500,7 +500,7 @@ namespace OpenLoco::Ui::NewsWindow
 
                 case newsItemSubTypes::town:
                 {
-                    auto town = townmgr::get(itemIndex);
+                    auto town = TownManager::get(itemIndex);
                     args.push(town->name);
                     break;
                 }
@@ -508,7 +508,7 @@ namespace OpenLoco::Ui::NewsWindow
                 case newsItemSubTypes::vehicle:
                 {
                     auto vehicle = ThingManager::get<OpenLoco::vehicle>(itemIndex);
-                    auto company = companymgr::get(vehicle->owner);
+                    auto company = CompanyManager::get(vehicle->owner);
                     if (isPlayerCompany(vehicle->owner))
                     {
                         args.push(StringIds::company_vehicle);
@@ -526,7 +526,7 @@ namespace OpenLoco::Ui::NewsWindow
 
                 case newsItemSubTypes::company:
                 {
-                    auto company = companymgr::get(itemIndex);
+                    auto company = CompanyManager::get(itemIndex);
                     args.push(company->name);
                     break;
                 }
@@ -752,7 +752,7 @@ namespace OpenLoco::Ui::NewsWindow
         // 0x00429739
         static void draw(Ui::window* self, Gfx::drawpixelinfo_t* dpi)
         {
-            auto news = messagemgr::get(_activeMessageIndex);
+            auto news = MessageManager::get(_activeMessageIndex);
 
             if (_word_4F8BE4[news->type] & (1 << 1))
             {

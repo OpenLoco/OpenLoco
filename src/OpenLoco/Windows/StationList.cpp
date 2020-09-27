@@ -131,7 +131,7 @@ namespace OpenLoco::Ui::Windows::StationList
     {
         window->row_count = 0;
 
-        for (auto& station : stationmgr::stations())
+        for (auto& station : StationManager::stations())
         {
             if (station.empty())
                 continue;
@@ -227,7 +227,7 @@ namespace OpenLoco::Ui::Windows::StationList
 
         auto i = -1;
 
-        for (auto& station : stationmgr::stations())
+        for (auto& station : StationManager::stations())
         {
             i++;
             if (station.empty())
@@ -252,7 +252,7 @@ namespace OpenLoco::Ui::Windows::StationList
                 continue;
             }
 
-            if (getOrder(SortMode(window->sort_mode), station, *stationmgr::get(edi)))
+            if (getOrder(SortMode(window->sort_mode), station, *StationManager::get(edi)))
             {
                 edi = i;
             }
@@ -262,7 +262,7 @@ namespace OpenLoco::Ui::Windows::StationList
         {
             bool dl = false;
 
-            stationmgr::get(edi)->flags |= station_flags::flag_4;
+            StationManager::get(edi)->flags |= station_flags::flag_4;
 
             auto ebp = window->row_count;
             if (edi != window->row_info[ebp])
@@ -314,7 +314,7 @@ namespace OpenLoco::Ui::Windows::StationList
             window = WindowManager::createWindow(
                 WindowType::stationList,
                 window_size,
-                window_flags::flag_11,
+                WindowFlags::flag_11,
                 &_events);
 
             window->number = companyId;
@@ -331,7 +331,7 @@ namespace OpenLoco::Ui::Windows::StationList
             window->min_height = min_dimensions.height;
             window->max_width = max_dimensions.width;
             window->max_height = max_dimensions.height;
-            window->flags |= window_flags::resizable;
+            window->flags |= WindowFlags::resizable;
 
             auto interface = ObjectManager::get<interface_skin_object>();
             window->colours[1] = interface->colour_0A;
@@ -384,13 +384,13 @@ namespace OpenLoco::Ui::Windows::StationList
     // 0x0049196F
     static void event_08(window* window)
     {
-        window->flags |= window_flags::not_scroll_view;
+        window->flags |= WindowFlags::not_scroll_view;
     }
 
     // 0x00491977
     static void event_09(window* window)
     {
-        if ((window->flags & window_flags::not_scroll_view) == 0)
+        if ((window->flags & WindowFlags::not_scroll_view) == 0)
             return;
 
         if (window->row_hover == -1)
@@ -408,7 +408,7 @@ namespace OpenLoco::Ui::Windows::StationList
         window->activated_widgets |= (1ULL << tabInformationByType[window->current_tab].widgetIndex);
 
         // Set company name.
-        auto company = companymgr::get(window->number);
+        auto company = CompanyManager::get(window->number);
         *_common_format_args = company->name;
 
         // Set window title.
@@ -495,7 +495,7 @@ namespace OpenLoco::Ui::Windows::StationList
                 text_colour_id = StringIds::wcolour2_stringid;
             }
 
-            auto station = stationmgr::get(stationId);
+            auto station = StationManager::get(stationId);
 
             // First, draw the town name.
             static const string_id label_icons[] = {
@@ -568,12 +568,12 @@ namespace OpenLoco::Ui::Windows::StationList
     static void drawTabs(Ui::window* window, Gfx::drawpixelinfo_t* dpi)
     {
         auto skin = ObjectManager::get<interface_skin_object>();
-        auto companyColour = companymgr::getCompanyColour(window->number);
+        auto companyColour = CompanyManager::getCompanyColour(window->number);
 
         for (auto tab : tabInformationByType)
         {
             uint32_t image = Gfx::recolour(skin->img + tab.imageId, companyColour);
-            widget::draw_tab(window, dpi, image, tab.widgetIndex);
+            Widget::draw_tab(window, dpi, image, tab.widgetIndex);
         }
     }
 
@@ -585,7 +585,7 @@ namespace OpenLoco::Ui::Windows::StationList
         drawTabs(window, dpi);
 
         // Draw company owner image.
-        auto company = companymgr::get(window->number);
+        auto company = CompanyManager::get(window->number);
         auto competitor = ObjectManager::get<competitor_object>(company->competitor_id);
         uint32_t image = Gfx::recolour(competitor->images[company->owner_emotion], company->mainColours.primary);
         uint16_t x = window->x + window->widgets[widx::company_select].left + 1;
@@ -618,7 +618,7 @@ namespace OpenLoco::Ui::Windows::StationList
             return;
 
         // If not, we'll turn this window into a window for the company selected.
-        auto company = companymgr::get(companyId);
+        auto company = CompanyManager::get(companyId);
         if (company->name == StringIds::empty)
             return;
 
@@ -717,7 +717,7 @@ namespace OpenLoco::Ui::Windows::StationList
     // 0x004919D1
     static void onScrollMouseOver(Ui::window* window, int16_t x, int16_t y, uint8_t scroll_index)
     {
-        window->flags &= ~(window_flags::not_scroll_view);
+        window->flags &= ~(WindowFlags::not_scroll_view);
 
         uint16_t currentRow = y / rowHeight;
         int16_t currentStation = -1;

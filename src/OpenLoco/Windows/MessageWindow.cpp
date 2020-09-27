@@ -120,13 +120,13 @@ namespace OpenLoco::Ui::MessageWindow
         // 0x0042A847
         static void event_08(window* self)
         {
-            self->flags |= window_flags::not_scroll_view;
+            self->flags |= WindowFlags::not_scroll_view;
         }
 
         // 0x0042A84F
         static void event_09(window* self)
         {
-            if (!(self->flags & window_flags::not_scroll_view))
+            if (!(self->flags & WindowFlags::not_scroll_view))
                 return;
 
             if (self->row_hover == -1)
@@ -152,7 +152,7 @@ namespace OpenLoco::Ui::MessageWindow
 
             if (_activeMessageIndex != 0xFFFF)
             {
-                auto message = messagemgr::get(_activeMessageIndex);
+                auto message = MessageManager::get(_activeMessageIndex);
                 if (message->var_C8 != 0xFFFF)
                 {
                     if (message->var_C8 & (1 << 15))
@@ -163,7 +163,7 @@ namespace OpenLoco::Ui::MessageWindow
             _activeMessageIndex = 0xFFFF;
             WindowManager::close(WindowType::news, 0);
 
-            auto message = messagemgr::get(messageIndex);
+            auto message = MessageManager::get(messageIndex);
             message->var_C8 = (1 << 15) | (1 << 0);
 
             NewsWindow::open(messageIndex);
@@ -175,7 +175,7 @@ namespace OpenLoco::Ui::MessageWindow
         // 0x0042A87C
         static void scrollMouseOver(Ui::window* self, int16_t x, int16_t y, uint8_t scrollIndex)
         {
-            self->flags &= ~(window_flags::not_scroll_view);
+            self->flags &= ~(WindowFlags::not_scroll_view);
 
             auto messageIndex = y / messageHeight;
             auto messageId = 0xFFFF;
@@ -233,7 +233,7 @@ namespace OpenLoco::Ui::MessageWindow
                     height += messageHeight;
                     continue;
                 }
-                auto message = messagemgr::get(i);
+                auto message = MessageManager::get(i);
                 char* buffer = message->messageString;
                 auto str = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
 
@@ -320,7 +320,7 @@ namespace OpenLoco::Ui::MessageWindow
                 WindowType::messages,
                 origin,
                 { 366, 217 },
-                window_flags::flag_11,
+                WindowFlags::flag_11,
                 &Messages::events);
 
             window->enabled_widgets = Messages::enabledWidgets;
@@ -336,7 +336,7 @@ namespace OpenLoco::Ui::MessageWindow
             window->min_height = Messages::minWindowSize.height;
             window->max_width = Messages::maxWindowSize.width;
             window->max_height = Messages::maxWindowSize.height;
-            window->flags |= window_flags::resizable;
+            window->flags |= WindowFlags::resizable;
 
             window->owner = _playerCompany;
             auto skin = ObjectManager::get<interface_skin_object>();
@@ -617,7 +617,7 @@ namespace OpenLoco::Ui::MessageWindow
 
             self->current_tab = widgetIndex - widx::tab_messages;
             self->frame_no = 0;
-            self->flags &= ~(window_flags::flag_16);
+            self->flags &= ~(WindowFlags::flag_16);
 
             if (self->viewports[0] != nullptr)
             {
@@ -658,7 +658,7 @@ namespace OpenLoco::Ui::MessageWindow
                 uint32_t imageId = skin->img;
                 imageId += InterfaceSkin::ImageIds::tab_messages;
 
-                widget::draw_tab(self, dpi, imageId, widx::tab_messages);
+                Widget::draw_tab(self, dpi, imageId, widx::tab_messages);
             }
 
             // Setting Tab
@@ -666,7 +666,7 @@ namespace OpenLoco::Ui::MessageWindow
                 uint32_t imageId = skin->img;
                 imageId += InterfaceSkin::ImageIds::tab_message_settings;
 
-                widget::draw_tab(self, dpi, imageId, widx::tab_settings);
+                Widget::draw_tab(self, dpi, imageId, widx::tab_settings);
             }
         }
 

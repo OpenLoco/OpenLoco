@@ -14,12 +14,12 @@ namespace OpenLoco
     using namespace Map;
     using industry_id_t = uint8_t;
 
-    namespace industry_id
+    namespace IndustryId
     {
         constexpr industry_id_t null = std::numeric_limits<industry_id_t>::max();
     }
 
-    namespace industry_flags
+    namespace IndustryFlags
     {
         constexpr uint16_t flag_01 = 1 << 0;
         constexpr uint16_t sorted = 1 << 1;

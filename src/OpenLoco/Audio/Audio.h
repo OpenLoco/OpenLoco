@@ -75,7 +75,7 @@ namespace OpenLoco::Audio
 
     struct music_info
     {
-        environment::path_id path_id;
+        Environment::path_id path_id;
         string_id title_id;
         uint16_t start_year;
         uint16_t end_year;

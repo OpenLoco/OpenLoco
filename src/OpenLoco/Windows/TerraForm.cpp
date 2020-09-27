@@ -690,7 +690,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 WindowType::terraform,
                 origin,
                 PlantTrees::windowSize,
-                window_flags::flag_11,
+                WindowFlags::flag_11,
                 &PlantTrees::events);
 
             window->number = 0;
@@ -2131,7 +2131,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
         static void onResize(window* self, uint8_t height)
         {
-            self->flags |= window_flags::resizable;
+            self->flags |= WindowFlags::resizable;
 
             /*auto width = 130;
             if (isEditorMode)
@@ -2233,14 +2233,14 @@ namespace OpenLoco::Ui::Windows::Terraform
                 uint32_t imageId = skin->img;
                 imageId += InterfaceSkin::ImageIds::toolbar_menu_bulldozer;
 
-                widget::draw_tab(self, dpi, imageId, widx::tab_clear_area);
+                Widget::draw_tab(self, dpi, imageId, widx::tab_clear_area);
             }
             // Adjust Land Tab
             {
                 auto landObj = ObjectManager::get<land_object>(_grassLand);
                 uint32_t imageId = landObj->var_16 + Land::ImageIds::toolbar_terraform_land;
 
-                widget::draw_tab(self, dpi, imageId, widx::tab_adjust_land);
+                Widget::draw_tab(self, dpi, imageId, widx::tab_adjust_land);
             }
             // Adjust Water Tab
             {
@@ -2249,21 +2249,21 @@ namespace OpenLoco::Ui::Windows::Terraform
                 if (self->current_tab == widx::tab_adjust_water - widx::tab_clear_area)
                     imageId += (self->frame_no / 2) % 16;
 
-                widget::draw_tab(self, dpi, imageId, widx::tab_adjust_water);
+                Widget::draw_tab(self, dpi, imageId, widx::tab_adjust_water);
             }
             // Plant Trees Tab
             {
                 uint32_t imageId = skin->img;
                 imageId += InterfaceSkin::ImageIds::toolbar_menu_plant_trees;
 
-                widget::draw_tab(self, dpi, imageId, widx::tab_plant_trees);
+                Widget::draw_tab(self, dpi, imageId, widx::tab_plant_trees);
             }
             // Build Walls Tab
             {
                 uint32_t imageId = skin->img;
                 imageId += InterfaceSkin::ImageIds::toolbar_menu_build_walls;
 
-                widget::draw_tab(self, dpi, imageId, widx::tab_build_walls);
+                Widget::draw_tab(self, dpi, imageId, widx::tab_build_walls);
             }
         }
 

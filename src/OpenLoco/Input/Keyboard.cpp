@@ -70,14 +70,14 @@ namespace OpenLoco::Input
 
     static void loc_4BECDE()
     {
-        _screenFlags |= screen_flags::unknown_6;
+        _screenFlags |= ScreenFlags::unknown_6;
 
         Audio::playSound(Audio::sound_id::click_press, Ui::width() / 2);
     }
 
     static void loc_4BED04()
     {
-        if ((_screenFlags & screen_flags::unknown_6) == 0)
+        if ((_screenFlags & ScreenFlags::unknown_6) == 0)
         {
             return;
             // Only works when DRIVER mode is active
@@ -91,7 +91,7 @@ namespace OpenLoco::Input
                 continue;
 
             auto t = ThingManager::get<OpenLoco::vehicle>(w->number);
-            if (t->owner != companymgr::getControllingId())
+            if (t->owner != CompanyManager::getControllingId())
                 continue;
 
             if (t->mode != TransportMode::rail)
@@ -118,21 +118,21 @@ namespace OpenLoco::Input
 
     static void loc_4BEFEF()
     {
-        switch (tutorial::state())
+        switch (Tutorial::state())
         {
-            case tutorial::tutorial_state::none:
+            case Tutorial::tutorial_state::none:
                 break;
 
-            case tutorial::tutorial_state::playing:
+            case Tutorial::tutorial_state::playing:
             {
-                const uint16_t next = tutorial::nextInput();
+                const uint16_t next = Tutorial::nextInput();
                 _keyModifier = next;
-                if ((_keyModifier & key_modifier::unknown) == 0)
+                if ((_keyModifier & KeyModifier::unknown) == 0)
                     return;
 
                 ToolTip::closeAndReset();
 
-                auto tutStringId = tutorial::nextString();
+                auto tutStringId = Tutorial::nextString();
                 auto main = WindowManager::getMainWindow();
                 auto cursor = getMouseLocation();
 
@@ -140,7 +140,7 @@ namespace OpenLoco::Input
                 break;
             }
 
-            case tutorial::tutorial_state::recording:
+            case Tutorial::tutorial_state::recording:
             {
                 call(0x004BF005);
                 break;
@@ -180,22 +180,22 @@ namespace OpenLoco::Input
         // Used to handle INSERT cheat
         if ((_keyboardState[DIK_INSERT] & 0x80) != 0)
         {
-            if ((_keyModifier & key_modifier::cheat) != 0)
+            if ((_keyModifier & KeyModifier::cheat) != 0)
             {
                 return;
             }
             else
             {
-                _keyModifier |= key_modifier::cheat;
+                _keyModifier |= KeyModifier::cheat;
                 _cheatBuffer.clear();
                 return;
             }
         }
 
-        if ((_keyModifier & key_modifier::cheat) == 0)
+        if ((_keyModifier & KeyModifier::cheat) == 0)
             return;
 
-        _keyModifier = _keyModifier & (~key_modifier::cheat);
+        _keyModifier = _keyModifier & (~KeyModifier::cheat);
 
         if (isTitleMode())
             return;
@@ -266,7 +266,7 @@ namespace OpenLoco::Input
             if (eax->keyCode == 0x11) // VK_CONTROL
                 continue;
 
-            if ((_keyModifier & key_modifier::cheat) != 0)
+            if ((_keyModifier & KeyModifier::cheat) != 0)
             {
                 if (eax->charCode >= 'a' && eax->charCode <= 'z')
                 {
@@ -326,9 +326,9 @@ namespace OpenLoco::Input
                 continue;
             }
 
-            if (tutorial::state() == tutorial::tutorial_state::playing)
+            if (Tutorial::state() == Tutorial::tutorial_state::playing)
             {
-                tutorial::stop();
+                Tutorial::stop();
                 continue;
             }
 
@@ -342,15 +342,15 @@ namespace OpenLoco::Input
                 continue;
             }
 
-            if (intro::state() == (intro::intro_state)9)
+            if (Intro::state() == (Intro::intro_state)9)
             {
-                intro::state(intro::intro_state::end);
+                Intro::state(Intro::intro_state::end);
                 continue;
             }
 
-            if (intro::state() != intro::intro_state::none)
+            if (Intro::state() != Intro::intro_state::none)
             {
-                intro::state((intro::intro_state)8);
+                Intro::state((Intro::intro_state)8);
             }
 
             if (tryShortcut(Shortcut::sendMessage, eax->keyCode, _keyModifier))
@@ -363,7 +363,7 @@ namespace OpenLoco::Input
 
     static void edgeScroll()
     {
-        if (tutorial::state() != tutorial::tutorial_state::none)
+        if (Tutorial::state() != Tutorial::tutorial_state::none)
             return;
 
         if (Config::get().edge_scrolling == 0)
@@ -372,7 +372,7 @@ namespace OpenLoco::Input
         if (Input::state() != input_state::normal && Input::state() != input_state::dropdown_active)
             return;
 
-        if (hasKeyModifier(key_modifier::shift) || hasKeyModifier(key_modifier::control))
+        if (hasKeyModifier(KeyModifier::shift) || hasKeyModifier(KeyModifier::control))
             return;
 
         Gfx::point_t delta = { 0, 0 };
@@ -394,7 +394,7 @@ namespace OpenLoco::Input
             return;
 
         auto main = WindowManager::getMainWindow();
-        if ((main->flags & window_flags::viewport_no_scrolling) != 0)
+        if ((main->flags & WindowFlags::viewport_no_scrolling) != 0)
             return;
 
         if (OpenLoco::isTitleMode())
@@ -413,7 +413,7 @@ namespace OpenLoco::Input
 
     static void keyScroll()
     {
-        if (tutorial::state() != tutorial::tutorial_state::none)
+        if (Tutorial::state() != Tutorial::tutorial_state::none)
             return;
 
         if (*_modalWindowType != WindowType::undefined)
@@ -440,7 +440,7 @@ namespace OpenLoco::Input
             return;
 
         auto main = WindowManager::getMainWindow();
-        if ((main->flags & window_flags::viewport_no_scrolling) != 0)
+        if ((main->flags & WindowFlags::viewport_no_scrolling) != 0)
             return;
 
         if (OpenLoco::isTitleMode())
@@ -480,7 +480,7 @@ namespace OpenLoco::Input
 
         edgeScroll();
 
-        _keyModifier = _keyModifier & ~(key_modifier::shift | key_modifier::control | key_modifier::unknown);
+        _keyModifier = _keyModifier & ~(KeyModifier::shift | KeyModifier::control | KeyModifier::unknown);
 
         if (addr<0x005251CC, uint8_t>() != 1)
         {
@@ -488,16 +488,16 @@ namespace OpenLoco::Input
         }
 
         if (_keyboardState[DIK_LSHIFT] & 0x80)
-            _keyModifier |= key_modifier::shift;
+            _keyModifier |= KeyModifier::shift;
 
         if (_keyboardState[DIK_RSHIFT] & 0x80)
-            _keyModifier |= key_modifier::shift;
+            _keyModifier |= KeyModifier::shift;
 
         if (_keyboardState[DIK_LCONTROL] & 0x80)
-            _keyModifier |= key_modifier::control;
+            _keyModifier |= KeyModifier::control;
 
         if (_keyboardState[DIK_RCONTROL] & 0x80)
-            _keyModifier |= key_modifier::control;
+            _keyModifier |= KeyModifier::control;
 
         keyScroll();
     }

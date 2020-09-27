@@ -235,7 +235,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         self->draw(dpi);
         Common::drawTabs(self, dpi);
 
-        auto company = companymgr::get(_playerCompany);
+        auto company = CompanyManager::get(_playerCompany);
         auto companyColour = company->mainColours.primary;
         int16_t xPos = self->widgets[widx::image].left + self->x;
         int16_t yPos = self->widgets[widx::image].top + self->y;
@@ -322,7 +322,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         }
         else
         {
-            auto station = stationmgr::get(_constructingStationId);
+            auto station = StationManager::get(_constructingStationId);
             args.push(station->name);
             args.push(station->town);
         }

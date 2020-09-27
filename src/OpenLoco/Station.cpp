@@ -145,7 +145,7 @@ namespace OpenLoco
 
         void resetIndustryMap()
         {
-            std::fill_n(_industry.get(), max_cargo_stats, industry_id::null);
+            std::fill_n(_industry.get(), max_cargo_stats, IndustryId::null);
         }
 
         industry_id_t getIndustry(const uint8_t cargo) const
@@ -170,7 +170,7 @@ namespace OpenLoco
         auto index = (size_t)(this - _stations);
         if (index > 1024)
         {
-            index = station_id::null;
+            index = StationId::null;
         }
         return (station_id_t)index;
     }
@@ -202,7 +202,7 @@ namespace OpenLoco
 
         if (originallyAcceptedCargo != currentAcceptedCargo)
         {
-            if (owner == companymgr::getControllingId())
+            if (owner == CompanyManager::getControllingId())
             {
                 alertCargoAcceptanceChange(originallyAcceptedCargo, currentAcceptedCargo);
             }
@@ -219,7 +219,7 @@ namespace OpenLoco
             bool acceptedNow = (newCargoAcc & (1 << cargoId)) != 0;
             if (acceptedBefore && !acceptedNow)
             {
-                messagemgr::post(
+                MessageManager::post(
                     messageType::cargoNoLongerAccepted,
                     owner,
                     id(),
@@ -227,7 +227,7 @@ namespace OpenLoco
             }
             else if (!acceptedBefore && acceptedNow)
             {
-                messagemgr::post(
+                MessageManager::post(
                     messageType::cargoNowAccepted,
                     owner,
                     id(),
@@ -709,7 +709,7 @@ namespace OpenLoco
     // 0x004CBA2D
     void station::invalidate()
     {
-        Ui::viewportmgr::invalidate(this);
+        Ui::ViewportManager::invalidate(this);
     }
 
     void station::invalidateWindow()

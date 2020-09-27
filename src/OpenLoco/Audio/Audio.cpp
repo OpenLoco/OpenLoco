@@ -26,7 +26,7 @@
 #define __HAS_DEFAULT_DEVICE__
 #endif
 
-using namespace OpenLoco::environment;
+using namespace OpenLoco::Environment;
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui;
 using namespace OpenLoco::Utility;
@@ -161,7 +161,7 @@ namespace OpenLoco::Audio
 
         if (cr == -1)
         {
-            console::error("Error during SDL_BuildAudioCVT: %s", SDL_GetError());
+            Console::error("Error during SDL_BuildAudioCVT: %s", SDL_GetError());
             return {};
         }
         else if (cr == 0)
@@ -190,7 +190,7 @@ namespace OpenLoco::Audio
             std::memcpy(cvt.buf, pcm, pcmLen);
             if (SDL_ConvertAudio(&cvt) != 0)
             {
-                console::error("Error during SDL_ConvertAudio: %s", SDL_GetError());
+                Console::error("Error during SDL_ConvertAudio: %s", SDL_GetError());
                 return {};
             }
 
@@ -211,7 +211,7 @@ namespace OpenLoco::Audio
 
     static std::vector<sample> loadSoundsFromCSS(const fs::path& path)
     {
-        console::logVerbose("loadSoundsFromCSS(%s)", path.string().c_str());
+        Console::logVerbose("loadSoundsFromCSS(%s)", path.string().c_str());
         std::vector<sample> results;
         std::ifstream fs(path, std::ios::in | std::ios::binary);
 
@@ -307,7 +307,7 @@ namespace OpenLoco::Audio
         format.channels = MIX_DEFAULT_CHANNELS;
         if (Mix_OpenAudioDevice(format.frequency, format.format, format.channels, 1024, deviceName, 0) != 0)
         {
-            console::error("Mix_OpenAudio failed: %s", Mix_GetError());
+            Console::error("Mix_OpenAudio failed: %s", Mix_GetError());
             return;
         }
         Mix_AllocateChannels(num_reserved_channels + num_sound_channels);
@@ -322,7 +322,7 @@ namespace OpenLoco::Audio
             _vehicle_channels[i] = vehicle_channel(channel(4 + i));
         }
 
-        auto css1path = environment::getPath(environment::path_id::css1);
+        auto css1path = Environment::getPath(Environment::path_id::css1);
         _samples = loadSoundsFromCSS(css1path);
         _audio_initialised = 1;
     }
@@ -555,7 +555,7 @@ namespace OpenLoco::Audio
     {
         if (v->var_4A & 1)
         {
-            console::logVerbose("playSound(vehicle #%d)", v->id);
+            Console::logVerbose("playSound(vehicle #%d)", v->id);
             auto vc = getFreeVehicleChannel();
             if (vc != nullptr)
             {
@@ -653,7 +653,7 @@ namespace OpenLoco::Audio
 
     static void mixSound(sound_id id, bool loop, int32_t volume, int32_t pan, int32_t freq)
     {
-        console::logVerbose("mixSound(%d, %s, %d, %d, %d)", (int32_t)id, loop ? "true" : "false", volume, pan, freq);
+        Console::logVerbose("mixSound(%d, %s, %d, %d, %d)", (int32_t)id, loop ? "true" : "false", volume, pan, freq);
         auto sample = getSoundSample(id);
         if (sample != nullptr && sample->chunk != nullptr)
         {
@@ -674,7 +674,7 @@ namespace OpenLoco::Audio
 
     static bool loadChannel(channel_id id, const fs::path& path, int32_t c)
     {
-        console::logVerbose("loadChannel(%d, %s, %d)", id, path.string().c_str(), c);
+        Console::logVerbose("loadChannel(%d, %s, %d)", id, path.string().c_str(), c);
         if (isMusicChannel(id))
         {
             if (_music_channel.load(path))
@@ -704,7 +704,7 @@ namespace OpenLoco::Audio
     // 0x00401999
     bool playChannel(channel_id id, int32_t loop, int32_t volume, int32_t d, int32_t freq)
     {
-        console::logVerbose("playChannel(%d, %d, %d, %d, %d)", id, loop, volume, d, freq);
+        Console::logVerbose("playChannel(%d, %d, %d, %d, %d)", id, loop, volume, d, freq);
         if (isMusicChannel(id))
         {
             if (_music_channel.play(loop != 0))
@@ -728,7 +728,7 @@ namespace OpenLoco::Audio
     // 0x00401A05
     void stopChannel(channel_id id)
     {
-        console::logVerbose("stopChannel(%d)", id);
+        Console::logVerbose("stopChannel(%d)", id);
         if (isMusicChannel(id))
         {
             if (_music_current_channel == id)
@@ -749,7 +749,7 @@ namespace OpenLoco::Audio
     // 0x00401AD3
     void setChannelVolume(channel_id id, int32_t volume)
     {
-        console::logVerbose("setChannelVolume(%d, %d)", id, volume);
+        Console::logVerbose("setChannelVolume(%d, %d)", id, volume);
         if (isMusicChannel(id))
         {
             if (_music_current_channel == id)
@@ -794,7 +794,7 @@ namespace OpenLoco::Audio
             return;
 
         // TODO: left or top?
-        if (v->sprite_left == location::null)
+        if (v->sprite_left == Location::null)
             return;
 
         if (_numActiveVehicleSounds >= Config::get().max_vehicle_sounds)
@@ -1074,7 +1074,7 @@ namespace OpenLoco::Audio
             _lastSong = _currentSong;
 
             const auto& mi = MusicInfo[_currentSong];
-            auto path = environment::getPath((path_id)mi.path_id);
+            auto path = Environment::getPath((path_id)mi.path_id);
             if (_music_channel.load(path))
             {
                 _music_current_channel = channel_id::bgm;
@@ -1108,7 +1108,7 @@ namespace OpenLoco::Audio
         {
             if (!isChannelPlaying(channel_id::title))
             {
-                auto path = environment::getPath(path_id::css5);
+                auto path = Environment::getPath(path_id::css5);
                 if (loadChannel(channel_id::title, path, 0))
                 {
                     playChannel(channel_id::title, 1, -500, 0, 0);

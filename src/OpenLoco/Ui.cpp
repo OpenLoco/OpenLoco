@@ -395,7 +395,7 @@ namespace OpenLoco::Ui
     void resize(int32_t width, int32_t height)
     {
         update(width, height);
-        gui::resize();
+        Gui::resize();
         Gfx::invalidateScreen();
 
         // Save window size to config if NOT maximized
@@ -450,7 +450,7 @@ namespace OpenLoco::Ui
             {
                 if (SDL_BlitSurface(surface, nullptr, SDL_GetWindowSurface(window), nullptr))
                 {
-                    console::error("SDL_BlitSurface %s", SDL_GetError());
+                    Console::error("SDL_BlitSurface %s", SDL_GetError());
                     exit(1);
                 }
             }
@@ -459,14 +459,14 @@ namespace OpenLoco::Ui
                 // first blit to rgba surface to change the pixel format
                 if (SDL_BlitSurface(surface, nullptr, RGBASurface, nullptr))
                 {
-                    console::error("SDL_BlitSurface %s", SDL_GetError());
+                    Console::error("SDL_BlitSurface %s", SDL_GetError());
                     exit(1);
                 }
                 // then scale to window size. Without changing to RGBA first, SDL complains
                 // about blit configurations being incompatible.
                 if (SDL_BlitScaled(RGBASurface, nullptr, SDL_GetWindowSurface(window), nullptr))
                 {
-                    console::error("SDL_BlitScaled %s", SDL_GetError());
+                    Console::error("SDL_BlitScaled %s", SDL_GetError());
                     exit(1);
                 }
             }
@@ -822,7 +822,7 @@ namespace OpenLoco::Ui
         // Set the window fullscreen mode.
         if (SDL_SetWindowFullscreen(window, flags) != 0)
         {
-            console::error("SDL_SetWindowFullscreen failed: %s", SDL_GetError());
+            Console::error("SDL_SetWindowFullscreen failed: %s", SDL_GetError());
             return false;
         }
 
@@ -986,7 +986,7 @@ namespace OpenLoco::Ui
     // 0x004C96E7
     void handleInput()
     {
-        if (multiplayer::resetFlag(multiplayer::flags::flag_10))
+        if (MultiPlayer::resetFlag(MultiPlayer::flags::flag_10))
         {
             call(0x00435ACC);
         }
@@ -997,21 +997,21 @@ namespace OpenLoco::Ui
         {
             if (!isTitleMode() && !isEditorMode())
             {
-                if (tutorial::state() == tutorial::tutorial_state::none)
+                if (Tutorial::state() == Tutorial::tutorial_state::none)
                 {
                     call(0x4C95A6);
                 }
             }
         }
 
-        if (multiplayer::resetFlag(multiplayer::flags::flag_5))
+        if (MultiPlayer::resetFlag(MultiPlayer::flags::flag_5))
         {
             GameCommands::do_21(2, 1);
         }
 
-        if (!multiplayer::hasFlag(multiplayer::flags::flag_0) && !multiplayer::hasFlag(multiplayer::flags::flag_4))
+        if (!MultiPlayer::hasFlag(MultiPlayer::flags::flag_0) && !MultiPlayer::hasFlag(MultiPlayer::flags::flag_4))
         {
-            if (multiplayer::resetFlag(multiplayer::flags::flag_2))
+            if (MultiPlayer::resetFlag(MultiPlayer::flags::flag_2))
             {
                 WindowManager::closeConstructionWindows();
                 call(0x004CF456);
@@ -1020,7 +1020,7 @@ namespace OpenLoco::Ui
                 GameCommands::doCommand(69, regs);
             }
 
-            if (multiplayer::resetFlag(multiplayer::flags::flag_3))
+            if (MultiPlayer::resetFlag(MultiPlayer::flags::flag_3))
             {
                 WindowManager::closeConstructionWindows();
                 call(0x004CF456);
@@ -1030,20 +1030,20 @@ namespace OpenLoco::Ui
             }
         }
 
-        if (multiplayer::resetFlag(multiplayer::flags::flag_4))
+        if (MultiPlayer::resetFlag(MultiPlayer::flags::flag_4))
         {
             registers regs;
             regs.bl = GameCommandFlag::apply;
             GameCommands::doCommand(72, regs);
         }
 
-        if (multiplayer::resetFlag(multiplayer::flags::flag_0))
+        if (MultiPlayer::resetFlag(MultiPlayer::flags::flag_0))
         {
             WindowManager::closeConstructionWindows();
             call(0x004CF456);
         }
 
-        if (multiplayer::resetFlag(multiplayer::flags::flag_1))
+        if (MultiPlayer::resetFlag(MultiPlayer::flags::flag_1))
         {
             GameCommands::do_21(0, 2);
         }
@@ -1060,16 +1060,16 @@ namespace OpenLoco::Ui
             Input::mouse_button state;
             while ((state = gameGetNextInput(&x, &y)) != Input::mouse_button::released)
             {
-                if (isTitleMode() && intro::isActive() && state == Input::mouse_button::left_pressed)
+                if (isTitleMode() && Intro::isActive() && state == Input::mouse_button::left_pressed)
                 {
-                    if (intro::state() == intro::intro_state::state_9)
+                    if (Intro::state() == Intro::intro_state::state_9)
                     {
-                        intro::state(intro::intro_state::end);
+                        Intro::state(Intro::intro_state::end);
                         continue;
                     }
                     else
                     {
-                        intro::state(intro::intro_state::state_8);
+                        Intro::state(Intro::intro_state::state_8);
                     }
                 }
                 Input::handleMouse(x, y, state);

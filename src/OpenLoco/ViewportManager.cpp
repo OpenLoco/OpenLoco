@@ -15,7 +15,7 @@
 using namespace OpenLoco::Ui;
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::Ui::viewportmgr
+namespace OpenLoco::Ui::ViewportManager
 {
     static std::vector<std::unique_ptr<viewport>> _viewports;
 
@@ -58,7 +58,7 @@ namespace OpenLoco::Ui::viewportmgr
         auto& cfg = OpenLoco::Config::get();
         if ((cfg.flags & Config::flags::gridlines_on_landscape) != 0)
         {
-            vp->flags |= viewport_flags::gridlines_on_landscape;
+            vp->flags |= ViewportFlags::gridlines_on_landscape;
         }
 
         return vp;
@@ -301,7 +301,7 @@ namespace OpenLoco::Ui::viewportmgr
      */
     void invalidate(Thing* t, ZoomLevel zoom)
     {
-        if (t->sprite_left == location::null)
+        if (t->sprite_left == Location::null)
             return;
 
         ViewportRect rect;

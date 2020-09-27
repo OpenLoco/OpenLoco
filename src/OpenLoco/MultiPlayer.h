@@ -1,6 +1,6 @@
 #pragma once
 
-namespace OpenLoco::multiplayer
+namespace OpenLoco::MultiPlayer
 {
     enum flags
     {

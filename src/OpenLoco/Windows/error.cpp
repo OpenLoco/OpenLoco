@@ -143,7 +143,7 @@ namespace OpenLoco::Ui::Windows::Error
                 WindowType::error,
                 Gfx::point_t(x, y),
                 windowSize,
-                window_flags::stick_to_front | window_flags::transparent | window_flags::flag_7,
+                WindowFlags::stick_to_front | WindowFlags::transparent | WindowFlags::flag_7,
                 &Common::events);
 
             Common::initEvents();
@@ -235,7 +235,7 @@ namespace OpenLoco::Ui::Windows::Error
                 auto xPos = self->widgets[ErrorCompetitor::widx::innerFrame].left + self->x;
                 auto yPos = self->widgets[ErrorCompetitor::widx::innerFrame].top + self->y;
 
-                auto company = companymgr::get(_errorCompetitorId);
+                auto company = CompanyManager::get(_errorCompetitorId);
                 auto companyObj = ObjectManager::get<competitor_object>(company->id());
 
                 auto imageId = companyObj->images[company->owner_emotion];

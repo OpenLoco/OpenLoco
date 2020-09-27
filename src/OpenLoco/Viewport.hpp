@@ -37,7 +37,7 @@ namespace OpenLoco::Ui
         }
     };
 
-    namespace viewport_flags
+    namespace ViewportFlags
     {
         constexpr uint32_t underground_view = 1 << 0;
         constexpr uint32_t hide_foreground_tracks_roads = 1 << 1;

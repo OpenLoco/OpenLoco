@@ -3,7 +3,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::intro
+namespace OpenLoco::Intro
 {
     loco_global<uint8_t, 0x0050C195> _state;
 

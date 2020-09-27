@@ -11,7 +11,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::environment
+namespace OpenLoco::Environment
 {
     loco_global<char[260], 0x009D118E> _path_buffer;
     loco_global<char[257], 0x0050B0CE> _path_install;

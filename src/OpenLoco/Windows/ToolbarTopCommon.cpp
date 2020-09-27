@@ -40,7 +40,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
         // Draw widgets.
         self->draw(dpi);
 
-        uint32_t company_colour = companymgr::getPlayerCompanyColour();
+        uint32_t company_colour = CompanyManager::getPlayerCompanyColour();
 
         if (self->widgets[Widx::road_menu].type != widget_type::none && last_road_option != 0xFF)
         {
@@ -145,28 +145,28 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
 
         uint32_t current_viewport_flags = WindowManager::getMainWindow()->viewports[0]->flags;
 
-        if (current_viewport_flags & viewport_flags::underground_view)
+        if (current_viewport_flags & ViewportFlags::underground_view)
             Dropdown::setItemSelected(0);
 
-        if (current_viewport_flags & viewport_flags::hide_foreground_tracks_roads)
+        if (current_viewport_flags & ViewportFlags::hide_foreground_tracks_roads)
             Dropdown::setItemSelected(1);
 
-        if (current_viewport_flags & viewport_flags::hide_foreground_scenery_buildings)
+        if (current_viewport_flags & ViewportFlags::hide_foreground_scenery_buildings)
             Dropdown::setItemSelected(2);
 
-        if (current_viewport_flags & viewport_flags::height_marks_on_tracks_roads)
+        if (current_viewport_flags & ViewportFlags::height_marks_on_tracks_roads)
             Dropdown::setItemSelected(4);
 
-        if (current_viewport_flags & viewport_flags::height_marks_on_land)
+        if (current_viewport_flags & ViewportFlags::height_marks_on_land)
             Dropdown::setItemSelected(5);
 
-        if (current_viewport_flags & viewport_flags::one_way_direction_arrows)
+        if (current_viewport_flags & ViewportFlags::one_way_direction_arrows)
             Dropdown::setItemSelected(6);
 
-        if (!(current_viewport_flags & viewport_flags::town_names_displayed))
+        if (!(current_viewport_flags & ViewportFlags::town_names_displayed))
             Dropdown::setItemSelected(8);
 
-        if (!(current_viewport_flags & viewport_flags::station_names_displayed))
+        if (!(current_viewport_flags & ViewportFlags::station_names_displayed))
             Dropdown::setItemSelected(9);
 
         Dropdown::setHighlightedItem(0);
@@ -203,7 +203,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
         if (i == 0)
             return;
 
-        auto company_colour = companymgr::getPlayerCompanyColour();
+        auto company_colour = CompanyManager::getPlayerCompanyColour();
 
         // Add available objects to Dropdown.
         uint16_t highlighted_item = 0;
@@ -257,15 +257,15 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
         if (itemIndex == 0)
         {
             window->viewportZoomIn(false);
-            townmgr::updateLabels();
-            stationmgr::updateLabels();
+            TownManager::updateLabels();
+            StationManager::updateLabels();
         }
         else if (itemIndex == 1)
         {
             zoom_ticks = 0;
             window->viewportZoomOut(false);
-            townmgr::updateLabels();
-            stationmgr::updateLabels();
+            TownManager::updateLabels();
+            StationManager::updateLabels();
         }
         else if (itemIndex == 2)
         {
@@ -285,15 +285,15 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
         if (itemIndex == 1 || mouseButtonUsed == Input::mouse_button::right_pressed)
         {
             window->viewportRotateLeft();
-            townmgr::updateLabels();
-            stationmgr::updateLabels();
+            TownManager::updateLabels();
+            StationManager::updateLabels();
             Windows::Map::centerOnViewPoint();
         }
         else if (itemIndex == 0)
         {
             window->viewportRotateRight();
-            townmgr::updateLabels();
-            stationmgr::updateLabels();
+            TownManager::updateLabels();
+            StationManager::updateLabels();
             Windows::Map::centerOnViewPoint();
         }
     }
@@ -308,21 +308,21 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
         auto viewport = WindowManager::getMainWindow()->viewports[0];
 
         if (itemIndex == 0)
-            viewport->flags ^= viewport_flags::underground_view;
+            viewport->flags ^= ViewportFlags::underground_view;
         else if (itemIndex == 1)
-            viewport->flags ^= viewport_flags::hide_foreground_tracks_roads;
+            viewport->flags ^= ViewportFlags::hide_foreground_tracks_roads;
         else if (itemIndex == 2)
-            viewport->flags ^= viewport_flags::hide_foreground_scenery_buildings;
+            viewport->flags ^= ViewportFlags::hide_foreground_scenery_buildings;
         else if (itemIndex == 4)
-            viewport->flags ^= viewport_flags::height_marks_on_tracks_roads;
+            viewport->flags ^= ViewportFlags::height_marks_on_tracks_roads;
         else if (itemIndex == 5)
-            viewport->flags ^= viewport_flags::height_marks_on_land;
+            viewport->flags ^= ViewportFlags::height_marks_on_land;
         else if (itemIndex == 6)
-            viewport->flags ^= viewport_flags::one_way_direction_arrows;
+            viewport->flags ^= ViewportFlags::one_way_direction_arrows;
         else if (itemIndex == 8)
-            viewport->flags ^= viewport_flags::town_names_displayed;
+            viewport->flags ^= ViewportFlags::town_names_displayed;
         else if (itemIndex == 9)
-            viewport->flags ^= viewport_flags::station_names_displayed;
+            viewport->flags ^= ViewportFlags::station_names_displayed;
 
         window->invalidate();
     }

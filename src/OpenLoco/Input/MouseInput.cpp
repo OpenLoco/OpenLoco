@@ -217,24 +217,24 @@ namespace OpenLoco::Input
     // 0x004C6E65
     void updateCursorPosition()
     {
-        switch (tutorial::state())
+        switch (Tutorial::state())
         {
-            case tutorial::tutorial_state::none:
+            case Tutorial::tutorial_state::none:
             {
                 _cursorX2 = _cursorX;
                 _cursorY2 = _cursorY;
                 break;
             }
 
-            case tutorial::tutorial_state::playing:
+            case Tutorial::tutorial_state::playing:
             {
-                _cursorX2 = tutorial::nextInput();
-                _cursorY2 = tutorial::nextInput();
+                _cursorX2 = Tutorial::nextInput();
+                _cursorY2 = Tutorial::nextInput();
                 Ui::setCursorPos(*_cursorX2, *_cursorY2);
                 break;
             }
 
-            case tutorial::tutorial_state::recording:
+            case Tutorial::tutorial_state::recording:
             {
                 call(0x004C6EC3);
                 break;
@@ -530,7 +530,7 @@ namespace OpenLoco::Input
                                 pos.y -= _4F9296[index].y;
 
                                 auto z = building->baseZ();
-                                for (auto& company : companymgr::companies())
+                                for (auto& company : CompanyManager::companies())
                                 {
                                     if (company.empty())
                                         continue;
@@ -688,7 +688,7 @@ namespace OpenLoco::Input
                     return;
                 }
 
-                if (window->flags & window_flags::viewport_no_scrolling)
+                if (window->flags & WindowFlags::viewport_no_scrolling)
                 {
                     return;
                 }
@@ -739,7 +739,7 @@ namespace OpenLoco::Input
                                 break;
                             case InteractionItem::station:
                             {
-                                auto station = stationmgr::get(ptr.value);
+                                auto station = StationManager::get(ptr.value);
                                 Ui::Windows::StationList::open(station->owner);
                                 break;
                             }
@@ -758,7 +758,7 @@ namespace OpenLoco::Input
                         auto track = ((Map::tile_element*)ptr.object)->asTrack();
                         if (track != nullptr)
                         {
-                            if (track->owner() == companymgr::getControllingId())
+                            if (track->owner() == CompanyManager::getControllingId())
                             {
                                 Ui::Windows::Construction::openAtTrack(window, track, { ptr.x, ptr.y });
                             }
@@ -778,7 +778,7 @@ namespace OpenLoco::Input
                             auto owner = road->owner();
 
                             auto roadObject = ObjectManager::get<road_object>(road->roadObjectId());
-                            if (owner == companymgr::getControllingId() || owner == company_id::neutral || (roadObject->flags & Flags12::unk_03))
+                            if (owner == CompanyManager::getControllingId() || owner == CompanyId::neutral || (roadObject->flags & Flags12::unk_03))
                             {
                                 Ui::Windows::Construction::openAtRoad(window, road, { ptr.x, ptr.y });
                             }
@@ -999,17 +999,17 @@ namespace OpenLoco::Input
                 _tooltipWindowType = _dragWindowType;
                 _tooltipWindowNumber = _dragWindowNumber;
 
-                if (w->flags & Ui::window_flags::flag_15)
+                if (w->flags & Ui::WindowFlags::flag_15)
                 {
                     doDefault = true;
                     break;
                 }
 
-                if (w->flags & Ui::window_flags::flag_16)
+                if (w->flags & Ui::WindowFlags::flag_16)
                 {
                     x = window->var_88A - window->width + _dragLastX;
                     y = window->var_88C - window->height + _dragLastY;
-                    w->flags &= ~Ui::window_flags::flag_16;
+                    w->flags &= ~Ui::WindowFlags::flag_16;
                     doDefault = true;
                     break;
                 }
@@ -1018,7 +1018,7 @@ namespace OpenLoco::Input
                 window->var_88C = window->height;
                 x = _dragLastX - window->x - window->width + Ui::width();
                 y = _dragLastY - window->y - window->height + Ui::height() - 27;
-                w->flags |= Ui::window_flags::flag_16;
+                w->flags |= Ui::WindowFlags::flag_16;
                 if (y >= Ui::height() - 2)
                 {
                     _dragLastX = x;
@@ -1061,14 +1061,14 @@ namespace OpenLoco::Input
                 return;
             }
 
-            w->flags &= ~Ui::window_flags::flag_16;
+            w->flags &= ~Ui::WindowFlags::flag_16;
         }
 
         w->invalidate();
 
         w->width = std::clamp<uint16_t>(w->width + dx, w->min_width, w->max_width);
         w->height = std::clamp<uint16_t>(w->height + dy, w->min_height, w->max_height);
-        w->flags |= Ui::window_flags::flag_15;
+        w->flags |= Ui::WindowFlags::flag_15;
         w->callOnResize();
         w->callPrepareDraw();
         w->scroll_areas[0].contentWidth = -1;
@@ -1758,14 +1758,14 @@ namespace OpenLoco::Input
         _dragLastY = y;
         _dragWindowType = window->type;
         _dragWindowNumber = window->number;
-        window->flags &= ~Ui::window_flags::flag_15;
+        window->flags &= ~Ui::WindowFlags::flag_15;
     }
 
 #pragma mark - Viewport dragging
 
     static void viewportDragBegin(window* w)
     {
-        w->flags &= ~Ui::window_flags::scrolling_to_location;
+        w->flags &= ~Ui::WindowFlags::scrolling_to_location;
         state(input_state::viewport_right);
         _dragWindowType = w->type;
         _dragWindowNumber = w->number;
@@ -1829,12 +1829,12 @@ namespace OpenLoco::Input
         Ui::cursor_id cursorId = Ui::cursor_id::pointer;
 
         _mapTooltipFormatArguments = StringIds::null;
-        _mapTooltipOwner = company_id::null;
+        _mapTooltipOwner = CompanyId::null;
 
         if (_mapSelectionFlags & (1 << 6))
         {
             _mapSelectionFlags &= (uint16_t) ~(1 << 6);
-            auto station = stationmgr::get(_hoveredStationId);
+            auto station = StationManager::get(_hoveredStationId);
             if (!station->empty())
             {
                 station->invalidate();
@@ -1854,7 +1854,7 @@ namespace OpenLoco::Input
                 {
                     case Ui::widget_type::panel:
                     case Ui::widget_type::frame:
-                        if (window->flags & Ui::window_flags::resizable)
+                        if (window->flags & Ui::WindowFlags::resizable)
                         {
                             if (window->min_width != window->max_width || window->min_height != window->max_height)
                             {

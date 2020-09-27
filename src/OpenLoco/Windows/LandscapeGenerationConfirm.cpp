@@ -62,9 +62,9 @@ namespace OpenLoco::Ui::Windows::LandscapeGenerationConfirm
                 WindowManager::close(window);
 
                 if (status == 0)
-                    scenario::generateLandscape();
+                    Scenario::generateLandscape();
                 else
-                    scenario::eraseLandscape();
+                    Scenario::eraseLandscape();
                 break;
         }
     }
@@ -87,7 +87,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGenerationConfirm
             window->initScrollWidgets();
             window->colours[0] = Colour::translucent(Colour::salmon_pink);
             window->colours[1] = Colour::translucent(Colour::salmon_pink);
-            window->flags |= window_flags::transparent;
+            window->flags |= WindowFlags::transparent;
 
             // TODO(avgeffen): only needs to be called once.
             init_events();

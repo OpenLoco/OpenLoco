@@ -88,14 +88,14 @@ namespace OpenLoco::platform
         auto bytesRead = readlink("/proc/self/exe", exePath, sizeof(exePath));
         if (bytesRead == -1)
         {
-            console::error("failed to read /proc/self/exe");
+            Console::error("failed to read /proc/self/exe");
         }
 #elif defined(__FreeBSD__)
         const int32_t mib[] = { CTL_KERN, KERN_PROC, KERN_PROC_PATHNAME, -1 };
         auto exeLen = sizeof(exePath);
         if (sysctl(mib, 4, exePath, &exeLen, nullptr, 0) == -1)
         {
-            console::error("failed to get process path");
+            Console::error("failed to get process path");
         }
 #elif defined(__OpenBSD__)
         // There is no way to get the path name of a running executable.
@@ -107,7 +107,7 @@ namespace OpenLoco::platform
         return exePath;
     }
 
-    std::string promptDirectory(const std::string& title)
+    std::string promptDirectory(const std::string& Title)
     {
         std::string input;
         std::cout << "Type your Locomotion path: ";

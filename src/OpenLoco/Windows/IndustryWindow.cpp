@@ -134,10 +134,10 @@ namespace OpenLoco::Ui::Windows::Industry
             self->draw(dpi);
             Common::drawTabs(self, dpi);
             self->drawViewports(dpi);
-            widget::drawViewportCentreButton(dpi, self, widx::centre_on_viewport);
+            Widget::drawViewportCentreButton(dpi, self, widx::centre_on_viewport);
 
             const char* buffer = StringManager::getString(StringIds::buffer_1250);
-            auto industry = industrymgr::get(self->number);
+            auto industry = IndustryManager::get(self->number);
             industry->getStatusString(const_cast<char*>(buffer));
 
             auto args = FormatArguments();
@@ -236,7 +236,7 @@ namespace OpenLoco::Ui::Windows::Industry
             self->callPrepareDraw();
 
             // Figure out the industry's position on the map.
-            auto industry = industrymgr::get(self->number);
+            auto industry = IndustryManager::get(self->number);
             int16_t tileZ = OpenLoco::Map::tileElementHeight(industry->x, industry->y).landHeight;
 
             // Compute views.
@@ -258,12 +258,12 @@ namespace OpenLoco::Ui::Windows::Industry
                 flags = self->viewports[0]->flags;
                 self->viewports[0]->width = 0;
                 self->viewports[0] = nullptr;
-                viewportmgr::collectGarbage();
+                ViewportManager::collectGarbage();
             }
             else
             {
                 if ((Config::get().flags & Config::flags::gridlines_on_landscape) != 0)
-                    flags |= viewport_flags::gridlines_on_landscape;
+                    flags |= ViewportFlags::gridlines_on_landscape;
             }
 
             self->saved_view = view;
@@ -274,9 +274,9 @@ namespace OpenLoco::Ui::Windows::Industry
                 auto tile = OpenLoco::Map::map_pos3({ industry->x, industry->y, tileZ });
                 auto origin = Gfx::point_t(widget->left + self->x + 1, widget->top + self->y + 1);
                 auto size = Gfx::ui_size_t(widget->width() - 2, widget->height() - 2);
-                viewportmgr::create(self, 0, origin, size, self->saved_view.zoomLevel, tile);
+                ViewportManager::create(self, 0, origin, size, self->saved_view.zoomLevel, tile);
                 self->invalidate();
-                self->flags |= window_flags::viewport_no_scrolling;
+                self->flags |= WindowFlags::viewport_no_scrolling;
             }
 
             if (self->viewports[0] != nullptr)
@@ -313,7 +313,7 @@ namespace OpenLoco::Ui::Windows::Industry
         if (window == nullptr)
         {
             // 0x00456DBC start
-            const uint32_t newFlags = window_flags::flag_8 | window_flags::resizable;
+            const uint32_t newFlags = WindowFlags::flag_8 | WindowFlags::resizable;
             window = WindowManager::createWindow(WindowType::industry, Industry::windowSize, newFlags, &Industry::events);
             window->number = industryId;
             window->min_width = 192;
@@ -453,7 +453,7 @@ namespace OpenLoco::Ui::Windows::Industry
             self->draw(dpi);
             Common::drawTabs(self, dpi);
 
-            auto industry = industrymgr::get(self->number);
+            auto industry = IndustryManager::get(self->number);
             auto industryObj = industry->object();
             int16_t xPos = self->x + 3;
             int16_t yPos = self->y + 45;
@@ -563,7 +563,7 @@ namespace OpenLoco::Ui::Windows::Industry
 
         static void setDisabledWidgets(window* self)
         {
-            auto industryObj = ObjectManager::get<industry_object>(industrymgr::get(self->number)->object_id);
+            auto industryObj = ObjectManager::get<industry_object>(IndustryManager::get(self->number)->object_id);
             auto disabledWidgets = 0;
 
             if (industryObj->produced_cargo_type[0] == 0xFF)
@@ -582,7 +582,7 @@ namespace OpenLoco::Ui::Windows::Industry
             Common::drawTabs(self, dpi);
 
             // Draw Units of Cargo sub title
-            const auto industry = industrymgr::get(self->number);
+            const auto industry = IndustryManager::get(self->number);
             const auto industryObj = ObjectManager::get<industry_object>(industry->object_id);
             const auto cargoObj = ObjectManager::get<cargo_object>(industryObj->produced_cargo_type[0]);
 
@@ -708,7 +708,7 @@ namespace OpenLoco::Ui::Windows::Industry
             self->activated_widgets |= (1ULL << widgetIndex);
 
             // Put industry name in place.
-            auto industry = industrymgr::get(self->number);
+            auto industry = IndustryManager::get(self->number);
             auto args = FormatArguments();
             args.push(industry->name);
             args.push(industry->town);
@@ -753,10 +753,10 @@ namespace OpenLoco::Ui::Windows::Industry
         //0x00455D81
         static void renameIndustryPrompt(window* self, widget_index widgetIndex)
         {
-            auto industry = industrymgr::get(self->number);
+            auto industry = IndustryManager::get(self->number);
             if (!isEditorMode())
             {
-                if ((industry->flags & industry_flags::flag_04) == 0)
+                if ((industry->flags & IndustryFlags::flag_04) == 0)
                     return;
                 if (!isPlayerCompany(industry->owner))
                     return;
@@ -797,7 +797,7 @@ namespace OpenLoco::Ui::Windows::Industry
 
             self->current_tab = widgetIndex - widx::tab_industry;
             self->frame_no = 0;
-            self->flags &= ~(window_flags::flag_16);
+            self->flags &= ~(WindowFlags::flag_16);
             self->var_85C = -1;
 
             if (self->viewports[0] != nullptr)
@@ -839,7 +839,7 @@ namespace OpenLoco::Ui::Windows::Industry
                 InterfaceSkin::ImageIds::tab_production_frame7,
             };
 
-            auto industry = industrymgr::get(self->number);
+            auto industry = IndustryManager::get(self->number);
             auto industryObj = ObjectManager::get<industry_object>(industry->object_id);
             auto skin = ObjectManager::get<interface_skin_object>();
 
@@ -869,7 +869,7 @@ namespace OpenLoco::Ui::Windows::Industry
                 auto caroObj = ObjectManager::get<cargo_object>(industryObj->produced_cargo_type[productionTabNumber]);
                 Gfx::drawImage(dpi, xPos + 18, yPos + 14, caroObj->unit_inline_sprite);
 
-                widget::draw_tab(self, dpi, -2, tab);
+                Widget::draw_tab(self, dpi, -2, tab);
             }
         }
 
@@ -882,7 +882,7 @@ namespace OpenLoco::Ui::Windows::Industry
             {
                 uint32_t imageId = skin->img;
                 imageId += InterfaceSkin::ImageIds::toolbar_menu_industries;
-                widget::draw_tab(self, dpi, imageId, widx::tab_industry);
+                Widget::draw_tab(self, dpi, imageId, widx::tab_industry);
             }
 
             // Production Tab
@@ -912,7 +912,7 @@ namespace OpenLoco::Ui::Windows::Industry
                     imageId += transportedTabImageIds[(self->frame_no / 4) % std::size(transportedTabImageIds)];
                 else
                     imageId += transportedTabImageIds[0];
-                widget::draw_tab(self, dpi, imageId, widx::tab_transported);
+                Widget::draw_tab(self, dpi, imageId, widx::tab_transported);
             }
         }
 

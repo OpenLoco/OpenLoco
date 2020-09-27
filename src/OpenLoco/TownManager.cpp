@@ -7,7 +7,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::townmgr
+namespace OpenLoco::TownManager
 {
     static loco_global<town[max_towns], 0x005B825C> _towns;
 
@@ -38,7 +38,7 @@ namespace OpenLoco::townmgr
                 auto town = get(id);
                 if (town != nullptr && !town->empty())
                 {
-                    companymgr::updatingCompanyId(company_id::neutral);
+                    CompanyManager::updatingCompanyId(CompanyId::neutral);
                     town->update();
                 }
             }

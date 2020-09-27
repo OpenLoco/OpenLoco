@@ -157,7 +157,7 @@ namespace OpenLoco::Ui::Windows
             WindowType::titleMenu,
             Gfx::point_t((Ui::width() - ww) / 2, Ui::height() - wh - 25),
             { ww, wh },
-            window_flags::stick_to_front | window_flags::transparent | window_flags::no_background | window_flags::flag_6,
+            WindowFlags::stick_to_front | WindowFlags::transparent | WindowFlags::no_background | WindowFlags::flag_6,
             &_events);
 
         window->widgets = _widgets;
@@ -299,7 +299,7 @@ namespace OpenLoco::Ui::Windows
     // 0x00439094
     static void onMouseUp(Ui::window* window, widget_index widgetIndex)
     {
-        if (intro::isActive())
+        if (Intro::isActive())
         {
             return;
         }
@@ -391,11 +391,11 @@ namespace OpenLoco::Ui::Windows
             WindowType::main,
             { 0, 0 },
             Gfx::ui_size_t(uiWidth, uiHeight),
-            Ui::window_flags::stick_to_back,
+            Ui::WindowFlags::stick_to_back,
             (Ui::window_event_list*)0x004FA5F8);
         window->widgets = _editorWidgets;
         addr<0x00e3f0b8, int32_t>() = 0; // gCurrentRotation?
-        OpenLoco::Ui::viewportmgr::create(
+        OpenLoco::Ui::ViewportManager::create(
             window,
             0,
             { window->x, window->y },
@@ -461,7 +461,7 @@ namespace OpenLoco::Ui::Windows
         if (itemIndex == -1)
             return;
 
-        tutorial::start(itemIndex);
+        Tutorial::start(itemIndex);
     }
 
     static void sub_4391DA()
@@ -484,13 +484,13 @@ namespace OpenLoco::Ui::Windows
     {
         window->var_846++;
 
-        if (intro::isActive())
+        if (Intro::isActive())
         {
             window->invalidate();
             return;
         }
 
-        if (!multiplayer::hasFlag(multiplayer::flags::flag_8) && !multiplayer::hasFlag(multiplayer::flags::flag_9))
+        if (!MultiPlayer::hasFlag(MultiPlayer::flags::flag_8) && !MultiPlayer::hasFlag(MultiPlayer::flags::flag_9))
         {
             window->invalidate();
             return;
