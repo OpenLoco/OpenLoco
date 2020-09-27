@@ -364,7 +364,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             }
 
             // Draw checkmark to indicate completion
-            Gfx::drawImage(dpi, 395, y + 1, 3629);
+            Gfx::drawImage(dpi, 395, y + 1, ImageIds::scenario_completed_tick);
 
             // 'Completed by' info
             {
@@ -391,7 +391,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         switch (widgetIndex)
         {
             case widx::close:
-                WindowManager::close(self->type);
+                WindowManager::close(self);
                 break;
         }
     }
@@ -417,7 +417,8 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
                 config.scenario_selected_tab = selectedCategory;
                 Config::write();
 
-                self->object = reinterpret_cast<char*>(0xFFFFFFFF);
+                self->info = reinterpret_cast<uintptr_t>(0xFFFFFFFF);
+                self->invalidate();
                 self->callOnResize();
                 self->callPrepareDraw();
                 self->initScrollWidgets();
@@ -440,9 +441,6 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     {
         auto numScenarios = scenariomgr::getNumScenariosByCategory(self->current_tab);
 
-        // Mouse click sound
-        Audio::playSound(Audio::sound_id::click_down, self->x + (self->width / 2));
-
         auto index = y / ROW_HEIGHT;
         if (index > numScenarios)
             return;
@@ -450,6 +448,9 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         auto* scenarioInfo = scenariomgr::getNthScenarioFromCategory(self->current_tab, index);
         if (scenarioInfo == nullptr)
             return;
+
+        // Mouse click sound
+        Audio::playSound(Audio::sound_id::click_down, self->x + (self->width / 2));
 
         if (isNetworked())
         {

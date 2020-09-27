@@ -74,7 +74,6 @@ namespace OpenLoco
     {
         constexpr palette_index_t transparent = 0;
         constexpr palette_index_t index_0A = 0x0A;
-        constexpr palette_index_t index_0B = 0x0B;
         constexpr palette_index_t index_0C = 0x0C;
         constexpr palette_index_t index_0E = 0x0E;
         constexpr palette_index_t index_11 = 0x11;
