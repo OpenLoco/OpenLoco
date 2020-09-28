@@ -6,11 +6,11 @@ using namespace OpenLoco::Interop;
 namespace OpenLoco::ScenarioManager
 {
     loco_global<ScenarioIndexEntry*, 0x0050AE8C> scenarioList;
-    loco_global<int32_t, 0x0050AEA0> numScenarios;
+    loco_global<int32_t, 0x0050AEA0> scenarioCount;
 
     bool hasScenariosForCategory(uint8_t category)
     {
-        for (auto i = 0; i < numScenarios; i++)
+        for (auto i = 0; i < scenarioCount; i++)
         {
             ScenarioIndexEntry& entry = scenarioList[i];
             if (!entry.hasFlag(ScenarioIndexFlags::flag_0))
@@ -25,7 +25,7 @@ namespace OpenLoco::ScenarioManager
 
     bool hasScenarioInCategory(uint8_t category, ScenarioIndexEntry* scenario)
     {
-        for (auto i = 0; i < numScenarios; i++)
+        for (auto i = 0; i < scenarioCount; i++)
         {
             ScenarioIndexEntry* entry = &scenarioList[i];
 
@@ -45,25 +45,25 @@ namespace OpenLoco::ScenarioManager
     }
 
     // 0x00443EF6, kind of
-    uint16_t getNumScenariosByCategory(uint8_t category)
+    uint16_t getScenarioCountByCategory(uint8_t category)
     {
-        auto numScenariosInCategory = 0;
-        for (auto i = 0; i < numScenarios; i++)
+        auto scenarioCountInCategory = 0;
+        for (auto i = 0; i < scenarioCount; i++)
         {
             ScenarioIndexEntry& entry = scenarioList[i];
             if (entry.category != category || !entry.hasFlag(ScenarioIndexFlags::flag_0))
                 continue;
 
-            numScenariosInCategory++;
+            scenarioCountInCategory++;
         }
 
-        return numScenariosInCategory;
+        return scenarioCountInCategory;
     }
 
     ScenarioIndexEntry* getNthScenarioFromCategory(uint8_t category, uint8_t index)
     {
         uint8_t j = 0;
-        for (auto i = 0; i < numScenarios; i++)
+        for (auto i = 0; i < scenarioCount; i++)
         {
             ScenarioIndexEntry& entry = scenarioList[i];
             if (entry.category != category || !entry.hasFlag(ScenarioIndexFlags::flag_0))

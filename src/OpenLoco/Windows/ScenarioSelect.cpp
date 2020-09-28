@@ -50,7 +50,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         widgetEnd(),
     };
 
-    constexpr auto ROW_HEIGHT = 24;
+    constexpr auto rowHeight = 24;
 
     static window_event_list _events;
 
@@ -326,23 +326,23 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         Gfx::clearSingle(*dpi, colour);
 
         using namespace ScenarioManager;
-        auto numScenarios = getNumScenariosByCategory(self->current_tab);
+        auto scenarioCount = getScenarioCountByCategory(self->current_tab);
 
         int16_t y = 0;
-        for (auto i = 0; i < numScenarios; i++)
+        for (auto i = 0; i < scenarioCount; i++)
         {
             auto* scenarioInfo = getNthScenarioFromCategory(self->current_tab, i);
             if (scenarioInfo == nullptr)
                 continue;
 
-            if (y + ROW_HEIGHT < dpi->y || y > dpi->y + dpi->height)
+            if (y + rowHeight < dpi->y || y > dpi->y + dpi->height)
                 continue;
 
             // Highlight selected item
             auto formatStringId = StringIds::black_stringid;
             if (scenarioInfo == reinterpret_cast<ScenarioIndexEntry*>(self->info))
             {
-                Gfx::drawRect(dpi, 0, y, self->width, ROW_HEIGHT - 1, 0x2000000 | 48);
+                Gfx::drawRect(dpi, 0, y, self->width, rowHeight - 1, 0x2000000 | 48);
                 formatStringId = StringIds::wcolour2_stringid;
             }
 
@@ -361,7 +361,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             // Completed?
             if (!scenarioInfo->hasFlag(ScenarioIndexFlags::completed))
             {
-                y += ROW_HEIGHT;
+                y += rowHeight;
                 continue;
             }
 
@@ -383,7 +383,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
                 Gfx::drawStringCentred(*dpi, x, y + 10, Colour::black, formatStringId, &args);
             }
 
-            y += ROW_HEIGHT;
+            y += rowHeight;
         }
     }
 
@@ -435,16 +435,16 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     // 0x00443EF6
     static void getScrollSize(window* self, uint32_t, uint16_t*, uint16_t* const scrollHeight)
     {
-        *scrollHeight = ScenarioManager::getNumScenariosByCategory(self->current_tab) * ROW_HEIGHT;
+        *scrollHeight = ScenarioManager::getScenarioCountByCategory(self->current_tab) * rowHeight;
     }
 
     // 0x00443F32
     static void onScrollMouseDown(window* self, int16_t x, int16_t y, uint8_t scroll_index)
     {
-        auto numScenarios = ScenarioManager::getNumScenariosByCategory(self->current_tab);
+        auto scenarioCount = ScenarioManager::getScenarioCountByCategory(self->current_tab);
 
-        auto index = y / ROW_HEIGHT;
-        if (index > numScenarios)
+        auto index = y / rowHeight;
+        if (index > scenarioCount)
             return;
 
         auto* scenarioInfo = ScenarioManager::getNthScenarioFromCategory(self->current_tab, index);
@@ -467,10 +467,10 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     // 0x00443FB2
     static void onScrollMouseOver(window* self, int16_t x, int16_t y, uint8_t scroll_index)
     {
-        auto numScenarios = ScenarioManager::getNumScenariosByCategory(self->current_tab);
+        auto scenarioCount = ScenarioManager::getScenarioCountByCategory(self->current_tab);
 
-        auto index = y / ROW_HEIGHT;
-        if (index > numScenarios)
+        auto index = y / rowHeight;
+        if (index > scenarioCount)
             return;
 
         auto* scenarioEntry = ScenarioManager::getNthScenarioFromCategory(self->current_tab, index);

@@ -43,7 +43,7 @@ namespace OpenLoco::ScenarioManager
 
     bool hasScenariosForCategory(uint8_t category);
     bool hasScenarioInCategory(uint8_t category, ScenarioIndexEntry* scenario);
-    uint16_t getNumScenariosByCategory(uint8_t category);
+    uint16_t getScenarioCountByCategory(uint8_t category);
     ScenarioIndexEntry* getNthScenarioFromCategory(uint8_t category, uint8_t index);
     void loadIndex(uint8_t al);
 }
