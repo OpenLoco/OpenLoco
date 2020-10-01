@@ -119,6 +119,7 @@
     <ClCompile Include="Windows\PromptBrowseWindow.cpp" />
     <ClCompile Include="Windows\PromptOkCancelWindow.cpp" />
     <ClCompile Include="Windows\ScenarioOptions.cpp" />
+    <ClCompile Include="Windows\ScenarioSelect.cpp" />
     <ClCompile Include="Windows\StationList.cpp" />
     <ClCompile Include="Windows\StationWindow.cpp" />
     <ClCompile Include="Windows\TerraForm.cpp" />

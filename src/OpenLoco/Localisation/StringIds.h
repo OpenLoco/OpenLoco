@@ -374,6 +374,7 @@ namespace OpenLoco::StringIds
     constexpr string_id month_long_december = 646;
 
     constexpr string_id tooltip_daymonthyear_challenge = 647;
+    constexpr string_id select_scenario_for_new_game = 648;
 
     constexpr string_id sound_quality = UNUSED_STR(650);
     constexpr string_id sound_quality_low = UNUSED_STR(651);
@@ -1156,6 +1157,11 @@ namespace OpenLoco::StringIds
     constexpr string_id tooltip_speed_fast_forward = 1819;
     constexpr string_id tooltip_speed_extra_fast_forward = 1820;
     constexpr string_id randomly_generated_landscape = 1821;
+    constexpr string_id challenge_start_date = 1822;
+    constexpr string_id challenge_competing_companies_none = 1823;
+    constexpr string_id challenge_competing_companies_up_to = 1824;
+    constexpr string_id competition_not_starting_for_month = 1825;
+    constexpr string_id competition_not_starting_for_months = 1826;
 
     constexpr string_id local_authority_ratings_transport_companies = 1833;
     constexpr string_id town_rating_appalling = 1834;
@@ -1178,6 +1184,7 @@ namespace OpenLoco::StringIds
     constexpr string_id challenge_performance_index = 1858;
     constexpr string_id challenge_delivered_cargo = 1859;
     constexpr string_id time_limit_years_value = 1860;
+    constexpr string_id completed_by_name_in_years_months = 1861;
 
     constexpr string_id cargo_delivered = 1867;
     constexpr string_id cargo_delivered_none = 1868;

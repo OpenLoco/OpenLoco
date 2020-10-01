@@ -466,7 +466,7 @@ namespace OpenLoco::Ui::Windows
 
     static void sub_4391DA()
     {
-        call(0x443868); // scenario_select::open()
+        ScenarioSelect::open();
     }
 
     static void sub_4391E2()

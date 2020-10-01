@@ -322,4 +322,56 @@ namespace OpenLoco::ObjectManager
 
         return list;
     }
+
+    // 0x00471B95
+    void freeScenarioText()
+    {
+        call(0x00471B95);
+    }
+
+    // 0x0047176D
+    void getScenarioText(header& object)
+    {
+        registers regs;
+        regs.ebp = reinterpret_cast<int32_t>(&object);
+        call(0x0047176D, regs);
+    }
+
+    // 0x004720EB
+    // Returns std::nullopt if not loaded
+    std::optional<uint32_t> getLoadedObjectIndex(const header* header)
+    {
+        registers regs;
+        regs.ebp = reinterpret_cast<uint32_t>(&header->type);
+        const bool success = !(call(0x004720EB, regs) & (X86_FLAG_CARRY << 8));
+        // Object type is also returned on ecx
+        if (success)
+        {
+            return { regs.ebx };
+        }
+        return std::nullopt;
+    }
+
+    // 0x004720EB
+    // Returns std::nullopt if not loaded
+    std::optional<uint32_t> getLoadedObjectIndex(const object_index_entry& object)
+    {
+        return getLoadedObjectIndex(object._header);
+    }
+
+    // 0x00472AFE
+    ObjIndexPair getActiveObject(object_type objectType, uint8_t* edi)
+    {
+        const auto objects = getAvailableObjects(objectType);
+
+        for (auto [index, object] : objects)
+        {
+            if (edi[index] & (1 << 0))
+            {
+                return { static_cast<int16_t>(index), object };
+            }
+        }
+
+        return { -1, object_index_entry{} };
+    }
 }

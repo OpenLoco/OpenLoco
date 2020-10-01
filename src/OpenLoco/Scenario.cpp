@@ -25,10 +25,13 @@ namespace OpenLoco::Scenario
     }
 
     // 0x0044400C
-    void start(int32_t ebx)
+    void start(const char* filename)
     {
+        if (filename == nullptr)
+            filename = reinterpret_cast<const char*>(-1);
+
         registers regs;
-        regs.ebx = ebx;
+        regs.ebx = reinterpret_cast<int32_t>(filename);
         call(0x0044400C, regs);
     }
 }
