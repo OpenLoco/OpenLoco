@@ -31,7 +31,7 @@ namespace OpenLoco
         uint16_t tunnel_cost_factor; // 0x08
         uint8_t cost_index;          // 0x0A
         uint8_t pad_0B[0x0E - 0x0B];
-        uint32_t image;
+        uint32_t image;       // 0x0E
         uint16_t flags;       // 0x12
         uint8_t num_bridges;  // 0x14
         uint8_t bridges[7];   // 0x15

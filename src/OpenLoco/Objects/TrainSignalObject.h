@@ -17,7 +17,7 @@ namespace OpenLoco
         uint8_t cost_index;        // 0x0A
         uint8_t var_0B;
         uint16_t var_0C;
-        uint32_t image;
+        uint32_t image;         // 0x0E
         uint8_t num_compatible; // 0x12
         uint8_t mods[7];        // 0x13
         uint16_t designed_year; // 0x1A

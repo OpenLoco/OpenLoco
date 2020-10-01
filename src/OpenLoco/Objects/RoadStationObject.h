@@ -22,7 +22,7 @@ namespace OpenLoco
         uint16_t sell_cost_factor;  // 0x08
         uint8_t cost_index;         // 0x0A
         uint8_t flags;              // 0x0B
-        uint32_t image;
+        uint32_t image;             // 0x0C
         uint8_t pad_10[0x20 - 0x10];
         uint8_t num_compatible; // 0x20
         uint8_t mods[7];        // 0x21

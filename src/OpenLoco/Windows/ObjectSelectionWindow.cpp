@@ -70,16 +70,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     static loco_global<uint8_t[224 * 4], 0x112C884> _characterWidths;
     static loco_global<char[512], 0x0112CC04> _byte_112CC04;
 
-    static void onClose(window*);
-    static void onMouseUp(window*, widget_index);
-    static void onUpdate(window*);
-    static void getScrollSize(window*, uint32_t, uint16_t*, uint16_t*);
-    static void onScrollMouseDown(window*, int16_t, int16_t, uint8_t);
-    static void onScrollMouseOver(window*, int16_t, int16_t, uint8_t);
-    static void tooltip(FormatArguments& args, Ui::window* window, widget_index widgetIndex);
-    static void prepareDraw(window*);
-    static void draw(window*, Gfx::drawpixelinfo_t*);
-    static void drawScroll(window*, Gfx::drawpixelinfo_t*, uint32_t);
+    static void initEvents();
 
     enum widx
     {
@@ -151,20 +142,6 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         registers regs;
         regs.eax = 0;
         call(0x00473A95, regs);
-    }
-
-    static void initEvents()
-    {
-        _events.on_close = onClose;
-        _events.on_mouse_up = onMouseUp;
-        _events.on_update = onUpdate;
-        _events.get_scroll_size = getScrollSize;
-        _events.scroll_mouse_down = onScrollMouseDown;
-        _events.scroll_mouse_over = onScrollMouseOver;
-        _events.tooltip = tooltip;
-        _events.prepare_draw = prepareDraw;
-        _events.draw = draw;
-        _events.draw_scroll = drawScroll;
     }
 
     // 0x00472A20
@@ -340,7 +317,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                     image = Gfx::recolour(tabImages[_112C21C[index].index], Colour::saturated_green);
                     Gfx::drawImage(dpi, xPos, yPos, image);
 
-                    image = (1 << 30) | (1 << 24) | (1 << 23) | (1 << 20) | (1 << 19) | ImageIds::tab;
+                    image = Gfx::recolourTranslucent(ImageIds::tab, 51);
                     Gfx::drawImage(dpi, xPos, yPos, image);
 
                     if (row < 1)
@@ -402,23 +379,18 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 auto object = reinterpret_cast<currency_object*>(objectPtr);
                 auto currencyIndex = (object->object_icon + 3);
 
-                auto defaultElement = Gfx::getG1Element(0x77F);
+                auto defaultElement = Gfx::getG1Element(ImageIds::currency_symbol);
                 auto backupElement = *defaultElement;
                 auto currencyElement = Gfx::getG1Element(currencyIndex);
 
-                Gfx::getG1Element(0x77F)->offset = currencyElement->offset;
-                Gfx::getG1Element(0x77F)->width = currencyElement->width;
-                Gfx::getG1Element(0x77F)->height = currencyElement->height;
-                Gfx::getG1Element(0x77F)->x_offset = currencyElement->x_offset;
-                Gfx::getG1Element(0x77F)->y_offset = currencyElement->y_offset;
-                Gfx::getG1Element(0x77F)->flags = currencyElement->flags;
+                *defaultElement = *currencyElement;
 
-                auto defaultWidth = _characterWidths[803];
-                _characterWidths[803] = currencyElement->width + 1;
+                auto defaultWidth = _characterWidths[Font::large + 131];
+                _characterWidths[Font::large + 131] = currencyElement->width + 1;
 
                 Gfx::drawStringCentred(*dpi, x, y - 9, Colour::black, StringIds::object_currency_big_font);
 
-                _characterWidths[803] = defaultWidth;
+                _characterWidths[Font::large + 131] = defaultWidth;
                 *defaultElement = backupElement;
 
                 break;
@@ -475,7 +447,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                     Gfx::drawImage(clipped, 70, 72 + (object->var_08 / 2), image);
                     if (object->flags & (1 << 1))
                     {
-                        Gfx::drawImage(clipped, 70, 72 + (object->var_08 / 2), image + 0x44600006);
+                        Gfx::drawImage(clipped, 70, 72 + (object->var_08 / 2), Gfx::recolourTranslucent(object->sprite + 6, 140));
                     }
                     else
                     {
@@ -1455,5 +1427,19 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     static void onUpdate(window* self)
     {
         WindowManager::invalidateWidget(WindowType::objectSelection, self->number, widx::objectImage);
+    }
+
+    static void initEvents()
+    {
+        _events.on_close = onClose;
+        _events.on_mouse_up = onMouseUp;
+        _events.on_update = onUpdate;
+        _events.get_scroll_size = getScrollSize;
+        _events.scroll_mouse_down = onScrollMouseDown;
+        _events.scroll_mouse_over = onScrollMouseOver;
+        _events.tooltip = tooltip;
+        _events.prepare_draw = prepareDraw;
+        _events.draw = draw;
+        _events.draw_scroll = drawScroll;
     }
 }

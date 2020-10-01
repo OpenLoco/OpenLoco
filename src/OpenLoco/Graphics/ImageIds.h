@@ -8,6 +8,8 @@ namespace OpenLoco::ImageIds
 {
     constexpr uint32_t null = 0xFFFFFFFF;
 
+    constexpr uint32_t currency_symbol = 1919;
+
     constexpr uint32_t text_palette = 2169;
 
     constexpr uint32_t colour_swatch_recolourable = 2306;
