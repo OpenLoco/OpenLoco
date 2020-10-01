@@ -349,6 +349,13 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     static const Gfx::ui_size_t objectPreviewSize = { 112, 112 };
     static const uint8_t descriptionRowHeight = 10;
 
+    template <typename T>
+    static void callDrawPreviewImage(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y, void* objectPtr)
+    {
+        auto object = reinterpret_cast<T*>(objectPtr);
+        object->drawPreviewImage(dpi, x, y);
+    }
+
     // 0x00473579
     static void drawPreviewImage(ObjectManager::header* header, Gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, void* objectPtr)
     {
@@ -641,15 +648,8 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             }
 
             case object_type::airport:
-            {
-                auto object = reinterpret_cast<airport_object*>(objectPtr);
-
-                auto image = Gfx::recolour(object->image, Colour::salmon_pink);
-
-                Gfx::drawImage(dpi, x - 34, y - 34, image);
-
+                callDrawPreviewImage<airport_object>(*dpi, x, y, objectPtr);
                 break;
-            }
 
             case object_type::dock:
             {
@@ -1192,7 +1192,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     }
 
     // 0x004737BA
-    void onMouseUp(window* self, widget_index w)
+    static void onMouseUp(window* self, widget_index w)
     {
         switch (w)
         {
@@ -1274,7 +1274,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     }
 
     // 0x004738ED
-    void getScrollSize(window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+    static void getScrollSize(window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
         *scrollHeight = _tabObjectCounts[self->current_tab] * rowHeight;
     }
