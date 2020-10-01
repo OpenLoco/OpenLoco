@@ -9,8 +9,8 @@ namespace OpenLoco
     struct train_signal_object
     {
         string_id name;
-        uint16_t track_side; // 0x02
-        uint8_t var_04;
+        uint16_t track_side;       // 0x02
+        uint8_t animationSpeed;    // 0x04
         uint8_t num_frames;        // 0x05
         uint16_t cost_factor;      // 0x06
         uint16_t sell_cost_factor; // 0x08

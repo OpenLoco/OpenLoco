@@ -606,7 +606,7 @@ namespace OpenLoco::Ui::Windows::Construction
                         {
                             auto frames = signalFrames[(((trainSignalObject->num_frames + 2) / 3) - 2)];
                             auto frameCount = std::size(frames) - 1;
-                            frameCount &= (self->frame_no >> trainSignalObject->var_04);
+                            frameCount &= (self->frame_no >> trainSignalObject->animationSpeed);
                             auto frameIndex = frames[frameCount];
                             frameIndex <<= 3;
                             imageId += frameIndex;
