@@ -203,33 +203,38 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             call(0x0046E07B); // load currency gfx
         }
 
+        const int16_t baseX = self->x + self->widgets[widx::list].right + 4;
+        const int16_t baseY = self->y + self->widgets[widx::panel].top + 5;
+        const int16_t colWidth = self->widgets[widx::panel].right - self->widgets[widx::list].right - 6;
+
+        int16_t x = baseX, y = baseY;
+
         // Scenario name
         {
-            const int16_t x = self->x + self->widgets[widx::list].right + 89;
-            const int16_t y = self->y + self->widgets[widx::panel].top + 5;
-
             auto str = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
             strncpy(str, scenarioInfo->scenarioName, std::size(scenarioInfo->scenarioName));
 
             auto args = FormatArguments();
             args.push(StringIds::buffer_2039);
+
+            x += colWidth / 2;
             Gfx::drawStringCentredClipped(*dpi, x, y, 170, Colour::black, StringIds::wcolour2_stringid, &args);
+
+            y += 14;
         }
 
         // Outline for preview image
         {
-            const int16_t x = self->x + self->widgets[widx::list].right + 24;
-            const int16_t y = self->y + self->widgets[widx::panel].top + 19;
-
+            x = baseX + 20;
             Gfx::drawRectInset(dpi, x, y, 130, 130, self->colours[1], 0x30);
+
+            x += 1;
+            y += 1;
         }
 
         // Preview image?
         if (scenarioInfo->hasFlag(ScenarioIndexFlags::hasPreviewImage))
         {
-            const int16_t x = self->x + self->widgets[widx::list].right + 25;
-            const int16_t y = self->y + self->widgets[widx::panel].top + 20;
-
             const auto imageId = 0;
             const auto g1 = Gfx::getG1Element(imageId);
             if (g1 != nullptr)
@@ -251,8 +256,8 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         }
         else
         {
-            int16_t x = self->x + self->widgets[widx::list].right + 25;
-            int16_t y = self->y + self->widgets[widx::panel].top + 21;
+            x += 1;
+            y += 1;
 
             // No preview image -- a placeholder will have to do.
             auto image = Gfx::recolour(ImageIds::random_map_watermark, self->colours[1]);
@@ -270,8 +275,8 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         }
 
         {
-            const int16_t x = self->x + self->widgets[widx::list].right + 4;
-            int16_t y = self->y + self->widgets[widx::panel].top + 155;
+            x = baseX;
+            y = baseY + 150;
 
             // Description
             auto str = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
