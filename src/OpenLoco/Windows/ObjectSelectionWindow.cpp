@@ -399,40 +399,12 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 break;
 
             case object_type::level_crossing:
-            {
-                auto object = reinterpret_cast<level_crossing_object*>(objectPtr);
-
-                auto image = (object->closedFrames + 1) * 8;
-                auto frameCount = (object->closingFrames - 1);
-                auto animationFrame = frameCount & (scenarioTicks() >> object->animationSpeed);
-                auto frameIndex = 8 * animationFrame;
-                image += frameIndex;
-                image += object->image;
-
-                Gfx::drawImage(dpi, x, y, image);
-                Gfx::drawImage(dpi, x, y, image + 1);
-                Gfx::drawImage(dpi, x, y, image + 2);
-                Gfx::drawImage(dpi, x, y, image + 3);
-
+                callDrawPreviewImage<level_crossing_object>(*dpi, x, y, objectPtr);
                 break;
-            }
 
             case object_type::street_light:
-            {
-                auto object = reinterpret_cast<street_light_object*>(objectPtr);
-                x -= 20;
-                y -= -1;
-                for (auto i = 0; i < 3; i++)
-                {
-                    auto image = (i * 4) + object->image;
-                    Gfx::drawImage(dpi, x - 14, y, image + 2);
-                    Gfx::drawImage(dpi, x, y - 7, image);
-                    x += 20;
-                    y += descriptionRowHeight;
-                }
-
+                callDrawPreviewImage<street_light_object>(*dpi, x, y, objectPtr);
                 break;
-            }
 
             case object_type::tunnel:
             {
