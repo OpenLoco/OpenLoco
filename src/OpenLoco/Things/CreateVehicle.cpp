@@ -571,6 +571,8 @@ namespace OpenLoco::Things::Vehicle
         newHead->var_22 = static_cast<uint8_t>(vehicleType) + 4;
         newHead->var_44 = 0; // Reset to null value so ignored in next function
         newHead->var_44 = createUniqueTypeNumber(vehicleType);
+        newHead->var_52 = 0;
+        newHead->var_5C = 0;
         newHead->var_5D = 0;
         newHead->var_54 = -1;
         newHead->var_5F = 0;
