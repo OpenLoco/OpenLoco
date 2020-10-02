@@ -212,7 +212,8 @@ namespace OpenLoco
         int16_t var_54;
         uint8_t pad_56[0x4];
         uint8_t pad_5A;
-        uint8_t pad_5B[0x5D - 0x5B];
+        uint8_t pad_5B;
+        uint8_t var_5C;
         uint8_t var_5D;
         VehicleType vehicleType; // 0x5E
         uint8_t var_5F;          // 0x5F
