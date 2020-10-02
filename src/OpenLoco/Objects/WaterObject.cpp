@@ -4,7 +4,7 @@
 
 namespace OpenLoco
 {
-    void water_object::drawPreviewImage(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y)
+    void water_object::drawPreviewImage(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y) const
     {
         auto colourImage = Gfx::recolourTranslucent(Gfx::recolour(image + 35), 32);
         Gfx::drawImage(&dpi, x, y, colourImage);

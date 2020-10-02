@@ -84,6 +84,10 @@ namespace OpenLoco
         return ptr;
     }
 
+    void industry_object::drawPreviewImage(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y) const
+    {
+    }
+
     // 0x00458C7F
     void industry_object::drawIndustry(Gfx::drawpixelinfo_t* clipped, int16_t x, int16_t y)
     {

@@ -5,6 +5,9 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco
 {
+    void building_object::drawPreviewImage(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y) const
+    {
+    }
     // 0x0042DB95
     void building_object::drawBuilding(Gfx::drawpixelinfo_t* clipped, uint8_t buildingRotation, int16_t x, int16_t y, colour_t colour)
     {

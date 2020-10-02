@@ -387,61 +387,16 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 break;
 
             case object_type::land:
-            {
-                auto object = reinterpret_cast<land_object*>(objectPtr);
-                uint32_t imageId = object->image + (object->var_03 - 1) * object->var_0E;
-                Gfx::drawImage(dpi, x, y, imageId);
+                callDrawPreviewImage<land_object>(*dpi, x, y, objectPtr);
                 break;
-            }
 
             case object_type::wall:
-            {
-                auto object = reinterpret_cast<wall_object*>(objectPtr);
-                Gfx::drawpixelinfo_t* clipped = nullptr;
-
-                xy32 pos = { x - objectPreviewOffset.x, y - objectPreviewOffset.y };
-                if (Gfx::clipDrawpixelinfo(&clipped, dpi, pos, objectPreviewSize))
-                {
-                    auto image = object->sprite;
-                    image = Gfx::recolour(image, Colour::salmon_pink);
-                    if (object->flags & (1 << 6))
-                    {
-                        image |= (1 << 31) | (1 << 28);
-                    }
-
-                    Gfx::drawImage(clipped, 70, 72 + (object->var_08 * 2), image);
-                    if (object->flags & (1 << 1))
-                    {
-                        Gfx::drawImage(clipped, 70, 72 + (object->var_08 * 2), Gfx::recolourTranslucent(object->sprite + 6, 140));
-                    }
-                    else
-                    {
-                        if (object->flags & (1 << 4))
-                        {
-                            Gfx::drawImage(clipped, 70, 72 + (object->var_08 * 2), image + 1);
-                        }
-                    }
-                }
+                callDrawPreviewImage<wall_object>(*dpi, x, y, objectPtr);
                 break;
-            }
 
             case object_type::track_signal:
-            {
-                auto object = reinterpret_cast<train_signal_object*>(objectPtr);
-
-                auto image = object->image;
-                auto frames = signalFrames[(((object->num_frames + 2) / 3) - 2)];
-                auto frameCount = std::size(frames) - 1;
-                auto animationFrame = frameCount & (scenarioTicks() >> object->animationSpeed);
-
-                auto frameIndex = frames[animationFrame];
-                frameIndex *= 8;
-                image += frameIndex;
-
-                Gfx::drawImage(dpi, x, y + 15, image);
-
+                callDrawPreviewImage<train_signal_object>(*dpi, x, y, objectPtr);
                 break;
-            }
 
             case object_type::level_crossing:
             {

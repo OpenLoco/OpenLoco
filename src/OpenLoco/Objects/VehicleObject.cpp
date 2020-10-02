@@ -7,6 +7,9 @@
 
 namespace OpenLoco
 {
+    void vehicle_object::drawPreviewImage(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y) const
+    {
+    }
     void vehicle_object::getCargoString(char* buffer)
     {
         if (num_simultaneous_cargo_types != 0)

@@ -56,7 +56,7 @@ namespace OpenLoco
         uint8_t stations[7];    // 0x2D
         uint8_t display_offset; // 0x34
 
-        void drawPreviewImage(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y);
+        void drawPreviewImage(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y) const;
     };
 #pragma pack(pop)
 }

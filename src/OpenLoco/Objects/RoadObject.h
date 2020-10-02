@@ -48,7 +48,7 @@ namespace OpenLoco
         uint8_t num_compatible; // 0x28
         uint8_t pad_29[0x30 - 0x29];
 
-        void drawPreviewImage(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y);
+        void drawPreviewImage(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y) const;
     };
 #pragma pack(pop)
 }

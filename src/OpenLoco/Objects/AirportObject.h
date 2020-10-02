@@ -54,7 +54,7 @@ namespace OpenLoco
         airport_var_B2_object* var_B2;
         uint8_t pad_B6[0xBA - 0xB6];
 
-        void drawPreviewImage(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y);
+        void drawPreviewImage(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y) const;
     };
 #pragma pack(pop)
 }
