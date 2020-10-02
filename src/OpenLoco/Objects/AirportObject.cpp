@@ -1,6 +1,6 @@
 #include "AirportObject.h"
-#include "../Graphics/Gfx.h"
 #include "../Graphics/Colour.h"
+#include "../Graphics/Gfx.h"
 
 namespace OpenLoco
 {

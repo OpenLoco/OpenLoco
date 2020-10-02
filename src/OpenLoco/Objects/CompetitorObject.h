@@ -6,6 +6,11 @@
 
 namespace OpenLoco
 {
+    namespace Gfx
+    {
+        struct drawpixelinfo_t;
+    }
+
 #pragma pack(push, 1)
     struct competitor_object
     {
@@ -19,6 +24,8 @@ namespace OpenLoco
         uint8_t aggressiveness;  // 0x35
         uint8_t competitiveness; // 0x36
         uint8_t var_37;          // 0x37
+
+        void drawPreviewImage(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y);
     };
     static_assert(sizeof(competitor_object) == 0x38);
 #pragma pack(pop)

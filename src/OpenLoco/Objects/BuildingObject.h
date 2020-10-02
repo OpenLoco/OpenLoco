@@ -1,11 +1,15 @@
 #pragma once
 
 #include "../Graphics/Colour.h"
-#include "../Graphics/Gfx.h"
 #include "../Localisation/StringManager.h"
 
 namespace OpenLoco
 {
+    namespace Gfx
+    {
+        struct drawpixelinfo_t;
+    }
+
     namespace BuildingObjectFlags
     {
         constexpr uint32_t large_tile = 1 << 0; // 2x2 tile
@@ -30,6 +34,7 @@ namespace OpenLoco
         uint8_t var_A6[2];
         uint8_t var_A8[2];
 
+        void drawPreviewImage(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y);
         void drawBuilding(Gfx::drawpixelinfo_t* clipped, uint8_t buildingRotation, int16_t x, int16_t y, colour_t colour);
     };
 #pragma pack(pop)

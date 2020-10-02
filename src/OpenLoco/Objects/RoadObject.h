@@ -4,6 +4,11 @@
 
 namespace OpenLoco
 {
+    namespace Gfx
+    {
+        struct drawpixelinfo_t;
+    }
+
     namespace Flags12
     {
         constexpr uint8_t unk_01 = 1 << 1;
@@ -42,6 +47,8 @@ namespace OpenLoco
         uint8_t mods[2];        // 0x26
         uint8_t num_compatible; // 0x28
         uint8_t pad_29[0x30 - 0x29];
+
+        void drawPreviewImage(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y);
     };
 #pragma pack(pop)
 }

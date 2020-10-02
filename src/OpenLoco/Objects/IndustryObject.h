@@ -1,10 +1,14 @@
 #pragma once
 
-#include "../Graphics/Gfx.h"
 #include "../Localisation/StringManager.h"
 
 namespace OpenLoco
 {
+    namespace Gfx
+    {
+        struct drawpixelinfo_t;
+    }
+
     namespace IndustryObjectFlags
     {
         constexpr uint32_t built_on_water = 1 << 8;
@@ -43,6 +47,7 @@ namespace OpenLoco
         bool producesCargo() const;
         char* getProducedCargoString(const char* buffer);
         char* getRequiredCargoString(const char* buffer);
+        void drawPreviewImage(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y);
         void drawIndustry(Gfx::drawpixelinfo_t* clipped, int16_t x, int16_t y);
     };
 #pragma pack(pop)

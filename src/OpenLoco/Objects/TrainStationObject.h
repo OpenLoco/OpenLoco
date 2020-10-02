@@ -4,6 +4,11 @@
 
 namespace OpenLoco
 {
+    namespace Gfx
+    {
+        struct drawpixelinfo_t;
+    }
+
     namespace TrainStationFlags
     {
         constexpr uint8_t recolourable = 1 << 0;
@@ -33,6 +38,8 @@ namespace OpenLoco
         uint8_t var_4E[16];
         uint8_t var_5E[16];
         uint8_t pad_6E[0xAC - 0x6E];
+
+        void drawPreviewImage(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y);
     };
 #pragma pack(pop)
 }

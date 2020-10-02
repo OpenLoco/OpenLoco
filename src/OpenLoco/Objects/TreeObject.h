@@ -5,6 +5,11 @@
 
 namespace OpenLoco
 {
+    namespace Gfx
+    {
+        struct drawpixelinfo_t;
+    }
+
     const std::array<uint8_t, 11> treeGrowth = { {
         1,
         0,
@@ -40,6 +45,8 @@ namespace OpenLoco
         uint32_t colours;           // 0x44
         uint16_t var_48;
         uint16_t var_4A;
+
+        void drawPreviewImage(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y);
     };
 #pragma pack(pop)
 }

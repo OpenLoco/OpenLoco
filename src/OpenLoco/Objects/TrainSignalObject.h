@@ -5,6 +5,11 @@
 
 namespace OpenLoco
 {
+    namespace Gfx
+    {
+        struct drawpixelinfo_t;
+    }
+
 #pragma pack(push, 1)
     struct train_signal_object
     {
@@ -22,6 +27,8 @@ namespace OpenLoco
         uint8_t mods[7];        // 0x13
         uint16_t designed_year; // 0x1A
         uint16_t obsolete_year; // 0x1C
+
+        void drawPreviewImage(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y);
     };
 #pragma pack(pop)
 

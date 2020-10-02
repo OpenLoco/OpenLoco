@@ -4,6 +4,11 @@
 
 namespace OpenLoco
 {
+    namespace Gfx
+    {
+        struct drawpixelinfo_t;
+    }
+
     namespace RoadStationFlags
     {
         constexpr uint8_t recolourable = 1 << 0;
@@ -30,6 +35,8 @@ namespace OpenLoco
         uint16_t obsolete_year; // 0x2A
         uint8_t var_2C;
         uint8_t pad_2D[0x6E - 0x2D];
+
+        void drawPreviewImage(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y);
     };
 #pragma pack(pop)
 }

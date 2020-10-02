@@ -67,7 +67,6 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     static loco_global<uint16_t[33], 0x00112C181> _tabObjectCounts;
     static loco_global<tabPosition[36], 0x0112C21C> _tabInformation;
     static loco_global<int16_t, 0x112C876> _currentFontSpriteBase;
-    static loco_global<uint8_t[224 * 4], 0x112C884> _characterWidths;
 
     static void initEvents();
 
@@ -349,7 +348,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     static const Gfx::ui_size_t objectPreviewSize = { 112, 112 };
     static const uint8_t descriptionRowHeight = 10;
 
-    template <typename T>
+    template<typename T>
     static void callDrawPreviewImage(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y, void* objectPtr)
     {
         auto object = reinterpret_cast<T*>(objectPtr);
@@ -372,60 +371,20 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 break;
 
             case object_type::interface_skin:
-            {
-                auto object = reinterpret_cast<interface_skin_object*>(objectPtr);
-                auto image = Gfx::recolour(object->img, Colour::saturated_green);
-
-                Gfx::drawImage(dpi, x - 32, y - 32, image);
+                callDrawPreviewImage<interface_skin_object>(*dpi, x, y, objectPtr);
                 break;
-            }
 
             case object_type::currency:
-            {
-                auto object = reinterpret_cast<currency_object*>(objectPtr);
-                auto currencyIndex = (object->object_icon + 3);
-
-                auto defaultElement = Gfx::getG1Element(ImageIds::currency_symbol);
-                auto backupElement = *defaultElement;
-                auto currencyElement = Gfx::getG1Element(currencyIndex);
-
-                *defaultElement = *currencyElement;
-
-                auto defaultWidth = _characterWidths[Font::large + 131];
-                _characterWidths[Font::large + 131] = currencyElement->width + 1;
-
-                Gfx::drawStringCentred(*dpi, x, y - 9, Colour::black, StringIds::object_currency_big_font);
-
-                _characterWidths[Font::large + 131] = defaultWidth;
-                *defaultElement = backupElement;
-
+                callDrawPreviewImage<currency_object>(*dpi, x, y, objectPtr);
                 break;
-            }
 
             case object_type::rock:
-            {
-                auto object = reinterpret_cast<rock_object*>(objectPtr);
-                auto image = object->image;
-
-                Gfx::drawImage(dpi, x - 30, y, image);
-
-                image += 16;
-                Gfx::drawImage(dpi, x - 30, y, image);
+                callDrawPreviewImage<rock_object>(*dpi, x, y, objectPtr);
                 break;
-            }
 
             case object_type::water:
-            {
-                auto object = ObjectManager::get<water_object>();
-                auto image = object->image;
-                image += 0x61000023;
-                Gfx::drawImage(dpi, x, y, image);
-
-                image = object->image;
-                image += 30;
-                Gfx::drawImage(dpi, x, y, image);
+                callDrawPreviewImage<water_object>(*dpi, x, y, objectPtr);
                 break;
-            }
 
             case object_type::land:
             {

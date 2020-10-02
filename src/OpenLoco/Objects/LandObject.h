@@ -4,6 +4,11 @@
 
 namespace OpenLoco
 {
+    namespace Gfx
+    {
+        struct drawpixelinfo_t;
+    }
+
 #pragma pack(push, 1)
     struct land_object
     {
@@ -17,6 +22,8 @@ namespace OpenLoco
         uint8_t var_0E;
         uint8_t pad_0F[0x16 - 0x0F];
         uint32_t var_16;
+
+        void drawPreviewImage(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y);
     };
 #pragma pack(pop)
 

@@ -4,6 +4,11 @@
 
 namespace OpenLoco
 {
+    namespace Gfx
+    {
+        struct drawpixelinfo_t;
+    }
+
     namespace Flags22
     {
         constexpr uint8_t unk_02 = 1 << 2;
@@ -50,6 +55,8 @@ namespace OpenLoco
         uint8_t num_stations;   // 0x2C
         uint8_t stations[7];    // 0x2D
         uint8_t display_offset; // 0x34
+
+        void drawPreviewImage(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y);
     };
 #pragma pack(pop)
 }
