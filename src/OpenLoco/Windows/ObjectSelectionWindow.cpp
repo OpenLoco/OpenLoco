@@ -183,6 +183,49 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         return window;
     }
 
+    struct TabDisplayInfo
+    {
+        string_id name;
+        uint32_t image;
+    };
+
+    static const TabDisplayInfo _tabDisplayInfo[] = {
+        { StringIds::object_interface_styles, ImageIds::tab_object_settings },
+        { StringIds::object_sounds, ImageIds::tab_object_audio },
+        { StringIds::object_currency, ImageIds::tab_object_currency },
+        { StringIds::object_animation_effects, ImageIds::tab_object_smoke },
+        { StringIds::object_cliffs, ImageIds::tab_object_cliff },
+        { StringIds::object_water, ImageIds::tab_object_water },
+        { StringIds::object_land, ImageIds::tab_object_landscape },
+        { StringIds::object_town_names, ImageIds::tab_object_town_names },
+        { StringIds::object_cargo, ImageIds::tab_object_cargo },
+        { StringIds::object_walls, ImageIds::tab_object_walls },
+        { StringIds::object_signals, ImageIds::tab_object_signals },
+        { StringIds::object_level_crossing, ImageIds::tab_object_level_crossings },
+        { StringIds::object_street_lights, ImageIds::tab_object_streetlights },
+        { StringIds::object_tunnels, ImageIds::tab_object_tunnels },
+        { StringIds::object_bridges, ImageIds::tab_object_bridges },
+        { StringIds::object_track_stations, ImageIds::tab_object_track_stations },
+        { StringIds::object_track_extras, ImageIds::tab_object_track_mods },
+        { StringIds::object_tracks, ImageIds::tab_object_track },
+        { StringIds::object_road_stations, ImageIds::tab_object_road_stations },
+        { StringIds::object_road_extras, ImageIds::tab_object_road_mods },
+        { StringIds::object_roads, ImageIds::tab_object_road },
+        { StringIds::object_airports, ImageIds::tab_object_airports },
+        { StringIds::object_docks, ImageIds::tab_object_docks },
+        { StringIds::object_vehicles, ImageIds::tab_object_vehicles },
+        { StringIds::object_trees, ImageIds::tab_object_trees },
+        { StringIds::object_snow, ImageIds::tab_object_snow },
+        { StringIds::object_climate, ImageIds::tab_object_climate },
+        { StringIds::object_map_generation_data, ImageIds::tab_object_map },
+        { StringIds::object_buildings, ImageIds::tab_object_buildings },
+        { StringIds::object_scaffolding, ImageIds::tab_object_construction },
+        { StringIds::object_industries, ImageIds::tab_object_industries },
+        { StringIds::object_world_region, ImageIds::tab_object_world },
+        { StringIds::object_company_owners, ImageIds::tab_object_companies },
+        { StringIds::object_scenario_descriptions, ImageIds::tab_object_scenarios },
+    };
+
     // 0x004733AC
     static void prepareDraw(Ui::window* self)
     {
@@ -201,85 +244,11 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             self->activated_widgets |= (1 << widx::advancedButton);
         }
 
-        static string_id tabName[] = {
-            StringIds::object_interface_styles,
-            StringIds::object_sounds,
-            StringIds::object_currency,
-            StringIds::object_animation_effects,
-            StringIds::object_cliffs,
-            StringIds::object_water,
-            StringIds::object_land,
-            StringIds::object_town_names,
-            StringIds::object_cargo,
-            StringIds::object_walls,
-            StringIds::object_signals,
-            StringIds::object_level_crossing,
-            StringIds::object_street_lights,
-            StringIds::object_tunnels,
-            StringIds::object_bridges,
-            StringIds::object_track_stations,
-            StringIds::object_track_extras,
-            StringIds::object_tracks,
-            StringIds::object_road_stations,
-            StringIds::object_road_extras,
-            StringIds::object_roads,
-            StringIds::object_airports,
-            StringIds::object_docks,
-            StringIds::object_vehicles,
-            StringIds::object_trees,
-            StringIds::object_snow,
-            StringIds::object_climate,
-            StringIds::object_map_generation_data,
-            StringIds::object_buildings,
-            StringIds::object_scaffolding,
-            StringIds::object_industries,
-            StringIds::object_world_region,
-            StringIds::object_company_owners,
-            StringIds::object_scenario_descriptions,
-        };
-
         auto args = FormatArguments();
-        args.push(tabName[self->current_tab]);
+        args.push(_tabDisplayInfo[self->current_tab].name);
     }
 
     static loco_global<uint16_t[40], 0x0112C1C5> _112C1C5;
-
-    static uint32_t tabImages[] = {
-        ImageIds::tab_object_settings,
-        ImageIds::tab_object_audio,
-        ImageIds::tab_object_currency,
-        ImageIds::tab_object_smoke,
-        ImageIds::tab_object_cliff,
-        ImageIds::tab_object_water,
-        ImageIds::tab_object_landscape,
-        ImageIds::tab_object_town_names,
-        ImageIds::tab_object_cargo,
-        ImageIds::tab_object_walls,
-        ImageIds::tab_object_signals,
-        ImageIds::tab_object_level_crossings,
-        ImageIds::tab_object_streetlights,
-        ImageIds::tab_object_tunnels,
-        ImageIds::tab_object_bridges,
-        ImageIds::tab_object_track_stations,
-        ImageIds::tab_object_track_mods,
-        ImageIds::tab_object_track,
-        ImageIds::tab_object_road_stations,
-        ImageIds::tab_object_road_mods,
-        ImageIds::tab_object_road,
-        ImageIds::tab_object_airports,
-        ImageIds::tab_object_docks,
-        ImageIds::tab_object_vehicles,
-        ImageIds::tab_object_trees,
-        ImageIds::tab_object_snow,
-        ImageIds::tab_object_climate,
-        ImageIds::tab_object_map,
-        ImageIds::tab_object_buildings,
-        ImageIds::tab_object_construction,
-        ImageIds::tab_object_industries,
-        ImageIds::tab_object_world,
-        ImageIds::tab_object_companies,
-        ImageIds::tab_object_scenarios,
-    };
 
     static const uint8_t rowOffsetX = 10;
     static const uint8_t rowOffsetY = 24;
@@ -305,14 +274,14 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                     image = Gfx::recolour(ImageIds::selected_tab, self->colours[1]);
                     Gfx::drawImage(dpi, xPos, yPos, image);
 
-                    image = Gfx::recolour(tabImages[_tabInformation[index].index], Colour::saturated_green);
+                    image = Gfx::recolour(_tabDisplayInfo[_tabInformation[index].index].image, Colour::saturated_green);
                     Gfx::drawImage(dpi, xPos, yPos, image);
                 }
                 else
                 {
                     Gfx::drawImage(dpi, xPos, yPos, image);
 
-                    image = Gfx::recolour(tabImages[_tabInformation[index].index], Colour::saturated_green);
+                    image = Gfx::recolour(_tabDisplayInfo[_tabInformation[index].index].image, Colour::saturated_green);
                     Gfx::drawImage(dpi, xPos, yPos, image);
 
                     image = Gfx::recolourTranslucent(ImageIds::tab, 51);
@@ -346,15 +315,6 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         auto type = header->getType();
         switch (type)
         {
-            case object_type::sound:
-            case object_type::steam:
-            case object_type::town_names:
-            case object_type::cargo:
-            case object_type::climate:
-            case object_type::scenario_text:
-                // null
-                break;
-
             case object_type::interface_skin:
                 callDrawPreviewImage<interface_skin_object>(*dpi, x, y, objectPtr);
                 break;
@@ -466,6 +426,10 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             case object_type::competitor:
                 callDrawPreviewImage<competitor_object>(*dpi, x, y, objectPtr);
                 break;
+
+            default:
+                // null
+                break;
         }
     }
 
@@ -480,35 +444,6 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     {
         switch (header->getType())
         {
-            case object_type::interface_skin:
-            case object_type::sound:
-            case object_type::currency:
-            case object_type::steam:
-            case object_type::rock:
-            case object_type::water:
-            case object_type::land:
-            case object_type::town_names:
-            case object_type::cargo:
-            case object_type::wall:
-            case object_type::track_signal:
-            case object_type::street_light:
-            case object_type::tunnel:
-            case object_type::bridge:
-            case object_type::track_extra:
-            case object_type::track:
-            case object_type::road_extra:
-            case object_type::road:
-            case object_type::tree:
-            case object_type::snow:
-            case object_type::climate:
-            case object_type::hill_shapes:
-            case object_type::scaffolding:
-            case object_type::industry:
-            case object_type::region:
-            case object_type::scenario_text:
-                // null
-                break;
-
             case object_type::level_crossing:
                 callDrawDescription<level_crossing_object>(*dpi, x, y, objectPtr);
                 break;
@@ -539,6 +474,10 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
             case object_type::competitor:
                 callDrawDescription<competitor_object>(*dpi, x, y, objectPtr);
+                break;
+
+            default:
+                // null
                 break;
         }
     }

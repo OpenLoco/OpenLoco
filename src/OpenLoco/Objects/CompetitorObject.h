@@ -31,23 +31,5 @@ namespace OpenLoco
     static_assert(sizeof(competitor_object) == 0x38);
 #pragma pack(pop)
 
-    static std::array<string_id, 10> aiRatingToLevelArray = {
-        {
-            StringIds::low,
-            StringIds::low,
-            StringIds::low,
-            StringIds::low,
-            StringIds::medium,
-            StringIds::medium,
-            StringIds::medium,
-            StringIds::high,
-            StringIds::high,
-            StringIds::high,
-        }
-    };
-
-    constexpr string_id aiRatingToLevel(const uint8_t rating)
-    {
-        return aiRatingToLevelArray[std::min(rating, static_cast<uint8_t>(aiRatingToLevelArray.size()))];
-    }
+    [[nodiscard]] string_id aiRatingToLevel(const uint8_t rating);
 }

@@ -49,4 +49,24 @@ namespace OpenLoco
             Gfx::drawString_494B3F(dpi, rowPosition.x, rowPosition.y, Colour::black, StringIds::company_details_competitiveness, &args);
         }
     }
+
+    static std::array<string_id, 10> aiRatingToLevelArray = {
+        {
+            StringIds::low,
+            StringIds::low,
+            StringIds::low,
+            StringIds::low,
+            StringIds::medium,
+            StringIds::medium,
+            StringIds::medium,
+            StringIds::high,
+            StringIds::high,
+            StringIds::high,
+        }
+    };
+
+    [[nodiscard]] string_id aiRatingToLevel(const uint8_t rating)
+    {
+        return aiRatingToLevelArray[std::min(rating, static_cast<uint8_t>(aiRatingToLevelArray.size()))];
+    }
 }
