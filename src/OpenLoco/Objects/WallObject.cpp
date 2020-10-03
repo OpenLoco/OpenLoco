@@ -8,6 +8,7 @@ namespace OpenLoco
     static const Gfx::ui_size_t objectPreviewSize = { 112, 112 };
     static const xy32 objectPreviewOffset = { 56, 56 };
 
+    // 0x004C4B0B
     void wall_object::drawPreviewImage(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y) const
     {
         Gfx::drawpixelinfo_t* clipped = nullptr;

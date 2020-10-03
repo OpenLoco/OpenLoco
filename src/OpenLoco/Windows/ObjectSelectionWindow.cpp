@@ -469,6 +469,13 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         }
     }
 
+    template<typename T>
+    static void callDrawDescription(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y, void* objectPtr)
+    {
+        auto object = reinterpret_cast<T*>(objectPtr);
+        object->drawDescription(dpi, x, y);
+    }
+
     static void drawDescription(ObjectManager::header* header, window* self, Gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, void* objectPtr)
     {
         switch (header->getType())

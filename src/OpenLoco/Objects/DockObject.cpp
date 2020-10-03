@@ -4,6 +4,7 @@
 
 namespace OpenLoco
 {
+    // 0x00490F14
     void dock_object::drawPreviewImage(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y) const
     {
         auto colourImage = Gfx::recolour(image, Colour::salmon_pink);

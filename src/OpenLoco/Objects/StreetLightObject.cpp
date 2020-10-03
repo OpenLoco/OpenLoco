@@ -7,6 +7,7 @@ namespace OpenLoco
     // TODO: This should only be definined in the ObjectSelectionWindow header
     static const uint8_t descriptionRowHeight = 10;
 
+    // 0x00477F69
     void street_light_object::drawPreviewImage(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y) const
     {
         Gfx::point_t imgPosition{ x - 20, y - 1 };

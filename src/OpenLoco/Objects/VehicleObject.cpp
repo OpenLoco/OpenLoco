@@ -33,6 +33,7 @@ namespace OpenLoco
         call(0x4B7733, regs);
     }
 
+    // 0x004B8C52
     void vehicle_object::drawPreviewImage(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y) const
     {
         Gfx::drawpixelinfo_t* clipped = nullptr;

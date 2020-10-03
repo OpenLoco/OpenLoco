@@ -4,6 +4,7 @@
 
 namespace OpenLoco
 {
+    // 0x004699A8
     void land_object::drawPreviewImage(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y) const
     {
         uint32_t imageId = image + (var_03 - 1) * var_0E;

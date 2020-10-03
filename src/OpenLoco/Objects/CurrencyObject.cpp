@@ -11,6 +11,7 @@ namespace OpenLoco
 {
     static loco_global<uint8_t[224 * 4], 0x112C884> _characterWidths;
 
+    // 0x0046DFC3
     void currency_object::drawPreviewImage(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y) const
     {
         auto currencyIndex = object_icon + 3;
