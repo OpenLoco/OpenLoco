@@ -5,7 +5,7 @@
 namespace OpenLoco
 {
     // TODO: Should only be defined in ObjectSelectionWindow
-    static const xy32 objectPreviewOffset = { 56, 56 };
+    static const Gfx::point_t objectPreviewOffset = { 56, 56 };
     static const Gfx::ui_size_t objectPreviewSize = { 112, 112 };
 
     // 0x00434D5B
