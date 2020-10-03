@@ -1,4 +1,6 @@
 #include "IndustryObject.h"
+#include "../Graphics/Colour.h"
+#include "../Graphics/Gfx.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/StringIds.h"
 #include "CargoObject.h"
@@ -84,12 +86,23 @@ namespace OpenLoco
         return ptr;
     }
 
+    // TODO: Should only be defined in ObjectSelectionWindow
+    static const xy32 objectPreviewOffset = { 56, 56 };
+    static const Gfx::ui_size_t objectPreviewSize = { 112, 112 };
+
     void industry_object::drawPreviewImage(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y) const
     {
+        Gfx::drawpixelinfo_t* clipped = nullptr;
+
+        xy32 pos = { x - objectPreviewOffset.x, y - objectPreviewOffset.y };
+        if (Gfx::clipDrawpixelinfo(&clipped, &dpi, pos, objectPreviewSize))
+        {
+            drawIndustry(clipped, objectPreviewOffset.x, 96);
+        }
     }
 
     // 0x00458C7F
-    void industry_object::drawIndustry(Gfx::drawpixelinfo_t* clipped, int16_t x, int16_t y)
+    void industry_object::drawIndustry(Gfx::drawpixelinfo_t* clipped, int16_t x, int16_t y) const
     {
         registers regs;
         regs.cx = x;

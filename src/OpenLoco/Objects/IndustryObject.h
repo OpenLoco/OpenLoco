@@ -48,7 +48,7 @@ namespace OpenLoco
         char* getProducedCargoString(const char* buffer);
         char* getRequiredCargoString(const char* buffer);
         void drawPreviewImage(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y) const;
-        void drawIndustry(Gfx::drawpixelinfo_t* clipped, int16_t x, int16_t y);
+        void drawIndustry(Gfx::drawpixelinfo_t* clipped, int16_t x, int16_t y) const;
     };
 #pragma pack(pop)
 }

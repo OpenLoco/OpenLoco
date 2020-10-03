@@ -329,21 +329,6 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         }
     }
 
-    // 0x004B7733
-    static void drawVehicle(Gfx::drawpixelinfo_t* dpi, vehicle_object* vehicleObject, uint8_t eax, uint8_t esi, Gfx::point_t offset)
-    {
-        registers regs;
-        regs.cx = offset.x;
-        regs.dx = offset.y;
-        regs.eax = eax;
-        regs.esi = esi;
-        regs.bl = Colour::saturated_green;
-        regs.bh = 2;
-        regs.ebp = (uintptr_t)vehicleObject;
-        regs.edi = (uintptr_t)dpi;
-        call(0x4B7733, regs);
-    }
-
     static const xy32 objectPreviewOffset = { 56, 56 };
     static const Gfx::ui_size_t objectPreviewSize = { 112, 112 };
     static const uint8_t descriptionRowHeight = 10;
@@ -407,312 +392,80 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 break;
 
             case object_type::tunnel:
-            {
-                auto object = reinterpret_cast<tunnel_object*>(objectPtr);
-
-                auto image = object->image;
-
-                Gfx::drawImage(dpi, x - 16, y + 15, image);
-                Gfx::drawImage(dpi, x - 16, y + 15, image + 1);
-
+                callDrawPreviewImage<tunnel_object>(*dpi, x, y, objectPtr);
                 break;
-            }
 
             case object_type::bridge:
-            {
-                auto object = reinterpret_cast<bridge_object*>(objectPtr);
-
-                auto image = Gfx::recolour(object->image, Colour::salmon_pink);
-
-                Gfx::drawImage(dpi, x - 21, y - 9, image);
+                callDrawPreviewImage<bridge_object>(*dpi, x, y, objectPtr);
                 break;
-            }
 
             case object_type::track_station:
-            {
-                auto object = reinterpret_cast<train_station_object*>(objectPtr);
-
-                auto image = Gfx::recolour(object->image, Colour::salmon_pink);
-
-                Gfx::drawImage(dpi, x - 34, y - 34, image);
-
-                auto colour = 59;
-                if (!(object->flags & TrainStationFlags::recolourable))
-                {
-                    colour = 46;
-                }
-
-                image = Gfx::recolourTranslucent(object->image + 1, colour);
-
-                Gfx::drawImage(dpi, x - 34, y - 34, image);
+                callDrawPreviewImage<train_station_object>(*dpi, x, y, objectPtr);
                 break;
-            }
 
             case object_type::track_extra:
-            {
-                auto object = reinterpret_cast<track_extra_object*>(objectPtr);
-                auto image = Gfx::recolour(object->image, Colour::salmon_pink);
-
-                if (object->is_overhead == 0)
-                {
-                    Gfx::drawImage(dpi, x, y, image);
-                }
-                else
-                {
-                    Gfx::drawImage(dpi, x, y, image);
-                    Gfx::drawImage(dpi, x, y, image + 97);
-                    Gfx::drawImage(dpi, x, y, image + 96);
-                }
-
+                callDrawPreviewImage<track_extra_object>(*dpi, x, y, objectPtr);
                 break;
-            }
 
             case object_type::track:
-            {
-                auto object = reinterpret_cast<track_object*>(objectPtr);
-
-                auto image = Gfx::recolour(object->image, Colour::salmon_pink);
-
-                Gfx::drawImage(dpi, x, y, image + 18);
-                Gfx::drawImage(dpi, x, y, image + 20);
-                Gfx::drawImage(dpi, x, y, image + 22);
-
+                callDrawPreviewImage<track_object>(*dpi, x, y, objectPtr);
                 break;
-            }
 
             case object_type::road_station:
-            {
-                auto object = reinterpret_cast<road_station_object*>(objectPtr);
-
-                auto image = Gfx::recolour(object->image, Colour::salmon_pink);
-
-                Gfx::drawImage(dpi, x - 34, y - 34, image);
-
-                auto colour = 59;
-                if (!(object->flags & RoadStationFlags::recolourable))
-                {
-                    colour = 46;
-                }
-
-                image = Gfx::recolourTranslucent(object->image + 1, colour);
-
-                Gfx::drawImage(dpi, x - 34, y - 34, image);
+                callDrawPreviewImage<road_station_object>(*dpi, x, y, objectPtr);
                 break;
-            }
 
             case object_type::road_extra:
-            {
-                auto object = reinterpret_cast<road_extra_object*>(objectPtr);
-                auto image = Gfx::recolour(object->image, Colour::salmon_pink);
-
-                Gfx::drawImage(dpi, x, y, image + 36);
-                Gfx::drawImage(dpi, x, y, image + 37);
-                Gfx::drawImage(dpi, x, y, image);
-                Gfx::drawImage(dpi, x, y, image + 33);
-                Gfx::drawImage(dpi, x, y, image + 32);
-
+                callDrawPreviewImage<road_extra_object>(*dpi, x, y, objectPtr);
                 break;
-            }
 
             case object_type::road:
-            {
-                auto object = reinterpret_cast<road_object*>(objectPtr);
-
-                auto image = Gfx::recolour(object->image, Colour::salmon_pink);
-                if (object->var_24 == 1)
-                {
-                    Gfx::drawImage(dpi, x, y, image + 34);
-                    Gfx::drawImage(dpi, x, y, image + 36);
-                    Gfx::drawImage(dpi, x, y, image + 38);
-                }
-                else
-                {
-                    Gfx::drawImage(dpi, x, y, image + 34);
-                }
-
+                callDrawPreviewImage<road_object>(*dpi, x, y, objectPtr);
                 break;
-            }
 
             case object_type::airport:
                 callDrawPreviewImage<airport_object>(*dpi, x, y, objectPtr);
                 break;
 
             case object_type::dock:
-            {
-                auto object = reinterpret_cast<dock_object*>(objectPtr);
-
-                auto image = Gfx::recolour(object->image, Colour::salmon_pink);
-
-                Gfx::drawImage(dpi, x - 34, y - 34, image);
-
+                callDrawPreviewImage<dock_object>(*dpi, x, y, objectPtr);
                 break;
-            }
 
             case object_type::vehicle:
-            {
-                auto object = reinterpret_cast<vehicle_object*>(objectPtr);
-                Gfx::drawpixelinfo_t* clipped = nullptr;
-
-                xy32 pos = { x - objectPreviewOffset.x, y - objectPreviewOffset.y };
-                if (Gfx::clipDrawpixelinfo(&clipped, dpi, pos, objectPreviewSize))
-                {
-                    uint8_t unk1 = _52622E & 0x3F;
-                    uint8_t unk2 = ((_52622E + 2) / 4) & 0x3F;
-                    drawVehicle(clipped, object, unk1, unk2, { static_cast<int16_t>(objectPreviewOffset.x), 75 });
-                }
-
+                callDrawPreviewImage<vehicle_object>(*dpi, x, y, objectPtr);
                 break;
-            }
 
             case object_type::tree:
-            {
-                auto object = reinterpret_cast<tree_object*>(objectPtr);
-                Gfx::drawpixelinfo_t* clipped = nullptr;
-
-                xy32 pos = { x - objectPreviewOffset.x, y - objectPreviewOffset.y };
-                if (Gfx::clipDrawpixelinfo(&clipped, dpi, pos, objectPreviewSize))
-                {
-                    uint32_t image = treeGrowth[object->growth] * object->num_rotations;
-                    auto rotation = (object->num_rotations - 1) & 2;
-                    image += rotation;
-                    image += object->sprites[object->season_state];
-
-                    auto colourOptions = object->colours;
-                    if (colourOptions != 0)
-                    {
-
-                        colour_t colour = Utility::bitScanReverse(colourOptions);
-
-                        if (colour == 0xFF)
-                        {
-                            colour = 0;
-                        }
-
-                        image = Gfx::recolour(image, colour);
-                    }
-
-                    xy32 treePos = { objectPreviewOffset.x, 104 };
-                    if (object->var_08 & (1 << 0))
-                    {
-                        auto snowImage = treeGrowth[object->growth] * object->num_rotations;
-                        snowImage += rotation;
-                        snowImage += object->sprites[object->season_state + 6];
-
-                        if (colourOptions != 0)
-                        {
-
-                            colour_t colour = Utility::bitScanReverse(colourOptions);
-
-                            if (colour == 0xFF)
-                            {
-                                colour = 0;
-                            }
-
-                            snowImage = Gfx::recolour(snowImage, colour);
-                        }
-                        treePos.x = 84;
-                        Gfx::drawImage(clipped, treePos.x, treePos.y, snowImage);
-                        treePos.x = 28;
-                    }
-                    Gfx::drawImage(clipped, treePos.x, treePos.y, image);
-                }
-
+                callDrawPreviewImage<tree_object>(*dpi, x, y, objectPtr);
                 break;
-            }
 
             case object_type::snow:
-            {
-                auto object = reinterpret_cast<snow_object*>(objectPtr);
-                auto image = object->image;
-
-                Gfx::drawImage(dpi, x, y, image);
+                callDrawPreviewImage<snow_object>(*dpi, x, y, objectPtr);
                 break;
-            }
 
             case object_type::hill_shapes:
-            {
-                auto object = reinterpret_cast<hill_shapes_object*>(objectPtr);
-                auto image = object->image + object->hillHeightMapCount + object->mountainHeightMapCount;
-
-                Gfx::drawImage(dpi, x, y, image);
-
+                callDrawPreviewImage<hill_shapes_object>(*dpi, x, y, objectPtr);
                 break;
-            }
 
             case object_type::building:
-            {
-                auto object = reinterpret_cast<building_object*>(objectPtr);
-                Gfx::drawpixelinfo_t* clipped = nullptr;
-
-                xy32 pos = { x - objectPreviewOffset.x, y - objectPreviewOffset.y };
-                if (Gfx::clipDrawpixelinfo(&clipped, dpi, pos, objectPreviewSize))
-                {
-                    colour_t colour = Utility::bitScanReverse(object->colours);
-
-                    if (colour == 0xFF)
-                    {
-                        colour = 0;
-                    }
-
-                    object->drawBuilding(clipped, 1, objectPreviewOffset.x, 96, colour);
-                }
-
+                callDrawPreviewImage<building_object>(*dpi, x, y, objectPtr);
                 break;
-            }
 
             case object_type::scaffolding:
-            {
-                auto object = reinterpret_cast<building_object*>(objectPtr);
-                Gfx::drawpixelinfo_t* clipped = nullptr;
-
-                xy32 pos = { x - objectPreviewOffset.x, y - objectPreviewOffset.y };
-                if (Gfx::clipDrawpixelinfo(&clipped, dpi, pos, objectPreviewSize))
-                {
-                    auto image = Gfx::recolour(object->name, Colour::dark_olive_green);
-
-                    Gfx::drawImage(dpi, objectPreviewOffset.x, 79, image + 24);
-                    Gfx::drawImage(dpi, objectPreviewOffset.x, 79, image + 25);
-                    Gfx::drawImage(dpi, objectPreviewOffset.x, 79, image + 27);
-                }
-
+                callDrawPreviewImage<scaffolding_object>(*dpi, x, y, objectPtr);
                 break;
-            }
 
             case object_type::industry:
-            {
-                auto object = reinterpret_cast<industry_object*>(objectPtr);
-                Gfx::drawpixelinfo_t* clipped = nullptr;
-
-                xy32 pos = { x - objectPreviewOffset.x, y - objectPreviewOffset.y };
-                if (Gfx::clipDrawpixelinfo(&clipped, dpi, pos, objectPreviewSize))
-                {
-                    object->drawIndustry(clipped, objectPreviewOffset.x, 96);
-                }
-
+                callDrawPreviewImage<industry_object>(*dpi, x, y, objectPtr);
                 break;
-            }
 
             case object_type::region:
-            {
-                auto object = reinterpret_cast<region_object*>(objectPtr);
-                auto image = object->image;
-
-                Gfx::drawImage(dpi, x, y, image);
+                callDrawPreviewImage<region_object>(*dpi, x, y, objectPtr);
                 break;
-            }
 
             case object_type::competitor:
-            {
-                auto object = reinterpret_cast<competitor_object*>(objectPtr);
-
-                xy32 pos = { x - objectPreviewOffset.x, y - objectPreviewOffset.y };
-                Gfx::drawRect(dpi, pos.x, pos.y, objectPreviewSize.width, objectPreviewSize.height, Colour::inset(Colour::dark_brown));
-
-                auto image = Gfx::recolour(object->images[0], Colour::inset(Colour::dark_brown));
-                Gfx::drawImage(dpi, x - 32, y - 32, image);
-
+                callDrawPreviewImage<competitor_object>(*dpi, x, y, objectPtr);
                 break;
-            }
         }
     }
 
