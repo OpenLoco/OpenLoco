@@ -2,6 +2,7 @@
 #include "../Graphics/Colour.h"
 #include "../Graphics/Gfx.h"
 #include "../Interop/Interop.hpp"
+#include "ObjectManager.h"
 
 using namespace OpenLoco::Interop;
 
@@ -41,5 +42,12 @@ namespace OpenLoco
         regs.edi = (int32_t)clipped;
         regs.ebp = (uint32_t)this;
         call(0x0042DB95, regs);
+    }
+
+    // 0x0042DE82
+    void building_object::drawDescription(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y) const
+    {
+        Gfx::point_t rowPosition = { x, y };
+        ObjectManager::drawGenericDescription(dpi, rowPosition, designedYear, obsoleteYear);
     }
 }

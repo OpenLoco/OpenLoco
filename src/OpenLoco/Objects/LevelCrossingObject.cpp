@@ -1,5 +1,6 @@
 #include "LevelCrossingObject.h"
 #include "../Graphics/Gfx.h"
+#include "ObjectManager.h"
 
 namespace OpenLoco
 {
@@ -17,5 +18,12 @@ namespace OpenLoco
         Gfx::drawImage(&dpi, x, y, imageId + 1);
         Gfx::drawImage(&dpi, x, y, imageId + 2);
         Gfx::drawImage(&dpi, x, y, imageId + 3);
+    }
+
+    // 0x004781A4
+    void level_crossing_object::drawDescription(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y) const
+    {
+        Gfx::point_t rowPosition = { x, y };
+        ObjectManager::drawGenericDescription(dpi, rowPosition, designedYear, 0xFFFF);
     }
 }

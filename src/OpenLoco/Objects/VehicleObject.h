@@ -203,7 +203,8 @@ namespace OpenLoco
         uint8_t var_15B[0x15E - 0x15B]; // sound array size num_sounds/tbc??
 
         void drawPreviewImage(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y) const;
-        void getCargoString(char* buffer);
+        void drawDescription(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y) const;
+        void getCargoString(char* buffer) const;
     };
 #pragma pack(pop)
     static_assert(sizeof(vehicle_object) == 0x15E);

@@ -48,7 +48,44 @@ namespace OpenLoco
         }
     }
 
-    void vehicle_object::getCargoString(char* buffer)
+    // TODO: Should only be defined in ObjectSelectionWindow
+    static const uint8_t descriptionRowHeight = 10;
+
+    // 0x004B8C9D
+    void vehicle_object::drawDescription(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y) const
+    {
+        Gfx::point_t rowPosition = { x, y };
+        ObjectManager::drawGenericDescription(dpi, rowPosition, designed, obsolete);
+        if (power != 0 && (mode == TransportMode::road || mode == TransportMode::rail))
+        {
+            FormatArguments args{};
+            args.push(power);
+            Gfx::drawString_494B3F(dpi, rowPosition.x, rowPosition.y, Colour::black, StringIds::object_selection_power, &args);
+            rowPosition.y += descriptionRowHeight;
+        }
+
+        {
+            FormatArguments args{};
+            args.push(weight);
+            Gfx::drawString_494B3F(dpi, rowPosition.x, rowPosition.y, Colour::black, StringIds::object_selection_weight, &args);
+            rowPosition.y += descriptionRowHeight;
+        }
+        {
+            FormatArguments args{};
+            args.push(speed);
+            Gfx::drawString_494B3F(dpi, rowPosition.x, rowPosition.y, Colour::black, StringIds::object_selection_max_speed, &args);
+        }
+        auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
+
+        getCargoString(buffer);
+
+        // ****TODO: BEFORE MERGE, CLIP DPI PRIOR TO CALLING!!!*****
+        auto width = dpi.width - 4;
+        Gfx::drawString_495224(dpi, rowPosition.x, rowPosition.y, width, Colour::black, StringIds::buffer_1250);
+
+    }
+
+    void vehicle_object::getCargoString(char* buffer) const
     {
         if (num_simultaneous_cargo_types != 0)
         {

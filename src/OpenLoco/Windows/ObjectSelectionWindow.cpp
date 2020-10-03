@@ -510,179 +510,36 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 break;
 
             case object_type::level_crossing:
-            {
-                auto object = reinterpret_cast<level_crossing_object*>(objectPtr);
-
-                if (object->designedYear != 0)
-                {
-                    Gfx::drawString_494B3F(*dpi, x, y, Colour::black, StringIds::object_selection_designed, &object->designedYear);
-                    y += descriptionRowHeight;
-                }
-
+                callDrawDescription<level_crossing_object>(*dpi, x, y, objectPtr);
                 break;
-            }
 
             case object_type::track_station:
-            {
-                auto object = reinterpret_cast<train_station_object*>(objectPtr);
-
-                if (object->designed_year != 0)
-                {
-                    Gfx::drawString_494B3F(*dpi, x, y, Colour::black, StringIds::object_selection_designed, &object->designed_year);
-                    y += descriptionRowHeight;
-                }
-
-                if (object->obsolete_year != 0xFFFF)
-                {
-                    Gfx::drawString_494B3F(*dpi, x, y, Colour::black, StringIds::object_selection_obsolete, &object->obsolete_year);
-                    y += descriptionRowHeight;
-                }
-
+                callDrawDescription<train_station_object>(*dpi, x, y, objectPtr);
                 break;
-            }
 
             case object_type::road_station:
-            {
-                auto object = reinterpret_cast<road_station_object*>(objectPtr);
-
-                if (object->designed_year != 0)
-                {
-                    Gfx::drawString_494B3F(*dpi, x, y, Colour::black, StringIds::object_selection_designed, &object->designed_year);
-                    y += descriptionRowHeight;
-                }
-
-                if (object->obsolete_year != 0xFFFF)
-                {
-                    Gfx::drawString_494B3F(*dpi, x, y, Colour::black, StringIds::object_selection_obsolete, &object->obsolete_year);
-                    y += descriptionRowHeight;
-                }
-
+                callDrawDescription<road_station_object>(*dpi, x, y, objectPtr);
                 break;
-            }
 
             case object_type::airport:
-            {
-                auto object = reinterpret_cast<airport_object*>(objectPtr);
-
-                if (object->designed_year != 0)
-                {
-                    Gfx::drawString_494B3F(*dpi, x, y, Colour::black, StringIds::object_selection_designed, &object->designed_year);
-                    y += descriptionRowHeight;
-                }
-
-                if (object->obsolete_year != 0xFFFF)
-                {
-                    Gfx::drawString_494B3F(*dpi, x, y, Colour::black, StringIds::object_selection_obsolete, &object->obsolete_year);
-                    y += descriptionRowHeight;
-                }
-
+                callDrawDescription<airport_object>(*dpi, x, y, objectPtr);
                 break;
-            }
 
             case object_type::dock:
-            {
-                auto object = reinterpret_cast<dock_object*>(objectPtr);
-
-                if (object->designed_year != 0)
-                {
-                    Gfx::drawString_494B3F(*dpi, x, y, Colour::black, StringIds::object_selection_designed, &object->designed_year);
-                    y += descriptionRowHeight;
-                }
-
-                if (object->obsolete_year != 0xFFFF)
-                {
-                    Gfx::drawString_494B3F(*dpi, x, y, Colour::black, StringIds::object_selection_obsolete, &object->obsolete_year);
-                    y += descriptionRowHeight;
-                }
-
+                callDrawDescription<dock_object>(*dpi, x, y, objectPtr);
                 break;
-            }
 
             case object_type::vehicle:
-            {
-                auto object = reinterpret_cast<vehicle_object*>(objectPtr);
-
-                if (object->designed != 0)
-                {
-                    Gfx::drawString_494B3F(*dpi, x, y, Colour::black, StringIds::object_selection_designed, &object->designed);
-                    y += descriptionRowHeight;
-                }
-
-                if (object->obsolete != 0xFFFF)
-                {
-                    Gfx::drawString_494B3F(*dpi, x, y, Colour::black, StringIds::object_selection_obsolete, &object->obsolete);
-                    y += descriptionRowHeight;
-                }
-
-                if (object->power != 0 && (object->mode == TransportMode::road || object->mode == TransportMode::rail))
-                {
-                    Gfx::drawString_494B3F(*dpi, x, y, Colour::black, StringIds::object_selection_power, &object->power);
-                    y += descriptionRowHeight;
-                }
-
-                Gfx::drawString_494B3F(*dpi, x, y, Colour::black, StringIds::object_selection_weight, &object->weight);
-                y += descriptionRowHeight;
-
-                Gfx::drawString_494B3F(*dpi, x, y, Colour::black, StringIds::object_selection_max_speed, &object->speed);
-
-                auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
-
-                object->getCargoString(buffer);
-
-                auto width = self->width + self->x - x + 4;
-                Gfx::drawString_495224(*dpi, x, y, width, Colour::black, StringIds::buffer_1250);
-
+                callDrawDescription<vehicle_object>(*dpi, x, y, objectPtr);
                 break;
-            }
 
             case object_type::building:
-            {
-                auto object = reinterpret_cast<building_object*>(objectPtr);
-
-                if (object->designedYear != 0)
-                {
-                    Gfx::drawString_494B3F(*dpi, x, y, Colour::black, StringIds::building_earliest_construction_year, &object->designedYear);
-                    y += descriptionRowHeight;
-                }
-
-                if (object->obsoleteYear != 0xFFFF)
-                {
-                    Gfx::drawString_494B3F(*dpi, x, y, Colour::black, StringIds::building_latest_construction_year, &object->obsoleteYear);
-                    y += descriptionRowHeight;
-                }
-
+                callDrawDescription<building_object>(*dpi, x, y, objectPtr);
                 break;
-            }
 
             case object_type::competitor:
-            {
-                auto object = reinterpret_cast<competitor_object*>(objectPtr);
-                {
-                    auto args = FormatArguments();
-                    args.push<uint16_t>(object->intelligence);
-                    args.push(aiRatingToLevel(object->intelligence));
-
-                    Gfx::drawString_494B3F(*dpi, x, y, Colour::black, StringIds::company_details_intelligence, &args);
-                    y += descriptionRowHeight;
-                }
-                {
-                    auto args = FormatArguments();
-                    args.push<uint16_t>(object->aggressiveness);
-                    args.push(aiRatingToLevel(object->aggressiveness));
-
-                    Gfx::drawString_494B3F(*dpi, x, y, Colour::black, StringIds::company_details_aggressiveness, &args);
-                    y += descriptionRowHeight;
-                }
-                {
-                    auto args = FormatArguments();
-                    args.push<uint16_t>(object->competitiveness);
-                    args.push(aiRatingToLevel(object->competitiveness));
-
-                    Gfx::drawString_494B3F(*dpi, x, y, Colour::black, StringIds::company_details_competitiveness, &args);
-                }
-
+                callDrawDescription<competitor_object>(*dpi, x, y, objectPtr);
                 break;
-            }
         }
     }
 

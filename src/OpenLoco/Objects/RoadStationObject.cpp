@@ -1,6 +1,7 @@
 #include "RoadStationObject.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/Gfx.h"
+#include "ObjectManager.h"
 
 namespace OpenLoco
 {
@@ -20,5 +21,12 @@ namespace OpenLoco
         auto translucentImage = Gfx::recolourTranslucent(image + 1, colour);
 
         Gfx::drawImage(&dpi, x - 34, y - 34, translucentImage);
+    }
+
+    // 0x00490C59
+    void road_station_object::drawDescription(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y) const
+    {
+        Gfx::point_t rowPosition = { x, y };
+        ObjectManager::drawGenericDescription(dpi, rowPosition, designed_year, obsolete_year);
     }
 }

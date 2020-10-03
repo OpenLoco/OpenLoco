@@ -27,6 +27,7 @@ namespace OpenLoco
         uint8_t pad_24[0x28 - 0x24];
 
         void drawPreviewImage(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y) const;
+        void drawDescription(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y) const;
     };
 #pragma pack(pop)
 }

@@ -26,6 +26,7 @@ namespace OpenLoco
         uint8_t var_37;          // 0x37
 
         void drawPreviewImage(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y) const;
+        void drawDescription(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y) const;
     };
     static_assert(sizeof(competitor_object) == 0x38);
 #pragma pack(pop)
