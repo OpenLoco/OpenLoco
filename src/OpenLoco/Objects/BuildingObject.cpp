@@ -35,7 +35,7 @@ namespace OpenLoco
     }
 
     // 0x0042DE82
-    void building_object::drawDescription(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y) const
+    void building_object::drawDescription(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const
     {
         Gfx::point_t rowPosition = { x, y };
         ObjectManager::drawGenericDescription(dpi, rowPosition, designedYear, obsoleteYear);

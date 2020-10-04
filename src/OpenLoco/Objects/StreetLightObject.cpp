@@ -10,7 +10,7 @@ namespace OpenLoco
     // 0x00477F69
     void street_light_object::drawPreviewImage(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y) const
     {
-        Gfx::point_t imgPosition{ x - 20, y - 1 };
+        Gfx::point_t imgPosition = Gfx::point_t{ x, y } - Gfx::point_t{ 20, 1 };
         for (auto i = 0; i < 3; i++)
         {
             auto imageId = (i * 4) + image;

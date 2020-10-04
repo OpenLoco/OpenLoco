@@ -24,7 +24,7 @@ namespace OpenLoco
     }
 
     // 0x00490C59
-    void road_station_object::drawDescription(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y) const
+    void road_station_object::drawDescription(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const
     {
         Gfx::point_t rowPosition = { x, y };
         ObjectManager::drawGenericDescription(dpi, rowPosition, designed_year, obsolete_year);

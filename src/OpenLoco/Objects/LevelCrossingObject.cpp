@@ -21,7 +21,7 @@ namespace OpenLoco
     }
 
     // 0x004781A4
-    void level_crossing_object::drawDescription(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y) const
+    void level_crossing_object::drawDescription(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const
     {
         Gfx::point_t rowPosition = { x, y };
         ObjectManager::drawGenericDescription(dpi, rowPosition, designedYear, 0xFFFF);

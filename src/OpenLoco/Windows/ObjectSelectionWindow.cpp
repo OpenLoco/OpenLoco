@@ -441,46 +441,53 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     }
 
     template<typename T>
-    static void callDrawDescription(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y, void* objectPtr)
+    static void callDrawDescription(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y, const int16_t width, void* objectPtr)
     {
         auto object = reinterpret_cast<T*>(objectPtr);
-        object->drawDescription(dpi, x, y);
+        object->drawDescription(dpi, x, y, width);
     }
 
     static void drawDescription(ObjectManager::header* header, window* self, Gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, void* objectPtr)
     {
+        Gfx::drawpixelinfo_t* clipped = nullptr;
+        int16_t width = self->x + self->width - x;
+        int16_t height = self->y + self->height - y;
+        // Clip the draw area to simplify image draw
+        if (!Gfx::clipDrawpixelinfo(&clipped, dpi, x, y, width, height))
+            return;
+
         switch (header->getType())
         {
             case object_type::level_crossing:
-                callDrawDescription<level_crossing_object>(*dpi, x, y, objectPtr);
+                callDrawDescription<level_crossing_object>(*clipped, 0, 0, width, objectPtr);
                 break;
 
             case object_type::track_station:
-                callDrawDescription<train_station_object>(*dpi, x, y, objectPtr);
+                callDrawDescription<train_station_object>(*clipped, 0, 0, width, objectPtr);
                 break;
 
             case object_type::road_station:
-                callDrawDescription<road_station_object>(*dpi, x, y, objectPtr);
+                callDrawDescription<road_station_object>(*clipped, 0, 0, width, objectPtr);
                 break;
 
             case object_type::airport:
-                callDrawDescription<airport_object>(*dpi, x, y, objectPtr);
+                callDrawDescription<airport_object>(*clipped, 0, 0, width, objectPtr);
                 break;
 
             case object_type::dock:
-                callDrawDescription<dock_object>(*dpi, x, y, objectPtr);
+                callDrawDescription<dock_object>(*clipped, 0, 0, width, objectPtr);
                 break;
 
             case object_type::vehicle:
-                callDrawDescription<vehicle_object>(*dpi, x, y, objectPtr);
+                callDrawDescription<vehicle_object>(*clipped, 0, 0, width, objectPtr);
                 break;
 
             case object_type::building:
-                callDrawDescription<building_object>(*dpi, x, y, objectPtr);
+                callDrawDescription<building_object>(*clipped, 0, 0, width, objectPtr);
                 break;
 
             case object_type::competitor:
-                callDrawDescription<competitor_object>(*dpi, x, y, objectPtr);
+                callDrawDescription<competitor_object>(*clipped, 0, 0, width, objectPtr);
                 break;
 
             default:

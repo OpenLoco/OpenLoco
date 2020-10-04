@@ -26,7 +26,8 @@ namespace OpenLoco
             image = Gfx::recolour(image, colour);
         }
 
-        Gfx::point_t treePos = { x, y + 48 };
+        Gfx::point_t treePos = Gfx::point_t{ x, y } + Gfx::point_t{ 0, 48 };
+
         if (var_08 & (1 << 0))
         {
             auto snowImage = treeGrowth[growth] * num_rotations;

@@ -36,14 +36,14 @@ namespace OpenLoco
         uint8_t unk1 = _52622E & 0x3F;
         uint8_t unk2 = ((_52622E + 2) / 4) & 0x3F;
 
-        drawVehicle(&dpi, this, unk1, unk2, { x, y + 19 });
+        drawVehicle(&dpi, this, unk1, unk2, Gfx::point_t{ x, y } + Gfx::point_t{ 0, 19 });
     }
 
     // TODO: Should only be defined in ObjectSelectionWindow
     static const uint8_t descriptionRowHeight = 10;
 
     // 0x004B8C9D
-    void vehicle_object::drawDescription(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y) const
+    void vehicle_object::drawDescription(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y, const int16_t width) const
     {
         Gfx::point_t rowPosition = { x, y };
         ObjectManager::drawGenericDescription(dpi, rowPosition, designed, obsolete);
@@ -70,9 +70,7 @@ namespace OpenLoco
 
         getCargoString(buffer);
 
-        // ****TODO: BEFORE MERGE, CLIP DPI PRIOR TO CALLING!!!*****
-        auto width = dpi.width - 4;
-        Gfx::drawString_495224(dpi, rowPosition.x, rowPosition.y, width, Colour::black, StringIds::buffer_1250);
+        Gfx::drawString_495224(dpi, rowPosition.x, rowPosition.y, width - 4, Colour::black, StringIds::buffer_1250);
     }
 
     void vehicle_object::getCargoString(char* buffer) const
