@@ -565,7 +565,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             *buffer++ = ControlCodes::window_colour_2;
             auto objectPtr = self->object;
 
-            strncpy(buffer, ObjectManager::object_index_entry::read(&objectPtr)._name, 512);
+            strncpy(buffer, ObjectManager::object_index_entry::read(&objectPtr)._name, 510);
 
             Gfx::drawStringCentredClipped(*dpi, x, y, width, Colour::black, StringIds::buffer_2039);
         }
@@ -633,7 +633,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
             char buffer[512]{};
             buffer[0] = textColour;
-            strncpy(&buffer[1], object._name, 511);
+            strncpy(&buffer[1], object._name, 510);
             _currentFontSpriteBase = Font::medium_bold;
 
             Gfx::drawString(dpi, 15, y, Colour::black, buffer);
