@@ -4,6 +4,11 @@
 
 namespace OpenLoco
 {
+    namespace Gfx
+    {
+        struct drawpixelinfo_t;
+    }
+
 #pragma pack(push, 1)
     struct airport_var_AE_object
     {
@@ -30,7 +35,7 @@ namespace OpenLoco
         uint16_t sell_cost_factor;  // 0x04
         uint8_t cost_index;         //0x06
         uint8_t var_07;
-        uint32_t var_08;
+        uint32_t image; // 0x08
         uint8_t pad_0C[0x10 - 0x0C];
         uint16_t allowed_plane_types; // 0x10
         uint8_t num_sprite_sets;      // 0x12
@@ -48,6 +53,9 @@ namespace OpenLoco
         airport_var_AE_object* var_AE;
         airport_var_B2_object* var_B2;
         uint8_t pad_B6[0xBA - 0xB6];
+
+        void drawPreviewImage(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y) const;
+        void drawDescription(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const;
     };
 #pragma pack(pop)
 }

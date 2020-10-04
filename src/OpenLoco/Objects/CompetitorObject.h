@@ -1,9 +1,16 @@
 #pragma once
 
+#include "../Localisation/StringIds.h"
 #include "../Localisation/StringManager.h"
+#include <array>
 
 namespace OpenLoco
 {
+    namespace Gfx
+    {
+        struct drawpixelinfo_t;
+    }
+
 #pragma pack(push, 1)
     struct competitor_object
     {
@@ -14,10 +21,15 @@ namespace OpenLoco
         uint32_t emotions;       // 0x0C
         uint32_t images[9];      // 0x10
         uint8_t intelligence;    // 0x34
-        uint8_t agressiveness;   // 0x35
+        uint8_t aggressiveness;  // 0x35
         uint8_t competitiveness; // 0x36
         uint8_t var_37;          // 0x37
+
+        void drawPreviewImage(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y) const;
+        void drawDescription(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const;
     };
     static_assert(sizeof(competitor_object) == 0x38);
 #pragma pack(pop)
+
+    [[nodiscard]] string_id aiRatingToLevel(const uint8_t rating);
 }

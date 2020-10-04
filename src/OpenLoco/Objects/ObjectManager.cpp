@@ -1,5 +1,9 @@
 #include "ObjectManager.h"
+#include "../Graphics/Colour.h"
+#include "../Graphics/Gfx.h"
 #include "../Interop/Interop.hpp"
+#include "../Localisation/FormatArguments.hpp"
+#include "../Localisation/StringIds.h"
 #include <vector>
 
 using namespace OpenLoco::Interop;
@@ -69,6 +73,15 @@ namespace OpenLoco::ObjectManager
     steam_object* get(size_t id)
     {
         return _steamObjects[id];
+    }
+
+    template<>
+    rock_object* get(size_t id)
+    {
+        if (_rockObjects[id] != reinterpret_cast<rock_object*>(-1))
+            return _rockObjects[id];
+        else
+            return nullptr;
     }
 
     template<>
@@ -245,6 +258,14 @@ namespace OpenLoco::ObjectManager
             return nullptr;
     }
 
+    template<>
+    region_object* get()
+    {
+        if (_regionObjects[0] != reinterpret_cast<region_object*>(-1))
+            return _regionObjects[0];
+        else
+            return nullptr;
+    }
     /*
     static void printHeader(header data)
     {
@@ -373,5 +394,27 @@ namespace OpenLoco::ObjectManager
         }
 
         return { -1, object_index_entry{} };
+    }
+
+    // TODO: Should only be defined in ObjectSelectionWindow
+    static const uint8_t descriptionRowHeight = 10;
+
+    void drawGenericDescription(Gfx::drawpixelinfo_t& dpi, Gfx::point_t& rowPosition, const uint16_t designed, const uint16_t obsolete)
+    {
+        if (designed != 0)
+        {
+            FormatArguments args{};
+            args.push(designed);
+            Gfx::drawString_494B3F(dpi, rowPosition.x, rowPosition.y, Colour::black, StringIds::object_selection_designed, &args);
+            rowPosition.y += descriptionRowHeight;
+        }
+
+        if (obsolete != 0xFFFF)
+        {
+            FormatArguments args{};
+            args.push(obsolete);
+            Gfx::drawString_494B3F(dpi, rowPosition.x, rowPosition.y, Colour::black, StringIds::object_selection_obsolete, &args);
+            rowPosition.y += descriptionRowHeight;
+        }
     }
 }

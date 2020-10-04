@@ -4,6 +4,11 @@
 
 namespace OpenLoco
 {
+    namespace Gfx
+    {
+        struct drawpixelinfo_t;
+    }
+
     namespace Flags22
     {
         constexpr uint8_t unk_02 = 1 << 2;
@@ -42,14 +47,16 @@ namespace OpenLoco
         uint16_t tunnel_cost_factor; // 0x18
         uint8_t cost_index;          // 0x1A
         uint8_t var_1B;
-        uint16_t curve_speed; // 0x1C
-        uint32_t var_1E;
+        uint16_t curve_speed;   // 0x1C
+        uint32_t image;         // 0x1E
         uint16_t flags;         // 0x22
         uint8_t num_bridges;    // 0x24
         uint8_t bridges[7];     // 0x25
         uint8_t num_stations;   // 0x2C
         uint8_t stations[7];    // 0x2D
         uint8_t display_offset; // 0x34
+
+        void drawPreviewImage(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y) const;
     };
 #pragma pack(pop)
 }

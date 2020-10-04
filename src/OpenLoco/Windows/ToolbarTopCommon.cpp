@@ -53,12 +53,12 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
             if (isRoad)
             {
                 auto obj = ObjectManager::get<road_object>(last_road_option & ~(1 << 7));
-                fgImage = Gfx::recolour(obj->var_0E, company_colour);
+                fgImage = Gfx::recolour(obj->image, company_colour);
             }
             else
             {
                 auto obj = ObjectManager::get<track_object>(last_road_option);
-                fgImage = Gfx::recolour(obj->var_1E, company_colour);
+                fgImage = Gfx::recolour(obj->image, company_colour);
             }
 
             y--;
@@ -181,7 +181,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
 
         Dropdown::add(0, StringIds::menu_sprite_stringid, { interface->img + InterfaceSkin::ImageIds::toolbar_menu_bulldozer, StringIds::menu_clear_area });
         Dropdown::add(1, StringIds::menu_sprite_stringid, { land->var_16 + Land::ImageIds::toolbar_terraform_land, StringIds::menu_adjust_land });
-        Dropdown::add(2, StringIds::menu_sprite_stringid, { water->var_06 + Water::ImageIds::toolbar_terraform_water, StringIds::menu_adjust_water });
+        Dropdown::add(2, StringIds::menu_sprite_stringid, { water->image + Water::ImageIds::toolbar_terraform_water, StringIds::menu_adjust_water });
         Dropdown::add(3, StringIds::menu_sprite_stringid, { interface->img + InterfaceSkin::ImageIds::toolbar_menu_plant_trees, StringIds::menu_plant_trees });
         Dropdown::add(4, StringIds::menu_sprite_stringid, { interface->img + InterfaceSkin::ImageIds::toolbar_menu_build_walls, StringIds::menu_build_walls });
         Dropdown::showBelow(window, widgetIndex, 5, 25, (1 << 6));
@@ -217,13 +217,13 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
             {
                 auto road = ObjectManager::get<road_object>(objIndex & 0x7F);
                 obj_string_id = road->name;
-                obj_image = Gfx::recolour(road->var_0E, company_colour);
+                obj_image = Gfx::recolour(road->image, company_colour);
             }
             else
             {
                 auto track = ObjectManager::get<track_object>(objIndex);
                 obj_string_id = track->name;
-                obj_image = Gfx::recolour(track->var_1E, company_colour);
+                obj_image = Gfx::recolour(track->image, company_colour);
             }
 
             Dropdown::add(i, StringIds::menu_sprite_stringid_construction, { obj_image, obj_string_id });

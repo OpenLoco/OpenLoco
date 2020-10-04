@@ -1,4 +1,6 @@
 #include "IndustryObject.h"
+#include "../Graphics/Colour.h"
+#include "../Graphics/Gfx.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/StringIds.h"
 #include "CargoObject.h"
@@ -82,5 +84,22 @@ namespace OpenLoco
             }
         }
         return ptr;
+    }
+
+    // 0x0045932D
+    void industry_object::drawPreviewImage(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y) const
+    {
+        drawIndustry(&dpi, x, y + 40);
+    }
+
+    // 0x00458C7F
+    void industry_object::drawIndustry(Gfx::drawpixelinfo_t* clipped, int16_t x, int16_t y) const
+    {
+        registers regs;
+        regs.cx = x;
+        regs.dx = y;
+        regs.edi = (uint32_t)clipped;
+        regs.ebp = (uint32_t)this;
+        call(0x00458C7F, regs);
     }
 }

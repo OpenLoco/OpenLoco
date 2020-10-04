@@ -1046,19 +1046,6 @@ namespace OpenLoco::Ui::Windows::TownList
             args.push(StringIds::tooltip_scroll_building_list);
         }
 
-        // 0x0042DB95
-        static void drawBuildingThumb(Gfx::drawpixelinfo_t* clipped, const OpenLoco::building_object* buildingObj, uint8_t buildingRotation, int16_t x, int16_t y, colour_t colour)
-        {
-            registers regs;
-            regs.cx = x;
-            regs.dx = y;
-            regs.esi = colour;
-            regs.eax = buildingRotation;
-            regs.edi = (uint32_t)clipped;
-            regs.ebp = (uint32_t)buildingObj;
-            call(0x0042DB95, regs);
-        }
-
         // 0x0049AA1C
         static void drawScroll(Ui::window* self, Gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
         {
@@ -1095,7 +1082,7 @@ namespace OpenLoco::Ui::Windows::TownList
                             colour = 0;
                     }
 
-                    drawBuildingThumb(clipped, buildingObj, _buildingRotation, 56, 96, colour);
+                    buildingObj->drawBuilding(clipped, _buildingRotation, 56, 96, colour);
                 }
 
                 xPos += 112;

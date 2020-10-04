@@ -1500,15 +1500,12 @@ namespace OpenLoco::Ui::Options
                 index++;
                 if (index == ax)
                 {
-                    registers regs;
-                    regs.dl = (uint8_t)object_type::currency;
-                    regs.edi = (uintptr_t)_11364A0;
-                    call(0x00472AFE, regs); // get active object?
+                    auto ebp = ObjectManager::getActiveObject(object_type::currency, _11364A0);
 
-                    if (regs.ebp != -1)
+                    if (ebp.index != -1)
                     {
                         registers regs2;
-                        regs2.ebp = regs.ebp;
+                        regs2.ebp = (uintptr_t)ebp.object._header;
                         call(0x00471FF8, regs2); // unload object
                     }
 

@@ -1070,6 +1070,13 @@ namespace OpenLoco::StringIds
     constexpr string_id chat_instructions = 1718;
     constexpr string_id buffer_1719 = 1719;
 
+    constexpr string_id object_selection_designed = 1723;
+    constexpr string_id object_selection_obsolete = 1724;
+    constexpr string_id object_selection_power = 1725;
+    constexpr string_id object_selection_weight = 1726;
+    constexpr string_id object_selection_max_speed = 1727;
+    constexpr string_id object_selection_capacity = 1728;
+
     constexpr string_id land_distribution_everywhere = 1730;
     constexpr string_id land_distribution_nowhere = 1731;
     constexpr string_id land_distribution_far_from_water = 1732;
@@ -1163,6 +1170,8 @@ namespace OpenLoco::StringIds
     constexpr string_id competition_not_starting_for_month = 1825;
     constexpr string_id competition_not_starting_for_months = 1826;
 
+    constexpr string_id building_earliest_construction_year = 1831;
+    constexpr string_id building_latest_construction_year = 1832;
     constexpr string_id local_authority_ratings_transport_companies = 1833;
     constexpr string_id town_rating_appalling = 1834;
     constexpr string_id town_rating_poor = 1835;
@@ -1306,8 +1315,52 @@ namespace OpenLoco::StringIds
 
     constexpr string_id buffer_2045 = 2045;
 
+    constexpr string_id error_unable_to_select_object = 2049;
+    constexpr string_id error_unable_to_deselect_object = 2050;
+
+    constexpr string_id title_object_selection = 2052;
+    constexpr string_id object_interface_styles = 2053;
+    constexpr string_id object_sounds = 2054;
+    constexpr string_id object_currency = 2055;
+    constexpr string_id object_animation_effects = 2056;
+    constexpr string_id object_cliffs = 2057;
+    constexpr string_id object_water = 2058;
+    constexpr string_id object_land = 2059;
+    constexpr string_id object_town_names = 2060;
+    constexpr string_id object_cargo = 2061;
+    constexpr string_id object_walls = 2062;
+    constexpr string_id object_signals = 2063;
+    constexpr string_id object_level_crossing = 2064;
+    constexpr string_id object_street_lights = 2065;
+    constexpr string_id object_tunnels = 2066;
+    constexpr string_id object_bridges = 2067;
+    constexpr string_id object_track_stations = 2068;
+    constexpr string_id object_track_extras = 2069;
+    constexpr string_id object_tracks = 2070;
+    constexpr string_id object_road_stations = 2071;
+    constexpr string_id object_road_extras = 2072;
+    constexpr string_id object_roads = 2073;
+    constexpr string_id object_airports = 2074;
+    constexpr string_id object_docks = 2075;
+    constexpr string_id object_vehicles = 2076;
+    constexpr string_id object_trees = 2077;
+    constexpr string_id object_snow = 2078;
+    constexpr string_id object_climate = 2079;
+    constexpr string_id object_map_generation_data = 2080;
+    constexpr string_id object_buildings = 2081;
+    constexpr string_id object_scaffolding = 2082;
+    constexpr string_id object_industries = 2083;
+    constexpr string_id object_world_region = 2084;
+    constexpr string_id object_company_owners = 2085;
+    constexpr string_id object_scenario_descriptions = 2086;
+    constexpr string_id tooltip_object_list = 2087;
+
     constexpr string_id export_plugin_objects = 2089;
     constexpr string_id export_plugin_objects_tip = 2090;
+
+    constexpr string_id object_selection_advanced = 2093;
+    constexpr string_id object_selection_advanced_tooltip = 2094;
+    constexpr string_id object_currency_big_font = 2095;
 
     constexpr string_id unit_mph = 2113;
     constexpr string_id unit_kmh = 2114;

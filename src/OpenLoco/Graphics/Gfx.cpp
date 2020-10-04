@@ -1087,6 +1087,11 @@ namespace OpenLoco::Gfx
         return (1 << 29) | (colour << 19) | image;
     }
 
+    uint32_t recolourTranslucent(uint32_t image, uint8_t colour)
+    {
+        return (1 << 30) | (colour << 19) | image;
+    }
+
     loco_global<uint8_t*, 0x0050B860> _50B860;
     loco_global<uint32_t, 0x00E04324> _E04324;
 
@@ -1123,6 +1128,11 @@ namespace OpenLoco::Gfx
         *dst = (Gfx::drawpixelinfo_t*)regs.edi;
 
         return *dst != nullptr;
+    }
+
+    bool clipDrawpixelinfo(Gfx::drawpixelinfo_t** dst, Gfx::drawpixelinfo_t* src, point_t pos, Gfx::ui_size_t size)
+    {
+        return clipDrawpixelinfo(dst, src, pos.x, pos.y, size.width, size.height);
     }
 
     g1_element* getG1Element(uint32_t id)

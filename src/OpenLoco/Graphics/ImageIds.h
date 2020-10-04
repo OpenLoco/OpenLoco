@@ -8,6 +8,8 @@ namespace OpenLoco::ImageIds
 {
     constexpr uint32_t null = 0xFFFFFFFF;
 
+    constexpr uint32_t currency_symbol = 1919;
+
     constexpr uint32_t text_palette = 2169;
 
     constexpr uint32_t colour_swatch_recolourable = 2306;
@@ -117,6 +119,7 @@ namespace OpenLoco::ImageIds
     constexpr uint32_t tool_area = 2447;
 
     constexpr uint32_t tab = 2387;
+    constexpr uint32_t selected_tab = 2388;
 
     constexpr uint32_t speed_pause = 2460;
     constexpr uint32_t speed_pause_active = 2461;
@@ -129,6 +132,40 @@ namespace OpenLoco::ImageIds
     constexpr uint32_t random_map_watermark = 2468;
     constexpr uint32_t height_map_compass = 2469;
 
+    constexpr uint32_t tab_object_settings = 3505;
+    constexpr uint32_t tab_object_audio = 3506;
+    constexpr uint32_t tab_object_currency = 3507;
+    constexpr uint32_t tab_object_smoke = 3508;
+    constexpr uint32_t tab_object_cliff = 3509;
+    constexpr uint32_t tab_object_water = 3510;
+    constexpr uint32_t tab_object_landscape = 3511;
+    constexpr uint32_t tab_object_town_names = 3512;
+    constexpr uint32_t tab_object_cargo = 3513;
+    constexpr uint32_t tab_object_walls = 3514;
+    constexpr uint32_t tab_object_signals = 3515;
+    constexpr uint32_t tab_object_level_crossings = 3516;
+    constexpr uint32_t tab_object_streetlights = 3517;
+    constexpr uint32_t tab_object_tunnels = 3518;
+    constexpr uint32_t tab_object_bridges = 3519;
+    constexpr uint32_t tab_object_track_stations = 3520;
+    constexpr uint32_t tab_object_track_mods = 3521;
+    constexpr uint32_t tab_object_track = 3522;
+    constexpr uint32_t tab_object_road_stations = 3523;
+    constexpr uint32_t tab_object_road_mods = 3524;
+    constexpr uint32_t tab_object_road = 3525;
+    constexpr uint32_t tab_object_airports = 3526;
+    constexpr uint32_t tab_object_docks = 3527;
+    constexpr uint32_t tab_object_vehicles = 3528;
+    constexpr uint32_t tab_object_trees = 3529;
+    constexpr uint32_t tab_object_snow = 3530;
+    constexpr uint32_t tab_object_climate = 3531;
+    constexpr uint32_t tab_object_map = 3532;
+    constexpr uint32_t tab_object_buildings = 3533;
+    constexpr uint32_t tab_object_construction = 3534;
+    constexpr uint32_t tab_object_industries = 3535;
+    constexpr uint32_t tab_object_world = 3536;
+    constexpr uint32_t tab_object_companies = 3537;
+    constexpr uint32_t tab_object_scenarios = 3538;
     constexpr uint32_t news_background_old_left = 3539;
     constexpr uint32_t news_background_old_right = 3540;
     constexpr uint32_t news_background_new_left = 3541;

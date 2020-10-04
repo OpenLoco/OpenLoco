@@ -170,7 +170,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
             Gfx::drawString_495224(*dpi, xPos, yPos, width, Colour::black, StringIds::signal_black, &args);
         }
 
-        auto imageId = trainSignalObject->var_0E;
+        auto imageId = trainSignalObject->image;
 
         xPos = self->widgets[widx::both_directions].mid_x() + self->x;
         yPos = self->widgets[widx::both_directions].bottom + self->y - 4;

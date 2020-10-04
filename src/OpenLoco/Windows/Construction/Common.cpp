@@ -447,7 +447,7 @@ namespace OpenLoco::Ui::Windows::Construction
             auto roadObj = ObjectManager::get<road_object>(_trackType & ~(1 << 7));
             // Construction Tab
             {
-                auto imageId = roadObj->var_0E;
+                auto imageId = roadObj->image;
                 if (self->current_tab == widx::tab_construction - widx::tab_construction)
                     imageId += (self->frame_no / 4) % 32;
                 Gfx::recolour(imageId, companyColour);
@@ -476,14 +476,14 @@ namespace OpenLoco::Ui::Windows::Construction
                         clipped->x <<= 1;
                         clipped->y <<= 1;
                         auto roadStationObj = ObjectManager::get<road_station_object>(_lastSelectedStationType);
-                        auto imageId = Gfx::recolour(roadStationObj->var_0C, companyColour);
+                        auto imageId = Gfx::recolour(roadStationObj->image, companyColour);
                         Gfx::drawImage(clipped, -4, -10, imageId);
                         auto colour = _byte_5045FA[companyColour];
                         if (!(roadStationObj->flags & RoadStationFlags::recolourable))
                         {
                             colour = 46;
                         }
-                        imageId = Gfx::recolour(roadStationObj->var_0C, colour) + 1;
+                        imageId = Gfx::recolour(roadStationObj->image, colour) + 1;
                         Gfx::drawImage(clipped, -4, -10, imageId);
                     }
 
@@ -523,7 +523,7 @@ namespace OpenLoco::Ui::Windows::Construction
             auto trackObj = ObjectManager::get<track_object>(_trackType);
             // Construction Tab
             {
-                auto imageId = trackObj->var_1E;
+                auto imageId = trackObj->image;
                 if (self->current_tab == widx::tab_construction - widx::tab_construction)
                     imageId += (self->frame_no / 4) % 15;
                 Gfx::recolour(imageId, companyColour);
@@ -568,7 +568,7 @@ namespace OpenLoco::Ui::Windows::Construction
                                 clipped->x *= 2;
                                 clipped->y *= 2;
                                 auto trainStationObj = ObjectManager::get<train_station_object>(_lastSelectedStationType);
-                                auto imageId = Gfx::recolour(trainStationObj->var_0E, companyColour);
+                                auto imageId = Gfx::recolour(trainStationObj->image, companyColour);
                                 Gfx::drawImage(clipped, -4, -9, imageId);
                                 auto colour = _byte_5045FA[companyColour];
                                 if (!(trainStationObj->flags & TrainStationFlags::recolourable))
@@ -598,25 +598,15 @@ namespace OpenLoco::Ui::Windows::Construction
 
                     Gfx::drawpixelinfo_t* clipped = nullptr;
 
-                    const std::vector<uint8_t> signalFrames2State = { 1, 2, 3, 3, 3, 3, 3, 3, 2, 1, 0, 0, 0, 0, 0 };
-                    const std::vector<uint8_t> signalFrames3State = { 1, 2, 3, 3, 3, 3, 3, 3, 3, 4, 5, 6, 6, 6, 6, 6, 6, 6, 6, 5, 4, 3, 2, 1, 0, 0, 0, 0, 0, 0, 0 };
-                    const std::vector<uint8_t> signalFrames4State = { 1, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 5, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 7, 8, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-
-                    static const std::vector<std::vector<uint8_t>> signalFrames = {
-                        signalFrames2State,
-                        signalFrames3State,
-                        signalFrames4State,
-                    };
-
                     if (Gfx::clipDrawpixelinfo(&clipped, dpi, x, y, width, height))
                     {
                         auto trainSignalObject = ObjectManager::get<train_signal_object>(_lastSelectedSignal);
-                        auto imageId = trainSignalObject->var_0E;
+                        auto imageId = trainSignalObject->image;
                         if (self->current_tab == widx::tab_signal - widx::tab_construction)
                         {
                             auto frames = signalFrames[(((trainSignalObject->num_frames + 2) / 3) - 2)];
                             auto frameCount = std::size(frames) - 1;
-                            frameCount &= (self->frame_no >> trainSignalObject->var_04);
+                            frameCount &= (self->frame_no >> trainSignalObject->animationSpeed);
                             auto frameIndex = frames[frameCount];
                             frameIndex <<= 3;
                             imageId += frameIndex;

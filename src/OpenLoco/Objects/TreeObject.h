@@ -1,9 +1,29 @@
 #pragma once
 
 #include "../Types.hpp"
+#include <array>
 
 namespace OpenLoco
 {
+    namespace Gfx
+    {
+        struct drawpixelinfo_t;
+    }
+
+    const std::array<uint8_t, 11> treeGrowth = { {
+        1,
+        0,
+        1,
+        2,
+        2,
+        3,
+        4,
+        5,
+        6,
+        0,
+        0,
+    } };
+
 #pragma pack(push, 1)
     struct tree_object
     {
@@ -25,6 +45,8 @@ namespace OpenLoco
         uint32_t colours;           // 0x44
         uint16_t var_48;
         uint16_t var_4A;
+
+        void drawPreviewImage(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y) const;
     };
 #pragma pack(pop)
 }

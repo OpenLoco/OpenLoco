@@ -4,6 +4,11 @@
 
 namespace OpenLoco
 {
+    namespace Gfx
+    {
+        struct drawpixelinfo_t;
+    }
+
     enum class TransportMode : uint8_t
     {
         rail = 0,
@@ -196,7 +201,12 @@ namespace OpenLoco
         uint8_t pad_135[0x15A - 0x135];
         uint8_t num_sounds;             // 0x15A  possibly something else stuffed in (1<<7)
         uint8_t var_15B[0x15E - 0x15B]; // sound array size num_sounds/tbc??
+
+        void drawPreviewImage(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y) const;
+        void drawDescription(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y, const int16_t width) const;
+        void getCargoString(char* buffer) const;
     };
 #pragma pack(pop)
     static_assert(sizeof(vehicle_object) == 0x15E);
+
 }

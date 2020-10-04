@@ -182,7 +182,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
             return;
         }
         self->row_hover = rowIndex;
-        self->object = object._name;
+        self->object = reinterpret_cast<std::byte*>(object._header);
         ObjectManager::freeScenarioText();
         if (object._header)
         {
@@ -234,7 +234,8 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
             const auto width = self->width - self->widgets[widx::scrollview].right - 6;
             auto str = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
             *str++ = ControlCodes::window_colour_2;
-            strcpy(str, self->object);
+            auto objectPtr = self->object;
+            strcpy(str, ObjectManager::object_index_entry::read(&objectPtr)._name);
             Gfx::drawStringCentredClipped(*dpi, x, y, width, Colour::black, StringIds::buffer_2039);
         }
 

@@ -169,6 +169,7 @@ namespace OpenLoco::Gfx
     void drawImagePaletteSet(Gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, uint32_t image, uint8_t* palette);
     uint32_t recolour(uint32_t image);
     uint32_t recolour(uint32_t image, uint8_t colour);
+    uint32_t recolourTranslucent(uint32_t image, uint8_t colour);
 
     void invalidateScreen();
     void setDirtyBlocks(int32_t left, int32_t top, int32_t right, int32_t bottom);
@@ -179,5 +180,6 @@ namespace OpenLoco::Gfx
     void redrawScreenRect(int16_t left, int16_t top, int16_t right, int16_t bottom);
 
     bool clipDrawpixelinfo(Gfx::drawpixelinfo_t** dst, Gfx::drawpixelinfo_t* src, int16_t x, int16_t y, int16_t width, int16_t height);
+    bool clipDrawpixelinfo(Gfx::drawpixelinfo_t** dst, Gfx::drawpixelinfo_t* src, Gfx::point_t pos, Gfx::ui_size_t size);
     g1_element* getG1Element(uint32_t id);
 }
