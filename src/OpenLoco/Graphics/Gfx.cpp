@@ -1130,7 +1130,7 @@ namespace OpenLoco::Gfx
         return *dst != nullptr;
     }
 
-    bool clipDrawpixelinfo(Gfx::drawpixelinfo_t** dst, Gfx::drawpixelinfo_t* src, xy32 pos, Gfx::ui_size_t size)
+    bool clipDrawpixelinfo(Gfx::drawpixelinfo_t** dst, Gfx::drawpixelinfo_t* src, point_t pos, Gfx::ui_size_t size)
     {
         return clipDrawpixelinfo(dst, src, pos.x, pos.y, size.width, size.height);
     }

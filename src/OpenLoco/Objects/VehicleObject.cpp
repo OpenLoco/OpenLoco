@@ -11,10 +11,6 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco
 {
-    // TODO: Should only be defined in ObjectSelectionWindow
-    static const xy32 objectPreviewOffset = { 56, 56 };
-    static const Gfx::ui_size_t objectPreviewSize = { 112, 112 };
-
     static loco_global<uint16_t, 0x0052622E> _52622E; // Tick related
 
     // 0x004B7733
@@ -36,16 +32,11 @@ namespace OpenLoco
     // 0x004B8C52
     void vehicle_object::drawPreviewImage(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y) const
     {
-        Gfx::drawpixelinfo_t* clipped = nullptr;
+        // Rotation
+        uint8_t unk1 = _52622E & 0x3F;
+        uint8_t unk2 = ((_52622E + 2) / 4) & 0x3F;
 
-        xy32 pos = { x - objectPreviewOffset.x, y - objectPreviewOffset.y };
-        if (Gfx::clipDrawpixelinfo(&clipped, &dpi, pos, objectPreviewSize))
-        {
-            // Rotation
-            uint8_t unk1 = _52622E & 0x3F;
-            uint8_t unk2 = ((_52622E + 2) / 4) & 0x3F;
-            drawVehicle(clipped, this, unk1, unk2, { static_cast<int16_t>(objectPreviewOffset.x), 75 });
-        }
+        drawVehicle(&dpi, this, unk1, unk2, { x, y + 19 });
     }
 
     // TODO: Should only be defined in ObjectSelectionWindow
@@ -82,7 +73,6 @@ namespace OpenLoco
         // ****TODO: BEFORE MERGE, CLIP DPI PRIOR TO CALLING!!!*****
         auto width = dpi.width - 4;
         Gfx::drawString_495224(dpi, rowPosition.x, rowPosition.y, width, Colour::black, StringIds::buffer_1250);
-
     }
 
     void vehicle_object::getCargoString(char* buffer) const

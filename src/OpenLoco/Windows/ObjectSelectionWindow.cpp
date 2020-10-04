@@ -298,133 +298,140 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         }
     }
 
-    static const xy32 objectPreviewOffset = { 56, 56 };
+    static const Gfx::point_t objectPreviewOffset = { 56, 56 };
     static const Gfx::ui_size_t objectPreviewSize = { 112, 112 };
     static const uint8_t descriptionRowHeight = 10;
 
     template<typename T>
-    static void callDrawPreviewImage(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y, void* objectPtr)
+    static void callDrawPreviewImage(Gfx::drawpixelinfo_t& dpi, const Gfx::point_t& drawingOffset, void* objectPtr)
     {
         auto object = reinterpret_cast<T*>(objectPtr);
-        object->drawPreviewImage(dpi, x, y);
+        object->drawPreviewImage(dpi, drawingOffset.x, drawingOffset.y);
     }
 
     // 0x00473579
     static void drawPreviewImage(ObjectManager::header* header, Gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, void* objectPtr)
     {
         auto type = header->getType();
+
+        Gfx::drawpixelinfo_t* clipped = nullptr;
+        // Clip the draw area to simplify image draw
+        Gfx::point_t drawAreaPos = Gfx::point_t{ x, y } - objectPreviewOffset;
+        if (!Gfx::clipDrawpixelinfo(&clipped, dpi, drawAreaPos, objectPreviewSize))
+            return;
+
         switch (type)
         {
             case object_type::interface_skin:
-                callDrawPreviewImage<interface_skin_object>(*dpi, x, y, objectPtr);
+                callDrawPreviewImage<interface_skin_object>(*clipped, objectPreviewOffset, objectPtr);
                 break;
 
             case object_type::currency:
-                callDrawPreviewImage<currency_object>(*dpi, x, y, objectPtr);
+                callDrawPreviewImage<currency_object>(*clipped, objectPreviewOffset, objectPtr);
                 break;
 
             case object_type::rock:
-                callDrawPreviewImage<rock_object>(*dpi, x, y, objectPtr);
+                callDrawPreviewImage<rock_object>(*clipped, objectPreviewOffset, objectPtr);
                 break;
 
             case object_type::water:
-                callDrawPreviewImage<water_object>(*dpi, x, y, objectPtr);
+                callDrawPreviewImage<water_object>(*clipped, objectPreviewOffset, objectPtr);
                 break;
 
             case object_type::land:
-                callDrawPreviewImage<land_object>(*dpi, x, y, objectPtr);
+                callDrawPreviewImage<land_object>(*clipped, objectPreviewOffset, objectPtr);
                 break;
 
             case object_type::wall:
-                callDrawPreviewImage<wall_object>(*dpi, x, y, objectPtr);
+                callDrawPreviewImage<wall_object>(*clipped, objectPreviewOffset, objectPtr);
                 break;
 
             case object_type::track_signal:
-                callDrawPreviewImage<train_signal_object>(*dpi, x, y, objectPtr);
+                callDrawPreviewImage<train_signal_object>(*clipped, objectPreviewOffset, objectPtr);
                 break;
 
             case object_type::level_crossing:
-                callDrawPreviewImage<level_crossing_object>(*dpi, x, y, objectPtr);
+                callDrawPreviewImage<level_crossing_object>(*clipped, objectPreviewOffset, objectPtr);
                 break;
 
             case object_type::street_light:
-                callDrawPreviewImage<street_light_object>(*dpi, x, y, objectPtr);
+                callDrawPreviewImage<street_light_object>(*clipped, objectPreviewOffset, objectPtr);
                 break;
 
             case object_type::tunnel:
-                callDrawPreviewImage<tunnel_object>(*dpi, x, y, objectPtr);
+                callDrawPreviewImage<tunnel_object>(*clipped, objectPreviewOffset, objectPtr);
                 break;
 
             case object_type::bridge:
-                callDrawPreviewImage<bridge_object>(*dpi, x, y, objectPtr);
+                callDrawPreviewImage<bridge_object>(*clipped, objectPreviewOffset, objectPtr);
                 break;
 
             case object_type::track_station:
-                callDrawPreviewImage<train_station_object>(*dpi, x, y, objectPtr);
+                callDrawPreviewImage<train_station_object>(*clipped, objectPreviewOffset, objectPtr);
                 break;
 
             case object_type::track_extra:
-                callDrawPreviewImage<track_extra_object>(*dpi, x, y, objectPtr);
+                callDrawPreviewImage<track_extra_object>(*clipped, objectPreviewOffset, objectPtr);
                 break;
 
             case object_type::track:
-                callDrawPreviewImage<track_object>(*dpi, x, y, objectPtr);
+                callDrawPreviewImage<track_object>(*clipped, objectPreviewOffset, objectPtr);
                 break;
 
             case object_type::road_station:
-                callDrawPreviewImage<road_station_object>(*dpi, x, y, objectPtr);
+                callDrawPreviewImage<road_station_object>(*clipped, objectPreviewOffset, objectPtr);
                 break;
 
             case object_type::road_extra:
-                callDrawPreviewImage<road_extra_object>(*dpi, x, y, objectPtr);
+                callDrawPreviewImage<road_extra_object>(*clipped, objectPreviewOffset, objectPtr);
                 break;
 
             case object_type::road:
-                callDrawPreviewImage<road_object>(*dpi, x, y, objectPtr);
+                callDrawPreviewImage<road_object>(*clipped, objectPreviewOffset, objectPtr);
                 break;
 
             case object_type::airport:
-                callDrawPreviewImage<airport_object>(*dpi, x, y, objectPtr);
+                callDrawPreviewImage<airport_object>(*clipped, objectPreviewOffset, objectPtr);
                 break;
 
             case object_type::dock:
-                callDrawPreviewImage<dock_object>(*dpi, x, y, objectPtr);
+                callDrawPreviewImage<dock_object>(*clipped, objectPreviewOffset, objectPtr);
                 break;
 
             case object_type::vehicle:
-                callDrawPreviewImage<vehicle_object>(*dpi, x, y, objectPtr);
+                callDrawPreviewImage<vehicle_object>(*clipped, objectPreviewOffset, objectPtr);
                 break;
 
             case object_type::tree:
-                callDrawPreviewImage<tree_object>(*dpi, x, y, objectPtr);
+                callDrawPreviewImage<tree_object>(*clipped, objectPreviewOffset, objectPtr);
                 break;
 
             case object_type::snow:
-                callDrawPreviewImage<snow_object>(*dpi, x, y, objectPtr);
+                callDrawPreviewImage<snow_object>(*clipped, objectPreviewOffset, objectPtr);
                 break;
 
             case object_type::hill_shapes:
-                callDrawPreviewImage<hill_shapes_object>(*dpi, x, y, objectPtr);
+                callDrawPreviewImage<hill_shapes_object>(*clipped, objectPreviewOffset, objectPtr);
                 break;
 
             case object_type::building:
-                callDrawPreviewImage<building_object>(*dpi, x, y, objectPtr);
+                callDrawPreviewImage<building_object>(*clipped, objectPreviewOffset, objectPtr);
                 break;
 
             case object_type::scaffolding:
-                callDrawPreviewImage<scaffolding_object>(*dpi, x, y, objectPtr);
+                callDrawPreviewImage<scaffolding_object>(*clipped, objectPreviewOffset, objectPtr);
                 break;
 
             case object_type::industry:
-                callDrawPreviewImage<industry_object>(*dpi, x, y, objectPtr);
+                callDrawPreviewImage<industry_object>(*clipped, objectPreviewOffset, objectPtr);
                 break;
 
             case object_type::region:
-                callDrawPreviewImage<region_object>(*dpi, x, y, objectPtr);
+                callDrawPreviewImage<region_object>(*clipped, objectPreviewOffset, objectPtr);
                 break;
 
             case object_type::competitor:
-                callDrawPreviewImage<competitor_object>(*dpi, x, y, objectPtr);
+                callDrawPreviewImage<competitor_object>(*clipped, objectPreviewOffset, objectPtr);
                 break;
 
             default:
