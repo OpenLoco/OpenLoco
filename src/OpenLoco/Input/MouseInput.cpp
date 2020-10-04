@@ -491,14 +491,12 @@ namespace OpenLoco::Input
                 }
                 else if (!hasFlag(input_flags::flag4))
                 {
-                    ViewportInteraction::InteractionArg ptr{};
-
-                    auto interactionItem = ViewportInteraction::getItemLeft(x, y, &ptr);
-                    switch (interactionItem)
+                    auto interaction = ViewportInteraction::getItemLeft(x, y);
+                    switch (interaction.type)
                     {
                         case InteractionItem::thing:
                         {
-                            auto _thing = reinterpret_cast<Thing*>(ptr.object);
+                            auto _thing = reinterpret_cast<Thing*>(interaction.object);
                             auto veh = _thing->asVehicle();
                             if (veh != nullptr)
                             {
@@ -509,23 +507,23 @@ namespace OpenLoco::Input
 
                         case InteractionItem::town:
                         {
-                            Ui::Windows::Town::open(ptr.value);
+                            Ui::Windows::Town::open(interaction.value);
                             break;
                         }
 
                         case InteractionItem::station:
                         {
-                            Ui::Windows::Station::open(ptr.value);
+                            Ui::Windows::Station::open(interaction.value);
                             break;
                         }
 
                         case InteractionItem::headquarterBuilding:
                         {
-                            auto building = ((Map::tile_element*)ptr.object)->asBuilding();
+                            auto building = ((Map::tile_element*)interaction.object)->asBuilding();
                             if (building != nullptr)
                             {
                                 auto index = building->multiTileIndex();
-                                Map::map_pos pos{ ptr.x, ptr.y };
+                                Map::map_pos pos{ interaction.x, interaction.y };
                                 pos.x -= _4F9296[index].x;
                                 pos.y -= _4F9296[index].y;
 
@@ -549,7 +547,7 @@ namespace OpenLoco::Input
 
                         case InteractionItem::industry:
                         {
-                            Ui::Windows::Industry::open(ptr.value);
+                            Ui::Windows::Industry::open(interaction.value);
                             break;
                         }
 
@@ -712,20 +710,19 @@ namespace OpenLoco::Input
                 }
 
                 Input::state(input_state::reset);
-                ViewportInteraction::InteractionArg ptr{};
-                auto item = ViewportInteraction::rightOver(_dragLastX, _dragLastY, &ptr);
+                auto interaction = ViewportInteraction::rightOver(_dragLastX, _dragLastY);
 
-                switch (item)
+                switch (interaction.type)
                 {
                     case InteractionItem::t_0:
                     default:
                     {
-                        auto item2 = ViewportInteraction::getItemLeft(_dragLastX, _dragLastY, &ptr);
-                        switch (item2)
+                        auto item2 = ViewportInteraction::getItemLeft(_dragLastX, _dragLastY);
+                        switch (item2.type)
                         {
                             case InteractionItem::thing:
                             {
-                                auto _thing = reinterpret_cast<Thing*>(ptr.object);
+                                auto _thing = reinterpret_cast<Thing*>(item2.object);
                                 auto veh = _thing->asVehicle();
                                 if (veh != nullptr)
                                 {
@@ -739,7 +736,7 @@ namespace OpenLoco::Input
                                 break;
                             case InteractionItem::station:
                             {
-                                auto station = StationManager::get(ptr.value);
+                                auto station = StationManager::get(item2.value);
                                 Ui::Windows::StationList::open(station->owner);
                                 break;
                             }
@@ -755,12 +752,12 @@ namespace OpenLoco::Input
 
                     case InteractionItem::track:
                     {
-                        auto track = ((Map::tile_element*)ptr.object)->asTrack();
+                        auto track = ((Map::tile_element*)interaction.object)->asTrack();
                         if (track != nullptr)
                         {
                             if (track->owner() == CompanyManager::getControllingId())
                             {
-                                Ui::Windows::Construction::openAtTrack(window, track, { ptr.x, ptr.y });
+                                Ui::Windows::Construction::openAtTrack(window, track, { interaction.x, interaction.y });
                             }
                             else
                             {
@@ -771,7 +768,7 @@ namespace OpenLoco::Input
                     }
                     case InteractionItem::road:
                     {
-                        auto road = reinterpret_cast<Map::tile_element*>(ptr.object)->asRoad();
+                        auto road = reinterpret_cast<Map::tile_element*>(interaction.object)->asRoad();
                         if (road != nullptr)
                         {
 
@@ -780,7 +777,7 @@ namespace OpenLoco::Input
                             auto roadObject = ObjectManager::get<road_object>(road->roadObjectId());
                             if (owner == CompanyManager::getControllingId() || owner == CompanyId::neutral || (roadObject->flags & Flags12::unk_03))
                             {
-                                Ui::Windows::Construction::openAtRoad(window, road, { ptr.x, ptr.y });
+                                Ui::Windows::Construction::openAtRoad(window, road, { interaction.x, interaction.y });
                             }
                             else
                             {
@@ -791,100 +788,100 @@ namespace OpenLoco::Input
                     }
                     case InteractionItem::trackExtra:
                     {
-                        auto track = ((Map::tile_element*)ptr.object)->asTrack();
+                        auto track = ((Map::tile_element*)interaction.object)->asTrack();
                         if (track != nullptr)
                         {
-                            Ui::Windows::Construction::setToTrackExtra(window, track, ptr.unkBh, { ptr.x, ptr.y });
+                            Ui::Windows::Construction::setToTrackExtra(window, track, interaction.unkBh, { interaction.x, interaction.y });
                         }
                         break;
                     }
                     case InteractionItem::roadExtra:
                     {
-                        auto road = ((Map::tile_element*)ptr.object)->asRoad();
+                        auto road = ((Map::tile_element*)interaction.object)->asRoad();
                         if (road != nullptr)
                         {
-                            Ui::Windows::Construction::setToRoadExtra(window, road, ptr.unkBh, { ptr.x, ptr.y });
+                            Ui::Windows::Construction::setToRoadExtra(window, road, interaction.unkBh, { interaction.x, interaction.y });
                         }
                         break;
                     }
                     case InteractionItem::signal:
                     {
-                        auto signal = ((Map::tile_element*)ptr.object)->asSignal();
+                        auto signal = ((Map::tile_element*)interaction.object)->asSignal();
                         if (signal != nullptr)
                         {
-                            signalInteract(window, signal, ptr.unkBh, { ptr.x, ptr.y });
+                            signalInteract(window, signal, interaction.unkBh, { interaction.x, interaction.y });
                         }
                         break;
                     }
                     case InteractionItem::trackStation:
                     {
-                        auto station = ((Map::tile_element*)ptr.object)->asStation();
+                        auto station = ((Map::tile_element*)interaction.object)->asStation();
                         if (station != nullptr)
                         {
-                            trackStationInteract(window, station, { ptr.x, ptr.y });
+                            trackStationInteract(window, station, { interaction.x, interaction.y });
                         }
                         break;
                     }
                     case InteractionItem::roadStation:
                     {
-                        auto station = ((Map::tile_element*)ptr.object)->asStation();
+                        auto station = ((Map::tile_element*)interaction.object)->asStation();
                         if (station != nullptr)
                         {
-                            roadStationInteract(window, station, { ptr.x, ptr.y });
+                            roadStationInteract(window, station, { interaction.x, interaction.y });
                         }
                         break;
                     }
                     case InteractionItem::airport:
                     {
-                        auto station = ((Map::tile_element*)ptr.object)->asStation();
+                        auto station = ((Map::tile_element*)interaction.object)->asStation();
                         if (station != nullptr)
                         {
-                            airportInteract(window, station, { ptr.x, ptr.y });
+                            airportInteract(window, station, { interaction.x, interaction.y });
                         }
                         break;
                     }
                     case InteractionItem::dock:
                     {
-                        auto station = ((Map::tile_element*)ptr.object)->asStation();
+                        auto station = ((Map::tile_element*)interaction.object)->asStation();
                         if (station != nullptr)
                         {
-                            dockInteract(window, station, { ptr.x, ptr.y });
+                            dockInteract(window, station, { interaction.x, interaction.y });
                         }
                         break;
                     }
                     case InteractionItem::tree:
                     {
-                        auto tree = ((Map::tile_element*)ptr.object)->asTree();
+                        auto tree = ((Map::tile_element*)interaction.object)->asTree();
                         if (tree != nullptr)
                         {
-                            treeInteract(tree, { ptr.x, ptr.y });
+                            treeInteract(tree, { interaction.x, interaction.y });
                         }
                         break;
                     }
                     case InteractionItem::building:
                     {
-                        auto building = ((Map::tile_element*)ptr.object)->asBuilding();
+                        auto building = ((Map::tile_element*)interaction.object)->asBuilding();
                         if (building != nullptr)
                         {
-                            buildingInteract(building, { ptr.x, ptr.y });
+                            buildingInteract(building, { interaction.x, interaction.y });
                         }
                         break;
                     }
                     case InteractionItem::wall:
                     {
-                        auto wall = ((Map::tile_element*)ptr.object)->asWall();
+                        auto wall = ((Map::tile_element*)interaction.object)->asWall();
                         if (wall != nullptr)
                         {
-                            wallInteract(wall, { ptr.x, ptr.y });
+                            wallInteract(wall, { interaction.x, interaction.y });
                         }
                         break;
                     }
                     case InteractionItem::headquarterBuilding:
                     {
-                        auto building = ((Map::tile_element*)ptr.object)->asBuilding();
+                        auto building = ((Map::tile_element*)interaction.object)->asBuilding();
                         if (building != nullptr)
                         {
-                            headquarterInteract(building, { ptr.x, ptr.y });
+                            headquarterInteract(building, { interaction.x, interaction.y });
                         }
                         break;
                     }
@@ -1915,7 +1912,7 @@ namespace OpenLoco::Input
                         }
                         else
                         {
-                            switch (ViewportInteraction::getItemLeft(x, y, nullptr))
+                            switch (ViewportInteraction::getItemLeft(x, y).type)
                             {
                                 case InteractionItem::thing:
                                 case InteractionItem::town:
@@ -1937,7 +1934,7 @@ namespace OpenLoco::Input
 
         if (!skipItem)
         {
-            ViewportInteraction::rightOver(x, y, nullptr);
+            ViewportInteraction::rightOver(x, y);
         }
 
         if (Input::state() == Input::input_state::resizing)

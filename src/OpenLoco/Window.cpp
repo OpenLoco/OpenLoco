@@ -522,17 +522,70 @@ namespace OpenLoco::Ui
     }
 
     // 0x00459E54
-    // TODO: needs expansion in terms of (output) parameters.
-    static void getMapCoordinatesFromPos(int32_t screenX, int32_t screenY, int32_t flags, int16_t* x, int16_t* y)
+    static ViewportInteraction::InteractionArg getMapCoordinatesFromPos(int32_t screenX, int32_t screenY, int32_t flags)
     {
+        static loco_global<uint8_t, 0x0050BF68> _50BF68;                        // If in get map coords
+        static loco_global<int32_t, 0x00E40110> _getMapCoordinatesFromPosFlags; // flags
+        static loco_global<ViewportInteraction::InteractionItem, 0x00E40104> _E40104;
+        static loco_global<uint8_t, 0x00E40105> _E40105;  // Unk var_29 of paintstruct
+        static loco_global<uint16_t, 0x00E40108> _E40108; // mapX of selection
+        static loco_global<uint16_t, 0x00E4010A> _E4010A; // mapY of selection
+        static loco_global<uint32_t, 0x00E4010C> _E4010C; // tileElement or thing ptr
+        static loco_global<Gfx::drawpixelinfo_t*, 0x00E0C3E0> _dpiRef;
+        static loco_global<Gfx::drawpixelinfo_t, 0x00E0C3E4> _dpi1;
+        static loco_global<Gfx::drawpixelinfo_t, 0x00E0C3F4> _dpi2;
+        static loco_global<PaintStruct*, 0x00E0C404> _maxPaintStructs;
+        static loco_global<PaintStruct[6498], 0x00E0C410> _paintStructs;
+
+        _50BF68 = 1;
+        _getMapCoordinatesFromPosFlags = flags;
+        _E40104 = ViewportInteraction::InteractionItem::t_0;
+        ViewportInteraction::InteractionArg interaction{};
+        Gfx::point_t screenPos = { static_cast<int16_t>(screenX), static_cast<int16_t>(screenY) };
+        auto w = WindowManager::findAt(screenPos);
+        if (w == nullptr)
+        {
+            _50BF68 = 0;
+            return interaction;
+        }
+
+        for (auto vp : w->viewports)
+        {
+            if (vp == nullptr)
+                continue;
+            
+            if (!vp->containsUi({ screenPos.x, screenPos.y }))
+                continue;
+
+            auto vpPos = vp->uiToMap({ screenPos.x, screenPos.y });
+            _dpi1->zoom_level = vp->zoom;
+            _dpi1->x = (0xFFFF << vp->zoom) & vpPos.x;
+            _dpi1->y = (0xFFFF << vp->zoom) & vpPos.y;
+            _dpi2->x = _dpi1->x;
+            _dpi2->y = _dpi1->y;
+            _dpi2->width = 1;
+            _dpi2->height = 1;
+            _dpi2->zoom_level = _dpi1->zoom_level;
+            _maxPaintStructs = &_paintStructs[6498];
+            _dpiRef = &(*_dpi2);
+            auto& ps = _paintStructs[0];
+            //paint_init(dpi);
+            //paint_generate_structs(dpi);
+            //paint_struct ps = paint_arrange_structs();
+            //sub_68862C(dpi, &ps);
+            break;
+        }
         registers regs;
         regs.ax = screenX;
         regs.bx = screenY;
         regs.edx = flags;
         call(0x00459E54, regs);
-
-        *x = regs.ax;
-        *y = regs.cx;
+        interaction.x = regs.ax;
+        interaction.y = regs.cx;
+        interaction.value = regs.edx;
+        interaction.type = static_cast<ViewportInteraction::InteractionItem>(regs.bl);
+        interaction.unkBh = regs.bh;
+        return interaction;
     }
 
     void window::viewportGetMapCoordsByCursor(int16_t* map_x, int16_t* map_y, int16_t* offset_x, int16_t* offset_y)
@@ -542,7 +595,9 @@ namespace OpenLoco::Ui
         Ui::getCursorPos(mouse_x, mouse_y);
 
         // Compute map coordinate by mouse position.
-        getMapCoordinatesFromPos(mouse_x, mouse_y, 0, map_x, map_y);
+        auto interaction = getMapCoordinatesFromPos(mouse_x, mouse_y, 0);
+        *map_x = interaction.x;
+        *map_y = interaction.y;
 
         // Get viewport coordinates centring around the tile.
         int32_t base_height = Map::tileElementHeight(*map_x, *map_y).landHeight;
