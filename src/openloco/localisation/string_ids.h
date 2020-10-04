@@ -218,6 +218,28 @@ namespace openloco::string_ids
 
     constexpr string_id date_monthyear = 584;
 
+    constexpr string_id expenditure_income = 587;
+    constexpr string_id train_income = 588;
+    constexpr string_id train_running_costs = 589;
+    constexpr string_id bus_income = 590;
+    constexpr string_id bus_running_costs = 591;
+    constexpr string_id truck_income = 592;
+    constexpr string_id truck_running_costs = 593;
+    constexpr string_id tram_income = 594;
+    constexpr string_id tram_running_costs = 595;
+    constexpr string_id aircraft_income = 596;
+    constexpr string_id aircraft_running_costs = 597;
+    constexpr string_id ship_income = 598;
+    constexpr string_id ship_running_costs = 599;
+    constexpr string_id construction = 600;
+    constexpr string_id vehicle_purchases = 601;
+    constexpr string_id vehicle_disposals = 602;
+    constexpr string_id loan_interest = 603;
+    constexpr string_id miscellaneous = 604;
+    constexpr string_id uint16_raw = 605;
+    constexpr string_id plus_currency48 = 606;
+    constexpr string_id currency48 = 607;
+    constexpr string_id company_current_loan = 608;
     constexpr string_id company_current_loan_value = 609;
 
     constexpr string_id title_menu_new_game = 613;
@@ -229,6 +251,12 @@ namespace openloco::string_ids
     constexpr string_id town_size_town = 619;
     constexpr string_id town_size_city = 620;
     constexpr string_id town_size_metropolis = 621;
+
+    constexpr string_id cash_bankrupt = 630;
+    constexpr string_id cash_positive = 631;
+    constexpr string_id cash_negative = 632;
+    constexpr string_id company_value = 633;
+    constexpr string_id profit_from_vehicles = 634;
 
     constexpr string_id month_long_january = 635;
     constexpr string_id month_long_february = 636;
@@ -536,6 +564,7 @@ namespace openloco::string_ids
     constexpr string_id error_cant_rename_town = 1311;
 
     constexpr string_id window_owner = 1355;
+    constexpr string_id interest_per_year = 1356;
 
     constexpr string_id population_graph_people = 1357;
     constexpr string_id population_graph_year = 1358;

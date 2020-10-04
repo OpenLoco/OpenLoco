@@ -259,7 +259,7 @@ namespace openloco::ui::windows::PlayerInfoPanel
             auto companyValueString = string_ids::player_info_bankrupt;
             if (!(playerCompany->challenge_flags & company_flags::bankrupt))
             {
-                if (static_cast<int16_t>(playerCompany->var_08.var_04) < 0)
+                if (static_cast<int16_t>(playerCompany->cash.var_04) < 0)
                 {
                     companyValueString = string_ids::player_info_company_value_negative;
                 }
@@ -275,8 +275,8 @@ namespace openloco::ui::windows::PlayerInfoPanel
                 colour = colour::white;
             }
             auto args = FormatArguments();
-            args.push(playerCompany->var_08.var_00);
-            args.push(playerCompany->var_08.var_04);
+            args.push(playerCompany->cash.var_00);
+            args.push(playerCompany->cash.var_04);
             gfx::draw_string_centred(*dpi, x, window->y + frame.top + 2, colour, companyValueString, &args);
         }
 

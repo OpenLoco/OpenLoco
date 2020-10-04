@@ -404,8 +404,8 @@ namespace openloco
             if (!is_title_mode())
             {
                 auto edx = _prng->srand_0();
-                edx ^= companymgr::get(0)->var_08.var_00;
-                edx ^= companymgr::get(1)->var_08.var_00;
+                edx ^= companymgr::get(0)->cash.var_00;
+                edx ^= companymgr::get(1)->cash.var_00;
                 if (edx != eax)
                 {
                     // disconnect?

@@ -459,7 +459,7 @@ namespace openloco::ui::windows::CompanyWindow
                 }
 
                 // loc_43419F
-                auto car = thing->next_car()->next_car()->next_car()->next_car();
+                // auto car = thing->next_car()->next_car()->next_car()->next_car();
 
                 // ...
             }
@@ -879,14 +879,153 @@ namespace openloco::ui::windows::CompanyWindow
             self->draw(dpi);
             common::drawTabs(self, dpi);
 
-            // registers regs;
-            // regs.edi = (int32_t)dpi;
-            // regs.esi = (int32_t)self;
-            // call(0x004333D0, regs);
+            const auto company = companymgr::get(self->number);
+            const auto competitor = objectmgr::get<competitor_object>(company->competitor_id);
+
+            // Draw company owner face on dropdown.
+            {
+                const uint32_t image = gfx::recolour(competitor->images[company->owner_emotion], company->colour.primary);
+                const uint16_t x = self->x + self->widgets[common::widx::company_select].left + 1;
+                const uint16_t y = self->y + self->widgets[common::widx::company_select].top + 1;
+                gfx::draw_image(dpi, x, y, image);
+            }
+
+            // Draw 'expenditure/income' label
+            {
+                gfx::draw_string_left_underline(
+                    *dpi,
+                    self->x + 5,
+                    self->y + 47,
+                    colour::black,
+                    string_ids::expenditure_income,
+                    nullptr);
+            }
+
+            const string_id ExpenditureLabels[] = {
+                string_ids::train_income,
+                string_ids::train_running_costs,
+                string_ids::bus_income,
+                string_ids::bus_running_costs,
+                string_ids::truck_income,
+                string_ids::truck_running_costs,
+                string_ids::tram_income,
+                string_ids::tram_running_costs,
+                string_ids::aircraft_income,
+                string_ids::aircraft_running_costs,
+                string_ids::ship_income,
+                string_ids::ship_running_costs,
+                string_ids::construction,
+                string_ids::vehicle_purchases,
+                string_ids::vehicle_disposals,
+                string_ids::loan_interest,
+                string_ids::miscellaneous,
+            };
+
+            uint16_t y = self->y + 62;
+            for (uint8_t i = 0; i < static_cast<uint8_t>(std::size(ExpenditureLabels)); i++)
+            {
+                // Add zebra stripes to even labels.
+                if (i % 2 == 0)
+                {
+                    auto colour = colour::get_shade(self->colours[1], 6) | 0x1000000;
+                    gfx::fill_rect(dpi, 4, y, 129, y + 9, colour);
+                }
+
+                _common_format_args[0] = ExpenditureLabels[i];
+                gfx::draw_string_494B3F(
+                    *dpi,
+                    self->x + 5,
+                    y - 1,
+                    colour::black,
+                    string_ids::wcolour2_stringid2,
+                    _common_format_args);
+
+                y += 10;
+            }
+
+            // 'Current loan' label
+            {
+                gfx::draw_string_494B3F(
+                    *dpi,
+                    self->x + 7,
+                    self->y + self->widgets[widx::current_loan].top,
+                    colour::black,
+                    string_ids::company_current_loan);
+            }
+
+            // '@ X% interest per' label
+            {
+                loco_global<uint8_t, 0x00525FC6> loanInterestRate;
+                _common_format_args[0] = *loanInterestRate;
+                gfx::draw_string_494B3F(
+                    *dpi,
+                    self->x + self->widgets[widx::current_loan].right + 3,
+                    self->y + self->widgets[widx::current_loan].top + 1,
+                    colour::black,
+                    string_ids::interest_per_year,
+                    _common_format_args);
+            }
+
+            // 'Cash' label with value
+            {
+                // Set cash value in format args.
+                *(uint32_t*)&_common_format_args[0] = company->cash.var_00;
+                *(uint16_t*)&_common_format_args[2] = company->cash.var_04;
+
+                string_id cash_format = string_ids::cash_positive;
+                if ((company->challenge_flags & company_flags::bankrupt) != 0)
+                    cash_format = string_ids::cash_bankrupt;
+                if (company->cash.var_04 < 0)
+                    cash_format = string_ids::cash_negative;
+
+                gfx::draw_string_494B3F(
+                    *dpi,
+                    self->x + 7,
+                    self->y + self->widgets[widx::current_loan].top + 13,
+                    colour::black,
+                    cash_format,
+                    _common_format_args);
+            }
+
+            // 'Company value' label with value
+            {
+                // Set company value in format args.
+                *(uint32_t*)&_common_format_args[0] = company->companyValue.var_00;
+                *(uint16_t*)&_common_format_args[2] = company->companyValue.var_04;
+
+                gfx::draw_string_494B3F(
+                    *dpi,
+                    self->x + 7,
+                    self->y + self->widgets[widx::current_loan].top + 26,
+                    colour::black,
+                    string_ids::company_value,
+                    _common_format_args);
+            }
+
+            // 'Profit from vehicles' label with value
+            {
+                // Set company value in format args.
+                *(uint32_t*)&_common_format_args[0] = company->vehicleProfit.var_00;
+                *(uint16_t*)&_common_format_args[2] = company->vehicleProfit.var_04;
+
+                gfx::draw_string_494B3F(
+                    *dpi,
+                    self->x + 7,
+                    self->y + self->widgets[widx::current_loan].top + 39,
+                    colour::black,
+                    string_ids::profit_from_vehicles,
+                    _common_format_args);
+            }
         }
 
         // 0x0043361E
-        // static void draw_scroll(window* self);
+        static void draw_scroll(window* self, gfx::drawpixelinfo_t* context, uint32_t scrollIndex)
+        {
+            registers regs;
+            regs.edi = (int32_t)context;
+            regs.esi = (int32_t)self;
+            call(0x0043361E, regs);
+        }
 
         // 0x00433819
         static void on_mouse_up(window* self, widget_index widgetIndex)
@@ -994,7 +1133,7 @@ namespace openloco::ui::windows::CompanyWindow
         {
             events.prepare_draw = prepare_draw;
             events.draw = draw;
-            // events.draw_scroll = draw_scroll;
+            events.draw_scroll = draw_scroll;
             events.on_mouse_up = on_mouse_up;
             events.on_mouse_down = on_mouse_down;
             events.text_input = text_input;

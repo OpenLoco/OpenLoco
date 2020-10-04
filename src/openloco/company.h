@@ -29,8 +29,8 @@ namespace openloco
 #pragma pack(push, 1)
     struct currency48_t
     {
-        uint32_t var_00;
-        uint16_t var_04;
+        int32_t var_00;
+        int16_t var_04;
     };
 #pragma pack(pop)
     static_assert(sizeof(currency48_t) == 6);
@@ -41,7 +41,7 @@ namespace openloco
         string_id name;
         string_id owner_name;
         uint32_t challenge_flags;  // 0x04
-        currency48_t var_08;       // company value related
+        currency48_t cash;         // 0x08
         uint32_t current_loan;     // 0x0E
         uint32_t update_counter;   // 0x12
         int16_t performance_index; // 0x16
