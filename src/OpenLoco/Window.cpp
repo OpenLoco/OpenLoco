@@ -715,6 +715,15 @@ namespace OpenLoco::Ui
         call(0x0045F0ED, regs);
     }
 
+    void window::viewportRemove(const uint8_t viewportId)
+    {
+        if (viewports[viewportId] != nullptr)
+        {
+            viewports[viewportId]->width = 0;
+            viewports[viewportId] = nullptr;
+        }
+    }
+
     bool window::move(int16_t dx, int16_t dy)
     {
         if (dx == 0 && dy == 0)

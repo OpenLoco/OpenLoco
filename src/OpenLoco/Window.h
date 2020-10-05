@@ -455,6 +455,7 @@ namespace OpenLoco::Ui
         void viewportZoomOut(bool toCursor);
         void viewportRotateRight();
         void viewportRotateLeft();
+        void viewportRemove(const uint8_t viewportId);
 
         bool move(int16_t dx, int16_t dy);
         void moveInsideScreenEdges();

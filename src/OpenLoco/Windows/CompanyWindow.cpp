@@ -445,8 +445,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         static void differentViewportSettings(window* const self, const SavedView& view)
         {
             auto vpFlags = self->viewports[0]->flags;
-            self->viewports[0]->width = 0;
-            self->viewports[0] = nullptr;
+            self->viewportRemove(0);
             ViewportManager::collectGarbage();
             sub_434223(self, view, vpFlags);
         }
@@ -463,12 +462,8 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
         static void invalidViewport(window* const self)
         {
-            if (self->viewports[0] != nullptr)
-            {
-                self->viewports[0]->width = 0;
-                self->viewports[0] = nullptr;
-                self->invalidate();
-            }
+            self->viewportRemove(0);
+            self->invalidate();
         }
 
         // 0x004327C8
@@ -1047,13 +1042,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             if (company->headquarters_x == -1)
             {
                 // If headquarters not placed destroy the viewport
-                if (self->viewports[0] == nullptr)
-                {
-                    return;
-                }
-
-                self->viewports[0]->width = 0;
-                self->viewports[0] = nullptr;
+                self->viewportRemove(0);
                 self->invalidate();
                 return;
             }
@@ -1083,8 +1072,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             else if (self->saved_view != view)
             {
                 vpFlags = self->viewports[0]->flags;
-                self->viewports[0]->width = 0;
-                self->viewports[0] = nullptr;
+                self->viewportRemove(0);
                 ViewportManager::collectGarbage();
             }
             else
@@ -2491,11 +2479,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             self->frame_no = 0;
             self->flags &= ~(WindowFlags::flag_16);
 
-            if (self->viewports[0] != nullptr)
-            {
-                self->viewports[0]->width = 0;
-                self->viewports[0] = nullptr;
-            }
+            self->viewportRemove(0);
 
             auto tabIndex = widgetIndex - widx::tab_status;
             auto tabInfo = tabInformationByTabOffset[tabIndex];

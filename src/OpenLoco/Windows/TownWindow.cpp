@@ -293,8 +293,7 @@ namespace OpenLoco::Ui::Windows::Town
                     return;
 
                 flags = self->viewports[0]->flags;
-                self->viewports[0]->width = 0;
-                self->viewports[0] = nullptr;
+                self->viewportRemove(0);
                 ViewportManager::collectGarbage();
             }
             else
@@ -721,11 +720,7 @@ namespace OpenLoco::Ui::Windows::Town
             self->flags &= ~(WindowFlags::flag_16);
             self->var_85C = -1;
 
-            if (self->viewports[0] != nullptr)
-            {
-                self->viewports[0]->width = 0;
-                self->viewports[0] = nullptr;
-            }
+            self->viewportRemove(0);
 
             auto tabInfo = tabInformationByTabOffset[widgetIndex - widx::tab_town];
 

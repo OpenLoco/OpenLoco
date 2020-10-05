@@ -2237,11 +2237,7 @@ namespace OpenLoco::Ui::Options
         w->holdable_widgets = 0;
         w->activated_widgets = 0;
         w->row_hover = -1;
-        if (w->viewports[0])
-        {
-            w->viewports[0]->width = 0;
-            w->viewports[0] = nullptr;
-        }
+        w->viewportRemove(0);
 
         auto& tabInfo = tabInformationByTabOffset[w->current_tab];
         w->enabled_widgets = *tabInfo.enabledWidgets;
