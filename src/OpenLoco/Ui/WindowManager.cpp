@@ -1211,17 +1211,8 @@ namespace OpenLoco::Ui::WindowManager
         if (window == nullptr)
             return;
 
-        if (window->viewports[0] != nullptr)
-        {
-            window->viewports[0]->width = 0;
-            window->viewports[0] = nullptr;
-        }
-
-        if (window->viewports[1] != nullptr)
-        {
-            window->viewports[1]->width = 0;
-            window->viewports[1] = nullptr;
-        }
+        window->viewportRemove(0);
+        window->viewportRemove(1);
 
         window->invalidate();
 

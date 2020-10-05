@@ -2283,11 +2283,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             self->current_tab = widgetIndex - widx::tab_clear_area;
             self->frame_no = 0;
 
-            if (self->viewports[0] != nullptr)
-            {
-                self->viewports[0]->width = 0;
-                self->viewports[0] = nullptr;
-            }
+            self->viewportRemove(0);
 
             const auto& tabInfo = tabInformationByTabOffset[widgetIndex - widx::tab_clear_area];
 
