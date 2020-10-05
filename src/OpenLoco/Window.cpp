@@ -535,7 +535,7 @@ namespace OpenLoco::Ui
         static loco_global<Gfx::drawpixelinfo_t, 0x00E0C3E4> _dpi1;
         static loco_global<Gfx::drawpixelinfo_t, 0x00E0C3F4> _dpi2;
         static loco_global<PaintStruct*, 0x00E0C404> _maxPaintStructs;
-        static loco_global<PaintStruct[6498], 0x00E0C410> _paintStructs;
+        static loco_global<PaintStruct[3998], 0x00E0C410> _paintStructs;
 
         _50BF68 = 1;
         _getMapCoordinatesFromPosFlags = flags;

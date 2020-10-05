@@ -25,9 +25,9 @@ namespace OpenLoco::Paint
         uint32_t imageId; // 0x00
         union
         {
-            uint32_t tertiaryColour;
-            // If masked image_id is masked_id
-            uint32_t colourImageId;
+            uint32_t tertiaryColour; // 0x04 maybe unused in loco
+            // If masked imageId is maskedId
+            uint32_t colourImageId; // 0x04
         };
         int16_t x;     // 0x08
         int16_t y;     // 0x0A
@@ -43,7 +43,7 @@ namespace OpenLoco::Paint
         PaintStringStruct* next; // 0x02
         int16_t x;               // 0x06
         int16_t y;               // 0x08
-        uint16_t args[7];        // 0x0A // eax value
+        uint16_t args[7];        // 0x0A
         uint8_t pad_18[0x1A - 0x18];
         uint8_t* yOffsets; // 0x1A
         uint16_t colour;   // 0x1E
