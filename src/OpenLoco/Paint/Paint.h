@@ -16,6 +16,11 @@ namespace OpenLoco
     struct Thing;
 }
 
+namespace OpenLoco::Gfx
+{
+    struct drawpixelinfo_t;
+}
+
 namespace OpenLoco::Paint
 {
 
@@ -91,7 +96,6 @@ namespace OpenLoco::Paint
         };
     };
     static_assert(sizeof(PaintStruct) == 0x34);
-#pragma pack(pop)
 
     union PaintEntry
     {
@@ -99,30 +103,40 @@ namespace OpenLoco::Paint
         AttachedPaintStruct attached;
         PaintStringStruct string;
     };
+    static_assert(sizeof(PaintEntry) == 0x34);
+#pragma pack(pop)
 
     struct PaintSession
     {
-        Gfx::drawpixelinfo_t* dpi;         // 0xE0C3E0
-        PaintEntry paintStructs[4000];     // 0xE0C410 -> 0xE3F050
-        PaintStruct* quadrants[1024];      // 0xE3F0C0 -> 0xE400C0
-        PaintStruct paintHead;             // new field
-        uint32_t viewFlags;                // new field might not be needed tbc
-        uint32_t quadrantBackIndex;        // 0xE400C0
-        uint32_t quadrantFrontIndex;       // 0xE400C4
-        const void* currentlyDrawnItem;    // 0xE4F0B4
-        PaintEntry* endOfPaintStructArray; // 0xE0C404
-        PaintEntry* nextFreePaintStruct;   // 0xE0C40C
-        Map::map_pos spritePosition;       // 0xE3F090 and 0xE3F096
-        PaintStruct* lastRootPS;           // 0xE40120
-        //AttachedPaintStruct* unkF1AD2C;  // no equivalent
-        UI::ViewportInteraction::InteractionItem type; // 0xE3F0AC
-        uint8_t currentRotation;                       // new field
+    public:
+        Gfx::drawpixelinfo_t* dpi();
+        PaintEntry* allocateEntry();
+        void SetQuadrant(PaintEntry& p);
+
+    private:
+        //Gfx::drawpixelinfo_t* dpi;                     // 0xE0C3E0
+        //PaintEntry paintStructs[4000];                 // 0xE0C410 -> 0xE3F050
+        //PaintStruct* quadrants[1024];                  // 0xE3F0C0 -> 0xE400C0
+        //uint32_t quadrantBackIndex;                    // 0xE400C0
+        //uint32_t quadrantFrontIndex;                   // 0xE400C4
+        //const void* currentlyDrawnItem;                // 0xE4F0B4
+        //PaintEntry* endOfPaintStructArray;             // 0xE0C404
+        //PaintEntry* nextFreePaintStruct;               // 0xE0C40C
+        //Map::map_pos spritePosition;                   // 0xE3F090 and 0xE3F096
+        //PaintStruct* lastRootPS;                       // 0xE40120
+        //UI::ViewportInteraction::InteractionItem type; // 0xE3F0AC
+        //PaintStringStruct* paintStringHead;            // 0xE40118
+        //PaintStringStruct* lastPaintString;            // 0xE4011C
+        //Map::map_pos mapPosition;                      // 0xE3F0B0
+
+        // From OpenRCT2 equivalent fields not found yet or new
+        //uint8_t currentRotation;                     // new field
+        //PaintStruct paintHead;                       // new field
+        //uint32_t viewFlags;                          // new field might not be needed tbc
+        //AttachedPaintStruct* unkF1AD2C;              // no equivalent
         //support_height supportSegments[9];
         //support_height support;
-        PaintStringStruct* paintStringHead; // 0xE40118
-        PaintStringStruct* lastPaintString; // 0xE4011C
         //PaintStruct* woodenSupportsPrependTo;
-        Map::map_pos mapPosition; // 0xE3F0B0
         //tunnel_entry leftTunnels[TUNNEL_MAX_COUNT];
         //uint8_t leftTunnelCount;
         //tunnel_entry rightTunnels[TUNNEL_MAX_COUNT];
