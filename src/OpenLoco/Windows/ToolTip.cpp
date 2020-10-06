@@ -23,20 +23,28 @@ namespace OpenLoco::Ui::ToolTip
 
     static loco_global<uint16_t, 0x0052338C> _tooltipNotShownTicks;
 
-    static loco_global<Ui::widget_t[1], 0x005234CC> _widgets;
-
     static loco_global<char[1], 0x112C826> _commonFormatArgs;
     static loco_global<int32_t, 0x112C876> gCurrentFontSpriteBase;
-    static loco_global<char[512], 0x0112CC04> byte_112CC04;
 
-    static loco_global<char[512], 0x01136D90> _text;
-    static loco_global<uint16_t, 0x01136F90> _lineBreakCount;
+    static char _text[512];          // 0x001136D90
+    static uint16_t _lineBreakCount; // 0x01136F90
 
     static loco_global<int32_t, 0x01136F98> _currentTooltipStringId;
 
-    static void draw(Ui::window* window, Gfx::drawpixelinfo_t* dpi);
-    static void onClose(Ui::window* window);
-    static void update(Ui::window* window);
+    static window_event_list events;
+
+    enum widx
+    {
+        text
+    };
+
+    // 0x005234CC
+    widget_t _widgets[] = {
+        makeWidget({ 0, 0 }, { 200, 32 }, widget_type::wt_3, 0),
+        widgetEnd(),
+    };
+
+    static void initEvents();
 
     void registerHooks()
     {
@@ -52,58 +60,28 @@ namespace OpenLoco::Ui::ToolTip
                 Ui::ToolTip::update((Ui::window*)regs.esi, regs.edx, regs.di, regs.ax, regs.bx);
                 return 0;
             });
-        registerHook(
-            0x004C9397,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                draw((Ui::window*)regs.esi, (Gfx::drawpixelinfo_t*)regs.edi);
-                return 0;
-            });
-        registerHook(
-            0x004C94F7,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                onClose((Ui::window*)regs.esi);
-                return 0;
-            });
-        registerHook(
-            0x004C94FF,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                update((Ui::window*)regs.esi);
-                return 0;
-            });
     }
 
     static void common(const window* window, int32_t widgetIndex, string_id stringId, int16_t cursorX, int16_t cursorY)
     {
-        StringManager::formatString(byte_112CC04, stringId, _commonFormatArgs);
+        char buffer[512]{};
+        StringManager::formatString(buffer, stringId, _commonFormatArgs);
 
         gCurrentFontSpriteBase = Font::medium_bold;
-        int16_t strWidth;
-        {
-            // gfx_get_string_width_new_lined
-            registers regs;
-            regs.esi = (uint32_t)&byte_112CC04[0];
-            call(0x00495715, regs);
-            strWidth = regs.cx;
-        }
+        int16_t strWidth = Gfx::getStringWidthNewLined(buffer);
         strWidth = std::max<int16_t>(strWidth, 196);
 
         gCurrentFontSpriteBase = Font::medium_bold;
-        {
-            // gfx_wrap_string
-            registers regs;
-            regs.esi = (uint32_t)&byte_112CC04[0];
-            regs.di = strWidth + 1;
-            call(0x00495301, regs);
-            strWidth = regs.cx;
-            _lineBreakCount = regs.di;
-        }
 
-        int width = strWidth + 3;
+        auto [wrappedWidth, breakCount] = Gfx::wrapString(buffer, strWidth + 1);
+        _lineBreakCount = breakCount;
+
+        int width = wrappedWidth + 3;
         int height = (_lineBreakCount + 1) * 10 + 4;
-        _widgets[0].right = width;
-        _widgets[0].bottom = height;
+        _widgets[widx::text].right = width;
+        _widgets[widx::text].bottom = height;
 
-        std::memcpy(&_text[0], &byte_112CC04[0], 512);
+        std::memcpy(&_text[0], buffer, 512);
 
         int x, y;
 
@@ -117,12 +95,14 @@ namespace OpenLoco::Ui::ToolTip
 
         x = width <= Ui::width() ? std::clamp(cursorX - (width / 2), 0, Ui::width() - width) : 0;
 
+        initEvents();
+
         auto tooltip = WindowManager::createWindow(
             WindowType::tooltip,
             Gfx::point_t(x, y),
             Gfx::ui_size_t(width, height),
             WindowFlags::stick_to_front | WindowFlags::transparent | WindowFlags::flag_7,
-            (Ui::window_event_list*)0x504774);
+            &events);
         tooltip->widgets = _widgets;
         _tooltipNotShownTicks = 0;
     }
@@ -210,7 +190,7 @@ namespace OpenLoco::Ui::ToolTip
         Gfx::drawRect(dpi, x + 1, y + height - 1 - 1, 1, 1, 0x2000000 | 46);
         Gfx::drawRect(dpi, x + width - 1 - 1, y + height - 1 - 1, 1, 1, 0x2000000 | 46);
 
-        Gfx::drawStringCentredRaw(*dpi, ((width + 1) / 2) + x - 1, y + 1, _lineBreakCount, Colour::black, &_text[0]);
+        Gfx::drawStringCentredRaw(*dpi, ((width + 1) / 2) + x - 1, y + 1, _lineBreakCount, Colour::black, _text);
     }
 
     // 0x004C94F7
@@ -241,5 +221,12 @@ namespace OpenLoco::Ui::ToolTip
         _tooltipWindowType = WindowType::undefined;
         _currentTooltipStringId = -1;
         set_52336E(false);
+    }
+
+    static void initEvents()
+    {
+        events.on_close = onClose;
+        events.on_update = update;
+        events.draw = draw;
     }
 }
