@@ -2,6 +2,7 @@
 #include "../Graphics/Gfx.h"
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
+#include "../Localisation/FormatArguments.hpp"
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/ObjectManager.h"
 #include "../Ui.h"
@@ -23,7 +24,6 @@ namespace OpenLoco::Ui::ToolTip
 
     static loco_global<uint16_t, 0x0052338C> _tooltipNotShownTicks;
 
-    static loco_global<char[1], 0x112C826> _commonFormatArgs;
     static loco_global<int32_t, 0x112C876> gCurrentFontSpriteBase;
 
     static char _text[512];          // 0x001136D90
@@ -62,10 +62,10 @@ namespace OpenLoco::Ui::ToolTip
             });
     }
 
-    static void common(const window* window, int32_t widgetIndex, string_id stringId, int16_t cursorX, int16_t cursorY)
+    static void common(const window* window, int32_t widgetIndex, string_id stringId, int16_t cursorX, int16_t cursorY, FormatArguments& args)
     {
         char buffer[512]{};
-        StringManager::formatString(buffer, stringId, _commonFormatArgs);
+        StringManager::formatString(buffer, stringId, &args);
 
         gCurrentFontSpriteBase = Font::medium_bold;
         int16_t strWidth = Gfx::getStringWidthNewLined(buffer);
@@ -126,8 +126,8 @@ namespace OpenLoco::Ui::ToolTip
         _tooltipWindowNumber = window->number;
         _tooltipWidgetIndex = widgetIndex;
 
-        auto showString = window->callTooltip(widgetIndex);
-        if (!showString)
+        auto toolArgs = window->callTooltip(widgetIndex);
+        if (!toolArgs)
         {
             return;
         }
@@ -140,7 +140,7 @@ namespace OpenLoco::Ui::ToolTip
 
         _currentTooltipStringId = -1;
 
-        common(window, widgetIndex, window->widgets[widgetIndex].tooltip, cursorX, cursorY);
+        common(window, widgetIndex, window->widgets[widgetIndex].tooltip, cursorX, cursorY, *toolArgs);
     }
 
     // 0x004C9216
@@ -152,8 +152,8 @@ namespace OpenLoco::Ui::ToolTip
         _tooltipWindowNumber = window->number;
         _tooltipWidgetIndex = widgetIndex;
 
-        auto showString = window->callTooltip(widgetIndex);
-        if (!showString)
+        auto toolArgs = window->callTooltip(widgetIndex);
+        if (!toolArgs)
         {
             return;
         }
@@ -166,7 +166,7 @@ namespace OpenLoco::Ui::ToolTip
 
         _currentTooltipStringId = stringId;
 
-        common(window, widgetIndex, stringId, cursorX, cursorY);
+        common(window, widgetIndex, stringId, cursorX, cursorY, *toolArgs);
     }
 
     // 0x004C9397

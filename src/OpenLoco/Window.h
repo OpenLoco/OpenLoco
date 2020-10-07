@@ -486,7 +486,7 @@ namespace OpenLoco::Ui
         void callScrollMouseOver(int16_t x, int16_t y, uint8_t scroll_index);                            // 19
         void callTextInput(widget_index caller, char* buffer);                                           // 20
         void callViewportRotate();                                                                       // 21
-        bool callTooltip(int16_t widget_index);                                                          // 23
+        std::optional<FormatArguments> callTooltip(int16_t widget_index);                                // 23
         Ui::cursor_id callCursor(int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::cursor_id fallback); // 24
         void callOnMove(int16_t xPos, int16_t yPos);                                                     // 25
         void callPrepareDraw();                                                                          // 26
