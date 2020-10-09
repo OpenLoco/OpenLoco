@@ -188,8 +188,8 @@ namespace OpenLoco::Ui::Vehicle
 
     static loco_global<uint8_t, 0x00525FC5> _525FC5;
     static loco_global<uint8_t, 0x00525FB0> _pickupDirection; // direction that the ghost points
-    static loco_global<OpenLoco::vehicle_bogie*, 0x0113614E> _113614E;
-    static loco_global<int16_t, 0x01136156> _1136156;
+    static loco_global<OpenLoco::vehicle_bogie*, 0x0113614E> _dragCarComponent;
+    static loco_global<int16_t, 0x01136156> _dragVehicleHead;
     static loco_global<int32_t, 0x01136264> _1136264;
     static loco_global<string_id, 0x009C68E8> gGameCommandErrorTitle;
     static loco_global<uint8_t, 0x00508F14> _screenFlags;
@@ -349,8 +349,8 @@ namespace OpenLoco::Ui::Vehicle
             self->max_height = maxWindowSize.height;
             self->var_85C = -1;
             WindowManager::close(WindowType::dragVehiclePart, 0);
-            _113614E = nullptr;
-            _1136156 = -1;
+            _dragCarComponent = nullptr;
+            _dragVehicleHead = ThingId::null;
 
             const auto* skin = ObjectManager::get<interface_skin_object>();
             self->colours[1] = skin->colour_0A;
@@ -986,12 +986,12 @@ namespace OpenLoco::Ui::Vehicle
         // "Show <vehicle> design details and options" tab in vehicle window
         static void onUpdate(window* self)
         {
-            if (self->number == _1136156)
+            if (self->number == _dragVehicleHead)
             {
                 if (WindowManager::find(WindowType::dragVehiclePart) == nullptr)
                 {
-                    _1136156 = -1;
-                    _113614E = nullptr;
+                    _dragVehicleHead = ThingId::null;
+                    _dragCarComponent = nullptr;
                     self->invalidate();
                 }
             }
@@ -1001,7 +1001,7 @@ namespace OpenLoco::Ui::Vehicle
 
             WindowManager::invalidateWidget(WindowType::vehicle, self->number, Common::widx::tabDetails);
 
-            if (_1136156 == -1 && self->isActivated(widx::remove))
+            if (_dragVehicleHead == ThingId::null && self->isActivated(widx::remove))
             {
                 self->activated_widgets &= ~(1ULL << widx::remove);
                 WindowManager::invalidateWidget(WindowType::vehicle, self->number, widx::remove);
@@ -1359,7 +1359,7 @@ namespace OpenLoco::Ui::Vehicle
 
                     int16_t top = pos.y;
                     int16_t bottom = pos.y + self->row_height - 1;
-                    if (_113614E != nullptr)
+                    if (_dragCarComponent != nullptr)
                     {
                         bottom = pos.y;
                         top = pos.y - 1;
@@ -1371,7 +1371,7 @@ namespace OpenLoco::Ui::Vehicle
                 int16_t y = pos.y + (self->row_height - 22) / 2;
                 uint8_t al = 0;
                 uint8_t ah = 0;
-                if (car.front == _113614E)
+                if (car.front == _dragCarComponent)
                 {
                     al = 12;
                     ah = self->colours[1];
@@ -1388,7 +1388,7 @@ namespace OpenLoco::Ui::Vehicle
                 pos.y += self->row_height;
             }
 
-            if (self->row_hover == train.tail->id && _113614E != nullptr)
+            if (self->row_hover == train.tail->id && _dragCarComponent != nullptr)
             {
                 Gfx::fillRect(context, 0, pos.y - 1, self->width, pos.y, 0x2000030);
             }
@@ -1504,7 +1504,7 @@ namespace OpenLoco::Ui::Vehicle
         void scrollDragEnd(const Gfx::point_t& pos)
         {
             auto vehicleWindow = getVehicleDetailsWindow(pos);
-            if (vehicleWindow == nullptr && _113614E != nullptr)
+            if (vehicleWindow == nullptr && _dragCarComponent != nullptr)
             {
                 return;
             }
@@ -1513,14 +1513,14 @@ namespace OpenLoco::Ui::Vehicle
             switch (targetWidget)
             {
                 case widx::remove:
-                    GameCommands::do_6((*_113614E)->id);
+                    GameCommands::do_6((*_dragCarComponent)->id);
                     break;
                 case widx::carList:
                 {
                     auto car = getCarFromScrollViewPos(*vehicleWindow, pos);
                     if (car != nullptr)
                     {
-                        GameCommands::do_0((*_113614E)->id, car->id);
+                        GameCommands::do_0((*_dragCarComponent)->id, car->id);
                     }
                     break;
                 }

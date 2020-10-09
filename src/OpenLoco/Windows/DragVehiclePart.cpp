@@ -22,8 +22,8 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
     };
 
     // TODO: make vehicles versions of these call into this global, ?make thing_id instead?
-    static loco_global<OpenLoco::vehicle_bogie*, 0x0113614E> _113614E;
-    static loco_global<thing_id_t, 0x01136156> _1136156;
+    static loco_global<OpenLoco::vehicle_bogie*, 0x0113614E> _dragCarComponent;
+    static loco_global<thing_id_t, 0x01136156> _dragVehicleHead;
 
     static void initEvents();
 
@@ -31,8 +31,8 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
     void open(OpenLoco::Things::Vehicle::Car& car)
     {
         WindowManager::close(WindowType::dragVehiclePart);
-        _113614E = car.front;
-        _1136156 = car.front->head;
+        _dragCarComponent = car.front;
+        _dragVehicleHead = car.front->head;
         WindowManager::invalidate(WindowType::vehicle, car.front->head);
 
         initEvents();
@@ -61,8 +61,8 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
         self.height = 0; // Set to zero so that skipped in window find
         Vehicle::Details::scrollDragEnd(Input::getScrollLastLocation());
         WindowManager::close(&self);
-        _113614E = nullptr;
-        WindowManager::invalidate(WindowType::vehicle, _1136156);
+        _dragCarComponent = nullptr;
+        WindowManager::invalidate(WindowType::vehicle, _dragVehicleHead);
     }
 
     static void draw(Ui::window* const self, Gfx::drawpixelinfo_t* const context)
@@ -70,7 +70,7 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
         Gfx::drawpixelinfo_t* clipped;
         if (Gfx::clipDrawpixelinfo(&clipped, context, self->x, self->y, self->width, self->height))
         {
-            Vehicle::Common::sub_4B743B(0, 0, 0, 19, _113614E, clipped);
+            Vehicle::Common::sub_4B743B(0, 0, 0, 19, _dragCarComponent, clipped);
         }
     }
 
