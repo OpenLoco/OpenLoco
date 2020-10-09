@@ -52,8 +52,8 @@ execute_process(
 )
 
 # To avoid unnecessary rebuilds, set the current branch and short sha1 hash
-# only for the one file that uses these definitions: version.cpp
-set_property(SOURCE ${CMAKE_SOURCE_DIR}/src/openloco/version.cpp
+# only for the one file that uses these definitions: Version.cpp
+set_property(SOURCE ${CMAKE_SOURCE_DIR}/src/OpenLoco/Version.cpp
     PROPERTY COMPILE_DEFINITIONS
     OPENLOCO_VERSION_TAG="${OPENLOCO_VERSION_TAG}"
     OPENLOCO_BRANCH="${OPENLOCO_BRANCH}"
