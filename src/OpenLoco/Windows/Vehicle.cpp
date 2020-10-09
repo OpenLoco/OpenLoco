@@ -455,6 +455,7 @@ namespace OpenLoco::Ui::Vehicle
 
             auto head = Common::getVehicle(self);
 
+            // If vehicle not placed put into pickup mode if window in focus
             if (head->tile_x != -1 && (head->var_38 & Things::Vehicle::Flags38::unk_4) == 0)
             {
                 return;
@@ -529,18 +530,18 @@ namespace OpenLoco::Ui::Vehicle
                 dropdownCount,
                 0);
 
-            auto highlighted = 0; // Stop
+            auto selected = 0; // Stop
             if (!(head->var_0C & Things::Vehicle::Flags0C::unk_1))
             {
-                highlighted = 1; // Start
+                selected = 1; // Start
             }
             if (head->var_0C & Things::Vehicle::Flags0C::manualControl)
             {
-                highlighted = 2; // Manual
+                selected = 2; // Manual
             }
 
-            Dropdown::setItemSelected(highlighted);
-            Dropdown::setHighlightedItem(highlighted & 2); // Stop or Manual (Start becomes Stop highlighted)
+            Dropdown::setItemSelected(selected);
+            Dropdown::setHighlightedItem(selected == 1 ? 0 : selected); // Stop or Manual (Start becomes Stop highlighted)
         }
 
         // 0x004B2637
