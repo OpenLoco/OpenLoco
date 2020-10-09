@@ -252,19 +252,16 @@ namespace OpenLoco::Ui::Vehicle
 
             auto vehHead = Common::getVehicle(self);
             Things::Vehicle::Vehicle train(vehHead);
+
+            // If picked up no need for viewport drawn
             if (vehHead->tile_x == -1)
             {
-                if (self->viewports[0] == nullptr)
-                {
-                    return;
-                }
-
-                self->viewports[0]->width = 0;
-                self->viewports[0] = nullptr;
+                self->viewportRemove(0);
                 self->invalidate();
                 return;
             }
 
+            // By default focus on the veh2 id and if there are cars focus on the body of the first car
             thing_id_t targetThing = train.veh2->id;
             if (!train.cars.empty())
             {
@@ -292,8 +289,7 @@ namespace OpenLoco::Ui::Vehicle
                     return;
 
                 flags = self->viewports[0]->flags;
-                self->viewports[0]->width = 0;
-                self->viewports[0] = nullptr;
+                self->viewportRemove(0);
                 ViewportManager::collectGarbage();
             }
             else

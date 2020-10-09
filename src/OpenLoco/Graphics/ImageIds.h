@@ -60,7 +60,6 @@ namespace OpenLoco::ImageIds
     constexpr uint32_t airport_pickup = 2372;
     constexpr uint32_t airport_place = 2373;
     constexpr uint32_t pass_signal = 2374;
-
     constexpr uint32_t route_delete = 2375;
     constexpr uint32_t route_skip = 2376;
     constexpr uint32_t route_wait = 2377;
@@ -246,7 +245,6 @@ namespace OpenLoco::ImageIds
     constexpr uint32_t tab_object_world = 3536;
     constexpr uint32_t tab_object_companies = 3537;
     constexpr uint32_t tab_object_scenarios = 3538;
-
     constexpr uint32_t news_background_old_left = 3539;
     constexpr uint32_t news_background_old_right = 3540;
     constexpr uint32_t news_background_new_left = 3541;
@@ -260,7 +258,6 @@ namespace OpenLoco::ImageIds
     constexpr uint32_t title_menu_lesson_l = 3549;
     constexpr uint32_t title_menu_lesson_a = 3550;
     constexpr uint32_t title_menu_lesson_p = 3551;
-
     constexpr uint32_t title_menu_globe_spin_0 = 3552;
     constexpr uint32_t title_menu_globe_spin_1 = 3553;
     constexpr uint32_t title_menu_globe_spin_2 = 3554;
@@ -293,7 +290,6 @@ namespace OpenLoco::ImageIds
     constexpr uint32_t title_menu_globe_spin_29 = 3581;
     constexpr uint32_t title_menu_globe_spin_30 = 3582;
     constexpr uint32_t title_menu_globe_spin_31 = 3583;
-
     constexpr uint32_t title_menu_globe_construct_0 = 3584;
     constexpr uint32_t title_menu_globe_construct_1 = 3585;
     constexpr uint32_t title_menu_globe_construct_2 = 3586;
@@ -326,7 +322,6 @@ namespace OpenLoco::ImageIds
     constexpr uint32_t title_menu_globe_construct_29 = 3613;
     constexpr uint32_t title_menu_globe_construct_30 = 3614;
     constexpr uint32_t title_menu_globe_construct_31 = 3615;
-
     constexpr uint32_t chris_sawyer_logo_small = 3616;
     constexpr uint32_t chris_sawyer_logo_intro_left = 3617;
     constexpr uint32_t chris_sawyer_logo_intro_right = 3618;
@@ -334,7 +329,6 @@ namespace OpenLoco::ImageIds
     constexpr uint32_t atari_logo_intro_left = 3620;
     constexpr uint32_t atari_logo_intro_right = 3620;
     constexpr uint32_t atari_logo_small = UNUSED_IMG(3623);
-
     constexpr uint32_t locomotion_logo = 3624;
     constexpr uint32_t wide_tab = 3625;
 
