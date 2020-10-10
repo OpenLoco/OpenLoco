@@ -1014,7 +1014,7 @@ namespace OpenLoco::Ui
             if (MultiPlayer::resetFlag(MultiPlayer::flags::flag_2))
             {
                 WindowManager::closeConstructionWindows();
-                call(0x004CF456);
+                WindowManager::closeAllFloatingWindows();
                 registers regs;
                 regs.bl = GameCommandFlag::apply;
                 GameCommands::doCommand(69, regs);
@@ -1023,7 +1023,7 @@ namespace OpenLoco::Ui
             if (MultiPlayer::resetFlag(MultiPlayer::flags::flag_3))
             {
                 WindowManager::closeConstructionWindows();
-                call(0x004CF456);
+                WindowManager::closeAllFloatingWindows();
                 registers regs;
                 regs.bl = GameCommandFlag::apply;
                 GameCommands::doCommand(70, regs);
@@ -1040,7 +1040,7 @@ namespace OpenLoco::Ui
         if (MultiPlayer::resetFlag(MultiPlayer::flags::flag_0))
         {
             WindowManager::closeConstructionWindows();
-            call(0x004CF456);
+            WindowManager::closeAllFloatingWindows();
         }
 
         if (MultiPlayer::resetFlag(MultiPlayer::flags::flag_1))
