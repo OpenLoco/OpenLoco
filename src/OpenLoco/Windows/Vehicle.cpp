@@ -890,7 +890,7 @@ namespace OpenLoco::Ui::Vehicle
             if (self->viewports[0] != nullptr)
             {
                 self->drawViewports(context);
-                Widget::drawViewportCentreButton(context, self, 0x10);
+                Widget::drawViewportCentreButton(context, self, widx::centreViewport);
             }
             else if (Input::isToolActive(self->type, self->number))
             {
