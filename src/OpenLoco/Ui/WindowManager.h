@@ -72,6 +72,11 @@ namespace OpenLoco::Ui::WindowManager
     void viewportSetVisibility(viewport_visibility flags);
 }
 
+namespace OpenLoco::Ui::Windows::Main
+{
+    void open();
+}
+
 namespace OpenLoco::Ui::Windows
 {
     window* openTitleVersion();
