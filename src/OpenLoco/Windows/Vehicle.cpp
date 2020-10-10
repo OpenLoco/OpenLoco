@@ -515,7 +515,7 @@ namespace OpenLoco::Ui::Vehicle
 
             auto dropdownCount = 2;
             auto head = Common::getVehicle(self);
-            if (head->mode == TransportMode::rail && (_screenFlags & ScreenFlags::unknown_6))
+            if (head->mode == TransportMode::rail && (_screenFlags & ScreenFlags::driverCheatEnabled))
             {
                 dropdownCount = 3;
             }

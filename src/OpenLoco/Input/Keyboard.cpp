@@ -69,14 +69,14 @@ namespace OpenLoco::Input
 
     static void loc_4BECDE()
     {
-        setScreenFlag(ScreenFlags::unknown_6);
+        setScreenFlag(ScreenFlags::driverCheatEnabled);
 
         Audio::playSound(Audio::sound_id::click_press, Ui::width() / 2);
     }
 
     static void loc_4BED04()
     {
-        if ((getScreenFlags() & ScreenFlags::unknown_6) == 0)
+        if ((getScreenFlags() & ScreenFlags::driverCheatEnabled) == 0)
         {
             return;
             // Only works when DRIVER mode is active
@@ -96,10 +96,7 @@ namespace OpenLoco::Input
             if (t->mode != TransportMode::rail)
                 continue;
 
-            registers regs;
-            regs.cx = w->number;
-            regs.bl = GameCommandFlag::apply;
-            GameCommands::doCommand(77, regs);
+            GameCommands::do_77(w->number);
             Audio::playSound(Audio::sound_id::click_press, Ui::width() / 2);
 
             return;
@@ -108,9 +105,7 @@ namespace OpenLoco::Input
 
     static void loc_4BED79()
     {
-        registers regs;
-        regs.bl = GameCommandFlag::apply;
-        GameCommands::doCommand(78, regs);
+        GameCommands::do_78();
 
         Audio::playSound(Audio::sound_id::click_press, Ui::width() / 2);
     }

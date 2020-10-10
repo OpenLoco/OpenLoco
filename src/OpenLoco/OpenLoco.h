@@ -16,7 +16,7 @@ namespace OpenLoco
         constexpr uint16_t trackUpgrade = 1 << 3;
         constexpr uint16_t unknown_4 = 1 << 4;
         constexpr uint16_t unknown_5 = 1 << 5;
-        constexpr uint16_t unknown_6 = 1 << 6;
+        constexpr uint16_t driverCheatEnabled = 1 << 6;
     }
 
     extern const char version[];

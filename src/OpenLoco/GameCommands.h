@@ -61,6 +61,8 @@ namespace OpenLoco::GameCommands
         vehicle_speed_control = 74,
         vehicle_order_up = 75,
         vehicle_order_down = 76,
+        vehicle_apply_shunt_cheat = 77,
+        apply_free_cash_cheat = 78,
         rename_industry = 79,
     };
 
@@ -520,6 +522,21 @@ namespace OpenLoco::GameCommands
         regs.di = head;
         regs.edx = orderOffset;
         return doCommand(static_cast<int32_t>(GameCommand::vehicle_order_down), regs);
+    }
+
+    inline void do_77(thing_id_t head)
+    {
+        registers regs;
+        regs.bl = GameCommandFlag::apply;
+        regs.cx = head;
+        doCommand(static_cast<int32_t>(GameCommand::vehicle_apply_shunt_cheat), regs);
+    }
+
+    inline void do_78()
+    {
+        registers regs;
+        regs.bl = GameCommandFlag::apply;
+        GameCommands::doCommand(static_cast<int32_t>(GameCommand::apply_free_cash_cheat), regs);
     }
 
     // Rename industry
