@@ -850,12 +850,6 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         call(0x00474874); // editor_load_selected_objects
     }
 
-    // 0x0047237D
-    static void resetLoadedObjects()
-    {
-        call(0x0047237D); // reset_loaded_objects
-    }
-
     // 0x00473B91
     static void editorObjectFlagsFree0()
     {
@@ -870,7 +864,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         unloadUnselectedObjects();
         editorLoadSelectedObjects();
-        resetLoadedObjects();
+        ObjectManager::resetLoadedObjects();
         ObjectManager::freeScenarioText();
         editorObjectFlagsFree0();
     }

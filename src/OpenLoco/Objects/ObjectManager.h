@@ -242,6 +242,7 @@ namespace OpenLoco::ObjectManager
     void getScenarioText(header& object);
     std::optional<uint32_t> getLoadedObjectIndex(const header* header);
     std::optional<uint32_t> getLoadedObjectIndex(const object_index_entry& object);
+    void resetLoadedObjects();
     ObjIndexPair getActiveObject(object_type objectType, uint8_t* edi);
 
     void drawGenericDescription(Gfx::drawpixelinfo_t& dpi, Gfx::point_t& rowPosition, const uint16_t designed, const uint16_t obsolete);

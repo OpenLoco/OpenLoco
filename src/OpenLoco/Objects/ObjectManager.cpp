@@ -380,6 +380,12 @@ namespace OpenLoco::ObjectManager
         return getLoadedObjectIndex(object._header);
     }
 
+    // 0x0047237D
+    void resetLoadedObjects()
+    {
+        call(0x0047237D);
+    }
+
     // 0x00472AFE
     ObjIndexPair getActiveObject(object_type objectType, uint8_t* edi)
     {

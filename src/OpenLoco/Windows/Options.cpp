@@ -1513,7 +1513,7 @@ namespace OpenLoco::Ui::Options
                     regs3.ebp = (uintptr_t)object.second._header;
 
                     call(0x00471BCE, regs3);
-                    call(0x0047237D); // reset_loaded_objects
+                    ObjectManager::resetLoadedObjects();
                     call(0x0046E07B); // load currency gfx
                     sub_4BF935();
 
