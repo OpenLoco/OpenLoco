@@ -26,6 +26,9 @@ using namespace OpenLoco::Interop;
 namespace OpenLoco::Ui::Windows::CompanyWindow
 {
     static loco_global<string_id, 0x009C68E8> gGameCommandErrorTitle;
+    static loco_global<uint8_t, 0x005177FA> _byte_5177FA; // _str2039
+    static loco_global<uint8_t[255], 0x00526114> _526114; // start: 0x526114, next element: 0x526213
+    static loco_global<uint8_t[512], 0x005177FB> _5177FB; // start: 0x5177FB, next element: 0x5179FB // _str2039+1
 
     namespace Common
     {
@@ -2277,10 +2280,146 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             self->draw(dpi);
             Common::drawTabs(self, dpi);
 
-            registers regs;
-            regs.edi = (int32_t)dpi;
-            regs.esi = (int32_t)self;
-            call(0x00433DF5, regs);
+            //registers regs;
+            //regs.edi = (int32_t)dpi;
+            //regs.esi = (int32_t)self;
+            //call(0x00433DF5, regs);
+
+            //return;
+
+            int16_t dx = self->y + 47; // 00433DF5-00433DF9
+            _byte_5177FA = 0x90;       //00433E08
+
+            // 00433DFE, 00433E03, 00433E0F-00433E18, ebx, ebp, al
+            for (int32_t i = 0; _526114[i] != 0 /* && i<255 */; i++)
+            {
+                _5177FB[i] = _526114[i]; // copy _526114 to String 2039 (string buffer)
+            }
+
+            // 00433E1A-00433E35
+            uint16_t bp = self->width - 10;
+            int16_t cx = self->x + 5;
+            int16_t bx = 2039;
+            int16_t colour = 0;
+            dx = Gfx::drawString_495224(*dpi, cx, dx, bp, colour, bx);
+
+            // 00433E36-00433E50
+            dx = dx + 5;
+            cx = self->x + 5;
+            bx = 1851;
+            colour = 0;
+            Gfx::drawString_494B3F(*dpi, cx, dx, colour, bx);
+
+            // 00433E51-00433E62
+            dx = dx + 10;
+            cx = self->x + 5;
+            bp = self->width - 10;
+
+            // 00433E66
+            call(0x004384E9);
+
+            // 00433E6B-00433E7B
+            bx = 1852;
+            colour = 0;
+            loco_global<char[16], 0x0112C826> _commonFormatArgs;
+            dx = Gfx::drawString_495224(*dpi, cx, dx, bp, colour, bx, _commonFormatArgs);
+
+            // 00433E7C-00433E87
+            dx = dx + 5;
+            static loco_global<company_id_t[2], 0x00525E3C> _playerCompany;
+            company* playerCompany = CompanyManager::get(_playerCompany[0]);
+
+            // 00433E8D-00433E97
+            if ((playerCompany->challenge_flags & challenge_completed) != 0)
+            {
+                // 00433F42-00433F83
+                static loco_global<uint16_t[10], 0x0112C826> commonFormatArgsUInt16;
+                static loco_global<uint16_t, 0x00526245> _526245;
+
+                uint16_t years = _526245 / 12;
+                uint16_t months = _526245 % 12;
+
+                commonFormatArgsUInt16[0] = years;
+                commonFormatArgsUInt16[1] = months;
+                cx = self->x + 5;
+                bp = self->width - 10;
+                bx = 1862;
+                colour = 0;
+                Gfx::drawString_495224(*dpi, cx, dx, bp, colour, bx, commonFormatArgsUInt16);
+                return;
+            }
+
+            // 00433E9D-00433EA7
+            if ((playerCompany->challenge_flags & challenge_failed) != 0)
+            {
+                // 00433F84-00433FA1
+                cx = self->x + 5;
+                bp = self->width - 10;
+                bx = 1863;
+                colour = 0;
+                Gfx::drawString_495224(*dpi, cx, dx, bp, colour, bx);
+                return;
+            }
+
+            // 00433EAD-00433EB7
+            if ((playerCompany->challenge_flags & challenge_beaten_by_opponent) != 0)
+            {
+                // 00433FA2-00433FFD
+                static loco_global<uint16_t, 0x00526245> _526245;
+                static loco_global<uint16_t[10], 0x0112C826> commonFormatArgsUInt16;
+
+                uint16_t years = _526245 / 12;
+                uint16_t months = _526245 % 12;
+                commonFormatArgsUInt16[2] = years;
+                commonFormatArgsUInt16[3] = months;
+
+                company* otherCompany = CompanyManager::get(_playerCompany[1]); // byte_525E3D
+                commonFormatArgsUInt16[0] = otherCompany->owner_name;
+                cx = self->x + 5;
+                bp = self->width - 10;
+                bx = 1864;
+                Gfx::drawString_495224(*dpi, cx, dx, bp, colour, bx, commonFormatArgsUInt16);
+                return;
+            }
+
+            // 00433EBD-00433EEC
+            static loco_global<uint16_t[10], 0x0112C826> commonFormatArgsUInt16;
+            commonFormatArgsUInt16[0] = playerCompany->var_8C4E;
+            cx = self->x + 5;
+            bp = self->width - 10;
+            bx = 1865;
+            colour = 0;
+            dx = Gfx::drawString_495224(*dpi, cx, dx, bp, colour, bx, commonFormatArgsUInt16);
+
+            // 00433EED-00433EF4
+            static loco_global<uint8_t, 0x00526231> objectiveFlags;
+            if ((objectiveFlags & 4) == 0)
+            {
+                return;
+            }
+
+            // 00433EF6-00433F0A
+            static loco_global<uint8_t, 0x00526240> objectiveTimeLimitYears;
+            static loco_global<uint16_t, 0x00526243> _526243;
+            int32_t eax = objectiveTimeLimitYears;
+            eax = eax * 12 - _526243;               // months left
+            
+            // 00433F0F divide edx:eax (64 bit) by ecx - div ecx
+            // result: eax , remainder: edx
+
+            uint32_t years = eax / 12;
+            uint32_t months = eax % 12;
+
+            // 00433F11-00433F1E
+            commonFormatArgsUInt16[0] = static_cast<uint16_t>(years);
+            commonFormatArgsUInt16[1] = static_cast<uint16_t>(months);
+
+            // 00433F1F-00433F40
+            cx = self->x + 5;
+            bp = self->width + 10;
+            bx = 1866;
+            colour = 0;
+            Gfx::drawString_495224(*dpi, cx, dx, bp, colour, bx, commonFormatArgsUInt16);
         }
 
         // 0x00433FFE
