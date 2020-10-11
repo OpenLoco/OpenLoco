@@ -57,6 +57,11 @@ namespace OpenLoco::CompanyManager
         return _player_company[0];
     }
 
+    company* getPlayerCompany()
+    {
+        return &_companies[_player_company[0]];
+    }
+
     uint8_t getCompanyColour(company_id_t id)
     {
         return _company_colours[id];

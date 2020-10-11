@@ -2315,7 +2315,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             y = y + 5;
             static loco_global<company_id_t[2], 0x00525E3C> _playerCompany;
-            company* playerCompany = CompanyManager::get(_playerCompany[0]);
+            company* playerCompany = CompanyManager::getPlayerCompany();
 
             if ((playerCompany->challenge_flags & challenge_completed) != 0)
             {
