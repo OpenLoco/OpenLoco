@@ -2299,12 +2299,14 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             _byte_5177FA = 0x90;      //00433E08
 
             // 00433DFE, 00433E03, 00433E0F-00433E18, ebx, ebp, al
-            for (int32_t i = 0; _526114[i] != 0 /* && i<255 */; i++)
+            int i = 0;
+            while ((_5177FB[i] = _526114[i]) != 0 /* && i < 255 */) // copy _526114 to String 2039 (string buffer)
             {
-                _5177FB[i] = _526114[i]; // copy _526114 to String 2039 (string buffer)
+                i++;
             }
 
             // 00433E1A-00433E35
+            // for example: "Provide the transport services on this little island" for "Boulder Breakers" scenario
             y = Gfx::drawString_495224(*dpi, self->x + 5, y, self->width - 10, 0, StringIds::buffer_2039);
 
             // 00433E36-00433E50
