@@ -2291,13 +2291,6 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             self->draw(dpi);
             Common::drawTabs(self, dpi);
 
-            //registers regs;
-            //regs.edi = (int32_t)dpi;
-            //regs.esi = (int32_t)self;
-            //call(0x00433DF5, regs);
-
-            //return;
-
             char* buffer_2039 = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
             *buffer_2039++ = static_cast<char>(ControlCodes::colour_black);
             char* scenarioTitle = &_526114[0];
