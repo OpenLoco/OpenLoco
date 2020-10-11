@@ -2287,8 +2287,8 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             //return;
 
-            int16_t dx = self->y + 47; // 00433DF5-00433DF9
-            _byte_5177FA = 0x90;       //00433E08
+            int16_t y = self->y + 47; // 00433DF5-00433DF9
+            _byte_5177FA = 0x90;      //00433E08
 
             // 00433DFE, 00433E03, 00433E0F-00433E18, ebx, ebp, al
             for (int32_t i = 0; _526114[i] != 0 /* && i<255 */; i++)
@@ -2297,35 +2297,25 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             }
 
             // 00433E1A-00433E35
-            uint16_t bp = self->width - 10;
-            int16_t cx = self->x + 5;
-            int16_t bx = 2039;
-            int16_t colour = 0;
-            dx = Gfx::drawString_495224(*dpi, cx, dx, bp, colour, bx);
+            y = Gfx::drawString_495224(*dpi, self->x + 5, y, self->width - 10, 0, StringIds::buffer_2039);
 
             // 00433E36-00433E50
-            dx = dx + 5;
-            cx = self->x + 5;
-            bx = 1851;
-            colour = 0;
-            Gfx::drawString_494B3F(*dpi, cx, dx, colour, bx);
+            y = y + 5;
+            Gfx::drawString_494B3F(*dpi, self->x + 5, y, 0, StringIds::challenge_label);
 
             // 00433E51-00433E62
-            dx = dx + 10;
-            cx = self->x + 5;
-            bp = self->width - 10;
+            y = y + 10;
+            FormatArguments args{};
 
             // 00433E66
+            // this will modify the _commonFormatArgs for the StringIds::challenge_value
             call(0x004384E9);
 
             // 00433E6B-00433E7B
-            bx = 1852;
-            colour = 0;
-            loco_global<char[16], 0x0112C826> _commonFormatArgs;
-            dx = Gfx::drawString_495224(*dpi, cx, dx, bp, colour, bx, _commonFormatArgs);
+            y = Gfx::drawString_495224(*dpi, self->x + 5, y, self->width - 10, 0, StringIds::challenge_value, &args);
 
             // 00433E7C-00433E87
-            dx = dx + 5;
+            y = y + 5;
             static loco_global<company_id_t[2], 0x00525E3C> _playerCompany;
             company* playerCompany = CompanyManager::get(_playerCompany[0]);
 
@@ -2333,19 +2323,13 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             if ((playerCompany->challenge_flags & challenge_completed) != 0)
             {
                 // 00433F42-00433F83
-                static loco_global<uint16_t[10], 0x0112C826> commonFormatArgsUInt16;
                 static loco_global<uint16_t, 0x00526245> _526245;
-
                 uint16_t years = _526245 / 12;
                 uint16_t months = _526245 % 12;
-
-                commonFormatArgsUInt16[0] = years;
-                commonFormatArgsUInt16[1] = months;
-                cx = self->x + 5;
-                bp = self->width - 10;
-                bx = 1862;
-                colour = 0;
-                Gfx::drawString_495224(*dpi, cx, dx, bp, colour, bx, commonFormatArgsUInt16);
+                args = {};
+                args.push(years);
+                args.push(months);
+                Gfx::drawString_495224(*dpi, self->x + 5, y, self->width - 10, 0, StringIds::success_you_completed_the_challenge_in_years_months, &args);
                 return;
             }
 
@@ -2353,11 +2337,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             if ((playerCompany->challenge_flags & challenge_failed) != 0)
             {
                 // 00433F84-00433FA1
-                cx = self->x + 5;
-                bp = self->width - 10;
-                bx = 1863;
-                colour = 0;
-                Gfx::drawString_495224(*dpi, cx, dx, bp, colour, bx);
+                Gfx::drawString_495224(*dpi, self->x + 5, y, self->width - 10, 0, StringIds::failed_you_failed_to_complete_the_challenge);
                 return;
             }
 
@@ -2366,60 +2346,46 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             {
                 // 00433FA2-00433FFD
                 static loco_global<uint16_t, 0x00526245> _526245;
-                static loco_global<uint16_t[10], 0x0112C826> commonFormatArgsUInt16;
-
                 uint16_t years = _526245 / 12;
                 uint16_t months = _526245 % 12;
-                commonFormatArgsUInt16[2] = years;
-                commonFormatArgsUInt16[3] = months;
-
                 company* otherCompany = CompanyManager::get(_playerCompany[1]); // byte_525E3D
-                commonFormatArgsUInt16[0] = otherCompany->owner_name;
-                cx = self->x + 5;
-                bp = self->width - 10;
-                bx = 1864;
-                Gfx::drawString_495224(*dpi, cx, dx, bp, colour, bx, commonFormatArgsUInt16);
+
+                args = {};
+                args.push(otherCompany->owner_name);
+                args.skip(2);
+                args.push(years);
+                args.push(months);
+                Gfx::drawString_495224(*dpi, self->x + 5, y, self->width - 10, 0, StringIds::beaten_by_other_player_completed_in_years_months, &args);
                 return;
             }
 
             // 00433EBD-00433EEC
-            static loco_global<uint16_t[10], 0x0112C826> commonFormatArgsUInt16;
-            commonFormatArgsUInt16[0] = playerCompany->var_8C4E;
-            cx = self->x + 5;
-            bp = self->width - 10;
-            bx = 1865;
-            colour = 0;
-            dx = Gfx::drawString_495224(*dpi, cx, dx, bp, colour, bx, commonFormatArgsUInt16);
+            args = {};
+            args.push(static_cast<uint16_t>(playerCompany->var_8C4E));
+            y = Gfx::drawString_495224(*dpi, self->x + 5, y, self->width - 10, 0, StringIds::progress_towards_completing_challenge_percent, &args);
 
             // 00433EED-00433EF4
             static loco_global<uint8_t, 0x00526231> objectiveFlags;
-            if ((objectiveFlags & 4) == 0)
+            if ((objectiveFlags & 4) == 0) // time limited challenge
             {
+                // not a time limited challenge
                 return;
             }
 
             // 00433EF6-00433F0A
+            static loco_global<uint16_t, 0x00526243> _526243; // months in the challenge?
             static loco_global<uint8_t, 0x00526240> objectiveTimeLimitYears;
-            static loco_global<uint16_t, 0x00526243> _526243;
-            int32_t eax = objectiveTimeLimitYears;
-            eax = eax * 12 - _526243;               // months left
-            
-            // 00433F0F divide edx:eax (64 bit) by ecx - div ecx
-            // result: eax , remainder: edx
-
-            uint32_t years = eax / 12;
-            uint32_t months = eax % 12;
+            uint16_t monthsLeft = objectiveTimeLimitYears * 12 - _526243;
+            uint16_t years = monthsLeft / 12;
+            uint16_t months = monthsLeft % 12;
 
             // 00433F11-00433F1E
-            commonFormatArgsUInt16[0] = static_cast<uint16_t>(years);
-            commonFormatArgsUInt16[1] = static_cast<uint16_t>(months);
+            args = {};
+            args.push(years);
+            args.push(months);
 
             // 00433F1F-00433F40
-            cx = self->x + 5;
-            bp = self->width + 10;
-            bx = 1866;
-            colour = 0;
-            Gfx::drawString_495224(*dpi, cx, dx, bp, colour, bx, commonFormatArgsUInt16);
+            Gfx::drawString_495224(*dpi, self->x + 5, y, self->width + 10, 0, StringIds::time_remaining_years_months, &args);
         }
 
         // 0x00433FFE
