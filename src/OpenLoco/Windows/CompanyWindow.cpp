@@ -2274,6 +2274,14 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             Common::repositionTabs(self);
         }
 
+        // this will prepare _commonFormatArgs array before drawing the StringIds::challenge_value
+        // after that for example it will draw this string: Achieve a performance index of 10.0% ("Engineer")
+        // 0x004384E9
+        static void sub_4384E9()
+        {
+            call(0x004384E9);
+        }
+
         // 0x00433DEB
         static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
         {
@@ -2308,8 +2316,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             FormatArguments args{};
 
             // 00433E66
-            // this will modify the _commonFormatArgs for the StringIds::challenge_value
-            call(0x004384E9);
+            sub_4384E9();
 
             // 00433E6B-00433E7B
             y = Gfx::drawString_495224(*dpi, self->x + 5, y, self->width - 10, 0, StringIds::challenge_value, &args);
