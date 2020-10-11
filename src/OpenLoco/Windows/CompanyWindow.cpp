@@ -27,7 +27,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 {
     static loco_global<string_id, 0x009C68E8> gGameCommandErrorTitle;
     static loco_global<uint8_t, 0x005177FA> _byte_5177FA; // _str2039
-    static loco_global<uint8_t[255], 0x00526114> _526114; // start: 0x526114, next element: 0x526213
+    static loco_global<char[0x526213 - 0x526114], 0x00526114> _526114; // size 255, probably is: Scenario Title
     static loco_global<uint8_t[512], 0x005177FB> _5177FB; // start: 0x5177FB, next element: 0x5179FB // _str2039+1
 
     namespace Common
@@ -2295,46 +2295,34 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             //return;
 
-            int16_t y = self->y + 47; // 00433DF5-00433DF9
-            _byte_5177FA = 0x90;      //00433E08
+            char* buffer_2039 = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
+            *buffer_2039++ = static_cast<char>(ControlCodes::colour_black);
+            char* scenarioTitle = &_526114[0];
+            strcpy(buffer_2039, scenarioTitle);
 
-            // 00433DFE, 00433E03, 00433E0F-00433E18, ebx, ebp, al
-            int i = 0;
-            while ((_5177FB[i] = _526114[i]) != 0 /* && i < 255 */) // copy _526114 to String 2039 (string buffer)
-            {
-                i++;
-            }
-
-            // 00433E1A-00433E35
+            int16_t y = self->y + 47;
             // for example: "Provide the transport services on this little island" for "Boulder Breakers" scenario
             y = Gfx::drawString_495224(*dpi, self->x + 5, y, self->width - 10, 0, StringIds::buffer_2039);
 
-            // 00433E36-00433E50
             y = y + 5;
             Gfx::drawString_494B3F(*dpi, self->x + 5, y, 0, StringIds::challenge_label);
 
-            // 00433E51-00433E62
             y = y + 10;
             FormatArguments args{};
 
-            // 00433E66
             sub_4384E9();
-
-            // 00433E6B-00433E7B
             y = Gfx::drawString_495224(*dpi, self->x + 5, y, self->width - 10, 0, StringIds::challenge_value, &args);
 
-            // 00433E7C-00433E87
             y = y + 5;
             static loco_global<company_id_t[2], 0x00525E3C> _playerCompany;
             company* playerCompany = CompanyManager::get(_playerCompany[0]);
 
-            // 00433E8D-00433E97
             if ((playerCompany->challenge_flags & challenge_completed) != 0)
             {
-                // 00433F42-00433F83
                 static loco_global<uint16_t, 0x00526245> _526245;
                 uint16_t years = _526245 / 12;
                 uint16_t months = _526245 % 12;
+
                 args = {};
                 args.push(years);
                 args.push(months);
@@ -2342,18 +2330,14 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 return;
             }
 
-            // 00433E9D-00433EA7
             if ((playerCompany->challenge_flags & challenge_failed) != 0)
             {
-                // 00433F84-00433FA1
                 Gfx::drawString_495224(*dpi, self->x + 5, y, self->width - 10, 0, StringIds::failed_you_failed_to_complete_the_challenge);
                 return;
             }
 
-            // 00433EAD-00433EB7
             if ((playerCompany->challenge_flags & challenge_beaten_by_opponent) != 0)
             {
-                // 00433FA2-00433FFD
                 static loco_global<uint16_t, 0x00526245> _526245;
                 uint16_t years = _526245 / 12;
                 uint16_t months = _526245 % 12;
@@ -2368,12 +2352,10 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 return;
             }
 
-            // 00433EBD-00433EEC
             args = {};
             args.push(static_cast<uint16_t>(playerCompany->var_8C4E));
             y = Gfx::drawString_495224(*dpi, self->x + 5, y, self->width - 10, 0, StringIds::progress_towards_completing_challenge_percent, &args);
 
-            // 00433EED-00433EF4
             static loco_global<uint8_t, 0x00526231> objectiveFlags;
             if ((objectiveFlags & 4) == 0) // time limited challenge
             {
@@ -2381,19 +2363,15 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 return;
             }
 
-            // 00433EF6-00433F0A
             static loco_global<uint16_t, 0x00526243> _526243; // months in the challenge?
             static loco_global<uint8_t, 0x00526240> objectiveTimeLimitYears;
             uint16_t monthsLeft = objectiveTimeLimitYears * 12 - _526243;
             uint16_t years = monthsLeft / 12;
             uint16_t months = monthsLeft % 12;
 
-            // 00433F11-00433F1E
             args = {};
             args.push(years);
             args.push(months);
-
-            // 00433F1F-00433F40
             Gfx::drawString_495224(*dpi, self->x + 5, y, self->width + 10, 0, StringIds::time_remaining_years_months, &args);
         }
 
