@@ -26,9 +26,6 @@ using namespace OpenLoco::Interop;
 namespace OpenLoco::Ui::Windows::CompanyWindow
 {
     static loco_global<string_id, 0x009C68E8> gGameCommandErrorTitle;
-    static loco_global<uint8_t, 0x005177FA> _byte_5177FA; // _str2039
-    static loco_global<char[0x526213 - 0x526114], 0x00526114> _526114; // size 255, probably is: Scenario Title
-    static loco_global<uint8_t[512], 0x005177FB> _5177FB; // start: 0x5177FB, next element: 0x5179FB // _str2039+1
 
     namespace Common
     {
@@ -2235,6 +2232,12 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
     namespace Challenge
     {
+        static loco_global<char[0x526213 - 0x526114], 0x00526114> _526114; // size 255, probably is: Scenario Title
+        static loco_global<uint8_t, 0x00526231> objectiveFlags;
+        static loco_global<uint8_t, 0x00526240> objectiveTimeLimitYears;
+        static loco_global<uint16_t, 0x00526243> _526243; // months in the challenge?
+        static loco_global<uint16_t, 0x00526245> _526245; // completed challenge in months?
+
         const Gfx::ui_size_t windowSize = { 320, 182 };
 
         static widget_t widgets[] = {
@@ -2314,7 +2317,6 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             if ((playerCompany->challenge_flags & challenge_completed) != 0)
             {
-                static loco_global<uint16_t, 0x00526245> _526245;
                 uint16_t years = _526245 / 12;
                 uint16_t months = _526245 % 12;
 
@@ -2333,7 +2335,6 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             if ((playerCompany->challenge_flags & challenge_beaten_by_opponent) != 0)
             {
-                static loco_global<uint16_t, 0x00526245> _526245;
                 uint16_t years = _526245 / 12;
                 uint16_t months = _526245 % 12;
 
@@ -2350,15 +2351,12 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             args.push(static_cast<uint16_t>(playerCompany->var_8C4E));
             y = Gfx::drawString_495224(*dpi, self->x + 5, y, self->width - 10, 0, StringIds::progress_towards_completing_challenge_percent, &args);
 
-            static loco_global<uint8_t, 0x00526231> objectiveFlags;
             if ((objectiveFlags & 4) == 0) // time limited challenge
             {
                 // not a time limited challenge
                 return;
             }
 
-            static loco_global<uint16_t, 0x00526243> _526243; // months in the challenge?
-            static loco_global<uint8_t, 0x00526240> objectiveTimeLimitYears;
             uint16_t monthsLeft = objectiveTimeLimitYears * 12 - _526243;
             uint16_t years = monthsLeft / 12;
             uint16_t months = monthsLeft % 12;
