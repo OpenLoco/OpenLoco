@@ -2314,7 +2314,6 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             y = Gfx::drawString_495224(*dpi, self->x + 5, y, self->width - 10, 0, StringIds::challenge_value, &args);
 
             y = y + 5;
-            static loco_global<company_id_t[2], 0x00525E3C> _playerCompany;
             company* playerCompany = CompanyManager::getPlayerCompany();
 
             if ((playerCompany->challenge_flags & challenge_completed) != 0)
@@ -2341,10 +2340,9 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 static loco_global<uint16_t, 0x00526245> _526245;
                 uint16_t years = _526245 / 12;
                 uint16_t months = _526245 % 12;
-                company* otherCompany = CompanyManager::get(_playerCompany[1]); // byte_525E3D
 
                 args = {};
-                args.push(otherCompany->owner_name);
+                args.push(CompanyManager::getOpponent()->owner_name);
                 args.skip(2);
                 args.push(years);
                 args.push(months);
