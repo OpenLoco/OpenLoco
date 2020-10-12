@@ -2232,7 +2232,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
     namespace Challenge
     {
-        static loco_global<char[0x526213 - 0x526114], 0x00526114> _526114; // size 255, probably is: Scenario Title
+        static loco_global<char[255], 0x00526114> _526114; // probably is: Scenario Title
         static loco_global<uint8_t, 0x00526231> objectiveFlags;
         static loco_global<uint8_t, 0x00526240> objectiveTimeLimitYears;
         static loco_global<uint16_t, 0x00526243> _526243; // months in the challenge?
