@@ -2232,7 +2232,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
     namespace Challenge
     {
-        static loco_global<char[255], 0x00526114> _526114; // probably is: Scenario Title
+        static loco_global<char[255], 0x00526114> scenarioDetails;
         static loco_global<uint8_t, 0x00526231> objectiveFlags;
         static loco_global<uint8_t, 0x00526240> objectiveTimeLimitYears;
         static loco_global<uint16_t, 0x00526243> monthsInChallenge;
@@ -2293,8 +2293,8 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             char* buffer_2039 = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
             *buffer_2039++ = static_cast<char>(ControlCodes::colour_black);
-            char* scenarioTitle = &_526114[0];
-            strcpy(buffer_2039, scenarioTitle);
+            char* scenarioDetailsString = &scenarioDetails[0];
+            strcpy(buffer_2039, scenarioDetailsString);
 
             int16_t y = self->y + 47;
             // for example: "Provide the transport services on this little island" for "Boulder Breakers" scenario
