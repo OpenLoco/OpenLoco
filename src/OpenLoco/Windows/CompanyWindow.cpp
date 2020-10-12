@@ -2303,10 +2303,12 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             Gfx::drawString_494B3F(*dpi, self->x + 5, y, Colour::black, StringIds::challenge_label);
             y += 10;
 
-            FormatArguments args{};
-            sub_4384E9();
-            y = Gfx::drawString_495224(*dpi, self->x + 5, y, self->width - 10, Colour::black, StringIds::challenge_value, &args);
-            y += 5;
+            {
+                FormatArguments args{};
+                sub_4384E9();
+                y = Gfx::drawString_495224(*dpi, self->x + 5, y, self->width - 10, Colour::black, StringIds::challenge_value, &args);
+                y += 5;
+            }
 
             company* playerCompany = CompanyManager::getPlayerCompany();
 
@@ -2315,7 +2317,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 uint16_t years = completedChallengeInMonths / 12;
                 uint16_t months = completedChallengeInMonths % 12;
 
-                args = {};
+                FormatArguments args{};
                 args.push(years);
                 args.push(months);
                 Gfx::drawString_495224(*dpi, self->x + 5, y, self->width - 10, Colour::black, StringIds::success_you_completed_the_challenge_in_years_months, &args);
@@ -2333,7 +2335,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 uint16_t years = completedChallengeInMonths / 12;
                 uint16_t months = completedChallengeInMonths % 12;
 
-                args = {};
+                FormatArguments args{};
                 args.push(CompanyManager::getOpponent()->owner_name);
                 args.skip(2);
                 args.push(years);
@@ -2342,9 +2344,11 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 return;
             }
 
-            args = {};
-            args.push(static_cast<uint16_t>(playerCompany->var_8C4E));
-            y = Gfx::drawString_495224(*dpi, self->x + 5, y, self->width - 10, Colour::black, StringIds::progress_towards_completing_challenge_percent, &args);
+            {
+                FormatArguments args{};
+                args.push(static_cast<uint16_t>(playerCompany->var_8C4E));
+                y = Gfx::drawString_495224(*dpi, self->x + 5, y, self->width - 10, Colour::black, StringIds::progress_towards_completing_challenge_percent, &args);
+            }
 
             if ((objectiveFlags & 4) == 0) // time limited challenge
             {
@@ -2356,7 +2360,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             uint16_t years = monthsLeft / 12;
             uint16_t months = monthsLeft % 12;
 
-            args = {};
+            FormatArguments args{};
             args.push(years);
             args.push(months);
             Gfx::drawString_495224(*dpi, self->x + 5, y, self->width + 10, Colour::black, StringIds::time_remaining_years_months, &args);
