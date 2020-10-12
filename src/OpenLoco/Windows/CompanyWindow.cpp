@@ -2298,14 +2298,14 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             int16_t y = self->y + 47;
             // for example: "Provide the transport services on this little island" for "Boulder Breakers" scenario
-            y = Gfx::drawString_495224(*dpi, self->x + 5, y, self->width - 10, 0, StringIds::buffer_2039);
+            y = Gfx::drawString_495224(*dpi, self->x + 5, y, self->width - 10, Colour::black, StringIds::buffer_2039);
             y += 5;
-            Gfx::drawString_494B3F(*dpi, self->x + 5, y, 0, StringIds::challenge_label);
+            Gfx::drawString_494B3F(*dpi, self->x + 5, y, Colour::black, StringIds::challenge_label);
             y += 10;
 
             FormatArguments args{};
             sub_4384E9();
-            y = Gfx::drawString_495224(*dpi, self->x + 5, y, self->width - 10, 0, StringIds::challenge_value, &args);
+            y = Gfx::drawString_495224(*dpi, self->x + 5, y, self->width - 10, Colour::black, StringIds::challenge_value, &args);
             y += 5;
 
             company* playerCompany = CompanyManager::getPlayerCompany();
@@ -2318,13 +2318,13 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 args = {};
                 args.push(years);
                 args.push(months);
-                Gfx::drawString_495224(*dpi, self->x + 5, y, self->width - 10, 0, StringIds::success_you_completed_the_challenge_in_years_months, &args);
+                Gfx::drawString_495224(*dpi, self->x + 5, y, self->width - 10, Colour::black, StringIds::success_you_completed_the_challenge_in_years_months, &args);
                 return;
             }
 
             if ((playerCompany->challenge_flags & challenge_failed) != 0)
             {
-                Gfx::drawString_495224(*dpi, self->x + 5, y, self->width - 10, 0, StringIds::failed_you_failed_to_complete_the_challenge);
+                Gfx::drawString_495224(*dpi, self->x + 5, y, self->width - 10, Colour::black, StringIds::failed_you_failed_to_complete_the_challenge);
                 return;
             }
 
@@ -2338,13 +2338,13 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 args.skip(2);
                 args.push(years);
                 args.push(months);
-                Gfx::drawString_495224(*dpi, self->x + 5, y, self->width - 10, 0, StringIds::beaten_by_other_player_completed_in_years_months, &args);
+                Gfx::drawString_495224(*dpi, self->x + 5, y, self->width - 10, Colour::black, StringIds::beaten_by_other_player_completed_in_years_months, &args);
                 return;
             }
 
             args = {};
             args.push(static_cast<uint16_t>(playerCompany->var_8C4E));
-            y = Gfx::drawString_495224(*dpi, self->x + 5, y, self->width - 10, 0, StringIds::progress_towards_completing_challenge_percent, &args);
+            y = Gfx::drawString_495224(*dpi, self->x + 5, y, self->width - 10, Colour::black, StringIds::progress_towards_completing_challenge_percent, &args);
 
             if ((objectiveFlags & 4) == 0) // time limited challenge
             {
@@ -2359,7 +2359,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             args = {};
             args.push(years);
             args.push(months);
-            Gfx::drawString_495224(*dpi, self->x + 5, y, self->width + 10, 0, StringIds::time_remaining_years_months, &args);
+            Gfx::drawString_495224(*dpi, self->x + 5, y, self->width + 10, Colour::black, StringIds::time_remaining_years_months, &args);
         }
 
         // 0x00433FFE
