@@ -14,6 +14,7 @@
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/ObjectManager.h"
 #include "../OpenLoco.h"
+#include "../Scenario.h"
 #include "../Things/ThingManager.h"
 #include "../Things/Vehicle.h"
 #include "../Ui/Dropdown.h"
@@ -2232,6 +2233,12 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
     namespace Challenge
     {
+        static loco_global<char[256], 0x00526114> scenarioDetails;
+        static loco_global<uint8_t, 0x00526231> objectiveFlags;
+        static loco_global<uint8_t, 0x00526240> objectiveTimeLimitYears;
+        static loco_global<uint16_t, 0x00526243> objectiveMonthsInChallenge;
+        static loco_global<uint16_t, 0x00526245> objectiveCompletedChallengeInMonths;
+
         const Gfx::ui_size_t windowSize = { 320, 182 };
 
         static widget_t widgets[] = {
@@ -2271,16 +2278,92 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             Common::repositionTabs(self);
         }
 
+        // this will prepare _commonFormatArgs array before drawing the StringIds::challenge_value
+        // after that for example it will draw this string: Achieve a performance index of 10.0% ("Engineer")
+        // 0x004384E9
+        static void sub_4384E9()
+        {
+            call(0x004384E9);
+        }
+
         // 0x00433DEB
         static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
         {
             self->draw(dpi);
             Common::drawTabs(self, dpi);
 
-            registers regs;
-            regs.edi = (int32_t)dpi;
-            regs.esi = (int32_t)self;
-            call(0x00433DF5, regs);
+            char* buffer_2039 = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
+            *buffer_2039++ = static_cast<char>(ControlCodes::colour_black);
+            char* scenarioDetailsString = &scenarioDetails[0];
+            strcpy(buffer_2039, scenarioDetailsString);
+
+            int16_t y = self->y + 47;
+            // for example: "Provide the transport services on this little island" for "Boulder Breakers" scenario
+            y = Gfx::drawString_495224(*dpi, self->x + 5, y, self->width - 10, Colour::black, StringIds::buffer_2039);
+            y += 5;
+            Gfx::drawString_494B3F(*dpi, self->x + 5, y, Colour::black, StringIds::challenge_label);
+            y += 10;
+
+            {
+                FormatArguments args{};
+                sub_4384E9();
+                y = Gfx::drawString_495224(*dpi, self->x + 5, y, self->width - 10, Colour::black, StringIds::challenge_value, &args);
+                y += 5;
+            }
+
+            company* playerCompany = CompanyManager::getPlayerCompany();
+
+            if ((playerCompany->challenge_flags & challenge_completed) != 0)
+            {
+                uint16_t years = objectiveCompletedChallengeInMonths / 12;
+                uint16_t months = objectiveCompletedChallengeInMonths % 12;
+
+                FormatArguments args{};
+                args.push(years);
+                args.push(months);
+                Gfx::drawString_495224(*dpi, self->x + 5, y, self->width - 10, Colour::black, StringIds::success_you_completed_the_challenge_in_years_months, &args);
+                return;
+            }
+
+            if ((playerCompany->challenge_flags & challenge_failed) != 0)
+            {
+                Gfx::drawString_495224(*dpi, self->x + 5, y, self->width - 10, Colour::black, StringIds::failed_you_failed_to_complete_the_challenge);
+                return;
+            }
+
+            if ((playerCompany->challenge_flags & challenge_beaten_by_opponent) != 0)
+            {
+                uint16_t years = objectiveCompletedChallengeInMonths / 12;
+                uint16_t months = objectiveCompletedChallengeInMonths % 12;
+
+                FormatArguments args{};
+                args.push(CompanyManager::getOpponent()->owner_name);
+                args.skip(2);
+                args.push(years);
+                args.push(months);
+                Gfx::drawString_495224(*dpi, self->x + 5, y, self->width - 10, Colour::black, StringIds::beaten_by_other_player_completed_in_years_months, &args);
+                return;
+            }
+
+            {
+                FormatArguments args{};
+                args.push<uint16_t>(playerCompany->challengeProgress);
+                y = Gfx::drawString_495224(*dpi, self->x + 5, y, self->width - 10, Colour::black, StringIds::progress_towards_completing_challenge_percent, &args);
+            }
+
+            if ((objectiveFlags & Scenario::objective_flags::be_within_top_three_companies) != 0)
+            {
+                // time limited challenge
+                uint16_t monthsLeft = objectiveTimeLimitYears * 12 - objectiveMonthsInChallenge;
+                uint16_t years = monthsLeft / 12;
+                uint16_t months = monthsLeft % 12;
+
+                FormatArguments args{};
+                args.push(years);
+                args.push(months);
+                Gfx::drawString_495224(*dpi, self->x + 5, y, self->width + 10, Colour::black, StringIds::time_remaining_years_months, &args);
+                return;
+            }
         }
 
         // 0x00433FFE

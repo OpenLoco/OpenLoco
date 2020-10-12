@@ -1194,7 +1194,11 @@ namespace OpenLoco::StringIds
     constexpr string_id challenge_delivered_cargo = 1859;
     constexpr string_id time_limit_years_value = 1860;
     constexpr string_id completed_by_name_in_years_months = 1861;
-
+    constexpr string_id success_you_completed_the_challenge_in_years_months = 1862;
+    constexpr string_id failed_you_failed_to_complete_the_challenge = 1863;
+    constexpr string_id beaten_by_other_player_completed_in_years_months = 1864;
+    constexpr string_id progress_towards_completing_challenge_percent = 1865;
+    constexpr string_id time_remaining_years_months = 1866;
     constexpr string_id cargo_delivered = 1867;
     constexpr string_id cargo_delivered_none = 1868;
 

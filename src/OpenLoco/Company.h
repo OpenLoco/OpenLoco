@@ -90,7 +90,7 @@ namespace OpenLoco
         int16_t observation_y;        // 0x8BC0;
         uint8_t pad_8BC2[0x8BCE - 0x8BC2];
         uint32_t cargoDelivered[32]; // 0x8BCE;
-        uint8_t var_8C4E;
+        uint8_t challengeProgress;   // 0x8C4E - percent completed on challenge
         uint8_t pad_8C4F[0x8C54 - 0x8C4F];
         uint32_t cargo_units_distance_history[120]; // 0x008C54
         uint16_t jail_status;                       // 0x8E34
@@ -108,7 +108,7 @@ namespace OpenLoco
     static_assert(sizeof(company::expenditures) == 0x440);
     static_assert(offsetof(company, companyValueHistory[0]) == 0x88CE);
     static_assert(offsetof(company, vehicleProfit) == 0x8B9E);
-    static_assert(offsetof(company, var_8C4E) == 0x8C4E);
+    static_assert(offsetof(company, challengeProgress) == 0x8C4E);
     static_assert(offsetof(company, var_8BB0) == 0x8BB0);
 
     bool isPlayerCompany(company_id_t id);
