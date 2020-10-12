@@ -2347,7 +2347,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             {
                 FormatArguments args{};
-                args.push<uint16_t>(playerCompany->percentCompletedOnChallenge);
+                args.push<uint16_t>(playerCompany->challengeProgress);
                 y = Gfx::drawString_495224(*dpi, self->x + 5, y, self->width - 10, Colour::black, StringIds::progress_towards_completing_challenge_percent, &args);
             }
 
