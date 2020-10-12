@@ -350,7 +350,7 @@ namespace OpenLoco::Ui::TimePanel
         else
         {
             args.push(StringIds::challenge_progress);
-            args.push<uint16_t>(playerCompany->var_8C4E);
+            args.push<uint16_t>(playerCompany->percentCompletedOnChallenge);
 
             if (objectiveFlags & 4)
             {
