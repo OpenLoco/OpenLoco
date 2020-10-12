@@ -2350,20 +2350,19 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 y = Gfx::drawString_495224(*dpi, self->x + 5, y, self->width - 10, Colour::black, StringIds::progress_towards_completing_challenge_percent, &args);
             }
 
-            if ((objectiveFlags & 4) == 0) // time limited challenge
+            if ((objectiveFlags & 4) != 0)
             {
-                // not a time limited challenge
+                // time limited challenge
+                uint16_t monthsLeft = objectiveTimeLimitYears * 12 - monthsInChallenge;
+                uint16_t years = monthsLeft / 12;
+                uint16_t months = monthsLeft % 12;
+
+                FormatArguments args{};
+                args.push(years);
+                args.push(months);
+                Gfx::drawString_495224(*dpi, self->x + 5, y, self->width + 10, Colour::black, StringIds::time_remaining_years_months, &args);
                 return;
             }
-
-            uint16_t monthsLeft = objectiveTimeLimitYears * 12 - monthsInChallenge;
-            uint16_t years = monthsLeft / 12;
-            uint16_t months = monthsLeft % 12;
-
-            FormatArguments args{};
-            args.push(years);
-            args.push(months);
-            Gfx::drawString_495224(*dpi, self->x + 5, y, self->width + 10, Colour::black, StringIds::time_remaining_years_months, &args);
         }
 
         // 0x00433FFE
