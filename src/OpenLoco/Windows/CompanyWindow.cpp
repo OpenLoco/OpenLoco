@@ -2235,8 +2235,8 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         static loco_global<char[255], 0x00526114> _526114; // probably is: Scenario Title
         static loco_global<uint8_t, 0x00526231> objectiveFlags;
         static loco_global<uint8_t, 0x00526240> objectiveTimeLimitYears;
-        static loco_global<uint16_t, 0x00526243> _526243; // months in the challenge?
-        static loco_global<uint16_t, 0x00526245> _526245; // completed challenge in months?
+        static loco_global<uint16_t, 0x00526243> monthsInChallenge;
+        static loco_global<uint16_t, 0x00526245> completedChallengeInMonths;
 
         const Gfx::ui_size_t windowSize = { 320, 182 };
 
@@ -2312,8 +2312,8 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             if ((playerCompany->challenge_flags & challenge_completed) != 0)
             {
-                uint16_t years = _526245 / 12;
-                uint16_t months = _526245 % 12;
+                uint16_t years = completedChallengeInMonths / 12;
+                uint16_t months = completedChallengeInMonths % 12;
 
                 args = {};
                 args.push(years);
@@ -2330,8 +2330,8 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             if ((playerCompany->challenge_flags & challenge_beaten_by_opponent) != 0)
             {
-                uint16_t years = _526245 / 12;
-                uint16_t months = _526245 % 12;
+                uint16_t years = completedChallengeInMonths / 12;
+                uint16_t months = completedChallengeInMonths % 12;
 
                 args = {};
                 args.push(CompanyManager::getOpponent()->owner_name);
@@ -2352,7 +2352,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 return;
             }
 
-            uint16_t monthsLeft = objectiveTimeLimitYears * 12 - _526243;
+            uint16_t monthsLeft = objectiveTimeLimitYears * 12 - monthsInChallenge;
             uint16_t years = monthsLeft / 12;
             uint16_t months = monthsLeft % 12;
 
