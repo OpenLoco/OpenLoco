@@ -14,6 +14,7 @@
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/ObjectManager.h"
 #include "../OpenLoco.h"
+#include "../Scenario.h"
 #include "../Things/ThingManager.h"
 #include "../Things/Vehicle.h"
 #include "../Ui/Dropdown.h"
@@ -2350,7 +2351,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 y = Gfx::drawString_495224(*dpi, self->x + 5, y, self->width - 10, Colour::black, StringIds::progress_towards_completing_challenge_percent, &args);
             }
 
-            if ((objectiveFlags & 4) != 0)
+            if ((objectiveFlags & Scenario::objective_flags::be_within_top_three_companies) != 0)
             {
                 // time limited challenge
                 uint16_t monthsLeft = objectiveTimeLimitYears * 12 - objectiveMonthsInChallenge;
