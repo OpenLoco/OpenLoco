@@ -74,7 +74,7 @@ namespace OpenLoco::Ui::TimePanel
     static loco_global<uint8_t, 0x00508F1A> game_speed;
 
     static loco_global<uint8_t, 0x00526240> objectiveTimeLimitYears;
-    static loco_global<uint16_t, 0x00526243> monthsInChallenge;
+    static loco_global<uint16_t, 0x00526243> objectiveMonthsInChallenge;
 
     loco_global<uint16_t[8], 0x112C826> _common_format_args;
 
@@ -354,7 +354,7 @@ namespace OpenLoco::Ui::TimePanel
 
             if (objectiveFlags & 4)
             {
-                uint16_t monthsLeft = (*objectiveTimeLimitYears * 12 - monthsInChallenge);
+                uint16_t monthsLeft = (*objectiveTimeLimitYears * 12 - objectiveMonthsInChallenge);
                 uint16_t yearsLeft = monthsLeft / 12;
                 monthsLeft = monthsLeft % 12;
                 args.push(StringIds::challenge_time_left);
