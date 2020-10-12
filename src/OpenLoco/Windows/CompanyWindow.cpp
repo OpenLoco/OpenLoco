@@ -2298,13 +2298,15 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             int16_t y = self->y + 47;
             // for example: "Provide the transport services on this little island" for "Boulder Breakers" scenario
-            y = Gfx::drawString_495224(*dpi, self->x + 5, y, self->width - 10, 0, StringIds::buffer_2039) + 5;
+            y = Gfx::drawString_495224(*dpi, self->x + 5, y, self->width - 10, 0, StringIds::buffer_2039);
+            y += 5;
             Gfx::drawString_494B3F(*dpi, self->x + 5, y, 0, StringIds::challenge_label);
             y += 10;
 
             FormatArguments args{};
             sub_4384E9();
-            y = Gfx::drawString_495224(*dpi, self->x + 5, y, self->width - 10, 0, StringIds::challenge_value, &args) + 5;
+            y = Gfx::drawString_495224(*dpi, self->x + 5, y, self->width - 10, 0, StringIds::challenge_value, &args);
+            y += 5;
 
             company* playerCompany = CompanyManager::getPlayerCompany();
 
