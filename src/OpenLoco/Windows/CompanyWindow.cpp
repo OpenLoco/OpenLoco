@@ -2233,7 +2233,6 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
     namespace Challenge
     {
-        static loco_global<cargo_object* [32], 0x0050C700> _cargoObjects;
         static loco_global<cargo_object*, 0x0050D15C> _50D15C;
         static loco_global<char[256], 0x00526114> scenarioDetails;
         static loco_global<uint8_t, 0x00526230> objectiveType;
@@ -2323,7 +2322,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                     cargo_object* cargoObject = _50D15C;
                     if (objectiveDeliveredCargoType != 0xFF)
                     {
-                        cargoObject = _cargoObjects[objectiveDeliveredCargoType];
+                        cargoObject = ObjectManager::get<cargo_object>(objectiveDeliveredCargoType);
                     }
                     args.push(cargoObject->unit_name_plural);
                     args.push(*objectiveDeliveredCargoAmount);
