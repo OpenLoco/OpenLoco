@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Localisation/FormatArguments.hpp"
 #include <cstdint>
 
 namespace OpenLoco::Scenario
@@ -93,4 +94,5 @@ namespace OpenLoco::Scenario
     void eraseLandscape();
     void generateLandscape();
     void start(const char* filename = nullptr);
+    void formatChallengeArguments(FormatArguments& args);
 }
