@@ -341,7 +341,10 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
                 continue;
 
             if (y + rowHeight < dpi->y || y > dpi->y + dpi->height)
+            {
+                y += rowHeight;
                 continue;
+            }
 
             // Highlight selected item
             auto formatStringId = StringIds::black_stringid;
