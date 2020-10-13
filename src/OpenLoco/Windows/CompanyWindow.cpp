@@ -2291,11 +2291,9 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // Note: no input and output parameters are in the original assembly, update is done in the memory
         // in this implementation we return FormatArguments so in the future it will be not depending on global variables
         // 0x004384E9
-        static FormatArguments sub_4384E9()
+        static void formatChallengeArguments(FormatArguments& args)
         {
-            FormatArguments args{};
-
-            // 004384ED
+            // 004384E
             switch (objectiveType)
             {
                 case Scenario::objective_type::company_value: // 004384FB-0043850A
@@ -2357,7 +2355,6 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             // 004385D9
             args.push<uint16_t>(0);
             args.push<uint16_t>(0);
-            return args;
         }
 
         // 0x00433DEB
@@ -2379,7 +2376,8 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             y += 10;
 
             {
-                FormatArguments args = sub_4384E9();
+                FormatArguments args = {};
+                formatChallengeArguments(args);
                 y = Gfx::drawString_495224(*dpi, self->x + 5, y, self->width - 10, Colour::black, StringIds::challenge_value, &args);
                 y += 5;
             }
