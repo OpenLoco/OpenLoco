@@ -2330,15 +2330,15 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 }
             }
 
-            if ((objectiveFlags & Scenario::objective_flags::flag_0) != 0) // 0043857B
+            if ((objectiveFlags & Scenario::objective_flags::be_top_company) != 0) // 0043857B
             {
                 args.push(StringIds::and_be_the_top_performing_company);
             }
-            if ((objectiveFlags & Scenario::objective_flags::be_top_company) != 0) // 0043858C
+            if ((objectiveFlags & Scenario::objective_flags::be_within_top_three_companies) != 0) // 0043858C
             {
                 args.push(StringIds::and_be_one_of_the_top_3_performing_companies);
             }
-            if ((objectiveFlags & Scenario::objective_flags::be_within_top_three_companies) != 0) // 0043859D
+            if ((objectiveFlags & Scenario::objective_flags::within_time_limit) != 0) // 0043859D
             {
                 if (isTitleMode() || isEditorMode())
                 {
@@ -2424,7 +2424,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 y = Gfx::drawString_495224(*dpi, self->x + 5, y, self->width - 10, Colour::black, StringIds::progress_towards_completing_challenge_percent, &args);
             }
 
-            if ((objectiveFlags & Scenario::objective_flags::be_within_top_three_companies) != 0)
+            if ((objectiveFlags & Scenario::objective_flags::within_time_limit) != 0)
             {
                 // time limited challenge
                 uint16_t monthsLeft = objectiveTimeLimitYears * 12 - objectiveMonthsInChallenge;
