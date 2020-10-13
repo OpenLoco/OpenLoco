@@ -2304,6 +2304,8 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
         // this will prepare _commonFormatArgs array before drawing the StringIds::challenge_value
         // after that for example it will draw this string: Achieve a performance index of 10.0% ("Engineer")
+        // Note: no input and output parameters are in the original assembly, update is done in the memory
+        // in this implementation we return FormatArguments so in the future it will be not depending on global variables
         // 0x004384E9
         static FormatArguments sub_4384E9()
         {
