@@ -221,9 +221,10 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             int16_t yPos = window->y + widgets[widx::check_time_limit].bottom + 10;
             Gfx::drawString_494B3F(*dpi, xPos, yPos, Colour::black, StringIds::challenge_label);
 
-            call(0x004384E9);
+            FormatArguments args = {};
+            OpenLoco::Scenario::formatChallengeArguments(args);
             yPos += 10;
-            Gfx::drawString_495224(*dpi, xPos, yPos, window->width - 10, Colour::black, StringIds::challenge_value, &*commonFormatArgs);
+            Gfx::drawString_495224(*dpi, xPos, yPos, window->width - 10, Colour::black, StringIds::challenge_value, &args);
         }
 
         static const string_id objectiveTypeLabelIds[] = {
