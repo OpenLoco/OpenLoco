@@ -2299,17 +2299,17 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             // 004384ED
             switch (objectiveType)
             {
-                case 0: // 004384FB-0043850A
+                case Scenario::objective_type::company_value: // 004384FB-0043850A
                     args.push(StringIds::achieve_a_company_value_of);
                     args.push(*objectiveCompanyValue);
                     break;
 
-                case 1: // 0043850C-0043851B
+                case Scenario::objective_type::vehicle_profit: // 0043850C-0043851B
                     args.push(StringIds::achieve_a_monthly_profit_from_vehicles_of);
                     args.push(*objectiveMonthlyVehicleProfit);
                     break;
 
-                case 2: // 0043851D-00438543
+                case Scenario::objective_type::performance_index: // 0043851D-00438543
                 {
                     args.push(StringIds::achieve_a_performance_index_of);
                     int16_t performanceIndex = objectivePerformanceIndex * 10;
@@ -2317,7 +2317,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                     break;
                 }
 
-                case 3: //00438545-00438576
+                case Scenario::objective_type::cargo_delivery: //00438545-00438576
                 {
                     args.push(StringIds::deliver);
                     cargo_object* cargoObject = _50D15C;
