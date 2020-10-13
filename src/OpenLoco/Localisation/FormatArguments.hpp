@@ -15,19 +15,19 @@ namespace OpenLoco
         size_t _length;
 
     public:
-        FormatArguments(std::byte* buffer, size_t length)
-        {
-            _bufferStart = buffer;
-            _buffer = _bufferStart;
-            _length = length;
-        }
-
         FormatArguments()
         {
             loco_global<std::byte[0x0112C83A - 0x0112C826], 0x0112C826> _commonFormatArgs;
 
             _bufferStart = _buffer = &*_commonFormatArgs;
             _length = std::size(_commonFormatArgs);
+        }
+
+        template<typename... T>
+        FormatArguments(T... args)
+            : FormatArguments()
+        {
+            (push(args), ...);
         }
 
         // Size in bytes to skip forward the buffer
