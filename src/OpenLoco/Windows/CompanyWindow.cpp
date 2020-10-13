@@ -2287,21 +2287,6 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             Common::repositionTabs(self);
         }
 
-        // 0x00437D60
-        // Probably converts performance index * 10 to corporate rating index
-        // for example 10.0% (performanceIndex=100) converts to rating "Engineer" (output=1)
-        // input:
-        // ax = performanceIndex
-        // output:
-        // ax
-        static int16_t sub_437D60(int16_t performanceIndex)
-        {
-            registers regs;
-            regs.ax = performanceIndex;
-            call(0x00437D60, regs);
-            return regs.ax;
-        }
-
         // this will prepare _commonFormatArgs array before drawing the StringIds::challenge_value
         // after that for example it will draw this string: Achieve a performance index of 10.0% ("Engineer")
         // Note: no input and output parameters are in the original assembly, update is done in the memory
@@ -2329,7 +2314,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                     args.push(StringIds::achieve_a_performance_index_of);
                     int16_t performanceIndex = objectivePerformanceIndex * 10;
                     args.push(performanceIndex);
-                    string_id corporateRating = sub_437D60(performanceIndex) + StringIds::corporate_rating_platelayer;
+                    string_id corporateRating = static_cast<string_id>(performanceToRating(performanceIndex)) + StringIds::corporate_rating_platelayer;
                     args.push(corporateRating);
                     break;
                 }
