@@ -54,20 +54,19 @@ namespace OpenLoco::Scenario
     // 0x004384E9
     void formatChallengeArguments(FormatArguments& args)
     {
-        // 004384E
         switch (objectiveType)
         {
-            case Scenario::objective_type::company_value: // 004384FB-0043850A
+            case Scenario::objective_type::company_value:
                 args.push(StringIds::achieve_a_company_value_of);
                 args.push(*objectiveCompanyValue);
                 break;
 
-            case Scenario::objective_type::vehicle_profit: // 0043850C-0043851B
+            case Scenario::objective_type::vehicle_profit:
                 args.push(StringIds::achieve_a_monthly_profit_from_vehicles_of);
                 args.push(*objectiveMonthlyVehicleProfit);
                 break;
 
-            case Scenario::objective_type::performance_index: // 0043851D-00438543
+            case Scenario::objective_type::performance_index:
             {
                 args.push(StringIds::achieve_a_performance_index_of);
                 int16_t performanceIndex = objectivePerformanceIndex * 10;
@@ -75,7 +74,7 @@ namespace OpenLoco::Scenario
                 break;
             }
 
-            case Scenario::objective_type::cargo_delivery: //00438545-00438576
+            case Scenario::objective_type::cargo_delivery:
             {
                 args.push(StringIds::deliver);
                 cargo_object* cargoObject = _50D15C;
@@ -89,31 +88,28 @@ namespace OpenLoco::Scenario
             }
         }
 
-        if ((objectiveFlags & Scenario::objective_flags::be_top_company) != 0) // 0043857B
+        if ((objectiveFlags & Scenario::objective_flags::be_top_company) != 0)
         {
             args.push(StringIds::and_be_the_top_performing_company);
         }
-        if ((objectiveFlags & Scenario::objective_flags::be_within_top_three_companies) != 0) // 0043858C
+        if ((objectiveFlags & Scenario::objective_flags::be_within_top_three_companies) != 0)
         {
             args.push(StringIds::and_be_one_of_the_top_3_performing_companies);
         }
-        if ((objectiveFlags & Scenario::objective_flags::within_time_limit) != 0) // 0043859D
+        if ((objectiveFlags & Scenario::objective_flags::within_time_limit) != 0)
         {
             if (isTitleMode() || isEditorMode())
             {
-                // 004385C5-004385D6
                 args.push(StringIds::within_years);
                 args.push<uint16_t>(*objectiveTimeLimitYears);
             }
             else
             {
-                // 004385B1-004385C3
                 args.push(StringIds::by_the_end_of);
                 args.push(*_526241);
             }
         }
 
-        // 004385D9
         args.push<uint16_t>(0);
         args.push<uint16_t>(0);
     }
