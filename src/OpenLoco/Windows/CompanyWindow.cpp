@@ -2313,9 +2313,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 {
                     args.push(StringIds::achieve_a_performance_index_of);
                     int16_t performanceIndex = objectivePerformanceIndex * 10;
-                    args.push(performanceIndex);
-                    string_id corporateRating = static_cast<string_id>(performanceToRating(performanceIndex)) + StringIds::corporate_rating_platelayer;
-                    args.push(corporateRating);
+                    formatPerformanceIndex(performanceIndex, args);
                     break;
                 }
 

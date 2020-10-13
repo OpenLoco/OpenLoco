@@ -113,4 +113,5 @@ namespace OpenLoco
 
     bool isPlayerCompany(company_id_t id);
     constexpr CorporateRating performanceToRating(int16_t performanceIndex);
+    void formatPerformanceIndex(const int16_t performanceIndex, FormatArguments& args);
 }
