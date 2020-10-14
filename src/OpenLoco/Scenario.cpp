@@ -18,7 +18,7 @@ namespace OpenLoco::Scenario
     static loco_global<uint8_t, 0x0052623B> objectiveDeliveredCargoType;
     static loco_global<uint32_t, 0x0052623C> objectiveDeliveredCargoAmount;
     static loco_global<uint8_t, 0x00526240> objectiveTimeLimitYears;
-    static loco_global<uint16_t, 0x00526241> _526241; // objective complete goal until year?
+    static loco_global<uint16_t, 0x00526241> objectiveTimeLimitUntilYear;
 
     // 0x0043EDAD
     void eraseLandscape()
@@ -106,7 +106,7 @@ namespace OpenLoco::Scenario
             else
             {
                 args.push(StringIds::by_the_end_of);
-                args.push(*_526241);
+                args.push(*objectiveTimeLimitUntilYear);
             }
         }
 
