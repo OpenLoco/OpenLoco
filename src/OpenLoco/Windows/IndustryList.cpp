@@ -362,9 +362,11 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x00457EE8
-        static void tooltip(FormatArguments& args, Ui::window* self, widget_index widgetIndex)
+        static std::optional<FormatArguments> tooltip(Ui::window* self, widget_index widgetIndex)
         {
+            FormatArguments args{};
             args.push(StringIds::tooltip_scroll_industry_list);
+            return { args };
         }
 
         // 0x00458108
@@ -847,9 +849,11 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x00458455
-        static void tooltip(FormatArguments& args, Ui::window* self, widget_index widgetIndex)
+        static std::optional<FormatArguments> tooltip(Ui::window* self, widget_index widgetIndex)
         {
+            FormatArguments args{};
             args.push(StringIds::tooltip_scroll_new_industry_list);
+            return { args };
         }
 
         // 0x004586EA

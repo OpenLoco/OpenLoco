@@ -67,7 +67,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     static void onMouseDown(Ui::window* window, widget_index widgetIndex);
     static void onDropdown(window* w, widget_index widgetIndex, int16_t item_index);
     static Ui::cursor_id onCursor(Ui::window* window, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::cursor_id fallback);
-    static void tooltip(FormatArguments& args, Ui::window* window, widget_index widgetIndex);
+    static std::optional<FormatArguments> tooltip(Ui::window* window, widget_index widgetIndex);
     static void onUpdate(window* w);
 
     // 0x43AA4C
@@ -336,8 +336,9 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     }
 
     // 0x004395F5
-    static void tooltip(FormatArguments& args, Ui::window* window, widget_index widgetIndex)
+    static std::optional<FormatArguments> tooltip(Ui::window* window, widget_index widgetIndex)
     {
+        FormatArguments args{};
         switch (widgetIndex)
         {
             case Widx::company_value:
@@ -348,6 +349,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
                 performanceIndexTooltip(args);
                 break;
         }
+        return { args };
     }
 
     static void companyValueTooltip(FormatArguments& args)

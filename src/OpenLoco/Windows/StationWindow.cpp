@@ -454,9 +454,11 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048EB4F
-        static void tooltip(FormatArguments& args, Ui::window* window, widget_index widgetIndex)
+        static std::optional<FormatArguments> tooltip(Ui::window* window, widget_index widgetIndex)
         {
+            FormatArguments args{};
             args.push(StringIds::tooltip_scroll_cargo_list);
+            return { args };
         }
 
         // 0x0048E986
@@ -646,9 +648,11 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048EE73
-        static void tooltip(FormatArguments& args, Ui::window* window, widget_index widgetIndex)
+        static std::optional<FormatArguments> tooltip(Ui::window* window, widget_index widgetIndex)
         {
+            FormatArguments args{};
             args.push(StringIds::tooltip_scroll_ratings_list);
+            return { args };
         }
 
         // 0x0048EF02

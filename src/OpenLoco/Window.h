@@ -231,7 +231,7 @@ namespace OpenLoco::Ui
                 void (*text_input)(window*, widget_index, char*);
                 void (*viewport_rotate)(window*);
                 uint32_t event_22;
-                void (*tooltip)(FormatArguments& args, window*, widget_index);
+                std::optional<FormatArguments> (*tooltip)(window*, widget_index);
                 Ui::cursor_id (*cursor)(window*, int16_t, int16_t, int16_t, Ui::cursor_id);
                 void (*on_move)(window&, const int16_t x, const int16_t y);
                 void (*prepare_draw)(window*);

@@ -3,6 +3,7 @@
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/FormatArguments.hpp"
+#include "../Localisation/StringIds.h"
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/ObjectManager.h"
 #include "../Ui.h"
@@ -14,8 +15,6 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::ToolTip
 {
-    static loco_global<char[513], 0x0050ED4B> _str0337;
-
     static loco_global<bool, 0x0052336E> _52336E;
 
     static loco_global<WindowType, 0x00523381> _tooltipWindowType;
@@ -26,7 +25,7 @@ namespace OpenLoco::Ui::ToolTip
 
     static loco_global<int32_t, 0x112C876> gCurrentFontSpriteBase;
 
-    static char _text[512];          // 0x001136D90
+    static char _text[512];          // 0x01136D90
     static uint16_t _lineBreakCount; // 0x01136F90
 
     static loco_global<int32_t, 0x01136F98> _currentTooltipStringId;
@@ -64,24 +63,21 @@ namespace OpenLoco::Ui::ToolTip
 
     static void common(const window* window, int32_t widgetIndex, string_id stringId, int16_t cursorX, int16_t cursorY, FormatArguments& args)
     {
-        char buffer[512]{};
-        StringManager::formatString(buffer, stringId, &args);
+        StringManager::formatString(_text, stringId, &args);
 
         gCurrentFontSpriteBase = Font::medium_bold;
-        int16_t strWidth = Gfx::getStringWidthNewLined(buffer);
+        int16_t strWidth = Gfx::getStringWidthNewLined(_text);
         strWidth = std::max<int16_t>(strWidth, 196);
 
         gCurrentFontSpriteBase = Font::medium_bold;
 
-        auto [wrappedWidth, breakCount] = Gfx::wrapString(buffer, strWidth + 1);
+        auto [wrappedWidth, breakCount] = Gfx::wrapString(_text, strWidth + 1);
         _lineBreakCount = breakCount;
 
         int width = wrappedWidth + 3;
         int height = (_lineBreakCount + 1) * 10 + 4;
         _widgets[widx::text].right = width;
         _widgets[widx::text].bottom = height;
-
-        std::memcpy(&_text[0], buffer, 512);
 
         int x, y;
 
@@ -196,7 +192,8 @@ namespace OpenLoco::Ui::ToolTip
     // 0x004C94F7
     static void onClose(Ui::window* window)
     {
-        _str0337[0] = '\0';
+        auto str337 = const_cast<char*>(StringManager::getString(StringIds::buffer_337));
+        str337[0] = '\0';
     }
 
     // 0x004C94FF
@@ -219,7 +216,7 @@ namespace OpenLoco::Ui::ToolTip
         Ui::WindowManager::close(WindowType::tooltip, 0);
         Input::setTooltipTimeout(0);
         _tooltipWindowType = WindowType::undefined;
-        _currentTooltipStringId = -1;
+        _currentTooltipStringId = StringIds::null;
         set_52336E(false);
     }
 

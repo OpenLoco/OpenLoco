@@ -1284,8 +1284,9 @@ namespace OpenLoco::Ui
 
     std::optional<FormatArguments> window::callTooltip(int16_t widget_index)
     {
+        // We only return std::nullopt when required by the tooltip function
         if (event_handlers->tooltip == nullptr)
-            return {};
+            return { FormatArguments() };
 
         if (isInteropEvent(event_handlers->tooltip))
         {
@@ -1299,9 +1300,7 @@ namespace OpenLoco::Ui
             return { args };
         }
 
-        auto args = FormatArguments();
-        event_handlers->tooltip(args, this, widget_index);
-        return { args };
+        return event_handlers->tooltip(this, widget_index);
     }
 
     void window::callOnMove(int16_t xPos, int16_t yPos)

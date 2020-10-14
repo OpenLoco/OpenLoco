@@ -47,7 +47,7 @@ namespace OpenLoco::Ui::KeyboardShortcuts
     static void drawScroll(Ui::window* self, Gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex);
     static void onMouseUp(window* self, widget_index widgetIndex);
     static void loc_4BE832(window* self);
-    static void tooltip(FormatArguments& args, window*, widget_index);
+    static std::optional<FormatArguments> tooltip(window*, widget_index);
     static void getScrollSize(Ui::window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
     static void onScrollMouseOver(Ui::window* self, int16_t x, int16_t y, uint8_t scroll_index);
     static void onScrollMouseDown(Ui::window* self, int16_t x, int16_t y, uint8_t scroll_index);
@@ -164,9 +164,11 @@ namespace OpenLoco::Ui::KeyboardShortcuts
     }
 
     // 0x004BE844
-    static void tooltip(FormatArguments& args, window*, widget_index)
+    static std::optional<FormatArguments> tooltip(window*, widget_index)
     {
+        FormatArguments args{};
         args.push(StringIds::tooltip_scroll_list);
+        return { args };
     }
 
     // 0x004BE84E
