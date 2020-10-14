@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Localisation/FormatArguments.hpp"
 #include <cstdint>
 
 namespace OpenLoco::Scenario
@@ -18,11 +19,11 @@ namespace OpenLoco::Scenario
 
     enum objective_flags : uint8_t
     {
-        flag_0 = (1 << 0),
-        be_top_company = (1 << 1),
-        be_within_top_three_companies = (1 << 2),
+        be_top_company = (1 << 0),
+        be_within_top_three_companies = (1 << 1),
+        within_time_limit = (1 << 2),
         flag_3 = (1 << 3),
-        within_time_limit = (1 << 4),
+        flag_4 = (1 << 4),
     };
 
     enum objective_type : uint8_t
@@ -93,4 +94,5 @@ namespace OpenLoco::Scenario
     void eraseLandscape();
     void generateLandscape();
     void start(const char* filename = nullptr);
+    void formatChallengeArguments(FormatArguments& args);
 }

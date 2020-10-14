@@ -1179,7 +1179,14 @@ namespace OpenLoco::StringIds
     constexpr string_id town_rating_good = 1837;
     constexpr string_id town_rating_excellent = 1838;
     constexpr string_id town_rating_company_percentage_rank = 1839;
-
+    constexpr string_id achieve_a_company_value_of = 1840;
+    constexpr string_id achieve_a_monthly_profit_from_vehicles_of = 1841;
+    constexpr string_id achieve_a_performance_index_of = 1842;
+    constexpr string_id deliver = 1843;
+    constexpr string_id and_be_the_top_performing_company = 1844;
+    constexpr string_id and_be_one_of_the_top_3_performing_companies = 1845;
+    constexpr string_id within_years = 1846;
+    constexpr string_id by_the_end_of = 1847;
     constexpr string_id and_be_the_top_company = 1848;
     constexpr string_id and_be_within_the_top_companies = 1849;
     constexpr string_id with_a_time_limit = 1850;

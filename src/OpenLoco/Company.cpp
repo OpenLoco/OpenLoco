@@ -65,7 +65,11 @@ namespace OpenLoco
     }
 
     // Converts performance index to rating
-    // 0x437D60
+    // 0x00437D60
+    // input:
+    // ax = performanceIndex
+    // output:
+    // ax = return value, coprorate rating
     constexpr CorporateRating performanceToRating(int16_t performanceIndex)
     {
         return static_cast<CorporateRating>(std::min(9, performanceIndex / 100));

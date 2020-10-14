@@ -2278,14 +2278,6 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             Common::repositionTabs(self);
         }
 
-        // this will prepare _commonFormatArgs array before drawing the StringIds::challenge_value
-        // after that for example it will draw this string: Achieve a performance index of 10.0% ("Engineer")
-        // 0x004384E9
-        static void sub_4384E9()
-        {
-            call(0x004384E9);
-        }
-
         // 0x00433DEB
         static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
         {
@@ -2305,8 +2297,8 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             y += 10;
 
             {
-                FormatArguments args{};
-                sub_4384E9();
+                FormatArguments args = {};
+                Scenario::formatChallengeArguments(args);
                 y = Gfx::drawString_495224(*dpi, self->x + 5, y, self->width - 10, Colour::black, StringIds::challenge_value, &args);
                 y += 5;
             }
@@ -2351,7 +2343,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 y = Gfx::drawString_495224(*dpi, self->x + 5, y, self->width - 10, Colour::black, StringIds::progress_towards_completing_challenge_percent, &args);
             }
 
-            if ((objectiveFlags & Scenario::objective_flags::be_within_top_three_companies) != 0)
+            if ((objectiveFlags & Scenario::objective_flags::within_time_limit) != 0)
             {
                 // time limited challenge
                 uint16_t monthsLeft = objectiveTimeLimitYears * 12 - objectiveMonthsInChallenge;
