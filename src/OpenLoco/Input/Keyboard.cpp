@@ -69,7 +69,7 @@ namespace OpenLoco::Input
 
     static void loc_4BECDE()
     {
-        setScreenFlags(getScreenFlags() | ScreenFlags::unknown_6);
+        setScreenFlag(ScreenFlags::unknown_6);
 
         Audio::playSound(Audio::sound_id::click_press, Ui::width() / 2);
     }

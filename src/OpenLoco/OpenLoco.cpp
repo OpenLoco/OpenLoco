@@ -135,6 +135,16 @@ namespace OpenLoco
         _screenFlags = newScreenFlags;
     }
 
+    void setScreenFlag(uint16_t value)
+    {
+        *_screenFlags |= value;
+    }
+
+    void resetScreenFlag(uint16_t value)
+    {
+        *_screenFlags &= ~value;
+    }
+
     bool isEditorMode()
     {
         return (getScreenFlags() & ScreenFlags::editor) != 0;
@@ -356,7 +366,7 @@ namespace OpenLoco
         call(0x004284C8);
         call(0x004969DA);
         call(0x0043C88C);
-        setScreenFlags(getScreenFlags() | ScreenFlags::unknown_5);
+        setScreenFlag(ScreenFlags::unknown_5);
 #ifdef _SHOW_INTRO_
         Intro::state(Intro::intro_state::begin);
 #else

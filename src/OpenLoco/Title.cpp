@@ -88,11 +88,11 @@ namespace OpenLoco::Title
             togglePause(true);
         }
 
-        auto screenFlags = getScreenFlags();
-        setScreenFlags(screenFlags & ~ScreenFlags::networked);
+        auto currentScreenFlags = getScreenFlags();
+        resetScreenFlag(ScreenFlags::networked);
         Ui::WindowManager::closeAllFloatingWindows();
-        setScreenFlags(screenFlags);
-        setScreenFlags(getScreenFlags() | ScreenFlags::title);
+        setScreenFlags(currentScreenFlags);
+        setScreenFlag(ScreenFlags::title);
         _gameSpeed = 0;
         sub_472031();
         sub_473A95(1);
