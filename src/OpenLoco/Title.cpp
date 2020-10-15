@@ -47,13 +47,6 @@ namespace OpenLoco::Title
         call(0x00473B91);
     }
 
-    // 0x0047237D
-    // ?reset loaded objects?
-    static void sub_47237D()
-    {
-        call(0x0047237D);
-    }
-
     // 0x004748D4
     // ?Set default types for building. Like the initial track type and vehicle type and such.?
     static void sub_4748D4()
@@ -99,7 +92,7 @@ namespace OpenLoco::Title
         sub_473A95(1);
         sub_474874();
         sub_473B91();
-        sub_47237D();
+        ObjectManager::resetLoadedObjects();
         sub_4748D4();
         sub_43C88C();
         initialiseViewports();
