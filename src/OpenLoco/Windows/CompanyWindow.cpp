@@ -927,13 +927,6 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             }
         }
 
-        // 0x00468FFE hide_gridlines
-        static void sub_468FFE()
-        {
-            registers regs;
-            call(0x00468FFE, regs);
-        }
-
         // 0x00434EC7
         // input:
         // regs.ax = mouseX;
@@ -997,7 +990,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         static void onToolAbort(window& self, const widget_index widgetIndex)
         {
             sub_434E94();
-            sub_468FFE();
+            Ui::Windows::hideGridlines();
         }
 
         // 0x0432D85
