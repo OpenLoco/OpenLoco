@@ -89,7 +89,7 @@ namespace OpenLoco::Title
         }
 
         auto currentScreenFlags = getScreenFlags();
-        resetScreenFlag(ScreenFlags::networked);
+        clearScreenFlag(ScreenFlags::networked);
         Ui::WindowManager::closeAllFloatingWindows();
         setScreenFlags(currentScreenFlags);
         setScreenFlag(ScreenFlags::title);

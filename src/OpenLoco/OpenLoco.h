@@ -30,7 +30,7 @@ namespace OpenLoco
     uint16_t getScreenFlags();
     void setScreenFlags(uint16_t newScreenFlags);
     void setScreenFlag(uint16_t value);
-    void resetScreenFlag(uint16_t value);
+    void clearScreenFlag(uint16_t value);
     bool isEditorMode();
     bool isTitleMode();
     bool isNetworked();

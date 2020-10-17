@@ -140,7 +140,7 @@ namespace OpenLoco
         *_screenFlags |= value;
     }
 
-    void resetScreenFlag(uint16_t value)
+    void clearScreenFlag(uint16_t value)
     {
         *_screenFlags &= ~value;
     }
