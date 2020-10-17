@@ -374,34 +374,10 @@ namespace OpenLoco::Ui::Windows
         call(0x0046e639); // window_multiplayer::open
     }
 
-    static widget_t _editorWidgets[] = {
-        makeWidget({ 0, 0 }, { 0, 0 }, widget_type::viewport, 0, 0xFFFFFFFE),
-        widgetEnd(),
-    };
-
     // 0x0043CB9F
     void editorInit()
     {
-        const int32_t uiWidth = Ui::width();
-        const int32_t uiHeight = Ui::height();
-
-        _editorWidgets[0].bottom = uiHeight;
-        _editorWidgets[0].right = uiWidth;
-        auto window = WindowManager::createWindow(
-            WindowType::main,
-            { 0, 0 },
-            Gfx::ui_size_t(uiWidth, uiHeight),
-            Ui::WindowFlags::stick_to_back,
-            (Ui::window_event_list*)0x004FA5F8);
-        window->widgets = _editorWidgets;
-        addr<0x00e3f0b8, int32_t>() = 0; // gCurrentRotation?
-        OpenLoco::Ui::ViewportManager::create(
-            window,
-            0,
-            { window->x, window->y },
-            { window->width, window->height },
-            ZoomLevel::full,
-            { (OpenLoco::Map::map_rows * OpenLoco::Map::tile_size) / 2 - 1, (OpenLoco::Map::map_rows * OpenLoco::Map::tile_size) / 2 - 1, 480 });
+        Windows::Main::open();
 
         addr<0x00F2533F, int8_t>() = 0; // grid lines
         addr<0x0112C2e1, int8_t>() = 0;

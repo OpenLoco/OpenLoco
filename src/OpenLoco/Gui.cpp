@@ -16,32 +16,10 @@ using namespace OpenLoco::Ui;
 
 namespace OpenLoco::Gui
 {
-
-    loco_global<OpenLoco::Ui::widget_t[64], 0x00509c20> _mainWindowWidgets;
-
     // 0x00438A6C
     void init()
     {
-        const int32_t uiWidth = Ui::width();
-        const int32_t uiHeight = Ui::height();
-
-        _mainWindowWidgets[0].bottom = uiHeight;
-        _mainWindowWidgets[0].right = uiWidth;
-        auto window = WindowManager::createWindow(
-            WindowType::main,
-            { 0, 0 },
-            Gfx::ui_size_t(uiWidth, uiHeight),
-            Ui::WindowFlags::stick_to_back,
-            (Ui::window_event_list*)0x004FA1F4);
-        window->widgets = _mainWindowWidgets;
-        addr<0x00e3f0b8, int32_t>() = 0; // gCurrentRotation?
-        OpenLoco::Ui::ViewportManager::create(
-            window,
-            0,
-            { window->x, window->y },
-            { window->width, window->height },
-            ZoomLevel::full,
-            { (Map::map_rows * Map::tile_size) / 2 - 1, (Map::map_rows * Map::tile_size) / 2 - 1, 480 });
+        Windows::Main::open();
 
         addr<0x00F2533F, int8_t>() = 0; // grid lines
         addr<0x0112C2e1, int8_t>() = 0;
@@ -67,10 +45,10 @@ namespace OpenLoco::Gui
             if (OpenLoco::Tutorial::state() != Tutorial::tutorial_state::none)
             {
 
-                window = WindowManager::createWindow(
+                auto window = WindowManager::createWindow(
                     WindowType::tutorial,
-                    Gfx::point_t(140, uiHeight - 27),
-                    Gfx::ui_size_t(uiWidth - 280, 27),
+                    Gfx::point_t(140, Ui::height() - 27),
+                    Gfx::ui_size_t(Ui::width() - 280, 27),
                     Ui::WindowFlags::stick_to_front | Ui::WindowFlags::transparent | Ui::WindowFlags::no_background,
                     (Ui::window_event_list*)0x4fa10c);
                 window->widgets = (Ui::widget_t*)0x509de0;
