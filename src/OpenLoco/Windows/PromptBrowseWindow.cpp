@@ -115,6 +115,8 @@ namespace OpenLoco::Ui::PromptBrowse
     static void onMouseUp(Ui::window* window, widget_index widgetIndex);
     static void onUpdate(Ui::window* window);
     static void getScrollSize(Ui::window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
+    static void onScrollMouseDown(window* self, int16_t x, int16_t y, uint8_t scroll_index);
+    static void onScrollMouseOver(window* self, int16_t x, int16_t y, uint8_t scroll_index);
     static void tooltip(FormatArguments& args, Ui::window* window, widget_index widgetIndex);
     static void prepareDraw(window* window);
     static void draw(Ui::window* window, Gfx::drawpixelinfo_t* dpi);
@@ -125,6 +127,7 @@ namespace OpenLoco::Ui::PromptBrowse
     static void upOneLevel();
     static void sub_446574(Ui::window* window);
     static void refreshDirectoryList();
+    static void sub_446E87(window* self);
 
     // 0x00445AB9
     // ecx: path
@@ -142,8 +145,8 @@ namespace OpenLoco::Ui::PromptBrowse
         _events.on_resize = onResize;
         _events.on_update = onUpdate;
         _events.get_scroll_size = getScrollSize;
-        _events.scroll_mouse_down = reinterpret_cast<void (*)(window*, int16_t, int16_t, uint8_t)>(0x004464F7);
-        _events.scroll_mouse_over = reinterpret_cast<void (*)(window*, int16_t, int16_t, uint8_t)>(0x004464B1);
+        _events.scroll_mouse_down = onScrollMouseDown;
+        _events.scroll_mouse_over = onScrollMouseOver;
         _events.tooltip = tooltip;
         _events.prepare_draw = prepareDraw;
         _events.draw = draw;
@@ -266,6 +269,37 @@ namespace OpenLoco::Ui::PromptBrowse
     static void getScrollSize(Ui::window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
         *scrollHeight = window->row_height * _numFiles;
+    }
+
+    // 0x004464F7
+    static void onScrollMouseDown(window* self, int16_t x, int16_t y, uint8_t scrollIndex)
+    {
+        auto index = y / self->row_height;
+        if (index > _numFiles)
+            return;
+
+        registers regs;
+        regs.ax = index;
+        regs.esi = (int32_t)self;
+        call(0x00446512, regs);
+    }
+
+    // 0x004464B1
+    static void onScrollMouseOver(window* self, int16_t x, int16_t y, uint8_t scrollIndex)
+    {
+        if (WindowManager::getCurrentModalType() != WindowType::fileBrowserPrompt)
+            return;
+
+        auto index = y / self->row_height;
+        if (index > _numFiles)
+            return;
+
+        if (self->var_85A == index)
+            return;
+
+        self->var_85A = index;
+        sub_446E87(self);
+        self->invalidate();
     }
 
     // 0x004467D7
@@ -789,5 +823,14 @@ namespace OpenLoco::Ui::PromptBrowse
             regs.esi = (int32_t)window;
             call(0x00446689, regs);
         }
+    }
+
+    // 0x00446E87
+    // TODO: only called by this window -- implement.
+    static void sub_446E87(window* self)
+    {
+        registers regs;
+        regs.esi = (int32_t)self;
+        call(0x00446E87, regs);
     }
 }
