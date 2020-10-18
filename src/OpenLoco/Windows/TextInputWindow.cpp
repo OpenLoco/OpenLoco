@@ -106,7 +106,6 @@ namespace OpenLoco::Ui::TextInput
     static void onUpdate(Ui::window* window);
 
     static bool needsReoffsetting(int16_t containerWidth);
-    static void calculateTextOffset(int16_t containerWidth);
     static void sanitizeInput();
 
     /**
@@ -435,7 +434,7 @@ namespace OpenLoco::Ui::TextInput
      *
      * @param containerWidth @<edx>
      */
-    static void calculateTextOffset(int16_t containerWidth)
+    void calculateTextOffset(int16_t containerWidth)
     {
         std::string cursorStr = _buffer.substr(0, cursor_position);
 

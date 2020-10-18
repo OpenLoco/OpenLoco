@@ -219,6 +219,7 @@ namespace OpenLoco::Ui::TextInput
     void sub_4CE6C9(WindowType type, window_number number);
     void cancel();
     void sub_4CE910(int eax, int ebx);
+    void calculateTextOffset(int16_t containerWidth);
     void sub_4CE6FF();
 }
 

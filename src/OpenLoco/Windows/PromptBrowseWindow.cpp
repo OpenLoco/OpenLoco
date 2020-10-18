@@ -126,13 +126,6 @@ namespace OpenLoco::Ui::PromptBrowse
     static void sub_446574(Ui::window* window);
     static void refreshDirectoryList();
 
-    static void sub_4CEB67(int16_t dx)
-    {
-        registers regs;
-        regs.dx = dx;
-        call(0x004CEB67, regs);
-    }
-
     // 0x00445AB9
     // ecx: path
     // edx: filter
@@ -196,7 +189,7 @@ namespace OpenLoco::Ui::PromptBrowse
             window->var_85A = -1;
 
             addr<0x009DA285, uint8_t>() = 0;
-            sub_4CEB67(addr<0x0050ADAC, int16_t>() - addr<0x0050ADAA, int16_t>());
+            TextInput::calculateTextOffset(addr<0x0050ADAC, int16_t>() - addr<0x0050ADAA, int16_t>());
 
             window->colours[0] = Colour::black;
             window->colours[1] = Colour::saturated_green;
