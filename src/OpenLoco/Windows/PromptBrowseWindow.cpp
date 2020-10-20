@@ -71,6 +71,8 @@ namespace OpenLoco::Ui::PromptBrowse
     };
 #pragma pack(pop)
 
+    static_assert(sizeof(file_entry) == 0x140);
+
     enum widx
     {
         frame,
@@ -125,9 +127,11 @@ namespace OpenLoco::Ui::PromptBrowse
     static void drawTextInput(Ui::window* window, Gfx::drawpixelinfo_t& dpi, const char* text, int32_t caret, bool showCaret);
     static void drawScroll(Ui::window* window, Gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex);
     static void upOneLevel();
+    static void appendDirectory(const char* to_append);
     static void sub_446574(Ui::window* window);
     static void refreshDirectoryList();
     static void sub_446E87(window* self);
+    static bool filenameContainsInvalidChars();
 
     // 0x00445AB9
     // ecx: path
@@ -277,6 +281,49 @@ namespace OpenLoco::Ui::PromptBrowse
         auto index = y / self->row_height;
         if (index > _numFiles)
             return;
+
+        Audio::playSound(Audio::sound_id::click_down, self->x + (self->width / 2));
+
+        file_entry entry = _files[index];
+
+        // Clicking a directory, with left mouse button?
+        if (Input::state() == Input::input_state::scroll_left && entry.is_directory())
+        {
+            appendDirectory(entry.get_name().data());
+            self->invalidate();
+            return;
+        }
+
+        // Clicking a file, with left mouse button?
+        if (Input::state() != Input::input_state::scroll_left)
+        {
+            // Copy the selected filename without extension to text input buffer.
+            strncpy(_text_input_buffer, entry.get_name().data(), std::size(_text_input_buffer));
+
+            if (_type == browse_type::save)
+            {
+                if (filenameContainsInvalidChars())
+                {
+                    Windows::showError(StringIds::error_invalid_filename);
+                    return;
+                }
+
+                // 0x00446598
+                // ...
+            }
+            else
+            {
+                // 0x00446689
+                // ...
+            }
+        }
+
+        // Clicking a file, with right mouse button
+        else
+        {
+            // 0x004466CA
+            // ...
+        }
 
         registers regs;
         regs.ax = index;
