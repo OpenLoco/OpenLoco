@@ -22,5 +22,22 @@ namespace OpenLoco::Paint
     static loco_global<PaintStringStruct*, 0x00E40118> _sessionPaintStringHead;
     static loco_global<PaintStringStruct*, 0x00E4011C> _sessionLastPaintString;
     static loco_global<Map::map_pos, 0x00E3F0B0> _sessionMapPosition;
+    PaintSession _session;
+
+    // 0x0045A6CA
+    PaintSession* allocateSession(Gfx::drawpixelinfo_t& dpi, uint16_t viewportFlags)
+    {
+        _sessionNextFreePaintStruct = &_sessionPaintEntries[0];
+        _sessionLastRootPS = nullptr;
+        for (auto& quadrant : _sessionQuadrants)
+        {
+            quadrant = nullptr;
+        }
+        _sessionQuadrantBackIndex = -1;
+        _sessionQuadrantFrontIndex = 0;
+        _sessionLastPaintString = 0;
+        _sessionPaintStringHead = 0;
+        return &_session;
+    }
 
 }

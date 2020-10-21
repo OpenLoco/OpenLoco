@@ -111,7 +111,7 @@ namespace OpenLoco::Paint
     public:
         Gfx::drawpixelinfo_t* dpi();
         PaintEntry* allocateEntry();
-        void SetQuadrant(PaintEntry& p);
+        void setQuadrant(PaintEntry& p);
 
     private:
         //Gfx::drawpixelinfo_t* dpi;                     // 0xE0C3E0
@@ -150,4 +150,6 @@ namespace OpenLoco::Paint
         //uint16_t waterHeight;
         //uint32_t trackColours[4];
     };
+
+    PaintSession* allocateSession(Gfx::drawpixelinfo_t& dpi, uint16_t viewportFlags);
 }
