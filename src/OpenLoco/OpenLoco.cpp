@@ -130,7 +130,7 @@ namespace OpenLoco
         return _screenFlags;
     }
 
-    void setScreenFlags(uint16_t newScreenFlags)
+    void setAllScreenFlags(uint16_t newScreenFlags)
     {
         _screenFlags = newScreenFlags;
     }

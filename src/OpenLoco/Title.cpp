@@ -91,7 +91,7 @@ namespace OpenLoco::Title
         auto currentScreenFlags = getScreenFlags();
         clearScreenFlag(ScreenFlags::networked);
         Ui::WindowManager::closeAllFloatingWindows();
-        setScreenFlags(currentScreenFlags);
+        setAllScreenFlags(currentScreenFlags);
         setScreenFlag(ScreenFlags::title);
         _gameSpeed = 0;
         sub_472031();

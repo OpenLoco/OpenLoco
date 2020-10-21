@@ -28,7 +28,7 @@ namespace OpenLoco
     void lpCmdLine(const char* path);
     uint16_t getScreenAge();
     uint16_t getScreenFlags();
-    void setScreenFlags(uint16_t newScreenFlags);
+    void setAllScreenFlags(uint16_t newScreenFlags);
     void setScreenFlag(uint16_t value);
     void clearScreenFlag(uint16_t value);
     bool isEditorMode();
