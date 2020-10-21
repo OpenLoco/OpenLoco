@@ -47,7 +47,6 @@ namespace OpenLoco::Input
     static void loc_4BED04();
     static void loc_4BED79();
 
-    static loco_global<uint8_t, 0x00508F14> _screenFlags;
     static loco_global<int8_t, 0x00508F16> _screenshotCountdown;
     static loco_global<uint8_t, 0x00508F18> _keyModifier;
     static loco_global<Ui::WindowType, 0x005233B6> _modalWindowType;
@@ -70,14 +69,14 @@ namespace OpenLoco::Input
 
     static void loc_4BECDE()
     {
-        _screenFlags |= ScreenFlags::unknown_6;
+        setScreenFlag(ScreenFlags::unknown_6);
 
         Audio::playSound(Audio::sound_id::click_press, Ui::width() / 2);
     }
 
     static void loc_4BED04()
     {
-        if ((_screenFlags & ScreenFlags::unknown_6) == 0)
+        if ((getScreenFlags() & ScreenFlags::unknown_6) == 0)
         {
             return;
             // Only works when DRIVER mode is active

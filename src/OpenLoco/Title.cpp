@@ -11,7 +11,6 @@ using namespace OpenLoco::Interop;
 namespace OpenLoco::Title
 {
     static loco_global<uint16_t, 0x00508F12> _screenAge;
-    static loco_global<uint8_t, 0x00508F14> _screenFlags;
     static loco_global<uint8_t, 0x00508F1A> _gameSpeed;
 
     static void sub_473A95(int32_t eax);
@@ -82,11 +81,11 @@ namespace OpenLoco::Title
             togglePause(true);
         }
 
-        auto screenFlags = _screenFlags;
-        _screenFlags = screenFlags & ~ScreenFlags::networked;
+        auto currentScreenFlags = getScreenFlags();
+        clearScreenFlag(ScreenFlags::networked);
         Ui::WindowManager::closeAllFloatingWindows();
-        _screenFlags = screenFlags;
-        _screenFlags |= ScreenFlags::title;
+        setAllScreenFlags(currentScreenFlags);
+        setScreenFlag(ScreenFlags::title);
         _gameSpeed = 0;
         sub_472031();
         sub_473A95(1);

@@ -71,7 +71,7 @@ namespace OpenLoco
     loco_global<uint32_t, 0x0050C19E> last_tick_time;
     loco_global<uint8_t, 0x00508F08> game_command_nest_level;
     loco_global<uint16_t, 0x00508F12> _screen_age;
-    loco_global<uint8_t, 0x00508F14> _screen_flags;
+    loco_global<uint16_t, 0x00508F14> _screenFlags;
     loco_global<uint8_t, 0x00508F17> paused_state;
     loco_global<uint8_t, 0x00508F1A> game_speed;
     static loco_global<string_id, 0x0050A018> _mapTooltipFormatArguments;
@@ -125,39 +125,54 @@ namespace OpenLoco
         return _screen_age;
     }
 
-    uint8_t getScreenFlags()
+    uint16_t getScreenFlags()
     {
-        return _screen_flags;
+        return _screenFlags;
+    }
+
+    void setAllScreenFlags(uint16_t newScreenFlags)
+    {
+        _screenFlags = newScreenFlags;
+    }
+
+    void setScreenFlag(uint16_t value)
+    {
+        *_screenFlags |= value;
+    }
+
+    void clearScreenFlag(uint16_t value)
+    {
+        *_screenFlags &= ~value;
     }
 
     bool isEditorMode()
     {
-        return (_screen_flags & ScreenFlags::editor) != 0;
+        return (getScreenFlags() & ScreenFlags::editor) != 0;
     }
 
     bool isTitleMode()
     {
-        return (_screen_flags & ScreenFlags::title) != 0;
+        return (getScreenFlags() & ScreenFlags::title) != 0;
     }
 
     bool isNetworked()
     {
-        return (_screen_flags & ScreenFlags::networked) != 0;
+        return (getScreenFlags() & ScreenFlags::networked) != 0;
     }
 
     bool isTrackUpgradeMode()
     {
-        return (_screen_flags & ScreenFlags::trackUpgrade) != 0;
+        return (getScreenFlags() & ScreenFlags::trackUpgrade) != 0;
     }
 
     bool isUnknown4Mode()
     {
-        return (_screen_flags & ScreenFlags::unknown_4) != 0;
+        return (getScreenFlags() & ScreenFlags::unknown_4) != 0;
     }
 
     bool isUnknown5Mode()
     {
-        return (_screen_flags & ScreenFlags::unknown_5) != 0;
+        return (getScreenFlags() & ScreenFlags::unknown_5) != 0;
     }
 
     bool isPaused()
@@ -351,7 +366,7 @@ namespace OpenLoco
         call(0x004284C8);
         call(0x004969DA);
         call(0x0043C88C);
-        _screen_flags = _screen_flags | ScreenFlags::unknown_5;
+        setScreenFlag(ScreenFlags::unknown_5);
 #ifdef _SHOW_INTRO_
         Intro::state(Intro::intro_state::begin);
 #else
