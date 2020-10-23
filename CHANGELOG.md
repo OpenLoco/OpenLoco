@@ -2,6 +2,7 @@
 ------------------------------------------------------------------------
 - Feature: [#569] Option/cheat to disable AI companies entirely.
 - Fix: [#573] Crash caused by opening Road construction window.
+- Fix: [#588] Crash caused by changing default audio device.
 - Fix: [#595] Implementation mistake in CreateVehicle could lead to crashes.
 - Fix: [#635] Land tool not working properly, due to tool drag events not passing on coordinates.
 - Fix: [#648] Fix crash in vehicle update head caused by CreateVehicle.
