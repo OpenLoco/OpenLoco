@@ -296,7 +296,7 @@ namespace OpenLoco::Ui::PromptBrowse
         }
 
         // Clicking a file, with left mouse button?
-        if (Input::state() != Input::input_state::scroll_left)
+        if (Input::state() == Input::input_state::scroll_left)
         {
             // Copy the selected filename without extension to text input buffer.
             strncpy(_text_input_buffer, entry.get_name().data(), std::size(_text_input_buffer));
@@ -845,15 +845,15 @@ namespace OpenLoco::Ui::PromptBrowse
 
             // Copy directory and filename to buffer. Trailing / on directory is assumed.
             // TODO: refactor to fs::path
-            char* ptr = &*_stringFormatBuffer;
+            char* ptr = &_stringFormatBuffer[0];
             ptr = strncpy(ptr, _directory, std::size(_stringFormatBuffer));
-            ptr = strncpy(ptr, _text_input_buffer, std::size(_stringFormatBuffer) - strlen(_stringFormatBuffer));
+            ptr = strncat(ptr, _text_input_buffer, std::size(_stringFormatBuffer));
 
             // Append SC5 extension to save game filenames.
             if (_fileType == browse_file_type::saved_game)
-                ptr = strncpy(ptr, ".SC5", std::size(_stringFormatBuffer) - strlen(_stringFormatBuffer));
+                ptr = strncat(ptr, ".SC5", std::size(_stringFormatBuffer) - strlen(_stringFormatBuffer));
 
-            printf("Proposed filename: %s\n", &*_stringFormatBuffer);
+            printf("Proposed filename: %s\n", &_stringFormatBuffer[0]);
 
             // ...
             // registers regs;
@@ -862,10 +862,13 @@ namespace OpenLoco::Ui::PromptBrowse
         }
         else
         {
-            // 0x00446689
-            // registers regs;
-            // regs.esi = (int32_t)window;
-            // call(0x00446689, regs);
+            // Copy scenario path into expected address. Trailing / on directory is assumed.
+            // TODO: refactor to fs::path?
+            strncat(_directory, _text_input_buffer, std::size(_directory));
+            strncat(_directory, _fileType == browse_file_type::saved_game ? ".SV5" : ".SC5", std::size(_directory));
+
+            // Close browse window to start loading.
+            WindowManager::close(self);
         }
     }
 
