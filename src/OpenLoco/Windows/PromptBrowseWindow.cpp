@@ -73,7 +73,6 @@ namespace OpenLoco::Ui::PromptBrowse
 
     static_assert(sizeof(file_entry) == 0x140);
 
-
     enum widx
     {
         frame,
@@ -314,7 +313,6 @@ namespace OpenLoco::Ui::PromptBrowse
             regs.esi = (int32_t)self;
             call(0x004466CA, regs);
         }
-
     }
 
     // 0x004464B1
@@ -854,7 +852,6 @@ namespace OpenLoco::Ui::PromptBrowse
             // Append SC5 extension to save game filenames.
             if (_fileType == browse_file_type::saved_game)
                 ptr = strncpy(ptr, ".SC5", std::size(_stringFormatBuffer) - strlen(_stringFormatBuffer));
-
 
             printf("Proposed filename: %s\n", &*_stringFormatBuffer);
 
