@@ -73,6 +73,7 @@ namespace OpenLoco::Ui::PromptBrowse
 
     static_assert(sizeof(file_entry) == 0x140);
 
+
     enum widx
     {
         frame,
@@ -103,6 +104,7 @@ namespace OpenLoco::Ui::PromptBrowse
     static loco_global<char[256], 0x009D9D64> _title;
     static loco_global<char[32], 0x009D9E64> _filter;
     static loco_global<char[512], 0x009D9E84> _directory;
+    static loco_global<char[512], 0x0112CC04> _stringFormatBuffer;
     static loco_global<char[512], 0x011369A0> _text_input_buffer;
     static loco_global<int16_t, 0x009D1084> _numFiles;
     static loco_global<file_entry*, 0x0050AEA4> _files;
@@ -128,7 +130,7 @@ namespace OpenLoco::Ui::PromptBrowse
     static void drawScroll(Ui::window* window, Gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex);
     static void upOneLevel();
     static void appendDirectory(const char* to_append);
-    static void sub_446574(Ui::window* window);
+    static void processFileForLoadSave(window* window);
     static void refreshDirectoryList();
     static void sub_446E87(window* self);
     static bool filenameContainsInvalidChars();
@@ -254,7 +256,7 @@ namespace OpenLoco::Ui::PromptBrowse
                 window->invalidate();
                 break;
             case widx::ok_button:
-                sub_446574(window);
+                processFileForLoadSave(window);
                 break;
         }
     }
@@ -300,35 +302,19 @@ namespace OpenLoco::Ui::PromptBrowse
             // Copy the selected filename without extension to text input buffer.
             strncpy(_text_input_buffer, entry.get_name().data(), std::size(_text_input_buffer));
 
-            if (_type == browse_type::save)
-            {
-                if (filenameContainsInvalidChars())
-                {
-                    Windows::showError(StringIds::error_invalid_filename);
-                    return;
-                }
-
-                // 0x00446598
-                // ...
-            }
-            else
-            {
-                // 0x00446689
-                // ...
-            }
+            // Continue processing for load/save.
+            processFileForLoadSave(self);
         }
 
         // Clicking a file, with right mouse button
         else
         {
-            // 0x004466CA
-            // ...
+            registers regs;
+            regs.ax = index;
+            regs.esi = (int32_t)self;
+            call(0x004466CA, regs);
         }
 
-        registers regs;
-        regs.ax = index;
-        regs.esi = (int32_t)self;
-        call(0x00446512, regs);
     }
 
     // 0x004464B1
@@ -849,26 +835,40 @@ namespace OpenLoco::Ui::PromptBrowse
     }
 
     // 0x00446574
-    static void sub_446574(Ui::window* window)
+    static void processFileForLoadSave(window* self)
     {
-        if (*_type == browse_type::save)
+        if (_type == browse_type::save)
         {
             if (filenameContainsInvalidChars())
             {
                 Windows::showError(StringIds::error_invalid_filename);
+                return;
             }
-            else
-            {
-                registers regs;
-                regs.esi = (int32_t)window;
-                call(0x00446598, regs);
-            }
+
+            // Copy directory and filename to buffer. Trailing / on directory is assumed.
+            // TODO: refactor to fs::path
+            char* ptr = &*_stringFormatBuffer;
+            ptr = strncpy(ptr, _directory, std::size(_stringFormatBuffer));
+            ptr = strncpy(ptr, _text_input_buffer, std::size(_stringFormatBuffer) - strlen(_stringFormatBuffer));
+
+            // Append SC5 extension to save game filenames.
+            if (_fileType == browse_file_type::saved_game)
+                ptr = strncpy(ptr, ".SC5", std::size(_stringFormatBuffer) - strlen(_stringFormatBuffer));
+
+
+            printf("Proposed filename: %s\n", &*_stringFormatBuffer);
+
+            // ...
+            // registers regs;
+            // regs.esi = (int32_t)window;
+            // call(0x00446598, regs);
         }
         else
         {
-            registers regs;
-            regs.esi = (int32_t)window;
-            call(0x00446689, regs);
+            // 0x00446689
+            // registers regs;
+            // regs.esi = (int32_t)window;
+            // call(0x00446689, regs);
         }
     }
 
