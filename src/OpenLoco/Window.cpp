@@ -521,20 +521,6 @@ namespace OpenLoco::Ui
         call(0x004CC7CB, regs);
     }
 
-    // 0x00459E54
-    // TODO: needs expansion in terms of (output) parameters.
-    static void getMapCoordinatesFromPos(int32_t screenX, int32_t screenY, int32_t flags, int16_t* x, int16_t* y)
-    {
-        registers regs;
-        regs.ax = screenX;
-        regs.bx = screenY;
-        regs.edx = flags;
-        call(0x00459E54, regs);
-
-        *x = regs.ax;
-        *y = regs.cx;
-    }
-
     void window::viewportGetMapCoordsByCursor(int16_t* map_x, int16_t* map_y, int16_t* offset_x, int16_t* offset_y)
     {
         // Get mouse position to offset against.
@@ -542,7 +528,10 @@ namespace OpenLoco::Ui
         Ui::getCursorPos(mouse_x, mouse_y);
 
         // Compute map coordinate by mouse position.
-        getMapCoordinatesFromPos(mouse_x, mouse_y, 0, map_x, map_y);
+        auto res = ViewportInteraction::getMapCoordinatesFromPos(mouse_x, mouse_y, 0);
+        auto& interaction = res.first;
+        *map_x = interaction.x;
+        *map_y = interaction.y;
 
         // Get viewport coordinates centring around the tile.
         int32_t base_height = Map::tileElementHeight(*map_x, *map_y).landHeight;

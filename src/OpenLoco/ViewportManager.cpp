@@ -440,5 +440,19 @@ namespace OpenLoco::Ui::ViewportManager
                 regs = backup;
                 return 0;
             });
+        registerHook(
+            0x00459E54,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+                auto [interaction, vp] = Ui::ViewportInteraction::getMapCoordinatesFromPos(regs.ax, regs.bx, regs.edx);
+                regs = backup;
+                regs.ax = interaction.x;
+                regs.cx = interaction.y;
+                regs.bl = static_cast<uint8_t>(interaction.type);
+                regs.bh = static_cast<uint8_t>(interaction.unkBh);
+                regs.edx = static_cast<uint32_t>(interaction.value);
+                regs.edi = reinterpret_cast<uint32_t>(vp);
+                return 0;
+            });
     }
 }
