@@ -7,7 +7,6 @@
 #include "Localisation/FormatArguments.hpp"
 #include "Map/Tile.h"
 #include "Map/TileManager.h"
-#include "Paint/Paint.h"
 #include "Things/ThingManager.h"
 #include "Ui.h"
 #include "Ui/Rect.h"
@@ -522,61 +521,6 @@ namespace OpenLoco::Ui
         call(0x004CC7CB, regs);
     }
 
-    // 0x00459E54
-    static ViewportInteraction::InteractionArg getMapCoordinatesFromPos(int32_t screenX, int32_t screenY, int32_t flags)
-    {
-        static loco_global<uint8_t, 0x0050BF68> _50BF68;                        // If in get map coords
-        static loco_global<Gfx::drawpixelinfo_t, 0x00E0C3E4> _dpi1;
-        static loco_global<Gfx::drawpixelinfo_t, 0x00E0C3F4> _dpi2;
-
-        _50BF68 = 1;
-        ViewportInteraction::InteractionArg interaction{};
-        Gfx::point_t screenPos = { static_cast<int16_t>(screenX), static_cast<int16_t>(screenY) };
-        auto w = WindowManager::findAt(screenPos);
-        if (w == nullptr)
-        {
-            _50BF68 = 0;
-            return interaction;
-        }
-
-        for (auto vp : w->viewports)
-        {
-            if (vp == nullptr)
-                continue;
-
-            if (!vp->containsUi({ screenPos.x, screenPos.y }))
-                continue;
-
-            auto vpPos = vp->uiToMap({ screenPos.x, screenPos.y });
-            _dpi1->zoom_level = vp->zoom;
-            _dpi1->x = (0xFFFF << vp->zoom) & vpPos.x;
-            _dpi1->y = (0xFFFF << vp->zoom) & vpPos.y;
-            _dpi2->x = _dpi1->x;
-            _dpi2->y = _dpi1->y;
-            _dpi2->width = 1;
-            _dpi2->height = 1;
-            _dpi2->zoom_level = _dpi1->zoom_level;
-            auto* session = Paint::allocateSession(_dpi2, vp->flags);
-            session->generate();
-            session->arrangeStructs();
-            interaction = session->getNormalInteractionInfo(flags);
-            if (vp->flags & ViewportFlags::station_names_displayed)
-            {
-                if (_dpi2->zoom_level <= Config::get().station_names_min_scale)
-                {
-                    interaction = session->getStationNameInteractionInfo(flags);
-                }
-            }
-            if (vp->flags & ViewportFlags::town_names_displayed)
-            {
-                interaction = session->getStationNameInteractionInfo(flags);
-            }
-            break;
-        }
-        _50BF68 = 0;
-        return interaction;
-    }
-
     void window::viewportGetMapCoordsByCursor(int16_t* map_x, int16_t* map_y, int16_t* offset_x, int16_t* offset_y)
     {
         // Get mouse position to offset against.
@@ -584,7 +528,7 @@ namespace OpenLoco::Ui
         Ui::getCursorPos(mouse_x, mouse_y);
 
         // Compute map coordinate by mouse position.
-        auto interaction = getMapCoordinatesFromPos(mouse_x, mouse_y, 0);
+        [[maybe_unused]] auto [interaction, vp] = ViewportInteraction::getMapCoordinatesFromPos(mouse_x, mouse_y, 0);
         *map_x = interaction.x;
         *map_y = interaction.y;
 

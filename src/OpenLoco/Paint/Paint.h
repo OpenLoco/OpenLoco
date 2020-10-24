@@ -112,9 +112,9 @@ namespace OpenLoco::Paint
     public:
         void generate();
         void arrangeStructs();
-        Ui::ViewportInteraction::InteractionArg getNormalInteractionInfo(uint32_t flags);
-        Ui::ViewportInteraction::InteractionArg getStationNameInteractionInfo(uint32_t flags);
-        Ui::ViewportInteraction::InteractionArg getTownNameInteractionInfo(uint32_t flags);
+        [[nodiscard]] Ui::ViewportInteraction::InteractionArg getNormalInteractionInfo(const uint32_t flags);
+        [[nodiscard]] Ui::ViewportInteraction::InteractionArg getStationNameInteractionInfo(const uint32_t flags);
+        [[nodiscard]] Ui::ViewportInteraction::InteractionArg getTownNameInteractionInfo(const uint32_t flags);
 
     private:
         //Gfx::drawpixelinfo_t* dpi;                     // 0xE0C3E0

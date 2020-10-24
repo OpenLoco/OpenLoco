@@ -13,6 +13,7 @@ namespace OpenLoco::Config
 
 namespace OpenLoco::Ui
 {
+    struct viewport;
 
     struct screen_info_t
     {
@@ -134,5 +135,7 @@ namespace OpenLoco::Ui
 
         InteractionArg getItemLeft(int16_t tempX, int16_t tempY);
         InteractionArg rightOver(int16_t x, int16_t y);
+
+        std::pair<ViewportInteraction::InteractionArg, Ui::viewport*> getMapCoordinatesFromPos(int32_t screenX, int32_t screenY, int32_t flags);
     }
 }
