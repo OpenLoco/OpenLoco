@@ -1,6 +1,7 @@
 #include "Paint.h"
 #include "../Interop/Interop.hpp"
 #include "../Map/Tile.h"
+#include "../StationManager.h"
 #include "../Ui.h"
 
 using namespace OpenLoco::Interop;
@@ -63,11 +64,54 @@ namespace OpenLoco::Paint
     // 0x0048DDE4
     [[nodiscard]] InteractionArg PaintSession::getStationNameInteractionInfo(const uint32_t flags)
     {
-        _getMapCoordinatesFromPosFlags = flags;
-        registers regs;
-        regs.edi = reinterpret_cast<uint32_t>(*_dpi);
-        call(0x0048DDE4, regs);
-        return InteractionArg{ _sessionInteractionInfoX, _sessionInteractionInfoY, { _sessionInteractionInfoValue }, _sessionInteractionInfoType, _sessionInteractionInfoBh };
+        InteractionArg interaction{};
+
+        // -2 as there are two interaction items that you can't filter out adjust in future
+        if (flags & (1 << (static_cast<uint32_t>(InteractionItem::station) - 2)))
+        {
+            return interaction;
+        }
+
+        auto zoom = (*_dpi)->zoom_level;
+        auto left = (*_dpi)->x >> zoom;
+        auto bottom = (*_dpi)->y >> zoom;
+        auto right = ((*_dpi)->width >> zoom) + left;
+        auto top = ((*_dpi)->height >> zoom) + bottom;
+
+        for (auto& station : StationManager::stations())
+        {
+            if (station.empty())
+            {
+                continue;
+            }
+
+            if (station.flags & station_flags::flag_5)
+            {
+                continue;
+            }
+
+            if (left > station.label_left[zoom])
+            {
+                continue;
+            }
+            if (bottom > station.label_bottom[zoom])
+            {
+                continue;
+            }
+            if (right <= station.label_right[zoom])
+            {
+                continue;
+            }
+            if (top <= station.label_top[zoom])
+            {
+                continue;
+            }
+
+            interaction.type = InteractionItem::station;
+            interaction.value = station.id();
+        }
+
+        return interaction;
     }
 
     // 0x0049773D
