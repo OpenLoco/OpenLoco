@@ -102,7 +102,11 @@ namespace OpenLoco::Ui::ViewportInteraction
             }
             if (!(vp->flags & ViewportFlags::town_names_displayed))
             {
-                interaction = session->getTownNameInteractionInfo(flags);
+                auto townInteraction = session->getTownNameInteractionInfo(flags);
+                if (townInteraction.type != InteractionItem::t_0)
+                {
+                    interaction = townInteraction;
+                }
             }
             break;
         }
