@@ -1296,7 +1296,10 @@ namespace OpenLoco::StringIds
     constexpr string_id window_browse_challenge_progress = 2009;
     constexpr string_id window_browse_challenge_completed = 2010;
     constexpr string_id window_browse_challenge_failed = 2011;
-
+    constexpr string_id replace_existing_file_prompt = 2012;
+    constexpr string_id replace_existing_file_button = 2013;
+    constexpr string_id delete_file_prompt = 2014;
+    constexpr string_id delete_file_button = 2015;
     constexpr string_id error_invalid_filename = 2016;
     constexpr string_id title_industry_name = 2017;
     constexpr string_id prompt_enter_new_industry_name = 2018;
