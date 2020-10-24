@@ -67,7 +67,7 @@ namespace OpenLoco::Paint
         _sessionInteractionInfoType = InteractionItem::t_0;
         _getMapCoordinatesFromPosFlags = flags;
         call(0x0045ED91);
-        return InteractionArg{ _sessionInteractionInfoX, _sessionInteractionInfoY, _sessionInteractionInfoValue, _sessionInteractionInfoType, _sessionInteractionInfoBh };
+        return InteractionArg{ _sessionInteractionInfoX, _sessionInteractionInfoY, { _sessionInteractionInfoValue }, _sessionInteractionInfoType, _sessionInteractionInfoBh };
     }
 
     // 0x0048DDE4
@@ -77,7 +77,7 @@ namespace OpenLoco::Paint
         registers regs;
         regs.edi = reinterpret_cast<uint32_t>(*_sessionDpi);
         call(0x0048DDE4, regs);
-        return InteractionArg{ _sessionInteractionInfoX, _sessionInteractionInfoY, _sessionInteractionInfoValue, _sessionInteractionInfoType, _sessionInteractionInfoBh };
+        return InteractionArg{ _sessionInteractionInfoX, _sessionInteractionInfoY, { _sessionInteractionInfoValue }, _sessionInteractionInfoType, _sessionInteractionInfoBh };
     }
 
     // 0x0049773D
@@ -87,6 +87,6 @@ namespace OpenLoco::Paint
         registers regs;
         regs.edi = reinterpret_cast<uint32_t>(*_sessionDpi);
         call(0x0049773D, regs);
-        return InteractionArg{ _sessionInteractionInfoX, _sessionInteractionInfoY, _sessionInteractionInfoValue, _sessionInteractionInfoType, _sessionInteractionInfoBh };
+        return InteractionArg{ _sessionInteractionInfoX, _sessionInteractionInfoY, { _sessionInteractionInfoValue }, _sessionInteractionInfoType, _sessionInteractionInfoBh };
     }
 }
