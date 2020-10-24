@@ -305,7 +305,6 @@ namespace OpenLoco::Ui::PromptBrowse
             // Continue processing for load/save.
             processFileForLoadSave(self);
         }
-
         // Clicking a file, with right mouse button
         else
         {
