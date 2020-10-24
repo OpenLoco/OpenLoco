@@ -1,4 +1,5 @@
 #pragma once
+#include "../Interop/Interop.hpp"
 #include "../Types.hpp"
 
 namespace OpenLoco::Map
@@ -112,25 +113,27 @@ namespace OpenLoco::Paint
     public:
         void generate();
         void arrangeStructs();
+        void init(Gfx::drawpixelinfo_t& dpi, const uint16_t viewportFlags);
         [[nodiscard]] Ui::ViewportInteraction::InteractionArg getNormalInteractionInfo(const uint32_t flags);
         [[nodiscard]] Ui::ViewportInteraction::InteractionArg getStationNameInteractionInfo(const uint32_t flags);
         [[nodiscard]] Ui::ViewportInteraction::InteractionArg getTownNameInteractionInfo(const uint32_t flags);
 
     private:
-        //Gfx::drawpixelinfo_t* dpi;                     // 0xE0C3E0
-        //PaintEntry paintStructs[4000];                 // 0xE0C410 -> 0xE3F050
-        //PaintStruct* quadrants[1024];                  // 0xE3F0C0 -> 0xE400C0
-        //uint32_t quadrantBackIndex;                    // 0xE400C0
-        //uint32_t quadrantFrontIndex;                   // 0xE400C4
-        //const void* currentlyDrawnItem;                // 0xE4F0B4
-        //PaintEntry* endOfPaintStructArray;             // 0xE0C404
-        //PaintEntry* nextFreePaintStruct;               // 0xE0C40C
-        //Map::map_pos spritePosition;                   // 0xE3F090 and 0xE3F096
-        //PaintStruct* lastRootPS;                       // 0xE40120
-        //UI::ViewportInteraction::InteractionItem type; // 0xE3F0AC
-        //PaintStringStruct* paintStringHead;            // 0xE40118
-        //PaintStringStruct* lastPaintString;            // 0xE4011C
-        //Map::map_pos mapPosition;                      // 0xE3F0B0
+        inline static Interop::loco_global<Gfx::drawpixelinfo_t*, 0x00E0C3E0> _dpi;
+        inline static Interop::loco_global<PaintEntry[4000], 0x00E0C410> _paintEntries;
+        inline static Interop::loco_global<PaintStruct* [1024], 0x00E3F0C0> _quadrants;
+        inline static Interop::loco_global<uint32_t, 0x00E400C0> _quadrantBackIndex;
+        inline static Interop::loco_global<uint32_t, 0x00E400C4> _quadrantFrontIndex;
+        inline static Interop::loco_global<const void*, 0x00E4F0B4> _currentlyDrawnItem;
+        inline static Interop::loco_global<PaintEntry*, 0x00E0C404> _endOfPaintStructArray;
+        inline static Interop::loco_global<PaintEntry*, 0x00E0C40C> _nextFreePaintStruct;
+        inline static Interop::loco_global<coord_t, 0x00E3F090> _spritePositionX;
+        inline static Interop::loco_global<coord_t, 0x00E3F096> _spritePositionY;
+        inline static Interop::loco_global<PaintStruct*, 0x00E40120> _lastPS;
+        inline static Interop::loco_global<Ui::ViewportInteraction::InteractionItem, 0x00E3F0AC> _type;
+        inline static Interop::loco_global<PaintStringStruct*, 0x00E40118> _paintStringHead;
+        inline static Interop::loco_global<PaintStringStruct*, 0x00E4011C> _lastPaintString;
+        inline static Interop::loco_global<Map::map_pos, 0x00E3F0B0> _mapPosition;
 
         // From OpenRCT2 equivalent fields not found yet or new
         //uint8_t currentRotation;                     // new field
@@ -154,5 +157,5 @@ namespace OpenLoco::Paint
         //uint32_t trackColours[4];
     };
 
-    PaintSession* allocateSession(Gfx::drawpixelinfo_t& dpi, uint16_t viewportFlags);
+    PaintSession* allocateSession(Gfx::drawpixelinfo_t& dpi, const uint16_t viewportFlags);
 }
