@@ -33,11 +33,15 @@ namespace OpenLoco
 #pragma pack(push, 1)
     struct town
     {
-        string_id name; // 0x00
-        coord_t x;      // 0x02
-        coord_t y;      // 0x04
-        uint16_t flags; // 0x06
-        uint8_t pad_08[0x30 - 0x08];
+        string_id name;          // 0x00
+        coord_t x;               // 0x02
+        coord_t y;               // 0x04
+        uint16_t flags;          // 0x06
+        int16_t label_left[4];   // 0x08
+        int16_t label_right[4];  // 0x10
+        int16_t label_top[4];    // 0x18
+        int16_t label_bottom[4]; // 0x20
+        uint8_t pad_28[0x30 - 0x28];
         uint32_t population; // 0x30
         uint8_t pad_34[0x38 - 0x34];
         uint16_t var_38;
@@ -57,6 +61,7 @@ namespace OpenLoco
         uint8_t pad_1A8[0x270 - 0x1A8];
 
         bool empty() const;
+        town_id_t id() const;
         void update();
         void adjustCompanyRating(company_id_t cid, int amount);
         string_id getTownSizeString() const;

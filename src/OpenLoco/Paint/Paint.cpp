@@ -2,6 +2,7 @@
 #include "../Interop/Interop.hpp"
 #include "../Map/Tile.h"
 #include "../StationManager.h"
+#include "../TownManager.h"
 #include "../Ui.h"
 
 using namespace OpenLoco::Interop;
@@ -111,6 +112,7 @@ namespace OpenLoco::Paint
             interaction.value = station.id();
         }
 
+        // This is for functions that have not been implemented yet
         _sessionInteractionInfoType = interaction.type;
         _sessionInteractionInfoValue = interaction.value;
         return interaction;
@@ -119,10 +121,51 @@ namespace OpenLoco::Paint
     // 0x0049773D
     [[nodiscard]] InteractionArg PaintSession::getTownNameInteractionInfo(const uint32_t flags)
     {
-        _getMapCoordinatesFromPosFlags = flags;
-        registers regs;
-        regs.edi = reinterpret_cast<uint32_t>(*_dpi);
-        call(0x0049773D, regs);
-        return InteractionArg{ _sessionInteractionInfoX, _sessionInteractionInfoY, { _sessionInteractionInfoValue }, _sessionInteractionInfoType, _sessionInteractionInfoBh };
+        InteractionArg interaction{};
+
+        // -2 as there are two interaction items that you can't filter out adjust in future
+        if (flags & (1 << (static_cast<uint32_t>(InteractionItem::town) - 2)))
+        {
+            return interaction;
+        }
+
+        auto zoom = (*_dpi)->zoom_level;
+        auto left = (*_dpi)->x >> zoom;
+        auto top = (*_dpi)->y >> zoom;
+        auto right = ((*_dpi)->width >> zoom) + left;
+        auto bottom = ((*_dpi)->height >> zoom) + top;
+
+        for (auto& town : TownManager::towns())
+        {
+            if (town.empty())
+            {
+                continue;
+            }
+
+            if (top > town.label_bottom[zoom])
+            {
+                continue;
+            }
+            if (bottom < town.label_top[zoom])
+            {
+                continue;
+            }
+            if (left > town.label_right[zoom])
+            {
+                continue;
+            }
+            if (right < town.label_left[zoom])
+            {
+                continue;
+            }
+
+            interaction.type = InteractionItem::town;
+            interaction.value = town.id();
+        }
+
+        // This is for functions that have not been implemented yet
+        _sessionInteractionInfoType = interaction.type;
+        _sessionInteractionInfoValue = interaction.value;
+        return interaction;
     }
 }
