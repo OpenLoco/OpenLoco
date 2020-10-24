@@ -1,11 +1,6 @@
 #pragma once
 #include "../Types.hpp"
 
-namespace OpenLoco::UI::ViewportInteraction
-{
-    enum class InteractionItem : uint8_t;
-}
-
 namespace OpenLoco::Map
 {
     struct tile_element;
@@ -14,6 +9,12 @@ namespace OpenLoco::Map
 namespace OpenLoco
 {
     struct Thing;
+}
+
+namespace OpenLoco::Ui::ViewportInteraction
+{
+    struct InteractionArg;
+    enum class InteractionItem : uint8_t;
 }
 
 namespace OpenLoco::Gfx
@@ -84,7 +85,7 @@ namespace OpenLoco::Paint
         AttachedPaintStruct* attachedPS; // 0x1C
         PaintStruct* children;
         PaintStruct* nextQuadrantPS;                   // 0x24
-        UI::ViewportInteraction::InteractionItem type; // 0x28
+        Ui::ViewportInteraction::InteractionItem type; // 0x28
         uint8_t var_29;
         uint16_t pad_2A;
         coord_t map_x; // 0x2C
@@ -109,9 +110,11 @@ namespace OpenLoco::Paint
     struct PaintSession
     {
     public:
-        Gfx::drawpixelinfo_t* dpi();
-        PaintEntry* allocateEntry();
-        void setQuadrant(PaintEntry& p);
+        void generate();
+        void arrangeStructs();
+        Ui::ViewportInteraction::InteractionArg getNormalInteractionInfo(uint32_t flags);
+        Ui::ViewportInteraction::InteractionArg getStationNameInteractionInfo(uint32_t flags);
+        Ui::ViewportInteraction::InteractionArg getTownNameInteractionInfo(uint32_t flags);
 
     private:
         //Gfx::drawpixelinfo_t* dpi;                     // 0xE0C3E0
