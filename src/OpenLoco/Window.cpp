@@ -528,7 +528,8 @@ namespace OpenLoco::Ui
         Ui::getCursorPos(mouse_x, mouse_y);
 
         // Compute map coordinate by mouse position.
-        [[maybe_unused]] auto [interaction, vp] = ViewportInteraction::getMapCoordinatesFromPos(mouse_x, mouse_y, 0);
+        auto res = ViewportInteraction::getMapCoordinatesFromPos(mouse_x, mouse_y, 0);
+        auto& interaction = res.first;
         *map_x = interaction.x;
         *map_y = interaction.y;
 
