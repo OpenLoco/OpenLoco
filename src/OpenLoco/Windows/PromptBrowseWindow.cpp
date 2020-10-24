@@ -843,22 +843,39 @@ namespace OpenLoco::Ui::PromptBrowse
                 return;
             }
 
-            // Copy directory and filename to buffer. Trailing / on directory is assumed.
-            // TODO: refactor to fs::path
-            char* ptr = &_stringFormatBuffer[0];
-            ptr = strncpy(ptr, _directory, std::size(_stringFormatBuffer));
-            ptr = strncat(ptr, _text_input_buffer, std::size(_stringFormatBuffer));
+            // Create full path to target file.
+            fs::path path = fs::path(&_directory[0]) / std::string(&_text_input_buffer[0]);
 
-            // Append SC5 extension to save game filenames.
+            // Append extension to filename.
             if (_fileType == browse_file_type::saved_game)
-                ptr = strncat(ptr, ".SC5", std::size(_stringFormatBuffer) - strlen(_stringFormatBuffer));
+                path += ".SV5";
+            else
+                path += ".SC5";
 
-            printf("Proposed filename: %s\n", &_stringFormatBuffer[0]);
+            // Does the file already exist?
+            if (fs::exists(path))
+            {
+                // Copy directory and filename to buffer.
+                char* buffer_2039 = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
+                strncpy(&buffer_2039[0], path.c_str(), 512);
 
-            // ...
-            // registers regs;
-            // regs.esi = (int32_t)window;
-            // call(0x00446598, regs);
+                FormatArguments args{};
+                args.push(StringIds::buffer_2039);
+
+                // Formatted string into description buffer for ok/cancel window.
+                loco_global<char[512], 0x0112CE04> descriptionBuffer;
+                StringManager::formatString(&descriptionBuffer[0], StringIds::replace_existing_file_prompt, &args);
+
+                // Ask for confirmation to replace the file.
+                if (!Windows::promptOkCancel(StringIds::replace_existing_file_button))
+                    return;
+            }
+
+            // Copy directory and filename to buffer.
+            strncpy(&_directory[0], path.c_str(), std::size(_directory));
+
+            // Close browse window to continue saving.
+            WindowManager::close(self);
         }
         else
         {
