@@ -80,10 +80,10 @@ namespace OpenLoco
         coord_t x;      // 0x02
         coord_t y;      // 0x04
         coord_t z;      // 0x06
-        uint16_t label_left[4];
-        uint16_t label_right[4];
-        uint16_t label_top[4];
-        uint16_t label_bottom[4];
+        int16_t label_left[4];
+        int16_t label_right[4];
+        int16_t label_top[4];
+        int16_t label_bottom[4];
         company_id_t owner; // 0x28
         uint8_t var_29;
         uint16_t flags;

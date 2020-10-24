@@ -74,9 +74,9 @@ namespace OpenLoco::Paint
 
         auto zoom = (*_dpi)->zoom_level;
         auto left = (*_dpi)->x >> zoom;
-        auto bottom = (*_dpi)->y >> zoom;
+        auto top = (*_dpi)->y >> zoom;
         auto right = ((*_dpi)->width >> zoom) + left;
-        auto top = ((*_dpi)->height >> zoom) + bottom;
+        auto bottom = ((*_dpi)->height >> zoom) + top;
 
         for (auto& station : StationManager::stations())
         {
@@ -90,19 +90,19 @@ namespace OpenLoco::Paint
                 continue;
             }
 
-            if (left > station.label_left[zoom])
+            if (top > station.label_bottom[zoom])
             {
                 continue;
             }
-            if (bottom > station.label_bottom[zoom])
+            if (bottom < station.label_top[zoom])
             {
                 continue;
             }
-            if (right <= station.label_right[zoom])
+            if (left > station.label_right[zoom])
             {
                 continue;
             }
-            if (top <= station.label_top[zoom])
+            if (right < station.label_left[zoom])
             {
                 continue;
             }
@@ -111,6 +111,8 @@ namespace OpenLoco::Paint
             interaction.value = station.id();
         }
 
+        _sessionInteractionInfoType = interaction.type;
+        _sessionInteractionInfoValue = interaction.value;
         return interaction;
     }
 
