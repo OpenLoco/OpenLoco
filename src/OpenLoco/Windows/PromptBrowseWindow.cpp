@@ -130,6 +130,7 @@ namespace OpenLoco::Ui::PromptBrowse
     static void upOneLevel();
     static void appendDirectory(const char* to_append);
     static void processFileForLoadSave(window* window);
+    static void processFileForDelete(window* self, file_entry& entry);
     static void refreshDirectoryList();
     static void sub_446E87(window* self);
     static bool filenameContainsInvalidChars();
@@ -308,10 +309,7 @@ namespace OpenLoco::Ui::PromptBrowse
         // Clicking a file, with right mouse button
         else
         {
-            registers regs;
-            regs.ax = index;
-            regs.esi = (int32_t)self;
-            call(0x004466CA, regs);
+            processFileForDelete(self, entry);
         }
     }
 
@@ -887,6 +885,41 @@ namespace OpenLoco::Ui::PromptBrowse
             // Close browse window to start loading.
             WindowManager::close(self);
         }
+    }
+
+    // 0x004466CA
+    static void processFileForDelete(window* self, file_entry& entry)
+    {
+        // Create full path to target file.
+        fs::path path = fs::path(&_directory[0]) / std::string(entry.get_name());
+
+        // Append extension to filename.
+        if (_fileType == browse_file_type::saved_game)
+            path += ".SV5";
+        else
+            path += ".SC5";
+
+        // Copy directory and filename to buffer.
+        char* buffer_2039 = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
+        strncpy(&buffer_2039[0], path.c_str(), 512);
+
+        FormatArguments args{};
+        args.push(StringIds::buffer_2039);
+
+        // Formatted string into description buffer for ok/cancel window.
+        loco_global<char[512], 0x0112CE04> descriptionBuffer;
+        StringManager::formatString(&descriptionBuffer[0], StringIds::delete_file_prompt, &args);
+
+        // Ask for confirmation to delete the file.
+        if (!Windows::promptOkCancel(StringIds::delete_file_button))
+            return;
+
+        // Actually remove the file..!
+        fs::remove(path);
+
+        // Refresh window
+        refreshDirectoryList();
+        self->invalidate();
     }
 
     // 0x00446E87
