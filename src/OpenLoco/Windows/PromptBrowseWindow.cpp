@@ -855,7 +855,7 @@ namespace OpenLoco::Ui::PromptBrowse
             {
                 // Copy directory and filename to buffer.
                 char* buffer_2039 = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
-                strncpy(&buffer_2039[0], path.c_str(), 512);
+                strncpy(&buffer_2039[0], path.u8string().c_str(), 512);
 
                 FormatArguments args{};
                 args.push(StringIds::buffer_2039);
@@ -870,7 +870,7 @@ namespace OpenLoco::Ui::PromptBrowse
             }
 
             // Copy directory and filename to buffer.
-            strncpy(&_directory[0], path.c_str(), std::size(_directory));
+            strncpy(&_directory[0], path.u8string().c_str(), std::size(_directory));
 
             // Close browse window to continue saving.
             WindowManager::close(self);
@@ -901,7 +901,7 @@ namespace OpenLoco::Ui::PromptBrowse
 
         // Copy directory and filename to buffer.
         char* buffer_2039 = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
-        strncpy(&buffer_2039[0], path.c_str(), 512);
+        strncpy(&buffer_2039[0], path.u8string().c_str(), 512);
 
         FormatArguments args{};
         args.push(StringIds::buffer_2039);
