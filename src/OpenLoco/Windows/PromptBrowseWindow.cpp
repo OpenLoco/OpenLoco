@@ -854,10 +854,13 @@ namespace OpenLoco::Ui::PromptBrowse
             {
                 // Copy directory and filename to buffer.
                 char* buffer_2039 = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
-                strncpy(&buffer_2039[0], path.u8string().c_str(), 512);
+                strncpy(&buffer_2039[0], &_text_input_buffer[0], 512);
 
                 FormatArguments args{};
                 args.push(StringIds::buffer_2039);
+
+                // Copy window title into title buffer for ok/cancel window.
+                strncpy(&_stringFormatBuffer[0], _title, 256);
 
                 // Formatted string into description buffer for ok/cancel window.
                 loco_global<char[512], 0x0112CE04> descriptionBuffer;
@@ -900,10 +903,13 @@ namespace OpenLoco::Ui::PromptBrowse
 
         // Copy directory and filename to buffer.
         char* buffer_2039 = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
-        strncpy(&buffer_2039[0], path.u8string().c_str(), 512);
+        strncpy(&buffer_2039[0], entry.get_name().data(), 512);
 
         FormatArguments args{};
         args.push(StringIds::buffer_2039);
+
+        // Copy window title into title buffer for ok/cancel window.
+        strncpy(&_stringFormatBuffer[0], _title, 256);
 
         // Formatted string into description buffer for ok/cancel window.
         loco_global<char[512], 0x0112CE04> descriptionBuffer;
