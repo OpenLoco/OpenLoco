@@ -854,7 +854,7 @@ namespace OpenLoco::Ui::PromptBrowse
             {
                 // Copy directory and filename to buffer.
                 char* buffer_2039 = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
-                strncpy(&buffer_2039[0], path.u8string().c_str(), 512);
+                strncpy(&buffer_2039[0], &_text_input_buffer[0], 512);
 
                 FormatArguments args{};
                 args.push(StringIds::buffer_2039);
@@ -900,7 +900,7 @@ namespace OpenLoco::Ui::PromptBrowse
 
         // Copy directory and filename to buffer.
         char* buffer_2039 = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
-        strncpy(&buffer_2039[0], path.u8string().c_str(), 512);
+        strncpy(&buffer_2039[0], entry.get_name().data(), 512);
 
         FormatArguments args{};
         args.push(StringIds::buffer_2039);
