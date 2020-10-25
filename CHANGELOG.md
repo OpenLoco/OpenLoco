@@ -1,4 +1,4 @@
-20.07+ (in development)
+20.10 (2020-10-25)
 ------------------------------------------------------------------------
 - Feature: [#569] Option/cheat to disable AI companies entirely.
 - Fix: [#573] Crash caused by opening Road construction window.
