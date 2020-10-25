@@ -859,6 +859,9 @@ namespace OpenLoco::Ui::PromptBrowse
                 FormatArguments args{};
                 args.push(StringIds::buffer_2039);
 
+                // Copy window title into title buffer for ok/cancel window.
+                strncpy(&_stringFormatBuffer[0], _title, 256);
+
                 // Formatted string into description buffer for ok/cancel window.
                 loco_global<char[512], 0x0112CE04> descriptionBuffer;
                 StringManager::formatString(&descriptionBuffer[0], StringIds::replace_existing_file_prompt, &args);
@@ -904,6 +907,9 @@ namespace OpenLoco::Ui::PromptBrowse
 
         FormatArguments args{};
         args.push(StringIds::buffer_2039);
+
+        // Copy window title into title buffer for ok/cancel window.
+        strncpy(&_stringFormatBuffer[0], _title, 256);
 
         // Formatted string into description buffer for ok/cancel window.
         loco_global<char[512], 0x0112CE04> descriptionBuffer;
