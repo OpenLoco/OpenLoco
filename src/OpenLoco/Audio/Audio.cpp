@@ -288,6 +288,21 @@ namespace OpenLoco::Audio
     // 0x00404E53
     void initialiseDSound()
     {
+        if (_devices.empty())
+        {
+            // If devices is empty we need to load the default audio device to initliase the audio system
+            // this will then allow populating the devices
+            auto& format = _outputFormat;
+            format.frequency = MIX_DEFAULT_FREQUENCY;
+            format.format = MIX_DEFAULT_FORMAT;
+            format.channels = MIX_DEFAULT_CHANNELS;
+            if (Mix_OpenAudioDevice(format.frequency, format.format, format.channels, 1024, nullptr, 0) != 0)
+            {
+                Console::error("Mix_OpenAudio failed: %s", Mix_GetError());
+                return;
+            }
+            Mix_CloseAudio();
+        }
         const char* deviceName = nullptr;
         const auto& cfg = Config::getNew();
         if (!cfg.audio.device.empty())
@@ -349,7 +364,11 @@ namespace OpenLoco::Audio
     {
         _devices.clear();
 #ifdef __HAS_DEFAULT_DEVICE__
-        _devices.push_back(getDefaultDeviceName());
+        auto defaultDevice = getDefaultDeviceName();
+        if (defaultDevice != nullptr)
+        {
+            _devices.push_back(getDefaultDeviceName());
+        }
 #endif
         auto count = SDL_GetNumAudioDevices(0);
         for (auto i = 0; i < count; i++)
