@@ -72,6 +72,8 @@ namespace OpenLoco
 
     constexpr uint16_t station_mask_all_modes = station_flags::transport_mode_rail | station_flags::transport_mode_road | station_flags::transport_mode_air | station_flags::transport_mode_water;
 
+    string_id getTransportIconsFromStationFlags(const uint16_t flags);
+
     struct CargoSearchState;
 
     struct station
@@ -97,7 +99,7 @@ namespace OpenLoco
         void update();
         uint32_t calcAcceptedCargo(CargoSearchState& cargoSearchState, const map_pos& location = { -1, -1 }, const uint32_t filter = 0);
         void sub_48F7D1();
-        void getStatusString(const char* buffer);
+        char* getStatusString(char* buffer);
         bool updateCargo();
         int32_t calculateCargoRating(const station_cargo_stats& cargo) const;
         void invalidate();

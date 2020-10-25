@@ -498,35 +498,16 @@ namespace OpenLoco::Ui::Windows::StationList
             auto station = StationManager::get(stationId);
 
             // First, draw the town name.
-            static const string_id label_icons[] = {
-                StringIds::label_icons_none,
-                StringIds::label_icons_rail,
-                StringIds::label_icons_road,
-                StringIds::label_icons_rail_road,
-                StringIds::label_icons_air,
-                StringIds::label_icons_rail_air,
-                StringIds::label_icons_road_air,
-                StringIds::label_icons_rail_road_air,
-                StringIds::label_icons_water,
-                StringIds::label_icons_rail_water,
-                StringIds::label_icons_road_water,
-                StringIds::label_icons_rail_road_water,
-                StringIds::label_icons_air_water,
-                StringIds::label_icons_rail_air_water,
-                StringIds::label_icons_road_air_water,
-                StringIds::label_icons_rail_road_air_water,
-            };
-
             _common_format_args[0] = StringIds::stringid_stringid;
             _common_format_args[1] = station->name;
             _common_format_args[2] = station->town;
-            _common_format_args[3] = label_icons[station->flags & 0x0F];
+            _common_format_args[3] = getTransportIconsFromStationFlags(station->flags);
 
             Gfx::drawString_494BBF(*dpi, 0, yPos, 198, Colour::black, text_colour_id, &*_common_format_args);
 
             // Then the station's current status.
-            const char* buffer = StringManager::getString(StringIds::buffer_1250);
-            station->getStatusString((char*)buffer);
+            char* buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
+            station->getStatusString(buffer);
 
             _common_format_args[0] = StringIds::buffer_1250;
             Gfx::drawString_494BBF(*dpi, 200, yPos, 198, Colour::black, text_colour_id, &*_common_format_args);
@@ -541,7 +522,7 @@ namespace OpenLoco::Ui::Windows::StationList
             Gfx::drawString_494BBF(*dpi, 400, yPos, 88, Colour::black, text_colour_id, &*_common_format_args);
 
             // And, finally, what goods the station accepts.
-            char* ptr = (char*)buffer;
+            char* ptr = buffer;
             *ptr = '\0';
 
             for (uint32_t cargoId = 0; cargoId < max_cargo_stats; cargoId++)

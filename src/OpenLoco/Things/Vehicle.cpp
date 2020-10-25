@@ -1716,6 +1716,22 @@ bool vehicle_head::isVehicleTypeCompatible(const uint16_t vehicleTypeId) // TODO
     return true;
 }
 
+// 0x004B671C
+VehicleStatus vehicle_head::getStatus() const
+{
+    registers regs = {};
+    regs.esi = reinterpret_cast<int32_t>(this);
+
+    call(0x004B671C, regs);
+
+    VehicleStatus status = {};
+    status.status1 = regs.bx;
+    status.status1Args = regs.eax;
+    status.status2 = regs.cx;
+    status.status2Args = regs.edx;
+    return status;
+}
+
 namespace OpenLoco::Things::Vehicle
 {
     CarComponent::CarComponent(OpenLoco::vehicle_base*& component)

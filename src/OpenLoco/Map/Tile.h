@@ -143,6 +143,9 @@ namespace OpenLoco::Map
         coord_t waterHeight;
     };
 
+    // 0x004F9296, 0x4F9298
+    constexpr map_pos offsets[4] = { { 0, 0 }, { 0, 32 }, { 32, 32 }, { 32, 0 } };
+
     tileHeight tileElementHeight(int16_t x, int16_t y);
     Ui::viewport_pos coordinate3dTo2d(int16_t x, int16_t y, int16_t z, int rotation);
     map_pos rotate2dCoordinate(map_pos pos, uint8_t rotation);
@@ -376,7 +379,8 @@ namespace OpenLoco::Map
         uint8_t _7;
 
     public:
-        OpenLoco::industry* industry();
+        OpenLoco::industry_id_t industryId() const { return _industryId; }
+        OpenLoco::industry* industry() const;
     };
 #pragma pack(pop)
 

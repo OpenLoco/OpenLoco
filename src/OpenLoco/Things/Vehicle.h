@@ -76,6 +76,14 @@ namespace OpenLoco
         tail,
     };
 
+    struct VehicleStatus
+    {
+        string_id status1;
+        uint32_t status1Args;
+        string_id status2;
+        uint32_t status2Args;
+    };
+
 #pragma pack(push, 1)
     struct vehicle_base : thing_base
     {
@@ -262,6 +270,7 @@ namespace OpenLoco
         void sub_4BA8D4();
         void updateVehicle();
         uint16_t update();
+        VehicleStatus getStatus() const;
 
     private:
         void sub_4BAA76();

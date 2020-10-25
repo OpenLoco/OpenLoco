@@ -250,6 +250,14 @@ namespace OpenLoco::Ui::ToolTip
     void closeAndReset();
 }
 
+namespace OpenLoco::Ui::Windows::MapToolTip
+{
+    void open();
+    void setOwner(company_id_t company);
+    void reset();
+    FormatArguments getArguments();
+}
+
 namespace OpenLoco::Ui::Windows::Town
 {
     window* open(uint16_t townId);

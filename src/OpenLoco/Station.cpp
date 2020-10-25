@@ -392,12 +392,9 @@ namespace OpenLoco
                                 // Multi tile buildings should only be counted once so remove the other tiles from the search
                                 if (obj->flags & BuildingObjectFlags::large_tile)
                                 {
-                                    // 0x004F9296, 0x4F9298
-                                    static const map_pos offsets[4] = { { 0, 0 }, { 0, 32 }, { 32, 32 }, { 32, 0 } };
-
                                     auto index = buildingEl->multiTileIndex();
-                                    tile_coord_t xPos = (pos.x - offsets[index].x) / tile_size;
-                                    tile_coord_t yPos = (pos.y - offsets[index].y) / tile_size;
+                                    tile_coord_t xPos = (pos.x - Map::offsets[index].x) / tile_size;
+                                    tile_coord_t yPos = (pos.y - Map::offsets[index].y) / tile_size;
 
                                     cargoSearchState.mapRemove2(xPos + 0, yPos + 0);
                                     cargoSearchState.mapRemove2(xPos + 0, yPos + 1);
@@ -533,9 +530,9 @@ namespace OpenLoco
     }
 
     // 0x00492A98
-    void station::getStatusString(const char* buffer)
+    char* station::getStatusString(char* buffer)
     {
-        char* ptr = (char*)buffer;
+        char* ptr = buffer;
         *ptr = '\0';
 
         for (uint32_t cargoId = 0; cargoId < max_cargo_stats; cargoId++)
@@ -557,7 +554,7 @@ namespace OpenLoco
         }
 
         string_id suffix = *buffer == '\0' ? StringIds::nothing_waiting : StringIds::waiting;
-        ptr = StringManager::formatString(ptr, suffix);
+        return StringManager::formatString(ptr, suffix);
     }
 
     // 0x00492793
@@ -778,5 +775,28 @@ namespace OpenLoco
         CargoSearchState cargoSearchState;
 
         setStationCatchmentRegion(cargoSearchState, minPos, maxPos, flag);
+    }
+
+    string_id getTransportIconsFromStationFlags(const uint16_t flags)
+    {
+        constexpr string_id label_icons[] = {
+            StringIds::label_icons_none,
+            StringIds::label_icons_rail,
+            StringIds::label_icons_road,
+            StringIds::label_icons_rail_road,
+            StringIds::label_icons_air,
+            StringIds::label_icons_rail_air,
+            StringIds::label_icons_road_air,
+            StringIds::label_icons_rail_road_air,
+            StringIds::label_icons_water,
+            StringIds::label_icons_rail_water,
+            StringIds::label_icons_road_water,
+            StringIds::label_icons_rail_road_water,
+            StringIds::label_icons_air_water,
+            StringIds::label_icons_rail_air_water,
+            StringIds::label_icons_road_air_water,
+            StringIds::label_icons_rail_road_air_water,
+        };
+        return label_icons[flags & station_mask_all_modes];
     }
 }

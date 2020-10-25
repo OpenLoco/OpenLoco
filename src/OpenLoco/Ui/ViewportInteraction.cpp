@@ -1,7 +1,9 @@
+#include "../CompanyManager.h"
 #include "../Config.h"
 #include "../IndustryManager.h"
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
+#include "../Localisation/FormatArguments.hpp"
 #include "../Localisation/StringManager.h"
 #include "../Objects/CargoObject.h"
 #include "../Objects/ObjectManager.h"
@@ -28,213 +30,259 @@ namespace OpenLoco::Ui::ViewportInteraction
     {
     }
 
-    static bool _station(Map::station_element* station);
+    static bool _station(InteractionArg& interaction);
     static bool _station(station_id_t id);
 
-    static bool _track(Map::track_element* track)
+    // 0x004CD95A
+    static bool _track(InteractionArg& interaction)
     {
+        Map::track_element* track = reinterpret_cast<Map::track_element*>(interaction.object);
         if (!track->hasStationElement())
             return false;
 
-        auto next = (Map::station_element*)track++;
-        if (next->isFlag5())
+        auto station = reinterpret_cast<Map::station_element*>(track++);
+        if (station->isFlag5())
             return false;
 
-        return _station(next);
+        interaction.type = InteractionItem::station;
+        interaction.object = station;
+        return _station(interaction);
     }
 
     // 0x004CD974
-    static bool _road(Map::road_element* road)
+    static bool _road(InteractionArg& interaction)
     {
+        Map::road_element* road = reinterpret_cast<Map::road_element*>(interaction.object);
         if (!road->hasStationElement())
             return false;
 
-        Map::station_element* station;
-        for (auto tile = (Map::tile_element*)road++; !tile->isLast(); tile++)
+        Map::station_element* station = nullptr;
+        Map::tile tile{ interaction.x, interaction.y, reinterpret_cast<Map::tile_element*>(road) };
+        for (auto t : tile)
         {
-            if (tile->type() == Map::element_type::station)
+            station = t.asStation();
+            if (station != nullptr)
             {
-                station = tile->asStation();
                 break;
             }
         }
 
+        if (station == nullptr)
+        {
+            return false;
+        }
+
+        interaction.object = station;
+        interaction.type = InteractionItem::dock;
         if (station->isFlag5())
             return false;
 
-        return _station(station);
+        interaction.type = InteractionItem::station;
+        return _station(interaction);
     }
 
     // 0x004CD99A
-    static bool _station(Map::station_element* station)
+    static bool _station(InteractionArg& interaction)
     {
+        Map::station_element* station = reinterpret_cast<Map::station_element*>(interaction.value);
         if (station->isFlag4())
             return false;
 
+        interaction.value = station->stationId();
         return _station(station->stationId());
     }
 
-    static loco_global<uint16_t, 0x00F24484> _mapSelectionFlags;
     static loco_global<uint16_t, 0x00F252A4> _hoveredStationId;
-    static loco_global<company_id_t, 0x0050A040> _mapTooltipOwner;
 
     // 0x004CD9B0
-    static bool _station(station_id_t id)
+    static bool _station(const station_id_t id)
     {
         _hoveredStationId = id;
 
         auto station = StationManager::get(id);
 
-        *_mapSelectionFlags |= (1 << 6);
+        Input::setMapSelectionFlags(Input::MapSelectionFlags::unk_6);
         ViewportManager::invalidate(station);
+        Windows::MapToolTip::setOwner(station->owner);
+        auto args = Windows::MapToolTip::getArguments();
+        args.push(StringIds::stringid_stringid_wcolour3_stringid);
+        args.push(station->name);
+        args.push(station->town);
+        args.push(getTransportIconsFromStationFlags(station->flags));
+        char* buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_338));
+        buffer = station->getStatusString(buffer);
 
-        _mapTooltipOwner = station->owner;
-
-        args + 2 = station->name;
-        args + 4 = station->town;
-        args + 6 = label_icons[station->flags & 0x0F];
-        args + 10 = town->population; // 32-bit
-
-        station->getStatusString(); // save to buffer 338
-
-        string_id prefix = 1444; // "{NEWLINE}Accepts "
-        for (int i = 0; i < max_cargo_stats; i++)
+        buffer = StringManager::formatString(buffer, StringIds::station_accepts);
+        bool seperator = false; // First cargo item does not need a seperator
+        for (uint32_t cargoId = 0; cargoId < max_cargo_stats; cargoId++)
         {
-            auto& cargo = station->cargo_stats[i];
-            if (cargo.isAccepted())
-            {
-                out += StringManager::formatString(prefix);
-                out += StringManager::formatString(ObjectManager::get<cargo_object>(i)->name);
+            auto& stats = station->cargo_stats[cargoId];
 
-                prefix = StringIds::unit_separator;
+            if (!stats.isAccepted())
+            {
+                continue;
             }
+
+            if (seperator)
+            {
+                buffer = StringManager::formatString(buffer, StringIds::unit_separator);
+            }
+            buffer = StringManager::formatString(buffer, ObjectManager::get<cargo_object>(cargoId)->name);
+            seperator = true;
         }
 
-        args + 8 = StringIds::buffer_338;
-        args + 0 = 1239; //'{STRINGID} {STRINGID}{NEWLINE}{COLOUR WINDOW_3}{STRINGID}'
+        args.push(StringIds::buffer_338);
 
         return true;
     }
 
-    static bool _town(town_id_t id)
+    // 0x004CD7FB
+    static bool _town(const town_id_t id)
     {
         auto town = TownManager::get(id);
 
-        args + 2 = town->name;
-        args + 6 = 1304;              // "{STRINGID} population {INT32}"
-        args + 8 = 617 + town->size;  // 'hamlet' etc;
-        args + 10 = town->population; // 32-bit
-        args + 0 = 627;               // "{STRINGID}{NEWLINE}{COLOUR WINDOW_3}{STRINGID}"
+        auto args = Windows::MapToolTip::getArguments();
+        args.push(StringIds::wcolour3_stringid_2);
+        args.push(town->name); // args + 4 empty
+        args.skip(2);
+        args.push(StringIds::town_size_and_population);
+        args.push(town->getTownSizeString());
+        args.push(town->population);
 
         return true;
     }
 
-    // 0x0045935F
-
-    /**
-     *
-     * @param id @<dx>
-     */
-    static std::string sub_0045935F(industry_id_t id)
+    // 0x004CD8D5
+    static bool _industry(InteractionArg& interaction)
     {
-        auto industry = IndustryManager::get(id);
-
-        if (industry->flags & IndustryFlags::closing_down)
-        {
-            return 1419; // Closing down
-        }
-
-        if (industry->under_construction != 0xFF)
-        {
-            return 1366; // Under construction
-        }
-
-        auto object = industry->object();
-
-        string_id produces = 1367; // "Producing "
-        std::string out;
-
-        if (object->required_cargo_type[0] != -1 || object->required_cargo_type[1] != -1 || object->required_cargo_type[2] != -1)
-        {
-            out += StringManager::formatString(1371); // "Requires "
-
-            string_id voegwoord = 1374; // " or "
-            if (object->flags & 0x20000)
-            {
-                voegwoord = 1373; // " and "
-            }
-
-            bool dl = false;
-            for (int i = 0; i < 3; i++)
-            {
-                if (object->required_cargo_type[i] != -1)
-                {
-                    if (dl)
-                    {
-                        out += StringManager::formatString(1373); // " and "
-                    }
-                    out += StringManager::formatString(ObjectManager::get<cargo_object>(object->required_cargo_type[i])->name); // "Producing "
-                    dl = true;
-                }
-            }
-
-            produces = 1370; // " to produce "
-        }
-
-        if (object->produced_cargo_type[0] != -1 || object->produced_cargo_type[1] != -1)
-        {
-            out += StringManager::formatString(produces);
-
-            bool dl = false;
-            for (int i = 0; i < 2; i++)
-            {
-                if (object->produced_cargo_type[i] != -1)
-                {
-                    if (dl)
-                    {
-                        out += StringManager::formatString(1373); // " and "
-                    }
-                    out += StringManager::formatString(ObjectManager::get<cargo_object>(object->produced_cargo_type[i])->name); // "Producing "
-                    dl = true;
-                }
-            }
-        }
-    }
-
-    static bool _industry(Map::tree_element* tile)
-    {
-        if (tile->isFlag4())
+        auto industryTile = reinterpret_cast<Map::industry_element*>(interaction.value);
+        if (industryTile->isFlag4())
             return false;
 
-        auto industry = tile->industry();
+        interaction.value = industryTile->industryId();
+        auto industry = industryTile->industry();
 
-        args + 2 = industry->name;
-        args + 4 = industry->town; // likely town id
-        args + 6 = StringIds::buffer_338;
-        args + 0 = 627; // "{STRINGID}{NEWLINE}{COLOUR WINDOW_3}{STRINGID}"
-    }
-
-    void _vehicle(OpenLoco::vehicle* vehicle)
-    {
-        ThingManager::get<vehicle>(vehicle->head);
-
-        if (vehicle->tile_x == -1)
+        char* buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_338));
+        *buffer = 0;
+        industry->getStatusString(buffer);
+        auto args = Windows::MapToolTip::getArguments();
+        if (std::strlen(buffer) != 0)
         {
-            bx = 473;
-            cx = StringIds::null;
-        }
-        else if (false)
-        {
-            bx = 464;
-            cx = StringIds::null;
+            args.push(StringIds::wcolour3_stringid_2);
+            args.push(industry->name);
+            args.push(industry->town);
+            args.push(StringIds::buffer_338);
         }
         else
         {
+            args.push(industry->name);
+            args.push(industry->town);
         }
+        return true;
     }
 
-    void _headquarter(Map::tile_element* tile)
+    // 0x004CDA7C
+    static bool _vehicle(const InteractionArg& interaction)
     {
+        Thing* thing = reinterpret_cast<Thing*>(interaction.object);
+        auto vehicle = reinterpret_cast<OpenLoco::vehicle*>(thing->asVehicle());
+        if (vehicle == nullptr)
+        {
+            return false;
+        }
+        auto head = ThingManager::get<vehicle_head>(vehicle->head);
+
+        auto company = CompanyManager::get(head->owner);
+        Windows::MapToolTip::setOwner(head->owner);
+        auto status = head->getStatus();
+        auto args = Windows::MapToolTip::getArguments();
+        if (status.status2 == StringIds::null)
+        {
+            args.push(StringIds::wcolour3_stringid);
+        }
+        else
+        {
+            args.push(StringIds::wcolour3_stringid_stringid);
+        }
+        args.push(CompanyManager::getControllingId() == head->owner ? StringIds::company_vehicle : StringIds::competitor_vehicle);
+        args.push(company->name); // args + 6 is empty
+        args.skip(2);
+        args.push(head->var_22);
+        args.push(head->var_44);
+        args.push(status.status1);
+        args.push(status.status1Args); //32bit
+        args.push(status.status2);
+        args.push(status.status2Args); //32bit
+        return true;
+    }
+
+    // 0x004CD84A
+    bool _headquarter(const InteractionArg& interaction)
+    {
+        auto buildingTile = reinterpret_cast<Map::building_element*>(interaction.value);
+        if (buildingTile->isFlag4())
+        {
+            return false;
+        }
+
+        const auto index = buildingTile->multiTileIndex();
+        const Map::map_pos3 pos = { interaction.x - Map::offsets[index].x,
+                                    interaction.y - Map::offsets[index].y,
+                                    buildingTile->baseZ() };
+
+        for (auto& company : CompanyManager::companies())
+        {
+            if (company.empty())
+            {
+                continue;
+            }
+
+            if (company.headquarters_x != pos.x || company.headquarters_y != pos.y || company.headquarters_z != pos.z)
+            {
+                continue;
+            }
+
+            Windows::MapToolTip::setOwner(company.id());
+            auto args = Windows::MapToolTip::getArguments();
+            args.push(StringIds::wcolour3_stringid_2);
+            args.push(company.name);
+            args.push(StringIds::headquarters);
+            return true;
+        }
+        return false;
+    }
+
+    std::optional<uint32_t> vehicleDistanceFromLocation(const vehicle_base& component, const viewport_pos& targetPosition)
+    {
+        ViewportRect rect = {
+            component.sprite_left,
+            component.sprite_top,
+            component.sprite_bottom,
+            component.sprite_right
+        };
+        if (rect.contains(targetPosition))
+        {
+            uint32_t xDiff = std::abs(targetPosition.x - (component.sprite_right + component.sprite_left) / 2);
+            uint32_t yDiff = std::abs(targetPosition.y - (component.sprite_top + component.sprite_bottom) / 2);
+            return xDiff + yDiff;
+        }
+        return {};
+    }
+
+    void checkAndSetNearestVehicle(uint32_t& nearestDistance, vehicle_base*& nearestVehicle, vehicle_base& checkVehicle, const viewport_pos& targetPosition)
+    {
+        if (checkVehicle.sprite_left != 0x8000)
+        {
+            auto distanceRes = vehicleDistanceFromLocation(checkVehicle, targetPosition);
+            if (distanceRes)
+            {
+                if (*distanceRes < nearestDistance)
+                {
+                    nearestDistance = *distanceRes;
+                    nearestVehicle = &checkVehicle;
+                }
+            }
+        }
     }
 
     // 0x004CD658
@@ -255,43 +303,42 @@ namespace OpenLoco::Ui::ViewportInteraction
             interaction = res.first;
         }
 
+        bool success = false;
         switch (interaction.type)
         {
             case InteractionItem::track: // 4
-                return _track(interaction.value);
+                success = _track(interaction);
+                break;
 
             case InteractionItem::road: // 16
-                return _road(interaction.value);
-
+                success = _road(interaction);
+                break;
             case InteractionItem::town: // 14
-                return _town((town_id_t)interaction.value);
-
+                success = _town(static_cast<town_id_t>(interaction.value));
+                break;
             case InteractionItem::station: // 15
-                return _station((station_id_t)interaction.value);
-
+                success = _station(static_cast<station_id_t>(interaction.value));
+                break;
             case InteractionItem::trackStation: // 7
             case InteractionItem::roadStation:  // 8
             case InteractionItem::airport:      // 9
             case InteractionItem::dock:         // 10
-                return _station((Map::station_element*)interaction.value);
-
+                success = _station(interaction);
+                break;
             case InteractionItem::industry: // 20
-                return _industry(interaction.value);
-
+                success = _industry(interaction);
+                break;
             case InteractionItem::headquarterBuilding: // 21
-                return _headquarter(interaction.value);
-
+                success = _headquarter(interaction);
+                break;
             case InteractionItem::thing: // 3
-            {
-                auto t = (Thing*)interaction.value;
-                auto vehicle = t->asVehicle();
-                if (vehicle == nullptr)
-                    break;
-
-                return _vehicle(vehicle);
-            }
+                success = _vehicle(interaction);
+                break;
         }
-
+        if (success == true)
+        {
+            return interaction;
+        }
         auto window = WindowManager::findAt(tempX, tempY);
         if (window == nullptr)
             return InteractionArg{};
@@ -303,34 +350,34 @@ namespace OpenLoco::Ui::ViewportInteraction
         if (viewport->zoom > Config::get().vehicles_min_scale)
             return InteractionArg{};
 
-        uint16_t bp = std::numeric_limits<uint16_t>().max();
-
-        vehicle_base* esi;
+        uint32_t nearestDistance = std::numeric_limits<uint32_t>().max();
+        vehicle_base* nearestVehicle = nullptr;
+        auto targetPosition = viewport->uiToMap({ tempX, tempY });
 
         for (auto v : ThingManager::VehicleList())
         {
             auto train = Things::Vehicle::Vehicle(v);
+            checkAndSetNearestVehicle(nearestDistance, nearestVehicle, *train.veh2, targetPosition);
             for (auto car : train.cars)
             {
                 for (auto carComponent : car)
                 {
-                    // Loop through all components including veh2
-                    if (carComponent.front->sprite_left == 0x8000)
-                        continue;
-
-                    // determine distance from click; save to bp
+                    checkAndSetNearestVehicle(nearestDistance, nearestVehicle, *carComponent.front, targetPosition);
+                    checkAndSetNearestVehicle(nearestDistance, nearestVehicle, *carComponent.back, targetPosition);
+                    checkAndSetNearestVehicle(nearestDistance, nearestVehicle, *carComponent.body, targetPosition);
                 }
             }
         }
 
-        if (bp <= 32)
+        if (nearestDistance <= 32)
         {
             interaction.type = InteractionItem::thing;
-            interaction.object = esi;
-            interaction.x = esi->x;
-            interaction.y = esi->y;
+            interaction.object = reinterpret_cast<void*>(nearestVehicle);
+            interaction.x = nearestVehicle->x;
+            interaction.y = nearestVehicle->y;
 
             // 4CDA7C aka _vehicle
+            _vehicle(interaction);
             return interaction;
         }
 
