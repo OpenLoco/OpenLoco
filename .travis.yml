@@ -32,7 +32,7 @@ matrix:
           services:
             - docker
           env:
-            - OPENLOCO_CMAKE_OPTS="-G Ninja -DCMAKE_TOOLCHAIN_FILE=../CMakeLists_mingw.txt -DCMAKE_BUILD_TYPE=release -DOPENLOCO_USE_CCACHE=OFF -DBOOST_ROOT=/usr/i686-w64-mingw32/sys-root/mingw/ -DSDL2_DIR=/usr/i686-w64-mingw32/sys-root/mingw/lib/cmake/SDL2/ -DSDL2_MIXER_PATH=/usr/i686-w64-mingw32/sys-root/mingw/ -Dyaml-cpp_DIR=/usr/i686-w64-mingw32/sys-root/mingw/CMake/ -DPNG_LIBRARY=/usr/i686-w64-mingw32/sys-root/mingw/bin/libpng16-16.dll -DPNG_PNG_INCLUDE_DIR=/usr/i686-w64-mingw32/sys-root/mingw/include"
+            - OPENLOCO_CMAKE_OPTS="-G Ninja -DCMAKE_TOOLCHAIN_FILE=../CMakeLists_mingw.txt -DCMAKE_BUILD_TYPE=release -DOPENLOCO_USE_CCACHE=OFF -DSDL2_DIR=/usr/i686-w64-mingw32/sys-root/mingw/lib/cmake/SDL2/ -DSDL2_MIXER_PATH=/usr/i686-w64-mingw32/sys-root/mingw/ -Dyaml-cpp_DIR=/usr/i686-w64-mingw32/sys-root/mingw/CMake/ -DPNG_LIBRARY=/usr/i686-w64-mingw32/sys-root/mingw/bin/libpng16-16.dll -DPNG_PNG_INCLUDE_DIR=/usr/i686-w64-mingw32/sys-root/mingw/include"
             - DOCKERIMG=fedora-mingw32
         - os: osx
           name: macOS 10.13 Clang (Xcode 9.3)
