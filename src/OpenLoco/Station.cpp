@@ -311,7 +311,7 @@ namespace OpenLoco
 
                     for (auto& el : tile)
                     {
-                        if (el.isFlag4())
+                        if (el.isGhost())
                         {
                             continue;
                         }

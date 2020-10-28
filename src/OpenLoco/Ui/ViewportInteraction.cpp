@@ -85,7 +85,7 @@ namespace OpenLoco::Ui::ViewportInteraction
     static bool _station(InteractionArg& interaction)
     {
         Map::station_element* station = reinterpret_cast<Map::station_element*>(interaction.value);
-        if (station->isFlag4())
+        if (station->isGhost())
             return false;
 
         interaction.value = station->stationId();
@@ -156,7 +156,7 @@ namespace OpenLoco::Ui::ViewportInteraction
     static bool _industry(InteractionArg& interaction)
     {
         auto industryTile = reinterpret_cast<Map::industry_element*>(interaction.value);
-        if (industryTile->isFlag4())
+        if (industryTile->isGhost())
             return false;
 
         interaction.value = industryTile->industryId();
@@ -217,17 +217,17 @@ namespace OpenLoco::Ui::ViewportInteraction
     }
 
     // 0x004CD84A
-    bool _headquarter(const InteractionArg& interaction)
+    static bool _headquarter(const InteractionArg& interaction)
     {
         auto buildingTile = reinterpret_cast<Map::building_element*>(interaction.value);
-        if (buildingTile->isFlag4())
+        if (buildingTile->isGhost())
         {
             return false;
         }
 
         const auto index = buildingTile->multiTileIndex();
-        const Map::map_pos3 pos = { interaction.x - Map::offsets[index].x,
-                                    interaction.y - Map::offsets[index].y,
+        const Map::map_pos3 pos = { static_cast<coord_t>(interaction.x - Map::offsets[index].x),
+                                    static_cast<coord_t>(interaction.y - Map::offsets[index].y),
                                     buildingTile->baseZ() };
 
         for (auto& company : CompanyManager::companies())
@@ -253,7 +253,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         return false;
     }
 
-    std::optional<uint32_t> vehicleDistanceFromLocation(const vehicle_base& component, const viewport_pos& targetPosition)
+    static std::optional<uint32_t> vehicleDistanceFromLocation(const vehicle_base& component, const viewport_pos& targetPosition)
     {
         ViewportRect rect = {
             component.sprite_left,
@@ -270,9 +270,9 @@ namespace OpenLoco::Ui::ViewportInteraction
         return {};
     }
 
-    void checkAndSetNearestVehicle(uint32_t& nearestDistance, vehicle_base*& nearestVehicle, vehicle_base& checkVehicle, const viewport_pos& targetPosition)
+    static void checkAndSetNearestVehicle(uint32_t& nearestDistance, vehicle_base*& nearestVehicle, vehicle_base& checkVehicle, const viewport_pos& targetPosition)
     {
-        if (checkVehicle.sprite_left != 0x8000)
+        if (checkVehicle.sprite_left != Location::null)
         {
             auto distanceRes = vehicleDistanceFromLocation(checkVehicle, targetPosition);
             if (distanceRes)
@@ -335,6 +335,8 @@ namespace OpenLoco::Ui::ViewportInteraction
             case InteractionItem::thing: // 3
                 success = _vehicle(interaction);
                 break;
+            default:
+                break;
         }
         if (success == true)
         {
@@ -370,7 +372,7 @@ namespace OpenLoco::Ui::ViewportInteraction
             }
         }
 
-        if (nearestDistance <= 32)
+        if (nearestDistance <= 32 && nearestVehicle != nullptr)
         {
             interaction.type = InteractionItem::thing;
             interaction.object = reinterpret_cast<void*>(nearestVehicle);
