@@ -58,7 +58,7 @@ namespace OpenLoco::Ui::ViewportInteraction
 
         Map::station_element* station = nullptr;
         Map::tile tile{ interaction.x, interaction.y, reinterpret_cast<Map::tile_element*>(road) };
-        for (auto t : tile)
+        for (auto& t : tile)
         {
             station = t.asStation();
             if (station != nullptr)
