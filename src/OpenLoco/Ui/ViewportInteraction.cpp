@@ -246,6 +246,7 @@ namespace OpenLoco::Ui::ViewportInteraction
             auto args = Windows::MapToolTip::getArguments();
             args.push(StringIds::wcolour3_stringid_2);
             args.push(company.name);
+            args.skip(2);
             args.push(StringIds::headquarters);
             return true;
         }
