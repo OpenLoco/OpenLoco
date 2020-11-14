@@ -214,6 +214,31 @@ namespace OpenLoco::Ui::NewsWindow
         }
     }
 
+    // 0x0042AC27
+    void openLastMessage()
+    {
+        if (_activeMessageIndex != 0xFFFF)
+        {
+            auto message = MessageManager::get(_activeMessageIndex);
+            if (message->var_C8 != 0xFFFF)
+            {
+                if (message->var_C8 & (1 << 15))
+                    message->var_C8 = 0xFFFF;
+            }
+        }
+
+        _activeMessageIndex = 0xFFFF;
+        WindowManager::close(WindowType::news, 0);
+
+        if (_messageCount != 0)
+        {
+            auto message = MessageManager::get(_messageCount - 1);
+            message->var_C8 = (1 << 15) | (1 << 0);
+
+            NewsWindow::open(_messageCount - 1);
+        }
+    }
+
     namespace Common
     {
         void initEvents()

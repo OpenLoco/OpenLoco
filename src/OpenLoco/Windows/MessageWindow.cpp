@@ -298,7 +298,6 @@ namespace OpenLoco::Ui::MessageWindow
     // 0x0042A3FF
     void open()
     {
-        //call(0x0042A3FF);
         auto window = WindowManager::bringToFront(WindowType::messages);
 
         if (window != nullptr)

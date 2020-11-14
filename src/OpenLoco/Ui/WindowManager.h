@@ -286,6 +286,7 @@ namespace OpenLoco::Ui::MessageWindow
 namespace OpenLoco::Ui::NewsWindow
 {
     void open(uint16_t messageIndex);
+    void openLastMessage();
 }
 
 namespace OpenLoco::Ui::Windows::CompanyFaceSelection
