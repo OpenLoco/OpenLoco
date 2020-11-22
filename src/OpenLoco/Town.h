@@ -8,6 +8,37 @@
 
 namespace OpenLoco
 {
+#pragma pack(push, 1)
+    struct LabelPosition
+    {
+        int16_t left[ZoomLevels::max];
+        int16_t right[ZoomLevels::max];
+        int16_t top[ZoomLevels::max];
+        int16_t bottom[ZoomLevels::max];
+
+        [[nodiscard]] bool contains(OpenLoco::Ui::Rect& rec, uint8_t zoom) const
+        {
+            if (rec.top() > bottom[zoom])
+            {
+                return false;
+            }
+            if (rec.bottom() < top[zoom])
+            {
+                return false;
+            }
+            if (rec.left() > right[zoom])
+            {
+                return false;
+            }
+            if (rec.right() < left[zoom])
+            {
+                return false;
+            }
+            return true;
+        }
+    };
+#pragma pack(pop)
+
     using town_id_t = uint16_t;
 
     namespace TownId
@@ -33,14 +64,11 @@ namespace OpenLoco
 #pragma pack(push, 1)
     struct town
     {
-        string_id name;          // 0x00
-        coord_t x;               // 0x02
-        coord_t y;               // 0x04
-        uint16_t flags;          // 0x06
-        int16_t label_left[4];   // 0x08
-        int16_t label_right[4];  // 0x10
-        int16_t label_top[4];    // 0x18
-        int16_t label_bottom[4]; // 0x20
+        string_id name;              // 0x00
+        coord_t x;                   // 0x02
+        coord_t y;                   // 0x04
+        uint16_t flags;              // 0x06
+        LabelPosition labelPosition; // 0x08
         uint8_t pad_28[0x30 - 0x28];
         uint32_t population; // 0x30
         uint8_t pad_34[0x38 - 0x34];

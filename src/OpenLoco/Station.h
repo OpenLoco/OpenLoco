@@ -76,15 +76,12 @@ namespace OpenLoco
 
     struct station
     {
-        string_id name;          // 0x00
-        coord_t x;               // 0x02
-        coord_t y;               // 0x04
-        coord_t z;               // 0x06
-        int16_t label_left[4];   // 0x08
-        int16_t label_right[4];  // 0x10
-        int16_t label_top[4];    // 0x18
-        int16_t label_bottom[4]; // 0x20
-        company_id_t owner;      // 0x28
+        string_id name;              // 0x00
+        coord_t x;                   // 0x02
+        coord_t y;                   // 0x04
+        coord_t z;                   // 0x06
+        LabelPosition labelPosition; // 0x08
+        company_id_t owner;          // 0x28
         uint8_t var_29;
         uint16_t flags;                                   // 0x30
         town_id_t town;                                   // 0x2C
