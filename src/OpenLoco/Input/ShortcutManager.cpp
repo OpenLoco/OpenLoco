@@ -471,7 +471,18 @@ namespace OpenLoco::Input::ShortcutManager
     // 0x004BF3B3
     static void toggleLastAnnouncement()
     {
-        call(0x004BF3B3);
+        if (isEditorMode())
+            return;
+
+        auto window = WindowManager::find(WindowType::news);
+        if (window)
+        {
+            NewsWindow::close(window);
+        }
+        else
+        {
+            NewsWindow::openLastMessage();
+        }
     }
 
     // 0x004BF3DC
