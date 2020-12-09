@@ -477,7 +477,7 @@ namespace OpenLoco::Input::ShortcutManager
         auto window = WindowManager::find(WindowType::news);
         if (window)
         {
-            window->callOnMouseUp(1);
+            NewsWindow::close(window);
         }
         else
         {

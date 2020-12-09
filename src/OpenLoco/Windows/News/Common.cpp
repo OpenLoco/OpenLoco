@@ -239,6 +239,12 @@ namespace OpenLoco::Ui::NewsWindow
         }
     }
 
+    void close(window* self)
+    {
+        // Only affects the newspaper view; the ticker ignores this widget
+        self->callOnMouseUp(1);
+    }
+
     namespace Common
     {
         void initEvents()
