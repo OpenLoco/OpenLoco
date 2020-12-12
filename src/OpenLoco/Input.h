@@ -78,11 +78,14 @@ namespace OpenLoco::Input
     void updateCursorPosition();
 
     Ui::window* toolGetActiveWindow();
+    bool isToolActive(Ui::WindowType);
+
     bool isToolActive(Ui::WindowType, Ui::window_number);
     bool isToolActive(Ui::WindowType, Ui::window_number, int16_t);
     bool toolSet(Ui::window* w, int16_t widgetIndex, uint8_t tool);
     void toolCancel();
     void toolCancel(Ui::WindowType, Ui::window_number);
+    int16_t getToolWidgetIndex();
 
     bool hasKeyModifier(uint8_t modifier);
     uint16_t getMapSelectionFlags();

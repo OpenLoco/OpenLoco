@@ -1,12 +1,14 @@
 #include "ShortcutManager.h"
 #include "../CompanyManager.h"
 #include "../GameCommands.h"
+#include "../Input.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/StringIds.h"
 #include "../S5/S5.h"
 #include "../StationManager.h"
 #include "../TownManager.h"
 #include "../Ui/WindowManager.h"
+#include "../Windows/Construction/Construction.h"
 #include <array>
 
 using namespace OpenLoco::Interop;
@@ -207,10 +209,72 @@ namespace OpenLoco::Input::ShortcutManager
         Windows::Map::centerOnViewPoint();
     }
 
+    static loco_global<uint8_t, 0x00525FB0> _525FB0;
+    static bool sub_4B949C()
+    {
+        if (Input::isToolActive(WindowType::vehicle))
+        {
+            if (getToolWidgetIndex() == 13 || getToolWidgetIndex() == 10)
+            {
+                _525FB0 = _525FB0 ^ 1;
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    static loco_global<uint8_t, 0x01136061> _constructionHover;
+
+    static void sub_4A5D48()
+    {
+        auto window = WindowManager::find(WindowType::construction);
+
+        if (window == nullptr)
+            return;
+
+        switch (window->current_tab)
+        {
+            case 0:
+                if (_constructionHover == 1)
+                {
+                    window->callOnMouseUp(30);
+                    Windows::Construction::Common::sub_49FEC7();
+                }
+                break;
+
+            case 1:
+                if (window->widgets[11].type != widget_type::none)
+                {
+                    window->callOnMouseUp(11);
+                }
+                break;
+        }
+    }
+
     // 0x004BF148
     static void rotateConstructionObject()
     {
-        call(0x004BF148);
+        if (sub_4B949C())
+            return;
+
+        auto window = WindowManager::find(WindowType::terraform);
+        if (window != nullptr)
+        {
+            if (window->current_tab == 3)
+            {
+                if (!window->isDisabled(10))
+                {
+                    if (window->widgets[10].type != widget_type::none)
+                    {
+                        window->callOnMouseUp(10);
+                        return;
+                    }
+                }
+            }
+        }
+
+        sub_4A5D48();
     }
 
     // 0x004BF18A

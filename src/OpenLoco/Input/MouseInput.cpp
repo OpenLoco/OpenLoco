@@ -255,6 +255,19 @@ namespace OpenLoco::Input
         return WindowManager::find(_toolWindowType, _toolWindowNumber);
     }
 
+    int16_t getToolWidgetIndex()
+    {
+        return _toolWidgetIndex;
+    }
+
+    bool isToolActive(Ui::WindowType type)
+    {
+        if (!hasFlag(input_flags::tool_active))
+            return false;
+
+        return (*_toolWindowType == type);
+    }
+
     bool isToolActive(Ui::WindowType type, Ui::window_number number)
     {
         if (!hasFlag(input_flags::tool_active))
