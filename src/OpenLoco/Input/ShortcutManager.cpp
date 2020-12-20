@@ -8,7 +8,6 @@
 #include "../StationManager.h"
 #include "../TownManager.h"
 #include "../Ui/WindowManager.h"
-#include "../Windows/Construction/Construction.h"
 #include <array>
 
 using namespace OpenLoco::Interop;
@@ -224,34 +223,6 @@ namespace OpenLoco::Input::ShortcutManager
         return false;
     }
 
-    static loco_global<uint8_t, 0x01136061> _constructionHover;
-
-    static void sub_4A5D48()
-    {
-        auto window = WindowManager::find(WindowType::construction);
-
-        if (window == nullptr)
-            return;
-
-        switch (window->current_tab)
-        {
-            case 0:
-                if (_constructionHover == 1)
-                {
-                    window->callOnMouseUp(30);
-                    Windows::Construction::Common::sub_49FEC7();
-                }
-                break;
-
-            case 1:
-                if (window->widgets[11].type != widget_type::none)
-                {
-                    window->callOnMouseUp(11);
-                }
-                break;
-        }
-    }
-
     // 0x004BF148
     static void rotateConstructionObject()
     {
@@ -261,20 +232,16 @@ namespace OpenLoco::Input::ShortcutManager
         auto window = WindowManager::find(WindowType::terraform);
         if (window != nullptr)
         {
-            if (window->current_tab == 3)
-            {
-                if (!window->isDisabled(10))
-                {
-                    if (window->widgets[10].type != widget_type::none)
-                    {
-                        window->callOnMouseUp(10);
-                        return;
-                    }
-                }
-            }
+            if (Ui::Windows::Terraform::rotate(window))
+                return;
         }
 
-        sub_4A5D48();
+        // 0x004A5D48
+        window = WindowManager::find(WindowType::construction);
+        if (window != nullptr)
+        {
+            Ui::Windows::Construction::rotate(window);
+        }
     }
 
     // 0x004BF18A
