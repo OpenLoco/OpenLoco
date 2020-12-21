@@ -754,7 +754,7 @@ namespace OpenLoco::StringIds
     constexpr string_id tram = 1279;
     constexpr string_id aircraft = 1280;
     constexpr string_id ship = 1281;
-    constexpr string_id str_1282 = 1282;
+    constexpr string_id total_stringid = 1282;
     constexpr string_id cargo_empty_2 = 1283;
 
     constexpr string_id tooltip_vehicles_for = 1286;

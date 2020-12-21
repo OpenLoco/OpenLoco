@@ -1112,7 +1112,7 @@ namespace OpenLoco::Ui::Vehicle
             }
 
             char* buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_337));
-            if (*buffer != '\0')
+            if (strlen(buffer) != 0)
             {
                 if (self->widgets[widx::carList].tooltip == tooltipFormat && self->var_85C == tooltipContent)
                 {
@@ -1195,7 +1195,7 @@ namespace OpenLoco::Ui::Vehicle
             args.push(StringIds::getVehicleType(vehicle->vehicleType));
         }
 
-        // 0x004B3B3F
+        // 0x004B3B18
         static Ui::cursor_id cursor(window* const self, const int16_t widgetIdx, const int16_t x, const int16_t y, const Ui::cursor_id fallback)
         {
             if (widgetIdx != widx::carList)
@@ -1650,7 +1650,7 @@ namespace OpenLoco::Ui::Vehicle
             FormatArguments args = {};
             args.push<string_id>(StringIds::buffer_1250);
 
-            Gfx::drawString_494BBF(*context, self->x + 3, self->y + self->height - 13, self->width - 15, Colour::black, StringIds::str_1282, &args);
+            Gfx::drawString_494BBF(*context, self->x + 3, self->y + self->height - 13, self->width - 15, Colour::black, StringIds::total_stringid, &args);
         }
 
         // based on 0x004B40C7
