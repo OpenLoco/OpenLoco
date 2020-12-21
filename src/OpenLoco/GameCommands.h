@@ -27,7 +27,7 @@ namespace OpenLoco::GameCommands
 
     enum class GameCommand : uint8_t
     {
-        vehicle_rearange = 0,
+        vehicle_rearrange = 0,
         vehicle_place = 1,
         vehicle_pickup = 2,
         vehicle_reverse = 3,
@@ -78,7 +78,7 @@ namespace OpenLoco::GameCommands
         regs.bl = GameCommandFlag::apply;
         regs.dx = source;
         regs.di = dest;
-        doCommand(static_cast<int32_t>(GameCommand::vehicle_rearange), regs);
+        doCommand(static_cast<int32_t>(GameCommand::vehicle_rearrange), regs);
     }
 
     inline bool do_2(thing_id_t head)
