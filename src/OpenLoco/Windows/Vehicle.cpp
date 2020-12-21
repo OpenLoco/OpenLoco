@@ -1791,7 +1791,7 @@ namespace OpenLoco::Ui::Vehicle
                 if (cargoObject == nullptr)
                     continue;
 
-                if ((cargoObject->var_12 & 2) == 0)
+                if ((cargoObject->flags & CargoObject::Flags::refit) == 0)
                     continue;
 
                 string_id format = StringIds::dropdown_stringid;

@@ -4,6 +4,11 @@
 
 namespace OpenLoco
 {
+    namespace CargoObject::Flags
+    {
+        constexpr uint8_t refit = (1 << 1);
+    }
+
 #pragma pack(push, 1)
     struct cargo_object
     {
@@ -15,7 +20,7 @@ namespace OpenLoco
         string_id unit_name_plural;     // 0xA
         uint32_t unit_inline_sprite;    // 0xC
         std::uint8_t pad_10[0x12 - 0x10];
-        uint8_t var_12;
+        uint8_t flags; // 0x12
         std::uint8_t pad_13[0x1E - 0x13];
         uint8_t unitSize;
     };
