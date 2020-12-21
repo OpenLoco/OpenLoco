@@ -2316,8 +2316,8 @@ namespace OpenLoco::Ui::Vehicle
                         orderOffset += dword_4FE070[orderType];
                         i++;
                     }
+                    break;
                 }
-                break;
                 case widx::orderSkip:
                     gGameCommandErrorTitle = StringIds::empty;
                     GameCommands::do_37(self->number);
@@ -2567,8 +2567,8 @@ namespace OpenLoco::Ui::Vehicle
                     orderArgument >>= 3;
                     Audio::playSound(Audio::sound_id::waypoint, { x, y, Input::getDragLastLocation().x }, Input::getDragLastLocation().x);
                     sub_4B4ECB(&self, 3, orderArgument);
+                    break;
                 }
-                break;
                 case Ui::ViewportInteraction::InteractionItem::t_11:
                 {
                     // Water
@@ -2588,15 +2588,15 @@ namespace OpenLoco::Ui::Vehicle
                     orderArgument |= static_cast<uint64_t>(height / 8) << 16;
                     orderArgument >>= 3;
                     sub_4B4ECB(&self, 3, orderArgument);
+                    break;
                 }
-                break;
                 case Ui::ViewportInteraction::InteractionItem::station:
                 {
                     Audio::playSound(Audio::sound_id::waypoint, { x, y, Input::getDragLastLocation().x }, Input::getDragLastLocation().x);
                     station_id_t stationId = args.value;
                     sub_4B4ECB(&self, 1, (((stationId & 0x300) >> 2) | ((stationId & 0xFF) << 8)) >> 3);
+                    break;
                 }
-                break;
                 case Ui::ViewportInteraction::InteractionItem::road:
                 {
                     // 0x004B5223
@@ -2622,8 +2622,8 @@ namespace OpenLoco::Ui::Vehicle
                     orderArgument >>= 3;
                     Audio::playSound(Audio::sound_id::waypoint, { x, y, Input::getDragLastLocation().x }, Input::getDragLastLocation().x);
                     sub_4B4ECB(&self, 3, orderArgument);
+                    break;
                 }
-                break;
 
                 default:
                     break;
@@ -2769,8 +2769,8 @@ namespace OpenLoco::Ui::Vehicle
                     {
                         main->viewportCentreOnTile({ station->x, station->y, static_cast<coord_t>(station->z + 32) });
                     }
+                    break;
                 }
-                break;
                 case 3: // waypoint
                 {
                     map_pos3 loc{};
@@ -2782,8 +2782,8 @@ namespace OpenLoco::Ui::Vehicle
                     {
                         main->viewportCentreOnTile(loc);
                     }
+                    break;
                 }
-                break;
             }
         }
 
@@ -3169,29 +3169,29 @@ namespace OpenLoco::Ui::Vehicle
                     auto trackObj = ObjectManager::get<track_object>(head.track_type);
                     image = trackObj->image + (isPlaced ? 16 : 17);
                     tooltip = isPlaced ? StringIds::tooltip_remove_from_track : StringIds::tooltip_place_on_track;
+                    break;
                 }
-                break;
                 case TransportMode::road:
                 {
                     auto roadObjId = head.track_type == 0xFF ? _525FC5 : head.track_type;
                     auto roadObj = ObjectManager::get<road_object>(roadObjId);
                     image = roadObj->image + (isPlaced ? 32 : 33);
                     tooltip = isPlaced ? StringIds::tooltip_remove_from_track : StringIds::tooltip_place_on_track;
+                    break;
                 }
-                break;
                 case TransportMode::air:
                 {
                     image = isPlaced ? ImageIds::airport_pickup : ImageIds::airport_place;
                     tooltip = isPlaced ? StringIds::tooltip_remove_from_airport : StringIds::tooltip_place_on_airport;
+                    break;
                 }
-                break;
                 case TransportMode::water:
                 {
                     auto waterObj = ObjectManager::get<water_object>();
                     image = waterObj->image + (isPlaced ? 58 : 59);
                     tooltip = isPlaced ? StringIds::tooltip_remove_from_water : StringIds::tooltip_place_on_dock;
+                    break;
                 }
-                break;
             }
             return std::make_pair(image, tooltip);
         }
