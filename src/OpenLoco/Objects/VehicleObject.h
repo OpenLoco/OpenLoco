@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../Localisation/StringIds.h"
 #include "../Localisation/StringManager.h"
 
 namespace OpenLoco
@@ -198,4 +199,26 @@ namespace OpenLoco
 #pragma pack(pop)
     static_assert(sizeof(vehicle_object) == 0x15E);
 
+    namespace StringIds
+    {
+        constexpr string_id getVehicleType(VehicleType type)
+        {
+            switch (type)
+            {
+                case VehicleType::train:
+                    return StringIds::train;
+                case VehicleType::bus:
+                    return StringIds::bus;
+                case VehicleType::truck:
+                    return StringIds::truck;
+                case VehicleType::tram:
+                    return StringIds::tram;
+                case VehicleType::aircraft:
+                    return StringIds::aircraft;
+                case VehicleType::ship:
+                    return StringIds::ship;
+            }
+            return StringIds::empty;
+        }
+    }
 }

@@ -1459,24 +1459,4 @@ namespace OpenLoco::StringIds
     constexpr string_id menu_exit_openloco = 2140;
     constexpr string_id disableAICompanies = 2141;
     constexpr string_id disableAICompanies_tip = 2142;
-
-    constexpr string_id getVehicleType(VehicleType type)
-    {
-        switch (type)
-        {
-            case VehicleType::train:
-                return train;
-            case VehicleType::bus:
-                return bus;
-            case VehicleType::truck:
-                return truck;
-            case VehicleType::tram:
-                return tram;
-            case VehicleType::aircraft:
-                return aircraft;
-            case VehicleType::ship:
-                return ship;
-        }
-        return empty;
-    }
 }
