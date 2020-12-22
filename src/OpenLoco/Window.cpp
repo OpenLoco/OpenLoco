@@ -600,6 +600,24 @@ namespace OpenLoco::Ui
         moveWindowToLocation(pos);
     }
 
+    void window::viewportCentreMain()
+    {
+        if (viewports[0] == nullptr || saved_view.isEmpty())
+            return;
+
+        // Centre viewport on tile/thing.
+        auto main = WindowManager::getMainWindow();
+        if (saved_view.isThingView())
+        {
+            auto thing = ThingManager::get<Thing>(saved_view.thingId);
+            main->viewportCentreOnTile({ thing->x, thing->y, thing->z });
+        }
+        else
+        {
+            main->viewportCentreOnTile(saved_view.getPos());
+        }
+    }
+
     void window::viewportCentreTileAroundCursor(int16_t map_x, int16_t map_y, int16_t offset_x, int16_t offset_y)
     {
         // Get viewport coordinates centring around the tile.
@@ -1014,17 +1032,24 @@ namespace OpenLoco::Ui
 
     Ui::cursor_id window::call_15(int16_t xPos, int16_t yPos, Ui::cursor_id fallback, bool* out)
     {
-        registers regs;
-        regs.ax = xPos;
-        regs.bl = *out;
-        regs.cx = yPos;
-        regs.edi = (int32_t)fallback;
-        regs.esi = (int32_t)this;
-        call(this->event_handlers->event_15, regs);
+        if (event_handlers->event_15 == nullptr)
+            return cursor_id::pointer;
+        if (isInteropEvent(event_handlers->event_15))
+        {
+            registers regs;
+            regs.ax = xPos;
+            regs.bl = *out;
+            regs.cx = yPos;
+            regs.edi = (int32_t)fallback;
+            regs.esi = (int32_t)this;
+            call(reinterpret_cast<uint32_t>(this->event_handlers->event_15), regs);
 
-        *out = regs.bl;
+            *out = regs.bl;
 
-        return (cursor_id)regs.edi;
+            return (cursor_id)regs.edi;
+        }
+
+        return event_handlers->event_15(*this, xPos, yPos, fallback, *out);
     }
 
     Ui::cursor_id window::callCursor(int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::cursor_id fallback)
@@ -1278,11 +1303,18 @@ namespace OpenLoco::Ui
 
     void window::callOnMove(int16_t xPos, int16_t yPos)
     {
-        registers regs;
-        regs.cx = xPos;
-        regs.dx = yPos;
-        regs.esi = (int32_t)this;
-        call(this->event_handlers->on_move, regs);
+        if (event_handlers->on_move == nullptr)
+            return;
+
+        if (isInteropEvent(event_handlers->on_move))
+        {
+            registers regs;
+            regs.cx = xPos;
+            regs.dx = yPos;
+            regs.esi = (int32_t)this;
+            call(reinterpret_cast<int32_t>(this->event_handlers->on_move), regs);
+        }
+        this->event_handlers->on_move(*this, xPos, yPos);
     }
 
     void window::callPrepareDraw()

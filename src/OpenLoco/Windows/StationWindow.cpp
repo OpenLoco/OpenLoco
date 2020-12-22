@@ -157,21 +157,8 @@ namespace OpenLoco::Ui::Windows::Station
 
                 // 0x0049932D
                 case widx::centre_on_viewport:
-                {
-                    if (self->viewports[0] == nullptr || self->saved_view.isEmpty())
-                        break;
-                    auto main = WindowManager::getMainWindow();
-                    if (self->saved_view.isThingView())
-                    {
-                        auto thing = ThingManager::get<Thing>(self->saved_view.thingId);
-                        main->viewportCentreOnTile({ thing->x, thing->y, thing->z });
-                    }
-                    else
-                    {
-                        main->viewportCentreOnTile(self->saved_view.getPos());
-                    }
+                    self->viewportCentreMain();
                     break;
-                }
             }
         }
 

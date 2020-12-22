@@ -117,4 +117,16 @@ namespace OpenLoco
         quarter = 2,
         eighth = 3,
     };
+
+    enum class VehicleType : uint8_t
+    {
+        train = 0,
+        bus,
+        truck,
+        tram,
+        aircraft,
+        ship
+    };
+
+    constexpr uint8_t vehicleTypeCount = 6;
 }

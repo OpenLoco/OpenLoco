@@ -32,8 +32,6 @@ namespace OpenLoco::Input
     static void stateNormalLeft(int16_t x, int16_t y, Ui::window* window, Ui::widget_t* widget, Ui::widget_index widgetIndex);
     static void stateNormalRight(int16_t x, int16_t y, Ui::window* window, Ui::widget_t* widget, Ui::widget_index widgetIndex);
     static void statePositioningWindow(mouse_button button, int16_t x, int16_t y, Ui::window* window, Ui::widget_t* widget, Ui::widget_index widgetIndex);
-
-    static void windowPositionBegin(int16_t x, int16_t y, Ui::window* window, Ui::widget_index widget_index);
     static void windowPositionEnd();
 
     static void windowResizeBegin(int16_t x, int16_t y, Ui::window* window, Ui::widget_index widget_index);
@@ -214,6 +212,11 @@ namespace OpenLoco::Input
         return _pressedWidgetIndex;
     }
 
+    void setPressedWidgetIndex(Ui::widget_index index)
+    {
+        _pressedWidgetIndex = index;
+    }
+
     // 0x004C6E65
     void updateCursorPosition()
     {
@@ -242,12 +245,29 @@ namespace OpenLoco::Input
         }
     }
 
+    window* toolGetActiveWindow()
+    {
+        if (!hasFlag(input_flags::tool_active))
+        {
+            return nullptr;
+        }
+
+        return WindowManager::find(_toolWindowType, _toolWindowNumber);
+    }
+
     bool isToolActive(Ui::WindowType type, Ui::window_number number)
     {
         if (!hasFlag(input_flags::tool_active))
             return false;
 
         return (*_toolWindowType == type && _toolWindowNumber == number);
+    }
+
+    bool isToolActive(Ui::WindowType type, Ui::window_number number, int16_t widgetIndex)
+    {
+        if (!isToolActive(type, number))
+            return false;
+        return _toolWidgetIndex == widgetIndex;
     }
 
     // 0x004CE367
@@ -1724,7 +1744,7 @@ namespace OpenLoco::Input
 #pragma mark - Window positioning
 
     // 0x004C877D
-    static void windowPositionBegin(int16_t x, int16_t y, Ui::window* window, Ui::widget_index widget_index)
+    void windowPositionBegin(int16_t x, int16_t y, Ui::window* window, Ui::widget_index widget_index)
     {
         state(input_state::positioning_window);
         _pressedWidgetIndex = widget_index;
@@ -1903,7 +1923,7 @@ namespace OpenLoco::Input
                             if (wnd)
                             {
                                 bool out = false;
-                                wnd->call_15(x, y, cursorId, &out);
+                                cursorId = wnd->call_15(x, y, cursorId, &out);
                                 if (out)
                                 {
                                     skipItem = true;
@@ -1959,6 +1979,16 @@ namespace OpenLoco::Input
         return Gfx::point_t(_tooltipCursorX, _tooltipCursorY);
     }
 
+    Gfx::point_t getDragLastLocation()
+    {
+        return Gfx::point_t(_dragLastX, _dragLastY);
+    }
+
+    Gfx::point_t getScrollLastLocation()
+    {
+        return Gfx::point_t(_5233A4, _5233A6);
+    }
+
     void setTooltipMouseLocation(const Gfx::point_t& loc)
     {
         _tooltipCursorX = loc.x;
@@ -1972,5 +2002,10 @@ namespace OpenLoco::Input
     void setTooltipTimeout(uint16_t tooltipTimeout)
     {
         _tooltipTimeout = tooltipTimeout;
+    }
+
+    void setClickRepeatTicks(uint16_t ticks)
+    {
+        _clickRepeatTicks = ticks;
     }
 }

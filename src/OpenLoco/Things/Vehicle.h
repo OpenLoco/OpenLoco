@@ -3,6 +3,7 @@
 #include "../Audio/Audio.h"
 #include "../Company.h"
 #include "../Objects/VehicleObject.h"
+#include "../Types.hpp"
 #include "../Ui/WindowType.h"
 #include "../Window.h"
 #include "Thing.h"
@@ -15,6 +16,12 @@ namespace OpenLoco
 
         uint32_t create(const uint8_t flags, const uint16_t vehicleTypeId, const uint16_t vehicleThingId);
 
+        namespace Flags0C // commands?
+        {
+            constexpr uint8_t unk_1 = 1 << 1; // commanded to stop??
+            constexpr uint8_t manualControl = 1 << 6;
+        }
+
         namespace Flags38
         {
             constexpr uint8_t unk_0 = 1 << 0;
@@ -22,6 +29,24 @@ namespace OpenLoco
             constexpr uint8_t unk_3 = 1 << 3;
             constexpr uint8_t unk_4 = 1 << 4;
         }
+
+        enum class Status : uint8_t
+        {
+            unk_0 = 0, // no position (not placed)
+            stopped = 1,
+            unk_2 = 2, // travelling
+            unk_3 = 3, // travelling
+            approaching = 4,
+            unloading = 5,
+            loading = 6,
+            brokenDown = 7,
+            crashed = 8,
+            stuck = 9,
+            landing = 10,
+            taxiing1 = 11,
+            taxiing2 = 12,
+            takingOff = 13,
+        };
     }
 
     struct vehicle_head;
@@ -132,7 +157,7 @@ namespace OpenLoco
         uint16_t object_id;     // 0x40 not used in all vehicles **be careful**
         TransportMode mode;     // 0x42 field same in all vehicles
         uint8_t pad_43;
-        int16_t var_44; // used for name on vehicle_0 will be unique (for type) number
+        int16_t var_44; // name this number
         uint8_t pad_46;
         uint8_t pad_47[0x4A - 0x47];
         uint16_t var_4A;
@@ -201,12 +226,10 @@ namespace OpenLoco
         TransportMode mode;     // 0x42 field same in all vehicles
         uint8_t pad_43;
         int16_t var_44;
-        uint32_t length_of_var_4C; // 0x46
-        uint16_t var_4A;
-        uint16_t var_4C;     // 0x4C index into ?order? array
-        uint8_t pad_4E[0x2]; // 0x4E
-        uint8_t pad_50;
-        uint8_t pad_51; // 0x51
+        uint32_t orderTableOffset; // 0x46 offset into Order Table
+        uint16_t currentOrder;     // 0x4A offset, combine with orderTableOffset
+        uint16_t sizeOfOrderTable; // 0x4C size of Order Table
+        uint32_t var_4E;           // 0x4E
         uint8_t var_52;
         uint8_t pad_53;
         int16_t var_54;
@@ -214,14 +237,16 @@ namespace OpenLoco
         uint8_t pad_5A;
         uint8_t pad_5B;
         uint8_t var_5C;
-        uint8_t var_5D;
-        VehicleType vehicleType; // 0x5E
-        uint8_t var_5F;          // 0x5F
+        Things::Vehicle::Status status; // 0x5D
+        VehicleType vehicleType;        // 0x5E
+        uint8_t var_5F;                 // 0x5F
         uint8_t var_60;
         uint16_t var_61;
         uint8_t pad_63[0x69 - 0x63];
         uint32_t var_69;
-        uint8_t pad_6D[0x77 - 0x6D];
+        uint8_t pad_6D;
+        int8_t var_6E; // manual speed/brake
+        uint8_t pad_6F[0x77 - 0x6F];
         uint16_t var_77; //
         uint8_t var_79;
 
@@ -262,13 +287,19 @@ namespace OpenLoco
         uint16_t var_44;
         uint16_t var_46;
         uint8_t var_48;
-        uint8_t pad_49[0x4E - 0x49];
+        uint8_t var_49;
+        uint8_t pad_4A[0x4E - 0x4A];
         uint16_t var_4E;
         uint16_t var_50;
         uint8_t var_52;
         int32_t var_53;
+        int8_t var_57[4];
+        uint16_t var_5b[4];
+        uint16_t var_63[4];
+        uint8_t var_6B[4];
+        uint32_t var_6F[4];
     };
-    static_assert(sizeof(vehicle_1) == 0x57); // Can't use offset_of change this to last field if more found
+    static_assert(sizeof(vehicle_1) == 0x7F); // Can't use offset_of change this to last field if more found
 
     struct vehicle_2 : vehicle_base
     {
@@ -297,18 +328,21 @@ namespace OpenLoco
         uint16_t var_4A;                       // sound-related flag(s) common with tail
         Ui::window_number sound_window_number; // 0x4C common with tail
         Ui::WindowType sound_window_type;      // 0x4E common with tail
-        uint8_t pad_4F[0x56 - 0x4F];
+        uint8_t pad_4F;
+        uint16_t totalPower;  // 0x50 maybe not used by aircraft and ship
+        uint16_t totalWeight; // 0x52
+        int16_t maxSpeed;     // 0x54
         uint32_t var_56;
         uint8_t var_5A;
         uint8_t var_5B;
-        uint8_t pad_5C[0x5E - 0x5C];
+        int16_t rackRailMaxSpeed; // 0x5C
         uint32_t var_5E;
-        uint32_t refund_cost;
-        uint32_t var_66;
-        uint32_t var_6A;
-        uint32_t var_6E;
-        uint8_t var_72;
-        uint8_t var_73; // 0x73 (bit 0 = broken down)
+        int32_t refund_cost; // 0x62 currency maybe not refund cost (probably last 4 months profit 62-6E)
+        int32_t var_66;      // currency
+        int32_t var_6A;      // currency
+        int32_t var_6E;      // currency
+        uint8_t reliability; // 0x72
+        uint8_t var_73;      // 0x73 (bit 0 = broken down)
     };
     static_assert(sizeof(vehicle_2) == 0x74); // Can't use offset_of change this to last field if more found
 
@@ -341,8 +375,9 @@ namespace OpenLoco
         uint32_t accepted_cargo_types; // 0x48
         uint8_t cargo_type;            // 0x4C
         uint8_t max_cargo;             // 0x4D
-        uint8_t pad_4E[0x51 - 0x4E];
-        uint8_t var_51;
+        station_id_t townCargoFrom;    // 0x4E
+        uint8_t pad_50;
+        uint8_t primaryCargoQty; // 0x51
         uint8_t pad_52[0x54 - 0x52];
         uint8_t body_index; // 0x54
         int8_t var_55;
@@ -404,8 +439,9 @@ namespace OpenLoco
         uint32_t accepted_cargo_types; // 0x48 front car component front bogie only
         uint8_t cargo_type;            // 0x4C front car component front bogie only
         uint8_t max_cargo;             // 0x4D front car component front bogie only
-        uint8_t pad_4E[0x51 - 0x4E];
-        uint8_t var_51;
+        station_id_t townCargoFrom;    // 0x4E
+        uint8_t pad_50;
+        uint8_t secondaryCargoQty; // 0x51 front car component front bogie only
         uint8_t pad_52[0x54 - 0x52];
         uint8_t body_index; // 0x54
         uint8_t pad_55;

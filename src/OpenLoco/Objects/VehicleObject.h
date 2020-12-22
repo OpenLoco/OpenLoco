@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../Localisation/StringIds.h"
 #include "../Localisation/StringManager.h"
 
 namespace OpenLoco
@@ -12,22 +13,10 @@ namespace OpenLoco
     enum class TransportMode : uint8_t
     {
         rail = 0,
-        road,
-        air,
-        water
+        road = 1,
+        air = 2,
+        water = 3
     };
-
-    enum class VehicleType : uint8_t
-    {
-        train = 0,
-        bus,
-        truck,
-        tram,
-        plane,
-        ship
-    };
-
-    constexpr uint8_t vehicleTypeCount = 6;
 
     enum class simple_animation_type : uint8_t
     {
@@ -149,6 +138,7 @@ namespace OpenLoco
         constexpr uint16_t flag_03 = 1 << 3; // rollable? APT Driving carriage
         constexpr uint16_t rack_rail = 1 << 6;
         constexpr uint16_t unk_09 = 1 << 9; //anytrack??
+        constexpr uint16_t speed_control = 1 << 10;
         constexpr uint16_t can_couple = 1 << 11;
         constexpr uint16_t unk_12 = 1 << 12; //dualhead??
         constexpr uint16_t refittable = 1 << 14;
@@ -180,7 +170,7 @@ namespace OpenLoco
         uint16_t rack_speed;                          // 0xDC
         uint16_t weight;                              // 0xDE
         uint16_t flags;                               // 0xE0
-        uint8_t max_primary_cargo;                    // 0xE2
+        uint8_t max_primary_cargo;                    // 0xE2 size is relative to the first primary_cargo_types
         uint8_t max_secondary_cargo;                  // 0xE3
         uint32_t primary_cargo_types;                 // 0xE4
         uint32_t secondary_cargo_types;               // 0xE8
@@ -209,4 +199,26 @@ namespace OpenLoco
 #pragma pack(pop)
     static_assert(sizeof(vehicle_object) == 0x15E);
 
+    namespace StringIds
+    {
+        constexpr string_id getVehicleType(VehicleType type)
+        {
+            switch (type)
+            {
+                case VehicleType::train:
+                    return StringIds::train;
+                case VehicleType::bus:
+                    return StringIds::bus;
+                case VehicleType::truck:
+                    return StringIds::truck;
+                case VehicleType::tram:
+                    return StringIds::tram;
+                case VehicleType::aircraft:
+                    return StringIds::aircraft;
+                case VehicleType::ship:
+                    return StringIds::ship;
+            }
+            return StringIds::empty;
+        }
+    }
 }

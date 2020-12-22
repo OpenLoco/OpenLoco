@@ -42,6 +42,7 @@ namespace OpenLoco::Input
 
     namespace MapSelectionFlags
     {
+        constexpr uint8_t unk_04 = 1 << 4; // Vehicle orders?
         constexpr uint8_t catchment_area = 1 << 5;
     };
 
@@ -72,10 +73,13 @@ namespace OpenLoco::Input
     bool isPressed(Ui::WindowType type, Ui::window_number number);
     bool isPressed(Ui::WindowType type, Ui::window_number number, Ui::widget_index index);
     Ui::widget_index getPressedWidgetIndex();
+    void setPressedWidgetIndex(Ui::widget_index index);
 
     void updateCursorPosition();
 
+    Ui::window* toolGetActiveWindow();
     bool isToolActive(Ui::WindowType, Ui::window_number);
+    bool isToolActive(Ui::WindowType, Ui::window_number, int16_t);
     bool toolSet(Ui::window* w, int16_t widgetIndex, uint8_t tool);
     void toolCancel();
     void toolCancel(Ui::WindowType, Ui::window_number);
@@ -96,8 +100,14 @@ namespace OpenLoco::Input
     void processMouseOver(int16_t x, int16_t y);
     void processKeyboardInput();
 
+    void windowPositionBegin(int16_t x, int16_t y, Ui::window* window, Ui::widget_index widget_index);
+
+    Gfx::point_t getScrollLastLocation();
+    Gfx::point_t getDragLastLocation();
     Gfx::point_t getTooltipMouseLocation();
     void setTooltipMouseLocation(const Gfx::point_t& loc);
     uint16_t getTooltipTimeout();
     void setTooltipTimeout(uint16_t tooltipTimeout);
+
+    void setClickRepeatTicks(uint16_t ticks);
 }

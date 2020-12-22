@@ -139,16 +139,24 @@ bool vehicle::updateComponent()
 // 0x004BA8D4
 void vehicle_head::sub_4BA8D4()
 {
-    switch (var_5D)
+    switch (status)
     {
-        case 0:
-        case 1:
-        case 3:
-        case 5:
-        case 6:
-        case 8:
-        case 9:
+        case Things::Vehicle::Status::unk_0:
+        case Things::Vehicle::Status::stopped:
+        case Things::Vehicle::Status::unk_3:
+        case Things::Vehicle::Status::unloading:
+        case Things::Vehicle::Status::loading:
+        case Things::Vehicle::Status::crashed:
+        case Things::Vehicle::Status::stuck:
             return;
+        case Things::Vehicle::Status::unk_2:
+        case Things::Vehicle::Status::approaching:
+        case Things::Vehicle::Status::brokenDown:
+        case Things::Vehicle::Status::landing:
+        case Things::Vehicle::Status::taxiing1:
+        case Things::Vehicle::Status::taxiing2:
+        case Things::Vehicle::Status::takingOff:
+            break;
     }
     Things::Vehicle::Vehicle train(this);
     for (auto car : train.cars)
@@ -231,7 +239,7 @@ void OpenLoco::vehicle_body::animationUpdate()
         return;
 
     vehicle_head* headVeh = vehicleUpdate_head;
-    if ((headVeh->var_5D == 8) || (headVeh->var_5D == 9))
+    if ((headVeh->status == Things::Vehicle::Status::crashed) || (headVeh->status == Things::Vehicle::Status::stuck))
         return;
 
     auto vehicleObject = object();

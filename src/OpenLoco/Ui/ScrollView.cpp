@@ -260,19 +260,22 @@ namespace OpenLoco::Ui::ScrollView
         WindowManager::invalidateWidget(w->type, w->number, widgetIndex);
     }
 
-    // 0x004C8B26
-    static void vButtonTop(Ui::window* const w, const size_t scrollAreaIndex, const widget_index widgetIndex)
+    void verticalNudgeUp(Ui::window* const w, const size_t scrollAreaIndex, const widget_index widgetIndex)
     {
-        w->scroll_areas[scrollAreaIndex].flags |= ScrollFlags::VSCROLLBAR_UP_PRESSED;
         w->scroll_areas[scrollAreaIndex].contentOffsetY = std::max(w->scroll_areas[scrollAreaIndex].contentOffsetY - buttonClickStep, 0);
         ScrollView::updateThumbs(w, widgetIndex);
         WindowManager::invalidateWidget(w->type, w->number, widgetIndex);
     }
 
-    // 0x004C8B85
-    static void vButtonBottom(Ui::window* const w, const size_t scrollAreaIndex, const widget_index widgetIndex)
+    // 0x004C8B26
+    static void vButtonTop(Ui::window* const w, const size_t scrollAreaIndex, const widget_index widgetIndex)
     {
-        w->scroll_areas[scrollAreaIndex].flags |= ScrollFlags::VSCROLLBAR_DOWN_PRESSED;
+        w->scroll_areas[scrollAreaIndex].flags |= ScrollFlags::VSCROLLBAR_UP_PRESSED;
+        verticalNudgeUp(w, scrollAreaIndex, widgetIndex);
+    }
+
+    void verticalNudgeDown(Ui::window* const w, const size_t scrollAreaIndex, const widget_index widgetIndex)
+    {
         int16_t trackHeight = w->widgets[widgetIndex].height() - 2;
         if ((w->scroll_areas[scrollAreaIndex].flags & ScrollFlags::HSCROLLBAR_VISIBLE) != 0)
         {
@@ -282,6 +285,13 @@ namespace OpenLoco::Ui::ScrollView
         w->scroll_areas[scrollAreaIndex].contentOffsetY = std::min<int16_t>(w->scroll_areas[scrollAreaIndex].contentOffsetY + buttonClickStep, widgetContentHeight);
         ScrollView::updateThumbs(w, widgetIndex);
         WindowManager::invalidateWidget(w->type, w->number, widgetIndex);
+    }
+
+    // 0x004C8B85
+    static void vButtonBottom(Ui::window* const w, const size_t scrollAreaIndex, const widget_index widgetIndex)
+    {
+        w->scroll_areas[scrollAreaIndex].flags |= ScrollFlags::VSCROLLBAR_DOWN_PRESSED;
+        verticalNudgeDown(w, scrollAreaIndex, widgetIndex);
     }
 
     // 0x004C8C0D

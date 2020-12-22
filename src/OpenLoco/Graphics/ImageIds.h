@@ -25,6 +25,8 @@ namespace OpenLoco::ImageIds
 
     constexpr uint32_t construction_straight = 2335;
 
+    constexpr uint32_t red_arrow_up = 2338;
+    constexpr uint32_t red_arrow_down = 2339;
     constexpr uint32_t construction_left_hand_curve_very_small = 2340;
     constexpr uint32_t construction_right_hand_curve_very_small = 2341;
     constexpr uint32_t construction_left_hand_curve_small = 2342;
@@ -52,6 +54,16 @@ namespace OpenLoco::ImageIds
     constexpr uint32_t centre_viewport = 2364;
     constexpr uint32_t rotate_object = 2365;
 
+    constexpr uint32_t red_flag = 2369;
+    constexpr uint32_t green_flag = 2370;
+    constexpr uint32_t yellow_flag = 2371;
+    constexpr uint32_t airport_pickup = 2372;
+    constexpr uint32_t airport_place = 2373;
+    constexpr uint32_t pass_signal = 2374;
+    constexpr uint32_t route_delete = 2375;
+    constexpr uint32_t route_skip = 2376;
+    constexpr uint32_t route_wait = 2377;
+    constexpr uint32_t route_force_unload = 2378;
     constexpr uint32_t show_station_catchment = 2379;
     constexpr uint32_t plant_cluster_selected_tree = 2380;
     constexpr uint32_t plant_cluster_random_tree = 2381;
@@ -59,6 +71,8 @@ namespace OpenLoco::ImageIds
     constexpr uint32_t music_controls_stop = 2383;
     constexpr uint32_t music_controls_play = 2384;
     constexpr uint32_t music_controls_next = 2385;
+    constexpr uint32_t refit_cargo_button = 2386;
+    constexpr uint32_t tab_vehicle_background = 2387;
 
     constexpr uint32_t tab_display = 2391;
     constexpr uint32_t tab_control = 2392;
@@ -132,6 +146,71 @@ namespace OpenLoco::ImageIds
     constexpr uint32_t random_map_watermark = 2468;
     constexpr uint32_t height_map_compass = 2469;
 
+    constexpr uint32_t number_circle_00 = 3238;
+    constexpr uint32_t number_circle_01 = 3239;
+    constexpr uint32_t number_circle_02 = 3240;
+    constexpr uint32_t number_circle_03 = 3241;
+    constexpr uint32_t number_circle_04 = 3242;
+    constexpr uint32_t number_circle_05 = 3243;
+    constexpr uint32_t number_circle_06 = 3244;
+    constexpr uint32_t number_circle_07 = 3245;
+    constexpr uint32_t number_circle_08 = 3246;
+    constexpr uint32_t number_circle_09 = 3247;
+    constexpr uint32_t number_circle_10 = 3248;
+    constexpr uint32_t number_circle_11 = 3249;
+    constexpr uint32_t number_circle_12 = 3250;
+    constexpr uint32_t number_circle_13 = 3251;
+    constexpr uint32_t number_circle_14 = 3252;
+    constexpr uint32_t number_circle_15 = 3253;
+    constexpr uint32_t number_circle_16 = 3254;
+    constexpr uint32_t number_circle_17 = 3255;
+    constexpr uint32_t number_circle_18 = 3256;
+    constexpr uint32_t number_circle_19 = 3257;
+    constexpr uint32_t number_circle_20 = 3258;
+    constexpr uint32_t number_circle_21 = 3259;
+    constexpr uint32_t number_circle_22 = 3260;
+    constexpr uint32_t number_circle_23 = 3261;
+    constexpr uint32_t number_circle_24 = 3262;
+    constexpr uint32_t number_circle_25 = 3263;
+    constexpr uint32_t number_circle_26 = 3264;
+    constexpr uint32_t number_circle_27 = 3265;
+    constexpr uint32_t number_circle_28 = 3266;
+    constexpr uint32_t number_circle_29 = 3267;
+    constexpr uint32_t number_circle_30 = 3268;
+    constexpr uint32_t number_circle_31 = 3269;
+    constexpr uint32_t number_circle_32 = 3270;
+    constexpr uint32_t number_circle_33 = 3271;
+    constexpr uint32_t number_circle_34 = 3272;
+    constexpr uint32_t number_circle_35 = 3273;
+    constexpr uint32_t number_circle_36 = 3274;
+    constexpr uint32_t number_circle_37 = 3275;
+    constexpr uint32_t number_circle_38 = 3276;
+    constexpr uint32_t number_circle_39 = 3277;
+    constexpr uint32_t number_circle_40 = 3278;
+    constexpr uint32_t number_circle_41 = 3279;
+    constexpr uint32_t number_circle_42 = 3280;
+    constexpr uint32_t number_circle_43 = 3281;
+    constexpr uint32_t number_circle_44 = 3282;
+    constexpr uint32_t number_circle_45 = 3283;
+    constexpr uint32_t number_circle_46 = 3284;
+    constexpr uint32_t number_circle_47 = 3285;
+    constexpr uint32_t number_circle_48 = 3286;
+    constexpr uint32_t number_circle_49 = 3287;
+    constexpr uint32_t number_circle_50 = 3288;
+    constexpr uint32_t number_circle_51 = 3289;
+    constexpr uint32_t number_circle_52 = 3290;
+    constexpr uint32_t number_circle_53 = 3291;
+    constexpr uint32_t number_circle_54 = 3292;
+    constexpr uint32_t number_circle_55 = 3293;
+    constexpr uint32_t number_circle_56 = 3294;
+    constexpr uint32_t number_circle_57 = 3295;
+    constexpr uint32_t number_circle_58 = 3296;
+    constexpr uint32_t number_circle_59 = 3297;
+    constexpr uint32_t number_circle_60 = 3298;
+    constexpr uint32_t number_circle_61 = 3299;
+    constexpr uint32_t number_circle_62 = 3300;
+    constexpr uint32_t number_circle_63 = 3301;
+
     constexpr uint32_t tab_object_settings = 3505;
     constexpr uint32_t tab_object_audio = 3506;
     constexpr uint32_t tab_object_currency = 3507;
@@ -172,13 +251,13 @@ namespace OpenLoco::ImageIds
     constexpr uint32_t news_background_new_right = 3542;
     constexpr uint32_t volume_slider_track = 3543;
     constexpr uint32_t volume_slider_thumb = 3544;
-
+    constexpr uint32_t speed_control_track = 3545;
+    constexpr uint32_t speed_control_thumb = 3546;
     constexpr uint32_t title_menu_sparkle = 3547;
     constexpr uint32_t title_menu_save = 3548;
     constexpr uint32_t title_menu_lesson_l = 3549;
     constexpr uint32_t title_menu_lesson_a = 3550;
     constexpr uint32_t title_menu_lesson_p = 3551;
-
     constexpr uint32_t title_menu_globe_spin_0 = 3552;
     constexpr uint32_t title_menu_globe_spin_1 = 3553;
     constexpr uint32_t title_menu_globe_spin_2 = 3554;
@@ -211,7 +290,6 @@ namespace OpenLoco::ImageIds
     constexpr uint32_t title_menu_globe_spin_29 = 3581;
     constexpr uint32_t title_menu_globe_spin_30 = 3582;
     constexpr uint32_t title_menu_globe_spin_31 = 3583;
-
     constexpr uint32_t title_menu_globe_construct_0 = 3584;
     constexpr uint32_t title_menu_globe_construct_1 = 3585;
     constexpr uint32_t title_menu_globe_construct_2 = 3586;
@@ -244,7 +322,6 @@ namespace OpenLoco::ImageIds
     constexpr uint32_t title_menu_globe_construct_29 = 3613;
     constexpr uint32_t title_menu_globe_construct_30 = 3614;
     constexpr uint32_t title_menu_globe_construct_31 = 3615;
-
     constexpr uint32_t chris_sawyer_logo_small = 3616;
     constexpr uint32_t chris_sawyer_logo_intro_left = 3617;
     constexpr uint32_t chris_sawyer_logo_intro_right = 3618;
@@ -252,7 +329,6 @@ namespace OpenLoco::ImageIds
     constexpr uint32_t atari_logo_intro_left = 3620;
     constexpr uint32_t atari_logo_intro_right = 3620;
     constexpr uint32_t atari_logo_small = UNUSED_IMG(3623);
-
     constexpr uint32_t locomotion_logo = 3624;
     constexpr uint32_t wide_tab = 3625;
 

@@ -223,7 +223,7 @@ namespace OpenLoco::Ui
                 void (*toolDragContinue)(window&, const widget_index, const int16_t, const int16_t);
                 void (*toolDragEnd)(window&, const widget_index);
                 void (*on_tool_abort)(window&, const widget_index);
-                uint32_t event_15;
+                Ui::cursor_id (*event_15)(window&, const int16_t x, const int16_t y, const Ui::cursor_id, bool&);
                 void (*get_scroll_size)(window*, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
                 void (*scroll_mouse_down)(Ui::window*, int16_t x, int16_t y, uint8_t scroll_index);
                 void (*scroll_mouse_drag)(Ui::window*, int16_t x, int16_t y, uint8_t scroll_index);
@@ -233,7 +233,7 @@ namespace OpenLoco::Ui
                 uint32_t event_22;
                 void (*tooltip)(FormatArguments& args, window*, widget_index);
                 Ui::cursor_id (*cursor)(window*, int16_t, int16_t, int16_t, Ui::cursor_id);
-                uint32_t on_move;
+                void (*on_move)(window&, const int16_t x, const int16_t y);
                 void (*prepare_draw)(window*);
                 void (*draw)(window*, Gfx::drawpixelinfo_t*);
                 void (*draw_scroll)(window*, Gfx::drawpixelinfo_t*, uint32_t scrollIndex);
@@ -344,8 +344,8 @@ namespace OpenLoco::Ui
         uint16_t var_83C;
         uint16_t row_height;    // 0x83E
         int16_t row_hover = -1; // 0x840
-        uint8_t pad_842[0x844 - 0x842];
-        uint16_t sort_mode; // 0x844;
+        int16_t var_842;        // 0x842
+        uint16_t sort_mode;     // 0x844;
         uint16_t var_846 = 0;
         SavedView saved_view; // 0x848
         uint16_t var_850 = 0;
@@ -445,6 +445,7 @@ namespace OpenLoco::Ui
         int8_t getScrollDataIndex(widget_index index);
         void setDisabledWidgetsAndInvalidate(uint32_t _disabled_widgets);
         void drawViewports(Gfx::drawpixelinfo_t* dpi);
+        void viewportCentreMain();
         void viewportSetUndergroundFlag(bool underground, Ui::viewport* vp);
         void viewportGetMapCoordsByCursor(int16_t* map_x, int16_t* map_y, int16_t* offset_x, int16_t* offset_y);
         void moveWindowToLocation(viewport_pos pos);

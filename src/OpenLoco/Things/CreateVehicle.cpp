@@ -53,7 +53,7 @@ namespace OpenLoco::Things::Vehicle
     static loco_global<uint16_t, 0x0113642A> _113642A; // used by build window and others
     static loco_global<uint32_t[32], 0x00525E5E> currencyMultiplicationFactor;
     static loco_global<uint8_t, 0x00525FC5> _525FC5;
-    static loco_global<uint32_t, 0x00525FB8> _525FB8;                                            // total used length of _987C5C
+    static loco_global<uint32_t, 0x00525FB8> _orderTableLength;                                  // total used length of _987C5C
     static loco_global<thing_id_t[max_num_vehicles][max_num_routing_steps], 0x0096885C> _96885C; // Likely routing related
     static loco_global<uint8_t[max_orders], 0x00987C5C> _987C5C;                                 // ?orders? ?routing related?
 
@@ -105,21 +105,21 @@ namespace OpenLoco::Things::Vehicle
 
     static bool sub_4B0BDD(OpenLoco::vehicle_head* const head)
     {
-        switch (head->var_5D)
+        switch (head->status)
         {
-            case 8:
+            case Status::crashed:
                 gGameCommandErrorText = StringIds::vehicle_has_crashed;
                 return false;
-            case 9:
+            case Status::stuck:
                 gGameCommandErrorText = StringIds::vehicle_is_stuck;
                 return false;
-            case 7:
+            case Status::brokenDown:
                 gGameCommandErrorText = StringIds::vehicle_has_broken_down;
                 return false;
             default:
             {
                 Things::Vehicle::Vehicle train(head);
-                if (head->vehicleType == VehicleType::plane || head->vehicleType == VehicleType::ship)
+                if (head->vehicleType == VehicleType::aircraft || head->vehicleType == VehicleType::ship)
                 {
                     if (train.veh2->var_73 & (1 << 0))
                     {
@@ -132,7 +132,7 @@ namespace OpenLoco::Things::Vehicle
                         return true;
                     }
 
-                    if (head->var_5D != 6 && head->var_5D != 1)
+                    if (head->status != Status::loading && head->status != Status::stopped)
                     {
                         gGameCommandErrorText = StringIds::vehicle_must_be_stopped;
                         return false;
@@ -234,7 +234,7 @@ namespace OpenLoco::Things::Vehicle
         newBogie->var_47 = 0;
         newBogie->accepted_cargo_types = 0;
         newBogie->cargo_type = 0xFF;
-        newBogie->var_51 = 0;
+        newBogie->secondaryCargoQty = 0;
         newBogie->var_5E = 0;
         newBogie->var_5F = 0;
         newBogie->var_60 = 0; // different to createbody
@@ -355,7 +355,7 @@ namespace OpenLoco::Things::Vehicle
         newBody->var_47 = 0;
         newBody->accepted_cargo_types = 0;
         newBody->cargo_type = 0xFF;
-        newBody->var_51 = 0;
+        newBody->primaryCargoQty = 0;
         newBody->var_55 = 0; // different to create bogie
         newBody->var_5E = 0;
         newBody->var_5F = 0;
@@ -514,11 +514,11 @@ namespace OpenLoco::Things::Vehicle
 
     static void sub_470312(vehicle_head* const newHead)
     {
-        _987C5C[_525FB8] = 0;
-        newHead->length_of_var_4C = _525FB8;
-        _525FB8++;
-        newHead->var_4A = 0;
-        newHead->var_4C = 1;
+        _987C5C[_orderTableLength] = 0;
+        newHead->orderTableOffset = _orderTableLength;
+        _orderTableLength++;
+        newHead->currentOrder = 0;
+        newHead->sizeOfOrderTable = 1;
     }
 
     // 0x004B64F9
@@ -552,7 +552,7 @@ namespace OpenLoco::Things::Vehicle
         ThingManager::moveSpriteToList(newHead, ThingManager::thing_list::vehicle_head);
         newHead->owner = _updating_company_id;
         newHead->head = newHead->id;
-        newHead->var_0C |= (1 << 1);
+        newHead->var_0C |= Things::Vehicle::Flags0C::unk_1;
         newHead->track_type = trackType;
         newHead->mode = mode;
         newHead->tile_x = -1;
@@ -573,7 +573,7 @@ namespace OpenLoco::Things::Vehicle
         newHead->var_44 = createUniqueTypeNumber(vehicleType);
         newHead->var_52 = 0;
         newHead->var_5C = 0;
-        newHead->var_5D = 0;
+        newHead->status = Status::unk_0;
         newHead->var_54 = -1;
         newHead->var_5F = 0;
         newHead->var_60 = -1;
@@ -647,7 +647,7 @@ namespace OpenLoco::Things::Vehicle
         newVeh2->var_66 = 0;
         newVeh2->var_6A = 0;
         newVeh2->var_6E = 0;
-        newVeh2->var_72 = 0;
+        newVeh2->reliability = 0;
         newVeh2->var_73 = 0;
         lastVeh->next_car_id = newVeh2->id;
         return newVeh2;
@@ -687,7 +687,7 @@ namespace OpenLoco::Things::Vehicle
             return {};
         }
 
-        if (_525FB8 >= max_orders)
+        if (_orderTableLength >= max_orders)
         {
             gGameCommandErrorText = StringIds::no_space_for_more_vehicle_orders;
             return {};
@@ -757,13 +757,13 @@ namespace OpenLoco::Things::Vehicle
         }
     }
 
-    static void sub_470795(const uint32_t var46, const int16_t var4C)
+    static void sub_470795(const uint32_t removeOrderTableOffset, const int16_t sizeOfRemovedOrderTable)
     {
         for (auto head : ThingManager::VehicleList())
         {
-            if (head->length_of_var_4C >= var46)
+            if (head->orderTableOffset >= removeOrderTableOffset)
             {
-                head->length_of_var_4C += var4C;
+                head->orderTableOffset += sizeOfRemovedOrderTable;
             }
         }
     }
@@ -772,11 +772,11 @@ namespace OpenLoco::Things::Vehicle
     // Remove vehicle ?orders?
     static void sub_470334(OpenLoco::vehicle_head* const head)
     {
-        sub_470795(head->length_of_var_4C, head->var_4C * -1);
-        auto length = _525FB8 - head->length_of_var_4C - head->var_4C;
-        memmove(&_987C5C[head->length_of_var_4C], &_987C5C[head->var_4C + head->length_of_var_4C], length);
+        sub_470795(head->orderTableOffset, head->sizeOfOrderTable * -1);
+        auto length = _orderTableLength - head->orderTableOffset - head->sizeOfOrderTable;
+        memmove(&_987C5C[head->orderTableOffset], &_987C5C[head->sizeOfOrderTable + head->orderTableOffset], length);
 
-        _525FB8 = _525FB8 - head->var_4C;
+        _orderTableLength = _orderTableLength - head->sizeOfOrderTable;
     }
 
     // 0x0042851C

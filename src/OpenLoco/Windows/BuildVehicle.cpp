@@ -181,7 +181,7 @@ namespace OpenLoco::Ui::BuildVehicle
         { VehicleType::bus, tab_build_new_buses, busTabImages },
         { VehicleType::truck, tab_build_new_trucks, truckTabImages },
         { VehicleType::tram, tab_build_new_trams, tramTabImages },
-        { VehicleType::plane, tab_build_new_aircraft, aircraftTabImages },
+        { VehicleType::aircraft, tab_build_new_aircraft, aircraftTabImages },
         { VehicleType::ship, tab_build_new_ships, shipTabImages }
     };
 
@@ -240,7 +240,6 @@ namespace OpenLoco::Ui::BuildVehicle
     static void resetTrackTypeTabSelection(Ui::window* window);
     static void setTopToolbarLastTrack(uint8_t trackType, bool isRoad);
     static void setTransportTypeTabs(Ui::window* window);
-    static void sub_4B60CC(OpenLoco::vehicle* vehicle);
     static void drawVehicleOverview(Gfx::drawpixelinfo_t* dpi, int16_t vehicleTypeIdx, company_id_t company, uint8_t eax, uint8_t esi, Gfx::point_t offset);
     static int16_t drawVehicleInline(Gfx::drawpixelinfo_t* dpi, int16_t vehicleTypeIdx, uint8_t unk_1, company_id_t company, Gfx::point_t loc);
     static void drawTransportTypeTabs(Ui::window* window, Gfx::drawpixelinfo_t* dpi);
@@ -767,7 +766,7 @@ namespace OpenLoco::Ui::BuildVehicle
         if (_buildTargetVehicle == -1)
         {
             auto vehicle = ThingManager::get<OpenLoco::vehicle>(_113642A);
-            sub_4B60CC(vehicle);
+            Vehicle::Details::open(vehicle);
         }
         sub_4B92A5(window);
     }
@@ -807,7 +806,7 @@ namespace OpenLoco::Ui::BuildVehicle
             auto type = _TrackTypesForTab[trackTypeTab];
             if (type == -1)
             {
-                if (_transportTypeTabInformation[window->current_tab].type == VehicleType::plane)
+                if (_transportTypeTabInformation[window->current_tab].type == VehicleType::aircraft)
                 {
 
                     args.push(StringIds::airport);
@@ -1214,7 +1213,7 @@ namespace OpenLoco::Ui::BuildVehicle
     static void resetTrackTypeTabSelection(Ui::window* window)
     {
         auto transportType = _transportTypeTabInformation[window->current_tab].type;
-        if (transportType == VehicleType::plane || transportType == VehicleType::ship)
+        if (transportType == VehicleType::aircraft || transportType == VehicleType::ship)
         {
             window->current_secondary_tab = 0;
             return;
@@ -1299,16 +1298,6 @@ namespace OpenLoco::Ui::BuildVehicle
                 tabX += tabWidth + 1;
             }
         }
-    }
-
-    /* 0x4B60CC
-     * Opens vehicle window and clicks???
-     */
-    static void sub_4B60CC(OpenLoco::vehicle* vehicle)
-    {
-        registers regs;
-        regs.edx = (int32_t)vehicle;
-        call(0x4B60CC, regs);
     }
 
     // 0x4C2BFD

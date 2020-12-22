@@ -1039,7 +1039,7 @@ namespace OpenLoco::Ui::Windows::Map
     static std::optional<uint8_t> getRouteColour(Things::Vehicle::Vehicle train)
     {
         uint8_t colour;
-        if (train.head->vehicleType == VehicleType::plane)
+        if (train.head->vehicleType == VehicleType::aircraft)
         {
             colour = 211;
             auto index = Utility::bitScanForward(_dword_F253A4);
@@ -1107,7 +1107,7 @@ namespace OpenLoco::Ui::Windows::Map
 
         xy32 startPos = { Location::null, 0 };
         xy32 endPos = { Location::null, 0 };
-        auto index = train.head->length_of_var_4C;
+        auto index = train.head->orderTableOffset;
         auto lastOrder = _dword_987C5C[index] & 0x7;
 
         while (lastOrder != 0)
