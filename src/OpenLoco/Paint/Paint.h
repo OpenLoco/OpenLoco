@@ -134,9 +134,9 @@ namespace OpenLoco::Paint
         inline static Interop::loco_global<PaintStringStruct*, 0x00E40118> _paintStringHead;
         inline static Interop::loco_global<PaintStringStruct*, 0x00E4011C> _lastPaintString;
         inline static Interop::loco_global<Map::map_pos, 0x00E3F0B0> _mapPosition;
+        uint8_t currentRotation; // new field set from 0x00E3F0B8 but split out into this struct as seperate item
 
         // From OpenRCT2 equivalent fields not found yet or new
-        //uint8_t currentRotation;                     // new field
         //PaintStruct paintHead;                       // new field
         //uint32_t viewFlags;                          // new field might not be needed tbc
         //AttachedPaintStruct* unkF1AD2C;              // no equivalent

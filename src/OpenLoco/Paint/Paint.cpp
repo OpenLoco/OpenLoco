@@ -4,6 +4,7 @@
 #include "../StationManager.h"
 #include "../TownManager.h"
 #include "../Ui.h"
+#include "../Ui/WindowManager.h"
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui::ViewportInteraction;
@@ -41,10 +42,186 @@ namespace OpenLoco::Paint
         return &_session;
     }
 
+    // 0x00461CF8
+    void tilePaintSetup(PaintSession& session, const Gfx::point_t& loc)
+    {
+        registers regs{};
+        regs.eax = loc.x;
+        regs.ecx = loc.y;
+        call(0x00461CF8, regs);
+    }
+
+    // 0x004617C6
+    void tilePaintSetup2(PaintSession& session, const Gfx::point_t& loc)
+    {
+        registers regs{};
+        regs.eax = loc.x;
+        regs.ecx = loc.y;
+        call(0x004617C6, regs);
+    }
+
+    // 0x0046FA88
+    void entityPaintSetup(PaintSession& session, const Gfx::point_t& loc)
+    {
+        registers regs{};
+        regs.eax = loc.x;
+        regs.ecx = loc.y;
+        call(0x0046FA88, regs);
+    }
+
+    // 0x0046FB67
+    void entityPaintSetup2(PaintSession& session, const Gfx::point_t& loc)
+    {
+        registers regs{};
+        regs.eax = loc.x;
+        regs.ecx = loc.y;
+        call(0x0046FB67, regs);
+    }
+
     // 0x004622A2
     void PaintSession::generate()
     {
-        call(0x004622A2);
+        if ((addr<0x00525E28, uint32_t>() & (1 << 0)) == 0)
+            return;
+
+        Gfx::drawpixelinfo_t* dpi = _dpi;
+        Gfx::point_t loc = { static_cast<int16_t>(dpi->x & 0xFFE0), static_cast<int16_t>((dpi->y - 16) & 0xFFE0) };
+
+        int16_t halfX = loc.x >> 1;
+        currentRotation = Ui::WindowManager::getCurrentRotation();
+        uint16_t numVerticalQuadrants = (dpi->height + currentRotation == 0 ? 1040 : 1056) >> 5;
+
+        switch (currentRotation)
+        {
+            case 0:
+                loc.x = loc.y - halfX;
+                loc.y = loc.y + halfX;
+
+                loc.x &= 0xFFE0;
+                loc.y &= 0xFFE0;
+
+                for (; numVerticalQuadrants > 0; --numVerticalQuadrants)
+                {
+                    tilePaintSetup(*this, loc);
+                    entityPaintSetup(*this, loc);
+
+                    auto loc1 = loc + Gfx::point_t{ -32, 32 };
+                    tilePaintSetup2(*this, loc1);
+                    entityPaintSetup(*this, loc1);
+
+                    auto loc2 = loc + Gfx::point_t{ 0, 32 };
+                    tilePaintSetup(*this, loc2);
+                    entityPaintSetup(*this, loc2);
+
+                    auto loc3 = loc + Gfx::point_t{ 32, 0 };
+                    tilePaintSetup2(*this, loc3);
+                    entityPaintSetup(*this, loc3);
+
+                    auto loc4 = loc + Gfx::point_t{ 32, -32 };
+                    entityPaintSetup2(*this, loc);
+
+                    auto loc5 = loc + Gfx::point_t{ -32, 64 };
+                    entityPaintSetup2(*this, loc);
+                    loc += Gfx::point_t{ 32, 32 };
+                }
+                break;
+            case 1:
+                loc.x = -loc.y - halfX;
+                loc.y = loc.y - halfX - 16;
+
+                loc.x &= 0xFFE0;
+                loc.y &= 0xFFE0;
+
+                for (; numVerticalQuadrants > 0; --numVerticalQuadrants)
+                {
+                    tilePaintSetup(*this, loc);
+                    entityPaintSetup(*this, loc);
+
+                    auto loc1 = loc + Gfx::point_t{ -32, -32 };
+                    tilePaintSetup2(*this, loc1);
+                    entityPaintSetup(*this, loc1);
+
+                    auto loc2 = loc + Gfx::point_t{ -32, 0 };
+                    tilePaintSetup(*this, loc2);
+                    entityPaintSetup(*this, loc2);
+
+                    auto loc3 = loc + Gfx::point_t{ 0, 32 };
+                    tilePaintSetup2(*this, loc3);
+                    entityPaintSetup(*this, loc3);
+
+                    auto loc4 = loc + Gfx::point_t{ 32, 32 };
+                    entityPaintSetup2(*this, loc);
+
+                    auto loc5 = loc + Gfx::point_t{ -64, -32 };
+                    entityPaintSetup2(*this, loc);
+                    loc += Gfx::point_t{ -32, 32 };
+                }
+                break;
+            case 2:
+                loc.x = -loc.y + halfX;
+                loc.y = -loc.y - halfX;
+
+                loc.x &= 0xFFE0;
+                loc.y &= 0xFFE0;
+
+                for (; numVerticalQuadrants > 0; --numVerticalQuadrants)
+                {
+                    tilePaintSetup(*this, loc);
+                    entityPaintSetup(*this, loc);
+
+                    auto loc1 = loc + Gfx::point_t{ 32, -32 };
+                    tilePaintSetup2(*this, loc1);
+                    entityPaintSetup(*this, loc1);
+
+                    auto loc2 = loc + Gfx::point_t{ 0, -32 };
+                    tilePaintSetup(*this, loc2);
+                    entityPaintSetup(*this, loc2);
+
+                    auto loc3 = loc + Gfx::point_t{ -32, 0 };
+                    tilePaintSetup2(*this, loc3);
+                    entityPaintSetup(*this, loc3);
+
+                    auto loc4 = loc + Gfx::point_t{ -32, 32 };
+                    entityPaintSetup2(*this, loc);
+
+                    auto loc5 = loc + Gfx::point_t{ 32, -64 };
+                    entityPaintSetup2(*this, loc);
+                    loc += Gfx::point_t{ -32, -32 };
+                }
+                break;
+            case 3:
+                loc.x = loc.y + halfX;
+                loc.y = -loc.y + halfX - 16;
+
+                loc.x &= 0xFFE0;
+                loc.y &= 0xFFE0;
+
+                for (; numVerticalQuadrants > 0; --numVerticalQuadrants)
+                {
+                    tilePaintSetup(*this, loc);
+                    entityPaintSetup(*this, loc);
+
+                    auto loc1 = loc + Gfx::point_t{ 32, 32 };
+                    tilePaintSetup2(*this, loc1);
+                    entityPaintSetup(*this, loc1);
+
+                    auto loc2 = loc + Gfx::point_t{ 32, 0 };
+                    tilePaintSetup(*this, loc2);
+                    entityPaintSetup(*this, loc2);
+
+                    auto loc3 = loc + Gfx::point_t{ 0, -32 };
+                    tilePaintSetup2(*this, loc3);
+                    entityPaintSetup(*this, loc3);
+
+                    auto loc4 = loc + Gfx::point_t{ -32, -32 };
+                    entityPaintSetup2(*this, loc);
+
+                    auto loc5 = loc + Gfx::point_t{ 64, 32 };
+                    entityPaintSetup2(*this, loc);
+                    loc += Gfx::point_t{ 32, -32 };
+                }
+                break;
+        }
     }
 
     // 0x0045E7B5
