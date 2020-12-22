@@ -32,11 +32,68 @@ namespace OpenLoco::Map
         coord_t x = 0;
         coord_t y = 0;
 
-        map_pos() {}
-        map_pos(coord_t x, coord_t y)
+        constexpr map_pos() {}
+        constexpr map_pos(coord_t x, coord_t y)
             : x(x)
             , y(y)
         {
+        }
+
+        constexpr bool operator==(const map_pos& rhs)
+        {
+            return x == rhs.x && y == rhs.y;
+        }
+
+        constexpr map_pos& operator+=(const map_pos& rhs)
+        {
+            x += rhs.x;
+            y += rhs.y;
+            return *this;
+        }
+
+        constexpr map_pos& operator-=(const map_pos& rhs)
+        {
+            x -= rhs.x;
+            y -= rhs.y;
+            return *this;
+        }
+
+        constexpr friend map_pos operator+(map_pos lhs, const map_pos& rhs)
+        {
+            lhs += rhs;
+            return lhs;
+        }
+
+        constexpr friend map_pos operator-(map_pos lhs, const map_pos& rhs)
+        {
+            lhs -= rhs;
+            return lhs;
+        }
+
+        constexpr map_pos rotate(uint8_t rotation) const
+        {
+            map_pos coordinate2D;
+
+            switch (rotation)
+            {
+                default:
+                case 0:
+                    coordinate2D = *this;
+                    break;
+                case 1:
+                    coordinate2D.x = y;
+                    coordinate2D.y = -x;
+                    break;
+                case 2:
+                    coordinate2D.x = -x;
+                    coordinate2D.y = -y;
+                    break;
+                case 3:
+                    coordinate2D.x = -y;
+                    coordinate2D.y = x;
+                    break;
+            }
+            return coordinate2D;
         }
     };
 
