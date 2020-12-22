@@ -1724,12 +1724,12 @@ VehicleStatus vehicle_head::getStatus() const
 
     call(0x004B671C, regs);
 
-    VehicleStatus status = {};
-    status.status1 = regs.bx;
-    status.status1Args = regs.eax;
-    status.status2 = regs.cx;
-    status.status2Args = regs.edx;
-    return status;
+    VehicleStatus vehStatus = {};
+    vehStatus.status1 = regs.bx;
+    vehStatus.status1Args = regs.eax;
+    vehStatus.status2 = regs.cx;
+    vehStatus.status2Args = regs.edx;
+    return vehStatus;
 }
 
 namespace OpenLoco::Things::Vehicle
