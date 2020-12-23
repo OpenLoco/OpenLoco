@@ -8,48 +8,28 @@ namespace OpenLoco
     struct smoke;
     struct exhaust;
 
-    enum class misc_thing_type : uint8_t
+    enum class MiscThingType : uint8_t
     {
         exhaust = 0,
         smoke = 8
     };
 
 #pragma pack(push, 1)
-    struct misc_thing : thing_base
+    struct MiscBase : thing_base
     {
-        misc_thing_type type;
-        uint8_t pad_02;
-        uint8_t pad_03;
-        thing_id_t next_thing_id; // 0x04
-        uint8_t pad_06[0x09 - 0x06];
-        uint8_t var_09;
-        thing_id_t id; // 0x0A
-        uint16_t var_0C;
-        int16_t x; // 0x0E
-        int16_t y; // 0x10
-        int16_t z; // 0x12
-        uint8_t var_14;
-        uint8_t var_15;
-        int16_t sprite_left;   // 0x16
-        int16_t sprite_top;    // 0x18
-        int16_t sprite_right;  // 0x1A
-        int16_t sprite_bottom; // 0x1C
-        uint8_t sprite_yaw;    // 0x1E
-        uint8_t sprite_pitch;  // 0x1F
-
     private:
-        template<typename TType, misc_thing_type TClass>
+        template<typename TType, MiscThingType TClass>
         TType* as() const
         {
-            return type == TClass ? (TType*)this : nullptr;
+            return mType == TClass ? (TType*)this : nullptr;
         }
 
     public:
-        smoke* as_smoke() const { return as<smoke, misc_thing_type::smoke>(); }
-        exhaust* as_exhaust() const { return as<exhaust, misc_thing_type::exhaust>(); }
+        smoke* as_smoke() const { return as<smoke, MiscThingType::smoke>(); }
+        exhaust* as_exhaust() const { return as<exhaust, MiscThingType::exhaust>(); }
     };
 
-    struct exhaust : misc_thing
+    struct exhaust : MiscBase
     {
         uint8_t pad_20[0x26 - 0x20];
         int16_t var_26;
@@ -66,7 +46,7 @@ namespace OpenLoco
         static exhaust* create(loc16 loc, uint8_t type);
     };
 
-    struct smoke : misc_thing
+    struct smoke : MiscBase
     {
         uint8_t pad_20[0x28 - 0x20];
         uint16_t var_28;

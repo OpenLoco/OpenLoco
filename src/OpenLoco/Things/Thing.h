@@ -8,7 +8,7 @@ namespace OpenLoco
 {
     struct Thing;
     struct vehicle_base;
-    struct misc_thing;
+    struct MiscBase;
 
     namespace ThingId
     {
@@ -22,14 +22,16 @@ namespace OpenLoco
     };
 
     enum class VehicleThingType : uint8_t;
+    enum class MiscThingType : uint8_t;
+
 #pragma pack(push, 1)
     struct thing_base
     {
         thing_base_type base_type;
         union
         {
-            uint8_t mType;          // Misc Thing type (only valid for misc_thing things)
             VehicleThingType vType; // Vehicle Thing type (only valid for vehicle_base things)
+            MiscThingType mType;    // Misc Thing type (only valid for MiscBase things)
         };
         uint8_t pad_02;
         uint8_t pad_03;
@@ -67,7 +69,7 @@ namespace OpenLoco
 
     public:
         vehicle_base* asVehicle() const { return as<vehicle_base, thing_base_type::vehicle>(); }
-        misc_thing* asMisc() const { return as<misc_thing, thing_base_type::misc>(); }
+        MiscBase* asMisc() const { return as<MiscBase, thing_base_type::misc>(); }
     };
     static_assert(sizeof(Thing) == 0x80);
 #pragma pack(pop)
