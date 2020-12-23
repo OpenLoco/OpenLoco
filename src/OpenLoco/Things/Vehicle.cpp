@@ -63,14 +63,15 @@ constexpr int16_t factor503B50[] = {
     84
 };
 
-vehicle* vehicle::nextVehicle()
+vehicle_base* vehicle_base::nextVehicle()
 {
-    return ThingManager::get<vehicle>(next_thing_id);
+    return ThingManager::get<vehicle_base>(next_thing_id);
 }
 
-vehicle* vehicle::nextVehicleComponent()
+vehicle_base* vehicle_base::nextVehicleComponent()
 {
-    return ThingManager::get<vehicle>(next_car_id);
+    auto* veh = reinterpret_cast<vehicle*>(this);
+    return ThingManager::get<vehicle_base>(veh->next_car_id);
 }
 
 vehicle_object* vehicle::object() const
@@ -86,7 +87,7 @@ vehicle_object* vehicle_body::object() const
 void vehicle_head::updateVehicle()
 {
     // TODO: Refactor to use the Vehicle super class
-    auto v = reinterpret_cast<vehicle*>(this);
+    vehicle_base* v = this;
     while (v != nullptr)
     {
         if (v->updateComponent())
@@ -104,7 +105,7 @@ uint16_t vehicle_head::update()
     return call(0x004A8B81, regs);
 }
 
-bool vehicle::updateComponent()
+bool vehicle_base::updateComponent()
 {
     int32_t result = 0;
     registers regs;
@@ -1701,13 +1702,11 @@ namespace OpenLoco::Things::Vehicle
 {
     Vehicle::Vehicle(uint16_t _head)
     {
-        auto component = ThingManager::get<OpenLoco::vehicle>(_head);
+        auto component = ThingManager::get<OpenLoco::vehicle_base>(_head);
         head = component->asVehicleHead();
-        component = component->nextVehicleComponent();
-        veh1 = component->asVehicle1();
-        component = component->nextVehicleComponent();
-        veh2 = component->asVehicle2();
-        component = component->nextVehicleComponent();
+        veh1 = head->nextVehicleComponent()->asVehicle1();
+        veh2 = veh1->nextVehicleComponent()->asVehicle2();
+        component = veh2->nextVehicleComponent();
         if (component->getSubType() != VehicleThingType::tail)
         {
             cars = Cars{ Car{ component } };

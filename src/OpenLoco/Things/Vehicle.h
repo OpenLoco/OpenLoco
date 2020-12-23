@@ -114,6 +114,10 @@ namespace OpenLoco
             return as<vehicle_26, VehicleThingType::tail>();
         }
         vehicle_tail* asVehicleTail() const { return as<vehicle_tail>(); }
+
+        vehicle_base* nextVehicle();
+        vehicle_base* nextVehicleComponent();
+        bool updateComponent();
     };
 
     struct vehicle : vehicle_base
@@ -162,11 +166,7 @@ namespace OpenLoco
         uint8_t pad_6B[0x73 - 0x6B];
         uint8_t var_73; // 0x73 (bit 0 = broken down)
 
-        vehicle* nextVehicle();
-        vehicle* nextVehicleComponent();
         vehicle_object* object() const;
-
-        bool updateComponent();
     };
     static_assert(sizeof(vehicle) == 0x74); // Can't use offset_of change this to last field if more found
 
@@ -478,14 +478,12 @@ namespace OpenLoco
             vehicle_bogie* front = nullptr;
             vehicle_bogie* back = nullptr;
             vehicle_body* body = nullptr;
-            CarComponent(OpenLoco::vehicle*& component)
+            CarComponent(OpenLoco::vehicle_base*& component)
             {
                 front = component->asVehicleBogie();
-                component = component->nextVehicleComponent();
-                back = component->asVehicleBogie();
-                component = component->nextVehicleComponent();
-                body = component->asVehicleBody();
-                component = component->nextVehicleComponent();
+                back = front->nextVehicleComponent()->asVehicleBogie();
+                body = back->nextVehicleComponent()->asVehicleBody();
+                component = body;
             }
             CarComponent() = default;
         };
@@ -496,7 +494,7 @@ namespace OpenLoco
             {
             private:
                 CarComponent current;
-                OpenLoco::vehicle* nextVehicleComponent = nullptr;
+                OpenLoco::vehicle_base* nextVehicleComponent = nullptr;
 
             public:
                 CarComponentIter(const CarComponent* carComponent)
@@ -507,7 +505,7 @@ namespace OpenLoco
                         return;
                     }
                     current = *carComponent;
-                    nextVehicleComponent = reinterpret_cast<OpenLoco::vehicle*>(current.body)->nextVehicleComponent();
+                    nextVehicleComponent = current.body->nextVehicleComponent();
                 }
 
                 CarComponentIter& operator++()
@@ -568,7 +566,7 @@ namespace OpenLoco
                 return CarComponentIter(nullptr);
             }
 
-            Car(OpenLoco::vehicle*& component)
+            Car(OpenLoco::vehicle_base*& component)
                 : CarComponent(component)
             {
             }
@@ -584,7 +582,7 @@ namespace OpenLoco
                 {
                 private:
                     Car current;
-                    OpenLoco::vehicle* nextVehicleComponent = nullptr;
+                    OpenLoco::vehicle_base* nextVehicleComponent = nullptr;
 
                 public:
                     CarIter(const Car* carComponent)
@@ -595,7 +593,7 @@ namespace OpenLoco
                             return;
                         }
                         current = *carComponent;
-                        nextVehicleComponent = reinterpret_cast<OpenLoco::vehicle*>(current.body)->nextVehicleComponent();
+                        nextVehicleComponent = current.body->nextVehicleComponent();
                     }
 
                     CarIter& operator++()
