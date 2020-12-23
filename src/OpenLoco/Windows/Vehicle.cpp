@@ -267,7 +267,7 @@ namespace OpenLoco::Ui::Vehicle
             {
                 targetThing = train.cars.firstCar.front->id;
                 // Always true so above is pointless
-                if (train.cars.firstCar.front->type == VehicleThingType::bogie)
+                if (train.cars.firstCar.front->vType == VehicleThingType::bogie)
                 {
                     targetThing = train.cars.firstCar.body->id;
                 }

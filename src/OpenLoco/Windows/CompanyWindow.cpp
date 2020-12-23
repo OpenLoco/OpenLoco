@@ -516,7 +516,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 // loc_434170
                 auto thing = ThingManager::get<OpenLoco::vehicle_head>(company->observation_thing);
 
-                if (thing->base_type != thing_base_type::vehicle || thing->type != VehicleThingType::head || (thing->x == Location::null))
+                if (thing->base_type != thing_base_type::vehicle || thing->vType != VehicleThingType::head || (thing->x == Location::null))
                 {
                     invalidViewport(self);
                     return;

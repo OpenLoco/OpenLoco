@@ -21,26 +21,22 @@ namespace OpenLoco
         misc
     };
 
+    enum class VehicleThingType : uint8_t;
 #pragma pack(push, 1)
     struct thing_base
     {
         thing_base_type base_type;
-
-        void moveTo(loc16 loc);
-        void invalidateSprite();
-    };
-
-    // Max size of a thing. Use when needing to know thing size
-    struct Thing : thing_base
-    {
-    public:
-        uint8_t type;
+        union
+        {
+            uint8_t mType;          // Misc Thing type (only valid for misc_thing things)
+            VehicleThingType vType; // Vehicle Thing type (only valid for vehicle_base things)
+        };
         uint8_t pad_02;
         uint8_t pad_03;
         thing_id_t next_thing_id; // 0x04
         uint8_t pad_06[0x09 - 0x06];
         uint8_t var_09;
-        uint8_t pad_0A[0x0C - 0x0A];
+        thing_id_t id;
         uint16_t var_0C;
         int16_t x; // 0x0E
         int16_t y; // 0x10
@@ -54,6 +50,13 @@ namespace OpenLoco
         uint8_t sprite_yaw;    // 0x1E
         uint8_t sprite_pitch;  // 0x1F
 
+        void moveTo(loc16 loc);
+        void invalidateSprite();
+    };
+
+    // Max size of a thing. Use when needing to know thing size
+    struct Thing : thing_base
+    {
     private:
         uint8_t pad_20[0x80 - 0x20];
         template<typename TType, thing_base_type TClass>
