@@ -292,6 +292,7 @@ namespace OpenLoco::Ui::Vehicle
     {
         int16_t sub_4B743B(uint8_t al, uint8_t ah, int16_t cx, int16_t dx, vehicle_base* vehicle, Gfx::drawpixelinfo_t* const pDrawpixelinfo);
     }
+    bool rotate();
 }
 
 namespace OpenLoco::Ui::Windows::VehicleList

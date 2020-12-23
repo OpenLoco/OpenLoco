@@ -208,25 +208,10 @@ namespace OpenLoco::Input::ShortcutManager
         Windows::Map::centerOnViewPoint();
     }
 
-    static loco_global<uint8_t, 0x00525FB0> _525FB0;
-    static bool sub_4B949C()
-    {
-        if (Input::isToolActive(WindowType::vehicle))
-        {
-            if (getToolWidgetIndex() == 13 || getToolWidgetIndex() == 10)
-            {
-                _525FB0 = _525FB0 ^ 1;
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     // 0x004BF148
     static void rotateConstructionObject()
     {
-        if (sub_4B949C())
+        if (Vehicle::rotate())
             return;
 
         auto window = WindowManager::find(WindowType::terraform);

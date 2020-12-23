@@ -1235,7 +1235,7 @@ namespace OpenLoco::Ui::Windows::Construction
                 if (_constructionHover == 1)
                 {
                     self->callOnMouseUp(Construction::widx::rotate_90);
-                    Windows::Construction::Common::sub_49FEC7();
+                    Common::sub_49FEC7();
                 }
                 break;
 

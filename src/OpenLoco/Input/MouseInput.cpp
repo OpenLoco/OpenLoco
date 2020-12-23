@@ -270,10 +270,10 @@ namespace OpenLoco::Input
 
     bool isToolActive(Ui::WindowType type, Ui::window_number number)
     {
-        if (!hasFlag(input_flags::tool_active))
+        if (!isToolActive(type))
             return false;
 
-        return (*_toolWindowType == type && _toolWindowNumber == number);
+        return _toolWindowNumber == number;
     }
 
     bool isToolActive(Ui::WindowType type, Ui::window_number number, int16_t widgetIndex)

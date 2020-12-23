@@ -3536,6 +3536,21 @@ namespace OpenLoco::Ui::Vehicle
         }
     }
 
+    // 0x004B949C
+    bool rotate()
+    {
+        if (Input::isToolActive(WindowType::vehicle))
+        {
+            if (Input::getToolWidgetIndex() == Main::widx::pickup || Input::getToolWidgetIndex() == Details::widx::pickup)
+            {
+                _pickupDirection = _pickupDirection ^ 1;
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     void registerHooks()
     {
         Main::initEvents();
