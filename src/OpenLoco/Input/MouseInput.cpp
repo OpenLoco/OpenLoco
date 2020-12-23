@@ -255,12 +255,25 @@ namespace OpenLoco::Input
         return WindowManager::find(_toolWindowType, _toolWindowNumber);
     }
 
-    bool isToolActive(Ui::WindowType type, Ui::window_number number)
+    int16_t getToolWidgetIndex()
+    {
+        return _toolWidgetIndex;
+    }
+
+    bool isToolActive(Ui::WindowType type)
     {
         if (!hasFlag(input_flags::tool_active))
             return false;
 
-        return (*_toolWindowType == type && _toolWindowNumber == number);
+        return (*_toolWindowType == type);
+    }
+
+    bool isToolActive(Ui::WindowType type, Ui::window_number number)
+    {
+        if (!isToolActive(type))
+            return false;
+
+        return _toolWindowNumber == number;
     }
 
     bool isToolActive(Ui::WindowType type, Ui::window_number number, int16_t widgetIndex)

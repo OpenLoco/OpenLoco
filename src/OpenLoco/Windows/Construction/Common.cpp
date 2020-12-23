@@ -1227,6 +1227,27 @@ namespace OpenLoco::Ui::Windows::Construction
         }
     }
 
+    void rotate(window* self)
+    {
+        switch (self->current_tab)
+        {
+            case Common::widx::tab_construction - Common::widx::tab_construction:
+                if (_constructionHover == 1)
+                {
+                    self->callOnMouseUp(Construction::widx::rotate_90);
+                    Common::sub_49FEC7();
+                }
+                break;
+
+            case Common::widx::tab_station - Common::widx::tab_construction:
+                if (self->widgets[Station::widx::rotate].type != widget_type::none)
+                {
+                    self->callOnMouseUp(Station::widx::rotate);
+                }
+                break;
+        }
+    }
+
     void registerHooks()
     {
         registerHook(

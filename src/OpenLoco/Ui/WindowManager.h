@@ -125,6 +125,7 @@ namespace OpenLoco::Ui::Windows::Construction
     void setToTrackExtra(window* main, OpenLoco::Map::track_element* track, const uint8_t bh, const OpenLoco::Map::map_pos pos);
     void setToRoadExtra(window* main, OpenLoco::Map::road_element* track, const uint8_t bh, const OpenLoco::Map::map_pos pos);
     void sub_4A6FAC();
+    void rotate(window* self);
     void registerHooks();
 }
 
@@ -209,6 +210,7 @@ namespace OpenLoco::Ui::Windows::Terraform
     void openAdjustWater();
     void openPlantTrees();
     void openBuildWalls();
+    bool rotate(window*);
     void registerHooks();
 }
 
@@ -290,6 +292,7 @@ namespace OpenLoco::Ui::Vehicle
     {
         int16_t sub_4B743B(uint8_t al, uint8_t ah, int16_t cx, int16_t dx, vehicle_base* vehicle, Gfx::drawpixelinfo_t* const pDrawpixelinfo);
     }
+    bool rotate();
 }
 
 namespace OpenLoco::Ui::Windows::VehicleList

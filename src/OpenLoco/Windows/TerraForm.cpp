@@ -2384,6 +2384,23 @@ namespace OpenLoco::Ui::Windows::Terraform
         terraform_window->callOnMouseUp(Common::widx::tab_build_walls);
     }
 
+    bool rotate(window* self)
+    {
+        if (self->current_tab == Common::widx::tab_plant_trees - Common::widx::tab_clear_area)
+        {
+            if (!self->isDisabled(PlantTrees::widx::rotate_object))
+            {
+                if (self->widgets[PlantTrees::widx::rotate_object].type != widget_type::none)
+                {
+                    self->callOnMouseUp(PlantTrees::widx::rotate_object);
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     void registerHooks()
     {
         registerHook(

@@ -1,6 +1,7 @@
 #include "ShortcutManager.h"
 #include "../CompanyManager.h"
 #include "../GameCommands.h"
+#include "../Input.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/StringIds.h"
 #include "../S5/S5.h"
@@ -210,7 +211,22 @@ namespace OpenLoco::Input::ShortcutManager
     // 0x004BF148
     static void rotateConstructionObject()
     {
-        call(0x004BF148);
+        if (Vehicle::rotate())
+            return;
+
+        auto window = WindowManager::find(WindowType::terraform);
+        if (window != nullptr)
+        {
+            if (Ui::Windows::Terraform::rotate(window))
+                return;
+        }
+
+        // 0x004A5D48
+        window = WindowManager::find(WindowType::construction);
+        if (window != nullptr)
+        {
+            Ui::Windows::Construction::rotate(window);
+        }
     }
 
     // 0x004BF18A
