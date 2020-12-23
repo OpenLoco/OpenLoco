@@ -5,6 +5,7 @@
 #include "../TownManager.h"
 #include "../Ui.h"
 #include "../Ui/WindowManager.h"
+#include "PaintEntity.h"
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui::ViewportInteraction;
@@ -73,24 +74,6 @@ namespace OpenLoco::Paint
         regs.eax = loc.x;
         regs.ecx = loc.y;
         call(0x004617C6, regs);
-    }
-
-    // 0x0046FA88
-    static void paintEntities(PaintSession& session, const Map::map_pos& loc)
-    {
-        registers regs{};
-        regs.eax = loc.x;
-        regs.ecx = loc.y;
-        call(0x0046FA88, regs);
-    }
-
-    // 0x0046FB67
-    static void paintEntities2(PaintSession& session, const Map::map_pos& loc)
-    {
-        registers regs{};
-        regs.eax = loc.x;
-        regs.ecx = loc.y;
-        call(0x0046FB67, regs);
     }
 
     struct GenerationParameters
