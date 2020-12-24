@@ -89,9 +89,9 @@ namespace OpenLoco::Paint
         int16_t y;                  // 0x16
         uint16_t quadrantIndex;     // 0x18
         uint8_t flags;
-        uint8_t quadrantFlags;           // 0x1B
-        AttachedPaintStruct* attachedPS; // 0x1C
-        PaintStruct* children;
+        uint8_t quadrantFlags;                         // 0x1B
+        AttachedPaintStruct* attachedPS;               // 0x1C
+        PaintStruct* children;                         // 0x20
         PaintStruct* nextQuadrantPS;                   // 0x24
         Ui::ViewportInteraction::InteractionItem type; // 0x28
         uint8_t var_29;

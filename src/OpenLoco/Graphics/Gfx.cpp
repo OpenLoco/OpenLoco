@@ -1094,12 +1094,12 @@ namespace OpenLoco::Gfx
 
     uint32_t recolour(uint32_t image, uint8_t colour)
     {
-        return (1 << 29) | (colour << 19) | image;
+        return ImageIdFlags::remap | (colour << 19) | image;
     }
 
     uint32_t recolourTranslucent(uint32_t image, uint8_t colour)
     {
-        return (1 << 30) | (colour << 19) | image;
+        return ImageIdFlags::translucent | (colour << 19) | image;
     }
 
     loco_global<uint8_t*, 0x0050B860> _50B860;

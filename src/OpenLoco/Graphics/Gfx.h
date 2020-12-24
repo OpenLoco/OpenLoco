@@ -67,6 +67,12 @@ namespace OpenLoco::Gfx
     };
 
 #pragma pack(pop)
+    namespace ImageIdFlags
+    {
+        constexpr uint32_t remap = 1 << 29;
+        constexpr uint32_t translucent = 1 << 30;
+        constexpr uint32_t remap2 = 1 << 31;
+    }
 
     drawpixelinfo_t& screenDpi();
 
