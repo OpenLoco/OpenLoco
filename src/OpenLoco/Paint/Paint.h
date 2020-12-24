@@ -119,6 +119,10 @@ namespace OpenLoco::Paint
         [[nodiscard]] Ui::ViewportInteraction::InteractionArg getStationNameInteractionInfo(const uint32_t flags);
         [[nodiscard]] Ui::ViewportInteraction::InteractionArg getTownNameInteractionInfo(const uint32_t flags);
         Gfx::drawpixelinfo_t* getContext() { return _dpi; }
+        uint8_t rotation() { return currentRotation; }
+        void setCurrentObject(void* object) { _currentObject = object; }
+        void setInteractionItem(const Ui::ViewportInteraction::InteractionItem item) { _type = item; }
+        void setEntityPosition(const Map::map_pos& pos);
 
     private:
         void generateTilesAndEntities(GenerationParameters&& p);
@@ -135,6 +139,7 @@ namespace OpenLoco::Paint
         inline static Interop::loco_global<coord_t, 0x00E3F096> _spritePositionY;
         inline static Interop::loco_global<PaintStruct*, 0x00E40120> _lastPS;
         inline static Interop::loco_global<Ui::ViewportInteraction::InteractionItem, 0x00E3F0AC> _type;
+        inline static Interop::loco_global<void*, 0x00E3F0B4> _currentObject;
         inline static Interop::loco_global<PaintStringStruct*, 0x00E40118> _paintStringHead;
         inline static Interop::loco_global<PaintStringStruct*, 0x00E4011C> _lastPaintString;
         inline static Interop::loco_global<Map::map_pos, 0x00E3F0B0> _mapPosition;

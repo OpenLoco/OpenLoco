@@ -2,6 +2,7 @@
 #include "../Config.h"
 #include "../Interop/Interop.hpp"
 #include "../Map/Tile.h"
+#include "../Things/Misc.h"
 #include "../Things/ThingManager.h"
 #include "Paint.h"
 
@@ -10,10 +11,35 @@ using namespace OpenLoco::Ui::ViewportInteraction;
 
 namespace OpenLoco::Paint
 {
+    // 0x004B0CCE
+    void paintVehicleEntities(PaintSession& session, vehicle_base* base)
+    {
+        registers regs{};
+        regs.ax = base->x;
+        regs.cx = base->y;
+        regs.dl = base->z;
+        regs.ebx = (base->sprite_yaw + (session.rotation() << 4)) & 0x3F;
+        regs.esi = reinterpret_cast<int32_t>(base);
+        call(0x004B0CCE, regs);
+    }
+
+    // 0x00440325
+    void paintMiscEntities(PaintSession& session, MiscBase* base)
+    {
+        registers regs{};
+        regs.ax = base->x;
+        regs.cx = base->y;
+        regs.dl = base->z;
+        regs.ebx = (base->sprite_yaw + (session.rotation() << 4)) & 0x3F;
+        regs.esi = reinterpret_cast<int32_t>(base);
+        call(0x00440325, regs);
+    }
+
     // 0x0046FA88
     void paintEntities(PaintSession& session, const Map::map_pos& loc)
     {
-        if (Config::get().vehicles_min_scale < session.dpi()->zoom_level)
+        auto* dpi = session.getContext();
+        if (Config::get().vehicles_min_scale < dpi->zoom_level)
         {
             return;
         }
@@ -23,10 +49,43 @@ namespace OpenLoco::Paint
             return;
         }
 
-        registers regs{};
-        regs.eax = loc.x;
-        regs.ecx = loc.y;
-        call(0x0046FA88, regs);
+        ThingManager::ThingTileList entities(loc);
+        for (auto* entity : entities)
+        {
+            auto left = dpi->x;
+            auto top = dpi->y;
+            auto right = left + dpi->width;
+            auto bottom = top + dpi->height;
+
+            if (entity->sprite_top > bottom)
+            {
+                continue;
+            }
+            if (entity->sprite_bottom <= top)
+            {
+                continue;
+            }
+            if (entity->sprite_left > right)
+            {
+                continue;
+            }
+            if (entity->sprite_right <= left)
+            {
+                continue;
+            }
+            session.setCurrentObject(entity);
+            session.setEntityPosition({ entity->x, entity->y });
+            session.setInteractionItem(InteractionItem::thing);
+            switch (entity->base_type)
+            {
+                case thing_base_type::vehicle:
+                    paintVehicleEntities(session, entity->asVehicle());
+                    break;
+                case thing_base_type::misc:
+                    paintMiscEntities(session, entity->asMisc());
+                    break;
+            }
+        }
     }
 
     // 0x0046FB67
