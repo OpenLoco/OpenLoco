@@ -6,7 +6,6 @@
 
 namespace OpenLoco
 {
-    struct Thing;
     struct vehicle_base;
     struct MiscBase;
 
@@ -54,6 +53,16 @@ namespace OpenLoco
 
         void moveTo(loc16 loc);
         void invalidateSprite();
+
+        vehicle_base* asVehicle() const { return asBase<vehicle_base, thing_base_type::vehicle>(); }
+        MiscBase* asMisc() const { return asBase<MiscBase, thing_base_type::misc>(); }
+
+    private:
+        template<typename TType, thing_base_type TClass>
+        TType* asBase() const
+        {
+            return base_type == TClass ? (TType*)this : nullptr;
+        }
     };
 
     // Max size of a thing. Use when needing to know thing size
@@ -61,15 +70,6 @@ namespace OpenLoco
     {
     private:
         uint8_t pad_20[0x80 - 0x20];
-        template<typename TType, thing_base_type TClass>
-        TType* as() const
-        {
-            return base_type == TClass ? (TType*)this : nullptr;
-        }
-
-    public:
-        vehicle_base* asVehicle() const { return as<vehicle_base, thing_base_type::vehicle>(); }
-        MiscBase* asMisc() const { return as<MiscBase, thing_base_type::misc>(); }
     };
     static_assert(sizeof(Thing) == 0x80);
 #pragma pack(pop)

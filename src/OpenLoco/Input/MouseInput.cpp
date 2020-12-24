@@ -516,7 +516,7 @@ namespace OpenLoco::Input
                     {
                         case InteractionItem::thing:
                         {
-                            auto _thing = reinterpret_cast<Thing*>(interaction.object);
+                            auto _thing = reinterpret_cast<thing_base*>(interaction.object);
                             auto veh = _thing->asVehicle();
                             if (veh != nullptr)
                             {
@@ -742,7 +742,7 @@ namespace OpenLoco::Input
                         {
                             case InteractionItem::thing:
                             {
-                                auto _thing = reinterpret_cast<Thing*>(item2.object);
+                                auto _thing = reinterpret_cast<thing_base*>(item2.object);
                                 auto veh = _thing->asVehicle();
                                 if (veh != nullptr)
                                 {

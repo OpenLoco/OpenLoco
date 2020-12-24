@@ -306,7 +306,7 @@ namespace OpenLoco::Ui
 
             if (config->viewport_target_sprite != 0xFFFF)
             {
-                auto thing = ThingManager::get<Thing>(config->viewport_target_sprite);
+                auto thing = ThingManager::get<thing_base>(config->viewport_target_sprite);
 
                 int z = (tileElementHeight(thing->x, thing->y).landHeight) - 16;
                 bool underground = (thing->z < z);
@@ -609,7 +609,7 @@ namespace OpenLoco::Ui
         auto main = WindowManager::getMainWindow();
         if (saved_view.isThingView())
         {
-            auto thing = ThingManager::get<Thing>(saved_view.thingId);
+            auto thing = ThingManager::get<thing_base>(saved_view.thingId);
             main->viewportCentreOnTile({ thing->x, thing->y, thing->z });
         }
         else
