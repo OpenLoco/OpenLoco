@@ -170,10 +170,194 @@ namespace OpenLoco::Paint
         }
     }
 
+    template<uint8_t>
+    static bool checkBoundingBox(const PaintStructBoundBox& initialBBox, const PaintStructBoundBox& currentBBox)
+    {
+        return false;
+    }
+
+    template<>
+    bool checkBoundingBox<0>(const PaintStructBoundBox& initialBBox, const PaintStructBoundBox& currentBBox)
+    {
+        if (initialBBox.zEnd >= currentBBox.z && initialBBox.yEnd >= currentBBox.y && initialBBox.xEnd >= currentBBox.x
+            && !(initialBBox.z < currentBBox.zEnd && initialBBox.y < currentBBox.yEnd && initialBBox.x < currentBBox.xEnd))
+        {
+            return true;
+        }
+        return false;
+    }
+
+    template<>
+    bool checkBoundingBox<1>(const PaintStructBoundBox& initialBBox, const PaintStructBoundBox& currentBBox)
+    {
+        if (initialBBox.zEnd >= currentBBox.z && initialBBox.yEnd >= currentBBox.y && initialBBox.xEnd < currentBBox.x
+            && !(initialBBox.z < currentBBox.zEnd && initialBBox.y < currentBBox.yEnd && initialBBox.x >= currentBBox.xEnd))
+        {
+            return true;
+        }
+        return false;
+    }
+
+    template<>
+    bool checkBoundingBox<2>(const PaintStructBoundBox& initialBBox, const PaintStructBoundBox& currentBBox)
+    {
+        if (initialBBox.zEnd >= currentBBox.z && initialBBox.yEnd < currentBBox.y && initialBBox.xEnd < currentBBox.x
+            && !(initialBBox.z < currentBBox.zEnd && initialBBox.y >= currentBBox.yEnd && initialBBox.x >= currentBBox.xEnd))
+        {
+            return true;
+        }
+        return false;
+    }
+
+    template<>
+    bool checkBoundingBox<3>(const PaintStructBoundBox& initialBBox, const PaintStructBoundBox& currentBBox)
+    {
+        if (initialBBox.zEnd >= currentBBox.z && initialBBox.yEnd < currentBBox.y && initialBBox.xEnd >= currentBBox.x
+            && !(initialBBox.z < currentBBox.zEnd && initialBBox.y >= currentBBox.yEnd && initialBBox.x < currentBBox.xEnd))
+        {
+            return true;
+        }
+        return false;
+    }
+
+    template<uint8_t _TRotation>
+    static PaintStruct* arrangeStructsHelperRotation(PaintStruct* psNext, const uint16_t quadrantIndex, const uint8_t flag)
+    {
+        PaintStruct* ps = nullptr;
+        do
+        {
+            ps = psNext;
+            psNext = psNext->nextQuadrantPS;
+            if (psNext == nullptr)
+                return ps;
+        } while (quadrantIndex > psNext->quadrantIndex);
+
+        // Cache the last visited node so we don't have to walk the whole list again
+        auto* psCache = ps;
+        auto* psTemp = ps;
+        do
+        {
+            ps = ps->nextQuadrantPS;
+            if (ps == nullptr)
+                break;
+
+            if (ps->quadrantIndex > quadrantIndex + 1)
+            {
+                ps->quadrantFlags = QuadrantFlags::bigger;
+            }
+            else if (ps->quadrantIndex == quadrantIndex + 1)
+            {
+                ps->quadrantFlags = QuadrantFlags::next | QuadrantFlags::identical;
+            }
+            else if (ps->quadrantIndex == quadrantIndex)
+            {
+                ps->quadrantFlags = flag | QuadrantFlags::identical;
+            }
+        } while (ps->quadrantIndex <= quadrantIndex + 1);
+        ps = psTemp;
+
+        while (true)
+        {
+            while (true)
+            {
+                psNext = ps->nextQuadrantPS;
+                if (psNext == nullptr)
+                    return psCache;
+                if (psNext->quadrantFlags & QuadrantFlags::bigger)
+                    return psCache;
+                if (psNext->quadrantFlags & QuadrantFlags::identical)
+                    break;
+                ps = psNext;
+            }
+
+            psNext->quadrantFlags &= ~QuadrantFlags::identical;
+            psTemp = ps;
+
+            const PaintStructBoundBox& initialBBox = psNext->bounds;
+
+            while (true)
+            {
+                ps = psNext;
+                psNext = psNext->nextQuadrantPS;
+                if (psNext == nullptr)
+                    break;
+                if (psNext->quadrantFlags & QuadrantFlags::bigger)
+                    break;
+                if (!(psNext->quadrantFlags & QuadrantFlags::next))
+                    continue;
+
+                const PaintStructBoundBox& currentBBox = psNext->bounds;
+
+                const bool compareResult = checkBoundingBox<_TRotation>(initialBBox, currentBBox);
+
+                if (compareResult)
+                {
+                    ps->nextQuadrantPS = psNext->nextQuadrantPS;
+                    PaintStruct* ps_temp2 = psTemp->nextQuadrantPS;
+                    psTemp->nextQuadrantPS = psNext;
+                    psNext->nextQuadrantPS = ps_temp2;
+                    psNext = ps;
+                }
+            }
+
+            ps = psTemp;
+        }
+    }
+
+    static PaintStruct* arrangeStructsHelper(PaintStruct* psNext, uint16_t quadrantIndex, uint8_t flag, uint8_t rotation)
+    {
+        switch (rotation)
+        {
+            case 0:
+                return arrangeStructsHelperRotation<0>(psNext, quadrantIndex, flag);
+            case 1:
+                return arrangeStructsHelperRotation<1>(psNext, quadrantIndex, flag);
+            case 2:
+                return arrangeStructsHelperRotation<2>(psNext, quadrantIndex, flag);
+            case 3:
+                return arrangeStructsHelperRotation<3>(psNext, quadrantIndex, flag);
+        }
+        return nullptr;
+    }
+
     // 0x0045E7B5
     void PaintSession::arrangeStructs()
     {
-        call(0x0045E7B5);
+        _paintHead = _nextFreePaintStruct;
+        _nextFreePaintStruct++;
+
+        PaintStruct* ps = &(*_paintHead)->basic;
+        ps->nextQuadrantPS = nullptr;
+
+        uint32_t quadrantIndex = _quadrantBackIndex;
+        if (quadrantIndex == std::numeric_limits<uint32_t>::max())
+        {
+            return;
+        }
+
+        do
+        {
+            PaintStruct* psNext = _quadrants[quadrantIndex];
+            if (psNext != nullptr)
+            {
+                ps->nextQuadrantPS = psNext;
+                do
+                {
+                    ps = psNext;
+                    psNext = psNext->nextQuadrantPS;
+
+                } while (psNext != nullptr);
+            }
+        } while (++quadrantIndex <= _quadrantFrontIndex);
+
+        PaintStruct* psCache = arrangeStructsHelper(
+            &(*_paintHead)->basic, _quadrantBackIndex & 0xFFFF, QuadrantFlags::next, currentRotation);
+
+        quadrantIndex = _quadrantBackIndex;
+        while (++quadrantIndex < _quadrantFrontIndex)
+        {
+            psCache = arrangeStructsHelper(psCache, quadrantIndex & 0xFFFF, 0, currentRotation);
+        }
     }
 
     // 0x0045ED91
