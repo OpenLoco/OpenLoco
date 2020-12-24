@@ -65,7 +65,7 @@ void vehicle_channel::update()
     if (!isFree())
     {
         auto v = ThingManager::get<vehicle>(_vehicle_id);
-        if (v != nullptr && v->base_type == thing_base_type::vehicle && (v->vType == VehicleThingType::vehicle_2 || v->vType == VehicleThingType::tail) && (v->var_4A & 1))
+        if (v != nullptr && v->base_type == thing_base_type::vehicle && (v->getVehicleType() == VehicleThingType::vehicle_2 || v->getVehicleType() == VehicleThingType::tail) && (v->var_4A & 1))
         {
             auto [sid, sa] = sub_48A590(v);
             if (_sound_id == sid)

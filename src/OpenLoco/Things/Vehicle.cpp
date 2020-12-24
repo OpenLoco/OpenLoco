@@ -109,7 +109,7 @@ bool vehicle::updateComponent()
     int32_t result = 0;
     registers regs;
     regs.esi = (int32_t)this;
-    switch (vType)
+    switch (getVehicleType())
     {
         case VehicleThingType::head:
             result = asVehicleHead()->update();
@@ -1708,11 +1708,11 @@ namespace OpenLoco::Things::Vehicle
         component = component->nextVehicleComponent();
         veh2 = component->asVehicle2();
         component = component->nextVehicleComponent();
-        if (component->vType != VehicleThingType::tail)
+        if (component->getVehicleType() != VehicleThingType::tail)
         {
             cars = Cars{ Car{ component } };
         }
-        while (component->vType != VehicleThingType::tail)
+        while (component->getVehicleType() != VehicleThingType::tail)
         {
             component = component->nextVehicleComponent();
         }

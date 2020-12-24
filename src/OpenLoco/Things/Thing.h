@@ -20,18 +20,14 @@ namespace OpenLoco
         misc
     };
 
-    enum class VehicleThingType : uint8_t;
-    enum class MiscThingType : uint8_t;
-
 #pragma pack(push, 1)
     struct thing_base
     {
         thing_base_type base_type;
-        union
-        {
-            VehicleThingType vType; // Vehicle Thing type (only valid for vehicle_base things)
-            MiscThingType mType;    // Misc Thing type (only valid for MiscBase things)
-        };
+
+    private:
+        uint8_t type; // Use type specific getters/setters as this depends on base_type
+    public:
         uint8_t pad_02;
         uint8_t pad_03;
         thing_id_t next_thing_id; // 0x04
@@ -56,6 +52,10 @@ namespace OpenLoco
 
         vehicle_base* asVehicle() const { return asBase<vehicle_base, thing_base_type::vehicle>(); }
         MiscBase* asMisc() const { return asBase<MiscBase, thing_base_type::misc>(); }
+
+    protected:
+        uint8_t getSubType() const { return type; }
+        void setSubType(const uint8_t newType) { type = newType; }
 
     private:
         template<typename TType, thing_base_type TClass>

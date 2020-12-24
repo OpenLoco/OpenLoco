@@ -21,10 +21,12 @@ namespace OpenLoco
         template<typename TType, MiscThingType TClass>
         TType* as() const
         {
-            return mType == TClass ? (TType*)this : nullptr;
+            return getMiscType() == TClass ? (TType*)this : nullptr;
         }
 
     public:
+        MiscThingType getMiscType() const { return MiscThingType(thing_base::getSubType()); }
+        void setMiscType(const MiscThingType newType) { thing_base::setSubType(static_cast<uint8_t>(newType)); }
         smoke* as_smoke() const { return as<smoke, MiscThingType::smoke>(); }
         exhaust* as_exhaust() const { return as<exhaust, MiscThingType::exhaust>(); }
     };

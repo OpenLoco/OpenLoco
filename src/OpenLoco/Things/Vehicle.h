@@ -83,7 +83,7 @@ namespace OpenLoco
         TType* as() const
         {
             // This can not use reinterpret_cast due to being a const member without considerable more code
-            return vType == TClass ? (TType*)this : nullptr;
+            return getVehicleType() == TClass ? (TType*)this : nullptr;
         }
 
         template<typename TType>
@@ -93,6 +93,8 @@ namespace OpenLoco
         }
 
     public:
+        VehicleThingType getVehicleType() const { return VehicleThingType(thing_base::getSubType()); }
+        void setVehicleType(const VehicleThingType newType) { thing_base::setSubType(static_cast<uint8_t>(newType)); }
         vehicle_head* asVehicleHead() const { return as<vehicle_head>(); }
         vehicle_1* asVehicle1() const { return as<vehicle_1>(); }
         vehicle_2* asVehicle2() const { return as<vehicle_2>(); }
@@ -514,13 +516,13 @@ namespace OpenLoco
                     {
                         return *this;
                     }
-                    if (nextVehicleComponent->vType == VehicleThingType::tail)
+                    if (nextVehicleComponent->getVehicleType() == VehicleThingType::tail)
                     {
                         nextVehicleComponent = nullptr;
                         return *this;
                     }
                     CarComponent next{ nextVehicleComponent };
-                    if (next.body == nullptr || next.body->vType == VehicleThingType::body_start)
+                    if (next.body == nullptr || next.body->getVehicleType() == VehicleThingType::body_start)
                     {
                         nextVehicleComponent = nullptr;
                         return *this;
@@ -602,14 +604,14 @@ namespace OpenLoco
                         {
                             return *this;
                         }
-                        while (nextVehicleComponent->vType != VehicleThingType::tail)
+                        while (nextVehicleComponent->getVehicleType() != VehicleThingType::tail)
                         {
                             Car next{ nextVehicleComponent };
                             if (next.body == nullptr)
                             {
                                 break;
                             }
-                            if (next.body->vType == VehicleThingType::body_start)
+                            if (next.body->getVehicleType() == VehicleThingType::body_start)
                             {
                                 current = next;
                                 return *this;
