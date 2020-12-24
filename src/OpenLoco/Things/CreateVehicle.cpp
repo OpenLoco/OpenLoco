@@ -30,7 +30,7 @@ namespace OpenLoco::Things::Vehicle
     constexpr auto max_ai_vehicles = 500;
     constexpr auto max_num_car_components_in_car = 4;           // TODO: Move to vehicle_object
     constexpr auto num_vehicle_components_in_car_component = 3; // Bogie bogie body
-    constexpr auto num_vehicle_components_in_base = 4;          // head unk_1 unk_2 tail
+    constexpr auto num_vehicle_components_in_base = 4;          // thing unk_1 unk_2 tail
     constexpr auto max_num_vehicle_components_in_car = num_vehicle_components_in_car_component * max_num_car_components_in_car;
     constexpr thing_id_t allocated_but_free_routing_station = -2; // Indicates that this array is allocated to a vehicle but no station has been set.
 
@@ -434,7 +434,7 @@ namespace OpenLoco::Things::Vehicle
 
         // Get Car insertion location
         Vehicle train(head);
-        // lastVeh will point to the vehicle component prior to the tail (head, unk_1, unk_2 *here*, tail) or (... bogie, bogie, body *here*, tail)
+        // lastVeh will point to the vehicle component prior to the tail (thing, unk_1, unk_2 *here*, tail) or (... bogie, bogie, body *here*, tail)
         OpenLoco::vehicle* lastVeh = nullptr;
         if (!train.cars.empty())
         {
