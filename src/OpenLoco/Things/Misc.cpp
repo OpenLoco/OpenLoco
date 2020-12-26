@@ -35,7 +35,7 @@ exhaust* OpenLoco::exhaust::create(loc16 loc, uint8_t type)
         _exhaust->var_14 = obj->var_05;
         _exhaust->var_09 = obj->var_06;
         _exhaust->var_15 = obj->var_07;
-        _exhaust->setMiscType(MiscThingType::exhaust);
+        _exhaust->setSubType(MiscThingType::exhaust);
         _exhaust->var_26 = 0;
         _exhaust->var_28 = 0;
         _exhaust->var_32 = 0;
@@ -56,7 +56,7 @@ smoke* OpenLoco::smoke::create(loc16 loc)
         t->var_15 = 34;
         t->base_type = thing_base_type::misc;
         t->moveTo(loc);
-        t->setMiscType(MiscThingType::smoke);
+        t->setSubType(MiscThingType::smoke);
         t->var_28 = 0;
     }
     return t;
