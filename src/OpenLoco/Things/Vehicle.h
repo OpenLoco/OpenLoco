@@ -481,8 +481,20 @@ namespace OpenLoco
             CarComponent(OpenLoco::vehicle_base*& component)
             {
                 front = component->asVehicleBogie();
+                if (front == nullptr)
+                {
+                    throw;
+                }
                 back = front->nextVehicleComponent()->asVehicleBogie();
+                if (back == nullptr)
+                {
+                    throw;
+                }
                 body = back->nextVehicleComponent()->asVehicleBody();
+                if (body == nullptr)
+                {
+                    throw;
+                }
                 component = body;
             }
             CarComponent() = default;

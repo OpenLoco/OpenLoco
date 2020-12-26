@@ -1703,9 +1703,25 @@ namespace OpenLoco::Things::Vehicle
     Vehicle::Vehicle(uint16_t _head)
     {
         auto component = ThingManager::get<OpenLoco::vehicle_base>(_head);
+        if (component == nullptr)
+        {
+            throw;
+        }
         head = component->asVehicleHead();
+        if (head == nullptr)
+        {
+            throw;
+        }
         veh1 = head->nextVehicleComponent()->asVehicle1();
+        if (veh1 == nullptr)
+        {
+            throw;
+        }
         veh2 = veh1->nextVehicleComponent()->asVehicle2();
+        if (veh2 == nullptr)
+        {
+            throw;
+        }
         component = veh2->nextVehicleComponent();
         if (component->getSubType() != VehicleThingType::tail)
         {
@@ -1714,6 +1730,10 @@ namespace OpenLoco::Things::Vehicle
         while (component->getSubType() != VehicleThingType::tail)
         {
             component = component->nextVehicleComponent();
+            if (component == nullptr)
+            {
+                throw;
+            }
         }
         tail = component->asVehicleTail();
     }

@@ -144,7 +144,7 @@ namespace OpenLoco::GameCommands
     {
         registers regs;
         regs.bl = GameCommandFlag::apply;
-        regs.cx = head; // vehicle thing id
+        regs.cx = head; // vehicle head id
         regs.ax = i;    // [ 0, 1, 2]
         regs.edx = edx; // part of name buffer
         regs.ebp = ebp; // part of name buffer
