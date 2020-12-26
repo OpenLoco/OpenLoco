@@ -187,7 +187,7 @@ namespace OpenLoco::Things::Vehicle
     {
         auto* const base = createVehicleThing();
         base->base_type = thing_base_type::vehicle;
-        base->type = T::vehicleThingType;
+        base->setSubType(T::vehicleThingType);
         return reinterpret_cast<T*>(base);
     }
 
@@ -333,7 +333,7 @@ namespace OpenLoco::Things::Vehicle
     {
         auto newBody = createVehicleThing<vehicle_body>();
         // TODO: move this into the create function somehow
-        newBody->type = bodyNumber == 0 ? VehicleThingType::body_start : VehicleThingType::body_continued;
+        newBody->setSubType(bodyNumber == 0 ? VehicleThingType::body_start : VehicleThingType::body_continued);
         newBody->owner = _updating_company_id;
         newBody->head = head;
         newBody->body_index = bodyNumber;

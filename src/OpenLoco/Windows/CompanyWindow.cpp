@@ -514,15 +514,21 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             else
             {
                 // loc_434170
-                auto thing = ThingManager::get<OpenLoco::vehicle_head>(company->observation_thing);
-
-                if (thing->base_type != thing_base_type::vehicle || thing->type != VehicleThingType::head || (thing->x == Location::null))
+                auto thing = ThingManager::get<OpenLoco::thing_base>(company->observation_thing);
+                auto* vehicle = thing->asVehicle();
+                if (vehicle == nullptr)
+                {
+                    invalidViewport(self);
+                    return;
+                }
+                auto* head = vehicle->asVehicleHead();
+                if (head == nullptr || (head->x == Location::null))
                 {
                     invalidViewport(self);
                     return;
                 }
 
-                Things::Vehicle::Vehicle train(thing);
+                Things::Vehicle::Vehicle train(head);
 
                 int8_t rotation = static_cast<int8_t>(self->viewports[0]->getRotation());
                 SavedView view(

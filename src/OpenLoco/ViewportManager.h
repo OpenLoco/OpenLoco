@@ -17,6 +17,6 @@ namespace OpenLoco::Ui::ViewportManager
     viewport* create(window* window, int viewportIndex, Gfx::point_t origin, Gfx::ui_size_t size, ZoomLevel zoom, thing_id_t thing_id);
     viewport* create(window* window, int viewportIndex, Gfx::point_t origin, Gfx::ui_size_t size, ZoomLevel zoom, Map::map_pos3 tile);
     void invalidate(station* station);
-    void invalidate(Thing* t, ZoomLevel zoom);
+    void invalidate(thing_base* t, ZoomLevel zoom);
     void invalidate(Map::map_pos pos, coord_t zMin, coord_t zMax, ZoomLevel zoom = ZoomLevel::eighth, int radius = 32);
 }
