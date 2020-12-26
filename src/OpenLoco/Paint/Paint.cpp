@@ -367,7 +367,7 @@ namespace OpenLoco::Paint
         static loco_global<uint32_t, 0x00E04324> _interactionFlags;
         _interactionResult = false;
         _interactionFlags = 0;
-        auto paletteMap = PaletteMap::GetDefault();
+        auto paletteMap = Gfx::PaletteMap::getDefault();
         imageId &= ~Gfx::ImageIdFlags::translucent;
         if (imageId & Gfx::ImageIdFlags::remap)
         {
@@ -377,7 +377,7 @@ namespace OpenLoco::Paint
             {
                 index &= 0x1F;
             }
-            if (auto pm = GetPaletteMapForColour(index))
+            if (auto pm = Gfx::getPaletteMapForColour(index))
             {
                 paletteMap = *pm;
             }
