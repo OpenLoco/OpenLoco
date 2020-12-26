@@ -159,4 +159,6 @@ namespace OpenLoco::Paint
     };
 
     PaintSession* allocateSession(Gfx::drawpixelinfo_t& dpi, const uint16_t viewportFlags);
+
+    void registerHooks();
 }

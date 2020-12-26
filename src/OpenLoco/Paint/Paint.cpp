@@ -42,6 +42,21 @@ namespace OpenLoco::Paint
         return &_session;
     }
 
+    void registerHooks()
+    {
+        registerHook(
+            0x004622A2,
+            [](registers& regs) -> uint8_t {
+                registers backup = regs;
+
+                PaintSession session;
+                session.generate();
+
+                regs = backup;
+                return 0;
+            });
+    }
+
     // 0x00461CF8
     static void tilePaintSetup(PaintSession& session, const Map::map_pos& loc)
     {
@@ -82,7 +97,7 @@ namespace OpenLoco::Paint
     void generateRotated(PaintSession& session)
     {
         auto* dpi = session.dpi();
-        uint16_t numVerticalQuadrants = (dpi->height + rotation == 0 ? 1040 : 1056) >> 5;
+        uint16_t numVerticalQuadrants = (dpi->height + (rotation == 0 ? 1040 : 1056)) >> 5;
         auto mapLoc = Ui::viewportCoordToMapCoord(static_cast<int16_t>(dpi->x & 0xFFE0), static_cast<int16_t>((dpi->y - 16) & 0xFFE0), 0, rotation);
         if constexpr (rotation & 1)
         {

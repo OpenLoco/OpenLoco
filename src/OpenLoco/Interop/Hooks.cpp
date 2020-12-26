@@ -16,6 +16,7 @@
 #include "../Gui.h"
 #include "../Input.h"
 #include "../Map/Tile.h"
+#include "../Paint/Paint.h"
 #include "../Platform/Platform.h"
 #include "../Station.h"
 #include "../Things/Vehicle.h"
@@ -780,6 +781,7 @@ void OpenLoco::Interop::registerHooks()
     GameCommands::registerHooks();
     Title::registerHooks();
     Tutorial::registerHooks();
+    Paint::registerHooks();
 
     // Part of 0x004691FA
     registerHook(
