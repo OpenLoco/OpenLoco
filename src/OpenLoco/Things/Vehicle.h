@@ -478,25 +478,7 @@ namespace OpenLoco
             vehicle_bogie* front = nullptr;
             vehicle_bogie* back = nullptr;
             vehicle_body* body = nullptr;
-            CarComponent(OpenLoco::vehicle_base*& component)
-            {
-                front = component->asVehicleBogie();
-                if (front == nullptr)
-                {
-                    throw;
-                }
-                back = front->nextVehicleComponent()->asVehicleBogie();
-                if (back == nullptr)
-                {
-                    throw;
-                }
-                body = back->nextVehicleComponent()->asVehicleBody();
-                if (body == nullptr)
-                {
-                    throw;
-                }
-                component = body;
-            }
+            CarComponent(OpenLoco::vehicle_base*& component);
             CarComponent() = default;
         };
 

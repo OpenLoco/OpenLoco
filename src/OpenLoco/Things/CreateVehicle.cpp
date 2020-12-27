@@ -844,12 +844,12 @@ namespace OpenLoco::Things::Vehicle
                 auto veh1 = _head->nextVehicleComponent();
                 if (veh1 == nullptr)
                 {
-                    throw;
+                    throw std::runtime_error("Bad vehicle structure");
                 }
                 auto veh2 = veh1->nextVehicleComponent();
                 if (veh2 == nullptr)
                 {
-                    throw;
+                    throw std::runtime_error("Bad vehicle structure");
                 }
                 auto tail = veh2->nextVehicleComponent();
                 // Get all vehicles before freeing

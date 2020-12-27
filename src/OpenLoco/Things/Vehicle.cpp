@@ -1700,27 +1700,47 @@ bool vehicle_head::isVehicleTypeCompatible(const uint16_t vehicleTypeId) // TODO
 
 namespace OpenLoco::Things::Vehicle
 {
+    CarComponent::CarComponent(OpenLoco::vehicle_base*& component)
+    {
+        front = component->asVehicleBogie();
+        if (front == nullptr)
+        {
+            throw std::runtime_error("Bad vehicle structure");
+        }
+        back = front->nextVehicleComponent()->asVehicleBogie();
+        if (back == nullptr)
+        {
+            throw std::runtime_error("Bad vehicle structure");
+        }
+        body = back->nextVehicleComponent()->asVehicleBody();
+        if (body == nullptr)
+        {
+            throw std::runtime_error("Bad vehicle structure");
+        }
+        component = body->nextVehicleComponent();
+    }
+
     Vehicle::Vehicle(uint16_t _head)
     {
         auto component = ThingManager::get<OpenLoco::vehicle_base>(_head);
         if (component == nullptr)
         {
-            throw;
+            throw std::runtime_error("Bad vehicle structure");
         }
         head = component->asVehicleHead();
         if (head == nullptr)
         {
-            throw;
+            throw std::runtime_error("Bad vehicle structure");
         }
         veh1 = head->nextVehicleComponent()->asVehicle1();
         if (veh1 == nullptr)
         {
-            throw;
+            throw std::runtime_error("Bad vehicle structure");
         }
         veh2 = veh1->nextVehicleComponent()->asVehicle2();
         if (veh2 == nullptr)
         {
-            throw;
+            throw std::runtime_error("Bad vehicle structure");
         }
         component = veh2->nextVehicleComponent();
         if (component->getSubType() != VehicleThingType::tail)
@@ -1732,7 +1752,7 @@ namespace OpenLoco::Things::Vehicle
             component = component->nextVehicleComponent();
             if (component == nullptr)
             {
-                throw;
+                throw std::runtime_error("Bad vehicle structure");
             }
         }
         tail = component->asVehicleTail();
