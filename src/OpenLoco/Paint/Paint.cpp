@@ -1,4 +1,5 @@
 #include "Paint.h"
+#include "../Graphics/Gfx.h"
 #include "../Interop/Interop.hpp"
 #include "../Map/Tile.h"
 #include "../StationManager.h"
@@ -360,13 +361,26 @@ namespace OpenLoco::Paint
         }
     }
 
+    static bool isSpriteInteractedWithPaletteSet(Gfx::drawpixelinfo_t* dpi, uint32_t imageId, const Gfx::point_t& coords, const Gfx::PaletteMap& paletteMap)
+    {
+        static loco_global<const uint8_t*, 0x0050B860> _paletteMap;
+        static loco_global<bool, 0x00E40114> _interactionResult;
+        _paletteMap = paletteMap.data();
+        registers regs{};
+        regs.ebx = imageId;
+        regs.edi = reinterpret_cast<int32_t>(dpi);
+        regs.cx = coords.x;
+        regs.dx = coords.y;
+        call(0x00447A5F, regs);
+        return _interactionResult;
+    }
+
     // 0x00447A0E
     static bool isSpriteInteractedWith(Gfx::drawpixelinfo_t* dpi, uint32_t imageId, const Gfx::point_t& coords)
     {
         static loco_global<bool, 0x00E40114> _interactionResult;
         static loco_global<uint32_t, 0x00E04324> _interactionFlags;
         _interactionResult = false;
-        _interactionFlags = 0;
         auto paletteMap = Gfx::PaletteMap::getDefault();
         imageId &= ~Gfx::ImageIdFlags::translucent;
         if (imageId & Gfx::ImageIdFlags::remap)
@@ -384,7 +398,7 @@ namespace OpenLoco::Paint
         }
         else
         {
-            _currentImageType = 0;
+            _interactionFlags = 0;
         }
         return isSpriteInteractedWithPaletteSet(dpi, imageId, coords, paletteMap);
     }
@@ -396,7 +410,6 @@ namespace OpenLoco::Paint
         if (spriteType == InteractionItem::t_0
             || spriteType == InteractionItem::t_18) // 18 as a type seems to not exist.
             return false;
-
 
         uint32_t mask = interactionItemToFilter[static_cast<size_t>(spriteType)];
 
@@ -412,6 +425,11 @@ namespace OpenLoco::Paint
     [[nodiscard]] InteractionArg PaintSession::getNormalInteractionInfo(const uint32_t flags)
     {
         InteractionArg info{};
+        _sessionInteractionInfoX = 0;
+        _sessionInteractionInfoY = 0;
+        _sessionInteractionInfoValue = 0;
+        _sessionInteractionInfoType = InteractionItem::t_0;
+        _sessionInteractionInfoBh = 0;
 
         for (auto* ps = (*_paintHead)->basic.nextQuadrantPS; ps != nullptr; ps = ps->nextQuadrantPS)
         {
@@ -420,11 +438,11 @@ namespace OpenLoco::Paint
             while (nextPS != nullptr)
             {
                 ps = nextPS;
-                if (isSpriteInteractedWith(dpi(), ps->imageId, { ps->x, ps->y }))
+                if (isSpriteInteractedWith(getContext(), ps->imageId, { ps->x, ps->y }))
                 {
                     if (isPSSpriteTypeInFilter(ps->type, flags))
                     {
-                        info = { ps };
+                        info = { *ps };
                     }
                 }
                 nextPS = ps->children;
@@ -432,22 +450,23 @@ namespace OpenLoco::Paint
 
             for (auto* attachedPS = ps->attachedPS; attachedPS != nullptr; attachedPS = attachedPS->next)
             {
-                if (isSpriteInteractedWith(dpi(), attachedPS->imageId, { (attachedPS->x + ps->x), (attachedPS->y + ps->y) }))
+                if (isSpriteInteractedWith(getContext(), attachedPS->imageId, { (attachedPS->x + ps->x), (attachedPS->y + ps->y) }))
                 {
                     if (isPSSpriteTypeInFilter(ps->type, flags))
                     {
-                        info = { ps };
+                        info = { *ps };
                     }
                 }
             }
 
             ps = tempPS;
         }
+        _sessionInteractionInfoX = info.x;
+        _sessionInteractionInfoY = info.y;
+        _sessionInteractionInfoValue = info.value;
+        _sessionInteractionInfoType = info.type;
+        _sessionInteractionInfoBh = info.unkBh;
         return info;
-        _sessionInteractionInfoType = InteractionItem::t_0;
-        _getMapCoordinatesFromPosFlags = flags;
-        call(0x0045ED91);
-        return InteractionArg{ _sessionInteractionInfoX, _sessionInteractionInfoY, { _sessionInteractionInfoValue }, _sessionInteractionInfoType, _sessionInteractionInfoBh };
     }
 
     // 0x0048DDE4

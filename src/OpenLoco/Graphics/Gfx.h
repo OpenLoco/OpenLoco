@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../Core/Optional.hpp"
 #include "../OpenLoco.h"
 #include "../Types.hpp"
 #include "../Ui/Rect.h"
@@ -117,6 +118,7 @@ namespace OpenLoco::Gfx
 
         uint8_t& operator[](size_t index);
         uint8_t operator[](size_t index) const;
+        uint8_t* data() const { return _data; }
         uint8_t blend(uint8_t src, uint8_t dst) const;
         void copy(size_t dstIndex, const PaletteMap& src, size_t srcIndex, size_t length);
     };

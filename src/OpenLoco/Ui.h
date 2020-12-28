@@ -11,6 +11,11 @@ namespace OpenLoco::Config
     struct resolution_t;
 }
 
+namespace OpenLoco::Paint
+{
+    struct PaintStruct;
+}
+
 namespace OpenLoco::Ui
 {
     struct viewport;
@@ -134,6 +139,14 @@ namespace OpenLoco::Ui
             };
             InteractionItem type;
             uint8_t unkBh;
+            InteractionArg() = default;
+            InteractionArg(const coord_t _x, const coord_t _y, uint32_t _value, InteractionItem _type, uint8_t _unkBh)
+                : x(_x)
+                , y(_y)
+                , value(_value)
+                , type(_type)
+                , unkBh(_unkBh){}
+            InteractionArg(const Paint::PaintStruct& ps);
         };
 
         InteractionArg getItemLeft(int16_t tempX, int16_t tempY);

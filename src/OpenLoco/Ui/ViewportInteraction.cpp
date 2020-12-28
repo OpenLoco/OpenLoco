@@ -13,6 +13,15 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::ViewportInteraction
 {
+    InteractionArg::InteractionArg(const Paint::PaintStruct& ps)
+        : x(ps.map_x)
+        , y(ps.map_y)
+        , object(ps.thing)
+        , type(ps.type)
+        , unkBh(ps.var_29)
+    {
+    }
+
     // 0x004CD658
     InteractionArg getItemLeft(int16_t tempX, int16_t tempY)
     {
