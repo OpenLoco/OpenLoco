@@ -127,8 +127,6 @@ namespace OpenLoco::Gfx
         std::memcpy(&_data[dstIndex], &src._data[srcIndex], copyLength);
     }
 
-
-
     std::optional<uint32_t> getPaletteG1Index(colour_t paletteId)
     {
         if (paletteId < std::size(_paletteToG1Offset))

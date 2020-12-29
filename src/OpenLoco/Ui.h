@@ -145,7 +145,9 @@ namespace OpenLoco::Ui
                 , y(_y)
                 , value(_value)
                 , type(_type)
-                , unkBh(_unkBh){}
+                , unkBh(_unkBh)
+            {
+            }
             InteractionArg(const Paint::PaintStruct& ps);
         };
 
