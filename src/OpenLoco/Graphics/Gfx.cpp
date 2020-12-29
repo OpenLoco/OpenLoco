@@ -54,6 +54,16 @@ namespace OpenLoco::Gfx
 
     static palette_index_t _textColours[8] = { 0 };
 
+    Ui::Rect drawpixelinfo_t::getDrawableRect() const
+    {
+        auto zoom = zoom_level;
+        auto left = x >> zoom;
+        auto top = y >> zoom;
+        auto right = (width >> zoom) + left;
+        auto bottom = (height >> zoom) + top;
+        return Ui::Rect::fromLTRB(left, top, right, bottom);
+    }
+
     drawpixelinfo_t& screenDpi()
     {
         return _screen_dpi;

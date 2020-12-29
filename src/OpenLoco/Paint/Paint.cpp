@@ -73,12 +73,7 @@ namespace OpenLoco::Paint
             return interaction;
         }
 
-        auto zoom = (*_dpi)->zoom_level;
-        auto left = (*_dpi)->x >> zoom;
-        auto top = (*_dpi)->y >> zoom;
-        auto right = ((*_dpi)->width >> zoom) + left;
-        auto bottom = ((*_dpi)->height >> zoom) + top;
-        auto rect = Ui::Rect::fromLTRB(left, top, right, bottom);
+        auto rect = (*_dpi)->getDrawableRect();
 
         for (auto& station : StationManager::stations())
         {
@@ -92,7 +87,7 @@ namespace OpenLoco::Paint
                 continue;
             }
 
-            if (!station.labelPosition.contains(rect, zoom))
+            if (!station.labelPosition.contains(rect, (*_dpi)->zoom_level))
             {
                 continue;
             }
@@ -118,12 +113,7 @@ namespace OpenLoco::Paint
             return interaction;
         }
 
-        auto zoom = (*_dpi)->zoom_level;
-        auto left = (*_dpi)->x >> zoom;
-        auto top = (*_dpi)->y >> zoom;
-        auto right = ((*_dpi)->width >> zoom) + left;
-        auto bottom = ((*_dpi)->height >> zoom) + top;
-        auto rect = Ui::Rect::fromLTRB(left, top, right, bottom);
+        auto rect = (*_dpi)->getDrawableRect();
 
         for (auto& town : TownManager::towns())
         {
@@ -132,7 +122,7 @@ namespace OpenLoco::Paint
                 continue;
             }
 
-            if (!town.labelPosition.contains(rect, zoom))
+            if (!town.labelPosition.contains(rect, (*_dpi)->zoom_level))
             {
                 continue;
             }
