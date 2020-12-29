@@ -90,6 +90,9 @@ namespace OpenLoco
     static loco_global<char[256], 0x011367A0> _11367A0;
     static loco_global<char[256], 0x011368A0> _11368A0;
 
+    static int32_t _monthsSinceLastAutosave;
+
+    static void autosaveReset();
     static void tickLogic(int32_t count);
     static void tickLogic();
     static void tickWait();
@@ -332,6 +335,10 @@ namespace OpenLoco
 
         StringManager::formatString(_11367A0, StringIds::label_button_ok);
         StringManager::formatString(_11368A0, StringIds::label_button_cancel);
+
+        // TODO Move this to a more generic, initialise game state function when
+        //      we have one hooked / implemented.
+        autosaveReset();
     }
 
     static void initialise()
@@ -815,6 +822,65 @@ namespace OpenLoco
         call(0x00496A84, regs);
     }
 
+    static void autosaveReset()
+    {
+        _monthsSinceLastAutosave = 0;
+    }
+
+    static void save_sv5(const fs::path& path)
+    {
+    }
+
+    static void autosave()
+    {
+        // Format filename
+        auto time = std::time(nullptr);
+        auto localTime = std::localtime(&time);
+        char filename[64];
+        snprintf(
+            filename, sizeof(filename), "autosave_%04u-%02u-%02u_%02u-%02u-%02u.sv5", localTime->tm_year + 1900, localTime->tm_mon + 1, localTime->tm_mday, localTime->tm_hour, localTime->tm_min, localTime->tm_sec);
+
+        try
+        {
+            auto autosaveDirectory = Environment::getPath(Environment::path_id::autosave);
+            if (!fs::is_directory(autosaveDirectory))
+            {
+                fs::create_directories(autosaveDirectory);
+                // clang-format off
+                fs::permissions(
+                    autosaveDirectory,
+                    fs::perms::owner_all |
+                    fs::perms::group_read | fs::perms::group_exec |
+                    fs::perms::others_read | fs::perms::others_exec);
+                // clang-format on
+            }
+
+            auto autosaveFullPath = autosaveDirectory / filename;
+
+            auto autosaveFullPath8 = autosaveFullPath.u8string();
+            std::printf("Autosaving game to %s\n", autosaveFullPath8.c_str());
+            save_sv5(autosaveFullPath);
+        }
+        catch (const std::exception& e)
+        {
+            std::fprintf(stderr, "Unable to autosave game: %s\n", e.what());
+        }
+    }
+
+    static void autosaveCheck()
+    {
+        _monthsSinceLastAutosave++;
+
+        if (!isTitleMode())
+        {
+            auto freq = Config::getNew().autosave_frequency;
+            if (freq > 0 && _monthsSinceLastAutosave >= freq)
+            {
+                autosave();
+            }
+        }
+    }
+
     // 0x004968C7
     static void dateTick()
     {
@@ -868,6 +934,8 @@ namespace OpenLoco
                         call(0x004C3A9E);
                         call(0x0047AB9B);
                     }
+
+                    autosaveCheck();
                 }
 
                 call(0x00437FB8);

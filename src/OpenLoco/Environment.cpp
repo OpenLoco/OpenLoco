@@ -146,7 +146,7 @@ namespace OpenLoco::Environment
     {
         auto basePath = getBasePath(id);
         auto subPath = getSubPath(id);
-        auto result = basePath / subPath;
+        auto result = (basePath / subPath).lexically_normal();
         if (!fs::exists(result))
         {
 #ifndef _WIN32
@@ -193,6 +193,7 @@ namespace OpenLoco::Environment
             case path_id::gamecfg:
             case path_id::scores:
             case path_id::openloco_yml:
+            case path_id::autosave:
                 return platform::getUserDirectory();
             case path_id::language_files:
 #if defined(__APPLE__) && defined(__MACH__)
@@ -258,6 +259,7 @@ namespace OpenLoco::Environment
             "Data/TUT800_3.DAT",
             "openloco.yml",
             "language",
+            "save/autosave",
         };
 
         size_t index = (size_t)id;

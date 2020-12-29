@@ -56,6 +56,7 @@ namespace OpenLoco::Environment
         tut800_3,
         openloco_yml,
         language_files,
+        autosave,
     };
 
     fs::path getPath(path_id id);
