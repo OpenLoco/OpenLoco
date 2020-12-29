@@ -9,7 +9,9 @@ namespace OpenLoco::ThingManager
     loco_global<thing_id_t[num_thing_lists], 0x00525E40> _heads;
     loco_global<uint16_t[num_thing_lists], 0x00525E4C> _listCounts;
     loco_global<Thing[max_things], 0x006DB6DC> _things;
+    loco_global<thing_id_t[0x40001], 0x01025A8C> _thingSpatialIndex;
     static loco_global<string_id, 0x009C68E6> gGameCommandErrorText;
+    constexpr size_t _thingSpatialIndexNull = 0x40000;
 
     thing_id_t firstId(thing_list list)
     {
@@ -36,6 +38,30 @@ namespace OpenLoco::ThingManager
             return &_things.get()[id];
         }
         return result;
+    }
+
+    constexpr size_t getSpatialIndexOffset(const Map::map_pos& loc)
+    {
+        size_t index = _thingSpatialIndexNull;
+        if (loc.x != Location::null)
+        {
+            uint16_t x = loc.x & 0x3FE0;
+            uint16_t y = loc.y & 0x3FE0;
+
+            index = (x << 4) | (y >> 5);
+        }
+
+        if (index >= 0x40001)
+        {
+            return _thingSpatialIndexNull;
+        }
+        return index;
+    }
+
+    thing_id_t firstQuadrantId(const Map::map_pos& loc)
+    {
+        auto index = getSpatialIndexOffset(loc);
+        return _thingSpatialIndex[index];
     }
 
     // 0x004700A5

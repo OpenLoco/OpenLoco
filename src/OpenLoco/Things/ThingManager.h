@@ -33,6 +33,8 @@ namespace OpenLoco::ThingManager
     template<typename T>
     T* first();
 
+    thing_id_t firstQuadrantId(const Map::map_pos& loc);
+
     thing_base* createThing();
     void freeThing(thing_base* const thing);
 
@@ -118,4 +120,26 @@ namespace OpenLoco::ThingManager
     };
 
     using VehicleList = ThingList<ListIterator<vehicle_head, &thing_base::next_thing_id>, thing_list::vehicle_head>;
+
+    class ThingTileList
+    {
+    private:
+        uint16_t firstId = ThingId::null;
+        using ThingTileListIterator = ListIterator<thing_base, &thing_base::nextQuadrantId>;
+
+    public:
+        ThingTileList(const Map::map_pos& loc)
+        {
+            firstId = ThingManager::firstQuadrantId(loc);
+        }
+
+        ThingTileListIterator begin()
+        {
+            return ThingTileListIterator(firstId);
+        }
+        ThingTileListIterator end()
+        {
+            return ThingTileListIterator(ThingId::null);
+        }
+    };
 }

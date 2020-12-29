@@ -28,9 +28,8 @@ namespace OpenLoco
     private:
         uint8_t type; // Use type specific getters/setters as this depends on base_type
     public:
-        uint8_t pad_02;
-        uint8_t pad_03;
-        thing_id_t next_thing_id; // 0x04
+        thing_id_t nextQuadrantId; // 0x02
+        thing_id_t next_thing_id;  // 0x04
         uint8_t pad_06[0x09 - 0x06];
         uint8_t var_09;
         thing_id_t id;
