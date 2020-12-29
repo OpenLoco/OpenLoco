@@ -1161,4 +1161,22 @@ namespace OpenLoco::Audio
     {
         return &MusicInfo[track];
     }
+
+    // 0x0048AA67
+    void setBgmVolume(int32_t volume)
+    {
+        if (Config::get().volume == volume)
+        {
+            return;
+        }
+
+        auto& cfg = Config::get();
+        cfg.volume = volume;
+        Config::write();
+
+        if (_audio_initialised && _currentSong != no_song && isChannelPlaying(channel_id::bgm))
+        {
+            setChannelVolume(channel_id::bgm, volume);
+        }
+    }
 }

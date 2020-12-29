@@ -1024,9 +1024,7 @@ namespace OpenLoco::Ui::Options
             int x = _5233A4 - w->x - w->widgets[Widx::volume].left - 10;
             x = std::clamp(x, 0, 80);
 
-            registers regs;
-            regs.ecx = (x * 32) - 2560;
-            call(0x0048AA67, regs);
+            Audio::setBgmVolume((x * 32) - 2560);
 
             w->invalidate();
         }

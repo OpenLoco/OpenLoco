@@ -107,6 +107,7 @@ namespace OpenLoco::Audio
     void stopChannel(channel_id id);
     void setChannelVolume(channel_id id, int32_t volume);
     bool isChannelPlaying(channel_id id);
+    void setBgmVolume(int32_t volume);
 
     void updateVehicleNoise();
     void stopVehicleNoise();
