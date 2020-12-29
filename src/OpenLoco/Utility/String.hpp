@@ -10,6 +10,16 @@ namespace OpenLoco::Utility
     std::string toUtf8(const std::wstring_view& src);
     std::wstring toUtf16(const std::string_view& src);
 
+    inline bool startsWith(std::string_view s, std::string_view value)
+    {
+        if (s.size() >= value.size())
+        {
+            auto substr = s.substr(0, value.size());
+            return substr == value;
+        }
+        return false;
+    }
+
     inline bool iequals(const std::string_view& a, const std::string_view& b)
     {
         if (a.size() != b.size())

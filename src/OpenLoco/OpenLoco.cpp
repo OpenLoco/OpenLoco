@@ -827,6 +827,43 @@ namespace OpenLoco
         _monthsSinceLastAutosave = 0;
     }
 
+    static void autosaveClean()
+    {
+        auto autosaveDirectory = Environment::getPath(Environment::path_id::autosave);
+        if (fs::is_directory(autosaveDirectory))
+        {
+            std::vector<fs::path> autosaveFiles;
+
+            // Collect all the autosave files
+            for (auto& f : fs::directory_iterator(autosaveDirectory))
+            {
+                if (f.is_regular_file())
+                {
+                    auto& path = f.path();
+                    auto filename = path.filename().u8string();
+                    if (Utility::startsWith(filename, "autosave_"))
+                    {
+                        autosaveFiles.push_back(path);
+                    }
+                }
+            }
+
+            auto amountToKeep = static_cast<size_t>(std::max(1, Config::getNew().autosave_amount));
+            if (autosaveFiles.size() > amountToKeep)
+            {
+                // Sort them by name (which should correspond to date order)
+                std::sort(autosaveFiles.begin(), autosaveFiles.end());
+
+                // Delete excess files
+                auto numToDelete = autosaveFiles.size() - amountToKeep;
+                for (size_t i = 0; i < numToDelete; i++)
+                {
+                    fs::remove(autosaveFiles[i]);
+                }
+            }
+        }
+    }
+
     static void autosave()
     {
         // Format filename
@@ -873,6 +910,7 @@ namespace OpenLoco
             if (freq > 0 && _monthsSinceLastAutosave >= freq)
             {
                 autosave();
+                autosaveClean();
             }
         }
     }
