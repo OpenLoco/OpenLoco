@@ -93,12 +93,20 @@ namespace OpenLoco::Ui::ViewportInteraction
             {
                 if (_dpi2->zoom_level <= Config::get().station_names_min_scale)
                 {
-                    interaction = session->getStationNameInteractionInfo(flags);
+                    auto stationInteraction = session->getStationNameInteractionInfo(flags);
+                    if (stationInteraction.type != InteractionItem::t_0)
+                    {
+                        interaction = stationInteraction;
+                    }
                 }
             }
             if (!(vp->flags & ViewportFlags::town_names_displayed))
             {
-                interaction = session->getTownNameInteractionInfo(flags);
+                auto townInteraction = session->getTownNameInteractionInfo(flags);
+                if (townInteraction.type != InteractionItem::t_0)
+                {
+                    interaction = townInteraction;
+                }
             }
             break;
         }

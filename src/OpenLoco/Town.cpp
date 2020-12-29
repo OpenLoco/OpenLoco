@@ -1,6 +1,7 @@
 #include "Town.h"
 #include "Interop/Interop.hpp"
 #include "Localisation/StringIds.h"
+#include "TownManager.h"
 #include <algorithm>
 
 using namespace OpenLoco::Interop;
@@ -13,6 +14,18 @@ namespace OpenLoco
     bool town::empty() const
     {
         return name == StringIds::null;
+    }
+
+    town_id_t town::id() const
+    {
+        // TODO check if this is stored in town structure
+        //      otherwise add it when possible
+        auto index = static_cast<size_t>(this - &TownManager::towns()[0]);
+        if (index > TownManager::max_towns)
+        {
+            index = TownId::null;
+        }
+        return static_cast<town_id_t>(index);
     }
 
     // 0x0049742F

@@ -76,17 +76,14 @@ namespace OpenLoco
 
     struct station
     {
-        string_id name; // 0x00
-        coord_t x;      // 0x02
-        coord_t y;      // 0x04
-        coord_t z;      // 0x06
-        uint16_t label_left[4];
-        uint16_t label_right[4];
-        uint16_t label_top[4];
-        uint16_t label_bottom[4];
-        company_id_t owner; // 0x28
+        string_id name;              // 0x00
+        coord_t x;                   // 0x02
+        coord_t y;                   // 0x04
+        coord_t z;                   // 0x06
+        LabelPosition labelPosition; // 0x08
+        company_id_t owner;          // 0x28
         uint8_t var_29;
-        uint16_t flags;
+        uint16_t flags;                                   // 0x30
         town_id_t town;                                   // 0x2C
         station_cargo_stats cargo_stats[max_cargo_stats]; // 0x2E
         uint16_t stationTileSize;                         // 0x1CE

@@ -248,10 +248,10 @@ namespace OpenLoco::Ui::ViewportManager
             }
 
             ViewportRect rect;
-            rect.left = station->label_left[viewport->zoom];
-            rect.top = station->label_top[viewport->zoom];
-            rect.right = station->label_right[viewport->zoom] + 1;
-            rect.bottom = station->label_bottom[viewport->zoom] + 1;
+            rect.left = station->labelPosition.left[viewport->zoom];
+            rect.top = station->labelPosition.top[viewport->zoom];
+            rect.right = station->labelPosition.right[viewport->zoom] + 1;
+            rect.bottom = station->labelPosition.bottom[viewport->zoom] + 1;
 
             rect.left <<= viewport->zoom;
             rect.top <<= viewport->zoom;

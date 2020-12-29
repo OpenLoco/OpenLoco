@@ -129,4 +129,9 @@ namespace OpenLoco
     };
 
     constexpr uint8_t vehicleTypeCount = 6;
+
+    namespace ZoomLevels
+    {
+        constexpr uint8_t max = 4;
+    }
 }

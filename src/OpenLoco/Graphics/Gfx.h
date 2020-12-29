@@ -19,6 +19,8 @@ namespace OpenLoco::Gfx
         int16_t height;      // 0x0A
         int16_t pitch;       // 0x0C note: this is actually (pitch - width)
         uint16_t zoom_level; // 0x0E
+
+        Ui::Rect getDrawableRect() const;
     };
 
     drawpixelinfo_t& screenDpi();

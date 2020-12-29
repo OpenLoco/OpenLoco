@@ -1,6 +1,8 @@
 #include "Paint.h"
 #include "../Interop/Interop.hpp"
 #include "../Map/Tile.h"
+#include "../StationManager.h"
+#include "../TownManager.h"
 #include "../Ui.h"
 
 using namespace OpenLoco::Interop;
@@ -63,20 +65,75 @@ namespace OpenLoco::Paint
     // 0x0048DDE4
     [[nodiscard]] InteractionArg PaintSession::getStationNameInteractionInfo(const uint32_t flags)
     {
-        _getMapCoordinatesFromPosFlags = flags;
-        registers regs;
-        regs.edi = reinterpret_cast<uint32_t>(*_dpi);
-        call(0x0048DDE4, regs);
-        return InteractionArg{ _sessionInteractionInfoX, _sessionInteractionInfoY, { _sessionInteractionInfoValue }, _sessionInteractionInfoType, _sessionInteractionInfoBh };
+        InteractionArg interaction{};
+
+        // -2 as there are two interaction items that you can't filter out adjust in future
+        if (flags & (1 << (static_cast<uint32_t>(InteractionItem::station) - 2)))
+        {
+            return interaction;
+        }
+
+        auto rect = (*_dpi)->getDrawableRect();
+
+        for (auto& station : StationManager::stations())
+        {
+            if (station.empty())
+            {
+                continue;
+            }
+
+            if (station.flags & station_flags::flag_5)
+            {
+                continue;
+            }
+
+            if (!station.labelPosition.contains(rect, (*_dpi)->zoom_level))
+            {
+                continue;
+            }
+
+            interaction.type = InteractionItem::station;
+            interaction.value = station.id();
+        }
+
+        // This is for functions that have not been implemented yet
+        _sessionInteractionInfoType = interaction.type;
+        _sessionInteractionInfoValue = interaction.value;
+        return interaction;
     }
 
     // 0x0049773D
     [[nodiscard]] InteractionArg PaintSession::getTownNameInteractionInfo(const uint32_t flags)
     {
-        _getMapCoordinatesFromPosFlags = flags;
-        registers regs;
-        regs.edi = reinterpret_cast<uint32_t>(*_dpi);
-        call(0x0049773D, regs);
-        return InteractionArg{ _sessionInteractionInfoX, _sessionInteractionInfoY, { _sessionInteractionInfoValue }, _sessionInteractionInfoType, _sessionInteractionInfoBh };
+        InteractionArg interaction{};
+
+        // -2 as there are two interaction items that you can't filter out adjust in future
+        if (flags & (1 << (static_cast<uint32_t>(InteractionItem::town) - 2)))
+        {
+            return interaction;
+        }
+
+        auto rect = (*_dpi)->getDrawableRect();
+
+        for (auto& town : TownManager::towns())
+        {
+            if (town.empty())
+            {
+                continue;
+            }
+
+            if (!town.labelPosition.contains(rect, (*_dpi)->zoom_level))
+            {
+                continue;
+            }
+
+            interaction.type = InteractionItem::town;
+            interaction.value = town.id();
+        }
+
+        // This is for functions that have not been implemented yet
+        _sessionInteractionInfoType = interaction.type;
+        _sessionInteractionInfoValue = interaction.value;
+        return interaction;
     }
 }
