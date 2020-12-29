@@ -2195,3 +2195,8 @@ strings:
   2140: "Exit OpenLoco"
   2141: "{COLOUR WINDOW_2}Disable AI companies"
   2142: "{SMALLFONT}{COLOUR BLACK}This disables AI from 'thinking', rendering them ineffective.{NEWLINE}In new games, this also prevents new AI companies from forming."
+  2143: "{COLOUR WINDOW_2}Autosave amount:"
+  2144: "{COLOUR WINDOW_2}Autosave frequency:"
+  2145: "Never"
+  2146: "Every month"
+  2147: "Every {INT32} months"

@@ -87,6 +87,10 @@ namespace OpenLoco::Config
             _new_config.scale_factor = config["scale_factor"].as<float>();
         if (config["zoom_to_cursor"])
             _new_config.zoom_to_cursor = config["zoom_to_cursor"].as<bool>();
+        if (config["autosave_frequency"])
+            _new_config.autosave_frequency = config["autosave_frequency"].as<int32_t>();
+        if (config["autosave_amount"])
+            _new_config.autosave_amount = config["autosave_amount"].as<int32_t>();
 
         return _new_config;
     }
@@ -143,6 +147,8 @@ namespace OpenLoco::Config
         node["companyAIDisabled"] = _new_config.companyAIDisabled;
         node["scale_factor"] = _new_config.scale_factor;
         node["zoom_to_cursor"] = _new_config.zoom_to_cursor;
+        node["autosave_frequency"] = _new_config.autosave_frequency;
+        node["autosave_amount"] = _new_config.autosave_amount;
 
         std::ofstream stream(configPath);
         if (stream.is_open())

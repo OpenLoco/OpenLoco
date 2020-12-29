@@ -1842,7 +1842,7 @@ namespace OpenLoco::Ui::Options
 
     namespace Misc
     {
-        static const Gfx::ui_size_t _window_size = { 420, 139 };
+        static const Gfx::ui_size_t _window_size = { 420, 239 };
 
         namespace Widx
         {
@@ -1853,10 +1853,15 @@ namespace OpenLoco::Ui::Options
                 use_preferred_owner_name,
                 change_btn,
                 export_plugin_objects,
+                autosave_frequency,
+                autosave_frequency_btn,
+                autosave_amount,
+                autosave_amount_down_btn,
+                autosave_amount_up_btn,
             };
         }
 
-        static constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Misc::Widx::disable_vehicle_breakdowns) | (1 << Widx::disableAICompanies) | (1 << Misc::Widx::use_preferred_owner_name) | (1 << Misc::Widx::change_btn) | (1 << Misc::Widx::export_plugin_objects);
+        static constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Misc::Widx::disable_vehicle_breakdowns) | (1 << Widx::disableAICompanies) | (1 << Misc::Widx::use_preferred_owner_name) | (1 << Misc::Widx::change_btn) | (1 << Misc::Widx::export_plugin_objects) | (1 << Misc::Widx::autosave_frequency_btn) | (1 << Misc::Widx::autosave_amount) | (1 << Misc::Widx::autosave_amount_down_btn) | (1 << Misc::Widx::autosave_amount_up_btn);
 
         static widget_t _widgets[] = {
             common_options_widgets(_window_size, StringIds::options_title_miscellaneous),
@@ -1865,6 +1870,9 @@ namespace OpenLoco::Ui::Options
             makeWidget({ 10, 79 }, { 400, 12 }, widget_type::checkbox, 1, StringIds::use_preferred_owner_name, StringIds::use_preferred_owner_name_tip),
             makeWidget({ 335, 94 }, { 75, 12 }, widget_type::wt_11, 1, StringIds::change),
             makeWidget({ 10, 109 }, { 400, 12 }, widget_type::checkbox, 1, StringIds::export_plugin_objects, StringIds::export_plugin_objects_tip),
+            makeWidget({ 235, 123 }, { 156, 12 }, widget_type::wt_18, 1, StringIds::empty),
+            makeWidget({ 379, 124 }, { 11, 10 }, widget_type::wt_11, 1, StringIds::dropdown),
+            makeStepperWidgets({ 235, 139 }, { 156, 12 }, widget_type::wt_17, 1, StringIds::empty),
             widgetEnd(),
         };
 
@@ -1929,6 +1937,15 @@ namespace OpenLoco::Ui::Options
             sub_4C13BE(w);
         }
 
+        static void drawDropdownContent(window* w, Gfx::drawpixelinfo_t* dpi, widget_index widgetIndex, string_id stringId, int32_t value)
+        {
+            auto& widget = w->widgets[widgetIndex];
+            FormatArguments args = {};
+            args.push(stringId);
+            args.push(value);
+            drawString_494B3F(*dpi, w->x + widget.left + 1, w->y + widget.top + 1, Colour::black, StringIds::black_stringid, &args);
+        }
+
         // 0x004C1282
         static void draw(window* w, Gfx::drawpixelinfo_t* dpi)
         {
@@ -1943,6 +1960,115 @@ namespace OpenLoco::Ui::Options
             FormatArguments args = {};
             args.push(StringIds::buffer_2039);
             Gfx::drawString_494B3F(*dpi, w->x + 10, w->y + w->widgets[Widx::change_btn].top + 1, 0, StringIds::wcolour2_preferred_owner_name, &args);
+
+            auto y = w->y + w->widgets[Widx::autosave_frequency].top + 1;
+            drawString_494B3F(*dpi, w->x + 10, y, Colour::black, StringIds::autosave_frequency, nullptr);
+
+            auto freq = Config::getNew().autosave_frequency;
+            string_id stringId;
+            switch (freq)
+            {
+                case 0:
+                    stringId = StringIds::autosave_never;
+                    break;
+                case 1:
+                    stringId = StringIds::autosave_every_month;
+                    break;
+                default:
+                    stringId = StringIds::autosave_every_x_months;
+                    break;
+            }
+            drawDropdownContent(w, dpi, Widx::autosave_frequency, stringId, freq);
+
+            y = w->y + w->widgets[Widx::autosave_amount].top + 1;
+            drawString_494B3F(*dpi, w->x + 10, y, Colour::black, StringIds::autosave_amount, nullptr);
+
+            auto scale = Config::getNew().autosave_amount;
+            drawDropdownContent(w, dpi, Widx::autosave_amount, StringIds::int_32, scale);
+        }
+
+        static void changeAutosaveAmount(window* w, int32_t delta)
+        {
+            auto& cfg = Config::getNew();
+            auto newValue = std::clamp(cfg.autosave_amount + delta, 1, 24);
+            if (cfg.autosave_amount != newValue)
+            {
+                cfg.autosave_amount = newValue;
+                Config::writeNewConfig();
+                w->invalidate();
+            }
+        }
+
+        static void changeAutosaveFrequency(window* w, int32_t value)
+        {
+            auto& cfg = Config::getNew();
+            if (cfg.autosave_frequency != value)
+            {
+                cfg.autosave_frequency = value;
+                Config::writeNewConfig();
+                w->invalidate();
+            }
+        }
+
+        static void showAutosaveFrequencyDropdown(window* w, widget_index wi)
+        {
+            auto dropdown = w->widgets[wi];
+            Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], 5, 0x80);
+
+            // Add pre-defined entries
+            Dropdown::add(0, StringIds::dropdown_stringid, { StringIds::autosave_never });
+            Dropdown::add(1, StringIds::dropdown_stringid, { StringIds::autosave_every_month });
+            Dropdown::add(2, StringIds::dropdown_stringid, { StringIds::autosave_every_x_months, static_cast<uint16_t>(3) });
+            Dropdown::add(3, StringIds::dropdown_stringid, { StringIds::autosave_every_x_months, static_cast<uint16_t>(6) });
+            Dropdown::add(4, StringIds::dropdown_stringid, { StringIds::autosave_every_x_months, static_cast<uint16_t>(12) });
+
+            // Set current selection
+            auto freq = Config::getNew().autosave_frequency;
+            std::optional<size_t> selected;
+            switch (freq)
+            {
+                case 0:
+                    selected = 0;
+                    break;
+                case 1:
+                    selected = 1;
+                    break;
+                case 3:
+                    selected = 2;
+                    break;
+                case 6:
+                    selected = 3;
+                    break;
+                case 12:
+                    selected = 4;
+                    break;
+            }
+            if (selected)
+            {
+                Dropdown::setItemSelected(*selected);
+            }
+        }
+
+        static void handleAutosaveFrequencyDropdown(window* w, int32_t index)
+        {
+            switch (index)
+            {
+                case 0:
+                    changeAutosaveFrequency(w, 0);
+                    break;
+                case 1:
+                    changeAutosaveFrequency(w, 1);
+                    break;
+                case 2:
+                    changeAutosaveFrequency(w, 3);
+                    break;
+                case 3:
+                    changeAutosaveFrequency(w, 6);
+                    break;
+                case 4:
+                    changeAutosaveFrequency(w, 12);
+                    break;
+            }
         }
 
         // 0x004C12D2
@@ -1981,6 +2107,32 @@ namespace OpenLoco::Ui::Options
 
                 case Widx::change_btn:
                     changePreferredName(w);
+                    break;
+            }
+        }
+
+        static void onMouseDown(window* w, widget_index wi)
+        {
+            switch (wi)
+            {
+                case Widx::autosave_frequency_btn:
+                    showAutosaveFrequencyDropdown(w, Widx::autosave_frequency);
+                    break;
+                case Widx::autosave_amount_down_btn:
+                    changeAutosaveAmount(w, -1);
+                    break;
+                case Widx::autosave_amount_up_btn:
+                    changeAutosaveAmount(w, 1);
+                    break;
+            }
+        }
+
+        static void onDropdown(window* w, widget_index wi, int16_t item_index)
+        {
+            switch (wi)
+            {
+                case Widx::autosave_frequency_btn:
+                    handleAutosaveFrequencyDropdown(w, item_index);
                     break;
             }
         }
@@ -2092,6 +2244,8 @@ namespace OpenLoco::Ui::Options
         {
             _events.on_close = onClose;
             _events.on_mouse_up = onMouseUp;
+            _events.on_mouse_down = onMouseDown;
+            _events.on_dropdown = onDropdown;
             _events.on_update = onUpdate;
             _events.text_input = textInput;
             _events.prepare_draw = prepareDraw;

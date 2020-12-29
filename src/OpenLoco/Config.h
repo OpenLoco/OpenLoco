@@ -153,6 +153,8 @@ namespace OpenLoco::Config
         bool companyAIDisabled = false;
         float scale_factor = 1.0f;
         bool zoom_to_cursor = true;
+        int32_t autosave_frequency = 1;
+        int32_t autosave_amount = 12;
     };
 
 #pragma pack(pop)
