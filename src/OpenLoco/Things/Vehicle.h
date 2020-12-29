@@ -79,11 +79,21 @@ namespace OpenLoco
     struct vehicle_base : thing_base
     {
     private:
+        template<VehicleThingType SubType>
+        bool is() const
+        {
+            return getSubType() == SubType;
+        }
+
         template<typename TType, VehicleThingType TClass>
         TType* as() const
         {
             // This can not use reinterpret_cast due to being a const member without considerable more code
-            return getSubType() == TClass ? (TType*)this : nullptr;
+            if (!is<TClass>())
+            {
+                throw std::runtime_error("Malformed vehicle. Incorrect subType!");
+            }
+            return (TType*)this;
         }
 
         template<typename TType>
@@ -95,25 +105,40 @@ namespace OpenLoco
     public:
         VehicleThingType getSubType() const { return VehicleThingType(thing_base::getSubType()); }
         void setSubType(const VehicleThingType newType) { thing_base::setSubType(static_cast<uint8_t>(newType)); }
+        bool isVehicleHead() const { return is<VehicleThingType::head>(); }
         vehicle_head* asVehicleHead() const { return as<vehicle_head>(); }
+        bool isVehicle1() const { return is<VehicleThingType::vehicle_1>(); }
         vehicle_1* asVehicle1() const { return as<vehicle_1>(); }
+        bool isVehicle2() const { return is<VehicleThingType::vehicle_2>(); }
         vehicle_2* asVehicle2() const { return as<vehicle_2>(); }
+        bool isVehicleBogie() const { return is<VehicleThingType::bogie>(); }
         vehicle_bogie* asVehicleBogie() const { return as<vehicle_bogie>(); }
+        bool isVehicleBody() const { return is<VehicleThingType::body_start>() || is<VehicleThingType::body_continued>(); }
         vehicle_body* asVehicleBody() const
         {
-            auto vehicle = as<vehicle_body, VehicleThingType::body_start>();
-            if (vehicle != nullptr)
-                return vehicle;
+            if (is<VehicleThingType::body_start>())
+            {
+                return as<vehicle_body, VehicleThingType::body_start>();
+            }
+
             return as<vehicle_body, VehicleThingType::body_continued>();
         }
+        bool isVehicle2Or6() { return is<VehicleThingType::vehicle_2>() || is<VehicleThingType::tail>(); }
         vehicle_26* asVehicle2Or6() const
         {
-            auto vehicle = as<vehicle_26, VehicleThingType::vehicle_2>();
-            if (vehicle != nullptr)
-                return vehicle;
+            if (is<VehicleThingType::vehicle_2>())
+            {
+                return as<vehicle_26, VehicleThingType::vehicle_2>();
+            }
+
             return as<vehicle_26, VehicleThingType::tail>();
         }
+        bool isVehicleTail() const { return is<VehicleThingType::tail>(); }
         vehicle_tail* asVehicleTail() const { return as<vehicle_tail>(); }
+
+        vehicle_base* nextVehicle();
+        vehicle_base* nextVehicleComponent();
+        bool updateComponent();
     };
 
     struct vehicle : vehicle_base
@@ -162,11 +187,7 @@ namespace OpenLoco
         uint8_t pad_6B[0x73 - 0x6B];
         uint8_t var_73; // 0x73 (bit 0 = broken down)
 
-        vehicle* nextVehicle();
-        vehicle* nextVehicleComponent();
         vehicle_object* object() const;
-
-        bool updateComponent();
     };
     static_assert(sizeof(vehicle) == 0x74); // Can't use offset_of change this to last field if more found
 
@@ -478,15 +499,7 @@ namespace OpenLoco
             vehicle_bogie* front = nullptr;
             vehicle_bogie* back = nullptr;
             vehicle_body* body = nullptr;
-            CarComponent(OpenLoco::vehicle*& component)
-            {
-                front = component->asVehicleBogie();
-                component = component->nextVehicleComponent();
-                back = component->asVehicleBogie();
-                component = component->nextVehicleComponent();
-                body = component->asVehicleBody();
-                component = component->nextVehicleComponent();
-            }
+            CarComponent(OpenLoco::vehicle_base*& component);
             CarComponent() = default;
         };
 
@@ -496,7 +509,7 @@ namespace OpenLoco
             {
             private:
                 CarComponent current;
-                OpenLoco::vehicle* nextVehicleComponent = nullptr;
+                OpenLoco::vehicle_base* nextVehicleComponent = nullptr;
 
             public:
                 CarComponentIter(const CarComponent* carComponent)
@@ -507,7 +520,7 @@ namespace OpenLoco
                         return;
                     }
                     current = *carComponent;
-                    nextVehicleComponent = reinterpret_cast<OpenLoco::vehicle*>(current.body)->nextVehicleComponent();
+                    nextVehicleComponent = current.body->nextVehicleComponent();
                 }
 
                 CarComponentIter& operator++()
@@ -568,7 +581,7 @@ namespace OpenLoco
                 return CarComponentIter(nullptr);
             }
 
-            Car(OpenLoco::vehicle*& component)
+            Car(OpenLoco::vehicle_base*& component)
                 : CarComponent(component)
             {
             }
@@ -584,7 +597,7 @@ namespace OpenLoco
                 {
                 private:
                     Car current;
-                    OpenLoco::vehicle* nextVehicleComponent = nullptr;
+                    OpenLoco::vehicle_base* nextVehicleComponent = nullptr;
 
                 public:
                     CarIter(const Car* carComponent)
@@ -595,7 +608,7 @@ namespace OpenLoco
                             return;
                         }
                         current = *carComponent;
-                        nextVehicleComponent = reinterpret_cast<OpenLoco::vehicle*>(current.body)->nextVehicleComponent();
+                        nextVehicleComponent = current.body->nextVehicleComponent();
                     }
 
                     CarIter& operator++()

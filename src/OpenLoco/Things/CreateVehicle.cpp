@@ -841,8 +841,16 @@ namespace OpenLoco::Things::Vehicle
                 sub_4B1E77(_head->var_36);
                 sub_470334(_head);
                 sub_42851C(_head->id, 3);
-                auto veh1 = reinterpret_cast<OpenLoco::vehicle*>(_head)->nextVehicleComponent();
+                auto veh1 = _head->nextVehicleComponent();
+                if (veh1 == nullptr)
+                {
+                    throw std::runtime_error("Bad vehicle structure");
+                }
                 auto veh2 = veh1->nextVehicleComponent();
+                if (veh2 == nullptr)
+                {
+                    throw std::runtime_error("Bad vehicle structure");
+                }
                 auto tail = veh2->nextVehicleComponent();
                 // Get all vehicles before freeing
                 ThingManager::freeThing(_head);

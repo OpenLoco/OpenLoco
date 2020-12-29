@@ -43,53 +43,54 @@ namespace OpenLoco::ThingManager
     void moveSpriteToList(thing_base* const thing, const thing_list list);
     bool checkNumFreeThings(const size_t numNewThings);
 
-    class VehicleHeadIterator
+    template<typename ThingType, thing_id_t thing_base::*nextList>
+    class ListIterator
     {
     private:
-        vehicle_head* head = nullptr;
-        thing_id_t nextHeadId = ThingId::null;
+        ThingType* thing = nullptr;
+        thing_id_t nextThingId = ThingId::null;
 
     public:
-        VehicleHeadIterator(const uint16_t _headId)
-            : nextHeadId(_headId)
+        ListIterator(const uint16_t _headId)
+            : nextThingId(_headId)
         {
             ++(*this);
         }
 
-        VehicleHeadIterator& operator++()
+        ListIterator& operator++()
         {
-            head = get<vehicle_head>(nextHeadId);
+            thing = get<ThingType>(nextThingId);
 
-            if (head)
+            if (thing)
             {
-                nextHeadId = head->next_thing_id;
+                nextThingId = thing->*nextList;
             }
             return *this;
         }
 
-        VehicleHeadIterator operator++(int)
+        ListIterator operator++(int)
         {
-            VehicleHeadIterator retval = *this;
+            ListIterator retval = *this;
             ++(*this);
             return retval;
         }
-        bool operator==(VehicleHeadIterator other) const
+        bool operator==(ListIterator& other) const
         {
-            return head == other.head;
+            return thing == other.thing;
         }
-        bool operator!=(VehicleHeadIterator other) const
+        bool operator!=(ListIterator& other) const
         {
             return !(*this == other);
         }
-        vehicle_head* operator*()
+        ThingType* operator*()
         {
-            return head;
+            return thing;
         }
         // iterator traits
         using difference_type = std::ptrdiff_t;
-        using value_type = vehicle_head;
-        using pointer = vehicle_head*;
-        using reference = vehicle_head&;
+        using value_type = ThingType;
+        using pointer = ThingType*;
+        using reference = ThingType&;
         using iterator_category = std::forward_iterator_tag;
     };
 
@@ -116,5 +117,5 @@ namespace OpenLoco::ThingManager
         }
     };
 
-    using VehicleList = ThingList<VehicleHeadIterator, thing_list::vehicle_head>;
+    using VehicleList = ThingList<ListIterator<vehicle_head, &thing_base::next_thing_id>, thing_list::vehicle_head>;
 }

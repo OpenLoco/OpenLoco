@@ -521,13 +521,13 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                     invalidViewport(self);
                     return;
                 }
-                auto* head = vehicle->asVehicleHead();
-                if (head == nullptr || (head->x == Location::null))
+                if (!vehicle->isVehicleHead() || (vehicle->x == Location::null))
                 {
                     invalidViewport(self);
                     return;
                 }
 
+                auto* head = vehicle->asVehicleHead();
                 Things::Vehicle::Vehicle train(head);
 
                 int8_t rotation = static_cast<int8_t>(self->viewports[0]->getRotation());
