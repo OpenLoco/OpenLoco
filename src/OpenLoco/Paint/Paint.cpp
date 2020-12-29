@@ -450,7 +450,7 @@ namespace OpenLoco::Paint
 
             for (auto* attachedPS = ps->attachedPS; attachedPS != nullptr; attachedPS = attachedPS->next)
             {
-                if (isSpriteInteractedWith(getContext(), attachedPS->imageId, { (attachedPS->x + ps->x), (attachedPS->y + ps->y) }))
+                if (isSpriteInteractedWith(getContext(), attachedPS->imageId, { static_cast<int16_t>(attachedPS->x + ps->x), static_cast<int16_t>(attachedPS->y + ps->y) }))
                 {
                     if (isPSSpriteTypeInFilter(ps->type, flags))
                     {
