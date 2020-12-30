@@ -2424,7 +2424,8 @@ namespace OpenLoco::Ui::Vehicle
             auto chosenOffset = head->sizeOfOrderTable - 1;
             if (self->var_842 != -1)
             {
-                chosenOffset = 1;
+                auto orderIndex = 0; // self->var_842 is in terms of order indexs (i.e. 1 per order)
+                chosenOffset = 0;    // chosenOffset will be (orderOffset - head->orderTableOffset)
                 auto orderOffset = head->orderTableOffset;
                 auto orderType = -1; // Just to do one loop in all cases TODO ?do while?
                 while (orderType != 0)
@@ -2435,11 +2436,12 @@ namespace OpenLoco::Ui::Vehicle
                         break;
                     }
                     orderOffset += dword_4FE070[orderType];
-                    if (chosenOffset == self->var_842)
+                    chosenOffset += dword_4FE070[orderType];
+                    orderIndex++;
+                    if (orderIndex == self->var_842)
                     {
                         break;
                     }
-                    chosenOffset++;
                 }
             }
             gGameCommandErrorTitle = StringIds::orders_cant_insert;
