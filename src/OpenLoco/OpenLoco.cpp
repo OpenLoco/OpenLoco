@@ -829,38 +829,47 @@ namespace OpenLoco
 
     static void autosaveClean()
     {
-        auto autosaveDirectory = Environment::getPath(Environment::path_id::autosave);
-        if (fs::is_directory(autosaveDirectory))
+        try
         {
-            std::vector<fs::path> autosaveFiles;
-
-            // Collect all the autosave files
-            for (auto& f : fs::directory_iterator(autosaveDirectory))
+            auto autosaveDirectory = Environment::getPath(Environment::path_id::autosave);
+            if (fs::is_directory(autosaveDirectory))
             {
-                if (f.is_regular_file())
+                std::vector<fs::path> autosaveFiles;
+
+                // Collect all the autosave files
+                for (auto& f : fs::directory_iterator(autosaveDirectory))
                 {
-                    auto& path = f.path();
-                    auto filename = path.filename().u8string();
-                    if (Utility::startsWith(filename, "autosave_"))
+                    if (f.is_regular_file())
                     {
-                        autosaveFiles.push_back(path);
+                        auto& path = f.path();
+                        auto filename = path.filename().u8string();
+                        if (Utility::startsWith(filename, "autosave_") && Utility::endsWith(filename, ".sv5", true))
+                        {
+                            autosaveFiles.push_back(path);
+                        }
+                    }
+                }
+
+                auto amountToKeep = static_cast<size_t>(std::max(1, Config::getNew().autosave_amount));
+                if (autosaveFiles.size() > amountToKeep)
+                {
+                    // Sort them by name (which should correspond to date order)
+                    std::sort(autosaveFiles.begin(), autosaveFiles.end());
+
+                    // Delete excess files
+                    auto numToDelete = autosaveFiles.size() - amountToKeep;
+                    for (size_t i = 0; i < numToDelete; i++)
+                    {
+                        auto path8 = autosaveFiles[i].u8string();
+                        std::printf("Deleting old autosave: %s\n", path8.c_str());
+                        fs::remove(autosaveFiles[i]);
                     }
                 }
             }
-
-            auto amountToKeep = static_cast<size_t>(std::max(1, Config::getNew().autosave_amount));
-            if (autosaveFiles.size() > amountToKeep)
-            {
-                // Sort them by name (which should correspond to date order)
-                std::sort(autosaveFiles.begin(), autosaveFiles.end());
-
-                // Delete excess files
-                auto numToDelete = autosaveFiles.size() - amountToKeep;
-                for (size_t i = 0; i < numToDelete; i++)
-                {
-                    fs::remove(autosaveFiles[i]);
-                }
-            }
+        }
+        catch (const std::exception& e)
+        {
+            std::fprintf(stderr, "Unable to clean autosaves: %s\n", e.what());
         }
     }
 
