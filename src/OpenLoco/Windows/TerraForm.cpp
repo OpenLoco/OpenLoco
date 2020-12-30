@@ -1014,7 +1014,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 if (landObj == nullptr)
                     continue;
 
-                if (landObj->name == _lastSelectedLand)
+                if (i == _lastSelectedLand)
                     Dropdown::setHighlightedItem(landIndex);
 
                 auto args = FormatArguments();
@@ -1067,7 +1067,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 return;
             if (itemIndex == -1)
                 return;
-            _lastSelectedLand = Dropdown::getHighlightedItem();
+            _lastSelectedLand = Dropdown::getItemArgument(itemIndex, 2);
             self->invalidate();
         }
 
