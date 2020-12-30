@@ -880,7 +880,7 @@ namespace OpenLoco
         auto localTime = std::localtime(&time);
         char filename[64];
         snprintf(
-            filename, sizeof(filename), "autosave_%04u-%02u-%02u_%02u-%02u-%02u.sv5", localTime->tm_year + 1900, localTime->tm_mon + 1, localTime->tm_mday, localTime->tm_hour, localTime->tm_min, localTime->tm_sec);
+            filename, sizeof(filename), "autosave_%04u-%02u-%02u_%02u-%02u-%02u.SV5", localTime->tm_year + 1900, localTime->tm_mon + 1, localTime->tm_mday, localTime->tm_hour, localTime->tm_min, localTime->tm_sec);
 
         try
         {
