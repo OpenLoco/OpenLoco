@@ -657,7 +657,7 @@ namespace OpenLoco::Ui::PromptBrowse
                     return path;
                 }
             }
-            return fs::path();
+            return str / fs::path();
         }
     }
 

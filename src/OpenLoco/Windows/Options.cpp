@@ -1842,7 +1842,7 @@ namespace OpenLoco::Ui::Options
 
     namespace Misc
     {
-        static const Gfx::ui_size_t _window_size = { 420, 239 };
+        static const Gfx::ui_size_t _window_size = { 420, 159 };
 
         namespace Widx
         {
@@ -1870,9 +1870,9 @@ namespace OpenLoco::Ui::Options
             makeWidget({ 10, 79 }, { 400, 12 }, widget_type::checkbox, 1, StringIds::use_preferred_owner_name, StringIds::use_preferred_owner_name_tip),
             makeWidget({ 335, 94 }, { 75, 12 }, widget_type::wt_11, 1, StringIds::change),
             makeWidget({ 10, 109 }, { 400, 12 }, widget_type::checkbox, 1, StringIds::export_plugin_objects, StringIds::export_plugin_objects_tip),
-            makeWidget({ 235, 123 }, { 156, 12 }, widget_type::wt_18, 1, StringIds::empty),
-            makeWidget({ 379, 124 }, { 11, 10 }, widget_type::wt_11, 1, StringIds::dropdown),
-            makeStepperWidgets({ 235, 139 }, { 156, 12 }, widget_type::wt_17, 1, StringIds::empty),
+            makeWidget({ 250, 123 }, { 156, 12 }, widget_type::wt_18, 1, StringIds::empty),
+            makeWidget({ 394, 124 }, { 11, 10 }, widget_type::wt_11, 1, StringIds::dropdown),
+            makeStepperWidgets({ 250, 139 }, { 156, 12 }, widget_type::wt_17, 1, StringIds::empty),
             widgetEnd(),
         };
 

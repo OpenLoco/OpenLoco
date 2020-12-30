@@ -56,6 +56,7 @@ namespace OpenLoco::Environment
         tut800_3,
         openloco_yml,
         language_files,
+        save,
         autosave,
     };
 

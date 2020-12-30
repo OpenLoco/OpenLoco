@@ -177,8 +177,8 @@ namespace OpenLoco::Environment
     {
         auto basePath = resolveLocoInstallPath();
         setDirectory(_path_install, basePath);
-        setDirectory(_path_saves_single_player, basePath / "Single Player Saved Games/");
-        setDirectory(_path_saves_two_player, basePath / "Two Player Saved Games/");
+        setDirectory(_path_saves_single_player, getPath(path_id::save));
+        setDirectory(_path_saves_two_player, getPath(path_id::save));
         setDirectory(_path_scenarios, basePath / "Scenarios/*.SC5");
         setDirectory(_path_landscapes, basePath / "Scenarios/Landscapes/*.SC5");
         setDirectory(_path_objects, basePath / "ObjData/*.DAT");
@@ -193,6 +193,7 @@ namespace OpenLoco::Environment
             case path_id::gamecfg:
             case path_id::scores:
             case path_id::openloco_yml:
+            case path_id::save:
             case path_id::autosave:
                 return platform::getUserDirectory();
             case path_id::language_files:
@@ -259,6 +260,7 @@ namespace OpenLoco::Environment
             "Data/TUT800_3.DAT",
             "openloco.yml",
             "language",
+            "save",
             "save/autosave",
         };
 
