@@ -58,7 +58,7 @@ namespace OpenLoco::Paint
     }
 
     // 0x00461CF8
-    static void tilePaintSetup(PaintSession& session, const Map::map_pos& loc)
+    static void paintTileElements(PaintSession& session, const Map::map_pos& loc)
     {
         registers regs{};
         regs.eax = loc.x;
@@ -67,7 +67,7 @@ namespace OpenLoco::Paint
     }
 
     // 0x004617C6
-    static void tilePaintSetup2(PaintSession& session, const Map::map_pos& loc)
+    static void paintTileElements2(PaintSession& session, const Map::map_pos& loc)
     {
         registers regs{};
         regs.eax = loc.x;
@@ -76,7 +76,7 @@ namespace OpenLoco::Paint
     }
 
     // 0x0046FA88
-    static void entityPaintSetup(PaintSession& session, const Map::map_pos& loc)
+    static void paintEntities(PaintSession& session, const Map::map_pos& loc)
     {
         registers regs{};
         regs.eax = loc.x;
@@ -85,7 +85,7 @@ namespace OpenLoco::Paint
     }
 
     // 0x0046FB67
-    static void entityPaintSetup2(PaintSession& session, const Map::map_pos& loc)
+    static void paintEntities2(PaintSession& session, const Map::map_pos& loc)
     {
         registers regs{};
         regs.eax = loc.x;
@@ -96,7 +96,7 @@ namespace OpenLoco::Paint
     template<uint8_t rotation>
     void generateRotated(PaintSession& session)
     {
-        auto* dpi = session.dpi();
+        auto* dpi = session.getContext();
         uint16_t numVerticalQuadrants = (dpi->height + (rotation == 0 ? 1040 : 1056)) >> 5;
         auto mapLoc = Ui::viewportCoordToMapCoord(static_cast<int16_t>(dpi->x & 0xFFE0), static_cast<int16_t>((dpi->y - 16) & 0xFFE0), 0, rotation);
         if constexpr (rotation & 1)
@@ -117,26 +117,26 @@ namespace OpenLoco::Paint
 
         for (; numVerticalQuadrants > 0; --numVerticalQuadrants)
         {
-            tilePaintSetup(session, mapLoc);
-            entityPaintSetup(session, mapLoc);
+            paintTileElements(session, mapLoc);
+            paintEntities(session, mapLoc);
 
             auto loc1 = mapLoc + additionalQuadrants[0];
-            tilePaintSetup2(session, loc1);
-            entityPaintSetup(session, loc1);
+            paintTileElements2(session, loc1);
+            paintEntities(session, loc1);
 
             auto loc2 = mapLoc + additionalQuadrants[1];
-            tilePaintSetup(session, loc2);
-            entityPaintSetup(session, loc2);
+            paintTileElements(session, loc2);
+            paintEntities(session, loc2);
 
             auto loc3 = mapLoc + additionalQuadrants[2];
-            tilePaintSetup2(session, loc3);
-            entityPaintSetup(session, loc3);
+            paintTileElements2(session, loc3);
+            paintEntities(session, loc3);
 
             auto loc4 = mapLoc + additionalQuadrants[3];
-            entityPaintSetup2(session, loc4);
+            paintEntities2(session, loc4);
 
             auto loc5 = mapLoc + additionalQuadrants[4];
-            entityPaintSetup2(session, loc5);
+            paintEntities2(session, loc5);
 
             mapLoc += nextVerticalQuadrant;
         }
