@@ -988,7 +988,7 @@ namespace OpenLoco::Ui
     {
         if (MultiPlayer::resetFlag(MultiPlayer::flags::flag_10))
         {
-            call(0x00435ACC);
+            Windows::CompanyWindow::openAndSetName();
         }
 
         bool set = _525E28 & (1 << 2);

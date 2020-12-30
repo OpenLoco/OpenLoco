@@ -451,13 +451,19 @@ namespace OpenLoco::Input::ShortcutManager
     // 0x004BF359
     static void showCompaniesList()
     {
-        call(0x004BF359);
+        if (isEditorMode())
+            return;
+
+        Ui::Windows::CompanyList::open();
     }
 
     // 0x004BF36A
     static void showCompanyInformation()
     {
-        call(0x004BF36A);
+        if (isEditorMode())
+            return;
+
+        Ui::Windows::CompanyWindow::open(CompanyManager::getControllingId());
     }
 
     // 0x004BF382
