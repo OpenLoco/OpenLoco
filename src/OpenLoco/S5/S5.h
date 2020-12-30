@@ -6,15 +6,29 @@
 
 namespace OpenLoco::S5
 {
+    enum class SType : uint8_t
+    {
+        savedGame = 0,
+        scenario = 1,
+        landscape = 3,
+    };
+
+    enum SFlags : uint8_t
+    {
+        isRaw = 1 << 0,
+        isDump = 1 << 1,
+        hasSaveDetails = 1 << 3,
+    };
+
 #pragma pack(push, 1)
     struct Header
     {
-        std::byte var_0;
-        std::byte var_1;
-        uint16_t var_2;
-        uint32_t var_4;
-        uint32_t var_8;
-        std::byte pad_C[20];
+        SType type;
+        uint8_t flags;
+        uint16_t numPackedObjects;
+        uint32_t version;
+        uint32_t magic;
+        std::byte padding[20];
     };
 #pragma pack(pop)
     static_assert(sizeof(Header) == 0x20);
@@ -130,16 +144,11 @@ namespace OpenLoco::S5
     enum SaveFlags : uint32_t
     {
         savedGame = 1 << 0,
-
-        /**
-         * Using flag 31 causes the saved games to not open, so this must
-         * have another meaning. For autosave we just want to prevent the
-         * construction windows from closing.
-         */
+        scenario = 1 << 1,
+        landscape = 1 << 2,
         noWindowClose = 1u << 29,
-
-        flag30 = 1u << 30, // Does not reorganise map elements
-        flag31 = 1u << 31, // Does not close construction windows
+        raw = 1u << 30,  // Save raw data including pointers with no clean up
+        dump = 1u << 31, // Used for dumping the game state when there is a fatal error
     };
 
     constexpr const char* extensionSC5 = ".SC5";
@@ -151,4 +160,5 @@ namespace OpenLoco::S5
     Options& getOptions();
     Options& getPreviewOptions();
     bool save(const fs::path& path, SaveFlags flags);
+    void registerHooks();
 }

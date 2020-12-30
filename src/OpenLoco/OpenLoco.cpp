@@ -121,6 +121,11 @@ namespace OpenLoco
     }
 #endif
 
+    void resetScreenAge()
+    {
+        _screen_age = 0;
+    }
+
     uint16_t getScreenAge()
     {
         return _screen_age;

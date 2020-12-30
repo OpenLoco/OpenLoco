@@ -7,7 +7,9 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Map::TileManager
 {
+    static loco_global<tile_element*, 0x005230C8> _elements;
     static loco_global<tile_element* [0x30004], 0x00E40134> _tiles;
+    static loco_global<tile_element*, 0x00F00134> _elementsEnd;
     static loco_global<coord_t, 0x00F24486> _mapSelectionAX;
     static loco_global<coord_t, 0x00F24488> _mapSelectionBX;
     static loco_global<coord_t, 0x00F2448A> _mapSelectionAY;
@@ -20,6 +22,21 @@ namespace OpenLoco::Map::TileManager
     void initialise()
     {
         call(0x00461179);
+    }
+
+    stdx::span<tile_element> getElements()
+    {
+        return stdx::span<tile_element>(_elements, getElementsEnd());
+    }
+
+    tile_element* getElementsEnd()
+    {
+        return _elementsEnd;
+    }
+
+    tile_element** getElementIndex()
+    {
+        return _tiles.get();
     }
 
     tile get(map_pos pos)
@@ -191,6 +208,12 @@ namespace OpenLoco::Map::TileManager
         }
 
         return height;
+    }
+
+    // 0x0046148F
+    void reorganise()
+    {
+        call(0x0046148F);
     }
 
     // 0x004610F2

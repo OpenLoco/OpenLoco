@@ -55,6 +55,7 @@ namespace OpenLoco::ThingManager
     uint16_t getListCount(const thing_list list);
     void moveSpriteToList(thing_base* const thing, const thing_list list);
     bool checkNumFreeThings(const size_t numNewThings);
+    void zeroUnused();
 
     template<typename ThingType, thing_id_t thing_base::*nextList>
     class ListIterator

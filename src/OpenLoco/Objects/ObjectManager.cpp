@@ -10,7 +10,24 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::ObjectManager
 {
+    struct object_repository_item
+    {
+        object* objects;
+        OpenLoco::ObjectManager::header* object_entry_extendeds;
+    };
+
+#pragma pack(push, 1)
+    struct ObjectEntry2
+    {
+        header entry;
+        char* unk;
+    };
+    static_assert(sizeof(ObjectEntry2) == 0x14);
+#pragma pack(pop)
+
+    loco_global<ObjectEntry2[maxObjects], 0x1125A90> objectEntries;
     loco_global<object_repository_item[64], 0x4FE0B8> object_repository;
+    loco_global<object* [maxObjects], 0x0050C3D0> _allObjects;
     loco_global<interface_skin_object* [1], 0x0050C3D0> _interfaceObjects;
     loco_global<sound_object* [128], 0x0050C3D4> _soundObjects;
     loco_global<currency_object* [1], 0x0050C5D4> _currencyObjects;
@@ -50,6 +67,22 @@ namespace OpenLoco::ObjectManager
     void loadIndex()
     {
         call(0x00470F3C);
+    }
+
+    header* getObjectEntry(size_t id)
+    {
+        return &objectEntries[id].entry;
+    }
+
+    template<>
+    object* get(size_t id)
+    {
+        auto obj = _allObjects[id];
+        if (obj == (void*)-1)
+        {
+            obj = nullptr;
+        }
+        return obj;
     }
 
     template<>
@@ -342,6 +375,28 @@ namespace OpenLoco::ObjectManager
         }
 
         return list;
+    }
+
+    // 0x004725FE
+    size_t getNumCustomObjects()
+    {
+        size_t result = 0;
+        if (!isNetworked())
+        {
+            for (size_t i = 0; i < maxObjects; i++)
+            {
+                auto obj = get<object>(i);
+                if (obj != nullptr)
+                {
+                    auto entry = getObjectEntry(i);
+                    if (entry->isCustom())
+                    {
+                        result++;
+                    }
+                }
+            }
+        }
+        return result;
     }
 
     // 0x00471B95

@@ -7,6 +7,7 @@
 
 namespace OpenLoco::Ui
 {
+    struct SavedViewSimple;
 
     struct viewport_pos
     {
@@ -109,7 +110,7 @@ namespace OpenLoco::Ui
             return out;
         }
 
-        constexpr int getRotation()
+        constexpr int getRotation() const
         {
             return Interop::addr<0x00e3f0b8, int32_t>();
         }
@@ -146,6 +147,7 @@ namespace OpenLoco::Ui
         void render(Gfx::drawpixelinfo_t* dpi);
         static viewport_pos mapFrom3d(loc16 loc, int32_t rotation);
         void centre2dCoordinates(int16_t x, int16_t y, int16_t z, int16_t* outX, int16_t* outY);
+        SavedViewSimple toSavedView() const;
 
     private:
         void paint(Gfx::drawpixelinfo_t* context, const Ui::Rect& rect);

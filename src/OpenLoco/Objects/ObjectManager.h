@@ -89,12 +89,6 @@ namespace OpenLoco
     struct region_object;
     struct competitor_object;
     struct scenario_text_object;
-
-    struct object_repository_item
-    {
-        object* objects;
-        uint32_t* object_entry_extendeds;
-    };
 }
 
 namespace OpenLoco::ObjectManager
@@ -142,12 +136,16 @@ namespace OpenLoco::ObjectManager
         return counts[(size_t)type];
     };
 
+    constexpr size_t maxObjects = 859;
+
     template<typename T>
     T* get();
 
     template<typename T>
     T* get(size_t id);
 
+    template<>
+    object* get(size_t id);
     template<>
     interface_skin_object* get();
     template<>
@@ -200,14 +198,31 @@ namespace OpenLoco::ObjectManager
     {
         uint8_t type; // 0x00
         uint8_t pad_01[3];
-        uint8_t var_04[8];
+        char name[8];
         uint32_t checksum; // 0xC
+
+        constexpr uint8_t getSourceGame()
+        {
+            return (type >> 6) & 0x3;
+        }
 
         constexpr object_type getType()
         {
             return static_cast<object_type>(type & 0x3F);
         }
+
+        constexpr bool isCustom()
+        {
+            return getSourceGame() == 0;
+        }
+
+        static header empty()
+        {
+            uint8_t bytes[16] = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
+            return *(reinterpret_cast<header*>(bytes));
+        }
     };
+    static_assert(sizeof(header) == 0x10);
 
     struct header2
     {
@@ -238,12 +253,14 @@ namespace OpenLoco::ObjectManager
 
     uint32_t getNumInstalledObjects();
     std::vector<std::pair<uint32_t, object_index_entry>> getAvailableObjects(object_type type);
+    size_t getNumCustomObjects();
     void freeScenarioText();
     void getScenarioText(header& object);
     std::optional<uint32_t> getLoadedObjectIndex(const header* header);
     std::optional<uint32_t> getLoadedObjectIndex(const object_index_entry& object);
     void resetLoadedObjects();
     ObjIndexPair getActiveObject(object_type objectType, uint8_t* edi);
+    header* getObjectEntry(size_t id);
 
     void drawGenericDescription(Gfx::drawpixelinfo_t& dpi, Gfx::point_t& rowPosition, const uint16_t designed, const uint16_t obsolete);
 }

@@ -11,7 +11,6 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Title
 {
-    static loco_global<uint16_t, 0x00508F12> _screenAge;
     static loco_global<uint8_t, 0x00508F1A> _gameSpeed;
 
     static void sub_473A95(int32_t eax);
@@ -86,7 +85,7 @@ namespace OpenLoco::Title
         Gui::init();
         sub_444357();
         Gfx::invalidateScreen();
-        _screenAge = 0;
+        resetScreenAge();
 
         Audio::playTitleScreenMusic();
     }

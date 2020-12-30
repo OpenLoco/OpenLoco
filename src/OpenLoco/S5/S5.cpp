@@ -1,15 +1,94 @@
 #include "S5.h"
 #include "../Interop/Interop.hpp"
+#include "../Map/TileManager.h"
+#include "../Objects/ObjectManager.h"
+#include "../StationManager.h"
+#include "../Things/ThingManager.h"
+#include "../Ui/WindowManager.h"
+#include "../Utility/Exception.hpp"
+#include <fstream>
 
 using namespace OpenLoco::Interop;
+using namespace OpenLoco::Map;
+using namespace OpenLoco::Ui;
+
+namespace OpenLoco
+{
+    constexpr uint32_t currentVersion = 0x62262;
+    constexpr uint32_t magicNumber = 0x62300;
+
+    enum class SawyerEncoding : uint8_t
+    {
+        Uncompressed,
+        RunLengthSingle,
+        RunLengthMulti,
+        Rotate,
+    };
+
+    class SawyerStreamWriter
+    {
+    private:
+        std::ofstream _stream;
+        uint32_t _checksum{};
+
+    public:
+        SawyerStreamWriter(const fs::path& path)
+        {
+            _stream.exceptions(std::ifstream::failbit);
+            _stream.open(path, std::ios::out | std::ios::binary);
+        }
+
+        template<typename T>
+        void writeChunk(SawyerEncoding chunkType, const T& data)
+        {
+            writeChunk(chunkType, &data, sizeof(T));
+        }
+
+        void writeChunk(SawyerEncoding chunkType, const void* data, size_t dataLen)
+        {
+            // Force uncompressed for now
+            chunkType = SawyerEncoding::Uncompressed;
+
+            write(&chunkType, sizeof(chunkType));
+            write(&dataLen, sizeof(dataLen));
+            write(data, dataLen);
+        }
+
+        void write(const void* data, size_t dataLen)
+        {
+            _stream.write(reinterpret_cast<const char*>(data), dataLen);
+            auto data8 = reinterpret_cast<const uint8_t*>(data);
+            for (size_t i = 0; i < dataLen; i++)
+            {
+                _checksum += data8[i];
+            }
+        }
+
+        void writeChecksum()
+        {
+            _stream.write(reinterpret_cast<const char*>(&_checksum), sizeof(_checksum));
+        }
+
+        void close()
+        {
+            _stream.close();
+        }
+    };
+
+}
 
 namespace OpenLoco::S5
 {
+    static loco_global<SaveDetails*, 0x0050AEA8> _saveDetails;
     static loco_global<Options, 0x009C8714> _activeOptions;
     static loco_global<Header, 0x009CCA34> _header;
     static loco_global<Options, 0x009CCA54> _previewOptions;
     static loco_global<uint32_t, 0x009D1C9C> _saveFlags;
     static loco_global<char[512], 0x0112CE04> _savePath;
+    static loco_global<OpenLoco::Ui::SavedViewSimple, 0x00525E36> _savedView;
+    static loco_global<uint32_t, 0x00525F68> _525F68;
+    static loco_global<uint8_t, 0x009D1CC7> _saveError;
+    static loco_global<uint8_t, 0x00F00134> _F00134;
 
     Options& getOptions()
     {
@@ -22,7 +101,7 @@ namespace OpenLoco::S5
     }
 
     // 0x00441C26
-    bool save(const fs::path& path, SaveFlags flags)
+    [[maybe_unused]] bool saveLegacy(const fs::path& path, SaveFlags flags)
     {
         // Copy UTF-8 path into filename buffer
         auto path8 = path.u8string();
@@ -49,5 +128,200 @@ namespace OpenLoco::S5
             regs.eax = flags;
             return call(0x00441C26, regs) & (1 << 8);
         }
+    }
+
+    static void sub_46FF54()
+    {
+        call(0x0046FF54);
+    }
+
+    static void sub_4702F7()
+    {
+        call(0x004702F7);
+    }
+
+    static void sub_4437FC()
+    {
+        _525F68 = 0x62300;
+    }
+
+    static void prepareSaveDetails(SaveDetails& saveDetails)
+    {
+        _saveDetails = &saveDetails;
+        call(0x004471A4);
+        _saveDetails = reinterpret_cast<SaveDetails*>(0xFFFFFFFF);
+    }
+
+    static void writeSaveDetails(SawyerStreamWriter& fs)
+    {
+        auto saveDetails = std::make_unique<SaveDetails>();
+        prepareSaveDetails(*saveDetails);
+        fs.writeChunk(SawyerEncoding::Rotate, *saveDetails);
+    }
+
+    // 0x00472633
+    static void writePackedObjects(SawyerStreamWriter& fs)
+    {
+        throw NotImplementedException();
+    }
+
+    // 0x004723F1
+    static void writeRequiredObjects(SawyerStreamWriter& fs)
+    {
+        std::vector<ObjectManager::header> entries;
+        entries.reserve(ObjectManager::maxObjects);
+
+        for (size_t i = 0; i < ObjectManager::maxObjects; i++)
+        {
+            auto obj = ObjectManager::get<object>(i);
+            if (obj != nullptr)
+            {
+                auto entry = ObjectManager::getObjectEntry(i);
+                entries.push_back(*entry);
+            }
+            else
+            {
+                entries.push_back(ObjectManager::header::empty());
+            }
+        }
+
+        fs.writeChunk(SawyerEncoding::Rotate, entries.data(), entries.size() * sizeof(ObjectManager::header));
+    }
+
+    static Header prepareHeader(SaveFlags flags)
+    {
+        Header result;
+        std::memset(&result, 0, sizeof(result));
+
+        result.type = SType::savedGame;
+        if (flags & SaveFlags::landscape)
+            result.type = SType::landscape;
+        if (flags & SaveFlags::scenario)
+            result.type = SType::scenario;
+
+        if (!(flags & SaveFlags::raw) && !(flags & SaveFlags::dump) && (flags & SaveFlags::savedGame))
+        {
+            result.numPackedObjects = static_cast<uint16_t>(ObjectManager::getNumCustomObjects());
+        }
+
+        result.version = currentVersion;
+        result.magic = magicNumber;
+
+        if (flags & SaveFlags::raw)
+        {
+            result.flags |= SFlags::isRaw;
+        }
+        if (flags & SaveFlags::dump)
+        {
+            result.flags |= SFlags::isDump;
+        }
+        if (!(flags & SaveFlags::scenario) && !(flags & SaveFlags::raw) && !(flags & SaveFlags::dump))
+        {
+            result.flags |= SFlags::hasSaveDetails;
+        }
+
+        return result;
+    }
+
+    // 0x00441C26
+    bool save(const fs::path& path, SaveFlags flags)
+    {
+        if (!(flags & SaveFlags::noWindowClose) || !(flags & SaveFlags::raw) || !(flags & SaveFlags::dump))
+        {
+            WindowManager::closeConstructionWindows();
+        }
+
+        if (!(flags & SaveFlags::raw))
+        {
+            TileManager::reorganise();
+            sub_46FF54();
+            ThingManager::zeroUnused();
+            StationManager::zeroUnused();
+            sub_4702F7();
+        }
+
+        sub_4437FC();
+
+        auto mainWindow = WindowManager::getMainWindow();
+        _savedView = mainWindow != nullptr ? mainWindow->viewports[0]->toSavedView() : SavedViewSimple();
+        _header = prepareHeader(flags);
+
+        try
+        {
+            SawyerStreamWriter fs(path);
+            fs.writeChunk(SawyerEncoding::Rotate, *_header);
+            if (flags & SaveFlags::landscape)
+            {
+                fs.writeChunk(SawyerEncoding::Rotate, _activeOptions);
+            }
+            if (_header->flags & SFlags::hasSaveDetails)
+            {
+                writeSaveDetails(fs);
+            }
+            if (_header->numPackedObjects != 0)
+            {
+                writePackedObjects(fs);
+            }
+            writeRequiredObjects(fs);
+
+            if (flags & SaveFlags::scenario)
+            {
+                fs.writeChunk(SawyerEncoding::RunLengthSingle, (const void*)0x00525E18, 0xB96C);
+                fs.writeChunk(SawyerEncoding::RunLengthSingle, (const void*)0x005B825C, 0x123480);
+                fs.writeChunk(SawyerEncoding::RunLengthSingle, (const void*)0x0094C6DC, 0x79D80);
+            }
+            else
+            {
+                fs.writeChunk(SawyerEncoding::RunLengthSingle, (const void*)0x00525E18, 0x4A0644);
+            }
+
+            if (flags & SaveFlags::raw)
+            {
+                throw NotImplementedException();
+            }
+            else
+            {
+                auto elements = TileManager::getElements();
+                fs.writeChunk(SawyerEncoding::RunLengthMulti, elements.data(), elements.size() * sizeof(tile_element));
+            }
+
+            fs.writeChecksum();
+            fs.close();
+        }
+        catch (const std::exception& e)
+        {
+            std::fprintf(stderr, "Unable to save S5: %s\n", e.what());
+            _saveError = 1;
+        }
+
+        if (!(flags & SaveFlags::raw) && !(flags & SaveFlags::dump))
+        {
+            ObjectManager::resetLoadedObjects();
+        }
+
+        if (_saveError == 0)
+        {
+            Gfx::invalidateScreen();
+            if (!(flags & SaveFlags::raw))
+            {
+                resetScreenAge();
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
+    void registerHooks()
+    {
+        registerHook(
+            0x00441C26,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                auto path = fs::u8path(std::string_view(_savePath));
+
+                registers backup = regs;
+                return save(path, static_cast<SaveFlags>(regs.eax)) ? 0x100 : 0;
+            });
     }
 }
