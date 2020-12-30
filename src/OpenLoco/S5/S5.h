@@ -123,6 +123,9 @@ namespace OpenLoco::S5
         flag31 = 1u << 31, // Does not close construction windows
     };
 
+    constexpr const char* extensionSC5 = ".SC5";
+    constexpr const char* extensionSV5 = ".SV5";
+
     Options& getOptions();
     Options& getPreviewOptions();
     bool save(const fs::path& path, SaveFlags flags);

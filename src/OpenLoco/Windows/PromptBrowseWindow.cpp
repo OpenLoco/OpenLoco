@@ -99,7 +99,7 @@ namespace OpenLoco::Ui::PromptBrowse
 
     static window_event_list _events;
     static loco_global<uint8_t, 0x009D9D63> _type;
-    static loco_global<uint8_t, 0x009DA284> _fileType;
+    static loco_global<browse_file_type, 0x009DA284> _fileType;
     static loco_global<char[256], 0x009D9D64> _title;
     static loco_global<char[32], 0x009D9E64> _filter;
     static loco_global<char[512], 0x009D9E84> _directory;
@@ -166,7 +166,7 @@ namespace OpenLoco::Ui::PromptBrowse
 
         *_type = type;
         *_fileType = browse_file_type::saved_game;
-        if (Utility::iequals(filter, "*.sc5"))
+        if (Utility::iequals(filter, S5::extensionSC5))
         {
             *_fileType = browse_file_type::landscape;
         }
@@ -831,6 +831,18 @@ namespace OpenLoco::Ui::PromptBrowse
         return numNonSpacesProcessed == 0;
     }
 
+    static constexpr const char* getExtensionFromFileType(browse_file_type type)
+    {
+        switch (type)
+        {
+            case browse_file_type::saved_game:
+                return S5::extensionSV5;
+            case browse_file_type::landscape:
+            default:
+                return S5::extensionSC5;
+        }
+    }
+
     // 0x00446574
     static void processFileForLoadSave(window* self)
     {
@@ -846,10 +858,7 @@ namespace OpenLoco::Ui::PromptBrowse
             fs::path path = fs::path(&_directory[0]) / std::string(&_text_input_buffer[0]);
 
             // Append extension to filename.
-            if (_fileType == browse_file_type::saved_game)
-                path += ".SV5";
-            else
-                path += ".SC5";
+            path += getExtensionFromFileType(_fileType);
 
             // Does the file already exist?
             if (fs::exists(path))
@@ -884,7 +893,7 @@ namespace OpenLoco::Ui::PromptBrowse
             // Copy scenario path into expected address. Trailing / on directory is assumed.
             // TODO: refactor to fs::path?
             strncat(_directory, _text_input_buffer, std::size(_directory));
-            strncat(_directory, _fileType == browse_file_type::saved_game ? ".SV5" : ".SC5", std::size(_directory));
+            strncat(_directory, getExtensionFromFileType(_fileType), std::size(_directory));
 
             // Close browse window to start loading.
             WindowManager::close(self);
@@ -898,10 +907,7 @@ namespace OpenLoco::Ui::PromptBrowse
         fs::path path = fs::path(&_directory[0]) / std::string(entry.get_name());
 
         // Append extension to filename.
-        if (_fileType == browse_file_type::saved_game)
-            path += ".SV5";
-        else
-            path += ".SC5";
+        path += getExtensionFromFileType(_fileType);
 
         // Copy directory and filename to buffer.
         char* buffer_2039 = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
