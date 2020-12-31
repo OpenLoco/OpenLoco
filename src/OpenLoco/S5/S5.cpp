@@ -241,24 +241,8 @@ namespace OpenLoco::S5
     // 0x004723F1
     static void writeRequiredObjects(SawyerStreamWriter& fs)
     {
-        std::vector<ObjectManager::header> entries;
-        entries.reserve(ObjectManager::maxObjects);
-
-        for (size_t i = 0; i < ObjectManager::maxObjects; i++)
-        {
-            auto obj = ObjectManager::get<object>(i);
-            if (obj != nullptr)
-            {
-                auto entry = ObjectManager::getObjectEntry(i);
-                entries.push_back(*entry);
-            }
-            else
-            {
-                entries.push_back(ObjectManager::header::empty());
-            }
-        }
-
-        fs.writeChunk(SawyerEncoding::Rotate, entries.data(), entries.size() * sizeof(ObjectManager::header));
+        auto objects = ObjectManager::getLoadedObjects();
+        fs.writeChunk(SawyerEncoding::Rotate, objects.data(), objects.size() * sizeof(ObjectHeader));
     }
 
     static Header prepareHeader(SaveFlags flags)

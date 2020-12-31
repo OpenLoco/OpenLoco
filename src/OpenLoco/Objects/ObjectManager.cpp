@@ -13,13 +13,13 @@ namespace OpenLoco::ObjectManager
     struct object_repository_item
     {
         object* objects;
-        OpenLoco::ObjectManager::header* object_entry_extendeds;
+        ObjectHeader* object_entry_extendeds;
     };
 
 #pragma pack(push, 1)
     struct ObjectEntry2
     {
-        header entry;
+        ObjectHeader entry;
         char* unk;
     };
     static_assert(sizeof(ObjectEntry2) == 0x14);
@@ -69,7 +69,7 @@ namespace OpenLoco::ObjectManager
         call(0x00470F3C);
     }
 
-    header* getObjectEntry(size_t id)
+    ObjectHeader* getObjectEntry(size_t id)
     {
         return &objectEntries[id].entry;
     }
@@ -319,8 +319,8 @@ namespace OpenLoco::ObjectManager
     {
         object_index_entry entry{};
 
-        entry._header = (header*)*ptr;
-        *ptr += sizeof(header);
+        entry._header = (ObjectHeader*)*ptr;
+        *ptr += sizeof(ObjectHeader);
 
         entry._filename = (char*)*ptr;
         *ptr += strlen(entry._filename) + 1;
@@ -340,7 +340,7 @@ namespace OpenLoco::ObjectManager
         for (int n = 0; n < *countA; n++)
         {
             //header* subh = (header*)ptr;
-            *ptr += sizeof(header);
+            *ptr += sizeof(ObjectHeader);
         }
 
         uint8_t* countB = (uint8_t*)*ptr;
@@ -348,7 +348,7 @@ namespace OpenLoco::ObjectManager
         for (int n = 0; n < *countB; n++)
         {
             //header* subh = (header*)ptr;
-            *ptr += sizeof(header);
+            *ptr += sizeof(ObjectHeader);
         }
 
         return entry;
@@ -406,7 +406,7 @@ namespace OpenLoco::ObjectManager
     }
 
     // 0x0047176D
-    void getScenarioText(header& object)
+    void getScenarioText(ObjectHeader& object)
     {
         registers regs;
         regs.ebp = reinterpret_cast<int32_t>(&object);
@@ -415,10 +415,10 @@ namespace OpenLoco::ObjectManager
 
     // 0x004720EB
     // Returns std::nullopt if not loaded
-    std::optional<uint32_t> getLoadedObjectIndex(const header* header)
+    std::optional<uint32_t> getLoadedObjectIndex(const ObjectHeader* header)
     {
         registers regs;
-        regs.ebp = reinterpret_cast<uint32_t>(&header->type);
+        regs.ebp = reinterpret_cast<uint32_t>(header);
         const bool success = !(call(0x004720EB, regs) & (X86_FLAG_CARRY << 8));
         // Object type is also returned on ecx
         if (success)
@@ -439,6 +439,28 @@ namespace OpenLoco::ObjectManager
     void resetLoadedObjects()
     {
         call(0x0047237D);
+    }
+
+    std::vector<ObjectHeader> getLoadedObjects()
+    {
+        std::vector<ObjectHeader> entries;
+        entries.reserve(ObjectManager::maxObjects);
+
+        for (size_t i = 0; i < ObjectManager::maxObjects; i++)
+        {
+            auto obj = ObjectManager::get<object>(i);
+            if (obj != nullptr)
+            {
+                auto entry = getObjectEntry(i);
+                entries.push_back(*entry);
+            }
+            else
+            {
+                entries.emplace_back();
+            }
+        }
+
+        return entries;
     }
 
     // 0x00472AFE

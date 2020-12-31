@@ -5,6 +5,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <cstdio>
+#include <string_view>
 #include <vector>
 
 namespace OpenLoco
@@ -89,6 +90,46 @@ namespace OpenLoco
     struct region_object;
     struct competitor_object;
     struct scenario_text_object;
+
+#pragma pack(push, 1)
+    struct ObjectHeader
+    {
+    private:
+        static constexpr char cFF = static_cast<char>(0xFF);
+
+    public:
+        uint32_t flags = 0xFFFFFFFF;
+        char name[8] = { cFF, cFF, cFF, cFF, cFF, cFF, cFF, cFF };
+        uint32_t checksum = 0xFFFFFFFF;
+
+        std::string_view getName()
+        {
+            return std::string_view(name, sizeof(name));
+        }
+
+        constexpr uint8_t getSourceGame()
+        {
+            return (flags >> 6) & 0x3;
+        }
+
+        constexpr object_type getType()
+        {
+            return static_cast<object_type>(flags & 0x3F);
+        }
+
+        constexpr bool isCustom()
+        {
+            return getSourceGame() == 0;
+        }
+
+        bool isEmpty()
+        {
+            auto ab = reinterpret_cast<int64_t*>(this);
+            return ab[0] == -1 && ab[1] == -1;
+        }
+    };
+    static_assert(sizeof(ObjectHeader) == 0x10);
+#pragma pack(pop)
 }
 
 namespace OpenLoco::ObjectManager
@@ -194,36 +235,6 @@ namespace OpenLoco::ObjectManager
     scenario_text_object* get();
 
 #pragma pack(push, 1)
-    struct header
-    {
-        uint8_t type; // 0x00
-        uint8_t pad_01[3];
-        char name[8];
-        uint32_t checksum; // 0xC
-
-        constexpr uint8_t getSourceGame()
-        {
-            return (type >> 6) & 0x3;
-        }
-
-        constexpr object_type getType()
-        {
-            return static_cast<object_type>(type & 0x3F);
-        }
-
-        constexpr bool isCustom()
-        {
-            return getSourceGame() == 0;
-        }
-
-        static header empty()
-        {
-            uint8_t bytes[16] = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
-            return *(reinterpret_cast<header*>(bytes));
-        }
-    };
-    static_assert(sizeof(header) == 0x10);
-
     struct header2
     {
         uint8_t pad_00[0x04 - 0x00];
@@ -237,7 +248,7 @@ namespace OpenLoco::ObjectManager
 
     struct object_index_entry
     {
-        header* _header;
+        ObjectHeader* _header;
         char* _filename;
         char* _name;
 
@@ -255,12 +266,13 @@ namespace OpenLoco::ObjectManager
     std::vector<std::pair<uint32_t, object_index_entry>> getAvailableObjects(object_type type);
     size_t getNumCustomObjects();
     void freeScenarioText();
-    void getScenarioText(header& object);
-    std::optional<uint32_t> getLoadedObjectIndex(const header* header);
+    void getScenarioText(ObjectHeader& object);
+    std::optional<uint32_t> getLoadedObjectIndex(const ObjectHeader* header);
     std::optional<uint32_t> getLoadedObjectIndex(const object_index_entry& object);
     void resetLoadedObjects();
     ObjIndexPair getActiveObject(object_type objectType, uint8_t* edi);
-    header* getObjectEntry(size_t id);
+    ObjectHeader* getObjectEntry(size_t id);
+    std::vector<ObjectHeader> getLoadedObjects();
 
     void drawGenericDescription(Gfx::drawpixelinfo_t& dpi, Gfx::point_t& rowPosition, const uint16_t designed, const uint16_t obsolete);
 }

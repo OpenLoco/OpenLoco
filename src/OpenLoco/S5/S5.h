@@ -61,7 +61,7 @@ namespace OpenLoco::S5
         uint8_t landDistributionPatterns[32];          // 0x0A
         char scenarioName[64];                         // 0x2A
         char scenarioDetails[256];                     // 0x6A
-        ObjectManager::header scenarioText;            // 0x16A
+        ObjectHeader scenarioText;                      // 0x16A
         uint16_t numberOfForests;                      // 0x17a
         uint8_t minForestRadius;                       // 0x17C
         uint8_t maxForestRadius;                       // 0x17D
