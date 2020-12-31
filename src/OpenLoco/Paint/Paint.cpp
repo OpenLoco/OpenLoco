@@ -4,6 +4,7 @@
 #include "../StationManager.h"
 #include "../TownManager.h"
 #include "../Ui.h"
+#include "../Ui/WindowManager.h"
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui::ViewportInteraction;
@@ -41,10 +42,143 @@ namespace OpenLoco::Paint
         return &_session;
     }
 
+    void registerHooks()
+    {
+        registerHook(
+            0x004622A2,
+            [](registers& regs) -> uint8_t {
+                registers backup = regs;
+
+                PaintSession session;
+                session.generate();
+
+                regs = backup;
+                return 0;
+            });
+    }
+
+    // 0x00461CF8
+    static void paintTileElements(PaintSession& session, const Map::map_pos& loc)
+    {
+        registers regs{};
+        regs.eax = loc.x;
+        regs.ecx = loc.y;
+        call(0x00461CF8, regs);
+    }
+
+    // 0x004617C6
+    static void paintTileElements2(PaintSession& session, const Map::map_pos& loc)
+    {
+        registers regs{};
+        regs.eax = loc.x;
+        regs.ecx = loc.y;
+        call(0x004617C6, regs);
+    }
+
+    // 0x0046FA88
+    static void paintEntities(PaintSession& session, const Map::map_pos& loc)
+    {
+        registers regs{};
+        regs.eax = loc.x;
+        regs.ecx = loc.y;
+        call(0x0046FA88, regs);
+    }
+
+    // 0x0046FB67
+    static void paintEntities2(PaintSession& session, const Map::map_pos& loc)
+    {
+        registers regs{};
+        regs.eax = loc.x;
+        regs.ecx = loc.y;
+        call(0x0046FB67, regs);
+    }
+
+    struct GenerationParameters
+    {
+        Map::map_pos mapLoc;
+        uint16_t numVerticalQuadrants;
+        std::array<Map::map_pos, 5> additionalQuadrants;
+        Map::map_pos nextVerticalQuadrant;
+    };
+
+    template<uint8_t rotation>
+    GenerationParameters generateParameters(Gfx::drawpixelinfo_t* context)
+    {
+        // TODO: Work out what these constants represent
+        uint16_t numVerticalQuadrants = (context->height + (rotation == 0 ? 1040 : 1056)) >> 5;
+
+        auto mapLoc = Ui::viewportCoordToMapCoord(static_cast<int16_t>(context->x & 0xFFE0), static_cast<int16_t>((context->y - 16) & 0xFFE0), 0, rotation);
+        if constexpr (rotation & 1)
+        {
+            mapLoc.y -= 16;
+        }
+        mapLoc.x &= 0xFFE0;
+        mapLoc.y &= 0xFFE0;
+
+        constexpr uint8_t rotOrder[] = { 0, 3, 2, 1 };
+        constexpr std::array<Map::map_pos, 5> additionalQuadrants = {
+            Map::map_pos{ -32, 32 }.rotate(rotOrder[rotation]),
+            Map::map_pos{ 0, 32 }.rotate(rotOrder[rotation]),
+            Map::map_pos{ 32, 0 }.rotate(rotOrder[rotation]),
+            Map::map_pos{ 32, -32 }.rotate(rotOrder[rotation]),
+            Map::map_pos{ -32, 64 }.rotate(rotOrder[rotation]),
+        };
+        constexpr auto nextVerticalQuadrant = Map::map_pos{ 32, 32 }.rotate(rotOrder[rotation]);
+
+        return { mapLoc, numVerticalQuadrants, additionalQuadrants, nextVerticalQuadrant };
+    }
+
+    void PaintSession::generateTilesAndEntities(GenerationParameters&& p)
+    {
+        for (; p.numVerticalQuadrants > 0; --p.numVerticalQuadrants)
+        {
+            paintTileElements(*this, p.mapLoc);
+            paintEntities(*this, p.mapLoc);
+
+            auto loc1 = p.mapLoc + p.additionalQuadrants[0];
+            paintTileElements2(*this, loc1);
+            paintEntities(*this, loc1);
+
+            auto loc2 = p.mapLoc + p.additionalQuadrants[1];
+            paintTileElements(*this, loc2);
+            paintEntities(*this, loc2);
+
+            auto loc3 = p.mapLoc + p.additionalQuadrants[2];
+            paintTileElements2(*this, loc3);
+            paintEntities(*this, loc3);
+
+            auto loc4 = p.mapLoc + p.additionalQuadrants[3];
+            paintEntities2(*this, loc4);
+
+            auto loc5 = p.mapLoc + p.additionalQuadrants[4];
+            paintEntities2(*this, loc5);
+
+            p.mapLoc += p.nextVerticalQuadrant;
+        }
+    }
+
     // 0x004622A2
     void PaintSession::generate()
     {
-        call(0x004622A2);
+        if ((addr<0x00525E28, uint32_t>() & (1 << 0)) == 0)
+            return;
+
+        currentRotation = Ui::WindowManager::getCurrentRotation();
+        switch (currentRotation)
+        {
+            case 0:
+                generateTilesAndEntities(generateParameters<0>(getContext()));
+                break;
+            case 1:
+                generateTilesAndEntities(generateParameters<1>(getContext()));
+                break;
+            case 2:
+                generateTilesAndEntities(generateParameters<2>(getContext()));
+                break;
+            case 3:
+                generateTilesAndEntities(generateParameters<3>(getContext()));
+                break;
+        }
     }
 
     // 0x0045E7B5

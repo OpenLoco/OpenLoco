@@ -107,6 +107,7 @@ namespace OpenLoco::Paint
     };
     static_assert(sizeof(PaintEntry) == 0x34);
 #pragma pack(pop)
+    struct GenerationParameters;
 
     struct PaintSession
     {
@@ -117,8 +118,11 @@ namespace OpenLoco::Paint
         [[nodiscard]] Ui::ViewportInteraction::InteractionArg getNormalInteractionInfo(const uint32_t flags);
         [[nodiscard]] Ui::ViewportInteraction::InteractionArg getStationNameInteractionInfo(const uint32_t flags);
         [[nodiscard]] Ui::ViewportInteraction::InteractionArg getTownNameInteractionInfo(const uint32_t flags);
+        Gfx::drawpixelinfo_t* getContext() { return _dpi; }
 
     private:
+        void generateTilesAndEntities(GenerationParameters&& p);
+
         inline static Interop::loco_global<Gfx::drawpixelinfo_t*, 0x00E0C3E0> _dpi;
         inline static Interop::loco_global<PaintEntry[4000], 0x00E0C410> _paintEntries;
         inline static Interop::loco_global<PaintStruct* [1024], 0x00E3F0C0> _quadrants;
@@ -134,9 +138,9 @@ namespace OpenLoco::Paint
         inline static Interop::loco_global<PaintStringStruct*, 0x00E40118> _paintStringHead;
         inline static Interop::loco_global<PaintStringStruct*, 0x00E4011C> _lastPaintString;
         inline static Interop::loco_global<Map::map_pos, 0x00E3F0B0> _mapPosition;
+        uint8_t currentRotation; // new field set from 0x00E3F0B8 but split out into this struct as seperate item
 
         // From OpenRCT2 equivalent fields not found yet or new
-        //uint8_t currentRotation;                     // new field
         //PaintStruct paintHead;                       // new field
         //uint32_t viewFlags;                          // new field might not be needed tbc
         //AttachedPaintStruct* unkF1AD2C;              // no equivalent
@@ -158,4 +162,6 @@ namespace OpenLoco::Paint
     };
 
     PaintSession* allocateSession(Gfx::drawpixelinfo_t& dpi, const uint16_t viewportFlags);
+
+    void registerHooks();
 }

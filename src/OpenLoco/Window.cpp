@@ -166,20 +166,20 @@ namespace OpenLoco::Ui
         switch (rotation)
         {
             case 0:
-                ret.x = -x / 2 + y + z;
-                ret.y = x / 2 + y + z;
+                ret.x = -(x >> 1) + y + z;
+                ret.y = (x >> 1) + y + z;
                 break;
             case 1:
-                ret.x = -x / 2 - y - z;
-                ret.y = -x / 2 + y + z;
+                ret.x = -(x >> 1) - y - z;
+                ret.y = -(x >> 1) + y + z;
                 break;
             case 2:
-                ret.x = x / 2 - y - z;
-                ret.y = -x / 2 - y - z;
+                ret.x = (x >> 1) - y - z;
+                ret.y = -(x >> 1) - y - z;
                 break;
             case 3:
-                ret.x = x / 2 + y + z;
-                ret.y = x / 2 - y - z;
+                ret.x = (x >> 1) + y + z;
+                ret.y = (x >> 1) - y - z;
                 break;
         }
         return ret;
