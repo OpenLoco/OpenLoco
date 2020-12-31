@@ -541,7 +541,7 @@ namespace OpenLoco::Ui::Vehicle
             }
 
             Dropdown::setItemSelected(selected);
-            Dropdown::setHighlightedItem(selected == 1 ? 0 : selected); // Stop or Manual (Start becomes Stop highlighted)
+            Dropdown::setHighlightedItem(selected == 0 ? 1 : 0); // Stop becomes start highlighted. Manual or Start becomes Stop highlighted
         }
 
         // 0x004B2637
