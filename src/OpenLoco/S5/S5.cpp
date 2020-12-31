@@ -1,5 +1,6 @@
 #include "S5.h"
 #include "../CompanyManager.h"
+#include "../Date.h"
 #include "../Interop/Interop.hpp"
 #include "../Map/TileManager.h"
 #include "../Objects/ObjectManager.h"
@@ -8,7 +9,7 @@
 #include "../Ui/WindowManager.h"
 #include "../Utility/Exception.hpp"
 #include "../ViewportManager.h"
-#include <OpenLoco/Date.h>
+#include "SawyerStream.h"
 #include <fstream>
 
 using namespace OpenLoco::Interop;
@@ -19,65 +20,6 @@ namespace OpenLoco
 {
     constexpr uint32_t currentVersion = 0x62262;
     constexpr uint32_t magicNumber = 0x62300;
-
-    enum class SawyerEncoding : uint8_t
-    {
-        Uncompressed,
-        RunLengthSingle,
-        RunLengthMulti,
-        Rotate,
-    };
-
-    class SawyerStreamWriter
-    {
-    private:
-        std::ofstream _stream;
-        uint32_t _checksum{};
-
-    public:
-        SawyerStreamWriter(const fs::path& path)
-        {
-            _stream.exceptions(std::ifstream::failbit);
-            _stream.open(path, std::ios::out | std::ios::binary);
-        }
-
-        template<typename T>
-        void writeChunk(SawyerEncoding chunkType, const T& data)
-        {
-            writeChunk(chunkType, &data, sizeof(T));
-        }
-
-        void writeChunk(SawyerEncoding chunkType, const void* data, size_t dataLen)
-        {
-            // Force uncompressed for now
-            chunkType = SawyerEncoding::Uncompressed;
-
-            write(&chunkType, sizeof(chunkType));
-            write(&dataLen, sizeof(dataLen));
-            write(data, dataLen);
-        }
-
-        void write(const void* data, size_t dataLen)
-        {
-            _stream.write(reinterpret_cast<const char*>(data), dataLen);
-            auto data8 = reinterpret_cast<const uint8_t*>(data);
-            for (size_t i = 0; i < dataLen; i++)
-            {
-                _checksum += data8[i];
-            }
-        }
-
-        void writeChecksum()
-        {
-            _stream.write(reinterpret_cast<const char*>(&_checksum), sizeof(_checksum));
-        }
-
-        void close()
-        {
-            _stream.close();
-        }
-    };
-
 }
 
 namespace OpenLoco::S5
@@ -232,20 +174,60 @@ namespace OpenLoco::S5
         fs.writeChunk(SawyerEncoding::Rotate, *saveDetails);
     }
 
-    // 0x00472633
-    static void writePackedObjects(SawyerStreamWriter& fs)
+    static constexpr SawyerEncoding getBestEncodingForObjectType(object_type type)
     {
-        throw NotImplementedException();
+        switch (type)
+        {
+            case object_type::competitor:
+                return SawyerEncoding::Uncompressed;
+            default:
+                return SawyerEncoding::RunLengthSingle;
+            case object_type::currency:
+                return SawyerEncoding::RunLengthMulti;
+            case object_type::town_names:
+            case object_type::scenario_text:
+                return SawyerEncoding::Rotate;
+        }
+    }
+
+    // 0x00472633
+    // 0x004722FF
+    static void writePackedObjects(SawyerStreamWriter& fs, const std::vector<ObjectHeader>& packedObjects)
+    {
+        // TODO at some point, change this to just pack the object file directly from
+        //      disc rather than using the in-memory version. This then avoids having
+        //      to unload the object temporarily to save the S5.
+        for (const auto& header : packedObjects)
+        {
+            auto index = ObjectManager::findIndex(header);
+            if (index)
+            {
+                // Unload the object so that the object data is restored to
+                // its original file state
+                ObjectManager::unload(*index);
+
+                auto encodingType = getBestEncodingForObjectType(header.getType());
+                auto obj = ObjectManager::get<object>(*index);
+                auto objSize = ObjectManager::getByteLength(*index);
+
+                fs.write(header);
+                fs.writeChunk(encodingType, &obj, objSize);
+            }
+            else
+            {
+                throw std::runtime_error("Unable to pack object: object not loaded");
+            }
+        }
     }
 
     // 0x004723F1
     static void writeRequiredObjects(SawyerStreamWriter& fs)
     {
-        auto objects = ObjectManager::getLoadedObjects();
+        auto objects = ObjectManager::getHeaders();
         fs.writeChunk(SawyerEncoding::Rotate, objects.data(), objects.size() * sizeof(ObjectHeader));
     }
 
-    static Header prepareHeader(SaveFlags flags)
+    static Header prepareHeader(SaveFlags flags, size_t numPackedObjects)
     {
         Header result;
         std::memset(&result, 0, sizeof(result));
@@ -256,11 +238,7 @@ namespace OpenLoco::S5
         if (flags & SaveFlags::scenario)
             result.type = SType::scenario;
 
-        if (!(flags & SaveFlags::raw) && !(flags & SaveFlags::dump) && (flags & SaveFlags::savedGame))
-        {
-            result.numPackedObjects = static_cast<uint16_t>(ObjectManager::getNumCustomObjects());
-        }
-
+        result.numPackedObjects = static_cast<uint16_t>(numPackedObjects);
         result.version = currentVersion;
         result.magic = magicNumber;
 
@@ -278,6 +256,11 @@ namespace OpenLoco::S5
         }
 
         return result;
+    }
+
+    static constexpr bool shouldPackObjects(SaveFlags flags)
+    {
+        return !(flags & SaveFlags::raw) && !(flags & SaveFlags::dump) && (flags & SaveFlags::packCustomObjects) && !isNetworked();
     }
 
     // 0x00441C26
@@ -299,9 +282,18 @@ namespace OpenLoco::S5
 
         sub_4437FC();
 
+        auto loadedObjects = ObjectManager::getHeaders();
+        std::vector<ObjectHeader> packedObjects;
+        if (shouldPackObjects(flags))
+        {
+            std::copy_if(loadedObjects.begin(), loadedObjects.end(), std::back_inserter(packedObjects), [](ObjectHeader& header) {
+                return header.isCustom();
+            });
+        }
+
         auto mainWindow = WindowManager::getMainWindow();
         _savedView = mainWindow != nullptr ? mainWindow->viewports[0]->toSavedView() : SavedViewSimple();
-        _header = prepareHeader(flags);
+        _header = prepareHeader(flags, packedObjects.size());
 
         try
         {
@@ -317,7 +309,7 @@ namespace OpenLoco::S5
             }
             if (_header->numPackedObjects != 0)
             {
-                writePackedObjects(fs);
+                writePackedObjects(fs, packedObjects);
             }
             writeRequiredObjects(fs);
 
@@ -353,7 +345,7 @@ namespace OpenLoco::S5
 
         if (!(flags & SaveFlags::raw) && !(flags & SaveFlags::dump))
         {
-            ObjectManager::resetLoadedObjects();
+            ObjectManager::reloadAll();
         }
 
         if (_saveError == 0)

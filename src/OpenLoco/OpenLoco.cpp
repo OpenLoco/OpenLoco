@@ -873,7 +873,7 @@ namespace OpenLoco
 
             auto autosaveFullPath8 = autosaveFullPath.u8string();
             std::printf("Autosaving game to %s\n", autosaveFullPath8.c_str());
-            S5::save(autosaveFullPath, static_cast<S5::SaveFlags>(S5::SaveFlags::savedGame | S5::SaveFlags::noWindowClose));
+            S5::save(autosaveFullPath, static_cast<S5::SaveFlags>(S5::SaveFlags::noWindowClose));
         }
         catch (const std::exception& e)
         {

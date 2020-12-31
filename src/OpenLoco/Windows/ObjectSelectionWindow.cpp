@@ -866,7 +866,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         unloadUnselectedObjects();
         editorLoadSelectedObjects();
-        ObjectManager::resetLoadedObjects();
+        ObjectManager::reloadAll();
         ObjectManager::freeScenarioText();
         editorObjectFlagsFree0();
     }

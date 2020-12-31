@@ -102,33 +102,39 @@ namespace OpenLoco
         char name[8] = { cFF, cFF, cFF, cFF, cFF, cFF, cFF, cFF };
         uint32_t checksum = 0xFFFFFFFF;
 
-        std::string_view getName()
+        std::string_view getName() const
         {
             return std::string_view(name, sizeof(name));
         }
 
-        constexpr uint8_t getSourceGame()
+        constexpr uint8_t getSourceGame() const
         {
             return (flags >> 6) & 0x3;
         }
 
-        constexpr object_type getType()
+        constexpr object_type getType() const
         {
             return static_cast<object_type>(flags & 0x3F);
         }
 
-        constexpr bool isCustom()
+        constexpr bool isCustom() const
         {
             return getSourceGame() == 0;
         }
 
-        bool isEmpty()
+        bool isEmpty() const
         {
-            auto ab = reinterpret_cast<int64_t*>(this);
+            auto ab = reinterpret_cast<const int64_t*>(this);
             return ab[0] == -1 && ab[1] == -1;
         }
     };
     static_assert(sizeof(ObjectHeader) == 0x10);
+
+    /**
+     * Represents an index into the entire loaded object array. Not an index for
+     * a specific object type.
+     */
+    using LoadedObjectIndex = size_t;
 #pragma pack(pop)
 }
 
@@ -178,6 +184,7 @@ namespace OpenLoco::ObjectManager
     };
 
     constexpr size_t maxObjects = 859;
+    constexpr size_t maxObjectTypes = 34;
 
     template<typename T>
     T* get();
@@ -264,15 +271,18 @@ namespace OpenLoco::ObjectManager
 
     uint32_t getNumInstalledObjects();
     std::vector<std::pair<uint32_t, object_index_entry>> getAvailableObjects(object_type type);
-    size_t getNumCustomObjects();
     void freeScenarioText();
     void getScenarioText(ObjectHeader& object);
-    std::optional<uint32_t> getLoadedObjectIndex(const ObjectHeader* header);
-    std::optional<uint32_t> getLoadedObjectIndex(const object_index_entry& object);
-    void resetLoadedObjects();
+    std::optional<LoadedObjectIndex> findIndex(const ObjectHeader& header);
+    std::optional<LoadedObjectIndex> findIndex(const object_index_entry& object);
+    void reloadAll();
     ObjIndexPair getActiveObject(object_type objectType, uint8_t* edi);
-    ObjectHeader* getObjectEntry(size_t id);
-    std::vector<ObjectHeader> getLoadedObjects();
+    ObjectHeader* getHeader(LoadedObjectIndex id);
+    std::vector<ObjectHeader> getHeaders();
+
+    void unload(LoadedObjectIndex index);
+
+    size_t getByteLength(LoadedObjectIndex id);
 
     void drawGenericDescription(Gfx::drawpixelinfo_t& dpi, Gfx::point_t& rowPosition, const uint16_t designed, const uint16_t obsolete);
 }

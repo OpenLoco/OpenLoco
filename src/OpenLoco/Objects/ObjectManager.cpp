@@ -69,7 +69,7 @@ namespace OpenLoco::ObjectManager
         call(0x00470F3C);
     }
 
-    ObjectHeader* getObjectEntry(size_t id)
+    ObjectHeader* getHeader(LoadedObjectIndex id)
     {
         return &objectEntries[id].entry;
     }
@@ -377,28 +377,6 @@ namespace OpenLoco::ObjectManager
         return list;
     }
 
-    // 0x004725FE
-    size_t getNumCustomObjects()
-    {
-        size_t result = 0;
-        if (!isNetworked())
-        {
-            for (size_t i = 0; i < maxObjects; i++)
-            {
-                auto obj = get<object>(i);
-                if (obj != nullptr)
-                {
-                    auto entry = getObjectEntry(i);
-                    if (entry->isCustom())
-                    {
-                        result++;
-                    }
-                }
-            }
-        }
-        return result;
-    }
-
     // 0x00471B95
     void freeScenarioText()
     {
@@ -415,10 +393,10 @@ namespace OpenLoco::ObjectManager
 
     // 0x004720EB
     // Returns std::nullopt if not loaded
-    std::optional<uint32_t> getLoadedObjectIndex(const ObjectHeader* header)
+    std::optional<LoadedObjectIndex> findIndex(const ObjectHeader& header)
     {
         registers regs;
-        regs.ebp = reinterpret_cast<uint32_t>(header);
+        regs.ebp = reinterpret_cast<uint32_t>(&header);
         const bool success = !(call(0x004720EB, regs) & (X86_FLAG_CARRY << 8));
         // Object type is also returned on ecx
         if (success)
@@ -430,18 +408,57 @@ namespace OpenLoco::ObjectManager
 
     // 0x004720EB
     // Returns std::nullopt if not loaded
-    std::optional<uint32_t> getLoadedObjectIndex(const object_index_entry& object)
+    std::optional<LoadedObjectIndex> findIndex(const object_index_entry& object)
     {
-        return getLoadedObjectIndex(object._header);
+        return findIndex(*object._header);
     }
 
     // 0x0047237D
-    void resetLoadedObjects()
+    void reloadAll()
     {
         call(0x0047237D);
     }
 
-    std::vector<ObjectHeader> getLoadedObjects()
+    enum class ObjectProcedure
+    {
+        load,
+        unload,
+        proc2,
+        drawPreview,
+    };
+
+    static bool callObjectFunction(LoadedObjectIndex index, ObjectProcedure proc)
+    {
+        auto objectHeader = getHeader(index);
+        if (objectHeader != nullptr)
+        {
+            auto obj = get<object>(index);
+            if (obj != nullptr)
+            {
+                auto objectType = objectHeader->getType();
+                auto objectProcTable = (const uintptr_t*)0x004FE1C8;
+                auto objectProc = objectProcTable[static_cast<size_t>(objectType)];
+
+                registers regs;
+                regs.al = static_cast<uint8_t>(proc);
+                regs.esi = reinterpret_cast<uint32_t>(obj);
+                return (call(objectProc, regs) & X86_FLAG_CARRY) != 0;
+            }
+        }
+        throw std::runtime_error("Object not loaded at this index");
+    }
+
+    void unload(LoadedObjectIndex index)
+    {
+        callObjectFunction(index, ObjectProcedure::unload);
+    }
+
+    size_t getByteLength(LoadedObjectIndex id)
+    {
+        return 0;
+    }
+
+    std::vector<ObjectHeader> getHeaders()
     {
         std::vector<ObjectHeader> entries;
         entries.reserve(ObjectManager::maxObjects);
@@ -451,7 +468,7 @@ namespace OpenLoco::ObjectManager
             auto obj = ObjectManager::get<object>(i);
             if (obj != nullptr)
             {
-                auto entry = getObjectEntry(i);
+                auto entry = getHeader(i);
                 entries.push_back(*entry);
             }
             else
