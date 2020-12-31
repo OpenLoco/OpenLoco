@@ -3,6 +3,7 @@
 #include "../Core/FileSystem.hpp"
 #include "../Objects/ObjectManager.h"
 #include <cstdint>
+#include <memory>
 
 namespace OpenLoco::S5
 {
@@ -140,6 +141,78 @@ namespace OpenLoco::S5
     };
 #pragma pack(pop)
     static_assert(sizeof(SaveDetails) == 0xC618);
+
+#pragma pack(push, 1)
+    struct Company
+    {
+        uint8_t pad_0000[0x8FA8];
+    };
+
+    struct Town
+    {
+        uint8_t pad_000[0x270];
+    };
+
+    struct Industry
+    {
+        uint8_t pad_000[0x453];
+    };
+
+    struct Station
+    {
+        uint8_t pad_000[0x3D2];
+    };
+
+    struct Entity
+    {
+        uint8_t pad_00[0x80];
+    };
+
+    struct Animation
+    {
+        uint8_t pad_0[0x6];
+    };
+
+    struct TileElement
+    {
+        uint8_t pad_0[0x8];
+    };
+
+    struct GameState
+    {
+        uint32_t rng[2];             // 0x000000 (0x00525E18)
+        uint32_t pad_0008[3];        // 0x000008
+        uint32_t currentDay;         // 0x000014
+        uint16_t dayCounter;         // 0x000018
+        uint16_t currentYear;        // 0x00001A
+        uint8_t currentMonth;        // 0x00001C
+        uint8_t currentDayOfMonth;   // 0x00001D
+        int16_t savedViewX;          // 0x00001E
+        int16_t savedViewY;          // 0x000020
+        uint8_t savedViewZoom;       // 0x000022
+        uint8_t savedViewRotation;   // 0x000023
+        uint8_t playerCompanyId;     // 0x000024
+        uint8_t pad_0025[0xB947];    // 0x000025
+        Company companies[15];       // 0x00B96C (0x00531784)
+        Town towns[80];              // 0x092444 (0x005B825C)
+        Industry industries[128];    // 0x09E744 (0x005C455C)
+        Station stations[1024];      // 0x0C10C4 (0x005E6EDC)
+        Entity entities[20000];      // 0x1B58C4 (0x006DB6DC)
+        Animation animations[8192];  // 0x4268C4 (0x0094C6DC)
+        uint8_t pad_4328C4[0x6DD80]; // 0x4328C4 (0x009586DC)
+    };
+#pragma pack(pop)
+    static_assert(sizeof(GameState) == 0x4A0644);
+
+    struct S5File
+    {
+        Header header;
+        std::unique_ptr<Options> landscapeOptions;
+        std::unique_ptr<SaveDetails> saveDetails;
+        ObjectHeader requiredObjects[859];
+        GameState gameState;
+        std::vector<TileElement> tileElements;
+    };
 
     enum SaveFlags : uint32_t
     {

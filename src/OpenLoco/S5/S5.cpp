@@ -25,6 +25,7 @@ namespace OpenLoco
 namespace OpenLoco::S5
 {
     static loco_global<SaveDetails*, 0x0050AEA8> _saveDetails;
+    static loco_global<GameState, 0x00525E18> _gameState;
     static loco_global<char[64], 0x005260D4> _scenarioName;
     static loco_global<Options, 0x009C8714> _activeOptions;
     static loco_global<Header, 0x009CCA34> _header;
@@ -36,6 +37,8 @@ namespace OpenLoco::S5
     static loco_global<uint8_t, 0x009D1CC7> _saveError;
     static loco_global<uint8_t, 0x00F00134> _F00134;
 
+    static bool save(const fs::path& path, const S5File& file, const std::vector<ObjectHeader>& packedObjects);
+
     Options& getOptions()
     {
         return _activeOptions;
@@ -44,36 +47,6 @@ namespace OpenLoco::S5
     Options& getPreviewOptions()
     {
         return _previewOptions;
-    }
-
-    // 0x00441C26
-    [[maybe_unused]] bool saveLegacy(const fs::path& path, SaveFlags flags)
-    {
-        // Copy UTF-8 path into filename buffer
-        auto path8 = path.u8string();
-        if (path8.size() >= std::size(_savePath))
-        {
-            std::fprintf(stderr, "Save path is too long: %s\n", path8.c_str());
-            return false;
-        }
-        std::strncpy(_savePath, path8.c_str(), std::size(_savePath));
-
-        if (flags & SaveFlags::noWindowClose)
-        {
-            // TODO: Remove ghost elements before saving to file
-
-            // Skip the close construction window call
-            // We have skipped the _saveFlags = eax instruction, so do this here
-            _saveFlags = flags;
-            return call(0x00441C3C) & (1 << 8);
-        }
-        else
-        {
-            // Normal entry
-            registers regs;
-            regs.eax = flags;
-            return call(0x00441C26, regs) & (1 << 8);
-        }
     }
 
     static void sub_46FF54()
@@ -89,6 +62,37 @@ namespace OpenLoco::S5
     static void sub_4437FC()
     {
         _525F68 = 0x62300;
+    }
+
+    static Header prepareHeader(SaveFlags flags, size_t numPackedObjects)
+    {
+        Header result;
+        std::memset(&result, 0, sizeof(result));
+
+        result.type = SType::savedGame;
+        if (flags & SaveFlags::landscape)
+            result.type = SType::landscape;
+        if (flags & SaveFlags::scenario)
+            result.type = SType::scenario;
+
+        result.numPackedObjects = static_cast<uint16_t>(numPackedObjects);
+        result.version = currentVersion;
+        result.magic = magicNumber;
+
+        if (flags & SaveFlags::raw)
+        {
+            result.flags |= SFlags::isRaw;
+        }
+        if (flags & SaveFlags::dump)
+        {
+            result.flags |= SFlags::isDump;
+        }
+        if (!(flags & SaveFlags::scenario) && !(flags & SaveFlags::raw) && !(flags & SaveFlags::dump))
+        {
+            result.flags |= SFlags::hasSaveDetails;
+        }
+
+        return result;
     }
 
     // 0x0045A0B3
@@ -168,12 +172,6 @@ namespace OpenLoco::S5
         return saveDetails;
     }
 
-    static void writeSaveDetails(SawyerStreamWriter& fs)
-    {
-        auto saveDetails = prepareSaveDetails();
-        fs.writeChunk(SawyerEncoding::Rotate, *saveDetails);
-    }
-
     static constexpr SawyerEncoding getBestEncodingForObjectType(object_type type)
     {
         switch (type)
@@ -220,42 +218,32 @@ namespace OpenLoco::S5
         }
     }
 
-    // 0x004723F1
-    static void writeRequiredObjects(SawyerStreamWriter& fs)
+    static std::unique_ptr<S5File> prepareSaveFile(SaveFlags flags, const std::vector<ObjectHeader>& requiredObjects, const std::vector<ObjectHeader>& packedObjects)
     {
-        auto objects = ObjectManager::getHeaders();
-        fs.writeChunk(SawyerEncoding::Rotate, objects.data(), objects.size() * sizeof(ObjectHeader));
-    }
+        auto mainWindow = WindowManager::getMainWindow();
+        auto savedView = mainWindow != nullptr ? mainWindow->viewports[0]->toSavedView() : SavedViewSimple();
 
-    static Header prepareHeader(SaveFlags flags, size_t numPackedObjects)
-    {
-        Header result;
-        std::memset(&result, 0, sizeof(result));
-
-        result.type = SType::savedGame;
-        if (flags & SaveFlags::landscape)
-            result.type = SType::landscape;
-        if (flags & SaveFlags::scenario)
-            result.type = SType::scenario;
-
-        result.numPackedObjects = static_cast<uint16_t>(numPackedObjects);
-        result.version = currentVersion;
-        result.magic = magicNumber;
-
-        if (flags & SaveFlags::raw)
+        auto file = std::make_unique<S5File>();
+        file->header = prepareHeader(flags, packedObjects.size());
+        if (file->header.type == SType::landscape)
         {
-            result.flags |= SFlags::isRaw;
+            file->landscapeOptions = std::make_unique<Options>(_activeOptions);
         }
-        if (flags & SaveFlags::dump)
+        if (file->header.flags & SFlags::hasSaveDetails)
         {
-            result.flags |= SFlags::isDump;
+            file->saveDetails = prepareSaveDetails();
         }
-        if (!(flags & SaveFlags::scenario) && !(flags & SaveFlags::raw) && !(flags & SaveFlags::dump))
-        {
-            result.flags |= SFlags::hasSaveDetails;
-        }
+        std::memcpy(file->requiredObjects, requiredObjects.data(), sizeof(file->requiredObjects));
+        file->gameState = _gameState;
+        file->gameState.savedViewX = savedView.mapX;
+        file->gameState.savedViewY = savedView.mapY;
+        file->gameState.savedViewZoom = static_cast<uint8_t>(savedView.zoomLevel);
+        file->gameState.savedViewRotation = savedView.rotation;
 
-        return result;
+        auto tileElements = TileManager::getElements();
+        file->tileElements.resize(tileElements.size());
+        std::memcpy(file->tileElements.data(), tileElements.data(), tileElements.size_bytes());
+        return file;
     }
 
     static constexpr bool shouldPackObjects(SaveFlags flags)
@@ -282,65 +270,18 @@ namespace OpenLoco::S5
 
         sub_4437FC();
 
-        auto loadedObjects = ObjectManager::getHeaders();
-        std::vector<ObjectHeader> packedObjects;
-        if (shouldPackObjects(flags))
         {
-            std::copy_if(loadedObjects.begin(), loadedObjects.end(), std::back_inserter(packedObjects), [](ObjectHeader& header) {
-                return header.isCustom();
-            });
-        }
-
-        auto mainWindow = WindowManager::getMainWindow();
-        _savedView = mainWindow != nullptr ? mainWindow->viewports[0]->toSavedView() : SavedViewSimple();
-        _header = prepareHeader(flags, packedObjects.size());
-
-        try
-        {
-            SawyerStreamWriter fs(path);
-            fs.writeChunk(SawyerEncoding::Rotate, *_header);
-            if (flags & SaveFlags::landscape)
+            auto requiredObjects = ObjectManager::getHeaders();
+            std::vector<ObjectHeader> packedObjects;
+            if (shouldPackObjects(flags))
             {
-                fs.writeChunk(SawyerEncoding::Rotate, _activeOptions);
-            }
-            if (_header->flags & SFlags::hasSaveDetails)
-            {
-                writeSaveDetails(fs);
-            }
-            if (_header->numPackedObjects != 0)
-            {
-                writePackedObjects(fs, packedObjects);
-            }
-            writeRequiredObjects(fs);
-
-            if (flags & SaveFlags::scenario)
-            {
-                fs.writeChunk(SawyerEncoding::RunLengthSingle, (const void*)0x00525E18, 0xB96C);
-                fs.writeChunk(SawyerEncoding::RunLengthSingle, (const void*)0x005B825C, 0x123480);
-                fs.writeChunk(SawyerEncoding::RunLengthSingle, (const void*)0x0094C6DC, 0x79D80);
-            }
-            else
-            {
-                fs.writeChunk(SawyerEncoding::RunLengthSingle, (const void*)0x00525E18, 0x4A0644);
+                std::copy_if(requiredObjects.begin(), requiredObjects.end(), std::back_inserter(packedObjects), [](ObjectHeader& header) {
+                    return header.isCustom();
+                });
             }
 
-            if (flags & SaveFlags::raw)
-            {
-                throw NotImplementedException();
-            }
-            else
-            {
-                auto elements = TileManager::getElements();
-                fs.writeChunk(SawyerEncoding::RunLengthMulti, elements.data(), elements.size() * sizeof(tile_element));
-            }
-
-            fs.writeChecksum();
-            fs.close();
-        }
-        catch (const std::exception& e)
-        {
-            std::fprintf(stderr, "Unable to save S5: %s\n", e.what());
-            _saveError = 1;
+            auto file = prepareSaveFile(flags, requiredObjects, packedObjects);
+            _saveError = save(path, *file, packedObjects) ? 0 : 1;
         }
 
         if (!(flags & SaveFlags::raw) && !(flags & SaveFlags::dump))
@@ -360,6 +301,57 @@ namespace OpenLoco::S5
         }
 
         return false;
+    }
+
+    static bool save(const fs::path& path, const S5File& file, const std::vector<ObjectHeader>& packedObjects)
+    {
+        try
+        {
+            SawyerStreamWriter fs(path);
+            fs.writeChunk(SawyerEncoding::Rotate, file.header);
+            if (file.header.type == SType::landscape)
+            {
+                fs.writeChunk(SawyerEncoding::Rotate, *file.landscapeOptions);
+            }
+            if (file.header.flags & SFlags::hasSaveDetails)
+            {
+                fs.writeChunk(SawyerEncoding::Rotate, *file.saveDetails);
+            }
+            if (file.header.numPackedObjects != 0)
+            {
+                writePackedObjects(fs, packedObjects);
+            }
+            fs.writeChunk(SawyerEncoding::Rotate, file.requiredObjects, sizeof(file.requiredObjects));
+
+            if (file.header.type == SType::scenario)
+            {
+                fs.writeChunk(SawyerEncoding::RunLengthSingle, file.gameState.rng, 0xB96C);
+                fs.writeChunk(SawyerEncoding::RunLengthSingle, file.gameState.towns, 0x123480);
+                fs.writeChunk(SawyerEncoding::RunLengthSingle, file.gameState.animations, 0x79D80);
+            }
+            else
+            {
+                fs.writeChunk(SawyerEncoding::RunLengthSingle, file.gameState);
+            }
+
+            if (file.header.flags & SaveFlags::raw)
+            {
+                throw NotImplementedException();
+            }
+            else
+            {
+                fs.writeChunk(SawyerEncoding::RunLengthMulti, file.tileElements.data(), file.tileElements.size() * sizeof(TileElement));
+            }
+
+            fs.writeChecksum();
+            fs.close();
+            return true;
+        }
+        catch (const std::exception& e)
+        {
+            std::fprintf(stderr, "Unable to save S5: %s\n", e.what());
+            return false;
+        }
     }
 
     void registerHooks()
