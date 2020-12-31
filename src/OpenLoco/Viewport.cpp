@@ -5,6 +5,7 @@
 #include "Window.h"
 
 using namespace OpenLoco::Interop;
+using namespace OpenLoco::Map;
 
 namespace OpenLoco::Ui
 {
@@ -77,5 +78,15 @@ namespace OpenLoco::Ui
                 break;
         }
         return result;
+    }
+
+    map_pos viewport::getCentreMapPosition() const
+    {
+        registers regs;
+        regs.ax = view_x + view_width / 2;
+        regs.bx = view_y + view_height / 2;
+        regs.edx = getRotation();
+        call(0x0045F997, regs);
+        return { regs.ax, regs.bx };
     }
 }

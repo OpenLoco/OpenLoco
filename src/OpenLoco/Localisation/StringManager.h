@@ -111,4 +111,5 @@ namespace OpenLoco::StringManager
     void reset();
     const char* getString(string_id id);
     char* formatString(char* buffer, string_id id, const void* args = nullptr);
+    char* formatString(char* buffer, size_t bufferLen, string_id id, const void* args = nullptr);
 }

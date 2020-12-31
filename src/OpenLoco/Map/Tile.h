@@ -130,6 +130,25 @@ namespace OpenLoco::Map
         coord_t y = 0;
         coord_t z = 0;
 
+        map_pos3() = default;
+        map_pos3(map_pos xy, coord_t z)
+            : x(xy.x)
+            , y(xy.y)
+            , z(z)
+        {
+        }
+        map_pos3(coord_t x, coord_t y)
+            : x(x)
+            , y(y)
+        {
+        }
+        map_pos3(coord_t x, coord_t y, coord_t z)
+            : x(x)
+            , y(y)
+            , z(z)
+        {
+        }
+
         operator map_pos() const
         {
             return map_pos(x, y);
@@ -141,6 +160,11 @@ namespace OpenLoco::Map
     {
         coord_t landHeight;
         coord_t waterHeight;
+
+        operator coord_t() const
+        {
+            return waterHeight == 0 ? landHeight : waterHeight;
+        }
     };
 
     // 0x004F9296, 0x4F9298

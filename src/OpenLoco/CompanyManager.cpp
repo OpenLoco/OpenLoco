@@ -224,15 +224,7 @@ namespace OpenLoco::CompanyManager
         // Happens if center of viewport is obstructed. Probably estimates the centre location
         if (mapPosition.x == Location::null || viewport != vp)
         {
-            registers r2;
-
-            r2.ax = viewport->view_x + viewport->view_width / 2;
-            r2.bx = viewport->view_y + viewport->view_height / 2;
-            r2.edx = viewport->getRotation();
-            call(0x0045F997, r2);
-
-            mapPosition.x = r2.ax;
-            mapPosition.y = r2.bx;
+            mapPosition = viewport->getCentreMapPosition();
         }
 
         GameCommands::do_73(mapPosition);

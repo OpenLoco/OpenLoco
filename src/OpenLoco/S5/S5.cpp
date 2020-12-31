@@ -1,4 +1,5 @@
 #include "S5.h"
+#include "../CompanyManager.h"
 #include "../Interop/Interop.hpp"
 #include "../Map/TileManager.h"
 #include "../Objects/ObjectManager.h"
@@ -6,6 +7,8 @@
 #include "../Things/ThingManager.h"
 #include "../Ui/WindowManager.h"
 #include "../Utility/Exception.hpp"
+#include "../ViewportManager.h"
+#include <OpenLoco/Date.h>
 #include <fstream>
 
 using namespace OpenLoco::Interop;
@@ -80,6 +83,7 @@ namespace OpenLoco
 namespace OpenLoco::S5
 {
     static loco_global<SaveDetails*, 0x0050AEA8> _saveDetails;
+    static loco_global<char[64], 0x005260D4> _scenarioName;
     static loco_global<Options, 0x009C8714> _activeOptions;
     static loco_global<Header, 0x009CCA34> _header;
     static loco_global<Options, 0x009CCA54> _previewOptions;
@@ -145,17 +149,86 @@ namespace OpenLoco::S5
         _525F68 = 0x62300;
     }
 
-    static void prepareSaveDetails(SaveDetails& saveDetails)
+    // 0x0045A0B3
+    static void previewWindowDraw(window* w, Gfx::drawpixelinfo_t* dpi)
     {
-        _saveDetails = &saveDetails;
-        call(0x004471A4);
-        _saveDetails = reinterpret_cast<SaveDetails*>(0xFFFFFFFF);
+        for (auto viewport : w->viewports)
+        {
+            if (viewport != nullptr)
+            {
+                viewport->render(dpi);
+            }
+        }
+    }
+
+    static void drawPreviewImage(void* pixels, Gfx::ui_size_t size)
+    {
+        auto mainViewport = WindowManager::getMainViewport();
+        if (mainViewport != nullptr)
+        {
+            auto mapPosXY = mainViewport->getCentreMapPosition();
+            auto mapPosXYZ = map_pos3(mapPosXY, TileManager::getHeight(mapPosXY));
+
+            static window_event_list eventList; // 0x4FB3F0
+            eventList.draw = previewWindowDraw;
+
+            auto tempWindow = WindowManager::createWindow(
+                WindowType::previewImage,
+                { 0, 0 },
+                size,
+                WindowFlags::stick_to_front,
+                &eventList);
+            if (tempWindow != nullptr)
+            {
+                auto tempViewport = ViewportManager::create(
+                    tempWindow,
+                    0,
+                    { tempWindow->x, tempWindow->y },
+                    { tempWindow->width, tempWindow->height },
+                    ZoomLevel::half,
+                    mapPosXYZ);
+                if (tempViewport != nullptr)
+                {
+                    tempViewport->flags = ViewportFlags::town_names_displayed | ViewportFlags::station_names_displayed;
+
+                    // Swap screen DPI with our temporary one to draw the window then revert it back
+                    auto& dpi = Gfx::screenDpi();
+                    auto backupDpi = dpi;
+                    dpi.bits = reinterpret_cast<uint8_t*>(pixels);
+                    dpi.x = 0;
+                    dpi.y = 0;
+                    dpi.width = size.width;
+                    dpi.height = size.height;
+                    dpi.pitch = 0;
+                    dpi.zoom_level = 0;
+                    Gfx::redrawScreenRect(0, 0, size.width, size.height);
+                    dpi = backupDpi;
+                }
+
+                WindowManager::close(WindowType::previewImage);
+            }
+        }
+    }
+
+    // 0x004471A4
+    static std::unique_ptr<SaveDetails> prepareSaveDetails()
+    {
+        auto saveDetails = std::make_unique<SaveDetails>();
+        auto playerCompany = CompanyManager::getPlayerCompany();
+        StringManager::formatString(saveDetails->company, sizeof(saveDetails->company), playerCompany->name);
+        StringManager::formatString(saveDetails->owner, sizeof(saveDetails->owner), playerCompany->owner_name);
+        saveDetails->date = getCurrentDay();
+        saveDetails->performance_index = playerCompany->performance_index;
+        saveDetails->challenge_progress = playerCompany->challengeProgress;
+        saveDetails->challenge_flags = playerCompany->challenge_flags;
+        std::strncpy(saveDetails->scenario, _scenarioName, sizeof(saveDetails->scenario));
+        drawPreviewImage(saveDetails->image, { 250, 200 });
+        return saveDetails;
     }
 
     static void writeSaveDetails(SawyerStreamWriter& fs)
     {
-        auto saveDetails = std::make_unique<SaveDetails>();
-        prepareSaveDetails(*saveDetails);
+        auto saveDetails = prepareSaveDetails();
         fs.writeChunk(SawyerEncoding::Rotate, *saveDetails);
     }
 
