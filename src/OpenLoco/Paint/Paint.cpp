@@ -104,6 +104,7 @@ namespace OpenLoco::Paint
     template<uint8_t rotation>
     GenerationParameters generateParameters(Gfx::drawpixelinfo_t* context)
     {
+        // TODO: Work out what these constants represent
         uint16_t numVerticalQuadrants = (context->height + (rotation == 0 ? 1040 : 1056)) >> 5;
 
         auto mapLoc = Ui::viewportCoordToMapCoord(static_cast<int16_t>(context->x & 0xFFE0), static_cast<int16_t>((context->y - 16) & 0xFFE0), 0, rotation);
