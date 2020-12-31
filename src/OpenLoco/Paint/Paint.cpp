@@ -93,20 +93,29 @@ namespace OpenLoco::Paint
         call(0x0046FB67, regs);
     }
 
-    template<uint8_t rotation>
-    void generateRotated(PaintSession& session)
+    struct GenerationParameters
     {
-        auto* dpi = session.getContext();
-        uint16_t numVerticalQuadrants = (dpi->height + (rotation == 0 ? 1040 : 1056)) >> 5;
-        auto mapLoc = Ui::viewportCoordToMapCoord(static_cast<int16_t>(dpi->x & 0xFFE0), static_cast<int16_t>((dpi->y - 16) & 0xFFE0), 0, rotation);
+        Map::map_pos mapLoc;
+        uint16_t numVerticalQuadrants;
+        std::array<Map::map_pos, 5> additionalQuadrants;
+        Map::map_pos nextVerticalQuadrant;
+    };
+
+    template<uint8_t rotation>
+    GenerationParameters generateParameters(Gfx::drawpixelinfo_t* context)
+    {
+        uint16_t numVerticalQuadrants = (context->height + (rotation == 0 ? 1040 : 1056)) >> 5;
+
+        auto mapLoc = Ui::viewportCoordToMapCoord(static_cast<int16_t>(context->x & 0xFFE0), static_cast<int16_t>((context->y - 16) & 0xFFE0), 0, rotation);
         if constexpr (rotation & 1)
         {
             mapLoc.y -= 16;
         }
         mapLoc.x &= 0xFFE0;
         mapLoc.y &= 0xFFE0;
+
         constexpr uint8_t rotOrder[] = { 0, 3, 2, 1 };
-        constexpr Map::map_pos additionalQuadrants[5] = {
+        constexpr std::array<Map::map_pos, 5> additionalQuadrants = {
             Map::map_pos{ -32, 32 }.rotate(rotOrder[rotation]),
             Map::map_pos{ 0, 32 }.rotate(rotOrder[rotation]),
             Map::map_pos{ 32, 0 }.rotate(rotOrder[rotation]),
@@ -115,30 +124,35 @@ namespace OpenLoco::Paint
         };
         constexpr auto nextVerticalQuadrant = Map::map_pos{ 32, 32 }.rotate(rotOrder[rotation]);
 
-        for (; numVerticalQuadrants > 0; --numVerticalQuadrants)
+        return { mapLoc, numVerticalQuadrants, additionalQuadrants, nextVerticalQuadrant };
+    }
+
+    void PaintSession::generateTilesAndEntities(GenerationParameters&& p)
+    {
+        for (; p.numVerticalQuadrants > 0; --p.numVerticalQuadrants)
         {
-            paintTileElements(session, mapLoc);
-            paintEntities(session, mapLoc);
+            paintTileElements(*this, p.mapLoc);
+            paintEntities(*this, p.mapLoc);
 
-            auto loc1 = mapLoc + additionalQuadrants[0];
-            paintTileElements2(session, loc1);
-            paintEntities(session, loc1);
+            auto loc1 = p.mapLoc + p.additionalQuadrants[0];
+            paintTileElements2(*this, loc1);
+            paintEntities(*this, loc1);
 
-            auto loc2 = mapLoc + additionalQuadrants[1];
-            paintTileElements(session, loc2);
-            paintEntities(session, loc2);
+            auto loc2 = p.mapLoc + p.additionalQuadrants[1];
+            paintTileElements(*this, loc2);
+            paintEntities(*this, loc2);
 
-            auto loc3 = mapLoc + additionalQuadrants[2];
-            paintTileElements2(session, loc3);
-            paintEntities(session, loc3);
+            auto loc3 = p.mapLoc + p.additionalQuadrants[2];
+            paintTileElements2(*this, loc3);
+            paintEntities(*this, loc3);
 
-            auto loc4 = mapLoc + additionalQuadrants[3];
-            paintEntities2(session, loc4);
+            auto loc4 = p.mapLoc + p.additionalQuadrants[3];
+            paintEntities2(*this, loc4);
 
-            auto loc5 = mapLoc + additionalQuadrants[4];
-            paintEntities2(session, loc5);
+            auto loc5 = p.mapLoc + p.additionalQuadrants[4];
+            paintEntities2(*this, loc5);
 
-            mapLoc += nextVerticalQuadrant;
+            p.mapLoc += p.nextVerticalQuadrant;
         }
     }
 
@@ -152,16 +166,16 @@ namespace OpenLoco::Paint
         switch (currentRotation)
         {
             case 0:
-                generateRotated<0>(*this);
+                generateTilesAndEntities(generateParameters<0>(getContext()));
                 break;
             case 1:
-                generateRotated<1>(*this);
+                generateTilesAndEntities(generateParameters<1>(getContext()));
                 break;
             case 2:
-                generateRotated<2>(*this);
+                generateTilesAndEntities(generateParameters<2>(getContext()));
                 break;
             case 3:
-                generateRotated<3>(*this);
+                generateTilesAndEntities(generateParameters<3>(getContext()));
                 break;
         }
     }

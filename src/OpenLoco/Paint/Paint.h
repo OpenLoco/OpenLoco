@@ -107,6 +107,7 @@ namespace OpenLoco::Paint
     };
     static_assert(sizeof(PaintEntry) == 0x34);
 #pragma pack(pop)
+    struct GenerationParameters;
 
     struct PaintSession
     {
@@ -120,6 +121,8 @@ namespace OpenLoco::Paint
         Gfx::drawpixelinfo_t* getContext() { return _dpi; }
 
     private:
+        void generateTilesAndEntities(GenerationParameters&& p);
+
         inline static Interop::loco_global<Gfx::drawpixelinfo_t*, 0x00E0C3E0> _dpi;
         inline static Interop::loco_global<PaintEntry[4000], 0x00E0C410> _paintEntries;
         inline static Interop::loco_global<PaintStruct* [1024], 0x00E3F0C0> _quadrants;
