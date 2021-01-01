@@ -12,25 +12,25 @@ using namespace OpenLoco::Ui::ViewportInteraction;
 namespace OpenLoco::Paint
 {
     // 0x004B0CCE
-    void paintVehicleEntities(PaintSession& session, vehicle_base* base)
+    void paintVehicleEntity(PaintSession& session, vehicle_base* base)
     {
         registers regs{};
         regs.ax = base->x;
         regs.cx = base->y;
         regs.dl = base->z;
-        regs.ebx = (base->sprite_yaw + (session.rotation() << 4)) & 0x3F;
+        regs.ebx = (base->sprite_yaw + (session.getRotation() << 4)) & 0x3F;
         regs.esi = reinterpret_cast<int32_t>(base);
         call(0x004B0CCE, regs);
     }
 
     // 0x00440325
-    void paintMiscEntities(PaintSession& session, MiscBase* base)
+    void paintMiscEntity(PaintSession& session, MiscBase* base)
     {
         registers regs{};
         regs.ax = base->x;
         regs.cx = base->y;
         regs.dl = base->z;
-        regs.ebx = (base->sprite_yaw + (session.rotation() << 4)) & 0x3F;
+        regs.ebx = (base->sprite_yaw + (session.getRotation() << 4)) & 0x3F;
         regs.esi = reinterpret_cast<int32_t>(base);
         call(0x00440325, regs);
     }
@@ -52,11 +52,13 @@ namespace OpenLoco::Paint
         ThingManager::ThingTileList entities(loc);
         for (auto* entity : entities)
         {
+            // TODO: Create a rect from dpi dims
             auto left = dpi->x;
             auto top = dpi->y;
             auto right = left + dpi->width;
             auto bottom = top + dpi->height;
 
+            // TODO: Create a rect from sprite dims and use a contains function
             if (entity->sprite_top > bottom)
             {
                 continue;
@@ -73,16 +75,16 @@ namespace OpenLoco::Paint
             {
                 continue;
             }
-            session.setCurrentObject(entity);
+            session.setCurrentItem(entity);
             session.setEntityPosition({ entity->x, entity->y });
-            session.setInteractionItem(InteractionItem::thing);
+            session.setItemType(InteractionItem::thing);
             switch (entity->base_type)
             {
                 case thing_base_type::vehicle:
-                    paintVehicleEntities(session, entity->asVehicle());
+                    paintVehicleEntity(session, entity->asVehicle());
                     break;
                 case thing_base_type::misc:
-                    paintMiscEntities(session, entity->asMisc());
+                    paintMiscEntity(session, entity->asMisc());
                     break;
             }
         }
