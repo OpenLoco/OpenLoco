@@ -202,6 +202,38 @@ namespace OpenLoco::S5
         }
     }
 
+    /**
+     * Removes all tile elements that have the ghost flag set.
+     * Assumes all elements are organised in tile order.
+     */
+    static void removeGhostElements(std::vector<TileElement>& elements)
+    {
+        for (size_t i = 0; i < elements.size(); i++)
+        {
+            if (elements[i].isGhost())
+            {
+                if (elements[i].isLast())
+                {
+                    if (i == 0 || elements[i - 1].isLast())
+                    {
+                        // First element of tile, can not remove...
+                    }
+                    else
+                    {
+                        elements[i - 1].setLast(true);
+                        elements.erase(elements.begin() + i);
+                        i--;
+                    }
+                }
+                else
+                {
+                    elements.erase(elements.begin() + i);
+                    i--;
+                }
+            }
+        }
+    }
+
     static std::unique_ptr<S5File> prepareSaveFile(SaveFlags flags, const std::vector<ObjectHeader>& requiredObjects, const std::vector<ObjectHeader>& packedObjects)
     {
         auto mainWindow = WindowManager::getMainWindow();
@@ -228,6 +260,7 @@ namespace OpenLoco::S5
         auto tileElements = TileManager::getElements();
         file->tileElements.resize(tileElements.size());
         std::memcpy(file->tileElements.data(), tileElements.data(), tileElements.size_bytes());
+        removeGhostElements(file->tileElements);
         return file;
     }
 
@@ -239,7 +272,7 @@ namespace OpenLoco::S5
     // 0x00441C26
     bool save(const fs::path& path, SaveFlags flags)
     {
-        if (!(flags & SaveFlags::noWindowClose) || !(flags & SaveFlags::raw) || !(flags & SaveFlags::dump))
+        if (!(flags & SaveFlags::noWindowClose) && !(flags & SaveFlags::raw) && !(flags & SaveFlags::dump))
         {
             WindowManager::closeConstructionWindows();
         }
