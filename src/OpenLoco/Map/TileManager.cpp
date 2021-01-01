@@ -46,8 +46,8 @@ namespace OpenLoco::Map::TileManager
 
     tile get(coord_t x, coord_t y)
     {
-        tile_coord_t tileX = x / 32;
-        tile_coord_t tileY = y / 32;
+        tile_coord_t tileX = x / tile_size;
+        tile_coord_t tileY = y / tile_size;
 
         size_t index = (tileY << 9) | tileX;
         auto data = _tiles[index];
@@ -210,10 +210,79 @@ namespace OpenLoco::Map::TileManager
         return height;
     }
 
+    static void clearTilePointers()
+    {
+        tile_element** tiles = _tiles;
+        std::memset(tiles, 0xFF, map_pitch * map_columns * sizeof(tile_element*));
+    }
+
+    static void set(TilePos pos, tile_element* elements)
+    {
+        _tiles[(pos.y * map_pitch) + pos.x] = elements;
+    }
+
+    // 0x00461348
+    void updateTilePointers()
+    {
+        clearTilePointers();
+
+        tile_element* el = _elements;
+        for (tile_coord_t y = 0; y < map_rows; y++)
+        {
+            for (tile_coord_t x = 0; x < map_columns; x++)
+            {
+                set(TilePos(x, y), el);
+
+                // Skip remaining elements on this tile
+                do
+                {
+                    el++;
+                } while (!(el - 1)->isLast());
+            }
+        }
+
+        _elementsEnd = el;
+    }
+
     // 0x0046148F
     void reorganise()
     {
-        call(0x0046148F);
+        Ui::setCursor(Ui::cursor_id::busy);
+
+        auto tempBuffer = reinterpret_cast<tile_element*>(std::malloc(maxElements * sizeof(tile_element)));
+        if (tempBuffer == nullptr)
+        {
+            exitWithError(4370, StringIds::null);
+            return;
+        }
+
+        size_t numElements = 0;
+        for (tile_coord_t y = 0; y < map_rows; y++)
+        {
+            for (tile_coord_t x = 0; x < map_columns; x++)
+            {
+                auto tile = get(TilePos(x, y));
+                for (auto element : tile)
+                {
+                    tempBuffer[numElements] = element;
+                    numElements++;
+                }
+            }
+        }
+
+        // Copy organised elements back to original element buffer
+        std::memcpy(_elements, tempBuffer, numElements * sizeof(tile_element));
+
+        // Zero all unused elements
+        auto remainingElements = maxElements - numElements;
+        std::memset(_elements + numElements, 0, remainingElements * sizeof(tile_element));
+
+        std::free(tempBuffer);
+
+        updateTilePointers();
+
+        // Note: original implementation did not revert the cursor
+        Ui::setCursor(Ui::cursor_id::pointer);
     }
 
     // 0x004610F2

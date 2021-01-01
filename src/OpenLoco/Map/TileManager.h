@@ -13,6 +13,8 @@ namespace OpenLoco::Map::TileManager
         enableConstruct = (1 << 1)
     };
 
+    constexpr size_t maxElements = 0x6C000;
+
     void initialise();
     stdx::span<tile_element> getElements();
     tile_element* getElementsEnd();
@@ -20,6 +22,7 @@ namespace OpenLoco::Map::TileManager
     tile get(map_pos pos);
     tile get(coord_t x, coord_t y);
     TileHeight getHeight(const map_pos& pos);
+    void updateTilePointers();
     void reorganise();
     void mapInvalidateSelectionRect();
     void mapInvalidateTileFull(Map::map_pos pos);
