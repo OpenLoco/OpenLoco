@@ -721,7 +721,7 @@ namespace OpenLoco::Ui::Windows::Construction
         // 0x004CD454
         void sub_4CD454()
         {
-            if (isTrackUpgradeMode())
+            if (isNetworkHost())
             {
                 auto window = WindowManager::find(_toolWindowType, _toolWindowNumber);
                 if (window != nullptr)

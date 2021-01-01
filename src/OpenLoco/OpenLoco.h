@@ -13,7 +13,7 @@ namespace OpenLoco
         constexpr uint16_t title = 1 << 0;
         constexpr uint16_t editor = 1 << 1;
         constexpr uint16_t networked = 1 << 2;
-        constexpr uint16_t trackUpgrade = 1 << 3;
+        constexpr uint16_t networkHost = 1 << 3;
         constexpr uint16_t unknown_4 = 1 << 4;
         constexpr uint16_t unknown_5 = 1 << 5;
         constexpr uint16_t driverCheatEnabled = 1 << 6;
@@ -34,7 +34,7 @@ namespace OpenLoco
     bool isEditorMode();
     bool isTitleMode();
     bool isNetworked();
-    bool isTrackUpgradeMode();
+    bool isNetworkHost();
     bool isUnknown4Mode();
     bool isUnknown5Mode();
     bool isPaused();
