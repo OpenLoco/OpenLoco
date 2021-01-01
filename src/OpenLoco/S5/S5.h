@@ -7,14 +7,14 @@
 
 namespace OpenLoco::S5
 {
-    enum class SType : uint8_t
+    enum class S5Type : uint8_t
     {
         savedGame = 0,
         scenario = 1,
         landscape = 3,
     };
 
-    enum SFlags : uint8_t
+    enum S5Flags : uint8_t
     {
         isRaw = 1 << 0,
         isDump = 1 << 1,
@@ -24,7 +24,7 @@ namespace OpenLoco::S5
 #pragma pack(push, 1)
     struct Header
     {
-        SType type;
+        S5Type type;
         uint8_t flags;
         uint16_t numPackedObjects;
         uint32_t version;

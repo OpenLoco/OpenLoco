@@ -53,11 +53,11 @@ namespace OpenLoco::S5
         Header result;
         std::memset(&result, 0, sizeof(result));
 
-        result.type = SType::savedGame;
+        result.type = S5Type::savedGame;
         if (flags & SaveFlags::landscape)
-            result.type = SType::landscape;
+            result.type = S5Type::landscape;
         if (flags & SaveFlags::scenario)
-            result.type = SType::scenario;
+            result.type = S5Type::scenario;
 
         result.numPackedObjects = static_cast<uint16_t>(numPackedObjects);
         result.version = currentVersion;
@@ -65,15 +65,15 @@ namespace OpenLoco::S5
 
         if (flags & SaveFlags::raw)
         {
-            result.flags |= SFlags::isRaw;
+            result.flags |= S5Flags::isRaw;
         }
         if (flags & SaveFlags::dump)
         {
-            result.flags |= SFlags::isDump;
+            result.flags |= S5Flags::isDump;
         }
         if (!(flags & SaveFlags::scenario) && !(flags & SaveFlags::raw) && !(flags & SaveFlags::dump))
         {
-            result.flags |= SFlags::hasSaveDetails;
+            result.flags |= S5Flags::hasSaveDetails;
         }
 
         return result;
@@ -209,11 +209,11 @@ namespace OpenLoco::S5
 
         auto file = std::make_unique<S5File>();
         file->header = prepareHeader(flags, packedObjects.size());
-        if (file->header.type == SType::landscape)
+        if (file->header.type == S5Type::landscape)
         {
             file->landscapeOptions = std::make_unique<Options>(_activeOptions);
         }
-        if (file->header.flags & SFlags::hasSaveDetails)
+        if (file->header.flags & S5Flags::hasSaveDetails)
         {
             file->saveDetails = prepareSaveDetails(_gameState);
         }
@@ -293,11 +293,11 @@ namespace OpenLoco::S5
         {
             SawyerStreamWriter fs(path);
             fs.writeChunk(SawyerEncoding::rotate, file.header);
-            if (file.header.type == SType::landscape)
+            if (file.header.type == S5Type::landscape)
             {
                 fs.writeChunk(SawyerEncoding::rotate, *file.landscapeOptions);
             }
-            if (file.header.flags & SFlags::hasSaveDetails)
+            if (file.header.flags & S5Flags::hasSaveDetails)
             {
                 fs.writeChunk(SawyerEncoding::rotate, *file.saveDetails);
             }
@@ -307,7 +307,7 @@ namespace OpenLoco::S5
             }
             fs.writeChunk(SawyerEncoding::rotate, file.requiredObjects, sizeof(file.requiredObjects));
 
-            if (file.header.type == SType::scenario)
+            if (file.header.type == S5Type::scenario)
             {
                 fs.writeChunk(SawyerEncoding::runLengthSingle, file.gameState.rng, 0xB96C);
                 fs.writeChunk(SawyerEncoding::runLengthSingle, file.gameState.towns, 0x123480);
