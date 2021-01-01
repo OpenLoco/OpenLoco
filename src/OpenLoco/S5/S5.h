@@ -145,8 +145,18 @@ namespace OpenLoco::S5
 #pragma pack(push, 1)
     struct Company
     {
-        uint8_t pad_0000[0x8FA8];
+        uint16_t name;                 // 0x0000
+        uint16_t ownerName;            // 0x0002
+        uint32_t challengeFlags;       // 0x0004
+        uint8_t cash[6];               // 0x0008
+        uint32_t currentLoan;          // 0x000E
+        uint32_t updateCounter;        // 0x0012
+        int16_t performanceIndex;      // 0x0016
+        uint8_t pad_18[0x8C4E - 0x18]; // 0x0018
+        uint8_t challengeProgress;     // 0x8C4E
+        uint8_t pad_8C4F[0x8FA8 - 0x8C4F];
     };
+    static_assert(sizeof(Company) == 0x8FA8);
 
     struct Town
     {
@@ -180,26 +190,35 @@ namespace OpenLoco::S5
 
     struct GameState
     {
-        uint32_t rng[2];             // 0x000000 (0x00525E18)
-        uint32_t pad_0008[3];        // 0x000008
-        uint32_t currentDay;         // 0x000014
-        uint16_t dayCounter;         // 0x000018
-        uint16_t currentYear;        // 0x00001A
-        uint8_t currentMonth;        // 0x00001C
-        uint8_t currentDayOfMonth;   // 0x00001D
-        int16_t savedViewX;          // 0x00001E
-        int16_t savedViewY;          // 0x000020
-        uint8_t savedViewZoom;       // 0x000022
-        uint8_t savedViewRotation;   // 0x000023
-        uint8_t playerCompanyId;     // 0x000024
-        uint8_t pad_0025[0xB947];    // 0x000025
-        Company companies[15];       // 0x00B96C (0x00531784)
-        Town towns[80];              // 0x092444 (0x005B825C)
-        Industry industries[128];    // 0x09E744 (0x005C455C)
-        Station stations[1024];      // 0x0C10C4 (0x005E6EDC)
-        Entity entities[20000];      // 0x1B58C4 (0x006DB6DC)
-        Animation animations[8192];  // 0x4268C4 (0x0094C6DC)
-        uint8_t pad_4328C4[0x6DD80]; // 0x4328C4 (0x009586DC)
+        uint32_t rng[2];                  // 0x000000 (0x00525E18)
+        uint32_t pad_0008[3];             // 0x000008
+        uint32_t currentDay;              // 0x000014 (0x00525E2C)
+        uint16_t dayCounter;              // 0x000018
+        uint16_t currentYear;             // 0x00001A
+        uint8_t currentMonth;             // 0x00001C
+        uint8_t currentDayOfMonth;        // 0x00001D
+        int16_t savedViewX;               // 0x00001E
+        int16_t savedViewY;               // 0x000020
+        uint8_t savedViewZoom;            // 0x000022
+        uint8_t savedViewRotation;        // 0x000023
+        uint8_t playerCompanyId;          // 0x000024
+        uint8_t pad_0025[0x146 - 0x25];   // 0x000025
+        uint32_t scenarioTicks;           // 0x000146 (0x00525F5E)
+        uint16_t pad_014A;                // 0x00014A (0x00525F62)
+        uint32_t scenarioTicks2;          // 0x00014C (0x00525F64)
+        uint32_t magicNumber;             // 0x000150 (0x00525F68)
+        uint16_t numMapAnimations;        // 0x000154 (0x00525F6C)
+        uint8_t pad_0156[0x02BC - 0x156]; // 0x000156
+        char scenarioName[64];            // 0x0002BC (0x005260D4)
+        char scenarioDetails[256];        // 0x0002FC (0x00526114)
+        uint8_t pad_03FC[0xB96C - 0x3FC]; // 0x0003FC
+        Company companies[15];            // 0x00B96C (0x00531784)
+        Town towns[80];                   // 0x092444 (0x005B825C)
+        Industry industries[128];         // 0x09E744 (0x005C455C)
+        Station stations[1024];           // 0x0C10C4 (0x005E6EDC)
+        Entity entities[20000];           // 0x1B58C4 (0x006DB6DC)
+        Animation animations[8192];       // 0x4268C4 (0x0094C6DC)
+        uint8_t pad_4328C4[0x6DD80];      // 0x4328C4 (0x009586DC)
     };
 #pragma pack(pop)
     static_assert(sizeof(GameState) == 0x4A0644);

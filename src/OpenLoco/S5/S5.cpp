@@ -1,6 +1,5 @@
 #include "S5.h"
 #include "../CompanyManager.h"
-#include "../Date.h"
 #include "../Interop/Interop.hpp"
 #include "../Map/TileManager.h"
 #include "../Objects/ObjectManager.h"
@@ -16,26 +15,16 @@ using namespace OpenLoco::Interop;
 using namespace OpenLoco::Map;
 using namespace OpenLoco::Ui;
 
-namespace OpenLoco
+namespace OpenLoco::S5
 {
     constexpr uint32_t currentVersion = 0x62262;
     constexpr uint32_t magicNumber = 0x62300;
-}
 
-namespace OpenLoco::S5
-{
-    static loco_global<SaveDetails*, 0x0050AEA8> _saveDetails;
     static loco_global<GameState, 0x00525E18> _gameState;
-    static loco_global<char[64], 0x005260D4> _scenarioName;
     static loco_global<Options, 0x009C8714> _activeOptions;
     static loco_global<Header, 0x009CCA34> _header;
     static loco_global<Options, 0x009CCA54> _previewOptions;
-    static loco_global<uint32_t, 0x009D1C9C> _saveFlags;
     static loco_global<char[512], 0x0112CE04> _savePath;
-    static loco_global<OpenLoco::Ui::SavedViewSimple, 0x00525E36> _savedView;
-    static loco_global<uint32_t, 0x00525F68> _525F68;
-    static loco_global<uint8_t, 0x009D1CC7> _saveError;
-    static loco_global<uint8_t, 0x00F00134> _F00134;
 
     static bool save(const fs::path& path, const S5File& file, const std::vector<ObjectHeader>& packedObjects);
 
@@ -57,11 +46,6 @@ namespace OpenLoco::S5
     static void sub_4702F7()
     {
         call(0x004702F7);
-    }
-
-    static void sub_4437FC()
-    {
-        _525F68 = 0x62300;
     }
 
     static Header prepareHeader(SaveFlags flags, size_t numPackedObjects)
@@ -157,17 +141,17 @@ namespace OpenLoco::S5
     }
 
     // 0x004471A4
-    static std::unique_ptr<SaveDetails> prepareSaveDetails()
+    static std::unique_ptr<SaveDetails> prepareSaveDetails(GameState& gameState)
     {
         auto saveDetails = std::make_unique<SaveDetails>();
-        auto playerCompany = CompanyManager::getPlayerCompany();
-        StringManager::formatString(saveDetails->company, sizeof(saveDetails->company), playerCompany->name);
-        StringManager::formatString(saveDetails->owner, sizeof(saveDetails->owner), playerCompany->owner_name);
-        saveDetails->date = getCurrentDay();
-        saveDetails->performance_index = playerCompany->performance_index;
-        saveDetails->challenge_progress = playerCompany->challengeProgress;
-        saveDetails->challenge_flags = playerCompany->challenge_flags;
-        std::strncpy(saveDetails->scenario, _scenarioName, sizeof(saveDetails->scenario));
+        const auto& playerCompany = gameState.companies[gameState.playerCompanyId];
+        StringManager::formatString(saveDetails->company, sizeof(saveDetails->company), playerCompany.name);
+        StringManager::formatString(saveDetails->owner, sizeof(saveDetails->owner), playerCompany.ownerName);
+        saveDetails->date = gameState.currentDay;
+        saveDetails->performance_index = playerCompany.performanceIndex;
+        saveDetails->challenge_progress = playerCompany.challengeProgress;
+        saveDetails->challenge_flags = playerCompany.challengeFlags;
+        std::strncpy(saveDetails->scenario, gameState.scenarioName, sizeof(saveDetails->scenario));
         drawPreviewImage(saveDetails->image, { 250, 200 });
         return saveDetails;
     }
@@ -231,7 +215,7 @@ namespace OpenLoco::S5
         }
         if (file->header.flags & SFlags::hasSaveDetails)
         {
-            file->saveDetails = prepareSaveDetails();
+            file->saveDetails = prepareSaveDetails(_gameState);
         }
         std::memcpy(file->requiredObjects, requiredObjects.data(), sizeof(file->requiredObjects));
         file->gameState = _gameState;
@@ -239,6 +223,7 @@ namespace OpenLoco::S5
         file->gameState.savedViewY = savedView.mapY;
         file->gameState.savedViewZoom = static_cast<uint8_t>(savedView.zoomLevel);
         file->gameState.savedViewRotation = savedView.rotation;
+        file->gameState.magicNumber = magicNumber; // Match implementation at 0x004437FC
 
         auto tileElements = TileManager::getElements();
         file->tileElements.resize(tileElements.size());
@@ -268,8 +253,7 @@ namespace OpenLoco::S5
             sub_4702F7();
         }
 
-        sub_4437FC();
-
+        bool saveResult;
         {
             auto requiredObjects = ObjectManager::getHeaders();
             std::vector<ObjectHeader> packedObjects;
@@ -281,7 +265,7 @@ namespace OpenLoco::S5
             }
 
             auto file = prepareSaveFile(flags, requiredObjects, packedObjects);
-            _saveError = save(path, *file, packedObjects) ? 0 : 1;
+            saveResult = save(path, *file, packedObjects);
         }
 
         if (!(flags & SaveFlags::raw) && !(flags & SaveFlags::dump))
@@ -289,7 +273,7 @@ namespace OpenLoco::S5
             ObjectManager::reloadAll();
         }
 
-        if (_saveError == 0)
+        if (saveResult)
         {
             Gfx::invalidateScreen();
             if (!(flags & SaveFlags::raw))
