@@ -76,7 +76,7 @@ namespace OpenLoco::Config
         uint8_t pad_29;                               // 0x29
         keyboard_shortcut_t keyboard_shortcuts[35];   // 0x2A
         uint8_t edge_scrolling;                       // 0x70
-        uint8_t vehicles_min_scale;                   // 0x71
+        uint8_t vehicles_min_scale;                   // 0x50AF25, 0x71
         uint8_t var_72;                               // 0x50AF26, 0x72
         music_playlist_type music_playlist;           // 0x50AF27, 0x73
         uint16_t height_marker_offset;                // 0x50AF28, 0x74
