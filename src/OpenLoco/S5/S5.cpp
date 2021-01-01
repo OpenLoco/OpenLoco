@@ -177,14 +177,14 @@ namespace OpenLoco::S5
         switch (type)
         {
             case object_type::competitor:
-                return SawyerEncoding::Uncompressed;
+                return SawyerEncoding::uncompressed;
             default:
-                return SawyerEncoding::RunLengthSingle;
+                return SawyerEncoding::runLengthSingle;
             case object_type::currency:
-                return SawyerEncoding::RunLengthMulti;
+                return SawyerEncoding::runLengthMulti;
             case object_type::town_names:
             case object_type::scenario_text:
-                return SawyerEncoding::Rotate;
+                return SawyerEncoding::rotate;
         }
     }
 
@@ -308,30 +308,30 @@ namespace OpenLoco::S5
         try
         {
             SawyerStreamWriter fs(path);
-            fs.writeChunk(SawyerEncoding::Rotate, file.header);
+            fs.writeChunk(SawyerEncoding::rotate, file.header);
             if (file.header.type == SType::landscape)
             {
-                fs.writeChunk(SawyerEncoding::Rotate, *file.landscapeOptions);
+                fs.writeChunk(SawyerEncoding::rotate, *file.landscapeOptions);
             }
             if (file.header.flags & SFlags::hasSaveDetails)
             {
-                fs.writeChunk(SawyerEncoding::Rotate, *file.saveDetails);
+                fs.writeChunk(SawyerEncoding::rotate, *file.saveDetails);
             }
             if (file.header.numPackedObjects != 0)
             {
                 writePackedObjects(fs, packedObjects);
             }
-            fs.writeChunk(SawyerEncoding::Rotate, file.requiredObjects, sizeof(file.requiredObjects));
+            fs.writeChunk(SawyerEncoding::rotate, file.requiredObjects, sizeof(file.requiredObjects));
 
             if (file.header.type == SType::scenario)
             {
-                fs.writeChunk(SawyerEncoding::RunLengthSingle, file.gameState.rng, 0xB96C);
-                fs.writeChunk(SawyerEncoding::RunLengthSingle, file.gameState.towns, 0x123480);
-                fs.writeChunk(SawyerEncoding::RunLengthSingle, file.gameState.animations, 0x79D80);
+                fs.writeChunk(SawyerEncoding::runLengthSingle, file.gameState.rng, 0xB96C);
+                fs.writeChunk(SawyerEncoding::runLengthSingle, file.gameState.towns, 0x123480);
+                fs.writeChunk(SawyerEncoding::runLengthSingle, file.gameState.animations, 0x79D80);
             }
             else
             {
-                fs.writeChunk(SawyerEncoding::RunLengthSingle, file.gameState);
+                fs.writeChunk(SawyerEncoding::runLengthSingle, file.gameState);
             }
 
             if (file.header.flags & SaveFlags::raw)
@@ -340,7 +340,7 @@ namespace OpenLoco::S5
             }
             else
             {
-                fs.writeChunk(SawyerEncoding::RunLengthMulti, file.tileElements.data(), file.tileElements.size() * sizeof(TileElement));
+                fs.writeChunk(SawyerEncoding::runLengthMulti, file.tileElements.data(), file.tileElements.size() * sizeof(TileElement));
             }
 
             fs.writeChecksum();
