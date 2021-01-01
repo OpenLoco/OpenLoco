@@ -894,17 +894,7 @@ namespace OpenLoco
         try
         {
             auto autosaveDirectory = Environment::getPath(Environment::path_id::autosave);
-            if (!fs::is_directory(autosaveDirectory))
-            {
-                fs::create_directories(autosaveDirectory);
-                // clang-format off
-                fs::permissions(
-                    autosaveDirectory,
-                    fs::perms::owner_all |
-                    fs::perms::group_read | fs::perms::group_exec |
-                    fs::perms::others_read | fs::perms::others_exec);
-                // clang-format on
-            }
+            Environment::autoCreateDirectory(autosaveDirectory);
 
             auto autosaveFullPath = autosaveDirectory / filename;
 

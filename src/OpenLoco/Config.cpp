@@ -47,7 +47,7 @@ namespace OpenLoco::Config
 
     new_config& readNewConfig()
     {
-        auto configPath = Environment::getPath(Environment::path_id::openloco_yml);
+        auto configPath = Environment::getPathNoWarning(Environment::path_id::openloco_yml);
 
         if (!fs::exists(configPath))
             return _new_config;
@@ -97,20 +97,9 @@ namespace OpenLoco::Config
 
     void writeNewConfig()
     {
-        auto configPath = Environment::getPath(Environment::path_id::openloco_yml);
+        auto configPath = Environment::getPathNoWarning(Environment::path_id::openloco_yml);
         auto dir = configPath.parent_path();
-        if (!fs::is_directory(dir))
-        {
-            fs::create_directories(dir);
-            // clang-format off
-            fs::permissions(
-                dir,
-                fs::perms::owner_all |
-                fs::perms::group_read | fs::perms::group_exec |
-                fs::perms::others_read | fs::perms::others_exec
-            );
-            // clang-format on
-        }
+        Environment::autoCreateDirectory(dir);
 
         auto& node = _config_yaml;
 

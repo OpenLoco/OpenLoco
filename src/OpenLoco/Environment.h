@@ -60,6 +60,8 @@ namespace OpenLoco::Environment
         autosave,
     };
 
+    void autoCreateDirectory(const fs::path& path);
     fs::path getPath(path_id id);
+    fs::path getPathNoWarning(path_id id);
     void resolvePaths();
 }
