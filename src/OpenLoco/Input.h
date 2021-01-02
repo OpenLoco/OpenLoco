@@ -100,6 +100,7 @@ namespace OpenLoco::Input
     void moveMouse(int32_t x, int32_t y, int32_t relX, int32_t relY);
     void sub_407218();
     void sub_407231();
+    Gfx::point_t getNextDragOffset();
     void processMouseOver(int16_t x, int16_t y);
     void processKeyboardInput();
 

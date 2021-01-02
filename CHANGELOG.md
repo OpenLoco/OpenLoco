@@ -1,5 +1,6 @@
 20.10+ (in development)
 ------------------------------------------------------------------------
+- Fix: [#151] Mouse moves out of window when looking around.
 - Fix: [#588] 'Cancel or Show Last Announcement' shortcut doesn't close announcements.
 
 20.10 (2020-10-25)
