@@ -74,4 +74,17 @@ namespace OpenLoco::Input
             Ui::showCursor();
         }
     }
+
+    Gfx::point_t getNextDragOffset()
+    {
+        int32_t currentX, currentY;
+        Ui::getCursorPos(currentX, currentY);
+
+        auto deltaX = currentX - _cursor_drag_start_x;
+        auto deltaY = currentY - _cursor_drag_start_y;
+
+        Ui::setCursorPos(_cursor_drag_start_x, _cursor_drag_start_y);
+
+        return { static_cast<int16_t>(deltaX), static_cast<int16_t>(deltaY) };
+    }
 }

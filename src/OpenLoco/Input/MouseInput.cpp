@@ -724,11 +724,13 @@ namespace OpenLoco::Input
                     return;
                 }
 
-                if (x != 0 || y != 0)
+                auto dragOffset = getNextDragOffset();
+                if (dragOffset.x != 0 || dragOffset.y != 0)
                 {
                     _ticksSinceDragStart = 1000;
-                    window->viewport_configurations[0].saved_view_x += x << (vp->zoom + 1);
-                    window->viewport_configurations[0].saved_view_y += y << (vp->zoom + 1);
+
+                    window->viewport_configurations[0].saved_view_x += dragOffset.x << (vp->zoom + 1);
+                    window->viewport_configurations[0].saved_view_y += dragOffset.y << (vp->zoom + 1);
                 }
 
                 break;
