@@ -27,7 +27,7 @@ namespace OpenLoco
             constexpr uint8_t unk_0 = 1 << 0;
             constexpr uint8_t unk_1 = 1 << 1;
             constexpr uint8_t unk_3 = 1 << 3;
-            constexpr uint8_t unk_4 = 1 << 4;
+            constexpr uint8_t isGhost = 1 << 4;
         }
 
         enum class Status : uint8_t
@@ -136,6 +136,8 @@ namespace OpenLoco
         bool isVehicleTail() const { return is<VehicleThingType::tail>(); }
         vehicle_tail* asVehicleTail() const { return as<vehicle_tail>(); }
         TransportMode getTransportMode() const;
+        uint8_t getOwner() const;
+        uint8_t getFlags38() const;
 
         vehicle_base* nextVehicle();
         vehicle_base* nextVehicleComponent();

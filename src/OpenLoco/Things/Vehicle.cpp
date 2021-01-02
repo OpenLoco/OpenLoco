@@ -80,6 +80,18 @@ TransportMode OpenLoco::vehicle_base::getTransportMode() const
     return veh->mode;
 }
 
+uint8_t OpenLoco::vehicle_base::getOwner() const
+{
+    const auto* veh = reinterpret_cast<const vehicle*>(this);
+    return veh->owner;
+}
+
+uint8_t OpenLoco::vehicle_base::getFlags38() const
+{
+    const auto* veh = reinterpret_cast<const vehicle*>(this);
+    return veh->var_38;
+}
+
 vehicle_object* vehicle::object() const
 {
     return ObjectManager::get<vehicle_object>(object_id);
@@ -242,7 +254,7 @@ int32_t OpenLoco::vehicle_body::update()
 // 0x004AAC4E
 void OpenLoco::vehicle_body::animationUpdate()
 {
-    if (var_38 & Things::Vehicle::Flags38::unk_4)
+    if (var_38 & Things::Vehicle::Flags38::isGhost)
         return;
 
     vehicle_head* headVeh = vehicleUpdate_head;
