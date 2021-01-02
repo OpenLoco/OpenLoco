@@ -5,7 +5,6 @@
 #include "../Things/Misc.h"
 #include "../Things/ThingManager.h"
 #include "Paint.h"
-#include <functional>
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui::ViewportInteraction;
@@ -36,8 +35,8 @@ namespace OpenLoco::Paint
         call(0x00440325, regs);
     }
 
-    // 0x0046FA88
-    static void paintEntitiesWithFilter(PaintSession& session, const Map::map_pos& loc, std::function<bool(const thing_base*)> filter)
+    template<typename FilterType>
+    static void paintEntitiesWithFilter(PaintSession& session, const Map::map_pos& loc, FilterType&& filter)
     {
         auto* dpi = session.getContext();
         if (Config::get().vehicles_min_scale < dpi->zoom_level)
@@ -95,6 +94,7 @@ namespace OpenLoco::Paint
         }
     }
 
+    // 0x0046FA88
     void paintEntities(PaintSession& session, const Map::map_pos& loc)
     {
         paintEntitiesWithFilter(session, loc, [](const thing_base*) { return true; });
