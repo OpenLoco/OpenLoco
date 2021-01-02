@@ -1002,6 +1002,7 @@ namespace OpenLoco::StringIds
 
     constexpr string_id load_landscape = 1581;
     constexpr string_id save_landscape = 1582;
+    constexpr string_id generating_landscape = 1583;
 
     constexpr string_id error_cant_clear_entire_area = 1584;
     constexpr string_id title_landscape_generation_options = 1585;

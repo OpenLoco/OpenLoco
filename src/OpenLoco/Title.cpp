@@ -4,6 +4,7 @@
 #include "Gui.h"
 #include "Interop/Interop.hpp"
 #include "OpenLoco.h"
+#include "Scenario.h"
 #include "Ui/WindowManager.h"
 
 using namespace OpenLoco::Interop;
@@ -46,20 +47,6 @@ namespace OpenLoco::Title
         call(0x00473B91);
     }
 
-    // 0x004748D4
-    // ?Set default types for building. Like the initial track type and vehicle type and such.?
-    static void sub_4748D4()
-    {
-        call(0x004748D4);
-    }
-
-    // 0x0043C88C
-    // ?reset all?
-    static void sub_43C88C()
-    {
-        call(0x0043C88C);
-    }
-
     // 0x004284C8
     static void sub_4284C8()
     {
@@ -92,8 +79,8 @@ namespace OpenLoco::Title
         sub_474874();
         sub_473B91();
         ObjectManager::resetLoadedObjects();
-        sub_4748D4();
-        sub_43C88C();
+        Scenario::sub_4748D4();
+        Scenario::reset();
         initialiseViewports();
         sub_4284C8();
         Gui::init();

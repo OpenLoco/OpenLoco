@@ -62,6 +62,7 @@ namespace OpenLoco::Ui::WindowManager
     Ui::window* findWindowShowing(const viewport_pos& position);
     void closeAllFloatingWindows();
     int32_t getCurrentRotation();
+    void setCurrentRotation(int32_t value);
 
     void viewportShiftPixels(Ui::window* window, Ui::viewport* viewport, int16_t dX, int16_t dY);
     void viewportSetVisibility(viewport_visibility flags);

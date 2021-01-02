@@ -91,6 +91,8 @@ namespace OpenLoco::Scenario
     constexpr uint8_t min_altitude_trees = 0;
     constexpr uint8_t max_altitude_trees = 40;
 
+    void reset();
+    void sub_4748D4();
     void eraseLandscape();
     void generateLandscape();
     void start(const char* filename = nullptr);
