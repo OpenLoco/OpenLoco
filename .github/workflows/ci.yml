@@ -17,6 +17,7 @@ jobs:
   windows:
     name: Windows
     runs-on: windows-latest
+    needs: [check-code-formatting]
     env:
       CONFIGURATION: Release
     steps:
