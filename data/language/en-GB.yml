@@ -2200,3 +2200,6 @@ strings:
   2145: "Never"
   2146: "Every month"
   2147: "Every {INT32} months"
+  2148: "{COLOUR WINDOW_2}Generator:"
+  2149: Original
+  2150: Improved

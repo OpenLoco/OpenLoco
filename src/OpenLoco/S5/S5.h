@@ -28,6 +28,12 @@ namespace OpenLoco::S5
         halfMountainsFlat,
     };
 
+    enum class LandGeneratorType : uint8_t
+    {
+        Original,
+        Improved,
+    };
+
 #pragma pack(push, 1)
     struct Options
     {
@@ -69,7 +75,11 @@ namespace OpenLoco::S5
         uint8_t objectiveTimeLimitYears;               // 0x419C
         ObjectManager::header objectiveDeliveredCargo; // 0x419D
         ObjectManager::header currency;                // 0x41AD
-        std::byte pad_41BD[349];
+
+        // new fields:
+        LandGeneratorType generator;
+
+        std::byte pad_41BD[348];
     };
 #pragma pack(pop)
 

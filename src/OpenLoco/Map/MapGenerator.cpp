@@ -128,6 +128,14 @@ namespace OpenLoco::Map::MapGenerator
 
     class OriginalTerrainGenerator
     {
+    public:
+        // 0x004624F0
+        void generate([[maybe_unused]] const S5::Options& options, HeightMap& heightMap)
+        {
+            _heightMap = heightMap.data();
+            call(0x004624F0);
+            _heightMap = nullptr;
+        }
     };
 
     class ModernTerrainGenerator
@@ -379,11 +387,16 @@ namespace OpenLoco::Map::MapGenerator
     // 0x004624F0
     static void generateHeightMap(const S5::Options& options, HeightMap& heightMap)
     {
-        ModernTerrainGenerator generator;
-        generator.generate(options, heightMap, std::random_device{}());
-
-        // Original:
-        // call(0x004624F0);
+        if (options.generator == LandGeneratorType::Original)
+        {
+            OriginalTerrainGenerator generator;
+            generator.generate(options, heightMap);
+        }
+        else
+        {
+            ModernTerrainGenerator generator;
+            generator.generate(options, heightMap, std::random_device{}());
+        }
     }
 
     // 0x004625D0

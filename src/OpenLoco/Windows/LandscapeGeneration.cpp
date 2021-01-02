@@ -20,7 +20,7 @@ using namespace OpenLoco::Interop;
 namespace OpenLoco::Ui::Windows::LandscapeGeneration
 {
     static const Gfx::ui_size_t window_size = { 366, 217 };
-    static const Gfx::ui_size_t land_tab_size = { 366, 232 };
+    static const Gfx::ui_size_t land_tab_size = { 366, 247 };
 
     static const uint8_t rowHeight = 22; // CJK: 22
 
@@ -337,7 +337,9 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
     {
         enum widx
         {
-            sea_level = 9,
+            generator = 9,
+            generator_btn,
+            sea_level,
             sea_level_down,
             sea_level_up,
             min_land_height,
@@ -352,17 +354,18 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             scrollview,
         };
 
-        const uint64_t enabled_widgets = Common::enabled_widgets | (1 << widx::sea_level_up) | (1 << widx::sea_level_down) | (1 << widx::min_land_height_up) | (1 << widx::min_land_height_down) | (1 << widx::topography_style) | (1 << widx::topography_style_btn) | (1 << widx::hill_density_up) | (1 << widx::hill_density_down) | (1 << widx::hills_edge_of_map);
+        const uint64_t enabled_widgets = Common::enabled_widgets | (1 << widx::generator) | (1 << widx::generator_btn) | (1 << widx::sea_level_up) | (1 << widx::sea_level_down) | (1 << widx::min_land_height_up) | (1 << widx::min_land_height_down) | (1 << widx::topography_style) | (1 << widx::topography_style_btn) | (1 << widx::hill_density_up) | (1 << widx::hill_density_down) | (1 << widx::hills_edge_of_map);
         const uint64_t holdable_widgets = (1 << widx::sea_level_up) | (1 << widx::sea_level_down) | (1 << widx::min_land_height_up) | (1 << widx::min_land_height_down) | (1 << widx::hill_density_up) | (1 << widx::hill_density_down);
 
         static widget_t widgets[] = {
-            common_options_widgets(232, StringIds::title_landscape_generation_land),
-            makeStepperWidgets({ 256, 52 }, { 100, 12 }, widget_type::wt_18, 1, StringIds::sea_level_units),
-            makeStepperWidgets({ 256, 67 }, { 100, 12 }, widget_type::wt_18, 1, StringIds::min_land_height_units),
-            makeDropdownWidgets({ 176, 82 }, { 180, 12 }, widget_type::wt_18, 1),
-            makeStepperWidgets({ 256, 97 }, { 100, 12 }, widget_type::wt_18, 1, StringIds::hill_density_percent),
-            makeWidget({ 10, 113 }, { 346, 12 }, widget_type::checkbox, 1, StringIds::create_hills_right_up_to_edge_of_map),
-            makeWidget({ 4, 127 }, { 358, 100 }, widget_type::scrollview, 1, scrollbars::vertical),
+            common_options_widgets(247, StringIds::title_landscape_generation_land),
+            makeDropdownWidgets({ 176, 52 }, { 180, 12 }, widget_type::wt_18, 1),
+            makeStepperWidgets({ 256, 67 }, { 100, 12 }, widget_type::wt_18, 1, StringIds::sea_level_units),
+            makeStepperWidgets({ 256, 82 }, { 100, 12 }, widget_type::wt_18, 1, StringIds::min_land_height_units),
+            makeDropdownWidgets({ 176, 97 }, { 180, 12 }, widget_type::wt_18, 1),
+            makeStepperWidgets({ 256, 112 }, { 100, 12 }, widget_type::wt_18, 1, StringIds::hill_density_percent),
+            makeWidget({ 10, 128 }, { 346, 12 }, widget_type::checkbox, 1, StringIds::create_hills_right_up_to_edge_of_map),
+            makeWidget({ 4, 142 }, { 358, 100 }, widget_type::scrollview, 1, scrollbars::vertical),
             widgetEnd()
         };
 
@@ -372,6 +375,13 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         static void draw(window* window, Gfx::drawpixelinfo_t* dpi)
         {
             Common::draw(window, dpi);
+
+            Gfx::drawString_494B3F(
+                *dpi,
+                window->x + 10,
+                window->y + window->widgets[widx::generator].top,
+                Colour::black,
+                StringIds::generator);
 
             Gfx::drawString_494B3F(
                 *dpi,
@@ -474,11 +484,24 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             StringIds::half_mountains_half_flat,
         };
 
+        static const string_id generatorIds[] = {
+            StringIds::generator_original,
+            StringIds::generator_improved,
+        };
+
         // 0x0043E1BA
         static void onDropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
         {
             switch (widgetIndex)
             {
+                case widx::generator_btn:
+                    if (itemIndex != -1)
+                    {
+                        S5::getOptions().generator = static_cast<S5::LandGeneratorType>(itemIndex);
+                        window->invalidate();
+                    }
+                    break;
+
                 case widx::topography_style_btn:
                     if (itemIndex != -1)
                     {
@@ -519,6 +542,18 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 case widx::min_land_height_down:
                     options.minLandHeight = std::max<int8_t>(Scenario::min_base_land_height, options.minLandHeight - 1);
                     break;
+
+                case widx::generator_btn:
+                {
+                    widget_t& target = window->widgets[widx::generator];
+                    Dropdown::show(window->x + target.left, window->y + target.top, target.width() - 4, target.height(), window->colours[1], std::size(generatorIds), 0x80);
+
+                    for (size_t i = 0; i < std::size(generatorIds); i++)
+                        Dropdown::add(i, generatorIds[i]);
+
+                    Dropdown::setHighlightedItem(static_cast<uint8_t>(options.generator));
+                    break;
+                }
 
                 case widx::topography_style_btn:
                 {
@@ -625,6 +660,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             commonFormatArgs[1] = options.minLandHeight;
             commonFormatArgs[2] = options.hillDensity;
 
+            window->widgets[widx::generator].text = generatorIds[static_cast<uint8_t>(options.generator)];
             window->widgets[widx::topography_style].text = topographyStyleIds[static_cast<uint8_t>(options.topographyStyle)];
 
             if ((options.scenarioFlags & Scenario::flags::hills_edge_of_map) != 0)
