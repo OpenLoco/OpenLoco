@@ -463,7 +463,7 @@ namespace OpenLoco::Ui::Windows::TownList
         {
             FormatArguments args{};
             args.push(StringIds::tooltip_scroll_town_list);
-            return { args };
+            return args;
         }
 
         // 0x004919A4
@@ -1047,7 +1047,7 @@ namespace OpenLoco::Ui::Windows::TownList
         {
             FormatArguments args{};
             args.push(StringIds::tooltip_scroll_building_list);
-            return { args };
+            return args;
         }
 
         // 0x0049AA1C

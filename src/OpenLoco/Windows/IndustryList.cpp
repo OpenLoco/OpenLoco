@@ -366,7 +366,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         {
             FormatArguments args{};
             args.push(StringIds::tooltip_scroll_industry_list);
-            return { args };
+            return args;
         }
 
         // 0x00458108
@@ -853,7 +853,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         {
             FormatArguments args{};
             args.push(StringIds::tooltip_scroll_new_industry_list);
-            return { args };
+            return args;
         }
 
         // 0x004586EA

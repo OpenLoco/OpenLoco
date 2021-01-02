@@ -86,7 +86,7 @@ namespace OpenLoco::Ui::AboutMusic
     {
         FormatArguments args{};
         args.push(StringIds::tooltip_scroll_credits_list);
-        return { args };
+        return args;
     }
 
     // 0x0043B8B8

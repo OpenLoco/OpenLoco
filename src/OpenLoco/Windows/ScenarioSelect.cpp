@@ -494,7 +494,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     {
         FormatArguments args{};
         args.push(StringIds::tooltip_scroll_scenario_list);
-        return { args };
+        return args;
     }
 
     static void initEvents()

@@ -335,7 +335,7 @@ namespace OpenLoco::Ui::PromptBrowse
     {
         FormatArguments args{};
         args.push(StringIds::tooltip_scroll_list);
-        return { args };
+        return args;
     }
 
     // 0x00445C8F

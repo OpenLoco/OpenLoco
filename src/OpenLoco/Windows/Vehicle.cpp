@@ -636,7 +636,7 @@ namespace OpenLoco::Ui::Vehicle
             auto head = Common::getVehicle(self);
             args.skip(2);
             args.push(StringIds::getVehicleType(head->vehicleType));
-            return { args };
+            return args;
         }
 
         // 0x004B1EB5
@@ -1197,7 +1197,7 @@ namespace OpenLoco::Ui::Vehicle
 
             auto vehicle = Common::getVehicle(self);
             args.push(StringIds::getVehicleType(vehicle->vehicleType));
-            return { args };
+            return args;
         }
 
         // 0x004B3B18
@@ -1834,7 +1834,7 @@ namespace OpenLoco::Ui::Vehicle
 
             auto vehicle = Common::getVehicle(self);
             args.push(StringIds::getVehicleType(vehicle->vehicleType));
-            return { args };
+            return args;
         }
 
         // 0x004B4360
@@ -2125,7 +2125,7 @@ namespace OpenLoco::Ui::Vehicle
             auto veh0 = Common::getVehicle(self);
             args.skip(2);
             args.push(StringIds::getVehicleType(veh0->vehicleType));
-            return { args };
+            return args;
         }
 
         // 0x004B5995
@@ -2521,7 +2521,7 @@ namespace OpenLoco::Ui::Vehicle
             args.push(StringIds::tooltip_scroll_orders_list);
             auto head = Common::getVehicle(self);
             args.push(StringIds::getVehicleType(head->vehicleType));
-            return { args };
+            return args;
         }
 
         // 0x004B5A1A

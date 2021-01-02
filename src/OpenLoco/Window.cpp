@@ -1286,7 +1286,7 @@ namespace OpenLoco::Ui
     {
         // We only return std::nullopt when required by the tooltip function
         if (event_handlers->tooltip == nullptr)
-            return { FormatArguments() };
+            return FormatArguments();
 
         if (isInteropEvent(event_handlers->tooltip))
         {
@@ -1297,7 +1297,7 @@ namespace OpenLoco::Ui
             auto args = FormatArguments();
             if (regs.ax == (int16_t)StringIds::null)
                 return {};
-            return { args };
+            return args;
         }
 
         return event_handlers->tooltip(this, widget_index);

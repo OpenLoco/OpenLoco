@@ -196,7 +196,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     {
         FormatArguments args{};
         args.push(StringIds::tooltip_scroll_list);
-        return { args };
+        return args;
     }
 
     // 0x434FE8

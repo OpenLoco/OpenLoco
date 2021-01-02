@@ -757,6 +757,6 @@ namespace OpenLoco::Ui::Windows::StationList
     {
         FormatArguments args{};
         args.push(StringIds::tooltip_scroll_station_list);
-        return { args };
+        return args;
     }
 }

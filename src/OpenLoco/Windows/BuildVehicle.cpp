@@ -833,7 +833,7 @@ namespace OpenLoco::Ui::BuildVehicle
                 }
             }
         }
-        return { args };
+        return args;
     }
 
     // 0x4C37CB

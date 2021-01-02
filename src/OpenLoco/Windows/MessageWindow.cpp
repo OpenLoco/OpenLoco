@@ -195,7 +195,7 @@ namespace OpenLoco::Ui::MessageWindow
         {
             FormatArguments args{};
             args.push(StringIds::tooltip_scroll_message_list);
-            return { args };
+            return args;
         }
 
         // 0x0042A545

@@ -493,7 +493,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         {
             FormatArguments args{};
             args.push(StringIds::tooltip_scroll_trees_list);
-            return { args };
+            return args;
         }
 
         // 0x004BB756
@@ -2021,7 +2021,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         {
             FormatArguments args{};
             args.push(StringIds::tooltip_scroll_walls_list);
-            return { args };
+            return args;
         }
 
         // 0x004BC029

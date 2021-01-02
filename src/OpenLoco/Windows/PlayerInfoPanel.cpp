@@ -349,7 +349,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
                 performanceIndexTooltip(args);
                 break;
         }
-        return { args };
+        return args;
     }
 
     static void companyValueTooltip(FormatArguments& args)

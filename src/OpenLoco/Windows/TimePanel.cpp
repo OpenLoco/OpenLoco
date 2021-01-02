@@ -327,7 +327,7 @@ namespace OpenLoco::Ui::TimePanel
                 formatChallenge(args);
                 break;
         }
-        return { args };
+        return args;
     }
 
     // 0x0043995C

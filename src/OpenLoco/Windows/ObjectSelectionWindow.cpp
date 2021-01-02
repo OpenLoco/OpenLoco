@@ -740,7 +740,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     {
         FormatArguments args{};
         args.push(StringIds::tooltip_object_list);
-        return { args };
+        return args;
     }
 
     // 0x00472B54

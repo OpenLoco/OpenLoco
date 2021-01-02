@@ -168,7 +168,7 @@ namespace OpenLoco::Ui::KeyboardShortcuts
     {
         FormatArguments args{};
         args.push(StringIds::tooltip_scroll_list);
-        return { args };
+        return args;
     }
 
     // 0x004BE84E

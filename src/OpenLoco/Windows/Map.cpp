@@ -402,7 +402,7 @@ namespace OpenLoco::Ui::Windows::Map
     {
         FormatArguments args{};
         args.push(StringIds::tooltip_scroll_map);
-        return { args };
+        return args;
     }
 
     // 0x0046D223

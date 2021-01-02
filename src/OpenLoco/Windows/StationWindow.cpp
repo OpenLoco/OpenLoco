@@ -458,7 +458,7 @@ namespace OpenLoco::Ui::Windows::Station
         {
             FormatArguments args{};
             args.push(StringIds::tooltip_scroll_cargo_list);
-            return { args };
+            return args;
         }
 
         // 0x0048E986
@@ -652,7 +652,7 @@ namespace OpenLoco::Ui::Windows::Station
         {
             FormatArguments args{};
             args.push(StringIds::tooltip_scroll_ratings_list);
-            return { args };
+            return args;
         }
 
         // 0x0048EF02

@@ -402,7 +402,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         {
             FormatArguments args{};
             args.push(StringIds::tooltip_scroll_company_list);
-            return { args };
+            return args;
         }
 
         // 0x0043632C
