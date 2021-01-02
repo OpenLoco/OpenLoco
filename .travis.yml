@@ -1,39 +1,12 @@
 language: c
 
-before_install:
-    - docker pull openloco/openloco:$DOCKERIMG
-
 install:
     - git config remote.origin.fetch +refs/heads/*:refs/remotes/origin/*
     - git config remote.origin.fetch +refs/tags/*:refs/tags/*
     - git fetch --tags
 
-sudo: required
-dist: trusty
-
 matrix:
     include:
-        - os: linux
-          name: Ubuntu i686 GCC
-          services:
-            - docker
-          env:
-            - OPENLOCO_CMAKE_OPTS="-G Ninja -DCMAKE_BUILD_TYPE=release -DOPENLOCO_USE_CCACHE=OFF -DSDL2_DIR=/usr/lib/i386-linux-gnu/cmake/SDL2 -DSDL2_MIXER_PATH=/usr/lib/i386-linux-gnu -Dyaml-cpp_DIR=/usr/lib/i386-linux-gnu/cmake/yaml-cpp -DPNG_LIBRARY=/usr/lib/i386-linux-gnu/libpng16.so -DPNG_PNG_INCLUDE_DIR=/usr/include -DZLIB_LIBRARY=/usr/lib/i386-linux-gnu/libz.so"
-            - DOCKERIMG=ubuntu-i686
-        - os: linux
-          name: Ubuntu i686 Clang
-          services:
-            - docker
-          env:
-            - OPENLOCO_CMAKE_OPTS="-G Ninja -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_BUILD_TYPE=release -DOPENLOCO_USE_CCACHE=OFF -DSDL2_DIR=/usr/lib/i386-linux-gnu/cmake/SDL2 -DSDL2_MIXER_PATH=/usr/lib/i386-linux-gnu -Dyaml-cpp_DIR=/usr/lib/i386-linux-gnu/cmake/yaml-cpp -DPNG_LIBRARY=/usr/lib/i386-linux-gnu/libpng16.so -DPNG_PNG_INCLUDE_DIR=/usr/include -DZLIB_LIBRARY=/usr/lib/i386-linux-gnu/libz.so"
-            - DOCKERIMG=ubuntu-i686
-        - os: linux
-          name: Fedora i686 MinGW32
-          services:
-            - docker
-          env:
-            - OPENLOCO_CMAKE_OPTS="-G Ninja -DCMAKE_TOOLCHAIN_FILE=../CMakeLists_mingw.txt -DCMAKE_BUILD_TYPE=release -DOPENLOCO_USE_CCACHE=OFF -DSDL2_DIR=/usr/i686-w64-mingw32/sys-root/mingw/lib/cmake/SDL2/ -DSDL2_MIXER_PATH=/usr/i686-w64-mingw32/sys-root/mingw/ -Dyaml-cpp_DIR=/usr/i686-w64-mingw32/sys-root/mingw/CMake/ -DPNG_LIBRARY=/usr/i686-w64-mingw32/sys-root/mingw/bin/libpng16-16.dll -DPNG_PNG_INCLUDE_DIR=/usr/i686-w64-mingw32/sys-root/mingw/include"
-            - DOCKERIMG=fedora-mingw32
         - os: osx
           name: macOS 10.13 Clang (Xcode 9.3)
           osx_image: xcode9.3 # macOS 10.13
@@ -47,10 +20,6 @@ matrix:
             - cmake .. "-DCMAKE_TOOLCHAIN_FILE=../vcpkg/scripts/buildsystems/vcpkg.cmake" -DVCPKG_TARGET_TRIPLET=x86-osx
             - make -j2
             - zip -r openloco-macos.zip openloco.app
-
-script:
-    - mkdir build
-    - docker run -v $(pwd):/openloco -w /openloco/build -i -t openloco/openloco:$DOCKERIMG bash -c "cmake ../ ${OPENLOCO_CMAKE_OPTS} && ninja -k0"
 
 deploy:
     provider: releases
