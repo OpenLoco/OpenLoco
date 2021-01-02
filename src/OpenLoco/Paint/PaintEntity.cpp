@@ -12,7 +12,7 @@ using namespace OpenLoco::Ui::ViewportInteraction;
 namespace OpenLoco::Paint
 {
     // 0x004B0CCE
-    void paintVehicleEntity(PaintSession& session, vehicle_base* base)
+    static void paintVehicleEntity(PaintSession& session, vehicle_base* base)
     {
         registers regs{};
         regs.ax = base->x;
@@ -24,7 +24,7 @@ namespace OpenLoco::Paint
     }
 
     // 0x00440325
-    void paintMiscEntity(PaintSession& session, MiscBase* base)
+    static void paintMiscEntity(PaintSession& session, MiscBase* base)
     {
         registers regs{};
         regs.ax = base->x;
