@@ -17,7 +17,7 @@ namespace OpenLoco::Paint
         registers regs{};
         regs.ax = base->x;
         regs.cx = base->y;
-        regs.dl = base->z;
+        regs.dx = base->z;
         regs.ebx = (base->sprite_yaw + (session.getRotation() << 4)) & 0x3F;
         regs.esi = reinterpret_cast<int32_t>(base);
         call(0x004B0CCE, regs);
@@ -29,7 +29,7 @@ namespace OpenLoco::Paint
         registers regs{};
         regs.ax = base->x;
         regs.cx = base->y;
-        regs.dl = base->z;
+        regs.dx = base->z;
         regs.ebx = (base->sprite_yaw + (session.getRotation() << 4)) & 0x3F;
         regs.esi = reinterpret_cast<int32_t>(base);
         call(0x00440325, regs);
