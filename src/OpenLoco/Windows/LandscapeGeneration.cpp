@@ -483,7 +483,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 case widx::topography_style_btn:
                     if (itemIndex != -1)
                     {
-                        S5::getOptions().topographyStyle = itemIndex;
+                        S5::getOptions().topographyStyle = static_cast<S5::TopographyStyle>(itemIndex);
                         window->invalidate();
                     }
                     break;
@@ -529,7 +529,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                     for (size_t i = 0; i < std::size(topographyStyleIds); i++)
                         Dropdown::add(i, topographyStyleIds[i]);
 
-                    Dropdown::setHighlightedItem(options.topographyStyle);
+                    Dropdown::setHighlightedItem(static_cast<uint8_t>(options.topographyStyle));
                     break;
                 }
 
@@ -626,7 +626,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             commonFormatArgs[1] = options.minLandHeight;
             commonFormatArgs[2] = options.hillDensity;
 
-            window->widgets[widx::topography_style].text = topographyStyleIds[options.topographyStyle];
+            window->widgets[widx::topography_style].text = topographyStyleIds[static_cast<uint8_t>(options.topographyStyle)];
 
             if ((options.scenarioFlags & Scenario::flags::hills_edge_of_map) != 0)
                 window->activated_widgets |= (1 << widx::hills_edge_of_map);

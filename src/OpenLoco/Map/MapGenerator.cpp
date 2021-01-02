@@ -14,6 +14,7 @@
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Map;
 using namespace OpenLoco::Ui;
+using namespace OpenLoco::S5;
 using namespace OpenLoco::Map::MapGenerator;
 
 namespace OpenLoco::Map::MapGenerator
@@ -76,6 +77,55 @@ namespace OpenLoco::Map::MapGenerator
         }
     };
 
+    class HeightMapRange
+    {
+    private:
+        HeightMap& _heightMap;
+        int32_t const _minX;
+        int32_t const _minY;
+
+    public:
+        int32_t const width;
+        int32_t const height;
+
+        HeightMapRange(HeightMap& heightMap)
+            : _heightMap(heightMap)
+            , _minX(0)
+            , _minY(0)
+            , width(heightMap.width)
+            , height(heightMap.height)
+        {
+        }
+
+        HeightMapRange(HeightMap& heightMap, int32_t minX, int32_t minY, int32_t width, int32_t height)
+            : _heightMap(heightMap)
+            , _minX(minX)
+            , _minY(minY)
+            , width(width)
+            , height(height)
+        {
+        }
+
+        uint8_t& operator[](Point pos)
+        {
+            pos.x += _minX;
+            pos.y += _minY;
+            return _heightMap[pos];
+        }
+
+        const uint8_t& operator[](Point pos) const
+        {
+            pos.x += _minX;
+            pos.y += _minY;
+            return _heightMap[pos];
+        }
+
+        HeightMapRange slice(int32_t l, int32_t t, int32_t w, int32_t h)
+        {
+            return HeightMapRange(_heightMap, _minX + l, _minY + t, w, h);
+        }
+    };
+
     class OriginalTerrainGenerator
     {
     };
@@ -83,19 +133,53 @@ namespace OpenLoco::Map::MapGenerator
     class ModernTerrainGenerator
     {
     public:
-        void generate(const S5::Options& options, HeightMap& heightMap, uint32_t seed)
+        void generate(const S5::Options& options, HeightMapRange heightMap, uint32_t seed)
         {
             initialiseRng(seed);
 
+            auto hillDensity = std::clamp<uint8_t>(options.hillDensity, 0, 100) / 100.0f;
+
             SimplexSettings settings;
             settings.low = options.minLandHeight;
-            settings.high = randomNext(8, 32);
-            settings.baseFreq = 2.0f;
-            settings.octaves = 5;
-            settings.smooth = 2;
 
-            generateSimplex(settings, heightMap);
-            smooth(settings, heightMap);
+            switch (options.topographyStyle)
+            {
+                case TopographyStyle::flatLand:
+                    settings.high = options.minLandHeight + 8;
+                    settings.baseFreq = 4.0f * hillDensity;
+                    settings.octaves = 5;
+                    settings.smooth = 2;
+                    generate(settings, heightMap);
+                    break;
+                case TopographyStyle::smallHills:
+                    settings.high = options.minLandHeight + 14;
+                    settings.baseFreq = 6.0f * hillDensity;
+                    settings.octaves = 6;
+                    settings.smooth = 1;
+                    generate(settings, heightMap);
+                    break;
+                case TopographyStyle::mountains:
+                    settings.high = 32;
+                    settings.baseFreq = 4.0f * hillDensity;
+                    settings.octaves = 6;
+                    settings.smooth = 1;
+                    generate(settings, heightMap);
+                    break;
+                case TopographyStyle::halfMountainsHills:
+                    settings.high = 32;
+                    settings.baseFreq = 8.0f * hillDensity;
+                    settings.octaves = 6;
+                    settings.smooth = 2;
+                    generate(settings, heightMap);
+                    break;
+                case TopographyStyle::halfMountainsFlat:
+                    settings.high = 32;
+                    settings.baseFreq = 6.0f * hillDensity;
+                    settings.octaves = 5;
+                    settings.smooth = 5;
+                    generate(settings, heightMap);
+                    break;
+            }
         }
 
     private:
@@ -115,7 +199,13 @@ namespace OpenLoco::Map::MapGenerator
             _pprng.seed(seed);
         }
 
-        void generateSimplex(const SimplexSettings& settings, HeightMap& heightMap)
+        void generate(const SimplexSettings& settings, HeightMapRange heightMap)
+        {
+            generateSimplex(settings, heightMap);
+            smooth(settings.smooth, heightMap);
+        }
+
+        void generateSimplex(const SimplexSettings& settings, HeightMapRange heightMap)
         {
             auto freq = settings.baseFreq * (1.0f / std::max(heightMap.width, heightMap.height));
             uint8_t perm[512];
@@ -132,9 +222,9 @@ namespace OpenLoco::Map::MapGenerator
             }
         }
 
-        static void smooth(const SimplexSettings& settings, HeightMap& heightMap)
+        static void smooth(int32_t iterations, HeightMapRange heightMap)
         {
-            for (int32_t i = 0; i < settings.smooth; i++)
+            for (int32_t i = 0; i < iterations; i++)
             {
                 auto copyHeight = heightMap;
                 for (int32_t y = 1; y < heightMap.width - 1; y++)

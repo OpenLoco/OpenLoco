@@ -19,6 +19,15 @@ namespace OpenLoco::S5
 #pragma pack(pop)
     static_assert(sizeof(Header) == 0x20);
 
+    enum class TopographyStyle : uint8_t
+    {
+        flatLand,
+        smallHills,
+        mountains,
+        halfMountainsHills,
+        halfMountainsFlat,
+    };
+
 #pragma pack(push, 1)
     struct Options
     {
@@ -42,7 +51,7 @@ namespace OpenLoco::S5
         uint8_t minAltitudeForTrees;                   // 0x182
         uint8_t maxAltitudeForTrees;                   // 0x183
         uint8_t minLandHeight;                         // 0x184
-        uint8_t topographyStyle;                       // 0x185
+        TopographyStyle topographyStyle;               // 0x185
         uint8_t hillDensity;                           // 0x186
         uint8_t numberOfTowns;                         // 0x187
         uint8_t maxTownSize;                           // 0x188
