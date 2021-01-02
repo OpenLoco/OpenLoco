@@ -5,6 +5,7 @@
 #include "../Things/Misc.h"
 #include "../Things/ThingManager.h"
 #include "Paint.h"
+#include <functional>
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui::ViewportInteraction;
@@ -36,7 +37,7 @@ namespace OpenLoco::Paint
     }
 
     // 0x0046FA88
-    void paintEntities(PaintSession& session, const Map::map_pos& loc)
+    static void paintEntitiesWithFilter(PaintSession& session, const Map::map_pos& loc, std::function<bool(const thing_base*)> filter)
     {
         auto* dpi = session.getContext();
         if (Config::get().vehicles_min_scale < dpi->zoom_level)
@@ -75,6 +76,10 @@ namespace OpenLoco::Paint
             {
                 continue;
             }
+            if (!filter(entity))
+            {
+                continue;
+            }
             session.setCurrentItem(entity);
             session.setEntityPosition({ entity->x, entity->y });
             session.setItemType(InteractionItem::thing);
@@ -90,12 +95,33 @@ namespace OpenLoco::Paint
         }
     }
 
+    void paintEntities(PaintSession& session, const Map::map_pos& loc)
+    {
+        paintEntitiesWithFilter(session, loc, [](const thing_base*) { return true; });
+    }
+
+    static bool isEntityFlyingOrFloating(const thing_base* entity)
+    {
+        auto* vehicle = entity->asVehicle();
+        if (vehicle == nullptr)
+        {
+            return false;
+        }
+        switch (vehicle->getTransportMode())
+        {
+            case TransportMode::air:
+            case TransportMode::water:
+                return true;
+            case TransportMode::rail:
+            case TransportMode::road:
+                return false;
+        }
+        return false;
+    }
+
     // 0x0046FB67
     void paintEntities2(PaintSession& session, const Map::map_pos& loc)
     {
-        registers regs{};
-        regs.eax = loc.x;
-        regs.ecx = loc.y;
-        call(0x0046FB67, regs);
+        paintEntitiesWithFilter(session, loc, isEntityFlyingOrFloating);
     }
 }

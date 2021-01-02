@@ -135,6 +135,7 @@ namespace OpenLoco
         }
         bool isVehicleTail() const { return is<VehicleThingType::tail>(); }
         vehicle_tail* asVehicleTail() const { return as<vehicle_tail>(); }
+        TransportMode getTransportMode() const;
 
         vehicle_base* nextVehicle();
         vehicle_base* nextVehicleComponent();
