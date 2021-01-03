@@ -84,7 +84,7 @@ namespace OpenLoco::Config
         uint8_t preferred_currency[16];               // 0x7C
         uint8_t enabled_music[29];                    // 0x50AF40, 0x8C
         uint8_t pad_A9[0xCC - 0xA9];                  // 0xA9
-        int32_t volume;                               // 0xCC
+        int32_t volume;                               // 0x50AF80, 0xCC
         uint32_t connection_timeout;                  // 0xD0
         char last_host[64];                           // 0xD4
         uint8_t station_names_min_scale;              // 0x114
