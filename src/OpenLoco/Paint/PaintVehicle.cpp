@@ -12,9 +12,11 @@ using namespace OpenLoco::Things::Vehicle;
 
 namespace OpenLoco::Paint
 {
-    const uint8_t _500160[16]{
+    // 0x00500160
+    const uint8_t _reversePitch[16]{
         0, 5, 6, 7, 8, 1, 2, 3, 4, 10, 9, 12, 11, 0, 0, 0
     };
+
     // 0x004B0CFC
     static void paintBogie(PaintSession& session, vehicle_bogie* bogie)
     {
@@ -25,28 +27,27 @@ namespace OpenLoco::Paint
         }
 
         auto& sprite = vehObject->bogie_sprites[bogie->object_sprite_type];
-        //uint8_t edi = bogie_sprites[0].var_01[bogie->object_sprite_type]; ?? why ??
-        uint8_t bl = (bogie->sprite_yaw + (session.getRotation() << 4)) & 0x3F;
-        uint8_t al = bogie->sprite_pitch;
+        //uint8_t edi = bogie_sprites[0].flags[bogie->object_sprite_type]; ?? why ??
+        uint8_t yaw = (bogie->sprite_yaw + (session.getRotation() << 4)) & 0x3F;
+        uint8_t pitch = bogie->sprite_pitch;
 
         // Reverse??
         if (bogie->getFlags38() & Flags38::unk_1)
         {
-            bl ^= (1 << 5);
-            al = _500160[bogie->sprite_pitch];
+            yaw ^= (1 << 5);
+            pitch = _reversePitch[bogie->sprite_pitch];
         }
-        bl >>= 1;
-        bl &= 0x1F;
-        switch (al)
+        auto yawIndex = (yaw >> 1) & 0x1F;
+        switch (pitch)
         {
             case 0:
             {
 
-                if (sprite.var_01 & (1 << 1))
+                if (sprite.flags & BogieSpriteFlags::unk_1)
                 {
-                    bl &= 0xF;
+                    yawIndex &= 0xF;
                 }
-                auto imageId = sprite.var_05 * bl + bogie->var_46 + sprite.image_1;
+                auto imageId = sprite.var_05 * yawIndex + bogie->var_46 + sprite.image_1;
                 if (bogie->getFlags38() & Flags38::isGhost)
                 {
                     Config::get().construction_marker;
@@ -71,7 +72,7 @@ namespace OpenLoco::Paint
                 }
                 else
                 {
-                    if (sprite.var_01 & (1 << 4))
+                    if (sprite.flags & BogieSpriteFlags::unk_4)
                     {
                         // larger sprite
                     }
@@ -90,12 +91,12 @@ namespace OpenLoco::Paint
             case 10:
             {
 
-                bl ^= (1 << 5);
-                if (sprite.var_01 & (1 << 1))
+                yawIndex ^= (1 << 5);
+                if (sprite.flags & BogieSpriteFlags::unk_1)
                 {
-                    bl ^= (1 << 5) | (1 << 4);
+                    yawIndex ^= (1 << 5) | (1 << 4);
                 }
-                auto imageId = sprite.var_05 * bl + bogie->var_46 + sprite.image_2;
+                auto imageId = sprite.var_05 * yawIndex + bogie->var_46 + sprite.image_2;
                 if (bogie->getFlags38() & Flags38::isGhost)
                 {
                     Config::get().construction_marker;
@@ -105,7 +106,7 @@ namespace OpenLoco::Paint
                 {
                     imageId = Gfx::recolour2(imageId, bogie->colour_scheme.primary, bogie->colour_scheme.secondary);
                 }
-                if (sprite.var_01 & (1 << 4))
+                if (sprite.flags & BogieSpriteFlags::unk_4)
                 {
                     // larger sprite
                 }
@@ -122,12 +123,12 @@ namespace OpenLoco::Paint
             default:
             {
 
-                bl ^= (1 << 5);
-                if (sprite.var_01 & (1 << 1))
+                yawIndex ^= (1 << 5);
+                if (sprite.flags & BogieSpriteFlags::unk_1)
                 {
-                    bl ^= (1 << 5) | (1 << 4);
+                    yawIndex ^= (1 << 5) | (1 << 4);
                 }
-                auto imageId = sprite.var_05 * bl + bogie->var_46 + sprite.image_3;
+                auto imageId = sprite.var_05 * yawIndex + bogie->var_46 + sprite.image_3;
                 if (bogie->getFlags38() & Flags38::isGhost)
                 {
                     Config::get().construction_marker;

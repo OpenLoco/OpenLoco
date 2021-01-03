@@ -103,10 +103,16 @@ namespace OpenLoco
         uint8_t var_05;
     };
 
+    namespace BogieSpriteFlags
+    {
+        constexpr uint8_t unk_1 = (1 << 1);
+        constexpr uint8_t unk_4 = (1 << 4);
+    }
+
     struct vehicle_object_bogie_sprite
     {
         uint8_t pad_00;
-        uint8_t var_01;
+        uint8_t flags;
         uint8_t var_02;
         uint8_t var_03;
         uint8_t var_04;
