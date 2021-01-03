@@ -13,4 +13,5 @@ namespace OpenLoco::IndustryManager
     Industry* get(IndustryId_t id);
     void update();
     void updateMonthly();
+    void createAllMapAnimations();
 }

@@ -111,4 +111,5 @@ namespace OpenLoco::Scenario
     void start(const char* filename = nullptr);
     void registerHooks();
     void formatChallengeArguments(FormatArguments& args);
+    void sub_46115C();
 }

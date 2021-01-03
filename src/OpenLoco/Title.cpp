@@ -7,6 +7,9 @@
 #include "Interop/Interop.hpp"
 #include "Map/TileManager.h"
 #include "OpenLoco.h"
+#include "Intro.h"
+#include "OpenLoco.h"
+#include "S5/S5.h"
 #include "Scenario.h"
 #include "Ui/WindowManager.h"
 
@@ -82,24 +85,12 @@ namespace OpenLoco::Title
     static TitleSequence::const_iterator _sequenceIterator;
     static uint16_t _waitCounter;
 
+
+    static loco_global<uint8_t, 0x00508F1A> _gameSpeed;
+    static loco_global<uint16_t, 0x0050C19A> _50C19A;
+    static loco_global<uint16_t, 0x00525F62> _525F62;
+
     static void sub_473A95(int32_t eax);
-
-    void registerHooks()
-    {
-        registerHook(
-            0x0046AD7D,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                start();
-                return 0;
-            });
-    }
-
-    // 0x00472031
-    // ?unload all objects?
-    static void sub_472031()
-    {
-        call(0x00472031);
-    }
 
     // 0x00474874
     // ?load selected objects?
@@ -126,6 +117,33 @@ namespace OpenLoco::Title
         call(0x004442C4);
     }
 
+    // 0x004442C4
+    static void loadTitle()
+    {
+        Scenario::sub_46115C();
+        if (Intro::state() == Intro::intro_state::none)
+        {
+            auto backupWord = _525F62;
+            auto titlePath = Environment::getPath(Environment::path_id::title);
+            clearScreenFlag(ScreenFlags::networked);
+            S5::load(titlePath, S5::LoadFlags::titleSequence);
+
+            setPlayerCompany(0);
+            CompanyManager::set_525E3D(255);
+            if (!isNetworked())
+            {
+                CompanyManager::set_525E3D(1);
+                if (!isTrackUpgradeMode())
+                {
+                    setPlayerCompany(1);
+                    CompanyManager::set_525E3D(0);
+                }
+            }
+
+            _525F62 = backupWord;
+        }
+    }
+
     // 0x00444357
     static void reset()
     {
@@ -133,7 +151,7 @@ namespace OpenLoco::Title
         _waitCounter = 0;
         loadTitle();
         resetScreenAge();
-        addr<0x50C19A, uint16_t>() = 55000;
+        _50C19A = 55000;
         update();
     }
 
@@ -152,7 +170,7 @@ namespace OpenLoco::Title
         setAllScreenFlags(currentScreenFlags);
         setScreenFlag(ScreenFlags::title);
         setGameSpeed(0);
-        sub_472031();
+        ObjectManager::unloadAll();
         sub_473A95(1);
         sub_474874();
         sub_473B91();
@@ -239,5 +257,21 @@ namespace OpenLoco::Title
         registers regs;
         regs.eax = eax;
         call(0x00473A95, regs);
+    }
+
+    void registerHooks()
+    {
+        registerHook(
+            0x0046AD7D,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                start();
+                return 0;
+            });
+        registerHook(
+            0x004442C4,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                loadTitle();
+                return 0;
+            });
     }
 }

@@ -352,4 +352,11 @@ namespace OpenLoco::Scenario
         args.push<uint16_t>(0);
         args.push<uint16_t>(0);
     }
+
+    void sub_46115C()
+    {
+        addr<0x00525E28, uint32_t>() = 0;
+        addr<0x00525F6C, uint16_t>() = 0;
+        addr<0x0052624C, uint16_t>() = 3;
+    }
 }

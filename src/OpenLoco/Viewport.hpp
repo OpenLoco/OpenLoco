@@ -117,6 +117,11 @@ namespace OpenLoco::Ui
             return Interop::addr<0x00e3f0b8, int32_t>();
         }
 
+        void setRotation(int32_t value)
+        {
+            Interop::addr<0x00e3f0b8, int32_t>() = value;
+        }
+
         /**
          * Maps a 2D viewport position to a UI (screen) position.
          */

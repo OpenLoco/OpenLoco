@@ -8,6 +8,11 @@
 using namespace OpenLoco;
 using namespace OpenLoco::Interop;
 
+bool EntityBase::isEmpty() const
+{
+    return base_type == EntityBaseType::null;
+}
+
 // 0x0046FC83
 void EntityBase::moveTo(const Map::Pos3& loc)
 {

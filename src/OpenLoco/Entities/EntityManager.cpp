@@ -143,6 +143,18 @@ namespace OpenLoco::EntityManager
         call(0x0046FF54);
     }
 
+    // 0x0046FC57
+    void updateSpatialIndex()
+    {
+        for (auto& ent : _entities)
+        {
+            if (!ent.isEmpty())
+            {
+                ent.moveTo({ ent.x, ent.y, ent.z });
+            }
+        }
+    }
+
     static EntityBase* createEntity(EntityId_t id, EntityListType list)
     {
         auto* newEntity = get<EntityBase>(id);

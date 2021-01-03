@@ -24,6 +24,7 @@ namespace OpenLoco::CompanyManager
     static loco_global<Company[max_companies], 0x00531784> _companies;
     static loco_global<uint8_t[max_companies + 1], 0x009C645C> _company_colours;
     static loco_global<CompanyId_t, 0x009C68EB> _updating_company_id;
+    static loco_global<uint8_t, 0x009C646B> _byte_9C646B;
 
     static void produceCompanies();
 
@@ -333,5 +334,22 @@ namespace OpenLoco::CompanyManager
         auto cost = currency48_t{ payment };
         company->cash -= cost;
         company->expenditures[0][static_cast<uint8_t>(type)] -= payment;
+    }
+
+    // 0x004302EF
+    void updateColours()
+    {
+        size_t index = 0;
+        for (auto& company : companies())
+        {
+            _company_colours[index] = company.mainColours.primary;
+            index++;
+        }
+        _byte_9C646B = 1;
+    }
+
+    void set_525E3D(uint8_t value)
+    {
+        _byte_525E3D = value;
     }
 }

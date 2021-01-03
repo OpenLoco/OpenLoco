@@ -630,6 +630,9 @@ namespace OpenLoco::StringIds
     constexpr string_id sandy_track_blues = 1080;
     constexpr string_id sandy_track_blues_credit = 1081;
     constexpr string_id error_unable_to_load_saved_game = 1082;
+    constexpr string_id error_file_contains_invalid_data = 1083;
+    constexpr string_id error_file_is_not_single_player_save = 1084;
+    constexpr string_id error_file_is_not_two_player_save = 1085;
 
     constexpr string_id loading = 1088;
 
@@ -1497,6 +1500,7 @@ namespace OpenLoco::StringIds
     constexpr string_id object_company_owners = 2085;
     constexpr string_id object_scenario_descriptions = 2086;
     constexpr string_id tooltip_object_list = 2087;
+    constexpr string_id missing_object_data_id_x = 2088;
 
     constexpr string_id export_plugin_objects = 2089;
     constexpr string_id export_plugin_objects_tip = 2090;
@@ -1504,6 +1508,8 @@ namespace OpenLoco::StringIds
     constexpr string_id object_selection_advanced = 2093;
     constexpr string_id object_selection_advanced_tooltip = 2094;
     constexpr string_id object_currency_big_font = 2095;
+
+    constexpr string_id new_objects_installed_successfully = 2096;
 
     constexpr string_id unit_mph = 2113;
     constexpr string_id unit_kmh = 2114;

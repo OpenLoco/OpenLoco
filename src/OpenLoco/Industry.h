@@ -33,7 +33,9 @@ namespace OpenLoco
         Utility::prng prng;         // 0x08
         uint8_t object_id;          // 0x10
         uint8_t under_construction; // 0x11 (0xFF = Finished)
-        uint8_t pad_12[0xD5 - 0x12];
+        uint16_t pad_12;
+        uint8_t numTiles;        // 0x14
+        Map::Pos3 tiles[32];     // 0x15
         TownId_t town;           // 0xD5
         Map::TileLoop tile_loop; // 0xD7
         int16_t var_DB;
@@ -65,7 +67,9 @@ namespace OpenLoco
         void sub_45329B(const Map::Pos2& pos);
         void sub_453354();
         void sub_454A43(const Map::Pos2& pos, uint8_t bl, uint8_t bh, uint8_t dl);
+        void createMapAnimations();
     };
+    static_assert(sizeof(industry) == 0x453);
 #pragma pack(pop)
 
     static_assert(sizeof(Industry) == 0x453);

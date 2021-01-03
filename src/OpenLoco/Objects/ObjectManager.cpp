@@ -492,6 +492,60 @@ namespace OpenLoco::ObjectManager
         throw std::runtime_error("Object not loaded at this index");
     }
 
+    // 0x00471BC5
+    static bool load(const ObjectHeader& header, LoadedObjectId id)
+    {
+        registers regs;
+        regs.ebp = reinterpret_cast<uint32_t>(&header);
+        regs.ecx = static_cast<int32_t>(id);
+        return (call(0x00471BC5, regs) & X86_FLAG_CARRY) == 0;
+    }
+
+    static LoadedObjectId getObjectId(LoadedObjectIndex index)
+    {
+        size_t objectType = 0;
+        while (objectType < maxObjectTypes)
+        {
+            auto count = getMaxObjects(static_cast<object_type>(objectType));
+            if (index < count)
+            {
+                return static_cast<LoadedObjectId>(index);
+            }
+            index -= count;
+            objectType++;
+        }
+        return std::numeric_limits<LoadedObjectId>::max();
+    }
+
+    LoadObjectsResult loadAll(stdx::span<ObjectHeader> objects)
+    {
+        LoadObjectsResult result;
+        result.Success = true;
+
+        unloadAll();
+
+        LoadedObjectIndex index = 0;
+        for (const auto& header : objects)
+        {
+            auto id = getObjectId(index);
+            if (!load(header, id))
+            {
+                result.Success = false;
+                result.ProblemObject = header;
+                unloadAll();
+                break;
+            }
+            index++;
+        }
+        return result;
+    }
+
+    // 0x00472031
+    void unloadAll()
+    {
+        call(0x00472031);
+    }
+
     void unload(LoadedObjectIndex index)
     {
         callObjectFunction(index, ObjectProcedure::unload);

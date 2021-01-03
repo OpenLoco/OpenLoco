@@ -483,6 +483,7 @@ namespace OpenLoco::Ui
         void viewportRotateRight();
         void viewportRotateLeft();
         void viewportRemove(const uint8_t viewportId);
+        void viewportFromSavedView(const SavedViewSimple& savedView);
 
         bool move(int16_t dx, int16_t dy);
         void moveInsideScreenEdges();

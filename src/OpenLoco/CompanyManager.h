@@ -39,7 +39,9 @@ namespace OpenLoco::CompanyManager
     string_id getOwnerStatus(CompanyId_t id, FormatArguments& args);
     OwnerStatus getOwnerStatus(CompanyId_t id);
     void updateOwnerStatus();
+    void updateColours();
 
     void spendMoneyEffect(const Map::Pos3& loc, const CompanyId_t company, const currency32_t amount);
     void applyPaymentToCompany(const CompanyId_t id, const currency32_t payment, const ExpenditureType type);
+    void set_525E3D(uint8_t value);
 }

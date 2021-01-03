@@ -1,10 +1,17 @@
+#define DO_TITLE_SEQUENCE_CHECKS
+
 #include "S5.h"
+#include "../Audio/Audio.h"
 #include "../CompanyManager.h"
 #include "../Entities/EntityManager.h"
+#include "../Gui.h"
+#include "../IndustryManager.h"
 #include "../Interop/Interop.hpp"
+#include "../Localisation/StringManager.h"
 #include "../Map/TileManager.h"
 #include "../Objects/ObjectManager.h"
 #include "../StationManager.h"
+#include "../TownManager.h"
 #include "../Ui/WindowManager.h"
 #include "../Utility/Exception.hpp"
 #include "../Vehicles/Orders.h"
@@ -26,6 +33,9 @@ namespace OpenLoco::S5
     static loco_global<Header, 0x009CCA34> _header;
     static loco_global<Options, 0x009CCA54> _previewOptions;
     static loco_global<char[512], 0x0112CE04> _savePath;
+    static loco_global<uint8_t, 0x00508F1A> _gameSpeed;
+    static loco_global<uint8_t, 0x0050C197> _loadErrorCode;
+    static loco_global<string_id, 0x0050C198> _loadErrorMessage;
 
     static bool save(const fs::path& path, const S5File& file, const std::vector<ObjectHeader>& packedObjects);
 
@@ -362,6 +372,290 @@ namespace OpenLoco::S5
         }
     }
 
+    // 0x00445A4A
+    static void fixState(GameState& state)
+    {
+        if (state.fixFlags & S5FixFlags::fixFlag0)
+        {
+            state.fixFlags |= S5FixFlags::fixFlag1;
+        }
+        if (!(state.fixFlags & S5FixFlags::fixFlag1))
+        {
+            // Shift data after companies to correct location
+            auto src = reinterpret_cast<uint8_t*>(&state) + 0x49EA24;
+            auto dst = src + 0x1C20;
+            for (size_t i = 0; i < 0x40E200; i++)
+            {
+                *--dst = *--src;
+            }
+
+            // Convert each company format from old to new
+            for (size_t i = 0; i < std::size(state.companies); i++)
+            {
+                for (size_t j = 0; j < 372; j++)
+                {
+                    *--dst = *--src;
+                }
+
+                for (size_t j = 0; j < 480; j++)
+                {
+                    *--dst = 0;
+                }
+
+                for (size_t j = 0; j < 35924; j++)
+                {
+                    *--dst = *--src;
+                }
+            }
+        }
+    }
+
+    static std::unique_ptr<S5File> load(const fs::path& path)
+    {
+        SawyerStreamReader fs(path);
+        if (!fs.validateChecksum())
+        {
+            throw std::runtime_error("Invalid checksum");
+        }
+
+        auto file = std::make_unique<S5File>();
+
+        // Read header
+        fs.readChunk(&file->header, sizeof(file->header));
+
+        // Read saved details
+        if (file->header.flags & S5Flags::hasSaveDetails)
+        {
+            file->saveDetails = std::make_unique<SaveDetails>();
+            fs.readChunk(file->saveDetails.get(), sizeof(file->saveDetails));
+        }
+
+        // Read packed objects
+        if (file->header.numPackedObjects > 0)
+        {
+        }
+
+        if (file->header.type == S5Type::objects)
+        {
+            // new_objects_installed_successfully
+        }
+        else
+        {
+            // Load required objects
+            fs.readChunk(file->requiredObjects, sizeof(file->requiredObjects));
+
+            // Load game state
+            fs.readChunk(&file->gameState, sizeof(file->gameState));
+            fixState(file->gameState);
+
+            // Load tile elements
+            auto tileElements = fs.readChunk();
+            auto numTileElements = tileElements.size() / sizeof(TileElement);
+            file->tileElements.resize(numTileElements);
+            std::memcpy(file->tileElements.data(), tileElements.data(), numTileElements * sizeof(TileElement));
+        }
+
+        return file;
+    }
+
+    // 0x00473BC7
+    static void object_create_identifier_name(char* dst, const ObjectHeader& header)
+    {
+        registers regs;
+        regs.edi = reinterpret_cast<int32_t>(dst);
+        regs.ebp = reinterpret_cast<int32_t>(&header);
+        call(0x00473BC7, regs);
+    }
+
+    // 0x00444D76
+    static void setObjectErrorMessage(const ObjectHeader& header)
+    {
+        auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_2040));
+        StringManager::formatString(buffer, sizeof(buffer), StringIds::missing_object_data_id_x);
+        object_create_identifier_name(strchr(buffer, 0), header);
+        _loadErrorCode = 255;
+        _loadErrorMessage = StringIds::buffer_2040;
+    }
+
+    class LoadException : public std::runtime_error
+    {
+    private:
+        string_id _localisedMessage;
+
+    public:
+        LoadException(const char* message, string_id localisedMessage)
+            : std::runtime_error(message)
+            , _localisedMessage(localisedMessage)
+        {
+        }
+
+        string_id getLocalisedMessage() const
+        {
+            return _localisedMessage;
+        }
+    };
+
+    static void sub_42F7F8()
+    {
+        call(0x0042F7F8);
+    }
+
+    static void sub_4BAEC4()
+    {
+        addr<0x001136496, uint8_t>() = 2;
+        addr<0x00525FB1, uint8_t>() = 255;
+        addr<0x00525FCA, uint8_t>() = 255;
+    }
+
+    // 0x00441FA7
+    bool load(const fs::path& path, LoadFlags flags)
+    {
+        _gameSpeed = 0;
+        if (!(flags & LoadFlags::titleSequence) && !(flags & LoadFlags::twoPlayer))
+        {
+            WindowManager::closeConstructionWindows();
+            WindowManager::closeAllFloatingWindows();
+        }
+
+        try
+        {
+            auto file = load(path);
+
+            if (file->header.version != currentVersion)
+            {
+                throw LoadException("Unsupported S5 version", StringIds::error_file_contains_invalid_data);
+            }
+
+#ifdef DO_TITLE_SEQUENCE_CHECKS
+            if (flags & LoadFlags::titleSequence)
+            {
+                if (!(file->header.flags & S5Flags::isTitleSequence))
+                {
+                    throw LoadException("File was not a title sequence", StringIds::error_file_contains_invalid_data);
+                }
+            }
+            else
+            {
+                if (file->header.flags & S5Flags::isTitleSequence)
+                {
+                    throw LoadException("File is a title sequence", StringIds::error_file_contains_invalid_data);
+                }
+            }
+#endif
+
+            if (file->header.type == S5Type::scenario)
+            {
+                throw LoadException("File is a scenario, not a saved game", StringIds::error_file_contains_invalid_data);
+            }
+
+            if ((file->header.flags & S5Flags::isRaw) || (file->header.flags & S5Flags::isDump))
+            {
+                throw LoadException("Unsupported S5 format", StringIds::error_file_contains_invalid_data);
+            }
+
+            if (flags & LoadFlags::twoPlayer)
+            {
+                if (file->header.type != S5Type::landscape)
+                {
+                    throw LoadException("Not a two player saved game", StringIds::error_file_is_not_two_player_save);
+                }
+            }
+            else
+            {
+                if (file->header.type != S5Type::savedGame)
+                {
+                    throw LoadException("Not a single player saved game", StringIds::error_file_is_not_single_player_save);
+                }
+            }
+
+            auto loadObjectResult = ObjectManager::loadAll(file->requiredObjects);
+            if (!loadObjectResult.Success)
+            {
+                setObjectErrorMessage(loadObjectResult.ProblemObject);
+                if (flags & LoadFlags::twoPlayer)
+                {
+                    sub_42F7F8();
+                    addr<0x00525F62, uint16_t>() = 0;
+                    return false;
+                }
+                else
+                {
+                    call(0x0043C0FD); // Important, should implement this
+                    return false;
+                }
+            }
+
+            ObjectManager::reloadAll();
+
+            _gameState = file->gameState;
+            TileManager::setElements(stdx::span<tile_element>(reinterpret_cast<tile_element*>(file->tileElements.data()), file->tileElements.size()));
+
+            call(0x0046FF54);
+            CompanyManager::updateColours();
+            call(0x004748FA);
+            TileManager::resetSurfaceClearance();
+            IndustryManager::createAllMapAnimations();
+
+            if (!(flags & LoadFlags::titleSequence))
+            {
+                clearScreenFlag(ScreenFlags::title);
+                initialiseViewports();
+                Gui::init();
+                Audio::resetMusic();
+            }
+
+            auto mainWindow = WindowManager::getMainWindow();
+            if (mainWindow != nullptr)
+            {
+                SavedViewSimple savedView;
+                savedView.mapX = file->gameState.savedViewX;
+                savedView.mapY = file->gameState.savedViewY;
+                savedView.zoomLevel = static_cast<ZoomLevel>(file->gameState.savedViewZoom);
+                savedView.rotation = file->gameState.savedViewRotation;
+                mainWindow->viewportFromSavedView(savedView);
+            }
+
+            ThingManager::updateSpatialIndex();
+            TownManager::updateLabels();
+            StationManager::updateLabels();
+            sub_4BAEC4();
+            addr<0x0052334E, uint16_t>() = 0;
+            Gfx::invalidateScreen();
+            call(0x004C153B);
+            call(0x0046E07B);
+            addr<0x00525F62, uint16_t>() = 0;
+
+            if (flags & LoadFlags::titleSequence)
+            {
+                addr<0x00525F5E, uint32_t>()--;
+                addr<0x00525F64, uint32_t>()--;
+                addr<0x0050BF6C, uint8_t>() = 1;
+            }
+
+            if (!(flags & LoadFlags::titleSequence) && !(flags & LoadFlags::twoPlayer))
+            {
+                resetScreenAge();
+                // longjmp
+            }
+
+            return true;
+        }
+        catch (const LoadException& e)
+        {
+            std::fprintf(stderr, "Unable to load S5: %s\n", e.what());
+            _loadErrorCode = 255;
+            _loadErrorMessage = e.getLocalisedMessage();
+            return false;
+        }
+        catch (const std::exception& e)
+        {
+            std::fprintf(stderr, "Unable to load S5: %s\n", e.what());
+            _loadErrorCode = 255;
+            _loadErrorMessage = StringIds::null;
+            return false;
+        }
+    }
+
     void registerHooks()
     {
         registerHook(
@@ -369,6 +663,12 @@ namespace OpenLoco::S5
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 auto path = fs::u8path(std::string(_savePath));
                 return save(path, static_cast<SaveFlags>(regs.eax)) ? 0 : X86_FLAG_CARRY;
+            });
+        registerHook(
+            0x00441FA7,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                auto path = fs::u8path(std::string_view(_savePath));
+                return load(path, static_cast<LoadFlags>(regs.eax)) ? 0x100 : 0;
             });
     }
 }
