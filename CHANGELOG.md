@@ -4,6 +4,7 @@
 - Fix: [#151] Mouse moves out of window when looking around.
 - Fix: [#588] 'Cancel or Show Last Announcement' shortcut doesn't close announcements.
 - Fix: [#679] Crash when changing ground texture.
+- Fix: [#694] Selecting a song to play is guaranteed to not play it.
 - Fix: [#712] Load / save window tries to show preview for item after last.
 - Fix: [#725] Company value graph does not display correctly.
 - Change: [#690] Default saved game directory is now in OpenLoco user directory.

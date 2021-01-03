@@ -1089,8 +1089,11 @@ namespace OpenLoco::Audio
 
         if (!_music_channel.isPlaying())
         {
-            _currentSong = chooseNextMusicTrack(_lastSong);
-            _lastSong = _currentSong;
+            if (_currentSong == no_song)
+            {
+                _currentSong = chooseNextMusicTrack(_lastSong);
+                _lastSong = _currentSong;
+            }
 
             const auto& mi = MusicInfo[_currentSong];
             auto path = Environment::getPath((path_id)mi.path_id);
