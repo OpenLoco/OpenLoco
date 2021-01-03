@@ -1,5 +1,7 @@
 #include "PaintVehicle.h"
 #include "../CompanyManager.h"
+#include "../Config.h"
+#include "../Graphics/Colour.h"
 #include "../Objects/ObjectManager.h"
 #include "../Objects/VehicleObject.h"
 #include "../Things/Vehicle.h"
@@ -10,15 +12,139 @@ using namespace OpenLoco::Things::Vehicle;
 
 namespace OpenLoco::Paint
 {
+    const uint8_t _500160[16]{
+        0, 5, 6, 7, 8, 1, 2, 3, 4, 10, 9, 12, 11, 0, 0, 0
+    };
     // 0x004B0CFC
     static void paintBogie(PaintSession& session, vehicle_bogie* bogie)
     {
         auto* vehObject = ObjectManager::get<vehicle_object>(bogie->object_id);
+        if (bogie->object_sprite_type == 0xFF)
+        {
+            return;
+        }
+
+        auto& sprite = vehObject->bogie_sprites[bogie->object_sprite_type];
+        //uint8_t edi = bogie_sprites[0].var_01[bogie->object_sprite_type]; ?? why ??
+        uint8_t bl = (bogie->sprite_yaw + (session.getRotation() << 4)) & 0x3F;
+        uint8_t al = bogie->sprite_pitch;
+
+        // Reverse??
+        if (bogie->getFlags38() & Flags38::unk_1)
+        {
+            bl ^= (1 << 5);
+            al = _500160[bogie->sprite_pitch];
+        }
+        bl >>= 1;
+        bl &= 0x1F;
+        switch (al)
+        {
+            case 0:
+            {
+
+                if (sprite.var_01 & (1 << 1))
+                {
+                    bl &= 0xF;
+                }
+                auto imageId = sprite.var_05 * bl + bogie->var_46 + sprite.image_1;
+                if (bogie->getFlags38() & Flags38::isGhost)
+                {
+                    Config::get().construction_marker;
+                    //imageId |= select ghost or invis;
+                }
+                else if (bogie->var_0C & (1 << 5))
+                {
+                    imageId = Gfx::recolour(imageId, PaletteIndex::index_74);
+                }
+                else
+                {
+                    imageId = Gfx::recolour2(imageId, bogie->colour_scheme.primary, bogie->colour_scheme.secondary);
+                }
+
+                if (bogie->getTransportMode() == TransportMode::air)
+                {
+                    if (bogie->getFlags38() & Flags38::isGhost)
+                    {
+                        return;
+                    }
+                    // special code
+                }
+                else
+                {
+                    if (sprite.var_01 & (1 << 4))
+                    {
+                        // larger sprite
+                    }
+                    else
+                    {
+                        // smaller sprite
+                    }
+                }
+                break;
+            }
+            case 2:
+            case 9:
+                // jumps into 6/10 at auto imageid
+                break;
+            case 6:
+            case 10:
+            {
+
+                bl ^= (1 << 5);
+                if (sprite.var_01 & (1 << 1))
+                {
+                    bl ^= (1 << 5) | (1 << 4);
+                }
+                auto imageId = sprite.var_05 * bl + bogie->var_46 + sprite.image_2;
+                if (bogie->getFlags38() & Flags38::isGhost)
+                {
+                    Config::get().construction_marker;
+                    //imageId |= select ghost or invis;
+                }
+                else
+                {
+                    imageId = Gfx::recolour2(imageId, bogie->colour_scheme.primary, bogie->colour_scheme.secondary);
+                }
+                if (sprite.var_01 & (1 << 4))
+                {
+                    // larger sprite
+                }
+                else
+                {
+                    // smaller sprite
+                }
+                break;
+            }
+            case 4:
+            case 11:
+                // jumps into default at auto imageid
+                break;
+            default:
+            {
+
+                bl ^= (1 << 5);
+                if (sprite.var_01 & (1 << 1))
+                {
+                    bl ^= (1 << 5) | (1 << 4);
+                }
+                auto imageId = sprite.var_05 * bl + bogie->var_46 + sprite.image_3;
+                if (bogie->getFlags38() & Flags38::isGhost)
+                {
+                    Config::get().construction_marker;
+                    //imageId |= select ghost or invis;
+                }
+                else
+                {
+                    imageId = Gfx::recolour2(imageId, bogie->colour_scheme.primary, bogie->colour_scheme.secondary);
+                }
+
+                break;
+            }
+        }
         registers regs{};
         regs.ax = bogie->x;
         regs.cx = bogie->y;
         regs.dx = bogie->z;
-        regs.ebx = (bogie->sprite_yaw + (session.getRotation() << 4)) & 0x3F;
         regs.esi = reinterpret_cast<int32_t>(bogie);
         regs.ebp = reinterpret_cast<int32_t>(vehObject);
         call(0x004B0CCE, regs); // Cant call 0x004B0CFC due to stack

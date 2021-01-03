@@ -105,12 +105,18 @@ namespace OpenLoco
 
     struct vehicle_object_bogie_sprite
     {
-        uint8_t pad_00[0x02 - 0x00];
+        uint8_t pad_00;
+        uint8_t var_01;
         uint8_t var_02;
         uint8_t var_03;
         uint8_t var_04;
-        uint8_t pad_05[0x12 - 0x5];
+        uint8_t var_05;
+        uint32_t image_1; // 0x6
+        uint32_t image_2; // 0xA
+        uint32_t image_3; // 0xE
     };
+
+    static_assert(sizeof(vehicle_object_bogie_sprite) == 0x12);
 
     struct vehicle_object_sprite
     {

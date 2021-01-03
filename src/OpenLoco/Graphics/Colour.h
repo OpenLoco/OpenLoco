@@ -97,6 +97,7 @@ namespace OpenLoco
         constexpr palette_index_t index_67 = 0x67;
         constexpr palette_index_t index_68 = 0x68;
         constexpr palette_index_t index_71 = 0x71;
+        constexpr palette_index_t index_74 = 0x74;
         constexpr palette_index_t index_7D = 0x7D;
         constexpr palette_index_t index_85 = 0x85;
         constexpr palette_index_t index_89 = 0x89;
