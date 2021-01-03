@@ -2,6 +2,7 @@
 ------------------------------------------------------------------------
 - Fix: [#151] Mouse moves out of window when looking around.
 - Fix: [#588] 'Cancel or Show Last Announcement' shortcut doesn't close announcements.
+- Fix: [#679] Crash when changing ground texture.
 
 20.10 (2020-10-25)
 ------------------------------------------------------------------------
