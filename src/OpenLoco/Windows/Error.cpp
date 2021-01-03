@@ -16,7 +16,6 @@ using namespace OpenLoco::Interop;
 namespace OpenLoco::Ui::Windows::Error
 {
     static loco_global<uint8_t, 0x00508F09> _suppressErrorSound;
-    static loco_global<Ui::widget_t[1], 0x00508F1C> _widgets;
     static loco_global<char[512], 0x009C64B3> _byte_9C64B3;
     static loco_global<uint16_t, 0x009C66B3> _word_9C66B3;
     static loco_global<uint8_t, 0x009C68EC> _errorCompetitorId;
