@@ -68,6 +68,13 @@ namespace OpenLoco::Paint
         uint16_t zEnd; // 0x12
     };
 
+    namespace QuadrantFlags
+    {
+        constexpr uint8_t identical = (1 << 0);
+        constexpr uint8_t bigger = (1 << 7);
+        constexpr uint8_t next = (1 << 1);
+    };
+
     struct PaintStruct
     {
         uint32_t imageId; // 0x00
@@ -80,9 +87,9 @@ namespace OpenLoco::Paint
         PaintStructBoundBox bounds; // 0x08
         int16_t x;                  // 0x14
         int16_t y;                  // 0x16
-        uint16_t quadrantIndex;
+        uint16_t quadrantIndex;     // 0x18
         uint8_t flags;
-        uint8_t quadrantFlags;
+        uint8_t quadrantFlags;           // 0x1B
         AttachedPaintStruct* attachedPS; // 0x1C
         PaintStruct* children;
         PaintStruct* nextQuadrantPS;                   // 0x24
@@ -135,6 +142,7 @@ namespace OpenLoco::Paint
         inline static Interop::loco_global<uint32_t, 0x00E400C4> _quadrantFrontIndex;
         inline static Interop::loco_global<const void*, 0x00E4F0B4> _currentlyDrawnItem;
         inline static Interop::loco_global<PaintEntry*, 0x00E0C404> _endOfPaintStructArray;
+        inline static Interop::loco_global<PaintEntry*, 0x00E0C408> _paintHead;
         inline static Interop::loco_global<PaintEntry*, 0x00E0C40C> _nextFreePaintStruct;
         inline static Interop::loco_global<coord_t, 0x00E3F090> _spritePositionX;
         inline static Interop::loco_global<coord_t, 0x00E3F096> _spritePositionY;
@@ -147,7 +155,6 @@ namespace OpenLoco::Paint
         uint8_t currentRotation; // new field set from 0x00E3F0B8 but split out into this struct as seperate item
 
         // From OpenRCT2 equivalent fields not found yet or new
-        //PaintStruct paintHead;                       // new field
         //uint32_t viewFlags;                          // new field might not be needed tbc
         //AttachedPaintStruct* unkF1AD2C;              // no equivalent
         //support_height supportSegments[9];
