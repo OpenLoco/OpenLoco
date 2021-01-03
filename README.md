@@ -17,9 +17,9 @@ An open source re-implementation of Chris Sawyer's Locomotion. A construction an
 ---
 
 ### Build Status
-|             | Windows | Linux / Mac | Download |
-|-------------|---------|-------------|----------|
-| **master**  | ![CI](https://github.com/OpenLoco/OpenLoco/workflows/CI/badge.svg) | [![Travis CI](https://travis-ci.org/OpenLoco/OpenLoco.svg?branch=master)](https://travis-ci.org/OpenLoco/OpenLoco) | [![GitHub release](https://img.shields.io/github/release/OpenLoco/OpenLoco.svg)](https://github.com/OpenLoco/OpenLoco/releases) |
+|             | Windows / Linux | Download |
+|-------------|-----------------|----------|
+| **master**  | ![CI](https://github.com/OpenLoco/OpenLoco/workflows/CI/badge.svg) | [![GitHub release](https://img.shields.io/github/release/OpenLoco/OpenLoco.svg)](https://github.com/OpenLoco/OpenLoco/releases) |
 
 ### Chat
 
