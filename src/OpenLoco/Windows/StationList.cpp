@@ -106,7 +106,7 @@ namespace OpenLoco::Ui::Windows::StationList
     static void onScrollMouseOver(Ui::window* window, int16_t x, int16_t y, uint8_t scroll_index);
     static void onUpdate(window* window);
     static void prepareDraw(Ui::window* window);
-    static void tooltip(FormatArguments& args, Ui::window* window, widget_index widgetIndex);
+    static std::optional<FormatArguments> tooltip(Ui::window* window, widget_index widgetIndex);
 
     static void initEvents()
     {
@@ -753,8 +753,10 @@ namespace OpenLoco::Ui::Windows::StationList
     }
 
     // 0x00491841
-    static void tooltip(FormatArguments& args, Ui::window* window, widget_index widgetIndex)
+    static std::optional<FormatArguments> tooltip(Ui::window* window, widget_index widgetIndex)
     {
+        FormatArguments args{};
         args.push(StringIds::tooltip_scroll_station_list);
+        return args;
     }
 }

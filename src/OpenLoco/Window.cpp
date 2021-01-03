@@ -1282,10 +1282,11 @@ namespace OpenLoco::Ui
         this->event_handlers->viewport_rotate(this);
     }
 
-    bool window::callTooltip(int16_t widget_index)
+    std::optional<FormatArguments> window::callTooltip(int16_t widget_index)
     {
+        // We only return std::nullopt when required by the tooltip function
         if (event_handlers->tooltip == nullptr)
-            return false;
+            return FormatArguments();
 
         if (isInteropEvent(event_handlers->tooltip))
         {
@@ -1293,12 +1294,13 @@ namespace OpenLoco::Ui
             regs.ax = widget_index;
             regs.esi = (int32_t)this;
             call((int32_t)this->event_handlers->tooltip, regs);
-            return regs.ax != (int16_t)StringIds::null;
+            auto args = FormatArguments();
+            if (regs.ax == (int16_t)StringIds::null)
+                return {};
+            return args;
         }
 
-        auto args = FormatArguments();
-        event_handlers->tooltip(args, this, widget_index);
-        return true;
+        return event_handlers->tooltip(this, widget_index);
     }
 
     void window::callOnMove(int16_t xPos, int16_t yPos)

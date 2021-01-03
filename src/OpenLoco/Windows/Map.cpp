@@ -398,9 +398,11 @@ namespace OpenLoco::Ui::Windows::Map
     }
 
     // 0x0046B946
-    static void tooltip(FormatArguments& args, window* self, widget_index widgetIndex)
+    static std::optional<FormatArguments> tooltip(window* self, widget_index widgetIndex)
     {
+        FormatArguments args{};
         args.push(StringIds::tooltip_scroll_map);
+        return args;
     }
 
     // 0x0046D223

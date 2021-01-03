@@ -120,7 +120,7 @@ namespace OpenLoco::Ui::PromptBrowse
     static void getScrollSize(Ui::window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
     static void onScrollMouseDown(window* self, int16_t x, int16_t y, uint8_t scroll_index);
     static void onScrollMouseOver(window* self, int16_t x, int16_t y, uint8_t scroll_index);
-    static void tooltip(FormatArguments& args, Ui::window* window, widget_index widgetIndex);
+    static std::optional<FormatArguments> tooltip(Ui::window* window, widget_index widgetIndex);
     static void prepareDraw(window* window);
     static void draw(Ui::window* window, Gfx::drawpixelinfo_t* dpi);
     static void drawSavePreview(Ui::window& window, Gfx::drawpixelinfo_t& dpi, int32_t x, int32_t y, int32_t width, int32_t height, const S5::SaveDetails& saveInfo);
@@ -331,9 +331,11 @@ namespace OpenLoco::Ui::PromptBrowse
     }
 
     // 0x004467D7
-    static void tooltip(FormatArguments& args, Ui::window* window, widget_index widgetIndex)
+    static std::optional<FormatArguments> tooltip(Ui::window* window, widget_index widgetIndex)
     {
+        FormatArguments args{};
         args.push(StringIds::tooltip_scroll_list);
+        return args;
     }
 
     // 0x00445C8F

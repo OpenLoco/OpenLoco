@@ -1953,9 +1953,11 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00433887
-        static void tooltip(FormatArguments& args, Ui::window* window, widget_index widgetIndex)
+        static std::optional<FormatArguments> tooltip(Ui::window* window, widget_index widgetIndex)
         {
+            FormatArguments args{};
             args.push(StringIds::tooltip_scroll_list);
+            return args;
         }
 
         // 0x0043399D

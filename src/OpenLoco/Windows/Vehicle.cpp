@@ -629,11 +629,14 @@ namespace OpenLoco::Ui::Vehicle
         }
 
         // 0x004B31F2
-        static void tooltip(FormatArguments& args, Ui::window* const self, const widget_index widgetIndex)
+        static std::optional<FormatArguments> tooltip(Ui::window* self, widget_index)
         {
+            FormatArguments args{};
+
             auto head = Common::getVehicle(self);
             args.skip(2);
             args.push(StringIds::getVehicleType(head->vehicleType));
+            return args;
         }
 
         // 0x004B1EB5
@@ -1187,12 +1190,14 @@ namespace OpenLoco::Ui::Vehicle
         }
 
         // 0x004B3880 TODO: common across 3 tabs
-        static void tooltip(FormatArguments& args, Ui::window* const self, const widget_index widgetIndex)
+        static std::optional<FormatArguments> tooltip(Ui::window* self, widget_index)
         {
+            FormatArguments args{};
             args.push(StringIds::tooltip_scroll_vehicle_list);
 
             auto vehicle = Common::getVehicle(self);
             args.push(StringIds::getVehicleType(vehicle->vehicleType));
+            return args;
         }
 
         // 0x004B3B18
@@ -1822,12 +1827,14 @@ namespace OpenLoco::Ui::Vehicle
         }
 
         // 0x004B4339
-        static void tooltip(FormatArguments& args, Ui::window* const self, const widget_index widgetIndex)
+        static std::optional<FormatArguments> tooltip(Ui::window* self, widget_index)
         {
+            FormatArguments args{};
             args.push(StringIds::tooltip_scroll_vehicle_list);
 
             auto vehicle = Common::getVehicle(self);
             args.push(StringIds::getVehicleType(vehicle->vehicleType));
+            return args;
         }
 
         // 0x004B4360
@@ -2112,11 +2119,13 @@ namespace OpenLoco::Ui::Vehicle
         }
 
         // 0x004B5977
-        static void tooltip(FormatArguments& args, Ui::window* const self, const widget_index widgetIndex)
+        static std::optional<FormatArguments> tooltip(Ui::window* self, widget_index)
         {
+            FormatArguments args{};
             auto veh0 = Common::getVehicle(self);
             args.skip(2);
             args.push(StringIds::getVehicleType(veh0->vehicleType));
+            return args;
         }
 
         // 0x004B5995
@@ -2506,11 +2515,13 @@ namespace OpenLoco::Ui::Vehicle
         }
 
         // 0x004B4D74
-        static void tooltip(FormatArguments& args, Ui::window* const self, const widget_index widgetIndex)
+        static std::optional<FormatArguments> tooltip(Ui::window* self, widget_index)
         {
+            FormatArguments args{};
             args.push(StringIds::tooltip_scroll_orders_list);
             auto head = Common::getVehicle(self);
             args.push(StringIds::getVehicleType(head->vehicleType));
+            return args;
         }
 
         // 0x004B5A1A

@@ -82,9 +82,11 @@ namespace OpenLoco::Ui::AboutMusic
     }
 
     // 0x0043BFC0
-    static void tooltip(FormatArguments& args, Ui::window*, widget_index)
+    static std::optional<FormatArguments> tooltip(Ui::window*, widget_index)
     {
+        FormatArguments args{};
         args.push(StringIds::tooltip_scroll_credits_list);
+        return args;
     }
 
     // 0x0043B8B8

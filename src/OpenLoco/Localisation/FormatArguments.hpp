@@ -67,5 +67,4 @@ namespace OpenLoco
             return nextOffset;
         }
     };
-
 }

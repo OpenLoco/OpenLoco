@@ -45,7 +45,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
     static void onScrollMouseDown(Ui::window* window, int16_t x, int16_t y, uint8_t scroll_index);
     static void onScrollMouseOver(Ui::window* window, int16_t x, int16_t y, uint8_t scroll_index);
     static void onUpdate(window* window);
-    static void tooltip(FormatArguments& args, Ui::window* window, widget_index widgetIndex);
+    static std::optional<FormatArguments> tooltip(Ui::window* window, widget_index widgetIndex);
 
     static void initEvents()
     {
@@ -197,8 +197,10 @@ namespace OpenLoco::Ui::Windows::MusicSelection
     }
 
     // 0x004C1762
-    static void tooltip(FormatArguments& args, Ui::window* window, widget_index widgetIndex)
+    static std::optional<FormatArguments> tooltip(Ui::window* window, widget_index widgetIndex)
     {
+        FormatArguments args{};
         args.push(StringIds::tooltip_scroll_list);
+        return args;
     }
 }

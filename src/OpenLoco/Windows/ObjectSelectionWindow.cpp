@@ -736,9 +736,11 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     }
 
     // 0x00473900
-    static void tooltip(FormatArguments& args, Ui::window* window, widget_index widgetIndex)
+    static std::optional<FormatArguments> tooltip(Ui::window* window, widget_index widgetIndex)
     {
+        FormatArguments args{};
         args.push(StringIds::tooltip_object_list);
+        return args;
     }
 
     // 0x00472B54

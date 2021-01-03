@@ -635,9 +635,11 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         }
 
         // 0x0043E2A2
-        static void tooltip(FormatArguments& args, Ui::window* window, widget_index widgetIndex)
+        static std::optional<FormatArguments> tooltip(Ui::window* window, widget_index widgetIndex)
         {
+            FormatArguments args{};
             args.push(StringIds::tooltip_scroll_list);
+            return args;
         }
 
         // 0x0043E3D9

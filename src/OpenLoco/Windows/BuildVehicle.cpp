@@ -794,8 +794,9 @@ namespace OpenLoco::Ui::BuildVehicle
     }
 
     // 0x4C370C
-    static void tooltip(FormatArguments& args, Ui::window* window, widget_index widgetIndex)
+    static std::optional<FormatArguments> tooltip(Ui::window* window, widget_index widgetIndex)
     {
+        FormatArguments args{};
         if (widgetIndex < widx::tab_track_type_0 || widgetIndex >= widx::scrollview_vehicle_selection)
         {
             args.push(StringIds::tooltip_scroll_new_vehicle_list);
@@ -832,6 +833,7 @@ namespace OpenLoco::Ui::BuildVehicle
                 }
             }
         }
+        return args;
     }
 
     // 0x4C37CB

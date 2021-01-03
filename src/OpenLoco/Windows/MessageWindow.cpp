@@ -191,9 +191,11 @@ namespace OpenLoco::Ui::MessageWindow
         }
 
         // 0x0042A70C
-        static void tooltip(FormatArguments& args, Ui::window* self, widget_index widgetIndex)
+        static std::optional<FormatArguments> tooltip(Ui::window* self, widget_index widgetIndex)
         {
+            FormatArguments args{};
             args.push(StringIds::tooltip_scroll_message_list);
+            return args;
         }
 
         // 0x0042A545

@@ -489,9 +489,11 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BBB00
-        static void tooltip(FormatArguments& args, window* self, widget_index widgetIndex)
+        static std::optional<FormatArguments> tooltip(window* self, widget_index widgetIndex)
         {
+            FormatArguments args{};
             args.push(StringIds::tooltip_scroll_trees_list);
+            return args;
         }
 
         // 0x004BB756
@@ -2015,9 +2017,11 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BC212
-        static void tooltip(FormatArguments& args, window* self, widget_index widgetIndex)
+        static std::optional<FormatArguments> tooltip(window* self, widget_index widgetIndex)
         {
+            FormatArguments args{};
             args.push(StringIds::tooltip_scroll_walls_list);
+            return args;
         }
 
         // 0x004BC029

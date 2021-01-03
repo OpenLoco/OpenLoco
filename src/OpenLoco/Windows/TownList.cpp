@@ -459,9 +459,11 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x00491841
-        static void tooltip(FormatArguments& args, Ui::window* window, widget_index widgetIndex)
+        static std::optional<FormatArguments> tooltip(Ui::window* window, widget_index widgetIndex)
         {
+            FormatArguments args{};
             args.push(StringIds::tooltip_scroll_town_list);
+            return args;
         }
 
         // 0x004919A4
@@ -1041,9 +1043,11 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049ABBB
-        static void tooltip(FormatArguments& args, Ui::window* window, widget_index widgetIndex)
+        static std::optional<FormatArguments> tooltip(Ui::window* window, widget_index widgetIndex)
         {
+            FormatArguments args{};
             args.push(StringIds::tooltip_scroll_building_list);
+            return args;
         }
 
         // 0x0049AA1C

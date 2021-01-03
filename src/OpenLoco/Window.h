@@ -231,7 +231,7 @@ namespace OpenLoco::Ui
                 void (*text_input)(window*, widget_index, char*);
                 void (*viewport_rotate)(window*);
                 uint32_t event_22;
-                void (*tooltip)(FormatArguments& args, window*, widget_index);
+                std::optional<FormatArguments> (*tooltip)(window*, widget_index);
                 Ui::cursor_id (*cursor)(window*, int16_t, int16_t, int16_t, Ui::cursor_id);
                 void (*on_move)(window&, const int16_t x, const int16_t y);
                 void (*prepare_draw)(window*);
@@ -486,7 +486,7 @@ namespace OpenLoco::Ui
         void callScrollMouseOver(int16_t x, int16_t y, uint8_t scroll_index);                            // 19
         void callTextInput(widget_index caller, char* buffer);                                           // 20
         void callViewportRotate();                                                                       // 21
-        bool callTooltip(int16_t widget_index);                                                          // 23
+        std::optional<FormatArguments> callTooltip(int16_t widget_index);                                // 23
         Ui::cursor_id callCursor(int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::cursor_id fallback); // 24
         void callOnMove(int16_t xPos, int16_t yPos);                                                     // 25
         void callPrepareDraw();                                                                          // 26

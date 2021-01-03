@@ -192,9 +192,11 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     }
 
     // 0x4352B1
-    static void tooltip(FormatArguments& args, window* const self, const widget_index)
+    static std::optional<FormatArguments> tooltip(window* const self, const widget_index)
     {
+        FormatArguments args{};
         args.push(StringIds::tooltip_scroll_list);
+        return args;
     }
 
     // 0x434FE8

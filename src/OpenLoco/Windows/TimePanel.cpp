@@ -63,7 +63,7 @@ namespace OpenLoco::Ui::TimePanel
     static void textInput(window* w, widget_index widgetIndex, char* str);
     static void onDropdown(window* w, widget_index widgetIndex, int16_t item_index);
     static Ui::cursor_id onCursor(window* w, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::cursor_id fallback);
-    static void tooltip(FormatArguments& args, Ui::window* window, widget_index widgetIndex);
+    static std::optional<FormatArguments> tooltip(Ui::window* window, widget_index widgetIndex);
     static void textInput(window* w, widget_index widgetIndex, char* str);
     static void onUpdate(window* w);
 
@@ -318,14 +318,16 @@ namespace OpenLoco::Ui::TimePanel
     }
 
     // 0x00439955
-    static void tooltip(FormatArguments& args, Ui::window* window, widget_index widgetIndex)
+    static std::optional<FormatArguments> tooltip(Ui::window* window, widget_index widgetIndex)
     {
+        FormatArguments args{};
         switch (widgetIndex)
         {
             case Widx::date_btn:
                 formatChallenge(args);
                 break;
         }
+        return args;
     }
 
     // 0x0043995C
