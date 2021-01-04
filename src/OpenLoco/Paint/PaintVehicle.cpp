@@ -17,6 +17,12 @@ namespace OpenLoco::Paint
         0, 5, 6, 7, 8, 1, 2, 3, 4, 10, 9, 12, 11, 0, 0, 0
     };
 
+    // 0x004FFAE8
+    const uint32_t _ghostInvisImageFlags[2]{
+        Gfx::recolour(0, PaletteIndex::index_2C),
+        Gfx::recolourTranslucent(0, PaletteIndex::index_31),
+    };
+
     // 0x004B0CFC
     static void paintBogie(PaintSession& session, vehicle_bogie* bogie)
     {
@@ -27,22 +33,39 @@ namespace OpenLoco::Paint
         }
 
         auto& sprite = vehObject->bogie_sprites[bogie->object_sprite_type];
-        //uint8_t edi = bogie_sprites[0].flags[bogie->object_sprite_type]; ?? why ??
         uint8_t yaw = (bogie->sprite_yaw + (session.getRotation() << 4)) & 0x3F;
         uint8_t pitch = bogie->sprite_pitch;
 
-        // Reverse??
         if (bogie->getFlags38() & Flags38::isReversed)
         {
             yaw ^= (1 << 5);
             pitch = _reversePitch[bogie->sprite_pitch];
         }
         auto yawIndex = (yaw >> 1) & 0x1F;
+
+        switch (pitch)
+        {
+            case 0:
+            case 2:
+            case 9:
+            case 4:
+            case 11:
+                break;
+            default:
+                if (sprite.flags & BogieSpriteFlags::rotationalSymmetry)
+                {
+                    yawIndex ^= (1 << 4);
+                }
+                else
+                {
+                    yawIndex ^= (1 << 5);
+                }
+                break;
+        }
         switch (pitch)
         {
             case 0:
             {
-
                 if (sprite.flags & BogieSpriteFlags::rotationalSymmetry)
                 {
                     yawIndex &= 0xF;
@@ -50,57 +73,46 @@ namespace OpenLoco::Paint
                 auto imageId = sprite.numRollSprites * yawIndex + bogie->var_46 + sprite.flatImageIds;
                 if (bogie->getFlags38() & Flags38::isGhost)
                 {
-                    Config::get().construction_marker;
-                    //imageId |= select ghost or invis;
+                    imageId |= _ghostInvisImageFlags[Config::get().construction_marker];
                 }
                 else if (bogie->var_0C & Flags0C::unk_5)
                 {
                     imageId = Gfx::recolour(imageId, PaletteIndex::index_74);
+                }
+                else if (bogie->getTransportMode() == TransportMode::air)
+                {
+                    if (bogie->getFlags38() & Flags38::isGhost)
+                    {
+                        return;
+                    }
+                    session.setItemType(Ui::ViewportInteraction::InteractionItem::t_0);
+                    imageId = Gfx::recolourTranslucent(imageId, PaletteIndex::index_50);
+                    // special code
                 }
                 else
                 {
                     imageId = Gfx::recolour2(imageId, bogie->colour_scheme.primary, bogie->colour_scheme.secondary);
                 }
 
-                if (bogie->getTransportMode() == TransportMode::air)
+                if (sprite.flags & BogieSpriteFlags::unk_4)
                 {
-                    if (bogie->getFlags38() & Flags38::isGhost)
-                    {
-                        return;
-                    }
-                    // special code
+                    // larger sprite
                 }
                 else
                 {
-                    if (sprite.flags & BogieSpriteFlags::unk_4)
-                    {
-                        // larger sprite
-                    }
-                    else
-                    {
-                        // smaller sprite
-                    }
+                    // smaller sprite
                 }
                 break;
             }
             case 2:
             case 9:
-                // jumps into 6/10 at auto imageid
-                break;
             case 6:
             case 10:
             {
-
-                yawIndex ^= (1 << 5);
-                if (sprite.flags & BogieSpriteFlags::rotationalSymmetry)
-                {
-                    yawIndex ^= (1 << 5) | (1 << 4);
-                }
                 auto imageId = sprite.numRollSprites * yawIndex + bogie->var_46 + sprite.gentleImageIds;
                 if (bogie->getFlags38() & Flags38::isGhost)
                 {
-                    Config::get().construction_marker;
-                    //imageId |= select ghost or invis;
+                    imageId |= _ghostInvisImageFlags[Config::get().construction_marker];
                 }
                 else
                 {
@@ -118,21 +130,12 @@ namespace OpenLoco::Paint
             }
             case 4:
             case 11:
-                // jumps into default at auto imageid
-                break;
             default:
             {
-
-                yawIndex ^= (1 << 5);
-                if (sprite.flags & BogieSpriteFlags::rotationalSymmetry)
-                {
-                    yawIndex ^= (1 << 5) | (1 << 4);
-                }
                 auto imageId = sprite.numRollSprites * yawIndex + bogie->var_46 + sprite.steepImageIds;
                 if (bogie->getFlags38() & Flags38::isGhost)
                 {
-                    Config::get().construction_marker;
-                    //imageId |= select ghost or invis;
+                    imageId |= _ghostInvisImageFlags[Config::get().construction_marker];
                 }
                 else
                 {
