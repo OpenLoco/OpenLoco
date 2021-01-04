@@ -724,7 +724,13 @@ namespace OpenLoco::Input
                     return;
                 }
 
-                auto dragOffset = getNextDragOffset();
+                Gfx::point_t dragOffset = { x, y };
+                if (Tutorial::state() != Tutorial::tutorial_state::playing)
+                {
+                    // Fix #151: use relative drag from one frame to the next rather than
+                    //           using the relative position from the message loop
+                    dragOffset = getNextDragOffset();
+                }
                 if (dragOffset.x != 0 || dragOffset.y != 0)
                 {
                     _ticksSinceDragStart = 1000;
