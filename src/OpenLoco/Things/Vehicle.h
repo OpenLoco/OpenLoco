@@ -19,13 +19,14 @@ namespace OpenLoco
         namespace Flags0C // commands?
         {
             constexpr uint8_t unk_1 = 1 << 1; // commanded to stop??
+            constexpr uint8_t unk_5 = 1 << 5;
             constexpr uint8_t manualControl = 1 << 6;
         }
 
         namespace Flags38
         {
             constexpr uint8_t unk_0 = 1 << 0;
-            constexpr uint8_t unk_1 = 1 << 1;
+            constexpr uint8_t isReversed = 1 << 1;
             constexpr uint8_t unk_3 = 1 << 3;
             constexpr uint8_t isGhost = 1 << 4;
         }
@@ -376,7 +377,7 @@ namespace OpenLoco
         TransportMode mode; // 0x42
         uint8_t pad_43;
         int16_t var_44;
-        uint8_t var_46;
+        uint8_t var_46; // 0x46 roll
         uint8_t var_47;
         uint32_t accepted_cargo_types; // 0x48
         uint8_t cargo_type;            // 0x4C
@@ -440,7 +441,7 @@ namespace OpenLoco
         TransportMode mode; // 0x42 field same in all vehicles
         uint8_t pad_43;
         uint16_t var_44;
-        uint8_t var_46;
+        uint8_t var_46; // 0x46 roll
         uint8_t var_47;
         uint32_t accepted_cargo_types; // 0x48 front car component front bogie only
         uint8_t cargo_type;            // 0x4C front car component front bogie only

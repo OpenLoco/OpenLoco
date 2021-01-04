@@ -32,7 +32,7 @@ namespace OpenLoco::Paint
         uint8_t pitch = bogie->sprite_pitch;
 
         // Reverse??
-        if (bogie->getFlags38() & Flags38::unk_1)
+        if (bogie->getFlags38() & Flags38::isReversed)
         {
             yaw ^= (1 << 5);
             pitch = _reversePitch[bogie->sprite_pitch];
@@ -43,17 +43,17 @@ namespace OpenLoco::Paint
             case 0:
             {
 
-                if (sprite.flags & BogieSpriteFlags::unk_1)
+                if (sprite.flags & BogieSpriteFlags::rotationalSymmetry)
                 {
                     yawIndex &= 0xF;
                 }
-                auto imageId = sprite.var_05 * yawIndex + bogie->var_46 + sprite.image_1;
+                auto imageId = sprite.numRollSprites * yawIndex + bogie->var_46 + sprite.flatImageIds;
                 if (bogie->getFlags38() & Flags38::isGhost)
                 {
                     Config::get().construction_marker;
                     //imageId |= select ghost or invis;
                 }
-                else if (bogie->var_0C & (1 << 5))
+                else if (bogie->var_0C & Flags0C::unk_5)
                 {
                     imageId = Gfx::recolour(imageId, PaletteIndex::index_74);
                 }
@@ -92,11 +92,11 @@ namespace OpenLoco::Paint
             {
 
                 yawIndex ^= (1 << 5);
-                if (sprite.flags & BogieSpriteFlags::unk_1)
+                if (sprite.flags & BogieSpriteFlags::rotationalSymmetry)
                 {
                     yawIndex ^= (1 << 5) | (1 << 4);
                 }
-                auto imageId = sprite.var_05 * yawIndex + bogie->var_46 + sprite.image_2;
+                auto imageId = sprite.numRollSprites * yawIndex + bogie->var_46 + sprite.gentleImageIds;
                 if (bogie->getFlags38() & Flags38::isGhost)
                 {
                     Config::get().construction_marker;
@@ -124,11 +124,11 @@ namespace OpenLoco::Paint
             {
 
                 yawIndex ^= (1 << 5);
-                if (sprite.flags & BogieSpriteFlags::unk_1)
+                if (sprite.flags & BogieSpriteFlags::rotationalSymmetry)
                 {
                     yawIndex ^= (1 << 5) | (1 << 4);
                 }
-                auto imageId = sprite.var_05 * yawIndex + bogie->var_46 + sprite.image_3;
+                auto imageId = sprite.numRollSprites * yawIndex + bogie->var_46 + sprite.steepImageIds;
                 if (bogie->getFlags38() & Flags38::isGhost)
                 {
                     Config::get().construction_marker;

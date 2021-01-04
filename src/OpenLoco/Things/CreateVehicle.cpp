@@ -317,7 +317,7 @@ namespace OpenLoco::Things::Vehicle
         {
             return nullptr;
         }
-        newBogie->var_38 = Flags38::unk_1;
+        newBogie->var_38 = Flags38::isReversed;
         newBogie->object_sprite_type = vehObject.var_24[bodyNumber].back_bogie_sprite_ind;
         if (newBogie->object_sprite_type != SpriteIndex::null)
         {
@@ -388,7 +388,7 @@ namespace OpenLoco::Things::Vehicle
         {
             if (spriteType & SpriteIndex::flag_unk7)
             {
-                newBody->var_38 |= Flags38::unk_1;
+                newBody->var_38 |= Flags38::isReversed;
                 spriteType &= ~SpriteIndex::flag_unk7;
             }
         }

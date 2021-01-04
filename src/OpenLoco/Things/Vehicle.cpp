@@ -305,7 +305,7 @@ void OpenLoco::vehicle_body::animationUpdate()
 void OpenLoco::vehicle_body::sub_4AAB0B()
 {
     int32_t eax = vehicle_var_1136130 >> 3;
-    if (var_38 & Things::Vehicle::Flags38::unk_1)
+    if (var_38 & Things::Vehicle::Flags38::isReversed)
     {
         eax = -eax;
     }
@@ -345,7 +345,7 @@ void OpenLoco::vehicle_body::sub_4AAB0B()
 
             if (ah < 0)
             {
-                if (var_38 & Things::Vehicle::Flags38::unk_1)
+                if (var_38 & Things::Vehicle::Flags38::isReversed)
                 {
                     ah = 2;
                     if (al != 0 && al != ah)
@@ -364,7 +364,7 @@ void OpenLoco::vehicle_body::sub_4AAB0B()
             }
             else if (ah > 0)
             {
-                if (var_38 & Things::Vehicle::Flags38::unk_1)
+                if (var_38 & Things::Vehicle::Flags38::isReversed)
                 {
                     ah = 1;
                     if (al != 0 && al != ah)
@@ -1055,7 +1055,7 @@ void OpenLoco::vehicle_body::steamPuffsAnimationUpdate(uint8_t num, int32_t var_
 
     auto _var_44 = var_44;
     // Reversing
-    if (var_38 & Things::Vehicle::Flags38::unk_1)
+    if (var_38 & Things::Vehicle::Flags38::isReversed)
     {
         var_05 = -var_05;
         _var_44 = -_var_44;
@@ -1214,7 +1214,7 @@ void OpenLoco::vehicle_body::dieselExhaust1AnimationUpdate(uint8_t num, int32_t 
         if (veh_2->var_56 == 0)
             return;
 
-        if (var_38 & Things::Vehicle::Flags38::unk_1)
+        if (var_38 & Things::Vehicle::Flags38::isReversed)
         {
             var_05 = -var_05;
         }
@@ -1239,7 +1239,7 @@ void OpenLoco::vehicle_body::dieselExhaust1AnimationUpdate(uint8_t num, int32_t 
         if (veh_2->var_5A != 1)
             return;
 
-        if (var_38 & Things::Vehicle::Flags38::unk_1)
+        if (var_38 & Things::Vehicle::Flags38::isReversed)
         {
             var_05 = -var_05;
         }
@@ -1300,7 +1300,7 @@ void OpenLoco::vehicle_body::dieselExhaust2AnimationUpdate(uint8_t num, int32_t 
     if (veh_2->var_56 > 917504)
         return;
 
-    if (var_38 & Things::Vehicle::Flags38::unk_1)
+    if (var_38 & Things::Vehicle::Flags38::isReversed)
     {
         var_05 = -var_05;
     }
@@ -1373,7 +1373,7 @@ void OpenLoco::vehicle_body::electricSpark1AnimationUpdate(uint8_t num, int32_t 
         return;
 
     auto _var_44 = var_44;
-    if (var_38 & Things::Vehicle::Flags38::unk_1)
+    if (var_38 & Things::Vehicle::Flags38::isReversed)
     {
         var_05 = -var_05;
         _var_44 = -var_44;
@@ -1433,7 +1433,7 @@ void OpenLoco::vehicle_body::electricSpark2AnimationUpdate(uint8_t num, int32_t 
         return;
 
     auto _var_44 = var_44;
-    if (var_38 & Things::Vehicle::Flags38::unk_1)
+    if (var_38 & Things::Vehicle::Flags38::isReversed)
     {
         var_05 = -var_05;
         _var_44 = -var_44;
@@ -1476,7 +1476,7 @@ void OpenLoco::vehicle_body::electricSpark2AnimationUpdate(uint8_t num, int32_t 
     loc.y += yFactor;
 
     auto yaw = (sprite_yaw + 16) & 0x3F;
-    auto firstBogie = var_38 & Things::Vehicle::Flags38::unk_1 ? backBogie : frontBogie;
+    auto firstBogie = var_38 & Things::Vehicle::Flags38::isReversed ? backBogie : frontBogie;
     xyFactor = 5;
     if (!(vehicle_arr_4F8A7C[firstBogie->var_2C / 8] & 1))
     {
