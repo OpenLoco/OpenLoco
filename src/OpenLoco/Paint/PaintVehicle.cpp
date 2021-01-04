@@ -81,13 +81,17 @@ namespace OpenLoco::Paint
                 }
                 else if (bogie->getTransportMode() == TransportMode::air)
                 {
+                    // Airplane bogies are the shadows of the plane
+
                     if (bogie->getFlags38() & Flags38::isGhost)
                     {
+                        // Ghosts don't cast shadows
                         return;
                     }
                     session.setItemType(Ui::ViewportInteraction::InteractionItem::t_0);
-                    imageId = Gfx::recolourTranslucent(imageId, PaletteIndex::index_50);
-                    // special code
+                    imageId = Gfx::recolourTranslucent(imageId, PaletteIndex::index_32);
+                    session.addToPlotList4FD200(imageId, { 0, 0, bogie->z }, { 8, 8, bogie->z + 6 }, { 48, 48, 2 });
+                    return;
                 }
                 else
                 {
@@ -97,10 +101,12 @@ namespace OpenLoco::Paint
                 if (sprite.flags & BogieSpriteFlags::unk_4)
                 {
                     // larger sprite
+                    session.addToPlotListAsParent(imageId, { 0, 0, bogie->z }, { -9, -9, bogie->z + 3 }, { 18, 18, 5 });
                 }
                 else
                 {
                     // smaller sprite
+                    session.addToPlotListAsParent(imageId, { 0, 0, bogie->z }, { -6, -6, bogie->z + 3 }, { 12, 12, 1 });
                 }
                 break;
             }
@@ -121,10 +127,12 @@ namespace OpenLoco::Paint
                 if (sprite.flags & BogieSpriteFlags::unk_4)
                 {
                     // larger sprite
+                    session.addToPlotListAsParent(imageId, { 0, 0, bogie->z }, { -8, -8, bogie->z + 3 }, { 16, 16, 1 });
                 }
                 else
                 {
                     // smaller sprite
+                    session.addToPlotListAsParent(imageId, { 0, 0, bogie->z }, { -6, -6, bogie->z + 3 }, { 12, 12, 1 });
                 }
                 break;
             }
@@ -141,17 +149,10 @@ namespace OpenLoco::Paint
                 {
                     imageId = Gfx::recolour2(imageId, bogie->colour_scheme.primary, bogie->colour_scheme.secondary);
                 }
-
+                session.addToPlotListAsParent(imageId, { 0, 0, bogie->z }, { -6, -6, bogie->z + 3 }, { 12, 12, 1 });
                 break;
             }
         }
-        registers regs{};
-        regs.ax = bogie->x;
-        regs.cx = bogie->y;
-        regs.dx = bogie->z;
-        regs.esi = reinterpret_cast<int32_t>(bogie);
-        regs.ebp = reinterpret_cast<int32_t>(vehObject);
-        call(0x004B0CCE, regs); // Cant call 0x004B0CFC due to stack
     }
 
     // 0x004B103C
