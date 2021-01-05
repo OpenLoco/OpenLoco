@@ -13,12 +13,6 @@ using namespace OpenLoco::Ui::ViewportInteraction;
 
 namespace OpenLoco::Paint
 {
-    static loco_global<InteractionItem, 0x00E40104> _sessionInteractionInfoType;
-    static loco_global<uint8_t, 0x00E40105> _sessionInteractionInfoBh; // Unk var_29 of paintstruct
-    static loco_global<int16_t, 0x00E40108> _sessionInteractionInfoX;
-    static loco_global<int16_t, 0x00E4010A> _sessionInteractionInfoY;
-    static loco_global<uint32_t, 0x00E4010C> _sessionInteractionInfoValue; // tileElement or thing ptr
-    static loco_global<uint32_t, 0x00E40110> _getMapCoordinatesFromPosFlags;
     PaintSession _session;
 
     void PaintSession::setEntityPosition(const Map::map_pos& pos)
@@ -425,11 +419,6 @@ namespace OpenLoco::Paint
     [[nodiscard]] InteractionArg PaintSession::getNormalInteractionInfo(const uint32_t flags)
     {
         InteractionArg info{};
-        _sessionInteractionInfoX = 0;
-        _sessionInteractionInfoY = 0;
-        _sessionInteractionInfoValue = 0;
-        _sessionInteractionInfoType = InteractionItem::t_0;
-        _sessionInteractionInfoBh = 0;
 
         for (auto* ps = (*_paintHead)->basic.nextQuadrantPS; ps != nullptr; ps = ps->nextQuadrantPS)
         {
@@ -461,11 +450,6 @@ namespace OpenLoco::Paint
 
             ps = tempPS;
         }
-        _sessionInteractionInfoX = info.x;
-        _sessionInteractionInfoY = info.y;
-        _sessionInteractionInfoValue = info.value;
-        _sessionInteractionInfoType = info.type;
-        _sessionInteractionInfoBh = info.unkBh;
         return info;
     }
 
@@ -502,10 +486,6 @@ namespace OpenLoco::Paint
             interaction.type = InteractionItem::station;
             interaction.value = station.id();
         }
-
-        // This is for functions that have not been implemented yet
-        _sessionInteractionInfoType = interaction.type;
-        _sessionInteractionInfoValue = interaction.value;
         return interaction;
     }
 
@@ -537,10 +517,6 @@ namespace OpenLoco::Paint
             interaction.type = InteractionItem::town;
             interaction.value = town.id();
         }
-
-        // This is for functions that have not been implemented yet
-        _sessionInteractionInfoType = interaction.type;
-        _sessionInteractionInfoValue = interaction.value;
         return interaction;
     }
 }
