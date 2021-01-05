@@ -161,6 +161,12 @@ namespace OpenLoco::Paint
          * @param boundBoxOffset_z @<0xE3F0A4>
          */
         void addToPlotList4FD200(uint32_t imageId, const Map::map_pos3& offset, const Map::map_pos3& boundBoxOffset, const Map::map_pos3& boundBoxSize);
+        /*      
+         * @param imageId  @<ebx>
+         * @param offset_x @<ax>
+         * @param offset_y @<cx>
+         */
+        void attachToPrevious(uint32_t imageId, const Map::map_pos& offset);
 
     private:
         void generateTilesAndEntities(GenerationParameters&& p);

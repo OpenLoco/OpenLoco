@@ -29,6 +29,11 @@ namespace OpenLoco::Paint
         Pitch::up20deg,
     };
 
+    // 0x00503F20
+    const uint8_t _503F20[8]{
+        4, 3, 2, 1, 0, 0, 0, 0
+    };
+
     // 0x004FFAE8
     static uint32_t applyGhostToImage(uint32_t imageId)
     {
@@ -46,7 +51,7 @@ namespace OpenLoco::Paint
     static void paintBogie(PaintSession& session, vehicle_bogie* bogie)
     {
         auto* vehObject = ObjectManager::get<vehicle_object>(bogie->object_id);
-        if (bogie->object_sprite_type == 0xFF)
+        if (bogie->object_sprite_type == SpriteIndex::null)
         {
             return;
         }
@@ -177,18 +182,295 @@ namespace OpenLoco::Paint
         }
     }
 
+    struct BodyImages
+    {
+        uint32_t body;
+        uint32_t brakingLight;
+    };
+
+    static uint32_t paintBodyPitchDefault(const VehicleObjectBodySprite& sprite, uint8_t yaw)
+    {
+        if (sprite.flags & BodySpriteFlags::rotationalSymmetry)
+        {
+            yaw &= 0x1F;
+        }
+        uint32_t imageId = (yaw >> _503F20[sprite.var_0B]) * sprite.numFramesPerRotation;
+        imageId += sprite.flatImageId;
+        return imageId;
+    }
+
+    static uint32_t paintBodyPitchUp12Deg(const VehicleObjectBodySprite& sprite, uint8_t yaw)
+    {
+        if (!(sprite.flags & BodySpriteFlags::hasGentleSprites))
+        {
+            return paintBodyPitchDefault(sprite, yaw);
+        }
+        auto imageOffset = sprite.flags & BodySpriteFlags::rotationalSymmetry ? 4 : 8;
+        uint32_t imageId = ((yaw >> _503F20[sprite.var_0C]) + imageOffset) * sprite.numFramesPerRotation;
+        imageId += sprite.gentleImageId;
+        return imageId;
+    }
+
+    static uint32_t paintBodyPitchDown12Deg(const VehicleObjectBodySprite& sprite, uint8_t yaw)
+    {
+        if (!(sprite.flags & BodySpriteFlags::hasGentleSprites))
+        {
+            return paintBodyPitchDefault(sprite, yaw);
+        }
+
+        if (sprite.flags & BodySpriteFlags::rotationalSymmetry)
+        {
+            yaw ^= (1 << 5);
+        }
+        else
+        {
+            yaw += (1 << 6);
+        }
+
+        return paintBodyPitchUp12Deg(sprite, yaw);
+    }
+
+    static uint32_t paintBodyPitchUp6Deg(const VehicleObjectBodySprite& sprite, uint8_t yaw)
+    {
+        if (!(sprite.flags & BodySpriteFlags::hasGentleSprites))
+        {
+            return paintBodyPitchDefault(sprite, yaw);
+        }
+        yaw += 7;
+        yaw >>= 4;
+        yaw &= 0x3;
+
+        return yaw * sprite.numFramesPerRotation + sprite.gentleImageId;
+    }
+
+    static uint32_t paintBodyPitchDown6Deg(const VehicleObjectBodySprite& sprite, uint8_t yaw)
+    {
+        if (!(sprite.flags & BodySpriteFlags::hasGentleSprites))
+        {
+            return paintBodyPitchDefault(sprite, yaw);
+        }
+        if (sprite.flags & BodySpriteFlags::rotationalSymmetry)
+        {
+            yaw ^= (1 << 5);
+            return paintBodyPitchUp6Deg(sprite, yaw);
+        }
+        else
+        {
+            yaw += 7;
+            yaw >>= 4;
+            yaw &= 0x3;
+            yaw += 4;
+
+            return yaw * sprite.numFramesPerRotation + sprite.gentleImageId;
+        }
+    }
+    static uint32_t paintBodyPitchUp25Deg(const VehicleObjectBodySprite& sprite, uint8_t yaw)
+    {
+        if (!(sprite.flags & BodySpriteFlags::hasSteepSprites))
+        {
+            return paintBodyPitchUp12Deg(sprite, yaw);
+        }
+        auto imageOffset = sprite.flags & BodySpriteFlags::rotationalSymmetry ? 4 : 8;
+        uint32_t imageId = ((yaw >> _503F20[sprite.var_0C]) + imageOffset) * sprite.numFramesPerRotation;
+        imageId += sprite.steepImageId;
+        return imageId;
+    }
+
+    static uint32_t paintBodyPitchDown25Deg(const VehicleObjectBodySprite& sprite, uint8_t yaw)
+    {
+        if (!(sprite.flags & BodySpriteFlags::hasSteepSprites))
+        {
+            return paintBodyPitchDown12Deg(sprite, yaw);
+        }
+
+        if (sprite.flags & BodySpriteFlags::rotationalSymmetry)
+        {
+            yaw ^= (1 << 5);
+        }
+        else
+        {
+            yaw += (1 << 6);
+        }
+
+        return paintBodyPitchUp25Deg(sprite, yaw);
+    }
+
+    static uint32_t paintBodyPitchUp18Deg(const VehicleObjectBodySprite& sprite, uint8_t yaw)
+    {
+        if (!(sprite.flags & BodySpriteFlags::hasSteepSprites))
+        {
+            return paintBodyPitchUp12Deg(sprite, yaw);
+        }
+        yaw += 7;
+        yaw >>= 4;
+        yaw &= 0x3;
+
+        return yaw * sprite.numFramesPerRotation + sprite.steepImageId;
+    }
+
+    static uint32_t paintBodyPitchDown18Deg(const VehicleObjectBodySprite& sprite, uint8_t yaw)
+    {
+        if (!(sprite.flags & BodySpriteFlags::hasSteepSprites))
+        {
+            return paintBodyPitchDown12Deg(sprite, yaw);
+        }
+        if (sprite.flags & BodySpriteFlags::rotationalSymmetry)
+        {
+            yaw ^= (1 << 5);
+            return paintBodyPitchUp18Deg(sprite, yaw);
+        }
+        else
+        {
+            yaw += 7;
+            yaw >>= 4;
+            yaw &= 0x3;
+            yaw += 4;
+
+            return yaw * sprite.numFramesPerRotation + sprite.steepImageId;
+        }
+    }
+
+    // Adds roll/animation and cargo
+    static uint32_t getBodyImage(const uint32_t imageId, const vehicle_body* body)
+    {
+        return imageId + body->var_46 + body->var_47;
+    }
+
+    static uint32_t getBrakingImage(const uint32_t imageId, const VehicleObjectBodySprite& sprite)
+    {
+        // Braking image is the last frame for a rotation
+        return imageId + sprite.numFramesPerRotation - 1;
+    }
+
     // 0x004B103C
     static void paintBody(PaintSession& session, vehicle_body* body)
     {
+        static loco_global<Map::map_pos[64], 0x00503B6A> _503B6A; // also used in vehicle.cpp
+        static loco_global<int8_t[32 * 4], 0x005001B4> _5001B4;   // array of 4 byte structures
+
         auto* vehObject = ObjectManager::get<vehicle_object>(body->object_id);
-        registers regs{};
-        regs.ax = body->x;
-        regs.cx = body->y;
-        regs.dx = body->z;
-        regs.ebx = (body->sprite_yaw + (session.getRotation() << 4)) & 0x3F;
-        regs.esi = reinterpret_cast<int32_t>(body);
-        regs.ebp = reinterpret_cast<int32_t>(vehObject);
-        call(0x004B0CCE, regs); // Cant call 0x004B103C due to stack
+        if (body->object_sprite_type == SpriteIndex::null)
+        {
+            return;
+        }
+
+        auto& sprite = vehObject->bodySprites[body->object_sprite_type];
+        uint8_t yaw = (body->sprite_yaw + (session.getRotation() << 4)) & 0x3F;
+        auto originalYaw = yaw; // edi
+        auto pitch = body->sprite_pitch;
+
+        if (body->getFlags38() & Flags38::isReversed)
+        {
+            yaw ^= (1 << 5);
+            pitch = _reversePitch[static_cast<uint8_t>(body->sprite_pitch)];
+        }
+
+        uint32_t pitchImageId;
+        switch (pitch)
+        {
+            case Pitch::flat:
+                pitchImageId = paintBodyPitchDefault(sprite, yaw);
+                break;
+            case Pitch::up12deg:
+                pitchImageId = paintBodyPitchUp12Deg(sprite, yaw);
+                break;
+            case Pitch::down12deg:
+                pitchImageId = paintBodyPitchDown12Deg(sprite, yaw);
+                break;
+            case Pitch::up6deg:
+                pitchImageId = paintBodyPitchUp6Deg(sprite, yaw);
+                break;
+            case Pitch::down6deg:
+                pitchImageId = paintBodyPitchDown6Deg(sprite, yaw);
+                break;
+            case Pitch::up25deg:
+                pitchImageId = paintBodyPitchUp25Deg(sprite, yaw);
+                break;
+            case Pitch::down25deg:
+                pitchImageId = paintBodyPitchDown25Deg(sprite, yaw);
+                break;
+            case Pitch::up18deg:
+                pitchImageId = paintBodyPitchUp18Deg(sprite, yaw);
+                break;
+            case Pitch::down18deg:
+                pitchImageId = paintBodyPitchDown18Deg(sprite, yaw);
+                break;
+            default:
+                pitchImageId = paintBodyPitchDefault(sprite, yaw);
+                break;
+        }
+
+        BodyImages bi{
+            getBodyImage(pitchImageId, body),
+            getBrakingImage(pitchImageId, sprite)
+        };
+
+        if (!(sprite.flags & BodySpriteFlags::hasBrakingLights))
+        {
+            bi.brakingLight = std::numeric_limits<decltype(bi.brakingLight)>::max();
+        }
+
+        Map::map_pos3 offsets = { 0, 0, body->z };
+        Map::map_pos3 boundBoxOffsets;
+        Map::map_pos3 boundBoxSize;
+        if ((body->getTransportMode() == TransportMode::air) || (body->getTransportMode() == TransportMode::water))
+        {
+            boundBoxOffsets = { -8, -8, static_cast<int16_t>(body->z + 11) };
+            boundBoxSize = { 48, 48, 15 };
+        }
+        else
+        {
+            auto& unk = vehObject->var_24[body->body_index];
+            auto offsetModifier = unk.length - unk.var_01;
+            if (body->getFlags38() & Flags38::isReversed)
+            {
+                offsetModifier = -offsetModifier;
+            }
+
+            if (unk.body_sprite_ind & SpriteIndex::flag_unk7)
+            {
+                offsetModifier = -offsetModifier;
+            }
+
+            boundBoxOffsets.x = (_503B6A[originalYaw].x * offsetModifier) >> 11;
+            boundBoxOffsets.y = (_503B6A[originalYaw].y * offsetModifier) >> 11;
+            offsetModifier = sprite.bogey_position * 2 - 4;
+            originalYaw &= 0x1F;
+            boundBoxOffsets.x += (_5001B4[originalYaw * 4] * offsetModifier) >> 8;
+            boundBoxOffsets.y += (_5001B4[originalYaw * 4 + 1] * offsetModifier) >> 8;
+            boundBoxOffsets.z = body->z + 11;
+            boundBoxSize = {
+                static_cast<coord_t>((_5001B4[originalYaw * 4 + 2] * offsetModifier) >> 8),
+                static_cast<coord_t>((_5001B4[originalYaw * 4 + 3] * offsetModifier) >> 8),
+                15
+            };
+        }
+        auto imageId = bi.body;
+        if (body->getFlags38() & Flags38::isGhost)
+        {
+            imageId = applyGhostToImage(imageId);
+        }
+        else if (body->var_0C & Flags0C::unk_5)
+        {
+            imageId = Gfx::recolour(imageId, PaletteIndex::index_74);
+        }
+        else
+        {
+            imageId = Gfx::recolour2(imageId, body->colour_scheme.primary, body->colour_scheme.secondary);
+        }
+
+        session.addToPlotList4FD200(imageId, offsets, boundBoxOffsets, boundBoxSize);
+
+        if (bi.brakingLight != std::numeric_limits<decltype(bi.brakingLight)>::max())
+        {
+            Vehicle train(body->head);
+            if (train.veh2->var_5B != 0
+                && !(body->getFlags38() & Flags38::isGhost)
+                && !(body->var_0C & Flags0C::unk_5))
+            {
+                session.attachToPrevious(bi.brakingLight, { 0, 0 });
+            }
+        }
     }
 
     // 0x004B0CCE

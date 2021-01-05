@@ -377,8 +377,8 @@ namespace OpenLoco
         TransportMode mode; // 0x42
         uint8_t pad_43;
         int16_t var_44;
-        uint8_t var_46; // 0x46 roll
-        uint8_t var_47;
+        uint8_t var_46;                // 0x46 roll/animation sprite index
+        uint8_t var_47;                // 0x47 cargo sprite index
         uint32_t accepted_cargo_types; // 0x48
         uint8_t cargo_type;            // 0x4C
         uint8_t max_cargo;             // 0x4D
