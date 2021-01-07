@@ -19,6 +19,7 @@ namespace OpenLoco::Map::TileManager
     stdx::span<tile_element> getElements();
     tile_element* getElementsEnd();
     tile_element** getElementIndex();
+    tile get(TilePos pos);
     tile get(map_pos pos);
     tile get(coord_t x, coord_t y);
     TileHeight getHeight(const map_pos& pos);

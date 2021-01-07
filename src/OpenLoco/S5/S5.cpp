@@ -377,8 +377,6 @@ namespace OpenLoco::S5
             0x00441C26,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 auto path = fs::u8path(std::string_view(_savePath));
-
-                registers backup = regs;
                 return save(path, static_cast<SaveFlags>(regs.eax)) ? 0x100 : 0;
             });
     }
