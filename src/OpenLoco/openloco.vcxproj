@@ -86,6 +86,7 @@
     <ClCompile Include="Platform\Platform.Windows.cpp" />
     <ClCompile Include="ProgressBar.cpp" />
     <ClCompile Include="S5\S5.cpp" />
+    <ClCompile Include="S5\SawyerStream.cpp" />
     <ClCompile Include="Scenario.cpp" />
     <ClCompile Include="ScenarioManager.cpp" />
     <ClCompile Include="Station.cpp" />
@@ -255,6 +256,7 @@
     <ClInclude Include="Platform\Platform.h" />
     <ClInclude Include="ProgressBar.h" />
     <ClInclude Include="S5\S5.h" />
+    <ClInclude Include="S5\SawyerStream.h" />
     <ClInclude Include="Scenario.h" />
     <ClInclude Include="ScenarioManager.h" />
     <ClInclude Include="Station.h" />
