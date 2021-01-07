@@ -47,7 +47,7 @@ namespace OpenLoco::Config
 
     new_config& readNewConfig()
     {
-        auto configPath = Environment::getPath(Environment::path_id::openloco_yml);
+        auto configPath = Environment::getPathNoWarning(Environment::path_id::openloco_yml);
 
         if (!fs::exists(configPath))
             return _new_config;
@@ -87,26 +87,19 @@ namespace OpenLoco::Config
             _new_config.scale_factor = config["scale_factor"].as<float>();
         if (config["zoom_to_cursor"])
             _new_config.zoom_to_cursor = config["zoom_to_cursor"].as<bool>();
+        if (config["autosave_frequency"])
+            _new_config.autosave_frequency = config["autosave_frequency"].as<int32_t>();
+        if (config["autosave_amount"])
+            _new_config.autosave_amount = config["autosave_amount"].as<int32_t>();
 
         return _new_config;
     }
 
     void writeNewConfig()
     {
-        auto configPath = Environment::getPath(Environment::path_id::openloco_yml);
+        auto configPath = Environment::getPathNoWarning(Environment::path_id::openloco_yml);
         auto dir = configPath.parent_path();
-        if (!fs::is_directory(dir))
-        {
-            fs::create_directories(dir);
-            // clang-format off
-            fs::permissions(
-                dir,
-                fs::perms::owner_all |
-                fs::perms::group_read | fs::perms::group_exec |
-                fs::perms::others_read | fs::perms::others_exec
-            );
-            // clang-format on
-        }
+        Environment::autoCreateDirectory(dir);
 
         auto& node = _config_yaml;
 
@@ -143,6 +136,8 @@ namespace OpenLoco::Config
         node["companyAIDisabled"] = _new_config.companyAIDisabled;
         node["scale_factor"] = _new_config.scale_factor;
         node["zoom_to_cursor"] = _new_config.zoom_to_cursor;
+        node["autosave_frequency"] = _new_config.autosave_frequency;
+        node["autosave_amount"] = _new_config.autosave_amount;
 
         std::ofstream stream(configPath);
         if (stream.is_open())

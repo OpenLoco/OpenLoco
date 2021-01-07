@@ -1459,4 +1459,9 @@ namespace OpenLoco::StringIds
     constexpr string_id menu_exit_openloco = 2140;
     constexpr string_id disableAICompanies = 2141;
     constexpr string_id disableAICompanies_tip = 2142;
+    constexpr string_id autosave_amount = 2143;
+    constexpr string_id autosave_frequency = 2144;
+    constexpr string_id autosave_never = 2145;
+    constexpr string_id autosave_every_month = 2146;
+    constexpr string_id autosave_every_x_months = 2147;
 }

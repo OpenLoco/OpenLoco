@@ -56,8 +56,12 @@ namespace OpenLoco::Environment
         tut800_3,
         openloco_yml,
         language_files,
+        save,
+        autosave,
     };
 
+    void autoCreateDirectory(const fs::path& path);
     fs::path getPath(path_id id);
+    fs::path getPathNoWarning(path_id id);
     void resolvePaths();
 }

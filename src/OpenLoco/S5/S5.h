@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../Core/FileSystem.hpp"
 #include "../Objects/ObjectManager.h"
 #include <cstdint>
 
@@ -107,6 +108,25 @@ namespace OpenLoco::S5
 #pragma pack(pop)
     static_assert(sizeof(SaveDetails) == 0xC618);
 
+    enum SaveFlags : uint32_t
+    {
+        savedGame = 1 << 0,
+
+        /**
+         * Using flag 31 causes the saved games to not open, so this must
+         * have another meaning. For autosave we just want to prevent the
+         * construction windows from closing.
+         */
+        noWindowClose = 1u << 29,
+
+        flag30 = 1u << 30, // Does not reorganise map elements
+        flag31 = 1u << 31, // Does not close construction windows
+    };
+
+    constexpr const char* extensionSC5 = ".SC5";
+    constexpr const char* extensionSV5 = ".SV5";
+
     Options& getOptions();
     Options& getPreviewOptions();
+    bool save(const fs::path& path, SaveFlags flags);
 }

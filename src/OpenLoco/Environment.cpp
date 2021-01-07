@@ -146,7 +146,7 @@ namespace OpenLoco::Environment
     {
         auto basePath = getBasePath(id);
         auto subPath = getSubPath(id);
-        auto result = basePath / subPath;
+        auto result = (basePath / subPath).lexically_normal();
         if (!fs::exists(result))
         {
 #ifndef _WIN32
@@ -166,10 +166,42 @@ namespace OpenLoco::Environment
         return result;
     }
 
+    fs::path getPathNoWarning(path_id id)
+    {
+        auto basePath = getBasePath(id);
+        auto subPath = getSubPath(id);
+        auto result = (basePath / subPath).lexically_normal();
+        return result;
+    }
+
     template<typename T>
     static void setDirectory(T& buffer, fs::path path)
     {
         Utility::strcpy_safe(buffer, path.make_preferred().u8string().c_str());
+    }
+
+    void autoCreateDirectory(const fs::path& path)
+    {
+        try
+        {
+            if (!fs::is_directory(path))
+            {
+                auto path8 = path.u8string();
+                std::printf("Creating directory: %s\n", path8.c_str());
+                fs::create_directories(path);
+                // clang-format off
+                fs::permissions(
+                    path,
+                    fs::perms::owner_all |
+                    fs::perms::group_read | fs::perms::group_exec |
+                    fs::perms::others_read | fs::perms::others_exec);
+                // clang-format on
+            }
+        }
+        catch (const std::exception& e)
+        {
+            std::fprintf(stderr, "Unable to create directory: %s\n", e.what());
+        }
     }
 
     // 0x004412CE
@@ -177,8 +209,12 @@ namespace OpenLoco::Environment
     {
         auto basePath = resolveLocoInstallPath();
         setDirectory(_path_install, basePath);
-        setDirectory(_path_saves_single_player, basePath / "Single Player Saved Games/");
-        setDirectory(_path_saves_two_player, basePath / "Two Player Saved Games/");
+
+        auto saveDirectory = getPathNoWarning(path_id::save);
+        setDirectory(_path_saves_single_player, saveDirectory);
+        setDirectory(_path_saves_two_player, saveDirectory);
+        autoCreateDirectory(saveDirectory);
+
         setDirectory(_path_scenarios, basePath / "Scenarios/*.SC5");
         setDirectory(_path_landscapes, basePath / "Scenarios/Landscapes/*.SC5");
         setDirectory(_path_objects, basePath / "ObjData/*.DAT");
@@ -193,6 +229,8 @@ namespace OpenLoco::Environment
             case path_id::gamecfg:
             case path_id::scores:
             case path_id::openloco_yml:
+            case path_id::save:
+            case path_id::autosave:
                 return platform::getUserDirectory();
             case path_id::language_files:
 #if defined(__APPLE__) && defined(__MACH__)
@@ -258,6 +296,8 @@ namespace OpenLoco::Environment
             "Data/TUT800_3.DAT",
             "openloco.yml",
             "language",
+            "save",
+            "save/autosave",
         };
 
         size_t index = (size_t)id;

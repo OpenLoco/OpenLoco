@@ -26,6 +26,31 @@ namespace OpenLoco::Utility
         return true;
     }
 
+    inline bool equals(const std::string_view& a, const std::string_view& b, bool ignoreCase = false)
+    {
+        return ignoreCase ? iequals(a, b) : a == b;
+    }
+
+    inline bool startsWith(std::string_view s, std::string_view value, bool ignoreCase = false)
+    {
+        if (s.size() >= value.size())
+        {
+            auto substr = s.substr(0, value.size());
+            return equals(substr, value, ignoreCase);
+        }
+        return false;
+    }
+
+    inline bool endsWith(std::string_view s, std::string_view value, bool ignoreCase = false)
+    {
+        if (s.size() >= value.size())
+        {
+            auto substr = s.substr(s.size() - value.size());
+            return equals(substr, value, ignoreCase);
+        }
+        return false;
+    }
+
     inline size_t strlcpy(char* dest, const char* src, size_t size)
     {
         size_t src_len = std::strlen(src);
