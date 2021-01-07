@@ -160,9 +160,9 @@ namespace OpenLoco
         return (getScreenFlags() & ScreenFlags::networked) != 0;
     }
 
-    bool isTrackUpgradeMode()
+    bool isNetworkHost()
     {
-        return (getScreenFlags() & ScreenFlags::trackUpgrade) != 0;
+        return (getScreenFlags() & ScreenFlags::networkHost) != 0;
     }
 
     bool isUnknown4Mode()
@@ -429,7 +429,7 @@ namespace OpenLoco
         }
 
         // Host/client?
-        if (isTrackUpgradeMode())
+        if (isNetworkHost())
         {
             _updating_company_id = CompanyManager::getControllingId();
 

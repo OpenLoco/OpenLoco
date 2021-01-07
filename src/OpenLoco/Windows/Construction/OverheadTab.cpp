@@ -213,7 +213,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
 
             self->widgets[widx::image].tooltip = StringIds::upgrade_track_with_mods;
 
-            if (isTrackUpgradeMode())
+            if (isNetworkHost())
             {
                 if (_toolWindowType == WindowType::construction)
                     self->widgets[widx::image].tooltip = StringIds::click_track_to_upgrade;
