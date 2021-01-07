@@ -185,6 +185,7 @@
     <ClInclude Include="Console.h" />
     <ClInclude Include="Core\FileSystem.hpp" />
     <ClInclude Include="Core\Optional.hpp" />
+    <ClInclude Include="Core\Span.hpp" />
     <ClInclude Include="Date.h" />
     <ClInclude Include="Drawing\SoftwareDrawingEngine.h" />
     <ClInclude Include="Environment.h" />
