@@ -11,15 +11,28 @@ namespace OpenLoco::Ui
     // 0x0045A0E7
     void viewport::render(Gfx::drawpixelinfo_t* dpi)
     {
-        registers regs;
-        regs.ax = dpi->x;
-        regs.bx = dpi->y;
-        regs.dx = dpi->x + dpi->width;
-        regs.bp = dpi->y + dpi->height;
-        regs.edi = (int32_t)dpi;
-        regs.esi = (int32_t)this;
+        auto contextRect = dpi->getUiRect();
+        auto viewRect = getUiRect();
 
-        call(0x0045A0E7, regs);
+        if (!contextRect.intersects(viewRect))
+        {
+            return;
+        }
+        auto intersection = contextRect.intersection(viewRect);
+        paint(dpi, uiToMap(intersection));
+    }
+
+    // 0x0045A1A4
+    void viewport::paint(Gfx::drawpixelinfo_t* context, const Rect& rect)
+    {
+        registers regs{};
+        regs.ax = rect.left();
+        regs.bx = rect.top();
+        regs.dx = rect.right();
+        regs.bp = rect.bottom();
+        regs.esi = reinterpret_cast<uint32_t>(this);
+        regs.edi = reinterpret_cast<uint32_t>(context);
+        call(0x0045A1A4, regs);
     }
 
     // 0x004CA444
