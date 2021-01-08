@@ -4,6 +4,7 @@
 - Fix: [#151] Mouse moves out of window when looking around.
 - Fix: [#588] 'Cancel or Show Last Announcement' shortcut doesn't close announcements.
 - Fix: [#679] Crash when changing ground texture.
+- Fix: [#712] Load / save window tries to show preview for item after last.
 - Change: [#690] Default saved game directory is now in OpenLoco user directory.
 
 20.10 (2020-10-25)

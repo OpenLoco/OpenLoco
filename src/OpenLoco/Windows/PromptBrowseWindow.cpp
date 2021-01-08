@@ -319,7 +319,7 @@ namespace OpenLoco::Ui::PromptBrowse
             return;
 
         auto index = y / self->row_height;
-        if (index > _numFiles)
+        if (index >= _numFiles)
             return;
 
         if (self->var_85A == index)
