@@ -15,6 +15,7 @@
 #include <fstream>
 #include <iostream>
 #include <memory>
+#include <numeric>
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Utility;
@@ -46,6 +47,7 @@ namespace OpenLoco::Gfx
     static loco_global<g1_element[g1_expected_count::disc + g1_count_temporary + g1_count_objects], 0x9E2424> _g1Elements;
 
     static std::unique_ptr<std::byte[]> _g1Buffer;
+    static loco_global<uint16_t[147], 0x050B8C8> _paletteToG1Offset;
 
     static loco_global<uint16_t, 0x112C824> _currentFontFlags;
     static loco_global<int16_t, 0x112C876> _currentFontSpriteBase;
@@ -67,6 +69,85 @@ namespace OpenLoco::Gfx
     drawpixelinfo_t& screenDpi()
     {
         return _screen_dpi;
+    }
+
+    const PaletteMap& PaletteMap::getDefault()
+    {
+        static bool initialised = false;
+        static uint8_t data[256];
+        static PaletteMap defaultMap(data);
+        if (!initialised)
+        {
+            std::iota(std::begin(data), std::end(data), 0);
+        }
+        return defaultMap;
+    }
+
+    uint8_t& PaletteMap::operator[](size_t index)
+    {
+        assert(index < _dataLength);
+
+        // Provide safety in release builds
+        if (index >= _dataLength)
+        {
+            static uint8_t dummy;
+            return dummy;
+        }
+
+        return _data[index];
+    }
+
+    uint8_t PaletteMap::operator[](size_t index) const
+    {
+        assert(index < _dataLength);
+
+        // Provide safety in release builds
+        if (index >= _dataLength)
+        {
+            return 0;
+        }
+
+        return _data[index];
+    }
+
+    uint8_t PaletteMap::blend(uint8_t src, uint8_t dst) const
+    {
+        // src = 0 would be transparent so there is no blend palette for that, hence (src - 1)
+        assert(src != 0 && (src - 1) < _numMaps);
+        assert(dst < _mapLength);
+        auto idx = ((src - 1) * 256) + dst;
+        return (*this)[idx];
+    }
+
+    void PaletteMap::copy(size_t dstIndex, const PaletteMap& src, size_t srcIndex, size_t length)
+    {
+        auto maxLength = std::min(_mapLength - srcIndex, _mapLength - dstIndex);
+        assert(length <= maxLength);
+        auto copyLength = std::min(length, maxLength);
+        std::memcpy(&_data[dstIndex], &src._data[srcIndex], copyLength);
+    }
+
+    std::optional<uint32_t> getPaletteG1Index(colour_t paletteId)
+    {
+        if (paletteId < std::size(_paletteToG1Offset))
+        {
+            return _paletteToG1Offset[paletteId];
+        }
+        return std::nullopt;
+    }
+
+    std::optional<PaletteMap> getPaletteMapForColour(colour_t paletteId)
+    {
+        auto g1Index = getPaletteG1Index(paletteId);
+        if (g1Index)
+        {
+            auto g1 = getG1Element(*g1Index);
+            if (g1 != nullptr)
+            {
+                return PaletteMap(g1->offset, g1->height, g1->width);
+            }
+        }
+        return std::nullopt;
     }
 
     static std::vector<g1_element> convertElements(const std::vector<g1_element32_t>& elements32)
@@ -1094,12 +1175,12 @@ namespace OpenLoco::Gfx
 
     uint32_t recolour(uint32_t image, uint8_t colour)
     {
-        return (1 << 29) | (colour << 19) | image;
+        return ImageIdFlags::remap | (colour << 19) | image;
     }
 
     uint32_t recolourTranslucent(uint32_t image, uint8_t colour)
     {
-        return (1 << 30) | (colour << 19) | image;
+        return ImageIdFlags::translucent | (colour << 19) | image;
     }
 
     loco_global<uint8_t*, 0x0050B860> _50B860;

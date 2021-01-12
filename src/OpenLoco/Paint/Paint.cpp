@@ -1,4 +1,5 @@
 #include "Paint.h"
+#include "../Graphics/Gfx.h"
 #include "../Interop/Interop.hpp"
 #include "../Map/Tile.h"
 #include "../StationManager.h"
@@ -12,12 +13,6 @@ using namespace OpenLoco::Ui::ViewportInteraction;
 
 namespace OpenLoco::Paint
 {
-    static loco_global<InteractionItem, 0x00E40104> _sessionInteractionInfoType;
-    static loco_global<uint8_t, 0x00E40105> _sessionInteractionInfoBh; // Unk var_29 of paintstruct
-    static loco_global<int16_t, 0x00E40108> _sessionInteractionInfoX;
-    static loco_global<int16_t, 0x00E4010A> _sessionInteractionInfoY;
-    static loco_global<uint32_t, 0x00E4010C> _sessionInteractionInfoValue; // tileElement or thing ptr
-    static loco_global<uint32_t, 0x00E40110> _getMapCoordinatesFromPosFlags;
     PaintSession _session;
 
     void PaintSession::setEntityPosition(const Map::map_pos& pos)
@@ -360,13 +355,102 @@ namespace OpenLoco::Paint
         }
     }
 
+    static bool isSpriteInteractedWithPaletteSet(Gfx::drawpixelinfo_t* dpi, uint32_t imageId, const Gfx::point_t& coords, const Gfx::PaletteMap& paletteMap)
+    {
+        static loco_global<const uint8_t*, 0x0050B860> _paletteMap;
+        static loco_global<bool, 0x00E40114> _interactionResult;
+        _paletteMap = paletteMap.data();
+        registers regs{};
+        regs.ebx = imageId;
+        regs.edi = reinterpret_cast<int32_t>(dpi);
+        regs.cx = coords.x;
+        regs.dx = coords.y;
+        call(0x00447A5F, regs);
+        return _interactionResult;
+    }
+
+    // 0x00447A0E
+    static bool isSpriteInteractedWith(Gfx::drawpixelinfo_t* dpi, uint32_t imageId, const Gfx::point_t& coords)
+    {
+        static loco_global<bool, 0x00E40114> _interactionResult;
+        static loco_global<uint32_t, 0x00E04324> _interactionFlags;
+        _interactionResult = false;
+        auto paletteMap = Gfx::PaletteMap::getDefault();
+        imageId &= ~Gfx::ImageIdFlags::translucent;
+        if (imageId & Gfx::ImageIdFlags::remap)
+        {
+            _interactionFlags = Gfx::ImageIdFlags::remap;
+            int32_t index = (imageId >> 19) & 0x7F;
+            if (imageId & Gfx::ImageIdFlags::remap2)
+            {
+                index &= 0x1F;
+            }
+            if (auto pm = Gfx::getPaletteMapForColour(index))
+            {
+                paletteMap = *pm;
+            }
+        }
+        else
+        {
+            _interactionFlags = 0;
+        }
+        return isSpriteInteractedWithPaletteSet(dpi, imageId, coords, paletteMap);
+    }
+
+    // 0x0045EDFC
+    static bool isPSSpriteTypeInFilter(const InteractionItem spriteType, uint32_t filter)
+    {
+        constexpr uint32_t interactionItemToFilter[] = { 0, 1 << 0, 1 << 0, 1 << 1, 1 << 2, 1 << 14, 1 << 7, 1 << 11, 1 << 11, 1 << 11, 1 << 11, 1 << 3, 1 << 4, 1 << 8, 1 << 12, 1 << 13, 1 << 5, 1 << 6, 000, 1 << 15, 1 << 16, 1 << 9 };
+        if (spriteType == InteractionItem::t_0
+            || spriteType == InteractionItem::t_18) // 18 as a type seems to not exist.
+            return false;
+
+        uint32_t mask = interactionItemToFilter[static_cast<size_t>(spriteType)];
+
+        if (filter & mask)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
     // 0x0045ED91
     [[nodiscard]] InteractionArg PaintSession::getNormalInteractionInfo(const uint32_t flags)
     {
-        _sessionInteractionInfoType = InteractionItem::t_0;
-        _getMapCoordinatesFromPosFlags = flags;
-        call(0x0045ED91);
-        return InteractionArg{ _sessionInteractionInfoX, _sessionInteractionInfoY, { _sessionInteractionInfoValue }, _sessionInteractionInfoType, _sessionInteractionInfoBh };
+        InteractionArg info{};
+
+        for (auto* ps = (*_paintHead)->basic.nextQuadrantPS; ps != nullptr; ps = ps->nextQuadrantPS)
+        {
+            auto* tempPS = ps;
+            auto* nextPS = ps;
+            while (nextPS != nullptr)
+            {
+                ps = nextPS;
+                if (isSpriteInteractedWith(getContext(), ps->imageId, { ps->x, ps->y }))
+                {
+                    if (isPSSpriteTypeInFilter(ps->type, flags))
+                    {
+                        info = { *ps };
+                    }
+                }
+                nextPS = ps->children;
+            }
+
+            for (auto* attachedPS = ps->attachedPS; attachedPS != nullptr; attachedPS = attachedPS->next)
+            {
+                if (isSpriteInteractedWith(getContext(), attachedPS->imageId, { static_cast<int16_t>(attachedPS->x + ps->x), static_cast<int16_t>(attachedPS->y + ps->y) }))
+                {
+                    if (isPSSpriteTypeInFilter(ps->type, flags))
+                    {
+                        info = { *ps };
+                    }
+                }
+            }
+
+            ps = tempPS;
+        }
+        return info;
     }
 
     // 0x0048DDE4
@@ -402,10 +486,6 @@ namespace OpenLoco::Paint
             interaction.type = InteractionItem::station;
             interaction.value = station.id();
         }
-
-        // This is for functions that have not been implemented yet
-        _sessionInteractionInfoType = interaction.type;
-        _sessionInteractionInfoValue = interaction.value;
         return interaction;
     }
 
@@ -437,10 +517,6 @@ namespace OpenLoco::Paint
             interaction.type = InteractionItem::town;
             interaction.value = town.id();
         }
-
-        // This is for functions that have not been implemented yet
-        _sessionInteractionInfoType = interaction.type;
-        _sessionInteractionInfoValue = interaction.value;
         return interaction;
     }
 }

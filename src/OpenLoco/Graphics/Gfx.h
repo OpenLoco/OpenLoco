@@ -1,10 +1,16 @@
 #pragma once
 
+#include "../Core/Optional.hpp"
 #include "../OpenLoco.h"
 #include "../Types.hpp"
 #include "../Ui/Rect.h"
 #include "Types.h"
 #include <cstdint>
+
+namespace OpenLoco
+{
+    using colour_t = uint8_t;
+}
 
 namespace OpenLoco::Gfx
 {
@@ -67,6 +73,58 @@ namespace OpenLoco::Gfx
     };
 
 #pragma pack(pop)
+    namespace ImageIdFlags
+    {
+        constexpr uint32_t remap = 1 << 29;
+        constexpr uint32_t translucent = 1 << 30;
+        constexpr uint32_t remap2 = 1 << 31;
+    }
+
+    /**
+     * Represents an 8-bit indexed map that maps from one palette index to another.
+     */
+    struct PaletteMap
+    {
+    private:
+        uint8_t* _data{};
+        uint32_t _dataLength{};
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-private-field"
+        uint16_t _numMaps;
+#pragma clang diagnostic pop
+        uint16_t _mapLength;
+
+    public:
+        static const PaletteMap& getDefault();
+
+        PaletteMap() = default;
+
+        PaletteMap(uint8_t* data, uint16_t numMaps, uint16_t mapLength)
+            : _data(data)
+            , _dataLength(numMaps * mapLength)
+            , _numMaps(numMaps)
+            , _mapLength(mapLength)
+        {
+        }
+
+        template<std::size_t TSize>
+        PaletteMap(uint8_t (&map)[TSize])
+            : _data(map)
+            , _dataLength(static_cast<uint32_t>(std::size(map)))
+            , _numMaps(1)
+            , _mapLength(static_cast<uint16_t>(std::size(map)))
+        {
+        }
+
+        uint8_t& operator[](size_t index);
+        uint8_t operator[](size_t index) const;
+        uint8_t* data() const { return _data; }
+        uint8_t blend(uint8_t src, uint8_t dst) const;
+        void copy(size_t dstIndex, const PaletteMap& src, size_t srcIndex, size_t length);
+    };
+
+    std::optional<uint32_t> getPaletteG1Index(colour_t paletteId);
+    std::optional<PaletteMap> getPaletteMapForColour(colour_t paletteId);
 
     drawpixelinfo_t& screenDpi();
 
