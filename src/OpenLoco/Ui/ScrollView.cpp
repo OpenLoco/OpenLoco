@@ -184,18 +184,121 @@ namespace OpenLoco::Ui::ScrollView
         scroll_part* output_scroll_area,
         size_t* scrollIndex)
     {
-        registers regs;
-        regs.ax = x;
-        regs.bx = y;
-        regs.esi = (uint32_t)window;
-        regs.edi = (uint32_t)widget;
+        *scrollIndex = 0;
+        *output_x = x;
+        *output_y = y;
+        *output_scroll_area = scroll_part::none;
 
-        call(0x004C8EF0, regs);
+        for (const auto* winWidget = window->widgets; winWidget != widget; winWidget++)
+        {
+            if (winWidget->type == widget_type::scrollview)
+            {
+                (*scrollIndex)++;
+            }
+        }
 
-        *output_x = regs.ax;
-        *output_y = regs.bx;
-        *output_scroll_area = (scroll_part)regs.cx;
-        *scrollIndex = regs.edx / sizeof(scroll_area_t);
+        const auto& scroll = window->scroll_areas[*scrollIndex];
+        auto right = widget->right + window->x;
+        auto left = widget->left + window->x;
+        auto top = widget->top + window->y;
+        auto bottom = widget->bottom + window->y;
+
+        if ((scroll.flags & ScrollFlags::HSCROLLBAR_VISIBLE)
+            && y >= (bottom - barWidth))
+        {
+            if (x < left + barWidth)
+            {
+                *output_scroll_area = scroll_part::hscrollbar_button_left;
+                return;
+            }
+
+            // If vertical is also visible then there is a deadzone in the corner
+            if (scroll.flags & ScrollFlags::VSCROLLBAR_VISIBLE)
+            {
+                right -= barWidth;
+            }
+
+            // Within deadzone
+            if (x >= right)
+            {
+                *output_scroll_area = scroll_part::none;
+                return;
+            }
+
+            if (x >= right - thumbSize)
+            {
+                *output_scroll_area = scroll_part::hscrollbar_button_right;
+                return;
+            }
+
+            if (x < scroll.h_thumb_left + left)
+            {
+                *output_scroll_area = scroll_part::hscrollbar_track_left;
+                return;
+            }
+
+            if (x > scroll.h_thumb_right + left)
+            {
+                *output_scroll_area = scroll_part::hscrollbar_track_right;
+                return;
+            }
+
+            *output_scroll_area = scroll_part::hscrollbar_thumb;
+        }
+        else if ((scroll.flags & ScrollFlags::VSCROLLBAR_VISIBLE) && x >= (right - barWidth))
+        {
+            if (y < top + barWidth)
+            {
+                *output_scroll_area = scroll_part::vscrollbar_button_top;
+                return;
+            }
+
+            // If horizontal is also visible then there is a deadzone in the corner
+            if (scroll.flags & ScrollFlags::HSCROLLBAR_VISIBLE)
+            {
+                bottom -= barWidth;
+            }
+
+            // Within deadzone
+            if (y >= bottom)
+            {
+                *output_scroll_area = scroll_part::none;
+                return;
+            }
+
+            if (y >= bottom - thumbSize)
+            {
+                *output_scroll_area = scroll_part::vscrollbar_button_bottom;
+                return;
+            }
+
+            if (y < scroll.v_thumb_top + top)
+            {
+                *output_scroll_area = scroll_part::vscrollbar_track_top;
+                return;
+            }
+
+            if (y > scroll.v_thumb_bottom + top)
+            {
+                *output_scroll_area = scroll_part::vscrollbar_track_bottom;
+                return;
+            }
+
+            *output_scroll_area = scroll_part::vscrollbar_thumb;
+        }
+        else
+        {
+            *output_x -= left + 1;
+            *output_y -= top + 1;
+            if (*output_x < 0 || *output_y < 0)
+            {
+                *output_scroll_area = scroll_part::none;
+                return;
+            }
+            *output_x += scroll.contentOffsetX;
+            *output_y += scroll.contentOffsetY;
+            *output_scroll_area = scroll_part::view;
+        }
     }
 
     // 0x004CA1ED
