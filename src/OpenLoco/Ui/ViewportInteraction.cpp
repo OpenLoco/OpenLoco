@@ -30,8 +30,8 @@ namespace OpenLoco::Ui::ViewportInteraction
     {
     }
 
-    static bool _station(InteractionArg& interaction);
-    static bool _station(station_id_t id);
+    static bool getStationArguments(InteractionArg& interaction);
+    static bool getStationArguments(station_id_t id);
 
     // 0x004CD95A
     static bool _track(InteractionArg& interaction)
@@ -46,7 +46,7 @@ namespace OpenLoco::Ui::ViewportInteraction
 
         interaction.type = InteractionItem::station;
         interaction.object = station;
-        return _station(interaction);
+        return getStationArguments(interaction);
     }
 
     // 0x004CD974
@@ -78,24 +78,24 @@ namespace OpenLoco::Ui::ViewportInteraction
             return false;
 
         interaction.type = InteractionItem::station;
-        return _station(interaction);
+        return getStationArguments(interaction);
     }
 
     // 0x004CD99A
-    static bool _station(InteractionArg& interaction)
+    static bool getStationArguments(InteractionArg& interaction)
     {
         Map::station_element* station = reinterpret_cast<Map::station_element*>(interaction.value);
         if (station->isGhost())
             return false;
 
         interaction.value = station->stationId();
-        return _station(station->stationId());
+        return getStationArguments(station->stationId());
     }
 
     static loco_global<uint16_t, 0x00F252A4> _hoveredStationId;
 
     // 0x004CD9B0
-    static bool _station(const station_id_t id)
+    static bool getStationArguments(const station_id_t id)
     {
         _hoveredStationId = id;
 
@@ -137,7 +137,7 @@ namespace OpenLoco::Ui::ViewportInteraction
     }
 
     // 0x004CD7FB
-    static bool _town(const town_id_t id)
+    static bool getTownArguments(const town_id_t id)
     {
         auto town = TownManager::get(id);
 
@@ -153,7 +153,7 @@ namespace OpenLoco::Ui::ViewportInteraction
     }
 
     // 0x004CD8D5
-    static bool _industry(InteractionArg& interaction)
+    static bool getIndustryArguments(InteractionArg& interaction)
     {
         auto industryTile = reinterpret_cast<Map::industry_element*>(interaction.value);
         if (industryTile->isGhost())
@@ -182,7 +182,7 @@ namespace OpenLoco::Ui::ViewportInteraction
     }
 
     // 0x004CDA7C
-    static bool _vehicle(const InteractionArg& interaction)
+    static bool getVehicleArguments(const InteractionArg& interaction)
     {
         Thing* thing = reinterpret_cast<Thing*>(interaction.object);
         auto vehicle = reinterpret_cast<OpenLoco::vehicle*>(thing->asVehicle());
@@ -217,7 +217,7 @@ namespace OpenLoco::Ui::ViewportInteraction
     }
 
     // 0x004CD84A
-    static bool _headquarter(const InteractionArg& interaction)
+    static bool getHeadquarterArguments(const InteractionArg& interaction)
     {
         auto buildingTile = reinterpret_cast<Map::building_element*>(interaction.value);
         if (buildingTile->isGhost())
@@ -315,25 +315,25 @@ namespace OpenLoco::Ui::ViewportInteraction
                 success = _road(interaction);
                 break;
             case InteractionItem::town: // 14
-                success = _town(static_cast<town_id_t>(interaction.value));
+                success = getTownArguments(static_cast<town_id_t>(interaction.value));
                 break;
             case InteractionItem::station: // 15
-                success = _station(static_cast<station_id_t>(interaction.value));
+                success = getStationArguments(static_cast<station_id_t>(interaction.value));
                 break;
             case InteractionItem::trackStation: // 7
             case InteractionItem::roadStation:  // 8
             case InteractionItem::airport:      // 9
             case InteractionItem::dock:         // 10
-                success = _station(interaction);
+                success = getStationArguments(interaction);
                 break;
             case InteractionItem::industry: // 20
-                success = _industry(interaction);
+                success = getIndustryArguments(interaction);
                 break;
             case InteractionItem::headquarterBuilding: // 21
-                success = _headquarter(interaction);
+                success = getHeadquarterArguments(interaction);
                 break;
             case InteractionItem::thing: // 3
-                success = _vehicle(interaction);
+                success = getVehicleArguments(interaction);
                 break;
             default:
                 break;
@@ -379,8 +379,8 @@ namespace OpenLoco::Ui::ViewportInteraction
             interaction.x = nearestVehicle->x;
             interaction.y = nearestVehicle->y;
 
-            // 4CDA7C aka _vehicle
-            _vehicle(interaction);
+            // 4CDA7C aka getVehicleArguments
+            getVehicleArguments(interaction);
             return interaction;
         }
 
