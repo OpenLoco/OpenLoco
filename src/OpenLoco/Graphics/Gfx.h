@@ -26,6 +26,7 @@ namespace OpenLoco::Gfx
         int16_t pitch;       // 0x0C note: this is actually (pitch - width)
         uint16_t zoom_level; // 0x0E
 
+        Ui::Rect getUiRect() const;
         Ui::Rect getDrawableRect() const;
     };
 

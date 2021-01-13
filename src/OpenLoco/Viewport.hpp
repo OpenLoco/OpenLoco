@@ -76,6 +76,11 @@ namespace OpenLoco::Ui
             return (pos.x >= x && pos.x < x + width && pos.y >= y && pos.y < y + height);
         }
 
+        Ui::Rect getUiRect() const
+        {
+            return Ui::Rect::fromLTRB(x, y, x + width, y + height);
+        }
+
         constexpr bool intersects(const ViewportRect& vpos)
         {
             if (vpos.right <= view_x)
@@ -128,10 +133,22 @@ namespace OpenLoco::Ui
             int16_t viewport_y = ((pos.y - y) << zoom) + view_y;
             return { viewport_x, viewport_y };
         }
+        /**
+         * Maps a UI (screen) rectangle to a 2D viewport rectangle.
+         */
+        Rect uiToMap(const Rect& rect)
+        {
+            auto leftTop = uiToMap({ rect.left(), rect.top() });
+            auto rightBottom = uiToMap({ rect.right(), rect.bottom() });
+            return Rect::fromLTRB(leftTop.x, leftTop.y, rightBottom.x, rightBottom.y);
+        }
 
         void render(Gfx::drawpixelinfo_t* dpi);
         static viewport_pos mapFrom3d(loc16 loc, int32_t rotation);
         void centre2dCoordinates(int16_t x, int16_t y, int16_t z, int16_t* outX, int16_t* outY);
+
+    private:
+        void paint(Gfx::drawpixelinfo_t* context, const Ui::Rect& rect);
     };
 
     struct viewport_config

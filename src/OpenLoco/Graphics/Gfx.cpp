@@ -66,6 +66,11 @@ namespace OpenLoco::Gfx
         return Ui::Rect::fromLTRB(left, top, right, bottom);
     }
 
+    Ui::Rect drawpixelinfo_t::getUiRect() const
+    {
+        return Ui::Rect::fromLTRB(x, y, x + width, y + height);
+    }
+
     drawpixelinfo_t& screenDpi()
     {
         return _screen_dpi;
