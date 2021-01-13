@@ -90,7 +90,7 @@ namespace OpenLoco::Paint
                     }
                     session.setItemType(Ui::ViewportInteraction::InteractionItem::t_0);
                     imageId = Gfx::recolourTranslucent(imageId, PaletteIndex::index_32);
-                    session.addToPlotList4FD200(imageId, { 0, 0, bogie->z }, { 8, 8, bogie->z + 6 }, { 48, 48, 2 });
+                    session.addToPlotList4FD200(imageId, { 0, 0, bogie->z }, { 8, 8, static_cast<coord_t>(bogie->z + 6) }, { 48, 48, 2 });
                     return;
                 }
                 else
@@ -101,12 +101,12 @@ namespace OpenLoco::Paint
                 if (sprite.flags & BogieSpriteFlags::unk_4)
                 {
                     // larger sprite
-                    session.addToPlotListAsParent(imageId, { 0, 0, bogie->z }, { -9, -9, bogie->z + 3 }, { 18, 18, 5 });
+                    session.addToPlotListAsParent(imageId, { 0, 0, bogie->z }, { -9, -9, static_cast<coord_t>(bogie->z + 3) }, { 18, 18, 5 });
                 }
                 else
                 {
                     // smaller sprite
-                    session.addToPlotListAsParent(imageId, { 0, 0, bogie->z }, { -6, -6, bogie->z + 3 }, { 12, 12, 1 });
+                    session.addToPlotListAsParent(imageId, { 0, 0, bogie->z }, { -6, -6, static_cast<coord_t>(bogie->z + 3) }, { 12, 12, 1 });
                 }
                 break;
             }
@@ -127,12 +127,12 @@ namespace OpenLoco::Paint
                 if (sprite.flags & BogieSpriteFlags::unk_4)
                 {
                     // larger sprite
-                    session.addToPlotListAsParent(imageId, { 0, 0, bogie->z }, { -8, -8, bogie->z + 3 }, { 16, 16, 1 });
+                    session.addToPlotListAsParent(imageId, { 0, 0, bogie->z }, { -8, -8, static_cast<coord_t>(bogie->z + 3) }, { 16, 16, 1 });
                 }
                 else
                 {
                     // smaller sprite
-                    session.addToPlotListAsParent(imageId, { 0, 0, bogie->z }, { -6, -6, bogie->z + 3 }, { 12, 12, 1 });
+                    session.addToPlotListAsParent(imageId, { 0, 0, bogie->z }, { -6, -6, static_cast<coord_t>(bogie->z + 3) }, { 12, 12, 1 });
                 }
                 break;
             }
@@ -149,7 +149,7 @@ namespace OpenLoco::Paint
                 {
                     imageId = Gfx::recolour2(imageId, bogie->colour_scheme.primary, bogie->colour_scheme.secondary);
                 }
-                session.addToPlotListAsParent(imageId, { 0, 0, bogie->z }, { -6, -6, bogie->z + 3 }, { 12, 12, 1 });
+                session.addToPlotListAsParent(imageId, { 0, 0, bogie->z }, { -6, -6, static_cast<coord_t>(bogie->z + 3) }, { 12, 12, 1 });
                 break;
             }
         }
