@@ -52,6 +52,10 @@ namespace OpenLoco::Input
     static loco_global<Ui::WindowType, 0x005233B6> _modalWindowType;
     static loco_global<char[16], 0x0112C826> _commonFormatArgs;
     static std::string _cheatBuffer; // 0x0011364A5
+    static loco_global<key[64], 0x0113E300> _keyQueue;
+    static loco_global<uint32_t, 0x00525388> _keyQueueLastWrite;
+    static loco_global<uint32_t, 0x00525384> _keyQueueReadIndex;
+    static loco_global<uint32_t, 0x00525380> _keyQueueWriteIndex;
     static loco_global<uint8_t[256], 0x01140740> _keyboardState;
     static loco_global<uint8_t, 0x011364A4> _11364A4;
 
@@ -142,11 +146,42 @@ namespace OpenLoco::Input
         }
     }
 
+    // 0x00406FBA
+    void enqueueKey(uint32_t keycode)
+    {
+        uint32_t writeIndex = _keyQueueWriteIndex;
+        auto nextWriteIndex = (writeIndex + 1) & (64 - 1);
+        if (nextWriteIndex == _keyQueueReadIndex)
+        {
+            return;
+        }
+        _keyQueueLastWrite = writeIndex;
+        _keyQueue[writeIndex] = { keycode, 0 };
+        _keyQueueWriteIndex = nextWriteIndex;
+    }
+
+    void enqueueText(const char* text)
+    {
+        if (text != nullptr && text[0] != '\0')
+        {
+            auto index = _keyQueueLastWrite;
+            _keyQueue[index].charCode = text[0];
+        }
+    }
+
     static key* getNextKey()
     {
-        registers regs;
-        call(0x00407028, regs);
-        return (key*)regs.eax;
+        uint32_t readIndex = _keyQueueReadIndex;
+        if (readIndex == _keyQueueWriteIndex)
+        {
+            return nullptr;
+        }
+        auto* out = &_keyQueue[readIndex];
+        readIndex++;
+        // Wrap around at _keyQueue size
+        readIndex &= (64 - 1);
+        _keyQueueReadIndex = readIndex;
+        return out;
     }
 
     static bool tryShortcut(Shortcut sc, uint32_t keyCode, uint8_t modifiers)
@@ -244,32 +279,32 @@ namespace OpenLoco::Input
     {
         while (true)
         {
-            auto eax = getNextKey();
-            if (eax == 0)
+            auto* nextKey = getNextKey();
+            if (nextKey == nullptr)
             {
                 loc_4BEFEF();
                 break;
             }
 
-            if (eax->keyCode >= 255)
+            if (nextKey->keyCode >= 255)
                 continue;
 
-            if (eax->keyCode == 0x10) // VK_SHIFT
+            if (nextKey->keyCode == 0x10) // VK_SHIFT
                 continue;
 
-            if (eax->keyCode == 0x11) // VK_CONTROL
+            if (nextKey->keyCode == 0x11) // VK_CONTROL
                 continue;
 
             if ((_keyModifier & KeyModifier::cheat) != 0)
             {
-                if (eax->charCode >= 'a' && eax->charCode <= 'z')
+                if (nextKey->charCode >= 'a' && nextKey->charCode <= 'z')
                 {
-                    eax->charCode = toupper(eax->charCode);
+                    nextKey->charCode = toupper(nextKey->charCode);
                 }
 
-                if (eax->charCode >= 'A' && eax->charCode <= 'Z')
+                if (nextKey->charCode >= 'A' && nextKey->charCode <= 'Z')
                 {
-                    _cheatBuffer += eax->charCode;
+                    _cheatBuffer += nextKey->charCode;
                 }
 
                 continue;
@@ -278,10 +313,10 @@ namespace OpenLoco::Input
             auto ti = WindowManager::find(WindowType::textInput);
             if (ti != nullptr)
             {
-                if (tryShortcut(Shortcut::screenshot, eax->keyCode, _keyModifier))
+                if (tryShortcut(Shortcut::screenshot, nextKey->keyCode, _keyModifier))
                     continue;
 
-                Ui::TextInput::sub_4CE910(eax->charCode, eax->keyCode);
+                Ui::TextInput::sub_4CE910(nextKey->charCode, nextKey->keyCode);
                 continue;
             }
 
@@ -290,12 +325,12 @@ namespace OpenLoco::Input
                 ti = WindowManager::find(WindowType::fileBrowserPrompt);
                 if (ti != nullptr)
                 {
-                    if (tryShortcut(Shortcut::screenshot, eax->keyCode, _keyModifier))
+                    if (tryShortcut(Shortcut::screenshot, nextKey->keyCode, _keyModifier))
                         continue;
 
                     registers regs;
-                    regs.eax = eax->charCode;
-                    regs.ebx = eax->keyCode;
+                    regs.eax = nextKey->charCode;
+                    regs.ebx = nextKey->keyCode;
                     call(0x0044685C, regs);
                     continue;
                 }
@@ -307,8 +342,8 @@ namespace OpenLoco::Input
                 if (ti != nullptr)
                 {
                     registers regs;
-                    regs.eax = eax->charCode;
-                    regs.ebx = eax->keyCode;
+                    regs.eax = nextKey->charCode;
+                    regs.ebx = nextKey->keyCode;
                     call(0x0044685C, regs);
                 }
             }
@@ -316,7 +351,7 @@ namespace OpenLoco::Input
             ti = WindowManager::find(WindowType::editKeyboardShortcut);
             if (ti != nullptr)
             {
-                editShortcut(eax);
+                editShortcut(nextKey);
                 continue;
             }
 
@@ -330,7 +365,7 @@ namespace OpenLoco::Input
             {
                 for (int i = 0; i < 35; i++)
                 {
-                    if (tryShortcut((Shortcut)i, eax->keyCode, _keyModifier))
+                    if (tryShortcut((Shortcut)i, nextKey->keyCode, _keyModifier))
                         break;
                 }
                 continue;
@@ -347,10 +382,10 @@ namespace OpenLoco::Input
                 Intro::state((Intro::intro_state)8);
             }
 
-            if (tryShortcut(Shortcut::sendMessage, eax->keyCode, _keyModifier))
+            if (tryShortcut(Shortcut::sendMessage, nextKey->keyCode, _keyModifier))
                 continue;
 
-            if (tryShortcut(Shortcut::screenshot, eax->keyCode, _keyModifier))
+            if (tryShortcut(Shortcut::screenshot, nextKey->keyCode, _keyModifier))
                 continue;
         }
     }

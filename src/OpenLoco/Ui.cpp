@@ -489,27 +489,10 @@ namespace OpenLoco::Ui
         SDL_SetPaletteColors(palette, base, 0, 256);
     }
 
-    static void enqueueText(const char* text)
-    {
-        if (text != nullptr && text[0] != '\0')
-        {
-#pragma pack(push, 1)
-            struct key_queue_item_t
-            {
-                uint32_t a;
-                uint32_t b;
-            };
-#pragma pack(pop)
-            auto queue = (key_queue_item_t*)0x0113E300;
-            auto index = addr<0x00525388, uint32_t>();
-            queue[index].b = text[0];
-        }
-    }
-
     // 0x00406FBA
     static void enqueueKey(uint32_t keycode)
     {
-        ((void (*)(uint32_t))(0x00406FBA))(keycode);
+        Input::enqueueKey(keycode);
 
         switch (keycode)
         {
@@ -518,7 +501,7 @@ namespace OpenLoco::Ui
             case SDLK_DELETE:
             {
                 char c[] = { (char)keycode, '\0' };
-                enqueueText(c);
+                Input::enqueueText(c);
                 break;
             }
         }

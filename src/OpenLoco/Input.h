@@ -87,6 +87,8 @@ namespace OpenLoco::Input
     void toolCancel(Ui::WindowType, Ui::window_number);
     int16_t getToolWidgetIndex();
 
+    void enqueueText(const char* text);
+    void enqueueKey(uint32_t key);
     bool hasKeyModifier(uint8_t modifier);
     uint16_t getMapSelectionFlags();
     bool hasMapSelectionFlag(uint8_t flags);
