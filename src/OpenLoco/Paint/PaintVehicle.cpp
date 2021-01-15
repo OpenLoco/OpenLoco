@@ -34,7 +34,7 @@ namespace OpenLoco::Paint
 
         auto& sprite = vehObject->bogie_sprites[bogie->object_sprite_type];
         uint8_t yaw = (bogie->sprite_yaw + (session.getRotation() << 4)) & 0x3F;
-        uint8_t pitch = bogie->sprite_pitch;
+        auto pitch = bogie->sprite_pitch;
 
         if (bogie->getFlags38() & Flags38::isReversed)
         {
