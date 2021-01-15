@@ -74,6 +74,12 @@ vehicle_base* vehicle_base::nextVehicleComponent()
     return ThingManager::get<vehicle_base>(veh->next_car_id);
 }
 
+TransportMode OpenLoco::vehicle_base::getTransportMode() const
+{
+    const auto* veh = reinterpret_cast<const vehicle*>(this);
+    return veh->mode;
+}
+
 vehicle_object* vehicle::object() const
 {
     return ObjectManager::get<vehicle_object>(object_id);
