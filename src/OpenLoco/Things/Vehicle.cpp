@@ -173,7 +173,7 @@ void vehicle_head::sub_4BA8D4()
             if ((scenarioTicks() & 3) == 0)
             {
                 auto v2 = car.body; // body
-                smoke::create(loc16(v2->x, v2->y, v2->z + 4));
+                Smoke::create(loc16(v2->x, v2->y, v2->z + 4));
             }
         }
 
@@ -1091,7 +1091,7 @@ void OpenLoco::vehicle_body::steamPuffsAnimationUpdate(uint8_t num, int32_t var_
     loc.x += xFactor;
     loc.y += yFactor;
 
-    exhaust::create(loc, vehicleObject->animation[num].object_id | (soundCode ? 0 : 0x80));
+    Exhaust::create(loc, vehicleObject->animation[num].object_id | (soundCode ? 0 : 0x80));
     if (soundCode == false)
         return;
 
@@ -1220,7 +1220,7 @@ void OpenLoco::vehicle_body::dieselExhaust1AnimationUpdate(uint8_t num, int32_t 
             static_cast<int16_t>(y + yFactor),
             static_cast<int16_t>(z + vehicleObject->animation[num].height)
         };
-        exhaust::create(loc, vehicleObject->animation[num].object_id);
+        Exhaust::create(loc, vehicleObject->animation[num].object_id);
     }
     else
     {
@@ -1267,7 +1267,7 @@ void OpenLoco::vehicle_body::dieselExhaust1AnimationUpdate(uint8_t num, int32_t 
         loc.x += xFactor;
         loc.y += yFactor;
 
-        exhaust::create(loc, vehicleObject->animation[num].object_id);
+        Exhaust::create(loc, vehicleObject->animation[num].object_id);
     }
 }
 
@@ -1343,7 +1343,7 @@ void OpenLoco::vehicle_body::dieselExhaust2AnimationUpdate(uint8_t num, int32_t 
     loc.x += xFactor;
     loc.y += yFactor;
 
-    exhaust::create(loc, vehicleObject->animation[num].object_id);
+    Exhaust::create(loc, vehicleObject->animation[num].object_id);
 }
 
 // 0x004ABDAD & 0x004AB3CA
@@ -1403,7 +1403,7 @@ void OpenLoco::vehicle_body::electricSpark1AnimationUpdate(uint8_t num, int32_t 
     loc.x += xFactor;
     loc.y += yFactor;
 
-    exhaust::create(loc, vehicleObject->animation[num].object_id);
+    Exhaust::create(loc, vehicleObject->animation[num].object_id);
 }
 
 // 0x004ABEC3 & 0x004AB4E0
@@ -1485,7 +1485,7 @@ void OpenLoco::vehicle_body::electricSpark2AnimationUpdate(uint8_t num, int32_t 
     loc.x += xFactor;
     loc.y += yFactor;
 
-    exhaust::create(loc, vehicleObject->animation[num].object_id);
+    Exhaust::create(loc, vehicleObject->animation[num].object_id);
 }
 
 // 0x004ABC8A & 0x004AB2A7
@@ -1539,7 +1539,7 @@ void OpenLoco::vehicle_body::shipWakeAnimationUpdate(uint8_t num, int32_t)
     loc.x += xFactor;
     loc.y += yFactor;
 
-    exhaust::create(loc, vehicleObject->animation[num].object_id);
+    Exhaust::create(loc, vehicleObject->animation[num].object_id);
 
     if (vehicleObject->var_113 == 0)
         return;
@@ -1555,7 +1555,7 @@ void OpenLoco::vehicle_body::shipWakeAnimationUpdate(uint8_t num, int32_t)
     loc.x += xFactor;
     loc.y += yFactor;
 
-    exhaust::create(loc, vehicleObject->animation[num].object_id);
+    Exhaust::create(loc, vehicleObject->animation[num].object_id);
 }
 
 // 0x004B90F0

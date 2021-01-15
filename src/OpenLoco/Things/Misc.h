@@ -5,21 +5,26 @@
 
 namespace OpenLoco
 {
-    struct smoke;
+    struct Exhaust;
     struct MoneyEffect;
-    struct exhaust;
+    struct VehicleCrashParticle;
+    struct ExplosionCloud;
+    struct Spark;
+    struct Fireball;
+    struct ExplosionSmoke;
+    struct Smoke;
 
     enum class MiscThingType : uint8_t
     {
-        exhaust = 0,
+        exhaust = 0, // Steam from the exhaust
         redGreenCurrency = 1,
         windowCurrency = 2,
-        shrepnel = 3,
-        explosion = 4,
-        sparks = 5,
+        vehicleCrashParticle = 3,
+        explosionCloud = 4,
+        spark = 5,
         fireball = 6,
         explosionSmoke = 7,
-        smoke = 8
+        smoke = 8 // Smoke from broken down train
     };
 
 #pragma pack(push, 1)
@@ -35,13 +40,18 @@ namespace OpenLoco
     public:
         MiscThingType getSubType() const { return MiscThingType(thing_base::getSubType()); }
         void setSubType(const MiscThingType newType) { thing_base::setSubType(static_cast<uint8_t>(newType)); }
-        smoke* as_smoke() const { return as<smoke, MiscThingType::smoke>(); }
+        Exhaust* as_exhaust() const { return as<Exhaust, MiscThingType::exhaust>(); }
         MoneyEffect* asRedGreenCurrency() const { return as<MoneyEffect, MiscThingType::redGreenCurrency>(); }
         MoneyEffect* asWindowCurrency() const { return as<MoneyEffect, MiscThingType::windowCurrency>(); }
-        exhaust* as_exhaust() const { return as<exhaust, MiscThingType::exhaust>(); }
+        VehicleCrashParticle* asVehicleCrashParticle() const { return as<VehicleCrashParticle, MiscThingType::vehicleCrashParticle>(); }
+        ExplosionCloud* asExplosionCloud() const { return as<ExplosionCloud, MiscThingType::explosionCloud>(); }
+        Spark* asSpark() const { return as<Spark, MiscThingType::spark>(); }
+        Fireball* asFireball() const { return as<Fireball, MiscThingType::fireball>(); }
+        ExplosionSmoke* asExplosionSmoke() const { return as<ExplosionSmoke, MiscThingType::explosionSmoke>(); }
+        Smoke* as_smoke() const { return as<Smoke, MiscThingType::smoke>(); }
     };
 
-    struct exhaust : MiscBase
+    struct Exhaust : MiscBase
     {
         uint8_t pad_20[0x26 - 0x20];
         int16_t var_26;
@@ -55,7 +65,7 @@ namespace OpenLoco
 
         steam_object* object() const;
 
-        static exhaust* create(loc16 loc, uint8_t type);
+        static Exhaust* create(loc16 loc, uint8_t type);
     };
 
     struct MoneyEffect : MiscBase
@@ -67,15 +77,58 @@ namespace OpenLoco
         int16_t offsetX; // 0x44
         uint16_t wiggle; // 0x46
 
-        //static moneyEffect* create(loc16 loc, uint8_t type);
+        //static MoneyEffect* create(loc16 loc, uint8_t type);
     };
 
-    struct smoke : MiscBase
+    struct VehicleCrashParticle : MiscBase
     {
         uint8_t pad_20[0x28 - 0x20];
-        uint16_t var_28;
+        uint16_t frame; // 0x28
+        uint8_t pad_2A[0x2E - 0x2A];
+        uint8_t colour[2];          // 0x2E
+        uint16_t crashedSpriteBase; // 0x30 crashed_sprite_base
 
-        static smoke* create(loc16 loc);
+        //static VehicleCrashParticle* create(loc16 loc);
+    };
+
+    struct ExplosionCloud : MiscBase
+    {
+        uint8_t pad_20[0x28 - 0x20];
+        uint16_t frame; // 0x28
+
+        //static ExplosionCloud* create(loc16 loc);
+    };
+
+    struct Spark : MiscBase
+    {
+        uint8_t pad_20[0x28 - 0x20];
+        uint16_t frame; // 0x28
+
+        //static Spark* create(loc16 loc);
+    };
+
+    struct Fireball : MiscBase
+    {
+        uint8_t pad_20[0x28 - 0x20];
+        uint16_t frame; // 0x28
+
+        //static Fireball* create(loc16 loc);
+    };
+
+    struct ExplosionSmoke : MiscBase
+    {
+        uint8_t pad_20[0x28 - 0x20];
+        uint16_t frame; // 0x28
+
+        //static ExplosionSmoke* create(loc16 loc);
+    };
+
+    struct Smoke : MiscBase
+    {
+        uint8_t pad_20[0x28 - 0x20];
+        uint16_t frame; // 0x28
+
+        static Smoke* create(loc16 loc);
     };
 #pragma pack(pop)
 }

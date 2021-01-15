@@ -46,7 +46,7 @@ namespace OpenLoco::Paint
                 {
                     return;
                 }
-                exhaust* exhaustObject = base->as_exhaust();
+                Exhaust* exhaustObject = base->as_exhaust();
                 steam_object* steamObject = ObjectManager::get<steam_object>(exhaustObject->object_id & 0x7f); // 00440342-00440349
                 static_assert(offsetof(steam_object, var_16) == 0x16);
                 static_assert(offsetof(steam_object, var_1A) == 0x1A);
@@ -96,6 +96,87 @@ namespace OpenLoco::Paint
                 addr<0xE3F0A8, int16_t>() = companyColour;                                      // 00440434
 
                 session.PaintFloatingMoneyEffect(currencyAmount, stringId, moneyEffect->y, moneyEffect->z, yOffsets, moneyEffect->offsetX); // 00440445
+                break;
+            }
+
+            case MiscThingType::vehicleCrashParticle: // 3
+            {
+                if (dpi->zoom_level != 0) // 0044044E-00440459
+                {
+                    return;
+                }
+
+                VehicleCrashParticle* particle = base->asVehicleCrashParticle();
+
+                constexpr uint32_t IMAGE_TYPE_REMAP = (1 << 29);
+                constexpr uint32_t IMAGE_TYPE_REMAP_2_PLUS = (1u << 31);
+                static_assert((IMAGE_TYPE_REMAP | IMAGE_TYPE_REMAP_2_PLUS) == 0x0A0000000);
+
+                loco_global<int32_t[5], 0x4FAAB4> vehicle_particle_base_sprites;
+                uint32_t imageId = vehicle_particle_base_sprites[particle->crashedSpriteBase] + particle->frame / 256;                      // 0044045F-0044046A
+                imageId = imageId | (particle->colour[0] << 19) | (particle->colour[1] << 24) | IMAGE_TYPE_REMAP | IMAGE_TYPE_REMAP_2_PLUS; // 00440471-00440487
+
+                session.addToPlotList2(imageId, { 0, 0, particle->z }, { 1, 1, 0 }); // 00440489-0044049D
+                break;
+            }
+
+            case MiscThingType::explosionCloud: // 4
+            {
+                if (dpi->zoom_level > 2) // 0044051C-00440527
+                {
+                    return;
+                }
+                ExplosionCloud* particle = base->asExplosionCloud();
+                uint32_t imageId = 3372 + (particle->frame / 256);                   // 0044052D-00440534
+                session.addToPlotList2(imageId, { 0, 0, particle->z }, { 1, 1, 0 }); // 0044053A-0044054E
+                break;
+            }
+
+            case MiscThingType::spark: // 5
+            {
+                if (dpi->zoom_level > 2) // 00440557-00440562
+                {
+                    return;
+                }
+                Spark* particle = base->asSpark();
+                uint32_t imageId = 3421 + (particle->frame / 256);                   // 00440568-0044056F
+                session.addToPlotList2(imageId, { 0, 0, particle->z }, { 1, 1, 0 }); // 00440575-00440589
+                break;
+            }
+
+            case MiscThingType::fireball: // 6
+            {
+                if (dpi->zoom_level > 2) // 00440592-0044059D
+                {
+                    return;
+                }
+                Fireball* particle = base->asFireball();
+                uint32_t imageId = 3390 + (particle->frame / 256);                   // 004405A3-004405AA
+                session.addToPlotList2(imageId, { 0, 0, particle->z }, { 1, 1, 0 }); // 004405B0-004405C4
+                break;
+            }
+
+            case MiscThingType::explosionSmoke: // 7
+            {
+                if (dpi->zoom_level > 1) // 004404A6-004404B7
+                {
+                    return;
+                }
+                ExplosionSmoke* particle = base->asExplosionSmoke();
+                uint32_t imageId = 3362 + (particle->frame / 256);                   // 004404B7-004404BE
+                session.addToPlotList2(imageId, { 0, 0, particle->z }, { 1, 1, 0 }); // 004404C4-004404D8
+                break;
+            }
+
+            case MiscThingType::smoke: // 8
+            {
+                if (dpi->zoom_level > 1) // 004404E1-004404EC
+                {
+                    return;
+                }
+                Smoke* particle = base->as_smoke();
+                uint32_t imageId = 3465 + (particle->frame / 256);                   // 004404F2-004404F9
+                session.addToPlotList2(imageId, { 0, 0, particle->z }, { 1, 1, 0 }); // 004404FF-00440513
                 break;
             }
         }
