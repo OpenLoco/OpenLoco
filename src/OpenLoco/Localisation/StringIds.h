@@ -334,6 +334,10 @@ namespace OpenLoco::StringIds
 
     constexpr string_id error_cant_change_land_type = 567;
 
+    constexpr string_id format_currency_income_green = 568;
+    constexpr string_id format_currency_expense_red_negative = 569;
+    constexpr string_id format_currency_income_in_company_colour = 570;
+    constexpr string_id format_currency_expense_in_company_colour_negative = 571;
     constexpr string_id player_info_company_value = 572;
     constexpr string_id player_info_company_value_negative = 573;
     constexpr string_id tooltip_vehicle_tab_main = 574;

@@ -21,6 +21,59 @@ namespace OpenLoco::Paint
         _spritePositionY = pos.y;
     }
 
+    loco_global<int32_t[4], 0x4FD120> _4FD120;
+    loco_global<int32_t[4], 0x4FD130> _4FD130;
+    loco_global<int32_t[4], 0x4FD140> _4FD140;
+    loco_global<int32_t[4], 0x4FD200> _4FD200;
+
+    // 0x004FD120
+    void PaintSession::PaintFloatingMoneyEffect(uint32_t amount, string_id stringId, uint16_t y, uint16_t z, uint32_t y_offsets, int16_t offset_x)
+    {
+        registers regs;
+        regs.bx = stringId;
+        regs.edi = y_offsets;
+        regs.si = offset_x;
+        regs.eax = amount;
+        regs.cx = y;
+        regs.dx = z;
+
+        call(_4FD120[currentRotation], regs);
+    }
+
+    // 0x004FD130
+    void PaintSession::addToPlotList2(uint32_t imageId, const Map::map_pos3& offset, const Map::map_pos3& boundBoxSize)
+    {
+        registers regs;
+        regs.ebx = imageId;
+        regs.al = offset.x;
+        regs.cl = offset.y;
+        regs.dx = offset.z;
+        regs.di = boundBoxSize.x;
+        regs.si = boundBoxSize.y;
+        regs.ah = boundBoxSize.z;
+
+        call(_4FD130[currentRotation], regs);
+    }
+
+    // 0x004FD140
+    void PaintSession::addToPlotListAsParent(uint32_t imageId, const Map::map_pos3& offset, const Map::map_pos3& boundBoxOffset, const Map::map_pos3& boundBoxSize)
+    {
+        registers regs;
+        regs.ebx = imageId;
+        regs.al = offset.x;
+        regs.cl = offset.y;
+        regs.dx = offset.z;
+        regs.di = boundBoxSize.x;
+        regs.si = boundBoxSize.y;
+        regs.ah = boundBoxSize.z;
+
+        addr<0xE3F0A0, int16_t>() = boundBoxOffset.x;
+        addr<0xE3F0A2, int16_t>() = boundBoxOffset.y;
+        addr<0xE3F0A4, uint16_t>() = boundBoxOffset.z;
+
+        call(_4FD140[currentRotation], regs);
+    }
+
     void PaintSession::init(Gfx::drawpixelinfo_t& dpi, const uint16_t viewportFlags)
     {
         _dpi = &dpi;

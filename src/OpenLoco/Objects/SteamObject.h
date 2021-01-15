@@ -13,7 +13,11 @@ namespace OpenLoco
         uint8_t var_06;
         uint8_t var_07;
         uint16_t var_08;
-        uint8_t pad_0A[0x1E - 0xA];
+        uint32_t var_0A;
+        uint32_t var_0E;
+        uint8_t pad_12[0x16 - 0x12];
+        uint32_t var_16;
+        uint32_t var_1A;
         uint8_t sound_effect; // 0x1E probably not confirmed
         uint8_t var_1F[9];    // size tbc
     };
