@@ -14,15 +14,23 @@ namespace OpenLoco::Paint
 {
     // 0x00500160
     const Pitch _reversePitch[13]{
-        Pitch::flat, 
-        Pitch::down6deg, Pitch::down12deg, Pitch::down18deg, Pitch::down25deg, 
-        Pitch::up6deg,   Pitch::up12deg,   Pitch::up18deg,   Pitch::up25deg, 
-        Pitch::down10deg, Pitch::up10deg, 
-        Pitch::down20deg, Pitch::up20deg,
+        Pitch::flat,
+        Pitch::down6deg,
+        Pitch::down12deg,
+        Pitch::down18deg,
+        Pitch::down25deg,
+        Pitch::up6deg,
+        Pitch::up12deg,
+        Pitch::up18deg,
+        Pitch::up25deg,
+        Pitch::down10deg,
+        Pitch::up10deg,
+        Pitch::down20deg,
+        Pitch::up20deg,
     };
 
     // 0x004FFAE8
-    uint32_t applyGhostToImage(uint32_t imageId)
+    static uint32_t applyGhostToImage(uint32_t imageId)
     {
         if (Config::get().construction_marker)
         {
@@ -84,6 +92,7 @@ namespace OpenLoco::Paint
                 auto imageId = sprite.numRollSprites * yawIndex + bogie->var_46 + sprite.flatImageIds;
                 if (bogie->getFlags38() & Flags38::isGhost)
                 {
+                    session.setItemType(Ui::ViewportInteraction::InteractionItem::t_0);
                     imageId = applyGhostToImage(imageId);
                 }
                 else if (bogie->var_0C & Flags0C::unk_5)
@@ -129,6 +138,7 @@ namespace OpenLoco::Paint
                 auto imageId = sprite.numRollSprites * yawIndex + bogie->var_46 + sprite.gentleImageIds;
                 if (bogie->getFlags38() & Flags38::isGhost)
                 {
+                    session.setItemType(Ui::ViewportInteraction::InteractionItem::t_0);
                     imageId = applyGhostToImage(imageId);
                 }
                 else
@@ -152,6 +162,7 @@ namespace OpenLoco::Paint
                 auto imageId = sprite.numRollSprites * yawIndex + bogie->var_46 + sprite.steepImageIds;
                 if (bogie->getFlags38() & Flags38::isGhost)
                 {
+                    session.setItemType(Ui::ViewportInteraction::InteractionItem::t_0);
                     imageId = applyGhostToImage(imageId);
                 }
                 else
