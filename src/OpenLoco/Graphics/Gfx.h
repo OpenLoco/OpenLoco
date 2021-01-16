@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../Company.h"
 #include "../Core/Optional.hpp"
 #include "../OpenLoco.h"
 #include "../Types.hpp"
@@ -230,6 +231,8 @@ namespace OpenLoco::Gfx
     void drawImagePaletteSet(Gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, uint32_t image, uint8_t* palette);
     uint32_t recolour(uint32_t image);
     uint32_t recolour(uint32_t image, uint8_t colour);
+    uint32_t recolour2(uint32_t image, uint8_t colour1, uint8_t colour2);
+    uint32_t recolour2(uint32_t image, ColourScheme colourScheme);
     uint32_t recolourTranslucent(uint32_t image, uint8_t colour);
 
     void invalidateScreen();

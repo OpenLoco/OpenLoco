@@ -91,8 +91,9 @@ namespace OpenLoco::Paint
                 static_assert((IMAGE_TYPE_REMAP | IMAGE_TYPE_REMAP_2_PLUS) == 0x0A0000000);
 
                 loco_global<int32_t[5], 0x4FAAB4> vehicle_particle_base_sprites;
-                uint32_t imageId = vehicle_particle_base_sprites[particle->crashedSpriteBase] + particle->frame / 256;                                              // 0044045F-0044046A
-                imageId = imageId | (particle->colourScheme.primary << 19) | (particle->colourScheme.secondary << 24) | IMAGE_TYPE_REMAP | IMAGE_TYPE_REMAP_2_PLUS; // 00440471-00440487
+                uint32_t imageId = vehicle_particle_base_sprites[particle->crashedSpriteBase] + particle->frame / 256; // 0044045F-0044046A
+                imageId = Gfx::recolour2(imageId, particle->colourScheme);                                             // 00440471-00440487
+                // imageId = imageId | (particle->colourScheme.primary << 19) | (particle->colourScheme.secondary << 24) | IMAGE_TYPE_REMAP | IMAGE_TYPE_REMAP_2_PLUS; // 00440471-00440487
 
                 session.addToPlotListAsParent(imageId, { 0, 0, particle->z }, { 1, 1, 0 }); // 00440489-0044049D
                 break;
