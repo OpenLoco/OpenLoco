@@ -22,10 +22,17 @@ namespace OpenLoco::Paint
     };
 
     // 0x004FFAE8
-    const uint32_t _ghostInvisImageFlags[2]{
-        Gfx::recolour(0, PaletteIndex::index_2C),
-        Gfx::recolourTranslucent(0, PaletteIndex::index_31),
-    };
+    uint32_t applyGhostToImage(uint32_t imageId)
+    {
+        if (Config::get().construction_marker)
+        {
+            return Gfx::recolour(imageId, PaletteIndex::index_2C);
+        }
+        else
+        {
+            return Gfx::recolourTranslucent(imageId, PaletteIndex::index_31);
+        }
+    }
 
     // 0x004B0CFC
     static void paintBogie(PaintSession& session, vehicle_bogie* bogie)
@@ -77,7 +84,7 @@ namespace OpenLoco::Paint
                 auto imageId = sprite.numRollSprites * yawIndex + bogie->var_46 + sprite.flatImageIds;
                 if (bogie->getFlags38() & Flags38::isGhost)
                 {
-                    imageId |= _ghostInvisImageFlags[Config::get().construction_marker];
+                    imageId = applyGhostToImage(imageId);
                 }
                 else if (bogie->var_0C & Flags0C::unk_5)
                 {
@@ -122,7 +129,7 @@ namespace OpenLoco::Paint
                 auto imageId = sprite.numRollSprites * yawIndex + bogie->var_46 + sprite.gentleImageIds;
                 if (bogie->getFlags38() & Flags38::isGhost)
                 {
-                    imageId |= _ghostInvisImageFlags[Config::get().construction_marker];
+                    imageId = applyGhostToImage(imageId);
                 }
                 else
                 {
@@ -145,7 +152,7 @@ namespace OpenLoco::Paint
                 auto imageId = sprite.numRollSprites * yawIndex + bogie->var_46 + sprite.steepImageIds;
                 if (bogie->getFlags38() & Flags38::isGhost)
                 {
-                    imageId |= _ghostInvisImageFlags[Config::get().construction_marker];
+                    imageId = applyGhostToImage(imageId);
                 }
                 else
                 {
