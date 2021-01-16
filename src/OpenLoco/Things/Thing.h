@@ -23,14 +23,18 @@ namespace OpenLoco
     enum class Pitch : uint8_t
     {
         flat = 0,
-        Up12deg = 1,
-        Up25deg = 2,
-        Up45deg = 3,
-        Up60deg = 4,
-        Down12deg = 5,
-        Down25deg = 6,
-        Down45deg = 7,
-        Down60deg = 8,
+        up6deg = 1,  // Transition
+        up12deg = 2, // Gentle
+        up18deg = 3, // Transition
+        up25deg = 4, // Steep
+        down6deg = 5,
+        down12deg = 6,
+        down18deg = 7,
+        down25deg = 8,
+        up10deg = 9, // Gentle Curve Up
+        down10deg = 10,
+        up20deg = 11, // Steep Curve Up
+        down20deg = 12,
     };
 
 #pragma pack(push, 1)

@@ -407,8 +407,8 @@ namespace OpenLoco
         void electricSpark1AnimationUpdate(uint8_t num, int32_t var_05);
         void electricSpark2AnimationUpdate(uint8_t num, int32_t var_05);
         void shipWakeAnimationUpdate(uint8_t num, int32_t var_05);
-        uint8_t updateSpritePitchSteepSlopes(uint16_t xy_offset, int16_t z_offset);
-        uint8_t updateSpritePitch(uint16_t xy_offset, int16_t z_offset);
+        Pitch updateSpritePitchSteepSlopes(uint16_t xy_offset, int16_t z_offset);
+        Pitch updateSpritePitch(uint16_t xy_offset, int16_t z_offset);
         uint8_t updateSpriteYaw0(int16_t x_offset, int16_t y_offset);
         uint8_t updateSpriteYaw1(int16_t x_offset, int16_t y_offset);
         uint8_t updateSpriteYaw2(int16_t x_offset, int16_t y_offset);

@@ -13,8 +13,12 @@ using namespace OpenLoco::Things::Vehicle;
 namespace OpenLoco::Paint
 {
     // 0x00500160
-    const uint8_t _reversePitch[16]{
-        0, 5, 6, 7, 8, 1, 2, 3, 4, 10, 9, 12, 11, 0, 0, 0
+    const Pitch _reversePitch[13]{
+        Pitch::flat, 
+        Pitch::down6deg, Pitch::down12deg, Pitch::down18deg, Pitch::down25deg, 
+        Pitch::up6deg,   Pitch::up12deg,   Pitch::up18deg,   Pitch::up25deg, 
+        Pitch::down10deg, Pitch::up10deg, 
+        Pitch::down20deg, Pitch::up20deg,
     };
 
     // 0x004FFAE8
@@ -39,17 +43,17 @@ namespace OpenLoco::Paint
         if (bogie->getFlags38() & Flags38::isReversed)
         {
             yaw ^= (1 << 5);
-            pitch = _reversePitch[bogie->sprite_pitch];
+            pitch = _reversePitch[static_cast<uint8_t>(bogie->sprite_pitch)];
         }
         auto yawIndex = (yaw >> 1) & 0x1F;
 
         switch (pitch)
         {
-            case 0:
-            case 2:
-            case 9:
-            case 4:
-            case 11:
+            case Pitch::flat:
+            case Pitch::up12deg:
+            case Pitch::up10deg:
+            case Pitch::up25deg:
+            case Pitch::up20deg:
                 break;
             default:
                 if (sprite.flags & BogieSpriteFlags::rotationalSymmetry)
@@ -64,7 +68,7 @@ namespace OpenLoco::Paint
         }
         switch (pitch)
         {
-            case 0:
+            case Pitch::flat:
             {
                 if (sprite.flags & BogieSpriteFlags::rotationalSymmetry)
                 {
@@ -110,10 +114,10 @@ namespace OpenLoco::Paint
                 }
                 break;
             }
-            case 2:
-            case 9:
-            case 6:
-            case 10:
+            case Pitch::up12deg:
+            case Pitch::up10deg:
+            case Pitch::down12deg:
+            case Pitch::down10deg:
             {
                 auto imageId = sprite.numRollSprites * yawIndex + bogie->var_46 + sprite.gentleImageIds;
                 if (bogie->getFlags38() & Flags38::isGhost)
@@ -136,8 +140,6 @@ namespace OpenLoco::Paint
                 }
                 break;
             }
-            case 4:
-            case 11:
             default:
             {
                 auto imageId = sprite.numRollSprites * yawIndex + bogie->var_46 + sprite.steepImageIds;
