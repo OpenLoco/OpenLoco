@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../Company.h"
 #include "../Core/Optional.hpp"
 #include "../OpenLoco.h"
 #include "../Types.hpp"
@@ -11,6 +10,8 @@
 namespace OpenLoco
 {
     using colour_t = uint8_t;
+    struct ColourScheme;
+
 }
 
 namespace OpenLoco::Gfx
