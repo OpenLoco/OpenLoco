@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../Company.h"
 #include "../Objects/SteamObject.h"
 #include "Thing.h"
 
@@ -63,7 +64,7 @@ namespace OpenLoco
         uint8_t pad_38[0x49 - 0x38];
         uint8_t object_id; // 0x49
 
-        steam_object* object() const;
+        SteamObject* object() const;
 
         static Exhaust* create(loc16 loc, uint8_t type);
     };
@@ -85,7 +86,7 @@ namespace OpenLoco
         uint8_t pad_20[0x28 - 0x20];
         uint16_t frame; // 0x28
         uint8_t pad_2A[0x2E - 0x2A];
-        uint8_t colour[2];          // 0x2E
+        ColourScheme colourScheme;  // 0x2E
         uint16_t crashedSpriteBase; // 0x30 crashed_sprite_base
 
         //static VehicleCrashParticle* create(loc16 loc);

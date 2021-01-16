@@ -6,9 +6,9 @@
 using namespace OpenLoco;
 using namespace OpenLoco::ObjectManager;
 
-steam_object* OpenLoco::Exhaust::object() const
+SteamObject* OpenLoco::Exhaust::object() const
 {
-    return ObjectManager::get<steam_object>(object_id & 0x7F);
+    return ObjectManager::get<SteamObject>(object_id & 0x7F);
 }
 
 // 0x0044080C

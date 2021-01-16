@@ -1096,7 +1096,7 @@ void OpenLoco::vehicle_body::steamPuffsAnimationUpdate(uint8_t num, int32_t var_
         return;
 
     var_55++;
-    steam_object* steam_obj = ObjectManager::get<steam_object>(vehicleObject->animation[num].object_id);
+    SteamObject* steam_obj = ObjectManager::get<SteamObject>(vehicleObject->animation[num].object_id);
     if (var_55 >= ((uint8_t)vehicleObject->animation[num].type) + 1)
     {
         var_55 = 0;
