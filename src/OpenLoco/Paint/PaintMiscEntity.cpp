@@ -10,7 +10,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Paint
 {
-    static void paintExhausEntity(PaintSession& session, MiscBase* base)
+    static void paintExhaustEntity(PaintSession& session, MiscBase* base)
     {
         Gfx::drawpixelinfo_t* dpi = session.getContext();
         if (dpi->zoom_level > 1) // 00440331-0044033C
@@ -160,7 +160,7 @@ namespace OpenLoco::Paint
         {
             case MiscThingType::exhaust: // 0
             {
-                paintExhausEntity(session, base);
+                paintExhaustEntity(session, base);
                 break;
             }
 
