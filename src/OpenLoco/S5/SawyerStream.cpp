@@ -311,7 +311,7 @@ SawyerStreamWriter::SawyerStreamWriter(const fs::path& path)
 
 void SawyerStreamWriter::writeChunk(SawyerEncoding chunkType, const void* data, size_t dataLen)
 {
-    auto encodedData = encode(chunkType, stdx::span<uint8_t const>(reinterpret_cast<const uint8_t*>(data), dataLen));
+    auto encodedData = encode(chunkType, stdx::span(reinterpret_cast<const uint8_t*>(data), dataLen));
     write(&chunkType, sizeof(chunkType));
     write(static_cast<uint32_t>(encodedData.size()));
     write(encodedData.data(), encodedData.size());
