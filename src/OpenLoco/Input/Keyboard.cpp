@@ -150,7 +150,7 @@ namespace OpenLoco::Input
     void enqueueKey(uint32_t keycode)
     {
         uint32_t writeIndex = _keyQueueWriteIndex;
-        auto nextWriteIndex = (writeIndex + 1) & (64 - 1);
+        auto nextWriteIndex = (writeIndex + 1) % std::size(_keyQueue);
         if (nextWriteIndex == _keyQueueReadIndex)
         {
             return;
@@ -169,6 +169,7 @@ namespace OpenLoco::Input
         }
     }
 
+    // 0x00407028
     static key* getNextKey()
     {
         uint32_t readIndex = _keyQueueReadIndex;
@@ -179,7 +180,7 @@ namespace OpenLoco::Input
         auto* out = &_keyQueue[readIndex];
         readIndex++;
         // Wrap around at _keyQueue size
-        readIndex &= (64 - 1);
+        readIndex %= std::size(_keyQueue);
         _keyQueueReadIndex = readIndex;
         return out;
     }
