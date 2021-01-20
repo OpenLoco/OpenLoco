@@ -220,7 +220,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             // Draw owner name
             {
-                FormatArguments args{ company->owner_name };
+                auto args = FormatArguments::common(company->owner_name);
                 auto& widget = self->widgets[widx::change_owner_name];
                 auto origin = Gfx::point_t(self->x + (widget.left + widget.right) / 2, self->y + widget.top + 5);
                 Gfx::drawStringCentredWrapped(
@@ -344,7 +344,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             char* buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
             strcpy(buffer, input);
 
-            FormatArguments args{ StringIds::buffer_2039 };
+            auto args = FormatArguments::common(StringIds::buffer_2039);
             // Add the ' Transport' suffix to the company name, and rename the company.
             StringManager::formatString(input, StringIds::company_owner_name_transport, const_cast<void*>(&args));
             Common::renameCompany(self, input);
@@ -760,7 +760,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             auto x = self->x + 3;
             auto y = self->y + 48;
             {
-                FormatArguments args{ company->startedDate };
+                auto args = FormatArguments::common(company->startedDate);
                 Gfx::drawString_494B3F(*dpi, x, y, Colour::black, StringIds::company_details_started, &args);
                 y += 10;
             }
@@ -783,7 +783,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             }
 
             {
-                FormatArguments args{ company->owner_name };
+                auto args = FormatArguments::common(company->owner_name);
                 Gfx::drawString_494BBF(*dpi, x, y, 213, Colour::black, StringIds::owner_label, &args);
                 y += 10;
             }
@@ -800,7 +800,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                     auto count = company->transportTypeCount[i];
                     if (count != 0)
                     {
-                        FormatArguments args{ count };
+                        auto args = FormatArguments::common(count);
                         Gfx::drawString_494B3F(*dpi, x, y, Colour::black, transportTypeCountString[i], &args);
                         y += 10;
                     }
@@ -1632,7 +1632,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                     Gfx::fillRect(dpi, self->x + 4, y, self->x + 129, y + 9, colour);
                 }
 
-                FormatArguments args{ ExpenditureLabels[i] };
+                auto args = FormatArguments::common(ExpenditureLabels[i]);
                 Gfx::drawString_494B3F(
                     *dpi,
                     self->x + 5,
@@ -1671,7 +1671,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             // 'Cash' label with value
             {
                 // Set cash value in format args.
-                FormatArguments args{ company->cash };
+                auto args = FormatArguments::common(company->cash);
 
                 string_id cash_format = StringIds::cash_positive;
                 if ((company->challenge_flags & company_flags::bankrupt) != 0)
@@ -1691,7 +1691,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             // 'Company value' label with value
             {
                 // Set company value in format args.
-                FormatArguments args{ company->companyValueHistory[0] };
+                auto args = FormatArguments::common(company->companyValueHistory[0]);
 
                 Gfx::drawString_494B3F(
                     *dpi,
@@ -1705,7 +1705,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             // 'Profit from vehicles' label with value
             {
                 // Set company value in format args.
-                FormatArguments args{ company->vehicleProfit };
+                auto args = FormatArguments::common(company->vehicleProfit);
 
                 Gfx::drawString_494B3F(
                     *dpi,
@@ -1719,7 +1719,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
         static void drawFinanceYear(Gfx::drawpixelinfo_t* context, int16_t x, int16_t& y, uint16_t columnYear, uint16_t currentYear)
         {
-            FormatArguments args = { StringIds::uint16_raw, columnYear };
+            auto args = FormatArguments::common(StringIds::uint16_raw, columnYear);
 
             string_id format = StringIds::wcolour2_stringid;
             if (columnYear != currentYear)
@@ -1755,7 +1755,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
                 if (expenditures != 0)
                 {
-                    FormatArguments args = { currFormat, expenditures };
+                    auto args = FormatArguments::common(currFormat, expenditures);
 
                     Gfx::drawString_494C78(
                         *context,
@@ -1779,7 +1779,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 mainFormat = StringIds::red_stringid;
                 sumFormat = StringIds::currency48;
             }
-            FormatArguments args{ sumFormat, sum };
+            auto args = FormatArguments::common(sumFormat, sum);
 
             y += 4;
 
@@ -2276,7 +2276,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 uint16_t years = objectiveCompletedChallengeInMonths / 12;
                 uint16_t months = objectiveCompletedChallengeInMonths % 12;
 
-                FormatArguments args{ years, months };
+                auto args = FormatArguments::common(years, months);
                 Gfx::drawString_495224(*dpi, self->x + 5, y, self->width - 10, Colour::black, StringIds::success_you_completed_the_challenge_in_years_months, &args);
                 return;
             }
@@ -2314,7 +2314,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 uint16_t years = monthsLeft / 12;
                 uint16_t months = monthsLeft % 12;
 
-                FormatArguments args{ years, months };
+                auto args = FormatArguments::common(years, months);
                 Gfx::drawString_495224(*dpi, self->x + 5, y, self->width + 10, Colour::black, StringIds::time_remaining_years_months, &args);
                 return;
             }
