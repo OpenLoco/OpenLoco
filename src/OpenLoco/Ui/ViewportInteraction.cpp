@@ -104,8 +104,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         Input::setMapSelectionFlags(Input::MapSelectionFlags::unk_6);
         ViewportManager::invalidate(station);
         Windows::MapToolTip::setOwner(station->owner);
-        auto args = Windows::MapToolTip::getArguments();
-        args.push(StringIds::stringid_stringid_wcolour3_stringid);
+        auto args = FormatArguments::mapToolTip(StringIds::stringid_stringid_wcolour3_stringid);
         args.push(station->name);
         args.push(station->town);
         args.push(getTransportIconsFromStationFlags(station->flags));
@@ -141,9 +140,7 @@ namespace OpenLoco::Ui::ViewportInteraction
     {
         auto town = TownManager::get(id);
 
-        auto args = Windows::MapToolTip::getArguments();
-        args.push(StringIds::wcolour3_stringid_2);
-        args.push(town->name); // args + 4 empty
+        auto args = FormatArguments::mapToolTip(StringIds::wcolour3_stringid_2, town->name); // args + 4 empty
         args.skip(2);
         args.push(StringIds::town_size_and_population);
         args.push(town->getTownSizeString());
@@ -165,7 +162,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         char* buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_338));
         *buffer = 0;
         industry->getStatusString(buffer);
-        auto args = Windows::MapToolTip::getArguments();
+        auto args = FormatArguments::mapToolTip();
         if (std::strlen(buffer) != 0)
         {
             args.push(StringIds::wcolour3_stringid_2);
@@ -195,7 +192,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         auto company = CompanyManager::get(head->owner);
         Windows::MapToolTip::setOwner(head->owner);
         auto status = head->getStatus();
-        auto args = Windows::MapToolTip::getArguments();
+        auto args = FormatArguments::mapToolTip();
         if (status.status2 == StringIds::null)
         {
             args.push(StringIds::wcolour3_stringid);
@@ -243,9 +240,7 @@ namespace OpenLoco::Ui::ViewportInteraction
             }
 
             Windows::MapToolTip::setOwner(company.id());
-            auto args = Windows::MapToolTip::getArguments();
-            args.push(StringIds::wcolour3_stringid_2);
-            args.push(company.name);
+            auto args = FormatArguments::mapToolTip(StringIds::wcolour3_stringid_2, company.name);
             args.skip(2);
             args.push(StringIds::headquarters);
             return true;

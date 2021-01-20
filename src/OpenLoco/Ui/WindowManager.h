@@ -255,7 +255,6 @@ namespace OpenLoco::Ui::Windows::MapToolTip
     void open();
     void setOwner(company_id_t company);
     void reset();
-    FormatArguments getArguments();
 }
 
 namespace OpenLoco::Ui::Windows::Town

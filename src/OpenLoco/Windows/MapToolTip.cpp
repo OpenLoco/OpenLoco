@@ -24,11 +24,6 @@ namespace OpenLoco::Ui::Windows::MapToolTip
     void reset()
     {
         setOwner(CompanyId::null);
-        getArguments().push(StringIds::null);
-    }
-
-    FormatArguments getArguments()
-    {
-        return FormatArguments{ reinterpret_cast<std::byte*>(&*_mapTooltipFormatArguments), 40 };
+        FormatArguments::mapToolTip(StringIds::null);
     }
 }
