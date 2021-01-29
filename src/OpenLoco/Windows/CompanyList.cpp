@@ -1181,6 +1181,45 @@ namespace OpenLoco::Ui::Windows::CompanyList
             call(0x004375F7, regs);
         }
 
+        // 0x004379F2
+        static void setKeyHover(window* self, int16_t x, int16_t y)
+        {
+            uint8_t cargoItem = 0;
+            if (!Input::hasFlag(Input::input_flags::flag5))
+            {
+                const auto location = Input::getMouseLocation2();
+                auto* frontWindow = WindowManager::findAt(location);
+                const auto xDiff = location.x - x;
+                const auto yDiff = location.y - y;
+                if (frontWindow != nullptr && frontWindow == self && xDiff <= 100 && xDiff >= 0 && yDiff < 320 && yDiff >= 0)
+                {
+                    auto listY = yDiff;
+                    for (cargoItem = 0; cargoItem < ObjectManager::getMaxObjects(object_type::cargo); ++cargoItem)
+                    {
+                        auto* cargoObj = ObjectManager::get<cargo_object>(cargoItem);
+                        if (cargoObj == nullptr)
+                        {
+                            continue;
+                        }
+                        listY -= 10;
+                        if (listY <= 0)
+                        {
+                            break;
+                        }
+                    }
+                }
+            }
+            if (self->var_854 != (1 << cargoItem))
+            {
+                self->var_854 = (1 << cargoItem);
+                self->invalidate();
+            }
+            if (self->var_854 != 0)
+            {
+                self->invalidate();
+            }
+        }
+
         // 0x00436273
         static void tabReset(window* self)
         {
@@ -1339,15 +1378,6 @@ namespace OpenLoco::Ui::Windows::CompanyList
             call(0x004378BA, regs);
         }
 
-        static void sub_4379F2(window* self, int16_t x, int16_t y)
-        {
-            registers regs;
-            regs.esi = (int32_t)self;
-            regs.cx = x;
-            regs.dx = y;
-            call(0x004379F2, regs);
-        }
-
         // 0x00437570
         static void onUpdate(window* self)
         {
@@ -1372,7 +1402,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 case widx::tab_payment_rates:
                 {
                     _word_9C68C7++;
-                    sub_4379F2(self, x, y);
+                    CargoPaymentRates::setKeyHover(self, x, y);
                     break;
                 }
                 case widx::tab_speed_records:
