@@ -103,14 +103,29 @@ namespace OpenLoco
         uint8_t var_05;
     };
 
+    namespace BogieSpriteFlags
+    {
+        constexpr uint8_t hasSprites = (1 << 0);         // If not set then no bogie will be loaded
+        constexpr uint8_t rotationalSymmetry = (1 << 1); // requires 16 rather than 32 sprites
+        constexpr uint8_t hasGentleSprites = (1 << 2);   // for gentle slopes
+        constexpr uint8_t hasSteepSprites = (1 << 3);    // for steep slopes
+        constexpr uint8_t unk_4 = (1 << 4);              // Increases bounding box size
+    }
+
     struct vehicle_object_bogie_sprite
     {
-        uint8_t pad_00[0x02 - 0x00];
-        uint8_t var_02;
-        uint8_t var_03;
-        uint8_t var_04;
-        uint8_t pad_05[0x12 - 0x5];
+        uint8_t rollStates;      // 0x0 valid values 1, 2, 4 related to bogie->var_46 (identical in value to numRollSprites)
+        uint8_t flags;           // 0x1 BogieSpriteFlags
+        uint8_t var_02;          // sprite width
+        uint8_t var_03;          // sprite height negative
+        uint8_t var_04;          // sprite height positive
+        uint8_t numRollSprites;  // 0x5
+        uint32_t flatImageIds;   // 0x6 flat sprites
+        uint32_t gentleImageIds; // 0xA gentle sprites
+        uint32_t steepImageIds;  // 0xE steep sprites
     };
+
+    static_assert(sizeof(vehicle_object_bogie_sprite) == 0x12);
 
     struct vehicle_object_sprite
     {

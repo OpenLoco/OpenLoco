@@ -1175,12 +1175,17 @@ namespace OpenLoco::Gfx
 
     uint32_t recolour(uint32_t image)
     {
-        return (1 << 29) | image;
+        return ImageIdFlags::remap | image;
     }
 
     uint32_t recolour(uint32_t image, uint8_t colour)
     {
         return ImageIdFlags::remap | (colour << 19) | image;
+    }
+
+    uint32_t recolour2(uint32_t image, uint8_t colour1, uint8_t colour2)
+    {
+        return ImageIdFlags::remap | ImageIdFlags::remap2 | (colour1 << 19) | (colour2 << 24) | image;
     }
 
     uint32_t recolourTranslucent(uint32_t image, uint8_t colour)

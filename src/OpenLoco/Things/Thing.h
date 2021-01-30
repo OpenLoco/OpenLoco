@@ -20,6 +20,23 @@ namespace OpenLoco
         misc
     };
 
+    enum class Pitch : uint8_t
+    {
+        flat = 0,
+        up6deg = 1,  // Transition
+        up12deg = 2, // Gentle
+        up18deg = 3, // Transition
+        up25deg = 4, // Steep
+        down6deg = 5,
+        down12deg = 6,
+        down18deg = 7,
+        down25deg = 8,
+        up10deg = 9, // Gentle Curve Up
+        down10deg = 10,
+        up20deg = 11, // Steep Curve Up
+        down20deg = 12,
+    };
+
 #pragma pack(push, 1)
     struct thing_base
     {
@@ -44,7 +61,7 @@ namespace OpenLoco
         int16_t sprite_right;  // 0x1A
         int16_t sprite_bottom; // 0x1C
         uint8_t sprite_yaw;    // 0x1E
-        uint8_t sprite_pitch;  // 0x1F
+        Pitch sprite_pitch;    // 0x1F
 
         void moveTo(loc16 loc);
         void invalidateSprite();

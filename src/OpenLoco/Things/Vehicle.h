@@ -19,15 +19,16 @@ namespace OpenLoco
         namespace Flags0C // commands?
         {
             constexpr uint8_t unk_1 = 1 << 1; // commanded to stop??
+            constexpr uint8_t unk_5 = 1 << 5;
             constexpr uint8_t manualControl = 1 << 6;
         }
 
         namespace Flags38
         {
             constexpr uint8_t unk_0 = 1 << 0;
-            constexpr uint8_t unk_1 = 1 << 1;
+            constexpr uint8_t isReversed = 1 << 1;
             constexpr uint8_t unk_3 = 1 << 3;
-            constexpr uint8_t unk_4 = 1 << 4;
+            constexpr uint8_t isGhost = 1 << 4;
         }
 
         enum class Status : uint8_t
@@ -136,6 +137,8 @@ namespace OpenLoco
         bool isVehicleTail() const { return is<VehicleThingType::tail>(); }
         vehicle_tail* asVehicleTail() const { return as<vehicle_tail>(); }
         TransportMode getTransportMode() const;
+        uint8_t getOwner() const;
+        uint8_t getFlags38() const;
 
         vehicle_base* nextVehicle();
         vehicle_base* nextVehicleComponent();
@@ -374,7 +377,7 @@ namespace OpenLoco
         TransportMode mode; // 0x42
         uint8_t pad_43;
         int16_t var_44;
-        uint8_t var_46;
+        uint8_t var_46; // 0x46 roll
         uint8_t var_47;
         uint32_t accepted_cargo_types; // 0x48
         uint8_t cargo_type;            // 0x4C
@@ -404,8 +407,8 @@ namespace OpenLoco
         void electricSpark1AnimationUpdate(uint8_t num, int32_t var_05);
         void electricSpark2AnimationUpdate(uint8_t num, int32_t var_05);
         void shipWakeAnimationUpdate(uint8_t num, int32_t var_05);
-        uint8_t updateSpritePitchSteepSlopes(uint16_t xy_offset, int16_t z_offset);
-        uint8_t updateSpritePitch(uint16_t xy_offset, int16_t z_offset);
+        Pitch updateSpritePitchSteepSlopes(uint16_t xy_offset, int16_t z_offset);
+        Pitch updateSpritePitch(uint16_t xy_offset, int16_t z_offset);
         uint8_t updateSpriteYaw0(int16_t x_offset, int16_t y_offset);
         uint8_t updateSpriteYaw1(int16_t x_offset, int16_t y_offset);
         uint8_t updateSpriteYaw2(int16_t x_offset, int16_t y_offset);
@@ -438,7 +441,7 @@ namespace OpenLoco
         TransportMode mode; // 0x42 field same in all vehicles
         uint8_t pad_43;
         uint16_t var_44;
-        uint8_t var_46;
+        uint8_t var_46; // 0x46 roll
         uint8_t var_47;
         uint32_t accepted_cargo_types; // 0x48 front car component front bogie only
         uint8_t cargo_type;            // 0x4C front car component front bogie only

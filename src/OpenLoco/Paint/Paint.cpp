@@ -21,6 +21,47 @@ namespace OpenLoco::Paint
         _spritePositionY = pos.y;
     }
 
+    loco_global<int32_t[4], 0x4FD140> _4FD140;
+    loco_global<int32_t[4], 0x4FD200> _4FD200;
+
+    // 0x004FD140
+    void PaintSession::addToPlotListAsParent(uint32_t imageId, const Map::map_pos3& offset, const Map::map_pos3& boundBoxOffset, const Map::map_pos3& boundBoxSize)
+    {
+        registers regs;
+        regs.ebx = imageId;
+        regs.al = offset.x;
+        regs.cl = offset.y;
+        regs.dx = offset.z;
+        regs.di = boundBoxSize.x;
+        regs.si = boundBoxSize.y;
+        regs.ah = boundBoxSize.z;
+
+        addr<0xE3F0A0, int16_t>() = boundBoxOffset.x;
+        addr<0xE3F0A2, int16_t>() = boundBoxOffset.y;
+        addr<0xE3F0A4, uint16_t>() = boundBoxOffset.z;
+
+        call(_4FD140[currentRotation], regs);
+    }
+
+    // 0x004FD200
+    void PaintSession::addToPlotList4FD200(uint32_t imageId, const Map::map_pos3& offset, const Map::map_pos3& boundBoxOffset, const Map::map_pos3& boundBoxSize)
+    {
+        registers regs;
+        regs.ebx = imageId;
+        regs.al = offset.x;
+        regs.cl = offset.y;
+        regs.dx = offset.z;
+        regs.di = boundBoxSize.x;
+        regs.si = boundBoxSize.y;
+        regs.ah = boundBoxSize.z;
+
+        addr<0xE3F0A0, int16_t>() = boundBoxOffset.x;
+        addr<0xE3F0A2, int16_t>() = boundBoxOffset.y;
+        addr<0xE3F0A4, uint16_t>() = boundBoxOffset.z;
+
+        call(_4FD200[currentRotation], regs);
+    }
+
     void PaintSession::init(Gfx::drawpixelinfo_t& dpi, const uint16_t viewportFlags)
     {
         _dpi = &dpi;
