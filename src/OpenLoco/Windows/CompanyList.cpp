@@ -1003,7 +1003,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             _graphLineCount = count;
             _graphDataEnd = maxHistorySize;
-            _dword_113DD0C = 4;
+            _dword_113DD0C = 6;
             _graphXLabel = StringIds::rawdate_short;
             _graphYLabel = StringIds::small_company_value_currency;
             _word_113DD80 = 4;
