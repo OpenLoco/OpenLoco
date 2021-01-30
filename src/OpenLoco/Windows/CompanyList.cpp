@@ -1184,7 +1184,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x004379F2
         static void setLegendHover(window* self, int16_t x, int16_t y)
         {
-            uint8_t selectedCargo = 0;
+            uint32_t selectedCargo = 0;
             if (!Input::hasFlag(Input::input_flags::flag5))
             {
                 const auto location = Input::getMouseLocation2();
@@ -1205,14 +1205,15 @@ namespace OpenLoco::Ui::Windows::CompanyList
                         listY -= 10;
                         if (listY <= 0)
                         {
+                            selectedCargo = 1ULL << cargoItem;
                             break;
                         }
                     }
-                    selectedCargo = 1 << cargoItem;
                 }
             }
             if (self->var_854 != selectedCargo)
             {
+                // TODO: var_854 is 16 bits but selectedCargo is 32 bits. Only the first 15 cargo types can be selected.
                 self->var_854 = selectedCargo;
                 self->invalidate();
             }
