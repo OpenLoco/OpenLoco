@@ -1189,7 +1189,6 @@ namespace OpenLoco::Ui::WindowManager
         }
 
         Ui::TextInput::sub_4CE6FF();
-        // open map tooltip
         Ui::Windows::MapToolTip::open();
     }
 

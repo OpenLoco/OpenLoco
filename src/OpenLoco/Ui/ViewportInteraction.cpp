@@ -299,35 +299,36 @@ namespace OpenLoco::Ui::ViewportInteraction
             interaction = res.first;
         }
 
+        // TODO: Rework so that getting the interaction arguments and getting the map tooltip format arguments are seperated
         bool success = false;
         switch (interaction.type)
         {
-            case InteractionItem::track: // 4
+            case InteractionItem::track:
                 success = _track(interaction);
                 break;
 
-            case InteractionItem::road: // 16
+            case InteractionItem::road:
                 success = _road(interaction);
                 break;
-            case InteractionItem::town: // 14
+            case InteractionItem::town:
                 success = getTownArguments(static_cast<town_id_t>(interaction.value));
                 break;
-            case InteractionItem::station: // 15
+            case InteractionItem::station:
                 success = getStationArguments(static_cast<station_id_t>(interaction.value));
                 break;
-            case InteractionItem::trackStation: // 7
-            case InteractionItem::roadStation:  // 8
-            case InteractionItem::airport:      // 9
-            case InteractionItem::dock:         // 10
+            case InteractionItem::trackStation:
+            case InteractionItem::roadStation:
+            case InteractionItem::airport:
+            case InteractionItem::dock:
                 success = getStationArguments(interaction);
                 break;
-            case InteractionItem::industry: // 20
+            case InteractionItem::industry:
                 success = getIndustryArguments(interaction);
                 break;
-            case InteractionItem::headquarterBuilding: // 21
+            case InteractionItem::headquarterBuilding:
                 success = getHeadquarterArguments(interaction);
                 break;
-            case InteractionItem::thing: // 3
+            case InteractionItem::thing:
                 success = getVehicleArguments(interaction);
                 break;
             default:
@@ -374,7 +375,6 @@ namespace OpenLoco::Ui::ViewportInteraction
             interaction.x = nearestVehicle->x;
             interaction.y = nearestVehicle->y;
 
-            // 4CDA7C aka getVehicleArguments
             getVehicleArguments(interaction);
             return interaction;
         }
