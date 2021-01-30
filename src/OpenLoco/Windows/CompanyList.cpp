@@ -36,7 +36,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
     static loco_global<uint32_t, 0x0113DC86> _graphYAxisLabelIncrement;
     static loco_global<uint16_t, 0x0113DC8A> _graphLineCount;
     static loco_global<uint32_t[32], 0x0113DC8C> _graphYData;
-    static loco_global<uint32_t, 0x0113DD0C> _dword_113DD0C; //graphType?
+    static loco_global<uint32_t, 0x0113DD0C> _graphDataTypeSize;
     static loco_global<uint16_t[32], 0x0113DD10> _graphDataStart;
     static loco_global<uint32_t, 0x0113DD50> _dword_113DD50;
     static loco_global<uint8_t[32], 0x0113DD54> _graphLineColour;
@@ -712,7 +712,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             _graphLineCount = count;
             _graphDataEnd = maxHistorySize;
-            _dword_113DD0C = 2;
+            _graphDataTypeSize = 2;
             _graphXLabel = StringIds::rawdate_short;
             _graphYLabel = StringIds::percentage_one_decimal_place;
             _word_113DD80 = 4;
@@ -809,7 +809,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             _graphLineCount = count;
             _graphDataEnd = maxHistorySize;
-            _dword_113DD0C = 4;
+            _graphDataTypeSize = 4;
             _graphXLabel = StringIds::rawdate_short;
             _graphYLabel = StringIds::cargo_units_delivered;
             _word_113DD80 = 4;
@@ -906,7 +906,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             _graphLineCount = count;
             _graphDataEnd = maxHistorySize;
-            _dword_113DD0C = 4;
+            _graphDataTypeSize = 4;
             _graphXLabel = StringIds::rawdate_short;
             _graphYLabel = StringIds::cargo_units_delivered;
             _word_113DD80 = 4;
@@ -1003,7 +1003,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             _graphLineCount = count;
             _graphDataEnd = maxHistorySize;
-            _dword_113DD0C = 4;
+            _graphDataTypeSize = 6;
             _graphXLabel = StringIds::rawdate_short;
             _graphYLabel = StringIds::small_company_value_currency;
             _word_113DD80 = 4;
@@ -1122,7 +1122,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             _graphLineCount = count;
             _graphDataEnd = 60;
-            _dword_113DD0C = 4;
+            _graphDataTypeSize = 4;
             _graphXLabel = StringIds::cargo_delivered_days;
             _graphYLabel = StringIds::cargo_delivered_currency;
             _word_113DD80 = 5;
