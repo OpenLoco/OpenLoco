@@ -92,7 +92,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         static void refreshCompanyList(window* self);
         static void drawTabs(window* self, Gfx::drawpixelinfo_t* dpi);
         static void drawGraph(window* self, Gfx::drawpixelinfo_t* dpi);
-        static void drawGraphAndKey(window* self, Gfx::drawpixelinfo_t* dpi);
+        static void drawGraphAndLegend(window* self, Gfx::drawpixelinfo_t* dpi);
         static void initEvents();
     }
 
@@ -721,7 +721,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             _dword_113DD8A = 100;
             _dword_113DD8E = 2;
 
-            Common::drawGraphAndKey(self, dpi);
+            Common::drawGraphAndLegend(self, dpi);
         }
 
         // 0x004361D8
@@ -818,7 +818,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             _dword_113DD8A = 1000;
             _dword_113DD8E = 2;
 
-            Common::drawGraphAndKey(self, dpi);
+            Common::drawGraphAndLegend(self, dpi);
         }
 
         // 0x00436201
@@ -915,7 +915,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             _dword_113DD8A = 1000;
             _dword_113DD8E = 2;
 
-            Common::drawGraphAndKey(self, dpi);
+            Common::drawGraphAndLegend(self, dpi);
         }
 
         // 0x00436227
@@ -1012,7 +1012,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             _dword_113DD8A = 10000;
             _dword_113DD8E = 2;
 
-            Common::drawGraphAndKey(self, dpi);
+            Common::drawGraphAndLegend(self, dpi);
         }
 
         // 0x0043624D
@@ -1056,7 +1056,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         // 0x00437949
-        static void drawGraphKey(window* self, Gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y)
+        static void drawGraphLegend(window* self, Gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y)
         {
             auto cargoCount = 0;
             for (uint8_t i = 0; i < ObjectManager::getMaxObjects(object_type::cargo); i++)
@@ -1158,7 +1158,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             auto x = self->width + self->x - 104;
             auto y = self->y + 52;
 
-            drawGraphKey(self, dpi, x, y);
+            drawGraphLegend(self, dpi, x, y);
 
             x = self->x + 8;
             y = self->widgets[Common::widx::panel].top + self->y + 1;
@@ -1179,6 +1179,48 @@ namespace OpenLoco::Ui::Windows::CompanyList
         {
             registers regs;
             call(0x004375F7, regs);
+        }
+
+        // 0x004379F2
+        static void setLegendHover(window* self, int16_t x, int16_t y)
+        {
+            uint32_t selectedCargo = 0;
+            if (!Input::hasFlag(Input::input_flags::flag5))
+            {
+                const auto location = Input::getMouseLocation2();
+                auto* frontWindow = WindowManager::findAt(location);
+                const auto xDiff = location.x - x;
+                const auto yDiff = location.y - y;
+                if (frontWindow != nullptr && frontWindow == self && xDiff <= 100 && xDiff >= 0 && yDiff < 320 && yDiff >= 0)
+                {
+                    auto listY = yDiff;
+                    uint8_t cargoItem = 0;
+                    for (; cargoItem < ObjectManager::getMaxObjects(object_type::cargo); ++cargoItem)
+                    {
+                        auto* cargoObj = ObjectManager::get<cargo_object>(cargoItem);
+                        if (cargoObj == nullptr)
+                        {
+                            continue;
+                        }
+                        listY -= 10;
+                        if (listY <= 0)
+                        {
+                            selectedCargo = 1ULL << cargoItem;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (self->var_854 != selectedCargo)
+            {
+                // TODO: var_854 is 16 bits but selectedCargo is 32 bits. Only the first 15 cargo types can be selected.
+                self->var_854 = selectedCargo;
+                self->invalidate();
+            }
+            if (self->var_854 != 0)
+            {
+                self->invalidate();
+            }
         }
 
         // 0x00436273
@@ -1339,15 +1381,6 @@ namespace OpenLoco::Ui::Windows::CompanyList
             call(0x004378BA, regs);
         }
 
-        static void sub_4379F2(window* self, int16_t x, int16_t y)
-        {
-            registers regs;
-            regs.esi = (int32_t)self;
-            regs.cx = x;
-            regs.dx = y;
-            call(0x004379F2, regs);
-        }
-
         // 0x00437570
         static void onUpdate(window* self)
         {
@@ -1372,7 +1405,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 case widx::tab_payment_rates:
                 {
                     _word_9C68C7++;
-                    sub_4379F2(self, x, y);
+                    CargoPaymentRates::setLegendHover(self, x, y);
                     break;
                 }
                 case widx::tab_speed_records:
@@ -1625,7 +1658,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         // 0x00437810
-        static void drawGraphKey(window* self, Gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y)
+        static void drawGraphLegend(window* self, Gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y)
         {
             auto companyCount = 0;
             for (auto& company : CompanyManager::companies())
@@ -1658,7 +1691,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         // 0x004365E4
-        static void drawGraphAndKey(window* self, Gfx::drawpixelinfo_t* dpi)
+        static void drawGraphAndLegend(window* self, Gfx::drawpixelinfo_t* dpi)
         {
             auto totalMonths = (getCurrentYear() * 12) + static_cast<uint16_t>(getCurrentMonth());
 
@@ -1690,7 +1723,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             auto x = self->width + self->x - 104;
             auto y = self->y + 52;
 
-            Common::drawGraphKey(self, dpi, x, y);
+            Common::drawGraphLegend(self, dpi, x, y);
         }
         static void initEvents()
         {

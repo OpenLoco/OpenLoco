@@ -1995,6 +1995,11 @@ namespace OpenLoco::Input
         return Gfx::point_t(_cursorX, _cursorY);
     }
 
+    Gfx::point_t getMouseLocation2()
+    {
+        return Gfx::point_t(_cursorX2, _cursorY2);
+    }
+
     Gfx::point_t getTooltipMouseLocation()
     {
         return Gfx::point_t(_tooltipCursorX, _tooltipCursorY);

@@ -63,6 +63,7 @@ namespace OpenLoco::Input
     void state(input_state);
 
     Gfx::point_t getMouseLocation();
+    Gfx::point_t getMouseLocation2();
     bool isHovering(Ui::WindowType);
     bool isHovering(Ui::WindowType, Ui::window_number);
     bool isHovering(Ui::WindowType type, Ui::window_number number, Ui::widget_index widgetIndex);
