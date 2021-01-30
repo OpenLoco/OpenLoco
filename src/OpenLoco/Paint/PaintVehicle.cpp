@@ -57,6 +57,7 @@ namespace OpenLoco::Paint
 
         if (bogie->getFlags38() & Flags38::isReversed)
         {
+            // Flip the highest bit to reverse the yaw
             yaw ^= (1 << 5);
             pitch = _reversePitch[static_cast<uint8_t>(bogie->sprite_pitch)];
         }
@@ -73,6 +74,7 @@ namespace OpenLoco::Paint
             default:
                 if (sprite.flags & BogieSpriteFlags::rotationalSymmetry)
                 {
+                    // Rotational symmetry will have 1 fewer bits of yaw
                     yawIndex ^= (1 << 4);
                 }
                 else
