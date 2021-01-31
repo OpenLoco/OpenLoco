@@ -2018,9 +2018,9 @@ namespace OpenLoco::Ui::Options
             // Add pre-defined entries
             Dropdown::add(0, StringIds::dropdown_stringid, { StringIds::autosave_never });
             Dropdown::add(1, StringIds::dropdown_stringid, { StringIds::autosave_every_month });
-            Dropdown::add(2, StringIds::dropdown_stringid, { StringIds::autosave_every_x_months, static_cast<uint16_t>(3) });
-            Dropdown::add(3, StringIds::dropdown_stringid, { StringIds::autosave_every_x_months, static_cast<uint16_t>(6) });
-            Dropdown::add(4, StringIds::dropdown_stringid, { StringIds::autosave_every_x_months, static_cast<uint16_t>(12) });
+            Dropdown::add(2, StringIds::dropdown_stringid, { StringIds::autosave_every_x_months, static_cast<uint32_t>(3) });
+            Dropdown::add(3, StringIds::dropdown_stringid, { StringIds::autosave_every_x_months, static_cast<uint32_t>(6) });
+            Dropdown::add(4, StringIds::dropdown_stringid, { StringIds::autosave_every_x_months, static_cast<uint32_t>(12) });
 
             // Set current selection
             auto freq = Config::getNew().autosave_frequency;
