@@ -1091,8 +1091,9 @@ namespace OpenLoco::Audio
         {
             if (_currentSong == no_song)
             {
-                _currentSong = chooseNextMusicTrack(_lastSong);
+                auto trackToExclude = _lastSong;
                 _lastSong = _currentSong;
+                _currentSong = chooseNextMusicTrack(trackToExclude);
             }
 
             const auto& mi = MusicInfo[_currentSong];
