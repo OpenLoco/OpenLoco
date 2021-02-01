@@ -1101,7 +1101,7 @@ namespace OpenLoco::Audio
             }
             else
             {
-                // We've choosing this one, but the next one should be decided automatically again.
+                // We're choosing this one, but the next one should be decided automatically again.
                 _lastSong = no_song;
             }
 
