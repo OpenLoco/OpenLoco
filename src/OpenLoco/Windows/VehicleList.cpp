@@ -44,11 +44,11 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
     widx getTabFromType(uint8_t type);
 
-    void sub_4C1D4F()
+    void sub_4C1D4F(window* vehicle_list)
     {
         registers regs;
-
-        call(0x004C1D4F);
+        regs.esi = (int32_t)vehicle_list;
+        call(0x004C1D4F, regs);
     }
 
     // 0x004C19DC
@@ -70,7 +70,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
             vehicle_list->sort_mode = 0;
             vehicle_list->row_hover = -1;
 
-            VehicleList::sub_4C1D4F();
+            VehicleList::sub_4C1D4F(vehicle_list);
 
             vehicle_list->invalidate();
 
