@@ -28,9 +28,9 @@ namespace OpenLoco::Ui::Options
     static void sub_4C1519();
     static void sub_4BF935();
 
-    static loco_global<uint32_t, 0x0050D430> _50D430;
+    static loco_global<uint32_t, 0x0050D430> _songProgress;
     static loco_global<int8_t, 0x0050D434> _currentSong;
-    static loco_global<uint8_t, 0x0050D435> _50D435;
+    static loco_global<uint8_t, 0x0050D435> _lastSong;
 
     // Should be a pointer to an array of u8's
     static loco_global<void*, 0x011364A0> __11364A0;
@@ -1185,8 +1185,8 @@ namespace OpenLoco::Ui::Options
             Audio::stopBackgroundMusic();
 
             _currentSong = track;
-            _50D435 = track;
-            _50D430 = 0;
+            _lastSong = track;
+            _songProgress = 0;
 
             w->invalidate();
         }
