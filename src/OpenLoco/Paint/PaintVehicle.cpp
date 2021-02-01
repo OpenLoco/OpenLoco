@@ -182,12 +182,6 @@ namespace OpenLoco::Paint
         }
     }
 
-    struct BodyImages
-    {
-        uint32_t body;
-        uint32_t brakingLight;
-    };
-
     static uint32_t paintBodyPitchDefault(const VehicleObjectBodySprite& sprite, uint8_t yaw)
     {
         if (sprite.flags & BodySpriteFlags::rotationalSymmetry)
@@ -400,14 +394,12 @@ namespace OpenLoco::Paint
                 break;
         }
 
-        BodyImages bi{
-            getBodyImage(pitchImageId, body),
-            getBrakingImage(pitchImageId, sprite)
-        };
+        uint32_t bodyImage = getBodyImage(pitchImageId, body);
 
-        if (!(sprite.flags & BodySpriteFlags::hasBrakingLights))
+        std::optional<uint32_t> brakingImage = {};
+        if (sprite.flags & BodySpriteFlags::hasBrakingLights)
         {
-            bi.brakingLight = std::numeric_limits<decltype(bi.brakingLight)>::max();
+            brakingImage = getBrakingImage(pitchImageId, sprite);
         }
 
         Map::map_pos3 offsets = { 0, 0, body->z };
@@ -445,30 +437,30 @@ namespace OpenLoco::Paint
                 15
             };
         }
-        auto imageId = bi.body;
+
+        uint32_t imageId = 0;
         if (body->getFlags38() & Flags38::isGhost)
         {
-            imageId = applyGhostToImage(imageId);
+            imageId = applyGhostToImage(bodyImage);
         }
         else if (body->var_0C & Flags0C::unk_5)
         {
-            imageId = Gfx::recolour(imageId, PaletteIndex::index_74);
+            imageId = Gfx::recolour(bodyImage, PaletteIndex::index_74);
         }
         else
         {
-            imageId = Gfx::recolour2(imageId, body->colour_scheme.primary, body->colour_scheme.secondary);
+            imageId = Gfx::recolour2(bodyImage, body->colour_scheme.primary, body->colour_scheme.secondary);
         }
-
         session.addToPlotList4FD200(imageId, offsets, boundBoxOffsets, boundBoxSize);
 
-        if (bi.brakingLight != std::numeric_limits<decltype(bi.brakingLight)>::max())
+        if (brakingImage)
         {
             Vehicle train(body->head);
             if (train.veh2->var_5B != 0
                 && !(body->getFlags38() & Flags38::isGhost)
                 && !(body->var_0C & Flags0C::unk_5))
             {
-                session.attachToPrevious(bi.brakingLight, { 0, 0 });
+                session.attachToPrevious(*brakingImage, { 0, 0 });
             }
         }
     }
