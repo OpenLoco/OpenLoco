@@ -1123,7 +1123,7 @@ void OpenLoco::vehicle_body::steamPuffsAnimationUpdate(uint8_t num, int32_t var_
 
         for (auto& el : tile)
         {
-            if (itemFound && !(el.isFlag4() | el.isFlag5()))
+            if (itemFound && !(el.isGhost() | el.isFlag5()))
             {
                 break;
             }
@@ -1714,6 +1714,22 @@ bool vehicle_head::isVehicleTypeCompatible(const uint16_t vehicleTypeId) // TODO
         return false;
     }
     return true;
+}
+
+// 0x004B671C
+VehicleStatus vehicle_head::getStatus() const
+{
+    registers regs = {};
+    regs.esi = reinterpret_cast<int32_t>(this);
+
+    call(0x004B671C, regs);
+
+    VehicleStatus vehStatus = {};
+    vehStatus.status1 = regs.bx;
+    vehStatus.status1Args = regs.eax;
+    vehStatus.status2 = regs.cx;
+    vehStatus.status2Args = regs.edx;
+    return vehStatus;
 }
 
 namespace OpenLoco::Things::Vehicle

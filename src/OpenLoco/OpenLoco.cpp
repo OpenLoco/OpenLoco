@@ -75,7 +75,6 @@ namespace OpenLoco
     loco_global<uint8_t, 0x00508F17> paused_state;
     loco_global<uint8_t, 0x00508F1A> game_speed;
     static loco_global<string_id, 0x0050A018> _mapTooltipFormatArguments;
-    static loco_global<company_id_t, 0x0050A040> _mapTooltipOwner;
     static loco_global<int32_t, 0x0052339C> _52339C;
     static loco_global<int8_t, 0x0052336E> _52336E; // bool
     loco_global<Utility::prng, 0x00525E18> _prng;
@@ -315,8 +314,7 @@ namespace OpenLoco
     // 0x004C57C0
     void initialiseViewports()
     {
-        _mapTooltipFormatArguments = StringIds::null;
-        _mapTooltipOwner = CompanyId::null;
+        Ui::Windows::MapToolTip::reset();
 
         Colour::initColourMap();
         Ui::WindowManager::init();

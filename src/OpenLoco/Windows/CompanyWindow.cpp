@@ -810,7 +810,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             {
                 x = self->x + (self->widgets[widx::viewport].left + self->widgets[widx::viewport].right) / 2;
                 y = self->y + self->widgets[widx::viewport].top - 12;
-                Gfx::drawStringCentred(*dpi, x, y, Colour::black, StringIds::headquarters);
+                Gfx::drawStringCentred(*dpi, x, y, Colour::black, StringIds::wcolour2_headquarters);
             }
 
             if (company->headquarters_x == -1)
