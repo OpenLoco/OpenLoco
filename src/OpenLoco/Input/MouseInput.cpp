@@ -46,11 +46,7 @@ namespace OpenLoco::Input
 
     static loco_global<mouse_button, 0x001136FA0> _lastKnownButtonState;
 
-    static loco_global<Map::map_pos[4], 0x004F9296> _4F9296;
-
     static loco_global<string_id, 0x0050A018> _mapTooltipFormatArguments;
-
-    static loco_global<company_id_t, 0x0050A040> _mapTooltipOwner;
 
     static loco_global<uint16_t, 0x0050C19C> time_since_last_tick;
 
@@ -557,8 +553,8 @@ namespace OpenLoco::Input
                             {
                                 auto index = building->multiTileIndex();
                                 Map::map_pos pos{ interaction.x, interaction.y };
-                                pos.x -= _4F9296[index].x;
-                                pos.y -= _4F9296[index].y;
+                                pos.x -= Map::offsets[index].x;
+                                pos.y -= Map::offsets[index].y;
 
                                 auto z = building->baseZ();
                                 for (auto& company : CompanyManager::companies())
@@ -1866,12 +1862,11 @@ namespace OpenLoco::Input
         bool skipItem = false;
         Ui::cursor_id cursorId = Ui::cursor_id::pointer;
 
-        _mapTooltipFormatArguments = StringIds::null;
-        _mapTooltipOwner = CompanyId::null;
+        Windows::MapToolTip::reset();
 
-        if (_mapSelectionFlags & (1 << 6))
+        if (hasMapSelectionFlag(MapSelectionFlags::unk_6))
         {
-            _mapSelectionFlags &= (uint16_t) ~(1 << 6);
+            resetMapSelectionFlag(MapSelectionFlags::unk_6);
             auto station = StationManager::get(_hoveredStationId);
             if (!station->empty())
             {
@@ -1993,6 +1988,11 @@ namespace OpenLoco::Input
     Gfx::point_t getMouseLocation()
     {
         return Gfx::point_t(_cursorX, _cursorY);
+    }
+
+    Gfx::point_t getMouseLocation2()
+    {
+        return Gfx::point_t(_cursorX2, _cursorY2);
     }
 
     Gfx::point_t getTooltipMouseLocation()

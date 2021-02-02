@@ -33,17 +33,17 @@ loco_global<uint8_t, 0x00525FAE> vehicle_var_525FAE;     // boolean
 static loco_global<string_id, 0x009C68E6> gGameCommandErrorText;
 
 // 0x00503E5C
-static constexpr uint8_t vehicleBodyIndexToPitch[] = {
-    0,
-    1,
-    2,
-    3,
-    4,
-    0, // Not a straight number count
-    5,
-    6,
-    7,
-    8
+static constexpr Pitch vehicleBodyIndexToPitch[] = {
+    Pitch::flat,
+    Pitch::up6deg,
+    Pitch::up12deg,
+    Pitch::up18deg,
+    Pitch::up25deg,
+    Pitch::flat, // Not a straight number count
+    Pitch::down6deg,
+    Pitch::down12deg,
+    Pitch::down18deg,
+    Pitch::down25deg,
 };
 
 // 0x00503B50
@@ -78,6 +78,18 @@ TransportMode OpenLoco::vehicle_base::getTransportMode() const
 {
     const auto* veh = reinterpret_cast<const vehicle*>(this);
     return veh->mode;
+}
+
+uint8_t OpenLoco::vehicle_base::getOwner() const
+{
+    const auto* veh = reinterpret_cast<const vehicle*>(this);
+    return veh->owner;
+}
+
+uint8_t OpenLoco::vehicle_base::getFlags38() const
+{
+    const auto* veh = reinterpret_cast<const vehicle*>(this);
+    return veh->var_38;
 }
 
 vehicle_object* vehicle::object() const
@@ -202,7 +214,7 @@ void vehicle_head::sub_4BAA76()
     call(0x004BAA76, regs);
 }
 
-static uint16_t sub_4BE368(uint32_t distance);
+static uint16_t fastSquareRoot(uint32_t distance);
 
 // 0x004AA1D0
 int32_t OpenLoco::vehicle_body::update()
@@ -242,7 +254,7 @@ int32_t OpenLoco::vehicle_body::update()
 // 0x004AAC4E
 void OpenLoco::vehicle_body::animationUpdate()
 {
-    if (var_38 & Things::Vehicle::Flags38::unk_4)
+    if (var_38 & Things::Vehicle::Flags38::isGhost)
         return;
 
     vehicle_head* headVeh = vehicleUpdate_head;
@@ -293,7 +305,7 @@ void OpenLoco::vehicle_body::animationUpdate()
 void OpenLoco::vehicle_body::sub_4AAB0B()
 {
     int32_t eax = vehicle_var_1136130 >> 3;
-    if (var_38 & Things::Vehicle::Flags38::unk_1)
+    if (var_38 & Things::Vehicle::Flags38::isReversed)
     {
         eax = -eax;
     }
@@ -333,7 +345,7 @@ void OpenLoco::vehicle_body::sub_4AAB0B()
 
             if (ah < 0)
             {
-                if (var_38 & Things::Vehicle::Flags38::unk_1)
+                if (var_38 & Things::Vehicle::Flags38::isReversed)
                 {
                     ah = 2;
                     if (al != 0 && al != ah)
@@ -352,7 +364,7 @@ void OpenLoco::vehicle_body::sub_4AAB0B()
             }
             else if (ah > 0)
             {
-                if (var_38 & Things::Vehicle::Flags38::unk_1)
+                if (var_38 & Things::Vehicle::Flags38::isReversed)
                 {
                     ah = 1;
                     if (al != 0 && al != ah)
@@ -403,7 +415,7 @@ void OpenLoco::vehicle_body::sub_4AC255(vehicle_bogie* back_bogie, vehicle_bogie
     auto distance_x = front_bogie->x - back_bogie->x;
     auto distance_y = front_bogie->y - back_bogie->y;
 
-    auto offset = sub_4BE368(distance_x * distance_x + distance_y * distance_y);
+    auto offset = fastSquareRoot(distance_x * distance_x + distance_y * distance_y);
 
     auto vehicle_object = object();
 
@@ -416,15 +428,15 @@ void OpenLoco::vehicle_body::sub_4AC255(vehicle_bogie* back_bogie, vehicle_bogie
         sprite_pitch = updateSpritePitch(offset, front_bogie->z - back_bogie->z);
     }
 
-    // If the sprite_pitch is odd
-    if (sprite_pitch & 1)
+    // If the sprite_pitch is a transition
+    if (static_cast<uint8_t>(sprite_pitch) & 1)
     {
         sprite_yaw = updateSpriteYaw1(distance_x, distance_y);
     }
     else
     {
         auto sprite = vehicle_object->sprites[object_sprite_type];
-        uint8_t i = sprite_pitch == 0 ? sprite.var_0B : sprite.var_0C;
+        uint8_t i = sprite_pitch == Pitch::flat ? sprite.var_0B : sprite.var_0C;
         switch (i)
         {
             case 0:
@@ -447,7 +459,7 @@ void OpenLoco::vehicle_body::sub_4AC255(vehicle_bogie* back_bogie, vehicle_bogie
 }
 
 // 0x004BE368
-static uint16_t sub_4BE368(uint32_t distance)
+static uint16_t fastSquareRoot(uint32_t distance)
 {
     uint8_t i = 10;
     for (; distance > 4096; --i, distance >>= 2)
@@ -457,7 +469,7 @@ static uint16_t sub_4BE368(uint32_t distance)
 }
 
 // 0x004BF4DA
-uint8_t OpenLoco::vehicle_body::updateSpritePitchSteepSlopes(uint16_t xy_offset, int16_t z_offset)
+Pitch OpenLoco::vehicle_body::updateSpritePitchSteepSlopes(uint16_t xy_offset, int16_t z_offset)
 {
     uint32_t i = 0;
 
@@ -497,7 +509,7 @@ uint8_t OpenLoco::vehicle_body::updateSpritePitchSteepSlopes(uint16_t xy_offset,
 }
 
 // 0x004BF49D
-uint8_t OpenLoco::vehicle_body::updateSpritePitch(uint16_t xy_offset, int16_t z_offset)
+Pitch OpenLoco::vehicle_body::updateSpritePitch(uint16_t xy_offset, int16_t z_offset)
 {
     uint32_t i = 0;
 
@@ -1043,7 +1055,7 @@ void OpenLoco::vehicle_body::steamPuffsAnimationUpdate(uint8_t num, int32_t var_
 
     auto _var_44 = var_44;
     // Reversing
-    if (var_38 & Things::Vehicle::Flags38::unk_1)
+    if (var_38 & Things::Vehicle::Flags38::isReversed)
     {
         var_05 = -var_05;
         _var_44 = -_var_44;
@@ -1079,7 +1091,7 @@ void OpenLoco::vehicle_body::steamPuffsAnimationUpdate(uint8_t num, int32_t var_
 
     loc.z += vehicleObject->animation[num].height;
 
-    auto xyFactor = vehicleObject->animation[num].height * factor503B50[sprite_pitch];
+    auto xyFactor = vehicleObject->animation[num].height * factor503B50[static_cast<uint8_t>(sprite_pitch)];
     xyFactor /= 256;
 
     auto xFactor = xyFactor * factorXY503B6A[sprite_yaw * 2];
@@ -1111,7 +1123,7 @@ void OpenLoco::vehicle_body::steamPuffsAnimationUpdate(uint8_t num, int32_t var_
 
         for (auto& el : tile)
         {
-            if (itemFound && !(el.isFlag4() | el.isFlag5()))
+            if (itemFound && !(el.isGhost() | el.isFlag5()))
             {
                 break;
             }
@@ -1202,7 +1214,7 @@ void OpenLoco::vehicle_body::dieselExhaust1AnimationUpdate(uint8_t num, int32_t 
         if (veh_2->var_56 == 0)
             return;
 
-        if (var_38 & Things::Vehicle::Flags38::unk_1)
+        if (var_38 & Things::Vehicle::Flags38::isReversed)
         {
             var_05 = -var_05;
         }
@@ -1227,7 +1239,7 @@ void OpenLoco::vehicle_body::dieselExhaust1AnimationUpdate(uint8_t num, int32_t 
         if (veh_2->var_5A != 1)
             return;
 
-        if (var_38 & Things::Vehicle::Flags38::unk_1)
+        if (var_38 & Things::Vehicle::Flags38::isReversed)
         {
             var_05 = -var_05;
         }
@@ -1255,7 +1267,7 @@ void OpenLoco::vehicle_body::dieselExhaust1AnimationUpdate(uint8_t num, int32_t 
 
         loc.z += vehicleObject->animation[num].height;
 
-        auto xyFactor = vehicleObject->animation[num].height * factor503B50[sprite_pitch];
+        auto xyFactor = vehicleObject->animation[num].height * factor503B50[static_cast<uint8_t>(sprite_pitch)];
         xyFactor /= 256;
 
         auto xFactor = xyFactor * factorXY503B6A[sprite_yaw * 2];
@@ -1288,7 +1300,7 @@ void OpenLoco::vehicle_body::dieselExhaust2AnimationUpdate(uint8_t num, int32_t 
     if (veh_2->var_56 > 917504)
         return;
 
-    if (var_38 & Things::Vehicle::Flags38::unk_1)
+    if (var_38 & Things::Vehicle::Flags38::isReversed)
     {
         var_05 = -var_05;
     }
@@ -1314,7 +1326,7 @@ void OpenLoco::vehicle_body::dieselExhaust2AnimationUpdate(uint8_t num, int32_t 
 
     loc.z += vehicleObject->animation[num].height;
 
-    auto xyFactor = vehicleObject->animation[num].height * factor503B50[sprite_pitch];
+    auto xyFactor = vehicleObject->animation[num].height * factor503B50[static_cast<uint8_t>(sprite_pitch)];
     xyFactor /= 256;
 
     auto xFactor = xyFactor * factorXY503B6A[sprite_yaw * 2];
@@ -1361,7 +1373,7 @@ void OpenLoco::vehicle_body::electricSpark1AnimationUpdate(uint8_t num, int32_t 
         return;
 
     auto _var_44 = var_44;
-    if (var_38 & Things::Vehicle::Flags38::unk_1)
+    if (var_38 & Things::Vehicle::Flags38::isReversed)
     {
         var_05 = -var_05;
         _var_44 = -var_44;
@@ -1391,7 +1403,7 @@ void OpenLoco::vehicle_body::electricSpark1AnimationUpdate(uint8_t num, int32_t 
 
     loc.z += vehicleObject->animation[num].height;
 
-    auto xyFactor = vehicleObject->animation[num].height * factor503B50[sprite_pitch];
+    auto xyFactor = vehicleObject->animation[num].height * factor503B50[static_cast<uint8_t>(sprite_pitch)];
     xyFactor /= 256;
 
     auto xFactor = xyFactor * factorXY503B6A[sprite_yaw * 2];
@@ -1421,7 +1433,7 @@ void OpenLoco::vehicle_body::electricSpark2AnimationUpdate(uint8_t num, int32_t 
         return;
 
     auto _var_44 = var_44;
-    if (var_38 & Things::Vehicle::Flags38::unk_1)
+    if (var_38 & Things::Vehicle::Flags38::isReversed)
     {
         var_05 = -var_05;
         _var_44 = -var_44;
@@ -1451,7 +1463,7 @@ void OpenLoco::vehicle_body::electricSpark2AnimationUpdate(uint8_t num, int32_t 
 
     loc.z += vehicleObject->animation[num].height;
 
-    auto xyFactor = vehicleObject->animation[num].height * factor503B50[sprite_pitch];
+    auto xyFactor = vehicleObject->animation[num].height * factor503B50[static_cast<uint8_t>(sprite_pitch)];
     xyFactor /= 256;
 
     auto xFactor = xyFactor * factorXY503B6A[sprite_yaw * 2];
@@ -1464,7 +1476,7 @@ void OpenLoco::vehicle_body::electricSpark2AnimationUpdate(uint8_t num, int32_t 
     loc.y += yFactor;
 
     auto yaw = (sprite_yaw + 16) & 0x3F;
-    auto firstBogie = var_38 & Things::Vehicle::Flags38::unk_1 ? backBogie : frontBogie;
+    auto firstBogie = var_38 & Things::Vehicle::Flags38::isReversed ? backBogie : frontBogie;
     xyFactor = 5;
     if (!(vehicle_arr_4F8A7C[firstBogie->var_2C / 8] & 1))
     {
@@ -1702,6 +1714,22 @@ bool vehicle_head::isVehicleTypeCompatible(const uint16_t vehicleTypeId) // TODO
         return false;
     }
     return true;
+}
+
+// 0x004B671C
+VehicleStatus vehicle_head::getStatus() const
+{
+    registers regs = {};
+    regs.esi = reinterpret_cast<int32_t>(this);
+
+    call(0x004B671C, regs);
+
+    VehicleStatus vehStatus = {};
+    vehStatus.status1 = regs.bx;
+    vehStatus.status1Args = regs.eax;
+    vehStatus.status2 = regs.cx;
+    vehStatus.status2Args = regs.edx;
+    return vehStatus;
 }
 
 namespace OpenLoco::Things::Vehicle

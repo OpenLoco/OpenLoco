@@ -456,7 +456,7 @@ namespace OpenLoco::Ui::Vehicle
             auto head = Common::getVehicle(self);
 
             // If vehicle not placed put into pickup mode if window in focus
-            if (head->tile_x != -1 && (head->var_38 & Things::Vehicle::Flags38::unk_4) == 0)
+            if (head->tile_x != -1 && (head->var_38 & Things::Vehicle::Flags38::isGhost) == 0)
             {
                 return;
             }
@@ -732,7 +732,7 @@ namespace OpenLoco::Ui::Vehicle
             }
             self->widgets[widx::stopStart].image = stopStartImage;
 
-            bool isPlaced = head->tile_x != -1 && !(head->var_38 & OpenLoco::Things::Vehicle::Flags38::unk_4);
+            bool isPlaced = head->tile_x != -1 && !(head->var_38 & OpenLoco::Things::Vehicle::Flags38::isGhost);
             auto [pickupImage, pickupTooltip] = Common::getPickupImageIdandTooltip(*head, isPlaced);
             self->widgets[widx::pickup].image = Gfx::recolour(pickupImage);
             self->widgets[widx::pickup].tooltip = pickupTooltip;
@@ -1018,7 +1018,7 @@ namespace OpenLoco::Ui::Vehicle
             }
 
             auto vehicle = Common::getVehicle(self);
-            if (vehicle->tile_x != -1 && (vehicle->var_38 & Things::Vehicle::Flags38::unk_4) == 0)
+            if (vehicle->tile_x != -1 && (vehicle->var_38 & Things::Vehicle::Flags38::isGhost) == 0)
                 return;
 
             if (!WindowManager::isInFrontAlt(self))
@@ -1269,7 +1269,7 @@ namespace OpenLoco::Ui::Vehicle
             self->widgets[widx::buildNew].type = widget_type::wt_9;
             self->widgets[widx::pickup].type = widget_type::wt_9;
             self->widgets[widx::remove].type = widget_type::wt_9;
-            bool isPlaced = head->tile_x != -1 && !(head->var_38 & OpenLoco::Things::Vehicle::Flags38::unk_4);
+            bool isPlaced = head->tile_x != -1 && !(head->var_38 & OpenLoco::Things::Vehicle::Flags38::isGhost);
             // Differs to main tab! Unsure why.
             if (isPlaced)
             {
@@ -3253,7 +3253,7 @@ namespace OpenLoco::Ui::Vehicle
         static void pickupToolAbort(window& self)
         {
             auto head = getVehicle(&self);
-            if (head->tile_x == -1 || !(head->var_38 & Things::Vehicle::Flags38::unk_4))
+            if (head->tile_x == -1 || !(head->var_38 & Things::Vehicle::Flags38::isGhost))
             {
                 self.invalidate();
                 return;
@@ -3388,7 +3388,7 @@ namespace OpenLoco::Ui::Vehicle
         {
             self->invalidate();
             auto head = getVehicle(self);
-            if (head->tile_x == -1 || head->var_38 & Things::Vehicle::Flags38::unk_4)
+            if (head->tile_x == -1 || head->var_38 & Things::Vehicle::Flags38::isGhost)
             {
                 auto tool = typeToTool[static_cast<uint8_t>(head->vehicleType)][_pickupDirection != 0 ? 1 : 0];
                 if (Input::toolSet(self, pickupWidx, tool))

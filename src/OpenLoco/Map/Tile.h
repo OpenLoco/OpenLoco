@@ -143,6 +143,9 @@ namespace OpenLoco::Map
         coord_t waterHeight;
     };
 
+    // 0x004F9296, 0x4F9298
+    constexpr map_pos offsets[4] = { { 0, 0 }, { 0, 32 }, { 32, 32 }, { 32, 0 } };
+
     tileHeight tileElementHeight(int16_t x, int16_t y);
     Ui::viewport_pos coordinate3dTo2d(int16_t x, int16_t y, int16_t z, int rotation);
     map_pos rotate2dCoordinate(map_pos pos, uint8_t rotation);
@@ -162,7 +165,7 @@ namespace OpenLoco::Map
 
     namespace ElementFlags
     {
-        constexpr uint8_t flag_4 = 1 << 4;
+        constexpr uint8_t ghost = 1 << 4;
         constexpr uint8_t flag_5 = 1 << 5;
         constexpr uint8_t flag_6 = 1 << 6;
         constexpr uint8_t last = 1 << 7;
@@ -196,7 +199,7 @@ namespace OpenLoco::Map
         uint8_t clearZ() const { return _clear_z; }
 
         bool hasHighTypeFlag() const { return _type & 0x80; }
-        bool isFlag4() const { return _flags & ElementFlags::flag_4; }
+        bool isGhost() const { return _flags & ElementFlags::ghost; }
         bool isFlag5() const { return _flags & ElementFlags::flag_5; }
         void setFlag6() { _flags |= ElementFlags::flag_6; }
         bool isLast() const;
@@ -376,7 +379,8 @@ namespace OpenLoco::Map
         uint8_t _7;
 
     public:
-        OpenLoco::industry* industry();
+        OpenLoco::industry_id_t industryId() const { return _industryId; }
+        OpenLoco::industry* industry() const;
     };
 #pragma pack(pop)
 

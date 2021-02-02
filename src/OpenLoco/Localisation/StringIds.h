@@ -387,6 +387,9 @@ namespace OpenLoco::StringIds
     constexpr string_id town_size_city = 620;
     constexpr string_id town_size_metropolis = 621;
 
+    constexpr string_id wcolour3_stringid_2 = 627; // identical to 628
+    constexpr string_id wcolour3_stringid = 628;
+    constexpr string_id wcolour3_stringid_stringid = 629;
     constexpr string_id cash_bankrupt = 630;
     constexpr string_id cash_positive = 631;
     constexpr string_id cash_negative = 632;
@@ -715,7 +718,7 @@ namespace OpenLoco::StringIds
     constexpr string_id route_click_on_waypoint = 1236;
     constexpr string_id tooltip_route_scrollview = 1237;
     constexpr string_id tooltip_route_scrollview_copy = 1238;
-
+    constexpr string_id stringid_stringid_wcolour3_stringid = 1239;
     constexpr string_id build_trains = 1240;
     constexpr string_id build_buses = 1241;
     constexpr string_id build_trucks = 1242;
@@ -778,6 +781,7 @@ namespace OpenLoco::StringIds
     constexpr string_id table_header_stations_desc = 1300;
     constexpr string_id tooltip_sort_stations = 1301;
 
+    constexpr string_id town_size_and_population = 1304;
     constexpr string_id tooltip_sort_town_type = 1305;
     constexpr string_id table_header_town_type = 1306;
     constexpr string_id table_header_town_type_desc = 1307;
@@ -802,7 +806,7 @@ namespace OpenLoco::StringIds
     constexpr string_id tooltip_fund_new_industries = 1326;
     constexpr string_id tooltip_build_new_industries = 1327;
 
-    constexpr string_id headquarters = 1354;
+    constexpr string_id wcolour2_headquarters = 1354;
     constexpr string_id window_owner = 1355;
     constexpr string_id interest_per_year = 1356;
     constexpr string_id population_graph_people = 1357;
@@ -888,7 +892,7 @@ namespace OpenLoco::StringIds
     constexpr string_id tooltip_sort_by_cargo_accepted = 1441;
     constexpr string_id num_units = 1442;
     constexpr string_id unit_separator = 1443;
-
+    constexpr string_id station_accepts = 1444;
     constexpr string_id accepted_cargo_separator = 1445;
     constexpr string_id cargo_nothing_accepted = 1446;
     constexpr string_id tooltip_station = 1447;
@@ -905,6 +909,7 @@ namespace OpenLoco::StringIds
     constexpr string_id title_name_owner = 1459;
     constexpr string_id prompt_enter_new_name_for_owner = 1460;
     constexpr string_id cannot_change_owner_name = 1461;
+    constexpr string_id headquarters = 1462;
 
     constexpr string_id tooltip_select_company = 1465;
 

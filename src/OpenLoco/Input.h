@@ -44,6 +44,7 @@ namespace OpenLoco::Input
     {
         constexpr uint8_t unk_04 = 1 << 4; // Vehicle orders?
         constexpr uint8_t catchment_area = 1 << 5;
+        constexpr uint8_t unk_6 = 1 << 6;
     };
 
     namespace KeyModifier
@@ -63,6 +64,7 @@ namespace OpenLoco::Input
     void state(input_state);
 
     Gfx::point_t getMouseLocation();
+    Gfx::point_t getMouseLocation2();
     bool isHovering(Ui::WindowType);
     bool isHovering(Ui::WindowType, Ui::window_number);
     bool isHovering(Ui::WindowType type, Ui::window_number number, Ui::widget_index widgetIndex);
@@ -87,6 +89,8 @@ namespace OpenLoco::Input
     void toolCancel(Ui::WindowType, Ui::window_number);
     int16_t getToolWidgetIndex();
 
+    void enqueueText(const char* text);
+    void enqueueKey(uint32_t key);
     bool hasKeyModifier(uint8_t modifier);
     uint16_t getMapSelectionFlags();
     bool hasMapSelectionFlag(uint8_t flags);

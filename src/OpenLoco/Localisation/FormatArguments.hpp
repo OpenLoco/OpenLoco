@@ -30,6 +30,24 @@ namespace OpenLoco
             _length = std::size(_commonFormatArgs);
         }
 
+        template<typename... T>
+        static FormatArguments common(T... args)
+        {
+            loco_global<std::byte[0x0112C83A - 0x0112C826], 0x0112C826> _commonFormatArgs;
+            FormatArguments formatter{ &*_commonFormatArgs, std::size(_commonFormatArgs) };
+            (formatter.push(args), ...);
+            return formatter;
+        }
+
+        template<typename... T>
+        static FormatArguments mapToolTip(T... args)
+        {
+            static loco_global<std::byte[40], 0x0050A018> _mapTooltipFormatArguments;
+            FormatArguments formatter{ &*_mapTooltipFormatArguments, std::size(_mapTooltipFormatArguments) };
+            (formatter.push(args), ...);
+            return formatter;
+        }
+
         // Size in bytes to skip forward the buffer
         void skip(const size_t size)
         {

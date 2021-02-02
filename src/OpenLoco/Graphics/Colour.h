@@ -82,8 +82,11 @@ namespace OpenLoco
         constexpr palette_index_t index_1F = 0x1F;
         constexpr palette_index_t index_24 = 0x24;
         constexpr palette_index_t index_29 = 0x29;
+        constexpr palette_index_t index_2C = 0x2C;
         constexpr palette_index_t index_2E = 0x2E;
         constexpr palette_index_t index_30 = 0x30;
+        constexpr palette_index_t index_31 = 0x31;
+        constexpr palette_index_t index_32 = 0x32;
         constexpr palette_index_t index_35 = 0x35;
         constexpr palette_index_t index_38 = 0x38;
         constexpr palette_index_t index_3F = 0x3F;
@@ -97,6 +100,7 @@ namespace OpenLoco
         constexpr palette_index_t index_67 = 0x67;
         constexpr palette_index_t index_68 = 0x68;
         constexpr palette_index_t index_71 = 0x71;
+        constexpr palette_index_t index_74 = 0x74;
         constexpr palette_index_t index_7D = 0x7D;
         constexpr palette_index_t index_85 = 0x85;
         constexpr palette_index_t index_89 = 0x89;
