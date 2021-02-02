@@ -50,7 +50,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         if (station->isFlag5())
             return false;
 
-        interaction.type = InteractionItem::station;
+        interaction.type = InteractionItem::trackStation;
         interaction.object = station;
         return getStationArguments(interaction);
     }
@@ -86,7 +86,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         if (station->isFlag5())
             return false;
 
-        interaction.type = InteractionItem::station;
+        interaction.type = InteractionItem::roadStation;
         return getStationArguments(interaction);
     }
 
@@ -101,6 +101,7 @@ namespace OpenLoco::Ui::ViewportInteraction
             return false;
 
         interaction.value = station->stationId();
+        interaction.type = InteractionItem::station;
         return getStationArguments(station->stationId());
     }
 
