@@ -262,7 +262,7 @@ namespace OpenLoco::Map
         uint8_t _slope;
         uint8_t _water;
         uint8_t _terrain;
-        uint8_t getIndustryArguments;
+        uint8_t _industry;
 
     public:
         bool isSlopeDoubleHeight() const { return _slope & SurfaceSlope::double_height; }
@@ -272,7 +272,7 @@ namespace OpenLoco::Map
         uint8_t water() const { return _water & 0x1F; }
         uint8_t terrain() const { return _terrain & 0x1F; }
         uint8_t var_6_SLR5() const { return _terrain >> 5; }
-        uint8_t industryId() const { return getIndustryArguments; }
+        uint8_t industryId() const { return _industry; }
         void createWave(int16_t x, int16_t y, int animationIndex);
     };
 

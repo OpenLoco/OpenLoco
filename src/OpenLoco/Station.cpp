@@ -34,7 +34,7 @@ namespace OpenLoco
         inline static loco_global<uint32_t, 0x0112C68C> _filter;
         inline static loco_global<uint32_t[max_cargo_stats], 0x0112C690> _score;
         inline static loco_global<uint32_t, 0x0112C710> _producedCargoTypes;
-        inline static loco_global<industry_id_t[max_cargo_stats], 0x0112C7D2> getIndustryArguments;
+        inline static loco_global<industry_id_t[max_cargo_stats], 0x0112C7D2> _industry;
         inline static loco_global<uint8_t, 0x0112C7F2> _byte_112C7F2;
 
     public:
@@ -145,17 +145,17 @@ namespace OpenLoco
 
         void resetIndustryMap()
         {
-            std::fill_n(getIndustryArguments.get(), max_cargo_stats, IndustryId::null);
+            std::fill_n(_industry.get(), max_cargo_stats, IndustryId::null);
         }
 
         industry_id_t getIndustry(const uint8_t cargo) const
         {
-            return getIndustryArguments[cargo];
+            return _industry[cargo];
         }
 
         void setIndustry(const uint8_t cargo, const industry_id_t id)
         {
-            getIndustryArguments[cargo] = id;
+            _industry[cargo] = id;
         }
     };
 
