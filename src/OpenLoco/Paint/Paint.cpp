@@ -23,7 +23,9 @@ namespace OpenLoco::Paint
 
     loco_global<int32_t[4], 0x4FD120> _4FD120;
     loco_global<int32_t[4], 0x4FD130> _4FD130;
-    loco_global<int32_t[4], 0x4FD140> _4FD140;    loco_global<int32_t[4], 0x4FD200> _4FD200;
+    loco_global<int32_t[4], 0x4FD140> _4FD140;
+    loco_global<int32_t[4], 0x4FD200> _4FD200;
+
     // 0x004FD120
     void PaintSession::addToStringPlotList(uint32_t amount, string_id stringId, uint16_t y, uint16_t z, int8_t* y_offsets, int16_t offset_x)
     {
