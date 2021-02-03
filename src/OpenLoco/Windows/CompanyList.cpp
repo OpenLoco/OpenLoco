@@ -25,7 +25,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
     static loco_global<uint16_t[3], 0x0052624E> _word_52624E;
     static loco_global<company_id_t[3], 0x00526254> _byte_526254;
     static loco_global<uint32_t[3], 0x00526258> _dword_526258;
-    static loco_global<uint16_t[32][120], 0x009C68F8> _deliveredCargoPayment;
+    static loco_global<currency32_t[32][60], 0x009C68F8> _deliveredCargoPayment;
     static loco_global<uint16_t, 0x009C68C7> _word_9C68C7;
     static loco_global<uint16_t, 0x0113DC7A> _graphLeft;
     static loco_global<uint16_t, 0x0113DC7C> _graphTop;
@@ -1175,10 +1175,35 @@ namespace OpenLoco::Ui::Windows::CompanyList
             Gfx::drawString_494B3F(*dpi, x, y, Colour::black, StringIds::cargo_transit_time);
         }
 
-        static void sub_4375F7()
+        // 0x0042F23C
+        // TODO: Move to cargo related file
+        static currency32_t calculateDeliveredCargoPayment(uint8_t cargoItem, int32_t numUnits, int32_t distance, uint16_t numDays)
         {
             registers regs;
-            call(0x004375F7, regs);
+            regs.eax = cargoItem;
+            regs.ebx = numUnits;
+            regs.ecx = distance;
+            regs.edx = numDays;
+            call(0x0042F23C, regs);
+            return regs.eax;
+        }
+
+        // 0x004375F7
+        static void buildDeliveredCargoPaymentsTable()
+        {
+            for (uint8_t cargoItem = 0; cargoItem < ObjectManager::getMaxObjects(object_type::cargo); ++cargoItem)
+            {
+                auto* cargoObj = ObjectManager::get<cargo_object>(cargoItem);
+                if (cargoObj == nullptr)
+                {
+                    continue;
+                }
+
+                for (uint16_t numDays = 2; numDays <= 122; ++numDays)
+                {
+                    _deliveredCargoPayment[cargoItem][(numDays / 2) - 1] = calculateDeliveredCargoPayment(cargoItem, 100, 10, numDays);
+                }
+            }
         }
 
         // 0x004379F2
@@ -1232,7 +1257,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             self->max_height = windowSize.height;
             self->width = windowSize.width;
             self->height = windowSize.height;
-            sub_4375F7();
+            buildDeliveredCargoPaymentsTable();
         }
 
         static void initEvents()
