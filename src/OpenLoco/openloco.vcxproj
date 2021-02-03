@@ -80,6 +80,7 @@
     <ClCompile Include="Objects\WallObject.cpp" />
     <ClCompile Include="Objects\WaterObject.cpp" />
     <ClCompile Include="OpenLoco.cpp" />
+    <ClCompile Include="Orders.cpp" />
     <ClCompile Include="Paint\Paint.cpp" />
     <ClCompile Include="Paint\PaintEntity.cpp" />
     <ClCompile Include="Paint\PaintVehicle.cpp" />
@@ -253,6 +254,7 @@
     <ClInclude Include="Objects\WallObject.h" />
     <ClInclude Include="Objects\WaterObject.h" />
     <ClInclude Include="OpenLoco.h" />
+    <ClInclude Include="Orders.h" />
     <ClInclude Include="Paint\Paint.h" />
     <ClInclude Include="Paint\PaintEntity.h" />
     <ClInclude Include="Paint\PaintVehicle.h" />
