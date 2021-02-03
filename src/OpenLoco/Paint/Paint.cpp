@@ -107,6 +107,17 @@ namespace OpenLoco::Paint
 
         call(_4FD200[currentRotation], regs);
     }
+    // 0x0045E779
+    void PaintSession::attachToPrevious(uint32_t imageId, const Map::map_pos& offset)
+    {
+        registers regs;
+        regs.ebx = imageId;
+        regs.ax = offset.x;
+        regs.cx = offset.y;
+
+        call(0x0045E779, regs);
+    }
+
     void PaintSession::init(Gfx::drawpixelinfo_t& dpi, const uint16_t viewportFlags)
     {
         _dpi = &dpi;

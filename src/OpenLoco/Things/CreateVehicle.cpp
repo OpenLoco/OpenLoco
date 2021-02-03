@@ -396,9 +396,9 @@ namespace OpenLoco::Things::Vehicle
 
         if (newBody->object_sprite_type != SpriteIndex::null)
         {
-            newBody->var_14 = vehObject.sprites[newBody->object_sprite_type].var_08;
-            newBody->var_09 = vehObject.sprites[newBody->object_sprite_type].var_09;
-            newBody->var_15 = vehObject.sprites[newBody->object_sprite_type].var_0A;
+            newBody->var_14 = vehObject.bodySprites[newBody->object_sprite_type].var_08;
+            newBody->var_09 = vehObject.bodySprites[newBody->object_sprite_type].var_09;
+            newBody->var_15 = vehObject.bodySprites[newBody->object_sprite_type].var_0A;
         }
 
         newBody->colour_scheme = colourScheme; // same as create bogie

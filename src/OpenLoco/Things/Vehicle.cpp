@@ -315,14 +315,14 @@ void OpenLoco::vehicle_body::sub_4AAB0B()
         return;
 
     auto vehicle_object = object();
-    int8_t al = 0;
-    if (vehicle_object->sprites[object_sprite_type].flags & (1 << 6))
+    uint8_t al = 0;
+    if (vehicle_object->bodySprites[object_sprite_type].flags & BodySpriteFlags::hasSpeedAnimation)
     {
         vehicle_2* veh3 = vehicleUpdate_2;
-        al = (veh3->var_56 >> 16) / (vehicle_object->speed / vehicle_object->sprites[object_sprite_type].var_02);
-        al = std::min(al, vehicle_object->sprites[object_sprite_type].var_02);
+        al = (veh3->var_56 >> 16) / (vehicle_object->speed / vehicle_object->bodySprites[object_sprite_type].numAnimationFrames);
+        al = std::min(al, vehicle_object->bodySprites[object_sprite_type].numAnimationFrames);
     }
-    else if (vehicle_object->sprites[object_sprite_type].var_05 != 1)
+    else if (vehicle_object->bodySprites[object_sprite_type].numRollFrames != 1)
     {
         vehicle_bogie* frontBogie = vehicleUpdate_frontBogie;
         vehicle_2* veh3 = vehicleUpdate_2;
@@ -390,7 +390,7 @@ void OpenLoco::vehicle_body::sub_4AAB0B()
     }
     else
     {
-        al = (var_44 >> 12) & (vehicle_object->sprites[object_sprite_type].var_02 - 1);
+        al = (var_44 >> 12) & (vehicle_object->bodySprites[object_sprite_type].numAnimationFrames - 1);
     }
     if (var_46 != al)
     {
@@ -419,7 +419,7 @@ void OpenLoco::vehicle_body::sub_4AC255(vehicle_bogie* back_bogie, vehicle_bogie
 
     auto vehicle_object = object();
 
-    if (vehicle_object->sprites[object_sprite_type].flags & (1 << 4))
+    if (vehicle_object->bodySprites[object_sprite_type].flags & BodySpriteFlags::hasSteepSprites)
     {
         sprite_pitch = updateSpritePitchSteepSlopes(offset, front_bogie->z - back_bogie->z);
     }
@@ -435,7 +435,7 @@ void OpenLoco::vehicle_body::sub_4AC255(vehicle_bogie* back_bogie, vehicle_bogie
     }
     else
     {
-        auto sprite = vehicle_object->sprites[object_sprite_type];
+        auto sprite = vehicle_object->bodySprites[object_sprite_type];
         uint8_t i = sprite_pitch == Pitch::flat ? sprite.var_0B : sprite.var_0C;
         switch (i)
         {
@@ -1222,7 +1222,7 @@ void OpenLoco::vehicle_body::dieselExhaust1AnimationUpdate(uint8_t num, int32_t 
         if (scenarioTicks() & 3)
             return;
 
-        auto positionFactor = vehicleObject->sprites[0].bogey_position * var_05 / 256;
+        auto positionFactor = vehicleObject->bodySprites[0].bogey_position * var_05 / 256;
         auto invertedDirection = sprite_yaw ^ (1 << 5);
         auto xFactor = (factorXY503B6A[invertedDirection * 2] * positionFactor) / 512;
         auto yFactor = (factorXY503B6A[invertedDirection * 2 + 1] * positionFactor) / 512;
@@ -1529,7 +1529,7 @@ void OpenLoco::vehicle_body::shipWakeAnimationUpdate(uint8_t num, int32_t)
     if ((scenarioTicks() % frequency) != 0)
         return;
 
-    auto positionFactor = vehicleObject->sprites[0].bogey_position;
+    auto positionFactor = vehicleObject->bodySprites[0].bogey_position;
     auto invertedDirection = sprite_yaw ^ (1 << 5);
     auto xFactor = (factorXY503B6A[invertedDirection * 2] * positionFactor) / 1024;
     auto yFactor = (factorXY503B6A[invertedDirection * 2 + 1] * positionFactor) / 1024;
@@ -1631,7 +1631,7 @@ static uint32_t getVehicleTypeLength(const uint16_t vehicleTypeId)
         }
 
         auto unk = vehObject->var_24[i].body_sprite_ind & 0x7F;
-        length += vehObject->sprites[unk].bogey_position * 2;
+        length += vehObject->bodySprites[unk].bogey_position * 2;
     }
     return length;
 }

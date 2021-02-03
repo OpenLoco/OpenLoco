@@ -96,10 +96,10 @@ namespace OpenLoco
     struct vehicle_object_unk
     {
         uint8_t length; // 0x00
-        uint8_t pad_01;
+        uint8_t var_01;
         uint8_t front_bogie_sprite_ind; // 0x02 index of bogie_sprites struct
         uint8_t back_bogie_sprite_ind;  // 0x03 index of bogie_sprites struct
-        uint8_t body_sprite_ind;        // 0x04 index of a sprites struct
+        uint8_t body_sprite_ind;        // 0x04 index of a bodySprites struct
         uint8_t var_05;
     };
 
@@ -127,24 +127,37 @@ namespace OpenLoco
 
     static_assert(sizeof(vehicle_object_bogie_sprite) == 0x12);
 
-    struct vehicle_object_sprite
+    namespace BodySpriteFlags
     {
-        uint8_t num_dir; // 0x00
-        uint8_t pad_01;
-        int8_t var_02;
-        uint8_t vehicle_type; // 0x03
-        uint8_t num_units;    // 0x04
-        uint8_t var_05;
-        uint8_t bogey_position; // 0x06
-        uint8_t flags;          // 0x07
-        uint8_t var_08;
-        uint8_t var_09;
-        uint8_t var_0A;
-        uint8_t var_0B;
-        uint8_t var_0C;
-        uint8_t pad_0D;
-        uint8_t sprite_num; // 0x0E
-        uint8_t pad_0F[0x1E - 0xF];
+        constexpr uint8_t hasSprites = (1 << 0);         // If not set then no body will be loaded
+        constexpr uint8_t rotationalSymmetry = (1 << 1); // requires 32 rather than 64 sprites
+        constexpr uint8_t hasUnkSprites = (1 << 2);
+        constexpr uint8_t hasGentleSprites = (1 << 3); // for gentle slopes
+        constexpr uint8_t hasSteepSprites = (1 << 4);  // for steep slopes
+        constexpr uint8_t hasBrakingLights = (1 << 5);
+        constexpr uint8_t hasSpeedAnimation = (1 << 6); // Speed based animation (such as hydrofoil)
+    }
+
+    struct VehicleObjectBodySprite
+    {
+        uint8_t numFlatRotationFrames;   // 0x00 4, 8, 16, 32, 64?
+        uint8_t numSlopedRotationFrames; // 0x01 4, 8, 16, 32?
+        uint8_t numAnimationFrames;      // 0x02
+        uint8_t vehicle_type;            // 0x03
+        uint8_t numCargoFrames;          // 0x04
+        uint8_t numRollFrames;           // 0x05
+        uint8_t bogey_position;          // 0x06
+        uint8_t flags;                   // 0x07
+        uint8_t var_08;                  // sprite width
+        uint8_t var_09;                  // sprite height negative
+        uint8_t var_0A;                  // sprite height positive
+        uint8_t var_0B;                  // 0 - 4 rotational sprites types on flat built from numFlatRotationFrames
+        uint8_t var_0C;                  // 0 - 3 rotational sprites types on slopes built from numSlopedRotationFrames
+        uint8_t numFramesPerRotation;    // 0x0D numAnimationFrames * numCargoFrames * numRollFrames + 1 (for braking lights)
+        uint32_t flatImageId;            // 0x0E
+        uint32_t unkImageId;             // 0x12
+        uint32_t gentleImageId;          // 0x16
+        uint32_t steepImageId;           // 0x1A
     };
 
     namespace FlagsE0
@@ -178,7 +191,7 @@ namespace OpenLoco
         uint16_t compatible_vehicles[8];  // 0x10 array of compatible vehicle_types
         uint8_t required_track_extras[4]; // 0x20
         vehicle_object_unk var_24[4];
-        vehicle_object_sprite sprites[4];             // 0x3C
+        VehicleObjectBodySprite bodySprites[4];       // 0x3C
         vehicle_object_bogie_sprite bogie_sprites[2]; // 0xB4
         uint16_t power;                               // 0xD8
         uint16_t speed;                               // 0xDA
