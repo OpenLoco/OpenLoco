@@ -2260,16 +2260,12 @@ namespace OpenLoco::Ui::Vehicle
                 return false;
 
             auto i = 0;
-            auto orderOffset = head->orderTableOffset;
-            auto orderType = -1; // Just to do one loop in all cases TODO ?do while?
-            while (orderType != 0)
+            for (auto& order : OpenLoco::Vehicle::OrderTableView(head->orderTableOffset))
             {
                 if (i == orderId - 1)
                 {
-                    return orderMoveFunc(head, orderOffset);
+                    return orderMoveFunc(head, order.getOffset());
                 }
-                orderType = _dword_987C5C[orderOffset] & 0x7;
-                orderOffset += dword_4FE070[orderType];
                 i++;
             }
             return false;
@@ -2301,24 +2297,19 @@ namespace OpenLoco::Ui::Vehicle
                     {
                         return;
                     }
+
+                    // Refresh selection (check if we are now at no order selected)
                     auto i = 0;
-                    auto orderOffset = Common::getVehicle(self)->orderTableOffset;
-                    auto orderType = -1; // Just to do one loop in all cases TODO ?do while?
-                    while (orderType != 0)
+                    for ([[maybe_unused]] auto& order : OpenLoco::Vehicle::OrderTableView(Common::getVehicle(self)->orderTableOffset))
                     {
-                        if (i == self->var_842)
+                        if (i + 1 == self->var_842)
                         {
                             return;
                         }
-                        orderType = _dword_987C5C[orderOffset] & 0x7;
-                        if (orderType == 0)
-                        {
-                            self->var_842 = -1;
-                            return;
-                        }
-                        orderOffset += dword_4FE070[orderType];
                         i++;
                     }
+                    // No order selected anymore
+                    self->var_842 = -1;
                     break;
                 }
                 case widx::orderSkip:
@@ -2343,26 +2334,14 @@ namespace OpenLoco::Ui::Vehicle
                             return;
                         }
                         auto i = 0;
-                        auto orderOffset = Common::getVehicle(self)->orderTableOffset;
-                        auto orderType = -1; // Just to do one loop in all cases TODO ?do while?
-                        while (orderType != 0)
+                        for ([[maybe_unused]] auto& order : OpenLoco::Vehicle::OrderTableView(Common::getVehicle(self)->orderTableOffset))
                         {
-                            orderType = _dword_987C5C[orderOffset] & 0x7;
-                            if (orderType == 0)
-                            {
-                                return;
-                            }
-                            orderOffset += dword_4FE070[orderType];
-                            i++;
                             if (i == self->var_842)
                             {
-                                orderType = _dword_987C5C[orderOffset] & 0x7;
-                                if (orderType != 0)
-                                {
-                                    self->var_842++;
-                                }
+                                self->var_842++;
                                 return;
                             }
+                            i++;
                         }
                     }
                     break;
@@ -2429,22 +2408,14 @@ namespace OpenLoco::Ui::Vehicle
             {
                 auto orderIndex = 0; // self->var_842 is in terms of order indexs (i.e. 1 per order)
                 chosenOffset = 0;    // chosenOffset will be (orderOffset - head->orderTableOffset)
-                auto orderOffset = head->orderTableOffset;
-                auto orderType = -1; // Just to do one loop in all cases TODO ?do while?
-                while (orderType != 0)
+                for (auto& existingOrders : OpenLoco::Vehicle::OrderTableView(Common::getVehicle(self)->orderTableOffset))
                 {
-                    orderType = _dword_987C5C[orderOffset] & 0x7;
-                    if (orderType == 0)
+                    if (orderIndex + 1 == self->var_842)
                     {
+                        chosenOffset = existingOrders.getOffset() - head->orderTableOffset;
                         break;
                     }
-                    orderOffset += dword_4FE070[orderType];
-                    chosenOffset += dword_4FE070[orderType];
                     orderIndex++;
-                    if (orderIndex == self->var_842)
-                    {
-                        break;
-                    }
                 }
             }
             gGameCommandErrorTitle = StringIds::orders_cant_insert;
@@ -2655,14 +2626,9 @@ namespace OpenLoco::Ui::Vehicle
             auto head = Common::getVehicle(self);
 
             *height = 10;
-            auto orderOffset = head->orderTableOffset;
-            auto orderType = -1; // Just to do one loop in all cases TODO ?do while?
-            while (orderType != 0)
-            {
-                orderType = _dword_987C5C[orderOffset] & 0x7;
-                orderOffset += dword_4FE070[orderType];
-                *height += 10;
-            }
+
+            auto table = OpenLoco::Vehicle::OrderTableView(head->orderTableOffset);
+            *height += 10 * std::distance(table.begin(), table.end());
         }
 
         static void scrollMouseDown(window* const self, const int16_t x, const int16_t y, const uint8_t scrollIndex)
@@ -2671,24 +2637,19 @@ namespace OpenLoco::Ui::Vehicle
             auto item = y / 10;
             auto orderOffset = head->orderTableOffset;
             auto orderType = -1; // Just to do one loop in all cases TODO ?do while?
+            OpenLoco::Vehicle::Order* selectedOrder = nullptr;
             if (item != 0)
             {
                 auto i = 1;
-                while (orderType != 0)
+                for (auto& order : OpenLoco::Vehicle::OrderTableView(head->orderTableOffset))
                 {
-                    orderType = _dword_987C5C[orderOffset] & 0x7;
-                    if (orderType == 0)
-                    {
-                        item = -1;
-                        break;
-                    }
                     if (i == item)
                     {
+                        selectedOrder = &order;
                         break;
                     }
-                    orderOffset += dword_4FE070[orderType];
-                    i++;
                 }
+                item = -1;
             }
 
             auto toolWindow = Input::toolGetActiveWindow();
@@ -2764,30 +2725,46 @@ namespace OpenLoco::Ui::Vehicle
                 return;
             }
 
-            switch (orderType)
+            switch (selectedOrder->getType())
             {
-                case 1:
-                case 2:
+                case OpenLoco::Vehicle::OrderType::StopAt:
                 {
-                    station_id_t stationId = (static_cast<uint16_t>(_dword_987C5C[orderOffset] & 0xC) << 2) | (_dword_987C5C[orderOffset + 1]);
-                    auto station = StationManager::get(stationId);
-                    auto main = WindowManager::getMainWindow();
-                    if (main)
+                    auto* stopOrder = selectedOrder->as<OpenLoco::Vehicle::OrderStopAt>();
+                    if (stopOrder != nullptr)
                     {
-                        main->viewportCentreOnTile({ station->x, station->y, static_cast<coord_t>(station->z + 32) });
+                        auto station = StationManager::get(stopOrder->getStation());
+                        auto main = WindowManager::getMainWindow();
+                        if (main)
+                        {
+                            main->viewportCentreOnTile({ station->x, station->y, static_cast<coord_t>(station->z + 32) });
+                        }
                     }
                     break;
                 }
-                case 3: // waypoint
+                case OpenLoco::Vehicle::OrderType::RouteThrough:
                 {
-                    map_pos3 loc{};
-                    loc.x = ((static_cast<int16_t>(_dword_987C5C[orderOffset] & 0x80) << 1) | _dword_987C5C[orderOffset + 1]) * tile_size + 16;
-                    loc.y = ((static_cast<int16_t>(_dword_987C5C[orderOffset + 2] & 0x80) << 1) | _dword_987C5C[orderOffset + 3]) * tile_size + 16;
-                    loc.z = (_dword_987C5C[orderOffset + 2] & 0x7F) * 8 + 32;
-                    auto main = WindowManager::getMainWindow();
-                    if (main)
+                    auto* routeOrder = selectedOrder->as<OpenLoco::Vehicle::OrderRouteThrough>();
+                    if (routeOrder != nullptr)
                     {
-                        main->viewportCentreOnTile(loc);
+                        auto station = StationManager::get(routeOrder->getStation());
+                        auto main = WindowManager::getMainWindow();
+                        if (main)
+                        {
+                            main->viewportCentreOnTile({ station->x, station->y, static_cast<coord_t>(station->z + 32) });
+                        }
+                    }
+                    break;
+                }
+                case OpenLoco::Vehicle::OrderType::RouteWaypoint: // waypoint
+                {
+                    auto* routeOrder = selectedOrder->as<OpenLoco::Vehicle::OrderRouteWaypoint>();
+                    if (routeOrder != nullptr)
+                    {
+                        auto main = WindowManager::getMainWindow();
+                        if (main)
+                        {
+                            main->viewportCentreOnTile(routeOrder->getWaypoint());
+                        }
                     }
                     break;
                 }
