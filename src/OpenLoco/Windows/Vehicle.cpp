@@ -15,6 +15,7 @@
 #include "../Objects/TrackObject.h"
 #include "../Objects/WaterObject.h"
 #include "../OpenLoco.h"
+#include "../Orders.h"
 #include "../StationManager.h"
 #include "../Things/ThingManager.h"
 #include "../TrackData.h"
@@ -2210,31 +2211,24 @@ namespace OpenLoco::Ui::Vehicle
                 return;
             }
 
-            // Order id can be -1 at this point for none selected
+            // orderId can be -1 at this point for none selected
             auto i = 0;
-            auto orderOffset = head->orderTableOffset;
-            auto previousOffset = orderOffset;
-            auto orderType = -1; // Just to do one loop in all cases TODO ?do while?
-            while (orderType != 0)
+            OpenLoco::Vehicle::Order* last = nullptr;
+            for (auto& order : OpenLoco::Vehicle::OrderTableView(head->orderTableOffset))
             {
                 if (i == orderId - 1)
                 {
-                    orderDeleteCommand(head, orderOffset);
+                    orderDeleteCommand(head, order.getOffset());
                     return;
                 }
-                orderType = _dword_987C5C[orderOffset] & 0x7;
-                // Will only occur when no order found, so deletes the last one
-                if (orderType == 0)
-                {
-                    // Passes the previous iterations offset
-                    orderDeleteCommand(head, previousOffset);
-                    return;
-                }
-                previousOffset = orderOffset;
-                orderOffset += dword_4FE070[orderType];
+                last = &order;
                 i++;
             }
-            return;
+            // No order selected so delete the last one
+            if (last != nullptr)
+            {
+                orderDeleteCommand(head, last->getOffset());
+            }
         }
 
         // 0x004B4C14

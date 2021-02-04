@@ -1,5 +1,7 @@
 #pragma once
+#include "Map/Tile.h"
 #include "Types.hpp"
+#include <iterator>
 
 namespace OpenLoco::Map
 {
@@ -23,6 +25,7 @@ namespace OpenLoco::Vehicle
     {
         uint8_t _type;
         OrderType getType() const { return OrderType(_type & 0x7); }
+        uint32_t getOffset() const;
         template<typename T>
         constexpr bool is() const { return getType() == T::TYPE; }
         template<typename T>
@@ -30,6 +33,8 @@ namespace OpenLoco::Vehicle
         template<typename T>
         const T* as() const { return is<T>() ? reinterpret_cast<const T*>(this) : nullptr; }
     };
+
+    static_assert(sizeof(Order) == 1, "Size of order must be 1 for pointer arithmatic to work in OrderTableView");
 
     struct OrderEnd : Order
     {
@@ -64,7 +69,7 @@ namespace OpenLoco::Vehicle
         uint8_t _4;
         uint8_t _5;
 
-        Map::map_pos3& getWaypoint() const;
+        Map::map_pos3 getWaypoint() const;
     };
     struct OrderUnloadAll : Order
     {
@@ -78,4 +83,77 @@ namespace OpenLoco::Vehicle
     };
 
 #pragma pack(pop)
+
+    struct OrderTableView
+    {
+    private:
+        struct Iterator
+        {
+        private:
+            Order* _orders;
+
+        public:
+            Iterator(Order* orders)
+                : _orders(orders)
+            {
+            }
+
+            Iterator& operator++();
+
+            Iterator operator++(int)
+            {
+                Iterator res = *this;
+                ++(*this);
+                return res;
+            }
+
+            bool operator==(Iterator other) const
+            {
+                return _orders->getType() == other->getType();
+            }
+
+            bool operator!=(Iterator other) const
+            {
+                return !(*this == other);
+            }
+
+            Order& operator*()
+            {
+                return *_orders;
+            }
+
+            const Order& operator*() const
+            {
+                return *_orders;
+            }
+
+            Order* operator->()
+            {
+                return _orders;
+            }
+
+            const Order* operator->() const
+            {
+                return _orders;
+            }
+
+            // iterator traits
+            using difference_type = std::ptrdiff_t;
+            using value_type = Order;
+            using pointer = const Order*;
+            using reference = const Order&;
+            using iterator_category = std::forward_iterator_tag;
+        };
+
+        uint32_t _beginOffset;
+
+    public:
+        OrderTableView(uint32_t offset)
+            : _beginOffset(offset)
+        {
+        }
+
+        OrderTableView::Iterator begin();
+        OrderTableView::Iterator end();
+    };
 }
