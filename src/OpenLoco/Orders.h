@@ -40,26 +40,28 @@ namespace OpenLoco::Vehicle
     {
         static constexpr OrderType TYPE = OrderType::End;
     };
-    struct OrderStopAt : Order
+
+    struct OrderStation : Order
+    {
+        uint8_t _1;
+
+        station_id_t getStation() const
+        {
+            return ((_type & 0xC) << 2) | _1;
+        }
+        void setFormatArguments(FormatArguments& args) const;
+    };
+
+    struct OrderStopAt : OrderStation
     {
         static constexpr OrderType TYPE = OrderType::StopAt;
-        uint8_t _1;
-
-        station_id_t getStation() const
-        {
-            return ((_type & 0xC) << 2) | _1;
-        }
     };
-    struct OrderRouteThrough : Order
+
+    struct OrderRouteThrough : OrderStation
     {
         static constexpr OrderType TYPE = OrderType::RouteThrough;
-        uint8_t _1;
-
-        station_id_t getStation() const
-        {
-            return ((_type & 0xC) << 2) | _1;
-        }
     };
+
     struct OrderRouteWaypoint : Order
     {
         static constexpr OrderType TYPE = OrderType::RouteWaypoint;
@@ -69,17 +71,27 @@ namespace OpenLoco::Vehicle
         uint8_t _4;
         uint8_t _5;
 
+        void setWaypoint(const Map::TilePos& pos, const uint8_t baseZ);
+        void setDirection(const uint8_t direction);
+        void setTrackId(const uint8_t trackId);
         Map::map_pos3 getWaypoint() const;
+        uint8_t getDirection() const;
+        uint8_t getTrackId() const;
     };
-    struct OrderUnloadAll : Order
+
+    struct OrderCargo : Order
+    {
+        uint8_t getCargo() const { return _type >> 3; }
+        void setFormatArguments(FormatArguments& args) const;
+    };
+
+    struct OrderUnloadAll : OrderCargo
     {
         static constexpr OrderType TYPE = OrderType::UnloadAll;
-        uint8_t getCargo() const { return _type >> 3; }
     };
-    struct OrderWaitFor : Order
+    struct OrderWaitFor : OrderCargo
     {
         static constexpr OrderType TYPE = OrderType::WaitFor;
-        uint8_t getCargo() const { return _type >> 3; }
     };
 
 #pragma pack(pop)

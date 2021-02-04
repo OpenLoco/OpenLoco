@@ -2648,6 +2648,7 @@ namespace OpenLoco::Ui::Vehicle
                         selectedOrder = &order;
                         break;
                     }
+                    i++;
                 }
                 item = -1;
             }
@@ -2981,24 +2982,6 @@ namespace OpenLoco::Ui::Vehicle
             }
         };
 
-        // 0x004B49F8
-        static void sub_4B49F8(const uint32_t orderOffset, FormatArguments& args)
-        {
-            station_id_t stationId = ((_dword_987C5C[orderOffset] & 0xC0) << 2) + _dword_987C5C[orderOffset + 1];
-            auto station = StationManager::get(stationId);
-            args.push(station->name);
-            args.push(station->town);
-        }
-
-        // 0x004B4A31
-        static void sub_4B4A31(const uint32_t orderOffset, FormatArguments& args)
-        {
-            uint16_t cargoId = _dword_987C5C[orderOffset] >> 3;
-            auto cargoObj = ObjectManager::get<cargo_object>(cargoId);
-            args.push(cargoObj->name);
-            args.push(cargoObj->unit_inline_sprite);
-        }
-
         // 0x004B4A58 based on
         static void sub_4B4A58(window* const self, Gfx::drawpixelinfo_t* const context, const string_id strFormat, FormatArguments& args, const uint8_t orderType, int16_t& y)
         {
@@ -3043,11 +3026,8 @@ namespace OpenLoco::Ui::Vehicle
             }
 
             _113646A = 1; // Number ?symbol? TODO: make not a global
-            auto orderOffset = head->orderTableOffset;
-            auto orderType = -1; // Just to do one loop in all cases TODO ?do while?
-            while (orderType != 0)
+            for (auto& order : OpenLoco::Vehicle::OrderTableView(head->orderTableOffset))
             {
-                orderType = _dword_987C5C[orderOffset] & 0x7;
                 int16_t y = rowNum * 10;
                 strFormat = StringIds::black_stringid;
                 if (self->var_842 == rowNum)
@@ -3062,30 +3042,37 @@ namespace OpenLoco::Ui::Vehicle
                 }
 
                 FormatArguments args{};
-                args.push(orderString[orderType]);
-                switch (orderType)
+                args.push(orderString[static_cast<uint8_t>(order.getType())]);
+                switch (order.getType())
                 {
-                    case 0: // end of list
-                    case 3: // route through waypoints
+                    case OpenLoco::Vehicle::OrderType::End:
+                    case OpenLoco::Vehicle::OrderType::RouteWaypoint:
                         // Fall through
                         break;
-                    case 1: // stop at
-                    case 2: // route through
-                        sub_4B49F8(orderOffset, args);
+                    case OpenLoco::Vehicle::OrderType::StopAt:
+                    case OpenLoco::Vehicle::OrderType::RouteThrough:
+                    {
+
+                        auto* stationOrder = static_cast<OpenLoco::Vehicle::OrderStation*>(&order);
+                        stationOrder->setFormatArguments(args);
                         break;
-                    case 4: // unload all of
-                    case 5: // wait for full load of
-                        sub_4B4A31(orderOffset, args);
+                    }
+                    case OpenLoco::Vehicle::OrderType::UnloadAll:
+                    case OpenLoco::Vehicle::OrderType::WaitFor:
+                    {
+
+                        auto* cargoOrder = static_cast<OpenLoco::Vehicle::OrderCargo*>(&order);
+                        cargoOrder->setFormatArguments(args);
                         break;
+                    }
                 }
 
-                sub_4B4A58(self, pDrawpixelinfo, strFormat, args, orderType, y);
-                if (head->currentOrder + head->orderTableOffset == orderOffset)
+                sub_4B4A58(self, pDrawpixelinfo, strFormat, args, static_cast<uint8_t>(order.getType()), y);
+                if (head->currentOrder + head->orderTableOffset == order.getOffset())
                 {
                     Gfx::drawString_494B3F(*pDrawpixelinfo, 1, y - 1, Colour::black, StringIds::orders_current_order);
                 }
 
-                orderOffset += dword_4FE070[orderType];
                 rowNum++;
             }
         }
