@@ -23,82 +23,29 @@ namespace OpenLoco::Vehicle
         sizeof(OrderWaitFor),
     };
 
+    template<typename T>
+    std::shared_ptr<Order> orderClone(const Order& order)
+    {
+        auto* o = order.as<T>();
+        return o != nullptr ? std::make_shared<T>(*o) : nullptr;
+    }
+
     std::shared_ptr<Order> Order::clone() const
     {
         switch (getType())
         {
             case OrderType::End:
-            {
-                auto cloneOrder = std::make_shared<OrderEnd>();
-                cloneOrder->setType(OrderType::End);
-                return cloneOrder;
-            }
+                return orderClone<OrderEnd>(*this);
             case OrderType::StopAt:
-            {
-                auto* stopOrder = as<OrderStopAt>();
-                if (stopOrder != nullptr)
-                {
-                    auto cloneOrder = std::make_shared<OrderStopAt>();
-                    cloneOrder->setType(OrderType::StopAt);
-                    cloneOrder->setStation(stopOrder->getStation());
-                    return cloneOrder;
-                }
-                break;
-            }
+                return orderClone<OrderStopAt>(*this);
             case OrderType::RouteThrough:
-            {
-
-                auto* routeOrder = as<OrderRouteThrough>();
-                if (routeOrder != nullptr)
-                {
-                    auto cloneOrder = std::make_shared<OrderRouteThrough>();
-                    cloneOrder->setType(OrderType::RouteThrough);
-                    cloneOrder->setStation(routeOrder->getStation());
-                    return cloneOrder;
-                }
-                break;
-            }
+                return orderClone<OrderRouteThrough>(*this);
             case OrderType::RouteWaypoint:
-            {
-                auto* waypointOrder = as<OrderRouteWaypoint>();
-                if (waypointOrder != nullptr)
-                {
-                    auto cloneOrder = std::make_shared<OrderRouteWaypoint>();
-                    cloneOrder->setType(OrderType::RouteWaypoint);
-                    tile_coord_t x = ((waypointOrder->_type & 0x80) << 1) | waypointOrder->_1;
-                    tile_coord_t y = ((waypointOrder->_2 & 0x80) << 1) | waypointOrder->_3;
-                    auto z = (waypointOrder->_2 & 0x7F);
-                    cloneOrder->setWaypoint({ x, y }, z);
-                    cloneOrder->setDirection(waypointOrder->getDirection());
-                    cloneOrder->setTrackId(waypointOrder->getTrackId());
-                    return cloneOrder;
-                }
-                break;
-            }
+                return orderClone<OrderRouteWaypoint>(*this);
             case OrderType::UnloadAll:
-            {
-                auto* unloadOrder = as<OrderUnloadAll>();
-                if (unloadOrder != nullptr)
-                {
-                    auto cloneOrder = std::make_shared<OrderUnloadAll>();
-                    cloneOrder->setType(OrderType::UnloadAll);
-                    cloneOrder->setCargo(unloadOrder->getCargo());
-                    return cloneOrder;
-                }
-                break;
-            }
+                return orderClone<OrderUnloadAll>(*this);
             case OrderType::WaitFor:
-            {
-                auto* waitOrder = as<OrderWaitFor>();
-                if (waitOrder != nullptr)
-                {
-                    auto cloneOrder = std::make_shared<OrderWaitFor>();
-                    cloneOrder->setType(OrderType::WaitFor);
-                    cloneOrder->setCargo(waitOrder->getCargo());
-                    return cloneOrder;
-                }
-                break;
-            }
+                return orderClone<OrderWaitFor>(*this);
         }
         return {};
     }

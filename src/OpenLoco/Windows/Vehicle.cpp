@@ -2390,7 +2390,7 @@ namespace OpenLoco::Ui::Vehicle
         // order argument : eax (3 - 32 bits), cx
         // Note will move orders so do not use while iterating OrderTableView
         // 0x004B4ECB
-        static void addNewOrder(window* const self, const OpenLoco::Vehicle::Order* const order)
+        static void addNewOrder(window* const self, const OpenLoco::Vehicle::Order& order)
         {
             auto head = Common::getVehicle(self);
             auto chosenOffset = head->sizeOfOrderTable - 1;
@@ -2410,7 +2410,7 @@ namespace OpenLoco::Ui::Vehicle
             }
             gGameCommandErrorTitle = StringIds::orders_cant_insert;
             auto previousSize = head->sizeOfOrderTable;
-            GameCommands::do_35(head->id, order->getRaw(), chosenOffset);
+            GameCommands::do_35(head->id, order.getRaw(), chosenOffset);
             sub_470824(head);
             if (head->sizeOfOrderTable == previousSize)
             {
@@ -2437,19 +2437,14 @@ namespace OpenLoco::Ui::Vehicle
             {
                 case widx::orderForceUnload:
                 {
-                    OpenLoco::Vehicle::OrderUnloadAll unload;
-                    unload.setType(OpenLoco::Vehicle::OrderType::UnloadAll);
-                    unload.setCargo(Dropdown::getItemArgument(item, 3));
-                    addNewOrder(self, &unload);
+                    OpenLoco::Vehicle::OrderUnloadAll unload(Dropdown::getItemArgument(item, 3));
+                    addNewOrder(self, unload);
                     break;
                 }
                 case widx::orderWait:
                 {
-
-                    OpenLoco::Vehicle::OrderWaitFor wait;
-                    wait.setType(OpenLoco::Vehicle::OrderType::WaitFor);
-                    wait.setCargo(Dropdown::getItemArgument(item, 3));
-                    addNewOrder(self, &wait);
+                    OpenLoco::Vehicle::OrderWaitFor wait(Dropdown::getItemArgument(item, 3));
+                    addNewOrder(self, wait);
                     break;
                 }
             }
@@ -2539,14 +2534,9 @@ namespace OpenLoco::Ui::Vehicle
                     TilePos tPos{ pos };
                     height -= trackPart.z;
 
-                    OpenLoco::Vehicle::OrderRouteWaypoint waypoint;
-                    waypoint.setType(OpenLoco::Vehicle::OrderType::RouteWaypoint);
-                    waypoint.setWaypoint(tPos, height / 8);
-                    waypoint.setDirection(trackElement->unkDirection());
-                    waypoint.setTrackId(trackId);
-
+                    OpenLoco::Vehicle::OrderRouteWaypoint waypoint(tPos, height / 8, trackElement->unkDirection(), trackId);
                     Audio::playSound(Audio::sound_id::waypoint, { x, y, Input::getDragLastLocation().x }, Input::getDragLastLocation().x);
-                    addNewOrder(&self, &waypoint);
+                    addNewOrder(&self, waypoint);
                     break;
                 }
                 case Ui::ViewportInteraction::InteractionItem::t_11:
@@ -2563,20 +2553,16 @@ namespace OpenLoco::Ui::Vehicle
                         map_pos{ args.x, args.y }
                     };
 
-                    OpenLoco::Vehicle::OrderRouteWaypoint waypoint;
-                    waypoint.setType(OpenLoco::Vehicle::OrderType::RouteWaypoint);
-                    waypoint.setWaypoint(tPos, height / 8);
-                    addNewOrder(&self, &waypoint);
+                    OpenLoco::Vehicle::OrderRouteWaypoint waypoint(tPos, height / 8, 0, 0);
+                    addNewOrder(&self, waypoint);
                     break;
                 }
                 case Ui::ViewportInteraction::InteractionItem::station:
                 {
                     Audio::playSound(Audio::sound_id::waypoint, { x, y, Input::getDragLastLocation().x }, Input::getDragLastLocation().x);
                     station_id_t stationId = args.value;
-                    OpenLoco::Vehicle::OrderStation station;
-                    station.setType(OpenLoco::Vehicle::OrderType::StopAt);
-                    station.setStation(stationId);
-                    addNewOrder(&self, &station);
+                    OpenLoco::Vehicle::OrderStopAt station(stationId);
+                    addNewOrder(&self, station);
                     break;
                 }
                 case Ui::ViewportInteraction::InteractionItem::road:
@@ -2597,13 +2583,9 @@ namespace OpenLoco::Ui::Vehicle
                     TilePos tPos{ pos };
                     height -= roadPart.z;
 
-                    OpenLoco::Vehicle::OrderRouteWaypoint waypoint;
-                    waypoint.setType(OpenLoco::Vehicle::OrderType::RouteWaypoint);
-                    waypoint.setWaypoint(tPos, height / 8);
-                    waypoint.setDirection(trackElement->unkDirection());
-                    waypoint.setTrackId(roadId);
+                    OpenLoco::Vehicle::OrderRouteWaypoint waypoint(tPos, height / 8, trackElement->unkDirection(), roadId);
                     Audio::playSound(Audio::sound_id::waypoint, { x, y, Input::getDragLastLocation().x }, Input::getDragLastLocation().x);
-                    addNewOrder(&self, &waypoint);
+                    addNewOrder(&self, waypoint);
                     break;
                 }
 
@@ -2677,7 +2659,7 @@ namespace OpenLoco::Ui::Vehicle
                     }
                     for (auto& order : clonedOrders)
                     {
-                        addNewOrder(toolWindow, order.get());
+                        addNewOrder(toolWindow, *order);
                     }
                     WindowManager::bringToFront(toolWindow);
                 }
@@ -2686,7 +2668,7 @@ namespace OpenLoco::Ui::Vehicle
                     // Copy a single entry on the order list
                     Audio::playSound(Audio::sound_id::waypoint, { x, y, Input::getDragLastLocation().x }, Input::getDragLastLocation().x);
                     auto clonedOrder = selectedOrder->clone();
-                    addNewOrder(toolWindow, clonedOrder.get());
+                    addNewOrder(toolWindow, *clonedOrder);
                     WindowManager::bringToFront(toolWindow);
                 }
                 return;

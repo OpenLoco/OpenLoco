@@ -24,6 +24,11 @@ namespace OpenLoco::Vehicle
     struct Order
     {
         uint8_t _type;
+
+    protected:
+        Order() = default;
+
+    public:
         OrderType getType() const { return OrderType(_type & 0x7); }
         void setType(OrderType type)
         {
@@ -57,7 +62,7 @@ namespace OpenLoco::Vehicle
         {
             return ((_type & 0xC0) << 2) | _1;
         }
-        void setStation(station_id_t station)
+        void setStation(const station_id_t station)
         {
             _type &= ~(0xC0);
             _type |= (station >> 2) & 0xC0;
@@ -69,11 +74,21 @@ namespace OpenLoco::Vehicle
     struct OrderStopAt : OrderStation
     {
         static constexpr OrderType TYPE = OrderType::StopAt;
+        OrderStopAt(const station_id_t station)
+        {
+            setType(TYPE);
+            setStation(station);
+        }
     };
 
     struct OrderRouteThrough : OrderStation
     {
         static constexpr OrderType TYPE = OrderType::RouteThrough;
+        OrderRouteThrough(const station_id_t station)
+        {
+            setType(TYPE);
+            setStation(station);
+        }
     };
 
     struct OrderRouteWaypoint : Order
@@ -85,6 +100,13 @@ namespace OpenLoco::Vehicle
         uint8_t _4;
         uint8_t _5;
 
+        OrderRouteWaypoint(const Map::TilePos& pos, const uint8_t baseZ, const uint8_t direction, const uint8_t trackId)
+        {
+            setType(TYPE);
+            setWaypoint(pos, baseZ);
+            setDirection(direction);
+            setTrackId(trackId);
+        }
         void setWaypoint(const Map::TilePos& pos, const uint8_t baseZ);
         void setDirection(const uint8_t direction);
         void setTrackId(const uint8_t trackId);
@@ -96,7 +118,7 @@ namespace OpenLoco::Vehicle
     struct OrderCargo : Order
     {
         uint8_t getCargo() const { return _type >> 3; }
-        void setCargo(uint8_t cargo)
+        void setCargo(const uint8_t cargo)
         {
             _type &= ~0xF8;
             _type |= (cargo & 0x1F) << 3;
@@ -107,10 +129,20 @@ namespace OpenLoco::Vehicle
     struct OrderUnloadAll : OrderCargo
     {
         static constexpr OrderType TYPE = OrderType::UnloadAll;
+        OrderUnloadAll(const uint8_t cargo)
+        {
+            setType(TYPE);
+            setCargo(cargo);
+        }
     };
     struct OrderWaitFor : OrderCargo
     {
         static constexpr OrderType TYPE = OrderType::WaitFor;
+        OrderWaitFor(const uint8_t cargo)
+        {
+            setType(TYPE);
+            setCargo(cargo);
+        }
     };
 
 #pragma pack(pop)
