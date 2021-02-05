@@ -16,18 +16,18 @@ using namespace OpenLoco::Literals;
 namespace OpenLoco::Vehicles
 {
 
-    loco_global<VehicleHead*, 0x01136118> vehicleUpdate_head;
-    loco_global<VehicleBogie*, 0x01136124> vehicleUpdate_frontBogie;
-    loco_global<VehicleBogie*, 0x01136128> vehicleUpdate_backBogie;
-    loco_global<int32_t, 0x01136130> vehicle_var_1136130;
-    loco_global<Vehicle2*, 0x01136120> vehicleUpdate_2;
-    loco_global<uint8_t, 0x01136237> vehicle_var_1136237;   // var_28 related?
-    loco_global<uint8_t, 0x01136238> vehicle_var_1136238;   // var_28 related?
-    loco_global<int8_t[88], 0x004F865C> vehicle_arr_4F865C; // var_2C related?
-    loco_global<uint16_t[2047], 0x00500B50> vehicle_arr_500B50;
-    loco_global<int16_t[128], 0x00503B6A> factorXY503B6A;
-    loco_global<uint8_t[44], 0x004F8A7C> vehicle_arr_4F8A7C; // bools
-    loco_global<uint8_t, 0x00525FAE> vehicle_var_525FAE;     // boolean
+    static loco_global<VehicleHead*, 0x01136118> vehicleUpdate_head;
+    static loco_global<Vehicle2*, 0x01136120> vehicleUpdate_2;
+    static loco_global<VehicleBogie*, 0x01136124> vehicleUpdate_frontBogie;
+    static loco_global<VehicleBogie*, 0x01136128> vehicleUpdate_backBogie;
+    static loco_global<int32_t, 0x01136130> vehicleUpdate_var_1136130; // Speed
+    static loco_global<uint8_t, 0x01136237> vehicle_var_1136237;       // var_28 related?
+    static loco_global<uint8_t, 0x01136238> vehicle_var_1136238;       // var_28 related?
+    static loco_global<int8_t[88], 0x004F865C> vehicle_arr_4F865C; // var_2C related?
+    static loco_global<uint16_t[2047], 0x00500B50> vehicle_arr_500B50;
+    static loco_global<int16_t[128], 0x00503B6A> factorXY503B6A;
+    static loco_global<uint8_t[44], 0x004F8A7C> vehicle_arr_4F8A7C; // bools
+    static loco_global<uint8_t, 0x00525FAE> vehicle_var_525FAE;     // boolean
 
     // 0x00503E5C
     static constexpr Pitch vehicleBodyIndexToPitch[] = {
@@ -85,7 +85,7 @@ namespace OpenLoco::Vehicles
             sub_4AC255(vehicleUpdate_backBogie, vehicleUpdate_frontBogie);
             invalidateSprite();
         }
-        uint32_t backup1136130 = vehicle_var_1136130;
+        uint32_t backup1136130 = vehicleUpdate_var_1136130;
         if (var_5E != 0)
         {
             int32_t var_1136130 = var_5E;
@@ -94,11 +94,11 @@ namespace OpenLoco::Vehicles
                 var_1136130 = 64 - var_1136130;
             }
 
-            vehicle_var_1136130 += var_1136130 * 320 + 500;
+            vehicleUpdate_var_1136130 += var_1136130 * 320 + 500;
         }
         animationUpdate();
         sub_4AAB0B();
-        vehicle_var_1136130 = backup1136130;
+        vehicleUpdate_var_1136130 = backup1136130;
         return 0;
     }
 
@@ -155,7 +155,7 @@ namespace OpenLoco::Vehicles
     // 0x004AAB0B
     void VehicleBody::sub_4AAB0B()
     {
-        int32_t eax = vehicle_var_1136130 >> 3;
+        int32_t eax = vehicleUpdate_var_1136130 >> 3;
         if (var_38 & Flags38::isReversed)
         {
             eax = -eax;
@@ -924,7 +924,7 @@ namespace OpenLoco::Vehicles
         }
         else
         {
-            if (vehicle_var_1136130 + (uint16_t)(_var_44 * 8) < std::numeric_limits<uint16_t>::max())
+            if (vehicleUpdate_var_1136130 + (uint16_t)(_var_44 * 8) < std::numeric_limits<uint16_t>::max())
             {
                 return;
             }
@@ -1235,7 +1235,7 @@ namespace OpenLoco::Vehicles
             _var_44 = -var_44;
         }
 
-        if (((uint16_t)vehicle_var_1136130) + ((uint16_t)_var_44 * 8) < std::numeric_limits<uint16_t>::max())
+        if (((uint16_t)vehicleUpdate_var_1136130) + ((uint16_t)_var_44 * 8) < std::numeric_limits<uint16_t>::max())
             return;
 
         var_05 += 64;
@@ -1295,7 +1295,7 @@ namespace OpenLoco::Vehicles
             _var_44 = -var_44;
         }
 
-        if (((uint16_t)vehicle_var_1136130) + ((uint16_t)_var_44 * 8) < std::numeric_limits<uint16_t>::max())
+        if (((uint16_t)vehicleUpdate_var_1136130) + ((uint16_t)_var_44 * 8) < std::numeric_limits<uint16_t>::max())
             return;
 
         var_05 += 64;

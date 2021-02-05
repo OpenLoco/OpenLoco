@@ -224,13 +224,18 @@ namespace OpenLoco::Vehicles
 
     public:
         bool isVehicleTypeCompatible(const uint16_t vehicleTypeId);
-        void sub_4BA8D4();
+        void updateBreakdown();
         void updateVehicle();
-        uint16_t update();
+        bool update();
         VehicleStatus getStatus() const;
 
     private:
         void applyBreakdownToTrain();
+        void updateTrainSounds();
+        void removeDanglingTrain();
+        bool updateLand();
+        bool updateAir();
+        bool updateWater();
         uint32_t getVehicleTotalLength();
     };
     static_assert(sizeof(VehicleHead) == 0x7A); // Can't use offset_of change this to last field if more found
@@ -455,8 +460,9 @@ namespace OpenLoco::Vehicles
         uint16_t var_4A;                       // sound-related flag(s) common with veh_2
         Ui::window_number sound_window_number; // 0x4C common with veh_2
         Ui::WindowType sound_window_type;      // 0x4E common with veh_2
+        uint16_t trainDanglingTimeout;         // 0x4F counts up when no cars on train
     };
-    static_assert(sizeof(VehicleTail) == 0x4F); // Can't use offset_of change this to last field if more found
+    static_assert(sizeof(VehicleTail) == 0x51); // Can't use offset_of change this to last field if more found
 
 #pragma pack(pop)
 

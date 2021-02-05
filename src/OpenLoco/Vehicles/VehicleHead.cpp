@@ -17,6 +17,16 @@ using namespace OpenLoco::Literals;
 namespace OpenLoco::Vehicles
 {
     static loco_global<string_id, 0x009C68E6> gGameCommandErrorText;
+    static loco_global<VehicleHead*, 0x01136118> vehicleUpdate_head;
+    static loco_global<Vehicle1*, 0x0113611C> vehicleUpdate_1;
+    static loco_global<Vehicle2*, 0x01136120> vehicleUpdate_2;
+    static loco_global<VehicleBogie*, 0x01136124> vehicleUpdate_frontBogie;
+    static loco_global<VehicleBogie*, 0x01136128> vehicleUpdate_backBogie;
+    static loco_global<int32_t, 0x0113612C> vehicleUpdate_var_113612C; // Speed
+    static loco_global<int32_t, 0x01136130> vehicleUpdate_var_1136130; // Speed
+    static loco_global<uint8_t, 0x01136237> vehicle_var_1136237;       // var_28 related?
+    static loco_global<uint8_t, 0x01136238> vehicle_var_1136238;       // var_28 related?
+    static loco_global<Status, 0x0113646C> vehicleUpdate_initialStatus;
 
     void VehicleHead::updateVehicle()
     {
@@ -32,15 +42,60 @@ namespace OpenLoco::Vehicles
         }
     }
 
-    uint16_t VehicleHead::update()
+    // 0x004A8B81
+    bool VehicleHead::update()
     {
-        registers regs;
-        regs.esi = (int32_t)this;
-        return call(0x004A8B81, regs);
+        Vehicle train(this);
+        vehicleUpdate_head = train.head;
+        vehicleUpdate_1 = train.veh1;
+        vehicleUpdate_2 = train.veh2;
+
+        vehicleUpdate_initialStatus = status;
+        updateTrainSounds();
+
+        vehicleUpdate_frontBogie = reinterpret_cast<VehicleBogie*>(0xFFFFFFFF);
+        vehicleUpdate_backBogie = reinterpret_cast<VehicleBogie*>(0xFFFFFFFF);
+
+        Vehicle2* veh2 = vehicleUpdate_2;
+        vehicleUpdate_var_113612C = veh2->var_56 >> 7;
+        vehicleUpdate_var_1136130 = veh2->var_56 >> 7;
+
+        if (var_5C != 0)
+        {
+            var_5C--;
+        }
+
+        if (tile_x == -1)
+        {
+            if (!train.cars.empty())
+            {
+                return false;
+            }
+
+            train.tail->trainDanglingTimeout++;
+            if (train.tail->trainDanglingTimeout < 960)
+            {
+                return false;
+            }
+            removeDanglingTrain();
+            return false;
+        }
+        updateBreakdown();
+        switch (mode)
+        {
+            case OpenLoco::TransportMode::rail:
+            case OpenLoco::TransportMode::road:
+                return updateLand();
+            case OpenLoco::TransportMode::air:
+                return updateAir();
+            case OpenLoco::TransportMode::water:
+                return updateWater();
+        }
+        return false;
     }
 
     // 0x004BA8D4
-    void VehicleHead::sub_4BA8D4()
+    void VehicleHead::updateBreakdown()
     {
         switch (status)
         {
@@ -297,5 +352,45 @@ namespace OpenLoco::Vehicles
         vehStatus.status2 = regs.cx;
         vehStatus.status2Args = regs.edx;
         return vehStatus;
+    }
+
+    // 0x004A8882
+    void VehicleHead::updateTrainSounds()
+    {
+        registers regs;
+        regs.esi = reinterpret_cast<int32_t>(this);
+        call(0x004A8882, regs);
+    }
+
+    // 0x004AF06E
+    void VehicleHead::removeDanglingTrain()
+    {
+        registers regs;
+        regs.esi = reinterpret_cast<int32_t>(this);
+        call(0x004AF06E, regs);
+    }
+
+    // 0x004A8C11
+    bool VehicleHead::updateLand()
+    {
+        registers regs;
+        regs.esi = reinterpret_cast<int32_t>(this);
+        return (call(0x004A8C11, regs) & (1 << 8)) != 0;
+    }
+
+    // 0x004A9051
+    bool VehicleHead::updateAir()
+    {
+        registers regs;
+        regs.esi = reinterpret_cast<int32_t>(this);
+        return (call(0x004A9051, regs) & (1 << 8)) != 0;
+    }
+
+    // 0x004A9649
+    bool VehicleHead::updateWater()
+    {
+        registers regs;
+        regs.esi = reinterpret_cast<int32_t>(this);
+        return (call(0x004A9649, regs) & (1 << 8)) != 0;
     }
 }
