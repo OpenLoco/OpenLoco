@@ -317,12 +317,12 @@ namespace OpenLoco::GameCommands
         return doCommand(31, regs) != FAILURE;
     }
 
-    inline bool do_35(thing_id_t head, uint8_t order, uint64_t orderArgument, uint32_t orderOffset)
+    inline bool do_35(thing_id_t head, uint64_t rawOrder, uint32_t orderOffset)
     {
         registers regs;
         regs.bl = GameCommandFlag::apply;
-        regs.eax = order | (orderArgument << 3);
-        regs.cx = orderArgument >> 32;
+        regs.eax = rawOrder & 0xFFFFFFFF;
+        regs.cx = rawOrder >> 32;
         regs.di = head;
         regs.edx = orderOffset;
         return doCommand(static_cast<int32_t>(GameCommand::vehicle_order_insert), regs);

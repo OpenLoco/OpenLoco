@@ -23,13 +23,13 @@ namespace OpenLoco::Vehicle
         sizeof(OrderWaitFor),
     };
 
-    std::unique_ptr<Order> Order::clone() const
+    std::shared_ptr<Order> Order::clone() const
     {
         switch (getType())
         {
             case OrderType::End:
             {
-                auto cloneOrder = std::make_unique<OrderEnd>();
+                auto cloneOrder = std::make_shared<OrderEnd>();
                 cloneOrder->setType(OrderType::End);
                 return cloneOrder;
             }
@@ -38,7 +38,7 @@ namespace OpenLoco::Vehicle
                 auto* stopOrder = as<OrderStopAt>();
                 if (stopOrder != nullptr)
                 {
-                    auto cloneOrder = std::make_unique<OrderStopAt>();
+                    auto cloneOrder = std::make_shared<OrderStopAt>();
                     cloneOrder->setType(OrderType::StopAt);
                     cloneOrder->setStation(stopOrder->getStation());
                     return cloneOrder;
@@ -51,7 +51,7 @@ namespace OpenLoco::Vehicle
                 auto* routeOrder = as<OrderRouteThrough>();
                 if (routeOrder != nullptr)
                 {
-                    auto cloneOrder = std::make_unique<OrderRouteThrough>();
+                    auto cloneOrder = std::make_shared<OrderRouteThrough>();
                     cloneOrder->setType(OrderType::RouteThrough);
                     cloneOrder->setStation(routeOrder->getStation());
                     return cloneOrder;
@@ -63,10 +63,10 @@ namespace OpenLoco::Vehicle
                 auto* waypointOrder = as<OrderRouteWaypoint>();
                 if (waypointOrder != nullptr)
                 {
-                    auto cloneOrder = std::make_unique<OrderRouteWaypoint>();
+                    auto cloneOrder = std::make_shared<OrderRouteWaypoint>();
                     cloneOrder->setType(OrderType::RouteWaypoint);
-                    auto x = ((waypointOrder->_type & 0x80) << 1) | waypointOrder->_1;
-                    auto y = ((waypointOrder->_2 & 0x80) << 1) | waypointOrder->_3;
+                    tile_coord_t x = ((waypointOrder->_type & 0x80) << 1) | waypointOrder->_1;
+                    tile_coord_t y = ((waypointOrder->_2 & 0x80) << 1) | waypointOrder->_3;
                     auto z = (waypointOrder->_2 & 0x7F);
                     cloneOrder->setWaypoint({ x, y }, z);
                     cloneOrder->setDirection(waypointOrder->getDirection());
@@ -80,7 +80,7 @@ namespace OpenLoco::Vehicle
                 auto* unloadOrder = as<OrderUnloadAll>();
                 if (unloadOrder != nullptr)
                 {
-                    auto cloneOrder = std::make_unique<OrderUnloadAll>();
+                    auto cloneOrder = std::make_shared<OrderUnloadAll>();
                     cloneOrder->setType(OrderType::UnloadAll);
                     cloneOrder->setCargo(unloadOrder->getCargo());
                     return cloneOrder;
@@ -92,7 +92,7 @@ namespace OpenLoco::Vehicle
                 auto* waitOrder = as<OrderWaitFor>();
                 if (waitOrder != nullptr)
                 {
-                    auto cloneOrder = std::make_unique<OrderWaitFor>();
+                    auto cloneOrder = std::make_shared<OrderWaitFor>();
                     cloneOrder->setType(OrderType::WaitFor);
                     cloneOrder->setCargo(waitOrder->getCargo());
                     return cloneOrder;
@@ -148,6 +148,47 @@ namespace OpenLoco::Vehicle
     uint32_t Order::getOffset() const
     {
         return this - _orderTable;
+    }
+
+    uint64_t Order::getRaw() const
+    {
+        uint64_t ret = 0;
+        ret = _type;
+        switch (getType())
+        {
+            case OrderType::RouteThrough:
+            {
+                auto* route = as<OrderRouteThrough>();
+                if (route != nullptr)
+                {
+                    ret |= route->_1 << 8;
+                }
+                break;
+            }
+            case OrderType::RouteWaypoint:
+            {
+                auto* route = as<OrderRouteWaypoint>();
+                if (route != nullptr)
+                {
+                    ret |= route->_1 << 8;
+                    ret |= route->_2 << 16;
+                    ret |= route->_3 << 24;
+                    ret |= static_cast<uint64_t>(route->_4) << 32;
+                    ret |= static_cast<uint64_t>(route->_5) << 40;
+                }
+                break;
+            }
+            case OrderType::StopAt:
+            {
+                auto* stop = as<OrderStopAt>();
+                if (stop != nullptr)
+                {
+                    ret |= stop->_1 << 8;
+                }
+                break;
+            }
+        }
+        return ret;
     }
 
     OrderTableView::Iterator& OrderTableView::Iterator::operator++()

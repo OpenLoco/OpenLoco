@@ -2159,18 +2159,6 @@ namespace OpenLoco::Ui::Vehicle
     namespace Route
     {
         static loco_global<uint8_t, 0x00113646A> _113646A;
-        constexpr uint32_t max_orders = 256000; // TODO: MOVE
-        static loco_global<uint8_t[max_orders], 0x00987C5C> _dword_987C5C;
-
-        // TODO: Move to orders file this is duplicated
-        static const uint8_t dword_4FE070[] = {
-            1,
-            2,
-            2,
-            6,
-            1,
-            1,
-        };
 
         // 0x00470824
         static void sub_470824(Vehicles::VehicleHead* head)
@@ -2400,7 +2388,9 @@ namespace OpenLoco::Ui::Vehicle
 
         // order : al (first 3 bits)
         // order argument : eax (3 - 32 bits), cx
-        static void sub_4B4ECB(window* const self, const uint8_t order, const uint64_t orderArgument)
+        // Note will move orders so do not use while iterating OrderTableView
+        // 0x004B4ECB
+        static void addNewOrder(window* const self, const OpenLoco::Vehicle::Order* const order)
         {
             auto head = Common::getVehicle(self);
             auto chosenOffset = head->sizeOfOrderTable - 1;
@@ -2420,7 +2410,7 @@ namespace OpenLoco::Ui::Vehicle
             }
             gGameCommandErrorTitle = StringIds::orders_cant_insert;
             auto previousSize = head->sizeOfOrderTable;
-            GameCommands::do_35(head->id, order, orderArgument, chosenOffset);
+            GameCommands::do_35(head->id, order->getRaw(), chosenOffset);
             sub_470824(head);
             if (head->sizeOfOrderTable == previousSize)
             {
@@ -2446,11 +2436,22 @@ namespace OpenLoco::Ui::Vehicle
             switch (i)
             {
                 case widx::orderForceUnload:
-                    sub_4B4ECB(self, 4, Dropdown::getItemArgument(item, 3));
+                {
+                    OpenLoco::Vehicle::OrderUnloadAll unload;
+                    unload.setType(OpenLoco::Vehicle::OrderType::UnloadAll);
+                    unload.setCargo(Dropdown::getItemArgument(item, 3));
+                    addNewOrder(self, &unload);
                     break;
+                }
                 case widx::orderWait:
-                    sub_4B4ECB(self, 5, Dropdown::getItemArgument(item, 3));
+                {
+
+                    OpenLoco::Vehicle::OrderWaitFor wait;
+                    wait.setType(OpenLoco::Vehicle::OrderType::WaitFor);
+                    wait.setCargo(Dropdown::getItemArgument(item, 3));
+                    addNewOrder(self, &wait);
                     break;
+                }
             }
         }
 
@@ -2537,14 +2538,15 @@ namespace OpenLoco::Ui::Vehicle
                     pos.y += args.y;
                     TilePos tPos{ pos };
                     height -= trackPart.z;
-                    uint64_t orderArgument = ((tPos.x & 0xFF) << 8) | ((tPos.x & 0x0100) >> 1);
-                    orderArgument |= static_cast<uint64_t>(((tPos.y & 0xFF) << 8) | ((tPos.y & 0x0100) >> 1)) << 16;
-                    orderArgument |= static_cast<uint64_t>(height / 8) << 16;
-                    orderArgument |= static_cast<uint64_t>(trackElement->unkDirection()) << 32;
-                    orderArgument |= static_cast<uint64_t>(trackId) << 35;
-                    orderArgument >>= 3;
+
+                    OpenLoco::Vehicle::OrderRouteWaypoint waypoint;
+                    waypoint.setType(OpenLoco::Vehicle::OrderType::RouteWaypoint);
+                    waypoint.setWaypoint(tPos, height / 8);
+                    waypoint.setDirection(trackElement->unkDirection());
+                    waypoint.setTrackId(trackId);
+
                     Audio::playSound(Audio::sound_id::waypoint, { x, y, Input::getDragLastLocation().x }, Input::getDragLastLocation().x);
-                    sub_4B4ECB(&self, 3, orderArgument);
+                    addNewOrder(&self, &waypoint);
                     break;
                 }
                 case Ui::ViewportInteraction::InteractionItem::t_11:
@@ -2561,18 +2563,20 @@ namespace OpenLoco::Ui::Vehicle
                         map_pos{ args.x, args.y }
                     };
 
-                    uint64_t orderArgument = ((tPos.x & 0xFF) << 8) | ((tPos.x & 0x0100) >> 1);
-                    orderArgument |= static_cast<uint64_t>(((tPos.y & 0xFF) << 8) | ((tPos.y & 0x0100) >> 1)) << 16;
-                    orderArgument |= static_cast<uint64_t>(height / 8) << 16;
-                    orderArgument >>= 3;
-                    sub_4B4ECB(&self, 3, orderArgument);
+                    OpenLoco::Vehicle::OrderRouteWaypoint waypoint;
+                    waypoint.setType(OpenLoco::Vehicle::OrderType::RouteWaypoint);
+                    waypoint.setWaypoint(tPos, height / 8);
+                    addNewOrder(&self, &waypoint);
                     break;
                 }
                 case Ui::ViewportInteraction::InteractionItem::station:
                 {
                     Audio::playSound(Audio::sound_id::waypoint, { x, y, Input::getDragLastLocation().x }, Input::getDragLastLocation().x);
                     station_id_t stationId = args.value;
-                    sub_4B4ECB(&self, 1, (((stationId & 0x300) >> 2) | ((stationId & 0xFF) << 8)) >> 3);
+                    OpenLoco::Vehicle::OrderStation station;
+                    station.setType(OpenLoco::Vehicle::OrderType::StopAt);
+                    station.setStation(stationId);
+                    addNewOrder(&self, &station);
                     break;
                 }
                 case Ui::ViewportInteraction::InteractionItem::road:
@@ -2592,14 +2596,14 @@ namespace OpenLoco::Ui::Vehicle
                     pos.y += args.y;
                     TilePos tPos{ pos };
                     height -= roadPart.z;
-                    uint64_t orderArgument = ((tPos.x & 0xFF) << 8) | ((tPos.x & 0x0100) >> 1);
-                    orderArgument |= static_cast<uint64_t>(((tPos.y & 0xFF) << 8) | ((tPos.y & 0x0100) >> 1)) << 16;
-                    orderArgument |= static_cast<uint64_t>(height / 8) << 16;
-                    orderArgument |= static_cast<uint64_t>(trackElement->unkDirection()) << 32;
-                    orderArgument |= static_cast<uint64_t>(roadId) << 35;
-                    orderArgument >>= 3;
+
+                    OpenLoco::Vehicle::OrderRouteWaypoint waypoint;
+                    waypoint.setType(OpenLoco::Vehicle::OrderType::RouteWaypoint);
+                    waypoint.setWaypoint(tPos, height / 8);
+                    waypoint.setDirection(trackElement->unkDirection());
+                    waypoint.setTrackId(roadId);
                     Audio::playSound(Audio::sound_id::waypoint, { x, y, Input::getDragLastLocation().x }, Input::getDragLastLocation().x);
-                    sub_4B4ECB(&self, 3, orderArgument);
+                    addNewOrder(&self, &waypoint);
                     break;
                 }
 
@@ -2635,8 +2639,6 @@ namespace OpenLoco::Ui::Vehicle
         {
             auto head = Common::getVehicle(self);
             auto item = y / 10;
-            auto orderOffset = head->orderTableOffset;
-            auto orderType = -1; // Just to do one loop in all cases TODO ?do while?
             OpenLoco::Vehicle::Order* selectedOrder = nullptr;
             if (item != 0)
             {
@@ -2650,7 +2652,10 @@ namespace OpenLoco::Ui::Vehicle
                     }
                     i++;
                 }
-                item = -1;
+                if (selectedOrder == nullptr)
+                {
+                    item = -1;
+                }
             }
 
             auto toolWindow = Input::toolGetActiveWindow();
@@ -2665,17 +2670,14 @@ namespace OpenLoco::Ui::Vehicle
                 {
                     // Copy complete order list
                     Audio::playSound(Audio::sound_id::waypoint, { x, y, Input::getDragLastLocation().x }, Input::getDragLastLocation().x);
-                    orderOffset = head->orderTableOffset;
-                    auto orderPosition = 0;
-                    orderType = -1; // Just to do one loop in all cases TODO ?do while?
-                    std::vector<std::unique_ptr<OpenLoco::Vehicle::Order>> clonedOrders;
+                    std::vector<std::shared_ptr<OpenLoco::Vehicle::Order>> clonedOrders;
                     for (auto& existingOrders : OpenLoco::Vehicle::OrderTableView(head->orderTableOffset))
                     {
                         clonedOrders.push_back(existingOrders.clone());
                     }
                     for (auto& order : clonedOrders)
                     {
-                        sub_4B4ECB(toolWindow, order.get());
+                        addNewOrder(toolWindow, order.get());
                     }
                     WindowManager::bringToFront(toolWindow);
                 }
@@ -2683,15 +2685,8 @@ namespace OpenLoco::Ui::Vehicle
                 {
                     // Copy a single entry on the order list
                     Audio::playSound(Audio::sound_id::waypoint, { x, y, Input::getDragLastLocation().x }, Input::getDragLastLocation().x);
-                    orderType = _dword_987C5C[orderOffset] & 0x7;
-                    uint64_t orderArgs = _dword_987C5C[orderOffset];
-                    orderArgs |= static_cast<uint64_t>(_dword_987C5C[orderOffset + 1]) << 8;
-                    orderArgs |= static_cast<uint64_t>(_dword_987C5C[orderOffset + 2]) << 16;
-                    orderArgs |= static_cast<uint64_t>(_dword_987C5C[orderOffset + 3]) << 24;
-                    orderArgs |= static_cast<uint64_t>(_dword_987C5C[orderOffset + 4]) << 32;
-                    orderArgs |= static_cast<uint64_t>(_dword_987C5C[orderOffset + 5]) << 40;
-                    orderArgs >>= 3;
-                    sub_4B4ECB(toolWindow, orderType, orderArgs);
+                    auto clonedOrder = selectedOrder->clone();
+                    addNewOrder(toolWindow, clonedOrder.get());
                     WindowManager::bringToFront(toolWindow);
                 }
                 return;
@@ -2715,6 +2710,10 @@ namespace OpenLoco::Ui::Vehicle
                 return;
             }
 
+            if (selectedOrder == nullptr)
+            {
+                return;
+            }
             switch (selectedOrder->getType())
             {
                 case OpenLoco::Vehicle::OrderType::StopAt:

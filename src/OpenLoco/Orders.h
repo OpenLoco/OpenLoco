@@ -31,7 +31,8 @@ namespace OpenLoco::Vehicle
             _type |= static_cast<uint8_t>(type);
         }
         uint32_t getOffset() const;
-        std::unique_ptr<Order> clone() const;
+        std::shared_ptr<Order> clone() const;
+        uint64_t getRaw() const;
 
         template<typename T>
         constexpr bool is() const { return getType() == T::TYPE; }
@@ -56,7 +57,8 @@ namespace OpenLoco::Vehicle
         {
             return ((_type & 0xC0) << 2) | _1;
         }
-        void setStation(station_id_t station) {
+        void setStation(station_id_t station)
+        {
             _type &= ~(0xC0);
             _type |= (station >> 2) & 0xC0;
             _1 = station & 0xFF;
