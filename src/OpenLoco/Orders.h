@@ -25,7 +25,14 @@ namespace OpenLoco::Vehicle
     {
         uint8_t _type;
         OrderType getType() const { return OrderType(_type & 0x7); }
+        void setType(OrderType type)
+        {
+            _type &= ~0x7;
+            _type |= static_cast<uint8_t>(type);
+        }
         uint32_t getOffset() const;
+        std::unique_ptr<Order> clone() const;
+
         template<typename T>
         constexpr bool is() const { return getType() == T::TYPE; }
         template<typename T>
@@ -47,7 +54,12 @@ namespace OpenLoco::Vehicle
 
         station_id_t getStation() const
         {
-            return ((_type & 0xC) << 2) | _1;
+            return ((_type & 0xC0) << 2) | _1;
+        }
+        void setStation(station_id_t station) {
+            _type &= ~(0xC0);
+            _type |= (station >> 2) & 0xC0;
+            _1 = station & 0xFF;
         }
         void setFormatArguments(FormatArguments& args) const;
     };
@@ -82,6 +94,11 @@ namespace OpenLoco::Vehicle
     struct OrderCargo : Order
     {
         uint8_t getCargo() const { return _type >> 3; }
+        void setCargo(uint8_t cargo)
+        {
+            _type &= ~0xF8;
+            _type |= (cargo & 0x1F) << 3;
+        }
         void setFormatArguments(FormatArguments& args) const;
     };
 

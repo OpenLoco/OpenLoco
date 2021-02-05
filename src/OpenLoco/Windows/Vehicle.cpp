@@ -2668,25 +2668,14 @@ namespace OpenLoco::Ui::Vehicle
                     orderOffset = head->orderTableOffset;
                     auto orderPosition = 0;
                     orderType = -1; // Just to do one loop in all cases TODO ?do while?
-                    while (orderType != 0)
+                    std::vector<std::unique_ptr<OpenLoco::Vehicle::Order>> clonedOrders;
+                    for (auto& existingOrders : OpenLoco::Vehicle::OrderTableView(head->orderTableOffset))
                     {
-                        orderType = _dword_987C5C[orderOffset] & 0x7;
-                        if (orderType == 0)
-                        {
-                            break;
-                        }
-
-                        uint64_t orderArgs = _dword_987C5C[orderOffset];
-                        orderArgs |= static_cast<uint64_t>(_dword_987C5C[orderOffset + 1]) << 8;
-                        orderArgs |= static_cast<uint64_t>(_dword_987C5C[orderOffset + 2]) << 16;
-                        orderArgs |= static_cast<uint64_t>(_dword_987C5C[orderOffset + 3]) << 24;
-                        orderArgs |= static_cast<uint64_t>(_dword_987C5C[orderOffset + 4]) << 32;
-                        orderArgs |= static_cast<uint64_t>(_dword_987C5C[orderOffset + 5]) << 40;
-                        orderArgs >>= 3;
-                        sub_4B4ECB(toolWindow, orderType, orderArgs);
-                        orderPosition += dword_4FE070[orderType];
-                        // OrderOffset invalidated by sub_4B4ECB recalculate it
-                        orderOffset = orderPosition + head->orderTableOffset;
+                        clonedOrders.push_back(existingOrders.clone());
+                    }
+                    for (auto& order : clonedOrders)
+                    {
+                        sub_4B4ECB(toolWindow, order.get());
                     }
                     WindowManager::bringToFront(toolWindow);
                 }

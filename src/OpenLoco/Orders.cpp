@@ -23,6 +23,86 @@ namespace OpenLoco::Vehicle
         sizeof(OrderWaitFor),
     };
 
+    std::unique_ptr<Order> Order::clone() const
+    {
+        switch (getType())
+        {
+            case OrderType::End:
+            {
+                auto cloneOrder = std::make_unique<OrderEnd>();
+                cloneOrder->setType(OrderType::End);
+                return cloneOrder;
+            }
+            case OrderType::StopAt:
+            {
+                auto* stopOrder = as<OrderStopAt>();
+                if (stopOrder != nullptr)
+                {
+                    auto cloneOrder = std::make_unique<OrderStopAt>();
+                    cloneOrder->setType(OrderType::StopAt);
+                    cloneOrder->setStation(stopOrder->getStation());
+                    return cloneOrder;
+                }
+                break;
+            }
+            case OrderType::RouteThrough:
+            {
+
+                auto* routeOrder = as<OrderRouteThrough>();
+                if (routeOrder != nullptr)
+                {
+                    auto cloneOrder = std::make_unique<OrderRouteThrough>();
+                    cloneOrder->setType(OrderType::RouteThrough);
+                    cloneOrder->setStation(routeOrder->getStation());
+                    return cloneOrder;
+                }
+                break;
+            }
+            case OrderType::RouteWaypoint:
+            {
+                auto* waypointOrder = as<OrderRouteWaypoint>();
+                if (waypointOrder != nullptr)
+                {
+                    auto cloneOrder = std::make_unique<OrderRouteWaypoint>();
+                    cloneOrder->setType(OrderType::RouteWaypoint);
+                    auto x = ((waypointOrder->_type & 0x80) << 1) | waypointOrder->_1;
+                    auto y = ((waypointOrder->_2 & 0x80) << 1) | waypointOrder->_3;
+                    auto z = (waypointOrder->_2 & 0x7F);
+                    cloneOrder->setWaypoint({ x, y }, z);
+                    cloneOrder->setDirection(waypointOrder->getDirection());
+                    cloneOrder->setTrackId(waypointOrder->getTrackId());
+                    return cloneOrder;
+                }
+                break;
+            }
+            case OrderType::UnloadAll:
+            {
+                auto* unloadOrder = as<OrderUnloadAll>();
+                if (unloadOrder != nullptr)
+                {
+                    auto cloneOrder = std::make_unique<OrderUnloadAll>();
+                    cloneOrder->setType(OrderType::UnloadAll);
+                    cloneOrder->setCargo(unloadOrder->getCargo());
+                    return cloneOrder;
+                }
+                break;
+            }
+            case OrderType::WaitFor:
+            {
+                auto* waitOrder = as<OrderWaitFor>();
+                if (waitOrder != nullptr)
+                {
+                    auto cloneOrder = std::make_unique<OrderWaitFor>();
+                    cloneOrder->setType(OrderType::WaitFor);
+                    cloneOrder->setCargo(waitOrder->getCargo());
+                    return cloneOrder;
+                }
+                break;
+            }
+        }
+        return {};
+    }
+
     void OrderRouteWaypoint::setWaypoint(const Map::TilePos& pos, const uint8_t baseZ)
     {
         _1 &= ~0x80;
