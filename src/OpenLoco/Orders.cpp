@@ -14,7 +14,7 @@ namespace OpenLoco::Vehicle
     static loco_global<Order[max_orders], 0x00987C5C> _orderTable;
 
     // 0x004FE070
-    static constexpr uint8_t OrderSizes[] = {
+    static constexpr uint8_t _orderSizes[] = {
         sizeof(OrderEnd),
         sizeof(OrderStopAt),
         sizeof(OrderRouteThrough),
@@ -22,6 +22,21 @@ namespace OpenLoco::Vehicle
         sizeof(OrderUnloadAll),
         sizeof(OrderWaitFor),
     };
+
+    // 0x004FE088
+    static constexpr uint8_t _orderFlags[] = {
+        0,
+        OrderFlags::IsRoutable | OrderFlags::HasNumber | OrderFlags::HasStation,
+        OrderFlags::IsRoutable | OrderFlags::HasNumber | OrderFlags::HasStation,
+        OrderFlags::IsRoutable | OrderFlags::HasNumber,
+        OrderFlags::HasCargo,
+        OrderFlags::HasCargo,
+    };
+
+    bool Order::hasFlag(const uint8_t flag) const
+    {
+        return _orderFlags[static_cast<uint8_t>(getType())] & flag;
+    }
 
     template<typename T>
     std::shared_ptr<Order> orderClone(const Order& order)
@@ -140,7 +155,7 @@ namespace OpenLoco::Vehicle
 
     OrderTableView::Iterator& OrderTableView::Iterator::operator++()
     {
-        auto* newOrders = reinterpret_cast<uint8_t*>(_orders) + OrderSizes[static_cast<uint8_t>(_orders->getType())];
+        auto* newOrders = reinterpret_cast<uint8_t*>(_orders) + _orderSizes[static_cast<uint8_t>(_orders->getType())];
         _orders = reinterpret_cast<Order*>(newOrders);
         return *this;
     }

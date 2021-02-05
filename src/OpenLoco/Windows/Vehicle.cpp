@@ -2716,6 +2716,8 @@ namespace OpenLoco::Ui::Vehicle
                     }
                     break;
                 }
+                case OpenLoco::Vehicle::OrderType::End:
+                    break;
             }
         }
 
@@ -2930,11 +2932,11 @@ namespace OpenLoco::Ui::Vehicle
         };
 
         // 0x004B4A58 based on
-        static void sub_4B4A58(window* const self, Gfx::drawpixelinfo_t* const context, const string_id strFormat, FormatArguments& args, const uint8_t orderType, int16_t& y)
+        static void sub_4B4A58(window* const self, Gfx::drawpixelinfo_t* const context, const string_id strFormat, FormatArguments& args, OpenLoco::Vehicle::Order& order, int16_t& y)
         {
             Gfx::point_t loc = { 8, static_cast<int16_t>(y - 1) };
             Gfx::drawString_494B3F(*context, &loc, Colour::black, strFormat, &args);
-            if (byte_4FE088[orderType] & (1 << 1))
+            if (order.hasFlag(OpenLoco::Vehicle::OrderFlags::HasNumber))
             {
                 if (Input::isToolActive(self->type, self->number))
                 {
@@ -3013,7 +3015,7 @@ namespace OpenLoco::Ui::Vehicle
                     }
                 }
 
-                sub_4B4A58(self, pDrawpixelinfo, strFormat, args, static_cast<uint8_t>(order.getType()), y);
+                sub_4B4A58(self, pDrawpixelinfo, strFormat, args, order, y);
                 if (head->currentOrder + head->orderTableOffset == order.getOffset())
                 {
                     Gfx::drawString_494B3F(*pDrawpixelinfo, 1, y - 1, Colour::black, StringIds::orders_current_order);

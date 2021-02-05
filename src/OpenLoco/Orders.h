@@ -9,9 +9,7 @@ namespace OpenLoco::Map
 }
 namespace OpenLoco::Vehicle
 {
-
-#pragma pack(push, 1)
-    enum class OrderType
+    enum class OrderType : uint8_t
     {
         End,
         StopAt,
@@ -21,9 +19,17 @@ namespace OpenLoco::Vehicle
         WaitFor
     };
 
+    namespace OrderFlags
+    {
+        constexpr uint8_t IsRoutable = (1 << 0);
+        constexpr uint8_t HasNumber = (1 << 1);
+        constexpr uint8_t HasCargo = (1 << 2);
+        constexpr uint8_t HasStation = (1 << 3);
+    }
+#pragma pack(push, 1)
     struct Order
     {
-        uint8_t _type;
+        uint8_t _type = 0;
 
     protected:
         Order() = default;
@@ -38,6 +44,7 @@ namespace OpenLoco::Vehicle
         uint32_t getOffset() const;
         std::shared_ptr<Order> clone() const;
         uint64_t getRaw() const;
+        bool hasFlag(const uint8_t flag) const;
 
         template<typename T>
         constexpr bool is() const { return getType() == T::TYPE; }
@@ -56,7 +63,7 @@ namespace OpenLoco::Vehicle
 
     struct OrderStation : Order
     {
-        uint8_t _1;
+        uint8_t _1 = 0;
 
         station_id_t getStation() const
         {
@@ -94,11 +101,11 @@ namespace OpenLoco::Vehicle
     struct OrderRouteWaypoint : Order
     {
         static constexpr OrderType TYPE = OrderType::RouteWaypoint;
-        uint8_t _1;
-        uint8_t _2;
-        uint8_t _3;
-        uint8_t _4;
-        uint8_t _5;
+        uint8_t _1 = 0;
+        uint8_t _2 = 0;
+        uint8_t _3 = 0;
+        uint8_t _4 = 0;
+        uint8_t _5 = 0;
 
         OrderRouteWaypoint(const Map::TilePos& pos, const uint8_t baseZ, const uint8_t direction, const uint8_t trackId)
         {
