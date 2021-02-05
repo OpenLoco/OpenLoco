@@ -2676,31 +2676,16 @@ namespace OpenLoco::Ui::Vehicle
             switch (selectedOrder->getType())
             {
                 case OpenLoco::Vehicle::OrderType::StopAt:
-                {
-                    auto* stopOrder = selectedOrder->as<OpenLoco::Vehicle::OrderStopAt>();
-                    if (stopOrder != nullptr)
-                    {
-                        auto station = StationManager::get(stopOrder->getStation());
-                        auto main = WindowManager::getMainWindow();
-                        if (main)
-                        {
-                            main->viewportCentreOnTile({ station->x, station->y, static_cast<coord_t>(station->z + 32) });
-                        }
-                    }
-                    break;
-                }
                 case OpenLoco::Vehicle::OrderType::RouteThrough:
                 {
-                    auto* routeOrder = selectedOrder->as<OpenLoco::Vehicle::OrderRouteThrough>();
-                    if (routeOrder != nullptr)
+                    auto* stationOrder = static_cast<OpenLoco::Vehicle::OrderStation*>(selectedOrder);
+                    auto station = StationManager::get(stationOrder->getStation());
+                    auto main = WindowManager::getMainWindow();
+                    if (main)
                     {
-                        auto station = StationManager::get(routeOrder->getStation());
-                        auto main = WindowManager::getMainWindow();
-                        if (main)
-                        {
-                            main->viewportCentreOnTile({ station->x, station->y, static_cast<coord_t>(station->z + 32) });
-                        }
+                        main->viewportCentreOnTile({ station->x, station->y, static_cast<coord_t>(station->z + 32) });
                     }
+
                     break;
                 }
                 case OpenLoco::Vehicle::OrderType::RouteWaypoint:
@@ -2849,18 +2834,6 @@ namespace OpenLoco::Ui::Vehicle
                 StringIds::orders_unload_all,
                 StringIds::orders_wait_for_full_load_of,
             }
-        };
-
-        // TODO: Move to orders file this is duplicated
-        static const uint8_t byte_4FE088[] = {
-            0,
-            11,
-            11,
-            3,
-            4,
-            4,
-            0,
-            0,
         };
 
         static const std::array<uint32_t, 63> numberCircle = {
