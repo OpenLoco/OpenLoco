@@ -216,7 +216,9 @@ namespace OpenLoco::Vehicle
         {
         }
 
-        OrderTableView::Iterator begin();
-        OrderTableView::Iterator end();
+        OrderTableView::Iterator begin() const;
+        OrderTableView::Iterator end() const;
+
+        Order* atIndex(const uint8_t index) const;
     };
 }

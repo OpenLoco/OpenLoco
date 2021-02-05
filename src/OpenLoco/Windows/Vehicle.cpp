@@ -2184,6 +2184,11 @@ namespace OpenLoco::Ui::Vehicle
             sub_470824(head);
         }
 
+        static OpenLoco::Vehicle::OrderTableView getOrderTable(const vehicle_head* const head)
+        {
+            return OpenLoco::Vehicle::OrderTableView(head->orderTableOffset);
+        }
+
         // 0x004B4F6D
         static void onOrderDelete(Vehicles::VehicleHead* const head, const int16_t orderId)
         {
@@ -2202,7 +2207,7 @@ namespace OpenLoco::Ui::Vehicle
             // orderId can be -1 at this point for none selected
             auto i = 0;
             OpenLoco::Vehicle::Order* last = nullptr;
-            for (auto& order : OpenLoco::Vehicle::OrderTableView(head->orderTableOffset))
+            for (auto& order : getOrderTable(head))
             {
                 if (i == orderId - 1)
                 {
@@ -2247,14 +2252,10 @@ namespace OpenLoco::Ui::Vehicle
             if (orderId <= 0)
                 return false;
 
-            auto i = 0;
-            for (auto& order : OpenLoco::Vehicle::OrderTableView(head->orderTableOffset))
+            auto* order = getOrderTable(head).atIndex(orderId - 1);
+            if (order != nullptr)
             {
-                if (i == orderId - 1)
-                {
-                    return orderMoveFunc(head, order.getOffset());
-                }
-                i++;
+                return orderMoveFunc(head, order->getOffset());
             }
             return false;
         }
@@ -2287,17 +2288,13 @@ namespace OpenLoco::Ui::Vehicle
                     }
 
                     // Refresh selection (check if we are now at no order selected)
-                    auto i = 0;
-                    for ([[maybe_unused]] auto& order : OpenLoco::Vehicle::OrderTableView(Common::getVehicle(self)->orderTableOffset))
+                    auto* order = getOrderTable(Common::getVehicle(self)).atIndex(self->var_842 - 1);
+
+                    // If no order selected anymore
+                    if (order == nullptr)
                     {
-                        if (i + 1 == self->var_842)
-                        {
-                            return;
-                        }
-                        i++;
+                        self->var_842 = -1;
                     }
-                    // No order selected anymore
-                    self->var_842 = -1;
                     break;
                 }
                 case widx::orderSkip:
@@ -2321,15 +2318,10 @@ namespace OpenLoco::Ui::Vehicle
                         {
                             return;
                         }
-                        auto i = 0;
-                        for ([[maybe_unused]] auto& order : OpenLoco::Vehicle::OrderTableView(Common::getVehicle(self)->orderTableOffset))
+                        auto* order = getOrderTable(Common::getVehicle(self)).atIndex(self->var_842);
+                        if (order != nullptr)
                         {
-                            if (i == self->var_842)
-                            {
-                                self->var_842++;
-                                return;
-                            }
-                            i++;
+                            self->var_842++;
                         }
                     }
                     break;
@@ -2396,16 +2388,10 @@ namespace OpenLoco::Ui::Vehicle
             auto chosenOffset = head->sizeOfOrderTable - 1;
             if (self->var_842 != -1)
             {
-                auto orderIndex = 0; // self->var_842 is in terms of order indexs (i.e. 1 per order)
-                chosenOffset = 0;    // chosenOffset will be (orderOffset - head->orderTableOffset)
-                for (auto& existingOrders : OpenLoco::Vehicle::OrderTableView(Common::getVehicle(self)->orderTableOffset))
+                auto* chosenOrder = getOrderTable(head).atIndex(self->var_842);
+                if (chosenOrder != nullptr)
                 {
-                    if (orderIndex + 1 == self->var_842)
-                    {
-                        chosenOffset = existingOrders.getOffset() - head->orderTableOffset;
-                        break;
-                    }
-                    orderIndex++;
+                    chosenOffset = chosenOrder->getOffset() - head->orderTableOffset;
                 }
             }
             gGameCommandErrorTitle = StringIds::orders_cant_insert;
@@ -2624,16 +2610,7 @@ namespace OpenLoco::Ui::Vehicle
             OpenLoco::Vehicle::Order* selectedOrder = nullptr;
             if (item != 0)
             {
-                auto i = 1;
-                for (auto& order : OpenLoco::Vehicle::OrderTableView(head->orderTableOffset))
-                {
-                    if (i == item)
-                    {
-                        selectedOrder = &order;
-                        break;
-                    }
-                    i++;
-                }
+                selectedOrder = getOrderTable(head).atIndex(item - 1);
                 if (selectedOrder == nullptr)
                 {
                     item = -1;
@@ -2726,7 +2703,7 @@ namespace OpenLoco::Ui::Vehicle
                     }
                     break;
                 }
-                case OpenLoco::Vehicle::OrderType::RouteWaypoint: // waypoint
+                case OpenLoco::Vehicle::OrderType::RouteWaypoint:
                 {
                     auto* routeOrder = selectedOrder->as<OpenLoco::Vehicle::OrderRouteWaypoint>();
                     if (routeOrder != nullptr)
@@ -2996,7 +2973,7 @@ namespace OpenLoco::Ui::Vehicle
             }
 
             _113646A = 1; // Number ?symbol? TODO: make not a global
-            for (auto& order : OpenLoco::Vehicle::OrderTableView(head->orderTableOffset))
+            for (auto& order : getOrderTable(head))
             {
                 int16_t y = rowNum * 10;
                 strFormat = StringIds::black_stringid;
@@ -3022,7 +2999,6 @@ namespace OpenLoco::Ui::Vehicle
                     case OpenLoco::Vehicle::OrderType::StopAt:
                     case OpenLoco::Vehicle::OrderType::RouteThrough:
                     {
-
                         auto* stationOrder = static_cast<OpenLoco::Vehicle::OrderStation*>(&order);
                         stationOrder->setFormatArguments(args);
                         break;

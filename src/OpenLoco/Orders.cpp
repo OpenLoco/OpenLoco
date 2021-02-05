@@ -145,12 +145,12 @@ namespace OpenLoco::Vehicle
         return *this;
     }
 
-    OrderTableView::Iterator OrderTableView::begin()
+    OrderTableView::Iterator OrderTableView::begin() const
     {
         return Iterator(&_orderTable[_beginOffset]);
     }
 
-    OrderTableView::Iterator OrderTableView::end()
+    OrderTableView::Iterator OrderTableView::end() const
     {
         static OrderEnd _end;
         return Iterator(&_end);
@@ -172,4 +172,14 @@ namespace OpenLoco::Vehicle
         args.push(cargoObj->unit_inline_sprite);
     }
 
+    Order* OrderTableView::atIndex(const uint8_t index) const
+    {
+        auto size = std::distance(begin(), end());
+        if (index >= size)
+        {
+            return nullptr;
+        }
+        auto chosenOrder = std::next(begin(), index);
+        return &(*chosenOrder);
+    }
 }
