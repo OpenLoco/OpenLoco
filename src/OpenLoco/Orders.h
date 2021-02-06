@@ -2,11 +2,8 @@
 #include "Map/Tile.h"
 #include "Types.hpp"
 #include <iterator>
+#include <memory>
 
-namespace OpenLoco::Map
-{
-    struct map_pos3;
-}
 namespace OpenLoco::Vehicle
 {
     enum class OrderType : uint8_t
