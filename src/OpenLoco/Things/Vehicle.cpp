@@ -17,6 +17,7 @@
 using namespace OpenLoco;
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::ObjectManager;
+using namespace OpenLoco::Literals;
 
 loco_global<vehicle_head*, 0x01136118> vehicleUpdate_head;
 loco_global<vehicle_bogie*, 0x01136124> vehicleUpdate_frontBogie;
@@ -1297,7 +1298,7 @@ void OpenLoco::vehicle_body::dieselExhaust2AnimationUpdate(uint8_t num, int32_t 
     if (veh_2->var_5A != 1)
         return;
 
-    if (veh_2->var_56 > 917504)
+    if (veh_2->var_56 > 14.0_mph32)
         return;
 
     if (var_38 & Things::Vehicle::Flags38::isReversed)

@@ -348,7 +348,7 @@ namespace OpenLoco
         uint16_t totalPower;  // 0x50 maybe not used by aircraft and ship
         uint16_t totalWeight; // 0x52
         int16_t maxSpeed;     // 0x54
-        uint32_t var_56;
+        uint32_t var_56;      // 0x56 currentSpeed
         uint8_t var_5A;
         uint8_t var_5B;
         int16_t rackRailMaxSpeed; // 0x5C
