@@ -95,8 +95,8 @@ namespace OpenLoco::Vehicles
     void VehicleHead::applyBreakdownToTrain()
     {
         Vehicle train(this);
-        uint8_t flags = 0;
         bool isBrokenDown = false;
+        bool trainStillPowered = false;
         // Check only the first bogie on each car for breakdown flags
         for (const auto& car : train.cars)
         {
@@ -116,24 +116,24 @@ namespace OpenLoco::Vehicles
             }
             else
             {
-                flags |= (1 << 1);
+                trainStillPowered = true;
             }
         }
         if (isBrokenDown)
         {
-            if (flags & (1 << 1))
+            if (trainStillPowered)
             {
-                train.veh2->var_73 |= (1 << 0) | (1 << 1);
+                train.veh2->var_73 |= Flags73::isBrokenDown | Flags73::isStillPowered;
             }
             else
             {
-                train.veh2->var_73 |= (1 << 0);
-                train.veh2->var_73 &= ~(1 << 1);
+                train.veh2->var_73 |= Flags73::isBrokenDown;
+                train.veh2->var_73 &= ~Flags73::isStillPowered;
             }
         }
         else
         {
-            train.veh2->var_73 &= ~((1 << 0) | (1 << 1));
+            train.veh2->var_73 &= ~(Flags73::isBrokenDown | Flags73::isStillPowered);
         }
     }
 

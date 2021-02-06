@@ -29,6 +29,12 @@ namespace OpenLoco::Vehicles
         constexpr uint8_t isGhost = 1 << 4;
     }
 
+    namespace Flags73 // veh2 Train breakdown flags
+    {
+        constexpr uint8_t isBrokenDown = 1 << 0;
+        constexpr uint8_t isStillPowered = 1 << 1;
+    }
+
     enum class Status : uint8_t
     {
         unk_0 = 0, // no position (not placed)
@@ -309,7 +315,7 @@ namespace OpenLoco::Vehicles
         int32_t var_6A;      // currency
         int32_t var_6E;      // currency
         uint8_t reliability; // 0x72
-        uint8_t var_73;      // 0x73 (bit 0 = broken down)
+        uint8_t var_73;      // 0x73 (bit 0 = broken down, bit 1 = still powered)
     };
     static_assert(sizeof(Vehicle2) == 0x74); // Can't use offset_of change this to last field if more found
 
