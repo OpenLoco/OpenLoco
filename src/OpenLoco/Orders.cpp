@@ -132,9 +132,9 @@ namespace OpenLoco::Vehicle
                 auto* route = as<OrderRouteWaypoint>();
                 if (route != nullptr)
                 {
-                    ret |= route->_data[0] << 8;
-                    ret |= route->_data[1] << 16;
-                    ret |= route->_data[2] << 24;
+                    ret |= static_cast<uint64_t>(route->_data[0]) << 8;
+                    ret |= static_cast<uint64_t>(route->_data[1]) << 16;
+                    ret |= static_cast<uint64_t>(route->_data[2]) << 24;
                     ret |= static_cast<uint64_t>(route->_data[3]) << 32;
                     ret |= static_cast<uint64_t>(route->_data[4]) << 40;
                 }
@@ -145,7 +145,7 @@ namespace OpenLoco::Vehicle
                 auto* stop = as<OrderStopAt>();
                 if (stop != nullptr)
                 {
-                    ret |= stop->_data << 8;
+                    ret |= static_cast<uint64_t>(stop->_data) << 8;
                 }
                 break;
             }
