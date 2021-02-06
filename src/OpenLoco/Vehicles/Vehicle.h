@@ -224,7 +224,7 @@ namespace OpenLoco::Vehicles
         VehicleStatus getStatus() const;
 
     private:
-        void sub_4BAA76();
+        void applyBreakdownToTrain();
         uint32_t getVehicleTotalLength();
     };
     static_assert(sizeof(VehicleHead) == 0x7A); // Can't use offset_of change this to last field if more found

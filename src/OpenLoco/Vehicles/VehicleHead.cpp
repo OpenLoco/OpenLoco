@@ -62,7 +62,7 @@ namespace OpenLoco::Vehicles
                 break;
         }
         Vehicle train(this);
-        for (auto car : train.cars)
+        for (auto& car : train.cars)
         {
             if (car.front->var_5F & Flags5F::broken_down)
             {
@@ -81,7 +81,7 @@ namespace OpenLoco::Vehicles
                     car.front->var_5F &= ~Flags5F::breakdown_pending;
                     car.front->var_5F |= Flags5F::broken_down;
                     car.front->var_6A = 5;
-                    sub_4BAA76();
+                    applyBreakdownToTrain();
 
                     auto v2 = car.body;
                     auto soundId = (Audio::sound_id)gPrng().randNext(26, 26 + 5);
@@ -91,11 +91,50 @@ namespace OpenLoco::Vehicles
         }
     }
 
-    void VehicleHead::sub_4BAA76()
+
+    void VehicleHead::applyBreakdownToTrain()
     {
-        registers regs;
-        regs.esi = (int32_t)this;
-        call(0x004BAA76, regs);
+        Vehicle train(this);
+        uint8_t flags = 0;
+        bool isBrokenDown = false;
+        // Check only the first bogie on each car for breakdown flags
+        for (const auto& car : train.cars)
+        {
+            auto* vehObj = ObjectManager::get<vehicle_object>(car.front->object_id);
+            if (vehObj == nullptr)
+            {
+                continue;
+            }
+            // Unpowered vehicles can not breakdown
+            if (vehObj->power == 0)
+            {
+                continue;
+            }
+            if (car.front->var_5F & Flags5F::broken_down)
+            {
+                isBrokenDown = true;
+            }
+            else
+            {
+                flags |= (1 << 1);
+            }
+        }
+        if (isBrokenDown)
+        {
+            if (flags & (1 << 1))
+            {
+                train.veh2->var_73 |= (1 << 0) | (1 << 1);
+            }
+            else
+            {
+                train.veh2->var_73 |= (1 << 0);
+                train.veh2->var_73 &= ~(1 << 1);
+            }
+        }
+        else
+        {
+            train.veh2->var_73 &= ~((1 << 0) | (1 << 1));
+        }
     }
 
     // 0x004B90F0
