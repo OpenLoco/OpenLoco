@@ -1372,13 +1372,41 @@ namespace OpenLoco::Ui::Windows::CompanyList
             }
         }
 
-        static void sub_4378BA(window* self, int16_t x, int16_t y)
+        // 0x004378BA
+        static void setLegendHover(window* self, int16_t x, int16_t y)
         {
-            registers regs;
-            regs.esi = (int32_t)self;
-            regs.cx = x;
-            regs.dx = y;
-            call(0x004378BA, regs);
+            uint32_t selectedCompany = 0;
+            if (!Input::hasFlag(Input::input_flags::flag5))
+            {
+                const auto location = Input::getMouseLocation2();
+                auto* frontWindow = WindowManager::findAt(location);
+                const auto xDiff = location.x - x;
+                const auto yDiff = location.y - y;
+                if (frontWindow != nullptr && frontWindow == self && xDiff <= 100 && xDiff >= 0 && yDiff < 150 && yDiff >= 0)
+                {
+                    auto listY = yDiff;
+                    for (auto& company : CompanyManager::companies())
+                    {
+                        if (company.empty())
+                            continue;
+                        listY -= 10;
+                        if (listY <= 0)
+                        {
+                            selectedCompany = 1ULL << company.id();
+                            break;
+                        }
+                    }
+                }
+            }
+            if (self->var_854 != selectedCompany)
+            {
+                self->var_854 = selectedCompany;
+                self->invalidate();
+            }
+            if (self->var_854 != 0)
+            {
+                self->invalidate();
+            }
         }
 
         // 0x00437570
@@ -1399,7 +1427,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 case widx::tab_values:
                 {
                     _word_9C68C7++;
-                    sub_4378BA(self, x, y);
+                    setLegendHover(self, x, y);
                     break;
                 }
                 case widx::tab_payment_rates:
