@@ -137,15 +137,16 @@ namespace OpenLoco
 
     namespace Literals
     {
-        constexpr uint32_t operator"" _mph32(long double speedMph)
+        // Note: Only valid for 3 decimal places.
+        constexpr uint32_t operator"" _mph(long double speedMph)
         {
             uint32_t wholeNumber = speedMph;
             uint32_t fraction = static_cast<uint64_t>(speedMph * 1000) - static_cast<uint64_t>(wholeNumber) * 1000;
             return wholeNumber << 16 | ((fraction << 16) / 1000);
         }
 
-        static_assert(2.75_mph32 == 0x2C000);
-        static_assert(4.0_mph32 == 0x40000);
-        static_assert(14.0_mph32 == 0xE0000);
+        static_assert(2.75_mph == 0x2C000);
+        static_assert(4.0_mph == 0x40000);
+        static_assert(14.0_mph == 0xE0000);
     }
 }

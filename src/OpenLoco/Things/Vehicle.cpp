@@ -1298,7 +1298,7 @@ void OpenLoco::vehicle_body::dieselExhaust2AnimationUpdate(uint8_t num, int32_t 
     if (veh_2->var_5A != 1)
         return;
 
-    if (veh_2->var_56 > 14.0_mph32)
+    if (veh_2->var_56 > 14.0_mph)
         return;
 
     if (var_38 & Things::Vehicle::Flags38::isReversed)
