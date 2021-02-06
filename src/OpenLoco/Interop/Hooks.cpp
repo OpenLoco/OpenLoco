@@ -716,14 +716,6 @@ void OpenLoco::Interop::registerHooks()
         });
 
     registerHook(
-        0x004BA8D4,
-        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            auto v = (Vehicles::VehicleHead*)regs.esi;
-            v->updateBreakdown();
-            return 0;
-        });
-
-    registerHook(
         0x00438A6C,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             Gui::init();

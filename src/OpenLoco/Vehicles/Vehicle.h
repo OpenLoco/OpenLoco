@@ -16,7 +16,7 @@ namespace OpenLoco::Vehicles
 
     namespace Flags0C // commands?
     {
-        constexpr uint8_t unk_1 = 1 << 1; // commanded to stop??
+        constexpr uint8_t commandStop = 1 << 1; // commanded to stop??
         constexpr uint8_t unk_5 = 1 << 5;
         constexpr uint8_t manualControl = 1 << 6;
     }
@@ -64,8 +64,10 @@ namespace OpenLoco::Vehicles
 
     namespace Flags5F
     {
+        constexpr uint8_t unk_0 = 1 << 0;
         constexpr uint8_t breakdown_pending = 1 << 1;
         constexpr uint8_t broken_down = 1 << 2;
+        constexpr uint8_t unk_3 = 1 << 3;
     }
 
     enum class VehicleThingType : uint8_t
@@ -204,10 +206,9 @@ namespace OpenLoco::Vehicles
         uint32_t var_4E;           // 0x4E
         uint8_t var_52;
         uint8_t pad_53;
-        int16_t var_54;
-        uint8_t pad_56[0x4];
-        uint8_t pad_5A;
-        uint8_t pad_5B;
+        station_id_t stationId; // 0x54
+        uint16_t var_56;
+        uint32_t var_58;
         uint8_t var_5C;
         Status status;           // 0x5D
         VehicleType vehicleType; // 0x5E
@@ -217,9 +218,11 @@ namespace OpenLoco::Vehicles
         uint8_t pad_63[0x69 - 0x63];
         uint32_t var_69;
         uint8_t pad_6D;
-        int8_t var_6E; // manual speed/brake
-        uint8_t pad_6F[0x77 - 0x6F];
-        uint16_t var_77; //
+        int8_t var_6E;             // manual speed/brake
+        int16_t var_6F;            // 0x6F x
+        int16_t var_71;            // 0x6F y
+        uint32_t var_73;           // 0x73 ticks since journey start
+        uint16_t lastAverageSpeed; // 0x77
         uint8_t var_79;
 
     public:
@@ -231,12 +234,24 @@ namespace OpenLoco::Vehicles
 
     private:
         void applyBreakdownToTrain();
-        void updateTrainSounds();
+        void updateDrivingSounds();
         void removeDanglingTrain();
         bool updateLand();
         bool updateAir();
         bool updateWater();
         uint32_t getVehicleTotalLength();
+        void tryCreateInitialMovementSound();
+        void setStationVisitedTypes();
+        void checkIfAtOrderStation();
+        void updateLastJourneyAverageSpeed();
+        void beginUnloading();
+        uint32_t updateWaterMotion(uint32_t flags);
+        void updateUnloadCargo();
+        bool updateLoadCargo();
+        void beginNewJourney();
+        void advanceToNextRoutableOrder();
+        Status sub_427BF2();
+        void produceLeavingDockSound();
     };
     static_assert(sizeof(VehicleHead) == 0x7A); // Can't use offset_of change this to last field if more found
 
@@ -307,10 +322,10 @@ namespace OpenLoco::Vehicles
         Ui::window_number sound_window_number; // 0x4C common with tail
         Ui::WindowType sound_window_type;      // 0x4E common with tail
         uint8_t pad_4F;
-        uint16_t totalPower;  // 0x50 maybe not used by aircraft and ship
-        uint16_t totalWeight; // 0x52
-        int16_t maxSpeed;     // 0x54
-        uint32_t var_56;      // 0x56 currentSpeed
+        uint16_t totalPower;   // 0x50 maybe not used by aircraft and ship
+        uint16_t totalWeight;  // 0x52
+        int16_t maxSpeed;      // 0x54
+        uint32_t currentSpeed; // 0x56
         uint8_t var_5A;
         uint8_t var_5B;
         int16_t rackRailMaxSpeed; // 0x5C
@@ -367,9 +382,9 @@ namespace OpenLoco::Vehicles
         vehicle_object* object() const;
         int32_t update();
         void secondaryAnimationUpdate();
+        void sub_4AAB0B();
 
     private:
-        void sub_4AAB0B();
         void animationUpdate();
         void sub_4AC255(VehicleBogie* back_bogie, VehicleBogie* front_bogie);
         void steamPuffsAnimationUpdate(uint8_t num, int32_t var_05);

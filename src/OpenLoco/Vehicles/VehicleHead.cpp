@@ -6,6 +6,7 @@
 #include "../Objects/ObjectManager.h"
 #include "../Objects/VehicleObject.h"
 #include "../OpenLoco.h"
+#include "../StationManager.h"
 #include "../Things/Misc.h"
 #include "../Things/ThingManager.h"
 #include "../ViewportManager.h"
@@ -51,14 +52,14 @@ namespace OpenLoco::Vehicles
         vehicleUpdate_2 = train.veh2;
 
         vehicleUpdate_initialStatus = status;
-        updateTrainSounds();
+        updateDrivingSounds();
 
         vehicleUpdate_frontBogie = reinterpret_cast<VehicleBogie*>(0xFFFFFFFF);
         vehicleUpdate_backBogie = reinterpret_cast<VehicleBogie*>(0xFFFFFFFF);
 
         Vehicle2* veh2 = vehicleUpdate_2;
-        vehicleUpdate_var_113612C = veh2->var_56 >> 7;
-        vehicleUpdate_var_1136130 = veh2->var_56 >> 7;
+        vehicleUpdate_var_113612C = veh2->currentSpeed >> 7;
+        vehicleUpdate_var_1136130 = veh2->currentSpeed >> 7;
 
         if (var_5C != 0)
         {
@@ -81,17 +82,30 @@ namespace OpenLoco::Vehicles
             return false;
         }
         updateBreakdown();
+        bool continueUpdating = true;
         switch (mode)
         {
-            case OpenLoco::TransportMode::rail:
-            case OpenLoco::TransportMode::road:
-                return updateLand();
-            case OpenLoco::TransportMode::air:
-                return updateAir();
-            case OpenLoco::TransportMode::water:
-                return updateWater();
+            case TransportMode::rail:
+            case TransportMode::road:
+                continueUpdating = updateLand();
+                break;
+            case TransportMode::air:
+                continueUpdating = updateAir();
+                break;
+            case TransportMode::water:
+                continueUpdating = updateWater();
+                if (continueUpdating)
+                {
+                    tryCreateInitialMovementSound();
+                }
+                break;
         }
-        return false;
+        // TODO move to here when all update mode functions implemented
+        //if (continueUpdating)
+        //{
+        //    tryCreateInitialMovementSound();
+        //}
+        return continueUpdating;
     }
 
     // 0x004BA8D4
@@ -355,7 +369,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004A8882
-    void VehicleHead::updateTrainSounds()
+    void VehicleHead::updateDrivingSounds()
     {
         registers regs;
         regs.esi = reinterpret_cast<int32_t>(this);
@@ -386,11 +400,216 @@ namespace OpenLoco::Vehicles
         return (call(0x004A9051, regs) & (1 << 8)) != 0;
     }
 
+    namespace WaterMotionFlags
+    {
+        constexpr uint32_t isStopping = 1 << 0;
+        constexpr uint32_t isLeavingDock = 1 << 1;
+        constexpr uint32_t hasReachedDock = 1 << 16;
+        constexpr uint32_t hasReachedADestination = 1 << 17;
+    }
+
     // 0x004A9649
     bool VehicleHead::updateWater()
     {
+        Vehicle2* vehType2 = vehicleUpdate_2;
+        if (vehType2->currentSpeed >= 5.0_mph)
+        {
+            vehicleUpdate_var_1136130 = 0x4000;
+        }
+        else
+        {
+            vehicleUpdate_var_1136130 = 0x2000;
+        }
+
+        Vehicle train(this);
+        train.cars.firstCar.body->sub_4AAB0B();
+
+        if (status == Status::stopped)
+        {
+            if (var_0C & Flags0C::commandStop)
+            {
+                return true;
+            }
+
+            if (stationId != StationId::null)
+            {
+                vehType2->currentSpeed = 0.0_mph;
+                setStationVisitedTypes();
+                checkIfAtOrderStation();
+                updateLastJourneyAverageSpeed();
+                beginUnloading();
+                return true;
+            }
+        }
+
+        if (var_0C & Flags0C::commandStop)
+        {
+            if (!(updateWaterMotion(WaterMotionFlags::isStopping) & WaterMotionFlags::hasReachedADestination))
+            {
+                return true;
+            }
+
+            status = Status::stopped;
+            vehType2->currentSpeed = 0.0_mph;
+            vehType2->var_5A = 0;
+            return true;
+        }
+
+        if (status == Status::unloading)
+        {
+            updateUnloadCargo();
+            return true;
+        }
+        else if (status == Status::loading)
+        {
+            if (updateLoadCargo())
+            {
+                return true;
+            }
+
+            beginNewJourney();
+            advanceToNextRoutableOrder();
+            status = Status::unk_2;
+            status = sub_427BF2();
+            updateWaterMotion(WaterMotionFlags::isLeavingDock);
+            produceLeavingDockSound();
+            return true;
+        }
+        else
+        {
+            status = Status::unk_2;
+            status = sub_427BF2();
+            advanceToNextRoutableOrder();
+            if (!(updateWaterMotion(0) & WaterMotionFlags::hasReachedDock))
+            {
+                return true;
+            }
+
+            if (var_0C & Flags0C::commandStop)
+            {
+                status = Status::stopped;
+                vehType2->currentSpeed = 0.0_mph;
+                vehType2->var_5A = 0;
+                return true;
+            }
+
+            vehType2->currentSpeed = 0.0_mph;
+            setStationVisitedTypes();
+            checkIfAtOrderStation();
+            updateLastJourneyAverageSpeed();
+            beginUnloading();
+            return true;
+        }
+    }
+
+    // 0x004B980A
+    void VehicleHead::tryCreateInitialMovementSound()
+    {
         registers regs;
         regs.esi = reinterpret_cast<int32_t>(this);
-        return (call(0x004A9649, regs) & (1 << 8)) != 0;
+        call(0x004B980A, regs);
+    }
+
+    // 0x004B996F
+    void VehicleHead::setStationVisitedTypes()
+    {
+        auto station = StationManager::get(stationId);
+        station->var_3B2 |= (1 << static_cast<uint8_t>(vehicleType));
+    }
+
+    // 0x004B9987
+    void VehicleHead::checkIfAtOrderStation()
+    {
+        registers regs;
+        regs.esi = reinterpret_cast<int32_t>(this);
+        call(0x004B9987, regs);
+    }
+
+    // 0x004BACAF
+    void VehicleHead::updateLastJourneyAverageSpeed()
+    {
+        registers regs;
+        regs.esi = reinterpret_cast<int32_t>(this);
+        call(0x004BACAF, regs);
+    }
+
+    void VehicleHead::beginUnloading()
+    {
+        var_5F &= ~Flags5F::unk_0;
+        status = Status::unloading;
+        var_56 = 10;
+        var_58 = 0;
+
+        Vehicle train(this);
+        for (auto& car : train.cars)
+        {
+            for (auto& carComponent : car)
+            {
+                carComponent.front->var_5F |= Flags5F::unk_0;
+                carComponent.back->var_5F |= Flags5F::unk_0;
+                carComponent.body->var_5F |= Flags5F::unk_0;
+            }
+        }
+    }
+
+    // 0x00427C05
+    uint32_t VehicleHead::updateWaterMotion(uint32_t flags)
+    {
+        // some sort of routing logic
+        registers regs;
+        regs.esi = reinterpret_cast<int32_t>(this);
+        regs.eax = flags;
+        call(0x00427C05, regs);
+        return regs.eax;
+    }
+
+    // 0x004B9A2A
+    void VehicleHead::updateUnloadCargo()
+    {
+        registers regs;
+        regs.esi = reinterpret_cast<int32_t>(this);
+        call(0x004B9A2A, regs);
+    }
+
+    // 0x004BA142 returns false when loaded
+    bool VehicleHead::updateLoadCargo()
+    {
+        registers regs;
+        regs.esi = reinterpret_cast<int32_t>(this);
+        return call(0x004BA142, regs) & (1 << 8);
+    }
+
+    // 0x004BAC74
+    void VehicleHead::beginNewJourney()
+    {
+        // Set initial position for updateLastJourneyAverageSpeed
+        var_73 = scenarioTicks();
+        Vehicle train(this);
+        var_6F = train.veh2->x;
+        var_71 = train.veh2->y;
+        var_5F |= Flags5F::unk_3;
+    }
+
+    // 0x004707C0
+    void VehicleHead::advanceToNextRoutableOrder()
+    {
+        registers regs;
+        regs.esi = reinterpret_cast<int32_t>(this);
+        call(0x004707C0, regs);
+    }
+
+    // 0x00427BF2
+    Status VehicleHead::sub_427BF2()
+    {
+        return stationId == StationId::null ? Status::unk_2 : Status::approaching;
+    }
+
+    // 0x0042843E
+    void VehicleHead::produceLeavingDockSound()
+    {
+        // Creates a random sound
+        registers regs;
+        regs.esi = reinterpret_cast<int32_t>(this);
+        call(0x0042843E, regs);
     }
 }

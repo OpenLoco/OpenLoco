@@ -23,7 +23,7 @@ namespace OpenLoco::Vehicles
     static loco_global<int32_t, 0x01136130> vehicleUpdate_var_1136130; // Speed
     static loco_global<uint8_t, 0x01136237> vehicle_var_1136237;       // var_28 related?
     static loco_global<uint8_t, 0x01136238> vehicle_var_1136238;       // var_28 related?
-    static loco_global<int8_t[88], 0x004F865C> vehicle_arr_4F865C; // var_2C related?
+    static loco_global<int8_t[88], 0x004F865C> vehicle_arr_4F865C;     // var_2C related?
     static loco_global<uint16_t[2047], 0x00500B50> vehicle_arr_500B50;
     static loco_global<int16_t[128], 0x00503B6A> factorXY503B6A;
     static loco_global<uint8_t[44], 0x004F8A7C> vehicle_arr_4F8A7C; // bools
@@ -170,7 +170,7 @@ namespace OpenLoco::Vehicles
         if (vehicle_object->bodySprites[object_sprite_type].flags & BodySpriteFlags::hasSpeedAnimation)
         {
             Vehicle2* veh3 = vehicleUpdate_2;
-            al = (veh3->var_56 >> 16) / (vehicle_object->speed / vehicle_object->bodySprites[object_sprite_type].numAnimationFrames);
+            al = (veh3->currentSpeed >> 16) / (vehicle_object->speed / vehicle_object->bodySprites[object_sprite_type].numAnimationFrames);
             al = std::min(al, vehicle_object->bodySprites[object_sprite_type].numAnimationFrames);
         }
         else if (vehicle_object->bodySprites[object_sprite_type].numRollFrames != 1)
@@ -179,7 +179,7 @@ namespace OpenLoco::Vehicles
             Vehicle2* veh3 = vehicleUpdate_2;
             al = var_46;
             int8_t ah = 0;
-            if (veh3->var_56 < 35.0_mph)
+            if (veh3->currentSpeed < 35.0_mph)
             {
                 ah = 0;
             }
@@ -904,7 +904,7 @@ namespace OpenLoco::Vehicles
             soundCode = true;
         }
         bool tickCalc = true;
-        if (veh_2->var_5A != 0 && veh_2->var_56 >= 1.0_mph)
+        if (veh_2->var_5A != 0 && veh_2->currentSpeed >= 1.0_mph)
         {
             tickCalc = false;
         }
@@ -1007,10 +1007,10 @@ namespace OpenLoco::Vehicles
         {
             auto soundId = static_cast<sound_object_id_t>(steam_obj->var_1F[var_55 + (steam_obj->sound_effect >> 1)]);
 
-            if (veh_2->var_56 > 15.0_mph)
+            if (veh_2->currentSpeed > 15.0_mph)
                 return;
 
-            int32_t volume = 0 - (veh_2->var_56 >> 9);
+            int32_t volume = 0 - (veh_2->currentSpeed >> 9);
 
             auto height = std::get<0>(Map::TileManager::getHeight(loc.x, loc.y));
 
@@ -1031,10 +1031,10 @@ namespace OpenLoco::Vehicles
             auto underSoundId = static_cast<sound_object_id_t>(steam_obj->var_1F[soundModifier + var_55]);
             auto soundId = static_cast<sound_object_id_t>(steam_obj->var_1F[var_55]);
 
-            if (veh_2->var_56 > 15.0_mph)
+            if (veh_2->currentSpeed > 15.0_mph)
                 return;
 
-            int32_t volume = 0 - (veh_2->var_56 >> 9);
+            int32_t volume = 0 - (veh_2->currentSpeed >> 9);
 
             auto height = std::get<0>(Map::TileManager::getHeight(loc.x, loc.y));
 
@@ -1067,7 +1067,7 @@ namespace OpenLoco::Vehicles
 
         if (headVeh->vehicleType == VehicleType::ship)
         {
-            if (veh_2->var_56 == 0.0_mph)
+            if (veh_2->currentSpeed == 0.0_mph)
                 return;
 
             if (var_38 & Flags38::isReversed)
@@ -1153,7 +1153,7 @@ namespace OpenLoco::Vehicles
         if (veh_2->var_5A != 1)
             return;
 
-        if (veh_2->var_56 > 14.0_mph)
+        if (veh_2->currentSpeed > 14.0_mph)
             return;
 
         if (var_38 & Flags38::isReversed)
@@ -1365,17 +1365,17 @@ namespace OpenLoco::Vehicles
         if (veh_2->var_5A == 0)
             return;
 
-        if (veh_2->var_56 < 6.0_mph)
+        if (veh_2->currentSpeed < 6.0_mph)
             return;
 
         auto frequency = 32;
-        if (veh_2->var_56 >= 9.0_mph)
+        if (veh_2->currentSpeed >= 9.0_mph)
         {
             frequency = 16;
-            if (veh_2->var_56 >= 13.0_mph)
+            if (veh_2->currentSpeed >= 13.0_mph)
             {
                 frequency = 8;
-                if (veh_2->var_56 >= 25.0_mph)
+                if (veh_2->currentSpeed >= 25.0_mph)
                 {
                     frequency = 4;
                 }
