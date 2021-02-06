@@ -91,7 +91,7 @@ namespace OpenLoco::Vehicles
         }
     }
 
-
+    // 0x004BAA76
     void VehicleHead::applyBreakdownToTrain()
     {
         Vehicle train(this);
