@@ -2701,7 +2701,10 @@ namespace OpenLoco::Ui::Vehicle
                     }
                     break;
                 }
+                case OpenLoco::Vehicle::OrderType::UnloadAll:
+                case OpenLoco::Vehicle::OrderType::WaitFor:
                 case OpenLoco::Vehicle::OrderType::End:
+                    // These orders don't have a location to centre on
                     break;
             }
         }
