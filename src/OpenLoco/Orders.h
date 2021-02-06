@@ -26,7 +26,7 @@ namespace OpenLoco::Vehicle
 #pragma pack(push, 1)
     struct Order
     {
-        uint8_t _type = 0;
+        uint8_t _type = 0; // 0x0
 
     protected:
         Order() = default;
@@ -60,17 +60,17 @@ namespace OpenLoco::Vehicle
 
     struct OrderStation : Order
     {
-        uint8_t _1 = 0;
+        uint8_t _data = 0; // 0x1
 
         station_id_t getStation() const
         {
-            return ((_type & 0xC0) << 2) | _1;
+            return ((_type & 0xC0) << 2) | _data;
         }
         void setStation(const station_id_t station)
         {
             _type &= ~(0xC0);
             _type |= (station >> 2) & 0xC0;
-            _1 = station & 0xFF;
+            _data = station & 0xFF;
         }
         void setFormatArguments(FormatArguments& args) const;
     };
@@ -98,11 +98,7 @@ namespace OpenLoco::Vehicle
     struct OrderRouteWaypoint : Order
     {
         static constexpr OrderType TYPE = OrderType::RouteWaypoint;
-        uint8_t _1 = 0;
-        uint8_t _2 = 0;
-        uint8_t _3 = 0;
-        uint8_t _4 = 0;
-        uint8_t _5 = 0;
+        uint8_t _data[5] = { 0 }; // 0x1 - 0x6
 
         OrderRouteWaypoint(const Map::TilePos& pos, const uint8_t baseZ, const uint8_t direction, const uint8_t trackId)
         {
