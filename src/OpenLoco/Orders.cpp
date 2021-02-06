@@ -149,6 +149,11 @@ namespace OpenLoco::Vehicle
                 }
                 break;
             }
+            case OrderType::End:
+            case OrderType::UnloadAll:
+            case OrderType::WaitFor:
+                // These are all one byte and no more data to save
+                break;
         }
         return ret;
     }
