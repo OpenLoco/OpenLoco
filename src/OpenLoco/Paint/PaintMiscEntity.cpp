@@ -122,7 +122,56 @@ namespace OpenLoco::Paint
         {
             return;
         }
-        uint32_t imageId = 3421 + (particle->frame / 256);
+
+        static const std::array<uint32_t, 44> sparkImageIds = {
+            ImageIds::spark_00,
+            ImageIds::spark_01,
+            ImageIds::spark_02,
+            ImageIds::spark_03,
+            ImageIds::spark_04,
+            ImageIds::spark_05,
+            ImageIds::spark_06,
+            ImageIds::spark_07,
+            ImageIds::spark_08,
+            ImageIds::spark_09,
+            ImageIds::spark_10,
+            ImageIds::spark_11,
+            ImageIds::spark_12,
+            ImageIds::spark_13,
+            ImageIds::spark_14,
+            ImageIds::spark_15,
+            ImageIds::spark_16,
+            ImageIds::spark_17,
+            ImageIds::spark_18,
+            ImageIds::spark_19,
+            ImageIds::spark_20,
+            ImageIds::spark_21,
+            ImageIds::spark_22,
+            ImageIds::spark_23,
+            ImageIds::spark_24,
+            ImageIds::spark_25,
+            ImageIds::spark_26,
+            ImageIds::spark_27,
+            ImageIds::spark_28,
+            ImageIds::spark_29,
+            ImageIds::spark_30,
+            ImageIds::spark_31,
+            ImageIds::spark_32,
+            ImageIds::spark_33,
+            ImageIds::spark_34,
+            ImageIds::spark_35,
+            ImageIds::spark_36,
+            ImageIds::spark_37,
+            ImageIds::spark_38,
+            ImageIds::spark_39,
+            ImageIds::spark_40,
+            ImageIds::spark_41,
+            ImageIds::spark_42,
+            ImageIds::spark_43
+        };
+
+        assert(static_cast<size_t>(particle->frame / 256) < sparkImageIds.size());
+        uint32_t imageId = sparkImageIds.at(particle->frame / 256);
         session.addToPlotListAsParent(imageId, { 0, 0, particle->z }, { 1, 1, 0 });
     }
 
