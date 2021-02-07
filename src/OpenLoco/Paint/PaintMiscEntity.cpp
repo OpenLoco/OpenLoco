@@ -133,7 +133,43 @@ namespace OpenLoco::Paint
         {
             return;
         }
-        uint32_t imageId = 3390 + (particle->frame / 256);
+
+        static const std::array<uint32_t, 31> fireballImageIds = {
+            ImageIds::fireball_00,
+            ImageIds::fireball_01,
+            ImageIds::fireball_02,
+            ImageIds::fireball_03,
+            ImageIds::fireball_04,
+            ImageIds::fireball_05,
+            ImageIds::fireball_06,
+            ImageIds::fireball_07,
+            ImageIds::fireball_08,
+            ImageIds::fireball_09,
+            ImageIds::fireball_10,
+            ImageIds::fireball_11,
+            ImageIds::fireball_12,
+            ImageIds::fireball_13,
+            ImageIds::fireball_14,
+            ImageIds::fireball_15,
+            ImageIds::fireball_16,
+            ImageIds::fireball_17,
+            ImageIds::fireball_18,
+            ImageIds::fireball_19,
+            ImageIds::fireball_20,
+            ImageIds::fireball_21,
+            ImageIds::fireball_22,
+            ImageIds::fireball_23,
+            ImageIds::fireball_24,
+            ImageIds::fireball_25,
+            ImageIds::fireball_26,
+            ImageIds::fireball_27,
+            ImageIds::fireball_28,
+            ImageIds::fireball_29,
+            ImageIds::fireball_30
+        };
+
+        assert(static_cast<size_t>(particle->frame / 256) < fireballImageIds.size());
+        uint32_t imageId = fireballImageIds.at(particle->frame / 256);
         session.addToPlotListAsParent(imageId, { 0, 0, particle->z }, { 1, 1, 0 });
     }
 
