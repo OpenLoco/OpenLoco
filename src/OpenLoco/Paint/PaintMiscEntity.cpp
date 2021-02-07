@@ -6,6 +6,7 @@
 #include "../Localisation/StringIds.h"
 #include "../Map/Tile.h"
 #include "Paint.h"
+#include <cassert>
 
 using namespace OpenLoco::Interop;
 
@@ -88,7 +89,7 @@ namespace OpenLoco::Paint
             return;
         }
 
-        static const uint32_t explosionCloudImageIds[] = {
+        static const std::array<uint32_t, 18> explosionCloudImageIds = {
             ImageIds::explosion_cloud_00,
             ImageIds::explosion_cloud_01,
             ImageIds::explosion_cloud_02,
@@ -109,7 +110,8 @@ namespace OpenLoco::Paint
             ImageIds::explosion_cloud_17
         };
 
-        uint32_t imageId = explosionCloudImageIds[particle->frame / 256];
+        assert((particle->frame / 256) >= 0 && static_cast<size_t>(particle->frame / 256) < explosionCloudImageIds.size());
+        uint32_t imageId = explosionCloudImageIds.at(particle->frame / 256);
         session.addToPlotListAsParent(imageId, { 0, 0, particle->z }, { 1, 1, 0 });
     }
 
