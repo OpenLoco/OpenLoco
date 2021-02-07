@@ -2999,6 +2999,11 @@ namespace OpenLoco::Ui::Vehicle
 
                 rowNum++;
             }
+
+            // Output the end of orders
+            auto args = FormatArguments::common(orderString[0]);
+            Gfx::point_t loc = { 8, static_cast<int16_t>(rowNum * 10 - 1) };
+            Gfx::drawString_494B3F(*pDrawpixelinfo, &loc, Colour::black, StringIds::black_stringid, &args);
         }
 
         static void initEvents()
