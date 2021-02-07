@@ -293,7 +293,7 @@ namespace OpenLoco::Input
                 && widgetIndex == _toolWidgetIndex)
             {
                 toolCancel();
-                return true;
+                return false;
             }
             else
             {
@@ -307,7 +307,7 @@ namespace OpenLoco::Input
         _toolWindowType = w->type;
         _toolWindowNumber = w->number;
         _toolWidgetIndex = widgetIndex;
-        return false;
+        return true;
     }
 
     // 0x004CE3D6
