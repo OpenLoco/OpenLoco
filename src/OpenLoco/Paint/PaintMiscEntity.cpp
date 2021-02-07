@@ -110,7 +110,7 @@ namespace OpenLoco::Paint
             ImageIds::explosion_cloud_17
         };
 
-        assert((particle->frame / 256) >= 0 && static_cast<size_t>(particle->frame / 256) < explosionCloudImageIds.size());
+        assert(static_cast<size_t>(particle->frame / 256) < explosionCloudImageIds.size());
         uint32_t imageId = explosionCloudImageIds.at(particle->frame / 256);
         session.addToPlotListAsParent(imageId, { 0, 0, particle->z }, { 1, 1, 0 });
     }
