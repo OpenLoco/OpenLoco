@@ -206,7 +206,24 @@ namespace OpenLoco::Paint
         {
             return;
         }
-        uint32_t imageId = 3465 + (particle->frame / 256);
+
+        static const std::array<uint32_t, 12> smokeImageIds = {
+            ImageIds::smoke_00,
+            ImageIds::smoke_01,
+            ImageIds::smoke_02,
+            ImageIds::smoke_03,
+            ImageIds::smoke_04,
+            ImageIds::smoke_05,
+            ImageIds::smoke_06,
+            ImageIds::smoke_07,
+            ImageIds::smoke_08,
+            ImageIds::smoke_09,
+            ImageIds::smoke_10,
+            ImageIds::smoke_11
+        };
+
+        assert(static_cast<size_t>(particle->frame / 256) < smokeImageIds.size());
+        uint32_t imageId = smokeImageIds.at(particle->frame / 256);
         session.addToPlotListAsParent(imageId, { 0, 0, particle->z }, { 1, 1, 0 });
     }
 

@@ -271,6 +271,19 @@ namespace OpenLoco::ImageIds
     constexpr uint32_t fireball_29 = 3419;
     constexpr uint32_t fireball_30 = 3420;
 
+    constexpr uint32_t smoke_00 = 3465;
+    constexpr uint32_t smoke_01 = 3466;
+    constexpr uint32_t smoke_02 = 3467;
+    constexpr uint32_t smoke_03 = 3468;
+    constexpr uint32_t smoke_04 = 3469;
+    constexpr uint32_t smoke_05 = 3470;
+    constexpr uint32_t smoke_06 = 3471;
+    constexpr uint32_t smoke_07 = 3472;
+    constexpr uint32_t smoke_08 = 3473;
+    constexpr uint32_t smoke_09 = 3474;
+    constexpr uint32_t smoke_10 = 3475;
+    constexpr uint32_t smoke_11 = 3476;
+
     constexpr uint32_t tab_object_settings = 3505;
     constexpr uint32_t tab_object_audio = 3506;
     constexpr uint32_t tab_object_currency = 3507;
