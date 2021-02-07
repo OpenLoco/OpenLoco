@@ -41,7 +41,7 @@ namespace OpenLoco
     public:
         MiscThingType getSubType() const { return MiscThingType(thing_base::getSubType()); }
         void setSubType(const MiscThingType newType) { thing_base::setSubType(static_cast<uint8_t>(newType)); }
-        Exhaust* as_exhaust() const { return as<Exhaust, MiscThingType::exhaust>(); }
+        Exhaust* asExhaust() const { return as<Exhaust, MiscThingType::exhaust>(); }
         MoneyEffect* asRedGreenCurrency() const { return as<MoneyEffect, MiscThingType::redGreenCurrency>(); }
         MoneyEffect* asWindowCurrency() const { return as<MoneyEffect, MiscThingType::windowCurrency>(); }
         VehicleCrashParticle* asVehicleCrashParticle() const { return as<VehicleCrashParticle, MiscThingType::vehicleCrashParticle>(); }
@@ -49,7 +49,7 @@ namespace OpenLoco
         Spark* asSpark() const { return as<Spark, MiscThingType::spark>(); }
         Fireball* asFireball() const { return as<Fireball, MiscThingType::fireball>(); }
         ExplosionSmoke* asExplosionSmoke() const { return as<ExplosionSmoke, MiscThingType::explosionSmoke>(); }
-        Smoke* as_smoke() const { return as<Smoke, MiscThingType::smoke>(); }
+        Smoke* asSmoke() const { return as<Smoke, MiscThingType::smoke>(); }
     };
 
     struct Exhaust : MiscBase
