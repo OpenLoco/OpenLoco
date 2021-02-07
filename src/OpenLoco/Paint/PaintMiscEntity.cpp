@@ -123,7 +123,7 @@ namespace OpenLoco::Paint
             return;
         }
 
-        static const std::array<uint32_t, 44> sparkImageIds = {
+        static const std::array<uint32_t, 28> sparkImageIds = {
             ImageIds::spark_00,
             ImageIds::spark_01,
             ImageIds::spark_02,
@@ -151,23 +151,7 @@ namespace OpenLoco::Paint
             ImageIds::spark_24,
             ImageIds::spark_25,
             ImageIds::spark_26,
-            ImageIds::spark_27,
-            ImageIds::spark_28,
-            ImageIds::spark_29,
-            ImageIds::spark_30,
-            ImageIds::spark_31,
-            ImageIds::spark_32,
-            ImageIds::spark_33,
-            ImageIds::spark_34,
-            ImageIds::spark_35,
-            ImageIds::spark_36,
-            ImageIds::spark_37,
-            ImageIds::spark_38,
-            ImageIds::spark_39,
-            ImageIds::spark_40,
-            ImageIds::spark_41,
-            ImageIds::spark_42,
-            ImageIds::spark_43
+            ImageIds::spark_27
         };
 
         assert(static_cast<size_t>(particle->frame / 256) < sparkImageIds.size());

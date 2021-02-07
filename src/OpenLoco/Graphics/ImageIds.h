@@ -298,22 +298,7 @@ namespace OpenLoco::ImageIds
     constexpr uint32_t spark_25 = 3446;
     constexpr uint32_t spark_26 = 3447;
     constexpr uint32_t spark_27 = 3448;
-    constexpr uint32_t spark_28 = 3449;
-    constexpr uint32_t spark_29 = 3450;
-    constexpr uint32_t spark_30 = 3451;
-    constexpr uint32_t spark_31 = 3452;
-    constexpr uint32_t spark_32 = 3453;
-    constexpr uint32_t spark_33 = 3454;
-    constexpr uint32_t spark_34 = 3455;
-    constexpr uint32_t spark_35 = 3456;
-    constexpr uint32_t spark_36 = 3457;
-    constexpr uint32_t spark_37 = 3458;
-    constexpr uint32_t spark_38 = 3459;
-    constexpr uint32_t spark_39 = 3460;
-    constexpr uint32_t spark_40 = 3461;
-    constexpr uint32_t spark_41 = 3462;
-    constexpr uint32_t spark_42 = 3463;
-    constexpr uint32_t spark_43 = 3464;
+
     constexpr uint32_t smoke_00 = 3465;
     constexpr uint32_t smoke_01 = 3466;
     constexpr uint32_t smoke_02 = 3467;
