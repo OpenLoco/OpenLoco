@@ -57,6 +57,8 @@ namespace OpenLoco::Vehicles
         takingOff = 13,
     };
 
+    struct OrderRingView;
+
     struct VehicleHead;
     struct Vehicle1;
     struct Vehicle2;
@@ -92,6 +94,8 @@ namespace OpenLoco::Vehicles
         string_id status2;
         uint32_t status2Args;
     };
+
+    constexpr uint8_t cAirportApronAreaNull = 0xFF;
 
 #pragma pack(push, 1)
     struct VehicleBase : thing_base
@@ -222,7 +226,8 @@ namespace OpenLoco::Vehicles
         uint8_t var_5F;          // 0x5F
         uint8_t var_60;
         uint16_t var_61;
-        uint8_t pad_63[0x69 - 0x63];
+        uint8_t pad_63[0x68 - 0x63];
+        uint8_t airportApronArea; // 0x68
         uint32_t var_69;
         uint8_t pad_6D;
         int8_t var_6E;             // manual speed/brake
@@ -238,6 +243,7 @@ namespace OpenLoco::Vehicles
         void updateVehicle();
         bool update();
         VehicleStatus getStatus() const;
+        OrderRingView getCurrentOrders() const;
 
     private:
         void applyBreakdownToTrain();
@@ -250,6 +256,14 @@ namespace OpenLoco::Vehicles
         void removeDanglingTrain();
         bool updateLand();
         bool updateAir();
+        bool airplaneLoadingUpdate();
+        bool sub_4A95CB();
+        bool sub_4A9348(uint32_t newApronArea, uint16_t target_z);
+        bool airplaneApproachTarget(uint16_t target_z);
+        std::pair<Status, Speed16> airplaneGetNewStatus();
+        uint8_t airportGetNextApronArea(uint8_t _airportApronArea);
+        std::tuple<uint32_t, uint16_t, uint8_t> sub_427122();
+        std::pair<uint32_t, Map::map_pos3> sub_426E26(station_id_t station, uint8_t unkVar68);
         bool updateWater();
         uint32_t getVehicleTotalLength();
         void tryCreateInitialMovementSound();
@@ -257,6 +271,7 @@ namespace OpenLoco::Vehicles
         void checkIfAtOrderStation();
         void updateLastJourneyAverageSpeed();
         void beginUnloading();
+        void movePlaneTo(const Map::map_pos3& newLoc, const uint8_t newYaw, const Pitch newPitch);
         uint32_t updateWaterMotion(uint32_t flags);
         void moveBoatTo(const Map::map_pos3& loc, const uint8_t yaw, const Pitch pitch);
         void updateUnloadCargo();
@@ -266,6 +281,7 @@ namespace OpenLoco::Vehicles
         Status sub_427BF2();
         void produceLeavingDockSound();
         std::tuple<station_id_t, Map::map_pos, Map::map_pos3> sub_427FC9();
+        void produceLeavingAirportSound();
     };
     static_assert(sizeof(VehicleHead) == 0x7A); // Can't use offset_of change this to last field if more found
 
@@ -460,6 +476,9 @@ namespace OpenLoco::Vehicles
         uint16_t reliability; // 0x66 front bogies only
         uint16_t var_68;
         uint8_t var_6A;
+
+    public:
+        uint16_t getPlaneType();
     };
     static_assert(sizeof(VehicleBogie) == 0x6B); // Can't use offset_of change this to last field if more found
 

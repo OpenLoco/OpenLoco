@@ -166,10 +166,12 @@ namespace OpenLoco
         constexpr uint16_t flag_02 = 1 << 2; // rollable? APT Passenger carriage
         constexpr uint16_t flag_03 = 1 << 3; // rollable? APT Driving carriage
         constexpr uint16_t rack_rail = 1 << 6;
+        constexpr uint16_t unk_08 = 1 << 8;
         constexpr uint16_t unk_09 = 1 << 9; //anytrack??
         constexpr uint16_t speed_control = 1 << 10;
         constexpr uint16_t can_couple = 1 << 11;
         constexpr uint16_t unk_12 = 1 << 12; //dualhead??
+        constexpr uint16_t isHelicopter = 1 << 13;
         constexpr uint16_t refittable = 1 << 14;
         constexpr uint16_t unk_15 = 1 << 15; //noannounce??
     }

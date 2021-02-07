@@ -145,4 +145,19 @@ namespace OpenLoco::Vehicles
         }
         tail = component->asVehicleTail();
     }
+
+    // 0x00426790
+    uint16_t VehicleBogie::getPlaneType()
+    {
+        auto* vehObj = ObjectManager::get<vehicle_object>(object_id);
+        if (vehObj->flags & FlagsE0::isHelicopter)
+        {
+            return 1 << 4;
+        }
+        if (vehObj->weight < 60)
+        {
+            return (1 << 3) | (1 << 2);
+        }
+        return 1 << 3;
+    }
 }
