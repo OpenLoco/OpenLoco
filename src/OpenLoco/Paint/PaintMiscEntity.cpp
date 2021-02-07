@@ -1,6 +1,7 @@
 #include "PaintMiscEntity.h"
 #include "../CompanyManager.h"
 #include "../Graphics/Gfx.h"
+#include "../Graphics/ImageIds.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/StringIds.h"
 #include "../Map/Tile.h"
@@ -86,7 +87,29 @@ namespace OpenLoco::Paint
         {
             return;
         }
-        uint32_t imageId = 3372 + (particle->frame / 256);
+
+        static const uint32_t explosionCloudImageIds[] = {
+            ImageIds::explosion_cloud_00,
+            ImageIds::explosion_cloud_01,
+            ImageIds::explosion_cloud_02,
+            ImageIds::explosion_cloud_03,
+            ImageIds::explosion_cloud_04,
+            ImageIds::explosion_cloud_05,
+            ImageIds::explosion_cloud_06,
+            ImageIds::explosion_cloud_07,
+            ImageIds::explosion_cloud_08,
+            ImageIds::explosion_cloud_09,
+            ImageIds::explosion_cloud_10,
+            ImageIds::explosion_cloud_11,
+            ImageIds::explosion_cloud_12,
+            ImageIds::explosion_cloud_13,
+            ImageIds::explosion_cloud_14,
+            ImageIds::explosion_cloud_15,
+            ImageIds::explosion_cloud_16,
+            ImageIds::explosion_cloud_17
+        };
+
+        uint32_t imageId = explosionCloudImageIds[particle->frame / 256];
         session.addToPlotListAsParent(imageId, { 0, 0, particle->z }, { 1, 1, 0 });
     }
 

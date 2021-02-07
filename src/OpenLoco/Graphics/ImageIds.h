@@ -211,6 +211,25 @@ namespace OpenLoco::ImageIds
     constexpr uint32_t number_circle_62 = 3300;
     constexpr uint32_t number_circle_63 = 3301;
 
+    constexpr uint32_t explosion_cloud_00 = 3372;
+    constexpr uint32_t explosion_cloud_01 = 3373;
+    constexpr uint32_t explosion_cloud_02 = 3374;
+    constexpr uint32_t explosion_cloud_03 = 3375;
+    constexpr uint32_t explosion_cloud_04 = 3376;
+    constexpr uint32_t explosion_cloud_05 = 3377;
+    constexpr uint32_t explosion_cloud_06 = 3378;
+    constexpr uint32_t explosion_cloud_07 = 3379;
+    constexpr uint32_t explosion_cloud_08 = 3380;
+    constexpr uint32_t explosion_cloud_09 = 3381;
+    constexpr uint32_t explosion_cloud_10 = 3382;
+    constexpr uint32_t explosion_cloud_11 = 3383;
+    constexpr uint32_t explosion_cloud_12 = 3384;
+    constexpr uint32_t explosion_cloud_13 = 3385;
+    constexpr uint32_t explosion_cloud_14 = 3386;
+    constexpr uint32_t explosion_cloud_15 = 3387;
+    constexpr uint32_t explosion_cloud_16 = 3388;
+    constexpr uint32_t explosion_cloud_17 = 3389;
+
     constexpr uint32_t tab_object_settings = 3505;
     constexpr uint32_t tab_object_audio = 3506;
     constexpr uint32_t tab_object_currency = 3507;
