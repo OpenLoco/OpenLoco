@@ -67,12 +67,12 @@ namespace OpenLoco::Vehicle
 
     void OrderRouteWaypoint::setWaypoint(const Map::TilePos& pos, const uint8_t baseZ)
     {
-        _data[0] &= ~0x80;
-        _data[0] |= ((pos.x & 0x100) >> 1);
-        _data[1] = pos.x & 0xFF;
-        _data[3] = pos.y & 0xFF;
-        _data[2] = baseZ;
-        _data[2] |= ((pos.y & 0x100) >> 1);
+        _type &= ~0x80;
+        _type |= ((pos.x & 0x100) >> 1);
+        _data[0] = pos.x & 0xFF;
+        _data[2] = pos.y & 0xFF;
+        _data[1] = baseZ;
+        _data[1] |= ((pos.y & 0x100) >> 1);
     }
 
     void OrderRouteWaypoint::setDirection(const uint8_t direction)
