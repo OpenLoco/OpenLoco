@@ -48,6 +48,12 @@ namespace OpenLoco::Vehicles
         return veh->var_38;
     }
 
+    thing_id_t vehicle_base::getHead() const
+    {
+        const auto* veh = reinterpret_cast<const vehicle*>(this);
+        return veh->head;
+    }
+
     vehicle_object* vehicle::object() const
     {
         return ObjectManager::get<vehicle_object>(object_id);

@@ -144,6 +144,7 @@ namespace OpenLoco::Vehicles
         TransportMode getTransportMode() const;
         uint8_t getOwner() const;
         uint8_t getFlags38() const;
+        thing_id_t getHead() const;
 
         vehicle_base* nextVehicle();
         vehicle_base* nextVehicleComponent();

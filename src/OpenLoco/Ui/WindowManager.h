@@ -8,12 +8,6 @@
 #include "../Window.h"
 #include <cstddef>
 
-namespace OpenLoco::Vehicles
-{
-    struct vehicle;
-    struct vehicle_base;
-}
-
 namespace OpenLoco::Ui::WindowManager
 {
     enum class viewport_visibility
@@ -269,7 +263,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
 namespace OpenLoco::Vehicles
 {
-    struct vehicle;
+    struct vehicle_base;
     struct Car;
 }
 
@@ -283,11 +277,11 @@ namespace OpenLoco::Ui::Vehicle
     void registerHooks();
     namespace Main
     {
-        window* open(const Vehicles::vehicle* vehicle);
+        window* open(const Vehicles::vehicle_base* vehicle);
     }
     namespace Details
     {
-        window* open(const Vehicles::vehicle* vehicle);
+        window* open(const Vehicles::vehicle_base* vehicle);
         void scrollDrag(const Gfx::point_t& pos);
         void scrollDragEnd(const Gfx::point_t& pos);
     }

@@ -358,9 +358,9 @@ namespace OpenLoco::Ui::Vehicle
         }
 
         // 0x004B6033
-        window* open(const Vehicles::vehicle* vehicle)
+        window* open(const Vehicles::vehicle_base* vehicle)
         {
-            const auto head = vehicle->head;
+            const auto head = vehicle->getHead();
             auto* self = WindowManager::find(WindowType::vehicle, head);
             if (self != nullptr)
             {
@@ -934,7 +934,7 @@ namespace OpenLoco::Ui::Vehicle
     namespace Details
     {
         // 0x4B60CC
-        window* open(const Vehicles::vehicle* vehicle)
+        window* open(const Vehicles::vehicle_base* vehicle)
         {
             auto self = Main::open(vehicle);
             self->callOnMouseUp(Common::widx::tabDetails);

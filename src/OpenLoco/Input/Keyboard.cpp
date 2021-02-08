@@ -94,11 +94,11 @@ namespace OpenLoco::Input
             if (w->type != WindowType::vehicle)
                 continue;
 
-            auto t = ThingManager::get<Vehicles::vehicle>(w->number);
-            if (t->owner != CompanyManager::getControllingId())
+            auto t = ThingManager::get<Vehicles::vehicle_base>(w->number);
+            if (t->getOwner() != CompanyManager::getControllingId())
                 continue;
 
-            if (t->mode != TransportMode::rail)
+            if (t->getTransportMode() != TransportMode::rail)
                 continue;
 
             GameCommands::do_77(w->number);

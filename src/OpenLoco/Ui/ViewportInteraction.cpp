@@ -199,12 +199,12 @@ namespace OpenLoco::Ui::ViewportInteraction
     static bool getVehicleArguments(const InteractionArg& interaction)
     {
         Thing* thing = reinterpret_cast<Thing*>(interaction.object);
-        auto vehicle = reinterpret_cast<Vehicles::vehicle*>(thing->asVehicle());
+        auto vehicle = thing->asVehicle();
         if (vehicle == nullptr)
         {
             return false;
         }
-        auto head = ThingManager::get<Vehicles::vehicle_head>(vehicle->head);
+        auto head = ThingManager::get<Vehicles::vehicle_head>(vehicle->getHead());
 
         auto company = CompanyManager::get(head->owner);
         Windows::MapToolTip::setOwner(head->owner);

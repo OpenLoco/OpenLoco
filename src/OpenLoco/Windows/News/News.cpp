@@ -96,11 +96,7 @@ namespace OpenLoco::Ui::NewsWindow
                             {
                                 auto vehicle = ThingManager::get<Vehicles::vehicle>(itemId);
 
-                                // Ui::vehicle::open
-                                registers regs;
-                                regs.edx = (int32_t)vehicle;
-                                call(0x004B6033, regs);
-
+                                Ui::Vehicle::Main::open(vehicle);
                                 break;
                             }
 
@@ -508,7 +504,7 @@ namespace OpenLoco::Ui::NewsWindow
 
                 case newsItemSubTypes::vehicle:
                 {
-                    auto vehicle = ThingManager::get<Vehicles::vehicle>(itemIndex);
+                    auto vehicle = ThingManager::get<Vehicles::vehicle_head>(itemIndex);
                     auto company = CompanyManager::get(vehicle->owner);
                     if (isPlayerCompany(vehicle->owner))
                     {
