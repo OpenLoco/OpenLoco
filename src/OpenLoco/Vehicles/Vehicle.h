@@ -49,7 +49,7 @@ namespace OpenLoco::Vehicles
 
     struct VehicleHead;
     struct Vehicle1;
-    struct vehicle_2;
+    struct Vehicle2;
     struct VehicleBogie;
     struct VehicleBody;
     struct VehicleTail;
@@ -116,7 +116,7 @@ namespace OpenLoco::Vehicles
         bool isVehicle1() const { return is<VehicleThingType::vehicle_1>(); }
         Vehicle1* asVehicle1() const { return as<Vehicle1>(); }
         bool isVehicle2() const { return is<VehicleThingType::vehicle_2>(); }
-        vehicle_2* asVehicle2() const { return as<vehicle_2>(); }
+        Vehicle2* asVehicle2() const { return as<Vehicle2>(); }
         bool isVehicleBogie() const { return is<VehicleThingType::bogie>(); }
         VehicleBogie* asVehicleBogie() const { return as<VehicleBogie>(); }
         bool isVehicleBody() const { return is<VehicleThingType::body_start>() || is<VehicleThingType::body_continued>(); }
@@ -268,7 +268,7 @@ namespace OpenLoco::Vehicles
     };
     static_assert(sizeof(Vehicle1) == 0x7F); // Can't use offset_of change this to last field if more found
 
-    struct vehicle_2 : VehicleBase
+    struct Vehicle2 : VehicleBase
     {
         static constexpr auto vehicleThingType = VehicleThingType::vehicle_2;
         uint8_t pad_20;
@@ -311,7 +311,7 @@ namespace OpenLoco::Vehicles
         uint8_t reliability; // 0x72
         uint8_t var_73;      // 0x73 (bit 0 = broken down)
     };
-    static_assert(sizeof(vehicle_2) == 0x74); // Can't use offset_of change this to last field if more found
+    static_assert(sizeof(Vehicle2) == 0x74); // Can't use offset_of change this to last field if more found
 
     struct VehicleBody : VehicleBase
     {
@@ -661,7 +661,7 @@ namespace OpenLoco::Vehicles
 
         VehicleHead* head;
         Vehicle1* veh1;
-        vehicle_2* veh2;
+        Vehicle2* veh2;
         VehicleTail* tail;
         Cars cars;
 

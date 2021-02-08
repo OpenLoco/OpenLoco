@@ -24,7 +24,7 @@ namespace OpenLoco::Vehicles
     loco_global<VehicleBogie*, 0x01136124> vehicleUpdate_frontBogie;
     loco_global<VehicleBogie*, 0x01136128> vehicleUpdate_backBogie;
     loco_global<int32_t, 0x01136130> vehicle_var_1136130;
-    loco_global<vehicle_2*, 0x01136120> vehicleUpdate_2;
+    loco_global<Vehicle2*, 0x01136120> vehicleUpdate_2;
     loco_global<uint8_t, 0x01136237> vehicle_var_1136237;   // var_28 related?
     loco_global<uint8_t, 0x01136238> vehicle_var_1136238;   // var_28 related?
     loco_global<int8_t[88], 0x004F865C> vehicle_arr_4F865C; // var_2C related?
@@ -173,14 +173,14 @@ namespace OpenLoco::Vehicles
         uint8_t al = 0;
         if (vehicle_object->bodySprites[object_sprite_type].flags & BodySpriteFlags::hasSpeedAnimation)
         {
-            vehicle_2* veh3 = vehicleUpdate_2;
+            Vehicle2* veh3 = vehicleUpdate_2;
             al = (veh3->var_56 >> 16) / (vehicle_object->speed / vehicle_object->bodySprites[object_sprite_type].numAnimationFrames);
             al = std::min(al, vehicle_object->bodySprites[object_sprite_type].numAnimationFrames);
         }
         else if (vehicle_object->bodySprites[object_sprite_type].numRollFrames != 1)
         {
             VehicleBogie* frontBogie = vehicleUpdate_frontBogie;
-            vehicle_2* veh3 = vehicleUpdate_2;
+            Vehicle2* veh3 = vehicleUpdate_2;
             al = var_46;
             int8_t ah = 0;
             if (veh3->var_56 < 0x230000)
@@ -896,7 +896,7 @@ namespace OpenLoco::Vehicles
         if (frontBogie->var_5F & Flags5F::broken_down)
             return;
 
-        vehicle_2* veh_2 = vehicleUpdate_2;
+        Vehicle2* veh_2 = vehicleUpdate_2;
         bool soundCode = false;
         if (veh_2->var_5A == 1 || veh_2->var_5A == 4)
         {
@@ -1061,7 +1061,7 @@ namespace OpenLoco::Vehicles
             return;
 
         VehicleHead* headVeh = vehicleUpdate_head;
-        vehicle_2* veh_2 = vehicleUpdate_2;
+        Vehicle2* veh_2 = vehicleUpdate_2;
         auto vehicleObject = object();
 
         if (headVeh->vehicleType == VehicleType::ship)
@@ -1146,7 +1146,7 @@ namespace OpenLoco::Vehicles
         if (frontBogie->var_5F & Flags5F::broken_down)
             return;
 
-        vehicle_2* veh_2 = vehicleUpdate_2;
+        Vehicle2* veh_2 = vehicleUpdate_2;
         auto vehicleObject = object();
 
         if (veh_2->var_5A != 1)
@@ -1221,7 +1221,7 @@ namespace OpenLoco::Vehicles
         if (frontBogie->var_5F & Flags5F::broken_down)
             return;
 
-        vehicle_2* veh_2 = vehicleUpdate_2;
+        Vehicle2* veh_2 = vehicleUpdate_2;
         auto vehicleObject = object();
 
         if (veh_2->var_5A != 2 && veh_2->var_5A != 1)
@@ -1281,7 +1281,7 @@ namespace OpenLoco::Vehicles
         if (frontBogie->var_5F & Flags5F::broken_down)
             return;
 
-        vehicle_2* veh_2 = vehicleUpdate_2;
+        Vehicle2* veh_2 = vehicleUpdate_2;
         auto vehicleObject = object();
 
         if (veh_2->var_5A != 2 && veh_2->var_5A != 1)
@@ -1358,7 +1358,7 @@ namespace OpenLoco::Vehicles
     // 0x004ABC8A & 0x004AB2A7
     void VehicleBody::shipWakeAnimationUpdate(uint8_t num, int32_t)
     {
-        vehicle_2* veh_2 = vehicleUpdate_2;
+        Vehicle2* veh_2 = vehicleUpdate_2;
         auto vehicleObject = object();
 
         if (veh_2->var_5A == 0)
