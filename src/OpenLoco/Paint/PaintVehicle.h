@@ -1,7 +1,7 @@
 #pragma once
 #include "../Types.hpp"
 
-namespace OpenLoco
+namespace OpenLoco::Vehicles
 {
     struct vehicle_base;
 }
@@ -9,5 +9,5 @@ namespace OpenLoco
 namespace OpenLoco::Paint
 {
     struct PaintSession;
-    void paintVehicleEntity(PaintSession& session, vehicle_base* base);
+    void paintVehicleEntity(PaintSession& session, Vehicles::vehicle_base* base);
 }

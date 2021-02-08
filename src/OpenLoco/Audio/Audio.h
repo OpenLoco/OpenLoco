@@ -8,7 +8,7 @@
 
 struct Mix_Chunk;
 
-namespace OpenLoco
+namespace OpenLoco::Vehicles
 {
     struct vehicle_26;
 }
@@ -95,7 +95,7 @@ namespace OpenLoco::Audio
     void toggleSound();
     void pauseSound();
     void unpauseSound();
-    void playSound(vehicle_26* t);
+    void playSound(Vehicles::vehicle_26* t);
     void playSound(sound_id id, loc16 loc);
     void playSound(sound_id id, loc16 loc, int32_t pan);
     void playSound(sound_id id, int32_t pan);

@@ -6,8 +6,8 @@
 #include "Map/Tile.h"
 #include "OpenLoco.h"
 #include "Things/ThingManager.h"
-#include "Vehicles/Vehicle.h"
 #include "Ui/WindowManager.h"
+#include "Vehicles/Vehicle.h"
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui;
@@ -185,7 +185,7 @@ namespace OpenLoco::CompanyManager
             if (w->type != WindowType::vehicle)
                 continue;
 
-            auto vehicle = ThingManager::get<OpenLoco::vehicle>(w->number);
+            auto vehicle = ThingManager::get<Vehicles::vehicle>(w->number);
             if (vehicle->x == Location::null)
                 continue;
 

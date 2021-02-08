@@ -8,7 +8,7 @@
 #include "../Window.h"
 #include <cstddef>
 
-namespace OpenLoco
+namespace OpenLoco::Vehicles
 {
     struct vehicle;
     struct vehicle_base;
@@ -267,19 +267,15 @@ namespace OpenLoco::Ui::Windows::TownList
     window* open();
 }
 
-namespace OpenLoco
+namespace OpenLoco::Vehicles
 {
     struct vehicle;
-}
-
-namespace OpenLoco::Things::Vehicle
-{
     struct Car;
 }
 
 namespace OpenLoco::Ui::Windows::DragVehiclePart
 {
-    void open(OpenLoco::Things::Vehicle::Car& car);
+    void open(Vehicles::Car& car);
 }
 
 namespace OpenLoco::Ui::Vehicle
@@ -287,17 +283,17 @@ namespace OpenLoco::Ui::Vehicle
     void registerHooks();
     namespace Main
     {
-        window* open(const OpenLoco::vehicle* vehicle);
+        window* open(const Vehicles::vehicle* vehicle);
     }
     namespace Details
     {
-        window* open(const OpenLoco::vehicle* vehicle);
+        window* open(const Vehicles::vehicle* vehicle);
         void scrollDrag(const Gfx::point_t& pos);
         void scrollDragEnd(const Gfx::point_t& pos);
     }
     namespace Common
     {
-        int16_t sub_4B743B(uint8_t al, uint8_t ah, int16_t cx, int16_t dx, vehicle_base* vehicle, Gfx::drawpixelinfo_t* const pDrawpixelinfo);
+        int16_t sub_4B743B(uint8_t al, uint8_t ah, int16_t cx, int16_t dx, Vehicles::vehicle_base* vehicle, Gfx::drawpixelinfo_t* const pDrawpixelinfo);
     }
     bool rotate();
 }

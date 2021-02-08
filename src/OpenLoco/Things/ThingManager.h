@@ -8,7 +8,7 @@ namespace OpenLoco::Map
 {
     struct map_pos;
 }
-namespace OpenLoco
+namespace OpenLoco::Vehicles
 {
     struct vehicle_head;
 }
@@ -128,7 +128,7 @@ namespace OpenLoco::ThingManager
         }
     };
 
-    using VehicleList = ThingList<ListIterator<vehicle_head, &thing_base::next_thing_id>, thing_list::vehicle_head>;
+    using VehicleList = ThingList<ListIterator<Vehicles::vehicle_head, &thing_base::next_thing_id>, thing_list::vehicle_head>;
 
     class ThingTileList
     {

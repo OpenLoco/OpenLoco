@@ -8,7 +8,7 @@
 #include "Paint.h"
 
 using namespace OpenLoco::Interop;
-using namespace OpenLoco::Things::Vehicle;
+using namespace OpenLoco::Vehicles;
 
 namespace OpenLoco::Paint
 {
@@ -466,7 +466,7 @@ namespace OpenLoco::Paint
     }
 
     // 0x004B0CCE
-    void paintVehicleEntity(PaintSession& session, vehicle_base* base)
+    void paintVehicleEntity(PaintSession& session, Vehicles::vehicle_base* base)
     {
         if (base->getFlags38() & Flags38::isGhost)
         {

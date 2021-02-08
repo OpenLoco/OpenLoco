@@ -199,12 +199,12 @@ namespace OpenLoco::Ui::ViewportInteraction
     static bool getVehicleArguments(const InteractionArg& interaction)
     {
         Thing* thing = reinterpret_cast<Thing*>(interaction.object);
-        auto vehicle = reinterpret_cast<OpenLoco::vehicle*>(thing->asVehicle());
+        auto vehicle = reinterpret_cast<Vehicles::vehicle*>(thing->asVehicle());
         if (vehicle == nullptr)
         {
             return false;
         }
-        auto head = ThingManager::get<vehicle_head>(vehicle->head);
+        auto head = ThingManager::get<Vehicles::vehicle_head>(vehicle->head);
 
         auto company = CompanyManager::get(head->owner);
         Windows::MapToolTip::setOwner(head->owner);
@@ -270,7 +270,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         return false;
     }
 
-    static std::optional<uint32_t> vehicleDistanceFromLocation(const vehicle_base& component, const viewport_pos& targetPosition)
+    static std::optional<uint32_t> vehicleDistanceFromLocation(const Vehicles::vehicle_base& component, const viewport_pos& targetPosition)
     {
         ViewportRect rect = {
             component.sprite_left,
@@ -287,7 +287,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         return {};
     }
 
-    static void checkAndSetNearestVehicle(uint32_t& nearestDistance, vehicle_base*& nearestVehicle, vehicle_base& checkVehicle, const viewport_pos& targetPosition)
+    static void checkAndSetNearestVehicle(uint32_t& nearestDistance, Vehicles::vehicle_base*& nearestVehicle, Vehicles::vehicle_base& checkVehicle, const viewport_pos& targetPosition)
     {
         if (checkVehicle.sprite_left != Location::null)
         {
@@ -372,12 +372,12 @@ namespace OpenLoco::Ui::ViewportInteraction
             return InteractionArg{};
 
         uint32_t nearestDistance = std::numeric_limits<uint32_t>().max();
-        vehicle_base* nearestVehicle = nullptr;
+        Vehicles::vehicle_base* nearestVehicle = nullptr;
         auto targetPosition = viewport->uiToMap({ tempX, tempY });
 
         for (auto v : ThingManager::VehicleList())
         {
-            auto train = Things::Vehicle::Vehicle(v);
+            auto train = Vehicles::Vehicle(v);
             checkAndSetNearestVehicle(nearestDistance, nearestVehicle, *train.veh2, targetPosition);
             for (auto car : train.cars)
             {

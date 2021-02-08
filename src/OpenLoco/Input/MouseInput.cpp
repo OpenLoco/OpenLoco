@@ -530,7 +530,7 @@ namespace OpenLoco::Input
                             auto veh = _thing->asVehicle();
                             if (veh != nullptr)
                             {
-                                Ui::Vehicle::Main::open(reinterpret_cast<OpenLoco::vehicle*>(veh));
+                                Ui::Vehicle::Main::open(reinterpret_cast<Vehicles::vehicle*>(veh));
                             }
                             break;
                         }
@@ -764,7 +764,7 @@ namespace OpenLoco::Input
                                 auto veh = _thing->asVehicle();
                                 if (veh != nullptr)
                                 {
-                                    auto head = ThingManager::get<vehicle>(reinterpret_cast<OpenLoco::vehicle*>(veh)->head);
+                                    auto head = ThingManager::get<Vehicles::vehicle>(reinterpret_cast<Vehicles::vehicle*>(veh)->head);
                                     Ui::Windows::VehicleList::open(head->owner, static_cast<uint8_t>(head->vehicleType));
                                 }
                                 break;

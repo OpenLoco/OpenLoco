@@ -57,9 +57,9 @@ namespace OpenLoco::Ui::Vehicle
 
         constexpr uint64_t enabledWidgets = (1 << closeButton) | (1 << tabMain) | (1 << tabDetails) | (1 << tabCargo) | (1 << tabFinances) | (1 << tabRoute);
 
-        static OpenLoco::vehicle_head* getVehicle(const window* self)
+        static Vehicles::vehicle_head* getVehicle(const window* self)
         {
-            return ThingManager::get<OpenLoco::vehicle_head>(self->number);
+            return ThingManager::get<Vehicles::vehicle_head>(self->number);
         }
 
         static void setActiveTabs(window* const self);
@@ -78,8 +78,8 @@ namespace OpenLoco::Ui::Vehicle
         static void pickupToolAbort(window& self);
         static size_t getNumCars(Ui::window* const self);
         static void drawTabs(window* const window, Gfx::drawpixelinfo_t* const context);
-        static std::optional<Things::Vehicle::Car> getCarFromScrollView(window* const self, const int16_t y);
-        static std::pair<uint32_t, string_id> getPickupImageIdandTooltip(const vehicle_head& head, const bool isPlaced);
+        static std::optional<Vehicles::Car> getCarFromScrollView(window* const self, const int16_t y);
+        static std::pair<uint32_t, string_id> getPickupImageIdandTooltip(const Vehicles::vehicle_head& head, const bool isPlaced);
     }
 
     namespace Details
@@ -188,7 +188,7 @@ namespace OpenLoco::Ui::Vehicle
 
     static loco_global<uint8_t, 0x00525FC5> _525FC5;
     static loco_global<uint8_t, 0x00525FB0> _pickupDirection; // direction that the ghost points
-    static loco_global<OpenLoco::vehicle_bogie*, 0x0113614E> _dragCarComponent;
+    static loco_global<Vehicles::vehicle_bogie*, 0x0113614E> _dragCarComponent;
     static loco_global<thing_id_t, 0x01136156> _dragVehicleHead;
     static loco_global<int32_t, 0x01136264> _1136264;
     static loco_global<string_id, 0x009C68E8> gGameCommandErrorTitle;
@@ -251,7 +251,7 @@ namespace OpenLoco::Ui::Vehicle
             self->callPrepareDraw();
 
             auto vehHead = Common::getVehicle(self);
-            Things::Vehicle::Vehicle train(vehHead);
+            Vehicles::Vehicle train(vehHead);
 
             // If picked up no need for viewport drawn
             if (vehHead->tile_x == -1)
@@ -267,7 +267,7 @@ namespace OpenLoco::Ui::Vehicle
             {
                 targetThing = train.cars.firstCar.front->id;
                 // Always true so above is pointless
-                if (train.cars.firstCar.front->getSubType() == VehicleThingType::bogie)
+                if (train.cars.firstCar.front->getSubType() == Vehicles::VehicleThingType::bogie)
                 {
                     targetThing = train.cars.firstCar.body->id;
                 }
@@ -337,7 +337,7 @@ namespace OpenLoco::Ui::Vehicle
             self->widgets = widgets;
             self->enabled_widgets = enabledWidgets;
             self->number = head;
-            const auto* vehicle = ThingManager::get<OpenLoco::vehicle_head>(head);
+            const auto* vehicle = ThingManager::get<Vehicles::vehicle_head>(head);
             self->owner = vehicle->owner;
             self->row_height = rowHeights[static_cast<uint8_t>(vehicle->vehicleType)];
             self->current_tab = 0;
@@ -358,7 +358,7 @@ namespace OpenLoco::Ui::Vehicle
         }
 
         // 0x004B6033
-        window* open(const OpenLoco::vehicle* vehicle)
+        window* open(const Vehicles::vehicle* vehicle)
         {
             const auto head = vehicle->head;
             auto* self = WindowManager::find(WindowType::vehicle, head);
@@ -456,7 +456,7 @@ namespace OpenLoco::Ui::Vehicle
             auto head = Common::getVehicle(self);
 
             // If vehicle not placed put into pickup mode if window in focus
-            if (head->tile_x != -1 && (head->var_38 & Things::Vehicle::Flags38::isGhost) == 0)
+            if (head->tile_x != -1 && (head->var_38 & Vehicles::Flags38::isGhost) == 0)
             {
                 return;
             }
@@ -487,7 +487,7 @@ namespace OpenLoco::Ui::Vehicle
                     newWidth += 22;
 
                 uint16_t newHeight = self->height - 59;
-                if (head->var_0C & Things::Vehicle::Flags0C::manualControl && head->owner == CompanyManager::getControllingId())
+                if (head->var_0C & Vehicles::Flags0C::manualControl && head->owner == CompanyManager::getControllingId())
                 {
                     newWidth -= 27;
                 }
@@ -531,11 +531,11 @@ namespace OpenLoco::Ui::Vehicle
                 0);
 
             auto selected = 0; // Stop
-            if (!(head->var_0C & Things::Vehicle::Flags0C::unk_1))
+            if (!(head->var_0C & Vehicles::Flags0C::unk_1))
             {
                 selected = 1; // Start
             }
-            if (head->var_0C & Things::Vehicle::Flags0C::manualControl)
+            if (head->var_0C & Vehicles::Flags0C::manualControl)
             {
                 selected = 2; // Manual
             }
@@ -650,7 +650,7 @@ namespace OpenLoco::Ui::Vehicle
 
             Common::setActiveTabs(self);
             auto head = Common::getVehicle(self);
-            Things::Vehicle::Vehicle train(head);
+            Vehicles::Vehicle train(head);
 
             self->widgets[widx::stopStart].type = widget_type::wt_9;
             self->widgets[widx::pickup].type = widget_type::wt_9;
@@ -682,7 +682,7 @@ namespace OpenLoco::Ui::Vehicle
 
             if (head->mode == TransportMode::air || head->mode == TransportMode::water)
             {
-                if (head->status != Things::Vehicle::Status::stopped && head->status != Things::Vehicle::Status::loading && head->tile_x != -1)
+                if (head->status != Vehicles::Status::stopped && head->status != Vehicles::Status::loading && head->tile_x != -1)
                 {
                     self->disabled_widgets |= (1 << widx::pickup);
                 }
@@ -697,7 +697,7 @@ namespace OpenLoco::Ui::Vehicle
                 }
             }
 
-            if (head->status != Things::Vehicle::Status::unk_3)
+            if (head->status != Vehicles::Status::unk_3)
             {
                 self->disabled_widgets |= (1 << widx::passSignal);
             }
@@ -718,11 +718,11 @@ namespace OpenLoco::Ui::Vehicle
             args.push(head->var_44);
 
             uint32_t stopStartImage = ImageIds::red_flag;
-            if ((head->var_0C & Things::Vehicle::Flags0C::manualControl) != 0)
+            if ((head->var_0C & Vehicles::Flags0C::manualControl) != 0)
             {
                 stopStartImage = ImageIds::yellow_flag;
             }
-            else if ((head->var_0C & Things::Vehicle::Flags0C::unk_1) != 0)
+            else if ((head->var_0C & Vehicles::Flags0C::unk_1) != 0)
             {
                 stopStartImage = ImageIds::red_flag;
             }
@@ -732,7 +732,7 @@ namespace OpenLoco::Ui::Vehicle
             }
             self->widgets[widx::stopStart].image = stopStartImage;
 
-            bool isPlaced = head->tile_x != -1 && !(head->var_38 & OpenLoco::Things::Vehicle::Flags38::isGhost);
+            bool isPlaced = head->tile_x != -1 && !(head->var_38 & OpenLoco::Vehicles::Flags38::isGhost);
             auto [pickupImage, pickupTooltip] = Common::getPickupImageIdandTooltip(*head, isPlaced);
             self->widgets[widx::pickup].image = Gfx::recolour(pickupImage);
             self->widgets[widx::pickup].tooltip = pickupTooltip;
@@ -748,7 +748,7 @@ namespace OpenLoco::Ui::Vehicle
             self->widgets[Common::widx::closeButton].right = self->width - 3;
 
             int viewportRight = self->width - 26;
-            if (head->var_0C & Things::Vehicle::Flags0C::manualControl)
+            if (head->var_0C & Vehicles::Flags0C::manualControl)
             {
                 if (isPlayerCompany(head->owner))
                 {
@@ -801,7 +801,7 @@ namespace OpenLoco::Ui::Vehicle
             uint32_t status2Args;
         };
 
-        static VehicleStatus sub_4B671C(const OpenLoco::vehicle_head* head)
+        static VehicleStatus sub_4B671C(const Vehicles::vehicle_head* head)
         {
             registers regs = {};
             regs.esi = (int32_t)head;
@@ -934,7 +934,7 @@ namespace OpenLoco::Ui::Vehicle
     namespace Details
     {
         // 0x4B60CC
-        window* open(const OpenLoco::vehicle* vehicle)
+        window* open(const Vehicles::vehicle* vehicle)
         {
             auto self = Main::open(vehicle);
             self->callOnMouseUp(Common::widx::tabDetails);
@@ -1018,7 +1018,7 @@ namespace OpenLoco::Ui::Vehicle
             }
 
             auto vehicle = Common::getVehicle(self);
-            if (vehicle->tile_x != -1 && (vehicle->var_38 & Things::Vehicle::Flags38::isGhost) == 0)
+            if (vehicle->tile_x != -1 && (vehicle->var_38 & Vehicles::Flags38::isGhost) == 0)
                 return;
 
             if (!WindowManager::isInFrontAlt(self))
@@ -1084,7 +1084,7 @@ namespace OpenLoco::Ui::Vehicle
                 return;
             }
 
-            OpenLoco::Things::Vehicle::Vehicle train{ head };
+            OpenLoco::Vehicles::Vehicle train{ head };
             for (auto c : train.cars)
             {
                 if (c.front == car->front)
@@ -1269,7 +1269,7 @@ namespace OpenLoco::Ui::Vehicle
             self->widgets[widx::buildNew].type = widget_type::wt_9;
             self->widgets[widx::pickup].type = widget_type::wt_9;
             self->widgets[widx::remove].type = widget_type::wt_9;
-            bool isPlaced = head->tile_x != -1 && !(head->var_38 & OpenLoco::Things::Vehicle::Flags38::isGhost);
+            bool isPlaced = head->tile_x != -1 && !(head->var_38 & OpenLoco::Vehicles::Flags38::isGhost);
             // Differs to main tab! Unsure why.
             if (isPlaced)
             {
@@ -1287,7 +1287,7 @@ namespace OpenLoco::Ui::Vehicle
             auto buildImage = skin->img + additionalVehicleButtonByVehicleType.at(head->vehicleType);
             self->widgets[widx::buildNew].image = Gfx::recolour(buildImage, CompanyManager::getCompanyColour(self->owner));
 
-            Things::Vehicle::Vehicle train{ head };
+            Vehicles::Vehicle train{ head };
             if (train.cars.empty())
             {
                 self->disabled_widgets |= 1 << widx::pickup;
@@ -1319,7 +1319,7 @@ namespace OpenLoco::Ui::Vehicle
             }
 
             auto head = Common::getVehicle(self);
-            OpenLoco::Things::Vehicle::Vehicle train{ head };
+            OpenLoco::Vehicles::Vehicle train{ head };
             Gfx::point_t pos = { static_cast<int16_t>(self->x + 3), static_cast<int16_t>(self->y + self->height - 23) };
 
             {
@@ -1354,7 +1354,7 @@ namespace OpenLoco::Ui::Vehicle
         {
             Gfx::clearSingle(*context, Colour::getShade(self->colours[1], 4));
             auto head = Common::getVehicle(self);
-            OpenLoco::Things::Vehicle::Vehicle train{ head };
+            OpenLoco::Vehicles::Vehicle train{ head };
             Gfx::point_t pos{ 0, 0 };
             for (auto& car : train.cars)
             {
@@ -1431,7 +1431,7 @@ namespace OpenLoco::Ui::Vehicle
             return vehicleWindow;
         }
 
-        static OpenLoco::vehicle_base* getCarFromScrollViewPos(Ui::window& self, const Gfx::point_t& pos)
+        static Vehicles::vehicle_base* getCarFromScrollViewPos(Ui::window& self, const Gfx::point_t& pos)
         {
             int16_t scrollX;
             int16_t scrollY;
@@ -1449,7 +1449,7 @@ namespace OpenLoco::Ui::Vehicle
             if (!car)
             {
                 auto head = Common::getVehicle(&self);
-                Things::Vehicle::Vehicle train(head);
+                Vehicles::Vehicle train(head);
                 return train.tail;
             }
             return car->front;
@@ -1538,14 +1538,14 @@ namespace OpenLoco::Ui::Vehicle
     {
         static void onRefitButton(window* const self, const widget_index wi);
 
-        static bool canRefit(OpenLoco::vehicle_head* headVehicle)
+        static bool canRefit(Vehicles::vehicle_head* headVehicle)
         {
             if (!isPlayerCompany(headVehicle->owner))
             {
                 return false;
             }
 
-            OpenLoco::Things::Vehicle::Vehicle train(headVehicle);
+            OpenLoco::Vehicles::Vehicle train(headVehicle);
 
             if (train.cars.empty())
             {
@@ -1596,10 +1596,10 @@ namespace OpenLoco::Ui::Vehicle
             Common::repositionTabs(self);
         }
 
-        static void generateCargoTotalString(OpenLoco::vehicle_head* vehicle, char* buffer)
+        static void generateCargoTotalString(Vehicles::vehicle_head* vehicle, char* buffer)
         {
             uint32_t cargoTotals[ObjectManager::getMaxObjects(object_type::cargo)]{};
-            Things::Vehicle::Vehicle train(vehicle);
+            Vehicles::Vehicle train(vehicle);
             for (auto& car : train.cars)
             {
                 auto front = car.front;
@@ -1683,7 +1683,7 @@ namespace OpenLoco::Ui::Vehicle
         static void drawScroll(window* const self, Gfx::drawpixelinfo_t* const pDrawpixelinfo, const uint32_t i)
         {
             Gfx::clearSingle(*pDrawpixelinfo, Colour::getShade(self->colours[1], 4));
-            Things::Vehicle::Vehicle train{ Common::getVehicle(self) };
+            Vehicles::Vehicle train{ Common::getVehicle(self) };
             int16_t y = 0;
             for (auto& car : train.cars)
             {
@@ -1784,7 +1784,7 @@ namespace OpenLoco::Ui::Vehicle
 
         static void onRefitButton(window* const self, const widget_index wi)
         {
-            Things::Vehicle::Vehicle train(Common::getVehicle(self));
+            Vehicles::Vehicle train(Common::getVehicle(self));
             auto vehicleObject = ObjectManager::get<vehicle_object>(train.cars.firstCar.front->object_id);
             auto maxPrimaryCargo = vehicleObject->max_primary_cargo;
             auto primaryCargoId = Utility::bitScanForward(vehicleObject->primary_cargo_types);
@@ -1999,7 +1999,7 @@ namespace OpenLoco::Ui::Vehicle
         }
 
         // 0x004C3BA6
-        static int32_t getMonthlyRunningCost(Things::Vehicle::Vehicle& train)
+        static int32_t getMonthlyRunningCost(Vehicles::Vehicle& train)
         {
             int32_t totalCost = 0;
             for (const auto& car : train.cars)
@@ -2021,7 +2021,7 @@ namespace OpenLoco::Ui::Vehicle
             auto pos = Gfx::point_t(self->x + 4, self->y + 46);
 
             auto head = Common::getVehicle(self);
-            Things::Vehicle::Vehicle train(head);
+            Vehicles::Vehicle train(head);
             auto veh1 = train.veh1;
             if (veh1->var_53 != -1)
             {
@@ -2172,7 +2172,7 @@ namespace OpenLoco::Ui::Vehicle
         };
 
         // 0x00470824
-        static void sub_470824(OpenLoco::vehicle_head* head)
+        static void sub_470824(Vehicles::vehicle_head* head)
         {
             registers regs{};
             regs.esi = reinterpret_cast<uint32_t>(head);
@@ -2188,7 +2188,7 @@ namespace OpenLoco::Ui::Vehicle
             }
         }
 
-        static void orderDeleteCommand(vehicle_head* const head, const uint32_t orderOffset)
+        static void orderDeleteCommand(Vehicles::vehicle_head* const head, const uint32_t orderOffset)
         {
             gGameCommandErrorTitle = StringIds::empty;
             GameCommands::do_36(head->id, orderOffset - head->orderTableOffset);
@@ -2196,7 +2196,7 @@ namespace OpenLoco::Ui::Vehicle
         }
 
         // 0x004B4F6D
-        static void onOrderDelete(vehicle_head* const head, const int16_t orderId)
+        static void onOrderDelete(Vehicles::vehicle_head* const head, const int16_t orderId)
         {
             // No deleteable orders
             if (head->sizeOfOrderTable <= 1)
@@ -2238,7 +2238,7 @@ namespace OpenLoco::Ui::Vehicle
         }
 
         // 0x004B4C14
-        static bool orderUpCommand(vehicle_head* const head, const uint32_t orderOffset)
+        static bool orderUpCommand(Vehicles::vehicle_head* const head, const uint32_t orderOffset)
         {
             gGameCommandErrorTitle = StringIds::empty;
             auto result = GameCommands::do_75(head->id, orderOffset - head->orderTableOffset);
@@ -2247,7 +2247,7 @@ namespace OpenLoco::Ui::Vehicle
         }
 
         // 0x004B4CCB based on
-        static bool orderDownCommand(vehicle_head* const head, const uint32_t orderOffset)
+        static bool orderDownCommand(Vehicles::vehicle_head* const head, const uint32_t orderOffset)
         {
             gGameCommandErrorTitle = StringIds::empty;
             auto result = GameCommands::do_76(head->id, orderOffset - head->orderTableOffset);
@@ -2256,7 +2256,7 @@ namespace OpenLoco::Ui::Vehicle
         }
 
         // 0x004B4BC1 / 0x004B4C78 based on
-        static bool onOrderMove(vehicle_head* const head, const int16_t orderId, bool(orderMoveFunc)(vehicle_head*, uint32_t))
+        static bool onOrderMove(Vehicles::vehicle_head* const head, const int16_t orderId, bool(orderMoveFunc)(Vehicles::vehicle_head*, uint32_t))
         {
             // No moveable orders
             if (head->sizeOfOrderTable <= 1)
@@ -3050,7 +3050,7 @@ namespace OpenLoco::Ui::Vehicle
             Gfx::clearSingle(*pDrawpixelinfo, Colour::getShade(self->colours[1], 4));
 
             auto head = Common::getVehicle(self);
-            Things::Vehicle::Vehicle train(head);
+            Vehicles::Vehicle train(head);
             auto strFormat = StringIds::black_stringid;
             if (self->row_hover == 0)
             {
@@ -3171,7 +3171,7 @@ namespace OpenLoco::Ui::Vehicle
             self->activated_widgets |= 1ULL << (widx::tabMain + self->current_tab);
         }
 
-        static std::pair<uint32_t, string_id> getPickupImageIdandTooltip(const vehicle_head& head, const bool isPlaced)
+        static std::pair<uint32_t, string_id> getPickupImageIdandTooltip(const Vehicles::vehicle_head& head, const bool isPlaced)
         {
             uint32_t image = 0;
             string_id tooltip = 0;
@@ -3253,7 +3253,7 @@ namespace OpenLoco::Ui::Vehicle
         static void pickupToolAbort(window& self)
         {
             auto head = getVehicle(&self);
-            if (head->tile_x == -1 || !(head->var_38 & Things::Vehicle::Flags38::isGhost))
+            if (head->tile_x == -1 || !(head->var_38 & Vehicles::Flags38::isGhost))
             {
                 self.invalidate();
                 return;
@@ -3388,7 +3388,7 @@ namespace OpenLoco::Ui::Vehicle
         {
             self->invalidate();
             auto head = getVehicle(self);
-            if (head->tile_x == -1 || head->var_38 & Things::Vehicle::Flags38::isGhost)
+            if (head->tile_x == -1 || head->var_38 & Vehicles::Flags38::isGhost)
             {
                 auto tool = typeToTool[static_cast<uint8_t>(head->vehicleType)][_pickupDirection != 0 ? 1 : 0];
                 if (Input::toolSet(self, pickupWidx, tool))
@@ -3426,7 +3426,7 @@ namespace OpenLoco::Ui::Vehicle
 
         static size_t getNumCars(Ui::window* const self)
         {
-            Things::Vehicle::Vehicle train(Common::getVehicle(self));
+            Vehicles::Vehicle train(Common::getVehicle(self));
 
             if (train.cars.empty())
             {
@@ -3437,7 +3437,7 @@ namespace OpenLoco::Ui::Vehicle
         }
 
         // TODO: Move to a more appropriate file used by many windows
-        int16_t sub_4B743B(uint8_t al, uint8_t ah, int16_t cx, int16_t dx, vehicle_base* vehicle, Gfx::drawpixelinfo_t* const pDrawpixelinfo)
+        int16_t sub_4B743B(uint8_t al, uint8_t ah, int16_t cx, int16_t dx, Vehicles::vehicle_base* vehicle, Gfx::drawpixelinfo_t* const pDrawpixelinfo)
         {
             registers regs{};
             regs.al = al;
@@ -3451,9 +3451,9 @@ namespace OpenLoco::Ui::Vehicle
         }
 
         // 0x004B5CC1
-        static std::optional<Things::Vehicle::Car> getCarFromScrollView(window* const self, const int16_t y)
+        static std::optional<Vehicles::Car> getCarFromScrollView(window* const self, const int16_t y)
         {
-            Things::Vehicle::Vehicle train(getVehicle(self));
+            Vehicles::Vehicle train(getVehicle(self));
 
             auto heightOffset = y;
             for (auto& car : train.cars)

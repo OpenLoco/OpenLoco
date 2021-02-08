@@ -7,7 +7,7 @@ using namespace OpenLoco;
 using namespace OpenLoco::Audio;
 using namespace OpenLoco::Interop;
 
-static std::tuple<sound_id, channel_attributes> sub_48A590(const vehicle* v)
+static std::tuple<sound_id, channel_attributes> sub_48A590(const Vehicles::vehicle* v)
 {
     registers regs;
     regs.esi = (int32_t)v;
@@ -39,7 +39,7 @@ vehicle_channel& vehicle_channel::operator=(vehicle_channel&& other)
 
 void vehicle_channel::begin(thing_id_t vid)
 {
-    auto v = ThingManager::get<vehicle>(vid);
+    auto v = ThingManager::get<Vehicles::vehicle>(vid);
     if (v != nullptr)
     {
         auto [sid, sa] = sub_48A590(v);
@@ -64,8 +64,8 @@ void vehicle_channel::update()
 {
     if (!isFree())
     {
-        auto v = ThingManager::get<vehicle>(_vehicle_id);
-        if (v != nullptr && v->base_type == thing_base_type::vehicle && (v->getSubType() == VehicleThingType::vehicle_2 || v->getSubType() == VehicleThingType::tail) && (v->var_4A & 1))
+        auto v = ThingManager::get<Vehicles::vehicle>(_vehicle_id);
+        if (v != nullptr && v->base_type == thing_base_type::vehicle && (v->getSubType() == Vehicles::VehicleThingType::vehicle_2 || v->getSubType() == Vehicles::VehicleThingType::tail) && (v->var_4A & 1))
         {
             auto [sid, sa] = sub_48A590(v);
             if (_sound_id == sid)

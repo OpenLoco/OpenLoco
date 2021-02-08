@@ -279,7 +279,7 @@ namespace OpenLoco::Ui::BuildVehicle
             widget_index tab = widx::tab_build_new_trains;
             if (!tabMode)
             {
-                auto veh = ThingManager::get<OpenLoco::vehicle>(vehicle);
+                auto veh = ThingManager::get<Vehicles::vehicle>(vehicle);
                 tab += static_cast<uint8_t>(veh->vehicleType);
             }
             else
@@ -307,7 +307,7 @@ namespace OpenLoco::Ui::BuildVehicle
             if (!tabMode)
             {
                 _buildTargetVehicle = vehicle;
-                auto veh = ThingManager::get<OpenLoco::vehicle>(vehicle);
+                auto veh = ThingManager::get<Vehicles::vehicle>(vehicle);
                 window->current_tab = static_cast<uint8_t>(veh->vehicleType);
             }
             else
@@ -339,7 +339,7 @@ namespace OpenLoco::Ui::BuildVehicle
         {
             return window;
         }
-        auto veh = ThingManager::get<OpenLoco::vehicle>(_buildTargetVehicle);
+        auto veh = ThingManager::get<Vehicles::vehicle>(_buildTargetVehicle);
         if (veh == nullptr)
         {
             return window;
@@ -393,7 +393,7 @@ namespace OpenLoco::Ui::BuildVehicle
     /* 0x4B9165
      * Works out which vehicles are able to be built for this vehicle_type or vehicle
      */
-    static void generateBuildableVehiclesArray(VehicleType vehicleType, uint8_t trackType, OpenLoco::vehicle* vehicle)
+    static void generateBuildableVehiclesArray(VehicleType vehicleType, uint8_t trackType, Vehicles::vehicle* vehicle)
     {
         if (trackType != 0xFF && (trackType & (1 << 7)))
         {
@@ -506,7 +506,7 @@ namespace OpenLoco::Ui::BuildVehicle
             if (w->current_tab != 1)
                 continue;
 
-            auto vehicle = ThingManager::get<OpenLoco::vehicle>(w->number);
+            auto vehicle = ThingManager::get<Vehicles::vehicle>(w->number);
             if (vehicle->owner != CompanyManager::getControllingId())
                 continue;
 
@@ -540,10 +540,10 @@ namespace OpenLoco::Ui::BuildVehicle
         VehicleType vehicleType = _transportTypeTabInformation[window->current_tab].type;
         uint8_t trackType = _TrackTypesForTab[window->current_secondary_tab];
 
-        OpenLoco::vehicle* veh = nullptr;
+        Vehicles::vehicle* veh = nullptr;
         if (_buildTargetVehicle != -1)
         {
-            veh = ThingManager::get<OpenLoco::vehicle>(_buildTargetVehicle);
+            veh = ThingManager::get<Vehicles::vehicle>(_buildTargetVehicle);
         }
 
         generateBuildableVehiclesArray(vehicleType, trackType, veh);
@@ -753,7 +753,7 @@ namespace OpenLoco::Ui::BuildVehicle
         gGameCommandErrorTitle = StringIds::cant_build_pop_5_string_id;
         if (_buildTargetVehicle != -1)
         {
-            auto vehicle = ThingManager::get<OpenLoco::vehicle>(_buildTargetVehicle);
+            auto vehicle = ThingManager::get<Vehicles::vehicle>(_buildTargetVehicle);
             args.push(vehicle->var_22);
             args.push(vehicle->var_44);
             gGameCommandErrorTitle = StringIds::cant_add_pop_5_string_id_string_id;
@@ -766,7 +766,7 @@ namespace OpenLoco::Ui::BuildVehicle
 
         if (_buildTargetVehicle == -1)
         {
-            auto vehicle = ThingManager::get<OpenLoco::vehicle>(_113642A);
+            auto vehicle = ThingManager::get<Vehicles::vehicle>(_113642A);
             Vehicle::Details::open(vehicle);
         }
         sub_4B92A5(window);
@@ -914,7 +914,7 @@ namespace OpenLoco::Ui::BuildVehicle
             FormatArguments args{};
             if (_buildTargetVehicle != -1)
             {
-                auto vehicle = ThingManager::get<OpenLoco::vehicle>(_buildTargetVehicle);
+                auto vehicle = ThingManager::get<Vehicles::vehicle>(_buildTargetVehicle);
                 args.push(vehicle->var_22);
                 args.push(vehicle->var_44);
                 bottomLeftMessage = StringIds::select_vehicle_to_add_to_string_id;
@@ -1046,7 +1046,7 @@ namespace OpenLoco::Ui::BuildVehicle
                     FormatArguments args{};
                     if (_buildTargetVehicle != -1)
                     {
-                        auto vehicle = ThingManager::get<OpenLoco::vehicle>(_buildTargetVehicle);
+                        auto vehicle = ThingManager::get<Vehicles::vehicle>(_buildTargetVehicle);
                         defaultMessage = StringIds::no_compatible_vehicles_available;
                         args.push(vehicle->var_22);
                         args.push(vehicle->var_44);

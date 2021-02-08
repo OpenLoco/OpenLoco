@@ -600,7 +600,7 @@ static void registerAudioHooks()
     registerHook(
         0x0048A4BF,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            Audio::playSound((vehicle_26*)regs.esi);
+            Audio::playSound((Vehicles::vehicle_26*)regs.esi);
             return 0;
         });
     registerHook(
@@ -718,7 +718,7 @@ void OpenLoco::Interop::registerHooks()
     registerHook(
         0x004BA8D4,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            auto v = (OpenLoco::vehicle_head*)regs.esi;
+            auto v = (Vehicles::vehicle_head*)regs.esi;
             v->sub_4BA8D4();
             return 0;
         });
@@ -802,7 +802,7 @@ void OpenLoco::Interop::registerHooks()
     registerHook(
         0x004AB655,
         [](registers& regs) -> uint8_t {
-            auto v = (OpenLoco::vehicle_base*)regs.esi;
+            auto v = (Vehicles::vehicle_base*)regs.esi;
             v->asVehicleBody()->secondaryAnimationUpdate();
 
             return 0;
