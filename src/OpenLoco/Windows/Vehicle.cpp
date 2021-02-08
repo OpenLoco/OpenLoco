@@ -2597,9 +2597,10 @@ namespace OpenLoco::Ui::Vehicle
         {
             auto head = Common::getVehicle(self);
 
-            *height = 10;
+            // Space for the end of orders and express/local item
+            *height = 10 * 2;
 
-            auto table = OpenLoco::Vehicle::OrderTableView(head->orderTableOffset);
+            auto table = getOrderTable(head);
             *height += 10 * std::distance(table.begin(), table.end());
         }
 
