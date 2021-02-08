@@ -154,56 +154,6 @@ namespace OpenLoco::Vehicles
         bool updateComponent();
     };
 
-    struct vehicle : vehicle_base
-    {
-        uint8_t pad_20;
-        company_id_t owner; // 0x21
-        uint16_t var_22;    // used for name on vehicle_0 will be type as string_id
-        uint8_t pad_24[0x26 - 0x24];
-        thing_id_t head; // 0x26
-        uint16_t var_28;
-        uint8_t pad_2A[0x2C - 0x2A];
-        uint16_t var_2C;
-        uint16_t var_2E;
-        int16_t tile_x;      // 0x30
-        int16_t tile_y;      // 0x32
-        uint8_t tile_base_z; // 0x34
-        uint8_t track_type;  // 0x35 field same in all vehicles
-        uint16_t var_36;     // 0x36 field same in all vehicles
-        uint8_t var_38;
-        uint8_t pad_39;         // 0x39
-        thing_id_t next_car_id; // 0x3A
-        uint32_t var_3C;        // veh1 speed?
-        uint16_t object_id;     // 0x40 not used in all vehicles **be careful**
-        TransportMode mode;     // 0x42 field same in all vehicles
-        uint8_t pad_43;
-        int16_t var_44; // name this number
-        uint8_t pad_46;
-        uint8_t pad_47[0x4A - 0x47];
-        uint16_t var_4A;
-        uint8_t cargo_type; // 0x4C
-        uint8_t pad_4D;
-        uint16_t cargo_origin; // 0x4E
-        uint8_t pad_50;
-        uint8_t cargo_quantity; // 0x51
-        uint8_t pad_52[0x54 - 0x52];
-        uint8_t pad_54;
-        uint8_t pad_55;
-        uint32_t var_56;
-        uint8_t var_5A;
-        uint8_t pad_5B[0x5D - 0x5B];
-        uint8_t var_5D;
-        VehicleType vehicleType; // 0x5E
-        uint8_t var_5F;          // 0x5F (bit 1 = can break down)
-        uint8_t pad_60[0x6A - 0x60];
-        uint8_t var_6A;
-        uint8_t pad_6B[0x73 - 0x6B];
-        uint8_t var_73; // 0x73 (bit 0 = broken down)
-
-        vehicle_object* object() const;
-    };
-    static_assert(sizeof(vehicle) == 0x74); // Can't use offset_of change this to last field if more found
-
     struct vehicle_26 : vehicle_base
     {
         uint8_t pad_20[0x44 - 0x20];

@@ -66,6 +66,11 @@ namespace OpenLoco::Vehicles
 
     static uint16_t fastSquareRoot(uint32_t distance);
 
+    vehicle_object* vehicle_body::object() const
+    {
+        return ObjectManager::get<vehicle_object>(object_id);
+    }
+
     // 0x004AA1D0
     int32_t vehicle_body::update()
     {
