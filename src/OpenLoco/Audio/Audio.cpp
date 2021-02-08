@@ -570,7 +570,7 @@ namespace OpenLoco::Audio
     }
 
     // 0x0048A4BF
-    void playSound(Vehicles::vehicle_26* v)
+    void playSound(Vehicles::Vehicle2or6* v)
     {
         if (v->var_4A & 1)
         {
@@ -804,7 +804,7 @@ namespace OpenLoco::Audio
         return false;
     }
 
-    static void sub_48A274(Vehicles::vehicle_26* v)
+    static void sub_48A274(Vehicles::Vehicle2or6* v)
     {
         if (v == nullptr)
             return;
@@ -873,7 +873,7 @@ namespace OpenLoco::Audio
         }
     }
 
-    static void off_4FEB58(Vehicles::vehicle_26* v, int32_t x)
+    static void off_4FEB58(Vehicles::Vehicle2or6* v, int32_t x)
     {
         switch (x)
         {
@@ -908,8 +908,8 @@ namespace OpenLoco::Audio
         for (auto v : ThingManager::VehicleList())
         {
             Vehicles::Vehicle train(v);
-            off_4FEB58(reinterpret_cast<Vehicles::vehicle_26*>(train.veh2), x);
-            off_4FEB58(reinterpret_cast<Vehicles::vehicle_26*>(train.tail), x);
+            off_4FEB58(reinterpret_cast<Vehicles::Vehicle2or6*>(train.veh2), x);
+            off_4FEB58(reinterpret_cast<Vehicles::Vehicle2or6*>(train.tail), x);
         }
     }
 

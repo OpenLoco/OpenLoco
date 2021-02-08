@@ -7,7 +7,7 @@ using namespace OpenLoco;
 using namespace OpenLoco::Audio;
 using namespace OpenLoco::Interop;
 
-static std::tuple<sound_id, channel_attributes> sub_48A590(const Vehicles::vehicle_26* v)
+static std::tuple<sound_id, channel_attributes> sub_48A590(const Vehicles::Vehicle2or6* v)
 {
     registers regs;
     regs.esi = (int32_t)v;

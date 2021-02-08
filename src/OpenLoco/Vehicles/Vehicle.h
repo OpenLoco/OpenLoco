@@ -54,7 +54,7 @@ namespace OpenLoco::Vehicles
     struct VehicleBody;
     struct VehicleTail;
 
-    struct vehicle_26;
+    struct Vehicle2or6;
 
     namespace Flags5F
     {
@@ -130,14 +130,14 @@ namespace OpenLoco::Vehicles
             return as<VehicleBody, VehicleThingType::body_continued>();
         }
         bool isVehicle2Or6() { return is<VehicleThingType::vehicle_2>() || is<VehicleThingType::tail>(); }
-        vehicle_26* asVehicle2Or6() const
+        Vehicle2or6* asVehicle2Or6() const
         {
             if (is<VehicleThingType::vehicle_2>())
             {
-                return as<vehicle_26, VehicleThingType::vehicle_2>();
+                return as<Vehicle2or6, VehicleThingType::vehicle_2>();
             }
 
-            return as<vehicle_26, VehicleThingType::tail>();
+            return as<Vehicle2or6, VehicleThingType::tail>();
         }
         bool isVehicleTail() const { return is<VehicleThingType::tail>(); }
         VehicleTail* asVehicleTail() const { return as<VehicleTail>(); }
@@ -154,7 +154,7 @@ namespace OpenLoco::Vehicles
         bool updateComponent();
     };
 
-    struct vehicle_26 : VehicleBase
+    struct Vehicle2or6 : VehicleBase
     {
         uint8_t pad_20[0x44 - 0x20];
         sound_object_id_t sound_id; // 0x44
