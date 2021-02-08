@@ -1,8 +1,17 @@
 #pragma once
 
 #include "Thing.h"
-#include "Vehicle.h"
 #include <cstdio>
+#include <iterator>
+
+namespace OpenLoco::Map
+{
+    struct map_pos;
+}
+namespace OpenLoco
+{
+    struct vehicle_head;
+}
 
 namespace OpenLoco::ThingManager
 {

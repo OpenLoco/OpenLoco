@@ -16,9 +16,9 @@
 #include "../OpenLoco.h"
 #include "../Scenario.h"
 #include "../Things/ThingManager.h"
-#include "../Things/Vehicle.h"
 #include "../Ui/Dropdown.h"
 #include "../Ui/WindowManager.h"
+#include "../Vehicles/Vehicle.h"
 #include "../ViewportManager.h"
 #include "../Widget.h"
 

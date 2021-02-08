@@ -7,8 +7,8 @@
 #include "Objects/RoadObject.h"
 #include "Objects/TrackObject.h"
 #include "StationManager.h"
-#include "Things/Vehicle.h"
 #include "Ui/WindowManager.h"
+#include "Vehicles/Vehicle.h"
 #include <cassert>
 
 using namespace OpenLoco::Ui;

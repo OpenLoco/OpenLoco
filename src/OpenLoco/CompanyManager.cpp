@@ -6,7 +6,7 @@
 #include "Map/Tile.h"
 #include "OpenLoco.h"
 #include "Things/ThingManager.h"
-#include "Things/Vehicle.h"
+#include "Vehicles/Vehicle.h"
 #include "Ui/WindowManager.h"
 
 using namespace OpenLoco::Interop;

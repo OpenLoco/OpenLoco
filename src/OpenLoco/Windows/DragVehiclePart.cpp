@@ -1,8 +1,8 @@
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
 #include "../OpenLoco.h"
-#include "../Things/Vehicle.h"
 #include "../Ui/WindowManager.h"
+#include "../Vehicles/Vehicle.h"
 
 using namespace OpenLoco::Interop;
 

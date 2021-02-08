@@ -19,12 +19,12 @@
 #include "../Paint/Paint.h"
 #include "../Platform/Platform.h"
 #include "../Station.h"
-#include "../Things/Vehicle.h"
 #include "../Title.h"
 #include "../Tutorial.h"
 #include "../Ui.h"
 #include "../Ui/WindowManager.h"
 #include "../Utility/String.hpp"
+#include "../Vehicles/Vehicle.h"
 #include "../ViewportManager.h"
 #include "Interop.hpp"
 

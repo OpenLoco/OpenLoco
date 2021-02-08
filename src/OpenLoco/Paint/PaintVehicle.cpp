@@ -4,7 +4,7 @@
 #include "../Graphics/Colour.h"
 #include "../Objects/ObjectManager.h"
 #include "../Objects/VehicleObject.h"
-#include "../Things/Vehicle.h"
+#include "../Vehicles/Vehicle.h"
 #include "Paint.h"
 
 using namespace OpenLoco::Interop;

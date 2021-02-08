@@ -3,10 +3,10 @@
 #include "../Audio/Audio.h"
 #include "../Company.h"
 #include "../Objects/VehicleObject.h"
+#include "../Things/Thing.h"
 #include "../Types.hpp"
 #include "../Ui/WindowType.h"
 #include "../Window.h"
-#include "Thing.h"
 
 namespace OpenLoco
 {
@@ -505,6 +505,7 @@ namespace OpenLoco
     static_assert(sizeof(vehicle_tail) == 0x4F); // Can't use offset_of change this to last field if more found
 
 #pragma pack(pop)
+
     namespace Things::Vehicle
     {
         struct CarComponent

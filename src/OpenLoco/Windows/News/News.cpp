@@ -14,6 +14,7 @@
 #include "../../StationManager.h"
 #include "../../Things/ThingManager.h"
 #include "../../TownManager.h"
+#include "../../Vehicles/Vehicle.h"
 #include "../../ViewportManager.h"
 #include "../../Window.h"
 

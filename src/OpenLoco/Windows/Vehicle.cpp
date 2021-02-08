@@ -1,4 +1,4 @@
-#include "../Things/Vehicle.h"
+#include "../Vehicles/Vehicle.h"
 #include "../CompanyManager.h"
 #include "../Config.h"
 #include "../GameCommands.h"

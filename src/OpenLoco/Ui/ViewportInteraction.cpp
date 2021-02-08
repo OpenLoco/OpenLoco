@@ -13,6 +13,7 @@
 #include "../TownManager.h"
 #include "../Ui.h"
 #include "../Ui/ScrollView.h"
+#include "../Vehicles/Vehicle.h"
 #include "../ViewportManager.h"
 #include "../Window.h"
 #include "WindowManager.h"

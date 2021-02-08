@@ -13,10 +13,10 @@
 #include "../MultiPlayer.h"
 #include "../StationManager.h"
 #include "../Things/ThingManager.h"
-#include "../Things/Vehicle.h"
 #include "../TownManager.h"
 #include "../Tutorial.h"
 #include "../Ui.h"
+#include "../Vehicles/Vehicle.h"
 #include "../ViewportManager.h"
 #include "ScrollView.h"
 #include <algorithm>

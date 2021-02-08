@@ -12,6 +12,7 @@
 #include "../Tutorial.h"
 #include "../Ui.h"
 #include "../Ui/Screenshot.h"
+#include "../Vehicles/Vehicle.h"
 #include "../Win32.h"
 #include "ShortcutManager.h"
 #include <cstdint>

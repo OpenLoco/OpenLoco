@@ -12,6 +12,7 @@
 #include "../TownManager.h"
 #include "../Tutorial.h"
 #include "../Ui/ScrollView.h"
+#include "../Vehicles/Vehicle.h"
 #include <map>
 
 using namespace OpenLoco::Interop;

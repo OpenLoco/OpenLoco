@@ -18,6 +18,7 @@
 #include "../Types.hpp"
 #include "../Ui/ScrollView.h"
 #include "../Ui/WindowManager.h"
+#include "../Vehicles/Vehicle.h"
 #include "../Widget.h"
 
 using namespace OpenLoco::Interop;
