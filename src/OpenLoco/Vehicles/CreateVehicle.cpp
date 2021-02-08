@@ -209,20 +209,20 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AE8F1, 0x004AEA9E
-    static vehicle_bogie* createBogie(const thing_id_t head, const uint16_t vehicleTypeId, const vehicle_object& vehObject, const uint8_t bodyNumber, vehicle* const lastVeh, const ColourScheme colourScheme)
+    static vehicle_bogie* createBogie(const thing_id_t head, const uint16_t vehicleTypeId, const vehicle_object& vehObject, const uint8_t bodyNumber, vehicle_base* const lastVeh, const ColourScheme colourScheme)
     {
         auto newBogie = createVehicleThing<vehicle_bogie>();
         newBogie->owner = _updating_company_id;
         newBogie->head = head;
         newBogie->body_index = bodyNumber;
-        newBogie->track_type = lastVeh->track_type;
-        newBogie->mode = lastVeh->mode;
+        newBogie->track_type = lastVeh->getTrackType();
+        newBogie->mode = lastVeh->getTransportMode();
         newBogie->tile_x = -1;
         newBogie->tile_y = 0;
         newBogie->tile_base_z = 0;
         newBogie->var_2E = 0;
         newBogie->var_2C = 0;
-        newBogie->var_36 = lastVeh->var_36;
+        newBogie->var_36 = lastVeh->getVar36();
         newBogie->object_id = vehicleTypeId;
 
         auto& prng = gPrng();
@@ -243,12 +243,12 @@ namespace OpenLoco::Vehicles
         newBogie->var_15 = 1;
 
         newBogie->colour_scheme = colourScheme;
-        lastVeh->next_car_id = newBogie->id;
+        lastVeh->setNextCar(newBogie->id);
         return newBogie;
     }
 
     // 0x4AE8F1
-    static vehicle_bogie* createFirstBogie(const thing_id_t head, const uint16_t vehicleTypeId, const vehicle_object& vehObject, const uint8_t bodyNumber, vehicle* const lastVeh, const ColourScheme colourScheme)
+    static vehicle_bogie* createFirstBogie(const thing_id_t head, const uint16_t vehicleTypeId, const vehicle_object& vehObject, const uint8_t bodyNumber, vehicle_base* const lastVeh, const ColourScheme colourScheme)
     {
         auto newBogie = createBogie(head, vehicleTypeId, vehObject, bodyNumber, lastVeh, colourScheme);
         if (newBogie == nullptr) // Can never happen
@@ -308,7 +308,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AEA9E
-    static vehicle_bogie* createSecondBogie(const thing_id_t head, const uint16_t vehicleTypeId, const vehicle_object& vehObject, const uint8_t bodyNumber, vehicle* const lastVeh, const ColourScheme colourScheme)
+    static vehicle_bogie* createSecondBogie(const thing_id_t head, const uint16_t vehicleTypeId, const vehicle_object& vehObject, const uint8_t bodyNumber, vehicle_base* const lastVeh, const ColourScheme colourScheme)
     {
         auto newBogie = createBogie(head, vehicleTypeId, vehObject, bodyNumber, lastVeh, colourScheme);
         if (newBogie == nullptr) // Can never happen
@@ -327,7 +327,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AEA9E
-    static vehicle_body* createBody(const thing_id_t head, const uint16_t vehicleTypeId, const vehicle_object& vehObject, const uint8_t bodyNumber, vehicle* const lastVeh, const ColourScheme colourScheme)
+    static vehicle_body* createBody(const thing_id_t head, const uint16_t vehicleTypeId, const vehicle_object& vehObject, const uint8_t bodyNumber, vehicle_base* const lastVeh, const ColourScheme colourScheme)
     {
         auto newBody = createVehicleThing<vehicle_body>();
         // TODO: move this into the create function somehow
@@ -335,14 +335,14 @@ namespace OpenLoco::Vehicles
         newBody->owner = _updating_company_id;
         newBody->head = head;
         newBody->body_index = bodyNumber;
-        newBody->track_type = lastVeh->track_type;
-        newBody->mode = lastVeh->mode;
+        newBody->track_type = lastVeh->getTrackType();
+        newBody->mode = lastVeh->getTransportMode();
         newBody->tile_x = -1;
         newBody->tile_y = 0;
         newBody->tile_base_z = 0;
         newBody->var_2E = 0;
         newBody->var_2C = 0;
-        newBody->var_36 = lastVeh->var_36;
+        newBody->var_36 = lastVeh->getVar36();
         newBody->var_38 = Flags38::unk_0; // different to create bogie
         newBody->object_id = vehicleTypeId;
 
@@ -411,7 +411,7 @@ namespace OpenLoco::Vehicles
             newBody->var_38 |= Flags38::unk_3;
         }
 
-        lastVeh->next_car_id = newBody->id; // same as create bogie
+        lastVeh->setNextCar(newBody->id); // same as create bogie
         return newBody;
     }
 
@@ -433,20 +433,20 @@ namespace OpenLoco::Vehicles
         // Get Car insertion location
         Vehicle train(head);
         // lastVeh will point to the vehicle component prior to the tail (head, unk_1, unk_2 *here*, tail) or (... bogie, bogie, body *here*, tail)
-        vehicle* lastVeh = nullptr;
+        vehicle_base* lastVeh = nullptr;
         if (!train.cars.empty())
         {
             for (auto& car : train.cars)
             {
                 for (auto& carComponent : car)
                 {
-                    lastVeh = reinterpret_cast<vehicle*>(carComponent.body);
+                    lastVeh = carComponent.body;
                 }
             }
         }
         else
         {
-            lastVeh = reinterpret_cast<vehicle*>(train.veh2);
+            lastVeh = train.veh2;
         }
 
         const auto vehObject = ObjectManager::get<vehicle_object>(vehicleTypeId);
@@ -463,13 +463,13 @@ namespace OpenLoco::Vehicles
         for (auto bodyNumber = 0; bodyNumber < vehObject->var_04; ++bodyNumber)
         {
             auto* const firstBogie = createFirstBogie(head->id, vehicleTypeId, *vehObject, bodyNumber, lastVeh, colourScheme);
-            lastVeh = reinterpret_cast<vehicle*>(firstBogie);
+            lastVeh = firstBogie;
 
             auto* const secondBogie = createSecondBogie(head->id, vehicleTypeId, *vehObject, bodyNumber, lastVeh, colourScheme);
-            lastVeh = reinterpret_cast<vehicle*>(secondBogie);
+            lastVeh = secondBogie;
 
             auto* const body = createBody(head->id, vehicleTypeId, *vehObject, bodyNumber, lastVeh, colourScheme);
-            lastVeh = reinterpret_cast<vehicle*>(body);
+            lastVeh = body;
 
             if (newCarStart == nullptr)
             {
@@ -481,7 +481,7 @@ namespace OpenLoco::Vehicles
         {
             return false;
         }
-        lastVeh->next_car_id = train.tail->id;
+        lastVeh->setNextCar(train.tail->id);
         sub_4B7CC3(head);
         return true;
     }
@@ -584,20 +584,20 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AE40E
-    static vehicle_1* createVehicle1(const thing_id_t head, vehicle* const lastVeh)
+    static vehicle_1* createVehicle1(const thing_id_t head, vehicle_base* const lastVeh)
     {
         auto* const newVeh1 = createVehicleThing<vehicle_1>();
         newVeh1->owner = _updating_company_id;
         newVeh1->head = head;
-        newVeh1->track_type = lastVeh->track_type;
-        newVeh1->mode = lastVeh->mode;
+        newVeh1->track_type = lastVeh->getTrackType();
+        newVeh1->mode = lastVeh->getTransportMode();
         newVeh1->tile_x = -1;
         newVeh1->tile_y = 0;
         newVeh1->tile_base_z = 0;
         newVeh1->var_28 = 0;
         newVeh1->var_2E = 0;
         newVeh1->var_2C = 0;
-        newVeh1->var_36 = lastVeh->var_36;
+        newVeh1->var_36 = lastVeh->getVar36();
         newVeh1->var_14 = 0;
         newVeh1->var_09 = 0;
         newVeh1->var_15 = 0;
@@ -610,25 +610,25 @@ namespace OpenLoco::Vehicles
         newVeh1->var_4E = 0;
         newVeh1->var_50 = 0;
         newVeh1->var_53 = -1;
-        lastVeh->next_car_id = newVeh1->id;
+        lastVeh->setNextCar(newVeh1->id);
         return newVeh1;
     }
 
     // 0x004AE4A0
-    static vehicle_2* createVehicle2(const thing_id_t head, vehicle* const lastVeh)
+    static vehicle_2* createVehicle2(const thing_id_t head, vehicle_base* const lastVeh)
     {
         auto* const newVeh2 = createVehicleThing<vehicle_2>();
         newVeh2->owner = _updating_company_id;
         newVeh2->head = head;
-        newVeh2->track_type = lastVeh->track_type;
-        newVeh2->mode = lastVeh->mode;
+        newVeh2->track_type = lastVeh->getTrackType();
+        newVeh2->mode = lastVeh->getTransportMode();
         newVeh2->tile_x = -1;
         newVeh2->tile_y = 0;
         newVeh2->tile_base_z = 0;
         newVeh2->var_28 = 0;
         newVeh2->var_2E = 0;
         newVeh2->var_2C = 0;
-        newVeh2->var_36 = lastVeh->var_36;
+        newVeh2->var_36 = lastVeh->getVar36();
         newVeh2->var_14 = 0;
         newVeh2->var_09 = 0;
         newVeh2->var_15 = 0;
@@ -647,25 +647,25 @@ namespace OpenLoco::Vehicles
         newVeh2->var_6E = 0;
         newVeh2->reliability = 0;
         newVeh2->var_73 = 0;
-        lastVeh->next_car_id = newVeh2->id;
+        lastVeh->setNextCar(newVeh2->id);
         return newVeh2;
     }
 
     // 0x004AE54E
-    static vehicle_tail* createVehicleTail(const thing_id_t head, vehicle* const lastVeh)
+    static vehicle_tail* createVehicleTail(const thing_id_t head, vehicle_base* const lastVeh)
     {
         auto* const newTail = createVehicleThing<vehicle_tail>();
         newTail->owner = _updating_company_id;
         newTail->head = head;
-        newTail->track_type = lastVeh->track_type;
-        newTail->mode = lastVeh->mode;
+        newTail->track_type = lastVeh->getTrackType();
+        newTail->mode = lastVeh->getTransportMode();
         newTail->tile_x = -1;
         newTail->tile_y = 0;
         newTail->tile_base_z = 0;
         newTail->var_28 = 0;
         newTail->var_2E = 0;
         newTail->var_2C = 0;
-        newTail->var_36 = lastVeh->var_36;
+        newTail->var_36 = lastVeh->getVar36();
         newTail->var_14 = 0;
         newTail->var_09 = 0;
         newTail->var_15 = 0;
@@ -673,7 +673,7 @@ namespace OpenLoco::Vehicles
         newTail->soundId = SoundObjectId::null;
         newTail->var_48 = -1;
         newTail->var_4A = 0;
-        lastVeh->next_car_id = newTail->id;
+        lastVeh->setNextCar(newTail->id);
         newTail->next_car_id = ThingId::null;
         return newTail;
     }
@@ -697,22 +697,20 @@ namespace OpenLoco::Vehicles
             return {};
         }
 
-        auto* const head = createHead(trackType, mode, *orderId, type);
-        vehicle* lastVeh = reinterpret_cast<vehicle*>(head);
+        auto* head = createHead(trackType, mode, *orderId, type);
+        vehicle_base* lastVeh = head;
         if (lastVeh == nullptr) // Can never happen
         {
             return {};
         }
 
-        auto* const veh1 = createVehicle1(head->id, lastVeh);
-        lastVeh = reinterpret_cast<vehicle*>(veh1);
+        lastVeh = createVehicle1(head->id, lastVeh);
         if (lastVeh == nullptr) // Can never happen
         {
             return {};
         }
 
-        auto* const veh2 = createVehicle2(head->id, lastVeh);
-        lastVeh = reinterpret_cast<vehicle*>(veh2);
+        lastVeh = createVehicle2(head->id, lastVeh);
         if (lastVeh == nullptr) // Can never happen
         {
             return {};

@@ -530,7 +530,7 @@ namespace OpenLoco::Input
                             auto veh = _thing->asVehicle();
                             if (veh != nullptr)
                             {
-                                Ui::Vehicle::Main::open(reinterpret_cast<Vehicles::vehicle*>(veh));
+                                Ui::Vehicle::Main::open(veh);
                             }
                             break;
                         }

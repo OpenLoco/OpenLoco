@@ -48,10 +48,28 @@ namespace OpenLoco::Vehicles
         return veh->var_38;
     }
 
+    uint8_t vehicle_base::getTrackType() const
+    {
+        const auto* veh = reinterpret_cast<const vehicle*>(this);
+        return veh->track_type;
+    }
+
+    uint16_t vehicle_base::getVar36() const
+    {
+        const auto* veh = reinterpret_cast<const vehicle*>(this);
+        return veh->var_36;
+    }
+
     thing_id_t vehicle_base::getHead() const
     {
         const auto* veh = reinterpret_cast<const vehicle*>(this);
         return veh->head;
+    }
+
+    void vehicle_base::setNextCar(const thing_id_t newNextCar)
+    {
+        auto* veh = reinterpret_cast<vehicle*>(this);
+        veh->next_car_id = newNextCar;
     }
 
     vehicle_object* vehicle::object() const
