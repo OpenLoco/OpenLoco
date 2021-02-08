@@ -327,9 +327,9 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AEA9E
-    static vehicle_body* createBody(const thing_id_t head, const uint16_t vehicleTypeId, const vehicle_object& vehObject, const uint8_t bodyNumber, vehicle_base* const lastVeh, const ColourScheme colourScheme)
+    static VehicleBody* createBody(const thing_id_t head, const uint16_t vehicleTypeId, const vehicle_object& vehObject, const uint8_t bodyNumber, vehicle_base* const lastVeh, const ColourScheme colourScheme)
     {
-        auto newBody = createVehicleThing<vehicle_body>();
+        auto newBody = createVehicleThing<VehicleBody>();
         // TODO: move this into the create function somehow
         newBody->setSubType(bodyNumber == 0 ? VehicleThingType::body_start : VehicleThingType::body_continued);
         newBody->owner = _updating_company_id;

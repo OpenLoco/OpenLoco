@@ -51,7 +51,7 @@ namespace OpenLoco::Vehicles
     struct vehicle_1;
     struct vehicle_2;
     struct VehicleBogie;
-    struct vehicle_body;
+    struct VehicleBody;
     struct VehicleTail;
 
     struct vehicle_26;
@@ -120,14 +120,14 @@ namespace OpenLoco::Vehicles
         bool isVehicleBogie() const { return is<VehicleThingType::bogie>(); }
         VehicleBogie* asVehicleBogie() const { return as<VehicleBogie>(); }
         bool isVehicleBody() const { return is<VehicleThingType::body_start>() || is<VehicleThingType::body_continued>(); }
-        vehicle_body* asVehicleBody() const
+        VehicleBody* asVehicleBody() const
         {
             if (is<VehicleThingType::body_start>())
             {
-                return as<vehicle_body, VehicleThingType::body_start>();
+                return as<VehicleBody, VehicleThingType::body_start>();
             }
 
-            return as<vehicle_body, VehicleThingType::body_continued>();
+            return as<VehicleBody, VehicleThingType::body_continued>();
         }
         bool isVehicle2Or6() { return is<VehicleThingType::vehicle_2>() || is<VehicleThingType::tail>(); }
         vehicle_26* asVehicle2Or6() const
@@ -313,7 +313,7 @@ namespace OpenLoco::Vehicles
     };
     static_assert(sizeof(vehicle_2) == 0x74); // Can't use offset_of change this to last field if more found
 
-    struct vehicle_body : vehicle_base
+    struct VehicleBody : vehicle_base
     {
         static constexpr auto vehicleThingType = VehicleThingType::body_continued;
         uint8_t pad_20;
@@ -375,7 +375,7 @@ namespace OpenLoco::Vehicles
         uint8_t updateSpriteYaw3(int16_t x_offset, int16_t y_offset);
         uint8_t updateSpriteYaw4(int16_t x_offset, int16_t y_offset);
     };
-    static_assert(sizeof(vehicle_body) == 0x60); // Can't use offset_of change this to last field if more found
+    static_assert(sizeof(VehicleBody) == 0x60); // Can't use offset_of change this to last field if more found
 
     struct VehicleBogie : vehicle_base
     {
@@ -461,7 +461,7 @@ namespace OpenLoco::Vehicles
     {
         VehicleBogie* front = nullptr;
         VehicleBogie* back = nullptr;
-        vehicle_body* body = nullptr;
+        VehicleBody* body = nullptr;
         CarComponent(vehicle_base*& component);
         CarComponent() = default;
     };

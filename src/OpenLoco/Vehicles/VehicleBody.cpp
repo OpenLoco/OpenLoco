@@ -66,13 +66,13 @@ namespace OpenLoco::Vehicles
 
     static uint16_t fastSquareRoot(uint32_t distance);
 
-    vehicle_object* vehicle_body::object() const
+    vehicle_object* VehicleBody::object() const
     {
         return ObjectManager::get<vehicle_object>(object_id);
     }
 
     // 0x004AA1D0
-    int32_t vehicle_body::update()
+    int32_t VehicleBody::update()
     {
         registers regs;
         regs.esi = (int32_t)this;
@@ -107,7 +107,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AAC4E
-    void vehicle_body::animationUpdate()
+    void VehicleBody::animationUpdate()
     {
         if (var_38 & Flags38::isGhost)
             return;
@@ -157,7 +157,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AAB0B
-    void vehicle_body::sub_4AAB0B()
+    void VehicleBody::sub_4AAB0B()
     {
         int32_t eax = vehicle_var_1136130 >> 3;
         if (var_38 & Flags38::isReversed)
@@ -255,7 +255,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AC255
-    void vehicle_body::sub_4AC255(VehicleBogie* back_bogie, VehicleBogie* front_bogie)
+    void VehicleBody::sub_4AC255(VehicleBogie* back_bogie, VehicleBogie* front_bogie)
     {
         loc16 loc = {
             static_cast<int16_t>((front_bogie->x + back_bogie->x) / 2),
@@ -324,7 +324,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004BF4DA
-    Pitch vehicle_body::updateSpritePitchSteepSlopes(uint16_t xy_offset, int16_t z_offset)
+    Pitch VehicleBody::updateSpritePitchSteepSlopes(uint16_t xy_offset, int16_t z_offset)
     {
         uint32_t i = 0;
 
@@ -364,7 +364,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004BF49D
-    Pitch vehicle_body::updateSpritePitch(uint16_t xy_offset, int16_t z_offset)
+    Pitch VehicleBody::updateSpritePitch(uint16_t xy_offset, int16_t z_offset)
     {
         uint32_t i = 0;
 
@@ -393,7 +393,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004BF52B
-    uint8_t vehicle_body::updateSpriteYaw0(int16_t x_offset, int16_t y_offset)
+    uint8_t VehicleBody::updateSpriteYaw0(int16_t x_offset, int16_t y_offset)
     {
         uint32_t i = 0;
 
@@ -435,7 +435,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004BF5B3
-    uint8_t vehicle_body::updateSpriteYaw1(int16_t x_offset, int16_t y_offset)
+    uint8_t VehicleBody::updateSpriteYaw1(int16_t x_offset, int16_t y_offset)
     {
         uint32_t i = 0;
 
@@ -485,7 +485,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004BF5FB
-    uint8_t vehicle_body::updateSpriteYaw2(int16_t x_offset, int16_t y_offset)
+    uint8_t VehicleBody::updateSpriteYaw2(int16_t x_offset, int16_t y_offset)
     {
         uint32_t i = 0;
 
@@ -554,7 +554,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004BF657
-    uint8_t vehicle_body::updateSpriteYaw3(int16_t x_offset, int16_t y_offset)
+    uint8_t VehicleBody::updateSpriteYaw3(int16_t x_offset, int16_t y_offset)
     {
         uint32_t i = 0;
 
@@ -664,7 +664,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004BF6DF
-    uint8_t vehicle_body::updateSpriteYaw4(int16_t x_offset, int16_t y_offset)
+    uint8_t VehicleBody::updateSpriteYaw4(int16_t x_offset, int16_t y_offset)
     {
         uint32_t i = 0;
 
@@ -847,7 +847,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AB655
-    void vehicle_body::secondaryAnimationUpdate()
+    void VehicleBody::secondaryAnimationUpdate()
     {
         auto vehicleObject = object();
 
@@ -888,7 +888,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AB688, 0x004AACA5
-    void vehicle_body::steamPuffsAnimationUpdate(uint8_t num, int32_t var_05)
+    void VehicleBody::steamPuffsAnimationUpdate(uint8_t num, int32_t var_05)
     {
         auto vehicleObject = object();
         VehicleBogie* frontBogie = vehicleUpdate_frontBogie;
@@ -1053,7 +1053,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AB9DD & 0x004AAFFA
-    void vehicle_body::dieselExhaust1AnimationUpdate(uint8_t num, int32_t var_05)
+    void VehicleBody::dieselExhaust1AnimationUpdate(uint8_t num, int32_t var_05)
     {
         VehicleBogie* frontBogie = vehicleUpdate_frontBogie;
         VehicleBogie* backBogie = vehicleUpdate_backBogie;
@@ -1139,7 +1139,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004ABB5A & 0x004AB177
-    void vehicle_body::dieselExhaust2AnimationUpdate(uint8_t num, int32_t var_05)
+    void VehicleBody::dieselExhaust2AnimationUpdate(uint8_t num, int32_t var_05)
     {
         VehicleBogie* frontBogie = vehicleUpdate_frontBogie;
         VehicleBogie* backBogie = vehicleUpdate_backBogie;
@@ -1214,7 +1214,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004ABDAD & 0x004AB3CA
-    void vehicle_body::electricSpark1AnimationUpdate(uint8_t num, int32_t var_05)
+    void VehicleBody::electricSpark1AnimationUpdate(uint8_t num, int32_t var_05)
     {
         VehicleBogie* frontBogie = vehicleUpdate_frontBogie;
         VehicleBogie* backBogie = vehicleUpdate_backBogie;
@@ -1274,7 +1274,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004ABEC3 & 0x004AB4E0
-    void vehicle_body::electricSpark2AnimationUpdate(uint8_t num, int32_t var_05)
+    void VehicleBody::electricSpark2AnimationUpdate(uint8_t num, int32_t var_05)
     {
         VehicleBogie* frontBogie = vehicleUpdate_frontBogie;
         VehicleBogie* backBogie = vehicleUpdate_backBogie;
@@ -1356,7 +1356,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004ABC8A & 0x004AB2A7
-    void vehicle_body::shipWakeAnimationUpdate(uint8_t num, int32_t)
+    void VehicleBody::shipWakeAnimationUpdate(uint8_t num, int32_t)
     {
         vehicle_2* veh_2 = vehicleUpdate_2;
         auto vehicleObject = object();
