@@ -1009,7 +1009,7 @@ namespace OpenLoco::Ui::Windows::Map
     }
 
     // 0x0046BF0F based on
-    static void drawVehicleOnMap(Gfx::drawpixelinfo_t* dpi, Vehicles::vehicle_base* vehicle, uint8_t colour)
+    static void drawVehicleOnMap(Gfx::drawpixelinfo_t* dpi, Vehicles::VehicleBase* vehicle, uint8_t colour)
     {
         if (vehicle->x == Location::null)
             return;

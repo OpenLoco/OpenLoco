@@ -263,7 +263,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
 namespace OpenLoco::Vehicles
 {
-    struct vehicle_base;
+    struct VehicleBase;
     struct Car;
 }
 
@@ -277,17 +277,17 @@ namespace OpenLoco::Ui::Vehicle
     void registerHooks();
     namespace Main
     {
-        window* open(const Vehicles::vehicle_base* vehicle);
+        window* open(const Vehicles::VehicleBase* vehicle);
     }
     namespace Details
     {
-        window* open(const Vehicles::vehicle_base* vehicle);
+        window* open(const Vehicles::VehicleBase* vehicle);
         void scrollDrag(const Gfx::point_t& pos);
         void scrollDragEnd(const Gfx::point_t& pos);
     }
     namespace Common
     {
-        int16_t sub_4B743B(uint8_t al, uint8_t ah, int16_t cx, int16_t dx, Vehicles::vehicle_base* vehicle, Gfx::drawpixelinfo_t* const pDrawpixelinfo);
+        int16_t sub_4B743B(uint8_t al, uint8_t ah, int16_t cx, int16_t dx, Vehicles::VehicleBase* vehicle, Gfx::drawpixelinfo_t* const pDrawpixelinfo);
     }
     bool rotate();
 }

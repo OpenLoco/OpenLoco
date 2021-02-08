@@ -82,7 +82,7 @@ namespace OpenLoco::Vehicles
     };
 
 #pragma pack(push, 1)
-    struct vehicle_base : thing_base
+    struct VehicleBase : thing_base
     {
     private:
         template<VehicleThingType SubType>
@@ -149,12 +149,12 @@ namespace OpenLoco::Vehicles
         thing_id_t getHead() const;
         void setNextCar(const thing_id_t newNextCar);
 
-        vehicle_base* nextVehicle();
-        vehicle_base* nextVehicleComponent();
+        VehicleBase* nextVehicle();
+        VehicleBase* nextVehicleComponent();
         bool updateComponent();
     };
 
-    struct vehicle_26 : vehicle_base
+    struct vehicle_26 : VehicleBase
     {
         uint8_t pad_20[0x44 - 0x20];
         sound_object_id_t sound_id; // 0x44
@@ -168,7 +168,7 @@ namespace OpenLoco::Vehicles
         uint8_t var_73;
     };
 
-    struct VehicleHead : vehicle_base
+    struct VehicleHead : VehicleBase
     {
         static constexpr auto vehicleThingType = VehicleThingType::head;
         uint8_t pad_20;
@@ -229,7 +229,7 @@ namespace OpenLoco::Vehicles
     };
     static_assert(sizeof(VehicleHead) == 0x7A); // Can't use offset_of change this to last field if more found
 
-    struct vehicle_1 : vehicle_base
+    struct vehicle_1 : VehicleBase
     {
         static constexpr auto vehicleThingType = VehicleThingType::vehicle_1;
         uint8_t pad_20;
@@ -268,7 +268,7 @@ namespace OpenLoco::Vehicles
     };
     static_assert(sizeof(vehicle_1) == 0x7F); // Can't use offset_of change this to last field if more found
 
-    struct vehicle_2 : vehicle_base
+    struct vehicle_2 : VehicleBase
     {
         static constexpr auto vehicleThingType = VehicleThingType::vehicle_2;
         uint8_t pad_20;
@@ -313,7 +313,7 @@ namespace OpenLoco::Vehicles
     };
     static_assert(sizeof(vehicle_2) == 0x74); // Can't use offset_of change this to last field if more found
 
-    struct VehicleBody : vehicle_base
+    struct VehicleBody : VehicleBase
     {
         static constexpr auto vehicleThingType = VehicleThingType::body_continued;
         uint8_t pad_20;
@@ -377,7 +377,7 @@ namespace OpenLoco::Vehicles
     };
     static_assert(sizeof(VehicleBody) == 0x60); // Can't use offset_of change this to last field if more found
 
-    struct VehicleBogie : vehicle_base
+    struct VehicleBogie : VehicleBase
     {
         static constexpr auto vehicleThingType = VehicleThingType::bogie;
         uint8_t pad_20;
@@ -425,7 +425,7 @@ namespace OpenLoco::Vehicles
     };
     static_assert(sizeof(VehicleBogie) == 0x6B); // Can't use offset_of change this to last field if more found
 
-    struct VehicleTail : vehicle_base
+    struct VehicleTail : VehicleBase
     {
         static constexpr auto vehicleThingType = VehicleThingType::tail;
         uint8_t pad_20;
@@ -462,7 +462,7 @@ namespace OpenLoco::Vehicles
         VehicleBogie* front = nullptr;
         VehicleBogie* back = nullptr;
         VehicleBody* body = nullptr;
-        CarComponent(vehicle_base*& component);
+        CarComponent(VehicleBase*& component);
         CarComponent() = default;
     };
 
@@ -472,7 +472,7 @@ namespace OpenLoco::Vehicles
         {
         private:
             CarComponent current;
-            vehicle_base* nextVehicleComponent = nullptr;
+            VehicleBase* nextVehicleComponent = nullptr;
 
         public:
             CarComponentIter(const CarComponent* carComponent)
@@ -544,7 +544,7 @@ namespace OpenLoco::Vehicles
             return CarComponentIter(nullptr);
         }
 
-        Car(vehicle_base*& component)
+        Car(VehicleBase*& component)
             : CarComponent(component)
         {
         }
@@ -560,7 +560,7 @@ namespace OpenLoco::Vehicles
             {
             private:
                 Car current;
-                vehicle_base* nextVehicleComponent = nullptr;
+                VehicleBase* nextVehicleComponent = nullptr;
 
             public:
                 CarIter(const Car* carComponent)

@@ -185,7 +185,7 @@ namespace OpenLoco::CompanyManager
             if (w->type != WindowType::vehicle)
                 continue;
 
-            auto vehicle = ThingManager::get<Vehicles::vehicle_base>(w->number);
+            auto vehicle = ThingManager::get<Vehicles::VehicleBase>(w->number);
             if (vehicle->x == Location::null)
                 continue;
 

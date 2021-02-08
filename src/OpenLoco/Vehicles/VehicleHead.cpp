@@ -24,7 +24,7 @@ namespace OpenLoco::Vehicles
     void VehicleHead::updateVehicle()
     {
         // TODO: Refactor to use the Vehicle super class
-        vehicle_base* v = this;
+        VehicleBase* v = this;
         while (v != nullptr)
         {
             if (v->updateComponent())

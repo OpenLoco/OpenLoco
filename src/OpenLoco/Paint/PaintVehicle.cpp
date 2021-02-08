@@ -466,7 +466,7 @@ namespace OpenLoco::Paint
     }
 
     // 0x004B0CCE
-    void paintVehicleEntity(PaintSession& session, Vehicles::vehicle_base* base)
+    void paintVehicleEntity(PaintSession& session, Vehicles::VehicleBase* base)
     {
         if (base->getFlags38() & Flags38::isGhost)
         {

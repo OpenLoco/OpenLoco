@@ -19,8 +19,8 @@ using namespace OpenLoco::Literals;
 namespace OpenLoco::Vehicles
 {
 #pragma pack(push, 1)
-    // There are some common elements in the vehicle components at various offsets these can be accessed via vehicle_base
-    struct VehicleCommon : vehicle_base
+    // There are some common elements in the vehicle components at various offsets these can be accessed via VehicleBase
+    struct VehicleCommon : VehicleBase
     {
         uint8_t pad_20;
         company_id_t owner; // 0x21
@@ -44,60 +44,60 @@ namespace OpenLoco::Vehicles
     static_assert(sizeof(VehicleCommon) == 0x43); // Can't use offset_of change this to last field if more found
 #pragma pack(pop)
 
-    vehicle_base* vehicle_base::nextVehicle()
+    VehicleBase* VehicleBase::nextVehicle()
     {
-        return ThingManager::get<vehicle_base>(next_thing_id);
+        return ThingManager::get<VehicleBase>(next_thing_id);
     }
 
-    vehicle_base* vehicle_base::nextVehicleComponent()
+    VehicleBase* VehicleBase::nextVehicleComponent()
     {
         auto* veh = reinterpret_cast<VehicleCommon*>(this);
-        return ThingManager::get<vehicle_base>(veh->next_car_id);
+        return ThingManager::get<VehicleBase>(veh->next_car_id);
     }
 
-    TransportMode vehicle_base::getTransportMode() const
+    TransportMode VehicleBase::getTransportMode() const
     {
         const auto* veh = reinterpret_cast<const VehicleCommon*>(this);
         return veh->mode;
     }
 
-    uint8_t vehicle_base::getOwner() const
+    uint8_t VehicleBase::getOwner() const
     {
         const auto* veh = reinterpret_cast<const VehicleCommon*>(this);
         return veh->owner;
     }
 
-    uint8_t vehicle_base::getFlags38() const
+    uint8_t VehicleBase::getFlags38() const
     {
         const auto* veh = reinterpret_cast<const VehicleCommon*>(this);
         return veh->var_38;
     }
 
-    uint8_t vehicle_base::getTrackType() const
+    uint8_t VehicleBase::getTrackType() const
     {
         const auto* veh = reinterpret_cast<const VehicleCommon*>(this);
         return veh->track_type;
     }
 
-    uint16_t vehicle_base::getVar36() const
+    uint16_t VehicleBase::getVar36() const
     {
         const auto* veh = reinterpret_cast<const VehicleCommon*>(this);
         return veh->var_36;
     }
 
-    thing_id_t vehicle_base::getHead() const
+    thing_id_t VehicleBase::getHead() const
     {
         const auto* veh = reinterpret_cast<const VehicleCommon*>(this);
         return veh->head;
     }
 
-    void vehicle_base::setNextCar(const thing_id_t newNextCar)
+    void VehicleBase::setNextCar(const thing_id_t newNextCar)
     {
         auto* veh = reinterpret_cast<VehicleCommon*>(this);
         veh->next_car_id = newNextCar;
     }
 
-    bool vehicle_base::updateComponent()
+    bool VehicleBase::updateComponent()
     {
         int32_t result = 0;
         registers regs;
@@ -129,7 +129,7 @@ namespace OpenLoco::Vehicles
         return (result & (1 << 8)) != 0;
     }
 
-    CarComponent::CarComponent(vehicle_base*& component)
+    CarComponent::CarComponent(VehicleBase*& component)
     {
         front = component->asVehicleBogie();
         back = front->nextVehicleComponent()->asVehicleBogie();
@@ -139,7 +139,7 @@ namespace OpenLoco::Vehicles
 
     Vehicle::Vehicle(uint16_t _head)
     {
-        auto component = ThingManager::get<vehicle_base>(_head);
+        auto component = ThingManager::get<VehicleBase>(_head);
         if (component == nullptr)
         {
             throw std::runtime_error("Bad vehicle structure");

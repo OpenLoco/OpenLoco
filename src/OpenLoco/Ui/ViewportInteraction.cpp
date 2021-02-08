@@ -270,7 +270,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         return false;
     }
 
-    static std::optional<uint32_t> vehicleDistanceFromLocation(const Vehicles::vehicle_base& component, const viewport_pos& targetPosition)
+    static std::optional<uint32_t> vehicleDistanceFromLocation(const Vehicles::VehicleBase& component, const viewport_pos& targetPosition)
     {
         ViewportRect rect = {
             component.sprite_left,
@@ -287,7 +287,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         return {};
     }
 
-    static void checkAndSetNearestVehicle(uint32_t& nearestDistance, Vehicles::vehicle_base*& nearestVehicle, Vehicles::vehicle_base& checkVehicle, const viewport_pos& targetPosition)
+    static void checkAndSetNearestVehicle(uint32_t& nearestDistance, Vehicles::VehicleBase*& nearestVehicle, Vehicles::VehicleBase& checkVehicle, const viewport_pos& targetPosition)
     {
         if (checkVehicle.sprite_left != Location::null)
         {
@@ -372,7 +372,7 @@ namespace OpenLoco::Ui::ViewportInteraction
             return InteractionArg{};
 
         uint32_t nearestDistance = std::numeric_limits<uint32_t>().max();
-        Vehicles::vehicle_base* nearestVehicle = nullptr;
+        Vehicles::VehicleBase* nearestVehicle = nullptr;
         auto targetPosition = viewport->uiToMap({ tempX, tempY });
 
         for (auto v : ThingManager::VehicleList())

@@ -94,7 +94,7 @@ namespace OpenLoco::Ui::NewsWindow
 
                             case newsItemSubTypes::vehicle:
                             {
-                                auto vehicle = ThingManager::get<Vehicles::vehicle_base>(itemId);
+                                auto vehicle = ThingManager::get<Vehicles::VehicleBase>(itemId);
 
                                 Ui::Vehicle::Main::open(vehicle);
                                 break;

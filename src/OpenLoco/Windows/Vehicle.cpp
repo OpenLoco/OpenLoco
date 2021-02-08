@@ -358,7 +358,7 @@ namespace OpenLoco::Ui::Vehicle
         }
 
         // 0x004B6033
-        window* open(const Vehicles::vehicle_base* vehicle)
+        window* open(const Vehicles::VehicleBase* vehicle)
         {
             const auto head = vehicle->getHead();
             auto* self = WindowManager::find(WindowType::vehicle, head);
@@ -934,7 +934,7 @@ namespace OpenLoco::Ui::Vehicle
     namespace Details
     {
         // 0x4B60CC
-        window* open(const Vehicles::vehicle_base* vehicle)
+        window* open(const Vehicles::VehicleBase* vehicle)
         {
             auto self = Main::open(vehicle);
             self->callOnMouseUp(Common::widx::tabDetails);
@@ -1431,7 +1431,7 @@ namespace OpenLoco::Ui::Vehicle
             return vehicleWindow;
         }
 
-        static Vehicles::vehicle_base* getCarFromScrollViewPos(Ui::window& self, const Gfx::point_t& pos)
+        static Vehicles::VehicleBase* getCarFromScrollViewPos(Ui::window& self, const Gfx::point_t& pos)
         {
             int16_t scrollX;
             int16_t scrollY;
@@ -3437,7 +3437,7 @@ namespace OpenLoco::Ui::Vehicle
         }
 
         // TODO: Move to a more appropriate file used by many windows
-        int16_t sub_4B743B(uint8_t al, uint8_t ah, int16_t cx, int16_t dx, Vehicles::vehicle_base* vehicle, Gfx::drawpixelinfo_t* const pDrawpixelinfo)
+        int16_t sub_4B743B(uint8_t al, uint8_t ah, int16_t cx, int16_t dx, Vehicles::VehicleBase* vehicle, Gfx::drawpixelinfo_t* const pDrawpixelinfo)
         {
             registers regs{};
             regs.al = al;
