@@ -3002,9 +3002,22 @@ namespace OpenLoco::Ui::Vehicle
             }
 
             // Output the end of orders
+            Gfx::point_t loc = { 8, static_cast<int16_t>(rowNum * 10) };
+            strFormat = StringIds::black_stringid;
+            if (self->var_842 == rowNum)
+            {
+                Gfx::fillRect(pDrawpixelinfo, 0, loc.y, self->width, loc.y + 9, Colour::aquamarine);
+                strFormat = StringIds::white_stringid;
+            }
+            if (self->row_hover == rowNum)
+            {
+                strFormat = StringIds::wcolour2_stringid;
+                Gfx::fillRect(pDrawpixelinfo, 0, loc.y, self->width, loc.y + 9, 0x2000030);
+            }
+
+            loc.y -= 1;
             auto args = FormatArguments::common(orderString[0]);
-            Gfx::point_t loc = { 8, static_cast<int16_t>(rowNum * 10 - 1) };
-            Gfx::drawString_494B3F(*pDrawpixelinfo, &loc, Colour::black, StringIds::black_stringid, &args);
+            Gfx::drawString_494B3F(*pDrawpixelinfo, &loc, Colour::black, strFormat, &args);
         }
 
         static void initEvents()
