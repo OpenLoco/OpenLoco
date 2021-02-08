@@ -52,7 +52,7 @@ namespace OpenLoco::Vehicles
     struct vehicle_2;
     struct vehicle_bogie;
     struct vehicle_body;
-    struct vehicle_tail;
+    struct VehicleTail;
 
     struct vehicle_26;
 
@@ -140,7 +140,7 @@ namespace OpenLoco::Vehicles
             return as<vehicle_26, VehicleThingType::tail>();
         }
         bool isVehicleTail() const { return is<VehicleThingType::tail>(); }
-        vehicle_tail* asVehicleTail() const { return as<vehicle_tail>(); }
+        VehicleTail* asVehicleTail() const { return as<VehicleTail>(); }
         TransportMode getTransportMode() const;
         uint8_t getOwner() const;
         uint8_t getFlags38() const;
@@ -425,7 +425,7 @@ namespace OpenLoco::Vehicles
     };
     static_assert(sizeof(vehicle_bogie) == 0x6B); // Can't use offset_of change this to last field if more found
 
-    struct vehicle_tail : vehicle_base
+    struct VehicleTail : vehicle_base
     {
         static constexpr auto vehicleThingType = VehicleThingType::tail;
         uint8_t pad_20;
@@ -453,7 +453,7 @@ namespace OpenLoco::Vehicles
         Ui::window_number sound_window_number; // 0x4C common with veh_2
         Ui::WindowType sound_window_type;      // 0x4E common with veh_2
     };
-    static_assert(sizeof(vehicle_tail) == 0x4F); // Can't use offset_of change this to last field if more found
+    static_assert(sizeof(VehicleTail) == 0x4F); // Can't use offset_of change this to last field if more found
 
 #pragma pack(pop)
 
@@ -662,7 +662,7 @@ namespace OpenLoco::Vehicles
         VehicleHead* head;
         vehicle_1* veh1;
         vehicle_2* veh2;
-        vehicle_tail* tail;
+        VehicleTail* tail;
         Cars cars;
 
         Vehicle(VehicleHead* _head)

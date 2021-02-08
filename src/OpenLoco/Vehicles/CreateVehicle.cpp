@@ -652,9 +652,9 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AE54E
-    static vehicle_tail* createVehicleTail(const thing_id_t head, vehicle_base* const lastVeh)
+    static VehicleTail* createVehicleTail(const thing_id_t head, vehicle_base* const lastVeh)
     {
-        auto* const newTail = createVehicleThing<vehicle_tail>();
+        auto* const newTail = createVehicleThing<VehicleTail>();
         newTail->owner = _updating_company_id;
         newTail->head = head;
         newTail->track_type = lastVeh->getTrackType();
