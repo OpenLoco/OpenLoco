@@ -188,7 +188,7 @@ namespace OpenLoco::Ui::Vehicle
 
     static loco_global<uint8_t, 0x00525FC5> _525FC5;
     static loco_global<uint8_t, 0x00525FB0> _pickupDirection; // direction that the ghost points
-    static loco_global<Vehicles::vehicle_bogie*, 0x0113614E> _dragCarComponent;
+    static loco_global<Vehicles::VehicleBogie*, 0x0113614E> _dragCarComponent;
     static loco_global<thing_id_t, 0x01136156> _dragVehicleHead;
     static loco_global<int32_t, 0x01136264> _1136264;
     static loco_global<string_id, 0x009C68E8> gGameCommandErrorTitle;

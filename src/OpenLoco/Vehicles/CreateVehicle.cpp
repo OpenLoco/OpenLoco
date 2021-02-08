@@ -191,7 +191,7 @@ namespace OpenLoco::Vehicles
 
     // 0x004BA873
     // esi : vehBogie
-    static void sub_4BA873(vehicle_bogie* const vehBogie)
+    static void sub_4BA873(VehicleBogie* const vehBogie)
     {
         vehBogie->var_68 = 0xFFFF;
         if (vehBogie->reliability != 0)
@@ -209,9 +209,9 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AE8F1, 0x004AEA9E
-    static vehicle_bogie* createBogie(const thing_id_t head, const uint16_t vehicleTypeId, const vehicle_object& vehObject, const uint8_t bodyNumber, vehicle_base* const lastVeh, const ColourScheme colourScheme)
+    static VehicleBogie* createBogie(const thing_id_t head, const uint16_t vehicleTypeId, const vehicle_object& vehObject, const uint8_t bodyNumber, vehicle_base* const lastVeh, const ColourScheme colourScheme)
     {
-        auto newBogie = createVehicleThing<vehicle_bogie>();
+        auto newBogie = createVehicleThing<VehicleBogie>();
         newBogie->owner = _updating_company_id;
         newBogie->head = head;
         newBogie->body_index = bodyNumber;
@@ -248,7 +248,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x4AE8F1
-    static vehicle_bogie* createFirstBogie(const thing_id_t head, const uint16_t vehicleTypeId, const vehicle_object& vehObject, const uint8_t bodyNumber, vehicle_base* const lastVeh, const ColourScheme colourScheme)
+    static VehicleBogie* createFirstBogie(const thing_id_t head, const uint16_t vehicleTypeId, const vehicle_object& vehObject, const uint8_t bodyNumber, vehicle_base* const lastVeh, const ColourScheme colourScheme)
     {
         auto newBogie = createBogie(head, vehicleTypeId, vehObject, bodyNumber, lastVeh, colourScheme);
         if (newBogie == nullptr) // Can never happen
@@ -308,7 +308,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AEA9E
-    static vehicle_bogie* createSecondBogie(const thing_id_t head, const uint16_t vehicleTypeId, const vehicle_object& vehObject, const uint8_t bodyNumber, vehicle_base* const lastVeh, const ColourScheme colourScheme)
+    static VehicleBogie* createSecondBogie(const thing_id_t head, const uint16_t vehicleTypeId, const vehicle_object& vehObject, const uint8_t bodyNumber, vehicle_base* const lastVeh, const ColourScheme colourScheme)
     {
         auto newBogie = createBogie(head, vehicleTypeId, vehObject, bodyNumber, lastVeh, colourScheme);
         if (newBogie == nullptr) // Can never happen
@@ -459,7 +459,7 @@ namespace OpenLoco::Vehicles
             colourScheme = company->vehicleColours[vehObject->colour_type - 1];
         }
 
-        vehicle_bogie* newCarStart = nullptr;
+        VehicleBogie* newCarStart = nullptr;
         for (auto bodyNumber = 0; bodyNumber < vehObject->var_04; ++bodyNumber)
         {
             auto* const firstBogie = createFirstBogie(head->id, vehicleTypeId, *vehObject, bodyNumber, lastVeh, colourScheme);

@@ -50,7 +50,7 @@ namespace OpenLoco::Vehicles
     struct VehicleHead;
     struct vehicle_1;
     struct vehicle_2;
-    struct vehicle_bogie;
+    struct VehicleBogie;
     struct vehicle_body;
     struct VehicleTail;
 
@@ -118,7 +118,7 @@ namespace OpenLoco::Vehicles
         bool isVehicle2() const { return is<VehicleThingType::vehicle_2>(); }
         vehicle_2* asVehicle2() const { return as<vehicle_2>(); }
         bool isVehicleBogie() const { return is<VehicleThingType::bogie>(); }
-        vehicle_bogie* asVehicleBogie() const { return as<vehicle_bogie>(); }
+        VehicleBogie* asVehicleBogie() const { return as<VehicleBogie>(); }
         bool isVehicleBody() const { return is<VehicleThingType::body_start>() || is<VehicleThingType::body_continued>(); }
         vehicle_body* asVehicleBody() const
         {
@@ -360,7 +360,7 @@ namespace OpenLoco::Vehicles
     private:
         void sub_4AAB0B();
         void animationUpdate();
-        void sub_4AC255(vehicle_bogie* back_bogie, vehicle_bogie* front_bogie);
+        void sub_4AC255(VehicleBogie* back_bogie, VehicleBogie* front_bogie);
         void steamPuffsAnimationUpdate(uint8_t num, int32_t var_05);
         void dieselExhaust1AnimationUpdate(uint8_t num, int32_t var_05);
         void dieselExhaust2AnimationUpdate(uint8_t num, int32_t var_05);
@@ -377,7 +377,7 @@ namespace OpenLoco::Vehicles
     };
     static_assert(sizeof(vehicle_body) == 0x60); // Can't use offset_of change this to last field if more found
 
-    struct vehicle_bogie : vehicle_base
+    struct VehicleBogie : vehicle_base
     {
         static constexpr auto vehicleThingType = VehicleThingType::bogie;
         uint8_t pad_20;
@@ -423,7 +423,7 @@ namespace OpenLoco::Vehicles
         uint16_t var_68;
         uint8_t var_6A;
     };
-    static_assert(sizeof(vehicle_bogie) == 0x6B); // Can't use offset_of change this to last field if more found
+    static_assert(sizeof(VehicleBogie) == 0x6B); // Can't use offset_of change this to last field if more found
 
     struct VehicleTail : vehicle_base
     {
@@ -459,8 +459,8 @@ namespace OpenLoco::Vehicles
 
     struct CarComponent
     {
-        vehicle_bogie* front = nullptr;
-        vehicle_bogie* back = nullptr;
+        VehicleBogie* front = nullptr;
+        VehicleBogie* back = nullptr;
         vehicle_body* body = nullptr;
         CarComponent(vehicle_base*& component);
         CarComponent() = default;
