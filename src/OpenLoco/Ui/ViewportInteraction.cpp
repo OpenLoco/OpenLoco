@@ -204,7 +204,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         {
             return false;
         }
-        auto head = ThingManager::get<Vehicles::vehicle_head>(vehicle->getHead());
+        auto head = ThingManager::get<Vehicles::VehicleHead>(vehicle->getHead());
 
         auto company = CompanyManager::get(head->owner);
         Windows::MapToolTip::setOwner(head->owner);

@@ -42,7 +42,7 @@ namespace OpenLoco::Vehicles
     static loco_global<Map::tile_element*, 0x009C68D0> _9C68D0;
     static loco_global<ColourScheme, 0x01136140> _1136140; // primary colour
     static loco_global<int32_t, 0x011360FC> _11360FC;
-    static loco_global<vehicle_head*, 0x01136240> _backupVeh0;
+    static loco_global<VehicleHead*, 0x01136240> _backupVeh0;
     static loco_global<int16_t, 0x01136248> _backup2E;
     static loco_global<int16_t, 0x0113624C> _backup2C;
     static loco_global<int16_t, 0x01136250> _backupX;
@@ -101,7 +101,7 @@ namespace OpenLoco::Vehicles
         return false;
     }
 
-    static bool sub_4B0BDD(vehicle_head* const head)
+    static bool sub_4B0BDD(VehicleHead* const head)
     {
         switch (head->status)
         {
@@ -165,7 +165,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004B08DD
-    static void liftUpVehicle(vehicle_head* const head)
+    static void liftUpVehicle(VehicleHead* const head)
     {
         registers regs{};
         regs.esi = reinterpret_cast<uint32_t>(head);
@@ -415,7 +415,7 @@ namespace OpenLoco::Vehicles
         return newBody;
     }
 
-    static void sub_4B7CC3(vehicle_head* const head)
+    static void sub_4B7CC3(VehicleHead* const head)
     {
         registers regs{};
         regs.esi = reinterpret_cast<int32_t>(head);
@@ -423,7 +423,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AE86D
-    static bool createCar(vehicle_head* const head, const uint16_t vehicleTypeId)
+    static bool createCar(VehicleHead* const head, const uint16_t vehicleTypeId)
     {
         if (!ThingManager::checkNumFreeThings(max_num_vehicle_components_in_car))
         {
@@ -510,7 +510,7 @@ namespace OpenLoco::Vehicles
         return {};
     }
 
-    static void sub_470312(vehicle_head* const newHead)
+    static void sub_470312(VehicleHead* const newHead)
     {
         _987C5C[_orderTableLength] = 0;
         newHead->orderTableOffset = _orderTableLength;
@@ -544,9 +544,9 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AE34B
-    static vehicle_head* createHead(const uint8_t trackType, const TransportMode mode, const uint16_t orderId, const VehicleType vehicleType)
+    static VehicleHead* createHead(const uint8_t trackType, const TransportMode mode, const uint16_t orderId, const VehicleType vehicleType)
     {
-        auto* const newHead = createVehicleThing<vehicle_head>();
+        auto* const newHead = createVehicleThing<VehicleHead>();
         ThingManager::moveSpriteToList(newHead, ThingManager::thing_list::vehicle_head);
         newHead->owner = _updating_company_id;
         newHead->head = newHead->id;
@@ -678,7 +678,7 @@ namespace OpenLoco::Vehicles
         return newTail;
     }
     // 0x004AE318
-    static std::optional<vehicle_head*> createBaseVehicle(const TransportMode mode, const VehicleType type, const uint8_t trackType)
+    static std::optional<VehicleHead*> createBaseVehicle(const TransportMode mode, const VehicleType type, const uint8_t trackType)
     {
         if (!ThingManager::checkNumFreeThings(num_vehicle_components_in_base))
         {
@@ -722,7 +722,7 @@ namespace OpenLoco::Vehicles
         return { head };
     }
 
-    static void sub_4AF7A4(vehicle_head* const veh0)
+    static void sub_4AF7A4(VehicleHead* const veh0)
     {
         registers regs{};
         regs.esi = reinterpret_cast<int32_t>(veh0);
@@ -730,7 +730,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004B05E4
-    static void placeDownVehicle(vehicle_head* const head, const coord_t x, const coord_t y, const uint8_t baseZ, const uint16_t unk1, const uint16_t unk2)
+    static void placeDownVehicle(VehicleHead* const head, const coord_t x, const coord_t y, const uint8_t baseZ, const uint16_t unk1, const uint16_t unk2)
     {
         registers regs{};
         regs.esi = reinterpret_cast<int32_t>(head);
@@ -766,7 +766,7 @@ namespace OpenLoco::Vehicles
 
     // 0x00470334
     // Remove vehicle ?orders?
-    static void sub_470334(vehicle_head* const head)
+    static void sub_470334(VehicleHead* const head)
     {
         sub_470795(head->orderTableOffset, head->sizeOfOrderTable * -1);
         auto length = _orderTableLength - head->orderTableOffset - head->sizeOfOrderTable;
@@ -786,13 +786,13 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AE6DE
-    static void updateWholeVehicle(vehicle_head* const head)
+    static void updateWholeVehicle(VehicleHead* const head)
     {
         sub_4AF7A4(head);
         auto company = CompanyManager::get(_updating_company_id);
         company->recalculateTransportCounts();
 
-        if (_backupVeh0 != reinterpret_cast<vehicle_head*>(-1))
+        if (_backupVeh0 != reinterpret_cast<VehicleHead*>(-1))
         {
             placeDownVehicle(_backupVeh0, _backupX, _backupY, _backupZ, _backup2C, _backup2E);
         }
@@ -911,12 +911,12 @@ namespace OpenLoco::Vehicles
             }
             else
             {
-                if (_backupVeh0 == reinterpret_cast<vehicle_head*>(-1))
+                if (_backupVeh0 == reinterpret_cast<VehicleHead*>(-1))
                 {
                     return FAILURE;
                 }
 
-                vehicle_head* veh0backup = _backupVeh0;
+                VehicleHead* veh0backup = _backupVeh0;
                 // If it has an existing body
                 Vehicle bkupTrain(veh0backup);
                 if (!bkupTrain.cars.empty())
@@ -937,7 +937,7 @@ namespace OpenLoco::Vehicles
     uint32_t create(const uint8_t flags, const uint16_t vehicleTypeId, const uint16_t vehicleThingId)
     {
         gGameCommandExpenditureType = static_cast<uint8_t>(ExpenditureType::VehiclePurchases) * 4;
-        _backupVeh0 = reinterpret_cast<vehicle_head*>(-1);
+        _backupVeh0 = reinterpret_cast<VehicleHead*>(-1);
         if (vehicleThingId == (uint16_t)-1)
         {
             return createNewVehicle(flags, vehicleTypeId);

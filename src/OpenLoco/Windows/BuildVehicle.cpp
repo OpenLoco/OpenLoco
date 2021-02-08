@@ -219,7 +219,7 @@ namespace OpenLoco::Ui::BuildVehicle
     static loco_global<int16_t, 0x01136268> _numAvailableVehicles;
     static loco_global<uint16_t[ObjectManager::getMaxObjects(object_type::vehicle)], 0x0113626A> _availableVehicles;
     static loco_global<uint16_t, 0x0113642A> _113642A;
-    static loco_global<int32_t, 0x011364E8> _buildTargetVehicle; // -1 for no target vehicle_head
+    static loco_global<int32_t, 0x011364E8> _buildTargetVehicle; // -1 for no target VehicleHead
     static loco_global<uint32_t, 0x011364EC> _numTrackTypeTabs;
     // Array of types if 0xFF then no type, flag (1<<7) as well
     static loco_global<int8_t[widxToTrackTypeTab(widx::tab_track_type_7) + 1], 0x011364F0> _TrackTypesForTab;
@@ -268,7 +268,7 @@ namespace OpenLoco::Ui::BuildVehicle
     }
 
     /* 0x4C1AF7
-     * depending on flags (1<<31) vehicle is a tab id or a vehicle_head thing_id
+     * depending on flags (1<<31) vehicle is a tab id or a VehicleHead thing_id
      */
     window* open(uint32_t vehicle, uint32_t flags)
     {
@@ -279,7 +279,7 @@ namespace OpenLoco::Ui::BuildVehicle
             widget_index tab = widx::tab_build_new_trains;
             if (!tabMode)
             {
-                auto veh = ThingManager::get<Vehicles::vehicle_head>(vehicle);
+                auto veh = ThingManager::get<Vehicles::VehicleHead>(vehicle);
                 tab += static_cast<uint8_t>(veh->vehicleType);
             }
             else
@@ -307,7 +307,7 @@ namespace OpenLoco::Ui::BuildVehicle
             if (!tabMode)
             {
                 _buildTargetVehicle = vehicle;
-                auto veh = ThingManager::get<Vehicles::vehicle_head>(vehicle);
+                auto veh = ThingManager::get<Vehicles::VehicleHead>(vehicle);
                 window->current_tab = static_cast<uint8_t>(veh->vehicleType);
             }
             else
@@ -753,7 +753,7 @@ namespace OpenLoco::Ui::BuildVehicle
         gGameCommandErrorTitle = StringIds::cant_build_pop_5_string_id;
         if (_buildTargetVehicle != -1)
         {
-            auto vehicle = ThingManager::get<Vehicles::vehicle_head>(_buildTargetVehicle);
+            auto vehicle = ThingManager::get<Vehicles::VehicleHead>(_buildTargetVehicle);
             args.push(vehicle->var_22);
             args.push(vehicle->var_44);
             gGameCommandErrorTitle = StringIds::cant_add_pop_5_string_id_string_id;
@@ -914,7 +914,7 @@ namespace OpenLoco::Ui::BuildVehicle
             FormatArguments args{};
             if (_buildTargetVehicle != -1)
             {
-                auto vehicle = ThingManager::get<Vehicles::vehicle_head>(_buildTargetVehicle);
+                auto vehicle = ThingManager::get<Vehicles::VehicleHead>(_buildTargetVehicle);
                 args.push(vehicle->var_22);
                 args.push(vehicle->var_44);
                 bottomLeftMessage = StringIds::select_vehicle_to_add_to_string_id;
@@ -1046,7 +1046,7 @@ namespace OpenLoco::Ui::BuildVehicle
                     FormatArguments args{};
                     if (_buildTargetVehicle != -1)
                     {
-                        auto vehicle = ThingManager::get<Vehicles::vehicle_head>(_buildTargetVehicle);
+                        auto vehicle = ThingManager::get<Vehicles::VehicleHead>(_buildTargetVehicle);
                         defaultMessage = StringIds::no_compatible_vehicles_available;
                         args.push(vehicle->var_22);
                         args.push(vehicle->var_44);

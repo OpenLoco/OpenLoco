@@ -21,7 +21,7 @@ namespace OpenLoco::Vehicles
 {
     static loco_global<string_id, 0x009C68E6> gGameCommandErrorText;
 
-    void vehicle_head::updateVehicle()
+    void VehicleHead::updateVehicle()
     {
         // TODO: Refactor to use the Vehicle super class
         vehicle_base* v = this;
@@ -35,7 +35,7 @@ namespace OpenLoco::Vehicles
         }
     }
 
-    uint16_t vehicle_head::update()
+    uint16_t VehicleHead::update()
     {
         registers regs;
         regs.esi = (int32_t)this;
@@ -43,7 +43,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004BA8D4
-    void vehicle_head::sub_4BA8D4()
+    void VehicleHead::sub_4BA8D4()
     {
         switch (status)
         {
@@ -94,7 +94,7 @@ namespace OpenLoco::Vehicles
         }
     }
 
-    void vehicle_head::sub_4BAA76()
+    void VehicleHead::sub_4BAA76()
     {
         registers regs;
         regs.esi = (int32_t)this;
@@ -169,7 +169,7 @@ namespace OpenLoco::Vehicles
 
     // 0x004B97B7
     // used by road vehicles only maybe??
-    uint32_t vehicle_head::getVehicleTotalLength() // TODO: const
+    uint32_t VehicleHead::getVehicleTotalLength() // TODO: const
     {
         auto totalLength = 0;
         Vehicle train(this);
@@ -183,7 +183,7 @@ namespace OpenLoco::Vehicles
     // 0x004B8FA2
     // esi : self
     // ax  : vehicleTypeId
-    bool vehicle_head::isVehicleTypeCompatible(const uint16_t vehicleTypeId) // TODO: const
+    bool VehicleHead::isVehicleTypeCompatible(const uint16_t vehicleTypeId) // TODO: const
     {
         auto newObject = ObjectManager::get<vehicle_object>(vehicleTypeId);
         if (newObject->mode == TransportMode::air || newObject->mode == TransportMode::water)
@@ -248,7 +248,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004B671C
-    VehicleStatus vehicle_head::getStatus() const
+    VehicleStatus VehicleHead::getStatus() const
     {
         registers regs = {};
         regs.esi = reinterpret_cast<int32_t>(this);

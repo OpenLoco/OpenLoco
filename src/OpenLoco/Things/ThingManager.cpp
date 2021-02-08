@@ -26,9 +26,9 @@ namespace OpenLoco::ThingManager
     }
 
     template<>
-    Vehicles::vehicle_head* first()
+    Vehicles::VehicleHead* first()
     {
-        return get<Vehicles::vehicle_head>(firstId(thing_list::vehicle_head));
+        return get<Vehicles::VehicleHead>(firstId(thing_list::vehicle_head));
     }
 
     template<>

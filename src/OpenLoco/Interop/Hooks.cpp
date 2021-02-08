@@ -718,7 +718,7 @@ void OpenLoco::Interop::registerHooks()
     registerHook(
         0x004BA8D4,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            auto v = (Vehicles::vehicle_head*)regs.esi;
+            auto v = (Vehicles::VehicleHead*)regs.esi;
             v->sub_4BA8D4();
             return 0;
         });

@@ -504,7 +504,7 @@ namespace OpenLoco::Ui::NewsWindow
 
                 case newsItemSubTypes::vehicle:
                 {
-                    auto vehicle = ThingManager::get<Vehicles::vehicle_head>(itemIndex);
+                    auto vehicle = ThingManager::get<Vehicles::VehicleHead>(itemIndex);
                     auto company = CompanyManager::get(vehicle->owner);
                     if (isPlayerCompany(vehicle->owner))
                     {

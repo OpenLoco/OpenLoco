@@ -57,9 +57,9 @@ namespace OpenLoco::Ui::Vehicle
 
         constexpr uint64_t enabledWidgets = (1 << closeButton) | (1 << tabMain) | (1 << tabDetails) | (1 << tabCargo) | (1 << tabFinances) | (1 << tabRoute);
 
-        static Vehicles::vehicle_head* getVehicle(const window* self)
+        static Vehicles::VehicleHead* getVehicle(const window* self)
         {
-            return ThingManager::get<Vehicles::vehicle_head>(self->number);
+            return ThingManager::get<Vehicles::VehicleHead>(self->number);
         }
 
         static void setActiveTabs(window* const self);
@@ -79,7 +79,7 @@ namespace OpenLoco::Ui::Vehicle
         static size_t getNumCars(Ui::window* const self);
         static void drawTabs(window* const window, Gfx::drawpixelinfo_t* const context);
         static std::optional<Vehicles::Car> getCarFromScrollView(window* const self, const int16_t y);
-        static std::pair<uint32_t, string_id> getPickupImageIdandTooltip(const Vehicles::vehicle_head& head, const bool isPlaced);
+        static std::pair<uint32_t, string_id> getPickupImageIdandTooltip(const Vehicles::VehicleHead& head, const bool isPlaced);
     }
 
     namespace Details
@@ -337,7 +337,7 @@ namespace OpenLoco::Ui::Vehicle
             self->widgets = widgets;
             self->enabled_widgets = enabledWidgets;
             self->number = head;
-            const auto* vehicle = ThingManager::get<Vehicles::vehicle_head>(head);
+            const auto* vehicle = ThingManager::get<Vehicles::VehicleHead>(head);
             self->owner = vehicle->owner;
             self->row_height = rowHeights[static_cast<uint8_t>(vehicle->vehicleType)];
             self->current_tab = 0;
@@ -801,7 +801,7 @@ namespace OpenLoco::Ui::Vehicle
             uint32_t status2Args;
         };
 
-        static VehicleStatus sub_4B671C(const Vehicles::vehicle_head* head)
+        static VehicleStatus sub_4B671C(const Vehicles::VehicleHead* head)
         {
             registers regs = {};
             regs.esi = (int32_t)head;
@@ -1538,7 +1538,7 @@ namespace OpenLoco::Ui::Vehicle
     {
         static void onRefitButton(window* const self, const widget_index wi);
 
-        static bool canRefit(Vehicles::vehicle_head* headVehicle)
+        static bool canRefit(Vehicles::VehicleHead* headVehicle)
         {
             if (!isPlayerCompany(headVehicle->owner))
             {
@@ -1596,7 +1596,7 @@ namespace OpenLoco::Ui::Vehicle
             Common::repositionTabs(self);
         }
 
-        static void generateCargoTotalString(Vehicles::vehicle_head* vehicle, char* buffer)
+        static void generateCargoTotalString(Vehicles::VehicleHead* vehicle, char* buffer)
         {
             uint32_t cargoTotals[ObjectManager::getMaxObjects(object_type::cargo)]{};
             Vehicles::Vehicle train(vehicle);
@@ -2172,7 +2172,7 @@ namespace OpenLoco::Ui::Vehicle
         };
 
         // 0x00470824
-        static void sub_470824(Vehicles::vehicle_head* head)
+        static void sub_470824(Vehicles::VehicleHead* head)
         {
             registers regs{};
             regs.esi = reinterpret_cast<uint32_t>(head);
@@ -2188,7 +2188,7 @@ namespace OpenLoco::Ui::Vehicle
             }
         }
 
-        static void orderDeleteCommand(Vehicles::vehicle_head* const head, const uint32_t orderOffset)
+        static void orderDeleteCommand(Vehicles::VehicleHead* const head, const uint32_t orderOffset)
         {
             gGameCommandErrorTitle = StringIds::empty;
             GameCommands::do_36(head->id, orderOffset - head->orderTableOffset);
@@ -2196,7 +2196,7 @@ namespace OpenLoco::Ui::Vehicle
         }
 
         // 0x004B4F6D
-        static void onOrderDelete(Vehicles::vehicle_head* const head, const int16_t orderId)
+        static void onOrderDelete(Vehicles::VehicleHead* const head, const int16_t orderId)
         {
             // No deleteable orders
             if (head->sizeOfOrderTable <= 1)
@@ -2238,7 +2238,7 @@ namespace OpenLoco::Ui::Vehicle
         }
 
         // 0x004B4C14
-        static bool orderUpCommand(Vehicles::vehicle_head* const head, const uint32_t orderOffset)
+        static bool orderUpCommand(Vehicles::VehicleHead* const head, const uint32_t orderOffset)
         {
             gGameCommandErrorTitle = StringIds::empty;
             auto result = GameCommands::do_75(head->id, orderOffset - head->orderTableOffset);
@@ -2247,7 +2247,7 @@ namespace OpenLoco::Ui::Vehicle
         }
 
         // 0x004B4CCB based on
-        static bool orderDownCommand(Vehicles::vehicle_head* const head, const uint32_t orderOffset)
+        static bool orderDownCommand(Vehicles::VehicleHead* const head, const uint32_t orderOffset)
         {
             gGameCommandErrorTitle = StringIds::empty;
             auto result = GameCommands::do_76(head->id, orderOffset - head->orderTableOffset);
@@ -2256,7 +2256,7 @@ namespace OpenLoco::Ui::Vehicle
         }
 
         // 0x004B4BC1 / 0x004B4C78 based on
-        static bool onOrderMove(Vehicles::vehicle_head* const head, const int16_t orderId, bool(orderMoveFunc)(Vehicles::vehicle_head*, uint32_t))
+        static bool onOrderMove(Vehicles::VehicleHead* const head, const int16_t orderId, bool(orderMoveFunc)(Vehicles::VehicleHead*, uint32_t))
         {
             // No moveable orders
             if (head->sizeOfOrderTable <= 1)
@@ -3171,7 +3171,7 @@ namespace OpenLoco::Ui::Vehicle
             self->activated_widgets |= 1ULL << (widx::tabMain + self->current_tab);
         }
 
-        static std::pair<uint32_t, string_id> getPickupImageIdandTooltip(const Vehicles::vehicle_head& head, const bool isPlaced)
+        static std::pair<uint32_t, string_id> getPickupImageIdandTooltip(const Vehicles::VehicleHead& head, const bool isPlaced)
         {
             uint32_t image = 0;
             string_id tooltip = 0;

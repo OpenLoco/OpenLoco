@@ -764,7 +764,7 @@ namespace OpenLoco::Input
                                 auto veh = _thing->asVehicle();
                                 if (veh != nullptr)
                                 {
-                                    auto head = ThingManager::get<Vehicles::vehicle_head>(veh->getHead());
+                                    auto head = ThingManager::get<Vehicles::VehicleHead>(veh->getHead());
                                     Ui::Windows::VehicleList::open(head->owner, static_cast<uint8_t>(head->vehicleType));
                                 }
                                 break;

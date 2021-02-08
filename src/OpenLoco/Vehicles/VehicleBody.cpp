@@ -20,7 +20,7 @@ using namespace OpenLoco::Literals;
 namespace OpenLoco::Vehicles
 {
 
-    loco_global<vehicle_head*, 0x01136118> vehicleUpdate_head;
+    loco_global<VehicleHead*, 0x01136118> vehicleUpdate_head;
     loco_global<vehicle_bogie*, 0x01136124> vehicleUpdate_frontBogie;
     loco_global<vehicle_bogie*, 0x01136128> vehicleUpdate_backBogie;
     loco_global<int32_t, 0x01136130> vehicle_var_1136130;
@@ -112,7 +112,7 @@ namespace OpenLoco::Vehicles
         if (var_38 & Flags38::isGhost)
             return;
 
-        vehicle_head* headVeh = vehicleUpdate_head;
+        VehicleHead* headVeh = vehicleUpdate_head;
         if ((headVeh->status == Status::crashed) || (headVeh->status == Status::stuck))
             return;
 
@@ -1060,7 +1060,7 @@ namespace OpenLoco::Vehicles
         if (frontBogie->var_5F & Flags5F::broken_down)
             return;
 
-        vehicle_head* headVeh = vehicleUpdate_head;
+        VehicleHead* headVeh = vehicleUpdate_head;
         vehicle_2* veh_2 = vehicleUpdate_2;
         auto vehicleObject = object();
 
