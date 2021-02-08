@@ -1,20 +1,8 @@
 #include "Vehicle.h"
-#include "../Audio/Audio.h"
-#include "../Config.h"
-#include "../Graphics/Gfx.h"
 #include "../Interop/Interop.hpp"
-#include "../Map/TileManager.h"
-#include "../Objects/ObjectManager.h"
-#include "../Objects/VehicleObject.h"
-#include "../OpenLoco.h"
 #include "../Things/ThingManager.h"
-#include "../Utility/Numeric.hpp"
-#include "../ViewportManager.h"
-#include <algorithm>
-#include <cassert>
 
 using namespace OpenLoco::Interop;
-using namespace OpenLoco::Literals;
 
 namespace OpenLoco::Vehicles
 {

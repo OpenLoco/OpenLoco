@@ -8,11 +8,8 @@
 #include "../OpenLoco.h"
 #include "../Things/Misc.h"
 #include "../Things/ThingManager.h"
-#include "../Utility/Numeric.hpp"
 #include "../ViewportManager.h"
 #include "Vehicle.h"
-#include <algorithm>
-#include <cassert>
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Literals;
