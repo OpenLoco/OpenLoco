@@ -16,9 +16,9 @@
 #include "../OpenLoco.h"
 #include "../Scenario.h"
 #include "../Things/ThingManager.h"
-#include "../Things/Vehicle.h"
 #include "../Ui/Dropdown.h"
 #include "../Ui/WindowManager.h"
+#include "../Vehicles/Vehicle.h"
 #include "../ViewportManager.h"
 #include "../Widget.h"
 
@@ -525,7 +525,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 }
 
                 auto* head = vehicle->asVehicleHead();
-                Things::Vehicle::Vehicle train(head);
+                Vehicles::Vehicle train(head);
 
                 int8_t rotation = static_cast<int8_t>(self->viewports[0]->getRotation());
                 SavedView view(

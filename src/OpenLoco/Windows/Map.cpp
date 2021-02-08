@@ -18,6 +18,7 @@
 #include "../Types.hpp"
 #include "../Ui/ScrollView.h"
 #include "../Ui/WindowManager.h"
+#include "../Vehicles/Vehicle.h"
 #include "../Widget.h"
 
 using namespace OpenLoco::Interop;
@@ -1008,7 +1009,7 @@ namespace OpenLoco::Ui::Windows::Map
     }
 
     // 0x0046BF0F based on
-    static void drawVehicleOnMap(Gfx::drawpixelinfo_t* dpi, vehicle_base* vehicle, uint8_t colour)
+    static void drawVehicleOnMap(Gfx::drawpixelinfo_t* dpi, Vehicles::VehicleBase* vehicle, uint8_t colour)
     {
         if (vehicle->x == Location::null)
             return;
@@ -1038,7 +1039,7 @@ namespace OpenLoco::Ui::Windows::Map
         return std::make_pair(startPos, endPos);
     }
 
-    static std::optional<uint8_t> getRouteColour(Things::Vehicle::Vehicle train)
+    static std::optional<uint8_t> getRouteColour(Vehicles::Vehicle train)
     {
         uint8_t colour;
         if (train.head->vehicleType == VehicleType::aircraft)
@@ -1080,7 +1081,7 @@ namespace OpenLoco::Ui::Windows::Map
     }
 
     // 0x0046C18D
-    static void drawRoutesOnMap(Gfx::drawpixelinfo_t* dpi, Things::Vehicle::Vehicle train)
+    static void drawRoutesOnMap(Gfx::drawpixelinfo_t* dpi, Vehicles::Vehicle train)
     {
         auto colour = getRouteColour(train);
 
@@ -1139,7 +1140,7 @@ namespace OpenLoco::Ui::Windows::Map
     }
 
     // 0x0046C426
-    static uint8_t getVehicleColour(widget_index widgetIndex, Things::Vehicle::Vehicle train, Things::Vehicle::Car car)
+    static uint8_t getVehicleColour(widget_index widgetIndex, Vehicles::Vehicle train, Vehicles::Car car)
     {
         auto colour = PaletteIndex::index_15;
 
@@ -1176,7 +1177,7 @@ namespace OpenLoco::Ui::Windows::Map
 
         for (auto vehicle : ThingManager::VehicleList())
         {
-            Things::Vehicle::Vehicle train(vehicle);
+            Vehicles::Vehicle train(vehicle);
 
             if (train.head->var_38 & (1 << 4))
                 continue;
@@ -1194,7 +1195,7 @@ namespace OpenLoco::Ui::Windows::Map
     {
         for (auto vehicle : ThingManager::VehicleList())
         {
-            Things::Vehicle::Vehicle train(vehicle);
+            Vehicles::Vehicle train(vehicle);
 
             if (train.head->var_38 & (1 << 4))
                 continue;

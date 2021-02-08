@@ -91,11 +91,9 @@
     <ClCompile Include="ScenarioManager.cpp" />
     <ClCompile Include="Station.cpp" />
     <ClCompile Include="StationManager.cpp" />
-    <ClCompile Include="Things\CreateVehicle.cpp" />
     <ClCompile Include="Things\Misc.cpp" />
     <ClCompile Include="Things\Thing.cpp" />
     <ClCompile Include="Things\ThingManager.cpp" />
-    <ClCompile Include="Things\Vehicle.cpp" />
     <ClCompile Include="Title.cpp" />
     <ClCompile Include="Town.cpp" />
     <ClCompile Include="TownManager.cpp" />
@@ -109,6 +107,10 @@
     <ClCompile Include="Ui\WindowManager.cpp" />
     <ClCompile Include="Utility\Numeric.cpp" />
     <ClCompile Include="Utility\String.cpp" />
+    <ClCompile Include="Vehicles\CreateVehicle.cpp" />
+    <ClCompile Include="Vehicles\Vehicle.cpp" />
+    <ClCompile Include="Vehicles\VehicleBody.cpp" />
+    <ClCompile Include="Vehicles\VehicleHead.cpp" />
     <ClCompile Include="Version.cpp">
       <!-- Define git information -->
       <PreprocessorDefinitions Condition="'$(OPENLOCO_BRANCH)'!=''">OPENLOCO_BRANCH="$(OPENLOCO_BRANCH)";%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -264,7 +266,6 @@
     <ClInclude Include="Things\Misc.h" />
     <ClInclude Include="Things\Thing.h" />
     <ClInclude Include="Things\ThingManager.h" />
-    <ClInclude Include="Things\Vehicle.h" />
     <ClInclude Include="Title.h" />
     <ClInclude Include="Town.h" />
     <ClInclude Include="TownManager.h" />
@@ -284,6 +285,7 @@
     <ClInclude Include="Utility\Stream.hpp" />
     <ClInclude Include="Utility\String.hpp" />
     <ClInclude Include="Utility\Yaml.hpp" />
+    <ClInclude Include="Vehicles\Vehicle.h" />
     <ClInclude Include="Viewport.hpp" />
     <ClInclude Include="ViewportManager.h" />
     <ClInclude Include="Widget.h" />

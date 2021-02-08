@@ -13,10 +13,10 @@
 #include "../MultiPlayer.h"
 #include "../StationManager.h"
 #include "../Things/ThingManager.h"
-#include "../Things/Vehicle.h"
 #include "../TownManager.h"
 #include "../Tutorial.h"
 #include "../Ui.h"
+#include "../Vehicles/Vehicle.h"
 #include "../ViewportManager.h"
 #include "ScrollView.h"
 #include <algorithm>
@@ -125,7 +125,7 @@ namespace OpenLoco::Ui::WindowManager
             0x004B6033,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                auto* w = Vehicle::Main::open(reinterpret_cast<OpenLoco::vehicle*>(regs.edx));
+                auto* w = Vehicle::Main::open(reinterpret_cast<Vehicles::VehicleBase*>(regs.edx));
                 regs = backup;
                 regs.esi = reinterpret_cast<int32_t>(w);
                 return 0;

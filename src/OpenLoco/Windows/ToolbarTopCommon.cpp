@@ -17,9 +17,9 @@
 #include "../Objects/WaterObject.h"
 #include "../StationManager.h"
 #include "../Things/ThingManager.h"
-#include "../Things/Vehicle.h"
 #include "../TownManager.h"
 #include "../Ui/Dropdown.h"
+#include "../Vehicles/Vehicle.h"
 #include <map>
 
 using namespace OpenLoco::Interop;

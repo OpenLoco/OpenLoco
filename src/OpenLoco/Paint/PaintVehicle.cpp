@@ -4,11 +4,11 @@
 #include "../Graphics/Colour.h"
 #include "../Objects/ObjectManager.h"
 #include "../Objects/VehicleObject.h"
-#include "../Things/Vehicle.h"
+#include "../Vehicles/Vehicle.h"
 #include "Paint.h"
 
 using namespace OpenLoco::Interop;
-using namespace OpenLoco::Things::Vehicle;
+using namespace OpenLoco::Vehicles;
 
 namespace OpenLoco::Paint
 {
@@ -48,7 +48,7 @@ namespace OpenLoco::Paint
     }
 
     // 0x004B0CFC
-    static void paintBogie(PaintSession& session, vehicle_bogie* bogie)
+    static void paintBogie(PaintSession& session, VehicleBogie* bogie)
     {
         auto* vehObject = ObjectManager::get<vehicle_object>(bogie->object_id);
         if (bogie->object_sprite_type == SpriteIndex::null)
@@ -325,7 +325,7 @@ namespace OpenLoco::Paint
     }
 
     // Adds roll/animation and cargo
-    static uint32_t getBodyImage(const uint32_t imageId, const vehicle_body* body)
+    static uint32_t getBodyImage(const uint32_t imageId, const VehicleBody* body)
     {
         return imageId + body->var_46 + body->var_47;
     }
@@ -337,7 +337,7 @@ namespace OpenLoco::Paint
     }
 
     // 0x004B103C
-    static void paintBody(PaintSession& session, vehicle_body* body)
+    static void paintBody(PaintSession& session, VehicleBody* body)
     {
         static loco_global<Map::map_pos[64], 0x00503B6A> _503B6A; // also used in vehicle.cpp
         static loco_global<int8_t[32 * 4], 0x005001B4> _5001B4;   // array of 4 byte structures
@@ -466,7 +466,7 @@ namespace OpenLoco::Paint
     }
 
     // 0x004B0CCE
-    void paintVehicleEntity(PaintSession& session, vehicle_base* base)
+    void paintVehicleEntity(PaintSession& session, Vehicles::VehicleBase* base)
     {
         if (base->getFlags38() & Flags38::isGhost)
         {

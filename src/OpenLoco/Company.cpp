@@ -4,6 +4,7 @@
 #include "Localisation/StringIds.h"
 #include "Things/ThingManager.h"
 #include "Ui/WindowManager.h"
+#include "Vehicles/Vehicle.h"
 #include <algorithm>
 #include <array>
 #include <map>

@@ -7,9 +7,9 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco
+namespace OpenLoco::Vehicles
 {
-    struct vehicle_head;
+    struct VehicleHead;
 }
 
 namespace OpenLoco::GameCommands
@@ -90,7 +90,7 @@ namespace OpenLoco::GameCommands
     }
 
     // Reverse (vehicle)
-    inline void do_3(thing_id_t vehicleHead, OpenLoco::vehicle_head* const head)
+    inline void do_3(thing_id_t vehicleHead, Vehicles::VehicleHead* const head)
     {
         registers regs;
         regs.bl = GameCommandFlag::apply;

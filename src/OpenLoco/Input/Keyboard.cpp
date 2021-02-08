@@ -12,6 +12,7 @@
 #include "../Tutorial.h"
 #include "../Ui.h"
 #include "../Ui/Screenshot.h"
+#include "../Vehicles/Vehicle.h"
 #include "../Win32.h"
 #include "ShortcutManager.h"
 #include <cstdint>
@@ -93,11 +94,11 @@ namespace OpenLoco::Input
             if (w->type != WindowType::vehicle)
                 continue;
 
-            auto t = ThingManager::get<OpenLoco::vehicle>(w->number);
-            if (t->owner != CompanyManager::getControllingId())
+            auto t = ThingManager::get<Vehicles::VehicleBase>(w->number);
+            if (t->getOwner() != CompanyManager::getControllingId())
                 continue;
 
-            if (t->mode != TransportMode::rail)
+            if (t->getTransportMode() != TransportMode::rail)
                 continue;
 
             GameCommands::do_77(w->number);

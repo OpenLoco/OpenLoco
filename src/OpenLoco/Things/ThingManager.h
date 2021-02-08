@@ -1,8 +1,17 @@
 #pragma once
 
 #include "Thing.h"
-#include "Vehicle.h"
 #include <cstdio>
+#include <iterator>
+
+namespace OpenLoco::Map
+{
+    struct map_pos;
+}
+namespace OpenLoco::Vehicles
+{
+    struct VehicleHead;
+}
 
 namespace OpenLoco::ThingManager
 {
@@ -119,7 +128,7 @@ namespace OpenLoco::ThingManager
         }
     };
 
-    using VehicleList = ThingList<ListIterator<vehicle_head, &thing_base::next_thing_id>, thing_list::vehicle_head>;
+    using VehicleList = ThingList<ListIterator<Vehicles::VehicleHead, &thing_base::next_thing_id>, thing_list::vehicle_head>;
 
     class ThingTileList
     {

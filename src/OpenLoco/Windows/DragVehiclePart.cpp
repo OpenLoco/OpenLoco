@@ -1,8 +1,8 @@
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
 #include "../OpenLoco.h"
-#include "../Things/Vehicle.h"
 #include "../Ui/WindowManager.h"
+#include "../Vehicles/Vehicle.h"
 
 using namespace OpenLoco::Interop;
 
@@ -22,13 +22,13 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
     };
 
     // TODO: make vehicles versions of these call into this global, ?make thing_id instead?
-    static loco_global<OpenLoco::vehicle_bogie*, 0x0113614E> _dragCarComponent;
+    static loco_global<Vehicles::VehicleBogie*, 0x0113614E> _dragCarComponent;
     static loco_global<thing_id_t, 0x01136156> _dragVehicleHead;
 
     static void initEvents();
 
     // 0x004B3B7E
-    void open(OpenLoco::Things::Vehicle::Car& car)
+    void open(Vehicles::Car& car)
     {
         WindowManager::close(WindowType::dragVehiclePart);
         _dragCarComponent = car.front;
