@@ -2184,7 +2184,7 @@ namespace OpenLoco::Ui::Vehicle
             sub_470824(head);
         }
 
-        static OpenLoco::Vehicle::OrderTableView getOrderTable(const vehicle_head* const head)
+        static OpenLoco::Vehicle::OrderTableView getOrderTable(const Vehicles::VehicleHead* const head)
         {
             return OpenLoco::Vehicle::OrderTableView(head->orderTableOffset);
         }
