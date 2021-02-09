@@ -4,7 +4,7 @@
 #include <iterator>
 #include <memory>
 
-namespace OpenLoco::Vehicle
+namespace OpenLoco::Vehicles
 {
     enum class OrderType : uint8_t
     {

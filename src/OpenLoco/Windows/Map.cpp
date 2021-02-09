@@ -1089,11 +1089,11 @@ namespace OpenLoco::Ui::Windows::Map
 
         xy32 startPos = { Location::null, 0 };
         xy32 endPos = { Location::null, 0 };
-        for (auto& order : OpenLoco::Vehicle::OrderTableView(train.head->orderTableOffset))
+        for (auto& order : Vehicles::OrderTableView(train.head->orderTableOffset))
         {
-            if (order.hasFlag(OpenLoco::Vehicle::OrderFlags::HasStation))
+            if (order.hasFlag(Vehicles::OrderFlags::HasStation))
             {
-                auto* stationOrder = static_cast<OpenLoco::Vehicle::OrderStation*>(&order);
+                auto* stationOrder = static_cast<Vehicles::OrderStation*>(&order);
                 auto station = StationManager::get(stationOrder->getStation());
                 map_pos stationPos = { station->x, station->y };
 

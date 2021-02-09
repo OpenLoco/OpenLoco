@@ -2184,9 +2184,9 @@ namespace OpenLoco::Ui::Vehicle
             sub_470824(head);
         }
 
-        static OpenLoco::Vehicle::OrderTableView getOrderTable(const Vehicles::VehicleHead* const head)
+        static Vehicles::OrderTableView getOrderTable(const Vehicles::VehicleHead* const head)
         {
-            return OpenLoco::Vehicle::OrderTableView(head->orderTableOffset);
+            return Vehicles::OrderTableView(head->orderTableOffset);
         }
 
         // 0x004B4F6D
@@ -2206,7 +2206,7 @@ namespace OpenLoco::Ui::Vehicle
 
             // orderId can be -1 at this point for none selected
             auto i = 0;
-            OpenLoco::Vehicle::Order* last = nullptr;
+            Vehicles::Order* last = nullptr;
             for (auto& order : getOrderTable(head))
             {
                 if (i == orderId - 1)
@@ -2382,7 +2382,7 @@ namespace OpenLoco::Ui::Vehicle
         // order argument : eax (3 - 32 bits), cx
         // Note will move orders so do not use while iterating OrderTableView
         // 0x004B4ECB
-        static void addNewOrder(window* const self, const OpenLoco::Vehicle::Order& order)
+        static void addNewOrder(window* const self, const Vehicles::Order& order)
         {
             auto head = Common::getVehicle(self);
             auto chosenOffset = head->sizeOfOrderTable - 1;
@@ -2423,13 +2423,13 @@ namespace OpenLoco::Ui::Vehicle
             {
                 case widx::orderForceUnload:
                 {
-                    OpenLoco::Vehicle::OrderUnloadAll unload(Dropdown::getItemArgument(item, 3));
+                    Vehicles::OrderUnloadAll unload(Dropdown::getItemArgument(item, 3));
                     addNewOrder(self, unload);
                     break;
                 }
                 case widx::orderWait:
                 {
-                    OpenLoco::Vehicle::OrderWaitFor wait(Dropdown::getItemArgument(item, 3));
+                    Vehicles::OrderWaitFor wait(Dropdown::getItemArgument(item, 3));
                     addNewOrder(self, wait);
                     break;
                 }
@@ -2520,7 +2520,7 @@ namespace OpenLoco::Ui::Vehicle
                     TilePos tPos{ pos };
                     height -= trackPart.z;
 
-                    OpenLoco::Vehicle::OrderRouteWaypoint waypoint(tPos, height / 8, trackElement->unkDirection(), trackId);
+                    Vehicles::OrderRouteWaypoint waypoint(tPos, height / 8, trackElement->unkDirection(), trackId);
                     Audio::playSound(Audio::sound_id::waypoint, { x, y, Input::getDragLastLocation().x }, Input::getDragLastLocation().x);
                     addNewOrder(&self, waypoint);
                     break;
@@ -2539,7 +2539,7 @@ namespace OpenLoco::Ui::Vehicle
                         map_pos{ args.x, args.y }
                     };
 
-                    OpenLoco::Vehicle::OrderRouteWaypoint waypoint(tPos, height / 8, 0, 0);
+                    Vehicles::OrderRouteWaypoint waypoint(tPos, height / 8, 0, 0);
                     addNewOrder(&self, waypoint);
                     break;
                 }
@@ -2547,7 +2547,7 @@ namespace OpenLoco::Ui::Vehicle
                 {
                     Audio::playSound(Audio::sound_id::waypoint, { x, y, Input::getDragLastLocation().x }, Input::getDragLastLocation().x);
                     station_id_t stationId = args.value;
-                    OpenLoco::Vehicle::OrderStopAt station(stationId);
+                    Vehicles::OrderStopAt station(stationId);
                     addNewOrder(&self, station);
                     break;
                 }
@@ -2569,7 +2569,7 @@ namespace OpenLoco::Ui::Vehicle
                     TilePos tPos{ pos };
                     height -= roadPart.z;
 
-                    OpenLoco::Vehicle::OrderRouteWaypoint waypoint(tPos, height / 8, trackElement->unkDirection(), roadId);
+                    Vehicles::OrderRouteWaypoint waypoint(tPos, height / 8, trackElement->unkDirection(), roadId);
                     Audio::playSound(Audio::sound_id::waypoint, { x, y, Input::getDragLastLocation().x }, Input::getDragLastLocation().x);
                     addNewOrder(&self, waypoint);
                     break;
@@ -2608,7 +2608,7 @@ namespace OpenLoco::Ui::Vehicle
         {
             auto head = Common::getVehicle(self);
             auto item = y / 10;
-            OpenLoco::Vehicle::Order* selectedOrder = nullptr;
+            Vehicles::Order* selectedOrder = nullptr;
             if (item != 0)
             {
                 selectedOrder = getOrderTable(head).atIndex(item - 1);
@@ -2630,8 +2630,8 @@ namespace OpenLoco::Ui::Vehicle
                 {
                     // Copy complete order list
                     Audio::playSound(Audio::sound_id::waypoint, { x, y, Input::getDragLastLocation().x }, Input::getDragLastLocation().x);
-                    std::vector<std::shared_ptr<OpenLoco::Vehicle::Order>> clonedOrders;
-                    for (auto& existingOrders : OpenLoco::Vehicle::OrderTableView(head->orderTableOffset))
+                    std::vector<std::shared_ptr<Vehicles::Order>> clonedOrders;
+                    for (auto& existingOrders : Vehicles::OrderTableView(head->orderTableOffset))
                     {
                         clonedOrders.push_back(existingOrders.clone());
                     }
@@ -2676,10 +2676,10 @@ namespace OpenLoco::Ui::Vehicle
             }
             switch (selectedOrder->getType())
             {
-                case OpenLoco::Vehicle::OrderType::StopAt:
-                case OpenLoco::Vehicle::OrderType::RouteThrough:
+                case Vehicles::OrderType::StopAt:
+                case Vehicles::OrderType::RouteThrough:
                 {
-                    auto* stationOrder = static_cast<OpenLoco::Vehicle::OrderStation*>(selectedOrder);
+                    auto* stationOrder = static_cast<Vehicles::OrderStation*>(selectedOrder);
                     auto station = StationManager::get(stationOrder->getStation());
                     auto main = WindowManager::getMainWindow();
                     if (main)
@@ -2689,9 +2689,9 @@ namespace OpenLoco::Ui::Vehicle
 
                     break;
                 }
-                case OpenLoco::Vehicle::OrderType::RouteWaypoint:
+                case Vehicles::OrderType::RouteWaypoint:
                 {
-                    auto* routeOrder = selectedOrder->as<OpenLoco::Vehicle::OrderRouteWaypoint>();
+                    auto* routeOrder = selectedOrder->as<Vehicles::OrderRouteWaypoint>();
                     if (routeOrder != nullptr)
                     {
                         auto main = WindowManager::getMainWindow();
@@ -2702,9 +2702,9 @@ namespace OpenLoco::Ui::Vehicle
                     }
                     break;
                 }
-                case OpenLoco::Vehicle::OrderType::UnloadAll:
-                case OpenLoco::Vehicle::OrderType::WaitFor:
-                case OpenLoco::Vehicle::OrderType::End:
+                case Vehicles::OrderType::UnloadAll:
+                case Vehicles::OrderType::WaitFor:
+                case Vehicles::OrderType::End:
                     // These orders don't have a location to centre on
                     break;
             }
@@ -2909,11 +2909,11 @@ namespace OpenLoco::Ui::Vehicle
         };
 
         // 0x004B4A58 based on
-        static void sub_4B4A58(window* const self, Gfx::drawpixelinfo_t* const context, const string_id strFormat, FormatArguments& args, OpenLoco::Vehicle::Order& order, int16_t& y)
+        static void sub_4B4A58(window* const self, Gfx::drawpixelinfo_t* const context, const string_id strFormat, FormatArguments& args, Vehicles::Order& order, int16_t& y)
         {
             Gfx::point_t loc = { 8, static_cast<int16_t>(y - 1) };
             Gfx::drawString_494B3F(*context, &loc, Colour::black, strFormat, &args);
-            if (order.hasFlag(OpenLoco::Vehicle::OrderFlags::HasNumber))
+            if (order.hasFlag(Vehicles::OrderFlags::HasNumber))
             {
                 if (Input::isToolActive(self->type, self->number))
                 {
@@ -2971,22 +2971,22 @@ namespace OpenLoco::Ui::Vehicle
                 args.push(orderString[static_cast<uint8_t>(order.getType())]);
                 switch (order.getType())
                 {
-                    case OpenLoco::Vehicle::OrderType::End:
-                    case OpenLoco::Vehicle::OrderType::RouteWaypoint:
+                    case Vehicles::OrderType::End:
+                    case Vehicles::OrderType::RouteWaypoint:
                         // Fall through
                         break;
-                    case OpenLoco::Vehicle::OrderType::StopAt:
-                    case OpenLoco::Vehicle::OrderType::RouteThrough:
+                    case Vehicles::OrderType::StopAt:
+                    case Vehicles::OrderType::RouteThrough:
                     {
-                        auto* stationOrder = static_cast<OpenLoco::Vehicle::OrderStation*>(&order);
+                        auto* stationOrder = static_cast<Vehicles::OrderStation*>(&order);
                         stationOrder->setFormatArguments(args);
                         break;
                     }
-                    case OpenLoco::Vehicle::OrderType::UnloadAll:
-                    case OpenLoco::Vehicle::OrderType::WaitFor:
+                    case Vehicles::OrderType::UnloadAll:
+                    case Vehicles::OrderType::WaitFor:
                     {
 
-                        auto* cargoOrder = static_cast<OpenLoco::Vehicle::OrderCargo*>(&order);
+                        auto* cargoOrder = static_cast<Vehicles::OrderCargo*>(&order);
                         cargoOrder->setFormatArguments(args);
                         break;
                     }

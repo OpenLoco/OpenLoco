@@ -8,7 +8,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::Vehicle
+namespace OpenLoco::Vehicles
 {
     constexpr uint32_t max_orders = 256000;
     static loco_global<Order[max_orders], 0x00987C5C> _orderTable;
