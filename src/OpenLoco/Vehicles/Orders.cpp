@@ -202,4 +202,9 @@ namespace OpenLoco::Vehicles
         auto chosenOrder = std::next(begin(), index);
         return &(*chosenOrder);
     }
+
+    OrderTableView::Iterator OrderTableView::atOffset(const uint8_t offset) const
+    {
+        return Iterator(&_orderTable[_beginOffset + offset]);
+    }
 }
