@@ -37,7 +37,7 @@ namespace OpenLoco::Paint
     // 0x004FFAE8
     static uint32_t applyGhostToImage(uint32_t imageId)
     {
-        if (Config::get().construction_marker)
+        if (Config::get().construction_marker == 0)
         {
             return Gfx::recolour(imageId, PaletteIndex::index_2C);
         }
