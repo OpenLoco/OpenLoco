@@ -9,7 +9,9 @@
 #include "../StationManager.h"
 #include "../Things/Misc.h"
 #include "../Things/ThingManager.h"
+#include "../Ui/WindowManager.h"
 #include "../ViewportManager.h"
+#include "Orders.h"
 #include "Vehicle.h"
 #include <cassert>
 
@@ -813,9 +815,30 @@ namespace OpenLoco::Vehicles
     // 0x004B9987
     void VehicleHead::checkIfAtOrderStation()
     {
-        registers regs;
-        regs.esi = reinterpret_cast<int32_t>(this);
-        call(0x004B9987, regs);
+        OrderTableView orders(orderTableOffset);
+        auto curOrder = orders.atOffset(currentOrder);
+        auto* orderStation = curOrder->as<OrderStation>();
+        if (orderStation == nullptr)
+        {
+            return;
+        }
+
+        if (orderStation->getStation() != stationId)
+        {
+            return;
+        }
+
+        curOrder++;
+
+        if (curOrder->is<OrderEnd>())
+        {
+            currentOrder = 0;
+        }
+        else
+        {
+            currentOrder = curOrder->getOffset() - orderTableOffset;
+        }
+        Ui::WindowManager::sub_4B93A5(id);
     }
 
     // 0x004BACAF
