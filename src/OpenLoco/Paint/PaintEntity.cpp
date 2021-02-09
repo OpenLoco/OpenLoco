@@ -5,6 +5,7 @@
 #include "../Map/Tile.h"
 #include "../Things/Misc.h"
 #include "../Things/ThingManager.h"
+#include "../Vehicles/Vehicle.h"
 #include "Paint.h"
 #include "PaintMiscEntity.h"
 #include "PaintVehicle.h"

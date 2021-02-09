@@ -4,9 +4,13 @@
 #include <cstdint>
 #include <limits>
 
+namespace OpenLoco::Vehicles
+{
+    struct VehicleBase;
+}
+
 namespace OpenLoco
 {
-    struct vehicle_base;
     struct MiscBase;
 
     namespace ThingId
@@ -66,7 +70,7 @@ namespace OpenLoco
         void moveTo(loc16 loc);
         void invalidateSprite();
 
-        vehicle_base* asVehicle() const { return asBase<vehicle_base, thing_base_type::vehicle>(); }
+        Vehicles::VehicleBase* asVehicle() const { return asBase<Vehicles::VehicleBase, thing_base_type::vehicle>(); }
         MiscBase* asMisc() const { return asBase<MiscBase, thing_base_type::misc>(); }
 
     protected:

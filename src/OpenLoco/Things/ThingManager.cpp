@@ -1,6 +1,8 @@
 #include "ThingManager.h"
 #include "../Interop/Interop.hpp"
+#include "../Map/Tile.h"
 #include "../OpenLoco.h"
+#include "../Vehicles/Vehicle.h"
 
 using namespace OpenLoco::Interop;
 
@@ -24,9 +26,9 @@ namespace OpenLoco::ThingManager
     }
 
     template<>
-    vehicle_head* first()
+    Vehicles::VehicleHead* first()
     {
-        return get<vehicle_head>(firstId(thing_list::vehicle_head));
+        return get<Vehicles::VehicleHead>(firstId(thing_list::vehicle_head));
     }
 
     template<>

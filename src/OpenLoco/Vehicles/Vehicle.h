@@ -3,61 +3,64 @@
 #include "../Audio/Audio.h"
 #include "../Company.h"
 #include "../Objects/VehicleObject.h"
+#include "../Things/Thing.h"
 #include "../Types.hpp"
 #include "../Ui/WindowType.h"
 #include "../Window.h"
-#include "Thing.h"
 
-namespace OpenLoco
+namespace OpenLoco::Vehicles
 {
-    namespace Things::Vehicle
+    constexpr auto max_vehicle_length = 176; // TODO: Units?
+
+    uint32_t create(const uint8_t flags, const uint16_t vehicleTypeId, const uint16_t vehicleThingId);
+
+    namespace Flags0C // commands?
     {
-        constexpr auto max_vehicle_length = 176; // TODO: Units?
-
-        uint32_t create(const uint8_t flags, const uint16_t vehicleTypeId, const uint16_t vehicleThingId);
-
-        namespace Flags0C // commands?
-        {
-            constexpr uint8_t unk_1 = 1 << 1; // commanded to stop??
-            constexpr uint8_t unk_5 = 1 << 5;
-            constexpr uint8_t manualControl = 1 << 6;
-        }
-
-        namespace Flags38
-        {
-            constexpr uint8_t unk_0 = 1 << 0;
-            constexpr uint8_t isReversed = 1 << 1;
-            constexpr uint8_t unk_3 = 1 << 3;
-            constexpr uint8_t isGhost = 1 << 4;
-        }
-
-        enum class Status : uint8_t
-        {
-            unk_0 = 0, // no position (not placed)
-            stopped = 1,
-            unk_2 = 2, // travelling
-            unk_3 = 3, // travelling
-            approaching = 4,
-            unloading = 5,
-            loading = 6,
-            brokenDown = 7,
-            crashed = 8,
-            stuck = 9,
-            landing = 10,
-            taxiing1 = 11,
-            taxiing2 = 12,
-            takingOff = 13,
-        };
+        constexpr uint8_t unk_1 = 1 << 1; // commanded to stop??
+        constexpr uint8_t unk_5 = 1 << 5;
+        constexpr uint8_t manualControl = 1 << 6;
     }
 
-    struct vehicle_head;
-    struct vehicle_1;
-    struct vehicle_2;
-    struct vehicle_bogie;
-    struct vehicle_body;
-    struct vehicle_tail;
+    namespace Flags38
+    {
+        constexpr uint8_t unk_0 = 1 << 0;
+        constexpr uint8_t isReversed = 1 << 1;
+        constexpr uint8_t unk_3 = 1 << 3;
+        constexpr uint8_t isGhost = 1 << 4;
+    }
 
-    struct vehicle_26;
+    namespace Flags73 // veh2 Train breakdown flags
+    {
+        constexpr uint8_t isBrokenDown = 1 << 0;
+        constexpr uint8_t isStillPowered = 1 << 1;
+    }
+
+    enum class Status : uint8_t
+    {
+        unk_0 = 0, // no position (not placed)
+        stopped = 1,
+        unk_2 = 2, // travelling
+        unk_3 = 3, // travelling
+        approaching = 4,
+        unloading = 5,
+        loading = 6,
+        brokenDown = 7,
+        crashed = 8,
+        stuck = 9,
+        landing = 10,
+        taxiing1 = 11,
+        taxiing2 = 12,
+        takingOff = 13,
+    };
+
+    struct VehicleHead;
+    struct Vehicle1;
+    struct Vehicle2;
+    struct VehicleBogie;
+    struct VehicleBody;
+    struct VehicleTail;
+
+    struct Vehicle2or6;
 
     namespace Flags5F
     {
@@ -85,7 +88,7 @@ namespace OpenLoco
     };
 
 #pragma pack(push, 1)
-    struct vehicle_base : thing_base
+    struct VehicleBase : thing_base
     {
     private:
         template<VehicleThingType SubType>
@@ -115,95 +118,49 @@ namespace OpenLoco
         VehicleThingType getSubType() const { return VehicleThingType(thing_base::getSubType()); }
         void setSubType(const VehicleThingType newType) { thing_base::setSubType(static_cast<uint8_t>(newType)); }
         bool isVehicleHead() const { return is<VehicleThingType::head>(); }
-        vehicle_head* asVehicleHead() const { return as<vehicle_head>(); }
+        VehicleHead* asVehicleHead() const { return as<VehicleHead>(); }
         bool isVehicle1() const { return is<VehicleThingType::vehicle_1>(); }
-        vehicle_1* asVehicle1() const { return as<vehicle_1>(); }
+        Vehicle1* asVehicle1() const { return as<Vehicle1>(); }
         bool isVehicle2() const { return is<VehicleThingType::vehicle_2>(); }
-        vehicle_2* asVehicle2() const { return as<vehicle_2>(); }
+        Vehicle2* asVehicle2() const { return as<Vehicle2>(); }
         bool isVehicleBogie() const { return is<VehicleThingType::bogie>(); }
-        vehicle_bogie* asVehicleBogie() const { return as<vehicle_bogie>(); }
+        VehicleBogie* asVehicleBogie() const { return as<VehicleBogie>(); }
         bool isVehicleBody() const { return is<VehicleThingType::body_start>() || is<VehicleThingType::body_continued>(); }
-        vehicle_body* asVehicleBody() const
+        VehicleBody* asVehicleBody() const
         {
             if (is<VehicleThingType::body_start>())
             {
-                return as<vehicle_body, VehicleThingType::body_start>();
+                return as<VehicleBody, VehicleThingType::body_start>();
             }
 
-            return as<vehicle_body, VehicleThingType::body_continued>();
+            return as<VehicleBody, VehicleThingType::body_continued>();
         }
         bool isVehicle2Or6() { return is<VehicleThingType::vehicle_2>() || is<VehicleThingType::tail>(); }
-        vehicle_26* asVehicle2Or6() const
+        Vehicle2or6* asVehicle2Or6() const
         {
             if (is<VehicleThingType::vehicle_2>())
             {
-                return as<vehicle_26, VehicleThingType::vehicle_2>();
+                return as<Vehicle2or6, VehicleThingType::vehicle_2>();
             }
 
-            return as<vehicle_26, VehicleThingType::tail>();
+            return as<Vehicle2or6, VehicleThingType::tail>();
         }
         bool isVehicleTail() const { return is<VehicleThingType::tail>(); }
-        vehicle_tail* asVehicleTail() const { return as<vehicle_tail>(); }
+        VehicleTail* asVehicleTail() const { return as<VehicleTail>(); }
         TransportMode getTransportMode() const;
         uint8_t getOwner() const;
         uint8_t getFlags38() const;
+        uint8_t getTrackType() const;
+        uint16_t getVar36() const;
+        thing_id_t getHead() const;
+        void setNextCar(const thing_id_t newNextCar);
 
-        vehicle_base* nextVehicle();
-        vehicle_base* nextVehicleComponent();
+        VehicleBase* nextVehicle();
+        VehicleBase* nextVehicleComponent();
         bool updateComponent();
     };
 
-    struct vehicle : vehicle_base
-    {
-        uint8_t pad_20;
-        company_id_t owner; // 0x21
-        uint16_t var_22;    // used for name on vehicle_0 will be type as string_id
-        uint8_t pad_24[0x26 - 0x24];
-        thing_id_t head; // 0x26
-        uint16_t var_28;
-        uint8_t pad_2A[0x2C - 0x2A];
-        uint16_t var_2C;
-        uint16_t var_2E;
-        int16_t tile_x;      // 0x30
-        int16_t tile_y;      // 0x32
-        uint8_t tile_base_z; // 0x34
-        uint8_t track_type;  // 0x35 field same in all vehicles
-        uint16_t var_36;     // 0x36 field same in all vehicles
-        uint8_t var_38;
-        uint8_t pad_39;         // 0x39
-        thing_id_t next_car_id; // 0x3A
-        uint32_t var_3C;        // veh1 speed?
-        uint16_t object_id;     // 0x40 not used in all vehicles **be careful**
-        TransportMode mode;     // 0x42 field same in all vehicles
-        uint8_t pad_43;
-        int16_t var_44; // name this number
-        uint8_t pad_46;
-        uint8_t pad_47[0x4A - 0x47];
-        uint16_t var_4A;
-        uint8_t cargo_type; // 0x4C
-        uint8_t pad_4D;
-        uint16_t cargo_origin; // 0x4E
-        uint8_t pad_50;
-        uint8_t cargo_quantity; // 0x51
-        uint8_t pad_52[0x54 - 0x52];
-        uint8_t pad_54;
-        uint8_t pad_55;
-        uint32_t var_56;
-        uint8_t var_5A;
-        uint8_t pad_5B[0x5D - 0x5B];
-        uint8_t var_5D;
-        VehicleType vehicleType; // 0x5E
-        uint8_t var_5F;          // 0x5F (bit 1 = can break down)
-        uint8_t pad_60[0x6A - 0x60];
-        uint8_t var_6A;
-        uint8_t pad_6B[0x73 - 0x6B];
-        uint8_t var_73; // 0x73 (bit 0 = broken down)
-
-        vehicle_object* object() const;
-    };
-    static_assert(sizeof(vehicle) == 0x74); // Can't use offset_of change this to last field if more found
-
-    struct vehicle_26 : vehicle_base
+    struct Vehicle2or6 : VehicleBase
     {
         uint8_t pad_20[0x44 - 0x20];
         sound_object_id_t sound_id; // 0x44
@@ -217,7 +174,7 @@ namespace OpenLoco
         uint8_t var_73;
     };
 
-    struct vehicle_head : vehicle_base
+    struct VehicleHead : VehicleBase
     {
         static constexpr auto vehicleThingType = VehicleThingType::head;
         uint8_t pad_20;
@@ -252,9 +209,9 @@ namespace OpenLoco
         uint8_t pad_5A;
         uint8_t pad_5B;
         uint8_t var_5C;
-        Things::Vehicle::Status status; // 0x5D
-        VehicleType vehicleType;        // 0x5E
-        uint8_t var_5F;                 // 0x5F
+        Status status;           // 0x5D
+        VehicleType vehicleType; // 0x5E
+        uint8_t var_5F;          // 0x5F
         uint8_t var_60;
         uint16_t var_61;
         uint8_t pad_63[0x69 - 0x63];
@@ -273,12 +230,12 @@ namespace OpenLoco
         VehicleStatus getStatus() const;
 
     private:
-        void sub_4BAA76();
+        void applyBreakdownToTrain();
         uint32_t getVehicleTotalLength();
     };
-    static_assert(sizeof(vehicle_head) == 0x7A); // Can't use offset_of change this to last field if more found
+    static_assert(sizeof(VehicleHead) == 0x7A); // Can't use offset_of change this to last field if more found
 
-    struct vehicle_1 : vehicle_base
+    struct Vehicle1 : VehicleBase
     {
         static constexpr auto vehicleThingType = VehicleThingType::vehicle_1;
         uint8_t pad_20;
@@ -315,9 +272,9 @@ namespace OpenLoco
         uint8_t var_6B[4];
         uint32_t var_6F[4];
     };
-    static_assert(sizeof(vehicle_1) == 0x7F); // Can't use offset_of change this to last field if more found
+    static_assert(sizeof(Vehicle1) == 0x7F); // Can't use offset_of change this to last field if more found
 
-    struct vehicle_2 : vehicle_base
+    struct Vehicle2 : VehicleBase
     {
         static constexpr auto vehicleThingType = VehicleThingType::vehicle_2;
         uint8_t pad_20;
@@ -348,7 +305,7 @@ namespace OpenLoco
         uint16_t totalPower;  // 0x50 maybe not used by aircraft and ship
         uint16_t totalWeight; // 0x52
         int16_t maxSpeed;     // 0x54
-        uint32_t var_56;
+        uint32_t var_56;      // 0x56 currentSpeed
         uint8_t var_5A;
         uint8_t var_5B;
         int16_t rackRailMaxSpeed; // 0x5C
@@ -358,11 +315,11 @@ namespace OpenLoco
         int32_t var_6A;      // currency
         int32_t var_6E;      // currency
         uint8_t reliability; // 0x72
-        uint8_t var_73;      // 0x73 (bit 0 = broken down)
+        uint8_t var_73;      // 0x73 (bit 0 = broken down, bit 1 = still powered)
     };
-    static_assert(sizeof(vehicle_2) == 0x74); // Can't use offset_of change this to last field if more found
+    static_assert(sizeof(Vehicle2) == 0x74); // Can't use offset_of change this to last field if more found
 
-    struct vehicle_body : vehicle_base
+    struct VehicleBody : VehicleBase
     {
         static constexpr auto vehicleThingType = VehicleThingType::body_continued;
         uint8_t pad_20;
@@ -409,7 +366,7 @@ namespace OpenLoco
     private:
         void sub_4AAB0B();
         void animationUpdate();
-        void sub_4AC255(vehicle_bogie* back_bogie, vehicle_bogie* front_bogie);
+        void sub_4AC255(VehicleBogie* back_bogie, VehicleBogie* front_bogie);
         void steamPuffsAnimationUpdate(uint8_t num, int32_t var_05);
         void dieselExhaust1AnimationUpdate(uint8_t num, int32_t var_05);
         void dieselExhaust2AnimationUpdate(uint8_t num, int32_t var_05);
@@ -424,9 +381,9 @@ namespace OpenLoco
         uint8_t updateSpriteYaw3(int16_t x_offset, int16_t y_offset);
         uint8_t updateSpriteYaw4(int16_t x_offset, int16_t y_offset);
     };
-    static_assert(sizeof(vehicle_body) == 0x60); // Can't use offset_of change this to last field if more found
+    static_assert(sizeof(VehicleBody) == 0x60); // Can't use offset_of change this to last field if more found
 
-    struct vehicle_bogie : vehicle_base
+    struct VehicleBogie : VehicleBase
     {
         static constexpr auto vehicleThingType = VehicleThingType::bogie;
         uint8_t pad_20;
@@ -472,9 +429,9 @@ namespace OpenLoco
         uint16_t var_68;
         uint8_t var_6A;
     };
-    static_assert(sizeof(vehicle_bogie) == 0x6B); // Can't use offset_of change this to last field if more found
+    static_assert(sizeof(VehicleBogie) == 0x6B); // Can't use offset_of change this to last field if more found
 
-    struct vehicle_tail : vehicle_base
+    struct VehicleTail : VehicleBase
     {
         static constexpr auto vehicleThingType = VehicleThingType::tail;
         uint8_t pad_20;
@@ -502,32 +459,119 @@ namespace OpenLoco
         Ui::window_number sound_window_number; // 0x4C common with veh_2
         Ui::WindowType sound_window_type;      // 0x4E common with veh_2
     };
-    static_assert(sizeof(vehicle_tail) == 0x4F); // Can't use offset_of change this to last field if more found
+    static_assert(sizeof(VehicleTail) == 0x4F); // Can't use offset_of change this to last field if more found
 
 #pragma pack(pop)
-    namespace Things::Vehicle
+
+    struct CarComponent
     {
-        struct CarComponent
+        VehicleBogie* front = nullptr;
+        VehicleBogie* back = nullptr;
+        VehicleBody* body = nullptr;
+        CarComponent(VehicleBase*& component);
+        CarComponent() = default;
+    };
+
+    struct Car : public CarComponent
+    {
+        class CarComponentIter
         {
-            vehicle_bogie* front = nullptr;
-            vehicle_bogie* back = nullptr;
-            vehicle_body* body = nullptr;
-            CarComponent(OpenLoco::vehicle_base*& component);
-            CarComponent() = default;
+        private:
+            CarComponent current;
+            VehicleBase* nextVehicleComponent = nullptr;
+
+        public:
+            CarComponentIter(const CarComponent* carComponent)
+            {
+                if (carComponent == nullptr)
+                {
+                    nextVehicleComponent = nullptr;
+                    return;
+                }
+                current = *carComponent;
+                nextVehicleComponent = current.body->nextVehicleComponent();
+            }
+
+            CarComponentIter& operator++()
+            {
+                if (nextVehicleComponent == nullptr)
+                {
+                    return *this;
+                }
+                if (nextVehicleComponent->getSubType() == VehicleThingType::tail)
+                {
+                    nextVehicleComponent = nullptr;
+                    return *this;
+                }
+                CarComponent next{ nextVehicleComponent };
+                if (next.body == nullptr || next.body->getSubType() == VehicleThingType::body_start)
+                {
+                    nextVehicleComponent = nullptr;
+                    return *this;
+                }
+                current = next;
+                return *this;
+            }
+
+            CarComponentIter operator++(int)
+            {
+                CarComponentIter retval = *this;
+                ++(*this);
+                return retval;
+            }
+
+            bool operator==(CarComponentIter other) const
+            {
+                return nextVehicleComponent == other.nextVehicleComponent;
+            }
+            bool operator!=(CarComponentIter other) const
+            {
+                return !(*this == other);
+            }
+
+            constexpr CarComponent& operator*()
+            {
+                return current;
+            }
+            // iterator traits
+            using difference_type = std::ptrdiff_t;
+            using value_type = CarComponent;
+            using pointer = CarComponent*;
+            using reference = CarComponent&;
+            using iterator_category = std::forward_iterator_tag;
         };
 
-        struct Car : public CarComponent
+        CarComponentIter begin() const
         {
-            class CarComponentIter
+            return CarComponentIter(this);
+        }
+        CarComponentIter end() const
+        {
+            return CarComponentIter(nullptr);
+        }
+
+        Car(VehicleBase*& component)
+            : CarComponent(component)
+        {
+        }
+        Car() = default;
+    };
+
+    struct Vehicle
+    {
+        struct Cars
+        {
+            Car firstCar;
+            class CarIter
             {
             private:
-                CarComponent current;
-                OpenLoco::vehicle_base* nextVehicleComponent = nullptr;
+                Car current;
+                VehicleBase* nextVehicleComponent = nullptr;
 
             public:
-                CarComponentIter(const CarComponent* carComponent)
+                CarIter(const Car* carComponent)
                 {
-                    if (carComponent == nullptr)
+                    if (carComponent == nullptr || carComponent->body == nullptr)
                     {
                         nextVehicleComponent = nullptr;
                         return;
@@ -536,190 +580,101 @@ namespace OpenLoco
                     nextVehicleComponent = current.body->nextVehicleComponent();
                 }
 
-                CarComponentIter& operator++()
+                CarIter& operator++()
                 {
                     if (nextVehicleComponent == nullptr)
                     {
                         return *this;
                     }
-                    if (nextVehicleComponent->getSubType() == VehicleThingType::tail)
+                    while (nextVehicleComponent->getSubType() != VehicleThingType::tail)
                     {
-                        nextVehicleComponent = nullptr;
-                        return *this;
+                        Car next{ nextVehicleComponent };
+                        if (next.body == nullptr)
+                        {
+                            break;
+                        }
+                        if (next.body->getSubType() == VehicleThingType::body_start)
+                        {
+                            current = next;
+                            return *this;
+                        }
                     }
-                    CarComponent next{ nextVehicleComponent };
-                    if (next.body == nullptr || next.body->getSubType() == VehicleThingType::body_start)
-                    {
-                        nextVehicleComponent = nullptr;
-                        return *this;
-                    }
-                    current = next;
+                    nextVehicleComponent = nullptr;
                     return *this;
                 }
 
-                CarComponentIter operator++(int)
+                CarIter operator++(int)
                 {
-                    CarComponentIter retval = *this;
+                    CarIter retval = *this;
                     ++(*this);
                     return retval;
                 }
 
-                bool operator==(CarComponentIter other) const
+                bool operator==(CarIter other) const
                 {
                     return nextVehicleComponent == other.nextVehicleComponent;
                 }
-                bool operator!=(CarComponentIter other) const
+                bool operator!=(CarIter other) const
                 {
                     return !(*this == other);
                 }
 
-                constexpr CarComponent& operator*()
+                constexpr Car& operator*()
                 {
                     return current;
                 }
                 // iterator traits
                 using difference_type = std::ptrdiff_t;
-                using value_type = CarComponent;
-                using pointer = CarComponent*;
-                using reference = CarComponent&;
+                using value_type = Car;
+                using pointer = Car*;
+                using reference = Car&;
                 using iterator_category = std::forward_iterator_tag;
             };
 
-            CarComponentIter begin() const
+            CarIter begin() const
             {
-                return CarComponentIter(this);
+                return CarIter(&firstCar);
             }
-            CarComponentIter end() const
+            CarIter end() const
             {
-                return CarComponentIter(nullptr);
+                return CarIter(nullptr);
             }
 
-            Car(OpenLoco::vehicle_base*& component)
-                : CarComponent(component)
+            std::size_t size() const
+            {
+                if (firstCar.body == nullptr)
+                {
+                    return 0;
+                }
+                return std::distance(begin(), end());
+            }
+
+            bool empty() const
+            {
+                if (firstCar.body == nullptr)
+                {
+                    return true;
+                }
+                return false;
+            }
+
+            Cars(Car&& _firstCar)
+                : firstCar(_firstCar)
             {
             }
-            Car() = default;
+            Cars() = default;
         };
 
-        struct Vehicle
+        VehicleHead* head;
+        Vehicle1* veh1;
+        Vehicle2* veh2;
+        VehicleTail* tail;
+        Cars cars;
+
+        Vehicle(VehicleHead* _head)
+            : Vehicle(_head->id)
         {
-            struct Cars
-            {
-                Car firstCar;
-                class CarIter
-                {
-                private:
-                    Car current;
-                    OpenLoco::vehicle_base* nextVehicleComponent = nullptr;
-
-                public:
-                    CarIter(const Car* carComponent)
-                    {
-                        if (carComponent == nullptr || carComponent->body == nullptr)
-                        {
-                            nextVehicleComponent = nullptr;
-                            return;
-                        }
-                        current = *carComponent;
-                        nextVehicleComponent = current.body->nextVehicleComponent();
-                    }
-
-                    CarIter& operator++()
-                    {
-                        if (nextVehicleComponent == nullptr)
-                        {
-                            return *this;
-                        }
-                        while (nextVehicleComponent->getSubType() != VehicleThingType::tail)
-                        {
-                            Car next{ nextVehicleComponent };
-                            if (next.body == nullptr)
-                            {
-                                break;
-                            }
-                            if (next.body->getSubType() == VehicleThingType::body_start)
-                            {
-                                current = next;
-                                return *this;
-                            }
-                        }
-                        nextVehicleComponent = nullptr;
-                        return *this;
-                    }
-
-                    CarIter operator++(int)
-                    {
-                        CarIter retval = *this;
-                        ++(*this);
-                        return retval;
-                    }
-
-                    bool operator==(CarIter other) const
-                    {
-                        return nextVehicleComponent == other.nextVehicleComponent;
-                    }
-                    bool operator!=(CarIter other) const
-                    {
-                        return !(*this == other);
-                    }
-
-                    constexpr Car& operator*()
-                    {
-                        return current;
-                    }
-                    // iterator traits
-                    using difference_type = std::ptrdiff_t;
-                    using value_type = Car;
-                    using pointer = Car*;
-                    using reference = Car&;
-                    using iterator_category = std::forward_iterator_tag;
-                };
-
-                CarIter begin() const
-                {
-                    return CarIter(&firstCar);
-                }
-                CarIter end() const
-                {
-                    return CarIter(nullptr);
-                }
-
-                std::size_t size() const
-                {
-                    if (firstCar.body == nullptr)
-                    {
-                        return 0;
-                    }
-                    return std::distance(begin(), end());
-                }
-
-                bool empty() const
-                {
-                    if (firstCar.body == nullptr)
-                    {
-                        return true;
-                    }
-                    return false;
-                }
-
-                Cars(Car&& _firstCar)
-                    : firstCar(_firstCar)
-                {
-                }
-                Cars() = default;
-            };
-
-            vehicle_head* head;
-            vehicle_1* veh1;
-            vehicle_2* veh2;
-            vehicle_tail* tail;
-            Cars cars;
-
-            Vehicle(vehicle_head* _head)
-                : Vehicle(_head->id)
-            {
-            }
-            Vehicle(uint16_t _head);
-        };
-    }
+        }
+        Vehicle(uint16_t _head);
+    };
 }

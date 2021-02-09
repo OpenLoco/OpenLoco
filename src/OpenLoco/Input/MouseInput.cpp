@@ -12,6 +12,7 @@
 #include "../TownManager.h"
 #include "../Tutorial.h"
 #include "../Ui/ScrollView.h"
+#include "../Vehicles/Vehicle.h"
 #include <map>
 
 using namespace OpenLoco::Interop;
@@ -292,7 +293,7 @@ namespace OpenLoco::Input
                 && widgetIndex == _toolWidgetIndex)
             {
                 toolCancel();
-                return true;
+                return false;
             }
             else
             {
@@ -306,7 +307,7 @@ namespace OpenLoco::Input
         _toolWindowType = w->type;
         _toolWindowNumber = w->number;
         _toolWidgetIndex = widgetIndex;
-        return false;
+        return true;
     }
 
     // 0x004CE3D6
@@ -529,7 +530,7 @@ namespace OpenLoco::Input
                             auto veh = _thing->asVehicle();
                             if (veh != nullptr)
                             {
-                                Ui::Vehicle::Main::open(reinterpret_cast<OpenLoco::vehicle*>(veh));
+                                Ui::Vehicle::Main::open(veh);
                             }
                             break;
                         }
@@ -763,7 +764,7 @@ namespace OpenLoco::Input
                                 auto veh = _thing->asVehicle();
                                 if (veh != nullptr)
                                 {
-                                    auto head = ThingManager::get<vehicle>(reinterpret_cast<OpenLoco::vehicle*>(veh)->head);
+                                    auto head = ThingManager::get<Vehicles::VehicleHead>(veh->getHead());
                                     Ui::Windows::VehicleList::open(head->owner, static_cast<uint8_t>(head->vehicleType));
                                 }
                                 break;

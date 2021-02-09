@@ -14,6 +14,7 @@
 #include "../../StationManager.h"
 #include "../../Things/ThingManager.h"
 #include "../../TownManager.h"
+#include "../../Vehicles/Vehicle.h"
 #include "../../ViewportManager.h"
 #include "../../Window.h"
 
@@ -93,13 +94,9 @@ namespace OpenLoco::Ui::NewsWindow
 
                             case newsItemSubTypes::vehicle:
                             {
-                                auto vehicle = ThingManager::get<OpenLoco::vehicle>(itemId);
+                                auto vehicle = ThingManager::get<Vehicles::VehicleBase>(itemId);
 
-                                // Ui::vehicle::open
-                                registers regs;
-                                regs.edx = (int32_t)vehicle;
-                                call(0x004B6033, regs);
-
+                                Ui::Vehicle::Main::open(vehicle);
                                 break;
                             }
 
@@ -227,7 +224,7 @@ namespace OpenLoco::Ui::NewsWindow
 
                 case newsItemSubTypes::vehicle:
                 {
-                    Things::Vehicle::Vehicle train(itemId);
+                    Vehicles::Vehicle train(itemId);
                     if (train.head->tile_x == -1)
                         break;
 
@@ -507,7 +504,7 @@ namespace OpenLoco::Ui::NewsWindow
 
                 case newsItemSubTypes::vehicle:
                 {
-                    auto vehicle = ThingManager::get<OpenLoco::vehicle>(itemIndex);
+                    auto vehicle = ThingManager::get<Vehicles::VehicleHead>(itemIndex);
                     auto company = CompanyManager::get(vehicle->owner);
                     if (isPlayerCompany(vehicle->owner))
                     {

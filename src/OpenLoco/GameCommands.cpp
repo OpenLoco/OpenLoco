@@ -7,8 +7,8 @@
 #include "Objects/RoadObject.h"
 #include "Objects/TrackObject.h"
 #include "StationManager.h"
-#include "Things/Vehicle.h"
 #include "Ui/WindowManager.h"
+#include "Vehicles/Vehicle.h"
 #include <cassert>
 
 using namespace OpenLoco::Ui;
@@ -52,7 +52,7 @@ namespace OpenLoco::GameCommands
             0x004AE5E4,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                auto ebx = Things::Vehicle::create(regs.bl, regs.dx, regs.di);
+                auto ebx = Vehicles::create(regs.bl, regs.dx, regs.di);
 
                 regs = backup;
                 regs.ebx = ebx;

@@ -1,13 +1,13 @@
 #include "VehicleChannel.h"
 #include "../Interop/Interop.hpp"
 #include "../Things/ThingManager.h"
-#include "../Things/Vehicle.h"
+#include "../Vehicles/Vehicle.h"
 
 using namespace OpenLoco;
 using namespace OpenLoco::Audio;
 using namespace OpenLoco::Interop;
 
-static std::tuple<sound_id, channel_attributes> sub_48A590(const vehicle* v)
+static std::tuple<sound_id, channel_attributes> sub_48A590(const Vehicles::Vehicle2or6* v)
 {
     registers regs;
     regs.esi = (int32_t)v;
@@ -39,23 +39,27 @@ vehicle_channel& vehicle_channel::operator=(vehicle_channel&& other)
 
 void vehicle_channel::begin(thing_id_t vid)
 {
-    auto v = ThingManager::get<vehicle>(vid);
+    auto v = ThingManager::get<Vehicles::VehicleBase>(vid);
     if (v != nullptr)
     {
-        auto [sid, sa] = sub_48A590(v);
-        auto loop = Audio::shouldSoundLoop(sid);
-        auto sample = Audio::getSoundSample(sid);
-        if (sample != nullptr)
+        auto* veh26 = v->asVehicle2Or6();
+        if (veh26 != nullptr)
         {
-            _vehicle_id = vid;
-            _sound_id = sid;
-            _attributes = sa;
+            auto [sid, sa] = sub_48A590(veh26);
+            auto loop = Audio::shouldSoundLoop(sid);
+            auto sample = Audio::getSoundSample(sid);
+            if (sample != nullptr)
+            {
+                _vehicle_id = vid;
+                _sound_id = sid;
+                _attributes = sa;
 
-            _channel.load(*sample);
-            _channel.play(loop);
-            _channel.setVolume(sa.volume);
-            _channel.setPan(sa.pan);
-            _channel.setFrequency(sa.freq);
+                _channel.load(*sample);
+                _channel.play(loop);
+                _channel.setVolume(sa.volume);
+                _channel.setPan(sa.pan);
+                _channel.setFrequency(sa.freq);
+            }
         }
     }
 }
@@ -64,27 +68,31 @@ void vehicle_channel::update()
 {
     if (!isFree())
     {
-        auto v = ThingManager::get<vehicle>(_vehicle_id);
-        if (v != nullptr && v->base_type == thing_base_type::vehicle && (v->getSubType() == VehicleThingType::vehicle_2 || v->getSubType() == VehicleThingType::tail) && (v->var_4A & 1))
+        auto v = ThingManager::get<Vehicles::VehicleBase>(_vehicle_id);
+        if (v != nullptr)
         {
-            auto [sid, sa] = sub_48A590(v);
-            if (_sound_id == sid)
+            auto* veh26 = v->asVehicle2Or6();
+            if (veh26 != nullptr && (veh26->var_4A & 1))
             {
-                v->var_4A &= ~1;
-                if (_attributes.volume != sa.volume)
+                auto [sid, sa] = sub_48A590(veh26);
+                if (_sound_id == sid)
                 {
-                    _channel.setVolume(sa.volume);
+                    veh26->var_4A &= ~1;
+                    if (_attributes.volume != sa.volume)
+                    {
+                        _channel.setVolume(sa.volume);
+                    }
+                    if (_attributes.pan != sa.pan)
+                    {
+                        _channel.setPan(sa.pan);
+                    }
+                    if (_attributes.freq != sa.freq)
+                    {
+                        _channel.setFrequency(sa.freq);
+                    }
+                    _attributes = sa;
+                    return;
                 }
-                if (_attributes.pan != sa.pan)
-                {
-                    _channel.setPan(sa.pan);
-                }
-                if (_attributes.freq != sa.freq)
-                {
-                    _channel.setFrequency(sa.freq);
-                }
-                _attributes = sa;
-                return;
             }
         }
         stop();

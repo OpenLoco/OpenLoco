@@ -16,10 +16,10 @@
 #include "../Objects/WaterObject.h"
 #include "../StationManager.h"
 #include "../Things/ThingManager.h"
-#include "../Things/Vehicle.h"
 #include "../TownManager.h"
 #include "../Ui/Dropdown.h"
 #include "../Ui/WindowManager.h"
+#include "../Vehicles/Vehicle.h"
 #include "ToolbarTopCommon.h"
 #include <map>
 
@@ -410,7 +410,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             if (v->owner != player_company_id)
                 continue;
 
-            if ((v->var_38 & Things::Vehicle::Flags38::isGhost) != 0)
+            if ((v->var_38 & Vehicles::Flags38::isGhost) != 0)
                 continue;
 
             vehicle_counts[static_cast<uint8_t>(v->vehicleType)]++;

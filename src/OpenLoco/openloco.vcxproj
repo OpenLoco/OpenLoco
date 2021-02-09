@@ -88,15 +88,14 @@
     <ClCompile Include="Platform\Platform.Windows.cpp" />
     <ClCompile Include="ProgressBar.cpp" />
     <ClCompile Include="S5\S5.cpp" />
+    <ClCompile Include="S5\SawyerStream.cpp" />
     <ClCompile Include="Scenario.cpp" />
     <ClCompile Include="ScenarioManager.cpp" />
     <ClCompile Include="Station.cpp" />
     <ClCompile Include="StationManager.cpp" />
-    <ClCompile Include="Things\CreateVehicle.cpp" />
     <ClCompile Include="Things\Misc.cpp" />
     <ClCompile Include="Things\Thing.cpp" />
     <ClCompile Include="Things\ThingManager.cpp" />
-    <ClCompile Include="Things\Vehicle.cpp" />
     <ClCompile Include="Title.cpp" />
     <ClCompile Include="Town.cpp" />
     <ClCompile Include="TownManager.cpp" />
@@ -110,6 +109,11 @@
     <ClCompile Include="Ui\WindowManager.cpp" />
     <ClCompile Include="Utility\Numeric.cpp" />
     <ClCompile Include="Utility\String.cpp" />
+    <ClCompile Include="Vehicles\CreateVehicle.cpp" />
+    <ClCompile Include="Vehicles\Orders.cpp" />
+    <ClCompile Include="Vehicles\Vehicle.cpp" />
+    <ClCompile Include="Vehicles\VehicleBody.cpp" />
+    <ClCompile Include="Vehicles\VehicleHead.cpp" />
     <ClCompile Include="Version.cpp">
       <!-- Define git information -->
       <PreprocessorDefinitions Condition="'$(OPENLOCO_BRANCH)'!=''">OPENLOCO_BRANCH="$(OPENLOCO_BRANCH)";%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -188,6 +192,7 @@
     <ClInclude Include="Console.h" />
     <ClInclude Include="Core\FileSystem.hpp" />
     <ClInclude Include="Core\Optional.hpp" />
+    <ClInclude Include="Core\Span.hpp" />
     <ClInclude Include="Date.h" />
     <ClInclude Include="Drawing\SoftwareDrawingEngine.h" />
     <ClInclude Include="Environment.h" />
@@ -259,6 +264,7 @@
     <ClInclude Include="Platform\Platform.h" />
     <ClInclude Include="ProgressBar.h" />
     <ClInclude Include="S5\S5.h" />
+    <ClInclude Include="S5\SawyerStream.h" />
     <ClInclude Include="Scenario.h" />
     <ClInclude Include="ScenarioManager.h" />
     <ClInclude Include="Station.h" />
@@ -266,7 +272,6 @@
     <ClInclude Include="Things\Misc.h" />
     <ClInclude Include="Things\Thing.h" />
     <ClInclude Include="Things\ThingManager.h" />
-    <ClInclude Include="Things\Vehicle.h" />
     <ClInclude Include="Title.h" />
     <ClInclude Include="Town.h" />
     <ClInclude Include="TownManager.h" />
@@ -286,6 +291,8 @@
     <ClInclude Include="Utility\Stream.hpp" />
     <ClInclude Include="Utility\String.hpp" />
     <ClInclude Include="Utility\Yaml.hpp" />
+    <ClInclude Include="Vehicles\Orders.h" />
+    <ClInclude Include="Vehicles\Vehicle.h" />
     <ClInclude Include="Viewport.hpp" />
     <ClInclude Include="ViewportManager.h" />
     <ClInclude Include="Widget.h" />
@@ -326,7 +333,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <PackageReference Include="OpenLoco.Dependencies" Version="1.2.0">
+    <PackageReference Include="OpenLoco.Dependencies" Version="1.3.0">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
   </ItemGroup>
