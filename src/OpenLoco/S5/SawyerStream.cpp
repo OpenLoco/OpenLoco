@@ -176,7 +176,7 @@ bool SawyerStreamReader::validateChecksum()
         uint8_t buffer[2048];
         for (uint32_t i = 0; i < fileLength - 4; i += sizeof(buffer))
         {
-            auto readLength = std::min(sizeof(buffer), fileLength - 4 - i);
+            auto readLength = std::min<size_t>(sizeof(buffer), fileLength - 4 - i);
             _stream.read(reinterpret_cast<char*>(buffer), readLength);
             for (size_t j = 0; j < readLength; j++)
             {
