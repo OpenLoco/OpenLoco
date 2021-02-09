@@ -69,7 +69,7 @@ namespace OpenLoco::Vehicles
                 if ((scenarioTicks() & 3) == 0)
                 {
                     auto v2 = car.body; // body
-                    smoke::create(loc16(v2->x, v2->y, v2->z + 4));
+                    Smoke::create(loc16(v2->x, v2->y, v2->z + 4));
                 }
             }
 
