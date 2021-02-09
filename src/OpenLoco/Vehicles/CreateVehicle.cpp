@@ -119,7 +119,7 @@ namespace OpenLoco::Vehicles
                 Vehicle train(head);
                 if (head->vehicleType == VehicleType::aircraft || head->vehicleType == VehicleType::ship)
                 {
-                    if (train.veh2->var_73 & (1 << 0))
+                    if (train.veh2->var_73 & Flags73::isBrokenDown)
                     {
                         gGameCommandErrorText = StringIds::vehicle_has_broken_down;
                         return false;
