@@ -10,7 +10,7 @@ namespace OpenLoco
     struct MoneyEffect;
     struct VehicleCrashParticle;
     struct ExplosionCloud;
-    struct Spark;
+    struct Splash;
     struct Fireball;
     struct ExplosionSmoke;
     struct Smoke;
@@ -19,10 +19,10 @@ namespace OpenLoco
     {
         exhaust = 0, // Steam from the exhaust
         redGreenCurrency = 1,
-        windowCurrency = 2,
-        vehicleCrashParticle = 3,
-        explosionCloud = 4,
-        spark = 5,
+        windowCurrency = 2,       // currency which is created in the company's colour when a transaction is made (for example the train arrives with a passengers into the station)
+        vehicleCrashParticle = 3, // parts (particles) of vehicle after crash which they fall to the ground after explosion
+        explosionCloud = 4,       // explosion which is created when two trains (or maybe other vehicles) crash to each other
+        splash = 5,               // splash when particles after explosion land to water and creates a splash (exploding train on the bridge)
         fireball = 6,
         explosionSmoke = 7,
         smoke = 8 // Smoke from broken down train
@@ -46,7 +46,7 @@ namespace OpenLoco
         MoneyEffect* asWindowCurrency() const { return as<MoneyEffect, MiscThingType::windowCurrency>(); }
         VehicleCrashParticle* asVehicleCrashParticle() const { return as<VehicleCrashParticle, MiscThingType::vehicleCrashParticle>(); }
         ExplosionCloud* asExplosionCloud() const { return as<ExplosionCloud, MiscThingType::explosionCloud>(); }
-        Spark* asSpark() const { return as<Spark, MiscThingType::spark>(); }
+        Splash* asSplash() const { return as<Splash, MiscThingType::splash>(); }
         Fireball* asFireball() const { return as<Fireball, MiscThingType::fireball>(); }
         ExplosionSmoke* asExplosionSmoke() const { return as<ExplosionSmoke, MiscThingType::explosionSmoke>(); }
         Smoke* asSmoke() const { return as<Smoke, MiscThingType::smoke>(); }
@@ -100,12 +100,12 @@ namespace OpenLoco
         //static ExplosionCloud* create(loc16 loc);
     };
 
-    struct Spark : MiscBase
+    struct Splash : MiscBase
     {
         uint8_t pad_20[0x28 - 0x20];
         uint16_t frame; // 0x28
 
-        //static Spark* create(loc16 loc);
+        //static Splash* create(loc16 loc);
     };
 
     struct Fireball : MiscBase

@@ -115,7 +115,7 @@ namespace OpenLoco::Paint
         session.addToPlotListAsParent(imageId, { 0, 0, particle->z }, { 1, 1, 0 });
     }
 
-    static void paintSparkEntity(PaintSession& session, Spark* particle)
+    static void paintSplashEntity(PaintSession& session, Splash* particle)
     {
         Gfx::drawpixelinfo_t* dpi = session.getContext();
         if (dpi->zoom_level > 2)
@@ -123,39 +123,39 @@ namespace OpenLoco::Paint
             return;
         }
 
-        static const std::array<uint32_t, 28> sparkImageIds = {
-            ImageIds::spark_00,
-            ImageIds::spark_01,
-            ImageIds::spark_02,
-            ImageIds::spark_03,
-            ImageIds::spark_04,
-            ImageIds::spark_05,
-            ImageIds::spark_06,
-            ImageIds::spark_07,
-            ImageIds::spark_08,
-            ImageIds::spark_09,
-            ImageIds::spark_10,
-            ImageIds::spark_11,
-            ImageIds::spark_12,
-            ImageIds::spark_13,
-            ImageIds::spark_14,
-            ImageIds::spark_15,
-            ImageIds::spark_16,
-            ImageIds::spark_17,
-            ImageIds::spark_18,
-            ImageIds::spark_19,
-            ImageIds::spark_20,
-            ImageIds::spark_21,
-            ImageIds::spark_22,
-            ImageIds::spark_23,
-            ImageIds::spark_24,
-            ImageIds::spark_25,
-            ImageIds::spark_26,
-            ImageIds::spark_27
+        static const std::array<uint32_t, 28> splashImageIds = {
+            ImageIds::splash_00,
+            ImageIds::splash_01,
+            ImageIds::splash_02,
+            ImageIds::splash_03,
+            ImageIds::splash_04,
+            ImageIds::splash_05,
+            ImageIds::splash_06,
+            ImageIds::splash_07,
+            ImageIds::splash_08,
+            ImageIds::splash_09,
+            ImageIds::splash_10,
+            ImageIds::splash_11,
+            ImageIds::splash_12,
+            ImageIds::splash_13,
+            ImageIds::splash_14,
+            ImageIds::splash_15,
+            ImageIds::splash_16,
+            ImageIds::splash_17,
+            ImageIds::splash_18,
+            ImageIds::splash_19,
+            ImageIds::splash_20,
+            ImageIds::splash_21,
+            ImageIds::splash_22,
+            ImageIds::splash_23,
+            ImageIds::splash_24,
+            ImageIds::splash_25,
+            ImageIds::splash_26,
+            ImageIds::splash_27
         };
 
-        assert(static_cast<size_t>(particle->frame / 256) < sparkImageIds.size());
-        uint32_t imageId = sparkImageIds.at(particle->frame / 256);
+        assert(static_cast<size_t>(particle->frame / 256) < splashImageIds.size());
+        uint32_t imageId = splashImageIds.at(particle->frame / 256);
         session.addToPlotListAsParent(imageId, { 0, 0, particle->z }, { 1, 1, 0 });
     }
 
@@ -295,9 +295,9 @@ namespace OpenLoco::Paint
                 break;
             }
 
-            case MiscThingType::spark: // 5
+            case MiscThingType::splash: // 5
             {
-                paintSparkEntity(session, base->asSpark());
+                paintSplashEntity(session, base->asSplash());
                 break;
             }
 
