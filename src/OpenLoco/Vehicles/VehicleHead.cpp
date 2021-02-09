@@ -909,9 +909,46 @@ namespace OpenLoco::Vehicles
     // 0x004707C0
     void VehicleHead::advanceToNextRoutableOrder()
     {
-        registers regs;
-        regs.esi = reinterpret_cast<int32_t>(this);
-        call(0x004707C0, regs);
+        if (sizeOfOrderTable == 1)
+        {
+            return;
+        }
+        OrderTableView orders(orderTableOffset);
+        auto curOrder = orders.atOffset(currentOrder);
+        if (curOrder->hasFlag(OrderFlags::IsRoutable))
+        {
+            return;
+        }
+
+        // Loop through from current looking for a routable order
+        auto bkupCurOrder = curOrder;
+        for (; curOrder != orders.end(); ++curOrder)
+        {
+            if (curOrder->hasFlag(OrderFlags::IsRoutable))
+            {
+                auto newOrder = curOrder->getOffset() - orderTableOffset;
+                if (newOrder != currentOrder)
+                {
+                    currentOrder = newOrder;
+                    Ui::WindowManager::sub_4B93A5(id);
+                    return;
+                }
+            }
+        }
+        // Loop through from the beginning to find routable order
+        for (curOrder = orders.begin(); curOrder->getOffset() != bkupCurOrder->getOffset(); ++curOrder)
+        {
+            if (curOrder->hasFlag(OrderFlags::IsRoutable))
+            {
+                auto newOrder = curOrder->getOffset() - orderTableOffset;
+                if (newOrder != currentOrder)
+                {
+                    currentOrder = newOrder;
+                    Ui::WindowManager::sub_4B93A5(id);
+                    return;
+                }
+            }
+        }
     }
 
     // 0x00427BF2
