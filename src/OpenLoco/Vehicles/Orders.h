@@ -220,5 +220,6 @@ namespace OpenLoco::Vehicles
         OrderTableView::Iterator end() const;
 
         Order* atIndex(const uint8_t index) const;
+        OrderTableView::Iterator atOffset(const uint8_t offset) const
     };
 }
