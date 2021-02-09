@@ -18,6 +18,7 @@
 #include "../Types.hpp"
 #include "../Ui/ScrollView.h"
 #include "../Ui/WindowManager.h"
+#include "../Vehicles/Orders.h"
 #include "../Vehicles/Vehicle.h"
 #include "../Widget.h"
 
@@ -67,8 +68,6 @@ namespace OpenLoco::Ui::Windows::Map
     static loco_global<uint8_t[19], 0x00F253F2> _routeColours;
     static loco_global<uint32_t, 0x00525E28> _dword_525E28;
     static loco_global<company_id_t, 0x00525E3C> _playerCompanyId;
-    constexpr uint32_t max_orders = 256000;
-    static loco_global<uint8_t[max_orders], 0x00987C5C> _dword_987C5C; // ?orders? ?routing related?
     static loco_global<uint8_t[CompanyManager::max_companies + 1], 0x009C645C> _companyColours;
     static loco_global<int16_t, 0x112C876> _currentFontSpriteBase;
     static loco_global<char[512], 0x0112CC04> _stringFormatBuffer;
@@ -1088,49 +1087,20 @@ namespace OpenLoco::Ui::Windows::Map
         if (!colour)
             return;
 
-        static const uint8_t byte_4FE088[] = {
-            0,
-            11,
-            11,
-            3,
-            4,
-            4,
-            0,
-            0,
-        };
-
-        static const uint8_t dword_4FE070[] = {
-            1,
-            2,
-            2,
-            6,
-            1,
-            1,
-        };
-
         xy32 startPos = { Location::null, 0 };
         xy32 endPos = { Location::null, 0 };
-        auto index = train.head->orderTableOffset;
-        auto lastOrder = _dword_987C5C[index] & 0x7;
-
-        while (lastOrder != 0)
+        for (auto& order : Vehicles::OrderTableView(train.head->orderTableOffset))
         {
-            if (byte_4FE088[lastOrder] & (1 << 3))
+            if (order.hasFlag(Vehicles::OrderFlags::HasStation))
             {
-                auto order = _dword_987C5C[index] & 0xC0;
-                order <<= 2;
-                order |= _dword_987C5C[index + 1];
-
-                auto station = StationManager::get(order);
+                auto* stationOrder = static_cast<Vehicles::OrderStation*>(&order);
+                auto station = StationManager::get(stationOrder->getStation());
                 map_pos stationPos = { station->x, station->y };
 
                 auto routePos = drawRouteLine(dpi, startPos, endPos, stationPos, *colour);
                 startPos = routePos.first;
                 endPos = routePos.second;
             }
-
-            index += dword_4FE070[lastOrder];
-            lastOrder = _dword_987C5C[index] & 0x7;
         }
 
         if (startPos.x == Location::null || endPos.x == Location::null)
