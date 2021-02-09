@@ -39,11 +39,11 @@ namespace OpenLoco::Paint
     {
         if (Config::get().construction_marker)
         {
-            return Gfx::recolour(imageId, PaletteIndex::index_2C);
+            return Gfx::recolourTranslucent(imageId, PaletteIndex::index_31);
         }
         else
         {
-            return Gfx::recolourTranslucent(imageId, PaletteIndex::index_31);
+            return Gfx::recolour(imageId, PaletteIndex::index_2C);
         }
     }
 
