@@ -1089,9 +1089,23 @@ namespace OpenLoco::Audio
 
         if (!_music_channel.isPlaying())
         {
-            _currentSong = chooseNextMusicTrack(_lastSong);
-            _lastSong = _currentSong;
+            // Not playing, but the 'current song' is last song? It's been requested manually!
+            bool requestedSong = _lastSong != no_song && _lastSong == _currentSong;
 
+            // Choose a track to play, unless we have requested one track in particular.
+            if (_currentSong == no_song || !requestedSong)
+            {
+                auto trackToExclude = _lastSong;
+                _lastSong = _currentSong;
+                _currentSong = chooseNextMusicTrack(trackToExclude);
+            }
+            else
+            {
+                // We're choosing this one, but the next one should be decided automatically again.
+                _lastSong = no_song;
+            }
+
+            // Load info on the song to play.
             const auto& mi = MusicInfo[_currentSong];
             auto path = Environment::getPath((path_id)mi.path_id);
             if (_music_channel.load(path))
