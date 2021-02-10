@@ -815,8 +815,8 @@ namespace OpenLoco::Vehicles
     // 0x004B9987
     void VehicleHead::checkIfAtOrderStation()
     {
-        OrderTableView orders(orderTableOffset);
-        auto curOrder = orders.atOffset(currentOrder);
+        OrderRingView orders(orderTableOffset, currentOrder);
+        auto curOrder = orders.begin();
         auto* orderStation = curOrder->as<OrderStation>();
         if (orderStation == nullptr)
         {
@@ -829,15 +829,7 @@ namespace OpenLoco::Vehicles
         }
 
         curOrder++;
-
-        if (curOrder->is<OrderEnd>())
-        {
-            currentOrder = 0;
-        }
-        else
-        {
-            currentOrder = curOrder->getOffset() - orderTableOffset;
-        }
+        currentOrder = curOrder->getOffset() - orderTableOffset;
         Ui::WindowManager::sub_4B93A5(id);
     }
 
@@ -913,40 +905,18 @@ namespace OpenLoco::Vehicles
         {
             return;
         }
-        OrderTableView orders(orderTableOffset);
-        auto curOrder = orders.atOffset(currentOrder);
-        if (curOrder->hasFlag(OrderFlags::IsRoutable))
+        OrderRingView orders(orderTableOffset, currentOrder);
+        for (auto& order : orders)
         {
-            return;
-        }
-
-        // Loop through from current looking for a routable order
-        auto bkupCurOrder = curOrder;
-        for (; curOrder != orders.end(); ++curOrder)
-        {
-            if (curOrder->hasFlag(OrderFlags::IsRoutable))
+            if (order.hasFlag(OrderFlags::IsRoutable))
             {
-                auto newOrder = curOrder->getOffset() - orderTableOffset;
+                auto newOrder = order.getOffset() - orderTableOffset;
                 if (newOrder != currentOrder)
                 {
                     currentOrder = newOrder;
                     Ui::WindowManager::sub_4B93A5(id);
-                    return;
                 }
-            }
-        }
-        // Loop through from the beginning to find routable order
-        for (curOrder = orders.begin(); curOrder->getOffset() != bkupCurOrder->getOffset(); ++curOrder)
-        {
-            if (curOrder->hasFlag(OrderFlags::IsRoutable))
-            {
-                auto newOrder = curOrder->getOffset() - orderTableOffset;
-                if (newOrder != currentOrder)
-                {
-                    currentOrder = newOrder;
-                    Ui::WindowManager::sub_4B93A5(id);
-                    return;
-                }
+                return;
             }
         }
     }
