@@ -74,8 +74,17 @@ namespace OpenLoco::Paint
             return;
         }
 
-        loco_global<int32_t[5], 0x4FAAB4> vehicle_particle_base_sprites;
-        uint32_t imageId = vehicle_particle_base_sprites[particle->crashedSpriteBase] + particle->frame / 256;
+        static const std::unordered_map<int, const std::array<uint32_t, 12>> vehicleCrashParticleImageIds = {
+            { 0, { ImageIds::vehicle_crash_0_00, ImageIds::vehicle_crash_0_01, ImageIds::vehicle_crash_0_02, ImageIds::vehicle_crash_0_03, ImageIds::vehicle_crash_0_04, ImageIds::vehicle_crash_0_05, ImageIds::vehicle_crash_0_06, ImageIds::vehicle_crash_0_07, ImageIds::vehicle_crash_0_08, ImageIds::vehicle_crash_0_09, ImageIds::vehicle_crash_0_10, ImageIds::vehicle_crash_0_11 } },
+            { 1, { ImageIds::vehicle_crash_1_00, ImageIds::vehicle_crash_1_01, ImageIds::vehicle_crash_1_02, ImageIds::vehicle_crash_1_03, ImageIds::vehicle_crash_1_04, ImageIds::vehicle_crash_1_05, ImageIds::vehicle_crash_1_06, ImageIds::vehicle_crash_1_07, ImageIds::vehicle_crash_1_08, ImageIds::vehicle_crash_1_09, ImageIds::vehicle_crash_1_10, ImageIds::vehicle_crash_1_11 } },
+            { 2, { ImageIds::vehicle_crash_2_00, ImageIds::vehicle_crash_2_01, ImageIds::vehicle_crash_2_02, ImageIds::vehicle_crash_2_03, ImageIds::vehicle_crash_2_04, ImageIds::vehicle_crash_2_05, ImageIds::vehicle_crash_2_06, ImageIds::vehicle_crash_2_07, ImageIds::vehicle_crash_2_08, ImageIds::vehicle_crash_2_09, ImageIds::vehicle_crash_2_10, ImageIds::vehicle_crash_2_11 } },
+            { 3, { ImageIds::vehicle_crash_3_00, ImageIds::vehicle_crash_3_01, ImageIds::vehicle_crash_3_02, ImageIds::vehicle_crash_3_03, ImageIds::vehicle_crash_3_04, ImageIds::vehicle_crash_3_05, ImageIds::vehicle_crash_3_06, ImageIds::vehicle_crash_3_07, ImageIds::vehicle_crash_3_08, ImageIds::vehicle_crash_3_09, ImageIds::vehicle_crash_3_10, ImageIds::vehicle_crash_3_11 } },
+            { 4, { ImageIds::vehicle_crash_4_00, ImageIds::vehicle_crash_4_01, ImageIds::vehicle_crash_4_02, ImageIds::vehicle_crash_4_03, ImageIds::vehicle_crash_4_04, ImageIds::vehicle_crash_4_05, ImageIds::vehicle_crash_4_06, ImageIds::vehicle_crash_4_07, ImageIds::vehicle_crash_4_08, ImageIds::vehicle_crash_4_09, ImageIds::vehicle_crash_4_10, ImageIds::vehicle_crash_4_11 } }
+        };
+
+        assert(static_cast<size_t>(particle->frame / 256) < 12);
+        assert((particle->crashedSpriteBase) < 5);
+        uint32_t imageId = vehicleCrashParticleImageIds.at(particle->crashedSpriteBase).at(particle->frame / 256);
         imageId = Gfx::recolour2(imageId, particle->colourScheme);
 
         session.addToPlotListAsParent(imageId, { 0, 0, particle->z }, { 1, 1, 0 });
