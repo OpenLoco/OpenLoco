@@ -9,6 +9,7 @@
 #include <time.h>
 
 #ifdef __linux__
+#include <linux/limits.h>
 #include <sys/types.h>
 #include <unistd.h>
 #endif
