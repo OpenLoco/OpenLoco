@@ -23,6 +23,10 @@ namespace OpenLoco::Vehicles
         constexpr uint8_t HasCargo = (1 << 2);
         constexpr uint8_t HasStation = (1 << 3);
     }
+    struct OrderStation;
+    struct OrderStopAt;
+    struct OrderRouteThrough;
+
 #pragma pack(push, 1)
     struct Order
     {
@@ -45,6 +49,16 @@ namespace OpenLoco::Vehicles
 
         template<typename T>
         constexpr bool is() const { return getType() == T::TYPE; }
+
+        template<>
+        constexpr bool is<OrderStation>() const
+        {
+            if (is<OrderStopAt>())
+            {
+                return true;
+            }
+            return is<OrderRouteThrough>();
+        }
         template<typename T>
         T* as() { return is<T>() ? reinterpret_cast<T*>(this) : nullptr; }
         template<typename T>
