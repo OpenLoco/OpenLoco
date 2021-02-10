@@ -770,9 +770,36 @@ namespace OpenLoco::Vehicles
     // 0x004B980A
     void VehicleHead::tryCreateInitialMovementSound()
     {
-        registers regs;
-        regs.esi = reinterpret_cast<int32_t>(this);
-        call(0x004B980A, regs);
+        if (status != Status::unk_2)
+        {
+            return;
+        }
+
+        if (vehicleUpdate_initialStatus != Status::stopped && vehicleUpdate_initialStatus != Status::unk_3)
+        {
+            return;
+        }
+
+        Vehicle train(this);
+        auto* vehObj = train.cars.firstCar.body->object();
+        if (vehObj != nullptr && vehObj->numStartSounds != 0)
+        {
+            auto numSounds = vehObj->numStartSounds & 0x7F;
+            if (vehObj->numStartSounds & (1<<7))
+            {
+                numSounds = std::max(numSounds - 1, 1);
+            }
+            auto randSoundIndex = gPrng().randNext(numSounds - 1);
+            auto randSoundId = Audio::makeObjectSoundId(vehObj->startSounds[randSoundIndex]);
+            Vehicle2* veh2 = vehicleUpdate_2;
+            auto tileHeight = Map::tileElementHeight(veh2->x, veh2->y);
+            auto volume = 0;
+            if (veh2->z < tileHeight.landHeight)
+            {
+                volume = -1500;
+            }
+            Audio::playSound(randSoundId, { veh2->x, veh2->y, veh2->z + 22 }, volume, 22050);
+        }
     }
 
     // 0x004B996F
