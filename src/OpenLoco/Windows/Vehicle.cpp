@@ -185,6 +185,8 @@ namespace OpenLoco::Ui::Vehicle
             makeWidget({ 240, 152 }, { 24, 12 }, widget_type::wt_9, 1, ImageIds::red_arrow_down, StringIds::tooltip_route_move_order_down),
             widgetEnd(),
         };
+
+        static void addNewOrder(window* const self, const Vehicles::Order& order);
     }
 
     static loco_global<uint8_t, 0x00525FC5> _525FC5;
@@ -942,6 +944,48 @@ namespace OpenLoco::Ui::Vehicle
             return self;
         }
 
+        static void cloneVehicle(window* self)
+        {
+            static loco_global<uint16_t, 0x0113642A> _113642A;
+            auto head = Common::getVehicle(self);
+            Vehicles::Vehicle train(head);
+            Vehicles::VehicleHead* newHead = nullptr;
+            for (auto& car : train.cars)
+            {
+                if (newHead == nullptr)
+                {
+                    GameCommands::do_5(car.front->object_id, -1);
+                    newHead = ThingManager::get<Vehicles::VehicleHead>(ThingManager::get<Vehicles::VehicleBase>(_113642A)->getHead());
+                }
+                else
+                {
+                    GameCommands::do_5(car.front->object_id, newHead->head);
+                }
+            }
+            auto* newWnd = Vehicle::Details::open(newHead);
+
+            // Copy orders
+            // Route::addNewOrder expects window on Route tab but we can just pretend
+            // TODO: Change this in the future.
+            newWnd->var_842 = 0;
+            std::vector<std::shared_ptr<Vehicles::Order>> clonedOrders;
+            for (auto& existingOrders : Vehicles::OrderTableView(head->orderTableOffset))
+            {
+                clonedOrders.push_back(existingOrders.clone());
+            }
+            for (auto& order : clonedOrders)
+            {
+                Route::addNewOrder(newWnd, *order);
+            }
+            newWnd->var_842 = 0;
+
+            // Copy express/local
+            if (train.veh1->var_48 & (1 << 1))
+            {
+                GameCommands::do12(newHead->id, 2);
+            }
+        }
+
         // 0x004B3823
         static void onMouseUp(window* self, widget_index widgetIndex)
         {
@@ -964,7 +1008,8 @@ namespace OpenLoco::Ui::Vehicle
                     Common::onPickup(self, widx::pickup);
                     break;
                 case widx::buildNew:
-                    BuildVehicle::open(self->number, 0);
+                    cloneVehicle(self);
+                    //BuildVehicle::open(self->number, 0);
                     break;
                 case widx::remove:
                 {
