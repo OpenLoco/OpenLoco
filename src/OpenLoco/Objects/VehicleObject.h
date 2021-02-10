@@ -182,6 +182,12 @@ namespace OpenLoco
         engine2
     };
 
+    namespace NumStartSounds
+    {
+        constexpr uint8_t hasCrossingWhistle = 1 << 7;
+        constexpr uint8_t mask = ~hasCrossingWhistle;
+    }
+
     struct vehicle_object
     {
         string_id name;     // 0x00
@@ -226,8 +232,8 @@ namespace OpenLoco
             VehicleObjectEngine2Sound engine2;
         } sound;
         uint8_t pad_135[0x15A - 0x135];
-        uint8_t numStartSounds;           // 0x15A possibly something else stuffed in (1<<7)
-        sound_object_id_t startSounds[3]; // 0x15B sound array length numStartSounds
+        uint8_t numStartSounds;           // 0x15A use mask when accessing hasCrossingWhistle stuffed in (1 << 7)
+        sound_object_id_t startSounds[3]; // 0x15B sound array length numStartSounds highest sound is the crossing whistle
 
         void drawPreviewImage(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y) const;
         void drawDescription(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y, const int16_t width) const;
