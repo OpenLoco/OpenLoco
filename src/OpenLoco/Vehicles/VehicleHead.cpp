@@ -872,9 +872,14 @@ namespace OpenLoco::Vehicles
     // 0x0042843E
     void VehicleHead::produceLeavingDockSound()
     {
-        // Creates a random sound
-        registers regs;
-        regs.esi = reinterpret_cast<int32_t>(this);
-        call(0x0042843E, regs);
+        Vehicle train(this);
+        auto* vehObj = train.cars.firstCar.body->object();
+        if (vehObj != nullptr && vehObj->numStartSounds != 0)
+        {
+            auto randSoundIndex = gPrng().randNext((vehObj->numStartSounds & 0x7F) - 1);
+            auto randSoundId = Audio::makeObjectSoundId(vehObj->startSounds[randSoundIndex]);
+            Vehicle2* veh2 = vehicleUpdate_2;
+            Audio::playSound(randSoundId, { veh2->x, veh2->y, veh2->z + 22 }, 0, 22050);
+        }
     }
 }

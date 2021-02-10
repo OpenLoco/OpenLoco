@@ -226,8 +226,8 @@ namespace OpenLoco
             VehicleObjectEngine2Sound engine2;
         } sound;
         uint8_t pad_135[0x15A - 0x135];
-        uint8_t num_sounds;             // 0x15A  possibly something else stuffed in (1<<7)
-        uint8_t var_15B[0x15E - 0x15B]; // sound array size num_sounds/tbc??
+        uint8_t numStartSounds;           // 0x15A possibly something else stuffed in (1<<7)
+        sound_object_id_t startSounds[3]; // 0x15B sound array length numStartSounds
 
         void drawPreviewImage(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y) const;
         void drawDescription(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y, const int16_t width) const;
