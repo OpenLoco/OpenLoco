@@ -41,50 +41,50 @@ namespace OpenLoco
 #pragma pack(push, 1)
     struct vehicle_object_sound_1
     {
-        uint8_t sound_object_id;
-        uint32_t var_01;
-        uint8_t var_05;
-        uint16_t var_06;
-        uint8_t var_08;
-        uint8_t var_09;
-        uint8_t var_0A;
+        uint8_t soundObjectId;     // 0x0
+        uint32_t minSpeed;         // 0x1 below this speed no sound created
+        uint8_t speedFreqFactor;   // 0x5
+        uint16_t baseFrequency;    // 0x6
+        uint8_t speedVolumeFactor; // 0x8
+        uint8_t baseVolume;        // 0x9
+        uint8_t maxVolume;         // 0xA
     };
 
     struct vehicle_object_sound_2
     {
-        uint8_t sound_object_id;
-        uint16_t var_01;
-        uint8_t var_03;
+        uint8_t soundObjectId;     // 0x0
+        uint16_t defaultFrequency; // 0x1
+        uint8_t defaultVolume;     // 0x3
         uint16_t var_04;
         uint8_t var_06;
         uint16_t var_07;
         uint8_t var_09;
-        uint16_t var_0A;
-        uint16_t var_0C;
-        uint8_t var_0E;
-        uint8_t var_0F;
-        uint8_t var_10;
+        uint16_t freqIncreaseStep;  // 0xA
+        uint16_t freqDecreaseStep;  // 0xC
+        uint8_t volumeIncreaseStep; // 0xE
+        uint8_t volumeDecreaseStep; // 0xF
+        uint8_t speedFreqFactor;    // 0x10
     };
 
     struct vehicle_object_sound_3
     {
-        uint8_t sound_object_id;
-        uint16_t var_01;
-        uint8_t var_03;
-        uint16_t var_04;
-        uint16_t var_06;
-        uint16_t var_08;
-        uint16_t var_0A;
-        uint16_t var_0C;
-        uint16_t var_0E;
-        uint16_t var_10;
+        uint8_t soundObjectId;         // 0x0
+        uint16_t defaultFrequency;     // 0x1
+        uint8_t defaultVolume;         // 0x2
+        uint16_t firstGearFrequency;   // 0x4 All subsequent gears are based on this frequency
+        uint16_t firstGearSpeed;       // 0x6
+        uint16_t secondGearFreqFactor; // 0x8
+        uint16_t secondGearSpeed;      // 0xA
+        uint16_t thirdGearFreqFactor;  // 0xC
+        uint16_t thirdGearSpeed;       // 0xE
+        uint16_t fourthGearFreqFactor; // 0x10
         uint8_t var_12;
         uint8_t var_13;
-        uint16_t var_14;
-        uint16_t var_16;
-        uint8_t var_18;
-        uint8_t var_19;
-        uint8_t var_1A;
+        uint16_t freqIncreaseStep;  // 0x14
+        uint16_t freqDecreaseStep;  // 0x16
+        uint8_t volumeIncreaseStep; // 0x18
+        uint8_t volumeDecreaseStep; // 0x19
+        uint8_t speedFreqFactor;    // 0x1A
     };
 
     struct simple_animation
@@ -174,6 +174,14 @@ namespace OpenLoco
         constexpr uint16_t unk_15 = 1 << 15; //noannounce??
     }
 
+    enum class DrivingSoundType : uint8_t
+    {
+        none,
+        friction,
+        engine1,
+        engine2
+    };
+
     struct vehicle_object
     {
         string_id name;     // 0x00
@@ -207,10 +215,10 @@ namespace OpenLoco
         uint8_t num_simultaneous_cargo_types; // 0x10C
         simple_animation animation[2];        // 0x10D
         uint8_t var_113;
-        uint16_t designed;      // 0x114
-        uint16_t obsolete;      // 0x116
-        uint8_t rack_rail_type; // 0x118
-        uint8_t startsnd_type;  // 0x119
+        uint16_t designed;                 // 0x114
+        uint16_t obsolete;                 // 0x116
+        uint8_t rack_rail_type;            // 0x118
+        DrivingSoundType drivingSoundType; // 0x119
         union
         {
             vehicle_object_sound_1 type_1;
