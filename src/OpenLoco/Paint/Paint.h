@@ -142,7 +142,7 @@ namespace OpenLoco::Paint
          * @param y_offsets @<edi>
          * @param rotation  @<ebp>
          */
-        void addToStringPlotList(uint32_t amount, string_id stringId, uint16_t y, uint16_t z, int8_t* y_offsets, int16_t offset_x);
+        void addToStringPlotList(uint32_t amount, string_id stringId, uint16_t y, uint16_t z, const int8_t* y_offsets, int16_t offset_x);
 
         /*      
          * @param amount    @<eax>
@@ -154,7 +154,7 @@ namespace OpenLoco::Paint
          * @param rotation  @<ebp>
          * @param colour    @<0xE3F0A8>
          */
-        void addToStringPlotList(uint32_t amount, string_id stringId, uint16_t y, uint16_t z, int8_t* y_offsets, int16_t offset_x, uint16_t colour);
+        void addToStringPlotList(uint32_t amount, string_id stringId, uint16_t y, uint16_t z, const int8_t* y_offsets, int16_t offset_x, uint16_t colour);
 
         /*      
          * @param rotation @<ebp>

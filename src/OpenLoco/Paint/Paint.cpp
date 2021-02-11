@@ -27,7 +27,7 @@ namespace OpenLoco::Paint
     loco_global<int32_t[4], 0x4FD200> _4FD200;
 
     // 0x004FD120
-    void PaintSession::addToStringPlotList(uint32_t amount, string_id stringId, uint16_t y, uint16_t z, int8_t* y_offsets, int16_t offset_x)
+    void PaintSession::addToStringPlotList(uint32_t amount, string_id stringId, uint16_t y, uint16_t z, const int8_t* y_offsets, int16_t offset_x)
     {
         registers regs;
         regs.bx = stringId;
@@ -41,7 +41,7 @@ namespace OpenLoco::Paint
     }
 
     // 0x004FD120
-    void PaintSession::addToStringPlotList(uint32_t amount, string_id stringId, uint16_t y, uint16_t z, int8_t* y_offsets, int16_t offset_x, uint16_t colour)
+    void PaintSession::addToStringPlotList(uint32_t amount, string_id stringId, uint16_t y, uint16_t z, const int8_t* y_offsets, int16_t offset_x, uint16_t colour)
     {
         registers regs;
         regs.bx = stringId;

@@ -12,6 +12,33 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Paint
 {
+    // 004FAAC8
+    // This is an array of 22 signed int8 elements which are repeating 20 times, can be optimized after C++ implementation of 0x004FD120 - addToStringPlotList
+    // clang-format off
+    static const int8_t wiggleYOffsets[440] = {
+        0, 1, 2, 2, 3, 3, 3, 3, 2, 2, 1, 0, -1, -2, -2, -3, -3, -2, -2, -1,
+        0, 1, 2, 2, 3, 3, 3, 3, 2, 2, 1, 0, -1, -2, -2, -3, -3, -2, -2, -1,
+        0, 1, 2, 2, 3, 3, 3, 3, 2, 2, 1, 0, -1, -2, -2, -3, -3, -2, -2, -1,
+        0, 1, 2, 2, 3, 3, 3, 3, 2, 2, 1, 0, -1, -2, -2, -3, -3, -2, -2, -1,
+        0, 1, 2, 2, 3, 3, 3, 3, 2, 2, 1, 0, -1, -2, -2, -3, -3, -2, -2, -1,
+        0, 1, 2, 2, 3, 3, 3, 3, 2, 2, 1, 0, -1, -2, -2, -3, -3, -2, -2, -1,
+        0, 1, 2, 2, 3, 3, 3, 3, 2, 2, 1, 0, -1, -2, -2, -3, -3, -2, -2, -1,
+        0, 1, 2, 2, 3, 3, 3, 3, 2, 2, 1, 0, -1, -2, -2, -3, -3, -2, -2, -1,
+        0, 1, 2, 2, 3, 3, 3, 3, 2, 2, 1, 0, -1, -2, -2, -3, -3, -2, -2, -1,
+        0, 1, 2, 2, 3, 3, 3, 3, 2, 2, 1, 0, -1, -2, -2, -3, -3, -2, -2, -1,
+        0, 1, 2, 2, 3, 3, 3, 3, 2, 2, 1, 0, -1, -2, -2, -3, -3, -2, -2, -1,
+        0, 1, 2, 2, 3, 3, 3, 3, 2, 2, 1, 0, -1, -2, -2, -3, -3, -2, -2, -1,
+        0, 1, 2, 2, 3, 3, 3, 3, 2, 2, 1, 0, -1, -2, -2, -3, -3, -2, -2, -1,
+        0, 1, 2, 2, 3, 3, 3, 3, 2, 2, 1, 0, -1, -2, -2, -3, -3, -2, -2, -1,
+        0, 1, 2, 2, 3, 3, 3, 3, 2, 2, 1, 0, -1, -2, -2, -3, -3, -2, -2, -1,
+        0, 1, 2, 2, 3, 3, 3, 3, 2, 2, 1, 0, -1, -2, -2, -3, -3, -2, -2, -1,
+        0, 1, 2, 2, 3, 3, 3, 3, 2, 2, 1, 0, -1, -2, -2, -3, -3, -2, -2, -1,
+        0, 1, 2, 2, 3, 3, 3, 3, 2, 2, 1, 0, -1, -2, -2, -3, -3, -2, -2, -1,
+        0, 1, 2, 2, 3, 3, 3, 3, 2, 2, 1, 0, -1, -2, -2, -3, -3, -2, -2, -1,
+        0, 1, 2, 2, 3, 3, 3, 3, 2, 2, 1, 0, -1, -2, -2, -3, -3, -2, -2, -1,
+    };
+    // clang-format on
+
     static void paintExhaustEntity(PaintSession& session, Exhaust* exhaustObject)
     {
         Gfx::drawpixelinfo_t* dpi = session.getContext();
@@ -38,14 +65,13 @@ namespace OpenLoco::Paint
     static void paintRedGreenCurrencyEntity(PaintSession& session, MoneyEffect* moneyEffect)
     {
         Gfx::drawpixelinfo_t* dpi = session.getContext();
-        int8_t* wiggleYOffsets = reinterpret_cast<int8_t*>(0x4FAAC8);
         if (dpi->zoom_level > 1)
         {
             return;
         }
         const string_id stringId = moneyEffect->amount >= 0 ? StringIds::format_currency_income_green : StringIds::format_currency_expense_red_negative;
         uint32_t currencyAmount = abs(moneyEffect->amount);
-        int8_t* yOffsets = &wiggleYOffsets[moneyEffect->wiggle];
+        const int8_t* yOffsets = &wiggleYOffsets[moneyEffect->wiggle];
 
         session.addToStringPlotList(currencyAmount, stringId, moneyEffect->y, moneyEffect->z, yOffsets, moneyEffect->offsetX);
     }
@@ -53,14 +79,13 @@ namespace OpenLoco::Paint
     static void paintWindowCurrencyEntity(PaintSession& session, MoneyEffect* moneyEffect)
     {
         Gfx::drawpixelinfo_t* dpi = session.getContext();
-        int8_t* wiggleYOffsets = reinterpret_cast<int8_t*>(0x4FAAC8);
         if (dpi->zoom_level > 1)
         {
             return;
         }
         const string_id stringId = moneyEffect->amount >= 0 ? StringIds::format_currency_income_in_company_colour : StringIds::format_currency_expense_in_company_colour_negative;
         uint32_t currencyAmount = abs(moneyEffect->amount);
-        int8_t* yOffsets = &wiggleYOffsets[moneyEffect->wiggle];
+        const int8_t* yOffsets = &wiggleYOffsets[moneyEffect->wiggle];
         uint16_t companyColour = CompanyManager::getCompanyColour(moneyEffect->var_2E);
 
         session.addToStringPlotList(currencyAmount, stringId, moneyEffect->y, moneyEffect->z, yOffsets, moneyEffect->offsetX, companyColour);
