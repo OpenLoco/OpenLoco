@@ -134,6 +134,41 @@ namespace OpenLoco::Paint
         void setEntityPosition(const Map::map_pos& pos);
 
         /*      
+         * @param amount    @<eax>
+         * @param stringId  @<bx>
+         * @param y         @<cx>
+         * @param z         @<dx>
+         * @param offset_x  @<si>
+         * @param y_offsets @<edi>
+         * @param rotation  @<ebp>
+         */
+        void addToStringPlotList(uint32_t amount, string_id stringId, uint16_t y, uint16_t z, const int8_t* y_offsets, int16_t offset_x);
+
+        /*      
+         * @param amount    @<eax>
+         * @param stringId  @<bx>
+         * @param y         @<cx>
+         * @param z         @<dx>
+         * @param offset_x  @<si>
+         * @param y_offsets @<edi>
+         * @param rotation  @<ebp>
+         * @param colour    @<0xE3F0A8>
+         */
+        void addToStringPlotList(uint32_t amount, string_id stringId, uint16_t y, uint16_t z, const int8_t* y_offsets, int16_t offset_x, uint16_t colour);
+
+        /*      
+         * @param rotation @<ebp>
+         * @param imageId  @<ebx>
+         * @param offset_x @<al>
+         * @param offset_y @<cl>
+         * @param offset_z @<dx>
+         * @param boundBoxLength_x @<di>
+         * @param boundBoxLength_y @<si>
+         * @param boundBoxLength_z @<ah>
+         */
+        void addToPlotListAsParent(uint32_t imageId, const Map::map_pos3& offset, const Map::map_pos3& boundBoxSize);
+
+        /*      
          * @param rotation @<ebp>
          * @param imageId  @<ebx>
          * @param offset_x @<al>
@@ -147,6 +182,7 @@ namespace OpenLoco::Paint
          * @param boundBoxOffset_z @<0xE3F0A4>
          */
         void addToPlotListAsParent(uint32_t imageId, const Map::map_pos3& offset, const Map::map_pos3& boundBoxOffset, const Map::map_pos3& boundBoxSize);
+
         /*      
          * @param rotation @<ebp>
          * @param imageId  @<ebx>

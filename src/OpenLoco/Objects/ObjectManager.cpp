@@ -14,7 +14,7 @@ namespace OpenLoco::ObjectManager
     loco_global<interface_skin_object* [1], 0x0050C3D0> _interfaceObjects;
     loco_global<sound_object* [128], 0x0050C3D4> _soundObjects;
     loco_global<currency_object* [1], 0x0050C5D4> _currencyObjects;
-    loco_global<steam_object* [32], 0x0050C5D8> _steamObjects;
+    loco_global<SteamObject* [32], 0x0050C5D8> _steamObjects;
     loco_global<rock_object* [8], 0x0050C658> _rockObjects;
     loco_global<water_object* [1], 0x0050C678> _waterObjects;
     loco_global<land_object* [32], 0x0050C67C> _landObjects;
@@ -70,7 +70,7 @@ namespace OpenLoco::ObjectManager
     }
 
     template<>
-    steam_object* get(size_t id)
+    SteamObject* get(size_t id)
     {
         return _steamObjects[id];
     }

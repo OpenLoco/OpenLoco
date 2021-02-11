@@ -1,4 +1,5 @@
 #include "Gfx.h"
+#include "../Company.h"
 #include "../Console.h"
 #include "../Drawing/SoftwareDrawingEngine.h"
 #include "../Environment.h"
@@ -1186,6 +1187,11 @@ namespace OpenLoco::Gfx
     uint32_t recolour2(uint32_t image, uint8_t colour1, uint8_t colour2)
     {
         return ImageIdFlags::remap | ImageIdFlags::remap2 | (colour1 << 19) | (colour2 << 24) | image;
+    }
+
+    uint32_t recolour2(uint32_t image, ColourScheme colourScheme)
+    {
+        return recolour2(image, colourScheme.primary, colourScheme.secondary);
     }
 
     uint32_t recolourTranslucent(uint32_t image, uint8_t colour)

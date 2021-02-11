@@ -59,7 +59,7 @@ namespace OpenLoco
     struct interface_skin_object;
     struct sound_object;
     struct currency_object;
-    struct steam_object;
+    struct SteamObject;
     struct rock_object;
     struct water_object;
     struct land_object;
@@ -151,7 +151,7 @@ namespace OpenLoco::ObjectManager
     template<>
     interface_skin_object* get();
     template<>
-    steam_object* get(size_t id);
+    SteamObject* get(size_t id);
     template<>
     rock_object* get(size_t id);
     template<>

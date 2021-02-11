@@ -954,12 +954,12 @@ namespace OpenLoco::Vehicles
         loc.x += xFactor;
         loc.y += yFactor;
 
-        exhaust::create(loc, vehicleObject->animation[num].object_id | (soundCode ? 0 : 0x80));
+        Exhaust::create(loc, vehicleObject->animation[num].object_id | (soundCode ? 0 : 0x80));
         if (soundCode == false)
             return;
 
         var_55++;
-        steam_object* steam_obj = ObjectManager::get<steam_object>(vehicleObject->animation[num].object_id);
+        SteamObject* steam_obj = ObjectManager::get<SteamObject>(vehicleObject->animation[num].object_id);
         if (var_55 >= ((uint8_t)vehicleObject->animation[num].type) + 1)
         {
             var_55 = 0;
@@ -1083,7 +1083,7 @@ namespace OpenLoco::Vehicles
                 static_cast<int16_t>(y + yFactor),
                 static_cast<int16_t>(z + vehicleObject->animation[num].height)
             };
-            exhaust::create(loc, vehicleObject->animation[num].object_id);
+            Exhaust::create(loc, vehicleObject->animation[num].object_id);
         }
         else
         {
@@ -1130,7 +1130,7 @@ namespace OpenLoco::Vehicles
             loc.x += xFactor;
             loc.y += yFactor;
 
-            exhaust::create(loc, vehicleObject->animation[num].object_id);
+            Exhaust::create(loc, vehicleObject->animation[num].object_id);
         }
     }
 
@@ -1206,7 +1206,7 @@ namespace OpenLoco::Vehicles
         loc.x += xFactor;
         loc.y += yFactor;
 
-        exhaust::create(loc, vehicleObject->animation[num].object_id);
+        Exhaust::create(loc, vehicleObject->animation[num].object_id);
     }
 
     // 0x004ABDAD & 0x004AB3CA
@@ -1266,7 +1266,7 @@ namespace OpenLoco::Vehicles
         loc.x += xFactor;
         loc.y += yFactor;
 
-        exhaust::create(loc, vehicleObject->animation[num].object_id);
+        Exhaust::create(loc, vehicleObject->animation[num].object_id);
     }
 
     // 0x004ABEC3 & 0x004AB4E0
@@ -1348,7 +1348,7 @@ namespace OpenLoco::Vehicles
         loc.x += xFactor;
         loc.y += yFactor;
 
-        exhaust::create(loc, vehicleObject->animation[num].object_id);
+        Exhaust::create(loc, vehicleObject->animation[num].object_id);
     }
 
     // 0x004ABC8A & 0x004AB2A7
@@ -1402,7 +1402,7 @@ namespace OpenLoco::Vehicles
         loc.x += xFactor;
         loc.y += yFactor;
 
-        exhaust::create(loc, vehicleObject->animation[num].object_id);
+        Exhaust::create(loc, vehicleObject->animation[num].object_id);
 
         if (vehicleObject->var_113 == 0)
             return;
@@ -1418,6 +1418,6 @@ namespace OpenLoco::Vehicles
         loc.x += xFactor;
         loc.y += yFactor;
 
-        exhaust::create(loc, vehicleObject->animation[num].object_id);
+        Exhaust::create(loc, vehicleObject->animation[num].object_id);
     }
 }

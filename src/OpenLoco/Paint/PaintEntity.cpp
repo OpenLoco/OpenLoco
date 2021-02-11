@@ -6,6 +6,7 @@
 #include "../Things/ThingManager.h"
 #include "../Vehicles/Vehicle.h"
 #include "Paint.h"
+#include "PaintMiscEntity.h"
 #include "PaintVehicle.h"
 
 using namespace OpenLoco::Interop;
@@ -13,18 +14,6 @@ using namespace OpenLoco::Ui::ViewportInteraction;
 
 namespace OpenLoco::Paint
 {
-    // 0x00440325
-    static void paintMiscEntity(PaintSession& session, MiscBase* base)
-    {
-        registers regs{};
-        regs.ax = base->x;
-        regs.cx = base->y;
-        regs.dx = base->z;
-        regs.ebx = (base->sprite_yaw + (session.getRotation() << 4)) & 0x3F;
-        regs.esi = reinterpret_cast<int32_t>(base);
-        call(0x00440325, regs);
-    }
-
     template<typename FilterType>
     static void paintEntitiesWithFilter(PaintSession& session, const Map::map_pos& loc, FilterType&& filter)
     {

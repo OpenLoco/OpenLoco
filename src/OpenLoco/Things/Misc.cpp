@@ -6,13 +6,13 @@
 using namespace OpenLoco;
 using namespace OpenLoco::ObjectManager;
 
-steam_object* OpenLoco::exhaust::object() const
+SteamObject* OpenLoco::Exhaust::object() const
 {
-    return ObjectManager::get<steam_object>(object_id & 0x7F);
+    return ObjectManager::get<SteamObject>(object_id & 0x7F);
 }
 
 // 0x0044080C
-exhaust* OpenLoco::exhaust::create(loc16 loc, uint8_t type)
+Exhaust* OpenLoco::Exhaust::create(loc16 loc, uint8_t type)
 {
     if ((uint16_t)loc.x > 12287 || (uint16_t)loc.y > 12287)
         return nullptr;
@@ -24,7 +24,7 @@ exhaust* OpenLoco::exhaust::create(loc16 loc, uint8_t type)
     if (loc.z <= surface->baseZ() * 4)
         return nullptr;
 
-    auto _exhaust = static_cast<exhaust*>(ThingManager::createThing());
+    auto _exhaust = static_cast<Exhaust*>(ThingManager::createThing());
 
     if (_exhaust != nullptr)
     {
@@ -46,9 +46,9 @@ exhaust* OpenLoco::exhaust::create(loc16 loc, uint8_t type)
 }
 
 // 0x00440BEB
-smoke* OpenLoco::smoke::create(loc16 loc)
+Smoke* OpenLoco::Smoke::create(loc16 loc)
 {
-    auto t = static_cast<smoke*>(ThingManager::createThing());
+    auto t = static_cast<Smoke*>(ThingManager::createThing());
     if (t != nullptr)
     {
         t->var_14 = 44;
@@ -57,7 +57,7 @@ smoke* OpenLoco::smoke::create(loc16 loc)
         t->base_type = thing_base_type::misc;
         t->moveTo(loc);
         t->setSubType(MiscThingType::smoke);
-        t->var_28 = 0;
+        t->frame = 0;
     }
     return t;
 }

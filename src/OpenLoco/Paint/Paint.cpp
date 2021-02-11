@@ -21,8 +21,54 @@ namespace OpenLoco::Paint
         _spritePositionY = pos.y;
     }
 
+    loco_global<int32_t[4], 0x4FD120> _4FD120;
+    loco_global<int32_t[4], 0x4FD130> _4FD130;
     loco_global<int32_t[4], 0x4FD140> _4FD140;
     loco_global<int32_t[4], 0x4FD200> _4FD200;
+
+    // 0x004FD120
+    void PaintSession::addToStringPlotList(uint32_t amount, string_id stringId, uint16_t y, uint16_t z, const int8_t* y_offsets, int16_t offset_x)
+    {
+        registers regs;
+        regs.bx = stringId;
+        regs.edi = reinterpret_cast<int32_t>(y_offsets);
+        regs.si = offset_x;
+        regs.eax = amount;
+        regs.cx = y;
+        regs.dx = z;
+
+        call(_4FD120[currentRotation], regs);
+    }
+
+    // 0x004FD120
+    void PaintSession::addToStringPlotList(uint32_t amount, string_id stringId, uint16_t y, uint16_t z, const int8_t* y_offsets, int16_t offset_x, uint16_t colour)
+    {
+        registers regs;
+        regs.bx = stringId;
+        regs.edi = reinterpret_cast<int32_t>(y_offsets);
+        regs.si = offset_x;
+        regs.eax = amount;
+        regs.cx = y;
+        regs.dx = z;
+        addr<0xE3F0A8, uint16_t>() = colour;
+
+        call(_4FD120[currentRotation], regs);
+    }
+
+    // 0x004FD130
+    void PaintSession::addToPlotListAsParent(uint32_t imageId, const Map::map_pos3& offset, const Map::map_pos3& boundBoxSize)
+    {
+        registers regs;
+        regs.ebx = imageId;
+        regs.al = offset.x;
+        regs.cl = offset.y;
+        regs.dx = offset.z;
+        regs.di = boundBoxSize.x;
+        regs.si = boundBoxSize.y;
+        regs.ah = boundBoxSize.z;
+
+        call(_4FD130[currentRotation], regs);
+    }
 
     // 0x004FD140
     void PaintSession::addToPlotListAsParent(uint32_t imageId, const Map::map_pos3& offset, const Map::map_pos3& boundBoxOffset, const Map::map_pos3& boundBoxSize)
@@ -61,7 +107,6 @@ namespace OpenLoco::Paint
 
         call(_4FD200[currentRotation], regs);
     }
-
     // 0x0045E779
     void PaintSession::attachToPrevious(uint32_t imageId, const Map::map_pos& offset)
     {

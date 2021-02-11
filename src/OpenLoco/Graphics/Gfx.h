@@ -10,6 +10,8 @@
 namespace OpenLoco
 {
     using colour_t = uint8_t;
+    struct ColourScheme;
+
 }
 
 namespace OpenLoco::Gfx
@@ -231,6 +233,7 @@ namespace OpenLoco::Gfx
     uint32_t recolour(uint32_t image);
     uint32_t recolour(uint32_t image, uint8_t colour);
     uint32_t recolour2(uint32_t image, uint8_t colour1, uint8_t colour2);
+    uint32_t recolour2(uint32_t image, ColourScheme colourScheme);
     uint32_t recolourTranslucent(uint32_t image, uint8_t colour);
 
     void invalidateScreen();
