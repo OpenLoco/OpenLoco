@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../Company.h"
 #include "../Objects/SteamObject.h"
 #include "Thing.h"
 
