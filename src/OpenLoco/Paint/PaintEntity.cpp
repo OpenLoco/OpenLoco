@@ -1,5 +1,4 @@
 #include "PaintEntity.h"
-#include "../CompanyManager.h"
 #include "../Config.h"
 #include "../Interop/Interop.hpp"
 #include "../Map/Tile.h"
