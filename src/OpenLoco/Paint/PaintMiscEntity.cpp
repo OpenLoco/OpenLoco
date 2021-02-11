@@ -59,7 +59,7 @@ namespace OpenLoco::Paint
         }
         else
         {
-            session.addToPlotListAsParent(imageId, { 0, 0, exhaustObject->z }, { 1, 1, 0 }, { -12, -12, exhaustObject->z });
+            session.addToPlotListAsParent(imageId, { 0, 0, exhaustObject->z }, { -12, -12, exhaustObject->z }, { 24, 24, 0 });
         }
     }
 
