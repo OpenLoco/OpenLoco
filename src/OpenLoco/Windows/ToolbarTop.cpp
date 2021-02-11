@@ -14,6 +14,7 @@
 #include "../Objects/RoadObject.h"
 #include "../Objects/TrackObject.h"
 #include "../Objects/WaterObject.h"
+#include "../S5/S5.h"
 #include "../StationManager.h"
 #include "../Things/ThingManager.h"
 #include "../TownManager.h"
@@ -126,6 +127,51 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         Dropdown::setHighlightedItem(1);
     }
 
+    // 0x00441843
+    static bool saveGameOpen()
+    {
+        registers regs;
+        call(0x00441843, regs);
+        return regs.eax;
+    }
+
+    // 0x0043B1C4
+    static void prepareSaveGame()
+    {
+        Input::toolCancel();
+
+        if (isNetworked())
+        {
+            if (CompanyManager::updatingCompanyId() == CompanyManager::getControllingId())
+                GameCommands::do_72();
+            return;
+        }
+
+        if (!saveGameOpen())
+        {
+            // Cancelled by user
+            Gfx::invalidateScreen();
+            return;
+        }
+
+        static loco_global<char[512], 0x0112CE04> _savePath;
+        auto providedPath = fs::path(&_savePath[0]);
+        auto dirName = providedPath.parent_path();
+        auto baseName = providedPath.stem();
+        auto path = (dirName / baseName).u8string() + S5::extensionSV5;
+
+        // Store path to active file
+        static loco_global<char[256], 0x0050B745> _currentGameFilePath;
+        strncpy(&_currentGameFilePath[0], path.c_str(), std::size(_currentGameFilePath));
+
+        S5::SaveFlags flags = {};
+        if (Config::get().flags & Config::flags::export_objects_with_saves)
+            flags = S5::SaveFlags::savedGame;
+
+        if (!S5::save(path, flags) == 0)
+            Error::open(StringIds::error_game_save_failed, StringIds::null);
+    }
+
     // 0x0043B154
     static void loadsaveMenuDropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
     {
@@ -141,7 +187,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 
             case 1:
                 // Save game
-                call(0x0043B1C4);
+                prepareSaveGame();
                 break;
 
             case 3:
