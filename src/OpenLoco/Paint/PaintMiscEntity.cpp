@@ -53,7 +53,7 @@ namespace OpenLoco::Paint
         uint32_t imageId = edi[2 * exhaustObject->var_26];
         imageId = imageId + steamObject->baseImageId + steamObject->var_0A;
 
-        if ((steamObject->var_08 & 8) != 0)
+        if ((steamObject->var_08 & (1 << 3)) == 0)
         {
             session.addToPlotListAsParent(imageId, { 0, 0, exhaustObject->z }, { 1, 1, 0 });
         }
