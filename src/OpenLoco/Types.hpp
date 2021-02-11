@@ -128,6 +128,12 @@ namespace OpenLoco
         ship
     };
 
+    struct ColourScheme
+    {
+        uint8_t primary;
+        uint8_t secondary;
+    };
+
     constexpr uint8_t vehicleTypeCount = 6;
 
     namespace ZoomLevels

@@ -10,8 +10,6 @@
 namespace OpenLoco
 {
     using colour_t = uint8_t;
-    struct ColourScheme;
-
 }
 
 namespace OpenLoco::Gfx

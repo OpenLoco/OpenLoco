@@ -45,12 +45,6 @@ namespace OpenLoco
 
     constexpr size_t expenditureHistoryCapacity = 16;
 
-    struct ColourScheme
-    {
-        uint8_t primary;   // 0x1A
-        uint8_t secondary; // 0x1B
-    };
-
 #pragma pack(push, 1)
     struct company
     {
