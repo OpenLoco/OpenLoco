@@ -8,6 +8,7 @@
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/StringIds.h"
+#include "../MultiPlayer.h"
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/LandObject.h"
 #include "../Objects/ObjectManager.h"
@@ -143,7 +144,10 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         if (isNetworked())
         {
             if (CompanyManager::updatingCompanyId() == CompanyManager::getControllingId())
+            {
                 GameCommands::do_72();
+                MultiPlayer::setFlag(MultiPlayer::flags::flag_2);
+            }
             return;
         }
 
