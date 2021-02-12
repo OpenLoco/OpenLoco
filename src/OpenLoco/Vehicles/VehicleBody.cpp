@@ -333,7 +333,7 @@ namespace OpenLoco::Vehicles
         uint32_t xyz = std::numeric_limits<uint32_t>::max();
         if (xy_offset != 0)
         {
-            xyz = static_cast<uint64_t>(z_offset << 16) / xy_offset;
+            xyz = (static_cast<uint64_t>(z_offset) << 16) / xy_offset;
         }
 
         if (xyz > 10064)
@@ -373,7 +373,7 @@ namespace OpenLoco::Vehicles
         uint32_t xyz = std::numeric_limits<uint32_t>::max();
         if (xy_offset != 0)
         {
-            xyz = static_cast<uint64_t>(z_offset << 16) / xy_offset;
+            xyz = (static_cast<uint64_t>(z_offset) << 16) / xy_offset;
         }
 
         if (xyz >= 3331)
@@ -408,7 +408,7 @@ namespace OpenLoco::Vehicles
         uint32_t xy = std::numeric_limits<uint32_t>::max();
         if (y_offset != 0)
         {
-            xy = static_cast<uint64_t>(x_offset << 16) / y_offset;
+            xy = (static_cast<uint64_t>(x_offset) << 16) / y_offset;
         }
 
         if (xy >= 65536)
@@ -450,7 +450,7 @@ namespace OpenLoco::Vehicles
         uint32_t xy = std::numeric_limits<uint32_t>::max();
         if (y_offset != 0)
         {
-            xy = static_cast<uint64_t>(x_offset << 16) / y_offset;
+            xy = (static_cast<uint64_t>(x_offset) << 16) / y_offset;
         }
 
         if (xy >= 27146)
@@ -500,7 +500,7 @@ namespace OpenLoco::Vehicles
         uint32_t xy = std::numeric_limits<uint32_t>::max();
         if (y_offset != 0)
         {
-            xy = static_cast<uint64_t>(x_offset << 16) / y_offset;
+            xy = (static_cast<uint64_t>(x_offset) << 16) / y_offset;
         }
 
         if (xy >= 43790)
@@ -569,7 +569,7 @@ namespace OpenLoco::Vehicles
         uint32_t xy = std::numeric_limits<uint32_t>::max();
         if (y_offset != 0)
         {
-            xy = static_cast<uint64_t>(x_offset << 16) / y_offset;
+            xy = (static_cast<uint64_t>(x_offset) << 16) / y_offset;
         }
 
         if (xy >= 79856)
@@ -679,7 +679,7 @@ namespace OpenLoco::Vehicles
         uint32_t xy = std::numeric_limits<uint32_t>::max();
         if (y_offset != 0)
         {
-            xy = static_cast<uint64_t>(x_offset << 16) / y_offset;
+            xy = (static_cast<uint64_t>(x_offset) << 16) / y_offset;
         }
 
         if (xy >= 72308)
@@ -974,7 +974,7 @@ namespace OpenLoco::Vehicles
 
             for (auto& el : tile)
             {
-                if (itemFound && !(el.isGhost() | el.isFlag5()))
+                if (itemFound && !(el.isGhost() || el.isFlag5()))
                 {
                     break;
                 }
