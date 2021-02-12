@@ -250,6 +250,11 @@ namespace OpenLoco::Vehicles
         }
     }
 
+    static uint8_t calculateYaw0FromVector(int16_t xDiff, int16_t yDiff);
+    static uint8_t calculateYaw1FromVector(int16_t xDiff, int16_t yDiff);
+    static uint8_t calculateYaw2FromVector(int16_t xDiff, int16_t yDiff);
+    static uint8_t calculateYaw3FromVector(int16_t xDiff, int16_t yDiff);
+
     // 0x004AC255
     void VehicleBody::sub_4AC255(VehicleBogie* back_bogie, VehicleBogie* front_bogie)
     {
@@ -279,10 +284,10 @@ namespace OpenLoco::Vehicles
             sprite_pitch = updateSpritePitch(offset, front_bogie->z - back_bogie->z);
         }
 
-        // If the sprite_pitch is a transition
+        // If the sprite_pitch is a transition there is always 4 bits for yaw
         if (static_cast<uint8_t>(sprite_pitch) & 1)
         {
-            sprite_yaw = updateSpriteYaw1(distance_x, distance_y);
+            sprite_yaw = calculateYaw1FromVector(distance_x, distance_y);
         }
         else
         {
@@ -291,19 +296,19 @@ namespace OpenLoco::Vehicles
             switch (i)
             {
                 case 0:
-                    sprite_yaw = updateSpriteYaw0(distance_x, distance_y);
+                    sprite_yaw = calculateYaw0FromVector(distance_x, distance_y);
                     break;
                 case 1:
-                    sprite_yaw = updateSpriteYaw1(distance_x, distance_y);
+                    sprite_yaw = calculateYaw1FromVector(distance_x, distance_y);
                     break;
                 case 2:
-                    sprite_yaw = updateSpriteYaw2(distance_x, distance_y);
+                    sprite_yaw = calculateYaw2FromVector(distance_x, distance_y);
                     break;
                 case 3:
-                    sprite_yaw = updateSpriteYaw3(distance_x, distance_y);
+                    sprite_yaw = calculateYaw3FromVector(distance_x, distance_y);
                     break;
                 case 4:
-                    sprite_yaw = updateSpriteYaw4(distance_x, distance_y);
+                    sprite_yaw = calculateYaw4FromVector(distance_x, distance_y);
                     break;
             }
         }
@@ -388,27 +393,27 @@ namespace OpenLoco::Vehicles
         return vehicleBodyIndexToPitch[i];
     }
 
-    // 0x004BF52B
-    uint8_t VehicleBody::updateSpriteYaw0(int16_t x_offset, int16_t y_offset)
+    // 0x004BF52B For yaw of 3 bits
+    static uint8_t calculateYaw0FromVector(int16_t xDiff, int16_t yDiff)
     {
         uint32_t i = 0;
 
-        if (x_offset < 0)
+        if (xDiff < 0)
         {
             i += 2;
-            x_offset = -x_offset;
+            xDiff = -xDiff;
         }
 
-        if (y_offset < 0)
+        if (yDiff < 0)
         {
             i += 4;
-            y_offset = -y_offset;
+            yDiff = -yDiff;
         }
 
         uint32_t xy = std::numeric_limits<uint32_t>::max();
-        if (y_offset != 0)
+        if (yDiff != 0)
         {
-            xy = (static_cast<uint64_t>(x_offset) << 16) / y_offset;
+            xy = (static_cast<uint64_t>(xDiff) << 16) / yDiff;
         }
 
         if (xy >= 65536)
@@ -430,27 +435,27 @@ namespace OpenLoco::Vehicles
         return indexToYaw[i];
     }
 
-    // 0x004BF5B3
-    uint8_t VehicleBody::updateSpriteYaw1(int16_t x_offset, int16_t y_offset)
+    // 0x004BF5B3 For yaw of 4 bits
+    static uint8_t calculateYaw1FromVector(int16_t xDiff, int16_t yDiff)
     {
         uint32_t i = 0;
 
-        if (x_offset < 0)
+        if (xDiff < 0)
         {
             i += 3;
-            x_offset = -x_offset;
+            xDiff = -xDiff;
         }
 
-        if (y_offset < 0)
+        if (yDiff < 0)
         {
             i += 6;
-            y_offset = -y_offset;
+            yDiff = -yDiff;
         }
 
         uint32_t xy = std::numeric_limits<uint32_t>::max();
-        if (y_offset != 0)
+        if (yDiff != 0)
         {
-            xy = (static_cast<uint64_t>(x_offset) << 16) / y_offset;
+            xy = (static_cast<uint64_t>(xDiff) << 16) / yDiff;
         }
 
         if (xy >= 27146)
@@ -480,27 +485,27 @@ namespace OpenLoco::Vehicles
         return indexToYaw[i];
     }
 
-    // 0x004BF5FB
-    uint8_t VehicleBody::updateSpriteYaw2(int16_t x_offset, int16_t y_offset)
+    // 0x004BF5FB For yaw of 5 bits
+    static uint8_t calculateYaw2FromVector(int16_t xDiff, int16_t yDiff)
     {
         uint32_t i = 0;
 
-        if (x_offset < 0)
+        if (xDiff < 0)
         {
             i += 5;
-            x_offset = -x_offset;
+            xDiff = -xDiff;
         }
 
-        if (y_offset < 0)
+        if (yDiff < 0)
         {
             i += 10;
-            y_offset = -y_offset;
+            yDiff = -yDiff;
         }
 
         uint32_t xy = std::numeric_limits<uint32_t>::max();
-        if (y_offset != 0)
+        if (yDiff != 0)
         {
-            xy = (static_cast<uint64_t>(x_offset) << 16) / y_offset;
+            xy = (static_cast<uint64_t>(xDiff) << 16) / yDiff;
         }
 
         if (xy >= 43790)
@@ -549,27 +554,27 @@ namespace OpenLoco::Vehicles
         return indexToYaw[i];
     }
 
-    // 0x004BF657
-    uint8_t VehicleBody::updateSpriteYaw3(int16_t x_offset, int16_t y_offset)
+    // 0x004BF657 For yaw of 6 bits
+    static uint8_t calculateYaw3FromVector(int16_t xDiff, int16_t yDiff)
     {
         uint32_t i = 0;
 
-        if (x_offset < 0)
+        if (xDiff < 0)
         {
             i += 9;
-            x_offset = -x_offset;
+            xDiff = -xDiff;
         }
 
-        if (y_offset < 0)
+        if (yDiff < 0)
         {
             i += 18;
-            y_offset = -y_offset;
+            yDiff = -yDiff;
         }
 
         uint32_t xy = std::numeric_limits<uint32_t>::max();
-        if (y_offset != 0)
+        if (yDiff != 0)
         {
-            xy = (static_cast<uint64_t>(x_offset) << 16) / y_offset;
+            xy = (static_cast<uint64_t>(xDiff) << 16) / yDiff;
         }
 
         if (xy >= 79856)
@@ -659,27 +664,27 @@ namespace OpenLoco::Vehicles
         return indexToYaw[i];
     }
 
-    // 0x004BF6DF
-    uint8_t VehicleBody::updateSpriteYaw4(int16_t x_offset, int16_t y_offset)
+    // 0x004BF6DF For yaw of 7 bits
+    uint8_t calculateYaw4FromVector(int16_t xDiff, int16_t yDiff)
     {
         uint32_t i = 0;
 
-        if (x_offset < 0)
+        if (xDiff < 0)
         {
             i += 17;
-            x_offset = -x_offset;
+            xDiff = -xDiff;
         }
 
-        if (y_offset < 0)
+        if (yDiff < 0)
         {
             i += 34;
-            y_offset = -y_offset;
+            yDiff = -yDiff;
         }
 
         uint32_t xy = std::numeric_limits<uint32_t>::max();
-        if (y_offset != 0)
+        if (yDiff != 0)
         {
-            xy = (static_cast<uint64_t>(x_offset) << 16) / y_offset;
+            xy = (static_cast<uint64_t>(xDiff) << 16) / yDiff;
         }
 
         if (xy >= 72308)

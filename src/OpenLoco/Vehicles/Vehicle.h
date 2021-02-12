@@ -375,13 +375,10 @@ namespace OpenLoco::Vehicles
         void shipWakeAnimationUpdate(uint8_t num, int32_t var_05);
         Pitch updateSpritePitchSteepSlopes(uint16_t xy_offset, int16_t z_offset);
         Pitch updateSpritePitch(uint16_t xy_offset, int16_t z_offset);
-        uint8_t updateSpriteYaw0(int16_t x_offset, int16_t y_offset);
-        uint8_t updateSpriteYaw1(int16_t x_offset, int16_t y_offset);
-        uint8_t updateSpriteYaw2(int16_t x_offset, int16_t y_offset);
-        uint8_t updateSpriteYaw3(int16_t x_offset, int16_t y_offset);
-        uint8_t updateSpriteYaw4(int16_t x_offset, int16_t y_offset);
     };
     static_assert(sizeof(VehicleBody) == 0x60); // Can't use offset_of change this to last field if more found
+
+    uint8_t calculateYaw4FromVector(int16_t x_offset, int16_t y_offset);
 
     struct VehicleBogie : VehicleBase
     {
