@@ -92,7 +92,8 @@ namespace OpenLoco
         map_pos3 stationTiles[80];                        // 0x1D0
         uint8_t var_3B0;
         uint8_t var_3B1;
-        uint8_t pad_3B2[0x3D2 - 0x3B2];
+        uint16_t var_3B2;
+        uint8_t pad_3B4[0x3D2 - 0x3B4];
 
         bool empty() const { return name == StringIds::null; }
         station_id_t id() const;
@@ -111,5 +112,6 @@ namespace OpenLoco
         void alertCargoAcceptanceChange(uint32_t oldCargoAcc, uint32_t newCargoAcc);
         void sub_4929DB();
     };
+    static_assert(sizeof(station) == 0x3D2);
 #pragma pack(pop)
 }

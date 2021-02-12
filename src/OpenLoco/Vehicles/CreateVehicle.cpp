@@ -10,6 +10,7 @@
 #include "../Objects/SoundObject.h"
 #include "../Objects/TrackObject.h"
 #include "../Objects/VehicleObject.h"
+#include "../Station.h"
 #include "../Things/ThingManager.h"
 #include "../Types.hpp"
 #include "../Ui/WindowManager.h"
@@ -136,7 +137,8 @@ namespace OpenLoco::Vehicles
                         gGameCommandErrorText = StringIds::vehicle_must_be_stopped;
                         return false;
                     }
-                    if (train.veh2->var_56 == 0.0_mph)
+
+                    if (train.veh2->currentSpeed == 0.0_mph)
                     {
                         return true;
                     }
@@ -150,7 +152,8 @@ namespace OpenLoco::Vehicles
                     {
                         return true;
                     }
-                    if (train.veh2->var_56 == 0.0_mph)
+
+                    if (train.veh2->currentSpeed == 0.0_mph)
                     {
                         return true;
                     }
@@ -551,7 +554,7 @@ namespace OpenLoco::Vehicles
         ThingManager::moveSpriteToList(newHead, ThingManager::thing_list::vehicle_head);
         newHead->owner = _updating_company_id;
         newHead->head = newHead->id;
-        newHead->var_0C |= Flags0C::unk_1;
+        newHead->var_0C |= Flags0C::commandStop;
         newHead->track_type = trackType;
         newHead->mode = mode;
         newHead->tile_x = -1;
@@ -573,12 +576,12 @@ namespace OpenLoco::Vehicles
         newHead->var_52 = 0;
         newHead->var_5C = 0;
         newHead->status = Status::unk_0;
-        newHead->var_54 = -1;
+        newHead->stationId = StationId::null;
         newHead->var_5F = 0;
         newHead->var_60 = -1;
         newHead->var_61 = -1;
         newHead->var_69 = 0;
-        newHead->var_77 = 0;
+        newHead->lastAverageSpeed = 0;
         newHead->var_79 = 0;
         sub_470312(newHead);
         return newHead;
@@ -635,7 +638,7 @@ namespace OpenLoco::Vehicles
         newVeh2->var_15 = 0;
         newVeh2->var_38 = 0;
 
-        newVeh2->var_56 = 0.0_mph;
+        newVeh2->currentSpeed = 0.0_mph;
         newVeh2->var_5A = 0;
         newVeh2->var_5B = 0;
         newVeh2->soundId = SoundObjectId::null;

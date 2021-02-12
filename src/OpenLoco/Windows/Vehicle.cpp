@@ -532,7 +532,7 @@ namespace OpenLoco::Ui::Vehicle
                 0);
 
             auto selected = 0; // Stop
-            if (!(head->var_0C & Vehicles::Flags0C::unk_1))
+            if (!(head->var_0C & Vehicles::Flags0C::commandStop))
             {
                 selected = 1; // Start
             }
@@ -723,7 +723,7 @@ namespace OpenLoco::Ui::Vehicle
             {
                 stopStartImage = ImageIds::yellow_flag;
             }
-            else if ((head->var_0C & Vehicles::Flags0C::unk_1) != 0)
+            else if ((head->var_0C & Vehicles::Flags0C::commandStop) != 0)
             {
                 stopStartImage = ImageIds::red_flag;
             }
@@ -2063,11 +2063,11 @@ namespace OpenLoco::Ui::Vehicle
 
             pos.y += 5;
 
-            if (head->var_77 != 0)
+            if (head->lastAverageSpeed != 0)
             {
                 // Last journey average speed: {VELOCITY}
                 auto args = FormatArguments();
-                args.push(head->var_77);
+                args.push(head->lastAverageSpeed);
                 Gfx::drawString_494B3F(*context, pos.x, pos.y, Colour::black, StringIds::last_journey_average_speed, &args);
                 pos.y += 10 + 5;
             }
