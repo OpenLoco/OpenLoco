@@ -151,9 +151,17 @@ namespace OpenLoco
             return (static_cast<uint32_t>(wholeNumber) << 16) | static_cast<uint16_t>((fraction << 16) / 100000);
         }
 
+        static_assert(0.0_mph == 0x0000);
+        static_assert(1.0_mph == 0x10000);
         static_assert(2.75_mph == 0x2C000);
         static_assert(4.0_mph == 0x40000);
+        static_assert(6.0_mph == 0x60000);
+        static_assert(9.0_mph == 0x90000);
+        static_assert(13.0_mph == 0xD0000);
         static_assert(14.0_mph == 0xE0000);
+        static_assert(15.0_mph == 0xF0000);
+        static_assert(25.0_mph == 0x190000);
+        static_assert(35.0_mph == 0x230000);
         static_assert(0.333333_mph == 0x5555);
     }
 }

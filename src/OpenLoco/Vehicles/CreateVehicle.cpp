@@ -11,6 +11,7 @@
 #include "../Objects/TrackObject.h"
 #include "../Objects/VehicleObject.h"
 #include "../Things/ThingManager.h"
+#include "../Types.hpp"
 #include "../Ui/WindowManager.h"
 #include "Vehicle.h"
 #include <numeric>
@@ -18,6 +19,7 @@
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::GameCommands;
+using namespace OpenLoco::Literals;
 
 namespace OpenLoco::Vehicles
 {
@@ -134,7 +136,7 @@ namespace OpenLoco::Vehicles
                         gGameCommandErrorText = StringIds::vehicle_must_be_stopped;
                         return false;
                     }
-                    if (train.veh2->var_56 == 0)
+                    if (train.veh2->var_56 == 0.0_mph)
                     {
                         return true;
                     }
@@ -148,7 +150,7 @@ namespace OpenLoco::Vehicles
                     {
                         return true;
                     }
-                    if (train.veh2->var_56 == 0)
+                    if (train.veh2->var_56 == 0.0_mph)
                     {
                         return true;
                     }
@@ -633,7 +635,7 @@ namespace OpenLoco::Vehicles
         newVeh2->var_15 = 0;
         newVeh2->var_38 = 0;
 
-        newVeh2->var_56 = 0;
+        newVeh2->var_56 = 0.0_mph;
         newVeh2->var_5A = 0;
         newVeh2->var_5B = 0;
         newVeh2->soundId = SoundObjectId::null;
