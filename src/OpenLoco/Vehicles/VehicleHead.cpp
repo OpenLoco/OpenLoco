@@ -389,7 +389,7 @@ namespace OpenLoco::Vehicles
     {
         registers regs;
         regs.esi = reinterpret_cast<int32_t>(this);
-        return (call(0x004A8C11, regs) & (1 << 8)) != 0;
+        return (call(0x004A8C11, regs) & (1 << 8)) == 0;
     }
 
     // 0x004A9051
@@ -397,7 +397,7 @@ namespace OpenLoco::Vehicles
     {
         registers regs;
         regs.esi = reinterpret_cast<int32_t>(this);
-        return (call(0x004A9051, regs) & (1 << 8)) != 0;
+        return (call(0x004A9051, regs) & (1 << 8)) == 0;
     }
 
     namespace WaterMotionFlags

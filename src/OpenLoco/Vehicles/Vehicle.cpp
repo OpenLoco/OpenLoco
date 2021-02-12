@@ -93,7 +93,7 @@ namespace OpenLoco::Vehicles
         switch (getSubType())
         {
             case VehicleThingType::head:
-                return asVehicleHead()->update();
+                return !asVehicleHead()->update();
             case VehicleThingType::vehicle_1:
                 result = call(0x004A9788, regs);
                 break;
