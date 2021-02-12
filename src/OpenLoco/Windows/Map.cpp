@@ -1090,7 +1090,7 @@ namespace OpenLoco::Ui::Windows::Map
 
         xy32 startPos = { Location::null, 0 };
         xy32 endPos = { Location::null, 0 };
-        for (auto& order : Vehicles::OrderTableView(train.head->orderTableOffset))
+        for (auto& order : Vehicles::OrderRingView(train.head->orderTableOffset))
         {
             if (order.hasFlag(Vehicles::OrderFlags::HasStation))
             {

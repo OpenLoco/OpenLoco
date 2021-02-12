@@ -75,7 +75,7 @@ namespace OpenLoco::Vehicles
 
         // Copy orders
         std::vector<std::shared_ptr<Vehicles::Order>> clonedOrders;
-        for (auto& existingOrders : Vehicles::OrderTableView(existingTrain.head->orderTableOffset))
+        for (auto& existingOrders : Vehicles::OrderRingView(existingTrain.head->orderTableOffset))
         {
             clonedOrders.push_back(existingOrders.clone());
         }

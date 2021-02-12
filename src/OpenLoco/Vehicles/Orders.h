@@ -147,18 +147,26 @@ namespace OpenLoco::Vehicles
 
 #pragma pack(pop)
 
-    struct OrderTableView
+    struct OrderRingView
     {
     private:
         struct Iterator
         {
         private:
-            Order* _orders;
+            Order* _beginOrderTable;
+            Order* _currentOrder;
+            bool _hasLooped = false;
 
         public:
-            Iterator(Order* orders)
-                : _orders(orders)
+            Iterator(Order* beginOrderTable, Order* currentOrder)
+                : _beginOrderTable(beginOrderTable)
+                , _currentOrder(currentOrder)
             {
+                // Prevent empty tables looping
+                if (_currentOrder->getType() == OrderType::End)
+                {
+                    _hasLooped = true;
+                }
             }
 
             Iterator& operator++();
@@ -172,7 +180,7 @@ namespace OpenLoco::Vehicles
 
             bool operator==(Iterator other) const
             {
-                return _orders->getType() == other->getType();
+                return _currentOrder == other._currentOrder && (_hasLooped || other._hasLooped);
             }
 
             bool operator!=(Iterator other) const
@@ -182,22 +190,22 @@ namespace OpenLoco::Vehicles
 
             Order& operator*()
             {
-                return *_orders;
+                return *_currentOrder;
             }
 
             const Order& operator*() const
             {
-                return *_orders;
+                return *_currentOrder;
             }
 
             Order* operator->()
             {
-                return _orders;
+                return _currentOrder;
             }
 
             const Order* operator->() const
             {
-                return _orders;
+                return _currentOrder;
             }
 
             // iterator traits
@@ -208,18 +216,20 @@ namespace OpenLoco::Vehicles
             using iterator_category = std::forward_iterator_tag;
         };
 
-        uint32_t _beginOffset;
+        uint32_t _beginTableOffset;
+        uint32_t _currentOrderOffset;
 
     public:
-        OrderTableView(uint32_t offset)
-            : _beginOffset(offset)
+        // currentOrderOffset is relative to beginTableOffset and is where the ring will begin and end
+        OrderRingView(uint32_t beginTableOffset, uint32_t currentOrderOffset = 0)
+            : _beginTableOffset(beginTableOffset)
+            , _currentOrderOffset(currentOrderOffset)
         {
         }
 
-        OrderTableView::Iterator begin() const;
-        OrderTableView::Iterator end() const;
+        OrderRingView::Iterator begin() const;
+        OrderRingView::Iterator end() const;
 
         Order* atIndex(const uint8_t index) const;
-        OrderTableView::Iterator atOffset(const uint8_t offset) const;
     };
 }

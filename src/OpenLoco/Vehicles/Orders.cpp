@@ -158,24 +158,6 @@ namespace OpenLoco::Vehicles
         return ret;
     }
 
-    OrderTableView::Iterator& OrderTableView::Iterator::operator++()
-    {
-        auto* newOrders = reinterpret_cast<uint8_t*>(_orders) + _orderSizes[static_cast<uint8_t>(_orders->getType())];
-        _orders = reinterpret_cast<Order*>(newOrders);
-        return *this;
-    }
-
-    OrderTableView::Iterator OrderTableView::begin() const
-    {
-        return Iterator(&_orderTable[_beginOffset]);
-    }
-
-    OrderTableView::Iterator OrderTableView::end() const
-    {
-        static OrderEnd _end;
-        return Iterator(&_end);
-    }
-
     // 0x004B49F8
     void OrderStation::setFormatArguments(FormatArguments& args) const
     {
@@ -192,7 +174,7 @@ namespace OpenLoco::Vehicles
         args.push(cargoObj->unit_inline_sprite);
     }
 
-    Order* OrderTableView::atIndex(const uint8_t index) const
+    Order* OrderRingView::atIndex(const uint8_t index) const
     {
         auto size = std::distance(begin(), end());
         if (index >= size)
@@ -203,8 +185,25 @@ namespace OpenLoco::Vehicles
         return &(*chosenOrder);
     }
 
-    OrderTableView::Iterator OrderTableView::atOffset(const uint8_t offset) const
+    OrderRingView::Iterator& OrderRingView::Iterator::operator++()
     {
-        return Iterator(&_orderTable[_beginOffset + offset]);
+        auto* newOrders = reinterpret_cast<uint8_t*>(_currentOrder) + _orderSizes[static_cast<uint8_t>(_currentOrder->getType())];
+        _currentOrder = reinterpret_cast<Order*>(newOrders);
+        if (_currentOrder->getType() == OrderType::End)
+        {
+            _currentOrder = _beginOrderTable;
+            _hasLooped = true;
+        }
+        return *this;
+    }
+
+    OrderRingView::Iterator OrderRingView::begin() const
+    {
+        return Iterator(&_orderTable[_beginTableOffset], &_orderTable[_beginTableOffset + _currentOrderOffset]);
+    }
+
+    OrderRingView::Iterator OrderRingView::end() const
+    {
+        return begin();
     }
 }

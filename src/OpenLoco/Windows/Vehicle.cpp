@@ -2290,9 +2290,9 @@ namespace OpenLoco::Ui::Vehicle
             sub_470824(head);
         }
 
-        static Vehicles::OrderTableView getOrderTable(const Vehicles::VehicleHead* const head)
+        static Vehicles::OrderRingView getOrderTable(const Vehicles::VehicleHead* const head)
         {
-            return Vehicles::OrderTableView(head->orderTableOffset);
+            return Vehicles::OrderRingView(head->orderTableOffset);
         }
 
         // 0x004B4F6D
@@ -2508,7 +2508,7 @@ namespace OpenLoco::Ui::Vehicle
 
         // order : al (first 3 bits)
         // order argument : eax (3 - 32 bits), cx
-        // Note will move orders so do not use while iterating OrderTableView
+        // Note will move orders so do not use while iterating OrderRingView
         // 0x004B4ECB
         static void addNewOrder(window* const self, const Vehicles::Order& order)
         {
@@ -2750,7 +2750,7 @@ namespace OpenLoco::Ui::Vehicle
                     // Copy complete order list
                     Audio::playSound(Audio::sound_id::waypoint, { x, y, Input::getDragLastLocation().x }, Input::getDragLastLocation().x);
                     std::vector<std::shared_ptr<Vehicles::Order>> clonedOrders;
-                    for (auto& existingOrders : Vehicles::OrderTableView(head->orderTableOffset))
+                    for (auto& existingOrders : getOrderTable(head))
                     {
                         clonedOrders.push_back(existingOrders.clone());
                     }
