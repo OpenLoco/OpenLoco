@@ -179,7 +179,7 @@ namespace OpenLoco::Vehicles
             Vehicle2* veh3 = vehicleUpdate_2;
             al = var_46;
             int8_t ah = 0;
-            if (veh3->var_56 < 0x230000)
+            if (veh3->var_56 < 35.0_mph)
             {
                 ah = 0;
             }
@@ -899,7 +899,7 @@ namespace OpenLoco::Vehicles
             soundCode = true;
         }
         bool tickCalc = true;
-        if (veh_2->var_5A != 0 && veh_2->var_56 >= 65536)
+        if (veh_2->var_5A != 0 && veh_2->var_56 >= 1.0_mph)
         {
             tickCalc = false;
         }
@@ -1002,7 +1002,7 @@ namespace OpenLoco::Vehicles
         {
             auto soundId = static_cast<sound_object_id_t>(steam_obj->var_1F[var_55 + (steam_obj->sound_effect >> 1)]);
 
-            if (veh_2->var_56 > 983040)
+            if (veh_2->var_56 > 15.0_mph)
                 return;
 
             int32_t volume = 0 - (veh_2->var_56 >> 9);
@@ -1026,7 +1026,7 @@ namespace OpenLoco::Vehicles
             auto underSoundId = static_cast<sound_object_id_t>(steam_obj->var_1F[soundModifier + var_55]);
             auto soundId = static_cast<sound_object_id_t>(steam_obj->var_1F[var_55]);
 
-            if (veh_2->var_56 > 983040)
+            if (veh_2->var_56 > 15.0_mph)
                 return;
 
             int32_t volume = 0 - (veh_2->var_56 >> 9);
@@ -1062,7 +1062,7 @@ namespace OpenLoco::Vehicles
 
         if (headVeh->vehicleType == VehicleType::ship)
         {
-            if (veh_2->var_56 == 0)
+            if (veh_2->var_56 == 0.0_mph)
                 return;
 
             if (var_38 & Flags38::isReversed)
@@ -1360,17 +1360,17 @@ namespace OpenLoco::Vehicles
         if (veh_2->var_5A == 0)
             return;
 
-        if (veh_2->var_56 < 393216)
+        if (veh_2->var_56 < 6.0_mph)
             return;
 
         auto frequency = 32;
-        if (veh_2->var_56 >= 589824)
+        if (veh_2->var_56 >= 9.0_mph)
         {
             frequency = 16;
-            if (veh_2->var_56 >= 851968)
+            if (veh_2->var_56 >= 13.0_mph)
             {
                 frequency = 8;
-                if (veh_2->var_56 >= 1638400)
+                if (veh_2->var_56 >= 25.0_mph)
                 {
                     frequency = 4;
                 }
