@@ -263,6 +263,8 @@ namespace OpenLoco::StringIds
 
     constexpr string_id error_can_only_build_above_ground = 360;
 
+    constexpr string_id error_game_save_failed = 370;
+
     constexpr string_id menu_hide_foreground_scenery_buildings = 372;
 
     constexpr string_id title_name_vehicle = 375;

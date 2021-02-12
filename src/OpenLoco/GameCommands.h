@@ -57,6 +57,7 @@ namespace OpenLoco::GameCommands
         change_company_face = 66,
         load_multiplayer_map = 67,
         send_chat_message = 71,
+        multiplayer_save = 72,
         update_owner_status = 73,
         vehicle_speed_control = 74,
         vehicle_order_up = 75,
@@ -475,6 +476,14 @@ namespace OpenLoco::GameCommands
         memcpy(&regs.ebp, &string[8], 4);
         memcpy(&regs.edi, &string[12], 4);
         doCommand(71, regs);
+    }
+
+    // Multiplayer save
+    inline void do_72()
+    {
+        registers regs;
+        regs.bl = GameCommandFlag::apply;
+        doCommand(72, regs);
     }
 
     // Update owner status
