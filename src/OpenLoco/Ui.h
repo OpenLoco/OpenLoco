@@ -20,6 +20,7 @@ namespace OpenLoco::Ui
 {
     struct viewport;
 
+#pragma pack(push, 1)
     struct screen_info_t
     {
         Gfx::drawpixelinfo_t dpi;
@@ -37,6 +38,7 @@ namespace OpenLoco::Ui
         int8_t dirty_block_row_shift;
         int8_t dirty_blocks_initialised;
     };
+#pragma pack(pop)
 
     enum class cursor_id
     {

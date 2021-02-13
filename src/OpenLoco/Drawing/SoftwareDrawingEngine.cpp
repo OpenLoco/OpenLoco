@@ -113,14 +113,8 @@ namespace OpenLoco::Drawing
                 if (grid[y][x] == 0)
                     continue;
 
-                // Determine columns
-                size_t xx;
-                for (xx = x; xx < columns; xx++)
-                {
-                    if (grid[y][xx] == 0)
-                        break;
-                }
-                size_t dX = xx - x;
+                // Don't determine columns will cause rendering z fighting issues
+                const size_t dX = 1;
 
                 // Check rows
                 size_t dY = grid.getRows(x, dX, y);
