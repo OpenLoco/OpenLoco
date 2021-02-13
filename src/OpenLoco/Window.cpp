@@ -605,8 +605,12 @@ namespace OpenLoco::Ui
         if (viewports[0] == nullptr || saved_view.isEmpty())
             return;
 
-        // Centre viewport on tile/thing.
         auto main = WindowManager::getMainWindow();
+
+        // Unfocus the viewport.
+        main->viewport_configurations[0].viewport_target_sprite = ThingId::null;
+
+        // Centre viewport on tile/thing.
         if (saved_view.isThingView())
         {
             auto thing = ThingManager::get<thing_base>(saved_view.thingId);
