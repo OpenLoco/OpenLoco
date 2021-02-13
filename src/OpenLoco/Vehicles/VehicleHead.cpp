@@ -873,15 +873,7 @@ namespace OpenLoco::Vehicles
 
         // updates the current boats position and sets flags about position
         auto tile = TileManager::get({ x, y });
-        surface_element* surface = nullptr;
-        for (auto el : tile)
-        {
-            surface = el.asSurface();
-            if (surface != nullptr)
-            {
-                break;
-            }
-        }
+        surface_element* surface = tile.surface();
 
         if (surface != nullptr)
         {
