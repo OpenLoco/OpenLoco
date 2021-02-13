@@ -902,7 +902,7 @@ namespace OpenLoco::Vehicles
         uint32_t targetSpeed = 5;
         if (stationId == StationId::null)
         {
-            if (!(flags & (1 << 0)))
+            if (!(flags & WaterMotionFlags::isStopping))
             {
                 if (!(veh2->var_73 & Flags73::isBrokenDown))
                 {
@@ -943,14 +943,14 @@ namespace OpenLoco::Vehicles
             }
         }
 
-        if ((flags & (1 << 1)) || manhattanDistance <= targetTolerance)
+        if ((flags & WaterMotionFlags::isLeavingDock) || manhattanDistance <= targetTolerance)
         {
-            flags |= (1 << 17);
-            if (stationId != StationId::null && !(flags & (1 << 1)))
+            flags |= WaterMotionFlags::hasReachedADestination;
+            if (stationId != StationId::null && !(flags & WaterMotionFlags::isLeavingDock))
             {
-                flags |= (1 << 16);
+                flags |= WaterMotionFlags::hasReachedDock;
             }
-            if (flags & (1 << 0))
+            if (flags & WaterMotionFlags::isStopping)
             {
                 return flags;
             }
@@ -976,7 +976,7 @@ namespace OpenLoco::Vehicles
                 }
             }
 
-            if (!(flags & (1 << 1)) && stationId != StationId::null)
+            if (!(flags & WaterMotionFlags::isLeavingDock) && stationId != StationId::null)
             {
                 return flags;
             }
