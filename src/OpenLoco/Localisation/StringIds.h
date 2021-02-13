@@ -1479,4 +1479,6 @@ namespace OpenLoco::StringIds
     constexpr string_id generator = 2148;
     constexpr string_id generator_original = 2149;
     constexpr string_id generator_improved = 2150;
+    constexpr string_id dropdown_modify_vehicle = 2151;
+    constexpr string_id dropdown_clone_vehicle = 2152;
 }

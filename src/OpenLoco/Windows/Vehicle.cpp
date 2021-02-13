@@ -1007,10 +1007,6 @@ namespace OpenLoco::Ui::Vehicle
                 case widx::pickup:
                     Common::onPickup(self, widx::pickup);
                     break;
-                case widx::buildNew:
-                    cloneVehicle(self);
-                    //BuildVehicle::open(self->number, 0);
-                    break;
                 case widx::remove:
                 {
                     auto head = Common::getVehicle(self);
@@ -1030,6 +1026,44 @@ namespace OpenLoco::Ui::Vehicle
         {
             Common::setCaptionEnableState(self);
             self->setSize(minWindowSize, maxWindowSize);
+        }
+
+        static void onMouseDown(window* const self, const widget_index widgetIndex)
+        {
+            if (widgetIndex != widx::buildNew)
+                return;
+
+            Dropdown::add(0, StringIds::dropdown_stringid, StringIds::dropdown_modify_vehicle);
+            Dropdown::add(1, StringIds::dropdown_stringid, StringIds::dropdown_clone_vehicle);
+
+            widget_t* widget = &self->widgets[widx::buildNew];
+            Dropdown::showText(
+                self->x + widget->left,
+                self->y + widget->top,
+                widget->width(),
+                widget->height(),
+                self->colours[1],
+                2,
+                0);
+
+            Dropdown::setItemSelected(0);
+            Dropdown::setHighlightedItem(0);
+        }
+
+        // 0x004B253A
+        static void onDropdown(window* const self, const widget_index widgetIndex, const int16_t itemIndex)
+        {
+            if (widgetIndex != widx::buildNew)
+                return;
+
+            if (itemIndex <= 0)
+            {
+                BuildVehicle::open(self->number, 0);
+            }
+            else if (itemIndex == 1)
+            {
+                cloneVehicle(self);
+            }
         }
 
         // 0x004B3C45
@@ -1450,6 +1484,8 @@ namespace OpenLoco::Ui::Vehicle
         {
             events.on_mouse_up = onMouseUp;
             events.on_resize = onResize;
+            events.on_mouse_down = onMouseDown;
+            events.on_dropdown = onDropdown;
             events.on_update = onUpdate;
             events.event_08 = Common::event8;
             events.event_09 = Common::event9;
