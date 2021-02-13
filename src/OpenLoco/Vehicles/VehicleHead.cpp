@@ -882,16 +882,20 @@ namespace OpenLoco::Vehicles
                 break;
             }
         }
-        auto waterHeight = surface->water();
-        if (waterHeight != 0)
+
+        if (surface != nullptr)
         {
-            if (surface->hasHighTypeFlag())
+            auto waterHeight = surface->water();
+            if (waterHeight != 0)
             {
-                surface->setHighTypeFlag(false);
-                surface->setVar6SLR5(0);
+                if (surface->hasHighTypeFlag())
+                {
+                    surface->setHighTypeFlag(false);
+                    surface->setVar6SLR5(0);
+                }
+                surface->setIndustry(0);
+                surface->setType6Flag(true);
             }
-            surface->setIndustry(0);
-            surface->setType6Flag(true);
         }
         Vehicle2* veh2 = vehicleUpdate_2;
 
@@ -994,12 +998,11 @@ namespace OpenLoco::Vehicles
                     }
                     if (station->baseZ() == tile_base_z)
                     {
+                        station->setFlag6(false);
+                        stationId = StationId::null;
                         break;
                     }
                 }
-
-                station->setFlag6(false);
-                stationId = StationId::null;
             }
             auto [newStationId, location] = sub_427FC9();
             moveTo({ location.x, location.y, 32 });
@@ -1026,10 +1029,10 @@ namespace OpenLoco::Vehicles
                     }
                     if (station->baseZ() == tile_base_z)
                     {
+                        station->setFlag6(true);
                         break;
                     }
                 }
-                station->setFlag6(true);
             }
         }
 
