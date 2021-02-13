@@ -640,6 +640,35 @@ namespace OpenLoco::Ui
         vc->saved_view_y = dest_y + rebased_y + (offset_y / (1 << v->zoom));
     }
 
+    void window::viewportFocusOnEntity(uint16_t targetEntity)
+    {
+        if (viewports[0] == nullptr || saved_view.isEmpty())
+            return;
+
+        viewport_configurations[0].viewport_target_sprite = targetEntity;
+    }
+
+    bool window::viewportIsFocusedOnEntity() const
+    {
+        if (viewports[0] == nullptr || saved_view.isEmpty())
+            return false;
+
+        return viewport_configurations[0].viewport_target_sprite != ThingId::null;
+    }
+
+    void window::viewportUnfocusFromEntity()
+    {
+        if (viewports[0] == nullptr || saved_view.isEmpty())
+            return;
+
+        if (viewport_configurations[0].viewport_target_sprite == ThingId::null)
+            return;
+
+        auto thing = ThingManager::get<thing_base>(viewport_configurations[0].viewport_target_sprite);
+        viewport_configurations[0].viewport_target_sprite = ThingId::null;
+        viewportCentreOnTile({ thing->x, thing->y, thing->z });
+    }
+
     void window::viewportZoomSet(int8_t zoomLevel, bool toCursor)
     {
         viewport* v = this->viewports[0];

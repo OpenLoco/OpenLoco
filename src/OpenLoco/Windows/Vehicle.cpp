@@ -431,8 +431,19 @@ namespace OpenLoco::Ui::Vehicle
                     GameCommands::do_4(self->number);
                     break;
                 case widx::centreViewport:
-                    self->viewportCentreMain();
+                {
+                    // self->viewportCentreMain();
+
+                    auto vehHead = Common::getVehicle(self);
+                    Vehicles::Vehicle train(vehHead);
+                    thing_id_t targetThing = train.veh2->id;
+
+                    // Centre viewport on tile/thing.
+                    auto main = WindowManager::getMainWindow();
+                    main->viewportFocusOnEntity(targetThing);
+
                     break;
+                }
             }
         }
 

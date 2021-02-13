@@ -732,8 +732,15 @@ namespace OpenLoco::Input
                 {
                     _ticksSinceDragStart = 1000;
 
-                    window->viewport_configurations[0].saved_view_x += dragOffset.x << (vp->zoom + 1);
-                    window->viewport_configurations[0].saved_view_y += dragOffset.y << (vp->zoom + 1);
+                    if (!window->viewportIsFocusedOnEntity())
+                    {
+                        window->viewport_configurations[0].saved_view_x += dragOffset.x << (vp->zoom + 1);
+                        window->viewport_configurations[0].saved_view_y += dragOffset.y << (vp->zoom + 1);
+                    }
+                    else
+                    {
+                        window->viewportUnfocusFromEntity();
+                    }
                 }
 
                 break;
