@@ -185,7 +185,7 @@ namespace OpenLoco
     namespace NumStartSounds
     {
         constexpr uint8_t hasCrossingWhistle = 1 << 7;
-        constexpr uint8_t mask = ~hasCrossingWhistle;
+        constexpr uint8_t mask = 0x7F;
     }
 
     struct vehicle_object
