@@ -7,7 +7,7 @@
 - Fix: [#694] Selecting a song to play is guaranteed to not play it.
 - Fix: [#712] Load / save window tries to show preview for item after last.
 - Fix: [#725] Company value graph does not display correctly.
-- Fix: [#744] Z fighting issues with bridges.
+- Fix: [#744] Rendering issues ('Z-fighting') with vehicles over bridges.
 - Change: [#690] Default saved game directory is now in OpenLoco user directory.
 
 20.10 (2020-10-25)
