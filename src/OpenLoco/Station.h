@@ -85,7 +85,7 @@ namespace OpenLoco
         LabelPosition labelPosition; // 0x08
         company_id_t owner;          // 0x28
         uint8_t var_29;
-        uint16_t flags;                                   // 0x30
+        uint16_t flags;                                   // 0x2A
         town_id_t town;                                   // 0x2C
         station_cargo_stats cargo_stats[max_cargo_stats]; // 0x2E
         uint16_t stationTileSize;                         // 0x1CE
