@@ -7,6 +7,7 @@
 #include "../Map/Tile.h"
 #include "Paint.h"
 #include <cassert>
+#include <unordered_map>
 
 using namespace OpenLoco::Interop;
 
