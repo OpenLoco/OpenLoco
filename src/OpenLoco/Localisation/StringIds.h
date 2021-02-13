@@ -1482,4 +1482,6 @@ namespace OpenLoco::StringIds
     constexpr string_id dropdown_modify_vehicle = 2151;
     constexpr string_id dropdown_clone_vehicle = 2152;
     constexpr string_id cant_clone_vehicle = 2153;
+    constexpr string_id dropdown_viewport_move = 2154;
+    constexpr string_id dropdown_viewport_focus = 2155;
 }
