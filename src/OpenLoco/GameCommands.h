@@ -123,6 +123,17 @@ namespace OpenLoco::GameCommands
         return doCommand(5, regs) != FAILURE;
     }
 
+    // Build vehicle
+    inline uint32_t queryDo_5(uint16_t vehicle_type, uint16_t vehicle_id = 0xFFFF)
+    {
+        registers regs;
+        regs.bl = 0;
+        regs.di = vehicle_id;
+        regs.edx = vehicle_type;
+
+        return doCommand(5, regs);
+    }
+
     inline void do_6(thing_id_t car)
     {
         registers regs;

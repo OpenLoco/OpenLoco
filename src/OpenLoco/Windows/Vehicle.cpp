@@ -950,6 +950,37 @@ namespace OpenLoco::Ui::Vehicle
             auto head = Common::getVehicle(self);
             Vehicles::Vehicle train(head);
             Vehicles::VehicleHead* newHead = nullptr;
+
+            // Get total cost for a new vehicle (note this should be removed when turned into a game command)
+            uint32_t totalCost = 0;
+            for (auto& car : train.cars)
+            {
+                auto cost = GameCommands::queryDo_5(car.front->object_id, -1);
+                if (cost == GameCommands::FAILURE)
+                {
+                    totalCost = GameCommands::FAILURE;
+                    break;
+                }
+                else
+                {
+                    totalCost += cost;
+                }
+            }
+
+            if (totalCost == GameCommands::FAILURE)
+            {
+                return;
+            }
+
+            // Check total cost for a new vehicle, taken from GameCommands::loc_4313C6 (note this should be removed when turned into a game command)
+            registers regs2;
+            regs2.ebp = totalCost;
+            call(0x0046DD06, regs2);
+            if (static_cast<uint32_t>(regs2.ebp) == GameCommands::FAILURE)
+            {
+                return;
+            }
+
             for (auto& car : train.cars)
             {
                 if (newHead == nullptr)
