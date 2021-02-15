@@ -1243,8 +1243,8 @@ strings:
   1213: "{COLOUR WINDOW_2}{STRINGID})"
   1214: Sem espaço para mais ordens do veículo!
   1215: Muitas ordens para esse veículo!
-  1216: "- - Local - -"
-  1217: "- - Expresso - -"
+  1216: "Local"
+  1217: "Expresso"
   1218: "{COLOUR BLACK}- - Sem rota definida - -"
   1219: "{COLOUR BLACK}- - Fim da lista de rotas - -"
   1220: Parar em {STRINGID}

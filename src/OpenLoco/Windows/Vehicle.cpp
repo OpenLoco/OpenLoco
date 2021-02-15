@@ -178,8 +178,8 @@ namespace OpenLoco::Ui::Vehicle
         static widget_t widgets[] = {
             commonWidgets(265, 189, StringIds::title_vehicle_route),
             makeWidget({ 0, 0 }, { 1, 1 }, widget_type::none, 0),
-            makeWidget({ 3, 44 }, { 118, 12 }, widget_type::wt_11, 1, StringIds::local_seperator),
-            makeWidget({ 121, 44 }, { 119, 12 }, widget_type::wt_11, 1, StringIds::express_seperator),
+            makeWidget({ 3, 44 }, { 118, 12 }, widget_type::wt_11, 1, StringIds::local_mode_button),
+            makeWidget({ 121, 44 }, { 119, 12 }, widget_type::wt_11, 1, StringIds::express_mode_button),
             makeWidget({ 3, 57 }, { 237, 120 }, widget_type::scrollview, 1, vertical, StringIds::tooltip_route_scrollview),
             makeWidget({ 240, 44 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::route_force_unload, StringIds::tooltip_route_insert_force_unload),
             makeWidget({ 240, 68 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::route_wait, StringIds::tooltip_route_insert_wait_full_cargo),

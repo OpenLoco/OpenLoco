@@ -1244,8 +1244,8 @@ strings:
   1213: "{COLOUR WINDOW_2}{STRINGID})"
   1214: Nie je priestor pre viac príkazov vozidiel!
   1215: Príliš veľa príkazov pre toto vozidlo!
-  1216: "- - Normálny - -"
-  1217: "- - Rýchlik - -"
+  1216: "Normálny"
+  1217: "Rýchlik"
   1218: "{COLOUR BLACK}- - Nie je definovaná žiadna trasa - -"
   1219: "{COLOUR BLACK}- - Koniec zoznamu trás - -"
   1220: "Zastávka v: {STRINGID}"

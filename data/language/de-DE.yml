@@ -1243,8 +1243,8 @@ strings:
   1213: "{COLOUR WINDOW_2}{STRINGID})"
   1214: Es können keine Aufträge für Fahrzeuge mehr angenommen werden!
   1215: Für dieses Fahrzeug liegen zu viele Aufträge vor!
-  1216: "- - Lokal - -"
-  1217: "- - Express - -"
+  1216: "Lokal"
+  1217: "Express"
   1218: "{COLOUR BLACK}- - Keine Strecke definiert - -"
   1219: "{COLOUR BLACK}- - Ende der Streckenliste - -"
   1220: Halt bei {STRINGID}

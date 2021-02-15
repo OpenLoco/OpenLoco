@@ -1236,8 +1236,8 @@ strings:
   1213: '{COLOUR WINDOW_2}{STRINGID})'
   1214: Brak miejsca na więcej poleceń pojazdu!
   1215: Zbyt wiele poleceń dla tego pojazdu!
-  1216: '- - Normalny - -'
-  1217: '- - Pospieszny - -'
+  1216: 'Normalny'
+  1217: 'Pospieszny'
   1218: '{COLOUR BLACK}- - Brak poleceń - -'
   1219: '{COLOUR BLACK}- - Koniec poleceń - -'
   1220: Zatrzymaj przy {STRINGID}
