@@ -159,6 +159,8 @@ namespace OpenLoco::Ui::Vehicle
         enum widx
         {
             tool = Common::widx::tabRoute + 1, // Only used to hold the tool does nothing
+            localMode,
+            expressMode,
             routeList,
             orderForceUnload,
             orderWait,
@@ -170,13 +172,15 @@ namespace OpenLoco::Ui::Vehicle
 
         // 0x00500554
         static window_event_list events;
-        constexpr uint64_t enabledWidgets = (1 << widx::routeList) | (1 << widx::orderForceUnload) | (1 << widx::orderWait) | (1 << widx::orderSkip) | (1 << widx::orderDelete) | (1 << widx::orderUp) | (1 << widx::orderDown) | Common::enabledWidgets;
+        constexpr uint64_t enabledWidgets = (1 << widx::localMode) | (1 << widx::expressMode) | (1 << widx::routeList) | (1 << widx::orderForceUnload) | (1 << widx::orderWait) | (1 << widx::orderSkip) | (1 << widx::orderDelete) | (1 << widx::orderUp) | (1 << widx::orderDown) | Common::enabledWidgets;
         constexpr uint64_t holdableWidgets = 0;
 
         static widget_t widgets[] = {
-            commonWidgets(265, 177, StringIds::title_vehicle_route),
+            commonWidgets(265, 189, StringIds::title_vehicle_route),
             makeWidget({ 0, 0 }, { 1, 1 }, widget_type::none, 0),
-            makeWidget({ 3, 44 }, { 237, 120 }, widget_type::scrollview, 1, vertical, StringIds::tooltip_route_scrollview),
+            makeWidget({ 3, 44 }, { 118, 12 }, widget_type::wt_11, 1, StringIds::local_seperator),
+            makeWidget({ 121, 44 }, { 119, 12 }, widget_type::wt_11, 1, StringIds::express_seperator),
+            makeWidget({ 3, 57 }, { 237, 120 }, widget_type::scrollview, 1, vertical, StringIds::tooltip_route_scrollview),
             makeWidget({ 240, 44 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::route_force_unload, StringIds::tooltip_route_insert_force_unload),
             makeWidget({ 240, 68 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::route_wait, StringIds::tooltip_route_insert_wait_full_cargo),
             makeWidget({ 240, 92 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::route_skip, StringIds::tooltip_route_skip_next_order),
@@ -2846,6 +2850,14 @@ namespace OpenLoco::Ui::Vehicle
                 self->disabled_widgets &= ~((1 << widx::orderWait) | (1 << widx::orderForceUnload));
             }
 
+            // Express / local
+            self->activated_widgets = 0;
+            Vehicles::Vehicle train(head);
+            if (train.veh1->var_48 & (1 << 1))
+                self->activated_widgets |= (1 << widx::expressMode);
+            else
+                self->activated_widgets |= (1 << widx::localMode);
+
             widget_type type = head->owner == CompanyManager::getControllingId() ? widget_type::wt_9 : widget_type::none;
             self->widgets[widx::orderForceUnload].type = type;
             self->widgets[widx::orderWait].type = type;
@@ -2857,6 +2869,10 @@ namespace OpenLoco::Ui::Vehicle
             {
                 self->widgets[widx::routeList].right += 22;
             }
+
+            self->widgets[widx::expressMode].right = self->widgets[widx::routeList].right;
+            self->widgets[widx::expressMode].left = (self->widgets[widx::expressMode].right - 3) / 2 + 3;
+            self->widgets[widx::localMode].right = self->widgets[widx::expressMode].left - 1;
 
             self->disabled_widgets |= (1 << widx::orderUp) | (1 << widx::orderDown);
             if (self->var_842 != -1)
