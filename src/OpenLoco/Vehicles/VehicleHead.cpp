@@ -382,7 +382,7 @@ namespace OpenLoco::Vehicles
     {
         if (tile_x == -1 || status == Status::crashed || status == Status::stuck || (var_38 & Flags38::isGhost) || vehType2or6->objectId == 0xFFFF)
         {
-            sub_4A8B7C(vehType2or6);
+            updateDrivingSoundNone(vehType2or6);
             return;
         }
 
@@ -390,52 +390,49 @@ namespace OpenLoco::Vehicles
         switch (vehicleObject->drivingSoundType)
         {
             case DrivingSoundType::none:
-                sub_4A8B7C(vehType2or6);
+                updateDrivingSoundNone(vehType2or6);
                 break;
             case DrivingSoundType::friction:
-                sub_4A88F7(vehType2or6, &vehicleObject->sound.type_1);
+                updateDrivingSoundFriction(vehType2or6, &vehicleObject->sound.friction);
                 break;
             case DrivingSoundType::engine1:
-                sub_4A8937(vehType2or6, &vehicleObject->sound.type_2);
+                updateDrivingSoundEngine1(vehType2or6, &vehicleObject->sound.engine1);
                 break;
             case DrivingSoundType::engine2:
-                sub_4A8A39(vehType2or6, &vehicleObject->sound.type_3);
+                updateDrivingSoundEngine2(vehType2or6, &vehicleObject->sound.engine2);
                 break;
             default:
                 break;
         }
     }
 
-    void VehicleHead::sub_4A8B7C(Vehicle2or6* vehType2or6)
+    // 0x004A8B7C
+    void VehicleHead::updateDrivingSoundNone(Vehicle2or6* vehType2or6)
     {
         vehType2or6->drivingSoundId = 0xFF;
     }
 
-    void VehicleHead::sub_4A88F7(Vehicle2or6* vehType2or6, vehicle_object_sound_1* snd)
+    // 0x004A88F7
+    void VehicleHead::updateDrivingSoundFriction(Vehicle2or6* vehType2or6, VehicleObjectSoundFriction* snd)
     {
         Vehicle2* vehType2_2 = vehicleUpdate_2;
         if (vehType2_2->currentSpeed < snd->minSpeed)
         {
-            sub_4A8B7C(vehType2or6);
+            updateDrivingSoundNone(vehType2or6);
             return;
         }
 
         uint32_t speedDiff = vehType2_2->currentSpeed - snd->minSpeed;
         vehType2or6->drivingSoundFrequency = (speedDiff >> snd->speedFreqFactor) + snd->baseFrequency;
 
-        auto volume = speedDiff >> snd->speedVolumeFactor;
-        volume += snd->baseVolume;
+        auto volume = (speedDiff >> snd->speedVolumeFactor) + snd->baseVolume;
 
-        if (volume > snd->maxVolume)
-        {
-            volume = snd->maxVolume;
-        }
-
-        vehType2or6->drivingSoundVolume = volume;
+        vehType2or6->drivingSoundVolume = std::min<uint8_t>(volume, snd->maxVolume);
         vehType2or6->drivingSoundId = snd->soundObjectId;
     }
 
-    void VehicleHead::sub_4A8937(Vehicle2or6* vehType2or6, vehicle_object_sound_2* snd)
+    // 0x004A8937
+    void VehicleHead::updateDrivingSoundEngine1(Vehicle2or6* vehType2or6, VehicleObjectSoundEngine1* snd)
     {
         Vehicle train(this);
         if (vehType2or6->isVehicle2())
@@ -449,7 +446,7 @@ namespace OpenLoco::Vehicles
                 }
                 if (train.cars.firstCar.front->var_5F & Flags5F::broken_down)
                 {
-                    sub_4A8B7C(vehType2or6);
+                    updateDrivingSoundNone(vehType2or6);
                     return;
                 }
             }
@@ -473,7 +470,7 @@ namespace OpenLoco::Vehicles
         }
         else if (vehType2_2->var_5A == 1)
         {
-            if (vehType2or6->isVehicle2() || train.cars.firstCar.front->var_5E == 0)
+            if (!(vehType2or6->isVehicle2()) || train.cars.firstCar.front->var_5E == 0)
             {
                 targetFrequency = snd->var_07 + (vehType2_2->currentSpeed >> snd->speedFreqFactor);
                 targetVolume = snd->var_09;
@@ -527,7 +524,8 @@ namespace OpenLoco::Vehicles
         vehType2or6->drivingSoundId = snd->soundObjectId;
     }
 
-    void VehicleHead::sub_4A8A39(Vehicle2or6* vehType2or6, vehicle_object_sound_3* snd)
+    // 0x004A8A39
+    void VehicleHead::updateDrivingSoundEngine2(Vehicle2or6* vehType2or6, VehicleObjectSoundEngine2* snd)
     {
         Vehicle train(this);
         if (vehType2or6->isVehicle2())
@@ -541,7 +539,7 @@ namespace OpenLoco::Vehicles
                 }
                 if (train.cars.firstCar.front->var_5F & Flags5F::broken_down)
                 {
-                    sub_4A8B7C(vehType2or6);
+                    updateDrivingSoundNone(vehType2or6);
                     return;
                 }
             }
@@ -578,7 +576,7 @@ namespace OpenLoco::Vehicles
 
         if (var5aEqual1Code == true)
         {
-            if (vehType2or6->isVehicle2() || train.cars.firstCar.front->var_5E == 0)
+            if (!(vehType2or6->isVehicle2()) || train.cars.firstCar.front->var_5E == 0)
             {
                 auto speed = std::max<uint32_t>(vehType2_2->currentSpeed, 7.0_mph) >> 16;
 
@@ -597,7 +595,7 @@ namespace OpenLoco::Vehicles
                     }
                 }
                 speed <<= 16;
-                targetFrequency = (uint16_t)((speed >> snd->speedFreqFactor) + frequency);
+                targetFrequency = (speed >> snd->speedFreqFactor) + frequency;
             }
             else
             {

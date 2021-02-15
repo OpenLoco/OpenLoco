@@ -39,7 +39,7 @@ namespace OpenLoco
     }
 
 #pragma pack(push, 1)
-    struct vehicle_object_sound_1
+    struct VehicleObjectSoundFriction
     {
         uint8_t soundObjectId;     // 0x0
         uint32_t minSpeed;         // 0x1 below this speed no sound created
@@ -50,7 +50,7 @@ namespace OpenLoco
         uint8_t maxVolume;         // 0xA
     };
 
-    struct vehicle_object_sound_2
+    struct VehicleObjectSoundEngine1
     {
         uint8_t soundObjectId;     // 0x0
         uint16_t defaultFrequency; // 0x1
@@ -66,7 +66,7 @@ namespace OpenLoco
         uint8_t speedFreqFactor;    // 0x10
     };
 
-    struct vehicle_object_sound_3
+    struct VehicleObjectSoundEngine2
     {
         uint8_t soundObjectId;         // 0x0
         uint16_t defaultFrequency;     // 0x1
@@ -221,9 +221,9 @@ namespace OpenLoco
         DrivingSoundType drivingSoundType; // 0x119
         union
         {
-            vehicle_object_sound_1 type_1;
-            vehicle_object_sound_2 type_2;
-            vehicle_object_sound_3 type_3;
+            VehicleObjectSoundFriction friction;
+            VehicleObjectSoundEngine1 engine1;
+            VehicleObjectSoundEngine2 engine2;
         } sound;
         uint8_t pad_135[0x15A - 0x135];
         uint8_t num_sounds;             // 0x15A  possibly something else stuffed in (1<<7)

@@ -241,10 +241,10 @@ namespace OpenLoco::Vehicles
         void applyBreakdownToTrain();
         void updateDrivingSounds();
         void updateDrivingSound(Vehicle2or6* vehType2or6);
-        void sub_4A8B7C(Vehicle2or6* vehType2or6);
-        void sub_4A88F7(Vehicle2or6* vehType2or6, vehicle_object_sound_1* snd);
-        void sub_4A8937(Vehicle2or6* vehType2or6, vehicle_object_sound_2* snd);
-        void sub_4A8A39(Vehicle2or6* vehType2or6, vehicle_object_sound_3* snd);
+        void updateDrivingSoundNone(Vehicle2or6* vehType2or6);
+        void updateDrivingSoundFriction(Vehicle2or6* vehType2or6, VehicleObjectSoundFriction* snd);
+        void updateDrivingSoundEngine1(Vehicle2or6* vehType2or6, VehicleObjectSoundEngine1* snd);
+        void updateDrivingSoundEngine2(Vehicle2or6* vehType2or6, VehicleObjectSoundEngine2* snd);
         void removeDanglingTrain();
         bool updateLand();
         bool updateAir();
