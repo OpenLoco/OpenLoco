@@ -141,19 +141,109 @@ namespace OpenLoco
         constexpr uint8_t max = 4;
     }
 
+    class Speed32
+    {
+    private:
+        uint32_t _value;
+
+    public:
+        constexpr explicit Speed32(uint32_t val)
+            : _value(val)
+        {
+        }
+
+        constexpr uint32_t getRaw() const { return _value; }
+        constexpr bool operator==(const Speed32& rhs) const
+        {
+            return _value == rhs._value;
+        }
+        constexpr bool operator!=(const Speed32& rhs) const
+        {
+            return !(*this == rhs);
+        }
+        constexpr bool operator>(const Speed32& rhs) const
+        {
+            return _value > rhs._value;
+        }
+        constexpr bool operator<(const Speed32& rhs) const
+        {
+            return _value < rhs._value;
+        }
+        constexpr bool operator>=(const Speed32& rhs) const
+        {
+            return _value >= rhs._value;
+        }
+        constexpr bool operator<=(const Speed32& rhs) const
+        {
+            return _value <= rhs._value;
+        }
+    };
+
+    class Speed16
+    {
+    private:
+        uint16_t _value;
+
+    public:
+        constexpr explicit Speed16(uint16_t val)
+            : _value(val)
+        {
+        }
+        // **Warning** truncates
+        constexpr explicit Speed16(Speed32 val)
+            : _value(val.getRaw() >> 16)
+        {
+        }
+        constexpr uint16_t getRaw() const { return _value; }
+        // Implicitly convert to a Speed32 but only explicit in reverse as it could lose data
+        constexpr operator Speed32() const { return Speed32(_value << 16); }
+
+        constexpr bool operator==(const Speed16& rhs) const
+        {
+            return _value == rhs._value;
+        }
+        constexpr bool operator!=(const Speed16& rhs) const
+        {
+            return !(*this == rhs);
+        }
+        constexpr bool operator>(const Speed16& rhs) const
+        {
+            return _value > rhs._value;
+        }
+        constexpr bool operator<(const Speed16& rhs) const
+        {
+            return _value < rhs._value;
+        }
+        constexpr bool operator>=(const Speed16& rhs) const
+        {
+            return _value >= rhs._value;
+        }
+        constexpr bool operator<=(const Speed16& rhs) const
+        {
+            return _value <= rhs._value;
+        }
+    };
+
+    constexpr auto speed16Null = Speed16(0xFFFF);
+
     namespace Literals
     {
         // Note: Only valid for 5 decimal places.
-        constexpr uint32_t operator"" _mph(long double speedMph)
+        constexpr Speed32 operator"" _mph(long double speedMph)
         {
             uint16_t wholeNumber = speedMph;
             uint64_t fraction = (speedMph - wholeNumber) * 100000;
-            return (static_cast<uint32_t>(wholeNumber) << 16) | static_cast<uint16_t>((fraction << 16) / 100000);
+            return Speed32((static_cast<uint32_t>(wholeNumber) << 16) | static_cast<uint16_t>((fraction << 16) / 100000));
         }
 
-        static_assert(2.75_mph == 0x2C000);
-        static_assert(4.0_mph == 0x40000);
-        static_assert(14.0_mph == 0xE0000);
-        static_assert(0.333333_mph == 0x5555);
+        constexpr Speed16 operator""_mph(unsigned long long int speed)
+        {
+            return Speed16(speed);
+        }
+        static_assert(2.75_mph == Speed32(0x2C000));
+        static_assert(4.0_mph == Speed32(0x40000));
+        static_assert(14.0_mph == Speed32(0xE0000));
+        static_assert(0.333333_mph == Speed32(0x5555));
+        static_assert(2.0_mph == 2_mph);
     }
 }

@@ -58,8 +58,8 @@ namespace OpenLoco::Vehicles
         vehicleUpdate_backBogie = reinterpret_cast<VehicleBogie*>(0xFFFFFFFF);
 
         Vehicle2* veh2 = vehicleUpdate_2;
-        vehicleUpdate_var_113612C = veh2->currentSpeed >> 7;
-        vehicleUpdate_var_1136130 = veh2->currentSpeed >> 7;
+        vehicleUpdate_var_113612C = veh2->currentSpeed.getRaw() >> 7;
+        vehicleUpdate_var_1136130 = veh2->currentSpeed.getRaw() >> 7;
 
         if (var_5C != 0)
         {

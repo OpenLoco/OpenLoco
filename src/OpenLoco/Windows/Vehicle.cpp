@@ -1338,7 +1338,7 @@ namespace OpenLoco::Ui::Vehicle
 
             {
                 FormatArguments args{};
-                args.push<uint16_t>(train.veh2->maxSpeed == -1 ? 0 : train.veh2->maxSpeed);
+                args.push<uint16_t>(train.veh2->maxSpeed == speed16Null ? 0 : train.veh2->maxSpeed.getRaw());
                 args.push<uint16_t>(train.veh2->rackRailMaxSpeed == -1 ? 0 : train.veh2->rackRailMaxSpeed);
                 args.push<uint16_t>(train.veh2->reliability == 0 ? 64 : train.veh2->reliability);
                 string_id str = StringIds::vehicle_details_max_speed_and_reliability;
