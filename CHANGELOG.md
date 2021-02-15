@@ -1,6 +1,7 @@
 20.10+ (in development)
 ------------------------------------------------------------------------
 - Feature: [#690] Automatically save the game at regular intervals.
+- Feature: [#702] Optional new map generator (experimental).
 - Fix: [#151] Mouse moves out of window when looking around.
 - Fix: [#588] 'Cancel or Show Last Announcement' shortcut doesn't close announcements.
 - Fix: [#679] Crash when changing ground texture.

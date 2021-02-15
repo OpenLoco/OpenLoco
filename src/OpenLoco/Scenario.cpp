@@ -64,6 +64,18 @@ namespace OpenLoco::Scenario
         call(0x0049685C, regs);
     }
 
+    void registerHooks()
+    {
+        registerHook(
+            0x0043C90C,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+                generateLandscape();
+                regs = backup;
+                return 0;
+            });
+    }
+
     // 0x0044400C
     void start(const char* filename)
     {

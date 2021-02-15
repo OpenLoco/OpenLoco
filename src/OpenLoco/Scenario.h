@@ -97,5 +97,6 @@ namespace OpenLoco::Scenario
     void generateLandscape();
     void initialiseDate(uint16_t year);
     void start(const char* filename = nullptr);
+    void registerHooks();
     void formatChallengeArguments(FormatArguments& args);
 }
