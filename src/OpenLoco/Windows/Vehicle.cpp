@@ -172,7 +172,7 @@ namespace OpenLoco::Ui::Vehicle
 
         // 0x00500554
         static window_event_list events;
-        constexpr uint64_t enabledWidgets = (1 << widx::localMode) | (1 << widx::expressMode) | (1 << widx::routeList) | (1 << widx::orderForceUnload) | (1 << widx::orderWait) | (1 << widx::orderSkip) | (1 << widx::orderDelete) | (1 << widx::orderUp) | (1 << widx::orderDown) | Common::enabledWidgets;
+        constexpr uint64_t enabledWidgets = (1 << widx::routeList) | (1 << widx::orderForceUnload) | (1 << widx::orderWait) | (1 << widx::orderSkip) | (1 << widx::orderDelete) | (1 << widx::orderUp) | (1 << widx::orderDown) | Common::enabledWidgets;
         constexpr uint64_t holdableWidgets = 0;
 
         static widget_t widgets[] = {
@@ -2353,6 +2353,34 @@ namespace OpenLoco::Ui::Vehicle
                     }
                     break;
                 }
+                case widx::localMode:
+                {
+                    auto head = Common::getVehicle(self);
+                    if (!isPlayerCompany(head->owner))
+                        return;
+
+                    Vehicles::Vehicle train(head);
+                    if (train.veh1->var_48 & (1 << 1))
+                    {
+                        gGameCommandErrorTitle = StringIds::empty;
+                        GameCommands::do12(head->id, 2);
+                    }
+                    break;
+                }
+                case widx::expressMode:
+                {
+                    auto head = Common::getVehicle(self);
+                    if (!isPlayerCompany(head->owner))
+                        return;
+
+                    Vehicles::Vehicle train(head);
+                    if (!(train.veh1->var_48 & (1 << 1)))
+                    {
+                        gGameCommandErrorTitle = StringIds::empty;
+                        GameCommands::do12(head->id, 2);
+                    }
+                    break;
+                }
                 case widx::orderSkip:
                     gGameCommandErrorTitle = StringIds::empty;
                     GameCommands::do_37(self->number);
@@ -2868,6 +2896,11 @@ namespace OpenLoco::Ui::Vehicle
             if (type == widget_type::none)
             {
                 self->widgets[widx::routeList].right += 22;
+                self->enabled_widgets &= ~(1 << widx::expressMode | 1 << widx::localMode);
+            }
+            else
+            {
+                self->enabled_widgets |= (1 << widx::expressMode | 1 << widx::localMode);
             }
 
             self->widgets[widx::expressMode].right = self->widgets[widx::routeList].right;
