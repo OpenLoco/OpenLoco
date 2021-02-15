@@ -2254,18 +2254,12 @@ namespace OpenLoco::Ui::Vehicle
                 return;
             }
 
-            // First item on the list is the local/express button
-            if (orderId == 0)
-            {
-                return;
-            }
-
             // orderId can be -1 at this point for none selected
             auto i = 0;
             Vehicles::Order* last = nullptr;
             for (auto& order : getOrderTable(head))
             {
-                if (i == orderId - 1)
+                if (i == orderId)
                 {
                     orderDeleteCommand(head, order.getOffset());
                     return;
@@ -2304,11 +2298,11 @@ namespace OpenLoco::Ui::Vehicle
             // No moveable orders
             if (head->sizeOfOrderTable <= 1)
                 return false;
-            // Null orderId and item 0 (local/express) no action
-            if (orderId <= 0)
+            // Valid orderId should be positive (avoid -1 / null)
+            if (orderId < 0)
                 return false;
 
-            auto* order = getOrderTable(head).atIndex(orderId - 1);
+            auto* order = getOrderTable(head).atIndex(orderId);
             if (order != nullptr)
             {
                 return orderMoveFunc(head, order->getOffset());
@@ -2344,7 +2338,7 @@ namespace OpenLoco::Ui::Vehicle
                     }
 
                     // Refresh selection (check if we are now at no order selected)
-                    auto* order = getOrderTable(Common::getVehicle(self)).atIndex(self->var_842 - 1);
+                    auto* order = getOrderTable(Common::getVehicle(self)).atIndex(self->var_842);
 
                     // If no order selected anymore
                     if (order == nullptr)
@@ -2388,7 +2382,7 @@ namespace OpenLoco::Ui::Vehicle
                 case widx::orderUp:
                     if (onOrderMove(Common::getVehicle(self), self->var_842, orderUpCommand))
                     {
-                        if (self->var_842 <= 1)
+                        if (self->var_842 <= 0)
                         {
                             return;
                         }
@@ -2398,7 +2392,7 @@ namespace OpenLoco::Ui::Vehicle
                 case widx::orderDown:
                     if (onOrderMove(Common::getVehicle(self), self->var_842, orderDownCommand))
                     {
-                        if (self->var_842 <= 0)
+                        if (self->var_842 < 0)
                         {
                             return;
                         }
@@ -2680,36 +2674,24 @@ namespace OpenLoco::Ui::Vehicle
         static void getScrollSize(Ui::window* const self, const uint32_t scrollIndex, uint16_t* const width, uint16_t* const height)
         {
             auto head = Common::getVehicle(self);
-
-            // Space for the end of orders and express/local item
-            *height = 10 * 2;
-
             auto table = getOrderTable(head);
-            *height += 10 * std::distance(table.begin(), table.end());
+            *height = 10 * std::distance(table.begin(), table.end());
         }
 
         static void scrollMouseDown(window* const self, const int16_t x, const int16_t y, const uint8_t scrollIndex)
         {
             auto head = Common::getVehicle(self);
             auto item = y / 10;
-            Vehicles::Order* selectedOrder = nullptr;
-            if (item != 0)
+            Vehicles::Order* selectedOrder = getOrderTable(head).atIndex(item);
+            if (selectedOrder == nullptr)
             {
-                selectedOrder = getOrderTable(head).atIndex(item - 1);
-                if (selectedOrder == nullptr)
-                {
-                    item = -1;
-                }
+                item = -1;
             }
 
             auto toolWindow = Input::toolGetActiveWindow();
             // If another vehicle window is open and has focus (tool)
             if (toolWindow != nullptr && toolWindow->type == self->type && toolWindow->number != self->number)
             {
-                if (item == 0)
-                {
-                    return;
-                }
                 if (item == -1)
                 {
                     // Copy complete order list
@@ -2733,17 +2715,6 @@ namespace OpenLoco::Ui::Vehicle
                     addNewOrder(toolWindow, *clonedOrder);
                     WindowManager::bringToFront(toolWindow);
                 }
-                return;
-            }
-
-            // If Express/Local item
-            if (item == 0)
-            {
-                if (head->owner != CompanyManager::getControllingId())
-                    return;
-                gGameCommandErrorTitle = StringIds::empty;
-                GameCommands::do12(head->id, 2);
-                self->var_842 = -1;
                 return;
             }
 
@@ -3032,23 +3003,11 @@ namespace OpenLoco::Ui::Vehicle
 
             auto head = Common::getVehicle(self);
             Vehicles::Vehicle train(head);
-            auto strFormat = StringIds::black_stringid;
-            if (self->row_hover == 0)
-            {
-                Gfx::fillRect(pDrawpixelinfo, 0, 0, self->width, 9, 0x2000030);
-                strFormat = StringIds::wcolour2_stringid;
-            }
 
             auto rowNum = 0;
-            {
-                FormatArguments args{};
-                args.push(train.veh1->var_48 & (1 << 1) ? StringIds::express_seperator : StringIds::local_seperator);
-                Gfx::drawString_494B3F(*pDrawpixelinfo, 8, -1, Colour::black, strFormat, &args);
-                rowNum++;
-            }
             if (head->sizeOfOrderTable == 1)
             {
-                Gfx::drawString_494B3F(*pDrawpixelinfo, 8, 9, Colour::black, StringIds::no_route_defined);
+                Gfx::drawString_494B3F(*pDrawpixelinfo, 8, 0, Colour::black, StringIds::no_route_defined);
                 rowNum++; // Used to move down the text
             }
 
@@ -3056,7 +3015,7 @@ namespace OpenLoco::Ui::Vehicle
             for (auto& order : getOrderTable(head))
             {
                 int16_t y = rowNum * 10;
-                strFormat = StringIds::black_stringid;
+                auto strFormat = StringIds::black_stringid;
                 if (self->var_842 == rowNum)
                 {
                     Gfx::fillRect(pDrawpixelinfo, 0, y, self->width, y + 9, Colour::aquamarine);
@@ -3104,16 +3063,16 @@ namespace OpenLoco::Ui::Vehicle
 
             // Output the end of orders
             Gfx::point_t loc = { 8, static_cast<int16_t>(rowNum * 10) };
-            strFormat = StringIds::black_stringid;
+            auto strFormat = StringIds::black_stringid;
             if (self->var_842 == rowNum)
             {
-                Gfx::fillRect(pDrawpixelinfo, 0, loc.y, self->width, loc.y + 9, Colour::aquamarine);
+                Gfx::fillRect(pDrawpixelinfo, 0, loc.y, self->width, loc.y + 10, Colour::aquamarine);
                 strFormat = StringIds::white_stringid;
             }
             if (self->row_hover == rowNum)
             {
                 strFormat = StringIds::wcolour2_stringid;
-                Gfx::fillRect(pDrawpixelinfo, 0, loc.y, self->width, loc.y + 9, 0x2000030);
+                Gfx::fillRect(pDrawpixelinfo, 0, loc.y, self->width, loc.y + 10, 0x2000030);
             }
 
             loc.y -= 1;
