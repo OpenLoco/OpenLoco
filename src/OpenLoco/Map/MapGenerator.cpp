@@ -5,6 +5,7 @@
 #include "../Scenario.h"
 #include "../Ui/WindowManager.h"
 #include "Tile.h"
+#include "TileLoop.hpp"
 #include "TileManager.h"
 #include <cassert>
 #include <cstdint>
@@ -410,9 +411,20 @@ namespace OpenLoco::Map::MapGenerator
     // 0x004C4BD7
     static void generateWater(HeightMap& heightMap)
     {
-        _heightMap = heightMap.data();
-        call(0x004C4BD7);
-        _heightMap = nullptr;
+        static loco_global<uint16_t, 0x00525FB2> seaLevel;
+
+        Map::tile_loop tileLoop;
+        for (uint32_t posId = 0; posId < map_size; posId++)
+        {
+            auto pos = tileLoop.current();
+            auto tile = TileManager::get(pos);
+            auto* surface = tile.surface();
+
+            if (surface != nullptr && surface->baseZ() < (seaLevel << 2))
+                surface->setWater(seaLevel);
+
+            tileLoop.next();
+        }
     }
 
     // 0x0046A021
