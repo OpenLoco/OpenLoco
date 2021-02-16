@@ -12,7 +12,7 @@ namespace OpenLoco::Vehicles
 {
     constexpr auto max_vehicle_length = 176; // TODO: Units?
 
-    uint32_t create(const uint8_t flags, const uint16_t vehicleTypeId, const uint16_t vehicleThingId);
+    void create(OpenLoco::Interop::registers& regs);
 
     namespace Flags0C // commands?
     {

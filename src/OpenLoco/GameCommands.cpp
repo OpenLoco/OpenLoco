@@ -35,6 +35,90 @@ namespace OpenLoco::GameCommands
     static loco_global<uint8_t, 0x009C68EE> _errorCompanyId;
     static loco_global<string_id[8], 0x112C826> _commonFormatArgs;
 
+    using GameCommandFunc = void (*)(registers& regs);
+    static GameCommandFunc _gameCommandFunctions[80] = {
+        nullptr,          // vehicle_rearrange = 0,
+        nullptr,          // vehicle_place = 1,
+        nullptr,          // vehicle_pickup = 2,
+        nullptr,          // vehicle_reverse = 3,
+        nullptr,          // 4
+        Vehicles::create, // vehicle_create = 5,
+        nullptr,          // vehicle_sell = 6,
+        nullptr,          // 7
+        nullptr,          // 8
+        nullptr,          // build_vehicle = 9,
+        nullptr,          // vehicle_rename = 10,
+        nullptr,          // change_station_name = 11,
+        nullptr,          // vehicle_local_express = 12,
+        nullptr,          // 13
+        nullptr,          // 14
+        nullptr,          // 15
+        nullptr,          // 16
+        nullptr,          // 17
+        nullptr,          // 18
+        nullptr,          // change_company_colour_scheme = 19,
+        nullptr,          // pause_game = 20,
+        nullptr,          // load_save_quit_game = 21,
+        nullptr,          // 22
+        nullptr,          // 23
+        nullptr,          // change_land_material = 24,
+        nullptr,          // raise_land = 25,
+        nullptr,          // lower_land = 26,
+        nullptr,          // lower_raise_land_mountain = 27,
+        nullptr,          // raise_water = 28,
+        nullptr,          // lower_water = 29,
+        nullptr,          // 30
+        nullptr,          // 31
+        nullptr,          // 32
+        nullptr,          // 33
+        nullptr,          // 34
+        nullptr,          // vehicle_order_insert = 35,
+        nullptr,          // vehicle_order_delete = 36,
+        nullptr,          // vehicle_order_skip = 37,
+        nullptr,          // 38
+        nullptr,          // 39
+        nullptr,          // 40
+        nullptr,          // 41
+        nullptr,          // 42
+        nullptr,          // 43
+        nullptr,          // 44
+        nullptr,          // 45
+        nullptr,          // change_company_name = 46,
+        nullptr,          // 47
+        nullptr,          // 48
+        nullptr,          // 49
+        nullptr,          // 50
+        nullptr,          // 51
+        nullptr,          // 52
+        nullptr,          // 53
+        nullptr,          // remove_industry = 54,
+        nullptr,          // build_company_headquarters = 55,
+        nullptr,          // 56
+        nullptr,          // 57
+        nullptr,          // 58
+        nullptr,          // vehicle_abort_pickup_air = 59,
+        nullptr,          // 60
+        nullptr,          // 61
+        nullptr,          // 62
+        nullptr,          // vehicle_abort_pickup_water = 63,
+        nullptr,          // 63
+        nullptr,          // 64
+        nullptr,          // change_company_face = 66,
+        nullptr,          // load_multiplayer_map = 67,
+        nullptr,          // 68
+        nullptr,          // 69
+        nullptr,          // 70
+        nullptr,          // send_chat_message = 71,
+        nullptr,          // multiplayer_save = 72,
+        nullptr,          // update_owner_status = 73,
+        nullptr,          // vehicle_speed_control = 74,
+        nullptr,          // vehicle_order_up = 75,
+        nullptr,          // vehicle_order_down = 76,
+        nullptr,          // vehicle_apply_shunt_cheat = 77,
+        nullptr,          // apply_free_cash_cheat = 78,
+        nullptr,          // rename_industry = 79,
+    };
+
     void registerHooks()
     {
         registerHook(
@@ -42,17 +126,6 @@ namespace OpenLoco::GameCommands
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
                 auto ebx = doCommand(regs.esi, backup);
-
-                regs = backup;
-                regs.ebx = ebx;
-                return 0;
-            });
-
-        registerHook(
-            0x004AE5E4,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                auto ebx = Vehicles::create(regs.bl, regs.dx, regs.di);
 
                 regs = backup;
                 regs.ebx = ebx;
@@ -112,18 +185,29 @@ namespace OpenLoco::GameCommands
         return loc_4313C6(esi, regs);
     }
 
+    void callGameCommandFunction(uint32_t command, registers& regs)
+    {
+        if (_gameCommandFunctions[command] != nullptr)
+        {
+            _gameCommandFunctions[command](regs);
+        }
+        else
+        {
+            auto addr = _4F9548[command];
+            call(addr, regs);
+        }
+    }
+
     static uint32_t loc_4313C6(int esi, const registers& regs)
     {
         uint16_t flags = regs.bx;
         gGameCommandErrorText = StringIds::null;
         game_command_nest_level++;
 
-        auto addr = _4F9548[esi];
-
         uint16_t flagsBackup = _gameCommandFlags;
         registers fnRegs1 = regs;
         fnRegs1.bl &= ~GameCommandFlag::apply;
-        call(addr, fnRegs1);
+        callGameCommandFunction(esi, fnRegs1);
         int32_t ebx = fnRegs1.ebx;
         _gameCommandFlags = flagsBackup;
 
@@ -167,7 +251,7 @@ namespace OpenLoco::GameCommands
 
         uint16_t flagsBackup2 = _gameCommandFlags;
         registers fnRegs2 = regs;
-        call(addr, fnRegs2);
+        callGameCommandFunction(esi, fnRegs2);
         int32_t ebx2 = fnRegs2.ebx;
         _gameCommandFlags = flagsBackup2;
 
