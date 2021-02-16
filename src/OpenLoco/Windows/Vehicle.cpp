@@ -2676,6 +2676,9 @@ namespace OpenLoco::Ui::Vehicle
             auto head = Common::getVehicle(self);
             auto table = getOrderTable(head);
             *height = 10 * std::distance(table.begin(), table.end());
+
+            // Space for the 'end of orders' item
+            *height += 10;
         }
 
         static void scrollMouseDown(window* const self, const int16_t x, const int16_t y, const uint8_t scrollIndex)
