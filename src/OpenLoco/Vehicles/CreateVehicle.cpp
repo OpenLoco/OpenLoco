@@ -938,7 +938,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AE5E4
-    uint32_t create(const uint8_t flags, const uint16_t vehicleTypeId, const uint16_t vehicleThingId)
+    static uint32_t create(const uint8_t flags, const uint16_t vehicleTypeId, const uint16_t vehicleThingId)
     {
         gGameCommandExpenditureType = static_cast<uint8_t>(ExpenditureType::VehiclePurchases) * 4;
         _backupVeh0 = reinterpret_cast<VehicleHead*>(-1);
@@ -950,5 +950,10 @@ namespace OpenLoco::Vehicles
         {
             return addCarToVehicle(flags, vehicleTypeId, vehicleThingId);
         }
+    }
+
+    void create(registers& regs)
+    {
+        regs.ebx = create(regs.bl, regs.dx, regs.di);
     }
 }
