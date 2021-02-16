@@ -37,86 +37,86 @@ namespace OpenLoco::GameCommands
 
     using GameCommandFunc = void (*)(registers& regs);
     static GameCommandFunc _gameCommandFunctions[80] = {
-        nullptr,          // vehicle_rearrange = 0,
-        nullptr,          // vehicle_place = 1,
-        nullptr,          // vehicle_pickup = 2,
-        nullptr,          // vehicle_reverse = 3,
-        nullptr,          // 4
+        nullptr,          // vehicle_rearrange = 0,             0x004AF1DF
+        nullptr,          // vehicle_place = 1,                 0x004B01B6
+        nullptr,          // vehicle_pickup = 2,                0x004B0826
+        nullptr,          // vehicle_reverse = 3,               0x004ADAA8
+        nullptr,          // 4                                  0x004B0B50
         Vehicles::create, // vehicle_create = 5,
-        nullptr,          // vehicle_sell = 6,
-        nullptr,          // 7
-        nullptr,          // 8
-        nullptr,          // build_vehicle = 9,
-        nullptr,          // vehicle_rename = 10,
-        nullptr,          // change_station_name = 11,
-        nullptr,          // vehicle_local_express = 12,
-        nullptr,          // 13
-        nullptr,          // 14
-        nullptr,          // 15
-        nullptr,          // 16
-        nullptr,          // 17
-        nullptr,          // 18
-        nullptr,          // change_company_colour_scheme = 19,
-        nullptr,          // pause_game = 20,
-        nullptr,          // load_save_quit_game = 21,
-        nullptr,          // 22
-        nullptr,          // 23
-        nullptr,          // change_land_material = 24,
-        nullptr,          // raise_land = 25,
-        nullptr,          // lower_land = 26,
-        nullptr,          // lower_raise_land_mountain = 27,
-        nullptr,          // raise_water = 28,
-        nullptr,          // lower_water = 29,
-        nullptr,          // 30
-        nullptr,          // 31
-        nullptr,          // 32
-        nullptr,          // 33
-        nullptr,          // 34
-        nullptr,          // vehicle_order_insert = 35,
-        nullptr,          // vehicle_order_delete = 36,
-        nullptr,          // vehicle_order_skip = 37,
-        nullptr,          // 38
-        nullptr,          // 39
-        nullptr,          // 40
-        nullptr,          // 41
-        nullptr,          // 42
-        nullptr,          // 43
-        nullptr,          // 44
-        nullptr,          // 45
-        nullptr,          // change_company_name = 46,
-        nullptr,          // 47
-        nullptr,          // 48
-        nullptr,          // 49
-        nullptr,          // 50
-        nullptr,          // 51
-        nullptr,          // 52
-        nullptr,          // 53
-        nullptr,          // remove_industry = 54,
-        nullptr,          // build_company_headquarters = 55,
-        nullptr,          // 56
-        nullptr,          // 57
-        nullptr,          // 58
-        nullptr,          // vehicle_abort_pickup_air = 59,
-        nullptr,          // 60
-        nullptr,          // 61
-        nullptr,          // 62
-        nullptr,          // vehicle_abort_pickup_water = 63,
-        nullptr,          // 63
-        nullptr,          // 64
-        nullptr,          // change_company_face = 66,
-        nullptr,          // load_multiplayer_map = 67,
-        nullptr,          // 68
-        nullptr,          // 69
-        nullptr,          // 70
-        nullptr,          // send_chat_message = 71,
-        nullptr,          // multiplayer_save = 72,
-        nullptr,          // update_owner_status = 73,
-        nullptr,          // vehicle_speed_control = 74,
-        nullptr,          // vehicle_order_up = 75,
-        nullptr,          // vehicle_order_down = 76,
-        nullptr,          // vehicle_apply_shunt_cheat = 77,
-        nullptr,          // apply_free_cash_cheat = 78,
-        nullptr,          // rename_industry = 79,
+        nullptr,          // vehicle_sell = 6,                  0x004AED34
+        nullptr,          // 7                                  0x0049BB98
+        nullptr,          // 8                                  0x0049C7F2
+        nullptr,          // build_vehicle = 9,                 0x0046DE88
+        nullptr,          // vehicle_rename = 10,               0x004B6572
+        nullptr,          // change_station_name = 11,          0x00490756
+        nullptr,          // vehicle_local_express = 12,        0x004B694B
+        nullptr,          // 13                                 0x00488BDB
+        nullptr,          // 14                                 0x004891E4
+        nullptr,          // 15                                 0x0048BB20
+        nullptr,          // 16                                 0x0048C402
+        nullptr,          // 17                                 0x004A6479
+        nullptr,          // 18                                 0x004A668A
+        nullptr,          // change_company_colour_scheme = 19, 0x0043483D
+        nullptr,          // pause_game = 20,                   0x00431E32
+        nullptr,          // load_save_quit_game = 21,          0x0043BFCB
+        nullptr,          // 22                                 0x004BB392
+        nullptr,          // 23                                 0x004BB138
+        nullptr,          // change_land_material = 24,         0x00468EDD
+        nullptr,          // raise_land = 25,                   0x00463702
+        nullptr,          // lower_land = 26,                   0x004638C6
+        nullptr,          // lower_raise_land_mountain = 27,    0x00462DCE
+        nullptr,          // raise_water = 28,                  0x004C4F19
+        nullptr,          // lower_water = 29,                  0x004C5126
+        nullptr,          // 30                                 0x00434914
+        nullptr,          // 31                                 0x00434A58
+        nullptr,          // 32                                 0x004C436C
+        nullptr,          // 33                                 0x004C466C
+        nullptr,          // 34                                 0x004C4717
+        nullptr,          // vehicle_order_insert = 35,         0x0047036E
+        nullptr,          // vehicle_order_delete = 36,         0x0047057A
+        nullptr,          // vehicle_order_skip = 37,           0x0047071A
+        nullptr,          // 38                                 0x00475FBC
+        nullptr,          // 39                                 0x004775A5
+        nullptr,          // 40                                 0x0047A21E
+        nullptr,          // 41                                 0x0047A42F
+        nullptr,          // 42                                 0x0048C708
+        nullptr,          // 43                                 0x0048D2AC
+        nullptr,          // 44                                 0x0042D133
+        nullptr,          // 45                                 0x0042D74E
+        nullptr,          // change_company_name = 46,          0x0049B11E
+        nullptr,          // 47                                 0x0045436B
+        nullptr,          // 48                                 0x00455943
+        nullptr,          // 49                                 0x00496C22
+        nullptr,          // 50                                 0x0049711F
+        nullptr,          // 51                                 0x004A6FDC
+        nullptr,          // 52                                 0x004A734F
+        nullptr,          // 53                                 0x0047AF0B
+        nullptr,          // remove_industry = 54,              0x0042ECFC
+        nullptr,          // build_company_headquarters = 55,   0x0042EEAF
+        nullptr,          // 56                                 0x00492C41
+        nullptr,          // 57                                 0x00493559
+        nullptr,          // 58                                 0x004267BE
+        nullptr,          // vehicle_abort_pickup_air = 59,     0x00426B29
+        nullptr,          // 60                                 0x00493AA7
+        nullptr,          // 61                                 0x00494570
+        nullptr,          // 62                                 0x0042773C
+        nullptr,          // vehicle_abort_pickup_water = 63,   0x004279CC
+        nullptr,          // 63                                 0x0042F6DB
+        nullptr,          // 64                                 0x00435506
+        nullptr,          // change_company_face = 66,          0x00469CCB
+        nullptr,          // load_multiplayer_map = 67,         0x00444DA0
+        nullptr,          // 68                                 0x0046F8A5
+        nullptr,          // 69                                 0x004454BE
+        nullptr,          // 70                                 0x004456C8
+        nullptr,          // send_chat_message = 71,            0x0046F976
+        nullptr,          // multiplayer_save = 72,             0x004A0ACD
+        nullptr,          // update_owner_status = 73,          0x004383CA
+        nullptr,          // vehicle_speed_control = 74,        0x004BAB63
+        nullptr,          // vehicle_order_up = 75,             0x00470CD2
+        nullptr,          // vehicle_order_down = 76,           0x00470E06
+        nullptr,          // vehicle_apply_shunt_cheat = 77,    0x004BAC53
+        nullptr,          // apply_free_cash_cheat = 78,        0x00438A08
+        nullptr,          // rename_industry = 79,              0x00455029
     };
 
     void registerHooks()
@@ -185,7 +185,7 @@ namespace OpenLoco::GameCommands
         return loc_4313C6(esi, regs);
     }
 
-    void callGameCommandFunction(uint32_t command, registers& regs)
+    static void callGameCommandFunction(uint32_t command, registers& regs)
     {
         if (_gameCommandFunctions[command] != nullptr)
         {
