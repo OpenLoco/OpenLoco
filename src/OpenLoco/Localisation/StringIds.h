@@ -699,8 +699,8 @@ namespace OpenLoco::StringIds
     constexpr string_id station_cargo_en_route_end = 1213;
     constexpr string_id no_space_for_more_vehicle_orders = 1214;
 
-    constexpr string_id local_seperator = 1216;
-    constexpr string_id express_seperator = 1217;
+    constexpr string_id local_mode_button = 1216;
+    constexpr string_id express_mode_button = 1217;
     constexpr string_id no_route_defined = 1218;
     constexpr string_id orders_end = 1219;
     constexpr string_id orders_stop_at = 1220;
