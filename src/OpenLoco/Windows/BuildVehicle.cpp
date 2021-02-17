@@ -759,7 +759,7 @@ namespace OpenLoco::Ui::BuildVehicle
             gGameCommandErrorTitle = StringIds::cant_add_pop_5_string_id_string_id;
         }
 
-        if (!GameCommands::do_5(item, _buildTargetVehicle))
+        if (GameCommands::do_5(item, _buildTargetVehicle) == GameCommands::FAILURE)
         {
             return;
         }

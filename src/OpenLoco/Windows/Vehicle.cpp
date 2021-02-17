@@ -185,8 +185,6 @@ namespace OpenLoco::Ui::Vehicle
             makeWidget({ 240, 152 }, { 24, 12 }, widget_type::wt_9, 1, ImageIds::red_arrow_down, StringIds::tooltip_route_move_order_down),
             widgetEnd(),
         };
-
-        static void addNewOrder(window* const self, const Vehicles::Order& order);
     }
 
     static loco_global<uint8_t, 0x00525FC5> _525FC5;
@@ -948,72 +946,14 @@ namespace OpenLoco::Ui::Vehicle
         {
             static loco_global<uint16_t, 0x0113642A> _113642A;
             auto head = Common::getVehicle(self);
-            Vehicles::Vehicle train(head);
-            Vehicles::VehicleHead* newHead = nullptr;
-
-            // Get total cost for a new vehicle (note this should be removed when turned into a game command)
-            uint32_t totalCost = 0;
-            for (auto& car : train.cars)
+            gGameCommandErrorTitle = StringIds::cant_clone_vehicle;
+            if (GameCommands::do_80(head->head))
             {
-                auto cost = GameCommands::queryDo_5(car.front->object_id, -1);
-                if (cost == GameCommands::FAILURE)
+                auto* newVehicle = ThingManager::get<Vehicles::VehicleBase>(_113642A);
+                if (newVehicle != nullptr)
                 {
-                    totalCost = GameCommands::FAILURE;
-                    break;
+                    OpenLoco::Ui::Vehicle::Details::open(newVehicle);
                 }
-                else
-                {
-                    totalCost += cost;
-                }
-            }
-
-            if (totalCost == GameCommands::FAILURE)
-            {
-                return;
-            }
-
-            // Check total cost for a new vehicle, taken from GameCommands::loc_4313C6 (note this should be removed when turned into a game command)
-            registers regs2;
-            regs2.ebp = totalCost;
-            call(0x0046DD06, regs2);
-            if (static_cast<uint32_t>(regs2.ebp) == GameCommands::FAILURE)
-            {
-                return;
-            }
-
-            for (auto& car : train.cars)
-            {
-                if (newHead == nullptr)
-                {
-                    GameCommands::do_5(car.front->object_id, -1);
-                    newHead = ThingManager::get<Vehicles::VehicleHead>(ThingManager::get<Vehicles::VehicleBase>(_113642A)->getHead());
-                }
-                else
-                {
-                    GameCommands::do_5(car.front->object_id, newHead->head);
-                }
-            }
-            auto* newWnd = Vehicle::Details::open(newHead);
-
-            // Copy orders
-            // Route::addNewOrder expects window on Route tab but we can just pretend
-            // TODO: Change this in the future.
-            newWnd->var_842 = 0;
-            std::vector<std::shared_ptr<Vehicles::Order>> clonedOrders;
-            for (auto& existingOrders : Vehicles::OrderTableView(head->orderTableOffset))
-            {
-                clonedOrders.push_back(existingOrders.clone());
-            }
-            for (auto& order : clonedOrders)
-            {
-                Route::addNewOrder(newWnd, *order);
-            }
-            newWnd->var_842 = 0;
-
-            // Copy express/local
-            if (train.veh1->var_48 & (1 << 1))
-            {
-                GameCommands::do12(newHead->id, 2);
             }
         }
 
