@@ -25,7 +25,90 @@ namespace OpenLoco::GameCommands
 
     static uint16_t _gameCommandFlags;
     static loco_global<uintptr_t[80], 0x004F9548> _4F9548;
-    static loco_global<uint8_t[80], 0x004F9688> _4F9688;
+
+    // 0x004F9688
+    bool _gameCommandCanBeUsedWhenPaused[80] = {
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false,
+        false,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+    };
 
     static loco_global<tile_element*, 0x009C68D0> _9C68D0;
 
@@ -151,7 +234,7 @@ namespace OpenLoco::GameCommands
         }
 
         if ((flags & (GameCommandFlag::flag_4 | GameCommandFlag::flag_6)) != 0
-            && _4F9688[esi] == 1
+            && _gameCommandCanBeUsedWhenPaused[esi]
             && _updating_company_id == _player_company[0])
         {
             if (getPauseFlags() & 1)
