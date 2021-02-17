@@ -605,8 +605,12 @@ namespace OpenLoco::Ui
         if (viewports[0] == nullptr || saved_view.isEmpty())
             return;
 
-        // Centre viewport on tile/thing.
         auto main = WindowManager::getMainWindow();
+
+        // Unfocus the viewport.
+        main->viewport_configurations[0].viewport_target_sprite = ThingId::null;
+
+        // Centre viewport on tile/thing.
         if (saved_view.isThingView())
         {
             auto thing = ThingManager::get<thing_base>(saved_view.thingId);
@@ -638,6 +642,35 @@ namespace OpenLoco::Ui
         viewport_config* vc = &this->viewport_configurations[0];
         vc->saved_view_x = dest_x + rebased_x + (offset_x / (1 << v->zoom));
         vc->saved_view_y = dest_y + rebased_y + (offset_y / (1 << v->zoom));
+    }
+
+    void window::viewportFocusOnEntity(uint16_t targetEntity)
+    {
+        if (viewports[0] == nullptr || saved_view.isEmpty())
+            return;
+
+        viewport_configurations[0].viewport_target_sprite = targetEntity;
+    }
+
+    bool window::viewportIsFocusedOnEntity() const
+    {
+        if (viewports[0] == nullptr || saved_view.isEmpty())
+            return false;
+
+        return viewport_configurations[0].viewport_target_sprite != ThingId::null;
+    }
+
+    void window::viewportUnfocusFromEntity()
+    {
+        if (viewports[0] == nullptr || saved_view.isEmpty())
+            return;
+
+        if (viewport_configurations[0].viewport_target_sprite == ThingId::null)
+            return;
+
+        auto thing = ThingManager::get<thing_base>(viewport_configurations[0].viewport_target_sprite);
+        viewport_configurations[0].viewport_target_sprite = ThingId::null;
+        viewportCentreOnTile({ thing->x, thing->y, thing->z });
     }
 
     void window::viewportZoomSet(int8_t zoomLevel, bool toCursor)

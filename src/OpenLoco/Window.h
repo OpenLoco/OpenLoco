@@ -465,6 +465,9 @@ namespace OpenLoco::Ui
         void moveWindowToLocation(viewport_pos pos);
         void viewportCentreOnTile(const Map::map_pos3& loc);
         void viewportCentreTileAroundCursor(int16_t map_x, int16_t map_y, int16_t offset_x, int16_t offset_y);
+        void viewportFocusOnEntity(uint16_t targetEntity);
+        bool viewportIsFocusedOnEntity() const;
+        void viewportUnfocusFromEntity();
         void viewportZoomSet(int8_t zoomLevel, bool toCursor);
         void viewportZoomIn(bool toCursor);
         void viewportZoomOut(bool toCursor);

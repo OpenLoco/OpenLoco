@@ -402,6 +402,25 @@ namespace OpenLoco::Ui::Vehicle
             GameCommands::do_3(self->number, Common::getVehicle(self));
         }
 
+        static void onCentreViewportControl(window* const self)
+        {
+            Dropdown::add(0, StringIds::dropdown_stringid, StringIds::dropdown_viewport_move);
+            Dropdown::add(1, StringIds::dropdown_stringid, StringIds::dropdown_viewport_focus);
+
+            widget_t* widget = &self->widgets[widx::centreViewport];
+            Dropdown::showText(
+                self->x + widget->left,
+                self->y + widget->top,
+                widget->width(),
+                widget->height(),
+                self->colours[1],
+                2,
+                0);
+
+            Dropdown::setItemSelected(0);
+            Dropdown::setHighlightedItem(0);
+        }
+
         // 0x004B24D1
         static void onMouseUp(window* const self, const widget_index widgetIndex)
         {
@@ -429,9 +448,6 @@ namespace OpenLoco::Ui::Vehicle
                 case widx::passSignal:
                     gGameCommandErrorTitle = StringIds::cant_pass_signal_at_danger;
                     GameCommands::do_4(self->number);
-                    break;
-                case widx::centreViewport:
-                    self->viewportCentreMain();
                     break;
             }
         }
@@ -567,17 +583,15 @@ namespace OpenLoco::Ui::Vehicle
                 case widx::speedControl:
                     onSpeedControl(self);
                     break;
+                case widx::centreViewport:
+                    onCentreViewportControl(self);
+                    break;
             }
         }
 
         // 0x004B253A
-        static void onDropdown(window* const self, const widget_index widgetIndex, const int16_t itemIndex)
+        static void onStopStartDropdown(window* const self, const int16_t itemIndex)
         {
-            if (widgetIndex != widx::stopStart)
-            {
-                return;
-            }
-
             auto item = itemIndex == -1 ? Dropdown::getHighlightedItem() : itemIndex;
             if (item == -1 || item > 2)
             {
@@ -597,6 +611,41 @@ namespace OpenLoco::Ui::Vehicle
             args.push(head->var_22);
             args.push(head->var_44);
             GameCommands::do12(head->id, mode);
+        }
+
+        static void onCentreViewportDropdown(window* const self, const int16_t itemIndex)
+        {
+            if (itemIndex <= 0)
+            {
+                // Centre main window on vehicle, without locking.
+                self->viewportCentreMain();
+            }
+
+            // Focus main viewport on vehicle
+            if (itemIndex == 1)
+            {
+                auto vehHead = Common::getVehicle(self);
+                Vehicles::Vehicle train(vehHead);
+                thing_id_t targetThing = train.veh2->id;
+
+                // Focus viewport on vehicle, with locking.
+                auto main = WindowManager::getMainWindow();
+                main->viewportFocusOnEntity(targetThing);
+            }
+        }
+
+        // 0x004B253A
+        static void onDropdown(window* const self, const widget_index widgetIndex, const int16_t itemIndex)
+        {
+            switch (widgetIndex)
+            {
+                case widx::stopStart:
+                    onStopStartDropdown(self, itemIndex);
+                    break;
+                case widx::centreViewport:
+                    onCentreViewportDropdown(self, itemIndex);
+                    break;
+            }
         }
 
         // 0x004B2545
