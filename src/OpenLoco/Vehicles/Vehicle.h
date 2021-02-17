@@ -13,6 +13,7 @@ namespace OpenLoco::Vehicles
     constexpr auto max_vehicle_length = 176; // TODO: Units?
 
     void create(OpenLoco::Interop::registers& regs);
+    void cloneVehicle(OpenLoco::Interop::registers& regs);
 
     namespace Flags0C // commands?
     {

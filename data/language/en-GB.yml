@@ -2203,3 +2203,6 @@ strings:
   2148: "{COLOUR WINDOW_2}Generator:"
   2149: Original
   2150: Improved
+  2151: "Modify vehicle"
+  2152: "Clone vehicle"
+  2153: "Can't clone vehicle..."

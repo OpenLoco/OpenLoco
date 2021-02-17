@@ -110,6 +110,7 @@
     <ClCompile Include="Ui\WindowManager.cpp" />
     <ClCompile Include="Utility\Numeric.cpp" />
     <ClCompile Include="Utility\String.cpp" />
+    <ClCompile Include="Vehicles\CloneVehicle.cpp" />
     <ClCompile Include="Vehicles\CreateVehicle.cpp" />
     <ClCompile Include="Vehicles\Orders.cpp" />
     <ClCompile Include="Vehicles\Vehicle.cpp" />

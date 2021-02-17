@@ -65,6 +65,7 @@ namespace OpenLoco::GameCommands
         vehicle_apply_shunt_cheat = 77,
         apply_free_cash_cheat = 78,
         rename_industry = 79,
+        vehicle_clone = 80,
     };
 
     constexpr uint32_t FAILURE = 0x80000000;
@@ -113,14 +114,25 @@ namespace OpenLoco::GameCommands
     }
 
     // Build vehicle
-    inline bool do_5(uint16_t vehicle_type, uint16_t vehicle_id = 0xFFFF)
+    inline uint32_t do_5(uint16_t vehicle_type, uint16_t vehicle_id = 0xFFFF)
     {
         registers regs;
         regs.bl = GameCommandFlag::apply;
         regs.di = vehicle_id;
         regs.edx = vehicle_type;
 
-        return doCommand(5, regs) != FAILURE;
+        return doCommand(5, regs);
+    }
+
+    // Build vehicle
+    inline uint32_t queryDo_5(uint16_t vehicle_type, uint16_t vehicle_id = 0xFFFF)
+    {
+        registers regs;
+        regs.bl = 0;
+        regs.di = vehicle_id;
+        regs.edx = vehicle_type;
+
+        return doCommand(5, regs);
     }
 
     inline void do_6(thing_id_t car)
@@ -559,5 +571,13 @@ namespace OpenLoco::GameCommands
         regs.ebp = ebp; // part of name buffer
         regs.edi = edi; // part of name buffer
         doCommand(79, regs);
+    }
+
+    inline bool do_80(uint16_t head)
+    {
+        registers regs;
+        regs.bl = GameCommandFlag::apply;
+        regs.ax = head;
+        return GameCommands::doCommand(static_cast<int32_t>(GameCommand::vehicle_clone), regs) != FAILURE;
     }
 }
