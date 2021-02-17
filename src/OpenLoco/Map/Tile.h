@@ -137,7 +137,7 @@ namespace OpenLoco::Map
     };
 #pragma pack(pop)
 
-    struct tileHeight
+    struct TileHeight
     {
         coord_t landHeight;
         coord_t waterHeight;
@@ -146,7 +146,6 @@ namespace OpenLoco::Map
     // 0x004F9296, 0x4F9298
     constexpr map_pos offsets[4] = { { 0, 0 }, { 0, 32 }, { 32, 32 }, { 32, 0 } };
 
-    tileHeight tileElementHeight(int16_t x, int16_t y);
     Ui::viewport_pos coordinate3dTo2d(int16_t x, int16_t y, int16_t z, int rotation);
     map_pos rotate2dCoordinate(map_pos pos, uint8_t rotation);
 
@@ -408,6 +407,8 @@ namespace OpenLoco::Map
         tile_element* operator[](size_t i);
 
         size_t indexOf(const tile_element_base* element) const;
-        surface_element* surface();
+        surface_element* surface() const;
+
+        TileHeight getHeight() const;
     };
 }

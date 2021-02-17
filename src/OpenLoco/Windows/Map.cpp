@@ -6,6 +6,7 @@
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/FormatArguments.hpp"
+#include "../Map/TileManager.h"
 #include "../Objects/IndustryObject.h"
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/ObjectManager.h"
@@ -380,7 +381,7 @@ namespace OpenLoco::Ui::Windows::Map
     // 0x0046B9D4
     static void moveMainViewToMapView(map_pos pos)
     {
-        auto z = tileElementHeight(pos.x, pos.y).landHeight;
+        auto z = TileManager::get(pos.x, pos.y).getHeight().landHeight;
         auto window = WindowManager::getMainWindow();
 
         if (window == nullptr)

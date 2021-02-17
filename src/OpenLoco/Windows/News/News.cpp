@@ -7,6 +7,7 @@
 #include "../../Interop/Interop.hpp"
 #include "../../Localisation/FormatArguments.hpp"
 #include "../../Localisation/StringIds.h"
+#include "../../Map/TileManager.h"
 #include "../../Message.h"
 #include "../../MessageManager.h"
 #include "../../Objects/ObjectManager.h"
@@ -189,7 +190,7 @@ namespace OpenLoco::Ui::NewsWindow
 
                     view.mapX = industry->x;
                     view.mapY = industry->y;
-                    view.surfaceZ = tileElementHeight(view.mapX, view.mapY).landHeight;
+                    view.surfaceZ = TileManager::get(view.mapX, view.mapY).getHeight().landHeight;
                     view.rotation = gCurrentRotation;
                     view.zoomLevel = ZoomLevel::half;
                     *selectable = true;
@@ -215,7 +216,7 @@ namespace OpenLoco::Ui::NewsWindow
 
                     view.mapX = town->x;
                     view.mapY = town->y;
-                    view.surfaceZ = tileElementHeight(view.mapX, view.mapY).landHeight;
+                    view.surfaceZ = TileManager::get(view.mapX, view.mapY).getHeight().landHeight;
                     view.rotation = gCurrentRotation;
                     view.zoomLevel = ZoomLevel::half;
                     *selectable = true;
@@ -251,7 +252,7 @@ namespace OpenLoco::Ui::NewsWindow
                 case 5:
                     view.mapX = news->item_id_1; // possible union?
                     view.mapY = news->item_id_2;
-                    view.surfaceZ = tileElementHeight(view.mapX, view.mapY).landHeight;
+                    view.surfaceZ = TileManager::get(view.mapX, view.mapY).getHeight().landHeight;
                     view.zoomLevel = ZoomLevel::full;
                     view.rotation = gCurrentRotation;
                     *selectable = true;
