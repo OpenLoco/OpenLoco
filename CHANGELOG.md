@@ -8,6 +8,7 @@
 - Fix: [#712] Load / save window tries to show preview for item after last.
 - Fix: [#725] Company value graph does not display correctly.
 - Fix: [#744] Rendering issues ('Z-fighting') with vehicles over bridges.
+- Fix: [#766] Performance index is off by a factor of 10 in scenario options window.
 - Change: [#690] Default saved game directory is now in OpenLoco user directory.
 
 20.10 (2020-10-25)

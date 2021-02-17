@@ -429,6 +429,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             }
         }
 
+        // 0x0043FB0C
         static void prepareDraw(window* self)
         {
             Common::prepareDraw(self);
@@ -453,7 +454,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                     break;
 
                 case Scenario::objective_type::performance_index:
-                    *(int16_t*)&*commonFormatArgs = *objectivePerformanceIndex;
+                    *(int16_t*)&*commonFormatArgs = *objectivePerformanceIndex * 10;
                     widgets[widx::objective_value].text = StringIds::challenge_performance_index;
                     break;
 
