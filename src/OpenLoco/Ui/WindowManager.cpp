@@ -1967,6 +1967,11 @@ namespace OpenLoco::Ui::WindowManager
     {
         return gCurrentRotation;
     }
+
+    void setCurrentRotation(int32_t value)
+    {
+        gCurrentRotation = value;
+    }
 }
 
 namespace OpenLoco::Ui::Windows

@@ -1,11 +1,15 @@
 #include "Scenario.h"
 #include "Graphics/Gfx.h"
 #include "Interop/Interop.hpp"
+#include "Map/MapGenerator.h"
+#include "Map/TileManager.h"
 #include "Objects/CargoObject.h"
 #include "S5/S5.h"
 #include "Ui/WindowManager.h"
 
 using namespace OpenLoco::Interop;
+using namespace OpenLoco::Map;
+using namespace OpenLoco::Ui;
 
 namespace OpenLoco::Scenario
 {
@@ -20,6 +24,19 @@ namespace OpenLoco::Scenario
     static loco_global<uint8_t, 0x00526240> objectiveTimeLimitYears;
     static loco_global<uint16_t, 0x00526241> objectiveTimeLimitUntilYear;
 
+    // 0x0043C88C
+    void reset()
+    {
+        call(0x0043C88C);
+    }
+
+    // 0x004748D4
+    // ?Set default types for building. Like the initial track type and vehicle type and such.?
+    void sub_4748D4()
+    {
+        call(0x004748D4);
+    }
+
     // 0x0043EDAD
     void eraseLandscape()
     {
@@ -31,9 +48,32 @@ namespace OpenLoco::Scenario
         Gfx::invalidateScreen();
     }
 
+    // 0x0043C90C
     void generateLandscape()
     {
-        call(0x0043C90C);
+        auto& options = S5::getOptions();
+        MapGenerator::generate(options);
+        options.madeAnyChanges = 0;
+        addr<0x00F25374, uint8_t>() = 0;
+    }
+
+    void initialiseDate(uint16_t year)
+    {
+        registers regs;
+        regs.ax = year;
+        call(0x0049685C, regs);
+    }
+
+    void registerHooks()
+    {
+        registerHook(
+            0x0043C90C,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+                generateLandscape();
+                regs = backup;
+                return 0;
+            });
     }
 
     // 0x0044400C

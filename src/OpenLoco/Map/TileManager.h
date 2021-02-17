@@ -12,6 +12,7 @@ namespace OpenLoco::Map::TileManager
         enableConstruct = (1 << 1)
     };
 
+    void initialise();
     tile get(map_pos pos);
     tile get(coord_t x, coord_t y);
     std::tuple<int16_t, int16_t> getHeight(coord_t x, coord_t y);

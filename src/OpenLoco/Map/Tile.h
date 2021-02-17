@@ -270,6 +270,7 @@ namespace OpenLoco::Map
         uint8_t slope() const { return _slope & 0x1F; }
         uint8_t var_4_E0() const { return _slope & 0xE0; }
         uint8_t water() const { return _water & 0x1F; }
+        void setWater(uint8_t level) { _water = (_water & 0xE0) | (level & 0x1F); };
         uint8_t terrain() const { return _terrain & 0x1F; }
         uint8_t var_6_SLR5() const { return _terrain >> 5; }
         uint8_t industryId() const { return _industry; }

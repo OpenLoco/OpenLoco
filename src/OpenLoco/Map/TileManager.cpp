@@ -16,6 +16,12 @@ namespace OpenLoco::Map::TileManager
     constexpr uint16_t mapSelectedTilesSize = 300;
     static loco_global<map_pos[mapSelectedTilesSize], 0x00F24490> _mapSelectedTiles;
 
+    // 0x00461179
+    void initialise()
+    {
+        call(0x00461179);
+    }
+
     tile get(map_pos pos)
     {
         return get(pos.x, pos.y);

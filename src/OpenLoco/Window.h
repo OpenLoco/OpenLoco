@@ -115,6 +115,20 @@ namespace OpenLoco::Ui
         return out;
     }
 
+#define makeDropdownWidgets(...) \
+    makeWidget(__VA_ARGS__),     \
+        makeDropdownButtonWidget(__VA_ARGS__)
+
+    [[maybe_unused]] static constexpr widget_t makeDropdownButtonWidget(Gfx::point_t origin, Gfx::ui_size_t size, [[maybe_unused]] widget_type type, uint8_t colour, [[maybe_unused]] uint32_t content = 0xFFFFFFFF, [[maybe_unused]] string_id tooltip = StringIds::null)
+    {
+        const int16_t xPos = origin.x + size.width - 12;
+        const int16_t yPos = origin.y + 1;
+        const uint16_t width = 11;
+        const uint16_t height = 10;
+
+        return makeWidget({ xPos, yPos }, { width, height }, widget_type::wt_11, colour, StringIds::dropdown);
+    }
+
 #define makeStepperWidgets(...)                 \
     makeWidget(__VA_ARGS__),                    \
         makeStepperDecreaseWidget(__VA_ARGS__), \

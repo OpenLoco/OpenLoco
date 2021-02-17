@@ -18,6 +18,7 @@
 #include "../Map/Tile.h"
 #include "../Paint/Paint.h"
 #include "../Platform/Platform.h"
+#include "../Scenario.h"
 #include "../Station.h"
 #include "../Title.h"
 #include "../Tutorial.h"
@@ -771,6 +772,7 @@ void OpenLoco::Interop::registerHooks()
     Ui::WindowManager::registerHooks();
     Ui::ViewportManager::registerHooks();
     GameCommands::registerHooks();
+    Scenario::registerHooks();
     Title::registerHooks();
     Tutorial::registerHooks();
     Paint::registerHooks();
