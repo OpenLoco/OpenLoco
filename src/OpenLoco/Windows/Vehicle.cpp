@@ -2564,7 +2564,7 @@ namespace OpenLoco::Ui::Vehicle
                     auto height = trackElement->baseZ() * 4;
                     auto trackId = trackElement->trackId();
                     const auto& trackPiece = OpenLoco::Map::TrackData::getTrackPiece(trackId);
-                    const auto& trackPart = trackPiece[trackElement->unk_5l()];
+                    const auto& trackPart = trackPiece[trackElement->sequenceIndex()];
 
                     auto pos = Map::rotate2dCoordinate({ trackPart.x, trackPart.y }, trackElement->unkDirection());
                     pos.x += args.x;
@@ -2607,21 +2607,21 @@ namespace OpenLoco::Ui::Vehicle
                 {
                     // 0x004B5223
                     auto tileElement = static_cast<tile_element*>(args.object);
-                    auto trackElement = tileElement->asTrack();
-                    if (trackElement == nullptr)
+                    auto roadElement = tileElement->asRoad();
+                    if (roadElement == nullptr)
                         break;
-                    auto height = trackElement->baseZ() * 4;
-                    auto roadId = trackElement->trackId();
+                    auto height = roadElement->baseZ() * 4;
+                    auto roadId = roadElement->roadId();
                     const auto& roadPiece = OpenLoco::Map::TrackData::getRoadPiece(roadId);
-                    const auto& roadPart = roadPiece[trackElement->unk_5l()];
+                    const auto& roadPart = roadPiece[roadElement->sequenceIndex()];
 
-                    auto pos = Map::rotate2dCoordinate({ roadPart.x, roadPart.y }, trackElement->unkDirection());
+                    auto pos = Map::rotate2dCoordinate({ roadPart.x, roadPart.y }, roadElement->unkDirection());
                     pos.x += args.x;
                     pos.y += args.y;
                     TilePos tPos{ pos };
                     height -= roadPart.z;
 
-                    Vehicles::OrderRouteWaypoint waypoint(tPos, height / 8, trackElement->unkDirection(), roadId);
+                    Vehicles::OrderRouteWaypoint waypoint(tPos, height / 8, roadElement->unkDirection(), roadId);
                     Audio::playSound(Audio::sound_id::waypoint, { x, y, Input::getDragLastLocation().x }, Input::getDragLastLocation().x);
                     addNewOrder(&self, waypoint);
                     break;
