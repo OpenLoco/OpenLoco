@@ -11,6 +11,7 @@
 - Fix: [#725] Company value graph does not display correctly.
 - Fix: [#744] Rendering issues ('Z-fighting') with vehicles over bridges.
 - Fix: [#766] Performance index is off by a factor of 10 in scenario options window.
+- Fix: [#769] Waypoints for road vehicles could not be set.
 - Change: [#690] Default saved game directory is now in OpenLoco user directory.
 - Change: [#762] The vehicle window now uses buttons for local/express mode.
 

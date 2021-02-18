@@ -338,13 +338,13 @@ namespace OpenLoco::Map
         uint8_t unkZ() const { return (_type & 0x03) | ((_4 & 0x3F) << 3); }
         bool hasSignal() const { return (_type & 0x40) != 0; }
         uint8_t unkDirection() const { return _type & 0x03; }
-        uint8_t trackId() const { return _4 & 0x3F; }
+        uint8_t trackId() const { return _4 & 0x3F; } // _4
         bool has_4_80() const { return (_4 & 0x80) != 0; }
-        uint8_t trackObjectId() const { return _5 >> 4; } // _5u
-        uint8_t unk_5l() const { return _5 & 0xF; }
-        uint8_t unk_6() const { return _6; }
-        uint8_t owner() const { return _7 & 0xF; } // _7l
-        uint8_t unk_7u() const { return _7 >> 4; }
+        uint8_t trackObjectId() const { return _5 >> 4; }  // _5u
+        uint8_t sequenceIndex() const { return _5 & 0xF; } // _5l
+        uint8_t unk_6() const { return _6; }               // _6
+        uint8_t owner() const { return _7 & 0xF; }         // _7l
+        uint8_t unk_7u() const { return _7 >> 4; }         // _7u
     };
 
     struct signal_element : public tile_element_base
@@ -365,8 +365,10 @@ namespace OpenLoco::Map
         uint8_t _7;
 
     public:
-        uint8_t unk_4_F() const { return _4 & 0xF; }
-        uint8_t roadObjectId() const { return _5 >> 4; } // _5u
+        uint8_t unkDirection() const { return _type & 0x03; }
+        uint8_t roadId() const { return _4 & 0xF; }        // _4l
+        uint8_t roadObjectId() const { return _5 >> 4; }   // _5u
+        uint8_t sequenceIndex() const { return _5 & 0x3; } // _5l
         bool hasStationElement() const { return (_type & 0x80) != 0; }
         uint8_t owner() const { return _7 & 0xF; } // _7l
     };
