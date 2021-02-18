@@ -42,10 +42,10 @@ namespace OpenLoco
         uint8_t num_tiles;            // 0x13
         uint8_t pad_14[0xA0 - 0x14];
         uint32_t large_tiles;   // 0xA0
-        uint8_t min_x;          // 0xA4
-        uint8_t min_y;          // 0xA5
-        uint8_t max_x;          // 0xA6
-        uint8_t max_y;          // 0xA7
+        int8_t min_x;           // 0xA4
+        int8_t min_y;           // 0xA5
+        int8_t max_x;           // 0xA6
+        int8_t max_y;           // 0xA7
         uint16_t designed_year; // 0xA8
         uint16_t obsolete_year; // 0xAA
         uint8_t num_nodes;      // 0xAC
