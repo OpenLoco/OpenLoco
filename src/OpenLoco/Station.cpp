@@ -456,11 +456,8 @@ namespace OpenLoco
                 {
                     auto airportObject = ObjectManager::get<airport_object>(stationElement->objectId());
 
-                    map_pos minPos, maxPos;
-                    minPos.x = airportObject->min_x;
-                    minPos.y = airportObject->min_y;
-                    maxPos.x = airportObject->max_x;
-                    maxPos.y = airportObject->max_y;
+                    map_pos minPos = { airportObject->min_x * 32, airportObject->min_y * 32 };
+                    map_pos maxPos = { airportObject->max_x * 32, airportObject->max_y * 32 };
 
                     minPos = rotate2dCoordinate(minPos, stationElement->rotation());
                     maxPos = rotate2dCoordinate(maxPos, stationElement->rotation());
