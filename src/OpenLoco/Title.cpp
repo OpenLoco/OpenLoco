@@ -78,7 +78,7 @@ namespace OpenLoco::Title
         sub_474874();
         sub_473B91();
         ObjectManager::reloadAll();
-        sub_4748D4();
+        Scenario::sub_4748D4();
         Scenario::reset();
         initialiseViewports();
         sub_4284C8();

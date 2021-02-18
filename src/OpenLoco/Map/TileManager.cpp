@@ -39,6 +39,11 @@ namespace OpenLoco::Map::TileManager
         return _tiles.get();
     }
 
+    tile get(TilePos pos)
+    {
+        return get(pos.x * tile_size, pos.y * tile_size);
+    }
+
     tile get(map_pos pos)
     {
         return get(pos.x, pos.y);

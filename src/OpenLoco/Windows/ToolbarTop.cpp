@@ -170,7 +170,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 
         S5::SaveFlags flags = {};
         if (Config::get().flags & Config::flags::export_objects_with_saves)
-            flags = S5::SaveFlags::savedGame;
+            flags = S5::SaveFlags::packCustomObjects;
 
         if (!S5::save(path, flags) == 0)
             Error::open(StringIds::error_game_save_failed, StringIds::null);
