@@ -32,7 +32,7 @@ namespace OpenLoco::Map::TileManager
         tile_coord_t tileX = x / 32;
         tile_coord_t tileY = y / 32;
 
-        size_t index = ((y << 9) | x) >> 5;
+        size_t index = (tileY << 9) | tileX;
         auto data = _tiles[index];
         if (data == (tile_element*)0xFFFFFFFF)
         {
