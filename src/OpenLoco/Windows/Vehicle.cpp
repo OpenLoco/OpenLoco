@@ -2656,7 +2656,7 @@ namespace OpenLoco::Ui::Vehicle
                 case Ui::ViewportInteraction::InteractionItem::t_11:
                 {
                     // Water
-                    auto heights = TileManager::get(args.x, args.y).getHeight();
+                    auto heights = TileManager::getHeight({ args.x, args.y });
                     auto height = heights.landHeight;
                     if (heights.waterHeight != 0)
                     {

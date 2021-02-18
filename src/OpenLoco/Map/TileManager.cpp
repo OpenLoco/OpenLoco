@@ -41,6 +41,11 @@ namespace OpenLoco::Map::TileManager
         return tile(tileX, tileY, data);
     }
 
+    TileHeight getHeight(const map_pos& pos)
+    {
+        return get(pos).getHeight();
+    }
+
     // 0x004610F2
     void mapInvalidateSelectionRect()
     {

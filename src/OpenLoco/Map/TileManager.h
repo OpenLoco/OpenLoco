@@ -15,6 +15,7 @@ namespace OpenLoco::Map::TileManager
     void initialise();
     tile get(map_pos pos);
     tile get(coord_t x, coord_t y);
+    TileHeight getHeight(const map_pos& pos);
     void mapInvalidateSelectionRect();
     void mapInvalidateTileFull(Map::map_pos pos);
     void mapInvalidateMapSelectionTiles();

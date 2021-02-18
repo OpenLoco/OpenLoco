@@ -465,7 +465,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 // Observing a certain location?
                 if (company->observation_x != -1)
                 {
-                    auto tileZAndWater = TileManager::get(company->observation_x, company->observation_y).getHeight();
+                    auto tileZAndWater = TileManager::getHeight({ company->observation_x, company->observation_y });
                     coord_t tileZ = tileZAndWater.landHeight;
                     coord_t waterZ = tileZAndWater.waterHeight;
                     if (waterZ != 0)

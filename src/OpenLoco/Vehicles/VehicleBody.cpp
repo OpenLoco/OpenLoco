@@ -1012,7 +1012,7 @@ namespace OpenLoco::Vehicles
 
             int32_t volume = 0 - (veh_2->currentSpeed >> 9);
 
-            auto height = Map::TileManager::get(loc.x, loc.y).getHeight().landHeight;
+            auto height = Map::TileManager::getHeight({ loc.x, loc.y }).landHeight;
 
             if (loc.z <= height)
             {
@@ -1036,7 +1036,7 @@ namespace OpenLoco::Vehicles
 
             int32_t volume = 0 - (veh_2->currentSpeed >> 9);
 
-            auto height = Map::TileManager::get(loc.x, loc.y).getHeight().landHeight;
+            auto height = Map::TileManager::getHeight({ loc.x, loc.y }).landHeight;
 
             if (loc.z <= height)
             {
