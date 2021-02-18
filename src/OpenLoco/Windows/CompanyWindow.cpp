@@ -9,6 +9,7 @@
 #include "../Localisation/FormatArguments.hpp"
 #include "../Localisation/StringIds.h"
 #include "../Management/Expenditures.h"
+#include "../Map/TileManager.h"
 #include "../Objects/CargoObject.h"
 #include "../Objects/CompetitorObject.h"
 #include "../Objects/InterfaceSkinObject.h"
@@ -464,7 +465,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 // Observing a certain location?
                 if (company->observation_x != -1)
                 {
-                    auto tileZAndWater = OpenLoco::Map::tileElementHeight(company->observation_x, company->observation_y);
+                    auto tileZAndWater = TileManager::getHeight({ company->observation_x, company->observation_y });
                     coord_t tileZ = tileZAndWater.landHeight;
                     coord_t waterZ = tileZAndWater.waterHeight;
                     if (waterZ != 0)

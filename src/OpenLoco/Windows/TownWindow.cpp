@@ -10,6 +10,7 @@
 #include "../Localisation/FormatArguments.hpp"
 #include "../Localisation/StringIds.h"
 #include "../Map/Tile.h"
+#include "../Map/TileManager.h"
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/ObjectManager.h"
 #include "../OpenLoco.h"
@@ -204,7 +205,7 @@ namespace OpenLoco::Ui::Windows::Town
                     town->history[town->history_size - 1] = historyEntry;
 
                     // Play construction sound at the town centre.
-                    int16_t tileZ = OpenLoco::Map::tileElementHeight(town->x, town->y).landHeight;
+                    int16_t tileZ = TileManager::getHeight({ town->x, town->y }).landHeight;
                     Audio::playSound(Audio::sound_id::construct, loc16(town->x + 16, town->y + 16, tileZ));
                     break;
                 }
@@ -269,7 +270,7 @@ namespace OpenLoco::Ui::Windows::Town
 
             // Figure out the town's position on the map.
             auto town = TownManager::get(self->number);
-            int16_t tileZ = OpenLoco::Map::tileElementHeight(town->x, town->y).landHeight;
+            int16_t tileZ = TileManager::getHeight({ town->x, town->y }).landHeight;
 
             // Compute views.
             SavedView view = {

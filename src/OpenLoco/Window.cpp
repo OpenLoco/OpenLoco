@@ -308,7 +308,7 @@ namespace OpenLoco::Ui
             {
                 auto thing = ThingManager::get<thing_base>(config->viewport_target_sprite);
 
-                int z = (tileElementHeight(thing->x, thing->y).landHeight) - 16;
+                int z = (TileManager::getHeight({ thing->x, thing->y }).landHeight) - 16;
                 bool underground = (thing->z < z);
 
                 viewportSetUndergroundFlag(underground, viewport);
@@ -534,7 +534,7 @@ namespace OpenLoco::Ui
         *map_y = interaction.y;
 
         // Get viewport coordinates centring around the tile.
-        int32_t base_height = Map::tileElementHeight(*map_x, *map_y).landHeight;
+        int32_t base_height = TileManager::getHeight({ *map_x, *map_y }).landHeight;
         int16_t dest_x, dest_y;
         viewport* v = this->viewports[0];
         v->centre2dCoordinates(*map_x, *map_y, base_height, &dest_x, &dest_y);
@@ -570,7 +570,7 @@ namespace OpenLoco::Ui
         if (viewport == nullptr)
             return;
 
-        auto tileHeight = tileElementHeight(loc.x, loc.y).landHeight;
+        auto tileHeight = TileManager::getHeight(loc).landHeight;
         tileHeight -= 16;
 
         if (loc.z < tileHeight)
@@ -626,7 +626,7 @@ namespace OpenLoco::Ui
     {
         // Get viewport coordinates centring around the tile.
         int16_t dest_x, dest_y;
-        int32_t base_height = Map::tileElementHeight(map_x, map_y).landHeight;
+        int32_t base_height = TileManager::getHeight({ map_x, map_y }).landHeight;
         viewport* v = this->viewports[0];
         v->centre2dCoordinates(map_x, map_y, base_height, &dest_x, &dest_y);
 

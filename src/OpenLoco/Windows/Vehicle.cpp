@@ -7,6 +7,7 @@
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/FormatArguments.hpp"
+#include "../Map/TileManager.h"
 #include "../Objects/CargoObject.h"
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/ObjectManager.h"
@@ -2655,7 +2656,7 @@ namespace OpenLoco::Ui::Vehicle
                 case Ui::ViewportInteraction::InteractionItem::t_11:
                 {
                     // Water
-                    auto heights = Map::tileElementHeight(args.x, args.y);
+                    auto heights = TileManager::getHeight({ args.x, args.y });
                     auto height = heights.landHeight;
                     if (heights.waterHeight != 0)
                     {

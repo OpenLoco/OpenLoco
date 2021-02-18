@@ -11,6 +11,7 @@
 #include "../Interop/Interop.hpp"
 #include "../Localisation/FormatArguments.hpp"
 #include "../Localisation/StringIds.h"
+#include "../Map/TileManager.h"
 #include "../Objects/CargoObject.h"
 #include "../Objects/IndustryObject.h"
 #include "../Objects/InterfaceSkinObject.h"
@@ -231,7 +232,7 @@ namespace OpenLoco::Ui::Windows::Industry
 
             // Figure out the industry's position on the map.
             auto industry = IndustryManager::get(self->number);
-            int16_t tileZ = OpenLoco::Map::tileElementHeight(industry->x, industry->y).landHeight;
+            int16_t tileZ = TileManager::getHeight({ industry->x, industry->y }).landHeight;
 
             // Compute views.
             SavedView view = {
