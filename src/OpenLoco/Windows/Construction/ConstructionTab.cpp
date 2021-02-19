@@ -115,6 +115,11 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     static std::optional<TrackPieceId> getRoadPieceId(uint8_t trackPiece, uint8_t gradient, uint8_t rotation);
     static std::optional<TrackPieceId> getTrackPieceId(uint8_t trackPiece, uint8_t gradient, uint8_t rotation);
 
+    void reset()
+    {
+        call(0x0049B50C);
+    }
+
     // 0x0049F92D
     static void constructTrack(window* self, widget_index widgetIndex)
     {
@@ -2115,4 +2120,5 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         events.prepare_draw = prepareDraw;
         events.draw = draw;
     }
+
 }

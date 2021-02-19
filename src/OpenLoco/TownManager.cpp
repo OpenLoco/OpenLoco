@@ -11,6 +11,11 @@ namespace OpenLoco::TownManager
 {
     static loco_global<town[max_towns], 0x005B825C> _towns;
 
+    void reset()
+    {
+        call(0x00496B38);
+    }
+
     std::array<town, max_towns>& towns()
     {
         auto arr = (std::array<town, max_towns>*)_towns.get();
@@ -136,4 +141,5 @@ namespace OpenLoco::TownManager
 
         Ui::WindowManager::invalidate(Ui::WindowType::town);
     }
+
 }

@@ -9,6 +9,11 @@ namespace OpenLoco::IndustryManager
 {
     static loco_global<industry[max_industries], 0x005C455C> _industries;
 
+    void reset()
+    {
+        call(0x00453214);
+    }
+
     std::array<industry, max_industries>& industries()
     {
         auto arr = (std::array<industry, max_industries>*)_industries.get();
@@ -45,4 +50,5 @@ namespace OpenLoco::IndustryManager
     {
         call(0x0045383B);
     }
+
 }

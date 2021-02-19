@@ -1,13 +1,18 @@
-﻿#include "Scenario.h"
+#include "Scenario.h"
 #include "CompanyManager.h"
 #include "Graphics/Gfx.h"
+#include "IndustryManager.h"
 #include "Interop/Interop.hpp"
 #include "Map/MapGenerator.h"
 #include "Map/TileManager.h"
 #include "Objects/CargoObject.h"
 #include "S5/S5.h"
+#include "StationManager.h"
+#include "Things/ThingManager.h"
 #include "Title.h"
+#include "TownManager.h"
 #include "Ui/WindowManager.h"
+#include "Windows/Construction/Construction.h"
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Map;
@@ -25,30 +30,6 @@ namespace OpenLoco::Scenario
     static loco_global<uint32_t, 0x0052623C> objectiveDeliveredCargoAmount;
     static loco_global<uint8_t, 0x00526240> objectiveTimeLimitYears;
     static loco_global<uint16_t, 0x00526241> objectiveTimeLimitUntilYear;
-
-    // TODO: Move to CompanyManager::reset()
-    static void sub_42F7F8()
-    {
-        call(0x0042F7F8);
-    }
-
-    // TODO: Move to StringManager::reset()
-    static void sub_49650E()
-    {
-        call(0x0049650E);
-    }
-
-    // TODO: Move to ThingManager::reset();
-    static void sub_46FDFD()
-    {
-        call(0x0046FDFD);
-    }
-
-    // TODO: Move to Construction::reset();
-    static void sub_49B50C()
-    {
-        call(0x0049B50C);
-    }
 
     static void sub_46115C()
     {
@@ -75,24 +56,6 @@ namespace OpenLoco::Scenario
     static void sub_475988()
     {
         call(0x00475988);
-    }
-
-    // TODO: Move to TownManager::reset()
-    static void sub_496B38()
-    {
-        call(0x00496B38);
-    }
-
-    // TODO: Move to IndustryManager::reset();
-    static void sub_453214()
-    {
-        call(0x00453214);
-    }
-
-    // TODO: Move to StationManager::reset();
-    static void sub_48B1D8()
-    {
-        call(0x0048B1D8);
     }
 
     static void sub_4A8810()
@@ -125,11 +88,11 @@ namespace OpenLoco::Scenario
         CompanyManager::updatingCompanyId(0x0F);
         WindowManager::setCurrentRotation(0);
 
-        sub_42F7F8();
-        sub_49650E();
-        sub_46FDFD();
+        CompanyManager::reset();
+        StringManager::reset();
+        ThingManager::reset();
 
-        sub_49B50C();
+        Ui::Windows::Construction::Construction::reset();
         sub_46115C();
         sub_4C4BC0();
 
@@ -137,9 +100,9 @@ namespace OpenLoco::Scenario
 
         sub_496A18();
         sub_475988();
-        sub_496B38();
-        sub_453214();
-        sub_48B1D8();
+        TownManager::reset();
+        IndustryManager::reset();
+        StationManager::reset();
 
         sub_4A8810();
         sub_4702EC();

@@ -15,6 +15,11 @@ namespace OpenLoco::ThingManager
     static loco_global<string_id, 0x009C68E6> gGameCommandErrorText;
     constexpr size_t _thingSpatialIndexNull = 0x40000;
 
+    void reset()
+    {
+        call(0x0046FDFD);
+    }
+
     thing_id_t firstId(thing_list list)
     {
         return _heads[(size_t)list];
@@ -119,4 +124,5 @@ namespace OpenLoco::ThingManager
         }
         return true;
     }
+
 }
