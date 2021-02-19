@@ -1,4 +1,4 @@
-#include "Title.h"
+﻿#include "Title.h"
 #include "Audio/Audio.h"
 #include "CompanyManager.h"
 #include "Gui.h"
@@ -48,7 +48,7 @@ namespace OpenLoco::Title
     }
 
     // 0x004284C8
-    static void sub_4284C8()
+    void sub_4284C8()
     {
         call(0x004284C8);
     }

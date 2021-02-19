@@ -1,10 +1,12 @@
-#include "Scenario.h"
+﻿#include "Scenario.h"
+#include "CompanyManager.h"
 #include "Graphics/Gfx.h"
 #include "Interop/Interop.hpp"
 #include "Map/MapGenerator.h"
 #include "Map/TileManager.h"
 #include "Objects/CargoObject.h"
 #include "S5/S5.h"
+#include "Title.h"
 #include "Ui/WindowManager.h"
 
 using namespace OpenLoco::Interop;
@@ -24,10 +26,126 @@ namespace OpenLoco::Scenario
     static loco_global<uint8_t, 0x00526240> objectiveTimeLimitYears;
     static loco_global<uint16_t, 0x00526241> objectiveTimeLimitUntilYear;
 
+    // TODO: Move to CompanyManager::reset()
+    static void sub_42F7F8()
+    {
+        call(0x0042F7F8);
+    }
+
+    // TODO: Move to StringManager::reset()
+    static void sub_49650E()
+    {
+        call(0x0049650E);
+    }
+
+    // TODO: Move to ThingManager::reset();
+    static void sub_46FDFD()
+    {
+        call(0x0046FDFD);
+    }
+
+    // TODO: Move to Construction::reset();
+    static void sub_49B50C()
+    {
+        call(0x0049B50C);
+    }
+
+    static void sub_46115C()
+    {
+        call(0x0046115C);
+    }
+
+    static void sub_4C4BC0()
+    {
+        call(0x004C4BC0);
+    }
+
+    static void sub_49685C(int16_t year)
+    {
+        registers regs{};
+        regs.eax = year;
+        call(0x0049685C, regs);
+    }
+
+    static void sub_496A18()
+    {
+        call(0x00496A18);
+    }
+
+    static void sub_475988()
+    {
+        call(0x00475988);
+    }
+
+    // TODO: Move to TownManager::reset()
+    static void sub_496B38()
+    {
+        call(0x00496B38);
+    }
+
+    // TODO: Move to IndustryManager::reset();
+    static void sub_453214()
+    {
+        call(0x00453214);
+    }
+
+    // TODO: Move to StationManager::reset();
+    static void sub_48B1D8()
+    {
+        call(0x0048B1D8);
+    }
+
+    static void sub_4A8810()
+    {
+        call(0x004A8810);
+    }
+
+    // TODO: Move to OrderManager::reset
+    static void sub_4702EC()
+    {
+        call(0x004702EC);
+    }
+
+    // TODO: Move to Terraform::reset
+    static void sub_4BAEC4()
+    {
+        call(0x004BAEC4);
+    }
+
+    static void sub_43C8FD()
+    {
+        call(0x0043C8FD);
+    }
+
     // 0x0043C88C
     void reset()
     {
-        call(0x0043C88C);
+        WindowManager::closeConstructionWindows();
+
+        CompanyManager::updatingCompanyId(0x0F);
+        WindowManager::setCurrentRotation(0);
+
+        sub_42F7F8();
+        sub_49650E();
+        sub_46FDFD();
+
+        sub_49B50C();
+        sub_46115C();
+        sub_4C4BC0();
+
+        sub_49685C(0x76C);
+
+        sub_496A18();
+        sub_475988();
+        sub_496B38();
+        sub_453214();
+        sub_48B1D8();
+
+        sub_4A8810();
+        sub_4702EC();
+        sub_4BAEC4();
+        sub_43C8FD();
+        Title::sub_4284C8();
     }
 
     // 0x004748D4
