@@ -408,7 +408,5 @@ namespace OpenLoco::Map
 
         size_t indexOf(const tile_element_base* element) const;
         surface_element* surface() const;
-
-        TileHeight getHeight() const;
     };
 }

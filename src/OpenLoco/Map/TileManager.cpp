@@ -41,9 +41,156 @@ namespace OpenLoco::Map::TileManager
         return tile(tileX, tileY, data);
     }
 
+    /**
+     * Return the absolute height of an element, given its (x, y) coordinates
+     * remember to & with 0xFFFF if you don't want water affecting results
+     *
+     * @param x @<ax>
+     * @param y @<cx>
+     * @return height @<edx>
+     *
+     * 0x00467297 rct2: 0x00662783 (numbers different)
+     */
     TileHeight getHeight(const map_pos& pos)
     {
-        return get(pos).getHeight();
+        TileHeight height{ 16, 0 };
+        // Off the map
+        if ((unsigned)pos.x >= 12287 || (unsigned)pos.y >= 12287)
+            return height;
+
+        auto tile = TileManager::get(pos);
+        // Get the surface element for the tile
+        auto surfaceEl = tile.surface();
+
+        if (surfaceEl == nullptr)
+        {
+            return height;
+        }
+
+        height.waterHeight = surfaceEl->water() * 16;
+        height.landHeight = surfaceEl->baseZ() * 4;
+
+        auto slope = surfaceEl->slopeCorners();
+        int8_t quad = 0, quad_extra = 0; // which quadrant the element is in?
+                                         // quad_extra is for extra height tiles
+
+        uint8_t TILE_SIZE = 31;
+
+        // Subtile coords
+        auto xl = pos.x & 0x1f;
+        auto yl = pos.y & 0x1f;
+
+        // Slope logic:
+        // Each of the four bits in slope represents that corner being raised
+        // slope == 15 (all four bits) is not used and slope == 0 is flat
+        // If the extra_height bit is set, then the slope goes up two z-levels
+
+        // We arbitrarily take the SW corner to be closest to the viewer
+
+        // One corner up
+        if (slope == SurfaceSlope::n_corner_up || slope == SurfaceSlope::e_corner_up || slope == SurfaceSlope::s_corner_up || slope == SurfaceSlope::w_corner_up)
+        {
+            switch (slope)
+            {
+                case SurfaceSlope::n_corner_up:
+                    quad = xl + yl - TILE_SIZE;
+                    break;
+                case SurfaceSlope::e_corner_up:
+                    quad = xl - yl;
+                    break;
+                case SurfaceSlope::s_corner_up:
+                    quad = TILE_SIZE - yl - xl;
+                    break;
+                case SurfaceSlope::w_corner_up:
+                    quad = yl - xl;
+                    break;
+            }
+            // If the element is in the quadrant with the slope, raise its height
+            if (quad > 0)
+            {
+                height.landHeight += quad / 2;
+            }
+        }
+
+        // One side up
+        switch (slope)
+        {
+            case SurfaceSlope::ne_side_up:
+                height.landHeight += xl / 2 + 1;
+                break;
+            case SurfaceSlope::se_side_up:
+                height.landHeight += (TILE_SIZE - yl) / 2;
+                break;
+            case SurfaceSlope::nw_side_up:
+                height.landHeight += yl / 2;
+                height.landHeight++;
+                break;
+            case SurfaceSlope::sw_side_up:
+                height.landHeight += (TILE_SIZE - xl) / 2;
+                break;
+        }
+
+        // One corner down
+        if ((slope == SurfaceSlope::w_corner_dn) || (slope == SurfaceSlope::s_corner_dn) || (slope == SurfaceSlope::e_corner_dn) || (slope == SurfaceSlope::n_corner_dn))
+        {
+            switch (slope)
+            {
+                case SurfaceSlope::w_corner_dn:
+                    quad_extra = xl + TILE_SIZE - yl;
+                    quad = xl - yl;
+                    break;
+                case SurfaceSlope::s_corner_dn:
+                    quad_extra = xl + yl;
+                    quad = xl + yl - TILE_SIZE - 1;
+                    break;
+                case SurfaceSlope::e_corner_dn:
+                    quad_extra = TILE_SIZE - xl + yl;
+                    quad = yl - xl;
+                    break;
+                case SurfaceSlope::n_corner_dn:
+                    quad_extra = (TILE_SIZE - xl) + (TILE_SIZE - yl);
+                    quad = TILE_SIZE - yl - xl - 1;
+                    break;
+            }
+
+            if (surfaceEl->isSlopeDoubleHeight())
+            {
+                height.landHeight += quad_extra / 2;
+                height.landHeight++;
+                return height;
+            }
+            // This tile is essentially at the next height level
+            height.landHeight += 0x10;
+            // so we move *down* the slope
+            if (quad < 0)
+            {
+                height.landHeight += quad / 2;
+            }
+        }
+
+        // Valleys
+        if ((slope == SurfaceSlope::w_e_valley) || (slope == SurfaceSlope::n_s_valley))
+        {
+            switch (slope)
+            {
+                case SurfaceSlope::w_e_valley:
+                    if (xl + yl <= TILE_SIZE + 1)
+                    {
+                        return height;
+                    }
+                    quad = TILE_SIZE - xl - yl;
+                    break;
+                case SurfaceSlope::n_s_valley:
+                    quad = xl - yl;
+                    break;
+            }
+            if (quad > 0)
+            {
+                height.landHeight += quad / 2;
+            }
+        }
+
+        return height;
     }
 
     // 0x004610F2
