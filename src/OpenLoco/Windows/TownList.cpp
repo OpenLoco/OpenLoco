@@ -191,7 +191,7 @@ namespace OpenLoco::Ui::Windows::TownList
                 {
                     auto args = FormatArguments();
                     args.push(StringIds::int_32);
-                    args.push(town->num_stations);
+                    args.push<int32_t>(town->num_stations);
 
                     Gfx::drawString_494BBF(*dpi, 350, yPos, 68, Colour::black, text_colour_id, &args);
                 }
