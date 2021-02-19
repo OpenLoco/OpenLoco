@@ -82,7 +82,8 @@ namespace OpenLoco::Vehicles
 
         for (auto& order : clonedOrders)
         {
-            auto chosenOffset = newHead->orderTableOffset + newHead->sizeOfOrderTable - 1;
+            // Do not cache this as it will be a different value every iteration
+            auto chosenOffset = newHead->sizeOfOrderTable - 1;
             GameCommands::do_35(newHead->id, order->getRaw(), chosenOffset);
         }
 
