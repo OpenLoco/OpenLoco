@@ -1,11 +1,18 @@
 #include "Scenario.h"
+#include "CompanyManager.h"
 #include "Graphics/Gfx.h"
+#include "IndustryManager.h"
 #include "Interop/Interop.hpp"
 #include "Map/MapGenerator.h"
 #include "Map/TileManager.h"
 #include "Objects/CargoObject.h"
 #include "S5/S5.h"
+#include "StationManager.h"
+#include "Things/ThingManager.h"
+#include "Title.h"
+#include "TownManager.h"
 #include "Ui/WindowManager.h"
+#include "Windows/Construction/Construction.h"
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Map;
@@ -24,10 +31,85 @@ namespace OpenLoco::Scenario
     static loco_global<uint8_t, 0x00526240> objectiveTimeLimitYears;
     static loco_global<uint16_t, 0x00526241> objectiveTimeLimitUntilYear;
 
+    // 0x0046115C
+    static void sub_46115C()
+    {
+        call(0x0046115C);
+    }
+
+    // 0x004C4BC0
+    static void sub_4C4BC0()
+    {
+        call(0x004C4BC0);
+    }
+
+    // 0x00496A18
+    static void sub_496A18()
+    {
+        call(0x00496A18);
+    }
+
+    // 0x00475988
+    static void sub_475988()
+    {
+        call(0x00475988);
+    }
+
+    // 0x004A8810
+    static void sub_4A8810()
+    {
+        call(0x004A8810);
+    }
+
+    // TODO: Move to OrderManager::reset
+    // 0x004702EC
+    static void sub_4702EC()
+    {
+        call(0x004702EC);
+    }
+
+    // TODO: Move to Terraform::reset
+    // 0x004BAEC4
+    static void sub_4BAEC4()
+    {
+        call(0x004BAEC4);
+    }
+
+    // 0x0043C8FD
+    static void sub_43C8FD()
+    {
+        call(0x0043C8FD);
+    }
+
     // 0x0043C88C
     void reset()
     {
-        call(0x0043C88C);
+        WindowManager::closeConstructionWindows();
+
+        CompanyManager::updatingCompanyId(0x0F);
+        WindowManager::setCurrentRotation(0);
+
+        CompanyManager::reset();
+        StringManager::reset();
+        ThingManager::reset();
+
+        Ui::Windows::Construction::Construction::reset();
+        sub_46115C();
+        sub_4C4BC0();
+
+        initialiseDate(1900);
+
+        sub_496A18();
+        sub_475988();
+        TownManager::reset();
+        IndustryManager::reset();
+        StationManager::reset();
+
+        sub_4A8810();
+        sub_4702EC();
+        sub_4BAEC4();
+        sub_43C8FD();
+        Title::sub_4284C8();
     }
 
     // 0x004748D4
@@ -57,6 +139,7 @@ namespace OpenLoco::Scenario
         addr<0x00F25374, uint8_t>() = 0;
     }
 
+    // 0x0049685C
     void initialiseDate(uint16_t year)
     {
         registers regs;
@@ -66,6 +149,15 @@ namespace OpenLoco::Scenario
 
     void registerHooks()
     {
+        registerHook(
+            0x0043C88C,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+                reset();
+                regs = backup;
+                return 0;
+            });
+
         registerHook(
             0x0043C90C,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {

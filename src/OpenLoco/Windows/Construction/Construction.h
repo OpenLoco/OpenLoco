@@ -196,6 +196,7 @@ namespace OpenLoco::Ui::Windows::Construction
         extern window_event_list events;
         constexpr uint64_t enabledWidgets = Common::enabledWidgets | allConstruction;
 
+        void reset();
         void activateSelectedConstructionWidgets();
         void tabReset(window* self);
         void initEvents();

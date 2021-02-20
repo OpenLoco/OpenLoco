@@ -26,6 +26,12 @@ namespace OpenLoco::CompanyManager
 
     static void produceCompanies();
 
+    // 0x0042F7F8
+    void reset()
+    {
+        call(0x0042F7F8);
+    }
+
     company_id_t updatingCompanyId()
     {
         return _updating_company_id;
@@ -231,4 +237,5 @@ namespace OpenLoco::CompanyManager
 
         GameCommands::do_73(mapPosition);
     }
+
 }

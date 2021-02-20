@@ -9,6 +9,7 @@ namespace OpenLoco::CompanyManager
 {
     constexpr size_t max_companies = 15;
 
+    void reset();
     company_id_t updatingCompanyId();
     void updatingCompanyId(company_id_t id);
 

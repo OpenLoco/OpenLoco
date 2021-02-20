@@ -25,6 +25,8 @@ namespace OpenLoco::ThingManager
         misc = 3,
     };
 
+    void reset();
+
     template<typename T>
     T* get(thing_id_t id);
 

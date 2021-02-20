@@ -79,6 +79,12 @@ namespace OpenLoco::StringManager
         { month_id::december, { StringIds::month_short_december, StringIds::month_long_december } },
     };
 
+    // 0x0049650E
+    void reset()
+    {
+        call(0x0049650E);
+    }
+
     const char* getString(string_id id)
     {
         char* str = _strings[id];
@@ -585,4 +591,5 @@ namespace OpenLoco::StringManager
         auto wrapped = argswrapper(args);
         return formatString(buffer, id, wrapped);
     }
+
 }
