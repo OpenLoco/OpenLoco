@@ -582,6 +582,8 @@ namespace OpenLoco::Paint
 
             interaction.type = InteractionItem::station;
             interaction.value = station.id();
+            interaction.x = station.x;
+            interaction.y = station.y;
         }
         return interaction;
     }
@@ -613,6 +615,8 @@ namespace OpenLoco::Paint
 
             interaction.type = InteractionItem::town;
             interaction.value = town.id();
+            interaction.x = town.x;
+            interaction.y = town.y;
         }
         return interaction;
     }
