@@ -3,6 +3,7 @@
 #include "../Audio/Audio.h"
 #include "../Company.h"
 #include "../Objects/VehicleObject.h"
+#include "../Speed.hpp"
 #include "../Things/Thing.h"
 #include "../Types.hpp"
 #include "../Ui/WindowType.h"

@@ -170,7 +170,7 @@ namespace OpenLoco::Vehicles
         if (vehicle_object->bodySprites[object_sprite_type].flags & BodySpriteFlags::hasSpeedAnimation)
         {
             Vehicle2* veh3 = vehicleUpdate_2;
-            al = toSpeed16(veh3->currentSpeed).getRaw() / (vehicle_object->speed / vehicle_object->bodySprites[object_sprite_type].numAnimationFrames);
+            al = toSpeed16(veh3->currentSpeed) / Speed16(vehicle_object->speed / vehicle_object->bodySprites[object_sprite_type].numAnimationFrames);
             al = std::min(al, vehicle_object->bodySprites[object_sprite_type].numAnimationFrames);
         }
         else if (vehicle_object->bodySprites[object_sprite_type].numRollFrames != 1)
