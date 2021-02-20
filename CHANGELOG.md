@@ -1,4 +1,4 @@
-20.10+ (in development)
+21.02 (2021-02-20)
 ------------------------------------------------------------------------
 - Feature: [#122] Allow vehicles to be cloned from the vehicle window.
 - Feature: [#690] Automatically save the game at regular intervals.
