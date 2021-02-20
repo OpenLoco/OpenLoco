@@ -157,6 +157,15 @@ namespace OpenLoco::Scenario
     void registerHooks()
     {
         registerHook(
+            0x0043C88C,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+                reset();
+                regs = backup;
+                return 0;
+            });
+
+        registerHook(
             0x0043C90C,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
