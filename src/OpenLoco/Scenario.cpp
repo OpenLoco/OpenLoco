@@ -43,14 +43,6 @@ namespace OpenLoco::Scenario
         call(0x004C4BC0);
     }
 
-    // 0x0049685C
-    static void sub_49685C(int16_t year)
-    {
-        registers regs{};
-        regs.eax = year;
-        call(0x0049685C, regs);
-    }
-
     // 0x00496A18
     static void sub_496A18()
     {
@@ -105,7 +97,7 @@ namespace OpenLoco::Scenario
         sub_46115C();
         sub_4C4BC0();
 
-        sub_49685C(1900);
+        initialiseDate(1900);
 
         sub_496A18();
         sub_475988();
@@ -147,6 +139,7 @@ namespace OpenLoco::Scenario
         addr<0x00F25374, uint8_t>() = 0;
     }
 
+    // 0x0049685C
     void initialiseDate(uint16_t year)
     {
         registers regs;
