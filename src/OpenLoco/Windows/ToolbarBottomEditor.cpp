@@ -27,10 +27,10 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
     };
 
     static std::map<EditorController::Step, string_id> _stepNames = {
-        { EditorController::Step::step0, StringIds::str_1575 },
-        { EditorController::Step::step1, StringIds::str_1576 },
-        { EditorController::Step::step2, StringIds::str_1577 },
-        { EditorController::Step::step3, StringIds::str_1578 },
+        { EditorController::Step::step0, StringIds::editor_step_object_selection },
+        { EditorController::Step::step1, StringIds::editor_step_landscape },
+        { EditorController::Step::step2, StringIds::editor_step_options },
+        { EditorController::Step::step3, StringIds::editor_step_save },
     };
 
     // 0x0043CE21
@@ -89,7 +89,7 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
             {
                 al = Colour::white;
             }
-            Gfx::drawStringCentred(*ctx, self->x + x, self->y + y, al, StringIds::str_1579);
+            Gfx::drawStringCentred(*ctx, self->x + x, self->y + y, al, StringIds::editor_previous_step);
             Gfx::drawStringCentred(*ctx, self->x + x, self->y + y + 10, al, _stepNames[EditorController::getPreviousStep()]);
         }
         Gfx::drawImage(ctx, self->x + next.right - 29, self->y + next.top + 4, ImageIds::spr_2337);
@@ -100,7 +100,7 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
         {
             al = Colour::white;
         }
-        Gfx::drawStringCentred(*ctx, self->x + x, self->y + y, al, StringIds::str_1580);
+        Gfx::drawStringCentred(*ctx, self->x + x, self->y + y, al, StringIds::editor_next_step);
         Gfx::drawStringCentred(*ctx, self->x + x, self->y + y + 10, al, _stepNames[EditorController::getNextStep()]);
     }
 
