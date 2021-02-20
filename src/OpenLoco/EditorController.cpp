@@ -52,6 +52,9 @@ namespace OpenLoco::EditorController
     {
         switch (getCurrentStep())
         {
+            case Step::null:
+                break;
+
             case Step::step0:
                 if (WindowManager::find(WindowType::objectSelection) == nullptr)
                     Windows::ObjectSelectionWindow::open();
