@@ -24,7 +24,8 @@ namespace OpenLoco::ImageIds
     constexpr uint32_t inline_red_down_arrow = 2325;
 
     constexpr uint32_t construction_straight = 2335;
-
+    constexpr uint32_t spr_2336 = 2336;
+    constexpr uint32_t spr_2337 = 2337;
     constexpr uint32_t red_arrow_up = 2338;
     constexpr uint32_t red_arrow_down = 2339;
     constexpr uint32_t construction_left_hand_curve_very_small = 2340;

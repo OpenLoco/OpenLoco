@@ -1,7 +1,9 @@
+#include "../EditorController.h"
 #include "../GameCommands.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/Gfx.h"
 #include "../Graphics/ImageIds.h"
+#include "../Gui.h"
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
 #include "../Intro.h"
@@ -387,11 +389,12 @@ namespace OpenLoco::Ui::Windows
 
         ToolbarTop::Editor::open();
         ToolbarBottom::Editor::open();
+        Gui::resize();
     }
 
     static void sub_43910A()
     {
-        call(0x0043D7DC); // show_scenario_editor
+        EditorController::init();
     }
 
     static void sub_439112(window* window)
