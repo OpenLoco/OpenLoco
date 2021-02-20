@@ -166,7 +166,7 @@ namespace OpenLoco::Ui::PromptBrowse
 
         *_type = type;
         *_fileType = browse_file_type::saved_game;
-        if (Utility::iequals(filter, S5::extensionSC5))
+        if (Utility::iequals(filter, S5::filterSC5))
         {
             *_fileType = browse_file_type::landscape;
         }
