@@ -11,6 +11,7 @@ namespace OpenLoco::TownManager
 {
     static loco_global<town[max_towns], 0x005B825C> _towns;
 
+    // 0x00496B38
     void reset()
     {
         call(0x00496B38);

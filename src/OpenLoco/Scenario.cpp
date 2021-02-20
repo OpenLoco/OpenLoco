@@ -31,16 +31,19 @@ namespace OpenLoco::Scenario
     static loco_global<uint8_t, 0x00526240> objectiveTimeLimitYears;
     static loco_global<uint16_t, 0x00526241> objectiveTimeLimitUntilYear;
 
+    // 0x0046115C
     static void sub_46115C()
     {
         call(0x0046115C);
     }
 
+    // 0x004C4BC0
     static void sub_4C4BC0()
     {
         call(0x004C4BC0);
     }
 
+    // 0x0049685C
     static void sub_49685C(int16_t year)
     {
         registers regs{};
@@ -48,33 +51,39 @@ namespace OpenLoco::Scenario
         call(0x0049685C, regs);
     }
 
+    // 0x00496A18
     static void sub_496A18()
     {
         call(0x00496A18);
     }
 
+    // 0x00475988
     static void sub_475988()
     {
         call(0x00475988);
     }
 
+    // 0x004A8810
     static void sub_4A8810()
     {
         call(0x004A8810);
     }
 
     // TODO: Move to OrderManager::reset
+    // 0x004702EC
     static void sub_4702EC()
     {
         call(0x004702EC);
     }
 
     // TODO: Move to Terraform::reset
+    // 0x004BAEC4
     static void sub_4BAEC4()
     {
         call(0x004BAEC4);
     }
 
+    // 0x0043C8FD
     static void sub_43C8FD()
     {
         call(0x0043C8FD);
@@ -96,7 +105,7 @@ namespace OpenLoco::Scenario
         sub_46115C();
         sub_4C4BC0();
 
-        sub_49685C(0x76C);
+        sub_49685C(1900);
 
         sub_496A18();
         sub_475988();

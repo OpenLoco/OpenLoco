@@ -1,4 +1,4 @@
-﻿#include "Title.h"
+#include "Title.h"
 #include "Audio/Audio.h"
 #include "CompanyManager.h"
 #include "Gui.h"

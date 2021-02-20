@@ -26,6 +26,7 @@ namespace OpenLoco::CompanyManager
 
     static void produceCompanies();
 
+    // 0x0042F7F8
     void reset()
     {
         call(0x0042F7F8);

@@ -13,6 +13,7 @@ namespace OpenLoco::StationManager
 {
     static loco_global<station[max_stations], 0x005E6EDC> _stations;
 
+    // 0x0048B1D8
     void reset()
     {
         call(0x0048B1D8);

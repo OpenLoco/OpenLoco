@@ -79,6 +79,7 @@ namespace OpenLoco::StringManager
         { month_id::december, { StringIds::month_short_december, StringIds::month_long_december } },
     };
 
+    // 0x0049650E
     void reset()
     {
         call(0x0049650E);
