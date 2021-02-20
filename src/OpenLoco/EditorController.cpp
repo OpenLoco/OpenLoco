@@ -17,17 +17,17 @@ namespace OpenLoco::EditorController
 
     Step getCurrentStep()
     {
-        return (Step)*_editorStep;
+        return _editorStep;
     }
 
     Step getPreviousStep()
     {
-        return (Step)((uint8_t)(*_editorStep) - 1);
+        return Step(static_cast<uint8_t>(*_editorStep) - 1);
     }
 
     Step getNextStep()
     {
-        return (Step)((uint8_t)(*_editorStep) + 1);
+        return Step(static_cast<uint8_t>(*_editorStep) + 1);
     }
 
     bool canGoBack()

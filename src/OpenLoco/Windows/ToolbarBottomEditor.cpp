@@ -16,15 +16,17 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
 
     static const uint16_t windowHeight = 32;
 
-    static window_event_list events;
+    static window_event_list _events;
 
-    static widget_t widgets[] = {
+    static widget_t _widgets[] = {
         makeWidget({ 0, 0 }, { 200, 34 }, widget_type::wt_3, 0),
         makeWidget({ 2, 2 }, { 196, 30 }, widget_type::wt_9, 0),
         makeWidget({ 440, 0 }, { 200, 34 }, widget_type::wt_3, 0),
         makeWidget({ 442, 2 }, { 196, 30 }, widget_type::wt_9, 0),
         widgetEnd(),
     };
+
+    static void initEvents();
 
     static std::map<EditorController::Step, string_id> _stepNames = {
         { EditorController::Step::objectSelection, StringIds::editor_step_object_selection },
@@ -84,24 +86,24 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
             Gfx::drawImage(ctx, self->x + previous.left + 6, self->y + previous.top + 6, ImageIds::step_back);
             int x = (previous.left + 30 + previous.right) / 2;
             int y = previous.top + 6;
-            colour_t al = Colour::opaque(self->colours[1]);
+            colour_t textColour = Colour::opaque(self->colours[1]);
             if (Input::isHovering(self->type, self->number, widx::previous_button))
             {
-                al = Colour::white;
+                textColour = Colour::white;
             }
-            Gfx::drawStringCentred(*ctx, self->x + x, self->y + y, al, StringIds::editor_previous_step);
-            Gfx::drawStringCentred(*ctx, self->x + x, self->y + y + 10, al, _stepNames[EditorController::getPreviousStep()]);
+            Gfx::drawStringCentred(*ctx, self->x + x, self->y + y, textColour, StringIds::editor_previous_step);
+            Gfx::drawStringCentred(*ctx, self->x + x, self->y + y + 10, textColour, _stepNames[EditorController::getPreviousStep()]);
         }
         Gfx::drawImage(ctx, self->x + next.right - 29, self->y + next.top + 4, ImageIds::step_forward);
         int x = next.left + (next.width() - 31) / 2;
         int y = next.top + 6;
-        colour_t al = Colour::opaque(self->colours[1]);
+        colour_t textColour = Colour::opaque(self->colours[1]);
         if (Input::isHovering(self->type, self->number, widx::next_button))
         {
-            al = Colour::white;
+            textColour = Colour::white;
         }
-        Gfx::drawStringCentred(*ctx, self->x + x, self->y + y, al, StringIds::editor_next_step);
-        Gfx::drawStringCentred(*ctx, self->x + x, self->y + y + 10, al, _stepNames[EditorController::getNextStep()]);
+        Gfx::drawStringCentred(*ctx, self->x + x, self->y + y, textColour, StringIds::editor_next_step);
+        Gfx::drawStringCentred(*ctx, self->x + x, self->y + y + 10, textColour, _stepNames[EditorController::getNextStep()]);
     }
 
     // 0x0043D0ED
@@ -122,9 +124,7 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
     // 0x0043CCCD
     void open()
     {
-        events.on_mouse_up = onMouseUp;
-        events.prepare_draw = prepareDraw;
-        events.draw = draw;
+        initEvents();
 
         Gfx::point_t origin = Gfx::point_t(0, Ui::height() - windowHeight);
         Gfx::ui_size_t windowSize = Gfx::ui_size_t(Ui::width(), windowHeight);
@@ -133,13 +133,20 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
             origin,
             windowSize,
             WindowFlags::stick_to_front | WindowFlags::transparent | WindowFlags::no_background,
-            &events);
-        window->widgets = widgets;
+            &_events);
+        window->widgets = _widgets;
         window->enabled_widgets = 1 << widx::previous_button | 1 << widx::previous_frame | 1 << widx::next_frame | 1 << widx::next_button;
         window->var_854 = 0;
         window->initScrollWidgets();
         window->colours[0] = Colour::translucent(Colour::saturated_green);
         window->colours[1] = Colour::translucent(Colour::saturated_green);
         window->colours[2] = Colour::translucent(Colour::saturated_green);
+    }
+
+    static void initEvents()
+    {
+        _events.on_mouse_up = onMouseUp;
+        _events.prepare_draw = prepareDraw;
+        _events.draw = draw;
     }
 }
