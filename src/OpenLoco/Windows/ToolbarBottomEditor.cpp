@@ -81,7 +81,7 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
 
         if (EditorController::canGoBack())
         {
-            Gfx::drawImage(ctx, self->x + previous.left + 6, self->y + previous.top + 6, ImageIds::spr_2336);
+            Gfx::drawImage(ctx, self->x + previous.left + 6, self->y + previous.top + 6, ImageIds::step_back);
             int x = (previous.left + 30 + previous.right) / 2;
             int y = previous.top + 6;
             colour_t al = Colour::opaque(self->colours[1]);
@@ -92,7 +92,7 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
             Gfx::drawStringCentred(*ctx, self->x + x, self->y + y, al, StringIds::editor_previous_step);
             Gfx::drawStringCentred(*ctx, self->x + x, self->y + y + 10, al, _stepNames[EditorController::getPreviousStep()]);
         }
-        Gfx::drawImage(ctx, self->x + next.right - 29, self->y + next.top + 4, ImageIds::spr_2337);
+        Gfx::drawImage(ctx, self->x + next.right - 29, self->y + next.top + 4, ImageIds::step_forward);
         int x = next.left + (next.width() - 31) / 2;
         int y = next.top + 6;
         colour_t al = Colour::opaque(self->colours[1]);
