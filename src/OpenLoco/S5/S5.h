@@ -145,6 +145,9 @@ namespace OpenLoco::S5
     constexpr const char* extensionSC5 = ".SC5";
     constexpr const char* extensionSV5 = ".SV5";
 
+    constexpr const char* filterSC5 = "*.SC5";
+    constexpr const char* filterSV5 = "*.SV5";
+
     Options& getOptions();
     Options& getPreviewOptions();
     bool save(const fs::path& path, SaveFlags flags);
