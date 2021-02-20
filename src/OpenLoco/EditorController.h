@@ -8,10 +8,10 @@ namespace OpenLoco::EditorController
     enum class Step : int8_t
     {
         null = -1,
-        step0 = 0,
-        step1 = 1,
-        step2 = 2,
-        step3 = 3,
+        objectSelection = 0,
+        landscapeEditor = 1,
+        scenarioOptions = 2,
+        saveScenario = 3,
     };
 
     void init();

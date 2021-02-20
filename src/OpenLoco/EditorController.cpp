@@ -32,7 +32,7 @@ namespace OpenLoco::EditorController
 
     bool canGoBack()
     {
-        return getCurrentStep() != Step::step0;
+        return getCurrentStep() != Step::objectSelection;
     }
 
     // 0x0043D0FA
@@ -55,12 +55,12 @@ namespace OpenLoco::EditorController
             case Step::null:
                 break;
 
-            case Step::step0:
+            case Step::objectSelection:
                 if (WindowManager::find(WindowType::objectSelection) == nullptr)
                     Windows::ObjectSelectionWindow::open();
                 break;
 
-            case Step::step1:
+            case Step::landscapeEditor:
                 // Scenario/landscape loaded?
                 if ((addr<0x00525E28, uint32_t>() & 1) != 0)
                     return;
@@ -69,12 +69,12 @@ namespace OpenLoco::EditorController
                     Windows::LandscapeGeneration::open();
                 break;
 
-            case Step::step2:
+            case Step::scenarioOptions:
                 if (WindowManager::find(WindowType::scenarioOptions) == nullptr)
                     Windows::ScenarioOptions::open();
                 break;
 
-            case Step::step3:
+            case Step::saveScenario:
                 break;
         }
     }

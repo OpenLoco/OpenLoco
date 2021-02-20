@@ -27,10 +27,10 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
     };
 
     static std::map<EditorController::Step, string_id> _stepNames = {
-        { EditorController::Step::step0, StringIds::editor_step_object_selection },
-        { EditorController::Step::step1, StringIds::editor_step_landscape },
-        { EditorController::Step::step2, StringIds::editor_step_options },
-        { EditorController::Step::step3, StringIds::editor_step_save },
+        { EditorController::Step::objectSelection, StringIds::editor_step_object_selection },
+        { EditorController::Step::landscapeEditor, StringIds::editor_step_landscape },
+        { EditorController::Step::scenarioOptions, StringIds::editor_step_options },
+        { EditorController::Step::saveScenario, StringIds::editor_step_save },
     };
 
     // 0x0043CE21
