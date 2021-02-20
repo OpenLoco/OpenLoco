@@ -89,6 +89,14 @@ namespace OpenLoco
         {
             return BestType<RhsT>(*this).value / BestType<RhsT>(rhs).value;
         }
+        constexpr SpeedTemplate<Value> operator/(uint32_t const& rhs)
+        {
+            return SpeedTemplate<Value>(value / rhs);
+        }
+        constexpr SpeedTemplate<Value> operator*(uint32_t const& rhs)
+        {
+            return SpeedTemplate<Value>(value * rhs);
+        }
     };
 
     using Speed32 = SpeedTemplate<int32_t>;
@@ -126,5 +134,8 @@ namespace OpenLoco
         static_assert(2.0_mph - 4.0_mph == -2_mph);
         static_assert(6.0_mph / 2_mph == 3);
         static_assert(6.0_mph / 2.0_mph == 3);
+        static_assert(6.0_mph / 2 == 3.0_mph);
+        static_assert(6.0_mph * 2 == 12.0_mph);
+        static_assert(6_mph * 2 == 12_mph);
     }
 }

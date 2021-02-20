@@ -2,6 +2,7 @@
 
 #include "../Localisation/StringIds.h"
 #include "../Localisation/StringManager.h"
+#include "../Speed.hpp"
 
 namespace OpenLoco
 {
@@ -194,7 +195,7 @@ namespace OpenLoco
         VehicleObjectBodySprite bodySprites[4];       // 0x3C
         vehicle_object_bogie_sprite bogie_sprites[2]; // 0xB4
         uint16_t power;                               // 0xD8
-        uint16_t speed;                               // 0xDA
+        Speed16 speed;                                // 0xDA
         uint16_t rack_speed;                          // 0xDC
         uint16_t weight;                              // 0xDE
         uint16_t flags;                               // 0xE0
