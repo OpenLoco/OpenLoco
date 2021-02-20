@@ -65,9 +65,9 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
 
         if (EditorController::canGoBack())
         {
-            Gfx::drawRect(ctx, previous.left + self->x, previous.top + self->y, previous.width(), previous.height(), 0x2000034);
+            Gfx::drawRect(ctx, previous.left + self->x, previous.top + self->y, previous.width(), previous.height(), 0x2000000 | 52);
         }
-        Gfx::drawRect(ctx, next.left + self->x, next.top + self->y, next.width(), next.height(), 0x2000034);
+        Gfx::drawRect(ctx, next.left + self->x, next.top + self->y, next.width(), next.height(), 0x2000000 | 52);
 
         self->draw(ctx);
 
@@ -77,7 +77,7 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
         }
         Gfx::drawRectInset(ctx, next.left + self->x + 1, next.top + self->y + 1, next.width() - 2, next.height() - 2, self->colours[1], 0x30);
 
-        Gfx::drawStringCentred(*ctx, (previous.right + next.left) / 2 + self->x, self->y + self->height - 12, Colour::opaque(self->colours[2]) | 0x20, _stepNames[EditorController::getCurrentStep()]);
+        Gfx::drawStringCentred(*ctx, (previous.right + next.left) / 2 + self->x, self->y + self->height - 12, Colour::opaque(self->colours[2]) | Colour::outline_flag, _stepNames[EditorController::getCurrentStep()]);
 
         if (EditorController::canGoBack())
         {
@@ -128,7 +128,12 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
 
         Gfx::point_t origin = Gfx::point_t(0, Ui::height() - windowHeight);
         Gfx::ui_size_t windowSize = Gfx::ui_size_t(Ui::width(), windowHeight);
-        auto window = WindowManager::createWindow(WindowType::editorToolbar, origin, windowSize, 0x32, &events);
+        auto window = WindowManager::createWindow(
+            WindowType::editorToolbar,
+            origin,
+            windowSize,
+            WindowFlags::stick_to_front | WindowFlags::transparent | WindowFlags::no_background,
+            &events);
         window->widgets = widgets;
         window->enabled_widgets = 1 << widx::previous_button | 1 << widx::previous_frame | 1 << widx::next_frame | 1 << widx::next_button;
         window->var_854 = 0;
