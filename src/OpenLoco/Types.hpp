@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <type_traits>
 
 namespace OpenLoco
 {
@@ -141,90 +142,69 @@ namespace OpenLoco
         constexpr uint8_t max = 4;
     }
 
-    class Speed32
+    template<typename Value>
+    struct SpeedTemplate
     {
-    private:
-        uint32_t _value;
-
-    public:
-        constexpr explicit Speed32(uint32_t val)
-            : _value(val)
+        Value value;
+        constexpr Value getRaw() const { return value; }
+        constexpr explicit SpeedTemplate(Value val)
+            : value(val)
         {
         }
 
-        constexpr uint32_t getRaw() const { return _value; }
-        constexpr bool operator==(const Speed32& rhs) const
+        // Conversion function (only valid to more accuracy)
+        template<typename T>
+        constexpr operator SpeedTemplate<T>() const
         {
-            return _value == rhs._value;
+            static_assert(sizeof(T) > sizeof(Value));
+            constexpr auto shift = (sizeof(T) - sizeof(Value)) * 8;
+            return SpeedTemplate<T>(getRaw() << shift);
         }
-        constexpr bool operator!=(const Speed32& rhs) const
+
+        // Best accuracy between ThisType and OtherType
+        template<typename OtherType>
+        using BestType = std::conditional_t<(sizeof(Value) > sizeof(OtherType)), SpeedTemplate<Value>, SpeedTemplate<OtherType>>;
+
+        template<typename RhsT>
+        constexpr bool operator==(SpeedTemplate<RhsT> const& rhs)
+        {
+            return BestType<RhsT>(*this).value == BestType<RhsT>(rhs).value;
+        }
+        template<typename RhsT>
+        constexpr bool operator!=(SpeedTemplate<RhsT> const& rhs)
         {
             return !(*this == rhs);
         }
-        constexpr bool operator>(const Speed32& rhs) const
+        template<typename RhsT>
+        constexpr bool operator>(SpeedTemplate<RhsT> const& rhs)
         {
-            return _value > rhs._value;
+            return BestType<RhsT>(*this).value > BestType<RhsT>(rhs).value;
         }
-        constexpr bool operator<(const Speed32& rhs) const
+        template<typename RhsT>
+        constexpr bool operator<=(SpeedTemplate<RhsT> const& rhs)
         {
-            return _value < rhs._value;
+            return !(*this > rhs);
         }
-        constexpr bool operator>=(const Speed32& rhs) const
+        template<typename RhsT>
+        constexpr bool operator<(SpeedTemplate<RhsT> const& rhs)
         {
-            return _value >= rhs._value;
+            return BestType<RhsT>(*this).value < BestType<RhsT>(rhs).value;
         }
-        constexpr bool operator<=(const Speed32& rhs) const
+        template<typename RhsT>
+        constexpr bool operator>=(SpeedTemplate<RhsT> const& rhs)
         {
-            return _value <= rhs._value;
+            return !(*this < rhs);
         }
     };
 
-    class Speed16
+    using Speed32 = SpeedTemplate<int32_t>;
+    using Speed16 = SpeedTemplate<int16_t>;
+
+    constexpr auto speed16Null = Speed16(-1);
+    constexpr Speed16 toSpeed16(Speed32 speed)
     {
-    private:
-        uint16_t _value;
-
-    public:
-        constexpr explicit Speed16(uint16_t val)
-            : _value(val)
-        {
-        }
-        // **Warning** truncates
-        constexpr explicit Speed16(Speed32 val)
-            : _value(val.getRaw() >> 16)
-        {
-        }
-        constexpr uint16_t getRaw() const { return _value; }
-        // Implicitly convert to a Speed32 but only explicit in reverse as it could lose data
-        constexpr operator Speed32() const { return Speed32(_value << 16); }
-
-        constexpr bool operator==(const Speed16& rhs) const
-        {
-            return _value == rhs._value;
-        }
-        constexpr bool operator!=(const Speed16& rhs) const
-        {
-            return !(*this == rhs);
-        }
-        constexpr bool operator>(const Speed16& rhs) const
-        {
-            return _value > rhs._value;
-        }
-        constexpr bool operator<(const Speed16& rhs) const
-        {
-            return _value < rhs._value;
-        }
-        constexpr bool operator>=(const Speed16& rhs) const
-        {
-            return _value >= rhs._value;
-        }
-        constexpr bool operator<=(const Speed16& rhs) const
-        {
-            return _value <= rhs._value;
-        }
-    };
-
-    constexpr auto speed16Null = Speed16(0xFFFF);
+        return Speed16(speed.getRaw() / 65535);
+    }
 
     namespace Literals
     {
