@@ -72,12 +72,6 @@ namespace OpenLoco::Gui
         const int32_t uiWidth = Ui::width();
         const int32_t uiHeight = Ui::height();
 
-        if (OpenLoco::isEditorMode())
-        {
-            call(0x43CD35);
-            return;
-        }
-
         auto window = WindowManager::getMainWindow();
         if (window)
         {
@@ -114,6 +108,13 @@ namespace OpenLoco::Gui
         {
             window->y = uiHeight - window->height;
             window->x = std::max(uiWidth, 640) - window->width;
+        }
+
+        window = WindowManager::find(WindowType::editorToolbar);
+        if (window)
+        {
+            window->y = uiHeight - window->height;
+            window->width = std::max(uiWidth, 640);
         }
 
         window = WindowManager::find(WindowType::titleMenu);

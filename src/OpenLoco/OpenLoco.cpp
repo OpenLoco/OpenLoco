@@ -22,6 +22,7 @@
 #include "CompanyManager.h"
 #include "Config.h"
 #include "Date.h"
+#include "EditorController.h"
 #include "Environment.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
@@ -83,8 +84,6 @@ namespace OpenLoco
     static loco_global<int16_t, 0x00525F62> _525F62;
 
     static loco_global<company_id_t, 0x009C68EB> _updating_company_id;
-
-    static loco_global<uint8_t, 0x009C8714> _editorStep;
 
     static loco_global<char[256], 0x011367A0> _11367A0;
     static loco_global<char[256], 0x011368A0> _11368A0;
@@ -490,38 +489,6 @@ namespace OpenLoco
         }
     }
 
-    // 0x0043D9D4
-    static void editorTick()
-    {
-        if (!isEditorMode())
-            return;
-
-        switch (_editorStep)
-        {
-            case 0:
-                if (WindowManager::find(WindowType::objectSelection) == nullptr)
-                    Windows::ObjectSelectionWindow::open();
-                break;
-
-            case 1:
-                // Scenario/landscape loaded?
-                if ((addr<0x00525E28, uint32_t>() & 1) != 0)
-                    return;
-
-                if (WindowManager::find(WindowType::landscapeGeneration) == nullptr)
-                    Windows::LandscapeGeneration::open();
-                break;
-
-            case 2:
-                if (WindowManager::find(WindowType::scenarioOptions) == nullptr)
-                    Windows::ScenarioOptions::open();
-                break;
-
-            case 3:
-                break;
-        }
-    }
-
     // 0x0046A794
     static void tick()
     {
@@ -698,7 +665,10 @@ namespace OpenLoco
                 tickLogic(numUpdates);
 
                 _525F62++;
-                editorTick();
+                if (isEditorMode())
+                {
+                    EditorController::tick();
+                }
                 Audio::playBackgroundMusic();
 
                 // TODO move stop title music to title::stop (when mode changes)

@@ -10,6 +10,7 @@ namespace OpenLoco::Ui
         topToolbar = 1,
         playerInfoToolbar = 2,
         timeToolbar = 3,
+        editorToolbar = 4,
 
         tooltip = 6,
         dropdown = 7,

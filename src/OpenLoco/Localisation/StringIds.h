@@ -999,7 +999,12 @@ namespace OpenLoco::StringIds
     constexpr string_id scenario_group_medium = 1572;
     constexpr string_id scenario_group_challenging = 1573;
     constexpr string_id scenario_group_expert = 1574;
-
+    constexpr string_id editor_step_object_selection = 1575;
+    constexpr string_id editor_step_landscape = 1576;
+    constexpr string_id editor_step_options = 1577;
+    constexpr string_id editor_step_save = 1578;
+    constexpr string_id editor_previous_step = 1579;
+    constexpr string_id editor_next_step = 1580;
     constexpr string_id load_landscape = 1581;
     constexpr string_id save_landscape = 1582;
     constexpr string_id generating_landscape = 1583;
