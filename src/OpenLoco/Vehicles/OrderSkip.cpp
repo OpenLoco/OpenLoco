@@ -13,6 +13,7 @@ namespace OpenLoco::Vehicles
     loco_global<uint16_t, 0x009C68E2> gameCommandMapY;
     loco_global<uint16_t, 0x009C68E4> gameCommandMapZ;
 
+    // 0x0047071A
     static uint32_t orderSkip(uint16_t headId, uint8_t flags)
     {
         auto* head = ThingManager::get<Vehicles::VehicleHead>(headId);
@@ -42,6 +43,7 @@ namespace OpenLoco::Vehicles
         {
             head->currentOrder = curOrder->getOffset() - head->orderTableOffset;
         }
+        return 0;
     }
 
     void orderSkip(registers& regs)
