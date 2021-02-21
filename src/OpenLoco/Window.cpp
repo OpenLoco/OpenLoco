@@ -1280,7 +1280,7 @@ namespace OpenLoco::Ui
         this->event_handlers->scroll_mouse_over(this, xPos, yPos, scroll_index);
     }
 
-    void window::callTextInput(widget_index caller, char* buffer)
+    void window::callTextInput(widget_index caller, const char* buffer)
     {
         if (event_handlers->text_input == nullptr)
             return;

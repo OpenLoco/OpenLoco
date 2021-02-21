@@ -38,7 +38,7 @@ namespace OpenLoco::Ui::TimePanel
     }
 
     static void formatChallenge(FormatArguments& args);
-    static void processChatMessage(char* str);
+    static void processChatMessage(const char* str);
     static void togglePaused();
     static void changeGameSpeed(window* w, uint8_t speed);
 
@@ -60,11 +60,10 @@ namespace OpenLoco::Ui::TimePanel
     static void draw(Ui::window* self, Gfx::drawpixelinfo_t* dpi);
     static void onMouseUp(Ui::window* window, widget_index widgetIndex);
     static void onMouseDown(Ui::window* window, widget_index widgetIndex);
-    static void textInput(window* w, widget_index widgetIndex, char* str);
+    static void textInput(window* w, widget_index widgetIndex, const char* str);
     static void onDropdown(window* w, widget_index widgetIndex, int16_t item_index);
     static Ui::cursor_id onCursor(window* w, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::cursor_id fallback);
     static std::optional<FormatArguments> tooltip(Ui::window* window, widget_index widgetIndex);
-    static void textInput(window* w, widget_index widgetIndex, char* str);
     static void onUpdate(window* w);
 
     static loco_global<uint16_t, 0x0050A004> _50A004;
@@ -371,7 +370,7 @@ namespace OpenLoco::Ui::TimePanel
     }
 
     // 0x00439A15
-    static void textInput(window* w, widget_index widgetIndex, char* str)
+    static void textInput(window* w, widget_index widgetIndex, const char* str)
     {
         switch (widgetIndex)
         {
@@ -382,7 +381,7 @@ namespace OpenLoco::Ui::TimePanel
     }
 
     // 0x00439A1C
-    static void processChatMessage(char string[512])
+    static void processChatMessage(const char* string)
     {
         addr<0x009C68E8, string_id>() = StringIds::empty;
 

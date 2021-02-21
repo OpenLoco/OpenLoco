@@ -478,7 +478,7 @@ namespace OpenLoco::GameCommands
     }
 
     // Send chat message
-    inline void do_71(int32_t ax, char* string)
+    inline void do_71(int32_t ax, const char* string)
     {
         registers regs;
         regs.bl = GameCommandFlag::apply;

@@ -60,7 +60,7 @@ namespace OpenLoco::Ui::Windows::Station
 
         // Defined at the bottom of this file.
         static void prepareDraw(window* self);
-        static void textInput(window* self, widget_index callingWidget, char* input);
+        static void textInput(window* self, widget_index callingWidget, const char* input);
         static void update(window* self);
         static void renameStationPrompt(window* self, widget_index widgetIndex);
         static void repositionTabs(window* self);
@@ -844,7 +844,7 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048E5DF
-        static void textInput(window* self, widget_index callingWidget, char* input)
+        static void textInput(window* self, widget_index callingWidget, const char* input)
         {
             if (callingWidget != Common::widx::caption)
                 return;
