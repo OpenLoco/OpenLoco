@@ -85,7 +85,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // Defined at the bottom of this file.
         static void initEvents();
         static void renameCompanyPrompt(window* self, widget_index widgetIndex);
-        static void renameCompany(window* self, char* input);
+        static void renameCompany(window* self, const char* input);
         static void switchCompany(window* self, int16_t itemIndex);
         static void switchTab(window* self, widget_index widgetIndex);
         static void switchTabWidgets(window* self);
@@ -316,7 +316,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x004325DF
-        static void renameCompanyOwnerName(window* self, char* input)
+        static void renameCompanyOwnerName(window* self, const char* input)
         {
             if (strlen(input) == 0)
                 return;
@@ -347,12 +347,12 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             auto args = FormatArguments::common(StringIds::buffer_2039);
             // Add the ' Transport' suffix to the company name, and rename the company.
-            StringManager::formatString(input, StringIds::company_owner_name_transport, const_cast<void*>(&args));
-            Common::renameCompany(self, input);
+            StringManager::formatString(buffer, StringIds::company_owner_name_transport, const_cast<void*>(&args));
+            Common::renameCompany(self, buffer);
         }
 
         // 0x004322F6
-        static void textInput(window* self, widget_index callingWidget, char* input)
+        static void textInput(window* self, widget_index callingWidget, const char* input)
         {
             if (callingWidget == Common::widx::caption)
             {
@@ -893,7 +893,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00432C24
-        static void textInput(window* self, widget_index callingWidget, char* input)
+        static void textInput(window* self, widget_index callingWidget, const char* input)
         {
             if (callingWidget == Common::widx::caption)
             {
@@ -1417,7 +1417,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00433092
-        static void textInput(window* self, widget_index callingWidget, char* input)
+        static void textInput(window* self, widget_index callingWidget, const char* input)
         {
             if (callingWidget == Common::widx::caption)
             {
@@ -1902,7 +1902,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x0043385D
-        static void textInput(window* self, widget_index callingWidget, char* input)
+        static void textInput(window* self, widget_index callingWidget, const char* input)
         {
             if (callingWidget == Common::widx::caption)
             {
@@ -2141,7 +2141,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00433C16
-        static void textInput(window* self, widget_index callingWidget, char* input)
+        static void textInput(window* self, widget_index callingWidget, const char* input)
         {
             if (callingWidget == Common::widx::caption)
             {
@@ -2346,7 +2346,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x00434023
-        static void textInput(window* self, widget_index callingWidget, char* input)
+        static void textInput(window* self, widget_index callingWidget, const char* input)
         {
             if (callingWidget == Common::widx::caption)
             {
@@ -2552,7 +2552,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x0043254F
-        static void renameCompany(window* self, char* input)
+        static void renameCompany(window* self, const char* input)
         {
             if (strlen(input) == 0)
                 return;

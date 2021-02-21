@@ -1117,7 +1117,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         }
 
         // 0x0043F156
-        static void textInput(window* self, widget_index callingWidget, char* input)
+        static void textInput(window* self, widget_index callingWidget, const char* input)
         {
             switch (callingWidget)
             {

@@ -131,7 +131,7 @@ namespace OpenLoco::Ui::TextInput
 
         memcpy(_formatArgs, _commonFormatArgs, 16);
 
-        char temp[200];
+        char temp[200] = {};
         StringManager::formatString(temp, value, valueArgs);
         _buffer = temp;
 
@@ -262,7 +262,7 @@ namespace OpenLoco::Ui::TextInput
         }
 
         char* drawnBuffer = (char*)StringManager::getString(StringIds::buffer_2039);
-        strcpy(drawnBuffer, _buffer.data());
+        strcpy(drawnBuffer, _buffer.c_str());
 
         *((string_id*)(&_commonFormatArgs[0])) = StringIds::buffer_2039;
 
@@ -274,7 +274,7 @@ namespace OpenLoco::Ui::TextInput
             return;
         }
 
-        strncpy(drawnBuffer, _buffer.data(), cursor_position);
+        strncpy(drawnBuffer, _buffer.c_str(), cursor_position);
         drawnBuffer[cursor_position] = '\0';
 
         *((string_id*)(&_commonFormatArgs[0])) = StringIds::buffer_2039;
@@ -296,7 +296,7 @@ namespace OpenLoco::Ui::TextInput
                 auto caller = WindowManager::find(_callingWindowType, _callingWindowNumber);
                 if (caller != nullptr)
                 {
-                    caller->callTextInput(_callingWidget, _buffer.data());
+                    caller->callTextInput(_callingWidget, _buffer.c_str());
                 }
                 WindowManager::close(window);
                 break;
@@ -412,8 +412,8 @@ namespace OpenLoco::Ui::TextInput
         std::string cursorStr = _buffer.substr(0, cursor_position);
 
         _currentFontSpriteBase = Font::medium_bold;
-        auto stringWidth = Gfx::getStringWidth(_buffer.data());
-        auto cursorX = Gfx::getStringWidth(cursorStr.data());
+        auto stringWidth = Gfx::getStringWidth(_buffer.c_str());
+        auto cursorX = Gfx::getStringWidth(cursorStr.c_str());
 
         int x = _xOffset + cursorX;
 
@@ -439,8 +439,8 @@ namespace OpenLoco::Ui::TextInput
         std::string cursorStr = _buffer.substr(0, cursor_position);
 
         _currentFontSpriteBase = Font::medium_bold;
-        auto stringWidth = Gfx::getStringWidth(_buffer.data());
-        auto cursorX = Gfx::getStringWidth(cursorStr.data());
+        auto stringWidth = Gfx::getStringWidth(_buffer.c_str());
+        auto cursorX = Gfx::getStringWidth(cursorStr.c_str());
 
         auto midX = containerWidth / 2;
 

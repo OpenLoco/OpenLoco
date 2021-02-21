@@ -65,7 +65,7 @@ namespace OpenLoco::Ui::Vehicle
         }
 
         static void setActiveTabs(window* const self);
-        static void textInput(window* const self, const widget_index callingWidget, char* const input);
+        static void textInput(window* const self, const widget_index callingWidget, const char* const input);
         static void renameVehicle(window* const self, const widget_index widgetIndex);
         static void switchTab(window* const self, const widget_index widgetIndex);
         static void repositionTabs(window* const self);
@@ -3224,7 +3224,7 @@ namespace OpenLoco::Ui::Vehicle
         }
 
         // 0x004B26C0
-        static void textInput(window* const self, const widget_index callingWidget, char* const input)
+        static void textInput(window* const self, const widget_index callingWidget, const char* const input)
         {
             if (callingWidget != widx::caption)
             {

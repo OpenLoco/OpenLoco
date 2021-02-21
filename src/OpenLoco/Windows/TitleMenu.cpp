@@ -123,7 +123,7 @@ namespace OpenLoco::Ui::Windows
 
     static void sub_439112(window* window);
     static void sub_4391CC(int16_t itemIndex);
-    static void sub_43918F(char string[512]);
+    static void sub_43918F(const char* string);
     static void sub_4391DA();
     static void sub_4391E2();
     static void sub_43910A();
@@ -135,7 +135,7 @@ namespace OpenLoco::Ui::Windows
     static void onMouseDown(Ui::window* window, widget_index widgetIndex);
     static void onDropdown(Ui::window* window, widget_index widgetIndex, int16_t itemIndex);
     static void onUpdate(window* window);
-    static void onTextInput(window* window, widget_index widgetIndex, char* input);
+    static void onTextInput(window* window, widget_index widgetIndex, const char* input);
     static Ui::cursor_id onCursor(window* window, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::cursor_id fallback);
     static void draw(Ui::window* window, Gfx::drawpixelinfo_t* dpi);
     static void prepareDraw(Ui::window* window);
@@ -351,7 +351,7 @@ namespace OpenLoco::Ui::Windows
     }
 
     // 0x004390ED
-    static void onTextInput(window* window, widget_index widgetIndex, char* input)
+    static void onTextInput(window* window, widget_index widgetIndex, const char* input)
     {
         switch (widgetIndex)
         {
@@ -421,7 +421,7 @@ namespace OpenLoco::Ui::Windows
         TextInput::openTextInput(callingWindow, StringIds::chat_title, StringIds::chat_instructions, StringIds::empty, callingWidget, (void*)0x112C826);
     }
 
-    static void sub_43918F(char string[512])
+    static void sub_43918F(const char* string)
     {
         addr<0x009C68E8, string_id>() = StringIds::empty;
 

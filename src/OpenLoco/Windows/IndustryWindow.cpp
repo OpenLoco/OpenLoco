@@ -55,7 +55,7 @@ namespace OpenLoco::Ui::Windows::Industry
 
         // Defined at the bottom of this file.
         static void prepareDraw(window* self);
-        static void textInput(window* self, widget_index callingWidget, char* input);
+        static void textInput(window* self, widget_index callingWidget, const char* input);
         static void update(window* self);
         static void renameIndustryPrompt(window* self, widget_index widgetIndex);
         static void repositionTabs(window* self);
@@ -721,7 +721,7 @@ namespace OpenLoco::Ui::Windows::Industry
         }
 
         // 0x00455CBC
-        static void textInput(window* self, widget_index callingWidget, char* input)
+        static void textInput(window* self, widget_index callingWidget, const char* input)
         {
             if (callingWidget != Common::widx::caption)
                 return;

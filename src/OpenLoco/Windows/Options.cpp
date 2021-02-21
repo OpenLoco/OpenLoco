@@ -1881,7 +1881,7 @@ namespace OpenLoco::Ui::Options
         static loco_global<uint8_t, 0x0112A17E> _112A17E;
 
         static void changePreferredName(window* w);
-        static void setPreferredName(window* w, char* str);
+        static void setPreferredName(window* w, const char* str);
         static void usePreferredOwnerNameMouseUp(window* w);
         static void disableVehicleBreakdownsMouseUp(window* w);
         static void disableAICompaniesMouseUp(window* w);
@@ -2138,7 +2138,7 @@ namespace OpenLoco::Ui::Options
         }
 
         // 0x004C1304
-        static void textInput(window* w, widget_index i, char* str)
+        static void textInput(window* w, widget_index i, const char* str)
         {
             switch (i)
             {
@@ -2160,7 +2160,7 @@ namespace OpenLoco::Ui::Options
         }
 
         // 0x004C1342
-        static void setPreferredName(window* w, char* str)
+        static void setPreferredName(window* w, const char* str)
         {
             auto& cfg = OpenLoco::Config::get();
 
