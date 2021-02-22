@@ -870,9 +870,10 @@ namespace OpenLoco::Vehicles
     // bit 17 : reachedADestination
     uint32_t VehicleHead::updateWaterMotion(uint32_t flags)
     {
+        Vehicle2* veh2 = vehicleUpdate_2;
 
         // updates the current boats position and sets flags about position
-        auto tile = TileManager::get({ x, y });
+        auto tile = TileManager::get({ veh2->x, veh2->y });
         surface_element* surface = tile.surface();
 
         if (surface != nullptr)
@@ -889,7 +890,6 @@ namespace OpenLoco::Vehicles
                 surface->setType6Flag(true);
             }
         }
-        Vehicle2* veh2 = vehicleUpdate_2;
 
         auto targetSpeed = 5_mph;
         if (stationId == StationId::null)
