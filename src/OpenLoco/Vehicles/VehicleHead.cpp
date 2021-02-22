@@ -793,13 +793,13 @@ namespace OpenLoco::Vehicles
             auto randSoundIndex = gPrng().randNext(numSounds - 1);
             auto randSoundId = Audio::makeObjectSoundId(vehObj->startSounds[randSoundIndex]);
             Vehicle2* veh2 = vehicleUpdate_2;
-            auto tileHeight = Map::tileElementHeight(veh2->x, veh2->y);
+            auto tileHeight = TileManager::getHeight({ veh2->x, veh2->y });
             auto volume = 0;
             if (veh2->z < tileHeight.landHeight)
             {
                 volume = -1500;
             }
-            Audio::playSound(randSoundId, { veh2->x, veh2->y, veh2->z + 22 }, volume, 22050);
+            Audio::playSound(randSoundId, { veh2->x, veh2->y, static_cast<int16_t>(veh2->z + 22) }, volume, 22050);
         }
     }
 
@@ -907,7 +907,7 @@ namespace OpenLoco::Vehicles
             auto randSoundIndex = gPrng().randNext((vehObj->numStartSounds & NumStartSounds::mask) - 1);
             auto randSoundId = Audio::makeObjectSoundId(vehObj->startSounds[randSoundIndex]);
             Vehicle2* veh2 = vehicleUpdate_2;
-            Audio::playSound(randSoundId, { veh2->x, veh2->y, veh2->z + 22 }, 0, 22050);
+            Audio::playSound(randSoundId, { veh2->x, veh2->y, static_cast<int16_t>(veh2->z + 22) }, 0, 22050);
         }
     }
 }
