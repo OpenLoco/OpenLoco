@@ -422,10 +422,10 @@ namespace OpenLoco::Vehicles
             return;
         }
 
-        uint32_t speedDiff = vehType2_2->currentSpeed - snd->minSpeed;
-        vehType2or6->drivingSoundFrequency = (speedDiff >> snd->speedFreqFactor) + snd->baseFrequency;
+        auto speedDiff = vehType2_2->currentSpeed - snd->minSpeed;
+        vehType2or6->drivingSoundFrequency = (speedDiff.getRaw() >> snd->speedFreqFactor) + snd->baseFrequency;
 
-        auto volume = (speedDiff >> snd->speedVolumeFactor) + snd->baseVolume;
+        auto volume = (speedDiff.getRaw() >> snd->speedVolumeFactor) + snd->baseVolume;
 
         vehType2or6->drivingSoundVolume = std::min<uint8_t>(volume, snd->maxVolume);
         vehType2or6->drivingSoundId = snd->soundObjectId;
@@ -472,7 +472,7 @@ namespace OpenLoco::Vehicles
         {
             if (!(vehType2or6->isVehicle2()) || train.cars.firstCar.front->var_5E == 0)
             {
-                targetFrequency = snd->var_07 + (vehType2_2->currentSpeed >> snd->speedFreqFactor);
+                targetFrequency = snd->var_07 + (vehType2_2->currentSpeed.getRaw() >> snd->speedFreqFactor);
                 targetVolume = snd->var_09;
             }
             else
@@ -578,7 +578,7 @@ namespace OpenLoco::Vehicles
         {
             if (!(vehType2or6->isVehicle2()) || train.cars.firstCar.front->var_5E == 0)
             {
-                auto speed = std::max<uint32_t>(vehType2_2->currentSpeed, 7.0_mph) >> 16;
+                auto speed = std::max(vehType2_2->currentSpeed, 7.0_mph);
 
                 auto frequency = snd->firstGearFrequency;
 
@@ -594,8 +594,7 @@ namespace OpenLoco::Vehicles
                         }
                     }
                 }
-                speed <<= 16;
-                targetFrequency = (speed >> snd->speedFreqFactor) + frequency;
+                targetFrequency = (speed.getRaw() >> snd->speedFreqFactor) + frequency;
             }
             else
             {
