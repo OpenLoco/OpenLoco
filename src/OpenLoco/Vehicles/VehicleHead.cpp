@@ -891,7 +891,7 @@ namespace OpenLoco::Vehicles
         }
         Vehicle2* veh2 = vehicleUpdate_2;
 
-        uint32_t targetSpeed = 5;
+        auto targetSpeed = 5_mph;
         if (stationId == StationId::null)
         {
             if (!(flags & WaterMotionFlags::isStopping))
@@ -902,11 +902,11 @@ namespace OpenLoco::Vehicles
                 }
             }
         }
-        if ((targetSpeed << 16) == veh2->currentSpeed)
+        if (targetSpeed == veh2->currentSpeed)
         {
             veh2->var_5A = 2;
         }
-        else if ((targetSpeed << 16) > veh2->currentSpeed)
+        else if (targetSpeed > veh2->currentSpeed)
         {
             veh2->var_5A = 2;
             auto decelerationRate = 1.0_mph;
@@ -915,13 +915,13 @@ namespace OpenLoco::Vehicles
                 decelerationRate = 3.0_mph;
             }
             veh2->var_5A = 3;
-            auto newSpeed = std::max<int64_t>(veh2->currentSpeed - decelerationRate, 0);
-            veh2->currentSpeed = std::max<uint32_t>(targetSpeed, newSpeed);
+            auto newSpeed = std::max(veh2->currentSpeed - decelerationRate, 0.0_mph);
+            veh2->currentSpeed = std::max<Speed32>(targetSpeed, newSpeed);
         }
         else
         {
             veh2->var_5A = 1;
-            veh2->currentSpeed = std::min<uint32_t>(targetSpeed << 16, veh2->currentSpeed + 0.3333_mph);
+            veh2->currentSpeed = std::min<Speed32>(targetSpeed, veh2->currentSpeed + 0.3333_mph);
         }
 
         auto manhattanDistance = std::abs(x - veh2->x) + std::abs(y - veh2->y);
@@ -947,23 +947,15 @@ namespace OpenLoco::Vehicles
                 return flags;
             }
 
-            OrderTableView orders(orderTableOffset);
-            auto order = orders.atOffset(currentOrder);
-            auto waypoint = order->as<OrderRouteWaypoint>();
+            OrderRingView orders(orderTableOffset, currentOrder);
+            auto curOrder = orders.begin();
+            auto waypoint = curOrder->as<OrderRouteWaypoint>();
             if (waypoint != nullptr)
             {
                 auto point = waypoint->getWaypoint();
                 if (point.x == (x & 0xFFE0) && point.y == (y & 0xFFE0))
                 {
-                    order++;
-                    if (order->is<OrderEnd>())
-                    {
-                        currentOrder = 0;
-                    }
-                    else
-                    {
-                        currentOrder = order->getOffset() - orderTableOffset;
-                    }
+                    currentOrder = (++curOrder)->getOffset() - orderTableOffset;
                     Ui::WindowManager::sub_4B93A5(id);
                 }
             }
@@ -1043,8 +1035,8 @@ namespace OpenLoco::Vehicles
         }
 
         Vehicle1* veh1 = vehicleUpdate_1;
-        auto distX = (veh2->currentSpeed >> 13) * factorXY503B6A[veh2->sprite_yaw * 2];
-        auto distY = (veh2->currentSpeed >> 13) * factorXY503B6A[veh2->sprite_yaw * 2 + 1];
+        auto distX = (veh2->currentSpeed.getRaw() >> 13) * factorXY503B6A[veh2->sprite_yaw * 2];
+        auto distY = (veh2->currentSpeed.getRaw() >> 13) * factorXY503B6A[veh2->sprite_yaw * 2 + 1];
 
         veh1->var_4E += distX;
         veh1->var_50 += distY;
