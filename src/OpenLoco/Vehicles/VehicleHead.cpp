@@ -1044,21 +1044,26 @@ namespace OpenLoco::Vehicles
         veh1->var_4E = bigCoordX & 0xFFFF;
         veh1->var_50 = bigCoordY & 0xFFFF;
 
-        loc16 newLocation = { bigCoordX >> 16, bigCoordY >> 16, veh2->z };
-        // sub_427B70
-        Vehicle train(this);
-        train.veh1->moveTo(newLocation);
-        train.veh1->tile_x = 0;
-        train.veh2->moveTo(newLocation);
-        train.veh2->tile_x = 0;
-        train.cars.firstCar.body->invalidateSprite();
-        train.cars.firstCar.body->moveTo(newLocation);
-        train.cars.firstCar.body->sprite_yaw = veh2->sprite_yaw;
-        train.cars.firstCar.body->sprite_pitch = Pitch::flat;
-        train.cars.firstCar.body->tile_x = 0;
-        train.cars.firstCar.body->invalidateSprite();
+        map_pos3 newLocation = { static_cast<int16_t>(bigCoordX >> 16), static_cast<int16_t>(bigCoordY >> 16), veh2->z };
+        moveBoatTo(newLocation, veh2->sprite_yaw, Pitch::flat);
 
         return flags;
+    }
+
+    // 0x00427B70
+    void VehicleHead::moveBoatTo(const map_pos3& newLoc, const uint8_t yaw, const Pitch pitch)
+    {
+        Vehicle train(this);
+        train.veh1->moveTo({ newLoc.x, newLoc.y, newLoc.z });
+        train.veh1->tile_x = 0;
+        train.veh2->moveTo({ newLoc.x, newLoc.y, newLoc.z });
+        train.veh2->tile_x = 0;
+        train.cars.firstCar.body->invalidateSprite();
+        train.cars.firstCar.body->moveTo({ newLoc.x, newLoc.y, newLoc.z });
+        train.cars.firstCar.body->sprite_yaw = yaw;
+        train.cars.firstCar.body->sprite_pitch = pitch;
+        train.cars.firstCar.body->tile_x = 0;
+        train.cars.firstCar.body->invalidateSprite();
     }
 
     // 0x004B9A2A

@@ -258,6 +258,7 @@ namespace OpenLoco::Vehicles
         void updateLastJourneyAverageSpeed();
         void beginUnloading();
         uint32_t updateWaterMotion(uint32_t flags);
+        void moveBoatTo(const Map::map_pos3& loc, const uint8_t yaw, const Pitch pitch);
         void updateUnloadCargo();
         bool updateLoadCargo();
         void beginNewJourney();
