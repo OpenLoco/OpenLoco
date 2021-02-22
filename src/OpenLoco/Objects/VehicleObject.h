@@ -42,7 +42,7 @@ namespace OpenLoco
     struct VehicleObjectSoundFriction
     {
         uint8_t soundObjectId;     // 0x0
-        Speed32 minSpeed;         // 0x1 below this speed no sound created
+        Speed32 minSpeed;          // 0x1 below this speed no sound created
         uint8_t speedFreqFactor;   // 0x5
         uint16_t baseFrequency;    // 0x6
         uint8_t speedVolumeFactor; // 0x8
@@ -72,7 +72,7 @@ namespace OpenLoco
         uint16_t defaultFrequency;     // 0x1
         uint8_t defaultVolume;         // 0x2
         uint16_t firstGearFrequency;   // 0x4 All subsequent gears are based on this frequency
-        Speed16 firstGearSpeed;       // 0x6
+        Speed16 firstGearSpeed;        // 0x6
         uint16_t secondGearFreqFactor; // 0x8
         Speed16 secondGearSpeed;       // 0xA
         uint16_t thirdGearFreqFactor;  // 0xC
