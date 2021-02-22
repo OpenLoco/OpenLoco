@@ -265,7 +265,7 @@ namespace OpenLoco::Vehicles
         void advanceToNextRoutableOrder();
         Status sub_427BF2();
         void produceLeavingDockSound();
-        std::pair<station_id_t, Map::map_pos3> sub_427FC9();
+        std::tuple<station_id_t, Map::map_pos, Map::map_pos3> sub_427FC9();
     };
     static_assert(sizeof(VehicleHead) == 0x7A); // Can't use offset_of change this to last field if more found
 

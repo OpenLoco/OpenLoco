@@ -91,9 +91,9 @@ namespace OpenLoco::Vehicles
     Map::map_pos3 OrderRouteWaypoint::getWaypoint() const
     {
         Map::map_pos3 loc{};
-        loc.x = ((static_cast<int16_t>(_type & 0x80) << 1) | _data[0]) * Map::tile_size + 16;
-        loc.y = ((static_cast<int16_t>(_data[1] & 0x80) << 1) | _data[2]) * Map::tile_size + 16;
-        loc.z = (_data[1] & 0x7F) * 8 + 32;
+        loc.x = ((static_cast<int16_t>(_type & 0x80) << 1) | _data[0]) * Map::tile_size;
+        loc.y = ((static_cast<int16_t>(_data[1] & 0x80) << 1) | _data[2]) * Map::tile_size;
+        loc.z = (_data[1] & 0x7F) * 8;
         return loc;
     }
 

@@ -988,15 +988,15 @@ namespace OpenLoco::Vehicles
                     }
                 }
             }
-            auto [newStationId, location] = sub_427FC9();
-            moveTo({ location.x, location.y, 32 });
+            auto [newStationId, headTarget, stationTarget] = sub_427FC9();
+            moveTo({ headTarget.x, headTarget.y, 32 });
 
             if (newStationId != StationId::null)
             {
                 stationId = newStationId;
-                tile_x = location.x;
-                tile_y = location.y;
-                tile_base_z = location.z / 4;
+                tile_x = stationTarget.x;
+                tile_y = stationTarget.y;
+                tile_base_z = stationTarget.z / 4;
 
                 auto targetTile = TileManager::get({ tile_x, tile_y });
                 station_element* station = nullptr;
@@ -1137,12 +1137,13 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x00427FC9
-    std::pair<station_id_t, Map::map_pos3> VehicleHead::sub_427FC9()
+    std::tuple<station_id_t, Map::map_pos, Map::map_pos3> VehicleHead::sub_427FC9()
     {
         registers regs;
         regs.esi = reinterpret_cast<int32_t>(this);
         call(0x00427FC9, regs);
-        Map::map_pos3 ret = { regs.di, regs.bp, regs.dl };
-        return std::make_pair(regs.bx, ret);
+        Map::map_pos headTarget = { regs.ax, regs.cx };
+        Map::map_pos3 stationTarget = { regs.di, regs.bp, regs.dl };
+        return std::make_tuple(regs.bx, headTarget, stationTarget);
     }
 }
