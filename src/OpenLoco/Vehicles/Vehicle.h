@@ -3,6 +3,7 @@
 #include "../Audio/Audio.h"
 #include "../Company.h"
 #include "../Objects/VehicleObject.h"
+#include "../Speed.hpp"
 #include "../Things/Thing.h"
 #include "../Types.hpp"
 #include "../Ui/WindowType.h"
@@ -323,10 +324,10 @@ namespace OpenLoco::Vehicles
         Ui::window_number sound_window_number; // 0x4C common with tail
         Ui::WindowType sound_window_type;      // 0x4E common with tail
         uint8_t pad_4F;
-        uint16_t totalPower;   // 0x50 maybe not used by aircraft and ship
-        uint16_t totalWeight;  // 0x52
-        int16_t maxSpeed;      // 0x54
-        uint32_t currentSpeed; // 0x56
+        uint16_t totalPower;  // 0x50 maybe not used by aircraft and ship
+        uint16_t totalWeight; // 0x52
+        Speed16 maxSpeed;     // 0x54
+        Speed32 currentSpeed; // 0x56
         uint8_t var_5A;
         uint8_t var_5B;
         int16_t rackRailMaxSpeed; // 0x5C

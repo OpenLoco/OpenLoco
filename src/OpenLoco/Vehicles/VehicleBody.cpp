@@ -170,7 +170,7 @@ namespace OpenLoco::Vehicles
         if (vehicle_object->bodySprites[object_sprite_type].flags & BodySpriteFlags::hasSpeedAnimation)
         {
             Vehicle2* veh3 = vehicleUpdate_2;
-            al = (veh3->currentSpeed >> 16) / (vehicle_object->speed / vehicle_object->bodySprites[object_sprite_type].numAnimationFrames);
+            al = veh3->currentSpeed / (vehicle_object->speed / vehicle_object->bodySprites[object_sprite_type].numAnimationFrames);
             al = std::min(al, vehicle_object->bodySprites[object_sprite_type].numAnimationFrames);
         }
         else if (vehicle_object->bodySprites[object_sprite_type].numRollFrames != 1)
@@ -1010,7 +1010,7 @@ namespace OpenLoco::Vehicles
             if (veh_2->currentSpeed > 15.0_mph)
                 return;
 
-            int32_t volume = 0 - (veh_2->currentSpeed >> 9);
+            int32_t volume = 0 - (veh_2->currentSpeed.getRaw() >> 9);
 
             auto height = Map::TileManager::getHeight({ loc.x, loc.y }).landHeight;
 
@@ -1034,7 +1034,7 @@ namespace OpenLoco::Vehicles
             if (veh_2->currentSpeed > 15.0_mph)
                 return;
 
-            int32_t volume = 0 - (veh_2->currentSpeed >> 9);
+            int32_t volume = 0 - (veh_2->currentSpeed.getRaw() >> 9);
 
             auto height = Map::TileManager::getHeight({ loc.x, loc.y }).landHeight;
 

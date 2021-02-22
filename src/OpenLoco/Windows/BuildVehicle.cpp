@@ -1012,7 +1012,7 @@ namespace OpenLoco::Ui::BuildVehicle
         }
         {
             FormatArguments args{};
-            args.push(vehicleObj->speed);
+            args.push(vehicleObj->speed.getRaw());
             buffer = StringManager::formatString(buffer, StringIds::stats_max_speed, &args);
         }
         if (vehicleObj->flags & FlagsE0::rack_rail)
