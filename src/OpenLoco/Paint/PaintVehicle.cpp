@@ -99,7 +99,7 @@ namespace OpenLoco::Paint
                 auto imageId = sprite.numRollSprites * yawIndex + bogie->var_46 + sprite.flatImageIds;
                 if (bogie->getFlags38() & Flags38::isGhost)
                 {
-                    session.setItemType(Ui::ViewportInteraction::InteractionItem::t_0);
+                    session.setItemType(Ui::ViewportInteraction::InteractionItem::noInteraction);
                     imageId = applyGhostToImage(imageId);
                 }
                 else if (bogie->var_0C & Flags0C::unk_5)
@@ -115,7 +115,7 @@ namespace OpenLoco::Paint
                         // Ghosts don't cast shadows
                         return;
                     }
-                    session.setItemType(Ui::ViewportInteraction::InteractionItem::t_0);
+                    session.setItemType(Ui::ViewportInteraction::InteractionItem::noInteraction);
                     imageId = Gfx::recolourTranslucent(imageId, PaletteIndex::index_32);
                     session.addToPlotList4FD200(imageId, { 0, 0, bogie->z }, { 8, 8, static_cast<coord_t>(bogie->z + 6) }, { 48, 48, 2 });
                     return;
@@ -145,7 +145,7 @@ namespace OpenLoco::Paint
                 auto imageId = sprite.numRollSprites * yawIndex + bogie->var_46 + sprite.gentleImageIds;
                 if (bogie->getFlags38() & Flags38::isGhost)
                 {
-                    session.setItemType(Ui::ViewportInteraction::InteractionItem::t_0);
+                    session.setItemType(Ui::ViewportInteraction::InteractionItem::noInteraction);
                     imageId = applyGhostToImage(imageId);
                 }
                 else
@@ -169,7 +169,7 @@ namespace OpenLoco::Paint
                 auto imageId = sprite.numRollSprites * yawIndex + bogie->var_46 + sprite.steepImageIds;
                 if (bogie->getFlags38() & Flags38::isGhost)
                 {
-                    session.setItemType(Ui::ViewportInteraction::InteractionItem::t_0);
+                    session.setItemType(Ui::ViewportInteraction::InteractionItem::noInteraction);
                     imageId = applyGhostToImage(imageId);
                 }
                 else

@@ -524,7 +524,7 @@ namespace OpenLoco::Input
                     auto interaction = ViewportInteraction::getItemLeft(x, y);
                     switch (interaction.type)
                     {
-                        case InteractionItem::thing:
+                        case InteractionItem::entity:
                         {
                             auto _thing = reinterpret_cast<thing_base*>(interaction.object);
                             auto veh = _thing->asVehicle();
@@ -535,13 +535,13 @@ namespace OpenLoco::Input
                             break;
                         }
 
-                        case InteractionItem::town:
+                        case InteractionItem::townLabel:
                         {
                             Ui::Windows::Town::open(interaction.value);
                             break;
                         }
 
-                        case InteractionItem::station:
+                        case InteractionItem::stationLabel:
                         {
                             Ui::Windows::Station::open(interaction.value);
                             break;
@@ -759,13 +759,13 @@ namespace OpenLoco::Input
 
                 switch (interaction.type)
                 {
-                    case InteractionItem::t_0:
+                    case InteractionItem::noInteraction:
                     default:
                     {
                         auto item2 = ViewportInteraction::getItemLeft(_dragLastX, _dragLastY);
                         switch (item2.type)
                         {
-                            case InteractionItem::thing:
+                            case InteractionItem::entity:
                             {
                                 auto _thing = reinterpret_cast<thing_base*>(item2.object);
                                 auto veh = _thing->asVehicle();
@@ -776,10 +776,10 @@ namespace OpenLoco::Input
                                 }
                                 break;
                             }
-                            case InteractionItem::town:
+                            case InteractionItem::townLabel:
                                 Ui::Windows::TownList::open();
                                 break;
-                            case InteractionItem::station:
+                            case InteractionItem::stationLabel:
                             {
                                 auto station = StationManager::get(item2.value);
                                 Ui::Windows::StationList::open(station->owner);
@@ -1958,9 +1958,9 @@ namespace OpenLoco::Input
                         {
                             switch (ViewportInteraction::getItemLeft(x, y).type)
                             {
-                                case InteractionItem::thing:
-                                case InteractionItem::town:
-                                case InteractionItem::station:
+                                case InteractionItem::entity:
+                                case InteractionItem::townLabel:
+                                case InteractionItem::stationLabel:
                                 case InteractionItem::industry:
                                 case InteractionItem::headquarterBuilding:
                                     skipItem = true;
