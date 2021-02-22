@@ -906,7 +906,7 @@ namespace OpenLoco::Vehicles
         {
             veh2->var_5A = 2;
         }
-        else if (targetSpeed > veh2->currentSpeed)
+        else if (targetSpeed < veh2->currentSpeed)
         {
             veh2->var_5A = 2;
             auto decelerationRate = 1.0_mph;
@@ -1038,10 +1038,13 @@ namespace OpenLoco::Vehicles
         auto distX = (veh2->currentSpeed.getRaw() >> 13) * factorXY503B6A[veh2->sprite_yaw * 2];
         auto distY = (veh2->currentSpeed.getRaw() >> 13) * factorXY503B6A[veh2->sprite_yaw * 2 + 1];
 
-        veh1->var_4E += distX;
-        veh1->var_50 += distY;
+        auto bigCoordX = veh1->var_4E + (veh2->x << 16) + distX;
+        auto bigCoordY = veh1->var_50 + (veh2->y << 16) + distY;
 
-        loc16 newLocation = { veh2->x, veh2->y, veh2->z };
+        veh1->var_4E = bigCoordX & 0xFFFF;
+        veh1->var_50 = bigCoordY & 0xFFFF;
+
+        loc16 newLocation = { bigCoordX >> 16, bigCoordY >> 16, veh2->z };
         // sub_427B70
         Vehicle train(this);
         train.veh1->moveTo(newLocation);
