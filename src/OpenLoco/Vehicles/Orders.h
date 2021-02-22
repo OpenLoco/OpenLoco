@@ -50,22 +50,22 @@ namespace OpenLoco::Vehicles
         template<typename T>
         constexpr bool is() const { return getType() == T::TYPE; }
 
-        template<>
-        constexpr bool is<OrderStation>() const
-        {
-            if (is<OrderStopAt>())
-            {
-                return true;
-            }
-            return is<OrderRouteThrough>();
-        }
         template<typename T>
         T* as() { return is<T>() ? reinterpret_cast<T*>(this) : nullptr; }
         template<typename T>
         const T* as() const { return is<T>() ? reinterpret_cast<const T*>(this) : nullptr; }
     };
-
     static_assert(sizeof(Order) == 1, "Size of order must be 1 for pointer arithmatic to work in OrderTableView");
+
+    template<>
+    constexpr bool Order::is<OrderStation>() const
+    {
+        if (is<OrderStopAt>())
+        {
+            return true;
+        }
+        return is<OrderRouteThrough>();
+    }
 
     struct OrderEnd : Order
     {
