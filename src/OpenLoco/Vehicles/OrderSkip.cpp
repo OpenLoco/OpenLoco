@@ -32,17 +32,9 @@ namespace OpenLoco::Vehicles
 
         Ui::WindowManager::sub_4B93A5(head->id);
 
-        OrderTableView orders(head->orderTableOffset);
-        auto curOrder = orders.atOffset(head->currentOrder);
-        curOrder++;
-        if (curOrder->is<OrderEnd>())
-        {
-            head->currentOrder = 0;
-        }
-        else
-        {
-            head->currentOrder = curOrder->getOffset() - head->orderTableOffset;
-        }
+        OrderRingView orders(head->orderTableOffset, head->currentOrder);
+        auto nextOrder = orders.begin()++;
+        head->currentOrder = nextOrder->getOffset() - head->orderTableOffset;
         return 0;
     }
 
