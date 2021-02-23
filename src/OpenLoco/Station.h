@@ -20,16 +20,16 @@ namespace OpenLoco
 #pragma pack(push, 1)
     struct station_cargo_stats
     {
-        uint16_t quantity;   // 0x2E
-        station_id_t origin; // 0x30
-        uint8_t flags;       // 0x32
-        uint8_t age;         // 0x33
-        uint8_t rating;      // 0x34
-        uint8_t enroute_age; // 0x35
-        uint16_t var_36;     // 0x36
-        uint8_t var_38;
-        industry_id_t industry_id; // 0x39
-        uint8_t pad_40;
+        uint16_t quantity{};                   // 0x2E
+        station_id_t origin = StationId::null; // 0x30
+        uint8_t flags{};                       // 0x32
+        uint8_t age{};                         // 0x33
+        uint8_t rating{};                      // 0x34
+        uint8_t enroute_age{};                 // 0x35
+        uint16_t var_36{};                     // 0x36
+        uint8_t var_38{};
+        industry_id_t industry_id{}; // 0x39
+        uint8_t pad_40{};
 
         bool empty() const
         {
@@ -78,22 +78,22 @@ namespace OpenLoco
 
     struct station
     {
-        string_id name;              // 0x00
-        coord_t x;                   // 0x02
-        coord_t y;                   // 0x04
-        coord_t z;                   // 0x06
-        LabelPosition labelPosition; // 0x08
-        company_id_t owner;          // 0x28
-        uint8_t var_29;
-        uint16_t flags;                                   // 0x2A
-        town_id_t town;                                   // 0x2C
+        string_id name = StringIds::null; // 0x00
+        coord_t x{};                      // 0x02
+        coord_t y{};                      // 0x04
+        coord_t z{};                      // 0x06
+        LabelPosition labelPosition;      // 0x08
+        company_id_t owner{};             // 0x28
+        uint8_t var_29{};
+        uint16_t flags{};                                 // 0x2A
+        town_id_t town{};                                 // 0x2C
         station_cargo_stats cargo_stats[max_cargo_stats]; // 0x2E
-        uint16_t stationTileSize;                         // 0x1CE
+        uint16_t stationTileSize{};                       // 0x1CE
         map_pos3 stationTiles[80];                        // 0x1D0
-        uint8_t var_3B0;
-        uint8_t var_3B1;
-        uint16_t var_3B2;
-        uint8_t pad_3B4[0x3D2 - 0x3B4];
+        uint8_t var_3B0{};
+        uint8_t var_3B1{};
+        uint16_t var_3B2{};
+        uint8_t pad_3B4[0x3D2 - 0x3B4]{};
 
         bool empty() const { return name == StringIds::null; }
         station_id_t id() const;

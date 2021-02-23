@@ -132,7 +132,7 @@ namespace OpenLoco::StationManager
             if (station.empty())
             {
                 // Zero unused station
-                std::memset(&station, 0, sizeof(station));
+                station = {};
                 station.name = StringIds::empty;
             }
             else

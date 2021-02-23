@@ -7,6 +7,7 @@
 #include "../Things/ThingManager.h"
 #include "../Ui/WindowManager.h"
 #include "../Utility/Exception.hpp"
+#include "../Vehicles/Orders.h"
 #include "../ViewportManager.h"
 #include "SawyerStream.h"
 #include <fstream>
@@ -41,11 +42,6 @@ namespace OpenLoco::S5
     static void sub_46FF54()
     {
         call(0x0046FF54);
-    }
-
-    static void sub_4702F7()
-    {
-        call(0x004702F7);
     }
 
     static Header prepareHeader(SaveFlags flags, size_t numPackedObjects)
@@ -283,7 +279,7 @@ namespace OpenLoco::S5
             sub_46FF54();
             ThingManager::zeroUnused();
             StationManager::zeroUnused();
-            sub_4702F7();
+            Vehicles::zeroOrderTable();
         }
 
         bool saveResult;
@@ -377,7 +373,7 @@ namespace OpenLoco::S5
             0x00441C26,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 auto path = fs::u8path(std::string_view(_savePath));
-                return save(path, static_cast<SaveFlags>(regs.eax)) ? 0x100 : 0;
+                return save(path, static_cast<SaveFlags>(regs.eax)) ? X86_FLAG_CARRY : 0;
             });
     }
 }

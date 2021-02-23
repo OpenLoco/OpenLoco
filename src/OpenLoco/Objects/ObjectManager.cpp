@@ -10,13 +10,14 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::ObjectManager
 {
+#pragma pack(push, 1)
     struct object_repository_item
     {
         object* objects;
         ObjectHeader* object_entry_extendeds;
     };
+    static_assert(sizeof(object_repository_item) == 8);
 
-#pragma pack(push, 1)
     struct ObjectEntry2
     {
         ObjectHeader entry;
@@ -423,7 +424,7 @@ namespace OpenLoco::ObjectManager
     {
         load,
         unload,
-        proc2,
+        validate,
         drawPreview,
     };
 
