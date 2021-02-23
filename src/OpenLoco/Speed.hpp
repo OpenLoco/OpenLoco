@@ -30,32 +30,32 @@ namespace OpenLoco
         using BestType = SpeedTemplate<BestValue<OtherType>>;
 
         template<typename RhsT>
-        constexpr bool operator==(SpeedTemplate<RhsT> const& rhs)
+        constexpr bool operator==(SpeedTemplate<RhsT> const& rhs) const
         {
             return BestType<RhsT>(*this).value == BestType<RhsT>(rhs).value;
         }
         template<typename RhsT>
-        constexpr bool operator!=(SpeedTemplate<RhsT> const& rhs)
+        constexpr bool operator!=(SpeedTemplate<RhsT> const& rhs) const
         {
             return !(*this == rhs);
         }
         template<typename RhsT>
-        constexpr bool operator>(SpeedTemplate<RhsT> const& rhs)
+        constexpr bool operator>(SpeedTemplate<RhsT> const& rhs) const
         {
             return BestType<RhsT>(*this).value > BestType<RhsT>(rhs).value;
         }
         template<typename RhsT>
-        constexpr bool operator<=(SpeedTemplate<RhsT> const& rhs)
+        constexpr bool operator<=(SpeedTemplate<RhsT> const& rhs) const
         {
             return !(*this > rhs);
         }
         template<typename RhsT>
-        constexpr bool operator<(SpeedTemplate<RhsT> const& rhs)
+        constexpr bool operator<(SpeedTemplate<RhsT> const& rhs) const
         {
             return BestType<RhsT>(*this).value < BestType<RhsT>(rhs).value;
         }
         template<typename RhsT>
-        constexpr bool operator>=(SpeedTemplate<RhsT> const& rhs)
+        constexpr bool operator>=(SpeedTemplate<RhsT> const& rhs) const
         {
             return !(*this < rhs);
         }
@@ -75,25 +75,25 @@ namespace OpenLoco
             return *this;
         }
         template<typename RhsT>
-        constexpr BestType<RhsT> operator+(SpeedTemplate<RhsT> const& rhs)
+        constexpr BestType<RhsT> operator+(SpeedTemplate<RhsT> const& rhs) const
         {
             return BestType<RhsT>(BestType<RhsT>(*this).value + BestType<RhsT>(rhs).value);
         }
         template<typename RhsT>
-        constexpr BestType<RhsT> operator-(SpeedTemplate<RhsT> const& rhs)
+        constexpr BestType<RhsT> operator-(SpeedTemplate<RhsT> const& rhs) const
         {
             return BestType<RhsT>(BestType<RhsT>(*this).value - BestType<RhsT>(rhs).value);
         }
         template<typename RhsT>
-        constexpr BestValue<RhsT> operator/(SpeedTemplate<RhsT> const& rhs)
+        constexpr BestValue<RhsT> operator/(SpeedTemplate<RhsT> const& rhs) const
         {
             return BestType<RhsT>(*this).value / BestType<RhsT>(rhs).value;
         }
-        constexpr SpeedTemplate<Value> operator/(uint32_t const& rhs)
+        constexpr SpeedTemplate<Value> operator/(uint32_t const& rhs) const
         {
             return SpeedTemplate<Value>(value / rhs);
         }
-        constexpr SpeedTemplate<Value> operator*(uint32_t const& rhs)
+        constexpr SpeedTemplate<Value> operator*(uint32_t const& rhs) const
         {
             return SpeedTemplate<Value>(value * rhs);
         }

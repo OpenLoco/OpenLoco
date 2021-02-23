@@ -11,6 +11,7 @@
 #include "../Things/ThingManager.h"
 #include "../ViewportManager.h"
 #include "Vehicle.h"
+#include <cassert>
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Literals;
@@ -371,9 +372,273 @@ namespace OpenLoco::Vehicles
     // 0x004A8882
     void VehicleHead::updateDrivingSounds()
     {
-        registers regs;
-        regs.esi = reinterpret_cast<int32_t>(this);
-        call(0x004A8882, regs);
+        Vehicle train(this);
+        updateDrivingSound(train.veh2->asVehicle2Or6());
+        updateDrivingSound(train.tail->asVehicle2Or6());
+    }
+
+    // 0x004A88A6
+    void VehicleHead::updateDrivingSound(Vehicle2or6* vehType2or6)
+    {
+        if (tile_x == -1 || status == Status::crashed || status == Status::stuck || (var_38 & Flags38::isGhost) || vehType2or6->objectId == 0xFFFF)
+        {
+            updateDrivingSoundNone(vehType2or6);
+            return;
+        }
+
+        auto vehicleObject = ObjectManager::get<vehicle_object>(vehType2or6->objectId);
+        switch (vehicleObject->drivingSoundType)
+        {
+            case DrivingSoundType::none:
+                updateDrivingSoundNone(vehType2or6);
+                break;
+            case DrivingSoundType::friction:
+                updateDrivingSoundFriction(vehType2or6, &vehicleObject->sound.friction);
+                break;
+            case DrivingSoundType::engine1:
+                updateDrivingSoundEngine1(vehType2or6, &vehicleObject->sound.engine1);
+                break;
+            case DrivingSoundType::engine2:
+                updateDrivingSoundEngine2(vehType2or6, &vehicleObject->sound.engine2);
+                break;
+            default:
+                break;
+        }
+    }
+
+    // 0x004A8B7C
+    void VehicleHead::updateDrivingSoundNone(Vehicle2or6* vehType2or6)
+    {
+        vehType2or6->drivingSoundId = 0xFF;
+    }
+
+    // 0x004A88F7
+    void VehicleHead::updateDrivingSoundFriction(Vehicle2or6* vehType2or6, VehicleObjectFrictionSound* snd)
+    {
+        Vehicle2* vehType2_2 = vehicleUpdate_2;
+        if (vehType2_2->currentSpeed < snd->minSpeed)
+        {
+            updateDrivingSoundNone(vehType2or6);
+            return;
+        }
+
+        auto speedDiff = vehType2_2->currentSpeed - snd->minSpeed;
+        vehType2or6->drivingSoundFrequency = (speedDiff.getRaw() >> snd->speedFreqFactor) + snd->baseFrequency;
+
+        auto volume = (speedDiff.getRaw() >> snd->speedVolumeFactor) + snd->baseVolume;
+
+        vehType2or6->drivingSoundVolume = std::min<uint8_t>(volume, snd->maxVolume);
+        vehType2or6->drivingSoundId = snd->soundObjectId;
+    }
+
+    // 0x004A8937
+    void VehicleHead::updateDrivingSoundEngine1(Vehicle2or6* vehType2or6, VehicleObjectEngine1Sound* snd)
+    {
+        Vehicle train(this);
+        if (vehType2or6->isVehicle2())
+        {
+            if (vehicleType != VehicleType::ship && vehicleType != VehicleType::aircraft)
+            {
+                // Can be a type 6 or bogie
+                if (train.cars.empty())
+                {
+                    assert(false);
+                }
+                if (train.cars.firstCar.front->var_5F & Flags5F::broken_down)
+                {
+                    updateDrivingSoundNone(vehType2or6);
+                    return;
+                }
+            }
+        }
+
+        Vehicle2* vehType2_2 = vehicleUpdate_2;
+        uint16_t targetFrequency = 0;
+        uint8_t targetVolume = 0;
+        if (vehType2_2->var_5A == 2)
+        {
+            if (vehType2_2->currentSpeed < 12.0_mph)
+            {
+                targetFrequency = snd->defaultFrequency;
+                targetVolume = snd->defaultVolume;
+            }
+            else
+            {
+                targetFrequency = snd->var_04;
+                targetVolume = snd->var_06;
+            }
+        }
+        else if (vehType2_2->var_5A == 1)
+        {
+            if (!(vehType2or6->isVehicle2()) || train.cars.firstCar.front->var_5E == 0)
+            {
+                targetFrequency = snd->var_07 + (vehType2_2->currentSpeed.getRaw() >> snd->speedFreqFactor);
+                targetVolume = snd->var_09;
+            }
+            else
+            {
+                targetFrequency = snd->defaultFrequency;
+                targetVolume = snd->defaultVolume;
+            }
+        }
+        else
+        {
+            targetFrequency = snd->defaultFrequency;
+            targetVolume = snd->defaultVolume;
+        }
+
+        if (vehType2or6->drivingSoundId == 0xFF)
+        {
+            // Half
+            vehType2or6->drivingSoundVolume = snd->defaultVolume >> 1;
+            // Quarter
+            vehType2or6->drivingSoundFrequency = snd->defaultFrequency >> 2;
+            vehType2or6->drivingSoundId = snd->soundObjectId;
+            return;
+        }
+
+        if (vehType2or6->drivingSoundFrequency != targetFrequency)
+        {
+            if (vehType2or6->drivingSoundFrequency > targetFrequency)
+            {
+                vehType2or6->drivingSoundFrequency = std::max<uint16_t>(targetFrequency, vehType2or6->drivingSoundFrequency - snd->freqDecreaseStep);
+            }
+            else
+            {
+                vehType2or6->drivingSoundFrequency = std::min<uint16_t>(targetFrequency, vehType2or6->drivingSoundFrequency + snd->freqIncreaseStep);
+            }
+        }
+
+        if (vehType2or6->drivingSoundVolume != targetVolume)
+        {
+            if (vehType2or6->drivingSoundVolume > targetVolume)
+            {
+                vehType2or6->drivingSoundVolume = std::max<uint8_t>(targetVolume, vehType2or6->drivingSoundVolume - snd->volumeDecreaseStep);
+            }
+            else
+            {
+                vehType2or6->drivingSoundVolume = std::min<uint8_t>(targetVolume, vehType2or6->drivingSoundVolume + snd->volumeIncreaseStep);
+            }
+        }
+
+        vehType2or6->drivingSoundId = snd->soundObjectId;
+    }
+
+    // 0x004A8A39
+    void VehicleHead::updateDrivingSoundEngine2(Vehicle2or6* vehType2or6, VehicleObjectEngine2Sound* snd)
+    {
+        Vehicle train(this);
+        if (vehType2or6->isVehicle2())
+        {
+            if (vehicleType != VehicleType::ship && vehicleType != VehicleType::aircraft)
+            {
+                // Can be a type 6 or bogie
+                if (train.cars.empty())
+                {
+                    assert(false);
+                }
+                if (train.cars.firstCar.front->var_5F & Flags5F::broken_down)
+                {
+                    updateDrivingSoundNone(vehType2or6);
+                    return;
+                }
+            }
+        }
+
+        Vehicle2* vehType2_2 = vehicleUpdate_2;
+        uint16_t targetFrequency = 0;
+        uint8_t targetVolume = 0;
+        bool var5aEqual1Code = false;
+
+        if (vehType2_2->var_5A == 2 || vehType2_2->var_5A == 3)
+        {
+            if (vehType2_2->currentSpeed < 12.0_mph)
+            {
+                targetFrequency = snd->defaultFrequency;
+                targetVolume = snd->var_12;
+            }
+            else
+            {
+                targetVolume = snd->var_12;
+                var5aEqual1Code = true;
+            }
+        }
+        else if (vehType2_2->var_5A == 1)
+        {
+            targetVolume = snd->var_13;
+            var5aEqual1Code = true;
+        }
+        else
+        {
+            targetFrequency = snd->defaultFrequency;
+            targetVolume = snd->defaultVolume;
+        }
+
+        if (var5aEqual1Code == true)
+        {
+            if (!(vehType2or6->isVehicle2()) || train.cars.firstCar.front->var_5E == 0)
+            {
+                auto speed = std::max(vehType2_2->currentSpeed, 7.0_mph);
+
+                auto frequency = snd->firstGearFrequency;
+
+                if (speed >= snd->firstGearSpeed)
+                {
+                    frequency -= snd->secondGearFreqFactor;
+                    if (speed >= snd->secondGearSpeed)
+                    {
+                        frequency -= snd->thirdGearFreqFactor;
+                        if (speed >= snd->thirdGearSpeed)
+                        {
+                            frequency -= snd->fourthGearFreqFactor;
+                        }
+                    }
+                }
+                targetFrequency = (speed.getRaw() >> snd->speedFreqFactor) + frequency;
+            }
+            else
+            {
+                targetFrequency = snd->defaultFrequency;
+                targetVolume = snd->defaultVolume;
+            }
+        }
+
+        if (vehType2or6->drivingSoundId == 0xFF)
+        {
+            // Half
+            vehType2or6->drivingSoundVolume = snd->defaultVolume >> 1;
+            // Quarter
+            vehType2or6->drivingSoundFrequency = snd->defaultFrequency >> 2;
+            vehType2or6->drivingSoundId = snd->soundObjectId;
+            return;
+        }
+
+        if (vehType2or6->drivingSoundFrequency != targetFrequency)
+        {
+            if (vehType2or6->drivingSoundFrequency > targetFrequency)
+            {
+                targetVolume = snd->var_12;
+                vehType2or6->drivingSoundFrequency = std::max<uint16_t>(targetFrequency, vehType2or6->drivingSoundFrequency - snd->freqDecreaseStep);
+            }
+            else
+            {
+                vehType2or6->drivingSoundFrequency = std::min<uint16_t>(targetFrequency, vehType2or6->drivingSoundFrequency + snd->freqIncreaseStep);
+            }
+        }
+
+        if (vehType2or6->drivingSoundVolume != targetVolume)
+        {
+            if (vehType2or6->drivingSoundVolume > targetVolume)
+            {
+                vehType2or6->drivingSoundVolume = std::max<uint8_t>(targetVolume, vehType2or6->drivingSoundVolume - snd->volumeDecreaseStep);
+            }
+            else
+            {
+                vehType2or6->drivingSoundVolume = std::min<uint8_t>(targetVolume, vehType2or6->drivingSoundVolume + snd->volumeIncreaseStep);
+            }
+        }
+
+        vehType2or6->drivingSoundId = snd->soundObjectId;
     }
 
     // 0x004AF06E

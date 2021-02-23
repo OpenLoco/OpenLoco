@@ -809,7 +809,7 @@ namespace OpenLoco::Audio
         if (v == nullptr)
             return;
 
-        if (v->sound_id == SoundObjectId::null)
+        if (v->drivingSoundId == SoundObjectId::null)
             return;
 
         // TODO: left or top?
