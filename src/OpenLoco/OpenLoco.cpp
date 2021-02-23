@@ -22,6 +22,7 @@
 #include "CompanyManager.h"
 #include "Config.h"
 #include "Date.h"
+#include "Economy.h"
 #include "EditorController.h"
 #include "Environment.h"
 #include "Graphics/Colour.h"
@@ -922,7 +923,7 @@ namespace OpenLoco
 
                     if (today.year <= 2029)
                     {
-                        call(0x0046E239);
+                        Economy::sub_46E239();
                     }
 
                     // clang-format off

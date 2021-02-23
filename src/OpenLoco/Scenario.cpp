@@ -1,5 +1,7 @@
 #include "Scenario.h"
 #include "CompanyManager.h"
+#include "Date.h"
+#include "Economy.h"
 #include "Graphics/Gfx.h"
 #include "IndustryManager.h"
 #include "Interop/Interop.hpp"
@@ -21,6 +23,11 @@ using namespace OpenLoco::Ui;
 namespace OpenLoco::Scenario
 {
     static loco_global<cargo_object*, 0x0050D15C> _50D15C;
+
+    static loco_global<uint32_t, 0x00525F5E> _scenario_ticks;
+    static loco_global<uint8_t, 0x00525FB5> _525FB5;
+    static loco_global<uint16_t, 0x0052622E> _52622E; // tick-related?
+
     static loco_global<uint8_t, 0x00526230> objectiveType;
     static loco_global<uint8_t, 0x00526231> objectiveFlags;
     static loco_global<uint32_t, 0x00526232> objectiveCompanyValue;
@@ -142,9 +149,25 @@ namespace OpenLoco::Scenario
     // 0x0049685C
     void initialiseDate(uint16_t year)
     {
-        registers regs;
-        regs.ax = year;
-        call(0x0049685C, regs);
+        // NB: this base value was already 1800 in Locomotion.
+        uint32_t baseYear = year - 1800;
+        uint32_t dayCount = (baseYear / 4) * (365 * 3 + 366);
+
+        // Leap year?
+        if ((baseYear & 3) != 0)
+            dayCount += (baseYear & 3) * 365 + 1;
+
+        setDate(date(year, month_id::january, 1));
+        setCurrentDay(dayCount);
+        setDayProgression(0);
+
+        _scenario_ticks = 0;
+        _52622E = 0;
+        _525FB5 = 1;
+
+        CompanyManager::determineAvailableVehicles();
+
+        Economy::sub_46E2C0(getCurrentYear());
     }
 
     void registerHooks()
@@ -163,6 +186,15 @@ namespace OpenLoco::Scenario
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
                 generateLandscape();
+                regs = backup;
+                return 0;
+            });
+
+        registerHook(
+            0x0049685C,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                registers backup = regs;
+                initialiseDate(regs.ax);
                 regs = backup;
                 return 0;
             });

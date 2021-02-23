@@ -25,6 +25,7 @@
     <ClCompile Include="Console.cpp" />
     <ClCompile Include="Date.cpp" />
     <ClCompile Include="Drawing\SoftwareDrawingEngine.cpp" />
+    <ClCompile Include="Economy.cpp" />
     <ClCompile Include="EditorController.cpp" />
     <ClCompile Include="Environment.cpp" />
     <ClCompile Include="GameCommands.cpp" />
@@ -117,6 +118,7 @@
     <ClCompile Include="Vehicles\Vehicle.cpp" />
     <ClCompile Include="Vehicles\VehicleBody.cpp" />
     <ClCompile Include="Vehicles\VehicleHead.cpp" />
+    <ClCompile Include="Vehicles\VehicleManager.cpp" />
     <ClCompile Include="Version.cpp">
       <!-- Define git information -->
       <PreprocessorDefinitions Condition="'$(OPENLOCO_BRANCH)'!=''">OPENLOCO_BRANCH="$(OPENLOCO_BRANCH)";%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -198,6 +200,7 @@
     <ClInclude Include="Core\Span.hpp" />
     <ClInclude Include="Date.h" />
     <ClInclude Include="Drawing\SoftwareDrawingEngine.h" />
+    <ClInclude Include="Economy.h" />
     <ClInclude Include="EditorController.h" />
     <ClInclude Include="Environment.h" />
     <ClInclude Include="GameCommands.h" />
@@ -299,6 +302,7 @@
     <ClInclude Include="Utility\Yaml.hpp" />
     <ClInclude Include="Vehicles\Orders.h" />
     <ClInclude Include="Vehicles\Vehicle.h" />
+    <ClInclude Include="Vehicles\VehicleManager.h" />
     <ClInclude Include="Viewport.hpp" />
     <ClInclude Include="ViewportManager.h" />
     <ClInclude Include="Widget.h" />
