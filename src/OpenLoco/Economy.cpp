@@ -7,8 +7,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Economy
 {
-    // Inflation rates?
-    static const uint32_t _4FDEC0[32] = {
+    static const uint32_t _inflationFactors[32] = {
         20,
         20,
         20,
@@ -50,16 +49,22 @@ namespace OpenLoco::Economy
     // Always 0.
     static loco_global<uint32_t[32], 0x00525EDE> _525EDE;
 
+    // 0x004375F7
+    static void sub_4375F7()
+    {
+        call(0x004375F7);
+    }
+
     // 0x0046E239
     // NB: called in sub_46E2C0 below, as well in openloco::date_tick.
-    void sub_46E239()
+    void updateMonthly()
     {
         for (uint8_t i = 0; i < 32; i++)
         {
-            currencyMultiplicationFactor[i] += (static_cast<uint64_t>(_4FDEC0[i]) * currencyMultiplicationFactor[i]) >> 12;
+            currencyMultiplicationFactor[i] += (static_cast<uint64_t>(_inflationFactors[i]) * currencyMultiplicationFactor[i]) >> 12;
         }
 
-        call(0x004375F7);
+        sub_4375F7();
         Ui::WindowManager::invalidate(Ui::WindowType::companyList);
         Ui::WindowManager::invalidate(Ui::WindowType::buildVehicle);
         Ui::WindowManager::invalidate(Ui::WindowType::construction);
@@ -78,13 +83,11 @@ namespace OpenLoco::Economy
 
         // OpenLoco allows 1800 as the minimum year, whereas Locomotion uses 1900.
         // Treat years before 1900 as though they were 1900 to not change vanilla scenarios.
-        uint32_t yearCount = std::clamp<uint32_t>(year, 1900, 2030) - 1900;
+        const uint32_t baseYear = std::clamp<uint32_t>(year, 1900, 2030) - 1900;
 
-        yearCount *= 12;
-        while (yearCount > 0)
+        for (uint32_t monthCount = baseYear * 12; monthCount > 0; monthCount--)
         {
-            sub_46E239();
-            yearCount--;
+            updateMonthly();
         }
     }
 }
