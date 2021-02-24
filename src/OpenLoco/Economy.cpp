@@ -45,7 +45,9 @@ namespace OpenLoco::Economy
 
     static loco_global<uint32_t[32], 0x00525E5E> currencyMultiplicationFactor;
 
-    // NB: _525EDE[2] is dword_525E66, referred to by four subs for (price) computation.
+    // NB: This is not used for anything due to a mistake in original inflation calculation
+    // looks as if it was meant to be extra precesion for the currencyMultiplicationFactor
+    // Always 0.
     static loco_global<uint32_t[32], 0x00525EDE> _525EDE;
 
     // 0x0046E239
@@ -54,20 +56,7 @@ namespace OpenLoco::Economy
     {
         for (uint8_t i = 0; i < 32; i++)
         {
-            uint32_t ebx = currencyMultiplicationFactor[i];
-
-            // Inflating prices?
-            uint64_t edx_eax = _525EDE[i] * _4FDEC0[i];
-            edx_eax >>= 12;
-
-            // Storing two halves of the money struct?
-            _525EDE[i] += static_cast<uint32_t>(edx_eax);
-            currencyMultiplicationFactor[i] += static_cast<uint32_t>(edx_eax >> 32);
-
-            // Inflating prices more?
-            edx_eax = ebx * _4FDEC0[i];
-            edx_eax >>= 12;
-            currencyMultiplicationFactor[i] += static_cast<uint32_t>(edx_eax);
+            currencyMultiplicationFactor[i] += (static_cast<uint64_t>(_4FDEC0[i]) * currencyMultiplicationFactor[i]) >> 12;
         }
 
         call(0x004375F7);
