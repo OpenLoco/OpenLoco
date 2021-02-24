@@ -38,6 +38,8 @@ namespace OpenLoco
         }
     };
 
+    bool isLeapYear(const int year);
+
     uint32_t getCurrentDay();
     void setCurrentDay(const uint32_t day);
     month_id getCurrentMonth();

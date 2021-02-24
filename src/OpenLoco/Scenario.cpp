@@ -150,12 +150,13 @@ namespace OpenLoco::Scenario
     void initialiseDate(uint16_t year)
     {
         // NB: this base value was already 1800 in Locomotion.
-        uint32_t baseYear = year - 1800;
-        uint32_t dayCount = (baseYear / 4) * (365 * 3 + 366);
-
-        // Leap year?
-        if ((baseYear & 3) != 0)
-            dayCount += (baseYear & 3) * 365 + 1;
+        uint32_t dayCount = 0;
+        for (int y = 1800; y < year; y++)
+        {
+            dayCount += 365;
+            if (isLeapYear(y))
+                dayCount += 1;
+        }
 
         setDate(date(year, month_id::january, 1));
         setCurrentDay(dayCount);
