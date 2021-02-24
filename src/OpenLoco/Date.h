@@ -38,13 +38,19 @@ namespace OpenLoco
         }
     };
 
+    bool isLeapYear(const int year);
+
     uint32_t getCurrentDay();
+    void setCurrentDay(const uint32_t day);
     month_id getCurrentMonth();
     uint16_t getCurrentYear();
     void setCurrentYear(const int16_t year);
 
     date getCurrentDate();
     void setDate(const date& date);
+
+    uint16_t getDayProgression();
+    void setDayProgression(const uint16_t progression);
 
     /**
      * Updates the current day counter.

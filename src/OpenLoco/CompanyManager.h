@@ -20,6 +20,7 @@ namespace OpenLoco::CompanyManager
     uint8_t getCompanyColour(company_id_t id);
     uint8_t getPlayerCompanyColour();
     void update();
+    void determineAvailableVehicles();
 
     struct owner_status
     {

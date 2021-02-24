@@ -16,9 +16,19 @@ namespace OpenLoco
 
     static std::pair<month_id, uint8_t> getMonthDay(int32_t dayOfYear);
 
+    bool isLeapYear(const int year)
+    {
+        return year % 4 == 0;
+    }
+
     uint32_t getCurrentDay()
     {
         return _current_day;
+    }
+
+    void setCurrentDay(const uint32_t day)
+    {
+        _current_day = day;
     }
 
     month_id getCurrentMonth()
@@ -46,6 +56,16 @@ namespace OpenLoco
         _current_day_of_month = date.day - 1;
         _current_month = (int8_t)date.month;
         _current_year = date.year;
+    }
+
+    uint16_t getDayProgression()
+    {
+        return _day_progression;
+    }
+
+    void setDayProgression(const uint16_t progression)
+    {
+        _day_progression = progression;
     }
 
     bool updateDayCounter()

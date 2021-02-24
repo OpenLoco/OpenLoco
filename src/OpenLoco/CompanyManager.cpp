@@ -8,6 +8,7 @@
 #include "Things/ThingManager.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
+#include "Vehicles/VehicleManager.h"
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui;
@@ -103,6 +104,18 @@ namespace OpenLoco::CompanyManager
     static void sub_42F9AC()
     {
         call(0x0042F9AC);
+    }
+
+    // 0x0042FDE2
+    void determineAvailableVehicles()
+    {
+        for (auto& company : _companies)
+        {
+            if (company.empty())
+                continue;
+
+            VehicleManager::determineAvailableVehicles(company);
+        }
     }
 
     // 0x004306D1
