@@ -189,7 +189,7 @@ namespace OpenLoco::S5
                 auto objSize = ObjectManager::getByteLength(*index);
 
                 fs.write(header);
-                fs.writeChunk(encodingType, &obj, objSize);
+                fs.writeChunk(encodingType, obj, objSize);
             }
             else
             {

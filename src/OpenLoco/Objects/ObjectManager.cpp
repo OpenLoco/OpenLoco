@@ -11,19 +11,18 @@ using namespace OpenLoco::Interop;
 namespace OpenLoco::ObjectManager
 {
 #pragma pack(push, 1)
-    struct object_repository_item
+    struct ObjectEntry2 : public ObjectHeader
     {
-        object* objects;
-        ObjectHeader* object_entry_extendeds;
-    };
-    static_assert(sizeof(object_repository_item) == 8);
-
-    struct ObjectEntry2
-    {
-        ObjectHeader entry;
-        char* unk;
+        uint32_t dataSize;
     };
     static_assert(sizeof(ObjectEntry2) == 0x14);
+
+    struct object_repository_item
+    {
+        object** objects;
+        ObjectEntry2* object_entry_extendeds;
+    };
+    static_assert(sizeof(object_repository_item) == 8);
 #pragma pack(pop)
 
     loco_global<ObjectEntry2[maxObjects], 0x1125A90> objectEntries;
@@ -72,7 +71,7 @@ namespace OpenLoco::ObjectManager
 
     ObjectHeader* getHeader(LoadedObjectIndex id)
     {
-        return &objectEntries[id].entry;
+        return &objectEntries[id];
     }
 
     template<>
@@ -392,19 +391,52 @@ namespace OpenLoco::ObjectManager
         call(0x0047176D, regs);
     }
 
+    static LoadedObjectIndex getLoadedObjectIndex(object_type objectType, size_t index)
+    {
+        auto baseIndex = 0;
+        size_t type = 0;
+        while (type != static_cast<size_t>(objectType))
+        {
+            auto maxObjectsForType = getMaxObjects(static_cast<object_type>(type));
+            baseIndex += maxObjectsForType;
+            type++;
+        }
+        return baseIndex + index;
+    }
+
     // 0x004720EB
     // Returns std::nullopt if not loaded
     std::optional<LoadedObjectIndex> findIndex(const ObjectHeader& header)
     {
-        registers regs;
-        regs.ebp = reinterpret_cast<uint32_t>(&header);
-        const bool success = !(call(0x004720EB, regs) & (X86_FLAG_CARRY << 8));
-        // Object type is also returned on ecx
-        if (success)
+        if ((header.flags & 0xFF) != 0xFF)
         {
-            return { regs.ebx };
+            auto objectType = header.getType();
+            const auto& typedObjectList = object_repository[static_cast<size_t>(objectType)];
+            auto maxObjectsForType = getMaxObjects(objectType);
+            for (size_t i = 0; i < maxObjectsForType; i++)
+            {
+                auto obj = typedObjectList.objects[i];
+                if (obj != nullptr && obj != reinterpret_cast<object*>(-1))
+                {
+                    const auto& objHeader = typedObjectList.object_entry_extendeds[i];
+                    if (objHeader.isCustom())
+                    {
+                        if (header == objHeader)
+                        {
+                            return getLoadedObjectIndex(objectType, i);
+                        }
+                    }
+                    else
+                    {
+                        if (header.getType() == objHeader.getType() && header.getName() == objHeader.getName())
+                        {
+                            return getLoadedObjectIndex(objectType, i);
+                        }
+                    }
+                }
+            }
         }
-        return std::nullopt;
+        return {};
     }
 
     // 0x004720EB
@@ -456,7 +488,7 @@ namespace OpenLoco::ObjectManager
 
     size_t getByteLength(LoadedObjectIndex id)
     {
-        return 0;
+        return objectEntries[id].dataSize;
     }
 
     std::vector<ObjectHeader> getHeaders()

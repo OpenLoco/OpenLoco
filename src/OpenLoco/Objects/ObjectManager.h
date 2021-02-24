@@ -5,6 +5,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <cstdio>
+#include <cstring>
 #include <string_view>
 #include <vector>
 
@@ -126,6 +127,11 @@ namespace OpenLoco
         {
             auto ab = reinterpret_cast<const int64_t*>(this);
             return ab[0] == -1 && ab[1] == -1;
+        }
+
+        bool operator==(const ObjectHeader& rhs) const
+        {
+            return std::memcmp(this, &rhs, sizeof(ObjectHeader)) == 0;
         }
     };
     static_assert(sizeof(ObjectHeader) == 0x10);
