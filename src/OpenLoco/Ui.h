@@ -137,15 +137,15 @@ namespace OpenLoco::Ui
             constexpr uint32_t track = 1 << 2;
             constexpr uint32_t water = 1 << 3;
             constexpr uint32_t tree = 1 << 4;
-            constexpr uint32_t road_and_tram = 1 << 5;
-            constexpr uint32_t road_and_tram_extra = 1 << 6;
+            constexpr uint32_t roadAndTram = 1 << 5;
+            constexpr uint32_t roadAndTramExtra = 1 << 6;
             constexpr uint32_t signal = 1 << 7;
             constexpr uint32_t wall = 1 << 8;
-            constexpr uint32_t headquarter_building = 1 << 9;
+            constexpr uint32_t headquarterBuilding = 1 << 9;
             constexpr uint32_t station = 1 << 11;
-            constexpr uint32_t town_label = 1 << 12;
-            constexpr uint32_t station_label = 1 << 13;
-            constexpr uint32_t track_extra = 1 << 14;
+            constexpr uint32_t townLabel = 1 << 12;
+            constexpr uint32_t stationLabel = 1 << 13;
+            constexpr uint32_t trackExtra = 1 << 14;
             constexpr uint32_t building = 1 << 15;
             constexpr uint32_t industry = 1 << 16;
         }

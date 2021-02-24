@@ -497,7 +497,29 @@ namespace OpenLoco::Paint
     // 0x0045EDFC
     static bool isPSSpriteTypeInFilter(const InteractionItem spriteType, uint32_t filter)
     {
-        constexpr uint32_t interactionItemToFilter[] = { 0, 1 << 0, 1 << 0, 1 << 1, 1 << 2, 1 << 14, 1 << 7, 1 << 11, 1 << 11, 1 << 11, 1 << 11, 1 << 3, 1 << 4, 1 << 8, 1 << 12, 1 << 13, 1 << 5, 1 << 6, 000, 1 << 15, 1 << 16, 1 << 9 };
+        constexpr uint32_t interactionItemToFilter[] = { 0,
+                                                         InteractionItemFlags::surface,
+                                                         InteractionItemFlags::surface,
+                                                         InteractionItemFlags::entity,
+                                                         InteractionItemFlags::track,
+                                                         InteractionItemFlags::trackExtra,
+                                                         InteractionItemFlags::signal,
+                                                         InteractionItemFlags::station,
+                                                         InteractionItemFlags::station,
+                                                         InteractionItemFlags::station,
+                                                         InteractionItemFlags::station,
+                                                         InteractionItemFlags::water,
+                                                         InteractionItemFlags::tree,
+                                                         InteractionItemFlags::wall,
+                                                         InteractionItemFlags::townLabel,
+                                                         InteractionItemFlags::stationLabel,
+                                                         InteractionItemFlags::roadAndTram,
+                                                         InteractionItemFlags::roadAndTramExtra,
+                                                         0,
+                                                         InteractionItemFlags::building,
+                                                         InteractionItemFlags::industry,
+                                                         InteractionItemFlags::headquarterBuilding };
+
         if (spriteType == InteractionItem::noInteraction
             || spriteType == InteractionItem::bridge) // 18 as a type seems to not exist.
             return false;
@@ -555,8 +577,7 @@ namespace OpenLoco::Paint
     {
         InteractionArg interaction{};
 
-        // -2 as there are two interaction items that you can't filter out adjust in future
-        if (flags & (1 << (static_cast<uint32_t>(InteractionItem::stationLabel) - 2)))
+        if (flags & InteractionItemFlags::stationLabel)
         {
             return interaction;
         }
@@ -593,8 +614,7 @@ namespace OpenLoco::Paint
     {
         InteractionArg interaction{};
 
-        // -2 as there are two interaction items that you can't filter out adjust in future
-        if (flags & (1 << (static_cast<uint32_t>(InteractionItem::townLabel) - 2)))
+        if (flags & InteractionItemFlags::townLabel)
         {
             return interaction;
         }

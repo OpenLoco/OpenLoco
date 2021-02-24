@@ -309,15 +309,16 @@ namespace OpenLoco::Ui::ViewportInteraction
         if (OpenLoco::isTitleMode())
             return InteractionArg{};
 
-        // 0x2000 | 0x1000 | 0x2
-        // station | town | thing
-        auto res = getMapCoordinatesFromPos(tempX, tempY, 0b11111111111111111100111111111101);
+        auto interactionsToInclude = ~0 & ~InteractionItemFlags::entity & ~InteractionItemFlags::townLabel & ~InteractionItemFlags::stationLabel;
+        auto res = getMapCoordinatesFromPos(tempX, tempY, interactionsToInclude);
+
         auto interaction = res.first;
         if (interaction.type != InteractionItem::entity)
         {
-            // 0x10000 | 0x2000 | 0x1000 | 0x800 | 0x200 | 0x20 | 0x4 | 0x2
-            // industry | station | town | (7|8|9|10) | headquarterBuilding | road | track | thing
-            res = getMapCoordinatesFromPos(tempX, tempY, 0b11111111111111101100010111011001);
+            interactionsToInclude = ~0 & ~InteractionItemFlags::entity & ~InteractionItemFlags::track & ~InteractionItemFlags::roadAndTram
+                & ~InteractionItemFlags::headquarterBuilding & ~InteractionItemFlags::station & ~InteractionItemFlags::townLabel
+                & ~InteractionItemFlags::stationLabel & ~InteractionItemFlags::industry;
+            res = getMapCoordinatesFromPos(tempX, tempY, interactionsToInclude);
             interaction = res.first;
         }
 
@@ -410,11 +411,12 @@ namespace OpenLoco::Ui::ViewportInteraction
         if (OpenLoco::isTitleMode())
             return InteractionArg{};
 
-        // Default flags
-        auto filterInteractionsFlags = 0 | InteractionItemFlags::surface | InteractionItemFlags::water;
+        // Interaction types to exclude by default
+        auto interactionsToExclude = 0 | InteractionItemFlags::surface | InteractionItemFlags::water;
 
+        // TODO: Handle in the paint functions
         // Get the viewport and add extra flags for hidden scenery
-        Gfx::point_t screenPos = { static_cast<int16_t>(x), static_cast<int16_t>(y) };
+        auto screenPos = Gfx::point_t(x, y);
         auto w = WindowManager::findAt(screenPos);
         if (w != nullptr)
         {
@@ -424,7 +426,7 @@ namespace OpenLoco::Ui::ViewportInteraction
                 {
                     if (vp->flags & ViewportFlags::hide_foreground_scenery_buildings)
                     {
-                        filterInteractionsFlags |= InteractionItemFlags::building | InteractionItemFlags::headquarter_building | InteractionItemFlags::industry | InteractionItemFlags::tree | InteractionItemFlags::wall;
+                        interactionsToExclude |= InteractionItemFlags::building | InteractionItemFlags::headquarterBuilding | InteractionItemFlags::industry | InteractionItemFlags::tree | InteractionItemFlags::wall;
                     }
                 }
             }
@@ -433,7 +435,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         registers regs;
         regs.ax = x;
         regs.bx = y;
-        regs.edx = filterInteractionsFlags;
+        regs.edx = interactionsToExclude;
 
         call(0x004CDB3F, regs);
         InteractionArg result;
