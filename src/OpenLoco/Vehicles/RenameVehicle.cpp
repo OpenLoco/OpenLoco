@@ -14,8 +14,6 @@ using namespace OpenLoco::Interop;
 namespace OpenLoco::Vehicles
 {
     static loco_global<uint8_t, 0x009C68EA> gGameCommandExpenditureType; // premultiplied by 4
-    static loco_global<uint32_t[9], 0x011361F8> gRenameBuffer;
-    static loco_global<char[36], 0x011361F8> gRenameBufferAsString;
     static loco_global<uint16_t, 0x0113621D> _113621D;
 
     // 0x004B6572
@@ -28,13 +26,15 @@ namespace OpenLoco::Vehicles
             _headId_113621D = headId; // 004B657F
         }
 
+        static uint32_t staticRenameBuffer[9];
+
         if ((flags & GameCommands::apply) != 0) // 004B6586-004B6589
         {
             static const std::array<int, 3> transformTable = { 2, 0, 1 };
             int arrayIndex = transformTable.at(index);   // 004B658B-004B6591
-            gRenameBuffer[arrayIndex * 3] = buffer0;     // 004B6596-004B6599
-            gRenameBuffer[arrayIndex * 3 + 1] = buffer1; // 004B659F
-            gRenameBuffer[arrayIndex * 3 + 2] = buffer2; // 004B65A5
+            staticRenameBuffer[arrayIndex * 3] = buffer0; // 004B6596-004B6599
+            staticRenameBuffer[arrayIndex * 3 + 1] = buffer1; // 004B659F
+            staticRenameBuffer[arrayIndex * 3 + 2] = buffer2; // 004B65A5
         }
 
         if (index != 0) // 004B65AB
@@ -46,18 +46,20 @@ namespace OpenLoco::Vehicles
         Vehicles::VehicleHead* vehicleHead = ThingManager::get<Vehicles::VehicleHead>(vehicleHeadId); // 004B65BD-004B65C0
 
         static loco_global<char[512], 0x0112CC04> _stringFormatBuffer;
+        char renameStringBuffer[36] = "";
+        memcpy(renameStringBuffer, staticRenameBuffer, sizeof(renameStringBuffer));
 
         auto args = FormatArguments::common(vehicleHead->var_44);                     // 004B65C6-004B65CA
         StringManager::formatString(_stringFormatBuffer, vehicleHead->var_22, &args); // 004B65D0-004B65E6
-        if (strcmp(_stringFormatBuffer, gRenameBufferAsString) == 0)                  // 004B65F1-004B6601
+        if (strcmp(_stringFormatBuffer, renameStringBuffer) == 0)                     // 004B65F1-004B6601
         {
             return 0; // 004B6655-004B6657
         }
 
         string_id allocatedStringId = 0;
-        if (strlen(gRenameBufferAsString) != 0) // 004B6603-004B660A
+        if (strlen(renameStringBuffer) != 0) // 004B6603-004B660A
         {
-            allocatedStringId = StringManager::userStringAllocate(gRenameBufferAsString, 0); // 004B660C-004B6613
+            allocatedStringId = StringManager::userStringAllocate(renameStringBuffer, 0); // 004B660C-004B6613
             if (allocatedStringId == 0)                                                      // 004B6618-004B661B
             {
                 return GameCommands::FAILURE; // 004B664D-004B6654
