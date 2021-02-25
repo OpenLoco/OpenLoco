@@ -131,7 +131,7 @@ namespace OpenLoco::GameCommands
         nullptr,               // 7                                  0x0049BB98
         nullptr,               // 8                                  0x0049C7F2
         nullptr,               // build_vehicle = 9,                 0x0046DE88
-        nullptr,               // vehicle_rename = 10,               0x004B6572
+        Vehicles::rename,      // vehicle_rename = 10,               0x004B6572
         nullptr,               // change_station_name = 11,          0x00490756
         nullptr,               // vehicle_local_express = 12,        0x004B694B
         nullptr,               // 13                                 0x00488BDB
