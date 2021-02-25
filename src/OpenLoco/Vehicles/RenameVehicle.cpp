@@ -7,6 +7,7 @@
 #include "../Types.hpp"
 #include "Vehicle.h"
 #include <array>
+#include <unordered_map>
 
 using namespace OpenLoco::Interop;
 
@@ -53,7 +54,7 @@ namespace OpenLoco::Vehicles
             return 0; // 004B6655-004B6657
         }
 
-        uint16_t allocatedStringId = 0;
+        string_id allocatedStringId = 0;
         if (strlen(gRenameBufferAsString) != 0) // 004B6603-004B660A
         {
             allocatedStringId = StringManager::userStringAllocate(gRenameBufferAsString, 0); // 004B660C-004B6613
@@ -73,10 +74,19 @@ namespace OpenLoco::Vehicles
             {
                 return 0; // 004B6639-004B663B, 004B6655-004B6657
             }
-            allocatedStringId = static_cast<uint16_t>(vehicleHead->vehicleType) + 4; // 004B6642-004B664B
+
+            static const std::unordered_map<VehicleType, string_id> defaultVehicleStringIdMap = {
+                { VehicleType::train, StringIds::train_number },
+                { VehicleType::bus, StringIds::bus_number },
+                { VehicleType::truck, StringIds::truck_number },
+                { VehicleType::tram, StringIds::tram_number },
+                { VehicleType::aircraft, StringIds::aircraft_number },
+                { VehicleType::ship, StringIds::ship_number }
+            };
+            allocatedStringId = defaultVehicleStringIdMap.at(vehicleHead->vehicleType); // 004B6642-004B664B
         }
 
-        uint16_t oldStringId = vehicleHead->var_22;
+        string_id oldStringId = vehicleHead->var_22;
         vehicleHead->var_22 = allocatedStringId;     // 004B6622
         StringManager::emptyUserString(oldStringId); // 004B6626
         Gfx::invalidateScreen();                     // 004B662B

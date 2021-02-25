@@ -111,6 +111,6 @@ namespace OpenLoco::StringManager
     void reset();
     const char* getString(string_id id);
     char* formatString(char* buffer, string_id id, const void* args = nullptr);
-    uint16_t userStringAllocate(char* str, uint8_t cl);
-    void emptyUserString(uint16_t ax);
+    string_id userStringAllocate(char* str, uint8_t cl);
+    void emptyUserString(string_id stringId);
 }
