@@ -2189,13 +2189,129 @@ namespace OpenLoco::Ui::Vehicle
     namespace Route
     {
         static loco_global<uint8_t, 0x00113646A> _113646A;
+#pragma pack(push, 1)
+        struct UnkF2494A
+        {
+            uint32_t orderOffset;   // 0x0
+            LabelPosition position; // 0x4
+            uint8_t lineNumber;     // 0x24
+            uint8_t pad_25;
+        };
+        static_assert(sizeof(UnkF2494A) == 0x26);
+#pragma pack(pop)
+
+        static loco_global<UnkF2494A[64], 0x00F2494A> _F2494A;
+
+        static Vehicles::OrderRingView getOrderTable(const Vehicles::VehicleHead* const head)
+        {
+            return Vehicles::OrderRingView(head->orderTableOffset);
+        }
+
+        static std::pair<Map::map_pos3, const char*> sub_470B76(const Vehicles::Order& order, uint8_t orderNum)
+        {
+            static loco_global<char[512], 0x0112CC04> _stringFormatBuffer;
+
+            registers regs{};
+            regs.ebp = order.getOffset();
+            regs.ebx = static_cast<uint8_t>(order.getType());
+            regs.ecx = orderNum;
+            call(0x00470824, regs);
+            Map::map_pos3 res = { regs.ax, regs.cx, regs.dx };
+            return std::make_pair(res, _stringFormatBuffer.get());
+        }
 
         // 0x00470824
         static void sub_470824(Vehicles::VehicleHead* head)
         {
-            registers regs{};
-            regs.esi = reinterpret_cast<uint32_t>(head);
-            call(0x00470824, regs);
+            Input::setMapSelectionFlags(Input::MapSelectionFlags::unk_04);
+            Gfx::invalidateScreen();
+            for (auto& unk : _F2494A)
+            {
+                unk.orderOffset = -1;
+            }
+            auto orders = getOrderTable(head);
+            uint8_t i = 0;
+            for (auto& order : orders)
+            {
+                if (!order.hasFlag(Vehicles::OrderFlags::HasNumber))
+                {
+                    continue;
+                }
+
+                _F2494A[i].orderOffset = order.getOffset();
+
+                auto lineNumber = 0;
+                auto* stationOrder = order.as<Vehicles::OrderStation>();
+                auto* waypointOrder = order.as<Vehicles::OrderRouteWaypoint>();
+                if (stationOrder != nullptr)
+                {
+                    lineNumber++; // station labels start on line 0 so add 1 for the number
+
+                    const auto stationId = stationOrder->getStation();
+                    for (auto innerOrder = orders.begin(); innerOrder->getOffset() != order.getOffset(); ++innerOrder)
+                    {
+                        auto* innerStationOrder = innerOrder->as<Vehicles::OrderStation>();
+                        if (innerStationOrder == nullptr)
+                        {
+                            continue;
+                        }
+                        if (stationId == innerStationOrder->getStation())
+                        {
+                            lineNumber++;
+                        }
+                    }
+                }
+                else if (waypointOrder != nullptr)
+                {
+                    const auto rawOrder = order.getRaw();
+                    for (auto innerOrder = orders.begin(); innerOrder->getOffset() != order.getOffset(); ++innerOrder)
+                    {
+                        if (rawOrder == innerOrder->getRaw())
+                        {
+                            lineNumber++;
+                        }
+                    }
+                }
+
+                _F2494A[i].lineNumber = lineNumber & 0xFF;
+                i++;
+            }
+
+            i = 0;
+            for (auto& unk : _F2494A)
+            {
+                if (unk.orderOffset == -1)
+                {
+                    continue;
+                }
+
+                auto order = Vehicles::OrderRingView(unk.orderOffset, 0).begin();
+                if (!order->hasFlag(Vehicles::OrderFlags::HasNumber))
+                {
+                    continue;
+                }
+
+                auto [loc, str] = sub_470B76(*order, i);
+                const auto pos = coordinate3dTo2d(loc.x, loc.y, loc.z, WindowManager::getCurrentRotation());
+                auto stringWidth = Gfx::getStringWidth(str);
+                for (auto zoom = 0; zoom < 4; ++zoom)
+                {
+                    // The first line of the label will always be at the centre
+                    // of the station/waypoint. This works out where the subsequent
+                    // lines of the label will end up.
+                    auto width = (stringWidth + 3) << zoom;
+                    auto numberHeight = (unk.lineNumber * 10) << zoom;
+                    auto firstLineHeight = 11 << zoom;
+                    auto midX = width / 2;
+                    auto midFirstLineY = firstLineHeight / 2;
+
+                    unk.position.left[zoom] = (pos.x - midX) >> zoom;
+                    unk.position.right[zoom] = (pos.x + midX) >> zoom;
+                    unk.position.top[zoom] = (pos.y - midFirstLineY) >> zoom;
+                    unk.position.bottom[zoom] = (pos.y + midFirstLineY + numberHeight) >> zoom;
+                }
+                i++;
+            }
         }
 
         // 0x004B509B
@@ -2212,11 +2328,6 @@ namespace OpenLoco::Ui::Vehicle
             GameCommands::setErrorTitle(StringIds::empty);
             GameCommands::do_36(head->id, orderOffset - head->orderTableOffset);
             sub_470824(head);
-        }
-
-        static Vehicles::OrderRingView getOrderTable(const Vehicles::VehicleHead* const head)
-        {
-            return Vehicles::OrderRingView(head->orderTableOffset);
         }
 
         // 0x004B4F6D
