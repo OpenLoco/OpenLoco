@@ -6,6 +6,7 @@
 #include "../Things/ThingManager.h"
 #include "../Types.hpp"
 #include "Vehicle.h"
+#include <array>
 
 using namespace OpenLoco::Interop;
 
@@ -28,11 +29,8 @@ namespace OpenLoco::Vehicles
 
         if ((flags & GameCommands::apply) != 0) // 004B6586-004B6589
         {
-            int16_t arrayIndex = index - 1; // 004B658B-004B658E
-            if (arrayIndex < 0)             // 004B658F
-            {
-                arrayIndex = 2; // 004B6591
-            }
+            static const std::array<int, 3> transformTable = { 2, 0, 1 };
+            int arrayIndex = transformTable.at(index);   // 004B658B-004B6591
             gRenameBuffer[arrayIndex * 3] = buffer0;     // 004B6596-004B6599
             gRenameBuffer[arrayIndex * 3 + 1] = buffer1; // 004B659F
             gRenameBuffer[arrayIndex * 3 + 2] = buffer2; // 004B65A5
@@ -55,17 +53,17 @@ namespace OpenLoco::Vehicles
             return 0; // 004B6655-004B6657
         }
 
-        uint16_t allocationResult = 0;
+        uint16_t allocatedStringId = 0;
         if (strlen(gRenameBufferAsString) != 0) // 004B6603-004B660A
         {
-            allocationResult = StringManager::userStringAllocate(gRenameBufferAsString, 0); // 004B660C-004B6613
-            if (allocationResult == 0)                                                      // 004B6618-004B661B
+            allocatedStringId = StringManager::userStringAllocate(gRenameBufferAsString, 0); // 004B660C-004B6613
+            if (allocatedStringId == 0)                                                      // 004B6618-004B661B
             {
                 return GameCommands::FAILURE; // 004B664D-004B6654
             }
             if ((flags & GameCommands::apply) == 0) // 004B661D-004B6620
             {
-                StringManager::emptyUserString(allocationResult); // 004B6634-004B663B, 004B6655-004B6657
+                StringManager::emptyUserString(allocatedStringId); // 004B6634-004B663B, 004B6655-004B6657
                 return 0;
             }
         }
@@ -75,14 +73,14 @@ namespace OpenLoco::Vehicles
             {
                 return 0; // 004B6639-004B663B, 004B6655-004B6657
             }
-            allocationResult = static_cast<uint16_t>(vehicleHead->vehicleType) + 4; // 004B6642-004B664B
+            allocatedStringId = static_cast<uint16_t>(vehicleHead->vehicleType) + 4; // 004B6642-004B664B
         }
 
-        uint16_t tempAx = vehicleHead->var_22;
-        vehicleHead->var_22 = allocationResult; // 004B6622
-        StringManager::emptyUserString(tempAx); // 004B6626
-        Gfx::invalidateScreen();                // 004B662B
-        return 0;                               // 004B6630-004B6632, 004B6655-004B6657
+        uint16_t oldStringId = vehicleHead->var_22;
+        vehicleHead->var_22 = allocatedStringId;     // 004B6622
+        StringManager::emptyUserString(oldStringId); // 004B6626
+        Gfx::invalidateScreen();                     // 004B662B
+        return 0;                                    // 004B6630-004B6632, 004B6655-004B6657
 
         //registers regs;
         //regs.ax = index;
