@@ -183,6 +183,16 @@ namespace OpenLoco
         return (getScreenFlags() & ScreenFlags::unknown_5) != 0;
     }
 
+    bool isDriverCheatEnabled()
+    {
+        return (getScreenFlags() & ScreenFlags::driverCheatEnabled) != 0;
+    }
+
+    bool isSandboxMode()
+    {
+        return (getScreenFlags() & ScreenFlags::sandboxMode) != 0;
+    }
+
     bool isPaused()
     {
         return paused_state;

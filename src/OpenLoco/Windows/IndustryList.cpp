@@ -117,7 +117,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
             self->widgets[widx::sort_industry_status].text = self->sort_mode == SortMode::Status ? StringIds::industry_table_header_status_desc : StringIds::industry_table_header_status;
             self->widgets[widx::sort_industry_production_transported].text = self->sort_mode == SortMode::ProductionTransported ? StringIds::industry_table_header_production_desc : StringIds::industry_table_header_production;
 
-            if (isEditorMode())
+            if (isEditorMode() || isSandboxMode())
                 self->widgets[Common::widx::tab_new_industry].tooltip = StringIds::tooltip_build_new_industries;
             else
                 self->widgets[Common::widx::tab_new_industry].tooltip = StringIds::tooltip_fund_new_industries;
@@ -598,7 +598,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
             self->widgets[widx::scrollview].right = self->width - 4;
             self->widgets[widx::scrollview].bottom = self->height - 14;
 
-            if (isEditorMode())
+            if (isEditorMode() || isSandboxMode())
             {
                 self->widgets[Common::widx::caption].text = StringIds::title_build_new_industries;
                 self->widgets[Common::widx::tab_new_industry].tooltip = StringIds::tooltip_build_new_industries;
@@ -650,7 +650,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
             auto widthOffset = 0;
 
-            if (!isEditorMode())
+            if (!isEditorMode() && !isSandboxMode())
             {
                 auto xPos = self->x + 3 + self->width - 19;
                 auto yPos = self->y + self->height - 13;
@@ -993,7 +993,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 auto industryObj = ObjectManager::get<industry_object>(i);
                 if (industryObj == nullptr)
                     break;
-                if (!isEditorMode())
+                if (!isEditorMode() && !isSandboxMode())
                 {
                     if (!(industryObj->flags & IndustryObjectFlags::can_be_founded_by_user))
                         continue;

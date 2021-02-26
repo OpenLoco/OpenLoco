@@ -198,7 +198,6 @@ namespace OpenLoco::Ui::Vehicle
     static loco_global<thing_id_t, 0x01136156> _dragVehicleHead;
     static loco_global<int32_t, 0x01136264> _1136264;
     static loco_global<string_id, 0x009C68E8> gGameCommandErrorTitle;
-    static loco_global<uint8_t, 0x00508F14> _screenFlags;
     static loco_global<uint32_t[32], 0x00525E5E> currencyMultiplicationFactor;
 
     namespace Main
@@ -537,7 +536,7 @@ namespace OpenLoco::Ui::Vehicle
 
             auto dropdownCount = 2;
             auto head = Common::getVehicle(self);
-            if (head->mode == TransportMode::rail && (_screenFlags & ScreenFlags::driverCheatEnabled))
+            if (head->mode == TransportMode::rail && isDriverCheatEnabled())
             {
                 dropdownCount = 3;
             }
