@@ -37,94 +37,95 @@ namespace OpenLoco::GameCommands
 
     struct GameCommandInfo
     {
+        GammeCommand id;
         GameCommandFunc implementation;
         uintptr_t originalAddress; // original array: 0x004F9548
-        bool canUseWhilePaused;    // original array: 0x004F9688
+        bool resumesGame;    // original array: 0x004F9688
     };
 
     // clang-format off
     static constexpr GameCommandInfo _gameCommandDefinitions[81] = {
-        { nullptr,                0x004AF1DF, true  }, // vehicle_rearrange = 0,
-        { nullptr,                0x004B01B6, true  }, // vehicle_place = 1,
-        { nullptr,                0x004B0826, true  }, // vehicle_pickup = 2,
-        { nullptr,                0x004ADAA8, true  }, // vehicle_reverse = 3,
-        { nullptr,                0x004B0B50, true  }, // 4
-        { Vehicles::create,       0x004AE5E4, true  }, // vehicle_create = 5,
-        { nullptr,                0x004AED34, true  }, // vehicle_sell = 6,
-        { nullptr,                0x0049BB98, true  }, // 7
-        { nullptr,                0x0049C7F2, true  }, // 8
-        { nullptr,                0x0046DE88, false }, // build_vehicle = 9,
-        { nullptr,                0x004B6572, false }, // vehicle_rename = 10,
-        { nullptr,                0x00490756, false }, // change_station_name = 11,
-        { nullptr,                0x004B694B, true  }, // vehicle_local_express = 12,
-        { nullptr,                0x00488BDB, true  }, // 13
-        { nullptr,                0x004891E4, true  }, // 14
-        { nullptr,                0x0048BB20, true  }, // 15
-        { nullptr,                0x0048C402, true  }, // 16
-        { nullptr,                0x004A6479, true  }, // 17
-        { nullptr,                0x004A668A, true  }, // 18
-        { nullptr,                0x0043483D, false }, // change_company_colour_scheme = 19,
-        { nullptr,                0x00431E32, false }, // pause_game = 20,
-        { nullptr,                0x0043BFCB, false }, // load_save_quit_game = 21,
-        { nullptr,                0x004BB392, true  }, // 22
-        { nullptr,                0x004BB138, true  }, // 23
-        { nullptr,                0x00468EDD, true  }, // change_land_material = 24,
-        { nullptr,                0x00463702, true  }, // raise_land = 25,
-        { nullptr,                0x004638C6, true  }, // lower_land = 26,
-        { nullptr,                0x00462DCE, true  }, // lower_raise_land_mountain = 27,
-        { nullptr,                0x004C4F19, true  }, // raise_water = 28,
-        { nullptr,                0x004C5126, true  }, // lower_water = 29,
-        { nullptr,                0x00434914, false }, // 30
-        { nullptr,                0x00434A58, false }, // 31
-        { nullptr,                0x004C436C, true  }, // 32
-        { nullptr,                0x004C466C, true  }, // 33
-        { nullptr,                0x004C4717, false }, // 34
-        { nullptr,                0x0047036E, false }, // vehicle_order_insert = 35,
-        { nullptr,                0x0047057A, false }, // vehicle_order_delete = 36,
-        { nullptr,                0x0047071A, false }, // vehicle_order_skip = 37,
-        { nullptr,                0x00475FBC, true  }, // 38
-        { nullptr,                0x004775A5, true  }, // 39
-        { nullptr,                0x0047A21E, true  }, // 40
-        { nullptr,                0x0047A42F, true  }, // 41
-        { nullptr,                0x0048C708, true  }, // 42
-        { nullptr,                0x0048D2AC, true  }, // 43
-        { nullptr,                0x0042D133, true  }, // 44
-        { nullptr,                0x0042D74E, true  }, // 45
-        { nullptr,                0x0049B11E, false }, // change_company_name = 46,
-        { nullptr,                0x0045436B, true  }, // 47
-        { nullptr,                0x00455943, true  }, // 48
-        { nullptr,                0x00496C22, true  }, // 49
-        { nullptr,                0x0049711F, true  }, // 50
-        { nullptr,                0x004A6FDC, true  }, // 51
-        { nullptr,                0x004A734F, true  }, // 52
-        { nullptr,                0x0047AF0B, true  }, // 53
-        { nullptr,                0x0042ECFC, true  }, // remove_industry = 54,
-        { nullptr,                0x0042EEAF, true  }, // build_company_headquarters = 55,
-        { nullptr,                0x00492C41, true  }, // 56
-        { nullptr,                0x00493559, true  }, // 57
-        { nullptr,                0x004267BE, true  }, // 58
-        { nullptr,                0x00426B29, true  }, // vehicle_abort_pickup_air = 59,
-        { nullptr,                0x00493AA7, true  }, // 60
-        { nullptr,                0x00494570, true  }, // 61
-        { nullptr,                0x0042773C, true  }, // 62
-        { nullptr,                0x004279CC, true  }, // vehicle_abort_pickup_water = 63,
-        { nullptr,                0x0042F6DB, false }, // 63
-        { nullptr,                0x00435506, false }, // 64
-        { nullptr,                0x00469CCB, true  }, // change_company_face = 66,
-        { nullptr,                0x00444DA0, false }, // load_multiplayer_map = 67,
-        { nullptr,                0x0046F8A5, false }, // 68
-        { nullptr,                0x004454BE, false }, // 69
-        { nullptr,                0x004456C8, false }, // 70
-        { nullptr,                0x0046F976, false }, // send_chat_message = 71,
-        { nullptr,                0x004A0ACD, false }, // multiplayer_save = 72,
-        { nullptr,                0x004383CA, false }, // update_owner_status = 73,
-        { nullptr,                0x004BAB63, true  }, // vehicle_speed_control = 74,
-        { nullptr,                0x00470CD2, false }, // vehicle_order_up = 75,
-        { nullptr,                0x00470E06, false }, // vehicle_order_down = 76,
-        { nullptr,                0x004BAC53, false }, // vehicle_apply_shunt_cheat = 77,
-        { nullptr,                0x00438A08, false }, // apply_free_cash_cheat = 78,
-        { nullptr,                0x00455029, false }, // rename_industry = 79,
-        { Vehicles::cloneVehicle, 0,          true  }, // vehicle_clone = 80,
+        { GameCommand::vehicle_rearrange,             nullptr,                0x004AF1DF, true  },
+        { GameCommand::vehicle_place,                 nullptr,                0x004B01B6, true  },
+        { GameCommand::vehicle_pickup,                nullptr,                0x004B0826, true  },
+        { GameCommand::vehicle_reverse,               nullptr,                0x004ADAA8, true  },
+        { GameCommand::gc_unk_4,                      nullptr,                0x004B0B50, true  },
+        { GameCommand::vehicle_create,                Vehicles::create,       0x004AE5E4, true  },
+        { GameCommand::vehicle_sell,                  nullptr,                0x004AED34, true  },
+        { GameCommand::gc_unk_7,                      nullptr,                0x0049BB98, true  },
+        { GameCommand::gc_unk_8,                      nullptr,                0x0049C7F2, true  },
+        { GameCommand::build_vehicle,                 nullptr,                0x0046DE88, false },
+        { GameCommand::vehicle_rename,                nullptr,                0x004B6572, false },
+        { GameCommand::change_station_name,           nullptr,                0x00490756, false },
+        { GameCommand::vehicle_local_express,         nullptr,                0x004B694B, true  },
+        { GameCommand::gc_unk_13,                     nullptr,                0x00488BDB, true  },
+        { GameCommand::gc_unk_14,                     nullptr,                0x004891E4, true  },
+        { GameCommand::gc_unk_15,                     nullptr,                0x0048BB20, true  },
+        { GameCommand::gc_unk_16,                     nullptr,                0x0048C402, true  },
+        { GameCommand::gc_unk_17,                     nullptr,                0x004A6479, true  },
+        { GameCommand::gc_unk_18,                     nullptr,                0x004A668A, true  },
+        { GameCommand::change_company_colour_scheme,  nullptr,                0x0043483D, false },
+        { GameCommand::pause_game,                    nullptr,                0x00431E32, false },
+        { GameCommand::load_save_quit_game,           nullptr,                0x0043BFCB, false },
+        { GameCommand::gc_unk_22,                     nullptr,                0x004BB392, true  },
+        { GameCommand::gc_unk_23,                     nullptr,                0x004BB138, true  },
+        { GameCommand::change_land_material,          nullptr,                0x00468EDD, true  },
+        { GameCommand::raise_land,                    nullptr,                0x00463702, true  },
+        { GameCommand::lower_land,                    nullptr,                0x004638C6, true  },
+        { GameCommand::lower_raise_land_mountain,     nullptr,                0x00462DCE, true  },
+        { GameCommand::raise_water,                   nullptr,                0x004C4F19, true  },
+        { GameCommand::lower_water,                   nullptr,                0x004C5126, true  },
+        { GameCommand::gc_unk_30,                     nullptr,                0x00434914, false },
+        { GameCommand::gc_unk_31,                     nullptr,                0x00434A58, false },
+        { GameCommand::gc_unk_32,                     nullptr,                0x004C436C, true  },
+        { GameCommand::gc_unk_33,                     nullptr,                0x004C466C, true  },
+        { GameCommand::gc_unk_34,                     nullptr,                0x004C4717, false },
+        { GameCommand::vehicle_order_insert,          nullptr,                0x0047036E, false },
+        { GameCommand::vehicle_order_delete,          nullptr,                0x0047057A, false },
+        { GameCommand::vehicle_order_skip,            nullptr,                0x0047071A, false },
+        { GameCommand::gc_unk_38,                     nullptr,                0x00475FBC, true  },
+        { GameCommand::gc_unk_39,                     nullptr,                0x004775A5, true  },
+        { GameCommand::gc_unk_40,                     nullptr,                0x0047A21E, true  },
+        { GameCommand::gc_unk_41,                     nullptr,                0x0047A42F, true  },
+        { GameCommand::gc_unk_42,                     nullptr,                0x0048C708, true  },
+        { GameCommand::gc_unk_43,                     nullptr,                0x0048D2AC, true  },
+        { GameCommand::gc_unk_44,                     nullptr,                0x0042D133, true  },
+        { GameCommand::gc_unk_45,                     nullptr,                0x0042D74E, true  },
+        { GameCommand::change_company_name,           nullptr,                0x0049B11E, false },
+        { GameCommand::gc_unk_47,                     nullptr,                0x0045436B, true  },
+        { GameCommand::gc_unk_48,                     nullptr,                0x00455943, true  },
+        { GameCommand::gc_unk_49,                     nullptr,                0x00496C22, true  },
+        { GameCommand::gc_unk_50,                     nullptr,                0x0049711F, true  },
+        { GameCommand::gc_unk_51,                     nullptr,                0x004A6FDC, true  },
+        { GameCommand::gc_unk_52,                     nullptr,                0x004A734F, true  },
+        { GameCommand::gc_unk_53,                     nullptr,                0x0047AF0B, true  },
+        { GameCommand::remove_industry,               nullptr,                0x0042ECFC, true  },
+        { GameCommand::build_company_headquarters,    nullptr,                0x0042EEAF, true  },
+        { GameCommand::gc_unk_56,                     nullptr,                0x00492C41, true  },
+        { GameCommand::gc_unk_57,                     nullptr,                0x00493559, true  },
+        { GameCommand::gc_unk_58,                     nullptr,                0x004267BE, true  },
+        { GameCommand::vehicle_abort_pickup_air,      nullptr,                0x00426B29, true  },
+        { GameCommand::gc_unk_60,                     nullptr,                0x00493AA7, true  },
+        { GameCommand::gc_unk_61,                     nullptr,                0x00494570, true  },
+        { GameCommand::gc_unk_62,                     nullptr,                0x0042773C, true  },
+        { GameCommand::vehicle_abort_pickup_water,    nullptr,                0x004279CC, true  },
+        { GameCommand::gc_unk_63,                     nullptr,                0x0042F6DB, false },
+        { GameCommand::gc_unk_64,                     nullptr,                0x00435506, false },
+        { GameCommand::change_company_face,           nullptr,                0x00469CCB, true  },
+        { GameCommand::load_multiplayer_map,          nullptr,                0x00444DA0, false },
+        { GameCommand::gc_unk_68,                     nullptr,                0x0046F8A5, false },
+        { GameCommand::gc_unk_69,                     nullptr,                0x004454BE, false },
+        { GameCommand::gc_unk_70,                     nullptr,                0x004456C8, false },
+        { GameCommand::send_chat_message,             nullptr,                0x0046F976, false },
+        { GameCommand::multiplayer_save,              nullptr,                0x004A0ACD, false },
+        { GameCommand::update_owner_status,           nullptr,                0x004383CA, false },
+        { GameCommand::vehicle_speed_control,         nullptr,                0x004BAB63, true  },
+        { GameCommand::vehicle_order_up,              nullptr,                0x00470CD2, false },
+        { GameCommand::vehicle_order_down,            nullptr,                0x00470E06, false },
+        { GameCommand::vehicle_apply_shunt_cheat,     nullptr,                0x004BAC53, false },
+        { GameCommand::apply_free_cash_cheat,         nullptr,                0x00438A08, false },
+        { GameCommand::rename_industry,               nullptr,                0x00455029, false },
+        { GameCommand::vehicle_clone,                 Vehicles::cloneVehicle, 0,          true  },
     };
     // clang-format on
 
