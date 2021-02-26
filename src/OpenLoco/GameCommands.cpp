@@ -235,7 +235,7 @@ namespace OpenLoco::GameCommands
             return loc_4313C6(esi, regs);
         }
 
-        if ((flags & (GameCommandFlag::flag_4 | GameCommandFlag::flag_6)) != 0
+        if ((flags & (GameCommandFlag::flag_4 | GameCommandFlag::flag_6)) == 0
             && _gameCommandCanBeUsedWhenPaused[esi]
             && _updating_company_id == _player_company[0])
         {
