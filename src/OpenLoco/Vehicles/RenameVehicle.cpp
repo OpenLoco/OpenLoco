@@ -31,8 +31,8 @@ namespace OpenLoco::Vehicles
         if ((flags & GameCommands::apply) != 0) // 004B6586-004B6589
         {
             static const std::array<int, 3> transformTable = { 2, 0, 1 };
-            int arrayIndex = transformTable.at(index);   // 004B658B-004B6591
-            staticRenameBuffer[arrayIndex * 3] = buffer0; // 004B6596-004B6599
+            int arrayIndex = transformTable.at(index);        // 004B658B-004B6591
+            staticRenameBuffer[arrayIndex * 3] = buffer0;     // 004B6596-004B6599
             staticRenameBuffer[arrayIndex * 3 + 1] = buffer1; // 004B659F
             staticRenameBuffer[arrayIndex * 3 + 2] = buffer2; // 004B65A5
         }
@@ -45,13 +45,14 @@ namespace OpenLoco::Vehicles
         thing_id_t vehicleHeadId = _113621D;                                                          // 004B65B6
         Vehicles::VehicleHead* vehicleHead = ThingManager::get<Vehicles::VehicleHead>(vehicleHeadId); // 004B65BD-004B65C0
 
-        static loco_global<char[512], 0x0112CC04> _stringFormatBuffer;
-        char renameStringBuffer[36] = "";
-        memcpy(renameStringBuffer, staticRenameBuffer, sizeof(renameStringBuffer));
+        char renameStringBuffer[37] = "";
+        memcpy(renameStringBuffer, staticRenameBuffer, sizeof(staticRenameBuffer));
+        renameStringBuffer[36] = '\0';
 
-        auto args = FormatArguments::common(vehicleHead->var_44);                     // 004B65C6-004B65CA
-        StringManager::formatString(_stringFormatBuffer, vehicleHead->var_22, &args); // 004B65D0-004B65E6
-        if (strcmp(_stringFormatBuffer, renameStringBuffer) == 0)                     // 004B65F1-004B6601
+        char stringFormatBuffer[512];
+        auto args = FormatArguments::common(vehicleHead->var_44);                    // 004B65C6-004B65CA
+        StringManager::formatString(stringFormatBuffer, vehicleHead->var_22, &args); // 004B65D0-004B65E6
+        if (strcmp(stringFormatBuffer, renameStringBuffer) == 0)                     // 004B65F1-004B6601
         {
             return 0; // 004B6655-004B6657
         }
@@ -60,7 +61,7 @@ namespace OpenLoco::Vehicles
         if (strlen(renameStringBuffer) != 0) // 004B6603-004B660A
         {
             allocatedStringId = StringManager::userStringAllocate(renameStringBuffer, 0); // 004B660C-004B6613
-            if (allocatedStringId == 0)                                                      // 004B6618-004B661B
+            if (allocatedStringId == 0)                                                   // 004B6618-004B661B
             {
                 return GameCommands::FAILURE; // 004B664D-004B6654
             }
