@@ -37,10 +37,10 @@ namespace OpenLoco::GameCommands
 
     struct GameCommandInfo
     {
-        GammeCommand id;
+        GameCommand id;
         GameCommandFunc implementation;
         uintptr_t originalAddress; // original array: 0x004F9548
-        bool resumesGame;    // original array: 0x004F9688
+        bool resumesGame;          // original array: 0x004F9688
     };
 
     // clang-format off
@@ -49,12 +49,12 @@ namespace OpenLoco::GameCommands
         { GameCommand::vehicle_place,                 nullptr,                0x004B01B6, true  },
         { GameCommand::vehicle_pickup,                nullptr,                0x004B0826, true  },
         { GameCommand::vehicle_reverse,               nullptr,                0x004ADAA8, true  },
-        { GameCommand::gc_unk_4,                      nullptr,                0x004B0B50, true  },
+        { GameCommand::vehicle_pass_signal,           nullptr,                0x004B0B50, true  },
         { GameCommand::vehicle_create,                Vehicles::create,       0x004AE5E4, true  },
         { GameCommand::vehicle_sell,                  nullptr,                0x004AED34, true  },
         { GameCommand::gc_unk_7,                      nullptr,                0x0049BB98, true  },
         { GameCommand::gc_unk_8,                      nullptr,                0x0049C7F2, true  },
-        { GameCommand::build_vehicle,                 nullptr,                0x0046DE88, false },
+        { GameCommand::change_loan,                   nullptr,                0x0046DE88, false },
         { GameCommand::vehicle_rename,                nullptr,                0x004B6572, false },
         { GameCommand::change_station_name,           nullptr,                0x00490756, false },
         { GameCommand::vehicle_local_express,         nullptr,                0x004B694B, true  },
@@ -75,8 +75,8 @@ namespace OpenLoco::GameCommands
         { GameCommand::lower_raise_land_mountain,     nullptr,                0x00462DCE, true  },
         { GameCommand::raise_water,                   nullptr,                0x004C4F19, true  },
         { GameCommand::lower_water,                   nullptr,                0x004C5126, true  },
-        { GameCommand::gc_unk_30,                     nullptr,                0x00434914, false },
-        { GameCommand::gc_unk_31,                     nullptr,                0x00434A58, false },
+        { GameCommand::change_company_name,           nullptr,                0x00434914, false },
+        { GameCommand::change_company_owner_name,     nullptr,                0x00434A58, false },
         { GameCommand::gc_unk_32,                     nullptr,                0x004C436C, true  },
         { GameCommand::gc_unk_33,                     nullptr,                0x004C466C, true  },
         { GameCommand::gc_unk_34,                     nullptr,                0x004C4717, false },
@@ -91,15 +91,15 @@ namespace OpenLoco::GameCommands
         { GameCommand::gc_unk_43,                     nullptr,                0x0048D2AC, true  },
         { GameCommand::gc_unk_44,                     nullptr,                0x0042D133, true  },
         { GameCommand::gc_unk_45,                     nullptr,                0x0042D74E, true  },
-        { GameCommand::change_company_name,           nullptr,                0x0049B11E, false },
+        { GameCommand::change_town_name,              nullptr,                0x0049B11E, false },
         { GameCommand::gc_unk_47,                     nullptr,                0x0045436B, true  },
-        { GameCommand::gc_unk_48,                     nullptr,                0x00455943, true  },
+        { GameCommand::remove_industry,               nullptr,                0x00455943, true  },
         { GameCommand::gc_unk_49,                     nullptr,                0x00496C22, true  },
-        { GameCommand::gc_unk_50,                     nullptr,                0x0049711F, true  },
+        { GameCommand::remove_town,                   nullptr,                0x0049711F, true  },
         { GameCommand::gc_unk_51,                     nullptr,                0x004A6FDC, true  },
         { GameCommand::gc_unk_52,                     nullptr,                0x004A734F, true  },
         { GameCommand::gc_unk_53,                     nullptr,                0x0047AF0B, true  },
-        { GameCommand::remove_industry,               nullptr,                0x0042ECFC, true  },
+        { GameCommand::remove_company_headquarters,   nullptr,                0x0042ECFC, true  },
         { GameCommand::build_company_headquarters,    nullptr,                0x0042EEAF, true  },
         { GameCommand::gc_unk_56,                     nullptr,                0x00492C41, true  },
         { GameCommand::gc_unk_57,                     nullptr,                0x00493559, true  },
@@ -109,9 +109,9 @@ namespace OpenLoco::GameCommands
         { GameCommand::gc_unk_61,                     nullptr,                0x00494570, true  },
         { GameCommand::gc_unk_62,                     nullptr,                0x0042773C, true  },
         { GameCommand::vehicle_abort_pickup_water,    nullptr,                0x004279CC, true  },
-        { GameCommand::gc_unk_63,                     nullptr,                0x0042F6DB, false },
-        { GameCommand::gc_unk_64,                     nullptr,                0x00435506, false },
-        { GameCommand::change_company_face,           nullptr,                0x00469CCB, true  },
+        { GameCommand::vehicle_refit,                 nullptr,                0x0042F6DB, false },
+        { GameCommand::change_company_face,           nullptr,                0x00435506, false },
+        { GameCommand::clear_land,                    nullptr,                0x00469CCB, true  },
         { GameCommand::load_multiplayer_map,          nullptr,                0x00444DA0, false },
         { GameCommand::gc_unk_68,                     nullptr,                0x0046F8A5, false },
         { GameCommand::gc_unk_69,                     nullptr,                0x004454BE, false },
@@ -135,7 +135,7 @@ namespace OpenLoco::GameCommands
             0x00431315,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                auto ebx = doCommand(regs.esi, backup);
+                auto ebx = doCommand(GameCommand(regs.esi), backup);
 
                 regs = backup;
                 regs.ebx = ebx;
@@ -147,9 +147,10 @@ namespace OpenLoco::GameCommands
     static uint32_t loc_4313C6(int esi, const registers& regs);
 
     // 0x00431315
-    uint32_t doCommand(int esi, const registers& regs)
+    uint32_t doCommand(GameCommand command, const registers& regs)
     {
         uint16_t flags = regs.bx;
+        uint32_t esi = static_cast<uint32_t>(command);
 
         _gameCommandFlags = regs.bx;
         if (game_command_nest_level != 0)
@@ -162,7 +163,7 @@ namespace OpenLoco::GameCommands
 
         auto& gameCommand = _gameCommandDefinitions[esi];
         if ((flags & (GameCommandFlag::flag_4 | GameCommandFlag::flag_6)) == 0
-            && gameCommand.canUseWhilePaused
+            && gameCommand.resumesGame
             && _updating_company_id == _player_company[0])
         {
             if (getPauseFlags() & 1)

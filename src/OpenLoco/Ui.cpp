@@ -998,26 +998,20 @@ namespace OpenLoco::Ui
             {
                 WindowManager::closeConstructionWindows();
                 WindowManager::closeAllFloatingWindows();
-                registers regs;
-                regs.bl = GameCommandFlag::apply;
-                GameCommands::doCommand(69, regs);
+                GameCommands::do_69();
             }
 
             if (MultiPlayer::resetFlag(MultiPlayer::flags::flag_3))
             {
                 WindowManager::closeConstructionWindows();
                 WindowManager::closeAllFloatingWindows();
-                registers regs;
-                regs.bl = GameCommandFlag::apply;
-                GameCommands::doCommand(70, regs);
+                GameCommands::do_70();
             }
         }
 
         if (MultiPlayer::resetFlag(MultiPlayer::flags::flag_4))
         {
-            registers regs;
-            regs.bl = GameCommandFlag::apply;
-            GameCommands::doCommand(72, regs);
+            GameCommands::do_72();
         }
 
         if (MultiPlayer::resetFlag(MultiPlayer::flags::flag_0))
