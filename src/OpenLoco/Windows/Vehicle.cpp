@@ -2642,10 +2642,9 @@ namespace OpenLoco::Ui::Vehicle
                     const auto& trackPiece = OpenLoco::Map::TrackData::getTrackPiece(trackId);
                     const auto& trackPart = trackPiece[trackElement->sequenceIndex()];
 
-                    auto pos = Map::rotate2dCoordinate({ trackPart.x, trackPart.y }, trackElement->unkDirection());
-                    pos.x += args.x;
-                    pos.y += args.y;
-                    TilePos tPos{ pos };
+                    auto offsetToFirstTile = Map::rotate2dCoordinate({ trackPart.x, trackPart.y }, trackElement->unkDirection());
+                    auto firstTilePos = Map::map_pos(args.x - offsetToFirstTile.x, args.y - offsetToFirstTile.y);
+                    TilePos tPos{ firstTilePos };
                     height -= trackPart.z;
 
                     Vehicles::OrderRouteWaypoint waypoint(tPos, height / 8, trackElement->unkDirection(), trackId);
@@ -2691,10 +2690,9 @@ namespace OpenLoco::Ui::Vehicle
                     const auto& roadPiece = OpenLoco::Map::TrackData::getRoadPiece(roadId);
                     const auto& roadPart = roadPiece[roadElement->sequenceIndex()];
 
-                    auto pos = Map::rotate2dCoordinate({ roadPart.x, roadPart.y }, roadElement->unkDirection());
-                    pos.x += args.x;
-                    pos.y += args.y;
-                    TilePos tPos{ pos };
+                    auto offsetToFirstTile = Map::rotate2dCoordinate({ roadPart.x, roadPart.y }, roadElement->unkDirection());
+                    auto firstTilePos = Map::map_pos(args.x - offsetToFirstTile.x, args.y - offsetToFirstTile.y);
+                    TilePos tPos{ firstTilePos };
                     height -= roadPart.z;
 
                     Vehicles::OrderRouteWaypoint waypoint(tPos, height / 8, roadElement->unkDirection(), roadId);
