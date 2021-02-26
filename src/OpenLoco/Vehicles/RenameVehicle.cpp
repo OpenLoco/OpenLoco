@@ -49,10 +49,10 @@ namespace OpenLoco::Vehicles
         memcpy(renameStringBuffer, staticRenameBuffer, sizeof(staticRenameBuffer));
         renameStringBuffer[36] = '\0';
 
-        char stringFormatBuffer[512];
-        auto args = FormatArguments::common(vehicleHead->var_44);                    // 004B65C6-004B65CA
-        StringManager::formatString(stringFormatBuffer, vehicleHead->var_22, &args); // 004B65D0-004B65E6
-        if (strcmp(stringFormatBuffer, renameStringBuffer) == 0)                     // 004B65F1-004B6601
+        char existingVehicleName[512];
+        auto args = FormatArguments::common(vehicleHead->var_44);                     // 004B65C6-004B65CA
+        StringManager::formatString(existingVehicleName, vehicleHead->var_22, &args); // 004B65D0-004B65E6
+        if (strcmp(existingVehicleName, renameStringBuffer) == 0)                     // 004B65F1-004B6601
         {
             return 0; // 004B6655-004B6657
         }
