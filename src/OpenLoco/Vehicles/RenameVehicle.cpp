@@ -27,7 +27,7 @@ namespace OpenLoco::Vehicles
      * @param buffer0 @<edx> - First group of 4 characters of a 12 character update buffer
      * @param buffer1 @<dx> - Second group of 4 characters of a 12 character update buffer
      * @param buffer2 @<bp> - Third group of 4 characters of a 12 character update buffer
-     * @return
+     * @return @<ebx> - if rename is successful, return 0, if failed, return GameCommands::FAILURE
      */
     static uint32_t rename(const uint8_t flags, thing_id_t headId, int16_t index, uint32_t buffer0, uint32_t buffer1, uint32_t buffer2)
     {
