@@ -133,7 +133,7 @@ namespace OpenLoco::StationManager
             {
                 // Zero unused station
                 station = {};
-                station.name = StringIds::empty;
+                station.name = StringIds::null;
             }
             else
             {
