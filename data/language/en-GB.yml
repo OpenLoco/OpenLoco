@@ -2212,3 +2212,4 @@ strings:
   2157: "{SMALLFONT}{COLOUR BLACK}This adds an extra button to the game's toolbar, allowing easy access to certain cheats and debugging options."
   2158: "Enable sandbox mode"
   2159: "Allow manual driving"
+  2160: "Allow building while paused"

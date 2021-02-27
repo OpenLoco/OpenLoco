@@ -193,6 +193,11 @@ namespace OpenLoco
         return (getScreenFlags() & ScreenFlags::sandboxMode) != 0;
     }
 
+    bool isPauseOverrideEnabled()
+    {
+        return (getScreenFlags() & ScreenFlags::pauseOverrideEnabled) != 0;
+    }
+
     bool isPaused()
     {
         return paused_state;

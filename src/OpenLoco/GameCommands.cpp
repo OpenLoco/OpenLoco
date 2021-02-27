@@ -163,6 +163,7 @@ namespace OpenLoco::GameCommands
         auto& gameCommand = _gameCommandDefinitions[esi];
         if ((flags & (GameCommandFlag::flag_4 | GameCommandFlag::flag_6)) == 0
             && gameCommand.unpausesGame
+            && !isPauseOverrideEnabled()
             && _updating_company_id == _player_company[0])
         {
             if (getPauseFlags() & 1)

@@ -280,14 +280,18 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         // Check if cheats enabled
 
         Dropdown::add(0, StringIds::dropdown_without_checkmark, StringIds::cheat_enable_sandbox_mode);
-        Dropdown::add(1, StringIds::dropdown_without_checkmark, StringIds::cheat_allow_manual_driving);
-        Dropdown::showBelow(window, widgetIndex, 2, 0);
+        Dropdown::add(1, StringIds::dropdown_without_checkmark, StringIds::cheat_allow_building_while_paused);
+        Dropdown::add(2, StringIds::dropdown_without_checkmark, StringIds::cheat_allow_manual_driving);
+        Dropdown::showBelow(window, widgetIndex, 3, 0);
 
         if (isSandboxMode())
             Dropdown::setItemSelected(0);
 
-        if (isDriverCheatEnabled())
+        if (isPauseOverrideEnabled())
             Dropdown::setItemSelected(1);
+
+        if (isDriverCheatEnabled())
+            Dropdown::setItemSelected(2);
     }
 
     static void cheatsMenuDropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
@@ -307,6 +311,13 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
                 break;
 
             case 1:
+                if (!isPauseOverrideEnabled())
+                    setScreenFlag(ScreenFlags::pauseOverrideEnabled);
+                else
+                    clearScreenFlag(ScreenFlags::pauseOverrideEnabled);
+                break;
+
+            case 2:
                 if (!isDriverCheatEnabled())
                     setScreenFlag(ScreenFlags::driverCheatEnabled);
                 else

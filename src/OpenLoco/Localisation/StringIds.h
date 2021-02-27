@@ -1499,4 +1499,5 @@ namespace OpenLoco::StringIds
     constexpr string_id tooltip_option_cheat_menu_enable = 2157;
     constexpr string_id cheat_enable_sandbox_mode = 2158;
     constexpr string_id cheat_allow_manual_driving = 2159;
+    constexpr string_id cheat_allow_building_while_paused = 2160;
 }
