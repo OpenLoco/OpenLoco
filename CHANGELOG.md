@@ -2,6 +2,7 @@
 ------------------------------------------------------------------------
 - Fix: [#294] Crash when setting company name twice.
 - Fix: [#794] Game does not stay paused while in construction mode.
+- Fix: [#798] Setting waypoints on multitile track/road elements corrupts the position.
 
 21.02 (2021-02-20)
 ------------------------------------------------------------------------
