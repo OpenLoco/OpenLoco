@@ -81,6 +81,8 @@ namespace OpenLoco::Config
             _new_config.language = config["language"].as<std::string>();
         if (config["breakdowns_disabled"])
             _new_config.breakdowns_disabled = config["breakdowns_disabled"].as<bool>();
+        if (config["cheats_menu_enabled"])
+            _new_config.cheats_menu_enabled = config["cheats_menu_enabled"].as<bool>();
         if (config["companyAIDisabled"])
             _new_config.companyAIDisabled = config["companyAIDisabled"].as<bool>();
         if (config["scale_factor"])
@@ -133,6 +135,7 @@ namespace OpenLoco::Config
         node["loco_install_path"] = _new_config.loco_install_path;
         node["language"] = _new_config.language;
         node["breakdowns_disabled"] = _new_config.breakdowns_disabled;
+        node["cheats_menu_enabled"] = _new_config.cheats_menu_enabled;
         node["companyAIDisabled"] = _new_config.companyAIDisabled;
         node["scale_factor"] = _new_config.scale_factor;
         node["zoom_to_cursor"] = _new_config.zoom_to_cursor;

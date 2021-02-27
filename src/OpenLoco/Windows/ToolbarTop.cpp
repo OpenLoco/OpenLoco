@@ -779,6 +779,23 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             window->widgets[Common::Widx::audio_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_audio_active, window->colours[0]);
         }
 
+        if (Config::getNew().cheats_menu_enabled)
+        {
+            window->widgets[Widx::cheats_menu].type = widget_type::wt_7;
+            auto& baseWidget = window->widgets[Widx::cheats_menu];
+            window->widgets[Common::Widx::zoom_menu].left = baseWidget.left + 14 + (baseWidget.width() * 1);
+            window->widgets[Common::Widx::rotate_menu].left = baseWidget.left + 14 + (baseWidget.width() * 2);
+            window->widgets[Common::Widx::view_menu].left = baseWidget.left + 14 + (baseWidget.width() * 3);
+        }
+        else
+        {
+            window->widgets[Widx::cheats_menu].type = widget_type::none;
+            auto& baseWidget = window->widgets[Common::Widx::audio_menu];
+            window->widgets[Common::Widx::zoom_menu].left = baseWidget.left + 14 + (baseWidget.width() * 1);
+            window->widgets[Common::Widx::rotate_menu].left = baseWidget.left + 14 + (baseWidget.width() * 2);
+            window->widgets[Common::Widx::view_menu].left = baseWidget.left + 14 + (baseWidget.width() * 3);
+        }
+
         if (last_port_option == 0 && addr<0x00525FAC, int8_t>() != -1 && addr<0x00525FAD, int8_t>() == -1)
             last_port_option = 1;
 
