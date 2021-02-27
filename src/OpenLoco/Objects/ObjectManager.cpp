@@ -10,7 +10,24 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::ObjectManager
 {
+#pragma pack(push, 1)
+    struct ObjectEntry2 : public ObjectHeader
+    {
+        uint32_t dataSize;
+    };
+    static_assert(sizeof(ObjectEntry2) == 0x14);
+
+    struct object_repository_item
+    {
+        object** objects;
+        ObjectEntry2* object_entry_extendeds;
+    };
+    static_assert(sizeof(object_repository_item) == 8);
+#pragma pack(pop)
+
+    loco_global<ObjectEntry2[maxObjects], 0x1125A90> objectEntries;
     loco_global<object_repository_item[64], 0x4FE0B8> object_repository;
+    loco_global<object* [maxObjects], 0x0050C3D0> _allObjects;
     loco_global<interface_skin_object* [1], 0x0050C3D0> _interfaceObjects;
     loco_global<sound_object* [128], 0x0050C3D4> _soundObjects;
     loco_global<currency_object* [1], 0x0050C5D4> _currencyObjects;
@@ -50,6 +67,22 @@ namespace OpenLoco::ObjectManager
     void loadIndex()
     {
         call(0x00470F3C);
+    }
+
+    ObjectHeader* getHeader(LoadedObjectIndex id)
+    {
+        return &objectEntries[id];
+    }
+
+    template<>
+    object* get(size_t id)
+    {
+        auto obj = _allObjects[id];
+        if (obj == (void*)-1)
+        {
+            obj = nullptr;
+        }
+        return obj;
     }
 
     template<>
@@ -286,8 +319,8 @@ namespace OpenLoco::ObjectManager
     {
         object_index_entry entry{};
 
-        entry._header = (header*)*ptr;
-        *ptr += sizeof(header);
+        entry._header = (ObjectHeader*)*ptr;
+        *ptr += sizeof(ObjectHeader);
 
         entry._filename = (char*)*ptr;
         *ptr += strlen(entry._filename) + 1;
@@ -307,7 +340,7 @@ namespace OpenLoco::ObjectManager
         for (int n = 0; n < *countA; n++)
         {
             //header* subh = (header*)ptr;
-            *ptr += sizeof(header);
+            *ptr += sizeof(ObjectHeader);
         }
 
         uint8_t* countB = (uint8_t*)*ptr;
@@ -315,7 +348,7 @@ namespace OpenLoco::ObjectManager
         for (int n = 0; n < *countB; n++)
         {
             //header* subh = (header*)ptr;
-            *ptr += sizeof(header);
+            *ptr += sizeof(ObjectHeader);
         }
 
         return entry;
@@ -351,39 +384,133 @@ namespace OpenLoco::ObjectManager
     }
 
     // 0x0047176D
-    void getScenarioText(header& object)
+    void getScenarioText(ObjectHeader& object)
     {
         registers regs;
         regs.ebp = reinterpret_cast<int32_t>(&object);
         call(0x0047176D, regs);
     }
 
-    // 0x004720EB
-    // Returns std::nullopt if not loaded
-    std::optional<uint32_t> getLoadedObjectIndex(const header* header)
+    static LoadedObjectIndex getLoadedObjectIndex(object_type objectType, size_t index)
     {
-        registers regs;
-        regs.ebp = reinterpret_cast<uint32_t>(&header->type);
-        const bool success = !(call(0x004720EB, regs) & (X86_FLAG_CARRY << 8));
-        // Object type is also returned on ecx
-        if (success)
+        auto baseIndex = 0;
+        size_t type = 0;
+        while (type != static_cast<size_t>(objectType))
         {
-            return { regs.ebx };
+            auto maxObjectsForType = getMaxObjects(static_cast<object_type>(type));
+            baseIndex += maxObjectsForType;
+            type++;
         }
-        return std::nullopt;
+        return baseIndex + index;
     }
 
     // 0x004720EB
     // Returns std::nullopt if not loaded
-    std::optional<uint32_t> getLoadedObjectIndex(const object_index_entry& object)
+    std::optional<LoadedObjectIndex> findIndex(const ObjectHeader& header)
     {
-        return getLoadedObjectIndex(object._header);
+        if ((header.flags & 0xFF) != 0xFF)
+        {
+            auto objectType = header.getType();
+            const auto& typedObjectList = object_repository[static_cast<size_t>(objectType)];
+            auto maxObjectsForType = getMaxObjects(objectType);
+            for (size_t i = 0; i < maxObjectsForType; i++)
+            {
+                auto obj = typedObjectList.objects[i];
+                if (obj != nullptr && obj != reinterpret_cast<object*>(-1))
+                {
+                    const auto& objHeader = typedObjectList.object_entry_extendeds[i];
+                    if (objHeader.isCustom())
+                    {
+                        if (header == objHeader)
+                        {
+                            return getLoadedObjectIndex(objectType, i);
+                        }
+                    }
+                    else
+                    {
+                        if (header.getType() == objHeader.getType() && header.getName() == objHeader.getName())
+                        {
+                            return getLoadedObjectIndex(objectType, i);
+                        }
+                    }
+                }
+            }
+        }
+        return {};
+    }
+
+    // 0x004720EB
+    // Returns std::nullopt if not loaded
+    std::optional<LoadedObjectIndex> findIndex(const object_index_entry& object)
+    {
+        return findIndex(*object._header);
     }
 
     // 0x0047237D
-    void resetLoadedObjects()
+    void reloadAll()
     {
         call(0x0047237D);
+    }
+
+    enum class ObjectProcedure
+    {
+        load,
+        unload,
+        validate,
+        drawPreview,
+    };
+
+    static bool callObjectFunction(LoadedObjectIndex index, ObjectProcedure proc)
+    {
+        auto objectHeader = getHeader(index);
+        if (objectHeader != nullptr)
+        {
+            auto obj = get<object>(index);
+            if (obj != nullptr)
+            {
+                auto objectType = objectHeader->getType();
+                auto objectProcTable = (const uintptr_t*)0x004FE1C8;
+                auto objectProc = objectProcTable[static_cast<size_t>(objectType)];
+
+                registers regs;
+                regs.al = static_cast<uint8_t>(proc);
+                regs.esi = reinterpret_cast<uint32_t>(obj);
+                return (call(objectProc, regs) & X86_FLAG_CARRY) != 0;
+            }
+        }
+        throw std::runtime_error("Object not loaded at this index");
+    }
+
+    void unload(LoadedObjectIndex index)
+    {
+        callObjectFunction(index, ObjectProcedure::unload);
+    }
+
+    size_t getByteLength(LoadedObjectIndex id)
+    {
+        return objectEntries[id].dataSize;
+    }
+
+    std::vector<ObjectHeader> getHeaders()
+    {
+        std::vector<ObjectHeader> entries;
+        entries.reserve(ObjectManager::maxObjects);
+
+        for (size_t i = 0; i < ObjectManager::maxObjects; i++)
+        {
+            auto obj = ObjectManager::get<object>(i);
+            if (obj != nullptr)
+            {
+                auto entry = getHeader(i);
+                entries.push_back(*entry);
+            }
+            else
+            {
+                entries.emplace_back();
+            }
+        }
+
+        return entries;
     }
 
     // 0x00472AFE

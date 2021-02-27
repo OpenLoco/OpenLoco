@@ -310,7 +310,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     }
 
     // 0x00473579
-    static void drawPreviewImage(ObjectManager::header* header, Gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, void* objectPtr)
+    static void drawPreviewImage(ObjectHeader* header, Gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, void* objectPtr)
     {
         auto type = header->getType();
 
@@ -447,7 +447,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         object->drawDescription(dpi, x, y, width);
     }
 
-    static void drawDescription(ObjectManager::header* header, window* self, Gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, void* objectPtr)
+    static void drawDescription(ObjectHeader* header, window* self, Gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, void* objectPtr)
     {
         Gfx::drawpixelinfo_t* clipped = nullptr;
         int16_t width = self->x + self->width - x;
@@ -866,7 +866,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         unloadUnselectedObjects();
         editorLoadSelectedObjects();
-        ObjectManager::resetLoadedObjects();
+        ObjectManager::reloadAll();
         ObjectManager::freeScenarioText();
         editorObjectFlagsFree0();
     }

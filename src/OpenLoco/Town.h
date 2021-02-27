@@ -11,10 +11,10 @@ namespace OpenLoco
 #pragma pack(push, 1)
     struct LabelPosition
     {
-        int16_t left[ZoomLevels::max];
-        int16_t right[ZoomLevels::max];
-        int16_t top[ZoomLevels::max];
-        int16_t bottom[ZoomLevels::max];
+        int16_t left[ZoomLevels::max]{};
+        int16_t right[ZoomLevels::max]{};
+        int16_t top[ZoomLevels::max]{};
+        int16_t bottom[ZoomLevels::max]{};
 
         [[nodiscard]] bool contains(OpenLoco::Ui::Rect& rec, uint8_t zoom) const
         {

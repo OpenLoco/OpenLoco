@@ -232,4 +232,6 @@ namespace OpenLoco::Vehicles
 
         Order* atIndex(const uint8_t index) const;
     };
+
+    void zeroOrderTable();
 }

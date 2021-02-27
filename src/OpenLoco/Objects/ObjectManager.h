@@ -5,6 +5,8 @@
 #include <cstddef>
 #include <cstdint>
 #include <cstdio>
+#include <cstring>
+#include <string_view>
 #include <vector>
 
 namespace OpenLoco
@@ -90,11 +92,56 @@ namespace OpenLoco
     struct competitor_object;
     struct scenario_text_object;
 
-    struct object_repository_item
+#pragma pack(push, 1)
+    struct ObjectHeader
     {
-        object* objects;
-        uint32_t* object_entry_extendeds;
+    private:
+        static constexpr char cFF = static_cast<char>(0xFF);
+
+    public:
+        uint32_t flags = 0xFFFFFFFF;
+        char name[8] = { cFF, cFF, cFF, cFF, cFF, cFF, cFF, cFF };
+        uint32_t checksum = 0xFFFFFFFF;
+
+        std::string_view getName() const
+        {
+            return std::string_view(name, sizeof(name));
+        }
+
+        constexpr uint8_t getSourceGame() const
+        {
+            return (flags >> 6) & 0x3;
+        }
+
+        constexpr object_type getType() const
+        {
+            return static_cast<object_type>(flags & 0x3F);
+        }
+
+        constexpr bool isCustom() const
+        {
+            return getSourceGame() == 0;
+        }
+
+        bool isEmpty() const
+        {
+            auto ab = reinterpret_cast<const int64_t*>(this);
+            return ab[0] == -1 && ab[1] == -1;
+        }
+
+        bool operator==(const ObjectHeader& rhs) const
+        {
+            return std::memcmp(this, &rhs, sizeof(ObjectHeader)) == 0;
+        }
     };
+    static_assert(sizeof(ObjectHeader) == 0x10);
+
+    /**
+     * Represents an index into the entire loaded object array. Not an index for
+     * a specific object type.
+     */
+    using LoadedObjectIndex = size_t;
+#pragma pack(pop)
 }
 
 namespace OpenLoco::ObjectManager
@@ -142,12 +189,17 @@ namespace OpenLoco::ObjectManager
         return counts[(size_t)type];
     };
 
+    constexpr size_t maxObjects = 859;
+    constexpr size_t maxObjectTypes = 34;
+
     template<typename T>
     T* get();
 
     template<typename T>
     T* get(size_t id);
 
+    template<>
+    object* get(size_t id);
     template<>
     interface_skin_object* get();
     template<>
@@ -196,19 +248,6 @@ namespace OpenLoco::ObjectManager
     scenario_text_object* get();
 
 #pragma pack(push, 1)
-    struct header
-    {
-        uint8_t type; // 0x00
-        uint8_t pad_01[3];
-        uint8_t var_04[8];
-        uint32_t checksum; // 0xC
-
-        constexpr object_type getType()
-        {
-            return static_cast<object_type>(type & 0x3F);
-        }
-    };
-
     struct header2
     {
         uint8_t pad_00[0x04 - 0x00];
@@ -222,7 +261,7 @@ namespace OpenLoco::ObjectManager
 
     struct object_index_entry
     {
-        header* _header;
+        ObjectHeader* _header;
         char* _filename;
         char* _name;
 
@@ -239,11 +278,17 @@ namespace OpenLoco::ObjectManager
     uint32_t getNumInstalledObjects();
     std::vector<std::pair<uint32_t, object_index_entry>> getAvailableObjects(object_type type);
     void freeScenarioText();
-    void getScenarioText(header& object);
-    std::optional<uint32_t> getLoadedObjectIndex(const header* header);
-    std::optional<uint32_t> getLoadedObjectIndex(const object_index_entry& object);
-    void resetLoadedObjects();
+    void getScenarioText(ObjectHeader& object);
+    std::optional<LoadedObjectIndex> findIndex(const ObjectHeader& header);
+    std::optional<LoadedObjectIndex> findIndex(const object_index_entry& object);
+    void reloadAll();
     ObjIndexPair getActiveObject(object_type objectType, uint8_t* edi);
+    ObjectHeader* getHeader(LoadedObjectIndex id);
+    std::vector<ObjectHeader> getHeaders();
+
+    void unload(LoadedObjectIndex index);
+
+    size_t getByteLength(LoadedObjectIndex id);
 
     void drawGenericDescription(Gfx::drawpixelinfo_t& dpi, Gfx::point_t& rowPosition, const uint16_t designed, const uint16_t obsolete);
 }

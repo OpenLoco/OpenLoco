@@ -14,4 +14,5 @@ namespace OpenLoco::StationManager
     void update();
     void updateLabels();
     void updateDaily();
+    void zeroUnused();
 }

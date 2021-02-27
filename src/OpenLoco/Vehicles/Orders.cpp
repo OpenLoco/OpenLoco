@@ -206,4 +206,10 @@ namespace OpenLoco::Vehicles
     {
         return begin();
     }
+
+    // 0x004702F7
+    void zeroOrderTable()
+    {
+        call(0x004702F7);
+    }
 }

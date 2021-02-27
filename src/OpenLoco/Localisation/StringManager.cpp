@@ -592,4 +592,8 @@ namespace OpenLoco::StringManager
         return formatString(buffer, id, wrapped);
     }
 
+    char* formatString(char* buffer, size_t bufferLen, string_id id, const void* args)
+    {
+        return formatString(buffer, id, args);
+    }
 }

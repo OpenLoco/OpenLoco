@@ -7,7 +7,9 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Map::TileManager
 {
+    static loco_global<tile_element*, 0x005230C8> _elements;
     static loco_global<tile_element* [0x30004], 0x00E40134> _tiles;
+    static loco_global<tile_element*, 0x00F00134> _elementsEnd;
     static loco_global<coord_t, 0x00F24486> _mapSelectionAX;
     static loco_global<coord_t, 0x00F24488> _mapSelectionBX;
     static loco_global<coord_t, 0x00F2448A> _mapSelectionAY;
@@ -22,6 +24,26 @@ namespace OpenLoco::Map::TileManager
         call(0x00461179);
     }
 
+    stdx::span<tile_element> getElements()
+    {
+        return stdx::span<tile_element>(_elements, getElementsEnd());
+    }
+
+    tile_element* getElementsEnd()
+    {
+        return _elementsEnd;
+    }
+
+    tile_element** getElementIndex()
+    {
+        return _tiles.get();
+    }
+
+    tile get(TilePos pos)
+    {
+        return get(pos.x * tile_size, pos.y * tile_size);
+    }
+
     tile get(map_pos pos)
     {
         return get(pos.x, pos.y);
@@ -29,8 +51,8 @@ namespace OpenLoco::Map::TileManager
 
     tile get(coord_t x, coord_t y)
     {
-        tile_coord_t tileX = x / 32;
-        tile_coord_t tileY = y / 32;
+        tile_coord_t tileX = x / tile_size;
+        tile_coord_t tileY = y / tile_size;
 
         size_t index = (tileY << 9) | tileX;
         auto data = _tiles[index];
@@ -191,6 +213,84 @@ namespace OpenLoco::Map::TileManager
         }
 
         return height;
+    }
+
+    static void clearTilePointers()
+    {
+        tile_element** tiles = _tiles;
+        std::memset(tiles, 0xFF, map_pitch * map_columns * sizeof(tile_element*));
+    }
+
+    static void set(TilePos pos, tile_element* elements)
+    {
+        _tiles[(pos.y * map_pitch) + pos.x] = elements;
+    }
+
+    // 0x00461348
+    void updateTilePointers()
+    {
+        clearTilePointers();
+
+        tile_element* el = _elements;
+        for (tile_coord_t y = 0; y < map_rows; y++)
+        {
+            for (tile_coord_t x = 0; x < map_columns; x++)
+            {
+                set(TilePos(x, y), el);
+
+                // Skip remaining elements on this tile
+                do
+                {
+                    el++;
+                } while (!(el - 1)->isLast());
+            }
+        }
+
+        _elementsEnd = el;
+    }
+
+    // 0x0046148F
+    void reorganise()
+    {
+        Ui::setCursor(Ui::cursor_id::busy);
+
+        try
+        {
+            // Allocate a temporary buffer and tighly pack all the tile elements in the map
+            std::vector<tile_element> tempBuffer;
+            tempBuffer.resize(maxElements * sizeof(tile_element));
+
+            size_t numElements = 0;
+            for (tile_coord_t y = 0; y < map_rows; y++)
+            {
+                for (tile_coord_t x = 0; x < map_columns; x++)
+                {
+                    auto tile = get(TilePos(x, y));
+                    for (const auto& element : tile)
+                    {
+                        tempBuffer[numElements] = element;
+                        numElements++;
+                    }
+                }
+            }
+
+            // Copy organised elements back to original element buffer
+            std::memcpy(_elements, tempBuffer.data(), numElements * sizeof(tile_element));
+
+            // Zero all unused elements
+            auto remainingElements = maxElements - numElements;
+            std::memset(_elements + numElements, 0, remainingElements * sizeof(tile_element));
+
+            updateTilePointers();
+
+            // Note: original implementation did not revert the cursor
+            Ui::setCursor(Ui::cursor_id::pointer);
+        }
+        catch (const std::bad_alloc&)
+        {
+            exitWithError(4370, StringIds::null);
+            return;
+        }
     }
 
     // 0x004610F2

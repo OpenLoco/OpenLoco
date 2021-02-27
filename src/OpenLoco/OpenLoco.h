@@ -26,6 +26,7 @@ namespace OpenLoco
     void* hInstance();
     const char* lpCmdLine();
     void lpCmdLine(const char* path);
+    void resetScreenAge();
     uint16_t getScreenAge();
     uint16_t getScreenFlags();
     void setAllScreenFlags(uint16_t newScreenFlags);

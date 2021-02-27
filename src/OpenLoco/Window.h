@@ -261,6 +261,14 @@ namespace OpenLoco::Ui
         }
     };
 
+    struct SavedViewSimple
+    {
+        coord_t mapX;
+        coord_t mapY;
+        ZoomLevel zoomLevel;
+        int8_t rotation;
+    };
+
     struct SavedView
     {
         union
