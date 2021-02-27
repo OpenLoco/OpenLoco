@@ -126,4 +126,9 @@ namespace OpenLoco::ThingManager
         return true;
     }
 
+    // 0x0046FED5
+    void zeroUnused()
+    {
+        call(0x0046FED5);
+    }
 }

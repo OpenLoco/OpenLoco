@@ -28,6 +28,7 @@ namespace OpenLoco::Ui::WindowManager
 
     void update();
     window* getMainWindow();
+    viewport* getMainViewport();
     window* find(WindowType type);
     window* find(WindowType type, window_number number);
     window* findAt(int16_t x, int16_t y);

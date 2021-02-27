@@ -5,6 +5,7 @@
 #include "Window.h"
 
 using namespace OpenLoco::Interop;
+using namespace OpenLoco::Map;
 
 namespace OpenLoco::Ui
 {
@@ -44,6 +45,16 @@ namespace OpenLoco::Ui
         *outY = centre.y - view_height / 2;
     }
 
+    SavedViewSimple viewport::toSavedView() const
+    {
+        SavedViewSimple result;
+        result.mapX = view_x + (view_width >> 1);
+        result.mapY = view_y + (view_height >> 1);
+        result.zoomLevel = static_cast<ZoomLevel>(zoom);
+        result.rotation = getRotation();
+        return result;
+    }
+
     viewport_pos viewport::mapFrom3d(loc16 loc, int32_t rotation)
     {
         Ui::viewport_pos result;
@@ -67,5 +78,15 @@ namespace OpenLoco::Ui
                 break;
         }
         return result;
+    }
+
+    map_pos viewport::getCentreMapPosition() const
+    {
+        registers regs;
+        regs.ax = view_x + view_width / 2;
+        regs.bx = view_y + view_height / 2;
+        regs.edx = getRotation();
+        call(0x0045F997, regs);
+        return { regs.ax, regs.bx };
     }
 }

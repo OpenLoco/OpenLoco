@@ -17,6 +17,7 @@ namespace OpenLoco::Map
     constexpr coord_t tile_size = 32;
     constexpr coord_t map_rows = 384;
     constexpr coord_t map_columns = 384;
+    constexpr coord_t map_pitch = 512;
     constexpr coord_t map_height = map_rows * tile_size;
     constexpr coord_t map_width = map_columns * tile_size;
     constexpr int32_t map_size = map_columns * map_rows;
@@ -130,6 +131,25 @@ namespace OpenLoco::Map
         coord_t y = 0;
         coord_t z = 0;
 
+        map_pos3() = default;
+        map_pos3(map_pos xy, coord_t z)
+            : x(xy.x)
+            , y(xy.y)
+            , z(z)
+        {
+        }
+        map_pos3(coord_t x, coord_t y)
+            : x(x)
+            , y(y)
+        {
+        }
+        map_pos3(coord_t x, coord_t y, coord_t z)
+            : x(x)
+            , y(y)
+            , z(z)
+        {
+        }
+
         operator map_pos() const
         {
             return map_pos(x, y);
@@ -141,6 +161,11 @@ namespace OpenLoco::Map
     {
         coord_t landHeight;
         coord_t waterHeight;
+
+        operator coord_t() const
+        {
+            return waterHeight == 0 ? landHeight : waterHeight;
+        }
     };
 
     // 0x004F9296, 0x4F9298

@@ -68,7 +68,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
         _inUseCompetitors.clear();
         for (const auto& object : ObjectManager::getAvailableObjects(object_type::competitor))
         {
-            auto competitorId = ObjectManager::getLoadedObjectIndex(object.second);
+            auto competitorId = ObjectManager::findIndex(object.second);
             if (competitorId)
             {
                 auto res = std::find(takenCompetitorIds.begin(), takenCompetitorIds.end(), *competitorId);

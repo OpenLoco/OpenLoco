@@ -582,6 +582,16 @@ namespace OpenLoco::Ui::WindowManager
         return find(WindowType::main);
     }
 
+    viewport* getMainViewport()
+    {
+        auto mainWindow = getMainWindow();
+        if (mainWindow != nullptr)
+        {
+            return mainWindow->viewports[0];
+        }
+        return nullptr;
+    }
+
     // 0x004C9B56
     window* find(WindowType type)
     {

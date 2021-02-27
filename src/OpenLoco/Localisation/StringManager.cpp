@@ -592,6 +592,11 @@ namespace OpenLoco::StringManager
         return formatString(buffer, id, wrapped);
     }
 
+    char* formatString(char* buffer, size_t bufferLen, string_id id, const void* args)
+    {
+        return formatString(buffer, id, args);
+    }
+
     // 0x00496522
     string_id userStringAllocate(char* str /* edi */, uint8_t cl)
     {
@@ -609,5 +614,4 @@ namespace OpenLoco::StringManager
         regs.ax = stringId;
         call(0x004965A6, regs);
     }
-
 }
