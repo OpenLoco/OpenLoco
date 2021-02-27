@@ -1,6 +1,7 @@
 #include "../Audio/Audio.h"
 #include "../CompanyManager.h"
 #include "../Config.h"
+#include "../EditorController.h"
 #include "../GameCommands.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/Gfx.h"
@@ -267,7 +268,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
         x -= 11;
         Common::rightAlignTabs(window, x, { Common::Widx::road_menu, Widx::map_generation_menu, Common::Widx::terraform_menu });
 
-        if (S5::getOptions().editorStep == 1)
+        if (EditorController::getCurrentStep() == EditorController::Step::landscapeEditor)
         {
             window->widgets[Common::Widx::zoom_menu].type = widget_type::wt_7;
             window->widgets[Common::Widx::rotate_menu].type = widget_type::wt_7;
