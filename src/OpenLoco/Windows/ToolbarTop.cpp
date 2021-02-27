@@ -47,16 +47,18 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     {
         enum
         {
-            railroad_menu = Common::Widx::w6
+            cheats_menu = Common::Widx::w2
         };
     }
 
     static widget_t _widgets[] = {
         makeWidget({ 0, 0 }, { 30, 28 }, widget_type::wt_7, 0),
         makeWidget({ 30, 0 }, { 30, 28 }, widget_type::wt_7, 0),
-        makeWidget({ 74, 0 }, { 30, 28 }, widget_type::wt_7, 1),
+        makeWidget({ 60, 0 }, { 30, 28 }, widget_type::wt_7, 0),
+
         makeWidget({ 104, 0 }, { 30, 28 }, widget_type::wt_7, 1),
         makeWidget({ 134, 0 }, { 30, 28 }, widget_type::wt_7, 1),
+        makeWidget({ 164, 0 }, { 30, 28 }, widget_type::wt_7, 1),
 
         makeWidget({ 267, 0 }, { 30, 28 }, widget_type::wt_7, 2),
         makeWidget({ 387, 0 }, { 30, 28 }, widget_type::wt_7, 2),
@@ -99,7 +101,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             WindowFlags::stick_to_front | WindowFlags::transparent | WindowFlags::no_background,
             &_events);
         window->widgets = _widgets;
-        window->enabled_widgets = (1 << Common::Widx::loadsave_menu) | (1 << Common::Widx::audio_menu) | (1 << Common::Widx::zoom_menu) | (1 << Common::Widx::rotate_menu) | (1 << Common::Widx::view_menu) | (1 << Common::Widx::terraform_menu) | (1 << Widx::railroad_menu) | (1 << Common::Widx::road_menu) | (1 << Common::Widx::port_menu) | (1 << Common::Widx::build_vehicles_menu) | (1 << Common::Widx::vehicles_menu) | (1 << Common::Widx::stations_menu) | (1 << Common::Widx::towns_menu);
+        window->enabled_widgets = (1 << Common::Widx::loadsave_menu) | (1 << Common::Widx::audio_menu) | (1 << Common::Widx::zoom_menu) | (1 << Common::Widx::rotate_menu) | (1 << Common::Widx::view_menu) | (1 << Common::Widx::terraform_menu) | (1 << Common::Widx::railroad_menu) | (1 << Common::Widx::road_menu) | (1 << Common::Widx::port_menu) | (1 << Common::Widx::build_vehicles_menu) | (1 << Common::Widx::vehicles_menu) | (1 << Common::Widx::stations_menu) | (1 << Common::Widx::towns_menu);
         window->initScrollWidgets();
 
         auto skin = ObjectManager::get<interface_skin_object>();
@@ -269,6 +271,46 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 
             case 3:
                 Options::openMusicSettings();
+                break;
+        }
+    }
+
+    static void cheatsMenuMouseDown(window* window, widget_index widgetIndex)
+    {
+        // Check if cheats enabled
+
+        Dropdown::add(0, StringIds::dropdown_without_checkmark, StringIds::cheat_enable_sandbox_mode);
+        Dropdown::add(1, StringIds::dropdown_without_checkmark, StringIds::cheat_allow_manual_driving);
+        Dropdown::showBelow(window, widgetIndex, 2, 0);
+
+        if (isSandboxMode())
+            Dropdown::setItemSelected(0);
+
+        if (isDriverCheatEnabled())
+            Dropdown::setItemSelected(1);
+    }
+
+    static void cheatsMenuDropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
+    {
+        // Check if cheats enabled
+
+        if (itemIndex == -1)
+            return;
+
+        switch (itemIndex)
+        {
+            case 0:
+                if (!isSandboxMode())
+                    setScreenFlag(ScreenFlags::sandboxMode);
+                else
+                    clearScreenFlag(ScreenFlags::sandboxMode);
+                break;
+
+            case 1:
+                if (!isDriverCheatEnabled())
+                    setScreenFlag(ScreenFlags::driverCheatEnabled);
+                else
+                    clearScreenFlag(ScreenFlags::driverCheatEnabled);
                 break;
         }
     }
@@ -552,7 +594,11 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
                 audioMenuMouseDown(window, widgetIndex);
                 break;
 
-            case Widx::railroad_menu:
+            case Widx::cheats_menu:
+                cheatsMenuMouseDown(window, widgetIndex);
+                break;
+
+            case Common::Widx::railroad_menu:
                 railroadMenuMouseDown(window, widgetIndex);
                 break;
 
@@ -590,7 +636,11 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
                 audioMenuDropdown(window, widgetIndex, itemIndex);
                 break;
 
-            case Widx::railroad_menu:
+            case Widx::cheats_menu:
+                cheatsMenuDropdown(window, widgetIndex, itemIndex);
+                break;
+
+            case Common::Widx::railroad_menu:
                 railroadMenuDropdown(window, widgetIndex, itemIndex);
                 break;
 
@@ -623,10 +673,10 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 
         uint32_t company_colour = CompanyManager::getPlayerCompanyColour();
 
-        if (window->widgets[Widx::railroad_menu].type != widget_type::none)
+        if (window->widgets[Common::Widx::railroad_menu].type != widget_type::none)
         {
-            uint32_t x = window->widgets[Widx::railroad_menu].left + window->x;
-            uint32_t y = window->widgets[Widx::railroad_menu].top + window->y;
+            uint32_t x = window->widgets[Common::Widx::railroad_menu].left + window->x;
+            uint32_t y = window->widgets[Common::Widx::railroad_menu].top + window->y;
             uint32_t fg_image = 0;
 
             // Figure out what icon to show on the button face.
@@ -647,7 +697,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             uint32_t bg_image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_transparent, window->colours[2]);
 
             y--;
-            if (Input::isDropdownActive(Ui::WindowType::topToolbar, Widx::railroad_menu))
+            if (Input::isDropdownActive(Ui::WindowType::topToolbar, Common::Widx::railroad_menu))
             {
                 y++;
                 bg_image++;
@@ -655,7 +705,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 
             Gfx::drawImage(dpi, x, y, fg_image);
 
-            y = window->widgets[Widx::railroad_menu].top + window->y;
+            y = window->widgets[Common::Widx::railroad_menu].top + window->y;
             Gfx::drawImage(dpi, x, y, bg_image);
         }
 
@@ -733,12 +783,13 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             last_port_option = 1;
 
         window->widgets[Common::Widx::loadsave_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_loadsave, 0);
+        window->widgets[Widx::cheats_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_cogwheels, 0);
         window->widgets[Common::Widx::zoom_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_zoom, 0);
         window->widgets[Common::Widx::rotate_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_rotate, 0);
         window->widgets[Common::Widx::view_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_view, 0);
 
         window->widgets[Common::Widx::terraform_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_terraform, 0);
-        window->widgets[Widx::railroad_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_opaque, 0);
+        window->widgets[Common::Widx::railroad_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_opaque, 0);
         window->widgets[Common::Widx::road_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_opaque, 0);
         window->widgets[Common::Widx::port_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_opaque, 0);
         window->widgets[Common::Widx::build_vehicles_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_opaque, 0);
@@ -762,9 +813,9 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             window->widgets[Common::Widx::road_menu].type = widget_type::none;
 
         if (last_railroad_option != 0xFF)
-            window->widgets[Widx::railroad_menu].type = widget_type::wt_7;
+            window->widgets[Common::Widx::railroad_menu].type = widget_type::wt_7;
         else
-            window->widgets[Widx::railroad_menu].type = widget_type::none;
+            window->widgets[Common::Widx::railroad_menu].type = widget_type::none;
 
         if (addr<0x00525FAC, int8_t>() != -1 || addr<0x00525FAD, int8_t>() != -1)
             window->widgets[Common::Widx::port_menu].type = widget_type::wt_7;
@@ -786,9 +837,9 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             Common::rightAlignTabs(window, x, { Common::Widx::road_menu });
         }
 
-        if (window->widgets[Widx::railroad_menu].type != widget_type::none)
+        if (window->widgets[Common::Widx::railroad_menu].type != widget_type::none)
         {
-            Common::rightAlignTabs(window, x, { Widx::railroad_menu });
+            Common::rightAlignTabs(window, x, { Common::Widx::railroad_menu });
         }
 
         Common::rightAlignTabs(window, x, { Common::Widx::terraform_menu });

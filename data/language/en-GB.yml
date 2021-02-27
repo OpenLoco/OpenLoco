@@ -2208,3 +2208,5 @@ strings:
   2153: "Can't clone vehicle..."
   2154: "Locate vehicle on main view"
   2155: "Follow vehicle on main view"
+  2156: "Enable sandbox mode"
+  2157: "Allow manual driving"
