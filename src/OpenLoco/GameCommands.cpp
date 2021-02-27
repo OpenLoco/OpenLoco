@@ -40,7 +40,7 @@ namespace OpenLoco::GameCommands
         GameCommand id;
         GameCommandFunc implementation;
         uintptr_t originalAddress; // original array: 0x004F9548
-        bool resumesGame;          // original array: 0x004F9688
+        bool unpausesGame;         // original array: 0x004F9688
     };
 
     // clang-format off
@@ -163,7 +163,7 @@ namespace OpenLoco::GameCommands
 
         auto& gameCommand = _gameCommandDefinitions[esi];
         if ((flags & (GameCommandFlag::flag_4 | GameCommandFlag::flag_6)) == 0
-            && gameCommand.resumesGame
+            && gameCommand.unpausesGame
             && _updating_company_id == _player_company[0])
         {
             if (getPauseFlags() & 1)
