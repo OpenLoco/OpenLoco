@@ -16,66 +16,78 @@ namespace OpenLoco::Vehicles
     static loco_global<uint8_t, 0x009C68EA> gGameCommandExpenditureType; // premultiplied by 4
     static loco_global<uint16_t, 0x0113621D> _113621D;
 
-    // 0x004B6572
-    static uint32_t rename(const uint8_t flags /* bl */, thing_id_t headId /* cx */, int16_t index /* ax */, uint32_t buffer0 /* edx */, uint32_t buffer1 /* ebp */, uint32_t buffer2 /* edi */)
+    /**
+     * 0x004B6572 
+     * Rename vehicle - calls 3 times with part of the buffers (each 12 bytes long), in each cycle first without apply flag, second with apply flag.
+     * The vehicle name is up to 31 characters long (no more characters were taken during the game play).
+     *
+     * @param flags @<bl> - game command flags
+     * @param headId @<cx> - head id of the vehicle
+     * @param index @<ax> - update index (in order of: 1, 2, 0)
+     * @param buffer0 @<edx> - First group of 4 characters of a 12 character update buffer
+     * @param buffer1 @<dx> - Second group of 4 characters of a 12 character update buffer
+     * @param buffer2 @<bp> - Third group of 4 characters of a 12 character update buffer
+     * @return
+     */
+    static uint32_t rename(const uint8_t flags, thing_id_t headId, int16_t index, uint32_t buffer0, uint32_t buffer1, uint32_t buffer2)
     {
         static loco_global<thing_id_t, 0x0113621D> _headId_113621D;
-        gGameCommandExpenditureType = static_cast<uint8_t>(ExpenditureType::TrainRunningCosts) * 4; // 004B6572
-        if (index == 1)                                                                             // 004B6579-004B657D
+        gGameCommandExpenditureType = static_cast<uint8_t>(ExpenditureType::TrainRunningCosts) * 4;
+        if (index == 1)
         {
-            _headId_113621D = headId; // 004B657F
+            _headId_113621D = headId;
         }
 
         static uint32_t staticRenameBuffer[9];
 
-        if ((flags & GameCommands::apply) != 0) // 004B6586-004B6589
+        if ((flags & GameCommands::apply) != 0)
         {
             static const std::array<int, 3> transformTable = { 2, 0, 1 };
-            int arrayIndex = transformTable.at(index);        // 004B658B-004B6591
-            staticRenameBuffer[arrayIndex * 3] = buffer0;     // 004B6596-004B6599
-            staticRenameBuffer[arrayIndex * 3 + 1] = buffer1; // 004B659F
-            staticRenameBuffer[arrayIndex * 3 + 2] = buffer2; // 004B65A5
+            int arrayIndex = transformTable.at(index);
+            staticRenameBuffer[arrayIndex * 3] = buffer0;
+            staticRenameBuffer[arrayIndex * 3 + 1] = buffer1;
+            staticRenameBuffer[arrayIndex * 3 + 2] = buffer2;
         }
 
-        if (index != 0) // 004B65AB
+        if (index != 0)
         {
-            return 0; // 004B6655-004B6657
+            return 0;
         }
 
-        thing_id_t vehicleHeadId = _113621D;                                                          // 004B65B6
-        Vehicles::VehicleHead* vehicleHead = ThingManager::get<Vehicles::VehicleHead>(vehicleHeadId); // 004B65BD-004B65C0
+        thing_id_t vehicleHeadId = _113621D;
+        Vehicles::VehicleHead* vehicleHead = ThingManager::get<Vehicles::VehicleHead>(vehicleHeadId);
 
         char renameStringBuffer[37] = "";
         memcpy(renameStringBuffer, staticRenameBuffer, sizeof(staticRenameBuffer));
         renameStringBuffer[36] = '\0';
 
         char existingVehicleName[512];
-        auto args = FormatArguments::common(vehicleHead->var_44);                     // 004B65C6-004B65CA
-        StringManager::formatString(existingVehicleName, vehicleHead->var_22, &args); // 004B65D0-004B65E6
-        if (strcmp(existingVehicleName, renameStringBuffer) == 0)                     // 004B65F1-004B6601
+        auto args = FormatArguments::common(vehicleHead->var_44);
+        StringManager::formatString(existingVehicleName, vehicleHead->var_22, &args);
+        if (strcmp(existingVehicleName, renameStringBuffer) == 0)
         {
-            return 0; // 004B6655-004B6657
+            return 0;
         }
 
-        string_id allocatedStringId = 0;
-        if (strlen(renameStringBuffer) != 0) // 004B6603-004B660A
+        string_id allocatedStringId = StringIds::empty;
+        if (strlen(renameStringBuffer) != 0)
         {
-            allocatedStringId = StringManager::userStringAllocate(renameStringBuffer, 0); // 004B660C-004B6613
-            if (allocatedStringId == 0)                                                   // 004B6618-004B661B
+            allocatedStringId = StringManager::userStringAllocate(renameStringBuffer, 0);
+            if (allocatedStringId == StringIds::empty)
             {
-                return GameCommands::FAILURE; // 004B664D-004B6654
+                return GameCommands::FAILURE;
             }
-            if ((flags & GameCommands::apply) == 0) // 004B661D-004B6620
+            if ((flags & GameCommands::apply) == 0)
             {
-                StringManager::emptyUserString(allocatedStringId); // 004B6634-004B663B, 004B6655-004B6657
+                StringManager::emptyUserString(allocatedStringId);
                 return 0;
             }
         }
         else
         {
-            if ((flags & GameCommands::apply) == 0) // 004B663D-004B6640
+            if ((flags & GameCommands::apply) == 0)
             {
-                return 0; // 004B6639-004B663B, 004B6655-004B6657
+                return 0;
             }
 
             static const std::unordered_map<VehicleType, string_id> defaultVehicleStringIdMap = {
@@ -86,24 +98,14 @@ namespace OpenLoco::Vehicles
                 { VehicleType::aircraft, StringIds::aircraft_number },
                 { VehicleType::ship, StringIds::ship_number }
             };
-            allocatedStringId = defaultVehicleStringIdMap.at(vehicleHead->vehicleType); // 004B6642-004B664B
+            allocatedStringId = defaultVehicleStringIdMap.at(vehicleHead->vehicleType);
         }
 
         string_id oldStringId = vehicleHead->var_22;
-        vehicleHead->var_22 = allocatedStringId;     // 004B6622
-        StringManager::emptyUserString(oldStringId); // 004B6626
-        Gfx::invalidateScreen();                     // 004B662B
-        return 0;                                    // 004B6630-004B6632, 004B6655-004B6657
-
-        //registers regs;
-        //regs.ax = index;
-        //regs.bl = flags;
-        //regs.cx = headId;
-        //regs.edx = buffer0;
-        //regs.ebp = buffer1;
-        //regs.edi = buffer2;
-        //call(0x004B6572, regs);
-        //return regs.ebx;
+        vehicleHead->var_22 = allocatedStringId;
+        StringManager::emptyUserString(oldStringId);
+        Gfx::invalidateScreen();
+        return 0;
     }
 
     void rename(registers& regs)
