@@ -55,7 +55,7 @@ namespace OpenLoco::GameCommands
         { GameCommand::gc_unk_7,                      nullptr,                0x0049BB98, true  },
         { GameCommand::gc_unk_8,                      nullptr,                0x0049C7F2, true  },
         { GameCommand::change_loan,                   nullptr,                0x0046DE88, false },
-        { GameCommand::vehicle_rename,                nullptr,                0x004B6572, false },
+        { GameCommand::vehicle_rename,                Vehicles::rename,       0x004B6572, false },
         { GameCommand::change_station_name,           nullptr,                0x00490756, false },
         { GameCommand::vehicle_local_express,         nullptr,                0x004B694B, true  },
         { GameCommand::gc_unk_13,                     nullptr,                0x00488BDB, true  },

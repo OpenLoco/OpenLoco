@@ -16,6 +16,7 @@ namespace OpenLoco::Vehicles
     void create(OpenLoco::Interop::registers& regs);
     void orderSkip(OpenLoco::Interop::registers& regs);
     void cloneVehicle(OpenLoco::Interop::registers& regs);
+    void rename(OpenLoco::Interop::registers& regs);
 
     namespace Flags0C // commands?
     {

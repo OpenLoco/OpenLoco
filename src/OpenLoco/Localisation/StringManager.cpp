@@ -596,4 +596,22 @@ namespace OpenLoco::StringManager
     {
         return formatString(buffer, id, args);
     }
+
+    // 0x00496522
+    string_id userStringAllocate(char* str /* edi */, uint8_t cl)
+    {
+        registers regs;
+        regs.edi = reinterpret_cast<uint32_t>(str);
+        regs.cl = cl;
+        call(0x00496522, regs);
+        return regs.ax;
+    }
+
+    // 0x004965A6
+    void emptyUserString(string_id stringId)
+    {
+        registers regs;
+        regs.ax = stringId;
+        call(0x004965A6, regs);
+    }
 }
