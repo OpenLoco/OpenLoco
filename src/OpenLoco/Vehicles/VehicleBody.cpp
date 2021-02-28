@@ -171,7 +171,7 @@ namespace OpenLoco::Vehicles
         {
             Vehicle2* veh3 = vehicleUpdate_2;
             al = veh3->currentSpeed / (vehicle_object->speed / vehicle_object->bodySprites[object_sprite_type].numAnimationFrames);
-            al = std::min(al, vehicle_object->bodySprites[object_sprite_type].numAnimationFrames);
+            al = std::min<uint8_t>(al, vehicle_object->bodySprites[object_sprite_type].numAnimationFrames - 1);
         }
         else if (vehicle_object->bodySprites[object_sprite_type].numRollFrames != 1)
         {
