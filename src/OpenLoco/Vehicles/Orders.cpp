@@ -84,7 +84,7 @@ namespace OpenLoco::Vehicles
     void OrderRouteWaypoint::setTrackId(const uint8_t trackId)
     {
         _data[3] &= ~0xF8;
-        _data[3] = (trackId & 0x1F) << 3;
+        _data[3] |= (trackId & 0x1F) << 3;
         _data[4] = (trackId >> 5) & 0x1;
     }
 
