@@ -76,7 +76,7 @@ namespace OpenLoco
     loco_global<uint16_t, 0x00508F12> _screen_age;
     loco_global<uint16_t, 0x00508F14> _screenFlags;
     loco_global<uint8_t, 0x00508F17> paused_state;
-    loco_global<uint8_t, 0x00508F1A> game_speed;
+    loco_global<uint8_t, 0x00508F1A> _gameSpeed;
     static loco_global<string_id, 0x0050A018> _mapTooltipFormatArguments;
     static loco_global<int32_t, 0x0052339C> _52339C;
     static loco_global<int8_t, 0x0052336E> _52336E; // bool
@@ -205,13 +205,13 @@ namespace OpenLoco
 
     uint8_t getGameSpeed()
     {
-        return game_speed;
+        return _gameSpeed;
     }
 
     void setGameSpeed(uint8_t speed)
     {
         assert(speed >= 0 && speed <= 3);
-        game_speed = speed;
+        _gameSpeed = speed;
     }
 
     uint32_t scenarioTicks()
@@ -670,10 +670,10 @@ namespace OpenLoco
                 }
                 uint16_t var_F253A0 = std::max<uint16_t>(1, numUpdates);
                 _screen_age = std::min(0xFFFF, (int32_t)_screen_age + var_F253A0);
-                if (game_speed != 0)
+                if (_gameSpeed != 0)
                 {
                     numUpdates *= 3;
-                    if (game_speed != 1)
+                    if (_gameSpeed != 1)
                     {
                         numUpdates *= 3;
                     }
