@@ -258,12 +258,14 @@ namespace OpenLoco::Vehicles
         void updateLastJourneyAverageSpeed();
         void beginUnloading();
         uint32_t updateWaterMotion(uint32_t flags);
+        void moveBoatTo(const Map::map_pos3& loc, const uint8_t yaw, const Pitch pitch);
         void updateUnloadCargo();
         bool updateLoadCargo();
         void beginNewJourney();
         void advanceToNextRoutableOrder();
         Status sub_427BF2();
         void produceLeavingDockSound();
+        std::tuple<station_id_t, Map::map_pos, Map::map_pos3> sub_427FC9();
     };
     static_assert(sizeof(VehicleHead) == 0x7A); // Can't use offset_of change this to last field if more found
 

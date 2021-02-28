@@ -31,6 +31,7 @@ namespace OpenLoco::Vehicles
     static loco_global<uint8_t, 0x01136237> vehicle_var_1136237;       // var_28 related?
     static loco_global<uint8_t, 0x01136238> vehicle_var_1136238;       // var_28 related?
     static loco_global<Status, 0x0113646C> vehicleUpdate_initialStatus;
+    static loco_global<int16_t[128], 0x00503B6A> factorXY503B6A;
 
     void VehicleHead::updateVehicle()
     {
@@ -861,14 +862,209 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x00427C05
+    // Input flags:
+    // bit 0  : commandedToStop
+    // bit 1  : isLeavingDock
+    // Output flags:
+    // bit 16 : reachedDock
+    // bit 17 : reachedADestination
     uint32_t VehicleHead::updateWaterMotion(uint32_t flags)
     {
-        // some sort of routing logic
-        registers regs;
-        regs.esi = reinterpret_cast<int32_t>(this);
-        regs.eax = flags;
-        call(0x00427C05, regs);
-        return regs.eax;
+        Vehicle2* veh2 = vehicleUpdate_2;
+
+        // updates the current boats position and sets flags about position
+        auto tile = TileManager::get(Map::map_pos{ veh2->x, veh2->y });
+        surface_element* surface = tile.surface();
+
+        if (surface != nullptr)
+        {
+            auto waterHeight = surface->water();
+            if (waterHeight != 0)
+            {
+                if (surface->hasHighTypeFlag())
+                {
+                    surface->setHighTypeFlag(false);
+                    surface->setVar6SLR5(0);
+                }
+                surface->setIndustry(0);
+                surface->setType6Flag(true);
+            }
+        }
+
+        auto targetSpeed = 5_mph;
+        if (stationId == StationId::null)
+        {
+            if (!(flags & WaterMotionFlags::isStopping))
+            {
+                if (!(veh2->var_73 & Flags73::isBrokenDown))
+                {
+                    targetSpeed = veh2->maxSpeed;
+                }
+            }
+        }
+
+        if (targetSpeed == veh2->currentSpeed)
+        {
+            veh2->var_5A = 2;
+        }
+        else if (targetSpeed < veh2->currentSpeed)
+        {
+            veh2->var_5A = 2;
+            auto decelerationRate = 1.0_mph;
+            if (veh2->currentSpeed >= 50.0_mph)
+            {
+                decelerationRate = 3.0_mph;
+            }
+            veh2->var_5A = 3;
+            auto newSpeed = std::max(veh2->currentSpeed - decelerationRate, 0.0_mph);
+            veh2->currentSpeed = std::max<Speed32>(targetSpeed, newSpeed);
+        }
+        else
+        {
+            veh2->var_5A = 1;
+            veh2->currentSpeed = std::min<Speed32>(targetSpeed, veh2->currentSpeed + 0.333333_mph);
+        }
+
+        auto manhattanDistance = std::abs(x - veh2->x) + std::abs(y - veh2->y);
+        auto targetTolerance = 3;
+        if (veh2->currentSpeed >= 20.0_mph)
+        {
+            targetTolerance = 16;
+            if (veh2->currentSpeed > 70.0_mph)
+            {
+                targetTolerance = 24;
+            }
+        }
+
+        if ((flags & WaterMotionFlags::isLeavingDock) || manhattanDistance <= targetTolerance)
+        {
+            flags |= WaterMotionFlags::hasReachedADestination;
+            if (stationId != StationId::null && !(flags & WaterMotionFlags::isLeavingDock))
+            {
+                flags |= WaterMotionFlags::hasReachedDock;
+            }
+            if (flags & WaterMotionFlags::isStopping)
+            {
+                return flags;
+            }
+
+            OrderRingView orders(orderTableOffset, currentOrder);
+            auto curOrder = orders.begin();
+            auto waypoint = curOrder->as<OrderRouteWaypoint>();
+            if (waypoint != nullptr)
+            {
+                auto point = waypoint->getWaypoint();
+                if (point.x == (x & 0xFFE0) && point.y == (y & 0xFFE0))
+                {
+                    currentOrder = (++curOrder)->getOffset() - orderTableOffset;
+                    Ui::WindowManager::sub_4B93A5(id);
+                }
+            }
+
+            if (!(flags & WaterMotionFlags::isLeavingDock) && stationId != StationId::null)
+            {
+                return flags;
+            }
+
+            if (stationId != StationId::null)
+            {
+                auto targetTile = TileManager::get(Map::map_pos{ tile_x, tile_y });
+                station_element* station = nullptr;
+                for (auto& el : targetTile)
+                {
+                    station = el.asStation();
+                    if (station == nullptr)
+                    {
+                        continue;
+                    }
+                    if (station->isGhost() || station->isFlag5())
+                    {
+                        continue;
+                    }
+                    if (station->baseZ() == tile_base_z)
+                    {
+                        station->setFlag6(false);
+                        stationId = StationId::null;
+                        break;
+                    }
+                }
+            }
+            auto [newStationId, headTarget, stationTarget] = sub_427FC9();
+            moveTo({ headTarget.x, headTarget.y, 32 });
+
+            if (newStationId != StationId::null)
+            {
+                stationId = newStationId;
+                tile_x = stationTarget.x;
+                tile_y = stationTarget.y;
+                tile_base_z = stationTarget.z / 4;
+
+                auto targetTile = TileManager::get(Map::map_pos{ tile_x, tile_y });
+                station_element* station = nullptr;
+                for (auto& el : targetTile)
+                {
+                    station = el.asStation();
+                    if (station == nullptr)
+                    {
+                        continue;
+                    }
+                    if (station->isGhost() || station->isFlag5())
+                    {
+                        continue;
+                    }
+                    if (station->baseZ() == tile_base_z)
+                    {
+                        station->setFlag6(true);
+                        break;
+                    }
+                }
+            }
+        }
+
+        auto targetYaw = calculateYaw4FromVector(x - veh2->x, y - veh2->y);
+        if (targetYaw != veh2->sprite_yaw)
+        {
+            if (((targetYaw - veh2->sprite_yaw) & 0x3F) > 0x20)
+            {
+                veh2->sprite_yaw--;
+            }
+            else
+            {
+                veh2->sprite_yaw++;
+            }
+            veh2->sprite_yaw &= 0x3F;
+        }
+
+        Vehicle1* veh1 = vehicleUpdate_1;
+        auto distX = (veh2->currentSpeed.getRaw() >> 13) * factorXY503B6A[veh2->sprite_yaw * 2];
+        auto distY = (veh2->currentSpeed.getRaw() >> 13) * factorXY503B6A[veh2->sprite_yaw * 2 + 1];
+
+        auto bigCoordX = veh1->var_4E + (veh2->x << 16) + distX;
+        auto bigCoordY = veh1->var_50 + (veh2->y << 16) + distY;
+
+        veh1->var_4E = bigCoordX & 0xFFFF;
+        veh1->var_50 = bigCoordY & 0xFFFF;
+
+        map_pos3 newLocation = { static_cast<int16_t>(bigCoordX >> 16), static_cast<int16_t>(bigCoordY >> 16), veh2->z };
+        moveBoatTo(newLocation, veh2->sprite_yaw, Pitch::flat);
+
+        return flags;
+    }
+
+    // 0x00427B70
+    void VehicleHead::moveBoatTo(const map_pos3& newLoc, const uint8_t yaw, const Pitch pitch)
+    {
+        Vehicle train(this);
+        train.veh1->moveTo({ newLoc.x, newLoc.y, newLoc.z });
+        train.veh1->tile_x = 0;
+        train.veh2->moveTo({ newLoc.x, newLoc.y, newLoc.z });
+        train.veh2->tile_x = 0;
+        train.cars.firstCar.body->invalidateSprite();
+        train.cars.firstCar.body->moveTo({ newLoc.x, newLoc.y, newLoc.z });
+        train.cars.firstCar.body->sprite_yaw = yaw;
+        train.cars.firstCar.body->sprite_pitch = pitch;
+        train.cars.firstCar.body->tile_x = 0;
+        train.cars.firstCar.body->invalidateSprite();
     }
 
     // 0x004B9A2A
@@ -939,5 +1135,16 @@ namespace OpenLoco::Vehicles
             Vehicle2* veh2 = vehicleUpdate_2;
             Audio::playSound(randSoundId, { veh2->x, veh2->y, static_cast<int16_t>(veh2->z + 22) }, 0, 22050);
         }
+    }
+
+    // 0x00427FC9
+    std::tuple<station_id_t, Map::map_pos, Map::map_pos3> VehicleHead::sub_427FC9()
+    {
+        registers regs;
+        regs.esi = reinterpret_cast<int32_t>(this);
+        call(0x00427FC9, regs);
+        Map::map_pos headTarget = { regs.ax, regs.cx };
+        Map::map_pos3 stationTarget = { regs.di, regs.bp, regs.dl };
+        return std::make_tuple(regs.bx, headTarget, stationTarget);
     }
 }

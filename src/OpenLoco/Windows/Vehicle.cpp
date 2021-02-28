@@ -2803,7 +2803,11 @@ namespace OpenLoco::Ui::Vehicle
                         auto main = WindowManager::getMainWindow();
                         if (main)
                         {
-                            main->viewportCentreOnTile(routeOrder->getWaypoint());
+                            auto position = routeOrder->getWaypoint();
+                            position.x += 16;
+                            position.y += 16;
+                            position.z += 32;
+                            main->viewportCentreOnTile(position);
                         }
                     }
                     break;
