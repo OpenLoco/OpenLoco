@@ -309,15 +309,17 @@ namespace OpenLoco::Ui::ViewportInteraction
         if (OpenLoco::isTitleMode())
             return InteractionArg{};
 
-        auto interactionsToInclude = ~0 & ~InteractionItemFlags::entity & ~InteractionItemFlags::townLabel & ~InteractionItemFlags::stationLabel;
+        auto interactionsToInclude = ~(InteractionItemFlags::entity | InteractionItemFlags::townLabel | InteractionItemFlags::stationLabel);
         auto res = getMapCoordinatesFromPos(tempX, tempY, interactionsToInclude);
 
         auto interaction = res.first;
         if (interaction.type != InteractionItem::entity)
         {
+            // clang-format off
             interactionsToInclude = ~(InteractionItemFlags::entity | InteractionItemFlags::track | InteractionItemFlags::roadAndTram
                 | InteractionItemFlags::headquarterBuilding | InteractionItemFlags::station | InteractionItemFlags::townLabel
                 | InteractionItemFlags::stationLabel | InteractionItemFlags::industry);
+            // clang-format on
             res = getMapCoordinatesFromPos(tempX, tempY, interactionsToInclude);
             interaction = res.first;
         }
