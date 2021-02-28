@@ -315,9 +315,9 @@ namespace OpenLoco::Ui::ViewportInteraction
         auto interaction = res.first;
         if (interaction.type != InteractionItem::entity)
         {
-            interactionsToInclude = ~0 & ~InteractionItemFlags::entity & ~InteractionItemFlags::track & ~InteractionItemFlags::roadAndTram
-                & ~InteractionItemFlags::headquarterBuilding & ~InteractionItemFlags::station & ~InteractionItemFlags::townLabel
-                & ~InteractionItemFlags::stationLabel & ~InteractionItemFlags::industry;
+            interactionsToInclude = ~(InteractionItemFlags::entity | InteractionItemFlags::track | InteractionItemFlags::roadAndTram
+                | InteractionItemFlags::headquarterBuilding | InteractionItemFlags::station | InteractionItemFlags::townLabel
+                | InteractionItemFlags::stationLabel | InteractionItemFlags::industry);
             res = getMapCoordinatesFromPos(tempX, tempY, interactionsToInclude);
             interaction = res.first;
         }
