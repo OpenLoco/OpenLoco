@@ -9,7 +9,9 @@
 #include "../StationManager.h"
 #include "../Things/Misc.h"
 #include "../Things/ThingManager.h"
+#include "../Ui/WindowManager.h"
 #include "../ViewportManager.h"
+#include "Orders.h"
 #include "Vehicle.h"
 #include <cassert>
 
@@ -813,9 +815,22 @@ namespace OpenLoco::Vehicles
     // 0x004B9987
     void VehicleHead::checkIfAtOrderStation()
     {
-        registers regs;
-        regs.esi = reinterpret_cast<int32_t>(this);
-        call(0x004B9987, regs);
+        OrderRingView orders(orderTableOffset, currentOrder);
+        auto curOrder = orders.begin();
+        auto* orderStation = curOrder->as<OrderStation>();
+        if (orderStation == nullptr)
+        {
+            return;
+        }
+
+        if (orderStation->getStation() != stationId)
+        {
+            return;
+        }
+
+        curOrder++;
+        currentOrder = curOrder->getOffset() - orderTableOffset;
+        Ui::WindowManager::sub_4B93A5(id);
     }
 
     // 0x004BACAF
@@ -886,9 +901,24 @@ namespace OpenLoco::Vehicles
     // 0x004707C0
     void VehicleHead::advanceToNextRoutableOrder()
     {
-        registers regs;
-        regs.esi = reinterpret_cast<int32_t>(this);
-        call(0x004707C0, regs);
+        if (sizeOfOrderTable == 1)
+        {
+            return;
+        }
+        OrderRingView orders(orderTableOffset, currentOrder);
+        for (auto& order : orders)
+        {
+            if (order.hasFlag(OrderFlags::IsRoutable))
+            {
+                auto newOrder = order.getOffset() - orderTableOffset;
+                if (newOrder != currentOrder)
+                {
+                    currentOrder = newOrder;
+                    Ui::WindowManager::sub_4B93A5(id);
+                }
+                return;
+            }
+        }
     }
 
     // 0x00427BF2

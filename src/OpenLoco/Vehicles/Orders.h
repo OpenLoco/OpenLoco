@@ -23,6 +23,7 @@ namespace OpenLoco::Vehicles
         constexpr uint8_t HasCargo = (1 << 2);
         constexpr uint8_t HasStation = (1 << 3);
     }
+
 #pragma pack(push, 1)
     struct Order
     {
@@ -45,12 +46,12 @@ namespace OpenLoco::Vehicles
 
         template<typename T>
         constexpr bool is() const { return getType() == T::TYPE; }
+
         template<typename T>
         T* as() { return is<T>() ? reinterpret_cast<T*>(this) : nullptr; }
         template<typename T>
         const T* as() const { return is<T>() ? reinterpret_cast<const T*>(this) : nullptr; }
     };
-
     static_assert(sizeof(Order) == 1, "Size of order must be 1 for pointer arithmatic to work in OrderTableView");
 
     struct OrderEnd : Order
@@ -94,6 +95,16 @@ namespace OpenLoco::Vehicles
             setStation(station);
         }
     };
+
+    template<>
+    constexpr bool Order::is<OrderStation>() const
+    {
+        if (is<OrderStopAt>())
+        {
+            return true;
+        }
+        return is<OrderRouteThrough>();
+    }
 
     struct OrderRouteWaypoint : Order
     {
