@@ -20,7 +20,6 @@ namespace OpenLoco::GameCommands
     static loco_global<uint8_t, 0x00508F08> game_command_nest_level;
     static loco_global<company_id_t[2], 0x00525E3C> _player_company;
     static loco_global<uint8_t, 0x00508F17> paused_state;
-    static loco_global<uint8_t, 0x00508F1A> game_speed;
     static loco_global<uint16_t, 0x0050A004> _50A004;
 
     static uint16_t _gameCommandFlags;
@@ -174,9 +173,9 @@ namespace OpenLoco::GameCommands
                 _50A004 = _50A004 | 1;
             }
 
-            if (game_speed != 0)
+            if (getGameSpeed() != 0)
             {
-                game_speed = 0;
+                setGameSpeed(0);
                 WindowManager::invalidate(WindowType::timeToolbar);
             }
 

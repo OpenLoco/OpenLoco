@@ -41,6 +41,8 @@ namespace OpenLoco
     bool isPaused();
     uint8_t getPauseFlags();
     void togglePause(bool value);
+    uint8_t getGameSpeed();
+    void setGameSpeed(uint8_t speed);
     uint32_t scenarioTicks();
     Utility::prng& gPrng();
     void initialiseViewports();
