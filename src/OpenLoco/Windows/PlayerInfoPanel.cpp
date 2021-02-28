@@ -58,7 +58,6 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     static loco_global<uint16_t, 0x0050A004> _50A004; // maybe date related
     static loco_global<uint16_t, 0x0052338A> _tooltipTimeout;
     static loco_global<int32_t, 0x00e3f0b8> gCurrentRotation;
-    static loco_global<uint8_t, 0x00508F1A> game_speed;
     static loco_global<uint16_t, 0x0113DC78> _113DC78; // Dropdown flags?
 
     static void prepareDraw(window* window);

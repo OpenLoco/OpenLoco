@@ -202,6 +202,17 @@ namespace OpenLoco
         call(0x00431E32, regs);
     }
 
+    uint8_t getGameSpeed()
+    {
+        return game_speed;
+    }
+
+    void setGameSpeed(uint8_t speed)
+    {
+        assert(speed >= 0 && speed <= 3);
+        game_speed = speed;
+    }
+
     uint32_t scenarioTicks()
     {
         return _scenario_ticks;

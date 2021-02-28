@@ -70,7 +70,6 @@ namespace OpenLoco::Ui::TimePanel
     static loco_global<uint8_t, 0x00526231> objectiveFlags;
     static loco_global<uint16_t, 0x0052338A> _tooltipTimeout;
     static loco_global<int32_t, 0x00e3f0b8> gCurrentRotation;
-    static loco_global<uint8_t, 0x00508F1A> game_speed;
 
     static loco_global<uint8_t, 0x00526240> objectiveTimeLimitYears;
     static loco_global<uint16_t, 0x00526243> objectiveMonthsInChallenge;
@@ -125,15 +124,15 @@ namespace OpenLoco::Ui::TimePanel
         {
             _widgets[Widx::pause_btn].image = Gfx::recolour(ImageIds::speed_pause_active);
         }
-        else if (game_speed == 0)
+        else if (getGameSpeed() == 0)
         {
             _widgets[Widx::normal_speed_btn].image = Gfx::recolour(ImageIds::speed_normal_active);
         }
-        else if (game_speed == 1)
+        else if (getGameSpeed() == 1)
         {
             _widgets[Widx::fast_forward_btn].image = Gfx::recolour(ImageIds::speed_fast_forward_active);
         }
-        else if (game_speed == 2)
+        else if (getGameSpeed() == 2)
         {
             _widgets[Widx::extra_fast_forward_btn].image = Gfx::recolour(ImageIds::speed_extra_fast_forward_active);
         }
@@ -406,7 +405,7 @@ namespace OpenLoco::Ui::TimePanel
             GameCommands::do_20();
         }
 
-        game_speed = speed;
+        setGameSpeed(speed);
         w->invalidate();
     }
 

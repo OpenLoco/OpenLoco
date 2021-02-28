@@ -11,8 +11,6 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Title
 {
-    static loco_global<uint8_t, 0x00508F1A> _gameSpeed;
-
     static void sub_473A95(int32_t eax);
 
     void registerHooks()
@@ -72,7 +70,7 @@ namespace OpenLoco::Title
         Ui::WindowManager::closeAllFloatingWindows();
         setAllScreenFlags(currentScreenFlags);
         setScreenFlag(ScreenFlags::title);
-        _gameSpeed = 0;
+        setGameSpeed(0);
         sub_472031();
         sub_473A95(1);
         sub_474874();

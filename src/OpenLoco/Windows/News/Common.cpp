@@ -19,7 +19,7 @@ namespace OpenLoco::Ui::NewsWindow
 
         int16_t y = Ui::height() - _word_525CE0;
 
-        if (_gameSpeed != 0 || isOld)
+        if (getGameSpeed() != 0 || isOld)
         {
             y = Ui::height() - windowSize.height;
             _word_525CE0 = windowSize.height;

@@ -21,7 +21,6 @@ namespace OpenLoco::Ui::NewsWindow
     static loco_global<uint16_t[31], 0x004F8BE4> _word_4F8BE4;
     static loco_global<uint8_t[31], 0x004F8C22> _messageTypes;
     static loco_global<uint8_t[31], 0x004F8C41> _messageSounds;
-    static loco_global<uint8_t, 0x00508F1A> _gameSpeed;
     static loco_global<uint8_t[3], 0x005215B5> _unk_5215B5;
     static loco_global<uint32_t, 0x00523338> _cursorX2;
     static loco_global<uint32_t, 0x0052333C> _cursorY2;
