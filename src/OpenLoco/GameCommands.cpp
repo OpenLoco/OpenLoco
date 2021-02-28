@@ -81,7 +81,7 @@ namespace OpenLoco::GameCommands
         { GameCommand::gc_unk_33,                     nullptr,                0x004C466C, true  },
         { GameCommand::gc_unk_34,                     nullptr,                0x004C4717, false },
         { GameCommand::vehicle_order_insert,          nullptr,                0x0047036E, false },
-        { GameCommand::vehicle_order_delete,          nullptr,                0x0047057A, false },
+        { GameCommand::vehicle_order_delete,          Vehicles::orderSkip,    0x0047057A, false },
         { GameCommand::vehicle_order_skip,            nullptr,                0x0047071A, false },
         { GameCommand::gc_unk_38,                     nullptr,                0x00475FBC, true  },
         { GameCommand::gc_unk_39,                     nullptr,                0x004775A5, true  },
