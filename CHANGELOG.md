@@ -4,6 +4,7 @@
 - Fix: [#794] Game does not stay paused while in construction mode.
 - Fix: [#798] Setting waypoints on multitile track/road elements corrupts the position.
 - Fix: [#801] Initial save path does not contain a trailing slash.
+- Fix: [#807] Incorrect vehicle animation for speed based animations like hydrofoils when at max speed.
 
 21.02 (2021-02-20)
 ------------------------------------------------------------------------
