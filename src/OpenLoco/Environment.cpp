@@ -210,7 +210,8 @@ namespace OpenLoco::Environment
         auto basePath = resolveLocoInstallPath();
         setDirectory(_path_install, basePath);
 
-        auto saveDirectory = getPathNoWarning(path_id::save);
+        // NB: vanilla routines do not use std::filesystem yet, so the trailing slash is still needed.
+        auto saveDirectory = getPathNoWarning(path_id::save) / "";
         setDirectory(_path_saves_single_player, saveDirectory);
         setDirectory(_path_saves_two_player, saveDirectory);
         autoCreateDirectory(saveDirectory);
