@@ -873,7 +873,7 @@ namespace OpenLoco::Vehicles
         Vehicle2* veh2 = vehicleUpdate_2;
 
         // updates the current boats position and sets flags about position
-        auto tile = TileManager::get({ veh2->x, veh2->y });
+        auto tile = TileManager::get(Map::map_pos{ veh2->x, veh2->y });
         surface_element* surface = tile.surface();
 
         if (surface != nullptr)
@@ -902,6 +902,7 @@ namespace OpenLoco::Vehicles
                 }
             }
         }
+
         if (targetSpeed == veh2->currentSpeed)
         {
             veh2->var_5A = 2;
@@ -921,7 +922,7 @@ namespace OpenLoco::Vehicles
         else
         {
             veh2->var_5A = 1;
-            veh2->currentSpeed = std::min<Speed32>(targetSpeed, veh2->currentSpeed + 0.3333_mph);
+            veh2->currentSpeed = std::min<Speed32>(targetSpeed, veh2->currentSpeed + 0.333333_mph);
         }
 
         auto manhattanDistance = std::abs(x - veh2->x) + std::abs(y - veh2->y);
@@ -967,7 +968,7 @@ namespace OpenLoco::Vehicles
 
             if (stationId != StationId::null)
             {
-                auto targetTile = TileManager::get({ tile_x, tile_y });
+                auto targetTile = TileManager::get(Map::map_pos{ tile_x, tile_y });
                 station_element* station = nullptr;
                 for (auto el : targetTile)
                 {
@@ -998,7 +999,7 @@ namespace OpenLoco::Vehicles
                 tile_y = stationTarget.y;
                 tile_base_z = stationTarget.z / 4;
 
-                auto targetTile = TileManager::get({ tile_x, tile_y });
+                auto targetTile = TileManager::get(Map::map_pos{ tile_x, tile_y });
                 station_element* station = nullptr;
                 for (auto el : targetTile)
                 {
