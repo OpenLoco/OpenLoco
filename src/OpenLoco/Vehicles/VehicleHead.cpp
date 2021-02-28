@@ -970,7 +970,7 @@ namespace OpenLoco::Vehicles
             {
                 auto targetTile = TileManager::get(Map::map_pos{ tile_x, tile_y });
                 station_element* station = nullptr;
-                for (auto el : targetTile)
+                for (auto& el : targetTile)
                 {
                     station = el.asStation();
                     if (station == nullptr)
@@ -1001,7 +1001,7 @@ namespace OpenLoco::Vehicles
 
                 auto targetTile = TileManager::get(Map::map_pos{ tile_x, tile_y });
                 station_element* station = nullptr;
-                for (auto el : targetTile)
+                for (auto& el : targetTile)
                 {
                     station = el.asStation();
                     if (station == nullptr)
