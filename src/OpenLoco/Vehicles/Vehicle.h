@@ -14,6 +14,7 @@ namespace OpenLoco::Vehicles
     constexpr auto max_vehicle_length = 176; // TODO: Units?
 
     void create(OpenLoco::Interop::registers& regs);
+    void orderSkip(OpenLoco::Interop::registers& regs);
     void cloneVehicle(OpenLoco::Interop::registers& regs);
     void rename(OpenLoco::Interop::registers& regs);
 
