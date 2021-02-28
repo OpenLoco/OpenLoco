@@ -802,7 +802,7 @@ namespace OpenLoco
         invalidate_map_animations();
         Audio::updateVehicleNoise();
         Audio::updateAmbientNoise();
-        call(0x00444387);
+        Title::update();
 
         S5::getOptions().madeAnyChanges = addr<0x00F25374, uint8_t>();
         if (_50C197 != 0)
