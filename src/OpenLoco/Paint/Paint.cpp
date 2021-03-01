@@ -497,9 +497,31 @@ namespace OpenLoco::Paint
     // 0x0045EDFC
     static bool isPSSpriteTypeInFilter(const InteractionItem spriteType, uint32_t filter)
     {
-        constexpr uint32_t interactionItemToFilter[] = { 0, 1 << 0, 1 << 0, 1 << 1, 1 << 2, 1 << 14, 1 << 7, 1 << 11, 1 << 11, 1 << 11, 1 << 11, 1 << 3, 1 << 4, 1 << 8, 1 << 12, 1 << 13, 1 << 5, 1 << 6, 000, 1 << 15, 1 << 16, 1 << 9 };
-        if (spriteType == InteractionItem::t_0
-            || spriteType == InteractionItem::t_18) // 18 as a type seems to not exist.
+        constexpr uint32_t interactionItemToFilter[] = { 0,
+                                                         InteractionItemFlags::surface,
+                                                         InteractionItemFlags::surface,
+                                                         InteractionItemFlags::entity,
+                                                         InteractionItemFlags::track,
+                                                         InteractionItemFlags::trackExtra,
+                                                         InteractionItemFlags::signal,
+                                                         InteractionItemFlags::station,
+                                                         InteractionItemFlags::station,
+                                                         InteractionItemFlags::station,
+                                                         InteractionItemFlags::station,
+                                                         InteractionItemFlags::water,
+                                                         InteractionItemFlags::tree,
+                                                         InteractionItemFlags::wall,
+                                                         InteractionItemFlags::townLabel,
+                                                         InteractionItemFlags::stationLabel,
+                                                         InteractionItemFlags::roadAndTram,
+                                                         InteractionItemFlags::roadAndTramExtra,
+                                                         0,
+                                                         InteractionItemFlags::building,
+                                                         InteractionItemFlags::industry,
+                                                         InteractionItemFlags::headquarterBuilding };
+
+        if (spriteType == InteractionItem::noInteraction
+            || spriteType == InteractionItem::bridge) // 18 as a type seems to not exist.
             return false;
 
         uint32_t mask = interactionItemToFilter[static_cast<size_t>(spriteType)];
@@ -555,8 +577,7 @@ namespace OpenLoco::Paint
     {
         InteractionArg interaction{};
 
-        // -2 as there are two interaction items that you can't filter out adjust in future
-        if (flags & (1 << (static_cast<uint32_t>(InteractionItem::station) - 2)))
+        if (flags & InteractionItemFlags::stationLabel)
         {
             return interaction;
         }
@@ -580,7 +601,7 @@ namespace OpenLoco::Paint
                 continue;
             }
 
-            interaction.type = InteractionItem::station;
+            interaction.type = InteractionItem::stationLabel;
             interaction.value = station.id();
             interaction.x = station.x;
             interaction.y = station.y;
@@ -593,8 +614,7 @@ namespace OpenLoco::Paint
     {
         InteractionArg interaction{};
 
-        // -2 as there are two interaction items that you can't filter out adjust in future
-        if (flags & (1 << (static_cast<uint32_t>(InteractionItem::town) - 2)))
+        if (flags & InteractionItemFlags::townLabel)
         {
             return interaction;
         }
@@ -613,7 +633,7 @@ namespace OpenLoco::Paint
                 continue;
             }
 
-            interaction.type = InteractionItem::town;
+            interaction.type = InteractionItem::townLabel;
             interaction.value = town.id();
             interaction.x = town.x;
             interaction.y = town.y;

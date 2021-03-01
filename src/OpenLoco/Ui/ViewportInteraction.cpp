@@ -102,7 +102,7 @@ namespace OpenLoco::Ui::ViewportInteraction
             return false;
 
         interaction.value = station->stationId();
-        interaction.type = InteractionItem::station;
+        interaction.type = InteractionItem::stationLabel;
         return getStationArguments(station->stationId());
     }
 
@@ -309,15 +309,18 @@ namespace OpenLoco::Ui::ViewportInteraction
         if (OpenLoco::isTitleMode())
             return InteractionArg{};
 
-        // 0x2000 | 0x1000 | 0x2
-        // station | town | thing
-        auto res = getMapCoordinatesFromPos(tempX, tempY, 0b11111111111111111100111111111101);
+        auto interactionsToInclude = ~(InteractionItemFlags::entity | InteractionItemFlags::townLabel | InteractionItemFlags::stationLabel);
+        auto res = getMapCoordinatesFromPos(tempX, tempY, interactionsToInclude);
+
         auto interaction = res.first;
-        if (interaction.type != InteractionItem::thing)
+        if (interaction.type != InteractionItem::entity)
         {
-            // 0x10000 | 0x2000 | 0x1000 | 0x800 | 0x200 | 0x20 | 0x4 | 0x2
-            // industry | station | town | (7|8|9|10) | headquarterBuilding | road | track | thing
-            res = getMapCoordinatesFromPos(tempX, tempY, 0b11111111111111101100010111011001);
+            // clang-format off
+            interactionsToInclude = ~(InteractionItemFlags::entity | InteractionItemFlags::track | InteractionItemFlags::roadAndTram
+                | InteractionItemFlags::headquarterBuilding | InteractionItemFlags::station | InteractionItemFlags::townLabel
+                | InteractionItemFlags::stationLabel | InteractionItemFlags::industry);
+            // clang-format on
+            res = getMapCoordinatesFromPos(tempX, tempY, interactionsToInclude);
             interaction = res.first;
         }
 
@@ -332,10 +335,10 @@ namespace OpenLoco::Ui::ViewportInteraction
             case InteractionItem::road:
                 success = _road(interaction);
                 break;
-            case InteractionItem::town:
+            case InteractionItem::townLabel:
                 success = getTownArguments(static_cast<town_id_t>(interaction.value));
                 break;
-            case InteractionItem::station:
+            case InteractionItem::stationLabel:
                 success = getStationArguments(static_cast<station_id_t>(interaction.value));
                 break;
             case InteractionItem::trackStation:
@@ -350,7 +353,7 @@ namespace OpenLoco::Ui::ViewportInteraction
             case InteractionItem::headquarterBuilding:
                 success = getHeadquarterArguments(interaction);
                 break;
-            case InteractionItem::thing:
+            case InteractionItem::entity:
                 success = getVehicleArguments(interaction);
                 break;
             default:
@@ -392,7 +395,7 @@ namespace OpenLoco::Ui::ViewportInteraction
 
         if (nearestDistance <= 32 && nearestVehicle != nullptr)
         {
-            interaction.type = InteractionItem::thing;
+            interaction.type = InteractionItem::entity;
             interaction.object = reinterpret_cast<void*>(nearestVehicle);
             interaction.x = nearestVehicle->x;
             interaction.y = nearestVehicle->y;
@@ -407,11 +410,36 @@ namespace OpenLoco::Ui::ViewportInteraction
     // 0x004CDB2B
     InteractionArg rightOver(int16_t x, int16_t y)
     {
+        if (OpenLoco::isTitleMode())
+            return InteractionArg{};
+
+        // Interaction types to exclude by default
+        auto interactionsToExclude = 0 | InteractionItemFlags::surface | InteractionItemFlags::water;
+
+        // TODO: Handle in the paint functions
+        // Get the viewport and add extra flags for hidden scenery
+        auto screenPos = Gfx::point_t(x, y);
+        auto w = WindowManager::findAt(screenPos);
+        if (w != nullptr)
+        {
+            for (auto vp : w->viewports)
+            {
+                if (vp != nullptr && vp->containsUi({ screenPos.x, screenPos.y }))
+                {
+                    if (vp->flags & ViewportFlags::hide_foreground_scenery_buildings)
+                    {
+                        interactionsToExclude |= InteractionItemFlags::building | InteractionItemFlags::headquarterBuilding | InteractionItemFlags::industry | InteractionItemFlags::tree | InteractionItemFlags::wall;
+                    }
+                }
+            }
+        }
+
         registers regs;
         regs.ax = x;
         regs.bx = y;
+        regs.edx = interactionsToExclude;
 
-        call(0x004CDB2B, regs);
+        call(0x004CDB3F, regs);
         InteractionArg result;
         result.value = regs.edx;
         result.x = regs.ax;
@@ -467,7 +495,7 @@ namespace OpenLoco::Ui::ViewportInteraction
                 if (_dpi2->zoom_level <= Config::get().station_names_min_scale)
                 {
                     auto stationInteraction = session->getStationNameInteractionInfo(flags);
-                    if (stationInteraction.type != InteractionItem::t_0)
+                    if (stationInteraction.type != InteractionItem::noInteraction)
                     {
                         interaction = stationInteraction;
                     }
@@ -476,7 +504,7 @@ namespace OpenLoco::Ui::ViewportInteraction
             if (!(vp->flags & ViewportFlags::town_names_displayed))
             {
                 auto townInteraction = session->getTownNameInteractionInfo(flags);
-                if (townInteraction.type != InteractionItem::t_0)
+                if (townInteraction.type != InteractionItem::noInteraction)
                 {
                     interaction = townInteraction;
                 }

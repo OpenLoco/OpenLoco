@@ -2652,7 +2652,7 @@ namespace OpenLoco::Ui::Vehicle
                     addNewOrder(&self, waypoint);
                     break;
                 }
-                case Ui::ViewportInteraction::InteractionItem::t_11:
+                case Ui::ViewportInteraction::InteractionItem::water:
                 {
                     // Water
                     auto heights = TileManager::getHeight({ args.x, args.y });
@@ -2670,7 +2670,7 @@ namespace OpenLoco::Ui::Vehicle
                     addNewOrder(&self, waypoint);
                     break;
                 }
-                case Ui::ViewportInteraction::InteractionItem::station:
+                case Ui::ViewportInteraction::InteractionItem::stationLabel:
                 {
                     Audio::playSound(Audio::sound_id::waypoint, { x, y, Input::getDragLastLocation().x }, Input::getDragLastLocation().x);
                     station_id_t stationId = args.value;
@@ -2710,7 +2710,7 @@ namespace OpenLoco::Ui::Vehicle
         static Ui::cursor_id event15(window& self, const int16_t x, const int16_t y, const Ui::cursor_id fallback, bool& out)
         {
             auto typeP = sub_4B5A1A(self, x, y);
-            out = typeP.first != Ui::ViewportInteraction::InteractionItem::t_0;
+            out = typeP.first != Ui::ViewportInteraction::InteractionItem::noInteraction;
             if (out)
             {
                 return cursor_id::arrows_inward;

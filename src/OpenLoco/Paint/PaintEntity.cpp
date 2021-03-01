@@ -60,7 +60,7 @@ namespace OpenLoco::Paint
             }
             session.setCurrentItem(entity);
             session.setEntityPosition({ entity->x, entity->y });
-            session.setItemType(InteractionItem::thing);
+            session.setItemType(InteractionItem::entity);
             switch (entity->base_type)
             {
                 case thing_base_type::vehicle:
