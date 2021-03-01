@@ -2306,8 +2306,8 @@ namespace OpenLoco::Ui::Vehicle
 
             // orderId can be -1 at this point for none selected
             auto i = 0;
-            Vehicles::Order* last = nullptr;
-            for (auto& order : getOrderTable(head))
+            const Vehicles::Order* last = nullptr;
+            for (const auto& order : getOrderTable(head))
             {
                 if (i == orderId)
                 {
