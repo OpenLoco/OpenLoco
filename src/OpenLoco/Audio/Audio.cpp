@@ -1,4 +1,4 @@
-#include "Audio.h"
+﻿#include "Audio.h"
 #include "../Config.h"
 #include "../Console.h"
 #include "../Date.h"
@@ -613,7 +613,7 @@ namespace OpenLoco::Audio
                     return;
                 }
 
-                volume += calculateVolumeFromViewport(id, { loc.x, loc.y, 0 }, *viewport);
+                volume += calculateVolumeFromViewport(id, { loc.x, loc.y, loc.z }, *viewport);
                 pan = viewport->mapToUi(vpos).x;
                 if (volume < -10000)
                 {
