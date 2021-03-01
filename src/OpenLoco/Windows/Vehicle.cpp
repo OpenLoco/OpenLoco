@@ -2227,7 +2227,7 @@ namespace OpenLoco::Ui::Vehicle
             Gfx::invalidateScreen();
             for (auto& unk : _F2494A)
             {
-                unk.orderOffset = -1;
+                unk.orderOffset = static_cast<uint32_t>(-1);
             }
             auto orders = getOrderTable(head);
             uint8_t i = 0;
@@ -2280,7 +2280,7 @@ namespace OpenLoco::Ui::Vehicle
             i = 0;
             for (auto& unk : _F2494A)
             {
-                if (unk.orderOffset == -1)
+                if (unk.orderOffset == static_cast<uint32_t>(-1))
                 {
                     continue;
                 }
