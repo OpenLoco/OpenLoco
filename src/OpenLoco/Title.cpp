@@ -25,11 +25,7 @@ namespace OpenLoco::Title
         uint16_t arg;
     };
 
-    struct MoveStep
-    {
-        coord_t xPos;
-        coord_t yPos;
-    };
+    using MoveStep = Map::TilePos;
 
     struct RotateStep
     {
@@ -202,7 +198,7 @@ namespace OpenLoco::Title
                            [](MoveStep step) {
                                if (addr<0x00525E28, uint32_t>() & 1)
                                {
-                                   auto pos = Map::map_pos(step.xPos * 32 + 16, step.yPos * 32 + 16);
+                                   auto pos = Map::map_pos(step) + Map::map_pos(16, 16);
                                    auto height = Map::TileManager::getHeight(pos);
                                    auto main = Ui::WindowManager::getMainWindow();
                                    if (main != nullptr)
