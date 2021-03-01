@@ -257,13 +257,13 @@ namespace OpenLoco::Math::Vector
     }
 
     template<typename T, T TResolution>
-    static constexpr auto Distance(const TVector2<T, TResolution>& lhs, const TVector2<T, TResolution>& rhs)
+    static constexpr auto ManhattanDistance(const TVector2<T, TResolution>& lhs, const TVector2<T, TResolution>& rhs)
     {
         return std::abs(lhs.x - rhs.x) + std::abs(lhs.y - rhs.y);
     }
 
     template<typename T, T TResolution>
-    static constexpr auto Distance(const TVector3<T, TResolution>& lhs, const TVector3<T, TResolution>& rhs)
+    static constexpr auto ManhattanDistance(const TVector3<T, TResolution>& lhs, const TVector3<T, TResolution>& rhs)
     {
         return std::abs(lhs.x - rhs.x) + std::abs(lhs.y - rhs.y) + std::abs(lhs.z - rhs.z);
     }
