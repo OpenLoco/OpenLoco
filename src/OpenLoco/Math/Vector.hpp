@@ -88,22 +88,22 @@ namespace OpenLoco::Math::Vector
 
         constexpr const TVector2 operator+(const TVector2& rhs) const
         {
-            return { x + rhs.x, y + rhs.y };
+            return { static_cast<T>(x + rhs.x), static_cast<T>(y + rhs.y) };
         }
 
         constexpr const TVector2 operator-(const TVector2& rhs) const
         {
-            return { x - rhs.x, y - rhs.y };
+            return { static_cast<T>(x - rhs.x), static_cast<T>(y - rhs.y) };
         }
 
         constexpr const TVector2 operator*(const int32_t rhs) const
         {
-            return { x * rhs, y * rhs };
+            return { static_cast<T>(x * rhs), static_cast<T>(y * rhs) };
         }
 
         constexpr const TVector2 operator/(const int32_t rhs) const
         {
-            return { x / rhs, y / rhs };
+            return { static_cast<T>(x / rhs), static_cast<T>(y / rhs) };
         }
     };
 
@@ -209,22 +209,22 @@ namespace OpenLoco::Math::Vector
 
         constexpr const TVector3 operator+(const TVector3& rhs) const
         {
-            return { Base::x + rhs.x, Base::y + rhs.y, z + rhs.z };
+            return { static_cast<T>(Base::x + rhs.x), static_cast<T>(Base::y + rhs.y), static_cast<T>(z + rhs.z) };
         }
 
         constexpr const TVector3 operator-(const TVector3& rhs) const
         {
-            return { Base::x - rhs.x, Base::y - rhs.y, z - rhs.z };
+            return { static_cast<T>(Base::x - rhs.x), static_cast<T>(Base::y - rhs.y), static_cast<T>(z - rhs.z) };
         }
 
         constexpr const TVector3 operator*(const T rhs) const
         {
-            return { Base::x * rhs, Base::y * rhs, z * rhs };
+            return { static_cast<T>(Base::x * rhs), static_cast<T>(Base::y * rhs), static_cast<T>(z * rhs) };
         }
 
         constexpr const TVector3 operator/(const T rhs) const
         {
-            return { Base::x / rhs, Base::y / rhs, z / rhs };
+            return { static_cast<T>(Base::x / rhs), static_cast<T>(Base::y / rhs), static_cast<T>(z / rhs) };
         }
     };
 #pragma pack(pop)
