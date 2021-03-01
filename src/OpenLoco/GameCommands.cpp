@@ -145,6 +145,18 @@ namespace OpenLoco::GameCommands
     static uint32_t loc_4314EA();
     static uint32_t loc_4313C6(int esi, const registers& regs);
 
+    static bool commandRequiresUnpausingGame(GameCommand command, uint16_t flags)
+    {
+        if ((flags & (GameCommandFlag::flag_4 | GameCommandFlag::flag_6)) != 0)
+            return false;
+
+        auto& gameCommand = _gameCommandDefinitions[static_cast<uint32_t>(command)];
+        if (!gameCommand.unpausesGame || isPauseOverrideEnabled())
+            return false;
+
+        return true;
+    }
+
     // 0x00431315
     uint32_t doCommand(GameCommand command, const registers& regs)
     {
@@ -160,11 +172,7 @@ namespace OpenLoco::GameCommands
             return loc_4313C6(esi, regs);
         }
 
-        auto& gameCommand = _gameCommandDefinitions[esi];
-        if ((flags & (GameCommandFlag::flag_4 | GameCommandFlag::flag_6)) == 0
-            && gameCommand.unpausesGame
-            && !isPauseOverrideEnabled()
-            && _updating_company_id == _player_company[0])
+        if (commandRequiresUnpausingGame(command, flags) && _updating_company_id == _player_company[0])
         {
             if (getPauseFlags() & 1)
             {
