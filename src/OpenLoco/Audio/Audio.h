@@ -147,22 +147,22 @@ namespace OpenLoco::Audio
     /**
      * Converts a Locomotion pan range to a left and right value for SDL2 mixer.
      */
-    constexpr std::tuple<int32_t, int32_t> panLocoToSDL(int32_t pan)
+    constexpr std::pair<int32_t, int32_t> panLocoToSDL(int32_t pan)
     {
         constexpr auto range = 2048.0f;
         if (pan == 0)
         {
-            return std::make_tuple(0, 0);
+            return { 0, 0 };
         }
         else if (pan < 0)
         {
             auto r = (int32_t)(255 - ((pan / -range) * 255));
-            return std::make_tuple(255, r);
+            return { 255, r };
         }
         else
         {
             auto r = (int32_t)(255 - ((pan / range) * 255));
-            return std::make_tuple(r, 255);
+            return { r, 255 };
         }
     }
 }
