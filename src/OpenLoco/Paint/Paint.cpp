@@ -197,14 +197,16 @@ namespace OpenLoco::Paint
         mapLoc.y &= 0xFFE0;
 
         constexpr uint8_t rotOrder[] = { 0, 3, 2, 1 };
+
+        const auto direction = rotOrder[rotation];
         constexpr std::array<Map::map_pos, 5> additionalQuadrants = {
-            Map::map_pos{ -32, 32 }.rotate(rotOrder[rotation]),
-            Map::map_pos{ 0, 32 }.rotate(rotOrder[rotation]),
-            Map::map_pos{ 32, 0 }.rotate(rotOrder[rotation]),
-            Map::map_pos{ 32, -32 }.rotate(rotOrder[rotation]),
-            Map::map_pos{ -32, 64 }.rotate(rotOrder[rotation]),
+            Math::Vector::Rotate(Map::map_pos{ -32, 32 }, direction),
+            Math::Vector::Rotate(Map::map_pos{ 0, 32 }, direction),
+            Math::Vector::Rotate(Map::map_pos{ 32, 0 }, direction),
+            Math::Vector::Rotate(Map::map_pos{ 32, -32 }, direction),
+            Math::Vector::Rotate(Map::map_pos{ -32, 64 }, direction),
         };
-        constexpr auto nextVerticalQuadrant = Map::map_pos{ 32, 32 }.rotate(rotOrder[rotation]);
+        constexpr auto nextVerticalQuadrant = Math::Vector::Rotate(Map::map_pos{ 32, 32 }, direction);
 
         return { mapLoc, numVerticalQuadrants, additionalQuadrants, nextVerticalQuadrant };
     }

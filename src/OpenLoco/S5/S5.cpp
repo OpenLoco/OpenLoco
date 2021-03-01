@@ -93,7 +93,7 @@ namespace OpenLoco::S5
         if (mainViewport != nullptr)
         {
             auto mapPosXY = mainViewport->getCentreMapPosition();
-            auto mapPosXYZ = map_pos3(mapPosXY, TileManager::getHeight(mapPosXY));
+            auto mapPosXYZ = map_pos3(mapPosXY.x, mapPosXY.y, TileManager::getHeight(mapPosXY));
 
             static window_event_list eventList; // 0x4FB3F0
             eventList.draw = previewWindowDraw;

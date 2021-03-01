@@ -1,12 +1,11 @@
 #pragma once
 #include "../Interop/Interop.hpp"
+#include "../Map/Map.hpp"
 #include "../Types.hpp"
 
 namespace OpenLoco::Map
 {
     struct tile_element;
-    struct map_pos;
-    struct map_pos3;
 }
 namespace OpenLoco
 {
