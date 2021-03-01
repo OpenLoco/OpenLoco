@@ -55,7 +55,7 @@ namespace OpenLoco::Ui
         return result;
     }
 
-    viewport_pos viewport::mapFrom3d(loc16 loc, int32_t rotation)
+    viewport_pos viewport::mapFrom3d(Map::map_pos3 loc, int32_t rotation)
     {
         Ui::viewport_pos result;
         switch (rotation & 3)

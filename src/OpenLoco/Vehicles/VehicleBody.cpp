@@ -258,7 +258,7 @@ namespace OpenLoco::Vehicles
     // 0x004AC255
     void VehicleBody::sub_4AC255(VehicleBogie* back_bogie, VehicleBogie* front_bogie)
     {
-        loc16 loc = {
+        Map::map_pos3 loc = {
             static_cast<int16_t>((front_bogie->x + back_bogie->x) / 2),
             static_cast<int16_t>((front_bogie->y + back_bogie->y) / 2),
             static_cast<int16_t>((front_bogie->z + back_bogie->z) / 2)
@@ -980,7 +980,7 @@ namespace OpenLoco::Vehicles
         }
 
         var_05 += 64;
-        loc16 loc = {
+        Map::map_pos3 loc = {
             static_cast<int16_t>(backBogie->x - frontBogie->x),
             static_cast<int16_t>(backBogie->y - frontBogie->y),
             static_cast<int16_t>(backBogie->z - frontBogie->z),
@@ -1132,7 +1132,7 @@ namespace OpenLoco::Vehicles
             auto xFactor = (factorXY503B6A[invertedDirection * 2] * positionFactor) / 512;
             auto yFactor = (factorXY503B6A[invertedDirection * 2 + 1] * positionFactor) / 512;
 
-            loc16 loc = {
+            Map::map_pos3 loc = {
                 static_cast<int16_t>(x + xFactor),
                 static_cast<int16_t>(y + yFactor),
                 static_cast<int16_t>(z + vehicleObject->animation[num].height)
@@ -1156,7 +1156,7 @@ namespace OpenLoco::Vehicles
                 return;
 
             var_05 += 64;
-            loc16 loc = {
+            Map::map_pos3 loc = {
                 static_cast<int16_t>(backBogie->x - frontBogie->x),
                 static_cast<int16_t>(backBogie->y - frontBogie->y),
                 static_cast<int16_t>(backBogie->z - frontBogie->z),
@@ -1215,7 +1215,7 @@ namespace OpenLoco::Vehicles
 
         var_05 += 64;
 
-        loc16 loc = {
+        Map::map_pos3 loc = {
             static_cast<int16_t>(backBogie->x - frontBogie->x),
             static_cast<int16_t>(backBogie->y - frontBogie->y),
             static_cast<int16_t>(backBogie->z - frontBogie->z),
@@ -1292,7 +1292,7 @@ namespace OpenLoco::Vehicles
         if (gPrng().randNext(std::numeric_limits<uint16_t>::max()) > 819)
             return;
 
-        loc16 loc = {
+        Map::map_pos3 loc = {
             static_cast<int16_t>(backBogie->x - frontBogie->x),
             static_cast<int16_t>(backBogie->y - frontBogie->y),
             static_cast<int16_t>(backBogie->z - frontBogie->z),
@@ -1352,7 +1352,7 @@ namespace OpenLoco::Vehicles
         if (gPrng().randNext(std::numeric_limits<uint16_t>::max()) > 936)
             return;
 
-        loc16 loc = {
+        Map::map_pos3 loc = {
             static_cast<int16_t>(backBogie->x - frontBogie->x),
             static_cast<int16_t>(backBogie->y - frontBogie->y),
             static_cast<int16_t>(backBogie->z - frontBogie->z),
@@ -1439,7 +1439,7 @@ namespace OpenLoco::Vehicles
         auto xFactor = (factorXY503B6A[invertedDirection * 2] * positionFactor) / 1024;
         auto yFactor = (factorXY503B6A[invertedDirection * 2 + 1] * positionFactor) / 1024;
 
-        loc16 loc = {
+        Map::map_pos3 loc = {
             static_cast<int16_t>(x + xFactor),
             static_cast<int16_t>(y + yFactor),
             z

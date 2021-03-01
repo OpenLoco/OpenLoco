@@ -1143,7 +1143,7 @@ namespace OpenLoco::Ui::Windows::TownList
                     updateBuildingColours(self);
 
                     int32_t pan = (self->width >> 1) + self->x;
-                    loc16 loc = { xPos, yPos, static_cast<int16_t>(pan) };
+                    OpenLoco::Map::map_pos3 loc = { xPos, yPos, static_cast<int16_t>(pan) };
 
                     Audio::playSound(Audio::sound_id::click_down, loc, pan);
                     self->saved_view.mapX = -16;

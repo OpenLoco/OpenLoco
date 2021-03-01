@@ -9,6 +9,7 @@
 #include "../Interop/Interop.hpp"
 #include "../Localisation/FormatArguments.hpp"
 #include "../Localisation/StringIds.h"
+#include "../Map/Map.hpp"
 #include "../Map/Tile.h"
 #include "../Map/TileManager.h"
 #include "../Objects/InterfaceSkinObject.h"
@@ -206,7 +207,7 @@ namespace OpenLoco::Ui::Windows::Town
 
                     // Play construction sound at the town centre.
                     int16_t tileZ = TileManager::getHeight({ town->x, town->y }).landHeight;
-                    Audio::playSound(Audio::sound_id::construct, loc16(town->x + 16, town->y + 16, tileZ));
+                    Audio::playSound(Audio::sound_id::construct, OpenLoco::Map::map_pos3(town->x + 16, town->y + 16, tileZ));
                     break;
                 }
 
@@ -223,7 +224,7 @@ namespace OpenLoco::Ui::Windows::Town
                     loco_global<uint16_t, 0x009C68E2> gameCommandMapY;
                     loco_global<uint16_t, 0x009C68E4> gameCommandMapZ;
 
-                    Audio::playSound(Audio::sound_id::demolish, loc16(gameCommandMapX, gameCommandMapY, gameCommandMapZ));
+                    Audio::playSound(Audio::sound_id::demolish, OpenLoco::Map::map_pos3(gameCommandMapX, gameCommandMapY, gameCommandMapZ));
                     break;
                 }
             }

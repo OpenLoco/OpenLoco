@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../Map/Map.hpp"
 #include "../Objects/SteamObject.h"
 #include "Thing.h"
 
@@ -65,7 +66,7 @@ namespace OpenLoco
 
         SteamObject* object() const;
 
-        static Exhaust* create(loc16 loc, uint8_t type);
+        static Exhaust* create(Map::map_pos3 loc, uint8_t type);
     };
 
     struct MoneyEffect : MiscBase
@@ -128,7 +129,7 @@ namespace OpenLoco
         uint8_t pad_20[0x28 - 0x20];
         uint16_t frame; // 0x28
 
-        static Smoke* create(loc16 loc);
+        static Smoke* create(Map::map_pos3 loc);
     };
 #pragma pack(pop)
 }

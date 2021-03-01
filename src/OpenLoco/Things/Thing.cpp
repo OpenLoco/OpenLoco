@@ -9,7 +9,7 @@ using namespace OpenLoco;
 using namespace OpenLoco::Interop;
 
 // 0x0046FC83
-void thing_base::moveTo(loc16 loc)
+void thing_base::moveTo(Map::map_pos3 loc)
 {
     registers regs;
     regs.ax = loc.x;
