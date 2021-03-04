@@ -12,10 +12,13 @@
 #endif // _WIN32
 
 #include "../Console.h"
+#include "../Ptr.h"
 #include "Interop.hpp"
 
 #pragma warning(disable : 4731) // frame pointer register 'ebp' modified by inline assembly code
+#if defined(__i386__) || defined(_M_IX86)
 #define PLATFORM_X86
+#endif
 
 #if defined(__GNUC__)
 #ifdef __clang__

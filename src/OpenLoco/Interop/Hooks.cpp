@@ -39,8 +39,13 @@ using namespace OpenLoco;
 #define STDCALL __stdcall
 #define CDECL __cdecl
 #elif defined(__GNUC__)
+#if defined(__i386__) || defined(_M_IX86)
 #define STDCALL __attribute__((stdcall))
 #define CDECL __attribute__((cdecl))
+#else
+#define STDCALL
+#define CDECL
+#endif
 #else
 #error Unknown compiler, please define STDCALL and CDECL
 #endif
