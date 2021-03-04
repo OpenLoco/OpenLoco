@@ -35,6 +35,7 @@ INCLUDE(FindPkgConfig)
 include(CheckCXXCompilerFlag)
 
 option(STRICT "Build with warnings as errors" YES)
+option(DISABLE_LOCO "Disable use of original binary" OFF)
 
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake;${CMAKE_MODULE_PATH}")
 
@@ -111,7 +112,7 @@ set(OBJ_FORMAT "elf32-i386")
 set(LINKER_SCRIPT "ld_script_i386.xc")
 
 # Handle creating the rct2 text and data files on OS X and Linux
-if (UNIX)
+if (NOT DISABLE_LOCO AND UNIX)
     set(OLOCO_EXE ${CMAKE_CURRENT_SOURCE_DIR}/loco.exe)
     set(OLOCO_TEXT ${CMAKE_BINARY_DIR}/openloco_text)
     set(OLOCO_DATA ${CMAKE_BINARY_DIR}/openloco_data)
@@ -157,7 +158,7 @@ if (UNIX)
         set(LOCO_SECTIONS "${CMAKE_BINARY_DIR}/openloco_data_section.o" "${CMAKE_BINARY_DIR}/openloco_text_section.o")
         set(LOCO_SEGMENT_LINKER_FLAGS "-Wl,-T,\"${CMAKE_CURRENT_SOURCE_DIR}/distribution/linux/${LINKER_SCRIPT}\"")
     endif ()
-endif (UNIX)
+endif (NOT DISABLE_LOCO AND UNIX)
 
 set(DEBUG_LEVEL 0 CACHE STRING "Select debug level for compilation. Use value in range 0–3.")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DDEBUG=${DEBUG_LEVEL}")
@@ -176,7 +177,9 @@ if (APPLE)
 endif ()
 
 set(PIE_FLAG "-fno-pie")
-set(TARGET_M "-m32")
+if (NOT DISABLE_LOCO)
+    set(TARGET_M "-m32")
+endif()
 
 # Check if a flag exists and add it to the list of compiler (so, not linker) options
 function (ADD_CHECK_CXX_COMPILER_FLAG _CXXFLAGS _CACHE_VAR _FLAG)
@@ -203,7 +206,7 @@ ADD_CHECK_CXX_FLAG(CMAKE_CXX_FLAGS CXX_WNO_CLOBBERED -Wno-clobbered)
 
 # set necessary flags to compile code as is
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${TARGET_M} -std=gnu99 ${COMMON_COMPILE_OPTIONS} -Wimplicit")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TARGET_M} ${COMMON_COMPILE_OPTIONS}")
+set(CMAKE_CXX_FLAGS "${TARGET_M} ${COMMON_COMPILE_OPTIONS} ${CMAKE_CXX_FLAGS}")
 set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} ${TARGET_M}")
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${CMAKE_SHARED_LINKER_FLAGS} ${TARGET_M} ${PIE_FLAG}")
 
@@ -241,7 +244,9 @@ if (MINGW)
     target_link_libraries(${PROJECT} winmm)
 else ()
     add_executable(${PROJECT} ${OLOCO_SOURCES} ${OLOCO_MM_SOURCES} ${LOCO_SECTIONS})
-    set_target_properties(${PROJECT} PROPERTIES LINK_FLAGS ${LOCO_SEGMENT_LINKER_FLAGS})
+    if (NOT DISABLE_LOCO)
+        set_target_properties(${PROJECT} PROPERTIES LINK_FLAGS ${LOCO_SEGMENT_LINKER_FLAGS})
+    endif()
 endif ()
 
 target_link_libraries(${PROJECT} ${SDL2_LIBRARIES} ${SDL2_MIXER_LIBRARIES})
@@ -249,7 +254,7 @@ target_link_libraries(${PROJECT} yaml-cpp ${YAML_CPP_LIBRARIES})
 target_link_libraries(${PROJECT} ${PNG_LIBRARIES})
 
 
-if (NOT MINGW)
+if (NOT MINGW AND NOT DISABLE_LOCO)
     add_dependencies(${PROJECT} segfiles)
 endif()
 
