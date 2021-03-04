@@ -2,6 +2,7 @@
 
 #include "../Core/Optional.hpp"
 #include "../OpenLoco.h"
+#include "../Ptr.h"
 #include "../Types.hpp"
 #include "../Ui/Rect.h"
 #include "Types.h"
@@ -62,7 +63,7 @@ namespace OpenLoco::Gfx
 
         g1_element() = default;
         g1_element(const g1_element32_t& src)
-            : offset((uint8_t*)src.offset)
+            : offset(ToPtr(uint8_t, src.offset))
             , width(src.width)
             , height(src.height)
             , x_offset(src.x_offset)

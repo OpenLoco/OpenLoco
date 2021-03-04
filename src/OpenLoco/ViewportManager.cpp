@@ -99,7 +99,7 @@ namespace OpenLoco::Ui::ViewportManager
 
     static viewport* create(registers regs, int index)
     {
-        Ui::window* window = (Ui::window*)regs.esi;
+        Ui::window* window = ToPtr(Ui::window, regs.esi);
         ZoomLevel zoom = ZoomLevel::full;
         if (regs.edx & (1 << 30))
         {
@@ -364,31 +364,31 @@ namespace OpenLoco::Ui::ViewportManager
         registerHook(
             0x004CBA2D,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                invalidate((station*)regs.esi);
+                invalidate(ToPtr(station, regs.esi));
                 return 0;
             });
         registerHook(
             0x004CBB01,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                invalidate((thing_base*)regs.esi, ZoomLevel::eighth);
+                invalidate(ToPtr(thing_base, regs.esi), ZoomLevel::eighth);
                 return 0;
             });
         registerHook(
             0x004CBBD2,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                invalidate((thing_base*)regs.esi, ZoomLevel::quarter);
+                invalidate(ToPtr(thing_base, regs.esi), ZoomLevel::quarter);
                 return 0;
             });
         registerHook(
             0x004CBCAC,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                invalidate((thing_base*)regs.esi, ZoomLevel::half);
+                invalidate(ToPtr(thing_base, regs.esi), ZoomLevel::half);
                 return 0;
             });
         registerHook(
             0x004CBD86,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                invalidate((thing_base*)regs.esi, ZoomLevel::full);
+                invalidate(ToPtr(thing_base, regs.esi), ZoomLevel::full);
                 return 0;
             });
         registerHook(

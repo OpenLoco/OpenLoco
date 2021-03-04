@@ -302,7 +302,7 @@ namespace OpenLoco::Interop
         }
 #else
         // We own the pages with PROT_WRITE | PROT_EXEC, we can simply just memcpy the data
-        std::memcpy(data, (void*)address, size);
+        std::memcpy(data, ToPtr(void, address), size);
 #endif // _WIN32
     }
 
@@ -315,7 +315,7 @@ namespace OpenLoco::Interop
         }
 #else
         // We own the pages with PROT_WRITE | PROT_EXEC, we can simply just memcpy the data
-        std::memcpy((void*)address, data, size);
+        std::memcpy(ToPtr(void, address), data, size);
 #endif // _WIN32
     }
 

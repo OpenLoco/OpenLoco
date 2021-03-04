@@ -1144,7 +1144,7 @@ namespace OpenLoco::Ui
             registers regs;
             regs.esi = ToInt(this);
             call(ToInt(event_handlers->on_resize), regs);
-            return (window*)regs.esi;
+            return ToPtr(window, regs.esi);
         }
 
         event_handlers->on_resize(this);

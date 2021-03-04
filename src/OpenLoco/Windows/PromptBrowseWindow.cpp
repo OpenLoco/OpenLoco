@@ -786,9 +786,9 @@ namespace OpenLoco::Ui::PromptBrowse
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 auto result = open(
                     (browse_type)regs.al,
-                    (char*)regs.ecx,
-                    (const char*)regs.edx,
-                    (const char*)regs.ebx);
+                    ToPtr(char, regs.ecx),
+                    ToPtr(const char, regs.edx),
+                    ToPtr(const char, regs.ebx));
                 regs.eax = result ? 1 : 0;
                 return 0;
             });
@@ -796,7 +796,7 @@ namespace OpenLoco::Ui::PromptBrowse
         registerHook(
             0x00446E62,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                appendDirectory((char*)regs.ebp);
+                appendDirectory(ToPtr(char, regs.ebp));
                 return 0;
             });
     }

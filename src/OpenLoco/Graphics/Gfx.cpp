@@ -1232,7 +1232,7 @@ namespace OpenLoco::Gfx
         regs.dx = height;
         regs.cx = y;
         call(0x4cec50, regs);
-        *dst = (Gfx::drawpixelinfo_t*)regs.edi;
+        *dst = ToPtr(Gfx::drawpixelinfo_t, regs.edi);
 
         return *dst != nullptr;
     }

@@ -99,7 +99,7 @@ namespace OpenLoco::StringManager
         regs.edi = ToInt(buffer);
 
         call(0x00495F35, regs);
-        return (char*)regs.edi;
+        return ToPtr(char, regs.edi);
     }
 
     static char* formatInt32Ungrouped(int32_t value, char* buffer)
@@ -109,7 +109,7 @@ namespace OpenLoco::StringManager
         regs.edi = ToInt(buffer);
 
         call(0x495E2A, regs);
-        return (char*)regs.edi;
+        return ToPtr(char, regs.edi);
     }
 
     static char* formatInt48Grouped(uint64_t value, char* buffer, uint8_t separator)
@@ -121,7 +121,7 @@ namespace OpenLoco::StringManager
         regs.ebx = ToInt(separator);
 
         call(0x496052, regs);
-        return (char*)regs.edi;
+        return ToPtr(char, regs.edi);
     }
 
     static char* formatShortWithDecimals(int16_t value, char* buffer)
@@ -131,7 +131,7 @@ namespace OpenLoco::StringManager
         regs.edi = ToInt(buffer);
 
         call(0x4963FC, regs);
-        return (char*)regs.edi;
+        return ToPtr(char, regs.edi);
     }
 
     static char* formatIntWithDecimals(int32_t value, char* buffer)
@@ -141,7 +141,7 @@ namespace OpenLoco::StringManager
         regs.edi = ToInt(buffer);
 
         call(0x4962F1, regs);
-        return (char*)regs.edi;
+        return ToPtr(char, regs.edi);
     }
 
     // 0x00495D09
@@ -363,7 +363,7 @@ namespace OpenLoco::StringManager
 
                     case ControlCodes::string_ptr:
                     {
-                        const char* str = (char*)args.pop32();
+                        const char* str = ToPtr(char, args.pop32());
                         strcpy(buffer, str);
                         buffer += strlen(str);
                         break;

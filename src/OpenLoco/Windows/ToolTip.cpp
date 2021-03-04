@@ -50,13 +50,13 @@ namespace OpenLoco::Ui::ToolTip
         registerHook(
             0x004C906B,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                Ui::ToolTip::open((Ui::window*)regs.esi, regs.edx, regs.ax, regs.bx);
+                Ui::ToolTip::open(ToPtr(Ui::window, regs.esi), regs.edx, regs.ax, regs.bx);
                 return 0;
             });
         registerHook(
             0x004C9216,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                Ui::ToolTip::update((Ui::window*)regs.esi, regs.edx, regs.di, regs.ax, regs.bx);
+                Ui::ToolTip::update(ToPtr(Ui::window, regs.esi), regs.edx, regs.di, regs.ax, regs.bx);
                 return 0;
             });
     }

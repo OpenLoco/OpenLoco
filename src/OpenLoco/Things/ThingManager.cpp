@@ -78,7 +78,7 @@ namespace OpenLoco::ThingManager
     {
         registers regs;
         call(0x004700A5, regs);
-        return (thing_base*)regs.esi;
+        return ToPtr(thing_base, regs.esi);
     }
 
     // 0x0047024A

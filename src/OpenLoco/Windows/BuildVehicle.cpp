@@ -375,7 +375,7 @@ namespace OpenLoco::Ui::BuildVehicle
             0x004B92A5,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                sub_4B92A5((Ui::window*)regs.esi);
+                sub_4B92A5(ToPtr(Ui::window, regs.esi));
                 regs = backup;
                 return 0;
             });

@@ -37,7 +37,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
             regs.eax = (uint32_t)companyId;
             regs.ebx = type;
             call(0x004C1A05, regs);
-            vehicle_list = (window*)regs.esi;
+            vehicle_list = ToPtr(window, regs.esi);
         }
         else
         {
