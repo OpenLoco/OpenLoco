@@ -6,7 +6,7 @@
 
 // Find out where std::optional is:
 #if defined(__APPLE__) // XCode has the header in experimental namespace
-#define NORMAL_OPTIONAL 0
+#define NORMAL_OPTIONAL 1
 #else // By default assume supported.
 #define NORMAL_OPTIONAL 1
 #endif
