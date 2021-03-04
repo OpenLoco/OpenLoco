@@ -3,6 +3,7 @@
 #include "Graphics/ImageIds.h"
 #include "Input.h"
 #include "Interop/Interop.hpp"
+#include "Ptr.h"
 #include "Ui/ScrollView.h"
 #include "Window.h"
 #include <cassert>
@@ -51,9 +52,9 @@ namespace OpenLoco::Ui::Widget
         regs.bx = width;
         regs.cx = x;
         regs.dx = y;
-        regs.esi = (uint32_t)window;
-        regs.edi = (uint32_t)dpi;
-        regs.ebp = (uint32_t)widget;
+        regs.esi = ToInt(window);
+        regs.edi = ToInt(dpi);
+        regs.ebp = ToInt(widget);
         call(0x004CF3EB, regs);
     }
 

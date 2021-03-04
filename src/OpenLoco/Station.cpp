@@ -12,6 +12,7 @@
 #include "Objects/ObjectManager.h"
 #include "Objects/RoadStationObject.h"
 #include "OpenLoco.h"
+#include "Ptr.h"
 #include "Ui/WindowManager.h"
 #include "ViewportManager.h"
 #include <algorithm>
@@ -696,7 +697,7 @@ namespace OpenLoco
     void station::sub_4929DB()
     {
         registers regs;
-        regs.ebp = (int32_t)this;
+        regs.ebp = ToInt(this);
         call(0x004929DB, regs);
     }
 

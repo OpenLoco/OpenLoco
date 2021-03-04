@@ -12,6 +12,7 @@
 #include "../Objects/ObjectManager.h"
 #include "../Objects/RoadObject.h"
 #include "../Objects/TrackObject.h"
+#include "../Ptr.h"
 #include "../StationManager.h"
 #include "../Things/Thing.h"
 #include "../Things/ThingManager.h"
@@ -216,7 +217,7 @@ namespace OpenLoco::Ui::Windows::Map
     static void sub_46C544(window* self)
     {
         registers regs;
-        regs.esi = (int32_t)self;
+        regs.esi = ToInt(self);
         call(0x0046C544, regs);
     }
 

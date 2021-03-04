@@ -2,6 +2,7 @@
 #include "Graphics/Gfx.h"
 #include "Interop/Interop.hpp"
 #include "Map/Tile.h"
+#include "Ptr.h"
 #include "Window.h"
 
 using namespace OpenLoco::Interop;
@@ -31,8 +32,8 @@ namespace OpenLoco::Ui
         regs.bx = rect.top();
         regs.dx = rect.right();
         regs.bp = rect.bottom();
-        regs.esi = reinterpret_cast<uint32_t>(this);
-        regs.edi = reinterpret_cast<uint32_t>(context);
+        regs.esi = ToInt(this);
+        regs.edi = ToInt(context);
         call(0x0045A1A4, regs);
     }
 

@@ -10,6 +10,7 @@
 #include "../Objects/SoundObject.h"
 #include "../Objects/TrackObject.h"
 #include "../Objects/VehicleObject.h"
+#include "../Ptr.h"
 #include "../Station.h"
 #include "../Things/ThingManager.h"
 #include "../Types.hpp"
@@ -172,7 +173,7 @@ namespace OpenLoco::Vehicles
     static void liftUpVehicle(VehicleHead* const head)
     {
         registers regs{};
-        regs.esi = reinterpret_cast<uint32_t>(head);
+        regs.esi = ToInt(head);
         call(0x004B08DD, regs);
     }
 
@@ -422,7 +423,7 @@ namespace OpenLoco::Vehicles
     static void sub_4B7CC3(VehicleHead* const head)
     {
         registers regs{};
-        regs.esi = reinterpret_cast<int32_t>(head);
+        regs.esi = ToInt(head);
         call(0x004B7CC3, regs);
     }
 
@@ -729,7 +730,7 @@ namespace OpenLoco::Vehicles
     static void sub_4AF7A4(VehicleHead* const veh0)
     {
         registers regs{};
-        regs.esi = reinterpret_cast<int32_t>(veh0);
+        regs.esi = ToInt(veh0);
         call(0x004AF7A4, regs);
     }
 
@@ -737,7 +738,7 @@ namespace OpenLoco::Vehicles
     static void placeDownVehicle(VehicleHead* const head, const coord_t x, const coord_t y, const uint8_t baseZ, const uint16_t unk1, const uint16_t unk2)
     {
         registers regs{};
-        regs.esi = reinterpret_cast<int32_t>(head);
+        regs.esi = ToInt(head);
         regs.ax = x;
         regs.cx = y;
         regs.bx = unk2;

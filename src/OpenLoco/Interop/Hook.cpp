@@ -10,6 +10,7 @@
 #else
 #include <sys/mman.h>
 #endif // _WIN32
+#include "../Ptr.h"
 #include "Interop.hpp"
 
 namespace OpenLoco::Interop
@@ -177,7 +178,7 @@ namespace OpenLoco::Interop
         {
             return;
         }
-        uint32_t hookaddress = (uint32_t)_hookTableAddress + (_hookTableOffset * HOOK_BYTE_COUNT);
+        uint32_t hookaddress = ToInt(_hookTableAddress) + (_hookTableOffset * HOOK_BYTE_COUNT);
         uint8_t data[9];
         int32_t i = 0;
         data[i++] = 0xE9; // jmp

@@ -5,6 +5,7 @@
 #include "Localisation/FormatArguments.hpp"
 #include "Map/Tile.h"
 #include "OpenLoco.h"
+#include "Ptr.h"
 #include "Things/ThingManager.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
@@ -156,7 +157,7 @@ namespace OpenLoco::CompanyManager
     string_id getOwnerStatus(company_id_t id, FormatArguments& args)
     {
         registers regs;
-        regs.esi = (int32_t)get(id);
+        regs.esi = ToInt(get(id));
         call(0x00438047, regs);
 
         args.push(regs.ecx);
@@ -167,7 +168,7 @@ namespace OpenLoco::CompanyManager
     owner_status getOwnerStatus(company_id_t id)
     {
         registers regs;
-        regs.esi = (int32_t)get(id);
+        regs.esi = ToInt(get(id));
         call(0x00438047, regs);
 
         owner_status ownerStatus;

@@ -6,6 +6,7 @@
 #include "../Localisation/FormatArguments.hpp"
 #include "../Objects/CompetitorObject.h"
 #include "../Objects/ObjectManager.h"
+#include "../Ptr.h"
 #include "../Window.h"
 
 #include <cassert>
@@ -336,7 +337,7 @@ namespace OpenLoco::Ui::Dropdown
         static uint16_t getStringWidth(char* buffer)
         {
             registers regs;
-            regs.esi = (int32_t)buffer;
+            regs.esi = ToInt(buffer);
             call(0x004955BC, regs);
 
             return regs.cx;

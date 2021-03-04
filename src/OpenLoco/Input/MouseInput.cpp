@@ -7,6 +7,7 @@
 #include "../Map/TileManager.h"
 #include "../Objects/ObjectManager.h"
 #include "../Objects/RoadObject.h"
+#include "../Ptr.h"
 #include "../StationManager.h"
 #include "../Things/ThingManager.h"
 #include "../TownManager.h"
@@ -410,9 +411,9 @@ namespace OpenLoco::Input
 
         registers regs;
         regs.ebp = (int32_t)state();
-        regs.esi = (uint32_t)window;
+        regs.esi = ToInt(window);
         regs.edx = widgetIndex;
-        regs.edi = (uint32_t)widget;
+        regs.edi = ToInt(widget);
         regs.cx = (uint16_t)button;
         regs.ax = x;
         regs.bx = y;
@@ -596,8 +597,8 @@ namespace OpenLoco::Input
     static void signalInteract(window* main, Map::signal_element* signal, const uint8_t bh, const Map::map_pos pos)
     {
         registers regs{};
-        regs.esi = reinterpret_cast<uint32_t>(main);
-        regs.edx = reinterpret_cast<uint32_t>(signal);
+        regs.esi = ToInt(main);
+        regs.edx = ToInt(signal);
         regs.bh = bh;
         regs.ax = pos.x;
         regs.cx = pos.y;
@@ -608,8 +609,8 @@ namespace OpenLoco::Input
     static void trackStationInteract(window* main, Map::station_element* station, const Map::map_pos pos)
     {
         registers regs{};
-        regs.esi = reinterpret_cast<uint32_t>(main);
-        regs.edx = reinterpret_cast<uint32_t>(station);
+        regs.esi = ToInt(main);
+        regs.edx = ToInt(station);
         regs.ax = pos.x;
         regs.cx = pos.y;
         call(0x004A5B66, regs);
@@ -619,8 +620,8 @@ namespace OpenLoco::Input
     static void roadStationInteract(window* main, Map::station_element* station, const Map::map_pos pos)
     {
         registers regs{};
-        regs.esi = reinterpret_cast<uint32_t>(main);
-        regs.edx = reinterpret_cast<uint32_t>(station);
+        regs.esi = ToInt(main);
+        regs.edx = ToInt(station);
         regs.ax = pos.x;
         regs.cx = pos.y;
         call(0x004A5BDF, regs);
@@ -630,8 +631,8 @@ namespace OpenLoco::Input
     static void airportInteract(window* main, Map::station_element* station, const Map::map_pos pos)
     {
         registers regs{};
-        regs.esi = reinterpret_cast<uint32_t>(main);
-        regs.edx = reinterpret_cast<uint32_t>(station);
+        regs.esi = ToInt(main);
+        regs.edx = ToInt(station);
         regs.ax = pos.x;
         regs.cx = pos.y;
         call(0x004A5C58, regs);
@@ -641,8 +642,8 @@ namespace OpenLoco::Input
     static void dockInteract(window* main, Map::station_element* station, const Map::map_pos pos)
     {
         registers regs{};
-        regs.esi = reinterpret_cast<uint32_t>(main);
-        regs.edx = reinterpret_cast<uint32_t>(station);
+        regs.esi = ToInt(main);
+        regs.edx = ToInt(station);
         regs.ax = pos.x;
         regs.cx = pos.y;
         call(0x004A5CC5, regs);
@@ -652,7 +653,7 @@ namespace OpenLoco::Input
     static void treeInteract(Map::tree_element* tree, const Map::map_pos pos)
     {
         registers regs{};
-        regs.edx = reinterpret_cast<uint32_t>(tree);
+        regs.edx = ToInt(tree);
         regs.ax = pos.x;
         regs.cx = pos.y;
         call(0x004BB116, regs);
@@ -662,7 +663,7 @@ namespace OpenLoco::Input
     static void buildingInteract(Map::building_element* building, const Map::map_pos pos)
     {
         registers regs{};
-        regs.edx = reinterpret_cast<uint32_t>(building);
+        regs.edx = ToInt(building);
         regs.ax = pos.x;
         regs.cx = pos.y;
         call(0x0042D9BF, regs);
@@ -672,7 +673,7 @@ namespace OpenLoco::Input
     static void wallInteract(Map::wall_element* wall, const Map::map_pos pos)
     {
         registers regs{};
-        regs.edx = reinterpret_cast<uint32_t>(wall);
+        regs.edx = ToInt(wall);
         regs.ax = pos.x;
         regs.cx = pos.y;
         call(0x004C4809, regs);
@@ -682,7 +683,7 @@ namespace OpenLoco::Input
     static void headquarterInteract(Map::building_element* building, const Map::map_pos pos)
     {
         registers regs{};
-        regs.edx = reinterpret_cast<uint32_t>(building);
+        regs.edx = ToInt(building);
         regs.ax = pos.x;
         regs.cx = pos.y;
         call(0x0042F007, regs);

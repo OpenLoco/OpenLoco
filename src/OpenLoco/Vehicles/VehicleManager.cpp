@@ -1,6 +1,7 @@
 #include "VehicleManager.h"
 #include "../Company.h"
 #include "../Interop/Interop.hpp"
+#include "../Ptr.h"
 
 using namespace OpenLoco::Interop;
 
@@ -10,7 +11,7 @@ namespace OpenLoco::VehicleManager
     void determineAvailableVehicles(company& company)
     {
         registers regs;
-        regs.esi = reinterpret_cast<int32_t>(&company);
+        regs.esi = ToInt(&company);
         call(0x004C3A0C, regs);
     }
 }

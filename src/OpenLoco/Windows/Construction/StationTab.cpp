@@ -10,6 +10,7 @@
 #include "../../Objects/RoadStationObject.h"
 #include "../../Objects/TrackObject.h"
 #include "../../Objects/TrainStationObject.h"
+#include "../../Ptr.h"
 #include "../../StationManager.h"
 #include "../../Ui/Dropdown.h"
 #include "Construction.h"
@@ -158,7 +159,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     static void onToolUpdate(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
     {
         registers regs;
-        regs.esi = (int32_t)&self;
+        regs.esi = ToInt(&self);
         regs.dx = widgetIndex;
         regs.ax = x;
         regs.bx = y;
@@ -169,7 +170,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     static void onToolDown(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
     {
         registers regs;
-        regs.esi = (int32_t)&self;
+        regs.esi = ToInt(&self);
         regs.dx = widgetIndex;
         regs.ax = x;
         regs.bx = y;

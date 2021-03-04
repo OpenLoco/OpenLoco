@@ -3,6 +3,7 @@
 #include "../../Interop/Interop.hpp"
 #include "../../Message.h"
 #include "../../MessageManager.h"
+#include "../../Ptr.h"
 #include "News.h"
 
 using namespace OpenLoco::Interop;
@@ -143,7 +144,7 @@ namespace OpenLoco::Ui::NewsWindow::Ticker
         regs.cx = x;
         regs.dx = y;
         regs.ebp = ebp;
-        regs.edi = (int32_t)clipped;
+        regs.edi = ToInt(clipped);
         call(0x004950EF, regs);
     }
 

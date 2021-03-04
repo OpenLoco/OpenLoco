@@ -5,6 +5,7 @@
 #include "../Map/TileManager.h"
 #include "../Objects/ObjectManager.h"
 #include "../Objects/VehicleObject.h"
+#include "../Ptr.h"
 #include "../Things/Misc.h"
 #include "../Things/ThingManager.h"
 #include "Vehicle.h"
@@ -71,7 +72,7 @@ namespace OpenLoco::Vehicles
     int32_t VehicleBody::update()
     {
         registers regs;
-        regs.esi = (int32_t)this;
+        regs.esi = ToInt(this);
 
         if (mode == TransportMode::air || mode == TransportMode::water)
         {

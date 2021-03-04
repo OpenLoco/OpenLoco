@@ -18,6 +18,7 @@
 #include "../Map/Tile.h"
 #include "../Paint/Paint.h"
 #include "../Platform/Platform.h"
+#include "../Ptr.h"
 #include "../S5/S5.h"
 #include "../Scenario.h"
 #include "../Station.h"
@@ -446,7 +447,7 @@ static int32_t STDCALL lib_CreateFileA(
         return -1;
     }
 
-    return (int32_t)pFILE;
+    return ToInt(pFILE);
 }
 
 FORCE_ALIGN_ARG_POINTER
@@ -652,7 +653,7 @@ void OpenLoco::Interop::registerHooks()
             // TODO: use Utility::strlcpy with the buffer size instead of std::strcpy, if possible
             std::strcpy(buffer, path.make_preferred().u8string().c_str());
 
-            regs.ebx = (int32_t)buffer;
+            regs.ebx = ToInt(buffer);
             return 0;
         });
 
@@ -713,7 +714,7 @@ void OpenLoco::Interop::registerHooks()
             registers backup = regs;
             char* buffer = StringManager::formatString((char*)regs.edi, regs.eax, (void*)regs.ecx);
             regs = backup;
-            regs.edi = (uint32_t)buffer;
+            regs.edi = ToInt(buffer);
             return 0;
         });
 

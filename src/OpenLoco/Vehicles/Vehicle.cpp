@@ -1,5 +1,6 @@
 #include "Vehicle.h"
 #include "../Interop/Interop.hpp"
+#include "../Ptr.h"
 #include "../Things/ThingManager.h"
 
 using namespace OpenLoco::Interop;
@@ -89,7 +90,7 @@ namespace OpenLoco::Vehicles
     {
         int32_t result = 0;
         registers regs;
-        regs.esi = (int32_t)this;
+        regs.esi = ToInt(this);
         switch (getSubType())
         {
             case VehicleThingType::head:

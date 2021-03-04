@@ -7,6 +7,7 @@
 #include "../../Objects/ObjectManager.h"
 #include "../../Objects/RoadObject.h"
 #include "../../Objects/TrackObject.h"
+#include "../../Ptr.h"
 #include "../../TrackData.h"
 #include "../../Ui/Dropdown.h"
 #include "Construction.h"
@@ -126,7 +127,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     {
         registers regs;
         regs.edx = widgetIndex;
-        regs.esi = (int32_t)self;
+        regs.esi = ToInt(self);
         call(0x0049F92D, regs);
     }
 
@@ -135,7 +136,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     {
         registers regs;
         regs.edx = widgetIndex;
-        regs.esi = (int32_t)self;
+        regs.esi = ToInt(self);
         call(0x004A0121, regs);
     }
 
@@ -1616,7 +1617,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     static void onToolUpdate(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
     {
         registers regs;
-        regs.esi = (int32_t)&self;
+        regs.esi = ToInt(&self);
         regs.dx = widgetIndex;
         regs.ax = x;
         regs.bx = y;

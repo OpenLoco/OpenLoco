@@ -8,6 +8,7 @@
 #include "Map/MapGenerator.h"
 #include "Map/TileManager.h"
 #include "Objects/CargoObject.h"
+#include "Ptr.h"
 #include "S5/S5.h"
 #include "StationManager.h"
 #include "Things/ThingManager.h"
@@ -208,7 +209,7 @@ namespace OpenLoco::Scenario
             filename = reinterpret_cast<const char*>(-1);
 
         registers regs;
-        regs.ebx = reinterpret_cast<int32_t>(filename);
+        regs.ebx = ToInt(filename);
         call(0x0044400C, regs);
     }
 

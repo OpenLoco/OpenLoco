@@ -4,6 +4,7 @@
 #include "../Interop/Interop.hpp"
 #include "../Objects/CurrencyObject.h"
 #include "../Objects/ObjectManager.h"
+#include "../Ptr.h"
 #include "../TownManager.h"
 #include "ArgsWrapper.hpp"
 #include "StringIds.h"
@@ -94,8 +95,8 @@ namespace OpenLoco::StringManager
     static char* formatInt32Grouped(int32_t value, char* buffer)
     {
         registers regs;
-        regs.eax = (uint32_t)value;
-        regs.edi = (uint32_t)buffer;
+        regs.eax = ToInt(value);
+        regs.edi = ToInt(buffer);
 
         call(0x00495F35, regs);
         return (char*)regs.edi;
@@ -104,8 +105,8 @@ namespace OpenLoco::StringManager
     static char* formatInt32Ungrouped(int32_t value, char* buffer)
     {
         registers regs;
-        regs.eax = (uint32_t)value;
-        regs.edi = (uint32_t)buffer;
+        regs.eax = ToInt(value);
+        regs.edi = ToInt(buffer);
 
         call(0x495E2A, regs);
         return (char*)regs.edi;
@@ -114,10 +115,10 @@ namespace OpenLoco::StringManager
     static char* formatInt48Grouped(uint64_t value, char* buffer, uint8_t separator)
     {
         registers regs;
-        regs.eax = (uint32_t)value;
-        regs.edx = (uint32_t)(value / (1ULL << 32)); // regs.dx = (uint16_t)(value >> 32);
-        regs.edi = (uint32_t)buffer;
-        regs.ebx = (uint32_t)separator;
+        regs.eax = ToInt(value);
+        regs.edx = ToInt(value / (1ULL << 32)); // regs.dx = (uint16_t)(value >> 32);
+        regs.edi = ToInt(buffer);
+        regs.ebx = ToInt(separator);
 
         call(0x496052, regs);
         return (char*)regs.edi;
@@ -126,8 +127,8 @@ namespace OpenLoco::StringManager
     static char* formatShortWithDecimals(int16_t value, char* buffer)
     {
         registers regs;
-        regs.eax = (uint32_t)value;
-        regs.edi = (uint32_t)buffer;
+        regs.eax = ToInt(value);
+        regs.edi = ToInt(buffer);
 
         call(0x4963FC, regs);
         return (char*)regs.edi;
@@ -136,8 +137,8 @@ namespace OpenLoco::StringManager
     static char* formatIntWithDecimals(int32_t value, char* buffer)
     {
         registers regs;
-        regs.eax = (uint32_t)value;
-        regs.edi = (uint32_t)buffer;
+        regs.eax = ToInt(value);
+        regs.edi = ToInt(buffer);
 
         call(0x4962F1, regs);
         return (char*)regs.edi;
@@ -338,7 +339,7 @@ namespace OpenLoco::StringManager
 
                     case ControlCodes::currency48:
                     {
-                        uint32_t value_low = (uint32_t)args.pop32();
+                        uint32_t value_low = ToInt(args.pop32());
                         int32_t value_high = args.popS16();
                         int64_t value = (value_high * (1ULL << 32)) | value_low;
                         buffer = formatCurrency(value, buffer);
@@ -601,7 +602,7 @@ namespace OpenLoco::StringManager
     string_id userStringAllocate(char* str /* edi */, uint8_t cl)
     {
         registers regs;
-        regs.edi = reinterpret_cast<uint32_t>(str);
+        regs.edi = ToInt(str);
         regs.cl = cl;
         call(0x00496522, regs);
         return regs.ax;

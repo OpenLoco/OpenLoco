@@ -15,6 +15,7 @@
 #include "../Objects/RoadObject.h"
 #include "../Objects/TrackObject.h"
 #include "../Objects/WaterObject.h"
+#include "../Ptr.h"
 #include "../StationManager.h"
 #include "../Things/ThingManager.h"
 #include "../TownManager.h"
@@ -193,7 +194,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
     {
         // Load objects.
         registers regs;
-        regs.edi = (uint32_t)&available_objects[0];
+        regs.edi = ToInt(&available_objects[0]);
         call(0x00478265, regs);
 
         // Sanity check: any objects available?

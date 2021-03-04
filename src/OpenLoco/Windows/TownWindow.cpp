@@ -14,6 +14,7 @@
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/ObjectManager.h"
 #include "../OpenLoco.h"
+#include "../Ptr.h"
 #include "../Things/ThingManager.h"
 #include "../TownManager.h"
 #include "../Ui/WindowManager.h"
@@ -187,7 +188,7 @@ namespace OpenLoco::Ui::Windows::Town
                         for (uint32_t j = ebx; j > 0; j--)
                         {
                             registers regs;
-                            regs.esi = (int32_t)town;
+                            regs.esi = ToInt(town);
                             regs.eax = 0xFF;
 
                             call(0x00498116, regs);

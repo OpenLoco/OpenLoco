@@ -6,6 +6,7 @@
 #include "../Objects/ObjectManager.h"
 #include "../Objects/VehicleObject.h"
 #include "../OpenLoco.h"
+#include "../Ptr.h"
 #include "../StationManager.h"
 #include "../Things/Misc.h"
 #include "../Things/ThingManager.h"
@@ -360,7 +361,7 @@ namespace OpenLoco::Vehicles
     VehicleStatus VehicleHead::getStatus() const
     {
         registers regs = {};
-        regs.esi = reinterpret_cast<int32_t>(this);
+        regs.esi = ToInt(this);
 
         call(0x004B671C, regs);
 
@@ -648,7 +649,7 @@ namespace OpenLoco::Vehicles
     void VehicleHead::removeDanglingTrain()
     {
         registers regs;
-        regs.esi = reinterpret_cast<int32_t>(this);
+        regs.esi = ToInt(this);
         call(0x004AF06E, regs);
     }
 
@@ -656,7 +657,7 @@ namespace OpenLoco::Vehicles
     bool VehicleHead::updateLand()
     {
         registers regs;
-        regs.esi = reinterpret_cast<int32_t>(this);
+        regs.esi = ToInt(this);
         return (call(0x004A8C11, regs) & (1 << 8)) == 0;
     }
 
@@ -664,7 +665,7 @@ namespace OpenLoco::Vehicles
     bool VehicleHead::updateAir()
     {
         registers regs;
-        regs.esi = reinterpret_cast<int32_t>(this);
+        regs.esi = ToInt(this);
         return (call(0x004A9051, regs) & (1 << 8)) == 0;
     }
 
@@ -838,7 +839,7 @@ namespace OpenLoco::Vehicles
     void VehicleHead::updateLastJourneyAverageSpeed()
     {
         registers regs;
-        regs.esi = reinterpret_cast<int32_t>(this);
+        regs.esi = ToInt(this);
         call(0x004BACAF, regs);
     }
 
@@ -1071,7 +1072,7 @@ namespace OpenLoco::Vehicles
     void VehicleHead::updateUnloadCargo()
     {
         registers regs;
-        regs.esi = reinterpret_cast<int32_t>(this);
+        regs.esi = ToInt(this);
         call(0x004B9A2A, regs);
     }
 
@@ -1079,7 +1080,7 @@ namespace OpenLoco::Vehicles
     bool VehicleHead::updateLoadCargo()
     {
         registers regs;
-        regs.esi = reinterpret_cast<int32_t>(this);
+        regs.esi = ToInt(this);
         return call(0x004BA142, regs) & (1 << 8);
     }
 
@@ -1141,7 +1142,7 @@ namespace OpenLoco::Vehicles
     std::tuple<station_id_t, Map::map_pos, Map::map_pos3> VehicleHead::sub_427FC9()
     {
         registers regs;
-        regs.esi = reinterpret_cast<int32_t>(this);
+        regs.esi = ToInt(this);
         call(0x00427FC9, regs);
         Map::map_pos headTarget = { regs.ax, regs.cx };
         Map::map_pos3 stationTarget = { regs.di, regs.bp, regs.dl };

@@ -2,6 +2,7 @@
 #include "Interop/Interop.hpp"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
+#include "Ptr.h"
 #include "Things/ThingManager.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
@@ -40,7 +41,7 @@ namespace OpenLoco
     void company::aiThink()
     {
         registers regs;
-        regs.esi = (int32_t)this;
+        regs.esi = ToInt(this);
         call(0x00430762, regs);
     }
 

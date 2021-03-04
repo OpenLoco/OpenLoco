@@ -14,6 +14,7 @@
 #include "../Objects/TrackObject.h"
 #include "../Objects/VehicleObject.h"
 #include "../OpenLoco.h"
+#include "../Ptr.h"
 #include "../Things/ThingManager.h"
 #include "../Ui/ScrollView.h"
 #include "../Ui/WindowManager.h"
@@ -385,7 +386,7 @@ namespace OpenLoco::Ui::BuildVehicle
                 registers backup = regs;
                 auto window = open(regs.eax, regs.eax);
                 regs = backup;
-                regs.esi = (int32_t)window;
+                regs.esi = ToInt(window);
                 return 0;
             });
     }

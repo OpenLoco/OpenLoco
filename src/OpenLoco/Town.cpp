@@ -1,6 +1,7 @@
 #include "Town.h"
 #include "Interop/Interop.hpp"
 #include "Localisation/StringIds.h"
+#include "Ptr.h"
 #include "TownManager.h"
 #include <algorithm>
 
@@ -32,7 +33,7 @@ namespace OpenLoco
     void town::update()
     {
         registers regs;
-        regs.esi = (int32_t)this;
+        regs.esi = ToInt(this);
         call(0x0049742F, regs);
     }
 

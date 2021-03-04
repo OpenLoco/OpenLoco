@@ -2,6 +2,7 @@
 #include "../Graphics/Colour.h"
 #include "../Graphics/Gfx.h"
 #include "../Interop/Interop.hpp"
+#include "../Ptr.h"
 #include "ObjectManager.h"
 
 using namespace OpenLoco::Interop;
@@ -29,8 +30,8 @@ namespace OpenLoco
         regs.dx = y;
         regs.esi = colour;
         regs.eax = buildingRotation;
-        regs.edi = (int32_t)clipped;
-        regs.ebp = (uint32_t)this;
+        regs.edi = ToInt(clipped);
+        regs.ebp = ToInt(this);
         call(0x0042DB95, regs);
     }
 

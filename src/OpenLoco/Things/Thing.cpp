@@ -2,6 +2,7 @@
 #include "../Config.h"
 #include "../Graphics/Gfx.h"
 #include "../Interop/Interop.hpp"
+#include "../Ptr.h"
 #include "../ViewportManager.h"
 #include <algorithm>
 
@@ -15,7 +16,7 @@ void thing_base::moveTo(loc16 loc)
     regs.ax = loc.x;
     regs.cx = loc.y;
     regs.dx = loc.z;
-    regs.esi = (int32_t)this;
+    regs.esi = ToInt(this);
     call(0x0046FC83, regs);
 }
 

@@ -15,6 +15,7 @@
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/ObjectManager.h"
 #include "../OpenLoco.h"
+#include "../Ptr.h"
 #include "../Scenario.h"
 #include "../Things/ThingManager.h"
 #include "../Ui/Dropdown.h"
@@ -862,7 +863,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                     // Centre viewport on HQ.
                     // TODO(avgeffen): move/implement.
                     registers regs;
-                    regs.esi = (int32_t)self;
+                    regs.esi = ToInt(self);
                     call(0x00432C45, regs);
                     break;
                 }
@@ -937,7 +938,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         static void onToolUpdate(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
         {
             registers regs;
-            regs.esi = (int32_t)&self;
+            regs.esi = ToInt(&self);
             regs.dx = widgetIndex;
             regs.ax = x;
             regs.bx = y;
@@ -1388,8 +1389,8 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 {
                     registers regs;
                     regs.edx = widgetIndex;
-                    regs.esi = (int32_t)self;
-                    regs.edi = (int32_t)&self->widgets[widgetIndex];
+                    regs.esi = ToInt(self);
+                    regs.edi = ToInt(&self->widgets[widgetIndex]);
                     call(0x00433119, regs);
                     break;
                 }
@@ -1408,8 +1409,8 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 {
                     registers regs;
                     regs.edx = widgetIndex;
-                    regs.esi = (int32_t)self;
-                    regs.edi = (int32_t)&self->widgets[widgetIndex];
+                    regs.esi = ToInt(self);
+                    regs.edi = ToInt(&self->widgets[widgetIndex]);
                     call(0x00433183, regs);
                     break;
                 }
@@ -1913,7 +1914,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         static void sub_4C8DBF(window* self)
         {
             registers regs;
-            regs.esi = (int32_t)self;
+            regs.esi = ToInt(self);
             call(0x004C8DBF, regs);
         }
 

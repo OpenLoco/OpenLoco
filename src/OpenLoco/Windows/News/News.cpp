@@ -12,6 +12,7 @@
 #include "../../MessageManager.h"
 #include "../../Objects/ObjectManager.h"
 #include "../../Objects/VehicleObject.h"
+#include "../../Ptr.h"
 #include "../../StationManager.h"
 #include "../../Things/ThingManager.h"
 #include "../../TownManager.h"
@@ -467,9 +468,9 @@ namespace OpenLoco::Ui::NewsWindow
         static void sub_42A136(window* self, Gfx::drawpixelinfo_t* dpi, message* news)
         {
             registers regs;
-            regs.edi = (int32_t)dpi;
-            regs.esi = (int32_t)self;
-            regs.ebp = (int32_t)news;
+            regs.edi = ToInt(dpi);
+            regs.esi = ToInt(self);
+            regs.ebp = ToInt(news);
             call(0x0042A136, regs);
         }
 
