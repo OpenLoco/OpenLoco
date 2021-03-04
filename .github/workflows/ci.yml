@@ -94,3 +94,18 @@ jobs:
           mkdir build
           cd build
           cmake ../ ${OPENLOCO_CMAKE_OPTS} && ninja -k0
+  macos:
+    name: Experimental MacOS 64-bit
+    runs-on: macos-latest
+    needs: [check-code-formatting]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Install deps
+        run: |
+          brew install ninja sdl2 sdl2_mixer yaml-cpp libpng
+      - name: Build OpenLoco
+        run: |
+          mkdir build
+          cd build
+          cmake ../ -G Ninja -DDISABLE_LOCO=on && ninja -k0
