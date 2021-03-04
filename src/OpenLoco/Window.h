@@ -518,7 +518,9 @@ namespace OpenLoco::Ui
         void callDraw(Gfx::drawpixelinfo_t* dpi);                                                        // 27
         void callDrawScroll(Gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex);                            // 28
     };
+#if defined(__i386__) || defined(_M_IX86)
     static_assert(sizeof(window) == 0x88E);
+#endif
 
     Map::map_pos viewportCoordToMapCoord(int16_t x, int16_t y, int16_t z, int32_t rotation);
     std::optional<Map::map_pos> screenGetMapXyWithZ(const xy32& mouse, const int16_t z);

@@ -44,7 +44,9 @@ namespace OpenLoco::Paint
         uint8_t pad_0D;
         AttachedPaintStruct* next; // 0x0E
     };
+#if defined(__i386__) || defined(_M_IX86)
     static_assert(sizeof(AttachedPaintStruct) == 0x12);
+#endif
 
     struct PaintStringStruct
     {
@@ -57,7 +59,9 @@ namespace OpenLoco::Paint
         uint8_t* yOffsets; // 0x1A
         uint16_t colour;   // 0x1E
     };
+#if defined(__i386__) || defined(_M_IX86)
     static_assert(sizeof(PaintStringStruct) == 0x20);
+#endif
 
     struct PaintStructBoundBox
     {
@@ -105,7 +109,9 @@ namespace OpenLoco::Paint
             Thing* thing;                   // 0x30
         };
     };
+#if defined(__i386__) || defined(_M_IX86)
     static_assert(sizeof(PaintStruct) == 0x34);
+#endif
 
     union PaintEntry
     {
@@ -113,7 +119,9 @@ namespace OpenLoco::Paint
         AttachedPaintStruct attached;
         PaintStringStruct string;
     };
+#if defined(__i386__) || defined(_M_IX86)
     static_assert(sizeof(PaintEntry) == 0x34);
+#endif
 #pragma pack(pop)
     struct GenerationParameters;
 

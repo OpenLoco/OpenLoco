@@ -16,14 +16,18 @@ namespace OpenLoco::ObjectManager
     {
         uint32_t dataSize;
     };
+#if defined(__i386__) || defined(_M_IX86)
     static_assert(sizeof(ObjectEntry2) == 0x14);
+#endif
 
     struct object_repository_item
     {
         object** objects;
         ObjectEntry2* object_entry_extendeds;
     };
+#if defined(__i386__) || defined(_M_IX86)
     static_assert(sizeof(object_repository_item) == 8);
+#endif
 #pragma pack(pop)
 
     loco_global<ObjectEntry2[maxObjects], 0x1125A90> objectEntries;
