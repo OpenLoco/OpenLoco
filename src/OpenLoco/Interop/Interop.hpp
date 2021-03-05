@@ -27,7 +27,7 @@ namespace OpenLoco::Interop
     {
         union
         {
-            int32_t eax{ DEFAULT_REG_VAL };
+            intptr_t eax{ DEFAULT_REG_VAL };
             int16_t ax;
             struct
             {
@@ -37,7 +37,7 @@ namespace OpenLoco::Interop
         };
         union
         {
-            int32_t ebx{ DEFAULT_REG_VAL };
+            intptr_t ebx{ DEFAULT_REG_VAL };
             int16_t bx;
             struct
             {
@@ -47,7 +47,7 @@ namespace OpenLoco::Interop
         };
         union
         {
-            int32_t ecx{ DEFAULT_REG_VAL };
+            intptr_t ecx{ DEFAULT_REG_VAL };
             int16_t cx;
             struct
             {
@@ -57,7 +57,7 @@ namespace OpenLoco::Interop
         };
         union
         {
-            int32_t edx{ DEFAULT_REG_VAL };
+            intptr_t edx{ DEFAULT_REG_VAL };
             int16_t dx;
             struct
             {
@@ -67,21 +67,23 @@ namespace OpenLoco::Interop
         };
         union
         {
-            int32_t esi{ DEFAULT_REG_VAL };
+            intptr_t esi{ DEFAULT_REG_VAL };
             int16_t si;
         };
         union
         {
-            int32_t edi{ DEFAULT_REG_VAL };
+            intptr_t edi{ DEFAULT_REG_VAL };
             int16_t di;
         };
         union
         {
-            int32_t ebp{ DEFAULT_REG_VAL };
+            intptr_t ebp{ DEFAULT_REG_VAL };
             int16_t bp;
         };
     };
+#if defined(__i386__) || defined(_M_IX86)
     assert_struct_size(registers, 7 * 4);
+#endif
 #pragma pack(pop)
 
 #ifndef USE_MMAP

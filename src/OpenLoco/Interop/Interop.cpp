@@ -96,7 +96,7 @@ namespace OpenLoco::Interop
     }
 #endif
 
-    static int32_t DISABLE_OPT callByRef(int32_t address, int32_t* _eax, int32_t* _ebx, int32_t* _ecx, int32_t* _edx, int32_t* _esi, int32_t* _edi, int32_t* _ebp)
+    static int32_t DISABLE_OPT callByRef(int32_t address, intptr_t* _eax, intptr_t* _ebx, intptr_t* _ecx, intptr_t* _edx, intptr_t* _esi, intptr_t* _edi, intptr_t* _ebp)
     {
 #ifdef _LOG_INTEROP_CALLS_
         OpenLoco::Console::group("0x%x", address);

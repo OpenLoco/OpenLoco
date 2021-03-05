@@ -13,7 +13,7 @@ static std::pair<sound_id, channel_attributes> sub_48A590(const Vehicles::Vehicl
     registers regs;
     regs.esi = ToInt(v);
     call(0x0048A590, regs);
-    return { static_cast<sound_id>(regs.eax), { regs.ecx, regs.edx, regs.ebx } };
+    return { static_cast<sound_id>(regs.eax), { (int32_t)regs.ecx, (int32_t)regs.edx, (int32_t)regs.ebx } };
 }
 
 vehicle_channel::vehicle_channel(channel&& c)
