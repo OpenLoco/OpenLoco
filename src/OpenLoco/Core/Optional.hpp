@@ -4,14 +4,8 @@
 
 #pragma once
 
-// Find out where std::optional is:
-#if defined(__APPLE__) // XCode has the header in experimental namespace
-#define NORMAL_OPTIONAL 0
-#else // By default assume supported.
-#define NORMAL_OPTIONAL 1
-#endif
-
-#if NORMAL_OPTIONAL
+#if defined(__has_include) // For GCC/Clang check if the header exists.
+#if __has_include(<optional>)
 #include <optional>
 #else
 #include <experimental/optional>
@@ -21,5 +15,6 @@ namespace std
     using std::experimental::optional;
 }
 #endif
-
-#undef NORMAL_OPTIONAL // Not needed any more, don't make it public.
+#else
+#error "<optional> header not found"
+#endif
