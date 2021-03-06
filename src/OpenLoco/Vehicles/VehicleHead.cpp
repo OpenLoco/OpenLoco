@@ -690,6 +690,11 @@ namespace OpenLoco::Vehicles
         {
             vehicleUpdate_var_1136130 = 0x4000;
         }
+        else
+        {
+            vehicleUpdate_var_1136130 = 0x2000;
+        }
+
 
         Vehicle train(this);
         train.cars.firstCar.body->sub_4AAB0B();
