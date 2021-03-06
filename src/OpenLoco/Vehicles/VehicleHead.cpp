@@ -652,6 +652,20 @@ namespace OpenLoco::Vehicles
         call(0x004AF06E, regs);
     }
 
+    // Returns veh1, veh2 position
+    static std::pair<map_pos, map_pos> calculateNextPosition(const uint8_t yaw, const Map::map_pos& curPos, const Vehicle1* veh1, const Speed32 speed)
+    {
+        auto distX = (speed.getRaw() >> 13) * factorXY503B6A[yaw * 2];
+        auto distY = (speed.getRaw() >> 13) * factorXY503B6A[yaw * 2 + 1];
+
+        auto bigCoordX = veh1->var_4E + (curPos.x << 16) + distX;
+        auto bigCoordY = veh1->var_50 + (curPos.y << 16) + distY;
+
+        map_pos veh1Pos = { static_cast<int16_t>(bigCoordX & 0xFFFF), static_cast<int16_t>(bigCoordY & 0xFFFF) };
+        map_pos veh2Pos = { static_cast<int16_t>(bigCoordX >> 16), static_cast<int16_t>(bigCoordY >> 16) };
+        return std::make_pair(veh1Pos, veh2Pos);
+    }
+
     // 0x004A8C11
     bool VehicleHead::updateLand()
     {
@@ -1036,16 +1050,12 @@ namespace OpenLoco::Vehicles
         }
 
         Vehicle1* veh1 = vehicleUpdate_1;
-        auto distX = (veh2->currentSpeed.getRaw() >> 13) * factorXY503B6A[veh2->sprite_yaw * 2];
-        auto distY = (veh2->currentSpeed.getRaw() >> 13) * factorXY503B6A[veh2->sprite_yaw * 2 + 1];
+        auto [newVeh1Pos, newVeh2Pos] = calculateNextPosition(veh2->sprite_yaw, { veh2->x, veh2->y }, veh1, veh2->currentSpeed);
 
-        auto bigCoordX = veh1->var_4E + (veh2->x << 16) + distX;
-        auto bigCoordY = veh1->var_50 + (veh2->y << 16) + distY;
+        veh1->var_4E = newVeh1Pos.x;
+        veh1->var_50 = newVeh1Pos.y;
 
-        veh1->var_4E = bigCoordX & 0xFFFF;
-        veh1->var_50 = bigCoordY & 0xFFFF;
-
-        map_pos3 newLocation = { static_cast<int16_t>(bigCoordX >> 16), static_cast<int16_t>(bigCoordY >> 16), veh2->z };
+        map_pos3 newLocation = { newVeh2Pos, veh2->z };
         moveBoatTo(newLocation, veh2->sprite_yaw, Pitch::flat);
 
         return flags;
