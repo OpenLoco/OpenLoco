@@ -291,7 +291,7 @@ namespace OpenLoco::Vehicles
         uint8_t pad_40[0x2];    // 0x40
         TransportMode mode;     // 0x42 field same in all vehicles
         uint8_t pad_43;
-        uint16_t var_44;
+        Speed16 var_44;
         uint16_t var_46;
         uint8_t var_48;
         uint8_t var_49;
@@ -343,7 +343,7 @@ namespace OpenLoco::Vehicles
         Speed32 currentSpeed; // 0x56
         uint8_t var_5A;
         uint8_t var_5B;
-        int16_t rackRailMaxSpeed; // 0x5C
+        Speed16 rackRailMaxSpeed; // 0x5C
         uint32_t var_5E;
         int32_t refund_cost; // 0x62 currency maybe not refund cost (probably last 4 months profit 62-6E)
         int32_t var_66;      // currency
