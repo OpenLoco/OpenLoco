@@ -924,88 +924,11 @@ namespace OpenLoco::Vehicles
     // 0x004273DF
     std::pair<Status, Speed16> VehicleHead::airplaneGetNewStatus()
     {
-        Vehicle train(this);
-        if (stationId == StationId::null || airportApronArea == cAirportApronAreaNull)
-        {
-            auto veh2 = train.veh2;
-            auto targetSpeed = veh2->maxSpeed;
-            if (veh2->var_73 & Flags73::isBrokenDown)
-            {
-                targetSpeed = veh2->rackRailMaxSpeed;
-            }
+        registers regs;
+        regs.esi = reinterpret_cast<uint32_t>(this);
+        call(0x004273DF, regs);
 
-            return std::make_pair(Status::unk_2, targetSpeed);
-        }
-
-        auto station = StationManager::get(stationId);
-
-        map_pos3 loc = {
-            station->unk_tile_x,
-            station->unk_tile_y,
-            station->unk_tile_z
-        };
-
-        auto tile = Map::TileManager::get(loc);
-        for (auto& el : tile)
-        {
-            auto elStation = el.asStation();
-            if (elStation == nullptr)
-                continue;
-
-            if (elStation->baseZ() != loc.z / 4)
-                continue;
-
-            auto airportObject = ObjectManager::get<airport_object>(elStation->objectId());
-
-            uint8_t al = airportObject->var_B2[airportApronArea].var_03;
-            uint8_t cl = airportObject->var_B2[airportApronArea].var_00;
-
-            auto veh2 = train.veh2;
-            if (al != 0)
-            {
-                if (cl == 1 || al != 2)
-                {
-                    if (al == 1)
-                    {
-                        return std::make_pair(Status::landing, veh2->rackRailMaxSpeed);
-                    }
-                    else if (al == 3)
-                    {
-                        return std::make_pair(Status::landing, 0_mph);
-                    }
-                    else if (al == 4)
-                    {
-                        return std::make_pair(Status::taxiing1, 20_mph);
-                    }
-                    else
-                    {
-                        return std::make_pair(Status::approaching, veh2->rackRailMaxSpeed);
-                    }
-                }
-            }
-
-            if (cl == 2)
-            {
-                auto targetSpeed = veh2->maxSpeed;
-                if (veh2->var_73 & Flags73::isBrokenDown)
-                {
-                    targetSpeed = veh2->rackRailMaxSpeed;
-                }
-                return std::make_pair(Status::takingOff, targetSpeed);
-            }
-            else if (cl == 3)
-            {
-                return std::make_pair(Status::takingOff, 0_mph);
-            }
-            else
-            {
-                return std::make_pair(Status::taxiing2, 20_mph);
-            }
-        }
-
-        // Tile not found. Todo: fail gracefully
-        assert(false);
-        return std::make_pair(Status::unk_2, train.veh2->maxSpeed);
+        return std::make_pair(static_cast<Status>(regs.al), static_cast<Speed16>(regs.bx));
     }
 
     // 0x004A95CB
