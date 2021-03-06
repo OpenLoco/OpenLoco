@@ -237,7 +237,7 @@ namespace OpenLoco::S5
 
         auto file = std::make_unique<S5File>();
         file->header = prepareHeader(flags, packedObjects.size());
-        if (file->header.type == S5Type::landscape)
+        if (file->header.type == S5Type::scenario || file->header.type == S5Type::landscape)
         {
             file->landscapeOptions = std::make_unique<Options>(_activeOptions);
         }
@@ -322,7 +322,7 @@ namespace OpenLoco::S5
         {
             SawyerStreamWriter fs(path);
             fs.writeChunk(SawyerEncoding::rotate, file.header);
-            if (file.header.type == S5Type::landscape)
+            if (file.header.type == S5Type::scenario || file.header.type == S5Type::landscape)
             {
                 fs.writeChunk(SawyerEncoding::rotate, *file.landscapeOptions);
             }
