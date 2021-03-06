@@ -102,10 +102,10 @@ namespace OpenLoco::Vehicles
                 break;
             case TransportMode::air:
                 continueUpdating = updateAir();
-                if (continueUpdating)
-                {
-                    tryCreateInitialMovementSound();
-                }
+                //if (continueUpdating)
+                //{
+                //    tryCreateInitialMovementSound();
+                //}
                 break;
             case TransportMode::water:
                 continueUpdating = updateWater();
@@ -706,12 +706,14 @@ namespace OpenLoco::Vehicles
                 checkIfAtOrderStation();
                 beginUnloading();
             }
-
+            tryCreateInitialMovementSound();
             return true;
         }
         else if (status == Status::unloading)
         {
             updateUnloadCargo();
+
+            tryCreateInitialMovementSound();
             return true;
         }
         else if (status == Status::loading)
@@ -790,18 +792,17 @@ namespace OpenLoco::Vehicles
             }
         }
 
-        targetYaw = (targetYaw - sprite_yaw) & 0x3F;
-
-        if (targetYaw != 0)
+        if (targetYaw != sprite_yaw)
         {
-            if (targetYaw > 32)
+            if (((targetYaw - sprite_yaw) & 0x3F) > 0x20)
             {
-                sprite_yaw = (sprite_yaw - 1) & 0x3F;
+                sprite_yaw--;
             }
             else
             {
-                sprite_yaw = (sprite_yaw + 1) & 0x3F;
+                sprite_yaw++;
             }
+            sprite_yaw &= 0x3F;
         }
 
         Pitch targetPitch = Pitch::flat;
@@ -917,6 +918,8 @@ namespace OpenLoco::Vehicles
         {
             vehType2->currentSpeed = 0.0_mph;
             vehType2->var_5A = 0;
+
+            tryCreateInitialMovementSound();
             return true;
         }
     }
@@ -946,6 +949,7 @@ namespace OpenLoco::Vehicles
             checkIfAtOrderStation();
             beginUnloading();
         }
+        tryCreateInitialMovementSound();
         return true;
     }
 
@@ -957,6 +961,7 @@ namespace OpenLoco::Vehicles
         vehType2->var_5A = 0;
         if (updateLoadCargo())
         {
+            tryCreateInitialMovementSound();
             return true;
         }
 
@@ -980,72 +985,16 @@ namespace OpenLoco::Vehicles
         }
 
         status = Status::loading;
+        tryCreateInitialMovementSound();
         return true;
     }
 
     // 0x004A94A9
     bool VehicleHead::airplaneApproachTarget(uint16_t targetZ)
     {
-        auto _yaw = sprite_yaw;
-        // Helicopter
-        if (vehicleUpdate_var_525BB0 & (1 << 7))
-        {
-            _yaw = vehicleUpdate_helicopterTargetYaw;
-        }
-
-        Vehicle1* vehType1 = vehicleUpdate_1;
-        Vehicle2* vehType2 = vehicleUpdate_2;
-
-        auto [veh1Loc, veh2Loc] = calculateNextPosition(
-            _yaw, { x, y }, vehType1, vehType2->currentSpeed);
-
-        map_pos3 newLoc(veh2Loc, targetZ);
-        vehType1->var_4E = veh1Loc.x;
-        vehType1->var_50 = veh1Loc.y;
-        if (targetZ != z)
-        {
-            // Final section of landing / helicopter
-            if (vehicleUpdate_manhattanDistanceToStation <= 28)
-            {
-                int16_t z_shift = 1;
-                if (vehType2->currentSpeed >= 50.0_mph)
-                {
-                    z_shift++;
-                    if (vehType2->currentSpeed >= 100.0_mph)
-                    {
-                        z_shift++;
-                    }
-                }
-
-                if (targetZ < z)
-                {
-                    newLoc.z = std::max<int16_t>(targetZ, z - z_shift);
-                }
-                else if (targetZ > z)
-                {
-                    newLoc.z = std::min<int16_t>(targetZ, z + z_shift);
-                }
-            }
-            else
-            {
-                int32_t zDiff = targetZ - z;
-                // We want a SAR instruction so use >>5
-                int32_t param1 = (zDiff * toSpeed16(vehType2->currentSpeed).getRaw()) >> 5;
-                int32_t param2 = vehicleUpdate_manhattanDistanceToStation - 18;
-
-                auto modulo = param1 % param2;
-                if (modulo < 0)
-                {
-                    newLoc.z = z + param1 / param2 - 1;
-                }
-                else
-                {
-                    newLoc.z = z + param1 / param2 + 1;
-                }
-            }
-        }
-        movePlaneTo(newLoc, sprite_yaw, sprite_pitch);
-        return true;
+        registers regs;
+        regs.esi = reinterpret_cast<uint32_t>(this);
+        return (call(0x004A94A9, regs) & (1 << 8)) == 0;
     }
 
     bool VehicleHead::sub_4A9348(uint32_t newApronArea, uint16_t target_z)
@@ -1133,7 +1082,7 @@ namespace OpenLoco::Vehicles
 
             // Todo: fail gracefully on tile not found
             assert(false);
-
+            tryCreateInitialMovementSound();
             return true;
             // 0x004A938A
         }
