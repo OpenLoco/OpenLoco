@@ -1842,13 +1842,14 @@ namespace OpenLoco::Ui::Options
 
     namespace Misc
     {
-        static const Gfx::ui_size_t _window_size = { 420, 159 };
+        static const Gfx::ui_size_t _window_size = { 420, 174 };
 
         namespace Widx
         {
             enum
             {
-                disable_vehicle_breakdowns = 10,
+                enableCheatsToolbarButton = 10,
+                disable_vehicle_breakdowns,
                 disableAICompanies,
                 use_preferred_owner_name,
                 change_btn,
@@ -1861,18 +1862,19 @@ namespace OpenLoco::Ui::Options
             };
         }
 
-        static constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Misc::Widx::disable_vehicle_breakdowns) | (1 << Widx::disableAICompanies) | (1 << Misc::Widx::use_preferred_owner_name) | (1 << Misc::Widx::change_btn) | (1 << Misc::Widx::export_plugin_objects) | (1 << Misc::Widx::autosave_frequency_btn) | (1 << Misc::Widx::autosave_amount) | (1 << Misc::Widx::autosave_amount_down_btn) | (1 << Misc::Widx::autosave_amount_up_btn);
+        static constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Misc::Widx::enableCheatsToolbarButton) | (1 << Misc::Widx::disable_vehicle_breakdowns) | (1 << Widx::disableAICompanies) | (1 << Misc::Widx::use_preferred_owner_name) | (1 << Misc::Widx::change_btn) | (1 << Misc::Widx::export_plugin_objects) | (1 << Misc::Widx::autosave_frequency_btn) | (1 << Misc::Widx::autosave_amount) | (1 << Misc::Widx::autosave_amount_down_btn) | (1 << Misc::Widx::autosave_amount_up_btn);
 
         static widget_t _widgets[] = {
             common_options_widgets(_window_size, StringIds::options_title_miscellaneous),
-            makeWidget({ 10, 49 }, { 400, 12 }, widget_type::checkbox, 1, StringIds::disable_vehicle_breakdowns, StringIds::null),
-            makeWidget({ 10, 64 }, { 400, 12 }, widget_type::checkbox, 1, StringIds::disableAICompanies, StringIds::disableAICompanies_tip),
-            makeWidget({ 10, 79 }, { 400, 12 }, widget_type::checkbox, 1, StringIds::use_preferred_owner_name, StringIds::use_preferred_owner_name_tip),
-            makeWidget({ 335, 94 }, { 75, 12 }, widget_type::wt_11, 1, StringIds::change),
-            makeWidget({ 10, 109 }, { 400, 12 }, widget_type::checkbox, 1, StringIds::export_plugin_objects, StringIds::export_plugin_objects_tip),
-            makeWidget({ 250, 123 }, { 156, 12 }, widget_type::wt_18, 1, StringIds::empty),
-            makeWidget({ 394, 124 }, { 11, 10 }, widget_type::wt_11, 1, StringIds::dropdown),
-            makeStepperWidgets({ 250, 139 }, { 156, 12 }, widget_type::wt_17, 1, StringIds::empty),
+            makeWidget({ 10, 49 }, { 400, 12 }, widget_type::checkbox, 1, StringIds::option_cheat_menu_enable, StringIds::tooltip_option_cheat_menu_enable),
+            makeWidget({ 10, 64 }, { 400, 12 }, widget_type::checkbox, 1, StringIds::disable_vehicle_breakdowns),
+            makeWidget({ 10, 79 }, { 400, 12 }, widget_type::checkbox, 1, StringIds::disableAICompanies, StringIds::disableAICompanies_tip),
+            makeWidget({ 10, 94 }, { 400, 12 }, widget_type::checkbox, 1, StringIds::use_preferred_owner_name, StringIds::use_preferred_owner_name_tip),
+            makeWidget({ 335, 109 }, { 75, 12 }, widget_type::wt_11, 1, StringIds::change),
+            makeWidget({ 10, 124 }, { 400, 12 }, widget_type::checkbox, 1, StringIds::export_plugin_objects, StringIds::export_plugin_objects_tip),
+            makeWidget({ 250, 139 }, { 156, 12 }, widget_type::wt_18, 1, StringIds::empty),
+            makeWidget({ 394, 140 }, { 11, 10 }, widget_type::wt_11, 1, StringIds::dropdown),
+            makeStepperWidgets({ 250, 154 }, { 156, 12 }, widget_type::wt_17, 1, StringIds::empty),
             widgetEnd(),
         };
 
@@ -1883,6 +1885,7 @@ namespace OpenLoco::Ui::Options
         static void changePreferredName(window* w);
         static void setPreferredName(window* w, const char* str);
         static void usePreferredOwnerNameMouseUp(window* w);
+        static void enableCheatsToolbarButtonMouseUp(window* w);
         static void disableVehicleBreakdownsMouseUp(window* w);
         static void disableAICompaniesMouseUp(window* w);
         static void exportPluginObjectsMouseUp(window* w);
@@ -1903,6 +1906,11 @@ namespace OpenLoco::Ui::Options
             w->widgets[Common::Widx::caption].right = w->width - 2;
             w->widgets[Common::Widx::close_button].left = w->width - 15;
             w->widgets[Common::Widx::close_button].right = w->width - 15 + 12;
+
+            if (Config::getNew().cheats_menu_enabled)
+                w->activated_widgets |= (1 << Widx::enableCheatsToolbarButton);
+            else
+                w->activated_widgets &= ~(1 << Widx::enableCheatsToolbarButton);
 
             if (Config::getNew().breakdowns_disabled)
                 w->activated_widgets |= (1 << Widx::disable_vehicle_breakdowns);
@@ -2089,6 +2097,10 @@ namespace OpenLoco::Ui::Options
                     Options::tabOnMouseUp(w, wi);
                     return;
 
+                case Widx::enableCheatsToolbarButton:
+                    enableCheatsToolbarButtonMouseUp(w);
+                    break;
+
                 case Widx::disable_vehicle_breakdowns:
                     disableVehicleBreakdownsMouseUp(w);
                     break;
@@ -2198,6 +2210,15 @@ namespace OpenLoco::Ui::Options
                     changePreferredName(w);
                 }
             }
+        }
+
+        static void enableCheatsToolbarButtonMouseUp(window* w)
+        {
+            auto& cfg = OpenLoco::Config::getNew();
+            cfg.cheats_menu_enabled = !cfg.cheats_menu_enabled;
+            Config::write();
+            w->invalidate();
+            WindowManager::invalidate(WindowType::topToolbar);
         }
 
         static void disableVehicleBreakdownsMouseUp(window* w)

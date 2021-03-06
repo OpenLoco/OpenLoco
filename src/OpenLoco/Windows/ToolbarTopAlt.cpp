@@ -1,6 +1,7 @@
 #include "../Audio/Audio.h"
 #include "../CompanyManager.h"
 #include "../Config.h"
+#include "../EditorController.h"
 #include "../GameCommands.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/Gfx.h"
@@ -34,26 +35,28 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
     {
         enum
         {
-            map_generation_menu = Common::Widx::w6,
+            map_generation_menu = Common::Widx::w2,
         };
     }
 
     static widget_t _widgets[] = {
-        makeWidget({ 0, 0 }, { 30, 28 }, widget_type::wt_7, 0),   // 0
-        makeWidget({ 30, 0 }, { 30, 28 }, widget_type::wt_7, 0),  // 1
-        makeWidget({ 74, 0 }, { 30, 28 }, widget_type::wt_7, 1),  // 2
+        makeWidget({ 0, 0 }, { 30, 28 }, widget_type::wt_7, 0),  // 0
+        makeWidget({ 30, 0 }, { 30, 28 }, widget_type::wt_7, 0), // 1
+        makeWidget({ 60, 0 }, { 30, 28 }, widget_type::wt_7, 0), // 2
+
         makeWidget({ 104, 0 }, { 30, 28 }, widget_type::wt_7, 1), // 3
         makeWidget({ 134, 0 }, { 30, 28 }, widget_type::wt_7, 1), // 4
+        makeWidget({ 164, 0 }, { 30, 28 }, widget_type::wt_7, 1), // 5
 
-        makeWidget({ 267, 0 }, { 30, 28 }, widget_type::wt_7, 2), // 5
         makeWidget({ 267, 0 }, { 30, 28 }, widget_type::wt_7, 2), // 6
-        makeWidget({ 357, 0 }, { 30, 28 }, widget_type::wt_7, 2), // 7
-        makeWidget({ 0, 0 }, { 1, 1 }, widget_type::none, 0),     // 8
+        makeWidget({ 0, 0 }, { 1, 1 }, widget_type::none, 0),     // 7
+        makeWidget({ 357, 0 }, { 30, 28 }, widget_type::wt_7, 2), // 8
         makeWidget({ 0, 0 }, { 1, 1 }, widget_type::none, 0),     // 9
-
         makeWidget({ 0, 0 }, { 1, 1 }, widget_type::none, 0),     // 10
+
         makeWidget({ 0, 0 }, { 1, 1 }, widget_type::none, 0),     // 11
-        makeWidget({ 460, 0 }, { 30, 28 }, widget_type::wt_7, 3), // 12
+        makeWidget({ 0, 0 }, { 1, 1 }, widget_type::none, 0),     // 12
+        makeWidget({ 460, 0 }, { 30, 28 }, widget_type::wt_7, 3), // 13
         widgetEnd(),
     };
 
@@ -265,9 +268,9 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
 
         Common::rightAlignTabs(window, x, { Common::Widx::towns_menu });
         x -= 11;
-        Common::rightAlignTabs(window, x, { Common::Widx::road_menu, Widx::map_generation_menu, Common::Widx::terraform_menu });
+        Common::rightAlignTabs(window, x, { Common::Widx::road_menu, Common::Widx::terraform_menu });
 
-        if (S5::getOptions().editorStep == 1)
+        if (EditorController::getCurrentStep() == EditorController::Step::landscapeEditor)
         {
             window->widgets[Common::Widx::zoom_menu].type = widget_type::wt_7;
             window->widgets[Common::Widx::rotate_menu].type = widget_type::wt_7;
@@ -313,7 +316,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
         window->widgets[Common::Widx::view_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_view, 0);
 
         window->widgets[Common::Widx::terraform_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_terraform, 0);
-        window->widgets[Widx::map_generation_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_map_generation, 0);
+        window->widgets[Widx::map_generation_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_cogwheels, 0);
         window->widgets[Common::Widx::road_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_opaque, 0);
 
         if (last_town_option == 0)

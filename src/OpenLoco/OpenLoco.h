@@ -17,6 +17,8 @@ namespace OpenLoco
         constexpr uint16_t unknown_4 = 1 << 4;
         constexpr uint16_t unknown_5 = 1 << 5;
         constexpr uint16_t driverCheatEnabled = 1 << 6;
+        constexpr uint16_t sandboxMode = 1 << 7;          // new in OpenLoco
+        constexpr uint16_t pauseOverrideEnabled = 1 << 8; // new in OpenLoco
     }
 
     extern const char version[];
@@ -38,6 +40,9 @@ namespace OpenLoco
     bool isNetworkHost();
     bool isUnknown4Mode();
     bool isUnknown5Mode();
+    bool isDriverCheatEnabled();
+    bool isSandboxMode();
+    bool isPauseOverrideEnabled();
     bool isPaused();
     uint8_t getPauseFlags();
     void togglePause(bool value);

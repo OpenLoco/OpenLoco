@@ -512,7 +512,7 @@ namespace OpenLoco::Ui::Windows::Map
 
                 auto colour = Colour::black;
 
-                if (!isEditorMode())
+                if (!isEditorMode() && !isSandboxMode())
                 {
                     auto company = CompanyManager::get(_playerCompanyId);
                     colour = company->mainColours.primary;

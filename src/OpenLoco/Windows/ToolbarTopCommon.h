@@ -12,12 +12,14 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
         {
             loadsave_menu,
             audio_menu,
+            w2,
+
             zoom_menu,
             rotate_menu,
             view_menu,
 
             terraform_menu,
-            w6,
+            railroad_menu,
             road_menu,
             port_menu,
             build_vehicles_menu,

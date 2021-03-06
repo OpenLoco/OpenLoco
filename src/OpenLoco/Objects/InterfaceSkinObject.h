@@ -66,8 +66,8 @@ namespace OpenLoco
         constexpr uint32_t toolbar_airports_hover = 26;
         constexpr uint32_t toolbar_ports = 27;
         constexpr uint32_t toolbar_ports_hover = 28;
-        constexpr uint32_t toolbar_map_generation = 29;
-        constexpr uint32_t toolbar_map_generation_hover = 30;
+        constexpr uint32_t toolbar_cogwheels = 29;
+        constexpr uint32_t toolbar_cogwheels_hover = 30;
         constexpr uint32_t toolbar_build_vehicle_train = 31;
         constexpr uint32_t toolbar_build_vehicle_train_hover = 32;
         constexpr uint32_t toolbar_build_vehicle_bus = 33;

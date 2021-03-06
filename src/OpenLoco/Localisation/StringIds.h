@@ -1495,4 +1495,9 @@ namespace OpenLoco::StringIds
     constexpr string_id cant_clone_vehicle = 2153;
     constexpr string_id dropdown_viewport_move = 2154;
     constexpr string_id dropdown_viewport_focus = 2155;
+    constexpr string_id option_cheat_menu_enable = 2156;
+    constexpr string_id tooltip_option_cheat_menu_enable = 2157;
+    constexpr string_id cheat_enable_sandbox_mode = 2158;
+    constexpr string_id cheat_allow_manual_driving = 2159;
+    constexpr string_id cheat_allow_building_while_paused = 2160;
 }
