@@ -102,10 +102,6 @@ namespace OpenLoco::Vehicles
                 break;
             case TransportMode::air:
                 continueUpdating = updateAir();
-                //if (continueUpdating)
-                //{
-                //    tryCreateInitialMovementSound();
-                //}
                 break;
             case TransportMode::water:
                 continueUpdating = updateWater();
@@ -997,105 +993,12 @@ namespace OpenLoco::Vehicles
         return (call(0x004A94A9, regs) & (1 << 8)) == 0;
     }
 
-    bool VehicleHead::sub_4A9348(uint32_t newApronArea, uint16_t target_z)
+    bool VehicleHead::sub_4A9348(uint8_t newApronArea, uint16_t target_z)
     {
-        if (stationId != StationId::null && airportApronArea != cAirportApronAreaNull)
-        {
-            StationManager::get(stationId)->airportApronOccupiedAreas &= ~(1 << airportApronArea);
-        }
-
-        if (newApronArea == cAirportApronAreaNull)
-        {
-            beginNewJourney();
-
-            if (sizeOfOrderTable == 1)
-            {
-                // 0x4a94a5
-                airportApronArea = cAirportApronAreaNull;
-                return airplaneApproachTarget(target_z);
-            }
-
-            auto orders = getCurrentOrders();
-            auto* order = orders.begin()->as<OrderStopAt>();
-            if (order == nullptr)
-            {
-                airportApronArea = cAirportApronAreaNull;
-                return airplaneApproachTarget(target_z);
-            }
-
-            station_id_t orderStationId = order->getStation();
-
-            auto station = StationManager::get(orderStationId);
-
-            if (station == nullptr || !(station->flags & station_flags::flag_6))
-            {
-                airportApronArea = cAirportApronAreaNull;
-                return airplaneApproachTarget(target_z);
-            }
-
-            if (!isPlayerCompany(owner))
-            {
-                stationId = orderStationId;
-                airportApronArea = cAirportApronAreaNull;
-                return airplaneApproachTarget(target_z);
-            }
-
-            map_pos3 loc = {
-                station->unk_tile_x,
-                station->unk_tile_y,
-                station->unk_tile_z
-            };
-
-            auto tile = Map::TileManager::get(loc);
-            for (auto& el : tile)
-            {
-                auto elStation = el.asStation();
-                if (elStation == nullptr)
-                    continue;
-
-                if (elStation->baseZ() != loc.z / 4)
-                    continue;
-
-                auto airportObject = ObjectManager::get<airport_object>(elStation->objectId());
-                Vehicle train(this);
-                uint16_t planeType = train.cars.firstCar.front->getPlaneType();
-
-                if (airportObject->allowed_plane_types & planeType)
-                {
-                    stationId = orderStationId;
-                    airportApronArea = cAirportApronAreaNull;
-                    return airplaneApproachTarget(target_z);
-                }
-
-                if (owner == CompanyManager::getControllingId())
-                {
-                    MessageManager::post(
-                        messageType::unableToLandAtAirport,
-                        owner,
-                        id,
-                        orderStationId);
-                }
-
-                airportApronArea = cAirportApronAreaNull;
-                return airplaneApproachTarget(target_z);
-            }
-
-            // Todo: fail gracefully on tile not found
-            assert(false);
-            tryCreateInitialMovementSound();
-            return true;
-            // 0x004A938A
-        }
-        else
-        {
-            airportApronArea = newApronArea;
-            if (stationId != StationId::null)
-            {
-                auto station = StationManager::get(stationId);
-                station->airportApronOccupiedAreas |= (1 << airportApronArea);
-            }
-            return airplaneApproachTarget(target_z);
-        }
+        registers regs;
+        regs.eax = static_cast<int8_t>(newApronArea);
+        regs.esi = reinterpret_cast<uint32_t>(this);
+        return (call(0x004A9348, regs) & (1 << 8)) == 0;
     }
 
     namespace WaterMotionFlags

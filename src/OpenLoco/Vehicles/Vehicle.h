@@ -258,7 +258,7 @@ namespace OpenLoco::Vehicles
         bool updateAir();
         bool airplaneLoadingUpdate();
         bool sub_4A95CB();
-        bool sub_4A9348(uint32_t newApronArea, uint16_t target_z);
+        bool sub_4A9348(uint8_t newApronArea, uint16_t target_z);
         bool airplaneApproachTarget(uint16_t target_z);
         std::pair<Status, Speed16> airplaneGetNewStatus();
         uint8_t airportGetNextApronArea(uint8_t _airportApronArea);
