@@ -34,7 +34,8 @@ namespace OpenLoco::Scenario
         cargo_delivery,
     };
 
-    constexpr uint16_t min_year = 1900;
+    // NB: min_year has been changed to 1800 in OpenLoco; Locomotion uses 1900.
+    constexpr uint16_t min_year = 1800;
     constexpr uint16_t max_year = 2100;
 
     constexpr uint8_t min_objective_year_limit = 2;

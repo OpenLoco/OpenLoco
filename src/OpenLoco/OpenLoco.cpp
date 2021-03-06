@@ -955,7 +955,7 @@ namespace OpenLoco
 
                     if (today.year <= 2029)
                     {
-                        Economy::sub_46E239();
+                        Economy::updateMonthly();
                     }
 
                     // clang-format off
