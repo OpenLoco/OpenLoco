@@ -720,10 +720,206 @@ namespace OpenLoco::Vehicles
         {
             return airplaneLoadingUpdate();
         }
+        status = Status::unk_2;
+        auto [newStatus, targetSpeed] = airplaneGetNewStatus();
 
-        registers regs;
-        regs.esi = reinterpret_cast<uint32_t>(this);
-        return (call(0x004A90E3, regs) & (1 << 8)) == 0;
+        status = newStatus;
+        Vehicle1* vehType1 = vehicleUpdate_1;
+        vehType1->var_44 = targetSpeed;
+
+        advanceToNextRoutableOrder();
+        Speed32 type1speed = vehType1->var_44;
+        auto type2speed = vehType2->currentSpeed;
+
+        if (type2speed == type1speed)
+        {
+            vehType2->var_5A = 5;
+
+            if (type2speed != 20.0_mph)
+            {
+                vehType2->var_5A = 2;
+            }
+        }
+        else if (type2speed > type1speed)
+        {
+            vehType2->var_5A = 2;
+            auto decelerationAmount = 2.0_mph;
+            if (type2speed >= 130.0_mph)
+            {
+                decelerationAmount = 5.0_mph;
+                if (type2speed >= 400.0_mph)
+                {
+                    decelerationAmount = 11.0_mph;
+                    if (type2speed >= 600.0_mph)
+                    {
+                        decelerationAmount = 25.0_mph;
+                    }
+                }
+            }
+
+            if (type1speed == 20.0_mph)
+            {
+                vehType2->var_5A = 3;
+            }
+
+            type2speed = std::max<Speed32>(0.0_mph, type2speed - decelerationAmount);
+            type2speed = std::max<Speed32>(type1speed, type2speed);
+            vehType2->currentSpeed = type2speed;
+        }
+        else
+        {
+            vehType2->var_5A = 1;
+            type2speed += 2.0_mph;
+            type2speed = std::min<Speed32>(type2speed, type1speed);
+            vehType2->currentSpeed = type2speed;
+        }
+        auto [manhattanDistance, targetZ, targetYaw] = sub_427122();
+
+        vehicleUpdate_manhattanDistanceToStation = manhattanDistance;
+        vehicleUpdate_targetZ = targetZ;
+
+        // Helicopter
+        if (vehicleUpdate_var_525BB0 & (1 << 7))
+        {
+            vehicleUpdate_helicopterTargetYaw = targetYaw;
+            targetYaw = sprite_yaw;
+            vehType2->var_5A = 1;
+            if (targetZ < z)
+            {
+                vehType2->var_5A = 2;
+            }
+        }
+
+        if (targetYaw != sprite_yaw)
+        {
+            if (((targetYaw - sprite_yaw) & 0x3F) > 0x20)
+            {
+                sprite_yaw--;
+            }
+            else
+            {
+                sprite_yaw++;
+            }
+            sprite_yaw &= 0x3F;
+        }
+
+        Pitch targetPitch = Pitch::flat;
+        if (vehType2->currentSpeed < 50.0_mph)
+        {
+            auto vehObject = ObjectManager::get<vehicle_object>(train.cars.firstCar.front->object_id);
+            targetPitch = Pitch::up12deg;
+            // Slope sprites for taxiing planes??
+            if (!(vehObject->flags & FlagsE0::unk_08))
+            {
+                targetPitch = Pitch::flat;
+            }
+        }
+
+        if (targetZ > z)
+        {
+            if (vehType2->currentSpeed <= 350.0_mph)
+            {
+                targetPitch = Pitch::up12deg;
+            }
+        }
+
+        if (targetZ < z)
+        {
+            if (vehType2->currentSpeed <= 180.0_mph)
+            {
+                auto vehObject = ObjectManager::get<vehicle_object>(train.cars.firstCar.front->object_id);
+
+                // looks wrong??
+                if (vehObject->flags & FlagsE0::can_couple)
+                {
+                    targetPitch = Pitch::up12deg;
+                }
+            }
+        }
+
+        if (targetPitch != sprite_pitch)
+        {
+            if (targetPitch < sprite_pitch)
+            {
+                sprite_pitch = Pitch(static_cast<uint8_t>(sprite_pitch) - 1);
+            }
+            else
+            {
+                sprite_pitch = Pitch(static_cast<uint8_t>(sprite_pitch) + 1);
+            }
+        }
+
+        // Helicopter
+        if (vehicleUpdate_var_525BB0 & (1 << 7))
+        {
+            vehType2->currentSpeed = 8.0_mph;
+            if (targetZ != z)
+            {
+                return airplaneApproachTarget(targetZ);
+            }
+        }
+        else
+        {
+            uint32_t targetTolerance = 480;
+            if (airportApronArea != cAirportApronAreaNull)
+            {
+                targetTolerance = 5;
+                if (vehType2->currentSpeed >= 70.0_mph)
+                {
+                    targetTolerance = 30;
+                }
+            }
+
+            if (manhattanDistance > targetTolerance)
+            {
+                return airplaneApproachTarget(targetZ);
+            }
+        }
+
+        if (stationId != StationId::null && airportApronArea != cAirportApronAreaNull)
+        {
+            auto flags = sub_426E26(stationId, airportApronArea).first;
+
+            if (flags & (1 << 8))
+            {
+                produceLeavingAirportSound();
+            }
+            if (flags & (1 << 3))
+            {
+                updateLastJourneyAverageSpeed();
+            }
+
+            if (flags & (1 << 0))
+            {
+                return sub_4A95CB();
+            }
+        }
+
+        auto apronArea = cAirportApronAreaNull;
+        if (stationId != StationId::null)
+        {
+            apronArea = airportApronArea;
+        }
+
+        auto newApronArea = airportGetNextApronArea(apronArea);
+
+        if (newApronArea != static_cast<uint8_t>(-2))
+        {
+            return sub_4A9348(newApronArea, targetZ);
+        }
+
+        if (vehType2->currentSpeed > 30.0_mph)
+        {
+            return airplaneApproachTarget(targetZ);
+        }
+        else
+        {
+            vehType2->currentSpeed = 0.0_mph;
+            vehType2->var_5A = 0;
+
+            tryCreateInitialMovementSound();
+            return true;
+        }
     }
 
     // 0x004273DF
