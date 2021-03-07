@@ -1,8 +1,11 @@
 #include "../Audio/Audio.h"
+#include "../CompanyManager.h"
 #include "../Config.h"
 #include "../Graphics/Gfx.h"
 #include "../Interop/Interop.hpp"
 #include "../Map/TileManager.h"
+#include "../MessageManager.h"
+#include "../Objects/AirportObject.h"
 #include "../Objects/ObjectManager.h"
 #include "../Objects/VehicleObject.h"
 #include "../OpenLoco.h"
@@ -21,6 +24,7 @@ using namespace OpenLoco::Literals;
 namespace OpenLoco::Vehicles
 {
     static loco_global<string_id, 0x009C68E6> gGameCommandErrorText;
+    static loco_global<uint32_t, 0x011360D0> vehicleUpdate_manhattanDistanceToStation;
     static loco_global<VehicleHead*, 0x01136118> vehicleUpdate_head;
     static loco_global<Vehicle1*, 0x0113611C> vehicleUpdate_1;
     static loco_global<Vehicle2*, 0x01136120> vehicleUpdate_2;
@@ -28,9 +32,12 @@ namespace OpenLoco::Vehicles
     static loco_global<VehicleBogie*, 0x01136128> vehicleUpdate_backBogie;
     static loco_global<int32_t, 0x0113612C> vehicleUpdate_var_113612C; // Speed
     static loco_global<int32_t, 0x01136130> vehicleUpdate_var_1136130; // Speed
-    static loco_global<uint8_t, 0x01136237> vehicle_var_1136237;       // var_28 related?
-    static loco_global<uint8_t, 0x01136238> vehicle_var_1136238;       // var_28 related?
+    static loco_global<int16_t, 0x01136168> vehicleUpdate_targetZ;
+    static loco_global<uint8_t, 0x01136237> vehicle_var_1136237; // var_28 related?
+    static loco_global<uint8_t, 0x01136238> vehicle_var_1136238; // var_28 related?
     static loco_global<Status, 0x0113646C> vehicleUpdate_initialStatus;
+    static loco_global<uint8_t, 0x0113646D> vehicleUpdate_helicopterTargetYaw;
+    static loco_global<uint32_t, 0x00525BB0> vehicleUpdate_var_525BB0;
     static loco_global<int16_t[128], 0x00503B6A> factorXY503B6A;
 
     void VehicleHead::updateVehicle()
@@ -677,9 +684,323 @@ namespace OpenLoco::Vehicles
     // 0x004A9051
     bool VehicleHead::updateAir()
     {
+        Vehicle2* vehType2 = vehicleUpdate_2;
+
+        if (vehType2->currentSpeed >= 20.0_mph)
+        {
+            vehicleUpdate_var_1136130 = 0x4000;
+        }
+        else
+        {
+            vehicleUpdate_var_1136130 = 0x2000;
+        }
+
+        Vehicle train(this);
+        train.cars.firstCar.body->sub_4AAB0B();
+
+        if (status == Status::stopped)
+        {
+            if (!(var_0C & Flags0C::commandStop))
+            {
+                setStationVisitedTypes();
+                checkIfAtOrderStation();
+                beginUnloading();
+            }
+            tryCreateInitialMovementSound();
+            return true;
+        }
+        else if (status == Status::unloading)
+        {
+            updateUnloadCargo();
+
+            tryCreateInitialMovementSound();
+            return true;
+        }
+        else if (status == Status::loading)
+        {
+            return airplaneLoadingUpdate();
+        }
+        status = Status::unk_2;
+        auto [newStatus, targetSpeed] = airplaneGetNewStatus();
+
+        status = newStatus;
+        Vehicle1* vehType1 = vehicleUpdate_1;
+        vehType1->var_44 = targetSpeed;
+
+        advanceToNextRoutableOrder();
+        Speed32 type1speed = vehType1->var_44;
+        auto type2speed = vehType2->currentSpeed;
+
+        if (type2speed == type1speed)
+        {
+            vehType2->var_5A = 5;
+
+            if (type2speed != 20.0_mph)
+            {
+                vehType2->var_5A = 2;
+            }
+        }
+        else if (type2speed > type1speed)
+        {
+            vehType2->var_5A = 2;
+            auto decelerationAmount = 2.0_mph;
+            if (type2speed >= 130.0_mph)
+            {
+                decelerationAmount = 5.0_mph;
+                if (type2speed >= 400.0_mph)
+                {
+                    decelerationAmount = 11.0_mph;
+                    if (type2speed >= 600.0_mph)
+                    {
+                        decelerationAmount = 25.0_mph;
+                    }
+                }
+            }
+
+            if (type1speed == 20.0_mph)
+            {
+                vehType2->var_5A = 3;
+            }
+
+            type2speed = std::max<Speed32>(0.0_mph, type2speed - decelerationAmount);
+            type2speed = std::max<Speed32>(type1speed, type2speed);
+            vehType2->currentSpeed = type2speed;
+        }
+        else
+        {
+            vehType2->var_5A = 1;
+            type2speed += 2.0_mph;
+            type2speed = std::min<Speed32>(type2speed, type1speed);
+            vehType2->currentSpeed = type2speed;
+        }
+        auto [manhattanDistance, targetZ, targetYaw] = sub_427122();
+
+        vehicleUpdate_manhattanDistanceToStation = manhattanDistance;
+        vehicleUpdate_targetZ = targetZ;
+
+        // Helicopter
+        if (vehicleUpdate_var_525BB0 & (1 << 7))
+        {
+            vehicleUpdate_helicopterTargetYaw = targetYaw;
+            targetYaw = sprite_yaw;
+            vehType2->var_5A = 1;
+            if (targetZ < z)
+            {
+                vehType2->var_5A = 2;
+            }
+        }
+
+        if (targetYaw != sprite_yaw)
+        {
+            if (((targetYaw - sprite_yaw) & 0x3F) > 0x20)
+            {
+                sprite_yaw--;
+            }
+            else
+            {
+                sprite_yaw++;
+            }
+            sprite_yaw &= 0x3F;
+        }
+
+        Pitch targetPitch = Pitch::flat;
+        if (vehType2->currentSpeed < 50.0_mph)
+        {
+            auto vehObject = ObjectManager::get<vehicle_object>(train.cars.firstCar.front->object_id);
+            targetPitch = Pitch::up12deg;
+            // Slope sprites for taxiing planes??
+            if (!(vehObject->flags & FlagsE0::unk_08))
+            {
+                targetPitch = Pitch::flat;
+            }
+        }
+
+        if (targetZ > z)
+        {
+            if (vehType2->currentSpeed <= 350.0_mph)
+            {
+                targetPitch = Pitch::up12deg;
+            }
+        }
+
+        if (targetZ < z)
+        {
+            if (vehType2->currentSpeed <= 180.0_mph)
+            {
+                auto vehObject = ObjectManager::get<vehicle_object>(train.cars.firstCar.front->object_id);
+
+                // looks wrong??
+                if (vehObject->flags & FlagsE0::can_couple)
+                {
+                    targetPitch = Pitch::up12deg;
+                }
+            }
+        }
+
+        if (targetPitch != sprite_pitch)
+        {
+            if (targetPitch < sprite_pitch)
+            {
+                sprite_pitch = Pitch(static_cast<uint8_t>(sprite_pitch) - 1);
+            }
+            else
+            {
+                sprite_pitch = Pitch(static_cast<uint8_t>(sprite_pitch) + 1);
+            }
+        }
+
+        // Helicopter
+        if (vehicleUpdate_var_525BB0 & (1 << 7))
+        {
+            vehType2->currentSpeed = 8.0_mph;
+            if (targetZ != z)
+            {
+                return airplaneApproachTarget(targetZ);
+            }
+        }
+        else
+        {
+            uint32_t targetTolerance = 480;
+            if (airportApronArea != cAirportApronAreaNull)
+            {
+                targetTolerance = 5;
+                if (vehType2->currentSpeed >= 70.0_mph)
+                {
+                    targetTolerance = 30;
+                }
+            }
+
+            if (manhattanDistance > targetTolerance)
+            {
+                return airplaneApproachTarget(targetZ);
+            }
+        }
+
+        if (stationId != StationId::null && airportApronArea != cAirportApronAreaNull)
+        {
+            auto flags = sub_426E26(stationId, airportApronArea).first;
+
+            if (flags & (1 << 8))
+            {
+                produceLeavingAirportSound();
+            }
+            if (flags & (1 << 3))
+            {
+                updateLastJourneyAverageSpeed();
+            }
+
+            if (flags & (1 << 0))
+            {
+                return sub_4A95CB();
+            }
+        }
+
+        auto apronArea = cAirportApronAreaNull;
+        if (stationId != StationId::null)
+        {
+            apronArea = airportApronArea;
+        }
+
+        auto newApronArea = airportGetNextApronArea(apronArea);
+
+        if (newApronArea != static_cast<uint8_t>(-2))
+        {
+            return sub_4A9348(newApronArea, targetZ);
+        }
+
+        if (vehType2->currentSpeed > 30.0_mph)
+        {
+            return airplaneApproachTarget(targetZ);
+        }
+        else
+        {
+            vehType2->currentSpeed = 0.0_mph;
+            vehType2->var_5A = 0;
+
+            tryCreateInitialMovementSound();
+            return true;
+        }
+    }
+
+    // 0x004273DF
+    std::pair<Status, Speed16> VehicleHead::airplaneGetNewStatus()
+    {
         registers regs;
-        regs.esi = reinterpret_cast<int32_t>(this);
-        return (call(0x004A9051, regs) & (1 << 8)) == 0;
+        regs.esi = reinterpret_cast<uint32_t>(this);
+        call(0x004273DF, regs);
+
+        return std::make_pair(static_cast<Status>(regs.al), static_cast<Speed16>(regs.bx));
+    }
+
+    // 0x004A95CB
+    bool VehicleHead::sub_4A95CB()
+    {
+        if (var_0C & Flags0C::commandStop)
+        {
+            status = Status::stopped;
+            Vehicle2* vehType2 = vehicleUpdate_2;
+            vehType2->currentSpeed = 0.0_mph;
+        }
+        else
+        {
+            setStationVisitedTypes();
+            checkIfAtOrderStation();
+            beginUnloading();
+        }
+        tryCreateInitialMovementSound();
+        return true;
+    }
+
+    // 0x004A95F5
+    bool VehicleHead::airplaneLoadingUpdate()
+    {
+        Vehicle2* vehType2 = vehicleUpdate_2;
+        vehType2->currentSpeed = 0.0_mph;
+        vehType2->var_5A = 0;
+        if (updateLoadCargo())
+        {
+            tryCreateInitialMovementSound();
+            return true;
+        }
+
+        advanceToNextRoutableOrder();
+        status = Status::unk_2;
+        status = airplaneGetNewStatus().first;
+
+        auto apronArea = cAirportApronAreaNull;
+        if (stationId != StationId::null)
+        {
+            apronArea = airportApronArea;
+        }
+
+        auto newApronArea = airportGetNextApronArea(apronArea);
+
+        if (newApronArea != static_cast<uint8_t>(-2))
+        {
+            // Strangely the original would enter this function with an
+            // uninitialised targetZ. We will pass a valid z.
+            return sub_4A9348(newApronArea, z);
+        }
+
+        status = Status::loading;
+        tryCreateInitialMovementSound();
+        return true;
+    }
+
+    // 0x004A94A9
+    bool VehicleHead::airplaneApproachTarget(uint16_t targetZ)
+    {
+        registers regs;
+        regs.esi = reinterpret_cast<uint32_t>(this);
+        return (call(0x004A94A9, regs) & (1 << 8)) == 0;
+    }
+
+    bool VehicleHead::sub_4A9348(uint8_t newApronArea, uint16_t target_z)
+    {
+        registers regs;
+        regs.eax = static_cast<int8_t>(newApronArea);
+        regs.esi = reinterpret_cast<uint32_t>(this);
+        return (call(0x004A9348, regs) & (1 << 8)) == 0;
     }
 
     namespace WaterMotionFlags
@@ -784,6 +1105,38 @@ namespace OpenLoco::Vehicles
         }
     }
 
+    // 0x00427122
+    std::tuple<uint32_t, uint16_t, uint8_t> VehicleHead::sub_427122()
+    {
+        registers regs;
+        regs.esi = reinterpret_cast<int32_t>(this);
+        call(0x00427122, regs);
+        // Manhatten distance, targetZ, targetYaw
+        return std::make_tuple(regs.ebp, regs.dx, regs.bl);
+    }
+
+    // 0x00427214
+    uint8_t VehicleHead::airportGetNextApronArea(uint8_t _airportApronArea)
+    {
+        registers regs;
+        regs.esi = reinterpret_cast<int32_t>(this);
+        regs.eax = static_cast<int8_t>(_airportApronArea);
+        call(0x00427214, regs);
+        return regs.al;
+    }
+
+    // 0x00426E26
+    std::pair<uint32_t, Map::map_pos3> VehicleHead::sub_426E26(station_id_t station, uint8_t unkVar68)
+    {
+        registers regs;
+        regs.esi = reinterpret_cast<int32_t>(this);
+        regs.eax = station;
+        regs.ebx = unkVar68;
+        call(0x00426E26, regs);
+        // Flags, location
+        return std::make_pair(regs.ebx, Map::map_pos3{ regs.ax, regs.cx, regs.dx });
+    }
+
     // 0x004B980A
     void VehicleHead::tryCreateInitialMovementSound()
     {
@@ -856,6 +1209,7 @@ namespace OpenLoco::Vehicles
         call(0x004BACAF, regs);
     }
 
+    // 0x004B99E1
     void VehicleHead::beginUnloading()
     {
         var_5F &= ~Flags5F::unk_0;
@@ -873,6 +1227,19 @@ namespace OpenLoco::Vehicles
                 carComponent.body->var_5F |= Flags5F::unk_0;
             }
         }
+    }
+
+    // 0x00426CA4
+    void VehicleHead::movePlaneTo(const Map::map_pos3& newLoc, const uint8_t newYaw, const Pitch newPitch)
+    {
+        registers regs;
+        regs.esi = reinterpret_cast<int32_t>(this);
+        regs.bl = newYaw;
+        regs.bh = static_cast<uint8_t>(newPitch);
+        regs.ax = newLoc.x;
+        regs.cx = newLoc.y;
+        regs.dx = newLoc.z;
+        call(0x00426CA4, regs);
     }
 
     // 0x00427C05
@@ -1156,5 +1523,19 @@ namespace OpenLoco::Vehicles
         Map::map_pos headTarget = { regs.ax, regs.cx };
         Map::map_pos3 stationTarget = { regs.di, regs.bp, regs.dl };
         return std::make_tuple(regs.bx, headTarget, stationTarget);
+    }
+
+    // 0x0042750E
+    void VehicleHead::produceLeavingAirportSound()
+    {
+        // Creates a random sound
+        registers regs;
+        regs.esi = reinterpret_cast<int32_t>(this);
+        call(0x0042750E, regs);
+    }
+
+    OrderRingView Vehicles::VehicleHead::getCurrentOrders() const
+    {
+        return OrderRingView(orderTableOffset, currentOrder);
     }
 }
