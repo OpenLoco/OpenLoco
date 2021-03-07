@@ -435,6 +435,55 @@ namespace OpenLoco::Vehicles
         return indexToYaw[i];
     }
 
+    // 0x004BF56B For yaw of 3 bits (special plane version)
+    uint8_t calculateYaw1FromVectorPlane(int16_t xDiff, int16_t yDiff)
+    {
+        uint32_t i = 0;
+
+        if (xDiff < 0)
+        {
+            i += 3;
+            xDiff = -xDiff;
+        }
+
+        if (yDiff < 0)
+        {
+            i += 6;
+            yDiff = -yDiff;
+        }
+
+        uint32_t xy = std::numeric_limits<uint32_t>::max();
+        if (yDiff != 0)
+        {
+            xy = (static_cast<uint64_t>(xDiff) << 16) / yDiff;
+        }
+
+        if (xy >= 3434)
+        {
+            i++;
+            if (xy >= 1250501)
+            {
+                i++;
+            }
+        }
+        // 0x00503E6E
+        constexpr uint8_t indexToYaw[] = {
+            16,
+            24,
+            32,
+            16,
+            8,
+            0,
+            48,
+            40,
+            32,
+            48,
+            56,
+            0
+        };
+        return indexToYaw[i];
+    }
+
     // 0x004BF5B3 For yaw of 4 bits
     static uint8_t calculateYaw1FromVector(int16_t xDiff, int16_t yDiff)
     {
