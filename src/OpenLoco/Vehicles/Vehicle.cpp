@@ -154,7 +154,7 @@ namespace OpenLoco::Vehicles
         {
             return 1 << 4;
         }
-        if (vehObj->weight < 60)
+        if (vehObj->weight < 50)
         {
             return (1 << 3) | (1 << 2);
         }
