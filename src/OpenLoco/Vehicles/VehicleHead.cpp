@@ -102,6 +102,10 @@ namespace OpenLoco::Vehicles
                 break;
             case TransportMode::air:
                 continueUpdating = updateAir();
+                if (continueUpdating)
+                {
+                    tryCreateInitialMovementSound();
+                }
                 break;
             case TransportMode::water:
                 continueUpdating = updateWater();
@@ -706,14 +710,11 @@ namespace OpenLoco::Vehicles
                 checkIfAtOrderStation();
                 beginUnloading();
             }
-            tryCreateInitialMovementSound();
             return true;
         }
         else if (status == Status::unloading)
         {
             updateUnloadCargo();
-
-            tryCreateInitialMovementSound();
             return true;
         }
         else if (status == Status::loading)
@@ -773,6 +774,7 @@ namespace OpenLoco::Vehicles
             type2speed = std::min<Speed32>(type2speed, type1speed);
             vehType2->currentSpeed = type2speed;
         }
+
         auto [manhattanDistance, targetZ, targetYaw] = sub_427122();
 
         vehicleUpdate_manhattanDistanceToStation = manhattanDistance;
@@ -916,8 +918,6 @@ namespace OpenLoco::Vehicles
         {
             vehType2->currentSpeed = 0.0_mph;
             vehType2->var_5A = 0;
-
-            tryCreateInitialMovementSound();
             return true;
         }
     }
@@ -925,11 +925,88 @@ namespace OpenLoco::Vehicles
     // 0x004273DF
     std::pair<Status, Speed16> VehicleHead::airplaneGetNewStatus()
     {
-        registers regs;
-        regs.esi = reinterpret_cast<uint32_t>(this);
-        call(0x004273DF, regs);
+        Vehicle train(this);
+        if (stationId == StationId::null || airportApronArea == cAirportApronAreaNull)
+        {
+            auto veh2 = train.veh2;
+            auto targetSpeed = veh2->maxSpeed;
+            if (veh2->var_73 & Flags73::isBrokenDown)
+            {
+                targetSpeed = veh2->rackRailMaxSpeed;
+            }
 
-        return std::make_pair(static_cast<Status>(regs.al), static_cast<Speed16>(regs.bx));
+            return std::make_pair(Status::unk_2, targetSpeed);
+        }
+
+        auto station = StationManager::get(stationId);
+
+        map_pos3 loc = {
+            station->unk_tile_x,
+            station->unk_tile_y,
+            station->unk_tile_z
+        };
+
+        auto tile = Map::TileManager::get(loc);
+        for (auto& el : tile)
+        {
+            auto elStation = el.asStation();
+            if (elStation == nullptr)
+                continue;
+
+            if (elStation->baseZ() != loc.z / 4)
+                continue;
+
+            auto airportObject = ObjectManager::get<airport_object>(elStation->objectId());
+
+            uint8_t al = airportObject->var_B2[airportApronArea].var_03;
+            uint8_t cl = airportObject->var_B2[airportApronArea].var_00;
+
+            auto veh2 = train.veh2;
+            if (al != 0)
+            {
+                if (cl == 1 || al != 2)
+                {
+                    if (al == 1)
+                    {
+                        return std::make_pair(Status::landing, veh2->rackRailMaxSpeed);
+                    }
+                    else if (al == 3)
+                    {
+                        return std::make_pair(Status::landing, 0_mph);
+                    }
+                    else if (al == 4)
+                    {
+                        return std::make_pair(Status::taxiing1, 20_mph);
+                    }
+                    else
+                    {
+                        return std::make_pair(Status::approaching, veh2->rackRailMaxSpeed);
+                    }
+                }
+            }
+
+            if (cl == 2)
+            {
+                auto targetSpeed = veh2->maxSpeed;
+                if (veh2->var_73 & Flags73::isBrokenDown)
+                {
+                    targetSpeed = veh2->rackRailMaxSpeed;
+                }
+                return std::make_pair(Status::takingOff, targetSpeed);
+            }
+            else if (cl == 3)
+            {
+                return std::make_pair(Status::takingOff, 0_mph);
+            }
+            else
+            {
+                return std::make_pair(Status::taxiing2, 20_mph);
+            }
+        }
+
+        // Tile not found. Todo: fail gracefully
+        assert(false);
+        return std::make_pair(Status::unk_2, train.veh2->maxSpeed);
     }
 
     // 0x004A95CB
@@ -947,7 +1024,6 @@ namespace OpenLoco::Vehicles
             checkIfAtOrderStation();
             beginUnloading();
         }
-        tryCreateInitialMovementSound();
         return true;
     }
 
@@ -959,7 +1035,6 @@ namespace OpenLoco::Vehicles
         vehType2->var_5A = 0;
         if (updateLoadCargo())
         {
-            tryCreateInitialMovementSound();
             return true;
         }
 
@@ -983,24 +1058,173 @@ namespace OpenLoco::Vehicles
         }
 
         status = Status::loading;
-        tryCreateInitialMovementSound();
         return true;
     }
 
     // 0x004A94A9
     bool VehicleHead::airplaneApproachTarget(uint16_t targetZ)
     {
-        registers regs;
-        regs.esi = reinterpret_cast<uint32_t>(this);
-        return (call(0x004A94A9, regs) & (1 << 8)) == 0;
+        auto _yaw = sprite_yaw;
+        // Helicopter
+        if (vehicleUpdate_var_525BB0 & (1 << 7))
+        {
+            _yaw = vehicleUpdate_helicopterTargetYaw;
+        }
+
+        Vehicle1* vehType1 = vehicleUpdate_1;
+        Vehicle2* vehType2 = vehicleUpdate_2;
+
+        auto [veh1Loc, veh2Loc] = calculateNextPosition(
+            _yaw, { x, y }, vehType1, vehType2->currentSpeed);
+
+        map_pos3 newLoc(veh2Loc, targetZ);
+        vehType1->var_4E = veh1Loc.x;
+        vehType1->var_50 = veh1Loc.y;
+        if (targetZ != z)
+        {
+            // Final section of landing / helicopter
+            if (vehicleUpdate_manhattanDistanceToStation <= 28)
+            {
+                int16_t z_shift = 1;
+                if (vehType2->currentSpeed >= 50.0_mph)
+                {
+                    z_shift++;
+                    if (vehType2->currentSpeed >= 100.0_mph)
+                    {
+                        z_shift++;
+                    }
+                }
+
+                if (targetZ < z)
+                {
+                    newLoc.z = std::max<int16_t>(targetZ, z - z_shift);
+                }
+                else if (targetZ > z)
+                {
+                    newLoc.z = std::min<int16_t>(targetZ, z + z_shift);
+                }
+            }
+            else
+            {
+                int32_t zDiff = targetZ - z;
+                // We want a SAR instruction so use >>5
+                int32_t param1 = (zDiff * toSpeed16(vehType2->currentSpeed).getRaw()) >> 5;
+                int32_t param2 = vehicleUpdate_manhattanDistanceToStation - 18;
+
+                auto modulo = param1 % param2;
+                if (modulo < 0)
+                {
+                    newLoc.z = z + param1 / param2 - 1;
+                }
+                else
+                {
+                    newLoc.z = z + param1 / param2 + 1;
+                }
+            }
+        }
+        movePlaneTo(newLoc, sprite_yaw, sprite_pitch);
+        return true;
     }
 
     bool VehicleHead::sub_4A9348(uint8_t newApronArea, uint16_t target_z)
     {
-        registers regs;
-        regs.eax = static_cast<int8_t>(newApronArea);
-        regs.esi = reinterpret_cast<uint32_t>(this);
-        return (call(0x004A9348, regs) & (1 << 8)) == 0;
+        if (stationId != StationId::null && airportApronArea != cAirportApronAreaNull)
+        {
+            StationManager::get(stationId)->airportApronOccupiedAreas &= ~(1 << airportApronArea);
+        }
+
+        if (newApronArea == cAirportApronAreaNull)
+        {
+            beginNewJourney();
+
+            if (sizeOfOrderTable == 1)
+            {
+                // 0x4a94a5
+                airportApronArea = cAirportApronAreaNull;
+                return airplaneApproachTarget(target_z);
+            }
+
+            auto orders = getCurrentOrders();
+            auto* order = orders.begin()->as<OrderStopAt>();
+            if (order == nullptr)
+            {
+                airportApronArea = cAirportApronAreaNull;
+                return airplaneApproachTarget(target_z);
+            }
+
+            station_id_t orderStationId = order->getStation();
+
+            auto station = StationManager::get(orderStationId);
+
+            if (station == nullptr || !(station->flags & station_flags::flag_6))
+            {
+                airportApronArea = cAirportApronAreaNull;
+                return airplaneApproachTarget(target_z);
+            }
+
+            if (!isPlayerCompany(owner))
+            {
+                stationId = orderStationId;
+                airportApronArea = cAirportApronAreaNull;
+                return airplaneApproachTarget(target_z);
+            }
+
+            map_pos3 loc = {
+                station->unk_tile_x,
+                station->unk_tile_y,
+                station->unk_tile_z
+            };
+
+            auto tile = Map::TileManager::get(loc);
+            for (auto& el : tile)
+            {
+                auto elStation = el.asStation();
+                if (elStation == nullptr)
+                    continue;
+
+                if (elStation->baseZ() != loc.z / 4)
+                    continue;
+
+                auto airportObject = ObjectManager::get<airport_object>(elStation->objectId());
+                Vehicle train(this);
+                uint16_t planeType = train.cars.firstCar.front->getPlaneType();
+
+                if (airportObject->allowed_plane_types & planeType)
+                {
+                    stationId = orderStationId;
+                    airportApronArea = cAirportApronAreaNull;
+                    return airplaneApproachTarget(target_z);
+                }
+
+                if (owner == CompanyManager::getControllingId())
+                {
+                    MessageManager::post(
+                        messageType::unableToLandAtAirport,
+                        owner,
+                        id,
+                        orderStationId);
+                }
+
+                airportApronArea = cAirportApronAreaNull;
+                return airplaneApproachTarget(target_z);
+            }
+
+            // Todo: fail gracefully on tile not found
+            assert(false);
+
+            return true;
+            // 0x004A938A
+        }
+        else
+        {
+            airportApronArea = newApronArea;
+            if (stationId != StationId::null)
+            {
+                auto station = StationManager::get(stationId);
+                station->airportApronOccupiedAreas |= (1 << airportApronArea);
+            }
+            return airplaneApproachTarget(target_z);
+        }
     }
 
     namespace WaterMotionFlags
