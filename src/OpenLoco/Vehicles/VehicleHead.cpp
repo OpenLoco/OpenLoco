@@ -926,7 +926,7 @@ namespace OpenLoco::Vehicles
         vehicleUpdate_targetZ = targetZ;
 
         // Helicopter
-        if (vehicleUpdate_var_525BB0 & (1 << 7))
+        if (vehicleUpdate_var_525BB0 & ApronAreaFlags::heliTakeoffEnd)
         {
             vehicleUpdate_helicopterTargetYaw = targetYaw;
             targetYaw = sprite_yaw;
@@ -997,7 +997,7 @@ namespace OpenLoco::Vehicles
         }
 
         // Helicopter
-        if (vehicleUpdate_var_525BB0 & (1 << 7))
+        if (vehicleUpdate_var_525BB0 & ApronAreaFlags::heliTakeoffEnd)
         {
             vehType2->currentSpeed = 8.0_mph;
             if (targetZ != z)
@@ -1025,18 +1025,18 @@ namespace OpenLoco::Vehicles
 
         if (stationId != StationId::null && airportApronArea != cAirportApronAreaNull)
         {
-            auto flags = sub_426E26(stationId, airportApronArea).first;
+            auto flags = airportGetApronTransitionTarget(stationId, airportApronArea).first;
 
-            if (flags & (1 << 8))
+            if (flags & ApronAreaFlags::touchdown)
             {
                 produceTouchdownAirportSound();
             }
-            if (flags & (1 << 3))
+            if (flags & ApronAreaFlags::taxiing)
             {
                 updateLastJourneyAverageSpeed();
             }
 
-            if (flags & (1 << 0))
+            if (flags & ApronAreaFlags::terminal)
             {
                 return sub_4A95CB();
             }
@@ -1211,7 +1211,7 @@ namespace OpenLoco::Vehicles
     {
         auto _yaw = sprite_yaw;
         // Helicopter
-        if (vehicleUpdate_var_525BB0 & (1 << 7))
+        if (vehicleUpdate_var_525BB0 & ApronAreaFlags::heliTakeoffEnd)
         {
             _yaw = vehicleUpdate_helicopterTargetYaw;
         }
@@ -1515,7 +1515,7 @@ namespace OpenLoco::Vehicles
                 }
                 else
                 {
-                    auto [flags, pos] = sub_426E26(stationId, airportApronArea);
+                    auto [flags, pos] = airportGetApronTransitionTarget(stationId, airportApronArea);
                     vehicleUpdate_var_525BB0 = flags;
                     targetPos = pos;
                 }
@@ -1695,15 +1695,59 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x00426E26
-    std::pair<uint32_t, Map::map_pos3> VehicleHead::sub_426E26(station_id_t station, uint8_t unkVar68)
+    std::pair<uint32_t, Map::map_pos3> VehicleHead::airportGetApronTransitionTarget(station_id_t targetStation, uint8_t unkVar68)
     {
-        registers regs;
-        regs.esi = reinterpret_cast<int32_t>(this);
-        regs.eax = station;
-        regs.ebx = unkVar68;
-        call(0x00426E26, regs);
+        auto station = StationManager::get(targetStation);
+
+        map_pos3 staionLoc = {
+            station->unk_tile_x,
+            station->unk_tile_y,
+            station->unk_tile_z
+        };
+
+        auto tile = TileManager::get(staionLoc);
+
+        for (auto& el : tile)
+        {
+            auto elStation = el.asStation();
+            if (elStation == nullptr)
+                continue;
+
+            if (elStation->baseZ() != staionLoc.z / 4)
+                continue;
+
+            auto airportObject = ObjectManager::get<airport_object>(elStation->objectId());
+
+            uint32_t destinationArea = airportObject->apronTransistions[unkVar68].nextApronArea;
+
+            map_pos loc2 = {
+                static_cast<int16_t>(airportObject->apronAreas[destinationArea].x - 16),
+                static_cast<int16_t>(airportObject->apronAreas[destinationArea].y - 16)
+            };
+            loc2 = Math::Vector::Rotate(loc2, elStation->rotation());
+            auto airportFlags = airportObject->apronAreas[destinationArea].flags;
+
+            loc2.x += 16 + staionLoc.x;
+            loc2.y += 16 + staionLoc.y;
+
+            map_pos3 loc = { loc2.x, loc2.y, static_cast<int16_t>(airportObject->apronAreas[destinationArea].z + staionLoc.z) };
+
+            if (!(airportFlags & ApronAreaFlags::taxiing))
+            {
+                loc.z = staionLoc.z + 255;
+                if (!(airportFlags & ApronAreaFlags::inFlight))
+                {
+                    loc.z = 960;
+                }
+            }
+
+            return std::make_pair(airportFlags, loc);
+        }
+
+        // Tile not found. Todo: fail gracefully
+        assert(false);
         // Flags, location
-        return std::make_pair(regs.ebx, Map::map_pos3{ regs.ax, regs.cx, regs.dx });
+        return std::make_pair(0, Map::map_pos3{ 0, 0, 0 });
     }
 
     // 0x004B980A

@@ -270,7 +270,7 @@ namespace OpenLoco::Vehicles
         std::pair<Status, Speed16> airplaneGetNewStatus();
         uint8_t airportGetNextApronArea(uint8_t _airportApronArea);
         std::tuple<uint32_t, uint16_t, uint8_t> sub_427122();
-        std::pair<uint32_t, Map::map_pos3> sub_426E26(station_id_t station, uint8_t unkVar68);
+        std::pair<uint32_t, Map::map_pos3> airportGetApronTransitionTarget(station_id_t station, uint8_t unkVar68);
         bool updateWater();
         uint32_t getVehicleTotalLength();
         void tryCreateInitialMovementSound();
