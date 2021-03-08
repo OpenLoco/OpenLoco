@@ -217,12 +217,12 @@ namespace OpenLoco
 
     void setPauseFlag(uint8_t value)
     {
-        paused_state |= value;
+        *paused_state |= value;
     }
 
     void unsetPauseFlag(uint8_t value)
     {
-        paused_state &= ~(value);
+        *paused_state &= ~(value);
     }
 
     uint8_t getGameSpeed()

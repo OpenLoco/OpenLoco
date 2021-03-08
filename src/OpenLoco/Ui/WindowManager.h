@@ -356,6 +356,11 @@ namespace OpenLoco::Ui::Windows::ProgressBar
     void close();
 }
 
+namespace OpenLoco::Ui::Windows::PromptSaveWindow
+{
+    window* open(uint16_t savePromptType);
+}
+
 namespace OpenLoco::Ui::Windows::ScenarioSelect
 {
     window* open();

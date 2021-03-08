@@ -266,7 +266,7 @@ namespace OpenLoco::GameCommands
     {
         registers regs;
         regs.bl = GameCommandFlag::apply;
-        regs.dl = dl; // [ 0, 2 ]
+        regs.dl = dl; // [ 0 = save, 1 = close save prompt, 2 = don't save ]
         regs.di = di; // [ 0 = load game, 1 = return to title screen, 2 = quit to desktop ]
         doCommand(GameCommand::load_save_quit_game, regs);
     }
@@ -639,6 +639,10 @@ namespace OpenLoco::GameCommands
         regs.ax = head;
         return GameCommands::doCommand(GameCommand::vehicle_clone, regs) != FAILURE;
     }
+
+    // Defined in GameCommands/LoadSaveQuit.cpp
+    void confirmSaveGame();
+    void loadSaveQuit(registers& regs);
 
     // Defined in GameCommands/RenameIndustry.cpp
     void renameIndustry(registers& regs);

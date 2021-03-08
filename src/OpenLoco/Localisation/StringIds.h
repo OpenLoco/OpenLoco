@@ -144,6 +144,16 @@ namespace OpenLoco::StringIds
     constexpr string_id menu_rotate_clockwise = 172;
     constexpr string_id menu_rotate_anti_clockwise = 173;
 
+    constexpr string_id title_load_game = 176;
+    constexpr string_id title_quit_game = 177;
+    constexpr string_id title_quit_game_alt = 178;
+    constexpr string_id title_quit_scenario_editor = 179;
+    constexpr string_id title_load_landscape = 180;
+    constexpr string_id prompt_save_before_loading = 181;
+    constexpr string_id prompt_save_before_quitting = 182;
+    constexpr string_id prompt_save_before_quitting_alt = 183;
+    constexpr string_id label_button_save = 184;
+    constexpr string_id label_button_dont_save = 185;
     constexpr string_id label_button_cancel = 186;
     constexpr string_id label_button_ok = 187;
     constexpr string_id tooltip_scroll_left = 188;

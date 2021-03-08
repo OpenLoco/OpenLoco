@@ -33,6 +33,7 @@
     <ClCompile Include="Entities\Misc.cpp" />
     <ClCompile Include="Environment.cpp" />
     <ClCompile Include="GameCommands\GameCommands.cpp" />
+    <ClCompile Include="GameCommands\LoadSaveQuit.cpp" />
     <ClCompile Include="GameCommands\RenameIndustry.cpp" />
     <ClCompile Include="GameCommands\RenameTown.cpp" />
     <ClCompile Include="Graphics\Colour.cpp" />
@@ -169,6 +170,7 @@
     <ClCompile Include="Windows\ProgressBar.cpp" />
     <ClCompile Include="Windows\PromptBrowseWindow.cpp" />
     <ClCompile Include="Windows\PromptOkCancelWindow.cpp" />
+    <ClCompile Include="Windows\PromptSaveWindow.cpp" />
     <ClCompile Include="Windows\ScenarioOptions.cpp" />
     <ClCompile Include="Windows\ScenarioSelect.cpp" />
     <ClCompile Include="Windows\StationList.cpp" />
