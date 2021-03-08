@@ -29,6 +29,7 @@
 #include "EditorController.h"
 #include "Entities/EntityManager.h"
 #include "Environment.h"
+#include "GameCommands/GameCommands.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Gui.h"
@@ -721,7 +722,7 @@ namespace OpenLoco
                     Tutorial::stop();
 
                     // This ends with a premature tick termination
-                    call(0x0043C0FD);
+                    GameCommands::returnToTitle();
                     return; // won't be reached
                 }
 

@@ -1,15 +1,20 @@
 #include "../Audio/Audio.h"
+#include "../Input.h"
 #include "../Interop/Interop.hpp"
 #include "../OpenLoco.h"
+#include "../Title.h"
 #include "../Tutorial.h"
 #include "../Ui/WindowManager.h"
 #include "../Ui/WindowType.h"
 #include "GameCommands.h"
 
+#include <csetjmp>
+
 using namespace OpenLoco::Interop;
 
 namespace OpenLoco::GameCommands
 {
+    static loco_global<uint8_t, 0x00508F08> _game_command_nest_level;
     static loco_global<uint16_t, 0x0050A002> _savePromptType;
 
     // 0x0043BFF8
@@ -23,17 +28,44 @@ namespace OpenLoco::GameCommands
     // 0x0043C182
     static uint32_t quitGame()
     {
+        _game_command_nest_level = 0;
+
+        if (isNetworked())
+        {
+            clearScreenFlag(ScreenFlags::networked);
+        }
+
         registers regs;
         call(0x0043C182);
         return regs.ebx;
     }
 
     // 0x0043C0FD
-    static uint32_t returnToTitle()
+    void returnToTitle()
     {
-        registers regs;
-        call(0x0043C0FD);
-        return regs.ebx;
+        if (isNetworked())
+        {
+            Ui::WindowManager::closeAllFloatingWindows();
+        }
+
+        Ui::WindowManager::close(Ui::WindowType::options);
+        Ui::WindowManager::close(Ui::WindowType::companyFaceSelection);
+        Ui::WindowManager::close(Ui::WindowType::objectSelection);
+        Ui::WindowManager::close(Ui::WindowType::saveGamePrompt);
+
+        clearScreenFlag(ScreenFlags::editor);
+        Audio::pauseSound();
+        Audio::unpauseSound();
+
+        if (Input::hasFlag(Input::input_flags::flag5))
+        {
+            Input::sub_407231();
+            Input::resetFlag(Input::input_flags::flag5);
+        }
+
+        Title::start();
+
+        // TODO: interrupt tick?
     }
 
     // 0x0043C427
@@ -87,7 +119,8 @@ namespace OpenLoco::GameCommands
                 return loadGame();
 
             case 1:
-                return returnToTitle();
+                returnToTitle();
+                return 0;
 
             case 2:
                 return quitGame();

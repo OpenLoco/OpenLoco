@@ -642,6 +642,7 @@ namespace OpenLoco::GameCommands
 
     // Defined in GameCommands/LoadSaveQuit.cpp
     void confirmSaveGame();
+    void returnToTitle();
     void loadSaveQuit(registers& regs);
 
     // Defined in GameCommands/RenameIndustry.cpp
