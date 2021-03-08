@@ -1029,7 +1029,7 @@ namespace OpenLoco::Vehicles
 
             if (flags & (1 << 8))
             {
-                produceLeavingAirportSound();
+                produceTouchdownAirportSound();
             }
             if (flags & (1 << 3))
             {
@@ -1981,7 +1981,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x0042750E
-    void VehicleHead::produceLeavingAirportSound()
+    void VehicleHead::produceTouchdownAirportSound()
     {
         Vehicle train(this);
         auto* vehObj = train.cars.firstCar.body->object();
