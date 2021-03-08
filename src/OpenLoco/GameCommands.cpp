@@ -123,7 +123,7 @@ namespace OpenLoco::GameCommands
         { GameCommand::vehicle_order_down,            nullptr,                0x00470E06, false },
         { GameCommand::vehicle_apply_shunt_cheat,     nullptr,                0x004BAC53, false },
         { GameCommand::apply_free_cash_cheat,         nullptr,                0x00438A08, false },
-        { GameCommand::rename_industry,               nullptr,                0x00455029, false },
+        { GameCommand::rename_industry,               renameIndustry,         0x00455029, false },
         { GameCommand::vehicle_clone,                 Vehicles::cloneVehicle, 0,          true  },
     };
     // clang-format on
