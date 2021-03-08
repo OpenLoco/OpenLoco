@@ -54,7 +54,13 @@ namespace OpenLoco::TownManager
     // 0x0049771C
     void updateLabels()
     {
-        call(0x0049771C);
+        for (town& town : towns())
+        {
+            if (town.empty())
+                continue;
+
+            town.updateLabel();
+        }
     }
 
     // 0x0049748C

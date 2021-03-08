@@ -39,8 +39,6 @@ namespace OpenLoco
     };
 #pragma pack(pop)
 
-    using town_id_t = uint16_t;
-
     namespace TownId
     {
         constexpr town_id_t null = std::numeric_limits<town_id_t>::max();
@@ -91,6 +89,7 @@ namespace OpenLoco
         bool empty() const;
         town_id_t id() const;
         void update();
+        void updateLabel();
         void adjustCompanyRating(company_id_t cid, int amount);
         string_id getTownSizeString() const;
     };

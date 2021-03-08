@@ -36,6 +36,14 @@ namespace OpenLoco
         call(0x0049742F, regs);
     }
 
+    // 0x00497616
+    void town::updateLabel()
+    {
+        registers regs;
+        regs.esi = (int32_t)this;
+        call(0x00497616, regs);
+    }
+
     void town::adjustCompanyRating(company_id_t cid, int amount)
     {
         companies_with_rating |= (1 << cid);
