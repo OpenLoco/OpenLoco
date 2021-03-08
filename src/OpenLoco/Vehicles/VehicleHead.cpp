@@ -1456,14 +1456,33 @@ namespace OpenLoco::Vehicles
     // 0x00426CA4
     void VehicleHead::movePlaneTo(const Map::map_pos3& newLoc, const uint8_t newYaw, const Pitch newPitch)
     {
-        registers regs;
-        regs.esi = reinterpret_cast<int32_t>(this);
-        regs.bl = newYaw;
-        regs.bh = static_cast<uint8_t>(newPitch);
-        regs.ax = newLoc.x;
-        regs.cx = newLoc.y;
-        regs.dx = newLoc.z;
-        call(0x00426CA4, regs);
+        Vehicle train(this);
+        moveTo({ newLoc.x, newLoc.y, newLoc.z });
+        tile_x = 0;
+
+        train.veh1->moveTo({ newLoc.x, newLoc.y, newLoc.z });
+        train.veh1->tile_x = 0;
+
+        train.veh2->moveTo({ newLoc.x, newLoc.y, newLoc.z });
+        train.veh2->tile_x = 0;
+
+        // The first bogie of the plane is the shadow of the plane
+        auto* shadow = train.cars.firstCar.front;
+        shadow->invalidateSprite();
+        auto height = coord_t{ TileManager::getHeight(newLoc) };
+        shadow->moveTo({ newLoc.x, newLoc.y, height });
+        shadow->sprite_yaw = newYaw;
+        shadow->sprite_pitch = Pitch::flat;
+        shadow->tile_x = 0;
+        shadow->invalidateSprite();
+
+        auto* body = train.cars.firstCar.body;
+        body->invalidateSprite();
+        body->moveTo({ newLoc.x, newLoc.y, newLoc.z });
+        body->sprite_yaw = newYaw;
+        body->sprite_pitch = newPitch;
+        body->tile_x = 0;
+        body->invalidateSprite();
     }
 
     // 0x00427C05
