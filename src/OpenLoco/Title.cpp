@@ -1,6 +1,7 @@
 #include "Title.h"
 #include "Audio/Audio.h"
 #include "CompanyManager.h"
+#include "GameCommands/GameCommands.h"
 #include "Gui.h"
 #include "Interop/Interop.hpp"
 #include "Map/TileManager.h"
@@ -142,7 +143,7 @@ namespace OpenLoco::Title
         CompanyManager::updatingCompanyId(CompanyManager::getControllingId());
         if (isPaused())
         {
-            togglePause(true);
+            GameCommands::do_20();
         }
 
         auto currentScreenFlags = getScreenFlags();

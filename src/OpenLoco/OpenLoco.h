@@ -54,7 +54,8 @@ namespace OpenLoco
     bool isPauseOverrideEnabled();
     bool isPaused();
     uint8_t getPauseFlags();
-    void togglePause(bool value);
+    void setPauseFlag(uint8_t value);
+    void unsetPauseFlag(uint8_t value);
     uint8_t getGameSpeed();
     void setGameSpeed(uint8_t speed);
     uint32_t scenarioTicks();

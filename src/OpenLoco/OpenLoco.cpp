@@ -207,7 +207,7 @@ namespace OpenLoco
 
     bool isPaused()
     {
-        return paused_state;
+        return paused_state != 0;
     }
 
     uint8_t getPauseFlags()
@@ -215,14 +215,14 @@ namespace OpenLoco
         return paused_state;
     }
 
-    // 0x00431E32
-    // value: bl (false will no-op)
-    // **Gamecommand**
-    void togglePause(bool value)
+    void setPauseFlag(uint8_t value)
     {
-        registers regs;
-        regs.bl = value ? 1 : 0;
-        call(0x00431E32, regs);
+        paused_state |= value;
+    }
+
+    void unsetPauseFlag(uint8_t value)
+    {
+        paused_state &= ~(value);
     }
 
     uint8_t getGameSpeed()
