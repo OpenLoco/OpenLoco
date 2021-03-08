@@ -54,7 +54,9 @@ namespace OpenLoco::GameCommands
         if (index != 0)
             return 0;
 
-        static char* renameStringBuffer = reinterpret_cast<char*>(renameBuffer);
+        char renameStringBuffer[37] = "";
+        memcpy(renameStringBuffer, renameBuffer, sizeof(renameStringBuffer));
+        renameStringBuffer[36] = '\0';
 
         // Ensure the new name isn't empty.
         if (strlen(renameStringBuffer) == 0)
