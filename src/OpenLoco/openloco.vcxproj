@@ -29,6 +29,7 @@
     <ClCompile Include="EditorController.cpp" />
     <ClCompile Include="Environment.cpp" />
     <ClCompile Include="GameCommands\RenameIndustry.cpp" />
+    <ClCompile Include="GameCommands\RenameTown.cpp" />
     <ClCompile Include="GameCommands.cpp" />
     <ClCompile Include="Graphics\Colour.cpp" />
     <ClCompile Include="Graphics\Gfx.cpp" />

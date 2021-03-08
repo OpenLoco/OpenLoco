@@ -73,10 +73,10 @@ namespace OpenLoco::GameCommands
         gc_unk_43 = 43,
         gc_unk_44 = 44,
         gc_unk_45 = 45,
-        change_town_name = 46,
-        gc_unk_47 = 47,
+        rename_town = 46,
+        create_industry = 47,
         remove_industry = 48,
-        gc_unk_49 = 49,
+        create_town = 49,
         remove_town = 50,
         gc_unk_51 = 51,
         gc_unk_52 = 52,
@@ -410,7 +410,7 @@ namespace OpenLoco::GameCommands
         regs.edx = edx; // part of name buffer
         regs.ebp = ebp; // part of name buffer
         regs.edi = edi; // part of name buffer
-        doCommand(GameCommand::change_town_name, regs);
+        doCommand(GameCommand::rename_town, regs);
     }
 
     // Remove industry
@@ -641,4 +641,7 @@ namespace OpenLoco::GameCommands
 
     // Defined in GameCommands/RenameIndustry.cpp
     void renameIndustry(registers& regs);
+
+    // Defined in GameCommands/RenameTown.cpp
+    void renameTown(registers& regs);
 }
