@@ -70,4 +70,6 @@ namespace OpenLoco
         void sub_454A43(map_pos pos, uint8_t bl, uint8_t bh, uint8_t dl);
     };
 #pragma pack(pop)
+
+    static_assert(sizeof(industry) == 0x453);
 }

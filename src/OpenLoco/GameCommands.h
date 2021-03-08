@@ -638,4 +638,7 @@ namespace OpenLoco::GameCommands
         regs.ax = head;
         return GameCommands::doCommand(GameCommand::vehicle_clone, regs) != FAILURE;
     }
+
+    // Defined in GameCommands/RenameIndustry.cpp
+    void renameIndustry(registers& regs);
 }
