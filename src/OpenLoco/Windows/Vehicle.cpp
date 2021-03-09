@@ -2921,11 +2921,11 @@ namespace OpenLoco::Ui::Vehicle
             if (type == widget_type::none)
             {
                 self->widgets[widx::routeList].right += 22;
-                self->visible_widgets &= ~(1 << widx::expressMode | 1 << widx::localMode);
+                self->setHidden(widx::expressMode, widx::localMode);
             }
             else
             {
-                self->visible_widgets |= (1 << widx::expressMode | 1 << widx::localMode);
+                self->setVisible(widx::expressMode, widx::localMode);
             }
 
             self->widgets[widx::expressMode].right = self->widgets[widx::routeList].right;
@@ -3361,11 +3361,11 @@ namespace OpenLoco::Ui::Vehicle
         // 0x004B1E94
         static void setCaptionEnableState(window* const self)
         {
-            self->visible_widgets |= 1 << widx::caption;
+            self->setVisible(widx::caption);
             auto head = getVehicle(self);
             if (head->owner != CompanyManager::getControllingId())
             {
-                self->visible_widgets &= ~static_cast<uint64_t>(1 << widx::caption);
+                self->setHidden(widx::caption);
             }
         }
 

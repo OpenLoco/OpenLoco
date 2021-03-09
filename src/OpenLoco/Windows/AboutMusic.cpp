@@ -56,7 +56,7 @@ namespace OpenLoco::Ui::AboutMusic
             &_events);
 
         window->widgets = _widgets;
-        window->visible_widgets = 1 << Widx::close;
+        window->setVisible(Widx::close);
         window->initScrollWidgets();
 
         const auto interface = ObjectManager::get<interface_skin_object>();

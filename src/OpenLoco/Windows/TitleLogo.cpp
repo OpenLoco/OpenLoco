@@ -41,7 +41,7 @@ namespace OpenLoco::Ui::Windows
             &_events);
 
         window->widgets = _widgets;
-        window->visible_widgets = 1 << Widx::logo;
+        window->setVisible(Widx::logo);
 
         window->initScrollWidgets();
 

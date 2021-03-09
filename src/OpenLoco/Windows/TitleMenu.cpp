@@ -163,7 +163,7 @@ namespace OpenLoco::Ui::Windows
             &_events);
 
         window->widgets = _widgets;
-        window->visible_widgets = (1 << Widx::scenario_list_btn) | (1 << Widx::load_game_btn) | (1 << Widx::tutorial_btn) | (1 << Widx::scenario_editor_btn) | (1 << Widx::chat_btn) | (1 << Widx::multiplayer_toggle_btn);
+        window->setVisible(Widx::scenario_list_btn, Widx::load_game_btn, Widx::tutorial_btn, Widx::scenario_editor_btn, Widx::chat_btn, Widx::multiplayer_toggle_btn);
 
         window->initScrollWidgets();
 

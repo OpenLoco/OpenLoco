@@ -400,6 +400,18 @@ namespace OpenLoco::Ui
 
         window(Gfx::point_t position, Gfx::ui_size_t size);
 
+        template<typename... Args>
+        constexpr void setVisible(Args&&... widgets)
+        {
+            visible_widgets |= ((1ULL << static_cast<uint64_t>(widgets)), ...);
+        }
+
+        template<typename... Args>
+        constexpr void setHidden(Args&&... widgets)
+        {
+            visible_widgets &= ~((1ULL << static_cast<uint64_t>(widgets)), ...);
+        }
+
         constexpr bool setSize(Gfx::ui_size_t minSize, Gfx::ui_size_t maxSize)
         {
             bool hasResized = false;

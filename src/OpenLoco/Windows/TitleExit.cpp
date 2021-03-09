@@ -47,7 +47,7 @@ namespace OpenLoco::Ui::Windows
             &_events);
 
         window->widgets = _widgets;
-        window->visible_widgets = (1 << Widx::exit_button);
+        window->setVisible(Widx::exit_button);
 
         window->initScrollWidgets();
 

@@ -1016,11 +1016,11 @@ namespace OpenLoco::Ui::Windows::Station
             {
                 if (isPlayerCompany(station->owner))
                 {
-                    self->visible_widgets |= (1 << Common::widx::caption);
+                    self->setVisible(Common::widx::caption);
                 }
                 else
                 {
-                    self->visible_widgets &= ~(1 << Common::widx::caption);
+                    self->setHidden(Common::widx::caption);
                 }
             }
         }

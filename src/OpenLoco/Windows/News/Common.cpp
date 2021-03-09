@@ -135,7 +135,6 @@ namespace OpenLoco::Ui::NewsWindow
 
                 window->widgets = Ticker::widgets;
                 window->visible_widgets = Ticker::enabledWidgets;
-
                 Common::initEvents();
 
                 window->initScrollWidgets();

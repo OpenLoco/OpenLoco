@@ -344,7 +344,7 @@ namespace OpenLoco::Ui::Windows::StationList
         window->invalidate();
 
         window->widgets = _widgets;
-        window->visible_widgets = (1 << close_button) | (1 << tab_all_stations) | (1 << tab_rail_stations) | (1 << tab_road_stations) | (1 << tab_airports) | (1 << tab_ship_ports) | (1 << company_select) | (1 << sort_name) | (1 << sort_status) | (1 << sort_total_waiting) | (1 << sort_accepts) | (1 << scrollview);
+        window->setVisible(close_button, tab_all_stations, tab_rail_stations, tab_road_stations, tab_airports, tab_ship_ports, company_select, sort_name, sort_status, sort_total_waiting, sort_accepts, scrollview);
 
         window->activated_widgets = 0;
         window->holdable_widgets = 0;

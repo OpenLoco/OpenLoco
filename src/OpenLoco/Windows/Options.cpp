@@ -370,12 +370,12 @@ namespace OpenLoco::Ui::Options
         {
             if (Config::getNew().display.mode == Config::screen_mode::fullscreen)
             {
-                w->visible_widgets |= (1 << Widx::display_resolution) | (1 << Widx::display_resolution_btn);
+                w->setVisible(Widx::display_resolution, Widx::display_resolution_btn);
                 w->disabled_widgets &= ~((1 << Widx::display_resolution) | (1 << Widx::display_resolution_btn));
             }
             else
             {
-                w->visible_widgets &= ~((1 << Widx::display_resolution) | (1 << Widx::display_resolution_btn));
+                w->setHidden(Widx::display_resolution, Widx::display_resolution_btn);
                 w->disabled_widgets |= (1 << Widx::display_resolution) | (1 << Widx::display_resolution_btn);
             }
         }
@@ -623,7 +623,7 @@ namespace OpenLoco::Ui::Options
                 w->disabled_widgets = (1 << Display::Widx::display_resolution) | (1 << Display::Widx::display_resolution_btn);
 
 #if !(defined(__APPLE__) && defined(__MACH__))
-            w->visible_widgets |= (1 << Display::Widx::screen_mode) | (1 << Display::Widx::screen_mode_btn);
+            w->setVisible(Display::Widx::screen_mode, Display::Widx::screen_mode_btn);
             Display::screenModeToggleEnabled(w);
 #else
             w->disabled_widgets |= (1 << Display::Widx::screen_mode) | (1 << Display::Widx::screen_mode_btn) | (1 << Display::Widx::display_resolution) | (1 << Display::Widx::display_resolution_btn);

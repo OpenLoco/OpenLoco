@@ -96,7 +96,7 @@ namespace OpenLoco::Ui::TimePanel
             Ui::WindowFlags::stick_to_front | Ui::WindowFlags::transparent | Ui::WindowFlags::no_background,
             &_events);
         window->widgets = _widgets;
-        window->visible_widgets = (1 << Widx::map_chat_menu) | (1 << Widx::date_btn) | (1 << Widx::pause_btn) | (1 << Widx::normal_speed_btn) | (1 << Widx::fast_forward_btn) | (1 << Widx::extra_fast_forward_btn);
+        window->setVisible(Widx::map_chat_menu, Widx::date_btn, Widx::pause_btn, Widx::normal_speed_btn, Widx::fast_forward_btn, Widx::extra_fast_forward_btn);
         window->var_854 = 0;
         window->var_856 = 0;
         window->initScrollWidgets();

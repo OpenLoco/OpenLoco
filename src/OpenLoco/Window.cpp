@@ -1463,9 +1463,9 @@ namespace OpenLoco::Ui
 
             uint8_t colour = this->colours[widget->colour];
 
-            bool enabled = (this->visible_widgets & (1ULL << widgetIndex)) != 0;
-            bool disabled = (this->disabled_widgets & (1ULL << widgetIndex)) != 0;
-            bool activated = (this->activated_widgets & (1ULL << widgetIndex)) != 0;
+            bool enabled = isVisible(widgetIndex);
+            bool disabled = isDisabled(widgetIndex);
+            bool activated = isActivated(widgetIndex);
             activated |= (pressed_widget & (1ULL << widgetIndex)) != 0;
             activated |= (tool_widget & (1ULL << widgetIndex)) != 0;
             bool hovered = (hovered_widget & (1ULL << widgetIndex)) != 0;

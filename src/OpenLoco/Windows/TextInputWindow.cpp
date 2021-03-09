@@ -146,8 +146,7 @@ namespace OpenLoco::Ui::TextInput
             WindowFlags::stick_to_front | WindowFlags::flag_12,
             &_events);
         window->widgets = _widgets;
-        window->visible_widgets |= 1ULL << Widx::close;
-        window->visible_widgets |= 1ULL << Widx::ok;
+        window->setVisible(Widx::close, Widx::ok);
         window->initScrollWidgets();
 
         cursor_position = _buffer.length();

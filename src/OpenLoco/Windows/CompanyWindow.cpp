@@ -74,11 +74,11 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         {
             if (isEditorMode() || self->number == CompanyManager::getControllingId())
             {
-                self->visible_widgets |= (1 << caption);
+                self->setVisible(caption);
             }
             else
             {
-                self->visible_widgets &= ~(1 << caption);
+                self->setHidden(caption);
             }
         }
 

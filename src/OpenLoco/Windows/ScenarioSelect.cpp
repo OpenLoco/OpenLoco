@@ -109,7 +109,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             &_events);
 
         self->widgets = _widgets;
-        self->visible_widgets = (1 << widx::close) | (1 << widx::tab0) | (1 << widx::tab1) | (1 << widx::tab2) | (1 << widx::tab3) | (1 << widx::tab4);
+        self->setVisible(widx::close, widx::tab0, widx::tab1, widx::tab2, widx::tab3, widx::tab4);
         self->initScrollWidgets();
 
         self->colours[0] = Colour::black;
