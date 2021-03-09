@@ -299,6 +299,7 @@ namespace OpenLoco::Environment
             "language",
             "save",
             "save/autosave",
+            "1.TMP",
         };
 
         size_t index = (size_t)id;

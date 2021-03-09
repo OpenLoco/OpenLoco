@@ -338,6 +338,20 @@ namespace OpenLoco
         call(0x004BE5EB, regs);
     }
 
+    // 0x004BE65E
+    [[noreturn]] void exitCleanly()
+    {
+        auto tempFilePath = Environment::getPathNoWarning(Environment::path_id::_1tmp);
+        if (fs::exists(tempFilePath))
+        {
+            printf("Removing temp file '%s'\n", tempFilePath.c_str());
+            fs::remove(tempFilePath);
+        }
+
+        // SDL_Quit();
+        exit(0);
+    }
+
     // 0x00441400
     static void startupChecks()
     {

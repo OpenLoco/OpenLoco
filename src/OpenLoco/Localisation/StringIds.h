@@ -1361,6 +1361,7 @@ namespace OpenLoco::StringIds
 
     constexpr string_id title_menu_chat_tooltip = 1933;
     constexpr string_id the_other_player = 1934;
+    constexpr string_id error_the_other_player_has_exited_the_game = 1935;
 
     // String ids 1943--1982 (some blank) were used in the Atari credits screen, but are now unused.
     constexpr string_id title_cargo_distance_graphs = 1983;
