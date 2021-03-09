@@ -1,4 +1,5 @@
 #include "../Audio/Audio.h"
+#include "../GameException.hpp"
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
 #include "../OpenLoco.h"
@@ -65,7 +66,7 @@ namespace OpenLoco::GameCommands
 
         Title::start();
 
-        // TODO: interrupt tick?
+        throw GameException::Interrupt;
     }
 
     // 0x0043C427
