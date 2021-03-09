@@ -345,7 +345,7 @@ namespace OpenLoco::Ui
     {
         window_event_list* event_handlers;                 // 0x00
         Ui::viewport* viewports[2] = { nullptr, nullptr }; // 0x04
-        uint64_t enabled_widgets = 0;                      // 0x0C
+        uint64_t visible_widgets = 0;                      // 0x0C
         uint64_t disabled_widgets = 0;                     // 0x14
         uint64_t activated_widgets = 0;                    // 0x1C
         uint64_t holdable_widgets = 0;                     // 0x24
@@ -453,7 +453,7 @@ namespace OpenLoco::Ui
             return (this->flags & WindowFlags::transparent) != 0;
         }
 
-        bool isEnabled(int8_t widget_index);
+        bool isVisible(int8_t widget_index);
         bool isDisabled(int8_t widget_index);
         bool isActivated(widget_index index);
         bool isHoldable(widget_index index);

@@ -563,7 +563,7 @@ namespace OpenLoco::Ui::Windows::TownList
             window->invalidate();
 
             window->widgets = TownList::widgets;
-            window->enabled_widgets = TownList::enabledWidgets;
+            window->visible_widgets = TownList::enabledWidgets;
 
             if (isEditorMode() || isSandboxMode())
                 window->disabled_widgets = 0;
@@ -1475,7 +1475,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
             const auto& tabInfo = tabInformationByTabOffset[widgetIndex - widx::tab_town_list];
 
-            self->enabled_widgets = tabInfo.enabledWidgets;
+            self->visible_widgets = tabInfo.enabledWidgets;
             self->holdable_widgets = 0;
             self->event_handlers = tabInfo.events;
             self->activated_widgets = 0;

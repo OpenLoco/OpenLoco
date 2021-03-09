@@ -187,7 +187,7 @@ namespace OpenLoco::Ui::PromptBrowse
         if (window != nullptr)
         {
             window->widgets = widgets;
-            window->enabled_widgets = (1 << widx::close_button) | (1 << widx::parent_button) | (1 << widx::ok_button);
+            window->visible_widgets = (1 << widx::close_button) | (1 << widx::parent_button) | (1 << widx::ok_button);
             window->initScrollWidgets();
 
             _textInputCaret = -1;

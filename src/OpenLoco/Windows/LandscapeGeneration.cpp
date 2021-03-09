@@ -306,7 +306,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         {
             window = WindowManager::createWindowCentred(WindowType::landscapeGeneration, window_size, 0, &Options::events);
             window->widgets = Options::widgets;
-            window->enabled_widgets = Options::enabled_widgets;
+            window->visible_widgets = Options::enabled_widgets;
             window->number = 0;
             window->current_tab = 0;
             window->frame_no = 0;
@@ -1294,7 +1294,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 &Industries::enabled_widgets,
             };
 
-            window->enabled_widgets = *enabledWidgetsByTab[window->current_tab];
+            window->visible_widgets = *enabledWidgetsByTab[window->current_tab];
 
             static const uint64_t* holdableWidgetsByTab[] = {
                 &Options::holdable_widgets,

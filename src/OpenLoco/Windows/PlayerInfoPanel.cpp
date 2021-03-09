@@ -187,7 +187,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
             Ui::WindowFlags::stick_to_front | Ui::WindowFlags::transparent | Ui::WindowFlags::no_background,
             &_events);
         window->widgets = _widgets;
-        window->enabled_widgets = (1 << Widx::player) | (1 << Widx::company_value) | (1 << Widx::performance_index);
+        window->visible_widgets = (1 << Widx::player) | (1 << Widx::company_value) | (1 << Widx::performance_index);
         window->var_854 = 0;
         window->initScrollWidgets();
 

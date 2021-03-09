@@ -78,7 +78,7 @@ namespace OpenLoco::Ui::KeyboardShortcuts
         window = WindowManager::createWindowCentred(WindowType::keyboardShortcuts, { 360, 238 }, 0, &_events);
 
         window->widgets = _widgets;
-        window->enabled_widgets = (1 << Widx::close_button) | (1 << Widx::reset_keys_btn);
+        window->visible_widgets = (1 << Widx::close_button) | (1 << Widx::reset_keys_btn);
         window->initScrollWidgets();
 
         auto skin = ObjectManager::get<interface_skin_object>();

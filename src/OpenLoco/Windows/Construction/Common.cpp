@@ -416,7 +416,7 @@ namespace OpenLoco::Ui::Windows::Construction
 
             auto tabInfo = tabInformationByTabOffset[widgetIndex - widx::tab_construction];
 
-            self->enabled_widgets = tabInfo.enabledWidgets;
+            self->visible_widgets = tabInfo.enabledWidgets;
             self->event_handlers = tabInfo.events;
             self->activated_widgets = 0;
             self->widgets = tabInfo.widgets;
@@ -786,7 +786,7 @@ namespace OpenLoco::Ui::Windows::Construction
 
             window->widgets = Construction::widgets;
             window->current_tab = 0;
-            window->enabled_widgets = Construction::enabledWidgets;
+            window->visible_widgets = Construction::enabledWidgets;
             window->activated_widgets = 0;
 
             setDisabledWidgets(window);

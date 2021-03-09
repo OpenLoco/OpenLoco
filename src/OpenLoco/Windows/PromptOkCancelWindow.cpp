@@ -71,7 +71,7 @@ namespace OpenLoco::Ui::Windows
         window->widgets = _widgets;
         window->widgets[okButton].text = okButtonStringId;
 
-        window->enabled_widgets = (1 << widx::closeButton) | (1 << widx::okButton) | (1 << widx::cancelButton);
+        window->visible_widgets = (1 << widx::closeButton) | (1 << widx::okButton) | (1 << widx::cancelButton);
         window->initScrollWidgets();
         window->colours[0] = Colour::translucent(Colour::salmon_pink);
         window->colours[1] = Colour::translucent(Colour::salmon_pink);

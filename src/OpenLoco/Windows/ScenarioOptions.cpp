@@ -515,7 +515,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             // 0x0043EEFF start
             window = WindowManager::createWindowCentred(WindowType::scenarioOptions, otherWindowSize, 0, &Challenge::events);
             window->widgets = Challenge::widgets;
-            window->enabled_widgets = Challenge::enabledWidgets;
+            window->visible_widgets = Challenge::enabledWidgets;
             window->number = 0;
             window->current_tab = 0;
             window->frame_no = 0;
@@ -539,7 +539,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         window->invalidate();
 
         window->widgets = Challenge::widgets;
-        window->enabled_widgets = Challenge::enabledWidgets;
+        window->visible_widgets = Challenge::enabledWidgets;
         window->holdable_widgets = Challenge::holdableWidgets;
         window->event_handlers = &Challenge::events;
         window->activated_widgets = 0;
@@ -1209,7 +1209,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
             auto tabInfo = tabInformationByTabOffset[widgetIndex - widx::tab_challenge];
 
-            self->enabled_widgets = *tabInfo.enabledWidgets;
+            self->visible_widgets = *tabInfo.enabledWidgets;
             self->holdable_widgets = *tabInfo.holdableWidgets;
             self->event_handlers = tabInfo.events;
             self->activated_widgets = 0;

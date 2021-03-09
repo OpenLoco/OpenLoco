@@ -45,7 +45,7 @@ namespace OpenLoco::Ui::TitleOptions
             &_events);
 
         window->widgets = _widgets;
-        window->enabled_widgets = (1 << Widx::options_button);
+        window->visible_widgets = (1 << Widx::options_button);
 
         window->initScrollWidgets();
 

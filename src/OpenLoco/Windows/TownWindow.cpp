@@ -372,7 +372,7 @@ namespace OpenLoco::Ui::Windows::Town
         window->invalidate();
 
         window->widgets = Town::widgets;
-        window->enabled_widgets = Town::enabledWidgets;
+        window->visible_widgets = Town::enabledWidgets;
         window->holdable_widgets = 0;
         window->event_handlers = &Town::events;
         window->activated_widgets = 0;
@@ -721,7 +721,7 @@ namespace OpenLoco::Ui::Windows::Town
 
             auto tabInfo = tabInformationByTabOffset[widgetIndex - widx::tab_town];
 
-            self->enabled_widgets = *tabInfo.enabledWidgets;
+            self->visible_widgets = *tabInfo.enabledWidgets;
             self->holdable_widgets = 0;
             self->event_handlers = tabInfo.events;
             self->activated_widgets = 0;

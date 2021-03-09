@@ -370,12 +370,12 @@ namespace OpenLoco::Ui::Options
         {
             if (Config::getNew().display.mode == Config::screen_mode::fullscreen)
             {
-                w->enabled_widgets |= (1 << Widx::display_resolution) | (1 << Widx::display_resolution_btn);
+                w->visible_widgets |= (1 << Widx::display_resolution) | (1 << Widx::display_resolution_btn);
                 w->disabled_widgets &= ~((1 << Widx::display_resolution) | (1 << Widx::display_resolution_btn));
             }
             else
             {
-                w->enabled_widgets &= ~((1 << Widx::display_resolution) | (1 << Widx::display_resolution_btn));
+                w->visible_widgets &= ~((1 << Widx::display_resolution) | (1 << Widx::display_resolution_btn));
                 w->disabled_widgets |= (1 << Widx::display_resolution) | (1 << Widx::display_resolution_btn);
             }
         }
@@ -623,7 +623,7 @@ namespace OpenLoco::Ui::Options
                 w->disabled_widgets = (1 << Display::Widx::display_resolution) | (1 << Display::Widx::display_resolution_btn);
 
 #if !(defined(__APPLE__) && defined(__MACH__))
-            w->enabled_widgets |= (1 << Display::Widx::screen_mode) | (1 << Display::Widx::screen_mode_btn);
+            w->visible_widgets |= (1 << Display::Widx::screen_mode) | (1 << Display::Widx::screen_mode_btn);
             Display::screenModeToggleEnabled(w);
 #else
             w->disabled_widgets |= (1 << Display::Widx::screen_mode) | (1 << Display::Widx::screen_mode_btn) | (1 << Display::Widx::display_resolution) | (1 << Display::Widx::display_resolution_btn);
@@ -2356,7 +2356,7 @@ namespace OpenLoco::Ui::Options
         sub_4BF8CD();
         sub_4C1519();
 
-        window->enabled_widgets = Display::enabledWidgets;
+        window->visible_widgets = Display::enabledWidgets;
         Display::applyScreenModeRestrictions(window);
 
         window->holdable_widgets = 0;
@@ -2413,7 +2413,7 @@ namespace OpenLoco::Ui::Options
         w->viewportRemove(0);
 
         auto& tabInfo = tabInformationByTabOffset[w->current_tab];
-        w->enabled_widgets = *tabInfo.enabledWidgets;
+        w->visible_widgets = *tabInfo.enabledWidgets;
         w->event_handlers = tabInfo.events;
         w->widgets = tabInfo.widgets;
         w->invalidate();

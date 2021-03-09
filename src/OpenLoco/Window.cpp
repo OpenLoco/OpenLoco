@@ -87,9 +87,9 @@ namespace OpenLoco::Ui
         }
     }
 
-    bool window::isEnabled(int8_t widget_index)
+    bool window::isVisible(int8_t widget_index)
     {
-        return (this->enabled_widgets & (1ULL << widget_index)) != 0;
+        return (this->visible_widgets & (1ULL << widget_index)) != 0;
     }
 
     bool window::isDisabled(int8_t widget_index)
@@ -1463,7 +1463,7 @@ namespace OpenLoco::Ui
 
             uint8_t colour = this->colours[widget->colour];
 
-            bool enabled = (this->enabled_widgets & (1ULL << widgetIndex)) != 0;
+            bool enabled = (this->visible_widgets & (1ULL << widgetIndex)) != 0;
             bool disabled = (this->disabled_widgets & (1ULL << widgetIndex)) != 0;
             bool activated = (this->activated_widgets & (1ULL << widgetIndex)) != 0;
             activated |= (pressed_widget & (1ULL << widgetIndex)) != 0;

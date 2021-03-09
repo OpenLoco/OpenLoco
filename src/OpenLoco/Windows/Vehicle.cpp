@@ -340,7 +340,7 @@ namespace OpenLoco::Ui::Vehicle
         {
             auto* const self = WindowManager::createWindow(WindowType::vehicle, windowSize, WindowFlags::flag_11 | WindowFlags::flag_8 | WindowFlags::resizable, &events);
             self->widgets = widgets;
-            self->enabled_widgets = enabledWidgets;
+            self->visible_widgets = enabledWidgets;
             self->number = head;
             const auto* vehicle = ThingManager::get<Vehicles::VehicleHead>(head);
             self->owner = vehicle->owner;
@@ -383,7 +383,7 @@ namespace OpenLoco::Ui::Vehicle
             self->current_tab = 0;
             self->invalidate();
             self->widgets = widgets;
-            self->enabled_widgets = enabledWidgets;
+            self->visible_widgets = enabledWidgets;
             self->holdable_widgets = holdableWidgets;
             self->event_handlers = &events;
             self->activated_widgets = 0;
@@ -2921,11 +2921,11 @@ namespace OpenLoco::Ui::Vehicle
             if (type == widget_type::none)
             {
                 self->widgets[widx::routeList].right += 22;
-                self->enabled_widgets &= ~(1 << widx::expressMode | 1 << widx::localMode);
+                self->visible_widgets &= ~(1 << widx::expressMode | 1 << widx::localMode);
             }
             else
             {
-                self->enabled_widgets |= (1 << widx::expressMode | 1 << widx::localMode);
+                self->visible_widgets |= (1 << widx::expressMode | 1 << widx::localMode);
             }
 
             self->widgets[widx::expressMode].right = self->widgets[widx::routeList].right;
@@ -3323,7 +3323,7 @@ namespace OpenLoco::Ui::Vehicle
 
             auto tabInfo = tabInformationByTabOffset[widgetIndex - widx::tabMain];
 
-            self->enabled_widgets = *tabInfo.enabledWidgets;
+            self->visible_widgets = *tabInfo.enabledWidgets;
             self->holdable_widgets = *tabInfo.holdableWidgets;
 
             self->event_handlers = tabInfo.events;
@@ -3361,11 +3361,11 @@ namespace OpenLoco::Ui::Vehicle
         // 0x004B1E94
         static void setCaptionEnableState(window* const self)
         {
-            self->enabled_widgets |= 1 << widx::caption;
+            self->visible_widgets |= 1 << widx::caption;
             auto head = getVehicle(self);
             if (head->owner != CompanyManager::getControllingId())
             {
-                self->enabled_widgets &= ~static_cast<uint64_t>(1 << widx::caption);
+                self->visible_widgets &= ~static_cast<uint64_t>(1 << widx::caption);
             }
         }
 

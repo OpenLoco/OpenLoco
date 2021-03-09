@@ -74,11 +74,11 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         {
             if (isEditorMode() || self->number == CompanyManager::getControllingId())
             {
-                self->enabled_widgets |= (1 << caption);
+                self->visible_widgets |= (1 << caption);
             }
             else
             {
-                self->enabled_widgets &= ~(1 << caption);
+                self->visible_widgets &= ~(1 << caption);
             }
         }
 
@@ -610,7 +610,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         window->invalidate();
 
         window->widgets = Status::widgets;
-        window->enabled_widgets = Status::enabledWidgets;
+        window->visible_widgets = Status::enabledWidgets;
         window->holdable_widgets = 0;
         window->event_handlers = &Status::events;
         window->activated_widgets = 0;
@@ -1286,9 +1286,9 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             }
 
             if (self->number == CompanyManager::getControllingId())
-                self->enabled_widgets |= allColourChecks | allMainColours | allSecondaryColours;
+                self->visible_widgets |= allColourChecks | allMainColours | allSecondaryColours;
             else
-                self->enabled_widgets &= ~(allColourChecks | allMainColours | allSecondaryColours);
+                self->visible_widgets &= ~(allColourChecks | allMainColours | allSecondaryColours);
         }
 
         // 0x00432F9A
@@ -2001,7 +2001,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         window->invalidate();
 
         window->widgets = Finances::widgets;
-        window->enabled_widgets = Finances::enabledWidgets;
+        window->visible_widgets = Finances::enabledWidgets;
         window->holdable_widgets = Finances::holdableWidgets;
         window->event_handlers = &Finances::events;
         window->activated_widgets = 0;
@@ -2406,7 +2406,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         window->invalidate();
 
         window->widgets = Challenge::widgets;
-        window->enabled_widgets = Challenge::enabledWidgets;
+        window->visible_widgets = Challenge::enabledWidgets;
         window->holdable_widgets = 0;
         window->event_handlers = &Challenge::events;
         window->activated_widgets = 0;
@@ -2522,7 +2522,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             auto tabIndex = widgetIndex - widx::tab_status;
             auto tabInfo = tabInformationByTabOffset[tabIndex];
 
-            self->enabled_widgets = *tabInfo.enabledWidgets;
+            self->visible_widgets = *tabInfo.enabledWidgets;
             self->holdable_widgets = 0;
             self->event_handlers = tabInfo.events;
             self->activated_widgets = 0;

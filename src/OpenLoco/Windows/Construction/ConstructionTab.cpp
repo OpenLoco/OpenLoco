@@ -1118,10 +1118,10 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     // 0x0049DAA5
     static void onResize(window* self)
     {
-        self->enabled_widgets &= ~(1 << widx::construct);
+        self->visible_widgets &= ~(1 << widx::construct);
 
         if (_constructionHover != 1)
-            self->enabled_widgets |= (1 << widx::construct);
+            self->visible_widgets |= (1 << widx::construct);
 
         auto disabledWidgets = self->disabled_widgets;
         disabledWidgets &= (1 << Common::widx::tab_construction | 1 << Common::widx::tab_overhead | 1 << Common::widx::tab_signal | 1 << Common::widx::tab_station);

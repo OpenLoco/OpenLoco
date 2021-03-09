@@ -154,7 +154,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         window = WindowManager::createWindowCentred(WindowType::objectSelection, { windowSize }, 0, &_events);
         window->widgets = widgets;
-        window->enabled_widgets = (1ULL << widx::closeButton) | (1ULL << widx::tabArea) | (1ULL << widx::advancedButton);
+        window->visible_widgets = (1ULL << widx::closeButton) | (1ULL << widx::tabArea) | (1ULL << widx::advancedButton);
         window->initScrollWidgets();
         window->frame_no = 0;
         window->row_hover = -1;

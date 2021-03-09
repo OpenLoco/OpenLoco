@@ -632,7 +632,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         Common::initEvents();
 
         window->widgets = CompanyList::widgets;
-        window->enabled_widgets = CompanyList::enabledWidgets;
+        window->visible_widgets = CompanyList::enabledWidgets;
         window->holdable_widgets = 0;
         window->event_handlers = &CompanyList::events;
         window->activated_widgets = 0;
@@ -1507,7 +1507,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             const auto& tabInfo = tabInformationByTabOffset[widgetIndex - widx::tab_company_list];
 
-            self->enabled_widgets = tabInfo.enabledWidgets;
+            self->visible_widgets = tabInfo.enabledWidgets;
             self->holdable_widgets = 0;
             self->event_handlers = tabInfo.events;
             self->activated_widgets = 0;

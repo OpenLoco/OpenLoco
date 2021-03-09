@@ -135,7 +135,7 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
             WindowFlags::stick_to_front | WindowFlags::transparent | WindowFlags::no_background,
             &_events);
         window->widgets = _widgets;
-        window->enabled_widgets = 1 << widx::previous_button | 1 << widx::previous_frame | 1 << widx::next_frame | 1 << widx::next_button;
+        window->visible_widgets = 1 << widx::previous_button | 1 << widx::previous_frame | 1 << widx::next_frame | 1 << widx::next_button;
         window->var_854 = 0;
         window->initScrollWidgets();
         window->colours[0] = Colour::translucent(Colour::saturated_green);

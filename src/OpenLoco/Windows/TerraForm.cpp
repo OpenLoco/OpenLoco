@@ -725,7 +725,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             window->invalidate();
 
             window->widgets = PlantTrees::widgets;
-            window->enabled_widgets = PlantTrees::enabledWidgets;
+            window->visible_widgets = PlantTrees::enabledWidgets;
             window->holdable_widgets = 0;
             window->activated_widgets = 0;
 
@@ -2291,7 +2291,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             const auto& tabInfo = tabInformationByTabOffset[widgetIndex - widx::tab_clear_area];
 
-            self->enabled_widgets = tabInfo.enabledWidgets;
+            self->visible_widgets = tabInfo.enabledWidgets;
             self->holdable_widgets = 0;
             self->event_handlers = tabInfo.events;
             self->activated_widgets = 0;

@@ -1490,7 +1490,7 @@ namespace OpenLoco::Ui::Windows::Map
 
         window = WindowManager::createWindow(WindowType::map, size, 0, &events);
         window->widgets = widgets;
-        window->enabled_widgets |= enabledWidgets;
+        window->visible_widgets |= enabledWidgets;
 
         initEvents();
 

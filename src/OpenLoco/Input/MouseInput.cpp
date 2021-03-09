@@ -1174,7 +1174,7 @@ namespace OpenLoco::Input
                     auto dragWindow = WindowManager::find(_dragWindowType, _dragWindowNumber);
                     if (dragWindow != nullptr)
                     {
-                        if (dragWindow->isEnabled(_pressedWidgetIndex))
+                        if (dragWindow->isVisible(_pressedWidgetIndex))
                         {
                             auto pressedWidget = &dragWindow->widgets[_pressedWidgetIndex];
 
@@ -1674,7 +1674,7 @@ namespace OpenLoco::Input
                 break;
 
             default:
-                if (window->isEnabled(widgetIndex) && !window->isDisabled(widgetIndex))
+                if (window->isVisible(widgetIndex) && !window->isDisabled(widgetIndex))
                 {
                     Audio::playSound(Audio::sound_id::click_down, window->x + widget->mid_x());
 

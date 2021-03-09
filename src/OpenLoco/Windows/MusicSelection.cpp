@@ -76,7 +76,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
         initEvents();
 
         window->widgets = _widgets;
-        window->enabled_widgets = 1 << widx::close;
+        window->visible_widgets = 1 << widx::close;
         window->initScrollWidgets();
 
         auto interface = ObjectManager::get<interface_skin_object>();

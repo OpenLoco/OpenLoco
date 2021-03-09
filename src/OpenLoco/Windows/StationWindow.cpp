@@ -302,7 +302,7 @@ namespace OpenLoco::Ui::Windows::Station
         window->invalidate();
 
         window->widgets = Station::widgets;
-        window->enabled_widgets = Station::enabledWidgets;
+        window->visible_widgets = Station::enabledWidgets;
         window->holdable_widgets = 0;
         window->event_handlers = &Station::events;
         window->activated_widgets = 0;
@@ -922,7 +922,7 @@ namespace OpenLoco::Ui::Windows::Station
 
             auto tabInfo = tabInformationByTabOffset[widgetIndex - widx::tab_station];
 
-            self->enabled_widgets = *tabInfo.enabledWidgets;
+            self->visible_widgets = *tabInfo.enabledWidgets;
             self->holdable_widgets = 0;
             self->event_handlers = tabInfo.events;
             self->activated_widgets = 0;
@@ -1016,11 +1016,11 @@ namespace OpenLoco::Ui::Windows::Station
             {
                 if (isPlayerCompany(station->owner))
                 {
-                    self->enabled_widgets |= (1 << Common::widx::caption);
+                    self->visible_widgets |= (1 << Common::widx::caption);
                 }
                 else
                 {
-                    self->enabled_widgets &= ~(1 << Common::widx::caption);
+                    self->visible_widgets &= ~(1 << Common::widx::caption);
                 }
             }
         }
