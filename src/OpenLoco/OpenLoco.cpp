@@ -344,7 +344,8 @@ namespace OpenLoco
         auto tempFilePath = Environment::getPathNoWarning(Environment::path_id::_1tmp);
         if (fs::exists(tempFilePath))
         {
-            printf("Removing temp file '%s'\n", tempFilePath.c_str());
+            auto path8 = tempFilePath.u8string();
+            printf("Removing temp file '%s'\n", path8.c_str());
             fs::remove(tempFilePath);
         }
 

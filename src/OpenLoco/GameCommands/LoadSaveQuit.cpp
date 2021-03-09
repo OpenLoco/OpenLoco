@@ -4,8 +4,10 @@
 #include "../Graphics/Gfx.h"
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
+#include "../MultiPlayer.h"
 #include "../Objects/ObjectManager.h"
 #include "../OpenLoco.h"
+#include "../S5/S5.h"
 #include "../Title.h"
 #include "../Tutorial.h"
 #include "../Ui/WindowManager.h"
@@ -21,12 +23,84 @@ namespace OpenLoco::GameCommands
     static loco_global<uint8_t, 0x00508F08> _game_command_nest_level;
     static loco_global<uint16_t, 0x0050A002> _savePromptType;
 
+    static loco_global<char[256], 0x0050B745> _currentScenarioFilename;
+    static loco_global<char[512], 0x0112CE04> _savePath;
+
+    // 0x004416FF
+    static bool loadSaveGameOpen()
+    {
+        registers regs;
+        call(0x004416FF, regs);
+        return regs.eax;
+    }
+
+    // 0x004417A7
+    static bool loadLandscapeOpen()
+    {
+        registers regs;
+        call(0x004417A7, regs);
+        return regs.eax;
+    }
+
+    // 0x00441FA7
+    static bool sub_441FA7()
+    {
+        registers regs;
+        call(0x00441FA7);
+        return regs.eax != 0;
+    }
+
+    // 0x004424CE
+    static bool sub_4424CE()
+    {
+        registers regs;
+        call(0x004424CE);
+        return regs.eax != 0;
+    }
+
     // 0x0043BFF8
     static uint32_t loadGame()
     {
-        registers regs;
-        call(0x0043BFF8);
-        return regs.ebx;
+        GameCommands::do_21(1, 0);
+        Input::toolCancel();
+
+        if (isEditorMode() && loadLandscapeOpen())
+        {
+            // 0x0043C087
+            auto path = fs::path(&_savePath[0]).replace_extension(S5::extensionSC5).u8string();
+            std::strncpy(&_currentScenarioFilename[0], path.c_str(), std::size(_currentScenarioFilename));
+
+            if (sub_4424CE())
+            {
+                resetScreenAge();
+                throw GameException::Interrupt;
+            }
+        }
+        else if (!isNetworked() && loadSaveGameOpen())
+        {
+            // 0x0043C033
+            auto path = fs::path(&_savePath[0]).replace_extension(S5::extensionSV5).u8string();
+            std::strncpy(&_currentScenarioFilename[0], path.c_str(), std::size(_currentScenarioFilename));
+
+            if (sub_441FA7())
+            {
+                resetScreenAge();
+                throw GameException::Interrupt;
+            }
+        }
+        else if (isNetworked())
+        {
+            // 0x0043C0DB
+            if (CompanyManager::getControllingId() == CompanyManager::updatingCompanyId())
+            {
+                MultiPlayer::setFlag(MultiPlayer::flags::flag_4);
+                MultiPlayer::setFlag(MultiPlayer::flags::flag_3);
+            }
+        }
+
+        // 0x0043C0D1
+        Gfx::invalidateScreen();
+        return 0;
     }
 
     // 0x0043C182
