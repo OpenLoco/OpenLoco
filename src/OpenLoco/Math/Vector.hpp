@@ -76,16 +76,6 @@ namespace OpenLoco::Math::Vector
             return *this;
         }
 
-        constexpr bool operator>=(const TVector2& rhs) const
-        {
-            return x >= rhs.x && y >= rhs.y;
-        }
-
-        constexpr bool operator<=(const TVector2& rhs) const
-        {
-            return x <= rhs.x && y <= rhs.y;
-        }
-
         constexpr const TVector2 operator+(const TVector2& rhs) const
         {
             return { static_cast<T>(x + rhs.x), static_cast<T>(y + rhs.y) };
@@ -195,16 +185,6 @@ namespace OpenLoco::Math::Vector
             Base::operator/=(rhs);
             z /= rhs.z;
             return *this;
-        }
-
-        constexpr bool operator>=(const TVector3& rhs) const
-        {
-            return Base::operator>=(rhs) && z >= rhs.z;
-        }
-
-        constexpr bool operator<=(const TVector3& rhs) const
-        {
-            return Base::operator<=(rhs) && z <= rhs.z;
         }
 
         constexpr const TVector3 operator+(const TVector3& rhs) const
