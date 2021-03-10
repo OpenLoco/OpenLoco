@@ -1077,7 +1077,7 @@ namespace OpenLoco::Vehicles
         auto [veh1Loc, veh2Loc] = calculateNextPosition(
             _yaw, { x, y }, vehType1, vehType2->currentSpeed);
 
-        map_pos3 newLoc(veh2Loc, targetZ);
+        map_pos3 newLoc(veh2Loc.x, veh2Loc.y, targetZ);
         vehType1->var_4E = veh1Loc.x;
         vehType1->var_50 = veh1Loc.y;
         if (targetZ != z)
@@ -1646,7 +1646,7 @@ namespace OpenLoco::Vehicles
         veh1->var_4E = newVeh1Pos.x;
         veh1->var_50 = newVeh1Pos.y;
 
-        map_pos3 newLocation = { newVeh2Pos, veh2->z };
+        map_pos3 newLocation = { newVeh2Pos.x, newVeh2Pos.y, veh2->z };
         moveBoatTo(newLocation, veh2->sprite_yaw, Pitch::flat);
 
         return flags;
