@@ -915,12 +915,16 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     // 0x004739DD
     static void onClose(Window& self)
     {
-        if (!isEditorMode())
+        if (!(isEditorMode() || isSandboxMode()))
             return;
 
         unloadUnselectedObjects();
         editorLoadSelectedObjects();
         ObjectManager::reloadAll();
+
+        if (!isEditorMode())
+            return;
+
         ObjectManager::freeTemporaryObject();
         editorObjectFlagsFree0();
     }
