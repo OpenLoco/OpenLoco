@@ -41,7 +41,13 @@ namespace OpenLoco::Map::TileManager
 
     tile get(TilePos pos)
     {
-        return get(pos.x * tile_size, pos.y * tile_size);
+        size_t index = (pos.y << 9) | pos.x;
+        auto data = _tiles[index];
+        if (data == (tile_element*)0xFFFFFFFF)
+        {
+            data = nullptr;
+        }
+        return tile(pos.x, pos.y, data);
     }
 
     tile get(map_pos pos)
@@ -51,16 +57,7 @@ namespace OpenLoco::Map::TileManager
 
     tile get(coord_t x, coord_t y)
     {
-        tile_coord_t tileX = x / tile_size;
-        tile_coord_t tileY = y / tile_size;
-
-        size_t index = (tileY << 9) | tileX;
-        auto data = _tiles[index];
-        if (data == (tile_element*)0xFFFFFFFF)
-        {
-            data = nullptr;
-        }
-        return tile(tileX, tileY, data);
+        return get(TilePos(x / Map::tile_size, y / Map::tile_size));
     }
 
     /**
