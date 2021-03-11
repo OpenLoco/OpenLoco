@@ -702,7 +702,7 @@ namespace OpenLoco::Vehicles
             }
             else if (var_0C & Flags0C::manualControl)
             {
-                if (var_6E <= 236)
+                if (var_6E <= -20)
                 {
                     return sub_4A8C81();
                 }
@@ -710,55 +710,53 @@ namespace OpenLoco::Vehicles
 
             return sub_4A8FAC();
         }
+
+        if (status == Status::unloading)
+        {
+            updateUnloadCargo();
+
+            tryCreateInitialMovementSound();
+            return true;
+        }
+        else if (status == Status::loading)
+        {
+            return landLoadingUpdate();
+        }
+        else if (status == Status::crashed)
+        {
+            sub_4AA625();
+
+            return false;
+        }
+        else if (status == Status::stuck)
+        {
+            return false;
+        }
         else
         {
-            if (status == Status::unloading)
-            {
-                updateUnloadCargo();
+            status = Status::unk_2;
 
-                tryCreateInitialMovementSound();
-                return true;
-            }
-            else if (status == Status::loading)
+            if (!(vehType2->var_73 & Flags73::isBrokenDown) || (vehType2->var_73 & Flags73::isStillPowered))
             {
-                return landLoadingUpdate();
-            }
-            else if (status == Status::crashed)
-            {
-                sub_4AA625();
-
-                return false;
-            }
-            else if (status == Status::stuck)
-            {
-                return false;
-            }
-            else
-            {
-                status = Status::unk_2;
-
-                if (!(vehType2->var_73 & Flags73::isBrokenDown) || (vehType2->var_73 & Flags73::isStillPowered))
+                if (!(var_0C & Flags0C::manualControl) || var_6E > -20)
                 {
-                    if (!(var_0C & Flags0C::manualControl) || var_6E > 236)
+                    if (!(var_0C & Flags0C::commandStop))
                     {
-                        if (!(var_0C & Flags0C::commandStop))
-                        {
-                            return sub_4A8D48();
-                        }
-                        else
-                        {
-                            return sub_4A8CB6();
-                        }
+                        return sub_4A8D48();
                     }
                     else
                     {
-                        return sub_4A8C81();
+                        return sub_4A8CB6();
                     }
                 }
                 else
                 {
-                    return sub_4A8CB6();
+                    return sub_4A8C81();
                 }
+            }
+            else
+            {
+                return sub_4A8CB6();
             }
         }
     }
