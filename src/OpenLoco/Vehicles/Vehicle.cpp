@@ -85,6 +85,14 @@ namespace OpenLoco::Vehicles
         veh->next_car_id = newNextCar;
     }
 
+    // 0x004AA464
+    void VehicleBase::sub_4AA464()
+    {
+        registers regs;
+        regs.esi = reinterpret_cast<int32_t>(this);
+        call(0x004AA464, regs);
+    }
+
     bool VehicleBase::updateComponent()
     {
         int32_t result = 0;

@@ -825,9 +825,157 @@ namespace OpenLoco::Vehicles
     // 0x004A8D48
     bool VehicleHead::sub_4A8D48()
     {
+        advanceToNextRoutableOrder();
+        auto [al, flags, nextStation] = sub_4ACEE7(0xD4CB00, vehicleUpdate_var_113612C);
+        Vehicle train(this);
+
+        if (mode == TransportMode::road)
+        {
+            uint8_t bl = sub_4AA36A();
+            if (bl == 1)
+            {
+                return sub_4A8DB7();
+            }
+            else if (bl == 2)
+            {
+                return sub_4A8F22();
+            }
+            else if (al == 4)
+            {
+                status = Status::approaching;
+                stationId = nextStation;
+                tryCreateInitialMovementSound();
+                return true;
+            }
+            else if (al == 2)
+            {
+                if (var_36 != train.veh2->var_36 || train.veh2->var_2E != var_2E)
+                {
+                    tryCreateInitialMovementSound();
+                    return true;
+                }
+                return sub_4A8F22();
+            }
+            else
+            {
+                tryCreateInitialMovementSound();
+                return true;
+            }
+        }
+        else
+        {
+            if (al == 4)
+            {
+                status = Status::approaching;
+                stationId = nextStation;
+                tryCreateInitialMovementSound();
+                return true;
+            }
+            else if (al == 3)
+            {
+                if (train.veh2->var_36 != var_36 || train.veh2->var_2E != var_2E)
+                {
+                    tryCreateInitialMovementSound();
+                    return true;
+                }
+
+                status = Status::unk_3;
+
+                auto* vehType1 = train.veh1;
+                vehType1->var_46++;
+
+                if (var_0C & Flags0C::manualControl)
+                {
+                    var_5C = 2;
+                    vehType1->var_48 |= 1 << 0;
+                    tryCreateInitialMovementSound();
+                    return true;
+                }
+
+                if (flags & (1 << 1))
+                {
+                    if (vehType1->var_46 < 1920)
+                    {
+                        tryCreateInitialMovementSound();
+                        return true;
+                    }
+
+                    if (!(flags & (1 << 7)))
+                    {
+                        if (sub_4AC1C2())
+                        {
+                            var_5C = 2;
+                            vehType1->var_48 |= 1 << 0;
+                            tryCreateInitialMovementSound();
+                            return true;
+                        }
+                    }
+                    return landReverseFromSignal();
+                }
+                else
+                {
+                    if (!(vehType1->var_46 & 0x3F))
+                    {
+                        if (!(flags & (1 << 7)))
+                        {
+                            if (sub_4AC1C2())
+                            {
+                                var_5C = 2;
+                                vehType1->var_48 |= 1 << 0;
+                                tryCreateInitialMovementSound();
+                                return true;
+                            }
+                        }
+
+                        if (sub_4AC0A3())
+                        {
+                            return landReverseFromSignal();
+                        }
+                    }
+
+                    if (vehType1->var_46 < 640)
+                    {
+                        tryCreateInitialMovementSound();
+                        return true;
+                    }
+                    return landReverseFromSignal();
+                }
+            }
+            else
+            {
+                train.veh1->var_46 = 0;
+                if (al == 2)
+                {
+                    if (!(var_0C & Flags0C::manualControl))
+                    {
+                        return landReverseFromSignal();
+                    }
+
+                    auto* vehType2 = train.veh2;
+                    if (vehType2->var_36 != var_36 || vehType2->var_2E != var_2E)
+                    {
+                        return landReverseFromSignal();
+                    }
+
+                    // Crash
+                    vehType2->sub_4AA464();
+                    return false;
+                }
+                else
+                {
+                    tryCreateInitialMovementSound();
+                    return true;
+                }
+            }
+        }
+    }
+
+    // 0x004A8ED9
+    bool VehicleHead::landReverseFromSignal()
+    {
         registers regs;
         regs.esi = reinterpret_cast<uint32_t>(this);
-        return (call(0x004A8D48, regs) & (1 << 8)) == 0;
+        return (call(0x004A8ED9, regs) & (1 << 8)) == 0;
     }
 
     // 0x004A9051
@@ -2143,6 +2291,34 @@ namespace OpenLoco::Vehicles
         registers regs;
         regs.esi = reinterpret_cast<int32_t>(this);
         call(0x004AA625, regs);
+    }
+
+    // 0x004ACEE7
+    std::tuple<uint8_t, uint8_t, station_id_t> VehicleHead::sub_4ACEE7(uint32_t unk1, uint32_t var_113612C)
+    {
+        registers regs;
+        regs.esi = reinterpret_cast<int32_t>(this);
+        regs.eax = unk1;
+        regs.ebx = var_113612C;
+        call(0x004ACEE7, regs);
+        // status, flags, stationId
+        return std::make_tuple(static_cast<uint8_t>(regs.al), static_cast<uint8_t>(regs.ah), static_cast<station_id_t>(regs.bp));
+    }
+
+    // 0x004AC1C2
+    bool VehicleHead::sub_4AC1C2()
+    {
+        registers regs;
+        regs.esi = reinterpret_cast<int32_t>(this);
+        return call(0x004AC1C2, regs) & (1 << 8);
+    }
+
+    // 0x004AC0A3
+    bool VehicleHead::sub_4AC0A3()
+    {
+        registers regs;
+        regs.esi = reinterpret_cast<int32_t>(this);
+        return call(0x004AC0A3, regs) & (1 << 8);
     }
 
     OrderRingView Vehicles::VehicleHead::getCurrentOrders() const

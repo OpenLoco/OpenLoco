@@ -168,6 +168,7 @@ namespace OpenLoco::Vehicles
         VehicleBase* nextVehicle();
         VehicleBase* nextVehicleComponent();
         bool updateComponent();
+        void sub_4AA464();
     };
 
     struct Vehicle2or6 : VehicleBase
@@ -262,6 +263,7 @@ namespace OpenLoco::Vehicles
         bool sub_4A8FAC();
         bool landLoadingUpdate();
         bool sub_4A8D48();
+        bool landReverseFromSignal();
         bool updateAir();
         bool airplaneLoadingUpdate();
         bool sub_4A95CB();
@@ -292,6 +294,9 @@ namespace OpenLoco::Vehicles
         uint8_t sub_4AA36A();
         void sub_4AD778();
         void sub_4AA625();
+        std::tuple<uint8_t, uint8_t, station_id_t> sub_4ACEE7(uint32_t unk1, uint32_t var_113612C);
+        bool sub_4AC1C2();
+        bool sub_4AC0A3();
     };
     static_assert(sizeof(VehicleHead) == 0x7A); // Can't use offset_of change this to last field if more found
 
