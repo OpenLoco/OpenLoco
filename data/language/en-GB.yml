@@ -2220,7 +2220,7 @@ strings:
   2165: "Hardware"
   2166: "Map rendering"
   2167: "Tile inspector"
-  2168: "{COLOUR WINDOW_2} {STRINGID} {STRINGID}"
+  2168: "{COLOUR WINDOW_2} {STRINGID} ({STRINGID})"
   2169: "Surface"
   2170: "Track"
   2171: "Station"

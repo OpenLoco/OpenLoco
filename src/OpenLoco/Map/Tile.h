@@ -216,6 +216,9 @@ namespace OpenLoco::Map
         uint8_t _5;
         uint8_t _6;
         uint8_t _7;
+
+    public:
+        uint8_t treeObjectId() const { return _4; } // _4
     };
 
     struct wall_element : public tile_element_base
@@ -225,6 +228,9 @@ namespace OpenLoco::Map
         uint8_t _5;
         uint8_t _6;
         uint8_t _7;
+
+    public:
+        uint8_t wallObjectId() const { return _4; } // _4
     };
 
     struct track_element : public tile_element_base
@@ -256,6 +262,12 @@ namespace OpenLoco::Map
         uint8_t _5;
         uint8_t _6;
         uint8_t _7;
+
+    public:
+        bool hasLeftSignal() const { return _4 & 0x80; }
+        uint8_t leftSignalObjectId() const { return _4 & 0xF; } // _4l
+        bool hasRightSignal() const { return _6 & 0x80; }
+        uint8_t rightSignalObjectId() const { return _6 & 0xF; } // _6l
     };
 
     struct road_element : public tile_element_base

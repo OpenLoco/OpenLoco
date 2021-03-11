@@ -1,15 +1,28 @@
+#include "../CompanyManager.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/Gfx.h"
 #include "../Graphics/ImageIds.h"
+#include "../Industry.h"
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/FormatArguments.hpp"
 #include "../Localisation/StringIds.h"
 #include "../Map/TileManager.h"
+#include "../Objects/AirportObject.h"
+#include "../Objects/BuildingObject.h"
+#include "../Objects/DockObject.h"
 #include "../Objects/InterfaceSkinObject.h"
+#include "../Objects/LandObject.h"
 #include "../Objects/ObjectManager.h"
+#include "../Objects/RoadObject.h"
+#include "../Objects/RoadStationObject.h"
+#include "../Objects/TrackObject.h"
+#include "../Objects/TrainSignalObject.h"
+#include "../Objects/TrainStationObject.h"
+#include "../Objects/TreeObject.h"
+#include "../Objects/WallObject.h"
+#include "../Station.h"
 #include "../Ui/WindowManager.h"
-
 #include <map>
 
 using namespace OpenLoco::Interop;
@@ -39,7 +52,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
 
     static widget_t _widgets[] = {
         makeWidget({ 0, 0 }, windowSize, widget_type::frame, 0),
-        makeWidget({ 1, 1 }, { windowSize.width - 2, 13 }, widget_type::caption_25, 0, StringIds::about_locomotion_caption),
+        makeWidget({ 1, 1 }, { windowSize.width - 2, 13 }, widget_type::caption_25, 0, StringIds::tile_inspector),
         makeWidget({ windowSize.width - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window),
         makeWidget({ 0, 15 }, { windowSize.width, 245 }, widget_type::panel, 1),
         makeWidget({ 4, 18 }, { windowSize.width - 8, 289 }, widget_type::scrollview, 1, Ui::scrollbars::vertical),
@@ -90,6 +103,174 @@ namespace OpenLoco::Ui::Windows::TileInspector
         self->draw(dpi);
     }
 
+    static string_id getElementTypeName(const tile_element& element)
+    {
+        static const std::map<element_type, string_id> typeToString = {
+            { element_type::surface, StringIds::tile_inspector_element_type_surface },
+            { element_type::track, StringIds::tile_inspector_element_type_track },
+            { element_type::station, StringIds::tile_inspector_element_type_station },
+            { element_type::signal, StringIds::tile_inspector_element_type_signal },
+            { element_type::building, StringIds::tile_inspector_element_type_building },
+            { element_type::tree, StringIds::tile_inspector_element_type_tree },
+            { element_type::wall, StringIds::tile_inspector_element_type_wall },
+            { element_type::road, StringIds::tile_inspector_element_type_road },
+            { element_type::industry, StringIds::tile_inspector_element_type_industry },
+        };
+
+        return typeToString.at(element.type());
+    }
+
+    static string_id getObjectName(const tile_element& element)
+    {
+        switch (element.type())
+        {
+            case element_type::surface:
+            {
+                auto surface = element.asSurface();
+                if (surface != nullptr)
+                {
+                    auto terrainId = surface->terrain();
+                    auto object = ObjectManager::get<LandObject>(terrainId);
+                    return object->name;
+                }
+                break;
+            }
+            case element_type::track:
+            {
+                auto track = element.asTrack();
+                if (track != nullptr)
+                {
+                    auto objectId = track->trackObjectId();
+                    auto object = ObjectManager::get<TrackObject>(objectId);
+                    return object->name;
+                }
+                break;
+            }
+            case element_type::station:
+            {
+                auto station = element.asStation();
+                if (station != nullptr)
+                {
+                    auto objectId = station->objectId();
+                    auto stationType = station->stationType();
+                    switch (stationType)
+                    {
+                        case stationType::trainStation:
+                            return ObjectManager::get<TrainStationObject>(objectId)->name;
+                        case stationType::roadStation:
+                            return ObjectManager::get<RoadStationObject>(objectId)->name;
+                        case stationType::airport:
+                            return ObjectManager::get<AirportObject>(objectId)->name;
+                        case stationType::docks:
+                            return ObjectManager::get<DockObject>(objectId)->name;
+                    }
+                }
+                break;
+            }
+            case element_type::signal:
+            {
+                auto signal = element.asSignal();
+                if (signal != nullptr)
+                {
+                    TrainSignalObject* object = nullptr;
+                    if (signal->hasLeftSignal())
+                        object = ObjectManager::get<TrainSignalObject>(signal->leftSignalObjectId());
+                    else if (signal->hasRightSignal())
+                        object = ObjectManager::get<TrainSignalObject>(signal->rightSignalObjectId());
+
+                    if (object != nullptr)
+                        return object->name;
+                }
+                break;
+            }
+            case element_type::building:
+            {
+                auto building = element.asBuilding();
+                if (building != nullptr)
+                {
+                    auto objectId = building->objectId();
+                    auto object = ObjectManager::get<BuildingObject>(objectId);
+                    return object->name;
+                }
+                break;
+            }
+            case element_type::tree:
+            {
+                auto tree = element.asTree();
+                if (tree != nullptr)
+                {
+                    auto objectId = tree->treeObjectId();
+                    auto object = ObjectManager::get<TreeObject>(objectId);
+                    return object->name;
+                }
+                break;
+            }
+            case element_type::wall:
+            {
+                auto wall = element.asWall();
+                if (wall != nullptr)
+                {
+                    auto objectId = wall->wallObjectId();
+                    auto object = ObjectManager::get<WallObject>(objectId);
+                    return object->name;
+                }
+                break;
+            }
+            case element_type::road:
+            {
+                auto road = element.asRoad();
+                if (road != nullptr)
+                {
+                    auto objectId = road->roadObjectId();
+                    auto object = ObjectManager::get<RoadObject>(objectId);
+                    return object->name;
+                }
+                break;
+            }
+            case element_type::industry:
+            {
+                auto industry = element.asIndustry();
+                if (industry != nullptr)
+                {
+                    auto object = ObjectManager::get<IndustryObject>(industry->industry()->object_id);
+                    return object->name;
+                }
+            }
+        }
+        return StringIds::empty;
+    }
+
+    static string_id getOwnerName(const tile_element& element)
+    {
+        if (element.type() == element_type::road)
+        {
+            auto road = element.asRoad();
+            if (road != nullptr)
+            {
+                auto ownerId = road->owner();
+                if (ownerId != CompanyId::neutral)
+                {
+                    auto company = CompanyManager::get(ownerId);
+                    return company->name;
+                }
+            }
+        }
+        else if (element.type() == element_type::track)
+        {
+            auto track = element.asTrack();
+            if (track != nullptr)
+            {
+                auto ownerId = track->owner();
+                if (ownerId != CompanyId::neutral)
+                {
+                    auto company = CompanyManager::get(ownerId);
+                    return company->name;
+                }
+            }
+        }
+        return StringIds::empty;
+    }
+
     static void drawScroll(Ui::window*, Gfx::drawpixelinfo_t* const context, uint32_t)
     {
         if (_currentPosition == map_pos(0, 0))
@@ -101,20 +282,22 @@ namespace OpenLoco::Ui::Windows::TileInspector
         {
             FormatArguments args = {};
 
-            static const std::map<element_type, string_id> typeToString = {
-                { element_type::surface, StringIds::tile_inspector_element_type_surface },
-                { element_type::track, StringIds::tile_inspector_element_type_track },
-                { element_type::station, StringIds::tile_inspector_element_type_station },
-                { element_type::signal, StringIds::tile_inspector_element_type_signal },
-                { element_type::building, StringIds::tile_inspector_element_type_building },
-                { element_type::tree, StringIds::tile_inspector_element_type_tree },
-                { element_type::wall, StringIds::tile_inspector_element_type_wall },
-                { element_type::road, StringIds::tile_inspector_element_type_road },
-                { element_type::industry, StringIds::tile_inspector_element_type_industry },
-            };
+            string_id elementName = getElementTypeName(element);
+            string_id objectName = getObjectName(element);
+            string_id ownerName = getOwnerName(element);
 
-            args.push(typeToString.at(element.type()));
-            args.push(StringIds::empty);
+            if (ownerName != StringIds::empty)
+            {
+                args.push(StringIds::competitor_vehicle);
+                args.push(objectName);
+                args.push(ownerName);
+                args.push(elementName);
+            }
+            else
+            {
+                args.push(objectName);
+                args.push(elementName);
+            }
 
             Gfx::drawString_494B3F(*context, 0, yPos, Colour::black, StringIds::wcolour2_stringid_stringid, &args);
             yPos += 10;
@@ -163,6 +346,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
             return;
 
         _currentPosition = TileManager::screenPosToMapPos(x, y);
+        WindowManager::invalidateWidget(self.type, self.number, widx::scrollview);
     }
 
     static void initEvents()
