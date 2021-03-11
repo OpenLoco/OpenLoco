@@ -1509,7 +1509,7 @@ namespace OpenLoco::StringIds
     constexpr string_id frame_hardware = 2165;
     constexpr string_id frame_map_rendering = 2166;
     constexpr string_id tile_inspector = 2167;
-    constexpr string_id wcolour2_stringid_stringid = 2168;
+    constexpr string_id tile_inspector_select_btn_tooltip = 2168;
     constexpr string_id tile_inspector_element_type_surface = 2169;
     constexpr string_id tile_inspector_element_type_track = 2170;
     constexpr string_id tile_inspector_element_type_station = 2171;
@@ -1519,4 +1519,8 @@ namespace OpenLoco::StringIds
     constexpr string_id tile_inspector_element_type_wall = 2175;
     constexpr string_id tile_inspector_element_type_road = 2176;
     constexpr string_id tile_inspector_element_type_industry = 2177;
-}
+    constexpr string_id tile_inspector_entry_two_pos = 2178;
+    constexpr string_id tile_inspector_entry_three_pos = 2179;
+    constexpr string_id tile_inspector_x_coord = 2180;
+    constexpr string_id tile_inspector_y_coord = 2181;
+    constexpr string_id tile_inspector_coord = 2182;}

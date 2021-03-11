@@ -45,8 +45,14 @@ namespace OpenLoco::Ui::Windows::TileInspector
             title,
             close,
             panel,
-            scrollview,
+            xPos,
+            xPosDecrease,
+            xPosIncrease,
+            yPos,
+            yPosDecrease,
+            yPosIncrease,
             select,
+            scrollview,
         };
     }
 
@@ -55,8 +61,10 @@ namespace OpenLoco::Ui::Windows::TileInspector
         makeWidget({ 1, 1 }, { windowSize.width - 2, 13 }, widget_type::caption_25, 0, StringIds::tile_inspector),
         makeWidget({ windowSize.width - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window),
         makeWidget({ 0, 15 }, { windowSize.width, 245 }, widget_type::panel, 1),
-        makeWidget({ 4, 18 }, { windowSize.width - 8, 289 }, widget_type::scrollview, 1, Ui::scrollbars::vertical),
-        makeWidget({ 100, 234 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::construction_new_position),
+        makeStepperWidgets({ 19, 24 }, { 50, 12 }, widget_type::wt_17, 1),
+        makeStepperWidgets({ 87, 24 }, { 50, 12 }, widget_type::wt_17, 1),
+        makeWidget({ windowSize.width - 26, 18 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::construction_new_position, StringIds::tile_inspector_select_btn_tooltip),
+        makeWidget({ 4, 46 }, { windowSize.width - 8, 210 }, widget_type::scrollview, 1, Ui::scrollbars::vertical),
         widgetEnd(),
     };
 
@@ -85,7 +93,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
             &_events);
 
         window->widgets = _widgets;
-        window->enabled_widgets = (1 << widx::close) | (1 << widx::select);
+        window->enabled_widgets = (1 << widx::close) | (1 << widx::select) | (1 << widx::xPosDecrease) | (1 << widx::xPosIncrease) | (1 << widx::yPosDecrease) | (1 << widx::yPosIncrease);
         window->initScrollWidgets();
 
         auto skin = ObjectManager::get<InterfaceSkinObject>();
@@ -97,10 +105,44 @@ namespace OpenLoco::Ui::Windows::TileInspector
         return window;
     }
 
-    static void draw(Ui::window* const self, Gfx::drawpixelinfo_t* const dpi)
+    static void prepareDraw(window* self)
+    {
+        if (Input::isToolActive(WindowType::tileInspector))
+            self->activated_widgets |= (1 << widx::select);
+        else
+            self->activated_widgets &= ~(1 << widx::select);
+    }
+
+    static void draw(Ui::window* const self, Gfx::drawpixelinfo_t* const context)
     {
         // Draw widgets.
-        self->draw(dpi);
+        self->draw(context);
+
+        // Coord X/Y labels
+        {
+            auto args = FormatArguments::common(StringIds::tile_inspector_x_coord);
+            auto& widget = self->widgets[widx::xPos];
+            Gfx::drawString_494B3F(*context, self->x + widget.left - 15, self->y + widget.top + 1, Colour::black, StringIds::wcolour2_stringid, &args);
+        }
+        {
+            auto args = FormatArguments::common(StringIds::tile_inspector_y_coord);
+            auto& widget = self->widgets[widx::yPos];
+            Gfx::drawString_494B3F(*context, self->x + widget.left - 15, self->y + widget.top + 1, Colour::black, StringIds::wcolour2_stringid, &args);
+        }
+
+        // Coord X/Y values
+        {
+            FormatArguments args = {};
+            args.push<int16_t>(_currentPosition.x / OpenLoco::Map::tile_size);
+            auto& widget = self->widgets[widx::xPos];
+            Gfx::drawString_494B3F(*context, self->x + widget.left + 2, self->y + widget.top + 1, Colour::black, StringIds::tile_inspector_coord, &args);
+        }
+        {
+            FormatArguments args = {};
+            args.push<int16_t>(_currentPosition.y / OpenLoco::Map::tile_size);
+            auto& widget = self->widgets[widx::yPos];
+            Gfx::drawString_494B3F(*context, self->x + widget.left + 2, self->y + widget.top + 1, Colour::black, StringIds::tile_inspector_coord, &args);
+        }
     }
 
     static string_id getElementTypeName(const tile_element& element)
@@ -285,21 +327,23 @@ namespace OpenLoco::Ui::Windows::TileInspector
             string_id elementName = getElementTypeName(element);
             string_id objectName = getObjectName(element);
             string_id ownerName = getOwnerName(element);
+            string_id formatString;
 
             if (ownerName != StringIds::empty)
             {
-                args.push(StringIds::competitor_vehicle);
+                formatString = StringIds::tile_inspector_entry_three_pos;
                 args.push(objectName);
                 args.push(ownerName);
                 args.push(elementName);
             }
             else
             {
+                formatString = StringIds::tile_inspector_entry_two_pos;
                 args.push(objectName);
                 args.push(elementName);
             }
 
-            Gfx::drawString_494B3F(*context, 0, yPos, Colour::black, StringIds::wcolour2_stringid_stringid, &args);
+            Gfx::drawString_494B3F(*context, 0, yPos, Colour::black, formatString, &args);
             yPos += 10;
         }
     }
@@ -314,6 +358,26 @@ namespace OpenLoco::Ui::Windows::TileInspector
 
             case widx::select:
                 activateMapSelectionTool(self);
+                break;
+
+            case widx::xPosDecrease:
+                _currentPosition.x = std::clamp<coord_t>(_currentPosition.x - OpenLoco::Map::tile_size, 1, OpenLoco::Map::map_width);
+                self->invalidate();
+                break;
+
+            case widx::xPosIncrease:
+                _currentPosition.x = std::clamp<coord_t>(_currentPosition.x + OpenLoco::Map::tile_size, 1, OpenLoco::Map::map_width);
+                self->invalidate();
+                break;
+
+            case widx::yPosDecrease:
+                _currentPosition.y = std::clamp<coord_t>(_currentPosition.y - OpenLoco::Map::tile_size, 1, OpenLoco::Map::map_height);
+                self->invalidate();
+                break;
+
+            case widx::yPosIncrease:
+                _currentPosition.y = std::clamp<coord_t>(_currentPosition.y + OpenLoco::Map::tile_size, 1, OpenLoco::Map::map_height);
+                self->invalidate();
                 break;
         }
     }
@@ -346,7 +410,12 @@ namespace OpenLoco::Ui::Windows::TileInspector
             return;
 
         _currentPosition = TileManager::screenPosToMapPos(x, y);
-        WindowManager::invalidateWidget(self.type, self.number, widx::scrollview);
+        self.invalidate();
+    }
+
+    static void onClose(window* self)
+    {
+        Input::toolCancel();
     }
 
     static void initEvents()
@@ -354,8 +423,10 @@ namespace OpenLoco::Ui::Windows::TileInspector
         _events.draw = draw;
         _events.draw_scroll = drawScroll;
         _events.get_scroll_size = getScrollSize;
+        _events.on_close = onClose;
         _events.on_mouse_up = onMouseUp;
         _events.on_tool_update = onToolUpdate;
         _events.on_tool_down = onToolDown;
+        _events.prepare_draw = prepareDraw;
     }
 }
