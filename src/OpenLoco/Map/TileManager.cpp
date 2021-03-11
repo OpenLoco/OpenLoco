@@ -10,10 +10,13 @@ namespace OpenLoco::Map::TileManager
     static loco_global<tile_element*, 0x005230C8> _elements;
     static loco_global<tile_element* [0x30004], 0x00E40134> _tiles;
     static loco_global<tile_element*, 0x00F00134> _elementsEnd;
+    static loco_global<uint16_t, 0x00F24484> _mapSelectionFlags;
     static loco_global<coord_t, 0x00F24486> _mapSelectionAX;
     static loco_global<coord_t, 0x00F24488> _mapSelectionBX;
     static loco_global<coord_t, 0x00F2448A> _mapSelectionAY;
     static loco_global<coord_t, 0x00F2448C> _mapSelectionBY;
+    static loco_global<uint16_t, 0x00F2448E> _word_F2448E;
+    static loco_global<int16_t, 0x0050A000> _adjustToolSize;
 
     constexpr uint16_t mapSelectedTilesSize = 300;
     static loco_global<map_pos[mapSelectedTilesSize], 0x00F24490> _mapSelectedTiles;
@@ -288,6 +291,156 @@ namespace OpenLoco::Map::TileManager
             exitWithError(4370, StringIds::null);
             return;
         }
+    }
+
+    // 0x0045F1A7
+    map_pos screenGetMapXY(int16_t x, int16_t y)
+    {
+        registers regs;
+        regs.ax = x;
+        regs.bx = y;
+        call(0x0045F1A7, regs);
+        map_pos pos = { regs.ax, regs.bx };
+        return pos;
+    }
+
+    uint16_t setMapSelectionTiles(int16_t x, int16_t y)
+    {
+        auto pos = screenGetMapXY(x, y);
+
+        uint16_t xPos = pos.x;
+        uint16_t yPos = pos.y;
+        uint8_t count = 0;
+
+        if (xPos == 0x8000)
+            return 0x8000;
+
+        if ((_mapSelectionFlags & 1) == 0)
+        {
+            _mapSelectionFlags = _mapSelectionFlags | 1;
+            count++;
+        }
+
+        if (_word_F2448E != 4)
+        {
+            _word_F2448E = 4;
+            count++;
+        }
+
+        uint16_t toolSizeA = _adjustToolSize;
+
+        if (!toolSizeA)
+            toolSizeA = 1;
+
+        toolSizeA = toolSizeA << 5;
+        uint16_t toolSizeB = toolSizeA;
+        toolSizeB -= 32;
+        toolSizeA = toolSizeA >> 1;
+        toolSizeA -= 16;
+        xPos -= toolSizeA;
+        yPos -= toolSizeA;
+        xPos &= 0xFFE0;
+        yPos &= 0xFFE0;
+
+        if (xPos != _mapSelectionAX)
+        {
+            _mapSelectionAX = xPos;
+            count++;
+        }
+
+        if (yPos != _mapSelectionAY)
+        {
+            _mapSelectionAY = yPos;
+            count++;
+        }
+
+        xPos += toolSizeB;
+        yPos += toolSizeB;
+
+        if (xPos != _mapSelectionBX)
+        {
+            _mapSelectionBX = xPos;
+            count++;
+        }
+
+        if (yPos != _mapSelectionBY)
+        {
+            _mapSelectionBY = yPos;
+            count++;
+        }
+
+        mapInvalidateSelectionRect();
+
+        return count;
+    }
+
+    // 0x0045FD8E
+    map_pos3 screenPosToMapPos(int16_t x, int16_t y)
+    {
+        registers regs;
+        regs.ax = x;
+        regs.bx = y;
+        call(0x0045FD8E, regs);
+        map_pos3 pos = { regs.ax, regs.bx, regs.cx };
+        return pos;
+    }
+
+    uint16_t setMapSelectionSingleTile(int16_t x, int16_t y, bool setQuadrant)
+    {
+        auto pos = screenPosToMapPos(x, y);
+
+        uint16_t xPos = pos.x;
+        uint16_t yPos = pos.y;
+        uint16_t cursorQuadrant = pos.z;
+
+        if (xPos == 0x8000)
+            return 0x8000;
+
+        auto count = 0;
+        if ((_mapSelectionFlags & 1) == 0)
+        {
+            _mapSelectionFlags = _mapSelectionFlags | 1;
+            count++;
+        }
+
+        if (setQuadrant && _word_F2448E != cursorQuadrant)
+        {
+            _word_F2448E = cursorQuadrant;
+            count++;
+        }
+        else if (!setQuadrant && _word_F2448E != 4)
+        {
+            _word_F2448E = 4;
+            count++;
+        }
+
+        if (xPos != _mapSelectionAX)
+        {
+            _mapSelectionAX = xPos;
+            count++;
+        }
+
+        if (yPos != _mapSelectionAY)
+        {
+            _mapSelectionAY = yPos;
+            count++;
+        }
+
+        if (xPos != _mapSelectionBX)
+        {
+            _mapSelectionBX = xPos;
+            count++;
+        }
+
+        if (yPos != _mapSelectionBY)
+        {
+            _mapSelectionBY = yPos;
+            count++;
+        }
+
+        mapInvalidateSelectionRect();
+
+        return count;
     }
 
     // 0x004610F2
