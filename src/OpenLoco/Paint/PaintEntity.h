@@ -1,10 +1,6 @@
 #pragma once
+#include "../Map/Map.hpp"
 #include "../Types.hpp"
-
-namespace OpenLoco::Map
-{
-    struct map_pos;
-}
 
 namespace OpenLoco::Paint
 {

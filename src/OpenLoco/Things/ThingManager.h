@@ -1,13 +1,10 @@
 #pragma once
 
+#include "../Map/Map.hpp"
 #include "Thing.h"
 #include <cstdio>
 #include <iterator>
 
-namespace OpenLoco::Map
-{
-    struct map_pos;
-}
 namespace OpenLoco::Vehicles
 {
     struct VehicleHead;

@@ -613,7 +613,7 @@ namespace OpenLoco::Audio
                     return;
                 }
 
-                volume += calculateVolumeFromViewport(id, { loc.x, loc.y }, *viewport);
+                volume += calculateVolumeFromViewport(id, { loc.x, loc.y, loc.z }, *viewport);
                 pan = viewport->mapToUi(vpos).x;
                 if (volume < -10000)
                 {

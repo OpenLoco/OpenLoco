@@ -2,13 +2,9 @@
 
 #include "Graphics/Gfx.h"
 #include "Interop/Interop.hpp"
+#include "Map/Map.hpp"
 #include "Types.hpp"
 #include <algorithm>
-
-namespace OpenLoco::Map
-{
-    struct map_pos;
-}
 
 namespace OpenLoco::Ui
 {
