@@ -175,6 +175,7 @@
     <ClCompile Include="Windows\TerraForm.cpp" />
     <ClCompile Include="Windows\TextInputWindow.cpp" />
     <ClCompile Include="Windows\TimePanel.cpp" />
+    <ClCompile Include="Windows\TileInspector.cpp" />
     <ClCompile Include="Windows\TitleExit.cpp" />
     <ClCompile Include="Windows\TitleLogo.cpp" />
     <ClCompile Include="Windows\TitleMenu.cpp" />

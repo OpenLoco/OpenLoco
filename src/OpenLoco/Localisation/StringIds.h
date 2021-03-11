@@ -1508,4 +1508,15 @@ namespace OpenLoco::StringIds
     constexpr string_id option_uncap_fps_tooltip = 2164;
     constexpr string_id frame_hardware = 2165;
     constexpr string_id frame_map_rendering = 2166;
+    constexpr string_id tile_inspector = 2167;
+    constexpr string_id wcolour2_stringid_stringid = 2168;
+    constexpr string_id tile_inspector_element_type_surface = 2169;
+    constexpr string_id tile_inspector_element_type_track = 2170;
+    constexpr string_id tile_inspector_element_type_station = 2171;
+    constexpr string_id tile_inspector_element_type_signal = 2172;
+    constexpr string_id tile_inspector_element_type_building = 2173;
+    constexpr string_id tile_inspector_element_type_tree = 2174;
+    constexpr string_id tile_inspector_element_type_wall = 2175;
+    constexpr string_id tile_inspector_element_type_road = 2176;
+    constexpr string_id tile_inspector_element_type_industry = 2177;
 }

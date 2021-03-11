@@ -279,7 +279,10 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         Dropdown::add(0, StringIds::dropdown_without_checkmark, StringIds::cheat_enable_sandbox_mode);
         Dropdown::add(1, StringIds::dropdown_without_checkmark, StringIds::cheat_allow_building_while_paused);
         Dropdown::add(2, StringIds::dropdown_without_checkmark, StringIds::cheat_allow_manual_driving);
-        Dropdown::showBelow(window, widgetIndex, 3, 0);
+        Dropdown::add(3, 0);
+        Dropdown::add(4, StringIds::tile_inspector);
+
+        Dropdown::showBelow(window, widgetIndex, 5, 0);
 
         if (isSandboxMode())
             Dropdown::setItemSelected(0);
@@ -319,6 +322,10 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
                     setScreenFlag(ScreenFlags::driverCheatEnabled);
                 else
                     clearScreenFlag(ScreenFlags::driverCheatEnabled);
+                break;
+
+            case 4:
+                TileInspector::open();
                 break;
         }
     }

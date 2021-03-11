@@ -64,6 +64,7 @@ namespace OpenLoco::Ui
         confirmationPrompt = 54,
         openLocoVersion = 55,
         titleOptions = 56,
+        tileInspector = 57,
 
         undefined = 255
     };
