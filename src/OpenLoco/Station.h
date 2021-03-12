@@ -29,7 +29,7 @@ namespace OpenLoco
         uint16_t var_36{};                     // 0x36
         uint8_t var_38{};
         industry_id_t industry_id{}; // 0x39
-        uint8_t pad_40{};
+        uint8_t var_40{};
 
         bool empty() const
         {
@@ -114,7 +114,7 @@ namespace OpenLoco
     private:
         void updateCargoAcceptance();
         void alertCargoAcceptanceChange(uint32_t oldCargoAcc, uint32_t newCargoAcc);
-        void sub_4929DB();
+        void updateCargoDistribution();
     };
     static_assert(sizeof(station) == 0x3D2);
 #pragma pack(pop)

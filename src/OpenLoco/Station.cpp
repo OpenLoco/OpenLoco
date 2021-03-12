@@ -609,7 +609,7 @@ namespace OpenLoco
             }
         }
 
-        sub_4929DB();
+        updateCargoDistribution();
 
         auto w = WindowManager::find(WindowType::station, id());
         if (w != nullptr && (w->current_tab == 2 || w->current_tab == 1 || quantityUpdated))
@@ -693,11 +693,43 @@ namespace OpenLoco
         return std::clamp<int32_t>(rating, min_cargo_rating, max_cargo_rating);
     }
 
-    void station::sub_4929DB()
+    // 0x004929DB
+    void station::updateCargoDistribution()
     {
-        registers regs;
-        regs.ebp = (int32_t)this;
-        call(0x004929DB, regs);
+        WindowManager::invalidate(Ui::WindowType::station, id());
+        WindowManager::invalidate(Ui::WindowType::stationList);
+        bool hasChanged = false;
+        for (auto i = 0; i < max_cargo_stats; ++i)
+        {
+            auto& cargoStat = cargo_stats[i];
+            auto newAmount = 0;
+            if (cargoStat.quantity != 0)
+            {
+                if (stationTileSize != 0)
+                {
+                    newAmount = cargoStat.quantity / stationTileSize;
+                    auto* cargoObj = ObjectManager::get<cargo_object>(i);
+                    newAmount += (1 << cargoObj->var_14) - 1;
+                    newAmount >>= cargoObj->var_14;
+
+                    newAmount = std::max(newAmount, 15);
+                }
+            }
+            if (cargoStat.var_40 != newAmount)
+            {
+                cargoStat.var_40 = newAmount;
+                hasChanged = true;
+            }
+        }
+
+        if (hasChanged)
+        {
+            for (auto i = 0; i < stationTileSize; ++i)
+            {
+                const auto& tile = stationTiles[i];
+                Ui::ViewportManager::invalidate({ tile.x, tile.y }, tile.z & 0xFFFC, tile.z + 32, ZoomLevel::full);
+            }
+        }
     }
 
     // 0x004CBA2D

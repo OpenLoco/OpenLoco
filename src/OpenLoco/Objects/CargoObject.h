@@ -21,8 +21,10 @@ namespace OpenLoco
         uint32_t unit_inline_sprite;    // 0xC
         std::uint8_t pad_10[0x12 - 0x10];
         uint8_t flags; // 0x12
-        std::uint8_t pad_13[0x1E - 0x13];
-        uint8_t unitSize;
+        std::uint8_t pad_13;
+        uint8_t var_14;
+        uint8_t pad_15[0x1E - 0x15];
+        uint8_t unitSize; // 0x1E
     };
 #pragma pack(pop)
 
