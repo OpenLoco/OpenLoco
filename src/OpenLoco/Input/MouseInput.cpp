@@ -1853,10 +1853,8 @@ namespace OpenLoco::Input
             oldWindow->callPrepareDraw();
 
             Ui::widget_t* oldWidget = &oldWindow->widgets[widgetIdx];
-            if (
-                oldWidget->type == Ui::widget_type::wt_16 || oldWidget->type == Ui::widget_type::wt_10 || oldWidget->type == Ui::widget_type::wt_9)
+            if (oldWidget->type == Ui::widget_type::wt_10 || oldWidget->type == Ui::widget_type::wt_9)
             {
-
                 WindowManager::invalidateWidget(windowType, windowNumber, widgetIdx);
             }
         }

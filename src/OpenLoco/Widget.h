@@ -36,5 +36,7 @@ namespace OpenLoco::Ui::Widget
 
     void draw_29(Gfx::drawpixelinfo_t* dpi, window* window, widget_t* widget);
 
+    void drawGroupbox(Gfx::drawpixelinfo_t* const context, window* const window, widget_t* widget);
+
     void draw_tab(window* w, Gfx::drawpixelinfo_t* ctx, int32_t imageId, widget_index index);
 }

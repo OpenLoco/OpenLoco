@@ -1526,8 +1526,9 @@ namespace OpenLoco::Ui
                     Widget::draw_15(dpi, this, widget, widgetFlags, colour, disabled);
                     break;
 
-                case widget_type::wt_16:
-                    assert(false); // Unused
+                case widget_type::groupbox:
+                    // NB: widget type 16 has been repurposed to add groupboxes; the original type 16 was unused.
+                    Widget::drawGroupbox(dpi, this, widget);
                     break;
 
                 case widget_type::wt_17:

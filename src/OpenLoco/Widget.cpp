@@ -781,6 +781,52 @@ namespace OpenLoco::Ui::Widget
         Gfx::fillRect(dpi, left, top, right, bottom, Colour::getShade(Colour::black, 5));
     }
 
+    void drawGroupbox(Gfx::drawpixelinfo_t* const context, window* const window, widget_t* widget)
+    {
+        const uint8_t colour = window->colours[widget->colour] & 0x7F;
+        int32_t l = window->x + widget->left + 5;
+        int32_t t = window->y + widget->top;
+        int32_t r = window->x + widget->right;
+        int32_t b = window->y + widget->bottom;
+        int32_t textEndPos = l;
+
+        // First, draw the label text, if any.
+        if (widget->text != StringIds::null)
+        {
+            char buffer[512] = { 0 };
+            StringManager::formatString(buffer, sizeof(buffer), widget->text);
+
+            Gfx::drawString(context, l, t, colour, buffer);
+            textEndPos = l + Gfx::getStringWidth(buffer) + 1;
+        }
+
+        // Prepare border dimensions
+        l = window->x + widget->left;
+        t = window->y + widget->top + 4;
+        r = window->x + widget->right;
+        b = window->y + widget->bottom;
+
+        // Border left of text
+        Gfx::fillRect(context, l, t, l + 4, t, Colour::getShade(colour, 4));
+        Gfx::fillRect(context, l + 1, t + 1, l + 4, t + 1, Colour::getShade(colour, 7));
+
+        // Border right of text
+        Gfx::fillRect(context, textEndPos, t, r - 1, t, Colour::getShade(colour, 4));
+        Gfx::fillRect(context, textEndPos, t + 1, r - 2, t + 1, Colour::getShade(colour, 7));
+
+        // Border right
+        Gfx::fillRect(context, r - 1, t + 1, r - 1, b - 1, Colour::getShade(colour, 4));
+        Gfx::fillRect(context, r, t, r, b, Colour::getShade(colour, 7));
+
+        // Border bottom
+        Gfx::fillRect(context, l, b - 1, r - 2, b - 1, Colour::getShade(colour, 4));
+        Gfx::fillRect(context, l, b, r - 1, b, Colour::getShade(colour, 7));
+
+        // Border left
+        Gfx::fillRect(context, l, t + 1, l, b - 2, Colour::getShade(colour, 4));
+        Gfx::fillRect(context, l + 1, t + 2, l + 1, b - 2, Colour::getShade(colour, 7));
+    }
+
     // 0x004CF194
     void draw_tab(window* w, Gfx::drawpixelinfo_t* ctx, int32_t imageId, widget_index index)
     {
