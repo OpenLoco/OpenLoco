@@ -94,6 +94,12 @@ namespace OpenLoco::Map
             _flags |= state == true ? ElementFlags::flag_6 : 0;
         }
         bool isLast() const;
+
+        std::array<uint8_t, 8>& rawData()
+        {
+            auto array = reinterpret_cast<std::array<uint8_t, 8>*>(this);
+            return *array;
+        }
     };
 
     struct tile_element : public tile_element_base

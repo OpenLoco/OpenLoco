@@ -1523,4 +1523,6 @@ namespace OpenLoco::StringIds
     constexpr string_id tile_inspector_entry_three_pos = 2179;
     constexpr string_id tile_inspector_x_coord = 2180;
     constexpr string_id tile_inspector_y_coord = 2181;
-    constexpr string_id tile_inspector_coord = 2182;}
+    constexpr string_id tile_inspector_coord = 2182;
+    constexpr string_id tile_element_data = 2183;
+}

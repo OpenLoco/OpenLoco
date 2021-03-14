@@ -35,7 +35,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
 
     static map_pos _currentPosition{};
 
-    constexpr Gfx::ui_size_t windowSize = { 400, 260 };
+    constexpr Gfx::ui_size_t windowSize = { 250, 182 };
 
     namespace widx
     {
@@ -53,6 +53,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
             yPosIncrease,
             select,
             scrollview,
+            detailsGroup,
         };
     }
 
@@ -61,10 +62,11 @@ namespace OpenLoco::Ui::Windows::TileInspector
         makeWidget({ 1, 1 }, { windowSize.width - 2, 13 }, widget_type::caption_25, 0, StringIds::tile_inspector),
         makeWidget({ windowSize.width - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window),
         makeWidget({ 0, 15 }, { windowSize.width, 245 }, widget_type::panel, 1),
-        makeStepperWidgets({ 19, 24 }, { 50, 12 }, widget_type::wt_17, 1),
-        makeStepperWidgets({ 87, 24 }, { 50, 12 }, widget_type::wt_17, 1),
+        makeStepperWidgets({ 19, 24 }, { 55, 12 }, widget_type::wt_17, 1),
+        makeStepperWidgets({ 92, 24 }, { 55, 12 }, widget_type::wt_17, 1),
         makeWidget({ windowSize.width - 26, 18 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::construction_new_position, StringIds::tile_inspector_select_btn_tooltip),
-        makeWidget({ 4, 46 }, { windowSize.width - 8, 210 }, widget_type::scrollview, 1, Ui::scrollbars::vertical),
+        makeWidget({ 4, 46 }, { windowSize.width - 8, 100 }, widget_type::scrollview, 1, Ui::scrollbars::vertical),
+        makeWidget({ 4, 148 }, { windowSize.width - 8, 30 }, widget_type::groupbox, 1, StringIds::tile_element_data),
         widgetEnd(),
     };
 
@@ -86,7 +88,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
 
         initEvents();
 
-        window = WindowManager::createWindowCentred(
+        window = WindowManager::createWindow(
             WindowType::tileInspector,
             windowSize,
             0,
@@ -94,6 +96,9 @@ namespace OpenLoco::Ui::Windows::TileInspector
 
         window->widgets = _widgets;
         window->enabled_widgets = (1 << widx::close) | (1 << widx::select) | (1 << widx::xPosDecrease) | (1 << widx::xPosIncrease) | (1 << widx::yPosDecrease) | (1 << widx::yPosIncrease);
+        window->row_count = 0;
+        window->row_height = 10;
+        window->var_842 = -1;
         window->initScrollWidgets();
 
         auto skin = ObjectManager::get<InterfaceSkinObject>();
@@ -142,6 +147,20 @@ namespace OpenLoco::Ui::Windows::TileInspector
             args.push<int16_t>(_currentPosition.y / OpenLoco::Map::tile_size);
             auto& widget = self->widgets[widx::yPos];
             Gfx::drawString_494B3F(*context, self->x + widget.left + 2, self->y + widget.top + 1, Colour::black, StringIds::tile_inspector_coord, &args);
+        }
+
+        // Selected element details
+        if (self->var_842 != -1)
+        {
+            auto tile = TileManager::get(_currentPosition)[self->var_842];
+            std::array<uint8_t, 8>& data = tile->rawData();
+
+            char buffer[32] = {};
+            buffer[0] = ControlCodes::window_colour_2;
+            snprintf(&buffer[1], std::size(buffer) - 1, "Data: %02x %02x %02x %02x %02x %02x %02x %02x", data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7]);
+
+            auto widget = self->widgets[widx::detailsGroup];
+            Gfx::drawString(context, self->x + widget.left + 7, self->y + widget.top + 14, Colour::black, buffer);
         }
     }
 
@@ -313,38 +332,82 @@ namespace OpenLoco::Ui::Windows::TileInspector
         return StringIds::empty;
     }
 
-    static void drawScroll(Ui::window*, Gfx::drawpixelinfo_t* const context, uint32_t)
+    static void drawScroll(Ui::window* self, Gfx::drawpixelinfo_t* const context, uint32_t)
     {
         if (_currentPosition == map_pos(0, 0))
             return;
 
         auto tile = TileManager::get(_currentPosition);
         auto yPos = 0;
+        auto rowNum = 0;
         for (auto& element : tile)
         {
+            string_id formatString;
+            if (self->var_842 == rowNum)
+            {
+                Gfx::fillRect(context, 0, yPos, self->width, yPos + self->row_height, Colour::aquamarine);
+                formatString = StringIds::white_stringid;
+            }
+            else if (self->row_hover == rowNum)
+            {
+                Gfx::fillRect(context, 0, yPos, self->width, yPos + self->row_height, 0x2000030);
+                formatString = StringIds::wcolour2_stringid;
+            }
+            else
+            {
+                formatString = StringIds::wcolour2_stringid;
+            }
+
             FormatArguments args = {};
 
             string_id elementName = getElementTypeName(element);
             string_id objectName = getObjectName(element);
             string_id ownerName = getOwnerName(element);
-            string_id formatString;
 
             if (ownerName != StringIds::empty)
             {
-                formatString = StringIds::tile_inspector_entry_three_pos;
+                args.push(StringIds::tile_inspector_entry_three_pos);
                 args.push(objectName);
                 args.push(ownerName);
                 args.push(elementName);
             }
             else
             {
-                formatString = StringIds::tile_inspector_entry_two_pos;
+                args.push(StringIds::tile_inspector_entry_two_pos);
                 args.push(objectName);
                 args.push(elementName);
             }
 
             Gfx::drawString_494B3F(*context, 0, yPos, Colour::black, formatString, &args);
-            yPos += 10;
+            rowNum++;
+            yPos += self->row_height;
+        }
+    }
+
+    static void scrollMouseDown(window* const self, const int16_t x, const int16_t y, const uint8_t scrollIndex)
+    {
+        auto index = y / self->row_height;
+        if (index >= self->row_count)
+            return;
+
+        if (self->var_842 != index)
+        {
+            self->var_842 = index;
+            self->invalidate();
+            return;
+        }
+    }
+
+    static void scrollMouseOver(window* const self, const int16_t x, const int16_t y, const uint8_t scrollIndex)
+    {
+        auto index = y / self->row_height;
+        if (index >= self->row_count)
+            return;
+
+        if (self->row_hover != index)
+        {
+            self->row_hover = index;
+            self->invalidate();
         }
     }
 
@@ -382,7 +445,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
         }
     }
 
-    static void getScrollSize(Ui::window*, uint32_t, uint16_t*, uint16_t* const scrollHeight)
+    static void getScrollSize(Ui::window* self, uint32_t, uint16_t*, uint16_t* const scrollHeight)
     {
         if (_currentPosition == map_pos(0, 0))
         {
@@ -390,8 +453,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
             return;
         }
 
-        auto tile = TileManager::get(_currentPosition);
-        *scrollHeight = static_cast<uint16_t>(tile.size()) * 10;
+        *scrollHeight = self->row_count * self->row_height;
     }
 
     static void onToolUpdate(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
@@ -410,6 +472,11 @@ namespace OpenLoco::Ui::Windows::TileInspector
             return;
 
         _currentPosition = TileManager::screenPosToMapPos(x, y);
+        auto tile = TileManager::get(_currentPosition);
+
+        self.row_count = static_cast<uint16_t>(tile.size());
+        self.row_hover = -1;
+        self.var_842 = 0;
         self.invalidate();
     }
 
@@ -428,5 +495,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
         _events.on_tool_update = onToolUpdate;
         _events.on_tool_down = onToolDown;
         _events.prepare_draw = prepareDraw;
+        _events.scroll_mouse_down = scrollMouseDown;
+        _events.scroll_mouse_over = scrollMouseOver;
     }
 }
