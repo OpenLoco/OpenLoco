@@ -1151,6 +1151,8 @@ namespace OpenLoco::StringIds
     constexpr string_id enter_description_of_this_scenario = 1707;
     constexpr string_id no_details_yet = 1708;
     constexpr string_id unnamed = 1709;
+    constexpr string_id landscape_save_failed = 1710;
+    constexpr string_id scenario_save_failed = 1711;
 
     constexpr string_id chat_send_message = 1716;
     constexpr string_id chat_title = 1717;

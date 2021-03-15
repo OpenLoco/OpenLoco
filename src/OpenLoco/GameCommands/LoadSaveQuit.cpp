@@ -1,5 +1,6 @@
 #include "../Audio/Audio.h"
 #include "../CompanyManager.h"
+#include "../Config.h"
 #include "../GameException.hpp"
 #include "../Graphics/Gfx.h"
 #include "../Input.h"
@@ -34,11 +35,27 @@ namespace OpenLoco::GameCommands
         return regs.eax;
     }
 
+    // 0x00441843
+    static bool saveSaveGameOpen()
+    {
+        registers regs;
+        call(0x00441843, regs);
+        return regs.eax;
+    }
+
     // 0x004417A7
     static bool loadLandscapeOpen()
     {
         registers regs;
         call(0x004417A7, regs);
+        return regs.eax;
+    }
+
+    // 0x00441993
+    static bool saveLandscapeOpen()
+    {
+        registers regs;
+        call(0x00441993, regs);
         return regs.eax;
     }
 
@@ -193,8 +210,56 @@ namespace OpenLoco::GameCommands
     // 0x0043C427
     void confirmSaveGame()
     {
-        // registers regs;
-        call(0x0043C427);
+        Input::toolCancel();
+
+        if (isEditorMode() && saveLandscapeOpen())
+        {
+            // 0x0043C4B3
+            auto path = fs::path(&_savePath[0]).replace_extension(S5::extensionSC5).u8string();
+            std::strncpy(&_currentScenarioFilename[0], path.c_str(), std::size(_currentScenarioFilename));
+
+            if (!S5::save(path, S5::SaveFlags::scenario))
+                Ui::Windows::Error::open(StringIds::landscape_save_failed, StringIds::null);
+            else
+                GameCommands::do_21(2, 0);
+        }
+        else if (!isNetworked() && saveSaveGameOpen())
+        {
+            // 0x0043C446
+            auto path = fs::path(&_savePath[0]).replace_extension(S5::extensionSV5).u8string();
+            std::strncpy(&_currentScenarioFilename[0], path.c_str(), std::size(_currentScenarioFilename));
+
+            S5::SaveFlags flags = {};
+            if (Config::get().flags & Config::flags::export_objects_with_saves)
+                flags = S5::SaveFlags::packCustomObjects;
+
+            if (!S5::save(path, flags))
+                Ui::Windows::Error::open(StringIds::error_game_save_failed, StringIds::null);
+            else
+                GameCommands::do_21(2, 0);
+        }
+        else
+        {
+            // 0x0043C511
+            GameCommands::do_72();
+            MultiPlayer::setFlag(MultiPlayer::flags::flag_2);
+
+            switch (_savePromptType)
+            {
+                case 0:
+                    MultiPlayer::setFlag(MultiPlayer::flags::flag_13); // intend to load?
+                    break;
+                case 1:
+                    MultiPlayer::setFlag(MultiPlayer::flags::flag_14); // intend to return to title?
+                    break;
+                case 2:
+                    MultiPlayer::setFlag(MultiPlayer::flags::flag_15); // intend to quit game?
+                    break;
+            }
+        }
+
+        // 0x0043C411
+        Gfx::invalidateScreen();
     }
 
     // 0x0043BFCB
