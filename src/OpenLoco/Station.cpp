@@ -699,7 +699,7 @@ namespace OpenLoco
         WindowManager::invalidate(Ui::WindowType::station, id());
         WindowManager::invalidate(Ui::WindowType::stationList);
         bool hasChanged = false;
-        for (auto i = 0; i < max_cargo_stats; ++i)
+        for (uint8_t i = 0; i < max_cargo_stats; ++i)
         {
             auto& cargoStat = cargo_stats[i];
             auto newAmount = 0;
