@@ -1575,7 +1575,7 @@ namespace OpenLoco::Vehicles
 
             auto airportObject = ObjectManager::get<airport_object>(elStation->objectId());
 
-            if (curApronArea == -1)
+            if (curApronArea == cAirportApronAreaNull)
             {
                 for (uint8_t apronArea = 0; apronArea < airportObject->numApronTransitions; apronArea++)
                 {
@@ -1610,7 +1610,7 @@ namespace OpenLoco::Vehicles
                 uint8_t targetApronArea = airportObject->apronTransistions[curApronArea].nextApronArea;
                 if (status == Status::takingOff && airportObject->apronAreas[targetApronArea].flags & ApronAreaFlags::takeoffEnd)
                 {
-                    return -1;
+                    return cAirportApronAreaNull;
                 }
                 // 0x4272A5
                 Vehicle train(this);
@@ -1691,7 +1691,7 @@ namespace OpenLoco::Vehicles
 
         // Tile not found. Todo: fail gracefully
         assert(false);
-        return -1;
+        return cAirportApronAreaNull;
     }
 
     // 0x00426E26
