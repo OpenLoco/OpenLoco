@@ -1,6 +1,7 @@
 #include "../Audio/Audio.h"
 #include "../CompanyManager.h"
 #include "../Config.h"
+#include "../Core/Optional.hpp"
 #include "../Graphics/Gfx.h"
 #include "../Interop/Interop.hpp"
 #include "../Map/TileManager.h"
@@ -1329,14 +1330,81 @@ namespace OpenLoco::Vehicles
         }
     }
 
-    // 0x00427122
+    /** 0x00427122
+     * Seems to work out where to land or something like that.
+     *  manhattanDistance = regs.ebp
+     *  targetZ = regs.dx
+     *  targetYaw = regs.bl
+     *  airportFlags = vehicleUpdate_var_525BB0
+     */
     std::tuple<uint32_t, uint16_t, uint8_t> VehicleHead::sub_427122()
     {
-        registers regs;
-        regs.esi = reinterpret_cast<int32_t>(this);
-        call(0x00427122, regs);
+        vehicleUpdate_var_525BB0 = 0;
+        station_id_t targetStationId = StationId::null;
+        std::optional<Map::map_pos3> targetPos{};
+        if (stationId == StationId::null)
+        {
+            auto orders = getCurrentOrders();
+            auto curOrder = orders.begin();
+            auto stationOrder = curOrder->as<OrderStation>();
+            if (curOrder->is<OrderRouteWaypoint>() || !(curOrder->hasFlag(OrderFlags::HasStation)) || stationOrder == nullptr)
+            {
+                targetStationId = stationId;
+            }
+            else
+            {
+                targetStationId = stationOrder->getStation();
+            }
+        }
+        else
+        {
+            if (airportApronArea == cAirportApronAreaNull)
+            {
+                targetStationId = stationId;
+            }
+            else
+            {
+                auto station = StationManager::get(stationId);
+                if (!(station->flags & station_flags::flag_6))
+                {
+                    targetStationId = stationId;
+                }
+                else
+                {
+                    auto [flags, pos] = sub_426E26(stationId, airportApronArea);
+                    vehicleUpdate_var_525BB0 = flags;
+                    targetPos = pos;
+                }
+            }
+        }
+
+        if (!targetPos)
+        {
+            if (targetStationId == StationId::null)
+            {
+                targetPos = map_pos3{ 6143, 6143, 960 };
+            }
+            else
+            {
+                auto station = StationManager::get(targetStationId);
+                targetPos = map_pos3{ station->x, station->y, 960 };
+                if (station->flags & station_flags::flag_6)
+                {
+                    targetPos = map_pos3{ station->unk_tile_x, station->unk_tile_y, 960 };
+                }
+            }
+        }
+
+        auto xDiff = targetPos->x - x;
+        auto yDiff = targetPos->y - y;
+
+        auto targetYaw = calculateYaw1FromVectorPlane(xDiff, yDiff);
+
+        // manhattan distance to target
+        auto manhattanDistance = std::abs(xDiff) + std::abs(yDiff);
+
         // Manhatten distance, targetZ, targetYaw
-        return std::make_tuple(regs.ebp, regs.dx, regs.bl);
+        return std::make_tuple(manhattanDistance, targetPos->z, targetYaw);
     }
 
     // 0x00427214
