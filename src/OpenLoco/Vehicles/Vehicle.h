@@ -302,6 +302,8 @@ namespace OpenLoco::Vehicles
         bool sub_4ACCDC();
         void sub_4AD93A();
         station_id_t manualFindTrainStationAtLocation();
+        bool sub_4BADE4();
+        void sub_4ADB47(bool unk);
     };
     static_assert(sizeof(VehicleHead) == 0x7A); // Can't use offset_of change this to last field if more found
 
