@@ -643,8 +643,7 @@ namespace OpenLoco::Ui::PromptBrowse
     {
         if (path.has_extension())
         {
-            std::basic_string<fs::path::value_type> sep(1, fs::path::preferred_separator);
-            return path.parent_path().concat(sep);
+            return path.parent_path() / "";
         }
         else
         {
