@@ -1103,8 +1103,8 @@ namespace OpenLoco::Vehicles
 
             auto airportObject = ObjectManager::get<airport_object>(elStation->objectId());
 
-            uint8_t al = airportObject->var_B2[airportApronArea].var_03;
-            uint8_t cl = airportObject->var_B2[airportApronArea].var_00;
+            uint8_t al = airportObject->apronTransistions[airportApronArea].var_03;
+            uint8_t cl = airportObject->apronTransistions[airportApronArea].var_00;
 
             auto veh2 = train.veh2;
             if (al != 0)
@@ -1551,14 +1551,147 @@ namespace OpenLoco::Vehicles
         return std::make_tuple(manhattanDistance, targetPos->z, targetYaw);
     }
 
-    // 0x00427214
-    uint8_t VehicleHead::airportGetNextApronArea(uint8_t _airportApronArea)
+    // 0x00427214 returns next apron area or -2 if no valid transition or -1 for in flight
+    uint8_t VehicleHead::airportGetNextApronArea(uint8_t curApronArea)
     {
-        registers regs;
-        regs.esi = reinterpret_cast<int32_t>(this);
-        regs.eax = static_cast<int8_t>(_airportApronArea);
-        call(0x00427214, regs);
-        return regs.al;
+        auto station = StationManager::get(stationId);
+
+        map_pos3 loc = {
+            station->unk_tile_x,
+            station->unk_tile_y,
+            station->unk_tile_z
+        };
+
+        auto tile = TileManager::get(loc);
+
+        for (auto& el : tile)
+        {
+            auto elStation = el.asStation();
+            if (elStation == nullptr)
+                continue;
+
+            if (elStation->baseZ() != loc.z / 4)
+                continue;
+
+            auto airportObject = ObjectManager::get<airport_object>(elStation->objectId());
+
+            if (curApronArea == cAirportApronAreaNull)
+            {
+                for (uint8_t apronArea = 0; apronArea < airportObject->numApronTransitions; apronArea++)
+                {
+                    const auto& transition = airportObject->apronTransistions[apronArea];
+                    if (!(airportObject->apronAreas[transition.curApronArea].flags & ApronAreaFlags::flag2))
+                    {
+                        continue;
+                    }
+
+                    if (station->airportApronOccupiedAreas & transition.mustBeClearAreas)
+                    {
+                        continue;
+                    }
+
+                    if (transition.atLeastOneClearAreas == 0)
+                    {
+                        return apronArea;
+                    }
+
+                    auto occupiedAreas = station->airportApronOccupiedAreas & transition.atLeastOneClearAreas;
+                    if (occupiedAreas == transition.atLeastOneClearAreas)
+                    {
+                        continue;
+                    }
+
+                    return apronArea;
+                }
+                return -2;
+            }
+            else
+            {
+                uint8_t targetApronArea = airportObject->apronTransistions[curApronArea].nextApronArea;
+                if (status == Status::takingOff && airportObject->apronAreas[targetApronArea].flags & ApronAreaFlags::takeoffEnd)
+                {
+                    return cAirportApronAreaNull;
+                }
+                // 0x4272A5
+                Vehicle train(this);
+                auto vehObject = ObjectManager::get<vehicle_object>(train.cars.firstCar.front->object_id);
+                if (vehObject->flags & FlagsE0::isHelicopter)
+                {
+                    for (uint8_t apronArea = 0; apronArea < airportObject->numApronTransitions; apronArea++)
+                    {
+                        const auto& transition = airportObject->apronTransistions[apronArea];
+
+                        if (transition.curApronArea != targetApronArea)
+                        {
+                            continue;
+                        }
+
+                        if (airportObject->apronAreas[transition.nextApronArea].flags & ApronAreaFlags::takeoffBegin)
+                        {
+                            continue;
+                        }
+
+                        if (station->airportApronOccupiedAreas & transition.mustBeClearAreas)
+                        {
+                            continue;
+                        }
+
+                        if (transition.atLeastOneClearAreas == 0)
+                        {
+                            return apronArea;
+                        }
+
+                        auto occupiedAreas = station->airportApronOccupiedAreas & transition.atLeastOneClearAreas;
+                        if (occupiedAreas == transition.atLeastOneClearAreas)
+                        {
+                            continue;
+                        }
+                        return apronArea;
+                    }
+
+                    return -2;
+                }
+                else
+                {
+                    for (uint8_t apronArea = 0; apronArea < airportObject->numApronTransitions; apronArea++)
+                    {
+                        const auto& transition = airportObject->apronTransistions[apronArea];
+                        if (transition.curApronArea != targetApronArea)
+                        {
+                            continue;
+                        }
+
+                        if (airportObject->apronAreas[transition.nextApronArea].flags & ApronAreaFlags::heliTakeoffBegin)
+                        {
+                            continue;
+                        }
+
+                        if (station->airportApronOccupiedAreas & transition.mustBeClearAreas)
+                        {
+                            continue;
+                        }
+
+                        if (transition.atLeastOneClearAreas == 0)
+                        {
+                            return apronArea;
+                        }
+
+                        auto occupiedAreas = station->airportApronOccupiedAreas & transition.atLeastOneClearAreas;
+                        if (occupiedAreas == transition.atLeastOneClearAreas)
+                        {
+                            continue;
+                        }
+
+                        return apronArea;
+                    }
+                    return -2;
+                }
+            }
+        }
+
+        // Tile not found. Todo: fail gracefully
+        assert(false);
+        return cAirportApronAreaNull;
     }
 
     // 0x00426E26
