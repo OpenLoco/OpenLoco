@@ -1988,7 +1988,7 @@ namespace OpenLoco::Vehicles
         if (vehObj != nullptr && vehObj->numStartSounds != 0)
         {
 
-            auto randSoundIndex = gPrng().randNext(vehObj->numStartSounds & NumStartSounds::mask);
+            auto randSoundIndex = gPrng().randNext((vehObj->numStartSounds & NumStartSounds::mask) - 1);
             auto randSoundId = Audio::makeObjectSoundId(vehObj->startSounds[randSoundIndex]);
 
             Vehicle2* veh2 = vehicleUpdate_2;
