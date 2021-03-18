@@ -712,7 +712,7 @@ namespace OpenLoco
                     newAmount += (1 << cargoObj->var_14) - 1;
                     newAmount >>= cargoObj->var_14;
 
-                    newAmount = std::max(newAmount, 15);
+                    newAmount = std::min(newAmount, 15);
                 }
             }
             if (cargoStat.var_40 != newAmount)
