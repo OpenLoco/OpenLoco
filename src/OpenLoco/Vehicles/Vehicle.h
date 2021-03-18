@@ -255,6 +255,13 @@ namespace OpenLoco::Vehicles
         void updateDrivingSoundEngine2(Vehicle2or6* vehType2or6, VehicleObjectEngine2Sound* snd);
         void removeDanglingTrain();
         bool updateLand();
+        bool sub_4A8DB7();
+        bool sub_4A8F22();
+        bool sub_4A8CB6();
+        bool sub_4A8C81();
+        bool sub_4A8FAC();
+        bool landLoadingUpdate();
+        bool sub_4A8D48();
         bool updateAir();
         bool airplaneLoadingUpdate();
         bool sub_4A95CB();
@@ -282,6 +289,9 @@ namespace OpenLoco::Vehicles
         void produceLeavingDockSound();
         std::tuple<station_id_t, Map::map_pos, Map::map_pos3> sub_427FC9();
         void produceLeavingAirportSound();
+        uint8_t sub_4AA36A();
+        void sub_4AD778();
+        void sub_4AA625();
     };
     static_assert(sizeof(VehicleHead) == 0x7A); // Can't use offset_of change this to last field if more found
 

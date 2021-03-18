@@ -681,9 +681,153 @@ namespace OpenLoco::Vehicles
     // 0x004A8C11
     bool VehicleHead::updateLand()
     {
+        Vehicle2* vehType2 = vehicleUpdate_2;
+        if ((!(vehType2->var_73 & Flags73::isBrokenDown) || (vehType2->var_73 & Flags73::isStillPowered)) && status == Status::approaching)
+        {
+            if (mode == TransportMode::road)
+            {
+                uint8_t bl = sub_4AA36A();
+                if (bl == 1)
+                {
+                    return sub_4A8DB7();
+                }
+                else if (bl == 2)
+                {
+                    return sub_4A8F22();
+                }
+            }
+
+            if (var_0C & Flags0C::commandStop)
+            {
+                return sub_4A8CB6();
+            }
+            else if (var_0C & Flags0C::manualControl)
+            {
+                if (var_6E <= -20)
+                {
+                    return sub_4A8C81();
+                }
+            }
+
+            return sub_4A8FAC();
+        }
+
+        if (status == Status::unloading)
+        {
+            updateUnloadCargo();
+
+            tryCreateInitialMovementSound();
+            return true;
+        }
+        else if (status == Status::loading)
+        {
+            return landLoadingUpdate();
+        }
+        else if (status == Status::crashed)
+        {
+            sub_4AA625();
+
+            return false;
+        }
+        else if (status == Status::stuck)
+        {
+            return false;
+        }
+        else
+        {
+            status = Status::unk_2;
+
+            if (!(vehType2->var_73 & Flags73::isBrokenDown) || (vehType2->var_73 & Flags73::isStillPowered))
+            {
+                if (!(var_0C & Flags0C::manualControl) || var_6E > -20)
+                {
+                    if (!(var_0C & Flags0C::commandStop))
+                    {
+                        return sub_4A8D48();
+                    }
+                    else
+                    {
+                        return sub_4A8CB6();
+                    }
+                }
+                else
+                {
+                    return sub_4A8C81();
+                }
+            }
+            else
+            {
+                return sub_4A8CB6();
+            }
+        }
+    }
+
+    uint8_t VehicleHead::sub_4AA36A()
+    {
         registers regs;
-        regs.esi = reinterpret_cast<int32_t>(this);
-        return (call(0x004A8C11, regs) & (1 << 8)) == 0;
+        regs.esi = reinterpret_cast<uint32_t>(this);
+        call(0x004AA36A, regs);
+        return regs.bl;
+    }
+
+    // 0x004A8DB7
+    bool VehicleHead::sub_4A8DB7()
+    {
+        sub_4AD778();
+        if (status == Status::approaching)
+        {
+            status = Status::unk_2;
+        }
+        tryCreateInitialMovementSound();
+        return true;
+    }
+
+    // 0x004A8F22
+    bool VehicleHead::sub_4A8F22()
+    {
+        registers regs;
+        regs.esi = reinterpret_cast<uint32_t>(this);
+        return (call(0x004A8F22, regs) & (1 << 8)) == 0;
+    }
+
+    // 0x004A8CB6
+    bool VehicleHead::sub_4A8CB6()
+    {
+        registers regs;
+        regs.esi = reinterpret_cast<uint32_t>(this);
+        return (call(0x004A8CB6, regs) & (1 << 8)) == 0;
+    }
+
+    // 0x004A8C81
+    bool VehicleHead::sub_4A8C81()
+    {
+        registers regs;
+        regs.esi = reinterpret_cast<uint32_t>(this);
+        return (call(0x004A8C81, regs) & (1 << 8)) == 0;
+    }
+
+    // 0x004A8FAC
+    bool VehicleHead::sub_4A8FAC()
+    {
+        registers regs;
+        regs.esi = reinterpret_cast<uint32_t>(this);
+        return (call(0x004A8FAC, regs) & (1 << 8)) == 0;
+    }
+
+    // 0x004A9011
+    bool VehicleHead::landLoadingUpdate()
+    {
+        registers regs;
+        regs.esi = reinterpret_cast<uint32_t>(this);
+        return (call(0x004A9011, regs) & (1 << 8)) == 0;
+    }
+
+    // 0x004A8D48
+    bool VehicleHead::sub_4A8D48()
+    {
+        registers regs;
+        regs.esi = reinterpret_cast<uint32_t>(this);
+        return (call(0x004A8D48, regs) & (1 << 8)) == 0;
     }
 
     // 0x004A9051
@@ -1843,6 +1987,22 @@ namespace OpenLoco::Vehicles
         registers regs;
         regs.esi = reinterpret_cast<int32_t>(this);
         call(0x0042750E, regs);
+    }
+
+    // 0x004AD778
+    void VehicleHead::sub_4AD778()
+    {
+        registers regs;
+        regs.esi = reinterpret_cast<int32_t>(this);
+        call(0x004AD778, regs);
+    }
+
+    // 0x004AA625
+    void VehicleHead::sub_4AA625()
+    {
+        registers regs;
+        regs.esi = reinterpret_cast<int32_t>(this);
+        call(0x004AA625, regs);
     }
 
     OrderRingView Vehicles::VehicleHead::getCurrentOrders() const
