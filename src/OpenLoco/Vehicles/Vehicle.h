@@ -288,7 +288,7 @@ namespace OpenLoco::Vehicles
         Status sub_427BF2();
         void produceLeavingDockSound();
         std::tuple<station_id_t, Map::map_pos, Map::map_pos3> sub_427FC9();
-        void produceLeavingAirportSound();
+        void produceTouchdownAirportSound();
         uint8_t sub_4AA36A();
         void sub_4AD778();
         void sub_4AA625();

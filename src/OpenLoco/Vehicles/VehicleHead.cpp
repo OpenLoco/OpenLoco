@@ -1029,7 +1029,7 @@ namespace OpenLoco::Vehicles
 
             if (flags & (1 << 8))
             {
-                produceLeavingAirportSound();
+                produceTouchdownAirportSound();
             }
             if (flags & (1 << 3))
             {
@@ -1981,12 +1981,19 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x0042750E
-    void VehicleHead::produceLeavingAirportSound()
+    void VehicleHead::produceTouchdownAirportSound()
     {
-        // Creates a random sound
-        registers regs;
-        regs.esi = reinterpret_cast<int32_t>(this);
-        call(0x0042750E, regs);
+        Vehicle train(this);
+        auto* vehObj = train.cars.firstCar.body->object();
+        if (vehObj != nullptr && vehObj->numStartSounds != 0)
+        {
+
+            auto randSoundIndex = gPrng().randNext((vehObj->numStartSounds & NumStartSounds::mask) - 1);
+            auto randSoundId = Audio::makeObjectSoundId(vehObj->startSounds[randSoundIndex]);
+
+            Vehicle2* veh2 = vehicleUpdate_2;
+            Audio::playSound(randSoundId, { veh2->x, veh2->y, static_cast<int16_t>(veh2->z + 22) }, 0, 22050);
+        }
     }
 
     // 0x004AD778
