@@ -106,7 +106,7 @@ namespace OpenLoco::Ui::Windows
             return;
 
         if (charCode == VK_ESCAPE)
-            WindowManager::close(window->type);
+            window->callOnMouseUp(widx::closeButton);
     }
 
     // 0x00447093
