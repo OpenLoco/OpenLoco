@@ -787,7 +787,7 @@ namespace OpenLoco::Vehicles
     // 0x004A8F22
     bool VehicleHead::sub_4A8F22()
     {
-        if (sub_4BADE4())
+        if (isOnExpectedRoadOrTrack())
         {
             auto temp = var_52;
             var_52 = 1;
@@ -2574,11 +2574,64 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004BADE4
-    bool VehicleHead::sub_4BADE4()
+    bool VehicleHead::isOnExpectedRoadOrTrack()
     {
-        registers regs;
-        regs.esi = reinterpret_cast<int32_t>(this);
-        return (call(0x004ADB47, regs) & (1 << 8)) == 0;
+        Vehicle train(this);
+        Vehicle2* veh = train.veh2;
+        map_pos loc = {
+            veh->tile_x,
+            veh->tile_y
+        };
+        auto baseZ = veh->tile_base_z;
+
+        auto tile = TileManager::get(loc);
+        if (veh->mode == TransportMode::road)
+        {
+            for (auto& el : tile)
+            {
+                auto elRoad = el.asRoad();
+                if (elRoad == nullptr)
+                    continue;
+
+                auto heightDiff = std::abs(elRoad->baseZ() - baseZ);
+                if (heightDiff > 4)
+                    continue;
+
+                if (elRoad->isGhost() || elRoad->isFlag5())
+                    continue;
+
+                if (elRoad->roadId() != ((veh->var_2C >> 3) & 0xF))
+                    continue;
+
+                return true;
+            }
+            return false;
+        }
+        else
+        {
+            for (auto& el : tile)
+            {
+                auto elTrack = el.asTrack();
+                if (elTrack == nullptr)
+                    continue;
+
+                auto heightDiff = std::abs(elTrack->baseZ() - baseZ);
+                if (heightDiff > 4)
+                    continue;
+
+                if (elTrack->isGhost() || elTrack->isFlag5())
+                    continue;
+
+                if (elTrack->unkDirection() != (veh->var_2C & 0x3))
+                    continue;
+
+                if (elTrack->trackId() != ((veh->var_2C >> 3) & 0x3F))
+                    continue;
+
+                return true;
+            }
+            return false;
+        }
     }
 
     OrderRingView Vehicles::VehicleHead::getCurrentOrders() const
