@@ -330,10 +330,7 @@ namespace OpenLoco::Input
                     if (tryShortcut(Shortcut::screenshot, nextKey->keyCode, _keyModifier))
                         continue;
 
-                    registers regs;
-                    regs.eax = nextKey->charCode;
-                    regs.ebx = nextKey->keyCode;
-                    call(0x0044685C, regs);
+                    Ui::PromptBrowse::handleInput(nextKey->charCode, nextKey->keyCode);
                     continue;
                 }
             }

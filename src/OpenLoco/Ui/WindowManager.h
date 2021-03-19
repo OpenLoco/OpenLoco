@@ -179,6 +179,7 @@ namespace OpenLoco::Ui::PromptBrowse
         save = 2
     };
     bool open(browse_type type, char* path, const char* filter, const char* title);
+    void handleInput(uint32_t charCode, uint32_t keyCode);
     void registerHooks();
 }
 
