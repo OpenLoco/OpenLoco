@@ -743,7 +743,7 @@ namespace OpenLoco::Vehicles
                 {
                     if (!(var_0C & Flags0C::commandStop))
                     {
-                        return sub_4A8D48();
+                        return landNormalMovementUpdate();
                     }
                     else
                     {
@@ -823,83 +823,113 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004A8D48
-    bool VehicleHead::sub_4A8D48()
+    bool VehicleHead::landNormalMovementUpdate()
     {
         advanceToNextRoutableOrder();
         auto [al, flags, nextStation] = sub_4ACEE7(0xD4CB00, vehicleUpdate_var_113612C);
-        Vehicle train(this);
 
         if (mode == TransportMode::road)
         {
-            uint8_t bl = sub_4AA36A();
-            if (bl == 1)
-            {
-                return sub_4A8DB7();
-            }
-            else if (bl == 2)
-            {
-                return sub_4A8F22();
-            }
-            else if (al == 4)
-            {
-                status = Status::approaching;
-                stationId = nextStation;
-                tryCreateInitialMovementSound();
-                return true;
-            }
-            else if (al == 2)
-            {
-                if (var_36 != train.veh2->var_36 || train.veh2->var_2E != var_2E)
-                {
-                    tryCreateInitialMovementSound();
-                    return true;
-                }
-                return sub_4A8F22();
-            }
-            else
-            {
-                tryCreateInitialMovementSound();
-                return true;
-            }
+            return roadNormalMovementUpdate(al, nextStation);
         }
         else
         {
-            if (al == 4)
+            return trainNormalMovementUpdate(al, flags, nextStation);
+        }
+    }
+
+    // 0x004A8D8F
+    bool VehicleHead::roadNormalMovementUpdate(uint8_t al, station_id_t nextStation)
+    {
+        uint8_t bl = sub_4AA36A();
+        if (bl == 1)
+        {
+            return sub_4A8DB7();
+        }
+        else if (bl == 2)
+        {
+            return sub_4A8F22();
+        }
+        else if (al == 4)
+        {
+            status = Status::approaching;
+            stationId = nextStation;
+            tryCreateInitialMovementSound();
+            return true;
+        }
+        else if (al == 2)
+        {
+            Vehicle train(this);
+            if (var_36 != train.veh2->var_36 || train.veh2->var_2E != var_2E)
             {
-                status = Status::approaching;
-                stationId = nextStation;
                 tryCreateInitialMovementSound();
                 return true;
             }
-            else if (al == 3)
+            return sub_4A8F22();
+        }
+        else
+        {
+            tryCreateInitialMovementSound();
+            return true;
+        }
+    }
+
+    // 0x004A8D63
+    bool VehicleHead::trainNormalMovementUpdate(uint8_t al, uint8_t flags, station_id_t nextStation)
+    {
+        Vehicle train(this);
+        if (al == 4)
+        {
+            status = Status::approaching;
+            stationId = nextStation;
+            tryCreateInitialMovementSound();
+            return true;
+        }
+        else if (al == 3)
+        {
+            if (train.veh2->var_36 != var_36 || train.veh2->var_2E != var_2E)
             {
-                if (train.veh2->var_36 != var_36 || train.veh2->var_2E != var_2E)
+                tryCreateInitialMovementSound();
+                return true;
+            }
+
+            status = Status::unk_3;
+
+            auto* vehType1 = train.veh1;
+            vehType1->var_46++;
+
+            if (var_0C & Flags0C::manualControl)
+            {
+                var_5C = 2;
+                vehType1->var_48 |= 1 << 0;
+                tryCreateInitialMovementSound();
+                return true;
+            }
+
+            if (flags & (1 << 1))
+            {
+                if (vehType1->var_46 < 1920)
                 {
                     tryCreateInitialMovementSound();
                     return true;
                 }
 
-                status = Status::unk_3;
-
-                auto* vehType1 = train.veh1;
-                vehType1->var_46++;
-
-                if (var_0C & Flags0C::manualControl)
+                if (!(flags & (1 << 7)))
                 {
-                    var_5C = 2;
-                    vehType1->var_48 |= 1 << 0;
-                    tryCreateInitialMovementSound();
-                    return true;
-                }
-
-                if (flags & (1 << 1))
-                {
-                    if (vehType1->var_46 < 1920)
+                    if (sub_4AC1C2())
                     {
+                        var_5C = 2;
+                        vehType1->var_48 |= 1 << 0;
                         tryCreateInitialMovementSound();
                         return true;
                     }
-
+                }
+                return landReverseFromSignal();
+            }
+            else
+            {
+                if (!(vehType1->var_46 & 0x3F))
+                {
                     if (!(flags & (1 << 7)))
                     {
                         if (sub_4AC1C2())
@@ -910,62 +940,45 @@ namespace OpenLoco::Vehicles
                             return true;
                         }
                     }
-                    return landReverseFromSignal();
-                }
-                else
-                {
-                    if (!(vehType1->var_46 & 0x3F))
-                    {
-                        if (!(flags & (1 << 7)))
-                        {
-                            if (sub_4AC1C2())
-                            {
-                                var_5C = 2;
-                                vehType1->var_48 |= 1 << 0;
-                                tryCreateInitialMovementSound();
-                                return true;
-                            }
-                        }
 
-                        if (sub_4AC0A3())
-                        {
-                            return landReverseFromSignal();
-                        }
-                    }
-
-                    if (vehType1->var_46 < 640)
-                    {
-                        tryCreateInitialMovementSound();
-                        return true;
-                    }
-                    return landReverseFromSignal();
-                }
-            }
-            else
-            {
-                train.veh1->var_46 = 0;
-                if (al == 2)
-                {
-                    if (!(var_0C & Flags0C::manualControl))
+                    if (sub_4AC0A3())
                     {
                         return landReverseFromSignal();
                     }
-
-                    auto* vehType2 = train.veh2;
-                    if (vehType2->var_36 != var_36 || vehType2->var_2E != var_2E)
-                    {
-                        return landReverseFromSignal();
-                    }
-
-                    // Crash
-                    vehType2->sub_4AA464();
-                    return false;
                 }
-                else
+
+                if (vehType1->var_46 < 640)
                 {
                     tryCreateInitialMovementSound();
                     return true;
                 }
+                return landReverseFromSignal();
+            }
+        }
+        else
+        {
+            train.veh1->var_46 = 0;
+            if (al == 2)
+            {
+                if (!(var_0C & Flags0C::manualControl))
+                {
+                    return landReverseFromSignal();
+                }
+
+                auto* vehType2 = train.veh2;
+                if (vehType2->var_36 != var_36 || vehType2->var_2E != var_2E)
+                {
+                    return landReverseFromSignal();
+                }
+
+                // Crash
+                vehType2->sub_4AA464();
+                return false;
+            }
+            else
+            {
+                tryCreateInitialMovementSound();
+                return true;
             }
         }
     }

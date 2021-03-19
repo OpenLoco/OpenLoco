@@ -262,7 +262,9 @@ namespace OpenLoco::Vehicles
         bool sub_4A8C81();
         bool sub_4A8FAC();
         bool landLoadingUpdate();
-        bool sub_4A8D48();
+        bool landNormalMovementUpdate();
+        bool trainNormalMovementUpdate(uint8_t al, uint8_t flags, station_id_t nextStation);
+        bool roadNormalMovementUpdate(uint8_t al, station_id_t nextStation);
         bool landReverseFromSignal();
         bool updateAir();
         bool airplaneLoadingUpdate();
