@@ -6,6 +6,7 @@
 #include "../OpenLoco.h"
 #include "../Ui.h"
 #include "../Ui/WindowManager.h"
+#include "../Win32.h"
 #include <cstring>
 
 using namespace OpenLoco::Interop;
@@ -95,6 +96,17 @@ namespace OpenLoco::Ui::Windows
         WindowManager::setCurrentModalType(originalModal);
 
         return _result != 0;
+    }
+
+    // 0x00447125
+    void promptOkCancelInput(uint32_t charCode, uint32_t keyCode)
+    {
+        auto window = WindowManager::find(WindowType::confirmationPrompt);
+        if (window == nullptr)
+            return;
+
+        if (charCode == VK_ESCAPE)
+            WindowManager::close(window->type);
     }
 
     // 0x00447093

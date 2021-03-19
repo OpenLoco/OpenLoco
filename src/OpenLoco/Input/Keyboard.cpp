@@ -343,10 +343,8 @@ namespace OpenLoco::Input
                 ti = WindowManager::find(WindowType::confirmationPrompt);
                 if (ti != nullptr)
                 {
-                    registers regs;
-                    regs.eax = nextKey->charCode;
-                    regs.ebx = nextKey->keyCode;
-                    call(0x0044685C, regs);
+                    Ui::Windows::promptOkCancelInput(nextKey->charCode, nextKey->keyCode);
+                    continue;
                 }
             }
 
