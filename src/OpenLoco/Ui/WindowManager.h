@@ -82,6 +82,7 @@ namespace OpenLoco::Ui::Windows
     window* openTitleLogo();
 
     bool promptOkCancel(string_id okButtonStringId);
+    void promptOkCancelInput(uint32_t charCode, uint32_t keyCode);
 
     void showError(string_id title, string_id message = StringIds::null, bool sound = true);
 
