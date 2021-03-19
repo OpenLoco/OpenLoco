@@ -10,7 +10,7 @@ namespace OpenLoco
     }
 
 #pragma pack(push, 1)
-    namespace ApronAreaFlags
+    namespace AirportMovementNodeFlags
     {
         constexpr uint16_t terminal = (1 << 0);
         constexpr uint16_t takeoffEnd = (1 << 1);
@@ -23,26 +23,26 @@ namespace OpenLoco
         constexpr uint16_t touchdown = (1 << 8);
     }
 
-    struct AirportObjectApronArea
-    {
-        int16_t x;      // 0x00
-        int16_t y;      // 0x02
-        int16_t z;      // 0x04
-        uint16_t flags; // 0x06 ApronAreaFlags
-    };
-
-    struct AirportObjectApronTransitions
-    {
-        uint8_t var_00;
-        uint8_t curApronArea;  // 0x01
-        uint8_t nextApronArea; // 0x02
-        uint8_t var_03;
-        uint32_t mustBeClearAreas;     // 0x04 Which areas must be clear to use the transition
-        uint32_t atLeastOneClearAreas; // 0x08 Which areas must have at least one clear to use transition
-    };
-
     struct airport_object
     {
+        struct MovementNode
+        {
+            int16_t x;      // 0x00
+            int16_t y;      // 0x02
+            int16_t z;      // 0x04
+            uint16_t flags; // 0x06 AirportMovementNodeFlags
+        };
+
+        struct MovementEdge
+        {
+            uint8_t var_00;
+            uint8_t curNode;  // 0x01
+            uint8_t nextNode; // 0x02
+            uint8_t var_03;
+            uint32_t mustBeClearEdges;     // 0x04 Which edges must be clear to use the transition edge
+            uint32_t atLeastOneClearEdges; // 0x08 Which edges must have at least one clear to use transition edge
+        };
+
         string_id name;
         uint16_t build_cost_factor; // 0x02
         uint16_t sell_cost_factor;  // 0x04
@@ -54,17 +54,17 @@ namespace OpenLoco
         uint8_t num_sprite_sets;      // 0x12
         uint8_t num_tiles;            // 0x13
         uint8_t pad_14[0xA0 - 0x14];
-        uint32_t large_tiles;                             // 0xA0
-        int8_t min_x;                                     // 0xA4
-        int8_t min_y;                                     // 0xA5
-        int8_t max_x;                                     // 0xA6
-        int8_t max_y;                                     // 0xA7
-        uint16_t designed_year;                           // 0xA8
-        uint16_t obsolete_year;                           // 0xAA
-        uint8_t numApronAreas;                            // 0xAC
-        uint8_t numApronTransitions;                      // 0xAD
-        AirportObjectApronArea* apronAreas;               // 0xAE
-        AirportObjectApronTransitions* apronTransistions; // 0xB2
+        uint32_t large_tiles;        // 0xA0
+        int8_t min_x;                // 0xA4
+        int8_t min_y;                // 0xA5
+        int8_t max_x;                // 0xA6
+        int8_t max_y;                // 0xA7
+        uint16_t designed_year;      // 0xA8
+        uint16_t obsolete_year;      // 0xAA
+        uint8_t numMovementNodes;    // 0xAC
+        uint8_t numMovementEdges;    // 0xAD
+        MovementNode* movementNodes; // 0xAE
+        MovementEdge* movementEdges; // 0xB2
         uint8_t pad_B6[0xBA - 0xB6];
 
         void drawPreviewImage(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y) const;

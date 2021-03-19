@@ -95,7 +95,7 @@ namespace OpenLoco::Vehicles
         uint32_t status2Args;
     };
 
-    constexpr uint8_t cAirportApronAreaNull = 0xFF;
+    constexpr uint8_t cAirportMovementNodeNull = 0xFF;
 
 #pragma pack(push, 1)
     struct VehicleBase : thing_base
@@ -227,7 +227,7 @@ namespace OpenLoco::Vehicles
         uint8_t var_60;
         uint16_t var_61;
         uint8_t pad_63[0x68 - 0x63];
-        uint8_t airportApronArea; // 0x68
+        uint8_t airportMovementEdge; // 0x68
         uint32_t var_69;
         uint8_t pad_6D;
         int8_t var_6E;             // manual speed/brake
@@ -265,12 +265,12 @@ namespace OpenLoco::Vehicles
         bool updateAir();
         bool airplaneLoadingUpdate();
         bool sub_4A95CB();
-        bool sub_4A9348(uint8_t newApronArea, uint16_t target_z);
-        bool airplaneApproachTarget(uint16_t target_z);
+        bool sub_4A9348(uint8_t newMovementEdge, uint16_t targetZ);
+        bool airplaneApproachTarget(uint16_t targetZ);
         std::pair<Status, Speed16> airplaneGetNewStatus();
-        uint8_t airportGetNextApronArea(uint8_t _airportApronArea);
+        uint8_t airportGetNextMovementEdge(uint8_t curEdge);
         std::tuple<uint32_t, uint16_t, uint8_t> sub_427122();
-        std::pair<uint32_t, Map::map_pos3> airportGetApronTransitionTarget(station_id_t station, uint8_t unkVar68);
+        std::pair<uint32_t, Map::map_pos3> airportGetMovementEdgeTarget(station_id_t targetStation, uint8_t curEdge);
         bool updateWater();
         uint32_t getVehicleTotalLength();
         void tryCreateInitialMovementSound();
