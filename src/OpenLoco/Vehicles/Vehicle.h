@@ -325,7 +325,7 @@ namespace OpenLoco::Vehicles
         TransportMode mode;     // 0x42 field same in all vehicles
         uint8_t pad_43;
         Speed16 var_44;
-        uint16_t var_46;
+        uint16_t timeAtSignal; // 0x46
         uint8_t var_48;
         uint8_t var_49;
         uint8_t pad_4A[0x4E - 0x4A];

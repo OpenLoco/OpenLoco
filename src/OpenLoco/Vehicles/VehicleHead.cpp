@@ -40,6 +40,8 @@ namespace OpenLoco::Vehicles
     static loco_global<uint8_t, 0x0113646D> vehicleUpdate_helicopterTargetYaw;
     static loco_global<uint32_t, 0x00525BB0> vehicleUpdate_var_525BB0;
     static loco_global<int16_t[128], 0x00503B6A> factorXY503B6A;
+    static constexpr uint16_t trainOneWaySignalTimeout = 1920;
+    static constexpr uint16_t trainTwoWaySignalTimeout = 640;
 
     void VehicleHead::updateVehicle()
     {
@@ -896,7 +898,7 @@ namespace OpenLoco::Vehicles
             status = Status::unk_3;
 
             auto* vehType1 = train.veh1;
-            vehType1->var_46++;
+            vehType1->timeAtSignal++;
 
             if (var_0C & Flags0C::manualControl)
             {
@@ -906,16 +908,16 @@ namespace OpenLoco::Vehicles
                 return true;
             }
 
+            // if one-way or two-way signal??
             if (flags & (1 << 1))
             {
-                if (vehType1->var_46 < 1920)
+                if (vehType1->timeAtSignal >= trainOneWaySignalTimeout)
                 {
-                    tryCreateInitialMovementSound();
-                    return true;
-                }
+                    if (flags & (1 << 7))
+                    {
+                        return landReverseFromSignal();
+                    }
 
-                if (!(flags & (1 << 7)))
-                {
                     if (sub_4AC1C2())
                     {
                         var_5C = 2;
@@ -923,12 +925,16 @@ namespace OpenLoco::Vehicles
                         tryCreateInitialMovementSound();
                         return true;
                     }
+                    return landReverseFromSignal();
                 }
-                return landReverseFromSignal();
+
+                // Keep witing at the signal
+                tryCreateInitialMovementSound();
+                return true;
             }
             else
             {
-                if (!(vehType1->var_46 & 0x3F))
+                if (!(vehType1->timeAtSignal & 0x3F))
                 {
                     if (!(flags & (1 << 7)))
                     {
@@ -947,33 +953,35 @@ namespace OpenLoco::Vehicles
                     }
                 }
 
-                if (vehType1->var_46 < 640)
+                if (vehType1->timeAtSignal >= trainTwoWaySignalTimeout)
                 {
-                    tryCreateInitialMovementSound();
-                    return true;
+                    return landReverseFromSignal();
                 }
-                return landReverseFromSignal();
+
+                // Keep witing at the signal
+                tryCreateInitialMovementSound();
+                return true;
             }
         }
         else
         {
-            train.veh1->var_46 = 0;
+            train.veh1->timeAtSignal = 0;
             if (al == 2)
             {
-                if (!(var_0C & Flags0C::manualControl))
+                if (var_0C & Flags0C::manualControl)
                 {
-                    return landReverseFromSignal();
+                    auto* vehType2 = train.veh2;
+                    if (vehType2->var_36 != var_36 || vehType2->var_2E != var_2E)
+                    {
+                        return landReverseFromSignal();
+                    }
+
+                    // Crash
+                    vehType2->sub_4AA464();
+                    return false;
                 }
 
-                auto* vehType2 = train.veh2;
-                if (vehType2->var_36 != var_36 || vehType2->var_2E != var_2E)
-                {
-                    return landReverseFromSignal();
-                }
-
-                // Crash
-                vehType2->sub_4AA464();
-                return false;
+                return landReverseFromSignal();
             }
             else
             {
