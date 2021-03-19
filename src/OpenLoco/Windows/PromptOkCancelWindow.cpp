@@ -6,20 +6,8 @@
 #include "../OpenLoco.h"
 #include "../Ui.h"
 #include "../Ui/WindowManager.h"
-#include "../Win32.h"
+#include <SDL2/SDL.h>
 #include <cstring>
-
-#ifdef _WIN32
-#ifndef NOMINMAX
-#define NOMINMAX
-#endif
-#define WIN32_LEAN_AND_MEAN
-#include <shlobj.h>
-#include <windows.h>
-
-// `interface` is defined as a macro for `struct` in `windows.h`
-#undef interface
-#endif
 
 using namespace OpenLoco::Interop;
 
@@ -117,7 +105,7 @@ namespace OpenLoco::Ui::Windows
         if (window == nullptr)
             return;
 
-        if (charCode == VK_ESCAPE)
+        if (keyCode == SDLK_ESCAPE)
             window->callOnMouseUp(widx::closeButton);
     }
 
