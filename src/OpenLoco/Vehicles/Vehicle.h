@@ -260,7 +260,7 @@ namespace OpenLoco::Vehicles
         bool sub_4A8F22();
         bool sub_4A8CB6();
         bool sub_4A8C81();
-        bool sub_4A8FAC();
+        bool landTryBeginUnloading();
         bool landLoadingUpdate();
         bool landNormalMovementUpdate();
         bool trainNormalMovementUpdate(uint8_t al, uint8_t flags, station_id_t nextStation);
@@ -299,6 +299,7 @@ namespace OpenLoco::Vehicles
         std::tuple<uint8_t, uint8_t, station_id_t> sub_4ACEE7(uint32_t unk1, uint32_t var_113612C);
         bool sub_4AC1C2();
         bool sub_4AC0A3();
+        bool sub_4ACCDC();
     };
     static_assert(sizeof(VehicleHead) == 0x7A); // Can't use offset_of change this to last field if more found
 

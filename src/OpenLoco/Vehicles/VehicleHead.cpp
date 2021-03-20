@@ -711,7 +711,7 @@ namespace OpenLoco::Vehicles
                 }
             }
 
-            return sub_4A8FAC();
+            return landTryBeginUnloading();
         }
 
         if (status == Status::unloading)
@@ -809,19 +809,58 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004A8FAC
-    bool VehicleHead::sub_4A8FAC()
+    // Checks if at the desiered station and then begins unloading if at it
+    bool VehicleHead::landTryBeginUnloading()
     {
-        registers regs;
-        regs.esi = reinterpret_cast<uint32_t>(this);
-        return (call(0x004A8FAC, regs) & (1 << 8)) == 0;
+        Vehicle train(this);
+        if (var_36 != train.veh2->var_36 || train.veh2->var_2E != var_2E)
+        {
+            tryCreateInitialMovementSound();
+            return true;
+        }
+
+        // Manual control is going too fast at this point to stop at the station
+        if (var_0C & Flags0C::manualControl)
+        {
+            tryCreateInitialMovementSound();
+            return true;
+        }
+
+        setStationVisitedTypes();
+        checkIfAtOrderStation();
+        updateLastJourneyAverageSpeed();
+        beginUnloading();
+
+        tryCreateInitialMovementSound();
+        return true;
     }
 
     // 0x004A9011
     bool VehicleHead::landLoadingUpdate()
     {
-        registers regs;
-        regs.esi = reinterpret_cast<uint32_t>(this);
-        return (call(0x004A9011, regs) & (1 << 8)) == 0;
+        if (updateLoadCargo())
+        {
+            tryCreateInitialMovementSound();
+            return true;
+        }
+
+        beginNewJourney();
+        status = Status::stopped;
+        advanceToNextRoutableOrder();
+
+        if (var_0C & Flags0C::manualControl)
+        {
+            tryCreateInitialMovementSound();
+            return true;
+        }
+
+        if (sub_4ACCDC())
+        {
+            return sub_4A8F22();
+        }
+
+        tryCreateInitialMovementSound();
+        return true;
     }
 
     // 0x004A8D48
@@ -2384,6 +2423,14 @@ namespace OpenLoco::Vehicles
         registers regs;
         regs.esi = reinterpret_cast<int32_t>(this);
         return call(0x004AC0A3, regs) & (1 << 8);
+    }
+
+    // 0x004ACCDC
+    bool VehicleHead::sub_4ACCDC()
+    {
+        registers regs;
+        regs.esi = reinterpret_cast<int32_t>(this);
+        return call(0x004ACCDC, regs) & (1 << 8);
     }
 
     OrderRingView Vehicles::VehicleHead::getCurrentOrders() const
