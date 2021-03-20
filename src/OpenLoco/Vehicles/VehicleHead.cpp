@@ -43,6 +43,8 @@ namespace OpenLoco::Vehicles
     static loco_global<int16_t[128], 0x00503B6A> factorXY503B6A;
     static constexpr uint16_t trainOneWaySignalTimeout = 1920;
     static constexpr uint16_t trainTwoWaySignalTimeout = 640;
+    static constexpr uint16_t busSignalTimeout = 960;
+    static constexpr uint16_t tramSignalTimeout = 2880;
 
     void VehicleHead::updateVehicle()
     {
@@ -765,6 +767,10 @@ namespace OpenLoco::Vehicles
         }
     }
 
+    // 0x004AA36A
+    // 0: None of the below
+    // 1: reached first timeout at signal
+    // 2: give up and reverse at signal
     uint8_t VehicleHead::sub_4AA36A()
     {
         Vehicle train(this);
@@ -775,23 +781,24 @@ namespace OpenLoco::Vehicles
         }
 
         auto param1 = 160;
-        auto param2 = 960;
+        auto turnaroundAtSignalTimeout = busSignalTimeout;
 
-        if (track_type == 0xFF || ObjectManager::get<road_object>(track_type)->flags & Flags12::unk_06)
+        if (track_type == 0xFF || ObjectManager::get<RoadObject>(track_type)->flags & Flags12::isRoad)
         {
             if (train.veh1->var_2C & (1 << 7))
             {
                 param1 = 128;
-                param2 = 544;
+                turnaroundAtSignalTimeout = 544;
             }
         }
         else
         {
-            param2 = 2880;
+            // Tram
+            turnaroundAtSignalTimeout = tramSignalTimeout;
             if (train.veh1->var_2C & (1 << 7))
             {
                 param1 = 64;
-                param2 = 128;
+                turnaroundAtSignalTimeout = 128;
             }
         }
 
@@ -801,7 +808,7 @@ namespace OpenLoco::Vehicles
             return 1;
         }
 
-        if (train.veh1->timeAtSignal == param2)
+        if (train.veh1->timeAtSignal == turnaroundAtSignalTimeout)
         {
             var_5C = 40;
             return 2;
