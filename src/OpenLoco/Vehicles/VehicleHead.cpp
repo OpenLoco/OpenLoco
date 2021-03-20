@@ -928,7 +928,7 @@ namespace OpenLoco::Vehicles
                     return landReverseFromSignal();
                 }
 
-                // Keep witing at the signal
+                // Keep waiting at the signal
                 tryCreateInitialMovementSound();
                 return true;
             }
@@ -958,7 +958,7 @@ namespace OpenLoco::Vehicles
                     return landReverseFromSignal();
                 }
 
-                // Keep witing at the signal
+                // Keep waiting at the signal
                 tryCreateInitialMovementSound();
                 return true;
             }
