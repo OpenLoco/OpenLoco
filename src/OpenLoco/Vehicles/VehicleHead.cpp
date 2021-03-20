@@ -1090,9 +1090,15 @@ namespace OpenLoco::Vehicles
     // 0x004A8ED9
     bool VehicleHead::landReverseFromSignal()
     {
-        registers regs;
-        regs.esi = reinterpret_cast<uint32_t>(this);
-        return (call(0x004A8ED9, regs) & (1 << 8)) == 0;
+        Vehicle train(this);
+        train.veh1->timeAtSignal = 0;
+
+        if (var_36 != train.veh2->var_36 || train.veh2->var_2E != var_2E)
+        {
+            tryCreateInitialMovementSound();
+            return true;
+        }
+        return sub_4A8F22();
     }
 
     // 0x004A9051
