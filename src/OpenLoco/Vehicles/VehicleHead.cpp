@@ -10,6 +10,7 @@
 #include "../MessageManager.h"
 #include "../Objects/AirportObject.h"
 #include "../Objects/ObjectManager.h"
+#include "../Objects/RoadObject.h"
 #include "../Objects/VehicleObject.h"
 #include "../OpenLoco.h"
 #include "../StationManager.h"
@@ -766,10 +767,47 @@ namespace OpenLoco::Vehicles
 
     uint8_t VehicleHead::sub_4AA36A()
     {
-        registers regs;
-        regs.esi = reinterpret_cast<uint32_t>(this);
-        call(0x004AA36A, regs);
-        return regs.bl;
+        Vehicle train(this);
+        if (train.veh2->var_36 != train.veh1->var_36 || train.veh2->var_2E != train.veh1->var_2E)
+        {
+            train.veh1->timeAtSignal = 0;
+            return 0;
+        }
+
+        auto param1 = 160;
+        auto param2 = 960;
+
+        if (track_type == 0xFF || ObjectManager::get<road_object>(track_type)->flags & Flags12::unk_06)
+        {
+            if (train.veh1->var_2C & (1 << 7))
+            {
+                param1 = 128;
+                param2 = 544;
+            }
+        }
+        else
+        {
+            param2 = 2880;
+            if (train.veh1->var_2C & (1 << 7))
+            {
+                param1 = 64;
+                param2 = 128;
+            }
+        }
+
+        train.veh1->timeAtSignal++;
+        if (train.veh1->timeAtSignal == param1)
+        {
+            return 1;
+        }
+
+        if (train.veh1->timeAtSignal == param2)
+        {
+            var_5C = 40;
+            return 2;
+        }
+
+        return 0;
     }
 
     // 0x004A8DB7

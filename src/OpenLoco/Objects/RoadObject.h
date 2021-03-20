@@ -13,6 +13,7 @@ namespace OpenLoco
     {
         constexpr uint8_t unk_01 = 1 << 1;
         constexpr uint8_t unk_03 = 1 << 3;
+        constexpr uint8_t unk_06 = 1 << 6;
     }
 
     namespace RoadPieceFlags
