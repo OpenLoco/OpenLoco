@@ -168,6 +168,7 @@ namespace OpenLoco::Vehicles
         VehicleBase* nextVehicle();
         VehicleBase* nextVehicleComponent();
         bool updateComponent();
+        void sub_4AA464();
     };
 
     struct Vehicle2or6 : VehicleBase
@@ -261,7 +262,10 @@ namespace OpenLoco::Vehicles
         bool sub_4A8C81();
         bool sub_4A8FAC();
         bool landLoadingUpdate();
-        bool sub_4A8D48();
+        bool landNormalMovementUpdate();
+        bool trainNormalMovementUpdate(uint8_t al, uint8_t flags, station_id_t nextStation);
+        bool roadNormalMovementUpdate(uint8_t al, station_id_t nextStation);
+        bool landReverseFromSignal();
         bool updateAir();
         bool airplaneLoadingUpdate();
         bool sub_4A95CB();
@@ -292,6 +296,9 @@ namespace OpenLoco::Vehicles
         uint8_t sub_4AA36A();
         void sub_4AD778();
         void sub_4AA625();
+        std::tuple<uint8_t, uint8_t, station_id_t> sub_4ACEE7(uint32_t unk1, uint32_t var_113612C);
+        bool sub_4AC1C2();
+        bool sub_4AC0A3();
     };
     static_assert(sizeof(VehicleHead) == 0x7A); // Can't use offset_of change this to last field if more found
 
@@ -318,7 +325,7 @@ namespace OpenLoco::Vehicles
         TransportMode mode;     // 0x42 field same in all vehicles
         uint8_t pad_43;
         Speed16 var_44;
-        uint16_t var_46;
+        uint16_t timeAtSignal; // 0x46
         uint8_t var_48;
         uint8_t var_49;
         uint8_t pad_4A[0x4E - 0x4A];
