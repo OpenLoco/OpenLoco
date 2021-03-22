@@ -5,6 +5,7 @@
 #include "../Localisation/StringIds.h"
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/ObjectManager.h"
+#include "../Ui/TextInput.h"
 #include "../Ui/WindowManager.h"
 #include "../Win32.h"
 #include <cassert>
@@ -25,8 +26,6 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::TextInputWindow
 {
-    constexpr int16_t textboxPadding = 4;
-
     static int16_t _callingWidget;
     static window_number _callingWindowNumber;
     static loco_global<WindowType, 0x523364> _callingWindowType;
@@ -35,12 +34,7 @@ namespace OpenLoco::Ui::Windows::TextInputWindow
     static string_id _title;
     static string_id _message;
 
-    // txtutils
-    static std::string _buffer;
-    static int16_t _xOffset;     // 1136FA4
-    static uint8_t _cursorFrame; // 0x011370A9
-
-    size_t cursor_position;
+    static TextInput::InputSession inputSession;
 
     static loco_global<char[16], 0x0112C826> _commonFormatArgs;
     static loco_global<int32_t, 0x0112C876> _currentFontSpriteBase;
@@ -105,9 +99,6 @@ namespace OpenLoco::Ui::Windows::TextInputWindow
     static void onMouseUp(Ui::window* window, widget_index widgetIndex);
     static void onUpdate(Ui::window* window);
 
-    static bool needsReoffsetting(int16_t containerWidth);
-    static void sanitizeInput();
-
     /**
      * 0x004CE523
      *
@@ -129,12 +120,6 @@ namespace OpenLoco::Ui::Windows::TextInputWindow
         // Close any previous text input window
         cancel();
 
-        memcpy(_formatArgs, _commonFormatArgs, 16);
-
-        char temp[200] = {};
-        StringManager::formatString(temp, value, valueArgs);
-        _buffer = temp;
-
         _events.draw = draw;
         _events.prepare_draw = prepareDraw;
         _events.on_mouse_up = onMouseUp;
@@ -150,11 +135,13 @@ namespace OpenLoco::Ui::Windows::TextInputWindow
         window->enabled_widgets |= 1ULL << Widx::ok;
         window->initScrollWidgets();
 
-        cursor_position = _buffer.length();
-        _cursorFrame = 0;
+        memcpy(_formatArgs, _commonFormatArgs, 16);
 
-        _xOffset = 0;
-        calculateTextOffset(_widgets[Widx::input].width() - 2);
+        char temp[200] = {};
+        StringManager::formatString(temp, value, valueArgs);
+
+        inputSession = TextInput::InputSession(temp);
+        inputSession.calculateTextOffset(_widgets[Widx::input].width() - 2);
 
         caller = WindowManager::find(_callingWindowType, _callingWindowNumber);
 
@@ -262,23 +249,23 @@ namespace OpenLoco::Ui::Windows::TextInputWindow
         }
 
         char* drawnBuffer = (char*)StringManager::getString(StringIds::buffer_2039);
-        strcpy(drawnBuffer, _buffer.c_str());
+        strcpy(drawnBuffer, inputSession.buffer.c_str());
 
         *((string_id*)(&_commonFormatArgs[0])) = StringIds::buffer_2039;
 
-        position = { _xOffset, 1 };
+        position = { inputSession.xOffset, 1 };
         Gfx::drawString_494B3F(*clipped, &position, 0, StringIds::black_stringid, _commonFormatArgs);
 
-        if ((_cursorFrame % 32) >= 16)
+        if ((inputSession.cursorFrame % 32) >= 16)
         {
             return;
         }
 
-        strncpy(drawnBuffer, _buffer.c_str(), cursor_position);
-        drawnBuffer[cursor_position] = '\0';
+        strncpy(drawnBuffer, inputSession.buffer.c_str(), inputSession.cursorPosition);
+        drawnBuffer[inputSession.cursorPosition] = '\0';
 
         *((string_id*)(&_commonFormatArgs[0])) = StringIds::buffer_2039;
-        position = { _xOffset, 1 };
+        position = { inputSession.xOffset, 1 };
         Gfx::drawString_494B3F(*clipped, &position, 0, StringIds::black_stringid, _commonFormatArgs);
         Gfx::fillRect(clipped, position.x, position.y, position.x, position.y + 9, Colour::getShade(window->colours[1], 9));
     }
@@ -292,11 +279,11 @@ namespace OpenLoco::Ui::Windows::TextInputWindow
                 WindowManager::close(window);
                 break;
             case Widx::ok:
-                sanitizeInput();
+                inputSession.sanitizeInput();
                 auto caller = WindowManager::find(_callingWindowType, _callingWindowNumber);
                 if (caller != nullptr)
                 {
-                    caller->callTextInput(_callingWidget, _buffer.c_str());
+                    caller->callTextInput(_callingWidget, inputSession.buffer.c_str());
                 }
                 WindowManager::close(window);
                 break;
@@ -306,14 +293,15 @@ namespace OpenLoco::Ui::Windows::TextInputWindow
     // 0x004CE8FA
     static void onUpdate(Ui::window* window)
     {
-        _cursorFrame++;
-        if ((_cursorFrame % 16) == 0)
+        inputSession.cursorFrame++;
+        if ((inputSession.cursorFrame % 16) == 0)
         {
             window->invalidate();
         }
     }
 
-    void sub_4CE910(int eax, int ebx)
+    // 0x004CE910
+    void handleInput(uint32_t charCode, uint32_t keyCode)
     {
         auto w = WindowManager::find(WindowType::textInput);
         if (w == nullptr)
@@ -321,177 +309,28 @@ namespace OpenLoco::Ui::Windows::TextInputWindow
             return;
         }
 
-        if ((eax >= VK_SPACE && eax < VK_F12) || (eax >= 159 && eax <= 255))
-        {
-            if (_buffer.length() == 199)
-            {
-                return;
-            }
-
-            if (cursor_position == _buffer.length())
-            {
-                _buffer.append(1, (char)eax);
-            }
-            else
-            {
-                _buffer.insert(cursor_position, 1, (char)eax);
-            }
-            cursor_position += 1;
-        }
-        else if (eax == VK_BACK)
-        {
-            if (cursor_position == 0)
-            {
-                // Cursor is at beginning
-                return;
-            }
-
-            _buffer.erase(cursor_position - 1, 1);
-            cursor_position -= 1;
-        }
-        else if (ebx == VK_DELETE)
-        {
-            if (cursor_position == _buffer.length())
-            {
-                return;
-            }
-
-            _buffer.erase(cursor_position, 1);
-        }
-        else if (eax == VK_RETURN)
+        if (charCode == VK_RETURN)
         {
             w->callOnMouseUp(Widx::ok);
             return;
         }
-        else if (eax == VK_ESCAPE)
+        else if (charCode == VK_ESCAPE)
         {
             w->callOnMouseUp(Widx::close);
             return;
         }
-        else if (ebx == VK_HOME)
+        else if (!inputSession.handleInput(charCode, keyCode))
         {
-            cursor_position = 0;
-        }
-        else if (ebx == VK_END)
-        {
-            cursor_position = _buffer.length();
-        }
-        else if (ebx == VK_LEFT)
-        {
-            if (cursor_position == 0)
-            {
-                // Cursor is at beginning
-                return;
-            }
-
-            cursor_position -= 1;
-        }
-        else if (ebx == VK_RIGHT)
-        {
-            if (cursor_position == _buffer.length())
-            {
-                // Cursor is at end
-                return;
-            }
-
-            cursor_position += 1;
+            return;
         }
 
         WindowManager::invalidate(WindowType::textInput, 0);
-        _cursorFrame = 0;
+        inputSession.cursorFrame = 0;
 
         int containerWidth = _widgets[Widx::input].width() - 2;
-        if (needsReoffsetting(containerWidth))
+        if (inputSession.needsReoffsetting(containerWidth))
         {
-            calculateTextOffset(containerWidth);
+            inputSession.calculateTextOffset(containerWidth);
         }
-    }
-
-    static bool needsReoffsetting(int16_t containerWidth)
-    {
-        std::string cursorStr = _buffer.substr(0, cursor_position);
-
-        _currentFontSpriteBase = Font::medium_bold;
-        auto stringWidth = Gfx::getStringWidth(_buffer.c_str());
-        auto cursorX = Gfx::getStringWidth(cursorStr.c_str());
-
-        int x = _xOffset + cursorX;
-
-        if (x < textboxPadding)
-            return true;
-
-        if (x > containerWidth - textboxPadding)
-            return true;
-
-        if (_xOffset + stringWidth < containerWidth - textboxPadding)
-            return true;
-
-        return false;
-    }
-
-    /**
-     * 0x004CEB67
-     *
-     * @param containerWidth @<edx>
-     */
-    void calculateTextOffset(int16_t containerWidth)
-    {
-        std::string cursorStr = _buffer.substr(0, cursor_position);
-
-        _currentFontSpriteBase = Font::medium_bold;
-        auto stringWidth = Gfx::getStringWidth(_buffer.c_str());
-        auto cursorX = Gfx::getStringWidth(cursorStr.c_str());
-
-        auto midX = containerWidth / 2;
-
-        // Prefer to centre cursor
-        _xOffset = -1 * (cursorX - midX);
-
-        // Make sure that text will always be at the left edge
-        int16_t minOffset = textboxPadding;
-        int16_t maxOffset = textboxPadding;
-
-        if (stringWidth + textboxPadding * 2 > containerWidth)
-        {
-            // Make sure that the whole textbox is filled up
-            minOffset = -stringWidth + containerWidth - textboxPadding;
-        }
-        _xOffset = std::clamp<int16_t>(_xOffset, minOffset, maxOffset);
-    }
-
-    /**
-     * 0x004CEBFB
-     */
-    static void sanitizeInput()
-    {
-        _buffer.erase(
-            std::remove_if(
-                _buffer.begin(),
-                _buffer.end(),
-                [](unsigned char chr) {
-                    if (chr < ' ')
-                    {
-                        return true;
-                    }
-                    else if (chr <= 'z')
-                    {
-                        return false;
-                    }
-                    else if (chr == 171)
-                    {
-                        return false;
-                    }
-                    else if (chr == 187)
-                    {
-                        return false;
-                    }
-                    else if (chr >= 191)
-                    {
-                        return false;
-                    }
-
-                    return true;
-                }),
-            _buffer.end());
     }
 }
