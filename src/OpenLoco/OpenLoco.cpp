@@ -173,14 +173,14 @@ namespace OpenLoco
         return (getScreenFlags() & ScreenFlags::networkHost) != 0;
     }
 
-    bool isUnknown4Mode()
+    bool isProgressBarActive()
     {
-        return (getScreenFlags() & ScreenFlags::unknown_4) != 0;
+        return (getScreenFlags() & ScreenFlags::progressBarActive) != 0;
     }
 
-    bool isUnknown5Mode()
+    bool isInitialised()
     {
-        return (getScreenFlags() & ScreenFlags::unknown_5) != 0;
+        return (getScreenFlags() & ScreenFlags::initialised) != 0;
     }
 
     bool isDriverCheatEnabled()
@@ -403,7 +403,7 @@ namespace OpenLoco
         call(0x004284C8);
         call(0x004969DA);
         call(0x0043C88C);
-        setScreenFlag(ScreenFlags::unknown_5);
+        setScreenFlag(ScreenFlags::initialised);
 #ifdef _SHOW_INTRO_
         Intro::state(Intro::intro_state::begin);
 #else

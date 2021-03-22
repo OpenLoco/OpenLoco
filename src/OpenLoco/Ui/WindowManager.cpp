@@ -1162,7 +1162,7 @@ namespace OpenLoco::Ui::WindowManager
                 return;
         }
 
-        if (isUnknown4Mode() && w->type != WindowType::progressBar)
+        if (isProgressBarActive() && w->type != WindowType::progressBar)
         {
             return;
         }
