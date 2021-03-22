@@ -926,7 +926,7 @@ namespace OpenLoco::Vehicles
         vehicleUpdate_targetZ = targetZ;
 
         // Helicopter
-        if (vehicleUpdate_var_525BB0 & (1 << 7))
+        if (vehicleUpdate_var_525BB0 & AirportMovementNodeFlags::heliTakeoffEnd)
         {
             vehicleUpdate_helicopterTargetYaw = targetYaw;
             targetYaw = sprite_yaw;
@@ -997,7 +997,7 @@ namespace OpenLoco::Vehicles
         }
 
         // Helicopter
-        if (vehicleUpdate_var_525BB0 & (1 << 7))
+        if (vehicleUpdate_var_525BB0 & AirportMovementNodeFlags::heliTakeoffEnd)
         {
             vehType2->currentSpeed = 8.0_mph;
             if (targetZ != z)
@@ -1008,7 +1008,7 @@ namespace OpenLoco::Vehicles
         else
         {
             uint32_t targetTolerance = 480;
-            if (airportApronArea != cAirportApronAreaNull)
+            if (airportMovementEdge != cAirportMovementNodeNull)
             {
                 targetTolerance = 5;
                 if (vehType2->currentSpeed >= 70.0_mph)
@@ -1023,36 +1023,36 @@ namespace OpenLoco::Vehicles
             }
         }
 
-        if (stationId != StationId::null && airportApronArea != cAirportApronAreaNull)
+        if (stationId != StationId::null && airportMovementEdge != cAirportMovementNodeNull)
         {
-            auto flags = sub_426E26(stationId, airportApronArea).first;
+            auto flags = airportGetMovementEdgeTarget(stationId, airportMovementEdge).first;
 
-            if (flags & (1 << 8))
+            if (flags & AirportMovementNodeFlags::touchdown)
             {
                 produceTouchdownAirportSound();
             }
-            if (flags & (1 << 3))
+            if (flags & AirportMovementNodeFlags::taxiing)
             {
                 updateLastJourneyAverageSpeed();
             }
 
-            if (flags & (1 << 0))
+            if (flags & AirportMovementNodeFlags::terminal)
             {
                 return sub_4A95CB();
             }
         }
 
-        auto apronArea = cAirportApronAreaNull;
+        auto movementEdge = cAirportMovementNodeNull;
         if (stationId != StationId::null)
         {
-            apronArea = airportApronArea;
+            movementEdge = airportMovementEdge;
         }
 
-        auto newApronArea = airportGetNextApronArea(apronArea);
+        auto newMovementEdge = airportGetNextMovementEdge(movementEdge);
 
-        if (newApronArea != static_cast<uint8_t>(-2))
+        if (newMovementEdge != static_cast<uint8_t>(-2))
         {
-            return sub_4A9348(newApronArea, targetZ);
+            return sub_4A9348(newMovementEdge, targetZ);
         }
 
         if (vehType2->currentSpeed > 30.0_mph)
@@ -1071,7 +1071,7 @@ namespace OpenLoco::Vehicles
     std::pair<Status, Speed16> VehicleHead::airplaneGetNewStatus()
     {
         Vehicle train(this);
-        if (stationId == StationId::null || airportApronArea == cAirportApronAreaNull)
+        if (stationId == StationId::null || airportMovementEdge == cAirportMovementNodeNull)
         {
             auto veh2 = train.veh2;
             auto targetSpeed = veh2->maxSpeed;
@@ -1103,8 +1103,8 @@ namespace OpenLoco::Vehicles
 
             auto airportObject = ObjectManager::get<airport_object>(elStation->objectId());
 
-            uint8_t al = airportObject->apronTransistions[airportApronArea].var_03;
-            uint8_t cl = airportObject->apronTransistions[airportApronArea].var_00;
+            uint8_t al = airportObject->movementEdges[airportMovementEdge].var_03;
+            uint8_t cl = airportObject->movementEdges[airportMovementEdge].var_00;
 
             auto veh2 = train.veh2;
             if (al != 0)
@@ -1187,19 +1187,19 @@ namespace OpenLoco::Vehicles
         status = Status::unk_2;
         status = airplaneGetNewStatus().first;
 
-        auto apronArea = cAirportApronAreaNull;
+        auto movementEdge = cAirportMovementNodeNull;
         if (stationId != StationId::null)
         {
-            apronArea = airportApronArea;
+            movementEdge = airportMovementEdge;
         }
 
-        auto newApronArea = airportGetNextApronArea(apronArea);
+        auto newMovementEdge = airportGetNextMovementEdge(movementEdge);
 
-        if (newApronArea != static_cast<uint8_t>(-2))
+        if (newMovementEdge != static_cast<uint8_t>(-2))
         {
             // Strangely the original would enter this function with an
             // uninitialised targetZ. We will pass a valid z.
-            return sub_4A9348(newApronArea, z);
+            return sub_4A9348(newMovementEdge, z);
         }
 
         status = Status::loading;
@@ -1211,7 +1211,7 @@ namespace OpenLoco::Vehicles
     {
         auto _yaw = sprite_yaw;
         // Helicopter
-        if (vehicleUpdate_var_525BB0 & (1 << 7))
+        if (vehicleUpdate_var_525BB0 & AirportMovementNodeFlags::heliTakeoffEnd)
         {
             _yaw = vehicleUpdate_helicopterTargetYaw;
         }
@@ -1271,30 +1271,30 @@ namespace OpenLoco::Vehicles
         return true;
     }
 
-    bool VehicleHead::sub_4A9348(uint8_t newApronArea, uint16_t target_z)
+    bool VehicleHead::sub_4A9348(uint8_t newMovementEdge, uint16_t targetZ)
     {
-        if (stationId != StationId::null && airportApronArea != cAirportApronAreaNull)
+        if (stationId != StationId::null && airportMovementEdge != cAirportMovementNodeNull)
         {
-            StationManager::get(stationId)->airportApronOccupiedAreas &= ~(1 << airportApronArea);
+            StationManager::get(stationId)->airportMovementOccupiedEdges &= ~(1 << airportMovementEdge);
         }
 
-        if (newApronArea == cAirportApronAreaNull)
+        if (newMovementEdge == cAirportMovementNodeNull)
         {
             beginNewJourney();
 
             if (sizeOfOrderTable == 1)
             {
                 // 0x4a94a5
-                airportApronArea = cAirportApronAreaNull;
-                return airplaneApproachTarget(target_z);
+                airportMovementEdge = cAirportMovementNodeNull;
+                return airplaneApproachTarget(targetZ);
             }
 
             auto orders = getCurrentOrders();
             auto* order = orders.begin()->as<OrderStopAt>();
             if (order == nullptr)
             {
-                airportApronArea = cAirportApronAreaNull;
-                return airplaneApproachTarget(target_z);
+                airportMovementEdge = cAirportMovementNodeNull;
+                return airplaneApproachTarget(targetZ);
             }
 
             station_id_t orderStationId = order->getStation();
@@ -1303,15 +1303,15 @@ namespace OpenLoco::Vehicles
 
             if (station == nullptr || !(station->flags & station_flags::flag_6))
             {
-                airportApronArea = cAirportApronAreaNull;
-                return airplaneApproachTarget(target_z);
+                airportMovementEdge = cAirportMovementNodeNull;
+                return airplaneApproachTarget(targetZ);
             }
 
             if (!isPlayerCompany(owner))
             {
                 stationId = orderStationId;
-                airportApronArea = cAirportApronAreaNull;
-                return airplaneApproachTarget(target_z);
+                airportMovementEdge = cAirportMovementNodeNull;
+                return airplaneApproachTarget(targetZ);
             }
 
             map_pos3 loc = {
@@ -1337,8 +1337,8 @@ namespace OpenLoco::Vehicles
                 if (airportObject->allowed_plane_types & planeType)
                 {
                     stationId = orderStationId;
-                    airportApronArea = cAirportApronAreaNull;
-                    return airplaneApproachTarget(target_z);
+                    airportMovementEdge = cAirportMovementNodeNull;
+                    return airplaneApproachTarget(targetZ);
                 }
 
                 if (owner == CompanyManager::getControllingId())
@@ -1350,8 +1350,8 @@ namespace OpenLoco::Vehicles
                         orderStationId);
                 }
 
-                airportApronArea = cAirportApronAreaNull;
-                return airplaneApproachTarget(target_z);
+                airportMovementEdge = cAirportMovementNodeNull;
+                return airplaneApproachTarget(targetZ);
             }
 
             // Todo: fail gracefully on tile not found
@@ -1362,13 +1362,13 @@ namespace OpenLoco::Vehicles
         }
         else
         {
-            airportApronArea = newApronArea;
+            airportMovementEdge = newMovementEdge;
             if (stationId != StationId::null)
             {
                 auto station = StationManager::get(stationId);
-                station->airportApronOccupiedAreas |= (1 << airportApronArea);
+                station->airportMovementOccupiedEdges |= (1 << airportMovementEdge);
             }
-            return airplaneApproachTarget(target_z);
+            return airplaneApproachTarget(targetZ);
         }
     }
 
@@ -1502,7 +1502,7 @@ namespace OpenLoco::Vehicles
         }
         else
         {
-            if (airportApronArea == cAirportApronAreaNull)
+            if (airportMovementEdge == cAirportMovementNodeNull)
             {
                 targetStationId = stationId;
             }
@@ -1515,7 +1515,7 @@ namespace OpenLoco::Vehicles
                 }
                 else
                 {
-                    auto [flags, pos] = sub_426E26(stationId, airportApronArea);
+                    auto [flags, pos] = airportGetMovementEdgeTarget(stationId, airportMovementEdge);
                     vehicleUpdate_var_525BB0 = flags;
                     targetPos = pos;
                 }
@@ -1551,8 +1551,8 @@ namespace OpenLoco::Vehicles
         return std::make_tuple(manhattanDistance, targetPos->z, targetYaw);
     }
 
-    // 0x00427214 returns next apron area or -2 if no valid transition or -1 for in flight
-    uint8_t VehicleHead::airportGetNextApronArea(uint8_t curApronArea)
+    // 0x00427214 returns next movement edge or -2 if no valid edge or -1 for in flight
+    uint8_t VehicleHead::airportGetNextMovementEdge(uint8_t curEdge)
     {
         auto station = StationManager::get(stationId);
 
@@ -1575,114 +1575,114 @@ namespace OpenLoco::Vehicles
 
             auto airportObject = ObjectManager::get<airport_object>(elStation->objectId());
 
-            if (curApronArea == cAirportApronAreaNull)
+            if (curEdge == cAirportMovementNodeNull)
             {
-                for (uint8_t apronArea = 0; apronArea < airportObject->numApronTransitions; apronArea++)
+                for (uint8_t movementEdge = 0; movementEdge < airportObject->numMovementEdges; movementEdge++)
                 {
-                    const auto& transition = airportObject->apronTransistions[apronArea];
-                    if (!(airportObject->apronAreas[transition.curApronArea].flags & ApronAreaFlags::flag2))
+                    const auto& transition = airportObject->movementEdges[movementEdge];
+                    if (!(airportObject->movementNodes[transition.curNode].flags & AirportMovementNodeFlags::flag2))
                     {
                         continue;
                     }
 
-                    if (station->airportApronOccupiedAreas & transition.mustBeClearAreas)
+                    if (station->airportMovementOccupiedEdges & transition.mustBeClearEdges)
                     {
                         continue;
                     }
 
-                    if (transition.atLeastOneClearAreas == 0)
+                    if (transition.atLeastOneClearEdges == 0)
                     {
-                        return apronArea;
+                        return movementEdge;
                     }
 
-                    auto occupiedAreas = station->airportApronOccupiedAreas & transition.atLeastOneClearAreas;
-                    if (occupiedAreas == transition.atLeastOneClearAreas)
+                    auto occupiedAreas = station->airportMovementOccupiedEdges & transition.atLeastOneClearEdges;
+                    if (occupiedAreas == transition.atLeastOneClearEdges)
                     {
                         continue;
                     }
 
-                    return apronArea;
+                    return movementEdge;
                 }
                 return -2;
             }
             else
             {
-                uint8_t targetApronArea = airportObject->apronTransistions[curApronArea].nextApronArea;
-                if (status == Status::takingOff && airportObject->apronAreas[targetApronArea].flags & ApronAreaFlags::takeoffEnd)
+                uint8_t targetNode = airportObject->movementEdges[curEdge].nextNode;
+                if (status == Status::takingOff && airportObject->movementNodes[targetNode].flags & AirportMovementNodeFlags::takeoffEnd)
                 {
-                    return cAirportApronAreaNull;
+                    return cAirportMovementNodeNull;
                 }
                 // 0x4272A5
                 Vehicle train(this);
                 auto vehObject = ObjectManager::get<vehicle_object>(train.cars.firstCar.front->object_id);
                 if (vehObject->flags & FlagsE0::isHelicopter)
                 {
-                    for (uint8_t apronArea = 0; apronArea < airportObject->numApronTransitions; apronArea++)
+                    for (uint8_t movementEdge = 0; movementEdge < airportObject->numMovementEdges; movementEdge++)
                     {
-                        const auto& transition = airportObject->apronTransistions[apronArea];
+                        const auto& transition = airportObject->movementEdges[movementEdge];
 
-                        if (transition.curApronArea != targetApronArea)
+                        if (transition.curNode != targetNode)
                         {
                             continue;
                         }
 
-                        if (airportObject->apronAreas[transition.nextApronArea].flags & ApronAreaFlags::takeoffBegin)
+                        if (airportObject->movementNodes[transition.nextNode].flags & AirportMovementNodeFlags::takeoffBegin)
                         {
                             continue;
                         }
 
-                        if (station->airportApronOccupiedAreas & transition.mustBeClearAreas)
+                        if (station->airportMovementOccupiedEdges & transition.mustBeClearEdges)
                         {
                             continue;
                         }
 
-                        if (transition.atLeastOneClearAreas == 0)
+                        if (transition.atLeastOneClearEdges == 0)
                         {
-                            return apronArea;
+                            return movementEdge;
                         }
 
-                        auto occupiedAreas = station->airportApronOccupiedAreas & transition.atLeastOneClearAreas;
-                        if (occupiedAreas == transition.atLeastOneClearAreas)
+                        auto occupiedAreas = station->airportMovementOccupiedEdges & transition.atLeastOneClearEdges;
+                        if (occupiedAreas == transition.atLeastOneClearEdges)
                         {
                             continue;
                         }
-                        return apronArea;
+                        return movementEdge;
                     }
 
                     return -2;
                 }
                 else
                 {
-                    for (uint8_t apronArea = 0; apronArea < airportObject->numApronTransitions; apronArea++)
+                    for (uint8_t movementEdge = 0; movementEdge < airportObject->numMovementEdges; movementEdge++)
                     {
-                        const auto& transition = airportObject->apronTransistions[apronArea];
-                        if (transition.curApronArea != targetApronArea)
+                        const auto& transition = airportObject->movementEdges[movementEdge];
+                        if (transition.curNode != targetNode)
                         {
                             continue;
                         }
 
-                        if (airportObject->apronAreas[transition.nextApronArea].flags & ApronAreaFlags::heliTakeoffBegin)
+                        if (airportObject->movementNodes[transition.nextNode].flags & AirportMovementNodeFlags::heliTakeoffBegin)
                         {
                             continue;
                         }
 
-                        if (station->airportApronOccupiedAreas & transition.mustBeClearAreas)
+                        if (station->airportMovementOccupiedEdges & transition.mustBeClearEdges)
                         {
                             continue;
                         }
 
-                        if (transition.atLeastOneClearAreas == 0)
+                        if (transition.atLeastOneClearEdges == 0)
                         {
-                            return apronArea;
+                            return movementEdge;
                         }
 
-                        auto occupiedAreas = station->airportApronOccupiedAreas & transition.atLeastOneClearAreas;
-                        if (occupiedAreas == transition.atLeastOneClearAreas)
+                        auto occupiedAreas = station->airportMovementOccupiedEdges & transition.atLeastOneClearEdges;
+                        if (occupiedAreas == transition.atLeastOneClearEdges)
                         {
                             continue;
                         }
 
-                        return apronArea;
+                        return movementEdge;
                     }
                     return -2;
                 }
@@ -1691,19 +1691,63 @@ namespace OpenLoco::Vehicles
 
         // Tile not found. Todo: fail gracefully
         assert(false);
-        return cAirportApronAreaNull;
+        return cAirportMovementNodeNull;
     }
 
     // 0x00426E26
-    std::pair<uint32_t, Map::map_pos3> VehicleHead::sub_426E26(station_id_t station, uint8_t unkVar68)
+    std::pair<uint32_t, Map::map_pos3> VehicleHead::airportGetMovementEdgeTarget(station_id_t targetStation, uint8_t curEdge)
     {
-        registers regs;
-        regs.esi = reinterpret_cast<int32_t>(this);
-        regs.eax = station;
-        regs.ebx = unkVar68;
-        call(0x00426E26, regs);
+        auto station = StationManager::get(targetStation);
+
+        map_pos3 staionLoc = {
+            station->unk_tile_x,
+            station->unk_tile_y,
+            station->unk_tile_z
+        };
+
+        auto tile = TileManager::get(staionLoc);
+
+        for (auto& el : tile)
+        {
+            auto elStation = el.asStation();
+            if (elStation == nullptr)
+                continue;
+
+            if (elStation->baseZ() != staionLoc.z / 4)
+                continue;
+
+            auto airportObject = ObjectManager::get<airport_object>(elStation->objectId());
+
+            auto destinationNode = airportObject->movementEdges[curEdge].nextNode;
+
+            map_pos loc2 = {
+                static_cast<int16_t>(airportObject->movementNodes[destinationNode].x - 16),
+                static_cast<int16_t>(airportObject->movementNodes[destinationNode].y - 16)
+            };
+            loc2 = Math::Vector::Rotate(loc2, elStation->rotation());
+            auto airportFlags = airportObject->movementNodes[destinationNode].flags;
+
+            loc2.x += 16 + staionLoc.x;
+            loc2.y += 16 + staionLoc.y;
+
+            map_pos3 loc = { loc2.x, loc2.y, static_cast<int16_t>(airportObject->movementNodes[destinationNode].z + staionLoc.z) };
+
+            if (!(airportFlags & AirportMovementNodeFlags::taxiing))
+            {
+                loc.z = staionLoc.z + 255;
+                if (!(airportFlags & AirportMovementNodeFlags::inFlight))
+                {
+                    loc.z = 960;
+                }
+            }
+
+            return std::make_pair(airportFlags, loc);
+        }
+
+        // Tile not found. Todo: fail gracefully
+        assert(false);
         // Flags, location
-        return std::make_pair(regs.ebx, Map::map_pos3{ regs.ax, regs.cx, regs.dx });
+        return std::make_pair(0, Map::map_pos3{ 0, 0, 0 });
     }
 
     // 0x004B980A
