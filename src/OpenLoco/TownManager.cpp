@@ -129,18 +129,21 @@ namespace OpenLoco::TownManager
             }
 
             // Work towards computing new build speed.
-            int16_t maxCargoDelivered = -1;
+            // will be the smallest of the influence cargo delivered to the town
+            // i.e. to get maximum growth max of the influence cargo must be delivered
+            // every update. If no influence cargo the grows at max rate
+            uint16_t minCargoDelivered = std::numeric_limits<uint16_t>::max();
             uint32_t cargoFlags = currTown.cargo_influence_flags;
             while (cargoFlags != 0)
             {
                 uint32_t cargoId = Utility::bitScanForward(cargoFlags);
                 cargoFlags &= ~(1 << cargoId);
 
-                maxCargoDelivered = std::max(maxCargoDelivered, currTown.monthly_cargo_delivered[cargoId]);
+                minCargoDelivered = std::min(minCargoDelivered, currTown.monthly_cargo_delivered[cargoId]);
             }
 
             // Compute build speed (1=slow build speed, 4=fast build speed)
-            currTown.build_speed = std::clamp((maxCargoDelivered / 100) + 1, 1, 4);
+            currTown.build_speed = std::clamp((minCargoDelivered / 100) + 1, 1, 4);
 
             // Reset all monthly_cargo_delivered intermediaries to zero.
             memset(&currTown.monthly_cargo_delivered, 0, sizeof(currTown.monthly_cargo_delivered));
