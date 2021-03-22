@@ -833,9 +833,24 @@ namespace OpenLoco::Vehicles
     // 0x004A8C81
     bool VehicleHead::sub_4A8C81()
     {
-        registers regs;
-        regs.esi = reinterpret_cast<uint32_t>(this);
-        return (call(0x004A8C81, regs) & (1 << 8)) == 0;
+        Vehicle2* vehType2 = vehicleUpdate_2;
+        if (vehType2->currentSpeed > 1.0_mph)
+        {
+            return landNormalMovementUpdate();
+        }
+
+        auto foundStationId = manualFindTrainStationAtLocation();
+        if (foundStationId == StationId::null)
+        {
+            return sub_4A8CB6();
+        }
+        stationId = foundStationId;
+        setStationVisitedTypes();
+        checkIfAtOrderStation();
+        updateLastJourneyAverageSpeed();
+        beginUnloading();
+
+        return sub_4A8CB6();
     }
 
     // 0x004A8FAC
@@ -2469,6 +2484,72 @@ namespace OpenLoco::Vehicles
         registers regs;
         regs.esi = reinterpret_cast<int32_t>(this);
         call(0x004AD93A, regs);
+    }
+
+    static station_id_t tryFindStationAt(VehicleBogie* bogie)
+    {
+        map_pos loc{ bogie->tile_x, bogie->tile_y };
+        auto baseZ = bogie->tile_base_z;
+        auto direction = bogie->var_2C & 3;
+        auto trackId = (bogie->var_2C >> 3) & 0x3F;
+
+        bool findStation = false;
+        auto tile = TileManager::get(loc);
+        for (auto& el : tile)
+        {
+            auto* elTrack = el.asTrack();
+            auto* elStation = el.asStation();
+            if (findStation && elStation != nullptr)
+            {
+                findStation = false;
+                if (elStation->isFlag5() || elStation->isGhost())
+                    continue;
+
+                return elStation->stationId();
+            }
+            if (elTrack == nullptr)
+                continue;
+
+            if (elTrack->baseZ() != baseZ)
+                continue;
+
+            if (elTrack->unkDirection() != direction)
+                continue;
+
+            if (elTrack->trackId() != trackId)
+                continue;
+
+            if (!elTrack->hasStationElement())
+                continue;
+
+            findStation = true;
+        }
+        return StationId::null;
+    }
+
+    // 0x004BABAD
+    // Manual control has much broader detection of when at a station
+    // it is defined as stationary with at least one bogie at the station
+    station_id_t VehicleHead::manualFindTrainStationAtLocation()
+    {
+        Vehicle train(this);
+        for (auto& car : train.cars)
+        {
+            for (auto& component : car)
+            {
+                auto foundStation = tryFindStationAt(component.front);
+                if (foundStation != StationId::null)
+                {
+                    return foundStation;
+                }
+                foundStation = tryFindStationAt(component.back);
+                if (foundStation != StationId::null)
+                {
+                    return foundStation;
+                }
+            }
+        }
+        return StationId::null;
     }
 
     OrderRingView Vehicles::VehicleHead::getCurrentOrders() const
