@@ -1,18 +1,30 @@
 #include "ProgressBar.h"
 #include "Interop/Interop.hpp"
+#include "OpenLoco.h"
 
 using namespace OpenLoco::Interop;
 
 namespace OpenLoco::ProgressBar
 {
+    static uint32_t _1136590;
+
     // 0x004CF5C5
-    // eax: maximum
     void begin(string_id stringId, int32_t edx)
     {
-        registers regs;
-        regs.eax = stringId;
-        regs.edx = edx;
-        call(0x004CF5C5, regs);
+        _1136590 = edx;
+        if (isInitialised())
+        {
+            _1136590 &= (1 << 31);
+            registers regs;
+            regs.eax = stringId;
+            call(0x004CF6B0, regs);
+        }
+        else
+        {
+            registers regs;
+            regs.eax = stringId;
+            call(0x004CF5DA, regs);
+        }
     }
 
     // 0x004CF621
@@ -24,9 +36,22 @@ namespace OpenLoco::ProgressBar
         call(0x004CF621, regs);
     }
 
+    // 0x00408163
+    static void destroyLoadingWindow()
+    {
+        call(0x00408163);
+    }
+
     // 0x004CF60B
     void end()
     {
-        call(0x004CF60B);
+        if (_1136590 & (1 << 31))
+        {
+            call(0x004CF74E);
+        }
+        else
+        {
+            destroyLoadingWindow();
+        }
     }
 }
