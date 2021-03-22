@@ -2168,7 +2168,7 @@ namespace OpenLoco::Ui::Options
             strcpy(buffer, playerName);
             buffer[strlen(playerName)] = '\0';
 
-            TextInput::openTextInput(w, StringIds::preferred_owner_name, StringIds::enter_preferred_owner_name, StringIds::buffer_2039, Widx::use_preferred_owner_name, nullptr);
+            Windows::TextInputWindow::openTextInput(w, StringIds::preferred_owner_name, StringIds::enter_preferred_owner_name, StringIds::buffer_2039, Widx::use_preferred_owner_name, nullptr);
         }
 
         // 0x004C1342
@@ -2402,7 +2402,7 @@ namespace OpenLoco::Ui::Options
     {
         Input::toolCancel(w->type, w->number);
 
-        TextInput::sub_4CE6C9(w->type, w->number);
+        Windows::TextInputWindow::sub_4CE6C9(w->type, w->number);
         w->current_tab = wi - Common::Widx::tab_display;
         w->frame_no = 0;
         w->flags &= ~(WindowFlags::flag_16);

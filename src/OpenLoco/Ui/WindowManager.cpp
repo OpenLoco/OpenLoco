@@ -1198,7 +1198,7 @@ namespace OpenLoco::Ui::WindowManager
             w->callUpdate();
         }
 
-        Ui::TextInput::sub_4CE6FF();
+        Ui::Windows::TextInputWindow::sub_4CE6FF();
         Ui::Windows::MapToolTip::open();
     }
 

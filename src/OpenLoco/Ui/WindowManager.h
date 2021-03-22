@@ -211,7 +211,7 @@ namespace OpenLoco::Ui::Windows::Terraform
     void registerHooks();
 }
 
-namespace OpenLoco::Ui::TextInput
+namespace OpenLoco::Ui::Windows::TextInputWindow
 {
     void registerHooks();
 
