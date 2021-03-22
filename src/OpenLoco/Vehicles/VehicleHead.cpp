@@ -795,9 +795,39 @@ namespace OpenLoco::Vehicles
     // 0x004A8CB6
     bool VehicleHead::sub_4A8CB6()
     {
-        registers regs;
-        regs.esi = reinterpret_cast<uint32_t>(this);
-        return (call(0x004A8CB6, regs) & (1 << 8)) == 0;
+        Vehicle1* vehType1 = vehicleUpdate_1;
+
+        if (x != vehType1->x || y != vehType1->y || z != vehType1->z)
+        {
+            sub_4AD93A();
+            if (status == Status::approaching)
+            {
+                stationId = StationId::null;
+                status = Status::unk_2;
+            }
+        }
+
+        Vehicle train(this);
+        auto* vehType2 = train.veh2;
+        if (vehType2->var_36 != var_36 || vehType2->var_2E != var_2E)
+        {
+            tryCreateInitialMovementSound();
+            return true;
+        }
+
+        status = Status::stopped;
+        vehType2 = vehicleUpdate_2;
+
+        if (vehType2->var_73 & Flags73::isBrokenDown)
+        {
+            stationId = StationId::null;
+            status = Status::brokenDown;
+
+            tryCreateInitialMovementSound();
+            return true;
+        }
+        tryCreateInitialMovementSound();
+        return true;
     }
 
     // 0x004A8C81
@@ -2431,6 +2461,14 @@ namespace OpenLoco::Vehicles
         registers regs;
         regs.esi = reinterpret_cast<int32_t>(this);
         return call(0x004ACCDC, regs) & (1 << 8);
+    }
+
+    // 0x004AD93A
+    void VehicleHead::sub_4AD93A()
+    {
+        registers regs;
+        regs.esi = reinterpret_cast<int32_t>(this);
+        call(0x004AD93A, regs);
     }
 
     OrderRingView Vehicles::VehicleHead::getCurrentOrders() const

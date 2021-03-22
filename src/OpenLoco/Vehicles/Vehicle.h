@@ -300,6 +300,7 @@ namespace OpenLoco::Vehicles
         bool sub_4AC1C2();
         bool sub_4AC0A3();
         bool sub_4ACCDC();
+        void sub_4AD93A();
     };
     static_assert(sizeof(VehicleHead) == 0x7A); // Can't use offset_of change this to last field if more found
 
