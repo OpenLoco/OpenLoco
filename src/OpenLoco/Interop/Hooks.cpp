@@ -765,7 +765,7 @@ void OpenLoco::Interop::registerHooks()
 
     Ui::ProgressBar::registerHooks();
     Ui::PromptBrowse::registerHooks();
-    Ui::Windows::TextInputWindow::registerHooks();
+    Ui::Windows::TextInput::registerHooks();
     Ui::ToolTip::registerHooks();
     Ui::Vehicle::registerHooks();
     Ui::BuildVehicle::registerHooks();

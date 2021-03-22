@@ -24,7 +24,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::Ui::Windows::TextInputWindow
+namespace OpenLoco::Ui::Windows::TextInput
 {
     static int16_t _callingWidget;
     static window_number _callingWindowNumber;
@@ -34,7 +34,7 @@ namespace OpenLoco::Ui::Windows::TextInputWindow
     static string_id _title;
     static string_id _message;
 
-    static TextInput::InputSession inputSession;
+    static Ui::TextInput::InputSession inputSession;
 
     static loco_global<char[16], 0x0112C826> _commonFormatArgs;
     static loco_global<int32_t, 0x0112C876> _currentFontSpriteBase;
@@ -140,7 +140,7 @@ namespace OpenLoco::Ui::Windows::TextInputWindow
         char temp[200] = {};
         StringManager::formatString(temp, value, valueArgs);
 
-        inputSession = TextInput::InputSession(temp);
+        inputSession = Ui::TextInput::InputSession(temp);
         inputSession.calculateTextOffset(_widgets[Widx::input].width() - 2);
 
         caller = WindowManager::find(_callingWindowType, _callingWindowNumber);

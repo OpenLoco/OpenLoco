@@ -3300,7 +3300,7 @@ namespace OpenLoco::Ui::Vehicle
                 args.push(StringIds::getVehicleType(vehicle->vehicleType)); // 0
                 args.skip(6);
                 args.push(StringIds::getVehicleType(vehicle->vehicleType)); // 8
-                Windows::TextInputWindow::openTextInput(self, StringIds::title_name_vehicle, StringIds::prompt_enter_new_vehicle_name, vehicle->var_22, widgetIndex, &vehicle->var_44);
+                Windows::TextInput::openTextInput(self, StringIds::title_name_vehicle, StringIds::prompt_enter_new_vehicle_name, vehicle->var_22, widgetIndex, &vehicle->var_44);
             }
         }
 
@@ -3308,7 +3308,7 @@ namespace OpenLoco::Ui::Vehicle
         static void switchTab(window* self, widget_index widgetIndex)
         {
             Input::toolCancel(self->type, self->number);
-            Windows::TextInputWindow::sub_4CE6C9(self->type, self->number);
+            Windows::TextInput::sub_4CE6C9(self->type, self->number);
 
             self->current_tab = widgetIndex - Common::widx::tabMain;
             self->frame_no = 0;

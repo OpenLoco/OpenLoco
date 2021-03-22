@@ -171,7 +171,7 @@ namespace OpenLoco::Ui::PromptBrowse
         auto directory = getDirectory(path);
         auto baseName = getBasename(path);
 
-        Windows::TextInputWindow::cancel();
+        Windows::TextInput::cancel();
 
         *_type = type;
         *_fileType = browse_file_type::saved_game;

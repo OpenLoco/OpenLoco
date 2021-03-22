@@ -361,7 +361,7 @@ namespace OpenLoco
         // tooltip-related
         _52336E = 0;
 
-        Ui::Windows::TextInputWindow::cancel();
+        Ui::Windows::TextInput::cancel();
 
         StringManager::formatString(_11367A0, StringIds::label_button_ok);
         StringManager::formatString(_11368A0, StringIds::label_button_cancel);
