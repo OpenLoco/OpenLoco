@@ -12,6 +12,7 @@
 #include "../S5/S5.h"
 #include "../Scenario.h"
 #include "../Ui.h"
+#include "../Ui/TextInput.h"
 #include "../Ui/WindowManager.h"
 #include "../Utility/String.hpp"
 #include "../Win32.h"
@@ -119,13 +120,10 @@ namespace OpenLoco::Ui::PromptBrowse
     static loco_global<char[32], 0x009D9E64> _filter;
     static loco_global<char[512], 0x009D9E84> _directory;
     static loco_global<char[512], 0x0112CC04> _stringFormatBuffer;
-    static std::string _textInputBuffer;
     static loco_global<int16_t, 0x009D1084> _numFiles;
     static loco_global<file_entry*, 0x0050AEA4> _files;
 
-    static size_t _textInputCaret; // 0x01136FA2
-    static loco_global<uint8_t, 0x01136FA4> _textInputLeft;
-    static loco_global<uint8_t, 0x011370A9> _cursorFrame;
+    static TextInput::InputSession inputSession;
 
     static std::vector<file_entry> _newFiles;
 
@@ -150,15 +148,6 @@ namespace OpenLoco::Ui::PromptBrowse
     static void refreshDirectoryList();
     static void sub_446E87(window* self);
     static bool filenameContainsInvalidChars();
-
-    // 0x004CEB67
-    // TODO: replace with Ui::TextInput::calculateTextOffset
-    static void calculateTextOffset(int16_t dx)
-    {
-        registers regs;
-        regs.dx = dx;
-        call(0x004CEB67, regs);
-    }
 
     // 0x00445AB9
     // ecx: path
@@ -199,7 +188,7 @@ namespace OpenLoco::Ui::PromptBrowse
         Utility::strcpy_safe(_filter, filter);
 
         Utility::strcpy_safe(_directory, directory.make_preferred().u8string().c_str());
-        _textInputBuffer = baseName;
+        inputSession = TextInput::InputSession(baseName);
 
         refreshDirectoryList();
 
@@ -215,17 +204,13 @@ namespace OpenLoco::Ui::PromptBrowse
             window->enabled_widgets = (1 << widx::close_button) | (1 << widx::parent_button) | (1 << widx::ok_button);
             window->initScrollWidgets();
 
-            _textInputCaret = _textInputBuffer.length();
-            _cursorFrame = 0;
-            _textInputLeft = 0;
-
             window->row_height = 11;
             window->var_85A = -1;
 
             addr<0x009DA285, uint8_t>() = 0;
 
             auto& widget = window->widgets[widx::text_filename];
-            calculateTextOffset(widget.width());
+            inputSession.calculateTextOffset(widget.width());
 
             window->colours[0] = Colour::black;
             window->colours[1] = Colour::saturated_green;
@@ -291,8 +276,8 @@ namespace OpenLoco::Ui::PromptBrowse
     // 0x004467E1
     static void onUpdate(Ui::window* window)
     {
-        _cursorFrame++;
-        if ((_cursorFrame & 0x0F) == 0)
+        inputSession.cursorFrame++;
+        if ((inputSession.cursorFrame & 0x0F) == 0)
         {
             window->invalidate();
         }
@@ -327,8 +312,8 @@ namespace OpenLoco::Ui::PromptBrowse
         if (Input::state() == Input::input_state::scroll_left)
         {
             // Copy the selected filename without extension to text input buffer.
-            _textInputBuffer = entry.get_name();
-            _textInputCaret = _textInputBuffer.length();
+            inputSession.buffer = entry.get_name();
+            inputSession.cursorPosition = inputSession.buffer.length();
             self->invalidate();
 
             // Continue processing for load/save.
@@ -498,7 +483,7 @@ namespace OpenLoco::Ui::PromptBrowse
                     filenameBox.right - filenameBox.left - 1,
                     filenameBox.bottom - filenameBox.top - 1))
             {
-                drawTextInput(window, *dpi2, _textInputBuffer.c_str(), _textInputCaret, (_cursorFrame & 0x10) == 0);
+                drawTextInput(window, *dpi2, inputSession.buffer.c_str(), inputSession.cursorPosition, (inputSession.cursorFrame & 0x10) == 0);
             }
         }
     }
@@ -675,43 +660,7 @@ namespace OpenLoco::Ui::PromptBrowse
         if (w == nullptr)
             return;
 
-        if ((charCode >= VK_SPACE && charCode < VK_F12) || (charCode >= 159 && charCode <= 255))
-        {
-            if (_textInputBuffer.length() >= 80)
-                return;
-
-            if (_textInputCaret == _textInputBuffer.length())
-            {
-                _textInputBuffer.append(1, static_cast<char>(charCode));
-            }
-            else
-            {
-                _textInputBuffer.insert(_textInputCaret, 1, static_cast<char>(charCode));
-            }
-
-            _textInputCaret += 1;
-        }
-        else if (charCode == VK_BACK)
-        {
-            if (_textInputCaret == 0)
-            {
-                // Cursor is at beginning
-                return;
-            }
-
-            _textInputBuffer.erase(_textInputCaret - 1, 1);
-            _textInputCaret -= 1;
-        }
-        else if (keyCode == VK_DELETE)
-        {
-            if (_textInputCaret == _textInputBuffer.length())
-            {
-                return;
-            }
-
-            _textInputBuffer.erase(_textInputCaret, 1);
-        }
-        else if (keyCode == VK_RETURN)
+        if (keyCode == VK_RETURN)
         {
             w->callOnMouseUp(widx::ok_button);
             return;
@@ -721,41 +670,18 @@ namespace OpenLoco::Ui::PromptBrowse
             w->callOnMouseUp(widx::close_button);
             return;
         }
-        else if (keyCode == VK_HOME)
+        else if (!inputSession.handleInput(charCode, keyCode))
         {
-            _textInputCaret = 0;
-        }
-        else if (keyCode == VK_END)
-        {
-            _textInputCaret = _textInputBuffer.length();
-        }
-        else if (keyCode == VK_LEFT)
-        {
-            if (_textInputCaret == 0)
-            {
-                // Cursor is at beginning
-                return;
-            }
-
-            _textInputCaret -= 1;
-        }
-        else if (keyCode == VK_RIGHT)
-        {
-            if (_textInputCaret == _textInputBuffer.length())
-            {
-                // Cursor is at end
-                return;
-            }
-
-            _textInputCaret += 1;
+            return;
         }
 
         // 0x00446A6E
+        auto containerWidth = w->widgets[widx::text_filename].width() - 2;
+        if (inputSession.needsReoffsetting(containerWidth))
+        {
+            inputSession.calculateTextOffset(containerWidth);
+        }
         w->invalidate();
-        auto& widget = w->widgets[widx::text_filename];
-
-        // TODO: this still needs to be adapted.
-        calculateTextOffset(widget.width());
     }
 
     static fs::path getDirectory(const fs::path& path)
@@ -922,7 +848,7 @@ namespace OpenLoco::Ui::PromptBrowse
     static bool filenameContainsInvalidChars()
     {
         uint8_t numNonSpacesProcessed = 0;
-        for (const char chr : _textInputBuffer)
+        for (const char chr : inputSession.buffer)
         {
             if (chr != ' ')
                 numNonSpacesProcessed++;
@@ -973,7 +899,7 @@ namespace OpenLoco::Ui::PromptBrowse
             }
 
             // Create full path to target file.
-            fs::path path = fs::path(&_directory[0]) / _textInputBuffer;
+            fs::path path = fs::path(&_directory[0]) / inputSession.buffer;
 
             // Append extension to filename.
             path += getExtensionFromFileType(_fileType);
@@ -983,7 +909,7 @@ namespace OpenLoco::Ui::PromptBrowse
             {
                 // Copy directory and filename to buffer.
                 char* buffer_2039 = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
-                strncpy(&buffer_2039[0], _textInputBuffer.c_str(), 512);
+                strncpy(&buffer_2039[0], inputSession.buffer.c_str(), 512);
 
                 FormatArguments args{};
                 args.push(StringIds::buffer_2039);
@@ -1010,7 +936,7 @@ namespace OpenLoco::Ui::PromptBrowse
         {
             // Copy scenario path into expected address. Trailing / on directory is assumed.
             // TODO: refactor to fs::path?
-            strncat(_directory, _textInputBuffer.c_str(), std::size(_directory));
+            strncat(_directory, inputSession.buffer.c_str(), std::size(_directory));
             strncat(_directory, getExtensionFromFileType(_fileType), std::size(_directory));
 
             // Close browse window to start loading.
