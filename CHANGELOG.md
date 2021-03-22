@@ -3,6 +3,7 @@
 - Fix: [#809] Audio calculation not using the z axis.
 - Fix: [#825] Potential crash when opening town rename prompt.
 - Fix: [#838] Escape key doesn't work in confirmation windows.
+- Fix: [#845] Town growth incorrectly calculated causing more aggressive growth than should be possible.
 
 21.03 (2021-03-06)
 ------------------------------------------------------------------------
