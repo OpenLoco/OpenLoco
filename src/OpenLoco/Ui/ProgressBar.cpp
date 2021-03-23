@@ -1,10 +1,10 @@
 #include "ProgressBar.h"
-#include "Interop/Interop.hpp"
-#include "OpenLoco.h"
+#include "../Interop/Interop.hpp"
+#include "../OpenLoco.h"
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::ProgressBar
+namespace OpenLoco::Ui::ProgressBar
 {
     static uint32_t _1136590;
 

@@ -40,7 +40,6 @@
 #include "Objects/ObjectManager.h"
 #include "OpenLoco.h"
 #include "Platform/Platform.h"
-#include "ProgressBar.h"
 #include "S5/S5.h"
 #include "ScenarioManager.h"
 #include "StationManager.h"
@@ -49,6 +48,7 @@
 #include "TownManager.h"
 #include "Tutorial.h"
 #include "Ui.h"
+#include "Ui/ProgressBar.h"
 #include "Ui/WindowManager.h"
 #include "Utility/Numeric.hpp"
 #include "ViewportManager.h"
@@ -380,24 +380,24 @@ namespace OpenLoco
         Environment::resolvePaths();
         Localisation::enumerateLanguages();
         Localisation::loadLanguageFile();
-        ProgressBar::begin(StringIds::loading, 0);
-        ProgressBar::setProgress(30);
+        Ui::ProgressBar::begin(StringIds::loading, 0);
+        Ui::ProgressBar::setProgress(30);
         startupChecks();
-        ProgressBar::setProgress(40);
+        Ui::ProgressBar::setProgress(40);
         call(0x004BE5DE);
-        ProgressBar::end();
+        Ui::ProgressBar::end();
         Config::read();
         ObjectManager::loadIndex();
         ScenarioManager::loadIndex(0);
-        ProgressBar::begin(StringIds::loading, 0);
-        ProgressBar::setProgress(60);
+        Ui::ProgressBar::begin(StringIds::loading, 0);
+        Ui::ProgressBar::setProgress(60);
         Gfx::loadG1();
-        ProgressBar::setProgress(220);
+        Ui::ProgressBar::setProgress(220);
         call(0x004949BC);
-        ProgressBar::setProgress(235);
-        ProgressBar::setProgress(250);
+        Ui::ProgressBar::setProgress(235);
+        Ui::ProgressBar::setProgress(250);
         Ui::initialiseCursors();
-        ProgressBar::end();
+        Ui::ProgressBar::end();
         Ui::initialise();
         initialiseViewports();
         call(0x004284C8);
