@@ -91,7 +91,6 @@
     <ClCompile Include="Paint\PaintVehicle.cpp" />
     <ClCompile Include="Platform\Platform.Posix.cpp" />
     <ClCompile Include="Platform\Platform.Windows.cpp" />
-    <ClCompile Include="ProgressBar.cpp" />
     <ClCompile Include="S5\S5.cpp" />
     <ClCompile Include="S5\SawyerStream.cpp" />
     <ClCompile Include="Scenario.cpp" />
@@ -110,6 +109,7 @@
     <ClCompile Include="Ui\Dropdown.cpp" />
     <ClCompile Include="Ui\Screenshot.cpp" />
     <ClCompile Include="Ui\ScrollView.cpp" />
+    <ClCompile Include="Ui\ProgressBar.cpp" />
     <ClCompile Include="Ui\ViewportInteraction.cpp" />
     <ClCompile Include="Ui\WindowManager.cpp" />
     <ClCompile Include="Utility\Numeric.cpp" />
@@ -163,6 +163,7 @@
     <ClCompile Include="Windows\ObjectSelectionWindow.cpp" />
     <ClCompile Include="Windows\Options.cpp" />
     <ClCompile Include="Windows\PlayerInfoPanel.cpp" />
+    <ClCompile Include="Windows\ProgressBar.cpp" />
     <ClCompile Include="Windows\PromptBrowseWindow.cpp" />
     <ClCompile Include="Windows\PromptOkCancelWindow.cpp" />
     <ClCompile Include="Windows\ScenarioOptions.cpp" />
@@ -298,6 +299,7 @@
     <ClInclude Include="Ui\Rect.h" />
     <ClInclude Include="Ui\Screenshot.h" />
     <ClInclude Include="Ui\ScrollView.h" />
+    <ClInclude Include="Ui\ProgressBar.h" />
     <ClInclude Include="Ui\WindowManager.h" />
     <ClInclude Include="Ui\WindowType.h" />
     <ClInclude Include="Utility\Collection.hpp" />

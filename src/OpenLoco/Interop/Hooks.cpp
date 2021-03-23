@@ -24,6 +24,7 @@
 #include "../Title.h"
 #include "../Tutorial.h"
 #include "../Ui.h"
+#include "../Ui/ProgressBar.h"
 #include "../Ui/WindowManager.h"
 #include "../Utility/String.hpp"
 #include "../Vehicles/Vehicle.h"
@@ -762,6 +763,7 @@ void OpenLoco::Interop::registerHooks()
             return 0;
         });
 
+    Ui::ProgressBar::registerHooks();
     Ui::PromptBrowse::registerHooks();
     Ui::TextInput::registerHooks();
     Ui::ToolTip::registerHooks();
