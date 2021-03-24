@@ -16,5 +16,5 @@ namespace std
 }
 #endif
 #else
-#error "<optional> header not found"
+#error "__has_include operator is unavailable; <optional> header could not be located"
 #endif
