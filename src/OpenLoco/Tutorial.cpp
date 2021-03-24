@@ -113,7 +113,7 @@ namespace OpenLoco::Tutorial
             }
 
             // Get the environment file for this tutorial.
-            static const Environment::path_id tutorialFileIds[] = {
+            static constexpr Environment::path_id tutorialFileIds[] = {
                 Environment::path_id::tut1024_1,
                 Environment::path_id::tut1024_2,
                 Environment::path_id::tut1024_3,
@@ -126,7 +126,7 @@ namespace OpenLoco::Tutorial
             _tutorialIt = _tutorialData.cbegin();
 
             // Set the first string to show.
-            static const string_id openingStringIds[] = {
+            static constexpr string_id openingStringIds[] = {
                 StringIds::tutorial_1_string_1,
                 StringIds::tutorial_2_string_1,
                 StringIds::tutorial_3_string_1,
@@ -175,6 +175,11 @@ namespace OpenLoco::Tutorial
         string_id currentString = *_tutorialString;
         _tutorialString = currentString + 1;
         return currentString;
+    }
+
+    uint8_t getTutorialNumber()
+    {
+        return _tutorialNumber;
     }
 
     // 0x00445A30

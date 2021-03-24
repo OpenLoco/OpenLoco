@@ -2,8 +2,6 @@
 #include "Graphics/Colour.h"
 #include "Interop/Interop.hpp"
 #include "Map/Tile.h"
-#include "Objects/InterfaceSkinObject.h"
-#include "Objects/ObjectManager.h"
 #include "OpenLoco.h"
 #include "Tutorial.h"
 #include "Ui.h"
@@ -44,22 +42,7 @@ namespace OpenLoco::Gui
 
             if (OpenLoco::Tutorial::state() != Tutorial::tutorial_state::none)
             {
-
-                auto window = WindowManager::createWindow(
-                    WindowType::tutorial,
-                    Gfx::point_t(140, Ui::height() - 27),
-                    Gfx::ui_size_t(Ui::width() - 280, 27),
-                    Ui::WindowFlags::stick_to_front | Ui::WindowFlags::transparent | Ui::WindowFlags::no_background,
-                    (Ui::window_event_list*)0x4fa10c);
-                window->widgets = (Ui::widget_t*)0x509de0;
-                window->initScrollWidgets();
-
-                auto skin = OpenLoco::ObjectManager::get<interface_skin_object>();
-                if (skin != nullptr)
-                {
-                    window->colours[0] = Colour::translucent(skin->colour_06);
-                    window->colours[1] = Colour::translucent(skin->colour_07);
-                }
+                Windows::Tutorial::open();
             }
         }
 
