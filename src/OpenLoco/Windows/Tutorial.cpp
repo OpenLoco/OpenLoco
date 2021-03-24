@@ -1,18 +1,14 @@
 #include "../Tutorial.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/Gfx.h"
-#include "../Interop/Interop.hpp"
 #include "../Localisation/FormatArguments.hpp"
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/ObjectManager.h"
 #include "../OpenLoco.h"
 #include "../Ui.h"
 #include "../Ui/WindowManager.h"
-#include "../Window.h"
 
 #include <array>
-
-using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::Tutorial
 {
@@ -68,21 +64,21 @@ namespace OpenLoco::Ui::Windows::Tutorial
     {
         self->draw(dpi);
 
-        static constexpr std::array<string_id, 3> titleStringIds[] = {
+        static constexpr string_id titleStringIds[] = {
             StringIds::tutorial_1_title,
             StringIds::tutorial_2_title,
             StringIds::tutorial_3_title,
         };
 
         auto tutorialNumber = OpenLoco::Tutorial::getTutorialNumber();
-        auto args = FormatArguments::common(titleStringIds->at(tutorialNumber));
+        auto args = FormatArguments::common(titleStringIds[tutorialNumber]);
 
         auto& widget = self->widgets[Widx::frame];
         auto yPos = self->y + widget.top + 4;
-        drawStringCentred(*dpi, self->x + widget.mid_x(), yPos, Colour::black, StringIds::tutorial_text, &args);
+        Gfx::drawStringCentred(*dpi, self->x + widget.mid_x(), yPos, Colour::black, StringIds::tutorial_text, &args);
 
         yPos += 10;
-        drawStringCentred(*dpi, self->x + widget.mid_x(), yPos, Colour::black, StringIds::tutorial_control, nullptr);
+        Gfx::drawStringCentred(*dpi, self->x + widget.mid_x(), yPos, Colour::black, StringIds::tutorial_control, nullptr);
     }
 
     static void initEvents()
