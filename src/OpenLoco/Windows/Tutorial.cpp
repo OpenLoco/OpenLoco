@@ -62,8 +62,6 @@ namespace OpenLoco::Ui::Windows::Tutorial
     // 0x00439B4A
     static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
     {
-        self->draw(dpi);
-
         static constexpr string_id titleStringIds[] = {
             StringIds::tutorial_1_title,
             StringIds::tutorial_2_title,
