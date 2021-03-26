@@ -156,6 +156,7 @@ namespace OpenLoco::Config
         bool zoom_to_cursor = true;
         int32_t autosave_frequency = 1;
         int32_t autosave_amount = 12;
+        bool showFPS = false;
     };
 
 #pragma pack(pop)

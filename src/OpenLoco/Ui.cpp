@@ -434,7 +434,10 @@ namespace OpenLoco::Ui
             }
 
             // Draw FPS counter?
-            Drawing::drawFPS();
+            if (Config::getNew().showFPS)
+            {
+                Drawing::drawFPS();
+            }
 
             // Copy pixels from the virtual screen buffer to the surface
             auto& dpi = Gfx::screenDpi();
