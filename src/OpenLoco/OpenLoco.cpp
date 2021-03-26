@@ -380,7 +380,7 @@ namespace OpenLoco
         Environment::resolvePaths();
         Localisation::enumerateLanguages();
         Localisation::loadLanguageFile();
-        Ui::ProgressBar::begin(StringIds::loading, 0);
+        Ui::ProgressBar::begin(StringIds::loading);
         Ui::ProgressBar::setProgress(30);
         startupChecks();
         Ui::ProgressBar::setProgress(40);
@@ -389,7 +389,7 @@ namespace OpenLoco
         Config::read();
         ObjectManager::loadIndex();
         ScenarioManager::loadIndex(0);
-        Ui::ProgressBar::begin(StringIds::loading, 0);
+        Ui::ProgressBar::begin(StringIds::loading);
         Ui::ProgressBar::setProgress(60);
         Gfx::loadG1();
         Ui::ProgressBar::setProgress(220);

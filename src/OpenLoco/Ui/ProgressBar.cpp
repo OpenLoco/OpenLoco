@@ -9,8 +9,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::ProgressBar
 {
-    static constexpr uint32_t _isInternalWindow = (1 << 31);
-    static uint32_t _1136590;
+    static bool _isInternalWindow = false;
     static char _captionBuffer[256] = {};
 
     // 0x004CF5DA
@@ -23,12 +22,11 @@ namespace OpenLoco::Ui::ProgressBar
     }
 
     // 0x004CF5C5
-    void begin(string_id captionStringId, int32_t edx)
+    void begin(string_id captionStringId)
     {
-        _1136590 = edx;
         if (isInitialised())
         {
-            _1136590 |= _isInternalWindow;
+            _isInternalWindow = true;
             if (captionStringId != StringIds::null)
             {
                 auto args = FormatArguments::common();
@@ -61,7 +59,7 @@ namespace OpenLoco::Ui::ProgressBar
     // eax: value
     void setProgress(int32_t value)
     {
-        if (_1136590 & _isInternalWindow)
+        if (_isInternalWindow)
         {
             Windows::ProgressBar::setProgress(value);
         }
@@ -81,7 +79,7 @@ namespace OpenLoco::Ui::ProgressBar
     // 0x004CF60B
     void end()
     {
-        if (_1136590 & _isInternalWindow)
+        if (_isInternalWindow)
         {
             Windows::ProgressBar::close();
         }
@@ -97,7 +95,7 @@ namespace OpenLoco::Ui::ProgressBar
             0x004CF5C5,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                begin(regs.eax, regs.edx);
+                begin(regs.eax);
                 regs = backup;
                 return 0;
             });

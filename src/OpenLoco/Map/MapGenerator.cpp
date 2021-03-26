@@ -483,7 +483,7 @@ namespace OpenLoco::Map::MapGenerator
 
         WindowManager::close(WindowType::town);
         WindowManager::close(WindowType::industry);
-        Ui::ProgressBar::begin(StringIds::generating_landscape, 0);
+        Ui::ProgressBar::begin(StringIds::generating_landscape);
 
         auto rotation = WindowManager::getCurrentRotation();
         Scenario::reset();
