@@ -2,6 +2,7 @@
 
 #include "Graphics/Gfx.h"
 #include "Interop/Interop.hpp"
+#include "Location.hpp"
 #include "Map/Map.hpp"
 #include "Types.hpp"
 #include <algorithm>

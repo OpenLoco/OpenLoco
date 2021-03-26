@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../Environment.h"
+#include "../Location.hpp"
 #include "../Types.hpp"
 #include <string>
 #include <tuple>
