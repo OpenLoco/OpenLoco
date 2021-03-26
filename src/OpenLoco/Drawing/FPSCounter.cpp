@@ -21,11 +21,11 @@ namespace OpenLoco::Drawing
         _currentFrameCount++;
 
         auto currentTime = std::chrono::high_resolution_clock::now();
-        auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(currentTime - _referenceTime).count() / 1000.0;
+        auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - _referenceTime).count() / 1000.0;
 
-        if (elapsed > 1000)
+        if (elapsed > 1.0)
         {
-            _currentFPS = _currentFrameCount;
+            _currentFPS = _currentFrameCount / elapsed;
             _currentFrameCount = 0;
             _referenceTime = currentTime;
         }
