@@ -8,6 +8,15 @@
 namespace OpenLoco
 {
     using string_id = uint16_t;
+
+    namespace Engine
+    {
+        constexpr uint32_t MaxTimeDeltaMs = 500;
+        constexpr uint32_t UpdateRateHz = 40;
+        constexpr uint32_t UpdateRateInMs = 1000 / UpdateRateHz;
+        constexpr uint32_t MaxUpdates = 3;
+    }
+
     namespace ScreenFlags
     {
         constexpr uint16_t title = 1 << 0;

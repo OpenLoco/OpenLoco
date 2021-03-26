@@ -1,9 +1,11 @@
 #include <algorithm>
 #include <cassert>
+#include <chrono>
 #include <cstring>
 #include <iostream>
 #include <setjmp.h>
 #include <string>
+#include <thread>
 #include <vector>
 
 #ifdef _WIN32
@@ -61,6 +63,12 @@ using namespace OpenLoco::Input;
 
 namespace OpenLoco
 {
+    using Clock = std::chrono::high_resolution_clock;
+    using Timepoint = Clock::time_point;
+
+    static double _accumulator = 0.0;
+    static Timepoint _lastUpdate = Clock::now();
+
 #ifdef _WIN32
     loco_global<HINSTANCE, 0x0113E0B4> ghInstance;
     loco_global<LPSTR, 0x00525348> glpCmdLine;
@@ -95,7 +103,6 @@ namespace OpenLoco
     static void autosaveReset();
     static void tickLogic(int32_t count);
     static void tickLogic();
-    static void tickWait();
     static void dateTick();
     static void sub_46FFCA();
 
@@ -612,7 +619,6 @@ namespace OpenLoco
                 Gfx::invalidateScreen();
                 if (Config::get().var_72 != 96)
                 {
-                    tickWait();
                     return;
                 }
                 Config::get().var_72 = 1;
@@ -739,8 +745,6 @@ namespace OpenLoco
                 Ui::setCursorPos(addr<0x00F2538C, int32_t>(), addr<0x00F25390, int32_t>());
             }
         }
-
-        tickWait();
     }
 
     static void tickLogic(int32_t count)
@@ -986,12 +990,12 @@ namespace OpenLoco
         }
     }
 
-    // 0x0046AD4D
-    void tickWait()
+    static void tickWait()
     {
+        // Idle loop for a 40 FPS
         do
         {
-            // Idle loop for a 40 FPS
+            std::this_thread::yield();
         } while (platform::getTime() - last_tick_time < 25);
     }
 
@@ -999,18 +1003,58 @@ namespace OpenLoco
     {
         while (true)
         {
-            auto startTime = platform::getTime();
+            last_tick_time = platform::getTime();
             time_since_last_tick = 31;
             if (!Ui::processMessages() || !tickAction())
             {
                 break;
             }
             Ui::render();
-            do
-            {
-                // Idle loop for a 40 FPS
-            } while (platform::getTime() - startTime < 25);
+            tickWait();
         }
+    }
+
+    constexpr auto MaxUpdateTime = static_cast<double>(Engine::MaxTimeDeltaMs) / 1000.0;
+    constexpr auto UpdateTime = static_cast<double>(Engine::UpdateRateInMs) / 1000.0;
+
+    static void variableUpdate()
+    {
+        while (_accumulator >= UpdateTime)
+        {
+            tick();
+            _accumulator -= UpdateTime;
+        }
+
+        Ui::render();
+    }
+
+    static void fixedUpdate()
+    {
+        if (_accumulator < UpdateTime)
+        {
+            auto timeMissing = static_cast<uint32_t>((UpdateTime - _accumulator) * 1000);
+            std::this_thread::sleep_for(std::chrono::milliseconds(timeMissing));
+        }
+
+        tick();
+        _accumulator -= UpdateTime;
+
+        Ui::render();
+    }
+
+    static void update()
+    {
+        auto timeNow = Clock::now();
+        auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(timeNow - _lastUpdate).count() / 1'000'000.0;
+
+        _accumulator = std::min(_accumulator + elapsed, MaxUpdateTime);
+        _lastUpdate = timeNow;
+
+        // TODO: Make this a configuration.
+        if (true)
+            variableUpdate();
+        else
+            fixedUpdate();
     }
 
     // 0x00406386
@@ -1047,8 +1091,7 @@ namespace OpenLoco
                 sub_4058F5();
             }
             sub_4062E0();
-            tick();
-            Ui::render();
+            update();
         }
         sub_40567E();
 
