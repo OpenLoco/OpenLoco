@@ -1,8 +1,8 @@
 #include "MapGenerator.h"
 #include "../Interop/Interop.hpp"
-#include "../ProgressBar.h"
 #include "../S5/S5.h"
 #include "../Scenario.h"
+#include "../Ui/ProgressBar.h"
 #include "../Ui/WindowManager.h"
 #include "Tile.h"
 #include "TileLoop.hpp"
@@ -473,7 +473,7 @@ namespace OpenLoco::Map::MapGenerator
     static void updateProgress(uint8_t value)
     {
         miniMessageLoop();
-        ProgressBar::setProgress(value);
+        Ui::ProgressBar::setProgress(value);
     }
 
     // 0x0043C90C
@@ -483,7 +483,7 @@ namespace OpenLoco::Map::MapGenerator
 
         WindowManager::close(WindowType::town);
         WindowManager::close(WindowType::industry);
-        ProgressBar::begin(StringIds::generating_landscape, 0);
+        Ui::ProgressBar::begin(StringIds::generating_landscape);
 
         auto rotation = WindowManager::getCurrentRotation();
         Scenario::reset();
@@ -533,6 +533,6 @@ namespace OpenLoco::Map::MapGenerator
 
         call(0x004969E0);
         call(0x004748D4);
-        ProgressBar::end();
+        Ui::ProgressBar::end();
     }
 }

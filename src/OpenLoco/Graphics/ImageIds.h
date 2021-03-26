@@ -22,7 +22,15 @@ namespace OpenLoco::ImageIds
 
     constexpr uint32_t inline_green_up_arrow = 2324;
     constexpr uint32_t inline_red_down_arrow = 2325;
-
+    constexpr uint32_t progressbar_style0_frame0 = 2326;
+    constexpr uint32_t progressbar_style0_frame1 = 2327;
+    constexpr uint32_t progressbar_style0_frame2 = 2328;
+    constexpr uint32_t progressbar_style0_frame3 = 2329;
+    constexpr uint32_t progressbar_track = 2330;
+    constexpr uint32_t progressbar_style1_frame0 = 2331;
+    constexpr uint32_t progressbar_style1_frame1 = 2332;
+    constexpr uint32_t progressbar_style1_frame2 = 2333;
+    constexpr uint32_t progressbar_style1_frame3 = 2334;
     constexpr uint32_t construction_straight = 2335;
     constexpr uint32_t step_back = 2336;
     constexpr uint32_t step_forward = 2337;

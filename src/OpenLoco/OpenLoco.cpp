@@ -40,7 +40,6 @@
 #include "Objects/ObjectManager.h"
 #include "OpenLoco.h"
 #include "Platform/Platform.h"
-#include "ProgressBar.h"
 #include "S5/S5.h"
 #include "ScenarioManager.h"
 #include "StationManager.h"
@@ -49,6 +48,7 @@
 #include "TownManager.h"
 #include "Tutorial.h"
 #include "Ui.h"
+#include "Ui/ProgressBar.h"
 #include "Ui/WindowManager.h"
 #include "Utility/Numeric.hpp"
 #include "ViewportManager.h"
@@ -173,14 +173,14 @@ namespace OpenLoco
         return (getScreenFlags() & ScreenFlags::networkHost) != 0;
     }
 
-    bool isUnknown4Mode()
+    bool isProgressBarActive()
     {
-        return (getScreenFlags() & ScreenFlags::unknown_4) != 0;
+        return (getScreenFlags() & ScreenFlags::progressBarActive) != 0;
     }
 
-    bool isUnknown5Mode()
+    bool isInitialised()
     {
-        return (getScreenFlags() & ScreenFlags::unknown_5) != 0;
+        return (getScreenFlags() & ScreenFlags::initialised) != 0;
     }
 
     bool isDriverCheatEnabled()
@@ -380,30 +380,30 @@ namespace OpenLoco
         Environment::resolvePaths();
         Localisation::enumerateLanguages();
         Localisation::loadLanguageFile();
-        ProgressBar::begin(StringIds::loading, 0);
-        ProgressBar::setProgress(30);
+        Ui::ProgressBar::begin(StringIds::loading);
+        Ui::ProgressBar::setProgress(30);
         startupChecks();
-        ProgressBar::setProgress(40);
+        Ui::ProgressBar::setProgress(40);
         call(0x004BE5DE);
-        ProgressBar::end();
+        Ui::ProgressBar::end();
         Config::read();
         ObjectManager::loadIndex();
         ScenarioManager::loadIndex(0);
-        ProgressBar::begin(StringIds::loading, 0);
-        ProgressBar::setProgress(60);
+        Ui::ProgressBar::begin(StringIds::loading);
+        Ui::ProgressBar::setProgress(60);
         Gfx::loadG1();
-        ProgressBar::setProgress(220);
+        Ui::ProgressBar::setProgress(220);
         call(0x004949BC);
-        ProgressBar::setProgress(235);
-        ProgressBar::setProgress(250);
+        Ui::ProgressBar::setProgress(235);
+        Ui::ProgressBar::setProgress(250);
         Ui::initialiseCursors();
-        ProgressBar::end();
+        Ui::ProgressBar::end();
         Ui::initialise();
         initialiseViewports();
         call(0x004284C8);
         call(0x004969DA);
         call(0x0043C88C);
-        setScreenFlag(ScreenFlags::unknown_5);
+        setScreenFlag(ScreenFlags::initialised);
 #ifdef _SHOW_INTRO_
         Intro::state(Intro::intro_state::begin);
 #else
