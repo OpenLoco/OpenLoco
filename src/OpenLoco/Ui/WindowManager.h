@@ -350,7 +350,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
 
 namespace OpenLoco::Ui::Windows::ProgressBar
 {
-    window* open(const char* captionString);
+    window* open(std::string_view captionString);
     void setProgress(uint8_t value);
     void close();
 }

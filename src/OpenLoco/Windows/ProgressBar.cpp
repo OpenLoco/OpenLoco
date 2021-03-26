@@ -8,6 +8,8 @@
 #include "../Window.h"
 
 #include <array>
+#include <string>
+#include <string_view>
 
 using namespace OpenLoco::Interop;
 
@@ -31,7 +33,7 @@ namespace OpenLoco::Ui::Windows::ProgressBar
 
     static window_event_list _events;
 
-    static const char* _captionString;
+    static std::string _captionString;
     static uint8_t _progressBarStyle = 0; // 0x005233C8
     static uint8_t _progressBarValue = 0; // 0x011370A8
 
@@ -39,7 +41,7 @@ namespace OpenLoco::Ui::Windows::ProgressBar
     static void initEvents();
 
     // 0x004CF6E2
-    window* open(const char* captionString)
+    window* open(std::string_view captionString)
     {
         _captionString = captionString;
         setScreenFlag(ScreenFlags::progressBarActive);
@@ -86,7 +88,7 @@ namespace OpenLoco::Ui::Windows::ProgressBar
     static void prepareDraw(window* self)
     {
         char* buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
-        strncpy(buffer, _captionString, 256);
+        strncpy(buffer, _captionString.c_str(), 256);
     }
 
     // 004CF7A0
@@ -95,7 +97,8 @@ namespace OpenLoco::Ui::Windows::ProgressBar
         self->draw(dpi);
 
         Gfx::drawpixelinfo_t* clipped = nullptr;
-        Gfx::clipDrawpixelinfo(&clipped, dpi, Gfx::point_t(self->x + 2, self->y + 17), Gfx::ui_size_t(self->width - 5, self->height - 19));
+        if (!Gfx::clipDrawpixelinfo(&clipped, dpi, Gfx::point_t(self->x + 2, self->y + 17), Gfx::ui_size_t(self->width - 5, self->height - 19)))
+            return;
 
         // First, draw the train track.
         Gfx::drawImage(clipped, 0, 0, ImageIds::progressbar_track);
