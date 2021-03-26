@@ -12,10 +12,26 @@
 #include "../S5/S5.h"
 #include "../Scenario.h"
 #include "../Ui.h"
+#include "../Ui/TextInput.h"
 #include "../Ui/WindowManager.h"
 #include "../Utility/String.hpp"
+#include "../Win32.h"
+
+#ifdef _WIN32
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
+#define WIN32_LEAN_AND_MEAN
+#include <shlobj.h>
+#include <windows.h>
+
+// `interface` is defined as a macro for `struct` in `windows.h`
+#undef interface
+#endif
+
 #include <algorithm>
 #include <cstring>
+#include <string>
 
 using namespace OpenLoco::Interop;
 
@@ -104,12 +120,10 @@ namespace OpenLoco::Ui::PromptBrowse
     static loco_global<char[32], 0x009D9E64> _filter;
     static loco_global<char[512], 0x009D9E84> _directory;
     static loco_global<char[512], 0x0112CC04> _stringFormatBuffer;
-    static loco_global<char[512], 0x011369A0> _text_input_buffer;
     static loco_global<int16_t, 0x009D1084> _numFiles;
     static loco_global<file_entry*, 0x0050AEA4> _files;
-    static loco_global<int16_t, 0x01136FA2> _textInputCaret;
-    static loco_global<uint8_t, 0x01136FA4> _textInputLeft;
-    static loco_global<uint8_t, 0x011370A9> _textInputFlags;
+
+    static TextInput::InputSession inputSession;
 
     static std::vector<file_entry> _newFiles;
 
@@ -134,15 +148,6 @@ namespace OpenLoco::Ui::PromptBrowse
     static void refreshDirectoryList();
     static void sub_446E87(window* self);
     static bool filenameContainsInvalidChars();
-
-    // 0x004CEB67
-    // TODO: replace with Ui::TextInput::calculateTextOffset
-    static void calculateTextOffset(int16_t dx)
-    {
-        registers regs;
-        regs.dx = dx;
-        call(0x004CEB67, regs);
-    }
 
     // 0x00445AB9
     // ecx: path
@@ -183,7 +188,7 @@ namespace OpenLoco::Ui::PromptBrowse
         Utility::strcpy_safe(_filter, filter);
 
         Utility::strcpy_safe(_directory, directory.make_preferred().u8string().c_str());
-        Utility::strcpy_safe(_text_input_buffer, baseName.c_str());
+        inputSession = TextInput::InputSession(baseName);
 
         refreshDirectoryList();
 
@@ -199,17 +204,13 @@ namespace OpenLoco::Ui::PromptBrowse
             window->enabled_widgets = (1 << widx::close_button) | (1 << widx::parent_button) | (1 << widx::ok_button);
             window->initScrollWidgets();
 
-            _textInputCaret = -1;
-            _textInputFlags = 0;
-            _textInputLeft = 0;
-
             window->row_height = 11;
             window->var_85A = -1;
 
             addr<0x009DA285, uint8_t>() = 0;
 
             auto& widget = window->widgets[widx::text_filename];
-            calculateTextOffset(widget.width());
+            inputSession.calculateTextOffset(widget.width());
 
             window->colours[0] = Colour::black;
             window->colours[1] = Colour::saturated_green;
@@ -275,8 +276,8 @@ namespace OpenLoco::Ui::PromptBrowse
     // 0x004467E1
     static void onUpdate(Ui::window* window)
     {
-        _textInputFlags++;
-        if ((_textInputFlags & 0x0F) == 0)
+        inputSession.cursorFrame++;
+        if ((inputSession.cursorFrame & 0x0F) == 0)
         {
             window->invalidate();
         }
@@ -311,7 +312,9 @@ namespace OpenLoco::Ui::PromptBrowse
         if (Input::state() == Input::input_state::scroll_left)
         {
             // Copy the selected filename without extension to text input buffer.
-            strncpy(_text_input_buffer, entry.get_name().data(), std::size(_text_input_buffer));
+            inputSession.buffer = entry.get_name();
+            inputSession.cursorPosition = inputSession.buffer.length();
+            self->invalidate();
 
             // Continue processing for load/save.
             processFileForLoadSave(self);
@@ -480,7 +483,7 @@ namespace OpenLoco::Ui::PromptBrowse
                     filenameBox.right - filenameBox.left - 1,
                     filenameBox.bottom - filenameBox.top - 1))
             {
-                drawTextInput(window, *dpi2, _text_input_buffer, _textInputCaret, (_textInputFlags & 0x10) == 0);
+                drawTextInput(window, *dpi2, inputSession.buffer.c_str(), inputSession.cursorPosition, (inputSession.cursorFrame & 0x10) == 0);
             }
         }
     }
@@ -650,6 +653,37 @@ namespace OpenLoco::Ui::PromptBrowse
         }
     }
 
+    // 0x0044685C
+    void handleInput(uint32_t charCode, uint32_t keyCode)
+    {
+        auto w = WindowManager::find(WindowType::fileBrowserPrompt);
+        if (w == nullptr)
+            return;
+
+        if (keyCode == VK_RETURN)
+        {
+            w->callOnMouseUp(widx::ok_button);
+            return;
+        }
+        else if (keyCode == VK_ESCAPE)
+        {
+            w->callOnMouseUp(widx::close_button);
+            return;
+        }
+        else if (!inputSession.handleInput(charCode, keyCode))
+        {
+            return;
+        }
+
+        // 0x00446A6E
+        auto containerWidth = w->widgets[widx::text_filename].width() - 2;
+        if (inputSession.needsReoffsetting(containerWidth))
+        {
+            inputSession.calculateTextOffset(containerWidth);
+        }
+        w->invalidate();
+    }
+
     static fs::path getDirectory(const fs::path& path)
     {
         if (path.has_extension())
@@ -814,12 +848,12 @@ namespace OpenLoco::Ui::PromptBrowse
     static bool filenameContainsInvalidChars()
     {
         uint8_t numNonSpacesProcessed = 0;
-        for (const char* ptr = &*_text_input_buffer; *ptr != '\0'; ptr++)
+        for (const char chr : inputSession.buffer)
         {
-            if (*ptr != ' ')
+            if (chr != ' ')
                 numNonSpacesProcessed++;
 
-            switch (*ptr)
+            switch (chr)
             {
                 // The following chars are considered invalid in filenames.
                 case '.':
@@ -865,7 +899,7 @@ namespace OpenLoco::Ui::PromptBrowse
             }
 
             // Create full path to target file.
-            fs::path path = fs::path(&_directory[0]) / std::string(&_text_input_buffer[0]);
+            fs::path path = fs::path(&_directory[0]) / inputSession.buffer;
 
             // Append extension to filename.
             path += getExtensionFromFileType(_fileType);
@@ -875,7 +909,7 @@ namespace OpenLoco::Ui::PromptBrowse
             {
                 // Copy directory and filename to buffer.
                 char* buffer_2039 = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
-                strncpy(&buffer_2039[0], &_text_input_buffer[0], 512);
+                strncpy(&buffer_2039[0], inputSession.buffer.c_str(), 512);
 
                 FormatArguments args{};
                 args.push(StringIds::buffer_2039);
@@ -902,7 +936,7 @@ namespace OpenLoco::Ui::PromptBrowse
         {
             // Copy scenario path into expected address. Trailing / on directory is assumed.
             // TODO: refactor to fs::path?
-            strncat(_directory, _text_input_buffer, std::size(_directory));
+            strncat(_directory, inputSession.buffer.c_str(), std::size(_directory));
             strncat(_directory, getExtensionFromFileType(_fileType), std::size(_directory));
 
             // Close browse window to start loading.
