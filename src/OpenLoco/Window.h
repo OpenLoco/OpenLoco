@@ -12,6 +12,7 @@
 #include "Ui.h"
 #include "Ui/WindowType.h"
 #include "Viewport.hpp"
+#include "ZoomLevel.hpp"
 #include <algorithm>
 
 namespace OpenLoco::Ui

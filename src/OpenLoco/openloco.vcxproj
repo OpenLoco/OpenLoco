@@ -320,6 +320,7 @@
     <ClInclude Include="Message.h" />
     <ClInclude Include="Windows\News\News.h" />
     <ClInclude Include="Windows\ToolbarTopCommon.h" />
+    <ClInclude Include="ZoomLevel.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\resources\OpenLoco.rc" />

@@ -16,14 +16,6 @@ namespace OpenLoco
 
     class FormatArguments;
 
-    enum class ZoomLevel : uint8_t
-    {
-        full = 0,
-        half = 1,
-        quarter = 2,
-        eighth = 3,
-    };
-
     enum class VehicleType : uint8_t
     {
         train = 0,
@@ -41,9 +33,4 @@ namespace OpenLoco
     };
 
     constexpr uint8_t vehicleTypeCount = 6;
-
-    namespace ZoomLevels
-    {
-        constexpr uint8_t max = 4;
-    }
 }
