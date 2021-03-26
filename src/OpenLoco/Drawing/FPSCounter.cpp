@@ -4,26 +4,32 @@
 #include "../Localisation/StringManager.h"
 #include "../Ui.h"
 
-#include <SDL2/SDL.h>
+#include <chrono>
 #include <stdio.h>
 
 namespace OpenLoco::Drawing
 {
-    static uint32_t _lastFPSUpdateTicks;
-    static uint32_t _lastFPSTicks;
+    using Clock_t = std::chrono::high_resolution_clock;
+    using Timepoint_t = Clock_t::time_point;
+
+    static Timepoint_t _referenceTime;
+    static uint32_t _currentFrameCount;
     static float _currentFPS;
 
     static float measureFPS()
     {
-        const uint32_t currentTicks = SDL_GetTicks();
-        if (currentTicks - _lastFPSUpdateTicks > 500)
-        {
-            _lastFPSUpdateTicks = currentTicks;
+        _currentFrameCount++;
 
-            const uint32_t frameDelta = currentTicks - _lastFPSTicks;
-            _currentFPS = 1000.0f / frameDelta;
+        auto currentTime = std::chrono::high_resolution_clock::now();
+        auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(currentTime - _referenceTime).count() / 1000.0;
+
+        if (elapsed > 1000)
+        {
+            _currentFPS = _currentFrameCount;
+            _currentFrameCount = 0;
+            _referenceTime = currentTime;
         }
-        _lastFPSTicks = currentTicks;
+
         return _currentFPS;
     }
 
