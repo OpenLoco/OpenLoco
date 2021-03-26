@@ -318,7 +318,7 @@ namespace OpenLoco::Input
                 if (tryShortcut(Shortcut::screenshot, nextKey->keyCode, _keyModifier))
                     continue;
 
-                Ui::TextInput::sub_4CE910(nextKey->charCode, nextKey->keyCode);
+                Ui::Windows::TextInput::handleInput(nextKey->charCode, nextKey->keyCode);
                 continue;
             }
 

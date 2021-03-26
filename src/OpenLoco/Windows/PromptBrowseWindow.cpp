@@ -135,6 +135,15 @@ namespace OpenLoco::Ui::PromptBrowse
     static void sub_446E87(window* self);
     static bool filenameContainsInvalidChars();
 
+    // 0x004CEB67
+    // TODO: replace with Ui::TextInput::calculateTextOffset
+    static void calculateTextOffset(int16_t dx)
+    {
+        registers regs;
+        regs.dx = dx;
+        call(0x004CEB67, regs);
+    }
+
     // 0x00445AB9
     // ecx: path
     // edx: filter
@@ -162,7 +171,7 @@ namespace OpenLoco::Ui::PromptBrowse
         auto directory = getDirectory(path);
         auto baseName = getBasename(path);
 
-        TextInput::cancel();
+        Windows::TextInput::cancel();
 
         *_type = type;
         *_fileType = browse_file_type::saved_game;
@@ -198,7 +207,9 @@ namespace OpenLoco::Ui::PromptBrowse
             window->var_85A = -1;
 
             addr<0x009DA285, uint8_t>() = 0;
-            TextInput::calculateTextOffset(addr<0x0050ADAC, int16_t>() - addr<0x0050ADAA, int16_t>());
+
+            auto& widget = window->widgets[widx::text_filename];
+            calculateTextOffset(widget.width());
 
             window->colours[0] = Colour::black;
             window->colours[1] = Colour::saturated_green;

@@ -787,7 +787,7 @@ namespace OpenLoco::Ui::Windows::Industry
             if (Input::isToolActive(self->type, self->number))
                 Input::toolCancel();
 
-            Ui::TextInput::sub_4CE6C9(self->type, self->number);
+            TextInput::sub_4CE6C9(self->type, self->number);
 
             self->current_tab = widgetIndex - widx::tab_industry;
             self->frame_no = 0;

@@ -107,9 +107,10 @@
     <ClCompile Include="Tutorial.cpp" />
     <ClCompile Include="Ui.cpp" />
     <ClCompile Include="Ui\Dropdown.cpp" />
+    <ClCompile Include="Ui\ProgressBar.cpp" />
     <ClCompile Include="Ui\Screenshot.cpp" />
     <ClCompile Include="Ui\ScrollView.cpp" />
-    <ClCompile Include="Ui\ProgressBar.cpp" />
+    <ClCompile Include="Ui\TextInput.cpp" />
     <ClCompile Include="Ui\ViewportInteraction.cpp" />
     <ClCompile Include="Ui\WindowManager.cpp" />
     <ClCompile Include="Utility\Numeric.cpp" />
@@ -298,10 +299,11 @@
     <ClInclude Include="Types.hpp" />
     <ClInclude Include="Ui.h" />
     <ClInclude Include="Ui\Dropdown.h" />
+    <ClInclude Include="Ui\ProgressBar.h" />
     <ClInclude Include="Ui\Rect.h" />
     <ClInclude Include="Ui\Screenshot.h" />
     <ClInclude Include="Ui\ScrollView.h" />
-    <ClInclude Include="Ui\ProgressBar.h" />
+    <ClInclude Include="Ui\TextInput.h" />
     <ClInclude Include="Ui\WindowManager.h" />
     <ClInclude Include="Ui\WindowType.h" />
     <ClInclude Include="Utility\Collection.hpp" />
