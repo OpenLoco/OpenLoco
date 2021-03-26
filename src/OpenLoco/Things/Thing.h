@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../Location.hpp"
 #include "../Types.hpp"
 #include <cstdint>
 #include <limits>

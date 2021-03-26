@@ -3,6 +3,7 @@
 #include "Company.h"
 #include "Localisation/StringManager.h"
 #include "Map/Tile.h"
+#include "ZoomLevel.hpp"
 #include <cstdint>
 #include <limits>
 
@@ -11,10 +12,10 @@ namespace OpenLoco
 #pragma pack(push, 1)
     struct LabelPosition
     {
-        int16_t left[ZoomLevels::max]{};
-        int16_t right[ZoomLevels::max]{};
-        int16_t top[ZoomLevels::max]{};
-        int16_t bottom[ZoomLevels::max]{};
+        int16_t left[ZoomLevel::max]{};
+        int16_t right[ZoomLevel::max]{};
+        int16_t top[ZoomLevel::max]{};
+        int16_t bottom[ZoomLevel::max]{};
 
         [[nodiscard]] bool contains(OpenLoco::Ui::Rect& rec, uint8_t zoom) const
         {

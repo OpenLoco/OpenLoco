@@ -1,5 +1,6 @@
-#pragma once
+﻿#pragma once
 
+#include "Currency.h"
 #include "Interop/Interop.hpp"
 #include "Map/Tile.h"
 #include "Objects/ObjectManager.h"

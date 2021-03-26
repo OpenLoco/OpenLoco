@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Currency.h"
 #include "Localisation/StringManager.h"
 #include "Management/Expenditures.h"
 #include "Types.hpp"
