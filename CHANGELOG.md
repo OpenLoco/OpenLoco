@@ -1,5 +1,6 @@
 21.03+ (???)
 ------------------------------------------------------------------------
+- Fix: [#804] Enter key not confirming save prompt.
 - Fix: [#809] Audio calculation not using the z axis.
 - Fix: [#825] Potential crash when opening town rename prompt.
 - Fix: [#838] Escape key doesn't work in confirmation windows.
