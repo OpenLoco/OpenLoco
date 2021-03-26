@@ -10,9 +10,9 @@
 namespace OpenLoco::Drawing
 {
     using Clock_t = std::chrono::high_resolution_clock;
-    using Timepoint_t = Clock_t::time_point;
+    using TimePoint_t = Clock_t::time_point;
 
-    static Timepoint_t _referenceTime;
+    static TimePoint_t _referenceTime;
     static uint32_t _currentFrameCount;
     static float _currentFPS;
 
@@ -20,7 +20,7 @@ namespace OpenLoco::Drawing
     {
         _currentFrameCount++;
 
-        auto currentTime = std::chrono::high_resolution_clock::now();
+        auto currentTime = Clock_t::now();
         auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - _referenceTime).count() / 1000.0;
 
         if (elapsed > 1.0)
