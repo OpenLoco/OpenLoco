@@ -2,8 +2,6 @@
 
 #include <cstdint>
 
-#include "Math/Vector.hpp"
-
 namespace OpenLoco
 {
     using coord_t = int16_t;
