@@ -157,6 +157,7 @@ namespace OpenLoco::Config
         int32_t autosave_frequency = 1;
         int32_t autosave_amount = 12;
         bool showFPS = false;
+        bool uncapFPS = false;
     };
 
 #pragma pack(pop)

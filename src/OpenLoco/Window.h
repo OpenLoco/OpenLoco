@@ -66,7 +66,7 @@ namespace OpenLoco::Ui
         wt_13,
         wt_14,
         wt_15,
-        wt_16,
+        groupbox,
         wt_17,
         wt_18,
         viewport = 19,

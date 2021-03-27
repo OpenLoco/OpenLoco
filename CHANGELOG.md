@@ -1,11 +1,13 @@
 21.03+ (???)
 ------------------------------------------------------------------------
 - Feature: [#451] Optionally show an FPS counter at the top of the screen.
+- Feature: [#853] Allow unlocking FPS by detaching game logic from rendering.
 - Fix: [#804] Enter key not confirming save prompt.
 - Fix: [#809] Audio calculation not using the z axis.
 - Fix: [#825] Potential crash when opening town rename prompt.
 - Fix: [#838] Escape key doesn't work in confirmation windows.
 - Fix: [#845] Town growth incorrectly calculated causing more aggressive growth than should be possible.
+- Fix: [#853] The game run slightly, but noticeably, slower than vanilla Locomotion.
 
 21.03 (2021-03-06)
 ------------------------------------------------------------------------

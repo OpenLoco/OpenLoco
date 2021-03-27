@@ -1,4 +1,3 @@
-
 #include <fstream>
 
 #ifdef _WIN32
@@ -95,6 +94,8 @@ namespace OpenLoco::Config
             _new_config.autosave_amount = config["autosave_amount"].as<int32_t>();
         if (config["showFPS"])
             _new_config.showFPS = config["showFPS"].as<bool>();
+        if (config["uncapFPS"])
+            _new_config.uncapFPS = config["uncapFPS"].as<bool>();
 
         return _new_config;
     }
@@ -144,6 +145,7 @@ namespace OpenLoco::Config
         node["autosave_frequency"] = _new_config.autosave_frequency;
         node["autosave_amount"] = _new_config.autosave_amount;
         node["showFPS"] = _new_config.showFPS;
+        node["uncapFPS"] = _new_config.uncapFPS;
 
         std::ofstream stream(configPath);
         if (stream.is_open())
