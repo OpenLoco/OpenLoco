@@ -5,6 +5,7 @@
 #include "../Localisation/StringIds.h"
 #include "../Objects/InterfaceSkinObject.h"
 #include "../OpenLoco.h"
+#include "../Ui/Dropdown.h"
 #include "../Ui/WindowManager.h"
 #include <stdexcept>
 
@@ -219,11 +220,58 @@ namespace OpenLoco::Ui::Windows::VehicleList
         }
     }
 
+    // 0x004C2434
+    static void onMouseDown(window* self, widget_index widgetIndex)
+    {
+        if (widgetIndex == Widx::company_select)
+            Dropdown::populateCompanySelect(self, &self->widgets[widgetIndex]);
+    }
+
+    // 0x004C243F
+    static void onDropdown(Ui::window* self, widget_index widgetIndex, int16_t itemIndex)
+    {
+        if (widgetIndex != Widx::company_select)
+            return;
+
+        if (itemIndex == -1)
+            return;
+
+        company_id_t companyId = Dropdown::getCompanyIdFromSelection(itemIndex);
+
+        // Try to find an open vehicle list for this company.
+        auto companyWindow = WindowManager::bringToFront(WindowType::vehicleList, companyId);
+        if (companyWindow != nullptr)
+            return;
+
+        // If not, we'll turn this window into a window for the company selected.
+        auto company = CompanyManager::get(companyId);
+        if (company->name == StringIds::empty)
+            return;
+
+        self->number = companyId;
+        self->owner = companyId;
+
+        disableUnavailableVehicleTypes(self);
+
+        self->row_count = 0;
+        sub_4C1D4F(self);
+
+        self->var_83C = 0;
+        self->row_hover = -1;
+
+        self->callOnResize();
+        self->callPrepareDraw();
+        self->initScrollWidgets();
+        self->invalidate();
+    }
+
     static void initEvents()
     {
         _events.prepare_draw = prepareDraw;
         _events.draw = draw;
         _events.on_mouse_up = onMouseUp;
+        _events.on_mouse_down = onMouseDown;
+        _events.on_dropdown = onDropdown;
 
         // TODO: the events below are not yet stubbed or implemented.
         // _events.cursor = cursor;
@@ -231,8 +279,6 @@ namespace OpenLoco::Ui::Windows::VehicleList
         // _events.event_08 = event_08;
         // _events.event_09 = event_09;
         // _events.get_scroll_size = getScrollSize;
-        // _events.on_dropdown = onDropdown;
-        // _events.on_mouse_down = onMouseDown;
         // _events.on_resize = onResize;
         // _events.on_update = onUpdate;
         // _events.scroll_mouse_down = onScrollMouseDown;
