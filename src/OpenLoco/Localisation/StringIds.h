@@ -1502,4 +1502,6 @@ namespace OpenLoco::StringIds
     constexpr string_id cheat_allow_building_while_paused = 2160;
     constexpr string_id option_show_fps_counter = 2161;
     constexpr string_id option_show_fps_counter_tooltip = 2162;
+    constexpr string_id option_uncap_fps = 2163;
+    constexpr string_id option_uncap_fps_tooltip = 2164;
 }

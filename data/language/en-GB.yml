@@ -2215,3 +2215,5 @@ strings:
   2160: "Allow building while paused"
   2161: "Show FPS counter"
   2162: "{SMALLFONT}{COLOUR BLACK}This shows a counter at the top of the screen, indicating the number of frames drawn per second."
+  2163: "Uncap FPS"
+  2164: "{SMALLFONT}{COLOUR BLACK}Removes the restriction of rendering at 40Hz."

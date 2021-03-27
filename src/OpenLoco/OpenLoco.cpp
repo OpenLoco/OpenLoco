@@ -1050,8 +1050,7 @@ namespace OpenLoco
         _accumulator = std::min(_accumulator + elapsed, MaxUpdateTime);
         _lastUpdate = timeNow;
 
-        // TODO: Make this a configuration.
-        if (true)
+        if (Config::getNew().uncapFPS)
             variableUpdate();
         else
             fixedUpdate();
