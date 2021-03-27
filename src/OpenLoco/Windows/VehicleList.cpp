@@ -44,46 +44,44 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
     widx getTabFromType(uint8_t type);
 
-    void sub_4C1D4F(window* vehicle_list)
+    static void sub_4C1D4F(window* self)
     {
         registers regs;
-        regs.esi = (int32_t)vehicle_list;
+        regs.esi = (int32_t)self;
         call(0x004C1D4F, regs);
     }
 
     // 0x004C19DC
     window* open(uint16_t companyId, uint8_t type)
     {
-        window* vehicle_list = WindowManager::bringToFront(WindowType::vehicleList, companyId);
-
-        if (vehicle_list == nullptr)
+        window* self = WindowManager::bringToFront(WindowType::vehicleList, companyId);
+        if (self != nullptr)
         {
-            // 0x004C1A05
-            vehicle_list = WindowManager::createWindow(
-                WindowType::vehicleList,
-                window_size,
-                0,
-                &_events);
-
-            vehicle_list->current_tab = VehicleList::getTabFromType(type);
-            vehicle_list->row_height = row_heights[type];
-            vehicle_list->sort_mode = 0;
-            vehicle_list->row_hover = -1;
-
-            VehicleList::sub_4C1D4F(vehicle_list);
-
-            vehicle_list->invalidate();
-
-            vehicle_list->callOnResize();
-            vehicle_list->callPrepareDraw();
-            vehicle_list->initScrollWidgets();
-        }
-        else
-        {
-            vehicle_list->callOnMouseUp(VehicleList::getTabFromType(type));
+            self->callOnMouseUp(VehicleList::getTabFromType(type));
+            return self;
         }
 
-        return vehicle_list;
+        // 0x004C1A05
+        self = WindowManager::createWindow(
+            WindowType::vehicleList,
+            window_size,
+            0,
+            &_events);
+
+        self->current_tab = VehicleList::getTabFromType(type);
+        self->row_height = row_heights[type];
+        self->sort_mode = 0;
+        self->row_hover = -1;
+
+        VehicleList::sub_4C1D4F(self);
+
+        self->invalidate();
+
+        self->callOnResize();
+        self->callPrepareDraw();
+        self->initScrollWidgets();
+
+        return self;
     }
 
     widx getTabFromType(uint8_t type)
