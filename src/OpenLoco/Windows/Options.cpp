@@ -166,46 +166,49 @@ namespace OpenLoco::Ui::Options
 
     namespace Display
     {
-        static const Gfx::ui_size_t _window_size = { 400, 199 };
+        static const Gfx::ui_size_t _window_size = { 400, 250 };
 
         namespace Widx
         {
             enum
             {
-                screen_mode = 10,
+                frame_hardware = 10,
+                screen_mode,
                 screen_mode_btn,
                 display_resolution,
                 display_resolution_btn,
                 display_scale,
                 display_scale_down_btn,
                 display_scale_up_btn,
-                show_fps,
                 uncap_fps,
-                landscape_smoothing,
-                gridlines_on_landscape,
+                show_fps,
+                frame_map_rendering,
                 vehicles_min_scale,
                 vehicles_min_scale_btn,
                 station_names_min_scale,
                 station_names_min_scale_btn,
                 construction_marker,
                 construction_marker_btn,
+                landscape_smoothing,
+                gridlines_on_landscape,
             };
         }
 
         static widget_t _widgets[] = {
             common_options_widgets(_window_size, StringIds::options_title_display),
-            makeWidget({ 235, 49 }, { 156, 12 }, widget_type::wt_18, 1, StringIds::empty),
-            makeWidget({ 379, 50 }, { 11, 10 }, widget_type::wt_11, 1, StringIds::dropdown),
-            makeWidget({ 235, 64 }, { 156, 12 }, widget_type::wt_18, 1, StringIds::display_resolution_label_format),
-            makeWidget({ 379, 65 }, { 11, 10 }, widget_type::wt_11, 1, StringIds::dropdown),
-            makeStepperWidgets({ 235, 79 }, { 156, 12 }, widget_type::wt_17, 1, StringIds::empty),
-            makeWidget({ 10, 99 }, { 346, 12 }, widget_type::checkbox, 1, StringIds::option_show_fps_counter, StringIds::option_show_fps_counter_tooltip),
-            makeWidget({ 235, 99 }, { 346, 12 }, widget_type::checkbox, 1, StringIds::option_uncap_fps, StringIds::option_uncap_fps_tooltip),
-            makeWidget({ 10, 114 }, { 346, 12 }, widget_type::checkbox, 1, StringIds::landscape_smoothing, StringIds::landscape_smoothing_tip),
-            makeWidget({ 10, 129 }, { 346, 12 }, widget_type::checkbox, 1, StringIds::gridlines_on_landscape, StringIds::gridlines_on_landscape_tip),
-            makeDropdownWidgets({ 235, 148 }, { 156, 12 }, widget_type::wt_18, 1, StringIds::empty, StringIds::vehicles_min_scale_tip),
-            makeDropdownWidgets({ 235, 163 }, { 156, 12 }, widget_type::wt_18, 1, StringIds::empty, StringIds::station_names_min_scale_tip),
-            makeDropdownWidgets({ 235, 178 }, { 156, 12 }, widget_type::wt_18, 1, StringIds::empty),
+            makeWidget({ 4, 49 }, { 392, 97 }, widget_type::groupbox, 1, StringIds::frame_hardware),
+            makeDropdownWidgets({ 235, 63 }, { 154, 12 }, widget_type::wt_18, 1, StringIds::empty),
+            makeDropdownWidgets({ 235, 79 }, { 154, 12 }, widget_type::wt_18, 1, StringIds::display_resolution_label_format),
+            makeStepperWidgets({ 235, 95 }, { 154, 12 }, widget_type::wt_17, 1, StringIds::empty),
+            makeWidget({ 10, 111 }, { 174, 12 }, widget_type::checkbox, 1, StringIds::option_uncap_fps, StringIds::option_uncap_fps_tooltip),
+            makeWidget({ 10, 127 }, { 174, 12 }, widget_type::checkbox, 1, StringIds::option_show_fps_counter, StringIds::option_show_fps_counter_tooltip),
+
+            makeWidget({ 4, 150 }, { 392, 96 }, widget_type::groupbox, 1, StringIds::frame_map_rendering),
+            makeDropdownWidgets({ 235, 164 }, { 154, 12 }, widget_type::wt_18, 1, StringIds::empty, StringIds::vehicles_min_scale_tip),
+            makeDropdownWidgets({ 235, 180 }, { 154, 12 }, widget_type::wt_18, 1, StringIds::empty, StringIds::station_names_min_scale_tip),
+            makeDropdownWidgets({ 235, 196 }, { 154, 12 }, widget_type::wt_18, 1, StringIds::empty),
+            makeWidget({ 10, 211 }, { 346, 12 }, widget_type::checkbox, 1, StringIds::landscape_smoothing, StringIds::landscape_smoothing_tip),
+            makeWidget({ 10, 227 }, { 346, 12 }, widget_type::checkbox, 1, StringIds::gridlines_on_landscape, StringIds::gridlines_on_landscape_tip),
             widgetEnd(),
         };
 
@@ -628,7 +631,7 @@ namespace OpenLoco::Ui::Options
             drawString_494B3F(*dpi, x, y, Colour::black, StringIds::options_screen_mode, nullptr);
 
             y = w->y + Display::_widgets[Display::Widx::display_resolution].top + 1;
-            drawString_494B3F(*dpi, x + 14, y, Colour::black, StringIds::display_resolution, nullptr);
+            drawString_494B3F(*dpi, x, y, Colour::black, StringIds::display_resolution, nullptr);
 
             y = w->y + Display::_widgets[Display::Widx::construction_marker].top + 1;
             drawString_494B3F(*dpi, x, y, Colour::black, StringIds::construction_marker, nullptr);
@@ -640,7 +643,7 @@ namespace OpenLoco::Ui::Options
             drawString_494B3F(*dpi, x, y, Colour::black, StringIds::station_names_min_scale, nullptr);
 
             y = w->y + Display::_widgets[Display::Widx::display_scale].top + 1;
-            drawString_494B3F(*dpi, x + 14, y, Colour::black, StringIds::window_scale_factor, nullptr);
+            drawString_494B3F(*dpi, x, y, Colour::black, StringIds::window_scale_factor, nullptr);
 
             int scale = (int)(Config::getNew().scale_factor * 100);
             auto& scale_widget = w->widgets[Widx::display_scale];
