@@ -203,7 +203,7 @@ namespace OpenLoco::Title
                                    auto main = Ui::WindowManager::getMainWindow();
                                    if (main != nullptr)
                                    {
-                                       auto pos3d = Map::map_pos3(pos, height.landHeight);
+                                       auto pos3d = Map::map_pos3(pos.x, pos.y, height.landHeight);
                                        main->viewportCentreOnTile(pos3d);
                                        main->flags &= ~Ui::WindowFlags::scrolling_to_location;
                                        main->viewportsUpdatePosition();
