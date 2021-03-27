@@ -1,5 +1,6 @@
 21.03+ (???)
 ------------------------------------------------------------------------
+- Feature: [#451] Optionally show an FPS counter at the top of the screen.
 - Fix: [#804] Enter key not confirming save prompt.
 - Fix: [#809] Audio calculation not using the z axis.
 - Fix: [#825] Potential crash when opening town rename prompt.

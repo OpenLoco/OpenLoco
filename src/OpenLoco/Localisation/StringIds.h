@@ -1500,4 +1500,6 @@ namespace OpenLoco::StringIds
     constexpr string_id cheat_enable_sandbox_mode = 2158;
     constexpr string_id cheat_allow_manual_driving = 2159;
     constexpr string_id cheat_allow_building_while_paused = 2160;
+    constexpr string_id option_show_fps_counter = 2161;
+    constexpr string_id option_show_fps_counter_tooltip = 2162;
 }

@@ -24,6 +24,7 @@
     <ClCompile Include="Config.cpp" />
     <ClCompile Include="Console.cpp" />
     <ClCompile Include="Date.cpp" />
+    <ClCompile Include="Drawing\FPSCounter.cpp" />
     <ClCompile Include="Drawing\SoftwareDrawingEngine.cpp" />
     <ClCompile Include="Economy.cpp" />
     <ClCompile Include="EditorController.cpp" />
@@ -206,6 +207,7 @@
     <ClInclude Include="Core\Span.hpp" />
     <ClInclude Include="Currency.h" />
     <ClInclude Include="Date.h" />
+    <ClInclude Include="Drawing\FPSCounter.h" />
     <ClInclude Include="Drawing\SoftwareDrawingEngine.h" />
     <ClInclude Include="Economy.h" />
     <ClInclude Include="EditorController.h" />

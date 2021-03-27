@@ -31,6 +31,7 @@
 
 #include "Config.h"
 #include "Console.h"
+#include "Drawing/FPSCounter.h"
 #include "GameCommands.h"
 #include "Graphics/Gfx.h"
 #include "Gui.h"
@@ -430,6 +431,12 @@ namespace OpenLoco::Ui
                 {
                     return;
                 }
+            }
+
+            // Draw FPS counter?
+            if (Config::getNew().showFPS)
+            {
+                Drawing::drawFPS();
             }
 
             // Copy pixels from the virtual screen buffer to the surface

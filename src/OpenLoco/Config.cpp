@@ -93,6 +93,8 @@ namespace OpenLoco::Config
             _new_config.autosave_frequency = config["autosave_frequency"].as<int32_t>();
         if (config["autosave_amount"])
             _new_config.autosave_amount = config["autosave_amount"].as<int32_t>();
+        if (config["showFPS"])
+            _new_config.showFPS = config["showFPS"].as<bool>();
 
         return _new_config;
     }
@@ -141,6 +143,7 @@ namespace OpenLoco::Config
         node["zoom_to_cursor"] = _new_config.zoom_to_cursor;
         node["autosave_frequency"] = _new_config.autosave_frequency;
         node["autosave_amount"] = _new_config.autosave_amount;
+        node["showFPS"] = _new_config.showFPS;
 
         std::ofstream stream(configPath);
         if (stream.is_open())

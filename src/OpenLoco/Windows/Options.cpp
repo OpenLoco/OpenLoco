@@ -166,7 +166,7 @@ namespace OpenLoco::Ui::Options
 
     namespace Display
     {
-        static const Gfx::ui_size_t _window_size = { 400, 184 };
+        static const Gfx::ui_size_t _window_size = { 400, 199 };
 
         namespace Widx
         {
@@ -179,6 +179,7 @@ namespace OpenLoco::Ui::Options
                 display_scale,
                 display_scale_down_btn,
                 display_scale_up_btn,
+                show_fps,
                 landscape_smoothing,
                 gridlines_on_landscape,
                 vehicles_min_scale,
@@ -197,20 +198,18 @@ namespace OpenLoco::Ui::Options
             makeWidget({ 235, 64 }, { 156, 12 }, widget_type::wt_18, 1, StringIds::display_resolution_label_format),
             makeWidget({ 379, 65 }, { 11, 10 }, widget_type::wt_11, 1, StringIds::dropdown),
             makeStepperWidgets({ 235, 79 }, { 156, 12 }, widget_type::wt_17, 1, StringIds::empty),
-            makeWidget({ 10, 99 }, { 346, 12 }, widget_type::checkbox, 1, StringIds::landscape_smoothing, StringIds::landscape_smoothing_tip),
-            makeWidget({ 10, 114 }, { 346, 12 }, widget_type::checkbox, 1, StringIds::gridlines_on_landscape, StringIds::gridlines_on_landscape_tip),
-            makeWidget({ 235, 133 }, { 156, 12 }, widget_type::wt_18, 1, StringIds::empty, StringIds::vehicles_min_scale_tip),
-            makeWidget({ 379, 134 }, { 11, 10 }, widget_type::wt_11, 1, StringIds::dropdown, StringIds::vehicles_min_scale_tip),
-            makeWidget({ 235, 148 }, { 156, 12 }, widget_type::wt_18, 1, StringIds::empty, StringIds::station_names_min_scale_tip),
-            makeWidget({ 379, 149 }, { 11, 10 }, widget_type::wt_11, 1, StringIds::dropdown, StringIds::station_names_min_scale_tip),
-            makeWidget({ 235, 163 }, { 156, 12 }, widget_type::wt_18, 1, StringIds::empty),
-            makeWidget({ 379, 164 }, { 11, 10 }, widget_type::wt_11, 1, StringIds::dropdown),
+            makeWidget({ 10, 99 }, { 346, 12 }, widget_type::checkbox, 1, StringIds::option_show_fps_counter, StringIds::option_show_fps_counter_tooltip),
+            makeWidget({ 10, 114 }, { 346, 12 }, widget_type::checkbox, 1, StringIds::landscape_smoothing, StringIds::landscape_smoothing_tip),
+            makeWidget({ 10, 129 }, { 346, 12 }, widget_type::checkbox, 1, StringIds::gridlines_on_landscape, StringIds::gridlines_on_landscape_tip),
+            makeDropdownWidgets({ 235, 148 }, { 156, 12 }, widget_type::wt_18, 1, StringIds::empty, StringIds::vehicles_min_scale_tip),
+            makeDropdownWidgets({ 235, 163 }, { 156, 12 }, widget_type::wt_18, 1, StringIds::empty, StringIds::station_names_min_scale_tip),
+            makeDropdownWidgets({ 235, 178 }, { 156, 12 }, widget_type::wt_18, 1, StringIds::empty),
             widgetEnd(),
         };
 
         static window_event_list _events;
 
-        static constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Display::Widx::landscape_smoothing) | (1 << Display::Widx::gridlines_on_landscape) | (1 << Display::Widx::vehicles_min_scale) | (1 << Display::Widx::vehicles_min_scale_btn) | (1 << Display::Widx::station_names_min_scale) | (1 << Display::Widx::station_names_min_scale_btn) | (1 << Display::Widx::construction_marker) | (1 << Display::Widx::construction_marker_btn) | (1 << Display::Widx::display_scale_up_btn) | (1 << Display::Widx::display_scale_down_btn);
+        static constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Widx::show_fps) | (1 << Display::Widx::landscape_smoothing) | (1 << Display::Widx::gridlines_on_landscape) | (1 << Display::Widx::vehicles_min_scale) | (1 << Display::Widx::vehicles_min_scale_btn) | (1 << Display::Widx::station_names_min_scale) | (1 << Display::Widx::station_names_min_scale_btn) | (1 << Display::Widx::construction_marker) | (1 << Display::Widx::construction_marker_btn) | (1 << Display::Widx::display_scale_up_btn) | (1 << Display::Widx::display_scale_down_btn);
 
         // 0x004BFB8C
         static void onMouseUp(window* w, widget_index wi)
@@ -229,6 +228,15 @@ namespace OpenLoco::Ui::Options
                 case Common::Widx::tab_miscellaneous:
                     Options::tabOnMouseUp(w, wi);
                     return;
+
+                case Widx::show_fps:
+                {
+                    auto& cfg = OpenLoco::Config::getNew();
+                    cfg.showFPS ^= 1;
+                    OpenLoco::Config::writeNewConfig();
+                    Gfx::invalidateScreen();
+                    return;
+                }
 
                 case Widx::landscape_smoothing:
                 {
@@ -555,6 +563,12 @@ namespace OpenLoco::Ui::Options
 
             w->widgets[Widx::vehicles_min_scale].text = scale_string_ids[Config::get().vehicles_min_scale];
             w->widgets[Widx::station_names_min_scale].text = scale_string_ids[Config::get().station_names_min_scale];
+
+            w->activated_widgets &= ~(1 << Widx::show_fps);
+            if (Config::getNew().showFPS)
+            {
+                w->activated_widgets |= (1 << Widx::show_fps);
+            }
 
             w->activated_widgets &= ~(1 << Widx::landscape_smoothing);
             if ((Config::get().flags & Config::flags::landscape_smoothing) == 0)
