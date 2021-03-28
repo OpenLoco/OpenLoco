@@ -67,10 +67,15 @@ namespace OpenLoco
             Gfx::drawString_494B3F(dpi, rowPosition.x, rowPosition.y, Colour::black, StringIds::object_selection_max_speed, &args);
         }
         auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
+        // Clear buffer
+        *buffer = '\0';
 
         getCargoString(buffer);
 
-        Gfx::drawString_495224(dpi, rowPosition.x, rowPosition.y, width - 4, Colour::black, StringIds::buffer_1250);
+        if (strlen(buffer) != 0)
+        {
+            Gfx::drawString_495224(dpi, rowPosition.x, rowPosition.y, width - 4, Colour::black, StringIds::buffer_1250);
+        }
     }
 
     void vehicle_object::getCargoString(char* buffer) const
