@@ -102,10 +102,12 @@ namespace OpenLoco::Ui::Windows::VehicleList
         call(0x004C1D92, regs);
     }
 
-    static void sub_4C2A6E(window* self)
+    // 0x004C2A6E
+    static void drawTabs(window* self, Gfx::drawpixelinfo_t* dpi)
     {
         registers regs;
         regs.esi = (int32_t)self;
+        regs.edi = (int32_t)dpi;
         call(0x004C2A6E, regs);
     }
 
@@ -280,7 +282,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
     {
         self->draw(dpi);
-        sub_4C2A6E(self);
+        drawTabs(self, dpi);
 
         // Draw company owner image.
         auto company = CompanyManager::get(self->number);
