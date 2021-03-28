@@ -640,7 +640,12 @@ namespace OpenLoco::StringIds
     constexpr string_id tooltip_select_main_colour = 1119;
     constexpr string_id tooltip_select_secondary_colour = 1120;
     constexpr string_id tooltip_toggle_vehicle_colour_scheme = 1121;
-
+    constexpr string_id stringid_trains = 1122;
+    constexpr string_id stringid_buses = 1123;
+    constexpr string_id stringid_trucks = 1124;
+    constexpr string_id stringid_trams = 1125;
+    constexpr string_id stringid_aircraft = 1126;
+    constexpr string_id stringid_ships = 1127;
     constexpr string_id stringid_all_stations = 1128;
     constexpr string_id stringid_rail_stations = 1129;
     constexpr string_id stringid_road_stations = 1130;
