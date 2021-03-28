@@ -270,4 +270,12 @@ namespace OpenLoco::Math::Vector
         };
     }
 
+    uint16_t fastSquareRoot(uint32_t distance);
+    template<typename T, T TResolution>
+    auto distance(const TVector2<T, TResolution>& lhs, const TVector2<T, TResolution>& rhs)
+    {
+        auto x = lhs.x - rhs.x;
+        auto y = lhs.y - rhs.y;
+        return fastSquareRoot(x * x + y * y);
+    }
 }
