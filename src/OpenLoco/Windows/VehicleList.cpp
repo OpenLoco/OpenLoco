@@ -2,6 +2,7 @@
 #include "../Graphics/Colour.h"
 #include "../Graphics/ImageIds.h"
 #include "../Interop/Interop.hpp"
+#include "../Localisation/FormatArguments.hpp"
 #include "../Localisation/StringIds.h"
 #include "../Objects/InterfaceSkinObject.h"
 #include "../OpenLoco.h"
@@ -78,6 +79,13 @@ namespace OpenLoco::Ui::Windows::VehicleList
         registers regs;
         regs.esi = (int32_t)self;
         call(0x004C1D4F, regs);
+    }
+
+    static void sub_4C1D92(window* self)
+    {
+        registers regs;
+        regs.esi = (int32_t)self;
+        call(0x004C1D92, regs);
     }
 
     // 0x004C28A5
@@ -275,6 +283,28 @@ namespace OpenLoco::Ui::Windows::VehicleList
         self->invalidate();
     }
 
+    // 0x004C24CA
+    static std::optional<FormatArguments> tooltip(window* self, widget_index widgetIndex)
+    {
+        FormatArguments args{};
+        args.push(StringIds::tooltip_scroll_vehicle_list);
+        return args;
+    }
+
+    // 0x004C260B
+    static void onUpdate(window* self)
+    {
+        self->frame_no++;
+        self->callPrepareDraw();
+        WindowManager::invalidateWidget(WindowType::vehicleList, self->number, getTabFromType(self->current_tab));
+
+        sub_4C1D92(self);
+        sub_4C1D92(self);
+        sub_4C1D92(self);
+
+        self->invalidate();
+    }
+
     // 0x004C265B
     static void getScrollSize(window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
@@ -311,6 +341,8 @@ namespace OpenLoco::Ui::Windows::VehicleList
         _events.on_mouse_up = onMouseUp;
         _events.on_mouse_down = onMouseDown;
         _events.on_dropdown = onDropdown;
+        _events.tooltip = tooltip;
+        _events.on_update = onUpdate;
         _events.get_scroll_size = getScrollSize;
         _events.scroll_mouse_down = onScrollMouseDown;
         _events.scroll_mouse_over = onScrollMouseOver;
@@ -320,7 +352,5 @@ namespace OpenLoco::Ui::Windows::VehicleList
         // _events.event_08 = event_08;
         // _events.event_09 = event_09;
         // _events.on_resize = onResize;
-        // _events.on_update = onUpdate;
-        // _events.tooltip = tooltip;
     }
 }
