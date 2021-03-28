@@ -135,7 +135,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
         // 0x004C1A05
         self = create(companyId);
-        self->current_tab = VehicleList::getTabFromType(type);
+        self->current_tab = type;
         self->row_height = row_heights[type];
         self->width = window_size.width;
         self->height = window_size.height;
