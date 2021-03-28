@@ -15,8 +15,8 @@ using namespace OpenLoco::Interop;
 namespace OpenLoco::Ui::Windows::VehicleList
 {
     static const Gfx::ui_size_t window_size = { 550, 213 };
-    static const Gfx::ui_size_t max_dimensions = { 640, 1200 };
-    static const Gfx::ui_size_t min_dimensions = { 192, 100 };
+    static const Gfx::ui_size_t max_dimensions = { 550, 1200 };
+    static const Gfx::ui_size_t min_dimensions = { 220, 160 };
 
     static window_event_list _events;
 
@@ -305,10 +305,38 @@ namespace OpenLoco::Ui::Windows::VehicleList
         self->invalidate();
     }
 
+    // 0x004C2640
+    static void event_08(window* self)
+    {
+        self->flags |= WindowFlags::not_scroll_view;
+    }
+
+    // 0x004C2648
+    static void event_09(window* self)
+    {
+        if (self->flags & WindowFlags::not_scroll_view)
+        {
+            self->row_hover = -1;
+        }
+    }
+
     // 0x004C265B
     static void getScrollSize(window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
         *scrollHeight = self->var_83C * self->row_height;
+    }
+
+    // 0x004C266D
+    static cursor_id cursor(window* self, int16_t widgetIdx, int16_t xPos, int16_t yPos, cursor_id fallback)
+    {
+        if (widgetIdx != Widx::scrollview)
+            return fallback;
+
+        uint16_t currentIndex = yPos / self->row_height;
+        if (currentIndex < self->var_83C && self->row_info[currentIndex] != -1)
+            return cursor_id::hand_pointer;
+
+        return fallback;
     }
 
     // 0x004C26A4
@@ -333,6 +361,30 @@ namespace OpenLoco::Ui::Windows::VehicleList
         call(0x004C27C0, regs);
     }
 
+    // 0x004C2820
+    static void onResize(window* self)
+    {
+        self->flags |= WindowFlags::resizable;
+
+        self->min_width = min_dimensions.width;
+        self->min_height = min_dimensions.height;
+
+        self->max_width = max_dimensions.width;
+        self->max_height = max_dimensions.height;
+
+        if (self->width < self->min_width)
+        {
+            self->width = self->min_width;
+            self->invalidate();
+        }
+
+        if (self->height < self->min_height)
+        {
+            self->height = self->min_height;
+            self->invalidate();
+        }
+    }
+
     static void initEvents()
     {
         _events.prepare_draw = prepareDraw;
@@ -343,14 +395,12 @@ namespace OpenLoco::Ui::Windows::VehicleList
         _events.on_dropdown = onDropdown;
         _events.tooltip = tooltip;
         _events.on_update = onUpdate;
+        _events.event_08 = event_08;
+        _events.event_09 = event_09;
         _events.get_scroll_size = getScrollSize;
+        _events.cursor = cursor;
         _events.scroll_mouse_down = onScrollMouseDown;
         _events.scroll_mouse_over = onScrollMouseOver;
-
-        // TODO: the events below are not yet stubbed or implemented.
-        // _events.cursor = cursor;
-        // _events.event_08 = event_08;
-        // _events.event_09 = event_09;
-        // _events.on_resize = onResize;
+        _events.on_resize = onResize;
     }
 }
