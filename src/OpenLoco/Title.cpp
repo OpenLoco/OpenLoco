@@ -190,7 +190,8 @@ namespace OpenLoco::Title
             auto& command = *_sequenceIterator++;
             std::visit(overloaded{
                            [](WaitStep step) {
-                               _waitCounter = step.duration / 4;
+                               // This loop slightly deviates from the original, subtract 1 tick to make up for it.
+                               _waitCounter = (step.duration / 4) - 1;
                            },
                            [](ReloadStep step) {
                                loadTitle();
