@@ -184,6 +184,9 @@ namespace OpenLoco::Title
 
         do
         {
+            if (_sequenceIterator >= _titleSequence.end())
+                return;
+
             auto& command = *_sequenceIterator++;
             std::visit(overloaded{
                            [](WaitStep step) {
