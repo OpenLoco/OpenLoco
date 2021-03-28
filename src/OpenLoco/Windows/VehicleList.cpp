@@ -183,6 +183,16 @@ namespace OpenLoco::Ui::Windows::VehicleList
         call(0x004C2121, regs);
     }
 
+    // 0x004C21CD
+    static void drawScroll(window* self, Gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
+    {
+        registers regs;
+        regs.esi = (int32_t)self;
+        regs.edi = (int32_t)dpi;
+        regs.eax = (int32_t)scrollIndex;
+        call(0x004C21CD, regs);
+    }
+
     // 0x004C2409
     static void onMouseUp(window* self, widget_index widgetIndex)
     {
@@ -265,24 +275,52 @@ namespace OpenLoco::Ui::Windows::VehicleList
         self->invalidate();
     }
 
+    // 0x004C265B
+    static void getScrollSize(window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+    {
+        *scrollHeight = self->var_83C * self->row_height;
+    }
+
+    // 0x004C26A4
+    static void onScrollMouseOver(window* self, int16_t x, int16_t y, uint8_t scroll_index)
+    {
+        registers regs;
+        regs.ax = scroll_index;
+        regs.cx = x;
+        regs.dx = y;
+        regs.esi = (int32_t)self;
+        call(0x004C26A4, regs);
+    }
+
+    // 0x004C27C0
+    static void onScrollMouseDown(window* self, int16_t x, int16_t y, uint8_t scroll_index)
+    {
+        registers regs;
+        regs.ax = scroll_index;
+        regs.cx = x;
+        regs.dx = y;
+        regs.esi = (int32_t)self;
+        call(0x004C27C0, regs);
+    }
+
     static void initEvents()
     {
         _events.prepare_draw = prepareDraw;
         _events.draw = draw;
+        _events.draw_scroll = drawScroll;
         _events.on_mouse_up = onMouseUp;
         _events.on_mouse_down = onMouseDown;
         _events.on_dropdown = onDropdown;
+        _events.get_scroll_size = getScrollSize;
+        _events.scroll_mouse_down = onScrollMouseDown;
+        _events.scroll_mouse_over = onScrollMouseOver;
 
         // TODO: the events below are not yet stubbed or implemented.
         // _events.cursor = cursor;
-        // _events.draw_scroll = drawScroll;
         // _events.event_08 = event_08;
         // _events.event_09 = event_09;
-        // _events.get_scroll_size = getScrollSize;
         // _events.on_resize = onResize;
         // _events.on_update = onUpdate;
-        // _events.scroll_mouse_down = onScrollMouseDown;
-        // _events.scroll_mouse_over = onScrollMouseOver;
         // _events.tooltip = tooltip;
     }
 }
