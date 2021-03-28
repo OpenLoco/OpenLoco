@@ -191,7 +191,7 @@ namespace OpenLoco::Title
             std::visit(overloaded{
                            [](WaitStep step) {
                                // This loop slightly deviates from the original, subtract 1 tick to make up for it.
-                               _waitCounter = (step.duration / 4) - 1;
+                               _waitCounter = step.duration - 1;
                            },
                            [](ReloadStep step) {
                                loadTitle();
