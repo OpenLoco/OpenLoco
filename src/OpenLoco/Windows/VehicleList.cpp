@@ -1,6 +1,7 @@
 #include "../CompanyManager.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/ImageIds.h"
+#include "../Input.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/FormatArguments.hpp"
 #include "../Localisation/StringIds.h"
@@ -14,6 +15,8 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::VehicleList
 {
+    static loco_global<uint8_t, 0x00525FAF> _lastVehiclesOption;
+
     static const Gfx::ui_size_t window_size = { 550, 213 };
     static const Gfx::ui_size_t max_dimensions = { 550, 1200 };
     static const Gfx::ui_size_t min_dimensions = { 220, 160 };
@@ -201,6 +204,45 @@ namespace OpenLoco::Ui::Windows::VehicleList
         call(0x004C21CD, regs);
     }
 
+    // 0x004C24F7
+    static void switchTab(window* self, uint8_t type)
+    {
+        if (Input::isToolActive(self->type, self->number))
+            Input::toolCancel();
+
+        self->current_tab = type;
+        self->row_height = row_heights[type];
+        self->frame_no = 0;
+
+        if (CompanyManager::getControllingId() == self->number && _lastVehiclesOption != type)
+        {
+            *_lastVehiclesOption = type;
+            WindowManager::invalidate(WindowType::topToolbar);
+        }
+
+        // The original game was setting viewports and (enabled/disabled) widgets here.
+        // As all tabs are the same, we've simplified this.
+
+        disableUnavailableVehicleTypes(self);
+        self->invalidate();
+
+        if (self->width < 220)
+            self->width = 220;
+
+        self->row_count = 0;
+        sub_4C1D4F(self);
+
+        self->var_83C = 0;
+        self->row_hover = -1;
+
+        self->callOnResize();
+        self->callOnPeriodicUpdate();
+        self->callPrepareDraw();
+        self->initScrollWidgets();
+        self->invalidate();
+        self->moveInsideScreenEdges();
+    }
+
     // 0x004C2409
     static void onMouseUp(window* self, widget_index widgetIndex)
     {
@@ -217,10 +259,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
             case Widx::tab_aircraft:
             case Widx::tab_ships:
             {
-                registers regs;
-                regs.esi = (int32_t)self;
-                regs.edx = widgetIndex;
-                call(0x004C24F7, regs);
+                switchTab(self, widgetIndex - Widx::tab_trains);
                 break;
             }
 
@@ -229,10 +268,13 @@ namespace OpenLoco::Ui::Windows::VehicleList
             case Widx::sort_age:
             case Widx::sort_reliability:
             {
-                registers regs;
-                regs.esi = (int32_t)self;
-                regs.edx = widgetIndex;
-                call(0x004C24D4, regs);
+                auto sortMode = widgetIndex - Widx::sort_name;
+                if (self->sort_mode == sortMode)
+                    return;
+
+                self->sort_mode = sortMode;
+                self->invalidate();
+                sub_4C1D4F(self);
                 break;
             }
         }
