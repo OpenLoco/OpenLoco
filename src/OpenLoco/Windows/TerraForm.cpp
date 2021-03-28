@@ -5,6 +5,7 @@
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/FormatArguments.hpp"
+#include "../Map/Map.hpp"
 #include "../Map/Tile.h"
 #include "../Map/TileManager.h"
 #include "../Objects/InterfaceSkinObject.h"
@@ -459,7 +460,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                     updateTreeColours(self);
 
                     int32_t pan = (self->width >> 1) + self->x;
-                    loc16 loc = { xPos, yPos, static_cast<int16_t>(pan) };
+                    OpenLoco::Map::map_pos3 loc = { xPos, yPos, static_cast<int16_t>(pan) };
                     Audio::playSound(Audio::sound_id::click_down, loc, pan);
                     self->saved_view.mapX = -16;
                     _lastTreeCost = 0x80000000;
@@ -1987,7 +1988,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                     _lastSelectedWall = static_cast<uint8_t>(rowInfo);
 
                     int32_t pan = (self->width >> 1) + self->x;
-                    loc16 loc = { xPos, yPos, static_cast<int16_t>(pan) };
+                    OpenLoco::Map::map_pos3 loc = { xPos, yPos, static_cast<int16_t>(pan) };
                     Audio::playSound(Audio::sound_id::click_down, loc, pan);
                     self->saved_view.mapX = -16;
                     self->invalidate();

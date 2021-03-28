@@ -12,7 +12,7 @@ SteamObject* OpenLoco::Exhaust::object() const
 }
 
 // 0x0044080C
-Exhaust* OpenLoco::Exhaust::create(loc16 loc, uint8_t type)
+Exhaust* OpenLoco::Exhaust::create(Map::map_pos3 loc, uint8_t type)
 {
     if ((uint16_t)loc.x > 12287 || (uint16_t)loc.y > 12287)
         return nullptr;
@@ -46,7 +46,7 @@ Exhaust* OpenLoco::Exhaust::create(loc16 loc, uint8_t type)
 }
 
 // 0x00440BEB
-Smoke* OpenLoco::Smoke::create(loc16 loc)
+Smoke* OpenLoco::Smoke::create(Map::map_pos3 loc)
 {
     auto t = static_cast<Smoke*>(ThingManager::createThing());
     if (t != nullptr)

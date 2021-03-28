@@ -5,6 +5,7 @@
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/FormatArguments.hpp"
+#include "../Map/Map.hpp"
 #include "../Objects/CargoObject.h"
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/ObjectManager.h"
@@ -743,7 +744,7 @@ namespace OpenLoco::Ui::BuildVehicle
         }
 
         auto pan = window->width / 2 + window->x;
-        Audio::playSound(Audio::sound_id::click_down, loc16{ x, y, static_cast<int16_t>(pan) }, pan);
+        Audio::playSound(Audio::sound_id::click_down, OpenLoco::Map::map_pos3{ x, y, static_cast<int16_t>(pan) }, pan);
         auto item = window->row_info[scrollItem];
         auto vehicleObj = ObjectManager::get<vehicle_object>(item);
         FormatArguments args{};

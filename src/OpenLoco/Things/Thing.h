@@ -1,7 +1,9 @@
 #pragma once
 
 #include "../Location.hpp"
+#include "../Map/Map.hpp"
 #include "../Types.hpp"
+
 #include <cstdint>
 #include <limits>
 
@@ -68,7 +70,7 @@ namespace OpenLoco
         uint8_t sprite_yaw;    // 0x1E
         Pitch sprite_pitch;    // 0x1F
 
-        void moveTo(loc16 loc);
+        void moveTo(Map::map_pos3 loc);
         void invalidateSprite();
 
         Vehicles::VehicleBase* asVehicle() const { return asBase<Vehicles::VehicleBase, thing_base_type::vehicle>(); }

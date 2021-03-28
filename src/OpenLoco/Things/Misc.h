@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../Map/Map.hpp"
 #include "../Objects/SteamObject.h"
 #include "Thing.h"
 
@@ -65,7 +66,7 @@ namespace OpenLoco
 
         SteamObject* object() const;
 
-        static Exhaust* create(loc16 loc, uint8_t type);
+        static Exhaust* create(Map::map_pos3 loc, uint8_t type);
     };
 
     struct MoneyEffect : MiscBase
@@ -76,8 +77,6 @@ namespace OpenLoco
         uint8_t pad_2F[0x44 - 0x2F];
         int16_t offsetX; // 0x44
         uint16_t wiggle; // 0x46
-
-        //static MoneyEffect* create(loc16 loc, uint8_t type);
     };
 
     struct VehicleCrashParticle : MiscBase
@@ -87,40 +86,30 @@ namespace OpenLoco
         uint8_t pad_2A[0x2E - 0x2A];
         ColourScheme colourScheme;  // 0x2E
         uint16_t crashedSpriteBase; // 0x30 crashed_sprite_base
-
-        //static VehicleCrashParticle* create(loc16 loc);
     };
 
     struct ExplosionCloud : MiscBase
     {
         uint8_t pad_20[0x28 - 0x20];
         uint16_t frame; // 0x28
-
-        //static ExplosionCloud* create(loc16 loc);
     };
 
     struct Splash : MiscBase
     {
         uint8_t pad_20[0x28 - 0x20];
         uint16_t frame; // 0x28
-
-        //static Splash* create(loc16 loc);
     };
 
     struct Fireball : MiscBase
     {
         uint8_t pad_20[0x28 - 0x20];
         uint16_t frame; // 0x28
-
-        //static Fireball* create(loc16 loc);
     };
 
     struct ExplosionSmoke : MiscBase
     {
         uint8_t pad_20[0x28 - 0x20];
         uint16_t frame; // 0x28
-
-        //static ExplosionSmoke* create(loc16 loc);
     };
 
     struct Smoke : MiscBase
@@ -128,7 +117,7 @@ namespace OpenLoco
         uint8_t pad_20[0x28 - 0x20];
         uint16_t frame; // 0x28
 
-        static Smoke* create(loc16 loc);
+        static Smoke* create(Map::map_pos3 loc);
     };
 #pragma pack(pop)
 }

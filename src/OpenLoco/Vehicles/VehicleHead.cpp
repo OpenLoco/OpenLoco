@@ -156,7 +156,7 @@ namespace OpenLoco::Vehicles
                 if ((scenarioTicks() & 3) == 0)
                 {
                     auto v2 = car.body; // body
-                    Smoke::create(loc16(v2->x, v2->y, v2->z + 4));
+                    Smoke::create(Map::map_pos3(v2->x, v2->y, v2->z + 4));
                 }
             }
 
@@ -172,7 +172,7 @@ namespace OpenLoco::Vehicles
 
                     auto v2 = car.body;
                     auto soundId = (Audio::sound_id)gPrng().randNext(26, 26 + 5);
-                    Audio::playSound(soundId, loc16(v2->x, v2->y, v2->z + 22));
+                    Audio::playSound(soundId, Map::map_pos3(v2->x, v2->y, v2->z + 22));
                 }
             }
         }

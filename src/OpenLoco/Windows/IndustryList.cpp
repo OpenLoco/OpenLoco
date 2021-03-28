@@ -7,6 +7,7 @@
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/FormatArguments.hpp"
+#include "../Map/Map.hpp"
 #include "../Objects/CargoObject.h"
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/ObjectManager.h"
@@ -704,7 +705,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                     _lastSelectedIndustry = static_cast<uint8_t>(rowInfo);
 
                     int32_t pan = (self->width >> 1) + self->x;
-                    loc16 loc = { xPos, yPos, static_cast<int16_t>(pan) };
+                    OpenLoco::Map::map_pos3 loc = { xPos, yPos, static_cast<int16_t>(pan) };
                     Audio::playSound(Audio::sound_id::click_down, loc, pan);
                     self->saved_view.mapX = -16;
                     dword_E0C39C = 0x80000000;

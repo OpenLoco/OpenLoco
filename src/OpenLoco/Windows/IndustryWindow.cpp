@@ -11,6 +11,7 @@
 #include "../Interop/Interop.hpp"
 #include "../Localisation/FormatArguments.hpp"
 #include "../Localisation/StringIds.h"
+#include "../Map/Map.hpp"
 #include "../Map/TileManager.h"
 #include "../Objects/CargoObject.h"
 #include "../Objects/IndustryObject.h"
@@ -187,7 +188,7 @@ namespace OpenLoco::Ui::Windows::Industry
                     loco_global<uint16_t, 0x009C68E2> gameCommandMapY;
                     loco_global<uint16_t, 0x009C68E4> gameCommandMapZ;
 
-                    Audio::playSound(Audio::sound_id::demolish, loc16(gameCommandMapX, gameCommandMapY, gameCommandMapZ));
+                    Audio::playSound(Audio::sound_id::demolish, OpenLoco::Map::map_pos3(gameCommandMapX, gameCommandMapY, gameCommandMapZ));
                     break;
                 }
             }

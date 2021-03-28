@@ -7,7 +7,6 @@
 namespace OpenLoco
 {
     using xy32 = Math::Vector::TVector2<int32_t, 1>;
-    using loc16 = Math::Vector::TVector3<int16_t, 1>;
 
     namespace Location
     {
