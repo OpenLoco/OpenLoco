@@ -175,6 +175,7 @@ namespace OpenLoco::Ui::Vehicle
         static window_event_list events;
         constexpr uint64_t enabledWidgets = (1 << widx::routeList) | (1 << widx::orderForceUnload) | (1 << widx::orderWait) | (1 << widx::orderSkip) | (1 << widx::orderDelete) | (1 << widx::orderUp) | (1 << widx::orderDown) | Common::enabledWidgets;
         constexpr uint64_t holdableWidgets = 0;
+        constexpr auto lineHeight = 10;
 
         static widget_t widgets[] = {
             commonWidgets(265, 189, StringIds::title_vehicle_route),
@@ -2192,9 +2193,9 @@ namespace OpenLoco::Ui::Vehicle
 #pragma pack(push, 1)
         struct UnkF2494A
         {
-            uint32_t orderOffset;   // 0x0
-            LabelPosition position; // 0x4
-            uint8_t lineNumber;     // 0x24
+            uint32_t orderOffset; // 0x0
+            LabelPosition frame;  // 0x4
+            uint8_t lineNumber;   // 0x24
             uint8_t pad_25;
         };
         static_assert(sizeof(UnkF2494A) == 0x26);
@@ -2273,7 +2274,8 @@ namespace OpenLoco::Ui::Vehicle
                     }
                 }
 
-                _F2494A[i].lineNumber = lineNumber & 0xFF;
+                // For some reason save only a byte when this could in theory be larger
+                _F2494A[i].lineNumber = static_cast<uint8_t>(lineNumber);
                 i++;
             }
 
@@ -2300,15 +2302,15 @@ namespace OpenLoco::Ui::Vehicle
                     // of the station/waypoint. This works out where the subsequent
                     // lines of the label will end up.
                     auto width = (stringWidth + 3) << zoom;
-                    auto numberHeight = (unk.lineNumber * 10) << zoom;
+                    auto numberHeight = (unk.lineNumber * lineHeight) << zoom;
                     auto firstLineHeight = 11 << zoom;
                     auto midX = width / 2;
                     auto midFirstLineY = firstLineHeight / 2;
 
-                    unk.position.left[zoom] = (pos.x - midX) >> zoom;
-                    unk.position.right[zoom] = (pos.x + midX) >> zoom;
-                    unk.position.top[zoom] = (pos.y - midFirstLineY) >> zoom;
-                    unk.position.bottom[zoom] = (pos.y + midFirstLineY + numberHeight) >> zoom;
+                    unk.frame.left[zoom] = (pos.x - midX) >> zoom;
+                    unk.frame.right[zoom] = (pos.x + midX) >> zoom;
+                    unk.frame.top[zoom] = (pos.y - midFirstLineY) >> zoom;
+                    unk.frame.bottom[zoom] = (pos.y + midFirstLineY + numberHeight) >> zoom;
                 }
                 i++;
             }
@@ -2758,16 +2760,16 @@ namespace OpenLoco::Ui::Vehicle
         {
             auto head = Common::getVehicle(self);
             auto table = getOrderTable(head);
-            *height = 10 * std::distance(table.begin(), table.end());
+            *height = lineHeight * std::distance(table.begin(), table.end());
 
             // Space for the 'end of orders' item
-            *height += 10;
+            *height += lineHeight;
         }
 
         static void scrollMouseDown(window* const self, const int16_t x, const int16_t y, const uint8_t scrollIndex)
         {
             auto head = Common::getVehicle(self);
-            auto item = y / 10;
+            auto item = y / lineHeight;
             Vehicles::Order* selectedOrder = getOrderTable(head).atIndex(item);
             if (selectedOrder == nullptr)
             {
@@ -2859,7 +2861,7 @@ namespace OpenLoco::Ui::Vehicle
         static void scrollMouseOver(window* const self, const int16_t x, const int16_t y, const uint8_t scrollIndex)
         {
             self->flags &= ~WindowFlags::not_scroll_view;
-            auto item = y / 10;
+            auto item = y / lineHeight;
             if (self->row_hover != item)
             {
                 self->row_hover = item;
@@ -3104,7 +3106,7 @@ namespace OpenLoco::Ui::Vehicle
             _113646A = 1; // Number ?symbol? TODO: make not a global
             for (auto& order : getOrderTable(head))
             {
-                int16_t y = rowNum * 10;
+                int16_t y = rowNum * lineHeight;
                 auto strFormat = StringIds::black_stringid;
                 if (self->var_842 == rowNum)
                 {
@@ -3152,17 +3154,17 @@ namespace OpenLoco::Ui::Vehicle
             }
 
             // Output the end of orders
-            Gfx::point_t loc = { 8, static_cast<int16_t>(rowNum * 10) };
+            Gfx::point_t loc = { 8, static_cast<int16_t>(rowNum * lineHeight) };
             auto strFormat = StringIds::black_stringid;
             if (self->var_842 == rowNum)
             {
-                Gfx::fillRect(pDrawpixelinfo, 0, loc.y, self->width, loc.y + 10, Colour::aquamarine);
+                Gfx::fillRect(pDrawpixelinfo, 0, loc.y, self->width, loc.y + lineHeight, Colour::aquamarine);
                 strFormat = StringIds::white_stringid;
             }
             if (self->row_hover == rowNum)
             {
                 strFormat = StringIds::wcolour2_stringid;
-                Gfx::fillRect(pDrawpixelinfo, 0, loc.y, self->width, loc.y + 10, 0x2000030);
+                Gfx::fillRect(pDrawpixelinfo, 0, loc.y, self->width, loc.y + lineHeight, 0x2000030);
             }
 
             loc.y -= 1;
