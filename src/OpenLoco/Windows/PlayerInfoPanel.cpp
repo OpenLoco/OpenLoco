@@ -55,7 +55,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     static window_event_list _events;
     std::vector<const company*> _sortedCompanies;
 
-    static loco_global<uint16_t, 0x0050A004> _50A004; // maybe date related
+    static loco_global<uint16_t, 0x0050A004> _50A004;
     static loco_global<uint16_t, 0x0052338A> _tooltipTimeout;
     static loco_global<int32_t, 0x00e3f0b8> gCurrentRotation;
     static loco_global<uint16_t, 0x0113DC78> _113DC78; // Dropdown flags?
@@ -364,6 +364,11 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
         auto playerCompany = CompanyManager::get(CompanyManager::getControllingId());
 
         formatPerformanceIndex(playerCompany->performance_index, args);
+    }
+
+    void invalidateFrame()
+    {
+        _50A004 = _50A004 | (1 << 0);
     }
 
     // 0x00439670

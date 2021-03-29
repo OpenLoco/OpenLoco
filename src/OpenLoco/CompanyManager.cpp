@@ -27,9 +27,6 @@ namespace OpenLoco::CompanyManager
     static loco_global<uint8_t[max_companies + 1], 0x009C645C> _company_colours;
     static loco_global<company_id_t, 0x009C68EB> _updating_company_id;
 
-    static loco_global<uint16_t, 0x0050A004> _50A004;
-    static loco_global<uint8_t, 0x009C68EA> gGameCommandExpenditureType; // premultiplied by 4
-
     static void produceCompanies();
 
     // 0x0042F7F8
@@ -283,7 +280,8 @@ namespace OpenLoco::CompanyManager
     // 0x0046DE2B
     // id : updatingCompanyId global var
     // payment : ebx (subtracted from company balance)
-    void applyPaymentToCompany(const company_id_t id, const currency32_t payment)
+    // type : gGameCommandExpenditureType global var
+    void applyPaymentToCompany(const company_id_t id, const currency32_t payment, const ExpenditureType type)
     {
         auto* company = get(id);
         if (company == nullptr || OpenLoco::isEditorMode())
@@ -292,10 +290,10 @@ namespace OpenLoco::CompanyManager
         // Invalidate the company balance if this is the player company
         if (getControllingId() == id)
         {
-            _50A004 = 1;
+            Ui::Windows::PlayerInfoPanel::invalidateFrame();
         }
         auto cost = currency48_t{ payment };
         company->cash -= cost;
-        company->expenditures[0][gGameCommandExpenditureType / 4] -= payment;
+        company->expenditures[0][static_cast<uint8_t>(type)] -= payment;
     }
 }

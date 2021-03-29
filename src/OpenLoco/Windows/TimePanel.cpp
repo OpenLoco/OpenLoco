@@ -409,6 +409,11 @@ namespace OpenLoco::Ui::TimePanel
         w->invalidate();
     }
 
+    void invalidateFrame()
+    {
+        _50A004 = _50A004 | (1 << 1);
+    }
+
     // 0x00439AD9
     static void onUpdate(window* w)
     {

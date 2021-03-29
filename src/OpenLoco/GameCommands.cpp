@@ -20,7 +20,6 @@ namespace OpenLoco::GameCommands
     static loco_global<uint8_t, 0x00508F08> game_command_nest_level;
     static loco_global<company_id_t[2], 0x00525E3C> _player_company;
     static loco_global<uint8_t, 0x00508F17> paused_state;
-    static loco_global<uint16_t, 0x0050A004> _50A004;
 
     static uint16_t _gameCommandFlags;
 
@@ -31,6 +30,7 @@ namespace OpenLoco::GameCommands
     static loco_global<coord_t, 0x009C68E4> gameCommandMapZ;
     static loco_global<string_id, 0x009C68E6> gGameCommandErrorText;
     static loco_global<string_id, 0x009C68E8> gGameCommandErrorTitle;
+    static loco_global<uint8_t, 0x009C68EA> gGameCommandExpenditureType; // premultiplied by 4
     static loco_global<uint8_t, 0x009C68EE> _errorCompanyId;
     static loco_global<string_id[8], 0x112C826> _commonFormatArgs;
 
@@ -181,7 +181,7 @@ namespace OpenLoco::GameCommands
                 paused_state = paused_state ^ 1;
                 WindowManager::invalidate(WindowType::timeToolbar);
                 Audio::unpauseSound();
-                _50A004 = _50A004 | 1;
+                Ui::Windows::PlayerInfoPanel::invalidateFrame();
             }
 
             if (getGameSpeed() != 0)
@@ -301,7 +301,7 @@ namespace OpenLoco::GameCommands
             return ebx;
 
         // Apply to company money
-        CompanyManager::applyPaymentToCompany(CompanyManager::updatingCompanyId(), ebx);
+        CompanyManager::applyPaymentToCompany(CompanyManager::updatingCompanyId(), ebx, ExpenditureType(gGameCommandExpenditureType / 4));
 
         if (ebx != 0 && _updating_company_id == _player_company[0])
         {

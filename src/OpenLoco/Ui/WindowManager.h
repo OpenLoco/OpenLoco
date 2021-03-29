@@ -346,6 +346,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 namespace OpenLoco::Ui::Windows::PlayerInfoPanel
 {
     window* open();
+    void invalidateFrame();
 }
 
 namespace OpenLoco::Ui::Windows::ProgressBar
@@ -368,6 +369,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
 namespace OpenLoco::Ui::TimePanel
 {
     window* open();
+    void invalidateFrame();
 }
 
 namespace OpenLoco::Ui::Windows::Tutorial
