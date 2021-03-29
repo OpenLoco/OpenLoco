@@ -187,6 +187,7 @@
     <ClCompile Include="Windows\ToolTip.cpp" />
     <ClCompile Include="Windows\TownList.cpp" />
     <ClCompile Include="Windows\TownWindow.cpp" />
+    <ClCompile Include="Windows\Tutorial.cpp" />
     <ClCompile Include="Windows\Vehicle.cpp" />
     <ClCompile Include="Windows\VehicleList.cpp" />
   </ItemGroup>

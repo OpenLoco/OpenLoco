@@ -365,6 +365,11 @@ namespace OpenLoco::Ui::TimePanel
     window* open();
 }
 
+namespace OpenLoco::Ui::Windows::Tutorial
+{
+    window* open();
+}
+
 namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
 {
     void open();

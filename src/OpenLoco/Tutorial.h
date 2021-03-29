@@ -20,4 +20,6 @@ namespace OpenLoco::Tutorial
 
     uint16_t nextInput();
     string_id nextString();
+
+    uint8_t getTutorialNumber();
 }

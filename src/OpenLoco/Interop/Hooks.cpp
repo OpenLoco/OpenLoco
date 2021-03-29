@@ -778,7 +778,7 @@ void OpenLoco::Interop::registerHooks()
     Scenario::registerHooks();
     S5::registerHooks();
     Title::registerHooks();
-    Tutorial::registerHooks();
+    OpenLoco::Tutorial::registerHooks();
     Paint::registerHooks();
 
     // Part of 0x004691FA

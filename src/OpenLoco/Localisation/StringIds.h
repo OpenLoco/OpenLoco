@@ -526,6 +526,8 @@ namespace OpenLoco::StringIds
     constexpr string_id forced_software_buffer_mixing = UNUSED_STR(1010);
     constexpr string_id forced_software_buffer_mixing_tip = UNUSED_STR(1011);
 
+    constexpr string_id tutorial_text = 1014;
+    constexpr string_id tutorial_control = 1015;
     constexpr string_id loco_already_running = 1016;
     constexpr string_id music_acknowledgements_btn = 1017;
     constexpr string_id music_acknowledgements_caption = 1018;

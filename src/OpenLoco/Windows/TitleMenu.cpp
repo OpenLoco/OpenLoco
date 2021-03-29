@@ -440,7 +440,7 @@ namespace OpenLoco::Ui::Windows
         if (itemIndex == -1)
             return;
 
-        Tutorial::start(itemIndex);
+        OpenLoco::Tutorial::start(itemIndex);
     }
 
     static void sub_4391DA()
