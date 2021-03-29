@@ -146,8 +146,8 @@ namespace OpenLoco::GameCommands
                 clearScreenFlag(ScreenFlags::networked);
                 clearScreenFlag(ScreenFlags::networkHost);
                 addr<0x00508F0C, uint32_t>() = 0;
-                addr<0x00525E3C, uint8_t>() = 0;
-                addr<0x00525E3D, uint8_t>() = 0xFF;
+                CompanyManager::setControllingId(0);
+                CompanyManager::setSecondaryPlayerId(CompanyId::null);
 
                 Gfx::invalidateScreen();
                 ObjectManager::loadIndex();
