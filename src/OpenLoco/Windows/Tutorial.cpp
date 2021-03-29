@@ -8,8 +8,6 @@
 #include "../Ui.h"
 #include "../Ui/WindowManager.h"
 
-#include <array>
-
 namespace OpenLoco::Ui::Windows::Tutorial
 {
     enum Widx
@@ -56,7 +54,7 @@ namespace OpenLoco::Ui::Windows::Tutorial
     // 0x00439B3D
     static void prepareDraw(window* self)
     {
-        self->widgets[Widx::frame].right = self->width;
+        self->widgets[Widx::frame].right = self->width - 1;
     }
 
     // 0x00439B4A
