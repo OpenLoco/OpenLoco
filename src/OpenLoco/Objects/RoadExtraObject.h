@@ -10,7 +10,7 @@ namespace OpenLoco
     }
 
 #pragma pack(push, 1)
-    struct road_extra_object
+    struct RoadExtraObject
     {
         string_id name;
         uint16_t road_pieces;       // 0x02

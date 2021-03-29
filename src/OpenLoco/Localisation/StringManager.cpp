@@ -223,7 +223,7 @@ namespace OpenLoco::StringManager
             value = -value;
         }
 
-        currency_object* currency = ObjectManager::get<currency_object>();
+        CurrencyObject* currency = ObjectManager::get<CurrencyObject>();
 
         int64_t localised_value = value * (1ULL << currency->factor);
 

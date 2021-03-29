@@ -236,7 +236,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     // 0x0049DB1F
-    static void disableUnusedTrackPieces(window* self, track_object trackObj, uint64_t disabledWidgets)
+    static void disableUnusedTrackPieces(window* self, TrackObject trackObj, uint64_t disabledWidgets)
     {
         if (_lastSelectedTrackGradient == 2 || _lastSelectedTrackGradient == 6 || _lastSelectedTrackGradient == 4 || _lastSelectedTrackGradient == 8)
         {
@@ -260,7 +260,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     // 0x0049DAF3
-    static void disableTrackSlopes(window* self, track_object trackObj, uint64_t disabledWidgets)
+    static void disableTrackSlopes(window* self, TrackObject trackObj, uint64_t disabledWidgets)
     {
         auto maskedTrackPieces = trackObj.track_pieces & ((1 << 5) | (1 << 8));
 
@@ -325,7 +325,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         window->holdable_widgets = (1 << widx::construct) | (1 << widx::remove);
 
         auto trackType = _trackType & ~(1 << 7);
-        auto roadObj = ObjectManager::get<road_object>(trackType);
+        auto roadObj = ObjectManager::get<RoadObject>(trackType);
 
         window->widgets[widx::s_bend_left].type = widget_type::none;
         window->widgets[widx::s_bend_right].type = widget_type::none;
@@ -517,7 +517,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         mapInvalidateMapSelectionTiles();
         window->holdable_widgets = (1 << widx::construct) | (1 << widx::remove);
 
-        auto trackObj = ObjectManager::get<track_object>(_trackType);
+        auto trackObj = ObjectManager::get<TrackObject>(_trackType);
 
         window->widgets[widx::s_bend_left].type = widget_type::wt_9;
         window->widgets[widx::s_bend_right].type = widget_type::wt_9;
@@ -1166,7 +1166,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         }
         else
         {
-            auto trackObj = ObjectManager::get<track_object>(trackType);
+            auto trackObj = ObjectManager::get<TrackObject>(trackType);
             if (_lastSelectedTrackPiece == 0xFF)
             {
                 disableUnusedTrackPieces(self, *trackObj, disabledWidgets);
@@ -1248,7 +1248,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             if (bridge == _lastSelectedBridge)
                 Dropdown::setHighlightedItem(i);
 
-            auto bridgeObj = ObjectManager::get<bridge_object>(bridge);
+            auto bridgeObj = ObjectManager::get<BridgeObject>(bridge);
             auto company = CompanyManager::get(_playerCompany);
             auto companyColour = company->mainColours.primary;
             auto imageId = Gfx::recolour(bridgeObj->image, companyColour);
@@ -1850,17 +1850,17 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         auto args = FormatArguments();
         if (_trackType & (1 << 7))
         {
-            auto roadObj = ObjectManager::get<road_object>(_trackType & ~(1 << 7));
+            auto roadObj = ObjectManager::get<RoadObject>(_trackType & ~(1 << 7));
             args.push(roadObj->name);
         }
         else
         {
-            auto trackObj = ObjectManager::get<track_object>(_trackType);
+            auto trackObj = ObjectManager::get<TrackObject>(_trackType);
             args.push(trackObj->name);
         }
         if (_lastSelectedBridge != 0xFF)
         {
-            auto bridgeObj = ObjectManager::get<bridge_object>(_lastSelectedBridge);
+            auto bridgeObj = ObjectManager::get<BridgeObject>(_lastSelectedBridge);
             if (bridgeObj != nullptr)
             {
                 args.push(bridgeObj->name);
@@ -1979,7 +1979,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         {
             if (_lastSelectedBridge != 0xFF)
             {
-                auto bridgeObj = ObjectManager::get<bridge_object>(_lastSelectedBridge);
+                auto bridgeObj = ObjectManager::get<BridgeObject>(_lastSelectedBridge);
                 if (bridgeObj != nullptr)
                 {
                     auto company = CompanyManager::get(_playerCompany);

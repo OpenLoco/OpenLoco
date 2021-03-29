@@ -58,7 +58,7 @@ namespace OpenLoco
         uint8_t pad_393[0x453 - 0x393];
 
         industry_id_t id() const;
-        industry_object* object() const;
+        IndustryObject* object() const;
         bool empty() const;
         bool canReceiveCargo() const;
         bool canProduceCargo() const;

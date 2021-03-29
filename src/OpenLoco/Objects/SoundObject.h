@@ -9,7 +9,7 @@ namespace OpenLoco
         constexpr sound_object_id_t null = 0xFF;
     }
 #pragma pack(push, 1)
-    struct sound_object
+    struct SoundObject
     {
         string_id name;
         void* data;

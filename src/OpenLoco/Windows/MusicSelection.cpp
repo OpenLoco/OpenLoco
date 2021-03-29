@@ -79,7 +79,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
         window->enabled_widgets = 1 << widx::close;
         window->initScrollWidgets();
 
-        auto interface = ObjectManager::get<interface_skin_object>();
+        auto interface = ObjectManager::get<InterfaceSkinObject>();
         window->colours[0] = interface->colour_0B;
         window->colours[1] = interface->colour_10;
 

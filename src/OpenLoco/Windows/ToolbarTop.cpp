@@ -104,7 +104,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         window->enabled_widgets = (1 << Common::Widx::loadsave_menu) | (1 << Common::Widx::audio_menu) | (1 << Common::Widx::zoom_menu) | (1 << Common::Widx::rotate_menu) | (1 << Common::Widx::view_menu) | (1 << Common::Widx::terraform_menu) | (1 << Common::Widx::railroad_menu) | (1 << Common::Widx::road_menu) | (1 << Common::Widx::port_menu) | (1 << Common::Widx::build_vehicles_menu) | (1 << Common::Widx::vehicles_menu) | (1 << Common::Widx::stations_menu) | (1 << Common::Widx::towns_menu);
         window->initScrollWidgets();
 
-        auto skin = ObjectManager::get<interface_skin_object>();
+        auto skin = ObjectManager::get<InterfaceSkinObject>();
         if (skin != nullptr)
         {
             window->colours[0] = skin->colour_12;
@@ -350,13 +350,13 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             int objIndex = available_objects[i];
             if ((objIndex & (1 << 7)) != 0)
             {
-                auto road = ObjectManager::get<road_object>(objIndex & 0x7F);
+                auto road = ObjectManager::get<RoadObject>(objIndex & 0x7F);
                 obj_string_id = road->name;
                 obj_image = Gfx::recolour(road->image, company_colour);
             }
             else
             {
-                auto track = ObjectManager::get<track_object>(objIndex);
+                auto track = ObjectManager::get<TrackObject>(objIndex);
                 obj_string_id = track->name;
                 obj_image = Gfx::recolour(track->image, company_colour);
             }
@@ -388,7 +388,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     static void portMenuMouseDown(window* window, widget_index widgetIndex)
     {
         uint8_t ddIndex = 0;
-        auto interface = ObjectManager::get<interface_skin_object>();
+        auto interface = ObjectManager::get<InterfaceSkinObject>();
         if (addr<0x525FAC, int8_t>() != -1)
         {
             Dropdown::add(ddIndex, StringIds::menu_sprite_stringid_construction, { interface->img + InterfaceSkin::ImageIds::toolbar_menu_airport, StringIds::menu_airport });
@@ -458,7 +458,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         uint16_t available_vehicles = company->available_vehicles;
 
         auto company_colour = CompanyManager::getPlayerCompanyColour();
-        auto interface = ObjectManager::get<interface_skin_object>();
+        auto interface = ObjectManager::get<InterfaceSkinObject>();
 
         uint8_t ddIndex = 0;
         for (uint8_t vehicleType = 0; vehicleType < vehicleTypeCount; vehicleType++)
@@ -502,7 +502,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         uint16_t available_vehicles = company->available_vehicles;
 
         auto company_colour = CompanyManager::getPlayerCompanyColour();
-        auto interface = ObjectManager::get<interface_skin_object>();
+        auto interface = ObjectManager::get<InterfaceSkinObject>();
 
         uint16_t vehicle_counts[vehicleTypeCount]{ 0 };
         for (auto v : ThingManager::VehicleList())
@@ -561,7 +561,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     // 0x0043A4E9
     static void stationsMenuMouseDown(window* window, widget_index widgetIndex)
     {
-        auto interface = ObjectManager::get<interface_skin_object>();
+        auto interface = ObjectManager::get<InterfaceSkinObject>();
         uint32_t sprite_base = interface->img;
 
         // Apply company colour.
@@ -692,16 +692,16 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             if ((ebx & (1 << 7)) != 0)
             {
                 ebx = ebx & ~(1 << 7);
-                auto obj = ObjectManager::get<road_object>(ebx);
+                auto obj = ObjectManager::get<RoadObject>(ebx);
                 fg_image = Gfx::recolour(obj->image, company_colour);
             }
             else
             {
-                auto obj = ObjectManager::get<track_object>(ebx);
+                auto obj = ObjectManager::get<TrackObject>(ebx);
                 fg_image = Gfx::recolour(obj->image, company_colour);
             }
 
-            auto interface = ObjectManager::get<interface_skin_object>();
+            auto interface = ObjectManager::get<InterfaceSkinObject>();
             uint32_t bg_image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_transparent, window->colours[2]);
 
             y--;
@@ -730,7 +730,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
                 InterfaceSkin::ImageIds::vehicle_ship,
             };
 
-            auto interface = ObjectManager::get<interface_skin_object>();
+            auto interface = ObjectManager::get<InterfaceSkinObject>();
             uint32_t fg_image = Gfx::recolour(interface->img + button_face_image_ids[last_vehicles_option], company_colour);
             uint32_t bg_image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_transparent, window->colours[3]);
 
@@ -761,7 +761,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             };
 
             // Figure out what icon to show on the button face.
-            auto interface = ObjectManager::get<interface_skin_object>();
+            auto interface = ObjectManager::get<InterfaceSkinObject>();
             uint32_t fg_image = Gfx::recolour(interface->img + build_vehicle_images[last_build_vehicles_option], company_colour);
 
             if (Input::isDropdownActive(Ui::WindowType::topToolbar, Common::Widx::build_vehicles_menu))
@@ -774,7 +774,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     // 0x00439BCB
     static void prepareDraw(window* window)
     {
-        auto interface = ObjectManager::get<interface_skin_object>();
+        auto interface = ObjectManager::get<InterfaceSkinObject>();
 
         if (!Audio::isAudioEnabled())
         {

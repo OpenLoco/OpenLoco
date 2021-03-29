@@ -10,7 +10,7 @@ namespace OpenLoco
     }
 
 #pragma pack(push, 1)
-    struct snow_object
+    struct SnowObject
     {
         string_id name;
         uint32_t image; // 0x02

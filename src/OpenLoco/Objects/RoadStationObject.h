@@ -18,7 +18,7 @@ namespace OpenLoco
     }
 
 #pragma pack(push, 1)
-    struct road_station_object
+    struct RoadStationObject
     {
         string_id name;
         uint8_t pad_02[0x04 - 0x02];

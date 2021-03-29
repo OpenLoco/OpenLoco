@@ -22,7 +22,7 @@ using namespace OpenLoco::Ui;
 
 namespace OpenLoco::Scenario
 {
-    static loco_global<cargo_object*, 0x0050D15C> _50D15C;
+    static loco_global<CargoObject*, 0x0050D15C> _50D15C;
 
     static loco_global<uint32_t, 0x00525F5E> _scenario_ticks;
     static loco_global<uint8_t, 0x00525FB5> _525FB5;
@@ -242,10 +242,10 @@ namespace OpenLoco::Scenario
             case Scenario::objective_type::cargo_delivery:
             {
                 args.push(StringIds::deliver);
-                cargo_object* cargoObject = _50D15C;
+                CargoObject* cargoObject = _50D15C;
                 if (objectiveDeliveredCargoType != 0xFF)
                 {
-                    cargoObject = ObjectManager::get<cargo_object>(objectiveDeliveredCargoType);
+                    cargoObject = ObjectManager::get<CargoObject>(objectiveDeliveredCargoType);
                 }
                 args.push(cargoObject->unit_name_plural);
                 args.push(*objectiveDeliveredCargoAmount);

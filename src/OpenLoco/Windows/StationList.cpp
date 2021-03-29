@@ -184,7 +184,7 @@ namespace OpenLoco::Ui::Windows::StationList
         {
             if (lhs.cargo_stats[cargoId].isAccepted())
             {
-                ptr = StringManager::formatString(ptr, ObjectManager::get<cargo_object>(cargoId)->name);
+                ptr = StringManager::formatString(ptr, ObjectManager::get<CargoObject>(cargoId)->name);
             }
         }
 
@@ -194,7 +194,7 @@ namespace OpenLoco::Ui::Windows::StationList
         {
             if (rhs.cargo_stats[cargoId].isAccepted())
             {
-                ptr = StringManager::formatString(ptr, ObjectManager::get<cargo_object>(cargoId)->name);
+                ptr = StringManager::formatString(ptr, ObjectManager::get<CargoObject>(cargoId)->name);
             }
         }
 
@@ -333,7 +333,7 @@ namespace OpenLoco::Ui::Windows::StationList
             window->max_height = max_dimensions.height;
             window->flags |= WindowFlags::resizable;
 
-            auto interface = ObjectManager::get<interface_skin_object>();
+            auto interface = ObjectManager::get<InterfaceSkinObject>();
             window->colours[1] = interface->colour_0A;
         }
 
@@ -535,7 +535,7 @@ namespace OpenLoco::Ui::Windows::StationList
                 if (*buffer != '\0')
                     ptr = StringManager::formatString(ptr, StringIds::unit_separator);
 
-                ptr = StringManager::formatString(ptr, ObjectManager::get<cargo_object>(cargoId)->name);
+                ptr = StringManager::formatString(ptr, ObjectManager::get<CargoObject>(cargoId)->name);
             }
 
             _common_format_args[0] = StringIds::buffer_1250;
@@ -548,7 +548,7 @@ namespace OpenLoco::Ui::Windows::StationList
     // 00491A76
     static void drawTabs(Ui::window* window, Gfx::drawpixelinfo_t* dpi)
     {
-        auto skin = ObjectManager::get<interface_skin_object>();
+        auto skin = ObjectManager::get<InterfaceSkinObject>();
         auto companyColour = CompanyManager::getCompanyColour(window->number);
 
         for (auto tab : tabInformationByType)
@@ -567,7 +567,7 @@ namespace OpenLoco::Ui::Windows::StationList
 
         // Draw company owner image.
         auto company = CompanyManager::get(window->number);
-        auto competitor = ObjectManager::get<competitor_object>(company->competitor_id);
+        auto competitor = ObjectManager::get<CompetitorObject>(company->competitor_id);
         uint32_t image = Gfx::recolour(competitor->images[company->owner_emotion], company->mainColours.primary);
         uint16_t x = window->x + window->widgets[widx::company_select].left + 1;
         uint16_t y = window->y + window->widgets[widx::company_select].top + 1;

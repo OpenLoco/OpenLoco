@@ -10,7 +10,7 @@ namespace OpenLoco
     }
 
 #pragma pack(push, 1)
-    struct level_crossing_object
+    struct LevelCrossingObject
     {
         string_id name;
         int16_t costFactor;          // 0x02

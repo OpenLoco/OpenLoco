@@ -203,7 +203,7 @@ namespace OpenLoco::Ui::Windows
             window->widgets[Widx::load_game_btn].right = btn_main_size * 3 - 1;
 
             window->widgets[Widx::chat_btn].type = Ui::widget_type::wt_9;
-            interface_skin_object* skin = ObjectManager::get<interface_skin_object>();
+            auto* skin = ObjectManager::get<InterfaceSkinObject>();
             window->widgets[Widx::chat_btn].image = skin->img + InterfaceSkin::ImageIds::phone;
         }
     }

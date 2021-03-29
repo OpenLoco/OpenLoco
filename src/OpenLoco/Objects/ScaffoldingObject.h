@@ -10,7 +10,7 @@ namespace OpenLoco
     }
 
 #pragma pack(push, 1)
-    struct scaffolding_object
+    struct ScaffoldingObject
     {
         string_id name;
         uint32_t image; // 0x02

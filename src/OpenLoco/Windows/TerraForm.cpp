@@ -147,7 +147,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         {
             if (self->row_hover != -1)
             {
-                auto treeObj = ObjectManager::get<tree_object>(self->row_hover);
+                auto treeObj = ObjectManager::get<TreeObject>(self->row_hover);
                 if (treeObj->colours != 0)
                 {
                     colour_t colour = Utility::bitScanReverse(treeObj->colours);
@@ -187,7 +187,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             auto treeCount = 0;
             for (uint16_t i = 0; i < ObjectManager::getMaxObjects(object_type::tree); i++)
             {
-                auto treeObj = ObjectManager::get<tree_object>(i);
+                auto treeObj = ObjectManager::get<TreeObject>(i);
                 if (treeObj == nullptr)
                     continue;
                 self->row_info[treeCount] = i;
@@ -515,7 +515,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             if (self->row_hover != -1)
             {
-                auto treeObj = ObjectManager::get<tree_object>(self->row_hover);
+                auto treeObj = ObjectManager::get<TreeObject>(self->row_hover);
                 if (treeObj->name != 0xFFFF)
                 {
                     if (treeObj->num_rotations != 1)
@@ -560,7 +560,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                     return;
             }
 
-            auto treeObj = ObjectManager::get<tree_object>(treeId);
+            auto treeObj = ObjectManager::get<TreeObject>(treeId);
 
             uint32_t treeCost = 0x80000000;
             if (self->var_846 == 0xFFFF)
@@ -590,7 +590,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             Gfx::drawString_494BBF(*dpi, xPos, yPos, width, Colour::black, StringIds::black_stringid, &treeObj->name);
         }
 
-        static void drawTreeThumb(tree_object* treeObj, Gfx::drawpixelinfo_t* clipped)
+        static void drawTreeThumb(TreeObject* treeObj, Gfx::drawpixelinfo_t* clipped)
         {
             uint32_t image = _byte_500775[treeObj->growth] * treeObj->num_rotations;
             auto rotation = (treeObj->num_rotations - 1) & _treeRotation;
@@ -637,7 +637,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                     Gfx::drawRectInset(dpi, xPos, yPos, 65, rowHeight - 1, self->colours[1], (Colour::translucent_flag | Colour::outline_flag));
                 }
 
-                auto treeObj = ObjectManager::get<tree_object>(self->row_info[i]);
+                auto treeObj = ObjectManager::get<TreeObject>(self->row_info[i]);
                 Gfx::drawpixelinfo_t* clipped = nullptr;
 
                 if (Gfx::clipDrawpixelinfo(&clipped, dpi, xPos + 1, yPos + 1, 64, rowHeight - 2))
@@ -713,7 +713,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             window->max_width = PlantTrees::windowSize.width;
             window->max_height = PlantTrees::windowSize.height;
 
-            auto skin = ObjectManager::get<interface_skin_object>();
+            auto skin = ObjectManager::get<InterfaceSkinObject>();
             window->colours[1] = skin->colour_0E;
 
             // End of 0x004BB586
@@ -965,7 +965,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             Input::setFlag(Input::input_flags::flag6);
             for (auto i = 0; i < 32; i++)
             {
-                auto landObj = ObjectManager::get<land_object>(i);
+                auto landObj = ObjectManager::get<LandObject>(i);
                 if (landObj == nullptr)
                     continue;
 
@@ -997,7 +997,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             auto landCount = 0;
             for (auto i = 0; i < 32; i++)
             {
-                auto landObj = ObjectManager::get<land_object>(i);
+                auto landObj = ObjectManager::get<LandObject>(i);
                 if (landObj != nullptr)
                     landCount++;
             }
@@ -1013,7 +1013,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             auto landIndex = 0;
             for (uint16_t i = 0; i < ObjectManager::getMaxObjects(object_type::land); i++)
             {
-                auto landObj = ObjectManager::get<land_object>(i);
+                auto landObj = ObjectManager::get<LandObject>(i);
                 if (landObj == nullptr)
                     continue;
 
@@ -1445,7 +1445,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             {
                 self->widgets[widx::land_material].type = widget_type::wt_6;
 
-                auto landObj = ObjectManager::get<land_object>(_lastSelectedLand);
+                auto landObj = ObjectManager::get<LandObject>(_lastSelectedLand);
 
                 self->widgets[widx::land_material].image = landObj->var_16 + OpenLoco::Land::ImageIds::landscape_generator_tile_icon;
             }
@@ -1791,7 +1791,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             auto wallCount = 0;
             for (uint16_t i = 0; i < ObjectManager::getMaxObjects(object_type::wall); i++)
             {
-                auto wallObj = ObjectManager::get<wall_object>(i);
+                auto wallObj = ObjectManager::get<WallObject>(i);
                 if (wallObj == nullptr)
                     continue;
                 self->row_info[wallCount] = i;
@@ -2050,7 +2050,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                     return;
             }
 
-            auto wallObj = ObjectManager::get<wall_object>(wallId);
+            auto wallObj = ObjectManager::get<WallObject>(wallId);
             auto xPos = self->x + 3;
             auto yPos = self->y + self->height - 13;
             auto width = self->width - 19;
@@ -2080,7 +2080,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                     Gfx::drawRectInset(dpi, xPos, yPos, 40, rowHeight, self->colours[1], (Colour::translucent_flag | Colour::outline_flag));
                 }
 
-                auto wallObj = ObjectManager::get<wall_object>(self->row_info[i]);
+                auto wallObj = ObjectManager::get<WallObject>(self->row_info[i]);
 
                 Gfx::drawpixelinfo_t* clipped = nullptr;
 
@@ -2231,7 +2231,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BCF7F
         static void drawTabs(window* self, Gfx::drawpixelinfo_t* dpi)
         {
-            auto skin = ObjectManager::get<interface_skin_object>();
+            auto skin = ObjectManager::get<InterfaceSkinObject>();
 
             // Clear Land Tab
             {
@@ -2242,14 +2242,14 @@ namespace OpenLoco::Ui::Windows::Terraform
             }
             // Adjust Land Tab
             {
-                auto landObj = ObjectManager::get<land_object>(_grassLand);
+                auto landObj = ObjectManager::get<LandObject>(_grassLand);
                 uint32_t imageId = landObj->var_16 + Land::ImageIds::toolbar_terraform_land;
 
                 Widget::draw_tab(self, dpi, imageId, widx::tab_adjust_land);
             }
             // Adjust Water Tab
             {
-                auto waterObj = ObjectManager::get<water_object>();
+                auto waterObj = ObjectManager::get<WaterObject>();
                 uint32_t imageId = waterObj->image + Water::ImageIds::toolbar_terraform_water;
                 if (self->current_tab == widx::tab_adjust_water - widx::tab_clear_area)
                     imageId += (self->frame_no / 2) % 16;

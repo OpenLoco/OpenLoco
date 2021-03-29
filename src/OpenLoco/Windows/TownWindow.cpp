@@ -355,7 +355,7 @@ namespace OpenLoco::Ui::Windows::Town
             window->max_width = 600;
             window->max_height = 440;
 
-            auto skin = ObjectManager::get<interface_skin_object>();
+            auto skin = ObjectManager::get<InterfaceSkinObject>();
             if (skin != nullptr)
             {
                 window->colours[0] = skin->colour_0B;
@@ -742,7 +742,7 @@ namespace OpenLoco::Ui::Windows::Town
         // 0x004999E1
         static void drawTabs(window* self, Gfx::drawpixelinfo_t* dpi)
         {
-            auto skin = ObjectManager::get<interface_skin_object>();
+            auto skin = ObjectManager::get<InterfaceSkinObject>();
 
             // Town tab
             {

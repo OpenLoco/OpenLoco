@@ -9,7 +9,7 @@
 
 namespace OpenLoco
 {
-    struct building_object;
+    struct BuildingObject;
     struct industry;
 }
 
@@ -205,7 +205,7 @@ namespace OpenLoco::Map
         bool has_40() const { return (_type & 0x40) != 0; }
         bool hasStationElement() const { return (_type & 0x80) != 0; }
         uint8_t objectId() const { return _4; }
-        building_object* object() const;
+        BuildingObject* object() const;
         uint8_t multiTileIndex() const { return _5 & 3; }
     };
 

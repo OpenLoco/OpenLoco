@@ -61,7 +61,7 @@ namespace OpenLoco
         ColourScheme mainColours;         // 0x1A
         ColourScheme vehicleColours[10];  // 0x1C
         uint32_t customVehicleColoursSet; // 0x30
-        uint32_t unlocked_vehicles[7];    // 0x34 (bit field based on vehicle_object index)
+        uint32_t unlocked_vehicles[7];    // 0x34 (bit field based on VehicleObject index)
         uint16_t available_vehicles;      // 0x50
         uint8_t pad_52[0x57 - 0x52];
         uint8_t numExpenditureMonths;                                                  // 0x57

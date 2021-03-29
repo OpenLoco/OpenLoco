@@ -300,7 +300,7 @@ namespace OpenLoco::Ui::Windows::Map
                             {
                                 if (self->current_tab == (widx::tabIndustries - widx::tabOverall))
                                 {
-                                    auto industryObj = ObjectManager::get<industry_object>(i);
+                                    auto industryObj = ObjectManager::get<IndustryObject>(i);
 
                                     if (industryObj == nullptr)
                                         continue;
@@ -479,7 +479,7 @@ namespace OpenLoco::Ui::Windows::Map
     // 0x0046D0E0
     static void drawTabs(window* self, Gfx::drawpixelinfo_t* dpi)
     {
-        auto skin = ObjectManager::get<interface_skin_object>();
+        auto skin = ObjectManager::get<InterfaceSkinObject>();
 
         // tabOverall
         {
@@ -694,7 +694,7 @@ namespace OpenLoco::Ui::Windows::Map
 
         for (uint8_t i = 0; i < ObjectManager::getMaxObjects(object_type::industry); i++)
         {
-            auto industry = ObjectManager::get<industry_object>(i);
+            auto industry = ObjectManager::get<IndustryObject>(i);
 
             if (industry == nullptr)
                 continue;
@@ -745,12 +745,12 @@ namespace OpenLoco::Ui::Windows::Map
                 {
                     if (index & (1 << 7))
                     {
-                        auto roadObj = ObjectManager::get<road_object>(index & ~(1 << 7));
+                        auto roadObj = ObjectManager::get<RoadObject>(index & ~(1 << 7));
                         routeType = roadObj->name;
                     }
                     else
                     {
-                        auto trackObj = ObjectManager::get<track_object>(index);
+                        auto trackObj = ObjectManager::get<TrackObject>(index);
                         routeType = trackObj->name;
                     }
                 }
@@ -898,7 +898,7 @@ namespace OpenLoco::Ui::Windows::Map
                 }
             }
 
-            auto industryObj = ObjectManager::get<industry_object>(industryIndex);
+            auto industryObj = ObjectManager::get<IndustryObject>(industryIndex);
             auto stringId = industryObj->namePlural;
 
             if (industryCount == 1)
@@ -1504,7 +1504,7 @@ namespace OpenLoco::Ui::Windows::Map
             window->flags |= (_lastMapWindowFlags & WindowFlags::flag_16);
         }
 
-        auto skin = ObjectManager::get<interface_skin_object>();
+        auto skin = ObjectManager::get<InterfaceSkinObject>();
         window->colours[0] = skin->colour_0B;
         window->colours[1] = skin->colour_0F;
 

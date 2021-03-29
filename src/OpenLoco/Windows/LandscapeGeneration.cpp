@@ -70,7 +70,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         // 0x0043ECA4
         static void drawTabs(window* window, Gfx::drawpixelinfo_t* dpi)
         {
-            auto skin = ObjectManager::get<interface_skin_object>();
+            auto skin = ObjectManager::get<InterfaceSkinObject>();
 
             // Options tab
             {
@@ -92,7 +92,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
             // Land tab
             {
-                auto land = ObjectManager::get<land_object>(*primaryLandObjectIndex);
+                auto land = ObjectManager::get<LandObject>(*primaryLandObjectIndex);
                 const uint32_t imageId = land->var_16 + Land::ImageIds::toolbar_terraform_land;
                 Widget::draw_tab(window, dpi, imageId, widx::tab_land);
             }
@@ -312,7 +312,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             window->frame_no = 0;
             window->row_hover = -1;
 
-            auto interface = ObjectManager::get<interface_skin_object>();
+            auto interface = ObjectManager::get<InterfaceSkinObject>();
             window->colours[0] = interface->colour_0B;
             window->colours[1] = interface->colour_0E;
         }
@@ -430,7 +430,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             uint16_t yPos = 0;
             for (uint16_t i = 0; i < maxLandObjects; i++)
             {
-                auto landObject = ObjectManager::get<land_object>(i);
+                auto landObject = ObjectManager::get<LandObject>(i);
                 if (landObject == nullptr)
                     continue;
 
@@ -468,7 +468,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
             for (uint16_t i = 0; i < maxLandObjects; i++)
             {
-                auto landObject = ObjectManager::get<land_object>(i);
+                auto landObject = ObjectManager::get<LandObject>(i);
                 if (landObject == nullptr)
                     continue;
 
@@ -616,7 +616,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
             for (uint16_t i = 0; i < maxLandObjects; i++)
             {
-                auto landObject = ObjectManager::get<land_object>(i);
+                auto landObject = ObjectManager::get<LandObject>(i);
                 if (landObject == nullptr)
                     continue;
 

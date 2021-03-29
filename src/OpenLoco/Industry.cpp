@@ -19,9 +19,9 @@ namespace OpenLoco
         return (industry_id_t)(this - first);
     }
 
-    industry_object* industry::object() const
+    IndustryObject* industry::object() const
     {
-        return ObjectManager::get<industry_object>(object_id);
+        return ObjectManager::get<IndustryObject>(object_id);
     }
 
     bool industry::empty() const
@@ -32,7 +32,7 @@ namespace OpenLoco
     bool industry::canReceiveCargo() const
     {
         auto receiveCargoState = false;
-        for (const auto& receivedCargo : ObjectManager::get<industry_object>(object_id)->required_cargo_type)
+        for (const auto& receivedCargo : ObjectManager::get<IndustryObject>(object_id)->required_cargo_type)
         {
             if (receivedCargo != 0xff)
                 receiveCargoState = true;
@@ -43,7 +43,7 @@ namespace OpenLoco
     bool industry::canProduceCargo() const
     {
         auto produceCargoState = false;
-        for (const auto& producedCargo : ObjectManager::get<industry_object>(object_id)->produced_cargo_type)
+        for (const auto& producedCargo : ObjectManager::get<IndustryObject>(object_id)->produced_cargo_type)
         {
             if (producedCargo != 0xff)
                 produceCargoState = true;

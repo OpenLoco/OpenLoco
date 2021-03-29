@@ -5,7 +5,7 @@
 namespace OpenLoco
 {
 #pragma pack(push, 1)
-    struct scenario_text_object
+    struct ScenarioTextObject
     {
         string_id name;
         string_id details;

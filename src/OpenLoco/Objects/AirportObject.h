@@ -23,7 +23,7 @@ namespace OpenLoco
         constexpr uint16_t touchdown = (1 << 8);
     }
 
-    struct airport_object
+    struct AirportObject
     {
         struct MovementNode
         {

@@ -4,13 +4,13 @@
 
 namespace OpenLoco
 {
-    namespace CargoObject::Flags
+    namespace CargoObjectFlags
     {
         constexpr uint8_t refit = (1 << 1);
     }
 
 #pragma pack(push, 1)
-    struct cargo_object
+    struct CargoObject
     {
         string_id name; // 0x0
         uint16_t var_2;
@@ -28,5 +28,5 @@ namespace OpenLoco
     };
 #pragma pack(pop)
 
-    static_assert(sizeof(cargo_object) == 0x1F);
+    static_assert(sizeof(CargoObject) == 0x1F);
 }

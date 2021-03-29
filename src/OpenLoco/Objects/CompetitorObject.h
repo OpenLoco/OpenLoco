@@ -12,7 +12,7 @@ namespace OpenLoco
     }
 
 #pragma pack(push, 1)
-    struct competitor_object
+    struct CompetitorObject
     {
         string_id var_00;        // 0x00
         string_id var_02;        // 0x02
@@ -28,7 +28,7 @@ namespace OpenLoco
         void drawPreviewImage(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y) const;
         void drawDescription(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const;
     };
-    static_assert(sizeof(competitor_object) == 0x38);
+    static_assert(sizeof(CompetitorObject) == 0x38);
 #pragma pack(pop)
 
     [[nodiscard]] string_id aiRatingToLevel(const uint8_t rating);

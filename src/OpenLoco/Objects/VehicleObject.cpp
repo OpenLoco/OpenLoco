@@ -14,7 +14,7 @@ namespace OpenLoco
     static loco_global<uint16_t, 0x0052622E> _52622E; // Tick related
 
     // 0x004B7733
-    static void drawVehicle(Gfx::drawpixelinfo_t* dpi, const vehicle_object* vehicleObject, uint8_t eax, uint8_t esi, Gfx::point_t offset)
+    static void drawVehicle(Gfx::drawpixelinfo_t* dpi, const VehicleObject* vehicleObject, uint8_t eax, uint8_t esi, Gfx::point_t offset)
     {
         // Eventually calls 0x4B777B part of 0x4B7741
         registers regs;
@@ -30,7 +30,7 @@ namespace OpenLoco
     }
 
     // 0x004B8C52
-    void vehicle_object::drawPreviewImage(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y) const
+    void VehicleObject::drawPreviewImage(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y) const
     {
         // Rotation
         uint8_t unk1 = _52622E & 0x3F;
@@ -43,7 +43,7 @@ namespace OpenLoco
     static const uint8_t descriptionRowHeight = 10;
 
     // 0x004B8C9D
-    void vehicle_object::drawDescription(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y, const int16_t width) const
+    void VehicleObject::drawDescription(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y, const int16_t width) const
     {
         Gfx::point_t rowPosition = { x, y };
         ObjectManager::drawGenericDescription(dpi, rowPosition, designed, obsolete);
@@ -78,7 +78,7 @@ namespace OpenLoco
         }
     }
 
-    void vehicle_object::getCargoString(char* buffer) const
+    void VehicleObject::getCargoString(char* buffer) const
     {
         if (num_simultaneous_cargo_types != 0)
         {
@@ -88,7 +88,7 @@ namespace OpenLoco
                 {
                     auto cargoTypes = primary_cargo_types & ~(1 << cargoType);
                     {
-                        auto cargoObj = ObjectManager::get<cargo_object>(cargoType);
+                        auto cargoObj = ObjectManager::get<CargoObject>(cargoType);
                         FormatArguments args{};
                         auto cargoUnitName = cargoObj->unit_name_plural;
                         if (max_primary_cargo == 1)
@@ -113,7 +113,7 @@ namespace OpenLoco
                                 buffer++;
                             }
 
-                            auto cargoObj = ObjectManager::get<cargo_object>(cargoType);
+                            auto cargoObj = ObjectManager::get<CargoObject>(cargoType);
                             FormatArguments args{};
                             args.push(cargoObj->name);
                             buffer = StringManager::formatString(buffer, StringIds::stats_or_string, &args);
@@ -137,7 +137,7 @@ namespace OpenLoco
                 {
                     auto cargoTypes = secondary_cargo_types & ~(1 << cargoType);
                     {
-                        auto cargoObj = ObjectManager::get<cargo_object>(cargoType);
+                        auto cargoObj = ObjectManager::get<CargoObject>(cargoType);
                         FormatArguments args{};
                         auto cargoUnitName = cargoObj->unit_name_plural;
                         if (max_secondary_cargo == 1)
@@ -163,7 +163,7 @@ namespace OpenLoco
                                 buffer++;
                             }
 
-                            auto cargoObj = ObjectManager::get<cargo_object>(cargoType);
+                            auto cargoObj = ObjectManager::get<CargoObject>(cargoType);
                             FormatArguments args{};
                             args.push(cargoObj->name);
                             buffer = StringManager::formatString(buffer, StringIds::stats_or_string, &args);

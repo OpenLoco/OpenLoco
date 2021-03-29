@@ -140,7 +140,7 @@ namespace OpenLoco::Ui::ViewportInteraction
             {
                 buffer = StringManager::formatString(buffer, StringIds::unit_separator);
             }
-            buffer = StringManager::formatString(buffer, ObjectManager::get<cargo_object>(cargoId)->name);
+            buffer = StringManager::formatString(buffer, ObjectManager::get<CargoObject>(cargoId)->name);
             seperator = true;
         }
 

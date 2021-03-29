@@ -10,7 +10,7 @@ namespace OpenLoco
     }
 
 #pragma pack(push, 1)
-    struct bridge_object
+    struct BridgeObject
     {
         string_id name;
         uint8_t no_roof; // 0x02

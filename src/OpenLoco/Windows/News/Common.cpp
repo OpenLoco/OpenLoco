@@ -140,7 +140,7 @@ namespace OpenLoco::Ui::NewsWindow
 
                 window->initScrollWidgets();
 
-                auto skin = ObjectManager::get<interface_skin_object>();
+                auto skin = ObjectManager::get<InterfaceSkinObject>();
                 window->colours[0] = Colour::translucent(skin->colour_0C);
 
                 window->var_852 = 0;

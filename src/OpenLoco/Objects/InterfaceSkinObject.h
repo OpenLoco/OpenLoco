@@ -10,7 +10,7 @@ namespace OpenLoco
     }
 
 #pragma pack(push, 1)
-    struct interface_skin_object
+    struct InterfaceSkinObject
     {
         string_id name; // 0x00
         uint32_t img;   // 0x02

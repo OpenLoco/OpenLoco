@@ -5,7 +5,7 @@
 namespace OpenLoco
 {
     // 0x00477EB9
-    void road_extra_object::drawPreviewImage(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y) const
+    void RoadExtraObject::drawPreviewImage(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y) const
     {
         auto colourImage = Gfx::recolour(image, Colour::salmon_pink);
 

@@ -111,7 +111,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
         auto highlightIndex = -1;
         for (auto company : _sortedCompanies)
         {
-            auto competitorObj = ObjectManager::get<competitor_object>(company->competitor_id);
+            auto competitorObj = ObjectManager::get<CompetitorObject>(company->competitor_id);
 
             auto args = FormatArguments();
             args.push(positionArray[index]);
@@ -191,7 +191,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
         window->var_854 = 0;
         window->initScrollWidgets();
 
-        auto skin = ObjectManager::get<interface_skin_object>();
+        auto skin = ObjectManager::get<InterfaceSkinObject>();
         if (skin != nullptr)
         {
             window->colours[0] = Colour::translucent(skin->colour_16);
@@ -219,7 +219,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
         drawRectInset(dpi, window->x + frame.left + 1, window->y + frame.top + 1, frame.width() - 2, frame.height() - 2, window->colours[1], 0x30);
 
         auto playerCompany = CompanyManager::get(CompanyManager::getControllingId());
-        auto competitor = ObjectManager::get<competitor_object>(playerCompany->competitor_id);
+        auto competitor = ObjectManager::get<CompetitorObject>(playerCompany->competitor_id);
         auto image = Gfx::recolour(competitor->images[playerCompany->owner_emotion], playerCompany->mainColours.primary);
         Gfx::drawImage(dpi, window->x + frame.left + 2, window->y + frame.top + 2, image);
 

@@ -10,7 +10,7 @@ namespace OpenLoco
     }
 
 #pragma pack(push, 1)
-    struct street_light_object
+    struct StreetLightObject
     {
         string_id name;
         uint16_t designedYear[3]; // 0x02

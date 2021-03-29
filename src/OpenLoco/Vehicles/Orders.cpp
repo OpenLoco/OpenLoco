@@ -169,7 +169,7 @@ namespace OpenLoco::Vehicles
     // 0x004B4A31
     void OrderCargo::setFormatArguments(FormatArguments& args) const
     {
-        auto cargoObj = ObjectManager::get<cargo_object>(getCargo());
+        auto cargoObj = ObjectManager::get<CargoObject>(getCargo());
         args.push(cargoObj->name);
         args.push(cargoObj->unit_inline_sprite);
     }

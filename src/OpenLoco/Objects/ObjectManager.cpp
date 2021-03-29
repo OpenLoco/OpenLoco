@@ -28,40 +28,40 @@ namespace OpenLoco::ObjectManager
     loco_global<ObjectEntry2[maxObjects], 0x1125A90> objectEntries;
     loco_global<object_repository_item[64], 0x4FE0B8> object_repository;
     loco_global<object* [maxObjects], 0x0050C3D0> _allObjects;
-    loco_global<interface_skin_object* [1], 0x0050C3D0> _interfaceObjects;
-    loco_global<sound_object* [128], 0x0050C3D4> _soundObjects;
-    loco_global<currency_object* [1], 0x0050C5D4> _currencyObjects;
+    loco_global<InterfaceSkinObject* [1], 0x0050C3D0> _interfaceObjects;
+    loco_global<SoundObject* [128], 0x0050C3D4> _soundObjects;
+    loco_global<CurrencyObject* [1], 0x0050C5D4> _currencyObjects;
     loco_global<SteamObject* [32], 0x0050C5D8> _steamObjects;
-    loco_global<rock_object* [8], 0x0050C658> _rockObjects;
-    loco_global<water_object* [1], 0x0050C678> _waterObjects;
-    loco_global<land_object* [32], 0x0050C67C> _landObjects;
+    loco_global<RockObject* [8], 0x0050C658> _rockObjects;
+    loco_global<WaterObject* [1], 0x0050C678> _waterObjects;
+    loco_global<LandObject* [32], 0x0050C67C> _landObjects;
     loco_global<town_names_object* [1], 0x0050C6FC> _townNamesObjects;
-    loco_global<cargo_object* [32], 0x0050C700> _cargoObjects;
-    loco_global<wall_object* [32], 0x0050C780> _wallObjects;
-    loco_global<train_signal_object* [16], 0x0050C800> _trainSignalObjects;
-    loco_global<level_crossing_object* [4], 0x0050C840> _levelCrossingObjects;
-    loco_global<street_light_object* [1], 0x0050C850> _streetLightObjects;
-    loco_global<tunnel_object* [16], 0x0050C854> _tunnelObjects;
-    loco_global<bridge_object* [8], 0x0050C894> _bridgeObjects;
-    loco_global<train_station_object* [16], 0x0050C8B4> _trainStationObjects;
-    loco_global<track_extra_object* [8], 0x0050C8F4> _trackExtraObjects;
-    loco_global<track_object* [8], 0x0050C914> _trackObjects;
-    loco_global<road_station_object* [16], 0x0050C934> _roadStationObjects;
-    loco_global<road_extra_object* [4], 0x0050C974> _roadExtraObjects;
-    loco_global<road_object* [8], 0x0050C984> _roadObjects;
-    loco_global<airport_object* [8], 0x0050C9A4> _airportObjects;
-    loco_global<dock_object* [8], 0x0050C9C4> _dockObjects;
-    loco_global<vehicle_object* [224], 0x0050C9E4> _vehicleObjects;
-    loco_global<tree_object* [64], 0x0050CD64> _treeObjects;
-    loco_global<snow_object* [1], 0x0050CE64> _snowObjects;
+    loco_global<CargoObject* [32], 0x0050C700> _cargoObjects;
+    loco_global<WallObject* [32], 0x0050C780> _wallObjects;
+    loco_global<TrainSignalObject* [16], 0x0050C800> _trainSignalObjects;
+    loco_global<LevelCrossingObject* [4], 0x0050C840> _levelCrossingObjects;
+    loco_global<StreetLightObject* [1], 0x0050C850> _streetLightObjects;
+    loco_global<TunnelObject* [16], 0x0050C854> _tunnelObjects;
+    loco_global<BridgeObject* [8], 0x0050C894> _bridgeObjects;
+    loco_global<TrainStationObject* [16], 0x0050C8B4> _trainStationObjects;
+    loco_global<TrackExtraObject* [8], 0x0050C8F4> _trackExtraObjects;
+    loco_global<TrackObject* [8], 0x0050C914> _trackObjects;
+    loco_global<RoadStationObject* [16], 0x0050C934> _roadStationObjects;
+    loco_global<RoadExtraObject* [4], 0x0050C974> _roadExtraObjects;
+    loco_global<RoadObject* [8], 0x0050C984> _roadObjects;
+    loco_global<AirportObject* [8], 0x0050C9A4> _airportObjects;
+    loco_global<DockObject* [8], 0x0050C9C4> _dockObjects;
+    loco_global<VehicleObject* [224], 0x0050C9E4> _vehicleObjects;
+    loco_global<TreeObject* [64], 0x0050CD64> _treeObjects;
+    loco_global<SnowObject* [1], 0x0050CE64> _snowObjects;
     loco_global<climate_object* [1], 0x0050CE68> _climateObjects;
-    loco_global<hill_shapes_object* [1], 0x0050CE6C> _hillShapeObjects;
-    loco_global<building_object* [128], 0x0050CE70> _buildingObjects;
-    loco_global<scaffolding_object* [1], 0x0050D070> _scaffoldingObjects;
-    loco_global<industry_object* [16], 0x0050D074> _industryObjects;
-    loco_global<region_object* [1], 0x0050D0B4> _regionObjects;
-    loco_global<competitor_object* [32], 0x0050D0B8> _competitorObjects;
-    loco_global<scenario_text_object* [1], 0x0050D138> _scenarioTextObjects;
+    loco_global<HillShapesObject* [1], 0x0050CE6C> _hillShapeObjects;
+    loco_global<BuildingObject* [128], 0x0050CE70> _buildingObjects;
+    loco_global<ScaffoldingObject* [1], 0x0050D070> _scaffoldingObjects;
+    loco_global<IndustryObject* [16], 0x0050D074> _industryObjects;
+    loco_global<RegionObject* [1], 0x0050D0B4> _regionObjects;
+    loco_global<CompetitorObject* [32], 0x0050D0B8> _competitorObjects;
+    loco_global<ScenarioTextObject* [1], 0x0050D138> _scenarioTextObjects;
 
     // 0x00470F3C
     void loadIndex()
@@ -86,7 +86,7 @@ namespace OpenLoco::ObjectManager
     }
 
     template<>
-    interface_skin_object* get()
+    InterfaceSkinObject* get()
     {
         if (_interfaceObjects[0] == (void*)-1)
         {
@@ -97,7 +97,7 @@ namespace OpenLoco::ObjectManager
     }
 
     template<>
-    sound_object* get(size_t id)
+    SoundObject* get(size_t id)
     {
         return _soundObjects[id];
     }
@@ -109,192 +109,192 @@ namespace OpenLoco::ObjectManager
     }
 
     template<>
-    rock_object* get(size_t id)
+    RockObject* get(size_t id)
     {
-        if (_rockObjects[id] != reinterpret_cast<rock_object*>(-1))
+        if (_rockObjects[id] != reinterpret_cast<RockObject*>(-1))
             return _rockObjects[id];
         else
             return nullptr;
     }
 
     template<>
-    cargo_object* get(size_t id)
+    CargoObject* get(size_t id)
     {
-        if (_cargoObjects[id] != (cargo_object*)-1)
+        if (_cargoObjects[id] != (CargoObject*)-1)
             return _cargoObjects[id];
         else
             return nullptr;
     }
 
     template<>
-    train_signal_object* get(size_t id)
+    TrainSignalObject* get(size_t id)
     {
-        if (_trainSignalObjects[id] != reinterpret_cast<train_signal_object*>(-1))
+        if (_trainSignalObjects[id] != reinterpret_cast<TrainSignalObject*>(-1))
             return _trainSignalObjects[id];
         else
             return nullptr;
     }
 
     template<>
-    road_station_object* get(size_t id)
+    RoadStationObject* get(size_t id)
     {
-        if (_roadStationObjects[id] != reinterpret_cast<road_station_object*>(-1))
+        if (_roadStationObjects[id] != reinterpret_cast<RoadStationObject*>(-1))
             return _roadStationObjects[id];
         else
             return nullptr;
     }
 
     template<>
-    vehicle_object* get(size_t id)
+    VehicleObject* get(size_t id)
     {
-        if (_vehicleObjects[id] != reinterpret_cast<vehicle_object*>(-1))
+        if (_vehicleObjects[id] != reinterpret_cast<VehicleObject*>(-1))
             return _vehicleObjects[id];
         else
             return nullptr;
     }
 
     template<>
-    tree_object* get(size_t id)
+    TreeObject* get(size_t id)
     {
-        if (_treeObjects[id] != reinterpret_cast<tree_object*>(-1))
+        if (_treeObjects[id] != reinterpret_cast<TreeObject*>(-1))
             return _treeObjects[id];
         else
             return nullptr;
     }
 
     template<>
-    wall_object* get(size_t id)
+    WallObject* get(size_t id)
     {
-        if (_wallObjects[id] != reinterpret_cast<wall_object*>(-1))
+        if (_wallObjects[id] != reinterpret_cast<WallObject*>(-1))
             return _wallObjects[id];
         else
             return nullptr;
     }
 
     template<>
-    building_object* get(size_t id)
+    BuildingObject* get(size_t id)
     {
-        if (_buildingObjects[id] != reinterpret_cast<building_object*>(-1))
+        if (_buildingObjects[id] != reinterpret_cast<BuildingObject*>(-1))
             return _buildingObjects[id];
         else
             return nullptr;
     }
 
     template<>
-    industry_object* get(size_t id)
+    IndustryObject* get(size_t id)
     {
-        if (_industryObjects[id] != reinterpret_cast<industry_object*>(-1))
+        if (_industryObjects[id] != reinterpret_cast<IndustryObject*>(-1))
             return _industryObjects[id];
         else
             return nullptr;
     }
 
     template<>
-    currency_object* get()
+    CurrencyObject* get()
     {
         return _currencyObjects[0];
     }
 
     template<>
-    bridge_object* get(size_t id)
+    BridgeObject* get(size_t id)
     {
-        if (_bridgeObjects[id] != reinterpret_cast<bridge_object*>(-1))
+        if (_bridgeObjects[id] != reinterpret_cast<BridgeObject*>(-1))
             return _bridgeObjects[id];
         else
             return nullptr;
     }
 
     template<>
-    train_station_object* get(size_t id)
+    TrainStationObject* get(size_t id)
     {
-        if (_trainStationObjects[id] != reinterpret_cast<train_station_object*>(-1))
+        if (_trainStationObjects[id] != reinterpret_cast<TrainStationObject*>(-1))
             return _trainStationObjects[id];
         else
             return nullptr;
     }
 
     template<>
-    track_extra_object* get(size_t id)
+    TrackExtraObject* get(size_t id)
     {
         return _trackExtraObjects[id];
     }
 
     template<>
-    track_object* get(size_t id)
+    TrackObject* get(size_t id)
     {
-        if (_trackObjects[id] != reinterpret_cast<track_object*>(-1))
+        if (_trackObjects[id] != reinterpret_cast<TrackObject*>(-1))
             return _trackObjects[id];
         else
             return nullptr;
     }
 
     template<>
-    road_extra_object* get(size_t id)
+    RoadExtraObject* get(size_t id)
     {
         return _roadExtraObjects[id];
     }
 
     template<>
-    road_object* get(size_t id)
+    RoadObject* get(size_t id)
     {
-        if (_roadObjects[id] != reinterpret_cast<road_object*>(-1))
+        if (_roadObjects[id] != reinterpret_cast<RoadObject*>(-1))
             return _roadObjects[id];
         else
             return nullptr;
     }
 
     template<>
-    airport_object* get(size_t id)
+    AirportObject* get(size_t id)
     {
-        if (_airportObjects[id] != reinterpret_cast<airport_object*>(-1))
+        if (_airportObjects[id] != reinterpret_cast<AirportObject*>(-1))
             return _airportObjects[id];
         else
             return nullptr;
     }
 
     template<>
-    dock_object* get(size_t id)
+    DockObject* get(size_t id)
     {
-        if (_dockObjects[id] != reinterpret_cast<dock_object*>(-1))
+        if (_dockObjects[id] != reinterpret_cast<DockObject*>(-1))
             return _dockObjects[id];
         else
             return nullptr;
     }
 
     template<>
-    land_object* get(size_t id)
+    LandObject* get(size_t id)
     {
-        if (_landObjects[id] != (land_object*)-1)
+        if (_landObjects[id] != (LandObject*)-1)
             return _landObjects[id];
         else
             return nullptr;
     }
 
     template<>
-    water_object* get()
+    WaterObject* get()
     {
         return _waterObjects[0];
     }
 
     template<>
-    competitor_object* get(size_t id)
+    CompetitorObject* get(size_t id)
     {
         return _competitorObjects[id];
     }
 
     template<>
-    scenario_text_object* get()
+    ScenarioTextObject* get()
     {
-        if (_scenarioTextObjects[0] != (scenario_text_object*)-1)
+        if (_scenarioTextObjects[0] != (ScenarioTextObject*)-1)
             return _scenarioTextObjects[0];
         else
             return nullptr;
     }
 
     template<>
-    region_object* get()
+    RegionObject* get()
     {
-        if (_regionObjects[0] != reinterpret_cast<region_object*>(-1))
+        if (_regionObjects[0] != reinterpret_cast<RegionObject*>(-1))
             return _regionObjects[0];
         else
             return nullptr;

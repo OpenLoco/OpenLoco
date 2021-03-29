@@ -266,14 +266,14 @@ namespace OpenLoco::Ui::Windows::Construction
             if (flags & (1 << 7))
             {
                 auto trackType = flags & ~(1 << 7);
-                auto roadObj = ObjectManager::get<road_object>(trackType);
+                auto roadObj = ObjectManager::get<RoadObject>(trackType);
 
                 if (roadObj->flags & Flags12::unk_03)
                 {
                     if (_trackType & (1 << 7))
                     {
                         trackType = _trackType & ~(1 << 7);
-                        roadObj = ObjectManager::get<road_object>(trackType);
+                        roadObj = ObjectManager::get<RoadObject>(trackType);
 
                         if (roadObj->flags & Flags12::unk_03)
                         {
@@ -444,7 +444,7 @@ namespace OpenLoco::Ui::Windows::Construction
         {
             auto company = CompanyManager::get(_playerCompany);
             auto companyColour = company->mainColours.primary;
-            auto roadObj = ObjectManager::get<road_object>(_trackType & ~(1 << 7));
+            auto roadObj = ObjectManager::get<RoadObject>(_trackType & ~(1 << 7));
             // Construction Tab
             {
                 auto imageId = roadObj->image;
@@ -475,7 +475,7 @@ namespace OpenLoco::Ui::Windows::Construction
                         clipped->height <<= 1;
                         clipped->x <<= 1;
                         clipped->y <<= 1;
-                        auto roadStationObj = ObjectManager::get<road_station_object>(_lastSelectedStationType);
+                        auto roadStationObj = ObjectManager::get<RoadStationObject>(_lastSelectedStationType);
                         auto imageId = Gfx::recolour(roadStationObj->image, companyColour);
                         Gfx::drawImage(clipped, -4, -10, imageId);
                         auto colour = _byte_5045FA[companyColour];
@@ -502,7 +502,7 @@ namespace OpenLoco::Ui::Windows::Construction
                     {
                         if (_modList[i] != 0xFF)
                         {
-                            auto roadExtraObj = ObjectManager::get<road_extra_object>(_modList[i]);
+                            auto roadExtraObj = ObjectManager::get<RoadExtraObject>(_modList[i]);
                             auto imageId = roadExtraObj->var_0E;
                             if (self->current_tab == widx::tab_overhead - widx::tab_construction)
                                 imageId += (self->frame_no / 2) % 8;
@@ -520,7 +520,7 @@ namespace OpenLoco::Ui::Windows::Construction
         {
             auto company = CompanyManager::get(_playerCompany);
             auto companyColour = company->mainColours.primary;
-            auto trackObj = ObjectManager::get<track_object>(_trackType);
+            auto trackObj = ObjectManager::get<TrackObject>(_trackType);
             // Construction Tab
             {
                 auto imageId = trackObj->image;
@@ -534,7 +534,7 @@ namespace OpenLoco::Ui::Windows::Construction
             {
                 if (_byte_1136063 & (1 << 7))
                 {
-                    auto imageId = ObjectManager::get<interface_skin_object>()->img + InterfaceSkin::ImageIds::toolbar_menu_airport;
+                    auto imageId = ObjectManager::get<InterfaceSkinObject>()->img + InterfaceSkin::ImageIds::toolbar_menu_airport;
 
                     Widget::draw_tab(self, dpi, imageId, widx::tab_station);
                 }
@@ -542,7 +542,7 @@ namespace OpenLoco::Ui::Windows::Construction
                 {
                     if (_byte_1136063 & (1 << 6))
                     {
-                        auto imageId = ObjectManager::get<interface_skin_object>()->img + InterfaceSkin::ImageIds::toolbar_menu_ship_port;
+                        auto imageId = ObjectManager::get<InterfaceSkinObject>()->img + InterfaceSkin::ImageIds::toolbar_menu_ship_port;
 
                         Widget::draw_tab(self, dpi, imageId, widx::tab_station);
                     }
@@ -567,7 +567,7 @@ namespace OpenLoco::Ui::Windows::Construction
                                 clipped->height *= 2;
                                 clipped->x *= 2;
                                 clipped->y *= 2;
-                                auto trainStationObj = ObjectManager::get<train_station_object>(_lastSelectedStationType);
+                                auto trainStationObj = ObjectManager::get<TrainStationObject>(_lastSelectedStationType);
                                 auto imageId = Gfx::recolour(trainStationObj->image, companyColour);
                                 Gfx::drawImage(clipped, -4, -9, imageId);
                                 auto colour = _byte_5045FA[companyColour];
@@ -600,7 +600,7 @@ namespace OpenLoco::Ui::Windows::Construction
 
                     if (Gfx::clipDrawpixelinfo(&clipped, dpi, x, y, width, height))
                     {
-                        auto trainSignalObject = ObjectManager::get<train_signal_object>(_lastSelectedSignal);
+                        auto trainSignalObject = ObjectManager::get<TrainSignalObject>(_lastSelectedSignal);
                         auto imageId = trainSignalObject->image;
                         if (self->current_tab == widx::tab_signal - widx::tab_construction)
                         {
@@ -629,7 +629,7 @@ namespace OpenLoco::Ui::Windows::Construction
                     {
                         if (_modList[i] != 0xFF)
                         {
-                            auto trackExtraObj = ObjectManager::get<track_extra_object>(_modList[i]);
+                            auto trackExtraObj = ObjectManager::get<TrackExtraObject>(_modList[i]);
                             auto imageId = trackExtraObj->var_0E;
                             if (self->current_tab == widx::tab_overhead - widx::tab_construction)
                                 imageId += (self->frame_no / 2) % 8;
@@ -736,7 +736,7 @@ namespace OpenLoco::Ui::Windows::Construction
             if (trackType & (1 << 7))
             {
                 newTrackType &= ~(1 << 7);
-                auto roadObj = ObjectManager::get<road_object>(newTrackType);
+                auto roadObj = ObjectManager::get<RoadObject>(newTrackType);
                 if (!(roadObj->flags & Flags12::unk_01))
                     _lastRoadOption = trackType;
                 else
@@ -744,7 +744,7 @@ namespace OpenLoco::Ui::Windows::Construction
             }
             else
             {
-                auto trackObj = ObjectManager::get<track_object>(newTrackType);
+                auto trackObj = ObjectManager::get<TrackObject>(newTrackType);
                 if (!(trackObj->flags & Flags22::unk_02))
                     _lastRailroadOption = trackType;
                 else
@@ -794,7 +794,7 @@ namespace OpenLoco::Ui::Windows::Construction
             window->initScrollWidgets();
             window->owner = _playerCompany;
 
-            auto skin = ObjectManager::get<interface_skin_object>();
+            auto skin = ObjectManager::get<InterfaceSkinObject>();
             window->colours[1] = skin->colour_0D;
 
             WindowManager::sub_4CEE0B(window);
@@ -835,7 +835,7 @@ namespace OpenLoco::Ui::Windows::Construction
             auto airportCount = 0;
             for (uint8_t i = 0; i < ObjectManager::getMaxObjects(object_type::airport); i++)
             {
-                auto airportObj = ObjectManager::get<airport_object>(i);
+                auto airportObj = ObjectManager::get<AirportObject>(i);
                 if (airportObj == nullptr)
                     continue;
                 if (currentYear < airportObj->designed_year)
@@ -857,7 +857,7 @@ namespace OpenLoco::Ui::Windows::Construction
             auto dockCount = 0;
             for (uint8_t i = 0; i < ObjectManager::getMaxObjects(object_type::dock); i++)
             {
-                auto dockObj = ObjectManager::get<dock_object>(i);
+                auto dockObj = ObjectManager::get<DockObject>(i);
                 if (dockObj == nullptr)
                     continue;
                 if (currentYear < dockObj->designed_year)
@@ -881,14 +881,14 @@ namespace OpenLoco::Ui::Windows::Construction
             if (transportMode == TransportMode::road)
             {
                 trackType &= ~(1 << 7);
-                auto roadObj = ObjectManager::get<road_object>(trackType);
+                auto roadObj = ObjectManager::get<RoadObject>(trackType);
 
                 for (auto i = 0; i < roadObj->num_stations; i++)
                 {
                     auto station = roadObj->stations[i];
                     if (station == 0xFF)
                         continue;
-                    auto roadStationObj = ObjectManager::get<road_station_object>(station);
+                    auto roadStationObj = ObjectManager::get<RoadStationObject>(station);
                     if (currentYear < roadStationObj->designed_year)
                         continue;
                     if (currentYear > roadStationObj->obsolete_year)
@@ -900,14 +900,14 @@ namespace OpenLoco::Ui::Windows::Construction
 
             if (transportMode == TransportMode::rail)
             {
-                auto trackObj = ObjectManager::get<track_object>(trackType);
+                auto trackObj = ObjectManager::get<TrackObject>(trackType);
 
                 for (auto i = 0; i < trackObj->num_stations; i++)
                 {
                     auto station = trackObj->stations[i];
                     if (station == 0xFF)
                         continue;
-                    auto trainStationObj = ObjectManager::get<train_station_object>(station);
+                    auto trainStationObj = ObjectManager::get<TrainStationObject>(station);
                     if (currentYear < trainStationObj->designed_year)
                         continue;
                     if (currentYear > trainStationObj->obsolete_year)
@@ -926,7 +926,7 @@ namespace OpenLoco::Ui::Windows::Construction
 
                 if (transportMode == TransportMode::road)
                 {
-                    auto roadStationObj = ObjectManager::get<road_station_object>(i);
+                    auto roadStationObj = ObjectManager::get<RoadStationObject>(i);
 
                     if (roadStationObj == nullptr)
                         continue;
@@ -938,7 +938,7 @@ namespace OpenLoco::Ui::Windows::Construction
                 }
                 else if (transportMode == TransportMode::rail)
                 {
-                    auto trainStationObj = ObjectManager::get<train_station_object>(i);
+                    auto trainStationObj = ObjectManager::get<TrainStationObject>(i);
 
                     if (trainStationObj == nullptr)
                         continue;
@@ -989,13 +989,13 @@ namespace OpenLoco::Ui::Windows::Construction
             if (transportMode == TransportMode::road)
             {
                 trackType &= ~(1 << 7);
-                auto roadObj = ObjectManager::get<road_object>(trackType);
+                auto roadObj = ObjectManager::get<RoadObject>(trackType);
                 for (auto i = 0; i < roadObj->num_bridges; i++)
                 {
                     auto bridge = roadObj->bridges[i];
                     if (bridge == 0xFF)
                         continue;
-                    auto bridgeObj = ObjectManager::get<bridge_object>(bridge);
+                    auto bridgeObj = ObjectManager::get<BridgeObject>(bridge);
                     if (currentYear < bridgeObj->designed_year)
                         continue;
                     bridgeList[bridgeCount] = bridge;
@@ -1005,13 +1005,13 @@ namespace OpenLoco::Ui::Windows::Construction
 
             if (transportMode == TransportMode::rail)
             {
-                auto trackObj = ObjectManager::get<track_object>(trackType);
+                auto trackObj = ObjectManager::get<TrackObject>(trackType);
                 for (auto i = 0; i < trackObj->num_bridges; i++)
                 {
                     auto bridge = trackObj->bridges[i];
                     if (bridge == 0xFF)
                         continue;
-                    auto bridgeObj = ObjectManager::get<bridge_object>(bridge);
+                    auto bridgeObj = ObjectManager::get<BridgeObject>(bridge);
                     if (currentYear < bridgeObj->designed_year)
                         continue;
                     bridgeList[bridgeCount] = bridge;
@@ -1021,7 +1021,7 @@ namespace OpenLoco::Ui::Windows::Construction
 
             for (uint8_t i = 0; i < ObjectManager::getMaxObjects(object_type::bridge); i++)
             {
-                auto bridgeObj = ObjectManager::get<bridge_object>(i);
+                auto bridgeObj = ObjectManager::get<BridgeObject>(i);
                 if (bridgeObj == nullptr)
                     continue;
 
@@ -1086,7 +1086,7 @@ namespace OpenLoco::Ui::Windows::Construction
 
             for (uint8_t vehicle = 0; vehicle < ObjectManager::getMaxObjects(object_type::vehicle); vehicle++)
             {
-                auto vehicleObj = ObjectManager::get<vehicle_object>(vehicle);
+                auto vehicleObj = ObjectManager::get<VehicleObject>(vehicle);
 
                 if (vehicleObj == nullptr)
                     continue;
@@ -1115,7 +1115,7 @@ namespace OpenLoco::Ui::Windows::Construction
 
             if (transportMode == TransportMode::road)
             {
-                auto roadObj = ObjectManager::get<road_object>(trackType);
+                auto roadObj = ObjectManager::get<RoadObject>(trackType);
 
                 for (auto i = 0; i < roadObj->num_mods; i++)
                 {
@@ -1126,7 +1126,7 @@ namespace OpenLoco::Ui::Windows::Construction
 
             if (transportMode == TransportMode::rail)
             {
-                auto trackObj = ObjectManager::get<track_object>(trackType);
+                auto trackObj = ObjectManager::get<TrackObject>(trackType);
 
                 for (auto i = 0; i < trackObj->num_mods; i++)
                 {
@@ -1175,7 +1175,7 @@ namespace OpenLoco::Ui::Windows::Construction
         void refreshSignalList(uint8_t* signalList, uint8_t trackType)
         {
             auto currentYear = getCurrentYear();
-            auto trackObj = ObjectManager::get<track_object>(trackType);
+            auto trackObj = ObjectManager::get<TrackObject>(trackType);
             auto signalCount = 0;
             auto var_0E = trackObj->var_0E;
             while (var_0E > 0)
@@ -1184,7 +1184,7 @@ namespace OpenLoco::Ui::Windows::Construction
                 if (ecx == -1)
                     break;
                 var_0E &= ~(1 << ecx);
-                auto signalObj = ObjectManager::get<train_signal_object>(ecx);
+                auto signalObj = ObjectManager::get<TrainSignalObject>(ecx);
 
                 if (currentYear > signalObj->obsolete_year)
                     continue;
@@ -1196,12 +1196,12 @@ namespace OpenLoco::Ui::Windows::Construction
 
             for (uint8_t i = 0; i < ObjectManager::getMaxObjects(object_type::track_signal); i++)
             {
-                auto signalObj = ObjectManager::get<train_signal_object>(i);
+                auto signalObj = ObjectManager::get<TrainSignalObject>(i);
                 if (signalObj == nullptr)
                     continue;
                 for (auto modCount = 0; modCount < signalObj->num_compatible; modCount++)
                 {
-                    if (trackType != ObjectManager::get<train_signal_object>(i)->mods[modCount])
+                    if (trackType != ObjectManager::get<TrainSignalObject>(i)->mods[modCount])
                         continue;
                     if (currentYear < signalObj->designed_year)
                         continue;

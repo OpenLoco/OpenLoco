@@ -190,7 +190,7 @@ namespace OpenLoco
         constexpr uint8_t mask = 0x7F;
     }
 
-    struct vehicle_object
+    struct VehicleObject
     {
         string_id name;     // 0x00
         TransportMode mode; // 0x02
@@ -242,7 +242,7 @@ namespace OpenLoco
         void getCargoString(char* buffer) const;
     };
 #pragma pack(pop)
-    static_assert(sizeof(vehicle_object) == 0x15E);
+    static_assert(sizeof(VehicleObject) == 0x15E);
 
     namespace StringIds
     {

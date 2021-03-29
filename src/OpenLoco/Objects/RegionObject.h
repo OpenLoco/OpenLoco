@@ -10,7 +10,7 @@ namespace OpenLoco
     }
 
 #pragma pack(push, 1)
-    struct region_object
+    struct RegionObject
     {
         string_id name;
         uint32_t image; // 0x02

@@ -11,7 +11,7 @@ namespace OpenLoco
     }
 
 #pragma pack(push, 1)
-    struct train_signal_object
+    struct TrainSignalObject
     {
         string_id name;
         uint16_t track_side;       // 0x02

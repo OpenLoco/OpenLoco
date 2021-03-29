@@ -50,7 +50,7 @@ namespace OpenLoco::Paint
     // 0x004B0CFC
     static void paintBogie(PaintSession& session, VehicleBogie* bogie)
     {
-        auto* vehObject = ObjectManager::get<vehicle_object>(bogie->object_id);
+        auto* vehObject = ObjectManager::get<VehicleObject>(bogie->object_id);
         if (bogie->object_sprite_type == SpriteIndex::null)
         {
             return;
@@ -342,7 +342,7 @@ namespace OpenLoco::Paint
         static loco_global<Map::map_pos[64], 0x00503B6A> _503B6A; // also used in vehicle.cpp
         static loco_global<int8_t[32 * 4], 0x005001B4> _5001B4;   // array of 4 byte structures
 
-        auto* vehObject = ObjectManager::get<vehicle_object>(body->object_id);
+        auto* vehObject = ObjectManager::get<VehicleObject>(body->object_id);
         if (body->object_sprite_type == SpriteIndex::null)
         {
             return;
