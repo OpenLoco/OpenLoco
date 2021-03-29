@@ -1737,14 +1737,14 @@ namespace OpenLoco::Ui::Vehicle
                 {
 
                     int16_t cargoTextHeight = self->row_height / 2 + y - ((self->row_height - 22) / 2) - 10;
-                    if (front->secondaryCargoQty != 0 || body->primaryCargoQty != 0)
+                    if (front->cargoQty != 0 || body->cargoQty != 0)
                     {
-                        if (body->primaryCargoQty == 0 || front->secondaryCargoQty == 0)
+                        if (body->cargoQty == 0 || front->cargoQty == 0)
                         {
                             cargoTextHeight += 5;
                         }
-                        drawCargoText(pDrawpixelinfo, width, cargoTextHeight, strFormat, body->primaryCargoQty, body->cargo_type, body->townCargoFrom);
-                        drawCargoText(pDrawpixelinfo, width, cargoTextHeight, strFormat, front->secondaryCargoQty, front->cargo_type, front->townCargoFrom);
+                        drawCargoText(pDrawpixelinfo, width, cargoTextHeight, strFormat, body->cargoQty, body->cargo_type, body->townCargoFrom);
+                        drawCargoText(pDrawpixelinfo, width, cargoTextHeight, strFormat, front->cargoQty, front->cargo_type, front->townCargoFrom);
                     }
                     else
                     {

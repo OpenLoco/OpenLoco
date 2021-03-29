@@ -1387,4 +1387,12 @@ namespace OpenLoco::Vehicles
 
         Exhaust::create(loc, vehicleObject->animation[num].object_id);
     }
+
+    // 0x004AC039
+    void VehicleBody::sub_4AC039()
+    {
+        registers regs{};
+        regs.esi = reinterpret_cast<int32_t>(this);
+        call(0x004AC039, regs);
+    }
 }

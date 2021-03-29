@@ -6,6 +6,7 @@
 #include "../Entities/Misc.h"
 #include "../GameCommands/GameCommands.h"
 #include "../Graphics/Gfx.h"
+#include "../IndustryManager.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/FormatArguments.hpp"
 #include "../Map/TileManager.h"
@@ -15,9 +16,11 @@
 #include "../Objects/CargoObject.h"
 #include "../Objects/ObjectManager.h"
 #include "../Objects/RoadObject.h"
+#include "../Objects/RoadStationObject.h"
 #include "../Objects/VehicleObject.h"
 #include "../OpenLoco.h"
 #include "../StationManager.h"
+#include "../TownManager.h"
 #include "../Ui/WindowManager.h"
 #include "../ViewportManager.h"
 #include "Orders.h"
@@ -2292,7 +2295,7 @@ namespace OpenLoco::Vehicles
     {
         var_5F &= ~Flags5F::unk_0;
         status = Status::unloading;
-        var_56 = 10;
+        cargoTransferTimeout = 10;
         var_58 = 0;
 
         Vehicle train(this);
@@ -2541,12 +2544,351 @@ namespace OpenLoco::Vehicles
         train.cars.firstCar.body->invalidateSprite();
     }
 
+    // 0x004B9A88
+    template<typename T>
+    void VehicleHead::updateUnloadCargoComponent(T* car, VehicleBogie* bogie)
+    {
+        if (car->cargoQty == 0)
+        {
+            return;
+        }
+
+        if (stationId == StationId::null)
+        {
+            return;
+        }
+
+        auto* station = StationManager::get(stationId);
+        auto& cargoStats = station->cargo_stats[car->cargo_type];
+        if (cargoStats.isAccepted())
+        {
+            station->deliverCargoToTown(car->cargo_type, car->cargoQty);
+            auto* sourceStation = StationManager::get(car->townCargoFrom);
+            auto stationLoc = Map::map_pos{ station->x, station->y };
+            auto sourceLoc = Map::map_pos{ sourceStation->x, sourceStation->y };
+            auto tilesDistance = Math::Vector::distance(stationLoc, sourceLoc) / 32;
+
+            Ui::WindowManager::invalidate(Ui::WindowType::company, car->owner);
+            auto* company = CompanyManager::get(car->owner);
+            company->cargoUnitsTotalDelivered += car->cargoQty;
+
+            auto cargoDist = std::min<uint32_t>(car->cargoQty * tilesDistance, std::numeric_limits<uint32_t>::max());
+            company->cargoUnitsTotalDistance += cargoDist;
+
+            auto cargoPayment = CompanyManager::calculateDeliveredCargoPayment(car->cargo_type, car->cargoQty, tilesDistance, car->cargoNumDays);
+            company->cargoDelivered[car->cargo_type] = static_cast<uint32_t>(std::min<uint64_t>(company->cargoDelivered[car->cargo_type] + static_cast<uint64_t>(car->cargoQty), std::numeric_limits<uint32_t>::max()));
+
+            sub_4BA7C7(car->cargo_type, car->cargoQty, tilesDistance, car->cargoNumDays, cargoPayment);
+
+            var_58 += cargoPayment;
+            station->var_3B1 = 0;
+            station->flags |= station_flags::flag_8;
+
+            if (cargoStats.industry_id != IndustryId::null)
+            {
+                auto* industry = IndustryManager::get(cargoStats.industry_id);
+                auto* industryObj = industry->object();
+
+                for (auto i = 0; i < 3; ++i)
+                {
+                    if (industryObj->required_cargo_type[i] != car->cargo_type)
+                    {
+                        continue;
+                    }
+
+                    industry->var_199[i] = static_cast<uint16_t>(std::min<uint32_t>(industry->var_199[i] + car->cargoQty, std::numeric_limits<uint16_t>::max()));
+                    industry->var_18D[i] = static_cast<uint16_t>(std::min<uint32_t>(industry->var_18D[i] + car->cargoQty, std::numeric_limits<uint16_t>::max()));
+                }
+
+                if (!(industry->history_min_production[0] & (1ULL << car->cargo_type)))
+                {
+                    industry->history_min_production[0] |= 1ULL << car->cargo_type;
+                    MessageManager::post(messageType::workersCelebrate, owner, car->head, cargoStats.industry_id, car->cargo_type << 8);
+                }
+
+                auto* town = TownManager::get(industry->town);
+                town->var_1A8 |= 1ULL << car->cargo_type;
+                town = TownManager::get(station->town);
+                town->var_1A8 |= 1ULL << car->cargo_type;
+            }
+            auto* town = TownManager::get(station->town);
+            if (!(town->var_1A8 & (1ULL << car->cargo_type)))
+            {
+                town->var_1A8 |= 1ULL << car->cargo_type;
+                MessageManager::post(messageType::citizensCelebrate, owner, car->head, station->town, car->cargo_type << 8);
+            }
+
+            if (cargoStats.isAccepted())
+            {
+                cargoStats.flags |= (1 << 3);
+            }
+
+            company->var_4A0 |= 1ULL << car->cargo_type;
+        }
+        else
+        {
+            auto orders = getCurrentOrders();
+            for (auto& order : orders)
+            {
+                if (!(order.hasFlag(OrderFlags::HasCargo)))
+                {
+                    return;
+                }
+                auto* unloadOrder = order.as<OrderUnloadAll>();
+                if (unloadOrder == nullptr)
+                {
+                    continue;
+                }
+                if (unloadOrder->getCargo() != car->cargo_type)
+                {
+                    continue;
+                }
+
+                break;
+            }
+            cargoStats.quantity = static_cast<uint16_t>(std::min<uint32_t>(cargoStats.quantity + car->cargoQty, std::numeric_limits<uint16_t>::max()));
+            station->updateCargoDistribution();
+            cargoStats.enroute_age = std::max(cargoStats.enroute_age, car->cargoNumDays);
+            bool setOrigin = true;
+            if (cargoStats.origin != StationId::null)
+            {
+                auto* cargoSourceStation = StationManager::get(cargoStats.origin);
+                auto stationLoc = Map::map_pos{ station->x, station->y };
+                auto cargoSourceLoc = Map::map_pos{ cargoSourceStation->x, cargoSourceStation->y };
+
+                auto stationSourceDistance = Math::Vector::distance(stationLoc, cargoSourceLoc);
+
+                auto* sourceStation = StationManager::get(car->townCargoFrom);
+                auto sourceLoc = Map::map_pos{ sourceStation->x, sourceStation->y };
+                auto cargoSourceDistance = Math::Vector::distance(stationLoc, sourceLoc);
+                if (cargoSourceDistance > stationSourceDistance)
+                {
+                    setOrigin = false;
+                }
+            }
+            if (setOrigin)
+            {
+                cargoStats.origin = car->townCargoFrom;
+            }
+        }
+
+        uint8_t loadingModifier = 1;
+        switch (mode)
+        {
+            case TransportMode::air:
+            case TransportMode::water:
+                break;
+            case TransportMode::rail:
+            {
+
+                if constexpr (std::is_same_v<T, VehicleBogie>)
+                {
+                    bogie = car;
+                }
+                auto tile = Map::TileManager::get(map_pos{ bogie->tile_x, bogie->tile_y });
+                bool findStation = false;
+                auto direction = bogie->var_2C & 3;
+                auto trackId = (bogie->var_2C >> 3) & 0x3F;
+                loadingModifier = 12;
+                for (auto& el : tile)
+                {
+                    auto* elTrack = el.asTrack();
+                    auto* elStation = el.asStation();
+                    if (findStation && elStation != nullptr)
+                    {
+                        findStation = false;
+                        if (elStation->isFlag5() || elStation->isGhost())
+                            break;
+
+                        if (elStation->stationId() == stationId)
+                        {
+                            loadingModifier = 1;
+                        }
+                        break;
+                    }
+                    if (elTrack == nullptr)
+                        continue;
+
+                    if (elTrack->baseZ() != car->tile_base_z)
+                        continue;
+
+                    if (elTrack->unkDirection() != direction)
+                        continue;
+
+                    if (elTrack->trackId() != trackId)
+                        continue;
+
+                    if (!elTrack->hasStationElement())
+                        continue;
+
+                    findStation = true;
+                }
+                break;
+            }
+            case TransportMode::road:
+            {
+
+                if constexpr (std::is_same_v<T, VehicleBogie>)
+                {
+                    bogie = car;
+                }
+                auto tile = Map::TileManager::get(map_pos{ bogie->tile_x, bogie->tile_y });
+                bool findStation = false;
+                auto direction = bogie->var_2C & 3;
+                auto roadId = (bogie->var_2C >> 3) & 0xF;
+                loadingModifier = 2;
+                for (auto& el : tile)
+                {
+                    auto* elRoad = el.asRoad();
+                    auto* elStation = el.asStation();
+                    if (findStation && elStation != nullptr)
+                    {
+                        findStation = false;
+                        if (elStation->isFlag5() || elStation->isGhost())
+                            break;
+
+                        if (elStation->stationId() != stationId)
+                            break;
+
+                        auto* roadStationObj = ObjectManager::get<RoadStationObject>(elStation->stationType());
+                        if (roadStationObj->flags & RoadStationFlags::roadEnd)
+                        {
+                            var_5F |= Flags5F::unk_0;
+                        }
+                        loadingModifier = 1;
+                        break;
+                    }
+                    if (elRoad == nullptr)
+                        continue;
+
+                    if (elRoad->baseZ() != car->tile_base_z)
+                        continue;
+
+                    if (elRoad->unkDirection() != direction)
+                        continue;
+
+                    if (elRoad->roadId() != roadId)
+                        continue;
+
+                    if (!elRoad->hasStationElement())
+                        continue;
+
+                    findStation = true;
+                }
+                break;
+            }
+            break;
+        }
+
+        auto* cargoObj = ObjectManager::get<CargoObject>(car->cargo_type);
+        cargoTransferTimeout = static_cast<uint16_t>(std::min<uint32_t>((cargoObj->var_4 * car->cargoQty * loadingModifier) / 256, std::numeric_limits<uint16_t>::max()));
+        car->cargoQty = 0;
+        sub_4B7CC3();
+        Ui::WindowManager::invalidate(Ui::WindowType::vehicle, id);
+        if constexpr (std::is_same_v<T, VehicleBody>)
+        {
+            car->sub_4AC039();
+        }
+    }
+
     // 0x004B9A2A
     void VehicleHead::updateUnloadCargo()
     {
-        registers regs;
-        regs.esi = reinterpret_cast<int32_t>(this);
-        call(0x004B9A2A, regs);
+        /*
+        21 owner
+        26 head
+        2c
+        30 tile_x
+        32 tile_y
+        34 tile_base_z
+        4c cargo_type // 0xFF signifies if cargo component or not
+        4d max_cargo 
+        4e townCargoFrom
+        50
+        51 cargoQty
+        5f
+        */
+
+        if (cargoTransferTimeout != 0)
+        {
+            cargoTransferTimeout--;
+            return;
+        }
+
+        Vehicle train(this);
+        for (auto& car : train.cars)
+        {
+            for (auto& carComponent : car)
+            {
+                if (carComponent.front->var_5F & (1 << 0))
+                {
+                    carComponent.front->var_5F &= ~(1 << 0);
+                    if (carComponent.front->cargo_type == 0xFF)
+                    {
+                        return;
+                    }
+                    updateUnloadCargoComponent(carComponent.front, nullptr);
+                    // use component
+                    // Do component unload
+                    return;
+                }
+                else if (carComponent.back->var_5F & (1 << 0))
+                {
+                    carComponent.back->var_5F &= ~(1 << 0);
+                    return;
+                }
+                else if (carComponent.body->var_5F & (1 << 0))
+                {
+                    carComponent.body->var_5F &= ~(1 << 0);
+                    if (carComponent.body->cargo_type == 0xFF)
+                    {
+                        return;
+                    }
+                    updateUnloadCargoComponent(carComponent.body, carComponent.back);
+                    // use component
+                    // Do component unload
+                    return;
+                }
+            }
+        }
+
+        currency32_t cargoProfit = var_58;
+        var_58 = 0;
+        if (cargoProfit != 0)
+        {
+            if (var_60 != 0xFF)
+            {
+                auto company = CompanyManager::get(owner);
+                company->var_4A8[var_60].var_80 += cargoProfit;
+            }
+            Vehicle2* veh2 = vehicleUpdate_2;
+            veh2->lifetimeProfit += cargoProfit;
+            Vehicle1* veh1 = vehicleUpdate_1;
+            if (cargoProfit != 0)
+            {
+                veh1->var_48 |= (1 << 2);
+            }
+
+            CompanyManager::applyPaymentToCompany(owner, -cargoProfit, ExpenditureType(static_cast<uint8_t>(vehicleType) * 2));
+
+            auto loc = Map::map_pos3{ train.cars.firstCar.body->x, train.cars.firstCar.body->y, train.cars.firstCar.body->z } + Map::map_pos3{ 0, 0, 28 };
+            CompanyManager::spendMoneyEffect(loc, owner, -cargoProfit);
+
+            Audio::playSound(Audio::sound_id::income, loc);
+        }
+
+        cargoTransferTimeout = 10;
+        for (auto& car : train.cars)
+        {
+            for (auto& carComponent : car)
+            {
+                carComponent.front->var_5F |= (1 << 0);
+                carComponent.back->var_5F |= (1 << 0);
+                carComponent.body->var_5F |= (1 << 0);
+            }
+        }
+
+        status = Status::loading;
     }
 
     // 0x004BA142 returns false when loaded
@@ -2750,11 +3092,11 @@ namespace OpenLoco::Vehicles
             auto body = car.body;
             if (front->cargo_type != 0xFF)
             {
-                cargoTotals[front->cargo_type] += front->secondaryCargoQty;
+                cargoTotals[front->cargo_type] += front->cargoQty;
             }
             if (body->cargo_type != 0xFF)
             {
-                cargoTotals[body->cargo_type] += body->primaryCargoQty;
+                cargoTotals[body->cargo_type] += body->cargoQty;
             }
         }
 
@@ -2882,6 +3224,27 @@ namespace OpenLoco::Vehicles
             }
             return false;
         }
+    }
+
+    // 0x004BA7C7
+    void VehicleHead::sub_4BA7C7(uint8_t cargoType, uint16_t cargoQty, uint16_t cargoDist, uint8_t cargoAge, currency32_t profit)
+    {
+        registers regs;
+        regs.al = cargoType;
+        regs.bx = cargoQty;
+        regs.cx = cargoDist;
+        regs.dl = cargoAge;
+        regs.ebp = profit;
+        regs.esi = reinterpret_cast<int32_t>(this);
+        call(0x004BA7C7, regs);
+    }
+
+    // 0x004B7CC3
+    void VehicleHead::sub_4B7CC3()
+    {
+        registers regs{};
+        regs.esi = reinterpret_cast<int32_t>(this);
+        call(0x004B7CC3, regs);
     }
 
     OrderRingView Vehicles::VehicleHead::getCurrentOrders() const

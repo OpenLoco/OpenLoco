@@ -109,11 +109,12 @@ namespace OpenLoco
         void invalidate();
         void invalidateWindow();
         void setCatchmentDisplay(uint8_t flags);
+        void deliverCargoToTown(uint8_t cargoType, uint16_t cargoQuantity);
+        void updateCargoDistribution();
 
     private:
         void updateCargoAcceptance();
         void alertCargoAcceptanceChange(uint32_t oldCargoAcc, uint32_t newCargoAcc);
-        void updateCargoDistribution();
     };
     static_assert(sizeof(Station) == 0x3D2);
 #pragma pack(pop)

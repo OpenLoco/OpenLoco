@@ -12,6 +12,7 @@
 #include "Objects/ObjectManager.h"
 #include "Objects/RoadStationObject.h"
 #include "OpenLoco.h"
+#include "TownManager.h"
 #include "Ui/WindowManager.h"
 #include "ViewportManager.h"
 #include <algorithm>
@@ -516,6 +517,13 @@ namespace OpenLoco
                 }
             }
         }
+    }
+
+    // 0x0049B4E0
+    void station::deliverCargoToTown(uint8_t cargoType, uint16_t cargoQuantity)
+    {
+        auto twn = TownManager::get(town);
+        twn->monthly_cargo_delivered[cargoType] = static_cast<uint16_t>(std::min<uint32_t>(std::numeric_limits<uint16_t>::max(), twn->monthly_cargo_delivered[cargoType] + cargoQuantity));
     }
 
     // 0x0048F7D1
