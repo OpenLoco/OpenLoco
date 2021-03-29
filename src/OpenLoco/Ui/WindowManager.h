@@ -360,6 +360,11 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     window* open();
 }
 
+namespace OpenLoco::Ui::Windows::TileInspector
+{
+    window* open();
+}
+
 namespace OpenLoco::Ui::TimePanel
 {
     window* open();

@@ -1146,149 +1146,6 @@ namespace OpenLoco::Ui::Windows::Terraform
             WindowManager::invalidate(WindowType::terraform, 0);
         }
 
-        static map_pos sub_45F1A7(int16_t x, int16_t y)
-        {
-            registers regs;
-            regs.ax = x;
-            regs.bx = y;
-            call(0x0045F1A7, regs);
-            map_pos pos = { regs.ax, regs.bx };
-            return pos;
-        }
-
-        static uint16_t setMapSelectionTiles(int16_t x, int16_t y)
-        {
-            auto pos = sub_45F1A7(x, y);
-
-            uint16_t xPos = pos.x;
-            uint16_t yPos = pos.y;
-            if (xPos != 0x8000)
-            {
-                uint8_t count = 0;
-                if ((_mapSelectionFlags & 1) == 0)
-                {
-                    _mapSelectionFlags = _mapSelectionFlags | 1;
-                    count++;
-                }
-
-                if (_word_F2448E != 4)
-                {
-                    _word_F2448E = 4;
-                    count++;
-                }
-
-                uint16_t toolSizeA = _adjustToolSize;
-
-                if (!toolSizeA)
-                    toolSizeA = 1;
-
-                toolSizeA = toolSizeA << 5;
-                uint16_t toolSizeB = toolSizeA;
-                toolSizeB -= 32;
-                toolSizeA = toolSizeA >> 1;
-                toolSizeA -= 16;
-                xPos -= toolSizeA;
-                yPos -= toolSizeA;
-                xPos &= 0xFFE0;
-                yPos &= 0xFFE0;
-
-                if (xPos != _mapSelectionAX)
-                {
-                    _mapSelectionAX = xPos;
-                    count++;
-                }
-
-                if (yPos != _mapSelectionAY)
-                {
-                    _mapSelectionAY = yPos;
-                    count++;
-                }
-
-                xPos += toolSizeB;
-                yPos += toolSizeB;
-
-                if (xPos != _mapSelectionBX)
-                {
-                    _mapSelectionBX = xPos;
-                    count++;
-                }
-
-                if (yPos != _mapSelectionBY)
-                {
-                    _mapSelectionBY = yPos;
-                    count++;
-                }
-
-                TileManager::mapInvalidateSelectionRect();
-
-                return count;
-            }
-            return 0x8000;
-        }
-
-        static map_pos3 sub_45FD8E(int16_t x, int16_t y)
-        {
-            registers regs;
-            regs.ax = x;
-            regs.bx = y;
-            call(0x0045FD8E, regs);
-            map_pos3 pos = { regs.ax, regs.bx, regs.cx };
-            return pos;
-        }
-
-        static uint16_t setMapSelectionSingleTile(int16_t x, int16_t y)
-        {
-            auto pos = sub_45FD8E(x, y);
-
-            uint16_t xPos = pos.x;
-            uint16_t yPos = pos.y;
-            uint16_t cursorQuadrant = pos.z;
-
-            if (xPos != 0x8000)
-            {
-                auto count = 0;
-                if ((_mapSelectionFlags & 1) == 0)
-                {
-                    _mapSelectionFlags = _mapSelectionFlags | 1;
-                    count++;
-                }
-
-                if (_word_F2448E != cursorQuadrant)
-                {
-                    _word_F2448E = cursorQuadrant;
-                    count++;
-                }
-                if (xPos != _mapSelectionAX)
-                {
-                    _mapSelectionAX = xPos;
-                    count++;
-                }
-
-                if (yPos != _mapSelectionAY)
-                {
-                    _mapSelectionAY = yPos;
-                    count++;
-                }
-
-                if (xPos != _mapSelectionBX)
-                {
-                    _mapSelectionBX = xPos;
-                    count++;
-                }
-
-                if (yPos != _mapSelectionBY)
-                {
-                    _mapSelectionBY = yPos;
-                    count++;
-                }
-
-                TileManager::mapInvalidateSelectionRect();
-
-                return count;
-            }
-            return 0x8000;
-        }
-
         // 0x004BC9D7
         static void onToolUpdate(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
         {
@@ -1303,7 +1160,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 _mapSelectionFlags = _mapSelectionFlags & ~(1 << 0);
                 if (_adjustLandToolSize != 1)
                 {
-                    auto count = setMapSelectionTiles(x, y);
+                    auto count = TileManager::setMapSelectionTiles(x, y);
 
                     if (count == 0x8000)
                         xPos = 0x8000;
@@ -1313,7 +1170,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 }
                 else
                 {
-                    auto count = setMapSelectionSingleTile(x, y);
+                    auto count = TileManager::setMapSelectionSingleTile(x, y, true);
 
                     if (count == 0x8000)
                         xPos = 0x8000;
