@@ -341,6 +341,8 @@ namespace OpenLoco
     // 0x004BE65E
     [[noreturn]] void exitCleanly()
     {
+        Audio::close();
+
         auto tempFilePath = Environment::getPathNoWarning(Environment::path_id::_1tmp);
         if (fs::exists(tempFilePath))
         {

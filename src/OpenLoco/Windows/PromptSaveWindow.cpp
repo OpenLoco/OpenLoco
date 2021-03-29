@@ -62,7 +62,7 @@ namespace OpenLoco::Ui::Windows::PromptSaveWindow
             window->colours[0] = Colour::translucent(Colour::salmon_pink);
             window->flags |= Ui::WindowFlags::transparent;
 
-            setPauseFlag(2);
+            setPauseFlag(1 << 1);
             Audio::pauseSound();
             WindowManager::invalidate(WindowType::timeToolbar);
         }

@@ -353,6 +353,12 @@ namespace OpenLoco::Audio
         _audio_initialised = 0;
     }
 
+    // 0x00489BA1
+    void close()
+    {
+        call(0x00489BA1);
+    }
+
 #ifdef __HAS_DEFAULT_DEVICE__
     static const char* getDefaultDeviceName()
     {

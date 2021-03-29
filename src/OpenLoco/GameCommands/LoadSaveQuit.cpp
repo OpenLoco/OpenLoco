@@ -22,7 +22,7 @@ using namespace OpenLoco::Interop;
 namespace OpenLoco::GameCommands
 {
     static loco_global<uint8_t, 0x00508F08> _game_command_nest_level;
-    static loco_global<uint16_t, 0x0050A002> _savePromptType;
+    static loco_global<LoadOrQuitMode, 0x0050A002> _savePromptType;
 
     static loco_global<char[256], 0x0050B745> _currentScenarioFilename;
     static loco_global<char[512], 0x0112CE04> _savePath;
@@ -81,28 +81,34 @@ namespace OpenLoco::GameCommands
         GameCommands::do_21(1, 0);
         Input::toolCancel();
 
-        if (isEditorMode() && loadLandscapeOpen())
+        if (isEditorMode())
         {
-            // 0x0043C087
-            auto path = fs::path(&_savePath[0]).replace_extension(S5::extensionSC5).u8string();
-            std::strncpy(&_currentScenarioFilename[0], path.c_str(), std::size(_currentScenarioFilename));
-
-            if (sub_4424CE())
+            if (loadLandscapeOpen())
             {
-                resetScreenAge();
-                throw GameException::Interrupt;
+                // 0x0043C087
+                auto path = fs::path(&_savePath[0]).replace_extension(S5::extensionSC5).u8string();
+                std::strncpy(&_currentScenarioFilename[0], path.c_str(), std::size(_currentScenarioFilename));
+
+                if (sub_4424CE())
+                {
+                    resetScreenAge();
+                    throw GameException::Interrupt;
+                }
             }
         }
-        else if (!isNetworked() && loadSaveGameOpen())
+        else if (!isNetworked())
         {
-            // 0x0043C033
-            auto path = fs::path(&_savePath[0]).replace_extension(S5::extensionSV5).u8string();
-            std::strncpy(&_currentScenarioFilename[0], path.c_str(), std::size(_currentScenarioFilename));
-
-            if (sub_441FA7())
+            if (loadSaveGameOpen())
             {
-                resetScreenAge();
-                throw GameException::Interrupt;
+                // 0x0043C033
+                auto path = fs::path(&_savePath[0]).replace_extension(S5::extensionSV5).u8string();
+                std::strncpy(&_currentScenarioFilename[0], path.c_str(), std::size(_currentScenarioFilename));
+
+                if (sub_441FA7())
+                {
+                    resetScreenAge();
+                    throw GameException::Interrupt;
+                }
             }
         }
         else if (isNetworked())
@@ -212,31 +218,37 @@ namespace OpenLoco::GameCommands
     {
         Input::toolCancel();
 
-        if (isEditorMode() && saveLandscapeOpen())
+        if (isEditorMode())
         {
-            // 0x0043C4B3
-            auto path = fs::path(&_savePath[0]).replace_extension(S5::extensionSC5).u8string();
-            std::strncpy(&_currentScenarioFilename[0], path.c_str(), std::size(_currentScenarioFilename));
+            if (saveLandscapeOpen())
+            {
+                // 0x0043C4B3
+                auto path = fs::path(&_savePath[0]).replace_extension(S5::extensionSC5).u8string();
+                std::strncpy(&_currentScenarioFilename[0], path.c_str(), std::size(_currentScenarioFilename));
 
-            if (!S5::save(path, S5::SaveFlags::scenario))
-                Ui::Windows::Error::open(StringIds::landscape_save_failed, StringIds::null);
-            else
-                GameCommands::do_21(2, 0);
+                if (!S5::save(path, S5::SaveFlags::scenario))
+                    Ui::Windows::Error::open(StringIds::landscape_save_failed, StringIds::null);
+                else
+                    GameCommands::do_21(2, 0);
+            }
         }
-        else if (!isNetworked() && saveSaveGameOpen())
+        else if (!isNetworked())
         {
-            // 0x0043C446
-            auto path = fs::path(&_savePath[0]).replace_extension(S5::extensionSV5).u8string();
-            std::strncpy(&_currentScenarioFilename[0], path.c_str(), std::size(_currentScenarioFilename));
+            if (saveSaveGameOpen())
+            {
+                // 0x0043C446
+                auto path = fs::path(&_savePath[0]).replace_extension(S5::extensionSV5).u8string();
+                std::strncpy(&_currentScenarioFilename[0], path.c_str(), std::size(_currentScenarioFilename));
 
-            S5::SaveFlags flags = {};
-            if (Config::get().flags & Config::flags::export_objects_with_saves)
-                flags = S5::SaveFlags::packCustomObjects;
+                S5::SaveFlags flags = {};
+                if (Config::get().flags & Config::flags::export_objects_with_saves)
+                    flags = S5::SaveFlags::packCustomObjects;
 
-            if (!S5::save(path, flags))
-                Ui::Windows::Error::open(StringIds::error_game_save_failed, StringIds::null);
-            else
-                GameCommands::do_21(2, 0);
+                if (!S5::save(path, flags))
+                    Ui::Windows::Error::open(StringIds::error_game_save_failed, StringIds::null);
+                else
+                    GameCommands::do_21(2, 0);
+            }
         }
         else
         {
@@ -246,13 +258,13 @@ namespace OpenLoco::GameCommands
 
             switch (_savePromptType)
             {
-                case 0:
+                case LoadOrQuitMode::LoadGamePrompt:
                     MultiPlayer::setFlag(MultiPlayer::flags::flag_13); // intend to load?
                     break;
-                case 1:
+                case LoadOrQuitMode::ReturnToTitlePrompt:
                     MultiPlayer::setFlag(MultiPlayer::flags::flag_14); // intend to return to title?
                     break;
-                case 2:
+                case LoadOrQuitMode::QuitGamePrompt:
                     MultiPlayer::setFlag(MultiPlayer::flags::flag_15); // intend to quit game?
                     break;
             }
@@ -276,18 +288,19 @@ namespace OpenLoco::GameCommands
 
         if (dl == 0)
         {
-            _savePromptType = di;
+            _savePromptType = static_cast<LoadOrQuitMode>(di);
             Ui::Windows::TextInput::cancel();
-            Ui::Windows::PromptSaveWindow::open(_savePromptType);
+            Ui::Windows::PromptSaveWindow::open(di);
 
             if (!isTitleMode())
             {
                 // 0x0043C369
+                // NB: tutorial recording has been omitted.
                 if (Tutorial::state() == Tutorial::tutorial_state::playing)
                 {
                     Tutorial::stop();
                 }
-                else if (!isNetworked() || _savePromptType != 2)
+                else if (!isNetworked() || _savePromptType != LoadOrQuitMode::QuitGamePrompt)
                 {
                     if (getScreenAge() >= 0xF00)
                     {
@@ -302,14 +315,14 @@ namespace OpenLoco::GameCommands
         // 0x0043BFE3
         switch (_savePromptType)
         {
-            case 0:
+            case LoadOrQuitMode::LoadGamePrompt:
                 return loadGame();
 
-            case 1:
+            case LoadOrQuitMode::ReturnToTitlePrompt:
                 returnToTitle();
                 return 0;
 
-            case 2:
+            case LoadOrQuitMode::QuitGamePrompt:
                 return quitGame();
         }
 

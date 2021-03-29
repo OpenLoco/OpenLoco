@@ -111,6 +111,13 @@ namespace OpenLoco::GameCommands
         vehicle_clone = 80,
     };
 
+    enum class LoadOrQuitMode : uint16_t
+    {
+        LoadGamePrompt,
+        ReturnToTitlePrompt,
+        QuitGamePrompt,
+    };
+
     constexpr uint32_t FAILURE = 0x80000000;
 
     void registerHooks();
