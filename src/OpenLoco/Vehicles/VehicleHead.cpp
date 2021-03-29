@@ -1810,7 +1810,7 @@ namespace OpenLoco::Vehicles
         auto targetYaw = calculateYaw1FromVectorPlane(xDiff, yDiff);
 
         // manhattan distance to target
-        auto manhattanDistance = std::abs(xDiff) + std::abs(yDiff);
+        auto manhattanDistance = Math::Vector::manhattanDistance(map_pos{ x, y }, *targetPos);
 
         // Manhatten distance, targetZ, targetYaw
         return std::make_tuple(manhattanDistance, targetPos->z, targetYaw);
@@ -1989,7 +1989,7 @@ namespace OpenLoco::Vehicles
                 static_cast<int16_t>(airportObject->movementNodes[destinationNode].x - 16),
                 static_cast<int16_t>(airportObject->movementNodes[destinationNode].y - 16)
             };
-            loc2 = Math::Vector::Rotate(loc2, elStation->rotation());
+            loc2 = Math::Vector::rotate(loc2, elStation->rotation());
             auto airportFlags = airportObject->movementNodes[destinationNode].flags;
 
             loc2.x += 16 + staionLoc.x;
@@ -2203,7 +2203,7 @@ namespace OpenLoco::Vehicles
             veh2->currentSpeed = std::min<Speed32>(targetSpeed, veh2->currentSpeed + 0.333333_mph);
         }
 
-        auto manhattanDistance = std::abs(x - veh2->x) + std::abs(y - veh2->y);
+        auto manhattanDistance = Math::Vector::manhattanDistance(map_pos{ x, y }, map_pos{ veh2->x, veh2->y });
         auto targetTolerance = 3;
         if (veh2->currentSpeed >= 20.0_mph)
         {
