@@ -36,6 +36,7 @@
     <ClCompile Include="GameCommands\LoadSaveQuit.cpp" />
     <ClCompile Include="GameCommands\RenameIndustry.cpp" />
     <ClCompile Include="GameCommands\RenameTown.cpp" />
+    <ClCompile Include="GameCommands\TogglePause.cpp" />
     <ClCompile Include="Graphics\Colour.cpp" />
     <ClCompile Include="Graphics\Gfx.cpp" />
     <ClCompile Include="Gui.cpp" />

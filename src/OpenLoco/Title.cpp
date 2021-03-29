@@ -143,7 +143,7 @@ namespace OpenLoco::Title
         CompanyManager::updatingCompanyId(CompanyManager::getControllingId());
         if (isPaused())
         {
-            GameCommands::do_20();
+            GameCommands::togglePause(1);
         }
 
         auto currentScreenFlags = getScreenFlags();

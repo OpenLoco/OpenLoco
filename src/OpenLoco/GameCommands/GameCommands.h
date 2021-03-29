@@ -658,6 +658,10 @@ namespace OpenLoco::GameCommands
     // Defined in GameCommands/RenameTown.cpp
     void renameTown(registers& regs);
 
+    // Defined in GameCommands/TogglePause.cpp
+    uint32_t togglePause(uint8_t flags);
+    void togglePause(registers& regs);
+
     const Map::map_pos3& getPostion();
     void setPosition(const Map::map_pos3& pos);
 }
