@@ -27,6 +27,9 @@ namespace OpenLoco::CompanyManager
     static loco_global<uint8_t[max_companies + 1], 0x009C645C> _company_colours;
     static loco_global<company_id_t, 0x009C68EB> _updating_company_id;
 
+    static loco_global<uint16_t, 0x0050A004> _50A004;
+    static loco_global<uint8_t, 0x009C68EA> gGameCommandExpenditureType; // premultiplied by 4
+
     static void produceCompanies();
 
     // 0x0042F7F8
@@ -255,7 +258,6 @@ namespace OpenLoco::CompanyManager
         {
             return;
         }
-
         Map::map_pos3 pos = loc;
         if (loc.x == Location::null)
         {
@@ -276,5 +278,24 @@ namespace OpenLoco::CompanyManager
         pos.z += 10;
 
         MoneyEffect::create(pos, company, -amount);
+    }
+
+    // 0x0046DE2B
+    // id : updatingCompanyId global var
+    // payment : ebx (subtracted from company balance)
+    void applyPaymentToCompany(const company_id_t id, const currency32_t payment)
+    {
+        auto* company = get(id);
+        if (company == nullptr || OpenLoco::isEditorMode())
+            WindowManager::invalidate(WindowType::company, id);
+
+        // Invalidate the company balance if this is the player company
+        if (getControllingId() == id)
+        {
+            _50A004 = 1;
+        }
+        auto cost = currency48_t{ payment };
+        company->cash -= cost;
+        company->expenditures[0][gGameCommandExpenditureType / 4] -= payment;
     }
 }

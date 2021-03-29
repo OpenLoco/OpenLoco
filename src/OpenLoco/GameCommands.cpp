@@ -300,12 +300,8 @@ namespace OpenLoco::GameCommands
         if ((flagsBackup2 & GameCommandFlag::flag_5) != 0)
             return ebx;
 
-        {
-            // Apply to company money
-            registers fnRegs;
-            fnRegs.ebx = ebx;
-            call(0x0046DE2B, fnRegs);
-        }
+        // Apply to company money
+        CompanyManager::applyPaymentToCompany(CompanyManager::updatingCompanyId(), ebx);
 
         if (ebx != 0 && _updating_company_id == _player_company[0])
         {
