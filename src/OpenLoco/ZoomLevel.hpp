@@ -21,7 +21,6 @@ namespace OpenLoco
         constexpr ZoomLevel(uint8_t zoom)
             : level(zoom)
         {
-            assert(zoom < max);
         }
 
         constexpr operator uint8_t()
