@@ -90,19 +90,19 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
                 if (_byte_1136063 & (1 << 7))
                 {
-                    AddStationsToDropdown<airport_object>(stationCount);
+                    AddStationsToDropdown<AirportObject>(stationCount);
                 }
                 else if (_byte_1136063 & (1 << 6))
                 {
-                    AddStationsToDropdown<dock_object>(stationCount);
+                    AddStationsToDropdown<DockObject>(stationCount);
                 }
                 else if (_trackType & (1 << 7))
                 {
-                    AddStationsToDropdown<road_station_object>(stationCount);
+                    AddStationsToDropdown<RoadStationObject>(stationCount);
                 }
                 else
                 {
-                    AddStationsToDropdown<train_station_object>(stationCount);
+                    AddStationsToDropdown<TrainStationObject>(stationCount);
                 }
                 break;
             }
@@ -189,7 +189,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         {
             self->widgets[widx::rotate].type = widget_type::wt_9;
 
-            auto airportObj = ObjectManager::get<airport_object>(_lastSelectedStationType);
+            auto airportObj = ObjectManager::get<AirportObject>(_lastSelectedStationType);
 
             self->widgets[widx::station].text = airportObj->name;
 
@@ -197,7 +197,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         }
         else if (_byte_1136063 & (1 << 6))
         {
-            auto dockObj = ObjectManager::get<dock_object>(_lastSelectedStationType);
+            auto dockObj = ObjectManager::get<DockObject>(_lastSelectedStationType);
 
             self->widgets[widx::station].text = dockObj->name;
 
@@ -207,21 +207,21 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         {
             auto trackType = _trackType & ~(1 << 7);
 
-            auto roadObj = ObjectManager::get<road_object>(trackType);
+            auto roadObj = ObjectManager::get<RoadObject>(trackType);
 
             args.push(roadObj->name);
 
-            auto roadStationObject = ObjectManager::get<road_station_object>(_lastSelectedStationType);
+            auto roadStationObject = ObjectManager::get<RoadStationObject>(_lastSelectedStationType);
 
             self->widgets[widx::station].text = roadStationObject->name;
         }
         else
         {
-            auto trackObj = ObjectManager::get<track_object>(_trackType);
+            auto trackObj = ObjectManager::get<TrackObject>(_trackType);
 
             args.push(trackObj->name);
 
-            auto trainStationObject = ObjectManager::get<train_station_object>(_lastSelectedStationType);
+            auto trainStationObject = ObjectManager::get<TrainStationObject>(_lastSelectedStationType);
 
             self->widgets[widx::station].text = trainStationObject->name;
         }
@@ -242,7 +242,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         if (_byte_1136063 & (1 << 7))
         {
-            auto airportObj = ObjectManager::get<airport_object>(_lastSelectedStationType);
+            auto airportObj = ObjectManager::get<AirportObject>(_lastSelectedStationType);
 
             auto imageId = Gfx::recolour(airportObj->image, companyColour);
 
@@ -250,7 +250,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         }
         else if (_byte_1136063 & (1 << 6))
         {
-            auto dockObj = ObjectManager::get<dock_object>(_lastSelectedStationType);
+            auto dockObj = ObjectManager::get<DockObject>(_lastSelectedStationType);
 
             auto imageId = Gfx::recolour(dockObj->image, companyColour);
 
@@ -258,7 +258,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         }
         else if (_trackType & (1 << 7))
         {
-            auto roadStationObj = ObjectManager::get<road_station_object>(_lastSelectedStationType);
+            auto roadStationObj = ObjectManager::get<RoadStationObject>(_lastSelectedStationType);
 
             auto imageId = Gfx::recolour(roadStationObj->image, companyColour);
 
@@ -277,7 +277,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         }
         else
         {
-            auto trainStationObj = ObjectManager::get<train_station_object>(_lastSelectedStationType);
+            auto trainStationObj = ObjectManager::get<TrainStationObject>(_lastSelectedStationType);
 
             auto imageId = Gfx::recolour(trainStationObj->image, companyColour);
 
@@ -352,7 +352,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
                     auto xPosMax = self->x + self->width - 12;
                     if (origin.x <= xPosMax)
                     {
-                        auto cargoObj = ObjectManager::get<cargo_object>(i);
+                        auto cargoObj = ObjectManager::get<CargoObject>(i);
 
                         Gfx::drawImage(dpi, origin.x, origin.y, cargoObj->unit_inline_sprite);
                         origin.x += 10;
@@ -381,7 +381,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
                     auto xPosMax = self->x + self->width - 12;
                     if (origin.x <= xPosMax)
                     {
-                        auto cargoObj = ObjectManager::get<cargo_object>(i);
+                        auto cargoObj = ObjectManager::get<CargoObject>(i);
 
                         Gfx::drawImage(dpi, origin.x, origin.y, cargoObj->unit_inline_sprite);
                         origin.x += 10;

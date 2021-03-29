@@ -187,7 +187,7 @@ namespace OpenLoco::Vehicles
         // Check only the first bogie on each car for breakdown flags
         for (const auto& car : train.cars)
         {
-            auto* vehObj = ObjectManager::get<vehicle_object>(car.front->object_id);
+            auto* vehObj = ObjectManager::get<VehicleObject>(car.front->object_id);
             if (vehObj == nullptr)
             {
                 continue;
@@ -229,8 +229,8 @@ namespace OpenLoco::Vehicles
     // ebx : sourceVehicleTypeId;
     static bool sub_4B90F0(const uint16_t newVehicleTypeId, const uint16_t sourceVehicleTypeId)
     {
-        auto newObject = ObjectManager::get<vehicle_object>(newVehicleTypeId);       //edi
-        auto sourceObject = ObjectManager::get<vehicle_object>(sourceVehicleTypeId); // esi
+        auto newObject = ObjectManager::get<VehicleObject>(newVehicleTypeId);       //edi
+        auto sourceObject = ObjectManager::get<VehicleObject>(sourceVehicleTypeId); // esi
 
         if ((newObject->flags & FlagsE0::can_couple) && (sourceObject->flags & FlagsE0::can_couple))
         {
@@ -275,7 +275,7 @@ namespace OpenLoco::Vehicles
     // used by road vehicles only maybe??
     static uint32_t getVehicleTypeLength(const uint16_t vehicleTypeId)
     {
-        auto vehObject = ObjectManager::get<vehicle_object>(vehicleTypeId);
+        auto vehObject = ObjectManager::get<VehicleObject>(vehicleTypeId);
         auto length = 0;
         for (auto i = 0; i < vehObject->var_04; ++i)
         {
@@ -308,7 +308,7 @@ namespace OpenLoco::Vehicles
     // ax  : vehicleTypeId
     bool VehicleHead::isVehicleTypeCompatible(const uint16_t vehicleTypeId) // TODO: const
     {
-        auto newObject = ObjectManager::get<vehicle_object>(vehicleTypeId);
+        auto newObject = ObjectManager::get<VehicleObject>(vehicleTypeId);
         if (newObject->mode == TransportMode::air || newObject->mode == TransportMode::water)
         {
             Vehicle train(this);
@@ -403,7 +403,7 @@ namespace OpenLoco::Vehicles
             return;
         }
 
-        auto vehicleObject = ObjectManager::get<vehicle_object>(vehType2or6->objectId);
+        auto vehicleObject = ObjectManager::get<VehicleObject>(vehType2or6->objectId);
         switch (vehicleObject->drivingSoundType)
         {
             case DrivingSoundType::none:
@@ -1218,7 +1218,7 @@ namespace OpenLoco::Vehicles
         Pitch targetPitch = Pitch::flat;
         if (vehType2->currentSpeed < 50.0_mph)
         {
-            auto vehObject = ObjectManager::get<vehicle_object>(train.cars.firstCar.front->object_id);
+            auto vehObject = ObjectManager::get<VehicleObject>(train.cars.firstCar.front->object_id);
             targetPitch = Pitch::up12deg;
             // Slope sprites for taxiing planes??
             if (!(vehObject->flags & FlagsE0::unk_08))
@@ -1239,7 +1239,7 @@ namespace OpenLoco::Vehicles
         {
             if (vehType2->currentSpeed <= 180.0_mph)
             {
-                auto vehObject = ObjectManager::get<vehicle_object>(train.cars.firstCar.front->object_id);
+                auto vehObject = ObjectManager::get<VehicleObject>(train.cars.firstCar.front->object_id);
 
                 // looks wrong??
                 if (vehObject->flags & FlagsE0::can_couple)
@@ -1366,7 +1366,7 @@ namespace OpenLoco::Vehicles
             if (elStation->baseZ() != loc.z / 4)
                 continue;
 
-            auto airportObject = ObjectManager::get<airport_object>(elStation->objectId());
+            auto airportObject = ObjectManager::get<AirportObject>(elStation->objectId());
 
             uint8_t al = airportObject->movementEdges[airportMovementEdge].var_03;
             uint8_t cl = airportObject->movementEdges[airportMovementEdge].var_00;
@@ -1595,7 +1595,7 @@ namespace OpenLoco::Vehicles
                 if (elStation->baseZ() != loc.z / 4)
                     continue;
 
-                auto airportObject = ObjectManager::get<airport_object>(elStation->objectId());
+                auto airportObject = ObjectManager::get<AirportObject>(elStation->objectId());
                 Vehicle train(this);
                 uint16_t planeType = train.cars.firstCar.front->getPlaneType();
 
@@ -1838,7 +1838,7 @@ namespace OpenLoco::Vehicles
             if (elStation->baseZ() != loc.z / 4)
                 continue;
 
-            auto airportObject = ObjectManager::get<airport_object>(elStation->objectId());
+            auto airportObject = ObjectManager::get<AirportObject>(elStation->objectId());
 
             if (curEdge == cAirportMovementNodeNull)
             {
@@ -1879,7 +1879,7 @@ namespace OpenLoco::Vehicles
                 }
                 // 0x4272A5
                 Vehicle train(this);
-                auto vehObject = ObjectManager::get<vehicle_object>(train.cars.firstCar.front->object_id);
+                auto vehObject = ObjectManager::get<VehicleObject>(train.cars.firstCar.front->object_id);
                 if (vehObject->flags & FlagsE0::isHelicopter)
                 {
                     for (uint8_t movementEdge = 0; movementEdge < airportObject->numMovementEdges; movementEdge++)
@@ -1981,7 +1981,7 @@ namespace OpenLoco::Vehicles
             if (elStation->baseZ() != staionLoc.z / 4)
                 continue;
 
-            auto airportObject = ObjectManager::get<airport_object>(elStation->objectId());
+            auto airportObject = ObjectManager::get<AirportObject>(elStation->objectId());
 
             auto destinationNode = airportObject->movementEdges[curEdge].nextNode;
 

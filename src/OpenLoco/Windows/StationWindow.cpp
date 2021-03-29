@@ -291,7 +291,7 @@ namespace OpenLoco::Ui::Windows::Station
 
             window->saved_view.clear();
 
-            auto skin = ObjectManager::get<interface_skin_object>();
+            auto skin = ObjectManager::get<InterfaceSkinObject>();
             window->colours[1] = skin->colour_0A;
             // 0x0048F29F end
         }
@@ -377,7 +377,7 @@ namespace OpenLoco::Ui::Windows::Station
 
                 *buffer++ = ' ';
                 *buffer++ = ControlCodes::inline_sprite_str;
-                *(reinterpret_cast<uint32_t*>(buffer)) = ObjectManager::get<cargo_object>(cargoId)->unit_inline_sprite;
+                *(reinterpret_cast<uint32_t*>(buffer)) = ObjectManager::get<CargoObject>(cargoId)->unit_inline_sprite;
                 buffer += 4;
 
                 cargoTypeCount++;
@@ -484,7 +484,7 @@ namespace OpenLoco::Ui::Windows::Station
 
                 auto units = (quantity + 9) / 10;
 
-                auto cargoObj = ObjectManager::get<cargo_object>(cargoId);
+                auto cargoObj = ObjectManager::get<CargoObject>(cargoId);
                 if (units != 0)
                 {
                     uint16_t xPos = 1;
@@ -684,7 +684,7 @@ namespace OpenLoco::Ui::Windows::Station
                     continue;
                 }
 
-                auto cargoObj = ObjectManager::get<cargo_object>(cargoId);
+                auto cargoObj = ObjectManager::get<CargoObject>(cargoId);
                 Gfx::drawString_494BBF(*dpi, 1, y, 98, 0, StringIds::wcolour2_stringid, &cargoObj->name);
 
                 auto rating = cargo.rating;
@@ -942,7 +942,7 @@ namespace OpenLoco::Ui::Windows::Station
         // 0x0048EFBC
         static void drawTabs(window* self, Gfx::drawpixelinfo_t* dpi)
         {
-            auto skin = ObjectManager::get<interface_skin_object>();
+            auto skin = ObjectManager::get<InterfaceSkinObject>();
             auto station = StationManager::get(self->number);
             auto companyColour = CompanyManager::getCompanyColour(station->owner);
 

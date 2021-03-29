@@ -548,7 +548,7 @@ namespace OpenLoco::Ui::Windows::TownList
             window->max_height = TownList::maxDimensions.height;
             window->flags |= WindowFlags::resizable;
 
-            auto skin = ObjectManager::get<interface_skin_object>();
+            auto skin = ObjectManager::get<InterfaceSkinObject>();
             window->colours[0] = skin->colour_0B;
             window->colours[1] = skin->colour_0C;
 
@@ -798,7 +798,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
             if (self->row_hover != -1)
             {
-                auto buildingObj = ObjectManager::get<building_object>(self->row_hover);
+                auto buildingObj = ObjectManager::get<BuildingObject>(self->row_hover);
                 if (buildingObj->colours != 0)
                     self->widgets[widx::object_colour].type = widget_type::wt_10;
             }
@@ -838,7 +838,7 @@ namespace OpenLoco::Ui::Windows::TownList
                     return;
             }
 
-            auto buildingObj = ObjectManager::get<building_object>(buildingId);
+            auto buildingObj = ObjectManager::get<BuildingObject>(buildingId);
 
             Gfx::drawString_494BBF(*dpi, self->x + 3, self->y + self->height - 13, self->width - 19, Colour::black, StringIds::black_stringid, &buildingObj->name);
         }
@@ -1072,7 +1072,7 @@ namespace OpenLoco::Ui::Windows::TownList
                     Gfx::drawRectInset(dpi, xPos, yPos, 112, 112, self->colours[1], (Colour::translucent_flag | Colour::outline_flag));
                 }
 
-                auto buildingObj = ObjectManager::get<building_object>(self->row_info[i]);
+                auto buildingObj = ObjectManager::get<BuildingObject>(self->row_info[i]);
 
                 Gfx::drawpixelinfo_t* clipped = nullptr;
 
@@ -1104,7 +1104,7 @@ namespace OpenLoco::Ui::Windows::TownList
         {
             if (self->row_hover != -1)
             {
-                auto buildingObj = ObjectManager::get<building_object>(self->row_hover);
+                auto buildingObj = ObjectManager::get<BuildingObject>(self->row_hover);
                 if (buildingObj->colours != 0)
                 {
                     colour_t colour = Utility::bitScanReverse(buildingObj->colours);
@@ -1197,7 +1197,7 @@ namespace OpenLoco::Ui::Windows::TownList
             auto buildingCount = 0;
             for (auto i = 0; i < 128; i++)
             {
-                auto buildingObj = ObjectManager::get<building_object>(i);
+                auto buildingObj = ObjectManager::get<BuildingObject>(i);
                 if (buildingObj == nullptr)
                     continue;
                 if (self->current_tab == Common::widx::tab_build_misc_buildings - Common::widx::tab_town_list)
@@ -1363,7 +1363,7 @@ namespace OpenLoco::Ui::Windows::TownList
         // 0x0049B054
         static void drawTabs(window* self, Gfx::drawpixelinfo_t* dpi)
         {
-            auto skin = ObjectManager::get<interface_skin_object>();
+            auto skin = ObjectManager::get<InterfaceSkinObject>();
 
             // Town List Tab
             {

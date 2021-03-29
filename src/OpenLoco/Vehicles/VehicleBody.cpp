@@ -62,9 +62,9 @@ namespace OpenLoco::Vehicles
 
     static uint16_t fastSquareRoot(uint32_t distance);
 
-    vehicle_object* VehicleBody::object() const
+    VehicleObject* VehicleBody::object() const
     {
-        return ObjectManager::get<vehicle_object>(object_id);
+        return ObjectManager::get<VehicleObject>(object_id);
     }
 
     // 0x004AA1D0
@@ -165,15 +165,15 @@ namespace OpenLoco::Vehicles
         if (object_sprite_type == 0xFF)
             return;
 
-        auto vehicle_object = object();
+        auto VehicleObject = object();
         uint8_t al = 0;
-        if (vehicle_object->bodySprites[object_sprite_type].flags & BodySpriteFlags::hasSpeedAnimation)
+        if (VehicleObject->bodySprites[object_sprite_type].flags & BodySpriteFlags::hasSpeedAnimation)
         {
             Vehicle2* veh3 = vehicleUpdate_2;
-            al = veh3->currentSpeed / (vehicle_object->speed / vehicle_object->bodySprites[object_sprite_type].numAnimationFrames);
-            al = std::min<uint8_t>(al, vehicle_object->bodySprites[object_sprite_type].numAnimationFrames - 1);
+            al = veh3->currentSpeed / (VehicleObject->speed / VehicleObject->bodySprites[object_sprite_type].numAnimationFrames);
+            al = std::min<uint8_t>(al, VehicleObject->bodySprites[object_sprite_type].numAnimationFrames - 1);
         }
-        else if (vehicle_object->bodySprites[object_sprite_type].numRollFrames != 1)
+        else if (VehicleObject->bodySprites[object_sprite_type].numRollFrames != 1)
         {
             VehicleBogie* frontBogie = vehicleUpdate_frontBogie;
             Vehicle2* veh3 = vehicleUpdate_2;
@@ -241,7 +241,7 @@ namespace OpenLoco::Vehicles
         }
         else
         {
-            al = (var_44 >> 12) & (vehicle_object->bodySprites[object_sprite_type].numAnimationFrames - 1);
+            al = (var_44 >> 12) & (VehicleObject->bodySprites[object_sprite_type].numAnimationFrames - 1);
         }
         if (var_46 != al)
         {
@@ -273,9 +273,9 @@ namespace OpenLoco::Vehicles
 
         auto offset = fastSquareRoot(distance_x * distance_x + distance_y * distance_y);
 
-        auto vehicle_object = object();
+        auto VehicleObject = object();
 
-        if (vehicle_object->bodySprites[object_sprite_type].flags & BodySpriteFlags::hasSteepSprites)
+        if (VehicleObject->bodySprites[object_sprite_type].flags & BodySpriteFlags::hasSteepSprites)
         {
             sprite_pitch = updateSpritePitchSteepSlopes(offset, front_bogie->z - back_bogie->z);
         }
@@ -291,7 +291,7 @@ namespace OpenLoco::Vehicles
         }
         else
         {
-            auto sprite = vehicle_object->bodySprites[object_sprite_type];
+            auto sprite = VehicleObject->bodySprites[object_sprite_type];
             uint8_t i = sprite_pitch == Pitch::flat ? sprite.var_0B : sprite.var_0C;
             switch (i)
             {

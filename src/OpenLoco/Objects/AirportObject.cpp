@@ -6,7 +6,7 @@
 namespace OpenLoco
 {
     // 0x00490DCF
-    void airport_object::drawPreviewImage(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y) const
+    void AirportObject::drawPreviewImage(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y) const
     {
         auto colourImage = Gfx::recolour(image, Colour::salmon_pink);
 
@@ -14,7 +14,7 @@ namespace OpenLoco
     }
 
     // 0x00490DE7
-    void airport_object::drawDescription(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const
+    void AirportObject::drawDescription(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const
     {
         Gfx::point_t rowPosition = { x, y };
         ObjectManager::drawGenericDescription(dpi, rowPosition, designed_year, obsolete_year);

@@ -17,7 +17,7 @@ namespace OpenLoco
         constexpr uint32_t flag_28 = 1 << 28;
     }
 #pragma pack(push, 1)
-    struct industry_object
+    struct IndustryObject
     {
         string_id name;
         uint8_t pad_02[0x0A - 0x02];

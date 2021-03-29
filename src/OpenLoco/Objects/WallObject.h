@@ -10,7 +10,7 @@ namespace OpenLoco
     }
 
 #pragma pack(push, 1)
-    struct wall_object
+    struct WallObject
     {
         string_id name;
         uint32_t sprite; // 0x02

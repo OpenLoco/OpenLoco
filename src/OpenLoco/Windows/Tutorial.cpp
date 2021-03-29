@@ -41,7 +41,7 @@ namespace OpenLoco::Ui::Windows::Tutorial
         window->widgets = widgets;
         window->initScrollWidgets();
 
-        auto skin = ObjectManager::get<interface_skin_object>();
+        auto skin = ObjectManager::get<InterfaceSkinObject>();
         if (skin != nullptr)
         {
             window->colours[0] = Colour::translucent(skin->colour_06);

@@ -11,7 +11,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco
 {
-    bool industry_object::requiresCargo() const
+    bool IndustryObject::requiresCargo() const
     {
         auto requiredCargoState = false;
         for (const auto& requiredCargo : required_cargo_type)
@@ -25,7 +25,7 @@ namespace OpenLoco
         return requiredCargoState;
     }
 
-    bool industry_object::producesCargo() const
+    bool IndustryObject::producesCargo() const
     {
         auto produceCargoState = false;
         for (const auto& producedCargo : produced_cargo_type)
@@ -39,7 +39,7 @@ namespace OpenLoco
         return produceCargoState;
     }
 
-    char* industry_object::getProducedCargoString(const char* buffer)
+    char* IndustryObject::getProducedCargoString(const char* buffer)
     {
         char* ptr = (char*)buffer;
         auto producedCargoCount = 0;
@@ -53,14 +53,14 @@ namespace OpenLoco
                 if (producedCargoCount > 1)
                     ptr = StringManager::formatString(ptr, StringIds::cargo_and);
 
-                auto cargoObj = ObjectManager::get<cargo_object>(producedCargo);
+                auto cargoObj = ObjectManager::get<CargoObject>(producedCargo);
                 ptr = StringManager::formatString(ptr, cargoObj->name);
             }
         }
         return ptr;
     }
 
-    char* industry_object::getRequiredCargoString(const char* buffer)
+    char* IndustryObject::getRequiredCargoString(const char* buffer)
     {
         char* ptr = (char*)buffer;
         auto requiredCargoCount = 0;
@@ -79,7 +79,7 @@ namespace OpenLoco
                         ptr = StringManager::formatString(ptr, StringIds::cargo_or);
                 }
 
-                auto cargoObj = ObjectManager::get<cargo_object>(requiredCargo);
+                auto cargoObj = ObjectManager::get<CargoObject>(requiredCargo);
                 ptr = StringManager::formatString(ptr, cargoObj->name);
             }
         }
@@ -87,13 +87,13 @@ namespace OpenLoco
     }
 
     // 0x0045932D
-    void industry_object::drawPreviewImage(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y) const
+    void IndustryObject::drawPreviewImage(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y) const
     {
         drawIndustry(&dpi, x, y + 40);
     }
 
     // 0x00458C7F
-    void industry_object::drawIndustry(Gfx::drawpixelinfo_t* clipped, int16_t x, int16_t y) const
+    void IndustryObject::drawIndustry(Gfx::drawpixelinfo_t* clipped, int16_t x, int16_t y) const
     {
         registers regs;
         regs.cx = x;

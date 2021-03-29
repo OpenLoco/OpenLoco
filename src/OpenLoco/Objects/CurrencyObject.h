@@ -10,7 +10,7 @@ namespace OpenLoco
     }
 
 #pragma pack(push, 1)
-    struct currency_object
+    struct CurrencyObject
     {
         string_id name;          // 0x00
         string_id prefix_symbol; // 0x02

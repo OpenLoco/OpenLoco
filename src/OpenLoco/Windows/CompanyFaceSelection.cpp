@@ -20,7 +20,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     static loco_global<company_id_t, 0x9C68F2> _9C68F2; // Use in a game command??
     static loco_global<uint16_t, 0x112C1C1> _numberCompetitorObjects;
     static loco_global<int32_t, 0x112C876> _currentFontSpriteBase;
-    static loco_global<competitor_object*, 0x0050D15C> _loadedObject; // This could be any type of object
+    static loco_global<CompetitorObject*, 0x0050D15C> _loadedObject; // This could be any type of object
     static loco_global<int32_t, 0x0113E72C> _cursorX;
     static loco_global<string_id, 0x009C68E8> gGameCommandErrorTitle;
 
@@ -101,7 +101,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
             self->initScrollWidgets();
             _9C68F2 = id;
             self->owner = id;
-            const auto* skin = ObjectManager::get<interface_skin_object>();
+            const auto* skin = ObjectManager::get<InterfaceSkinObject>();
             self->colours[1] = skin->colour_0A;
             findAllInUseCompetitors(id);
             self->row_count = _numberCompetitorObjects;
@@ -225,7 +225,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
             const auto b = self->y - 1 + self->widgets[widx::face_frame].bottom;
             Gfx::fillRect(dpi, l, t, r, b, colour);
 
-            const competitor_object* competitor = _loadedObject;
+            const CompetitorObject* competitor = _loadedObject;
             uint32_t img = competitor->images[0] + 1 + (1 << 29);
             Gfx::drawImage(dpi, l, t, img);
         }

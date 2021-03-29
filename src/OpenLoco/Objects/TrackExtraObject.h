@@ -10,7 +10,7 @@ namespace OpenLoco
     }
 
 #pragma pack(push, 1)
-    struct track_extra_object
+    struct TrackExtraObject
     {
         string_id name;
         uint16_t track_pieces;      // 0x02

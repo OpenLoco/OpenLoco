@@ -15,7 +15,7 @@ namespace OpenLoco
     }
 
 #pragma pack(push, 1)
-    struct train_station_object
+    struct TrainStationObject
     {
         string_id name;
         uint8_t var_02;

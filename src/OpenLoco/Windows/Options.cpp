@@ -1339,7 +1339,7 @@ namespace OpenLoco::Ui::Options
             }
 
             args.skip(0x2);
-            args.push(ObjectManager::get<currency_object>()->name);
+            args.push(ObjectManager::get<CurrencyObject>()->name);
             args.push(current_measurement_format);
 
             w->activated_widgets &= ~(1 << Widx::preferred_currency_for_new_games);
@@ -2382,7 +2382,7 @@ namespace OpenLoco::Ui::Options
         window->frame_no = 0;
         window->row_hover = -1;
 
-        auto interface = ObjectManager::get<interface_skin_object>();
+        auto interface = ObjectManager::get<InterfaceSkinObject>();
         window->colours[0] = interface->colour_0B;
         window->colours[1] = interface->colour_10;
 

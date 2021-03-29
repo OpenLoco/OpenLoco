@@ -27,7 +27,7 @@ namespace OpenLoco
         constexpr uint16_t street_lights = 1 << 8;
     }
 #pragma pack(push, 1)
-    struct road_object
+    struct RoadObject
     {
         string_id name;
         uint16_t road_pieces;        // 0x02

@@ -25,7 +25,7 @@ namespace OpenLoco
     } };
 
 #pragma pack(push, 1)
-    struct tree_object
+    struct TreeObject
     {
         string_id name;
         uint8_t var_02;

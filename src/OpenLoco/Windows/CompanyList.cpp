@@ -498,7 +498,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 }
 
                 auto company = CompanyManager::get(rowItem);
-                auto competitorObj = ObjectManager::get<competitor_object>(company->competitor_id);
+                auto competitorObj = ObjectManager::get<CompetitorObject>(company->competitor_id);
                 auto imageId = Gfx::recolour(competitorObj->images[company->owner_emotion], company->mainColours.primary);
 
                 {
@@ -614,7 +614,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             Common::refreshCompanyList(window);
 
-            auto skin = ObjectManager::get<interface_skin_object>();
+            auto skin = ObjectManager::get<InterfaceSkinObject>();
             window->colours[0] = skin->colour_0B;
             window->colours[1] = skin->colour_0C;
 
@@ -1061,7 +1061,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             auto cargoCount = 0;
             for (uint8_t i = 0; i < ObjectManager::getMaxObjects(object_type::cargo); i++)
             {
-                auto cargo = ObjectManager::get<cargo_object>(i);
+                auto cargo = ObjectManager::get<CargoObject>(i);
                 if (cargo == nullptr)
                     continue;
 
@@ -1107,7 +1107,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             auto count = 0;
             for (uint8_t i = 0; i < ObjectManager::getMaxObjects(object_type::cargo); i++)
             {
-                auto cargo = ObjectManager::get<cargo_object>(i);
+                auto cargo = ObjectManager::get<CargoObject>(i);
                 if (cargo == nullptr)
                     continue;
 
@@ -1193,7 +1193,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         {
             for (uint8_t cargoItem = 0; cargoItem < ObjectManager::getMaxObjects(object_type::cargo); ++cargoItem)
             {
-                auto* cargoObj = ObjectManager::get<cargo_object>(cargoItem);
+                auto* cargoObj = ObjectManager::get<CargoObject>(cargoItem);
                 if (cargoObj == nullptr)
                 {
                     continue;
@@ -1222,7 +1222,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                     uint8_t cargoItem = 0;
                     for (; cargoItem < ObjectManager::getMaxObjects(object_type::cargo); ++cargoItem)
                     {
-                        auto* cargoObj = ObjectManager::get<cargo_object>(cargoItem);
+                        auto* cargoObj = ObjectManager::get<CargoObject>(cargoItem);
                         if (cargoObj == nullptr)
                         {
                             continue;
@@ -1322,7 +1322,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 if (companyId != CompanyId::null)
                 {
                     auto company = CompanyManager::get(companyId);
-                    auto competitorObj = ObjectManager::get<competitor_object>(company->competitor_id);
+                    auto competitorObj = ObjectManager::get<CompetitorObject>(company->competitor_id);
 
                     auto imageId = competitorObj->images[company->owner_emotion];
                     imageId = Gfx::recolour(imageId, company->mainColours.primary);
@@ -1547,7 +1547,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x00437637
         static void drawTabs(window* self, Gfx::drawpixelinfo_t* dpi)
         {
-            auto skin = ObjectManager::get<interface_skin_object>();
+            auto skin = ObjectManager::get<InterfaceSkinObject>();
 
             // Company List Tab
             {

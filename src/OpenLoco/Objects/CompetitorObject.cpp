@@ -11,7 +11,7 @@ namespace OpenLoco
     static const Gfx::ui_size_t objectPreviewSize = { 112, 112 };
 
     // 0x00434D5B
-    void competitor_object::drawPreviewImage(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y) const
+    void CompetitorObject::drawPreviewImage(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y) const
     {
         Gfx::drawRect(&dpi, 0, 0, objectPreviewSize.width, objectPreviewSize.height, Colour::inset(Colour::dark_brown));
 
@@ -20,7 +20,7 @@ namespace OpenLoco
     }
 
     // 0x00434DA7
-    void competitor_object::drawDescription(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const
+    void CompetitorObject::drawDescription(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const
     {
         Gfx::point_t rowPosition = { x, y };
         {

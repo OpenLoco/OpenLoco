@@ -57,40 +57,40 @@ namespace OpenLoco
 
     struct object;
     struct object_entry_extended;
-    struct cargo_object;
-    struct interface_skin_object;
-    struct sound_object;
-    struct currency_object;
+    struct CargoObject;
+    struct InterfaceSkinObject;
+    struct SoundObject;
+    struct CurrencyObject;
     struct SteamObject;
-    struct rock_object;
-    struct water_object;
-    struct land_object;
+    struct RockObject;
+    struct WaterObject;
+    struct LandObject;
     struct town_names_object;
-    struct wall_object;
-    struct train_signal_object;
-    struct level_crossing_object;
-    struct street_light_object;
-    struct tunnel_object;
-    struct bridge_object;
-    struct train_station_object;
-    struct track_extra_object;
-    struct track_object;
-    struct road_station_object;
-    struct road_extra_object;
-    struct road_object;
-    struct airport_object;
-    struct dock_object;
-    struct vehicle_object;
-    struct tree_object;
-    struct snow_object;
+    struct WallObject;
+    struct TrainSignalObject;
+    struct LevelCrossingObject;
+    struct StreetLightObject;
+    struct TunnelObject;
+    struct BridgeObject;
+    struct TrainStationObject;
+    struct TrackExtraObject;
+    struct TrackObject;
+    struct RoadStationObject;
+    struct RoadExtraObject;
+    struct RoadObject;
+    struct AirportObject;
+    struct DockObject;
+    struct VehicleObject;
+    struct TreeObject;
+    struct SnowObject;
     struct climate_object;
-    struct hill_shapes_object;
-    struct building_object;
-    struct scaffolding_object;
-    struct industry_object;
-    struct region_object;
-    struct competitor_object;
-    struct scenario_text_object;
+    struct HillShapesObject;
+    struct BuildingObject;
+    struct ScaffoldingObject;
+    struct IndustryObject;
+    struct RegionObject;
+    struct CompetitorObject;
+    struct ScenarioTextObject;
 
 #pragma pack(push, 1)
     struct ObjectHeader
@@ -201,51 +201,51 @@ namespace OpenLoco::ObjectManager
     template<>
     object* get(size_t id);
     template<>
-    interface_skin_object* get();
+    InterfaceSkinObject* get();
     template<>
     SteamObject* get(size_t id);
     template<>
-    rock_object* get(size_t id);
+    RockObject* get(size_t id);
     template<>
-    cargo_object* get(size_t id);
+    CargoObject* get(size_t id);
     template<>
-    train_signal_object* get(size_t id);
+    TrainSignalObject* get(size_t id);
     template<>
-    road_station_object* get(size_t id);
+    RoadStationObject* get(size_t id);
     template<>
-    vehicle_object* get(size_t id);
+    VehicleObject* get(size_t id);
     template<>
-    tree_object* get(size_t id);
+    TreeObject* get(size_t id);
     template<>
-    wall_object* get(size_t id);
+    WallObject* get(size_t id);
     template<>
-    building_object* get(size_t id);
+    BuildingObject* get(size_t id);
     template<>
-    industry_object* get(size_t id);
+    IndustryObject* get(size_t id);
     template<>
-    currency_object* get();
+    CurrencyObject* get();
     template<>
-    bridge_object* get();
+    BridgeObject* get();
     template<>
-    train_station_object* get();
+    TrainStationObject* get();
     template<>
-    track_object* get(size_t id);
+    TrackObject* get(size_t id);
     template<>
-    road_object* get(size_t id);
+    RoadObject* get(size_t id);
     template<>
-    airport_object* get(size_t id);
+    AirportObject* get(size_t id);
     template<>
-    dock_object* get(size_t id);
+    DockObject* get(size_t id);
     template<>
-    land_object* get(size_t id);
+    LandObject* get(size_t id);
     template<>
-    water_object* get();
+    WaterObject* get();
     template<>
-    region_object* get();
+    RegionObject* get();
     template<>
-    competitor_object* get(size_t id);
+    CompetitorObject* get(size_t id);
     template<>
-    scenario_text_object* get();
+    ScenarioTextObject* get();
 
 #pragma pack(push, 1)
     struct header2

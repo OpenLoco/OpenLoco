@@ -5,7 +5,7 @@
 namespace OpenLoco
 {
     // 0x004BE2A2
-    void tree_object::drawPreviewImage(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y) const
+    void TreeObject::drawPreviewImage(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y) const
     {
         uint32_t image = treeGrowth[growth] * num_rotations;
         auto rotation = (num_rotations - 1) & 2;

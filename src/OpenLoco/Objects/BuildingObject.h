@@ -19,7 +19,7 @@ namespace OpenLoco
     }
 
 #pragma pack(push, 1)
-    struct building_object
+    struct BuildingObject
     {
         string_id name;
         uint8_t pad_02[0x90 - 0x02];

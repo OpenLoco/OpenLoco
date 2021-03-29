@@ -10,7 +10,7 @@ namespace OpenLoco
     }
 
 #pragma pack(push, 1)
-    struct water_object
+    struct WaterObject
     {
         string_id name;
         uint8_t cost_index; // 0x02

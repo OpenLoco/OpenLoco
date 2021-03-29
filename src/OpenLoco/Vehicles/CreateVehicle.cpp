@@ -28,7 +28,7 @@ namespace OpenLoco::Vehicles
     constexpr auto max_num_vehicles = 1000;
     constexpr auto max_num_routing_steps = 64;
     constexpr auto max_ai_vehicles = 500;
-    constexpr auto max_num_car_components_in_car = 4;           // TODO: Move to vehicle_object
+    constexpr auto max_num_car_components_in_car = 4;           // TODO: Move to VehicleObject
     constexpr auto num_vehicle_components_in_car_component = 3; // Bogie bogie body
     constexpr auto num_vehicle_components_in_base = 4;          // head unk_1 unk_2 tail
     constexpr auto max_num_vehicle_components_in_car = num_vehicle_components_in_car_component * max_num_car_components_in_car;
@@ -213,7 +213,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AE8F1, 0x004AEA9E
-    static VehicleBogie* createBogie(const thing_id_t head, const uint16_t vehicleTypeId, const vehicle_object& vehObject, const uint8_t bodyNumber, VehicleBase* const lastVeh, const ColourScheme colourScheme)
+    static VehicleBogie* createBogie(const thing_id_t head, const uint16_t vehicleTypeId, const VehicleObject& vehObject, const uint8_t bodyNumber, VehicleBase* const lastVeh, const ColourScheme colourScheme)
     {
         auto newBogie = createVehicleThing<VehicleBogie>();
         newBogie->owner = _updating_company_id;
@@ -252,7 +252,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x4AE8F1
-    static VehicleBogie* createFirstBogie(const thing_id_t head, const uint16_t vehicleTypeId, const vehicle_object& vehObject, const uint8_t bodyNumber, VehicleBase* const lastVeh, const ColourScheme colourScheme)
+    static VehicleBogie* createFirstBogie(const thing_id_t head, const uint16_t vehicleTypeId, const VehicleObject& vehObject, const uint8_t bodyNumber, VehicleBase* const lastVeh, const ColourScheme colourScheme)
     {
         auto newBogie = createBogie(head, vehicleTypeId, vehObject, bodyNumber, lastVeh, colourScheme);
         if (newBogie == nullptr) // Can never happen
@@ -312,7 +312,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AEA9E
-    static VehicleBogie* createSecondBogie(const thing_id_t head, const uint16_t vehicleTypeId, const vehicle_object& vehObject, const uint8_t bodyNumber, VehicleBase* const lastVeh, const ColourScheme colourScheme)
+    static VehicleBogie* createSecondBogie(const thing_id_t head, const uint16_t vehicleTypeId, const VehicleObject& vehObject, const uint8_t bodyNumber, VehicleBase* const lastVeh, const ColourScheme colourScheme)
     {
         auto newBogie = createBogie(head, vehicleTypeId, vehObject, bodyNumber, lastVeh, colourScheme);
         if (newBogie == nullptr) // Can never happen
@@ -331,7 +331,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AEA9E
-    static VehicleBody* createBody(const thing_id_t head, const uint16_t vehicleTypeId, const vehicle_object& vehObject, const uint8_t bodyNumber, VehicleBase* const lastVeh, const ColourScheme colourScheme)
+    static VehicleBody* createBody(const thing_id_t head, const uint16_t vehicleTypeId, const VehicleObject& vehObject, const uint8_t bodyNumber, VehicleBase* const lastVeh, const ColourScheme colourScheme)
     {
         auto newBody = createVehicleThing<VehicleBody>();
         // TODO: move this into the create function somehow
@@ -453,7 +453,7 @@ namespace OpenLoco::Vehicles
             lastVeh = train.veh2;
         }
 
-        const auto vehObject = ObjectManager::get<vehicle_object>(vehicleTypeId);
+        const auto vehObject = ObjectManager::get<VehicleObject>(vehicleTypeId);
         const auto company = CompanyManager::get(_updating_company_id);
         _1136140 = company->mainColours; // Copy to global variable. Can be removed when all global uses confirmed
         auto colourScheme = company->mainColours;
@@ -820,7 +820,7 @@ namespace OpenLoco::Vehicles
 
         if (flags & GameCommands::GameCommandFlag::apply)
         {
-            auto vehObject = ObjectManager::get<vehicle_object>(vehicleTypeId);
+            auto vehObject = ObjectManager::get<VehicleObject>(vehicleTypeId);
 
             auto head = createBaseVehicle(vehObject->mode, vehObject->type, vehObject->track_type);
             if (!head)
@@ -861,7 +861,7 @@ namespace OpenLoco::Vehicles
             }
         }
         // 0x4AE733
-        auto vehObject = ObjectManager::get<vehicle_object>(vehicleTypeId);
+        auto vehObject = ObjectManager::get<VehicleObject>(vehicleTypeId);
         // TODO: use FixedPoint with 6 {(1 << 6) == 64} decimals for cost_index
         auto cost = (vehObject->cost_factor * currencyMultiplicationFactor[vehObject->cost_index]) / 64;
         return cost;
@@ -931,7 +931,7 @@ namespace OpenLoco::Vehicles
             }
         }
         // 0x4AE733
-        auto vehObject = ObjectManager::get<vehicle_object>(vehicleTypeId);
+        auto vehObject = ObjectManager::get<VehicleObject>(vehicleTypeId);
         // TODO: use FixedPoint with 6 {(1 << 6) == 64} decimals for cost_index
         auto cost = (vehObject->cost_factor * currencyMultiplicationFactor[vehObject->cost_index]) / 64;
         return cost;

@@ -357,7 +357,7 @@ namespace OpenLoco::Ui::Vehicle
             _dragCarComponent = nullptr;
             _dragVehicleHead = ThingId::null;
 
-            const auto* skin = ObjectManager::get<interface_skin_object>();
+            const auto* skin = ObjectManager::get<InterfaceSkinObject>();
             self->colours[1] = skin->colour_0A;
             return self;
         }
@@ -1238,7 +1238,7 @@ namespace OpenLoco::Ui::Vehicle
 
             ToolTip::set_52336E(true);
 
-            auto vehicleObj = ObjectManager::get<vehicle_object>(car->front->object_id);
+            auto vehicleObj = ObjectManager::get<VehicleObject>(car->front->object_id);
             {
                 FormatArguments args{};
                 args.push(vehicleObj->name);
@@ -1274,7 +1274,7 @@ namespace OpenLoco::Ui::Vehicle
             {
                 FormatArguments args{};
                 args.push(vehicleObj->rack_speed);
-                auto rackRailObj = ObjectManager::get<track_extra_object>(vehicleObj->rack_rail_type);
+                auto rackRailObj = ObjectManager::get<TrackExtraObject>(vehicleObj->rack_rail_type);
                 args.push(rackRailObj->name);
                 buffer = StringManager::formatString(buffer, StringIds::vehicle_details_tooltip_speed_on_stringid, &args);
             }
@@ -1387,7 +1387,7 @@ namespace OpenLoco::Ui::Vehicle
                 self->widgets[widx::carList].right = self->width - 4;
             }
 
-            auto skin = ObjectManager::get<interface_skin_object>();
+            auto skin = ObjectManager::get<InterfaceSkinObject>();
             auto buildImage = skin->img + additionalVehicleButtonByVehicleType.at(head->vehicleType);
             self->widgets[widx::buildNew].image = Gfx::recolour(buildImage, CompanyManager::getCompanyColour(self->owner));
 
@@ -1488,7 +1488,7 @@ namespace OpenLoco::Ui::Vehicle
                 }
                 auto x = Common::sub_4B743B(al, ah, 0, y, car.front, context);
 
-                auto vehicleObj = ObjectManager::get<vehicle_object>(car.front->object_id);
+                auto vehicleObj = ObjectManager::get<VehicleObject>(car.front->object_id);
                 FormatArguments args{};
                 args.push(vehicleObj->name);
                 x += 2;
@@ -1658,7 +1658,7 @@ namespace OpenLoco::Ui::Vehicle
                 return false;
             }
 
-            auto object = ObjectManager::get<vehicle_object>(train.cars.firstCar.front->object_id);
+            auto object = ObjectManager::get<VehicleObject>(train.cars.firstCar.front->object_id);
             return (object->flags & FlagsE0::refittable);
         }
 
@@ -1736,7 +1736,7 @@ namespace OpenLoco::Ui::Vehicle
                     *buffer++ = ' ';
                 }
                 hasCargo = true;
-                auto cargoObj = ObjectManager::get<cargo_object>(cargoType);
+                auto cargoObj = ObjectManager::get<CargoObject>(cargoType);
                 auto unitNameFormat = cargoTotal == 1 ? cargoObj->unit_name_singular : cargoObj->unit_name_plural;
                 FormatArguments args{};
                 args.push(cargoTotal);
@@ -1772,7 +1772,7 @@ namespace OpenLoco::Ui::Vehicle
                 return;
             }
 
-            auto cargoObj = ObjectManager::get<cargo_object>(cargoType);
+            auto cargoObj = ObjectManager::get<CargoObject>(cargoType);
             auto unitNameFormat = cargoQty == 1 ? cargoObj->unit_name_singular : cargoObj->unit_name_plural;
             auto station = StationManager::get(stationId);
             FormatArguments args{};
@@ -1883,26 +1883,26 @@ namespace OpenLoco::Ui::Vehicle
         // 0x0042F6B6
         static uint32_t getNumUnitsForCargo(uint32_t maxPrimaryCargo, uint8_t primaryCargoId, uint8_t newCargoId)
         {
-            auto cargoObjA = ObjectManager::get<cargo_object>(primaryCargoId);
-            auto cargoObjB = ObjectManager::get<cargo_object>(newCargoId);
+            auto cargoObjA = ObjectManager::get<CargoObject>(primaryCargoId);
+            auto cargoObjB = ObjectManager::get<CargoObject>(newCargoId);
             return (cargoObjA->unitSize * maxPrimaryCargo) / cargoObjB->unitSize;
         }
 
         static void onRefitButton(window* const self, const widget_index wi)
         {
             Vehicles::Vehicle train(Common::getVehicle(self));
-            auto vehicleObject = ObjectManager::get<vehicle_object>(train.cars.firstCar.front->object_id);
+            auto vehicleObject = ObjectManager::get<VehicleObject>(train.cars.firstCar.front->object_id);
             auto maxPrimaryCargo = vehicleObject->max_primary_cargo;
             auto primaryCargoId = Utility::bitScanForward(vehicleObject->primary_cargo_types);
 
             int32_t index = 0;
             for (uint16_t cargoId = 0; cargoId < ObjectManager::getMaxObjects(object_type::cargo); cargoId++)
             {
-                auto cargoObject = ObjectManager::get<cargo_object>(cargoId);
+                auto cargoObject = ObjectManager::get<CargoObject>(cargoId);
                 if (cargoObject == nullptr)
                     continue;
 
-                if ((cargoObject->flags & CargoObject::Flags::refit) == 0)
+                if ((cargoObject->flags & CargoObjectFlags::refit) == 0)
                     continue;
 
                 string_id format = StringIds::dropdown_stringid;
@@ -1957,7 +1957,7 @@ namespace OpenLoco::Ui::Vehicle
             }
 
             {
-                auto cargoObj = ObjectManager::get<cargo_object>(cargoType);
+                auto cargoObj = ObjectManager::get<CargoObject>(cargoType);
                 FormatArguments args{};
                 args.push(maxCargo == 1 ? cargoObj->unit_name_singular : cargoObj->unit_name_plural);
                 args.push<uint32_t>(maxCargo);
@@ -1975,7 +1975,7 @@ namespace OpenLoco::Ui::Vehicle
                     auto type = Utility::bitScanForward(availableCargoTypes);
                     availableCargoTypes &= ~(1 << type);
 
-                    auto cargoObj = ObjectManager::get<cargo_object>(type);
+                    auto cargoObj = ObjectManager::get<CargoObject>(type);
                     FormatArguments args{};
                     args.push(cargoObj->name);
                     buffer = StringManager::formatString(buffer, StringIds::stats_or_string, &args);
@@ -2028,7 +2028,7 @@ namespace OpenLoco::Ui::Vehicle
             ToolTip::set_52336E(true);
 
             {
-                auto vehicleObj = ObjectManager::get<vehicle_object>(car->front->object_id);
+                auto vehicleObj = ObjectManager::get<VehicleObject>(car->front->object_id);
                 FormatArguments args{};
                 args.push(vehicleObj->name);
                 buffer = StringManager::formatString(buffer, StringIds::cargo_capacity_tooltip, &args);
@@ -2110,7 +2110,7 @@ namespace OpenLoco::Ui::Vehicle
             int32_t totalCost = 0;
             for (const auto& car : train.cars)
             {
-                auto vehicleObj = ObjectManager::get<vehicle_object>(car.front->object_id);
+                auto vehicleObj = ObjectManager::get<VehicleObject>(car.front->object_id);
                 // TODO: use FixedPoint with 10 {(1 << 10) == 1024} decimals for cost_index
                 auto cost = (vehicleObj->run_cost_factor * currencyMultiplicationFactor[vehicleObj->run_cost_index]) / 1024;
                 totalCost += cost;
@@ -2142,7 +2142,7 @@ namespace OpenLoco::Ui::Vehicle
                     if (cargoType == -1)
                         continue;
 
-                    auto cargoObject = ObjectManager::get<cargo_object>(cargoType);
+                    auto cargoObject = ObjectManager::get<CargoObject>(cargoType);
 
                     auto str = veh1->var_5b[i] == 1 ? cargoObject->unit_name_singular : cargoObject->unit_name_plural;
 
@@ -2474,7 +2474,7 @@ namespace OpenLoco::Ui::Vehicle
                     continue;
                 }
 
-                auto cargoObj = ObjectManager::get<cargo_object>(cargoId);
+                auto cargoObj = ObjectManager::get<CargoObject>(cargoId);
                 FormatArguments args{};
                 args.push(cargoObj->name);
                 args.push(cargoObj->unit_inline_sprite);
@@ -3194,7 +3194,7 @@ namespace OpenLoco::Ui::Vehicle
             {
                 case TransportMode::rail:
                 {
-                    auto trackObj = ObjectManager::get<track_object>(head.track_type);
+                    auto trackObj = ObjectManager::get<TrackObject>(head.track_type);
                     image = trackObj->image + (isPlaced ? 16 : 17);
                     tooltip = isPlaced ? StringIds::tooltip_remove_from_track : StringIds::tooltip_place_on_track;
                     break;
@@ -3202,7 +3202,7 @@ namespace OpenLoco::Ui::Vehicle
                 case TransportMode::road:
                 {
                     auto roadObjId = head.track_type == 0xFF ? _525FC5 : head.track_type;
-                    auto roadObj = ObjectManager::get<road_object>(roadObjId);
+                    auto roadObj = ObjectManager::get<RoadObject>(roadObjId);
                     image = roadObj->image + (isPlaced ? 32 : 33);
                     tooltip = isPlaced ? StringIds::tooltip_remove_from_track : StringIds::tooltip_place_on_track;
                     break;
@@ -3215,7 +3215,7 @@ namespace OpenLoco::Ui::Vehicle
                 }
                 case TransportMode::water:
                 {
-                    auto waterObj = ObjectManager::get<water_object>();
+                    auto waterObj = ObjectManager::get<WaterObject>();
                     image = waterObj->image + (isPlaced ? 58 : 59);
                     tooltip = isPlaced ? StringIds::tooltip_remove_from_water : StringIds::tooltip_place_on_dock;
                     break;
@@ -3500,7 +3500,7 @@ namespace OpenLoco::Ui::Vehicle
         // 0x004B5F0D
         static void drawTabs(window* const self, Gfx::drawpixelinfo_t* const context)
         {
-            auto skin = OpenLoco::ObjectManager::get<interface_skin_object>();
+            auto skin = OpenLoco::ObjectManager::get<InterfaceSkinObject>();
 
             auto vehicle = Common::getVehicle(self);
             auto vehicleType = vehicle->vehicleType;

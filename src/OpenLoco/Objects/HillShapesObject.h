@@ -10,7 +10,7 @@ namespace OpenLoco
     }
 
 #pragma pack(push, 1)
-    struct hill_shapes_object
+    struct HillShapesObject
     {
         string_id name;
         uint8_t hillHeightMapCount;     // 0x02

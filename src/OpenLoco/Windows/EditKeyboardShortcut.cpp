@@ -56,7 +56,7 @@ namespace OpenLoco::Ui::EditKeyboardShortcut
         window->enabled_widgets = 1 << Widx::close;
         window->initScrollWidgets();
 
-        const auto skin = ObjectManager::get<interface_skin_object>();
+        const auto skin = ObjectManager::get<InterfaceSkinObject>();
         window->colours[0] = skin->colour_0B;
         window->colours[1] = skin->colour_10;
 

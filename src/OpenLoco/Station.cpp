@@ -277,7 +277,7 @@ namespace OpenLoco
 
                 if (stationElement->stationType() == stationType::roadStation)
                 {
-                    auto obj = ObjectManager::get<road_station_object>(stationElement->objectId());
+                    auto obj = ObjectManager::get<RoadStationObject>(stationElement->objectId());
 
                     if (obj->flags & RoadStationFlags::passenger)
                     {
@@ -454,7 +454,7 @@ namespace OpenLoco
             {
                 case stationType::airport:
                 {
-                    auto airportObject = ObjectManager::get<airport_object>(stationElement->objectId());
+                    auto airportObject = ObjectManager::get<AirportObject>(stationElement->objectId());
 
                     map_pos minPos(airportObject->min_x * 32, airportObject->min_y * 32);
                     map_pos maxPos(airportObject->max_x * 32, airportObject->max_y * 32);
@@ -545,7 +545,7 @@ namespace OpenLoco
             loco_global<uint32_t, 0x112C826> _common_format_args;
             *_common_format_args = stats.quantity;
 
-            auto cargo = ObjectManager::get<cargo_object>(cargoId);
+            auto cargo = ObjectManager::get<CargoObject>(cargoId);
             string_id unit_name = stats.quantity == 1 ? cargo->unit_name_singular : cargo->unit_name_plural;
             ptr = StringManager::formatString(ptr, unit_name, &*_common_format_args);
         }
@@ -708,7 +708,7 @@ namespace OpenLoco
                 if (stationTileSize != 0)
                 {
                     newAmount = cargoStat.quantity / stationTileSize;
-                    auto* cargoObj = ObjectManager::get<cargo_object>(i);
+                    auto* cargoObj = ObjectManager::get<CargoObject>(i);
                     newAmount += (1 << cargoObj->var_14) - 1;
                     newAmount >>= cargoObj->var_14;
 

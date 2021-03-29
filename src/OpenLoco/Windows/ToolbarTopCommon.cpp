@@ -52,17 +52,17 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
             bool isRoad = last_road_option & (1 << 7);
             if (isRoad)
             {
-                auto obj = ObjectManager::get<road_object>(last_road_option & ~(1 << 7));
+                auto obj = ObjectManager::get<RoadObject>(last_road_option & ~(1 << 7));
                 fgImage = Gfx::recolour(obj->image, company_colour);
             }
             else
             {
-                auto obj = ObjectManager::get<track_object>(last_road_option);
+                auto obj = ObjectManager::get<TrackObject>(last_road_option);
                 fgImage = Gfx::recolour(obj->image, company_colour);
             }
 
             y--;
-            auto interface = ObjectManager::get<interface_skin_object>();
+            auto interface = ObjectManager::get<InterfaceSkinObject>();
             uint32_t bgImage = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_transparent, self->colours[2]);
 
             if (Input::isDropdownActive(Ui::WindowType::topToolbar, Widx::road_menu))
@@ -81,7 +81,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
     // 0x0043A78E
     void zoomMenuMouseDown(window* window, widget_index widgetIndex)
     {
-        auto interface = ObjectManager::get<interface_skin_object>();
+        auto interface = ObjectManager::get<InterfaceSkinObject>();
 
         Dropdown::add(0, StringIds::menu_sprite_stringid, { interface->img + InterfaceSkin::ImageIds::toolbar_menu_zoom_in, StringIds::menu_zoom_in });
         Dropdown::add(1, StringIds::menu_sprite_stringid, { interface->img + InterfaceSkin::ImageIds::toolbar_menu_zoom_out, StringIds::menu_zoom_out });
@@ -120,7 +120,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
     // 0x0043A5C5
     void rotateMenuMouseDown(window* window, widget_index widgetIndex)
     {
-        auto interface = ObjectManager::get<interface_skin_object>();
+        auto interface = ObjectManager::get<InterfaceSkinObject>();
 
         Dropdown::add(0, StringIds::menu_sprite_stringid, { interface->img + InterfaceSkin::ImageIds::toolbar_menu_rotate_clockwise, StringIds::menu_rotate_clockwise });
         Dropdown::add(1, StringIds::menu_sprite_stringid, { interface->img + InterfaceSkin::ImageIds::toolbar_menu_rotate_anti_clockwise, StringIds::menu_rotate_anti_clockwise });
@@ -175,9 +175,9 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
     // 0x0043A3C3
     void terraformMenuMouseDown(window* window, widget_index widgetIndex)
     {
-        auto interface = ObjectManager::get<interface_skin_object>();
-        auto land = ObjectManager::get<land_object>(addr<0x00525FB6, uint8_t>());
-        auto water = ObjectManager::get<water_object>();
+        auto interface = ObjectManager::get<InterfaceSkinObject>();
+        auto land = ObjectManager::get<LandObject>(addr<0x00525FB6, uint8_t>());
+        auto water = ObjectManager::get<WaterObject>();
 
         Dropdown::add(0, StringIds::menu_sprite_stringid, { interface->img + InterfaceSkin::ImageIds::toolbar_menu_bulldozer, StringIds::menu_clear_area });
         Dropdown::add(1, StringIds::menu_sprite_stringid, { land->var_16 + Land::ImageIds::toolbar_terraform_land, StringIds::menu_adjust_land });
@@ -215,13 +215,13 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
             int objIndex = available_objects[i];
             if ((objIndex & (1 << 7)) != 0)
             {
-                auto road = ObjectManager::get<road_object>(objIndex & 0x7F);
+                auto road = ObjectManager::get<RoadObject>(objIndex & 0x7F);
                 obj_string_id = road->name;
                 obj_image = Gfx::recolour(road->image, company_colour);
             }
             else
             {
-                auto track = ObjectManager::get<track_object>(objIndex);
+                auto track = ObjectManager::get<TrackObject>(objIndex);
                 obj_string_id = track->name;
                 obj_image = Gfx::recolour(track->image, company_colour);
             }
@@ -239,7 +239,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
     // 0x0043A8CE
     void townsMenuMouseDown(window* window, widget_index widgetIndex)
     {
-        auto interface = ObjectManager::get<interface_skin_object>();
+        auto interface = ObjectManager::get<InterfaceSkinObject>();
         Dropdown::add(0, StringIds::menu_sprite_stringid, { interface->img + InterfaceSkin::ImageIds::toolbar_menu_towns, StringIds::menu_towns });
         Dropdown::add(1, StringIds::menu_sprite_stringid, { interface->img + InterfaceSkin::ImageIds::toolbar_menu_industries, StringIds::menu_industries });
         Dropdown::showBelow(window, widgetIndex, 2, 25, (1 << 6));

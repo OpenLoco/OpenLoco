@@ -316,7 +316,7 @@ namespace OpenLoco::Ui::Windows::Industry
             window->max_width = 600;
             window->max_height = 440;
 
-            auto skin = ObjectManager::get<interface_skin_object>();
+            auto skin = ObjectManager::get<InterfaceSkinObject>();
             if (skin != nullptr)
             {
                 window->colours[0] = skin->colour_0B;
@@ -466,7 +466,7 @@ namespace OpenLoco::Ui::Windows::Industry
                 {
                     if (receivedCargoType != 0xFF)
                     {
-                        auto cargoObj = ObjectManager::get<cargo_object>(receivedCargoType);
+                        auto cargoObj = ObjectManager::get<CargoObject>(receivedCargoType);
                         auto args = FormatArguments();
 
                         if (industry->required_cargo_quantity[cargoNumber] == 1)
@@ -499,7 +499,7 @@ namespace OpenLoco::Ui::Windows::Industry
                 {
                     if (producedCargoType != 0xFF)
                     {
-                        auto cargoObj = ObjectManager::get<cargo_object>(producedCargoType);
+                        auto cargoObj = ObjectManager::get<CargoObject>(producedCargoType);
                         auto args = FormatArguments();
 
                         if (industry->produced_cargo_quantity[cargoNumber] == 1)
@@ -558,7 +558,7 @@ namespace OpenLoco::Ui::Windows::Industry
 
         static void setDisabledWidgets(window* self)
         {
-            auto industryObj = ObjectManager::get<industry_object>(IndustryManager::get(self->number)->object_id);
+            auto industryObj = ObjectManager::get<IndustryObject>(IndustryManager::get(self->number)->object_id);
             auto disabledWidgets = 0;
 
             if (industryObj->produced_cargo_type[0] == 0xFF)
@@ -578,8 +578,8 @@ namespace OpenLoco::Ui::Windows::Industry
 
             // Draw Units of Cargo sub title
             const auto industry = IndustryManager::get(self->number);
-            const auto industryObj = ObjectManager::get<industry_object>(industry->object_id);
-            const auto cargoObj = ObjectManager::get<cargo_object>(industryObj->produced_cargo_type[0]);
+            const auto industryObj = ObjectManager::get<IndustryObject>(industry->object_id);
+            const auto cargoObj = ObjectManager::get<CargoObject>(industryObj->produced_cargo_type[0]);
 
             {
                 auto args = FormatArguments();
@@ -831,8 +831,8 @@ namespace OpenLoco::Ui::Windows::Industry
             };
 
             auto industry = IndustryManager::get(self->number);
-            auto industryObj = ObjectManager::get<industry_object>(industry->object_id);
-            auto skin = ObjectManager::get<interface_skin_object>();
+            auto industryObj = ObjectManager::get<IndustryObject>(industry->object_id);
+            auto skin = ObjectManager::get<InterfaceSkinObject>();
 
             static const uint32_t productionTabIds[] = {
                 widx::tab_production,
@@ -857,7 +857,7 @@ namespace OpenLoco::Ui::Windows::Industry
                 auto yPos = widget.top + self->y;
                 Gfx::drawImage(dpi, xPos, yPos, imageId);
 
-                auto caroObj = ObjectManager::get<cargo_object>(industryObj->produced_cargo_type[productionTabNumber]);
+                auto caroObj = ObjectManager::get<CargoObject>(industryObj->produced_cargo_type[productionTabNumber]);
                 Gfx::drawImage(dpi, xPos + 18, yPos + 14, caroObj->unit_inline_sprite);
 
                 Widget::draw_tab(self, dpi, -2, tab);
@@ -867,7 +867,7 @@ namespace OpenLoco::Ui::Windows::Industry
         // 0x00456A98
         static void drawTabs(window* self, Gfx::drawpixelinfo_t* dpi)
         {
-            auto skin = ObjectManager::get<interface_skin_object>();
+            auto skin = ObjectManager::get<InterfaceSkinObject>();
 
             // Industry tab
             {

@@ -10,7 +10,7 @@ namespace OpenLoco
     }
 
 #pragma pack(push, 1)
-    struct dock_object
+    struct DockObject
     {
         string_id name;
         uint16_t build_cost_factor; // 0x02
