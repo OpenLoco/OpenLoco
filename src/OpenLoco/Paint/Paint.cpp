@@ -200,13 +200,13 @@ namespace OpenLoco::Paint
 
         const auto direction = rotOrder[rotation];
         constexpr std::array<Map::map_pos, 5> additionalQuadrants = {
-            Math::Vector::Rotate(Map::map_pos{ -32, 32 }, direction),
-            Math::Vector::Rotate(Map::map_pos{ 0, 32 }, direction),
-            Math::Vector::Rotate(Map::map_pos{ 32, 0 }, direction),
-            Math::Vector::Rotate(Map::map_pos{ 32, -32 }, direction),
-            Math::Vector::Rotate(Map::map_pos{ -32, 64 }, direction),
+            Math::Vector::rotate(Map::map_pos{ -32, 32 }, direction),
+            Math::Vector::rotate(Map::map_pos{ 0, 32 }, direction),
+            Math::Vector::rotate(Map::map_pos{ 32, 0 }, direction),
+            Math::Vector::rotate(Map::map_pos{ 32, -32 }, direction),
+            Math::Vector::rotate(Map::map_pos{ -32, 64 }, direction),
         };
-        constexpr auto nextVerticalQuadrant = Math::Vector::Rotate(Map::map_pos{ 32, 32 }, direction);
+        constexpr auto nextVerticalQuadrant = Math::Vector::rotate(Map::map_pos{ 32, 32 }, direction);
 
         return { mapLoc, numVerticalQuadrants, additionalQuadrants, nextVerticalQuadrant };
     }

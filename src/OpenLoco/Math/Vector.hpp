@@ -210,7 +210,7 @@ namespace OpenLoco::Math::Vector
 #pragma pack(pop)
 
     template<typename T, T TResolution>
-    static constexpr auto Rotate(const TVector2<T, TResolution>& vec, int32_t direction)
+    static constexpr auto rotate(const TVector2<T, TResolution>& vec, int32_t direction)
     {
         TVector2<T, TResolution> res;
         switch (direction & 3)
@@ -237,31 +237,31 @@ namespace OpenLoco::Math::Vector
     }
 
     template<typename T, T TResolution>
-    static constexpr auto ManhattanDistance(const TVector2<T, TResolution>& lhs, const TVector2<T, TResolution>& rhs)
+    static constexpr auto manhattanDistance(const TVector2<T, TResolution>& lhs, const TVector2<T, TResolution>& rhs)
     {
         return std::abs(lhs.x - rhs.x) + std::abs(lhs.y - rhs.y);
     }
 
     template<typename T, T TResolution>
-    static constexpr auto ManhattanDistance(const TVector3<T, TResolution>& lhs, const TVector3<T, TResolution>& rhs)
+    static constexpr auto manhattanDistance(const TVector3<T, TResolution>& lhs, const TVector3<T, TResolution>& rhs)
     {
         return std::abs(lhs.x - rhs.x) + std::abs(lhs.y - rhs.y) + std::abs(lhs.z - rhs.z);
     }
 
     template<typename T, T TResolution>
-    static constexpr auto Dot(const TVector2<T, TResolution>& lhs, const TVector2<T, TResolution>& rhs)
+    static constexpr auto dot(const TVector2<T, TResolution>& lhs, const TVector2<T, TResolution>& rhs)
     {
         return lhs.x * rhs.x + lhs.y * rhs.y;
     }
 
     template<typename T, T TResolution>
-    static constexpr auto Dot(const TVector3<T, TResolution>& lhs, const TVector3<T, TResolution>& rhs)
+    static constexpr auto dot(const TVector3<T, TResolution>& lhs, const TVector3<T, TResolution>& rhs)
     {
         return lhs.x * rhs.x + lhs.y * rhs.y + lhs.z * rhs.z;
     }
 
     template<typename T, T TResolution>
-    static constexpr auto Cross(const TVector3<T, TResolution>& lhs, const TVector3<T, TResolution>& rhs)
+    static constexpr auto cross(const TVector3<T, TResolution>& lhs, const TVector3<T, TResolution>& rhs)
     {
         return TVector3<T, TResolution>{
             lhs.y * rhs.z - lhs.z * rhs.y,
