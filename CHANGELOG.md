@@ -8,6 +8,7 @@
 - Fix: [#838] Escape key doesn't work in confirmation windows.
 - Fix: [#845] Town growth incorrectly calculated causing more aggressive growth than should be possible.
 - Fix: [#853] The game run slightly, but noticeably, slower than vanilla Locomotion.
+- Fix: [#860] Incorrect capacity information for vehicles that do not carry cargo (e.g. is a train engine).
 
 21.03 (2021-03-06)
 ------------------------------------------------------------------------
