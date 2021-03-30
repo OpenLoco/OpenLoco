@@ -110,7 +110,6 @@ namespace OpenLoco::EntityManager
     {
     private:
         uint16_t firstId = EntityId::null;
-        using thingListIterator = T;
 
     public:
         EntityList()
@@ -134,7 +133,7 @@ namespace OpenLoco::EntityManager
     {
     private:
         uint16_t firstId = EntityId::null;
-        using ThingTileListIterator = ListIterator<EntityBase, &EntityBase::nextQuadrantId>;
+        using Iterator = ListIterator<EntityBase, &EntityBase::nextQuadrantId>;
 
     public:
         EntityTileList(const Map::map_pos& loc)
@@ -142,13 +141,13 @@ namespace OpenLoco::EntityManager
             firstId = EntityManager::firstQuadrantId(loc);
         }
 
-        ThingTileListIterator begin()
+        Iterator begin()
         {
-            return ThingTileListIterator(firstId);
+            return Iterator(firstId);
         }
-        ThingTileListIterator end()
+        Iterator end()
         {
-            return ThingTileListIterator(EntityId::null);
+            return Iterator(EntityId::null);
         }
     };
 }

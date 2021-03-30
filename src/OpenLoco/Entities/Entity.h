@@ -88,7 +88,7 @@ namespace OpenLoco
         }
     };
 
-    // Max size of a thing. Use when needing to know thing size
+    // Max size of a Entity. Use when needing to know Entity size
     struct Entity : EntityBase
     {
     private:
