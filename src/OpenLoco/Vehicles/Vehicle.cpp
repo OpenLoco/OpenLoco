@@ -13,7 +13,7 @@ namespace OpenLoco::Vehicles
         uint8_t pad_20;
         company_id_t owner; // 0x21
         uint8_t pad_22[0x26 - 0x22];
-        thing_id_t head; // 0x26
+        EntityId_t head; // 0x26
         uint16_t var_28; // 0x28
         uint8_t pad_2A[0x2C - 0x2A];
         uint16_t var_2C;     // 0x2C
@@ -25,7 +25,7 @@ namespace OpenLoco::Vehicles
         uint16_t var_36;     // 0x36 field same in all vehicles
         uint8_t var_38;      // 0x38
         uint8_t pad_39;
-        thing_id_t next_car_id; // 0x3A
+        EntityId_t next_car_id; // 0x3A
         uint8_t pad_3C[0x42 - 0x3C];
         TransportMode mode; // 0x42 field same in all vehicles
     };
@@ -73,13 +73,13 @@ namespace OpenLoco::Vehicles
         return veh->var_36;
     }
 
-    thing_id_t VehicleBase::getHead() const
+    EntityId_t VehicleBase::getHead() const
     {
         const auto* veh = reinterpret_cast<const VehicleCommon*>(this);
         return veh->head;
     }
 
-    void VehicleBase::setNextCar(const thing_id_t newNextCar)
+    void VehicleBase::setNextCar(const EntityId_t newNextCar)
     {
         auto* veh = reinterpret_cast<VehicleCommon*>(this);
         veh->next_car_id = newNextCar;

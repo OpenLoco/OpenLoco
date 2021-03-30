@@ -195,7 +195,7 @@ namespace OpenLoco::Ui::Vehicle
     static loco_global<uint8_t, 0x00525FC5> _525FC5;
     static loco_global<uint8_t, 0x00525FB0> _pickupDirection; // direction that the ghost points
     static loco_global<Vehicles::VehicleBogie*, 0x0113614E> _dragCarComponent;
-    static loco_global<thing_id_t, 0x01136156> _dragVehicleHead;
+    static loco_global<EntityId_t, 0x01136156> _dragVehicleHead;
     static loco_global<int32_t, 0x01136264> _1136264;
     static loco_global<string_id, 0x009C68E8> gGameCommandErrorTitle;
     static loco_global<uint32_t[32], 0x00525E5E> currencyMultiplicationFactor;
@@ -267,7 +267,7 @@ namespace OpenLoco::Ui::Vehicle
             }
 
             // By default focus on the veh2 id and if there are cars focus on the body of the first car
-            thing_id_t targetThing = train.veh2->id;
+            EntityId_t targetThing = train.veh2->id;
             if (!train.cars.empty())
             {
                 targetThing = train.cars.firstCar.front->id;
@@ -630,7 +630,7 @@ namespace OpenLoco::Ui::Vehicle
             {
                 auto vehHead = Common::getVehicle(self);
                 Vehicles::Vehicle train(vehHead);
-                thing_id_t targetThing = train.veh2->id;
+                EntityId_t targetThing = train.veh2->id;
 
                 // Focus viewport on vehicle, with locking.
                 auto main = WindowManager::getMainWindow();
@@ -849,9 +849,9 @@ namespace OpenLoco::Ui::Vehicle
 
         struct VehicleStatus
         {
-            thing_id_t status1;
+            EntityId_t status1;
             uint32_t status1Args;
-            thing_id_t status2;
+            EntityId_t status2;
             uint32_t status2Args;
         };
 
@@ -1206,7 +1206,7 @@ namespace OpenLoco::Ui::Vehicle
             self->flags &= ~WindowFlags::not_scroll_view;
             auto car = Common::getCarFromScrollView(self, y);
             string_id tooltipFormat = StringIds::null;
-            thing_id_t tooltipContent = EntityId::null;
+            EntityId_t tooltipContent = EntityId::null;
             if (car)
             {
                 tooltipFormat = StringIds::buffer_337;
@@ -1995,7 +1995,7 @@ namespace OpenLoco::Ui::Vehicle
             self->flags &= ~WindowFlags::not_scroll_view;
             auto car = Common::getCarFromScrollView(self, y);
             string_id tooltipFormat = StringIds::null;
-            thing_id_t tooltipContent = EntityId::null;
+            EntityId_t tooltipContent = EntityId::null;
             if (car)
             {
                 tooltipFormat = StringIds::buffer_337;

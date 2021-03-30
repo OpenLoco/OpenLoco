@@ -37,7 +37,7 @@ vehicle_channel& vehicle_channel::operator=(vehicle_channel&& other)
     return *this;
 }
 
-void vehicle_channel::begin(thing_id_t vid)
+void vehicle_channel::begin(EntityId_t vid)
 {
     auto v = EntityManager::get<Vehicles::VehicleBase>(vid);
     if (v != nullptr && v->isVehicle2Or6())

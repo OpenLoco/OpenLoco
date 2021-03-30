@@ -275,7 +275,7 @@ namespace OpenLoco::Ui
         union
         {
             coord_t mapX;
-            thing_id_t thingId;
+            EntityId_t thingId;
         };
         union
         {
@@ -295,7 +295,7 @@ namespace OpenLoco::Ui
             , rotation(rotation)
             , surfaceZ(surfaceZ){};
 
-        SavedView(thing_id_t thingId, uint16_t flags, ZoomLevel zoomLevel, int8_t rotation, coord_t surfaceZ)
+        SavedView(EntityId_t thingId, uint16_t flags, ZoomLevel zoomLevel, int8_t rotation, coord_t surfaceZ)
             : thingId(thingId)
             , flags(flags)
             , zoomLevel(zoomLevel)

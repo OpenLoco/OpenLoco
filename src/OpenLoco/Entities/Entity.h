@@ -18,7 +18,7 @@ namespace OpenLoco
 
     namespace EntityId
     {
-        constexpr thing_id_t null = std::numeric_limits<thing_id_t>::max();
+        constexpr EntityId_t null = std::numeric_limits<EntityId_t>::max();
     }
 
     enum class EntityBaseType : uint8_t
@@ -52,11 +52,11 @@ namespace OpenLoco
     private:
         uint8_t type; // Use type specific getters/setters as this depends on base_type
     public:
-        thing_id_t nextQuadrantId; // 0x02
-        thing_id_t next_thing_id;  // 0x04
+        EntityId_t nextQuadrantId; // 0x02
+        EntityId_t next_thing_id;  // 0x04
         uint8_t pad_06[0x09 - 0x06];
         uint8_t var_09;
-        thing_id_t id; // 0xA
+        EntityId_t id; // 0xA
         uint16_t var_0C;
         int16_t x; // 0x0E
         int16_t y; // 0x10

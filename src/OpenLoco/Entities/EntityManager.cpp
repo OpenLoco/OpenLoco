@@ -8,10 +8,10 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::EntityManager
 {
-    loco_global<thing_id_t[numEntityLists], 0x00525E40> _heads;
+    loco_global<EntityId_t[numEntityLists], 0x00525E40> _heads;
     loco_global<uint16_t[numEntityLists], 0x00525E4C> _listCounts;
     loco_global<Entity[maxEntities], 0x006DB6DC> _entities;
-    loco_global<thing_id_t[0x40001], 0x01025A8C> _entitySpatialIndex;
+    loco_global<EntityId_t[0x40001], 0x01025A8C> _entitySpatialIndex;
     static loco_global<string_id, 0x009C68E6> gGameCommandErrorText;
     constexpr size_t _entitySpatialIndexNull = 0x40000;
 
@@ -21,7 +21,7 @@ namespace OpenLoco::EntityManager
         call(0x0046FDFD);
     }
 
-    thing_id_t firstId(EntityListType list)
+    EntityId_t firstId(EntityListType list)
     {
         return _heads[(size_t)list];
     }
@@ -38,7 +38,7 @@ namespace OpenLoco::EntityManager
     }
 
     template<>
-    EntityBase* get(thing_id_t id)
+    EntityBase* get(EntityId_t id)
     {
         EntityBase* result = nullptr;
         if (id < maxEntities)
@@ -66,7 +66,7 @@ namespace OpenLoco::EntityManager
         return index;
     }
 
-    thing_id_t firstQuadrantId(const Map::map_pos& loc)
+    EntityId_t firstQuadrantId(const Map::map_pos& loc)
     {
         auto index = getSpatialIndexOffset(loc);
         return _entitySpatialIndex[index];
