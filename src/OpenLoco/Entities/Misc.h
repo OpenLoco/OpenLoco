@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../Currency.h"
 #include "../Map/Map.hpp"
 #include "../Objects/SteamObject.h"
 #include "Entity.h"
@@ -71,12 +72,16 @@ namespace OpenLoco
 
     struct MoneyEffect : MiscBase
     {
-        uint8_t pad_20[0x2A - 0x20];
+        uint8_t pad_20[0x26 - 0x20];
+        uint16_t var_26;
+        uint16_t var_28;
         int32_t amount; // 0x2A - currency amount in British pounds - different currencies are probably getting recalculated
         int8_t var_2E;  // company colour?
         uint8_t pad_2F[0x44 - 0x2F];
         int16_t offsetX; // 0x44
         uint16_t wiggle; // 0x46
+
+        static MoneyEffect* create(const Map::map_pos3& loc, company_id_t company, currency32_t amount);
     };
 
     struct VehicleCrashParticle : MiscBase
