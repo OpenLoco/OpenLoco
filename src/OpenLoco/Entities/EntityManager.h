@@ -15,7 +15,7 @@ namespace OpenLoco::EntityManager
     constexpr size_t numEntityLists = 6;
     constexpr size_t maxEntities = 20000;
 
-    enum class EntityList
+    enum class EntityListType
     {
         null,
         vehicle_head,
@@ -36,7 +36,7 @@ namespace OpenLoco::EntityManager
         return static_cast<T*>(get<EntityBase>(id));
     }
 
-    thing_id_t firstId(EntityList list);
+    thing_id_t firstId(EntityListType list);
 
     template<typename T>
     T* first();
@@ -49,8 +49,8 @@ namespace OpenLoco::EntityManager
     void updateVehicles();
     void updateMiscThings();
 
-    uint16_t getListCount(const EntityList list);
-    void moveSpriteToList(EntityBase* const thing, const EntityList list);
+    uint16_t getListCount(const EntityListType list);
+    void moveSpriteToList(EntityBase* const thing, const EntityListType list);
     bool checkNumFreeThings(const size_t numNewThings);
     void zeroUnused();
 
@@ -105,15 +105,15 @@ namespace OpenLoco::EntityManager
         using iterator_category = std::forward_iterator_tag;
     };
 
-    template<typename T, EntityList list>
-    class ThingList
+    template<typename T, EntityListType list>
+    class EntityList
     {
     private:
         uint16_t firstId = ThingId::null;
         using thingListIterator = T;
 
     public:
-        ThingList()
+        EntityList()
         {
             firstId = EntityManager::firstId(list);
         }
@@ -128,16 +128,16 @@ namespace OpenLoco::EntityManager
         }
     };
 
-    using VehicleList = ThingList<ListIterator<Vehicles::VehicleHead, &EntityBase::next_thing_id>, EntityList::vehicle_head>;
+    using VehicleList = EntityList<ListIterator<Vehicles::VehicleHead, &EntityBase::next_thing_id>, EntityListType::vehicle_head>;
 
-    class ThingTileList
+    class EntityTileList
     {
     private:
         uint16_t firstId = ThingId::null;
         using ThingTileListIterator = ListIterator<EntityBase, &EntityBase::nextQuadrantId>;
 
     public:
-        ThingTileList(const Map::map_pos& loc)
+        EntityTileList(const Map::map_pos& loc)
         {
             firstId = EntityManager::firstQuadrantId(loc);
         }

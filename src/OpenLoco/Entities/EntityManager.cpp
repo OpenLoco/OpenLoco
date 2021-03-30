@@ -21,12 +21,12 @@ namespace OpenLoco::EntityManager
         call(0x0046FDFD);
     }
 
-    thing_id_t firstId(EntityList list)
+    thing_id_t firstId(EntityListType list)
     {
         return _heads[(size_t)list];
     }
 
-    uint16_t getListCount(const EntityList list)
+    uint16_t getListCount(const EntityListType list)
     {
         return _listCounts[static_cast<size_t>(list)];
     }
@@ -34,7 +34,7 @@ namespace OpenLoco::EntityManager
     template<>
     Vehicles::VehicleHead* first()
     {
-        return get<Vehicles::VehicleHead>(firstId(EntityList::vehicle_head));
+        return get<Vehicles::VehicleHead>(firstId(EntityListType::vehicle_head));
     }
 
     template<>
@@ -107,7 +107,7 @@ namespace OpenLoco::EntityManager
     }
 
     // 0x0047019F
-    void moveSpriteToList(EntityBase* const thing, const EntityList list)
+    void moveSpriteToList(EntityBase* const thing, const EntityListType list)
     {
         registers regs{};
         regs.esi = reinterpret_cast<uint32_t>(thing);
@@ -118,7 +118,7 @@ namespace OpenLoco::EntityManager
     // 0x00470188
     bool checkNumFreeThings(const size_t numNewThings)
     {
-        if (EntityManager::getListCount(EntityManager::EntityList::null) <= numNewThings)
+        if (EntityManager::getListCount(EntityManager::EntityListType::null) <= numNewThings)
         {
             gGameCommandErrorText = StringIds::too_many_objects_in_game;
             return false;
