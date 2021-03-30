@@ -43,38 +43,38 @@ namespace OpenLoco::EntityManager
 
     thing_id_t firstQuadrantId(const Map::map_pos& loc);
 
-    EntityBase* createThing();
-    void freeThing(EntityBase* const thing);
+    EntityBase* createEntity();
+    void freeEntity(EntityBase* const entity);
 
     void updateVehicles();
-    void updateMiscThings();
+    void updateMiscEntities();
 
     uint16_t getListCount(const EntityListType list);
-    void moveSpriteToList(EntityBase* const thing, const EntityListType list);
-    bool checkNumFreeThings(const size_t numNewThings);
+    void moveEntityToList(EntityBase* const entity, const EntityListType list);
+    bool checkNumFreeEntities(const size_t numNewThings);
     void zeroUnused();
 
-    template<typename ThingType, thing_id_t EntityBase::*nextList>
+    template<typename TEntityType, thing_id_t EntityBase::*nextList>
     class ListIterator
     {
     private:
-        ThingType* thing = nullptr;
-        thing_id_t nextThingId = ThingId::null;
+        TEntityType* entity = nullptr;
+        thing_id_t nextEntityId = ThingId::null;
 
     public:
         ListIterator(const uint16_t _headId)
-            : nextThingId(_headId)
+            : nextEntityId(_headId)
         {
             ++(*this);
         }
 
         ListIterator& operator++()
         {
-            thing = get<ThingType>(nextThingId);
+            entity = get<TEntityType>(nextEntityId);
 
-            if (thing)
+            if (entity)
             {
-                nextThingId = thing->*nextList;
+                nextEntityId = entity->*nextList;
             }
             return *this;
         }
@@ -87,21 +87,21 @@ namespace OpenLoco::EntityManager
         }
         bool operator==(ListIterator& other) const
         {
-            return thing == other.thing;
+            return entity == other.entity;
         }
         bool operator!=(ListIterator& other) const
         {
             return !(*this == other);
         }
-        ThingType* operator*()
+        TEntityType* operator*()
         {
-            return thing;
+            return entity;
         }
         // iterator traits
         using difference_type = std::ptrdiff_t;
-        using value_type = ThingType;
-        using pointer = ThingType*;
-        using reference = ThingType&;
+        using value_type = TEntityType;
+        using pointer = TEntityType*;
+        using reference = TEntityType&;
         using iterator_category = std::forward_iterator_tag;
     };
 

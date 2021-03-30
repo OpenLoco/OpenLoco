@@ -796,7 +796,7 @@ namespace OpenLoco
         EntityManager::updateVehicles();
         sub_46FFCA();
         StationManager::update();
-        EntityManager::updateMiscThings();
+        EntityManager::updateMiscEntities();
         sub_46FFCA();
         CompanyManager::update();
         invalidate_map_animations();

@@ -429,7 +429,7 @@ namespace OpenLoco::Vehicles
     // 0x004AE86D
     static bool createCar(VehicleHead* const head, const uint16_t vehicleTypeId)
     {
-        if (!EntityManager::checkNumFreeThings(max_num_vehicle_components_in_car))
+        if (!EntityManager::checkNumFreeEntities(max_num_vehicle_components_in_car))
         {
             return false;
         }
@@ -551,7 +551,7 @@ namespace OpenLoco::Vehicles
     static VehicleHead* createHead(const uint8_t trackType, const TransportMode mode, const uint16_t orderId, const VehicleType vehicleType)
     {
         auto* const newHead = createVehicleThing<VehicleHead>();
-        EntityManager::moveSpriteToList(newHead, EntityManager::EntityListType::vehicle_head);
+        EntityManager::moveEntityToList(newHead, EntityManager::EntityListType::vehicle_head);
         newHead->owner = _updating_company_id;
         newHead->head = newHead->id;
         newHead->var_0C |= Flags0C::commandStop;
@@ -684,7 +684,7 @@ namespace OpenLoco::Vehicles
     // 0x004AE318
     static std::optional<VehicleHead*> createBaseVehicle(const TransportMode mode, const VehicleType type, const uint8_t trackType)
     {
-        if (!EntityManager::checkNumFreeThings(num_vehicle_components_in_base))
+        if (!EntityManager::checkNumFreeEntities(num_vehicle_components_in_base))
         {
             return {};
         }
@@ -808,7 +808,7 @@ namespace OpenLoco::Vehicles
     static uint32_t createNewVehicle(const uint8_t flags, const uint16_t vehicleTypeId)
     {
         gameCommandMapX = Location::null;
-        if (!EntityManager::checkNumFreeThings(max_num_vehicle_components_in_car + num_vehicle_components_in_base))
+        if (!EntityManager::checkNumFreeEntities(max_num_vehicle_components_in_car + num_vehicle_components_in_base))
         {
             return FAILURE;
         }
@@ -853,10 +853,10 @@ namespace OpenLoco::Vehicles
                 }
                 auto tail = veh2->nextVehicleComponent();
                 // Get all vehicles before freeing
-                EntityManager::freeThing(_head);
-                EntityManager::freeThing(veh1);
-                EntityManager::freeThing(veh2);
-                EntityManager::freeThing(tail);
+                EntityManager::freeEntity(_head);
+                EntityManager::freeEntity(veh1);
+                EntityManager::freeEntity(veh2);
+                EntityManager::freeEntity(tail);
                 return FAILURE;
             }
         }
@@ -890,7 +890,7 @@ namespace OpenLoco::Vehicles
             return FAILURE;
         }
 
-        if (!EntityManager::checkNumFreeThings(max_num_vehicle_components_in_car))
+        if (!EntityManager::checkNumFreeEntities(max_num_vehicle_components_in_car))
         {
             return FAILURE;
         }
