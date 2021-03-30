@@ -12,10 +12,10 @@ namespace OpenLoco::Vehicles
 
 namespace OpenLoco::EntityManager
 {
-    constexpr size_t num_thing_lists = 6;
-    constexpr size_t max_things = 20000;
+    constexpr size_t numEntityLists = 6;
+    constexpr size_t maxEntities = 20000;
 
-    enum class thing_list
+    enum class EntityList
     {
         null,
         vehicle_head,
@@ -36,7 +36,7 @@ namespace OpenLoco::EntityManager
         return static_cast<T*>(get<thing_base>(id));
     }
 
-    thing_id_t firstId(thing_list list);
+    thing_id_t firstId(EntityList list);
 
     template<typename T>
     T* first();
@@ -49,8 +49,8 @@ namespace OpenLoco::EntityManager
     void updateVehicles();
     void updateMiscThings();
 
-    uint16_t getListCount(const thing_list list);
-    void moveSpriteToList(thing_base* const thing, const thing_list list);
+    uint16_t getListCount(const EntityList list);
+    void moveSpriteToList(thing_base* const thing, const EntityList list);
     bool checkNumFreeThings(const size_t numNewThings);
     void zeroUnused();
 
@@ -105,7 +105,7 @@ namespace OpenLoco::EntityManager
         using iterator_category = std::forward_iterator_tag;
     };
 
-    template<typename T, thing_list list>
+    template<typename T, EntityList list>
     class ThingList
     {
     private:
@@ -128,7 +128,7 @@ namespace OpenLoco::EntityManager
         }
     };
 
-    using VehicleList = ThingList<ListIterator<Vehicles::VehicleHead, &thing_base::next_thing_id>, thing_list::vehicle_head>;
+    using VehicleList = ThingList<ListIterator<Vehicles::VehicleHead, &thing_base::next_thing_id>, EntityList::vehicle_head>;
 
     class ThingTileList
     {

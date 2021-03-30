@@ -63,10 +63,10 @@ namespace OpenLoco::Paint
             session.setItemType(InteractionItem::entity);
             switch (entity->base_type)
             {
-                case thing_base_type::vehicle:
+                case EntityBaseType::vehicle:
                     paintVehicleEntity(session, entity->asVehicle());
                     break;
-                case thing_base_type::misc:
+                case EntityBaseType::misc:
                     paintMiscEntity(session, entity->asMisc());
                     break;
             }

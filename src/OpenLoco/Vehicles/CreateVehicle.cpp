@@ -188,7 +188,7 @@ namespace OpenLoco::Vehicles
     static T* createVehicleThing()
     {
         auto* const base = createVehicleThing();
-        base->base_type = thing_base_type::vehicle;
+        base->base_type = EntityBaseType::vehicle;
         base->setSubType(T::vehicleThingType);
         return reinterpret_cast<T*>(base);
     }
@@ -551,7 +551,7 @@ namespace OpenLoco::Vehicles
     static VehicleHead* createHead(const uint8_t trackType, const TransportMode mode, const uint16_t orderId, const VehicleType vehicleType)
     {
         auto* const newHead = createVehicleThing<VehicleHead>();
-        EntityManager::moveSpriteToList(newHead, EntityManager::thing_list::vehicle_head);
+        EntityManager::moveSpriteToList(newHead, EntityManager::EntityList::vehicle_head);
         newHead->owner = _updating_company_id;
         newHead->head = newHead->id;
         newHead->var_0C |= Flags0C::commandStop;

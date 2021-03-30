@@ -8,9 +8,9 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::EntityManager
 {
-    loco_global<thing_id_t[num_thing_lists], 0x00525E40> _heads;
-    loco_global<uint16_t[num_thing_lists], 0x00525E4C> _listCounts;
-    loco_global<Thing[max_things], 0x006DB6DC> _things;
+    loco_global<thing_id_t[numEntityLists], 0x00525E40> _heads;
+    loco_global<uint16_t[numEntityLists], 0x00525E4C> _listCounts;
+    loco_global<Thing[maxEntities], 0x006DB6DC> _things;
     loco_global<thing_id_t[0x40001], 0x01025A8C> _thingSpatialIndex;
     static loco_global<string_id, 0x009C68E6> gGameCommandErrorText;
     constexpr size_t _thingSpatialIndexNull = 0x40000;
@@ -21,12 +21,12 @@ namespace OpenLoco::EntityManager
         call(0x0046FDFD);
     }
 
-    thing_id_t firstId(thing_list list)
+    thing_id_t firstId(EntityList list)
     {
         return _heads[(size_t)list];
     }
 
-    uint16_t getListCount(const thing_list list)
+    uint16_t getListCount(const EntityList list)
     {
         return _listCounts[static_cast<size_t>(list)];
     }
@@ -34,14 +34,14 @@ namespace OpenLoco::EntityManager
     template<>
     Vehicles::VehicleHead* first()
     {
-        return get<Vehicles::VehicleHead>(firstId(thing_list::vehicle_head));
+        return get<Vehicles::VehicleHead>(firstId(EntityList::vehicle_head));
     }
 
     template<>
     thing_base* get(thing_id_t id)
     {
         thing_base* result = nullptr;
-        if (id < max_things)
+        if (id < maxEntities)
         {
             return &_things.get()[id];
         }
@@ -107,7 +107,7 @@ namespace OpenLoco::EntityManager
     }
 
     // 0x0047019F
-    void moveSpriteToList(thing_base* const thing, const thing_list list)
+    void moveSpriteToList(thing_base* const thing, const EntityList list)
     {
         registers regs{};
         regs.esi = reinterpret_cast<uint32_t>(thing);
@@ -118,7 +118,7 @@ namespace OpenLoco::EntityManager
     // 0x00470188
     bool checkNumFreeThings(const size_t numNewThings)
     {
-        if (EntityManager::getListCount(EntityManager::thing_list::null) <= numNewThings)
+        if (EntityManager::getListCount(EntityManager::EntityList::null) <= numNewThings)
         {
             gGameCommandErrorText = StringIds::too_many_objects_in_game;
             return false;
