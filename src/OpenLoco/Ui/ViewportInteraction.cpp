@@ -204,7 +204,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         {
             return false;
         }
-        auto head = ThingManager::get<Vehicles::VehicleHead>(vehicle->getHead());
+        auto head = EntityManager::get<Vehicles::VehicleHead>(vehicle->getHead());
 
         auto company = CompanyManager::get(head->owner);
         Windows::MapToolTip::setOwner(head->owner);
@@ -378,7 +378,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         Vehicles::VehicleBase* nearestVehicle = nullptr;
         auto targetPosition = viewport->uiToMap({ tempX, tempY });
 
-        for (auto v : ThingManager::VehicleList())
+        for (auto v : EntityManager::VehicleList())
         {
             auto train = Vehicles::Vehicle(v);
             checkAndSetNearestVehicle(nearestDistance, nearestVehicle, *train.veh2, targetPosition);

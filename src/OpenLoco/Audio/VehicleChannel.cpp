@@ -39,7 +39,7 @@ vehicle_channel& vehicle_channel::operator=(vehicle_channel&& other)
 
 void vehicle_channel::begin(thing_id_t vid)
 {
-    auto v = ThingManager::get<Vehicles::VehicleBase>(vid);
+    auto v = EntityManager::get<Vehicles::VehicleBase>(vid);
     if (v != nullptr && v->isVehicle2Or6())
     {
         auto* veh26 = v->asVehicle2Or6();
@@ -68,7 +68,7 @@ void vehicle_channel::update()
 {
     if (!isFree())
     {
-        auto v = ThingManager::get<Vehicles::VehicleBase>(_vehicle_id);
+        auto v = EntityManager::get<Vehicles::VehicleBase>(_vehicle_id);
         if (v != nullptr && v->isVehicle2Or6())
         {
             auto* veh26 = v->asVehicle2Or6();

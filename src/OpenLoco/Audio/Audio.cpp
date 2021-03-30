@@ -905,7 +905,7 @@ namespace OpenLoco::Audio
             _numActiveVehicleSounds = 0;
         }
 
-        for (auto v : ThingManager::VehicleList())
+        for (auto v : EntityManager::VehicleList())
         {
             Vehicles::Vehicle train(v);
             off_4FEB58(reinterpret_cast<Vehicles::Vehicle2or6*>(train.veh2), x);

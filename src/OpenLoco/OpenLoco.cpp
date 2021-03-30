@@ -793,10 +793,10 @@ namespace OpenLoco
         call(0x004C56F6);
         TownManager::update();
         IndustryManager::update();
-        ThingManager::updateVehicles();
+        EntityManager::updateVehicles();
         sub_46FFCA();
         StationManager::update();
-        ThingManager::updateMiscThings();
+        EntityManager::updateMiscThings();
         sub_46FFCA();
         CompanyManager::update();
         invalidate_map_animations();

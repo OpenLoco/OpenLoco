@@ -16,7 +16,7 @@ namespace OpenLoco::Vehicles
     // 0x0047071A
     static uint32_t orderSkip(uint16_t headId, uint8_t flags)
     {
-        auto* head = ThingManager::get<Vehicles::VehicleHead>(headId);
+        auto* head = EntityManager::get<Vehicles::VehicleHead>(headId);
         if (head == nullptr)
         {
             return GameCommands::FAILURE;

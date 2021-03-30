@@ -306,7 +306,7 @@ namespace OpenLoco::Ui
 
             if (config->viewport_target_sprite != 0xFFFF)
             {
-                auto thing = ThingManager::get<thing_base>(config->viewport_target_sprite);
+                auto thing = EntityManager::get<thing_base>(config->viewport_target_sprite);
 
                 int z = (TileManager::getHeight({ thing->x, thing->y }).landHeight) - 16;
                 bool underground = (thing->z < z);
@@ -613,7 +613,7 @@ namespace OpenLoco::Ui
         // Centre viewport on tile/thing.
         if (saved_view.isThingView())
         {
-            auto thing = ThingManager::get<thing_base>(saved_view.thingId);
+            auto thing = EntityManager::get<thing_base>(saved_view.thingId);
             main->viewportCentreOnTile({ thing->x, thing->y, thing->z });
         }
         else
@@ -668,7 +668,7 @@ namespace OpenLoco::Ui
         if (viewport_configurations[0].viewport_target_sprite == ThingId::null)
             return;
 
-        auto thing = ThingManager::get<thing_base>(viewport_configurations[0].viewport_target_sprite);
+        auto thing = EntityManager::get<thing_base>(viewport_configurations[0].viewport_target_sprite);
         viewport_configurations[0].viewport_target_sprite = ThingId::null;
         viewportCentreOnTile({ thing->x, thing->y, thing->z });
     }

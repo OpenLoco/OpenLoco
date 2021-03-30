@@ -6,7 +6,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::ThingManager
+namespace OpenLoco::EntityManager
 {
     loco_global<thing_id_t[num_thing_lists], 0x00525E40> _heads;
     loco_global<uint16_t[num_thing_lists], 0x00525E4C> _listCounts;
@@ -118,7 +118,7 @@ namespace OpenLoco::ThingManager
     // 0x00470188
     bool checkNumFreeThings(const size_t numNewThings)
     {
-        if (ThingManager::getListCount(ThingManager::thing_list::null) <= numNewThings)
+        if (EntityManager::getListCount(EntityManager::thing_list::null) <= numNewThings)
         {
             gGameCommandErrorText = StringIds::too_many_objects_in_game;
             return false;

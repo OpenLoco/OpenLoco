@@ -10,7 +10,7 @@ namespace OpenLoco::Vehicles
     struct VehicleHead;
 }
 
-namespace OpenLoco::ThingManager
+namespace OpenLoco::EntityManager
 {
     constexpr size_t num_thing_lists = 6;
     constexpr size_t max_things = 20000;
@@ -115,7 +115,7 @@ namespace OpenLoco::ThingManager
     public:
         ThingList()
         {
-            firstId = ThingManager::firstId(list);
+            firstId = EntityManager::firstId(list);
         }
 
         T begin()
@@ -139,7 +139,7 @@ namespace OpenLoco::ThingManager
     public:
         ThingTileList(const Map::map_pos& loc)
         {
-            firstId = ThingManager::firstQuadrantId(loc);
+            firstId = EntityManager::firstQuadrantId(loc);
         }
 
         ThingTileListIterator begin()

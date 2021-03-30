@@ -512,7 +512,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         auto interface = ObjectManager::get<InterfaceSkinObject>();
 
         uint16_t vehicle_counts[vehicleTypeCount]{ 0 };
-        for (auto v : ThingManager::VehicleList())
+        for (auto v : EntityManager::VehicleList())
         {
             if (v->owner != player_company_id)
                 continue;

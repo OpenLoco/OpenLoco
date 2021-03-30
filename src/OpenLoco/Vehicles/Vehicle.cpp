@@ -34,13 +34,13 @@ namespace OpenLoco::Vehicles
 
     VehicleBase* VehicleBase::nextVehicle()
     {
-        return ThingManager::get<VehicleBase>(next_thing_id);
+        return EntityManager::get<VehicleBase>(next_thing_id);
     }
 
     VehicleBase* VehicleBase::nextVehicleComponent()
     {
         auto* veh = reinterpret_cast<VehicleCommon*>(this);
-        return ThingManager::get<VehicleBase>(veh->next_car_id);
+        return EntityManager::get<VehicleBase>(veh->next_car_id);
     }
 
     TransportMode VehicleBase::getTransportMode() const
@@ -134,7 +134,7 @@ namespace OpenLoco::Vehicles
 
     Vehicle::Vehicle(uint16_t _head)
     {
-        auto component = ThingManager::get<VehicleBase>(_head);
+        auto component = EntityManager::get<VehicleBase>(_head);
         if (component == nullptr)
         {
             throw std::runtime_error("Bad vehicle structure");

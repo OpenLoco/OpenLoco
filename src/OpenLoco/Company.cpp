@@ -54,7 +54,7 @@ namespace OpenLoco
         }
 
         auto companyId = id();
-        for (auto v : ThingManager::VehicleList())
+        for (auto v : EntityManager::VehicleList())
         {
             if (v->owner == companyId)
             {

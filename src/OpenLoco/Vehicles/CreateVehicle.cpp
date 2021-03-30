@@ -429,7 +429,7 @@ namespace OpenLoco::Vehicles
     // 0x004AE86D
     static bool createCar(VehicleHead* const head, const uint16_t vehicleTypeId)
     {
-        if (!ThingManager::checkNumFreeThings(max_num_vehicle_components_in_car))
+        if (!EntityManager::checkNumFreeThings(max_num_vehicle_components_in_car))
         {
             return false;
         }
@@ -527,7 +527,7 @@ namespace OpenLoco::Vehicles
     static uint16_t createUniqueTypeNumber(const VehicleType type)
     {
         std::array<bool, max_num_vehicles> _unkArr{};
-        for (auto v : ThingManager::VehicleList())
+        for (auto v : EntityManager::VehicleList())
         {
             if (v->owner == _updating_company_id && v->vehicleType == type)
             {
@@ -551,7 +551,7 @@ namespace OpenLoco::Vehicles
     static VehicleHead* createHead(const uint8_t trackType, const TransportMode mode, const uint16_t orderId, const VehicleType vehicleType)
     {
         auto* const newHead = createVehicleThing<VehicleHead>();
-        ThingManager::moveSpriteToList(newHead, ThingManager::thing_list::vehicle_head);
+        EntityManager::moveSpriteToList(newHead, EntityManager::thing_list::vehicle_head);
         newHead->owner = _updating_company_id;
         newHead->head = newHead->id;
         newHead->var_0C |= Flags0C::commandStop;
@@ -684,7 +684,7 @@ namespace OpenLoco::Vehicles
     // 0x004AE318
     static std::optional<VehicleHead*> createBaseVehicle(const TransportMode mode, const VehicleType type, const uint8_t trackType)
     {
-        if (!ThingManager::checkNumFreeThings(num_vehicle_components_in_base))
+        if (!EntityManager::checkNumFreeThings(num_vehicle_components_in_base))
         {
             return {};
         }
@@ -759,7 +759,7 @@ namespace OpenLoco::Vehicles
 
     static void sub_470795(const uint32_t removeOrderTableOffset, const int16_t sizeOfRemovedOrderTable)
     {
-        for (auto head : ThingManager::VehicleList())
+        for (auto head : EntityManager::VehicleList())
         {
             if (head->orderTableOffset >= removeOrderTableOffset)
             {
@@ -808,7 +808,7 @@ namespace OpenLoco::Vehicles
     static uint32_t createNewVehicle(const uint8_t flags, const uint16_t vehicleTypeId)
     {
         gameCommandMapX = Location::null;
-        if (!ThingManager::checkNumFreeThings(max_num_vehicle_components_in_car + num_vehicle_components_in_base))
+        if (!EntityManager::checkNumFreeThings(max_num_vehicle_components_in_car + num_vehicle_components_in_base))
         {
             return FAILURE;
         }
@@ -853,10 +853,10 @@ namespace OpenLoco::Vehicles
                 }
                 auto tail = veh2->nextVehicleComponent();
                 // Get all vehicles before freeing
-                ThingManager::freeThing(_head);
-                ThingManager::freeThing(veh1);
-                ThingManager::freeThing(veh2);
-                ThingManager::freeThing(tail);
+                EntityManager::freeThing(_head);
+                EntityManager::freeThing(veh1);
+                EntityManager::freeThing(veh2);
+                EntityManager::freeThing(tail);
                 return FAILURE;
             }
         }
@@ -890,7 +890,7 @@ namespace OpenLoco::Vehicles
             return FAILURE;
         }
 
-        if (!ThingManager::checkNumFreeThings(max_num_vehicle_components_in_car))
+        if (!EntityManager::checkNumFreeThings(max_num_vehicle_components_in_car))
         {
             return FAILURE;
         }

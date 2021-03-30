@@ -98,7 +98,7 @@ namespace OpenLoco::Scenario
 
         CompanyManager::reset();
         StringManager::reset();
-        ThingManager::reset();
+        EntityManager::reset();
 
         Ui::Windows::Construction::Construction::reset();
         sub_46115C();

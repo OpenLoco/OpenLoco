@@ -28,7 +28,7 @@ namespace OpenLoco::Paint
             return;
         }
 
-        ThingManager::ThingTileList entities(loc);
+        EntityManager::ThingTileList entities(loc);
         for (auto* entity : entities)
         {
             // TODO: Create a rect from dpi dims

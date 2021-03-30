@@ -277,7 +277,7 @@ namespace OpenLoco::S5
         {
             TileManager::reorganise();
             sub_46FF54();
-            ThingManager::zeroUnused();
+            EntityManager::zeroUnused();
             StationManager::zeroUnused();
             Vehicles::zeroOrderTable();
         }

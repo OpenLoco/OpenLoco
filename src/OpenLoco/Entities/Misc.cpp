@@ -24,7 +24,7 @@ Exhaust* OpenLoco::Exhaust::create(Map::map_pos3 loc, uint8_t type)
     if (loc.z <= surface->baseZ() * 4)
         return nullptr;
 
-    auto _exhaust = static_cast<Exhaust*>(ThingManager::createThing());
+    auto _exhaust = static_cast<Exhaust*>(EntityManager::createThing());
 
     if (_exhaust != nullptr)
     {
@@ -48,7 +48,7 @@ Exhaust* OpenLoco::Exhaust::create(Map::map_pos3 loc, uint8_t type)
 // 0x00440BEB
 Smoke* OpenLoco::Smoke::create(Map::map_pos3 loc)
 {
-    auto t = static_cast<Smoke*>(ThingManager::createThing());
+    auto t = static_cast<Smoke*>(EntityManager::createThing());
     if (t != nullptr)
     {
         t->var_14 = 44;

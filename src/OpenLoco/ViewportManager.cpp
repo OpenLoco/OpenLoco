@@ -71,7 +71,7 @@ namespace OpenLoco::Ui::ViewportManager
 
         w->viewport_configurations[index].viewport_target_sprite = dx;
 
-        auto t = ThingManager::get<thing_base>(dx);
+        auto t = EntityManager::get<thing_base>(dx);
 
         int16_t dest_x, dest_y;
         viewport->centre2dCoordinates(t->x, t->y, t->z, &dest_x, &dest_y);

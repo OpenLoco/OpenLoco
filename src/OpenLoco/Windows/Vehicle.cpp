@@ -61,7 +61,7 @@ namespace OpenLoco::Ui::Vehicle
 
         static Vehicles::VehicleHead* getVehicle(const window* self)
         {
-            return ThingManager::get<Vehicles::VehicleHead>(self->number);
+            return EntityManager::get<Vehicles::VehicleHead>(self->number);
         }
 
         static void setActiveTabs(window* const self);
@@ -342,7 +342,7 @@ namespace OpenLoco::Ui::Vehicle
             self->widgets = widgets;
             self->enabled_widgets = enabledWidgets;
             self->number = head;
-            const auto* vehicle = ThingManager::get<Vehicles::VehicleHead>(head);
+            const auto* vehicle = EntityManager::get<Vehicles::VehicleHead>(head);
             self->owner = vehicle->owner;
             self->row_height = rowHeights[static_cast<uint8_t>(vehicle->vehicleType)];
             self->current_tab = 0;
@@ -1002,7 +1002,7 @@ namespace OpenLoco::Ui::Vehicle
             gGameCommandErrorTitle = StringIds::cant_clone_vehicle;
             if (GameCommands::do_80(head->head))
             {
-                auto* newVehicle = ThingManager::get<Vehicles::VehicleBase>(_113642A);
+                auto* newVehicle = EntityManager::get<Vehicles::VehicleBase>(_113642A);
                 if (newVehicle != nullptr)
                 {
                     OpenLoco::Ui::Vehicle::Details::open(newVehicle);

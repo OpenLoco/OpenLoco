@@ -47,12 +47,12 @@ namespace OpenLoco::Vehicles
             if (newHead == nullptr)
             {
                 cost = GameCommands::do_5(car.front->object_id, -1);
-                auto* newVeh = ThingManager::get<Vehicles::VehicleBase>(_113642A);
+                auto* newVeh = EntityManager::get<Vehicles::VehicleBase>(_113642A);
                 if (newVeh == nullptr)
                 {
                     return GameCommands::FAILURE;
                 }
-                newHead = ThingManager::get<Vehicles::VehicleHead>(newVeh->getHead());
+                newHead = EntityManager::get<Vehicles::VehicleHead>(newVeh->getHead());
             }
             else
             {
