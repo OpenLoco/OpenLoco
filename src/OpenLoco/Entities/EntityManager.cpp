@@ -38,9 +38,9 @@ namespace OpenLoco::EntityManager
     }
 
     template<>
-    thing_base* get(thing_id_t id)
+    EntityBase* get(thing_id_t id)
     {
-        thing_base* result = nullptr;
+        EntityBase* result = nullptr;
         if (id < maxEntities)
         {
             return &_things.get()[id];
@@ -73,15 +73,15 @@ namespace OpenLoco::EntityManager
     }
 
     // 0x004700A5
-    thing_base* createThing()
+    EntityBase* createThing()
     {
         registers regs;
         call(0x004700A5, regs);
-        return (thing_base*)regs.esi;
+        return (EntityBase*)regs.esi;
     }
 
     // 0x0047024A
-    void freeThing(thing_base* const thing)
+    void freeThing(EntityBase* const thing)
     {
         registers regs;
         regs.esi = reinterpret_cast<uint32_t>(thing);
@@ -107,7 +107,7 @@ namespace OpenLoco::EntityManager
     }
 
     // 0x0047019F
-    void moveSpriteToList(thing_base* const thing, const EntityList list)
+    void moveSpriteToList(EntityBase* const thing, const EntityList list)
     {
         registers regs{};
         regs.esi = reinterpret_cast<uint32_t>(thing);

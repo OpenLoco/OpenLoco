@@ -45,7 +45,7 @@ namespace OpenLoco
     };
 
 #pragma pack(push, 1)
-    struct thing_base
+    struct EntityBase
     {
         EntityBaseType base_type;
 
@@ -89,7 +89,7 @@ namespace OpenLoco
     };
 
     // Max size of a thing. Use when needing to know thing size
-    struct Thing : thing_base
+    struct Thing : EntityBase
     {
     private:
         uint8_t pad_20[0x80 - 0x20];

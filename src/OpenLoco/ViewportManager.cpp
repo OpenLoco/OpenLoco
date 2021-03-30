@@ -71,7 +71,7 @@ namespace OpenLoco::Ui::ViewportManager
 
         w->viewport_configurations[index].viewport_target_sprite = dx;
 
-        auto t = EntityManager::get<thing_base>(dx);
+        auto t = EntityManager::get<EntityBase>(dx);
 
         int16_t dest_x, dest_y;
         viewport->centre2dCoordinates(t->x, t->y, t->z, &dest_x, &dest_y);
@@ -299,7 +299,7 @@ namespace OpenLoco::Ui::ViewportManager
      * @param t @<esi>
      * @param zoom
      */
-    void invalidate(thing_base* t, ZoomLevel zoom)
+    void invalidate(EntityBase* t, ZoomLevel zoom)
     {
         if (t->sprite_left == Location::null)
             return;
@@ -369,25 +369,25 @@ namespace OpenLoco::Ui::ViewportManager
         registerHook(
             0x004CBB01,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                invalidate((thing_base*)regs.esi, ZoomLevel::eighth);
+                invalidate((EntityBase*)regs.esi, ZoomLevel::eighth);
                 return 0;
             });
         registerHook(
             0x004CBBD2,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                invalidate((thing_base*)regs.esi, ZoomLevel::quarter);
+                invalidate((EntityBase*)regs.esi, ZoomLevel::quarter);
                 return 0;
             });
         registerHook(
             0x004CBCAC,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                invalidate((thing_base*)regs.esi, ZoomLevel::half);
+                invalidate((EntityBase*)regs.esi, ZoomLevel::half);
                 return 0;
             });
         registerHook(
             0x004CBD86,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                invalidate((thing_base*)regs.esi, ZoomLevel::full);
+                invalidate((EntityBase*)regs.esi, ZoomLevel::full);
                 return 0;
             });
         registerHook(

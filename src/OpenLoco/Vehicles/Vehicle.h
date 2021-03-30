@@ -98,7 +98,7 @@ namespace OpenLoco::Vehicles
     constexpr uint8_t cAirportMovementNodeNull = 0xFF;
 
 #pragma pack(push, 1)
-    struct VehicleBase : thing_base
+    struct VehicleBase : EntityBase
     {
     private:
         template<VehicleThingType SubType>
@@ -125,8 +125,8 @@ namespace OpenLoco::Vehicles
         }
 
     public:
-        VehicleThingType getSubType() const { return VehicleThingType(thing_base::getSubType()); }
-        void setSubType(const VehicleThingType newType) { thing_base::setSubType(static_cast<uint8_t>(newType)); }
+        VehicleThingType getSubType() const { return VehicleThingType(EntityBase::getSubType()); }
+        void setSubType(const VehicleThingType newType) { EntityBase::setSubType(static_cast<uint8_t>(newType)); }
         bool isVehicleHead() const { return is<VehicleThingType::head>(); }
         VehicleHead* asVehicleHead() const { return as<VehicleHead>(); }
         bool isVehicle1() const { return is<VehicleThingType::vehicle_1>(); }

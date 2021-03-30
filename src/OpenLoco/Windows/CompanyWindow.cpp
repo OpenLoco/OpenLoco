@@ -512,7 +512,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             else
             {
                 // loc_434170
-                auto thing = EntityManager::get<OpenLoco::thing_base>(company->observation_thing);
+                auto thing = EntityManager::get<OpenLoco::EntityBase>(company->observation_thing);
                 auto* vehicle = thing->asVehicle();
                 if (vehicle == nullptr)
                 {

@@ -28,12 +28,12 @@ namespace OpenLoco::EntityManager
     T* get(thing_id_t id);
 
     template<>
-    thing_base* get(thing_id_t id);
+    EntityBase* get(thing_id_t id);
 
     template<typename T>
     T* get(thing_id_t id)
     {
-        return static_cast<T*>(get<thing_base>(id));
+        return static_cast<T*>(get<EntityBase>(id));
     }
 
     thing_id_t firstId(EntityList list);
@@ -43,18 +43,18 @@ namespace OpenLoco::EntityManager
 
     thing_id_t firstQuadrantId(const Map::map_pos& loc);
 
-    thing_base* createThing();
-    void freeThing(thing_base* const thing);
+    EntityBase* createThing();
+    void freeThing(EntityBase* const thing);
 
     void updateVehicles();
     void updateMiscThings();
 
     uint16_t getListCount(const EntityList list);
-    void moveSpriteToList(thing_base* const thing, const EntityList list);
+    void moveSpriteToList(EntityBase* const thing, const EntityList list);
     bool checkNumFreeThings(const size_t numNewThings);
     void zeroUnused();
 
-    template<typename ThingType, thing_id_t thing_base::*nextList>
+    template<typename ThingType, thing_id_t EntityBase::*nextList>
     class ListIterator
     {
     private:
@@ -128,13 +128,13 @@ namespace OpenLoco::EntityManager
         }
     };
 
-    using VehicleList = ThingList<ListIterator<Vehicles::VehicleHead, &thing_base::next_thing_id>, EntityList::vehicle_head>;
+    using VehicleList = ThingList<ListIterator<Vehicles::VehicleHead, &EntityBase::next_thing_id>, EntityList::vehicle_head>;
 
     class ThingTileList
     {
     private:
         uint16_t firstId = ThingId::null;
-        using ThingTileListIterator = ListIterator<thing_base, &thing_base::nextQuadrantId>;
+        using ThingTileListIterator = ListIterator<EntityBase, &EntityBase::nextQuadrantId>;
 
     public:
         ThingTileList(const Map::map_pos& loc)

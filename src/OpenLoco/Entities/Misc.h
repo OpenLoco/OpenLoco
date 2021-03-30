@@ -29,7 +29,7 @@ namespace OpenLoco
     };
 
 #pragma pack(push, 1)
-    struct MiscBase : thing_base
+    struct MiscBase : EntityBase
     {
     private:
         template<typename TType, MiscThingType TClass>
@@ -39,8 +39,8 @@ namespace OpenLoco
         }
 
     public:
-        MiscThingType getSubType() const { return MiscThingType(thing_base::getSubType()); }
-        void setSubType(const MiscThingType newType) { thing_base::setSubType(static_cast<uint8_t>(newType)); }
+        MiscThingType getSubType() const { return MiscThingType(EntityBase::getSubType()); }
+        void setSubType(const MiscThingType newType) { EntityBase::setSubType(static_cast<uint8_t>(newType)); }
         Exhaust* asExhaust() const { return as<Exhaust, MiscThingType::exhaust>(); }
         MoneyEffect* asRedGreenCurrency() const { return as<MoneyEffect, MiscThingType::redGreenCurrency>(); }
         MoneyEffect* asWindowCurrency() const { return as<MoneyEffect, MiscThingType::windowCurrency>(); }

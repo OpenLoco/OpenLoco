@@ -76,10 +76,10 @@ namespace OpenLoco::Paint
     // 0x0046FA88
     void paintEntities(PaintSession& session, const Map::map_pos& loc)
     {
-        paintEntitiesWithFilter(session, loc, [](const thing_base*) { return true; });
+        paintEntitiesWithFilter(session, loc, [](const EntityBase*) { return true; });
     }
 
-    static bool isEntityFlyingOrFloating(const thing_base* entity)
+    static bool isEntityFlyingOrFloating(const EntityBase* entity)
     {
         auto* vehicle = entity->asVehicle();
         if (vehicle == nullptr)
