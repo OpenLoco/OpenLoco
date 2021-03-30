@@ -10,7 +10,7 @@ namespace OpenLoco::EntityManager
 {
     loco_global<thing_id_t[numEntityLists], 0x00525E40> _heads;
     loco_global<uint16_t[numEntityLists], 0x00525E4C> _listCounts;
-    loco_global<Thing[maxEntities], 0x006DB6DC> _entities;
+    loco_global<Entity[maxEntities], 0x006DB6DC> _entities;
     loco_global<thing_id_t[0x40001], 0x01025A8C> _entitySpatialIndex;
     static loco_global<string_id, 0x009C68E6> gGameCommandErrorText;
     constexpr size_t _entitySpatialIndexNull = 0x40000;
@@ -116,9 +116,9 @@ namespace OpenLoco::EntityManager
     }
 
     // 0x00470188
-    bool checkNumFreeEntities(const size_t numNewThings)
+    bool checkNumFreeEntities(const size_t numNewEntities)
     {
-        if (EntityManager::getListCount(EntityManager::EntityListType::null) <= numNewThings)
+        if (EntityManager::getListCount(EntityManager::EntityListType::null) <= numNewEntities)
         {
             gGameCommandErrorText = StringIds::too_many_objects_in_game;
             return false;

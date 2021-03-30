@@ -460,7 +460,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             const auto& company = CompanyManager::get(self->number);
 
-            if (company->observation_thing == ThingId::null)
+            if (company->observation_thing == EntityId::null)
             {
                 // Observing a certain location?
                 if (company->observation_x != -1)

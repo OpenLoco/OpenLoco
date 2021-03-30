@@ -552,7 +552,7 @@ namespace OpenLoco::Ui
     // 0x004C6801
     void window::moveWindowToLocation(viewport_pos pos)
     {
-        if (this->viewport_configurations->viewport_target_sprite != ThingId::null)
+        if (this->viewport_configurations->viewport_target_sprite != EntityId::null)
             return;
 
         if (this->flags & WindowFlags::viewport_no_scrolling)
@@ -608,7 +608,7 @@ namespace OpenLoco::Ui
         auto main = WindowManager::getMainWindow();
 
         // Unfocus the viewport.
-        main->viewport_configurations[0].viewport_target_sprite = ThingId::null;
+        main->viewport_configurations[0].viewport_target_sprite = EntityId::null;
 
         // Centre viewport on tile/thing.
         if (saved_view.isThingView())
@@ -657,7 +657,7 @@ namespace OpenLoco::Ui
         if (viewports[0] == nullptr || saved_view.isEmpty())
             return false;
 
-        return viewport_configurations[0].viewport_target_sprite != ThingId::null;
+        return viewport_configurations[0].viewport_target_sprite != EntityId::null;
     }
 
     void window::viewportUnfocusFromEntity()
@@ -665,11 +665,11 @@ namespace OpenLoco::Ui
         if (viewports[0] == nullptr || saved_view.isEmpty())
             return;
 
-        if (viewport_configurations[0].viewport_target_sprite == ThingId::null)
+        if (viewport_configurations[0].viewport_target_sprite == EntityId::null)
             return;
 
         auto thing = EntityManager::get<EntityBase>(viewport_configurations[0].viewport_target_sprite);
-        viewport_configurations[0].viewport_target_sprite = ThingId::null;
+        viewport_configurations[0].viewport_target_sprite = EntityId::null;
         viewportCentreOnTile({ thing->x, thing->y, thing->z });
     }
 

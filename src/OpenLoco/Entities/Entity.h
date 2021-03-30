@@ -16,7 +16,7 @@ namespace OpenLoco
 {
     struct MiscBase;
 
-    namespace ThingId
+    namespace EntityId
     {
         constexpr thing_id_t null = std::numeric_limits<thing_id_t>::max();
     }
@@ -89,11 +89,11 @@ namespace OpenLoco
     };
 
     // Max size of a thing. Use when needing to know thing size
-    struct Thing : EntityBase
+    struct Entity : EntityBase
     {
     private:
         uint8_t pad_20[0x80 - 0x20];
     };
-    static_assert(sizeof(Thing) == 0x80);
+    static_assert(sizeof(Entity) == 0x80);
 #pragma pack(pop)
 }

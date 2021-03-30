@@ -94,7 +94,7 @@ namespace OpenLoco::Vehicles
         for (auto i = 0; i < max_num_vehicles; i++)
         {
             auto id = _96885C[i][0];
-            if (id == ThingId::null)
+            if (id == EntityId::null)
             {
                 return true;
             }
@@ -501,7 +501,7 @@ namespace OpenLoco::Vehicles
         for (auto i = 0; i < max_num_vehicles; i++)
         {
             auto id = _96885C[i][0];
-            if (id == ThingId::null)
+            if (id == EntityId::null)
             {
                 for (auto j = 0; j < max_num_routing_steps; ++j)
                 {
@@ -678,7 +678,7 @@ namespace OpenLoco::Vehicles
         newTail->objectId = -1;
         newTail->var_4A = 0;
         lastVeh->setNextCar(newTail->id);
-        newTail->next_car_id = ThingId::null;
+        newTail->next_car_id = EntityId::null;
         return newTail;
     }
     // 0x004AE318
@@ -753,7 +753,7 @@ namespace OpenLoco::Vehicles
         uint16_t baseOrderId = (orderId & ~(0x3F)) / max_num_routing_steps;
         for (auto i = 0; i < max_num_routing_steps; ++i)
         {
-            _96885C[baseOrderId][i] = ThingId::null;
+            _96885C[baseOrderId][i] = EntityId::null;
         }
     }
 

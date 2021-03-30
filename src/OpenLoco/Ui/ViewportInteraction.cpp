@@ -25,7 +25,7 @@ namespace OpenLoco::Ui::ViewportInteraction
     InteractionArg::InteractionArg(const Paint::PaintStruct& ps)
         : x(ps.map_x)
         , y(ps.map_y)
-        , object(ps.thing)
+        , object(ps.entity)
         , type(ps.type)
         , unkBh(ps.var_29)
     {
@@ -198,8 +198,8 @@ namespace OpenLoco::Ui::ViewportInteraction
     // 0x004CDA7C
     static bool getVehicleArguments(const InteractionArg& interaction)
     {
-        Thing* thing = reinterpret_cast<Thing*>(interaction.object);
-        auto vehicle = thing->asVehicle();
+        auto* entity = reinterpret_cast<EntityBase*>(interaction.object);
+        auto vehicle = entity->asVehicle();
         if (vehicle == nullptr)
         {
             return false;

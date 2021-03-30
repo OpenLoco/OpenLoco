@@ -309,55 +309,55 @@ namespace OpenLoco::Paint
     {
         switch (base->getSubType())
         {
-            case MiscThingType::exhaust: // 0
+            case MiscEntityType::exhaust: // 0
             {
                 paintExhaustEntity(session, base->asExhaust());
                 break;
             }
 
-            case MiscThingType::redGreenCurrency: // 1
+            case MiscEntityType::redGreenCurrency: // 1
             {
                 paintRedGreenCurrencyEntity(session, base->asRedGreenCurrency());
                 break;
             }
 
-            case MiscThingType::windowCurrency: // 2
+            case MiscEntityType::windowCurrency: // 2
             {
                 paintWindowCurrencyEntity(session, base->asWindowCurrency());
                 break;
             }
 
-            case MiscThingType::vehicleCrashParticle: // 3
+            case MiscEntityType::vehicleCrashParticle: // 3
             {
                 paintVehicleCrashParticleEntity(session, base->asVehicleCrashParticle());
                 break;
             }
 
-            case MiscThingType::explosionCloud: // 4
+            case MiscEntityType::explosionCloud: // 4
             {
                 paintExplosionCloudEntity(session, base->asExplosionCloud());
                 break;
             }
 
-            case MiscThingType::splash: // 5
+            case MiscEntityType::splash: // 5
             {
                 paintSplashEntity(session, base->asSplash());
                 break;
             }
 
-            case MiscThingType::fireball: // 6
+            case MiscEntityType::fireball: // 6
             {
                 paintFireballEntity(session, base->asFireball());
                 break;
             }
 
-            case MiscThingType::explosionSmoke: // 7
+            case MiscEntityType::explosionSmoke: // 7
             {
                 paintExplosionSmokeEntity(session, base->asExplosionSmoke());
                 break;
             }
 
-            case MiscThingType::smoke: // 8
+            case MiscEntityType::smoke: // 8
             {
                 paintSmokeEntity(session, base->asSmoke());
                 break;

@@ -9,7 +9,7 @@ namespace OpenLoco::Map
 }
 namespace OpenLoco
 {
-    struct Thing;
+    struct EntityBase;
 }
 
 namespace OpenLoco::Ui::ViewportInteraction
@@ -100,8 +100,8 @@ namespace OpenLoco::Paint
         coord_t map_y; // 0x2E
         union
         {
-            Map::tile_element* tileElement; // 0x30 (or thing pointer)
-            Thing* thing;                   // 0x30
+            Map::tile_element* tileElement; // 0x30 (or entity pointer)
+            EntityBase* entity;             // 0x30
         };
     };
     static_assert(sizeof(PaintStruct) == 0x34);

@@ -51,7 +51,7 @@ namespace OpenLoco::EntityManager
 
     uint16_t getListCount(const EntityListType list);
     void moveEntityToList(EntityBase* const entity, const EntityListType list);
-    bool checkNumFreeEntities(const size_t numNewThings);
+    bool checkNumFreeEntities(const size_t numNewEntities);
     void zeroUnused();
 
     template<typename TEntityType, thing_id_t EntityBase::*nextList>
@@ -59,7 +59,7 @@ namespace OpenLoco::EntityManager
     {
     private:
         TEntityType* entity = nullptr;
-        thing_id_t nextEntityId = ThingId::null;
+        thing_id_t nextEntityId = EntityId::null;
 
     public:
         ListIterator(const uint16_t _headId)
@@ -109,7 +109,7 @@ namespace OpenLoco::EntityManager
     class EntityList
     {
     private:
-        uint16_t firstId = ThingId::null;
+        uint16_t firstId = EntityId::null;
         using thingListIterator = T;
 
     public:
@@ -124,7 +124,7 @@ namespace OpenLoco::EntityManager
         }
         T end()
         {
-            return T(ThingId::null);
+            return T(EntityId::null);
         }
     };
 
@@ -133,7 +133,7 @@ namespace OpenLoco::EntityManager
     class EntityTileList
     {
     private:
-        uint16_t firstId = ThingId::null;
+        uint16_t firstId = EntityId::null;
         using ThingTileListIterator = ListIterator<EntityBase, &EntityBase::nextQuadrantId>;
 
     public:
@@ -148,7 +148,7 @@ namespace OpenLoco::EntityManager
         }
         ThingTileListIterator end()
         {
-            return ThingTileListIterator(ThingId::null);
+            return ThingTileListIterator(EntityId::null);
         }
     };
 }

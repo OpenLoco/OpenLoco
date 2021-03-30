@@ -355,7 +355,7 @@ namespace OpenLoco::Ui::Vehicle
             self->var_85C = -1;
             WindowManager::close(WindowType::dragVehiclePart, 0);
             _dragCarComponent = nullptr;
-            _dragVehicleHead = ThingId::null;
+            _dragVehicleHead = EntityId::null;
 
             const auto* skin = ObjectManager::get<InterfaceSkinObject>();
             self->colours[1] = skin->colour_0A;
@@ -1098,7 +1098,7 @@ namespace OpenLoco::Ui::Vehicle
             {
                 if (WindowManager::find(WindowType::dragVehiclePart) == nullptr)
                 {
-                    _dragVehicleHead = ThingId::null;
+                    _dragVehicleHead = EntityId::null;
                     _dragCarComponent = nullptr;
                     self->invalidate();
                 }
@@ -1109,7 +1109,7 @@ namespace OpenLoco::Ui::Vehicle
 
             WindowManager::invalidateWidget(WindowType::vehicle, self->number, Common::widx::tabDetails);
 
-            if (_dragVehicleHead == ThingId::null && self->isActivated(widx::remove))
+            if (_dragVehicleHead == EntityId::null && self->isActivated(widx::remove))
             {
                 self->activated_widgets &= ~(1ULL << widx::remove);
                 WindowManager::invalidateWidget(WindowType::vehicle, self->number, widx::remove);
@@ -1206,7 +1206,7 @@ namespace OpenLoco::Ui::Vehicle
             self->flags &= ~WindowFlags::not_scroll_view;
             auto car = Common::getCarFromScrollView(self, y);
             string_id tooltipFormat = StringIds::null;
-            thing_id_t tooltipContent = ThingId::null;
+            thing_id_t tooltipContent = EntityId::null;
             if (car)
             {
                 tooltipFormat = StringIds::buffer_337;
@@ -1231,7 +1231,7 @@ namespace OpenLoco::Ui::Vehicle
             self->var_85C = tooltipContent;
             ToolTip::closeAndReset();
 
-            if (tooltipContent == ThingId::null)
+            if (tooltipContent == EntityId::null)
             {
                 return;
             }
@@ -1995,7 +1995,7 @@ namespace OpenLoco::Ui::Vehicle
             self->flags &= ~WindowFlags::not_scroll_view;
             auto car = Common::getCarFromScrollView(self, y);
             string_id tooltipFormat = StringIds::null;
-            thing_id_t tooltipContent = ThingId::null;
+            thing_id_t tooltipContent = EntityId::null;
             if (car)
             {
                 tooltipFormat = StringIds::buffer_337;
@@ -2020,7 +2020,7 @@ namespace OpenLoco::Ui::Vehicle
             self->var_85C = tooltipContent;
             ToolTip::closeAndReset();
 
-            if (tooltipContent == ThingId::null)
+            if (tooltipContent == EntityId::null)
             {
                 return;
             }

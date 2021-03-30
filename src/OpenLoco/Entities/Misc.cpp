@@ -35,7 +35,7 @@ Exhaust* OpenLoco::Exhaust::create(Map::map_pos3 loc, uint8_t type)
         _exhaust->var_14 = obj->var_05;
         _exhaust->var_09 = obj->var_06;
         _exhaust->var_15 = obj->var_07;
-        _exhaust->setSubType(MiscThingType::exhaust);
+        _exhaust->setSubType(MiscEntityType::exhaust);
         _exhaust->var_26 = 0;
         _exhaust->var_28 = 0;
         _exhaust->var_32 = 0;
@@ -56,7 +56,7 @@ Smoke* OpenLoco::Smoke::create(Map::map_pos3 loc)
         t->var_15 = 34;
         t->base_type = EntityBaseType::misc;
         t->moveTo(loc);
-        t->setSubType(MiscThingType::smoke);
+        t->setSubType(MiscEntityType::smoke);
         t->frame = 0;
     }
     return t;
