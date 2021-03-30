@@ -551,7 +551,7 @@ namespace OpenLoco::Vehicles
     static VehicleHead* createHead(const uint8_t trackType, const TransportMode mode, const uint16_t orderId, const VehicleType vehicleType)
     {
         auto* const newHead = createVehicleThing<VehicleHead>();
-        EntityManager::moveEntityToList(newHead, EntityManager::EntityListType::vehicle_head);
+        EntityManager::moveEntityToList(newHead, EntityManager::EntityListType::vehicleHead);
         newHead->owner = _updating_company_id;
         newHead->head = newHead->id;
         newHead->var_0C |= Flags0C::commandStop;

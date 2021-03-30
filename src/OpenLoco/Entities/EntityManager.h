@@ -18,7 +18,7 @@ namespace OpenLoco::EntityManager
     enum class EntityListType
     {
         null,
-        vehicle_head,
+        vehicleHead,
         misc = 3,
     };
 
@@ -128,7 +128,7 @@ namespace OpenLoco::EntityManager
         }
     };
 
-    using VehicleList = EntityList<ListIterator<Vehicles::VehicleHead, &EntityBase::next_thing_id>, EntityListType::vehicle_head>;
+    using VehicleList = EntityList<ListIterator<Vehicles::VehicleHead, &EntityBase::next_thing_id>, EntityListType::vehicleHead>;
 
     class EntityTileList
     {

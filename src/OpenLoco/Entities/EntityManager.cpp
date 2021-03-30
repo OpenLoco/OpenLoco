@@ -34,7 +34,7 @@ namespace OpenLoco::EntityManager
     template<>
     Vehicles::VehicleHead* first()
     {
-        return get<Vehicles::VehicleHead>(firstId(EntityListType::vehicle_head));
+        return get<Vehicles::VehicleHead>(firstId(EntityListType::vehicleHead));
     }
 
     template<>
