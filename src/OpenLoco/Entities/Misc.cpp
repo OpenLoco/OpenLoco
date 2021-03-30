@@ -1,7 +1,7 @@
 #include "Misc.h"
 #include "../Map/TileManager.h"
 #include "../Objects/ObjectManager.h"
-#include "ThingManager.h"
+#include "EntityManager.h"
 
 using namespace OpenLoco;
 using namespace OpenLoco::ObjectManager;

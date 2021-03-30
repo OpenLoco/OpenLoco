@@ -28,6 +28,9 @@
     <ClCompile Include="Drawing\SoftwareDrawingEngine.cpp" />
     <ClCompile Include="Economy.cpp" />
     <ClCompile Include="EditorController.cpp" />
+    <ClCompile Include="Entities\Entity.cpp" />
+    <ClCompile Include="Entities\EntityManager.cpp" />
+    <ClCompile Include="Entities\Misc.cpp" />
     <ClCompile Include="Environment.cpp" />
     <ClCompile Include="GameCommands\RenameIndustry.cpp" />
     <ClCompile Include="GameCommands\RenameTown.cpp" />
@@ -98,9 +101,6 @@
     <ClCompile Include="ScenarioManager.cpp" />
     <ClCompile Include="Station.cpp" />
     <ClCompile Include="StationManager.cpp" />
-    <ClCompile Include="Things\Misc.cpp" />
-    <ClCompile Include="Things\Thing.cpp" />
-    <ClCompile Include="Things\ThingManager.cpp" />
     <ClCompile Include="Title.cpp" />
     <ClCompile Include="Town.cpp" />
     <ClCompile Include="TownManager.cpp" />
@@ -213,6 +213,9 @@
     <ClInclude Include="Drawing\SoftwareDrawingEngine.h" />
     <ClInclude Include="Economy.h" />
     <ClInclude Include="EditorController.h" />
+    <ClInclude Include="Entities\Entity.h" />
+    <ClInclude Include="Entities\EntityManager.h" />
+    <ClInclude Include="Entities\Misc.h" />
     <ClInclude Include="Environment.h" />
     <ClInclude Include="GameCommands.h" />
     <ClInclude Include="Graphics\Colour.h" />
@@ -292,9 +295,6 @@
     <ClInclude Include="Speed.hpp" />
     <ClInclude Include="Station.h" />
     <ClInclude Include="StationManager.h" />
-    <ClInclude Include="Things\Misc.h" />
-    <ClInclude Include="Things\Thing.h" />
-    <ClInclude Include="Things\ThingManager.h" />
     <ClInclude Include="Title.h" />
     <ClInclude Include="Town.h" />
     <ClInclude Include="TownManager.h" />

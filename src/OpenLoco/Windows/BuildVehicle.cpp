@@ -1,4 +1,5 @@
 #include "../CompanyManager.h"
+#include "../Entities/EntityManager.h"
 #include "../GameCommands.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/ImageIds.h"
@@ -15,7 +16,6 @@
 #include "../Objects/TrackObject.h"
 #include "../Objects/VehicleObject.h"
 #include "../OpenLoco.h"
-#include "../Things/ThingManager.h"
 #include "../Ui/ScrollView.h"
 #include "../Ui/WindowManager.h"
 #include "../Vehicles/Vehicle.h"

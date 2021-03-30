@@ -1,8 +1,8 @@
 #pragma once
 
+#include "Entities/Entity.h"
 #include "Map/Tile.h"
 #include "Station.h"
-#include "Things/Thing.h"
 #include "Types.hpp"
 #include "Window.h"
 #include <array>

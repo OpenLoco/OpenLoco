@@ -1,9 +1,9 @@
+#include "../Entities/EntityManager.h"
 #include "../GameCommands.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/FormatArguments.hpp"
 #include "../Localisation/StringManager.h"
 #include "../Management/Expenditures.h"
-#include "../Things/ThingManager.h"
 #include "../Types.hpp"
 #include "Vehicle.h"
 #include <array>

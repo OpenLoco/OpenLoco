@@ -1,6 +1,6 @@
+#include "../Entities/EntityManager.h"
 #include "../GameCommands.h"
 #include "../Interop/Interop.hpp"
-#include "../Things/ThingManager.h"
 #include "../Ui/WindowManager.h"
 #include "Orders.h"
 #include "Vehicle.h"

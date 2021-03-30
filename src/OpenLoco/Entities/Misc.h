@@ -2,7 +2,7 @@
 
 #include "../Map/Map.hpp"
 #include "../Objects/SteamObject.h"
-#include "Thing.h"
+#include "Entity.h"
 
 namespace OpenLoco
 {

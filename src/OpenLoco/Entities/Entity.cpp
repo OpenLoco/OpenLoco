@@ -1,4 +1,4 @@
-#include "Thing.h"
+#include "Entity.h"
 #include "../Config.h"
 #include "../Graphics/Gfx.h"
 #include "../Interop/Interop.hpp"

@@ -1,4 +1,4 @@
-#include "ThingManager.h"
+#include "EntityManager.h"
 #include "../Interop/Interop.hpp"
 #include "../Map/Tile.h"
 #include "../OpenLoco.h"

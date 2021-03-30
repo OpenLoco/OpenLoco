@@ -1,11 +1,11 @@
 #include "ViewportManager.h"
 #include "Config.h"
 #include "Console.h"
+#include "Entities/EntityManager.h"
 #include "Interop/Interop.hpp"
 #include "Map/Tile.h"
 #include "Map/TileManager.h"
 #include "Station.h"
-#include "Things/ThingManager.h"
 #include "Ui.h"
 #include "Window.h"
 #include <algorithm>

@@ -1,12 +1,12 @@
 #include "../Audio/Audio.h"
 #include "../Config.h"
+#include "../Entities/EntityManager.h"
+#include "../Entities/Misc.h"
 #include "../Graphics/Gfx.h"
 #include "../Interop/Interop.hpp"
 #include "../Map/TileManager.h"
 #include "../Objects/ObjectManager.h"
 #include "../Objects/VehicleObject.h"
-#include "../Things/Misc.h"
-#include "../Things/ThingManager.h"
 #include "Vehicle.h"
 #include <cassert>
 

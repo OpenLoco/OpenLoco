@@ -2,9 +2,9 @@
 
 #include "../Audio/Audio.h"
 #include "../Company.h"
+#include "../Entities/Entity.h"
 #include "../Objects/VehicleObject.h"
 #include "../Speed.hpp"
-#include "../Things/Thing.h"
 #include "../Types.hpp"
 #include "../Ui/WindowType.h"
 #include "../Window.h"
