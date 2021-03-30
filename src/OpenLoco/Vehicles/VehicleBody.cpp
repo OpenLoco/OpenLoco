@@ -265,12 +265,9 @@ namespace OpenLoco::Vehicles
         if (object_sprite_type == 0xFF)
             return;
 
-        auto xDiff = front_bogie->x - back_bogie->x;
-        auto yDiff = front_bogie->y - back_bogie->y;
         auto distanceBetweenBogies = Math::Vector::distance(Map::map_pos{ front_bogie->x, front_bogie->y }, Map::map_pos{ back_bogie->x, back_bogie->y });
 
         auto vehObj = object();
-
         if (vehObj->bodySprites[object_sprite_type].flags & BodySpriteFlags::hasSteepSprites)
         {
             sprite_pitch = updateSpritePitchSteepSlopes(distanceBetweenBogies, front_bogie->z - back_bogie->z);
@@ -280,6 +277,8 @@ namespace OpenLoco::Vehicles
             sprite_pitch = updateSpritePitch(distanceBetweenBogies, front_bogie->z - back_bogie->z);
         }
 
+        auto xDiff = front_bogie->x - back_bogie->x;
+        auto yDiff = front_bogie->y - back_bogie->y;
         // If the sprite_pitch is a transition there is always 4 bits for yaw
         if (static_cast<uint8_t>(sprite_pitch) & 1)
         {
