@@ -10,7 +10,7 @@
 #include "../Console.h"
 #include "../Core/FileSystem.hpp"
 #include "../Environment.h"
-#include "../GameCommands.h"
+#include "../GameCommands/GameCommands.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/Gfx.h"
 #include "../Gui.h"

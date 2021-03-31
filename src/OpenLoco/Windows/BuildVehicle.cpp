@@ -1,6 +1,6 @@
 #include "../CompanyManager.h"
 #include "../Entities/EntityManager.h"
-#include "../GameCommands.h"
+#include "../GameCommands/GameCommands.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/ImageIds.h"
 #include "../Input.h"

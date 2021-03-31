@@ -1,6 +1,6 @@
 #include "ShortcutManager.h"
 #include "../CompanyManager.h"
-#include "../GameCommands.h"
+#include "../GameCommands/GameCommands.h"
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/StringIds.h"
