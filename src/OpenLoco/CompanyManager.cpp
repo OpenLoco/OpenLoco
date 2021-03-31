@@ -2,7 +2,7 @@
 #include "Config.h"
 #include "Entities/EntityManager.h"
 #include "Entities/Misc.h"
-#include "GameCommands.h"
+#include "GameCommands/GameCommands.h"
 #include "Interop/Interop.hpp"
 #include "Localisation/FormatArguments.hpp"
 #include "Map/Tile.h"

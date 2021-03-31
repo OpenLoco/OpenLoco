@@ -3,7 +3,7 @@
 #include "../Core/Optional.hpp"
 #include "../Date.h"
 #include "../Entities/EntityManager.h"
-#include "../GameCommands.h"
+#include "../GameCommands/GameCommands.h"
 #include "../Management/Expenditures.h"
 #include "../Map/Tile.h"
 #include "../Objects/ObjectManager.h"

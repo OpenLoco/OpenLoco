@@ -3,7 +3,7 @@
 #include "../Config.h"
 #include "../Console.h"
 #include "../Entities/EntityManager.h"
-#include "../GameCommands.h"
+#include "../GameCommands/GameCommands.h"
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
 #include "../Intro.h"

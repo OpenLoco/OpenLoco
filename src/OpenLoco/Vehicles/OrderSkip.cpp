@@ -1,5 +1,5 @@
 #include "../Entities/EntityManager.h"
-#include "../GameCommands.h"
+#include "../GameCommands/GameCommands.h"
 #include "../Interop/Interop.hpp"
 #include "../Ui/WindowManager.h"
 #include "Orders.h"

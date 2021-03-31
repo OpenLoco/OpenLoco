@@ -1,7 +1,7 @@
 #include "../Company.h"
 #include "../CompanyManager.h"
 #include "../Date.h"
-#include "../GameCommands.h"
+#include "../GameCommands/GameCommands.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/Gfx.h"
 #include "../Graphics/ImageIds.h"

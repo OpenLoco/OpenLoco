@@ -32,7 +32,7 @@
 #include "Config.h"
 #include "Console.h"
 #include "Drawing/FPSCounter.h"
-#include "GameCommands.h"
+#include "GameCommands/GameCommands.h"
 #include "Graphics/Gfx.h"
 #include "Gui.h"
 #include "Input.h"

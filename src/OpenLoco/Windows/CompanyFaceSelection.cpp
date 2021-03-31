@@ -1,7 +1,7 @@
 #include "../Audio/Audio.h"
 #include "../CompanyManager.h"
 #include "../Core/Optional.hpp"
-#include "../GameCommands.h"
+#include "../GameCommands/GameCommands.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/ImageIds.h"
 #include "../Input.h"

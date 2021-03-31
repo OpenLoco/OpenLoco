@@ -1,4 +1,3 @@
-#include "../GameCommands.h"
 #include "../Industry.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/FormatArguments.hpp"
@@ -8,6 +7,7 @@
 #include "../StationManager.h"
 #include "../TownManager.h"
 #include "../Types.hpp"
+#include "GameCommands.h"
 
 using namespace OpenLoco::Interop;
 
