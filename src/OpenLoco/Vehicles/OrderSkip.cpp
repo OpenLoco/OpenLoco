@@ -9,10 +9,6 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Vehicles
 {
-    loco_global<uint16_t, 0x009C68E0> gameCommandMapX;
-    loco_global<uint16_t, 0x009C68E2> gameCommandMapY;
-    loco_global<uint16_t, 0x009C68E4> gameCommandMapZ;
-
     // 0x0047071A
     static uint32_t orderSkip(uint16_t headId, uint8_t flags)
     {
@@ -22,9 +18,7 @@ namespace OpenLoco::Vehicles
             return GameCommands::FAILURE;
         }
 
-        gameCommandMapX = head->x;
-        gameCommandMapY = head->y;
-        gameCommandMapZ = head->z;
+        GameCommands::setPosition({ head->x, head->y, head->z });
         if (!(flags & GameCommands::apply))
         {
             return 0;

@@ -35,9 +35,6 @@ namespace OpenLoco::Vehicles
     constexpr EntityId_t allocated_but_free_routing_station = -2; // Indicates that this array is allocated to a vehicle but no station has been set.
 
     static loco_global<company_id_t, 0x009C68EB> _updating_company_id;
-    static loco_global<uint16_t, 0x009C68E0> gameCommandMapX;
-    static loco_global<uint16_t, 0x009C68E2> gameCommandMapY;
-    static loco_global<uint16_t, 0x009C68E4> gameCommandMapZ;
     static loco_global<string_id, 0x009C68E6> gGameCommandErrorText;
     static loco_global<uint8_t, 0x009C68EA> gGameCommandExpenditureType; // premultiplied by 4
     static loco_global<uint8_t, 0x009C68EE> _errorCompanyId;
@@ -807,7 +804,7 @@ namespace OpenLoco::Vehicles
     // 0x004AE74E
     static uint32_t createNewVehicle(const uint8_t flags, const uint16_t vehicleTypeId)
     {
-        gameCommandMapX = Location::null;
+        GameCommands::setPosition({ Location::null, 0, 0 });
         if (!EntityManager::checkNumFreeEntities(max_num_vehicle_components_in_car + num_vehicle_components_in_base))
         {
             return FAILURE;
@@ -871,9 +868,7 @@ namespace OpenLoco::Vehicles
     static uint32_t addCarToVehicle(const uint8_t flags, const uint16_t vehicleTypeId, const uint16_t vehicleThingId)
     {
         Vehicle train(vehicleThingId);
-        gameCommandMapX = train.veh2->x;
-        gameCommandMapY = train.veh2->y;
-        gameCommandMapZ = train.veh2->z;
+        GameCommands::setPosition({ train.veh2->x, train.veh2->y, train.veh2->z });
 
         if (!sub_431E6A(train.head->owner))
         {

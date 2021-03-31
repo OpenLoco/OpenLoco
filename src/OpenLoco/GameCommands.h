@@ -645,4 +645,7 @@ namespace OpenLoco::GameCommands
 
     // Defined in GameCommands/RenameTown.cpp
     void renameTown(registers& regs);
+
+    const Map::map_pos3& getPostion();
+    void setPosition(const Map::map_pos3& pos);
 }
