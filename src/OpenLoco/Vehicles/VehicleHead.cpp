@@ -43,8 +43,8 @@ namespace OpenLoco::Vehicles
     static loco_global<int16_t[128], 0x00503B6A> factorXY503B6A;
     static constexpr uint16_t trainOneWaySignalTimeout = 1920;
     static constexpr uint16_t trainTwoWaySignalTimeout = 640;
-    static constexpr uint16_t busSignalTimeout = 960;
-    static constexpr uint16_t tramSignalTimeout = 2880;
+    static constexpr uint16_t busSignalTimeout = 960;   // Time to wait before turning around at barriers
+    static constexpr uint16_t tramSignalTimeout = 2880; // Time to wait before turning around at barriers
 
     void VehicleHead::updateVehicle()
     {
