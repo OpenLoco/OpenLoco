@@ -285,7 +285,9 @@ namespace OpenLoco::CompanyManager
     {
         auto* company = get(id);
         if (company == nullptr || OpenLoco::isEditorMode())
-            WindowManager::invalidate(WindowType::company, id);
+            return;
+
+        WindowManager::invalidate(WindowType::company, id);
 
         // Invalidate the company balance if this is the player company
         if (getControllingId() == id)
