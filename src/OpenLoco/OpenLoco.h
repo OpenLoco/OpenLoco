@@ -54,7 +54,8 @@ namespace OpenLoco
     bool isPauseOverrideEnabled();
     bool isPaused();
     uint8_t getPauseFlags();
-    void togglePause(bool value);
+    void setPauseFlag(uint8_t value);
+    void unsetPauseFlag(uint8_t value);
     uint8_t getGameSpeed();
     void setGameSpeed(uint8_t speed);
     uint32_t scenarioTicks();
@@ -64,5 +65,6 @@ namespace OpenLoco
     void sub_431695(uint16_t var_F253A0);
     void main();
     void promptTickLoop(std::function<bool()> tickAction);
+    [[noreturn]] void exitCleanly();
     void exitWithError(OpenLoco::string_id message, uint32_t errorCode);
 }

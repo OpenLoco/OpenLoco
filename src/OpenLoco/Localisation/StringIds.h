@@ -144,6 +144,16 @@ namespace OpenLoco::StringIds
     constexpr string_id menu_rotate_clockwise = 172;
     constexpr string_id menu_rotate_anti_clockwise = 173;
 
+    constexpr string_id title_load_game = 176;
+    constexpr string_id title_quit_game = 177;
+    constexpr string_id title_quit_game_alt = 178;
+    constexpr string_id title_quit_scenario_editor = 179;
+    constexpr string_id title_load_landscape = 180;
+    constexpr string_id prompt_save_before_loading = 181;
+    constexpr string_id prompt_save_before_quitting = 182;
+    constexpr string_id prompt_save_before_quitting_alt = 183;
+    constexpr string_id label_button_save = 184;
+    constexpr string_id label_button_dont_save = 185;
     constexpr string_id label_button_cancel = 186;
     constexpr string_id label_button_ok = 187;
     constexpr string_id tooltip_scroll_left = 188;
@@ -1141,6 +1151,8 @@ namespace OpenLoco::StringIds
     constexpr string_id enter_description_of_this_scenario = 1707;
     constexpr string_id no_details_yet = 1708;
     constexpr string_id unnamed = 1709;
+    constexpr string_id landscape_save_failed = 1710;
+    constexpr string_id scenario_save_failed = 1711;
 
     constexpr string_id chat_send_message = 1716;
     constexpr string_id chat_title = 1717;
@@ -1351,6 +1363,7 @@ namespace OpenLoco::StringIds
 
     constexpr string_id title_menu_chat_tooltip = 1933;
     constexpr string_id the_other_player = 1934;
+    constexpr string_id error_the_other_player_has_exited_the_game = 1935;
 
     // String ids 1943--1982 (some blank) were used in the Atari credits screen, but are now unused.
     constexpr string_id title_cargo_distance_graphs = 1983;

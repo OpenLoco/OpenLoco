@@ -17,6 +17,8 @@ namespace OpenLoco::CompanyManager
     std::array<company, max_companies>& companies();
     company* get(company_id_t id);
     company_id_t getControllingId();
+    void setControllingId(company_id_t id);
+    void setSecondaryPlayerId(company_id_t id);
     company* getPlayerCompany();
     uint8_t getCompanyColour(company_id_t id);
     uint8_t getPlayerCompanyColour();

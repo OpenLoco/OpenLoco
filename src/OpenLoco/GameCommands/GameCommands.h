@@ -111,6 +111,13 @@ namespace OpenLoco::GameCommands
         vehicle_clone = 80,
     };
 
+    enum class LoadOrQuitMode : uint16_t
+    {
+        LoadGamePrompt,
+        ReturnToTitlePrompt,
+        QuitGamePrompt,
+    };
+
     constexpr uint32_t FAILURE = 0x80000000;
 
     void registerHooks();
@@ -266,7 +273,7 @@ namespace OpenLoco::GameCommands
     {
         registers regs;
         regs.bl = GameCommandFlag::apply;
-        regs.dl = dl; // [ 0, 2 ]
+        regs.dl = dl; // [ 0 = save, 1 = close save prompt, 2 = don't save ]
         regs.di = di; // [ 0 = load game, 1 = return to title screen, 2 = quit to desktop ]
         doCommand(GameCommand::load_save_quit_game, regs);
     }
@@ -640,11 +647,20 @@ namespace OpenLoco::GameCommands
         return GameCommands::doCommand(GameCommand::vehicle_clone, regs) != FAILURE;
     }
 
+    // Defined in GameCommands/LoadSaveQuit.cpp
+    void confirmSaveGame();
+    void returnToTitle();
+    void loadSaveQuit(registers& regs);
+
     // Defined in GameCommands/RenameIndustry.cpp
     void renameIndustry(registers& regs);
 
     // Defined in GameCommands/RenameTown.cpp
     void renameTown(registers& regs);
+
+    // Defined in GameCommands/TogglePause.cpp
+    uint32_t togglePause(uint8_t flags);
+    void togglePause(registers& regs);
 
     const Map::map_pos3& getPostion();
     void setPosition(const Map::map_pos3& pos);

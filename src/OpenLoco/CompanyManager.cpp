@@ -21,8 +21,6 @@ namespace OpenLoco::CompanyManager
     static loco_global<uint8_t, 0x00525FCB> _byte_525FCB;
     static loco_global<uint8_t, 0x00526214> _company_competition_delay;
     static loco_global<uint8_t, 0x00525FB7> _company_max_competing;
-    static loco_global<uint8_t, 0x00525E3C> _byte_525E3C;
-    static loco_global<uint8_t, 0x00525E3D> _byte_525E3D;
     static loco_global<company[max_companies], 0x00531784> _companies;
     static loco_global<uint8_t[max_companies + 1], 0x009C645C> _company_colours;
     static loco_global<company_id_t, 0x009C68EB> _updating_company_id;
@@ -64,6 +62,16 @@ namespace OpenLoco::CompanyManager
     company_id_t getControllingId()
     {
         return _player_company[0];
+    }
+
+    void setControllingId(company_id_t id)
+    {
+        _player_company[0] = id;
+    }
+
+    void setSecondaryPlayerId(company_id_t id)
+    {
+        _player_company[1] = id;
     }
 
     company* getPlayerCompany()
@@ -129,7 +137,7 @@ namespace OpenLoco::CompanyManager
             for (const auto& company : companies())
             {
                 auto id = company.id();
-                if (!company.empty() && id != _byte_525E3C && id != _byte_525E3D)
+                if (!company.empty() && id != _player_company[0] && id != _player_company[1])
                 {
                     companies_active++;
                 }

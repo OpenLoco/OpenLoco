@@ -29,6 +29,8 @@
 #include "EditorController.h"
 #include "Entities/EntityManager.h"
 #include "Environment.h"
+#include "GameCommands/GameCommands.h"
+#include "GameException.hpp"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
 #include "Gui.h"
@@ -207,7 +209,7 @@ namespace OpenLoco
 
     bool isPaused()
     {
-        return paused_state;
+        return paused_state != 0;
     }
 
     uint8_t getPauseFlags()
@@ -215,14 +217,14 @@ namespace OpenLoco
         return paused_state;
     }
 
-    // 0x00431E32
-    // value: bl (false will no-op)
-    // **Gamecommand**
-    void togglePause(bool value)
+    void setPauseFlag(uint8_t value)
     {
-        registers regs;
-        regs.bl = value ? 1 : 0;
-        call(0x00431E32, regs);
+        *paused_state |= value;
+    }
+
+    void unsetPauseFlag(uint8_t value)
+    {
+        *paused_state &= ~(value);
     }
 
     uint8_t getGameSpeed()
@@ -334,6 +336,23 @@ namespace OpenLoco
         regs.eax = errorCode;
         regs.bx = message;
         call(0x004BE5EB, regs);
+    }
+
+    // 0x004BE65E
+    [[noreturn]] void exitCleanly()
+    {
+        Audio::close();
+
+        auto tempFilePath = Environment::getPathNoWarning(Environment::path_id::_1tmp);
+        if (fs::exists(tempFilePath))
+        {
+            auto path8 = tempFilePath.u8string();
+            printf("Removing temp file '%s'\n", path8.c_str());
+            fs::remove(tempFilePath);
+        }
+
+        // SDL_Quit();
+        exit(0);
     }
 
     // 0x00441400
@@ -554,196 +573,205 @@ namespace OpenLoco
             return;
         }
 
-        addr<0x00113E87C, int32_t>() = 0;
-        addr<0x0005252E0, int32_t>() = 0;
-        if (!isInitialised)
+        try
         {
-            isInitialised = true;
-
-            // This address is where those routines jump back to to end the tick prematurely
-            registerHook(
-                0x0046AD71,
-                [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                    longjmp(tickJump, 1);
-                });
-
-            initialise();
-            last_tick_time = platform::getTime();
-        }
-
-        uint32_t time = platform::getTime();
-        time_since_last_tick = (uint16_t)std::min(time - last_tick_time, 500U);
-        last_tick_time = time;
-
-        if (!isPaused())
-        {
-            addr<0x0050C1A2, uint32_t>() += time_since_last_tick;
-        }
-        if (Tutorial::state() != Tutorial::tutorial_state::none)
-        {
-            time_since_last_tick = 31;
-        }
-        game_command_nest_level = 0;
-        Ui::update();
-
-        addr<0x005233AE, int32_t>() += addr<0x0114084C, int32_t>();
-        addr<0x005233B2, int32_t>() += addr<0x01140840, int32_t>();
-        addr<0x0114084C, int32_t>() = 0;
-        addr<0x01140840, int32_t>() = 0;
-        if (Config::get().var_72 == 0)
-        {
-            Config::get().var_72 = 16;
-            Ui::getCursorPos(addr<0x00F2538C, int32_t>(), addr<0x00F25390, int32_t>());
-            Gfx::clear(Gfx::screenDpi(), 0);
-            addr<0x00F2539C, int32_t>() = 0;
-        }
-        else
-        {
-            if (Config::get().var_72 >= 16)
+            addr<0x00113E87C, int32_t>() = 0;
+            addr<0x0005252E0, int32_t>() = 0;
+            if (!isInitialised)
             {
-                Config::get().var_72++;
-                if (Config::get().var_72 >= 48)
-                {
-                    if (sub_4034FC(addr<0x00F25394, int32_t>(), addr<0x00F25398, int32_t>()))
-                    {
-                        uintptr_t esi = addr<0x00F25390, int32_t>() + 4;
-                        esi *= addr<0x00F25398, int32_t>();
-                        esi += addr<0x00F2538C, int32_t>();
-                        esi += 2;
-                        esi += addr<0x00F25394, int32_t>();
-                        addr<0x00F2539C, int32_t>() |= *((int32_t*)esi);
-                        call(0x00403575);
-                    }
-                }
-                Ui::setCursorPos(addr<0x00F2538C, int32_t>(), addr<0x00F25390, int32_t>());
-                Gfx::invalidateScreen();
-                if (Config::get().var_72 != 96)
-                {
-                    return;
-                }
-                Config::get().var_72 = 1;
-                if (addr<0x00F2539C, int32_t>() != 0)
-                {
-                    Config::get().var_72 = 2;
-                }
-                Config::write();
+                isInitialised = true;
+
+                // This address is where those routines jump back to to end the tick prematurely
+                registerHook(
+                    0x0046AD71,
+                    [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                        longjmp(tickJump, 1);
+                    });
+
+                initialise();
+                last_tick_time = platform::getTime();
             }
 
-            call(0x00452D1A);
-            call(0x00440DEC);
+            uint32_t time = platform::getTime();
+            time_since_last_tick = (uint16_t)std::min(time - last_tick_time, 500U);
+            last_tick_time = time;
 
-            if (addr<0x00525340, int32_t>() == 1)
+            if (!isPaused())
             {
-                addr<0x00525340, int32_t>() = 0;
-                MultiPlayer::setFlag(MultiPlayer::flags::flag_1);
+                addr<0x0050C1A2, uint32_t>() += time_since_last_tick;
             }
-
-            Input::handleKeyboard();
-            Audio::updateSounds();
-
-            addr<0x0050C1AE, int32_t>()++;
-            if (Intro::isActive())
+            if (Tutorial::state() != Tutorial::tutorial_state::none)
             {
-                Intro::update();
+                time_since_last_tick = 31;
+            }
+            game_command_nest_level = 0;
+            Ui::update();
+
+            addr<0x005233AE, int32_t>() += addr<0x0114084C, int32_t>();
+            addr<0x005233B2, int32_t>() += addr<0x01140840, int32_t>();
+            addr<0x0114084C, int32_t>() = 0;
+            addr<0x01140840, int32_t>() = 0;
+            if (Config::get().var_72 == 0)
+            {
+                Config::get().var_72 = 16;
+                Ui::getCursorPos(addr<0x00F2538C, int32_t>(), addr<0x00F25390, int32_t>());
+                Gfx::clear(Gfx::screenDpi(), 0);
+                addr<0x00F2539C, int32_t>() = 0;
             }
             else
             {
-                uint16_t numUpdates = std::clamp<uint16_t>(time_since_last_tick / (uint16_t)31, 1, 3);
-                if (WindowManager::find(Ui::WindowType::multiplayer, 0) != nullptr)
+                if (Config::get().var_72 >= 16)
                 {
-                    numUpdates = 1;
+                    Config::get().var_72++;
+                    if (Config::get().var_72 >= 48)
+                    {
+                        if (sub_4034FC(addr<0x00F25394, int32_t>(), addr<0x00F25398, int32_t>()))
+                        {
+                            uintptr_t esi = addr<0x00F25390, int32_t>() + 4;
+                            esi *= addr<0x00F25398, int32_t>();
+                            esi += addr<0x00F2538C, int32_t>();
+                            esi += 2;
+                            esi += addr<0x00F25394, int32_t>();
+                            addr<0x00F2539C, int32_t>() |= *((int32_t*)esi);
+                            call(0x00403575);
+                        }
+                    }
+                    Ui::setCursorPos(addr<0x00F2538C, int32_t>(), addr<0x00F25390, int32_t>());
+                    Gfx::invalidateScreen();
+                    if (Config::get().var_72 != 96)
+                    {
+                        return;
+                    }
+                    Config::get().var_72 = 1;
+                    if (addr<0x00F2539C, int32_t>() != 0)
+                    {
+                        Config::get().var_72 = 2;
+                    }
+                    Config::write();
                 }
-                if (isNetworked())
+
+                call(0x00452D1A);
+                call(0x00440DEC);
+
+                if (addr<0x00525340, int32_t>() == 1)
                 {
-                    numUpdates = 1;
+                    addr<0x00525340, int32_t>() = 0;
+                    MultiPlayer::setFlag(MultiPlayer::flags::flag_1);
                 }
-                if (addr<0x00525324, int32_t>() == 1)
+
+                Input::handleKeyboard();
+                Audio::updateSounds();
+
+                addr<0x0050C1AE, int32_t>()++;
+                if (Intro::isActive())
                 {
-                    addr<0x00525324, int32_t>() = 0;
-                    numUpdates = 1;
+                    Intro::update();
                 }
                 else
                 {
-                    switch (Input::state())
+                    uint16_t numUpdates = std::clamp<uint16_t>(time_since_last_tick / (uint16_t)31, 1, 3);
+                    if (WindowManager::find(Ui::WindowType::multiplayer, 0) != nullptr)
                     {
-                        case input_state::reset:
-                        case input_state::normal:
-                        case input_state::dropdown_active:
-                            if (Input::hasFlag(input_flags::viewport_scrolling))
-                            {
-                                Input::resetFlag(input_flags::viewport_scrolling);
-                                numUpdates = 1;
-                            }
-                            break;
-                        case input_state::widget_pressed: break;
-                        case input_state::positioning_window: break;
-                        case input_state::viewport_right: break;
-                        case input_state::viewport_left: break;
-                        case input_state::scroll_left: break;
-                        case input_state::resizing: break;
-                        case input_state::scroll_right: break;
+                        numUpdates = 1;
                     }
-                }
-                addr<0x0052622E, int16_t>() += numUpdates;
-                if (isPaused())
-                {
-                    numUpdates = 0;
-                }
-                uint16_t var_F253A0 = std::max<uint16_t>(1, numUpdates);
-                _screen_age = std::min(0xFFFF, (int32_t)_screen_age + var_F253A0);
-                if (_gameSpeed != 0)
-                {
-                    numUpdates *= 3;
-                    if (_gameSpeed != 1)
+                    if (isNetworked())
+                    {
+                        numUpdates = 1;
+                    }
+                    if (addr<0x00525324, int32_t>() == 1)
+                    {
+                        addr<0x00525324, int32_t>() = 0;
+                        numUpdates = 1;
+                    }
+                    else
+                    {
+                        switch (Input::state())
+                        {
+                            case input_state::reset:
+                            case input_state::normal:
+                            case input_state::dropdown_active:
+                                if (Input::hasFlag(input_flags::viewport_scrolling))
+                                {
+                                    Input::resetFlag(input_flags::viewport_scrolling);
+                                    numUpdates = 1;
+                                }
+                                break;
+                            case input_state::widget_pressed: break;
+                            case input_state::positioning_window: break;
+                            case input_state::viewport_right: break;
+                            case input_state::viewport_left: break;
+                            case input_state::scroll_left: break;
+                            case input_state::resizing: break;
+                            case input_state::scroll_right: break;
+                        }
+                    }
+                    addr<0x0052622E, int16_t>() += numUpdates;
+                    if (isPaused())
+                    {
+                        numUpdates = 0;
+                    }
+                    uint16_t var_F253A0 = std::max<uint16_t>(1, numUpdates);
+                    _screen_age = std::min(0xFFFF, (int32_t)_screen_age + var_F253A0);
+                    if (_gameSpeed != 0)
                     {
                         numUpdates *= 3;
+                        if (_gameSpeed != 1)
+                        {
+                            numUpdates *= 3;
+                        }
                     }
-                }
 
-                sub_46FFCA();
-                tickLogic(numUpdates);
+                    sub_46FFCA();
+                    tickLogic(numUpdates);
 
-                _525F62++;
-                if (isEditorMode())
-                {
-                    EditorController::tick();
-                }
-                Audio::playBackgroundMusic();
+                    _525F62++;
+                    if (isEditorMode())
+                    {
+                        EditorController::tick();
+                    }
+                    Audio::playBackgroundMusic();
 
-                // TODO move stop title music to title::stop (when mode changes)
-                if (!isTitleMode())
-                {
-                    Audio::stopTitleMusic();
-                }
+                    // TODO move stop title music to title::stop (when mode changes)
+                    if (!isTitleMode())
+                    {
+                        Audio::stopTitleMusic();
+                    }
 
-                if (Tutorial::state() != Tutorial::tutorial_state::none && addr<0x0052532C, int32_t>() != 0 && addr<0x0113E2E4, int32_t>() < 0x40)
-                {
-                    Tutorial::stop();
+                    if (Tutorial::state() != Tutorial::tutorial_state::none && addr<0x0052532C, int32_t>() != 0 && addr<0x0113E2E4, int32_t>() < 0x40)
+                    {
+                        Tutorial::stop();
 
-                    // This ends with a premature tick termination
-                    call(0x0043C0FD);
-                    return; // won't be reached
-                }
+                        // This ends with a premature tick termination
+                        GameCommands::returnToTitle();
+                        return; // won't be reached
+                    }
 
-                sub_431695(var_F253A0);
-                call(0x00452B5F);
-                sub_46FFCA();
-                if (Config::get().countdown != 0xFF)
-                {
-                    Config::get().countdown++;
+                    sub_431695(var_F253A0);
+                    call(0x00452B5F);
+                    sub_46FFCA();
                     if (Config::get().countdown != 0xFF)
                     {
-                        Config::write();
+                        Config::get().countdown++;
+                        if (Config::get().countdown != 0xFF)
+                        {
+                            Config::write();
+                        }
                     }
                 }
-            }
 
-            if (Config::get().var_72 == 2)
-            {
-                addr<0x005252DC, int32_t>() = 1;
-                Ui::getCursorPos(addr<0x00F2538C, int32_t>(), addr<0x00F25390, int32_t>());
-                Ui::setCursorPos(addr<0x00F2538C, int32_t>(), addr<0x00F25390, int32_t>());
+                if (Config::get().var_72 == 2)
+                {
+                    addr<0x005252DC, int32_t>() = 1;
+                    Ui::getCursorPos(addr<0x00F2538C, int32_t>(), addr<0x00F25390, int32_t>());
+                    Ui::setCursorPos(addr<0x00F2538C, int32_t>(), addr<0x00F25390, int32_t>());
+                }
             }
+        }
+        catch (GameException)
+        {
+            // Premature end of current tick; use a different message to indicate it's from C++ code
+            std::cout << "tick interrupted" << std::endl;
+            return;
         }
     }
 
