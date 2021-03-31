@@ -310,7 +310,7 @@ namespace OpenLoco::GameCommands
         if (ebx != 0 && _updating_company_id == _player_company[0])
         {
             // Add flying cost text
-            CompanyManager::spendMoneyEffect({ gameCommandMapX, gameCommandMapY, gameCommandMapZ + 24 }, _updating_company_id, ebx);
+            CompanyManager::spendMoneyEffect(Map::map_pos3{ gameCommandMapX, gameCommandMapY, gameCommandMapZ } + Map::map_pos3{ 0, 0, 24 }, _updating_company_id, ebx);
         }
 
         return ebx;
