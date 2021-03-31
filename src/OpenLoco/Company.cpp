@@ -13,16 +13,15 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco
 {
-    static loco_global<company_id_t[2], 0x00525E3C> _player_company[2];
+    static loco_global<company_id_t[2], 0x00525E3C> _playerCompanies;
 
     bool isPlayerCompany(company_id_t id)
     {
-        auto& player_company = *((std::array<company_id_t, 2>*)_player_company->get());
         auto findResult = std::find(
-            player_company.begin(),
-            player_company.end(),
+            _playerCompanies.begin(),
+            _playerCompanies.end(),
             id);
-        return findResult != player_company.end();
+        return findResult != _playerCompanies.end();
     }
 
     company_id_t company::id() const
