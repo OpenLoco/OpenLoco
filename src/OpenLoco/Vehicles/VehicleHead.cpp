@@ -10,6 +10,7 @@
 #include "../Interop/Interop.hpp"
 #include "../Localisation/FormatArguments.hpp"
 #include "../Map/TileManager.h"
+#include "../Math/Bound.hpp"
 #include "../Math/Trigonometry.hpp"
 #include "../MessageManager.h"
 #include "../Objects/AirportObject.h"
@@ -23,7 +24,6 @@
 #include "../TownManager.h"
 #include "../Ui/WindowManager.h"
 #include "../ViewportManager.h"
-#include "../Math/Bound.hpp"
 #include "Orders.h"
 #include "Vehicle.h"
 #include <cassert>
@@ -2795,21 +2795,6 @@ namespace OpenLoco::Vehicles
     // 0x004B9A2A
     void VehicleHead::updateUnloadCargo()
     {
-        /*
-        21 owner
-        26 head
-        2c
-        30 tile_x
-        32 tile_y
-        34 tile_base_z
-        4c cargo_type // 0xFF signifies if cargo component or not
-        4d max_cargo 
-        4e townCargoFrom
-        50
-        51 cargoQty
-        5f
-        */
-
         if (cargoTransferTimeout != 0)
         {
             cargoTransferTimeout--;
@@ -2829,8 +2814,6 @@ namespace OpenLoco::Vehicles
                         return;
                     }
                     updateUnloadCargoComponent(carComponent.front, nullptr);
-                    // use component
-                    // Do component unload
                     return;
                 }
                 else if (carComponent.back->var_5F & (1 << 0))
@@ -2846,8 +2829,6 @@ namespace OpenLoco::Vehicles
                         return;
                     }
                     updateUnloadCargoComponent(carComponent.body, carComponent.back);
-                    // use component
-                    // Do component unload
                     return;
                 }
             }
