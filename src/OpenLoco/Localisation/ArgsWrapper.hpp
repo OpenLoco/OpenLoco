@@ -1,77 +1,44 @@
 #pragma once
 
-#include <cstdint>
+#include <cstddef>
+#include <cstring>
 
 namespace OpenLoco::StringManager
 {
-    class argswrapper
+    class ArgsWrapper
     {
     private:
-        const void* args;
+        const std::byte* args;
 
     public:
-        argswrapper(const void* newargs)
-            : args(newargs){};
+        ArgsWrapper(const void* newargs)
+            : args(reinterpret_cast<const std::byte*>(newargs)){};
 
-        uint8_t pop8()
+        template<typename T>
+        T pop()
         {
             if (args == nullptr)
-                return 0;
+                return T{};
 
-            uint8_t value = *(uint8_t*)args;
-            args = (uint8_t*)args + 1;
+            T value;
+            std::memcpy(&value, args, sizeof(T));
+            args += sizeof(T);
+
             return value;
         }
 
-        uint16_t pop16()
+        template<typename T>
+        void skip()
         {
             if (args == nullptr)
-                return 0;
-
-            uint16_t value = *(uint16_t*)args;
-            args = (uint16_t*)args + 1;
-            return value;
+                return;
+            args += sizeof(T);
         }
 
-        int16_t popS16()
+        template<typename T>
+        void push()
         {
-            if (args == nullptr)
-                return 0;
-
-            uint16_t value = *(int16_t*)args;
-            args = (int16_t*)args + 1;
-            return value;
-        }
-
-        uint32_t pop32()
-        {
-            if (args == nullptr)
-                return 0;
-
-            uint32_t value = *(uint32_t*)args;
-            args = (uint32_t*)args + 1;
-            return value;
-        }
-
-        int32_t popS32()
-        {
-            if (args == nullptr)
-                return 0;
-
-            int32_t value = *(int32_t*)args;
-            args = (int32_t*)args + 1;
-            return value;
-        }
-
-        void skip16()
-        {
-            if (args != nullptr)
-                args = (uint16_t*)args + 1;
-        }
-
-        void push16()
-        {
-            args = (uint16_t*)args - 1;
+            args -= sizeof(T);
         }
     };
 }

@@ -238,9 +238,9 @@ namespace OpenLoco::StringManager
         return buffer;
     }
 
-    static char* formatString(char* buffer, string_id id, argswrapper& args);
+    static char* formatString(char* buffer, string_id id, ArgsWrapper& args);
 
-    static char* formatStringPart(char* buffer, const char* sourceStr, argswrapper& args)
+    static char* formatStringPart(char* buffer, const char* sourceStr, ArgsWrapper& args)
     {
         while (true)
         {
@@ -289,57 +289,57 @@ namespace OpenLoco::StringManager
                 {
                     case ControlCodes::int32_grouped:
                     {
-                        int32_t value = args.popS32();
+                        int32_t value = args.pop<int32_t>();
                         buffer = formatInt32Grouped(value, buffer);
                         break;
                     }
 
                     case ControlCodes::int32_ungrouped:
                     {
-                        int32_t value = args.popS32();
+                        int32_t value = args.pop<int32_t>();
                         buffer = formatInt32Ungrouped(value, buffer);
                         break;
                     }
 
                     case ControlCodes::int16_decimals:
                     {
-                        int16_t value = args.popS16();
+                        int16_t value = args.pop<int16_t>();
                         buffer = formatShortWithDecimals(value, buffer);
                         break;
                     }
 
                     case ControlCodes::int32_decimals:
                     {
-                        int32_t value = args.popS32();
+                        int32_t value = args.pop<int32_t>();
                         buffer = formatIntWithDecimals(value, buffer);
                         break;
                     }
 
                     case ControlCodes::int16_grouped:
                     {
-                        int16_t value = args.popS16();
+                        int16_t value = args.pop<int16_t>();
                         buffer = formatInt32Grouped(value, buffer);
                         break;
                     }
 
                     case ControlCodes::uint16_ungrouped:
                     {
-                        int32_t value = args.pop16();
+                        int32_t value = args.pop<uint16_t>();
                         buffer = formatInt32Ungrouped(value, buffer);
                         break;
                     }
 
                     case ControlCodes::currency32:
                     {
-                        int32_t value = args.pop32();
+                        int32_t value = args.pop<uint32_t>();
                         buffer = formatCurrency(value, buffer);
                         break;
                     }
 
                     case ControlCodes::currency48:
                     {
-                        uint32_t value_low = (uint32_t)args.pop32();
-                        int32_t value_high = args.popS16();
+                        uint32_t value_low = args.pop<uint32_t>();
+                        int32_t value_high = args.pop<int16_t>();
                         int64_t value = (value_high * (1ULL << 32)) | value_low;
                         buffer = formatCurrency(value, buffer);
                         break;
@@ -347,7 +347,7 @@ namespace OpenLoco::StringManager
 
                     case ControlCodes::stringid_args:
                     {
-                        string_id id = args.pop16();
+                        string_id id = args.pop<string_id>();
                         buffer = formatString(buffer, id, args);
                         break;
                     }
@@ -362,7 +362,7 @@ namespace OpenLoco::StringManager
 
                     case ControlCodes::string_ptr:
                     {
-                        const char* str = (char*)args.pop32();
+                        const char* str = args.pop<const char*>();
                         strcpy(buffer, str);
                         buffer += strlen(str);
                         break;
@@ -371,7 +371,7 @@ namespace OpenLoco::StringManager
                     case ControlCodes::date:
                     {
                         char modifier = *sourceStr;
-                        uint32_t totalDays = args.pop32();
+                        uint32_t totalDays = args.pop<uint32_t>();
                         sourceStr++;
 
                         switch (modifier)
@@ -403,7 +403,7 @@ namespace OpenLoco::StringManager
                     {
                         auto measurement_format = Config::get().measurement_format;
 
-                        int32_t value = args.popS16();
+                        int32_t value = args.pop<int16_t>();
 
                         const char* unit;
                         if (measurement_format == Config::measurement_format::imperial)
@@ -425,11 +425,11 @@ namespace OpenLoco::StringManager
                     }
 
                     case ControlCodes::pop16:
-                        args.skip16();
+                        args.skip<uint16_t>();
                         break;
 
                     case ControlCodes::push16:
-                        args.push16();
+                        args.push<uint16_t>();
                         break;
 
                     case ControlCodes::timeMS:
@@ -440,7 +440,7 @@ namespace OpenLoco::StringManager
 
                     case ControlCodes::distance:
                     {
-                        uint32_t value = args.pop16();
+                        uint32_t value = args.pop<uint16_t>();
                         auto measurement_format = Config::get().measurement_format;
 
                         const char* unit;
@@ -464,7 +464,7 @@ namespace OpenLoco::StringManager
 
                     case ControlCodes::height:
                     {
-                        int32_t value = args.popS16();
+                        int32_t value = args.pop<int16_t>();
 
                         bool show_height_as_units = Config::get().flags & Config::flags::show_height_as_units;
                         uint8_t measurement_format = Config::get().measurement_format;
@@ -495,7 +495,7 @@ namespace OpenLoco::StringManager
 
                     case ControlCodes::power:
                     {
-                        uint32_t value = args.pop16();
+                        uint32_t value = args.pop<int16_t>();
                         auto measurement_format = Config::get().measurement_format;
 
                         const char* unit;
@@ -520,7 +520,7 @@ namespace OpenLoco::StringManager
                     case ControlCodes::inline_sprite_args:
                     {
                         *buffer = ControlCodes::inline_sprite_str;
-                        uint32_t value = args.pop32();
+                        uint32_t value = args.pop<uint32_t>();
                         uint32_t* sprite_ptr = (uint32_t*)(buffer + 1);
                         *sprite_ptr = value;
                         buffer += 5;
@@ -534,12 +534,12 @@ namespace OpenLoco::StringManager
 
     static char* formatStringPart(char* buffer, const char* sourceStr, void* args)
     {
-        auto wrapped = argswrapper(args);
+        auto wrapped = ArgsWrapper(args);
         return formatStringPart(buffer, sourceStr, wrapped);
     }
 
     // 0x004958C6
-    static char* formatString(char* buffer, string_id id, argswrapper& args)
+    static char* formatString(char* buffer, string_id id, ArgsWrapper& args)
     {
         if (id < USER_STRINGS_START)
         {
@@ -556,7 +556,7 @@ namespace OpenLoco::StringManager
         else if (id < USER_STRINGS_END)
         {
             id -= USER_STRINGS_START;
-            args.skip16();
+            args.skip<uint16_t>();
             const char* sourceStr = _userStrings[id];
 
             // !!! TODO: original code is prone to buffer overflow.
@@ -569,14 +569,14 @@ namespace OpenLoco::StringManager
         else if (id < TOWN_NAMES_END)
         {
             id -= TOWN_NAMES_START;
-            uint16_t town_id = args.pop16();
+            uint16_t town_id = args.pop<uint16_t>();
             auto town = TownManager::get(town_id);
             void* town_name = (void*)&town->name;
             return formatString(buffer, id, town_name);
         }
         else if (id == TOWN_NAMES_END)
         {
-            uint16_t town_id = args.pop16();
+            uint16_t town_id = args.pop<uint16_t>();
             auto town = TownManager::get(town_id);
             return formatString(buffer, town->name, nullptr);
         }
@@ -588,7 +588,7 @@ namespace OpenLoco::StringManager
 
     char* formatString(char* buffer, string_id id, const void* args)
     {
-        auto wrapped = argswrapper(args);
+        auto wrapped = ArgsWrapper(args);
         return formatString(buffer, id, wrapped);
     }
 
