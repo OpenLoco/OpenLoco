@@ -5,8 +5,6 @@
 #include "../Ui/WindowManager.h"
 #include "EntityManager.h"
 
-using namespace OpenLoco::ObjectManager;
-
 namespace OpenLoco
 {
 
