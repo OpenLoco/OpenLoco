@@ -1,6 +1,7 @@
 #include "TileManager.h"
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
+#include "../Map/Map.hpp"
 #include "../ViewportManager.h"
 
 using namespace OpenLoco::Interop;
@@ -20,6 +21,8 @@ namespace OpenLoco::Map::TileManager
 
     constexpr uint16_t mapSelectedTilesSize = 300;
     static loco_global<map_pos[mapSelectedTilesSize], 0x00F24490> _mapSelectedTiles;
+
+    static tile_element* InvalidTile = reinterpret_cast<tile_element*>(static_cast<intptr_t>(-1));
 
     // 0x00461179
     void initialise()
@@ -46,7 +49,7 @@ namespace OpenLoco::Map::TileManager
     {
         size_t index = (pos.y << 9) | pos.x;
         auto data = _tiles[index];
-        if (data == (tile_element*)0xFFFFFFFF)
+        if (data == InvalidTile)
         {
             data = nullptr;
         }
@@ -77,7 +80,7 @@ namespace OpenLoco::Map::TileManager
     {
         TileHeight height{ 16, 0 };
         // Off the map
-        if ((unsigned)pos.x >= 12287 || (unsigned)pos.y >= 12287)
+        if ((unsigned)pos.x >= (Map::map_width - 1) || (unsigned)pos.y >= (Map::map_height - 1))
             return height;
 
         auto tile = TileManager::get(pos);
@@ -92,15 +95,22 @@ namespace OpenLoco::Map::TileManager
         height.waterHeight = surfaceEl->water() * 16;
         height.landHeight = surfaceEl->baseZ() * 4;
 
-        auto slope = surfaceEl->slopeCorners();
-        int8_t quad = 0, quad_extra = 0; // which quadrant the element is in?
-                                         // quad_extra is for extra height tiles
+        const auto slope = surfaceEl->slopeCorners();
+        if (slope == SurfaceSlope::flat)
+        {
+            // Flat surface requires no further calculations.
+            return height;
+        }
 
-        uint8_t TILE_SIZE = 31;
+        int8_t quad = 0;
+        int8_t quad_extra = 0; // which quadrant the element is in?
+                               // quad_extra is for extra height tiles
+
+        constexpr uint8_t TILE_SIZE = 31;
 
         // Subtile coords
-        auto xl = pos.x & 0x1f;
-        auto yl = pos.y & 0x1f;
+        const auto xl = pos.x & 0x1f;
+        const auto yl = pos.y & 0x1f;
 
         // Slope logic:
         // Each of the four bits in slope represents that corner being raised
@@ -110,28 +120,25 @@ namespace OpenLoco::Map::TileManager
         // We arbitrarily take the SW corner to be closest to the viewer
 
         // One corner up
-        if (slope == SurfaceSlope::n_corner_up || slope == SurfaceSlope::e_corner_up || slope == SurfaceSlope::s_corner_up || slope == SurfaceSlope::w_corner_up)
+        switch (slope)
         {
-            switch (slope)
-            {
-                case SurfaceSlope::n_corner_up:
-                    quad = xl + yl - TILE_SIZE;
-                    break;
-                case SurfaceSlope::e_corner_up:
-                    quad = xl - yl;
-                    break;
-                case SurfaceSlope::s_corner_up:
-                    quad = TILE_SIZE - yl - xl;
-                    break;
-                case SurfaceSlope::w_corner_up:
-                    quad = yl - xl;
-                    break;
-            }
-            // If the element is in the quadrant with the slope, raise its height
-            if (quad > 0)
-            {
-                height.landHeight += quad / 2;
-            }
+            case SurfaceSlope::n_corner_up:
+                quad = xl + yl - TILE_SIZE;
+                break;
+            case SurfaceSlope::e_corner_up:
+                quad = xl - yl;
+                break;
+            case SurfaceSlope::s_corner_up:
+                quad = TILE_SIZE - yl - xl;
+                break;
+            case SurfaceSlope::w_corner_up:
+                quad = yl - xl;
+                break;
+        }
+        // If the element is in the quadrant with the slope, raise its height
+        if (quad > 0)
+        {
+            height.landHeight += quad / 2;
         }
 
         // One side up
@@ -153,63 +160,59 @@ namespace OpenLoco::Map::TileManager
         }
 
         // One corner down
-        if ((slope == SurfaceSlope::w_corner_dn) || (slope == SurfaceSlope::s_corner_dn) || (slope == SurfaceSlope::e_corner_dn) || (slope == SurfaceSlope::n_corner_dn))
+        switch (slope)
         {
-            switch (slope)
-            {
-                case SurfaceSlope::w_corner_dn:
-                    quad_extra = xl + TILE_SIZE - yl;
-                    quad = xl - yl;
-                    break;
-                case SurfaceSlope::s_corner_dn:
-                    quad_extra = xl + yl;
-                    quad = xl + yl - TILE_SIZE - 1;
-                    break;
-                case SurfaceSlope::e_corner_dn:
-                    quad_extra = TILE_SIZE - xl + yl;
-                    quad = yl - xl;
-                    break;
-                case SurfaceSlope::n_corner_dn:
-                    quad_extra = (TILE_SIZE - xl) + (TILE_SIZE - yl);
-                    quad = TILE_SIZE - yl - xl - 1;
-                    break;
-            }
+            case SurfaceSlope::w_corner_dn:
+                quad_extra = xl + TILE_SIZE - yl;
+                quad = xl - yl;
+                break;
+            case SurfaceSlope::s_corner_dn:
+                quad_extra = xl + yl;
+                quad = xl + yl - TILE_SIZE - 1;
+                break;
+            case SurfaceSlope::e_corner_dn:
+                quad_extra = TILE_SIZE - xl + yl;
+                quad = yl - xl;
+                break;
+            case SurfaceSlope::n_corner_dn:
+                quad_extra = (TILE_SIZE - xl) + (TILE_SIZE - yl);
+                quad = TILE_SIZE - yl - xl - 1;
+                break;
+        }
 
-            if (surfaceEl->isSlopeDoubleHeight())
-            {
-                height.landHeight += quad_extra / 2;
-                height.landHeight++;
-                return height;
-            }
-            // This tile is essentially at the next height level
-            height.landHeight += 0x10;
-            // so we move *down* the slope
-            if (quad < 0)
-            {
-                height.landHeight += quad / 2;
-            }
+        if (surfaceEl->isSlopeDoubleHeight())
+        {
+            height.landHeight += quad_extra / 2;
+            height.landHeight++;
+            return height;
+        }
+
+        // This tile is essentially at the next height level
+        height.landHeight += 0x10;
+        // so we move *down* the slope
+        if (quad < 0)
+        {
+            height.landHeight += quad / 2;
         }
 
         // Valleys
-        if ((slope == SurfaceSlope::w_e_valley) || (slope == SurfaceSlope::n_s_valley))
+        switch (slope)
         {
-            switch (slope)
-            {
-                case SurfaceSlope::w_e_valley:
-                    if (xl + yl <= TILE_SIZE + 1)
-                    {
-                        return height;
-                    }
-                    quad = TILE_SIZE - xl - yl;
-                    break;
-                case SurfaceSlope::n_s_valley:
-                    quad = xl - yl;
-                    break;
-            }
-            if (quad > 0)
-            {
-                height.landHeight += quad / 2;
-            }
+            case SurfaceSlope::w_e_valley:
+                if (xl + yl <= TILE_SIZE + 1)
+                {
+                    return height;
+                }
+                quad = TILE_SIZE - xl - yl;
+                break;
+            case SurfaceSlope::n_s_valley:
+                quad = xl - yl;
+                break;
+        }
+
+        if (quad > 0)
+        {
+            height.landHeight += quad / 2;
         }
 
         return height;
@@ -217,8 +220,7 @@ namespace OpenLoco::Map::TileManager
 
     static void clearTilePointers()
     {
-        tile_element** tiles = _tiles;
-        std::memset(tiles, 0xFF, map_pitch * map_columns * sizeof(tile_element*));
+        std::fill(_tiles.begin(), _tiles.end(), InvalidTile);
     }
 
     static void set(TilePos pos, tile_element* elements)
