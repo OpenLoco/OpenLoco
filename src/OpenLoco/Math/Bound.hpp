@@ -15,6 +15,7 @@ namespace OpenLoco::Math::Bound
             template<typename T, typename U>
             constexpr T operator()(T lhs, U rhs) const
             {
+                static_assert(sizeof(T) < 8 && sizeof(U) < 8, "Bounded addition only possible with smaller than 64bit types");
                 return static_cast<T>(std::min<int64_t>(static_cast<int64_t>(lhs) + rhs, std::numeric_limits<T>::max()));
             }
         };
@@ -27,6 +28,7 @@ namespace OpenLoco::Math::Bound
             template<typename T, typename U>
             constexpr T operator()(T lhs, U rhs)
             {
+                static_assert(sizeof(T) < 8 && sizeof(U) < 8, "Bounded subtraction only possible with smaller than 64bit types");
                 return static_cast<T>(std::max<int64_t>(static_cast<int64_t>(lhs) - rhs, std::numeric_limits<T>::min()));
             }
         };
