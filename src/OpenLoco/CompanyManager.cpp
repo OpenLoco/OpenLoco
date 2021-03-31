@@ -1,10 +1,12 @@
 #include "CompanyManager.h"
 #include "Config.h"
 #include "Entities/EntityManager.h"
+#include "Entities/Misc.h"
 #include "GameCommands.h"
 #include "Interop/Interop.hpp"
 #include "Localisation/FormatArguments.hpp"
 #include "Map/Tile.h"
+#include "Map/TileManager.h"
 #include "OpenLoco.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
@@ -243,4 +245,36 @@ namespace OpenLoco::CompanyManager
         GameCommands::do_73(mapPosition);
     }
 
+    // 0x0046DC9F
+    // loc : gGameCommandMapX/Y/Z global
+    // company : updatingCompanyId global
+    // amount : ebx
+    void spendMoneyEffect(const Map::map_pos3& loc, const company_id_t company, const currency32_t amount)
+    {
+        if (isEditorMode())
+        {
+            return;
+        }
+
+        Map::map_pos3 pos = loc;
+        if (loc.x == Location::null)
+        {
+            auto* view = Ui::WindowManager::getMainViewport();
+            if (view == nullptr)
+            {
+                return;
+            }
+
+            auto centre = view->getCentreScreenMapPosition();
+            if (centre.x == Location::null)
+            {
+                return;
+            }
+            pos = Map::map_pos3(centre.x, centre.y, Map::TileManager::getHeight(centre).landHeight);
+        }
+
+        pos.z += 10;
+
+        MoneyEffect::create(pos, company, -amount);
+    }
 }

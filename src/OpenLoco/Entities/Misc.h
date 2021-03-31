@@ -81,7 +81,7 @@ namespace OpenLoco
         int16_t offsetX; // 0x44
         uint16_t wiggle; // 0x46
 
-        static MoneyEffect* create(const Map::map_pos3& loc, company_id_t company, currency32_t amount);
+        static MoneyEffect* create(const Map::map_pos3& loc, const company_id_t company, const currency32_t amount);
     };
 
     struct VehicleCrashParticle : MiscBase
