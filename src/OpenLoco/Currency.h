@@ -49,6 +49,17 @@ namespace OpenLoco
             return *this = sum;
         }
 
+        currency48_t operator-(currency48_t& rhs)
+        {
+            return currency48_t(asInt64() - rhs.asInt64());
+        }
+
+        currency48_t& operator-=(currency48_t& rhs)
+        {
+            auto sum = currency48_t(asInt64() - rhs.asInt64());
+            return *this = sum;
+        }
+
         bool operator<(currency48_t& rhs)
         {
             return asInt64() < rhs.asInt64();

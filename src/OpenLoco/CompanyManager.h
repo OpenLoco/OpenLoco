@@ -36,4 +36,5 @@ namespace OpenLoco::CompanyManager
     void updateOwnerStatus();
 
     void spendMoneyEffect(const Map::map_pos3& loc, const company_id_t company, const currency32_t amount);
+    void applyPaymentToCompany(const company_id_t id, const currency32_t payment, const ExpenditureType type);
 }

@@ -255,7 +255,6 @@ namespace OpenLoco::CompanyManager
         {
             return;
         }
-
         Map::map_pos3 pos = loc;
         if (loc.x == Location::null)
         {
@@ -276,5 +275,25 @@ namespace OpenLoco::CompanyManager
         pos.z += 10;
 
         MoneyEffect::create(pos, company, -amount);
+    }
+
+    // 0x0046DE2B
+    // id : updatingCompanyId global var
+    // payment : ebx (subtracted from company balance)
+    // type : gGameCommandExpenditureType global var
+    void applyPaymentToCompany(const company_id_t id, const currency32_t payment, const ExpenditureType type)
+    {
+        auto* company = get(id);
+        if (company == nullptr || OpenLoco::isEditorMode())
+            WindowManager::invalidate(WindowType::company, id);
+
+        // Invalidate the company balance if this is the player company
+        if (getControllingId() == id)
+        {
+            Ui::Windows::PlayerInfoPanel::invalidateFrame();
+        }
+        auto cost = currency48_t{ payment };
+        company->cash -= cost;
+        company->expenditures[0][static_cast<uint8_t>(type)] -= payment;
     }
 }
