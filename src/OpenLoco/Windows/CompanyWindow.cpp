@@ -517,7 +517,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                     invalidViewport(self);
                     return;
                 }
-                if (!vehicle->isVehicleHead() || (vehicle->x == Location::null))
+                if (!vehicle->isVehicleHead() || (vehicle->position.x == Location::null))
                 {
                     invalidViewport(self);
                     return;

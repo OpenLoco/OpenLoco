@@ -239,29 +239,29 @@ namespace OpenLoco::Vehicles
     void VehicleBody::sub_4AC255(VehicleBogie* back_bogie, VehicleBogie* front_bogie)
     {
         Map::Pos3 loc = {
-            static_cast<int16_t>((front_bogie->x + back_bogie->x) / 2),
-            static_cast<int16_t>((front_bogie->y + back_bogie->y) / 2),
-            static_cast<int16_t>((front_bogie->z + back_bogie->z) / 2)
+            static_cast<int16_t>((front_bogie->position.x + back_bogie->position.x) / 2),
+            static_cast<int16_t>((front_bogie->position.y + back_bogie->position.y) / 2),
+            static_cast<int16_t>((front_bogie->position.z + back_bogie->position.z) / 2)
         };
         moveTo(loc);
 
         if (object_sprite_type == 0xFF)
             return;
 
-        auto distanceBetweenBogies = Math::Vector::distance(Map::Pos2{ front_bogie->x, front_bogie->y }, Map::Pos2{ back_bogie->x, back_bogie->y });
+        auto distanceBetweenBogies = Math::Vector::distance(front_bogie->position, back_bogie->position);
 
         auto vehObj = object();
         if (vehObj->bodySprites[object_sprite_type].flags & BodySpriteFlags::hasSteepSprites)
         {
-            sprite_pitch = updateSpritePitchSteepSlopes(distanceBetweenBogies, front_bogie->z - back_bogie->z);
+            sprite_pitch = updateSpritePitchSteepSlopes(distanceBetweenBogies, front_bogie->position.z - back_bogie->position.z);
         }
         else
         {
-            sprite_pitch = updateSpritePitch(distanceBetweenBogies, front_bogie->z - back_bogie->z);
+            sprite_pitch = updateSpritePitch(distanceBetweenBogies, front_bogie->position.z - back_bogie->position.z);
         }
 
-        auto xDiff = front_bogie->x - back_bogie->x;
-        auto yDiff = front_bogie->y - back_bogie->y;
+        auto xDiff = front_bogie->position.x - back_bogie->position.x;
+        auto yDiff = front_bogie->position.y - back_bogie->position.y;
         // If the sprite_pitch is a transition there is always 4 bits for yaw
         if (static_cast<uint8_t>(sprite_pitch) & 1)
         {
@@ -949,18 +949,18 @@ namespace OpenLoco::Vehicles
 
         var_05 += 64;
         Map::Pos3 loc = {
-            static_cast<int16_t>(backBogie->x - frontBogie->x),
-            static_cast<int16_t>(backBogie->y - frontBogie->y),
-            static_cast<int16_t>(backBogie->z - frontBogie->z),
+            static_cast<int16_t>(backBogie->position.x - frontBogie->position.x),
+            static_cast<int16_t>(backBogie->position.y - frontBogie->position.y),
+            static_cast<int16_t>(backBogie->position.z - frontBogie->position.z),
         };
 
         loc.x = loc.x * var_05 / 128;
         loc.y = loc.y * var_05 / 128;
         loc.z = loc.z * var_05 / 128;
 
-        loc.x += frontBogie->x;
-        loc.y += frontBogie->y;
-        loc.z += frontBogie->z;
+        loc.x += frontBogie->position.x;
+        loc.y += frontBogie->position.y;
+        loc.z += frontBogie->position.z;
 
         loc.z += vehicleObject->animation[num].height;
 
@@ -1093,9 +1093,9 @@ namespace OpenLoco::Vehicles
             auto xyFactor = Math::Trigonometry::computeXYVector(positionFactor, invertedDirection) / 2;
 
             Map::Pos3 loc = {
-                static_cast<int16_t>(x + xyFactor.x),
-                static_cast<int16_t>(y + xyFactor.y),
-                static_cast<int16_t>(z + vehicleObject->animation[num].height)
+                static_cast<int16_t>(position.x + xyFactor.x),
+                static_cast<int16_t>(position.y + xyFactor.y),
+                static_cast<int16_t>(position.z + vehicleObject->animation[num].height)
             };
             Exhaust::create(loc, vehicleObject->animation[num].object_id);
         }
@@ -1117,18 +1117,18 @@ namespace OpenLoco::Vehicles
 
             var_05 += 64;
             Map::Pos3 loc = {
-                static_cast<int16_t>(backBogie->x - frontBogie->x),
-                static_cast<int16_t>(backBogie->y - frontBogie->y),
-                static_cast<int16_t>(backBogie->z - frontBogie->z),
+                static_cast<int16_t>(backBogie->position.x - frontBogie->position.x),
+                static_cast<int16_t>(backBogie->position.y - frontBogie->position.y),
+                static_cast<int16_t>(backBogie->position.z - frontBogie->position.z),
             };
 
             loc.x = loc.x * var_05 / 128;
             loc.y = loc.y * var_05 / 128;
             loc.z = loc.z * var_05 / 128;
 
-            loc.x += frontBogie->x;
-            loc.y += frontBogie->y;
-            loc.z += frontBogie->z;
+            loc.x += frontBogie->position.x;
+            loc.y += frontBogie->position.y;
+            loc.z += frontBogie->position.z;
 
             loc.z += vehicleObject->animation[num].height;
 
@@ -1169,18 +1169,18 @@ namespace OpenLoco::Vehicles
         var_05 += 64;
 
         Map::Pos3 loc = {
-            static_cast<int16_t>(backBogie->x - frontBogie->x),
-            static_cast<int16_t>(backBogie->y - frontBogie->y),
-            static_cast<int16_t>(backBogie->z - frontBogie->z),
+            static_cast<int16_t>(backBogie->position.x - frontBogie->position.x),
+            static_cast<int16_t>(backBogie->position.y - frontBogie->position.y),
+            static_cast<int16_t>(backBogie->position.z - frontBogie->position.z),
         };
 
         loc.x = loc.x * var_05 / 128;
         loc.y = loc.y * var_05 / 128;
         loc.z = loc.z * var_05 / 128;
 
-        loc.x += frontBogie->x;
-        loc.y += frontBogie->y;
-        loc.z += frontBogie->z;
+        loc.x += frontBogie->position.x;
+        loc.y += frontBogie->position.y;
+        loc.z += frontBogie->position.z;
 
         loc.z += vehicleObject->animation[num].height;
 
@@ -1234,18 +1234,18 @@ namespace OpenLoco::Vehicles
             return;
 
         Map::Pos3 loc = {
-            static_cast<int16_t>(backBogie->x - frontBogie->x),
-            static_cast<int16_t>(backBogie->y - frontBogie->y),
-            static_cast<int16_t>(backBogie->z - frontBogie->z),
+            static_cast<int16_t>(backBogie->position.x - frontBogie->position.x),
+            static_cast<int16_t>(backBogie->position.y - frontBogie->position.y),
+            static_cast<int16_t>(backBogie->position.z - frontBogie->position.z),
         };
 
         loc.x = loc.x * var_05 / 128;
         loc.y = loc.y * var_05 / 128;
         loc.z = loc.z * var_05 / 128;
 
-        loc.x += frontBogie->x;
-        loc.y += frontBogie->y;
-        loc.z += frontBogie->z;
+        loc.x += frontBogie->position.x;
+        loc.y += frontBogie->position.y;
+        loc.z += frontBogie->position.z;
 
         loc.z += vehicleObject->animation[num].height;
 
@@ -1287,18 +1287,18 @@ namespace OpenLoco::Vehicles
             return;
 
         Map::Pos3 loc = {
-            static_cast<int16_t>(backBogie->x - frontBogie->x),
-            static_cast<int16_t>(backBogie->y - frontBogie->y),
-            static_cast<int16_t>(backBogie->z - frontBogie->z),
+            static_cast<int16_t>(backBogie->position.x - frontBogie->position.x),
+            static_cast<int16_t>(backBogie->position.y - frontBogie->position.y),
+            static_cast<int16_t>(backBogie->position.z - frontBogie->position.z),
         };
 
         loc.x = loc.x * var_05 / 128;
         loc.y = loc.y * var_05 / 128;
         loc.z = loc.z * var_05 / 128;
 
-        loc.x += frontBogie->x;
-        loc.y += frontBogie->y;
-        loc.z += frontBogie->z;
+        loc.x += frontBogie->position.x;
+        loc.y += frontBogie->position.y;
+        loc.z += frontBogie->position.z;
 
         loc.z += vehicleObject->animation[num].height;
 
@@ -1361,9 +1361,9 @@ namespace OpenLoco::Vehicles
         auto xyFactor = Math::Trigonometry::computeXYVector(positionFactor, invertedDirection) / 4;
 
         Map::Pos3 loc = {
-            static_cast<int16_t>(x + xyFactor.x),
-            static_cast<int16_t>(y + xyFactor.y),
-            z
+            static_cast<int16_t>(position.x + xyFactor.x),
+            static_cast<int16_t>(position.y + xyFactor.y),
+            position.z
         };
 
         // 90 degrees C.W.

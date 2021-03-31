@@ -18,7 +18,7 @@ namespace OpenLoco::Vehicles
             return GameCommands::FAILURE;
         }
 
-        GameCommands::setPosition({ head->x, head->y, head->z });
+        GameCommands::setPosition(head->position);
         if (!(flags & GameCommands::Flags::apply))
         {
             return 0;

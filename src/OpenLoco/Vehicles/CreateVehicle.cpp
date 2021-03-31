@@ -779,7 +779,7 @@ namespace OpenLoco::Vehicles
     static uint32_t addCarToVehicle(const uint8_t flags, const uint16_t vehicleTypeId, const uint16_t vehicleThingId)
     {
         Vehicle train(vehicleThingId);
-        GameCommands::setPosition({ train.veh2->x, train.veh2->y, train.veh2->z });
+        GameCommands::setPosition(train.veh2->position);
 
         if (!sub_431E6A(train.head->owner))
         {

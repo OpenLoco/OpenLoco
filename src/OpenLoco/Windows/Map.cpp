@@ -1011,10 +1011,10 @@ namespace OpenLoco::Ui::Windows::Map
     // 0x0046BF0F based on
     static void drawVehicleOnMap(Gfx::drawpixelinfo_t* dpi, Vehicles::VehicleBase* vehicle, uint8_t colour)
     {
-        if (vehicle->x == Location::null)
+        if (vehicle->position.x == Location::null)
             return;
 
-        auto trainPos = locationToMapWindowPos({ vehicle->x, vehicle->y });
+        auto trainPos = locationToMapWindowPos(vehicle->position);
 
         Gfx::fillRect(dpi, trainPos.x, trainPos.y, trainPos.x, trainPos.y, colour);
     }
@@ -1153,7 +1153,7 @@ namespace OpenLoco::Ui::Windows::Map
             if (train.head->var_38 & (1 << 4))
                 continue;
 
-            if (train.head->x == Location::null)
+            if (train.head->position.x == Location::null)
                 continue;
 
             auto vehicleType = train.head->vehicleType;
@@ -1171,7 +1171,7 @@ namespace OpenLoco::Ui::Windows::Map
             if (train.head->var_38 & (1 << 4))
                 continue;
 
-            if (train.head->x == Location::null)
+            if (train.head->position.x == Location::null)
                 continue;
 
             for (auto& car : train.cars)

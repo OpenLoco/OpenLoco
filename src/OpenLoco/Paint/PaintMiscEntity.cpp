@@ -41,26 +41,26 @@ namespace OpenLoco::Paint
     // clang-format on
 
     // 0x00440331
-    static void paintExhaustEntity(PaintSession& session, Exhaust* exhaustObject)
+    static void paintExhaustEntity(PaintSession& session, Exhaust* exhaustEntity)
     {
         Gfx::drawpixelinfo_t* dpi = session.getContext();
         if (dpi->zoom_level > 1)
         {
             return;
         }
-        SteamObject* steamObject = exhaustObject->object();
+        SteamObject* steamObject = exhaustEntity->object();
 
-        uint8_t* edi = (exhaustObject->object_id & 0x80) == 0 ? steamObject->var_16 : steamObject->var_1A;
-        uint32_t imageId = edi[2 * exhaustObject->var_26];
+        uint8_t* edi = (exhaustEntity->object_id & 0x80) == 0 ? steamObject->var_16 : steamObject->var_1A;
+        uint32_t imageId = edi[2 * exhaustEntity->var_26];
         imageId = imageId + steamObject->baseImageId + steamObject->var_0A;
 
         if ((steamObject->var_08 & (1 << 3)) == 0)
         {
-            session.addToPlotListAsParent(imageId, { 0, 0, exhaustObject->z }, { 1, 1, 0 });
+            session.addToPlotListAsParent(imageId, { 0, 0, exhaustEntity->position.z }, { 1, 1, 0 });
         }
         else
         {
-            session.addToPlotListAsParent(imageId, { 0, 0, exhaustObject->z }, { -12, -12, exhaustObject->z }, { 24, 24, 0 });
+            session.addToPlotListAsParent(imageId, { 0, 0, exhaustEntity->position.z }, { -12, -12, exhaustEntity->position.z }, { 24, 24, 0 });
         }
     }
 
@@ -76,7 +76,7 @@ namespace OpenLoco::Paint
         uint32_t currencyAmount = abs(moneyEffect->amount);
         const int8_t* yOffsets = &wiggleYOffsets[moneyEffect->wiggle];
 
-        session.addToStringPlotList(currencyAmount, stringId, moneyEffect->y, moneyEffect->z, yOffsets, moneyEffect->offsetX);
+        session.addToStringPlotList(currencyAmount, stringId, moneyEffect->position.y, moneyEffect->position.z, yOffsets, moneyEffect->offsetX);
     }
 
     // 0x00440400
@@ -92,7 +92,7 @@ namespace OpenLoco::Paint
         const int8_t* yOffsets = &wiggleYOffsets[moneyEffect->wiggle];
         uint16_t companyColour = CompanyManager::getCompanyColour(moneyEffect->var_2E);
 
-        session.addToStringPlotList(currencyAmount, stringId, moneyEffect->y, moneyEffect->z, yOffsets, moneyEffect->offsetX, companyColour);
+        session.addToStringPlotList(currencyAmount, stringId, moneyEffect->position.y, moneyEffect->position.z, yOffsets, moneyEffect->offsetX, companyColour);
     }
 
     // 0x0044044E
@@ -117,7 +117,7 @@ namespace OpenLoco::Paint
         uint32_t imageId = vehicleCrashParticleImageIds.at(particle->crashedSpriteBase).at(particle->frame / 256);
         imageId = Gfx::recolour2(imageId, particle->colourScheme);
 
-        session.addToPlotListAsParent(imageId, { 0, 0, particle->z }, { 1, 1, 0 });
+        session.addToPlotListAsParent(imageId, { 0, 0, particle->position.z }, { 1, 1, 0 });
     }
 
     // 0x0044051C
@@ -152,7 +152,7 @@ namespace OpenLoco::Paint
 
         assert(static_cast<size_t>(particle->frame / 256) < explosionCloudImageIds.size());
         uint32_t imageId = explosionCloudImageIds.at(particle->frame / 256);
-        session.addToPlotListAsParent(imageId, { 0, 0, particle->z }, { 1, 1, 0 });
+        session.addToPlotListAsParent(imageId, { 0, 0, particle->position.z }, { 1, 1, 0 });
     }
 
     // 0x00440557
@@ -197,7 +197,7 @@ namespace OpenLoco::Paint
 
         assert(static_cast<size_t>(particle->frame / 256) < splashImageIds.size());
         uint32_t imageId = splashImageIds.at(particle->frame / 256);
-        session.addToPlotListAsParent(imageId, { 0, 0, particle->z }, { 1, 1, 0 });
+        session.addToPlotListAsParent(imageId, { 0, 0, particle->position.z }, { 1, 1, 0 });
     }
 
     // 0x00440592
@@ -245,7 +245,7 @@ namespace OpenLoco::Paint
 
         assert(static_cast<size_t>(particle->frame / 256) < fireballImageIds.size());
         uint32_t imageId = fireballImageIds.at(particle->frame / 256);
-        session.addToPlotListAsParent(imageId, { 0, 0, particle->z }, { 1, 1, 0 });
+        session.addToPlotListAsParent(imageId, { 0, 0, particle->position.z }, { 1, 1, 0 });
     }
 
     // 0x004404A6
@@ -272,7 +272,7 @@ namespace OpenLoco::Paint
 
         assert(static_cast<size_t>(particle->frame / 256) < explosionSmokeImageIds.size());
         uint32_t imageId = explosionSmokeImageIds.at(particle->frame / 256);
-        session.addToPlotListAsParent(imageId, { 0, 0, particle->z }, { 1, 1, 0 });
+        session.addToPlotListAsParent(imageId, { 0, 0, particle->position.z }, { 1, 1, 0 });
     }
 
     // 0x004404E1
@@ -301,7 +301,7 @@ namespace OpenLoco::Paint
 
         assert(static_cast<size_t>(particle->frame / 256) < smokeImageIds.size());
         uint32_t imageId = smokeImageIds.at(particle->frame / 256);
-        session.addToPlotListAsParent(imageId, { 0, 0, particle->z }, { 1, 1, 0 });
+        session.addToPlotListAsParent(imageId, { 0, 0, particle->position.z }, { 1, 1, 0 });
     }
 
     // 0x00440325

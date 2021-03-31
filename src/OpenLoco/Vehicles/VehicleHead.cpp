@@ -166,7 +166,8 @@ namespace OpenLoco::Vehicles
                 if ((scenarioTicks() & 3) == 0)
                 {
                     auto v2 = car.body; // body
-                    Smoke::create(Map::Pos3(v2->x, v2->y, v2->z + 4));
+
+                    Smoke::create(v2->position + Map::Pos3{ 0, 0, 4 });
                 }
             }
 
@@ -180,9 +181,8 @@ namespace OpenLoco::Vehicles
                     car.front->var_6A = 5;
                     applyBreakdownToTrain();
 
-                    auto v2 = car.body;
                     auto soundId = (Audio::SoundId)gPrng().randNext(26, 26 + 5);
-                    Audio::playSound(soundId, Map::Pos3(v2->x, v2->y, v2->z + 22));
+                    Audio::playSound(soundId, car.body->position + Map::Pos3{ 0, 0, 22 });
                 }
             }
         }
@@ -1008,7 +1008,7 @@ namespace OpenLoco::Vehicles
     {
         Vehicle1* vehType1 = vehicleUpdate_1;
 
-        if (x != vehType1->x || y != vehType1->y || z != vehType1->z)
+        if (position != vehType1->position)
         {
             sub_4AD93A();
             if (status == Status::approaching)
@@ -1401,7 +1401,7 @@ namespace OpenLoco::Vehicles
             vehicleUpdate_helicopterTargetYaw = targetYaw;
             targetYaw = sprite_yaw;
             vehType2->var_5A = 1;
-            if (targetZ < z)
+            if (targetZ < position.z)
             {
                 vehType2->var_5A = 2;
             }
@@ -1432,7 +1432,7 @@ namespace OpenLoco::Vehicles
             }
         }
 
-        if (targetZ > z)
+        if (targetZ > position.z)
         {
             if (vehType2->currentSpeed <= 350.0_mph)
             {
@@ -1440,7 +1440,7 @@ namespace OpenLoco::Vehicles
             }
         }
 
-        if (targetZ < z)
+        if (targetZ < position.z)
         {
             if (vehType2->currentSpeed <= 180.0_mph)
             {
@@ -1470,7 +1470,7 @@ namespace OpenLoco::Vehicles
         if (vehicleUpdate_var_525BB0 & AirportMovementNodeFlags::heliTakeoffEnd)
         {
             vehType2->currentSpeed = 8.0_mph;
-            if (targetZ != z)
+            if (targetZ != position.z)
             {
                 return airplaneApproachTarget(targetZ);
             }
@@ -1669,7 +1669,7 @@ namespace OpenLoco::Vehicles
         {
             // Strangely the original would enter this function with an
             // uninitialised targetZ. We will pass a valid z.
-            return sub_4A9348(newMovementEdge, z);
+            return sub_4A9348(newMovementEdge, position.z);
         }
 
         status = Status::loading;
@@ -1690,12 +1690,12 @@ namespace OpenLoco::Vehicles
         Vehicle2* vehType2 = vehicleUpdate_2;
 
         auto [veh1Loc, veh2Loc] = calculateNextPosition(
-            _yaw, { x, y }, vehType1, vehType2->currentSpeed);
+            _yaw, position, vehType1, vehType2->currentSpeed);
 
         Pos3 newLoc(veh2Loc.x, veh2Loc.y, targetZ);
         vehType1->var_4E = veh1Loc.x;
         vehType1->var_50 = veh1Loc.y;
-        if (targetZ != z)
+        if (targetZ != position.z)
         {
             // Final section of landing / helicopter
             if (vehicleUpdate_manhattanDistanceToStation <= 28)
@@ -1710,18 +1710,18 @@ namespace OpenLoco::Vehicles
                     }
                 }
 
-                if (targetZ < z)
+                if (targetZ < position.z)
                 {
-                    newLoc.z = std::max<int16_t>(targetZ, z - z_shift);
+                    newLoc.z = std::max<int16_t>(targetZ, position.z - z_shift);
                 }
-                else if (targetZ > z)
+                else if (targetZ > position.z)
                 {
-                    newLoc.z = std::min<int16_t>(targetZ, z + z_shift);
+                    newLoc.z = std::min<int16_t>(targetZ, position.z + z_shift);
                 }
             }
             else
             {
-                int32_t zDiff = targetZ - z;
+                int32_t zDiff = targetZ - position.z;
                 // We want a SAR instruction so use >>5
                 int32_t param1 = (zDiff * toSpeed16(vehType2->currentSpeed).getRaw()) >> 5;
                 int32_t param2 = vehicleUpdate_manhattanDistanceToStation - 18;
@@ -1729,11 +1729,11 @@ namespace OpenLoco::Vehicles
                 auto modulo = param1 % param2;
                 if (modulo < 0)
                 {
-                    newLoc.z = z + param1 / param2 - 1;
+                    newLoc.z = position.z + param1 / param2 - 1;
                 }
                 else
                 {
-                    newLoc.z = z + param1 / param2 + 1;
+                    newLoc.z = position.z + param1 / param2 + 1;
                 }
             }
         }
@@ -2009,13 +2009,13 @@ namespace OpenLoco::Vehicles
             }
         }
 
-        auto xDiff = targetPos->x - x;
-        auto yDiff = targetPos->y - y;
+        auto xDiff = targetPos->x - position.x;
+        auto yDiff = targetPos->y - position.y;
 
         auto targetYaw = calculateYaw1FromVectorPlane(xDiff, yDiff);
 
         // manhattan distance to target
-        auto manhattanDistance = Math::Vector::manhattanDistance(Pos2{ x, y }, *targetPos);
+        auto manhattanDistance = Math::Vector::manhattanDistance(position, *targetPos);
 
         // Manhatten distance, targetZ, targetYaw
         return std::make_tuple(manhattanDistance, targetPos->z, targetYaw);
@@ -2246,13 +2246,13 @@ namespace OpenLoco::Vehicles
             auto randSoundIndex = gPrng().randNext(numSounds - 1);
             auto randSoundId = Audio::makeObjectSoundId(vehObj->startSounds[randSoundIndex]);
             Vehicle2* veh2 = vehicleUpdate_2;
-            auto tileHeight = TileManager::getHeight({ veh2->x, veh2->y });
+            auto tileHeight = TileManager::getHeight(veh2->position);
             auto volume = 0;
-            if (veh2->z < tileHeight.landHeight)
+            if (veh2->position.z < tileHeight.landHeight)
             {
                 volume = -1500;
             }
-            Audio::playSound(randSoundId, { veh2->x, veh2->y, static_cast<int16_t>(veh2->z + 22) }, volume, 22050);
+            Audio::playSound(randSoundId, veh2->position + Map::Pos3{ 0, 0, 22 }, volume, 22050);
         }
     }
 
@@ -2356,7 +2356,8 @@ namespace OpenLoco::Vehicles
         Vehicle2* veh2 = vehicleUpdate_2;
 
         // updates the current boats position and sets flags about position
-        auto tile = TileManager::get(Map::Pos2{ veh2->x, veh2->y });
+        auto tile = TileManager::get(veh2->position);
+
         surface_element* surface = tile.surface();
 
         if (surface != nullptr)
@@ -2408,7 +2409,7 @@ namespace OpenLoco::Vehicles
             veh2->currentSpeed = std::min<Speed32>(targetSpeed, veh2->currentSpeed + 0.333333_mph);
         }
 
-        auto manhattanDistance = Math::Vector::manhattanDistance(Pos2{ x, y }, Pos2{ veh2->x, veh2->y });
+        auto manhattanDistance = Math::Vector::manhattanDistance(Map::Pos2{ position }, Map::Pos2{ veh2->position });
         auto targetTolerance = 3;
         if (veh2->currentSpeed >= 20.0_mph)
         {
@@ -2437,7 +2438,7 @@ namespace OpenLoco::Vehicles
             if (waypoint != nullptr)
             {
                 auto point = waypoint->getWaypoint();
-                if (point.x == (x & 0xFFE0) && point.y == (y & 0xFFE0))
+                if (point.x == (position.x & 0xFFE0) && point.y == (position.y & 0xFFE0))
                 {
                     currentOrder = (++curOrder)->getOffset() - orderTableOffset;
                     Ui::WindowManager::sub_4B93A5(id);
@@ -2504,7 +2505,7 @@ namespace OpenLoco::Vehicles
             }
         }
 
-        auto targetYaw = calculateYaw4FromVector(x - veh2->x, y - veh2->y);
+        auto targetYaw = calculateYaw4FromVector(position.x - veh2->position.x, position.y - veh2->position.y);
         if (targetYaw != veh2->sprite_yaw)
         {
             if (((targetYaw - veh2->sprite_yaw) & 0x3F) > 0x20)
@@ -2519,12 +2520,12 @@ namespace OpenLoco::Vehicles
         }
 
         Vehicle1* veh1 = vehicleUpdate_1;
-        auto [newVeh1Pos, newVeh2Pos] = calculateNextPosition(veh2->sprite_yaw, { veh2->x, veh2->y }, veh1, veh2->currentSpeed);
+        auto [newVeh1Pos, newVeh2Pos] = calculateNextPosition(veh2->sprite_yaw, veh2->position, veh1, veh2->currentSpeed);
 
         veh1->var_4E = newVeh1Pos.x;
         veh1->var_50 = newVeh1Pos.y;
 
-        Pos3 newLocation = { newVeh2Pos.x, newVeh2Pos.y, veh2->z };
+        Pos3 newLocation = { newVeh2Pos.x, newVeh2Pos.y, veh2->position.z };
         moveBoatTo(newLocation, veh2->sprite_yaw, Pitch::flat);
 
         return flags;
@@ -2831,8 +2832,8 @@ namespace OpenLoco::Vehicles
         // Set initial position for updateLastJourneyAverageSpeed
         var_73 = scenarioTicks();
         Vehicle train(this);
-        var_6F = train.veh2->x;
-        var_71 = train.veh2->y;
+        var_6F = train.veh2->position.x;
+        var_71 = train.veh2->position.y;
         var_5F |= Flags5F::unk_3;
     }
 
@@ -2875,7 +2876,7 @@ namespace OpenLoco::Vehicles
             auto randSoundIndex = gPrng().randNext((vehObj->numStartSounds & NumStartSounds::mask) - 1);
             auto randSoundId = Audio::makeObjectSoundId(vehObj->startSounds[randSoundIndex]);
             Vehicle2* veh2 = vehicleUpdate_2;
-            Audio::playSound(randSoundId, { veh2->x, veh2->y, static_cast<int16_t>(veh2->z + 22) }, 0, 22050);
+            Audio::playSound(randSoundId, veh2->position + Map::Pos3{ 0, 0, 22 }, 0, 22050);
         }
     }
 
@@ -2902,7 +2903,7 @@ namespace OpenLoco::Vehicles
             auto randSoundId = Audio::makeObjectSoundId(vehObj->startSounds[randSoundIndex]);
 
             Vehicle2* veh2 = vehicleUpdate_2;
-            Audio::playSound(randSoundId, { veh2->x, veh2->y, static_cast<int16_t>(veh2->z + 22) }, 0, 22050);
+            Audio::playSound(randSoundId, veh2->position + Map::Pos3{ 0, 0, 22 }, 0, 22050);
         }
     }
 

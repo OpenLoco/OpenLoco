@@ -397,8 +397,8 @@ namespace OpenLoco::Ui::ViewportInteraction
         {
             interaction.type = InteractionItem::entity;
             interaction.object = reinterpret_cast<void*>(nearestVehicle);
-            interaction.x = nearestVehicle->x;
-            interaction.y = nearestVehicle->y;
+            interaction.x = nearestVehicle->position.x;
+            interaction.y = nearestVehicle->position.y;
 
             getVehicleArguments(interaction);
             return interaction;

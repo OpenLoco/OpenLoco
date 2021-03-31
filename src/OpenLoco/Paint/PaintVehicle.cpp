@@ -117,7 +117,7 @@ namespace OpenLoco::Paint
                     }
                     session.setItemType(Ui::ViewportInteraction::InteractionItem::noInteraction);
                     imageId = Gfx::recolourTranslucent(imageId, PaletteIndex::index_32);
-                    session.addToPlotList4FD200(imageId, { 0, 0, bogie->z }, { 8, 8, static_cast<coord_t>(bogie->z + 6) }, { 48, 48, 2 });
+                    session.addToPlotList4FD200(imageId, { 0, 0, bogie->position.z }, { 8, 8, static_cast<coord_t>(bogie->position.z + 6) }, { 48, 48, 2 });
                     return;
                 }
                 else
@@ -128,12 +128,12 @@ namespace OpenLoco::Paint
                 if (sprite.flags & BogieSpriteFlags::unk_4)
                 {
                     // larger sprite
-                    session.addToPlotListAsParent(imageId, { 0, 0, bogie->z }, { -9, -9, static_cast<coord_t>(bogie->z + 3) }, { 18, 18, 5 });
+                    session.addToPlotListAsParent(imageId, { 0, 0, bogie->position.z }, { -9, -9, static_cast<coord_t>(bogie->position.z + 3) }, { 18, 18, 5 });
                 }
                 else
                 {
                     // smaller sprite
-                    session.addToPlotListAsParent(imageId, { 0, 0, bogie->z }, { -6, -6, static_cast<coord_t>(bogie->z + 3) }, { 12, 12, 1 });
+                    session.addToPlotListAsParent(imageId, { 0, 0, bogie->position.z }, { -6, -6, static_cast<coord_t>(bogie->position.z + 3) }, { 12, 12, 1 });
                 }
                 break;
             }
@@ -155,12 +155,12 @@ namespace OpenLoco::Paint
                 if (sprite.flags & BogieSpriteFlags::unk_4)
                 {
                     // larger sprite
-                    session.addToPlotListAsParent(imageId, { 0, 0, bogie->z }, { -8, -8, static_cast<coord_t>(bogie->z + 3) }, { 16, 16, 1 });
+                    session.addToPlotListAsParent(imageId, { 0, 0, bogie->position.z }, { -8, -8, static_cast<coord_t>(bogie->position.z + 3) }, { 16, 16, 1 });
                 }
                 else
                 {
                     // smaller sprite
-                    session.addToPlotListAsParent(imageId, { 0, 0, bogie->z }, { -6, -6, static_cast<coord_t>(bogie->z + 3) }, { 12, 12, 1 });
+                    session.addToPlotListAsParent(imageId, { 0, 0, bogie->position.z }, { -6, -6, static_cast<coord_t>(bogie->position.z + 3) }, { 12, 12, 1 });
                 }
                 break;
             }
@@ -176,7 +176,7 @@ namespace OpenLoco::Paint
                 {
                     imageId = Gfx::recolour2(imageId, bogie->colour_scheme.primary, bogie->colour_scheme.secondary);
                 }
-                session.addToPlotListAsParent(imageId, { 0, 0, bogie->z }, { -6, -6, static_cast<coord_t>(bogie->z + 3) }, { 12, 12, 1 });
+                session.addToPlotListAsParent(imageId, { 0, 0, bogie->position.z }, { -6, -6, static_cast<coord_t>(bogie->position.z + 3) }, { 12, 12, 1 });
                 break;
             }
         }
@@ -402,12 +402,12 @@ namespace OpenLoco::Paint
             brakingImage = getBrakingImage(pitchImageId, sprite);
         }
 
-        Map::Pos3 offsets = { 0, 0, body->z };
+        Map::Pos3 offsets = { 0, 0, body->position.z };
         Map::Pos3 boundBoxOffsets;
         Map::Pos3 boundBoxSize;
         if ((body->getTransportMode() == TransportMode::air) || (body->getTransportMode() == TransportMode::water))
         {
-            boundBoxOffsets = { -8, -8, static_cast<int16_t>(body->z + 11) };
+            boundBoxOffsets = { -8, -8, static_cast<int16_t>(body->position.z + 11) };
             boundBoxSize = { 48, 48, 15 };
         }
         else
@@ -430,7 +430,7 @@ namespace OpenLoco::Paint
             originalYaw &= 0x1F;
             boundBoxOffsets.x += (_5001B4[originalYaw * 4] * offsetModifier) >> 8;
             boundBoxOffsets.y += (_5001B4[originalYaw * 4 + 1] * offsetModifier) >> 8;
-            boundBoxOffsets.z = body->z + 11;
+            boundBoxOffsets.z = body->position.z + 11;
             boundBoxSize = {
                 static_cast<coord_t>((_5001B4[originalYaw * 4 + 2] * offsetModifier) >> 8),
                 static_cast<coord_t>((_5001B4[originalYaw * 4 + 3] * offsetModifier) >> 8),

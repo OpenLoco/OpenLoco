@@ -306,14 +306,14 @@ namespace OpenLoco::Ui
 
             if (config->viewport_target_sprite != 0xFFFF)
             {
-                auto thing = EntityManager::get<EntityBase>(config->viewport_target_sprite);
+                auto entity = EntityManager::get<EntityBase>(config->viewport_target_sprite);
 
-                int z = (TileManager::getHeight({ thing->x, thing->y }).landHeight) - 16;
-                bool underground = (thing->z < z);
+                int z = (TileManager::getHeight(entity->position).landHeight) - 16;
+                bool underground = (entity->position.z < z);
 
                 viewportSetUndergroundFlag(underground, viewport);
 
-                viewport->centre2dCoordinates(thing->x, thing->y, thing->z + 12, &centreX, &centreY);
+                viewport->centre2dCoordinates(entity->position.x, entity->position.y, entity->position.z + 12, &centreX, &centreY);
             }
             else
             {
@@ -614,7 +614,7 @@ namespace OpenLoco::Ui
         if (saved_view.isThingView())
         {
             auto thing = EntityManager::get<EntityBase>(saved_view.thingId);
-            main->viewportCentreOnTile({ thing->x, thing->y, thing->z });
+            main->viewportCentreOnTile(thing->position);
         }
         else
         {
@@ -670,7 +670,7 @@ namespace OpenLoco::Ui
 
         auto thing = EntityManager::get<EntityBase>(viewport_configurations[0].viewport_target_sprite);
         viewport_configurations[0].viewport_target_sprite = EntityId::null;
-        viewportCentreOnTile({ thing->x, thing->y, thing->z });
+        viewportCentreOnTile(thing->position);
     }
 
     void window::viewportZoomSet(int8_t zoomLevel, bool toCursor)

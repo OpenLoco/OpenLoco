@@ -74,7 +74,7 @@ namespace OpenLoco::Ui::ViewportManager
         auto t = EntityManager::get<EntityBase>(dx);
 
         int16_t dest_x, dest_y;
-        viewport->centre2dCoordinates(t->x, t->y, t->z, &dest_x, &dest_y);
+        viewport->centre2dCoordinates(t->position.x, t->position.y, t->position.z, &dest_x, &dest_y);
         w->viewport_configurations[index].saved_view_x = dest_x;
         w->viewport_configurations[index].saved_view_y = dest_y;
         viewport->view_x = dest_x;
