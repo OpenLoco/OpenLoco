@@ -2216,7 +2216,7 @@ namespace OpenLoco::Ui::Vehicle
             regs.ebp = order.getOffset();
             regs.ebx = static_cast<uint8_t>(order.getType());
             regs.ecx = orderNum;
-            call(0x00470824, regs);
+            call(0x00470B76, regs);
             Map::map_pos3 res = { regs.ax, regs.cx, regs.dx };
             return std::make_pair(res, _stringFormatBuffer.get());
         }
