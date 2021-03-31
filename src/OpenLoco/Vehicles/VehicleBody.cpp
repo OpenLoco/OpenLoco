@@ -24,7 +24,6 @@ namespace OpenLoco::Vehicles
     static loco_global<uint8_t, 0x01136237> vehicle_var_1136237;       // var_28 related?
     static loco_global<uint8_t, 0x01136238> vehicle_var_1136238;       // var_28 related?
     static loco_global<int8_t[88], 0x004F865C> vehicle_arr_4F865C;     // var_2C related?
-    static loco_global<uint16_t[2047], 0x00500B50> vehicle_arr_500B50;
     static loco_global<int16_t[128], 0x00503B6A> factorXY503B6A;
     static loco_global<uint8_t[44], 0x004F8A7C> vehicle_arr_4F8A7C; // bools
     static loco_global<uint8_t, 0x00525FAE> vehicle_var_525FAE;     // boolean
@@ -59,8 +58,6 @@ namespace OpenLoco::Vehicles
         -84,
         84
     };
-
-    static uint16_t fastSquareRoot(uint32_t distance);
 
     VehicleObject* VehicleBody::object() const
     {
@@ -268,60 +265,48 @@ namespace OpenLoco::Vehicles
         if (object_sprite_type == 0xFF)
             return;
 
-        auto distance_x = front_bogie->x - back_bogie->x;
-        auto distance_y = front_bogie->y - back_bogie->y;
+        auto distanceBetweenBogies = Math::Vector::distance(Map::map_pos{ front_bogie->x, front_bogie->y }, Map::map_pos{ back_bogie->x, back_bogie->y });
 
-        auto offset = fastSquareRoot(distance_x * distance_x + distance_y * distance_y);
-
-        auto VehicleObject = object();
-
-        if (VehicleObject->bodySprites[object_sprite_type].flags & BodySpriteFlags::hasSteepSprites)
+        auto vehObj = object();
+        if (vehObj->bodySprites[object_sprite_type].flags & BodySpriteFlags::hasSteepSprites)
         {
-            sprite_pitch = updateSpritePitchSteepSlopes(offset, front_bogie->z - back_bogie->z);
+            sprite_pitch = updateSpritePitchSteepSlopes(distanceBetweenBogies, front_bogie->z - back_bogie->z);
         }
         else
         {
-            sprite_pitch = updateSpritePitch(offset, front_bogie->z - back_bogie->z);
+            sprite_pitch = updateSpritePitch(distanceBetweenBogies, front_bogie->z - back_bogie->z);
         }
 
+        auto xDiff = front_bogie->x - back_bogie->x;
+        auto yDiff = front_bogie->y - back_bogie->y;
         // If the sprite_pitch is a transition there is always 4 bits for yaw
         if (static_cast<uint8_t>(sprite_pitch) & 1)
         {
-            sprite_yaw = calculateYaw1FromVector(distance_x, distance_y);
+            sprite_yaw = calculateYaw1FromVector(xDiff, yDiff);
         }
         else
         {
-            auto sprite = VehicleObject->bodySprites[object_sprite_type];
+            auto sprite = vehObj->bodySprites[object_sprite_type];
             uint8_t i = sprite_pitch == Pitch::flat ? sprite.var_0B : sprite.var_0C;
             switch (i)
             {
                 case 0:
-                    sprite_yaw = calculateYaw0FromVector(distance_x, distance_y);
+                    sprite_yaw = calculateYaw0FromVector(xDiff, yDiff);
                     break;
                 case 1:
-                    sprite_yaw = calculateYaw1FromVector(distance_x, distance_y);
+                    sprite_yaw = calculateYaw1FromVector(xDiff, yDiff);
                     break;
                 case 2:
-                    sprite_yaw = calculateYaw2FromVector(distance_x, distance_y);
+                    sprite_yaw = calculateYaw2FromVector(xDiff, yDiff);
                     break;
                 case 3:
-                    sprite_yaw = calculateYaw3FromVector(distance_x, distance_y);
+                    sprite_yaw = calculateYaw3FromVector(xDiff, yDiff);
                     break;
                 case 4:
-                    sprite_yaw = calculateYaw4FromVector(distance_x, distance_y);
+                    sprite_yaw = calculateYaw4FromVector(xDiff, yDiff);
                     break;
             }
         }
-    }
-
-    // 0x004BE368
-    static uint16_t fastSquareRoot(uint32_t distance)
-    {
-        uint8_t i = 10;
-        for (; distance > 4096; --i, distance >>= 2)
-            ;
-
-        return vehicle_arr_500B50[distance >> 1] >> i;
     }
 
     // 0x004BF4DA

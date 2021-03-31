@@ -57,6 +57,7 @@
     <ClCompile Include="Map\SurfaceTile.cpp" />
     <ClCompile Include="Map\Tile.cpp" />
     <ClCompile Include="Map\TileManager.cpp" />
+    <ClCompile Include="Math\Vector.cpp" />
     <ClCompile Include="MessageManager.cpp" />
     <ClCompile Include="MultiPlayer.cpp" />
     <ClCompile Include="Objects\AirportObject.cpp" />
