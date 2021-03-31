@@ -23,6 +23,7 @@
 #include "../TownManager.h"
 #include "../Ui/WindowManager.h"
 #include "../ViewportManager.h"
+#include "../Math/Bound.hpp"
 #include "Orders.h"
 #include "Vehicle.h"
 #include <cassert>
@@ -2576,7 +2577,7 @@ namespace OpenLoco::Vehicles
             company->cargoUnitsTotalDistance += cargoDist;
 
             auto cargoPayment = CompanyManager::calculateDeliveredCargoPayment(car->cargo_type, car->cargoQty, tilesDistance, car->cargoNumDays);
-            company->cargoDelivered[car->cargo_type] = static_cast<uint32_t>(std::min<uint64_t>(company->cargoDelivered[car->cargo_type] + static_cast<uint64_t>(car->cargoQty), std::numeric_limits<uint32_t>::max()));
+            company->cargoDelivered[car->cargo_type] = Math::Bound::add(company->cargoDelivered[car->cargo_type], car->cargoQty);
 
             sub_4BA7C7(car->cargo_type, car->cargoQty, tilesDistance, car->cargoNumDays, cargoPayment);
 
@@ -2596,8 +2597,8 @@ namespace OpenLoco::Vehicles
                         continue;
                     }
 
-                    industry->var_199[i] = static_cast<uint16_t>(std::min<uint32_t>(industry->var_199[i] + car->cargoQty, std::numeric_limits<uint16_t>::max()));
-                    industry->var_18D[i] = static_cast<uint16_t>(std::min<uint32_t>(industry->var_18D[i] + car->cargoQty, std::numeric_limits<uint16_t>::max()));
+                    industry->var_199[i] = Math::Bound::add(industry->var_199[i], car->cargoQty);
+                    industry->var_18D[i] = Math::Bound::add(industry->var_18D[i], car->cargoQty);
                 }
 
                 if (!(industry->history_min_production[0] & (1ULL << car->cargo_type)))
@@ -2646,7 +2647,7 @@ namespace OpenLoco::Vehicles
 
                 break;
             }
-            cargoStats.quantity = static_cast<uint16_t>(std::min<uint32_t>(cargoStats.quantity + car->cargoQty, std::numeric_limits<uint16_t>::max()));
+            cargoStats.quantity = Math::Bound::add(cargoStats.quantity, car->cargoQty);
             station->updateCargoDistribution();
             cargoStats.enroute_age = std::max(cargoStats.enroute_age, car->cargoNumDays);
             bool setOrigin = true;
