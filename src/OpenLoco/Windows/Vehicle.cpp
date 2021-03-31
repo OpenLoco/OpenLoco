@@ -2904,7 +2904,7 @@ namespace OpenLoco::Ui::Vehicle
             }
 
             // Express / local
-            self->activated_widgets = 0;
+            self->activated_widgets &= ~((1 << widx::expressMode) | (1 << widx::localMode));
             Vehicles::Vehicle train(head);
             if (train.veh1->var_48 & (1 << 1))
                 self->activated_widgets |= (1 << widx::expressMode);
