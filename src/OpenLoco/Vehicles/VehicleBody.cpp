@@ -238,18 +238,13 @@ namespace OpenLoco::Vehicles
     // 0x004AC255
     void VehicleBody::sub_4AC255(VehicleBogie* back_bogie, VehicleBogie* front_bogie)
     {
-        Map::Pos3 loc = {
-            static_cast<int16_t>((front_bogie->position.x + back_bogie->position.x) / 2),
-            static_cast<int16_t>((front_bogie->position.y + back_bogie->position.y) / 2),
-            static_cast<int16_t>((front_bogie->position.z + back_bogie->position.z) / 2)
-        };
-        moveTo(loc);
+        Map::Pos3 midPoint = (front_bogie->position - back_bogie->position) / 2;
+        moveTo(midPoint);
 
         if (object_sprite_type == 0xFF)
             return;
 
         auto distanceBetweenBogies = Math::Vector::distance(front_bogie->position, back_bogie->position);
-
         auto vehObj = object();
         if (vehObj->bodySprites[object_sprite_type].flags & BodySpriteFlags::hasSteepSprites)
         {
@@ -948,28 +943,14 @@ namespace OpenLoco::Vehicles
         }
 
         var_05 += 64;
-        Map::Pos3 loc = {
-            static_cast<int16_t>(backBogie->position.x - frontBogie->position.x),
-            static_cast<int16_t>(backBogie->position.y - frontBogie->position.y),
-            static_cast<int16_t>(backBogie->position.z - frontBogie->position.z),
-        };
-
-        loc.x = loc.x * var_05 / 128;
-        loc.y = loc.y * var_05 / 128;
-        loc.z = loc.z * var_05 / 128;
-
-        loc.x += frontBogie->position.x;
-        loc.y += frontBogie->position.y;
-        loc.z += frontBogie->position.z;
-
-        loc.z += vehicleObject->animation[num].height;
 
         auto xyFactor = Math::Trigonometry::computeXYVector(vehicleObject->animation[num].height, sprite_pitch, sprite_yaw);
 
-        loc.x += xyFactor.x;
-        loc.y += xyFactor.y;
+        auto bogieDifference = frontBogie->position - backBogie->position;
 
-        Exhaust::create(loc, vehicleObject->animation[num].object_id | (soundCode ? 0 : 0x80));
+        auto smokeLoc = bogieDifference * var_05 / 128 + frontBogie->position + Map::Pos3{ xyFactor.x, xyFactor.y, vehicleObject->animation[num].height };
+
+        Exhaust::create(smokeLoc, vehicleObject->animation[num].object_id | (soundCode ? 0 : 0x80));
         if (soundCode == false)
             return;
 
@@ -1002,7 +983,7 @@ namespace OpenLoco::Vehicles
                     continue;
                 if (track->baseZ() != frontBogie->tile_base_z)
                     continue;
-                if (track->unkZ() != loc.z)
+                if (track->unkZ() != smokeLoc.z)
                     continue;
 
                 if (!track->hasStationElement())
@@ -1022,14 +1003,14 @@ namespace OpenLoco::Vehicles
 
             int32_t volume = 0 - (veh_2->currentSpeed.getRaw() >> 9);
 
-            auto height = Map::TileManager::getHeight({ loc.x, loc.y }).landHeight;
+            auto height = Map::TileManager::getHeight(smokeLoc).landHeight;
 
-            if (loc.z <= height)
+            if (smokeLoc.z <= height)
             {
                 volume -= 1500;
             }
 
-            Audio::playSound(Audio::makeObjectSoundId(soundId), loc, volume, 22050);
+            Audio::playSound(Audio::makeObjectSoundId(soundId), smokeLoc, volume, 22050);
         }
         else
         {
@@ -1046,9 +1027,9 @@ namespace OpenLoco::Vehicles
 
             int32_t volume = 0 - (veh_2->currentSpeed.getRaw() >> 9);
 
-            auto height = Map::TileManager::getHeight({ loc.x, loc.y }).landHeight;
+            auto height = Map::TileManager::getHeight(smokeLoc).landHeight;
 
-            if (loc.z <= height)
+            if (smokeLoc.z <= height)
             {
                 soundId = underSoundId;
                 volume -= 1500;
@@ -1059,7 +1040,7 @@ namespace OpenLoco::Vehicles
                 volume = -400;
             }
 
-            Audio::playSound(Audio::makeObjectSoundId(soundId), loc, volume, 22050);
+            Audio::playSound(Audio::makeObjectSoundId(soundId), smokeLoc, volume, 22050);
         }
     }
 
@@ -1092,11 +1073,7 @@ namespace OpenLoco::Vehicles
             auto invertedDirection = sprite_yaw ^ (1 << 5);
             auto xyFactor = Math::Trigonometry::computeXYVector(positionFactor, invertedDirection) / 2;
 
-            Map::Pos3 loc = {
-                static_cast<int16_t>(position.x + xyFactor.x),
-                static_cast<int16_t>(position.y + xyFactor.y),
-                static_cast<int16_t>(position.z + vehicleObject->animation[num].height)
-            };
+            Map::Pos3 loc = position + Map::Pos3{ xyFactor.x, xyFactor.y, vehicleObject->animation[num].height };
             Exhaust::create(loc, vehicleObject->animation[num].object_id);
         }
         else
@@ -1360,11 +1337,7 @@ namespace OpenLoco::Vehicles
         auto invertedDirection = sprite_yaw ^ (1 << 5);
         auto xyFactor = Math::Trigonometry::computeXYVector(positionFactor, invertedDirection) / 4;
 
-        Map::Pos3 loc = {
-            static_cast<int16_t>(position.x + xyFactor.x),
-            static_cast<int16_t>(position.y + xyFactor.y),
-            position.z
-        };
+        Map::Pos3 loc = position + Map::Pos3{ xyFactor.x, xyFactor.y, 0 };
 
         // 90 degrees C.W.
         auto yaw = (sprite_yaw + 16) & 0x3F;
