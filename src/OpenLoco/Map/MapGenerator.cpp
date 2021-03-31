@@ -9,8 +9,8 @@
 #include "TileManager.h"
 #include <cassert>
 #include <cstdint>
-#include <memory>
 #include <random>
+#include <vector>
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Map;
@@ -31,7 +31,7 @@ namespace OpenLoco::Map::MapGenerator
     class HeightMap
     {
     private:
-        std::unique_ptr<uint8_t[]> _height;
+        std::vector<uint8_t> _height;
 
     public:
         int32_t const width;
@@ -39,20 +39,19 @@ namespace OpenLoco::Map::MapGenerator
         int32_t const pitch;
 
         HeightMap(int32_t width, int32_t height, int32_t pitch, uint8_t baseHeight)
-            : width(width)
+            : _height(width * pitch)
+            , width(width)
             , height(height)
             , pitch(pitch)
         {
-            _height = std::make_unique<uint8_t[]>(width * pitch);
         }
 
         HeightMap(const HeightMap& src)
-            : width(src.width)
+            : _height(src._height)
+            , width(src.width)
             , height(src.height)
             , pitch(src.pitch)
         {
-            _height = std::make_unique<uint8_t[]>(width * pitch);
-            std::memcpy(&_height[0], &src._height[0], width * pitch);
         }
 
         uint8_t& operator[](Point pos)
@@ -69,12 +68,12 @@ namespace OpenLoco::Map::MapGenerator
 
         uint8_t* data()
         {
-            return _height.get();
+            return _height.data();
         }
 
         const uint8_t* data() const
         {
-            return _height.get();
+            return _height.data();
         }
     };
 
