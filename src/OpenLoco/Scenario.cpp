@@ -2,6 +2,7 @@
 #include "CompanyManager.h"
 #include "Date.h"
 #include "Economy.h"
+#include "Entities/EntityManager.h"
 #include "Graphics/Gfx.h"
 #include "IndustryManager.h"
 #include "Interop/Interop.hpp"
@@ -10,7 +11,6 @@
 #include "Objects/CargoObject.h"
 #include "S5/S5.h"
 #include "StationManager.h"
-#include "Things/ThingManager.h"
 #include "Title.h"
 #include "TownManager.h"
 #include "Ui/WindowManager.h"
@@ -98,7 +98,7 @@ namespace OpenLoco::Scenario
 
         CompanyManager::reset();
         StringManager::reset();
-        ThingManager::reset();
+        EntityManager::reset();
 
         Ui::Windows::Construction::Construction::reset();
         sub_46115C();

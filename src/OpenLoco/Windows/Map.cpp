@@ -1,4 +1,6 @@
 #include "../CompanyManager.h"
+#include "../Entities/Entity.h"
+#include "../Entities/EntityManager.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/Gfx.h"
 #include "../Graphics/ImageIds.h"
@@ -13,8 +15,6 @@
 #include "../Objects/RoadObject.h"
 #include "../Objects/TrackObject.h"
 #include "../StationManager.h"
-#include "../Things/Thing.h"
-#include "../Things/ThingManager.h"
 #include "../TownManager.h"
 #include "../Types.hpp"
 #include "../Ui/ScrollView.h"
@@ -1146,7 +1146,7 @@ namespace OpenLoco::Ui::Windows::Map
             _vehicleTypeCounts[i] = 0;
         }
 
-        for (auto vehicle : ThingManager::VehicleList())
+        for (auto vehicle : EntityManager::VehicleList())
         {
             Vehicles::Vehicle train(vehicle);
 
@@ -1164,7 +1164,7 @@ namespace OpenLoco::Ui::Windows::Map
     // 0x0046BE6E, 0x0046C35A
     static void drawVehiclesOnMap(Gfx::drawpixelinfo_t* dpi, widget_index widgetIndex)
     {
-        for (auto vehicle : ThingManager::VehicleList())
+        for (auto vehicle : EntityManager::VehicleList())
         {
             Vehicles::Vehicle train(vehicle);
 

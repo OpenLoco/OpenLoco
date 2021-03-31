@@ -2,9 +2,9 @@
 
 #include "../Audio/Audio.h"
 #include "../Company.h"
+#include "../Entities/Entity.h"
 #include "../Objects/VehicleObject.h"
 #include "../Speed.hpp"
-#include "../Things/Thing.h"
 #include "../Types.hpp"
 #include "../Ui/WindowType.h"
 #include "../Window.h"
@@ -98,7 +98,7 @@ namespace OpenLoco::Vehicles
     constexpr uint8_t cAirportMovementNodeNull = 0xFF;
 
 #pragma pack(push, 1)
-    struct VehicleBase : thing_base
+    struct VehicleBase : EntityBase
     {
     private:
         template<VehicleThingType SubType>
@@ -125,8 +125,8 @@ namespace OpenLoco::Vehicles
         }
 
     public:
-        VehicleThingType getSubType() const { return VehicleThingType(thing_base::getSubType()); }
-        void setSubType(const VehicleThingType newType) { thing_base::setSubType(static_cast<uint8_t>(newType)); }
+        VehicleThingType getSubType() const { return VehicleThingType(EntityBase::getSubType()); }
+        void setSubType(const VehicleThingType newType) { EntityBase::setSubType(static_cast<uint8_t>(newType)); }
         bool isVehicleHead() const { return is<VehicleThingType::head>(); }
         VehicleHead* asVehicleHead() const { return as<VehicleHead>(); }
         bool isVehicle1() const { return is<VehicleThingType::vehicle_1>(); }
@@ -162,8 +162,8 @@ namespace OpenLoco::Vehicles
         uint8_t getFlags38() const;
         uint8_t getTrackType() const;
         uint16_t getVar36() const;
-        thing_id_t getHead() const;
-        void setNextCar(const thing_id_t newNextCar);
+        EntityId_t getHead() const;
+        void setNextCar(const EntityId_t newNextCar);
 
         VehicleBase* nextVehicle();
         VehicleBase* nextVehicleComponent();
@@ -195,7 +195,7 @@ namespace OpenLoco::Vehicles
         company_id_t owner; // 0x21
         uint16_t var_22;
         uint8_t pad_24[0x26 - 0x24];
-        thing_id_t head; // 0x26
+        EntityId_t head; // 0x26
         uint32_t var_28;
         uint16_t var_2C;
         uint16_t var_2E;
@@ -206,7 +206,7 @@ namespace OpenLoco::Vehicles
         uint16_t var_36;     // 0x36 field same in all vehicles orderId * max_num_routing_steps
         uint8_t var_38;
         uint8_t pad_39;         // 0x39
-        thing_id_t next_car_id; // 0x3A
+        EntityId_t next_car_id; // 0x3A
         uint32_t var_3C;        // 0x3C
         uint8_t pad_40[0x2];    // 0x40
         TransportMode mode;     // 0x42 field same in all vehicles
@@ -314,7 +314,7 @@ namespace OpenLoco::Vehicles
         uint8_t pad_20;
         company_id_t owner; // 0x21
         uint8_t pad_22[0x26 - 0x22];
-        thing_id_t head; // 0x26
+        EntityId_t head; // 0x26
         uint32_t var_28;
         uint16_t var_2C;
         uint16_t var_2E;
@@ -325,7 +325,7 @@ namespace OpenLoco::Vehicles
         uint16_t var_36;     // 0x36 field same in all vehicles
         uint8_t var_38;
         uint8_t pad_39;         // 0x39
-        thing_id_t next_car_id; // 0x3A
+        EntityId_t next_car_id; // 0x3A
         uint32_t var_3C;        // 0x3C
         uint8_t pad_40[0x2];    // 0x40
         TransportMode mode;     // 0x42 field same in all vehicles
@@ -353,7 +353,7 @@ namespace OpenLoco::Vehicles
         uint8_t pad_20;
         company_id_t owner; // 0x21
         uint8_t pad_22[0x26 - 0x22];
-        thing_id_t head; // 0x26
+        EntityId_t head; // 0x26
         uint32_t var_28;
         uint16_t var_2C;
         uint16_t var_2E;
@@ -364,7 +364,7 @@ namespace OpenLoco::Vehicles
         uint16_t var_36;     // 0x36 field same in all vehicles
         uint8_t var_38;
         uint8_t pad_39;              // 0x39
-        thing_id_t next_car_id;      // 0x3A
+        EntityId_t next_car_id;      // 0x3A
         uint8_t pad_3C[0x42 - 0x3C]; // 0x3C
         TransportMode mode;          // 0x42 field same in all vehicles
         uint8_t pad_43;
@@ -400,7 +400,7 @@ namespace OpenLoco::Vehicles
         company_id_t owner; // 0x21
         uint8_t pad_22[0x24 - 0x22];
         ColourScheme colour_scheme; // 0x24
-        thing_id_t head;            // 0x26
+        EntityId_t head;            // 0x26
         uint8_t pad_28[0x2C - 0x28];
         uint16_t var_2C;
         uint16_t var_2E;
@@ -411,7 +411,7 @@ namespace OpenLoco::Vehicles
         uint16_t var_36;     // 0x36 field same in all vehicles
         uint8_t var_38;
         uint8_t object_sprite_type; // 0x39
-        thing_id_t next_car_id;     // 0x3A
+        EntityId_t next_car_id;     // 0x3A
         uint8_t pad_3C[0x40 - 0x3C];
         uint16_t object_id; // 0x40
         TransportMode mode; // 0x42
@@ -462,7 +462,7 @@ namespace OpenLoco::Vehicles
         company_id_t owner; // 0x21
         uint8_t pad_22[0x24 - 0x22];
         ColourScheme colour_scheme; // 0x24
-        thing_id_t head;            // 0x26
+        EntityId_t head;            // 0x26
         uint8_t pad_28[0x2C - 0x28];
         uint16_t var_2C;
         uint16_t var_2E;
@@ -473,7 +473,7 @@ namespace OpenLoco::Vehicles
         uint16_t var_36;     // 0x36 field same in all vehicles
         uint8_t var_38;
         uint8_t object_sprite_type; // 0x39
-        thing_id_t next_car_id;     // 0x3A
+        EntityId_t next_car_id;     // 0x3A
         uint8_t pad_3C[0x40 - 0x3C];
         uint16_t object_id; // 0x40
         TransportMode mode; // 0x42 field same in all vehicles
@@ -512,7 +512,7 @@ namespace OpenLoco::Vehicles
         uint8_t pad_20;
         company_id_t owner; // 0x21
         uint8_t pad_22[0x26 - 0x22];
-        thing_id_t head; // 0x26
+        EntityId_t head; // 0x26
         uint32_t var_28;
         uint16_t var_2C;
         uint16_t var_2E;
@@ -523,7 +523,7 @@ namespace OpenLoco::Vehicles
         uint16_t var_36;     // 0x36 field same in all vehicles
         uint8_t var_38;
         uint8_t pad_39;              // 0x39
-        thing_id_t next_car_id;      // 0x3A
+        EntityId_t next_car_id;      // 0x3A
         uint8_t pad_3C[0x42 - 0x3C]; // 0x3C
         TransportMode mode;          // 0x42 field same in all vehicles
         uint8_t pad_43;

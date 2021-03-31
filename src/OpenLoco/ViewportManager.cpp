@@ -1,11 +1,11 @@
 #include "ViewportManager.h"
 #include "Config.h"
 #include "Console.h"
+#include "Entities/EntityManager.h"
 #include "Interop/Interop.hpp"
 #include "Map/Tile.h"
 #include "Map/TileManager.h"
 #include "Station.h"
-#include "Things/ThingManager.h"
 #include "Ui.h"
 #include "Window.h"
 #include <algorithm>
@@ -64,14 +64,14 @@ namespace OpenLoco::Ui::ViewportManager
         return vp;
     }
 
-    static void focusViewportOn(window* w, int index, thing_id_t dx)
+    static void focusViewportOn(window* w, int index, EntityId_t dx)
     {
         assert(index >= 0 && index < viewportsPerWindow);
         viewport* viewport = w->viewports[index];
 
         w->viewport_configurations[index].viewport_target_sprite = dx;
 
-        auto t = ThingManager::get<thing_base>(dx);
+        auto t = EntityManager::get<EntityBase>(dx);
 
         int16_t dest_x, dest_y;
         viewport->centre2dCoordinates(t->x, t->y, t->z, &dest_x, &dest_y);
@@ -113,7 +113,7 @@ namespace OpenLoco::Ui::ViewportManager
 
         if (regs.edx & (1 << 31))
         {
-            thing_id_t id = regs.dx;
+            EntityId_t id = regs.dx;
             return create(window, index, { x, y }, { width, height }, zoom, id);
         }
         else
@@ -141,7 +141,7 @@ namespace OpenLoco::Ui::ViewportManager
      * 2.
      * dx : thing_id
      */
-    viewport* create(window* window, int viewportIndex, Gfx::point_t origin, Gfx::ui_size_t size, ZoomLevel zoom, thing_id_t thing_id)
+    viewport* create(window* window, int viewportIndex, Gfx::point_t origin, Gfx::ui_size_t size, ZoomLevel zoom, EntityId_t thing_id)
     {
         viewport* viewport = initViewport(origin, size, zoom);
 
@@ -299,7 +299,7 @@ namespace OpenLoco::Ui::ViewportManager
      * @param t @<esi>
      * @param zoom
      */
-    void invalidate(thing_base* t, ZoomLevel zoom)
+    void invalidate(EntityBase* t, ZoomLevel zoom)
     {
         if (t->sprite_left == Location::null)
             return;
@@ -369,25 +369,25 @@ namespace OpenLoco::Ui::ViewportManager
         registerHook(
             0x004CBB01,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                invalidate((thing_base*)regs.esi, ZoomLevel::eighth);
+                invalidate((EntityBase*)regs.esi, ZoomLevel::eighth);
                 return 0;
             });
         registerHook(
             0x004CBBD2,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                invalidate((thing_base*)regs.esi, ZoomLevel::quarter);
+                invalidate((EntityBase*)regs.esi, ZoomLevel::quarter);
                 return 0;
             });
         registerHook(
             0x004CBCAC,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                invalidate((thing_base*)regs.esi, ZoomLevel::half);
+                invalidate((EntityBase*)regs.esi, ZoomLevel::half);
                 return 0;
             });
         registerHook(
             0x004CBD86,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                invalidate((thing_base*)regs.esi, ZoomLevel::full);
+                invalidate((EntityBase*)regs.esi, ZoomLevel::full);
                 return 0;
             });
         registerHook(

@@ -1,11 +1,11 @@
 #include "CompanyManager.h"
 #include "Config.h"
+#include "Entities/EntityManager.h"
 #include "GameCommands.h"
 #include "Interop/Interop.hpp"
 #include "Localisation/FormatArguments.hpp"
 #include "Map/Tile.h"
 #include "OpenLoco.h"
-#include "Things/ThingManager.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleManager.h"
@@ -204,7 +204,7 @@ namespace OpenLoco::CompanyManager
             if (w->type != WindowType::vehicle)
                 continue;
 
-            auto vehicle = ThingManager::get<Vehicles::VehicleBase>(w->number);
+            auto vehicle = EntityManager::get<Vehicles::VehicleBase>(w->number);
             if (vehicle->x == Location::null)
                 continue;
 

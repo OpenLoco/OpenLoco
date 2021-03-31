@@ -1,9 +1,9 @@
 #include "PaintEntity.h"
 #include "../Config.h"
+#include "../Entities/EntityManager.h"
+#include "../Entities/Misc.h"
 #include "../Interop/Interop.hpp"
 #include "../Map/Tile.h"
-#include "../Things/Misc.h"
-#include "../Things/ThingManager.h"
 #include "../Vehicles/Vehicle.h"
 #include "Paint.h"
 #include "PaintMiscEntity.h"
@@ -28,7 +28,7 @@ namespace OpenLoco::Paint
             return;
         }
 
-        ThingManager::ThingTileList entities(loc);
+        EntityManager::EntityTileList entities(loc);
         for (auto* entity : entities)
         {
             // TODO: Create a rect from dpi dims
@@ -63,10 +63,10 @@ namespace OpenLoco::Paint
             session.setItemType(InteractionItem::entity);
             switch (entity->base_type)
             {
-                case thing_base_type::vehicle:
+                case EntityBaseType::vehicle:
                     paintVehicleEntity(session, entity->asVehicle());
                     break;
-                case thing_base_type::misc:
+                case EntityBaseType::misc:
                     paintMiscEntity(session, entity->asMisc());
                     break;
             }
@@ -76,10 +76,10 @@ namespace OpenLoco::Paint
     // 0x0046FA88
     void paintEntities(PaintSession& session, const Map::map_pos& loc)
     {
-        paintEntitiesWithFilter(session, loc, [](const thing_base*) { return true; });
+        paintEntitiesWithFilter(session, loc, [](const EntityBase*) { return true; });
     }
 
-    static bool isEntityFlyingOrFloating(const thing_base* entity)
+    static bool isEntityFlyingOrFloating(const EntityBase* entity)
     {
         auto* vehicle = entity->asVehicle();
         if (vehicle == nullptr)

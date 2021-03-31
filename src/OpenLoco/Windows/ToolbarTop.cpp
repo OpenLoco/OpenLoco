@@ -1,6 +1,7 @@
 #include "../Audio/Audio.h"
 #include "../CompanyManager.h"
 #include "../Config.h"
+#include "../Entities/EntityManager.h"
 #include "../GameCommands.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/Gfx.h"
@@ -17,7 +18,6 @@
 #include "../Objects/WaterObject.h"
 #include "../S5/S5.h"
 #include "../StationManager.h"
-#include "../Things/ThingManager.h"
 #include "../TownManager.h"
 #include "../Ui/Dropdown.h"
 #include "../Ui/WindowManager.h"
@@ -512,7 +512,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         auto interface = ObjectManager::get<InterfaceSkinObject>();
 
         uint16_t vehicle_counts[vehicleTypeCount]{ 0 };
-        for (auto v : ThingManager::VehicleList())
+        for (auto v : EntityManager::VehicleList())
         {
             if (v->owner != player_company_id)
                 continue;

@@ -1,5 +1,6 @@
 #include "../CompanyManager.h"
 #include "../Config.h"
+#include "../Entities/EntityManager.h"
 #include "../IndustryManager.h"
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
@@ -9,7 +10,6 @@
 #include "../Objects/ObjectManager.h"
 #include "../Paint/Paint.h"
 #include "../StationManager.h"
-#include "../Things/ThingManager.h"
 #include "../TownManager.h"
 #include "../Ui.h"
 #include "../Ui/ScrollView.h"
@@ -25,7 +25,7 @@ namespace OpenLoco::Ui::ViewportInteraction
     InteractionArg::InteractionArg(const Paint::PaintStruct& ps)
         : x(ps.map_x)
         , y(ps.map_y)
-        , object(ps.thing)
+        , object(ps.entity)
         , type(ps.type)
         , unkBh(ps.var_29)
     {
@@ -198,13 +198,13 @@ namespace OpenLoco::Ui::ViewportInteraction
     // 0x004CDA7C
     static bool getVehicleArguments(const InteractionArg& interaction)
     {
-        Thing* thing = reinterpret_cast<Thing*>(interaction.object);
-        auto vehicle = thing->asVehicle();
+        auto* entity = reinterpret_cast<EntityBase*>(interaction.object);
+        auto vehicle = entity->asVehicle();
         if (vehicle == nullptr)
         {
             return false;
         }
-        auto head = ThingManager::get<Vehicles::VehicleHead>(vehicle->getHead());
+        auto head = EntityManager::get<Vehicles::VehicleHead>(vehicle->getHead());
 
         auto company = CompanyManager::get(head->owner);
         Windows::MapToolTip::setOwner(head->owner);
@@ -378,7 +378,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         Vehicles::VehicleBase* nearestVehicle = nullptr;
         auto targetPosition = viewport->uiToMap({ tempX, tempY });
 
-        for (auto v : ThingManager::VehicleList())
+        for (auto v : EntityManager::VehicleList())
         {
             auto train = Vehicles::Vehicle(v);
             checkAndSetNearestVehicle(nearestDistance, nearestVehicle, *train.veh2, targetPosition);

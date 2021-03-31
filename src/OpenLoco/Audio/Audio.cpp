@@ -2,13 +2,13 @@
 #include "../Config.h"
 #include "../Console.h"
 #include "../Date.h"
+#include "../Entities/EntityManager.h"
 #include "../Environment.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/StringIds.h"
 #include "../Map/TileManager.h"
 #include "../Objects/ObjectManager.h"
 #include "../Objects/SoundObject.h"
-#include "../Things/ThingManager.h"
 #include "../Ui/WindowManager.h"
 #include "../Utility/Stream.hpp"
 #include "../Vehicles/Vehicle.h"
@@ -905,7 +905,7 @@ namespace OpenLoco::Audio
             _numActiveVehicleSounds = 0;
         }
 
-        for (auto v : ThingManager::VehicleList())
+        for (auto v : EntityManager::VehicleList())
         {
             Vehicles::Vehicle train(v);
             off_4FEB58(reinterpret_cast<Vehicles::Vehicle2or6*>(train.veh2), x);

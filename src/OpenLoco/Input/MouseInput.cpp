@@ -1,6 +1,7 @@
 #include "../Audio/Audio.h"
 #include "../CompanyManager.h"
 #include "../Console.h"
+#include "../Entities/EntityManager.h"
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/StringIds.h"
@@ -8,7 +9,6 @@
 #include "../Objects/ObjectManager.h"
 #include "../Objects/RoadObject.h"
 #include "../StationManager.h"
-#include "../Things/ThingManager.h"
 #include "../TownManager.h"
 #include "../Tutorial.h"
 #include "../Ui/ScrollView.h"
@@ -526,7 +526,7 @@ namespace OpenLoco::Input
                     {
                         case InteractionItem::entity:
                         {
-                            auto _thing = reinterpret_cast<thing_base*>(interaction.object);
+                            auto _thing = reinterpret_cast<EntityBase*>(interaction.object);
                             auto veh = _thing->asVehicle();
                             if (veh != nullptr)
                             {
@@ -767,11 +767,11 @@ namespace OpenLoco::Input
                         {
                             case InteractionItem::entity:
                             {
-                                auto _thing = reinterpret_cast<thing_base*>(item2.object);
+                                auto _thing = reinterpret_cast<EntityBase*>(item2.object);
                                 auto veh = _thing->asVehicle();
                                 if (veh != nullptr)
                                 {
-                                    auto head = ThingManager::get<Vehicles::VehicleHead>(veh->getHead());
+                                    auto head = EntityManager::get<Vehicles::VehicleHead>(veh->getHead());
                                     Ui::Windows::VehicleList::open(head->owner, static_cast<uint8_t>(head->vehicleType));
                                 }
                                 break;

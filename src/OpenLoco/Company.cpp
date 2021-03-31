@@ -1,8 +1,8 @@
 #include "Company.h"
+#include "Entities/EntityManager.h"
 #include "Interop/Interop.hpp"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
-#include "Things/ThingManager.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
 #include <algorithm>
@@ -54,7 +54,7 @@ namespace OpenLoco
         }
 
         auto companyId = id();
-        for (auto v : ThingManager::VehicleList())
+        for (auto v : EntityManager::VehicleList())
         {
             if (v->owner == companyId)
             {

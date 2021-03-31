@@ -2,13 +2,13 @@
 #include "../CompanyManager.h"
 #include "../Config.h"
 #include "../Console.h"
+#include "../Entities/EntityManager.h"
 #include "../GameCommands.h"
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
 #include "../Intro.h"
 #include "../Localisation/StringIds.h"
 #include "../OpenLoco.h"
-#include "../Things/ThingManager.h"
 #include "../Tutorial.h"
 #include "../Ui.h"
 #include "../Ui/Screenshot.h"
@@ -94,7 +94,7 @@ namespace OpenLoco::Input
             if (w->type != WindowType::vehicle)
                 continue;
 
-            auto t = ThingManager::get<Vehicles::VehicleBase>(w->number);
+            auto t = EntityManager::get<Vehicles::VehicleBase>(w->number);
             if (t->getOwner() != CompanyManager::getControllingId())
                 continue;
 

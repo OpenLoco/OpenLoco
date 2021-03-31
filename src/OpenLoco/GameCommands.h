@@ -1,10 +1,10 @@
-﻿#pragma once
+#pragma once
 
 #include "Currency.h"
+#include "Entities/Entity.h"
 #include "Interop/Interop.hpp"
 #include "Map/Tile.h"
 #include "Objects/ObjectManager.h"
-#include "Things/Thing.h"
 
 using namespace OpenLoco::Interop;
 
@@ -117,7 +117,7 @@ namespace OpenLoco::GameCommands
     uint32_t doCommand(GameCommand command, const registers& registers);
     bool sub_431E6A(const company_id_t company, Map::tile_element* const tile = nullptr);
 
-    inline void do_0(thing_id_t source, thing_id_t dest)
+    inline void do_0(EntityId_t source, EntityId_t dest)
     {
         registers regs;
         regs.bl = GameCommandFlag::apply;
@@ -126,7 +126,7 @@ namespace OpenLoco::GameCommands
         doCommand(GameCommand::vehicle_rearrange, regs);
     }
 
-    inline bool do_2(thing_id_t head)
+    inline bool do_2(EntityId_t head)
     {
         registers regs;
         regs.bl = GameCommandFlag::apply | GameCommandFlag::flag_3 | GameCommandFlag::flag_6;
@@ -135,7 +135,7 @@ namespace OpenLoco::GameCommands
     }
 
     // Reverse (vehicle)
-    inline void do_3(thing_id_t vehicleHead, Vehicles::VehicleHead* const head)
+    inline void do_3(EntityId_t vehicleHead, Vehicles::VehicleHead* const head)
     {
         registers regs;
         regs.bl = GameCommandFlag::apply;
@@ -147,7 +147,7 @@ namespace OpenLoco::GameCommands
     }
 
     // Pass signal (vehicle)
-    inline void do_4(thing_id_t vehicleHead)
+    inline void do_4(EntityId_t vehicleHead)
     {
         registers regs;
         regs.bl = GameCommandFlag::apply;
@@ -178,7 +178,7 @@ namespace OpenLoco::GameCommands
         return doCommand(GameCommand::vehicle_create, regs);
     }
 
-    inline void do_6(thing_id_t car)
+    inline void do_6(EntityId_t car)
     {
         registers regs;
         regs.bl = GameCommandFlag::apply;
@@ -196,7 +196,7 @@ namespace OpenLoco::GameCommands
     }
 
     // Change vehicle name
-    inline void do_10(thing_id_t head, uint16_t i, uint32_t edx, uint32_t ebp, uint32_t edi)
+    inline void do_10(EntityId_t head, uint16_t i, uint32_t edx, uint32_t ebp, uint32_t edi)
     {
         registers regs;
         regs.bl = GameCommandFlag::apply;
@@ -221,7 +221,7 @@ namespace OpenLoco::GameCommands
         doCommand(GameCommand::change_station_name, regs);
     }
 
-    inline void do12(thing_id_t head, uint8_t bh)
+    inline void do12(EntityId_t head, uint8_t bh)
     {
         registers regs;
         regs.bl = GameCommandFlag::apply;
@@ -373,7 +373,7 @@ namespace OpenLoco::GameCommands
         return doCommand(GameCommand::change_company_owner_name, regs) != FAILURE;
     }
 
-    inline bool do_35(thing_id_t head, uint64_t rawOrder, uint32_t orderOffset)
+    inline bool do_35(EntityId_t head, uint64_t rawOrder, uint32_t orderOffset)
     {
         registers regs;
         regs.bl = GameCommandFlag::apply;
@@ -384,7 +384,7 @@ namespace OpenLoco::GameCommands
         return doCommand(GameCommand::vehicle_order_insert, regs);
     }
 
-    inline bool do_36(thing_id_t head, uint32_t orderOffset)
+    inline bool do_36(EntityId_t head, uint32_t orderOffset)
     {
         registers regs;
         regs.bl = GameCommandFlag::apply;
@@ -393,7 +393,7 @@ namespace OpenLoco::GameCommands
         return doCommand(GameCommand::vehicle_order_delete, regs);
     }
 
-    inline bool do_37(thing_id_t head)
+    inline bool do_37(EntityId_t head)
     {
         registers regs;
         regs.bl = GameCommandFlag::apply;
@@ -459,7 +459,7 @@ namespace OpenLoco::GameCommands
         doCommand(GameCommand::build_company_headquarters, regs);
     }
 
-    inline bool do_59(thing_id_t head)
+    inline bool do_59(EntityId_t head)
     {
         registers regs;
         regs.bl = GameCommandFlag::apply | GameCommandFlag::flag_3 | GameCommandFlag::flag_6;
@@ -467,7 +467,7 @@ namespace OpenLoco::GameCommands
         return doCommand(GameCommand::vehicle_abort_pickup_air, regs) != FAILURE;
     }
 
-    inline bool do_63(thing_id_t head)
+    inline bool do_63(EntityId_t head)
     {
         registers regs;
         regs.bl = GameCommandFlag::apply | GameCommandFlag::flag_3 | GameCommandFlag::flag_6;
@@ -476,7 +476,7 @@ namespace OpenLoco::GameCommands
     }
 
     // Refit vehicle
-    inline void do_64(thing_id_t vehicleHead, uint16_t option)
+    inline void do_64(EntityId_t vehicleHead, uint16_t option)
     {
         registers regs;
         regs.bl = GameCommandFlag::apply;
@@ -558,7 +558,7 @@ namespace OpenLoco::GameCommands
     }
 
     // Update owner status
-    inline void do_73(thing_id_t id)
+    inline void do_73(EntityId_t id)
     {
         registers regs;
         regs.bl = GameCommandFlag::apply;
@@ -577,7 +577,7 @@ namespace OpenLoco::GameCommands
         doCommand(GameCommand::update_owner_status, regs);
     }
 
-    inline uint32_t do_74(thing_id_t head, int16_t speed)
+    inline uint32_t do_74(EntityId_t head, int16_t speed)
     {
         registers regs;
         regs.bl = GameCommandFlag::apply;
@@ -586,7 +586,7 @@ namespace OpenLoco::GameCommands
         return doCommand(GameCommand::vehicle_speed_control, regs);
     }
 
-    inline uint32_t do_75(thing_id_t head, uint32_t orderOffset)
+    inline uint32_t do_75(EntityId_t head, uint32_t orderOffset)
     {
         registers regs;
         regs.bl = GameCommandFlag::apply;
@@ -595,7 +595,7 @@ namespace OpenLoco::GameCommands
         return doCommand(GameCommand::vehicle_order_up, regs);
     }
 
-    inline uint32_t do_76(thing_id_t head, uint32_t orderOffset)
+    inline uint32_t do_76(EntityId_t head, uint32_t orderOffset)
     {
         registers regs;
         regs.bl = GameCommandFlag::apply;
@@ -604,7 +604,7 @@ namespace OpenLoco::GameCommands
         return doCommand(GameCommand::vehicle_order_down, regs);
     }
 
-    inline void do_77(thing_id_t head)
+    inline void do_77(EntityId_t head)
     {
         registers regs;
         regs.bl = GameCommandFlag::apply;

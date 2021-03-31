@@ -16,12 +16,12 @@ namespace OpenLoco
 {
     struct MiscBase;
 
-    namespace ThingId
+    namespace EntityId
     {
-        constexpr thing_id_t null = std::numeric_limits<thing_id_t>::max();
+        constexpr EntityId_t null = std::numeric_limits<EntityId_t>::max();
     }
 
-    enum class thing_base_type : uint8_t
+    enum class EntityBaseType : uint8_t
     {
         vehicle = 0,
         misc
@@ -45,18 +45,18 @@ namespace OpenLoco
     };
 
 #pragma pack(push, 1)
-    struct thing_base
+    struct EntityBase
     {
-        thing_base_type base_type;
+        EntityBaseType base_type;
 
     private:
         uint8_t type; // Use type specific getters/setters as this depends on base_type
     public:
-        thing_id_t nextQuadrantId; // 0x02
-        thing_id_t next_thing_id;  // 0x04
+        EntityId_t nextQuadrantId; // 0x02
+        EntityId_t next_thing_id;  // 0x04
         uint8_t pad_06[0x09 - 0x06];
         uint8_t var_09;
-        thing_id_t id; // 0xA
+        EntityId_t id; // 0xA
         uint16_t var_0C;
         int16_t x; // 0x0E
         int16_t y; // 0x10
@@ -73,27 +73,27 @@ namespace OpenLoco
         void moveTo(Map::map_pos3 loc);
         void invalidateSprite();
 
-        Vehicles::VehicleBase* asVehicle() const { return asBase<Vehicles::VehicleBase, thing_base_type::vehicle>(); }
-        MiscBase* asMisc() const { return asBase<MiscBase, thing_base_type::misc>(); }
+        Vehicles::VehicleBase* asVehicle() const { return asBase<Vehicles::VehicleBase, EntityBaseType::vehicle>(); }
+        MiscBase* asMisc() const { return asBase<MiscBase, EntityBaseType::misc>(); }
 
     protected:
         uint8_t getSubType() const { return type; }
         void setSubType(const uint8_t newType) { type = newType; }
 
     private:
-        template<typename TType, thing_base_type TClass>
+        template<typename TType, EntityBaseType TClass>
         TType* asBase() const
         {
             return base_type == TClass ? (TType*)this : nullptr;
         }
     };
 
-    // Max size of a thing. Use when needing to know thing size
-    struct Thing : thing_base
+    // Max size of a Entity. Use when needing to know Entity size
+    struct Entity : EntityBase
     {
     private:
         uint8_t pad_20[0x80 - 0x20];
     };
-    static_assert(sizeof(Thing) == 0x80);
+    static_assert(sizeof(Entity) == 0x80);
 #pragma pack(pop)
 }

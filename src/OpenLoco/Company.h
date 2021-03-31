@@ -80,7 +80,7 @@ namespace OpenLoco
         uint16_t transportTypeCount[6];              // 0x8BA4
         uint8_t var_8BB0[9];
         uint8_t pad_8BB9[0x8BBC - 0x8BB9];
-        thing_id_t observation_thing; // 0x8BBC;
+        EntityId_t observation_thing; // 0x8BBC;
         int16_t observation_x;        // 0x8BBE;
         int16_t observation_y;        // 0x8BC0;
         uint8_t pad_8BC2[0x8BCE - 0x8BC2];

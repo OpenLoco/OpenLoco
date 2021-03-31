@@ -2,6 +2,7 @@
 #include "../CompanyManager.h"
 #include "../Config.h"
 #include "../Date.h"
+#include "../Entities/EntityManager.h"
 #include "../GameCommands.h"
 #include "../Graphics/ImageIds.h"
 #include "../Input.h"
@@ -16,7 +17,6 @@
 #include "../Objects/ObjectManager.h"
 #include "../OpenLoco.h"
 #include "../Scenario.h"
-#include "../Things/ThingManager.h"
 #include "../Ui/Dropdown.h"
 #include "../Ui/WindowManager.h"
 #include "../Vehicles/Vehicle.h"
@@ -460,7 +460,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             const auto& company = CompanyManager::get(self->number);
 
-            if (company->observation_thing == ThingId::null)
+            if (company->observation_thing == EntityId::null)
             {
                 // Observing a certain location?
                 if (company->observation_x != -1)
@@ -512,7 +512,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             else
             {
                 // loc_434170
-                auto thing = ThingManager::get<OpenLoco::thing_base>(company->observation_thing);
+                auto thing = EntityManager::get<OpenLoco::EntityBase>(company->observation_thing);
                 auto* vehicle = thing->asVehicle();
                 if (vehicle == nullptr)
                 {

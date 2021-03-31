@@ -27,6 +27,7 @@
 #include "Date.h"
 #include "Economy.h"
 #include "EditorController.h"
+#include "Entities/EntityManager.h"
 #include "Environment.h"
 #include "Graphics/Colour.h"
 #include "Graphics/Gfx.h"
@@ -45,7 +46,6 @@
 #include "S5/S5.h"
 #include "ScenarioManager.h"
 #include "StationManager.h"
-#include "Things/ThingManager.h"
 #include "Title.h"
 #include "TownManager.h"
 #include "Tutorial.h"
@@ -793,10 +793,10 @@ namespace OpenLoco
         call(0x004C56F6);
         TownManager::update();
         IndustryManager::update();
-        ThingManager::updateVehicles();
+        EntityManager::updateVehicles();
         sub_46FFCA();
         StationManager::update();
-        ThingManager::updateMiscThings();
+        EntityManager::updateMiscEntities();
         sub_46FFCA();
         CompanyManager::update();
         invalidate_map_animations();

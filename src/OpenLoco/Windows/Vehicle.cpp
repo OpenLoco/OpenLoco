@@ -1,6 +1,7 @@
 #include "../Vehicles/Vehicle.h"
 #include "../CompanyManager.h"
 #include "../Config.h"
+#include "../Entities/EntityManager.h"
 #include "../GameCommands.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/ImageIds.h"
@@ -17,7 +18,6 @@
 #include "../Objects/WaterObject.h"
 #include "../OpenLoco.h"
 #include "../StationManager.h"
-#include "../Things/ThingManager.h"
 #include "../TrackData.h"
 #include "../Ui/Dropdown.h"
 #include "../Ui/ScrollView.h"
@@ -61,7 +61,7 @@ namespace OpenLoco::Ui::Vehicle
 
         static Vehicles::VehicleHead* getVehicle(const window* self)
         {
-            return ThingManager::get<Vehicles::VehicleHead>(self->number);
+            return EntityManager::get<Vehicles::VehicleHead>(self->number);
         }
 
         static void setActiveTabs(window* const self);
@@ -195,7 +195,7 @@ namespace OpenLoco::Ui::Vehicle
     static loco_global<uint8_t, 0x00525FC5> _525FC5;
     static loco_global<uint8_t, 0x00525FB0> _pickupDirection; // direction that the ghost points
     static loco_global<Vehicles::VehicleBogie*, 0x0113614E> _dragCarComponent;
-    static loco_global<thing_id_t, 0x01136156> _dragVehicleHead;
+    static loco_global<EntityId_t, 0x01136156> _dragVehicleHead;
     static loco_global<int32_t, 0x01136264> _1136264;
     static loco_global<string_id, 0x009C68E8> gGameCommandErrorTitle;
     static loco_global<uint32_t[32], 0x00525E5E> currencyMultiplicationFactor;
@@ -267,7 +267,7 @@ namespace OpenLoco::Ui::Vehicle
             }
 
             // By default focus on the veh2 id and if there are cars focus on the body of the first car
-            thing_id_t targetThing = train.veh2->id;
+            EntityId_t targetThing = train.veh2->id;
             if (!train.cars.empty())
             {
                 targetThing = train.cars.firstCar.front->id;
@@ -342,7 +342,7 @@ namespace OpenLoco::Ui::Vehicle
             self->widgets = widgets;
             self->enabled_widgets = enabledWidgets;
             self->number = head;
-            const auto* vehicle = ThingManager::get<Vehicles::VehicleHead>(head);
+            const auto* vehicle = EntityManager::get<Vehicles::VehicleHead>(head);
             self->owner = vehicle->owner;
             self->row_height = rowHeights[static_cast<uint8_t>(vehicle->vehicleType)];
             self->current_tab = 0;
@@ -355,7 +355,7 @@ namespace OpenLoco::Ui::Vehicle
             self->var_85C = -1;
             WindowManager::close(WindowType::dragVehiclePart, 0);
             _dragCarComponent = nullptr;
-            _dragVehicleHead = ThingId::null;
+            _dragVehicleHead = EntityId::null;
 
             const auto* skin = ObjectManager::get<InterfaceSkinObject>();
             self->colours[1] = skin->colour_0A;
@@ -630,7 +630,7 @@ namespace OpenLoco::Ui::Vehicle
             {
                 auto vehHead = Common::getVehicle(self);
                 Vehicles::Vehicle train(vehHead);
-                thing_id_t targetThing = train.veh2->id;
+                EntityId_t targetThing = train.veh2->id;
 
                 // Focus viewport on vehicle, with locking.
                 auto main = WindowManager::getMainWindow();
@@ -849,9 +849,9 @@ namespace OpenLoco::Ui::Vehicle
 
         struct VehicleStatus
         {
-            thing_id_t status1;
+            EntityId_t status1;
             uint32_t status1Args;
-            thing_id_t status2;
+            EntityId_t status2;
             uint32_t status2Args;
         };
 
@@ -1002,7 +1002,7 @@ namespace OpenLoco::Ui::Vehicle
             gGameCommandErrorTitle = StringIds::cant_clone_vehicle;
             if (GameCommands::do_80(head->head))
             {
-                auto* newVehicle = ThingManager::get<Vehicles::VehicleBase>(_113642A);
+                auto* newVehicle = EntityManager::get<Vehicles::VehicleBase>(_113642A);
                 if (newVehicle != nullptr)
                 {
                     OpenLoco::Ui::Vehicle::Details::open(newVehicle);
@@ -1098,7 +1098,7 @@ namespace OpenLoco::Ui::Vehicle
             {
                 if (WindowManager::find(WindowType::dragVehiclePart) == nullptr)
                 {
-                    _dragVehicleHead = ThingId::null;
+                    _dragVehicleHead = EntityId::null;
                     _dragCarComponent = nullptr;
                     self->invalidate();
                 }
@@ -1109,7 +1109,7 @@ namespace OpenLoco::Ui::Vehicle
 
             WindowManager::invalidateWidget(WindowType::vehicle, self->number, Common::widx::tabDetails);
 
-            if (_dragVehicleHead == ThingId::null && self->isActivated(widx::remove))
+            if (_dragVehicleHead == EntityId::null && self->isActivated(widx::remove))
             {
                 self->activated_widgets &= ~(1ULL << widx::remove);
                 WindowManager::invalidateWidget(WindowType::vehicle, self->number, widx::remove);
@@ -1206,7 +1206,7 @@ namespace OpenLoco::Ui::Vehicle
             self->flags &= ~WindowFlags::not_scroll_view;
             auto car = Common::getCarFromScrollView(self, y);
             string_id tooltipFormat = StringIds::null;
-            thing_id_t tooltipContent = ThingId::null;
+            EntityId_t tooltipContent = EntityId::null;
             if (car)
             {
                 tooltipFormat = StringIds::buffer_337;
@@ -1231,7 +1231,7 @@ namespace OpenLoco::Ui::Vehicle
             self->var_85C = tooltipContent;
             ToolTip::closeAndReset();
 
-            if (tooltipContent == ThingId::null)
+            if (tooltipContent == EntityId::null)
             {
                 return;
             }
@@ -1995,7 +1995,7 @@ namespace OpenLoco::Ui::Vehicle
             self->flags &= ~WindowFlags::not_scroll_view;
             auto car = Common::getCarFromScrollView(self, y);
             string_id tooltipFormat = StringIds::null;
-            thing_id_t tooltipContent = ThingId::null;
+            EntityId_t tooltipContent = EntityId::null;
             if (car)
             {
                 tooltipFormat = StringIds::buffer_337;
@@ -2020,7 +2020,7 @@ namespace OpenLoco::Ui::Vehicle
             self->var_85C = tooltipContent;
             ToolTip::closeAndReset();
 
-            if (tooltipContent == ThingId::null)
+            if (tooltipContent == EntityId::null)
             {
                 return;
             }

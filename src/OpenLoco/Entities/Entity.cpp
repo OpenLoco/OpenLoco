@@ -1,4 +1,4 @@
-#include "Thing.h"
+#include "Entity.h"
 #include "../Config.h"
 #include "../Graphics/Gfx.h"
 #include "../Interop/Interop.hpp"
@@ -9,7 +9,7 @@ using namespace OpenLoco;
 using namespace OpenLoco::Interop;
 
 // 0x0046FC83
-void thing_base::moveTo(Map::map_pos3 loc)
+void EntityBase::moveTo(Map::map_pos3 loc)
 {
     registers regs;
     regs.ax = loc.x;
@@ -20,7 +20,7 @@ void thing_base::moveTo(Map::map_pos3 loc)
 }
 
 // 0x004CBB01
-void OpenLoco::thing_base::invalidateSprite()
+void OpenLoco::EntityBase::invalidateSprite()
 {
     Ui::ViewportManager::invalidate(this, ZoomLevel::eighth);
 }

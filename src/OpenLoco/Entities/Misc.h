@@ -2,7 +2,7 @@
 
 #include "../Map/Map.hpp"
 #include "../Objects/SteamObject.h"
-#include "Thing.h"
+#include "Entity.h"
 
 namespace OpenLoco
 {
@@ -15,7 +15,7 @@ namespace OpenLoco
     struct ExplosionSmoke;
     struct Smoke;
 
-    enum class MiscThingType : uint8_t
+    enum class MiscEntityType : uint8_t
     {
         exhaust = 0, // Steam from the exhaust
         redGreenCurrency = 1,
@@ -29,27 +29,27 @@ namespace OpenLoco
     };
 
 #pragma pack(push, 1)
-    struct MiscBase : thing_base
+    struct MiscBase : EntityBase
     {
     private:
-        template<typename TType, MiscThingType TClass>
+        template<typename TType, MiscEntityType TClass>
         TType* as() const
         {
             return getSubType() == TClass ? (TType*)this : nullptr;
         }
 
     public:
-        MiscThingType getSubType() const { return MiscThingType(thing_base::getSubType()); }
-        void setSubType(const MiscThingType newType) { thing_base::setSubType(static_cast<uint8_t>(newType)); }
-        Exhaust* asExhaust() const { return as<Exhaust, MiscThingType::exhaust>(); }
-        MoneyEffect* asRedGreenCurrency() const { return as<MoneyEffect, MiscThingType::redGreenCurrency>(); }
-        MoneyEffect* asWindowCurrency() const { return as<MoneyEffect, MiscThingType::windowCurrency>(); }
-        VehicleCrashParticle* asVehicleCrashParticle() const { return as<VehicleCrashParticle, MiscThingType::vehicleCrashParticle>(); }
-        ExplosionCloud* asExplosionCloud() const { return as<ExplosionCloud, MiscThingType::explosionCloud>(); }
-        Splash* asSplash() const { return as<Splash, MiscThingType::splash>(); }
-        Fireball* asFireball() const { return as<Fireball, MiscThingType::fireball>(); }
-        ExplosionSmoke* asExplosionSmoke() const { return as<ExplosionSmoke, MiscThingType::explosionSmoke>(); }
-        Smoke* asSmoke() const { return as<Smoke, MiscThingType::smoke>(); }
+        MiscEntityType getSubType() const { return MiscEntityType(EntityBase::getSubType()); }
+        void setSubType(const MiscEntityType newType) { EntityBase::setSubType(static_cast<uint8_t>(newType)); }
+        Exhaust* asExhaust() const { return as<Exhaust, MiscEntityType::exhaust>(); }
+        MoneyEffect* asRedGreenCurrency() const { return as<MoneyEffect, MiscEntityType::redGreenCurrency>(); }
+        MoneyEffect* asWindowCurrency() const { return as<MoneyEffect, MiscEntityType::windowCurrency>(); }
+        VehicleCrashParticle* asVehicleCrashParticle() const { return as<VehicleCrashParticle, MiscEntityType::vehicleCrashParticle>(); }
+        ExplosionCloud* asExplosionCloud() const { return as<ExplosionCloud, MiscEntityType::explosionCloud>(); }
+        Splash* asSplash() const { return as<Splash, MiscEntityType::splash>(); }
+        Fireball* asFireball() const { return as<Fireball, MiscEntityType::fireball>(); }
+        ExplosionSmoke* asExplosionSmoke() const { return as<ExplosionSmoke, MiscEntityType::explosionSmoke>(); }
+        Smoke* asSmoke() const { return as<Smoke, MiscEntityType::smoke>(); }
     };
 
     struct Exhaust : MiscBase

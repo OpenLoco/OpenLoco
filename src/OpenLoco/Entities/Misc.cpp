@@ -1,7 +1,7 @@
 #include "Misc.h"
 #include "../Map/TileManager.h"
 #include "../Objects/ObjectManager.h"
-#include "ThingManager.h"
+#include "EntityManager.h"
 
 using namespace OpenLoco;
 using namespace OpenLoco::ObjectManager;
@@ -24,18 +24,18 @@ Exhaust* OpenLoco::Exhaust::create(Map::map_pos3 loc, uint8_t type)
     if (loc.z <= surface->baseZ() * 4)
         return nullptr;
 
-    auto _exhaust = static_cast<Exhaust*>(ThingManager::createThing());
+    auto _exhaust = static_cast<Exhaust*>(EntityManager::createEntity());
 
     if (_exhaust != nullptr)
     {
-        _exhaust->base_type = thing_base_type::misc;
+        _exhaust->base_type = EntityBaseType::misc;
         _exhaust->moveTo(loc);
         _exhaust->object_id = type;
         auto obj = _exhaust->object();
         _exhaust->var_14 = obj->var_05;
         _exhaust->var_09 = obj->var_06;
         _exhaust->var_15 = obj->var_07;
-        _exhaust->setSubType(MiscThingType::exhaust);
+        _exhaust->setSubType(MiscEntityType::exhaust);
         _exhaust->var_26 = 0;
         _exhaust->var_28 = 0;
         _exhaust->var_32 = 0;
@@ -48,15 +48,15 @@ Exhaust* OpenLoco::Exhaust::create(Map::map_pos3 loc, uint8_t type)
 // 0x00440BEB
 Smoke* OpenLoco::Smoke::create(Map::map_pos3 loc)
 {
-    auto t = static_cast<Smoke*>(ThingManager::createThing());
+    auto t = static_cast<Smoke*>(EntityManager::createEntity());
     if (t != nullptr)
     {
         t->var_14 = 44;
         t->var_09 = 32;
         t->var_15 = 34;
-        t->base_type = thing_base_type::misc;
+        t->base_type = EntityBaseType::misc;
         t->moveTo(loc);
-        t->setSubType(MiscThingType::smoke);
+        t->setSubType(MiscEntityType::smoke);
         t->frame = 0;
     }
     return t;

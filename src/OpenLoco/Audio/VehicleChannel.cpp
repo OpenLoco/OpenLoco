@@ -1,6 +1,6 @@
 #include "VehicleChannel.h"
+#include "../Entities/EntityManager.h"
 #include "../Interop/Interop.hpp"
-#include "../Things/ThingManager.h"
 #include "../Vehicles/Vehicle.h"
 
 using namespace OpenLoco;
@@ -22,7 +22,7 @@ vehicle_channel::vehicle_channel(channel&& c)
 
 vehicle_channel::vehicle_channel(vehicle_channel&& vc)
     : _channel(std::exchange(vc._channel, {}))
-    , _vehicle_id(std::exchange(vc._vehicle_id, ThingId::null))
+    , _vehicle_id(std::exchange(vc._vehicle_id, EntityId::null))
     , _sound_id(std::exchange(vc._sound_id, {}))
     , _attributes(std::exchange(vc._attributes, {}))
 {
@@ -37,9 +37,9 @@ vehicle_channel& vehicle_channel::operator=(vehicle_channel&& other)
     return *this;
 }
 
-void vehicle_channel::begin(thing_id_t vid)
+void vehicle_channel::begin(EntityId_t vid)
 {
-    auto v = ThingManager::get<Vehicles::VehicleBase>(vid);
+    auto v = EntityManager::get<Vehicles::VehicleBase>(vid);
     if (v != nullptr && v->isVehicle2Or6())
     {
         auto* veh26 = v->asVehicle2Or6();
@@ -68,7 +68,7 @@ void vehicle_channel::update()
 {
     if (!isFree())
     {
-        auto v = ThingManager::get<Vehicles::VehicleBase>(_vehicle_id);
+        auto v = EntityManager::get<Vehicles::VehicleBase>(_vehicle_id);
         if (v != nullptr && v->isVehicle2Or6())
         {
             auto* veh26 = v->asVehicle2Or6();
@@ -102,5 +102,5 @@ void vehicle_channel::update()
 void vehicle_channel::stop()
 {
     _channel.stop();
-    _vehicle_id = ThingId::null;
+    _vehicle_id = EntityId::null;
 }

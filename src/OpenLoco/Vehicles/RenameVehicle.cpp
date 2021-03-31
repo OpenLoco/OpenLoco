@@ -1,9 +1,9 @@
+#include "../Entities/EntityManager.h"
 #include "../GameCommands.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/FormatArguments.hpp"
 #include "../Localisation/StringManager.h"
 #include "../Management/Expenditures.h"
-#include "../Things/ThingManager.h"
 #include "../Types.hpp"
 #include "Vehicle.h"
 #include <array>
@@ -29,9 +29,9 @@ namespace OpenLoco::Vehicles
      * @param buffer2 @<bp> - Third group of 4 characters of a 12 character update buffer
      * @return @<ebx> - if rename is successful, return 0, if failed, return GameCommands::FAILURE
      */
-    static uint32_t rename(const uint8_t flags, thing_id_t headId, int16_t index, uint32_t buffer0, uint32_t buffer1, uint32_t buffer2)
+    static uint32_t rename(const uint8_t flags, EntityId_t headId, int16_t index, uint32_t buffer0, uint32_t buffer1, uint32_t buffer2)
     {
-        static loco_global<thing_id_t, 0x0113621D> _headId_113621D;
+        static loco_global<EntityId_t, 0x0113621D> _headId_113621D;
         gGameCommandExpenditureType = static_cast<uint8_t>(ExpenditureType::TrainRunningCosts) * 4;
         if (index == 1)
         {
@@ -54,8 +54,8 @@ namespace OpenLoco::Vehicles
             return 0;
         }
 
-        thing_id_t vehicleHeadId = _113621D;
-        Vehicles::VehicleHead* vehicleHead = ThingManager::get<Vehicles::VehicleHead>(vehicleHeadId);
+        EntityId_t vehicleHeadId = _113621D;
+        Vehicles::VehicleHead* vehicleHead = EntityManager::get<Vehicles::VehicleHead>(vehicleHeadId);
 
         char renameStringBuffer[37] = "";
         memcpy(renameStringBuffer, staticRenameBuffer, sizeof(staticRenameBuffer));

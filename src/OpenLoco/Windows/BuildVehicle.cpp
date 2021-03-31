@@ -1,4 +1,5 @@
 #include "../CompanyManager.h"
+#include "../Entities/EntityManager.h"
 #include "../GameCommands.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/ImageIds.h"
@@ -15,7 +16,6 @@
 #include "../Objects/TrackObject.h"
 #include "../Objects/VehicleObject.h"
 #include "../OpenLoco.h"
-#include "../Things/ThingManager.h"
 #include "../Ui/ScrollView.h"
 #include "../Ui/WindowManager.h"
 #include "../Vehicles/Vehicle.h"
@@ -280,7 +280,7 @@ namespace OpenLoco::Ui::BuildVehicle
             widget_index tab = widx::tab_build_new_trains;
             if (!tabMode)
             {
-                auto veh = ThingManager::get<Vehicles::VehicleHead>(vehicle);
+                auto veh = EntityManager::get<Vehicles::VehicleHead>(vehicle);
                 tab += static_cast<uint8_t>(veh->vehicleType);
             }
             else
@@ -308,7 +308,7 @@ namespace OpenLoco::Ui::BuildVehicle
             if (!tabMode)
             {
                 _buildTargetVehicle = vehicle;
-                auto veh = ThingManager::get<Vehicles::VehicleHead>(vehicle);
+                auto veh = EntityManager::get<Vehicles::VehicleHead>(vehicle);
                 window->current_tab = static_cast<uint8_t>(veh->vehicleType);
             }
             else
@@ -340,7 +340,7 @@ namespace OpenLoco::Ui::BuildVehicle
         {
             return window;
         }
-        auto veh = ThingManager::get<Vehicles::VehicleBase>(_buildTargetVehicle);
+        auto veh = EntityManager::get<Vehicles::VehicleBase>(_buildTargetVehicle);
         if (veh == nullptr)
         {
             return window;
@@ -507,7 +507,7 @@ namespace OpenLoco::Ui::BuildVehicle
             if (w->current_tab != 1)
                 continue;
 
-            auto vehicle = ThingManager::get<Vehicles::VehicleBase>(w->number);
+            auto vehicle = EntityManager::get<Vehicles::VehicleBase>(w->number);
             if (vehicle->getOwner() != CompanyManager::getControllingId())
                 continue;
 
@@ -544,7 +544,7 @@ namespace OpenLoco::Ui::BuildVehicle
         Vehicles::VehicleBase* veh = nullptr;
         if (_buildTargetVehicle != -1)
         {
-            veh = ThingManager::get<Vehicles::VehicleBase>(_buildTargetVehicle);
+            veh = EntityManager::get<Vehicles::VehicleBase>(_buildTargetVehicle);
         }
 
         generateBuildableVehiclesArray(vehicleType, trackType, veh);
@@ -754,7 +754,7 @@ namespace OpenLoco::Ui::BuildVehicle
         gGameCommandErrorTitle = StringIds::cant_build_pop_5_string_id;
         if (_buildTargetVehicle != -1)
         {
-            auto vehicle = ThingManager::get<Vehicles::VehicleHead>(_buildTargetVehicle);
+            auto vehicle = EntityManager::get<Vehicles::VehicleHead>(_buildTargetVehicle);
             args.push(vehicle->var_22);
             args.push(vehicle->var_44);
             gGameCommandErrorTitle = StringIds::cant_add_pop_5_string_id_string_id;
@@ -767,7 +767,7 @@ namespace OpenLoco::Ui::BuildVehicle
 
         if (_buildTargetVehicle == -1)
         {
-            auto vehicle = ThingManager::get<Vehicles::VehicleBase>(_113642A);
+            auto vehicle = EntityManager::get<Vehicles::VehicleBase>(_113642A);
             Vehicle::Details::open(vehicle);
         }
         sub_4B92A5(window);
@@ -915,7 +915,7 @@ namespace OpenLoco::Ui::BuildVehicle
             FormatArguments args{};
             if (_buildTargetVehicle != -1)
             {
-                auto vehicle = ThingManager::get<Vehicles::VehicleHead>(_buildTargetVehicle);
+                auto vehicle = EntityManager::get<Vehicles::VehicleHead>(_buildTargetVehicle);
                 args.push(vehicle->var_22);
                 args.push(vehicle->var_44);
                 bottomLeftMessage = StringIds::select_vehicle_to_add_to_string_id;
@@ -1047,7 +1047,7 @@ namespace OpenLoco::Ui::BuildVehicle
                     FormatArguments args{};
                     if (_buildTargetVehicle != -1)
                     {
-                        auto vehicle = ThingManager::get<Vehicles::VehicleHead>(_buildTargetVehicle);
+                        auto vehicle = EntityManager::get<Vehicles::VehicleHead>(_buildTargetVehicle);
                         defaultMessage = StringIds::no_compatible_vehicles_available;
                         args.push(vehicle->var_22);
                         args.push(vehicle->var_44);

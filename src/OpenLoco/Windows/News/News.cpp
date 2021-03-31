@@ -1,6 +1,7 @@
 #include "News.h"
 #include "../../CompanyManager.h"
 #include "../../Date.h"
+#include "../../Entities/EntityManager.h"
 #include "../../Graphics/Colour.h"
 #include "../../Graphics/ImageIds.h"
 #include "../../IndustryManager.h"
@@ -13,7 +14,6 @@
 #include "../../Objects/ObjectManager.h"
 #include "../../Objects/VehicleObject.h"
 #include "../../StationManager.h"
-#include "../../Things/ThingManager.h"
 #include "../../TownManager.h"
 #include "../../Vehicles/Vehicle.h"
 #include "../../ViewportManager.h"
@@ -95,7 +95,7 @@ namespace OpenLoco::Ui::NewsWindow
 
                             case newsItemSubTypes::vehicle:
                             {
-                                auto vehicle = ThingManager::get<Vehicles::VehicleBase>(itemId);
+                                auto vehicle = EntityManager::get<Vehicles::VehicleBase>(itemId);
 
                                 Ui::Vehicle::Main::open(vehicle);
                                 break;
@@ -505,7 +505,7 @@ namespace OpenLoco::Ui::NewsWindow
 
                 case newsItemSubTypes::vehicle:
                 {
-                    auto vehicle = ThingManager::get<Vehicles::VehicleHead>(itemIndex);
+                    auto vehicle = EntityManager::get<Vehicles::VehicleHead>(itemIndex);
                     auto company = CompanyManager::get(vehicle->owner);
                     if (isPlayerCompany(vehicle->owner))
                     {

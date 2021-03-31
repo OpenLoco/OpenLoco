@@ -2,6 +2,7 @@
 #include "../CompanyManager.h"
 #include "../Core/Optional.hpp"
 #include "../Date.h"
+#include "../Entities/EntityManager.h"
 #include "../GameCommands.h"
 #include "../Management/Expenditures.h"
 #include "../Map/Tile.h"
@@ -11,7 +12,6 @@
 #include "../Objects/TrackObject.h"
 #include "../Objects/VehicleObject.h"
 #include "../Station.h"
-#include "../Things/ThingManager.h"
 #include "../Types.hpp"
 #include "../Ui/WindowManager.h"
 #include "Vehicle.h"
@@ -32,7 +32,7 @@ namespace OpenLoco::Vehicles
     constexpr auto num_vehicle_components_in_car_component = 3; // Bogie bogie body
     constexpr auto num_vehicle_components_in_base = 4;          // head unk_1 unk_2 tail
     constexpr auto max_num_vehicle_components_in_car = num_vehicle_components_in_car_component * max_num_car_components_in_car;
-    constexpr thing_id_t allocated_but_free_routing_station = -2; // Indicates that this array is allocated to a vehicle but no station has been set.
+    constexpr EntityId_t allocated_but_free_routing_station = -2; // Indicates that this array is allocated to a vehicle but no station has been set.
 
     static loco_global<company_id_t, 0x009C68EB> _updating_company_id;
     static loco_global<uint16_t, 0x009C68E0> gameCommandMapX;
@@ -54,7 +54,7 @@ namespace OpenLoco::Vehicles
     static loco_global<uint32_t[32], 0x00525E5E> currencyMultiplicationFactor;
     static loco_global<uint8_t, 0x00525FC5> _525FC5;
     static loco_global<uint32_t, 0x00525FB8> _orderTableLength;                                  // total used length of _987C5C
-    static loco_global<thing_id_t[max_num_vehicles][max_num_routing_steps], 0x0096885C> _96885C; // Likely routing related
+    static loco_global<EntityId_t[max_num_vehicles][max_num_routing_steps], 0x0096885C> _96885C; // Likely routing related
     static loco_global<uint8_t[max_orders], 0x00987C5C> _987C5C;                                 // ?orders? ?routing related?
 
     // 0x004B1D96
@@ -94,7 +94,7 @@ namespace OpenLoco::Vehicles
         for (auto i = 0; i < max_num_vehicles; i++)
         {
             auto id = _96885C[i][0];
-            if (id == ThingId::null)
+            if (id == EntityId::null)
             {
                 return true;
             }
@@ -188,7 +188,7 @@ namespace OpenLoco::Vehicles
     static T* createVehicleThing()
     {
         auto* const base = createVehicleThing();
-        base->base_type = thing_base_type::vehicle;
+        base->base_type = EntityBaseType::vehicle;
         base->setSubType(T::vehicleThingType);
         return reinterpret_cast<T*>(base);
     }
@@ -213,7 +213,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AE8F1, 0x004AEA9E
-    static VehicleBogie* createBogie(const thing_id_t head, const uint16_t vehicleTypeId, const VehicleObject& vehObject, const uint8_t bodyNumber, VehicleBase* const lastVeh, const ColourScheme colourScheme)
+    static VehicleBogie* createBogie(const EntityId_t head, const uint16_t vehicleTypeId, const VehicleObject& vehObject, const uint8_t bodyNumber, VehicleBase* const lastVeh, const ColourScheme colourScheme)
     {
         auto newBogie = createVehicleThing<VehicleBogie>();
         newBogie->owner = _updating_company_id;
@@ -252,7 +252,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x4AE8F1
-    static VehicleBogie* createFirstBogie(const thing_id_t head, const uint16_t vehicleTypeId, const VehicleObject& vehObject, const uint8_t bodyNumber, VehicleBase* const lastVeh, const ColourScheme colourScheme)
+    static VehicleBogie* createFirstBogie(const EntityId_t head, const uint16_t vehicleTypeId, const VehicleObject& vehObject, const uint8_t bodyNumber, VehicleBase* const lastVeh, const ColourScheme colourScheme)
     {
         auto newBogie = createBogie(head, vehicleTypeId, vehObject, bodyNumber, lastVeh, colourScheme);
         if (newBogie == nullptr) // Can never happen
@@ -312,7 +312,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AEA9E
-    static VehicleBogie* createSecondBogie(const thing_id_t head, const uint16_t vehicleTypeId, const VehicleObject& vehObject, const uint8_t bodyNumber, VehicleBase* const lastVeh, const ColourScheme colourScheme)
+    static VehicleBogie* createSecondBogie(const EntityId_t head, const uint16_t vehicleTypeId, const VehicleObject& vehObject, const uint8_t bodyNumber, VehicleBase* const lastVeh, const ColourScheme colourScheme)
     {
         auto newBogie = createBogie(head, vehicleTypeId, vehObject, bodyNumber, lastVeh, colourScheme);
         if (newBogie == nullptr) // Can never happen
@@ -331,7 +331,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AEA9E
-    static VehicleBody* createBody(const thing_id_t head, const uint16_t vehicleTypeId, const VehicleObject& vehObject, const uint8_t bodyNumber, VehicleBase* const lastVeh, const ColourScheme colourScheme)
+    static VehicleBody* createBody(const EntityId_t head, const uint16_t vehicleTypeId, const VehicleObject& vehObject, const uint8_t bodyNumber, VehicleBase* const lastVeh, const ColourScheme colourScheme)
     {
         auto newBody = createVehicleThing<VehicleBody>();
         // TODO: move this into the create function somehow
@@ -429,7 +429,7 @@ namespace OpenLoco::Vehicles
     // 0x004AE86D
     static bool createCar(VehicleHead* const head, const uint16_t vehicleTypeId)
     {
-        if (!ThingManager::checkNumFreeThings(max_num_vehicle_components_in_car))
+        if (!EntityManager::checkNumFreeEntities(max_num_vehicle_components_in_car))
         {
             return false;
         }
@@ -501,7 +501,7 @@ namespace OpenLoco::Vehicles
         for (auto i = 0; i < max_num_vehicles; i++)
         {
             auto id = _96885C[i][0];
-            if (id == ThingId::null)
+            if (id == EntityId::null)
             {
                 for (auto j = 0; j < max_num_routing_steps; ++j)
                 {
@@ -527,7 +527,7 @@ namespace OpenLoco::Vehicles
     static uint16_t createUniqueTypeNumber(const VehicleType type)
     {
         std::array<bool, max_num_vehicles> _unkArr{};
-        for (auto v : ThingManager::VehicleList())
+        for (auto v : EntityManager::VehicleList())
         {
             if (v->owner == _updating_company_id && v->vehicleType == type)
             {
@@ -551,7 +551,7 @@ namespace OpenLoco::Vehicles
     static VehicleHead* createHead(const uint8_t trackType, const TransportMode mode, const uint16_t orderId, const VehicleType vehicleType)
     {
         auto* const newHead = createVehicleThing<VehicleHead>();
-        ThingManager::moveSpriteToList(newHead, ThingManager::thing_list::vehicle_head);
+        EntityManager::moveEntityToList(newHead, EntityManager::EntityListType::vehicleHead);
         newHead->owner = _updating_company_id;
         newHead->head = newHead->id;
         newHead->var_0C |= Flags0C::commandStop;
@@ -588,7 +588,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AE40E
-    static Vehicle1* createVehicle1(const thing_id_t head, VehicleBase* const lastVeh)
+    static Vehicle1* createVehicle1(const EntityId_t head, VehicleBase* const lastVeh)
     {
         auto* const newVeh1 = createVehicleThing<Vehicle1>();
         newVeh1->owner = _updating_company_id;
@@ -619,7 +619,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AE4A0
-    static Vehicle2* createVehicle2(const thing_id_t head, VehicleBase* const lastVeh)
+    static Vehicle2* createVehicle2(const EntityId_t head, VehicleBase* const lastVeh)
     {
         auto* const newVeh2 = createVehicleThing<Vehicle2>();
         newVeh2->owner = _updating_company_id;
@@ -656,7 +656,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AE54E
-    static VehicleTail* createVehicleTail(const thing_id_t head, VehicleBase* const lastVeh)
+    static VehicleTail* createVehicleTail(const EntityId_t head, VehicleBase* const lastVeh)
     {
         auto* const newTail = createVehicleThing<VehicleTail>();
         newTail->owner = _updating_company_id;
@@ -678,13 +678,13 @@ namespace OpenLoco::Vehicles
         newTail->objectId = -1;
         newTail->var_4A = 0;
         lastVeh->setNextCar(newTail->id);
-        newTail->next_car_id = ThingId::null;
+        newTail->next_car_id = EntityId::null;
         return newTail;
     }
     // 0x004AE318
     static std::optional<VehicleHead*> createBaseVehicle(const TransportMode mode, const VehicleType type, const uint8_t trackType)
     {
-        if (!ThingManager::checkNumFreeThings(num_vehicle_components_in_base))
+        if (!EntityManager::checkNumFreeEntities(num_vehicle_components_in_base))
         {
             return {};
         }
@@ -753,13 +753,13 @@ namespace OpenLoco::Vehicles
         uint16_t baseOrderId = (orderId & ~(0x3F)) / max_num_routing_steps;
         for (auto i = 0; i < max_num_routing_steps; ++i)
         {
-            _96885C[baseOrderId][i] = ThingId::null;
+            _96885C[baseOrderId][i] = EntityId::null;
         }
     }
 
     static void sub_470795(const uint32_t removeOrderTableOffset, const int16_t sizeOfRemovedOrderTable)
     {
-        for (auto head : ThingManager::VehicleList())
+        for (auto head : EntityManager::VehicleList())
         {
             if (head->orderTableOffset >= removeOrderTableOffset)
             {
@@ -781,7 +781,7 @@ namespace OpenLoco::Vehicles
 
     // 0x0042851C
     // Delete related news items??
-    static void sub_42851C(const thing_id_t id, const uint8_t type)
+    static void sub_42851C(const EntityId_t id, const uint8_t type)
     {
         registers regs{};
         regs.al = type;
@@ -808,7 +808,7 @@ namespace OpenLoco::Vehicles
     static uint32_t createNewVehicle(const uint8_t flags, const uint16_t vehicleTypeId)
     {
         gameCommandMapX = Location::null;
-        if (!ThingManager::checkNumFreeThings(max_num_vehicle_components_in_car + num_vehicle_components_in_base))
+        if (!EntityManager::checkNumFreeEntities(max_num_vehicle_components_in_car + num_vehicle_components_in_base))
         {
             return FAILURE;
         }
@@ -853,10 +853,10 @@ namespace OpenLoco::Vehicles
                 }
                 auto tail = veh2->nextVehicleComponent();
                 // Get all vehicles before freeing
-                ThingManager::freeThing(_head);
-                ThingManager::freeThing(veh1);
-                ThingManager::freeThing(veh2);
-                ThingManager::freeThing(tail);
+                EntityManager::freeEntity(_head);
+                EntityManager::freeEntity(veh1);
+                EntityManager::freeEntity(veh2);
+                EntityManager::freeEntity(tail);
                 return FAILURE;
             }
         }
@@ -890,7 +890,7 @@ namespace OpenLoco::Vehicles
             return FAILURE;
         }
 
-        if (!ThingManager::checkNumFreeThings(max_num_vehicle_components_in_car))
+        if (!EntityManager::checkNumFreeEntities(max_num_vehicle_components_in_car))
         {
             return FAILURE;
         }
