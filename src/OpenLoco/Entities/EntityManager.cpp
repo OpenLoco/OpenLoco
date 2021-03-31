@@ -80,6 +80,15 @@ namespace OpenLoco::EntityManager
         return (EntityBase*)regs.esi;
     }
 
+    // 0x0047011C
+    // special version used only for money
+    EntityBase* createEntityMoney()
+    {
+        registers regs;
+        call(0x0047011C, regs);
+        return (EntityBase*)regs.esi;
+    }
+
     // 0x0047024A
     void freeEntity(EntityBase* const entity)
     {

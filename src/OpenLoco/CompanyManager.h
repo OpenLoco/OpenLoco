@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Company.h"
+#include "Map/Map.hpp"
 #include "Types.hpp"
 #include <array>
 #include <cstddef>
@@ -33,4 +34,6 @@ namespace OpenLoco::CompanyManager
     string_id getOwnerStatus(company_id_t id, FormatArguments& args);
     owner_status getOwnerStatus(company_id_t id);
     void updateOwnerStatus();
+
+    void spendMoneyEffect(const Map::map_pos3& loc, const company_id_t company, const currency32_t amount);
 }

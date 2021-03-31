@@ -26,7 +26,9 @@ namespace OpenLoco::GameCommands
 
     static loco_global<tile_element*, 0x009C68D0> _9C68D0;
 
-    static loco_global<coord_t, 0x009C68E4> _game_command_map_z;
+    static loco_global<coord_t, 0x009C68E0> gameCommandMapX;
+    static loco_global<coord_t, 0x009C68E2> gameCommandMapY;
+    static loco_global<coord_t, 0x009C68E4> gameCommandMapZ;
     static loco_global<string_id, 0x009C68E6> gGameCommandErrorText;
     static loco_global<string_id, 0x009C68E8> gGameCommandErrorTitle;
     static loco_global<uint8_t, 0x009C68EE> _errorCompanyId;
@@ -308,11 +310,7 @@ namespace OpenLoco::GameCommands
         if (ebx != 0 && _updating_company_id == _player_company[0])
         {
             // Add flying cost text
-            registers fnRegs;
-            fnRegs.ebx = ebx;
-            _game_command_map_z = _game_command_map_z + 24;
-            call(0x0046DC9F, fnRegs);
-            _game_command_map_z = _game_command_map_z - 24;
+            CompanyManager::spendMoneyEffect(Map::map_pos3{ gameCommandMapX, gameCommandMapY, gameCommandMapZ } + Map::map_pos3{ 0, 0, 24 }, _updating_company_id, ebx);
         }
 
         return ebx;

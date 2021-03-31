@@ -89,4 +89,13 @@ namespace OpenLoco::Ui
         call(0x0045F997, regs);
         return { regs.ax, regs.bx };
     }
+
+    map_pos viewport::getCentreScreenMapPosition() const
+    {
+        registers regs;
+        regs.ax = x + width / 2;
+        regs.bx = y + height / 2;
+        call(0x0045F1A7, regs);
+        return { regs.ax, regs.bx };
+    }
 }

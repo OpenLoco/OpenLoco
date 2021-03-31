@@ -44,6 +44,7 @@ namespace OpenLoco::EntityManager
     EntityId_t firstQuadrantId(const Map::map_pos& loc);
 
     EntityBase* createEntity();
+    EntityBase* createEntityMoney();
     void freeEntity(EntityBase* const entity);
 
     void updateVehicles();
