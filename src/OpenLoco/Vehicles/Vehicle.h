@@ -236,7 +236,7 @@ namespace OpenLoco::Vehicles
         int16_t var_71;            // 0x6F y
         uint32_t var_73;           // 0x73 ticks since journey start
         uint16_t lastAverageSpeed; // 0x77
-        uint8_t var_79;
+        uint8_t var_79;            // 0x79 timeout before auto starting trams/buses
 
     public:
         bool isVehicleTypeCompatible(const uint16_t vehicleTypeId);

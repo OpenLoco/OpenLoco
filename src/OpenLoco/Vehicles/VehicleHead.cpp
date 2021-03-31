@@ -10,6 +10,7 @@
 #include "../MessageManager.h"
 #include "../Objects/AirportObject.h"
 #include "../Objects/ObjectManager.h"
+#include "../Objects/RoadObject.h"
 #include "../Objects/VehicleObject.h"
 #include "../OpenLoco.h"
 #include "../StationManager.h"
@@ -42,6 +43,8 @@ namespace OpenLoco::Vehicles
     static loco_global<int16_t[128], 0x00503B6A> factorXY503B6A;
     static constexpr uint16_t trainOneWaySignalTimeout = 1920;
     static constexpr uint16_t trainTwoWaySignalTimeout = 640;
+    static constexpr uint16_t busSignalTimeout = 960;   // Time to wait before turning around at barriers
+    static constexpr uint16_t tramSignalTimeout = 2880; // Time to wait before turning around at barriers
 
     void VehicleHead::updateVehicle()
     {
@@ -764,12 +767,54 @@ namespace OpenLoco::Vehicles
         }
     }
 
+    // 0x004AA36A
+    // 0: None of the below
+    // 1: reached first timeout at signal
+    // 2: give up and reverse at signal
     uint8_t VehicleHead::sub_4AA36A()
     {
-        registers regs;
-        regs.esi = reinterpret_cast<uint32_t>(this);
-        call(0x004AA36A, regs);
-        return regs.bl;
+        Vehicle train(this);
+        if (train.veh2->var_36 != train.veh1->var_36 || train.veh2->var_2E != train.veh1->var_2E)
+        {
+            train.veh1->timeAtSignal = 0;
+            return 0;
+        }
+
+        auto param1 = 160;
+        auto turnaroundAtSignalTimeout = busSignalTimeout;
+
+        if (track_type == 0xFF || ObjectManager::get<RoadObject>(track_type)->flags & Flags12::isRoad)
+        {
+            if (train.veh1->var_2C & (1 << 7))
+            {
+                param1 = 128;
+                turnaroundAtSignalTimeout = 544;
+            }
+        }
+        else
+        {
+            // Tram
+            turnaroundAtSignalTimeout = tramSignalTimeout;
+            if (train.veh1->var_2C & (1 << 7))
+            {
+                param1 = 64;
+                turnaroundAtSignalTimeout = 128;
+            }
+        }
+
+        train.veh1->timeAtSignal++;
+        if (train.veh1->timeAtSignal == param1)
+        {
+            return 1;
+        }
+
+        if (train.veh1->timeAtSignal == turnaroundAtSignalTimeout)
+        {
+            var_5C = 40;
+            return 2;
+        }
+
+        return 0;
     }
 
     // 0x004A8DB7
@@ -1090,9 +1135,15 @@ namespace OpenLoco::Vehicles
     // 0x004A8ED9
     bool VehicleHead::landReverseFromSignal()
     {
-        registers regs;
-        regs.esi = reinterpret_cast<uint32_t>(this);
-        return (call(0x004A8ED9, regs) & (1 << 8)) == 0;
+        Vehicle train(this);
+        train.veh1->timeAtSignal = 0;
+
+        if (var_36 != train.veh2->var_36 || train.veh2->var_2E != var_2E)
+        {
+            tryCreateInitialMovementSound();
+            return true;
+        }
+        return sub_4A8F22();
     }
 
     // 0x004A9051
