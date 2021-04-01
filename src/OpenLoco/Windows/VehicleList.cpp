@@ -107,12 +107,111 @@ namespace OpenLoco::Ui::Windows::VehicleList
         }
     }
 
+    using VehicleHead = Vehicles::VehicleHead;
+
+    // 0x004C1E4F
+    static bool orderByName(const VehicleHead& lhs, const VehicleHead& rhs)
+    {
+        char lhsString[256] = { 0 };
+        StringManager::formatString(lhsString, lhs.name, (void*)&lhs.ordinalNumber);
+
+        char rhsString[256] = { 0 };
+        StringManager::formatString(rhsString, rhs.name, (void*)&rhs.ordinalNumber);
+
+        return strcmp(lhsString, rhsString) < 0;
+    }
+
+    // 0x004C1EC9
+    static bool orderByProfit(const VehicleHead& lhs, const VehicleHead& rhs)
+    {
+
+        return false;
+    }
+
+    // 0x004C1F1E
+    static bool orderByAge(const VehicleHead& lhs, const VehicleHead& rhs)
+    {
+
+        return false;
+    }
+
+    // 0x004C1F45
+    static bool orderByReliability(const VehicleHead& lhs, const VehicleHead& rhs)
+    {
+
+        return false;
+    }
+
+    static bool getOrder(const SortMode mode, const VehicleHead& lhs, const VehicleHead& rhs)
+    {
+        switch (mode)
+        {
+            case SortMode::Name:
+                return orderByName(lhs, rhs);
+
+            case SortMode::Profit:
+                return orderByProfit(lhs, rhs);
+
+            case SortMode::Age:
+                return orderByAge(lhs, rhs);
+
+            case SortMode::Reliability:
+                return orderByReliability(lhs, rhs);
+        }
+
+        return false;
+    }
+
     // 0x004C1D92
     static void updateVehicleList(window* self)
     {
-        registers regs;
-        regs.esi = (int32_t)self;
-        call(0x004C1D92, regs);
+        int16_t insertId = -1;
+
+        for (auto vehicle : EntityManager::VehicleList())
+        {
+            if (vehicle->getSubType() != static_cast<Vehicles::VehicleThingType>(self->type))
+                continue;
+
+            if (vehicle->owner != self->number)
+                continue;
+
+            if (vehicle->var_0C & Vehicles::Flags0C::sorted)
+                continue;
+
+            if (insertId == -1)
+            {
+                insertId = vehicle->id;
+                continue;
+            }
+
+            auto insertVehicle = EntityManager::get<VehicleHead>(insertId);
+            if (getOrder(SortMode(self->sort_mode), *vehicle, *insertVehicle))
+            {
+                insertId = vehicle->id;
+                continue;
+            }
+        }
+
+        if (insertId != -1)
+        {
+            auto vehicle = EntityManager::get<VehicleHead>(insertId);
+            vehicle->var_0C |= Vehicles::Flags0C::sorted;
+
+            if (vehicle->id != self->row_info[self->row_count])
+                self->row_info[self->row_count] = vehicle->id;
+
+            self->row_count++;
+
+            if (self->row_count > self->var_83C)
+                self->var_83C = self->row_count;
+        }
+        else
+        {
+            if (self->var_83C != self->row_count)
+                self->var_83C = self->row_count;
+
+            refreshVehicleList(self);
+        }
     }
 
     // 0x004C2A6E
