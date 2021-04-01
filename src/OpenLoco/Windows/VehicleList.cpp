@@ -142,8 +142,10 @@ namespace OpenLoco::Ui::Windows::VehicleList
     // 0x004C1F45
     static bool orderByReliability(const VehicleHead& lhs, const VehicleHead& rhs)
     {
+        auto reliabilityL = Vehicles::Vehicle(&lhs).veh2->reliability;
+        auto reliabilityR = Vehicles::Vehicle(&rhs).veh2->reliability;
 
-        return false;
+        return static_cast<int32_t>(reliabilityR - reliabilityL) < 0;
     }
 
     static bool getOrder(const SortMode mode, const VehicleHead& lhs, const VehicleHead& rhs)
