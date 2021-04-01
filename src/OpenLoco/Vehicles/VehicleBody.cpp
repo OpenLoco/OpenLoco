@@ -1188,6 +1188,7 @@ namespace OpenLoco::Vehicles
         loc.x += xyFactor.x;
         loc.y += xyFactor.y;
 
+        // 90 degrees C.W.
         auto yaw = (sprite_yaw + 16) & 0x3F;
 
         auto unkFactor = 5;
@@ -1305,6 +1306,7 @@ namespace OpenLoco::Vehicles
         loc.x += xyFactor.x;
         loc.y += xyFactor.y;
 
+        // 90 degrees C.W.
         auto yaw = (sprite_yaw + 16) & 0x3F;
         auto firstBogie = var_38 & Flags38::isReversed ? backBogie : frontBogie;
         auto unkFactor = 5;
@@ -1364,6 +1366,7 @@ namespace OpenLoco::Vehicles
             z
         };
 
+        // 90 degrees C.W.
         auto yaw = (sprite_yaw + 16) & 0x3F;
 
         xyFactor = Math::Triginometry::computeXYVector(vehicleObject->var_113, yaw) / 2;
@@ -1375,6 +1378,7 @@ namespace OpenLoco::Vehicles
         if (vehicleObject->var_113 == 0)
             return;
 
+        // 90 degrees C.C.W.
         yaw = (sprite_yaw - 16) & 0x3F;
 
         xyFactor = Math::Triginometry::computeXYVector(vehicleObject->var_113, yaw) / 2;
