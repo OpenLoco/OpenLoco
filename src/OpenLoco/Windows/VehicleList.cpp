@@ -133,8 +133,10 @@ namespace OpenLoco::Ui::Windows::VehicleList
     // 0x004C1F1E
     static bool orderByAge(const VehicleHead& lhs, const VehicleHead& rhs)
     {
+        auto ageL = Vehicles::Vehicle(&lhs).veh1->age;
+        auto ageR = Vehicles::Vehicle(&rhs).veh1->age;
 
-        return false;
+        return static_cast<int32_t>(ageL - ageR) < 0;
     }
 
     // 0x004C1F45
