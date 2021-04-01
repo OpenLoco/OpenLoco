@@ -1674,12 +1674,9 @@ namespace OpenLoco::Ui::Vehicle
             Common::setActiveTabs(self);
 
             auto* headVehicle = Common::getVehicle(self);
-            auto ax = headVehicle->ordinalNumber;
-            auto cx = headVehicle->name;
-
             FormatArguments args = {};
-            args.push(cx);
-            args.push(ax);
+            args.push(headVehicle->name);
+            args.push(headVehicle->ordinalNumber);
 
             widgets[Common::widx::frame].right = self->width - 1;
             widgets[Common::widx::frame].bottom = self->height - 1;

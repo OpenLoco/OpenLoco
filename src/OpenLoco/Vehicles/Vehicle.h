@@ -193,7 +193,7 @@ namespace OpenLoco::Vehicles
         static constexpr auto vehicleThingType = VehicleThingType::head;
         uint8_t pad_20;
         company_id_t owner; // 0x21
-        uint16_t name;      // 0x22
+        string_id name;     // 0x22, combined with ordinalNumber for strings 4 to 9
         uint8_t pad_24[0x26 - 0x24];
         EntityId_t head; // 0x26
         uint32_t var_28;
