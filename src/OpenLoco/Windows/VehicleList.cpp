@@ -700,12 +700,19 @@ namespace OpenLoco::Ui::Windows::VehicleList
     // 0x004C27C0
     static void onScrollMouseDown(window* self, int16_t x, int16_t y, uint8_t scroll_index)
     {
-        registers regs;
-        regs.ax = scroll_index;
-        regs.cx = x;
-        regs.dx = y;
-        regs.esi = (int32_t)self;
-        call(0x004C27C0, regs);
+        uint16_t currentRow = y / self->row_height;
+        if (currentRow >= self->var_83C)
+            return;
+
+        int16_t currentVehicleId = self->row_info[currentRow];
+        if (currentVehicleId == -1)
+            return;
+
+        auto head = EntityManager::get<VehicleHead>(currentVehicleId);
+        if (head->isPlaced())
+            Ui::Vehicle::Main::open(head);
+        else
+            Ui::Vehicle::Details::open(head);
     }
 
     // 0x004C2820
