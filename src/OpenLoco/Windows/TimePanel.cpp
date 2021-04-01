@@ -68,7 +68,6 @@ namespace OpenLoco::Ui::TimePanel
 
     static loco_global<uint16_t, 0x0050A004> _50A004;
     static loco_global<uint8_t, 0x00526231> objectiveFlags;
-    static loco_global<uint16_t, 0x0052338A> _tooltipTimeout;
     static loco_global<int32_t, 0x00e3f0b8> gCurrentRotation;
 
     static loco_global<uint8_t, 0x00526240> objectiveTimeLimitYears;
@@ -308,7 +307,7 @@ namespace OpenLoco::Ui::TimePanel
         switch (widgetIdx)
         {
             case Widx::date_btn:
-                _tooltipTimeout = 2000;
+                Input::setTooltipTimeout(2000);
                 break;
         }
 
