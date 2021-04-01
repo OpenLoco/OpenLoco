@@ -4,28 +4,15 @@
 
 namespace OpenLoco
 {
-    enum class Pitch : uint8_t
-    {
-        flat = 0,
-        up6deg = 1,  // Transition
-        up12deg = 2, // Gentle
-        up18deg = 3, // Transition
-        up25deg = 4, // Steep
-        down6deg = 5,
-        down12deg = 6,
-        down18deg = 7,
-        down25deg = 8,
-        up10deg = 9, // Gentle Curve Up
-        down10deg = 10,
-        up20deg = 11, // Steep Curve Up
-        down20deg = 12,
-    };
+    enum class Pitch : uint8_t;
 }
 
 namespace OpenLoco::Math::Triginometry
 {
     // 0x00503B6A
     // ROUND(COS((32/64+(L1/64))*(2*PI()))*256,0), ROUND(SIN(((L1/64))*(2*PI())) * 256,0)
+    // Where L1 represents an incrementing column 0 - 63
+    // Note: Must be at least 32bit to ensure all users do not overflow
     static constexpr Vector::TVector2<int32_t, 1> factorXY503B6A[64] = {
         { -256, 0 },
         { -255, 25 },
@@ -95,6 +82,7 @@ namespace OpenLoco::Math::Triginometry
 
     // 0x00503B50
     // -SIN((Y1/360)*2*PI())*256
+    // Where Y1 represents the angle of pitch in degrees (0, 5.75, 11.75, 17, 22.5, reverse, 10, -10, 19.25, -19.25)
     // Note: pitch angles not quite correct
     constexpr int16_t factor503B50[] = {
         0,
