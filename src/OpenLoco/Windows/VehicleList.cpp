@@ -97,7 +97,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         self->row_count = 0;
         for (auto vehicle : EntityManager::VehicleList())
         {
-            if (vehicle->getSubType() != static_cast<Vehicles::VehicleThingType>(self->type))
+            if (vehicle->vehicleType != static_cast<VehicleType>(self->current_tab))
                 continue;
 
             if (vehicle->owner != self->number)
@@ -169,7 +169,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
         for (auto vehicle : EntityManager::VehicleList())
         {
-            if (vehicle->getSubType() != static_cast<Vehicles::VehicleThingType>(self->type))
+            if (vehicle->vehicleType != static_cast<VehicleType>(self->current_tab))
                 continue;
 
             if (vehicle->owner != self->number)
