@@ -755,8 +755,8 @@ namespace OpenLoco::Ui::BuildVehicle
         if (_buildTargetVehicle != -1)
         {
             auto vehicle = EntityManager::get<Vehicles::VehicleHead>(_buildTargetVehicle);
-            args.push(vehicle->var_22);
-            args.push(vehicle->var_44);
+            args.push(vehicle->name);
+            args.push(vehicle->ordinalNumber);
             gGameCommandErrorTitle = StringIds::cant_add_pop_5_string_id_string_id;
         }
 
@@ -916,8 +916,8 @@ namespace OpenLoco::Ui::BuildVehicle
             if (_buildTargetVehicle != -1)
             {
                 auto vehicle = EntityManager::get<Vehicles::VehicleHead>(_buildTargetVehicle);
-                args.push(vehicle->var_22);
-                args.push(vehicle->var_44);
+                args.push(vehicle->name);
+                args.push(vehicle->ordinalNumber);
                 bottomLeftMessage = StringIds::select_vehicle_to_add_to_string_id;
             }
 
@@ -1049,8 +1049,8 @@ namespace OpenLoco::Ui::BuildVehicle
                     {
                         auto vehicle = EntityManager::get<Vehicles::VehicleHead>(_buildTargetVehicle);
                         defaultMessage = StringIds::no_compatible_vehicles_available;
-                        args.push(vehicle->var_22);
-                        args.push(vehicle->var_44);
+                        args.push(vehicle->name);
+                        args.push(vehicle->ordinalNumber);
                     }
 
                     auto widget = window->widgets[widx::scrollview_vehicle_selection];
