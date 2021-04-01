@@ -656,7 +656,13 @@ namespace OpenLoco::StringIds
     constexpr string_id road_stations = 1135;
     constexpr string_id airports = 1136;
     constexpr string_id ship_ports = 1137;
-
+    constexpr string_id vehicle_list_status_2pos = 1138;
+    constexpr string_id vehicle_list_status_3pos = 1139;
+    constexpr string_id vehicle_list_profit_pos = 1140;
+    constexpr string_id vehicle_list_profit_neg = 1141;
+    constexpr string_id vehicle_list_age_year = 1142;
+    constexpr string_id vehicle_list_age_years = 1143;
+    constexpr string_id vehicle_list_reliability = 1144;
     constexpr string_id table_header_name = 1145;
     constexpr string_id table_header_name_desc = 1146;
     constexpr string_id table_header_monthly_profit = 1147;
