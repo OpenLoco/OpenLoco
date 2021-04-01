@@ -1,4 +1,5 @@
 #include "../CompanyManager.h"
+#include "../Entities/EntityManager.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/ImageIds.h"
 #include "../Input.h"
@@ -10,6 +11,7 @@
 #include "../OpenLoco.h"
 #include "../Ui/Dropdown.h"
 #include "../Ui/WindowManager.h"
+#include "../Vehicles/Vehicle.h"
 #include "../Widget.h"
 #include <stdexcept>
 #include <utility>
@@ -89,14 +91,24 @@ namespace OpenLoco::Ui::Windows::VehicleList
     static Widx getTabFromType(uint8_t type);
     static void initEvents();
 
-    static void sub_4C1D4F(window* self)
+    // 0x004C1D4F
+    static void refreshVehicleList(window* self)
     {
-        registers regs;
-        regs.esi = (int32_t)self;
-        call(0x004C1D4F, regs);
+        self->row_count = 0;
+        for (auto vehicle : EntityManager::VehicleList())
+        {
+            if (vehicle->getSubType() != static_cast<Vehicles::VehicleThingType>(self->type))
+                continue;
+
+            if (vehicle->owner != self->number)
+                continue;
+
+            vehicle->var_0C &= ~Vehicles::Flags0C::sorted;
+        }
     }
 
-    static void sub_4C1D92(window* self)
+    // 0x004C1D92
+    static void updateVehicleList(window* self)
     {
         registers regs;
         regs.esi = (int32_t)self;
@@ -240,7 +252,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         self->var_83C = 0;
         self->row_hover = -1;
 
-        VehicleList::sub_4C1D4F(self);
+        refreshVehicleList(self);
 
         self->invalidate();
 
@@ -418,7 +430,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
             self->width = 220;
 
         self->row_count = 0;
-        sub_4C1D4F(self);
+        refreshVehicleList(self);
 
         self->var_83C = 0;
         self->row_hover = -1;
@@ -462,7 +474,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
                 self->sort_mode = sortMode;
                 self->invalidate();
-                sub_4C1D4F(self);
+                refreshVehicleList(self);
                 break;
             }
         }
@@ -502,7 +514,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         disableUnavailableVehicleTypes(self);
 
         self->row_count = 0;
-        sub_4C1D4F(self);
+        refreshVehicleList(self);
 
         self->var_83C = 0;
         self->row_hover = -1;
@@ -528,9 +540,9 @@ namespace OpenLoco::Ui::Windows::VehicleList
         self->callPrepareDraw();
         WindowManager::invalidateWidget(WindowType::vehicleList, self->number, getTabFromType(self->current_tab));
 
-        sub_4C1D92(self);
-        sub_4C1D92(self);
-        sub_4C1D92(self);
+        updateVehicleList(self);
+        updateVehicleList(self);
+        updateVehicleList(self);
 
         self->invalidate();
     }
