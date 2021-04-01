@@ -334,7 +334,7 @@ namespace OpenLoco::Vehicles
         uint16_t timeAtSignal; // 0x46
         uint8_t var_48;
         uint8_t var_49;
-        uint8_t pad_4A[0x4E - 0x4A];
+        uint32_t age; // 0x4A
         uint16_t var_4E;
         uint16_t var_50;
         uint8_t var_52;
