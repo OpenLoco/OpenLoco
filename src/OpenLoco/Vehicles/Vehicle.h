@@ -385,8 +385,8 @@ namespace OpenLoco::Vehicles
         Speed16 rackRailMaxSpeed; // 0x5C
         uint32_t var_5E;
         currency32_t profit[4]; // 0x62 last 4 months profit
-        uint8_t reliability; // 0x72
-        uint8_t var_73;      // 0x73 (bit 0 = broken down, bit 1 = still powered)
+        uint8_t reliability;    // 0x72
+        uint8_t var_73;         // 0x73 (bit 0 = broken down, bit 1 = still powered)
 
         currency32_t totalRecentProfit() const
         {
