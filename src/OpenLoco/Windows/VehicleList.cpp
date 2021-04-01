@@ -124,8 +124,10 @@ namespace OpenLoco::Ui::Windows::VehicleList
     // 0x004C1EC9
     static bool orderByProfit(const VehicleHead& lhs, const VehicleHead& rhs)
     {
+        auto profitL = Vehicles::Vehicle(&lhs).veh2->totalRecentProfit();
+        auto profitR = Vehicles::Vehicle(&rhs).veh2->totalRecentProfit();
 
-        return false;
+        return profitR - profitL < 0;
     }
 
     // 0x004C1F1E
