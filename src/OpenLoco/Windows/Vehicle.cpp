@@ -612,8 +612,8 @@ namespace OpenLoco::Ui::Vehicle
             FormatArguments args{};
             auto head = Common::getVehicle(self);
             args.skip(6);
-            args.push(head->var_22);
-            args.push(head->var_44);
+            args.push(head->name);
+            args.push(head->ordinalNumber);
             GameCommands::do12(head->id, mode);
         }
 
@@ -768,8 +768,8 @@ namespace OpenLoco::Ui::Vehicle
             }
             args.push(company->name);
             args.skip(2);
-            args.push(head->var_22);
-            args.push(head->var_44);
+            args.push(head->name);
+            args.push(head->ordinalNumber);
 
             uint32_t stopStartImage = ImageIds::red_flag;
             if ((head->var_0C & Vehicles::Flags0C::manualControl) != 0)
@@ -1036,8 +1036,8 @@ namespace OpenLoco::Ui::Vehicle
                     auto head = Common::getVehicle(self);
                     FormatArguments args{};
                     args.skip(10);
-                    args.push(head->var_22);
-                    args.push(head->var_44);
+                    args.push(head->name);
+                    args.push(head->ordinalNumber);
                     gGameCommandErrorTitle = StringIds::cant_sell_string_id;
                     GameCommands::do_6(head->id);
                     break;
@@ -1348,8 +1348,8 @@ namespace OpenLoco::Ui::Vehicle
 
             auto head = Common::getVehicle(self);
             auto args = FormatArguments();
-            args.push(head->var_22);
-            args.push(head->var_44);
+            args.push(head->name);
+            args.push(head->ordinalNumber);
 
             self->widgets[Common::widx::frame].right = self->width - 1;
             self->widgets[Common::widx::frame].bottom = self->height - 1;
@@ -1674,12 +1674,9 @@ namespace OpenLoco::Ui::Vehicle
             Common::setActiveTabs(self);
 
             auto* headVehicle = Common::getVehicle(self);
-            auto ax = headVehicle->var_44;
-            auto cx = headVehicle->var_22;
-
             FormatArguments args = {};
-            args.push(cx);
-            args.push(ax);
+            args.push(headVehicle->name);
+            args.push(headVehicle->ordinalNumber);
 
             widgets[Common::widx::frame].right = self->width - 1;
             widgets[Common::widx::frame].bottom = self->height - 1;
@@ -2090,8 +2087,8 @@ namespace OpenLoco::Ui::Vehicle
 
             auto vehicle = Common::getVehicle(self);
             auto args = FormatArguments();
-            args.push(vehicle->var_22);
-            args.push(vehicle->var_44);
+            args.push(vehicle->name);
+            args.push(vehicle->ordinalNumber);
 
             self->widgets[Common::widx::frame].right = self->width - 1;
             self->widgets[Common::widx::frame].bottom = self->height - 1;
@@ -2865,8 +2862,8 @@ namespace OpenLoco::Ui::Vehicle
             Common::setActiveTabs(self);
             auto head = Common::getVehicle(self);
             FormatArguments args{};
-            args.push(head->var_22);
-            args.push(head->var_44);
+            args.push(head->name);
+            args.push(head->ordinalNumber);
 
             self->widgets[widx::routeList].tooltip = Input::isToolActive(self->type, self->number) ? StringIds::tooltip_route_scrollview_copy : StringIds::tooltip_route_scrollview;
 
@@ -3300,7 +3297,7 @@ namespace OpenLoco::Ui::Vehicle
                 args.push(StringIds::getVehicleType(vehicle->vehicleType)); // 0
                 args.skip(6);
                 args.push(StringIds::getVehicleType(vehicle->vehicleType)); // 8
-                Windows::TextInput::openTextInput(self, StringIds::title_name_vehicle, StringIds::prompt_enter_new_vehicle_name, vehicle->var_22, widgetIndex, &vehicle->var_44);
+                Windows::TextInput::openTextInput(self, StringIds::title_name_vehicle, StringIds::prompt_enter_new_vehicle_name, vehicle->name, widgetIndex, &vehicle->ordinalNumber);
             }
         }
 
@@ -3416,8 +3413,8 @@ namespace OpenLoco::Ui::Vehicle
             gGameCommandErrorTitle = StringIds::cant_remove_string_id;
             FormatArguments args{};
             args.skip(10);
-            args.push(head->var_22);
-            args.push(head->var_44);
+            args.push(head->name);
+            args.push(head->ordinalNumber);
 
             bool success = false;
             switch (head->mode)

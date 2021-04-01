@@ -528,9 +528,9 @@ namespace OpenLoco::Vehicles
         {
             if (v->owner == _updating_company_id && v->vehicleType == type)
             {
-                if (v->var_44 != 0)
+                if (v->ordinalNumber != 0)
                 {
-                    _unkArr[v->var_44 - 1] = true;
+                    _unkArr[v->ordinalNumber - 1] = true;
                 }
             }
         }
@@ -567,9 +567,9 @@ namespace OpenLoco::Vehicles
         newHead->var_38 = 0;
         newHead->var_3C = 0;
         newHead->vehicleType = vehicleType;
-        newHead->var_22 = static_cast<uint8_t>(vehicleType) + 4;
-        newHead->var_44 = 0; // Reset to null value so ignored in next function
-        newHead->var_44 = createUniqueTypeNumber(vehicleType);
+        newHead->name = static_cast<uint8_t>(vehicleType) + 4;
+        newHead->ordinalNumber = 0; // Reset to null value so ignored in next function
+        newHead->ordinalNumber = createUniqueTypeNumber(vehicleType);
         newHead->var_52 = 0;
         newHead->var_5C = 0;
         newHead->status = Status::unk_0;

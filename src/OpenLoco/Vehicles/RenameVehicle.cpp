@@ -62,8 +62,8 @@ namespace OpenLoco::Vehicles
         renameStringBuffer[36] = '\0';
 
         char existingVehicleName[512];
-        auto args = FormatArguments::common(vehicleHead->var_44);
-        StringManager::formatString(existingVehicleName, vehicleHead->var_22, &args);
+        auto args = FormatArguments::common(vehicleHead->ordinalNumber);
+        StringManager::formatString(existingVehicleName, vehicleHead->name, &args);
         if (strcmp(existingVehicleName, renameStringBuffer) == 0)
         {
             return 0;
@@ -101,8 +101,8 @@ namespace OpenLoco::Vehicles
             allocatedStringId = defaultVehicleStringIdMap.at(vehicleHead->vehicleType);
         }
 
-        string_id oldStringId = vehicleHead->var_22;
-        vehicleHead->var_22 = allocatedStringId;
+        string_id oldStringId = vehicleHead->name;
+        vehicleHead->name = allocatedStringId;
         StringManager::emptyUserString(oldStringId);
         Gfx::invalidateScreen();
         return 0;

@@ -517,8 +517,8 @@ namespace OpenLoco::Ui::NewsWindow
                     }
                     args.push(company->name);
                     args.skip(2);
-                    args.push(vehicle->var_22);
-                    args.push(vehicle->var_44);
+                    args.push(vehicle->name);
+                    args.push(vehicle->ordinalNumber);
                     break;
                 }
 

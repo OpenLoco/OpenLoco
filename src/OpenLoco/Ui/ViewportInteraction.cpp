@@ -221,8 +221,8 @@ namespace OpenLoco::Ui::ViewportInteraction
         args.push(CompanyManager::getControllingId() == head->owner ? StringIds::company_vehicle : StringIds::competitor_vehicle);
         args.push(company->name); // args + 6 is empty
         args.skip(2);
-        args.push(head->var_22);
-        args.push(head->var_44);
+        args.push(head->name);
+        args.push(head->ordinalNumber);
         args.push(status.status1);
         args.push(status.status1Args); //32bit
         args.push(status.status2);

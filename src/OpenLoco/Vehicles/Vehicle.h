@@ -193,7 +193,7 @@ namespace OpenLoco::Vehicles
         static constexpr auto vehicleThingType = VehicleThingType::head;
         uint8_t pad_20;
         company_id_t owner; // 0x21
-        uint16_t var_22;
+        string_id name;     // 0x22, combined with ordinalNumber for strings 4 to 9
         uint8_t pad_24[0x26 - 0x24];
         EntityId_t head; // 0x26
         uint32_t var_28;
@@ -211,7 +211,7 @@ namespace OpenLoco::Vehicles
         uint8_t pad_40[0x2];    // 0x40
         TransportMode mode;     // 0x42 field same in all vehicles
         uint8_t pad_43;
-        int16_t var_44;
+        int16_t ordinalNumber;     // 0x44
         uint32_t orderTableOffset; // 0x46 offset into Order Table
         uint16_t currentOrder;     // 0x4A offset, combine with orderTableOffset
         uint16_t sizeOfOrderTable; // 0x4C size of Order Table
