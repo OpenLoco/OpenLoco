@@ -778,12 +778,43 @@ namespace OpenLoco::Ui::Windows::VehicleList
     // 0x004C26A4
     static void onScrollMouseOver(window* self, int16_t x, int16_t y, uint8_t scroll_index)
     {
+        Input::setTooltipTimeout(2000);
+
+        self->flags &= ~WindowFlags::not_scroll_view;
+
+        uint16_t currentRow = y / self->row_height;
+        if (currentRow <= self->var_83C)
+            self->row_hover = self->row_info[currentRow];
+        else
+            self->row_hover = -1;
+
+        string_id tooltipId = StringIds::buffer_337;
+        if (self->row_hover == -1)
+            tooltipId = StringIds::null;
+
+        char* tooltipBuffer = const_cast<char*>(StringManager::getString(StringIds::buffer_337));
+
+        // Have we already got the right tooltip?
+        if (tooltipBuffer[0] != '\0' && self->widgets[Widx::scrollview].tooltip == tooltipId && self->row_hover == self->var_85C)
+            return;
+
+        self->widgets[Widx::scrollview].tooltip = tooltipId;
+        self->var_85C = self->row_hover;
+        Ui::ToolTip::closeAndReset();
+
+        if (self->row_hover == -1)
+            return;
+
+        // Continued at 0x004C2724
+
+        /*
         registers regs;
         regs.ax = scroll_index;
         regs.cx = x;
         regs.dx = y;
         regs.esi = (int32_t)self;
         call(0x004C26A4, regs);
+        */
     }
 
     // 0x004C27C0
