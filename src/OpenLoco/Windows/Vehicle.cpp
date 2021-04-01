@@ -847,29 +847,6 @@ namespace OpenLoco::Ui::Vehicle
             Common::repositionTabs(self);
         }
 
-        struct VehicleStatus
-        {
-            EntityId_t status1;
-            uint32_t status1Args;
-            EntityId_t status2;
-            uint32_t status2Args;
-        };
-
-        static VehicleStatus sub_4B671C(const Vehicles::VehicleHead* head)
-        {
-            registers regs = {};
-            regs.esi = (int32_t)head;
-
-            call(0x004B671C, regs);
-
-            VehicleStatus status = {};
-            status.status1 = regs.bx;
-            status.status1Args = regs.eax;
-            status.status2 = regs.cx;
-            status.status2Args = regs.edx;
-            return status;
-        }
-
         // 0x004B226D
         static void draw(window* const self, Gfx::drawpixelinfo_t* const context)
         {
@@ -891,7 +868,7 @@ namespace OpenLoco::Ui::Vehicle
 
             auto veh = Common::getVehicle(self);
             {
-                auto status = sub_4B671C(veh);
+                auto status = veh->getStatus();
                 FormatArguments args = {};
                 args.push(status.status1);
                 args.push(status.status1Args);
