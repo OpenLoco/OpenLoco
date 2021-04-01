@@ -245,6 +245,7 @@ namespace OpenLoco::Vehicles
         bool update();
         VehicleStatus getStatus() const;
         OrderRingView getCurrentOrders() const;
+        bool isPlaced() const { return tile_x != -1 && !(var_38 & Flags38::isGhost); }
 
     private:
         void applyBreakdownToTrain();
