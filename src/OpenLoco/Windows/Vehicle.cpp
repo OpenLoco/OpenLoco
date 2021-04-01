@@ -2185,7 +2185,7 @@ namespace OpenLoco::Ui::Vehicle
             {
                 // Monthly Profit: {CURRENCY32}
                 auto args = FormatArguments();
-                auto monthlyProfit = (train.veh2->refund_cost + train.veh2->var_66 + train.veh2->var_6A + train.veh2->var_6E) / 4;
+                auto monthlyProfit = (train.veh2->totalRecentProfit()) / 4;
                 args.push(monthlyProfit);
                 Gfx::drawString_494B3F(*context, pos.x, pos.y, Colour::black, StringIds::vehicle_monthly_profit, &args);
                 pos.y += 10 + 5;

@@ -642,10 +642,10 @@ namespace OpenLoco::Vehicles
         newVeh2->objectId = -1;
         newVeh2->var_4A = 0;
         newVeh2->var_5E = 0;
-        newVeh2->refund_cost = 0;
-        newVeh2->var_66 = 0;
-        newVeh2->var_6A = 0;
-        newVeh2->var_6E = 0;
+        newVeh2->profit[0] = 0;
+        newVeh2->profit[1] = 0;
+        newVeh2->profit[2] = 0;
+        newVeh2->profit[3] = 0;
         newVeh2->reliability = 0;
         newVeh2->var_73 = 0;
         lastVeh->setNextCar(newVeh2->id);
