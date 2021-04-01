@@ -10,6 +10,7 @@
 #include "../OpenLoco.h"
 #include "../Ui/Dropdown.h"
 #include "../Ui/WindowManager.h"
+#include "../Widget.h"
 #include <stdexcept>
 #include <utility>
 
@@ -105,10 +106,83 @@ namespace OpenLoco::Ui::Windows::VehicleList
     // 0x004C2A6E
     static void drawTabs(window* self, Gfx::drawpixelinfo_t* dpi)
     {
-        registers regs;
-        regs.esi = (int32_t)self;
-        regs.edi = (int32_t)dpi;
-        call(0x004C2A6E, regs);
+        auto skin = ObjectManager::get<InterfaceSkinObject>();
+        auto companyColour = CompanyManager::getCompanyColour(self->number);
+
+        static std::pair<widget_index, std::array<uint32_t, 8>> tabAnimations[] = {
+            { Widx::tab_trains, {
+                                    InterfaceSkin::ImageIds::vehicle_train_frame_0,
+                                    InterfaceSkin::ImageIds::vehicle_train_frame_1,
+                                    InterfaceSkin::ImageIds::vehicle_train_frame_2,
+                                    InterfaceSkin::ImageIds::vehicle_train_frame_3,
+                                    InterfaceSkin::ImageIds::vehicle_train_frame_4,
+                                    InterfaceSkin::ImageIds::vehicle_train_frame_5,
+                                    InterfaceSkin::ImageIds::vehicle_train_frame_6,
+                                    InterfaceSkin::ImageIds::vehicle_train_frame_7,
+                                } },
+            { Widx::tab_aircraft, {
+                                      InterfaceSkin::ImageIds::vehicle_aircraft_frame_0,
+                                      InterfaceSkin::ImageIds::vehicle_aircraft_frame_1,
+                                      InterfaceSkin::ImageIds::vehicle_aircraft_frame_2,
+                                      InterfaceSkin::ImageIds::vehicle_aircraft_frame_3,
+                                      InterfaceSkin::ImageIds::vehicle_aircraft_frame_4,
+                                      InterfaceSkin::ImageIds::vehicle_aircraft_frame_5,
+                                      InterfaceSkin::ImageIds::vehicle_aircraft_frame_6,
+                                      InterfaceSkin::ImageIds::vehicle_aircraft_frame_7,
+                                  } },
+            { Widx::tab_buses, {
+                                   InterfaceSkin::ImageIds::vehicle_buses_frame_0,
+                                   InterfaceSkin::ImageIds::vehicle_buses_frame_1,
+                                   InterfaceSkin::ImageIds::vehicle_buses_frame_2,
+                                   InterfaceSkin::ImageIds::vehicle_buses_frame_3,
+                                   InterfaceSkin::ImageIds::vehicle_buses_frame_4,
+                                   InterfaceSkin::ImageIds::vehicle_buses_frame_5,
+                                   InterfaceSkin::ImageIds::vehicle_buses_frame_6,
+                                   InterfaceSkin::ImageIds::vehicle_buses_frame_7,
+                               } },
+            { Widx::tab_trams, {
+                                   InterfaceSkin::ImageIds::vehicle_trams_frame_0,
+                                   InterfaceSkin::ImageIds::vehicle_trams_frame_1,
+                                   InterfaceSkin::ImageIds::vehicle_trams_frame_2,
+                                   InterfaceSkin::ImageIds::vehicle_trams_frame_3,
+                                   InterfaceSkin::ImageIds::vehicle_trams_frame_4,
+                                   InterfaceSkin::ImageIds::vehicle_trams_frame_5,
+                                   InterfaceSkin::ImageIds::vehicle_trams_frame_6,
+                                   InterfaceSkin::ImageIds::vehicle_trams_frame_7,
+                               } },
+            { Widx::tab_trucks, {
+                                    InterfaceSkin::ImageIds::vehicle_trucks_frame_0,
+                                    InterfaceSkin::ImageIds::vehicle_trucks_frame_1,
+                                    InterfaceSkin::ImageIds::vehicle_trucks_frame_2,
+                                    InterfaceSkin::ImageIds::vehicle_trucks_frame_3,
+                                    InterfaceSkin::ImageIds::vehicle_trucks_frame_4,
+                                    InterfaceSkin::ImageIds::vehicle_trucks_frame_5,
+                                    InterfaceSkin::ImageIds::vehicle_trucks_frame_6,
+                                    InterfaceSkin::ImageIds::vehicle_trucks_frame_7,
+                                } },
+            { Widx::tab_ships, {
+                                   InterfaceSkin::ImageIds::vehicle_ships_frame_0,
+                                   InterfaceSkin::ImageIds::vehicle_ships_frame_1,
+                                   InterfaceSkin::ImageIds::vehicle_ships_frame_2,
+                                   InterfaceSkin::ImageIds::vehicle_ships_frame_3,
+                                   InterfaceSkin::ImageIds::vehicle_ships_frame_4,
+                                   InterfaceSkin::ImageIds::vehicle_ships_frame_5,
+                                   InterfaceSkin::ImageIds::vehicle_ships_frame_6,
+                                   InterfaceSkin::ImageIds::vehicle_ships_frame_7,
+                               } },
+        };
+
+        for (auto [tab, frames] : tabAnimations)
+        {
+            if (self->isDisabled(tab))
+                continue;
+
+            auto isActive = tab == self->current_tab + Widx::tab_trains;
+            auto imageId = isActive ? frames[self->frame_no / 2 % 8] : frames[0];
+
+            uint32_t image = Gfx::recolour(skin->img + imageId, companyColour);
+            Widget::draw_tab(self, dpi, image, tab);
+        }
     }
 
     // 0x004C28A5

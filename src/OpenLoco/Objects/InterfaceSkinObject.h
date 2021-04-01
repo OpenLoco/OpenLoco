@@ -463,17 +463,46 @@ namespace OpenLoco
         constexpr uint32_t vehicle_train_frame_5 = 423;
         constexpr uint32_t vehicle_train_frame_6 = 424;
         constexpr uint32_t vehicle_train_frame_7 = 425;
-
-        constexpr uint32_t vehicle_aircraft = 426;
-
-        constexpr uint32_t vehicle_bus = 434;
-
-        constexpr uint32_t vehicle_truck = 450;
-
-        constexpr uint32_t vehicle_tram = 442;
-
-        constexpr uint32_t vehicle_ship = 458;
-
+        constexpr uint32_t vehicle_aircraft_frame_0 = 426;
+        constexpr uint32_t vehicle_aircraft_frame_1 = 427;
+        constexpr uint32_t vehicle_aircraft_frame_2 = 428;
+        constexpr uint32_t vehicle_aircraft_frame_3 = 429;
+        constexpr uint32_t vehicle_aircraft_frame_4 = 430;
+        constexpr uint32_t vehicle_aircraft_frame_5 = 431;
+        constexpr uint32_t vehicle_aircraft_frame_6 = 432;
+        constexpr uint32_t vehicle_aircraft_frame_7 = 433;
+        constexpr uint32_t vehicle_buses_frame_0 = 434;
+        constexpr uint32_t vehicle_buses_frame_1 = 435;
+        constexpr uint32_t vehicle_buses_frame_2 = 436;
+        constexpr uint32_t vehicle_buses_frame_3 = 437;
+        constexpr uint32_t vehicle_buses_frame_4 = 438;
+        constexpr uint32_t vehicle_buses_frame_5 = 439;
+        constexpr uint32_t vehicle_buses_frame_6 = 440;
+        constexpr uint32_t vehicle_buses_frame_7 = 441;
+        constexpr uint32_t vehicle_trams_frame_0 = 442;
+        constexpr uint32_t vehicle_trams_frame_1 = 443;
+        constexpr uint32_t vehicle_trams_frame_2 = 444;
+        constexpr uint32_t vehicle_trams_frame_3 = 445;
+        constexpr uint32_t vehicle_trams_frame_4 = 446;
+        constexpr uint32_t vehicle_trams_frame_5 = 447;
+        constexpr uint32_t vehicle_trams_frame_6 = 448;
+        constexpr uint32_t vehicle_trams_frame_7 = 449;
+        constexpr uint32_t vehicle_trucks_frame_0 = 450;
+        constexpr uint32_t vehicle_trucks_frame_1 = 451;
+        constexpr uint32_t vehicle_trucks_frame_2 = 452;
+        constexpr uint32_t vehicle_trucks_frame_3 = 453;
+        constexpr uint32_t vehicle_trucks_frame_4 = 454;
+        constexpr uint32_t vehicle_trucks_frame_5 = 455;
+        constexpr uint32_t vehicle_trucks_frame_6 = 456;
+        constexpr uint32_t vehicle_trucks_frame_7 = 457;
+        constexpr uint32_t vehicle_ships_frame_0 = 458;
+        constexpr uint32_t vehicle_ships_frame_1 = 459;
+        constexpr uint32_t vehicle_ships_frame_2 = 460;
+        constexpr uint32_t vehicle_ships_frame_3 = 461;
+        constexpr uint32_t vehicle_ships_frame_4 = 462;
+        constexpr uint32_t vehicle_ships_frame_5 = 463;
+        constexpr uint32_t vehicle_ships_frame_6 = 464;
+        constexpr uint32_t vehicle_ships_frame_7 = 465;
         constexpr uint32_t toolbar_menu_map_north = 466;
         constexpr uint32_t toolbar_menu_map_west = 467;
         constexpr uint32_t toolbar_menu_map_south = 468;
