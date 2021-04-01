@@ -251,6 +251,7 @@
     <ClInclude Include="Map\TileLoop.hpp" />
     <ClInclude Include="Map\TileManager.h" />
     <ClInclude Include="Math\Bound.hpp" />
+    <ClInclude Include="Math\Triginometry.hpp" />
     <ClInclude Include="Math\Vector.hpp" />
     <ClInclude Include="MessageManager.h" />
     <ClInclude Include="MultiPlayer.h" />
