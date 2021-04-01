@@ -117,8 +117,12 @@ namespace OpenLoco::Math::Triginometry
         return (factor503B50[static_cast<uint8_t>(pitch)] * height) / 256;
     }
 
+    constexpr auto computeXYVector(int16_t magnitude, uint8_t yaw)
+    {
+        return (factorXY503B6A[yaw] * magnitude) / 256;
+    }
     constexpr auto computeXYVector(int16_t height, Pitch pitch, uint8_t yaw)
     {
-        return (factorXY503B6A[yaw] * computeXYMagnitude(height, pitch)) / 256;
+        return computeXYVector(computeXYMagnitude(height, pitch), yaw);
     }
 }

@@ -5,6 +5,7 @@
 #include "../Graphics/Gfx.h"
 #include "../Interop/Interop.hpp"
 #include "../Map/TileManager.h"
+#include "../Math/Triginometry.hpp"
 #include "../Objects/ObjectManager.h"
 #include "../Objects/VehicleObject.h"
 #include "Vehicle.h"
@@ -24,9 +25,8 @@ namespace OpenLoco::Vehicles
     static loco_global<uint8_t, 0x01136237> vehicle_var_1136237;       // var_28 related?
     static loco_global<uint8_t, 0x01136238> vehicle_var_1136238;       // var_28 related?
     static loco_global<int8_t[88], 0x004F865C> vehicle_arr_4F865C;     // var_2C related?
-    static loco_global<int16_t[128], 0x00503B6A> factorXY503B6A;
-    static loco_global<uint8_t[44], 0x004F8A7C> vehicle_arr_4F8A7C; // bools
-    static loco_global<uint8_t, 0x00525FAE> vehicle_var_525FAE;     // boolean
+    static loco_global<uint8_t[44], 0x004F8A7C> vehicle_arr_4F8A7C;    // bools
+    static loco_global<uint8_t, 0x00525FAE> vehicle_var_525FAE;        // boolean
 
     // 0x00503E5C
     static constexpr Pitch vehicleBodyIndexToPitch[] = {
@@ -40,23 +40,6 @@ namespace OpenLoco::Vehicles
         Pitch::down12deg,
         Pitch::down18deg,
         Pitch::down25deg,
-    };
-
-    // 0x00503B50
-    constexpr int16_t factor503B50[] = {
-        0,
-        -26,
-        -52,
-        -75,
-        -98,
-        26,
-        52,
-        75,
-        98,
-        -44,
-        44,
-        -84,
-        84
     };
 
     VehicleObject* VehicleBody::object() const
@@ -981,17 +964,10 @@ namespace OpenLoco::Vehicles
 
         loc.z += vehicleObject->animation[num].height;
 
-        auto xyFactor = vehicleObject->animation[num].height * factor503B50[static_cast<uint8_t>(sprite_pitch)];
-        xyFactor /= 256;
+        auto xyFactor = Math::Triginometry::computeXYVector(vehicleObject->animation[num].height, sprite_pitch, sprite_yaw);
 
-        auto xFactor = xyFactor * factorXY503B6A[sprite_yaw * 2];
-        auto yFactor = xyFactor * factorXY503B6A[sprite_yaw * 2 + 1];
-
-        xFactor /= 256;
-        yFactor /= 256;
-
-        loc.x += xFactor;
-        loc.y += yFactor;
+        loc.x += xyFactor.x;
+        loc.y += xyFactor.y;
 
         Exhaust::create(loc, vehicleObject->animation[num].object_id | (soundCode ? 0 : 0x80));
         if (soundCode == false)
@@ -1114,12 +1090,11 @@ namespace OpenLoco::Vehicles
 
             auto positionFactor = vehicleObject->bodySprites[0].bogey_position * var_05 / 256;
             auto invertedDirection = sprite_yaw ^ (1 << 5);
-            auto xFactor = (factorXY503B6A[invertedDirection * 2] * positionFactor) / 512;
-            auto yFactor = (factorXY503B6A[invertedDirection * 2 + 1] * positionFactor) / 512;
+            auto xyFactor = Math::Triginometry::computeXYVector(positionFactor, invertedDirection) / 2;
 
             Map::map_pos3 loc = {
-                static_cast<int16_t>(x + xFactor),
-                static_cast<int16_t>(y + yFactor),
+                static_cast<int16_t>(x + xyFactor.x),
+                static_cast<int16_t>(y + xyFactor.y),
                 static_cast<int16_t>(z + vehicleObject->animation[num].height)
             };
             Exhaust::create(loc, vehicleObject->animation[num].object_id);
@@ -1157,17 +1132,10 @@ namespace OpenLoco::Vehicles
 
             loc.z += vehicleObject->animation[num].height;
 
-            auto xyFactor = vehicleObject->animation[num].height * factor503B50[static_cast<uint8_t>(sprite_pitch)];
-            xyFactor /= 256;
+            auto xyFactor = Math::Triginometry::computeXYVector(vehicleObject->animation[num].height, sprite_pitch, sprite_yaw);
 
-            auto xFactor = xyFactor * factorXY503B6A[sprite_yaw * 2];
-            auto yFactor = xyFactor * factorXY503B6A[sprite_yaw * 2 + 1];
-
-            xFactor /= 256;
-            yFactor /= 256;
-
-            loc.x += xFactor;
-            loc.y += yFactor;
+            loc.x += xyFactor.x;
+            loc.y += xyFactor.y;
 
             Exhaust::create(loc, vehicleObject->animation[num].object_id);
         }
@@ -1216,34 +1184,21 @@ namespace OpenLoco::Vehicles
 
         loc.z += vehicleObject->animation[num].height;
 
-        auto xyFactor = vehicleObject->animation[num].height * factor503B50[static_cast<uint8_t>(sprite_pitch)];
-        xyFactor /= 256;
-
-        auto xFactor = xyFactor * factorXY503B6A[sprite_yaw * 2];
-        auto yFactor = xyFactor * factorXY503B6A[sprite_yaw * 2 + 1];
-
-        xFactor /= 256;
-        yFactor /= 256;
-
-        loc.x += xFactor;
-        loc.y += yFactor;
+        auto xyFactor = Math::Triginometry::computeXYVector(vehicleObject->animation[num].height, sprite_pitch, sprite_yaw);
+        loc.x += xyFactor.x;
+        loc.y += xyFactor.y;
 
         auto yaw = (sprite_yaw + 16) & 0x3F;
 
-        xyFactor = 5;
+        auto unkFactor = 5;
         if (vehicle_var_525FAE != 0)
         {
-            xyFactor = -5;
+            unkFactor = -5;
         }
 
-        xFactor = xyFactor * factorXY503B6A[yaw * 2];
-        yFactor = xyFactor * factorXY503B6A[yaw * 2 + 1];
-
-        xFactor /= 256;
-        yFactor /= 256;
-
-        loc.x += xFactor;
-        loc.y += yFactor;
+        xyFactor = Math::Triginometry::computeXYVector(unkFactor, yaw);
+        loc.x += xyFactor.x;
+        loc.y += xyFactor.y;
 
         Exhaust::create(loc, vehicleObject->animation[num].object_id);
     }
@@ -1293,17 +1248,10 @@ namespace OpenLoco::Vehicles
 
         loc.z += vehicleObject->animation[num].height;
 
-        auto xyFactor = vehicleObject->animation[num].height * factor503B50[static_cast<uint8_t>(sprite_pitch)];
-        xyFactor /= 256;
+        auto xyFactor = Math::Triginometry::computeXYVector(vehicleObject->animation[num].height, sprite_pitch, sprite_yaw);
 
-        auto xFactor = xyFactor * factorXY503B6A[sprite_yaw * 2];
-        auto yFactor = xyFactor * factorXY503B6A[sprite_yaw * 2 + 1];
-
-        xFactor /= 256;
-        yFactor /= 256;
-
-        loc.x += xFactor;
-        loc.y += yFactor;
+        loc.x += xyFactor.x;
+        loc.y += xyFactor.y;
 
         Exhaust::create(loc, vehicleObject->animation[num].object_id);
     }
@@ -1353,39 +1301,26 @@ namespace OpenLoco::Vehicles
 
         loc.z += vehicleObject->animation[num].height;
 
-        auto xyFactor = vehicleObject->animation[num].height * factor503B50[static_cast<uint8_t>(sprite_pitch)];
-        xyFactor /= 256;
-
-        auto xFactor = xyFactor * factorXY503B6A[sprite_yaw * 2];
-        auto yFactor = xyFactor * factorXY503B6A[sprite_yaw * 2 + 1];
-
-        xFactor /= 256;
-        yFactor /= 256;
-
-        loc.x += xFactor;
-        loc.y += yFactor;
+        auto xyFactor = Math::Triginometry::computeXYVector(vehicleObject->animation[num].height, sprite_pitch, sprite_yaw);
+        loc.x += xyFactor.x;
+        loc.y += xyFactor.y;
 
         auto yaw = (sprite_yaw + 16) & 0x3F;
         auto firstBogie = var_38 & Flags38::isReversed ? backBogie : frontBogie;
-        xyFactor = 5;
+        auto unkFactor = 5;
         if (!(vehicle_arr_4F8A7C[firstBogie->var_2C / 8] & 1))
         {
-            xyFactor = -5;
+            unkFactor = -5;
         }
 
         if (firstBogie->var_2C & (1 << 2))
         {
-            xyFactor = -xyFactor;
+            unkFactor = -unkFactor;
         }
 
-        xFactor = xyFactor * factorXY503B6A[yaw * 2];
-        yFactor = xyFactor * factorXY503B6A[yaw * 2 + 1];
-
-        xFactor /= 256;
-        yFactor /= 256;
-
-        loc.x += xFactor;
-        loc.y += yFactor;
+        xyFactor = Math::Triginometry::computeXYVector(unkFactor, yaw);
+        loc.x += xyFactor.x;
+        loc.y += xyFactor.y;
 
         Exhaust::create(loc, vehicleObject->animation[num].object_id);
     }
@@ -1421,25 +1356,19 @@ namespace OpenLoco::Vehicles
 
         auto positionFactor = vehicleObject->bodySprites[0].bogey_position;
         auto invertedDirection = sprite_yaw ^ (1 << 5);
-        auto xFactor = (factorXY503B6A[invertedDirection * 2] * positionFactor) / 1024;
-        auto yFactor = (factorXY503B6A[invertedDirection * 2 + 1] * positionFactor) / 1024;
+        auto xyFactor = Math::Triginometry::computeXYVector(positionFactor, invertedDirection) / 4;
 
         Map::map_pos3 loc = {
-            static_cast<int16_t>(x + xFactor),
-            static_cast<int16_t>(y + yFactor),
+            static_cast<int16_t>(x + xyFactor.x),
+            static_cast<int16_t>(y + xyFactor.y),
             z
         };
 
         auto yaw = (sprite_yaw + 16) & 0x3F;
 
-        xFactor = vehicleObject->var_113 * factorXY503B6A[yaw * 2];
-        yFactor = vehicleObject->var_113 * factorXY503B6A[yaw * 2 + 1];
-
-        xFactor /= 512;
-        yFactor /= 512;
-
-        loc.x += xFactor;
-        loc.y += yFactor;
+        xyFactor = Math::Triginometry::computeXYVector(vehicleObject->var_113, yaw) / 2;
+        loc.x += xyFactor.x;
+        loc.y += xyFactor.y;
 
         Exhaust::create(loc, vehicleObject->animation[num].object_id);
 
@@ -1448,14 +1377,9 @@ namespace OpenLoco::Vehicles
 
         yaw = (sprite_yaw - 16) & 0x3F;
 
-        xFactor = vehicleObject->var_113 * factorXY503B6A[yaw * 2];
-        yFactor = vehicleObject->var_113 * factorXY503B6A[yaw * 2 + 1];
-
-        xFactor /= 512;
-        yFactor /= 512;
-
-        loc.x += xFactor;
-        loc.y += yFactor;
+        xyFactor = Math::Triginometry::computeXYVector(vehicleObject->var_113, yaw) / 2;
+        loc.x += xyFactor.x;
+        loc.y += xyFactor.y;
 
         Exhaust::create(loc, vehicleObject->animation[num].object_id);
     }
