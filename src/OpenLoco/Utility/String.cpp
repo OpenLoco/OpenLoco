@@ -57,7 +57,7 @@ namespace OpenLoco::Utility
         std::wstring_convert<convert_typeX, wchar_t> converterX;
 
         std::wstring out = converterX.from_bytes(src.data());
-        std::cout << __PRETTY_FUNCTION__ << " " << out << "\n";
+        std::wcout << __PRETTY_FUNCTION__ << " " << out << "\n";
         return out;
 #endif
     }
