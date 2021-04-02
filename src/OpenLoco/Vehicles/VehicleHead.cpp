@@ -6,9 +6,11 @@
 #include "../Entities/Misc.h"
 #include "../Graphics/Gfx.h"
 #include "../Interop/Interop.hpp"
+#include "../Localisation/FormatArguments.hpp"
 #include "../Map/TileManager.h"
 #include "../MessageManager.h"
 #include "../Objects/AirportObject.h"
+#include "../Objects/CargoObject.h"
 #include "../Objects/ObjectManager.h"
 #include "../Objects/RoadObject.h"
 #include "../Objects/VehicleObject.h"
@@ -2588,6 +2590,56 @@ namespace OpenLoco::Vehicles
             findStation = true;
         }
         return StationId::null;
+    }
+
+    // 0x004B6669
+    char* VehicleHead::generateCargoTotalString(char* buffer)
+    {
+        uint32_t cargoTotals[ObjectManager::getMaxObjects(object_type::cargo)]{};
+        Vehicles::Vehicle train(this);
+        for (auto& car : train.cars)
+        {
+            auto front = car.front;
+            auto body = car.body;
+            if (front->cargo_type != 0xFF)
+            {
+                cargoTotals[front->cargo_type] += front->secondaryCargoQty;
+            }
+            if (body->cargo_type != 0xFF)
+            {
+                cargoTotals[body->cargo_type] += body->primaryCargoQty;
+            }
+        }
+
+        bool hasCargo = false;
+        for (size_t cargoType = 0; cargoType < ObjectManager::getMaxObjects(object_type::cargo); ++cargoType)
+        {
+            auto cargoTotal = cargoTotals[cargoType];
+            if (cargoTotal == 0)
+            {
+                continue;
+            }
+
+            // On all but first loop insert a ", "
+            if (hasCargo)
+            {
+                *buffer++ = ',';
+                *buffer++ = ' ';
+            }
+            hasCargo = true;
+            auto cargoObj = ObjectManager::get<CargoObject>(cargoType);
+            auto unitNameFormat = cargoTotal == 1 ? cargoObj->unit_name_singular : cargoObj->unit_name_plural;
+            FormatArguments args{};
+            args.push(cargoTotal);
+            buffer = StringManager::formatString(buffer, unitNameFormat, &args);
+        }
+
+        if (!hasCargo)
+        {
+            buffer = StringManager::formatString(buffer, StringIds::cargo_empty_2);
+        }
+
+        return buffer;
     }
 
     // 0x004BABAD
