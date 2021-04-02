@@ -332,5 +332,7 @@ namespace OpenLoco::Map
 
         size_t indexOf(const tile_element_base* element) const;
         surface_element* surface() const;
+        station_element* trackStation(uint8_t trackId, uint8_t direction, uint8_t baseZ) const;
+        station_element* roadStation(uint8_t roadId, uint8_t direction, uint8_t baseZ) const;
     };
 }

@@ -15,6 +15,7 @@
 #include "../MessageManager.h"
 #include "../Objects/AirportObject.h"
 #include "../Objects/CargoObject.h"
+#include "../Objects/IndustryObject.h"
 #include "../Objects/ObjectManager.h"
 #include "../Objects/RoadObject.h"
 #include "../Objects/RoadStationObject.h"
@@ -2564,8 +2565,8 @@ namespace OpenLoco::Vehicles
         {
             station->deliverCargoToTown(cargo.type, cargo.qty);
             auto* sourceStation = StationManager::get(cargo.townFrom);
-            auto stationLoc = Map::map_pos{ station->x, station->y };
-            auto sourceLoc = Map::map_pos{ sourceStation->x, sourceStation->y };
+            auto stationLoc = Map::Pos2{ station->x, station->y };
+            auto sourceLoc = Map::Pos2{ sourceStation->x, sourceStation->y };
             auto tilesDistance = Math::Vector::distance(stationLoc, sourceLoc) / 32;
 
             Ui::WindowManager::invalidate(Ui::WindowType::company, owner);
@@ -2582,7 +2583,7 @@ namespace OpenLoco::Vehicles
 
             var_58 += cargoPayment;
             station->var_3B1 = 0;
-            station->flags |= station_flags::flag_8;
+            station->flags |= StationFlags::flag_8;
 
             if (cargoStats.industry_id != IndustryId::null)
             {
@@ -2603,7 +2604,7 @@ namespace OpenLoco::Vehicles
                 if (!(industry->history_min_production[0] & (1ULL << cargo.type)))
                 {
                     industry->history_min_production[0] |= 1ULL << cargo.type;
-                    MessageManager::post(messageType::workersCelebrate, owner, id, cargoStats.industry_id, cargo.type << 8);
+                    MessageManager::post(MessageType::workersCelebrate, owner, id, cargoStats.industry_id, cargo.type << 8);
                 }
 
                 auto* town = TownManager::get(industry->town);
@@ -2615,7 +2616,7 @@ namespace OpenLoco::Vehicles
             if (!(town->var_1A8 & (1ULL << cargo.type)))
             {
                 town->var_1A8 |= 1ULL << cargo.type;
-                MessageManager::post(messageType::citizensCelebrate, owner, id, station->town, cargo.type << 8);
+                MessageManager::post(MessageType::citizensCelebrate, owner, id, station->town, cargo.type << 8);
             }
 
             if (cargoStats.isAccepted())
@@ -2653,13 +2654,13 @@ namespace OpenLoco::Vehicles
             if (cargoStats.origin != StationId::null)
             {
                 auto* cargoSourceStation = StationManager::get(cargoStats.origin);
-                auto stationLoc = Map::map_pos{ station->x, station->y };
-                auto cargoSourceLoc = Map::map_pos{ cargoSourceStation->x, cargoSourceStation->y };
+                auto stationLoc = Map::Pos2{ station->x, station->y };
+                auto cargoSourceLoc = Map::Pos2{ cargoSourceStation->x, cargoSourceStation->y };
 
                 auto stationSourceDistance = Math::Vector::distance(stationLoc, cargoSourceLoc);
 
                 auto* sourceStation = StationManager::get(cargo.townFrom);
-                auto sourceLoc = Map::map_pos{ sourceStation->x, sourceStation->y };
+                auto sourceLoc = Map::Pos2{ sourceStation->x, sourceStation->y };
                 auto cargoSourceDistance = Math::Vector::distance(stationLoc, sourceLoc);
                 if (cargoSourceDistance > stationSourceDistance)
                 {
@@ -2680,90 +2681,44 @@ namespace OpenLoco::Vehicles
                 break;
             case TransportMode::rail:
             {
-                auto tile = Map::TileManager::get(map_pos{ bogie->tile_x, bogie->tile_y });
-                bool findStation = false;
+                auto tile = Map::TileManager::get(Pos2{ bogie->tile_x, bogie->tile_y });
                 auto direction = bogie->var_2C & 3;
                 auto trackId = (bogie->var_2C >> 3) & 0x3F;
                 loadingModifier = 12;
-                for (auto& el : tile)
+                auto* elStation = tile.trackStation(trackId, direction, bogie->tile_base_z);
+                if (elStation != nullptr)
                 {
-                    auto* elTrack = el.asTrack();
-                    auto* elStation = el.asStation();
-                    if (findStation && elStation != nullptr)
-                    {
-                        findStation = false;
-                        if (elStation->isFlag5() || elStation->isGhost())
-                            break;
-
-                        if (elStation->stationId() == stationId)
-                        {
-                            loadingModifier = 1;
-                        }
+                    if (elStation->isFlag5() || elStation->isGhost())
                         break;
-                    }
-                    if (elTrack == nullptr)
-                        continue;
 
-                    if (elTrack->baseZ() != bogie->tile_base_z)
-                        continue;
+                    if (elStation->stationId() != stationId)
+                        break;
 
-                    if (elTrack->unkDirection() != direction)
-                        continue;
-
-                    if (elTrack->trackId() != trackId)
-                        continue;
-
-                    if (!elTrack->hasStationElement())
-                        continue;
-
-                    findStation = true;
+                    loadingModifier = 1;
                 }
                 break;
             }
             case TransportMode::road:
             {
-                auto tile = Map::TileManager::get(map_pos{ bogie->tile_x, bogie->tile_y });
-                bool findStation = false;
+                auto tile = Map::TileManager::get(Pos2{ bogie->tile_x, bogie->tile_y });
                 auto direction = bogie->var_2C & 3;
                 auto roadId = (bogie->var_2C >> 3) & 0xF;
                 loadingModifier = 2;
-                for (auto& el : tile)
+                auto* elStation = tile.roadStation(roadId, direction, bogie->tile_base_z);
+                if (elStation != nullptr)
                 {
-                    auto* elRoad = el.asRoad();
-                    auto* elStation = el.asStation();
-                    if (findStation && elStation != nullptr)
-                    {
-                        findStation = false;
-                        if (elStation->isFlag5() || elStation->isGhost())
-                            break;
-
-                        if (elStation->stationId() != stationId)
-                            break;
-
-                        auto* roadStationObj = ObjectManager::get<RoadStationObject>(elStation->stationType());
-                        if (roadStationObj->flags & RoadStationFlags::roadEnd)
-                        {
-                            var_5F |= Flags5F::unk_0;
-                        }
-                        loadingModifier = 1;
+                    if (elStation->isFlag5() || elStation->isGhost())
                         break;
+
+                    if (elStation->stationId() != stationId)
+                        break;
+
+                    auto* roadStationObj = ObjectManager::get<RoadStationObject>(elStation->objectId());
+                    if (roadStationObj->flags & RoadStationFlags::roadEnd)
+                    {
+                        var_5F |= Flags5F::unk_0;
                     }
-                    if (elRoad == nullptr)
-                        continue;
-
-                    if (elRoad->baseZ() != bogie->tile_base_z)
-                        continue;
-
-                    if (elRoad->unkDirection() != direction)
-                        continue;
-
-                    if (elRoad->roadId() != roadId)
-                        continue;
-
-                    if (!elRoad->hasStationElement())
-                        continue;
-
-                    findStation = true;
+                    loadingModifier = 1;
                 }
                 break;
             }
@@ -2842,7 +2797,7 @@ namespace OpenLoco::Vehicles
 
             CompanyManager::applyPaymentToCompany(owner, -cargoProfit, ExpenditureType(static_cast<uint8_t>(vehicleType) * 2));
 
-            auto loc = Map::map_pos3{ train.cars.firstCar.body->x, train.cars.firstCar.body->y, train.cars.firstCar.body->z } + Map::map_pos3{ 0, 0, 28 };
+            auto loc = Map::Pos3{ train.cars.firstCar.body->x, train.cars.firstCar.body->y, train.cars.firstCar.body->z } + Map::Pos3{ 0, 0, 28 };
             CompanyManager::spendMoneyEffect(loc, owner, -cargoProfit);
 
             Audio::playSound(Audio::sound_id::income, loc);
@@ -3013,43 +2968,21 @@ namespace OpenLoco::Vehicles
 
     static StationId_t tryFindStationAt(VehicleBogie* bogie)
     {
-        Pos2 loc{ bogie->tile_x, bogie->tile_y };
-        auto baseZ = bogie->tile_base_z;
         auto direction = bogie->var_2C & 3;
         auto trackId = (bogie->var_2C >> 3) & 0x3F;
 
-        bool findStation = false;
-        auto tile = TileManager::get(loc);
-        for (auto& el : tile)
+        auto tile = TileManager::get(Map::Pos2{ bogie->tile_x, bogie->tile_y });
+        auto* elStation = tile.trackStation(trackId, direction, bogie->tile_base_z);
+        if (elStation == nullptr)
         {
-            auto* elTrack = el.asTrack();
-            auto* elStation = el.asStation();
-            if (findStation && elStation != nullptr)
-            {
-                findStation = false;
-                if (elStation->isFlag5() || elStation->isGhost())
-                    continue;
-
-                return elStation->stationId();
-            }
-            if (elTrack == nullptr)
-                continue;
-
-            if (elTrack->baseZ() != baseZ)
-                continue;
-
-            if (elTrack->unkDirection() != direction)
-                continue;
-
-            if (elTrack->trackId() != trackId)
-                continue;
-
-            if (!elTrack->hasStationElement())
-                continue;
-
-            findStation = true;
+            return StationId::null;
         }
-        return StationId::null;
+        if (elStation->isFlag5() || elStation->isGhost())
+        {
+            return StationId::null;
+        }
+
+        return elStation->stationId();
     }
 
     // 0x004B6669
