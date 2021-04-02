@@ -188,6 +188,17 @@ namespace OpenLoco::Vehicles
     };
     static_assert(sizeof(Vehicle2or6) == 0x74); // Can't use offset_of change this to last field if more found
 
+    struct VehicleCargo
+    {
+        uint32_t acceptedTypes; // 0x48
+        uint8_t type;           // 0x4C
+        uint8_t maxQty;         // 0x4D
+        StationId_t townFrom;   // 0x4E
+        uint8_t numDays;        // 0x50
+        uint8_t qty;            // 0x51
+    };
+    static_assert(sizeof(VehicleCargo) == 0xA);
+
     struct VehicleHead : VehicleBase
     {
         static constexpr auto vehicleThingType = VehicleThingType::head;
@@ -215,7 +226,7 @@ namespace OpenLoco::Vehicles
         uint32_t var_4E;           // 0x4E
         uint8_t var_52;
         uint8_t pad_53;
-        StationId_t stationId; // 0x54
+        StationId_t stationId;         // 0x54
         uint16_t cargoTransferTimeout; // 0x56
         uint32_t var_58;
         uint8_t var_5C;
@@ -288,7 +299,7 @@ namespace OpenLoco::Vehicles
         uint32_t updateWaterMotion(uint32_t flags);
         void moveBoatTo(const Map::Pos3& loc, const uint8_t yaw, const Pitch pitch);
         template<typename T>
-        void updateUnloadCargoComponent(T* car, VehicleBogie* bogie);
+        void updateUnloadCargoComponent(T* car, VehicleCargo& cargo, VehicleBogie* bogie);
         void updateUnloadCargo();
         bool updateLoadCargo();
         void beginNewJourney();
@@ -419,14 +430,9 @@ namespace OpenLoco::Vehicles
         TransportMode mode; // 0x42
         uint8_t pad_43;
         int16_t var_44;
-        uint8_t var_46;                // 0x46 roll/animation sprite index
-        uint8_t var_47;                // 0x47 cargo sprite index
-        uint32_t accepted_cargo_types; // 0x48
-        uint8_t cargo_type;            // 0x4C
-        uint8_t max_cargo;             // 0x4D
-        StationId_t townCargoFrom;     // 0x4E
-        uint8_t cargoNumDays;          // 0x50
-        uint8_t cargoQty;              // 0x51 (this is for primary cargo)
+        uint8_t var_46;            // 0x46 roll/animation sprite index
+        uint8_t var_47;            // 0x47 cargo sprite index
+        VehicleCargo primaryCargo; // 0x48
         uint8_t pad_52[0x54 - 0x52];
         uint8_t body_index; // 0x54
         int8_t var_55;
@@ -481,12 +487,7 @@ namespace OpenLoco::Vehicles
         uint16_t var_44;
         uint8_t var_46; // 0x46 roll
         uint8_t var_47;
-        uint32_t accepted_cargo_types; // 0x48 front car component front bogie only
-        uint8_t cargo_type;            // 0x4C front car component front bogie only
-        uint8_t max_cargo;             // 0x4D front car component front bogie only
-        StationId_t townCargoFrom;     // 0x4E
-        uint8_t cargoNumDays;          // 0x50
-        uint8_t cargoQty;              // 0x51 front car component front bogie only (secondary cargo)
+        VehicleCargo secondaryCargo; // 0x48 Note back bogie cannot carry cargo always check type
         uint8_t pad_52[0x54 - 0x52];
         uint8_t body_index; // 0x54
         uint8_t pad_55;

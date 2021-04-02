@@ -2547,9 +2547,9 @@ namespace OpenLoco::Vehicles
 
     // 0x004B9A88
     template<typename T>
-    void VehicleHead::updateUnloadCargoComponent(T* car, VehicleBogie* bogie)
+    void VehicleHead::updateUnloadCargoComponent(T* car, VehicleCargo& cargo, VehicleBogie* bogie)
     {
-        if (car->cargoQty == 0)
+        if (cargo.qty == 0)
         {
             return;
         }
@@ -2560,26 +2560,26 @@ namespace OpenLoco::Vehicles
         }
 
         auto* station = StationManager::get(stationId);
-        auto& cargoStats = station->cargo_stats[car->cargo_type];
+        auto& cargoStats = station->cargo_stats[cargo.type];
         if (cargoStats.isAccepted())
         {
-            station->deliverCargoToTown(car->cargo_type, car->cargoQty);
-            auto* sourceStation = StationManager::get(car->townCargoFrom);
+            station->deliverCargoToTown(cargo.type, cargo.qty);
+            auto* sourceStation = StationManager::get(cargo.townFrom);
             auto stationLoc = Map::map_pos{ station->x, station->y };
             auto sourceLoc = Map::map_pos{ sourceStation->x, sourceStation->y };
             auto tilesDistance = Math::Vector::distance(stationLoc, sourceLoc) / 32;
 
             Ui::WindowManager::invalidate(Ui::WindowType::company, car->owner);
             auto* company = CompanyManager::get(car->owner);
-            company->cargoUnitsTotalDelivered += car->cargoQty;
+            company->cargoUnitsTotalDelivered += cargo.qty;
 
-            auto cargoDist = std::min<uint32_t>(car->cargoQty * tilesDistance, std::numeric_limits<uint32_t>::max());
+            auto cargoDist = std::min<uint32_t>(cargo.qty * tilesDistance, std::numeric_limits<uint32_t>::max());
             company->cargoUnitsTotalDistance += cargoDist;
 
-            auto cargoPayment = CompanyManager::calculateDeliveredCargoPayment(car->cargo_type, car->cargoQty, tilesDistance, car->cargoNumDays);
-            company->cargoDelivered[car->cargo_type] = Math::Bound::add(company->cargoDelivered[car->cargo_type], car->cargoQty);
+            auto cargoPayment = CompanyManager::calculateDeliveredCargoPayment(cargo.type, cargo.qty, tilesDistance, cargo.numDays);
+            company->cargoDelivered[cargo.type] = Math::Bound::add(company->cargoDelivered[cargo.type], cargo.qty);
 
-            sub_4BA7C7(car->cargo_type, car->cargoQty, tilesDistance, car->cargoNumDays, cargoPayment);
+            sub_4BA7C7(cargo.type, cargo.qty, tilesDistance, cargo.numDays, cargoPayment);
 
             var_58 += cargoPayment;
             station->var_3B1 = 0;
@@ -2592,31 +2592,31 @@ namespace OpenLoco::Vehicles
 
                 for (auto i = 0; i < 3; ++i)
                 {
-                    if (industryObj->required_cargo_type[i] != car->cargo_type)
+                    if (industryObj->required_cargo_type[i] != cargo.type)
                     {
                         continue;
                     }
 
-                    industry->var_199[i] = Math::Bound::add(industry->var_199[i], car->cargoQty);
-                    industry->var_18D[i] = Math::Bound::add(industry->var_18D[i], car->cargoQty);
+                    industry->var_199[i] = Math::Bound::add(industry->var_199[i], cargo.qty);
+                    industry->var_18D[i] = Math::Bound::add(industry->var_18D[i], cargo.qty);
                 }
 
-                if (!(industry->history_min_production[0] & (1ULL << car->cargo_type)))
+                if (!(industry->history_min_production[0] & (1ULL << cargo.type)))
                 {
-                    industry->history_min_production[0] |= 1ULL << car->cargo_type;
-                    MessageManager::post(messageType::workersCelebrate, owner, car->head, cargoStats.industry_id, car->cargo_type << 8);
+                    industry->history_min_production[0] |= 1ULL << cargo.type;
+                    MessageManager::post(messageType::workersCelebrate, owner, car->head, cargoStats.industry_id, cargo.type << 8);
                 }
 
                 auto* town = TownManager::get(industry->town);
-                town->var_1A8 |= 1ULL << car->cargo_type;
+                town->var_1A8 |= 1ULL << cargo.type;
                 town = TownManager::get(station->town);
-                town->var_1A8 |= 1ULL << car->cargo_type;
+                town->var_1A8 |= 1ULL << cargo.type;
             }
             auto* town = TownManager::get(station->town);
-            if (!(town->var_1A8 & (1ULL << car->cargo_type)))
+            if (!(town->var_1A8 & (1ULL << cargo.type)))
             {
-                town->var_1A8 |= 1ULL << car->cargo_type;
-                MessageManager::post(messageType::citizensCelebrate, owner, car->head, station->town, car->cargo_type << 8);
+                town->var_1A8 |= 1ULL << cargo.type;
+                MessageManager::post(messageType::citizensCelebrate, owner, car->head, station->town, cargo.type << 8);
             }
 
             if (cargoStats.isAccepted())
@@ -2624,7 +2624,7 @@ namespace OpenLoco::Vehicles
                 cargoStats.flags |= (1 << 3);
             }
 
-            company->var_4A0 |= 1ULL << car->cargo_type;
+            company->var_4A0 |= 1ULL << cargo.type;
         }
         else
         {
@@ -2640,16 +2640,16 @@ namespace OpenLoco::Vehicles
                 {
                     continue;
                 }
-                if (unloadOrder->getCargo() != car->cargo_type)
+                if (unloadOrder->getCargo() != cargo.type)
                 {
                     continue;
                 }
 
                 break;
             }
-            cargoStats.quantity = Math::Bound::add(cargoStats.quantity, car->cargoQty);
+            cargoStats.quantity = Math::Bound::add(cargoStats.quantity, cargo.qty);
             station->updateCargoDistribution();
-            cargoStats.enroute_age = std::max(cargoStats.enroute_age, car->cargoNumDays);
+            cargoStats.enroute_age = std::max(cargoStats.enroute_age, cargo.numDays);
             bool setOrigin = true;
             if (cargoStats.origin != StationId::null)
             {
@@ -2659,7 +2659,7 @@ namespace OpenLoco::Vehicles
 
                 auto stationSourceDistance = Math::Vector::distance(stationLoc, cargoSourceLoc);
 
-                auto* sourceStation = StationManager::get(car->townCargoFrom);
+                auto* sourceStation = StationManager::get(cargo.townFrom);
                 auto sourceLoc = Map::map_pos{ sourceStation->x, sourceStation->y };
                 auto cargoSourceDistance = Math::Vector::distance(stationLoc, sourceLoc);
                 if (cargoSourceDistance > stationSourceDistance)
@@ -2669,7 +2669,7 @@ namespace OpenLoco::Vehicles
             }
             if (setOrigin)
             {
-                cargoStats.origin = car->townCargoFrom;
+                cargoStats.origin = cargo.townFrom;
             }
         }
 
@@ -2710,7 +2710,7 @@ namespace OpenLoco::Vehicles
                     if (elTrack == nullptr)
                         continue;
 
-                    if (elTrack->baseZ() != car->tile_base_z)
+                    if (elTrack->baseZ() != bogie->tile_base_z)
                         continue;
 
                     if (elTrack->unkDirection() != direction)
@@ -2762,7 +2762,7 @@ namespace OpenLoco::Vehicles
                     if (elRoad == nullptr)
                         continue;
 
-                    if (elRoad->baseZ() != car->tile_base_z)
+                    if (elRoad->baseZ() != bogie->tile_base_z)
                         continue;
 
                     if (elRoad->unkDirection() != direction)
@@ -2781,9 +2781,9 @@ namespace OpenLoco::Vehicles
             break;
         }
 
-        auto* cargoObj = ObjectManager::get<CargoObject>(car->cargo_type);
-        cargoTransferTimeout = static_cast<uint16_t>(std::min<uint32_t>((cargoObj->var_4 * car->cargoQty * loadingModifier) / 256, std::numeric_limits<uint16_t>::max()));
-        car->cargoQty = 0;
+        auto* cargoObj = ObjectManager::get<CargoObject>(cargo.type);
+        cargoTransferTimeout = static_cast<uint16_t>(std::min<uint32_t>((cargoObj->var_4 * cargo.qty * loadingModifier) / 256, std::numeric_limits<uint16_t>::max()));
+        cargo.qty = 0;
         sub_4B7CC3();
         Ui::WindowManager::invalidate(Ui::WindowType::vehicle, id);
         if constexpr (std::is_same_v<T, VehicleBody>)
@@ -2809,11 +2809,11 @@ namespace OpenLoco::Vehicles
                 if (carComponent.front->var_5F & (1 << 0))
                 {
                     carComponent.front->var_5F &= ~(1 << 0);
-                    if (carComponent.front->cargo_type == 0xFF)
+                    if (carComponent.front->secondaryCargo.type == 0xFF)
                     {
                         return;
                     }
-                    updateUnloadCargoComponent(carComponent.front, nullptr);
+                    updateUnloadCargoComponent(carComponent.front, carComponent.front->secondaryCargo, nullptr);
                     return;
                 }
                 else if (carComponent.back->var_5F & (1 << 0))
@@ -2824,11 +2824,11 @@ namespace OpenLoco::Vehicles
                 else if (carComponent.body->var_5F & (1 << 0))
                 {
                     carComponent.body->var_5F &= ~(1 << 0);
-                    if (carComponent.body->cargo_type == 0xFF)
+                    if (carComponent.body->primaryCargo.type == 0xFF)
                     {
                         return;
                     }
-                    updateUnloadCargoComponent(carComponent.body, carComponent.back);
+                    updateUnloadCargoComponent(carComponent.body, carComponent.body->primaryCargo, carComponent.back);
                     return;
                 }
             }
@@ -3072,13 +3072,13 @@ namespace OpenLoco::Vehicles
         {
             auto front = car.front;
             auto body = car.body;
-            if (front->cargo_type != 0xFF)
+            if (front->secondaryCargo.type != 0xFF)
             {
-                cargoTotals[front->cargo_type] += front->cargoQty;
+                cargoTotals[front->secondaryCargo.type] += front->secondaryCargo.qty;
             }
-            if (body->cargo_type != 0xFF)
+            if (body->primaryCargo.type != 0xFF)
             {
-                cargoTotals[body->cargo_type] += body->cargoQty;
+                cargoTotals[body->primaryCargo.type] += body->primaryCargo.qty;
             }
         }
 
