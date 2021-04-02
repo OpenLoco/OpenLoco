@@ -331,6 +331,6 @@ namespace OpenLoco::GameCommands
 
     void loadSaveQuit(registers& regs)
     {
-        loadSaveQuit(regs.bl, regs.dl, regs.di);
+        regs.ebx = loadSaveQuit(regs.bl, regs.dl, regs.di);
     }
 }

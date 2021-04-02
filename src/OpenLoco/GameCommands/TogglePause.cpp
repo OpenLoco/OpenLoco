@@ -34,6 +34,6 @@ namespace OpenLoco::GameCommands
 
     void togglePause(registers& regs)
     {
-        togglePause(regs.bl);
+        regs.ebx = togglePause(regs.bl);
     }
 }
