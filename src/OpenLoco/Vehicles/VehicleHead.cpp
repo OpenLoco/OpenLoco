@@ -2,6 +2,7 @@
 #include "../CompanyManager.h"
 #include "../Config.h"
 #include "../Core/Optional.hpp"
+#include "../Date.h"
 #include "../Entities/EntityManager.h"
 #include "../Entities/Misc.h"
 #include "../GameCommands/GameCommands.h"
@@ -3133,14 +3134,46 @@ namespace OpenLoco::Vehicles
     // 0x004BA7C7
     void VehicleHead::sub_4BA7C7(uint8_t cargoType, uint16_t cargoQty, uint16_t cargoDist, uint8_t cargoAge, currency32_t profit)
     {
-        registers regs;
-        regs.al = cargoType;
-        regs.bx = cargoQty;
-        regs.cx = cargoDist;
-        regs.edx = cargoAge;
-        regs.ebp = profit;
-        regs.esi = reinterpret_cast<int32_t>(this);
-        call(0x004BA7C7, regs);
+        Vehicle train(this);
+        if (cargoQty == 0)
+            return;
+        if (cargoType == 0xFF)
+            return;
+
+        auto* veh1 = train.veh1;
+        if (veh1->var_48 & (1 << 2))
+        {
+            veh1->var_48 &= ~(1 << 2);
+            veh1->var_53 = getCurrentDay();
+            std::fill(std::begin(veh1->var_57), std::end(veh1->var_57), 0xFF);
+        }
+
+        for (auto i = 0; i < 4; ++i)
+        {
+            if (veh1->var_57[i] != cargoType)
+                continue;
+            if (veh1->var_63[i] != cargoDist)
+                continue;
+            veh1->var_5b[i] += cargoQty;
+            veh1->var_6F[i] += profit;
+            veh1->var_6B[i] = std::max(cargoAge, veh1->var_6B[i]);
+            Ui::WindowManager::invalidate(Ui::WindowType::vehicle, id);
+            return;
+        }
+
+        for (auto i = 0; i < 4; ++i)
+        {
+            if (veh1->var_57[i] != 0xFF)
+                continue;
+
+            veh1->var_57[i] = cargoType;
+            veh1->var_63[i] = cargoDist;
+            veh1->var_5b[i] = cargoQty;
+            veh1->var_6B[i] = cargoAge;
+            veh1->var_6F[i] = profit;
+            Ui::WindowManager::invalidate(Ui::WindowType::vehicle, id);
+            return;
+        }
     }
 
     // 0x004B7CC3

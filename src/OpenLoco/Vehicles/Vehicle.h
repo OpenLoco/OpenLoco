@@ -354,11 +354,11 @@ namespace OpenLoco::Vehicles
         uint16_t var_50;
         uint8_t var_52;
         int32_t var_53;
-        int8_t var_57[4];
-        uint16_t var_5b[4];
-        uint16_t var_63[4];
-        uint8_t var_6B[4];
-        uint32_t var_6F[4];
+        int8_t var_57[4];       // 0x57 cargoType
+        uint16_t var_5b[4];     // 0x5B cargoQty
+        uint16_t var_63[4];     // 0x63 cargoDistance
+        uint8_t var_6B[4];      // 0x6B cargoAge
+        currency32_t var_6F[4]; // 0x6F cargoProfit
     };
     static_assert(sizeof(Vehicle1) == 0x7F); // Can't use offset_of change this to last field if more found
 
