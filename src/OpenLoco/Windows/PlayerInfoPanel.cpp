@@ -56,7 +56,6 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     std::vector<const company*> _sortedCompanies;
 
     static loco_global<uint16_t, 0x0050A004> _50A004;
-    static loco_global<uint16_t, 0x0052338A> _tooltipTimeout;
     static loco_global<int32_t, 0x00e3f0b8> gCurrentRotation;
     static loco_global<uint16_t, 0x0113DC78> _113DC78; // Dropdown flags?
 
@@ -328,7 +327,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
         {
             case Widx::company_value:
             case Widx::performance_index:
-                _tooltipTimeout = 2000;
+                Input::setTooltipTimeout(2000);
                 break;
         }
         return fallback;

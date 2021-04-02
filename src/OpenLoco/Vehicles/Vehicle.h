@@ -334,7 +334,7 @@ namespace OpenLoco::Vehicles
         uint16_t timeAtSignal; // 0x46
         uint8_t var_48;
         uint8_t var_49;
-        uint8_t pad_4A[0x4E - 0x4A];
+        uint32_t dayCreated; // 0x4A
         uint16_t var_4E;
         uint16_t var_50;
         uint8_t var_52;
@@ -384,12 +384,14 @@ namespace OpenLoco::Vehicles
         uint8_t var_5B;
         Speed16 rackRailMaxSpeed; // 0x5C
         uint32_t var_5E;
-        int32_t refund_cost; // 0x62 currency maybe not refund cost (probably last 4 months profit 62-6E)
-        int32_t var_66;      // currency
-        int32_t var_6A;      // currency
-        int32_t var_6E;      // currency
-        uint8_t reliability; // 0x72
-        uint8_t var_73;      // 0x73 (bit 0 = broken down, bit 1 = still powered)
+        currency32_t profit[4]; // 0x62 last 4 months profit
+        uint8_t reliability;    // 0x72
+        uint8_t var_73;         // 0x73 (bit 0 = broken down, bit 1 = still powered)
+
+        currency32_t totalRecentProfit() const
+        {
+            return profit[0] + profit[1] + profit[2] + profit[3];
+        }
     };
     static_assert(sizeof(Vehicle2) == 0x74); // Can't use offset_of change this to last field if more found
 
@@ -748,7 +750,7 @@ namespace OpenLoco::Vehicles
         VehicleTail* tail;
         Cars cars;
 
-        Vehicle(VehicleHead* _head)
+        Vehicle(const VehicleHead* _head)
             : Vehicle(_head->id)
         {
         }

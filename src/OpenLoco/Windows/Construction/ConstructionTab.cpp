@@ -24,7 +24,6 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     static loco_global<uint8_t, 0x00522092> _byte_522092;
 
     static loco_global<uint16_t, 0x00523376> _clickRepeatTicks;
-    static loco_global<uint16_t, 0x0052338A> _tooltipTimeout;
     static loco_global<uint32_t, 0x00523394> _toolWidgetIndex;
 
     static loco_global<int32_t, 0x00E3F0B8> gCurrentRotation;
@@ -1839,7 +1838,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     static Ui::cursor_id cursor(window* self, int16_t widgetIndex, int16_t xPos, int16_t yPos, Ui::cursor_id fallback)
     {
         if (widgetIndex == widx::bridge || widgetIndex == widx::bridge_dropdown)
-            _tooltipTimeout = 2000;
+            Input::setTooltipTimeout(2000);
         return fallback;
     }
 
