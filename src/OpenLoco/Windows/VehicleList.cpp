@@ -10,8 +10,10 @@
 #include "../Objects/CompetitorObject.h"
 #include "../Objects/InterfaceSkinObject.h"
 #include "../OpenLoco.h"
+#include "../StationManager.h"
 #include "../Ui/Dropdown.h"
 #include "../Ui/WindowManager.h"
+#include "../Vehicles/Orders.h"
 #include "../Vehicles/Vehicle.h"
 #include "../Widget.h"
 #include <stdexcept>
@@ -805,16 +807,37 @@ namespace OpenLoco::Ui::Windows::VehicleList
         if (self->row_hover == -1)
             return;
 
-        // Continued at 0x004C2724
+        // Initialise tooltip buffer.
+        char* buffer = StringManager::formatString(tooltipBuffer, StringIds::vehicle_list_tooltip_load);
 
-        /*
-        registers regs;
-        regs.ax = scroll_index;
-        regs.cx = x;
-        regs.dx = y;
-        regs.esi = (int32_t)self;
-        call(0x004C26A4, regs);
-        */
+        // Append load to buffer.
+        auto head = EntityManager::get<VehicleHead>(self->var_85C);
+        buffer = head->generateCargoTotalString(buffer);
+
+        printf("%s\n", tooltipBuffer);
+
+        // Figure out what stations the vehicle stops at.
+        auto orders = Vehicles::OrderRingView(head->orderTableOffset);
+        bool isFirstStop = true;
+        for (auto order : orders)
+        {
+            // Is this order a station?
+            auto* stopOrder = order.as<Vehicles::OrderStopAt>();
+            if (stopOrder == nullptr)
+                continue;
+
+            string_id stopFormat = StringIds::vehicle_list_tooltip_comma_stringid;
+            if (isFirstStop)
+                stopFormat = StringIds::vehicle_list_tooltip_stops_at_stringid;
+
+            // Append station name to the tooltip buffer
+            auto* stationOrder = static_cast<Vehicles::OrderStation*>(&order);
+            auto args = FormatArguments::common();
+            stationOrder->setFormatArguments(args);
+            buffer = StringManager::formatString(buffer, stopFormat, &args);
+
+            isFirstStop = false;
+        }
     }
 
     // 0x004C27C0

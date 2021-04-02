@@ -794,7 +794,8 @@ namespace OpenLoco::StringIds
     constexpr string_id ship = 1281;
     constexpr string_id total_stringid = 1282;
     constexpr string_id cargo_empty_2 = 1283;
-
+    constexpr string_id vehicle_list_tooltip_load = 1284;
+    constexpr string_id requires_an_extra_stringid = 1285;
     constexpr string_id tooltip_vehicles_for = 1286;
     constexpr string_id menu_sprite_stringid = 1287;
     constexpr string_id menu_nosprite_stringid = 1288;
@@ -1317,7 +1318,8 @@ namespace OpenLoco::StringIds
 
     constexpr string_id forbid_competing_companies_from_using = 1875;
     constexpr string_id forbid_player_companies_from_using = 1876;
-
+    constexpr string_id vehicle_list_tooltip_stops_at_stringid = 1877;
+    constexpr string_id vehicle_list_tooltip_comma_stringid = 1878;
     constexpr string_id tutorial_1_title = 1879;
     constexpr string_id tutorial_2_title = 1880;
     constexpr string_id tutorial_3_title = 1881;
