@@ -298,8 +298,7 @@ namespace OpenLoco::Vehicles
         void movePlaneTo(const Map::Pos3& newLoc, const uint8_t newYaw, const Pitch newPitch);
         uint32_t updateWaterMotion(uint32_t flags);
         void moveBoatTo(const Map::Pos3& loc, const uint8_t yaw, const Pitch pitch);
-        template<typename T>
-        void updateUnloadCargoComponent(T* car, VehicleCargo& cargo, VehicleBogie* bogie);
+        bool updateUnloadCargoComponent(VehicleCargo& cargo, VehicleBogie* bogie);
         void updateUnloadCargo();
         bool updateLoadCargo();
         void beginNewJourney();

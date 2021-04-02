@@ -2546,17 +2546,16 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004B9A88
-    template<typename T>
-    void VehicleHead::updateUnloadCargoComponent(T* car, VehicleCargo& cargo, VehicleBogie* bogie)
+    bool VehicleHead::updateUnloadCargoComponent(VehicleCargo& cargo, VehicleBogie* bogie)
     {
         if (cargo.qty == 0)
         {
-            return;
+            return false;
         }
 
         if (stationId == StationId::null)
         {
-            return;
+            return false;
         }
 
         auto* station = StationManager::get(stationId);
@@ -2569,8 +2568,8 @@ namespace OpenLoco::Vehicles
             auto sourceLoc = Map::map_pos{ sourceStation->x, sourceStation->y };
             auto tilesDistance = Math::Vector::distance(stationLoc, sourceLoc) / 32;
 
-            Ui::WindowManager::invalidate(Ui::WindowType::company, car->owner);
-            auto* company = CompanyManager::get(car->owner);
+            Ui::WindowManager::invalidate(Ui::WindowType::company, owner);
+            auto* company = CompanyManager::get(owner);
             company->cargoUnitsTotalDelivered += cargo.qty;
 
             auto cargoDist = std::min<uint32_t>(cargo.qty * tilesDistance, std::numeric_limits<uint32_t>::max());
@@ -2604,7 +2603,7 @@ namespace OpenLoco::Vehicles
                 if (!(industry->history_min_production[0] & (1ULL << cargo.type)))
                 {
                     industry->history_min_production[0] |= 1ULL << cargo.type;
-                    MessageManager::post(messageType::workersCelebrate, owner, car->head, cargoStats.industry_id, cargo.type << 8);
+                    MessageManager::post(messageType::workersCelebrate, owner, id, cargoStats.industry_id, cargo.type << 8);
                 }
 
                 auto* town = TownManager::get(industry->town);
@@ -2616,7 +2615,7 @@ namespace OpenLoco::Vehicles
             if (!(town->var_1A8 & (1ULL << cargo.type)))
             {
                 town->var_1A8 |= 1ULL << cargo.type;
-                MessageManager::post(messageType::citizensCelebrate, owner, car->head, station->town, cargo.type << 8);
+                MessageManager::post(messageType::citizensCelebrate, owner, id, station->town, cargo.type << 8);
             }
 
             if (cargoStats.isAccepted())
@@ -2633,7 +2632,7 @@ namespace OpenLoco::Vehicles
             {
                 if (!(order.hasFlag(OrderFlags::HasCargo)))
                 {
-                    return;
+                    return false;
                 }
                 auto* unloadOrder = order.as<OrderUnloadAll>();
                 if (unloadOrder == nullptr)
@@ -2681,11 +2680,6 @@ namespace OpenLoco::Vehicles
                 break;
             case TransportMode::rail:
             {
-
-                if constexpr (std::is_same_v<T, VehicleBogie>)
-                {
-                    bogie = car;
-                }
                 auto tile = Map::TileManager::get(map_pos{ bogie->tile_x, bogie->tile_y });
                 bool findStation = false;
                 auto direction = bogie->var_2C & 3;
@@ -2728,11 +2722,6 @@ namespace OpenLoco::Vehicles
             }
             case TransportMode::road:
             {
-
-                if constexpr (std::is_same_v<T, VehicleBogie>)
-                {
-                    bogie = car;
-                }
                 auto tile = Map::TileManager::get(map_pos{ bogie->tile_x, bogie->tile_y });
                 bool findStation = false;
                 auto direction = bogie->var_2C & 3;
@@ -2786,10 +2775,7 @@ namespace OpenLoco::Vehicles
         cargo.qty = 0;
         sub_4B7CC3();
         Ui::WindowManager::invalidate(Ui::WindowType::vehicle, id);
-        if constexpr (std::is_same_v<T, VehicleBody>)
-        {
-            car->sub_4AC039();
-        }
+        return true;
     }
 
     // 0x004B9A2A
@@ -2813,7 +2799,7 @@ namespace OpenLoco::Vehicles
                     {
                         return;
                     }
-                    updateUnloadCargoComponent(carComponent.front, carComponent.front->secondaryCargo, nullptr);
+                    updateUnloadCargoComponent(carComponent.front->secondaryCargo, carComponent.front);
                     return;
                 }
                 else if (carComponent.back->var_5F & (1 << 0))
@@ -2828,7 +2814,10 @@ namespace OpenLoco::Vehicles
                     {
                         return;
                     }
-                    updateUnloadCargoComponent(carComponent.body, carComponent.body->primaryCargo, carComponent.back);
+                    if (updateUnloadCargoComponent(carComponent.body->primaryCargo, carComponent.back))
+                    {
+                        carComponent.body->sub_4AC039();
+                    }
                     return;
                 }
             }
