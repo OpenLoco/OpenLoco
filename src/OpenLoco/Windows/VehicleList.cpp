@@ -817,7 +817,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         // Figure out what stations the vehicle stops at.
         auto orders = Vehicles::OrderRingView(head->orderTableOffset);
         bool isFirstStop = true;
-        for (auto order : orders)
+        for (auto& order : orders)
         {
             // Is this order a station?
             auto* stopOrder = order.as<Vehicles::OrderStopAt>();
