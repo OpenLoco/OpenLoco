@@ -814,8 +814,6 @@ namespace OpenLoco::Ui::Windows::VehicleList
         auto head = EntityManager::get<VehicleHead>(self->var_85C);
         buffer = head->generateCargoTotalString(buffer);
 
-        printf("%s\n", tooltipBuffer);
-
         // Figure out what stations the vehicle stops at.
         auto orders = Vehicles::OrderRingView(head->orderTableOffset);
         bool isFirstStop = true;
@@ -831,9 +829,8 @@ namespace OpenLoco::Ui::Windows::VehicleList
                 stopFormat = StringIds::vehicle_list_tooltip_stops_at_stringid;
 
             // Append station name to the tooltip buffer
-            auto* stationOrder = static_cast<Vehicles::OrderStation*>(&order);
             auto args = FormatArguments::common();
-            stationOrder->setFormatArguments(args);
+            stopOrder->setFormatArguments(args);
             buffer = StringManager::formatString(buffer, stopFormat, &args);
 
             isFirstStop = false;
