@@ -297,7 +297,7 @@ namespace OpenLoco::Ui::Vehicle
 
 namespace OpenLoco::Ui::Windows::VehicleList
 {
-    window* open(uint16_t companyId, uint8_t type);
+    window* open(company_id_t companyId, VehicleType type);
 }
 
 namespace OpenLoco::Ui::BuildVehicle

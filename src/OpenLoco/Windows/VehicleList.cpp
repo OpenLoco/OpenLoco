@@ -23,7 +23,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::VehicleList
 {
-    static loco_global<uint8_t, 0x00525FAF> _lastVehiclesOption;
+    static loco_global<VehicleType, 0x00525FAF> _lastVehiclesOption;
 
     static const Gfx::ui_size_t window_size = { 550, 213 };
     static const Gfx::ui_size_t max_dimensions = { 550, 1200 };
@@ -91,7 +91,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         36
     };
 
-    static Widx getTabFromType(uint8_t type);
+    static Widx getTabFromType(VehicleType type);
     static void initEvents();
 
     // 0x004C1D4F
@@ -110,16 +110,18 @@ namespace OpenLoco::Ui::Windows::VehicleList
         }
     }
 
-    using VehicleHead = Vehicles::VehicleHead;
+    using Vehicles::VehicleHead;
 
     // 0x004C1E4F
     static bool orderByName(const VehicleHead& lhs, const VehicleHead& rhs)
     {
         char lhsString[256] = { 0 };
-        StringManager::formatString(lhsString, lhs.name, (void*)&lhs.ordinalNumber);
+        auto args = FormatArguments::common(lhs.ordinalNumber);
+        StringManager::formatString(lhsString, lhs.name, &args);
 
         char rhsString[256] = { 0 };
-        StringManager::formatString(rhsString, rhs.name, (void*)&rhs.ordinalNumber);
+        args = FormatArguments::common(rhs.ordinalNumber);
+        StringManager::formatString(rhsString, rhs.name, &args);
 
         return strcmp(lhsString, rhsString) < 0;
     }
@@ -316,7 +318,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x004C1AA2
-    static window* create(uint16_t companyId)
+    static window* create(company_id_t companyId)
     {
         window* self = WindowManager::createWindow(
             WindowType::vehicleList,
@@ -339,7 +341,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x004C19DC
-    window* open(uint16_t companyId, uint8_t type)
+    window* open(company_id_t companyId, VehicleType type)
     {
         window* self = WindowManager::bringToFront(WindowType::vehicleList, companyId);
         if (self != nullptr)
@@ -352,8 +354,9 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
         // 0x004C1A05
         self = create(companyId);
-        self->current_tab = type;
-        self->row_height = row_heights[type];
+        auto tabIndex = static_cast<uint8_t>(type);
+        self->current_tab = tabIndex;
+        self->row_height = row_heights[tabIndex];
         self->width = window_size.width;
         self->height = window_size.height;
         self->sort_mode = 0;
@@ -371,9 +374,10 @@ namespace OpenLoco::Ui::Windows::VehicleList
         return self;
     }
 
-    static Widx getTabFromType(uint8_t type)
+    static Widx getTabFromType(VehicleType type)
     {
-        if (type > 5)
+        auto tabIndex = static_cast<uint8_t>(type);
+        if (tabIndex > 5)
         {
             throw std::domain_error("Unexpected vehicle type");
         }
@@ -386,7 +390,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
             tab_aircraft,
             tab_ships,
         };
-        return type_to_widx[type];
+        return type_to_widx[tabIndex];
     }
 
     // 0x4C2865
@@ -601,13 +605,14 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x004C24F7
-    static void switchTab(window* self, uint8_t type)
+    static void switchTab(window* self, VehicleType type)
     {
         if (Input::isToolActive(self->type, self->number))
             Input::toolCancel();
 
-        self->current_tab = type;
-        self->row_height = row_heights[type];
+        auto tabIndex = static_cast<uint8_t>(type);
+        self->current_tab = tabIndex;
+        self->row_height = row_heights[tabIndex];
         self->frame_no = 0;
 
         if (CompanyManager::getControllingId() == self->number && _lastVehiclesOption != type)
@@ -655,7 +660,8 @@ namespace OpenLoco::Ui::Windows::VehicleList
             case Widx::tab_aircraft:
             case Widx::tab_ships:
             {
-                switchTab(self, widgetIndex - Widx::tab_trains);
+                auto vehicleType = VehicleType(widgetIndex - Widx::tab_trains);
+                switchTab(self, vehicleType);
                 break;
             }
 
@@ -734,7 +740,9 @@ namespace OpenLoco::Ui::Windows::VehicleList
     {
         self->frame_no++;
         self->callPrepareDraw();
-        WindowManager::invalidateWidget(WindowType::vehicleList, self->number, getTabFromType(self->current_tab));
+
+        auto widgetIndex = getTabFromType(static_cast<VehicleType>(self->current_tab));
+        WindowManager::invalidateWidget(WindowType::vehicleList, self->number, widgetIndex);
 
         updateVehicleList(self);
         updateVehicleList(self);

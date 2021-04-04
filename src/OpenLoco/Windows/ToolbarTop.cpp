@@ -33,7 +33,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 
     static loco_global<uint8_t, 0x00525FAA> last_railroad_option;
     static loco_global<uint8_t, 0x00525FAB> last_road_option;
-    static loco_global<uint8_t, 0x00525FAF> last_vehicles_option;
+    static loco_global<VehicleType, 0x00525FAF> last_vehicles_option;
     static loco_global<uint8_t, 0x0052622C> last_build_vehicles_option;
 
     static loco_global<uint32_t, 0x009C86F8> zoom_ticks;
@@ -549,7 +549,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         }
 
         Dropdown::showBelow(window, widgetIndex, ddIndex, 25, (1 << 6));
-        Dropdown::setHighlightedItem(last_vehicles_option);
+        Dropdown::setHighlightedItem(static_cast<uint8_t>(*last_vehicles_option));
     }
 
     // 0x0043ACEF
@@ -561,7 +561,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         if (itemIndex == -1)
             return;
 
-        auto vehicleType = menu_options[itemIndex];
+        auto vehicleType = VehicleType(menu_options[itemIndex]);
         last_vehicles_option = vehicleType;
 
         Windows::VehicleList::open(CompanyManager::getControllingId(), vehicleType);
@@ -740,7 +740,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             };
 
             auto interface = ObjectManager::get<InterfaceSkinObject>();
-            uint32_t fg_image = Gfx::recolour(interface->img + button_face_image_ids[last_vehicles_option], company_colour);
+            uint32_t fg_image = Gfx::recolour(interface->img + button_face_image_ids[static_cast<uint8_t>(*last_vehicles_option)], company_colour);
             uint32_t bg_image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_transparent, window->colours[3]);
 
             y--;
