@@ -477,7 +477,7 @@ namespace OpenLoco::Ui::Vehicle
             auto head = Common::getVehicle(self);
 
             // If vehicle not placed put into pickup mode if window in focus
-            if (head->tile_x != -1 && (head->var_38 & Vehicles::Flags38::isGhost) == 0)
+            if (head->isPlaced())
             {
                 return;
             }
@@ -786,8 +786,7 @@ namespace OpenLoco::Ui::Vehicle
             }
             self->widgets[widx::stopStart].image = stopStartImage;
 
-            bool isPlaced = head->tile_x != -1 && !(head->var_38 & OpenLoco::Vehicles::Flags38::isGhost);
-            auto [pickupImage, pickupTooltip] = Common::getPickupImageIdandTooltip(*head, isPlaced);
+            auto [pickupImage, pickupTooltip] = Common::getPickupImageIdandTooltip(*head, head->isPlaced());
             self->widgets[widx::pickup].image = Gfx::recolour(pickupImage);
             self->widgets[widx::pickup].tooltip = pickupTooltip;
 
@@ -1099,7 +1098,7 @@ namespace OpenLoco::Ui::Vehicle
             }
 
             auto vehicle = Common::getVehicle(self);
-            if (vehicle->tile_x != -1 && (vehicle->var_38 & Vehicles::Flags38::isGhost) == 0)
+            if (vehicle->isPlaced())
                 return;
 
             if (!WindowManager::isInFrontAlt(self))
@@ -1350,9 +1349,8 @@ namespace OpenLoco::Ui::Vehicle
             self->widgets[widx::buildNew].type = widget_type::wt_9;
             self->widgets[widx::pickup].type = widget_type::wt_9;
             self->widgets[widx::remove].type = widget_type::wt_9;
-            bool isPlaced = head->tile_x != -1 && !(head->var_38 & OpenLoco::Vehicles::Flags38::isGhost);
             // Differs to main tab! Unsure why.
-            if (isPlaced)
+            if (head->isPlaced())
             {
                 self->widgets[widx::pickup].type = widget_type::none;
             }
@@ -1378,7 +1376,7 @@ namespace OpenLoco::Ui::Vehicle
                 self->disabled_widgets &= ~(1ULL << widx::pickup);
             }
 
-            auto [pickupImage, pickupTooltip] = Common::getPickupImageIdandTooltip(*head, isPlaced);
+            auto [pickupImage, pickupTooltip] = Common::getPickupImageIdandTooltip(*head, head->isPlaced());
             self->widgets[widx::pickup].image = Gfx::recolour(pickupImage);
             self->widgets[widx::pickup].tooltip = pickupTooltip;
         }
@@ -1676,53 +1674,6 @@ namespace OpenLoco::Ui::Vehicle
             Common::repositionTabs(self);
         }
 
-        static void generateCargoTotalString(Vehicles::VehicleHead* vehicle, char* buffer)
-        {
-            uint32_t cargoTotals[ObjectManager::getMaxObjects(object_type::cargo)]{};
-            Vehicles::Vehicle train(vehicle);
-            for (auto& car : train.cars)
-            {
-                auto front = car.front;
-                auto body = car.body;
-                if (front->cargo_type != 0xFF)
-                {
-                    cargoTotals[front->cargo_type] += front->secondaryCargoQty;
-                }
-                if (body->cargo_type != 0xFF)
-                {
-                    cargoTotals[body->cargo_type] += body->primaryCargoQty;
-                }
-            }
-
-            bool hasCargo = false;
-            for (size_t cargoType = 0; cargoType < ObjectManager::getMaxObjects(object_type::cargo); ++cargoType)
-            {
-                auto cargoTotal = cargoTotals[cargoType];
-                if (cargoTotal == 0)
-                {
-                    continue;
-                }
-
-                // On all but first loop insert a ", "
-                if (hasCargo)
-                {
-                    *buffer++ = ',';
-                    *buffer++ = ' ';
-                }
-                hasCargo = true;
-                auto cargoObj = ObjectManager::get<CargoObject>(cargoType);
-                auto unitNameFormat = cargoTotal == 1 ? cargoObj->unit_name_singular : cargoObj->unit_name_plural;
-                FormatArguments args{};
-                args.push(cargoTotal);
-                buffer = StringManager::formatString(buffer, unitNameFormat, &args);
-            }
-
-            if (!hasCargo)
-            {
-                StringManager::formatString(buffer, StringIds::cargo_empty_2);
-            }
-        }
-
         // 004B3F0D
         static void draw(Ui::window* const self, Gfx::drawpixelinfo_t* const context)
         {
@@ -1730,7 +1681,8 @@ namespace OpenLoco::Ui::Vehicle
             Common::drawTabs(self, context);
 
             char* buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
-            generateCargoTotalString(Common::getVehicle(self), buffer);
+            auto head = Common::getVehicle(self);
+            head->generateCargoTotalString(buffer);
 
             FormatArguments args = {};
             args.push<string_id>(StringIds::buffer_1250);
@@ -3242,7 +3194,7 @@ namespace OpenLoco::Ui::Vehicle
         static void pickupToolAbort(window& self)
         {
             auto head = getVehicle(&self);
-            if (head->tile_x == -1 || !(head->var_38 & Vehicles::Flags38::isGhost))
+            if (!head->isPlaced())
             {
                 self.invalidate();
                 return;
@@ -3377,7 +3329,7 @@ namespace OpenLoco::Ui::Vehicle
         {
             self->invalidate();
             auto head = getVehicle(self);
-            if (head->tile_x == -1 || head->var_38 & Vehicles::Flags38::isGhost)
+            if (!head->isPlaced())
             {
                 auto tool = typeToTool[static_cast<uint8_t>(head->vehicleType)][_pickupDirection != 0 ? 1 : 0];
                 if (Input::toolSet(self, pickupWidx, tool))
