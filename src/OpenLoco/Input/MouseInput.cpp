@@ -772,7 +772,7 @@ namespace OpenLoco::Input
                                 if (veh != nullptr)
                                 {
                                     auto head = EntityManager::get<Vehicles::VehicleHead>(veh->getHead());
-                                    Ui::Windows::VehicleList::open(head->owner, static_cast<uint8_t>(head->vehicleType));
+                                    Ui::Windows::VehicleList::open(head->owner, head->vehicleType);
                                 }
                                 break;
                             }

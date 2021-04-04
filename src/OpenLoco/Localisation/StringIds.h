@@ -640,7 +640,12 @@ namespace OpenLoco::StringIds
     constexpr string_id tooltip_select_main_colour = 1119;
     constexpr string_id tooltip_select_secondary_colour = 1120;
     constexpr string_id tooltip_toggle_vehicle_colour_scheme = 1121;
-
+    constexpr string_id stringid_trains = 1122;
+    constexpr string_id stringid_buses = 1123;
+    constexpr string_id stringid_trucks = 1124;
+    constexpr string_id stringid_trams = 1125;
+    constexpr string_id stringid_aircraft = 1126;
+    constexpr string_id stringid_ships = 1127;
     constexpr string_id stringid_all_stations = 1128;
     constexpr string_id stringid_rail_stations = 1129;
     constexpr string_id stringid_road_stations = 1130;
@@ -651,7 +656,13 @@ namespace OpenLoco::StringIds
     constexpr string_id road_stations = 1135;
     constexpr string_id airports = 1136;
     constexpr string_id ship_ports = 1137;
-
+    constexpr string_id vehicle_list_status_2pos = 1138;
+    constexpr string_id vehicle_list_status_3pos = 1139;
+    constexpr string_id vehicle_list_profit_pos = 1140;
+    constexpr string_id vehicle_list_profit_neg = 1141;
+    constexpr string_id vehicle_list_age_year = 1142;
+    constexpr string_id vehicle_list_age_years = 1143;
+    constexpr string_id vehicle_list_reliability = 1144;
     constexpr string_id table_header_name = 1145;
     constexpr string_id table_header_name_desc = 1146;
     constexpr string_id table_header_monthly_profit = 1147;
@@ -783,7 +794,8 @@ namespace OpenLoco::StringIds
     constexpr string_id ship = 1281;
     constexpr string_id total_stringid = 1282;
     constexpr string_id cargo_empty_2 = 1283;
-
+    constexpr string_id vehicle_list_tooltip_load = 1284;
+    constexpr string_id requires_an_extra_stringid = 1285;
     constexpr string_id tooltip_vehicles_for = 1286;
     constexpr string_id menu_sprite_stringid = 1287;
     constexpr string_id menu_nosprite_stringid = 1288;
@@ -1306,7 +1318,8 @@ namespace OpenLoco::StringIds
 
     constexpr string_id forbid_competing_companies_from_using = 1875;
     constexpr string_id forbid_player_companies_from_using = 1876;
-
+    constexpr string_id vehicle_list_tooltip_stops_at_stringid = 1877;
+    constexpr string_id vehicle_list_tooltip_comma_stringid = 1878;
     constexpr string_id tutorial_1_title = 1879;
     constexpr string_id tutorial_2_title = 1880;
     constexpr string_id tutorial_3_title = 1881;

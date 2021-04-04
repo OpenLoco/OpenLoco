@@ -408,7 +408,7 @@ namespace OpenLoco::Input::ShortcutManager
         if (isEditorMode())
             return;
 
-        loco_global<uint8_t, 0x00525FAF> last_vehicles_option;
+        loco_global<VehicleType, 0x00525FAF> last_vehicles_option;
         Windows::VehicleList::open(CompanyManager::getControllingId(), *last_vehicles_option);
     }
 

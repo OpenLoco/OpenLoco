@@ -33,7 +33,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 
     static loco_global<uint8_t, 0x00525FAA> last_railroad_option;
     static loco_global<uint8_t, 0x00525FAB> last_road_option;
-    static loco_global<uint8_t, 0x00525FAF> last_vehicles_option;
+    static loco_global<VehicleType, 0x00525FAF> last_vehicles_option;
     static loco_global<uint8_t, 0x0052622C> last_build_vehicles_option;
 
     static loco_global<uint32_t, 0x009C86F8> zoom_ticks;
@@ -449,14 +449,16 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         string_id num_plural;
     };
 
+    // clang-format off
     static const std::map<VehicleType, VehicleTypeInterfaceParam> VehicleTypeInterfaceParameters{
-        { VehicleType::bus, { InterfaceSkin::ImageIds::vehicle_bus, InterfaceSkin::ImageIds::build_vehicle_bus_frame_0, StringIds::build_buses, StringIds::num_buses_singular, StringIds::num_buses_plural } },
-        { VehicleType::aircraft, { InterfaceSkin::ImageIds::vehicle_aircraft, InterfaceSkin::ImageIds::build_vehicle_aircraft_frame_0, StringIds::build_aircraft, StringIds::num_aircrafts_singular, StringIds::num_aircrafts_plural } },
-        { VehicleType::ship, { InterfaceSkin::ImageIds::vehicle_ship, InterfaceSkin::ImageIds::build_vehicle_ship_frame_0, StringIds::build_ships, StringIds::num_ships_singular, StringIds::num_ships_plural } },
-        { VehicleType::train, { InterfaceSkin::ImageIds::vehicle_train_frame_0, InterfaceSkin::ImageIds::build_vehicle_train_frame_0, StringIds::build_trains, StringIds::num_trains_singular, StringIds::num_trains_plural } },
-        { VehicleType::tram, { InterfaceSkin::ImageIds::vehicle_tram, InterfaceSkin::ImageIds::build_vehicle_tram_frame_0, StringIds::build_trams, StringIds::num_trams_singular, StringIds::num_trams_plural } },
-        { VehicleType::truck, { InterfaceSkin::ImageIds::vehicle_truck, InterfaceSkin::ImageIds::build_vehicle_truck_frame_0, StringIds::build_trucks, StringIds::num_trucks_singular, StringIds::num_trucks_plural } },
+        { VehicleType::bus,      { InterfaceSkin::ImageIds::vehicle_buses_frame_0,      InterfaceSkin::ImageIds::build_vehicle_bus_frame_0,      StringIds::build_buses,    StringIds::num_buses_singular,     StringIds::num_buses_plural } },
+        { VehicleType::aircraft, { InterfaceSkin::ImageIds::vehicle_aircraft_frame_0, InterfaceSkin::ImageIds::build_vehicle_aircraft_frame_0, StringIds::build_aircraft, StringIds::num_aircrafts_singular, StringIds::num_aircrafts_plural } },
+        { VehicleType::ship,     { InterfaceSkin::ImageIds::vehicle_ships_frame_0,     InterfaceSkin::ImageIds::build_vehicle_ship_frame_0,     StringIds::build_ships,    StringIds::num_ships_singular,     StringIds::num_ships_plural } },
+        { VehicleType::train,    { InterfaceSkin::ImageIds::vehicle_train_frame_0,    InterfaceSkin::ImageIds::build_vehicle_train_frame_0,    StringIds::build_trains,   StringIds::num_trains_singular,    StringIds::num_trains_plural } },
+        { VehicleType::tram,     { InterfaceSkin::ImageIds::vehicle_trams_frame_0,     InterfaceSkin::ImageIds::build_vehicle_tram_frame_0,     StringIds::build_trams,    StringIds::num_trams_singular,     StringIds::num_trams_plural } },
+        { VehicleType::truck,    { InterfaceSkin::ImageIds::vehicle_trucks_frame_0,    InterfaceSkin::ImageIds::build_vehicle_truck_frame_0,    StringIds::build_trucks,   StringIds::num_trucks_singular,    StringIds::num_trucks_plural } },
     };
+    // clang-format on
 
     // 0x0043AD1F
     static void buildVehiclesMenuMouseDown(window* window, widget_index widgetIndex)
@@ -547,7 +549,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         }
 
         Dropdown::showBelow(window, widgetIndex, ddIndex, 25, (1 << 6));
-        Dropdown::setHighlightedItem(last_vehicles_option);
+        Dropdown::setHighlightedItem(static_cast<uint8_t>(*last_vehicles_option));
     }
 
     // 0x0043ACEF
@@ -559,7 +561,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         if (itemIndex == -1)
             return;
 
-        auto vehicleType = menu_options[itemIndex];
+        auto vehicleType = VehicleType(menu_options[itemIndex]);
         last_vehicles_option = vehicleType;
 
         Windows::VehicleList::open(CompanyManager::getControllingId(), vehicleType);
@@ -730,15 +732,15 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 
             static const uint32_t button_face_image_ids[] = {
                 InterfaceSkin::ImageIds::vehicle_train_frame_0,
-                InterfaceSkin::ImageIds::vehicle_bus,
-                InterfaceSkin::ImageIds::vehicle_truck,
-                InterfaceSkin::ImageIds::vehicle_tram,
-                InterfaceSkin::ImageIds::vehicle_aircraft,
-                InterfaceSkin::ImageIds::vehicle_ship,
+                InterfaceSkin::ImageIds::vehicle_buses_frame_0,
+                InterfaceSkin::ImageIds::vehicle_trucks_frame_0,
+                InterfaceSkin::ImageIds::vehicle_trams_frame_0,
+                InterfaceSkin::ImageIds::vehicle_aircraft_frame_0,
+                InterfaceSkin::ImageIds::vehicle_ships_frame_0,
             };
 
             auto interface = ObjectManager::get<InterfaceSkinObject>();
-            uint32_t fg_image = Gfx::recolour(interface->img + button_face_image_ids[last_vehicles_option], company_colour);
+            uint32_t fg_image = Gfx::recolour(interface->img + button_face_image_ids[static_cast<uint8_t>(*last_vehicles_option)], company_colour);
             uint32_t bg_image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_transparent, window->colours[3]);
 
             y--;
