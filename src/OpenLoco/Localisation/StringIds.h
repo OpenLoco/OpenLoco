@@ -325,7 +325,16 @@ namespace OpenLoco::StringIds
     constexpr string_id black_stringid_stringid = 456;
     constexpr string_id wcolour2_stringid = 457;
     constexpr string_id white_stringid = 458;
+    constexpr string_id vehicle_status_stopping = 459;
+    constexpr string_id vehicle_status_waiting_at_signal = 460;
+    constexpr string_id vehicle_status_at_velocity = 461;
 
+    constexpr string_id vehicle_status_broken_down = 464;
+    constexpr string_id vehicle_status_stopped = 465;
+    
+    constexpr string_id vehicle_status_heading_for = 474;
+    constexpr string_id vehicle_status_no_position = 473;
+    constexpr string_id vehicle_status_travelling = 474;
     constexpr string_id competitor_vehicle = 475;
     constexpr string_id company_vehicle = 476;
     constexpr string_id error_cant_lower_water_here = 477;

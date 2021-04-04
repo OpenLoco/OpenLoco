@@ -378,6 +378,44 @@ namespace OpenLoco::Vehicles
     // 0x004B671C
     VehicleStatus VehicleHead::getStatus() const
     {
+        VehicleStatus vehStatus = {};
+        vehStatus.status2 = StringIds::null;
+        if (tile_x == -1)
+        {
+            vehStatus.status1 = StringIds::vehicle_status_no_position;
+            return vehStatus;
+        }
+        Vehicle train(this);
+        if (train.veh2->var_73 & Flags73::isBrokenDown)
+        {
+            vehStatus.status1 = StringIds::vehicle_status_broken_down;
+            return vehStatus;
+        }
+
+        switch (status)
+        {
+            case Status::unk_0:
+                vehStatus.status1 = StringIds::vehicle_status_no_position;
+                return vehStatus;
+            case Status::stopped:
+                vehStatus.status1 = StringIds::vehicle_status_stopped;
+                return vehStatus;
+            case Status::unk_2:
+            case Status::unk_3:
+                return getStatusTravelling();
+            case Status::approaching:
+            case Status::unloading:
+            case Status::loading:
+            case Status::brokenDown:
+            case Status::crashed:
+            case Status::stuck:
+            case Status::landing:
+            case Status::taxiing1:
+            case Status::taxiing2:
+                break;
+            case Status::takingOff:
+                break;
+        }
         registers regs = {};
         regs.esi = reinterpret_cast<int32_t>(this);
 
@@ -391,6 +429,57 @@ namespace OpenLoco::Vehicles
         return vehStatus;
     }
 
+    // 0x004B6885
+    VehicleStatus VehicleHead::getStatusTravelling() const
+    {
+        VehicleStatus vehStatus{};
+
+        if (var_0C & Flags0C::commandStop || (var_0C & Flags0C::manualControl && var_6E <= -20))
+        {
+            vehStatus.status1 = StringIds::vehicle_status_stopping;
+        }
+        else if (sizeOfOrderTable == 1)
+        {
+            vehStatus.status1 = StringIds::vehicle_status_travelling;
+        }
+        else
+        {
+            bool stopFound = false;
+            auto orders = getCurrentOrders();
+            for (auto& order : orders)
+            {
+                auto* stopOrder = order.as<OrderStopAt>();
+                if (stopOrder == nullptr)
+                    continue;
+
+                stopFound = true;
+                auto* station = StationManager::get(stopOrder->getStation());
+                vehStatus.status1 = StringIds::vehicle_status_heading_for;
+                vehStatus.status1Args = (station->town << 16) | station->name;
+            }
+            if (!stopFound)
+            {
+                vehStatus.status1 = StringIds::vehicle_status_travelling;
+            }
+        }
+        getSecondStatus(vehStatus);
+        return vehStatus;
+    }
+
+    // 0x004B691C
+    void VehicleHead::getSecondStatus(VehicleStatus& vehStatus) const
+    {
+        Vehicle train(this);
+        if (status == Status::unk_3)
+        {
+            vehStatus.status2 = StringIds::vehicle_status_waiting_at_signal;
+        }
+        else
+        {
+            vehStatus.status2 = StringIds::vehicle_status_at_velocity;
+            vehStatus.status2Args = toSpeed16(train.veh2->currentSpeed).getRaw();
+        }
+    }
     // 0x004A8882
     void VehicleHead::updateDrivingSounds()
     {
