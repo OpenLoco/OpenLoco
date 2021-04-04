@@ -404,28 +404,86 @@ namespace OpenLoco::Vehicles
             case Status::unk_3:
                 return getStatusTravelling();
             case Status::approaching:
+            {
+                if (stationId == StationId::null)
+                {
+                    return getStatusTravelling();
+                }
+                vehStatus.status1 = StringIds::vehicle_status_approaching;
+                auto station = StationManager::get(stationId);
+                vehStatus.status1Args = station->name | (station->town << 16);
+                getSecondStatus(vehStatus);
+                return vehStatus;
+            }
             case Status::unloading:
+            {
+                if (stationId == StationId::null)
+                {
+                    return getStatusTravelling();
+                }
+                vehStatus.status1 = StringIds::vehicle_status_unloading;
+                auto station = StationManager::get(stationId);
+                vehStatus.status1Args = station->name | (station->town << 16);
+                return vehStatus;
+            }
             case Status::loading:
+            {
+                if (stationId == StationId::null)
+                {
+                    return getStatusTravelling();
+                }
+                vehStatus.status1 = StringIds::vehicle_status_loading;
+                auto station = StationManager::get(stationId);
+                vehStatus.status1Args = station->name | (station->town << 16);
+                return vehStatus;
+            }
             case Status::brokenDown:
+                vehStatus.status1 = StringIds::vehicle_status_broken_down;
+                return vehStatus;
             case Status::crashed:
+                vehStatus.status1 = StringIds::vehicle_status_crashed;
+                return vehStatus;
             case Status::stuck:
+                vehStatus.status1 = StringIds::vehicle_status_stuck;
+                return vehStatus;
             case Status::landing:
+            {
+                if (stationId == StationId::null)
+                {
+                    return getStatusTravelling();
+                }
+                vehStatus.status1 = StringIds::vehicle_status_landing;
+                auto station = StationManager::get(stationId);
+                vehStatus.status1Args = station->name | (station->town << 16);
+                getSecondStatus(vehStatus);
+                return vehStatus;
+            }
             case Status::taxiing1:
             case Status::taxiing2:
-                break;
+            {
+                if (stationId == StationId::null)
+                {
+                    return getStatusTravelling();
+                }
+                vehStatus.status1 = StringIds::vehicle_status_taxiing;
+                auto station = StationManager::get(stationId);
+                vehStatus.status1Args = station->name | (station->town << 16);
+                getSecondStatus(vehStatus);
+                return vehStatus;
+            }
             case Status::takingOff:
-                break;
+            {
+                if (stationId == StationId::null)
+                {
+                    return getStatusTravelling();
+                }
+                vehStatus.status1 = StringIds::vehicle_status_taking_off;
+                auto station = StationManager::get(stationId);
+                vehStatus.status1Args = station->name | (station->town << 16);
+                getSecondStatus(vehStatus);
+                return vehStatus;
+            }
         }
-        registers regs = {};
-        regs.esi = reinterpret_cast<int32_t>(this);
-
-        call(0x004B671C, regs);
-
-        VehicleStatus vehStatus = {};
-        vehStatus.status1 = regs.bx;
-        vehStatus.status1Args = regs.eax;
-        vehStatus.status2 = regs.cx;
-        vehStatus.status2Args = regs.edx;
         return vehStatus;
     }
 

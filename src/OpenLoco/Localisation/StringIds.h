@@ -328,11 +328,17 @@ namespace OpenLoco::StringIds
     constexpr string_id vehicle_status_stopping = 459;
     constexpr string_id vehicle_status_waiting_at_signal = 460;
     constexpr string_id vehicle_status_at_velocity = 461;
-
+    constexpr string_id vehicle_status_crashed = 462;
+    constexpr string_id vehicle_status_stuck = 463;
     constexpr string_id vehicle_status_broken_down = 464;
     constexpr string_id vehicle_status_stopped = 465;
-    
-    constexpr string_id vehicle_status_heading_for = 474;
+    constexpr string_id vehicle_status_loading = 466;
+    constexpr string_id vehicle_status_unloading = 467;
+    constexpr string_id vehicle_status_approaching = 468;
+    constexpr string_id vehicle_status_landing = 469;
+    constexpr string_id vehicle_status_taxiing = 470;
+    constexpr string_id vehicle_status_taking_off = 471;
+    constexpr string_id vehicle_status_heading_for = 472;
     constexpr string_id vehicle_status_no_position = 473;
     constexpr string_id vehicle_status_travelling = 474;
     constexpr string_id competitor_vehicle = 475;
