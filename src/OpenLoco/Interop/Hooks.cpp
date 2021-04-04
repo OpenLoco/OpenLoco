@@ -894,4 +894,12 @@ void OpenLoco::Interop::registerHooks()
     // quite annoying when it's sometimes only the player's own
     // vehicles that are using it.
     writeNop(0x004776DD, 6);
+    // Remove this when sub_441FA7 has been fully implemented
+    // Although this looks like a basic writeRet it is also changing the flags
+    // to set them all to zero this is required.
+    registerHook(
+        0x004422CD,
+        [](registers& regs) -> uint8_t {
+            return 0;
+        });
 }
