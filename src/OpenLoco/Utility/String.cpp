@@ -43,22 +43,4 @@ namespace OpenLoco::Utility
         return std::to_wstring(0);
 #endif
     }
-
-    std::wstring utf8ToUtf16(const std::string_view& src)
-    {
-#ifdef _WIN32
-        int srcLen = src.size();
-        int sizeReq = MultiByteToWideChar(CP_UTF8, 0, src.data(), srcLen, nullptr, 0);
-        auto result = std::wstring(sizeReq, 0);
-        MultiByteToWideChar(CP_UTF8, 0, src.data(), srcLen, result.data(), sizeReq);
-        return result;
-#else
-        using convert_typeX = std::codecvt_utf8<wchar_t>;
-        std::wstring_convert<convert_typeX, wchar_t> converterX;
-
-        std::wstring out = converterX.from_bytes(src.data());
-        std::wcout << __PRETTY_FUNCTION__ << " " << out << "\n";
-        return out;
-#endif
-    }
 }
