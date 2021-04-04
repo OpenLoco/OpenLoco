@@ -899,7 +899,7 @@ namespace OpenLoco::Ui::PromptBrowse
             }
 
             // Create full path to target file.
-            fs::path path = fs::u8path((char*)_directory) / inputSession.buffer;
+            fs::path path = fs::u8path(&_directory[0]) / inputSession.buffer;
 
             // Append extension to filename.
             path += getExtensionFromFileType(_fileType);
