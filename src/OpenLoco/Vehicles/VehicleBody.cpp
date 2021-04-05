@@ -5,7 +5,7 @@
 #include "../Graphics/Gfx.h"
 #include "../Interop/Interop.hpp"
 #include "../Map/TileManager.h"
-#include "../Math/Triginometry.hpp"
+#include "../Math/Trigonometry.hpp"
 #include "../Objects/ObjectManager.h"
 #include "../Objects/VehicleObject.h"
 #include "Vehicle.h"
@@ -964,7 +964,7 @@ namespace OpenLoco::Vehicles
 
         loc.z += vehicleObject->animation[num].height;
 
-        auto xyFactor = Math::Triginometry::computeXYVector(vehicleObject->animation[num].height, sprite_pitch, sprite_yaw);
+        auto xyFactor = Math::Trigonometry::computeXYVector(vehicleObject->animation[num].height, sprite_pitch, sprite_yaw);
 
         loc.x += xyFactor.x;
         loc.y += xyFactor.y;
@@ -1090,7 +1090,7 @@ namespace OpenLoco::Vehicles
 
             auto positionFactor = vehicleObject->bodySprites[0].bogey_position * var_05 / 256;
             auto invertedDirection = sprite_yaw ^ (1 << 5);
-            auto xyFactor = Math::Triginometry::computeXYVector(positionFactor, invertedDirection) / 2;
+            auto xyFactor = Math::Trigonometry::computeXYVector(positionFactor, invertedDirection) / 2;
 
             Map::map_pos3 loc = {
                 static_cast<int16_t>(x + xyFactor.x),
@@ -1132,7 +1132,7 @@ namespace OpenLoco::Vehicles
 
             loc.z += vehicleObject->animation[num].height;
 
-            auto xyFactor = Math::Triginometry::computeXYVector(vehicleObject->animation[num].height, sprite_pitch, sprite_yaw);
+            auto xyFactor = Math::Trigonometry::computeXYVector(vehicleObject->animation[num].height, sprite_pitch, sprite_yaw);
 
             loc.x += xyFactor.x;
             loc.y += xyFactor.y;
@@ -1184,7 +1184,7 @@ namespace OpenLoco::Vehicles
 
         loc.z += vehicleObject->animation[num].height;
 
-        auto xyFactor = Math::Triginometry::computeXYVector(vehicleObject->animation[num].height, sprite_pitch, sprite_yaw);
+        auto xyFactor = Math::Trigonometry::computeXYVector(vehicleObject->animation[num].height, sprite_pitch, sprite_yaw);
         loc.x += xyFactor.x;
         loc.y += xyFactor.y;
 
@@ -1197,7 +1197,7 @@ namespace OpenLoco::Vehicles
             unkFactor = -5;
         }
 
-        xyFactor = Math::Triginometry::computeXYVector(unkFactor, yaw);
+        xyFactor = Math::Trigonometry::computeXYVector(unkFactor, yaw);
         loc.x += xyFactor.x;
         loc.y += xyFactor.y;
 
@@ -1249,7 +1249,7 @@ namespace OpenLoco::Vehicles
 
         loc.z += vehicleObject->animation[num].height;
 
-        auto xyFactor = Math::Triginometry::computeXYVector(vehicleObject->animation[num].height, sprite_pitch, sprite_yaw);
+        auto xyFactor = Math::Trigonometry::computeXYVector(vehicleObject->animation[num].height, sprite_pitch, sprite_yaw);
 
         loc.x += xyFactor.x;
         loc.y += xyFactor.y;
@@ -1302,7 +1302,7 @@ namespace OpenLoco::Vehicles
 
         loc.z += vehicleObject->animation[num].height;
 
-        auto xyFactor = Math::Triginometry::computeXYVector(vehicleObject->animation[num].height, sprite_pitch, sprite_yaw);
+        auto xyFactor = Math::Trigonometry::computeXYVector(vehicleObject->animation[num].height, sprite_pitch, sprite_yaw);
         loc.x += xyFactor.x;
         loc.y += xyFactor.y;
 
@@ -1320,7 +1320,7 @@ namespace OpenLoco::Vehicles
             unkFactor = -unkFactor;
         }
 
-        xyFactor = Math::Triginometry::computeXYVector(unkFactor, yaw);
+        xyFactor = Math::Trigonometry::computeXYVector(unkFactor, yaw);
         loc.x += xyFactor.x;
         loc.y += xyFactor.y;
 
@@ -1358,7 +1358,7 @@ namespace OpenLoco::Vehicles
 
         auto positionFactor = vehicleObject->bodySprites[0].bogey_position;
         auto invertedDirection = sprite_yaw ^ (1 << 5);
-        auto xyFactor = Math::Triginometry::computeXYVector(positionFactor, invertedDirection) / 4;
+        auto xyFactor = Math::Trigonometry::computeXYVector(positionFactor, invertedDirection) / 4;
 
         Map::map_pos3 loc = {
             static_cast<int16_t>(x + xyFactor.x),
@@ -1369,7 +1369,7 @@ namespace OpenLoco::Vehicles
         // 90 degrees C.W.
         auto yaw = (sprite_yaw + 16) & 0x3F;
 
-        xyFactor = Math::Triginometry::computeXYVector(vehicleObject->var_113, yaw) / 2;
+        xyFactor = Math::Trigonometry::computeXYVector(vehicleObject->var_113, yaw) / 2;
         loc.x += xyFactor.x;
         loc.y += xyFactor.y;
 
@@ -1381,7 +1381,7 @@ namespace OpenLoco::Vehicles
         // 90 degrees C.C.W.
         yaw = (sprite_yaw - 16) & 0x3F;
 
-        xyFactor = Math::Triginometry::computeXYVector(vehicleObject->var_113, yaw) / 2;
+        xyFactor = Math::Trigonometry::computeXYVector(vehicleObject->var_113, yaw) / 2;
         loc.x += xyFactor.x;
         loc.y += xyFactor.y;
 

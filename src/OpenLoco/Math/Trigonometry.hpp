@@ -7,7 +7,7 @@ namespace OpenLoco
     enum class Pitch : uint8_t;
 }
 
-namespace OpenLoco::Math::Triginometry
+namespace OpenLoco::Math::Trigonometry
 {
     // 0x00503B6A
     // ROUND(COS((32/64+(L1/64))*(2*PI()))*256,0), ROUND(SIN(((L1/64))*(2*PI())) * 256,0)

@@ -8,7 +8,7 @@
 #include "../Interop/Interop.hpp"
 #include "../Localisation/FormatArguments.hpp"
 #include "../Map/TileManager.h"
-#include "../Math/Triginometry.hpp"
+#include "../Math/Trigonometry.hpp"
 #include "../MessageManager.h"
 #include "../Objects/AirportObject.h"
 #include "../Objects/CargoObject.h"
@@ -822,7 +822,7 @@ namespace OpenLoco::Vehicles
     // Returns veh1, veh2 position
     static std::pair<map_pos, map_pos> calculateNextPosition(const uint8_t yaw, const Map::map_pos& curPos, const Vehicle1* veh1, const Speed32 speed)
     {
-        auto dist = Math::Triginometry::computeXYVector(speed.getRaw() >> 5, yaw);
+        auto dist = Math::Trigonometry::computeXYVector(speed.getRaw() >> 5, yaw);
 
         auto bigCoordX = veh1->var_4E + (curPos.x << 16) + dist.x;
         auto bigCoordY = veh1->var_50 + (curPos.y << 16) + dist.y;
