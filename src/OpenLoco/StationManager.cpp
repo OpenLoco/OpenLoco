@@ -85,7 +85,7 @@ namespace OpenLoco::StationManager
         {
             if (!town.empty())
             {
-                town.flags &= ~TownFlags::rating_adjusted;
+                town.flags &= ~TownFlags::ratingAdjusted;
             }
         }
 
@@ -114,9 +114,9 @@ namespace OpenLoco::StationManager
                 if (station.updateCargo())
                 {
                     auto town = TownManager::get(station.town);
-                    if (town != nullptr && !(town->flags & TownFlags::rating_adjusted))
+                    if (town != nullptr && !(town->flags & TownFlags::ratingAdjusted))
                     {
-                        town->flags |= TownFlags::rating_adjusted;
+                        town->flags |= TownFlags::ratingAdjusted;
                         town->adjustCompanyRating(station.owner, 1);
                     }
                 }

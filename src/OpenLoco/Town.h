@@ -42,16 +42,16 @@ namespace OpenLoco
 
     namespace TownId
     {
-        constexpr town_id_t null = std::numeric_limits<town_id_t>::max();
+        constexpr TownId_t null = std::numeric_limits<TownId_t>::max();
     }
 
     namespace TownFlags
     {
         constexpr uint16_t sorted = 1 << 0;
-        constexpr uint16_t rating_adjusted = 1 << 1;
+        constexpr uint16_t ratingAdjusted = 1 << 1;
     }
 
-    enum class town_size : uint8_t
+    enum class TownSize : uint8_t
     {
         hamlet,
         village,
@@ -61,7 +61,7 @@ namespace OpenLoco
     };
 
 #pragma pack(push, 1)
-    struct town
+    struct Town
     {
         string_id name;              // 0x00
         coord_t x;                   // 0x02
@@ -74,7 +74,7 @@ namespace OpenLoco
         uint16_t var_38;
         int16_t company_ratings[15];    // 0x3A
         uint16_t companies_with_rating; // 0x58
-        town_size size;                 // 0x5A
+        TownSize size;                  // 0x5A
         uint8_t history_size;           // 0x5B (<= 20 * 12)
         uint8_t history[20 * 12];       // 0x5C (20 years, 12 months)
         int32_t history_min_population; // 0x14C
@@ -88,12 +88,12 @@ namespace OpenLoco
         uint8_t pad_1A8[0x270 - 0x1A8];
 
         bool empty() const;
-        town_id_t id() const;
+        TownId_t id() const;
         void update();
         void updateLabel();
         void adjustCompanyRating(company_id_t cid, int amount);
         string_id getTownSizeString() const;
     };
-    static_assert(sizeof(town) == 0x270);
+    static_assert(sizeof(Town) == 0x270);
 #pragma pack(pop)
 }

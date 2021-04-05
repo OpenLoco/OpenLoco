@@ -9,7 +9,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::TownManager
 {
-    static loco_global<town[max_towns], 0x005B825C> _towns;
+    static loco_global<Town[max_towns], 0x005B825C> _towns;
 
     // 0x00496B38
     void reset()
@@ -17,13 +17,13 @@ namespace OpenLoco::TownManager
         call(0x00496B38);
     }
 
-    std::array<town, max_towns>& towns()
+    std::array<Town, max_towns>& towns()
     {
-        auto arr = (std::array<town, max_towns>*)_towns.get();
+        auto arr = (std::array<Town, max_towns>*)_towns.get();
         return *arr;
     }
 
-    town* get(town_id_t id)
+    Town* get(TownId_t id)
     {
         if (id >= _towns.size())
         {
@@ -40,7 +40,7 @@ namespace OpenLoco::TownManager
             auto ticks = scenarioTicks();
             if (ticks % 8 == 0)
             {
-                town_id_t id = (ticks / 8) % 0x7F;
+                TownId_t id = (ticks / 8) % 0x7F;
                 auto town = get(id);
                 if (town != nullptr && !town->empty())
                 {
@@ -54,7 +54,7 @@ namespace OpenLoco::TownManager
     // 0x0049771C
     void updateLabels()
     {
-        for (town& town : towns())
+        for (Town& town : towns())
         {
             if (town.empty())
                 continue;
@@ -66,7 +66,7 @@ namespace OpenLoco::TownManager
     // 0x0049748C
     void updateMonthly()
     {
-        for (town& currTown : towns())
+        for (Town& currTown : towns())
         {
             if (currTown.empty())
                 continue;

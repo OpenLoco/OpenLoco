@@ -8,8 +8,8 @@ namespace OpenLoco::TownManager
     constexpr size_t max_towns = 80;
 
     void reset();
-    std::array<town, max_towns>& towns();
-    town* get(town_id_t id);
+    std::array<Town, max_towns>& towns();
+    Town* get(TownId_t id);
     void update();
     void updateLabels();
     void updateMonthly();
