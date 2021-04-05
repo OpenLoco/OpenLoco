@@ -161,11 +161,11 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         }
 
         static loco_global<char[512], 0x0112CE04> _savePath;
-        auto path = fs::path(&_savePath[0]).replace_extension(S5::extensionSV5).u8string();
+        auto path = fs::u8path(&_savePath[0]).replace_extension(S5::extensionSV5);
 
         // Store path to active file
         static loco_global<char[256], 0x0050B745> _currentGameFilePath;
-        strncpy(&_currentGameFilePath[0], path.c_str(), std::size(_currentGameFilePath));
+        strncpy(&_currentGameFilePath[0], path.u8string().c_str(), std::size(_currentGameFilePath));
 
         S5::SaveFlags flags = {};
         if (Config::get().flags & Config::flags::export_objects_with_saves)

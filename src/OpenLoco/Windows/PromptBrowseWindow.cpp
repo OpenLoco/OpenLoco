@@ -172,7 +172,7 @@ namespace OpenLoco::Ui::PromptBrowse
         _events.draw = draw;
         _events.draw_scroll = drawScroll;
 
-        auto path = fs::path(szPath);
+        auto path = fs::u8path(szPath);
         auto directory = getDirectory(path);
         auto baseName = getBasename(path);
 
@@ -738,7 +738,7 @@ namespace OpenLoco::Ui::PromptBrowse
         }
         else
         {
-            auto directory = fs::path((char*)_directory);
+            auto directory = fs::u8path((char*)_directory);
             if (fs::is_directory(directory))
             {
                 try
@@ -899,7 +899,7 @@ namespace OpenLoco::Ui::PromptBrowse
             }
 
             // Create full path to target file.
-            fs::path path = fs::path(&_directory[0]) / inputSession.buffer;
+            fs::path path = fs::u8path(&_directory[0]) / inputSession.buffer;
 
             // Append extension to filename.
             path += getExtensionFromFileType(_fileType);
