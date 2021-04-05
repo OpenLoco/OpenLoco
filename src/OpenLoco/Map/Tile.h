@@ -10,7 +10,7 @@
 namespace OpenLoco
 {
     struct BuildingObject;
-    struct industry;
+    struct Industry;
 }
 
 namespace OpenLoco::Map
@@ -303,7 +303,7 @@ namespace OpenLoco::Map
 
     public:
         OpenLoco::industry_id_t industryId() const { return _industryId; }
-        OpenLoco::industry* industry() const;
+        OpenLoco::Industry* industry() const;
     };
 #pragma pack(pop)
 

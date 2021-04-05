@@ -7,7 +7,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::IndustryManager
 {
-    static loco_global<industry[max_industries], 0x005C455C> _industries;
+    static loco_global<Industry[max_industries], 0x005C455C> _industries;
 
     // 0x00453214
     void reset()
@@ -15,13 +15,13 @@ namespace OpenLoco::IndustryManager
         call(0x00453214);
     }
 
-    std::array<industry, max_industries>& industries()
+    std::array<Industry, max_industries>& industries()
     {
-        auto arr = (std::array<industry, max_industries>*)_industries.get();
+        auto arr = (std::array<Industry, max_industries>*)_industries.get();
         return *arr;
     }
 
-    industry* get(industry_id_t id)
+    Industry* get(industry_id_t id)
     {
         if (id >= _industries.size())
         {

@@ -1,18 +1,14 @@
 #pragma once
 
-#include "Localisation/StringManager.h"
 #include "Map/Tile.h"
 #include "Map/TileLoop.hpp"
-#include "Objects/IndustryObject.h"
-#include "Town.h"
+#include "Types.hpp"
 #include "Utility/Prng.hpp"
-#include <cstdint>
 #include <limits>
 
 namespace OpenLoco
 {
-    using namespace Map;
-    using industry_id_t = uint8_t;
+    struct IndustryObject;
 
     namespace IndustryId
     {
@@ -28,7 +24,7 @@ namespace OpenLoco
     }
 
 #pragma pack(push, 1)
-    struct industry
+    struct Industry
     {
         string_id name;
         coord_t x;                  // 0x02
@@ -65,11 +61,11 @@ namespace OpenLoco
         void getStatusString(const char* buffer);
 
         void update();
-        void sub_45329B(const map_pos& pos);
+        void sub_45329B(const Map::map_pos& pos);
         void sub_453354();
-        void sub_454A43(map_pos pos, uint8_t bl, uint8_t bh, uint8_t dl);
+        void sub_454A43(const Map::map_pos& pos, uint8_t bl, uint8_t bh, uint8_t dl);
     };
 #pragma pack(pop)
 
-    static_assert(sizeof(industry) == 0x453);
+    static_assert(sizeof(Industry) == 0x453);
 }

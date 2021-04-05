@@ -8,6 +8,7 @@
 using namespace OpenLoco;
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui::WindowManager;
+using namespace OpenLoco::Map;
 
 const uint8_t* tile_element_base::data() const
 {
@@ -107,7 +108,7 @@ surface_element* tile::surface() const
     return result;
 }
 
-OpenLoco::industry* industry_element::industry() const
+OpenLoco::Industry* industry_element::industry() const
 {
     return IndustryManager::get(_industryId);
 }

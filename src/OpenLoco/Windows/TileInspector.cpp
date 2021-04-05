@@ -11,6 +11,7 @@
 #include "../Objects/AirportObject.h"
 #include "../Objects/BuildingObject.h"
 #include "../Objects/DockObject.h"
+#include "../Objects/IndustryObject.h"
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/LandObject.h"
 #include "../Objects/ObjectManager.h"
