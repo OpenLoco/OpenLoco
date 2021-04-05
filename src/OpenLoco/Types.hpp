@@ -7,7 +7,7 @@ namespace OpenLoco
     using coord_t = int16_t;
     using company_id_t = uint8_t;
     using station_id_t = uint16_t;
-    using industry_id_t = uint8_t;
+    using IndustryId_t = uint8_t;
     using string_id = uint16_t;
     using EntityId_t = uint16_t;
     using tile_coord_t = int16_t;

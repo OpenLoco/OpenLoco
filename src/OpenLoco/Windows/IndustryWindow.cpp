@@ -290,7 +290,7 @@ namespace OpenLoco::Ui::Windows::Industry
     }
 
     // 0x00456D2D
-    window* open(industry_id_t industryId)
+    window* open(IndustryId_t industryId)
     {
         auto window = WindowManager::bringToFront(WindowType::industry, industryId);
         if (window != nullptr)

@@ -9,6 +9,7 @@
 #include "../Localisation/FormatArguments.hpp"
 #include "../Map/Map.hpp"
 #include "../Objects/CargoObject.h"
+#include "../Objects/IndustryObject.h"
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/ObjectManager.h"
 #include "../OpenLoco.h"
@@ -205,7 +206,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x00457A52
-        static bool orderByName(const OpenLoco::industry& lhs, const OpenLoco::industry& rhs)
+        static bool orderByName(const OpenLoco::Industry& lhs, const OpenLoco::Industry& rhs)
         {
             char lhsString[256] = { 0 };
             StringManager::formatString(lhsString, lhs.name, (void*)&lhs.town);
@@ -217,7 +218,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x00457A9F
-        static bool orderByStatus(OpenLoco::industry& lhs, OpenLoco::industry& rhs)
+        static bool orderByStatus(OpenLoco::Industry& lhs, OpenLoco::Industry& rhs)
         {
             char lhsString[256] = { 0 };
             const char* lhsBuffer = StringManager::getString(StringIds::buffer_1250);
@@ -234,7 +235,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
             return strcmp(lhsString, rhsString) < 0;
         }
 
-        static uint8_t getAverageTransportedCargo(const OpenLoco::industry& industry)
+        static uint8_t getAverageTransportedCargo(const OpenLoco::Industry& industry)
         {
             auto industryObj = ObjectManager::get<IndustryObject>(industry.object_id);
             uint8_t productionTransported = -1;
@@ -256,7 +257,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x00457AF3
-        static bool orderByProductionTransported(const OpenLoco::industry& lhs, const OpenLoco::industry& rhs)
+        static bool orderByProductionTransported(const OpenLoco::Industry& lhs, const OpenLoco::Industry& rhs)
         {
             auto lhsVar = getAverageTransportedCargo(lhs);
 
@@ -266,7 +267,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x00457A52, 0x00457A9F, 0x00457AF3
-        static bool getOrder(const SortMode mode, OpenLoco::industry& lhs, OpenLoco::industry& rhs)
+        static bool getOrder(const SortMode mode, OpenLoco::Industry& lhs, OpenLoco::Industry& rhs)
         {
             switch (mode)
             {
@@ -385,7 +386,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
             uint16_t yPos = 0;
             for (uint16_t i = 0; i < self->var_83C; i++)
             {
-                industry_id_t industryId = self->row_info[i];
+                IndustryId_t industryId = self->row_info[i];
 
                 // Skip items outside of view, or irrelevant to the current filter.
                 if (yPos + rowHeight < dpi->y || yPos >= yPos + rowHeight + dpi->height || industryId == IndustryId::null)

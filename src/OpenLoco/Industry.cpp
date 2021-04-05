@@ -13,23 +13,23 @@ using namespace OpenLoco::Map;
 
 namespace OpenLoco
 {
-    industry_id_t industry::id() const
+    IndustryId_t Industry::id() const
     {
-        auto first = (industry*)0x005C455C;
-        return (industry_id_t)(this - first);
+        auto first = (Industry*)0x005C455C;
+        return (IndustryId_t)(this - first);
     }
 
-    IndustryObject* industry::object() const
+    IndustryObject* Industry::object() const
     {
         return ObjectManager::get<IndustryObject>(object_id);
     }
 
-    bool industry::empty() const
+    bool Industry::empty() const
     {
         return name == StringIds::null;
     }
 
-    bool industry::canReceiveCargo() const
+    bool Industry::canReceiveCargo() const
     {
         auto receiveCargoState = false;
         for (const auto& receivedCargo : ObjectManager::get<IndustryObject>(object_id)->required_cargo_type)
@@ -40,7 +40,7 @@ namespace OpenLoco
         return receiveCargoState;
     }
 
-    bool industry::canProduceCargo() const
+    bool Industry::canProduceCargo() const
     {
         auto produceCargoState = false;
         for (const auto& producedCargo : ObjectManager::get<IndustryObject>(object_id)->produced_cargo_type)
@@ -66,14 +66,14 @@ namespace OpenLoco
     }
 
     // 0x0045935F
-    void industry::getStatusString(const char* buffer)
+    void Industry::getStatusString(const char* buffer)
     {
         char* ptr = (char*)buffer;
         *ptr = '\0';
         auto industryObj = object();
 
         // Closing Down
-        if (flags & IndustryFlags::closing_down)
+        if (flags & IndustryFlags::closingDown)
         {
             ptr = StringManager::formatString(ptr, StringIds::industry_closing_down);
             return;
@@ -114,7 +114,7 @@ namespace OpenLoco
     }
 
     // 0x00453275
-    void industry::update()
+    void Industry::update()
     {
         if (!(flags & IndustryFlags::flag_01) && under_construction == 0xFF)
         {
@@ -134,7 +134,7 @@ namespace OpenLoco
     }
 
     // 0x0045329B
-    void industry::sub_45329B(const map_pos& pos)
+    void Industry::sub_45329B(const map_pos& pos)
     {
         const auto& surface = TileManager::get(pos).surface();
         if (surface != nullptr)
@@ -159,7 +159,7 @@ namespace OpenLoco
         }
     }
 
-    void industry::sub_453354()
+    void Industry::sub_453354()
     {
         // 0x00453366
         int16_t tmp_a = var_DB / 16;
@@ -202,7 +202,7 @@ namespace OpenLoco
         }
     }
 
-    void industry::sub_454A43(map_pos pos, uint8_t bl, uint8_t bh, uint8_t dl)
+    void Industry::sub_454A43(const map_pos& pos, uint8_t bl, uint8_t bh, uint8_t dl)
     {
         registers regs;
         regs.bl = bl;
