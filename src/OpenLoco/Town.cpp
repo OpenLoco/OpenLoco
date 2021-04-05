@@ -16,7 +16,7 @@ namespace OpenLoco
         return name == StringIds::null;
     }
 
-    town_id_t Town::id() const
+    TownId_t Town::id() const
     {
         // TODO check if this is stored in Town structure
         //      otherwise add it when possible
@@ -25,7 +25,7 @@ namespace OpenLoco
         {
             index = TownId::null;
         }
-        return static_cast<town_id_t>(index);
+        return static_cast<TownId_t>(index);
     }
 
     // 0x0049742F

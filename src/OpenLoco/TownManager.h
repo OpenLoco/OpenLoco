@@ -9,7 +9,7 @@ namespace OpenLoco::TownManager
 
     void reset();
     std::array<Town, max_towns>& towns();
-    Town* get(town_id_t id);
+    Town* get(TownId_t id);
     void update();
     void updateLabels();
     void updateMonthly();

@@ -23,7 +23,7 @@ namespace OpenLoco::TownManager
         return *arr;
     }
 
-    Town* get(town_id_t id)
+    Town* get(TownId_t id)
     {
         if (id >= _towns.size())
         {
@@ -40,7 +40,7 @@ namespace OpenLoco::TownManager
             auto ticks = scenarioTicks();
             if (ticks % 8 == 0)
             {
-                town_id_t id = (ticks / 8) % 0x7F;
+                TownId_t id = (ticks / 8) % 0x7F;
                 auto town = get(id);
                 if (town != nullptr && !town->empty())
                 {

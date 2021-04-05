@@ -42,7 +42,7 @@ namespace OpenLoco
 
     namespace TownId
     {
-        constexpr town_id_t null = std::numeric_limits<town_id_t>::max();
+        constexpr TownId_t null = std::numeric_limits<TownId_t>::max();
     }
 
     namespace TownFlags
@@ -88,7 +88,7 @@ namespace OpenLoco
         uint8_t pad_1A8[0x270 - 0x1A8];
 
         bool empty() const;
-        town_id_t id() const;
+        TownId_t id() const;
         void update();
         void updateLabel();
         void adjustCompanyRating(company_id_t cid, int amount);

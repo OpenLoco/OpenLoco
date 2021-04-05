@@ -143,7 +143,7 @@ namespace OpenLoco::Ui::Windows::TownList
             uint16_t yPos = 0;
             for (uint16_t i = 0; i < self->var_83C; i++)
             {
-                town_id_t townId = self->row_info[i];
+                TownId_t townId = self->row_info[i];
 
                 // Skip items outside of view, or irrelevant to the current filter.
                 if (yPos + rowHeight < dpi->y || yPos >= yPos + rowHeight + dpi->height || townId == (uint16_t)-1)
