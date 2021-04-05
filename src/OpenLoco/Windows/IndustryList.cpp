@@ -386,7 +386,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
             uint16_t yPos = 0;
             for (uint16_t i = 0; i < self->var_83C; i++)
             {
-                industry_id_t industryId = self->row_info[i];
+                IndustryId_t industryId = self->row_info[i];
 
                 // Skip items outside of view, or irrelevant to the current filter.
                 if (yPos + rowHeight < dpi->y || yPos >= yPos + rowHeight + dpi->height || industryId == IndustryId::null)

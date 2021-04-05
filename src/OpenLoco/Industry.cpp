@@ -13,10 +13,10 @@ using namespace OpenLoco::Map;
 
 namespace OpenLoco
 {
-    industry_id_t Industry::id() const
+    IndustryId_t Industry::id() const
     {
         auto first = (Industry*)0x005C455C;
-        return (industry_id_t)(this - first);
+        return (IndustryId_t)(this - first);
     }
 
     IndustryObject* Industry::object() const
@@ -73,7 +73,7 @@ namespace OpenLoco
         auto industryObj = object();
 
         // Closing Down
-        if (flags & IndustryFlags::closing_down)
+        if (flags & IndustryFlags::closingDown)
         {
             ptr = StringManager::formatString(ptr, StringIds::industry_closing_down);
             return;

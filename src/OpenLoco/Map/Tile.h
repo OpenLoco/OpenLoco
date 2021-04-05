@@ -296,13 +296,13 @@ namespace OpenLoco::Map
     struct industry_element : public tile_element_base
     {
     private:
-        industry_id_t _industryId;
+        IndustryId_t _industryId;
         uint8_t _5;
         uint8_t _6;
         uint8_t _7;
 
     public:
-        OpenLoco::industry_id_t industryId() const { return _industryId; }
+        OpenLoco::IndustryId_t industryId() const { return _industryId; }
         OpenLoco::Industry* industry() const;
     };
 #pragma pack(pop)

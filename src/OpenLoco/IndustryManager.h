@@ -10,7 +10,7 @@ namespace OpenLoco::IndustryManager
 
     void reset();
     std::array<Industry, max_industries>& industries();
-    Industry* get(industry_id_t id);
+    Industry* get(IndustryId_t id);
     void update();
     void updateMonthly();
 }

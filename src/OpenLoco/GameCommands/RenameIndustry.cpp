@@ -29,12 +29,12 @@ namespace OpenLoco::GameCommands
      * @param buffer2 @<bp> - Third part (4 chars) of the 12 update buffer
      * @return @<ebx> - returns 0 if rename is successful; otherwise GameCommands::FAILURE
      */
-    static uint32_t renameIndustry(const uint8_t flags, industry_id_t industryId, int16_t index, uint32_t buffer0, uint32_t buffer1, uint32_t buffer2)
+    static uint32_t renameIndustry(const uint8_t flags, IndustryId_t industryId, int16_t index, uint32_t buffer0, uint32_t buffer1, uint32_t buffer2)
     {
         gGameCommandExpenditureType = static_cast<uint8_t>(ExpenditureType::Miscellaneous) * 4;
 
         // Keep track of the industry id over several calls.
-        static industry_id_t _industryId{};
+        static IndustryId_t _industryId{};
         if (index == 1)
             _industryId = industryId;
 

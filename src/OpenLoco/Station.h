@@ -28,7 +28,7 @@ namespace OpenLoco
         uint8_t enroute_age{};                 // 0x35
         uint16_t var_36{};                     // 0x36
         uint8_t var_38{};
-        industry_id_t industry_id{}; // 0x39
+        IndustryId_t industry_id{}; // 0x39
         uint8_t var_40{};
 
         bool empty() const

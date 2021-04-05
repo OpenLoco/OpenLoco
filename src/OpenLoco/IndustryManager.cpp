@@ -21,7 +21,7 @@ namespace OpenLoco::IndustryManager
         return *arr;
     }
 
-    Industry* get(industry_id_t id)
+    Industry* get(IndustryId_t id)
     {
         if (id >= _industries.size())
         {
