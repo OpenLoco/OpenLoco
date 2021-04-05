@@ -600,7 +600,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
                 Gfx::drawString_494BBF(*dpi, 475, yPos, 65, Colour::outline(Colour::black), StringIds::vehicle_list_reliability, &args);
             }
 
-            yPos += self->row_height;
+            yPos += self->row_height - 2;
         }
     }
 
