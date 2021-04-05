@@ -3194,7 +3194,7 @@ namespace OpenLoco::Ui::Vehicle
         static void pickupToolAbort(window& self)
         {
             auto head = getVehicle(&self);
-            if (!head->isPlaced())
+            if (head->tile_x == -1 || !(head->var_38 & Vehicles::Flags38::isGhost))
             {
                 self.invalidate();
                 return;
