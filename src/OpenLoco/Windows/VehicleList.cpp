@@ -793,7 +793,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         self->flags &= ~WindowFlags::not_scroll_view;
 
         uint16_t currentRow = y / self->row_height;
-        if (currentRow <= self->var_83C)
+        if (currentRow < self->var_83C)
             self->row_hover = self->row_info[currentRow];
         else
             self->row_hover = -1;
