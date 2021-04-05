@@ -48,10 +48,10 @@ namespace OpenLoco
     namespace TownFlags
     {
         constexpr uint16_t sorted = 1 << 0;
-        constexpr uint16_t rating_adjusted = 1 << 1;
+        constexpr uint16_t ratingAdjusted = 1 << 1;
     }
 
-    enum class town_size : uint8_t
+    enum class TownSize : uint8_t
     {
         hamlet,
         village,
@@ -74,7 +74,7 @@ namespace OpenLoco
         uint16_t var_38;
         int16_t company_ratings[15];    // 0x3A
         uint16_t companies_with_rating; // 0x58
-        town_size size;                 // 0x5A
+        TownSize size;                  // 0x5A
         uint8_t history_size;           // 0x5B (<= 20 * 12)
         uint8_t history[20 * 12];       // 0x5C (20 years, 12 months)
         int32_t history_min_population; // 0x14C
