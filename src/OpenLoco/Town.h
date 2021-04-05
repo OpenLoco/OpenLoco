@@ -61,7 +61,7 @@ namespace OpenLoco
     };
 
 #pragma pack(push, 1)
-    struct town
+    struct Town
     {
         string_id name;              // 0x00
         coord_t x;                   // 0x02
@@ -94,6 +94,6 @@ namespace OpenLoco
         void adjustCompanyRating(company_id_t cid, int amount);
         string_id getTownSizeString() const;
     };
-    static_assert(sizeof(town) == 0x270);
+    static_assert(sizeof(Town) == 0x270);
 #pragma pack(pop)
 }

@@ -286,7 +286,7 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x00499EC9
-        static bool orderByName(const OpenLoco::town& lhs, const OpenLoco::town& rhs)
+        static bool orderByName(const OpenLoco::Town& lhs, const OpenLoco::Town& rhs)
         {
             char lhsString[256] = { 0 };
             StringManager::formatString(lhsString, lhs.name);
@@ -298,7 +298,7 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x00499F28
-        static bool orderByPopulation(const OpenLoco::town& lhs, const OpenLoco::town& rhs)
+        static bool orderByPopulation(const OpenLoco::Town& lhs, const OpenLoco::Town& rhs)
         {
             auto lhsPopulation = lhs.population;
 
@@ -308,7 +308,7 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x00499F0A Left this in to match the x86 code. can be replaced with orderByPopulation
-        static bool orderByType(const OpenLoco::town& lhs, const OpenLoco::town& rhs)
+        static bool orderByType(const OpenLoco::Town& lhs, const OpenLoco::Town& rhs)
         {
             auto lhsSize = lhs.size;
 
@@ -325,7 +325,7 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x00499F3B
-        static bool orderByStations(const OpenLoco::town& lhs, const OpenLoco::town& rhs)
+        static bool orderByStations(const OpenLoco::Town& lhs, const OpenLoco::Town& rhs)
         {
             auto lhsStations = lhs.num_stations;
 
@@ -335,7 +335,7 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x00499EC9, 0x00499F0A, 0x00499F28, 0x00499F3B
-        static bool getOrder(const SortMode mode, OpenLoco::town& lhs, OpenLoco::town& rhs)
+        static bool getOrder(const SortMode mode, OpenLoco::Town& lhs, OpenLoco::Town& rhs)
         {
             switch (mode)
             {

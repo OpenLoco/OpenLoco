@@ -11,14 +11,14 @@ namespace OpenLoco
     constexpr int32_t min_company_rating = -1000;
     constexpr int32_t max_company_rating = 1000;
 
-    bool town::empty() const
+    bool Town::empty() const
     {
         return name == StringIds::null;
     }
 
-    town_id_t town::id() const
+    town_id_t Town::id() const
     {
-        // TODO check if this is stored in town structure
+        // TODO check if this is stored in Town structure
         //      otherwise add it when possible
         auto index = static_cast<size_t>(this - &TownManager::towns()[0]);
         if (index > TownManager::max_towns)
@@ -29,7 +29,7 @@ namespace OpenLoco
     }
 
     // 0x0049742F
-    void town::update()
+    void Town::update()
     {
         registers regs;
         regs.esi = (int32_t)this;
@@ -37,14 +37,14 @@ namespace OpenLoco
     }
 
     // 0x00497616
-    void town::updateLabel()
+    void Town::updateLabel()
     {
         registers regs;
         regs.esi = (int32_t)this;
         call(0x00497616, regs);
     }
 
-    void town::adjustCompanyRating(company_id_t cid, int amount)
+    void Town::adjustCompanyRating(company_id_t cid, int amount)
     {
         companies_with_rating |= (1 << cid);
         company_ratings[cid] = std::clamp(
@@ -53,7 +53,7 @@ namespace OpenLoco
             max_company_rating);
     }
 
-    string_id town::getTownSizeString() const
+    string_id Town::getTownSizeString() const
     {
         static string_id townSizeNames[5] = {
             StringIds::town_size_hamlet,
