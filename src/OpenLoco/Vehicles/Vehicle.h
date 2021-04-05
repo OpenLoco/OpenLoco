@@ -44,8 +44,8 @@ namespace OpenLoco::Vehicles
     {
         unk_0 = 0, // no position (not placed)
         stopped = 1,
-        unk_2 = 2, // travelling
-        unk_3 = 3, // travelling
+        travelling = 2,
+        waitingAtSignal = 3,
         approaching = 4,
         unloading = 5,
         loading = 6,

@@ -751,7 +751,7 @@ namespace OpenLoco::Ui::Vehicle
                 }
             }
 
-            if (head->status != Vehicles::Status::unk_3)
+            if (head->status != Vehicles::Status::waitingAtSignal)
             {
                 self->disabled_widgets |= (1 << widx::passSignal);
             }

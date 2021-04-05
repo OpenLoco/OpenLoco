@@ -138,13 +138,13 @@ namespace OpenLoco::Vehicles
         {
             case Status::unk_0:
             case Status::stopped:
-            case Status::unk_3:
+            case Status::waitingAtSignal:
             case Status::unloading:
             case Status::loading:
             case Status::crashed:
             case Status::stuck:
                 return;
-            case Status::unk_2:
+            case Status::travelling:
             case Status::approaching:
             case Status::brokenDown:
             case Status::landing:
@@ -400,8 +400,8 @@ namespace OpenLoco::Vehicles
             case Status::stopped:
                 vehStatus.status1 = StringIds::vehicle_status_stopped;
                 return vehStatus;
-            case Status::unk_2:
-            case Status::unk_3:
+            case Status::travelling:
+            case Status::waitingAtSignal:
                 return getStatusTravelling();
             case Status::approaching:
             {
@@ -528,7 +528,7 @@ namespace OpenLoco::Vehicles
     void VehicleHead::getSecondStatus(VehicleStatus& vehStatus) const
     {
         Vehicle train(this);
-        if (status == Status::unk_3)
+        if (status == Status::waitingAtSignal)
         {
             vehStatus.status2 = StringIds::vehicle_status_waiting_at_signal;
         }
@@ -889,7 +889,7 @@ namespace OpenLoco::Vehicles
         }
         else
         {
-            status = Status::unk_2;
+            status = Status::travelling;
 
             if (!(vehType2->var_73 & Flags73::isBrokenDown) || (vehType2->var_73 & Flags73::isStillPowered))
             {
@@ -972,7 +972,7 @@ namespace OpenLoco::Vehicles
         sub_4AD778();
         if (status == Status::approaching)
         {
-            status = Status::unk_2;
+            status = Status::travelling;
         }
         tryCreateInitialMovementSound();
         return true;
@@ -1009,7 +1009,7 @@ namespace OpenLoco::Vehicles
             if (status == Status::approaching)
             {
                 stationId = StationId::null;
-                status = Status::unk_2;
+                status = Status::travelling;
             }
         }
 
@@ -1185,7 +1185,7 @@ namespace OpenLoco::Vehicles
                 return true;
             }
 
-            status = Status::unk_3;
+            status = Status::waitingAtSignal;
 
             auto* vehType1 = train.veh1;
             vehType1->timeAtSignal++;
@@ -1331,7 +1331,7 @@ namespace OpenLoco::Vehicles
         {
             return airplaneLoadingUpdate();
         }
-        status = Status::unk_2;
+        status = Status::travelling;
         auto [newStatus, targetSpeed] = airplaneGetNewStatus();
 
         status = newStatus;
@@ -1545,7 +1545,7 @@ namespace OpenLoco::Vehicles
                 targetSpeed = veh2->rackRailMaxSpeed;
             }
 
-            return std::make_pair(Status::unk_2, targetSpeed);
+            return std::make_pair(Status::travelling, targetSpeed);
         }
 
         auto station = StationManager::get(stationId);
@@ -1616,7 +1616,7 @@ namespace OpenLoco::Vehicles
 
         // Tile not found. Todo: fail gracefully
         assert(false);
-        return std::make_pair(Status::unk_2, train.veh2->maxSpeed);
+        return std::make_pair(Status::travelling, train.veh2->maxSpeed);
     }
 
     // 0x004A95CB
@@ -1649,7 +1649,7 @@ namespace OpenLoco::Vehicles
         }
 
         advanceToNextRoutableOrder();
-        status = Status::unk_2;
+        status = Status::travelling;
         status = airplaneGetNewStatus().first;
 
         auto movementEdge = cAirportMovementNodeNull;
@@ -1906,7 +1906,7 @@ namespace OpenLoco::Vehicles
 
             beginNewJourney();
             advanceToNextRoutableOrder();
-            status = Status::unk_2;
+            status = Status::travelling;
             status = sub_427BF2();
             updateWaterMotion(WaterMotionFlags::isLeavingDock);
             produceLeavingDockSound();
@@ -1914,7 +1914,7 @@ namespace OpenLoco::Vehicles
         }
         else
         {
-            status = Status::unk_2;
+            status = Status::travelling;
             status = sub_427BF2();
             advanceToNextRoutableOrder();
             if (!(updateWaterMotion(0) & WaterMotionFlags::hasReachedDock))
@@ -2218,12 +2218,12 @@ namespace OpenLoco::Vehicles
     // 0x004B980A
     void VehicleHead::tryCreateInitialMovementSound()
     {
-        if (status != Status::unk_2)
+        if (status != Status::travelling)
         {
             return;
         }
 
-        if (vehicleUpdate_initialStatus != Status::stopped && vehicleUpdate_initialStatus != Status::unk_3)
+        if (vehicleUpdate_initialStatus != Status::stopped && vehicleUpdate_initialStatus != Status::waitingAtSignal)
         {
             return;
         }
@@ -2594,7 +2594,7 @@ namespace OpenLoco::Vehicles
     // 0x00427BF2
     Status VehicleHead::sub_427BF2()
     {
-        return stationId == StationId::null ? Status::unk_2 : Status::approaching;
+        return stationId == StationId::null ? Status::travelling : Status::approaching;
     }
 
     // 0x0042843E
