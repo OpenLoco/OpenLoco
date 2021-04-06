@@ -162,27 +162,27 @@ namespace OpenLoco
     static void sub_491BF5(const map_pos& pos, const uint8_t flag);
     static station_element* getStationElement(const map_pos3& pos);
 
-    station_id_t station::id() const
+    StationId_t Station::id() const
     {
         // TODO check if this is stored in station structure
         //      otherwise add it when possible
-        static loco_global<station[1024], 0x005E6EDC> _stations;
+        static loco_global<Station[1024], 0x005E6EDC> _stations;
         auto index = (size_t)(this - _stations);
         if (index > 1024)
         {
             index = StationId::null;
         }
-        return (station_id_t)index;
+        return (StationId_t)index;
     }
 
     // 0x0048B23E
-    void station::update()
+    void Station::update()
     {
         updateCargoAcceptance();
     }
 
     // 0x00492640
-    void station::updateCargoAcceptance()
+    void Station::updateCargoAcceptance()
     {
         CargoSearchState cargoSearchState;
         uint32_t currentAcceptedCargo = calcAcceptedCargo(cargoSearchState);
@@ -211,7 +211,7 @@ namespace OpenLoco
     }
 
     // 0x00492683
-    void station::alertCargoAcceptanceChange(uint32_t oldCargoAcc, uint32_t newCargoAcc)
+    void Station::alertCargoAcceptanceChange(uint32_t oldCargoAcc, uint32_t newCargoAcc)
     {
         for (uint32_t cargoId = 0; cargoId < max_cargo_stats; cargoId++)
         {
@@ -239,7 +239,7 @@ namespace OpenLoco
     // 0x00491FE0
     // WARNING: this may be called with station (ebp) = -1
     // filter only used if location.x != -1
-    uint32_t station::calcAcceptedCargo(CargoSearchState& cargoSearchState, const map_pos& location, const uint32_t filter)
+    uint32_t Station::calcAcceptedCargo(CargoSearchState& cargoSearchState, const map_pos& location, const uint32_t filter)
     {
         cargoSearchState.byte_112C7F2(1);
         cargoSearchState.filter(0);
@@ -261,7 +261,7 @@ namespace OpenLoco
         cargoSearchState.resetScores();
         cargoSearchState.resetProducedCargoTypes();
 
-        if (this != (station*)0xFFFFFFFF)
+        if (this != (Station*)0xFFFFFFFF)
         {
             for (uint16_t i = 0; i < stationTileSize; i++)
             {
@@ -275,7 +275,7 @@ namespace OpenLoco
 
                 cargoSearchState.byte_112C7F2(0);
 
-                if (stationElement->stationType() == stationType::roadStation)
+                if (stationElement->stationType() == StationType::roadStation)
                 {
                     auto obj = ObjectManager::get<RoadStationObject>(stationElement->objectId());
 
@@ -429,12 +429,12 @@ namespace OpenLoco
 
     // 0x00491D70
     // catchment flag should not be shifted (1, 2, 3, 4) and NOT (1 << 0, 1 << 1)
-    void station::setCatchmentDisplay(const uint8_t catchmentFlag)
+    void Station::setCatchmentDisplay(const uint8_t catchmentFlag)
     {
         CargoSearchState cargoSearchState;
         cargoSearchState.resetTileRegion(0, 0, map_columns, map_rows, catchmentFlag);
 
-        if (this == (station*)0xFFFFFFFF)
+        if (this == (Station*)0xFFFFFFFF)
             return;
 
         if (stationTileSize == 0)
@@ -452,7 +452,7 @@ namespace OpenLoco
 
             switch (stationElement->stationType())
             {
-                case stationType::airport:
+                case StationType::airport:
                 {
                     auto airportObject = ObjectManager::get<AirportObject>(stationElement->objectId());
 
@@ -488,7 +488,7 @@ namespace OpenLoco
                     setStationCatchmentRegion(cargoSearchState, tileMinPos, tileMaxPos, catchmentFlag);
                 }
                 break;
-                case stationType::docks:
+                case StationType::docks:
                 {
                     TilePos minPos(pos);
                     auto maxPos = minPos;
@@ -519,7 +519,7 @@ namespace OpenLoco
     }
 
     // 0x0048F7D1
-    void station::sub_48F7D1()
+    void Station::sub_48F7D1()
     {
         registers regs;
         regs.ebx = id();
@@ -527,7 +527,7 @@ namespace OpenLoco
     }
 
     // 0x00492A98
-    char* station::getStatusString(char* buffer)
+    char* Station::getStatusString(char* buffer)
     {
         char* ptr = buffer;
         *ptr = '\0';
@@ -555,7 +555,7 @@ namespace OpenLoco
     }
 
     // 0x00492793
-    bool station::updateCargo()
+    bool Station::updateCargo()
     {
         bool atLeastOneGoodRating = false;
         bool quantityUpdated = false;
@@ -621,7 +621,7 @@ namespace OpenLoco
     }
 
     // 0x004927F6
-    int32_t station::calculateCargoRating(const station_cargo_stats& cargo) const
+    int32_t Station::calculateCargoRating(const StationCargoStats& cargo) const
     {
         int32_t rating = 0;
 
@@ -666,7 +666,7 @@ namespace OpenLoco
             }
         }
 
-        if ((flags & (station_flags::flag_7 | station_flags::flag_8)) == 0 && !isPlayerCompany(owner))
+        if ((flags & (StationFlags::flag_7 | StationFlags::flag_8)) == 0 && !isPlayerCompany(owner))
         {
             rating = 120;
         }
@@ -694,7 +694,7 @@ namespace OpenLoco
     }
 
     // 0x004929DB
-    void station::updateCargoDistribution()
+    void Station::updateCargoDistribution()
     {
         WindowManager::invalidate(Ui::WindowType::station, id());
         WindowManager::invalidate(Ui::WindowType::stationList);
@@ -733,12 +733,12 @@ namespace OpenLoco
     }
 
     // 0x004CBA2D
-    void station::invalidate()
+    void Station::invalidate()
     {
         Ui::ViewportManager::invalidate(this);
     }
 
-    void station::invalidateWindow()
+    void Station::invalidateWindow()
     {
         WindowManager::invalidate(WindowType::station, id());
     }
@@ -826,6 +826,6 @@ namespace OpenLoco
             StringIds::label_icons_road_air_water,
             StringIds::label_icons_rail_road_air_water,
         };
-        return label_icons[flags & station_mask_all_modes];
+        return label_icons[flags & StationFlags::allModes];
     }
 }

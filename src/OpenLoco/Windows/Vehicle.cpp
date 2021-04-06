@@ -1691,7 +1691,7 @@ namespace OpenLoco::Ui::Vehicle
         }
 
         // based on 0x004B40C7
-        static void drawCargoText(Gfx::drawpixelinfo_t* const pDrawpixelinfo, const int16_t x, int16_t& y, const string_id strFormat, uint8_t cargoQty, uint8_t cargoType, station_id_t stationId)
+        static void drawCargoText(Gfx::drawpixelinfo_t* const pDrawpixelinfo, const int16_t x, int16_t& y, const string_id strFormat, uint8_t cargoQty, uint8_t cargoType, StationId_t stationId)
         {
             if (cargoQty == 0)
             {
@@ -2598,7 +2598,7 @@ namespace OpenLoco::Ui::Vehicle
                 case Ui::ViewportInteraction::InteractionItem::stationLabel:
                 {
                     Audio::playSound(Audio::sound_id::waypoint, { x, y, Input::getDragLastLocation().x }, Input::getDragLastLocation().x);
-                    station_id_t stationId = args.value;
+                    StationId_t stationId = args.value;
                     Vehicles::OrderStopAt station(stationId);
                     addNewOrder(&self, station);
                     break;

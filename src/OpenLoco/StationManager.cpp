@@ -11,7 +11,7 @@ using namespace OpenLoco::Ui;
 
 namespace OpenLoco::StationManager
 {
-    static loco_global<station[max_stations], 0x005E6EDC> _stations;
+    static loco_global<Station[max_stations], 0x005E6EDC> _stations;
 
     // 0x0048B1D8
     void reset()
@@ -19,13 +19,13 @@ namespace OpenLoco::StationManager
         call(0x0048B1D8);
     }
 
-    std::array<station, max_stations>& stations()
+    std::array<Station, max_stations>& stations()
     {
-        auto arr = (std::array<station, max_stations>*)_stations.get();
+        auto arr = (std::array<Station, max_stations>*)_stations.get();
         return *arr;
     }
 
-    station* get(station_id_t id)
+    Station* get(StationId_t id)
     {
         auto index = (size_t)id;
         if (index < _stations.size())
@@ -40,7 +40,7 @@ namespace OpenLoco::StationManager
     {
         if ((addr<0x00525E28, uint32_t>() & 1) && !isEditorMode())
         {
-            station_id_t id = scenarioTicks() & 0x3FF;
+            StationId_t id = scenarioTicks() & 0x3FF;
             auto station = get(id);
             if (station != nullptr && !station->empty())
             {
@@ -65,7 +65,7 @@ namespace OpenLoco::StationManager
         company->var_8BB0[arg1] = byte_4F9462[arg1];
     }
 
-    static void sub_49E1F1(station_id_t id)
+    static void sub_49E1F1(StationId_t id)
     {
         auto w = WindowManager::find(WindowType::construction);
         if (w != nullptr && w->current_tab == 1)

@@ -419,7 +419,7 @@ namespace OpenLoco::Ui::Windows::Station
 
                 case widx::station_catchment:
                 {
-                    station_id_t windowNumber = self->number;
+                    StationId_t windowNumber = self->number;
                     if (windowNumber == _lastSelectedStation)
                         windowNumber = StationId::null;
 

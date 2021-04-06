@@ -234,7 +234,7 @@ namespace OpenLoco::Ui::ViewportManager
     }
 
     // 0x004CBA2D
-    void invalidate(station* station)
+    void invalidate(Station* station)
     {
         bool doGarbageCollect = false;
 
@@ -363,7 +363,7 @@ namespace OpenLoco::Ui::ViewportManager
         registerHook(
             0x004CBA2D,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                invalidate((station*)regs.esi);
+                invalidate((Station*)regs.esi);
                 return 0;
             });
         registerHook(

@@ -593,7 +593,7 @@ namespace OpenLoco::Paint
                 continue;
             }
 
-            if (station.flags & station_flags::flag_5)
+            if (station.flags & StationFlags::flag_5)
             {
                 continue;
             }

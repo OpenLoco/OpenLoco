@@ -217,13 +217,13 @@ namespace OpenLoco::Ui::Windows::TileInspector
                     auto stationType = station->stationType();
                     switch (stationType)
                     {
-                        case stationType::trainStation:
+                        case StationType::trainStation:
                             return ObjectManager::get<TrainStationObject>(objectId)->name;
-                        case stationType::roadStation:
+                        case StationType::roadStation:
                             return ObjectManager::get<RoadStationObject>(objectId)->name;
-                        case stationType::airport:
+                        case StationType::airport:
                             return ObjectManager::get<AirportObject>(objectId)->name;
-                        case stationType::docks:
+                        case StationType::docks:
                             return ObjectManager::get<DockObject>(objectId)->name;
                     }
                 }

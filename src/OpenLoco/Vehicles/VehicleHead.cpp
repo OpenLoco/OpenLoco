@@ -1131,7 +1131,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004A8D8F
-    bool VehicleHead::roadNormalMovementUpdate(uint8_t al, station_id_t nextStation)
+    bool VehicleHead::roadNormalMovementUpdate(uint8_t al, StationId_t nextStation)
     {
         uint8_t bl = sub_4AA36A();
         if (bl == 1)
@@ -1167,7 +1167,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004A8D63
-    bool VehicleHead::trainNormalMovementUpdate(uint8_t al, uint8_t flags, station_id_t nextStation)
+    bool VehicleHead::trainNormalMovementUpdate(uint8_t al, uint8_t flags, StationId_t nextStation)
     {
         Vehicle train(this);
         if (al == 4)
@@ -1762,11 +1762,11 @@ namespace OpenLoco::Vehicles
                 return airplaneApproachTarget(targetZ);
             }
 
-            station_id_t orderStationId = order->getStation();
+            StationId_t orderStationId = order->getStation();
 
             auto station = StationManager::get(orderStationId);
 
-            if (station == nullptr || !(station->flags & station_flags::flag_6))
+            if (station == nullptr || !(station->flags & StationFlags::flag_6))
             {
                 airportMovementEdge = cAirportMovementNodeNull;
                 return airplaneApproachTarget(targetZ);
@@ -1949,7 +1949,7 @@ namespace OpenLoco::Vehicles
     std::tuple<uint32_t, uint16_t, uint8_t> VehicleHead::sub_427122()
     {
         vehicleUpdate_var_525BB0 = 0;
-        station_id_t targetStationId = StationId::null;
+        StationId_t targetStationId = StationId::null;
         std::optional<Map::map_pos3> targetPos{};
         if (stationId == StationId::null)
         {
@@ -1974,7 +1974,7 @@ namespace OpenLoco::Vehicles
             else
             {
                 auto station = StationManager::get(stationId);
-                if (!(station->flags & station_flags::flag_6))
+                if (!(station->flags & StationFlags::flag_6))
                 {
                     targetStationId = stationId;
                 }
@@ -1997,7 +1997,7 @@ namespace OpenLoco::Vehicles
             {
                 auto station = StationManager::get(targetStationId);
                 targetPos = map_pos3{ station->x, station->y, 960 };
-                if (station->flags & station_flags::flag_6)
+                if (station->flags & StationFlags::flag_6)
                 {
                     targetPos = map_pos3{ station->unk_tile_x, station->unk_tile_y, 960 };
                 }
@@ -2160,7 +2160,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x00426E26
-    std::pair<uint32_t, Map::map_pos3> VehicleHead::airportGetMovementEdgeTarget(station_id_t targetStation, uint8_t curEdge)
+    std::pair<uint32_t, Map::map_pos3> VehicleHead::airportGetMovementEdgeTarget(StationId_t targetStation, uint8_t curEdge)
     {
         auto station = StationManager::get(targetStation);
 
@@ -2612,7 +2612,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x00427FC9
-    std::tuple<station_id_t, Map::map_pos, Map::map_pos3> VehicleHead::sub_427FC9()
+    std::tuple<StationId_t, Map::map_pos, Map::map_pos3> VehicleHead::sub_427FC9()
     {
         registers regs;
         regs.esi = reinterpret_cast<int32_t>(this);
@@ -2655,7 +2655,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004ACEE7
-    std::tuple<uint8_t, uint8_t, station_id_t> VehicleHead::sub_4ACEE7(uint32_t unk1, uint32_t var_113612C)
+    std::tuple<uint8_t, uint8_t, StationId_t> VehicleHead::sub_4ACEE7(uint32_t unk1, uint32_t var_113612C)
     {
         registers regs;
         regs.esi = reinterpret_cast<int32_t>(this);
@@ -2663,7 +2663,7 @@ namespace OpenLoco::Vehicles
         regs.ebx = var_113612C;
         call(0x004ACEE7, regs);
         // status, flags, stationId
-        return std::make_tuple(static_cast<uint8_t>(regs.al), static_cast<uint8_t>(regs.ah), static_cast<station_id_t>(regs.bp));
+        return std::make_tuple(static_cast<uint8_t>(regs.al), static_cast<uint8_t>(regs.ah), static_cast<StationId_t>(regs.bp));
     }
 
     // 0x004AC1C2
@@ -2698,7 +2698,7 @@ namespace OpenLoco::Vehicles
         call(0x004AD93A, regs);
     }
 
-    static station_id_t tryFindStationAt(VehicleBogie* bogie)
+    static StationId_t tryFindStationAt(VehicleBogie* bogie)
     {
         map_pos loc{ bogie->tile_x, bogie->tile_y };
         auto baseZ = bogie->tile_base_z;
@@ -2792,7 +2792,7 @@ namespace OpenLoco::Vehicles
     // 0x004BABAD
     // Manual control has much broader detection of when at a station
     // it is defined as stationary with at least one bogie at the station
-    station_id_t VehicleHead::manualFindTrainStationAtLocation()
+    StationId_t VehicleHead::manualFindTrainStationAtLocation()
     {
         Vehicle train(this);
         for (auto& car : train.cars)

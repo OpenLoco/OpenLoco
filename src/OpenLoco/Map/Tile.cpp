@@ -2,6 +2,7 @@
 #include "../IndustryManager.h"
 #include "../Interop/Interop.hpp"
 #include "../Objects/ObjectManager.h"
+#include "../Station.h"
 #include "../Ui/WindowManager.h"
 #include <cassert>
 
@@ -112,6 +113,8 @@ OpenLoco::Industry* industry_element::industry() const
 {
     return IndustryManager::get(_industryId);
 }
+
+OpenLoco::StationType station_element::stationType() const { return OpenLoco::StationType(_5 >> 5); }
 
 namespace OpenLoco::Map
 {
