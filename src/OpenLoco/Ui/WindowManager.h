@@ -196,8 +196,8 @@ namespace OpenLoco::Ui::Windows::Station
 
 namespace OpenLoco::Ui::Windows::StationList
 {
-    window* open(company_id_t companyId);
-    window* open(company_id_t companyId, uint8_t type);
+    window* open(CompanyId_t companyId);
+    window* open(CompanyId_t companyId, uint8_t type);
 }
 
 namespace OpenLoco::Ui::Windows::Terraform
@@ -250,7 +250,7 @@ namespace OpenLoco::Ui::ToolTip
 namespace OpenLoco::Ui::Windows::MapToolTip
 {
     void open();
-    void setOwner(company_id_t company);
+    void setOwner(CompanyId_t company);
     void reset();
 }
 
@@ -297,7 +297,7 @@ namespace OpenLoco::Ui::Vehicle
 
 namespace OpenLoco::Ui::Windows::VehicleList
 {
-    window* open(company_id_t companyId, VehicleType type);
+    window* open(CompanyId_t companyId, VehicleType type);
 }
 
 namespace OpenLoco::Ui::BuildVehicle
@@ -321,7 +321,7 @@ namespace OpenLoco::Ui::NewsWindow
 
 namespace OpenLoco::Ui::Windows::CompanyFaceSelection
 {
-    void open(company_id_t id);
+    void open(CompanyId_t id);
 }
 
 namespace OpenLoco::Ui::Windows::CompanyList
@@ -332,10 +332,10 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
 namespace OpenLoco::Ui::Windows::CompanyWindow
 {
-    window* open(company_id_t companyId);
+    window* open(CompanyId_t companyId);
     window* openAndSetName();
-    window* openChallenge(company_id_t companyId);
-    window* openFinances(company_id_t companyId);
+    window* openChallenge(CompanyId_t companyId);
+    window* openFinances(CompanyId_t companyId);
 }
 
 namespace OpenLoco::Ui::Windows::ObjectSelectionWindow

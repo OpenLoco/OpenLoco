@@ -17,13 +17,13 @@ using namespace OpenLoco::Ui;
 
 namespace OpenLoco::CompanyManager
 {
-    static loco_global<company_id_t[2], 0x00525E3C> _player_company;
+    static loco_global<CompanyId_t[2], 0x00525E3C> _player_company;
     static loco_global<uint8_t, 0x00525FCB> _byte_525FCB;
     static loco_global<uint8_t, 0x00526214> _company_competition_delay;
     static loco_global<uint8_t, 0x00525FB7> _company_max_competing;
-    static loco_global<company[max_companies], 0x00531784> _companies;
+    static loco_global<Company[max_companies], 0x00531784> _companies;
     static loco_global<uint8_t[max_companies + 1], 0x009C645C> _company_colours;
-    static loco_global<company_id_t, 0x009C68EB> _updating_company_id;
+    static loco_global<CompanyId_t, 0x009C68EB> _updating_company_id;
 
     static void produceCompanies();
 
@@ -33,23 +33,23 @@ namespace OpenLoco::CompanyManager
         call(0x0042F7F8);
     }
 
-    company_id_t updatingCompanyId()
+    CompanyId_t updatingCompanyId()
     {
         return _updating_company_id;
     }
 
-    void updatingCompanyId(company_id_t id)
+    void updatingCompanyId(CompanyId_t id)
     {
         _updating_company_id = id;
     }
 
-    std::array<company, max_companies>& companies()
+    std::array<Company, max_companies>& companies()
     {
-        auto arr = (std::array<company, max_companies>*)_companies.get();
+        auto arr = (std::array<Company, max_companies>*)_companies.get();
         return *arr;
     }
 
-    company* get(company_id_t id)
+    Company* get(CompanyId_t id)
     {
         auto index = id;
         if (index < _companies.size())
@@ -59,27 +59,27 @@ namespace OpenLoco::CompanyManager
         return nullptr;
     }
 
-    company_id_t getControllingId()
+    CompanyId_t getControllingId()
     {
         return _player_company[0];
     }
 
-    void setControllingId(company_id_t id)
+    void setControllingId(CompanyId_t id)
     {
         _player_company[0] = id;
     }
 
-    void setSecondaryPlayerId(company_id_t id)
+    void setSecondaryPlayerId(CompanyId_t id)
     {
         _player_company[1] = id;
     }
 
-    company* getPlayerCompany()
+    Company* getPlayerCompany()
     {
         return &_companies[_player_company[0]];
     }
 
-    uint8_t getCompanyColour(company_id_t id)
+    uint8_t getCompanyColour(CompanyId_t id)
     {
         return _company_colours[id];
     }
@@ -94,7 +94,7 @@ namespace OpenLoco::CompanyManager
     {
         if (!isEditorMode() && !Config::getNew().companyAIDisabled)
         {
-            company_id_t id = scenarioTicks() & 0x0F;
+            CompanyId_t id = scenarioTicks() & 0x0F;
             auto company = get(id);
             if (company != nullptr && !isPlayerCompany(id) && !company->empty())
             {
@@ -156,14 +156,14 @@ namespace OpenLoco::CompanyManager
         }
     }
 
-    company* getOpponent()
+    Company* getOpponent()
     {
         return &_companies[_player_company[1]];
     }
 
     // 0x00438047
     // Returns a string between 1810 and 1816 with up to two arguments.
-    string_id getOwnerStatus(company_id_t id, FormatArguments& args)
+    string_id getOwnerStatus(CompanyId_t id, FormatArguments& args)
     {
         registers regs;
         regs.esi = (int32_t)get(id);
@@ -174,13 +174,13 @@ namespace OpenLoco::CompanyManager
         return regs.bx;
     }
 
-    owner_status getOwnerStatus(company_id_t id)
+    OwnerStatus getOwnerStatus(CompanyId_t id)
     {
         registers regs;
         regs.esi = (int32_t)get(id);
         call(0x00438047, regs);
 
-        owner_status ownerStatus;
+        OwnerStatus ownerStatus;
 
         ownerStatus.string = regs.bx;
         ownerStatus.argument1 = regs.ecx;
@@ -257,7 +257,7 @@ namespace OpenLoco::CompanyManager
     // loc : gGameCommandMapX/Y/Z global
     // company : updatingCompanyId global
     // amount : ebx
-    void spendMoneyEffect(const Map::map_pos3& loc, const company_id_t company, const currency32_t amount)
+    void spendMoneyEffect(const Map::map_pos3& loc, const CompanyId_t company, const currency32_t amount)
     {
         if (isEditorMode())
         {
@@ -289,7 +289,7 @@ namespace OpenLoco::CompanyManager
     // id : updatingCompanyId global var
     // payment : ebx (subtracted from company balance)
     // type : gGameCommandExpenditureType global var
-    void applyPaymentToCompany(const company_id_t id, const currency32_t payment, const ExpenditureType type)
+    void applyPaymentToCompany(const CompanyId_t id, const currency32_t payment, const ExpenditureType type)
     {
         auto* company = get(id);
         if (company == nullptr || OpenLoco::isEditorMode())

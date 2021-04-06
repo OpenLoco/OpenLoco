@@ -318,7 +318,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x004C1AA2
-    static window* create(company_id_t companyId)
+    static window* create(CompanyId_t companyId)
     {
         window* self = WindowManager::createWindow(
             WindowType::vehicleList,
@@ -341,7 +341,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x004C19DC
-    window* open(company_id_t companyId, VehicleType type)
+    window* open(CompanyId_t companyId, VehicleType type)
     {
         window* self = WindowManager::bringToFront(WindowType::vehicleList, companyId);
         if (self != nullptr)
@@ -698,7 +698,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         if (itemIndex == -1)
             return;
 
-        company_id_t companyId = Dropdown::getCompanyIdFromSelection(itemIndex);
+        CompanyId_t companyId = Dropdown::getCompanyIdFromSelection(itemIndex);
 
         // Try to find an open vehicle list for this company.
         auto companyWindow = WindowManager::bringToFront(WindowType::vehicleList, companyId);

@@ -74,7 +74,7 @@ namespace OpenLoco::Ui::Dropdown
     void showText2(int16_t x, int16_t y, int16_t width, int16_t height, colour_t colour, size_t count, uint8_t flags);
 
     void populateCompanySelect(window* window, widget_t* widget);
-    company_id_t getCompanyIdFromSelection(int16_t itemIndex);
+    CompanyId_t getCompanyIdFromSelection(int16_t itemIndex);
     uint16_t getItemArgument(const uint8_t index, const uint8_t argument);
     uint16_t getItemsPerRow(uint8_t itemCount);
 }

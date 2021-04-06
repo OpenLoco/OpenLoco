@@ -393,7 +393,7 @@ namespace OpenLoco::Ui
         viewport_config viewport_configurations[2]; // 0x876
         WindowType type;                            // 0x882
         uint8_t pad_883[1];
-        company_id_t owner = CompanyId::null; // 0x884
+        CompanyId_t owner = CompanyId::null; // 0x884
         uint8_t var_885 = 0xFF;
         uint8_t colours[4]; // 0x886
         int16_t var_88A;

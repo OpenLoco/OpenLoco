@@ -16,9 +16,9 @@ using namespace OpenLoco::Map;
 
 namespace OpenLoco::GameCommands
 {
-    static loco_global<company_id_t, 0x009C68EB> _updating_company_id;
+    static loco_global<CompanyId_t, 0x009C68EB> _updating_company_id;
     static loco_global<uint8_t, 0x00508F08> game_command_nest_level;
-    static loco_global<company_id_t[2], 0x00525E3C> _player_company;
+    static loco_global<CompanyId_t[2], 0x00525E3C> _player_company;
     static loco_global<uint8_t, 0x00508F17> paused_state;
 
     static uint16_t _gameCommandFlags;
@@ -405,7 +405,7 @@ namespace OpenLoco::GameCommands
     // 0x00431E6A
     // al  : company
     // esi : tile
-    bool sub_431E6A(const company_id_t company, Map::tile_element* const tile /*= nullptr*/)
+    bool sub_431E6A(const CompanyId_t company, Map::tile_element* const tile /*= nullptr*/)
     {
         if (company == CompanyId::neutral)
         {

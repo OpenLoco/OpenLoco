@@ -296,7 +296,7 @@ namespace OpenLoco::Ui::Windows::StationList
     }
 
     // 0x00490F6C
-    window* open(company_id_t companyId)
+    window* open(CompanyId_t companyId)
     {
         window* window = WindowManager::bringToFront(WindowType::stationList, companyId);
         if (window != nullptr)
@@ -356,7 +356,7 @@ namespace OpenLoco::Ui::Windows::StationList
         return window;
     }
 
-    window* open(company_id_t companyId, uint8_t type)
+    window* open(CompanyId_t companyId, uint8_t type)
     {
         if (type > 4)
             throw std::domain_error("Unexpected station type");
@@ -591,7 +591,7 @@ namespace OpenLoco::Ui::Windows::StationList
         if (itemIndex == -1)
             return;
 
-        company_id_t companyId = Dropdown::getCompanyIdFromSelection(itemIndex);
+        CompanyId_t companyId = Dropdown::getCompanyIdFromSelection(itemIndex);
 
         // Try to find an open station list for this company.
         auto companyWindow = WindowManager::bringToFront(WindowType::stationList, companyId);

@@ -70,7 +70,7 @@ namespace OpenLoco
     // company : updatingCompanyId global
     // loc : ax, cx, dx
     // amount : ebx
-    MoneyEffect* MoneyEffect::create(const Map::map_pos3& loc, const company_id_t company, const currency32_t amount)
+    MoneyEffect* MoneyEffect::create(const Map::map_pos3& loc, const CompanyId_t company, const currency32_t amount)
     {
         if (isTitleMode())
         {

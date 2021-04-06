@@ -122,7 +122,7 @@ namespace OpenLoco::GameCommands
 
     void registerHooks();
     uint32_t doCommand(GameCommand command, const registers& registers);
-    bool sub_431E6A(const company_id_t company, Map::tile_element* const tile = nullptr);
+    bool sub_431E6A(const CompanyId_t company, Map::tile_element* const tile = nullptr);
 
     inline void do_0(EntityId_t source, EntityId_t dest)
     {

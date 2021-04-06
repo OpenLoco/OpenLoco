@@ -53,7 +53,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     };
 
     static window_event_list _events;
-    std::vector<const company*> _sortedCompanies;
+    std::vector<const Company*> _sortedCompanies;
 
     static loco_global<uint16_t, 0x0050A004> _50A004;
     static loco_global<int32_t, 0x00e3f0b8> gCurrentRotation;
@@ -84,7 +84,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
         sort(
             _sortedCompanies.begin(),
             _sortedCompanies.end(),
-            [](const company* a, const company* b) {
+            [](const Company* a, const Company* b) {
                 return a->performance_index > b->performance_index;
             });
 
@@ -225,7 +225,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
         auto x = window->x + frame.width() / 2 + 12;
         {
             auto companyValueString = StringIds::player_info_bankrupt;
-            if (!(playerCompany->challenge_flags & company_flags::bankrupt))
+            if (!(playerCompany->challenge_flags & CompanyFlags::bankrupt))
             {
                 if (static_cast<int16_t>(playerCompany->cash.var_04) < 0)
                 {
@@ -251,11 +251,11 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
         {
             auto performanceString = StringIds::player_info_performance;
 
-            if (playerCompany->challenge_flags & company_flags::increased_performance)
+            if (playerCompany->challenge_flags & CompanyFlags::increasedPerformance)
             {
                 performanceString = StringIds::player_info_performance_increase;
             }
-            else if (playerCompany->challenge_flags & (company_flags::decreased_performance))
+            else if (playerCompany->challenge_flags & (CompanyFlags::decreasedPerformance))
             {
                 performanceString = StringIds::player_info_performance_decrease;
             }

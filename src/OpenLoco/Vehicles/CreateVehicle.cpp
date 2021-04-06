@@ -34,7 +34,7 @@ namespace OpenLoco::Vehicles
     constexpr auto max_num_vehicle_components_in_car = num_vehicle_components_in_car_component * max_num_car_components_in_car;
     constexpr EntityId_t allocated_but_free_routing_station = -2; // Indicates that this array is allocated to a vehicle but no station has been set.
 
-    static loco_global<company_id_t, 0x009C68EB> _updating_company_id;
+    static loco_global<CompanyId_t, 0x009C68EB> _updating_company_id;
     static loco_global<string_id, 0x009C68E6> gGameCommandErrorText;
     static loco_global<uint8_t, 0x009C68EA> gGameCommandExpenditureType; // premultiplied by 4
     static loco_global<uint8_t, 0x009C68EE> _errorCompanyId;

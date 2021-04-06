@@ -334,15 +334,15 @@ namespace OpenLoco::Ui::TimePanel
 
         auto playerCompany = CompanyManager::get(CompanyManager::getControllingId());
 
-        if ((playerCompany->challenge_flags & company_flags::challenge_completed) != 0)
+        if ((playerCompany->challenge_flags & CompanyFlags::challengeCompleted) != 0)
         {
             args.push(StringIds::challenge_completed);
         }
-        else if ((playerCompany->challenge_flags & company_flags::challenge_failed) != 0)
+        else if ((playerCompany->challenge_flags & CompanyFlags::challengeFailed) != 0)
         {
             args.push(StringIds::challenge_failed);
         }
-        else if ((playerCompany->challenge_flags & company_flags::challenge_beaten_by_opponent) != 0)
+        else if ((playerCompany->challenge_flags & CompanyFlags::challengeBeatenByOpponent) != 0)
         {
             args.push(StringIds::empty);
         }

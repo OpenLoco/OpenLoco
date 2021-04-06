@@ -193,8 +193,8 @@ namespace OpenLoco::Vehicles
     {
         static constexpr auto vehicleThingType = VehicleThingType::head;
         uint8_t pad_20;
-        company_id_t owner; // 0x21
-        string_id name;     // 0x22, combined with ordinalNumber for strings 4 to 9
+        CompanyId_t owner; // 0x21
+        string_id name;    // 0x22, combined with ordinalNumber for strings 4 to 9
         uint8_t pad_24[0x26 - 0x24];
         EntityId_t head; // 0x26
         uint32_t var_28;
@@ -317,7 +317,7 @@ namespace OpenLoco::Vehicles
     {
         static constexpr auto vehicleThingType = VehicleThingType::vehicle_1;
         uint8_t pad_20;
-        company_id_t owner; // 0x21
+        CompanyId_t owner; // 0x21
         uint8_t pad_22[0x26 - 0x22];
         EntityId_t head; // 0x26
         uint32_t var_28;
@@ -356,7 +356,7 @@ namespace OpenLoco::Vehicles
     {
         static constexpr auto vehicleThingType = VehicleThingType::vehicle_2;
         uint8_t pad_20;
-        company_id_t owner; // 0x21
+        CompanyId_t owner; // 0x21
         uint8_t pad_22[0x26 - 0x22];
         EntityId_t head; // 0x26
         uint32_t var_28;
@@ -404,7 +404,7 @@ namespace OpenLoco::Vehicles
     {
         static constexpr auto vehicleThingType = VehicleThingType::body_continued;
         uint8_t pad_20;
-        company_id_t owner; // 0x21
+        CompanyId_t owner; // 0x21
         uint8_t pad_22[0x24 - 0x22];
         ColourScheme colour_scheme; // 0x24
         EntityId_t head;            // 0x26
@@ -466,7 +466,7 @@ namespace OpenLoco::Vehicles
     {
         static constexpr auto vehicleThingType = VehicleThingType::bogie;
         uint8_t pad_20;
-        company_id_t owner; // 0x21
+        CompanyId_t owner; // 0x21
         uint8_t pad_22[0x24 - 0x22];
         ColourScheme colour_scheme; // 0x24
         EntityId_t head;            // 0x26
@@ -517,7 +517,7 @@ namespace OpenLoco::Vehicles
     {
         static constexpr auto vehicleThingType = VehicleThingType::tail;
         uint8_t pad_20;
-        company_id_t owner; // 0x21
+        CompanyId_t owner; // 0x21
         uint8_t pad_22[0x26 - 0x22];
         EntityId_t head; // 0x26
         uint32_t var_28;
