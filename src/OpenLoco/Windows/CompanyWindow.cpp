@@ -565,7 +565,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
     }
 
     // 0x004347D0
-    static window* create(company_id_t companyId)
+    static window* create(CompanyId_t companyId)
     {
         const uint32_t newFlags = WindowFlags::flag_8 | WindowFlags::flag_11;
         auto window = WindowManager::createWindow(WindowType::company, Status::windowSize, newFlags, &Status::events);
@@ -584,7 +584,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
     }
 
     // 0x0043454F
-    window* open(company_id_t companyId)
+    window* open(CompanyId_t companyId)
     {
         auto window = WindowManager::bringToFront(WindowType::company, companyId);
         if (window != nullptr)
@@ -625,7 +625,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
     // 0x00435ACC
     window* openAndSetName()
     {
-        company_id_t companyId = CompanyManager::getControllingId();
+        CompanyId_t companyId = CompanyManager::getControllingId();
         window* self = open(companyId);
 
         // Allow setting company owner name if no preferred owner name has been set.
@@ -713,7 +713,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             Common::repositionTabs(self);
         }
 
-        static void drawAIdetails(Gfx::drawpixelinfo_t& dpi, const int32_t x, int32_t& y, const OpenLoco::company& company)
+        static void drawAIdetails(Gfx::drawpixelinfo_t& dpi, const int32_t x, int32_t& y, const OpenLoco::Company& company)
         {
             const auto competitor = ObjectManager::get<CompetitorObject>(company.competitor_id);
             {
@@ -771,11 +771,11 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 formatPerformanceIndex(company->performance_index, args);
 
                 string_id formatId = StringIds::company_details_performance;
-                if (company->challenge_flags & company_flags::decreased_performance)
+                if (company->challenge_flags & CompanyFlags::decreasedPerformance)
                 {
                     formatId = StringIds::company_details_performance_decreasing;
                 }
-                else if (company->challenge_flags & company_flags::increased_performance)
+                else if (company->challenge_flags & CompanyFlags::increasedPerformance)
                 {
                     formatId = StringIds::company_details_performance_increasing;
                 }
@@ -1675,7 +1675,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 auto args = FormatArguments::common(company->cash);
 
                 string_id cash_format = StringIds::cash_positive;
-                if ((company->challenge_flags & company_flags::bankrupt) != 0)
+                if ((company->challenge_flags & CompanyFlags::bankrupt) != 0)
                     cash_format = StringIds::cash_bankrupt;
                 if (company->cash.var_04 < 0)
                     cash_format = StringIds::cash_negative;
@@ -1738,7 +1738,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             y += 14;
         }
 
-        static currency48_t drawFinanceExpenditureColumn(Gfx::drawpixelinfo_t* context, const int16_t x, int16_t& y, uint8_t columnIndex, company& company)
+        static currency48_t drawFinanceExpenditureColumn(Gfx::drawpixelinfo_t* context, const int16_t x, int16_t& y, uint8_t columnIndex, Company& company)
         {
             currency48_t sum = 0;
             for (auto j = 0; j < ExpenditureType::Count; j++)
@@ -1975,7 +1975,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
     }
 
     // 0x004345EE
-    window* openFinances(company_id_t companyId)
+    window* openFinances(CompanyId_t companyId)
     {
         auto window = WindowManager::bringToFront(WindowType::company, companyId);
         if (window != nullptr)
@@ -2270,9 +2270,9 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 y += 5;
             }
 
-            company* playerCompany = CompanyManager::getPlayerCompany();
+            Company* playerCompany = CompanyManager::getPlayerCompany();
 
-            if ((playerCompany->challenge_flags & challenge_completed) != 0)
+            if ((playerCompany->challenge_flags & CompanyFlags::challengeCompleted) != 0)
             {
                 uint16_t years = objectiveCompletedChallengeInMonths / 12;
                 uint16_t months = objectiveCompletedChallengeInMonths % 12;
@@ -2282,13 +2282,13 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 return;
             }
 
-            if ((playerCompany->challenge_flags & challenge_failed) != 0)
+            if ((playerCompany->challenge_flags & CompanyFlags::challengeFailed) != 0)
             {
                 Gfx::drawString_495224(*dpi, self->x + 5, y, self->width - 10, Colour::black, StringIds::failed_you_failed_to_complete_the_challenge);
                 return;
             }
 
-            if ((playerCompany->challenge_flags & challenge_beaten_by_opponent) != 0)
+            if ((playerCompany->challenge_flags & CompanyFlags::challengeBeatenByOpponent) != 0)
             {
                 uint16_t years = objectiveCompletedChallengeInMonths / 12;
                 uint16_t months = objectiveCompletedChallengeInMonths % 12;
@@ -2380,7 +2380,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
     }
 
     // 00434731
-    window* openChallenge(company_id_t companyId)
+    window* openChallenge(CompanyId_t companyId)
     {
         auto window = WindowManager::bringToFront(WindowType::company, companyId);
         if (window != nullptr)
@@ -2453,7 +2453,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             if (itemIndex == -1)
                 return;
 
-            company_id_t companyId = Dropdown::getCompanyIdFromSelection(itemIndex);
+            CompanyId_t companyId = Dropdown::getCompanyIdFromSelection(itemIndex);
 
             // Try to find an open company window for this company.
             auto companyWindow = WindowManager::bringToFront(WindowType::company, companyId);

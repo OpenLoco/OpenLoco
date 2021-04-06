@@ -28,7 +28,7 @@ namespace OpenLoco::Ui::MessageWindow
 {
     static loco_global<Ui::window_number, 0x00523390> _toolWindowNumber;
     static loco_global<Ui::WindowType, 0x00523392> _toolWindowType;
-    static loco_global<company_id_t, 0x00525E3C> _playerCompany;
+    static loco_global<CompanyId_t, 0x00525E3C> _playerCompany;
     static loco_global<uint16_t, 0x005271CE> _messageCount;
     static loco_global<uint16_t, 0x005271D0> _activeMessageIndex;
 

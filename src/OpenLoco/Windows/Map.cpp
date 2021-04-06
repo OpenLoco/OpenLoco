@@ -68,7 +68,7 @@ namespace OpenLoco::Ui::Windows::Map
     static loco_global<uint8_t[19], 0x00F253DF> _byte_F253DF;
     static loco_global<uint8_t[19], 0x00F253F2> _routeColours;
     static loco_global<uint32_t, 0x00525E28> _dword_525E28;
-    static loco_global<company_id_t, 0x00525E3C> _playerCompanyId;
+    static loco_global<CompanyId_t, 0x00525E3C> _playerCompanyId;
     static loco_global<uint8_t[CompanyManager::max_companies + 1], 0x009C645C> _companyColours;
     static loco_global<int16_t, 0x112C876> _currentFontSpriteBase;
     static loco_global<char[512], 0x0112CC04> _stringFormatBuffer;

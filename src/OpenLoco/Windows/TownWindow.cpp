@@ -534,7 +534,7 @@ namespace OpenLoco::Ui::Windows::Town
             xPos += 4;
             yPos += 14;
             auto town = TownManager::get(self->number);
-            for (company_id_t i = 0; i < std::size(town->company_ratings); i++)
+            for (CompanyId_t i = 0; i < std::size(town->company_ratings); i++)
             {
                 if ((town->companies_with_rating & (1 << i)) == 0)
                     continue;

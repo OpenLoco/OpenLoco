@@ -30,7 +30,7 @@ namespace OpenLoco::Ui::Windows::Terraform
     static loco_global<int16_t, 0x0052337A> _dragLastY;
     static loco_global<Ui::WindowType, 0x00523392> _toolWindowType;
     static loco_global<int8_t, 0x00523393> _currentTool;
-    static loco_global<company_id_t, 0x00525E3C> _player_company;
+    static loco_global<CompanyId_t, 0x00525E3C> _player_company;
     static loco_global<uint32_t[32], 0x00525E5E> _currencyMultiplicationFactor;
     static loco_global<uint8_t, 0x00525FB1> _lastSelectedTree;
     static loco_global<uint8_t, 0x00525FB6> _grassLand;

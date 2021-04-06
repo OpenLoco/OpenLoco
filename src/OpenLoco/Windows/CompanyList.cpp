@@ -23,7 +23,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
     static loco_global<Ui::window_number, 0x00523390> _toolWindowNumber;
     static loco_global<Ui::WindowType, 0x00523392> _toolWindowType;
     static loco_global<uint16_t[3], 0x0052624E> _word_52624E;
-    static loco_global<company_id_t[3], 0x00526254> _byte_526254;
+    static loco_global<CompanyId_t[3], 0x00526254> _byte_526254;
     static loco_global<uint32_t[3], 0x00526258> _dword_526258;
     static loco_global<currency32_t[32][60], 0x009C68F8> _deliveredCargoPayment;
     static loco_global<uint16_t, 0x009C68C7> _word_9C68C7;
@@ -181,7 +181,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         // 0x00437BA0
-        static bool orderByName(const OpenLoco::company& lhs, const OpenLoco::company& rhs)
+        static bool orderByName(const OpenLoco::Company& lhs, const OpenLoco::Company& rhs)
         {
             char lhsString[256] = { 0 };
             StringManager::formatString(lhsString, lhs.name);
@@ -193,7 +193,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         // 0x00437BE1
-        static bool orderByStatus(const OpenLoco::company& lhs, const OpenLoco::company& rhs)
+        static bool orderByStatus(const OpenLoco::Company& lhs, const OpenLoco::Company& rhs)
         {
             char lhsString[256] = { 0 };
             {
@@ -213,7 +213,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         // 0x00437C53
-        static bool orderByPerformance(const OpenLoco::company& lhs, const OpenLoco::company& rhs)
+        static bool orderByPerformance(const OpenLoco::Company& lhs, const OpenLoco::Company& rhs)
         {
             auto lhsPerformance = lhs.performance_index;
 
@@ -223,7 +223,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         // 0x00437C67
-        static bool orderByValue(const OpenLoco::company& lhs, const OpenLoco::company& rhs)
+        static bool orderByValue(const OpenLoco::Company& lhs, const OpenLoco::Company& rhs)
         {
             auto lhsValue = lhs.companyValueHistory[0].var_04;
 
@@ -240,7 +240,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         // 0x00437BA0, 0x00437BE1, 0x00437C53, 0x00437C67
-        static bool getOrder(const SortMode mode, OpenLoco::company& lhs, OpenLoco::company& rhs)
+        static bool getOrder(const SortMode mode, OpenLoco::Company& lhs, OpenLoco::Company& rhs)
         {
             switch (mode)
             {
@@ -273,7 +273,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 if (company.empty())
                     continue;
 
-                if ((company.challenge_flags & company_flags::sorted) != 0)
+                if ((company.challenge_flags & CompanyFlags::sorted) != 0)
                     continue;
 
                 if (chosenCompany == -1)
@@ -292,7 +292,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             {
                 bool shouldInvalidate = false;
 
-                CompanyManager::get(chosenCompany)->challenge_flags |= company_flags::sorted;
+                CompanyManager::get(chosenCompany)->challenge_flags |= CompanyFlags::sorted;
 
                 if (chosenCompany != self->row_info[self->row_count])
                 {
@@ -513,7 +513,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 {
 
                     auto args = FormatArguments();
-                    CompanyManager::owner_status ownerStatus = CompanyManager::getOwnerStatus(company->id());
+                    CompanyManager::OwnerStatus ownerStatus = CompanyManager::getOwnerStatus(company->id());
                     args.push(ownerStatus.string);
                     args.push(ownerStatus.argument1);
                     args.push(ownerStatus.argument2);
@@ -523,11 +523,11 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
                 auto performanceStringId = StringIds::performance_index;
 
-                if ((company->challenge_flags & company_flags::increased_performance) && (company->challenge_flags & company_flags::decreased_performance))
+                if ((company->challenge_flags & CompanyFlags::increasedPerformance) && (company->challenge_flags & CompanyFlags::decreasedPerformance))
                 {
                     performanceStringId = StringIds::performance_index_decrease;
 
-                    if (company->challenge_flags & company_flags::increased_performance)
+                    if (company->challenge_flags & CompanyFlags::increasedPerformance)
                     {
                         performanceStringId = StringIds::performance_index_increase;
                     }
@@ -1697,7 +1697,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 if (company.empty())
                     continue;
 
-                company.challenge_flags &= ~company_flags::sorted;
+                company.challenge_flags &= ~CompanyFlags::sorted;
             }
         }
 

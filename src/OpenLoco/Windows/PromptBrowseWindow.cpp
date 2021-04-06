@@ -524,14 +524,14 @@ namespace OpenLoco::Ui::PromptBrowse
 
         // Challenge progress
         auto flags = saveInfo.challenge_flags;
-        if (!(flags & company_flags::challenge_beaten_by_opponent))
+        if (!(flags & CompanyFlags::challengeBeatenByOpponent))
         {
             auto stringId = StringIds::window_browse_challenge_completed;
             int16_t progress = 0;
-            if (!(flags & company_flags::challenge_completed))
+            if (!(flags & CompanyFlags::challengeCompleted))
             {
                 stringId = StringIds::window_browse_challenge_failed;
-                if (!(flags & company_flags::challenge_failed))
+                if (!(flags & CompanyFlags::challengeFailed))
                 {
                     stringId = StringIds::window_browse_challenge_progress;
                     progress = saveInfo.challenge_progress;

@@ -13,9 +13,9 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco
 {
-    static loco_global<company_id_t[2], 0x00525E3C> _playerCompanies;
+    static loco_global<CompanyId_t[2], 0x00525E3C> _playerCompanies;
 
-    bool isPlayerCompany(company_id_t id)
+    bool isPlayerCompany(CompanyId_t id)
     {
         auto findResult = std::find(
             _playerCompanies.begin(),
@@ -24,19 +24,19 @@ namespace OpenLoco
         return findResult != _playerCompanies.end();
     }
 
-    company_id_t company::id() const
+    CompanyId_t Company::id() const
     {
-        auto first = (company*)0x00531784;
-        return (company_id_t)(this - first);
+        auto first = (Company*)0x00531784;
+        return (CompanyId_t)(this - first);
     }
 
-    bool company::empty() const
+    bool Company::empty() const
     {
         return name == StringIds::empty;
     }
 
     // 0x00430762
-    void company::aiThink()
+    void Company::aiThink()
     {
         registers regs;
         regs.esi = (int32_t)this;
@@ -44,7 +44,7 @@ namespace OpenLoco
     }
 
     // 0x00437ED0
-    void company::recalculateTransportCounts()
+    void Company::recalculateTransportCounts()
     {
         // Reset all counts to 0
         for (auto& count : transportTypeCount)
@@ -104,7 +104,7 @@ namespace OpenLoco
         args.push(getCorporateRatingAsStringId(performanceToRating(performanceIndex)));
     }
 
-    bool company::isVehicleIndexUnlocked(const uint8_t vehicleIndex) const
+    bool Company::isVehicleIndexUnlocked(const uint8_t vehicleIndex) const
     {
         auto vehicleTypeIndex = vehicleIndex >> 5;
 

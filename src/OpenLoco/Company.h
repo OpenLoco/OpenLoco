@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Currency.h"
-#include "Localisation/StringManager.h"
 #include "Management/Expenditures.h"
 #include "Types.hpp"
 #include <cstddef>
@@ -13,20 +12,20 @@ namespace OpenLoco
 
     namespace CompanyId
     {
-        constexpr company_id_t neutral = 15;
-        constexpr company_id_t null = std::numeric_limits<company_id_t>::max();
+        constexpr CompanyId_t neutral = 15;
+        constexpr CompanyId_t null = std::numeric_limits<CompanyId_t>::max();
     }
 
-    enum company_flags
+    namespace CompanyFlags
     {
-        sorted = (1 << 3),                       // 0x08
-        increased_performance = (1 << 4),        // 0x10
-        decreased_performance = (1 << 5),        // 0x20
-        challenge_completed = (1 << 6),          // 0x40
-        challenge_failed = (1 << 7),             // 0x80
-        challenge_beaten_by_opponent = (1 << 8), // 0x100
-        bankrupt = (1 << 9),                     // 0x200
-    };
+        constexpr uint32_t sorted = (1 << 3);                    // 0x08
+        constexpr uint32_t increasedPerformance = (1 << 4);      // 0x10
+        constexpr uint32_t decreasedPerformance = (1 << 5);      // 0x20
+        constexpr uint32_t challengeCompleted = (1 << 6);        // 0x40
+        constexpr uint32_t challengeFailed = (1 << 7);           // 0x80
+        constexpr uint32_t challengeBeatenByOpponent = (1 << 8); // 0x100
+        constexpr uint32_t bankrupt = (1 << 9);                  // 0x200
+    }
 
     enum class CorporateRating
     {
@@ -47,7 +46,7 @@ namespace OpenLoco
     constexpr size_t expenditureHistoryCapacity = 16;
 
 #pragma pack(push, 1)
-    struct company
+    struct Company
     {
         string_id name;
         string_id owner_name;
@@ -91,7 +90,7 @@ namespace OpenLoco
         uint16_t jail_status;                       // 0x8E34
         uint8_t pad_8E36[0x8FA8 - 0x8E36];
 
-        company_id_t id() const;
+        CompanyId_t id() const;
         bool empty() const;
         void aiThink();
         bool isVehicleIndexUnlocked(const uint8_t vehicleIndex) const;
@@ -99,14 +98,14 @@ namespace OpenLoco
     };
 #pragma pack(pop)
 
-    static_assert(sizeof(company) == 0x8FA8);
-    static_assert(sizeof(company::expenditures) == 0x440);
-    static_assert(offsetof(company, companyValueHistory[0]) == 0x88CE);
-    static_assert(offsetof(company, vehicleProfit) == 0x8B9E);
-    static_assert(offsetof(company, challengeProgress) == 0x8C4E);
-    static_assert(offsetof(company, var_8BB0) == 0x8BB0);
+    static_assert(sizeof(Company) == 0x8FA8);
+    static_assert(sizeof(Company::expenditures) == 0x440);
+    static_assert(offsetof(Company, companyValueHistory[0]) == 0x88CE);
+    static_assert(offsetof(Company, vehicleProfit) == 0x8B9E);
+    static_assert(offsetof(Company, challengeProgress) == 0x8C4E);
+    static_assert(offsetof(Company, var_8BB0) == 0x8BB0);
 
-    bool isPlayerCompany(company_id_t id);
+    bool isPlayerCompany(CompanyId_t id);
     constexpr CorporateRating performanceToRating(int16_t performanceIndex);
     void formatPerformanceIndex(const int16_t performanceIndex, FormatArguments& args);
 }

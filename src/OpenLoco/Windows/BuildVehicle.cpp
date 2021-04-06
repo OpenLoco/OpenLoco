@@ -242,15 +242,15 @@ namespace OpenLoco::Ui::BuildVehicle
     static void resetTrackTypeTabSelection(Ui::window* window);
     static void setTopToolbarLastTrack(uint8_t trackType, bool isRoad);
     static void setTransportTypeTabs(Ui::window* window);
-    static void drawVehicleOverview(Gfx::drawpixelinfo_t* dpi, int16_t vehicleTypeIdx, company_id_t company, uint8_t eax, uint8_t esi, Gfx::point_t offset);
-    static int16_t drawVehicleInline(Gfx::drawpixelinfo_t* dpi, int16_t vehicleTypeIdx, uint8_t unk_1, company_id_t company, Gfx::point_t loc);
+    static void drawVehicleOverview(Gfx::drawpixelinfo_t* dpi, int16_t vehicleTypeIdx, CompanyId_t company, uint8_t eax, uint8_t esi, Gfx::point_t offset);
+    static int16_t drawVehicleInline(Gfx::drawpixelinfo_t* dpi, int16_t vehicleTypeIdx, uint8_t unk_1, CompanyId_t company, Gfx::point_t loc);
     static void drawTransportTypeTabs(Ui::window* window, Gfx::drawpixelinfo_t* dpi);
     static void drawTrackTypeTabs(Ui::window* window, Gfx::drawpixelinfo_t* dpi);
 
     static void initEvents();
 
     // 0x4C1C64
-    static window* create(company_id_t company)
+    static window* create(CompanyId_t company)
     {
         initEvents();
         auto window = WindowManager::createWindow(WindowType::buildVehicle, window_size, WindowFlags::flag_11, &_events);
@@ -1393,7 +1393,7 @@ namespace OpenLoco::Ui::BuildVehicle
     }
 
     // 0x4B7741
-    static void drawVehicleOverview(Gfx::drawpixelinfo_t* dpi, int16_t vehicleTypeIdx, company_id_t company, uint8_t eax, uint8_t esi, Gfx::point_t offset)
+    static void drawVehicleOverview(Gfx::drawpixelinfo_t* dpi, int16_t vehicleTypeIdx, CompanyId_t company, uint8_t eax, uint8_t esi, Gfx::point_t offset)
     {
         registers regs;
         regs.cx = offset.x;
@@ -1407,7 +1407,7 @@ namespace OpenLoco::Ui::BuildVehicle
     }
 
     // 0x4B7711
-    static int16_t drawVehicleInline(Gfx::drawpixelinfo_t* dpi, int16_t vehicleTypeIdx, uint8_t unk_1, company_id_t company, Gfx::point_t loc)
+    static int16_t drawVehicleInline(Gfx::drawpixelinfo_t* dpi, int16_t vehicleTypeIdx, uint8_t unk_1, CompanyId_t company, Gfx::point_t loc)
     {
         registers regs;
 

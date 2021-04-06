@@ -8,7 +8,7 @@ using namespace OpenLoco::Interop;
 namespace OpenLoco::Ui::Windows::MapToolTip
 {
     static loco_global<string_id[20], 0x0050A018> _mapTooltipFormatArguments;
-    static loco_global<company_id_t, 0x0050A040> _mapTooltipOwner;
+    static loco_global<CompanyId_t, 0x0050A040> _mapTooltipOwner;
 
     // 0x004CEEA7
     void open()
@@ -16,7 +16,7 @@ namespace OpenLoco::Ui::Windows::MapToolTip
         call(0x004CEEA7);
     }
 
-    void setOwner(company_id_t company)
+    void setOwner(CompanyId_t company)
     {
         _mapTooltipOwner = company;
     }

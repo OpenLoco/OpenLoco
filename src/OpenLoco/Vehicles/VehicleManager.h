@@ -2,10 +2,10 @@
 
 namespace OpenLoco
 {
-    struct company;
+    struct Company;
 }
 
 namespace OpenLoco::VehicleManager
 {
-    void determineAvailableVehicles(company& company);
+    void determineAvailableVehicles(Company& company);
 }

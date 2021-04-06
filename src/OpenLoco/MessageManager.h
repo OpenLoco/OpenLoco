@@ -41,7 +41,7 @@ namespace OpenLoco::MessageManager
     // dx: subjectId C
     void post(
         messageType type,
-        company_id_t companyId,
+        CompanyId_t companyId,
         uint16_t subjectIdA,
         uint16_t subjectIdB,
         uint16_t subjectIdC = 0xFFFF);

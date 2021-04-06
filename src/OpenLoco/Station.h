@@ -83,7 +83,7 @@ namespace OpenLoco
         coord_t y{};                      // 0x04
         coord_t z{};                      // 0x06
         LabelPosition labelPosition;      // 0x08
-        company_id_t owner{};             // 0x28
+        CompanyId_t owner{};              // 0x28
         uint8_t var_29{};
         uint16_t flags{};                                 // 0x2A
         TownId_t town{};                                  // 0x2C
