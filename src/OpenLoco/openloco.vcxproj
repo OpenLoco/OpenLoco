@@ -234,6 +234,7 @@
     <ClInclude Include="Input\ShortcutManager.h" />
     <ClInclude Include="Interop\Interop.hpp" />
     <ClInclude Include="Intro.h" />
+    <ClInclude Include="LabelFrame.h" />
     <ClInclude Include="Localisation\ArgsWrapper.hpp" />
     <ClInclude Include="Localisation\Conversion.h" />
     <ClInclude Include="Localisation\FormatArguments.hpp" />

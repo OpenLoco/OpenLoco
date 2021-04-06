@@ -598,7 +598,7 @@ namespace OpenLoco::Paint
                 continue;
             }
 
-            if (!station.labelPosition.contains(rect, (*_dpi)->zoom_level))
+            if (!station.labelFrame.contains(rect, (*_dpi)->zoom_level))
             {
                 continue;
             }
@@ -630,7 +630,7 @@ namespace OpenLoco::Paint
                 continue;
             }
 
-            if (!town.labelPosition.contains(rect, (*_dpi)->zoom_level))
+            if (!town.labelFrame.contains(rect, (*_dpi)->zoom_level))
             {
                 continue;
             }

@@ -1,7 +1,8 @@
 #pragma once
 
+#include "LabelFrame.h"
+#include "Localisation/StringManager.h"
 #include "Map/Tile.h"
-#include "Town.h"
 #include "Types.hpp"
 #include "Utility/Numeric.hpp"
 #include <cstdint>
@@ -80,7 +81,7 @@ namespace OpenLoco
         coord_t x{};                      // 0x02
         coord_t y{};                      // 0x04
         coord_t z{};                      // 0x06
-        LabelPosition labelPosition;      // 0x08
+        LabelFrame labelFrame;            // 0x08
         CompanyId_t owner{};              // 0x28
         uint8_t var_29{};
         uint16_t flags{};                               // 0x2A
