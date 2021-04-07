@@ -55,7 +55,7 @@ namespace OpenLoco
 
     struct Exhaust : MiscBase
     {
-        uint8_t pad_20[0x26 - 0x20];
+        uint8_t pad_24[0x26 - 0x24];
         int16_t var_26;
         int16_t var_28;
         uint8_t pad_2A[0x32 - 0x2A];
@@ -69,10 +69,11 @@ namespace OpenLoco
 
         static Exhaust* create(Map::map_pos3 loc, uint8_t type);
     };
+    static_assert(sizeof(Exhaust) == 0x4A);
 
     struct MoneyEffect : MiscBase
     {
-        uint8_t pad_20[0x26 - 0x20];
+        uint8_t pad_24[0x26 - 0x24];
         uint16_t var_26;
         uint16_t var_28;
         int32_t amount; // 0x2A - currency amount in British pounds - different currencies are probably getting recalculated
@@ -83,46 +84,53 @@ namespace OpenLoco
 
         static MoneyEffect* create(const Map::map_pos3& loc, const CompanyId_t company, const currency32_t amount);
     };
+    static_assert(sizeof(MoneyEffect) == 0x48);
 
     struct VehicleCrashParticle : MiscBase
     {
-        uint8_t pad_20[0x28 - 0x20];
+        uint8_t pad_24[0x28 - 0x24];
         uint16_t frame; // 0x28
         uint8_t pad_2A[0x2E - 0x2A];
         ColourScheme colourScheme;  // 0x2E
         uint16_t crashedSpriteBase; // 0x30 crashed_sprite_base
     };
+    static_assert(sizeof(VehicleCrashParticle) == 0x32);
 
     struct ExplosionCloud : MiscBase
     {
-        uint8_t pad_20[0x28 - 0x20];
+        uint8_t pad_24[0x28 - 0x24];
         uint16_t frame; // 0x28
     };
+    static_assert(sizeof(ExplosionCloud) == 0x2A);
 
     struct Splash : MiscBase
     {
-        uint8_t pad_20[0x28 - 0x20];
+        uint8_t pad_24[0x28 - 0x24];
         uint16_t frame; // 0x28
     };
+    static_assert(sizeof(Splash) == 0x2A);
 
     struct Fireball : MiscBase
     {
-        uint8_t pad_20[0x28 - 0x20];
+        uint8_t pad_24[0x28 - 0x24];
         uint16_t frame; // 0x28
     };
+    static_assert(sizeof(Fireball) == 0x2A);
 
     struct ExplosionSmoke : MiscBase
     {
-        uint8_t pad_20[0x28 - 0x20];
+        uint8_t pad_24[0x28 - 0x24];
         uint16_t frame; // 0x28
     };
+    static_assert(sizeof(ExplosionSmoke) == 0x2A);
 
     struct Smoke : MiscBase
     {
-        uint8_t pad_20[0x28 - 0x20];
+        uint8_t pad_24[0x28 - 0x24];
         uint16_t frame; // 0x28
 
         static Smoke* create(Map::map_pos3 loc);
     };
+    static_assert(sizeof(Smoke) == 0x2A);
 #pragma pack(pop)
 }

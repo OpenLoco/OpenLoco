@@ -10,9 +10,7 @@ namespace OpenLoco::Vehicles
     // There are some common elements in the vehicle components at various offsets these can be accessed via VehicleBase
     struct VehicleCommon : VehicleBase
     {
-        uint8_t pad_20;
-        CompanyId_t owner; // 0x21
-        uint8_t pad_22[0x26 - 0x22];
+        uint8_t pad_24[0x24 - 0x22];
         EntityId_t head; // 0x26
         uint16_t var_28; // 0x28
         uint8_t pad_2A[0x2C - 0x2A];
@@ -47,12 +45,6 @@ namespace OpenLoco::Vehicles
     {
         const auto* veh = reinterpret_cast<const VehicleCommon*>(this);
         return veh->mode;
-    }
-
-    uint8_t VehicleBase::getOwner() const
-    {
-        const auto* veh = reinterpret_cast<const VehicleCommon*>(this);
-        return veh->owner;
     }
 
     uint8_t VehicleBase::getFlags38() const

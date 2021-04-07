@@ -95,7 +95,7 @@ namespace OpenLoco::Input
                 continue;
 
             auto t = EntityManager::get<Vehicles::VehicleBase>(w->number);
-            if (t->getOwner() != CompanyManager::getControllingId())
+            if (t->owner != CompanyManager::getControllingId())
                 continue;
 
             if (t->getTransportMode() != TransportMode::rail)

@@ -70,6 +70,9 @@ namespace OpenLoco
         int16_t sprite_bottom; // 0x1C
         uint8_t sprite_yaw;    // 0x1E
         Pitch sprite_pitch;    // 0x1F
+        uint8_t pad_20;
+        CompanyId_t owner; // 0x21
+        string_id name;    // 0x22, combined with ordinalNumber on vehicles
 
         void moveTo(Map::map_pos3 loc);
         void invalidateSprite();
@@ -93,7 +96,7 @@ namespace OpenLoco
     struct Entity : EntityBase
     {
     private:
-        uint8_t pad_20[0x80 - 0x20];
+        uint8_t pad_24[0x80 - 0x24];
     };
     static_assert(sizeof(Entity) == 0x80);
 #pragma pack(pop)
