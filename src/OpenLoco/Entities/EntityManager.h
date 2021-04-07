@@ -109,6 +109,9 @@ namespace OpenLoco::EntityManager
         using iterator_category = std::forward_iterator_tag;
     };
 
+    template<typename T>
+    using EntityListIterator = ListIterator<T, &EntityBase::next_thing_id>;
+
     template<typename T, EntityListType list>
     class EntityList
     {
@@ -131,7 +134,7 @@ namespace OpenLoco::EntityManager
         }
     };
 
-    using VehicleList = EntityList<ListIterator<Vehicles::VehicleHead, &EntityBase::next_thing_id>, EntityListType::vehicleHead>;
+    using VehicleList = EntityList<EntityListIterator<Vehicles::VehicleHead>, EntityListType::vehicleHead>;
 
     class EntityTileList
     {

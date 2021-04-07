@@ -243,6 +243,25 @@ namespace OpenLoco::EntityManager
     // 0x0046FED5
     void zeroUnused()
     {
-        call(0x0046FED5);
+        for (auto* ent : EntityList<EntityListIterator<EntityBase>, EntityListType::null>())
+        {
+            auto next = ent->next_thing_id;
+            auto id = ent->id;
+            std::fill_n(reinterpret_cast<uint8_t*>(ent), sizeof(Entity), 0);
+            ent->base_type = EntityBaseType::null;
+            ent->next_thing_id = next;
+            ent->id = id;
+            ent->linkedListOffset = static_cast<uint8_t>(EntityListType::null) * 2;
+        }
+        for (auto* ent : EntityList<EntityListIterator<EntityBase>, EntityListType::null2>())
+        {
+            auto next = ent->next_thing_id;
+            auto id = ent->id;
+            std::fill_n(reinterpret_cast<uint8_t*>(ent), sizeof(Entity), 0);
+            ent->base_type = EntityBaseType::null;
+            ent->next_thing_id = next;
+            ent->id = id;
+            ent->linkedListOffset = static_cast<uint8_t>(EntityListType::null2) * 2;
+        }
     }
 }
