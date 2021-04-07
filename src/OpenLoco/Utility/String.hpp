@@ -7,6 +7,7 @@
 
 namespace OpenLoco::Utility
 {
+    int32_t strlogicalcmp(std::string_view s1, std::string_view s2);
     std::string toUtf8(const std::wstring_view& src);
     std::wstring toUtf16(const std::string_view& src);
 

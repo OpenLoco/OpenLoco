@@ -13,6 +13,7 @@
 #include "../StationManager.h"
 #include "../Ui/Dropdown.h"
 #include "../Ui/WindowManager.h"
+#include "../Utility/String.hpp"
 #include "../Vehicles/Orders.h"
 #include "../Vehicles/Vehicle.h"
 #include "../Widget.h"
@@ -123,7 +124,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         args = FormatArguments::common(rhs.ordinalNumber);
         StringManager::formatString(rhsString, rhs.name, &args);
 
-        return strcmp(lhsString, rhsString) < 0;
+        return Utility::strlogicalcmp(lhsString, rhsString) < 0;
     }
 
     // 0x004C1EC9
