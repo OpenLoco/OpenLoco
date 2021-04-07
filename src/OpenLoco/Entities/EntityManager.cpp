@@ -1,6 +1,7 @@
 #include "EntityManager.h"
 #include "../Console.h"
 #include "../Interop/Interop.hpp"
+#include "../Localisation/StringIds.h"
 #include "../Map/Tile.h"
 #include "../OpenLoco.h"
 #include "../Vehicles/Vehicle.h"
@@ -76,9 +77,35 @@ namespace OpenLoco::EntityManager
     // 0x004700A5
     EntityBase* createEntity()
     {
-        registers regs;
-        call(0x004700A5, regs);
-        return (EntityBase*)regs.esi;
+        if (getListCount(EntityListType::misc) >= 4000)
+        {
+            return nullptr;
+        }
+        if (getListCount(EntityListType::null) <= 0)
+        {
+            return nullptr;
+        }
+
+        auto newId = _heads[static_cast<uint8_t>(EntityListType::null)];
+        auto* newEntity = get<EntityBase>(newId);
+        moveEntityToList(newEntity, EntityListType::misc);
+
+        newEntity->x = Location::null;
+        newEntity->y = Location::null;
+        newEntity->z = 0;
+        auto index = getSpatialIndexOffset({ Location::null, Location::null });
+        auto nextSpatialId = _entitySpatialIndex[index];
+        _entitySpatialIndex[index] = newEntity->id;
+        newEntity->nextQuadrantId = nextSpatialId;
+
+        newEntity->name = StringIds::empty_pop;
+        newEntity->var_14 = 16;
+        newEntity->var_09 = 20;
+        newEntity->var_15 = 8;
+        newEntity->var_0C = 0;
+        newEntity->sprite_left = Location::null;
+
+        return newEntity;
     }
 
     // 0x0047011C
