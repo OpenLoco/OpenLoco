@@ -1,45 +1,12 @@
 #pragma once
 
 #include "Company.h"
-#include "Localisation/StringManager.h"
+#include "LabelFrame.h"
 #include "Map/Tile.h"
-#include "ZoomLevel.hpp"
-#include <cstdint>
 #include <limits>
 
 namespace OpenLoco
 {
-#pragma pack(push, 1)
-    struct LabelPosition
-    {
-        int16_t left[ZoomLevel::max]{};
-        int16_t right[ZoomLevel::max]{};
-        int16_t top[ZoomLevel::max]{};
-        int16_t bottom[ZoomLevel::max]{};
-
-        [[nodiscard]] bool contains(OpenLoco::Ui::Rect& rec, uint8_t zoom) const
-        {
-            if (rec.top() > bottom[zoom])
-            {
-                return false;
-            }
-            if (rec.bottom() < top[zoom])
-            {
-                return false;
-            }
-            if (rec.left() > right[zoom])
-            {
-                return false;
-            }
-            if (rec.right() < left[zoom])
-            {
-                return false;
-            }
-            return true;
-        }
-    };
-#pragma pack(pop)
-
     namespace TownId
     {
         constexpr TownId_t null = std::numeric_limits<TownId_t>::max();
@@ -63,11 +30,11 @@ namespace OpenLoco
 #pragma pack(push, 1)
     struct Town
     {
-        string_id name;              // 0x00
-        coord_t x;                   // 0x02
-        coord_t y;                   // 0x04
-        uint16_t flags;              // 0x06
-        LabelPosition labelPosition; // 0x08
+        string_id name;        // 0x00
+        coord_t x;             // 0x02
+        coord_t y;             // 0x04
+        uint16_t flags;        // 0x06
+        LabelFrame labelFrame; // 0x08
         uint8_t pad_28[0x30 - 0x28];
         uint32_t population; // 0x30
         uint8_t pad_34[0x38 - 0x34];
