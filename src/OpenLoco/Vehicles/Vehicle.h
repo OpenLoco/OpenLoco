@@ -219,7 +219,7 @@ namespace OpenLoco::Vehicles
         uint32_t var_4E;           // 0x4E
         uint8_t var_52;
         uint8_t pad_53;
-        station_id_t stationId; // 0x54
+        StationId_t stationId; // 0x54
         uint16_t var_56;
         uint32_t var_58;
         uint8_t var_5C;
@@ -266,8 +266,8 @@ namespace OpenLoco::Vehicles
         bool landTryBeginUnloading();
         bool landLoadingUpdate();
         bool landNormalMovementUpdate();
-        bool trainNormalMovementUpdate(uint8_t al, uint8_t flags, station_id_t nextStation);
-        bool roadNormalMovementUpdate(uint8_t al, station_id_t nextStation);
+        bool trainNormalMovementUpdate(uint8_t al, uint8_t flags, StationId_t nextStation);
+        bool roadNormalMovementUpdate(uint8_t al, StationId_t nextStation);
         bool landReverseFromSignal();
         bool updateAir();
         bool airplaneLoadingUpdate();
@@ -277,7 +277,7 @@ namespace OpenLoco::Vehicles
         std::pair<Status, Speed16> airplaneGetNewStatus();
         uint8_t airportGetNextMovementEdge(uint8_t curEdge);
         std::tuple<uint32_t, uint16_t, uint8_t> sub_427122();
-        std::pair<uint32_t, Map::map_pos3> airportGetMovementEdgeTarget(station_id_t targetStation, uint8_t curEdge);
+        std::pair<uint32_t, Map::map_pos3> airportGetMovementEdgeTarget(StationId_t targetStation, uint8_t curEdge);
         bool updateWater();
         uint32_t getVehicleTotalLength();
         void tryCreateInitialMovementSound();
@@ -294,17 +294,17 @@ namespace OpenLoco::Vehicles
         void advanceToNextRoutableOrder();
         Status sub_427BF2();
         void produceLeavingDockSound();
-        std::tuple<station_id_t, Map::map_pos, Map::map_pos3> sub_427FC9();
+        std::tuple<StationId_t, Map::map_pos, Map::map_pos3> sub_427FC9();
         void produceTouchdownAirportSound();
         uint8_t sub_4AA36A();
         void sub_4AD778();
         void sub_4AA625();
-        std::tuple<uint8_t, uint8_t, station_id_t> sub_4ACEE7(uint32_t unk1, uint32_t var_113612C);
+        std::tuple<uint8_t, uint8_t, StationId_t> sub_4ACEE7(uint32_t unk1, uint32_t var_113612C);
         bool sub_4AC1C2();
         bool sub_4AC0A3();
         bool sub_4ACCDC();
         void sub_4AD93A();
-        station_id_t manualFindTrainStationAtLocation();
+        StationId_t manualFindTrainStationAtLocation();
         bool sub_4BADE4();
         bool isOnExpectedRoadOrTrack();
         void sub_4ADB47(bool unk);
@@ -429,7 +429,7 @@ namespace OpenLoco::Vehicles
         uint32_t accepted_cargo_types; // 0x48
         uint8_t cargo_type;            // 0x4C
         uint8_t max_cargo;             // 0x4D
-        station_id_t townCargoFrom;    // 0x4E
+        StationId_t townCargoFrom;     // 0x4E
         uint8_t pad_50;
         uint8_t primaryCargoQty; // 0x51
         uint8_t pad_52[0x54 - 0x52];
@@ -491,7 +491,7 @@ namespace OpenLoco::Vehicles
         uint32_t accepted_cargo_types; // 0x48 front car component front bogie only
         uint8_t cargo_type;            // 0x4C front car component front bogie only
         uint8_t max_cargo;             // 0x4D front car component front bogie only
-        station_id_t townCargoFrom;    // 0x4E
+        StationId_t townCargoFrom;     // 0x4E
         uint8_t pad_50;
         uint8_t secondaryCargoQty; // 0x51 front car component front bogie only
         uint8_t pad_52[0x54 - 0x52];

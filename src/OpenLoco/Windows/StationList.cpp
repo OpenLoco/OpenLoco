@@ -76,11 +76,11 @@ namespace OpenLoco::Ui::Windows::StationList
     };
 
     static TabDetails tabInformationByType[] = {
-        { tab_all_stations, StringIds::stringid_all_stations, InterfaceSkin::ImageIds::all_stations, station_mask_all_modes },
-        { tab_rail_stations, StringIds::stringid_rail_stations, InterfaceSkin::ImageIds::rail_stations, station_flags::transport_mode_rail },
-        { tab_road_stations, StringIds::stringid_road_stations, InterfaceSkin::ImageIds::road_stations, station_flags::transport_mode_road },
-        { tab_airports, StringIds::stringid_airports, InterfaceSkin::ImageIds::airports, station_flags::transport_mode_air },
-        { tab_ship_ports, StringIds::stringid_ship_ports, InterfaceSkin::ImageIds::ship_ports, station_flags::transport_mode_water }
+        { tab_all_stations, StringIds::stringid_all_stations, InterfaceSkin::ImageIds::all_stations, StationFlags::allModes },
+        { tab_rail_stations, StringIds::stringid_rail_stations, InterfaceSkin::ImageIds::rail_stations, StationFlags::transportModeRail },
+        { tab_road_stations, StringIds::stringid_road_stations, InterfaceSkin::ImageIds::road_stations, StationFlags::transportModeRoad },
+        { tab_airports, StringIds::stringid_airports, InterfaceSkin::ImageIds::airports, StationFlags::transportModeAir },
+        { tab_ship_ports, StringIds::stringid_ship_ports, InterfaceSkin::ImageIds::ship_ports, StationFlags::transportModeWater }
     };
 
     enum SortMode : uint16_t
@@ -138,13 +138,13 @@ namespace OpenLoco::Ui::Windows::StationList
 
             if (station.owner == window->number)
             {
-                station.flags &= ~station_flags::flag_4;
+                station.flags &= ~StationFlags::flag_4;
             }
         }
     }
 
     // 0x004911FD
-    static bool orderByName(const OpenLoco::station& lhs, const OpenLoco::station& rhs)
+    static bool orderByName(const OpenLoco::Station& lhs, const OpenLoco::Station& rhs)
     {
         char lhsString[256] = { 0 };
         StringManager::formatString(lhsString, lhs.name, (void*)&lhs.town);
@@ -156,16 +156,16 @@ namespace OpenLoco::Ui::Windows::StationList
     }
 
     // 0x00491281, 0x00491247
-    static bool orderByQuantity(const OpenLoco::station& lhs, const OpenLoco::station& rhs)
+    static bool orderByQuantity(const OpenLoco::Station& lhs, const OpenLoco::Station& rhs)
     {
         uint32_t lhsSum = 0;
-        for (auto cargo : lhs.cargo_stats)
+        for (const auto& cargo : lhs.cargo_stats)
         {
             lhsSum += cargo.quantity;
         }
 
         uint32_t rhsSum = 0;
-        for (auto cargo : rhs.cargo_stats)
+        for (const auto& cargo : rhs.cargo_stats)
         {
             rhsSum += cargo.quantity;
         }
@@ -174,7 +174,7 @@ namespace OpenLoco::Ui::Windows::StationList
     }
 
     // 0x004912BB
-    static bool orderByAccepts(const OpenLoco::station& lhs, const OpenLoco::station& rhs)
+    static bool orderByAccepts(const OpenLoco::Station& lhs, const OpenLoco::Station& rhs)
     {
         char* ptr;
 
@@ -202,7 +202,7 @@ namespace OpenLoco::Ui::Windows::StationList
     }
 
     // 0x004911FD, 0x00491247, 0x00491281, 0x004912BB
-    static bool getOrder(const SortMode mode, const OpenLoco::station& lhs, const OpenLoco::station& rhs)
+    static bool getOrder(const SortMode mode, const OpenLoco::Station& lhs, const OpenLoco::Station& rhs)
     {
         switch (mode)
         {
@@ -236,14 +236,14 @@ namespace OpenLoco::Ui::Windows::StationList
             if (station.owner != window->number)
                 continue;
 
-            if ((station.flags & station_flags::flag_5) != 0)
+            if ((station.flags & StationFlags::flag_5) != 0)
                 continue;
 
             const uint16_t mask = tabInformationByType[window->current_tab].stationMask;
             if ((station.flags & mask) == 0)
                 continue;
 
-            if ((station.flags & station_flags::flag_4) != 0)
+            if ((station.flags & StationFlags::flag_4) != 0)
                 continue;
 
             if (edi == -1)
@@ -262,7 +262,7 @@ namespace OpenLoco::Ui::Windows::StationList
         {
             bool dl = false;
 
-            StationManager::get(edi)->flags |= station_flags::flag_4;
+            StationManager::get(edi)->flags |= StationFlags::flag_4;
 
             auto ebp = window->row_count;
             if (edi != window->row_info[ebp])
@@ -477,7 +477,7 @@ namespace OpenLoco::Ui::Windows::StationList
         uint16_t yPos = 0;
         for (uint16_t i = 0; i < window->var_83C; i++)
         {
-            station_id_t stationId = window->row_info[i];
+            StationId_t stationId = window->row_info[i];
 
             // Skip items outside of view, or irrelevant to the current filter.
             if (yPos + rowHeight < dpi->y || yPos >= yPos + rowHeight + dpi->height || stationId == (uint16_t)-1)
@@ -514,7 +514,7 @@ namespace OpenLoco::Ui::Windows::StationList
 
             // Total units waiting.
             uint16_t totalUnits = 0;
-            for (auto stats : station->cargo_stats)
+            for (const auto& stats : station->cargo_stats)
                 totalUnits += stats.quantity;
 
             _common_format_args[0] = StringIds::num_units;
@@ -551,7 +551,7 @@ namespace OpenLoco::Ui::Windows::StationList
         auto skin = ObjectManager::get<InterfaceSkinObject>();
         auto companyColour = CompanyManager::getCompanyColour(window->number);
 
-        for (auto tab : tabInformationByType)
+        for (const auto& tab : tabInformationByType)
         {
             uint32_t image = Gfx::recolour(skin->img + tab.imageId, companyColour);
             Widget::draw_tab(window, dpi, image, tab.widgetIndex);

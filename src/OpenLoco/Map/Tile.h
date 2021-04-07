@@ -11,6 +11,7 @@ namespace OpenLoco
 {
     struct BuildingObject;
     struct Industry;
+    enum class StationType : uint8_t;
 }
 
 namespace OpenLoco::Map
@@ -194,9 +195,9 @@ namespace OpenLoco::Map
 
     public:
         uint8_t objectId() const { return _5 & 0x1F; }
-        uint8_t stationType() const { return _5 >> 5; }
+        StationType stationType() const;
         uint8_t rotation() const { return _type & 0x3; }
-        station_id_t stationId() const { return _station_id & 0x3FF; }
+        StationId_t stationId() const { return _station_id & 0x3FF; }
     };
 
     struct building_element : public tile_element_base
