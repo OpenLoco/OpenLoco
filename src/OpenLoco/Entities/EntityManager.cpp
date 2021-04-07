@@ -8,7 +8,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::EntityManager
 {
-    loco_global<EntityId_t[numEntityLists], 0x00525E40> _heads;
+    loco_global<EntityId_t[numEntityLists], 0x00525E3E> _heads;
     loco_global<uint16_t[numEntityLists], 0x00525E4C> _listCounts;
     loco_global<Entity[maxEntities], 0x006DB6DC> _entities;
     loco_global<EntityId_t[0x40001], 0x01025A8C> _entitySpatialIndex;
@@ -118,10 +118,46 @@ namespace OpenLoco::EntityManager
     // 0x0047019F
     void moveEntityToList(EntityBase* const entity, const EntityListType list)
     {
-        registers regs{};
-        regs.esi = reinterpret_cast<uint32_t>(entity);
-        regs.ecx = (static_cast<int8_t>(list) + 1) * 2; // Loco function expects to use this to access an array of words
-        call(0x0047019F, regs);
+        auto newListOffset = static_cast<uint8_t>(list) * 2;
+        if (entity->linkedListOffset == newListOffset)
+        {
+            return;
+        }
+
+        auto curList = entity->linkedListOffset / 2;
+        auto nextId = entity->next_thing_id;
+        auto previousId = entity->llPreviousId;
+
+        // Unlink previous entity from this entity
+        if (previousId == EntityId::null)
+        {
+            _heads[curList] = nextId;
+        }
+        else
+        {
+            auto* previousEntity = get<EntityBase>(previousId);
+            previousEntity->next_thing_id = nextId;
+        }
+        // Unlink next entity from this entity
+        if (nextId != EntityId::null)
+        {
+            auto* nextEntity = get<EntityBase>(nextId);
+            nextEntity->llPreviousId = previousId;
+        }
+
+        entity->llPreviousId = EntityId::null;
+        entity->linkedListOffset = newListOffset;
+        entity->next_thing_id = _heads[static_cast<uint8_t>(list)];
+        _heads[static_cast<uint8_t>(list)] = entity->id;
+        // Link next entity to this entity
+        if (entity->next_thing_id != EntityId::null)
+        {
+            auto* nextEntity = get<EntityBase>(entity->next_thing_id);
+            nextEntity->llPreviousId = entity->id;
+        }
+
+        _listCounts[curList]--;
+        _listCounts[static_cast<uint8_t>(list)]++;
     }
 
     // 0x00470188

@@ -12,12 +12,13 @@ namespace OpenLoco::Vehicles
 
 namespace OpenLoco::EntityManager
 {
-    constexpr size_t numEntityLists = 6;
+    constexpr size_t numEntityLists = 7;
     constexpr size_t maxEntities = 20000;
 
     enum class EntityListType
     {
         null,
+        null2,
         vehicleHead,
         misc = 3,
     };
