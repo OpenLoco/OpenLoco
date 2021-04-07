@@ -1,4 +1,5 @@
 #include "EntityManager.h"
+#include "../Console.h"
 #include "../Interop/Interop.hpp"
 #include "../Map/Tile.h"
 #include "../OpenLoco.h"
@@ -136,13 +137,27 @@ namespace OpenLoco::EntityManager
         else
         {
             auto* previousEntity = get<EntityBase>(previousId);
-            previousEntity->next_thing_id = nextId;
+            if (previousEntity == nullptr)
+            {
+                Console::error("Invalid previous entity id. Entity linked list corrupted?");
+            }
+            else
+            {
+                previousEntity->next_thing_id = nextId;
+            }
         }
         // Unlink next entity from this entity
         if (nextId != EntityId::null)
         {
             auto* nextEntity = get<EntityBase>(nextId);
-            nextEntity->llPreviousId = previousId;
+            if (nextEntity == nullptr)
+            {
+                Console::error("Invalid next entity id. Entity linked list corrupted?");
+            }
+            else
+            {
+                nextEntity->llPreviousId = previousId;
+            }
         }
 
         entity->llPreviousId = EntityId::null;
@@ -153,7 +168,14 @@ namespace OpenLoco::EntityManager
         if (entity->next_thing_id != EntityId::null)
         {
             auto* nextEntity = get<EntityBase>(entity->next_thing_id);
-            nextEntity->llPreviousId = entity->id;
+            if (nextEntity == nullptr)
+            {
+                Console::error("Invalid next entity id. Entity linked list corrupted?");
+            }
+            else
+            {
+                nextEntity->llPreviousId = entity->id;
+            }
         }
 
         _listCounts[curList]--;
