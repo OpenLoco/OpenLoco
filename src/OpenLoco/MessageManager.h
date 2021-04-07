@@ -1,6 +1,6 @@
 #pragma once
-
 #include "Message.h"
+#include <cstddef>
 
 namespace OpenLoco::MessageManager
 {
