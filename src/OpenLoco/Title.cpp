@@ -1,6 +1,7 @@
 #include "Title.h"
 #include "Audio/Audio.h"
 #include "CompanyManager.h"
+#include "Console.h"
 #include "GameCommands/GameCommands.h"
 #include "Gui.h"
 #include "Interop/Interop.hpp"
@@ -152,20 +153,26 @@ namespace OpenLoco::Title
         setAllScreenFlags(currentScreenFlags);
         setScreenFlag(ScreenFlags::title);
         setGameSpeed(0);
+        Console::log("Begin unk functions");
         sub_472031();
         sub_473A95(1);
         sub_474874();
         sub_473B91();
+        Console::log("Reload objects");
         ObjectManager::reloadAll();
+        Console::log("Scenario functions");
         Scenario::sub_4748D4();
         Scenario::reset();
+        Console::log("Init Viewports");
         initialiseViewports();
         sub_4284C8();
+        Console::log("Gui Init");
         Gui::init();
+        Console::log("Reset title");
         reset();
         Gfx::invalidateScreen();
         resetScreenAge();
-
+        Console::log("Play title music");
         Audio::playTitleScreenMusic();
     }
 

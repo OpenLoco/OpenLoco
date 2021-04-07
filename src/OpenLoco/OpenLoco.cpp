@@ -24,6 +24,7 @@
 #include "Audio/Audio.h"
 #include "CompanyManager.h"
 #include "Config.h"
+#include "Console.h"
 #include "Date.h"
 #include "Economy.h"
 #include "EditorController.h"
@@ -417,14 +418,18 @@ namespace OpenLoco
         ScenarioManager::loadIndex(0);
         Ui::ProgressBar::begin(StringIds::loading);
         Ui::ProgressBar::setProgress(60);
+        Console::log("Started loading G1");
         Gfx::loadG1();
+        Console::log("Finished loading G1");
         Ui::ProgressBar::setProgress(220);
         call(0x004949BC);
         Ui::ProgressBar::setProgress(235);
         Ui::ProgressBar::setProgress(250);
         Ui::initialiseCursors();
+        Console::log("Finished init Cursors");
         Ui::ProgressBar::end();
         Ui::initialise();
+        Console::log("Finished initialise");
         initialiseViewports();
         call(0x004284C8);
         call(0x004969DA);
@@ -435,7 +440,9 @@ namespace OpenLoco
 #else
         Intro::state(Intro::intro_state::end);
 #endif
+        Console::log("Start title");
         Title::start();
+        Console::log("Start Gui");
         Gui::init();
         Gfx::clear(Gfx::screenDpi(), 0x0A0A0A0A);
     }
