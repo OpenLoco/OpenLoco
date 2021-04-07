@@ -26,7 +26,7 @@ namespace OpenLoco
         if (loc.z <= surface->baseZ() * 4)
             return nullptr;
 
-        auto _exhaust = static_cast<Exhaust*>(EntityManager::createEntity());
+        auto _exhaust = static_cast<Exhaust*>(EntityManager::createEntityMisc());
 
         if (_exhaust != nullptr)
         {
@@ -50,7 +50,7 @@ namespace OpenLoco
     // 0x00440BEB
     Smoke* Smoke::create(Map::map_pos3 loc)
     {
-        auto t = static_cast<Smoke*>(EntityManager::createEntity());
+        auto t = static_cast<Smoke*>(EntityManager::createEntityMisc());
         if (t != nullptr)
         {
             t->var_14 = 44;

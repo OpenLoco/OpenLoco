@@ -21,6 +21,7 @@ namespace OpenLoco::EntityManager
         nullMoney, // For some reason money effects have their own pool of entities to use
         vehicleHead,
         misc = 4,
+        vehicle = 6,
     };
 
     void reset();
@@ -44,8 +45,9 @@ namespace OpenLoco::EntityManager
 
     EntityId_t firstQuadrantId(const Map::map_pos& loc);
 
-    EntityBase* createEntity();
+    EntityBase* createEntityMisc();
     EntityBase* createEntityMoney();
+    EntityBase* createEntityVehicle();
     void freeEntity(EntityBase* const entity);
 
     void updateVehicles();

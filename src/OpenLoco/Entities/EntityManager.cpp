@@ -74,21 +74,10 @@ namespace OpenLoco::EntityManager
         return _entitySpatialIndex[index];
     }
 
-    // 0x004700A5
-    EntityBase* createEntity()
+    static EntityBase* createEntity(EntityId_t id, EntityListType list)
     {
-        if (getListCount(EntityListType::misc) >= 4000)
-        {
-            return nullptr;
-        }
-        if (getListCount(EntityListType::null) <= 0)
-        {
-            return nullptr;
-        }
-
-        auto newId = _heads[static_cast<uint8_t>(EntityListType::null)];
-        auto* newEntity = get<EntityBase>(newId);
-        moveEntityToList(newEntity, EntityListType::misc);
+        auto* newEntity = get<EntityBase>(id);
+        moveEntityToList(newEntity, list);
 
         newEntity->x = Location::null;
         newEntity->y = Location::null;
@@ -108,13 +97,44 @@ namespace OpenLoco::EntityManager
         return newEntity;
     }
 
+    // 0x004700A5
+    EntityBase* createEntityMisc()
+    {
+        if (getListCount(EntityListType::misc) >= 4000)
+        {
+            return nullptr;
+        }
+        if (getListCount(EntityListType::null) <= 0)
+        {
+            return nullptr;
+        }
+
+        auto newId = _heads[static_cast<uint8_t>(EntityListType::null)];
+        return createEntity(newId, EntityListType::misc);
+    }
+
     // 0x0047011C
-    // special version used only for money
     EntityBase* createEntityMoney()
     {
-        registers regs;
-        call(0x0047011C, regs);
-        return (EntityBase*)regs.esi;
+        if (getListCount(EntityListType::null2) <= 0)
+        {
+            return nullptr;
+        }
+
+        auto newId = _heads[static_cast<uint8_t>(EntityListType::null2)];
+        return createEntity(newId, EntityListType::misc);
+    }
+
+    // 0x00470039
+    EntityBase* EntityManager::createEntityVehicle()
+    {
+        if (getListCount(EntityListType::null) <= 0)
+        {
+            return nullptr;
+        }
+
+        auto newId = _heads[static_cast<uint8_t>(EntityListType::null)];
+        return createEntity(newId, EntityListType::vehicle);
     }
 
     // 0x0047024A
