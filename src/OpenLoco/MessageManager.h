@@ -1,37 +1,12 @@
 #pragma once
 
-#include "Company.h"
 #include "Message.h"
-#include <cstdint>
-
-namespace OpenLoco
-{
-    enum class messageType
-    {
-        industryClosingDown = 1,
-        cargoNowAccepted = 9,
-        cargoNoLongerAccepted = 10,
-        newCompany,
-        unableToLandAtAirport = 12,
-        citizensCelebrate,
-        workersCelebrate,
-        newVehicle,
-        newIndustry = 17,
-        industryProductionUp,
-        industryProductionDown,
-        bankruptcyWarning6Months = 23,
-        bankruptcyWarning3Months,
-        bankruptcyDeclared,
-        vehicleCrashed = 27,
-        newSpeedRecord = 29,
-    };
-}
 
 namespace OpenLoco::MessageManager
 {
     constexpr size_t max_messages = 199;
 
-    message* get(message_id_t id);
+    Message* get(MessageId_t id);
 
     // 0x004285BA
     // al: type
@@ -40,7 +15,7 @@ namespace OpenLoco::MessageManager
     // cx: subjectId B (cargo)
     // dx: subjectId C
     void post(
-        messageType type,
+        MessageType type,
         CompanyId_t companyId,
         uint16_t subjectIdA,
         uint16_t subjectIdB,

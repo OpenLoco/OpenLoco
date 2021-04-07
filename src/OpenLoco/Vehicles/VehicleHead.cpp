@@ -1809,7 +1809,7 @@ namespace OpenLoco::Vehicles
                 if (owner == CompanyManager::getControllingId())
                 {
                     MessageManager::post(
-                        messageType::unableToLandAtAirport,
+                        MessageType::unableToLandAtAirport,
                         owner,
                         id,
                         orderStationId);

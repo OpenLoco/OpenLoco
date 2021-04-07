@@ -220,7 +220,7 @@ namespace OpenLoco
             if (acceptedBefore && !acceptedNow)
             {
                 MessageManager::post(
-                    messageType::cargoNoLongerAccepted,
+                    MessageType::cargoNoLongerAccepted,
                     owner,
                     id(),
                     cargoId);
@@ -228,7 +228,7 @@ namespace OpenLoco
             else if (!acceptedBefore && acceptedNow)
             {
                 MessageManager::post(
-                    messageType::cargoNowAccepted,
+                    MessageType::cargoNowAccepted,
                     owner,
                     id(),
                     cargoId);

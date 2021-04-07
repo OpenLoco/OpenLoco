@@ -6,9 +6,9 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::MessageManager
 {
-    static loco_global<message[max_messages], 0x005271D2> _messages;
+    static loco_global<Message[max_messages], 0x005271D2> _messages;
 
-    message* get(message_id_t id)
+    Message* get(MessageId_t id)
     {
         if (id >= _messages.size())
         {
@@ -18,7 +18,7 @@ namespace OpenLoco::MessageManager
     }
 
     void post(
-        messageType type,
+        MessageType type,
         CompanyId_t companyId,
         uint16_t subjectIdA,
         uint16_t subjectIdB,

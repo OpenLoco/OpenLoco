@@ -173,7 +173,7 @@ namespace OpenLoco::Ui::NewsWindow
             }
         }
 
-        static SavedView getView(window* self, message* news, uint16_t itemId, uint8_t itemType, bool* selectable)
+        static SavedView getView(window* self, Message* news, uint16_t itemId, uint8_t itemType, bool* selectable)
         {
             SavedView view;
             view.mapX = -1;
@@ -464,7 +464,7 @@ namespace OpenLoco::Ui::NewsWindow
         }
 
         // 0x0042A136
-        static void sub_42A136(window* self, Gfx::drawpixelinfo_t* dpi, message* news)
+        static void sub_42A136(window* self, Gfx::drawpixelinfo_t* dpi, Message* news)
         {
             registers regs;
             regs.edi = (int32_t)dpi;
@@ -561,7 +561,7 @@ namespace OpenLoco::Ui::NewsWindow
         }
 
         // 0x00429872
-        static void drawLateNews(window* self, Gfx::drawpixelinfo_t* dpi, message* news)
+        static void drawLateNews(window* self, Gfx::drawpixelinfo_t* dpi, Message* news)
         {
             Gfx::drawImage(dpi, self->x, self->y, ImageIds::news_background_new_left);
 
@@ -601,7 +601,7 @@ namespace OpenLoco::Ui::NewsWindow
         }
 
         // 0x00429934
-        static void drawMiddleNews(window* self, Gfx::drawpixelinfo_t* dpi, message* news)
+        static void drawMiddleNews(window* self, Gfx::drawpixelinfo_t* dpi, Message* news)
         {
             if (_word_4F8BE4[news->type] & (1 << 2))
             {
@@ -637,7 +637,7 @@ namespace OpenLoco::Ui::NewsWindow
         }
 
         // 0x004299E7
-        static void drawEarlyNews(window* self, Gfx::drawpixelinfo_t* dpi, message* news)
+        static void drawEarlyNews(window* self, Gfx::drawpixelinfo_t* dpi, Message* news)
         {
             auto imageId = Gfx::recolour(ImageIds::news_background_old_left, PaletteIndex::index_68);
 
@@ -694,7 +694,7 @@ namespace OpenLoco::Ui::NewsWindow
         }
 
         // 0x00429761
-        static void drawStationNews(window* self, Gfx::drawpixelinfo_t* dpi, message* news)
+        static void drawStationNews(window* self, Gfx::drawpixelinfo_t* dpi, Message* news)
         {
             self->draw(dpi);
 

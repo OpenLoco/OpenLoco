@@ -63,55 +63,55 @@ namespace OpenLoco::Ui::NewsWindow
 
         if (!isOld)
         {
-            newsItemSubType messageSubTypes[31] = {
-                newsItemSubType::advice,
-                newsItemSubType::general,
-                newsItemSubType::advice,
-                newsItemSubType::minorCompany,
-                newsItemSubType::minorCompany,
-                newsItemSubType::minorCompany,
-                newsItemSubType::minorCompany,
-                newsItemSubType::minorCompany,
-                newsItemSubType::minorCompany,
-                newsItemSubType::advice,
-                newsItemSubType::advice,
-                newsItemSubType::majorCompany,
-                newsItemSubType::advice,
-                newsItemSubType::minorCompany,
-                newsItemSubType::minorCompany,
-                newsItemSubType::general,
-                newsItemSubType::majorCompany,
-                newsItemSubType::general,
-                newsItemSubType::general,
-                newsItemSubType::general,
-                newsItemSubType::majorCompany,
-                newsItemSubType::majorCompany,
-                newsItemSubType::majorCompany,
-                newsItemSubType::majorCompany,
-                newsItemSubType::majorCompany,
-                newsItemSubType::majorCompany,
-                newsItemSubType::majorCompetitor,
-                newsItemSubType::majorCompany,
-                newsItemSubType::majorCompany,
-                newsItemSubType::majorCompany,
-                newsItemSubType::majorCompetitor,
+            NewsItemSubType messageSubTypes[31] = {
+                NewsItemSubType::advice,
+                NewsItemSubType::general,
+                NewsItemSubType::advice,
+                NewsItemSubType::minorCompany,
+                NewsItemSubType::minorCompany,
+                NewsItemSubType::minorCompany,
+                NewsItemSubType::minorCompany,
+                NewsItemSubType::minorCompany,
+                NewsItemSubType::minorCompany,
+                NewsItemSubType::advice,
+                NewsItemSubType::advice,
+                NewsItemSubType::majorCompany,
+                NewsItemSubType::advice,
+                NewsItemSubType::minorCompany,
+                NewsItemSubType::minorCompany,
+                NewsItemSubType::general,
+                NewsItemSubType::majorCompany,
+                NewsItemSubType::general,
+                NewsItemSubType::general,
+                NewsItemSubType::general,
+                NewsItemSubType::majorCompany,
+                NewsItemSubType::majorCompany,
+                NewsItemSubType::majorCompany,
+                NewsItemSubType::majorCompany,
+                NewsItemSubType::majorCompany,
+                NewsItemSubType::majorCompany,
+                NewsItemSubType::majorCompetitor,
+                NewsItemSubType::majorCompany,
+                NewsItemSubType::majorCompany,
+                NewsItemSubType::majorCompany,
+                NewsItemSubType::majorCompetitor,
             };
 
             auto messageSubType = messageSubTypes[activeMessage];
 
-            if (messageSubType == newsItemSubType::majorCompany)
+            if (messageSubType == NewsItemSubType::majorCompany)
             {
                 if (news->companyId != _playerCompany)
                 {
-                    messageSubType = newsItemSubType::majorCompetitor;
+                    messageSubType = NewsItemSubType::majorCompetitor;
                 }
             }
 
-            if (messageSubType == newsItemSubType::minorCompany)
+            if (messageSubType == NewsItemSubType::minorCompany)
             {
                 if (news->companyId != _playerCompany)
                 {
-                    messageSubType = newsItemSubType::minorCompetitor;
+                    messageSubType = NewsItemSubType::minorCompetitor;
                 }
             }
 

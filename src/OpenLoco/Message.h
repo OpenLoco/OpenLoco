@@ -1,20 +1,36 @@
 #pragma once
 
-#include "Localisation/StringManager.h"
-#include "Map/Tile.h"
+#include "Types.hpp"
 #include <limits>
 
 namespace OpenLoco
 {
-
-    using message_id_t = uint16_t;
-
     namespace MessageId
     {
-        constexpr message_id_t null = std::numeric_limits<message_id_t>::max();
+        constexpr MessageId_t null = std::numeric_limits<MessageId_t>::max();
     }
 
-    enum class newsItemSubType : uint8_t
+    enum class MessageType
+    {
+        industryClosingDown = 1,
+        cargoNowAccepted = 9,
+        cargoNoLongerAccepted = 10,
+        newCompany,
+        unableToLandAtAirport = 12,
+        citizensCelebrate,
+        workersCelebrate,
+        newVehicle,
+        newIndustry = 17,
+        industryProductionUp,
+        industryProductionDown,
+        bankruptcyWarning6Months = 23,
+        bankruptcyWarning3Months,
+        bankruptcyDeclared,
+        vehicleCrashed = 27,
+        newSpeedRecord = 29,
+    };
+
+    enum class NewsItemSubType : uint8_t
     {
         majorCompany,
         majorCompetitor,
@@ -25,7 +41,7 @@ namespace OpenLoco
     };
 
 #pragma pack(push, 1)
-    struct message
+    struct Message
     {
         uint8_t type;            // 0x00
         char messageString[198]; // 0x01
