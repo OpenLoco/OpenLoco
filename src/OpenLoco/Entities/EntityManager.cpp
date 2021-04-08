@@ -20,7 +20,61 @@ namespace OpenLoco::EntityManager
     // 0x0046FDFD
     void reset()
     {
-        call(0x0046FDFD);
+        std::fill_n(_entities.get(), maxEntities, Entity{});
+        for (auto& count : _listCounts)
+        {
+            count = 0;
+        }
+        for (auto& head : _heads)
+        {
+            head = EntityId::null;
+        }
+        EntityBase* previous = nullptr;
+        EntityId_t id = 0;
+        for (; id < 19800; ++id)
+        {
+            auto& ent = _entities[id];
+            ent.base_type = EntityBaseType::null;
+            ent.id = id;
+            ent.next_thing_id = EntityId::null;
+            ent.linkedListOffset = static_cast<uint8_t>(EntityListType::null) * 2;
+            if (previous == nullptr)
+            {
+                ent.llPreviousId = EntityId::null;
+                _heads[static_cast<uint8_t>(EntityListType::null)] = id;
+            }
+            else
+            {
+                ent.llPreviousId = previous->id;
+                previous->next_thing_id = id;
+            }
+            previous = &ent;
+        }
+        _listCounts[static_cast<uint8_t>(EntityListType::null)] = 19800;
+
+        previous = nullptr;
+        for (; id < maxEntities; ++id)
+        {
+            auto& ent = _entities[id];
+            ent.base_type = EntityBaseType::null;
+            ent.id = id;
+            ent.next_thing_id = EntityId::null;
+            ent.linkedListOffset = static_cast<uint8_t>(EntityListType::nullMoney) * 2;
+            if (previous == nullptr)
+            {
+                ent.llPreviousId = EntityId::null;
+                _heads[static_cast<uint8_t>(EntityListType::nullMoney)] = id;
+            }
+            else
+            {
+                ent.llPreviousId = previous->id;
+                previous->next_thing_id = id;
+            }
+            previous = &ent;
+        }
+        _listCounts[static_cast<uint8_t>(EntityListType::nullMoney)] = 200;
+
+        resetSpatialIndex();
     }
 
     EntityId_t firstId(EntityListType list)
@@ -72,6 +126,12 @@ namespace OpenLoco::EntityManager
     {
         auto index = getSpatialIndexOffset(loc);
         return _entitySpatialIndex[index];
+    }
+
+    // 0x0046FF54
+    void resetSpatialIndex()
+    {
+        call(0x0046FF54);
     }
 
     static EntityBase* createEntity(EntityId_t id, EntityListType list)
