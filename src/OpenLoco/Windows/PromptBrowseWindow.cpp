@@ -1,4 +1,5 @@
 #include "../Audio/Audio.h"
+#include "../Config.h"
 #include "../Console.h"
 #include "../Core/FileSystem.hpp"
 #include "../Graphics/Colour.h"
@@ -692,7 +693,7 @@ namespace OpenLoco::Ui::PromptBrowse
         }
         else
         {
-            auto str = path.string();
+            auto str = path.u8string();
             if (str.size() > 0)
             {
                 auto lastCharacter = str[str.size() - 1];
@@ -925,6 +926,11 @@ namespace OpenLoco::Ui::PromptBrowse
                 if (!Windows::promptOkCancel(StringIds::replace_existing_file_button))
                     return;
             }
+
+            // Save last directory
+            fs::path lastDirectory = fs::u8path(&_directory[0]);
+            Config::getNew().last_save_path = lastDirectory.u8string();
+            Config::writeNewConfig();
 
             // Copy directory and filename to buffer.
             strncpy(&_directory[0], path.u8string().c_str(), std::size(_directory));
