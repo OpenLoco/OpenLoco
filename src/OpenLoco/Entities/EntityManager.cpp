@@ -240,28 +240,30 @@ namespace OpenLoco::EntityManager
         return true;
     }
 
+    static void zeroEntity(EntityBase* ent)
+    {
+        auto next = ent->next_thing_id;
+        auto previous = ent->llPreviousId;
+        auto id = ent->id;
+        auto llOffset = ent->linkedListOffset;
+        std::fill_n(reinterpret_cast<uint8_t*>(ent), sizeof(Entity), 0);
+        ent->base_type = EntityBaseType::null;
+        ent->next_thing_id = next;
+        ent->llPreviousId = previous;
+        ent->id = id;
+        ent->linkedListOffset = llOffset;
+    }
+
     // 0x0046FED5
     void zeroUnused()
     {
         for (auto* ent : EntityList<EntityListIterator<EntityBase>, EntityListType::null>())
         {
-            auto next = ent->next_thing_id;
-            auto id = ent->id;
-            std::fill_n(reinterpret_cast<uint8_t*>(ent), sizeof(Entity), 0);
-            ent->base_type = EntityBaseType::null;
-            ent->next_thing_id = next;
-            ent->id = id;
-            ent->linkedListOffset = static_cast<uint8_t>(EntityListType::null) * 2;
+            zeroEntity(ent);
         }
         for (auto* ent : EntityList<EntityListIterator<EntityBase>, EntityListType::nullMoney>())
         {
-            auto next = ent->next_thing_id;
-            auto id = ent->id;
-            std::fill_n(reinterpret_cast<uint8_t*>(ent), sizeof(Entity), 0);
-            ent->base_type = EntityBaseType::null;
-            ent->next_thing_id = next;
-            ent->id = id;
-            ent->linkedListOffset = static_cast<uint8_t>(EntityListType::nullMoney) * 2;
+            zeroEntity(ent);
         }
     }
 }
