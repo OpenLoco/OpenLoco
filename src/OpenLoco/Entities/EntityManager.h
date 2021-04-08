@@ -17,8 +17,8 @@ namespace OpenLoco::EntityManager
 
     enum class EntityListType
     {
-        null,
-        null2,
+        null,      // Used for vehicles and other misc entities (not money)
+        nullMoney, // For some reason money effects have their own pool of entities to use
         vehicleHead,
         misc = 3,
     };
