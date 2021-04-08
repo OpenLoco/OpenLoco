@@ -51,6 +51,7 @@ namespace OpenLoco
         Fireball* asFireball() const { return as<Fireball, MiscEntityType::fireball>(); }
         ExplosionSmoke* asExplosionSmoke() const { return as<ExplosionSmoke, MiscEntityType::explosionSmoke>(); }
         Smoke* asSmoke() const { return as<Smoke, MiscEntityType::smoke>(); }
+        void update();
     };
 
     struct Exhaust : MiscBase

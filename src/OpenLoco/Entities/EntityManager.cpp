@@ -1,5 +1,6 @@
 #include "EntityManager.h"
 #include "../Console.h"
+#include "../Entities/Misc.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/StringIds.h"
 #include "../Map/Tile.h"
@@ -242,7 +243,13 @@ namespace OpenLoco::EntityManager
     // 0x004402F4
     void updateMiscEntities()
     {
-        call(0x004402F4);
+        if ((addr<0x00525E28, uint32_t>() & 1))
+        {
+            for (auto* misc : EntityList<EntityListIterator<MiscBase>, EntityListType::misc>())
+            {
+                misc->update();
+            }
+        }
     }
 
     // 0x0047019F

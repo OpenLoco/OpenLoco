@@ -5,8 +5,17 @@
 #include "../Ui/WindowManager.h"
 #include "EntityManager.h"
 
+using namespace OpenLoco::Interop;
+
 namespace OpenLoco
 {
+    // 0x004405CD
+    void MiscBase::update()
+    {
+        registers regs;
+        regs.esi = reinterpret_cast<uint32_t>(this);
+        call(0x004405CD, regs);
+    }
 
     SteamObject* Exhaust::object() const
     {
