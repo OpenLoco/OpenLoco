@@ -14,6 +14,7 @@ namespace OpenLoco::EntityManager
     loco_global<uint16_t[numEntityLists], 0x00525E4C> _listCounts;
     loco_global<Entity[maxEntities], 0x006DB6DC> _entities;
     loco_global<EntityId_t[0x40001], 0x01025A8C> _entitySpatialIndex;
+    loco_global<uint32_t, 0x01025A88> _entitySpatialCount;
     static loco_global<string_id, 0x009C68E6> gGameCommandErrorText;
     constexpr size_t _entitySpatialIndexNull = 0x40000;
 
@@ -200,9 +201,30 @@ namespace OpenLoco::EntityManager
     // 0x0047024A
     void freeEntity(EntityBase* const entity)
     {
-        registers regs;
-        regs.esi = reinterpret_cast<uint32_t>(entity);
-        call(0x0047024A, regs);
+        auto list = entity->id < 19800 ? EntityListType::null : EntityListType::nullMoney;
+        moveEntityToList(entity, list);
+        StringManager::emptyUserString(entity->name);
+        entity->base_type = EntityBaseType::null;
+
+        auto* quadId = &_entitySpatialIndex[getSpatialIndexOffset({ entity->x, entity->y })];
+        _entitySpatialCount = 0;
+        while (*quadId < maxEntities)
+        {
+            auto* quadEnt = get<EntityBase>(*quadId);
+            if (quadEnt == entity)
+            {
+                *quadId = entity->nextQuadrantId;
+                return;
+            }
+            _entitySpatialCount++;
+            if (_entitySpatialCount > maxEntities)
+            {
+                break;
+            }
+            quadId = &quadEnt->nextQuadrantId;
+        }
+        Console::log("Invalid quadrant ids... Reseting spatial index.");
+        resetSpatialIndex();
     }
 
     // 0x004A8826
