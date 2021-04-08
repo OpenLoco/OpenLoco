@@ -30,6 +30,8 @@ namespace OpenLoco::StringManager
     static loco_global<char* [0xFFFF], 0x005183FC> _strings;
     static loco_global<char[NUM_USER_STRINGS][USER_STRING_SIZE], 0x0095885C> _userStrings;
 
+    static loco_global<string_id, 0x009C68E6> gGameCommandErrorText;
+
     static std::map<int32_t, string_id> day_to_string = {
         { 1, StringIds::day_1st },
         { 2, StringIds::day_2nd },
@@ -82,7 +84,10 @@ namespace OpenLoco::StringManager
     // 0x0049650E
     void reset()
     {
-        call(0x0049650E);
+        for (auto* str : _userStrings)
+        {
+            *str = '\0';
+        }
     }
 
     const char* getString(string_id id)
@@ -600,18 +605,44 @@ namespace OpenLoco::StringManager
     // 0x00496522
     string_id userStringAllocate(char* str /* edi */, uint8_t cl)
     {
-        registers regs;
-        regs.edi = reinterpret_cast<uint32_t>(str);
-        regs.cl = cl;
-        call(0x00496522, regs);
-        return regs.ax;
+        auto bestSlot = -1;
+        for (auto i = 0; i < NUM_USER_STRINGS; ++i)
+        {
+            char* userStr = _userStrings[i];
+            if (*userStr == '\0')
+            {
+                bestSlot = i;
+            }
+            else if (cl > 0)
+            {
+                if (strcmp(str, userStr) == 0)
+                {
+                    gGameCommandErrorText = StringIds::chosen_name_in_use;
+                    return StringIds::empty;
+                }
+            }
+        }
+
+        if (bestSlot == -1)
+        {
+            gGameCommandErrorText = StringIds::too_many_names_in_use;
+            return StringIds::empty;
+        }
+
+        char* userStr = _userStrings[bestSlot];
+        strncpy(userStr, str, USER_STRING_SIZE);
+        userStr[USER_STRING_SIZE - 1] = '\0';
+        return bestSlot + USER_STRINGS_START;
     }
 
     // 0x004965A6
     void emptyUserString(string_id stringId)
     {
-        registers regs;
-        regs.ax = stringId;
-        call(0x004965A6, regs);
+        if (stringId < USER_STRINGS_START || stringId >= USER_STRINGS_END)
+        {
+            return;
+        }
+
+        *_userStrings[stringId - USER_STRINGS_START] = '\0';
     }
 }
