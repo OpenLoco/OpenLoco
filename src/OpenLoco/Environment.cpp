@@ -215,7 +215,7 @@ namespace OpenLoco::Environment
         auto& configLastSavePath = Config::getNew().last_save_path;
         if (!configLastSavePath.empty())
         {
-            auto directory = std::filesystem::u8path(configLastSavePath);
+            auto directory = fs::u8path(configLastSavePath);
             if (fs::is_directory(directory))
             {
                 saveDirectory = directory;
