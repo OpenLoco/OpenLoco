@@ -2236,3 +2236,8 @@ strings:
   2181: "Y:"
   2182: "{COLOUR WINDOW_2}{INT16}"
   2183: "Tile element data"
+  2184: "Cheats"
+  2185: "Financial cheats"
+  2186: "Company cheats"
+  2187: "Vehicle cheats"
+  2188: "Town cheats"

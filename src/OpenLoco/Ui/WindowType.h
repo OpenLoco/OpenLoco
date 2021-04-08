@@ -65,6 +65,7 @@ namespace OpenLoco::Ui
         openLocoVersion = 55,
         titleOptions = 56,
         tileInspector = 57,
+        cheats = 58,
 
         undefined = 255
     };

@@ -280,9 +280,10 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         Dropdown::add(1, StringIds::dropdown_without_checkmark, StringIds::cheat_allow_building_while_paused);
         Dropdown::add(2, StringIds::dropdown_without_checkmark, StringIds::cheat_allow_manual_driving);
         Dropdown::add(3, 0);
-        Dropdown::add(4, StringIds::tile_inspector);
+        Dropdown::add(4, StringIds::cheats);
+        Dropdown::add(5, StringIds::tile_inspector);
 
-        Dropdown::showBelow(window, widgetIndex, 5, 0);
+        Dropdown::showBelow(window, widgetIndex, 6, 0);
 
         if (isSandboxMode())
             Dropdown::setItemSelected(0);
@@ -325,6 +326,10 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
                 break;
 
             case 4:
+                Cheats::open();
+                break;
+
+            case 5:
                 TileInspector::open();
                 break;
         }

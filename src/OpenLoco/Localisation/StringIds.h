@@ -1568,4 +1568,9 @@ namespace OpenLoco::StringIds
     constexpr string_id tile_inspector_y_coord = 2181;
     constexpr string_id tile_inspector_coord = 2182;
     constexpr string_id tile_element_data = 2183;
+    constexpr string_id cheats = 2184;
+    constexpr string_id financial_cheats = 2185;
+    constexpr string_id company_cheats = 2186;
+    constexpr string_id vehicle_cheats = 2187;
+    constexpr string_id town_cheats = 2188;
 }

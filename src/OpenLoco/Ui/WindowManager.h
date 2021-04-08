@@ -319,6 +319,11 @@ namespace OpenLoco::Ui::NewsWindow
     void close(Ui::window* window);
 }
 
+namespace OpenLoco::Ui::Windows::Cheats
+{
+    window* open();
+}
+
 namespace OpenLoco::Ui::Windows::CompanyFaceSelection
 {
     void open(CompanyId_t id);
