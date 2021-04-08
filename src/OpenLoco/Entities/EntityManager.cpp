@@ -116,12 +116,12 @@ namespace OpenLoco::EntityManager
     // 0x0047011C
     EntityBase* createEntityMoney()
     {
-        if (getListCount(EntityListType::null2) <= 0)
+        if (getListCount(EntityListType::nullMoney) <= 0)
         {
             return nullptr;
         }
 
-        auto newId = _heads[static_cast<uint8_t>(EntityListType::null2)];
+        auto newId = _heads[static_cast<uint8_t>(EntityListType::nullMoney)];
         return createEntity(newId, EntityListType::misc);
     }
 
@@ -253,7 +253,7 @@ namespace OpenLoco::EntityManager
             ent->id = id;
             ent->linkedListOffset = static_cast<uint8_t>(EntityListType::null) * 2;
         }
-        for (auto* ent : EntityList<EntityListIterator<EntityBase>, EntityListType::null2>())
+        for (auto* ent : EntityList<EntityListIterator<EntityBase>, EntityListType::nullMoney>())
         {
             auto next = ent->next_thing_id;
             auto id = ent->id;
@@ -261,7 +261,7 @@ namespace OpenLoco::EntityManager
             ent->base_type = EntityBaseType::null;
             ent->next_thing_id = next;
             ent->id = id;
-            ent->linkedListOffset = static_cast<uint8_t>(EntityListType::null2) * 2;
+            ent->linkedListOffset = static_cast<uint8_t>(EntityListType::nullMoney) * 2;
         }
     }
 }
