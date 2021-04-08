@@ -7,6 +7,7 @@
 #include "../Graphics/ImageIds.h"
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
+#include "../LabelFrame.h"
 #include "../Localisation/FormatArguments.hpp"
 #include "../Map/TileManager.h"
 #include "../Objects/CargoObject.h"
@@ -2194,7 +2195,7 @@ namespace OpenLoco::Ui::Vehicle
         struct UnkF2494A
         {
             uint32_t orderOffset; // 0x0
-            LabelPosition frame;  // 0x4
+            LabelFrame frame;     // 0x4
             uint8_t lineNumber;   // 0x24
             uint8_t pad_25;
         };
