@@ -118,6 +118,8 @@ namespace OpenLoco::Ui::Windows::Cheats
                 Widget::draw_tab(self, context, imageId, Widx::tab_towns);
             }
         }
+
+        static void switchTab(window* self, widget_index widgetIndex);
     }
 
     namespace Finances
@@ -133,10 +135,6 @@ namespace OpenLoco::Ui::Windows::Cheats
                 loan_group = 8,
                 loan_value,
                 loan_clear,
-                switch_company_group,
-                switch_company_dropdown,
-                switch_company_dropdown_btn,
-                switch_company_apply,
             };
         }
 
@@ -145,17 +143,91 @@ namespace OpenLoco::Ui::Windows::Cheats
             makeWidget({ 4, 48 }, { windowSize.width - 8, 30 }, widget_type::groupbox, 1, StringIds::cheat_current_loan),
             makeWidget({ 10, 60 }, { 100, 12 }, widget_type::wt_17, 1, StringIds::company_current_loan_value),
             makeWidget({ 115, 60 }, { 80, 12 }, widget_type::wt_11, 1, StringIds::cheat_clear_loan),
+            widgetEnd(),
+        };
+
+        static uint64_t enabledWidgets = Common::enabledWidgets | (1 << Widx::loan_clear);
+
+        static void prepareDraw(window* self)
+        {
+            self->activated_widgets = (1 << Common::Widx::tab_finances);
+        }
+
+        static void draw(Ui::window* const self, Gfx::drawpixelinfo_t* const context)
+        {
+            // Draw widgets and tabs.
+            self->draw(context);
+            Common::drawTabs(self, context);
+        }
+
+        static void onMouseUp(Ui::window* const self, const widget_index widgetIndex)
+        {
+            switch (widgetIndex)
+            {
+                case Common::Widx::close_button:
+                    WindowManager::close(self->type);
+                    break;
+
+                case Common::Widx::tab_finances:
+                case Common::Widx::tab_companies:
+                case Common::Widx::tab_vehicles:
+                case Common::Widx::tab_towns:
+                    Common::switchTab(self, widgetIndex);
+                    break;
+
+                case Widx::loan_clear:
+                    GameCommands::do_81(CheatCommand::clearLoan);
+                    WindowManager::invalidateWidget(self->type, self->number, Widx::loan_value);
+                    break;
+            }
+        }
+
+        static void onUpdate(window* const self)
+        {
+            self->frame_no += 1;
+            self->callPrepareDraw();
+            WindowManager::invalidateWidget(self->type, self->number, Common::Widx::tab_finances);
+        }
+
+        static void initEvents()
+        {
+            _events.draw = draw;
+            _events.on_mouse_up = onMouseUp;
+            _events.on_update = onUpdate;
+            _events.prepare_draw = prepareDraw;
+        }
+    }
+
+    namespace Companies
+    {
+        constexpr Gfx::ui_size_t windowSize = { 250, 182 };
+
+        static window_event_list _events;
+
+        namespace Widx
+        {
+            enum
+            {
+                switch_company_group = 8,
+                switch_company_dropdown,
+                switch_company_dropdown_btn,
+                switch_company_apply,
+            };
+        }
+
+        static widget_t _widgets[] = {
+            commonWidgets(windowSize.width, windowSize.height, StringIds::company_cheats),
             makeWidget({ 4, 80 }, { windowSize.width - 8, 30 }, widget_type::groupbox, 1, StringIds::cheat_current_loan),
             makeDropdownWidgets({ 10, 92 }, { 100, 12 }, widget_type::wt_17, 1),
             makeWidget({ 115, 92 }, { 80, 12 }, widget_type::wt_11, 1, StringIds::cheat_clear_loan),
             widgetEnd(),
         };
 
-        static uint64_t enabledWidgets = Common::enabledWidgets | (1 << Widx::loan_clear) | (1 << Widx::switch_company_dropdown) | (1 << Widx::switch_company_dropdown_btn) | (1 << Widx::switch_company_apply);
+        static uint64_t enabledWidgets = Common::enabledWidgets | (1 << Widx::switch_company_dropdown) | (1 << Widx::switch_company_dropdown_btn) | (1 << Widx::switch_company_apply);
 
         static void prepareDraw(window* self)
         {
-            self->activated_widgets = (1 << Common::Widx::tab_finances);
+            self->activated_widgets = (1 << Common::Widx::tab_companies);
 
             auto company = CompanyManager::getPlayerCompany();
             auto args = FormatArguments::common();
@@ -188,9 +260,11 @@ namespace OpenLoco::Ui::Windows::Cheats
                     WindowManager::close(self->type);
                     break;
 
-                case Widx::loan_clear:
-                    GameCommands::do_81(CheatCommand::clearLoan);
-                    WindowManager::invalidateWidget(self->type, self->number, Widx::loan_value);
+                case Common::Widx::tab_finances:
+                case Common::Widx::tab_companies:
+                case Common::Widx::tab_vehicles:
+                case Common::Widx::tab_towns:
+                    Common::switchTab(self, widgetIndex);
                     break;
             }
         }
@@ -262,8 +336,52 @@ namespace OpenLoco::Ui::Windows::Cheats
         return window;
     }
 
+    namespace Common
+    {
+        struct TabInformation
+        {
+            widget_t* widgets;
+            widget_index widgetIndex;
+            window_event_list* events;
+            const uint64_t* enabledWidgets;
+            Gfx::ui_size_t windowSize;
+        };
+
+        // clang-format off
+        static TabInformation tabInformationByTabOffset[] = {
+            { Finances::_widgets,      Widx::tab_finances,       &Finances::_events,      &Finances::enabledWidgets,   Finances::windowSize  },
+            { Companies::_widgets,     Widx::tab_companies,      &Companies::_events,     &Companies::enabledWidgets,  Finances::windowSize  },
+        };
+        // clang-format on
+
+        static void switchTab(window* self, widget_index widgetIndex)
+        {
+            self->current_tab = std::clamp(widgetIndex - Widx::tab_finances, 0, 1);
+            self->frame_no = 0;
+
+            auto tabInfo = tabInformationByTabOffset[self->current_tab];
+
+            self->enabled_widgets = *tabInfo.enabledWidgets;
+            self->holdable_widgets = 0;
+            self->event_handlers = tabInfo.events;
+            self->activated_widgets = 0;
+            self->widgets = tabInfo.widgets;
+            self->disabled_widgets = 0;
+
+            self->invalidate();
+
+            self->setSize(tabInfo.windowSize);
+            self->callOnResize();
+            self->callPrepareDraw();
+            self->initScrollWidgets();
+            self->invalidate();
+            self->moveInsideScreenEdges();
+        }
+    }
+
     static void initEvents()
     {
         Finances::initEvents();
+        Companies::initEvents();
     }
 }
