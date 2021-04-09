@@ -1573,4 +1573,6 @@ namespace OpenLoco::StringIds
     constexpr string_id company_cheats = 2186;
     constexpr string_id vehicle_cheats = 2187;
     constexpr string_id town_cheats = 2188;
+    constexpr string_id cheat_current_loan = 2189;
+    constexpr string_id cheat_clear_loan = 2190;
 }

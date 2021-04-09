@@ -1,4 +1,6 @@
 #include "../CompanyManager.h"
+#include "../GameCommands/Cheat.h"
+#include "../GameCommands/GameCommands.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/Gfx.h"
 #include "../Graphics/ImageIds.h"
@@ -6,8 +8,11 @@
 #include "../Localisation/StringIds.h"
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/ObjectManager.h"
+#include "../Ui/Dropdown.h"
 #include "../Ui/WindowManager.h"
 #include "../Widget.h"
+
+using OpenLoco::GameCommands::CheatCommand;
 
 namespace OpenLoco::Ui::Windows::Cheats
 {
@@ -32,7 +37,7 @@ namespace OpenLoco::Ui::Windows::Cheats
     makeWidget({ 0, 0 }, { frameWidth, frameHeight }, widget_type::frame, 0),                                                          \
         makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, widget_type::caption_25, 0, windowCaptionId),                                     \
         makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window), \
-        makeWidget({ 0, 41 }, { frameWidth, frameHeight }, widget_type::panel, 1),                                                     \
+        makeWidget({ 0, 41 }, { frameWidth, frameHeight - 41 }, widget_type::panel, 1),                                                \
         makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab),                                                   \
         makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab),                                                  \
         makeRemapWidget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab),                                                  \
@@ -121,16 +126,41 @@ namespace OpenLoco::Ui::Windows::Cheats
 
         static window_event_list _events;
 
-        static uint64_t enabledWidgets = Common::enabledWidgets;
+        namespace Widx
+        {
+            enum
+            {
+                loan_group = 8,
+                loan_value,
+                loan_clear,
+                switch_company_group,
+                switch_company_dropdown,
+                switch_company_dropdown_btn,
+                switch_company_apply,
+            };
+        }
 
         static widget_t _widgets[] = {
             commonWidgets(windowSize.width, windowSize.height, StringIds::financial_cheats),
+            makeWidget({ 4, 48 }, { windowSize.width - 8, 30 }, widget_type::groupbox, 1, StringIds::cheat_current_loan),
+            makeWidget({ 10, 60 }, { 100, 12 }, widget_type::wt_17, 1, StringIds::company_current_loan_value),
+            makeWidget({ 115, 60 }, { 80, 12 }, widget_type::wt_11, 1, StringIds::cheat_clear_loan),
+            makeWidget({ 4, 80 }, { windowSize.width - 8, 30 }, widget_type::groupbox, 1, StringIds::cheat_current_loan),
+            makeDropdownWidgets({ 10, 92 }, { 100, 12 }, widget_type::wt_17, 1),
+            makeWidget({ 115, 92 }, { 80, 12 }, widget_type::wt_11, 1, StringIds::cheat_clear_loan),
             widgetEnd(),
         };
+
+        static uint64_t enabledWidgets = Common::enabledWidgets | (1 << Widx::loan_clear) | (1 << Widx::switch_company_dropdown) | (1 << Widx::switch_company_dropdown_btn) | (1 << Widx::switch_company_apply);
 
         static void prepareDraw(window* self)
         {
             self->activated_widgets = (1 << Common::Widx::tab_finances);
+
+            auto company = CompanyManager::getPlayerCompany();
+            auto args = FormatArguments::common();
+            args.skip(4);
+            args.push(company->current_loan);
         }
 
         static void draw(Ui::window* const self, Gfx::drawpixelinfo_t* const context)
@@ -138,6 +168,16 @@ namespace OpenLoco::Ui::Windows::Cheats
             // Draw widgets and tabs.
             self->draw(context);
             Common::drawTabs(self, context);
+
+            // Draw current company name
+            auto company = CompanyManager::getPlayerCompany();
+            auto& widget = self->widgets[Widx::switch_company_dropdown];
+            Gfx::drawString_494B3F(
+                *context,
+                self->x + widget.left,
+                self->y + widget.top,
+                Colour::black,
+                company->name);
         }
 
         static void onMouseUp(Ui::window* const self, const widget_index widgetIndex)
@@ -147,6 +187,32 @@ namespace OpenLoco::Ui::Windows::Cheats
                 case Common::Widx::close_button:
                     WindowManager::close(self->type);
                     break;
+
+                case Widx::loan_clear:
+                    GameCommands::do_81(CheatCommand::clearLoan);
+                    WindowManager::invalidateWidget(self->type, self->number, Widx::loan_value);
+                    break;
+            }
+        }
+
+        static void onMouseDown(window* self, widget_index widgetIndex)
+        {
+            if (widgetIndex == Widx::switch_company_dropdown)
+                Dropdown::populateCompanySelect(self, &self->widgets[widgetIndex]);
+        }
+
+        static void onDropdown(window* self, widget_index widgetIndex, int16_t itemIndex)
+        {
+            if (itemIndex == -1)
+                return;
+
+            CompanyId_t targetCompanyId = Dropdown::getCompanyIdFromSelection(itemIndex);
+
+            if (widgetIndex == Widx::switch_company_dropdown)
+            {
+                GameCommands::do_81(CheatCommand::switchCompany, targetCompanyId);
+                WindowManager::invalidate(WindowType::playerInfoToolbar);
+                return;
             }
         }
 
@@ -160,7 +226,9 @@ namespace OpenLoco::Ui::Windows::Cheats
         static void initEvents()
         {
             _events.draw = draw;
+            _events.on_dropdown = onDropdown;
             _events.on_mouse_up = onMouseUp;
+            _events.on_mouse_down = onMouseDown;
             _events.on_update = onUpdate;
             _events.prepare_draw = prepareDraw;
         }
