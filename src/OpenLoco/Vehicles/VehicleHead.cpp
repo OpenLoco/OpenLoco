@@ -514,6 +514,7 @@ namespace OpenLoco::Vehicles
                 auto* station = StationManager::get(stopOrder->getStation());
                 vehStatus.status1 = StringIds::vehicle_status_heading_for;
                 vehStatus.status1Args = (station->town << 16) | station->name;
+                break;
             }
             if (!stopFound)
             {
