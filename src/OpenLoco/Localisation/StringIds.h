@@ -1573,6 +1573,13 @@ namespace OpenLoco::StringIds
     constexpr string_id company_cheats = 2186;
     constexpr string_id vehicle_cheats = 2187;
     constexpr string_id town_cheats = 2188;
-    constexpr string_id cheat_current_loan = 2189;
-    constexpr string_id cheat_clear_loan = 2190;
+    constexpr string_id cheat_clear_loan = 2189;
+    constexpr string_id cheat_clear = 2190;
+    constexpr string_id cheat_loan_value = 2191;
+    constexpr string_id cheat_select_target_company = 2192;
+    constexpr string_id cheat_select_cheat_to_apply = 2193;
+    constexpr string_id cheat_switch_to_company = 2194;
+    constexpr string_id cheat_acquire_company_assets = 2195;
+    constexpr string_id cheat_toggle_bankruptcy = 2196;
+    constexpr string_id cheat_toggle_jail_status = 2197;
 }

@@ -140,9 +140,9 @@ namespace OpenLoco::Ui::Windows::Cheats
 
         static widget_t _widgets[] = {
             commonWidgets(windowSize.width, windowSize.height, StringIds::financial_cheats),
-            makeWidget({ 4, 48 }, { windowSize.width - 8, 30 }, widget_type::groupbox, 1, StringIds::cheat_current_loan),
-            makeWidget({ 10, 60 }, { 100, 12 }, widget_type::wt_17, 1, StringIds::company_current_loan_value),
-            makeWidget({ 115, 60 }, { 80, 12 }, widget_type::wt_11, 1, StringIds::cheat_clear_loan),
+            makeWidget({ 4, 48 }, { windowSize.width - 8, 33 }, widget_type::groupbox, 1, StringIds::cheat_clear_loan),
+            makeWidget({ 80, 62 }, { 95, 12 }, widget_type::wt_17, 1),
+            makeWidget({ 180, 62 }, { 60, 12 }, widget_type::wt_11, 1, StringIds::cheat_clear),
             widgetEnd(),
         };
 
@@ -158,6 +158,29 @@ namespace OpenLoco::Ui::Windows::Cheats
             // Draw widgets and tabs.
             self->draw(context);
             Common::drawTabs(self, context);
+
+            // Loan label and value
+            {
+                auto& widget = self->widgets[Widx::loan_value];
+                Gfx::drawString_494B3F(
+                    *context,
+                    self->x + 10,
+                    self->y + widget.top,
+                    Colour::black,
+                    StringIds::company_current_loan);
+
+                auto company = CompanyManager::getPlayerCompany();
+                auto args = FormatArguments::common();
+                args.push(company->current_loan);
+
+                Gfx::drawString_494B3F(
+                    *context,
+                    self->x + widget.left + 1,
+                    self->y + widget.top,
+                    Colour::black,
+                    StringIds::cheat_loan_value,
+                    &args);
+            }
         }
 
         static void onMouseUp(Ui::window* const self, const widget_index widgetIndex)
@@ -200,7 +223,7 @@ namespace OpenLoco::Ui::Windows::Cheats
 
     namespace Companies
     {
-        constexpr Gfx::ui_size_t windowSize = { 250, 182 };
+        constexpr Gfx::ui_size_t windowSize = { 250, 172 };
 
         static window_event_list _events;
 
@@ -208,31 +231,45 @@ namespace OpenLoco::Ui::Windows::Cheats
         {
             enum
             {
-                switch_company_group = 8,
-                switch_company_dropdown,
-                switch_company_dropdown_btn,
-                switch_company_apply,
+                target_company_group = 8,
+                target_company_dropdown,
+                target_company_dropdown_btn,
+                select_cheat_group,
+                switch_company_button,
+                acquire_company_assets_button,
+                toggle_bankruptcy_button,
+                toggle_jail_status_button,
             };
         }
 
         static widget_t _widgets[] = {
             commonWidgets(windowSize.width, windowSize.height, StringIds::company_cheats),
-            makeWidget({ 4, 80 }, { windowSize.width - 8, 30 }, widget_type::groupbox, 1, StringIds::cheat_current_loan),
-            makeDropdownWidgets({ 10, 92 }, { 100, 12 }, widget_type::wt_17, 1),
-            makeWidget({ 115, 92 }, { 80, 12 }, widget_type::wt_11, 1, StringIds::cheat_clear_loan),
+            makeWidget({ 4, 48 }, { windowSize.width - 8, 33 }, widget_type::groupbox, 1, StringIds::cheat_select_target_company),
+            makeDropdownWidgets({ 10, 62 }, { windowSize.width - 20, 12 }, widget_type::wt_17, 1),
+            makeWidget({ 4, 86 }, { windowSize.width - 8, 80 }, widget_type::groupbox, 1, StringIds::cheat_select_cheat_to_apply),
+            makeWidget({ 10, 100 }, { windowSize.width - 20, 12 }, widget_type::wt_11, 1, StringIds::cheat_switch_to_company),
+            makeWidget({ 10, 116 }, { windowSize.width - 20, 12 }, widget_type::wt_11, 1, StringIds::cheat_acquire_company_assets),
+            makeWidget({ 10, 132 }, { windowSize.width - 20, 12 }, widget_type::wt_11, 1, StringIds::cheat_toggle_bankruptcy),
+            makeWidget({ 10, 148 }, { windowSize.width - 20, 12 }, widget_type::wt_11, 1, StringIds::cheat_toggle_jail_status),
             widgetEnd(),
         };
 
-        static uint64_t enabledWidgets = Common::enabledWidgets | (1 << Widx::switch_company_dropdown) | (1 << Widx::switch_company_dropdown_btn) | (1 << Widx::switch_company_apply);
+        static uint64_t enabledWidgets = Common::enabledWidgets | (1 << Widx::target_company_dropdown) | (1 << Widx::target_company_dropdown_btn) | (1 << Widx::switch_company_button);
+
+        static CompanyId_t _targetCompanyId{};
 
         static void prepareDraw(window* self)
         {
             self->activated_widgets = (1 << Common::Widx::tab_companies);
 
-            auto company = CompanyManager::getPlayerCompany();
-            auto args = FormatArguments::common();
-            args.skip(4);
-            args.push(company->current_loan);
+            if (_targetCompanyId == CompanyManager::getControllingId())
+            {
+                self->disabled_widgets |= (1 << Widx::switch_company_button) | (1 << Widx::acquire_company_assets_button);
+            }
+            else
+            {
+                self->disabled_widgets &= ~((1 << Widx::switch_company_button) | (1 << Widx::acquire_company_assets_button));
+            }
         }
 
         static void draw(Ui::window* const self, Gfx::drawpixelinfo_t* const context)
@@ -242,14 +279,15 @@ namespace OpenLoco::Ui::Windows::Cheats
             Common::drawTabs(self, context);
 
             // Draw current company name
-            auto company = CompanyManager::getPlayerCompany();
-            auto& widget = self->widgets[Widx::switch_company_dropdown];
+            auto company = CompanyManager::get(_targetCompanyId);
+            auto& widget = self->widgets[Widx::target_company_dropdown];
             Gfx::drawString_494B3F(
                 *context,
                 self->x + widget.left,
                 self->y + widget.top,
                 Colour::black,
-                company->name);
+                StringIds::black_stringid,
+                &company->name);
         }
 
         static void onMouseUp(Ui::window* const self, const widget_index widgetIndex)
@@ -266,12 +304,19 @@ namespace OpenLoco::Ui::Windows::Cheats
                 case Common::Widx::tab_towns:
                     Common::switchTab(self, widgetIndex);
                     break;
+
+                case Widx::switch_company_button:
+                {
+                    GameCommands::do_81(CheatCommand::switchCompany, _targetCompanyId);
+                    WindowManager::invalidate(WindowType::playerInfoToolbar);
+                    return;
+                }
             }
         }
 
         static void onMouseDown(window* self, widget_index widgetIndex)
         {
-            if (widgetIndex == Widx::switch_company_dropdown)
+            if (widgetIndex == Widx::target_company_dropdown)
                 Dropdown::populateCompanySelect(self, &self->widgets[widgetIndex]);
         }
 
@@ -280,13 +325,10 @@ namespace OpenLoco::Ui::Windows::Cheats
             if (itemIndex == -1)
                 return;
 
-            CompanyId_t targetCompanyId = Dropdown::getCompanyIdFromSelection(itemIndex);
-
-            if (widgetIndex == Widx::switch_company_dropdown)
+            if (widgetIndex == Widx::target_company_dropdown)
             {
-                GameCommands::do_81(CheatCommand::switchCompany, targetCompanyId);
-                WindowManager::invalidate(WindowType::playerInfoToolbar);
-                return;
+                _targetCompanyId = Dropdown::getCompanyIdFromSelection(itemIndex);
+                self->invalidate();
             }
         }
 
@@ -350,7 +392,7 @@ namespace OpenLoco::Ui::Windows::Cheats
         // clang-format off
         static TabInformation tabInformationByTabOffset[] = {
             { Finances::_widgets,      Widx::tab_finances,       &Finances::_events,      &Finances::enabledWidgets,   Finances::windowSize  },
-            { Companies::_widgets,     Widx::tab_companies,      &Companies::_events,     &Companies::enabledWidgets,  Finances::windowSize  },
+            { Companies::_widgets,     Widx::tab_companies,      &Companies::_events,     &Companies::enabledWidgets,  Companies::windowSize },
         };
         // clang-format on
 
