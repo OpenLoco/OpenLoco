@@ -254,7 +254,7 @@ namespace OpenLoco::Ui::Windows::Cheats
             widgetEnd(),
         };
 
-        static uint64_t enabledWidgets = Common::enabledWidgets | (1 << Widx::target_company_dropdown) | (1 << Widx::target_company_dropdown_btn) | (1 << Widx::switch_company_button);
+        static uint64_t enabledWidgets = Common::enabledWidgets | (1 << Widx::target_company_dropdown) | (1 << Widx::target_company_dropdown_btn) | (1 << Widx::switch_company_button) | (1 << Widx::toggle_bankruptcy_button) | (1 << Widx::toggle_jail_status_button);
 
         static CompanyId_t _targetCompanyId{};
 
@@ -308,6 +308,20 @@ namespace OpenLoco::Ui::Windows::Cheats
                 case Widx::switch_company_button:
                 {
                     GameCommands::do_81(CheatCommand::switchCompany, _targetCompanyId);
+                    WindowManager::invalidate(WindowType::playerInfoToolbar);
+                    return;
+                }
+
+                case Widx::toggle_bankruptcy_button:
+                {
+                    GameCommands::do_81(CheatCommand::toggleBankruptcy, _targetCompanyId);
+                    WindowManager::invalidate(WindowType::playerInfoToolbar);
+                    return;
+                }
+
+                case Widx::toggle_jail_status_button:
+                {
+                    GameCommands::do_81(CheatCommand::toggleJail, _targetCompanyId);
                     WindowManager::invalidate(WindowType::playerInfoToolbar);
                     return;
                 }

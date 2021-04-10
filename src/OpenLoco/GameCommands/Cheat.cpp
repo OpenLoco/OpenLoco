@@ -38,6 +38,20 @@ namespace OpenLoco::GameCommands
             CompanyManager::setControllingId(targetCompanyId);
             return 0;
         }
+
+        static uint32_t toggleBankruptcy(CompanyId_t targetCompanyId)
+        {
+            auto company = CompanyManager::get(targetCompanyId);
+            company->challenge_flags ^= CompanyFlags::bankrupt;
+            return 0;
+        }
+
+        static uint32_t toggleJail(CompanyId_t targetCompanyId)
+        {
+            auto company = CompanyManager::get(targetCompanyId);
+            company->jail_status = 30;
+            return 0;
+        }
     }
 
     static uint32_t cheat(CheatCommand command, int32_t param1, int32_t param2, int32_t param3)
@@ -49,6 +63,12 @@ namespace OpenLoco::GameCommands
 
             case CheatCommand::switchCompany:
                 return Cheats::switchCompany(param1);
+
+            case CheatCommand::toggleBankruptcy:
+                return Cheats::toggleBankruptcy(param1);
+
+            case CheatCommand::toggleJail:
+                return Cheats::toggleJail(param1);
 
             default:
                 break;

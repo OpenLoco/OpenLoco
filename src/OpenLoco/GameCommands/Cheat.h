@@ -7,6 +7,9 @@ namespace OpenLoco::GameCommands
         clearLoan,
         addCash,
         switchCompany,
+        acquireAssets,
+        toggleBankruptcy,
+        toggleJail,
         vehicleReliability,
     };
 }
