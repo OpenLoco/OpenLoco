@@ -3,6 +3,7 @@
 - Feature: [#451] Optionally show an FPS counter at the top of the screen.
 - Feature: [#831] Add a tile inspector, allowing inspection of tile element data (read-only).
 - Feature: [#853] Allow unlocking FPS by detaching game logic from rendering.
+- Fix: [#391] Access violation in windows after exiting games.
 - Fix: [#804] Enter key not confirming save prompt.
 - Fix: [#809] Audio calculation not using the z axis.
 - Fix: [#825] Potential crash when opening town rename prompt.
