@@ -254,7 +254,7 @@ namespace OpenLoco::Ui::Windows::Cheats
             widgetEnd(),
         };
 
-        static uint64_t enabledWidgets = Common::enabledWidgets | (1 << Widx::target_company_dropdown) | (1 << Widx::target_company_dropdown_btn) | (1 << Widx::switch_company_button) | (1 << Widx::toggle_bankruptcy_button) | (1 << Widx::toggle_jail_status_button);
+        static uint64_t enabledWidgets = Common::enabledWidgets | (1 << Widx::target_company_dropdown) | (1 << Widx::target_company_dropdown_btn) | (1 << Widx::switch_company_button) | (1 << Widx::acquire_company_assets_button) | (1 << Widx::toggle_bankruptcy_button) | (1 << Widx::toggle_jail_status_button);
 
         static CompanyId_t _targetCompanyId{};
 
@@ -304,6 +304,13 @@ namespace OpenLoco::Ui::Windows::Cheats
                 case Common::Widx::tab_towns:
                     Common::switchTab(self, widgetIndex);
                     break;
+
+                case Widx::acquire_company_assets_button:
+                {
+                    GameCommands::do_81(CheatCommand::acquireAssets, _targetCompanyId);
+                    Gfx::invalidateScreen();
+                    return;
+                }
 
                 case Widx::switch_company_button:
                 {

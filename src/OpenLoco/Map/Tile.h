@@ -259,7 +259,8 @@ namespace OpenLoco::Map
         uint8_t sequenceIndex() const { return _5 & 0xF; } // _5l
         uint8_t unk_6() const { return _6; }               // _6
         uint8_t owner() const { return _7 & 0xF; }         // _7l
-        uint8_t unk_7u() const { return _7 >> 4; }         // _7u
+        void setOwner(uint8_t newOwner) { _7 = (_7 & 0xF0) | (newOwner & 0xF); }
+        uint8_t unk_7u() const { return _7 >> 4; } // _7u
     };
 
     struct signal_element : public tile_element_base
@@ -292,6 +293,7 @@ namespace OpenLoco::Map
         uint8_t sequenceIndex() const { return _5 & 0x3; } // _5l
         bool hasStationElement() const { return (_type & 0x80) != 0; }
         uint8_t owner() const { return _7 & 0xF; } // _7l
+        void setOwner(uint8_t newOwner) { _7 = (_7 & 0xF0) | (newOwner & 0xF); }
     };
 
     struct industry_element : public tile_element_base
