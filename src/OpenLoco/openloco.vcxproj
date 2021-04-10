@@ -32,6 +32,7 @@
     <ClCompile Include="Entities\EntityManager.cpp" />
     <ClCompile Include="Entities\Misc.cpp" />
     <ClCompile Include="Environment.cpp" />
+    <ClCompile Include="GameCommands\Cheat.cpp" />
     <ClCompile Include="GameCommands\GameCommands.cpp" />
     <ClCompile Include="GameCommands\LoadSaveQuit.cpp" />
     <ClCompile Include="GameCommands\RenameIndustry.cpp" />
@@ -141,6 +142,7 @@
     <ClCompile Include="Windows\About.cpp" />
     <ClCompile Include="Windows\AboutMusic.cpp" />
     <ClCompile Include="Windows\BuildVehicle.cpp" />
+    <ClCompile Include="Windows\Cheats.cpp" />
     <ClCompile Include="Windows\CompanyFaceSelection.cpp" />
     <ClCompile Include="Windows\CompanyList.cpp" />
     <ClCompile Include="Windows\CompanyWindow.cpp" />
@@ -221,6 +223,7 @@
     <ClInclude Include="Entities\EntityManager.h" />
     <ClInclude Include="Entities\Misc.h" />
     <ClInclude Include="Environment.h" />
+    <ClInclude Include="GameCommands\Cheat.cpp" />
     <ClInclude Include="GameCommands\GameCommands.h" />
     <ClInclude Include="Graphics\Colour.h" />
     <ClInclude Include="Graphics\Gfx.h" />
