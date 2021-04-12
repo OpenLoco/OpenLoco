@@ -124,7 +124,7 @@ namespace OpenLoco::Ui::Windows::Cheats
 
     namespace Finances
     {
-        constexpr Gfx::ui_size_t windowSize = { 250, 182 };
+        constexpr Gfx::ui_size_t windowSize = { 250, 124 };
 
         static window_event_list _events;
 
@@ -132,7 +132,12 @@ namespace OpenLoco::Ui::Windows::Cheats
         {
             enum
             {
-                loan_group = 8,
+                cash_step_group = 8,
+                cash_step_value,
+                cash_step_decrease,
+                cash_step_increase,
+                cash_step_apply,
+                loan_group,
                 loan_value,
                 loan_clear,
             };
@@ -140,13 +145,20 @@ namespace OpenLoco::Ui::Windows::Cheats
 
         static widget_t _widgets[] = {
             commonWidgets(windowSize.width, windowSize.height, StringIds::financial_cheats),
-            makeWidget({ 4, 48 }, { windowSize.width - 8, 33 }, widget_type::groupbox, 1, StringIds::cheat_clear_loan),
-            makeWidget({ 80, 62 }, { 95, 12 }, widget_type::wt_17, 1),
-            makeWidget({ 180, 62 }, { 60, 12 }, widget_type::wt_11, 1, StringIds::cheat_clear),
+            makeWidget({ 4, 48 }, { windowSize.width - 8, 33 }, widget_type::groupbox, 1, StringIds::cheat_increase_funds),
+            makeStepperWidgets({ 80, 62 }, { 95, 12 }, widget_type::wt_17, 1, StringIds::empty),
+            makeWidget({ 180, 62 }, { 60, 12 }, widget_type::wt_11, 1, StringIds::cheat_add),
+            makeWidget({ 4, 86 }, { windowSize.width - 8, 33 }, widget_type::groupbox, 1, StringIds::cheat_clear_loan),
+            makeWidget({ 80, 100 }, { 95, 12 }, widget_type::wt_17, 1),
+            makeWidget({ 180, 100 }, { 60, 12 }, widget_type::wt_11, 1, StringIds::cheat_clear),
             widgetEnd(),
         };
 
-        static uint64_t enabledWidgets = Common::enabledWidgets | (1 << Widx::loan_clear);
+        static uint64_t enabledWidgets = Common::enabledWidgets | (1 << Widx::loan_clear) | (1 << Widx::cash_step_decrease) | (1 << Widx::cash_step_increase) | (1 << Widx::cash_step_apply);
+
+        const uint64_t holdableWidgets = (1 << Widx::cash_step_decrease) | (1 << Widx::cash_step_increase);
+
+        static currency32_t _cashIncreaseStep = 10'000;
 
         static void prepareDraw(window* self)
         {
@@ -158,6 +170,27 @@ namespace OpenLoco::Ui::Windows::Cheats
             // Draw widgets and tabs.
             self->draw(context);
             Common::drawTabs(self, context);
+
+            // Add cash step label and value
+            {
+                auto& widget = self->widgets[Widx::cash_step_value];
+                Gfx::drawString_494B3F(
+                    *context,
+                    self->x + 10,
+                    self->y + widget.top,
+                    Colour::black,
+                    StringIds::cheat_amount);
+
+                auto args = FormatArguments::common();
+                args.push(_cashIncreaseStep);
+                Gfx::drawString_494B3F(
+                    *context,
+                    self->x + widget.left + 1,
+                    self->y + widget.top,
+                    Colour::black,
+                    StringIds::cheat_loan_value,
+                    &args);
+            }
 
             // Loan label and value
             {
@@ -198,9 +231,40 @@ namespace OpenLoco::Ui::Windows::Cheats
                     Common::switchTab(self, widgetIndex);
                     break;
 
+                case Widx::cash_step_apply:
+                    GameCommands::do_81(CheatCommand::addCash, _cashIncreaseStep);
+                    WindowManager::invalidate(WindowType::playerInfoToolbar);
+                    break;
+
                 case Widx::loan_clear:
                     GameCommands::do_81(CheatCommand::clearLoan);
                     WindowManager::invalidateWidget(self->type, self->number, Widx::loan_value);
+                    break;
+            }
+        }
+
+        static void onMouseDown(window* self, widget_index widgetIndex)
+        {
+            static loco_global<uint16_t, 0x00523376> _clickRepeatTicks;
+
+            currency32_t stepSize{};
+            if (*_clickRepeatTicks < 100)
+                stepSize = 1000;
+            else if (*_clickRepeatTicks >= 100)
+                stepSize = 10000;
+            else if (*_clickRepeatTicks >= 200)
+                stepSize = 100000;
+
+            switch (widgetIndex)
+            {
+                case Widx::cash_step_decrease:
+                    _cashIncreaseStep = std::max<currency32_t>(_cashIncreaseStep - stepSize, 0);
+                    WindowManager::invalidateWidget(self->type, self->number, Widx::cash_step_value);
+                    break;
+
+                case Widx::cash_step_increase:
+                    _cashIncreaseStep = std::max<currency32_t>(_cashIncreaseStep + stepSize, 0);
+                    WindowManager::invalidateWidget(self->type, self->number, Widx::cash_step_value);
                     break;
             }
         }
@@ -216,6 +280,7 @@ namespace OpenLoco::Ui::Windows::Cheats
         {
             _events.draw = draw;
             _events.on_mouse_up = onMouseUp;
+            _events.on_mouse_down = onMouseDown;
             _events.on_update = onUpdate;
             _events.prepare_draw = prepareDraw;
         }
@@ -390,6 +455,7 @@ namespace OpenLoco::Ui::Windows::Cheats
         window->widgets = Finances::_widgets;
         window->current_tab = Common::Widx::tab_finances - Common::Widx::tab_finances;
         window->enabled_widgets = Finances::enabledWidgets;
+        window->holdable_widgets = Finances::holdableWidgets;
         window->initScrollWidgets();
 
         auto skin = ObjectManager::get<InterfaceSkinObject>();
@@ -407,13 +473,14 @@ namespace OpenLoco::Ui::Windows::Cheats
             widget_index widgetIndex;
             window_event_list* events;
             const uint64_t* enabledWidgets;
+            const uint64_t* holdableWidgets;
             Gfx::ui_size_t windowSize;
         };
 
         // clang-format off
         static TabInformation tabInformationByTabOffset[] = {
-            { Finances::_widgets,      Widx::tab_finances,       &Finances::_events,      &Finances::enabledWidgets,   Finances::windowSize  },
-            { Companies::_widgets,     Widx::tab_companies,      &Companies::_events,     &Companies::enabledWidgets,  Companies::windowSize },
+            { Finances::_widgets,  Widx::tab_finances,  &Finances::_events,  &Finances::enabledWidgets,  &Finances::holdableWidgets, Finances::windowSize  },
+            { Companies::_widgets, Widx::tab_companies, &Companies::_events, &Companies::enabledWidgets, nullptr,                    Companies::windowSize },
         };
         // clang-format on
 
@@ -425,7 +492,7 @@ namespace OpenLoco::Ui::Windows::Cheats
             auto tabInfo = tabInformationByTabOffset[self->current_tab];
 
             self->enabled_widgets = *tabInfo.enabledWidgets;
-            self->holdable_widgets = 0;
+            self->holdable_widgets = tabInfo.holdableWidgets != nullptr ? *tabInfo.holdableWidgets : 0;
             self->event_handlers = tabInfo.events;
             self->activated_widgets = 0;
             self->widgets = tabInfo.widgets;

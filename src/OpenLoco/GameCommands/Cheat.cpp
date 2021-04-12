@@ -1,5 +1,6 @@
 #include "Cheat.h"
 #include "../CompanyManager.h"
+#include "../Currency.h"
 #include "../Entities/EntityManager.h"
 #include "../Interop/Interop.hpp"
 #include "../Map/TileManager.h"
@@ -71,6 +72,13 @@ namespace OpenLoco::GameCommands
             return 0;
         }
 
+        static uint32_t addCash(currency32_t amount)
+        {
+            auto company = CompanyManager::getPlayerCompany();
+            company->cash = company->cash + amount;
+            return 0;
+        }
+
         static uint32_t clearLoan()
         {
             auto company = CompanyManager::getPlayerCompany();
@@ -121,6 +129,9 @@ namespace OpenLoco::GameCommands
         {
             case CheatCommand::acquireAssets:
                 return Cheats::acquireAssets(param1);
+
+            case CheatCommand::addCash:
+                return Cheats::addCash(param1);
 
             case CheatCommand::clearLoan:
                 return Cheats::clearLoan();

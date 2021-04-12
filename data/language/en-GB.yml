@@ -2250,3 +2250,6 @@ strings:
   2195: "Acquire all company assets"
   2196: "Toggle bankruptcy"
   2197: "Toggle jail status"
+  2198: "Increase funds"
+  2199: "{COLOUR WINDOW_2}Amount:"
+  2200: "Add"

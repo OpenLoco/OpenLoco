@@ -1582,4 +1582,7 @@ namespace OpenLoco::StringIds
     constexpr string_id cheat_acquire_company_assets = 2195;
     constexpr string_id cheat_toggle_bankruptcy = 2196;
     constexpr string_id cheat_toggle_jail_status = 2197;
+    constexpr string_id cheat_increase_funds = 2198;
+    constexpr string_id cheat_amount = 2199;
+    constexpr string_id cheat_add = 2200;
 }
