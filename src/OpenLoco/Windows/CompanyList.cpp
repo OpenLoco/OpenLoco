@@ -225,18 +225,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x00437C67
         static bool orderByValue(const OpenLoco::Company& lhs, const OpenLoco::Company& rhs)
         {
-            auto lhsValue = lhs.companyValueHistory[0].var_04;
-
-            auto rhsValue = rhs.companyValueHistory[0].var_04;
-
-            if (lhsValue == rhsValue)
-            {
-                lhsValue = lhs.companyValueHistory[0].var_00;
-
-                rhsValue = rhs.companyValueHistory[0].var_00;
-            }
-
-            return rhsValue < lhsValue;
+            return rhs.companyValueHistory[0] < lhs.companyValueHistory[0];
         }
 
         // 0x00437BA0, 0x00437BE1, 0x00437C53, 0x00437C67

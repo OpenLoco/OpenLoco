@@ -9,7 +9,7 @@ namespace OpenLoco
 #pragma pack(push, 1)
     struct currency48_t
     {
-        int32_t var_00 = 0;
+        uint32_t var_00 = 0;
         int16_t var_04 = 0;
 
         currency48_t(int32_t currency)
@@ -23,17 +23,17 @@ namespace OpenLoco
             var_04 = (currency >> 32) & 0xFFFF;
         }
 
-        int64_t asInt64()
+        int64_t asInt64() const
         {
             return var_00 | (static_cast<int64_t>(var_04) << 32);
         }
 
-        bool operator==(const currency48_t rhs)
+        bool operator==(const currency48_t rhs) const
         {
             return var_00 == rhs.var_00 && var_04 == rhs.var_04;
         }
 
-        bool operator!=(const currency48_t rhs)
+        bool operator!=(const currency48_t rhs) const
         {
             return !(var_00 == rhs.var_00 && var_04 == rhs.var_04);
         }
@@ -60,14 +60,14 @@ namespace OpenLoco
             return *this = sum;
         }
 
-        bool operator<(currency48_t& rhs)
+        bool operator<(const currency48_t& rhs) const
         {
             return asInt64() < rhs.asInt64();
         }
 
-        bool operator<(int rhs)
+        bool operator<(const int64_t rhs) const
         {
-            return var_00 < rhs;
+            return asInt64() < rhs;
         }
     };
 #pragma pack(pop)
