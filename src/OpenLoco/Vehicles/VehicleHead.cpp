@@ -2619,7 +2619,7 @@ namespace OpenLoco::Vehicles
         regs.esi = reinterpret_cast<int32_t>(this);
         call(0x00427FC9, regs);
         Map::map_pos headTarget = { regs.ax, regs.cx };
-        Map::map_pos3 stationTarget = { regs.di, regs.bp, regs.dl };
+        Map::map_pos3 stationTarget = { regs.di, regs.bp, static_cast<uint8_t>(regs.dl) };
         return std::make_tuple(regs.bx, headTarget, stationTarget);
     }
 
