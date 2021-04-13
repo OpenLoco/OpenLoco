@@ -764,20 +764,21 @@ namespace OpenLoco::Ui
         }
     }
 
+    // 0x004421FB
     void window::viewportFromSavedView(const SavedViewSimple& savedView)
     {
         auto viewport = viewports[0];
         if (viewport != nullptr)
         {
             auto& config = viewport_configurations[0];
-            config.viewport_target_sprite = ThingId::null;
+            config.viewport_target_sprite = EntityId::null;
             config.saved_view_x = savedView.mapX;
             config.saved_view_y = savedView.mapY;
 
             auto zoom = static_cast<int32_t>(savedView.zoomLevel) - viewport->zoom;
             if (zoom != 0)
             {
-                if (viewport->zoom < 0)
+                if (zoom < 0)
                 {
                     zoom = -zoom;
                     viewport->view_width >>= zoom;

@@ -5,9 +5,8 @@
 #include "GameCommands/GameCommands.h"
 #include "Gui.h"
 #include "Interop/Interop.hpp"
-#include "Map/TileManager.h"
-#include "OpenLoco.h"
 #include "Intro.h"
+#include "Map/TileManager.h"
 #include "OpenLoco.h"
 #include "S5/S5.h"
 #include "Scenario.h"
@@ -51,7 +50,7 @@ namespace OpenLoco::Title
 
     // Explicit deduction guide (not needed as of C++20)
     template<class... Ts>
-    overloaded(Ts...)->overloaded<Ts...>;
+    overloaded(Ts...) -> overloaded<Ts...>;
 
     static const TitleSequence _titleSequence = {
         MoveStep{ 231, 160 },
@@ -85,8 +84,6 @@ namespace OpenLoco::Title
     static TitleSequence::const_iterator _sequenceIterator;
     static uint16_t _waitCounter;
 
-
-    static loco_global<uint8_t, 0x00508F1A> _gameSpeed;
     static loco_global<uint16_t, 0x0050C19A> _50C19A;
     static loco_global<uint16_t, 0x00525F62> _525F62;
 
@@ -112,11 +109,6 @@ namespace OpenLoco::Title
         call(0x004284C8);
     }
 
-    static void loadTitle()
-    {
-        call(0x004442C4);
-    }
-
     // 0x004442C4
     static void loadTitle()
     {
@@ -128,15 +120,15 @@ namespace OpenLoco::Title
             clearScreenFlag(ScreenFlags::networked);
             S5::load(titlePath, S5::LoadFlags::titleSequence);
 
-            setPlayerCompany(0);
-            CompanyManager::set_525E3D(255);
+            CompanyManager::setControllingId(0);
+            CompanyManager::setSecondaryPlayerId(255);
             if (!isNetworked())
             {
-                CompanyManager::set_525E3D(1);
-                if (!isTrackUpgradeMode())
+                CompanyManager::setSecondaryPlayerId(1);
+                if (!isNetworkHost())
                 {
-                    setPlayerCompany(1);
-                    CompanyManager::set_525E3D(0);
+                    CompanyManager::setControllingId(1);
+                    CompanyManager::setSecondaryPlayerId(0);
                 }
             }
 
@@ -144,15 +136,20 @@ namespace OpenLoco::Title
         }
     }
 
+    static void reload()
+    {
+        loadTitle();
+        resetScreenAge();
+        _50C19A = 55000;
+        update();
+    }
+
     // 0x00444357
     static void reset()
     {
         _sequenceIterator = _titleSequence.begin();
         _waitCounter = 0;
-        loadTitle();
-        resetScreenAge();
-        _50C19A = 55000;
-        update();
+        reload();
     }
 
     // 0x0046AD7D
@@ -213,10 +210,7 @@ namespace OpenLoco::Title
                                 _waitCounter = step.duration - 1;
                             },
                             [](ReloadStep step) {
-                                loadTitle();
-                                Gfx::invalidateScreen();
-                                resetScreenAge();
-                                addr<0x50C19A, uint16_t>() = 55000;
+                                reload();
                             },
                             [](MoveStep step) {
                                 if (addr<0x00525E28, uint32_t>() & 1)

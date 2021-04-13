@@ -14,8 +14,7 @@ namespace OpenLoco::Map::TileManager
     {
         uint8_t baseZ;
         uint8_t type;
-        coord_t x;
-        coord_t y;
+        Map::map_pos pos;
     };
     static_assert(sizeof(TileAnimation) == 6);
 #pragma pack(pop)
@@ -525,7 +524,7 @@ namespace OpenLoco::Map::TileManager
     }
 
     // 0x004612A6
-    void createAnimation(uint8_t type, coord_t x, coord_t y, tile_coord_t baseZ)
+    void createAnimation(uint8_t type, const map_pos& pos, tile_coord_t baseZ)
     {
         if (_numAnimations >= maxAnimations)
             return;
@@ -533,7 +532,7 @@ namespace OpenLoco::Map::TileManager
         for (size_t i = 0; i < _numAnimations; i++)
         {
             auto& animation = _animations[i];
-            if (animation.type == type && animation.x == x && animation.y == y && animation.baseZ == baseZ)
+            if (animation.type == type && animation.pos == pos && animation.baseZ == baseZ)
             {
                 return;
             }
@@ -542,8 +541,13 @@ namespace OpenLoco::Map::TileManager
         auto& newAnimation = _animations[_numAnimations++];
         newAnimation.baseZ = baseZ;
         newAnimation.type = type;
-        newAnimation.x = x;
-        newAnimation.y = y;
+        newAnimation.pos = pos;
+    }
+
+    // 0x00461166
+    void resetAnimations()
+    {
+        _numAnimations = 0;
     }
 
     void registerHooks()
@@ -551,7 +555,7 @@ namespace OpenLoco::Map::TileManager
         registerHook(
             0x004612A6,
             [](registers& regs) -> uint8_t {
-                createAnimation(regs.dh, regs.ax, regs.cx, regs.dl);
+                createAnimation(regs.dh, { regs.ax, regs.cx }, regs.dl);
                 return 0;
             });
     }

@@ -69,7 +69,6 @@ namespace OpenLoco
         void sub_454A43(const Map::Pos2& pos, uint8_t bl, uint8_t bh, uint8_t dl);
         void createMapAnimations();
     };
-    static_assert(sizeof(industry) == 0x453);
 #pragma pack(pop)
 
     static_assert(sizeof(Industry) == 0x453);

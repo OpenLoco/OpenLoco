@@ -410,6 +410,7 @@ namespace OpenLoco::S5
         }
     }
 
+    // 0x00441FC9
     static std::unique_ptr<S5File> load(const fs::path& path)
     {
         SawyerStreamReader fs(path);
@@ -423,7 +424,7 @@ namespace OpenLoco::S5
         // Read header
         fs.readChunk(&file->header, sizeof(file->header));
 
-        // Read saved details
+        // Read saved details 0x00442087
         if (file->header.flags & S5Flags::hasSaveDetails)
         {
             file->saveDetails = std::make_unique<SaveDetails>();
@@ -433,10 +434,12 @@ namespace OpenLoco::S5
         // Read packed objects
         if (file->header.numPackedObjects > 0)
         {
+            // 0x004420B2
         }
 
         if (file->header.type == S5Type::objects)
         {
+            // 0x004423C1
             // new_objects_installed_successfully
         }
         else
@@ -508,7 +511,7 @@ namespace OpenLoco::S5
     }
 
     // 0x00441FA7
-    bool load(const fs::path& path, LoadFlags flags)
+    bool load(const fs::path& path, uint32_t flags)
     {
         _gameSpeed = 0;
         if (!(flags & LoadFlags::titleSequence) && !(flags & LoadFlags::twoPlayer))
@@ -615,7 +618,7 @@ namespace OpenLoco::S5
                 mainWindow->viewportFromSavedView(savedView);
             }
 
-            ThingManager::updateSpatialIndex();
+            EntityManager::updateSpatialIndex();
             TownManager::updateLabels();
             StationManager::updateLabels();
             sub_4BAEC4();
@@ -668,7 +671,7 @@ namespace OpenLoco::S5
             0x00441FA7,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 auto path = fs::u8path(std::string_view(_savePath));
-                return load(path, static_cast<LoadFlags>(regs.eax)) ? 0x100 : 0;
+                return load(path, regs.eax) ? 0x100 : 0;
             });
     }
 }

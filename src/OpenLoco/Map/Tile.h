@@ -81,7 +81,6 @@ namespace OpenLoco::Map
         uint8_t baseZ() const { return _base_z; }
         uint8_t clearZ() const { return _clear_z; }
 
-        uint8_t direction() const { return _type & 0x03; }
         bool hasHighTypeFlag() const { return _type & 0x80; }
         void setHighTypeFlag(bool state)
         {

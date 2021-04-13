@@ -15,13 +15,13 @@ namespace OpenLoco::S5
         landscape = 3,
     };
 
-    enum S5Flags : uint8_t
+    namespace S5Flags
     {
-        isRaw = 1 << 0,
-        isDump = 1 << 1,
-        isTitleSequence = 1 << 2,
-        hasSaveDetails = 1 << 3,
-    };
+        constexpr uint8_t isRaw = 1 << 0;
+        constexpr uint8_t isDump = 1 << 1;
+        constexpr uint8_t isTitleSequence = 1 << 2;
+        constexpr uint8_t hasSaveDetails = 1 << 3;
+    }
 
 #pragma pack(push, 1)
     struct Header
@@ -271,11 +271,11 @@ namespace OpenLoco::S5
         std::vector<TileElement> tileElements;
     };
 
-    enum LoadFlags : uint32_t
+    namespace LoadFlags
     {
-        titleSequence = 1 << 0,
-        twoPlayer = 1 << 1,
-    };
+        constexpr uint32_t titleSequence = 1 << 0;
+        constexpr uint32_t twoPlayer = 1 << 1;
+    }
 
     enum SaveFlags : uint32_t
     {
@@ -298,5 +298,5 @@ namespace OpenLoco::S5
     bool save(const fs::path& path, SaveFlags flags);
     void registerHooks();
 
-    bool load(const fs::path& path, LoadFlags flags);
+    bool load(const fs::path& path, uint32_t flags);
 }

@@ -23,7 +23,7 @@ namespace OpenLoco
         {
         }
 
-        constexpr operator uint8_t()
+        constexpr operator uint8_t() const
         {
             return level;
         }

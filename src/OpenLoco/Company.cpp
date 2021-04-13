@@ -15,11 +15,6 @@ namespace OpenLoco
 {
     static loco_global<CompanyId_t[2], 0x00525E3C> _playerCompanies;
 
-    void setPlayerCompany(CompanyId_t id)
-    {
-        _playerCompanies[0] = id;
-    }
-
     bool isPlayerCompany(CompanyId_t id)
     {
         auto findResult = std::find(

@@ -122,14 +122,6 @@ namespace OpenLoco::Game
         return openBrowsePrompt(StringIds::title_prompt_save_landscape, browse_type::save, S5::filterSC5);
     }
 
-    // 0x00441FA7
-    static bool sub_441FA7(uint32_t flags)
-    {
-        registers regs;
-        regs.eax = flags;
-        return !(call(0x00441FA7) & (X86_FLAG_CARRY << 8));
-    }
-
     // 0x004424CE
     static bool sub_4424CE()
     {
@@ -167,7 +159,7 @@ namespace OpenLoco::Game
                 auto path = fs::path(&_savePath[0]).replace_extension(S5::extensionSV5).u8string();
                 std::strncpy(&_currentScenarioFilename[0], path.c_str(), std::size(_currentScenarioFilename));
 
-                if (sub_441FA7(0))
+                if (S5::load(path, 0))
                 {
                     resetScreenAge();
                     throw GameException::Interrupt;
