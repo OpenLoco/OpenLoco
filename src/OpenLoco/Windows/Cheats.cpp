@@ -523,6 +523,109 @@ namespace OpenLoco::Ui::Windows::Cheats
         }
     }
 
+    namespace Towns
+    {
+        constexpr Gfx::ui_size_t windowSize = { 250, 103 };
+
+        static window_event_list _events;
+
+        namespace Widx
+        {
+            enum
+            {
+                ratings_group = 8,
+                ratings_all_min_10pct,
+                ratings_all_plus_10pct,
+                ratings_all_to_min,
+                ratings_all_to_max,
+            };
+        }
+
+        static widget_t _widgets[] = {
+            commonWidgets(windowSize.width, windowSize.height, StringIds::town_cheats),
+            makeWidget({ 4, 48 }, { windowSize.width - 8, 49 }, widget_type::groupbox, 1, StringIds::cheat_set_ratings),
+            makeWidget({ 10, 62 }, { (windowSize.width - 26) / 2, 12 }, widget_type::wt_11, 1, StringIds::cheat_ratings_min_10pct),
+            makeWidget({ 3 + (windowSize.width / 2), 62 }, { (windowSize.width - 26) / 2, 12 }, widget_type::wt_11, 1, StringIds::cheat_ratings_plus_10pct),
+            makeWidget({ 10, 78 }, { (windowSize.width - 26) / 2, 12 }, widget_type::wt_11, 1, StringIds::cheat_ratings_to_min),
+            makeWidget({ 3 + (windowSize.width / 2), 78 }, { (windowSize.width - 26) / 2, 12 }, widget_type::wt_11, 1, StringIds::cheat_ratings_to_max),
+            widgetEnd(),
+        };
+
+        static uint64_t enabledWidgets = Common::enabledWidgets | (1 << Widx::ratings_all_min_10pct) | (1 << Widx::ratings_all_plus_10pct) | (1 << Widx::ratings_all_to_min) | (1 << Widx::ratings_all_to_max);
+
+        static void prepareDraw(window* self)
+        {
+            self->activated_widgets = (1 << Common::Widx::tab_towns);
+        }
+
+        static void draw(Ui::window* const self, Gfx::drawpixelinfo_t* const context)
+        {
+            // Draw widgets and tabs.
+            self->draw(context);
+            Common::drawTabs(self, context);
+        }
+
+        static void onMouseUp(Ui::window* const self, const widget_index widgetIndex)
+        {
+            switch (widgetIndex)
+            {
+                case Common::Widx::close_button:
+                    WindowManager::close(self->type);
+                    break;
+
+                case Common::Widx::tab_finances:
+                case Common::Widx::tab_companies:
+                case Common::Widx::tab_vehicles:
+                case Common::Widx::tab_towns:
+                    Common::switchTab(self, widgetIndex);
+                    break;
+
+                case Widx::ratings_all_min_10pct:
+                {
+                    GameCommands::do_81(CheatCommand::companyRatings, false, -10);
+                    WindowManager::invalidate(WindowType::town);
+                    return;
+                }
+
+                case Widx::ratings_all_plus_10pct:
+                {
+                    GameCommands::do_81(CheatCommand::companyRatings, false, 10);
+                    WindowManager::invalidate(WindowType::town);
+                    return;
+                }
+
+                case Widx::ratings_all_to_min:
+                {
+                    GameCommands::do_81(CheatCommand::companyRatings, true, -1);
+                    WindowManager::invalidate(WindowType::town);
+                    return;
+                }
+
+                case Widx::ratings_all_to_max:
+                {
+                    GameCommands::do_81(CheatCommand::companyRatings, true, 1);
+                    WindowManager::invalidate(WindowType::town);
+                    return;
+                }
+            }
+        }
+
+        static void onUpdate(window* const self)
+        {
+            self->frame_no += 1;
+            self->callPrepareDraw();
+            WindowManager::invalidateWidget(self->type, self->number, Common::Widx::tab_towns);
+        }
+
+        static void initEvents()
+        {
+            _events.draw = draw;
+            _events.on_mouse_up = onMouseUp;
+            _events.on_update = onUpdate;
+            _events.prepare_draw = prepareDraw;
+        }
+    }
+
     static void initEvents();
 
     window* open()
@@ -568,13 +671,14 @@ namespace OpenLoco::Ui::Windows::Cheats
         static TabInformation tabInformationByTabOffset[] = {
             { Finances::_widgets,  Widx::tab_finances,  &Finances::_events,  &Finances::enabledWidgets,  &Finances::holdableWidgets, Finances::windowSize  },
             { Companies::_widgets, Widx::tab_companies, &Companies::_events, &Companies::enabledWidgets, nullptr,                    Companies::windowSize },
-            { Vehicles::_widgets,  Widx::tab_vehicles,  &Vehicles::_events,  &Vehicles::enabledWidgets,  nullptr,                    Vehicles::windowSize },
+            { Vehicles::_widgets,  Widx::tab_vehicles,  &Vehicles::_events,  &Vehicles::enabledWidgets,  nullptr,                    Vehicles::windowSize  },
+            { Towns::_widgets,     Widx::tab_towns,     &Towns::_events,     &Towns::enabledWidgets,     nullptr,                    Towns::windowSize     },
         };
         // clang-format on
 
         static void switchTab(window* self, widget_index widgetIndex)
         {
-            self->current_tab = std::clamp(widgetIndex - Widx::tab_finances, 0, 2);
+            self->current_tab = widgetIndex - Widx::tab_finances;
             self->frame_no = 0;
 
             auto tabInfo = tabInformationByTabOffset[self->current_tab];
@@ -602,5 +706,6 @@ namespace OpenLoco::Ui::Windows::Cheats
         Finances::initEvents();
         Companies::initEvents();
         Vehicles::initEvents();
+        Towns::initEvents();
     }
 }

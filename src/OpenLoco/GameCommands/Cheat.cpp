@@ -5,6 +5,7 @@
 #include "../Interop/Interop.hpp"
 #include "../Map/TileManager.h"
 #include "../StationManager.h"
+#include "../TownManager.h"
 #include "../Types.hpp"
 #include "../Vehicles/Vehicle.h"
 #include "GameCommands.h"
@@ -86,6 +87,35 @@ namespace OpenLoco::GameCommands
             return 0;
         }
 
+        static uint32_t companyRatings(bool absolute, int32_t value)
+        {
+            auto companyId = CompanyManager::getControllingId();
+
+            for (auto& town : TownManager::towns())
+            {
+                // Does this town have a rating for our company?
+                if (!(town.companies_with_rating &= (1 << companyId)))
+                    continue;
+
+                int16_t newRanking{};
+                if (absolute)
+                {
+                    newRanking = value * max_company_rating;
+                }
+                else
+                {
+                    newRanking = town.company_ratings[companyId] + max_company_rating;
+                    newRanking *= 1.0f + (1.0f / value);
+                    newRanking -= max_company_rating;
+                }
+
+                // Set the new rating.
+                town.company_ratings[companyId] = std::clamp<int16_t>(newRanking, min_company_rating, max_company_rating);
+            }
+
+            return 0;
+        }
+
         static uint32_t switchCompany(CompanyId_t targetCompanyId)
         {
             auto ourId = CompanyManager::getControllingId();
@@ -163,6 +193,9 @@ namespace OpenLoco::GameCommands
 
             case CheatCommand::clearLoan:
                 return Cheats::clearLoan();
+
+            case CheatCommand::companyRatings:
+                return Cheats::companyRatings(param1, param2);
 
             case CheatCommand::switchCompany:
                 return Cheats::switchCompany(param1);

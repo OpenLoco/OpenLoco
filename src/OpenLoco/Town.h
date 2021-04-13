@@ -7,6 +7,9 @@
 
 namespace OpenLoco
 {
+    constexpr int32_t min_company_rating = -1000;
+    constexpr int32_t max_company_rating = 1000;
+
     namespace TownId
     {
         constexpr TownId_t null = std::numeric_limits<TownId_t>::max();

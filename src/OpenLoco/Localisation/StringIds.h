@@ -1588,4 +1588,9 @@ namespace OpenLoco::StringIds
     constexpr string_id cheat_set_vehicle_reliability = 2201;
     constexpr string_id cheat_reliability_zero = 2202;
     constexpr string_id cheat_reliability_hundred = 2203;
+    constexpr string_id cheat_set_ratings = 2204;
+    constexpr string_id cheat_ratings_min_10pct = 2205;
+    constexpr string_id cheat_ratings_plus_10pct = 2206;
+    constexpr string_id cheat_ratings_to_min = 2207;
+    constexpr string_id cheat_ratings_to_max = 2208;
 }

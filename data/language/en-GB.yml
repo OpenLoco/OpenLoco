@@ -2256,3 +2256,8 @@ strings:
   2201: "Vehicle reliability"
   2202: "Set all to zero (unlimited)"
   2203: "Set all to hundred (full renewal)"
+  2204: "Set company ratings"
+  2205: "-10% everywhere"
+  2206: "+10% everywhere"
+  2207: "Min everywhere"
+  2208: "Max everywhere"
