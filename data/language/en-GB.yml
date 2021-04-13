@@ -2253,3 +2253,6 @@ strings:
   2198: "Increase funds"
   2199: "{COLOUR WINDOW_2}Amount:"
   2200: "Add"
+  2201: "Vehicle reliability"
+  2202: "Set all to zero (unlimited)"
+  2203: "Set all to hundred (full renewal)"

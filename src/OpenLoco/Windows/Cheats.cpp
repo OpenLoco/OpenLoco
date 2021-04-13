@@ -436,6 +436,93 @@ namespace OpenLoco::Ui::Windows::Cheats
         }
     }
 
+    namespace Vehicles
+    {
+        constexpr Gfx::ui_size_t windowSize = { 250, 103 };
+
+        static window_event_list _events;
+
+        namespace Widx
+        {
+            enum
+            {
+                reliability_group = 8,
+                reliablity_all_to_zero,
+                reliablity_all_to_hundred,
+            };
+        }
+
+        static widget_t _widgets[] = {
+            commonWidgets(windowSize.width, windowSize.height, StringIds::vehicle_cheats),
+            makeWidget({ 4, 48 }, { windowSize.width - 8, 49 }, widget_type::groupbox, 1, StringIds::cheat_set_vehicle_reliability),
+            makeWidget({ 10, 62 }, { windowSize.width - 20, 12 }, widget_type::wt_11, 1, StringIds::cheat_reliability_zero),
+            makeWidget({ 10, 78 }, { windowSize.width - 20, 12 }, widget_type::wt_11, 1, StringIds::cheat_reliability_hundred),
+            widgetEnd(),
+        };
+
+        static uint64_t enabledWidgets = Common::enabledWidgets | (1 << Widx::reliablity_all_to_zero) | (1 << Widx::reliablity_all_to_hundred);
+
+        static void prepareDraw(window* self)
+        {
+            self->activated_widgets = (1 << Common::Widx::tab_vehicles);
+        }
+
+        static void draw(Ui::window* const self, Gfx::drawpixelinfo_t* const context)
+        {
+            // Draw widgets and tabs.
+            self->draw(context);
+            Common::drawTabs(self, context);
+        }
+
+        static void onMouseUp(Ui::window* const self, const widget_index widgetIndex)
+        {
+            switch (widgetIndex)
+            {
+                case Common::Widx::close_button:
+                    WindowManager::close(self->type);
+                    break;
+
+                case Common::Widx::tab_finances:
+                case Common::Widx::tab_companies:
+                case Common::Widx::tab_vehicles:
+                case Common::Widx::tab_towns:
+                    Common::switchTab(self, widgetIndex);
+                    break;
+
+                case Widx::reliablity_all_to_zero:
+                {
+                    GameCommands::do_81(CheatCommand::vehicleReliability, 0);
+                    WindowManager::invalidate(WindowType::vehicle);
+                    WindowManager::invalidate(WindowType::vehicleList);
+                    return;
+                }
+
+                case Widx::reliablity_all_to_hundred:
+                {
+                    GameCommands::do_81(CheatCommand::vehicleReliability, 100);
+                    WindowManager::invalidate(WindowType::vehicle);
+                    WindowManager::invalidate(WindowType::vehicleList);
+                    return;
+                }
+            }
+        }
+
+        static void onUpdate(window* const self)
+        {
+            self->frame_no += 1;
+            self->callPrepareDraw();
+            WindowManager::invalidateWidget(self->type, self->number, Common::Widx::tab_vehicles);
+        }
+
+        static void initEvents()
+        {
+            _events.draw = draw;
+            _events.on_mouse_up = onMouseUp;
+            _events.on_update = onUpdate;
+            _events.prepare_draw = prepareDraw;
+        }
+    }
+
     static void initEvents();
 
     window* open()
@@ -481,12 +568,13 @@ namespace OpenLoco::Ui::Windows::Cheats
         static TabInformation tabInformationByTabOffset[] = {
             { Finances::_widgets,  Widx::tab_finances,  &Finances::_events,  &Finances::enabledWidgets,  &Finances::holdableWidgets, Finances::windowSize  },
             { Companies::_widgets, Widx::tab_companies, &Companies::_events, &Companies::enabledWidgets, nullptr,                    Companies::windowSize },
+            { Vehicles::_widgets,  Widx::tab_vehicles,  &Vehicles::_events,  &Vehicles::enabledWidgets,  nullptr,                    Vehicles::windowSize },
         };
         // clang-format on
 
         static void switchTab(window* self, widget_index widgetIndex)
         {
-            self->current_tab = std::clamp(widgetIndex - Widx::tab_finances, 0, 1);
+            self->current_tab = std::clamp(widgetIndex - Widx::tab_finances, 0, 2);
             self->frame_no = 0;
 
             auto tabInfo = tabInformationByTabOffset[self->current_tab];
@@ -513,5 +601,6 @@ namespace OpenLoco::Ui::Windows::Cheats
     {
         Finances::initEvents();
         Companies::initEvents();
+        Vehicles::initEvents();
     }
 }

@@ -121,6 +121,34 @@ namespace OpenLoco::GameCommands
             company->jail_status = 30;
             return 0;
         }
+
+        static uint32_t vehicleReliability(int32_t newReliablity)
+        {
+            auto ourCompanyId = CompanyManager::updatingCompanyId();
+
+            for (auto vehicle : EntityManager::VehicleList())
+            {
+                if (vehicle->owner != ourCompanyId)
+                    continue;
+
+                Vehicles::Vehicle train(vehicle);
+                // train.head->reliability = newReliablity;
+                // train.veh1->reliability = newReliablity;
+                train.veh2->reliability = newReliablity;
+                // train.tail->reliability = newReliablity;
+
+                for (auto& car : train.cars)
+                {
+                    for (auto& component : car)
+                    {
+                        component.front->reliability = newReliablity * 256;
+                        // component.body->reliability = newReliablity * 256;
+                        component.back->reliability = newReliablity * 256;
+                    }
+                }
+            }
+            return 0;
+        }
     }
 
     static uint32_t cheat(CheatCommand command, int32_t param1, int32_t param2, int32_t param3)
@@ -144,6 +172,9 @@ namespace OpenLoco::GameCommands
 
             case CheatCommand::toggleJail:
                 return Cheats::toggleJail(param1);
+
+            case CheatCommand::vehicleReliability:
+                return Cheats::vehicleReliability(param1);
 
             default:
                 break;

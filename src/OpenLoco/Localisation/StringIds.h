@@ -1585,4 +1585,7 @@ namespace OpenLoco::StringIds
     constexpr string_id cheat_increase_funds = 2198;
     constexpr string_id cheat_amount = 2199;
     constexpr string_id cheat_add = 2200;
+    constexpr string_id cheat_set_vehicle_reliability = 2201;
+    constexpr string_id cheat_reliability_zero = 2202;
+    constexpr string_id cheat_reliability_hundred = 2203;
 }
