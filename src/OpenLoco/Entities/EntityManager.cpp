@@ -7,6 +7,7 @@
 #include "../Map/Tile.h"
 #include "../OpenLoco.h"
 #include "../Vehicles/Vehicle.h"
+#include "EntityTweener.h"
 
 using namespace OpenLoco::Interop;
 
@@ -82,6 +83,7 @@ namespace OpenLoco::EntityManager
         _listCounts[static_cast<uint8_t>(EntityListType::nullMoney)] = maxMoneyEntities;
 
         resetSpatialIndex();
+        EntityTweener::Get().Reset();
     }
 
     EntityId_t firstId(EntityListType list)
@@ -210,6 +212,8 @@ namespace OpenLoco::EntityManager
     // 0x0047024A
     void freeEntity(EntityBase* const entity)
     {
+        EntityTweener::Get().RemoveEntity(entity);
+
         auto list = entity->id < 19800 ? EntityListType::null : EntityListType::nullMoney;
         moveEntityToList(entity, list);
         StringManager::emptyUserString(entity->name);

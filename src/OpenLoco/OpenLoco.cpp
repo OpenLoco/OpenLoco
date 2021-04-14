@@ -28,6 +28,7 @@
 #include "Economy/Economy.h"
 #include "EditorController.h"
 #include "Entities/EntityManager.h"
+#include "Entities/EntityTweener.h"
 #include "Environment.h"
 #include "GameCommands/GameCommands.h"
 #include "GameException.hpp"
@@ -770,6 +771,7 @@ namespace OpenLoco
         catch (GameException)
         {
             // Premature end of current tick; use a different message to indicate it's from C++ code
+            EntityTweener::Get().Reset();
             std::cout << "tick interrupted" << std::endl;
             return;
         }
@@ -1044,20 +1046,34 @@ namespace OpenLoco
 
     constexpr auto MaxUpdateTime = static_cast<double>(Engine::MaxTimeDeltaMs) / 1000.0;
     constexpr auto UpdateTime = static_cast<double>(Engine::UpdateRateInMs) / 1000.0;
+    constexpr auto TimeScale = 1.0;
 
     static void variableUpdate()
     {
-        while (_accumulator >= UpdateTime)
+        auto& tweener = EntityTweener::Get();
+
+        const auto alpha = std::min<float>(_accumulator / UpdateTime, 1.0);
+
+        while (_accumulator > UpdateTime)
         {
+            tweener.PreTick();
+
             tick();
             _accumulator -= UpdateTime;
+
+            tweener.PostTick();
         }
+
+        tweener.Tween(alpha);
 
         Ui::render();
     }
 
     static void fixedUpdate()
     {
+        auto& tweener = EntityTweener::Get();
+        tweener.Reset();
+
         if (_accumulator < UpdateTime)
         {
             auto timeMissing = static_cast<uint32_t>((UpdateTime - _accumulator) * 1000);
@@ -1074,6 +1090,8 @@ namespace OpenLoco
     {
         auto timeNow = Clock::now();
         auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(timeNow - _lastUpdate).count() / 1'000'000.0;
+
+        elapsed *= TimeScale;
 
         _accumulator = std::min(_accumulator + elapsed, MaxUpdateTime);
         _lastUpdate = timeNow;
