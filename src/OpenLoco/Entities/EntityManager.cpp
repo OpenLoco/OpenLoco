@@ -151,10 +151,8 @@ namespace OpenLoco::EntityManager
         }
         moveEntityToList(newEntity, list);
 
-        newEntity->position.x = Location::null;
-        newEntity->position.y = Location::null;
-        newEntity->position.z = 0;
-        auto index = getSpatialIndexOffset({ Location::null, Location::null });
+        newEntity->position = { Location::null, Location::null, 0 };
+        auto index = getSpatialIndexOffset(newEntity->position);
         auto nextSpatialId = _entitySpatialIndex[index];
         _entitySpatialIndex[index] = newEntity->id;
         newEntity->nextQuadrantId = nextSpatialId;

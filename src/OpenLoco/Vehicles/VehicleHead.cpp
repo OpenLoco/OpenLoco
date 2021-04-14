@@ -2798,7 +2798,7 @@ namespace OpenLoco::Vehicles
 
             CompanyManager::applyPaymentToCompany(owner, -cargoProfit, ExpenditureType(static_cast<uint8_t>(vehicleType) * 2));
 
-            auto loc = Map::Pos3{ train.cars.firstCar.body->x, train.cars.firstCar.body->y, train.cars.firstCar.body->z } + Map::Pos3{ 0, 0, 28 };
+            auto loc = train.cars.firstCar.body->position + Map::Pos3{ 0, 0, 28 };
             CompanyManager::spendMoneyEffect(loc, owner, -cargoProfit);
 
             Audio::playSound(Audio::SoundId::income, loc);
