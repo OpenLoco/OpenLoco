@@ -22,7 +22,9 @@ namespace OpenLoco::EntityManager
     // 0x0046FDFD
     void reset()
     {
+        // Reset all entities to 0
         std::fill_n(_entities.get(), maxEntities, Entity{});
+        // Reset all entity lists
         for (auto& count : _listCounts)
         {
             count = 0;
@@ -31,9 +33,11 @@ namespace OpenLoco::EntityManager
         {
             head = EntityId::null;
         }
+
+        // Remake null entities (size maxNormalEntities)
         EntityBase* previous = nullptr;
         EntityId_t id = 0;
-        for (; id < 19800; ++id)
+        for (; id < maxNormalEntities; ++id)
         {
             auto& ent = _entities[id];
             ent.base_type = EntityBaseType::null;
@@ -52,8 +56,9 @@ namespace OpenLoco::EntityManager
             }
             previous = &ent;
         }
-        _listCounts[static_cast<uint8_t>(EntityListType::null)] = 19800;
+        _listCounts[static_cast<uint8_t>(EntityListType::null)] = maxNormalEntities;
 
+        // Remake null money entities (size maxMoneyEntities)
         previous = nullptr;
         for (; id < maxEntities; ++id)
         {
@@ -74,7 +79,7 @@ namespace OpenLoco::EntityManager
             }
             previous = &ent;
         }
-        _listCounts[static_cast<uint8_t>(EntityListType::nullMoney)] = 200;
+        _listCounts[static_cast<uint8_t>(EntityListType::nullMoney)] = maxMoneyEntities;
 
         resetSpatialIndex();
     }
@@ -162,7 +167,7 @@ namespace OpenLoco::EntityManager
     // 0x004700A5
     EntityBase* createEntityMisc()
     {
-        if (getListCount(EntityListType::misc) >= 4000)
+        if (getListCount(EntityListType::misc) >= maxMiscEntities)
         {
             return nullptr;
         }
@@ -188,7 +193,7 @@ namespace OpenLoco::EntityManager
     }
 
     // 0x00470039
-    EntityBase* EntityManager::createEntityVehicle()
+    EntityBase* createEntityVehicle()
     {
         if (getListCount(EntityListType::null) <= 0)
         {
@@ -207,6 +212,7 @@ namespace OpenLoco::EntityManager
         StringManager::emptyUserString(entity->name);
         entity->base_type = EntityBaseType::null;
 
+        // Remove from spatial lists
         auto* quadId = &_entitySpatialIndex[getSpatialIndexOffset({ entity->x, entity->y })];
         _entitySpatialCount = 0;
         while (*quadId < maxEntities)
