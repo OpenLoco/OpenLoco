@@ -8,6 +8,7 @@
 #include "../Interop/Interop.hpp"
 #include "../Localisation/FormatArguments.hpp"
 #include "../Map/TileManager.h"
+#include "../Math/Trigonometry.hpp"
 #include "../MessageManager.h"
 #include "../Objects/AirportObject.h"
 #include "../Objects/CargoObject.h"
@@ -42,7 +43,6 @@ namespace OpenLoco::Vehicles
     static loco_global<Status, 0x0113646C> vehicleUpdate_initialStatus;
     static loco_global<uint8_t, 0x0113646D> vehicleUpdate_helicopterTargetYaw;
     static loco_global<uint32_t, 0x00525BB0> vehicleUpdate_var_525BB0;
-    static loco_global<int16_t[128], 0x00503B6A> factorXY503B6A;
     static constexpr uint16_t trainOneWaySignalTimeout = 1920;
     static constexpr uint16_t trainTwoWaySignalTimeout = 640;
     static constexpr uint16_t busSignalTimeout = 960;   // Time to wait before turning around at barriers
@@ -822,11 +822,10 @@ namespace OpenLoco::Vehicles
     // Returns veh1, veh2 position
     static std::pair<map_pos, map_pos> calculateNextPosition(const uint8_t yaw, const Map::map_pos& curPos, const Vehicle1* veh1, const Speed32 speed)
     {
-        auto distX = (speed.getRaw() >> 13) * factorXY503B6A[yaw * 2];
-        auto distY = (speed.getRaw() >> 13) * factorXY503B6A[yaw * 2 + 1];
+        auto dist = Math::Trigonometry::computeXYVector(speed.getRaw() >> 5, yaw);
 
-        auto bigCoordX = veh1->var_4E + (curPos.x << 16) + distX;
-        auto bigCoordY = veh1->var_50 + (curPos.y << 16) + distY;
+        auto bigCoordX = veh1->var_4E + (curPos.x << 16) + dist.x;
+        auto bigCoordY = veh1->var_50 + (curPos.y << 16) + dist.y;
 
         map_pos veh1Pos = { static_cast<int16_t>(bigCoordX & 0xFFFF), static_cast<int16_t>(bigCoordY & 0xFFFF) };
         map_pos veh2Pos = { static_cast<int16_t>(bigCoordX >> 16), static_cast<int16_t>(bigCoordY >> 16) };

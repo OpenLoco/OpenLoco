@@ -30,18 +30,19 @@ namespace OpenLoco
 
     enum class Pitch : uint8_t
     {
+        //                               actual angle (for trig)
         flat = 0,
-        up6deg = 1,  // Transition
-        up12deg = 2, // Gentle
-        up18deg = 3, // Transition
-        up25deg = 4, // Steep
+        up6deg = 1,  // Transition,      5.75 deg
+        up12deg = 2, // Gentle,          11.75 deg
+        up18deg = 3, // Transition,      17 deg
+        up25deg = 4, // Steep,           22.5 deg
         down6deg = 5,
         down12deg = 6,
         down18deg = 7,
         down25deg = 8,
-        up10deg = 9, // Gentle Curve Up
+        up10deg = 9, // Gentle Curve Up, 10 deg
         down10deg = 10,
-        up20deg = 11, // Steep Curve Up
+        up20deg = 11, // Steep Curve Up, 19.25 deg
         down20deg = 12,
     };
 
