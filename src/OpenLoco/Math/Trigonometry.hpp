@@ -83,7 +83,7 @@ namespace OpenLoco::Math::Trigonometry
     // 0x00503B50
     // -SIN((Y1/360)*2*PI())*256
     // Where Y1 represents the angle of pitch in degrees (0, 5.75, 11.75, 17, 22.5, reverse, 10, -10, 19.25, -19.25)
-    // Note: pitch angles not quite correct
+    // Note: pitch angles not quite correct in the Pitch enum class (decimal points can't go in identifier names)
     constexpr int16_t pitchHorizontalFactor[] = {
         0,
         -26,
