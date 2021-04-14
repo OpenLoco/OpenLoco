@@ -1,4 +1,4 @@
-21.04+ (???)
+21.04.1 (2021-04-14)
 ------------------------------------------------------------------------
 - Fix: [#914] Boats get stuck in approaching dock mode when water is above a certain height.
 - Fix: [#915] Money subtractions with large values incorrectly calculated causing negative money.
