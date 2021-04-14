@@ -25,8 +25,8 @@ namespace OpenLoco::Vehicles
     static loco_global<uint8_t, 0x01136237> vehicle_var_1136237;       // var_28 related?
     static loco_global<uint8_t, 0x01136238> vehicle_var_1136238;       // var_28 related?
     static loco_global<int8_t[88], 0x004F865C> vehicle_arr_4F865C;     // var_2C related?
-    static loco_global<uint8_t[44], 0x004F8A7C> vehicle_arr_4F8A7C;    // bools
-    static loco_global<uint8_t, 0x00525FAE> vehicle_var_525FAE;        // boolean
+    static loco_global<bool[44], 0x004F8A7C> trackIdToSparkDirection;  // bools true for right false for left
+    static loco_global<bool, 0x00525FAE> trafficHandedness;            // boolean true for right false for left
 
     // 0x00503E5C
     static constexpr Pitch vehicleBodyIndexToPitch[] = {
@@ -1192,7 +1192,7 @@ namespace OpenLoco::Vehicles
         auto yaw = (sprite_yaw + 16) & 0x3F;
 
         auto unkFactor = 5;
-        if (vehicle_var_525FAE != 0)
+        if (trafficHandedness != 0)
         {
             unkFactor = -5;
         }
@@ -1310,7 +1310,7 @@ namespace OpenLoco::Vehicles
         auto yaw = (sprite_yaw + 16) & 0x3F;
         auto firstBogie = var_38 & Flags38::isReversed ? backBogie : frontBogie;
         auto unkFactor = 5;
-        if (!(vehicle_arr_4F8A7C[firstBogie->var_2C / 8] & 1))
+        if (!trackIdToSparkDirection[firstBogie->var_2C / 8])
         {
             unkFactor = -5;
         }

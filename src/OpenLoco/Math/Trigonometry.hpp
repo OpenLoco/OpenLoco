@@ -13,7 +13,7 @@ namespace OpenLoco::Math::Trigonometry
     // ROUND(COS((32/64+(L1/64))*(2*PI()))*256,0), ROUND(SIN(((L1/64))*(2*PI())) * 256,0)
     // Where L1 represents an incrementing column 0 - 63
     // Note: Must be at least 32bit to ensure all users do not overflow
-    static constexpr Vector::TVector2<int32_t, 1> factorXY503B6A[64] = {
+    static constexpr Vector::TVector2<int32_t, 1> yawToDirectionVector[64] = {
         { -256, 0 },
         { -255, 25 },
         { -251, 50 },
@@ -84,7 +84,7 @@ namespace OpenLoco::Math::Trigonometry
     // -SIN((Y1/360)*2*PI())*256
     // Where Y1 represents the angle of pitch in degrees (0, 5.75, 11.75, 17, 22.5, reverse, 10, -10, 19.25, -19.25)
     // Note: pitch angles not quite correct
-    constexpr int16_t factor503B50[] = {
+    constexpr int16_t pitchHorizontalFactor[] = {
         0,
         -26,
         -52,
@@ -102,12 +102,12 @@ namespace OpenLoco::Math::Trigonometry
 
     constexpr auto computeXYMagnitude(int16_t height, Pitch pitch)
     {
-        return (factor503B50[static_cast<uint8_t>(pitch)] * height) / 256;
+        return (pitchHorizontalFactor[static_cast<uint8_t>(pitch)] * height) / 256;
     }
 
     constexpr auto computeXYVector(int16_t magnitude, uint8_t yaw)
     {
-        return (factorXY503B6A[yaw] * magnitude) / 256;
+        return (yawToDirectionVector[yaw] * magnitude) / 256;
     }
     constexpr auto computeXYVector(int16_t height, Pitch pitch, uint8_t yaw)
     {
