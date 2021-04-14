@@ -12,12 +12,13 @@ namespace OpenLoco::Vehicles
 
 namespace OpenLoco::EntityManager
 {
-    constexpr size_t numEntityLists = 6;
+    constexpr size_t numEntityLists = 7;
     constexpr size_t maxEntities = 20000;
 
     enum class EntityListType
     {
-        null,
+        null,      // Used for vehicles and other misc entities (not money)
+        nullMoney, // For some reason money effects have their own pool of entities to use
         vehicleHead,
         misc = 3,
     };

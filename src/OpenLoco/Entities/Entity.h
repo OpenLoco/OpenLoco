@@ -54,7 +54,8 @@ namespace OpenLoco
     public:
         EntityId_t nextQuadrantId; // 0x02
         EntityId_t next_thing_id;  // 0x04
-        uint8_t pad_06[0x09 - 0x06];
+        EntityId_t llPreviousId;   // 0x06
+        uint8_t linkedListOffset;  // 0x8
         uint8_t var_09;
         EntityId_t id; // 0xA
         uint16_t var_0C;
