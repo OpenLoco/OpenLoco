@@ -9,6 +9,7 @@
 #include "../Audio/Audio.h"
 #include "../Console.h"
 #include "../Core/FileSystem.hpp"
+#include "../Entities/EntityManager.h"
 #include "../Environment.h"
 #include "../GameCommands/GameCommands.h"
 #include "../Graphics/Colour.h"
@@ -900,6 +901,18 @@ void OpenLoco::Interop::registerHooks()
     registerHook(
         0x004422CD,
         [](registers& regs) -> uint8_t {
+            return 0;
+        });
+
+    registerHook(
+        0x0047024A,
+        [](registers& regs) -> uint8_t {
+            registers backup = regs;
+
+            auto* entity = reinterpret_cast<EntityBase*>(regs.esi);
+            EntityManager::freeEntity(entity);
+
+            regs = backup;
             return 0;
         });
 }
