@@ -635,7 +635,7 @@ namespace OpenLoco::StringIds
     constexpr string_id error_file_is_not_two_player_save = 1085;
 
     constexpr string_id loading = 1088;
-
+    constexpr string_id installing_new_data = 1089;
     constexpr string_id white = 1090;
     constexpr string_id translucent = 1091;
     constexpr string_id construction_marker = 1092;
@@ -1501,7 +1501,6 @@ namespace OpenLoco::StringIds
     constexpr string_id object_scenario_descriptions = 2086;
     constexpr string_id tooltip_object_list = 2087;
     constexpr string_id missing_object_data_id_x = 2088;
-
     constexpr string_id export_plugin_objects = 2089;
     constexpr string_id export_plugin_objects_tip = 2090;
 

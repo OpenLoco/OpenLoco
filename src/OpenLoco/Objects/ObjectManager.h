@@ -11,6 +11,8 @@
 
 namespace OpenLoco
 {
+    class SawyerStreamWriter;
+
     namespace Gfx
     {
         struct Context;
@@ -283,8 +285,8 @@ namespace OpenLoco::ObjectManager
 
     struct LoadObjectsResult
     {
-        bool Success{};
-        ObjectHeader ProblemObject;
+        bool success{};
+        ObjectHeader problemObject;
     };
 
     uint32_t getNumInstalledObjects();
@@ -299,6 +301,8 @@ namespace OpenLoco::ObjectManager
     std::vector<ObjectHeader> getHeaders();
 
     LoadObjectsResult loadAll(stdx::span<ObjectHeader> objects);
+    bool tryInstallObject(const ObjectHeader& object, stdx::span<const uint8_t> data);
+    void writePackedObjects(SawyerStreamWriter& fs, const std::vector<ObjectHeader>& packedObjects);
 
     void unloadAll();
     void unload(LoadedObjectIndex index);

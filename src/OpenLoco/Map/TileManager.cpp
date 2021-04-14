@@ -14,7 +14,7 @@ namespace OpenLoco::Map::TileManager
     {
         uint8_t baseZ;
         uint8_t type;
-        Map::map_pos pos;
+        Map::Pos2 pos;
     };
     static_assert(sizeof(TileAnimation) == 6);
 #pragma pack(pop)
@@ -524,7 +524,7 @@ namespace OpenLoco::Map::TileManager
     }
 
     // 0x004612A6
-    void createAnimation(uint8_t type, const map_pos& pos, tile_coord_t baseZ)
+    void createAnimation(uint8_t type, const Pos2& pos, tile_coord_t baseZ)
     {
         if (_numAnimations >= maxAnimations)
             return;

@@ -4,6 +4,7 @@
 #include "../Audio/Audio.h"
 #include "../CompanyManager.h"
 #include "../Entities/EntityManager.h"
+#include "../GameException.hpp"
 #include "../Gui.h"
 #include "../IndustryManager.h"
 #include "../Interop/Interop.hpp"
@@ -434,6 +435,21 @@ namespace OpenLoco::S5
         // Read packed objects
         if (file->header.numPackedObjects > 0)
         {
+            bool objectInstalled = false;
+            for (auto i = 0; i < file->header.numPackedObjects; ++i)
+            {
+                ObjectHeader object;
+                fs.read(&object, sizeof(ObjectHeader));
+                if (ObjectManager::tryInstallObject(object, fs.readChunk()))
+                {
+                    objectInstalled = true;
+                }
+            }
+
+            if (objectInstalled)
+            {
+                ObjectManager::loadIndex();
+            }
             // 0x004420B2
         }
 
@@ -572,9 +588,9 @@ namespace OpenLoco::S5
             }
 
             auto loadObjectResult = ObjectManager::loadAll(file->requiredObjects);
-            if (!loadObjectResult.Success)
+            if (!loadObjectResult.success)
             {
-                setObjectErrorMessage(loadObjectResult.ProblemObject);
+                setObjectErrorMessage(loadObjectResult.problemObject);
                 if (flags & LoadFlags::twoPlayer)
                 {
                     sub_42F7F8();
@@ -593,7 +609,7 @@ namespace OpenLoco::S5
             _gameState = file->gameState;
             TileManager::setElements(stdx::span<tile_element>(reinterpret_cast<tile_element*>(file->tileElements.data()), file->tileElements.size()));
 
-            call(0x0046FF54);
+            EntityManager::resetSpatialIndex();
             CompanyManager::updateColours();
             call(0x004748FA);
             TileManager::resetSurfaceClearance();
@@ -616,29 +632,30 @@ namespace OpenLoco::S5
                 savedView.zoomLevel = static_cast<ZoomLevel>(file->gameState.savedViewZoom);
                 savedView.rotation = file->gameState.savedViewRotation;
                 mainWindow->viewportFromSavedView(savedView);
+                mainWindow->invalidate();
             }
 
             EntityManager::updateSpatialIndex();
             TownManager::updateLabels();
             StationManager::updateLabels();
             sub_4BAEC4();
-            addr<0x0052334E, uint16_t>() = 0;
+            addr<0x0052334E, uint16_t>() = 0; // _thousandthTickCounter
             Gfx::invalidateScreen();
             call(0x004C153B);
-            call(0x0046E07B);
+            call(0x0046E07B); // load currency gfx
             addr<0x00525F62, uint16_t>() = 0;
 
             if (flags & LoadFlags::titleSequence)
             {
-                addr<0x00525F5E, uint32_t>()--;
-                addr<0x00525F64, uint32_t>()--;
+                addr<0x00525F5E, uint32_t>()--; // _scenario_ticks
+                addr<0x00525F64, uint32_t>()--; // _scenario_ticks2
                 addr<0x0050BF6C, uint8_t>() = 1;
             }
 
             if (!(flags & LoadFlags::titleSequence) && !(flags & LoadFlags::twoPlayer))
             {
                 resetScreenAge();
-                // longjmp
+                throw GameException::Interrupt;
             }
 
             return true;
@@ -671,7 +688,7 @@ namespace OpenLoco::S5
             0x00441FA7,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 auto path = fs::u8path(std::string_view(_savePath));
-                return load(path, regs.eax) ? 0x100 : 0;
+                return load(path, regs.eax) ? X86_FLAG_CARRY : 0;
             });
     }
 }

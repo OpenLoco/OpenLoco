@@ -34,7 +34,7 @@ namespace OpenLoco::Map::TileManager
     void mapInvalidateTileFull(Map::Pos2 pos);
     void mapInvalidateMapSelectionTiles();
     void resetSurfaceClearance();
-    void createAnimation(uint8_t type, const map_pos& pos, tile_coord_t baseZ);
+    void createAnimation(uint8_t type, const Pos2& pos, tile_coord_t baseZ);
     void resetAnimations();
     void registerHooks();
 }

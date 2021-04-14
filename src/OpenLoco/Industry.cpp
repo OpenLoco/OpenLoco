@@ -15,7 +15,7 @@ namespace OpenLoco
 {
     struct Unk4F9274
     {
-        map_pos pos;
+        Pos2 pos;
         uint8_t unk;
     };
     static const Unk4F9274 word_4F9274[] = {
