@@ -470,7 +470,7 @@ namespace OpenLoco::Paint
     {
         if (base->getFlags38() & Flags38::isGhost)
         {
-            if (base->getOwner() != CompanyManager::getControllingId())
+            if (base->owner != CompanyManager::getControllingId())
             {
                 return;
             }

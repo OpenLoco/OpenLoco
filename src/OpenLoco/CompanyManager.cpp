@@ -218,7 +218,7 @@ namespace OpenLoco::CompanyManager
             if (vehicle->x == Location::null)
                 continue;
 
-            if (vehicle->getOwner() != _updating_company_id)
+            if (vehicle->owner != _updating_company_id)
                 continue;
 
             GameCommands::do_73(vehicle->id);

@@ -159,7 +159,6 @@ namespace OpenLoco::Vehicles
         bool isVehicleTail() const { return is<VehicleThingType::tail>(); }
         VehicleTail* asVehicleTail() const { return as<VehicleTail>(); }
         TransportMode getTransportMode() const;
-        uint8_t getOwner() const;
         uint8_t getFlags38() const;
         uint8_t getTrackType() const;
         uint16_t getVar36() const;
@@ -174,7 +173,7 @@ namespace OpenLoco::Vehicles
 
     struct Vehicle2or6 : VehicleBase
     {
-        uint8_t pad_20[0x44 - 0x20];
+        uint8_t pad_24[0x44 - 0x24];
         sound_object_id_t drivingSoundId;      // 0x44
         uint8_t drivingSoundVolume;            // 0x45 channel attribute volume related
         uint16_t drivingSoundFrequency;        // 0x46 channel attribute frequency
@@ -192,9 +191,6 @@ namespace OpenLoco::Vehicles
     struct VehicleHead : VehicleBase
     {
         static constexpr auto vehicleThingType = VehicleThingType::head;
-        uint8_t pad_20;
-        CompanyId_t owner; // 0x21
-        string_id name;    // 0x22, combined with ordinalNumber for strings 4 to 9
         uint8_t pad_24[0x26 - 0x24];
         EntityId_t head; // 0x26
         uint32_t var_28;
@@ -316,9 +312,7 @@ namespace OpenLoco::Vehicles
     struct Vehicle1 : VehicleBase
     {
         static constexpr auto vehicleThingType = VehicleThingType::vehicle_1;
-        uint8_t pad_20;
-        CompanyId_t owner; // 0x21
-        uint8_t pad_22[0x26 - 0x22];
+        uint8_t pad_24[0x26 - 0x24];
         EntityId_t head; // 0x26
         uint32_t var_28;
         uint16_t var_2C;
@@ -355,9 +349,7 @@ namespace OpenLoco::Vehicles
     struct Vehicle2 : VehicleBase
     {
         static constexpr auto vehicleThingType = VehicleThingType::vehicle_2;
-        uint8_t pad_20;
-        CompanyId_t owner; // 0x21
-        uint8_t pad_22[0x26 - 0x22];
+        uint8_t pad_24[0x26 - 0x24];
         EntityId_t head; // 0x26
         uint32_t var_28;
         uint16_t var_2C;
@@ -403,9 +395,6 @@ namespace OpenLoco::Vehicles
     struct VehicleBody : VehicleBase
     {
         static constexpr auto vehicleThingType = VehicleThingType::body_continued;
-        uint8_t pad_20;
-        CompanyId_t owner; // 0x21
-        uint8_t pad_22[0x24 - 0x22];
         ColourScheme colour_scheme; // 0x24
         EntityId_t head;            // 0x26
         uint8_t pad_28[0x2C - 0x28];
@@ -465,9 +454,6 @@ namespace OpenLoco::Vehicles
     struct VehicleBogie : VehicleBase
     {
         static constexpr auto vehicleThingType = VehicleThingType::bogie;
-        uint8_t pad_20;
-        CompanyId_t owner; // 0x21
-        uint8_t pad_22[0x24 - 0x22];
         ColourScheme colour_scheme; // 0x24
         EntityId_t head;            // 0x26
         uint8_t pad_28[0x2C - 0x28];
@@ -516,9 +502,7 @@ namespace OpenLoco::Vehicles
     struct VehicleTail : VehicleBase
     {
         static constexpr auto vehicleThingType = VehicleThingType::tail;
-        uint8_t pad_20;
-        CompanyId_t owner; // 0x21
-        uint8_t pad_22[0x26 - 0x22];
+        uint8_t pad_24[0x26 - 0x24];
         EntityId_t head; // 0x26
         uint32_t var_28;
         uint16_t var_2C;

@@ -409,7 +409,7 @@ namespace OpenLoco::Ui::BuildVehicle
         auto companyId = CompanyManager::getControllingId();
         if (vehicle != nullptr)
         {
-            companyId = vehicle->getOwner();
+            companyId = vehicle->owner;
         }
         _numAvailableVehicles = 0;
         struct build_item
@@ -508,7 +508,7 @@ namespace OpenLoco::Ui::BuildVehicle
                 continue;
 
             auto vehicle = EntityManager::get<Vehicles::VehicleBase>(w->number);
-            if (vehicle->getOwner() != CompanyManager::getControllingId())
+            if (vehicle->owner != CompanyManager::getControllingId())
                 continue;
 
             return w;
