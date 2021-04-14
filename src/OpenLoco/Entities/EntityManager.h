@@ -14,13 +14,20 @@ namespace OpenLoco::EntityManager
 {
     constexpr size_t numEntityLists = 7;
     constexpr size_t maxEntities = 20000;
+    // There is a seperate pool of 200 entities dedicated for money
+    constexpr size_t maxMoneyEntities = 200;
+    // This is the main pool for everything that isn't money
+    constexpr size_t maxNormalEntities = maxEntities - maxMoneyEntities;
+    // Money is not counted in this limit
+    constexpr size_t maxMiscEntities = 4000;
 
     enum class EntityListType
     {
         null,      // Used for vehicles and other misc entities (not money)
         nullMoney, // For some reason money effects have their own pool of entities to use
         vehicleHead,
-        misc = 3,
+        misc = 4,
+        vehicle = 6,
     };
 
     void reset();
@@ -43,9 +50,11 @@ namespace OpenLoco::EntityManager
     T* first();
 
     EntityId_t firstQuadrantId(const Map::map_pos& loc);
+    void resetSpatialIndex();
 
-    EntityBase* createEntity();
+    EntityBase* createEntityMisc();
     EntityBase* createEntityMoney();
+    EntityBase* createEntityVehicle();
     void freeEntity(EntityBase* const entity);
 
     void updateVehicles();
@@ -107,6 +116,9 @@ namespace OpenLoco::EntityManager
         using iterator_category = std::forward_iterator_tag;
     };
 
+    template<typename T>
+    using EntityListIterator = ListIterator<T, &EntityBase::next_thing_id>;
+
     template<typename T, EntityListType list>
     class EntityList
     {
@@ -129,7 +141,7 @@ namespace OpenLoco::EntityManager
         }
     };
 
-    using VehicleList = EntityList<ListIterator<Vehicles::VehicleHead, &EntityBase::next_thing_id>, EntityListType::vehicleHead>;
+    using VehicleList = EntityList<EntityListIterator<Vehicles::VehicleHead>, EntityListType::vehicleHead>;
 
     class EntityTileList
     {

@@ -24,7 +24,8 @@ namespace OpenLoco
     enum class EntityBaseType : uint8_t
     {
         vehicle = 0,
-        misc
+        misc,
+        null = 0xFF
     };
 
     enum class Pitch : uint8_t

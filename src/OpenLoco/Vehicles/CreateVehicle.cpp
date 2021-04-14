@@ -173,21 +173,14 @@ namespace OpenLoco::Vehicles
         call(0x004B08DD, regs);
     }
 
-    // 0x00470039
-    static VehicleBase* createVehicleThing()
-    {
-        registers regs{};
-        call(0x00470039, regs);
-        return reinterpret_cast<VehicleBase*>(regs.esi);
-    }
-
     template<typename T>
     static T* createVehicleThing()
     {
-        auto* const base = createVehicleThing();
+        auto* const base = EntityManager::createEntityVehicle();
         base->base_type = EntityBaseType::vehicle;
-        base->setSubType(T::vehicleThingType);
-        return reinterpret_cast<T*>(base);
+        auto* const vehicleBase = base->asVehicle();
+        vehicleBase->setSubType(T::vehicleThingType);
+        return static_cast<T*>(vehicleBase);
     }
 
     // 0x004BA873

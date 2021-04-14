@@ -39,11 +39,6 @@ namespace OpenLoco::S5
         return _previewOptions;
     }
 
-    static void sub_46FF54()
-    {
-        call(0x0046FF54);
-    }
-
     static Header prepareHeader(SaveFlags flags, size_t numPackedObjects)
     {
         Header result;
@@ -276,7 +271,7 @@ namespace OpenLoco::S5
         if (!(flags & SaveFlags::raw))
         {
             TileManager::reorganise();
-            sub_46FF54();
+            EntityManager::resetSpatialIndex();
             EntityManager::zeroUnused();
             StationManager::zeroUnused();
             Vehicles::zeroOrderTable();

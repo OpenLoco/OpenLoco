@@ -69,6 +69,9 @@ namespace OpenLoco::Paint
                 case EntityBaseType::misc:
                     paintMiscEntity(session, entity->asMisc());
                     break;
+                case EntityBaseType::null:
+                    // Nothing to paint
+                    break;
             }
         }
     }
