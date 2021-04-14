@@ -144,6 +144,11 @@ namespace OpenLoco::EntityManager
     static EntityBase* createEntity(EntityId_t id, EntityListType list)
     {
         auto* newEntity = get<EntityBase>(id);
+        if (newEntity == nullptr)
+        {
+            Console::error("Tried to create invalid entity!");
+            return nullptr;
+        }
         moveEntityToList(newEntity, list);
 
         newEntity->x = Location::null;
