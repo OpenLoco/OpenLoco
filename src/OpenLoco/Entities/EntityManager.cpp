@@ -1,6 +1,7 @@
 #include "EntityManager.h"
 #include "../Console.h"
 #include "../Entities/Misc.h"
+#include "../GameCommands/GameCommands.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/StringIds.h"
 #include "../Map/Tile.h"
@@ -16,7 +17,6 @@ namespace OpenLoco::EntityManager
     loco_global<Entity[maxEntities], 0x006DB6DC> _entities;
     loco_global<EntityId_t[0x40001], 0x01025A8C> _entitySpatialIndex;
     loco_global<uint32_t, 0x01025A88> _entitySpatialCount;
-    static loco_global<string_id, 0x009C68E6> gGameCommandErrorText;
     constexpr size_t _entitySpatialIndexNull = 0x40000;
 
     // 0x0046FDFD
@@ -334,7 +334,7 @@ namespace OpenLoco::EntityManager
     {
         if (EntityManager::getListCount(EntityManager::EntityListType::null) <= numNewEntities)
         {
-            gGameCommandErrorText = StringIds::too_many_objects_in_game;
+            GameCommands::setErrorText(StringIds::too_many_objects_in_game);
             return false;
         }
         return true;

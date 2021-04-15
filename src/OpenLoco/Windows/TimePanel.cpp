@@ -381,7 +381,7 @@ namespace OpenLoco::Ui::TimePanel
     // 0x00439A1C
     static void processChatMessage(const char* string)
     {
-        addr<0x009C68E8, string_id>() = StringIds::empty;
+        GameCommands::setErrorTitle(StringIds::empty);
 
         for (uint8_t i = 0; i < 32; i++)
         {

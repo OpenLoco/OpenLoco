@@ -61,6 +61,8 @@ namespace OpenLoco::StringIds
     constexpr string_id month_short_december = 52;
 
     constexpr string_id close_window_cross = 56;
+    constexpr string_id chosen_name_in_use = 57;
+    constexpr string_id too_many_names_in_use = 58;
 
     constexpr string_id tooltip_close_window = 60;
     constexpr string_id game_init_failure = 61;

@@ -227,7 +227,6 @@ namespace OpenLoco::Ui::BuildVehicle
     static std::array<uint16_t, 6> _scrollRowHeight = { { 22, 22, 22, 22, 42, 30 } };
 
     loco_global<uint16_t[8], 0x112C826> _common_format_args;
-    static loco_global<string_id, 0x009C68E8> gGameCommandErrorTitle;
     static loco_global<uint32_t[32], 0x00525E5E> currencyMultiplicationFactor;
     static loco_global<uint8_t, 0x00525FC5> _525FC5;
     static loco_global<uint8_t, 0x00525FAA> last_railroad_option;
@@ -751,13 +750,13 @@ namespace OpenLoco::Ui::BuildVehicle
         // Skip 5 * 2 bytes
         args.skip(10);
         args.push(vehicleObj->name);
-        gGameCommandErrorTitle = StringIds::cant_build_pop_5_string_id;
+        GameCommands::setErrorTitle(StringIds::cant_build_pop_5_string_id);
         if (_buildTargetVehicle != -1)
         {
             auto vehicle = EntityManager::get<Vehicles::VehicleHead>(_buildTargetVehicle);
             args.push(vehicle->name);
             args.push(vehicle->ordinalNumber);
-            gGameCommandErrorTitle = StringIds::cant_add_pop_5_string_id_string_id;
+            GameCommands::setErrorTitle(StringIds::cant_add_pop_5_string_id_string_id);
         }
 
         if (GameCommands::do_5(item, _buildTargetVehicle) == GameCommands::FAILURE)

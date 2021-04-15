@@ -27,8 +27,6 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::CompanyWindow
 {
-    static loco_global<string_id, 0x009C68E8> gGameCommandErrorTitle;
-
     namespace Common
     {
         enum widx
@@ -321,7 +319,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             if (strlen(input) == 0)
                 return;
 
-            gGameCommandErrorTitle = StringIds::cannot_change_owner_name;
+            GameCommands::setErrorTitle(StringIds::cannot_change_owner_name);
 
             bool success = false;
             {
@@ -961,7 +959,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 return;
             }
 
-            gGameCommandErrorTitle = StringIds::error_cant_build_this_here;
+            GameCommands::setErrorTitle(StringIds::error_cant_build_this_here);
             uint8_t flags = GameCommands::GameCommandFlag::apply | GameCommands::GameCommandFlag::flag_1;
             auto commandResult = GameCommands::do_54(flags, tileY, tileX, tileZ, dx);
             if (commandResult != GameCommands::FAILURE)
@@ -1357,7 +1355,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                     const auto company = CompanyManager::get(self->number);
                     const auto newMode = (company->customVehicleColoursSet & (1 << vehicleType)) == 0 ? 1 : 0;
 
-                    gGameCommandErrorTitle = StringIds::error_cant_change_colour_scheme;
+                    GameCommands::setErrorTitle(StringIds::error_cant_change_colour_scheme);
 
                     GameCommands::do_19(0, newMode, vehicleType, 1, self->number);
 
@@ -1449,7 +1447,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                     if (itemIndex == -1)
                         return;
 
-                    gGameCommandErrorTitle = StringIds::error_cant_change_colour_scheme;
+                    GameCommands::setErrorTitle(StringIds::error_cant_change_colour_scheme);
 
                     const int8_t colour = Dropdown::getItemArgument(itemIndex, 2);
                     const auto vehicleType = widgetIndex - widx::main_colour_scheme;
@@ -1473,7 +1471,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                     if (itemIndex == -1)
                         return;
 
-                    gGameCommandErrorTitle = StringIds::error_cant_change_colour_scheme;
+                    GameCommands::setErrorTitle(StringIds::error_cant_change_colour_scheme);
 
                     const int8_t colour = Dropdown::getItemArgument(itemIndex, 2);
                     const auto vehicleType = widgetIndex - widx::secondary_colour_scheme;
@@ -1878,7 +1876,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
                     auto newLoan = std::max<currency32_t>(0, company->current_loan - stepSize);
 
-                    gGameCommandErrorTitle = StringIds::cant_pay_back_loan;
+                    GameCommands::setErrorTitle(StringIds::cant_pay_back_loan);
                     GameCommands::do_9(newLoan);
                     break;
                 }
@@ -1894,7 +1892,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                         stepSize = 100000;
 
                     currency32_t newLoan = CompanyManager::get(self->number)->current_loan + stepSize;
-                    gGameCommandErrorTitle = StringIds::cant_borrow_any_more_money;
+                    GameCommands::setErrorTitle(StringIds::cant_borrow_any_more_money);
                     GameCommands::do_9(newLoan);
                     break;
                 }
@@ -2557,7 +2555,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             if (strlen(input) == 0)
                 return;
 
-            gGameCommandErrorTitle = StringIds::cannot_rename_this_company;
+            GameCommands::setErrorTitle(StringIds::cannot_rename_this_company);
 
             uint32_t* buffer = (uint32_t*)input;
             GameCommands::do_30(self->number, 1, buffer[0], buffer[1], buffer[2]);

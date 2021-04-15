@@ -26,8 +26,8 @@ namespace OpenLoco::GameCommands
     static loco_global<tile_element*, 0x009C68D0> _9C68D0;
 
     static loco_global<map_pos3, 0x009C68E0> _gGameCommandPosition;
-    static loco_global<string_id, 0x009C68E6> gGameCommandErrorText;
-    static loco_global<string_id, 0x009C68E8> gGameCommandErrorTitle;
+    static loco_global<string_id, 0x009C68E6> _gGameCommandErrorText;
+    static loco_global<string_id, 0x009C68E8> _gGameCommandErrorTitle;
     static loco_global<uint8_t, 0x009C68EA> gGameCommandExpenditureType; // premultiplied by 4
     static loco_global<uint8_t, 0x009C68EE> _errorCompanyId;
     static loco_global<string_id[8], 0x112C826> _commonFormatArgs;
@@ -190,7 +190,7 @@ namespace OpenLoco::GameCommands
 
             if (isPaused())
             {
-                gGameCommandErrorText = StringIds::empty;
+                _gGameCommandErrorText = StringIds::empty;
                 return 0x80000000;
             }
         }
@@ -222,7 +222,7 @@ namespace OpenLoco::GameCommands
     static uint32_t loc_4313C6(int esi, const registers& regs)
     {
         uint16_t flags = regs.bx;
-        gGameCommandErrorText = StringIds::null;
+        _gGameCommandErrorText = StringIds::null;
         game_command_nest_level++;
 
         uint16_t flagsBackup = _gameCommandFlags;
@@ -322,9 +322,9 @@ namespace OpenLoco::GameCommands
         if (_gameCommandFlags & GameCommandFlag::flag_3)
             return 0x80000000;
 
-        if (gGameCommandErrorText != 0xFFFE)
+        if (_gGameCommandErrorText != 0xFFFE)
         {
-            Windows::showError(gGameCommandErrorTitle, gGameCommandErrorText);
+            Windows::showError(_gGameCommandErrorTitle, _gGameCommandErrorText);
             return 0x80000000;
         }
 
@@ -347,7 +347,7 @@ namespace OpenLoco::GameCommands
 
                     _commonFormatArgs[0] = pObject->name;
                     _commonFormatArgs[1] = CompanyManager::get(_errorCompanyId)->name;
-                    Windows::Error::openWithCompetitor(gGameCommandErrorTitle, StringIds::error_reason_stringid_belongs_to, _errorCompanyId);
+                    Windows::Error::openWithCompetitor(_gGameCommandErrorTitle, StringIds::error_reason_stringid_belongs_to, _errorCompanyId);
                     return 0x80000000;
                 }
 
@@ -363,7 +363,7 @@ namespace OpenLoco::GameCommands
 
                     _commonFormatArgs[0] = pObject->name;
                     _commonFormatArgs[1] = CompanyManager::get(_errorCompanyId)->name;
-                    Windows::Error::openWithCompetitor(gGameCommandErrorTitle, StringIds::error_reason_stringid_belongs_to, _errorCompanyId);
+                    Windows::Error::openWithCompetitor(_gGameCommandErrorTitle, StringIds::error_reason_stringid_belongs_to, _errorCompanyId);
                     return 0x80000000;
                 }
 
@@ -380,14 +380,14 @@ namespace OpenLoco::GameCommands
                     _commonFormatArgs[0] = pStation->name;
                     _commonFormatArgs[1] = pStation->town;
                     _commonFormatArgs[2] = CompanyManager::get(_errorCompanyId)->name;
-                    Windows::Error::openWithCompetitor(gGameCommandErrorTitle, StringIds::error_reason_stringid_belongs_to, _errorCompanyId);
+                    Windows::Error::openWithCompetitor(_gGameCommandErrorTitle, StringIds::error_reason_stringid_belongs_to, _errorCompanyId);
                     return 0x80000000;
                 }
 
                 case element_type::signal: // 0x0C
                 {
                     _commonFormatArgs[0] = CompanyManager::get(_errorCompanyId)->name;
-                    Windows::Error::openWithCompetitor(gGameCommandErrorTitle, StringIds::error_reason_signal_belongs_to, _errorCompanyId);
+                    Windows::Error::openWithCompetitor(_gGameCommandErrorTitle, StringIds::error_reason_signal_belongs_to, _errorCompanyId);
                     return 0x80000000;
                 }
 
@@ -398,7 +398,7 @@ namespace OpenLoco::GameCommands
 
         // fallback
         _commonFormatArgs[0] = CompanyManager::get(_errorCompanyId)->name;
-        Windows::Error::openWithCompetitor(gGameCommandErrorTitle, StringIds::error_reason_stringid_belongs_to, _errorCompanyId);
+        Windows::Error::openWithCompetitor(_gGameCommandErrorTitle, StringIds::error_reason_stringid_belongs_to, _errorCompanyId);
         return 0x80000000;
     }
 
@@ -415,7 +415,7 @@ namespace OpenLoco::GameCommands
         {
             return true;
         }
-        gGameCommandErrorText = -2;
+        _gGameCommandErrorText = -2;
         _errorCompanyId = company;
         _9C68D0 = tile == nullptr ? reinterpret_cast<Map::tile_element*>(-1) : tile;
         return false;
@@ -429,5 +429,20 @@ namespace OpenLoco::GameCommands
     void setPosition(const Map::map_pos3& pos)
     {
         _gGameCommandPosition = pos;
+    }
+
+    void setErrorText(const string_id message)
+    {
+        _gGameCommandErrorText = message;
+    }
+
+    string_id getErrorText()
+    {
+        return _gGameCommandErrorText;
+    }
+
+    void setErrorTitle(const string_id title)
+    {
+        _gGameCommandErrorTitle = title;
     }
 }

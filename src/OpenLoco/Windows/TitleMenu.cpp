@@ -426,7 +426,8 @@ namespace OpenLoco::Ui::Windows
 
     static void sub_43918F(const char* string)
     {
-        addr<0x009C68E8, string_id>() = StringIds::empty;
+        // Identical to processChatMessage
+        GameCommands::setErrorTitle(StringIds::empty);
 
         for (int i = 0; i < 32; i++)
         {

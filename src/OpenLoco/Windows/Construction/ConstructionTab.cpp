@@ -1,5 +1,6 @@
 #include "../../Audio/Audio.h"
 #include "../../CompanyManager.h"
+#include "../../GameCommands/GameCommands.h"
 #include "../../Graphics/ImageIds.h"
 #include "../../Input.h"
 #include "../../Localisation/FormatArguments.hpp"
@@ -1575,7 +1576,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
             if (_dword_1135F42 == 0x80000000)
             {
-                if (gGameCommandErrorText != StringIds::error_can_only_build_above_ground)
+                if (GameCommands::getErrorText() != StringIds::error_can_only_build_above_ground)
                 {
                     maxRetries--;
                     if (maxRetries != 0)

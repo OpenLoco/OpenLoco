@@ -35,7 +35,6 @@ namespace OpenLoco::Vehicles
     constexpr EntityId_t allocated_but_free_routing_station = -2; // Indicates that this array is allocated to a vehicle but no station has been set.
 
     static loco_global<CompanyId_t, 0x009C68EB> _updating_company_id;
-    static loco_global<string_id, 0x009C68E6> gGameCommandErrorText;
     static loco_global<uint8_t, 0x009C68EA> gGameCommandExpenditureType; // premultiplied by 4
     static loco_global<uint8_t, 0x009C68EE> _errorCompanyId;
     static loco_global<Map::tile_element*, 0x009C68D0> _9C68D0;
@@ -73,7 +72,7 @@ namespace OpenLoco::Vehicles
 
         if (totalAiVehicles > max_ai_vehicles)
         {
-            gGameCommandErrorText = StringIds::too_many_vehicles;
+            GameCommands::setErrorText(StringIds::too_many_vehicles);
             return false;
         }
 
@@ -96,7 +95,7 @@ namespace OpenLoco::Vehicles
                 return true;
             }
         }
-        gGameCommandErrorText = StringIds::too_many_vehicles;
+        GameCommands::setErrorText(StringIds::too_many_vehicles);
         return false;
     }
 
@@ -105,13 +104,13 @@ namespace OpenLoco::Vehicles
         switch (head->status)
         {
             case Status::crashed:
-                gGameCommandErrorText = StringIds::vehicle_has_crashed;
+                GameCommands::setErrorText(StringIds::vehicle_has_crashed);
                 return false;
             case Status::stuck:
-                gGameCommandErrorText = StringIds::vehicle_is_stuck;
+                GameCommands::setErrorText(StringIds::vehicle_is_stuck);
                 return false;
             case Status::brokenDown:
-                gGameCommandErrorText = StringIds::vehicle_has_broken_down;
+                GameCommands::setErrorText(StringIds::vehicle_has_broken_down);
                 return false;
             default:
             {
@@ -120,7 +119,7 @@ namespace OpenLoco::Vehicles
                 {
                     if (train.veh2->var_73 & Flags73::isBrokenDown)
                     {
-                        gGameCommandErrorText = StringIds::vehicle_has_broken_down;
+                        GameCommands::setErrorText(StringIds::vehicle_has_broken_down);
                         return false;
                     }
 
@@ -131,7 +130,7 @@ namespace OpenLoco::Vehicles
 
                     if (head->status != Status::loading && head->status != Status::stopped)
                     {
-                        gGameCommandErrorText = StringIds::vehicle_must_be_stopped;
+                        GameCommands::setErrorText(StringIds::vehicle_must_be_stopped);
                         return false;
                     }
 
@@ -139,7 +138,7 @@ namespace OpenLoco::Vehicles
                     {
                         return true;
                     }
-                    gGameCommandErrorText = StringIds::vehicle_must_be_stopped;
+                    GameCommands::setErrorText(StringIds::vehicle_must_be_stopped);
                     return false;
                 }
                 else
@@ -158,7 +157,7 @@ namespace OpenLoco::Vehicles
                     {
                         return true;
                     }
-                    gGameCommandErrorText = StringIds::vehicle_must_be_stopped;
+                    GameCommands::setErrorText(StringIds::vehicle_must_be_stopped);
                     return false;
                 }
             }
@@ -500,7 +499,7 @@ namespace OpenLoco::Vehicles
                 return { i };
             }
         }
-        gGameCommandErrorText = StringIds::too_many_vehicles;
+        GameCommands::setErrorText(StringIds::too_many_vehicles);
         return {};
     }
 
@@ -681,7 +680,7 @@ namespace OpenLoco::Vehicles
 
         if (_orderTableLength >= max_orders)
         {
-            gGameCommandErrorText = StringIds::no_space_for_more_vehicle_orders;
+            GameCommands::setErrorText(StringIds::no_space_for_more_vehicle_orders);
             return {};
         }
 

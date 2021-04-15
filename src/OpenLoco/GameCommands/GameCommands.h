@@ -664,4 +664,7 @@ namespace OpenLoco::GameCommands
 
     const Map::map_pos3& getPostion();
     void setPosition(const Map::map_pos3& pos);
+    void setErrorText(const string_id message);
+    string_id getErrorText();
+    void setErrorTitle(const string_id title);
 }
