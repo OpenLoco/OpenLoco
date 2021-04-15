@@ -26,8 +26,6 @@ using namespace OpenLoco::GameCommands;
 
 namespace OpenLoco::Ui::Windows::Industry
 {
-    static loco_global<string_id, 0x009C68E8> gGameCommandErrorTitle;
-
     namespace Common
     {
         enum widx
@@ -726,7 +724,7 @@ namespace OpenLoco::Ui::Windows::Industry
             if (strlen(input) == 0)
                 return;
 
-            gGameCommandErrorTitle = StringIds::error_cant_rename_industry;
+            GameCommands::setErrorTitle(StringIds::error_cant_rename_industry);
 
             uint32_t* buffer = (uint32_t*)input;
             GameCommands::do_79(self->number, 1, buffer[0], buffer[1], buffer[2]);

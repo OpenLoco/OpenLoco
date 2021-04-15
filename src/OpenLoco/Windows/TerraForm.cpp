@@ -44,7 +44,6 @@ namespace OpenLoco::Ui::Windows::Terraform
     static loco_global<coord_t, 0x00F2448A> _mapSelectionAY;
     static loco_global<coord_t, 0x00F2448C> _mapSelectionBY;
     static loco_global<uint16_t, 0x00F2448E> _word_F2448E;
-    static loco_global<uint16_t, 0x009C68E8> _gGameCommandErrorTitle;
     static loco_global<uint8_t, 0x01136496> _treeRotation;
     static loco_global<uint8_t, 0x01136497> _treeColour;
     static loco_global<uint8_t, 0x0113649A> _byte_113649A;
@@ -839,7 +838,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 map_pos centre = { x, y };
                 map_pos pointA = { _mapSelectionAX, _mapSelectionAY };
                 map_pos pointB = { _mapSelectionBX, _mapSelectionBY };
-                _gGameCommandErrorTitle = StringIds::error_cant_clear_entire_area;
+                GameCommands::setErrorTitle(StringIds::error_cant_clear_entire_area);
 
                 GameCommands::do_66(centre, pointA, pointB, flags);
             }
@@ -1088,7 +1087,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             map_pos centre = { x, y };
             map_pos pointA = { _mapSelectionAX, _mapSelectionAY };
             map_pos pointB = { _mapSelectionBX, _mapSelectionBY };
-            _gGameCommandErrorTitle = StringIds::error_cant_lower_land_here;
+            GameCommands::setErrorTitle(StringIds::error_cant_lower_land_here);
 
             if (_adjustToolSize == 0)
             {
@@ -1117,7 +1116,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             map_pos centre = { x, y };
             map_pos pointA = { _mapSelectionAX, _mapSelectionAY };
             map_pos pointB = { _mapSelectionBX, _mapSelectionBY };
-            _gGameCommandErrorTitle = StringIds::error_cant_raise_land_here;
+            GameCommands::setErrorTitle(StringIds::error_cant_raise_land_here);
 
             if (_adjustToolSize == 0)
             {
@@ -1215,7 +1214,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             {
                 if (_lastSelectedLand != 0xFF)
                 {
-                    _gGameCommandErrorTitle = StringIds::error_cant_change_land_type;
+                    GameCommands::setErrorTitle(StringIds::error_cant_change_land_type);
                     map_pos pointA = { _mapSelectionAX, _mapSelectionAY };
                     map_pos pointB = { _mapSelectionBX, _mapSelectionBY };
 
@@ -1456,7 +1455,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         static void raiseWater(uint8_t flags)
         {
             Common::sub_4A69DD();
-            _gGameCommandErrorTitle = StringIds::error_cant_raise_water_here;
+            GameCommands::setErrorTitle(StringIds::error_cant_raise_water_here);
             map_pos pointA = { _mapSelectionAX, _mapSelectionAY };
             map_pos pointB = { _mapSelectionBX, _mapSelectionBY };
 
@@ -1466,7 +1465,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         static void lowerWater(uint8_t flags)
         {
             Common::sub_4A69DD();
-            _gGameCommandErrorTitle = StringIds::error_cant_raise_water_here;
+            GameCommands::setErrorTitle(StringIds::error_cant_raise_water_here);
             map_pos pointA = { _mapSelectionAX, _mapSelectionAY };
             map_pos pointB = { _mapSelectionBX, _mapSelectionBY };
 

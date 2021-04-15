@@ -22,7 +22,6 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     static loco_global<int32_t, 0x112C876> _currentFontSpriteBase;
     static loco_global<CompetitorObject*, 0x0050D15C> _loadedObject; // This could be any type of object
     static loco_global<int32_t, 0x0113E72C> _cursorX;
-    static loco_global<string_id, 0x009C68E8> gGameCommandErrorTitle;
 
     static const Gfx::ui_size_t windowSize = { 400, 272 };
     static constexpr uint32_t rowHeight = 10;
@@ -165,7 +164,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
         }
         self->invalidate();
         Audio::playSound(Audio::sound_id::click_down, _cursorX);
-        gGameCommandErrorTitle = StringIds::cant_select_face;
+        GameCommands::setErrorTitle(StringIds::cant_select_face);
         const auto result = GameCommands::do_65(*objIndex.object._header, self->owner);
         if (result)
         {

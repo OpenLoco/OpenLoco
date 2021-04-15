@@ -4,6 +4,7 @@
 #include "../Core/Optional.hpp"
 #include "../Entities/EntityManager.h"
 #include "../Entities/Misc.h"
+#include "../GameCommands/GameCommands.h"
 #include "../Graphics/Gfx.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/FormatArguments.hpp"
@@ -28,7 +29,6 @@ using namespace OpenLoco::Literals;
 
 namespace OpenLoco::Vehicles
 {
-    static loco_global<string_id, 0x009C68E6> gGameCommandErrorText;
     static loco_global<uint32_t, 0x011360D0> vehicleUpdate_manhattanDistanceToStation;
     static loco_global<VehicleHead*, 0x01136118> vehicleUpdate_head;
     static loco_global<Vehicle1*, 0x0113611C> vehicleUpdate_1;
@@ -239,7 +239,7 @@ namespace OpenLoco::Vehicles
 
         if ((newObject->flags & FlagsE0::can_couple) && (sourceObject->flags & FlagsE0::can_couple))
         {
-            gGameCommandErrorText = StringIds::incompatible_vehicle;
+            GameCommands::setErrorText(StringIds::incompatible_vehicle);
             return false;
         }
 
@@ -269,7 +269,7 @@ namespace OpenLoco::Vehicles
 
         if ((newObject->num_compat != 0) || (sourceObject->num_compat != 0))
         {
-            gGameCommandErrorText = StringIds::incompatible_vehicle;
+            GameCommands::setErrorText(StringIds::incompatible_vehicle);
             return false;
         }
 
@@ -319,7 +319,7 @@ namespace OpenLoco::Vehicles
             Vehicle train(this);
             if (!train.cars.empty())
             {
-                gGameCommandErrorText = StringIds::incompatible_vehicle;
+                GameCommands::setErrorText(StringIds::incompatible_vehicle);
                 return false;
             }
         }
@@ -327,20 +327,20 @@ namespace OpenLoco::Vehicles
         {
             if (newObject->track_type != track_type)
             {
-                gGameCommandErrorText = StringIds::incompatible_vehicle;
+                GameCommands::setErrorText(StringIds::incompatible_vehicle);
                 return false;
             }
         }
 
         if (newObject->mode != mode)
         {
-            gGameCommandErrorText = StringIds::incompatible_vehicle;
+            GameCommands::setErrorText(StringIds::incompatible_vehicle);
             return false;
         }
 
         if (newObject->type != vehicleType)
         {
-            gGameCommandErrorText = StringIds::incompatible_vehicle;
+            GameCommands::setErrorText(StringIds::incompatible_vehicle);
             return false;
         }
 
@@ -369,7 +369,7 @@ namespace OpenLoco::Vehicles
         auto additionalNewLength = getVehicleTypeLength(vehicleTypeId);
         if (curTotalLength + additionalNewLength > max_vehicle_length)
         {
-            gGameCommandErrorText = StringIds::vehicle_too_long;
+            GameCommands::setErrorText(StringIds::vehicle_too_long);
             return false;
         }
         return true;

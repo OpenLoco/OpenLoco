@@ -28,8 +28,6 @@ namespace OpenLoco::Ui::Windows::Station
     static loco_global<uint16_t, 0x00F24484> _mapSelectionFlags;
     static loco_global<uint16_t, 0x00112C786> _lastSelectedStation;
 
-    static loco_global<string_id, 0x009C68E8> gGameCommandErrorTitle;
-
     namespace Common
     {
         static const Gfx::ui_size_t minWindowSize = { 192, 136 };
@@ -852,7 +850,7 @@ namespace OpenLoco::Ui::Windows::Station
             if (strlen(input) == 0)
                 return;
 
-            gGameCommandErrorTitle = StringIds::error_cant_rename_station;
+            GameCommands::setErrorTitle(StringIds::error_cant_rename_station);
 
             uint32_t* buffer = (uint32_t*)input;
             GameCommands::do_11(self->number, 1, buffer[0], buffer[1], buffer[2]);

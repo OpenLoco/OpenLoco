@@ -197,7 +197,6 @@ namespace OpenLoco::Ui::Vehicle
     static loco_global<Vehicles::VehicleBogie*, 0x0113614E> _dragCarComponent;
     static loco_global<EntityId_t, 0x01136156> _dragVehicleHead;
     static loco_global<int32_t, 0x01136264> _1136264;
-    static loco_global<string_id, 0x009C68E8> gGameCommandErrorTitle;
     static loco_global<uint32_t[32], 0x00525E5E> currencyMultiplicationFactor;
 
     namespace Main
@@ -402,7 +401,7 @@ namespace OpenLoco::Ui::Vehicle
                 return;
             }
 
-            gGameCommandErrorTitle = StringIds::cant_reverse_train;
+            GameCommands::setErrorTitle(StringIds::cant_reverse_train);
             GameCommands::do_3(self->number, Common::getVehicle(self));
         }
 
@@ -450,7 +449,7 @@ namespace OpenLoco::Ui::Vehicle
                     onChangeDirection(self);
                     break;
                 case widx::passSignal:
-                    gGameCommandErrorTitle = StringIds::cant_pass_signal_at_danger;
+                    GameCommands::setErrorTitle(StringIds::cant_pass_signal_at_danger);
                     GameCommands::do_4(self->number);
                     break;
             }
@@ -608,7 +607,7 @@ namespace OpenLoco::Ui::Vehicle
                 { StringIds::cant_select_manual_mode_string_id, 3 },
             };
             auto [errorTitle, mode] = itemToGameCommandInfo[item];
-            gGameCommandErrorTitle = errorTitle;
+            GameCommands::setErrorTitle(errorTitle);
             FormatArguments args{};
             auto head = Common::getVehicle(self);
             args.skip(6);
@@ -975,7 +974,7 @@ namespace OpenLoco::Ui::Vehicle
         {
             static loco_global<uint16_t, 0x0113642A> _113642A;
             auto head = Common::getVehicle(self);
-            gGameCommandErrorTitle = StringIds::cant_clone_vehicle;
+            GameCommands::setErrorTitle(StringIds::cant_clone_vehicle);
             if (GameCommands::do_80(head->head))
             {
                 auto* newVehicle = EntityManager::get<Vehicles::VehicleBase>(_113642A);
@@ -1014,7 +1013,7 @@ namespace OpenLoco::Ui::Vehicle
                     args.skip(10);
                     args.push(head->name);
                     args.push(head->ordinalNumber);
-                    gGameCommandErrorTitle = StringIds::cant_sell_string_id;
+                    GameCommands::setErrorTitle(StringIds::cant_sell_string_id);
                     GameCommands::do_6(head->id);
                     break;
                 }
@@ -1800,7 +1799,7 @@ namespace OpenLoco::Ui::Vehicle
                     if (dropdownIndex == -1)
                         break;
 
-                    gGameCommandErrorTitle = StringIds::cant_refit_vehicle;
+                    GameCommands::setErrorTitle(StringIds::cant_refit_vehicle);
                     GameCommands::do_64(self->number, Dropdown::getItemArgument(dropdownIndex, 3));
                     break;
             }
@@ -2210,7 +2209,7 @@ namespace OpenLoco::Ui::Vehicle
 
         static void orderDeleteCommand(Vehicles::VehicleHead* const head, const uint32_t orderOffset)
         {
-            gGameCommandErrorTitle = StringIds::empty;
+            GameCommands::setErrorTitle(StringIds::empty);
             GameCommands::do_36(head->id, orderOffset - head->orderTableOffset);
             sub_470824(head);
         }
@@ -2252,7 +2251,7 @@ namespace OpenLoco::Ui::Vehicle
         // 0x004B4C14
         static bool orderUpCommand(Vehicles::VehicleHead* const head, const uint32_t orderOffset)
         {
-            gGameCommandErrorTitle = StringIds::empty;
+            GameCommands::setErrorTitle(StringIds::empty);
             auto result = GameCommands::do_75(head->id, orderOffset - head->orderTableOffset);
             sub_470824(head); // Note order changed check if this matters.
             return result != GameCommands::FAILURE;
@@ -2261,7 +2260,7 @@ namespace OpenLoco::Ui::Vehicle
         // 0x004B4CCB based on
         static bool orderDownCommand(Vehicles::VehicleHead* const head, const uint32_t orderOffset)
         {
-            gGameCommandErrorTitle = StringIds::empty;
+            GameCommands::setErrorTitle(StringIds::empty);
             auto result = GameCommands::do_76(head->id, orderOffset - head->orderTableOffset);
             sub_470824(head); // Note order changed check if this matters.
             return result != GameCommands::FAILURE;
@@ -2331,7 +2330,7 @@ namespace OpenLoco::Ui::Vehicle
                     Vehicles::Vehicle train(head);
                     if (train.veh1->var_48 & (1 << 1))
                     {
-                        gGameCommandErrorTitle = StringIds::empty;
+                        GameCommands::setErrorTitle(StringIds::empty);
                         GameCommands::do12(head->id, 2);
                     }
                     break;
@@ -2345,13 +2344,13 @@ namespace OpenLoco::Ui::Vehicle
                     Vehicles::Vehicle train(head);
                     if (!(train.veh1->var_48 & (1 << 1)))
                     {
-                        gGameCommandErrorTitle = StringIds::empty;
+                        GameCommands::setErrorTitle(StringIds::empty);
                         GameCommands::do12(head->id, 2);
                     }
                     break;
                 }
                 case widx::orderSkip:
-                    gGameCommandErrorTitle = StringIds::empty;
+                    GameCommands::setErrorTitle(StringIds::empty);
                     GameCommands::do_37(self->number);
                     break;
                 case widx::orderUp:
@@ -2447,7 +2446,7 @@ namespace OpenLoco::Ui::Vehicle
                     chosenOffset = chosenOrder->getOffset() - head->orderTableOffset;
                 }
             }
-            gGameCommandErrorTitle = StringIds::orders_cant_insert;
+            GameCommands::setErrorTitle(StringIds::orders_cant_insert);
             auto previousSize = head->sizeOfOrderTable;
             GameCommands::do_35(head->id, order.getRaw(), chosenOffset);
             sub_470824(head);
@@ -3163,7 +3162,7 @@ namespace OpenLoco::Ui::Vehicle
                 return;
             }
 
-            gGameCommandErrorTitle = StringIds::cant_rename_this_vehicle;
+            GameCommands::setErrorTitle(StringIds::cant_rename_this_vehicle);
             const uint32_t* buffer = reinterpret_cast<const uint32_t*>(input);
             GameCommands::do_10(self->number, 1, buffer[0], buffer[1], buffer[2]);
             GameCommands::do_10(0, 2, buffer[3], buffer[4], buffer[5]);
@@ -3339,7 +3338,7 @@ namespace OpenLoco::Ui::Vehicle
                 return;
             }
 
-            gGameCommandErrorTitle = StringIds::cant_remove_string_id;
+            GameCommands::setErrorTitle(StringIds::cant_remove_string_id);
             FormatArguments args{};
             args.skip(10);
             args.push(head->name);
