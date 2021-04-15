@@ -2714,7 +2714,7 @@ namespace OpenLoco::Vehicles
                         break;
 
                     auto* roadStationObj = ObjectManager::get<RoadStationObject>(elStation->objectId());
-                    if (roadStationObj->flags & RoadStationFlags::roadEnd)
+                    if (!(roadStationObj->flags & RoadStationFlags::roadEnd))
                     {
                         var_5F |= Flags5F::unk_0;
                     }
@@ -2747,9 +2747,9 @@ namespace OpenLoco::Vehicles
         {
             for (auto& carComponent : car)
             {
-                if (carComponent.front->var_5F & (1 << 0))
+                if (carComponent.front->var_5F & Flags5F::unk_0)
                 {
-                    carComponent.front->var_5F &= ~(1 << 0);
+                    carComponent.front->var_5F &= ~Flags5F::unk_0;
                     if (carComponent.front->secondaryCargo.type == 0xFF)
                     {
                         return;
@@ -2757,14 +2757,14 @@ namespace OpenLoco::Vehicles
                     updateUnloadCargoComponent(carComponent.front->secondaryCargo, carComponent.front);
                     return;
                 }
-                else if (carComponent.back->var_5F & (1 << 0))
+                else if (carComponent.back->var_5F & Flags5F::unk_0)
                 {
-                    carComponent.back->var_5F &= ~(1 << 0);
+                    carComponent.back->var_5F &= ~Flags5F::unk_0;
                     return;
                 }
-                else if (carComponent.body->var_5F & (1 << 0))
+                else if (carComponent.body->var_5F & Flags5F::unk_0)
                 {
-                    carComponent.body->var_5F &= ~(1 << 0);
+                    carComponent.body->var_5F &= ~Flags5F::unk_0;
                     if (carComponent.body->primaryCargo.type == 0xFF)
                     {
                         return;
@@ -2808,9 +2808,9 @@ namespace OpenLoco::Vehicles
         {
             for (auto& carComponent : car)
             {
-                carComponent.front->var_5F |= (1 << 0);
-                carComponent.back->var_5F |= (1 << 0);
-                carComponent.body->var_5F |= (1 << 0);
+                carComponent.front->var_5F |= Flags5F::unk_0;
+                carComponent.back->var_5F |= Flags5F::unk_0;
+                carComponent.body->var_5F |= Flags5F::unk_0;
             }
         }
 
