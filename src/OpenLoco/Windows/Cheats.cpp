@@ -250,9 +250,9 @@ namespace OpenLoco::Ui::Windows::Cheats
             currency32_t stepSize{};
             if (*_clickRepeatTicks < 100)
                 stepSize = 1000;
-            else if (*_clickRepeatTicks >= 100)
+            else if (*_clickRepeatTicks < 200)
                 stepSize = 10000;
-            else if (*_clickRepeatTicks >= 200)
+            else
                 stepSize = 100000;
 
             switch (widgetIndex)

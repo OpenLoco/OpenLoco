@@ -162,18 +162,13 @@ namespace OpenLoco::GameCommands
                     continue;
 
                 Vehicles::Vehicle train(vehicle);
-                // train.head->reliability = newReliablity;
-                // train.veh1->reliability = newReliablity;
                 train.veh2->reliability = newReliablity;
-                // train.tail->reliability = newReliablity;
 
                 for (auto& car : train.cars)
                 {
                     for (auto& component : car)
                     {
                         component.front->reliability = newReliablity * 256;
-                        // component.body->reliability = newReliablity * 256;
-                        component.back->reliability = newReliablity * 256;
                     }
                 }
             }
