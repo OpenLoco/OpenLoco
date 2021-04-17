@@ -304,7 +304,7 @@ namespace OpenLoco::GameCommands
         if (ebx != 0 && _updating_company_id == _player_company[0])
         {
             // Add flying cost text
-            CompanyManager::spendMoneyEffect(getPostion() + Map::map_pos3{ 0, 0, 24 }, _updating_company_id, ebx);
+            CompanyManager::spendMoneyEffect(getPosition() + Map::map_pos3{ 0, 0, 24 }, _updating_company_id, ebx);
         }
 
         return ebx;
@@ -421,7 +421,7 @@ namespace OpenLoco::GameCommands
         return false;
     }
 
-    const Map::map_pos3& getPostion()
+    const Map::map_pos3& getPosition()
     {
         return _gGameCommandPosition;
     }

@@ -219,7 +219,7 @@ namespace OpenLoco::Ui::Windows::Town
                     if (!success)
                         break;
 
-                    Audio::playSound(Audio::sound_id::demolish, GameCommands::getPostion());
+                    Audio::playSound(Audio::sound_id::demolish, GameCommands::getPosition());
                     break;
                 }
             }
