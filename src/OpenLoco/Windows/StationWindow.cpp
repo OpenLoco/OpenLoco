@@ -234,7 +234,7 @@ namespace OpenLoco::Ui::Windows::Station
             if (self->viewports[0] == nullptr)
             {
                 auto widget = &self->widgets[widx::viewport];
-                auto tile = OpenLoco::Map::map_pos3({ station->x, station->y, station->z });
+                auto tile = OpenLoco::Map::Pos3({ station->x, station->y, station->z });
                 auto origin = Gfx::point_t(widget->left + self->x + 1, widget->top + self->y + 1);
                 auto size = Gfx::ui_size_t(widget->width() - 2, widget->height() - 2);
                 ViewportManager::create(self, 0, origin, size, self->saved_view.zoomLevel, tile);

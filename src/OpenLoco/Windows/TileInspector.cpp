@@ -34,7 +34,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
     static loco_global<int8_t, 0x00523393> _currentTool;
     static loco_global<uint16_t, 0x00F24484> _mapSelectionFlags;
 
-    static map_pos _currentPosition{};
+    static Pos2 _currentPosition{};
 
     constexpr Gfx::ui_size_t windowSize = { 250, 182 };
 
@@ -335,7 +335,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
 
     static void drawScroll(Ui::window* self, Gfx::drawpixelinfo_t* const context, uint32_t)
     {
-        if (_currentPosition == map_pos(0, 0))
+        if (_currentPosition == Pos2(0, 0))
             return;
 
         auto tile = TileManager::get(_currentPosition);
@@ -448,7 +448,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
 
     static void getScrollSize(Ui::window* self, uint32_t, uint16_t*, uint16_t* const scrollHeight)
     {
-        if (_currentPosition == map_pos(0, 0))
+        if (_currentPosition == Pos2(0, 0))
         {
             *scrollHeight = 0;
             return;

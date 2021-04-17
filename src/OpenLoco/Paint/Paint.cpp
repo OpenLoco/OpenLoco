@@ -15,7 +15,7 @@ namespace OpenLoco::Paint
 {
     PaintSession _session;
 
-    void PaintSession::setEntityPosition(const Map::map_pos& pos)
+    void PaintSession::setEntityPosition(const Map::Pos2& pos)
     {
         _spritePositionX = pos.x;
         _spritePositionY = pos.y;
@@ -56,7 +56,7 @@ namespace OpenLoco::Paint
     }
 
     // 0x004FD130
-    void PaintSession::addToPlotListAsParent(uint32_t imageId, const Map::map_pos3& offset, const Map::map_pos3& boundBoxSize)
+    void PaintSession::addToPlotListAsParent(uint32_t imageId, const Map::Pos3& offset, const Map::Pos3& boundBoxSize)
     {
         registers regs;
         regs.ebx = imageId;
@@ -71,7 +71,7 @@ namespace OpenLoco::Paint
     }
 
     // 0x004FD140
-    void PaintSession::addToPlotListAsParent(uint32_t imageId, const Map::map_pos3& offset, const Map::map_pos3& boundBoxOffset, const Map::map_pos3& boundBoxSize)
+    void PaintSession::addToPlotListAsParent(uint32_t imageId, const Map::Pos3& offset, const Map::Pos3& boundBoxOffset, const Map::Pos3& boundBoxSize)
     {
         registers regs;
         regs.ebx = imageId;
@@ -90,7 +90,7 @@ namespace OpenLoco::Paint
     }
 
     // 0x004FD200
-    void PaintSession::addToPlotList4FD200(uint32_t imageId, const Map::map_pos3& offset, const Map::map_pos3& boundBoxOffset, const Map::map_pos3& boundBoxSize)
+    void PaintSession::addToPlotList4FD200(uint32_t imageId, const Map::Pos3& offset, const Map::Pos3& boundBoxOffset, const Map::Pos3& boundBoxSize)
     {
         registers regs;
         regs.ebx = imageId;
@@ -108,7 +108,7 @@ namespace OpenLoco::Paint
         call(_4FD200[currentRotation], regs);
     }
     // 0x0045E779
-    void PaintSession::attachToPrevious(uint32_t imageId, const Map::map_pos& offset)
+    void PaintSession::attachToPrevious(uint32_t imageId, const Map::Pos2& offset)
     {
         registers regs;
         regs.ebx = imageId;
@@ -157,7 +157,7 @@ namespace OpenLoco::Paint
     }
 
     // 0x00461CF8
-    static void paintTileElements(PaintSession& session, const Map::map_pos& loc)
+    static void paintTileElements(PaintSession& session, const Map::Pos2& loc)
     {
         registers regs{};
         regs.eax = loc.x;
@@ -166,7 +166,7 @@ namespace OpenLoco::Paint
     }
 
     // 0x004617C6
-    static void paintTileElements2(PaintSession& session, const Map::map_pos& loc)
+    static void paintTileElements2(PaintSession& session, const Map::Pos2& loc)
     {
         registers regs{};
         regs.eax = loc.x;
@@ -176,10 +176,10 @@ namespace OpenLoco::Paint
 
     struct GenerationParameters
     {
-        Map::map_pos mapLoc;
+        Map::Pos2 mapLoc;
         uint16_t numVerticalQuadrants;
-        std::array<Map::map_pos, 5> additionalQuadrants;
-        Map::map_pos nextVerticalQuadrant;
+        std::array<Map::Pos2, 5> additionalQuadrants;
+        Map::Pos2 nextVerticalQuadrant;
     };
 
     template<uint8_t rotation>
@@ -199,14 +199,14 @@ namespace OpenLoco::Paint
         constexpr uint8_t rotOrder[] = { 0, 3, 2, 1 };
 
         const auto direction = rotOrder[rotation];
-        constexpr std::array<Map::map_pos, 5> additionalQuadrants = {
-            Math::Vector::rotate(Map::map_pos{ -32, 32 }, direction),
-            Math::Vector::rotate(Map::map_pos{ 0, 32 }, direction),
-            Math::Vector::rotate(Map::map_pos{ 32, 0 }, direction),
-            Math::Vector::rotate(Map::map_pos{ 32, -32 }, direction),
-            Math::Vector::rotate(Map::map_pos{ -32, 64 }, direction),
+        constexpr std::array<Map::Pos2, 5> additionalQuadrants = {
+            Math::Vector::rotate(Map::Pos2{ -32, 32 }, direction),
+            Math::Vector::rotate(Map::Pos2{ 0, 32 }, direction),
+            Math::Vector::rotate(Map::Pos2{ 32, 0 }, direction),
+            Math::Vector::rotate(Map::Pos2{ 32, -32 }, direction),
+            Math::Vector::rotate(Map::Pos2{ -32, 64 }, direction),
         };
-        constexpr auto nextVerticalQuadrant = Math::Vector::rotate(Map::map_pos{ 32, 32 }, direction);
+        constexpr auto nextVerticalQuadrant = Math::Vector::rotate(Map::Pos2{ 32, 32 }, direction);
 
         return { mapLoc, numVerticalQuadrants, additionalQuadrants, nextVerticalQuadrant };
     }

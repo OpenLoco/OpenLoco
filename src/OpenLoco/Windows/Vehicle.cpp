@@ -2209,7 +2209,7 @@ namespace OpenLoco::Ui::Vehicle
             return Vehicles::OrderRingView(head->orderTableOffset);
         }
 
-        static std::pair<Map::map_pos3, const char*> sub_470B76(const Vehicles::Order& order, uint8_t orderNum)
+        static std::pair<Map::Pos3, const char*> sub_470B76(const Vehicles::Order& order, uint8_t orderNum)
         {
             static loco_global<char[512], 0x0112CC04> _stringFormatBuffer;
 
@@ -2218,7 +2218,7 @@ namespace OpenLoco::Ui::Vehicle
             regs.ebx = static_cast<uint8_t>(order.getType());
             regs.ecx = orderNum;
             call(0x00470B76, regs);
-            Map::map_pos3 res = { regs.ax, regs.cx, regs.dx };
+            Map::Pos3 res = { regs.ax, regs.cx, regs.dx };
             return std::make_pair(res, _stringFormatBuffer.get());
         }
 
@@ -2681,7 +2681,7 @@ namespace OpenLoco::Ui::Vehicle
                     const auto& trackPart = trackPiece[trackElement->sequenceIndex()];
 
                     auto offsetToFirstTile = Map::rotate2dCoordinate({ trackPart.x, trackPart.y }, trackElement->unkDirection());
-                    auto firstTilePos = Map::map_pos(args.x - offsetToFirstTile.x, args.y - offsetToFirstTile.y);
+                    auto firstTilePos = Map::Pos2(args.x - offsetToFirstTile.x, args.y - offsetToFirstTile.y);
                     TilePos tPos{ firstTilePos };
                     height -= trackPart.z;
 
@@ -2701,7 +2701,7 @@ namespace OpenLoco::Ui::Vehicle
                     }
                     Audio::playSound(Audio::sound_id::waypoint, { x, y, Input::getDragLastLocation().x }, Input::getDragLastLocation().x);
                     TilePos tPos{
-                        map_pos{ args.x, args.y }
+                        Pos2{ args.x, args.y }
                     };
 
                     Vehicles::OrderRouteWaypoint waypoint(tPos, height / 8, 0, 0);
@@ -2729,7 +2729,7 @@ namespace OpenLoco::Ui::Vehicle
                     const auto& roadPart = roadPiece[roadElement->sequenceIndex()];
 
                     auto offsetToFirstTile = Map::rotate2dCoordinate({ roadPart.x, roadPart.y }, roadElement->unkDirection());
-                    auto firstTilePos = Map::map_pos(args.x - offsetToFirstTile.x, args.y - offsetToFirstTile.y);
+                    auto firstTilePos = Map::Pos2(args.x - offsetToFirstTile.x, args.y - offsetToFirstTile.y);
                     TilePos tPos{ firstTilePos };
                     height -= roadPart.z;
 

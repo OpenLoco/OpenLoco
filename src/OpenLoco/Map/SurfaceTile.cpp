@@ -22,11 +22,11 @@ static loco_global<Utility::prng, 0x00525E20> _prng;
 static loco_global<unk1[64], 0x009586DC> _9586DC;
 static loco_global<int32_t, 0x00e3f0b8> gCurrentRotation;
 
-static map_pos _offsets[4] = {
-    map_pos(+32, 0),
-    map_pos(-32, 0),
-    map_pos(0, +32),
-    map_pos(0, -32),
+static Pos2 _offsets[4] = {
+    Pos2(+32, 0),
+    Pos2(-32, 0),
+    Pos2(0, +32),
+    Pos2(0, -32),
 };
 
 // 0x0046959C

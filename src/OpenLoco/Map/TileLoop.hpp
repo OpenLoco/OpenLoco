@@ -8,11 +8,11 @@ namespace OpenLoco::Map
     struct tile_loop
     {
     private:
-        map_pos _pos;
+        Pos2 _pos;
 
     public:
-        map_pos current() const { return _pos; }
-        map_pos next()
+        Pos2 current() const { return _pos; }
+        Pos2 next()
         {
             _pos.x += tile_size;
             if (_pos.x >= map_width - 1)

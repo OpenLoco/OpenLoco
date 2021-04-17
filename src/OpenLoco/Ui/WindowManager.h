@@ -117,10 +117,10 @@ namespace OpenLoco::Ui::AboutMusic
 namespace OpenLoco::Ui::Windows::Construction
 {
     window* openWithFlags(uint32_t flags);
-    window* openAtTrack(window* main, OpenLoco::Map::track_element* track, const OpenLoco::Map::map_pos pos);
-    window* openAtRoad(window* main, OpenLoco::Map::road_element* track, const OpenLoco::Map::map_pos pos);
-    void setToTrackExtra(window* main, OpenLoco::Map::track_element* track, const uint8_t bh, const OpenLoco::Map::map_pos pos);
-    void setToRoadExtra(window* main, OpenLoco::Map::road_element* track, const uint8_t bh, const OpenLoco::Map::map_pos pos);
+    window* openAtTrack(window* main, OpenLoco::Map::track_element* track, const OpenLoco::Map::Pos2 pos);
+    window* openAtRoad(window* main, OpenLoco::Map::road_element* track, const OpenLoco::Map::Pos2 pos);
+    void setToTrackExtra(window* main, OpenLoco::Map::track_element* track, const uint8_t bh, const OpenLoco::Map::Pos2 pos);
+    void setToRoadExtra(window* main, OpenLoco::Map::road_element* track, const uint8_t bh, const OpenLoco::Map::Pos2 pos);
     void sub_4A6FAC();
     void rotate(window* self);
     void registerHooks();

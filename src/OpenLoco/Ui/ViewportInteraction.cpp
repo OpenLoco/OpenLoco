@@ -245,9 +245,9 @@ namespace OpenLoco::Ui::ViewportInteraction
         }
 
         const auto index = buildingTile->multiTileIndex();
-        const Map::map_pos3 pos = { static_cast<coord_t>(interaction.x - Map::offsets[index].x),
-                                    static_cast<coord_t>(interaction.y - Map::offsets[index].y),
-                                    buildingTile->baseZ() };
+        const Map::Pos3 pos = { static_cast<coord_t>(interaction.x - Map::offsets[index].x),
+                                static_cast<coord_t>(interaction.y - Map::offsets[index].y),
+                                buildingTile->baseZ() };
 
         for (auto& company : CompanyManager::companies())
         {

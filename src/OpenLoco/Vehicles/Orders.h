@@ -121,7 +121,7 @@ namespace OpenLoco::Vehicles
         void setWaypoint(const Map::TilePos& pos, const uint8_t baseZ);
         void setDirection(const uint8_t direction);
         void setTrackId(const uint8_t trackId);
-        Map::map_pos3 getWaypoint() const;
+        Map::Pos3 getWaypoint() const;
         uint8_t getDirection() const;
         uint8_t getTrackId() const;
     };

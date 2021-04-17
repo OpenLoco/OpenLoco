@@ -238,7 +238,7 @@ namespace OpenLoco::Vehicles
     // 0x004AC255
     void VehicleBody::sub_4AC255(VehicleBogie* back_bogie, VehicleBogie* front_bogie)
     {
-        Map::map_pos3 loc = {
+        Map::Pos3 loc = {
             static_cast<int16_t>((front_bogie->x + back_bogie->x) / 2),
             static_cast<int16_t>((front_bogie->y + back_bogie->y) / 2),
             static_cast<int16_t>((front_bogie->z + back_bogie->z) / 2)
@@ -248,7 +248,7 @@ namespace OpenLoco::Vehicles
         if (object_sprite_type == 0xFF)
             return;
 
-        auto distanceBetweenBogies = Math::Vector::distance(Map::map_pos{ front_bogie->x, front_bogie->y }, Map::map_pos{ back_bogie->x, back_bogie->y });
+        auto distanceBetweenBogies = Math::Vector::distance(Map::Pos2{ front_bogie->x, front_bogie->y }, Map::Pos2{ back_bogie->x, back_bogie->y });
 
         auto vehObj = object();
         if (vehObj->bodySprites[object_sprite_type].flags & BodySpriteFlags::hasSteepSprites)
@@ -948,7 +948,7 @@ namespace OpenLoco::Vehicles
         }
 
         var_05 += 64;
-        Map::map_pos3 loc = {
+        Map::Pos3 loc = {
             static_cast<int16_t>(backBogie->x - frontBogie->x),
             static_cast<int16_t>(backBogie->y - frontBogie->y),
             static_cast<int16_t>(backBogie->z - frontBogie->z),
@@ -1092,7 +1092,7 @@ namespace OpenLoco::Vehicles
             auto invertedDirection = sprite_yaw ^ (1 << 5);
             auto xyFactor = Math::Trigonometry::computeXYVector(positionFactor, invertedDirection) / 2;
 
-            Map::map_pos3 loc = {
+            Map::Pos3 loc = {
                 static_cast<int16_t>(x + xyFactor.x),
                 static_cast<int16_t>(y + xyFactor.y),
                 static_cast<int16_t>(z + vehicleObject->animation[num].height)
@@ -1116,7 +1116,7 @@ namespace OpenLoco::Vehicles
                 return;
 
             var_05 += 64;
-            Map::map_pos3 loc = {
+            Map::Pos3 loc = {
                 static_cast<int16_t>(backBogie->x - frontBogie->x),
                 static_cast<int16_t>(backBogie->y - frontBogie->y),
                 static_cast<int16_t>(backBogie->z - frontBogie->z),
@@ -1168,7 +1168,7 @@ namespace OpenLoco::Vehicles
 
         var_05 += 64;
 
-        Map::map_pos3 loc = {
+        Map::Pos3 loc = {
             static_cast<int16_t>(backBogie->x - frontBogie->x),
             static_cast<int16_t>(backBogie->y - frontBogie->y),
             static_cast<int16_t>(backBogie->z - frontBogie->z),
@@ -1233,7 +1233,7 @@ namespace OpenLoco::Vehicles
         if (gPrng().randNext(std::numeric_limits<uint16_t>::max()) > 819)
             return;
 
-        Map::map_pos3 loc = {
+        Map::Pos3 loc = {
             static_cast<int16_t>(backBogie->x - frontBogie->x),
             static_cast<int16_t>(backBogie->y - frontBogie->y),
             static_cast<int16_t>(backBogie->z - frontBogie->z),
@@ -1286,7 +1286,7 @@ namespace OpenLoco::Vehicles
         if (gPrng().randNext(std::numeric_limits<uint16_t>::max()) > 936)
             return;
 
-        Map::map_pos3 loc = {
+        Map::Pos3 loc = {
             static_cast<int16_t>(backBogie->x - frontBogie->x),
             static_cast<int16_t>(backBogie->y - frontBogie->y),
             static_cast<int16_t>(backBogie->z - frontBogie->z),
@@ -1360,7 +1360,7 @@ namespace OpenLoco::Vehicles
         auto invertedDirection = sprite_yaw ^ (1 << 5);
         auto xyFactor = Math::Trigonometry::computeXYVector(positionFactor, invertedDirection) / 4;
 
-        Map::map_pos3 loc = {
+        Map::Pos3 loc = {
             static_cast<int16_t>(x + xyFactor.x),
             static_cast<int16_t>(y + xyFactor.y),
             z

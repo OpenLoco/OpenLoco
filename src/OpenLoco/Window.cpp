@@ -124,7 +124,7 @@ namespace OpenLoco::Ui
     // regs.bp:  z
     // Output:
     // {x: regs.ax, y: regs.bx}
-    std::optional<Map::map_pos> screenGetMapXyWithZ(const xy32& mouse, const int16_t z)
+    std::optional<Map::Pos2> screenGetMapXyWithZ(const xy32& mouse, const int16_t z)
     {
         window* w = WindowManager::findAt(mouse.x, mouse.y);
         if (w == nullptr)
@@ -141,7 +141,7 @@ namespace OpenLoco::Ui
         if (vp->containsUi(mouse))
         {
             viewport_pos vpos = vp->uiToMap(mouse);
-            Map::map_pos position = viewportCoordToMapCoord(vpos.x, vpos.y, z, WindowManager::getCurrentRotation());
+            Map::Pos2 position = viewportCoordToMapCoord(vpos.x, vpos.y, z, WindowManager::getCurrentRotation());
             if (position.x <= 0x2FFF && position.y <= 0x2FFF)
             {
                 return position;
@@ -160,9 +160,9 @@ namespace OpenLoco::Ui
     // Output:
     // {x: regs.ax, y: regs.bx}
     // Note: in the original code: regs.dx: x/2 (probably not used anywhere)
-    Map::map_pos viewportCoordToMapCoord(int16_t x, int16_t y, int16_t z, int32_t rotation)
+    Map::Pos2 viewportCoordToMapCoord(int16_t x, int16_t y, int16_t z, int32_t rotation)
     {
-        Map::map_pos ret{};
+        Map::Pos2 ret{};
         switch (rotation)
         {
             case 0:
@@ -320,7 +320,7 @@ namespace OpenLoco::Ui
                 int16_t midX = config->saved_view_x + (viewport->view_width / 2);
                 int16_t midY = config->saved_view_y + (viewport->view_height / 2);
 
-                Map::map_pos mapCoord = viewportCoordToMapCoord(midX, midY, 128, viewport->getRotation());
+                Map::Pos2 mapCoord = viewportCoordToMapCoord(midX, midY, 128, viewport->getRotation());
                 viewportSetUndergroundFlag(false, viewport);
 
                 bool atMapEdge = false;
@@ -564,7 +564,7 @@ namespace OpenLoco::Ui
     }
 
     // 0x004C6827
-    void window::viewportCentreOnTile(const Map::map_pos3& loc)
+    void window::viewportCentreOnTile(const Map::Pos3& loc)
     {
         auto viewport = this->viewports[0];
         if (viewport == nullptr)

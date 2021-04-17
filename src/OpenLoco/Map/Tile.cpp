@@ -154,9 +154,9 @@ namespace OpenLoco::Map
         return coordinate_2d;
     }
 
-    map_pos rotate2dCoordinate(map_pos pos, uint8_t rotation)
+    Pos2 rotate2dCoordinate(Pos2 pos, uint8_t rotation)
     {
-        map_pos coordinate2D;
+        Pos2 coordinate2D;
 
         switch (rotation)
         {

@@ -68,7 +68,7 @@ namespace OpenLoco
 
         SteamObject* object() const;
 
-        static Exhaust* create(Map::map_pos3 loc, uint8_t type);
+        static Exhaust* create(Map::Pos3 loc, uint8_t type);
     };
     static_assert(sizeof(Exhaust) == 0x4A);
 
@@ -83,7 +83,7 @@ namespace OpenLoco
         int16_t offsetX; // 0x44
         uint16_t wiggle; // 0x46
 
-        static MoneyEffect* create(const Map::map_pos3& loc, const CompanyId_t company, const currency32_t amount);
+        static MoneyEffect* create(const Map::Pos3& loc, const CompanyId_t company, const currency32_t amount);
     };
     static_assert(sizeof(MoneyEffect) == 0x48);
 
@@ -130,7 +130,7 @@ namespace OpenLoco
         uint8_t pad_24[0x28 - 0x24];
         uint16_t frame; // 0x28
 
-        static Smoke* create(Map::map_pos3 loc);
+        static Smoke* create(Map::Pos3 loc);
     };
     static_assert(sizeof(Smoke) == 0x2A);
 #pragma pack(pop)

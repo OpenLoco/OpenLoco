@@ -111,7 +111,7 @@ namespace OpenLoco::EntityManager
         return result;
     }
 
-    constexpr size_t getSpatialIndexOffset(const Map::map_pos& loc)
+    constexpr size_t getSpatialIndexOffset(const Map::Pos2& loc)
     {
         size_t index = _entitySpatialIndexNull;
         if (loc.x != Location::null)
@@ -129,7 +129,7 @@ namespace OpenLoco::EntityManager
         return index;
     }
 
-    EntityId_t firstQuadrantId(const Map::map_pos& loc)
+    EntityId_t firstQuadrantId(const Map::Pos2& loc)
     {
         auto index = getSpatialIndexOffset(loc);
         return _entitySpatialIndex[index];

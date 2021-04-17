@@ -55,7 +55,7 @@ namespace OpenLoco::Ui
         return result;
     }
 
-    viewport_pos viewport::mapFrom3d(Map::map_pos3 loc, int32_t rotation)
+    viewport_pos viewport::mapFrom3d(Map::Pos3 loc, int32_t rotation)
     {
         Ui::viewport_pos result;
         switch (rotation & 3)
@@ -80,7 +80,7 @@ namespace OpenLoco::Ui
         return result;
     }
 
-    map_pos viewport::getCentreMapPosition() const
+    Pos2 viewport::getCentreMapPosition() const
     {
         registers regs;
         regs.ax = view_x + view_width / 2;
@@ -90,7 +90,7 @@ namespace OpenLoco::Ui
         return { regs.ax, regs.bx };
     }
 
-    map_pos viewport::getCentreScreenMapPosition() const
+    Pos2 viewport::getCentreScreenMapPosition() const
     {
         registers regs;
         regs.ax = x + width / 2;

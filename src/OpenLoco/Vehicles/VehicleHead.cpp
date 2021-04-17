@@ -161,7 +161,7 @@ namespace OpenLoco::Vehicles
                 if ((scenarioTicks() & 3) == 0)
                 {
                     auto v2 = car.body; // body
-                    Smoke::create(Map::map_pos3(v2->x, v2->y, v2->z + 4));
+                    Smoke::create(Map::Pos3(v2->x, v2->y, v2->z + 4));
                 }
             }
 
@@ -177,7 +177,7 @@ namespace OpenLoco::Vehicles
 
                     auto v2 = car.body;
                     auto soundId = (Audio::sound_id)gPrng().randNext(26, 26 + 5);
-                    Audio::playSound(soundId, Map::map_pos3(v2->x, v2->y, v2->z + 22));
+                    Audio::playSound(soundId, Map::Pos3(v2->x, v2->y, v2->z + 22));
                 }
             }
         }
@@ -820,15 +820,15 @@ namespace OpenLoco::Vehicles
     }
 
     // Returns veh1, veh2 position
-    static std::pair<map_pos, map_pos> calculateNextPosition(const uint8_t yaw, const Map::map_pos& curPos, const Vehicle1* veh1, const Speed32 speed)
+    static std::pair<Pos2, Pos2> calculateNextPosition(const uint8_t yaw, const Map::Pos2& curPos, const Vehicle1* veh1, const Speed32 speed)
     {
         auto dist = Math::Trigonometry::computeXYVector(speed.getRaw() >> 5, yaw);
 
         auto bigCoordX = veh1->var_4E + (curPos.x << 16) + dist.x;
         auto bigCoordY = veh1->var_50 + (curPos.y << 16) + dist.y;
 
-        map_pos veh1Pos = { static_cast<int16_t>(bigCoordX & 0xFFFF), static_cast<int16_t>(bigCoordY & 0xFFFF) };
-        map_pos veh2Pos = { static_cast<int16_t>(bigCoordX >> 16), static_cast<int16_t>(bigCoordY >> 16) };
+        Pos2 veh1Pos = { static_cast<int16_t>(bigCoordX & 0xFFFF), static_cast<int16_t>(bigCoordY & 0xFFFF) };
+        Pos2 veh2Pos = { static_cast<int16_t>(bigCoordX >> 16), static_cast<int16_t>(bigCoordY >> 16) };
         return std::make_pair(veh1Pos, veh2Pos);
     }
 
@@ -1550,7 +1550,7 @@ namespace OpenLoco::Vehicles
 
         auto station = StationManager::get(stationId);
 
-        map_pos3 loc = {
+        Pos3 loc = {
             station->unk_tile_x,
             station->unk_tile_y,
             station->unk_tile_z
@@ -1687,7 +1687,7 @@ namespace OpenLoco::Vehicles
         auto [veh1Loc, veh2Loc] = calculateNextPosition(
             _yaw, { x, y }, vehType1, vehType2->currentSpeed);
 
-        map_pos3 newLoc(veh2Loc.x, veh2Loc.y, targetZ);
+        Pos3 newLoc(veh2Loc.x, veh2Loc.y, targetZ);
         vehType1->var_4E = veh1Loc.x;
         vehType1->var_50 = veh1Loc.y;
         if (targetZ != z)
@@ -1779,7 +1779,7 @@ namespace OpenLoco::Vehicles
                 return airplaneApproachTarget(targetZ);
             }
 
-            map_pos3 loc = {
+            Pos3 loc = {
                 station->unk_tile_x,
                 station->unk_tile_y,
                 station->unk_tile_z
@@ -1950,7 +1950,7 @@ namespace OpenLoco::Vehicles
     {
         vehicleUpdate_var_525BB0 = 0;
         StationId_t targetStationId = StationId::null;
-        std::optional<Map::map_pos3> targetPos{};
+        std::optional<Map::Pos3> targetPos{};
         if (stationId == StationId::null)
         {
             auto orders = getCurrentOrders();
@@ -1991,15 +1991,15 @@ namespace OpenLoco::Vehicles
         {
             if (targetStationId == StationId::null)
             {
-                targetPos = map_pos3{ 6143, 6143, 960 };
+                targetPos = Pos3{ 6143, 6143, 960 };
             }
             else
             {
                 auto station = StationManager::get(targetStationId);
-                targetPos = map_pos3{ station->x, station->y, 960 };
+                targetPos = Pos3{ station->x, station->y, 960 };
                 if (station->flags & StationFlags::flag_6)
                 {
-                    targetPos = map_pos3{ station->unk_tile_x, station->unk_tile_y, 960 };
+                    targetPos = Pos3{ station->unk_tile_x, station->unk_tile_y, 960 };
                 }
             }
         }
@@ -2010,7 +2010,7 @@ namespace OpenLoco::Vehicles
         auto targetYaw = calculateYaw1FromVectorPlane(xDiff, yDiff);
 
         // manhattan distance to target
-        auto manhattanDistance = Math::Vector::manhattanDistance(map_pos{ x, y }, *targetPos);
+        auto manhattanDistance = Math::Vector::manhattanDistance(Pos2{ x, y }, *targetPos);
 
         // Manhatten distance, targetZ, targetYaw
         return std::make_tuple(manhattanDistance, targetPos->z, targetYaw);
@@ -2021,7 +2021,7 @@ namespace OpenLoco::Vehicles
     {
         auto station = StationManager::get(stationId);
 
-        map_pos3 loc = {
+        Pos3 loc = {
             station->unk_tile_x,
             station->unk_tile_y,
             station->unk_tile_z
@@ -2160,11 +2160,11 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x00426E26
-    std::pair<uint32_t, Map::map_pos3> VehicleHead::airportGetMovementEdgeTarget(StationId_t targetStation, uint8_t curEdge)
+    std::pair<uint32_t, Map::Pos3> VehicleHead::airportGetMovementEdgeTarget(StationId_t targetStation, uint8_t curEdge)
     {
         auto station = StationManager::get(targetStation);
 
-        map_pos3 staionLoc = {
+        Pos3 staionLoc = {
             station->unk_tile_x,
             station->unk_tile_y,
             station->unk_tile_z
@@ -2185,7 +2185,7 @@ namespace OpenLoco::Vehicles
 
             auto destinationNode = airportObject->movementEdges[curEdge].nextNode;
 
-            map_pos loc2 = {
+            Pos2 loc2 = {
                 static_cast<int16_t>(airportObject->movementNodes[destinationNode].x - 16),
                 static_cast<int16_t>(airportObject->movementNodes[destinationNode].y - 16)
             };
@@ -2195,7 +2195,7 @@ namespace OpenLoco::Vehicles
             loc2.x += 16 + staionLoc.x;
             loc2.y += 16 + staionLoc.y;
 
-            map_pos3 loc = { loc2.x, loc2.y, static_cast<int16_t>(airportObject->movementNodes[destinationNode].z + staionLoc.z) };
+            Pos3 loc = { loc2.x, loc2.y, static_cast<int16_t>(airportObject->movementNodes[destinationNode].z + staionLoc.z) };
 
             if (!(airportFlags & AirportMovementNodeFlags::taxiing))
             {
@@ -2212,7 +2212,7 @@ namespace OpenLoco::Vehicles
         // Tile not found. Todo: fail gracefully
         assert(false);
         // Flags, location
-        return std::make_pair(0, Map::map_pos3{ 0, 0, 0 });
+        return std::make_pair(0, Map::Pos3{ 0, 0, 0 });
     }
 
     // 0x004B980A
@@ -2308,7 +2308,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x00426CA4
-    void VehicleHead::movePlaneTo(const Map::map_pos3& newLoc, const uint8_t newYaw, const Pitch newPitch)
+    void VehicleHead::movePlaneTo(const Map::Pos3& newLoc, const uint8_t newYaw, const Pitch newPitch)
     {
         Vehicle train(this);
         moveTo({ newLoc.x, newLoc.y, newLoc.z });
@@ -2351,7 +2351,7 @@ namespace OpenLoco::Vehicles
         Vehicle2* veh2 = vehicleUpdate_2;
 
         // updates the current boats position and sets flags about position
-        auto tile = TileManager::get(Map::map_pos{ veh2->x, veh2->y });
+        auto tile = TileManager::get(Map::Pos2{ veh2->x, veh2->y });
         surface_element* surface = tile.surface();
 
         if (surface != nullptr)
@@ -2403,7 +2403,7 @@ namespace OpenLoco::Vehicles
             veh2->currentSpeed = std::min<Speed32>(targetSpeed, veh2->currentSpeed + 0.333333_mph);
         }
 
-        auto manhattanDistance = Math::Vector::manhattanDistance(map_pos{ x, y }, map_pos{ veh2->x, veh2->y });
+        auto manhattanDistance = Math::Vector::manhattanDistance(Pos2{ x, y }, Pos2{ veh2->x, veh2->y });
         auto targetTolerance = 3;
         if (veh2->currentSpeed >= 20.0_mph)
         {
@@ -2446,7 +2446,7 @@ namespace OpenLoco::Vehicles
 
             if (stationId != StationId::null)
             {
-                auto targetTile = TileManager::get(Map::map_pos{ tile_x, tile_y });
+                auto targetTile = TileManager::get(Map::Pos2{ tile_x, tile_y });
                 station_element* station = nullptr;
                 for (auto& el : targetTile)
                 {
@@ -2477,7 +2477,7 @@ namespace OpenLoco::Vehicles
                 tile_y = stationTarget.y;
                 tile_base_z = stationTarget.z / 4;
 
-                auto targetTile = TileManager::get(Map::map_pos{ tile_x, tile_y });
+                auto targetTile = TileManager::get(Map::Pos2{ tile_x, tile_y });
                 station_element* station = nullptr;
                 for (auto& el : targetTile)
                 {
@@ -2519,14 +2519,14 @@ namespace OpenLoco::Vehicles
         veh1->var_4E = newVeh1Pos.x;
         veh1->var_50 = newVeh1Pos.y;
 
-        map_pos3 newLocation = { newVeh2Pos.x, newVeh2Pos.y, veh2->z };
+        Pos3 newLocation = { newVeh2Pos.x, newVeh2Pos.y, veh2->z };
         moveBoatTo(newLocation, veh2->sprite_yaw, Pitch::flat);
 
         return flags;
     }
 
     // 0x00427B70
-    void VehicleHead::moveBoatTo(const map_pos3& newLoc, const uint8_t yaw, const Pitch pitch)
+    void VehicleHead::moveBoatTo(const Pos3& newLoc, const uint8_t yaw, const Pitch pitch)
     {
         Vehicle train(this);
         train.veh1->moveTo({ newLoc.x, newLoc.y, newLoc.z });
@@ -2612,13 +2612,13 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x00427FC9
-    std::tuple<StationId_t, Map::map_pos, Map::map_pos3> VehicleHead::sub_427FC9()
+    std::tuple<StationId_t, Map::Pos2, Map::Pos3> VehicleHead::sub_427FC9()
     {
         registers regs;
         regs.esi = reinterpret_cast<int32_t>(this);
         call(0x00427FC9, regs);
-        Map::map_pos headTarget = { regs.ax, regs.cx };
-        Map::map_pos3 stationTarget = { regs.di, regs.bp, static_cast<uint8_t>(regs.dl) };
+        Map::Pos2 headTarget = { regs.ax, regs.cx };
+        Map::Pos3 stationTarget = { regs.di, regs.bp, static_cast<uint8_t>(regs.dl) };
         return std::make_tuple(regs.bx, headTarget, stationTarget);
     }
 
@@ -2700,7 +2700,7 @@ namespace OpenLoco::Vehicles
 
     static StationId_t tryFindStationAt(VehicleBogie* bogie)
     {
-        map_pos loc{ bogie->tile_x, bogie->tile_y };
+        Pos2 loc{ bogie->tile_x, bogie->tile_y };
         auto baseZ = bogie->tile_base_z;
         auto direction = bogie->var_2C & 3;
         auto trackId = (bogie->var_2C >> 3) & 0x3F;
@@ -2828,7 +2828,7 @@ namespace OpenLoco::Vehicles
     {
         Vehicle train(this);
         Vehicle2* veh = train.veh2;
-        map_pos loc = {
+        Pos2 loc = {
             veh->tile_x,
             veh->tile_y
         };

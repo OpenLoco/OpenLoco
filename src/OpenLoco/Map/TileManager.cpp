@@ -20,7 +20,7 @@ namespace OpenLoco::Map::TileManager
     static loco_global<int16_t, 0x0050A000> _adjustToolSize;
 
     constexpr uint16_t mapSelectedTilesSize = 300;
-    static loco_global<map_pos[mapSelectedTilesSize], 0x00F24490> _mapSelectedTiles;
+    static loco_global<Pos2[mapSelectedTilesSize], 0x00F24490> _mapSelectedTiles;
 
     static tile_element* InvalidTile = reinterpret_cast<tile_element*>(static_cast<intptr_t>(-1));
 
@@ -56,7 +56,7 @@ namespace OpenLoco::Map::TileManager
         return tile(pos.x, pos.y, data);
     }
 
-    tile get(map_pos pos)
+    tile get(Pos2 pos)
     {
         return get(pos.x, pos.y);
     }
@@ -76,7 +76,7 @@ namespace OpenLoco::Map::TileManager
      *
      * 0x00467297 rct2: 0x00662783 (numbers different)
      */
-    TileHeight getHeight(const map_pos& pos)
+    TileHeight getHeight(const Pos2& pos)
     {
         TileHeight height{ 16, 0 };
         // Off the map
@@ -296,13 +296,13 @@ namespace OpenLoco::Map::TileManager
     }
 
     // 0x0045F1A7
-    map_pos screenGetMapXY(int16_t x, int16_t y)
+    Pos2 screenGetMapXY(int16_t x, int16_t y)
     {
         registers regs;
         regs.ax = x;
         regs.bx = y;
         call(0x0045F1A7, regs);
-        map_pos pos = { regs.ax, regs.bx };
+        Pos2 pos = { regs.ax, regs.bx };
         return pos;
     }
 
@@ -377,13 +377,13 @@ namespace OpenLoco::Map::TileManager
     }
 
     // 0x0045FD8E
-    map_pos3 screenPosToMapPos(int16_t x, int16_t y)
+    Pos3 screenPosToMapPos(int16_t x, int16_t y)
     {
         registers regs;
         regs.ax = x;
         regs.bx = y;
         call(0x0045FD8E, regs);
-        map_pos3 pos = { regs.ax, regs.bx, regs.cx };
+        Pos3 pos = { regs.ax, regs.bx, regs.cx };
         return pos;
     }
 
@@ -463,7 +463,7 @@ namespace OpenLoco::Map::TileManager
     // 0x004CBE5F
     // regs.ax: pos.x
     // regs.cx: pos.y
-    void mapInvalidateTileFull(Map::map_pos pos)
+    void mapInvalidateTileFull(Map::Pos2 pos)
     {
         Ui::ViewportManager::invalidate(pos, 0, 1120, ZoomLevel::eighth);
     }

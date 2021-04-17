@@ -553,7 +553,7 @@ namespace OpenLoco::Input
                             if (building != nullptr)
                             {
                                 auto index = building->multiTileIndex();
-                                Map::map_pos pos{ interaction.x, interaction.y };
+                                Map::Pos2 pos{ interaction.x, interaction.y };
                                 pos.x -= Map::offsets[index].x;
                                 pos.y -= Map::offsets[index].y;
 
@@ -593,7 +593,7 @@ namespace OpenLoco::Input
     }
 
     // 0x004A5AA1 TODO: Move to a better file
-    static void signalInteract(window* main, Map::signal_element* signal, const uint8_t bh, const Map::map_pos pos)
+    static void signalInteract(window* main, Map::signal_element* signal, const uint8_t bh, const Map::Pos2 pos)
     {
         registers regs{};
         regs.esi = reinterpret_cast<uint32_t>(main);
@@ -605,7 +605,7 @@ namespace OpenLoco::Input
     }
 
     // 0x004A5B66 TODO: Move to a better file
-    static void trackStationInteract(window* main, Map::station_element* station, const Map::map_pos pos)
+    static void trackStationInteract(window* main, Map::station_element* station, const Map::Pos2 pos)
     {
         registers regs{};
         regs.esi = reinterpret_cast<uint32_t>(main);
@@ -616,7 +616,7 @@ namespace OpenLoco::Input
     }
 
     // 0x004A5BDF TODO: Move to a better file
-    static void roadStationInteract(window* main, Map::station_element* station, const Map::map_pos pos)
+    static void roadStationInteract(window* main, Map::station_element* station, const Map::Pos2 pos)
     {
         registers regs{};
         regs.esi = reinterpret_cast<uint32_t>(main);
@@ -627,7 +627,7 @@ namespace OpenLoco::Input
     }
 
     // 0x004A5C58 TODO: Move to a better file
-    static void airportInteract(window* main, Map::station_element* station, const Map::map_pos pos)
+    static void airportInteract(window* main, Map::station_element* station, const Map::Pos2 pos)
     {
         registers regs{};
         regs.esi = reinterpret_cast<uint32_t>(main);
@@ -638,7 +638,7 @@ namespace OpenLoco::Input
     }
 
     // 0x004A5CC5 TODO: Move to a better file
-    static void dockInteract(window* main, Map::station_element* station, const Map::map_pos pos)
+    static void dockInteract(window* main, Map::station_element* station, const Map::Pos2 pos)
     {
         registers regs{};
         regs.esi = reinterpret_cast<uint32_t>(main);
@@ -649,7 +649,7 @@ namespace OpenLoco::Input
     }
 
     // 0x004BB116 TODO: Move to a better file
-    static void treeInteract(Map::tree_element* tree, const Map::map_pos pos)
+    static void treeInteract(Map::tree_element* tree, const Map::Pos2 pos)
     {
         registers regs{};
         regs.edx = reinterpret_cast<uint32_t>(tree);
@@ -659,7 +659,7 @@ namespace OpenLoco::Input
     }
 
     // 0x0042D9BF TODO: Move to a better file
-    static void buildingInteract(Map::building_element* building, const Map::map_pos pos)
+    static void buildingInteract(Map::building_element* building, const Map::Pos2 pos)
     {
         registers regs{};
         regs.edx = reinterpret_cast<uint32_t>(building);
@@ -669,7 +669,7 @@ namespace OpenLoco::Input
     }
 
     // 0x004C4809 TODO: Move to a better file
-    static void wallInteract(Map::wall_element* wall, const Map::map_pos pos)
+    static void wallInteract(Map::wall_element* wall, const Map::Pos2 pos)
     {
         registers regs{};
         regs.edx = reinterpret_cast<uint32_t>(wall);
@@ -679,7 +679,7 @@ namespace OpenLoco::Input
     }
 
     // 0x0042F007 TODO: Move to a better file
-    static void headquarterInteract(Map::building_element* building, const Map::map_pos pos)
+    static void headquarterInteract(Map::building_element* building, const Map::Pos2 pos)
     {
         registers regs{};
         regs.edx = reinterpret_cast<uint32_t>(building);

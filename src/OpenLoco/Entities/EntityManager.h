@@ -49,7 +49,7 @@ namespace OpenLoco::EntityManager
     template<typename T>
     T* first();
 
-    EntityId_t firstQuadrantId(const Map::map_pos& loc);
+    EntityId_t firstQuadrantId(const Map::Pos2& loc);
     void resetSpatialIndex();
 
     EntityBase* createEntityMisc();
@@ -150,7 +150,7 @@ namespace OpenLoco::EntityManager
         using Iterator = ListIterator<EntityBase, &EntityBase::nextQuadrantId>;
 
     public:
-        EntityTileList(const Map::map_pos& loc)
+        EntityTileList(const Map::Pos2& loc)
         {
             firstId = EntityManager::firstQuadrantId(loc);
         }

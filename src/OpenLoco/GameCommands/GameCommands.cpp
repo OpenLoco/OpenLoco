@@ -25,7 +25,7 @@ namespace OpenLoco::GameCommands
 
     static loco_global<tile_element*, 0x009C68D0> _9C68D0;
 
-    static loco_global<map_pos3, 0x009C68E0> _gGameCommandPosition;
+    static loco_global<Pos3, 0x009C68E0> _gGameCommandPosition;
     static loco_global<string_id, 0x009C68E6> _gGameCommandErrorText;
     static loco_global<string_id, 0x009C68E8> _gGameCommandErrorTitle;
     static loco_global<uint8_t, 0x009C68EA> _gGameCommandExpenditureType; // premultiplied by 4
@@ -305,7 +305,7 @@ namespace OpenLoco::GameCommands
         if (ebx != 0 && _updating_company_id == _player_company[0])
         {
             // Add flying cost text
-            CompanyManager::spendMoneyEffect(getPosition() + Map::map_pos3{ 0, 0, 24 }, _updating_company_id, ebx);
+            CompanyManager::spendMoneyEffect(getPosition() + Map::Pos3{ 0, 0, 24 }, _updating_company_id, ebx);
         }
 
         return ebx;
@@ -422,12 +422,12 @@ namespace OpenLoco::GameCommands
         return false;
     }
 
-    const Map::map_pos3& getPosition()
+    const Map::Pos3& getPosition()
     {
         return _gGameCommandPosition;
     }
 
-    void setPosition(const Map::map_pos3& pos)
+    void setPosition(const Map::Pos3& pos)
     {
         _gGameCommandPosition = pos;
     }

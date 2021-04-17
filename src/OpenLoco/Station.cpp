@@ -159,8 +159,8 @@ namespace OpenLoco
         }
     };
 
-    static void sub_491BF5(const map_pos& pos, const uint8_t flag);
-    static station_element* getStationElement(const map_pos3& pos);
+    static void sub_491BF5(const Pos2& pos, const uint8_t flag);
+    static station_element* getStationElement(const Pos3& pos);
 
     StationId_t Station::id() const
     {
@@ -239,7 +239,7 @@ namespace OpenLoco
     // 0x00491FE0
     // WARNING: this may be called with station (ebp) = -1
     // filter only used if location.x != -1
-    uint32_t Station::calcAcceptedCargo(CargoSearchState& cargoSearchState, const map_pos& location, const uint32_t filter)
+    uint32_t Station::calcAcceptedCargo(CargoSearchState& cargoSearchState, const Pos2& location, const uint32_t filter)
     {
         cargoSearchState.byte_112C7F2(1);
         cargoSearchState.filter(0);
@@ -306,7 +306,7 @@ namespace OpenLoco
             {
                 if (cargoSearchState.mapHas2(tx, ty))
                 {
-                    auto pos = map_pos(tx * tile_size, ty * tile_size);
+                    auto pos = Pos2(tx * tile_size, ty * tile_size);
                     auto tile = TileManager::get(pos);
 
                     for (auto& el : tile)
@@ -456,8 +456,8 @@ namespace OpenLoco
                 {
                     auto airportObject = ObjectManager::get<AirportObject>(stationElement->objectId());
 
-                    map_pos minPos(airportObject->min_x * 32, airportObject->min_y * 32);
-                    map_pos maxPos(airportObject->max_x * 32, airportObject->max_y * 32);
+                    Pos2 minPos(airportObject->min_x * 32, airportObject->min_y * 32);
+                    Pos2 maxPos(airportObject->max_x * 32, airportObject->max_y * 32);
 
                     minPos = rotate2dCoordinate(minPos, stationElement->rotation());
                     maxPos = rotate2dCoordinate(maxPos, stationElement->rotation());
@@ -744,7 +744,7 @@ namespace OpenLoco
     }
 
     // 0x0048F6D4
-    static station_element* getStationElement(const map_pos3& pos)
+    static station_element* getStationElement(const Pos3& pos)
     {
         auto tile = TileManager::get(pos.x, pos.y);
         auto baseZ = pos.z / 4;
@@ -792,7 +792,7 @@ namespace OpenLoco
     }
 
     // 0x00491BF5
-    static void sub_491BF5(const map_pos& pos, const uint8_t flag)
+    static void sub_491BF5(const Pos2& pos, const uint8_t flag)
     {
         TilePos minPos(pos);
         auto maxPos = minPos;

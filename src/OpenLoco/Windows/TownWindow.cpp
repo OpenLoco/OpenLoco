@@ -207,7 +207,7 @@ namespace OpenLoco::Ui::Windows::Town
 
                     // Play construction sound at the town centre.
                     int16_t tileZ = TileManager::getHeight({ town->x, town->y }).landHeight;
-                    Audio::playSound(Audio::sound_id::construct, OpenLoco::Map::map_pos3(town->x + 16, town->y + 16, tileZ));
+                    Audio::playSound(Audio::sound_id::construct, OpenLoco::Map::Pos3(town->x + 16, town->y + 16, tileZ));
                     break;
                 }
 
@@ -299,7 +299,7 @@ namespace OpenLoco::Ui::Windows::Town
             if (self->viewports[0] == nullptr)
             {
                 auto widget = &self->widgets[widx::viewport];
-                auto tile = OpenLoco::Map::map_pos3({ town->x, town->y, tileZ });
+                auto tile = OpenLoco::Map::Pos3({ town->x, town->y, tileZ });
                 auto origin = Gfx::point_t(widget->left + self->x + 1, widget->top + self->y + 1);
                 auto size = Gfx::ui_size_t(widget->width() - 2, widget->height() - 2);
                 ViewportManager::create(self, 0, origin, size, self->saved_view.zoomLevel, tile);
