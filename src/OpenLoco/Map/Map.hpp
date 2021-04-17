@@ -20,10 +20,10 @@ namespace OpenLoco::Map
 
     using Pos2 = Math::Vector::TVector2<coord_t, 1>;
     using Pos3 = Math::Vector::TVector3<coord_t, 1>;
-    using TilePos = Math::Vector::TVector2<coord_t, tile_size>;
+    using TilePos2 = Math::Vector::TVector2<coord_t, tile_size>;
 
     // Until interop is removed this is a requirement.
     static_assert(sizeof(Pos2) == 4);
     static_assert(sizeof(Pos3) == 6);
-    static_assert(sizeof(TilePos) == 4);
+    static_assert(sizeof(TilePos2) == 4);
 }

@@ -2682,7 +2682,7 @@ namespace OpenLoco::Ui::Vehicle
 
                     auto offsetToFirstTile = Map::rotate2dCoordinate({ trackPart.x, trackPart.y }, trackElement->unkDirection());
                     auto firstTilePos = Map::Pos2(args.x - offsetToFirstTile.x, args.y - offsetToFirstTile.y);
-                    TilePos tPos{ firstTilePos };
+                    TilePos2 tPos{ firstTilePos };
                     height -= trackPart.z;
 
                     Vehicles::OrderRouteWaypoint waypoint(tPos, height / 8, trackElement->unkDirection(), trackId);
@@ -2700,7 +2700,7 @@ namespace OpenLoco::Ui::Vehicle
                         height = heights.waterHeight;
                     }
                     Audio::playSound(Audio::sound_id::waypoint, { x, y, Input::getDragLastLocation().x }, Input::getDragLastLocation().x);
-                    TilePos tPos{
+                    TilePos2 tPos{
                         Pos2{ args.x, args.y }
                     };
 
@@ -2730,7 +2730,7 @@ namespace OpenLoco::Ui::Vehicle
 
                     auto offsetToFirstTile = Map::rotate2dCoordinate({ roadPart.x, roadPart.y }, roadElement->unkDirection());
                     auto firstTilePos = Map::Pos2(args.x - offsetToFirstTile.x, args.y - offsetToFirstTile.y);
-                    TilePos tPos{ firstTilePos };
+                    TilePos2 tPos{ firstTilePos };
                     height -= roadPart.z;
 
                     Vehicles::OrderRouteWaypoint waypoint(tPos, height / 8, roadElement->unkDirection(), roadId);

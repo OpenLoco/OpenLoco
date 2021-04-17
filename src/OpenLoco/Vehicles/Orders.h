@@ -111,14 +111,14 @@ namespace OpenLoco::Vehicles
         static constexpr OrderType TYPE = OrderType::RouteWaypoint;
         uint8_t _data[5] = { 0 }; // 0x1 - 0x6
 
-        OrderRouteWaypoint(const Map::TilePos& pos, const uint8_t baseZ, const uint8_t direction, const uint8_t trackId)
+        OrderRouteWaypoint(const Map::TilePos2& pos, const uint8_t baseZ, const uint8_t direction, const uint8_t trackId)
         {
             setType(TYPE);
             setWaypoint(pos, baseZ);
             setDirection(direction);
             setTrackId(trackId);
         }
-        void setWaypoint(const Map::TilePos& pos, const uint8_t baseZ);
+        void setWaypoint(const Map::TilePos2& pos, const uint8_t baseZ);
         void setDirection(const uint8_t direction);
         void setTrackId(const uint8_t trackId);
         Map::Pos3 getWaypoint() const;

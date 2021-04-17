@@ -65,7 +65,7 @@ namespace OpenLoco::Vehicles
         return {};
     }
 
-    void OrderRouteWaypoint::setWaypoint(const Map::TilePos& pos, const uint8_t baseZ)
+    void OrderRouteWaypoint::setWaypoint(const Map::TilePos2& pos, const uint8_t baseZ)
     {
         _type &= ~0x80;
         _type |= ((pos.x & 0x100) >> 1);

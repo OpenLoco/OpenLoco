@@ -45,7 +45,7 @@ namespace OpenLoco::Map::TileManager
         return _tiles.get();
     }
 
-    tile get(TilePos pos)
+    tile get(TilePos2 pos)
     {
         size_t index = (pos.y << 9) | pos.x;
         auto data = _tiles[index];
@@ -63,7 +63,7 @@ namespace OpenLoco::Map::TileManager
 
     tile get(coord_t x, coord_t y)
     {
-        return get(TilePos(x / Map::tile_size, y / Map::tile_size));
+        return get(TilePos2(x / Map::tile_size, y / Map::tile_size));
     }
 
     /**
@@ -223,7 +223,7 @@ namespace OpenLoco::Map::TileManager
         std::fill(_tiles.begin(), _tiles.end(), InvalidTile);
     }
 
-    static void set(TilePos pos, tile_element* elements)
+    static void set(TilePos2 pos, tile_element* elements)
     {
         _tiles[(pos.y * map_pitch) + pos.x] = elements;
     }
@@ -238,7 +238,7 @@ namespace OpenLoco::Map::TileManager
         {
             for (tile_coord_t x = 0; x < map_columns; x++)
             {
-                set(TilePos(x, y), el);
+                set(TilePos2(x, y), el);
 
                 // Skip remaining elements on this tile
                 do
@@ -267,7 +267,7 @@ namespace OpenLoco::Map::TileManager
             {
                 for (tile_coord_t x = 0; x < map_columns; x++)
                 {
-                    auto tile = get(TilePos(x, y));
+                    auto tile = get(TilePos2(x, y));
                     for (const auto& element : tile)
                     {
                         tempBuffer[numElements] = element;

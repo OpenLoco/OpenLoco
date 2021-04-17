@@ -26,7 +26,7 @@ namespace OpenLoco::Title
         uint16_t arg;
     };
 
-    using MoveStep = Map::TilePos;
+    using MoveStep = Map::TilePos2;
 
     struct RotateStep
     {

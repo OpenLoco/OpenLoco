@@ -425,7 +425,7 @@ namespace OpenLoco
         return acceptedCargos;
     }
 
-    static void setStationCatchmentRegion(CargoSearchState& cargoSearchState, TilePos minPos, TilePos maxPos, const uint8_t flags);
+    static void setStationCatchmentRegion(CargoSearchState& cargoSearchState, TilePos2 minPos, TilePos2 maxPos, const uint8_t flags);
 
     // 0x00491D70
     // catchment flag should not be shifted (1, 2, 3, 4) and NOT (1 << 0, 1 << 1)
@@ -477,8 +477,8 @@ namespace OpenLoco
                         std::swap(minPos.y, maxPos.y);
                     }
 
-                    TilePos tileMinPos(minPos);
-                    TilePos tileMaxPos(maxPos);
+                    TilePos2 tileMinPos(minPos);
+                    TilePos2 tileMaxPos(maxPos);
 
                     tileMinPos.x -= catchmentSize;
                     tileMinPos.y -= catchmentSize;
@@ -490,7 +490,7 @@ namespace OpenLoco
                 break;
                 case StationType::docks:
                 {
-                    TilePos minPos(pos);
+                    TilePos2 minPos(pos);
                     auto maxPos = minPos;
 
                     minPos.x -= catchmentSize;
@@ -504,7 +504,7 @@ namespace OpenLoco
                 break;
                 default:
                 {
-                    TilePos minPos(pos);
+                    TilePos2 minPos(pos);
                     auto maxPos = minPos;
 
                     minPos.x -= catchmentSize;
@@ -776,7 +776,7 @@ namespace OpenLoco
     }
 
     // 0x00491EDC
-    static void setStationCatchmentRegion(CargoSearchState& cargoSearchState, TilePos minPos, TilePos maxPos, const uint8_t flag)
+    static void setStationCatchmentRegion(CargoSearchState& cargoSearchState, TilePos2 minPos, TilePos2 maxPos, const uint8_t flag)
     {
         minPos.x = std::max(minPos.x, static_cast<coord_t>(0));
         minPos.y = std::max(minPos.y, static_cast<coord_t>(0));
@@ -794,7 +794,7 @@ namespace OpenLoco
     // 0x00491BF5
     static void sub_491BF5(const Pos2& pos, const uint8_t flag)
     {
-        TilePos minPos(pos);
+        TilePos2 minPos(pos);
         auto maxPos = minPos;
         maxPos.x += catchmentSize;
         maxPos.y += catchmentSize;
