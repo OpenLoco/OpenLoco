@@ -994,7 +994,8 @@ namespace OpenLoco::Ui::Windows::IndustryList
             {
                 auto industryObj = ObjectManager::get<IndustryObject>(i);
                 if (industryObj == nullptr)
-                    break;
+                    continue;
+
                 if (!isEditorMode() && !isSandboxMode())
                 {
                     if (!(industryObj->flags & IndustryObjectFlags::can_be_founded_by_user))
