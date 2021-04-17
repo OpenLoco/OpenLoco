@@ -46,7 +46,7 @@ namespace OpenLoco::GameCommands
     static constexpr GameCommandInfo _gameCommandDefinitions[82] = {
         { GameCommand::vehicle_rearrange,             nullptr,                0x004AF1DF, true  },
         { GameCommand::vehicle_place,                 nullptr,                0x004B01B6, true  },
-        { GameCommand::vehicle_pickup,                nullptr,                0x004B0826, true  },
+        { GameCommand::vehicle_pickup,                vehiclePickup,          0x004B0826, true  },
         { GameCommand::vehicle_reverse,               nullptr,                0x004ADAA8, true  },
         { GameCommand::vehicle_pass_signal,           nullptr,                0x004B0B50, true  },
         { GameCommand::vehicle_create,                Vehicles::create,       0x004AE5E4, true  },
