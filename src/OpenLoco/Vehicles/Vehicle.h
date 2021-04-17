@@ -244,6 +244,8 @@ namespace OpenLoco::Vehicles
         OrderRingView getCurrentOrders() const;
         bool isPlaced() const { return tile_x != -1 && !(var_38 & Flags38::isGhost); }
         char* generateCargoTotalString(char* buffer);
+        bool canBeModified() const;
+        void liftUpVehicle();
 
     private:
         void applyBreakdownToTrain();
