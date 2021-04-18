@@ -274,63 +274,59 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 
     static void cheatsMenuMouseDown(window* window, widget_index widgetIndex)
     {
-        // Check if cheats enabled
-
-        Dropdown::add(0, StringIds::dropdown_without_checkmark, StringIds::cheat_enable_sandbox_mode);
-        Dropdown::add(1, StringIds::dropdown_without_checkmark, StringIds::cheat_allow_building_while_paused);
-        Dropdown::add(2, StringIds::dropdown_without_checkmark, StringIds::cheat_allow_manual_driving);
-        Dropdown::add(3, 0);
-        Dropdown::add(4, StringIds::cheats);
-        Dropdown::add(5, StringIds::tile_inspector);
+        Dropdown::add(0, StringIds::cheats);
+        Dropdown::add(1, StringIds::tile_inspector);
+        Dropdown::add(2, 0);
+        Dropdown::add(3, StringIds::dropdown_without_checkmark, StringIds::cheat_enable_sandbox_mode);
+        Dropdown::add(4, StringIds::dropdown_without_checkmark, StringIds::cheat_allow_building_while_paused);
+        Dropdown::add(5, StringIds::dropdown_without_checkmark, StringIds::cheat_allow_manual_driving);
 
         Dropdown::showBelow(window, widgetIndex, 6, 0);
 
         if (isSandboxMode())
-            Dropdown::setItemSelected(0);
+            Dropdown::setItemSelected(3);
 
         if (isPauseOverrideEnabled())
-            Dropdown::setItemSelected(1);
+            Dropdown::setItemSelected(4);
 
         if (isDriverCheatEnabled())
-            Dropdown::setItemSelected(2);
+            Dropdown::setItemSelected(5);
     }
 
     static void cheatsMenuDropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
     {
-        // Check if cheats enabled
-
         if (itemIndex == -1)
-            return;
+            itemIndex = 0;
 
         switch (itemIndex)
         {
             case 0:
+                Cheats::open();
+                break;
+
+            case 1:
+                TileInspector::open();
+                break;
+
+            case 3:
                 if (!isSandboxMode())
                     setScreenFlag(ScreenFlags::sandboxMode);
                 else
                     clearScreenFlag(ScreenFlags::sandboxMode);
                 break;
 
-            case 1:
+            case 4:
                 if (!isPauseOverrideEnabled())
                     setScreenFlag(ScreenFlags::pauseOverrideEnabled);
                 else
                     clearScreenFlag(ScreenFlags::pauseOverrideEnabled);
                 break;
 
-            case 2:
+            case 5:
                 if (!isDriverCheatEnabled())
                     setScreenFlag(ScreenFlags::driverCheatEnabled);
                 else
                     clearScreenFlag(ScreenFlags::driverCheatEnabled);
-                break;
-
-            case 4:
-                Cheats::open();
-                break;
-
-            case 5:
-                TileInspector::open();
                 break;
         }
     }
