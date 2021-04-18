@@ -89,7 +89,7 @@ namespace OpenLoco::Audio
     static std::vector<sample> _samples;
     static std::unordered_map<uint16_t, sample> _object_samples;
 
-    static void playSound(sound_id id, Map::Pos3 loc, int32_t volume, int32_t pan, int32_t frequency);
+    static void playSound(sound_id id, const Map::Pos3& loc, int32_t volume, int32_t pan, int32_t frequency);
     static void mixSound(sound_id id, bool loop, int32_t volume, int32_t pan, int32_t freq);
 
     // 0x004FE910
@@ -539,7 +539,7 @@ namespace OpenLoco::Audio
         return volume;
     }
 
-    void playSound(sound_id id, Map::Pos3 loc)
+    void playSound(sound_id id, const Map::Pos3& loc)
     {
         playSound(id, loc, play_at_location);
     }
@@ -590,20 +590,20 @@ namespace OpenLoco::Audio
     }
 
     // 0x00489F1B
-    void playSound(sound_id id, Map::Pos3 loc, int32_t volume, int32_t frequency)
+    void playSound(sound_id id, const Map::Pos3& loc, int32_t volume, int32_t frequency)
     {
         playSound(id, loc, volume, play_at_location, frequency);
     }
 
     // 0x00489CB5
-    void playSound(sound_id id, Map::Pos3 loc, int32_t pan)
+    void playSound(sound_id id, const Map::Pos3& loc, int32_t pan)
     {
         playSound(id, loc, 0, pan, 0);
     }
 
     // 0x00489CB5 / 0x00489F1B
     // pan is in UI pixels or known constant
-    void playSound(sound_id id, Map::Pos3 loc, int32_t volume, int32_t pan, int32_t frequency)
+    void playSound(sound_id id, const Map::Pos3& loc, int32_t volume, int32_t pan, int32_t frequency)
     {
         loco_global<int32_t, 0x00e3f0b8> current_rotation;
 
