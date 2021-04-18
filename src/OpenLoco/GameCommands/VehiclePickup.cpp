@@ -1,3 +1,4 @@
+#include "../Audio/Audio.h"
 #include "../Interop/Interop.hpp"
 #include "../Management/Expenditures.h"
 #include "../Types.hpp"
@@ -9,16 +10,13 @@ using namespace OpenLoco::Interop;
 namespace OpenLoco::GameCommands
 {
     // 0x0048B15B
-    static void playPickupSound()
+    static void playPickupSound(Vehicles::Vehicle2* veh2)
     {
-        auto position = GameCommands::getPosition();
-        registers regs;
-        regs.cx = position.x;
-        regs.dx = position.y;
-        regs.bp = position.z;
-        call(0x0048B15B, regs);
+        const auto pos = Map::map_pos3(veh2->x, veh2->y, veh2->z);
+        Audio::playSound(Audio::sound_id::vehicle_pickup, pos, -1000, 24098);
     }
 
+    // 0x004B0826
     static uint32_t vehiclePickup(const uint8_t flags, EntityId_t headId)
     {
         GameCommands::setExpenditureType(ExpenditureType::TrainRunningCosts);
@@ -40,9 +38,15 @@ namespace OpenLoco::GameCommands
             return 0;
 
         if (!(flags & GameCommands::GameCommandFlag::flag_6))
-            playPickupSound();
+            playPickupSound(veh2);
 
         head->liftUpVehicle();
+
+        // Clear ghost flag on primary vehicle pieces and all car components.
+        train.head->var_38 &= ~(Vehicles::Flags38::isGhost);
+        train.veh1->var_38 &= ~(Vehicles::Flags38::isGhost);
+        train.veh2->var_38 &= ~(Vehicles::Flags38::isGhost);
+        train.tail->var_38 &= ~(Vehicles::Flags38::isGhost);
 
         for (auto& car : train.cars)
         {
@@ -54,7 +58,7 @@ namespace OpenLoco::GameCommands
             }
         }
 
-        train.tail->var_0C |= Vehicles::Flags0C::commandStop;
+        head->var_0C |= Vehicles::Flags0C::commandStop;
 
         return 0;
     }

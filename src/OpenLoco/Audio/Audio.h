@@ -47,7 +47,7 @@ namespace OpenLoco::Audio
         demolish_tree = 17,
         demolish_building = 18,
         unk_19 = 19,
-        unk_20 = 20,
+        vehicle_pickup = 20,
         construct_ship = 21,
         ticker = 22,
         applause_2 = 23,
