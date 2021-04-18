@@ -43,7 +43,7 @@ namespace OpenLoco::GameCommands
     };
 
     // clang-format off
-    static constexpr GameCommandInfo _gameCommandDefinitions[81] = {
+    static constexpr GameCommandInfo _gameCommandDefinitions[82] = {
         { GameCommand::vehicle_rearrange,             nullptr,                0x004AF1DF, true  },
         { GameCommand::vehicle_place,                 nullptr,                0x004B01B6, true  },
         { GameCommand::vehicle_pickup,                nullptr,                0x004B0826, true  },
@@ -125,6 +125,7 @@ namespace OpenLoco::GameCommands
         { GameCommand::apply_free_cash_cheat,         nullptr,                0x00438A08, false },
         { GameCommand::rename_industry,               renameIndustry,         0x00455029, false },
         { GameCommand::vehicle_clone,                 Vehicles::cloneVehicle, 0,          true  },
+        { GameCommand::cheat,                         cheat,                  0,          true  },
     };
     // clang-format on
 

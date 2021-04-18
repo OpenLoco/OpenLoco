@@ -64,6 +64,11 @@ namespace OpenLoco::CompanyManager
         return _player_company[0];
     }
 
+    CompanyId_t getSecondaryPlayerId()
+    {
+        return _player_company[1];
+    }
+
     void setControllingId(CompanyId_t id)
     {
         _player_company[0] = id;

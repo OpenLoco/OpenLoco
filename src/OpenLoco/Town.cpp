@@ -8,9 +8,6 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco
 {
-    constexpr int32_t min_company_rating = -1000;
-    constexpr int32_t max_company_rating = 1000;
-
     bool Town::empty() const
     {
         return name == StringIds::null;
