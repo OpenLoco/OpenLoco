@@ -99,10 +99,10 @@ namespace OpenLoco::Audio
     void pauseSound();
     void unpauseSound();
     void playSound(Vehicles::Vehicle2or6* t);
-    void playSound(sound_id id, Map::map_pos3 loc);
-    void playSound(sound_id id, Map::map_pos3 loc, int32_t pan);
+    void playSound(sound_id id, const Map::Pos3& loc);
+    void playSound(sound_id id, const Map::Pos3& loc, int32_t pan);
     void playSound(sound_id id, int32_t pan);
-    void playSound(sound_id id, Map::map_pos3 loc, int32_t volume, int32_t frequency);
+    void playSound(sound_id id, const Map::Pos3& loc, int32_t volume, int32_t frequency);
     void updateSounds();
 
     bool loadChannel(channel_id id, const char* path, int32_t c);

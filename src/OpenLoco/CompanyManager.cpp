@@ -247,7 +247,7 @@ namespace OpenLoco::CompanyManager
         r1.bx = screenPosition.y;
         call(0x0045F1A7, r1);
         Ui::viewport* vp = (Ui::viewport*)r1.edi;
-        auto mapPosition = Map::map_pos(r1.ax, r1.bx);
+        auto mapPosition = Map::Pos2(r1.ax, r1.bx);
 
         // Happens if center of viewport is obstructed. Probably estimates the centre location
         if (mapPosition.x == Location::null || viewport != vp)
@@ -262,13 +262,13 @@ namespace OpenLoco::CompanyManager
     // loc : gGameCommandMapX/Y/Z global
     // company : updatingCompanyId global
     // amount : ebx
-    void spendMoneyEffect(const Map::map_pos3& loc, const CompanyId_t company, const currency32_t amount)
+    void spendMoneyEffect(const Map::Pos3& loc, const CompanyId_t company, const currency32_t amount)
     {
         if (isEditorMode())
         {
             return;
         }
-        Map::map_pos3 pos = loc;
+        Map::Pos3 pos = loc;
         if (loc.x == Location::null)
         {
             auto* view = Ui::WindowManager::getMainViewport();
@@ -282,7 +282,7 @@ namespace OpenLoco::CompanyManager
             {
                 return;
             }
-            pos = Map::map_pos3(centre.x, centre.y, Map::TileManager::getHeight(centre).landHeight);
+            pos = Map::Pos3(centre.x, centre.y, Map::TileManager::getHeight(centre).landHeight);
         }
 
         pos.z += 10;

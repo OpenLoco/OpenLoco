@@ -459,7 +459,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                     updateTreeColours(self);
 
                     int32_t pan = (self->width >> 1) + self->x;
-                    OpenLoco::Map::map_pos3 loc = { xPos, yPos, static_cast<int16_t>(pan) };
+                    OpenLoco::Map::Pos3 loc = { xPos, yPos, static_cast<int16_t>(pan) };
                     Audio::playSound(Audio::sound_id::click_down, loc, pan);
                     self->saved_view.mapX = -16;
                     _lastTreeCost = 0x80000000;
@@ -835,9 +835,9 @@ namespace OpenLoco::Ui::Windows::Terraform
                 int16_t y = _mapSelectionAY + _mapSelectionBY;
                 x /= 2;
                 y /= 2;
-                map_pos centre = { x, y };
-                map_pos pointA = { _mapSelectionAX, _mapSelectionAY };
-                map_pos pointB = { _mapSelectionBX, _mapSelectionBY };
+                Pos2 centre = { x, y };
+                Pos2 pointA = { _mapSelectionAX, _mapSelectionAY };
+                Pos2 pointB = { _mapSelectionBX, _mapSelectionBY };
                 GameCommands::setErrorTitle(StringIds::error_cant_clear_entire_area);
 
                 GameCommands::do_66(centre, pointA, pointB, flags);
@@ -1084,9 +1084,9 @@ namespace OpenLoco::Ui::Windows::Terraform
             int16_t y = _mapSelectionAY + _mapSelectionBY;
             x /= 2;
             y /= 2;
-            map_pos centre = { x, y };
-            map_pos pointA = { _mapSelectionAX, _mapSelectionAY };
-            map_pos pointB = { _mapSelectionBX, _mapSelectionBY };
+            Pos2 centre = { x, y };
+            Pos2 pointA = { _mapSelectionAX, _mapSelectionAY };
+            Pos2 pointB = { _mapSelectionBX, _mapSelectionBY };
             GameCommands::setErrorTitle(StringIds::error_cant_lower_land_here);
 
             if (_adjustToolSize == 0)
@@ -1113,9 +1113,9 @@ namespace OpenLoco::Ui::Windows::Terraform
             int16_t y = _mapSelectionAY + _mapSelectionBY;
             x /= 2;
             y /= 2;
-            map_pos centre = { x, y };
-            map_pos pointA = { _mapSelectionAX, _mapSelectionAY };
-            map_pos pointB = { _mapSelectionBX, _mapSelectionBY };
+            Pos2 centre = { x, y };
+            Pos2 pointA = { _mapSelectionAX, _mapSelectionAY };
+            Pos2 pointB = { _mapSelectionBX, _mapSelectionBY };
             GameCommands::setErrorTitle(StringIds::error_cant_raise_land_here);
 
             if (_adjustToolSize == 0)
@@ -1215,8 +1215,8 @@ namespace OpenLoco::Ui::Windows::Terraform
                 if (_lastSelectedLand != 0xFF)
                 {
                     GameCommands::setErrorTitle(StringIds::error_cant_change_land_type);
-                    map_pos pointA = { _mapSelectionAX, _mapSelectionAY };
-                    map_pos pointB = { _mapSelectionBX, _mapSelectionBY };
+                    Pos2 pointA = { _mapSelectionAX, _mapSelectionAY };
+                    Pos2 pointB = { _mapSelectionBX, _mapSelectionBY };
 
                     GameCommands::do_24(pointA, pointB, _lastSelectedLand, GameCommandFlag::apply);
                 }
@@ -1456,8 +1456,8 @@ namespace OpenLoco::Ui::Windows::Terraform
         {
             Common::sub_4A69DD();
             GameCommands::setErrorTitle(StringIds::error_cant_raise_water_here);
-            map_pos pointA = { _mapSelectionAX, _mapSelectionAY };
-            map_pos pointB = { _mapSelectionBX, _mapSelectionBY };
+            Pos2 pointA = { _mapSelectionAX, _mapSelectionAY };
+            Pos2 pointB = { _mapSelectionBX, _mapSelectionBY };
 
             GameCommands::do_28(pointA, pointB, flags);
         }
@@ -1466,8 +1466,8 @@ namespace OpenLoco::Ui::Windows::Terraform
         {
             Common::sub_4A69DD();
             GameCommands::setErrorTitle(StringIds::error_cant_raise_water_here);
-            map_pos pointA = { _mapSelectionAX, _mapSelectionAY };
-            map_pos pointB = { _mapSelectionBX, _mapSelectionBY };
+            Pos2 pointA = { _mapSelectionAX, _mapSelectionAY };
+            Pos2 pointB = { _mapSelectionBX, _mapSelectionBY };
 
             GameCommands::do_29(pointA, pointB, flags);
         }
@@ -1844,7 +1844,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                     _lastSelectedWall = static_cast<uint8_t>(rowInfo);
 
                     int32_t pan = (self->width >> 1) + self->x;
-                    OpenLoco::Map::map_pos3 loc = { xPos, yPos, static_cast<int16_t>(pan) };
+                    OpenLoco::Map::Pos3 loc = { xPos, yPos, static_cast<int16_t>(pan) };
                     Audio::playSound(Audio::sound_id::click_down, loc, pan);
                     self->saved_view.mapX = -16;
                     self->invalidate();

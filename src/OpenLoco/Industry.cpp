@@ -124,7 +124,7 @@ namespace OpenLoco
                 sub_45329B(tile_loop.current());
 
                 // loc_453318
-                if (tile_loop.next() == map_pos())
+                if (tile_loop.next() == Pos2())
                 {
                     sub_453354();
                     break;
@@ -134,7 +134,7 @@ namespace OpenLoco
     }
 
     // 0x0045329B
-    void Industry::sub_45329B(const map_pos& pos)
+    void Industry::sub_45329B(const Pos2& pos)
     {
         const auto& surface = TileManager::get(pos).surface();
         if (surface != nullptr)
@@ -187,7 +187,7 @@ namespace OpenLoco
             {
                 if (prng.randBool())
                 {
-                    Map::map_pos randTile{ static_cast<coord_t>(x + (prng.randNext(-15, 16) * 32)), static_cast<coord_t>(y + (prng.randNext(-15, 16) * 32)) };
+                    Map::Pos2 randTile{ static_cast<coord_t>(x + (prng.randNext(-15, 16) * 32)), static_cast<coord_t>(y + (prng.randNext(-15, 16) * 32)) };
                     uint8_t bl = obj->var_ED;
                     uint8_t bh = obj->var_EE;
                     if (obj->var_EF != 0xFF && prng.randBool())
@@ -202,7 +202,7 @@ namespace OpenLoco
         }
     }
 
-    void Industry::sub_454A43(const map_pos& pos, uint8_t bl, uint8_t bh, uint8_t dl)
+    void Industry::sub_454A43(const Pos2& pos, uint8_t bl, uint8_t bh, uint8_t dl)
     {
         registers regs;
         regs.bl = bl;

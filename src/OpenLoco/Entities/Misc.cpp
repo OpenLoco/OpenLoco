@@ -23,7 +23,7 @@ namespace OpenLoco
     }
 
     // 0x0044080C
-    Exhaust* Exhaust::create(Map::map_pos3 loc, uint8_t type)
+    Exhaust* Exhaust::create(Map::Pos3 loc, uint8_t type)
     {
         if ((uint16_t)loc.x > 12287 || (uint16_t)loc.y > 12287)
             return nullptr;
@@ -57,7 +57,7 @@ namespace OpenLoco
     }
 
     // 0x00440BEB
-    Smoke* Smoke::create(Map::map_pos3 loc)
+    Smoke* Smoke::create(Map::Pos3 loc)
     {
         auto t = static_cast<Smoke*>(EntityManager::createEntityMisc());
         if (t != nullptr)
@@ -79,7 +79,7 @@ namespace OpenLoco
     // company : updatingCompanyId global
     // loc : ax, cx, dx
     // amount : ebx
-    MoneyEffect* MoneyEffect::create(const Map::map_pos3& loc, const CompanyId_t company, const currency32_t amount)
+    MoneyEffect* MoneyEffect::create(const Map::Pos3& loc, const CompanyId_t company, const currency32_t amount)
     {
         if (isTitleMode())
         {

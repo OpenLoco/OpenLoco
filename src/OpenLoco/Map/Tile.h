@@ -28,10 +28,10 @@ namespace OpenLoco::Map
     };
 
     // 0x004F9296, 0x4F9298
-    constexpr map_pos offsets[4] = { { 0, 0 }, { 0, 32 }, { 32, 32 }, { 32, 0 } };
+    constexpr Pos2 offsets[4] = { { 0, 0 }, { 0, 32 }, { 32, 32 }, { 32, 0 } };
 
     Ui::viewport_pos coordinate3dTo2d(int16_t x, int16_t y, int16_t z, int rotation);
-    map_pos rotate2dCoordinate(map_pos pos, uint8_t rotation);
+    Pos2 rotate2dCoordinate(Pos2 pos, uint8_t rotation);
 
     enum class element_type
     {

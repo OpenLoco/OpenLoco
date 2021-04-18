@@ -107,11 +107,11 @@ namespace OpenLoco::Ui::Windows::Map
 
     static window_event_list events;
 
-    static map_pos mapWindowPosToLocation(xy32 pos)
+    static Pos2 mapWindowPosToLocation(xy32 pos)
     {
         pos.x = ((pos.x + 8) - map_columns) / 2;
         pos.y = ((pos.y + 8)) / 2;
-        map_pos location = { static_cast<coord_t>(pos.y - pos.x), static_cast<coord_t>(pos.x + pos.y) };
+        Pos2 location = { static_cast<coord_t>(pos.y - pos.x), static_cast<coord_t>(pos.x + pos.y) };
         location.x *= tile_size;
         location.y *= tile_size;
 
@@ -130,7 +130,7 @@ namespace OpenLoco::Ui::Windows::Map
         return { 0, 0 }; // unreachable
     }
 
-    static xy32 locationToMapWindowPos(map_pos pos)
+    static xy32 locationToMapWindowPos(Pos2 pos)
     {
         int32_t x = pos.x;
         int32_t y = pos.y;
@@ -379,7 +379,7 @@ namespace OpenLoco::Ui::Windows::Map
     }
 
     // 0x0046B9D4
-    static void moveMainViewToMapView(map_pos pos)
+    static void moveMainViewToMapView(Pos2 pos)
     {
         auto z = TileManager::getHeight(pos).landHeight;
         auto window = WindowManager::getMainWindow();
@@ -1020,7 +1020,7 @@ namespace OpenLoco::Ui::Windows::Map
     }
 
     // 0x0046C294
-    static std::pair<xy32, xy32> drawRouteLine(Gfx::drawpixelinfo_t* dpi, xy32 startPos, xy32 endPos, map_pos stationPos, uint8_t colour)
+    static std::pair<xy32, xy32> drawRouteLine(Gfx::drawpixelinfo_t* dpi, xy32 startPos, xy32 endPos, Pos2 stationPos, uint8_t colour)
     {
         auto newStartPos = locationToMapWindowPos({ stationPos.x, stationPos.y });
 
@@ -1096,7 +1096,7 @@ namespace OpenLoco::Ui::Windows::Map
             {
                 auto* stationOrder = static_cast<Vehicles::OrderStation*>(&order);
                 auto station = StationManager::get(stationOrder->getStation());
-                map_pos stationPos = { station->x, station->y };
+                Pos2 stationPos = { station->x, station->y };
 
                 auto routePos = drawRouteLine(dpi, startPos, endPos, stationPos, *colour);
                 startPos = routePos.first;

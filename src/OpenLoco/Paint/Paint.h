@@ -130,7 +130,7 @@ namespace OpenLoco::Paint
         // TileElement or Entity
         void setCurrentItem(void* item) { _currentItem = item; }
         void setItemType(const Ui::ViewportInteraction::InteractionItem type) { _itemType = type; }
-        void setEntityPosition(const Map::map_pos& pos);
+        void setEntityPosition(const Map::Pos2& pos);
 
         /*      
          * @param amount    @<eax>
@@ -165,7 +165,7 @@ namespace OpenLoco::Paint
          * @param boundBoxLength_y @<si>
          * @param boundBoxLength_z @<ah>
          */
-        void addToPlotListAsParent(uint32_t imageId, const Map::map_pos3& offset, const Map::map_pos3& boundBoxSize);
+        void addToPlotListAsParent(uint32_t imageId, const Map::Pos3& offset, const Map::Pos3& boundBoxSize);
 
         /*      
          * @param rotation @<ebp>
@@ -180,7 +180,7 @@ namespace OpenLoco::Paint
          * @param boundBoxOffset_y @<0xE3F0A2>
          * @param boundBoxOffset_z @<0xE3F0A4>
          */
-        void addToPlotListAsParent(uint32_t imageId, const Map::map_pos3& offset, const Map::map_pos3& boundBoxOffset, const Map::map_pos3& boundBoxSize);
+        void addToPlotListAsParent(uint32_t imageId, const Map::Pos3& offset, const Map::Pos3& boundBoxOffset, const Map::Pos3& boundBoxSize);
 
         /*      
          * @param rotation @<ebp>
@@ -195,13 +195,13 @@ namespace OpenLoco::Paint
          * @param boundBoxOffset_y @<0xE3F0A2>
          * @param boundBoxOffset_z @<0xE3F0A4>
          */
-        void addToPlotList4FD200(uint32_t imageId, const Map::map_pos3& offset, const Map::map_pos3& boundBoxOffset, const Map::map_pos3& boundBoxSize);
+        void addToPlotList4FD200(uint32_t imageId, const Map::Pos3& offset, const Map::Pos3& boundBoxOffset, const Map::Pos3& boundBoxSize);
         /*      
          * @param imageId  @<ebx>
          * @param offset_x @<ax>
          * @param offset_y @<cx>
          */
-        void attachToPrevious(uint32_t imageId, const Map::map_pos& offset);
+        void attachToPrevious(uint32_t imageId, const Map::Pos2& offset);
 
     private:
         void generateTilesAndEntities(GenerationParameters&& p);
@@ -222,7 +222,7 @@ namespace OpenLoco::Paint
         inline static Interop::loco_global<void*, 0x00E3F0B4> _currentItem;
         inline static Interop::loco_global<PaintStringStruct*, 0x00E40118> _paintStringHead;
         inline static Interop::loco_global<PaintStringStruct*, 0x00E4011C> _lastPaintString;
-        inline static Interop::loco_global<Map::map_pos, 0x00E3F0B0> _mapPosition;
+        inline static Interop::loco_global<Map::Pos2, 0x00E3F0B0> _mapPosition;
         uint8_t currentRotation; // new field set from 0x00E3F0B8 but split out into this struct as seperate item
 
         // From OpenRCT2 equivalent fields not found yet or new

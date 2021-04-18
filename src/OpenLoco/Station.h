@@ -88,7 +88,7 @@ namespace OpenLoco
         TownId_t town{};                                // 0x2C
         StationCargoStats cargo_stats[max_cargo_stats]; // 0x2E
         uint16_t stationTileSize{};                     // 0x1CE
-        map_pos3 stationTiles[80];                      // 0x1D0
+        Pos3 stationTiles[80];                          // 0x1D0
         uint8_t var_3B0{};
         uint8_t var_3B1{};
         uint16_t var_3B2{};
@@ -101,7 +101,7 @@ namespace OpenLoco
         bool empty() const { return name == StringIds::null; }
         StationId_t id() const;
         void update();
-        uint32_t calcAcceptedCargo(CargoSearchState& cargoSearchState, const map_pos& location = { -1, -1 }, const uint32_t filter = 0);
+        uint32_t calcAcceptedCargo(CargoSearchState& cargoSearchState, const Pos2& location = { -1, -1 }, const uint32_t filter = 0);
         void sub_48F7D1();
         char* getStatusString(char* buffer);
         bool updateCargo();

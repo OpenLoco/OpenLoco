@@ -317,7 +317,7 @@ namespace OpenLoco::Ui
             return (flags & (1 << 15)) != 0;
         }
 
-        OpenLoco::Map::map_pos3 getPos() const
+        OpenLoco::Map::Pos3 getPos() const
         {
             if (isThingView())
                 return {};
@@ -472,7 +472,7 @@ namespace OpenLoco::Ui
         void viewportSetUndergroundFlag(bool underground, Ui::viewport* vp);
         void viewportGetMapCoordsByCursor(int16_t* map_x, int16_t* map_y, int16_t* offset_x, int16_t* offset_y);
         void moveWindowToLocation(viewport_pos pos);
-        void viewportCentreOnTile(const Map::map_pos3& loc);
+        void viewportCentreOnTile(const Map::Pos3& loc);
         void viewportCentreTileAroundCursor(int16_t map_x, int16_t map_y, int16_t offset_x, int16_t offset_y);
         void viewportFocusOnEntity(uint16_t targetEntity);
         bool viewportIsFocusedOnEntity() const;
@@ -521,7 +521,7 @@ namespace OpenLoco::Ui
     };
     static_assert(sizeof(window) == 0x88E);
 
-    Map::map_pos viewportCoordToMapCoord(int16_t x, int16_t y, int16_t z, int32_t rotation);
-    std::optional<Map::map_pos> screenGetMapXyWithZ(const xy32& mouse, const int16_t z);
+    Map::Pos2 viewportCoordToMapCoord(int16_t x, int16_t y, int16_t z, int32_t rotation);
+    std::optional<Map::Pos2> screenGetMapXyWithZ(const xy32& mouse, const int16_t z);
 #pragma pack(pop)
 }

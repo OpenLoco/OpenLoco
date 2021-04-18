@@ -310,7 +310,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 continue;
             }
 
-            map_pos pos = { roadPart.x, roadPart.y };
+            Pos2 pos = { roadPart.x, roadPart.y };
 
             pos = rotate2dCoordinate(pos, rotation);
 
@@ -503,7 +503,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             {
                 continue;
             }
-            map_pos pos = { trackPart.x, trackPart.y };
+            Pos2 pos = { trackPart.x, trackPart.y };
 
             pos = rotate2dCoordinate(pos, rotation);
 
@@ -1444,7 +1444,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     // 0x004A2395
-    static std::optional<int16_t> getConstructionHeight(const map_pos& mapPos, int16_t height, bool isSelected)
+    static std::optional<int16_t> getConstructionHeight(const Pos2& mapPos, int16_t height, bool isSelected)
     {
         auto tile = TileManager::get(mapPos);
 
@@ -1538,19 +1538,19 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     // regs.bx = y;
     // returns
     // regs.ax = 0x8000 - probably in case of failure
-    static map_pos sub_460781(int16_t x, int16_t y)
+    static Pos2 sub_460781(int16_t x, int16_t y)
     {
         registers regs;
         regs.ax = x;
         regs.bx = y;
         call(0x00460781, regs);
 
-        map_pos mapPos = { regs.ax, regs.bx };
+        Pos2 mapPos = { regs.ax, regs.bx };
 
         return mapPos;
     }
 
-    static void constructionLoop(map_pos mapPos, uint32_t maxRetries, int16_t height)
+    static void constructionLoop(Pos2 mapPos, uint32_t maxRetries, int16_t height)
     {
         while (true)
         {
@@ -1664,7 +1664,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             _mapSelectionFlags = _mapSelectionFlags & ~((1 << 2) | (1 << 1) | (1 << 0));
 
             auto height = sub_478361(x, y);
-            map_pos mapPos;
+            Pos2 mapPos;
 
             if (height)
             {
@@ -1764,7 +1764,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             _mapSelectionFlags = _mapSelectionFlags & ~((1 << 2) | (1 << 1) | (1 << 0));
 
             auto height = sub_4A4011(x, y);
-            map_pos mapPos;
+            Pos2 mapPos;
 
             if (height)
             {
@@ -2021,7 +2021,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 const auto& roadPiece = OpenLoco::Map::TrackData::getRoadPiece(_lastSelectedTrackPieceId);
                 const auto& lastRoadPart = roadPiece.back();
 
-                map_pos3 pos3D = { lastRoadPart.x, lastRoadPart.y, lastRoadPart.z };
+                Pos3 pos3D = { lastRoadPart.x, lastRoadPart.y, lastRoadPart.z };
 
                 if (lastRoadPart.flags & OpenLoco::Map::TrackData::PreviewTrackFlags::unused)
                 {
@@ -2071,7 +2071,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 const auto& trackPiece = OpenLoco::Map::TrackData::getTrackPiece(_lastSelectedTrackPieceId);
                 const auto& lastTrackPart = trackPiece.back();
 
-                map_pos3 pos3D = { lastTrackPart.x, lastTrackPart.y, lastTrackPart.z };
+                Pos3 pos3D = { lastTrackPart.x, lastTrackPart.y, lastTrackPart.z };
 
                 if (lastTrackPart.flags & OpenLoco::Map::TrackData::PreviewTrackFlags::unused)
                 {

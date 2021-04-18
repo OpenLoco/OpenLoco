@@ -159,8 +159,8 @@ namespace OpenLoco
         }
     };
 
-    static void sub_491BF5(const map_pos& pos, const uint8_t flag);
-    static station_element* getStationElement(const map_pos3& pos);
+    static void sub_491BF5(const Pos2& pos, const uint8_t flag);
+    static station_element* getStationElement(const Pos3& pos);
 
     StationId_t Station::id() const
     {
@@ -239,7 +239,7 @@ namespace OpenLoco
     // 0x00491FE0
     // WARNING: this may be called with station (ebp) = -1
     // filter only used if location.x != -1
-    uint32_t Station::calcAcceptedCargo(CargoSearchState& cargoSearchState, const map_pos& location, const uint32_t filter)
+    uint32_t Station::calcAcceptedCargo(CargoSearchState& cargoSearchState, const Pos2& location, const uint32_t filter)
     {
         cargoSearchState.byte_112C7F2(1);
         cargoSearchState.filter(0);
@@ -306,7 +306,7 @@ namespace OpenLoco
             {
                 if (cargoSearchState.mapHas2(tx, ty))
                 {
-                    auto pos = map_pos(tx * tile_size, ty * tile_size);
+                    auto pos = Pos2(tx * tile_size, ty * tile_size);
                     auto tile = TileManager::get(pos);
 
                     for (auto& el : tile)
@@ -425,7 +425,7 @@ namespace OpenLoco
         return acceptedCargos;
     }
 
-    static void setStationCatchmentRegion(CargoSearchState& cargoSearchState, TilePos minPos, TilePos maxPos, const uint8_t flags);
+    static void setStationCatchmentRegion(CargoSearchState& cargoSearchState, TilePos2 minPos, TilePos2 maxPos, const uint8_t flags);
 
     // 0x00491D70
     // catchment flag should not be shifted (1, 2, 3, 4) and NOT (1 << 0, 1 << 1)
@@ -456,8 +456,8 @@ namespace OpenLoco
                 {
                     auto airportObject = ObjectManager::get<AirportObject>(stationElement->objectId());
 
-                    map_pos minPos(airportObject->min_x * 32, airportObject->min_y * 32);
-                    map_pos maxPos(airportObject->max_x * 32, airportObject->max_y * 32);
+                    Pos2 minPos(airportObject->min_x * 32, airportObject->min_y * 32);
+                    Pos2 maxPos(airportObject->max_x * 32, airportObject->max_y * 32);
 
                     minPos = rotate2dCoordinate(minPos, stationElement->rotation());
                     maxPos = rotate2dCoordinate(maxPos, stationElement->rotation());
@@ -477,8 +477,8 @@ namespace OpenLoco
                         std::swap(minPos.y, maxPos.y);
                     }
 
-                    TilePos tileMinPos(minPos);
-                    TilePos tileMaxPos(maxPos);
+                    TilePos2 tileMinPos(minPos);
+                    TilePos2 tileMaxPos(maxPos);
 
                     tileMinPos.x -= catchmentSize;
                     tileMinPos.y -= catchmentSize;
@@ -490,7 +490,7 @@ namespace OpenLoco
                 break;
                 case StationType::docks:
                 {
-                    TilePos minPos(pos);
+                    TilePos2 minPos(pos);
                     auto maxPos = minPos;
 
                     minPos.x -= catchmentSize;
@@ -504,7 +504,7 @@ namespace OpenLoco
                 break;
                 default:
                 {
-                    TilePos minPos(pos);
+                    TilePos2 minPos(pos);
                     auto maxPos = minPos;
 
                     minPos.x -= catchmentSize;
@@ -744,7 +744,7 @@ namespace OpenLoco
     }
 
     // 0x0048F6D4
-    static station_element* getStationElement(const map_pos3& pos)
+    static station_element* getStationElement(const Pos3& pos)
     {
         auto tile = TileManager::get(pos.x, pos.y);
         auto baseZ = pos.z / 4;
@@ -776,7 +776,7 @@ namespace OpenLoco
     }
 
     // 0x00491EDC
-    static void setStationCatchmentRegion(CargoSearchState& cargoSearchState, TilePos minPos, TilePos maxPos, const uint8_t flag)
+    static void setStationCatchmentRegion(CargoSearchState& cargoSearchState, TilePos2 minPos, TilePos2 maxPos, const uint8_t flag)
     {
         minPos.x = std::max(minPos.x, static_cast<coord_t>(0));
         minPos.y = std::max(minPos.y, static_cast<coord_t>(0));
@@ -792,9 +792,9 @@ namespace OpenLoco
     }
 
     // 0x00491BF5
-    static void sub_491BF5(const map_pos& pos, const uint8_t flag)
+    static void sub_491BF5(const Pos2& pos, const uint8_t flag)
     {
-        TilePos minPos(pos);
+        TilePos2 minPos(pos);
         auto maxPos = minPos;
         maxPos.x += catchmentSize;
         maxPos.y += catchmentSize;

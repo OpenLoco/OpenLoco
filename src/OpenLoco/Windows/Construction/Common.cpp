@@ -200,7 +200,7 @@ namespace OpenLoco::Ui::Windows::Construction
     }
 
     // 0x004A0EAD
-    window* openAtTrack(window* main, track_element* track, const map_pos pos)
+    window* openAtTrack(window* main, track_element* track, const Pos2 pos)
     {
         registers regs{};
         regs.esi = reinterpret_cast<uint32_t>(main);
@@ -213,7 +213,7 @@ namespace OpenLoco::Ui::Windows::Construction
     }
 
     // 0x004A147F
-    window* openAtRoad(window* main, road_element* track, const map_pos pos)
+    window* openAtRoad(window* main, road_element* track, const Pos2 pos)
     {
         registers regs{};
         regs.esi = reinterpret_cast<uint32_t>(main);
@@ -226,7 +226,7 @@ namespace OpenLoco::Ui::Windows::Construction
     }
 
     // 0x004A1303
-    void setToTrackExtra(window* main, track_element* track, const uint8_t bh, const map_pos pos)
+    void setToTrackExtra(window* main, track_element* track, const uint8_t bh, const Pos2 pos)
     {
         registers regs{};
         regs.esi = reinterpret_cast<uint32_t>(main);
@@ -238,7 +238,7 @@ namespace OpenLoco::Ui::Windows::Construction
     }
 
     // 0x004A13C1
-    void setToRoadExtra(window* main, road_element* road, const uint8_t bh, const map_pos pos)
+    void setToRoadExtra(window* main, road_element* road, const uint8_t bh, const Pos2 pos)
     {
         registers regs{};
         regs.esi = reinterpret_cast<uint32_t>(main);

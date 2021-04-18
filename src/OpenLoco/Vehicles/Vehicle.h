@@ -273,7 +273,7 @@ namespace OpenLoco::Vehicles
         std::pair<Status, Speed16> airplaneGetNewStatus();
         uint8_t airportGetNextMovementEdge(uint8_t curEdge);
         std::tuple<uint32_t, uint16_t, uint8_t> sub_427122();
-        std::pair<uint32_t, Map::map_pos3> airportGetMovementEdgeTarget(StationId_t targetStation, uint8_t curEdge);
+        std::pair<uint32_t, Map::Pos3> airportGetMovementEdgeTarget(StationId_t targetStation, uint8_t curEdge);
         bool updateWater();
         uint32_t getVehicleTotalLength();
         void tryCreateInitialMovementSound();
@@ -281,16 +281,16 @@ namespace OpenLoco::Vehicles
         void checkIfAtOrderStation();
         void updateLastJourneyAverageSpeed();
         void beginUnloading();
-        void movePlaneTo(const Map::map_pos3& newLoc, const uint8_t newYaw, const Pitch newPitch);
+        void movePlaneTo(const Map::Pos3& newLoc, const uint8_t newYaw, const Pitch newPitch);
         uint32_t updateWaterMotion(uint32_t flags);
-        void moveBoatTo(const Map::map_pos3& loc, const uint8_t yaw, const Pitch pitch);
+        void moveBoatTo(const Map::Pos3& loc, const uint8_t yaw, const Pitch pitch);
         void updateUnloadCargo();
         bool updateLoadCargo();
         void beginNewJourney();
         void advanceToNextRoutableOrder();
         Status sub_427BF2();
         void produceLeavingDockSound();
-        std::tuple<StationId_t, Map::map_pos, Map::map_pos3> sub_427FC9();
+        std::tuple<StationId_t, Map::Pos2, Map::Pos3> sub_427FC9();
         void produceTouchdownAirportSound();
         uint8_t sub_4AA36A();
         void sub_4AD778();
