@@ -9,7 +9,7 @@ using namespace OpenLoco;
 using namespace OpenLoco::Interop;
 
 // 0x0046FC83
-void EntityBase::moveTo(Map::Pos3 loc)
+void EntityBase::moveTo(const Map::Pos3& loc)
 {
     registers regs;
     regs.ax = loc.x;

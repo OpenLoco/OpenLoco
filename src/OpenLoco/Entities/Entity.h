@@ -76,7 +76,7 @@ namespace OpenLoco
         CompanyId_t owner; // 0x21
         string_id name;    // 0x22, combined with ordinalNumber on vehicles
 
-        void moveTo(Map::Pos3 loc);
+        void moveTo(const Map::Pos3& loc);
         void invalidateSprite();
 
         Vehicles::VehicleBase* asVehicle() const { return asBase<Vehicles::VehicleBase, EntityBaseType::vehicle>(); }
