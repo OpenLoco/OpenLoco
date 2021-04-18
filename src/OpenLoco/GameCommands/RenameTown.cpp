@@ -13,8 +13,6 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::GameCommands
 {
-    static loco_global<uint8_t, 0x009C68EA> gGameCommandExpenditureType; // premultiplied by 4
-
     /**
      * 0x00455029
      * Renames a particular town.
@@ -32,7 +30,7 @@ namespace OpenLoco::GameCommands
      */
     static uint32_t renameTown(const uint8_t flags, TownId_t townId, int16_t index, uint32_t buffer0, uint32_t buffer1, uint32_t buffer2)
     {
-        gGameCommandExpenditureType = static_cast<uint8_t>(ExpenditureType::Miscellaneous) * 4;
+        GameCommands::setExpenditureType(ExpenditureType::Miscellaneous);
 
         // Keep track of the town id over several calls.
         static TownId_t _townId{};

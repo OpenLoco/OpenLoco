@@ -8,6 +8,8 @@
 
 using namespace OpenLoco::Interop;
 
+enum ExpenditureType : uint8_t;
+
 namespace OpenLoco::Vehicles
 {
     struct VehicleHead;
@@ -667,4 +669,6 @@ namespace OpenLoco::GameCommands
     void setErrorText(const string_id message);
     string_id getErrorText();
     void setErrorTitle(const string_id title);
+    ExpenditureType getExpenditureType();
+    void setExpenditureType(const ExpenditureType type);
 }

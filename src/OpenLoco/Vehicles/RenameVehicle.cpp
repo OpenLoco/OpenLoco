@@ -13,7 +13,6 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Vehicles
 {
-    static loco_global<uint8_t, 0x009C68EA> gGameCommandExpenditureType; // premultiplied by 4
     static loco_global<uint16_t, 0x0113621D> _113621D;
 
     /**
@@ -31,8 +30,9 @@ namespace OpenLoco::Vehicles
      */
     static uint32_t rename(const uint8_t flags, EntityId_t headId, int16_t index, uint32_t buffer0, uint32_t buffer1, uint32_t buffer2)
     {
+        GameCommands::setExpenditureType(ExpenditureType::TrainRunningCosts);
+
         static loco_global<EntityId_t, 0x0113621D> _headId_113621D;
-        gGameCommandExpenditureType = static_cast<uint8_t>(ExpenditureType::TrainRunningCosts) * 4;
         if (index == 1)
         {
             _headId_113621D = headId;
