@@ -2280,7 +2280,7 @@ namespace OpenLoco::Ui::Vehicle
                 i++;
             }
 
-            i = 0;
+            i = 1;
             for (auto& unk : _F2494A)
             {
                 if (unk.orderOffset == static_cast<uint32_t>(-1))
@@ -2310,7 +2310,7 @@ namespace OpenLoco::Ui::Vehicle
 
                     unk.frame.left[zoom] = (pos.x - midX) >> zoom;
                     unk.frame.right[zoom] = (pos.x + midX) >> zoom;
-                    unk.frame.top[zoom] = (pos.y - midFirstLineY) >> zoom;
+                    unk.frame.top[zoom] = (pos.y - midFirstLineY + numberHeight) >> zoom;
                     unk.frame.bottom[zoom] = (pos.y + midFirstLineY + numberHeight) >> zoom;
                 }
                 i++;
