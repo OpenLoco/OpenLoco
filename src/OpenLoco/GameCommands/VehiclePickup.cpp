@@ -2,6 +2,7 @@
 #include "../Interop/Interop.hpp"
 #include "../Management/Expenditures.h"
 #include "../Types.hpp"
+#include "../Utility/Prng.hpp"
 #include "../Vehicles/Vehicle.h"
 #include "GameCommands.h"
 
@@ -9,11 +10,14 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::GameCommands
 {
+    static loco_global<Utility::prng, 0x00525E20> _prng;
+
     // 0x0048B15B
     static void playPickupSound(Vehicles::Vehicle2* veh2)
     {
         const auto pos = Map::map_pos3(veh2->x, veh2->y, veh2->z);
-        Audio::playSound(Audio::sound_id::vehicle_pickup, pos, -1000, 24098);
+        const auto frequency = 20003 + (_prng->randNext() & 0xFFF);
+        Audio::playSound(Audio::sound_id::vehicle_pickup, pos, -1000, frequency);
     }
 
     // 0x004B0826
