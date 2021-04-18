@@ -931,6 +931,7 @@ namespace OpenLoco::Ui::PromptBrowse
             fs::path lastDirectory = fs::u8path(&_directory[0]);
             Config::getNew().last_save_path = lastDirectory.u8string();
             Config::writeNewConfig();
+            Environment::resolvePaths();
 
             // Copy directory and filename to buffer.
             strncpy(&_directory[0], path.u8string().c_str(), std::size(_directory));
