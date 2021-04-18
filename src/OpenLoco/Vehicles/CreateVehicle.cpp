@@ -35,7 +35,6 @@ namespace OpenLoco::Vehicles
     constexpr EntityId_t allocated_but_free_routing_station = -2; // Indicates that this array is allocated to a vehicle but no station has been set.
 
     static loco_global<CompanyId_t, 0x009C68EB> _updating_company_id;
-    static loco_global<uint8_t, 0x009C68EA> gGameCommandExpenditureType; // premultiplied by 4
     static loco_global<uint8_t, 0x009C68EE> _errorCompanyId;
     static loco_global<Map::tile_element*, 0x009C68D0> _9C68D0;
     static loco_global<ColourScheme, 0x01136140> _1136140; // primary colour
@@ -927,7 +926,7 @@ namespace OpenLoco::Vehicles
     // 0x004AE5E4
     static uint32_t create(const uint8_t flags, const uint16_t vehicleTypeId, const uint16_t vehicleThingId)
     {
-        gGameCommandExpenditureType = static_cast<uint8_t>(ExpenditureType::VehiclePurchases) * 4;
+        GameCommands::setExpenditureType(ExpenditureType::VehiclePurchases);
         _backupVeh0 = reinterpret_cast<VehicleHead*>(-1);
         if (vehicleThingId == (uint16_t)-1)
         {

@@ -8,6 +8,8 @@
 
 using namespace OpenLoco::Interop;
 
+enum ExpenditureType : uint8_t;
+
 namespace OpenLoco::Vehicles
 {
     struct VehicleHead;
@@ -662,9 +664,11 @@ namespace OpenLoco::GameCommands
     uint32_t togglePause(uint8_t flags);
     void togglePause(registers& regs);
 
-    const Map::map_pos3& getPostion();
+    const Map::map_pos3& getPosition();
     void setPosition(const Map::map_pos3& pos);
     void setErrorText(const string_id message);
     string_id getErrorText();
     void setErrorTitle(const string_id title);
+    ExpenditureType getExpenditureType();
+    void setExpenditureType(const ExpenditureType type);
 }
