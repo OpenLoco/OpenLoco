@@ -100,16 +100,16 @@ namespace OpenLoco::Math::Trigonometry
         84
     };
 
-    constexpr auto computeXYMagnitude(int16_t height, Pitch pitch)
+    constexpr auto computeXYMagnitude(int32_t height, Pitch pitch)
     {
         return (pitchHorizontalFactor[static_cast<uint8_t>(pitch)] * height) / 256;
     }
 
-    constexpr auto computeXYVector(int16_t magnitude, uint8_t yaw)
+    constexpr auto computeXYVector(int32_t magnitude, uint8_t yaw)
     {
         return (yawToDirectionVector[yaw] * magnitude) / 256;
     }
-    constexpr auto computeXYVector(int16_t height, Pitch pitch, uint8_t yaw)
+    constexpr auto computeXYVector(int32_t height, Pitch pitch, uint8_t yaw)
     {
         return computeXYVector(computeXYMagnitude(height, pitch), yaw);
     }
