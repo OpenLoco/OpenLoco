@@ -681,6 +681,9 @@ namespace OpenLoco::GameCommands
     uint32_t togglePause(uint8_t flags);
     void togglePause(registers& regs);
 
+    // Defined in GameCommands/VehiclePickup.cpp
+    void vehiclePickup(registers& regs);
+
     const Map::Pos3& getPosition();
     void setPosition(const Map::Pos3& pos);
     void setErrorText(const string_id message);

@@ -98,79 +98,6 @@ namespace OpenLoco::Vehicles
         return false;
     }
 
-    static bool sub_4B0BDD(VehicleHead* const head)
-    {
-        switch (head->status)
-        {
-            case Status::crashed:
-                GameCommands::setErrorText(StringIds::vehicle_has_crashed);
-                return false;
-            case Status::stuck:
-                GameCommands::setErrorText(StringIds::vehicle_is_stuck);
-                return false;
-            case Status::brokenDown:
-                GameCommands::setErrorText(StringIds::vehicle_has_broken_down);
-                return false;
-            default:
-            {
-                Vehicle train(head);
-                if (head->vehicleType == VehicleType::aircraft || head->vehicleType == VehicleType::ship)
-                {
-                    if (train.veh2->var_73 & Flags73::isBrokenDown)
-                    {
-                        GameCommands::setErrorText(StringIds::vehicle_has_broken_down);
-                        return false;
-                    }
-
-                    if (head->tile_x == -1)
-                    {
-                        return true;
-                    }
-
-                    if (head->status != Status::loading && head->status != Status::stopped)
-                    {
-                        GameCommands::setErrorText(StringIds::vehicle_must_be_stopped);
-                        return false;
-                    }
-
-                    if (train.veh2->currentSpeed == 0.0_mph)
-                    {
-                        return true;
-                    }
-                    GameCommands::setErrorText(StringIds::vehicle_must_be_stopped);
-                    return false;
-                }
-                else
-                {
-
-                    if (head->tile_x == -1)
-                    {
-                        return true;
-                    }
-
-                    if (train.veh2->currentSpeed == 0.0_mph)
-                    {
-                        return true;
-                    }
-                    if (train.veh1->var_3C <= 13961)
-                    {
-                        return true;
-                    }
-                    GameCommands::setErrorText(StringIds::vehicle_must_be_stopped);
-                    return false;
-                }
-            }
-        }
-    }
-
-    // 0x004B08DD
-    static void liftUpVehicle(VehicleHead* const head)
-    {
-        registers regs{};
-        regs.esi = reinterpret_cast<uint32_t>(head);
-        call(0x004B08DD, regs);
-    }
-
     template<typename T>
     static T* createVehicleThing()
     {
@@ -866,7 +793,7 @@ namespace OpenLoco::Vehicles
             return FAILURE;
         }
 
-        if (!sub_4B0BDD(train.head))
+        if (!train.head->canBeModified())
         {
             return FAILURE;
         }
@@ -891,7 +818,7 @@ namespace OpenLoco::Vehicles
                 _backup2C = train.head->var_2C;
                 _backup2E = train.head->var_2E;
                 _backupVeh0 = train.head;
-                liftUpVehicle(train.head);
+                train.head->liftUpVehicle();
             }
 
             if (createCar(train.head, vehicleTypeId))
