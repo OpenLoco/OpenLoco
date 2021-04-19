@@ -223,7 +223,7 @@
     <ClInclude Include="Entities\EntityManager.h" />
     <ClInclude Include="Entities\Misc.h" />
     <ClInclude Include="Environment.h" />
-    <ClInclude Include="GameCommands\Cheat.cpp" />
+    <ClInclude Include="GameCommands\Cheat.h" />
     <ClInclude Include="GameCommands\GameCommands.h" />
     <ClInclude Include="Graphics\Colour.h" />
     <ClInclude Include="Graphics\Gfx.h" />
