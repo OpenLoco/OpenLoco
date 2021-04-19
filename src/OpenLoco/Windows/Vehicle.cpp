@@ -2202,7 +2202,7 @@ namespace OpenLoco::Ui::Vehicle
         static_assert(sizeof(UnkF2494A) == 0x26);
 #pragma pack(pop)
 
-        static loco_global<UnkF2494A[64], 0x00F2494A> _F2494A;
+        static loco_global<UnkF2494A[63], 0x00F2494A> _F2494A;
 
         static Vehicles::OrderRingView getOrderTable(const Vehicles::VehicleHead* const head)
         {
