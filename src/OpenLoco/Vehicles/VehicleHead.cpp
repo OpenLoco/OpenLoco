@@ -2604,7 +2604,7 @@ namespace OpenLoco::Vehicles
                 if (!(industry->history_min_production[0] & (1ULL << cargo.type)))
                 {
                     industry->history_min_production[0] |= 1ULL << cargo.type;
-                    MessageManager::post(MessageType::workersCelebrate, owner, id, cargoStats.industry_id, cargo.type << 8);
+                    MessageManager::post(MessageType::workersCelebrate, owner, id, cargoStats.industry_id, cargoStats.industry_id | (cargo.type << 8));
                 }
 
                 auto* town = TownManager::get(industry->town);
@@ -2616,7 +2616,7 @@ namespace OpenLoco::Vehicles
             if (!(town->var_1A8 & (1ULL << cargo.type)))
             {
                 town->var_1A8 |= 1ULL << cargo.type;
-                MessageManager::post(MessageType::citizensCelebrate, owner, id, station->town, cargo.type << 8);
+                MessageManager::post(MessageType::citizensCelebrate, owner, id, station->town, station->town | (cargo.type << 8));
             }
 
             if (cargoStats.isAccepted())
