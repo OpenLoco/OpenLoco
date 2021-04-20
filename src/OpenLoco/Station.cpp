@@ -4,6 +4,7 @@
 #include "Interop/Interop.hpp"
 #include "Localisation/StringIds.h"
 #include "Map/TileManager.h"
+#include "Math/Bound.hpp"
 #include "MessageManager.h"
 #include "Objects/AirportObject.h"
 #include "Objects/BuildingObject.h"
@@ -523,7 +524,7 @@ namespace OpenLoco
     void Station::deliverCargoToTown(uint8_t cargoType, uint16_t cargoQuantity)
     {
         auto twn = TownManager::get(town);
-        twn->monthly_cargo_delivered[cargoType] = static_cast<uint16_t>(std::min<uint32_t>(std::numeric_limits<uint16_t>::max(), twn->monthly_cargo_delivered[cargoType] + cargoQuantity));
+        twn->monthly_cargo_delivered[cargoType] = Math::Bound::add(twn->monthly_cargo_delivered[cargoType], cargoQuantity);
     }
 
     // 0x0048F7D1
