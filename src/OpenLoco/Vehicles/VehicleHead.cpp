@@ -2573,7 +2573,7 @@ namespace OpenLoco::Vehicles
             auto* company = CompanyManager::get(owner);
             company->cargoUnitsTotalDelivered += cargo.qty;
 
-            auto cargoDist = std::min<uint32_t>(cargo.qty * tilesDistance, std::numeric_limits<uint32_t>::max());
+            auto cargoDist = static_cast<uint32_t>(std::min<uint64_t>(static_cast<uint64_t>(cargo.qty) * tilesDistance, std::numeric_limits<uint32_t>::max()));
             company->cargoUnitsTotalDistance += cargoDist;
 
             auto cargoPayment = CompanyManager::calculateDeliveredCargoPayment(cargo.type, cargo.qty, tilesDistance, cargo.numDays);
