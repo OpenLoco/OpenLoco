@@ -150,7 +150,7 @@ namespace OpenLoco::EntityManager
         {
             if (!ent.isEmpty())
             {
-                ent.moveTo({ ent.x, ent.y, ent.z });
+                ent.moveTo(ent.position);
             }
         }
     }

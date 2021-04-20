@@ -4,6 +4,7 @@
 #include "../Audio/Audio.h"
 #include "../CompanyManager.h"
 #include "../Entities/EntityManager.h"
+#include "../GameCommands/GameCommands.h"
 #include "../GameException.hpp"
 #include "../Gui.h"
 #include "../IndustryManager.h"
@@ -455,8 +456,11 @@ namespace OpenLoco::S5
 
         if (file->header.type == S5Type::objects)
         {
-            // 0x004423C1
-            // new_objects_installed_successfully
+            addr<0x00525F62, uint16_t>() = 0;
+            _loadErrorCode = 254;
+            _loadErrorMessage = StringIds::new_objects_installed_successfully;
+            // Throws!
+            GameCommands::returnToTitle();
         }
         else
         {
@@ -599,7 +603,7 @@ namespace OpenLoco::S5
                 }
                 else
                 {
-                    call(0x0043C0FD); // Important, should implement this
+                    GameCommands::returnToTitle();
                     return false;
                 }
             }
