@@ -2076,9 +2076,9 @@ namespace OpenLoco::Ui::Vehicle
                     args = FormatArguments();
                     args.push(str);
                     args.push<uint32_t>(veh1->lastIncome.cargoQtys[i]);
-                    args.push(veh1->lastIncome.cargoDistance[i]);
-                    args.push<uint16_t>(veh1->lastIncome.cargoAge[i]);
-                    args.push<currency32_t>(veh1->lastIncome.cargoProfit[i]);
+                    args.push(veh1->lastIncome.cargoDistances[i]);
+                    args.push<uint16_t>(veh1->lastIncome.cargoAges[i]);
+                    args.push<currency32_t>(veh1->lastIncome.cargoProfits[i]);
                     // {STRINGID} transported {INT16} blocks in {INT16} days = {CURRENCY32}
                     Gfx::drawString_495224(*context, pos.x + 4, pos.y, self->width - 12, Colour::black, StringIds::transported_blocks_in_days, &args);
 

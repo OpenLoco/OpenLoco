@@ -3131,6 +3131,44 @@ namespace OpenLoco::Vehicles
         }
     }
 
+    // 0x004BA7FC
+    void LastIncome::beginNewIncome()
+    {
+        day = getCurrentDay();
+        std::fill(std::begin(cargoTypes), std::end(cargoTypes), 0xFF);
+    }
+
+    // 0x4BA817
+    // Returns false if stats were not updated
+    bool LastIncome::addToStats(uint8_t cargoType, uint16_t cargoQty, uint16_t cargoDist, uint8_t cargoAge, currency32_t profit)
+    {
+        for (auto i = 0; i < 4; ++i)
+        {
+            if (cargoTypes[i] != cargoType)
+                continue;
+            if (cargoDistances[i] != cargoDist)
+                continue;
+            cargoQtys[i] += cargoQty;
+            cargoProfits[i] += profit;
+            cargoAges[i] = std::max(cargoAge, cargoAges[i]);
+            return true;
+        }
+
+        for (auto i = 0; i < 4; ++i)
+        {
+            if (cargoTypes[i] != 0xFF)
+                continue;
+
+            cargoTypes[i] = cargoType;
+            cargoDistances[i] = cargoDist;
+            cargoQtys[i] = cargoQty;
+            cargoAges[i] = cargoAge;
+            cargoProfits[i] = profit;
+            return true;
+        }
+        return false;
+    }
+
     // 0x004BA7C7
     void VehicleHead::updateLastIncomeStats(uint8_t cargoType, uint16_t cargoQty, uint16_t cargoDist, uint8_t cargoAge, currency32_t profit)
     {
@@ -3144,35 +3182,12 @@ namespace OpenLoco::Vehicles
         if (veh1->var_48 & (1 << 2))
         {
             veh1->var_48 &= ~(1 << 2);
-            veh1->lastIncome.day = getCurrentDay();
-            std::fill(std::begin(veh1->lastIncome.cargoTypes), std::end(veh1->lastIncome.cargoTypes), 0xFF);
+            veh1->lastIncome.beginNewIncome();
         }
 
-        for (auto i = 0; i < 4; ++i)
+        if (veh1->lastIncome.addToStats(cargoType, cargoQty, cargoDist, cargoAge, profit))
         {
-            if (veh1->lastIncome.cargoTypes[i] != cargoType)
-                continue;
-            if (veh1->lastIncome.cargoDistance[i] != cargoDist)
-                continue;
-            veh1->lastIncome.cargoQtys[i] += cargoQty;
-            veh1->lastIncome.cargoProfit[i] += profit;
-            veh1->lastIncome.cargoAge[i] = std::max(cargoAge, veh1->lastIncome.cargoAge[i]);
             Ui::WindowManager::invalidate(Ui::WindowType::vehicle, id);
-            return;
-        }
-
-        for (auto i = 0; i < 4; ++i)
-        {
-            if (veh1->lastIncome.cargoTypes[i] != 0xFF)
-                continue;
-
-            veh1->lastIncome.cargoTypes[i] = cargoType;
-            veh1->lastIncome.cargoDistance[i] = cargoDist;
-            veh1->lastIncome.cargoQtys[i] = cargoQty;
-            veh1->lastIncome.cargoAge[i] = cargoAge;
-            veh1->lastIncome.cargoProfit[i] = profit;
-            Ui::WindowManager::invalidate(Ui::WindowType::vehicle, id);
-            return;
         }
     }
 

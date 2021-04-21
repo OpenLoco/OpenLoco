@@ -327,12 +327,14 @@ namespace OpenLoco::Vehicles
 
     struct LastIncome
     {
-        int32_t day;                 // 0x53
-        uint8_t cargoTypes[4];       // 0x57
-        uint16_t cargoQtys[4];       // 0x5B
-        uint16_t cargoDistance[4];   // 0x63
-        uint8_t cargoAge[4];         // 0x6B
-        currency32_t cargoProfit[4]; // 0x6F
+        int32_t day;                  // 0x53
+        uint8_t cargoTypes[4];        // 0x57
+        uint16_t cargoQtys[4];        // 0x5B
+        uint16_t cargoDistances[4];   // 0x63
+        uint8_t cargoAges[4];         // 0x6B
+        currency32_t cargoProfits[4]; // 0x6F
+        void beginNewIncome();
+        bool addToStats(uint8_t cargoType, uint16_t cargoQty, uint16_t cargoDist, uint8_t cargoAge, currency32_t profit);
     };
     static_assert(sizeof(LastIncome) == 0x2C);
 
