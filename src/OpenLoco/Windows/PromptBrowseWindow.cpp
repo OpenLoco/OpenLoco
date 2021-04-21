@@ -938,9 +938,12 @@ namespace OpenLoco::Ui::PromptBrowse
             strncat(_directory, getExtensionFromFileType(_fileType), std::size(_directory));
         }
 
-        // Save last directory
-        fs::path lastDirectory = fs::u8path(&_directory[0]);
-        Config::getNew().last_save_path = lastDirectory.u8string();
+        // Remember the current path
+        fs::path currentPath = fs::u8path(&_directory[0]);
+        if (!fs::is_directory(currentPath))
+            Config::getNew().last_save_path = currentPath.parent_path().u8string();
+        else
+            Config::getNew().last_save_path = currentPath.u8string();
         Config::writeNewConfig();
         Environment::resolvePaths();
 
