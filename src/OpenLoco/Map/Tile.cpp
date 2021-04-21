@@ -109,6 +109,68 @@ surface_element* tile::surface() const
     return result;
 }
 
+station_element* tile::trackStation(uint8_t trackId, uint8_t direction, uint8_t baseZ) const
+{
+    station_element* result = nullptr;
+    bool trackFound = false;
+    for (auto& tile : *this)
+    {
+        if (trackFound)
+        {
+            result = tile.asStation();
+            if (result != nullptr)
+            {
+                break;
+            }
+        }
+        auto* elTrack = tile.asTrack();
+        if (elTrack == nullptr)
+            continue;
+        trackFound = false;
+        if (elTrack->baseZ() != baseZ)
+            continue;
+        if (elTrack->unkDirection() != direction)
+            continue;
+        if (elTrack->trackId() != trackId)
+            continue;
+        if (!elTrack->hasStationElement())
+            continue;
+        trackFound = true;
+    }
+    return result;
+}
+
+station_element* tile::roadStation(uint8_t roadId, uint8_t direction, uint8_t baseZ) const
+{
+    station_element* result = nullptr;
+    bool trackFound = false;
+    for (auto& tile : *this)
+    {
+        if (trackFound)
+        {
+            result = tile.asStation();
+            if (result != nullptr)
+            {
+                break;
+            }
+        }
+        auto* elRoad = tile.asRoad();
+        if (elRoad == nullptr)
+            continue;
+        trackFound = false;
+        if (elRoad->baseZ() != baseZ)
+            continue;
+        if (elRoad->unkDirection() != direction)
+            continue;
+        if (elRoad->roadId() != roadId)
+            continue;
+        if (!elRoad->hasStationElement())
+            continue;
+        trackFound = true;
+    }
+    return result;
+}
+
 OpenLoco::Industry* industry_element::industry() const
 {
     return IndustryManager::get(_industryId);

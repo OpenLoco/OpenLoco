@@ -149,9 +149,9 @@ namespace OpenLoco::Vehicles
         newBogie->creation_day = getCurrentDay();
         newBogie->var_46 = 0;
         newBogie->var_47 = 0;
-        newBogie->accepted_cargo_types = 0;
-        newBogie->cargo_type = 0xFF;
-        newBogie->secondaryCargoQty = 0;
+        newBogie->secondaryCargo.acceptedTypes = 0;
+        newBogie->secondaryCargo.type = 0xFF;
+        newBogie->secondaryCargo.qty = 0;
         newBogie->var_5E = 0;
         newBogie->var_5F = 0;
         newBogie->var_60 = 0; // different to createbody
@@ -206,12 +206,12 @@ namespace OpenLoco::Vehicles
             // in the front car component body
             if (vehObject.num_simultaneous_cargo_types > 1)
             {
-                newBogie->max_cargo = vehObject.max_secondary_cargo;
-                newBogie->accepted_cargo_types = vehObject.secondary_cargo_types;
-                auto cargoType = Utility::bitScanForward(newBogie->accepted_cargo_types);
+                newBogie->secondaryCargo.maxQty = vehObject.max_secondary_cargo;
+                newBogie->secondaryCargo.acceptedTypes = vehObject.secondary_cargo_types;
+                auto cargoType = Utility::bitScanForward(newBogie->secondaryCargo.acceptedTypes);
                 if (cargoType != -1)
                 {
-                    newBogie->cargo_type = cargoType;
+                    newBogie->secondaryCargo.type = cargoType;
                 }
             }
         }
@@ -270,9 +270,9 @@ namespace OpenLoco::Vehicles
         newBody->creation_day = getCurrentDay();
         newBody->var_46 = 0;
         newBody->var_47 = 0;
-        newBody->accepted_cargo_types = 0;
-        newBody->cargo_type = 0xFF;
-        newBody->primaryCargoQty = 0;
+        newBody->primaryCargo.acceptedTypes = 0;
+        newBody->primaryCargo.type = 0xFF;
+        newBody->primaryCargo.qty = 0;
         newBody->var_55 = 0; // different to create bogie
         newBody->var_5E = 0;
         newBody->var_5F = 0;
@@ -285,12 +285,12 @@ namespace OpenLoco::Vehicles
             // Locomotives do not carry any cargo.
             if (vehObject.num_simultaneous_cargo_types != 0)
             {
-                newBody->max_cargo = vehObject.max_primary_cargo;
-                newBody->accepted_cargo_types = vehObject.primary_cargo_types;
-                auto cargoType = Utility::bitScanForward(newBody->accepted_cargo_types);
+                newBody->primaryCargo.maxQty = vehObject.max_primary_cargo;
+                newBody->primaryCargo.acceptedTypes = vehObject.primary_cargo_types;
+                auto cargoType = Utility::bitScanForward(newBody->primaryCargo.acceptedTypes);
                 if (cargoType != -1)
                 {
-                    newBody->cargo_type = cargoType;
+                    newBody->primaryCargo.type = cargoType;
                 }
             }
         }
@@ -334,15 +334,8 @@ namespace OpenLoco::Vehicles
         return newBody;
     }
 
-    static void sub_4B7CC3(VehicleHead* const head)
-    {
-        registers regs{};
-        regs.esi = reinterpret_cast<int32_t>(head);
-        call(0x004B7CC3, regs);
-    }
-
     // 0x004AE86D
-    static bool createCar(VehicleHead* const head, const uint16_t vehicleTypeId)
+    static bool createCar(VehicleHead* head, const uint16_t vehicleTypeId)
     {
         if (!EntityManager::checkNumFreeEntities(max_num_vehicle_components_in_car))
         {
@@ -401,7 +394,7 @@ namespace OpenLoco::Vehicles
             return false;
         }
         lastVeh->setNextCar(train.tail->id);
-        sub_4B7CC3(head);
+        head->sub_4B7CC3();
         return true;
     }
 
@@ -559,7 +552,7 @@ namespace OpenLoco::Vehicles
         newVeh2->drivingSoundId = SoundObjectId::null;
         newVeh2->objectId = -1;
         newVeh2->var_4A = 0;
-        newVeh2->var_5E = 0;
+        newVeh2->lifetimeProfit = 0;
         newVeh2->profit[0] = 0;
         newVeh2->profit[1] = 0;
         newVeh2->profit[2] = 0;
@@ -637,7 +630,7 @@ namespace OpenLoco::Vehicles
 
         createVehicleTail(head->id, lastVeh);
 
-        sub_4B7CC3(head);
+        head->sub_4B7CC3();
         return { head };
     }
 

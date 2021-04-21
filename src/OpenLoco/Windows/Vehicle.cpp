@@ -1733,18 +1733,18 @@ namespace OpenLoco::Ui::Vehicle
                 // Actually draw it
                 width = Common::sub_4B743B(0, 0, 24 - width, (self->row_height - 22) / 2 + y, car.front, pDrawpixelinfo);
 
-                if (body->cargo_type != 0xFF)
+                if (body->primaryCargo.type != 0xFF)
                 {
 
                     int16_t cargoTextHeight = self->row_height / 2 + y - ((self->row_height - 22) / 2) - 10;
-                    if (front->secondaryCargoQty != 0 || body->primaryCargoQty != 0)
+                    if (front->secondaryCargo.qty != 0 || body->primaryCargo.qty != 0)
                     {
-                        if (body->primaryCargoQty == 0 || front->secondaryCargoQty == 0)
+                        if (body->primaryCargo.qty == 0 || front->secondaryCargo.qty == 0)
                         {
                             cargoTextHeight += 5;
                         }
-                        drawCargoText(pDrawpixelinfo, width, cargoTextHeight, strFormat, body->primaryCargoQty, body->cargo_type, body->townCargoFrom);
-                        drawCargoText(pDrawpixelinfo, width, cargoTextHeight, strFormat, front->secondaryCargoQty, front->cargo_type, front->townCargoFrom);
+                        drawCargoText(pDrawpixelinfo, width, cargoTextHeight, strFormat, body->primaryCargo.qty, body->primaryCargo.type, body->primaryCargo.townFrom);
+                        drawCargoText(pDrawpixelinfo, width, cargoTextHeight, strFormat, front->secondaryCargo.qty, front->secondaryCargo.type, front->secondaryCargo.townFrom);
                     }
                     else
                     {
@@ -1833,7 +1833,7 @@ namespace OpenLoco::Ui::Vehicle
                     continue;
 
                 string_id format = StringIds::dropdown_stringid;
-                if (cargoId == train.cars.firstCar.body->cargo_type)
+                if (cargoId == train.cars.firstCar.body->primaryCargo.type)
                 {
                     format = StringIds::dropdown_stringid_selected;
                 }
@@ -1963,8 +1963,8 @@ namespace OpenLoco::Ui::Vehicle
 
             auto body = car->body;
             auto front = car->front;
-            buffer = generateCargoTooltipDetails(buffer, StringIds::cargo_capacity, body->cargo_type, body->max_cargo, body->accepted_cargo_types);
-            buffer = generateCargoTooltipDetails(buffer, StringIds::cargo_capacity_plus, front->cargo_type, front->max_cargo, front->accepted_cargo_types);
+            buffer = generateCargoTooltipDetails(buffer, StringIds::cargo_capacity, body->primaryCargo.type, body->primaryCargo.maxQty, body->primaryCargo.acceptedTypes);
+            buffer = generateCargoTooltipDetails(buffer, StringIds::cargo_capacity_plus, front->secondaryCargo.type, front->secondaryCargo.maxQty, front->secondaryCargo.acceptedTypes);
         }
 
         // 0x004B4607

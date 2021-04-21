@@ -188,6 +188,17 @@ namespace OpenLoco::Vehicles
     };
     static_assert(sizeof(Vehicle2or6) == 0x74); // Can't use offset_of change this to last field if more found
 
+    struct VehicleCargo
+    {
+        uint32_t acceptedTypes; // 0x48
+        uint8_t type;           // 0x4C
+        uint8_t maxQty;         // 0x4D
+        StationId_t townFrom;   // 0x4E
+        uint8_t numDays;        // 0x50
+        uint8_t qty;            // 0x51
+    };
+    static_assert(sizeof(VehicleCargo) == 0xA);
+
     struct VehicleHead : VehicleBase
     {
         static constexpr auto vehicleThingType = VehicleThingType::head;
@@ -215,8 +226,8 @@ namespace OpenLoco::Vehicles
         uint32_t var_4E;           // 0x4E
         uint8_t var_52;
         uint8_t pad_53;
-        StationId_t stationId; // 0x54
-        uint16_t var_56;
+        StationId_t stationId;         // 0x54
+        uint16_t cargoTransferTimeout; // 0x56
         uint32_t var_58;
         uint8_t var_5C;
         Status status;           // 0x5D
@@ -246,6 +257,7 @@ namespace OpenLoco::Vehicles
         char* generateCargoTotalString(char* buffer);
         bool canBeModified() const;
         void liftUpVehicle();
+        void sub_4B7CC3();
 
     private:
         void applyBreakdownToTrain();
@@ -286,6 +298,7 @@ namespace OpenLoco::Vehicles
         void movePlaneTo(const Map::Pos3& newLoc, const uint8_t newYaw, const Pitch newPitch);
         uint32_t updateWaterMotion(uint32_t flags);
         void moveBoatTo(const Map::Pos3& loc, const uint8_t yaw, const Pitch pitch);
+        bool updateUnloadCargoComponent(VehicleCargo& cargo, VehicleBogie* bogie);
         void updateUnloadCargo();
         bool updateLoadCargo();
         void beginNewJourney();
@@ -308,6 +321,7 @@ namespace OpenLoco::Vehicles
         void sub_4ADB47(bool unk);
         VehicleStatus getStatusTravelling() const;
         void getSecondStatus(VehicleStatus& vehStatus) const;
+        void sub_4BA7C7(uint8_t cargoType, uint16_t cargoQty, uint16_t cargoDist, uint8_t cargoAge, currency32_t profit);
     };
     static_assert(sizeof(VehicleHead) == 0x7A); // Can't use offset_of change this to last field if more found
 
@@ -381,11 +395,11 @@ namespace OpenLoco::Vehicles
         Speed32 currentSpeed; // 0x56
         uint8_t var_5A;
         uint8_t var_5B;
-        Speed16 rackRailMaxSpeed; // 0x5C
-        uint32_t var_5E;
-        currency32_t profit[4]; // 0x62 last 4 months profit
-        uint8_t reliability;    // 0x72
-        uint8_t var_73;         // 0x73 (bit 0 = broken down, bit 1 = still powered)
+        Speed16 rackRailMaxSpeed;    // 0x5C
+        currency32_t lifetimeProfit; // 0x5E
+        currency32_t profit[4];      // 0x62 last 4 months profit
+        uint8_t reliability;         // 0x72
+        uint8_t var_73;              // 0x73 (bit 0 = broken down, bit 1 = still powered)
 
         currency32_t totalRecentProfit() const
         {
@@ -415,14 +429,9 @@ namespace OpenLoco::Vehicles
         TransportMode mode; // 0x42
         uint8_t pad_43;
         int16_t var_44;
-        uint8_t var_46;                // 0x46 roll/animation sprite index
-        uint8_t var_47;                // 0x47 cargo sprite index
-        uint32_t accepted_cargo_types; // 0x48
-        uint8_t cargo_type;            // 0x4C
-        uint8_t max_cargo;             // 0x4D
-        StationId_t townCargoFrom;     // 0x4E
-        uint8_t pad_50;
-        uint8_t primaryCargoQty; // 0x51
+        uint8_t var_46;            // 0x46 roll/animation sprite index
+        uint8_t var_47;            // 0x47 cargo sprite index
+        VehicleCargo primaryCargo; // 0x48
         uint8_t pad_52[0x54 - 0x52];
         uint8_t body_index; // 0x54
         int8_t var_55;
@@ -435,6 +444,7 @@ namespace OpenLoco::Vehicles
         int32_t update();
         void secondaryAnimationUpdate();
         void sub_4AAB0B();
+        void sub_4AC039();
 
     private:
         void animationUpdate();
@@ -476,12 +486,7 @@ namespace OpenLoco::Vehicles
         uint16_t var_44;
         uint8_t var_46; // 0x46 roll
         uint8_t var_47;
-        uint32_t accepted_cargo_types; // 0x48 front car component front bogie only
-        uint8_t cargo_type;            // 0x4C front car component front bogie only
-        uint8_t max_cargo;             // 0x4D front car component front bogie only
-        StationId_t townCargoFrom;     // 0x4E
-        uint8_t pad_50;
-        uint8_t secondaryCargoQty; // 0x51 front car component front bogie only
+        VehicleCargo secondaryCargo; // 0x48 Note back bogie cannot carry cargo always check type
         uint8_t pad_52[0x54 - 0x52];
         uint8_t body_index; // 0x54
         uint8_t pad_55;

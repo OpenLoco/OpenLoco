@@ -55,7 +55,8 @@ namespace OpenLoco
         uint8_t build_speed; // 0x1A4, 1=slow build speed, 4=fast build speed
         uint8_t unk_1A5;
         uint16_t num_stations; // 0x1A6
-        uint8_t pad_1A8[0x270 - 0x1A8];
+        uint32_t var_1A8;
+        uint8_t pad_1AC[0x270 - 0x1AC];
 
         bool empty() const;
         TownId_t id() const;

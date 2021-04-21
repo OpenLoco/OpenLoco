@@ -83,7 +83,7 @@ namespace OpenLoco
         MiscBase* asMisc() const { return asBase<MiscBase, EntityBaseType::misc>(); }
 
     protected:
-        uint8_t getSubType() const { return type; }
+        constexpr uint8_t getSubType() const { return type; }
         void setSubType(const uint8_t newType) { type = newType; }
 
     private:

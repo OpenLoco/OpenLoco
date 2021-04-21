@@ -42,9 +42,10 @@ namespace OpenLoco
         uint8_t owner; // 0xE0
         uint8_t pad_E1[0x189 - 0xE1];
         uint16_t produced_cargo_quantity[2]; // 0x189
-        uint8_t pad_18D[0x193 - 0x18D];
+        uint16_t var_18D[3];
         uint16_t required_cargo_quantity[3]; // 0x193
-        uint8_t pad_199[0x1A3 - 0x199];
+        uint16_t var_199[3];
+        uint8_t pad_19F[0x1A3 - 0x19F];
         uint16_t produced_cargo_max[2];        // 0x1A3 (produced_cargo_quantity / 8)
         uint8_t produced_cargo_transported[2]; // 0x1A7 (%)
         uint8_t history_size[2];               // 0x1A9 (<= 20 * 12)

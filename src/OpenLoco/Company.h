@@ -48,6 +48,15 @@ namespace OpenLoco
 #pragma pack(push, 1)
     struct Company
     {
+        struct unk4A8
+        {
+            uint8_t pad_00[0x80];
+            uint32_t var_80; // 0x528
+            uint32_t var_84; // 0x52C
+            uint8_t var_88;  // 0x530
+            uint8_t pad_89[3];
+        };
+        static_assert(sizeof(unk4A8) == 0x8C);
         string_id name;
         string_id owner_name;
         uint32_t challenge_flags;         // 0x04
@@ -66,11 +75,16 @@ namespace OpenLoco
         uint8_t numExpenditureMonths;                                                  // 0x57
         currency32_t expenditures[expenditureHistoryCapacity][ExpenditureType::Count]; // 0x58
         uint32_t startedDate;                                                          // 0x0498
-        uint8_t pad_49C[0x2579 - 0x49C];
+        uint8_t pad_49C[0x4A0 - 0x49C];
+        uint32_t var_4A0;
+        uint8_t pad_4A4[0x4A8 - 0x4A4];
+        unk4A8 var_4A8[60];
+        uint8_t pad_2578;
         uint8_t headquarters_z; // 0x2579
         coord_t headquarters_x; // 0x257A -1 on no headquarter placed
         coord_t headquarters_y; // 0x257C
-        uint8_t pad_257E[0x85FC - 0x257E];
+        uint8_t pad_257E[0x85F8 - 0x257E];
+        uint32_t cargoUnitsTotalDelivered;           // 0x85F8
         uint32_t cargo_units_delivered_history[120]; // 0x85FC
         int16_t performance_index_history[120];      // 0x87DC
         uint16_t history_size;                       // 0x88CC
@@ -85,8 +99,9 @@ namespace OpenLoco
         uint8_t pad_8BC2[0x8BCE - 0x8BC2];
         uint32_t cargoDelivered[32]; // 0x8BCE;
         uint8_t challengeProgress;   // 0x8C4E - percent completed on challenge
-        uint8_t pad_8C4F[0x8C54 - 0x8C4F];
-        uint32_t cargo_units_distance_history[120]; // 0x008C54
+        uint8_t pad_8C4F;
+        uint32_t cargoUnitsTotalDistance;           // 0x8C50
+        uint32_t cargo_units_distance_history[120]; // 0x8C54
         uint16_t jail_status;                       // 0x8E34
         uint8_t pad_8E36[0x8FA8 - 0x8E36];
 

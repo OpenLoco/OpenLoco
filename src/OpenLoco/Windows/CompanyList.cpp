@@ -1164,19 +1164,6 @@ namespace OpenLoco::Ui::Windows::CompanyList
             Gfx::drawString_494B3F(*dpi, x, y, Colour::black, StringIds::cargo_transit_time);
         }
 
-        // 0x0042F23C
-        // TODO: Move to cargo related file
-        static currency32_t calculateDeliveredCargoPayment(uint8_t cargoItem, int32_t numUnits, int32_t distance, uint16_t numDays)
-        {
-            registers regs;
-            regs.eax = cargoItem;
-            regs.ebx = numUnits;
-            regs.ecx = distance;
-            regs.edx = numDays;
-            call(0x0042F23C, regs);
-            return regs.eax;
-        }
-
         // 0x004375F7
         static void buildDeliveredCargoPaymentsTable()
         {
@@ -1190,7 +1177,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
                 for (uint16_t numDays = 2; numDays <= 122; ++numDays)
                 {
-                    _deliveredCargoPayment[cargoItem][(numDays / 2) - 1] = calculateDeliveredCargoPayment(cargoItem, 100, 10, numDays);
+                    _deliveredCargoPayment[cargoItem][(numDays / 2) - 1] = CompanyManager::calculateDeliveredCargoPayment(cargoItem, 100, 10, numDays);
                 }
             }
         }

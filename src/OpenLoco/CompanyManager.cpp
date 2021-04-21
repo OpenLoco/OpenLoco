@@ -121,6 +121,18 @@ namespace OpenLoco::CompanyManager
         call(0x0042F9AC);
     }
 
+    // 0x0042F23C
+    currency32_t calculateDeliveredCargoPayment(uint8_t cargoItem, int32_t numUnits, int32_t distance, uint16_t numDays)
+    {
+        registers regs;
+        regs.eax = cargoItem;
+        regs.ebx = numUnits;
+        regs.ecx = distance;
+        regs.edx = numDays;
+        call(0x0042F23C, regs);
+        return regs.eax;
+    }
+
     // 0x0042FDE2
     void determineAvailableVehicles()
     {
