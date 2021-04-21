@@ -6,27 +6,27 @@
 
 namespace OpenLoco::Audio
 {
-    struct channel_attributes
+    struct ChannelAttributes
     {
         int32_t volume{};
         int32_t pan{};
         int32_t freq{};
     };
 
-    class vehicle_channel
+    class VehicleChannel
     {
     private:
-        channel _channel;
+        Channel _channel;
         EntityId_t _vehicle_id = EntityId::null;
-        sound_id _sound_id{};
-        channel_attributes _attributes;
+        SoundId _sound_id{};
+        ChannelAttributes _attributes;
 
     public:
-        vehicle_channel() = default;
-        vehicle_channel(const vehicle_channel& c) = delete;
-        explicit vehicle_channel(channel&& c);
-        vehicle_channel(vehicle_channel&& c);
-        vehicle_channel& operator=(vehicle_channel&& other);
+        VehicleChannel() = default;
+        VehicleChannel(const VehicleChannel& c) = delete;
+        explicit VehicleChannel(Channel&& c);
+        VehicleChannel(VehicleChannel&& c);
+        VehicleChannel& operator=(VehicleChannel&& other);
 
         bool isFree() const { return _vehicle_id == EntityId::null; }
 

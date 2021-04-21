@@ -305,7 +305,7 @@ namespace OpenLoco::GameCommands
                     if (getScreenAge() >= 0xF00)
                     {
                         auto window = Ui::WindowManager::bringToFront(Ui::WindowType::saveGamePrompt);
-                        Audio::playSound(Audio::sound_id::open_window, window->x + (window->width / 2));
+                        Audio::playSound(Audio::SoundId::openWindow, window->x + (window->width / 2));
                         return 0;
                     }
                 }

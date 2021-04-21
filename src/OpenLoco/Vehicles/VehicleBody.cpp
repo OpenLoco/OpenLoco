@@ -1015,7 +1015,7 @@ namespace OpenLoco::Vehicles
 
         if (itemFound)
         {
-            auto soundId = static_cast<sound_object_id_t>(steam_obj->var_1F[var_55 + (steam_obj->sound_effect >> 1)]);
+            auto soundId = static_cast<SoundObjectId_t>(steam_obj->var_1F[var_55 + (steam_obj->sound_effect >> 1)]);
 
             if (veh_2->currentSpeed > 15.0_mph)
                 return;
@@ -1038,8 +1038,8 @@ namespace OpenLoco::Vehicles
             {
                 soundModifier = 0;
             }
-            auto underSoundId = static_cast<sound_object_id_t>(steam_obj->var_1F[soundModifier + var_55]);
-            auto soundId = static_cast<sound_object_id_t>(steam_obj->var_1F[var_55]);
+            auto underSoundId = static_cast<SoundObjectId_t>(steam_obj->var_1F[soundModifier + var_55]);
+            auto soundId = static_cast<SoundObjectId_t>(steam_obj->var_1F[var_55]);
 
             if (veh_2->currentSpeed > 15.0_mph)
                 return;

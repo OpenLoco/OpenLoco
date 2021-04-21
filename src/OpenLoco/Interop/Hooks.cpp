@@ -52,31 +52,31 @@ using namespace OpenLoco;
 FORCE_ALIGN_ARG_POINTER
 static int32_t CDECL audioLoadChannel(int a0, const char* a1, int a2, int a3, int a4)
 {
-    return Audio::loadChannel((Audio::channel_id)a0, a1, a2) ? 1 : 0;
+    return Audio::loadChannel((Audio::ChannelId)a0, a1, a2) ? 1 : 0;
 }
 
 FORCE_ALIGN_ARG_POINTER
 static int32_t CDECL audioPlayChannel(int a0, int a1, int a2, int a3, int a4)
 {
-    return Audio::playChannel((Audio::channel_id)a0, a1, a2, a3, a4) ? 1 : 0;
+    return Audio::playChannel((Audio::ChannelId)a0, a1, a2, a3, a4) ? 1 : 0;
 }
 
 FORCE_ALIGN_ARG_POINTER
 static void CDECL audioStopChannel(int a0, int a1, int a2, int a3, int a4)
 {
-    Audio::stopChannel((Audio::channel_id)a0);
+    Audio::stopChannel((Audio::ChannelId)a0);
 }
 
 FORCE_ALIGN_ARG_POINTER
 static void CDECL audioSetChannelVolume(int a0, int a1)
 {
-    Audio::setChannelVolume((Audio::channel_id)a0, a1);
+    Audio::setChannelVolume((Audio::ChannelId)a0, a1);
 }
 
 FORCE_ALIGN_ARG_POINTER
 static int32_t CDECL audioIsChannelPlaying(int a0)
 {
-    return Audio::isChannelPlaying((Audio::channel_id)a0) ? 1 : 0;
+    return Audio::isChannelPlaying((Audio::ChannelId)a0) ? 1 : 0;
 }
 
 #ifdef _NO_LOCO_WIN32_
@@ -609,13 +609,13 @@ static void registerAudioHooks()
     registerHook(
         0x00489CB5,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            Audio::playSound((Audio::sound_id)regs.eax, { regs.cx, regs.dx, regs.bp }, regs.ebx);
+            Audio::playSound((Audio::SoundId)regs.eax, { regs.cx, regs.dx, regs.bp }, regs.ebx);
             return 0;
         });
     registerHook(
         0x00489F1B,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            Audio::playSound((Audio::sound_id)regs.eax, { regs.cx, regs.dx, regs.bp }, regs.edi, regs.ebx);
+            Audio::playSound((Audio::SoundId)regs.eax, { regs.cx, regs.dx, regs.bp }, regs.edi, regs.ebx);
             return 0;
         });
 }

@@ -12,7 +12,7 @@ namespace OpenLoco
     using EntityId_t = uint16_t;
     using tile_coord_t = int16_t;
     using TownId_t = uint16_t;
-    using sound_object_id_t = uint8_t;
+    using SoundObjectId_t = uint8_t;
     using MessageId_t = uint16_t;
 
     class FormatArguments;

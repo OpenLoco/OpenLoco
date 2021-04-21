@@ -76,7 +76,7 @@ namespace OpenLoco::Input
     {
         setScreenFlag(ScreenFlags::driverCheatEnabled);
 
-        Audio::playSound(Audio::sound_id::click_press, Ui::width() / 2);
+        Audio::playSound(Audio::SoundId::clickPress, Ui::width() / 2);
     }
 
     static void loc_4BED04()
@@ -102,7 +102,7 @@ namespace OpenLoco::Input
                 continue;
 
             GameCommands::do_77(w->number);
-            Audio::playSound(Audio::sound_id::click_press, Ui::width() / 2);
+            Audio::playSound(Audio::SoundId::clickPress, Ui::width() / 2);
 
             return;
         }
@@ -112,7 +112,7 @@ namespace OpenLoco::Input
     {
         GameCommands::do_78();
 
-        Audio::playSound(Audio::sound_id::click_press, Ui::width() / 2);
+        Audio::playSound(Audio::SoundId::clickPress, Ui::width() / 2);
     }
 
     static void loc_4BEFEF()

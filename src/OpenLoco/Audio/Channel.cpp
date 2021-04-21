@@ -6,19 +6,19 @@
 
 using namespace OpenLoco::Audio;
 
-channel::channel(int32_t cid)
+Channel::Channel(int32_t cid)
     : _id(cid)
 {
 }
 
-channel::channel(channel&& c)
+Channel::Channel(Channel&& c)
     : _id(std::exchange(c._id, undefined_id))
     , _chunk(std::exchange(c._chunk, nullptr))
     , _chunk_owner(std::exchange(c._chunk_owner, {}))
 {
 }
 
-channel& channel::operator=(channel&& other)
+Channel& Channel::operator=(Channel&& other)
 {
     std::swap(_id, other._id);
     std::swap(_chunk, other._chunk);
@@ -26,19 +26,19 @@ channel& channel::operator=(channel&& other)
     return *this;
 }
 
-channel::~channel()
+Channel::~Channel()
 {
     disposeChunk();
 }
 
-bool channel::load(sample& sample)
+bool Channel::load(Sample& sample)
 {
     disposeChunk();
     _chunk = sample.chunk;
     return true;
 }
 
-bool channel::load(const fs::path& path)
+bool Channel::load(const fs::path& path)
 {
     disposeChunk();
     _chunk = Mix_LoadWAV(path.u8string().c_str());
@@ -46,7 +46,7 @@ bool channel::load(const fs::path& path)
     return _chunk != nullptr;
 }
 
-bool channel::play(bool loop)
+bool Channel::play(bool loop)
 {
     if (!isUndefined())
     {
@@ -61,7 +61,7 @@ bool channel::play(bool loop)
     return false;
 }
 
-void channel::stop()
+void Channel::stop()
 {
     if (!isUndefined())
     {
@@ -69,7 +69,7 @@ void channel::stop()
     }
 }
 
-void channel::setVolume(int32_t volume)
+void Channel::setVolume(int32_t volume)
 {
     if (!isUndefined())
     {
@@ -77,7 +77,7 @@ void channel::setVolume(int32_t volume)
     }
 }
 
-void channel::setPan(int32_t pan)
+void Channel::setPan(int32_t pan)
 {
     if (!isUndefined())
     {
@@ -86,17 +86,17 @@ void channel::setPan(int32_t pan)
     }
 }
 
-void channel::setFrequency(int32_t freq)
+void Channel::setFrequency(int32_t freq)
 {
     // TODO
 }
 
-bool channel::isPlaying() const
+bool Channel::isPlaying() const
 {
     return isUndefined() ? false : (Mix_Playing(_id) != 0);
 }
 
-void channel::disposeChunk()
+void Channel::disposeChunk()
 {
     if (_chunk_owner)
     {

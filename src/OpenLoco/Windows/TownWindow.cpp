@@ -207,7 +207,7 @@ namespace OpenLoco::Ui::Windows::Town
 
                     // Play construction sound at the town centre.
                     int16_t tileZ = TileManager::getHeight({ town->x, town->y }).landHeight;
-                    Audio::playSound(Audio::sound_id::construct, OpenLoco::Map::Pos3(town->x + 16, town->y + 16, tileZ));
+                    Audio::playSound(Audio::SoundId::construct, OpenLoco::Map::Pos3(town->x + 16, town->y + 16, tileZ));
                     break;
                 }
 
@@ -219,7 +219,7 @@ namespace OpenLoco::Ui::Windows::Town
                     if (!success)
                         break;
 
-                    Audio::playSound(Audio::sound_id::demolish, GameCommands::getPosition());
+                    Audio::playSound(Audio::SoundId::demolish, GameCommands::getPosition());
                     break;
                 }
             }

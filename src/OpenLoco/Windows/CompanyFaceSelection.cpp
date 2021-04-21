@@ -163,7 +163,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
             return;
         }
         self->invalidate();
-        Audio::playSound(Audio::sound_id::click_down, _cursorX);
+        Audio::playSound(Audio::SoundId::clickDown, _cursorX);
         GameCommands::setErrorTitle(StringIds::cant_select_face);
         const auto result = GameCommands::do_65(*objIndex.object._header, self->owner);
         if (result)
