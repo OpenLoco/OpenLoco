@@ -521,7 +521,7 @@ namespace OpenLoco::Vehicles
         newVeh1->var_52 = 0;
         newVeh1->var_4E = 0;
         newVeh1->var_50 = 0;
-        newVeh1->var_53 = -1;
+        newVeh1->lastIncome.day = -1;
         lastVeh->setNextCar(newVeh1->id);
         return newVeh1;
     }
