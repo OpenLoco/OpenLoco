@@ -929,9 +929,6 @@ namespace OpenLoco::Ui::PromptBrowse
 
             // Copy directory and filename to buffer.
             strncpy(&_directory[0], path.u8string().c_str(), std::size(_directory));
-
-            // Close browse window to continue saving.
-            WindowManager::close(self);
         }
         else
         {
@@ -939,9 +936,6 @@ namespace OpenLoco::Ui::PromptBrowse
             // TODO: refactor to fs::path?
             strncat(_directory, inputSession.buffer.c_str(), std::size(_directory));
             strncat(_directory, getExtensionFromFileType(_fileType), std::size(_directory));
-
-            // Close browse window to start loading.
-            WindowManager::close(self);
         }
 
         // Save last directory
@@ -949,6 +943,9 @@ namespace OpenLoco::Ui::PromptBrowse
         Config::getNew().last_save_path = lastDirectory.u8string();
         Config::writeNewConfig();
         Environment::resolvePaths();
+
+        // Close browse window to continue saving.
+        WindowManager::close(self);
     }
 
     // 0x004466CA
