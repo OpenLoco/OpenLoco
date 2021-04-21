@@ -7,20 +7,20 @@ using namespace OpenLoco;
 using namespace OpenLoco::Audio;
 using namespace OpenLoco::Interop;
 
-static std::pair<sound_id, channel_attributes> sub_48A590(const Vehicles::Vehicle2or6* v)
+static std::pair<SoundId, ChannelAttributes> sub_48A590(const Vehicles::Vehicle2or6* v)
 {
     registers regs;
     regs.esi = (int32_t)v;
     call(0x0048A590, regs);
-    return { static_cast<sound_id>(regs.eax), { regs.ecx, regs.edx, regs.ebx } };
+    return { static_cast<SoundId>(regs.eax), { regs.ecx, regs.edx, regs.ebx } };
 }
 
-vehicle_channel::vehicle_channel(channel&& c)
+VehicleChannel::VehicleChannel(Channel&& c)
     : _channel(std::exchange(c, {}))
 {
 }
 
-vehicle_channel::vehicle_channel(vehicle_channel&& vc)
+VehicleChannel::VehicleChannel(VehicleChannel&& vc)
     : _channel(std::exchange(vc._channel, {}))
     , _vehicle_id(std::exchange(vc._vehicle_id, EntityId::null))
     , _sound_id(std::exchange(vc._sound_id, {}))
@@ -28,7 +28,7 @@ vehicle_channel::vehicle_channel(vehicle_channel&& vc)
 {
 }
 
-vehicle_channel& vehicle_channel::operator=(vehicle_channel&& other)
+VehicleChannel& VehicleChannel::operator=(VehicleChannel&& other)
 {
     std::swap(_channel, other._channel);
     std::swap(_vehicle_id, other._vehicle_id);
@@ -37,7 +37,7 @@ vehicle_channel& vehicle_channel::operator=(vehicle_channel&& other)
     return *this;
 }
 
-void vehicle_channel::begin(EntityId_t vid)
+void VehicleChannel::begin(EntityId_t vid)
 {
     auto v = EntityManager::get<Vehicles::VehicleBase>(vid);
     if (v != nullptr && v->isVehicle2Or6())
@@ -64,7 +64,7 @@ void vehicle_channel::begin(EntityId_t vid)
     }
 }
 
-void vehicle_channel::update()
+void VehicleChannel::update()
 {
     if (!isFree())
     {
@@ -99,7 +99,7 @@ void vehicle_channel::update()
     }
 }
 
-void vehicle_channel::stop()
+void VehicleChannel::stop()
 {
     _channel.stop();
     _vehicle_id = EntityId::null;

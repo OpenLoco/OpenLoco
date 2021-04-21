@@ -637,7 +637,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
             window->row_hover = landIndex;
 
-            Audio::playSound(Audio::sound_id::click_down, window->widgets[widx::scrollview].right);
+            Audio::playSound(Audio::SoundId::clickDown, window->widgets[widx::scrollview].right);
 
             const widget_t& target = window->widgets[widx::scrollview];
             const int16_t dropdownX = window->x + target.left + 151;

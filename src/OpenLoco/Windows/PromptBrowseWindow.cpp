@@ -296,7 +296,7 @@ namespace OpenLoco::Ui::PromptBrowse
         if (index > _numFiles)
             return;
 
-        Audio::playSound(Audio::sound_id::click_down, self->x + (self->width / 2));
+        Audio::playSound(Audio::SoundId::clickDown, self->x + (self->width / 2));
 
         file_entry entry = _files[index];
 

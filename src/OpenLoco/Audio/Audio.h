@@ -17,7 +17,7 @@ namespace OpenLoco::Vehicles
 
 namespace OpenLoco::Audio
 {
-    struct sample
+    struct Sample
     {
         void* pcm{};
         size_t len{};
@@ -25,45 +25,45 @@ namespace OpenLoco::Audio
     };
 
     // TODO: This should only be a byte needs to be split off from sound object
-    enum class sound_id : uint16_t
+    enum class SoundId : uint16_t
     {
-        click_down = 0,
-        click_up = 1,
-        click_press = 2,
+        clickDown = 0,
+        clickUp = 1,
+        clickPress = 2,
         construct = 3,
         demolish = 4,
         income = 5,
         crash = 6,
         water = 7,
-        splash_1 = 8,
-        splash_2 = 9,
+        splash1 = 8,
+        splash2 = 9,
         waypoint = 10,
         notification = 11,
-        open_window = 12,
+        openWindow = 12,
         applause_1 = 13,
         error = 14,
         unk_15 = 15,
         unk_16 = 16,
-        demolish_tree = 17,
-        demolish_building = 18,
+        demolishTree = 17,
+        demolishBuilding = 18,
         unk_19 = 19,
-        vehicle_pickup = 20,
-        construct_ship = 21,
+        vehiclePickup = 20,
+        constructShip = 21,
         ticker = 22,
-        applause_2 = 23,
-        news_oooh = 24,
-        news_awww = 25,
-        breakdown_1 = 26,
-        breakdown_2 = 27,
-        breakdown_3 = 28,
-        breakdown_4 = 29,
-        breakdown_5 = 30,
-        breakdown_6 = 31,
+        applause2 = 23,
+        newsOooh = 24,
+        newsAwww = 25,
+        breakdown1 = 26,
+        breakdown2 = 27,
+        breakdown3 = 28,
+        breakdown4 = 29,
+        breakdown5 = 30,
+        breakdown6 = 31,
 
         null = 0xFF
     };
 
-    enum class channel_id
+    enum class ChannelId
     {
         bgm,
         unk_1,
@@ -73,9 +73,9 @@ namespace OpenLoco::Audio
     };
     constexpr int32_t num_reserved_channels = 4 + 10;
 
-    using music_id = uint8_t;
+    using MusicId = uint8_t;
 
-    struct music_info
+    struct MusicInfo
     {
         Environment::path_id path_id;
         string_id title_id;
@@ -92,24 +92,24 @@ namespace OpenLoco::Audio
     size_t getCurrentDevice();
     void setDevice(size_t index);
 
-    sample* getSoundSample(sound_id id);
-    bool shouldSoundLoop(sound_id id);
+    Sample* getSoundSample(SoundId id);
+    bool shouldSoundLoop(SoundId id);
 
     void toggleSound();
     void pauseSound();
     void unpauseSound();
     void playSound(Vehicles::Vehicle2or6* t);
-    void playSound(sound_id id, const Map::Pos3& loc);
-    void playSound(sound_id id, const Map::Pos3& loc, int32_t pan);
-    void playSound(sound_id id, int32_t pan);
-    void playSound(sound_id id, const Map::Pos3& loc, int32_t volume, int32_t frequency);
+    void playSound(SoundId id, const Map::Pos3& loc);
+    void playSound(SoundId id, const Map::Pos3& loc, int32_t pan);
+    void playSound(SoundId id, int32_t pan);
+    void playSound(SoundId id, const Map::Pos3& loc, int32_t volume, int32_t frequency);
     void updateSounds();
 
-    bool loadChannel(channel_id id, const char* path, int32_t c);
-    bool playChannel(channel_id id, int32_t loop, int32_t volume, int32_t d, int32_t freq);
-    void stopChannel(channel_id id);
-    void setChannelVolume(channel_id id, int32_t volume);
-    bool isChannelPlaying(channel_id id);
+    bool loadChannel(ChannelId id, const char* path, int32_t c);
+    bool playChannel(ChannelId id, int32_t loop, int32_t volume, int32_t d, int32_t freq);
+    void stopChannel(ChannelId id);
+    void setChannelVolume(ChannelId id, int32_t volume);
+    bool isChannelPlaying(ChannelId id);
     void setBgmVolume(int32_t volume);
 
     void updateVehicleNoise();
@@ -127,7 +127,7 @@ namespace OpenLoco::Audio
 
     bool isAudioEnabled();
 
-    const music_info* getMusicInfo(music_id track);
+    const MusicInfo* getMusicInfo(MusicId track);
     constexpr int32_t num_music_tracks = 29;
 
     /**
@@ -137,14 +137,14 @@ namespace OpenLoco::Audio
      */
     int32_t volumeLocoToSDL(int32_t loco);
 
-    constexpr bool isObjectSoundId(sound_id id)
+    constexpr bool isObjectSoundId(SoundId id)
     {
         return ((int32_t)id & 0x8000);
     }
 
-    constexpr sound_id makeObjectSoundId(sound_object_id_t id)
+    constexpr SoundId makeObjectSoundId(SoundObjectId_t id)
     {
-        return (sound_id)((int32_t)id | 0x8000);
+        return (SoundId)((int32_t)id | 0x8000);
     }
 
     /**

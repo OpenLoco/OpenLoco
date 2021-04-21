@@ -6,7 +6,7 @@ namespace OpenLoco
 {
     namespace SoundObjectId
     {
-        constexpr sound_object_id_t null = 0xFF;
+        constexpr SoundObjectId_t null = 0xFF;
     }
 #pragma pack(push, 1)
     struct SoundObject

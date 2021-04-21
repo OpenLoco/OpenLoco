@@ -174,7 +174,7 @@ namespace OpenLoco::Vehicles
     struct Vehicle2or6 : VehicleBase
     {
         uint8_t pad_24[0x44 - 0x24];
-        sound_object_id_t drivingSoundId;      // 0x44
+        SoundObjectId_t drivingSoundId;        // 0x44
         uint8_t drivingSoundVolume;            // 0x45 channel attribute volume related
         uint16_t drivingSoundFrequency;        // 0x46 channel attribute frequency
         uint16_t objectId;                     // 0x48 vehicle object (used for sound)
@@ -381,7 +381,7 @@ namespace OpenLoco::Vehicles
         uint8_t pad_3C[0x42 - 0x3C]; // 0x3C
         TransportMode mode;          // 0x42 field same in all vehicles
         uint8_t pad_43;
-        sound_object_id_t drivingSoundId;      // 0x44
+        SoundObjectId_t drivingSoundId;        // 0x44
         uint8_t drivingSoundVolume;            // 0x45 channel attribute volume related
         uint16_t drivingSoundFrequency;        // 0x46 channel attribute frequency
         uint16_t objectId;                     // 0x48 vehicle object (used for sound)
@@ -525,7 +525,7 @@ namespace OpenLoco::Vehicles
         uint8_t pad_3C[0x42 - 0x3C]; // 0x3C
         TransportMode mode;          // 0x42 field same in all vehicles
         uint8_t pad_43;
-        sound_object_id_t drivingSoundId;      // 0x44
+        SoundObjectId_t drivingSoundId;        // 0x44
         uint8_t drivingSoundVolume;            // 0x45 channel attribute volume related
         uint16_t drivingSoundFrequency;        // 0x46 channel attribute frequency
         uint16_t objectId;                     // 0x48 vehicle object (used for sound)

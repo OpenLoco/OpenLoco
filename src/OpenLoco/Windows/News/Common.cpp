@@ -151,48 +151,48 @@ namespace OpenLoco::Ui::NewsWindow
 
         if (!isOld)
         {
-            Audio::sound_id soundId = Audio::sound_id::notification;
+            Audio::SoundId soundId = Audio::SoundId::notification;
 
             if (news->companyId == CompanyId::null || news->companyId == _playerCompany)
             {
-                Audio::sound_id messageSounds[31] = {
-                    Audio::sound_id::notification,
-                    Audio::sound_id::news_awww,
-                    Audio::sound_id::notification,
-                    Audio::sound_id::notification,
-                    Audio::sound_id::notification,
-                    Audio::sound_id::notification,
-                    Audio::sound_id::notification,
-                    Audio::sound_id::notification,
-                    Audio::sound_id::notification,
-                    Audio::sound_id::notification,
-                    Audio::sound_id::notification,
-                    Audio::sound_id::notification,
-                    Audio::sound_id::notification,
-                    Audio::sound_id::applause_2,
-                    Audio::sound_id::applause_2,
-                    Audio::sound_id::news_oooh,
-                    Audio::sound_id::applause_2,
-                    Audio::sound_id::news_oooh,
-                    Audio::sound_id::news_oooh,
-                    Audio::sound_id::news_awww,
-                    Audio::sound_id::applause_2,
-                    Audio::sound_id::news_awww,
-                    Audio::sound_id::news_awww,
-                    Audio::sound_id::news_awww,
-                    Audio::sound_id::news_awww,
-                    Audio::sound_id::news_awww,
-                    Audio::sound_id::applause_2,
-                    Audio::sound_id::notification,
-                    Audio::sound_id::news_awww,
-                    Audio::sound_id::applause_2,
-                    Audio::sound_id::news_oooh
+                Audio::SoundId messageSounds[31] = {
+                    Audio::SoundId::notification,
+                    Audio::SoundId::newsAwww,
+                    Audio::SoundId::notification,
+                    Audio::SoundId::notification,
+                    Audio::SoundId::notification,
+                    Audio::SoundId::notification,
+                    Audio::SoundId::notification,
+                    Audio::SoundId::notification,
+                    Audio::SoundId::notification,
+                    Audio::SoundId::notification,
+                    Audio::SoundId::notification,
+                    Audio::SoundId::notification,
+                    Audio::SoundId::notification,
+                    Audio::SoundId::applause2,
+                    Audio::SoundId::applause2,
+                    Audio::SoundId::newsOooh,
+                    Audio::SoundId::applause2,
+                    Audio::SoundId::newsOooh,
+                    Audio::SoundId::newsOooh,
+                    Audio::SoundId::newsAwww,
+                    Audio::SoundId::applause2,
+                    Audio::SoundId::newsAwww,
+                    Audio::SoundId::newsAwww,
+                    Audio::SoundId::newsAwww,
+                    Audio::SoundId::newsAwww,
+                    Audio::SoundId::newsAwww,
+                    Audio::SoundId::applause2,
+                    Audio::SoundId::notification,
+                    Audio::SoundId::newsAwww,
+                    Audio::SoundId::applause2,
+                    Audio::SoundId::newsOooh
                 };
 
                 soundId = messageSounds[activeMessage];
             }
 
-            if (soundId != Audio::sound_id::null)
+            if (soundId != Audio::SoundId::null)
             {
                 int32_t pan = Ui::width() / 2;
                 Audio::playSound(soundId, pan);

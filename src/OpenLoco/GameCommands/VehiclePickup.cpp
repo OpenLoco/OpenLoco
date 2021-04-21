@@ -17,7 +17,7 @@ namespace OpenLoco::GameCommands
     {
         const auto pos = Map::Pos3(veh2->x, veh2->y, veh2->z);
         const auto frequency = _prng->randNext(20003, 24098);
-        Audio::playSound(Audio::sound_id::vehicle_pickup, pos, -1000, frequency);
+        Audio::playSound(Audio::SoundId::vehiclePickup, pos, -1000, frequency);
     }
 
     // 0x004B0826

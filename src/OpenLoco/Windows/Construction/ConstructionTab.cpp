@@ -1606,7 +1606,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
             onMouseUp(window, widx::rotate_90);
 
-            Audio::playSound(Audio::sound_id::error, int32_t(Input::getMouseLocation().x));
+            Audio::playSound(Audio::SoundId::error, int32_t(Input::getMouseLocation().x));
 
             return;
         }

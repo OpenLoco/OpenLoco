@@ -181,7 +181,7 @@ namespace OpenLoco::Vehicles
                     applyBreakdownToTrain();
 
                     auto v2 = car.body;
-                    auto soundId = (Audio::sound_id)gPrng().randNext(26, 26 + 5);
+                    auto soundId = (Audio::SoundId)gPrng().randNext(26, 26 + 5);
                     Audio::playSound(soundId, Map::Pos3(v2->x, v2->y, v2->z + 22));
                 }
             }
@@ -2800,7 +2800,7 @@ namespace OpenLoco::Vehicles
             auto loc = Map::Pos3{ train.cars.firstCar.body->x, train.cars.firstCar.body->y, train.cars.firstCar.body->z } + Map::Pos3{ 0, 0, 28 };
             CompanyManager::spendMoneyEffect(loc, owner, -cargoProfit);
 
-            Audio::playSound(Audio::sound_id::income, loc);
+            Audio::playSound(Audio::SoundId::income, loc);
         }
 
         cargoTransferTimeout = 10;

@@ -10,16 +10,16 @@ typedef struct _Mix_Music Mix_Music;
 
 namespace OpenLoco::Audio
 {
-    class music_channel
+    class MusicChannel
     {
     private:
         Mix_Music* _music_track;
         int32_t _current_music = -1;
 
     public:
-        music_channel() = default;
-        music_channel(const music_channel&) = delete;
-        ~music_channel();
+        MusicChannel() = default;
+        MusicChannel(const MusicChannel&) = delete;
+        ~MusicChannel();
 
         bool isPlaying() const;
 

@@ -6,9 +6,9 @@ struct Mix_Chunk;
 
 namespace OpenLoco::Audio
 {
-    struct sample;
+    struct Sample;
 
-    class channel
+    class Channel
     {
     public:
         static constexpr int32_t undefined_id = -1;
@@ -19,13 +19,13 @@ namespace OpenLoco::Audio
         bool _chunk_owner{};
 
     public:
-        channel() = default;
-        channel(int32_t id);
-        channel(const channel&) = delete;
-        channel(channel&&);
-        channel& operator=(channel&& other);
-        ~channel();
-        bool load(sample& sample);
+        Channel() = default;
+        Channel(int32_t id);
+        Channel(const Channel&) = delete;
+        Channel(Channel&&);
+        Channel& operator=(Channel&& other);
+        ~Channel();
+        bool load(Sample& sample);
         bool load(const fs::path& path);
         bool play(bool loop);
         void stop();
