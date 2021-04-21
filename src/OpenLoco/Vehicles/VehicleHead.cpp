@@ -3137,7 +3137,7 @@ namespace OpenLoco::Vehicles
         regs.al = cargoType;
         regs.bx = cargoQty;
         regs.cx = cargoDist;
-        regs.dl = cargoAge;
+        regs.edx = cargoAge;
         regs.ebp = profit;
         regs.esi = reinterpret_cast<int32_t>(this);
         call(0x004BA7C7, regs);
