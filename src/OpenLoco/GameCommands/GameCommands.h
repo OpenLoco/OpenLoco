@@ -17,57 +17,57 @@ namespace OpenLoco::Vehicles
 
 namespace OpenLoco::GameCommands
 {
-    enum GameCommandFlag : uint8_t
+    namespace Flags
     {
-        apply = 1 << 0,  // 0x01
-        flag_1 = 1 << 1, // 0x02
-        flag_2 = 1 << 2, // 0x04
-        flag_3 = 1 << 3, // 0x08
-        flag_4 = 1 << 4, // 0x10
-        flag_5 = 1 << 5, // 0x20
-        flag_6 = 1 << 6, // 0x40
-    };
+        constexpr uint8_t apply = 1 << 0;  // 0x01
+        constexpr uint8_t flag_1 = 1 << 1; // 0x02
+        constexpr uint8_t flag_2 = 1 << 2; // 0x04
+        constexpr uint8_t flag_3 = 1 << 3; // 0x08
+        constexpr uint8_t flag_4 = 1 << 4; // 0x10
+        constexpr uint8_t flag_5 = 1 << 5; // 0x20
+        constexpr uint8_t flag_6 = 1 << 6; // 0x40
+    }
 
     enum class GameCommand : uint8_t
     {
-        vehicle_rearrange = 0,
-        vehicle_place = 1,
-        vehicle_pickup = 2,
-        vehicle_reverse = 3,
-        vehicle_pass_signal = 4,
-        vehicle_create = 5,
-        vehicle_sell = 6,
+        vehicleRearrange = 0,
+        vehiclePlace = 1,
+        vehiclePickup = 2,
+        vehicleReverse = 3,
+        vehiclePassSignal = 4,
+        vehicleCreate = 5,
+        vehicleSell = 6,
         gc_unk_7 = 7,
         gc_unk_8 = 8,
-        change_loan = 9,
-        vehicle_rename = 10,
-        change_station_name = 11,
-        vehicle_local_express = 12,
+        changeLoan = 9,
+        vehicleRename = 10,
+        changeStationName = 11,
+        vehicleLocalExpress = 12,
         gc_unk_13 = 13,
         gc_unk_14 = 14,
         gc_unk_15 = 15,
         gc_unk_16 = 16,
         gc_unk_17 = 17,
         gc_unk_18 = 18,
-        change_company_colour_scheme = 19,
-        pause_game = 20,
-        load_save_quit_game = 21,
+        changeCompanyColourScheme = 19,
+        pauseGame = 20,
+        loadSaveQuitGame = 21,
         gc_unk_22 = 22,
         gc_unk_23 = 23,
-        change_land_material = 24,
-        raise_land = 25,
-        lower_land = 26,
-        lower_raise_land_mountain = 27,
-        raise_water = 28,
-        lower_water = 29,
-        change_company_name = 30,
-        change_company_owner_name = 31,
+        changeLandMaterial = 24,
+        raiseLand = 25,
+        lowerLand = 26,
+        lowerRaiseLandMountain = 27,
+        raiseWater = 28,
+        lowerWater = 29,
+        changeCompanyName = 30,
+        changeCompanyOwnerName = 31,
         gc_unk_32 = 32,
         gc_unk_33 = 33,
         gc_unk_34 = 34,
-        vehicle_order_insert = 35,
-        vehicle_order_delete = 36,
-        vehicle_order_skip = 37,
+        vehicleOrderInsert = 35,
+        vehicleOrderDelete = 36,
+        vehicleOrderSkip = 37,
         gc_unk_38 = 38,
         gc_unk_39 = 39,
         gc_unk_40 = 40,
@@ -76,49 +76,49 @@ namespace OpenLoco::GameCommands
         gc_unk_43 = 43,
         gc_unk_44 = 44,
         gc_unk_45 = 45,
-        rename_town = 46,
-        create_industry = 47,
-        remove_industry = 48,
-        create_town = 49,
-        remove_town = 50,
+        renameTown = 46,
+        createIndustry = 47,
+        removeIndustry = 48,
+        createTown = 49,
+        removeTown = 50,
         gc_unk_51 = 51,
         gc_unk_52 = 52,
         gc_unk_53 = 53,
-        remove_company_headquarters = 54,
-        build_company_headquarters = 55,
+        removeCompanyHeadquarters = 54,
+        buildCompanyHeadquarters = 55,
         gc_unk_56 = 56,
         gc_unk_57 = 57,
         gc_unk_58 = 58,
-        vehicle_abort_pickup_air = 59,
+        vehicleAbortPickupAir = 59,
         gc_unk_60 = 60,
         gc_unk_61 = 61,
         gc_unk_62 = 62,
-        vehicle_abort_pickup_water = 63,
-        vehicle_refit = 64,
-        change_company_face = 65,
-        clear_land = 66,
-        load_multiplayer_map = 67,
+        vehicleAbortPickupWater = 63,
+        vehicleRefit = 64,
+        changeCompanyFace = 65,
+        clearLand = 66,
+        loadMultiplayerMap = 67,
         gc_unk_68 = 68,
         gc_unk_69 = 69,
         gc_unk_70 = 70,
-        send_chat_message = 71,
-        multiplayer_save = 72,
-        update_owner_status = 73,
-        vehicle_speed_control = 74,
-        vehicle_order_up = 75,
-        vehicle_order_down = 76,
-        vehicle_apply_shunt_cheat = 77,
-        apply_free_cash_cheat = 78,
-        rename_industry = 79,
-        vehicle_clone = 80,
+        sendChatMessage = 71,
+        multiplayerSave = 72,
+        updateOwnerStatus = 73,
+        vehicleSpeedControl = 74,
+        vehicleOrderUp = 75,
+        vehicleOrderDown = 76,
+        vehicleApplyShuntCheat = 77,
+        applyFreeCashCheat = 78,
+        renameIndustry = 79,
+        vehicleClone = 80,
         cheat = 81,
     };
 
     enum class LoadOrQuitMode : uint16_t
     {
-        LoadGamePrompt,
-        ReturnToTitlePrompt,
-        QuitGamePrompt,
+        loadGamePrompt,
+        returnToTitlePrompt,
+        quitGamePrompt,
     };
 
     constexpr uint32_t FAILURE = 0x80000000;
@@ -130,51 +130,51 @@ namespace OpenLoco::GameCommands
     inline void do_0(EntityId_t source, EntityId_t dest)
     {
         registers regs;
-        regs.bl = GameCommandFlag::apply;
+        regs.bl = Flags::apply;
         regs.dx = source;
         regs.di = dest;
-        doCommand(GameCommand::vehicle_rearrange, regs);
+        doCommand(GameCommand::vehicleRearrange, regs);
     }
 
     inline bool do_2(EntityId_t head)
     {
         registers regs;
-        regs.bl = GameCommandFlag::apply | GameCommandFlag::flag_3 | GameCommandFlag::flag_6;
+        regs.bl = Flags::apply | Flags::flag_3 | Flags::flag_6;
         regs.di = head;
-        return doCommand(GameCommand::vehicle_pickup, regs) != FAILURE;
+        return doCommand(GameCommand::vehiclePickup, regs) != FAILURE;
     }
 
     // Reverse (vehicle)
     inline void do_3(EntityId_t vehicleHead, Vehicles::VehicleHead* const head)
     {
         registers regs;
-        regs.bl = GameCommandFlag::apply;
+        regs.bl = Flags::apply;
         regs.dx = vehicleHead;
         // Bug in game command 3 requires to set edi to a vehicle prior to calling
         regs.edi = reinterpret_cast<uint32_t>(head);
 
-        doCommand(GameCommand::vehicle_reverse, regs);
+        doCommand(GameCommand::vehicleReverse, regs);
     }
 
     // Pass signal (vehicle)
     inline void do_4(EntityId_t vehicleHead)
     {
         registers regs;
-        regs.bl = GameCommandFlag::apply;
+        regs.bl = Flags::apply;
         regs.di = vehicleHead;
 
-        doCommand(GameCommand::vehicle_pass_signal, regs);
+        doCommand(GameCommand::vehiclePassSignal, regs);
     }
 
     // Build vehicle
     inline uint32_t do_5(uint16_t vehicle_type, uint16_t vehicle_id = 0xFFFF)
     {
         registers regs;
-        regs.bl = GameCommandFlag::apply;
+        regs.bl = Flags::apply;
         regs.di = vehicle_id;
         regs.edx = vehicle_type;
 
-        return doCommand(GameCommand::vehicle_create, regs);
+        return doCommand(GameCommand::vehicleCreate, regs);
     }
 
     // Build vehicle
@@ -185,66 +185,66 @@ namespace OpenLoco::GameCommands
         regs.di = vehicle_id;
         regs.edx = vehicle_type;
 
-        return doCommand(GameCommand::vehicle_create, regs);
+        return doCommand(GameCommand::vehicleCreate, regs);
     }
 
     inline void do_6(EntityId_t car)
     {
         registers regs;
-        regs.bl = GameCommandFlag::apply;
+        regs.bl = Flags::apply;
         regs.dx = car;
-        doCommand(GameCommand::vehicle_sell, regs);
+        doCommand(GameCommand::vehicleSell, regs);
     }
 
     // Change loan
     inline void do_9(currency32_t newLoan)
     {
         registers regs;
-        regs.bl = GameCommandFlag::apply;
+        regs.bl = Flags::apply;
         regs.edx = newLoan;
-        doCommand(GameCommand::change_loan, regs);
+        doCommand(GameCommand::changeLoan, regs);
     }
 
     // Change vehicle name
     inline void do_10(EntityId_t head, uint16_t i, uint32_t edx, uint32_t ebp, uint32_t edi)
     {
         registers regs;
-        regs.bl = GameCommandFlag::apply;
+        regs.bl = Flags::apply;
         regs.cx = head; // vehicle head id
         regs.ax = i;    // [ 0, 1, 2]
         regs.edx = edx; // part of name buffer
         regs.ebp = ebp; // part of name buffer
         regs.edi = edi; // part of name buffer
-        doCommand(GameCommand::vehicle_rename, regs);
+        doCommand(GameCommand::vehicleRename, regs);
     }
 
     // Change station name
     inline void do_11(uint16_t cx, uint16_t ax, uint32_t edx, uint32_t ebp, uint32_t edi)
     {
         registers regs;
-        regs.bl = GameCommandFlag::apply;
+        regs.bl = Flags::apply;
         regs.cx = cx;   // station number or 0
         regs.ax = ax;   // [ 0, 1, 2]
         regs.edx = edx; // part of name buffer
         regs.ebp = ebp; // part of name buffer
         regs.edi = edi; // part of name buffer
-        doCommand(GameCommand::change_station_name, regs);
+        doCommand(GameCommand::changeStationName, regs);
     }
 
     inline void do12(EntityId_t head, uint8_t bh)
     {
         registers regs;
-        regs.bl = GameCommandFlag::apply;
+        regs.bl = Flags::apply;
         regs.bh = bh;
         regs.dx = head;
-        doCommand(GameCommand::vehicle_local_express, regs);
+        doCommand(GameCommand::vehicleLocalExpress, regs);
     }
 
     // Change company colour scheme
     inline void do_19(int8_t isPrimary, int8_t value, int8_t colourType, int8_t setColourMode, uint8_t companyId)
     {
         registers regs;
-        regs.bl = GameCommandFlag::apply;
+        regs.bl = Flags::apply;
         regs.cl = colourType;    // vehicle type or main
         regs.dh = setColourMode; // [ 0, 1 ] -- 0 = set colour, 1 = toggle enabled/disabled;
         regs.dl = companyId;     // company id
@@ -260,25 +260,25 @@ namespace OpenLoco::GameCommands
             regs.al = value; // [ 0, 1 ] -- off or on
         }
 
-        doCommand(GameCommand::change_company_colour_scheme, regs);
+        doCommand(GameCommand::changeCompanyColourScheme, regs);
     }
 
     // Pause game
     inline void do_20()
     {
         registers regs;
-        regs.bl = GameCommandFlag::apply;
-        doCommand(GameCommand::pause_game, regs);
+        regs.bl = Flags::apply;
+        doCommand(GameCommand::pauseGame, regs);
     }
 
     // Load/save/quit game
     inline void do_21(uint8_t dl, uint8_t di)
     {
         registers regs;
-        regs.bl = GameCommandFlag::apply;
+        regs.bl = Flags::apply;
         regs.dl = dl; // [ 0 = save, 1 = close save prompt, 2 = don't save ]
         regs.di = di; // [ 0 = load game, 1 = return to title screen, 2 = quit to desktop ]
-        doCommand(GameCommand::load_save_quit_game, regs);
+        doCommand(GameCommand::loadSaveQuitGame, regs);
     }
 
     // Change Land Material
@@ -291,7 +291,7 @@ namespace OpenLoco::GameCommands
         regs.bp = pointB.y;
         regs.dl = landType;
         regs.bl = flags;
-        doCommand(GameCommand::change_land_material, regs);
+        doCommand(GameCommand::changeLandMaterial, regs);
     }
 
     // Raise Land
@@ -304,7 +304,7 @@ namespace OpenLoco::GameCommands
         regs.ebp = pointB.y << 16 | pointA.y;
         regs.bl = flags;
         regs.di = di;
-        return doCommand(GameCommand::raise_land, regs);
+        return doCommand(GameCommand::raiseLand, regs);
     }
 
     // Lower Land
@@ -317,7 +317,7 @@ namespace OpenLoco::GameCommands
         regs.ebp = pointB.y << 16 | pointA.y;
         regs.bl = flags;
         regs.di = di;
-        return doCommand(GameCommand::lower_land, regs);
+        return doCommand(GameCommand::lowerLand, regs);
     }
 
     // Lower/Raise Land Mountain
@@ -330,7 +330,7 @@ namespace OpenLoco::GameCommands
         regs.ebp = pointB.y << 16 | pointA.y;
         regs.bl = flags;
         regs.di = di;
-        return doCommand(GameCommand::lower_raise_land_mountain, regs);
+        return doCommand(GameCommand::lowerRaiseLandMountain, regs);
     }
 
     // Raise Water
@@ -342,7 +342,7 @@ namespace OpenLoco::GameCommands
         regs.di = pointB.x;
         regs.bp = pointB.y;
         regs.bl = flags;
-        return doCommand(GameCommand::raise_water, regs);
+        return doCommand(GameCommand::raiseWater, regs);
     }
 
     // Lower Water
@@ -354,92 +354,92 @@ namespace OpenLoco::GameCommands
         regs.di = pointB.x;
         regs.bp = pointB.y;
         regs.bl = flags;
-        return doCommand(GameCommand::lower_water, regs);
+        return doCommand(GameCommand::lowerWater, regs);
     }
 
     // Change company name
     inline bool do_30(uint16_t cx, uint16_t ax, uint32_t edx, uint32_t ebp, uint32_t edi)
     {
         registers regs;
-        regs.bl = GameCommandFlag::apply;
+        regs.bl = Flags::apply;
         regs.cx = cx;   // company id
         regs.ax = ax;   // [ 0, 1, 2]
         regs.edx = edx; // part of name buffer
         regs.ebp = ebp; // part of name buffer
         regs.edi = edi; // part of name buffer
-        return doCommand(GameCommand::change_company_name, regs) != FAILURE;
+        return doCommand(GameCommand::changeCompanyName, regs) != FAILURE;
     }
 
     // Change company owner name
     inline bool do_31(uint16_t cx, uint16_t ax, uint32_t edx, uint32_t ebp, uint32_t edi)
     {
         registers regs;
-        regs.bl = GameCommandFlag::apply;
+        regs.bl = Flags::apply;
         regs.cx = cx;   // company id
         regs.ax = ax;   // [ 0, 1, 2]
         regs.edx = edx; // part of name buffer
         regs.ebp = ebp; // part of name buffer
         regs.edi = edi; // part of name buffer
-        return doCommand(GameCommand::change_company_owner_name, regs) != FAILURE;
+        return doCommand(GameCommand::changeCompanyOwnerName, regs) != FAILURE;
     }
 
     inline bool do_35(EntityId_t head, uint64_t rawOrder, uint32_t orderOffset)
     {
         registers regs;
-        regs.bl = GameCommandFlag::apply;
+        regs.bl = Flags::apply;
         regs.eax = rawOrder & 0xFFFFFFFF;
         regs.cx = rawOrder >> 32;
         regs.di = head;
         regs.edx = orderOffset;
-        return doCommand(GameCommand::vehicle_order_insert, regs);
+        return doCommand(GameCommand::vehicleOrderInsert, regs);
     }
 
     inline bool do_36(EntityId_t head, uint32_t orderOffset)
     {
         registers regs;
-        regs.bl = GameCommandFlag::apply;
+        regs.bl = Flags::apply;
         regs.di = head;
         regs.edx = orderOffset;
-        return doCommand(GameCommand::vehicle_order_delete, regs);
+        return doCommand(GameCommand::vehicleOrderDelete, regs);
     }
 
     inline bool do_37(EntityId_t head)
     {
         registers regs;
-        regs.bl = GameCommandFlag::apply;
+        regs.bl = Flags::apply;
         regs.di = head;
-        return doCommand(GameCommand::vehicle_order_skip, regs);
+        return doCommand(GameCommand::vehicleOrderSkip, regs);
     }
 
     // Rename town
     inline void do_46(uint16_t cx, uint16_t ax, uint32_t edx, uint32_t ebp, uint32_t edi)
     {
         registers regs;
-        regs.bl = GameCommandFlag::apply;
+        regs.bl = Flags::apply;
         regs.cx = cx;   // town number or 0
         regs.ax = ax;   // [ 0, 1, 2]
         regs.edx = edx; // part of name buffer
         regs.ebp = ebp; // part of name buffer
         regs.edi = edi; // part of name buffer
-        doCommand(GameCommand::rename_town, regs);
+        doCommand(GameCommand::renameTown, regs);
     }
 
     // Remove industry
     inline bool do_48(uint8_t industryId)
     {
         registers regs;
-        regs.bl = GameCommandFlag::apply;
+        regs.bl = Flags::apply;
         regs.dx = industryId;
-        return doCommand(GameCommand::remove_industry, regs) != FAILURE;
+        return doCommand(GameCommand::removeIndustry, regs) != FAILURE;
     }
 
     // Remove town
     inline bool do_50(uint8_t townId)
     {
         registers regs;
-        regs.bl = GameCommandFlag::apply;
+        regs.bl = Flags::apply;
         regs.edi = townId;
-        return doCommand(GameCommand::remove_town, regs) != FAILURE;
+        return doCommand(GameCommand::removeTown, regs) != FAILURE;
     }
 
     // Remove company headquarters (or build - needs to be checked)
@@ -453,7 +453,7 @@ namespace OpenLoco::GameCommands
         regs.ax = ax; // y
         regs.di = di; // z
         regs.dx = dx; // company index (value 1 in testing case)
-        return doCommand(GameCommand::remove_company_headquarters, regs);
+        return doCommand(GameCommand::removeCompanyHeadquarters, regs);
     }
 
     // Build company headquarters (or remove - needs to be checked)
@@ -466,33 +466,33 @@ namespace OpenLoco::GameCommands
         regs.cx = cx; // x?
         regs.ax = ax; // y?
         regs.di = di; // z?
-        doCommand(GameCommand::build_company_headquarters, regs);
+        doCommand(GameCommand::buildCompanyHeadquarters, regs);
     }
 
     inline bool do_59(EntityId_t head)
     {
         registers regs;
-        regs.bl = GameCommandFlag::apply | GameCommandFlag::flag_3 | GameCommandFlag::flag_6;
+        regs.bl = Flags::apply | Flags::flag_3 | Flags::flag_6;
         regs.di = head;
-        return doCommand(GameCommand::vehicle_abort_pickup_air, regs) != FAILURE;
+        return doCommand(GameCommand::vehicleAbortPickupAir, regs) != FAILURE;
     }
 
     inline bool do_63(EntityId_t head)
     {
         registers regs;
-        regs.bl = GameCommandFlag::apply | GameCommandFlag::flag_3 | GameCommandFlag::flag_6;
+        regs.bl = Flags::apply | Flags::flag_3 | Flags::flag_6;
         regs.di = head;
-        return doCommand(GameCommand::vehicle_abort_pickup_water, regs) != FAILURE;
+        return doCommand(GameCommand::vehicleAbortPickupWater, regs) != FAILURE;
     }
 
     // Refit vehicle
     inline void do_64(EntityId_t vehicleHead, uint16_t option)
     {
         registers regs;
-        regs.bl = GameCommandFlag::apply;
+        regs.bl = Flags::apply;
         regs.di = vehicleHead;
         regs.dx = option;
-        doCommand(GameCommand::vehicle_refit, regs);
+        doCommand(GameCommand::vehicleRefit, regs);
     }
 
     // Change company face
@@ -500,13 +500,13 @@ namespace OpenLoco::GameCommands
     {
         auto objPtr = reinterpret_cast<const int32_t*>(&object);
         registers regs;
-        regs.bl = GameCommandFlag::apply;
+        regs.bl = Flags::apply;
         regs.eax = *objPtr++;
         regs.ecx = *objPtr++;
         regs.edx = *objPtr++;
         regs.edi = *objPtr;
         regs.bh = company;
-        return doCommand(GameCommand::change_company_face, regs) != FAILURE;
+        return doCommand(GameCommand::changeCompanyFace, regs) != FAILURE;
     }
 
     // Clear Land
@@ -518,23 +518,23 @@ namespace OpenLoco::GameCommands
         regs.edx = pointB.x << 16 | pointA.x;
         regs.ebp = pointB.y << 16 | pointA.y;
         regs.bl = flags;
-        doCommand(GameCommand::clear_land, regs);
+        doCommand(GameCommand::clearLand, regs);
     }
 
     // Load multiplayer map
     inline void do_67(const char* filename)
     {
         registers regs;
-        regs.bl = GameCommandFlag::apply;
+        regs.bl = Flags::apply;
         regs.ebp = reinterpret_cast<int32_t>(filename);
-        doCommand(GameCommand::load_multiplayer_map, regs);
+        doCommand(GameCommand::loadMultiplayerMap, regs);
     }
 
     // Multiplayer-related
     inline void do_69()
     {
         registers regs;
-        regs.bl = GameCommandFlag::apply;
+        regs.bl = Flags::apply;
         doCommand(GameCommand::gc_unk_69, regs);
     }
 
@@ -542,7 +542,7 @@ namespace OpenLoco::GameCommands
     inline void do_70()
     {
         registers regs;
-        regs.bl = GameCommandFlag::apply;
+        regs.bl = Flags::apply;
         doCommand(GameCommand::gc_unk_70, regs);
     }
 
@@ -550,104 +550,104 @@ namespace OpenLoco::GameCommands
     inline void do_71(int32_t ax, const char* string)
     {
         registers regs;
-        regs.bl = GameCommandFlag::apply;
+        regs.bl = Flags::apply;
         regs.ax = ax;
         memcpy(&regs.ecx, &string[0], 4);
         memcpy(&regs.edx, &string[4], 4);
         memcpy(&regs.ebp, &string[8], 4);
         memcpy(&regs.edi, &string[12], 4);
-        doCommand(GameCommand::send_chat_message, regs);
+        doCommand(GameCommand::sendChatMessage, regs);
     }
 
     // Multiplayer save
     inline void do_72()
     {
         registers regs;
-        regs.bl = GameCommandFlag::apply;
-        doCommand(GameCommand::multiplayer_save, regs);
+        regs.bl = Flags::apply;
+        doCommand(GameCommand::multiplayerSave, regs);
     }
 
     // Update owner status
     inline void do_73(EntityId_t id)
     {
         registers regs;
-        regs.bl = GameCommandFlag::apply;
+        regs.bl = Flags::apply;
         regs.ax = -2;
         regs.cx = id;
-        doCommand(GameCommand::update_owner_status, regs);
+        doCommand(GameCommand::updateOwnerStatus, regs);
     }
 
     // Update owner status
     inline void do_73(Map::Pos2 position)
     {
         registers regs;
-        regs.bl = GameCommandFlag::apply;
+        regs.bl = Flags::apply;
         regs.ax = position.x;
         regs.cx = position.y;
-        doCommand(GameCommand::update_owner_status, regs);
+        doCommand(GameCommand::updateOwnerStatus, regs);
     }
 
     inline uint32_t do_74(EntityId_t head, int16_t speed)
     {
         registers regs;
-        regs.bl = GameCommandFlag::apply;
+        regs.bl = Flags::apply;
         regs.cx = head;
         regs.dx = speed;
-        return doCommand(GameCommand::vehicle_speed_control, regs);
+        return doCommand(GameCommand::vehicleSpeedControl, regs);
     }
 
     inline uint32_t do_75(EntityId_t head, uint32_t orderOffset)
     {
         registers regs;
-        regs.bl = GameCommandFlag::apply;
+        regs.bl = Flags::apply;
         regs.di = head;
         regs.edx = orderOffset;
-        return doCommand(GameCommand::vehicle_order_up, regs);
+        return doCommand(GameCommand::vehicleOrderUp, regs);
     }
 
     inline uint32_t do_76(EntityId_t head, uint32_t orderOffset)
     {
         registers regs;
-        regs.bl = GameCommandFlag::apply;
+        regs.bl = Flags::apply;
         regs.di = head;
         regs.edx = orderOffset;
-        return doCommand(GameCommand::vehicle_order_down, regs);
+        return doCommand(GameCommand::vehicleOrderDown, regs);
     }
 
     inline void do_77(EntityId_t head)
     {
         registers regs;
-        regs.bl = GameCommandFlag::apply;
+        regs.bl = Flags::apply;
         regs.cx = head;
-        doCommand(GameCommand::vehicle_apply_shunt_cheat, regs);
+        doCommand(GameCommand::vehicleApplyShuntCheat, regs);
     }
 
     inline void do_78()
     {
         registers regs;
-        regs.bl = GameCommandFlag::apply;
-        GameCommands::doCommand(GameCommand::apply_free_cash_cheat, regs);
+        regs.bl = Flags::apply;
+        GameCommands::doCommand(GameCommand::applyFreeCashCheat, regs);
     }
 
     // Rename industry
     inline void do_79(uint16_t cx, uint16_t ax, uint32_t edx, uint32_t ebp, uint32_t edi)
     {
         registers regs;
-        regs.bl = GameCommandFlag::apply;
+        regs.bl = Flags::apply;
         regs.cx = cx;   // industry number or 0
         regs.ax = ax;   // [ 0, 1, 2]
         regs.edx = edx; // part of name buffer
         regs.ebp = ebp; // part of name buffer
         regs.edi = edi; // part of name buffer
-        doCommand(GameCommand::rename_industry, regs);
+        doCommand(GameCommand::renameIndustry, regs);
     }
 
     inline bool do_80(uint16_t head)
     {
         registers regs;
-        regs.bl = GameCommandFlag::apply;
+        regs.bl = Flags::apply;
         regs.ax = head;
-        return GameCommands::doCommand(GameCommand::vehicle_clone, regs) != FAILURE;
+        return GameCommands::doCommand(GameCommand::vehicleClone, regs) != FAILURE;
     }
 
     enum class CheatCommand : uint8_t;
@@ -655,7 +655,7 @@ namespace OpenLoco::GameCommands
     inline bool do_81(CheatCommand command, int32_t param1 = 0, int32_t param2 = 0, int32_t param3 = 0)
     {
         registers regs;
-        regs.bl = GameCommandFlag::apply;
+        regs.bl = Flags::apply;
         regs.eax = static_cast<int32_t>(command);
         regs.ebx = param1;
         regs.ecx = param2;
