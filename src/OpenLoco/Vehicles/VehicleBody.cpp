@@ -238,13 +238,13 @@ namespace OpenLoco::Vehicles
     // 0x004AC255
     void VehicleBody::sub_4AC255(VehicleBogie* back_bogie, VehicleBogie* front_bogie)
     {
-        auto bogieDifference = front_bogie->position - back_bogie->position;
-        auto midPoint = bogieDifference / 2;
+        auto midPoint = (front_bogie->position + back_bogie->position) / 2;
         moveTo(midPoint);
 
         if (object_sprite_type == 0xFF)
             return;
 
+        auto bogieDifference = front_bogie->position - back_bogie->position;
         auto distanceBetweenBogies = Math::Vector::distance(front_bogie->position, back_bogie->position);
         auto vehObj = object();
         if (vehObj->bodySprites[object_sprite_type].flags & BodySpriteFlags::hasSteepSprites)
