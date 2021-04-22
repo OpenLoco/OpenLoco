@@ -145,15 +145,15 @@ namespace OpenLoco::Vehicles
         if (object_sprite_type == 0xFF)
             return;
 
-        auto VehicleObject = object();
+        auto vehicleObj = object();
         uint8_t al = 0;
-        if (VehicleObject->bodySprites[object_sprite_type].flags & BodySpriteFlags::hasSpeedAnimation)
+        if (vehicleObj->bodySprites[object_sprite_type].flags & BodySpriteFlags::hasSpeedAnimation)
         {
             Vehicle2* veh3 = vehicleUpdate_2;
-            al = veh3->currentSpeed / (VehicleObject->speed / VehicleObject->bodySprites[object_sprite_type].numAnimationFrames);
-            al = std::min<uint8_t>(al, VehicleObject->bodySprites[object_sprite_type].numAnimationFrames - 1);
+            al = veh3->currentSpeed / (vehicleObj->speed / vehicleObj->bodySprites[object_sprite_type].numAnimationFrames);
+            al = std::min<uint8_t>(al, vehicleObj->bodySprites[object_sprite_type].numAnimationFrames - 1);
         }
-        else if (VehicleObject->bodySprites[object_sprite_type].numRollFrames != 1)
+        else if (vehicleObj->bodySprites[object_sprite_type].numRollFrames != 1)
         {
             VehicleBogie* frontBogie = vehicleUpdate_frontBogie;
             Vehicle2* veh3 = vehicleUpdate_2;
@@ -221,7 +221,7 @@ namespace OpenLoco::Vehicles
         }
         else
         {
-            al = (var_44 >> 12) & (VehicleObject->bodySprites[object_sprite_type].numAnimationFrames - 1);
+            al = (var_44 >> 12) & (vehicleObj->bodySprites[object_sprite_type].numAnimationFrames - 1);
         }
         if (var_46 != al)
         {
@@ -1389,10 +1389,31 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004AC039
-    void VehicleBody::sub_4AC039()
+    void VehicleBody::updateCargoSprite()
     {
-        registers regs{};
-        regs.esi = reinterpret_cast<int32_t>(this);
-        call(0x004AC039, regs);
+        if (object_sprite_type == 0xFF)
+        {
+            return;
+        }
+        if (primaryCargo.maxQty == 0)
+        {
+            return;
+        }
+
+        auto vehicleObj = object();
+        auto& bodySprite = vehicleObj->bodySprites[object_sprite_type];
+
+        auto percentageFull = std::min((primaryCargo.qty * 256) / primaryCargo.maxQty, 255);
+        auto spriteIndex = (percentageFull * bodySprite.numCargoLoadFrames) / 256;
+        if (spriteIndex != 0)
+        {
+            spriteIndex += vehicleObj->cargoTypeSpriteOffsets[primaryCargo.type];
+        }
+        spriteIndex *= bodySprite.numAnimationFrames;
+        if (spriteIndex != var_47)
+        {
+            var_47 = spriteIndex;
+            invalidateSprite();
+        }
     }
 }

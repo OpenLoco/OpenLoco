@@ -452,7 +452,7 @@ namespace OpenLoco::Vehicles
         int32_t update();
         void secondaryAnimationUpdate();
         void sub_4AAB0B();
-        void sub_4AC039();
+        void updateCargoSprite();
 
     private:
         void animationUpdate();

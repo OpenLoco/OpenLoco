@@ -144,7 +144,7 @@ namespace OpenLoco
         uint8_t numFlatRotationFrames;   // 0x00 4, 8, 16, 32, 64?
         uint8_t numSlopedRotationFrames; // 0x01 4, 8, 16, 32?
         uint8_t numAnimationFrames;      // 0x02
-        uint8_t vehicle_type;            // 0x03
+        uint8_t numCargoLoadFrames;      // 0x03
         uint8_t numCargoFrames;          // 0x04
         uint8_t numRollFrames;           // 0x05
         uint8_t bogey_position;          // 0x06
@@ -219,9 +219,9 @@ namespace OpenLoco
         uint8_t max_secondary_cargo;                  // 0xE3
         uint32_t primary_cargo_types;                 // 0xE4
         uint32_t secondary_cargo_types;               // 0xE8
-        uint8_t pad_EC[0x10C - 0xEC];
-        uint8_t num_simultaneous_cargo_types; // 0x10C
-        simple_animation animation[2];        // 0x10D
+        uint8_t cargoTypeSpriteOffsets[32];           // 0xEC
+        uint8_t num_simultaneous_cargo_types;         // 0x10C
+        simple_animation animation[2];                // 0x10D
         uint8_t var_113;
         uint16_t designed;                 // 0x114
         uint16_t obsolete;                 // 0x116
