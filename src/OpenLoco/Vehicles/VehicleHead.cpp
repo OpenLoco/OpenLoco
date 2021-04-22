@@ -3132,7 +3132,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004BA7FC
-    void LastIncome::beginNewIncome()
+    void IncomeStats::beginNewIncome()
     {
         day = getCurrentDay();
         std::fill(std::begin(cargoTypes), std::end(cargoTypes), 0xFF);
@@ -3140,7 +3140,7 @@ namespace OpenLoco::Vehicles
 
     // 0x4BA817
     // Returns false if stats were not updated
-    bool LastIncome::addToStats(uint8_t cargoType, uint16_t cargoQty, uint16_t cargoDist, uint8_t cargoAge, currency32_t profit)
+    bool IncomeStats::addToStats(uint8_t cargoType, uint16_t cargoQty, uint16_t cargoDist, uint8_t cargoAge, currency32_t profit)
     {
         for (auto i = 0; i < 4; ++i)
         {

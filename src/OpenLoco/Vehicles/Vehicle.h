@@ -325,7 +325,7 @@ namespace OpenLoco::Vehicles
     };
     static_assert(sizeof(VehicleHead) == 0x7A); // Can't use offset_of change this to last field if more found
 
-    struct LastIncome
+    struct IncomeStats
     {
         int32_t day;                  // 0x53
         uint8_t cargoTypes[4];        // 0x57
@@ -336,7 +336,7 @@ namespace OpenLoco::Vehicles
         void beginNewIncome();
         bool addToStats(uint8_t cargoType, uint16_t cargoQty, uint16_t cargoDist, uint8_t cargoAge, currency32_t profit);
     };
-    static_assert(sizeof(LastIncome) == 0x2C);
+    static_assert(sizeof(IncomeStats) == 0x2C);
 
     struct Vehicle1 : VehicleBase
     {
@@ -366,7 +366,7 @@ namespace OpenLoco::Vehicles
         uint16_t var_4E;
         uint16_t var_50;
         uint8_t var_52;
-        LastIncome lastIncome; // 0x53
+        IncomeStats lastIncome; // 0x53
     };
     static_assert(sizeof(Vehicle1) == 0x7F); // Can't use offset_of change this to last field if more found
 
