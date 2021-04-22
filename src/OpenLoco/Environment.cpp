@@ -212,6 +212,15 @@ namespace OpenLoco::Environment
 
         // NB: vanilla routines do not use std::filesystem yet, so the trailing slash is still needed.
         auto saveDirectory = getPathNoWarning(path_id::save) / "";
+        auto& configLastSavePath = Config::getNew().last_save_path;
+        if (!configLastSavePath.empty())
+        {
+            auto directory = fs::u8path(configLastSavePath);
+            if (fs::is_directory(directory))
+            {
+                saveDirectory = directory;
+            }
+        }
         setDirectory(_path_saves_single_player, saveDirectory);
         setDirectory(_path_saves_two_player, saveDirectory);
         autoCreateDirectory(saveDirectory);

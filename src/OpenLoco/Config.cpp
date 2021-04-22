@@ -76,6 +76,8 @@ namespace OpenLoco::Config
 
         if (config["loco_install_path"])
             _new_config.loco_install_path = config["loco_install_path"].as<std::string>();
+        if (config["last_save_path"])
+            _new_config.last_save_path = config["last_save_path"].as<std::string>();
         if (config["language"])
             _new_config.language = config["language"].as<std::string>();
         if (config["breakdowns_disabled"])
@@ -136,6 +138,7 @@ namespace OpenLoco::Config
         node["audio"] = audioNode;
 
         node["loco_install_path"] = _new_config.loco_install_path;
+        node["last_save_path"] = _new_config.last_save_path;
         node["language"] = _new_config.language;
         node["breakdowns_disabled"] = _new_config.breakdowns_disabled;
         node["cheats_menu_enabled"] = _new_config.cheats_menu_enabled;

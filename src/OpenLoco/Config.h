@@ -148,6 +148,7 @@ namespace OpenLoco::Config
         display_config display;
         audio_config audio;
         std::string loco_install_path;
+        std::string last_save_path;
         std::string language = "en-GB";
         bool cheats_menu_enabled = false;
         bool breakdowns_disabled = false;

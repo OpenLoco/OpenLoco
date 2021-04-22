@@ -1,4 +1,5 @@
 #include "../Audio/Audio.h"
+#include "../Config.h"
 #include "../Console.h"
 #include "../Core/FileSystem.hpp"
 #include "../Graphics/Colour.h"
@@ -692,7 +693,7 @@ namespace OpenLoco::Ui::PromptBrowse
         }
         else
         {
-            auto str = path.string();
+            auto str = path.u8string();
             if (str.size() > 0)
             {
                 auto lastCharacter = str[str.size() - 1];
@@ -928,9 +929,6 @@ namespace OpenLoco::Ui::PromptBrowse
 
             // Copy directory and filename to buffer.
             strncpy(&_directory[0], path.u8string().c_str(), std::size(_directory));
-
-            // Close browse window to continue saving.
-            WindowManager::close(self);
         }
         else
         {
@@ -938,10 +936,19 @@ namespace OpenLoco::Ui::PromptBrowse
             // TODO: refactor to fs::path?
             strncat(_directory, inputSession.buffer.c_str(), std::size(_directory));
             strncat(_directory, getExtensionFromFileType(_fileType), std::size(_directory));
-
-            // Close browse window to start loading.
-            WindowManager::close(self);
         }
+
+        // Remember the current path
+        fs::path currentPath = fs::u8path(&_directory[0]);
+        if (!fs::is_directory(currentPath))
+            Config::getNew().last_save_path = currentPath.parent_path().u8string();
+        else
+            Config::getNew().last_save_path = currentPath.u8string();
+        Config::writeNewConfig();
+        Environment::resolvePaths();
+
+        // Close browse window to continue saving.
+        WindowManager::close(self);
     }
 
     // 0x004466CA

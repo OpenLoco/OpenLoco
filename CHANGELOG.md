@@ -1,6 +1,7 @@
 21.04.1+ (???)
 ------------------------------------------------------------------------
 - Feature: [#184] Implement cheats window with financial, company, vehicle, and town cheats.
+- Feature: [#857] Remember last save directory in configuration variable.
 - Fix: [#914] Boats get stuck in approaching dock mode when water is above a certain height. This was incorrectly fixed in 21.04.1.
 - Fix: [#927] Some available industries are missing in the 'Fund new industries' tab.
 
