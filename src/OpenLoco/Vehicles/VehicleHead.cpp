@@ -2,6 +2,7 @@
 #include "../CompanyManager.h"
 #include "../Config.h"
 #include "../Core/Optional.hpp"
+#include "../Date.h"
 #include "../Entities/EntityManager.h"
 #include "../Entities/Misc.h"
 #include "../GameCommands/GameCommands.h"
@@ -2579,7 +2580,7 @@ namespace OpenLoco::Vehicles
             auto cargoPayment = CompanyManager::calculateDeliveredCargoPayment(cargo.type, cargo.qty, tilesDistance, cargo.numDays);
             company->cargoDelivered[cargo.type] = Math::Bound::add(company->cargoDelivered[cargo.type], cargo.qty);
 
-            sub_4BA7C7(cargo.type, cargo.qty, tilesDistance, cargo.numDays, cargoPayment);
+            updateLastIncomeStats(cargo.type, cargo.qty, tilesDistance, cargo.numDays, cargoPayment);
 
             var_58 += cargoPayment;
             station->var_3B1 = 0;
@@ -3130,17 +3131,64 @@ namespace OpenLoco::Vehicles
         }
     }
 
-    // 0x004BA7C7
-    void VehicleHead::sub_4BA7C7(uint8_t cargoType, uint16_t cargoQty, uint16_t cargoDist, uint8_t cargoAge, currency32_t profit)
+    // 0x004BA7FC
+    void IncomeStats::beginNewIncome()
     {
-        registers regs;
-        regs.al = cargoType;
-        regs.bx = cargoQty;
-        regs.cx = cargoDist;
-        regs.edx = cargoAge;
-        regs.ebp = profit;
-        regs.esi = reinterpret_cast<int32_t>(this);
-        call(0x004BA7C7, regs);
+        day = getCurrentDay();
+        std::fill(std::begin(cargoTypes), std::end(cargoTypes), 0xFF);
+    }
+
+    // 0x4BA817
+    // Returns false if stats were not updated
+    bool IncomeStats::addToStats(uint8_t cargoType, uint16_t cargoQty, uint16_t cargoDist, uint8_t cargoAge, currency32_t profit)
+    {
+        for (auto i = 0; i < 4; ++i)
+        {
+            if (cargoTypes[i] != cargoType)
+                continue;
+            if (cargoDistances[i] != cargoDist)
+                continue;
+            cargoQtys[i] += cargoQty;
+            cargoProfits[i] += profit;
+            cargoAges[i] = std::max(cargoAge, cargoAges[i]);
+            return true;
+        }
+
+        for (auto i = 0; i < 4; ++i)
+        {
+            if (cargoTypes[i] != 0xFF)
+                continue;
+
+            cargoTypes[i] = cargoType;
+            cargoDistances[i] = cargoDist;
+            cargoQtys[i] = cargoQty;
+            cargoAges[i] = cargoAge;
+            cargoProfits[i] = profit;
+            return true;
+        }
+        return false;
+    }
+
+    // 0x004BA7C7
+    void VehicleHead::updateLastIncomeStats(uint8_t cargoType, uint16_t cargoQty, uint16_t cargoDist, uint8_t cargoAge, currency32_t profit)
+    {
+        Vehicle train(this);
+        if (cargoQty == 0)
+            return;
+        if (cargoType == 0xFF)
+            return;
+
+        auto* veh1 = train.veh1;
+        if (veh1->var_48 & (1 << 2))
+        {
+            veh1->var_48 &= ~(1 << 2);
+            veh1->lastIncome.beginNewIncome();
+        }
+
+        if (veh1->lastIncome.addToStats(cargoType, cargoQty, cargoDist, cargoAge, profit))
+        {
+            Ui::WindowManager::invalidate(Ui::WindowType::vehicle, id);
+        }
     }
 
     // 0x004B7CC3

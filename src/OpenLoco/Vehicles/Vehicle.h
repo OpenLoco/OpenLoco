@@ -321,9 +321,22 @@ namespace OpenLoco::Vehicles
         void sub_4ADB47(bool unk);
         VehicleStatus getStatusTravelling() const;
         void getSecondStatus(VehicleStatus& vehStatus) const;
-        void sub_4BA7C7(uint8_t cargoType, uint16_t cargoQty, uint16_t cargoDist, uint8_t cargoAge, currency32_t profit);
+        void updateLastIncomeStats(uint8_t cargoType, uint16_t cargoQty, uint16_t cargoDist, uint8_t cargoAge, currency32_t profit);
     };
     static_assert(sizeof(VehicleHead) == 0x7A); // Can't use offset_of change this to last field if more found
+
+    struct IncomeStats
+    {
+        int32_t day;                  // 0x53
+        uint8_t cargoTypes[4];        // 0x57
+        uint16_t cargoQtys[4];        // 0x5B
+        uint16_t cargoDistances[4];   // 0x63
+        uint8_t cargoAges[4];         // 0x6B
+        currency32_t cargoProfits[4]; // 0x6F
+        void beginNewIncome();
+        bool addToStats(uint8_t cargoType, uint16_t cargoQty, uint16_t cargoDist, uint8_t cargoAge, currency32_t profit);
+    };
+    static_assert(sizeof(IncomeStats) == 0x2C);
 
     struct Vehicle1 : VehicleBase
     {
@@ -353,12 +366,7 @@ namespace OpenLoco::Vehicles
         uint16_t var_4E;
         uint16_t var_50;
         uint8_t var_52;
-        int32_t var_53;
-        int8_t var_57[4];
-        uint16_t var_5b[4];
-        uint16_t var_63[4];
-        uint8_t var_6B[4];
-        uint32_t var_6F[4];
+        IncomeStats lastIncome; // 0x53
     };
     static_assert(sizeof(Vehicle1) == 0x7F); // Can't use offset_of change this to last field if more found
 

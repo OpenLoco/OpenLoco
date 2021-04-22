@@ -2056,29 +2056,29 @@ namespace OpenLoco::Ui::Vehicle
             auto head = Common::getVehicle(self);
             Vehicles::Vehicle train(head);
             auto veh1 = train.veh1;
-            if (veh1->var_53 != -1)
+            if (veh1->lastIncome.day != -1)
             {
                 auto args = FormatArguments();
-                args.push<uint32_t>(veh1->var_53);
+                args.push<uint32_t>(veh1->lastIncome.day);
                 // Last income on: {DATE DMY}
                 Gfx::drawString_494B3F(*context, pos.x, pos.y, Colour::black, StringIds::last_income_on_date, &args);
                 pos.y += 10;
                 for (int i = 0; i < 4; i++)
                 {
-                    auto cargoType = veh1->var_57[i];
-                    if (cargoType == -1)
+                    auto cargoType = veh1->lastIncome.cargoTypes[i];
+                    if (cargoType == 0xFF)
                         continue;
 
                     auto cargoObject = ObjectManager::get<CargoObject>(cargoType);
 
-                    auto str = veh1->var_5b[i] == 1 ? cargoObject->unit_name_singular : cargoObject->unit_name_plural;
+                    auto str = veh1->lastIncome.cargoQtys[i] == 1 ? cargoObject->unit_name_singular : cargoObject->unit_name_plural;
 
                     args = FormatArguments();
                     args.push(str);
-                    args.push<uint32_t>(veh1->var_5b[i]);
-                    args.push(veh1->var_63[i]);
-                    args.push<uint16_t>(veh1->var_6B[i]);
-                    args.push<currency32_t>(veh1->var_6F[i]);
+                    args.push<uint32_t>(veh1->lastIncome.cargoQtys[i]);
+                    args.push(veh1->lastIncome.cargoDistances[i]);
+                    args.push<uint16_t>(veh1->lastIncome.cargoAges[i]);
+                    args.push<currency32_t>(veh1->lastIncome.cargoProfits[i]);
                     // {STRINGID} transported {INT16} blocks in {INT16} days = {CURRENCY32}
                     Gfx::drawString_495224(*context, pos.x + 4, pos.y, self->width - 12, Colour::black, StringIds::transported_blocks_in_days, &args);
 
