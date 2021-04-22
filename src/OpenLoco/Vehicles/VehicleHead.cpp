@@ -2771,7 +2771,7 @@ namespace OpenLoco::Vehicles
                     }
                     if (updateUnloadCargoComponent(carComponent.body->primaryCargo, carComponent.back))
                     {
-                        carComponent.body->sub_4AC039();
+                        carComponent.body->updateCargoSprite();
                     }
                     return;
                 }
