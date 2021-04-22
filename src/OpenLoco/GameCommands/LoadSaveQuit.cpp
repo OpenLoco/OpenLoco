@@ -258,13 +258,13 @@ namespace OpenLoco::GameCommands
 
             switch (_savePromptType)
             {
-                case LoadOrQuitMode::LoadGamePrompt:
+                case LoadOrQuitMode::loadGamePrompt:
                     MultiPlayer::setFlag(MultiPlayer::flags::flag_13); // intend to load?
                     break;
-                case LoadOrQuitMode::ReturnToTitlePrompt:
+                case LoadOrQuitMode::returnToTitlePrompt:
                     MultiPlayer::setFlag(MultiPlayer::flags::flag_14); // intend to return to title?
                     break;
-                case LoadOrQuitMode::QuitGamePrompt:
+                case LoadOrQuitMode::quitGamePrompt:
                     MultiPlayer::setFlag(MultiPlayer::flags::flag_15); // intend to quit game?
                     break;
             }
@@ -277,7 +277,7 @@ namespace OpenLoco::GameCommands
     // 0x0043BFCB
     static uint32_t loadSaveQuit(const uint8_t flags, uint8_t dl, uint8_t di)
     {
-        if ((flags & GameCommandFlag::apply) == 0)
+        if ((flags & Flags::apply) == 0)
             return 0;
 
         if (dl == 1)
@@ -300,7 +300,7 @@ namespace OpenLoco::GameCommands
                 {
                     Tutorial::stop();
                 }
-                else if (!isNetworked() || _savePromptType != LoadOrQuitMode::QuitGamePrompt)
+                else if (!isNetworked() || _savePromptType != LoadOrQuitMode::quitGamePrompt)
                 {
                     if (getScreenAge() >= 0xF00)
                     {
@@ -315,14 +315,14 @@ namespace OpenLoco::GameCommands
         // 0x0043BFE3
         switch (_savePromptType)
         {
-            case LoadOrQuitMode::LoadGamePrompt:
+            case LoadOrQuitMode::loadGamePrompt:
                 return loadGame();
 
-            case LoadOrQuitMode::ReturnToTitlePrompt:
+            case LoadOrQuitMode::returnToTitlePrompt:
                 returnToTitle();
                 return 0;
 
-            case LoadOrQuitMode::QuitGamePrompt:
+            case LoadOrQuitMode::quitGamePrompt:
                 return quitGame();
         }
 

@@ -726,7 +726,7 @@ namespace OpenLoco::Vehicles
             return FAILURE;
         }
 
-        if (flags & GameCommands::GameCommandFlag::apply)
+        if (flags & GameCommands::Flags::apply)
         {
             auto vehObject = ObjectManager::get<VehicleObject>(vehicleTypeId);
 
@@ -801,7 +801,7 @@ namespace OpenLoco::Vehicles
             return FAILURE;
         }
 
-        if (flags & GameCommands::GameCommandFlag::apply)
+        if (flags & GameCommands::Flags::apply)
         {
             if (train.head->tile_x != -1)
             {

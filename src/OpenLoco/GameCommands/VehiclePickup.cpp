@@ -38,10 +38,10 @@ namespace OpenLoco::GameCommands
         if (!head->canBeModified())
             return FAILURE;
 
-        if (!(flags & GameCommands::GameCommandFlag::apply))
+        if (!(flags & GameCommands::Flags::apply))
             return 0;
 
-        if (!(flags & GameCommands::GameCommandFlag::flag_6))
+        if (!(flags & GameCommands::Flags::flag_6))
             playPickupSound(veh2);
 
         head->liftUpVehicle();

@@ -904,7 +904,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             if (_9C68EF & (1 << 0))
             {
                 _9C68EF = _9C68EF & ~(1 << 0);
-                auto flags = GameCommands::GameCommandFlag::apply | GameCommands::GameCommandFlag::flag_3 | GameCommands::GameCommandFlag::flag_5 | GameCommands::GameCommandFlag::flag_6;
+                auto flags = GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6;
                 GameCommands::do_55(flags, _9C68D6, _9C68D8, _9C68DA);
             }
         }
@@ -960,7 +960,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             }
 
             GameCommands::setErrorTitle(StringIds::error_cant_build_this_here);
-            uint8_t flags = GameCommands::GameCommandFlag::apply | GameCommands::GameCommandFlag::flag_1;
+            uint8_t flags = GameCommands::Flags::apply | GameCommands::Flags::flag_1;
             auto commandResult = GameCommands::do_54(flags, tileY, tileX, tileZ, dx);
             if (commandResult != GameCommands::FAILURE)
             {

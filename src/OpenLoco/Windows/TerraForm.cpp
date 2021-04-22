@@ -849,7 +849,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         {
             if (widgetIndex != Common::widx::panel)
                 return;
-            clearLand(GameCommandFlag::apply);
+            clearLand(Flags::apply);
         }
 
         // 0x004BC682
@@ -861,7 +861,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             auto window = WindowManager::find(WindowType::error);
             if (window == nullptr)
             {
-                clearLand(GameCommandFlag::apply);
+                clearLand(Flags::apply);
             }
         }
 
@@ -1194,9 +1194,9 @@ namespace OpenLoco::Ui::Windows::Terraform
             }
             else
             {
-                lowerCost = lowerLand(GameCommandFlag::flag_2);
+                lowerCost = lowerLand(Flags::flag_2);
 
-                raiseCost = raiseLand(GameCommandFlag::flag_2);
+                raiseCost = raiseLand(Flags::flag_2);
             }
             setAdjustCost(raiseCost, lowerCost);
         }
@@ -1218,7 +1218,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                     Pos2 pointA = { _mapSelectionAX, _mapSelectionAY };
                     Pos2 pointB = { _mapSelectionBX, _mapSelectionBY };
 
-                    GameCommands::do_24(pointA, pointB, _lastSelectedLand, GameCommandFlag::apply);
+                    GameCommands::do_24(pointA, pointB, _lastSelectedLand, Flags::apply);
                 }
             }
 
@@ -1253,7 +1253,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             if (dY == 0)
                 dY = -1;
             auto deltaY = y - _dragLastY;
-            auto flags = GameCommandFlag::apply;
+            auto flags = Flags::apply;
 
             if (deltaY <= dY)
             {
@@ -1501,7 +1501,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 dY = -1;
 
             auto deltaY = y - _dragLastY;
-            auto flags = GameCommandFlag::apply;
+            auto flags = Flags::apply;
 
             if (deltaY <= dY)
             {

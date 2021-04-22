@@ -40,7 +40,7 @@ namespace OpenLoco::Vehicles
 
         static uint32_t staticRenameBuffer[9];
 
-        if ((flags & GameCommands::apply) != 0)
+        if ((flags & GameCommands::Flags::apply) != 0)
         {
             static const std::array<int, 3> transformTable = { 2, 0, 1 };
             int arrayIndex = transformTable.at(index);
@@ -77,7 +77,7 @@ namespace OpenLoco::Vehicles
             {
                 return GameCommands::FAILURE;
             }
-            if ((flags & GameCommands::apply) == 0)
+            if ((flags & GameCommands::Flags::apply) == 0)
             {
                 StringManager::emptyUserString(allocatedStringId);
                 return 0;
@@ -85,7 +85,7 @@ namespace OpenLoco::Vehicles
         }
         else
         {
-            if ((flags & GameCommands::apply) == 0)
+            if ((flags & GameCommands::Flags::apply) == 0)
             {
                 return 0;
             }

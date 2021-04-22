@@ -39,7 +39,7 @@ namespace OpenLoco::GameCommands
         static uint32_t renameBuffer[9];
 
         // Fill buffer over calls into the renameBuffer
-        if ((flags & GameCommands::apply) != 0)
+        if ((flags & GameCommands::Flags::apply) != 0)
         {
             static const std::array<int, 3> transformTable = { 2, 0, 1 };
             int arrayIndex = transformTable.at(index);
@@ -76,7 +76,7 @@ namespace OpenLoco::GameCommands
             return GameCommands::FAILURE;
 
         // Bailing out early?
-        if ((flags & GameCommands::apply) == 0)
+        if ((flags & GameCommands::Flags::apply) == 0)
         {
             StringManager::emptyUserString(allocatedStringId);
             return 0;

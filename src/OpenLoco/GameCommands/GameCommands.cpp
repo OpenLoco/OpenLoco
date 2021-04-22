@@ -44,44 +44,44 @@ namespace OpenLoco::GameCommands
 
     // clang-format off
     static constexpr GameCommandInfo _gameCommandDefinitions[82] = {
-        { GameCommand::vehicle_rearrange,             nullptr,                0x004AF1DF, true  },
-        { GameCommand::vehicle_place,                 nullptr,                0x004B01B6, true  },
-        { GameCommand::vehicle_pickup,                vehiclePickup,          0x004B0826, true  },
-        { GameCommand::vehicle_reverse,               nullptr,                0x004ADAA8, true  },
-        { GameCommand::vehicle_pass_signal,           nullptr,                0x004B0B50, true  },
-        { GameCommand::vehicle_create,                Vehicles::create,       0x004AE5E4, true  },
-        { GameCommand::vehicle_sell,                  nullptr,                0x004AED34, true  },
+        { GameCommand::vehicleRearrange,             nullptr,                0x004AF1DF, true  },
+        { GameCommand::vehiclePlace,                 nullptr,                0x004B01B6, true  },
+        { GameCommand::vehiclePickup,                vehiclePickup,          0x004B0826, true  },
+        { GameCommand::vehicleReverse,               nullptr,                0x004ADAA8, true  },
+        { GameCommand::vehiclePassSignal,           nullptr,                0x004B0B50, true  },
+        { GameCommand::vehicleCreate,                Vehicles::create,       0x004AE5E4, true  },
+        { GameCommand::vehicleSell,                  nullptr,                0x004AED34, true  },
         { GameCommand::gc_unk_7,                      nullptr,                0x0049BB98, true  },
         { GameCommand::gc_unk_8,                      nullptr,                0x0049C7F2, true  },
-        { GameCommand::change_loan,                   nullptr,                0x0046DE88, false },
-        { GameCommand::vehicle_rename,                Vehicles::rename,       0x004B6572, false },
-        { GameCommand::change_station_name,           nullptr,                0x00490756, false },
-        { GameCommand::vehicle_local_express,         nullptr,                0x004B694B, true  },
+        { GameCommand::changeLoan,                   nullptr,                0x0046DE88, false },
+        { GameCommand::vehicleRename,                Vehicles::rename,       0x004B6572, false },
+        { GameCommand::changeStationName,           nullptr,                0x00490756, false },
+        { GameCommand::vehicleLocalExpress,         nullptr,                0x004B694B, true  },
         { GameCommand::gc_unk_13,                     nullptr,                0x00488BDB, true  },
         { GameCommand::gc_unk_14,                     nullptr,                0x004891E4, true  },
         { GameCommand::gc_unk_15,                     nullptr,                0x0048BB20, true  },
         { GameCommand::gc_unk_16,                     nullptr,                0x0048C402, true  },
         { GameCommand::gc_unk_17,                     nullptr,                0x004A6479, true  },
         { GameCommand::gc_unk_18,                     nullptr,                0x004A668A, true  },
-        { GameCommand::change_company_colour_scheme,  nullptr,                0x0043483D, false },
-        { GameCommand::pause_game,                    togglePause,            0x00431E32, false },
-        { GameCommand::load_save_quit_game,           loadSaveQuit,           0x0043BFCB, false },
+        { GameCommand::changeCompanyColourScheme,  nullptr,                0x0043483D, false },
+        { GameCommand::pauseGame,                    togglePause,            0x00431E32, false },
+        { GameCommand::loadSaveQuitGame,           loadSaveQuit,           0x0043BFCB, false },
         { GameCommand::gc_unk_22,                     nullptr,                0x004BB392, true  },
         { GameCommand::gc_unk_23,                     nullptr,                0x004BB138, true  },
-        { GameCommand::change_land_material,          nullptr,                0x00468EDD, true  },
-        { GameCommand::raise_land,                    nullptr,                0x00463702, true  },
-        { GameCommand::lower_land,                    nullptr,                0x004638C6, true  },
-        { GameCommand::lower_raise_land_mountain,     nullptr,                0x00462DCE, true  },
-        { GameCommand::raise_water,                   nullptr,                0x004C4F19, true  },
-        { GameCommand::lower_water,                   nullptr,                0x004C5126, true  },
-        { GameCommand::change_company_name,           nullptr,                0x00434914, false },
-        { GameCommand::change_company_owner_name,     nullptr,                0x00434A58, false },
+        { GameCommand::changeLandMaterial,          nullptr,                0x00468EDD, true  },
+        { GameCommand::raiseLand,                    nullptr,                0x00463702, true  },
+        { GameCommand::lowerLand,                    nullptr,                0x004638C6, true  },
+        { GameCommand::lowerRaiseLandMountain,     nullptr,                0x00462DCE, true  },
+        { GameCommand::raiseWater,                   nullptr,                0x004C4F19, true  },
+        { GameCommand::lowerWater,                   nullptr,                0x004C5126, true  },
+        { GameCommand::changeCompanyName,           nullptr,                0x00434914, false },
+        { GameCommand::changeCompanyOwnerName,     nullptr,                0x00434A58, false },
         { GameCommand::gc_unk_32,                     nullptr,                0x004C436C, true  },
         { GameCommand::gc_unk_33,                     nullptr,                0x004C466C, true  },
         { GameCommand::gc_unk_34,                     nullptr,                0x004C4717, false },
-        { GameCommand::vehicle_order_insert,          nullptr,                0x0047036E, false },
-        { GameCommand::vehicle_order_delete,          nullptr,                0x0047057A, false },
-        { GameCommand::vehicle_order_skip,            Vehicles::orderSkip,    0x0047071A, false },
+        { GameCommand::vehicleOrderInsert,          nullptr,                0x0047036E, false },
+        { GameCommand::vehicleOrderDelete,          nullptr,                0x0047057A, false },
+        { GameCommand::vehicleOrderSkip,            Vehicles::orderSkip,    0x0047071A, false },
         { GameCommand::gc_unk_38,                     nullptr,                0x00475FBC, true  },
         { GameCommand::gc_unk_39,                     nullptr,                0x004775A5, true  },
         { GameCommand::gc_unk_40,                     nullptr,                0x0047A21E, true  },
@@ -90,41 +90,41 @@ namespace OpenLoco::GameCommands
         { GameCommand::gc_unk_43,                     nullptr,                0x0048D2AC, true  },
         { GameCommand::gc_unk_44,                     nullptr,                0x0042D133, true  },
         { GameCommand::gc_unk_45,                     nullptr,                0x0042D74E, true  },
-        { GameCommand::rename_town,                   renameTown,             0x0049B11E, false },
-        { GameCommand::create_industry,               nullptr,                0x0045436B, true  },
-        { GameCommand::remove_industry,               nullptr,                0x00455943, true  },
-        { GameCommand::create_town,                   nullptr,                0x00496C22, true  },
-        { GameCommand::remove_town,                   nullptr,                0x0049711F, true  },
+        { GameCommand::renameTown,                   renameTown,             0x0049B11E, false },
+        { GameCommand::createIndustry,               nullptr,                0x0045436B, true  },
+        { GameCommand::removeIndustry,               nullptr,                0x00455943, true  },
+        { GameCommand::createTown,                   nullptr,                0x00496C22, true  },
+        { GameCommand::removeTown,                   nullptr,                0x0049711F, true  },
         { GameCommand::gc_unk_51,                     nullptr,                0x004A6FDC, true  },
         { GameCommand::gc_unk_52,                     nullptr,                0x004A734F, true  },
         { GameCommand::gc_unk_53,                     nullptr,                0x0047AF0B, true  },
-        { GameCommand::remove_company_headquarters,   nullptr,                0x0042ECFC, true  },
-        { GameCommand::build_company_headquarters,    nullptr,                0x0042EEAF, true  },
+        { GameCommand::removeCompanyHeadquarters,   nullptr,                0x0042ECFC, true  },
+        { GameCommand::buildCompanyHeadquarters,    nullptr,                0x0042EEAF, true  },
         { GameCommand::gc_unk_56,                     nullptr,                0x00492C41, true  },
         { GameCommand::gc_unk_57,                     nullptr,                0x00493559, true  },
         { GameCommand::gc_unk_58,                     nullptr,                0x004267BE, true  },
-        { GameCommand::vehicle_abort_pickup_air,      nullptr,                0x00426B29, true  },
+        { GameCommand::vehicleAbortPickupAir,      nullptr,                0x00426B29, true  },
         { GameCommand::gc_unk_60,                     nullptr,                0x00493AA7, true  },
         { GameCommand::gc_unk_61,                     nullptr,                0x00494570, true  },
         { GameCommand::gc_unk_62,                     nullptr,                0x0042773C, true  },
-        { GameCommand::vehicle_abort_pickup_water,    nullptr,                0x004279CC, true  },
-        { GameCommand::vehicle_refit,                 nullptr,                0x0042F6DB, false },
-        { GameCommand::change_company_face,           nullptr,                0x00435506, false },
-        { GameCommand::clear_land,                    nullptr,                0x00469CCB, true  },
-        { GameCommand::load_multiplayer_map,          nullptr,                0x00444DA0, false },
+        { GameCommand::vehicleAbortPickupWater,    nullptr,                0x004279CC, true  },
+        { GameCommand::vehicleRefit,                 nullptr,                0x0042F6DB, false },
+        { GameCommand::changeCompanyFace,           nullptr,                0x00435506, false },
+        { GameCommand::clearLand,                    nullptr,                0x00469CCB, true  },
+        { GameCommand::loadMultiplayerMap,          nullptr,                0x00444DA0, false },
         { GameCommand::gc_unk_68,                     nullptr,                0x0046F8A5, false },
         { GameCommand::gc_unk_69,                     nullptr,                0x004454BE, false },
         { GameCommand::gc_unk_70,                     nullptr,                0x004456C8, false },
-        { GameCommand::send_chat_message,             nullptr,                0x0046F976, false },
-        { GameCommand::multiplayer_save,              nullptr,                0x004A0ACD, false },
-        { GameCommand::update_owner_status,           nullptr,                0x004383CA, false },
-        { GameCommand::vehicle_speed_control,         nullptr,                0x004BAB63, true  },
-        { GameCommand::vehicle_order_up,              nullptr,                0x00470CD2, false },
-        { GameCommand::vehicle_order_down,            nullptr,                0x00470E06, false },
-        { GameCommand::vehicle_apply_shunt_cheat,     nullptr,                0x004BAC53, false },
-        { GameCommand::apply_free_cash_cheat,         nullptr,                0x00438A08, false },
-        { GameCommand::rename_industry,               renameIndustry,         0x00455029, false },
-        { GameCommand::vehicle_clone,                 Vehicles::cloneVehicle, 0,          true  },
+        { GameCommand::sendChatMessage,             nullptr,                0x0046F976, false },
+        { GameCommand::multiplayerSave,              nullptr,                0x004A0ACD, false },
+        { GameCommand::updateOwnerStatus,           nullptr,                0x004383CA, false },
+        { GameCommand::vehicleSpeedControl,         nullptr,                0x004BAB63, true  },
+        { GameCommand::vehicleOrderUp,              nullptr,                0x00470CD2, false },
+        { GameCommand::vehicleOrderDown,            nullptr,                0x00470E06, false },
+        { GameCommand::vehicleApplyShuntCheat,     nullptr,                0x004BAC53, false },
+        { GameCommand::applyFreeCashCheat,         nullptr,                0x00438A08, false },
+        { GameCommand::renameIndustry,               renameIndustry,         0x00455029, false },
+        { GameCommand::vehicleClone,                 Vehicles::cloneVehicle, 0,          true  },
         { GameCommand::cheat,                         cheat,                  0,          true  },
     };
     // clang-format on
@@ -148,7 +148,7 @@ namespace OpenLoco::GameCommands
 
     static bool commandRequiresUnpausingGame(GameCommand command, uint16_t flags)
     {
-        if ((flags & (GameCommandFlag::flag_4 | GameCommandFlag::flag_6)) != 0)
+        if ((flags & (Flags::flag_4 | Flags::flag_6)) != 0)
             return false;
 
         auto& gameCommand = _gameCommandDefinitions[static_cast<uint32_t>(command)];
@@ -168,7 +168,7 @@ namespace OpenLoco::GameCommands
         if (game_command_nest_level != 0)
             return loc_4313C6(esi, regs);
 
-        if ((flags & GameCommandFlag::apply) == 0)
+        if ((flags & Flags::apply) == 0)
         {
             return loc_4313C6(esi, regs);
         }
@@ -228,7 +228,7 @@ namespace OpenLoco::GameCommands
 
         uint16_t flagsBackup = _gameCommandFlags;
         registers fnRegs1 = regs;
-        fnRegs1.bl &= ~GameCommandFlag::apply;
+        fnRegs1.bl &= ~Flags::apply;
         callGameCommandFunction(esi, fnRegs1);
         int32_t ebx = fnRegs1.ebx;
         _gameCommandFlags = flagsBackup;
@@ -240,8 +240,8 @@ namespace OpenLoco::GameCommands
 
             if (game_command_nest_level == 1)
             {
-                if ((_gameCommandFlags & GameCommandFlag::flag_2) == 0
-                    && (_gameCommandFlags & GameCommandFlag::flag_6) == 0
+                if ((_gameCommandFlags & Flags::flag_2) == 0
+                    && (_gameCommandFlags & Flags::flag_6) == 0
                     && ebx != 0)
                 {
                     registers regs2;
@@ -254,7 +254,7 @@ namespace OpenLoco::GameCommands
 
         if (ebx == static_cast<int32_t>(0x80000000))
         {
-            if (flags & GameCommandFlag::apply)
+            if (flags & Flags::apply)
             {
                 return loc_4314EA();
             }
@@ -296,7 +296,7 @@ namespace OpenLoco::GameCommands
         if (game_command_nest_level != 0)
             return ebx;
 
-        if ((flagsBackup2 & GameCommandFlag::flag_5) != 0)
+        if ((flagsBackup2 & Flags::flag_5) != 0)
             return ebx;
 
         // Apply to company money
@@ -320,7 +320,7 @@ namespace OpenLoco::GameCommands
         if (_updating_company_id != _player_company[0])
             return 0x80000000;
 
-        if (_gameCommandFlags & GameCommandFlag::flag_3)
+        if (_gameCommandFlags & Flags::flag_3)
             return 0x80000000;
 
         if (_gGameCommandErrorText != 0xFFFE)
