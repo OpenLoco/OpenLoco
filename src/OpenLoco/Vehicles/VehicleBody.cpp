@@ -947,7 +947,7 @@ namespace OpenLoco::Vehicles
 
         auto bogieDifference = frontBogie->position - backBogie->position;
 
-        auto smokeLoc = bogieDifference * var_05 / 128 + frontBogie->position + Map::Pos3{ static_cast<coord_t>(xyFactor.x), static_cast<coord_t>(xyFactor.y), vehicleObject->animation[num].height };
+        auto smokeLoc = bogieDifference * var_05 / 128 + frontBogie->position + Map::Pos3(xyFactor.x, xyFactor.y, vehicleObject->animation[num].height);
 
         Exhaust::create(smokeLoc, vehicleObject->animation[num].object_id | (soundCode ? 0 : 0x80));
         if (soundCode == false)
@@ -1072,7 +1072,7 @@ namespace OpenLoco::Vehicles
             auto invertedDirection = sprite_yaw ^ (1 << 5);
             auto xyFactor = Math::Trigonometry::computeXYVector(positionFactor, invertedDirection) / 2;
 
-            Map::Pos3 loc = position + Map::Pos3{ static_cast<coord_t>(xyFactor.x), static_cast<coord_t>(xyFactor.y), vehicleObject->animation[num].height };
+            Map::Pos3 loc = position + Map::Pos3(xyFactor.x, xyFactor.y, vehicleObject->animation[num].height);
             Exhaust::create(loc, vehicleObject->animation[num].object_id);
         }
         else
@@ -1274,7 +1274,7 @@ namespace OpenLoco::Vehicles
         auto invertedDirection = sprite_yaw ^ (1 << 5);
         auto xyFactor = Math::Trigonometry::computeXYVector(positionFactor, invertedDirection) / 4;
 
-        Map::Pos3 loc = position + Map::Pos3{ static_cast<coord_t>(xyFactor.x), static_cast<coord_t>(xyFactor.y), 0 };
+        Map::Pos3 loc = position + Map::Pos3(xyFactor.x, xyFactor.y, 0);
 
         // 90 degrees C.W.
         auto yaw = (sprite_yaw + 16) & 0x3F;
