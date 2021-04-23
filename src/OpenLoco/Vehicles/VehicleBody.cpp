@@ -945,7 +945,7 @@ namespace OpenLoco::Vehicles
 
         auto xyFactor = Math::Trigonometry::computeXYVector(vehicleObject->animation[num].height, sprite_pitch, sprite_yaw);
 
-        auto bogieDifference = frontBogie->position - backBogie->position;
+        auto bogieDifference = backBogie->position - frontBogie->position;
 
         auto smokeLoc = bogieDifference * var_05 / 128 + frontBogie->position + Map::Pos3(xyFactor.x, xyFactor.y, vehicleObject->animation[num].height);
 
