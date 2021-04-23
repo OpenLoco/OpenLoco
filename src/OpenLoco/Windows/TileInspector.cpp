@@ -62,7 +62,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
         makeWidget({ 0, 0 }, windowSize, widget_type::frame, 0),
         makeWidget({ 1, 1 }, { windowSize.width - 2, 13 }, widget_type::caption_25, 0, StringIds::tile_inspector),
         makeWidget({ windowSize.width - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window),
-        makeWidget({ 0, 15 }, { windowSize.width, 245 }, widget_type::panel, 1),
+        makeWidget({ 0, 15 }, { windowSize.width, windowSize.height - 15 }, widget_type::panel, 1),
         makeStepperWidgets({ 19, 24 }, { 55, 12 }, widget_type::wt_17, 1),
         makeStepperWidgets({ 92, 24 }, { 55, 12 }, widget_type::wt_17, 1),
         makeWidget({ windowSize.width - 26, 18 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::construction_new_position, StringIds::tile_inspector_select_btn_tooltip),
