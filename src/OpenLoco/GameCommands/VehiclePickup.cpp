@@ -1,6 +1,6 @@
 #include "../Audio/Audio.h"
+#include "../Economy/Expenditures.h"
 #include "../Interop/Interop.hpp"
-#include "../Management/Expenditures.h"
 #include "../Types.hpp"
 #include "../Utility/Prng.hpp"
 #include "../Vehicles/Vehicle.h"

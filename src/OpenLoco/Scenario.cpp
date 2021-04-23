@@ -1,7 +1,7 @@
 #include "Scenario.h"
 #include "CompanyManager.h"
 #include "Date.h"
-#include "Economy.h"
+#include "Economy/Economy.h"
 #include "Entities/EntityManager.h"
 #include "Graphics/Gfx.h"
 #include "IndustryManager.h"

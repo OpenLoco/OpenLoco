@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Currency.h"
+#include "../Economy/Currency.h"
 #include "../Map/Map.hpp"
 #include "../Objects/SteamObject.h"
 #include "Entity.h"
