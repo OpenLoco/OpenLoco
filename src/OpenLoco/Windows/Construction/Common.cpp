@@ -567,15 +567,17 @@ namespace OpenLoco::Ui::Windows::Construction
                                 clipped->height *= 2;
                                 clipped->x *= 2;
                                 clipped->y *= 2;
+
                                 auto trainStationObj = ObjectManager::get<TrainStationObject>(_lastSelectedStationType);
-                                auto imageId = Gfx::recolour(trainStationObj->image, companyColour);
+                                auto imageId = Gfx::recolour(trainStationObj->image + TrainStation::ImageIds::preview_image, companyColour);
                                 Gfx::drawImage(clipped, -4, -9, imageId);
+
                                 auto colour = _byte_5045FA[companyColour];
                                 if (!(trainStationObj->flags & TrainStationFlags::recolourable))
                                 {
                                     colour = 46;
                                 }
-                                imageId = Gfx::recolourTranslucent(trainStationObj->image + 1, colour);
+                                imageId = Gfx::recolourTranslucent(trainStationObj->image + TrainStation::ImageIds::preview_image_windows, colour);
                                 Gfx::drawImage(clipped, -4, -9, imageId);
                             }
 
