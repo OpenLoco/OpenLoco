@@ -5,11 +5,17 @@
 #if !defined(__APPLE__)
 
 #include <variant>
-namespace stdv = std;
-
+namespace stdx
+{
+	using std::variant;
+	using std::visit;
+}
 #else
 
 #include "../../Thirdparty/variant.hpp"
-namespace stdv = mpark;
-
+namespace stdx
+{
+	using mpark::variant;
+	using mpark::visit;
+}
 #endif

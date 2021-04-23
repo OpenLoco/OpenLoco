@@ -36,10 +36,10 @@ namespace OpenLoco::Title
     {
     };
 
-    using TitleStep = stdv::variant<WaitStep, ReloadStep, MoveStep, RotateStep, ResetStep>;
+    using TitleStep = stdx::variant<WaitStep, ReloadStep, MoveStep, RotateStep, ResetStep>;
     using TitleSequence = std::vector<TitleStep>;
 
-    // Helper type for using stdv::visit on TitleStep
+    // Helper type for using stdx::visit on TitleStep
     template<class... Ts>
     struct overloaded : Ts...
     {
@@ -189,7 +189,7 @@ namespace OpenLoco::Title
                 return;
 
             auto& command = *_sequenceIterator++;
-            stdv::visit(overloaded{
+            stdx::visit(overloaded{
                             [](WaitStep step) {
                                 // This loop slightly deviates from the original, subtract 1 tick to make up for it.
                                 _waitCounter = step.duration - 1;
