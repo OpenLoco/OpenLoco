@@ -271,7 +271,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
                 colour = 46;
             }
 
-            imageId = Gfx::recolour(imageId, colour) + 1;
+            imageId = Gfx::recolourTranslucent(roadStationObj->image, colour) + 1;
 
             Gfx::drawImage(dpi, xPos, yPos, imageId);
         }
@@ -290,7 +290,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
                 colour = 46;
             }
 
-            imageId = Gfx::recolour(imageId, colour) + 1;
+            imageId = Gfx::recolourTranslucent(trainStationObj->image, colour) + 1;
 
             Gfx::drawImage(dpi, xPos, yPos, imageId);
         }
