@@ -98,7 +98,7 @@ namespace OpenLoco::Ui::Windows::Construction
     makeWidget({ 0, 0 }, { frameWidth, frameHeight }, widget_type::frame, 0),                                                          \
         makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, widget_type::caption_24, 0, windowCaptionId),                                     \
         makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window), \
-        makeWidget({ 0, 41 }, { frameWidth, 235 }, widget_type::wt_3, 1),                                                              \
+        makeWidget({ 0, 41 }, { frameWidth, frameHeight - 41 }, widget_type::wt_3, 1),                                                 \
         makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tab_track_road_construction),           \
         makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tab_station_construction),             \
         makeRemapWidget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tab_signal_construction),              \
