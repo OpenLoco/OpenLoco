@@ -59,7 +59,7 @@ namespace OpenLoco::Paint
                 continue;
             }
             session.setCurrentItem(entity);
-            session.setEntityPosition({ entity->x, entity->y });
+            session.setEntityPosition(entity->position);
             session.setItemType(InteractionItem::entity);
             switch (entity->base_type)
             {

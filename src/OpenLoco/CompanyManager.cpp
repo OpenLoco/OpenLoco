@@ -232,7 +232,7 @@ namespace OpenLoco::CompanyManager
                 continue;
 
             auto vehicle = EntityManager::get<Vehicles::VehicleBase>(w->number);
-            if (vehicle->x == Location::null)
+            if (vehicle->position.x == Location::null)
                 continue;
 
             if (vehicle->owner != _updating_company_id)

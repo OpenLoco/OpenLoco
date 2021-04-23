@@ -15,9 +15,8 @@ namespace OpenLoco::GameCommands
     // 0x0048B15B
     static void playPickupSound(Vehicles::Vehicle2* veh2)
     {
-        const auto pos = Map::Pos3(veh2->x, veh2->y, veh2->z);
         const auto frequency = _prng->randNext(20003, 24098);
-        Audio::playSound(Audio::SoundId::vehiclePickup, pos, -1000, frequency);
+        Audio::playSound(Audio::SoundId::vehiclePickup, veh2->position, -1000, frequency);
     }
 
     // 0x004B0826
@@ -29,8 +28,7 @@ namespace OpenLoco::GameCommands
         auto* head = train.head;
         auto* veh2 = train.veh2;
 
-        const auto pos = Map::Pos3(veh2->x, veh2->y, veh2->z);
-        GameCommands::setPosition(pos);
+        GameCommands::setPosition(veh2->position);
 
         if (!GameCommands::sub_431E6A(head->owner))
             return FAILURE;

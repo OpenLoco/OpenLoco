@@ -61,9 +61,7 @@ namespace OpenLoco
         uint8_t var_09;
         EntityId_t id; // 0xA
         uint16_t var_0C;
-        int16_t x; // 0x0E
-        int16_t y; // 0x10
-        int16_t z; // 0x12
+        Map::Pos3 position; // 0x0E
         uint8_t var_14;
         uint8_t var_15;
         int16_t sprite_left;   // 0x16

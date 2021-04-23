@@ -151,10 +151,8 @@ namespace OpenLoco::EntityManager
         }
         moveEntityToList(newEntity, list);
 
-        newEntity->x = Location::null;
-        newEntity->y = Location::null;
-        newEntity->z = 0;
-        auto index = getSpatialIndexOffset({ Location::null, Location::null });
+        newEntity->position = { Location::null, Location::null, 0 };
+        auto index = getSpatialIndexOffset(newEntity->position);
         auto nextSpatialId = _entitySpatialIndex[index];
         _entitySpatialIndex[index] = newEntity->id;
         newEntity->nextQuadrantId = nextSpatialId;
@@ -218,7 +216,7 @@ namespace OpenLoco::EntityManager
         entity->base_type = EntityBaseType::null;
 
         // Remove from spatial lists
-        auto* quadId = &_entitySpatialIndex[getSpatialIndexOffset({ entity->x, entity->y })];
+        auto* quadId = &_entitySpatialIndex[getSpatialIndexOffset(entity->position)];
         _entitySpatialCount = 0;
         while (*quadId < maxEntities)
         {
