@@ -12,10 +12,10 @@ namespace OpenLoco
 
         Gfx::drawImage(&dpi, x - 34, y - 34, colourImage);
 
-        auto colour = 59;
+        auto colour = Colour::outline(Colour::saturated_red);
         if (!(flags & RoadStationFlags::recolourable))
         {
-            colour = 46;
+            colour = Colour::outline(Colour::bright_green);
         }
 
         auto translucentImage = Gfx::recolourTranslucent(image + 1, colour);
