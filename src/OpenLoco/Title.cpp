@@ -1,6 +1,7 @@
 #include "Title.h"
 #include "Audio/Audio.h"
 #include "CompanyManager.h"
+#include "Core/Variant.hpp"
 #include "GameCommands/GameCommands.h"
 #include "Gui.h"
 #include "Interop/Interop.hpp"
@@ -9,7 +10,6 @@
 #include "Scenario.h"
 #include "Ui/WindowManager.h"
 
-#include <variant>
 #include <vector>
 
 using namespace OpenLoco::Interop;
@@ -36,10 +36,10 @@ namespace OpenLoco::Title
     {
     };
 
-    using TitleStep = std::variant<WaitStep, ReloadStep, MoveStep, RotateStep, ResetStep>;
+    using TitleStep = stdx::variant<WaitStep, ReloadStep, MoveStep, RotateStep, ResetStep>;
     using TitleSequence = std::vector<TitleStep>;
 
-    // Helper type for using std::visit on TitleStep
+    // Helper type for using stdx::visit on TitleStep
     template<class... Ts>
     struct overloaded : Ts...
     {
@@ -189,47 +189,47 @@ namespace OpenLoco::Title
                 return;
 
             auto& command = *_sequenceIterator++;
-            std::visit(overloaded{
-                           [](WaitStep step) {
-                               // This loop slightly deviates from the original, subtract 1 tick to make up for it.
-                               _waitCounter = step.duration - 1;
-                           },
-                           [](ReloadStep step) {
-                               loadTitle();
-                               Gfx::invalidateScreen();
-                               resetScreenAge();
-                               addr<0x50C19A, uint16_t>() = 55000;
-                           },
-                           [](MoveStep step) {
-                               if (addr<0x00525E28, uint32_t>() & 1)
-                               {
-                                   auto pos = Map::Pos2(step) + Map::Pos2(16, 16);
-                                   auto height = Map::TileManager::getHeight(pos);
-                                   auto main = Ui::WindowManager::getMainWindow();
-                                   if (main != nullptr)
-                                   {
-                                       auto pos3d = Map::Pos3(pos.x, pos.y, height.landHeight);
-                                       main->viewportCentreOnTile(pos3d);
-                                       main->flags &= ~Ui::WindowFlags::scrolling_to_location;
-                                       main->viewportsUpdatePosition();
-                                   }
-                               }
-                           },
-                           [](RotateStep step) {
-                               if (addr<0x00525E28, uint32_t>() & 1)
-                               {
-                                   auto main = Ui::WindowManager::getMainWindow();
-                                   if (main != nullptr)
-                                   {
-                                       main->viewportRotateRight();
-                                   }
-                               }
-                           },
-                           [](ResetStep step) {
-                               _sequenceIterator = _titleSequence.begin();
-                           },
-                       },
-                       command);
+            stdx::visit(overloaded{
+                            [](WaitStep step) {
+                                // This loop slightly deviates from the original, subtract 1 tick to make up for it.
+                                _waitCounter = step.duration - 1;
+                            },
+                            [](ReloadStep step) {
+                                loadTitle();
+                                Gfx::invalidateScreen();
+                                resetScreenAge();
+                                addr<0x50C19A, uint16_t>() = 55000;
+                            },
+                            [](MoveStep step) {
+                                if (addr<0x00525E28, uint32_t>() & 1)
+                                {
+                                    auto pos = Map::Pos2(step) + Map::Pos2(16, 16);
+                                    auto height = Map::TileManager::getHeight(pos);
+                                    auto main = Ui::WindowManager::getMainWindow();
+                                    if (main != nullptr)
+                                    {
+                                        auto pos3d = Map::Pos3(pos.x, pos.y, height.landHeight);
+                                        main->viewportCentreOnTile(pos3d);
+                                        main->flags &= ~Ui::WindowFlags::scrolling_to_location;
+                                        main->viewportsUpdatePosition();
+                                    }
+                                }
+                            },
+                            [](RotateStep step) {
+                                if (addr<0x00525E28, uint32_t>() & 1)
+                                {
+                                    auto main = Ui::WindowManager::getMainWindow();
+                                    if (main != nullptr)
+                                    {
+                                        main->viewportRotateRight();
+                                    }
+                                }
+                            },
+                            [](ResetStep step) {
+                                _sequenceIterator = _titleSequence.begin();
+                            },
+                        },
+                        command);
         } while (_waitCounter == 0);
     }
 
