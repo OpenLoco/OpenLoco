@@ -2015,7 +2015,7 @@ namespace OpenLoco::Vehicles
         auto targetYaw = calculateYaw1FromVectorPlane(xDiff, yDiff);
 
         // manhattan distance to target
-        auto manhattanDistance = Math::Vector::manhattanDistance(position, *targetPos);
+        auto manhattanDistance = Math::Vector::manhattanDistance(Map::Pos2{ position }, Map::Pos2{ *targetPos });
 
         // Manhatten distance, targetZ, targetYaw
         return std::make_tuple(manhattanDistance, targetPos->z, targetYaw);
