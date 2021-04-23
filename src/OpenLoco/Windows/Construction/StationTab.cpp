@@ -243,17 +243,13 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         if (_byte_1136063 & (1 << 7))
         {
             auto airportObj = ObjectManager::get<AirportObject>(_lastSelectedStationType);
-
             auto imageId = Gfx::recolour(airportObj->image, companyColour);
-
             Gfx::drawImage(dpi, xPos, yPos, imageId);
         }
         else if (_byte_1136063 & (1 << 6))
         {
             auto dockObj = ObjectManager::get<DockObject>(_lastSelectedStationType);
-
             auto imageId = Gfx::recolour(dockObj->image, companyColour);
-
             Gfx::drawImage(dpi, xPos, yPos, imageId);
         }
         else if (_trackType & (1 << 7))
@@ -261,18 +257,15 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             auto roadStationObj = ObjectManager::get<RoadStationObject>(_lastSelectedStationType);
 
             auto imageId = Gfx::recolour(roadStationObj->image, companyColour);
-
             Gfx::drawImage(dpi, xPos, yPos, imageId);
 
             auto colour = _byte_5045FA[companyColour];
-
             if (!(roadStationObj->flags & RoadStationFlags::recolourable))
             {
                 colour = 46;
             }
 
             imageId = Gfx::recolourTranslucent(roadStationObj->image + 1, colour);
-
             Gfx::drawImage(dpi, xPos, yPos, imageId);
         }
         else
@@ -280,18 +273,15 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             auto trainStationObj = ObjectManager::get<TrainStationObject>(_lastSelectedStationType);
 
             auto imageId = Gfx::recolour(trainStationObj->image, companyColour);
-
             Gfx::drawImage(dpi, xPos, yPos, imageId);
 
             auto colour = _byte_5045FA[companyColour];
-
             if (!(trainStationObj->flags & TrainStationFlags::recolourable))
             {
                 colour = 46;
             }
 
             imageId = Gfx::recolourTranslucent(trainStationObj->image + 1, colour);
-
             Gfx::drawImage(dpi, xPos, yPos, imageId);
         }
 
