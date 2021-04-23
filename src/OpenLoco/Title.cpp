@@ -190,46 +190,46 @@ namespace OpenLoco::Title
 
             auto& command = *_sequenceIterator++;
             stdv::visit(overloaded{
-                           [](WaitStep step) {
-                               // This loop slightly deviates from the original, subtract 1 tick to make up for it.
-                               _waitCounter = step.duration - 1;
-                           },
-                           [](ReloadStep step) {
-                               loadTitle();
-                               Gfx::invalidateScreen();
-                               resetScreenAge();
-                               addr<0x50C19A, uint16_t>() = 55000;
-                           },
-                           [](MoveStep step) {
-                               if (addr<0x00525E28, uint32_t>() & 1)
-                               {
-                                   auto pos = Map::Pos2(step) + Map::Pos2(16, 16);
-                                   auto height = Map::TileManager::getHeight(pos);
-                                   auto main = Ui::WindowManager::getMainWindow();
-                                   if (main != nullptr)
-                                   {
-                                       auto pos3d = Map::Pos3(pos.x, pos.y, height.landHeight);
-                                       main->viewportCentreOnTile(pos3d);
-                                       main->flags &= ~Ui::WindowFlags::scrolling_to_location;
-                                       main->viewportsUpdatePosition();
-                                   }
-                               }
-                           },
-                           [](RotateStep step) {
-                               if (addr<0x00525E28, uint32_t>() & 1)
-                               {
-                                   auto main = Ui::WindowManager::getMainWindow();
-                                   if (main != nullptr)
-                                   {
-                                       main->viewportRotateRight();
-                                   }
-                               }
-                           },
-                           [](ResetStep step) {
-                               _sequenceIterator = _titleSequence.begin();
-                           },
-                       },
-                       command);
+                            [](WaitStep step) {
+                                // This loop slightly deviates from the original, subtract 1 tick to make up for it.
+                                _waitCounter = step.duration - 1;
+                            },
+                            [](ReloadStep step) {
+                                loadTitle();
+                                Gfx::invalidateScreen();
+                                resetScreenAge();
+                                addr<0x50C19A, uint16_t>() = 55000;
+                            },
+                            [](MoveStep step) {
+                                if (addr<0x00525E28, uint32_t>() & 1)
+                                {
+                                    auto pos = Map::Pos2(step) + Map::Pos2(16, 16);
+                                    auto height = Map::TileManager::getHeight(pos);
+                                    auto main = Ui::WindowManager::getMainWindow();
+                                    if (main != nullptr)
+                                    {
+                                        auto pos3d = Map::Pos3(pos.x, pos.y, height.landHeight);
+                                        main->viewportCentreOnTile(pos3d);
+                                        main->flags &= ~Ui::WindowFlags::scrolling_to_location;
+                                        main->viewportsUpdatePosition();
+                                    }
+                                }
+                            },
+                            [](RotateStep step) {
+                                if (addr<0x00525E28, uint32_t>() & 1)
+                                {
+                                    auto main = Ui::WindowManager::getMainWindow();
+                                    if (main != nullptr)
+                                    {
+                                        main->viewportRotateRight();
+                                    }
+                                }
+                            },
+                            [](ResetStep step) {
+                                _sequenceIterator = _titleSequence.begin();
+                            },
+                        },
+                        command);
         } while (_waitCounter == 0);
     }
 
