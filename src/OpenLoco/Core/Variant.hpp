@@ -1,7 +1,9 @@
-// This file enables access to std::visit
+// This file enables access to stdx::variant stdx::visit
 
 #pragma once
 
+// TODO: use a more fine-grained approach to detecting whether <variant>
+//       contains support for std::visit.
 #if !defined(__APPLE__)
 
 #include <variant>
