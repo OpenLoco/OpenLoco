@@ -789,7 +789,7 @@ void OpenLoco::Interop::registerHooks()
             int16_t x = regs.eax;
             int16_t i = regs.ebx / 6;
             int16_t y = regs.ecx;
-            OpenLoco::Map::surface_element* surface = (OpenLoco::Map::surface_element*)regs.esi;
+            Map::surface_element* surface = (Map::surface_element*)regs.esi;
 
             surface->createWave(x, y, i);
 

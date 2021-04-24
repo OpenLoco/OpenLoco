@@ -299,13 +299,13 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             roadId = road->id;
         }
 
-        const auto& roadPiece = OpenLoco::Map::TrackData::getRoadPiece(roadId);
+        const auto& roadPiece = Map::TrackData::getRoadPiece(roadId);
         auto posId = 0;
         rotation &= 3;
 
         for (const auto& roadPart : roadPiece)
         {
-            if (roadPart.flags & OpenLoco::Map::TrackData::PreviewTrackFlags::diagonal)
+            if (roadPart.flags & Map::TrackData::PreviewTrackFlags::diagonal)
             {
                 continue;
             }
@@ -493,13 +493,13 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             trackId = track->id;
         }
 
-        const auto& trackPiece = OpenLoco::Map::TrackData::getTrackPiece(trackId);
+        const auto& trackPiece = Map::TrackData::getTrackPiece(trackId);
         auto posId = 0;
         rotation &= 3;
 
         for (const auto& trackPart : trackPiece)
         {
-            if (trackPart.flags & OpenLoco::Map::TrackData::PreviewTrackFlags::diagonal)
+            if (trackPart.flags & Map::TrackData::PreviewTrackFlags::diagonal)
             {
                 continue;
             }
@@ -1703,7 +1703,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             auto maxRetries = 0;
             if (Input::hasKeyModifier(Input::KeyModifier::shift) || _byte_113605D != 1)
             {
-                const auto& roadPiece = OpenLoco::Map::TrackData::getRoadPiece(_byte_1136065);
+                const auto& roadPiece = Map::TrackData::getRoadPiece(_byte_1136065);
                 auto maxRoadPieceHeight = 0;
 
                 for (const auto& roadPart : roadPiece)
@@ -1806,7 +1806,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             auto maxRetries = 0;
             if (Input::hasKeyModifier(Input::KeyModifier::shift) || _byte_113605D != 1)
             {
-                const auto& trackPiece = OpenLoco::Map::TrackData::getTrackPiece(_byte_1136065);
+                const auto& trackPiece = Map::TrackData::getTrackPiece(_byte_1136065);
                 auto maxTrackPieceHeight = 0;
 
                 for (const auto& trackPart : trackPiece)
@@ -2018,12 +2018,12 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
             if (Gfx::clipDrawpixelinfo(&clipped, dpi, x, y, width, height))
             {
-                const auto& roadPiece = OpenLoco::Map::TrackData::getRoadPiece(_lastSelectedTrackPieceId);
+                const auto& roadPiece = Map::TrackData::getRoadPiece(_lastSelectedTrackPieceId);
                 const auto& lastRoadPart = roadPiece.back();
 
                 Pos3 pos3D = { lastRoadPart.x, lastRoadPart.y, lastRoadPart.z };
 
-                if (lastRoadPart.flags & OpenLoco::Map::TrackData::PreviewTrackFlags::unused)
+                if (lastRoadPart.flags & Map::TrackData::PreviewTrackFlags::unused)
                 {
                     pos3D.x = 0;
                     pos3D.y = 0;
@@ -2068,12 +2068,12 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
             if (Gfx::clipDrawpixelinfo(&clipped, dpi, x, y, width, height))
             {
-                const auto& trackPiece = OpenLoco::Map::TrackData::getTrackPiece(_lastSelectedTrackPieceId);
+                const auto& trackPiece = Map::TrackData::getTrackPiece(_lastSelectedTrackPieceId);
                 const auto& lastTrackPart = trackPiece.back();
 
                 Pos3 pos3D = { lastTrackPart.x, lastTrackPart.y, lastTrackPart.z };
 
-                if (lastTrackPart.flags & OpenLoco::Map::TrackData::PreviewTrackFlags::unused)
+                if (lastTrackPart.flags & Map::TrackData::PreviewTrackFlags::unused)
                 {
                     pos3D.x = 0;
                     pos3D.y = 0;

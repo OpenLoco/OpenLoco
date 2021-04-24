@@ -317,7 +317,7 @@ namespace OpenLoco::Ui
             return (flags & (1 << 15)) != 0;
         }
 
-        OpenLoco::Map::Pos3 getPos() const
+        Map::Pos3 getPos() const
         {
             if (isThingView())
                 return {};

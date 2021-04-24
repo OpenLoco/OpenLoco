@@ -161,8 +161,8 @@
     <ClCompile Include="Windows\LandscapeGeneration.cpp" />
     <ClCompile Include="Windows\LandscapeGenerationConfirm.cpp" />
     <ClCompile Include="Windows\Main.cpp" />
-    <ClCompile Include="Windows\Map.cpp" />
     <ClCompile Include="Windows\MapToolTip.cpp" />
+    <ClCompile Include="Windows\MapWindow.cpp" />
     <ClCompile Include="Windows\MessageWindow.cpp" />
     <ClCompile Include="Windows\MusicSelection.cpp" />
     <ClCompile Include="Windows\News\Common.cpp" />

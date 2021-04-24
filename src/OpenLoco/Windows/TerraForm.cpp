@@ -459,7 +459,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                     updateTreeColours(self);
 
                     int32_t pan = (self->width >> 1) + self->x;
-                    OpenLoco::Map::Pos3 loc = { xPos, yPos, static_cast<int16_t>(pan) };
+                    Map::Pos3 loc = { xPos, yPos, static_cast<int16_t>(pan) };
                     Audio::playSound(Audio::SoundId::clickDown, loc, pan);
                     self->saved_view.mapX = -16;
                     _lastTreeCost = 0x80000000;
@@ -1844,7 +1844,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                     _lastSelectedWall = static_cast<uint8_t>(rowInfo);
 
                     int32_t pan = (self->width >> 1) + self->x;
-                    OpenLoco::Map::Pos3 loc = { xPos, yPos, static_cast<int16_t>(pan) };
+                    Map::Pos3 loc = { xPos, yPos, static_cast<int16_t>(pan) };
                     Audio::playSound(Audio::SoundId::clickDown, loc, pan);
                     self->saved_view.mapX = -16;
                     self->invalidate();

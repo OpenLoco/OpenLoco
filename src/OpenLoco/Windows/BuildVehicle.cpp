@@ -743,7 +743,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         }
 
         auto pan = window->width / 2 + window->x;
-        Audio::playSound(Audio::SoundId::clickDown, OpenLoco::Map::Pos3{ x, y, static_cast<int16_t>(pan) }, pan);
+        Audio::playSound(Audio::SoundId::clickDown, Map::Pos3{ x, y, static_cast<int16_t>(pan) }, pan);
         auto item = window->row_info[scrollItem];
         auto vehicleObj = ObjectManager::get<VehicleObject>(item);
         FormatArguments args{};

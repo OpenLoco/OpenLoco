@@ -1023,7 +1023,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 return;
             }
             int8_t rotation = static_cast<int8_t>(self->viewports[0]->getRotation());
-            OpenLoco::Map::Pos3 loc = {
+            Map::Pos3 loc = {
                 static_cast<coord_t>(company->headquarters_x + 32),
                 static_cast<coord_t>(company->headquarters_y + 32),
                 static_cast<coord_t>((company->headquarters_z + 8) * 4)
