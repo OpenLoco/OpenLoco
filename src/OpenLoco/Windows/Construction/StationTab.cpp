@@ -262,7 +262,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             auto colour = _byte_5045FA[companyColour];
             if (!(roadStationObj->flags & RoadStationFlags::recolourable))
             {
-                colour = Colour::outline(Colour::bright_green);
+                colour = PaletteIndex::index_2E;
             }
 
             imageId = Gfx::recolourTranslucent(roadStationObj->image + RoadStation::ImageIds::preview_image_windows, colour);
@@ -278,7 +278,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             auto colour = _byte_5045FA[companyColour];
             if (!(trainStationObj->flags & TrainStationFlags::recolourable))
             {
-                colour = Colour::outline(Colour::bright_green);
+                colour = PaletteIndex::index_2E;
             }
 
             imageId = Gfx::recolourTranslucent(trainStationObj->image + TrainStation::ImageIds::preview_image_windows, colour);
