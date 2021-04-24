@@ -6,7 +6,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::Ui::Windows
+namespace OpenLoco::Ui::Windows::TitleLogo
 {
     static const Gfx::ui_size_t window_size = { 298, 170 };
 
@@ -28,7 +28,7 @@ namespace OpenLoco::Ui::Windows
     static void onMouseUp(window* window, widget_index widgetIndex);
     static void draw(Ui::window* window, Gfx::drawpixelinfo_t* dpi);
 
-    Ui::window* openTitleLogo()
+    window* open()
     {
         _events.on_mouse_up = onMouseUp;
         _events.draw = draw;
@@ -63,7 +63,7 @@ namespace OpenLoco::Ui::Windows
         switch (widgetIndex)
         {
             case Widx::logo:
-                About::open();
+                Windows::About::open();
                 break;
         }
     }

@@ -7,7 +7,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::Ui::NewsWindow::Ticker
+namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
 {
     widget_t widgets[] = {
         makeWidget({ 0, 0 }, { 111, 26 }, widget_type::wt_3, 0),

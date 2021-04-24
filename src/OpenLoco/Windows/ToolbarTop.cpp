@@ -194,11 +194,11 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
                 break;
 
             case 3:
-                About::open();
+                Windows::About::open();
                 break;
 
             case 4:
-                Options::open();
+                Windows::Options::open();
                 break;
 
             case 5:
@@ -267,7 +267,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             }
 
             case 3:
-                Options::openMusicSettings();
+                Windows::Options::openMusicSettings();
                 break;
         }
     }
@@ -501,7 +501,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         itemIndex = menu_options[itemIndex];
         last_build_vehicles_option = itemIndex;
 
-        BuildVehicle::open(itemIndex, 1 << 31);
+        Windows::BuildVehicle::open(itemIndex, 1 << 31);
     }
 
     // 0x0043ABCB

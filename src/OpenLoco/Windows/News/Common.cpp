@@ -11,7 +11,7 @@
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Config;
 
-namespace OpenLoco::Ui::NewsWindow
+namespace OpenLoco::Ui::Windows::NewsWindow
 {
     static void createNewsWindow(Gfx::ui_size_t windowSize, widget_t* widgets, uint8_t colour, bool isOld, uint32_t flags)
     {

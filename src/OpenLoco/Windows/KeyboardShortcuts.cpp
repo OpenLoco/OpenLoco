@@ -12,7 +12,7 @@
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Input;
 
-namespace OpenLoco::Ui::KeyboardShortcuts
+namespace OpenLoco::Ui::Windows::KeyboardShortcuts
 {
 
     static const int rowHeight = 10; // CJK: 13
@@ -200,6 +200,6 @@ namespace OpenLoco::Ui::KeyboardShortcuts
         if (row >= self->row_count)
             return;
 
-        EditKeyboardShortcut::open(row);
+        Windows::EditKeyboardShortcut::open(row);
     }
 }

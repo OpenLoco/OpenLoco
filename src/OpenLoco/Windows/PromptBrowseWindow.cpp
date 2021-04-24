@@ -36,7 +36,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::Ui::PromptBrowse
+namespace OpenLoco::Ui::Windows::PromptBrowse
 {
     static fs::path getDirectory(const fs::path& path);
     static std::string getBasename(const fs::path& path);
@@ -124,7 +124,7 @@ namespace OpenLoco::Ui::PromptBrowse
     static loco_global<int16_t, 0x009D1084> _numFiles;
     static loco_global<file_entry*, 0x0050AEA4> _files;
 
-    static TextInput::InputSession inputSession;
+    static Ui::TextInput::InputSession inputSession;
 
     static std::vector<file_entry> _newFiles;
 
@@ -189,7 +189,7 @@ namespace OpenLoco::Ui::PromptBrowse
         Utility::strcpy_safe(_filter, filter);
 
         Utility::strcpy_safe(_directory, directory.make_preferred().u8string().c_str());
-        inputSession = TextInput::InputSession(baseName);
+        inputSession = Ui::TextInput::InputSession(baseName);
 
         refreshDirectoryList();
 
@@ -923,7 +923,7 @@ namespace OpenLoco::Ui::PromptBrowse
                 StringManager::formatString(&descriptionBuffer[0], StringIds::replace_existing_file_prompt, &args);
 
                 // Ask for confirmation to replace the file.
-                if (!Windows::promptOkCancel(StringIds::replace_existing_file_button))
+                if (!Windows::PromptOkCancel::open(StringIds::replace_existing_file_button))
                     return;
             }
 
@@ -975,7 +975,7 @@ namespace OpenLoco::Ui::PromptBrowse
         StringManager::formatString(&descriptionBuffer[0], StringIds::delete_file_prompt, &args);
 
         // Ask for confirmation to delete the file.
-        if (!Windows::promptOkCancel(StringIds::delete_file_button))
+        if (!Windows::PromptOkCancel::open(StringIds::delete_file_button))
             return;
 
         // Actually remove the file..!

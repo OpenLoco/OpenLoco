@@ -811,7 +811,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
         self->widgets[Widx::scrollview].tooltip = tooltipId;
         self->var_85C = self->row_hover;
-        Ui::ToolTip::closeAndReset();
+        Ui::Windows::ToolTip::closeAndReset();
 
         if (self->row_hover == -1)
             return;
@@ -859,9 +859,9 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
         auto head = EntityManager::get<VehicleHead>(currentVehicleId);
         if (head->isPlaced())
-            Ui::Vehicle::Main::open(head);
+            Ui::Windows::Vehicle::Main::open(head);
         else
-            Ui::Vehicle::Details::open(head);
+            Ui::Windows::Vehicle::Details::open(head);
     }
 
     // 0x004C2820

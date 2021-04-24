@@ -21,7 +21,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::Ui::Options
+namespace OpenLoco::Ui::Windows::Options
 {
     static void tabOnMouseUp(window* w, widget_index wi);
     static void sub_4C13BE(window* w);
@@ -231,7 +231,7 @@ namespace OpenLoco::Ui::Options
                 case Common::Widx::tab_regional:
                 case Common::Widx::tab_controls:
                 case Common::Widx::tab_miscellaneous:
-                    Options::tabOnMouseUp(w, wi);
+                    Windows::Options::tabOnMouseUp(w, wi);
                     return;
 
                 case Widx::show_fps:
@@ -765,7 +765,7 @@ namespace OpenLoco::Ui::Options
                 case Common::Widx::tab_regional:
                 case Common::Widx::tab_controls:
                 case Common::Widx::tab_miscellaneous:
-                    Options::tabOnMouseUp(w, wi);
+                    Windows::Options::tabOnMouseUp(w, wi);
                     return;
 
                 case Widx::play_title_music:
@@ -994,7 +994,7 @@ namespace OpenLoco::Ui::Options
                 case Common::Widx::tab_regional:
                 case Common::Widx::tab_controls:
                 case Common::Widx::tab_miscellaneous:
-                    Options::tabOnMouseUp(w, wi);
+                    Windows::Options::tabOnMouseUp(w, wi);
                     return;
 
                 case Widx::music_controls_stop:
@@ -1393,7 +1393,7 @@ namespace OpenLoco::Ui::Options
                 case Common::Widx::tab_regional:
                 case Common::Widx::tab_controls:
                 case Common::Widx::tab_miscellaneous:
-                    Options::tabOnMouseUp(w, wi);
+                    Windows::Options::tabOnMouseUp(w, wi);
                     return;
 
                 case Widx::preferred_currency_for_new_games:
@@ -1813,7 +1813,7 @@ namespace OpenLoco::Ui::Options
                 case Common::Widx::tab_regional:
                 case Common::Widx::tab_controls:
                 case Common::Widx::tab_miscellaneous:
-                    Options::tabOnMouseUp(w, wi);
+                    Windows::Options::tabOnMouseUp(w, wi);
                     return;
 
                 case Widx::customize_keys:
@@ -1852,7 +1852,7 @@ namespace OpenLoco::Ui::Options
         // 0x004C118D
         static void openKeyboardShortcuts()
         {
-            KeyboardShortcuts::open();
+            Windows::KeyboardShortcuts::open();
         }
 
         // 0x004C1195
@@ -2127,7 +2127,7 @@ namespace OpenLoco::Ui::Options
                 case Common::Widx::tab_regional:
                 case Common::Widx::tab_controls:
                 case Common::Widx::tab_miscellaneous:
-                    Options::tabOnMouseUp(w, wi);
+                    Windows::Options::tabOnMouseUp(w, wi);
                     return;
 
                 case Widx::enableCheatsToolbarButton:

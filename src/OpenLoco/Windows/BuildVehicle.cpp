@@ -23,7 +23,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::Ui::BuildVehicle
+namespace OpenLoco::Ui::Windows::BuildVehicle
 {
     static const Gfx::ui_size_t window_size = { 380, 233 };
 
@@ -767,7 +767,7 @@ namespace OpenLoco::Ui::BuildVehicle
         if (_buildTargetVehicle == -1)
         {
             auto vehicle = EntityManager::get<Vehicles::VehicleBase>(_113642A);
-            Vehicle::Details::open(vehicle);
+            Windows::Vehicle::Details::open(vehicle);
         }
         sub_4B92A5(window);
     }

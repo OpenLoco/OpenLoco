@@ -977,7 +977,7 @@ namespace OpenLoco
                 if (today.month != yesterday.month)
                 {
                     // End of every month
-                    Ui::TimePanel::invalidateFrame();
+                    Ui::Windows::TimePanel::invalidateFrame();
                     addr<0x00526243, uint16_t>()++;
                     TownManager::updateMonthly();
                     call(0x0045383B);

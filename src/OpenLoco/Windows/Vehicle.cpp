@@ -30,7 +30,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::Ui::Vehicle
+namespace OpenLoco::Ui::Windows::Vehicle
 {
     namespace Common
     {
@@ -982,7 +982,7 @@ namespace OpenLoco::Ui::Vehicle
                 auto* newVehicle = EntityManager::get<Vehicles::VehicleBase>(_113642A);
                 if (newVehicle != nullptr)
                 {
-                    OpenLoco::Ui::Vehicle::Details::open(newVehicle);
+                    OpenLoco::Ui::Windows::Vehicle::Details::open(newVehicle);
                 }
             }
         }
@@ -1059,7 +1059,7 @@ namespace OpenLoco::Ui::Vehicle
 
             if (itemIndex <= 0)
             {
-                BuildVehicle::open(self->number, 0);
+                Windows::BuildVehicle::open(self->number, 0);
             }
             else if (itemIndex == 1)
             {
@@ -2677,7 +2677,7 @@ namespace OpenLoco::Ui::Vehicle
                         break;
                     auto height = trackElement->baseZ() * 4;
                     auto trackId = trackElement->trackId();
-                    const auto& trackPiece = OpenLoco::Map::TrackData::getTrackPiece(trackId);
+                    const auto& trackPiece = Map::TrackData::getTrackPiece(trackId);
                     const auto& trackPart = trackPiece[trackElement->sequenceIndex()];
 
                     auto offsetToFirstTile = Map::rotate2dCoordinate({ trackPart.x, trackPart.y }, trackElement->unkDirection());
@@ -2725,7 +2725,7 @@ namespace OpenLoco::Ui::Vehicle
                         break;
                     auto height = roadElement->baseZ() * 4;
                     auto roadId = roadElement->roadId();
-                    const auto& roadPiece = OpenLoco::Map::TrackData::getRoadPiece(roadId);
+                    const auto& roadPiece = Map::TrackData::getRoadPiece(roadId);
                     const auto& roadPart = roadPiece[roadElement->sequenceIndex()];
 
                     auto offsetToFirstTile = Map::rotate2dCoordinate({ roadPart.x, roadPart.y }, roadElement->unkDirection());

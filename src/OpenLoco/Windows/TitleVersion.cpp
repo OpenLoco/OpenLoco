@@ -7,7 +7,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::Ui::Windows
+namespace OpenLoco::Ui::Windows::TitleVersion
 {
     static widget_t widgets[] = {
         { widget_type::end, 0, 0, 0, 0, 0, { 0 }, 0 }
@@ -17,7 +17,7 @@ namespace OpenLoco::Ui::Windows
 
     static void draw(Ui::window* window, Gfx::drawpixelinfo_t* dpi);
 
-    window* openTitleVersion()
+    window* open()
     {
         auto width = 512;
         auto height = 16;

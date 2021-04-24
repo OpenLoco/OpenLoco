@@ -21,7 +21,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::Ui::Windows
+namespace OpenLoco::Ui::Windows::TitleMenu
 {
     static const uint8_t btn_main_size = 74;
     static const uint8_t btn_sub_height = 18;
@@ -144,7 +144,7 @@ namespace OpenLoco::Ui::Windows
 
     // static loco_global<window_event_list[1], 0x004f9ec8> _events;
 
-    Ui::window* openTitleMenu()
+    window* open()
     {
         _events.on_mouse_up = onMouseUp;
         _events.on_mouse_down = onMouseDown;

@@ -129,13 +129,13 @@ namespace OpenLoco::Input
                 if ((_keyModifier & KeyModifier::unknown) == 0)
                     return;
 
-                ToolTip::closeAndReset();
+                Windows::ToolTip::closeAndReset();
 
                 auto tutStringId = Tutorial::nextString();
                 auto main = WindowManager::getMainWindow();
                 auto cursor = getMouseLocation();
 
-                ToolTip::update(main, 0, tutStringId, cursor.x, cursor.y);
+                Windows::ToolTip::update(main, 0, tutStringId, cursor.x, cursor.y);
                 break;
             }
 
@@ -330,7 +330,7 @@ namespace OpenLoco::Input
                     if (tryShortcut(Shortcut::screenshot, nextKey->keyCode, _keyModifier))
                         continue;
 
-                    Ui::PromptBrowse::handleInput(nextKey->charCode, nextKey->keyCode);
+                    Ui::Windows::PromptBrowse::handleInput(nextKey->charCode, nextKey->keyCode);
                     continue;
                 }
             }
@@ -340,7 +340,7 @@ namespace OpenLoco::Input
                 ti = WindowManager::find(WindowType::confirmationPrompt);
                 if (ti != nullptr)
                 {
-                    Ui::Windows::promptOkCancelInput(nextKey->charCode, nextKey->keyCode);
+                    Ui::Windows::PromptOkCancel::handleInput(nextKey->charCode, nextKey->keyCode);
                     continue;
                 }
             }
