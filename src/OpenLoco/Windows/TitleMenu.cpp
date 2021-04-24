@@ -379,7 +379,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     // 0x0043CB9F
     void editorInit()
     {
-        Windows::Main::open();
+        Main::open();
 
         addr<0x00F2533F, int8_t>() = 0; // grid lines
         addr<0x0112C2e1, int8_t>() = 0;

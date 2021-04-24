@@ -1059,7 +1059,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             if (itemIndex <= 0)
             {
-                Windows::BuildVehicle::open(self->number, 0);
+                BuildVehicle::open(self->number, 0);
             }
             else if (itemIndex == 1)
             {
@@ -1170,7 +1170,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 if (c.front == car->front)
                 {
-                    Windows::DragVehiclePart::open(c);
+                    DragVehiclePart::open(c);
                     break;
                 }
             }
@@ -3339,7 +3339,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 args.push(StringIds::getVehicleType(vehicle->vehicleType)); // 0
                 args.skip(6);
                 args.push(StringIds::getVehicleType(vehicle->vehicleType)); // 8
-                Windows::TextInput::openTextInput(self, StringIds::title_name_vehicle, StringIds::prompt_enter_new_vehicle_name, vehicle->name, widgetIndex, &vehicle->ordinalNumber);
+                TextInput::openTextInput(self, StringIds::title_name_vehicle, StringIds::prompt_enter_new_vehicle_name, vehicle->name, widgetIndex, &vehicle->ordinalNumber);
             }
         }
 
@@ -3347,7 +3347,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         static void switchTab(window* self, widget_index widgetIndex)
         {
             Input::toolCancel(self->type, self->number);
-            Windows::TextInput::sub_4CE6C9(self->type, self->number);
+            TextInput::sub_4CE6C9(self->type, self->number);
 
             self->current_tab = widgetIndex - Common::widx::tabMain;
             self->frame_no = 0;

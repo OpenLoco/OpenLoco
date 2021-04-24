@@ -177,7 +177,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         auto directory = getDirectory(path);
         auto baseName = getBasename(path);
 
-        Windows::TextInput::cancel();
+        TextInput::cancel();
 
         *_type = type;
         *_fileType = browse_file_type::saved_game;
@@ -895,7 +895,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         {
             if (filenameContainsInvalidChars())
             {
-                Windows::showError(StringIds::error_invalid_filename);
+                showError(StringIds::error_invalid_filename);
                 return;
             }
 

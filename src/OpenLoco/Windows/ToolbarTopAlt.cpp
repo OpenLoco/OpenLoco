@@ -141,11 +141,11 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
                 break;
 
             case 3:
-                Windows::About::open();
+                About::open();
                 break;
 
             case 4:
-                Windows::Options::open();
+                Options::open();
                 break;
 
             case 5:

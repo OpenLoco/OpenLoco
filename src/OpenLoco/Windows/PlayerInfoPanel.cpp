@@ -149,14 +149,14 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
         // If its index is bigger than the list then its the company list extra item
         if (static_cast<uint16_t>(itemIndex) >= _sortedCompanies.size())
         {
-            Windows::CompanyList::open();
+            CompanyList::open();
         }
         else
         {
             auto company = _sortedCompanies[itemIndex];
             if (!company->empty())
             {
-                Windows::CompanyWindow::open(company->id());
+                CompanyWindow::open(company->id());
             }
         }
     }
@@ -311,13 +311,13 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     // 0x4395C7
     static void companyValueMouseUp()
     {
-        Windows::CompanyWindow::openFinances(CompanyManager::getControllingId());
+        CompanyWindow::openFinances(CompanyManager::getControllingId());
     }
 
     // 0x4395D6
     static void performanceIndexMouseUp()
     {
-        Windows::CompanyList::openPerformanceIndexes();
+        CompanyList::openPerformanceIndexes();
     }
 
     // 0x004395DE

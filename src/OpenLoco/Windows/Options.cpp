@@ -231,7 +231,7 @@ namespace OpenLoco::Ui::Windows::Options
                 case Common::Widx::tab_regional:
                 case Common::Widx::tab_controls:
                 case Common::Widx::tab_miscellaneous:
-                    Windows::Options::tabOnMouseUp(w, wi);
+                    Options::tabOnMouseUp(w, wi);
                     return;
 
                 case Widx::show_fps:
@@ -765,7 +765,7 @@ namespace OpenLoco::Ui::Windows::Options
                 case Common::Widx::tab_regional:
                 case Common::Widx::tab_controls:
                 case Common::Widx::tab_miscellaneous:
-                    Windows::Options::tabOnMouseUp(w, wi);
+                    Options::tabOnMouseUp(w, wi);
                     return;
 
                 case Widx::play_title_music:
@@ -994,7 +994,7 @@ namespace OpenLoco::Ui::Windows::Options
                 case Common::Widx::tab_regional:
                 case Common::Widx::tab_controls:
                 case Common::Widx::tab_miscellaneous:
-                    Windows::Options::tabOnMouseUp(w, wi);
+                    Options::tabOnMouseUp(w, wi);
                     return;
 
                 case Widx::music_controls_stop:
@@ -1010,7 +1010,7 @@ namespace OpenLoco::Ui::Windows::Options
                     return;
 
                 case Widx::edit_selection:
-                    Windows::MusicSelection::open();
+                    MusicSelection::open();
                     return;
             }
         }
@@ -1393,7 +1393,7 @@ namespace OpenLoco::Ui::Windows::Options
                 case Common::Widx::tab_regional:
                 case Common::Widx::tab_controls:
                 case Common::Widx::tab_miscellaneous:
-                    Windows::Options::tabOnMouseUp(w, wi);
+                    Options::tabOnMouseUp(w, wi);
                     return;
 
                 case Widx::preferred_currency_for_new_games:
@@ -1813,7 +1813,7 @@ namespace OpenLoco::Ui::Windows::Options
                 case Common::Widx::tab_regional:
                 case Common::Widx::tab_controls:
                 case Common::Widx::tab_miscellaneous:
-                    Windows::Options::tabOnMouseUp(w, wi);
+                    Options::tabOnMouseUp(w, wi);
                     return;
 
                 case Widx::customize_keys:
@@ -1852,7 +1852,7 @@ namespace OpenLoco::Ui::Windows::Options
         // 0x004C118D
         static void openKeyboardShortcuts()
         {
-            Windows::KeyboardShortcuts::open();
+            KeyboardShortcuts::open();
         }
 
         // 0x004C1195
@@ -2127,7 +2127,7 @@ namespace OpenLoco::Ui::Windows::Options
                 case Common::Widx::tab_regional:
                 case Common::Widx::tab_controls:
                 case Common::Widx::tab_miscellaneous:
-                    Windows::Options::tabOnMouseUp(w, wi);
+                    Options::tabOnMouseUp(w, wi);
                     return;
 
                 case Widx::enableCheatsToolbarButton:
@@ -2201,7 +2201,7 @@ namespace OpenLoco::Ui::Windows::Options
             strcpy(buffer, playerName);
             buffer[strlen(playerName)] = '\0';
 
-            Windows::TextInput::openTextInput(w, StringIds::preferred_owner_name, StringIds::enter_preferred_owner_name, StringIds::buffer_2039, Widx::use_preferred_owner_name, nullptr);
+            TextInput::openTextInput(w, StringIds::preferred_owner_name, StringIds::enter_preferred_owner_name, StringIds::buffer_2039, Widx::use_preferred_owner_name, nullptr);
         }
 
         // 0x004C1342
@@ -2435,7 +2435,7 @@ namespace OpenLoco::Ui::Windows::Options
     {
         Input::toolCancel(w->type, w->number);
 
-        Windows::TextInput::sub_4CE6C9(w->type, w->number);
+        TextInput::sub_4CE6C9(w->type, w->number);
         w->current_tab = wi - Common::Widx::tab_display;
         w->frame_no = 0;
         w->flags &= ~(WindowFlags::flag_16);

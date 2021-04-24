@@ -767,7 +767,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         if (_buildTargetVehicle == -1)
         {
             auto vehicle = EntityManager::get<Vehicles::VehicleBase>(_113642A);
-            Windows::Vehicle::Details::open(vehicle);
+            Vehicle::Details::open(vehicle);
         }
         sub_4B92A5(window);
     }

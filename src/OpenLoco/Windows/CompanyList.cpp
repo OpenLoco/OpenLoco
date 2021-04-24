@@ -365,7 +365,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             if (currentCompany == -1)
                 return;
 
-            Windows::CompanyWindow::open(currentCompany);
+            CompanyWindow::open(currentCompany);
         }
 
         // 0x00436361

@@ -200,6 +200,6 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
         if (row >= self->row_count)
             return;
 
-        Windows::EditKeyboardShortcut::open(row);
+        EditKeyboardShortcut::open(row);
     }
 }

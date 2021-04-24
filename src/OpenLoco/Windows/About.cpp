@@ -68,7 +68,7 @@ namespace OpenLoco::Ui::Windows::About
                 break;
 
             case widx::music_acknowledgements_btn:
-                Windows::AboutMusic::open();
+                AboutMusic::open();
                 break;
         }
     }

@@ -194,11 +194,11 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
                 break;
 
             case 3:
-                Windows::About::open();
+                About::open();
                 break;
 
             case 4:
-                Windows::Options::open();
+                Options::open();
                 break;
 
             case 5:
@@ -267,7 +267,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             }
 
             case 3:
-                Windows::Options::openMusicSettings();
+                Options::openMusicSettings();
                 break;
         }
     }
@@ -501,7 +501,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         itemIndex = menu_options[itemIndex];
         last_build_vehicles_option = itemIndex;
 
-        Windows::BuildVehicle::open(itemIndex, 1 << 31);
+        BuildVehicle::open(itemIndex, 1 << 31);
     }
 
     // 0x0043ABCB
@@ -565,7 +565,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         auto vehicleType = VehicleType(menu_options[itemIndex]);
         last_vehicles_option = vehicleType;
 
-        Windows::VehicleList::open(CompanyManager::getControllingId(), vehicleType);
+        VehicleList::open(CompanyManager::getControllingId(), vehicleType);
     }
 
     // 0x0043A4E9
@@ -596,7 +596,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         if (itemIndex > 4)
             return;
 
-        Windows::StationList::open(CompanyManager::getControllingId(), itemIndex);
+        StationList::open(CompanyManager::getControllingId(), itemIndex);
     }
 
     // 0x0043A071

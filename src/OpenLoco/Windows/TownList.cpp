@@ -264,7 +264,7 @@ namespace OpenLoco::Ui::Windows::TownList
             if (currentTown == -1)
                 return;
 
-            Windows::Town::open(currentTown);
+            Town::open(currentTown);
         }
 
         // 0x0049A532

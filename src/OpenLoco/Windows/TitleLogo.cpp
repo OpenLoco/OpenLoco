@@ -63,7 +63,7 @@ namespace OpenLoco::Ui::Windows::TitleLogo
         switch (widgetIndex)
         {
             case Widx::logo:
-                Windows::About::open();
+                About::open();
                 break;
         }
     }

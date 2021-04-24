@@ -209,7 +209,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
         switch (widgetIndex)
         {
             case Widx::date_btn:
-                Windows::MessageWindow::open();
+                MessageWindow::open();
                 break;
             case Widx::pause_btn:
                 togglePaused();
