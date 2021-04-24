@@ -26,7 +26,7 @@
     <ClCompile Include="Date.cpp" />
     <ClCompile Include="Drawing\FPSCounter.cpp" />
     <ClCompile Include="Drawing\SoftwareDrawingEngine.cpp" />
-    <ClCompile Include="Economy.cpp" />
+    <ClCompile Include="Economy\Economy.cpp" />
     <ClCompile Include="EditorController.cpp" />
     <ClCompile Include="Entities\Entity.cpp" />
     <ClCompile Include="Entities\EntityManager.cpp" />
@@ -214,11 +214,12 @@
     <ClInclude Include="Core\FileSystem.hpp" />
     <ClInclude Include="Core\Optional.hpp" />
     <ClInclude Include="Core\Span.hpp" />
-    <ClInclude Include="Currency.h" />
     <ClInclude Include="Date.h" />
     <ClInclude Include="Drawing\FPSCounter.h" />
     <ClInclude Include="Drawing\SoftwareDrawingEngine.h" />
-    <ClInclude Include="Economy.h" />
+    <ClInclude Include="Economy\Currency.h" />
+    <ClInclude Include="Economy\Economy.h" />
+    <ClInclude Include="Economy\Expenditures.h" />
     <ClInclude Include="EditorController.h" />
     <ClInclude Include="Entities\Entity.h" />
     <ClInclude Include="Entities\EntityManager.h" />
@@ -248,7 +249,6 @@
     <ClInclude Include="Localisation\StringIds.h" />
     <ClInclude Include="Localisation\Unicode.h" />
     <ClInclude Include="Location.hpp" />
-    <ClInclude Include="Management\Expenditures.h" />
     <ClInclude Include="Map\Map.hpp" />
     <ClInclude Include="Map\MapGenerator.h" />
     <ClInclude Include="Map\Tile.h" />
