@@ -452,7 +452,7 @@ namespace OpenLoco::Ui::Windows::Map
         self->widgets[widx::frame].right = self->width - 1;
         self->widgets[widx::frame].bottom = self->height - 1;
         self->widgets[widx::panel].right = self->width - 1;
-        self->widgets[widx::panel].bottom = self->height + 1;
+        self->widgets[widx::panel].bottom = self->height - 1;
 
         self->widgets[widx::caption].right = self->width - 2;
         self->widgets[widx::closeButton].left = self->width - 15;
