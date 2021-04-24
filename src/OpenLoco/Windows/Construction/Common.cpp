@@ -575,7 +575,7 @@ namespace OpenLoco::Ui::Windows::Construction
                                 {
                                     colour = 46;
                                 }
-                                imageId = Gfx::recolour(imageId, colour) + 1;
+                                imageId = Gfx::recolourTranslucent(trainStationObj->image + 1, colour);
                                 Gfx::drawImage(clipped, -4, -9, imageId);
                             }
 

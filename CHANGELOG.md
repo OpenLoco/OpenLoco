@@ -4,6 +4,7 @@
 - Feature: [#857] Remember last save directory in configuration variable.
 - Fix: [#914] Boats get stuck in approaching dock mode when water is above a certain height. This was incorrectly fixed in 21.04.1.
 - Fix: [#927] Some available industries are missing in the 'Fund new industries' tab.
+- Fix: [#945] Station construction preview image is using wrong colours.
 
 21.04.1 (2021-04-14)
 ------------------------------------------------------------------------
