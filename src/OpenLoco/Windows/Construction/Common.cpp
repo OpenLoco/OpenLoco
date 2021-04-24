@@ -690,8 +690,8 @@ namespace OpenLoco::Ui::Windows::Construction
             WindowManager::viewportSetVisibility(WindowManager::viewport_visibility::reset);
             TileManager::mapInvalidateMapSelectionTiles();
             _mapSelectionFlags = _mapSelectionFlags & ~MapSelectFlag::enableConstruct;
-            Windows::hideDirectionArrows();
-            Windows::hideGridlines();
+            hideDirectionArrows();
+            hideGridlines();
         }
 
         // 0x0049E437, 0x0049E76F, 0x0049ECD1

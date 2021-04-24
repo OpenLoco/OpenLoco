@@ -26,7 +26,7 @@ namespace OpenLoco::GameCommands
         {
             setPauseFlag(1 << 0);
             Audio::pauseSound();
-            Ui::TimePanel::invalidateFrame();
+            Ui::Windows::TimePanel::invalidateFrame();
         }
 
         return 0;

@@ -565,7 +565,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         auto vehicleType = VehicleType(menu_options[itemIndex]);
         last_vehicles_option = vehicleType;
 
-        Windows::VehicleList::open(CompanyManager::getControllingId(), vehicleType);
+        VehicleList::open(CompanyManager::getControllingId(), vehicleType);
     }
 
     // 0x0043A4E9
@@ -596,7 +596,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         if (itemIndex > 4)
             return;
 
-        Windows::StationList::open(CompanyManager::getControllingId(), itemIndex);
+        StationList::open(CompanyManager::getControllingId(), itemIndex);
     }
 
     // 0x0043A071

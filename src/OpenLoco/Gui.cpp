@@ -27,18 +27,18 @@ namespace OpenLoco::Gui
 
         if (OpenLoco::isTitleMode())
         {
-            Ui::Windows::openTitleMenu();
-            Ui::Windows::openTitleExit();
-            Ui::Windows::openTitleLogo();
-            Ui::Windows::openTitleVersion();
-            Ui::TitleOptions::open();
+            Ui::Windows::TitleMenu::open();
+            Ui::Windows::TitleExit::open();
+            Ui::Windows::TitleLogo::open();
+            Ui::Windows::TitleVersion::open();
+            Ui::Windows::TitleOptions::open();
         }
         else
         {
             Windows::ToolbarTop::Game::open();
 
             Windows::PlayerInfoPanel::open();
-            TimePanel::open();
+            Windows::TimePanel::open();
 
             if (OpenLoco::Tutorial::state() != Tutorial::tutorial_state::none)
             {

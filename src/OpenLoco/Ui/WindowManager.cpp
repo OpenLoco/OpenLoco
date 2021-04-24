@@ -96,7 +96,7 @@ namespace OpenLoco::Ui::WindowManager
         registerHook(
             0x0043CB9F,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                Windows::editorInit();
+                Windows::TitleMenu::editorInit();
 
                 return 0;
             });
@@ -125,7 +125,7 @@ namespace OpenLoco::Ui::WindowManager
             0x004B6033,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                auto* w = Vehicle::Main::open(reinterpret_cast<Vehicles::VehicleBase*>(regs.edx));
+                auto* w = Windows::Vehicle::Main::open(reinterpret_cast<Vehicles::VehicleBase*>(regs.edx));
                 regs = backup;
                 regs.esi = reinterpret_cast<int32_t>(w);
                 return 0;
@@ -249,7 +249,7 @@ namespace OpenLoco::Ui::WindowManager
             0x00428F8B,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                Ui::NewsWindow::open(regs.ax);
+                Ui::Windows::NewsWindow::open(regs.ax);
                 regs = backup;
 
                 return 0;
@@ -1504,7 +1504,7 @@ namespace OpenLoco::Ui::WindowManager
                 }
                 TownManager::updateLabels();
                 StationManager::updateLabels();
-                Windows::Map::centerOnViewPoint();
+                Windows::MapWindow::centerOnViewPoint();
             }
 
             return;

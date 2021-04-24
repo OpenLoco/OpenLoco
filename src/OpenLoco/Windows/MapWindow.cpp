@@ -26,7 +26,7 @@
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui::WindowManager;
 
-namespace OpenLoco::Ui::Windows::Map
+namespace OpenLoco::Ui::Windows::MapWindow
 {
     static loco_global<int32_t, 0x00523338> _cursorX2;
     static loco_global<int32_t, 0x0052333C> _cursorY2;

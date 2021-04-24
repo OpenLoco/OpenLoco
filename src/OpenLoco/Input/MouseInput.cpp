@@ -530,7 +530,7 @@ namespace OpenLoco::Input
                             auto veh = _thing->asVehicle();
                             if (veh != nullptr)
                             {
-                                Ui::Vehicle::Main::open(veh);
+                                Ui::Windows::Vehicle::Main::open(veh);
                             }
                             break;
                         }
@@ -1543,7 +1543,7 @@ namespace OpenLoco::Input
                     {
                         if (tooltipStringId != _currentTooltipStringId)
                         {
-                            Ui::ToolTip::closeAndReset();
+                            Ui::Windows::ToolTip::closeAndReset();
                         }
                     }
                 }
@@ -1562,7 +1562,7 @@ namespace OpenLoco::Input
             }
             else
             {
-                Ui::ToolTip::closeAndReset();
+                Ui::Windows::ToolTip::closeAndReset();
             }
 
             return;
@@ -1584,11 +1584,11 @@ namespace OpenLoco::Input
 
             if (tooltipStringId == StringIds::null)
             {
-                Ui::ToolTip::open(window, widgetIndex, x, y);
+                Ui::Windows::ToolTip::open(window, widgetIndex, x, y);
             }
             else
             {
-                Ui::ToolTip::update(window, widgetIndex, tooltipStringId, x, y);
+                Ui::Windows::ToolTip::update(window, widgetIndex, tooltipStringId, x, y);
             }
         }
 

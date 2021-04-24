@@ -21,7 +21,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::Ui::Options
+namespace OpenLoco::Ui::Windows::Options
 {
     static void tabOnMouseUp(window* w, widget_index wi);
     static void sub_4C13BE(window* w);
@@ -1010,7 +1010,7 @@ namespace OpenLoco::Ui::Options
                     return;
 
                 case Widx::edit_selection:
-                    Windows::MusicSelection::open();
+                    MusicSelection::open();
                     return;
             }
         }
@@ -2201,7 +2201,7 @@ namespace OpenLoco::Ui::Options
             strcpy(buffer, playerName);
             buffer[strlen(playerName)] = '\0';
 
-            Windows::TextInput::openTextInput(w, StringIds::preferred_owner_name, StringIds::enter_preferred_owner_name, StringIds::buffer_2039, Widx::use_preferred_owner_name, nullptr);
+            TextInput::openTextInput(w, StringIds::preferred_owner_name, StringIds::enter_preferred_owner_name, StringIds::buffer_2039, Widx::use_preferred_owner_name, nullptr);
         }
 
         // 0x004C1342
@@ -2435,7 +2435,7 @@ namespace OpenLoco::Ui::Options
     {
         Input::toolCancel(w->type, w->number);
 
-        Windows::TextInput::sub_4CE6C9(w->type, w->number);
+        TextInput::sub_4CE6C9(w->type, w->number);
         w->current_tab = wi - Common::Widx::tab_display;
         w->frame_no = 0;
         w->flags &= ~(WindowFlags::flag_16);

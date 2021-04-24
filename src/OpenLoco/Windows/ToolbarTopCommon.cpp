@@ -269,7 +269,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
         }
         else if (itemIndex == 2)
         {
-            Windows::Map::open();
+            MapWindow::open();
         }
     }
 
@@ -287,14 +287,14 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
             window->viewportRotateLeft();
             TownManager::updateLabels();
             StationManager::updateLabels();
-            Windows::Map::centerOnViewPoint();
+            MapWindow::centerOnViewPoint();
         }
         else if (itemIndex == 0)
         {
             window->viewportRotateRight();
             TownManager::updateLabels();
             StationManager::updateLabels();
-            Windows::Map::centerOnViewPoint();
+            MapWindow::centerOnViewPoint();
         }
     }
 
@@ -336,23 +336,23 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
         switch (itemIndex)
         {
             case 0:
-                Windows::Terraform::openClearArea();
+                Terraform::openClearArea();
                 break;
 
             case 1:
-                Windows::Terraform::openAdjustLand();
+                Terraform::openAdjustLand();
                 break;
 
             case 2:
-                Windows::Terraform::openAdjustWater();
+                Terraform::openAdjustWater();
                 break;
 
             case 3:
-                Windows::Terraform::openPlantTrees();
+                Terraform::openPlantTrees();
                 break;
 
             case 4:
-                Windows::Terraform::openBuildWalls();
+                Terraform::openBuildWalls();
                 break;
         }
     }
@@ -378,12 +378,12 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
 
         if (itemIndex == 0)
         {
-            Windows::TownList::open();
+            TownList::open();
             last_town_option = 0;
         }
         else if (itemIndex == 1)
         {
-            Windows::IndustryList::open();
+            IndustryList::open();
             last_town_option = 1;
         }
     }

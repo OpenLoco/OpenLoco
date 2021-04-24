@@ -11,7 +11,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::Ui::Windows
+namespace OpenLoco::Ui::Windows::PromptOkCancel
 {
 #pragma pack(push, 1)
     struct text_buffers_t
@@ -52,7 +52,7 @@ namespace OpenLoco::Ui::Windows
     // 0x00446F6B
     // eax: okButtonStringId
     // eax: {return}
-    bool promptOkCancel(string_id okButtonStringId)
+    bool open(string_id okButtonStringId)
     {
         text_buffers_t buffers;
         std::memcpy(buffers.title, byte_112CC04, 512);
@@ -99,7 +99,7 @@ namespace OpenLoco::Ui::Windows
     }
 
     // 0x00447125
-    void promptOkCancelInput(uint32_t charCode, uint32_t keyCode)
+    void handleInput(uint32_t charCode, uint32_t keyCode)
     {
         auto window = WindowManager::find(WindowType::confirmationPrompt);
         if (window == nullptr)

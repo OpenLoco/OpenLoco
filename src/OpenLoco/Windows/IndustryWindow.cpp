@@ -260,7 +260,7 @@ namespace OpenLoco::Ui::Windows::Industry
             if (self->viewports[0] == nullptr)
             {
                 auto widget = &self->widgets[widx::viewport];
-                auto tile = OpenLoco::Map::Pos3({ industry->x, industry->y, tileZ });
+                auto tile = Map::Pos3({ industry->x, industry->y, tileZ });
                 auto origin = Gfx::point_t(widget->left + self->x + 1, widget->top + self->y + 1);
                 auto size = Gfx::ui_size_t(widget->width() - 2, widget->height() - 2);
                 ViewportManager::create(self, 0, origin, size, self->saved_view.zoomLevel, tile);

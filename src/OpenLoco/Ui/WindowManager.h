@@ -69,325 +69,341 @@ namespace OpenLoco::Ui::WindowManager
     void viewportSetVisibility(viewport_visibility flags);
 }
 
-namespace OpenLoco::Ui::Windows::Main
-{
-    void open();
-}
-
-namespace OpenLoco::Ui::Windows
-{
-    window* openTitleVersion();
-    window* openTitleExit();
-    window* openTitleMenu();
-    window* openTitleLogo();
-
-    bool promptOkCancel(string_id okButtonStringId);
-    void promptOkCancelInput(uint32_t charCode, uint32_t keyCode);
-
-    void showError(string_id title, string_id message = StringIds::null, bool sound = true);
-
-    void editorInit();
-
-    void showGridlines();
-    void hideGridlines();
-    void showDirectionArrows();
-    void hideDirectionArrows();
-}
-
-namespace OpenLoco::Ui::About
-{
-    void open();
-}
-
-namespace OpenLoco::Ui::KeyboardShortcuts
-{
-    window* open();
-}
-
-namespace OpenLoco::Ui::EditKeyboardShortcut
-{
-    window* open(uint8_t shortcutIndex);
-}
-
-namespace OpenLoco::Ui::AboutMusic
-{
-    void open();
-}
-
-namespace OpenLoco::Ui::Windows::Construction
-{
-    window* openWithFlags(uint32_t flags);
-    window* openAtTrack(window* main, OpenLoco::Map::track_element* track, const OpenLoco::Map::Pos2 pos);
-    window* openAtRoad(window* main, OpenLoco::Map::road_element* track, const OpenLoco::Map::Pos2 pos);
-    void setToTrackExtra(window* main, OpenLoco::Map::track_element* track, const uint8_t bh, const OpenLoco::Map::Pos2 pos);
-    void setToRoadExtra(window* main, OpenLoco::Map::road_element* track, const uint8_t bh, const OpenLoco::Map::Pos2 pos);
-    void sub_4A6FAC();
-    void rotate(window* self);
-    void registerHooks();
-}
-
-namespace OpenLoco::Ui::Windows::Industry
-{
-    window* open(IndustryId_t id);
-}
-
-namespace OpenLoco::Ui::Windows::IndustryList
-{
-    window* open();
-}
-
-namespace OpenLoco::Ui::Windows::LandscapeGeneration
-{
-    window* open();
-}
-
-namespace OpenLoco::Ui::Windows::LandscapeGenerationConfirm
-{
-    window* open(int32_t prompt_type);
-}
-
-namespace OpenLoco::Ui::Windows::Map
-{
-    void open();
-    void centerOnViewPoint();
-}
-
-namespace OpenLoco::Ui::Windows::MusicSelection
-{
-    window* open();
-}
-
-namespace OpenLoco::Ui::Windows::Error
-{
-    void open(string_id title, string_id message);
-    void openWithCompetitor(string_id title, string_id message, uint8_t competitorId);
-    void registerHooks();
-}
-
-namespace OpenLoco::Ui::Options
-{
-    window* open();
-    window* openMusicSettings();
-    constexpr uint8_t tab_offset_music = 2;
-}
-
-namespace OpenLoco::Ui::PromptBrowse
-{
-    enum browse_type : uint8_t
-    {
-        load = 1,
-        save = 2
-    };
-    bool open(browse_type type, char* path, const char* filter, const char* title);
-    void handleInput(uint32_t charCode, uint32_t keyCode);
-    void registerHooks();
-}
-
-namespace OpenLoco::Ui::Windows::ScenarioOptions
-{
-    window* open();
-}
-
-namespace OpenLoco::Ui::Windows::Station
-{
-    window* open(uint16_t id);
-    void showStationCatchment(uint16_t windowNumber);
-}
-
-namespace OpenLoco::Ui::Windows::StationList
-{
-    window* open(CompanyId_t companyId);
-    window* open(CompanyId_t companyId, uint8_t type);
-}
-
-namespace OpenLoco::Ui::Windows::Terraform
-{
-    window* open();
-    void openClearArea();
-    void openAdjustLand();
-    void openAdjustWater();
-    void openPlantTrees();
-    void openBuildWalls();
-    bool rotate(window*);
-    void registerHooks();
-}
-
-namespace OpenLoco::Ui::Windows::TextInput
-{
-    void registerHooks();
-
-    void openTextInput(Ui::window* w, string_id title, string_id message, string_id value, int callingWidget, void* valueArgs);
-    void sub_4CE6C9(WindowType type, window_number number);
-    void cancel();
-    void handleInput(uint32_t charCode, uint32_t keyCode);
-    void sub_4CE6FF();
-}
-
-namespace OpenLoco::Ui::TitleOptions
-{
-    window* open();
-}
-
-namespace OpenLoco::Ui::Windows::ToolbarTop::Game
-{
-    void open();
-}
-
-namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
-{
-    void open();
-}
-
-namespace OpenLoco::Ui::ToolTip
-{
-    void registerHooks();
-    void open(Ui::window* window, int32_t widgetIndex, int16_t x, int16_t y);
-    void update(Ui::window* window, int32_t widgetIndex, string_id stringId, int16_t x, int16_t y);
-    void set_52336E(bool value);
-    void closeAndReset();
-}
-
-namespace OpenLoco::Ui::Windows::MapToolTip
-{
-    void open();
-    void setOwner(CompanyId_t company);
-    void reset();
-}
-
-namespace OpenLoco::Ui::Windows::Town
-{
-    window* open(uint16_t townId);
-}
-
-namespace OpenLoco::Ui::Windows::TownList
-{
-    window* open();
-}
-
 namespace OpenLoco::Vehicles
 {
     struct VehicleBase;
     struct Car;
 }
 
-namespace OpenLoco::Ui::Windows::DragVehiclePart
+namespace OpenLoco::Ui::Windows
 {
-    void open(Vehicles::Car& car);
-}
+    void showError(string_id title, string_id message = StringIds::null, bool sound = true);
 
-namespace OpenLoco::Ui::Vehicle
-{
-    void registerHooks();
+    void showGridlines();
+    void hideGridlines();
+    void showDirectionArrows();
+    void hideDirectionArrows();
+
+    namespace About
+    {
+        void open();
+    }
+
+    namespace AboutMusic
+    {
+        void open();
+    }
+
+    namespace BuildVehicle
+    {
+        window* open(uint32_t vehicle, uint32_t flags);
+        void sub_4B92A5(Ui::window* window);
+        void registerHooks();
+    }
+
+    namespace Cheats
+    {
+        window* open();
+    }
+
+    namespace CompanyFaceSelection
+    {
+        void open(CompanyId_t id);
+    }
+
+    namespace CompanyList
+    {
+        void openPerformanceIndexes();
+        window* open();
+    }
+
+    namespace CompanyWindow
+    {
+        window* open(CompanyId_t companyId);
+        window* openAndSetName();
+        window* openChallenge(CompanyId_t companyId);
+        window* openFinances(CompanyId_t companyId);
+    }
+
+    namespace Construction
+    {
+        window* openWithFlags(uint32_t flags);
+        window* openAtTrack(window* main, Map::track_element* track, const Map::Pos2 pos);
+        window* openAtRoad(window* main, Map::road_element* track, const Map::Pos2 pos);
+        void setToTrackExtra(window* main, Map::track_element* track, const uint8_t bh, const Map::Pos2 pos);
+        void setToRoadExtra(window* main, Map::road_element* track, const uint8_t bh, const Map::Pos2 pos);
+        void sub_4A6FAC();
+        void rotate(window* self);
+        void registerHooks();
+    }
+
+    namespace DragVehiclePart
+    {
+        void open(Vehicles::Car& car);
+    }
+
+    namespace EditKeyboardShortcut
+    {
+        window* open(uint8_t shortcutIndex);
+    }
+
+    namespace Error
+    {
+        void open(string_id title, string_id message);
+        void openWithCompetitor(string_id title, string_id message, uint8_t competitorId);
+        void registerHooks();
+    }
+
+    namespace Industry
+    {
+        window* open(IndustryId_t id);
+    }
+
+    namespace IndustryList
+    {
+        window* open();
+    }
+
+    namespace KeyboardShortcuts
+    {
+        window* open();
+    }
+
+    namespace LandscapeGeneration
+    {
+        window* open();
+    }
+
+    namespace LandscapeGenerationConfirm
+    {
+        window* open(int32_t prompt_type);
+    }
+
     namespace Main
     {
-        window* open(const Vehicles::VehicleBase* vehicle);
+        void open();
     }
-    namespace Details
+
+    namespace MapToolTip
     {
-        window* open(const Vehicles::VehicleBase* vehicle);
-        void scrollDrag(const Gfx::point_t& pos);
-        void scrollDragEnd(const Gfx::point_t& pos);
+        void open();
+        void setOwner(CompanyId_t company);
+        void reset();
     }
-    namespace Common
+
+    namespace MapWindow
     {
-        int16_t sub_4B743B(uint8_t al, uint8_t ah, int16_t cx, int16_t dx, Vehicles::VehicleBase* vehicle, Gfx::drawpixelinfo_t* const pDrawpixelinfo);
+        void open();
+        void centerOnViewPoint();
     }
-    bool rotate();
-}
 
-namespace OpenLoco::Ui::Windows::VehicleList
-{
-    window* open(CompanyId_t companyId, VehicleType type);
-}
+    namespace MessageWindow
+    {
+        void open();
+    }
 
-namespace OpenLoco::Ui::BuildVehicle
-{
-    window* open(uint32_t vehicle, uint32_t flags);
-    void sub_4B92A5(Ui::window* window);
-    void registerHooks();
-}
+    namespace MusicSelection
+    {
+        window* open();
+    }
+    namespace NewsWindow
+    {
+        void open(uint16_t messageIndex);
+        void openLastMessage();
+        void close(Ui::window* window);
+    }
 
-namespace OpenLoco::Ui::MessageWindow
-{
-    void open();
-}
+    namespace ObjectSelectionWindow
+    {
+        window* open();
+    }
 
-namespace OpenLoco::Ui::NewsWindow
-{
-    void open(uint16_t messageIndex);
-    void openLastMessage();
-    void close(Ui::window* window);
-}
+    namespace Options
+    {
+        window* open();
+        window* openMusicSettings();
+        constexpr uint8_t tab_offset_music = 2;
+    }
 
-namespace OpenLoco::Ui::Windows::Cheats
-{
-    window* open();
-}
+    namespace PlayerInfoPanel
+    {
+        window* open();
+        void invalidateFrame();
+    }
 
-namespace OpenLoco::Ui::Windows::CompanyFaceSelection
-{
-    void open(CompanyId_t id);
-}
+    namespace ProgressBar
+    {
+        window* open(std::string_view captionString);
+        void setProgress(uint8_t value);
+        void close();
+    }
 
-namespace OpenLoco::Ui::Windows::CompanyList
-{
-    void openPerformanceIndexes();
-    window* open();
-}
+    namespace PromptBrowse
+    {
+        enum browse_type : uint8_t
+        {
+            load = 1,
+            save = 2
+        };
+        bool open(browse_type type, char* path, const char* filter, const char* title);
+        void handleInput(uint32_t charCode, uint32_t keyCode);
+        void registerHooks();
+    }
 
-namespace OpenLoco::Ui::Windows::CompanyWindow
-{
-    window* open(CompanyId_t companyId);
-    window* openAndSetName();
-    window* openChallenge(CompanyId_t companyId);
-    window* openFinances(CompanyId_t companyId);
-}
+    namespace PromptOkCancel
+    {
+        bool open(string_id okButtonStringId);
+        void handleInput(uint32_t charCode, uint32_t keyCode);
+    }
 
-namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
-{
-    window* open();
-}
+    namespace PromptSaveWindow
+    {
+        window* open(uint16_t savePromptType);
+    }
 
-namespace OpenLoco::Ui::Windows::PlayerInfoPanel
-{
-    window* open();
-    void invalidateFrame();
-}
+    namespace ScenarioOptions
+    {
+        window* open();
+    }
 
-namespace OpenLoco::Ui::Windows::ProgressBar
-{
-    window* open(std::string_view captionString);
-    void setProgress(uint8_t value);
-    void close();
-}
+    namespace ScenarioSelect
+    {
+        window* open();
+    }
 
-namespace OpenLoco::Ui::Windows::PromptSaveWindow
-{
-    window* open(uint16_t savePromptType);
-}
+    namespace Station
+    {
+        window* open(uint16_t id);
+        void showStationCatchment(uint16_t windowNumber);
+    }
 
-namespace OpenLoco::Ui::Windows::ScenarioSelect
-{
-    window* open();
-}
+    namespace StationList
+    {
+        window* open(CompanyId_t companyId);
+        window* open(CompanyId_t companyId, uint8_t type);
+    }
 
-namespace OpenLoco::Ui::Windows::TileInspector
-{
-    window* open();
-}
+    namespace Terraform
+    {
+        window* open();
+        void openClearArea();
+        void openAdjustLand();
+        void openAdjustWater();
+        void openPlantTrees();
+        void openBuildWalls();
+        bool rotate(window*);
+        void registerHooks();
+    }
 
-namespace OpenLoco::Ui::TimePanel
-{
-    window* open();
-    void invalidateFrame();
-}
+    namespace TextInput
+    {
+        void registerHooks();
 
-namespace OpenLoco::Ui::Windows::Tutorial
-{
-    window* open();
-}
+        void openTextInput(Ui::window* w, string_id title, string_id message, string_id value, int callingWidget, void* valueArgs);
+        void sub_4CE6C9(WindowType type, window_number number);
+        void cancel();
+        void handleInput(uint32_t charCode, uint32_t keyCode);
+        void sub_4CE6FF();
+    }
 
-namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
-{
-    void open();
+    namespace TileInspector
+    {
+        window* open();
+    }
+
+    namespace TimePanel
+    {
+        window* open();
+        void invalidateFrame();
+    }
+
+    namespace TitleExit
+    {
+        window* open();
+    }
+
+    namespace TitleLogo
+    {
+        window* open();
+    }
+
+    namespace TitleMenu
+    {
+        window* open();
+        void editorInit();
+    }
+
+    namespace TitleOptions
+    {
+        window* open();
+    }
+
+    namespace TitleVersion
+    {
+        window* open();
+    }
+
+    namespace ToolbarBottom::Editor
+    {
+        void open();
+    }
+
+    namespace ToolbarTop::Game
+    {
+        void open();
+    }
+
+    namespace ToolbarTop::Editor
+    {
+        void open();
+    }
+
+    namespace ToolTip
+    {
+        void registerHooks();
+        void open(Ui::window* window, int32_t widgetIndex, int16_t x, int16_t y);
+        void update(Ui::window* window, int32_t widgetIndex, string_id stringId, int16_t x, int16_t y);
+        void set_52336E(bool value);
+        void closeAndReset();
+    }
+
+    namespace Town
+    {
+        window* open(uint16_t townId);
+    }
+
+    namespace TownList
+    {
+        window* open();
+    }
+
+    namespace Tutorial
+    {
+        window* open();
+    }
+
+    namespace Vehicle
+    {
+        void registerHooks();
+        namespace Main
+        {
+            window* open(const Vehicles::VehicleBase* vehicle);
+        }
+        namespace Details
+        {
+            window* open(const Vehicles::VehicleBase* vehicle);
+            void scrollDrag(const Gfx::point_t& pos);
+            void scrollDragEnd(const Gfx::point_t& pos);
+        }
+        namespace Common
+        {
+            int16_t sub_4B743B(uint8_t al, uint8_t ah, int16_t cx, int16_t dx, Vehicles::VehicleBase* vehicle, Gfx::drawpixelinfo_t* const pDrawpixelinfo);
+        }
+        bool rotate();
+    }
+
+    namespace VehicleList
+    {
+        window* open(CompanyId_t companyId, VehicleType type);
+    }
 }

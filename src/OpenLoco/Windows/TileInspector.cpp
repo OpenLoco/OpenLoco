@@ -139,13 +139,13 @@ namespace OpenLoco::Ui::Windows::TileInspector
         // Coord X/Y values
         {
             FormatArguments args = {};
-            args.push<int16_t>(_currentPosition.x / OpenLoco::Map::tile_size);
+            args.push<int16_t>(_currentPosition.x / Map::tile_size);
             auto& widget = self->widgets[widx::xPos];
             Gfx::drawString_494B3F(*context, self->x + widget.left + 2, self->y + widget.top + 1, Colour::black, StringIds::tile_inspector_coord, &args);
         }
         {
             FormatArguments args = {};
-            args.push<int16_t>(_currentPosition.y / OpenLoco::Map::tile_size);
+            args.push<int16_t>(_currentPosition.y / Map::tile_size);
             auto& widget = self->widgets[widx::yPos];
             Gfx::drawString_494B3F(*context, self->x + widget.left + 2, self->y + widget.top + 1, Colour::black, StringIds::tile_inspector_coord, &args);
         }
@@ -425,22 +425,22 @@ namespace OpenLoco::Ui::Windows::TileInspector
                 break;
 
             case widx::xPosDecrease:
-                _currentPosition.x = std::clamp<coord_t>(_currentPosition.x - OpenLoco::Map::tile_size, 1, OpenLoco::Map::map_width);
+                _currentPosition.x = std::clamp<coord_t>(_currentPosition.x - Map::tile_size, 1, Map::map_width);
                 self->invalidate();
                 break;
 
             case widx::xPosIncrease:
-                _currentPosition.x = std::clamp<coord_t>(_currentPosition.x + OpenLoco::Map::tile_size, 1, OpenLoco::Map::map_width);
+                _currentPosition.x = std::clamp<coord_t>(_currentPosition.x + Map::tile_size, 1, Map::map_width);
                 self->invalidate();
                 break;
 
             case widx::yPosDecrease:
-                _currentPosition.y = std::clamp<coord_t>(_currentPosition.y - OpenLoco::Map::tile_size, 1, OpenLoco::Map::map_height);
+                _currentPosition.y = std::clamp<coord_t>(_currentPosition.y - Map::tile_size, 1, Map::map_height);
                 self->invalidate();
                 break;
 
             case widx::yPosIncrease:
-                _currentPosition.y = std::clamp<coord_t>(_currentPosition.y + OpenLoco::Map::tile_size, 1, OpenLoco::Map::map_height);
+                _currentPosition.y = std::clamp<coord_t>(_currentPosition.y + Map::tile_size, 1, Map::map_height);
                 self->invalidate();
                 break;
         }

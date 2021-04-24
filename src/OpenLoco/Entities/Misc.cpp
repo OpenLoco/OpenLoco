@@ -27,7 +27,7 @@ namespace OpenLoco
     {
         if ((uint16_t)loc.x > 12287 || (uint16_t)loc.y > 12287)
             return nullptr;
-        auto surface = OpenLoco::Map::TileManager::get(loc.x & 0xFFE0, loc.y & 0xFFE0).surface();
+        auto surface = Map::TileManager::get(loc.x & 0xFFE0, loc.y & 0xFFE0).surface();
 
         if (surface == nullptr)
             return nullptr;

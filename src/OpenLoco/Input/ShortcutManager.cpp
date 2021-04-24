@@ -205,13 +205,13 @@ namespace OpenLoco::Input::ShortcutManager
         main->viewportRotateRight();
         TownManager::updateLabels();
         StationManager::updateLabels();
-        Windows::Map::centerOnViewPoint();
+        Windows::MapWindow::centerOnViewPoint();
     }
 
     // 0x004BF148
     static void rotateConstructionObject()
     {
-        if (Vehicle::rotate())
+        if (Windows::Vehicle::rotate())
             return;
 
         auto window = WindowManager::find(WindowType::terraform);
@@ -399,7 +399,7 @@ namespace OpenLoco::Input::ShortcutManager
         if (last_build_vehicles_option == 0xFF)
             return;
 
-        BuildVehicle::open(last_build_vehicles_option, 1 << 31);
+        Windows::BuildVehicle::open(last_build_vehicles_option, 1 << 31);
     }
 
     // 0x004BF2D1
@@ -445,7 +445,7 @@ namespace OpenLoco::Input::ShortcutManager
         if (isEditorMode() && S5::getOptions().editorStep == 0)
             return;
 
-        Windows::Map::open();
+        Windows::MapWindow::open();
     }
 
     // 0x004BF359
@@ -481,7 +481,7 @@ namespace OpenLoco::Input::ShortcutManager
         if (isEditorMode())
             return;
 
-        MessageWindow::open();
+        Windows::MessageWindow::open();
     }
 
     // 0x004BF3AB
@@ -499,11 +499,11 @@ namespace OpenLoco::Input::ShortcutManager
         auto window = WindowManager::find(WindowType::news);
         if (window)
         {
-            NewsWindow::close(window);
+            Windows::NewsWindow::close(window);
         }
         else
         {
-            NewsWindow::openLastMessage();
+            Windows::NewsWindow::openLastMessage();
         }
     }
 

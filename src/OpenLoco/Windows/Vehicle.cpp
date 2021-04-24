@@ -30,7 +30,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::Ui::Vehicle
+namespace OpenLoco::Ui::Windows::Vehicle
 {
     namespace Common
     {
@@ -982,7 +982,7 @@ namespace OpenLoco::Ui::Vehicle
                 auto* newVehicle = EntityManager::get<Vehicles::VehicleBase>(_113642A);
                 if (newVehicle != nullptr)
                 {
-                    OpenLoco::Ui::Vehicle::Details::open(newVehicle);
+                    OpenLoco::Ui::Windows::Vehicle::Details::open(newVehicle);
                 }
             }
         }
@@ -1170,7 +1170,7 @@ namespace OpenLoco::Ui::Vehicle
             {
                 if (c.front == car->front)
                 {
-                    Windows::DragVehiclePart::open(c);
+                    DragVehiclePart::open(c);
                     break;
                 }
             }
@@ -2677,7 +2677,7 @@ namespace OpenLoco::Ui::Vehicle
                         break;
                     auto height = trackElement->baseZ() * 4;
                     auto trackId = trackElement->trackId();
-                    const auto& trackPiece = OpenLoco::Map::TrackData::getTrackPiece(trackId);
+                    const auto& trackPiece = Map::TrackData::getTrackPiece(trackId);
                     const auto& trackPart = trackPiece[trackElement->sequenceIndex()];
 
                     auto offsetToFirstTile = Map::rotate2dCoordinate({ trackPart.x, trackPart.y }, trackElement->unkDirection());
@@ -2725,7 +2725,7 @@ namespace OpenLoco::Ui::Vehicle
                         break;
                     auto height = roadElement->baseZ() * 4;
                     auto roadId = roadElement->roadId();
-                    const auto& roadPiece = OpenLoco::Map::TrackData::getRoadPiece(roadId);
+                    const auto& roadPiece = Map::TrackData::getRoadPiece(roadId);
                     const auto& roadPart = roadPiece[roadElement->sequenceIndex()];
 
                     auto offsetToFirstTile = Map::rotate2dCoordinate({ roadPart.x, roadPart.y }, roadElement->unkDirection());
@@ -3339,7 +3339,7 @@ namespace OpenLoco::Ui::Vehicle
                 args.push(StringIds::getVehicleType(vehicle->vehicleType)); // 0
                 args.skip(6);
                 args.push(StringIds::getVehicleType(vehicle->vehicleType)); // 8
-                Windows::TextInput::openTextInput(self, StringIds::title_name_vehicle, StringIds::prompt_enter_new_vehicle_name, vehicle->name, widgetIndex, &vehicle->ordinalNumber);
+                TextInput::openTextInput(self, StringIds::title_name_vehicle, StringIds::prompt_enter_new_vehicle_name, vehicle->name, widgetIndex, &vehicle->ordinalNumber);
             }
         }
 
@@ -3347,7 +3347,7 @@ namespace OpenLoco::Ui::Vehicle
         static void switchTab(window* self, widget_index widgetIndex)
         {
             Input::toolCancel(self->type, self->number);
-            Windows::TextInput::sub_4CE6C9(self->type, self->number);
+            TextInput::sub_4CE6C9(self->type, self->number);
 
             self->current_tab = widgetIndex - Common::widx::tabMain;
             self->frame_no = 0;

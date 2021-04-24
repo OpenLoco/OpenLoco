@@ -10,7 +10,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::Ui::TitleOptions
+namespace OpenLoco::Ui::Windows::TitleOptions
 {
     static const Gfx::ui_size_t window_size = { 60, 15 };
 
@@ -77,7 +77,7 @@ namespace OpenLoco::Ui::TitleOptions
         switch (widgetIndex)
         {
             case Widx::options_button:
-                Ui::Options::open();
+                Ui::Windows::Options::open();
                 break;
         }
     }

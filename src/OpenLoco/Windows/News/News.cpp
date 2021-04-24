@@ -21,7 +21,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::Ui::NewsWindow
+namespace OpenLoco::Ui::Windows::NewsWindow
 {
     namespace News1
     {
@@ -97,7 +97,7 @@ namespace OpenLoco::Ui::NewsWindow
                             {
                                 auto vehicle = EntityManager::get<Vehicles::VehicleBase>(itemId);
 
-                                Ui::Vehicle::Main::open(vehicle);
+                                Ui::Windows::Vehicle::Main::open(vehicle);
                                 break;
                             }
 
@@ -111,7 +111,7 @@ namespace OpenLoco::Ui::NewsWindow
 
                             case newsItemSubTypes::vehicleTab:
                                 auto vehicleObj = ObjectManager::get<VehicleObject>(itemId);
-                                auto window = Ui::BuildVehicle::open(static_cast<uint32_t>(vehicleObj->type), (1 << 31));
+                                auto window = Ui::Windows::BuildVehicle::open(static_cast<uint32_t>(vehicleObj->type), (1 << 31));
                                 window->row_hover = itemId;
                                 if (vehicleObj->mode == TransportMode::rail || vehicleObj->mode == TransportMode::road)
                                 {
@@ -131,7 +131,7 @@ namespace OpenLoco::Ui::NewsWindow
 
                                 auto rowHover = window->row_hover;
 
-                                Ui::BuildVehicle::sub_4B92A5(window);
+                                Ui::Windows::BuildVehicle::sub_4B92A5(window);
 
                                 window->row_hover = rowHover;
                                 break;

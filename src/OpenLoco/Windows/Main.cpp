@@ -51,7 +51,7 @@ namespace OpenLoco::Ui::Windows::Main
             { window->x, window->y },
             { window->width, window->height },
             ZoomLevel::full,
-            { (OpenLoco::Map::map_rows * OpenLoco::Map::tile_size) / 2 - 1, (OpenLoco::Map::map_rows * OpenLoco::Map::tile_size) / 2 - 1, 480 });
+            { (Map::map_rows * Map::tile_size) / 2 - 1, (Map::map_rows * Map::tile_size) / 2 - 1, 480 });
     }
 
     // 0x0043B2E4

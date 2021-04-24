@@ -676,7 +676,7 @@ void OpenLoco::Interop::registerHooks()
     registerHook(
         0x00446F6B,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            auto result = promptOkCancel(regs.eax);
+            auto result = Ui::Windows::PromptOkCancel::open(regs.eax);
             regs.eax = result ? 1 : 0;
             return 0;
         });
@@ -764,11 +764,11 @@ void OpenLoco::Interop::registerHooks()
         });
 
     Ui::ProgressBar::registerHooks();
-    Ui::PromptBrowse::registerHooks();
+    Ui::Windows::PromptBrowse::registerHooks();
     Ui::Windows::TextInput::registerHooks();
-    Ui::ToolTip::registerHooks();
-    Ui::Vehicle::registerHooks();
-    Ui::BuildVehicle::registerHooks();
+    Ui::Windows::ToolTip::registerHooks();
+    Ui::Windows::Vehicle::registerHooks();
+    Ui::Windows::BuildVehicle::registerHooks();
     Ui::Windows::Terraform::registerHooks();
     Ui::Windows::Error::registerHooks();
     Ui::Windows::Construction::registerHooks();
@@ -789,7 +789,7 @@ void OpenLoco::Interop::registerHooks()
             int16_t x = regs.eax;
             int16_t i = regs.ebx / 6;
             int16_t y = regs.ecx;
-            OpenLoco::Map::surface_element* surface = (OpenLoco::Map::surface_element*)regs.esi;
+            Map::surface_element* surface = (Map::surface_element*)regs.esi;
 
             surface->createWave(x, y, i);
 

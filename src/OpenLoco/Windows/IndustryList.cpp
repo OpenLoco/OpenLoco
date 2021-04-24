@@ -187,7 +187,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
             if (currentIndustry == -1)
                 return;
 
-            Windows::Industry::open(currentIndustry);
+            Industry::open(currentIndustry);
         }
 
         // 0x00458140
@@ -706,7 +706,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                     _lastSelectedIndustry = static_cast<uint8_t>(rowInfo);
 
                     int32_t pan = (self->width >> 1) + self->x;
-                    OpenLoco::Map::Pos3 loc = { xPos, yPos, static_cast<int16_t>(pan) };
+                    Map::Pos3 loc = { xPos, yPos, static_cast<int16_t>(pan) };
                     Audio::playSound(Audio::SoundId::clickDown, loc, pan);
                     self->saved_view.mapX = -16;
                     dword_E0C39C = 0x80000000;

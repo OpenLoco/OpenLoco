@@ -13,7 +13,7 @@
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Input;
 
-namespace OpenLoco::Ui::EditKeyboardShortcut
+namespace OpenLoco::Ui::Windows::EditKeyboardShortcut
 {
     constexpr Gfx::ui_size_t windowSize = { 280, 72 };
 

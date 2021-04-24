@@ -18,7 +18,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::Ui::TimePanel
+namespace OpenLoco::Ui::Windows::TimePanel
 {
     static const Gfx::ui_size_t window_size = { 140, 27 };
 
@@ -260,11 +260,11 @@ namespace OpenLoco::Ui::TimePanel
                 {
                     auto opponent = CompanyManager::getOpponent();
                     _common_format_args[4] = opponent->owner_name;
-                    Ui::Windows::TextInput::openTextInput(self, StringIds::chat_title, StringIds::chat_instructions, StringIds::empty, widgetIndex, &*_common_format_args);
+                    TextInput::openTextInput(self, StringIds::chat_title, StringIds::chat_instructions, StringIds::empty, widgetIndex, &*_common_format_args);
                     break;
                 }
                 case 1:
-                    Windows::Map::open();
+                    MapWindow::open();
                     break;
             }
         }
@@ -273,7 +273,7 @@ namespace OpenLoco::Ui::TimePanel
             switch (itemIndex)
             {
                 case 0:
-                    Windows::Map::open();
+                    MapWindow::open();
                     break;
             }
         }

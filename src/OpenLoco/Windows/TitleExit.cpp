@@ -10,7 +10,7 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::Ui::Windows
+namespace OpenLoco::Ui::Windows::TitleExit
 {
     static const Gfx::ui_size_t window_size = { 40, 28 };
 
@@ -33,7 +33,7 @@ namespace OpenLoco::Ui::Windows
     static void prepareDraw(Ui::window* self);
     static void draw(Ui::window* window, Gfx::drawpixelinfo_t* dpi);
 
-    window* openTitleExit()
+    window* open()
     {
         _events.on_mouse_up = onMouseUp;
         _events.prepare_draw = prepareDraw;

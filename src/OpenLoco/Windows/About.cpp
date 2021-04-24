@@ -6,7 +6,7 @@
 #include "../Objects/ObjectManager.h"
 #include "../Ui/WindowManager.h"
 
-namespace OpenLoco::Ui::About
+namespace OpenLoco::Ui::Windows::About
 {
     constexpr Gfx::ui_size_t windowSize = { 400, 260 };
 
