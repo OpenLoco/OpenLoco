@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Currency.h"
-#include "Management/Expenditures.h"
+#include "Economy/Currency.h"
+#include "Economy/Expenditures.h"
 #include "Types.hpp"
 #include <cstddef>
 #include <cstdint>

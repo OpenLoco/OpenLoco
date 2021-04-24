@@ -1,6 +1,6 @@
 #include "Cheat.h"
 #include "../CompanyManager.h"
-#include "../Currency.h"
+#include "../Economy/Currency.h"
 #include "../Entities/EntityManager.h"
 #include "../Interop/Interop.hpp"
 #include "../Map/TileManager.h"

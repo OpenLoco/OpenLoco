@@ -25,7 +25,7 @@
 #include "CompanyManager.h"
 #include "Config.h"
 #include "Date.h"
-#include "Economy.h"
+#include "Economy/Economy.h"
 #include "EditorController.h"
 #include "Entities/EntityManager.h"
 #include "Environment.h"

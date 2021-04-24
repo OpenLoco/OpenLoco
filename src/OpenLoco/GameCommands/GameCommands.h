@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Currency.h"
+#include "../Economy/Currency.h"
 #include "../Entities/Entity.h"
 #include "../Interop/Interop.hpp"
 #include "../Map/Tile.h"
@@ -8,7 +8,10 @@
 
 using namespace OpenLoco::Interop;
 
-enum ExpenditureType : uint8_t;
+namespace OpenLoco
+{
+    enum ExpenditureType : uint8_t;
+}
 
 namespace OpenLoco::Vehicles
 {

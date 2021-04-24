@@ -1,7 +1,7 @@
 #include "Economy.h"
-#include "Interop/Interop.hpp"
-#include "Ui/WindowManager.h"
-#include "Ui/WindowType.h"
+#include "../Interop/Interop.hpp"
+#include "../Ui/WindowManager.h"
+#include "../Ui/WindowType.h"
 
 using namespace OpenLoco::Interop;
 
