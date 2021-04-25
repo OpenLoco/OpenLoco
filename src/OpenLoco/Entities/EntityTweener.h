@@ -9,8 +9,8 @@ namespace OpenLoco
     class EntityTweener
     {
         std::vector<EntityBase*> _entities;
-        std::vector<Map::map_pos3> _prePos;
-        std::vector<Map::map_pos3> _postPos;
+        std::vector<Map::Pos3> _prePos;
+        std::vector<Map::Pos3> _postPos;
 
     public:
         static EntityTweener& Get();
