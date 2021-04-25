@@ -26,6 +26,7 @@ namespace OpenLoco::Ui::WindowManager
     size_t indexOf(window* pWindow);
     size_t count();
 
+    void updateViewports();
     void update();
     window* getMainWindow();
     viewport* getMainViewport();

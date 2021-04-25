@@ -528,25 +528,18 @@ namespace OpenLoco::Ui::WindowManager
         _currentModalType = (uint8_t)type;
     }
 
-    // 0x004C6118
-    void update()
+    void updateViewports()
     {
-        _tooltipNotShownTicks = _tooltipNotShownTicks + time_since_last_tick;
-
-        if (!Ui::dirtyBlocksInitialised())
-        {
-            return;
-        }
-
-        if (!Intro::isActive())
-        {
-            Gfx::drawDirtyBlocks();
-        }
-
         for (Ui::window* w = &_windows[0]; w != _windowsEnd; w++)
         {
             w->viewportsUpdatePosition();
         }
+    }
+
+    // 0x004C6118
+    void update()
+    {
+        _tooltipNotShownTicks = _tooltipNotShownTicks + time_since_last_tick;
 
         // 1000 tick update
         _thousandthTickCounter = _thousandthTickCounter + time_since_last_tick;
