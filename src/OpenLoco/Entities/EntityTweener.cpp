@@ -38,6 +38,11 @@ namespace OpenLoco
         PopulateEntities<EntityListType::misc>(_entities, _prePos, [](auto* ent) { return true; });
         PopulateEntities<EntityListType::vehicle>(_entities, _prePos, [](auto* ent) {
             const auto* vehicle = ent->asVehicle();
+            if (vehicle == nullptr)
+            {
+                // This can be never null but makes the compiler happy.
+                return false;
+            }
             return vehicle->isVehicleBody() || vehicle->isVehicleBogie();
         });
     }
