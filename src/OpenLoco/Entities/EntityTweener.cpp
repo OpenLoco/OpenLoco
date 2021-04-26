@@ -26,15 +26,15 @@ namespace OpenLoco
 
     static EntityTweener _tweener;
 
-    EntityTweener& EntityTweener::Get()
+    EntityTweener& EntityTweener::get()
     {
         return _tweener;
     }
 
-    void EntityTweener::PreTick()
+    void EntityTweener::preTick()
     {
-        Restore();
-        Reset();
+        restore();
+        reset();
         PopulateEntities<EntityListType::misc>(_entities, _prePos, [](auto* ent) { return true; });
         PopulateEntities<EntityListType::vehicle>(_entities, _prePos, [](auto* ent) {
             const auto* vehicle = ent->asVehicle();
@@ -42,7 +42,7 @@ namespace OpenLoco
         });
     }
 
-    void EntityTweener::PostTick()
+    void EntityTweener::postTick()
     {
         for (auto* ent : _entities)
         {
@@ -58,7 +58,7 @@ namespace OpenLoco
         }
     }
 
-    void EntityTweener::RemoveEntity(const EntityBase* entity)
+    void EntityTweener::removeEntity(const EntityBase* entity)
     {
         auto it = std::find(_entities.begin(), _entities.end(), entity);
         if (it != _entities.end())
@@ -67,7 +67,7 @@ namespace OpenLoco
         }
     }
 
-    void EntityTweener::Tween(float alpha)
+    void EntityTweener::tween(float alpha)
     {
         const float inv = (1.0f - alpha);
 
@@ -95,7 +95,7 @@ namespace OpenLoco
         }
     }
 
-    void EntityTweener::Restore()
+    void EntityTweener::restore()
     {
         for (size_t i = 0; i < _entities.size(); ++i)
         {
@@ -113,7 +113,7 @@ namespace OpenLoco
         }
     }
 
-    void EntityTweener::Reset()
+    void EntityTweener::reset()
     {
         _entities.clear();
         _prePos.clear();

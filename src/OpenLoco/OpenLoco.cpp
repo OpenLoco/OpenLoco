@@ -771,7 +771,7 @@ namespace OpenLoco
         catch (GameException)
         {
             // Premature end of current tick; use a different message to indicate it's from C++ code
-            EntityTweener::Get().Reset();
+            EntityTweener::get().reset();
             std::cout << "tick interrupted" << std::endl;
             return;
         }
@@ -1050,29 +1050,29 @@ namespace OpenLoco
 
     static void variableUpdate()
     {
-        auto& tweener = EntityTweener::Get();
+        auto& tweener = EntityTweener::get();
 
         const auto alpha = std::min<float>(_accumulator / UpdateTime, 1.0);
 
         while (_accumulator > UpdateTime)
         {
-            tweener.PreTick();
+            tweener.preTick();
 
             tick();
             _accumulator -= UpdateTime;
 
-            tweener.PostTick();
+            tweener.postTick();
         }
 
-        tweener.Tween(alpha);
+        tweener.tween(alpha);
 
         Ui::render();
     }
 
     static void fixedUpdate()
     {
-        auto& tweener = EntityTweener::Get();
-        tweener.Reset();
+        auto& tweener = EntityTweener::get();
+        tweener.reset();
 
         if (_accumulator < UpdateTime)
         {

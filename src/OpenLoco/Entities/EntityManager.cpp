@@ -83,7 +83,7 @@ namespace OpenLoco::EntityManager
         _listCounts[static_cast<uint8_t>(EntityListType::nullMoney)] = maxMoneyEntities;
 
         resetSpatialIndex();
-        EntityTweener::Get().Reset();
+        EntityTweener::get().reset();
     }
 
     EntityId_t firstId(EntityListType list)
@@ -212,7 +212,7 @@ namespace OpenLoco::EntityManager
     // 0x0047024A
     void freeEntity(EntityBase* const entity)
     {
-        EntityTweener::Get().RemoveEntity(entity);
+        EntityTweener::get().removeEntity(entity);
 
         auto list = entity->id < 19800 ? EntityListType::null : EntityListType::nullMoney;
         moveEntityToList(entity, list);

@@ -13,13 +13,13 @@ namespace OpenLoco
         std::vector<Map::Pos3> _postPos;
 
     public:
-        static EntityTweener& Get();
+        static EntityTweener& get();
 
-        void PreTick();
-        void PostTick();
-        void RemoveEntity(const EntityBase* entity);
-        void Tween(float alpha);
-        void Restore();
-        void Reset();
+        void preTick();
+        void postTick();
+        void removeEntity(const EntityBase* entity);
+        void tween(float alpha);
+        void restore();
+        void reset();
     };
 }
