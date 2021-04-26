@@ -31,19 +31,19 @@ namespace OpenLoco
         }
 
         template<typename... T>
-        static FormatArguments common(T... args)
+        static FormatArguments common(T&&... args)
         {
             loco_global<std::byte[0x0112C83A - 0x0112C826], 0x0112C826> _commonFormatArgs;
-            FormatArguments formatter{ &*_commonFormatArgs, std::size(_commonFormatArgs) };
+            FormatArguments formatter{ _commonFormatArgs.get(), std::size(_commonFormatArgs) };
             (formatter.push(args), ...);
             return formatter;
         }
 
         template<typename... T>
-        static FormatArguments mapToolTip(T... args)
+        static FormatArguments mapToolTip(T&&... args)
         {
-            static loco_global<std::byte[40], 0x0050A018> _mapTooltipFormatArguments;
-            FormatArguments formatter{ &*_mapTooltipFormatArguments, std::size(_mapTooltipFormatArguments) };
+            loco_global<std::byte[40], 0x0050A018> _mapTooltipFormatArguments;
+            FormatArguments formatter{ _mapTooltipFormatArguments.get(), std::size(_mapTooltipFormatArguments) };
             (formatter.push(args), ...);
             return formatter;
         }

@@ -2,6 +2,7 @@
 #include "../Audio/Audio.h"
 #include "../Company.h"
 #include "../CompanyManager.h"
+#include "../Localisation/FormatArguments.hpp"
 #include "../Map/Tile.h"
 #include "../Objects/ObjectManager.h"
 #include "../Objects/RoadObject.h"
@@ -346,8 +347,9 @@ namespace OpenLoco::GameCommands
                     if (pObject == nullptr)
                         break;
 
-                    _commonFormatArgs[0] = pObject->name;
-                    _commonFormatArgs[1] = CompanyManager::get(_errorCompanyId)->name;
+                    auto formatter = FormatArguments::common();
+                    formatter.push(pObject->name);
+                    formatter.push(CompanyManager::get(_errorCompanyId)->name);
                     Windows::Error::openWithCompetitor(_gGameCommandErrorTitle, StringIds::error_reason_stringid_belongs_to, _errorCompanyId);
                     return 0x80000000;
                 }
@@ -362,8 +364,9 @@ namespace OpenLoco::GameCommands
                     if (pObject == nullptr)
                         break;
 
-                    _commonFormatArgs[0] = pObject->name;
-                    _commonFormatArgs[1] = CompanyManager::get(_errorCompanyId)->name;
+                    auto formatter = FormatArguments::common();
+                    formatter.push(pObject->name);
+                    formatter.push(CompanyManager::get(_errorCompanyId)->name);
                     Windows::Error::openWithCompetitor(_gGameCommandErrorTitle, StringIds::error_reason_stringid_belongs_to, _errorCompanyId);
                     return 0x80000000;
                 }
@@ -378,16 +381,18 @@ namespace OpenLoco::GameCommands
                     if (pStation == nullptr)
                         break;
 
-                    _commonFormatArgs[0] = pStation->name;
-                    _commonFormatArgs[1] = pStation->town;
-                    _commonFormatArgs[2] = CompanyManager::get(_errorCompanyId)->name;
+                    auto formatter = FormatArguments::common();
+                    formatter.push(pStation->name);
+                    formatter.push(pStation->town);
+                    formatter.push(CompanyManager::get(_errorCompanyId)->name);
                     Windows::Error::openWithCompetitor(_gGameCommandErrorTitle, StringIds::error_reason_stringid_belongs_to, _errorCompanyId);
                     return 0x80000000;
                 }
 
                 case element_type::signal: // 0x0C
                 {
-                    _commonFormatArgs[0] = CompanyManager::get(_errorCompanyId)->name;
+                    auto formatter = FormatArguments::common();
+                    formatter.push(CompanyManager::get(_errorCompanyId)->name);
                     Windows::Error::openWithCompetitor(_gGameCommandErrorTitle, StringIds::error_reason_signal_belongs_to, _errorCompanyId);
                     return 0x80000000;
                 }
@@ -398,7 +403,8 @@ namespace OpenLoco::GameCommands
         }
 
         // fallback
-        _commonFormatArgs[0] = CompanyManager::get(_errorCompanyId)->name;
+        auto formatter = FormatArguments::common();
+        formatter.push(CompanyManager::get(_errorCompanyId)->name);
         Windows::Error::openWithCompetitor(_gGameCommandErrorTitle, StringIds::error_reason_stringid_belongs_to, _errorCompanyId);
         return 0x80000000;
     }
