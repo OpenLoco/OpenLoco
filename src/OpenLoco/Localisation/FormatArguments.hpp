@@ -42,7 +42,7 @@ namespace OpenLoco
         template<typename... T>
         static FormatArguments mapToolTip(T... args)
         {
-            static loco_global<std::byte[40], 0x0050A018> _mapTooltipFormatArguments;
+            loco_global<std::byte[40], 0x0050A018> _mapTooltipFormatArguments;
             FormatArguments formatter{ &*_mapTooltipFormatArguments, std::size(_mapTooltipFormatArguments) };
             (formatter.push(args), ...);
             return formatter;
