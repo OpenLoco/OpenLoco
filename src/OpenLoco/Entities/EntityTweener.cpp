@@ -1,5 +1,7 @@
 #include "EntityTweener.h"
 #include "../OpenLoco.h"
+#include "../Vehicles/Vehicle.h"
+#include "Entity.h"
 #include <cmath>
 #include <iostream>
 
@@ -8,12 +10,15 @@ namespace OpenLoco
     using EntityListType = EntityManager::EntityListType;
     using EntityListIterator = EntityManager::ListIterator<EntityBase, &EntityBase::next_thing_id>;
 
-    template<EntityListType id>
-    void PopulateEntities(std::vector<EntityBase*>& list, std::vector<Map::Pos3>& posList)
+    template<EntityListType id, typename Pred>
+    void PopulateEntities(std::vector<EntityBase*>& list, std::vector<Map::Pos3>& posList, const Pred& pred)
     {
         auto entsView = EntityManager::EntityList<EntityListIterator, id>();
         for (auto* ent : entsView)
         {
+            if (!pred(ent))
+                continue;
+
             list.push_back(ent);
             posList.emplace_back(ent->position);
         }
@@ -30,9 +35,11 @@ namespace OpenLoco
     {
         Restore();
         Reset();
-        PopulateEntities<EntityListType::misc>(_entities, _prePos);
-        PopulateEntities<EntityListType::vehicleHead>(_entities, _prePos);
-        PopulateEntities<EntityListType::vehicle>(_entities, _prePos);
+        PopulateEntities<EntityListType::misc>(_entities, _prePos, [](auto* ent) { return true; });
+        PopulateEntities<EntityListType::vehicle>(_entities, _prePos, [](auto* ent) {
+            const auto* vehicle = ent->asVehicle();
+            return vehicle->isVehicleBody() || vehicle->isVehicleBogie();
+        });
     }
 
     void EntityTweener::PostTick()
