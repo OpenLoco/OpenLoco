@@ -14,11 +14,9 @@ using namespace OpenLoco::Input;
 
 namespace OpenLoco::Ui::Windows::KeyboardShortcuts
 {
-
     static const int rowHeight = 10; // CJK: 13
 
     static window_event_list _events;
-    static loco_global<string_id[8], 0x0112C826> _commonFormatArgs;
 
     static widget_t _widgets[] = {
         makeWidget({ 0, 0 }, { 360, 238 }, widget_type::frame, 0),
@@ -115,27 +113,32 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
                 format = StringIds::wcolour2_stringid;
             }
 
-            _commonFormatArgs[1] = ShortcutManager::getName(static_cast<Shortcut>(i));
-            _commonFormatArgs[2] = StringIds::empty;
-            _commonFormatArgs[3] = StringIds::empty;
+            auto modifierStringId = StringIds::empty;
+            auto baseStringId = StringIds::empty;
 
             if (Config::get().keyboard_shortcuts[i].var_0 != 0xFF)
             {
-                _commonFormatArgs[3] = StringIds::shortcut_key_base + Config::get().keyboard_shortcuts[i].var_0;
-
                 if (Config::get().keyboard_shortcuts[i].var_1 != 0)
                 {
-                    _commonFormatArgs[2] = StringIds::keyboard_shortcut_modifier_shift;
                     if (Config::get().keyboard_shortcuts[i].var_1 != 1)
                     {
-                        _commonFormatArgs[2] = StringIds::keyboard_shortcut_modifier_ctrl;
+                        modifierStringId = StringIds::keyboard_shortcut_modifier_ctrl;
+                    }
+                    else
+                    {
+                        modifierStringId = StringIds::keyboard_shortcut_modifier_shift;
                     }
                 }
+                baseStringId = StringIds::shortcut_key_base + Config::get().keyboard_shortcuts[i].var_0;
             }
 
-            _commonFormatArgs[0] = StringIds::keyboard_shortcut_list_format;
+            auto formatter = FormatArguments::common();
+            formatter.push(StringIds::keyboard_shortcut_list_format);
+            formatter.push(ShortcutManager::getName(static_cast<Shortcut>(i)));
+            formatter.push(modifierStringId);
+            formatter.push(baseStringId);
 
-            Gfx::drawString_494B3F(*dpi, 0, yPos - 1, Colour::black, format, _commonFormatArgs);
+            Gfx::drawString_494B3F(*dpi, 0, yPos - 1, Colour::black, format, &formatter);
             yPos += rowHeight;
         }
     }
