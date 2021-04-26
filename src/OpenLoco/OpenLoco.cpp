@@ -24,6 +24,7 @@
 #include "Audio/Audio.h"
 #include "CompanyManager.h"
 #include "Config.h"
+#include "Console.h"
 #include "Date.h"
 #include "Economy/Economy.h"
 #include "EditorController.h"
@@ -549,6 +550,14 @@ namespace OpenLoco
         }
     }
 
+    // This is called when the game requested to end the current tick early.
+    // This can be caused by loading a new save game or exceptions.
+    static void tickInterrupted()
+    {
+        EntityTweener::get().reset();
+        Console::log("Tick interrupted");
+    }
+
     // 0x0046A794
     static void tick()
     {
@@ -570,7 +579,7 @@ namespace OpenLoco
         if (setjmp(tickJump))
         {
             // Premature end of current tick
-            std::cout << "tick prematurely ended" << std::endl;
+            tickInterrupted();
             return;
         }
 
@@ -771,8 +780,7 @@ namespace OpenLoco
         catch (GameException)
         {
             // Premature end of current tick; use a different message to indicate it's from C++ code
-            EntityTweener::get().reset();
-            std::cout << "tick interrupted" << std::endl;
+            tickInterrupted();
             return;
         }
     }
