@@ -30,6 +30,7 @@
     <ClCompile Include="EditorController.cpp" />
     <ClCompile Include="Entities\Entity.cpp" />
     <ClCompile Include="Entities\EntityManager.cpp" />
+    <ClCompile Include="Entities\EntityTweener.cpp" />
     <ClCompile Include="Entities\Misc.cpp" />
     <ClCompile Include="Environment.cpp" />
     <ClCompile Include="GameCommands\Cheat.cpp" />
@@ -223,6 +224,7 @@
     <ClInclude Include="EditorController.h" />
     <ClInclude Include="Entities\Entity.h" />
     <ClInclude Include="Entities\EntityManager.h" />
+    <ClInclude Include="Entities\EntityTweener.h" />
     <ClInclude Include="Entities\Misc.h" />
     <ClInclude Include="Environment.h" />
     <ClInclude Include="GameCommands\Cheat.h" />

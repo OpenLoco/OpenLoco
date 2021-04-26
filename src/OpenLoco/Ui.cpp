@@ -44,6 +44,7 @@
 #include "Ui.h"
 #include "Ui/WindowManager.h"
 #include "Utility/String.hpp"
+#include "Window.h"
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::GameCommands;
@@ -422,64 +423,76 @@ namespace OpenLoco::Ui
 
     void render()
     {
-        if (window != nullptr && surface != nullptr)
+        if (window == nullptr || surface == nullptr)
+            return;
+
+        if (!Ui::dirtyBlocksInitialised())
         {
-            // Lock the surface before setting its pixels
-            if (SDL_MUSTLOCK(surface))
-            {
-                if (SDL_LockSurface(surface) < 0)
-                {
-                    return;
-                }
-            }
-
-            // Draw FPS counter?
-            if (Config::getNew().showFPS)
-            {
-                Drawing::drawFPS();
-            }
-
-            // Copy pixels from the virtual screen buffer to the surface
-            auto& dpi = Gfx::screenDpi();
-            if (dpi.bits != nullptr)
-            {
-                std::memcpy(surface->pixels, dpi.bits, surface->pitch * surface->h);
-            }
-
-            // Unlock the surface
-            if (SDL_MUSTLOCK(surface))
-            {
-                SDL_UnlockSurface(surface);
-            }
-
-            auto scale_factor = Config::getNew().scale_factor;
-            if (scale_factor == 1 || scale_factor <= 0)
-            {
-                if (SDL_BlitSurface(surface, nullptr, SDL_GetWindowSurface(window), nullptr))
-                {
-                    Console::error("SDL_BlitSurface %s", SDL_GetError());
-                    exit(1);
-                }
-            }
-            else
-            {
-                // first blit to rgba surface to change the pixel format
-                if (SDL_BlitSurface(surface, nullptr, RGBASurface, nullptr))
-                {
-                    Console::error("SDL_BlitSurface %s", SDL_GetError());
-                    exit(1);
-                }
-                // then scale to window size. Without changing to RGBA first, SDL complains
-                // about blit configurations being incompatible.
-                if (SDL_BlitScaled(RGBASurface, nullptr, SDL_GetWindowSurface(window), nullptr))
-                {
-                    Console::error("SDL_BlitScaled %s", SDL_GetError());
-                    exit(1);
-                }
-            }
-
-            SDL_UpdateWindowSurface(window);
+            return;
         }
+
+        WindowManager::updateViewports();
+
+        if (!Intro::isActive())
+        {
+            Gfx::drawDirtyBlocks();
+        }
+
+        // Lock the surface before setting its pixels
+        if (SDL_MUSTLOCK(surface))
+        {
+            if (SDL_LockSurface(surface) < 0)
+            {
+                return;
+            }
+        }
+
+        // Draw FPS counter?
+        if (Config::getNew().showFPS)
+        {
+            Drawing::drawFPS();
+        }
+
+        // Copy pixels from the virtual screen buffer to the surface
+        auto& dpi = Gfx::screenDpi();
+        if (dpi.bits != nullptr)
+        {
+            std::memcpy(surface->pixels, dpi.bits, surface->pitch * surface->h);
+        }
+
+        // Unlock the surface
+        if (SDL_MUSTLOCK(surface))
+        {
+            SDL_UnlockSurface(surface);
+        }
+
+        auto scale_factor = Config::getNew().scale_factor;
+        if (scale_factor == 1 || scale_factor <= 0)
+        {
+            if (SDL_BlitSurface(surface, nullptr, SDL_GetWindowSurface(window), nullptr))
+            {
+                Console::error("SDL_BlitSurface %s", SDL_GetError());
+                exit(1);
+            }
+        }
+        else
+        {
+            // first blit to rgba surface to change the pixel format
+            if (SDL_BlitSurface(surface, nullptr, RGBASurface, nullptr))
+            {
+                Console::error("SDL_BlitSurface %s", SDL_GetError());
+                exit(1);
+            }
+            // then scale to window size. Without changing to RGBA first, SDL complains
+            // about blit configurations being incompatible.
+            if (SDL_BlitScaled(RGBASurface, nullptr, SDL_GetWindowSurface(window), nullptr))
+            {
+                Console::error("SDL_BlitScaled %s", SDL_GetError());
+                exit(1);
+            }
+        }
+
+        SDL_UpdateWindowSurface(window);
     }
 
     void updatePalette(const palette_entry_t* entries, int32_t index, int32_t count)

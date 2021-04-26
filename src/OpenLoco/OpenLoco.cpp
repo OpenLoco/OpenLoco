@@ -24,10 +24,12 @@
 #include "Audio/Audio.h"
 #include "CompanyManager.h"
 #include "Config.h"
+#include "Console.h"
 #include "Date.h"
 #include "Economy/Economy.h"
 #include "EditorController.h"
 #include "Entities/EntityManager.h"
+#include "Entities/EntityTweener.h"
 #include "Environment.h"
 #include "GameCommands/GameCommands.h"
 #include "GameException.hpp"
@@ -548,6 +550,14 @@ namespace OpenLoco
         }
     }
 
+    // This is called when the game requested to end the current tick early.
+    // This can be caused by loading a new save game or exceptions.
+    static void tickInterrupted()
+    {
+        EntityTweener::get().reset();
+        Console::log("Tick interrupted");
+    }
+
     // 0x0046A794
     static void tick()
     {
@@ -569,7 +579,7 @@ namespace OpenLoco
         if (setjmp(tickJump))
         {
             // Premature end of current tick
-            std::cout << "tick prematurely ended" << std::endl;
+            tickInterrupted();
             return;
         }
 
@@ -770,7 +780,7 @@ namespace OpenLoco
         catch (GameException)
         {
             // Premature end of current tick; use a different message to indicate it's from C++ code
-            std::cout << "tick interrupted" << std::endl;
+            tickInterrupted();
             return;
         }
     }
@@ -1044,20 +1054,34 @@ namespace OpenLoco
 
     constexpr auto MaxUpdateTime = static_cast<double>(Engine::MaxTimeDeltaMs) / 1000.0;
     constexpr auto UpdateTime = static_cast<double>(Engine::UpdateRateInMs) / 1000.0;
+    constexpr auto TimeScale = 1.0;
 
     static void variableUpdate()
     {
-        while (_accumulator >= UpdateTime)
+        auto& tweener = EntityTweener::get();
+
+        const auto alpha = std::min<float>(_accumulator / UpdateTime, 1.0);
+
+        while (_accumulator > UpdateTime)
         {
+            tweener.preTick();
+
             tick();
             _accumulator -= UpdateTime;
+
+            tweener.postTick();
         }
+
+        tweener.tween(alpha);
 
         Ui::render();
     }
 
     static void fixedUpdate()
     {
+        auto& tweener = EntityTweener::get();
+        tweener.reset();
+
         if (_accumulator < UpdateTime)
         {
             auto timeMissing = static_cast<uint32_t>((UpdateTime - _accumulator) * 1000);
@@ -1074,6 +1098,8 @@ namespace OpenLoco
     {
         auto timeNow = Clock::now();
         auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(timeNow - _lastUpdate).count() / 1'000'000.0;
+
+        elapsed *= TimeScale;
 
         _accumulator = std::min(_accumulator + elapsed, MaxUpdateTime);
         _lastUpdate = timeNow;

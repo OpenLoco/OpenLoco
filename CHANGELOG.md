@@ -2,7 +2,9 @@
 ------------------------------------------------------------------------
 - Feature: [#184] Implement cheats window with financial, company, vehicle, and town cheats.
 - Feature: [#857] Remember last save directory in configuration variable.
+- Feature: [#923] Tween (linear interpolate) entities when frame limiter is uncapped for smoother movement.
 - Fix: [#914] Boats get stuck in approaching dock mode when water is above a certain height. This was incorrectly fixed in 21.04.1.
+- Fix: [#923] Decouple viewport updates from game ticks for smoother panning and zooming.
 - Fix: [#927] Some available industries are missing in the 'Fund new industries' tab.
 - Fix: [#945] Station construction preview image is using wrong colours.
 
