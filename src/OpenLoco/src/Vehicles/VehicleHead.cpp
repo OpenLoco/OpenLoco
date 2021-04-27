@@ -6359,6 +6359,30 @@ namespace OpenLoco::Vehicles
     // 0x004ADB47
     void VehicleHead::sub_4ADB47(bool unk)
     {
+        Vehicle train(*this);
+        for (auto& car : train.cars)
+        {
+            for (auto& component : car)
+            {
+                component.front->invalidateSprite();
+                component.back->invalidateSprite();
+                component.body->invalidateSprite();
+            }
+        }
+        sub_4AD778();
+        if (status != Status::approaching)
+        {
+            status = Status::travelling;
+        }
+
+        if (mode == TransportMode::road)
+        {
+        }
+        else
+        {
+            // 0x4ADB84
+        }
+        // 0x4ADDBE
         registers regs;
         regs.esi = X86Pointer(this);
         regs.eax = unk ? 1 : 0;
