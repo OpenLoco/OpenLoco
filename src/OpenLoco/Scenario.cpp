@@ -58,10 +58,15 @@ namespace OpenLoco::Scenario
     {
         switch (season)
         {
-            case Season::autumn: return Season::winter;
-            case Season::winter: return Season::spring;
-            case Season::spring: return Season::summer;
-            case Season::summer: return Season::autumn;
+            case Season::autumn:
+                return Season::winter;
+            case Season::winter:
+                return Season::spring;
+            case Season::spring:
+                return Season::summer;
+            case Season::summer:
+            default:
+                return Season::autumn;
         }
     }
 
