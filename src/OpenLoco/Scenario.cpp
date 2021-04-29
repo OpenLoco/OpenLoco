@@ -65,16 +65,9 @@ namespace OpenLoco::Scenario
         }
     }
 
-    // 0x00496A18
-    void initialiseSnowLine()
+    // 0x00496A18, 0x00496A84 (adapted)
+    static void updateSeason(int32_t currentDayOfYear, const ClimateObject* climateObj)
     {
-        auto today = calcDate(getCurrentDay());
-        int32_t currentDayOfYear = today.day_of_olympiad;
-
-        auto* climateObj = ObjectManager::get<ClimateObject>();
-        if (climateObj == nullptr)
-            return;
-
         Season season = static_cast<Season>(climateObj->firstSeason);
         int32_t dayOffset = currentDayOfYear - climateObj->seasonLength[0];
         if (dayOffset >= 0)
@@ -101,7 +94,21 @@ namespace OpenLoco::Scenario
         }
 
         _currentSeason = season;
-        if (season == Season::winter)
+    }
+
+    // 0x00496A18
+    void initialiseSnowLine()
+    {
+        auto today = calcDate(getCurrentDay());
+        int32_t currentDayOfYear = today.day_of_olympiad;
+
+        auto* climateObj = ObjectManager::get<ClimateObject>();
+        if (climateObj == nullptr)
+            return;
+
+        updateSeason(currentDayOfYear, climateObj);
+
+        if (_currentSeason == Season::winter)
         {
             _currentSnowLine = climateObj->winterSnowLine;
         }
@@ -115,34 +122,12 @@ namespace OpenLoco::Scenario
     void updateSnowLine(int32_t currentDayOfYear)
     {
         auto* climateObj = ObjectManager::get<ClimateObject>();
+        if (climateObj == nullptr)
+            return;
 
-        Season season = static_cast<Season>(climateObj->firstSeason);
-        int32_t dayOffset = currentDayOfYear - climateObj->seasonLength[0];
-        if (dayOffset >= 0)
-        {
-            season = nextSeason(season);
-            dayOffset -= climateObj->seasonLength[1];
+        updateSeason(currentDayOfYear, climateObj);
 
-            if (dayOffset >= 0)
-            {
-                season = nextSeason(season);
-                dayOffset -= climateObj->seasonLength[2];
-
-                if (dayOffset >= 0)
-                {
-                    season = nextSeason(season);
-                    dayOffset -= climateObj->seasonLength[3];
-
-                    if (dayOffset >= 0)
-                    {
-                        season = nextSeason(season);
-                    }
-                }
-            }
-        }
-
-        _currentSeason = season;
-        if (season == Season::winter)
+        if (_currentSeason == Season::winter)
         {
             if (_currentSnowLine != climateObj->winterSnowLine)
                 _currentSnowLine--;
