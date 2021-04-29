@@ -27,8 +27,8 @@ namespace OpenLoco::Scenario
 
     static loco_global<uint32_t, 0x00525F5E> _scenario_ticks;
 
-    static loco_global<uint8_t, 0x00525FB4> _525FB4; // current snow line?
-    static loco_global<uint8_t, 0x00525FB5> _525FB5; // target snow line?
+    static loco_global<uint8_t, 0x00525FB4> _currentSnowLine;
+    static loco_global<uint8_t, 0x00525FB5> _currentSeason;
 
     static loco_global<uint16_t, 0x0052622E> _52622E; // tick-related?
 
@@ -89,14 +89,14 @@ namespace OpenLoco::Scenario
             }
         }
 
-        _525FB5 = al;
+        _currentSeason = al;
         if (al == 1)
         {
-            _525FB4 = climateObj->var_07;
+            _currentSnowLine = climateObj->var_07;
         }
         else
         {
-            _525FB4 = climateObj->var_08;
+            _currentSnowLine = climateObj->var_08;
         }
     }
 
@@ -130,16 +130,16 @@ namespace OpenLoco::Scenario
             }
         }
 
-        _525FB5 = al;
+        _currentSeason = al;
         if (al == 1)
         {
-            if (_525FB4 != climateObj->var_07)
-                _525FB4--;
+            if (_currentSnowLine != climateObj->var_07)
+                _currentSnowLine--;
         }
         else
         {
-            if (_525FB4 != climateObj->var_08)
-                _525FB4++;
+            if (_currentSnowLine != climateObj->var_08)
+                _currentSnowLine++;
         }
     }
 
@@ -251,7 +251,7 @@ namespace OpenLoco::Scenario
 
         _scenario_ticks = 0;
         _52622E = 0;
-        _525FB5 = 1;
+        _currentSeason = 1;
 
         CompanyManager::determineAvailableVehicles();
 
