@@ -92,6 +92,8 @@ namespace OpenLoco::Scenario
     constexpr uint8_t min_altitude_trees = 0;
     constexpr uint8_t max_altitude_trees = 40;
 
+    void updateSnowLine();
+    void updateSnowLineAlt(int32_t currentDayOfYear);
     void reset();
     void sub_4748D4();
     void eraseLandscape();

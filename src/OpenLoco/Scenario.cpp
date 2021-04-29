@@ -9,6 +9,7 @@
 #include "Map/MapGenerator.h"
 #include "Map/TileManager.h"
 #include "Objects/CargoObject.h"
+#include "Objects/ClimateObject.h"
 #include "S5/S5.h"
 #include "StationManager.h"
 #include "Title.h"
@@ -25,7 +26,10 @@ namespace OpenLoco::Scenario
     static loco_global<CargoObject*, 0x0050D15C> _50D15C;
 
     static loco_global<uint32_t, 0x00525F5E> _scenario_ticks;
-    static loco_global<uint8_t, 0x00525FB5> _525FB5;
+
+    static loco_global<uint8_t, 0x00525FB4> _525FB4; // current snow line?
+    static loco_global<uint8_t, 0x00525FB5> _525FB5; // target snow line?
+
     static loco_global<uint16_t, 0x0052622E> _52622E; // tick-related?
 
     static loco_global<uint8_t, 0x00526230> objectiveType;
@@ -51,9 +55,92 @@ namespace OpenLoco::Scenario
     }
 
     // 0x00496A18
-    static void sub_496A18()
+    void updateSnowLine()
     {
-        call(0x00496A18);
+        auto today = calcDate(getCurrentDay());
+        int32_t currentDayOfYear = today.day_of_olympiad;
+
+        auto* climateObj = ObjectManager::get<ClimateObject>();
+        if (climateObj == nullptr)
+            return;
+
+        uint8_t al = climateObj->var_02;
+        int32_t dayOffset = currentDayOfYear - climateObj->var_03;
+        if (dayOffset >= 0)
+        {
+            al = (al + 1) & 3;
+            dayOffset -= climateObj->var_04;
+
+            if (dayOffset >= 0)
+            {
+                al = (al + 1) & 3;
+                dayOffset -= climateObj->var_05;
+
+                if (dayOffset >= 0)
+                {
+                    al = (al + 1) & 3;
+                    dayOffset -= climateObj->var_06;
+
+                    if (dayOffset >= 0)
+                    {
+                        al = (al + 1) & 3;
+                    }
+                }
+            }
+        }
+
+        _525FB5 = al;
+        if (al == 1)
+        {
+            _525FB4 = climateObj->var_07;
+        }
+        else
+        {
+            _525FB4 = climateObj->var_08;
+        }
+    }
+
+    // 0x00496A84
+    void updateSnowLineAlt(int32_t currentDayOfYear)
+    {
+        auto* climateObj = ObjectManager::get<ClimateObject>();
+
+        uint8_t al = climateObj->var_02;
+        int32_t dayOffset = currentDayOfYear - climateObj->var_03;
+        if (dayOffset >= 0)
+        {
+            al = (al + 1) & 3;
+            dayOffset -= climateObj->var_04;
+
+            if (dayOffset >= 0)
+            {
+                al = (al + 1) & 3;
+                dayOffset -= climateObj->var_05;
+
+                if (dayOffset >= 0)
+                {
+                    al = (al + 1) & 3;
+                    dayOffset -= climateObj->var_06;
+
+                    if (dayOffset >= 0)
+                    {
+                        al = (al + 1) & 3;
+                    }
+                }
+            }
+        }
+
+        _525FB5 = al;
+        if (al == 1)
+        {
+            if (_525FB4 != climateObj->var_07)
+                _525FB4--;
+        }
+        else
+        {
+            if (_525FB4 != climateObj->var_08)
+                _525FB4++;
+        }
     }
 
     // 0x00475988
@@ -106,7 +193,7 @@ namespace OpenLoco::Scenario
 
         initialiseDate(1900);
 
-        sub_496A18();
+        updateSnowLine();
         sub_475988();
         TownManager::reset();
         IndustryManager::reset();
