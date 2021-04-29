@@ -976,7 +976,7 @@ namespace OpenLoco
                 auto yesterday = calcDate(getCurrentDay() - 1);
                 auto today = calcDate(getCurrentDay());
                 setDate(today);
-                Scenario::updateSnowLineAlt(today.day_of_olympiad);
+                Scenario::updateSeasonAlt(today.day_of_olympiad);
                 if (today.month != yesterday.month)
                 {
                     // End of every month

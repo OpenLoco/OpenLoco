@@ -28,7 +28,7 @@ namespace OpenLoco::Scenario
     static loco_global<uint32_t, 0x00525F5E> _scenario_ticks;
 
     static loco_global<uint8_t, 0x00525FB4> _currentSnowLine;
-    static loco_global<uint8_t, 0x00525FB5> _currentSeason;
+    static loco_global<Season, 0x00525FB5> _currentSeason;
 
     static loco_global<uint16_t, 0x0052622E> _52622E; // tick-related?
 
@@ -54,8 +54,19 @@ namespace OpenLoco::Scenario
         call(0x004C4BC0);
     }
 
+    Season nextSeason(Season season)
+    {
+        switch (season)
+        {
+            case Season::autumn: return Season::winter;
+            case Season::winter: return Season::spring;
+            case Season::spring: return Season::summer;
+            case Season::summer: return Season::autumn;
+        }
+    }
+
     // 0x00496A18
-    void updateSnowLine()
+    void updateSeason()
     {
         auto today = calcDate(getCurrentDay());
         int32_t currentDayOfYear = today.day_of_olympiad;
@@ -64,81 +75,81 @@ namespace OpenLoco::Scenario
         if (climateObj == nullptr)
             return;
 
-        uint8_t al = climateObj->var_02;
-        int32_t dayOffset = currentDayOfYear - climateObj->var_03;
+        Season season = static_cast<Season>(climateObj->firstSeason);
+        int32_t dayOffset = currentDayOfYear - climateObj->seasonLength[0];
         if (dayOffset >= 0)
         {
-            al = (al + 1) & 3;
-            dayOffset -= climateObj->var_04;
+            season = nextSeason(season);
+            dayOffset -= climateObj->seasonLength[1];
 
             if (dayOffset >= 0)
             {
-                al = (al + 1) & 3;
-                dayOffset -= climateObj->var_05;
+                season = nextSeason(season);
+                dayOffset -= climateObj->seasonLength[2];
 
                 if (dayOffset >= 0)
                 {
-                    al = (al + 1) & 3;
-                    dayOffset -= climateObj->var_06;
+                    season = nextSeason(season);
+                    dayOffset -= climateObj->seasonLength[3];
 
                     if (dayOffset >= 0)
                     {
-                        al = (al + 1) & 3;
+                        season = nextSeason(season);
                     }
                 }
             }
         }
 
-        _currentSeason = al;
-        if (al == 1)
+        _currentSeason = season;
+        if (season == Season::winter)
         {
-            _currentSnowLine = climateObj->var_07;
+            _currentSnowLine = climateObj->winterSnowLine;
         }
         else
         {
-            _currentSnowLine = climateObj->var_08;
+            _currentSnowLine = climateObj->summerSnowLine;
         }
     }
 
     // 0x00496A84
-    void updateSnowLineAlt(int32_t currentDayOfYear)
+    void updateSeasonAlt(int32_t currentDayOfYear)
     {
         auto* climateObj = ObjectManager::get<ClimateObject>();
 
-        uint8_t al = climateObj->var_02;
-        int32_t dayOffset = currentDayOfYear - climateObj->var_03;
+        Season season = static_cast<Season>(climateObj->firstSeason);
+        int32_t dayOffset = currentDayOfYear - climateObj->seasonLength[0];
         if (dayOffset >= 0)
         {
-            al = (al + 1) & 3;
-            dayOffset -= climateObj->var_04;
+            season = nextSeason(season);
+            dayOffset -= climateObj->seasonLength[1];
 
             if (dayOffset >= 0)
             {
-                al = (al + 1) & 3;
-                dayOffset -= climateObj->var_05;
+                season = nextSeason(season);
+                dayOffset -= climateObj->seasonLength[2];
 
                 if (dayOffset >= 0)
                 {
-                    al = (al + 1) & 3;
-                    dayOffset -= climateObj->var_06;
+                    season = nextSeason(season);
+                    dayOffset -= climateObj->seasonLength[3];
 
                     if (dayOffset >= 0)
                     {
-                        al = (al + 1) & 3;
+                        season = nextSeason(season);
                     }
                 }
             }
         }
 
-        _currentSeason = al;
-        if (al == 1)
+        _currentSeason = season;
+        if (season == Season::winter)
         {
-            if (_currentSnowLine != climateObj->var_07)
+            if (_currentSnowLine != climateObj->winterSnowLine)
                 _currentSnowLine--;
         }
         else
         {
-            if (_currentSnowLine != climateObj->var_08)
+            if (_currentSnowLine != climateObj->summerSnowLine)
                 _currentSnowLine++;
         }
     }
@@ -193,7 +204,7 @@ namespace OpenLoco::Scenario
 
         initialiseDate(1900);
 
-        updateSnowLine();
+        updateSeason();
         sub_475988();
         TownManager::reset();
         IndustryManager::reset();
@@ -251,7 +262,7 @@ namespace OpenLoco::Scenario
 
         _scenario_ticks = 0;
         _52622E = 0;
-        _currentSeason = 1;
+        _currentSeason = Season::winter;
 
         CompanyManager::determineAvailableVehicles();
 
