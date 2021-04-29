@@ -71,7 +71,7 @@ namespace OpenLoco::Scenario
         Season season = static_cast<Season>(climateObj->firstSeason);
 
         int32_t dayOffset = currentDayOfYear;
-        for (auto i = 0; i < std::size(climateObj->seasonLength); i++)
+        for (size_t i = 0; i < std::size(climateObj->seasonLength); i++)
         {
             dayOffset -= climateObj->seasonLength[i];
             if (dayOffset < 0)
