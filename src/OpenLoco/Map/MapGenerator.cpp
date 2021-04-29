@@ -491,7 +491,7 @@ namespace OpenLoco::Map::MapGenerator
         updateProgress(5);
 
         Scenario::initialiseDate(options.scenarioStartYear);
-        Scenario::updateSeason();
+        Scenario::initialiseSnowLine();
         TileManager::initialise();
         updateProgress(10);
 

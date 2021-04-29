@@ -66,7 +66,7 @@ namespace OpenLoco::Scenario
     }
 
     // 0x00496A18
-    void updateSeason()
+    void initialiseSnowLine()
     {
         auto today = calcDate(getCurrentDay());
         int32_t currentDayOfYear = today.day_of_olympiad;
@@ -112,7 +112,7 @@ namespace OpenLoco::Scenario
     }
 
     // 0x00496A84
-    void updateSeasonAlt(int32_t currentDayOfYear)
+    void updateSnowLine(int32_t currentDayOfYear)
     {
         auto* climateObj = ObjectManager::get<ClimateObject>();
 
@@ -203,8 +203,7 @@ namespace OpenLoco::Scenario
         sub_4C4BC0();
 
         initialiseDate(1900);
-
-        updateSeason();
+        initialiseSnowLine();
         sub_475988();
         TownManager::reset();
         IndustryManager::reset();
