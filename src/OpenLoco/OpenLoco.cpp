@@ -44,6 +44,7 @@
 #include "Localisation/Languages.h"
 #include "Localisation/StringIds.h"
 #include "MultiPlayer.h"
+#include "Objects/ClimateObject.h"
 #include "Objects/ObjectManager.h"
 #include "OpenLoco.h"
 #include "Platform/Platform.h"
@@ -857,12 +858,50 @@ namespace OpenLoco
         }
     }
 
-    static void sub_496A84(int32_t edx)
+    // 0x00496A84
+    static void updateSnowLine(int32_t currentDayOfYear)
     {
-        // This is responsible for updating the snow line
-        registers regs;
-        regs.edx = edx;
-        call(0x00496A84, regs);
+        auto* climateObj = ObjectManager::get<ClimateObject>();
+
+        uint8_t al = climateObj->var_02;
+        int32_t dayOffset = currentDayOfYear - climateObj->var_03;
+        if (dayOffset >= 0)
+        {
+            al = (al + 1) & 3;
+            dayOffset -= climateObj->var_04;
+
+            if (dayOffset >= 0)
+            {
+                al = (al + 1) & 3;
+                dayOffset -= climateObj->var_05;
+
+                if (dayOffset >= 0)
+                {
+                    al = (al + 1) & 3;
+                    dayOffset -= climateObj->var_06;
+
+                    if (dayOffset >= 0)
+                    {
+                        al = (al + 1) & 3;
+                    }
+                }
+            }
+        }
+
+        static loco_global<uint8_t, 0x00525FB4> _525FB4; // current snow line?
+        static loco_global<uint8_t, 0x00525FB5> _525FB5; // target snow line?
+
+        _525FB5 = al;
+        if (al == 1)
+        {
+            if (_525FB4 != climateObj->var_07)
+                _525FB4--;
+        }
+        else
+        {
+            if (_525FB4 != climateObj->var_08)
+                _525FB4++;
+        }
     }
 
     static void autosaveReset()
@@ -983,7 +1022,7 @@ namespace OpenLoco
                 auto yesterday = calcDate(getCurrentDay() - 1);
                 auto today = calcDate(getCurrentDay());
                 setDate(today);
-                sub_496A84(today.day_of_olympiad);
+                updateSnowLine(today.day_of_olympiad);
                 if (today.month != yesterday.month)
                 {
                     // End of every month

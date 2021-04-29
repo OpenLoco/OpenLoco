@@ -83,7 +83,7 @@ namespace OpenLoco
     struct VehicleObject;
     struct TreeObject;
     struct SnowObject;
-    struct climate_object;
+    struct ClimateObject;
     struct HillShapesObject;
     struct BuildingObject;
     struct ScaffoldingObject;
