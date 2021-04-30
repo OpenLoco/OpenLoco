@@ -6377,6 +6377,10 @@ namespace OpenLoco::Vehicles
 
         if (mode == TransportMode::road)
         {
+            auto orderId = train.tail->var_36 / 64;
+            auto orderPos = train.tail->var_36 & 0x3f;
+            auto tailPos = Map::Pos3{ train.tail->tile_x, train.tail->tile_y, train.tail->tile_base_z * 4 };
+            auto trackIdRot = _96885C[orderId][orderPos];
         }
         else
         {
