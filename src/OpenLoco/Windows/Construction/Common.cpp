@@ -1,5 +1,6 @@
 #include "../../CompanyManager.h"
 #include "../../Date.h"
+#include "../../Graphics/Colour.h"
 #include "../../Graphics/ImageIds.h"
 #include "../../Input.h"
 #include "../../Objects/AirportObject.h"
@@ -481,7 +482,7 @@ namespace OpenLoco::Ui::Windows::Construction
                         auto colour = _byte_5045FA[companyColour];
                         if (!(roadStationObj->flags & RoadStationFlags::recolourable))
                         {
-                            colour = 46;
+                            colour = PaletteIndex::index_2E;
                         }
                         imageId = Gfx::recolour(roadStationObj->image, colour) + 1;
                         Gfx::drawImage(clipped, -4, -10, imageId);
@@ -567,15 +568,17 @@ namespace OpenLoco::Ui::Windows::Construction
                                 clipped->height *= 2;
                                 clipped->x *= 2;
                                 clipped->y *= 2;
+
                                 auto trainStationObj = ObjectManager::get<TrainStationObject>(_lastSelectedStationType);
-                                auto imageId = Gfx::recolour(trainStationObj->image, companyColour);
+                                auto imageId = Gfx::recolour(trainStationObj->image + TrainStation::ImageIds::preview_image, companyColour);
                                 Gfx::drawImage(clipped, -4, -9, imageId);
+
                                 auto colour = _byte_5045FA[companyColour];
                                 if (!(trainStationObj->flags & TrainStationFlags::recolourable))
                                 {
-                                    colour = 46;
+                                    colour = PaletteIndex::index_2E;
                                 }
-                                imageId = Gfx::recolourTranslucent(trainStationObj->image + 1, colour);
+                                imageId = Gfx::recolourTranslucent(trainStationObj->image + TrainStation::ImageIds::preview_image_windows, colour);
                                 Gfx::drawImage(clipped, -4, -9, imageId);
                             }
 

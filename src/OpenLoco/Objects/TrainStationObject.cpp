@@ -12,10 +12,10 @@ namespace OpenLoco
 
         Gfx::drawImage(&dpi, x - 34, y - 34, colourImage);
 
-        auto colour = 59;
+        auto colour = PaletteIndex::index_3B;
         if (!(flags & TrainStationFlags::recolourable))
         {
-            colour = 46;
+            colour = PaletteIndex::index_2E;
         }
 
         auto translucentImage = Gfx::recolourTranslucent(image + 1, colour);
