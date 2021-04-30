@@ -938,14 +938,17 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             strncat(_directory, getExtensionFromFileType(_fileType), std::size(_directory));
         }
 
-        // Remember the current path
-        fs::path currentPath = fs::u8path(&_directory[0]);
-        if (!fs::is_directory(currentPath))
-            Config::getNew().last_save_path = currentPath.parent_path().u8string();
-        else
-            Config::getNew().last_save_path = currentPath.u8string();
-        Config::writeNewConfig();
-        Environment::resolvePaths();
+        // Remember the current path for saved games
+        if (_fileType == browse_file_type::saved_game)
+        {
+            fs::path currentPath = fs::u8path(&_directory[0]);
+            if (!fs::is_directory(currentPath))
+                Config::getNew().last_save_path = currentPath.parent_path().u8string();
+            else
+                Config::getNew().last_save_path = currentPath.u8string();
+            Config::writeNewConfig();
+            Environment::resolvePaths();
+        }
 
         // Close browse window to continue saving.
         WindowManager::close(self);
