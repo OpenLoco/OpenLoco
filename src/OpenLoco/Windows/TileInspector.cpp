@@ -370,6 +370,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
                 args.push(StringIds::tile_inspector_entry_three_pos);
                 args.push(objectName);
                 args.push(ownerName);
+                args.push(StringIds::empty);
                 args.push(elementName);
             }
             else
