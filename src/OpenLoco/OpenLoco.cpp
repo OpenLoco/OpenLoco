@@ -48,6 +48,7 @@
 #include "OpenLoco.h"
 #include "Platform/Platform.h"
 #include "S5/S5.h"
+#include "Scenario.h"
 #include "ScenarioManager.h"
 #include "StationManager.h"
 #include "Title.h"
@@ -857,14 +858,6 @@ namespace OpenLoco
         }
     }
 
-    static void sub_496A84(int32_t edx)
-    {
-        // This is responsible for updating the snow line
-        registers regs;
-        regs.edx = edx;
-        call(0x00496A84, regs);
-    }
-
     static void autosaveReset()
     {
         _monthsSinceLastAutosave = 0;
@@ -983,7 +976,7 @@ namespace OpenLoco
                 auto yesterday = calcDate(getCurrentDay() - 1);
                 auto today = calcDate(getCurrentDay());
                 setDate(today);
-                sub_496A84(today.day_of_olympiad);
+                Scenario::updateSnowLine(today.day_of_olympiad);
                 if (today.month != yesterday.month)
                 {
                     // End of every month

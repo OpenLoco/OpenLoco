@@ -54,7 +54,7 @@ namespace OpenLoco::ObjectManager
     loco_global<VehicleObject* [224], 0x0050C9E4> _vehicleObjects;
     loco_global<TreeObject* [64], 0x0050CD64> _treeObjects;
     loco_global<SnowObject* [1], 0x0050CE64> _snowObjects;
-    loco_global<climate_object* [1], 0x0050CE68> _climateObjects;
+    loco_global<ClimateObject* [1], 0x0050CE68> _climateObjects;
     loco_global<HillShapesObject* [1], 0x0050CE6C> _hillShapeObjects;
     loco_global<BuildingObject* [128], 0x0050CE70> _buildingObjects;
     loco_global<ScaffoldingObject* [1], 0x0050D070> _scaffoldingObjects;
@@ -280,6 +280,17 @@ namespace OpenLoco::ObjectManager
     CompetitorObject* get(size_t id)
     {
         return _competitorObjects[id];
+    }
+
+    template<>
+    ClimateObject* get()
+    {
+        if (_climateObjects[0] == (void*)-1)
+        {
+            return nullptr;
+        }
+
+        return _climateObjects[0];
     }
 
     template<>

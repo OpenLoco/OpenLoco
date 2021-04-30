@@ -34,6 +34,14 @@ namespace OpenLoco::Scenario
         cargo_delivery,
     };
 
+    enum class Season : uint8_t
+    {
+        autumn = 0,
+        winter = 1,
+        spring = 2,
+        summer = 3,
+    };
+
     // NB: min_year has been changed to 1800 in OpenLoco; Locomotion uses 1900.
     constexpr uint16_t min_year = 1800;
     constexpr uint16_t max_year = 2100;
@@ -92,6 +100,9 @@ namespace OpenLoco::Scenario
     constexpr uint8_t min_altitude_trees = 0;
     constexpr uint8_t max_altitude_trees = 40;
 
+    Season nextSeason(Season season);
+    void initialiseSnowLine();
+    void updateSnowLine(int32_t currentDayOfYear);
     void reset();
     void sub_4748D4();
     void eraseLandscape();

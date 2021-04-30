@@ -9,6 +9,7 @@
 #include "Map/MapGenerator.h"
 #include "Map/TileManager.h"
 #include "Objects/CargoObject.h"
+#include "Objects/ClimateObject.h"
 #include "S5/S5.h"
 #include "StationManager.h"
 #include "Title.h"
@@ -25,7 +26,10 @@ namespace OpenLoco::Scenario
     static loco_global<CargoObject*, 0x0050D15C> _50D15C;
 
     static loco_global<uint32_t, 0x00525F5E> _scenario_ticks;
-    static loco_global<uint8_t, 0x00525FB5> _525FB5;
+
+    static loco_global<uint8_t, 0x00525FB4> _currentSnowLine;
+    static loco_global<Season, 0x00525FB5> _currentSeason;
+
     static loco_global<uint16_t, 0x0052622E> _52622E; // tick-related?
 
     static loco_global<uint8_t, 0x00526230> objectiveType;
@@ -50,10 +54,81 @@ namespace OpenLoco::Scenario
         call(0x004C4BC0);
     }
 
-    // 0x00496A18
-    static void sub_496A18()
+    Season nextSeason(Season season)
     {
-        call(0x00496A18);
+        switch (season)
+        {
+            case Season::autumn:
+                return Season::winter;
+            case Season::winter:
+                return Season::spring;
+            case Season::spring:
+                return Season::summer;
+            case Season::summer:
+            default:
+                return Season::autumn;
+        }
+    }
+
+    // 0x00496A18, 0x00496A84 (adapted)
+    static void updateSeason(int32_t currentDayOfYear, const ClimateObject* climateObj)
+    {
+        Season season = static_cast<Season>(climateObj->firstSeason);
+
+        int32_t dayOffset = currentDayOfYear;
+        for (size_t i = 0; i < std::size(climateObj->seasonLength); i++)
+        {
+            dayOffset -= climateObj->seasonLength[i];
+            if (dayOffset < 0)
+                break;
+
+            season = nextSeason(season);
+        }
+
+        _currentSeason = season;
+    }
+
+    // 0x00496A18
+    void initialiseSnowLine()
+    {
+        auto today = calcDate(getCurrentDay());
+        int32_t currentDayOfYear = today.day_of_olympiad;
+
+        auto* climateObj = ObjectManager::get<ClimateObject>();
+        if (climateObj == nullptr)
+            return;
+
+        updateSeason(currentDayOfYear, climateObj);
+
+        if (_currentSeason == Season::winter)
+        {
+            _currentSnowLine = climateObj->winterSnowLine;
+        }
+        else
+        {
+            _currentSnowLine = climateObj->summerSnowLine;
+        }
+    }
+
+    // 0x00496A84
+    void updateSnowLine(int32_t currentDayOfYear)
+    {
+        auto* climateObj = ObjectManager::get<ClimateObject>();
+        if (climateObj == nullptr)
+            return;
+
+        updateSeason(currentDayOfYear, climateObj);
+
+        if (_currentSeason == Season::winter)
+        {
+            if (_currentSnowLine != climateObj->winterSnowLine)
+                _currentSnowLine--;
+        }
+        else
+        {
+            if (_currentSnowLine != climateObj->summerSnowLine)
+                _currentSnowLine++;
+        }
     }
 
     // 0x00475988
@@ -105,8 +180,7 @@ namespace OpenLoco::Scenario
         sub_4C4BC0();
 
         initialiseDate(1900);
-
-        sub_496A18();
+        initialiseSnowLine();
         sub_475988();
         TownManager::reset();
         IndustryManager::reset();
@@ -164,7 +238,7 @@ namespace OpenLoco::Scenario
 
         _scenario_ticks = 0;
         _52622E = 0;
-        _525FB5 = 1;
+        _currentSeason = Season::winter;
 
         CompanyManager::determineAvailableVehicles();
 
