@@ -7,6 +7,7 @@
 - Fix: [#923] Decouple viewport updates from game ticks for smoother panning and zooming.
 - Fix: [#927] Some available industries are missing in the 'Fund new industries' tab.
 - Fix: [#945] Station construction preview image is using wrong colours.
+- Fix: [#957] Element name is not shown when inspecting track elements using the Tile Inspector.
 
 21.04.1 (2021-04-14)
 ------------------------------------------------------------------------
