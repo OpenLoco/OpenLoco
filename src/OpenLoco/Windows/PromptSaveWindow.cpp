@@ -1,4 +1,5 @@
 #include "../Audio/Audio.h"
+#include "../Game.h"
 #include "../GameCommands/GameCommands.h"
 #include "../Graphics/Colour.h"
 #include "../Input.h"
@@ -119,7 +120,7 @@ namespace OpenLoco::Ui::Windows::PromptSaveWindow
 
             case widx::saveButton:
             {
-                GameCommands::confirmSaveGame();
+                Game::confirmSaveGame();
                 break;
             }
 
