@@ -281,6 +281,14 @@ namespace OpenLoco::StringIds
 
     constexpr string_id error_can_only_build_above_ground = 360;
 
+    constexpr string_id title_prompt_load_game = 362;
+    constexpr string_id title_prompt_load_landscape = 363;
+    constexpr string_id title_prompt_save_landscape = 364;
+    constexpr string_id title_prompt_save_game = 365;
+    constexpr string_id title_prompt_save_scenario = 366;
+    constexpr string_id format_openloco_saved_game = 367;
+    constexpr string_id format_openloco_scenario = 368;
+    constexpr string_id format_openloco_landscape = 369;
     constexpr string_id error_game_save_failed = 370;
 
     constexpr string_id menu_hide_foreground_scenery_buildings = 372;

@@ -9,6 +9,7 @@
 #include "MultiPlayer.h"
 #include "S5/S5.h"
 #include "Title.h"
+#include "Ui/ProgressBar.h"
 #include "Ui/WindowManager.h"
 #include "Ui/WindowType.h"
 
@@ -17,39 +18,108 @@ namespace OpenLoco::Game
     static loco_global<uint8_t, 0x00508F08> _game_command_nest_level;
     static loco_global<GameCommands::LoadOrQuitMode, 0x0050A002> _savePromptType;
 
+    // TODO: make accessible from Environment
+    static loco_global<char[257], 0x0050B1CF> _path_saves_single_player;
+    static loco_global<char[257], 0x0050B2EC> _path_saves_two_player;
+    static loco_global<char[257], 0x0050B406> _path_scenarios;
+    static loco_global<char[257], 0x0050B518> _path_landscapes;
+
     static loco_global<char[256], 0x0050B745> _currentScenarioFilename;
+
+    static loco_global<uint32_t, 0x00525E28> _525E28;
+
+    static loco_global<uint16_t, 0x009C871A> _scenarioFlags;
+    static loco_global<char[64], 0x009C873E> _scenarioTitle;
+
     static loco_global<char[512], 0x0112CE04> _savePath;
+
+    // 0x004072EC
+    static void sub_4072EC()
+    {
+        call(0x004072EC);
+    }
+
+    // 0x0046DB4C
+    static void sub_46DB4C()
+    {
+        call(0x0046DB4C);
+    }
+
+    using Ui::Windows::PromptBrowse::browse_type;
+
+    static bool openBrowsePrompt(string_id titleId, browse_type type, const char* filter)
+    {
+        char titleBuffer[256] = {};
+        StringManager::formatString(titleBuffer, std::size(titleBuffer), titleId);
+
+        Audio::pauseSound();
+        setPauseFlag(1 << 2);
+        Gfx::invalidateScreen();
+        Ui::ProgressBar::sub_4CF63B();
+
+        bool confirm = Ui::Windows::PromptBrowse::open(type, &_savePath[0], filter, titleBuffer);
+
+        Audio::unpauseSound();
+        sub_4072EC();
+        unsetPauseFlag(1 << 2);
+        Gfx::invalidateScreen();
+        Ui::ProgressBar::sub_4CF63B();
+
+        return confirm;
+    }
 
     // 0x004416FF
     bool loadSaveGameOpen()
     {
-        registers regs;
-        call(0x004416FF, regs);
-        return regs.eax;
-    }
+        if (!isNetworked())
+            strncpy(&_savePath[0], &_path_saves_single_player[0], std::size(_savePath));
+        else
+            strncpy(&_savePath[0], &_path_saves_two_player[0], std::size(_savePath));
 
-    // 0x00441843
-    bool saveSaveGameOpen()
-    {
-        registers regs;
-        call(0x00441843, regs);
-        return regs.eax;
+        return openBrowsePrompt(StringIds::title_prompt_load_game, browse_type::load, S5::filterSV5);
     }
 
     // 0x004417A7
     bool loadLandscapeOpen()
     {
-        registers regs;
-        call(0x004417A7, regs);
-        return regs.eax;
+        strncpy(&_savePath[0], &_path_landscapes[0], std::size(_savePath));
+
+        return openBrowsePrompt(StringIds::title_prompt_load_landscape, browse_type::load, S5::filterSC5);
+    }
+
+    // 0x00441843
+    bool saveSaveGameOpen()
+    {
+        strncpy(&_savePath[0], &_path_landscapes[0], std::size(_savePath));
+
+        return openBrowsePrompt(StringIds::title_prompt_save_game, browse_type::save, S5::filterSV5);
+    }
+
+    // 0x004418DB
+    bool saveScenarioOpen()
+    {
+        strncpy(&_savePath[0], &_path_landscapes[0], std::size(_savePath));
+        strncat(&_savePath[0], &_scenarioTitle[0], std::size(_savePath));
+        strncat(&_savePath[0], S5::extensionSC5, std::size(_savePath));
+
+        return openBrowsePrompt(StringIds::title_prompt_save_game, browse_type::save, S5::filterSC5);
     }
 
     // 0x00441993
     bool saveLandscapeOpen()
     {
-        registers regs;
-        call(0x00441993, regs);
-        return regs.eax;
+        *_scenarioFlags &= ~(1 << 0);
+        if (_525E28 & (1 << 0))
+        {
+            *_scenarioFlags |= (1 << 0);
+            sub_46DB4C();
+        }
+
+        strncpy(&_savePath[0], &_path_landscapes[0], std::size(_savePath));
+        strncat(&_savePath[0], &_scenarioTitle[0], std::size(_savePath));
+        strncat(&_savePath[0], S5::extensionSC5, std::size(_savePath));
+
+        return openBrowsePrompt(StringIds::title_prompt_save_landscape, browse_type::save, S5::filterSC5);
     }
 
     // 0x00441FA7
