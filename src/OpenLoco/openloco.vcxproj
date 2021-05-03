@@ -33,6 +33,7 @@
     <ClCompile Include="Entities\EntityTweener.cpp" />
     <ClCompile Include="Entities\Misc.cpp" />
     <ClCompile Include="Environment.cpp" />
+    <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameCommands\Cheat.cpp" />
     <ClCompile Include="GameCommands\GameCommands.cpp" />
     <ClCompile Include="GameCommands\LoadSaveQuit.cpp" />
@@ -227,6 +228,7 @@
     <ClInclude Include="Entities\EntityTweener.h" />
     <ClInclude Include="Entities\Misc.h" />
     <ClInclude Include="Environment.h" />
+    <ClInclude Include="Game.h" />
     <ClInclude Include="GameCommands\Cheat.h" />
     <ClInclude Include="GameCommands\GameCommands.h" />
     <ClInclude Include="Graphics\Colour.h" />
