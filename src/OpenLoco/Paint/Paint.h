@@ -101,7 +101,7 @@ namespace OpenLoco::Paint
         union
         {
             Map::TileElement* tileElement; // 0x30 (or entity pointer)
-            EntityBase* entity;             // 0x30
+            EntityBase* entity;            // 0x30
         };
     };
     static_assert(sizeof(PaintStruct) == 0x34);

@@ -34,7 +34,7 @@ namespace OpenLoco
         uint8_t object_id;          // 0x10
         uint8_t under_construction; // 0x11 (0xFF = Finished)
         uint8_t pad_12[0xD5 - 0x12];
-        TownId_t town;            // 0xD5
+        TownId_t town;           // 0xD5
         Map::TileLoop tile_loop; // 0xD7
         int16_t var_DB;
         int16_t var_DD;
