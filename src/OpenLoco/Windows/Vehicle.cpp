@@ -2671,7 +2671,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 case Ui::ViewportInteraction::InteractionItem::track:
                 {
                     // 0x004B5160
-                    auto tileElement = static_cast<tile_element*>(args.object);
+                    auto tileElement = static_cast<TileElement*>(args.object);
                     auto trackElement = tileElement->asTrack();
                     if (trackElement == nullptr)
                         break;
@@ -2719,7 +2719,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 case Ui::ViewportInteraction::InteractionItem::road:
                 {
                     // 0x004B5223
-                    auto tileElement = static_cast<tile_element*>(args.object);
+                    auto tileElement = static_cast<TileElement*>(args.object);
                     auto roadElement = tileElement->asRoad();
                     if (roadElement == nullptr)
                         break;

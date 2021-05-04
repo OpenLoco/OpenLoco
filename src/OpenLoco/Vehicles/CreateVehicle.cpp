@@ -36,7 +36,7 @@ namespace OpenLoco::Vehicles
 
     static loco_global<CompanyId_t, 0x009C68EB> _updating_company_id;
     static loco_global<uint8_t, 0x009C68EE> _errorCompanyId;
-    static loco_global<Map::tile_element*, 0x009C68D0> _9C68D0;
+    static loco_global<Map::TileElement*, 0x009C68D0> _9C68D0;
     static loco_global<ColourScheme, 0x01136140> _1136140; // primary colour
     static loco_global<int32_t, 0x011360FC> _11360FC;
     static loco_global<VehicleHead*, 0x01136240> _backupVeh0;

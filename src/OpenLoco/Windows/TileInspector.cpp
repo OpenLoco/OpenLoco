@@ -165,28 +165,28 @@ namespace OpenLoco::Ui::Windows::TileInspector
         }
     }
 
-    static string_id getElementTypeName(const tile_element& element)
+    static string_id getElementTypeName(const TileElement& element)
     {
-        static const std::map<element_type, string_id> typeToString = {
-            { element_type::surface, StringIds::tile_inspector_element_type_surface },
-            { element_type::track, StringIds::tile_inspector_element_type_track },
-            { element_type::station, StringIds::tile_inspector_element_type_station },
-            { element_type::signal, StringIds::tile_inspector_element_type_signal },
-            { element_type::building, StringIds::tile_inspector_element_type_building },
-            { element_type::tree, StringIds::tile_inspector_element_type_tree },
-            { element_type::wall, StringIds::tile_inspector_element_type_wall },
-            { element_type::road, StringIds::tile_inspector_element_type_road },
-            { element_type::industry, StringIds::tile_inspector_element_type_industry },
+        static const std::map<ElementType, string_id> typeToString = {
+            { ElementType::surface, StringIds::tile_inspector_element_type_surface },
+            { ElementType::track, StringIds::tile_inspector_element_type_track },
+            { ElementType::station, StringIds::tile_inspector_element_type_station },
+            { ElementType::signal, StringIds::tile_inspector_element_type_signal },
+            { ElementType::building, StringIds::tile_inspector_element_type_building },
+            { ElementType::tree, StringIds::tile_inspector_element_type_tree },
+            { ElementType::wall, StringIds::tile_inspector_element_type_wall },
+            { ElementType::road, StringIds::tile_inspector_element_type_road },
+            { ElementType::industry, StringIds::tile_inspector_element_type_industry },
         };
 
         return typeToString.at(element.type());
     }
 
-    static string_id getObjectName(const tile_element& element)
+    static string_id getObjectName(const TileElement& element)
     {
         switch (element.type())
         {
-            case element_type::surface:
+            case ElementType::surface:
             {
                 auto surface = element.asSurface();
                 if (surface != nullptr)
@@ -197,7 +197,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
                 }
                 break;
             }
-            case element_type::track:
+            case ElementType::track:
             {
                 auto track = element.asTrack();
                 if (track != nullptr)
@@ -208,7 +208,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
                 }
                 break;
             }
-            case element_type::station:
+            case ElementType::station:
             {
                 auto station = element.asStation();
                 if (station != nullptr)
@@ -229,7 +229,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
                 }
                 break;
             }
-            case element_type::signal:
+            case ElementType::signal:
             {
                 auto signal = element.asSignal();
                 if (signal != nullptr)
@@ -245,7 +245,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
                 }
                 break;
             }
-            case element_type::building:
+            case ElementType::building:
             {
                 auto building = element.asBuilding();
                 if (building != nullptr)
@@ -256,7 +256,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
                 }
                 break;
             }
-            case element_type::tree:
+            case ElementType::tree:
             {
                 auto tree = element.asTree();
                 if (tree != nullptr)
@@ -267,7 +267,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
                 }
                 break;
             }
-            case element_type::wall:
+            case ElementType::wall:
             {
                 auto wall = element.asWall();
                 if (wall != nullptr)
@@ -278,7 +278,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
                 }
                 break;
             }
-            case element_type::road:
+            case ElementType::road:
             {
                 auto road = element.asRoad();
                 if (road != nullptr)
@@ -289,7 +289,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
                 }
                 break;
             }
-            case element_type::industry:
+            case ElementType::industry:
             {
                 auto industry = element.asIndustry();
                 if (industry != nullptr)
@@ -302,9 +302,9 @@ namespace OpenLoco::Ui::Windows::TileInspector
         return StringIds::empty;
     }
 
-    static string_id getOwnerName(const tile_element& element)
+    static string_id getOwnerName(const TileElement& element)
     {
-        if (element.type() == element_type::road)
+        if (element.type() == ElementType::road)
         {
             auto road = element.asRoad();
             if (road != nullptr)
@@ -317,7 +317,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
                 }
             }
         }
-        else if (element.type() == element_type::track)
+        else if (element.type() == ElementType::track)
         {
             auto track = element.asTrack();
             if (track != nullptr)

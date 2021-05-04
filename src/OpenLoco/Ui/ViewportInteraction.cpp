@@ -37,7 +37,7 @@ namespace OpenLoco::Ui::ViewportInteraction
     // 0x004CD95A
     static bool _track(InteractionArg& interaction)
     {
-        auto* tileElement = reinterpret_cast<Map::tile_element*>(interaction.object);
+        auto* tileElement = reinterpret_cast<Map::TileElement*>(interaction.object);
         auto* track = tileElement->asTrack();
         if (track == nullptr)
             return false;
@@ -59,15 +59,15 @@ namespace OpenLoco::Ui::ViewportInteraction
     // 0x004CD974
     static bool _road(InteractionArg& interaction)
     {
-        auto* tileElement = reinterpret_cast<Map::tile_element*>(interaction.object);
+        auto* tileElement = reinterpret_cast<Map::TileElement*>(interaction.object);
         auto* road = tileElement->asRoad();
         if (road == nullptr)
             return false;
         if (!road->hasStationElement())
             return false;
 
-        Map::station_element* station = nullptr;
-        Map::tile tile{ interaction.x, interaction.y, tileElement };
+        Map::StationElement* station = nullptr;
+        Map::Tile tile{ interaction.x, interaction.y, tileElement };
         for (auto& t : tile)
         {
             station = t.asStation();
@@ -94,7 +94,7 @@ namespace OpenLoco::Ui::ViewportInteraction
     // 0x004CD99A
     static bool getStationArguments(InteractionArg& interaction)
     {
-        auto* tileElement = reinterpret_cast<Map::tile_element*>(interaction.object);
+        auto* tileElement = reinterpret_cast<Map::TileElement*>(interaction.object);
         auto* station = tileElement->asStation();
         if (station == nullptr)
             return false;
@@ -166,7 +166,7 @@ namespace OpenLoco::Ui::ViewportInteraction
     // 0x004CD8D5
     static bool getIndustryArguments(InteractionArg& interaction)
     {
-        auto* tileElement = reinterpret_cast<Map::tile_element*>(interaction.object);
+        auto* tileElement = reinterpret_cast<Map::TileElement*>(interaction.object);
         auto* industryTile = tileElement->asIndustry();
         if (industryTile == nullptr)
             return false;
@@ -233,7 +233,7 @@ namespace OpenLoco::Ui::ViewportInteraction
     // 0x004CD84A
     static bool getHeadquarterArguments(const InteractionArg& interaction)
     {
-        auto* tileElement = reinterpret_cast<Map::tile_element*>(interaction.object);
+        auto* tileElement = reinterpret_cast<Map::TileElement*>(interaction.object);
         auto* buildingTile = tileElement->asBuilding();
         if (buildingTile == nullptr)
         {

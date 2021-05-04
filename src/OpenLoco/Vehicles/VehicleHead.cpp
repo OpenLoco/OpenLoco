@@ -2359,7 +2359,7 @@ namespace OpenLoco::Vehicles
         // updates the current boats position and sets flags about position
         auto tile = TileManager::get(veh2->position);
 
-        surface_element* surface = tile.surface();
+        SurfaceElement* surface = tile.surface();
 
         if (surface != nullptr)
         {
@@ -2454,7 +2454,7 @@ namespace OpenLoco::Vehicles
             if (stationId != StationId::null)
             {
                 auto targetTile = TileManager::get(Map::Pos2{ tile_x, tile_y });
-                station_element* station = nullptr;
+                StationElement* station = nullptr;
                 for (auto& el : targetTile)
                 {
                     station = el.asStation();
@@ -2485,7 +2485,7 @@ namespace OpenLoco::Vehicles
                 tile_base_z = stationTarget.z / 4;
 
                 auto targetTile = TileManager::get(Map::Pos2{ tile_x, tile_y });
-                station_element* station = nullptr;
+                StationElement* station = nullptr;
                 for (auto& el : targetTile)
                 {
                     station = el.asStation();
