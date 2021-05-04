@@ -163,12 +163,9 @@ set(DEBUG_LEVEL 0 CACHE STRING "Select debug level for compilation. Use value in
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DDEBUG=${DEBUG_LEVEL}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DDEBUG=${DEBUG_LEVEL}")
 
-# include lib
-include_directories("lib/")
 # add source files
 file(GLOB_RECURSE OLOCO_SOURCES "src/*.cpp")
 file(GLOB_RECURSE OLOCO_HEADERS "src/*.h" "src/*.hpp")
-
 
 if (APPLE)
     file(GLOB_RECURSE OLOCO_MM_SOURCES "src/*.mm")
