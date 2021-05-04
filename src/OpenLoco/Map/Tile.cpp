@@ -31,10 +31,9 @@ BuildingObject* BuildingElement::object() const
     return ObjectManager::get<BuildingObject>(objectId());
 }
 
-Tile::Tile(tile_coord_t x, tile_coord_t y, TileElement* data)
+Tile::Tile(const TilePos2& tPos, TileElement* data)
     : _data(data)
-    , x(x)
-    , y(y)
+    , pos(tPos)
 {
 }
 

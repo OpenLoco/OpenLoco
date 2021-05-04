@@ -5,7 +5,7 @@
 namespace OpenLoco::Map
 {
 #pragma pack(push, 1)
-    struct tile_loop
+    struct TileLoop
     {
     private:
         Pos2 _pos;

@@ -53,7 +53,7 @@ namespace OpenLoco::Map::TileManager
         {
             data = nullptr;
         }
-        return Tile(pos.x, pos.y, data);
+        return Tile(pos, data);
     }
 
     Tile get(Pos2 pos)

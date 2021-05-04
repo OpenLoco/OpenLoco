@@ -318,10 +318,9 @@ namespace OpenLoco::Map
     public:
         static constexpr size_t npos = std::numeric_limits<size_t>().max();
 
-        const tile_coord_t x;
-        const tile_coord_t y;
+        const TilePos2 pos;
 
-        Tile(tile_coord_t x, tile_coord_t y, TileElement* data);
+        Tile(const TilePos2& tPos, TileElement* data);
         bool isNull() const;
         TileElement* begin();
         TileElement* begin() const;
