@@ -412,7 +412,7 @@ namespace OpenLoco::Map::MapGenerator
     {
         static loco_global<uint16_t, 0x00525FB2> seaLevel;
 
-        Map::tile_loop tileLoop;
+        Map::TileLoop tileLoop;
         for (uint32_t posId = 0; posId < map_size; posId++)
         {
             auto pos = tileLoop.current();

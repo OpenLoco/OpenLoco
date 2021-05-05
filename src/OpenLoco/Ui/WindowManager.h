@@ -129,10 +129,10 @@ namespace OpenLoco::Ui::Windows
     namespace Construction
     {
         window* openWithFlags(uint32_t flags);
-        window* openAtTrack(window* main, Map::track_element* track, const Map::Pos2 pos);
-        window* openAtRoad(window* main, Map::road_element* track, const Map::Pos2 pos);
-        void setToTrackExtra(window* main, Map::track_element* track, const uint8_t bh, const Map::Pos2 pos);
-        void setToRoadExtra(window* main, Map::road_element* track, const uint8_t bh, const Map::Pos2 pos);
+        window* openAtTrack(window* main, Map::TrackElement* track, const Map::Pos2 pos);
+        window* openAtRoad(window* main, Map::RoadElement* track, const Map::Pos2 pos);
+        void setToTrackExtra(window* main, Map::TrackElement* track, const uint8_t bh, const Map::Pos2 pos);
+        void setToRoadExtra(window* main, Map::RoadElement* track, const uint8_t bh, const Map::Pos2 pos);
         void sub_4A6FAC();
         void rotate(window* self);
         void registerHooks();

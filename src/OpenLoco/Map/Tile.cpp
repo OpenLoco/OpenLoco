@@ -11,49 +11,48 @@ using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui::WindowManager;
 using namespace OpenLoco::Map;
 
-const uint8_t* tile_element_base::data() const
+const uint8_t* TileElementBase::data() const
 {
     return (uint8_t*)this;
 }
 
-element_type tile_element_base::type() const
+ElementType TileElementBase::type() const
 {
-    return (element_type)((_type & 0x3C) >> 2);
+    return (ElementType)((_type & 0x3C) >> 2);
 }
 
-bool tile_element_base::isLast() const
+bool TileElementBase::isLast() const
 {
     return (_flags & ElementFlags::last) != 0;
 }
 
-BuildingObject* building_element::object() const
+BuildingObject* BuildingElement::object() const
 {
     return ObjectManager::get<BuildingObject>(objectId());
 }
 
-tile::tile(tile_coord_t x, tile_coord_t y, tile_element* data)
+Tile::Tile(const TilePos2& tPos, TileElement* data)
     : _data(data)
-    , x(x)
-    , y(y)
+    , pos(tPos)
 {
 }
 
-bool tile::isNull() const
+bool Tile::isNull() const
 {
     return _data == nullptr;
 }
 
-tile_element* tile::begin()
+TileElement* Tile::begin()
 {
     return _data;
 }
 
-tile_element* tile::begin() const
+TileElement* Tile::begin() const
 {
-    return const_cast<tile&>(*this).begin();
+    return const_cast<Tile&>(*this).begin();
 }
 
-tile_element* tile::end()
+TileElement* Tile::end()
 {
     auto el = _data;
     do
@@ -63,17 +62,17 @@ tile_element* tile::end()
     return el;
 }
 
-tile_element* tile::end() const
+TileElement* Tile::end() const
 {
-    return const_cast<tile&>(*this).end();
+    return const_cast<Tile&>(*this).end();
 }
 
-size_t tile::size()
+size_t Tile::size()
 {
     return end() - begin();
 }
 
-tile_element* tile::operator[](size_t i)
+TileElement* Tile::operator[](size_t i)
 {
 #if DEBUG
     assert(i < size());
@@ -81,7 +80,7 @@ tile_element* tile::operator[](size_t i)
     return &_data[i];
 }
 
-size_t tile::indexOf(const tile_element_base* element) const
+size_t Tile::indexOf(const TileElementBase* element) const
 {
     size_t i = 0;
     for (const auto& tile : *this)
@@ -95,9 +94,9 @@ size_t tile::indexOf(const tile_element_base* element) const
     return npos;
 }
 
-surface_element* tile::surface() const
+SurfaceElement* Tile::surface() const
 {
-    surface_element* result = nullptr;
+    SurfaceElement* result = nullptr;
     for (auto& tile : *this)
     {
         result = tile.asSurface();
@@ -109,9 +108,9 @@ surface_element* tile::surface() const
     return result;
 }
 
-station_element* tile::trackStation(uint8_t trackId, uint8_t direction, uint8_t baseZ) const
+StationElement* Tile::trackStation(uint8_t trackId, uint8_t direction, uint8_t baseZ) const
 {
-    station_element* result = nullptr;
+    StationElement* result = nullptr;
     bool trackFound = false;
     for (auto& tile : *this)
     {
@@ -140,9 +139,9 @@ station_element* tile::trackStation(uint8_t trackId, uint8_t direction, uint8_t 
     return result;
 }
 
-station_element* tile::roadStation(uint8_t roadId, uint8_t direction, uint8_t baseZ) const
+StationElement* Tile::roadStation(uint8_t roadId, uint8_t direction, uint8_t baseZ) const
 {
-    station_element* result = nullptr;
+    StationElement* result = nullptr;
     bool trackFound = false;
     for (auto& tile : *this)
     {
@@ -171,12 +170,12 @@ station_element* tile::roadStation(uint8_t roadId, uint8_t direction, uint8_t ba
     return result;
 }
 
-OpenLoco::Industry* industry_element::industry() const
+OpenLoco::Industry* IndustryElement::industry() const
 {
     return IndustryManager::get(_industryId);
 }
 
-OpenLoco::StationType station_element::stationType() const { return OpenLoco::StationType(_5 >> 5); }
+OpenLoco::StationType StationElement::stationType() const { return OpenLoco::StationType(_5 >> 5); }
 
 namespace OpenLoco::Map
 {

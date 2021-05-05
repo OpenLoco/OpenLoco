@@ -5,7 +5,7 @@
 
 namespace OpenLoco::Map
 {
-    struct tile_element;
+    struct TileElement;
 }
 namespace OpenLoco
 {
@@ -100,8 +100,8 @@ namespace OpenLoco::Paint
         coord_t map_y; // 0x2E
         union
         {
-            Map::tile_element* tileElement; // 0x30 (or entity pointer)
-            EntityBase* entity;             // 0x30
+            Map::TileElement* tileElement; // 0x30 (or entity pointer)
+            EntityBase* entity;            // 0x30
         };
     };
     static_assert(sizeof(PaintStruct) == 0x34);
@@ -236,9 +236,9 @@ namespace OpenLoco::Paint
         //tunnel_entry rightTunnels[TUNNEL_MAX_COUNT];
         //uint8_t rightTunnelCount;
         //uint8_t verticalTunnelHeight;
-        //const Map::tile_element* surfaceElement;
-        //Map::tile_element* pathElementOnSameHeight;
-        //Map::tile_element* trackElementOnSameHeight;
+        //const Map::TileElement* surfaceElement;
+        //Map::TileElement* pathElementOnSameHeight;
+        //Map::TileElement* trackElementOnSameHeight;
         //bool didPassSurface;
         //uint8_t unk141E9DB;
         //uint16_t waterHeight;

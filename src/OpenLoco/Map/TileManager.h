@@ -7,21 +7,21 @@
 
 namespace OpenLoco::Map::TileManager
 {
-    enum MapSelectFlag : uint16_t
+    namespace MapSelectFlag
     {
-        enable = (1 << 0),
-        enableConstruct = (1 << 1)
-    };
+        constexpr uint16_t enable = (1 << 0);
+        constexpr uint16_t enableConstruct = (1 << 1);
+    }
 
     constexpr size_t maxElements = 0x6C000;
 
     void initialise();
-    stdx::span<tile_element> getElements();
-    tile_element* getElementsEnd();
-    tile_element** getElementIndex();
-    tile get(TilePos2 pos);
-    tile get(Pos2 pos);
-    tile get(coord_t x, coord_t y);
+    stdx::span<TileElement> getElements();
+    TileElement* getElementsEnd();
+    TileElement** getElementIndex();
+    Tile get(TilePos2 pos);
+    Tile get(Pos2 pos);
+    Tile get(coord_t x, coord_t y);
     TileHeight getHeight(const Pos2& pos);
     void updateTilePointers();
     void reorganise();

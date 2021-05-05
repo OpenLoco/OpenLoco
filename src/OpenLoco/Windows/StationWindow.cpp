@@ -723,7 +723,7 @@ namespace OpenLoco::Ui::Windows::Station
     // 0x00491BC6
     static void sub_491BC6()
     {
-        tile_loop tileLoop;
+        TileLoop tileLoop;
 
         for (uint32_t posId = 0; posId < map_size; posId++)
         {

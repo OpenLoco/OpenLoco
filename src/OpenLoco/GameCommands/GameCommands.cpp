@@ -24,7 +24,7 @@ namespace OpenLoco::GameCommands
 
     static uint16_t _gameCommandFlags;
 
-    static loco_global<tile_element*, 0x009C68D0> _9C68D0;
+    static loco_global<TileElement*, 0x009C68D0> _9C68D0;
 
     static loco_global<Pos3, 0x009C68E0> _gGameCommandPosition;
     static loco_global<string_id, 0x009C68E6> _gGameCommandErrorText;
@@ -333,11 +333,11 @@ namespace OpenLoco::GameCommands
         // advanced errors
         if (_9C68D0 != (void*)-1)
         {
-            auto tile = (tile_element*)_9C68D0;
+            auto tile = (TileElement*)_9C68D0;
 
             switch (tile->type())
             {
-                case element_type::track: // 4
+                case ElementType::track: // 4
                 {
                     auto trackElement = tile->asTrack();
                     if (trackElement == nullptr)
@@ -354,7 +354,7 @@ namespace OpenLoco::GameCommands
                     return 0x80000000;
                 }
 
-                case element_type::road: //0x1C
+                case ElementType::road: //0x1C
                 {
                     auto roadElement = tile->asRoad();
                     if (roadElement == nullptr)
@@ -371,7 +371,7 @@ namespace OpenLoco::GameCommands
                     return 0x80000000;
                 }
 
-                case element_type::station: // 8
+                case ElementType::station: // 8
                 {
                     auto stationElement = tile->asStation();
                     if (stationElement == nullptr)
@@ -389,7 +389,7 @@ namespace OpenLoco::GameCommands
                     return 0x80000000;
                 }
 
-                case element_type::signal: // 0x0C
+                case ElementType::signal: // 0x0C
                 {
                     auto formatter = FormatArguments::common();
                     formatter.push(CompanyManager::get(_errorCompanyId)->name);
@@ -412,7 +412,7 @@ namespace OpenLoco::GameCommands
     // 0x00431E6A
     // al  : company
     // esi : tile
-    bool sub_431E6A(const CompanyId_t company, Map::tile_element* const tile /*= nullptr*/)
+    bool sub_431E6A(const CompanyId_t company, Map::TileElement* const tile /*= nullptr*/)
     {
         if (company == CompanyId::neutral)
         {
@@ -424,7 +424,7 @@ namespace OpenLoco::GameCommands
         }
         _gGameCommandErrorText = -2;
         _errorCompanyId = company;
-        _9C68D0 = tile == nullptr ? reinterpret_cast<Map::tile_element*>(-1) : tile;
+        _9C68D0 = tile == nullptr ? reinterpret_cast<Map::TileElement*>(-1) : tile;
         return false;
     }
 

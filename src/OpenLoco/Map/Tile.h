@@ -33,7 +33,7 @@ namespace OpenLoco::Map
     Ui::viewport_pos coordinate3dTo2d(int16_t x, int16_t y, int16_t z, int rotation);
     Pos2 rotate2dCoordinate(Pos2 pos, uint8_t rotation);
 
-    enum class element_type
+    enum class ElementType
     {
         surface,  // 0x00
         track,    // 0x04
@@ -54,18 +54,18 @@ namespace OpenLoco::Map
         constexpr uint8_t last = 1 << 7;
     }
 
-    struct surface_element;
-    struct track_element;
-    struct station_element;
-    struct signal_element;
-    struct building_element;
-    struct tree_element;
-    struct wall_element;
-    struct road_element;
-    struct industry_element;
+    struct SurfaceElement;
+    struct TrackElement;
+    struct StationElement;
+    struct SignalElement;
+    struct BuildingElement;
+    struct TreeElement;
+    struct WallElement;
+    struct RoadElement;
+    struct IndustryElement;
 
 #pragma pack(push, 1)
-    struct tile_element_base
+    struct TileElementBase
     {
     protected:
         uint8_t _type;
@@ -76,7 +76,7 @@ namespace OpenLoco::Map
     public:
         // Temporary, use this to get fields easily before they are defined
         const uint8_t* data() const;
-        element_type type() const;
+        ElementType type() const;
         uint8_t flags() const { return _flags; }
         uint8_t baseZ() const { return _base_z; }
         uint8_t clearZ() const { return _clear_z; }
@@ -103,12 +103,12 @@ namespace OpenLoco::Map
         }
     };
 
-    struct tile_element : public tile_element_base
+    struct TileElement : public TileElementBase
     {
     private:
         uint8_t pad[4];
 
-        template<typename TType, element_type TClass>
+        template<typename TType, ElementType TClass>
         TType* as() const
         {
             return type() == TClass ? (TType*)this : nullptr;
@@ -117,17 +117,17 @@ namespace OpenLoco::Map
         uint8_t baseZ() const { return _base_z; }
 
     public:
-        surface_element* asSurface() const { return as<surface_element, element_type::surface>(); }
-        track_element* asTrack() const { return as<track_element, element_type::track>(); }
-        station_element* asStation() const { return as<station_element, element_type::station>(); }
-        signal_element* asSignal() const { return as<signal_element, element_type::signal>(); }
-        building_element* asBuilding() const { return as<building_element, element_type::building>(); }
-        tree_element* asTree() const { return as<tree_element, element_type::tree>(); }
-        wall_element* asWall() const { return as<wall_element, element_type::wall>(); }
-        road_element* asRoad() const { return as<road_element, element_type::road>(); }
-        industry_element* asIndustry() const { return as<industry_element, element_type::industry>(); }
+        SurfaceElement* asSurface() const { return as<SurfaceElement, ElementType::surface>(); }
+        TrackElement* asTrack() const { return as<TrackElement, ElementType::track>(); }
+        StationElement* asStation() const { return as<StationElement, ElementType::station>(); }
+        SignalElement* asSignal() const { return as<SignalElement, ElementType::signal>(); }
+        BuildingElement* asBuilding() const { return as<BuildingElement, ElementType::building>(); }
+        TreeElement* asTree() const { return as<TreeElement, ElementType::tree>(); }
+        WallElement* asWall() const { return as<WallElement, ElementType::wall>(); }
+        RoadElement* asRoad() const { return as<RoadElement, ElementType::road>(); }
+        IndustryElement* asIndustry() const { return as<IndustryElement, ElementType::industry>(); }
     };
-    static_assert(sizeof(tile_element) == 8);
+    static_assert(sizeof(TileElement) == 8);
 
     namespace SurfaceSlope
     {
@@ -154,7 +154,7 @@ namespace OpenLoco::Map
         constexpr uint8_t n_s_valley = n_corner_up | s_corner_up;
     }
 
-    struct surface_element : public tile_element_base
+    struct SurfaceElement : public TileElementBase
     {
     private:
         uint8_t _slope;    // 0x4
@@ -186,7 +186,7 @@ namespace OpenLoco::Map
         void createWave(int16_t x, int16_t y, int animationIndex);
     };
 
-    struct station_element : public tile_element_base
+    struct StationElement : public TileElementBase
     {
     private:
         uint8_t _4;
@@ -200,7 +200,7 @@ namespace OpenLoco::Map
         StationId_t stationId() const { return _station_id & 0x3FF; }
     };
 
-    struct building_element : public tile_element_base
+    struct BuildingElement : public TileElementBase
     {
     private:
         uint8_t _4;
@@ -216,7 +216,7 @@ namespace OpenLoco::Map
         uint8_t multiTileIndex() const { return _5 & 3; }
     };
 
-    struct tree_element : public tile_element_base
+    struct TreeElement : public TileElementBase
     {
     private:
         uint8_t _4;
@@ -228,7 +228,7 @@ namespace OpenLoco::Map
         uint8_t treeObjectId() const { return _4; } // _4
     };
 
-    struct wall_element : public tile_element_base
+    struct WallElement : public TileElementBase
     {
     private:
         uint8_t _4;
@@ -240,7 +240,7 @@ namespace OpenLoco::Map
         uint8_t wallObjectId() const { return _4; } // _4
     };
 
-    struct track_element : public tile_element_base
+    struct TrackElement : public TileElementBase
     {
     private:
         uint8_t _4;
@@ -263,7 +263,7 @@ namespace OpenLoco::Map
         uint8_t unk_7u() const { return _7 >> 4; } // _7u
     };
 
-    struct signal_element : public tile_element_base
+    struct SignalElement : public TileElementBase
     {
     private:
         uint8_t _4;
@@ -278,7 +278,7 @@ namespace OpenLoco::Map
         uint8_t rightSignalObjectId() const { return _6 & 0xF; } // _6l
     };
 
-    struct road_element : public tile_element_base
+    struct RoadElement : public TileElementBase
     {
     private:
         uint8_t _4;
@@ -296,7 +296,7 @@ namespace OpenLoco::Map
         void setOwner(uint8_t newOwner) { _7 = (_7 & 0xF0) | (newOwner & 0xF); }
     };
 
-    struct industry_element : public tile_element_base
+    struct IndustryElement : public TileElementBase
     {
     private:
         IndustryId_t _industryId;
@@ -310,29 +310,28 @@ namespace OpenLoco::Map
     };
 #pragma pack(pop)
 
-    struct tile
+    struct Tile
     {
     private:
-        tile_element* const _data;
+        TileElement* const _data;
 
     public:
         static constexpr size_t npos = std::numeric_limits<size_t>().max();
 
-        const tile_coord_t x;
-        const tile_coord_t y;
+        const TilePos2 pos;
 
-        tile(tile_coord_t x, tile_coord_t y, tile_element* data);
+        Tile(const TilePos2& tPos, TileElement* data);
         bool isNull() const;
-        tile_element* begin();
-        tile_element* begin() const;
-        tile_element* end();
-        tile_element* end() const;
+        TileElement* begin();
+        TileElement* begin() const;
+        TileElement* end();
+        TileElement* end() const;
         size_t size();
-        tile_element* operator[](size_t i);
+        TileElement* operator[](size_t i);
 
-        size_t indexOf(const tile_element_base* element) const;
-        surface_element* surface() const;
-        station_element* trackStation(uint8_t trackId, uint8_t direction, uint8_t baseZ) const;
-        station_element* roadStation(uint8_t roadId, uint8_t direction, uint8_t baseZ) const;
+        size_t indexOf(const TileElementBase* element) const;
+        SurfaceElement* surface() const;
+        StationElement* trackStation(uint8_t trackId, uint8_t direction, uint8_t baseZ) const;
+        StationElement* roadStation(uint8_t roadId, uint8_t direction, uint8_t baseZ) const;
     };
 }

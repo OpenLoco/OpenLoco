@@ -162,7 +162,7 @@ namespace OpenLoco
     };
 
     static void sub_491BF5(const Pos2& pos, const uint8_t flag);
-    static station_element* getStationElement(const Pos3& pos);
+    static StationElement* getStationElement(const Pos3& pos);
 
     StationId_t Station::id() const
     {
@@ -319,7 +319,7 @@ namespace OpenLoco
                         }
                         switch (el.type())
                         {
-                            case element_type::industry:
+                            case ElementType::industry:
                             {
                                 auto industryEl = el.asIndustry();
                                 auto industry = industryEl->industry();
@@ -354,7 +354,7 @@ namespace OpenLoco
 
                                 break;
                             }
-                            case element_type::building:
+                            case ElementType::building:
                             {
                                 auto buildingEl = el.asBuilding();
 
@@ -753,7 +753,7 @@ namespace OpenLoco
     }
 
     // 0x0048F6D4
-    static station_element* getStationElement(const Pos3& pos)
+    static StationElement* getStationElement(const Pos3& pos)
     {
         auto tile = TileManager::get(pos.x, pos.y);
         auto baseZ = pos.z / 4;

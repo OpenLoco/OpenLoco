@@ -51,13 +51,13 @@ namespace OpenLoco
         return produceCargoState;
     }
 
-    static bool findTree(surface_element* surface)
+    static bool findTree(SurfaceElement* surface)
     {
         auto element = surface;
         while (!element->isLast())
         {
             element++;
-            if (element->type() == element_type::tree)
+            if (element->type() == ElementType::tree)
             {
                 return true;
             }

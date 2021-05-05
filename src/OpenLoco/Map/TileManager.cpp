@@ -8,9 +8,9 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Map::TileManager
 {
-    static loco_global<tile_element*, 0x005230C8> _elements;
-    static loco_global<tile_element* [0x30004], 0x00E40134> _tiles;
-    static loco_global<tile_element*, 0x00F00134> _elementsEnd;
+    static loco_global<TileElement*, 0x005230C8> _elements;
+    static loco_global<TileElement* [0x30004], 0x00E40134> _tiles;
+    static loco_global<TileElement*, 0x00F00134> _elementsEnd;
     static loco_global<uint16_t, 0x00F24484> _mapSelectionFlags;
     static loco_global<coord_t, 0x00F24486> _mapSelectionAX;
     static loco_global<coord_t, 0x00F24488> _mapSelectionBX;
@@ -22,7 +22,7 @@ namespace OpenLoco::Map::TileManager
     constexpr uint16_t mapSelectedTilesSize = 300;
     static loco_global<Pos2[mapSelectedTilesSize], 0x00F24490> _mapSelectedTiles;
 
-    static tile_element* InvalidTile = reinterpret_cast<tile_element*>(static_cast<intptr_t>(-1));
+    static TileElement* InvalidTile = reinterpret_cast<TileElement*>(static_cast<intptr_t>(-1));
 
     // 0x00461179
     void initialise()
@@ -30,22 +30,22 @@ namespace OpenLoco::Map::TileManager
         call(0x00461179);
     }
 
-    stdx::span<tile_element> getElements()
+    stdx::span<TileElement> getElements()
     {
-        return stdx::span<tile_element>(_elements, getElementsEnd());
+        return stdx::span<TileElement>(_elements, getElementsEnd());
     }
 
-    tile_element* getElementsEnd()
+    TileElement* getElementsEnd()
     {
         return _elementsEnd;
     }
 
-    tile_element** getElementIndex()
+    TileElement** getElementIndex()
     {
         return _tiles.get();
     }
 
-    tile get(TilePos2 pos)
+    Tile get(TilePos2 pos)
     {
         size_t index = (pos.y << 9) | pos.x;
         auto data = _tiles[index];
@@ -53,15 +53,15 @@ namespace OpenLoco::Map::TileManager
         {
             data = nullptr;
         }
-        return tile(pos.x, pos.y, data);
+        return Tile(pos, data);
     }
 
-    tile get(Pos2 pos)
+    Tile get(Pos2 pos)
     {
         return get(pos.x, pos.y);
     }
 
-    tile get(coord_t x, coord_t y)
+    Tile get(coord_t x, coord_t y)
     {
         return get(TilePos2(x / Map::tile_size, y / Map::tile_size));
     }
@@ -223,7 +223,7 @@ namespace OpenLoco::Map::TileManager
         std::fill(_tiles.begin(), _tiles.end(), InvalidTile);
     }
 
-    static void set(TilePos2 pos, tile_element* elements)
+    static void set(TilePos2 pos, TileElement* elements)
     {
         _tiles[(pos.y * map_pitch) + pos.x] = elements;
     }
@@ -233,7 +233,7 @@ namespace OpenLoco::Map::TileManager
     {
         clearTilePointers();
 
-        tile_element* el = _elements;
+        TileElement* el = _elements;
         for (tile_coord_t y = 0; y < map_rows; y++)
         {
             for (tile_coord_t x = 0; x < map_columns; x++)
@@ -259,8 +259,8 @@ namespace OpenLoco::Map::TileManager
         try
         {
             // Allocate a temporary buffer and tighly pack all the tile elements in the map
-            std::vector<tile_element> tempBuffer;
-            tempBuffer.resize(maxElements * sizeof(tile_element));
+            std::vector<TileElement> tempBuffer;
+            tempBuffer.resize(maxElements * sizeof(TileElement));
 
             size_t numElements = 0;
             for (tile_coord_t y = 0; y < map_rows; y++)
@@ -277,11 +277,11 @@ namespace OpenLoco::Map::TileManager
             }
 
             // Copy organised elements back to original element buffer
-            std::memcpy(_elements, tempBuffer.data(), numElements * sizeof(tile_element));
+            std::memcpy(_elements, tempBuffer.data(), numElements * sizeof(TileElement));
 
             // Zero all unused elements
             auto remainingElements = maxElements - numElements;
-            std::memset(_elements + numElements, 0, remainingElements * sizeof(tile_element));
+            std::memset(_elements + numElements, 0, remainingElements * sizeof(TileElement));
 
             updateTilePointers();
 
