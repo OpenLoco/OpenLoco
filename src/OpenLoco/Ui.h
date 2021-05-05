@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Graphics/Gfx.h"
+#include "Map/Map.hpp"
 #include <string>
 #include <vector>
 
@@ -21,7 +22,7 @@ namespace OpenLoco::Ui
     struct viewport;
 
 #pragma pack(push, 1)
-    struct screen_info_t
+    struct ScreenInfo
     {
         Gfx::drawpixelinfo_t dpi;
         int16_t width;
@@ -40,18 +41,18 @@ namespace OpenLoco::Ui
     };
 #pragma pack(pop)
 
-    enum class cursor_id
+    enum class CursorId
     {
         pointer,
         blank,
-        up_arrow,
-        up_down_arrow,
-        hand_pointer,
+        upArrow,
+        upDownArrow,
+        handPointer,
         busy,
-        diagonal_arrows,
+        diagonalArrows,
         unk_25 = 25,
         unk_26 = 26,
-        arrows_inward = 37
+        inwardArrows = 37
     };
 
     struct Resolution
@@ -80,7 +81,7 @@ namespace OpenLoco::Ui
     void initialiseInput();
     void disposeInput();
     void disposeCursors();
-    void setCursor(cursor_id id);
+    void setCursor(CursorId id);
     void getCursorPos(int32_t& x, int32_t& y);
     void setCursorPos(int32_t x, int32_t y);
     void hideCursor();
@@ -152,8 +153,7 @@ namespace OpenLoco::Ui
 
         struct InteractionArg
         {
-            coord_t x;
-            coord_t y;
+            Map::Pos2 pos;
             union
             {
                 uint32_t value;
@@ -162,9 +162,8 @@ namespace OpenLoco::Ui
             InteractionItem type;
             uint8_t unkBh;
             InteractionArg() = default;
-            InteractionArg(const coord_t _x, const coord_t _y, uint32_t _value, InteractionItem _type, uint8_t _unkBh)
-                : x(_x)
-                , y(_y)
+            InteractionArg(const Map::Pos2& _pos, uint32_t _value, InteractionItem _type, uint8_t _unkBh)
+                : pos(_pos)
                 , value(_value)
                 , type(_type)
                 , unkBh(_unkBh)

@@ -774,14 +774,14 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x004C266D
-    static cursor_id cursor(window* self, int16_t widgetIdx, int16_t xPos, int16_t yPos, cursor_id fallback)
+    static CursorId cursor(window* self, int16_t widgetIdx, int16_t xPos, int16_t yPos, CursorId fallback)
     {
         if (widgetIdx != Widx::scrollview)
             return fallback;
 
         uint16_t currentIndex = yPos / self->row_height;
         if (currentIndex < self->var_83C && self->row_info[currentIndex] != -1)
-            return cursor_id::hand_pointer;
+            return CursorId::handPointer;
 
         return fallback;
     }

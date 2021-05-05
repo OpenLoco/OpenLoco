@@ -114,17 +114,17 @@ namespace OpenLoco::Input
     static loco_global<uint32_t, 0x0113DC74> _dropdownRowCount;
     static loco_global<uint16_t, 0x0113DC78> _113DC78;
 
-    static std::map<Ui::ScrollView::scroll_part, string_id> scroll_widget_tooltips = {
-        { Ui::ScrollView::scroll_part::hscrollbar_button_left, StringIds::tooltip_scroll_left },
-        { Ui::ScrollView::scroll_part::hscrollbar_button_right, StringIds::tooltip_scroll_right },
-        { Ui::ScrollView::scroll_part::hscrollbar_track_left, StringIds::tooltip_scroll_left_fast },
-        { Ui::ScrollView::scroll_part::hscrollbar_track_right, StringIds::tooltip_scroll_right_fast },
-        { Ui::ScrollView::scroll_part::hscrollbar_thumb, StringIds::tooltip_scroll_left_right },
-        { Ui::ScrollView::scroll_part::vscrollbar_button_top, StringIds::tooltip_scroll_up },
-        { Ui::ScrollView::scroll_part::vscrollbar_button_bottom, StringIds::tooltip_scroll_down },
-        { Ui::ScrollView::scroll_part::vscrollbar_track_top, StringIds::tooltip_scroll_up_fast },
-        { Ui::ScrollView::scroll_part::vscrollbar_track_bottom, StringIds::tooltip_scroll_down_fast },
-        { Ui::ScrollView::scroll_part::vscrollbar_thumb, StringIds::tooltip_scroll_up_down },
+    static std::map<Ui::ScrollView::ScrollPart, string_id> scroll_widget_tooltips = {
+        { Ui::ScrollView::ScrollPart::hscrollbarButtonLeft, StringIds::tooltip_scroll_left },
+        { Ui::ScrollView::ScrollPart::hscrollbarButtonRight, StringIds::tooltip_scroll_right },
+        { Ui::ScrollView::ScrollPart::hscrollbarTrackLeft, StringIds::tooltip_scroll_left_fast },
+        { Ui::ScrollView::ScrollPart::hscrollbarTrackRight, StringIds::tooltip_scroll_right_fast },
+        { Ui::ScrollView::ScrollPart::hscrollbarThumb, StringIds::tooltip_scroll_left_right },
+        { Ui::ScrollView::ScrollPart::vscrollbarButtonTop, StringIds::tooltip_scroll_up },
+        { Ui::ScrollView::ScrollPart::vscrollbarButtonBottom, StringIds::tooltip_scroll_down },
+        { Ui::ScrollView::ScrollPart::vscrollbarTrackTop, StringIds::tooltip_scroll_up_fast },
+        { Ui::ScrollView::ScrollPart::vscrollbarTrackBottom, StringIds::tooltip_scroll_down_fast },
+        { Ui::ScrollView::ScrollPart::vscrollbarThumb, StringIds::tooltip_scroll_up_down },
     };
 
     void initMouse()
@@ -553,11 +553,11 @@ namespace OpenLoco::Input
                             if (building != nullptr)
                             {
                                 auto index = building->multiTileIndex();
-                                Map::Pos2 pos{ interaction.x, interaction.y };
-                                pos.x -= Map::offsets[index].x;
-                                pos.y -= Map::offsets[index].y;
+                                const auto firstTile = interaction.pos - Map::offsets[index];
+                                const Pos3 pos = { firstTile.x,
+                                                   firstTile.y,
+                                                   building->baseZ() };
 
-                                auto z = building->baseZ();
                                 for (auto& company : CompanyManager::companies())
                                 {
                                     if (company.empty())
@@ -565,7 +565,7 @@ namespace OpenLoco::Input
 
                                     if (company.headquarters_x == pos.x
                                         && company.headquarters_y == pos.y
-                                        && company.headquarters_z == z)
+                                        && company.headquarters_z == pos.z)
                                     {
                                         Ui::Windows::CompanyWindow::open(company.id());
                                         break;
@@ -802,7 +802,7 @@ namespace OpenLoco::Input
                         {
                             if (track->owner() == CompanyManager::getControllingId())
                             {
-                                Ui::Windows::Construction::openAtTrack(window, track, { interaction.x, interaction.y });
+                                Ui::Windows::Construction::openAtTrack(window, track, interaction.pos);
                             }
                             else
                             {
@@ -822,7 +822,7 @@ namespace OpenLoco::Input
                             auto roadObject = ObjectManager::get<RoadObject>(road->roadObjectId());
                             if (owner == CompanyManager::getControllingId() || owner == CompanyId::neutral || (roadObject->flags & Flags12::unk_03))
                             {
-                                Ui::Windows::Construction::openAtRoad(window, road, { interaction.x, interaction.y });
+                                Ui::Windows::Construction::openAtRoad(window, road, interaction.pos);
                             }
                             else
                             {
@@ -836,7 +836,7 @@ namespace OpenLoco::Input
                         auto track = ((Map::TileElement*)interaction.object)->asTrack();
                         if (track != nullptr)
                         {
-                            Ui::Windows::Construction::setToTrackExtra(window, track, interaction.unkBh, { interaction.x, interaction.y });
+                            Ui::Windows::Construction::setToTrackExtra(window, track, interaction.unkBh, interaction.pos);
                         }
                         break;
                     }
@@ -845,7 +845,7 @@ namespace OpenLoco::Input
                         auto road = ((Map::TileElement*)interaction.object)->asRoad();
                         if (road != nullptr)
                         {
-                            Ui::Windows::Construction::setToRoadExtra(window, road, interaction.unkBh, { interaction.x, interaction.y });
+                            Ui::Windows::Construction::setToRoadExtra(window, road, interaction.unkBh, interaction.pos);
                         }
                         break;
                     }
@@ -854,7 +854,7 @@ namespace OpenLoco::Input
                         auto signal = ((Map::TileElement*)interaction.object)->asSignal();
                         if (signal != nullptr)
                         {
-                            signalInteract(window, signal, interaction.unkBh, { interaction.x, interaction.y });
+                            signalInteract(window, signal, interaction.unkBh, interaction.pos);
                         }
                         break;
                     }
@@ -863,7 +863,7 @@ namespace OpenLoco::Input
                         auto station = ((Map::TileElement*)interaction.object)->asStation();
                         if (station != nullptr)
                         {
-                            trackStationInteract(window, station, { interaction.x, interaction.y });
+                            trackStationInteract(window, station, interaction.pos);
                         }
                         break;
                     }
@@ -872,7 +872,7 @@ namespace OpenLoco::Input
                         auto station = ((Map::TileElement*)interaction.object)->asStation();
                         if (station != nullptr)
                         {
-                            roadStationInteract(window, station, { interaction.x, interaction.y });
+                            roadStationInteract(window, station, interaction.pos);
                         }
                         break;
                     }
@@ -881,7 +881,7 @@ namespace OpenLoco::Input
                         auto station = ((Map::TileElement*)interaction.object)->asStation();
                         if (station != nullptr)
                         {
-                            airportInteract(window, station, { interaction.x, interaction.y });
+                            airportInteract(window, station, interaction.pos);
                         }
                         break;
                     }
@@ -890,7 +890,7 @@ namespace OpenLoco::Input
                         auto station = ((Map::TileElement*)interaction.object)->asStation();
                         if (station != nullptr)
                         {
-                            dockInteract(window, station, { interaction.x, interaction.y });
+                            dockInteract(window, station, interaction.pos);
                         }
                         break;
                     }
@@ -899,7 +899,7 @@ namespace OpenLoco::Input
                         auto tree = ((Map::TileElement*)interaction.object)->asTree();
                         if (tree != nullptr)
                         {
-                            treeInteract(tree, { interaction.x, interaction.y });
+                            treeInteract(tree, interaction.pos);
                         }
                         break;
                     }
@@ -908,7 +908,7 @@ namespace OpenLoco::Input
                         auto building = ((Map::TileElement*)interaction.object)->asBuilding();
                         if (building != nullptr)
                         {
-                            buildingInteract(building, { interaction.x, interaction.y });
+                            buildingInteract(building, interaction.pos);
                         }
                         break;
                     }
@@ -917,7 +917,7 @@ namespace OpenLoco::Input
                         auto wall = ((Map::TileElement*)interaction.object)->asWall();
                         if (wall != nullptr)
                         {
-                            wallInteract(wall, { interaction.x, interaction.y });
+                            wallInteract(wall, interaction.pos);
                         }
                         break;
                     }
@@ -926,7 +926,7 @@ namespace OpenLoco::Input
                         auto building = ((Map::TileElement*)interaction.object)->asBuilding();
                         if (building != nullptr)
                         {
-                            headquarterInteract(building, { interaction.x, interaction.y });
+                            headquarterInteract(building, interaction.pos);
                         }
                         break;
                     }
@@ -1524,15 +1524,15 @@ namespace OpenLoco::Input
         {
             if (widget->type == Ui::widget_type::scrollview)
             {
-                Ui::ScrollView::scroll_part scrollArea;
+                Ui::ScrollView::ScrollPart scrollArea;
                 int16_t scrollX, scrollY;
                 size_t scrollIndex;
                 Ui::ScrollView::getPart(window, widget, x, y, &scrollX, &scrollY, &scrollArea, &scrollIndex);
 
-                if (scrollArea == Ui::ScrollView::scroll_part::none)
+                if (scrollArea == Ui::ScrollView::ScrollPart::none)
                 {
                 }
-                else if (scrollArea == Ui::ScrollView::scroll_part::view)
+                else if (scrollArea == Ui::ScrollView::ScrollPart::view)
                 {
                     window->callScrollMouseOver(scrollX, scrollY, static_cast<uint8_t>(scrollIndex));
                 }
@@ -1866,7 +1866,7 @@ namespace OpenLoco::Input
     void processMouseOver(int16_t x, int16_t y)
     {
         bool skipItem = false;
-        Ui::cursor_id cursorId = Ui::cursor_id::pointer;
+        Ui::CursorId cursorId = Ui::CursorId::pointer;
 
         Windows::MapToolTip::reset();
 
@@ -1899,7 +1899,7 @@ namespace OpenLoco::Input
                             {
                                 if (x >= window->x + window->width - 19 && y >= window->y + window->height - 19)
                                 {
-                                    cursorId = Ui::cursor_id::diagonal_arrows;
+                                    cursorId = Ui::CursorId::diagonalArrows;
                                     break;
                                 }
                             }
@@ -1915,7 +1915,7 @@ namespace OpenLoco::Input
                     case Ui::widget_type::scrollview:
                         _5233A4 = x;
                         _5233A6 = y;
-                        Ui::ScrollView::scroll_part output_scroll_area;
+                        Ui::ScrollView::ScrollPart output_scroll_area;
                         size_t scroll_id;
                         int16_t scroll_x, scroll_y;
                         Ui::ScrollView::getPart(
@@ -1928,7 +1928,7 @@ namespace OpenLoco::Input
                             &output_scroll_area,
                             &scroll_id);
 
-                        if (output_scroll_area == Ui::ScrollView::scroll_part::view)
+                        if (output_scroll_area == Ui::ScrollView::ScrollPart::view)
                         {
 
                             cursorId = window->callCursor(widgetIdx, scroll_x, scroll_y, cursorId);
@@ -1940,7 +1940,7 @@ namespace OpenLoco::Input
                         if (Input::hasFlag(input_flags::tool_active))
                         {
                             // 3
-                            cursorId = (Ui::cursor_id)*_currentTool;
+                            cursorId = (Ui::CursorId)*_currentTool;
                             auto wnd = Ui::WindowManager::find(_toolWindowType, _toolWindowNumber);
                             if (wnd)
                             {
@@ -1962,7 +1962,7 @@ namespace OpenLoco::Input
                                 case InteractionItem::industry:
                                 case InteractionItem::headquarterBuilding:
                                     skipItem = true;
-                                    cursorId = Ui::cursor_id::hand_pointer;
+                                    cursorId = Ui::CursorId::handPointer;
                                     break;
                                 default:
                                     break;
@@ -1981,10 +1981,10 @@ namespace OpenLoco::Input
 
         if (Input::state() == Input::input_state::resizing)
         {
-            cursorId = Ui::cursor_id::diagonal_arrows;
+            cursorId = Ui::CursorId::diagonalArrows;
         }
 
-        if (cursorId != (Ui::cursor_id)*_52336C)
+        if (cursorId != (Ui::CursorId)*_52336C)
         {
             _52336C = (int8_t)cursorId;
             Ui::setCursor(cursorId);

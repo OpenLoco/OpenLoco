@@ -9,7 +9,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::ScrollView
 {
-    static loco_global<Ui::ScrollView::scroll_part, 0x00523396> _currentScrollArea;
+    static loco_global<Ui::ScrollView::ScrollPart, 0x00523396> _currentScrollArea;
     // TODO: Convert to a scrollIndex when all scroll functions implemented
     static loco_global<uint32_t, 0x00523398> _currentScrollOffset;
     static void setCurrentScrollIndex(size_t index)
@@ -26,10 +26,10 @@ namespace OpenLoco::Ui::ScrollView
     static void horizontalFollow(Ui::window* const w, Ui::widget_t* const widget, const widget_index widgetIndex, const size_t scrollIndex, const int16_t deltaX)
     {
         scroll_area_t& scrollArea = w->scroll_areas[scrollIndex];
-        scrollArea.flags |= ScrollFlags::HSCROLLBAR_THUMB_PRESSED;
+        scrollArea.flags |= ScrollFlags::hscrollbarThumbPressed;
 
         uint16_t trackWidth = widget->width() - 2 - thumbSize - thumbSize;
-        if (scrollArea.flags & ScrollFlags::VSCROLLBAR_VISIBLE)
+        if (scrollArea.flags & ScrollFlags::vscrollbarVisible)
         {
             trackWidth -= barWidth;
         }
@@ -43,7 +43,7 @@ namespace OpenLoco::Ui::ScrollView
         int16_t newOffset = scrollArea.contentOffsetX + contentDeltaX;
 
         int frameWidth = widget->width() - 2;
-        if (scrollArea.flags & ScrollFlags::VSCROLLBAR_VISIBLE)
+        if (scrollArea.flags & ScrollFlags::vscrollbarVisible)
         {
             frameWidth -= barWidth;
         }
@@ -62,10 +62,10 @@ namespace OpenLoco::Ui::ScrollView
     static void verticalFollow(Ui::window* const w, Ui::widget_t* const widget, const widget_index widgetIndex, const size_t scrollIndex, const int16_t deltaY)
     {
         scroll_area_t& scrollArea = w->scroll_areas[scrollIndex];
-        scrollArea.flags |= ScrollFlags::VSCROLLBAR_THUMB_PRESSED;
+        scrollArea.flags |= ScrollFlags::vscrollbarThumbPressed;
 
         uint16_t trackHeight = widget->height() - 2 - thumbSize - thumbSize;
-        if ((scrollArea.flags & ScrollFlags::HSCROLLBAR_VISIBLE) != 0)
+        if ((scrollArea.flags & ScrollFlags::hscrollbarVisible) != 0)
         {
             trackHeight -= barWidth;
         }
@@ -79,7 +79,7 @@ namespace OpenLoco::Ui::ScrollView
         int16_t newOffset = scrollArea.contentOffsetY + contentDeltaY;
 
         int frameHeight = widget->height() - 2;
-        if ((scrollArea.flags & ScrollFlags::HSCROLLBAR_VISIBLE) != 0)
+        if ((scrollArea.flags & ScrollFlags::hscrollbarVisible) != 0)
         {
             frameHeight -= barWidth;
         }
@@ -98,13 +98,13 @@ namespace OpenLoco::Ui::ScrollView
     void horizontalDragFollow(Ui::window* const w, Ui::widget_t* const widget, const widget_index dragWidgetIndex, const size_t dragScrollIndex, const int16_t deltaX)
     {
         scroll_area_t& scrollArea = w->scroll_areas[dragScrollIndex];
-        if ((scrollArea.flags & ScrollFlags::HSCROLLBAR_VISIBLE) == 0)
+        if ((scrollArea.flags & ScrollFlags::hscrollbarVisible) == 0)
         {
             return;
         }
 
         uint16_t trackWidth = widget->width() - 2 - thumbSize - thumbSize;
-        if (scrollArea.flags & ScrollFlags::VSCROLLBAR_VISIBLE)
+        if (scrollArea.flags & ScrollFlags::vscrollbarVisible)
         {
             trackWidth -= barWidth;
         }
@@ -118,7 +118,7 @@ namespace OpenLoco::Ui::ScrollView
         int16_t newOffset = scrollArea.contentOffsetX + contentDeltaX;
 
         int frameWidth = widget->width() - 2;
-        if (scrollArea.flags & ScrollFlags::VSCROLLBAR_VISIBLE)
+        if (scrollArea.flags & ScrollFlags::vscrollbarVisible)
         {
             frameWidth -= barWidth;
         }
@@ -138,13 +138,13 @@ namespace OpenLoco::Ui::ScrollView
     void verticalDragFollow(Ui::window* const w, Ui::widget_t* const widget, const widget_index dragWidgetIndex, const size_t dragScrollIndex, const int16_t deltaY)
     {
         scroll_area_t& scrollArea = w->scroll_areas[dragScrollIndex];
-        if ((scrollArea.flags & ScrollFlags::VSCROLLBAR_VISIBLE) == 0)
+        if ((scrollArea.flags & ScrollFlags::vscrollbarVisible) == 0)
         {
             return;
         }
 
         uint16_t trackHeight = widget->height() - 2 - thumbSize - thumbSize;
-        if ((scrollArea.flags & ScrollFlags::HSCROLLBAR_VISIBLE) != 0)
+        if ((scrollArea.flags & ScrollFlags::hscrollbarVisible) != 0)
         {
             trackHeight -= barWidth;
         }
@@ -158,7 +158,7 @@ namespace OpenLoco::Ui::ScrollView
         int16_t newOffset = scrollArea.contentOffsetY + contentDeltaY;
 
         int frameHeight = widget->height() - 2;
-        if ((scrollArea.flags & ScrollFlags::HSCROLLBAR_VISIBLE) != 0)
+        if ((scrollArea.flags & ScrollFlags::hscrollbarVisible) != 0)
         {
             frameHeight -= barWidth;
         }
@@ -181,13 +181,13 @@ namespace OpenLoco::Ui::ScrollView
         int16_t y,
         int16_t* output_x,
         int16_t* output_y,
-        scroll_part* output_scroll_area,
+        ScrollPart* output_scroll_area,
         size_t* scrollIndex)
     {
         *scrollIndex = 0;
         *output_x = x;
         *output_y = y;
-        *output_scroll_area = scroll_part::none;
+        *output_scroll_area = ScrollPart::none;
 
         for (const auto* winWidget = window->widgets; winWidget != widget; winWidget++)
         {
@@ -203,17 +203,17 @@ namespace OpenLoco::Ui::ScrollView
         auto top = widget->top + window->y;
         auto bottom = widget->bottom + window->y;
 
-        if ((scroll.flags & ScrollFlags::HSCROLLBAR_VISIBLE)
+        if ((scroll.flags & ScrollFlags::hscrollbarVisible)
             && y >= (bottom - barWidth))
         {
             if (x < left + barWidth)
             {
-                *output_scroll_area = scroll_part::hscrollbar_button_left;
+                *output_scroll_area = ScrollPart::hscrollbarButtonLeft;
                 return;
             }
 
             // If vertical is also visible then there is a deadzone in the corner
-            if (scroll.flags & ScrollFlags::VSCROLLBAR_VISIBLE)
+            if (scroll.flags & ScrollFlags::vscrollbarVisible)
             {
                 right -= barWidth;
             }
@@ -221,40 +221,40 @@ namespace OpenLoco::Ui::ScrollView
             // Within deadzone
             if (x >= right)
             {
-                *output_scroll_area = scroll_part::none;
+                *output_scroll_area = ScrollPart::none;
                 return;
             }
 
             if (x >= right - thumbSize)
             {
-                *output_scroll_area = scroll_part::hscrollbar_button_right;
+                *output_scroll_area = ScrollPart::hscrollbarButtonRight;
                 return;
             }
 
             if (x < scroll.h_thumb_left + left)
             {
-                *output_scroll_area = scroll_part::hscrollbar_track_left;
+                *output_scroll_area = ScrollPart::hscrollbarTrackLeft;
                 return;
             }
 
             if (x > scroll.h_thumb_right + left)
             {
-                *output_scroll_area = scroll_part::hscrollbar_track_right;
+                *output_scroll_area = ScrollPart::hscrollbarTrackRight;
                 return;
             }
 
-            *output_scroll_area = scroll_part::hscrollbar_thumb;
+            *output_scroll_area = ScrollPart::hscrollbarThumb;
         }
-        else if ((scroll.flags & ScrollFlags::VSCROLLBAR_VISIBLE) && x >= (right - barWidth))
+        else if ((scroll.flags & ScrollFlags::vscrollbarVisible) && x >= (right - barWidth))
         {
             if (y < top + barWidth)
             {
-                *output_scroll_area = scroll_part::vscrollbar_button_top;
+                *output_scroll_area = ScrollPart::vscrollbarButtonTop;
                 return;
             }
 
             // If horizontal is also visible then there is a deadzone in the corner
-            if (scroll.flags & ScrollFlags::HSCROLLBAR_VISIBLE)
+            if (scroll.flags & ScrollFlags::hscrollbarVisible)
             {
                 bottom -= barWidth;
             }
@@ -262,29 +262,29 @@ namespace OpenLoco::Ui::ScrollView
             // Within deadzone
             if (y >= bottom)
             {
-                *output_scroll_area = scroll_part::none;
+                *output_scroll_area = ScrollPart::none;
                 return;
             }
 
             if (y >= bottom - thumbSize)
             {
-                *output_scroll_area = scroll_part::vscrollbar_button_bottom;
+                *output_scroll_area = ScrollPart::vscrollbarButtonBottom;
                 return;
             }
 
             if (y < scroll.v_thumb_top + top)
             {
-                *output_scroll_area = scroll_part::vscrollbar_track_top;
+                *output_scroll_area = ScrollPart::vscrollbarTrackTop;
                 return;
             }
 
             if (y > scroll.v_thumb_bottom + top)
             {
-                *output_scroll_area = scroll_part::vscrollbar_track_bottom;
+                *output_scroll_area = ScrollPart::vscrollbarTrackBottom;
                 return;
             }
 
-            *output_scroll_area = scroll_part::vscrollbar_thumb;
+            *output_scroll_area = ScrollPart::vscrollbarThumb;
         }
         else
         {
@@ -292,12 +292,12 @@ namespace OpenLoco::Ui::ScrollView
             *output_y -= top + 1;
             if (*output_x < 0 || *output_y < 0)
             {
-                *output_scroll_area = scroll_part::none;
+                *output_scroll_area = ScrollPart::none;
                 return;
             }
             *output_x += scroll.contentOffsetX;
             *output_y += scroll.contentOffsetY;
-            *output_scroll_area = scroll_part::view;
+            *output_scroll_area = ScrollPart::view;
         }
     }
 
@@ -315,7 +315,7 @@ namespace OpenLoco::Ui::ScrollView
     // 0x004C894F
     static void hButtonLeft(Ui::window* const w, const size_t scrollAreaIndex, const widget_index widgetIndex)
     {
-        w->scroll_areas[scrollAreaIndex].flags |= ScrollFlags::HSCROLLBAR_LEFT_PRESSED;
+        w->scroll_areas[scrollAreaIndex].flags |= ScrollFlags::hscrollbarLeftPressed;
         w->scroll_areas[scrollAreaIndex].contentOffsetX = std::max(w->scroll_areas[scrollAreaIndex].contentOffsetX - buttonClickStep, 0);
         ScrollView::updateThumbs(w, widgetIndex);
         WindowManager::invalidateWidget(w->type, w->number, widgetIndex);
@@ -324,9 +324,9 @@ namespace OpenLoco::Ui::ScrollView
     // 0x004C89AE
     static void hButtonRight(Ui::window* const w, const size_t scrollAreaIndex, const widget_index widgetIndex)
     {
-        w->scroll_areas[scrollAreaIndex].flags |= ScrollFlags::HSCROLLBAR_RIGHT_PRESSED;
+        w->scroll_areas[scrollAreaIndex].flags |= ScrollFlags::hscrollbarRightPressed;
         int16_t trackWidth = w->widgets[widgetIndex].width() - 2;
-        if ((w->scroll_areas[scrollAreaIndex].flags & ScrollFlags::VSCROLLBAR_VISIBLE) != 0)
+        if ((w->scroll_areas[scrollAreaIndex].flags & ScrollFlags::vscrollbarVisible) != 0)
         {
             trackWidth -= barWidth;
         }
@@ -340,7 +340,7 @@ namespace OpenLoco::Ui::ScrollView
     static void hTrackLeft(Ui::window* const w, const size_t scrollAreaIndex, const widget_index widgetIndex)
     {
         int16_t trackWidth = w->widgets[widgetIndex].width() - 2;
-        if ((w->scroll_areas[scrollAreaIndex].flags & ScrollFlags::VSCROLLBAR_VISIBLE) != 0)
+        if ((w->scroll_areas[scrollAreaIndex].flags & ScrollFlags::vscrollbarVisible) != 0)
         {
             trackWidth -= barWidth;
         }
@@ -353,7 +353,7 @@ namespace OpenLoco::Ui::ScrollView
     static void hTrackRight(Ui::window* const w, const size_t scrollAreaIndex, const widget_index widgetIndex)
     {
         int16_t trackWidth = w->widgets[widgetIndex].width() - 2;
-        if ((w->scroll_areas[scrollAreaIndex].flags & ScrollFlags::VSCROLLBAR_VISIBLE) != 0)
+        if ((w->scroll_areas[scrollAreaIndex].flags & ScrollFlags::vscrollbarVisible) != 0)
         {
             trackWidth -= barWidth;
         }
@@ -373,14 +373,14 @@ namespace OpenLoco::Ui::ScrollView
     // 0x004C8B26
     static void vButtonTop(Ui::window* const w, const size_t scrollAreaIndex, const widget_index widgetIndex)
     {
-        w->scroll_areas[scrollAreaIndex].flags |= ScrollFlags::VSCROLLBAR_UP_PRESSED;
+        w->scroll_areas[scrollAreaIndex].flags |= ScrollFlags::vscrollbarUpPressed;
         verticalNudgeUp(w, scrollAreaIndex, widgetIndex);
     }
 
     void verticalNudgeDown(Ui::window* const w, const size_t scrollAreaIndex, const widget_index widgetIndex)
     {
         int16_t trackHeight = w->widgets[widgetIndex].height() - 2;
-        if ((w->scroll_areas[scrollAreaIndex].flags & ScrollFlags::HSCROLLBAR_VISIBLE) != 0)
+        if ((w->scroll_areas[scrollAreaIndex].flags & ScrollFlags::hscrollbarVisible) != 0)
         {
             trackHeight -= barWidth;
         }
@@ -393,7 +393,7 @@ namespace OpenLoco::Ui::ScrollView
     // 0x004C8B85
     static void vButtonBottom(Ui::window* const w, const size_t scrollAreaIndex, const widget_index widgetIndex)
     {
-        w->scroll_areas[scrollAreaIndex].flags |= ScrollFlags::VSCROLLBAR_DOWN_PRESSED;
+        w->scroll_areas[scrollAreaIndex].flags |= ScrollFlags::vscrollbarDownPressed;
         verticalNudgeDown(w, scrollAreaIndex, widgetIndex);
     }
 
@@ -401,7 +401,7 @@ namespace OpenLoco::Ui::ScrollView
     static void vTrackTop(Ui::window* const w, const size_t scrollAreaIndex, const widget_index widgetIndex)
     {
         int16_t trackHeight = w->widgets[widgetIndex].height() - 2;
-        if ((w->scroll_areas[scrollAreaIndex].flags & ScrollFlags::HSCROLLBAR_VISIBLE) != 0)
+        if ((w->scroll_areas[scrollAreaIndex].flags & ScrollFlags::hscrollbarVisible) != 0)
         {
             trackHeight -= barWidth;
         }
@@ -414,7 +414,7 @@ namespace OpenLoco::Ui::ScrollView
     static void vTrackBottom(Ui::window* const w, const size_t scrollAreaIndex, const widget_index widgetIndex)
     {
         int16_t trackHeight = w->widgets[widgetIndex].height() - 2;
-        if ((w->scroll_areas[scrollAreaIndex].flags & ScrollFlags::HSCROLLBAR_VISIBLE) != 0)
+        if ((w->scroll_areas[scrollAreaIndex].flags & ScrollFlags::hscrollbarVisible) != 0)
         {
             trackHeight -= barWidth;
         }
@@ -427,7 +427,7 @@ namespace OpenLoco::Ui::ScrollView
     // 0x004C8689
     void scrollLeftBegin(const int16_t x, const int16_t y, Ui::window* const w, Ui::widget_t* const widget, const widget_index widgetIndex)
     {
-        Ui::ScrollView::scroll_part scrollArea;
+        Ui::ScrollView::ScrollPart scrollArea;
         int16_t outX, outY;
         size_t scrollIndex;
 
@@ -440,31 +440,31 @@ namespace OpenLoco::Ui::ScrollView
         // window->call_22()
         switch (scrollArea)
         {
-            case Ui::ScrollView::scroll_part::view:
+            case Ui::ScrollView::ScrollPart::view:
                 w->callScrollMouseDown(outX, outY, static_cast<uint8_t>(scrollIndex));
                 break;
-            case Ui::ScrollView::scroll_part::hscrollbar_button_left:
+            case Ui::ScrollView::ScrollPart::hscrollbarButtonLeft:
                 hButtonLeft(w, scrollIndex, widgetIndex);
                 break;
-            case Ui::ScrollView::scroll_part::hscrollbar_button_right:
+            case Ui::ScrollView::ScrollPart::hscrollbarButtonRight:
                 hButtonRight(w, scrollIndex, widgetIndex);
                 break;
-            case Ui::ScrollView::scroll_part::hscrollbar_track_left:
+            case Ui::ScrollView::ScrollPart::hscrollbarTrackLeft:
                 hTrackLeft(w, scrollIndex, widgetIndex);
                 break;
-            case Ui::ScrollView::scroll_part::hscrollbar_track_right:
+            case Ui::ScrollView::ScrollPart::hscrollbarTrackRight:
                 hTrackRight(w, scrollIndex, widgetIndex);
                 break;
-            case Ui::ScrollView::scroll_part::vscrollbar_button_top:
+            case Ui::ScrollView::ScrollPart::vscrollbarButtonTop:
                 vButtonTop(w, scrollIndex, widgetIndex);
                 break;
-            case Ui::ScrollView::scroll_part::vscrollbar_button_bottom:
+            case Ui::ScrollView::ScrollPart::vscrollbarButtonBottom:
                 vButtonBottom(w, scrollIndex, widgetIndex);
                 break;
-            case Ui::ScrollView::scroll_part::vscrollbar_track_top:
+            case Ui::ScrollView::ScrollPart::vscrollbarTrackTop:
                 vTrackTop(w, scrollIndex, widgetIndex);
                 break;
-            case Ui::ScrollView::scroll_part::vscrollbar_track_bottom:
+            case Ui::ScrollView::ScrollPart::vscrollbarTrackBottom:
                 vTrackBottom(w, scrollIndex, widgetIndex);
                 break;
             default:
@@ -475,7 +475,7 @@ namespace OpenLoco::Ui::ScrollView
     // Based on 0x004C8689
     void scrollModalRight(const int16_t x, const int16_t y, Ui::window* const w, Ui::widget_t* const widget, const widget_index widgetIndex)
     {
-        Ui::ScrollView::scroll_part scrollArea;
+        Ui::ScrollView::ScrollPart scrollArea;
         int16_t outX, outY;
         size_t scrollIndex;
 
@@ -484,7 +484,7 @@ namespace OpenLoco::Ui::ScrollView
         _currentScrollArea = scrollArea;
         setCurrentScrollIndex(scrollIndex);
 
-        if (scrollArea == Ui::ScrollView::scroll_part::view)
+        if (scrollArea == Ui::ScrollView::ScrollPart::view)
         {
             w->callScrollMouseDown(outX, outY, static_cast<uint8_t>(scrollIndex));
         }
@@ -499,8 +499,8 @@ namespace OpenLoco::Ui::ScrollView
 
         auto scrollAreaIndex = getCurrentScrollIndex();
 
-        constexpr uint16_t horizontalFlags = ScrollFlags::HSCROLLBAR_THUMB_PRESSED | ScrollFlags::HSCROLLBAR_LEFT_PRESSED | ScrollFlags::HSCROLLBAR_RIGHT_PRESSED;
-        constexpr uint16_t verticalFlags = ScrollFlags::VSCROLLBAR_THUMB_PRESSED | ScrollFlags::VSCROLLBAR_UP_PRESSED | ScrollFlags::VSCROLLBAR_DOWN_PRESSED;
+        constexpr uint16_t horizontalFlags = ScrollFlags::hscrollbarThumbPressed | ScrollFlags::hscrollbarLeftPressed | ScrollFlags::hscrollbarRightPressed;
+        constexpr uint16_t verticalFlags = ScrollFlags::vscrollbarThumbPressed | ScrollFlags::vscrollbarUpPressed | ScrollFlags::vscrollbarDownPressed;
 
         window->scroll_areas[scrollAreaIndex].flags &= ~(verticalFlags | horizontalFlags);
         WindowManager::invalidateWidget(type, number, widgetIndex);
@@ -510,7 +510,7 @@ namespace OpenLoco::Ui::ScrollView
     void scrollLeftContinue(const int16_t x, const int16_t y, Ui::window* const w, Ui::widget_t* const widget, const widget_index widgetIndex)
     {
         auto scrollIndex = getCurrentScrollIndex();
-        if (_currentScrollArea == ScrollView::scroll_part::hscrollbar_thumb)
+        if (_currentScrollArea == ScrollView::ScrollPart::hscrollbarThumb)
         {
             auto toolTipLoc = Input::getTooltipMouseLocation();
             int16_t deltaX = x - toolTipLoc.x;
@@ -518,7 +518,7 @@ namespace OpenLoco::Ui::ScrollView
             Input::setTooltipMouseLocation(toolTipLoc);
             ScrollView::horizontalFollow(w, widget, widgetIndex, scrollIndex, deltaX);
         }
-        else if (_currentScrollArea == ScrollView::scroll_part::vscrollbar_thumb)
+        else if (_currentScrollArea == ScrollView::ScrollPart::vscrollbarThumb)
         {
             auto toolTipLoc = Input::getTooltipMouseLocation();
             int16_t deltaY = y - toolTipLoc.y;
@@ -528,7 +528,7 @@ namespace OpenLoco::Ui::ScrollView
         }
         else
         {
-            Ui::ScrollView::scroll_part scrollArea;
+            Ui::ScrollView::ScrollPart scrollArea;
             Gfx::point_t point;
             Ui::ScrollView::getPart(w, widget, x, y, &point.x, &point.y, &scrollArea, &scrollIndex);
             if (scrollArea != _currentScrollArea)
@@ -539,28 +539,28 @@ namespace OpenLoco::Ui::ScrollView
 
             switch (scrollArea)
             {
-                case scroll_part::view: // 0x004C729A
+                case ScrollPart::view: // 0x004C729A
                     w->callScrollMouseDrag(point.x, point.y, static_cast<uint8_t>(scrollIndex));
                     break;
 
-                case scroll_part::hscrollbar_button_left:
+                case ScrollPart::hscrollbarButtonLeft:
                     hButtonLeft(w, scrollIndex, widgetIndex);
                     break;
-                case scroll_part::hscrollbar_button_right:
+                case ScrollPart::hscrollbarButtonRight:
                     hButtonRight(w, scrollIndex, widgetIndex);
                     break;
-                case scroll_part::hscrollbar_track_left:
-                case scroll_part::hscrollbar_track_right:
+                case ScrollPart::hscrollbarTrackLeft:
+                case ScrollPart::hscrollbarTrackRight:
                     break;
 
-                case scroll_part::vscrollbar_button_top:
+                case ScrollPart::vscrollbarButtonTop:
                     vButtonTop(w, scrollIndex, widgetIndex);
                     break;
-                case scroll_part::vscrollbar_button_bottom:
+                case ScrollPart::vscrollbarButtonBottom:
                     vButtonBottom(w, scrollIndex, widgetIndex);
                     break;
-                case scroll_part::vscrollbar_track_top:
-                case scroll_part::vscrollbar_track_bottom:
+                case ScrollPart::vscrollbarTrackTop:
+                case ScrollPart::vscrollbarTrackBottom:
                     break;
 
                 default:

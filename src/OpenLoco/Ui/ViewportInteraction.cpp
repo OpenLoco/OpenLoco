@@ -23,12 +23,11 @@ using namespace OpenLoco::Interop;
 namespace OpenLoco::Ui::ViewportInteraction
 {
     InteractionArg::InteractionArg(const Paint::PaintStruct& ps)
-        : x(ps.map_x)
-        , y(ps.map_y)
-        , object(ps.entity)
+        : object(ps.entity)
         , type(ps.type)
         , unkBh(ps.var_29)
     {
+        pos = Pos2{ ps.map_x, ps.map_y };
     }
 
     static bool getStationArguments(InteractionArg& interaction);
@@ -67,7 +66,7 @@ namespace OpenLoco::Ui::ViewportInteraction
             return false;
 
         Map::StationElement* station = nullptr;
-        Map::Tile tile{ Pos2{ interaction.x, interaction.y }, tileElement };
+        Map::Tile tile{ interaction.pos, tileElement };
         for (auto& t : tile)
         {
             station = t.asStation();
@@ -245,9 +244,8 @@ namespace OpenLoco::Ui::ViewportInteraction
         }
 
         const auto index = buildingTile->multiTileIndex();
-        const Map::Pos3 pos = { static_cast<coord_t>(interaction.x - Map::offsets[index].x),
-                                static_cast<coord_t>(interaction.y - Map::offsets[index].y),
-                                buildingTile->baseZ() };
+        const auto firstTile = interaction.pos - Map::offsets[index];
+        const Map::Pos3 pos = { firstTile.x, firstTile.y, buildingTile->baseZ() };
 
         for (auto& company : CompanyManager::companies())
         {
@@ -397,8 +395,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         {
             interaction.type = InteractionItem::entity;
             interaction.object = reinterpret_cast<void*>(nearestVehicle);
-            interaction.x = nearestVehicle->position.x;
-            interaction.y = nearestVehicle->position.y;
+            interaction.pos = nearestVehicle->position;
 
             getVehicleArguments(interaction);
             return interaction;
@@ -442,8 +439,8 @@ namespace OpenLoco::Ui::ViewportInteraction
         call(0x004CDB3F, regs);
         InteractionArg result;
         result.value = regs.edx;
-        result.x = regs.ax;
-        result.y = regs.cx;
+        result.pos.x = regs.ax;
+        result.pos.y = regs.cx;
         result.unkBh = regs.bh;
         result.type = static_cast<InteractionItem>(regs.bl);
 

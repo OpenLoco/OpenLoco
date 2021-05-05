@@ -1282,7 +1282,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B3B18
-        static Ui::cursor_id cursor(window* const self, const int16_t widgetIdx, const int16_t x, const int16_t y, const Ui::cursor_id fallback)
+        static Ui::CursorId cursor(window* const self, const int16_t widgetIdx, const int16_t x, const int16_t y, const Ui::CursorId fallback)
         {
             if (widgetIdx != widx::carList)
             {
@@ -1300,7 +1300,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 return fallback;
             }
-            return cursor_id::unk_25;
+            return CursorId::unk_25;
         }
 
         static const std::map<VehicleType, uint32_t> additionalVehicleButtonByVehicleType{
@@ -1517,11 +1517,11 @@ namespace OpenLoco::Ui::Windows::Vehicle
         {
             int16_t scrollX;
             int16_t scrollY;
-            ScrollView::scroll_part part;
+            ScrollView::ScrollPart part;
             size_t scrollIndex;
             Input::setPressedWidgetIndex(widx::carList);
             Ui::ScrollView::getPart(&self, &self.widgets[widx::carList], pos.x, pos.y, &scrollX, &scrollY, &part, &scrollIndex);
-            if (part != ScrollView::scroll_part::view)
+            if (part != ScrollView::ScrollPart::view)
             {
                 return nullptr;
             }
@@ -2649,8 +2649,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
             static loco_global<int16_t, 0x0113623C> _mapX;
             static loco_global<int16_t, 0x0113623E> _mapY;
             Ui::ViewportInteraction::InteractionArg output;
-            output.x = _mapX;
-            output.y = _mapY;
+            output.pos.x = _mapX;
+            output.pos.y = _mapY;
             output.object = reinterpret_cast<void*>(regs.edx);
             return std::make_pair(static_cast<Ui::ViewportInteraction::InteractionItem>(regs.bl), output);
         }
@@ -2681,7 +2681,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     const auto& trackPart = trackPiece[trackElement->sequenceIndex()];
 
                     auto offsetToFirstTile = Map::rotate2dCoordinate({ trackPart.x, trackPart.y }, trackElement->unkDirection());
-                    auto firstTilePos = Map::Pos2(args.x - offsetToFirstTile.x, args.y - offsetToFirstTile.y);
+                    auto firstTilePos = args.pos - offsetToFirstTile;
                     TilePos2 tPos{ firstTilePos };
                     height -= trackPart.z;
 
@@ -2693,7 +2693,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 case Ui::ViewportInteraction::InteractionItem::water:
                 {
                     // Water
-                    auto heights = TileManager::getHeight({ args.x, args.y });
+                    auto heights = TileManager::getHeight(args.pos);
                     auto height = heights.landHeight;
                     if (heights.waterHeight != 0)
                     {
@@ -2701,7 +2701,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     }
                     Audio::playSound(Audio::SoundId::waypoint, { x, y, Input::getDragLastLocation().x }, Input::getDragLastLocation().x);
                     TilePos2 tPos{
-                        Pos2{ args.x, args.y }
+                        args.pos
                     };
 
                     Vehicles::OrderRouteWaypoint waypoint(tPos, height / 8, 0, 0);
@@ -2729,7 +2729,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     const auto& roadPart = roadPiece[roadElement->sequenceIndex()];
 
                     auto offsetToFirstTile = Map::rotate2dCoordinate({ roadPart.x, roadPart.y }, roadElement->unkDirection());
-                    auto firstTilePos = Map::Pos2(args.x - offsetToFirstTile.x, args.y - offsetToFirstTile.y);
+                    auto firstTilePos = args.pos - offsetToFirstTile;
                     TilePos2 tPos{ firstTilePos };
                     height -= roadPart.z;
 
@@ -2745,13 +2745,13 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B50CE
-        static Ui::cursor_id event15(window& self, const int16_t x, const int16_t y, const Ui::cursor_id fallback, bool& out)
+        static Ui::CursorId event15(window& self, const int16_t x, const int16_t y, const Ui::CursorId fallback, bool& out)
         {
             auto typeP = sub_4B5A1A(self, x, y);
             out = typeP.first != Ui::ViewportInteraction::InteractionItem::noInteraction;
             if (out)
             {
-                return cursor_id::arrows_inward;
+                return CursorId::inwardArrows;
             }
             return fallback;
         }
@@ -2871,7 +2871,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B5339
-        static Ui::cursor_id cursor(window* const self, const int16_t widgetIdx, const int16_t x, const int16_t y, const Ui::cursor_id fallback)
+        static Ui::CursorId cursor(window* const self, const int16_t widgetIdx, const int16_t x, const int16_t y, const Ui::CursorId fallback)
         {
             if (widgetIdx != widx::routeList)
             {
@@ -2880,7 +2880,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             if (Input::isToolActive(self->type, self->number))
             {
-                return cursor_id::arrows_inward;
+                return CursorId::inwardArrows;
             }
             return fallback;
         }

@@ -254,7 +254,7 @@ namespace OpenLoco::Map::TileManager
     // 0x0046148F
     void reorganise()
     {
-        Ui::setCursor(Ui::cursor_id::busy);
+        Ui::setCursor(Ui::CursorId::busy);
 
         try
         {
@@ -286,7 +286,7 @@ namespace OpenLoco::Map::TileManager
             updateTilePointers();
 
             // Note: original implementation did not revert the cursor
-            Ui::setCursor(Ui::cursor_id::pointer);
+            Ui::setCursor(Ui::CursorId::pointer);
         }
         catch (const std::bad_alloc&)
         {

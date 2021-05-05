@@ -838,7 +838,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     }
 
     // 0x4C37CB
-    static Ui::cursor_id cursor(window* window, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::cursor_id fallback)
+    static Ui::CursorId cursor(window* window, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback)
     {
         if (widgetIdx != widx::scrollview_vehicle_selection)
         {
@@ -856,7 +856,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             return fallback;
         }
 
-        return cursor_id::hand_pointer;
+        return CursorId::handPointer;
     }
 
     // 0x4C2E5C

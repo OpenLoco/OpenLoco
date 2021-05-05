@@ -690,7 +690,7 @@ namespace OpenLoco::Ui::Windows::Construction
         void onClose(window* self)
         {
             sub_49FEC7();
-            WindowManager::viewportSetVisibility(WindowManager::viewport_visibility::reset);
+            WindowManager::viewportSetVisibility(WindowManager::ViewportVisibility::reset);
             TileManager::mapInvalidateMapSelectionTiles();
             _mapSelectionFlags = _mapSelectionFlags & ~MapSelectFlag::enableConstruct;
             hideDirectionArrows();

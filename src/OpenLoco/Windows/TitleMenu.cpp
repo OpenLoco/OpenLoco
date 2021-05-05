@@ -138,7 +138,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     static void onDropdown(Ui::window* window, widget_index widgetIndex, int16_t itemIndex);
     static void onUpdate(window* window);
     static void onTextInput(window* window, widget_index widgetIndex, const char* input);
-    static Ui::cursor_id onCursor(window* window, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::cursor_id fallback);
+    static Ui::CursorId onCursor(window* window, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback);
     static void draw(Ui::window* window, Gfx::drawpixelinfo_t* dpi);
     static void prepareDraw(Ui::window* window);
 
@@ -364,7 +364,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     }
 
     // 0x004390f8
-    static Ui::cursor_id onCursor(window* window, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::cursor_id fallback)
+    static Ui::CursorId onCursor(window* window, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback)
     {
         // Reset tooltip timeout to keep tooltips open.
         addr<0x0052338A, uint16_t>() = 2000;

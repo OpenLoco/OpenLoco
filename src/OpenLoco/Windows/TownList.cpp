@@ -467,14 +467,14 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x004919A4
-        static Ui::cursor_id cursor(window* self, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::cursor_id fallback)
+        static Ui::CursorId cursor(window* self, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback)
         {
             if (widgetIdx != widx::scrollview)
                 return fallback;
 
             uint16_t currentIndex = yPos / rowHeight;
             if (currentIndex < self->var_83C && self->row_info[currentIndex] != -1)
-                return cursor_id::hand_pointer;
+                return CursorId::handPointer;
 
             return fallback;
         }

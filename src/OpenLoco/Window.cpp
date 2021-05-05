@@ -487,11 +487,11 @@ namespace OpenLoco::Ui
 
             if (widget->content & scrollbars::horizontal)
             {
-                this->scroll_areas[s].flags |= Ui::ScrollView::ScrollFlags::HSCROLLBAR_VISIBLE;
+                this->scroll_areas[s].flags |= Ui::ScrollView::ScrollFlags::hscrollbarVisible;
             }
             if (widget->content & scrollbars::vertical)
             {
-                this->scroll_areas[s].flags |= Ui::ScrollView::ScrollFlags::VSCROLLBAR_VISIBLE;
+                this->scroll_areas[s].flags |= Ui::ScrollView::ScrollFlags::vscrollbarVisible;
             }
 
             Ui::ScrollView::updateThumbs(this, w);
@@ -530,8 +530,8 @@ namespace OpenLoco::Ui
         // Compute map coordinate by mouse position.
         auto res = ViewportInteraction::getMapCoordinatesFromPos(mouse_x, mouse_y, 0);
         auto& interaction = res.first;
-        *map_x = interaction.x;
-        *map_y = interaction.y;
+        *map_x = interaction.pos.x;
+        *map_y = interaction.pos.y;
 
         // Get viewport coordinates centring around the tile.
         int32_t base_height = TileManager::getHeight({ *map_x, *map_y }).landHeight;
@@ -1063,10 +1063,10 @@ namespace OpenLoco::Ui
         event_handlers->on_tool_abort(*this, widget_index);
     }
 
-    Ui::cursor_id window::call_15(int16_t xPos, int16_t yPos, Ui::cursor_id fallback, bool* out)
+    Ui::CursorId window::call_15(int16_t xPos, int16_t yPos, Ui::CursorId fallback, bool* out)
     {
         if (event_handlers->event_15 == nullptr)
-            return cursor_id::pointer;
+            return CursorId::pointer;
         if (isInteropEvent(event_handlers->event_15))
         {
             registers regs;
@@ -1079,13 +1079,13 @@ namespace OpenLoco::Ui
 
             *out = regs.bl;
 
-            return (cursor_id)regs.edi;
+            return (CursorId)regs.edi;
         }
 
         return event_handlers->event_15(*this, xPos, yPos, fallback, *out);
     }
 
-    Ui::cursor_id window::callCursor(int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::cursor_id fallback)
+    Ui::CursorId window::callCursor(int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback)
     {
         if (event_handlers->cursor == nullptr)
             return fallback;
@@ -1106,7 +1106,7 @@ namespace OpenLoco::Ui
                 return fallback;
             }
 
-            return (cursor_id)regs.ebx;
+            return (CursorId)regs.ebx;
         }
 
         return event_handlers->cursor(this, widgetIdx, xPos, yPos, fallback);

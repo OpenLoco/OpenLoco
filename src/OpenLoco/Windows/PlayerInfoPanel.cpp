@@ -64,7 +64,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     static void onMouseUp(Ui::window* window, widget_index widgetIndex);
     static void onMouseDown(Ui::window* window, widget_index widgetIndex);
     static void onDropdown(window* w, widget_index widgetIndex, int16_t item_index);
-    static Ui::cursor_id onCursor(Ui::window* window, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::cursor_id fallback);
+    static Ui::CursorId onCursor(Ui::window* window, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback);
     static std::optional<FormatArguments> tooltip(Ui::window* window, widget_index widgetIndex);
     static void onUpdate(window* w);
 
@@ -321,7 +321,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     }
 
     // 0x004395DE
-    static Ui::cursor_id onCursor(Ui::window* window, int16_t widgetIndex, int16_t xPos, int16_t yPos, Ui::cursor_id fallback)
+    static Ui::CursorId onCursor(Ui::window* window, int16_t widgetIndex, int16_t xPos, int16_t yPos, Ui::CursorId fallback)
     {
         switch (widgetIndex)
         {
