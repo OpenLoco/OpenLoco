@@ -122,21 +122,24 @@ namespace OpenLoco::Ui::Dropdown
 
     void setItemDisabled(size_t index)
     {
-        assert(index < std::numeric_limits<uint8_t>::max());
+        // Ensure that a valid item index is passed, or -1 to disable.
+        assert(index < std::numeric_limits<uint8_t>::max() || index == std::numeric_limits<size_t>::max());
 
         _dropdownDisabledItems |= (1U << static_cast<uint8_t>(index));
     }
 
     void setHighlightedItem(size_t index)
     {
-        assert(index < std::numeric_limits<uint8_t>::max());
+        // Ensure that a valid item index is passed, or -1 to disable.
+        assert(index < std::numeric_limits<uint8_t>::max() || index == std::numeric_limits<size_t>::max());
 
         _dropdownHighlightedIndex = static_cast<uint8_t>(index);
     }
 
     void setItemSelected(size_t index)
     {
-        assert(index < std::numeric_limits<uint8_t>::max());
+        // Ensure that a valid item index is passed, or -1 to disable.
+        assert(index < std::numeric_limits<uint8_t>::max() || index == std::numeric_limits<size_t>::max());
 
         _dropdownSelection |= (1U << static_cast<uint8_t>(index));
     }
