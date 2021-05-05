@@ -10,7 +10,7 @@ using namespace OpenLoco::Ui;
 
 namespace OpenLoco::Drawing
 {
-    static loco_global<Ui::screen_info_t, 0x0050B884> screen_info;
+    static loco_global<Ui::ScreenInfo, 0x0050B884> screen_info;
     static loco_global<uint8_t[1], 0x00E025C4> _E025C4;
 
     static void windowDraw(drawpixelinfo_t* dpi, Ui::window* w, Rect rect);

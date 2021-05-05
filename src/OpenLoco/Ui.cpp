@@ -79,7 +79,7 @@ namespace OpenLoco::Ui
 #ifdef _WIN32
     loco_global<void*, 0x00525320> _hwnd;
 #endif // _WIN32
-    loco_global<screen_info_t, 0x0050B884> screen_info;
+    loco_global<ScreenInfo, 0x0050B884> screen_info;
     static loco_global<uint16_t, 0x00523390> _toolWindowNumber;
     static loco_global<Ui::WindowType, 0x00523392> _toolWindowType;
     static loco_global<uint16_t, 0x00523394> _toolWidgetIdx;
@@ -259,7 +259,7 @@ namespace OpenLoco::Ui
 
     // 0x00407BA3
     // edx: cusor_id
-    void setCursor(cursor_id id)
+    void setCursor(CursorId id)
     {
         if (_cursors.size() > 0)
         {

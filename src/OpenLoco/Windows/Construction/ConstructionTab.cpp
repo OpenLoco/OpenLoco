@@ -1836,7 +1836,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     // 0x0049D4F5
-    static Ui::cursor_id cursor(window* self, int16_t widgetIndex, int16_t xPos, int16_t yPos, Ui::cursor_id fallback)
+    static Ui::CursorId cursor(window* self, int16_t widgetIndex, int16_t xPos, int16_t yPos, Ui::CursorId fallback)
     {
         if (widgetIndex == widx::bridge || widgetIndex == widx::bridge_dropdown)
             Input::setTooltipTimeout(2000);

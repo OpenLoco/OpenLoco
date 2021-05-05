@@ -93,7 +93,7 @@ namespace OpenLoco::Ui::Windows::StationList
 
     loco_global<uint16_t[4], 0x112C826> _common_format_args;
 
-    static Ui::cursor_id cursor(window* window, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::cursor_id fallback);
+    static Ui::CursorId cursor(window* window, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback);
     static void draw(Ui::window* window, Gfx::drawpixelinfo_t* dpi);
     static void drawScroll(Ui::window* window, Gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex);
     static void event_08(window* window);
@@ -369,14 +369,14 @@ namespace OpenLoco::Ui::Windows::StationList
     }
 
     // 0x004919A4
-    static Ui::cursor_id cursor(window* window, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::cursor_id fallback)
+    static Ui::CursorId cursor(window* window, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback)
     {
         if (widgetIdx != widx::scrollview)
             return fallback;
 
         uint16_t currentIndex = yPos / rowHeight;
         if (currentIndex < window->var_83C && window->row_info[currentIndex] != -1)
-            return cursor_id::hand_pointer;
+            return CursorId::handPointer;
 
         return fallback;
     }

@@ -446,8 +446,8 @@ namespace OpenLoco::Ui::ViewportManager
                 registers backup = regs;
                 auto [interaction, vp] = Ui::ViewportInteraction::getMapCoordinatesFromPos(regs.ax, regs.bx, regs.edx);
                 regs = backup;
-                regs.ax = interaction.x;
-                regs.cx = interaction.y;
+                regs.ax = interaction.pos.x;
+                regs.cx = interaction.pos.y;
                 regs.bl = static_cast<uint8_t>(interaction.type);
                 regs.bh = static_cast<uint8_t>(interaction.unkBh);
                 regs.edx = static_cast<uint32_t>(interaction.value);

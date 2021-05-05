@@ -62,7 +62,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
     static void onMouseDown(Ui::window* window, widget_index widgetIndex);
     static void textInput(window* w, widget_index widgetIndex, const char* str);
     static void onDropdown(window* w, widget_index widgetIndex, int16_t item_index);
-    static Ui::cursor_id onCursor(window* w, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::cursor_id fallback);
+    static Ui::CursorId onCursor(window* w, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback);
     static std::optional<FormatArguments> tooltip(Ui::window* window, widget_index widgetIndex);
     static void onUpdate(window* w);
 
@@ -302,7 +302,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
     }
 
     // 0x00439944
-    static Ui::cursor_id onCursor(Ui::window* self, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::cursor_id fallback)
+    static Ui::CursorId onCursor(Ui::window* self, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback)
     {
         switch (widgetIdx)
         {
