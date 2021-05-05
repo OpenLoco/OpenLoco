@@ -110,4 +110,25 @@ namespace OpenLoco
 
         return (unlocked_vehicles[vehicleTypeIndex] & (1 << (vehicleIndex & 0x1F))) != 0;
     }
+
+    //0x00487FCC
+    void Company::updateQuarterly()
+    {
+        for (auto& unk : var_4A8)
+        {
+            if (unk.var_00 == 0xFF)
+                continue;
+
+            unk.var_88 = std::min(0xFF, unk.var_88 + 1);
+            unk.var_84 = unk.var_80;
+            unk.var_80 = 0;
+            currency32_t total = 0;
+            for (auto i = 0; i < unk.var_44; ++i)
+            {
+                auto* vehHead = EntityManager::get<Vehicles::VehicleHead>(unk.var_66[i]);
+                total += vehHead->sub_4C3BA6();
+            }
+            unk.var_7C = total;
+        }
+    }
 }

@@ -116,6 +116,17 @@ namespace OpenLoco::CompanyManager
         }
     }
 
+    // 0x00487FC1
+    void updateQuarterly() {
+        for (auto& company : companies())
+        {
+            if (company.empty())
+                continue;
+            company.updateQuarterly();
+        }
+    }
+
+
     static void sub_42F9AC()
     {
         call(0x0042F9AC);

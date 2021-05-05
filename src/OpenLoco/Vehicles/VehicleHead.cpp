@@ -3277,4 +3277,13 @@ namespace OpenLoco::Vehicles
         regs.esi = reinterpret_cast<uint32_t>(this);
         call(0x004B08DD, regs);
     }
+
+    // 0x004C3BA6
+    currency32_t Vehicles::VehicleHead::sub_4C3BA6()
+    {
+        registers regs{};
+        regs.esi = reinterpret_cast<uint32_t>(this);
+        call(0x004C3BA6, regs);
+        return regs.ebx;
+    }
 }

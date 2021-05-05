@@ -1000,8 +1000,7 @@ namespace OpenLoco
                         today.month == month_id::october)
                     // clang-format on
                     {
-                        // Start of every season?
-                        call(0x00487FC1);
+                        CompanyManager::updateQuarterly();
                     }
 
                     if (today.year != yesterday.year)
