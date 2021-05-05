@@ -322,8 +322,6 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     set_target_properties(${PROJECT}-headers-check PROPERTIES LINKER_LANGUAGE CXX)
 	set_source_files_properties(${OLOCO_HEADERS} PROPERTIES LANGUAGE CXX)
     add_definitions("-x c++ -Wno-pragma-once-outside-header -Wno-unused-const-variable")
-	get_target_property(OPENLOCO_INCLUDE_DIRS ${PROJECT} INCLUDE_DIRECTORIES)
-	set_target_properties(${PROJECT}-headers-check PROPERTIES INCLUDE_DIRECTORIES "${OPENLOCO_INCLUDE_DIRS}")
 else ()
     # Dummy target to ease invocation
     add_custom_target(${PROJECT}-headers-check)
