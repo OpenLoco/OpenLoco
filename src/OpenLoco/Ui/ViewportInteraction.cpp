@@ -67,7 +67,7 @@ namespace OpenLoco::Ui::ViewportInteraction
             return false;
 
         Map::StationElement* station = nullptr;
-        Map::Tile tile{ { interaction.x / Map::tile_size, interaction.y / Map::tile_size }, tileElement };
+        Map::Tile tile{ Pos2{ interaction.x, interaction.y }, tileElement };
         for (auto& t : tile)
         {
             station = t.asStation();
