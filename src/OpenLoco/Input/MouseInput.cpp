@@ -114,17 +114,17 @@ namespace OpenLoco::Input
     static loco_global<uint32_t, 0x0113DC74> _dropdownRowCount;
     static loco_global<uint16_t, 0x0113DC78> _113DC78;
 
-    static std::map<Ui::ScrollView::scroll_part, string_id> scroll_widget_tooltips = {
-        { Ui::ScrollView::scroll_part::hscrollbar_button_left, StringIds::tooltip_scroll_left },
-        { Ui::ScrollView::scroll_part::hscrollbar_button_right, StringIds::tooltip_scroll_right },
-        { Ui::ScrollView::scroll_part::hscrollbar_track_left, StringIds::tooltip_scroll_left_fast },
-        { Ui::ScrollView::scroll_part::hscrollbar_track_right, StringIds::tooltip_scroll_right_fast },
-        { Ui::ScrollView::scroll_part::hscrollbar_thumb, StringIds::tooltip_scroll_left_right },
-        { Ui::ScrollView::scroll_part::vscrollbar_button_top, StringIds::tooltip_scroll_up },
-        { Ui::ScrollView::scroll_part::vscrollbar_button_bottom, StringIds::tooltip_scroll_down },
-        { Ui::ScrollView::scroll_part::vscrollbar_track_top, StringIds::tooltip_scroll_up_fast },
-        { Ui::ScrollView::scroll_part::vscrollbar_track_bottom, StringIds::tooltip_scroll_down_fast },
-        { Ui::ScrollView::scroll_part::vscrollbar_thumb, StringIds::tooltip_scroll_up_down },
+    static std::map<Ui::ScrollView::ScrollPart, string_id> scroll_widget_tooltips = {
+        { Ui::ScrollView::ScrollPart::hscrollbarButtonLeft, StringIds::tooltip_scroll_left },
+        { Ui::ScrollView::ScrollPart::hscrollbarButtonRight, StringIds::tooltip_scroll_right },
+        { Ui::ScrollView::ScrollPart::hscrollbarTrackLeft, StringIds::tooltip_scroll_left_fast },
+        { Ui::ScrollView::ScrollPart::hscrollbarTrackRight, StringIds::tooltip_scroll_right_fast },
+        { Ui::ScrollView::ScrollPart::hscrollbarThumb, StringIds::tooltip_scroll_left_right },
+        { Ui::ScrollView::ScrollPart::vscrollbarButtonTop, StringIds::tooltip_scroll_up },
+        { Ui::ScrollView::ScrollPart::vscrollbarButtonBottom, StringIds::tooltip_scroll_down },
+        { Ui::ScrollView::ScrollPart::vscrollbarTrackTop, StringIds::tooltip_scroll_up_fast },
+        { Ui::ScrollView::ScrollPart::vscrollbarTrackBottom, StringIds::tooltip_scroll_down_fast },
+        { Ui::ScrollView::ScrollPart::vscrollbarThumb, StringIds::tooltip_scroll_up_down },
     };
 
     void initMouse()
@@ -1524,15 +1524,15 @@ namespace OpenLoco::Input
         {
             if (widget->type == Ui::widget_type::scrollview)
             {
-                Ui::ScrollView::scroll_part scrollArea;
+                Ui::ScrollView::ScrollPart scrollArea;
                 int16_t scrollX, scrollY;
                 size_t scrollIndex;
                 Ui::ScrollView::getPart(window, widget, x, y, &scrollX, &scrollY, &scrollArea, &scrollIndex);
 
-                if (scrollArea == Ui::ScrollView::scroll_part::none)
+                if (scrollArea == Ui::ScrollView::ScrollPart::none)
                 {
                 }
-                else if (scrollArea == Ui::ScrollView::scroll_part::view)
+                else if (scrollArea == Ui::ScrollView::ScrollPart::view)
                 {
                     window->callScrollMouseOver(scrollX, scrollY, static_cast<uint8_t>(scrollIndex));
                 }
@@ -1915,7 +1915,7 @@ namespace OpenLoco::Input
                     case Ui::widget_type::scrollview:
                         _5233A4 = x;
                         _5233A6 = y;
-                        Ui::ScrollView::scroll_part output_scroll_area;
+                        Ui::ScrollView::ScrollPart output_scroll_area;
                         size_t scroll_id;
                         int16_t scroll_x, scroll_y;
                         Ui::ScrollView::getPart(
@@ -1928,7 +1928,7 @@ namespace OpenLoco::Input
                             &output_scroll_area,
                             &scroll_id);
 
-                        if (output_scroll_area == Ui::ScrollView::scroll_part::view)
+                        if (output_scroll_area == Ui::ScrollView::ScrollPart::view)
                         {
 
                             cursorId = window->callCursor(widgetIdx, scroll_x, scroll_y, cursorId);

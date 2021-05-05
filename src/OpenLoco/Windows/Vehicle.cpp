@@ -1517,11 +1517,11 @@ namespace OpenLoco::Ui::Windows::Vehicle
         {
             int16_t scrollX;
             int16_t scrollY;
-            ScrollView::scroll_part part;
+            ScrollView::ScrollPart part;
             size_t scrollIndex;
             Input::setPressedWidgetIndex(widx::carList);
             Ui::ScrollView::getPart(&self, &self.widgets[widx::carList], pos.x, pos.y, &scrollX, &scrollY, &part, &scrollIndex);
-            if (part != ScrollView::scroll_part::view)
+            if (part != ScrollView::ScrollPart::view)
             {
                 return nullptr;
             }

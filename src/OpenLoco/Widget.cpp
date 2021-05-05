@@ -535,7 +535,7 @@ namespace OpenLoco::Ui::Widget
         uint16_t dx = window->y + widget->bottom - 1;
 
         cx = dx - 10;
-        if (scroll_area->flags & Ui::ScrollView::ScrollFlags::VSCROLLBAR_VISIBLE)
+        if (scroll_area->flags & Ui::ScrollView::ScrollFlags::vscrollbarVisible)
         {
             bx -= 11;
         }
@@ -544,7 +544,7 @@ namespace OpenLoco::Ui::Widget
 
         // pusha
         f = 0;
-        if (scroll_area->flags & Ui::ScrollView::ScrollFlags::HSCROLLBAR_LEFT_PRESSED)
+        if (scroll_area->flags & Ui::ScrollView::ScrollFlags::hscrollbarLeftPressed)
         {
             f = flags | 0x20;
         }
@@ -557,7 +557,7 @@ namespace OpenLoco::Ui::Widget
 
         // pusha
         f = 0;
-        if (scroll_area->flags & Ui::ScrollView::ScrollFlags::HSCROLLBAR_RIGHT_PRESSED)
+        if (scroll_area->flags & Ui::ScrollView::ScrollFlags::hscrollbarRightPressed)
         {
             f = flags | 0x20;
         }
@@ -582,7 +582,7 @@ namespace OpenLoco::Ui::Widget
 
         // pusha
         f = 0;
-        if (scroll_area->flags & Ui::ScrollView::ScrollFlags::HSCROLLBAR_THUMB_PRESSED)
+        if (scroll_area->flags & Ui::ScrollView::ScrollFlags::hscrollbarThumbPressed)
         {
             f = 0x20;
         }
@@ -600,7 +600,7 @@ namespace OpenLoco::Ui::Widget
         uint16_t dx = window->y + widget->bottom - 1;
 
         ax = bx - 10;
-        if (scroll_area->flags & ScrollView::ScrollFlags::HSCROLLBAR_VISIBLE)
+        if (scroll_area->flags & ScrollView::ScrollFlags::hscrollbarVisible)
         {
             dx -= 11;
         }
@@ -609,7 +609,7 @@ namespace OpenLoco::Ui::Widget
 
         // pusha
         f = 0;
-        if (scroll_area->flags & ScrollView::ScrollFlags::VSCROLLBAR_UP_PRESSED)
+        if (scroll_area->flags & ScrollView::ScrollFlags::vscrollbarUpPressed)
         {
             f = flags | 0x20;
         }
@@ -622,7 +622,7 @@ namespace OpenLoco::Ui::Widget
 
         // pusha
         f = 0;
-        if (scroll_area->flags & ScrollView::ScrollFlags::VSCROLLBAR_DOWN_PRESSED)
+        if (scroll_area->flags & ScrollView::ScrollFlags::vscrollbarDownPressed)
         {
             f = flags | 0x20;
         }
@@ -647,7 +647,7 @@ namespace OpenLoco::Ui::Widget
 
         // pusha
         f = 0;
-        if (scroll_area->flags & ScrollView::ScrollFlags::VSCROLLBAR_THUMB_PRESSED)
+        if (scroll_area->flags & ScrollView::ScrollFlags::vscrollbarThumbPressed)
         {
             f = flags | 0x20;
         }
@@ -673,13 +673,13 @@ namespace OpenLoco::Ui::Widget
         Ui::scroll_area_t* scroll_area = &window->scroll_areas[scrollview_index];
 
         _currentFontSpriteBase = Font::medium_bold;
-        if (scroll_area->flags & Ui::ScrollView::ScrollFlags::HSCROLLBAR_VISIBLE)
+        if (scroll_area->flags & Ui::ScrollView::ScrollFlags::hscrollbarVisible)
         {
             draw_hscroll(dpi, window, widget, flags, colour, enabled, disabled, activated, hovered, scrollview_index);
             bottom -= 11;
         }
 
-        if (scroll_area->flags & Ui::ScrollView::ScrollFlags::VSCROLLBAR_VISIBLE)
+        if (scroll_area->flags & Ui::ScrollView::ScrollFlags::vscrollbarVisible)
         {
             draw_vscroll(dpi, window, widget, flags, colour, enabled, disabled, activated, hovered, scrollview_index);
             right -= 11;

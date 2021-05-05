@@ -174,7 +174,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                     break;
                 }
                 Common::sub_49FEC7();
-                WindowManager::viewportSetVisibility(WindowManager::viewport_visibility::overgroundView);
+                WindowManager::viewportSetVisibility(WindowManager::ViewportVisibility::overgroundView);
                 Input::toolSet(self, widx::construct, 12);
                 Input::setFlag(Input::input_flags::flag6);
 

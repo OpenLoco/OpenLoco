@@ -27,9 +27,9 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::WindowManager
 {
-    namespace find_flag
+    namespace FindFlag
     {
-        constexpr uint16_t by_type = 1 << 7;
+        constexpr uint16_t byType = 1 << 7;
     }
 
     constexpr size_t max_windows = 12;
@@ -311,9 +311,9 @@ namespace OpenLoco::Ui::WindowManager
             0x004C9B56,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 Ui::window* w;
-                if (regs.cx & find_flag::by_type)
+                if (regs.cx & FindFlag::byType)
                 {
-                    w = find((WindowType)(regs.cx & ~find_flag::by_type));
+                    w = find((WindowType)(regs.cx & ~FindFlag::byType));
                 }
                 else
                 {
@@ -367,9 +367,9 @@ namespace OpenLoco::Ui::WindowManager
             0x004CC692,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                if ((regs.cx & find_flag::by_type) != 0)
+                if ((regs.cx & FindFlag::byType) != 0)
                 {
-                    close((WindowType)(regs.cx & ~find_flag::by_type));
+                    close((WindowType)(regs.cx & ~FindFlag::byType));
                 }
                 else
                 {
@@ -1400,18 +1400,18 @@ namespace OpenLoco::Ui::WindowManager
         scroll_area_t* scroll = &window->scroll_areas[scrollIndex];
         Ui::widget_t* widget = &window->widgets[widgetIndex];
 
-        if (window->scroll_areas[scrollIndex].flags & ScrollView::ScrollFlags::VSCROLLBAR_VISIBLE)
+        if (window->scroll_areas[scrollIndex].flags & ScrollView::ScrollFlags::vscrollbarVisible)
         {
             int size = widget->bottom - widget->top - 1;
-            if (scroll->flags & ScrollView::ScrollFlags::HSCROLLBAR_VISIBLE)
+            if (scroll->flags & ScrollView::ScrollFlags::hscrollbarVisible)
                 size -= 11;
             size = std::max(0, scroll->contentHeight - size);
             scroll->contentOffsetY = std::clamp(scroll->contentOffsetY + wheel, 0, size);
         }
-        else if (window->scroll_areas[scrollIndex].flags & ScrollView::ScrollFlags::HSCROLLBAR_VISIBLE)
+        else if (window->scroll_areas[scrollIndex].flags & ScrollView::ScrollFlags::hscrollbarVisible)
         {
             int size = widget->right - widget->left - 1;
-            if (scroll->flags & ScrollView::ScrollFlags::VSCROLLBAR_VISIBLE)
+            if (scroll->flags & ScrollView::ScrollFlags::vscrollbarVisible)
                 size -= 11;
             size = std::max(0, scroll->contentWidth - size);
             scroll->contentOffsetX = std::clamp(scroll->contentOffsetX + wheel, 0, size);
@@ -1434,7 +1434,7 @@ namespace OpenLoco::Ui::WindowManager
                 continue;
 
             scrollIndex++;
-            constexpr uint16_t scrollbarFlags = ScrollView::ScrollFlags::HSCROLLBAR_VISIBLE | ScrollView::ScrollFlags::VSCROLLBAR_VISIBLE;
+            constexpr uint16_t scrollbarFlags = ScrollView::ScrollFlags::hscrollbarVisible | ScrollView::ScrollFlags::vscrollbarVisible;
             if (window->scroll_areas[scrollIndex].flags & scrollbarFlags)
             {
                 windowScrollWheelInput(window, widgetIndex, wheel);
@@ -1534,7 +1534,7 @@ namespace OpenLoco::Ui::WindowManager
                     if (window->widgets[widgetIndex].type == widget_type::scrollview)
                     {
                         auto scrollIndex = window->getScrollDataIndex(widgetIndex);
-                        constexpr uint16_t scrollbarFlags = ScrollView::ScrollFlags::HSCROLLBAR_VISIBLE | ScrollView::ScrollFlags::VSCROLLBAR_VISIBLE;
+                        constexpr uint16_t scrollbarFlags = ScrollView::ScrollFlags::hscrollbarVisible | ScrollView::ScrollFlags::vscrollbarVisible;
                         if (window->scroll_areas[scrollIndex].flags & scrollbarFlags)
                         {
                             windowScrollWheelInput(window, widgetIndex, wheel);
@@ -1847,7 +1847,7 @@ namespace OpenLoco::Ui::WindowManager
      *
      * @param visibility @<al>
      */
-    void viewportSetVisibility(viewport_visibility visibility)
+    void viewportSetVisibility(ViewportVisibility visibility)
     {
         auto window = WindowManager::getMainWindow();
 
@@ -1859,7 +1859,7 @@ namespace OpenLoco::Ui::WindowManager
 
         switch (visibility)
         {
-            case viewport_visibility::undergroundView:
+            case ViewportVisibility::undergroundView:
             {
                 if (!(viewport->flags & (ViewportFlags::underground_view)))
                 {
@@ -1869,7 +1869,7 @@ namespace OpenLoco::Ui::WindowManager
                 break;
             }
 
-            case viewport_visibility::heightMarksOnLand:
+            case ViewportVisibility::heightMarksOnLand:
             {
                 if (!(viewport->flags & (ViewportFlags::height_marks_on_land)))
                 {
@@ -1879,7 +1879,7 @@ namespace OpenLoco::Ui::WindowManager
                 break;
             }
 
-            case viewport_visibility::overgroundView:
+            case ViewportVisibility::overgroundView:
             {
                 if ((viewport->flags & (ViewportFlags::underground_view)))
                 {

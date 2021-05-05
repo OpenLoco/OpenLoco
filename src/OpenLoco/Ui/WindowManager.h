@@ -10,7 +10,7 @@
 
 namespace OpenLoco::Ui::WindowManager
 {
-    enum class viewport_visibility
+    enum class ViewportVisibility
     {
         reset,
         undergroundView,
@@ -67,7 +67,7 @@ namespace OpenLoco::Ui::WindowManager
     void setCurrentRotation(int32_t value);
 
     void viewportShiftPixels(Ui::window* window, Ui::viewport* viewport, int16_t dX, int16_t dY);
-    void viewportSetVisibility(viewport_visibility flags);
+    void viewportSetVisibility(ViewportVisibility flags);
 }
 
 namespace OpenLoco::Vehicles
