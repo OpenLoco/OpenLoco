@@ -9,7 +9,7 @@
 
 namespace OpenLoco
 {
-    using colour_t = uint8_t;
+    using Colour_t = uint8_t;
 }
 
 namespace OpenLoco::Gfx
@@ -32,13 +32,13 @@ namespace OpenLoco::Gfx
 
     drawpixelinfo_t& screenDpi();
 
-    struct g1_header_t
+    struct G1Header
     {
         uint32_t num_entries;
         uint32_t total_size;
     };
 
-    struct g1_element32_t
+    struct G1Element32
     {
         uint32_t offset;  // 0x00
         int16_t width;    // 0x04
@@ -50,7 +50,7 @@ namespace OpenLoco::Gfx
     };
 
     // A version that can be 64-bit when ready...
-    struct g1_element
+    struct G1Element
     {
         uint8_t* offset = nullptr;
         int16_t width = 0;
@@ -60,8 +60,8 @@ namespace OpenLoco::Gfx
         uint16_t flags = 0;
         int16_t unused = 0;
 
-        g1_element() = default;
-        g1_element(const g1_element32_t& src)
+        G1Element() = default;
+        G1Element(const G1Element32& src)
             : offset((uint8_t*)src.offset)
             , width(src.width)
             , height(src.height)
@@ -124,8 +124,8 @@ namespace OpenLoco::Gfx
         void copy(size_t dstIndex, const PaletteMap& src, size_t srcIndex, size_t length);
     };
 
-    std::optional<uint32_t> getPaletteG1Index(colour_t paletteId);
-    std::optional<PaletteMap> getPaletteMapForColour(colour_t paletteId);
+    std::optional<uint32_t> getPaletteG1Index(Colour_t paletteId);
+    std::optional<PaletteMap> getPaletteMapForColour(Colour_t paletteId);
 
     drawpixelinfo_t& screenDpi();
 
@@ -244,5 +244,5 @@ namespace OpenLoco::Gfx
 
     bool clipDrawpixelinfo(Gfx::drawpixelinfo_t** dst, Gfx::drawpixelinfo_t* src, int16_t x, int16_t y, int16_t width, int16_t height);
     bool clipDrawpixelinfo(Gfx::drawpixelinfo_t** dst, Gfx::drawpixelinfo_t* src, Gfx::point_t pos, Gfx::ui_size_t size);
-    g1_element* getG1Element(uint32_t id);
+    G1Element* getG1Element(uint32_t id);
 }

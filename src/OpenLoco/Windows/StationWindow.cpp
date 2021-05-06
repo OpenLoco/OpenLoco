@@ -654,7 +654,7 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048EF02
-        static void drawRatingBar(window* self, Gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, uint8_t amount, colour_t colour)
+        static void drawRatingBar(window* self, Gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, uint8_t amount, Colour_t colour)
         {
             Gfx::fillRectInset(dpi, x, y, x + 99, y + 9, self->colours[1], 48);
 

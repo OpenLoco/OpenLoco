@@ -16,7 +16,7 @@ namespace OpenLoco
         if (colourOptions != 0)
         {
 
-            colour_t colour = Utility::bitScanReverse(colourOptions);
+            Colour_t colour = Utility::bitScanReverse(colourOptions);
 
             if (colour == 0xFF)
             {
@@ -37,7 +37,7 @@ namespace OpenLoco
             if (colourOptions != 0)
             {
 
-                colour_t colour = Utility::bitScanReverse(colourOptions);
+                Colour_t colour = Utility::bitScanReverse(colourOptions);
 
                 if (colour == 0xFF)
                 {

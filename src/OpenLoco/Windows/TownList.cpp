@@ -22,7 +22,7 @@ using namespace OpenLoco::Interop;
 namespace OpenLoco::Ui::Windows::TownList
 {
     static loco_global<uint32_t, 0x01135C34> dword_1135C34;
-    static loco_global<colour_t, 0x01135C61> _buildingColour;
+    static loco_global<Colour_t, 0x01135C61> _buildingColour;
     static loco_global<uint8_t, 0x01135C63> _buildingRotation;
     static loco_global<uint8_t, 0x01135C65> byte_1135C65;
     static loco_global<uint8_t, 0x01135C66> _townSize;
@@ -1078,7 +1078,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
                 if (Gfx::clipDrawpixelinfo(&clipped, dpi, xPos + 1, yPos + 1, 110, 110))
                 {
-                    colour_t colour = _buildingColour;
+                    Colour_t colour = _buildingColour;
                     if (self->row_hover != self->row_info[i])
                     {
                         colour = Utility::bitScanReverse(buildingObj->colours);
@@ -1107,7 +1107,7 @@ namespace OpenLoco::Ui::Windows::TownList
                 auto buildingObj = ObjectManager::get<BuildingObject>(self->row_hover);
                 if (buildingObj->colours != 0)
                 {
-                    colour_t colour = Utility::bitScanReverse(buildingObj->colours);
+                    Colour_t colour = Utility::bitScanReverse(buildingObj->colours);
                     if (colour == 0xFF)
                         colour = 0;
                     _buildingColour = colour;
