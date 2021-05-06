@@ -3,7 +3,7 @@
 
 namespace OpenLoco::Localisation
 {
-    enum class loco_language_id : uint8_t
+    enum class LocoLanguageId : uint8_t
     {
         english_uk,
         english_us,
@@ -23,15 +23,15 @@ namespace OpenLoco::Localisation
         end = 255
     };
 
-    struct language_descriptor
+    struct LanguageDescriptor
     {
         std::string locale;
         std::string english_name;
         std::string native_name;
-        loco_language_id loco_original_id;
+        LocoLanguageId loco_original_id;
     };
 
     void enumerateLanguages();
-    std::vector<language_descriptor>& getLanguageDescriptors();
-    const language_descriptor& getDescriptorForLanguage(std::string target_locale);
+    std::vector<LanguageDescriptor>& getLanguageDescriptors();
+    const LanguageDescriptor& getDescriptorForLanguage(std::string target_locale);
 }
