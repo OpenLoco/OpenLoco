@@ -72,16 +72,16 @@ namespace YAML
         }
     };
 
-    // screen_mode
-    const convert_pair_vector<screen_mode> screen_mode_entries = {
-        enum_def(screen_mode, window),
-        enum_def(screen_mode, fullscreen),
-        enum_def(screen_mode, fullscreen_borderless),
+    // ScreenMode
+    const convert_pair_vector<ScreenMode> screen_mode_entries = {
+        enum_def(ScreenMode, window),
+        enum_def(ScreenMode, fullscreen),
+        enum_def(ScreenMode, fullscreenBorderless),
     };
     template<>
-    struct convert<screen_mode> : convert_enum_base<screen_mode>
+    struct convert<ScreenMode> : convert_enum_base<ScreenMode>
     {
-        static const convert_pair_vector<screen_mode>& getEntries() { return screen_mode_entries; }
+        static const convert_pair_vector<ScreenMode>& getEntries() { return screen_mode_entries; }
     };
 }
 

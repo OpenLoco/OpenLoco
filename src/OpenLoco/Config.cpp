@@ -59,7 +59,7 @@ namespace OpenLoco::Config
         if (displayNode && displayNode.IsMap())
         {
             auto& displayConfig = _new_config.display;
-            displayConfig.mode = displayNode["mode"].as<screen_mode>(screen_mode::window);
+            displayConfig.mode = displayNode["mode"].as<ScreenMode>(ScreenMode::window);
             displayConfig.index = displayNode["index"].as<int32_t>(0);
             displayConfig.window_resolution = displayNode["window_resolution"].as<resolution_t>();
             displayConfig.fullscreen_resolution = displayNode["fullscreen_resolution"].as<resolution_t>();

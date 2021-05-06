@@ -117,13 +117,13 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
             auto newsSettings = Config::get().news_settings[static_cast<uint8_t>(messageSubType)];
 
-            if (newsSettings == newsType::none)
+            if (newsSettings == NewsType::none)
             {
                 news->var_C8 = 0xFFFF;
                 return;
             }
 
-            if (newsSettings == newsType::ticker)
+            if (newsSettings == NewsType::ticker)
             {
                 _word_525CE0 = 0;
                 int16_t x = Ui::width() - 138;

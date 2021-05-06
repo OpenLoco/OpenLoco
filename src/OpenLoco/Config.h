@@ -20,19 +20,19 @@ namespace OpenLoco::Config
         constexpr uint32_t usePreferredOwnerName = (1 << 9);
     }
 
-    enum measurement_format
+    enum MeasurementFormat
     {
         imperial = 0,
         metric = 1,
     };
 
-    struct keyboard_shortcut_t
+    struct KeyboardShortcut
     {
         uint8_t var_0;
         uint8_t var_1;
     };
 
-    enum class newsType : uint8_t
+    enum class NewsType : uint8_t
     {
         none = 0,
         ticker,
@@ -41,16 +41,16 @@ namespace OpenLoco::Config
 
     constexpr auto newsItemSubTypeCount = 6;
 
-    enum class screen_mode
+    enum class ScreenMode
     {
         window,
         fullscreen,
-        fullscreen_borderless
+        fullscreenBorderless
     };
 
-    enum class music_playlist_type : uint8_t
+    enum class MusicPlaylistType : uint8_t
     {
-        current_era,
+        currentEra,
         all,
         custom,
     };
@@ -74,13 +74,13 @@ namespace OpenLoco::Config
         uint8_t sound_quality;                        // 0x27
         uint8_t measurement_format;                   // 0x50AEDC, 0x28
         uint8_t pad_29;                               // 0x29
-        keyboard_shortcut_t keyboard_shortcuts[35];   // 0x2A
+        KeyboardShortcut keyboard_shortcuts[35];   // 0x2A
         uint8_t edge_scrolling;                       // 0x70
         uint8_t vehicles_min_scale;                   // 0x50AF25, 0x71
         uint8_t var_72;                               // 0x50AF26, 0x72
-        music_playlist_type music_playlist;           // 0x50AF27, 0x73
+        MusicPlaylistType music_playlist;           // 0x50AF27, 0x73
         uint16_t height_marker_offset;                // 0x50AF28, 0x74
-        newsType news_settings[newsItemSubTypeCount]; // 0x50AF2A, 0x76
+        NewsType news_settings[newsItemSubTypeCount]; // 0x50AF2A, 0x76
         uint8_t preferred_currency[16];               // 0x7C
         uint8_t enabled_music[29];                    // 0x50AF40, 0x8C
         uint8_t pad_A9[0xCC - 0xA9];                  // 0xA9
@@ -131,7 +131,7 @@ namespace OpenLoco::Config
 
     struct display_config
     {
-        screen_mode mode;
+        ScreenMode mode;
         int32_t index{};
         resolution_t window_resolution = { 800, 600 };
         resolution_t fullscreen_resolution;

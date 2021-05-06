@@ -389,7 +389,7 @@ namespace OpenLoco::Ui::Windows::Options
 #if !(defined(__APPLE__) && defined(__MACH__))
         static void screenModeToggleEnabled(window* w)
         {
-            if (Config::getNew().display.mode == Config::screen_mode::fullscreen)
+            if (Config::getNew().display.mode == Config::ScreenMode::fullscreen)
             {
                 w->enabled_widgets |= (1 << Widx::display_resolution) | (1 << Widx::display_resolution_btn);
                 w->disabled_widgets &= ~((1 << Widx::display_resolution) | (1 << Widx::display_resolution_btn));
@@ -420,7 +420,7 @@ namespace OpenLoco::Ui::Windows::Options
             if (selection == -1)
                 return;
 
-            auto new_mode = static_cast<Config::screen_mode>(selection);
+            auto new_mode = static_cast<Config::ScreenMode>(selection);
             if (new_mode == Config::getNew().display.mode)
                 return;
 
@@ -454,7 +454,7 @@ namespace OpenLoco::Ui::Windows::Options
             if (index == -1)
                 return;
             std::vector<Resolution> resolutions = getFullscreenResolutions();
-            Ui::setDisplayMode(Config::screen_mode::fullscreen, { resolutions[index].width, resolutions[index].height });
+            Ui::setDisplayMode(Config::ScreenMode::fullscreen, { resolutions[index].width, resolutions[index].height });
         }
 
 #pragma mark -
@@ -544,13 +544,13 @@ namespace OpenLoco::Ui::Windows::Options
             string_id screen_mode_string_id = StringIds::empty;
             switch (Config::getNew().display.mode)
             {
-                case Config::screen_mode::window:
+                case Config::ScreenMode::window:
                     screen_mode_string_id = StringIds::options_mode_windowed;
                     break;
-                case Config::screen_mode::fullscreen:
+                case Config::ScreenMode::fullscreen:
                     screen_mode_string_id = StringIds::options_mode_fullscreen;
                     break;
-                case Config::screen_mode::fullscreen_borderless:
+                case Config::ScreenMode::fullscreenBorderless:
                     screen_mode_string_id = StringIds::options_mode_fullscreen_window;
                     break;
             }
@@ -652,7 +652,7 @@ namespace OpenLoco::Ui::Windows::Options
 
         static void applyScreenModeRestrictions(window* w)
         {
-            if (Config::getNew().display.mode != Config::screen_mode::fullscreen)
+            if (Config::getNew().display.mode != Config::ScreenMode::fullscreen)
                 w->disabled_widgets = (1 << Display::Widx::display_resolution) | (1 << Display::Widx::display_resolution_btn);
 
 #if !(defined(__APPLE__) && defined(__MACH__))
@@ -954,7 +954,7 @@ namespace OpenLoco::Ui::Windows::Options
             }
 
             w->disabled_widgets |= (1 << Widx::edit_selection);
-            if (Config::get().music_playlist == Config::music_playlist_type::custom)
+            if (Config::get().music_playlist == Config::MusicPlaylistType::custom)
             {
                 w->disabled_widgets &= ~(1 << Widx::edit_selection);
             }
@@ -1127,7 +1127,7 @@ namespace OpenLoco::Ui::Windows::Options
                 return;
 
             auto& cfg = OpenLoco::Config::get();
-            cfg.music_playlist = (Config::music_playlist_type)ax;
+            cfg.music_playlist = (Config::MusicPlaylistType)ax;
             Config::write();
 
             w->invalidate();
@@ -1143,7 +1143,7 @@ namespace OpenLoco::Ui::Windows::Options
         {
             auto vector = std::vector<int>();
 
-            if (Config::get().music_playlist == Config::music_playlist_type::current_era)
+            if (Config::get().music_playlist == Config::MusicPlaylistType::currentEra)
             {
                 uint16_t year = getCurrentYear();
                 for (int i = 0; i < Audio::num_music_tracks; i++)
@@ -1155,14 +1155,14 @@ namespace OpenLoco::Ui::Windows::Options
                     }
                 }
             }
-            else if (Config::get().music_playlist == Config::music_playlist_type::all)
+            else if (Config::get().music_playlist == Config::MusicPlaylistType::all)
             {
                 for (int i = 0; i < Audio::num_music_tracks; i++)
                 {
                     vector.push_back(i);
                 }
             }
-            else if (Config::get().music_playlist == Config::music_playlist_type::custom)
+            else if (Config::get().music_playlist == Config::MusicPlaylistType::custom)
             {
                 for (int i = 0; i < Audio::num_music_tracks; i++)
                 {
