@@ -192,7 +192,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
             }
         }
 
-        colour_t c = Colour::opaque(self->colours[0]);
+        Colour_t c = Colour::opaque(self->colours[0]);
         if (Input::isHovering(WindowType::timeToolbar, 0, Widx::date_btn))
         {
             c = Colour::white;

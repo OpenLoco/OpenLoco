@@ -44,7 +44,7 @@ namespace OpenLoco::Gfx
     static loco_global<drawpixelinfo_t, 0x0050B884> _screen_dpi;
     static loco_global<drawpixelinfo_t, 0x005233B8> _windowDPI;
 
-    static loco_global<g1_element[g1_expected_count::disc + g1_count_temporary + g1_count_objects], 0x9E2424> _g1Elements;
+    static loco_global<G1Element[g1_expected_count::disc + g1_count_temporary + g1_count_objects], 0x9E2424> _g1Elements;
 
     static std::unique_ptr<std::byte[]> _g1Buffer;
     static loco_global<uint16_t[147], 0x050B8C8> _paletteToG1Offset;
@@ -54,7 +54,7 @@ namespace OpenLoco::Gfx
     static loco_global<uint8_t[224 * 4], 0x112C884> _characterWidths;
     static loco_global<uint8_t[4], 0x1136594> _windowColours;
 
-    static palette_index_t _textColours[8] = { 0 };
+    static PaletteIndex_t _textColours[8] = { 0 };
 
     Ui::Rect drawpixelinfo_t::getDrawableRect() const
     {
@@ -132,7 +132,7 @@ namespace OpenLoco::Gfx
         std::memcpy(&_data[dstIndex], &src._data[srcIndex], copyLength);
     }
 
-    std::optional<uint32_t> getPaletteG1Index(colour_t paletteId)
+    std::optional<uint32_t> getPaletteG1Index(Colour_t paletteId)
     {
         if (paletteId < std::size(_paletteToG1Offset))
         {
@@ -141,7 +141,7 @@ namespace OpenLoco::Gfx
         return std::nullopt;
     }
 
-    std::optional<PaletteMap> getPaletteMapForColour(colour_t paletteId)
+    std::optional<PaletteMap> getPaletteMapForColour(Colour_t paletteId)
     {
         auto g1Index = getPaletteG1Index(paletteId);
         if (g1Index)
@@ -155,15 +155,15 @@ namespace OpenLoco::Gfx
         return std::nullopt;
     }
 
-    static std::vector<g1_element> convertElements(const std::vector<g1_element32_t>& elements32)
+    static std::vector<G1Element> convertElements(const std::vector<G1Element32>& elements32)
     {
-        auto elements = std::vector<g1_element>();
+        auto elements = std::vector<G1Element>();
         elements.reserve(elements32.size());
         std::transform(
             elements32.begin(),
             elements32.end(),
             std::back_inserter(elements),
-            [](g1_element32_t src) { return g1_element(src); });
+            [](G1Element32 src) { return G1Element(src); });
         return elements;
     }
 
@@ -177,7 +177,7 @@ namespace OpenLoco::Gfx
             throw std::runtime_error("Opening g1 file failed.");
         }
 
-        g1_header_t header;
+        G1Header header;
         if (!readData(stream, header))
         {
             throw std::runtime_error("Reading g1 file header failed.");
@@ -194,7 +194,7 @@ namespace OpenLoco::Gfx
         }
 
         // Read element headers
-        auto elements32 = std::vector<g1_element32_t>(header.num_entries);
+        auto elements32 = std::vector<G1Element32>(header.num_entries);
         if (!readData(stream, elements32.data(), header.num_entries))
         {
             throw std::runtime_error("Reading g1 element headers failed.");
@@ -356,7 +356,7 @@ namespace OpenLoco::Gfx
         return width;
     }
 
-    static void setTextColours(palette_index_t pal1, palette_index_t pal2, palette_index_t pal3)
+    static void setTextColours(PaletteIndex_t pal1, PaletteIndex_t pal2, PaletteIndex_t pal3)
     {
         if ((_currentFontFlags & text_draw_flags::inset) != 0)
             return;
@@ -1241,7 +1241,7 @@ namespace OpenLoco::Gfx
         return clipDrawpixelinfo(dst, src, pos.x, pos.y, size.width, size.height);
     }
 
-    g1_element* getG1Element(uint32_t id)
+    G1Element* getG1Element(uint32_t id)
     {
         if (id < _g1Elements.size())
         {

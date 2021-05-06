@@ -86,7 +86,7 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
             Gfx::drawImage(ctx, self->x + previous.left + 6, self->y + previous.top + 6, ImageIds::step_back);
             int x = (previous.left + 30 + previous.right) / 2;
             int y = previous.top + 6;
-            colour_t textColour = Colour::opaque(self->colours[1]);
+            Colour_t textColour = Colour::opaque(self->colours[1]);
             if (Input::isHovering(self->type, self->number, widx::previous_button))
             {
                 textColour = Colour::white;
@@ -97,7 +97,7 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
         Gfx::drawImage(ctx, self->x + next.right - 29, self->y + next.top + 4, ImageIds::step_forward);
         int x = next.left + (next.width() - 31) / 2;
         int y = next.top + 6;
-        colour_t textColour = Colour::opaque(self->colours[1]);
+        Colour_t textColour = Colour::opaque(self->colours[1]);
         if (Input::isHovering(self->type, self->number, widx::next_button))
         {
             textColour = Colour::white;

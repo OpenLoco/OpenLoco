@@ -149,7 +149,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 auto treeObj = ObjectManager::get<TreeObject>(self->row_hover);
                 if (treeObj->colours != 0)
                 {
-                    colour_t colour = Utility::bitScanReverse(treeObj->colours);
+                    Colour_t colour = Utility::bitScanReverse(treeObj->colours);
                     if (colour == 0xFF)
                         colour = 0;
                     _treeColour = colour;
@@ -599,7 +599,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             auto colourOptions = treeObj->colours;
             if (colourOptions != 0)
             {
-                colour_t colour = _treeColour;
+                Colour_t colour = _treeColour;
                 if (!(_lastTreeColourFlag & (1 << 5)))
                 {
                     colour = Utility::bitScanReverse(colourOptions);

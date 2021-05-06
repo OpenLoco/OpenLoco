@@ -11,7 +11,7 @@ namespace OpenLoco
     // 0x0042DE40
     void BuildingObject::drawPreviewImage(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y) const
     {
-        colour_t colour = Utility::bitScanReverse(colours);
+        Colour_t colour = Utility::bitScanReverse(colours);
 
         if (colour == 0xFF)
         {
@@ -22,7 +22,7 @@ namespace OpenLoco
     }
 
     // 0x0042DB95
-    void BuildingObject::drawBuilding(Gfx::drawpixelinfo_t* clipped, uint8_t buildingRotation, int16_t x, int16_t y, colour_t colour) const
+    void BuildingObject::drawBuilding(Gfx::drawpixelinfo_t* clipped, uint8_t buildingRotation, int16_t x, int16_t y, Colour_t colour) const
     {
         registers regs;
         regs.cx = x;

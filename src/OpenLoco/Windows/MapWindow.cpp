@@ -568,7 +568,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     // 0x0046D273
     static void drawGraphKeyOverall(window* self, Gfx::drawpixelinfo_t* dpi, uint16_t x, uint16_t* y)
     {
-        static const palette_index_t overallColours[] = {
+        static const PaletteIndex_t overallColours[] = {
             PaletteIndex::index_41,
             PaletteIndex::index_7D,
             PaletteIndex::index_0C,
@@ -610,7 +610,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x004FDD62
-    static const palette_index_t vehicleTypeColours[] = {
+    static const PaletteIndex_t vehicleTypeColours[] = {
         PaletteIndex::index_AD,
         PaletteIndex::index_67,
         PaletteIndex::index_A2,
@@ -658,7 +658,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     // 0x0046D47F
     static void drawGraphKeyIndustries(window* self, Gfx::drawpixelinfo_t* dpi, uint16_t x, uint16_t* y)
     {
-        static const palette_index_t industryColours[] = {
+        static const PaletteIndex_t industryColours[] = {
             PaletteIndex::index_0A,
             PaletteIndex::index_0E,
             PaletteIndex::index_15,
