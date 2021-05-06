@@ -60,7 +60,7 @@ namespace OpenLoco::Localisation
         while (true)
         {
             utf32_t codepoint = readCodePoint(&ptr);
-            if (codepoint == unicode_char::superscript_minus || codepoint == unicode_char::variation_selector)
+            if (codepoint == UnicodeChar::superscript_minus || codepoint == UnicodeChar::variation_selector)
                 continue;
 
             char readChar = convertUnicodeToLoco(codepoint);

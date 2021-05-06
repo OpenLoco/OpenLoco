@@ -10,13 +10,13 @@
 
 namespace OpenLoco::Localisation
 {
-    std::vector<language_descriptor> language_descriptors;
+    std::vector<LanguageDescriptor> language_descriptors;
 
     void enumerateLanguages()
     {
         // (Re-)initialise the languages table.
         language_descriptors.clear();
-        language_descriptor undefinedLanguage = { "", "", "", loco_language_id::english_uk };
+        LanguageDescriptor undefinedLanguage = { "", "", "", LocoLanguageId::english_uk };
         language_descriptors.emplace_back(undefinedLanguage);
 
         // Search the languages dir for YAML language files.
@@ -43,28 +43,28 @@ namespace OpenLoco::Localisation
             YAML::Node header = node["header"];
 
             // Create a language descriptor for this language file.
-            language_descriptor language;
+            LanguageDescriptor language;
             language.locale = header["locale"].as<std::string>();
             language.english_name = header["english_name"].as<std::string>();
             language.native_name = convertUnicodeToLoco(header["native_name"].as<std::string>());
-            language.loco_original_id = (loco_language_id)header["loco_original_id"].as<size_t>();
+            language.loco_original_id = (LocoLanguageId)header["loco_original_id"].as<size_t>();
 
             // Store it in the languages map.
             language_descriptors.emplace_back(language);
         }
 
         // Sort by native name.
-        std::sort(language_descriptors.begin(), language_descriptors.end(), [](const language_descriptor& a, const language_descriptor& b) -> bool {
+        std::sort(language_descriptors.begin(), language_descriptors.end(), [](const LanguageDescriptor& a, const LanguageDescriptor& b) -> bool {
             return a.native_name < b.native_name;
         });
     }
 
-    std::vector<language_descriptor>& getLanguageDescriptors()
+    std::vector<LanguageDescriptor>& getLanguageDescriptors()
     {
         return language_descriptors;
     }
 
-    const language_descriptor& getDescriptorForLanguage(std::string target_locale)
+    const LanguageDescriptor& getDescriptorForLanguage(std::string target_locale)
     {
         for (auto& ld : language_descriptors)
         {

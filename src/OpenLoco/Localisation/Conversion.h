@@ -10,7 +10,7 @@ namespace OpenLoco::Localisation
     uint8_t convertUnicodeToLoco(utf32_t unicode);
     std::string convertUnicodeToLoco(std::string unicode_string);
 
-    namespace loco_char
+    namespace LocoChar
     {
         // Polish characters (uppercase)
         constexpr uint8_t a_ogonek_uc = 159; // 0x9F
@@ -52,7 +52,7 @@ namespace OpenLoco::Localisation
         constexpr uint8_t z_acute = 254;  // 0xFE
     };
 
-    namespace unicode_char
+    namespace UnicodeChar
     {
         // Polish characters
         constexpr utf32_t a_ogonek_uc = 260;
