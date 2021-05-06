@@ -255,13 +255,13 @@ namespace OpenLoco::Ui::Windows::Options
                 {
                     auto& cfg = OpenLoco::Config::get();
                     // TODO: is there a better way to toggle a flag?
-                    if (cfg.flags & Config::flags::landscape_smoothing)
+                    if (cfg.flags & Config::Flags::landscapeSmoothing)
                     {
-                        cfg.flags &= ~Config::flags::landscape_smoothing;
+                        cfg.flags &= ~Config::Flags::landscapeSmoothing;
                     }
                     else
                     {
-                        cfg.flags |= Config::flags::landscape_smoothing;
+                        cfg.flags |= Config::Flags::landscapeSmoothing;
                     }
                     OpenLoco::Config::write();
                     Gfx::invalidateScreen();
@@ -271,13 +271,13 @@ namespace OpenLoco::Ui::Windows::Options
                 case Widx::gridlines_on_landscape:
                 {
                     auto& cfg = OpenLoco::Config::get();
-                    if (cfg.flags & Config::flags::gridlines_on_landscape)
+                    if (cfg.flags & Config::Flags::gridlinesOnLandscape)
                     {
-                        cfg.flags &= ~Config::flags::gridlines_on_landscape;
+                        cfg.flags &= ~Config::Flags::gridlinesOnLandscape;
                     }
                     else
                     {
-                        cfg.flags |= Config::flags::gridlines_on_landscape;
+                        cfg.flags |= Config::Flags::gridlinesOnLandscape;
                     }
                     OpenLoco::Config::write();
                     Gfx::invalidateScreen();
@@ -287,7 +287,7 @@ namespace OpenLoco::Ui::Windows::Options
                     {
                         main->viewports[0]->flags &= ~ViewportFlags::gridlines_on_landscape;
 
-                        if ((cfg.flags & Config::flags::gridlines_on_landscape) != 0)
+                        if ((cfg.flags & Config::Flags::gridlinesOnLandscape) != 0)
                         {
                             main->viewports[0]->flags |= ViewportFlags::gridlines_on_landscape;
                         }
@@ -590,13 +590,13 @@ namespace OpenLoco::Ui::Windows::Options
             }
 
             w->activated_widgets &= ~(1 << Widx::landscape_smoothing);
-            if ((Config::get().flags & Config::flags::landscape_smoothing) == 0)
+            if ((Config::get().flags & Config::Flags::landscapeSmoothing) == 0)
             {
                 w->activated_widgets |= (1 << Widx::landscape_smoothing);
             }
 
             w->activated_widgets &= ~(1 << Widx::gridlines_on_landscape);
-            if (Config::get().flags & Config::flags::gridlines_on_landscape)
+            if (Config::get().flags & Config::Flags::gridlinesOnLandscape)
             {
                 w->activated_widgets |= (1 << Widx::gridlines_on_landscape);
             }
@@ -1324,7 +1324,7 @@ namespace OpenLoco::Ui::Windows::Options
             args.push(language.native_name.c_str());
 
             string_id current_height_units = StringIds::height_units;
-            if ((OpenLoco::Config::get().flags & Config::flags::show_height_as_units) == 0)
+            if ((OpenLoco::Config::get().flags & Config::Flags::showHeightAsUnits) == 0)
             {
                 current_height_units = StringIds::height_real_values;
             }
@@ -1343,20 +1343,20 @@ namespace OpenLoco::Ui::Windows::Options
             args.push(current_measurement_format);
 
             w->activated_widgets &= ~(1 << Widx::preferred_currency_for_new_games);
-            if (Config::get().flags & Config::flags::preferred_currency_for_new_games)
+            if (Config::get().flags & Config::Flags::preferredCurrencyForNewGames)
             {
                 w->activated_widgets |= (1 << Widx::preferred_currency_for_new_games);
             }
 
             w->activated_widgets &= ~(1 << Widx::preferred_currency_always);
-            if (Config::get().flags & Config::flags::preferred_currency_always)
+            if (Config::get().flags & Config::Flags::preferredCurrencyAlways)
             {
                 w->activated_widgets |= (1 << Widx::preferred_currency_always);
             }
 
             w->disabled_widgets &= ~(1 << Widx::currency);
             w->disabled_widgets &= ~(1 << Widx::currency_btn);
-            if (Config::get().flags & Config::flags::preferred_currency_always)
+            if (Config::get().flags & Config::Flags::preferredCurrencyAlways)
             {
                 w->disabled_widgets |= (1 << Widx::currency);
                 w->disabled_widgets |= (1 << Widx::currency_btn);
@@ -1606,13 +1606,13 @@ namespace OpenLoco::Ui::Windows::Options
         static void preferredCurrencyNewGameMouseUp(window* w)
         {
             auto& cfg = OpenLoco::Config::get();
-            if (cfg.flags & Config::flags::preferred_currency_for_new_games)
+            if (cfg.flags & Config::Flags::preferredCurrencyForNewGames)
             {
-                cfg.flags &= ~Config::flags::preferred_currency_for_new_games;
+                cfg.flags &= ~Config::Flags::preferredCurrencyForNewGames;
             }
             else
             {
-                cfg.flags |= Config::flags::preferred_currency_for_new_games;
+                cfg.flags |= Config::Flags::preferredCurrencyForNewGames;
             }
             Config::write();
 
@@ -1623,13 +1623,13 @@ namespace OpenLoco::Ui::Windows::Options
         static void preferredCurrencyAlwaysMouseUp(window* w)
         {
             auto& cfg = OpenLoco::Config::get();
-            if (cfg.flags & Config::flags::preferred_currency_always)
+            if (cfg.flags & Config::Flags::preferredCurrencyAlways)
             {
-                cfg.flags &= ~Config::flags::preferred_currency_always;
+                cfg.flags &= ~Config::Flags::preferredCurrencyAlways;
             }
             else
             {
-                cfg.flags |= Config::flags::preferred_currency_always;
+                cfg.flags |= Config::Flags::preferredCurrencyAlways;
             }
             Config::write();
 
@@ -1661,7 +1661,7 @@ namespace OpenLoco::Ui::Windows::Options
 
             // 0x004C0FC2
             cfg.height_marker_offset = 0;
-            if ((cfg.flags & Config::flags::show_height_as_units) == 0)
+            if ((cfg.flags & Config::Flags::showHeightAsUnits) == 0)
             {
                 cfg.height_marker_offset = 0x100 + cfg.measurement_format * 0x100;
             }
@@ -1680,7 +1680,7 @@ namespace OpenLoco::Ui::Windows::Options
             Dropdown::add(1, StringIds::dropdown_stringid, StringIds::height_real_values);
 
             int selectedItem = 0;
-            if ((Config::get().flags & Config::flags::show_height_as_units) == 0)
+            if ((Config::get().flags & Config::Flags::showHeightAsUnits) == 0)
             {
                 selectedItem = 1;
             }
@@ -1694,16 +1694,16 @@ namespace OpenLoco::Ui::Windows::Options
                 return;
 
             auto& cfg = Config::get();
-            cfg.flags &= ~Config::flags::show_height_as_units;
+            cfg.flags &= ~Config::Flags::showHeightAsUnits;
 
             if (ax == 0)
             {
-                cfg.flags |= Config::flags::show_height_as_units;
+                cfg.flags |= Config::Flags::showHeightAsUnits;
             }
 
             // 0x004C0FC2
             cfg.height_marker_offset = 0;
-            if ((cfg.flags & Config::flags::show_height_as_units) == 0)
+            if ((cfg.flags & Config::Flags::showHeightAsUnits) == 0)
             {
                 cfg.height_marker_offset = 0x100 + cfg.measurement_format * 0x100;
             }
@@ -1956,14 +1956,14 @@ namespace OpenLoco::Ui::Windows::Options
                 w->activated_widgets &= ~(1 << Widx::disableAICompanies);
 
             w->activated_widgets &= ~(1 << Widx::export_plugin_objects);
-            if (Config::get().flags & Config::flags::export_objects_with_saves)
+            if (Config::get().flags & Config::Flags::exportObjectsWithSaves)
             {
                 w->activated_widgets |= (1 << Widx::export_plugin_objects);
             }
 
             w->activated_widgets &= ~(1 << Widx::use_preferred_owner_name);
             w->disabled_widgets |= (1 << Widx::change_btn);
-            if (Config::get().flags & Config::flags::use_preferred_owner_name)
+            if (Config::get().flags & Config::Flags::usePreferredOwnerName)
             {
                 w->activated_widgets |= (1 << Widx::use_preferred_owner_name);
                 w->disabled_widgets &= ~(1 << Widx::change_btn);
@@ -2210,7 +2210,7 @@ namespace OpenLoco::Ui::Windows::Options
             auto& cfg = OpenLoco::Config::get();
 
             if (strlen(str) == 0)
-                cfg.flags &= ~Config::flags::use_preferred_owner_name;
+                cfg.flags &= ~Config::Flags::usePreferredOwnerName;
 
             strcpy(cfg.preferred_name, str);
             cfg.preferred_name[strlen(str)] = '\0';
@@ -2224,19 +2224,19 @@ namespace OpenLoco::Ui::Windows::Options
         static void usePreferredOwnerNameMouseUp(window* w)
         {
             auto& cfg = OpenLoco::Config::get();
-            if (cfg.flags & Config::flags::use_preferred_owner_name)
+            if (cfg.flags & Config::Flags::usePreferredOwnerName)
             {
-                cfg.flags &= ~Config::flags::use_preferred_owner_name;
+                cfg.flags &= ~Config::Flags::usePreferredOwnerName;
             }
             else
             {
-                cfg.flags |= Config::flags::use_preferred_owner_name;
+                cfg.flags |= Config::Flags::usePreferredOwnerName;
             }
             Config::write();
 
             w->invalidate();
 
-            if (cfg.flags & Config::flags::use_preferred_owner_name)
+            if (cfg.flags & Config::Flags::usePreferredOwnerName)
             {
                 if (strlen(cfg.preferred_name) == 0)
                 {
@@ -2273,13 +2273,13 @@ namespace OpenLoco::Ui::Windows::Options
         static void exportPluginObjectsMouseUp(window* w)
         {
             auto& cfg = OpenLoco::Config::get();
-            if (cfg.flags & Config::flags::export_objects_with_saves)
+            if (cfg.flags & Config::Flags::exportObjectsWithSaves)
             {
-                cfg.flags &= ~Config::flags::export_objects_with_saves;
+                cfg.flags &= ~Config::Flags::exportObjectsWithSaves;
             }
             else
             {
-                cfg.flags |= Config::flags::export_objects_with_saves;
+                cfg.flags |= Config::Flags::exportObjectsWithSaves;
             }
             Config::write();
 

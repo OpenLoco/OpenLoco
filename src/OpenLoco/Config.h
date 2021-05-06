@@ -7,18 +7,18 @@ namespace OpenLoco::Config
 {
 #pragma pack(push, 1)
 
-    enum flags
+    namespace Flags
     {
-        gridlines_on_landscape = (1 << 0),
-        show_height_as_units = (1 << 1),
-        landscape_smoothing = (1 << 2),
-        export_objects_with_saves = (1 << 3),
+        constexpr uint32_t gridlinesOnLandscape = (1 << 0);
+        constexpr uint32_t showHeightAsUnits = (1 << 1);
+        constexpr uint32_t landscapeSmoothing = (1 << 2);
+        constexpr uint32_t exportObjectsWithSaves = (1 << 3);
 
-        preferred_currency_for_new_games = (1 << 6),
-        preferred_currency_always = (1 << 7),
+        constexpr uint32_t preferredCurrencyForNewGames = (1 << 6);
+        constexpr uint32_t preferredCurrencyAlways = (1 << 7);
 
-        use_preferred_owner_name = (1 << 9),
-    };
+        constexpr uint32_t usePreferredOwnerName = (1 << 9);
+    }
 
     enum measurement_format
     {

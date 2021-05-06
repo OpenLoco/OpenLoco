@@ -470,11 +470,11 @@ namespace OpenLoco::StringManager
                     {
                         int32_t value = args.pop<int16_t>();
 
-                        bool show_height_as_units = Config::get().flags & Config::flags::show_height_as_units;
+                        bool showHeightAsUnits = Config::get().flags & Config::Flags::showHeightAsUnits;
                         uint8_t measurement_format = Config::get().measurement_format;
                         const char* unit;
 
-                        if (show_height_as_units)
+                        if (showHeightAsUnits)
                         {
                             unit = getString(StringIds::unit_units);
                         }
