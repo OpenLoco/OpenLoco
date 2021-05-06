@@ -258,7 +258,7 @@ namespace OpenLoco::Vehicles
         bool canBeModified() const;
         void liftUpVehicle();
         void sub_4B7CC3();
-        currency32_t sub_4C3BA6();
+        currency32_t calculateRunningCost() const;
 
     private:
         void applyBreakdownToTrain();

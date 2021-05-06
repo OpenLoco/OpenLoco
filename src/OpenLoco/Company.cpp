@@ -122,13 +122,13 @@ namespace OpenLoco
             unk.var_88 = std::min(0xFF, unk.var_88 + 1);
             unk.var_84 = unk.var_80;
             unk.var_80 = 0;
-            currency32_t total = 0;
+            currency32_t totalRunCost = 0;
             for (auto i = 0; i < unk.var_44; ++i)
             {
                 auto* vehHead = EntityManager::get<Vehicles::VehicleHead>(unk.var_66[i]);
-                total += vehHead->sub_4C3BA6();
+                totalRunCost += vehHead->calculateRunningCost();
             }
-            unk.var_7C = total;
+            unk.var_7C = totalRunCost;
         }
     }
 }

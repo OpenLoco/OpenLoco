@@ -2031,20 +2031,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
             Common::repositionTabs(self);
         }
 
-        // 0x004C3BA6
-        static int32_t getMonthlyRunningCost(Vehicles::Vehicle& train)
-        {
-            int32_t totalCost = 0;
-            for (const auto& car : train.cars)
-            {
-                auto vehicleObj = ObjectManager::get<VehicleObject>(car.front->object_id);
-                // TODO: use FixedPoint with 10 {(1 << 10) == 1024} decimals for cost_index
-                auto cost = (vehicleObj->run_cost_factor * currencyMultiplicationFactor[vehicleObj->run_cost_index]) / 1024;
-                totalCost += cost;
-            }
-            return totalCost;
-        }
-
         // 0x004B576C
         static void draw(Ui::window* const self, Gfx::drawpixelinfo_t* const context)
         {
@@ -2107,7 +2093,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 // Monthly Running Cost: {CURRENCY32}
                 auto args = FormatArguments();
-                args.push(getMonthlyRunningCost(train));
+                args.push(head->calculateRunningCost());
                 Gfx::drawString_494B3F(*context, pos.x, pos.y, Colour::black, StringIds::vehicle_monthly_running_cost, &args);
                 pos.y += 10;
             }
