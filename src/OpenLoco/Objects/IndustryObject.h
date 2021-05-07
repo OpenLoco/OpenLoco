@@ -6,7 +6,7 @@ namespace OpenLoco
 {
     namespace Gfx
     {
-        struct drawpixelinfo_t;
+        struct Context;
     }
 
     namespace IndustryObjectFlags
@@ -47,8 +47,8 @@ namespace OpenLoco
         bool producesCargo() const;
         char* getProducedCargoString(const char* buffer);
         char* getRequiredCargoString(const char* buffer);
-        void drawPreviewImage(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y) const;
-        void drawIndustry(Gfx::drawpixelinfo_t* clipped, int16_t x, int16_t y) const;
+        void drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const;
+        void drawIndustry(Gfx::Context* clipped, int16_t x, int16_t y) const;
     };
 #pragma pack(pop)
 }

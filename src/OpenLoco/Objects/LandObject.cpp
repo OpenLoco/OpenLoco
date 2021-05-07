@@ -5,9 +5,9 @@
 namespace OpenLoco
 {
     // 0x004699A8
-    void LandObject::drawPreviewImage(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y) const
+    void LandObject::drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const
     {
         uint32_t imageId = image + (var_03 - 1) * var_0E;
-        Gfx::drawImage(&dpi, x, y, imageId);
+        Gfx::drawImage(&context, x, y, imageId);
     }
 }

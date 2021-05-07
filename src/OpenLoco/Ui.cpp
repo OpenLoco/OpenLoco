@@ -360,13 +360,13 @@ namespace OpenLoco::Ui
 
         int32_t pitch = surface->pitch;
 
-        Gfx::drawpixelinfo_t dpi{};
-        dpi.bits = new uint8_t[surface->pitch * height];
-        dpi.width = width;
-        dpi.height = height;
-        dpi.pitch = pitch - width;
+        Gfx::Context context{};
+        context.bits = new uint8_t[surface->pitch * height];
+        context.width = width;
+        context.height = height;
+        context.pitch = pitch - width;
 
-        screen_info->dpi = dpi;
+        screen_info->context = context;
         screen_info->width = width;
         screen_info->height = height;
         screen_info->width_2 = width;
@@ -454,10 +454,10 @@ namespace OpenLoco::Ui
         }
 
         // Copy pixels from the virtual screen buffer to the surface
-        auto& dpi = Gfx::screenDpi();
-        if (dpi.bits != nullptr)
+        auto& context = Gfx::screenContext();
+        if (context.bits != nullptr)
         {
-            std::memcpy(surface->pixels, dpi.bits, surface->pitch * surface->h);
+            std::memcpy(surface->pixels, context.bits, surface->pitch * surface->h);
         }
 
         // Unlock the surface

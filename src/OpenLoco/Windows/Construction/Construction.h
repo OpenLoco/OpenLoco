@@ -27,7 +27,7 @@ namespace OpenLoco::Ui::Windows::Construction
     static loco_global<uint8_t, 0x00525FAC> _lastAirport;
     static loco_global<uint8_t, 0x00525FAD> _lastShipPort;
     static loco_global<uint8_t, 0x00525FAE> _byte_525FAE;
-    static loco_global<Gfx::drawpixelinfo_t*, 0x00E0C3E0> _dword_E0C3E0;
+    static loco_global<Gfx::Context*, 0x00E0C3E0> _dword_E0C3E0;
     static loco_global<uint16_t, 0x00F24484> _mapSelectionFlags;
     constexpr uint16_t mapSelectedTilesSize = 300;
     static loco_global<Pos2[mapSelectedTilesSize], 0x00F24490> _mapSelectedTiles;
@@ -109,7 +109,7 @@ namespace OpenLoco::Ui::Windows::Construction
         void prepareDraw(window* self);
         void switchTab(window* self, widget_index widgetIndex);
         void repositionTabs(window* self);
-        void drawTabs(window* self, Gfx::drawpixelinfo_t* dpi);
+        void drawTabs(window* self, Gfx::Context* context);
         void initEvents();
         void sub_49FEC7();
         void onClose(window* self);

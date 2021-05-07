@@ -35,16 +35,16 @@ namespace OpenLoco::Ui::Windows::LandscapeGenerationConfirm
     static window_event_list events;
 
     // 0x004C18A5
-    static void draw(window* window, Gfx::drawpixelinfo_t* dpi)
+    static void draw(window* window, Gfx::Context* context)
     {
-        window->draw(dpi);
+        window->draw(context);
 
         static loco_global<string_id, 0x0112C826> commonFormatArgs;
         string_id prompt = window->var_846 == 0 ? StringIds::prompt_confirm_generate_landscape : StringIds::prompt_confirm_random_landscape;
         *commonFormatArgs = prompt;
 
         auto origin = Gfx::point_t(window->x + (window->width / 2), window->y + 41);
-        Gfx::drawStringCentredWrapped(dpi, &origin, window->width, Colour::black, StringIds::wcolour2_stringid, (const char*)&*commonFormatArgs);
+        Gfx::drawStringCentredWrapped(context, &origin, window->width, Colour::black, StringIds::wcolour2_stringid, (const char*)&*commonFormatArgs);
     }
 
     // 0x004C18E4

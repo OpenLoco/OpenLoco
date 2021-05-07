@@ -171,7 +171,7 @@ namespace OpenLoco::Ui::Dropdown
         }
 
         // 0x00494BF6
-        static void sub_494BF6(window* self, Gfx::drawpixelinfo_t* dpi, string_id stringId, int16_t x, int16_t y, int16_t width, Colour_t colour, FormatArguments args)
+        static void sub_494BF6(window* self, Gfx::Context* context, string_id stringId, int16_t x, int16_t y, int16_t width, Colour_t colour, FormatArguments args)
         {
             StringManager::formatString(_byte_112CC04, stringId, &args);
 
@@ -181,13 +181,13 @@ namespace OpenLoco::Ui::Dropdown
 
             _currentFontSpriteBase = Font::m1;
 
-            Gfx::drawString(dpi, x, y, colour, _byte_112CC04);
+            Gfx::drawString(context, x, y, colour, _byte_112CC04);
         }
 
         // 0x004CD00E
-        static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
+        static void draw(window* self, Gfx::Context* context)
         {
-            self->draw(dpi);
+            self->draw(context);
             _windowDropdownOnpaintCellX = 0;
             _windowDropdownOnpaintCellY = 0;
 
@@ -199,7 +199,7 @@ namespace OpenLoco::Ui::Dropdown
                     {
                         auto x = _windowDropdownOnpaintCellX * _dropdownItemWidth + self->x + 2;
                         auto y = _windowDropdownOnpaintCellY * _dropdownItemHeight + self->y + 2;
-                        Gfx::drawRect(dpi, x, y, _dropdownItemWidth, _dropdownItemHeight, (1 << 25) | PaletteIndex::index_2E);
+                        Gfx::drawRect(context, x, y, _dropdownItemWidth, _dropdownItemHeight, (1 << 25) | PaletteIndex::index_2E);
                     }
 
                     auto args = FormatArguments();
@@ -238,7 +238,7 @@ namespace OpenLoco::Ui::Dropdown
                             auto x = _windowDropdownOnpaintCellX * _dropdownItemWidth + self->x + 2;
                             auto y = _windowDropdownOnpaintCellY * _dropdownItemHeight + self->y + 1;
                             auto width = self->width - 5;
-                            sub_494BF6(self, dpi, dropdownItemFormat, x, y, width, colour, args);
+                            sub_494BF6(self, context, dropdownItemFormat, x, y, width, colour, args);
                         }
                     }
 
@@ -252,7 +252,7 @@ namespace OpenLoco::Ui::Dropdown
                         {
                             imageId++;
                         }
-                        Gfx::drawImage(dpi, x, y, imageId);
+                        Gfx::drawImage(context, x, y, imageId);
                     }
                 }
                 else
@@ -262,16 +262,16 @@ namespace OpenLoco::Ui::Dropdown
 
                     if (!(self->colours[0] & Colour::translucent_flag))
                     {
-                        Gfx::drawRect(dpi, x, y, _dropdownItemWidth - 1, 1, Colour::getShade(self->colours[0], 3));
-                        Gfx::drawRect(dpi, x, y + 1, _dropdownItemWidth - 1, 1, Colour::getShade(self->colours[0], 7));
+                        Gfx::drawRect(context, x, y, _dropdownItemWidth - 1, 1, Colour::getShade(self->colours[0], 3));
+                        Gfx::drawRect(context, x, y + 1, _dropdownItemWidth - 1, 1, Colour::getShade(self->colours[0], 7));
                     }
                     else
                     {
                         uint32_t colour = _byte_5045FA[Colour::opaque(self->colours[0])] | (1 << 25);
                         colour++;
-                        Gfx::drawRect(dpi, x, y, _dropdownItemWidth - 1, 1, colour);
+                        Gfx::drawRect(context, x, y, _dropdownItemWidth - 1, 1, colour);
                         colour++;
-                        Gfx::drawRect(dpi, x, y + 1, _dropdownItemWidth - 1, 1, colour);
+                        Gfx::drawRect(context, x, y + 1, _dropdownItemWidth - 1, 1, colour);
                     }
                 }
 

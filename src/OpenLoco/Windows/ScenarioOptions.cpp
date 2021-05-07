@@ -86,7 +86,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         }
 
         // 0x004400A4
-        static void drawTabs(window* window, Gfx::drawpixelinfo_t* dpi)
+        static void drawTabs(window* window, Gfx::Context* context)
         {
             auto skin = ObjectManager::get<InterfaceSkinObject>();
 
@@ -117,13 +117,13 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                 else
                     imageId += challengeTabImageIds[0];
 
-                Widget::draw_tab(window, dpi, imageId, widx::tab_challenge);
+                Widget::draw_tab(window, context, imageId, widx::tab_challenge);
             }
 
             // Companies tab
             {
                 const uint32_t imageId = skin->img + InterfaceSkin::ImageIds::tab_companies;
-                Widget::draw_tab(window, dpi, imageId, widx::tab_companies);
+                Widget::draw_tab(window, context, imageId, widx::tab_companies);
             }
 
             // Finances tab
@@ -153,20 +153,20 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                 else
                     imageId += financesTabImageIds[0];
 
-                Widget::draw_tab(window, dpi, imageId, widx::tab_finances);
+                Widget::draw_tab(window, context, imageId, widx::tab_finances);
             }
 
             // Scenario details tab
             {
                 const uint32_t imageId = skin->img + InterfaceSkin::ImageIds::tab_scenario_details;
-                Widget::draw_tab(window, dpi, imageId, widx::tab_scenario);
+                Widget::draw_tab(window, context, imageId, widx::tab_scenario);
             }
         }
 
-        static void draw(window* window, Gfx::drawpixelinfo_t* dpi)
+        static void draw(window* window, Gfx::Context* context)
         {
-            window->draw(dpi);
-            drawTabs(window, dpi);
+            window->draw(context);
+            drawTabs(window, context);
         }
 
         static void prepareDraw(window* self);
@@ -213,18 +213,18 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         static window_event_list events;
 
         // 0x0043FC91
-        static void draw(Ui::window* window, Gfx::drawpixelinfo_t* dpi)
+        static void draw(Ui::window* window, Gfx::Context* context)
         {
-            Common::draw(window, dpi);
+            Common::draw(window, context);
 
             const int16_t xPos = window->x + 5;
             int16_t yPos = window->y + widgets[widx::check_time_limit].bottom + 10;
-            Gfx::drawString_494B3F(*dpi, xPos, yPos, Colour::black, StringIds::challenge_label);
+            Gfx::drawString_494B3F(*context, xPos, yPos, Colour::black, StringIds::challenge_label);
 
             FormatArguments args = {};
             OpenLoco::Scenario::formatChallengeArguments(args);
             yPos += 10;
-            Gfx::drawString_495224(*dpi, xPos, yPos, window->width - 10, Colour::black, StringIds::challenge_value, &args);
+            Gfx::drawString_495224(*context, xPos, yPos, window->width - 10, Colour::black, StringIds::challenge_value, &args);
         }
 
         static const string_id objectiveTypeLabelIds[] = {
@@ -612,56 +612,56 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         static window_event_list events;
 
         // 0x0043F4EB
-        static void draw(Ui::window* window, Gfx::drawpixelinfo_t* dpi)
+        static void draw(Ui::window* window, Gfx::Context* context)
         {
-            Common::draw(window, dpi);
+            Common::draw(window, context);
 
             {
                 const int16_t xPos = window->x + 10;
                 int16_t yPos = window->y + widgets[widx::max_competing_companies].top + 1;
-                Gfx::drawString_494B3F(*dpi, xPos, yPos, Colour::black, StringIds::max_competing_companies);
+                Gfx::drawString_494B3F(*context, xPos, yPos, Colour::black, StringIds::max_competing_companies);
             }
 
             {
                 const int16_t xPos = window->x + 10;
                 int16_t yPos = window->y + widgets[widx::delay_before_competing_companies_start].top + 1;
-                Gfx::drawString_494B3F(*dpi, xPos, yPos, Colour::black, StringIds::delay_before_competing_companies_start);
+                Gfx::drawString_494B3F(*context, xPos, yPos, Colour::black, StringIds::delay_before_competing_companies_start);
             }
 
             {
                 const int16_t xPos = window->x + 15;
                 int16_t yPos = window->y + widgets[widx::preferred_intelligence].top - 14;
-                Gfx::drawString_494B3F(*dpi, xPos, yPos, Colour::black, StringIds::selection_of_competing_companies);
+                Gfx::drawString_494B3F(*context, xPos, yPos, Colour::black, StringIds::selection_of_competing_companies);
             }
 
             {
                 const int16_t xPos = window->x + 10;
                 int16_t yPos = window->y + widgets[widx::preferred_intelligence].top + 1;
-                Gfx::drawString_494B3F(*dpi, xPos, yPos, Colour::black, StringIds::preferred_intelligence);
+                Gfx::drawString_494B3F(*context, xPos, yPos, Colour::black, StringIds::preferred_intelligence);
             }
 
             {
                 const int16_t xPos = window->x + 10;
                 int16_t yPos = window->y + widgets[widx::preferred_aggressiveness].top + 1;
-                Gfx::drawString_494B3F(*dpi, xPos, yPos, Colour::black, StringIds::preferred_aggressiveness);
+                Gfx::drawString_494B3F(*context, xPos, yPos, Colour::black, StringIds::preferred_aggressiveness);
             }
 
             {
                 const int16_t xPos = window->x + 10;
                 int16_t yPos = window->y + widgets[widx::preferred_competitiveness].top + 1;
-                Gfx::drawString_494B3F(*dpi, xPos, yPos, Colour::black, StringIds::preferred_competitiveness);
+                Gfx::drawString_494B3F(*context, xPos, yPos, Colour::black, StringIds::preferred_competitiveness);
             }
 
             {
                 const int16_t xPos = window->x + 10;
                 int16_t yPos = window->y + widgets[widx::competitor_forbid_trains].top - 12;
-                Gfx::drawString_494B3F(*dpi, xPos, yPos, Colour::black, StringIds::forbid_competing_companies_from_using);
+                Gfx::drawString_494B3F(*context, xPos, yPos, Colour::black, StringIds::forbid_competing_companies_from_using);
             }
 
             {
                 const int16_t xPos = window->x + 10;
                 int16_t yPos = window->y + widgets[widx::player_forbid_trains].top - 12;
-                Gfx::drawString_494B3F(*dpi, xPos, yPos, Colour::black, StringIds::forbid_player_companies_from_using);
+                Gfx::drawString_494B3F(*context, xPos, yPos, Colour::black, StringIds::forbid_player_companies_from_using);
             }
         }
 
@@ -868,26 +868,26 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         static window_event_list events;
 
         // 0x0043F97D
-        static void draw(Ui::window* window, Gfx::drawpixelinfo_t* dpi)
+        static void draw(Ui::window* window, Gfx::Context* context)
         {
-            Common::draw(window, dpi);
+            Common::draw(window, context);
 
             {
                 const int16_t xPos = window->x + 10;
                 int16_t yPos = window->y + widgets[widx::starting_loan].top + 1;
-                Gfx::drawString_494B3F(*dpi, xPos, yPos, Colour::black, StringIds::starting_loan);
+                Gfx::drawString_494B3F(*context, xPos, yPos, Colour::black, StringIds::starting_loan);
             }
 
             {
                 const int16_t xPos = window->x + 10;
                 int16_t yPos = window->y + widgets[widx::max_loan_size].top + 1;
-                Gfx::drawString_494B3F(*dpi, xPos, yPos, Colour::black, StringIds::max_loan_size);
+                Gfx::drawString_494B3F(*context, xPos, yPos, Colour::black, StringIds::max_loan_size);
             }
 
             {
                 const int16_t xPos = window->x + 10;
                 int16_t yPos = window->y + widgets[widx::loan_interest_rate].top + 1;
-                Gfx::drawString_494B3F(*dpi, xPos, yPos, Colour::black, StringIds::loan_interest_rate);
+                Gfx::drawString_494B3F(*context, xPos, yPos, Colour::black, StringIds::loan_interest_rate);
             }
         }
 
@@ -996,9 +996,9 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         static window_event_list events;
 
         // 0x0043F004
-        static void draw(Ui::window* window, Gfx::drawpixelinfo_t* dpi)
+        static void draw(Ui::window* window, Gfx::Context* context)
         {
-            Common::draw(window, dpi);
+            Common::draw(window, context);
 
             {
                 // Prepare scenario name text.
@@ -1013,19 +1013,19 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                 const int16_t xPos = window->x + 10;
                 int16_t yPos = window->y + widgets[widx::change_name_btn].top + 1;
                 int16_t width = widgets[widx::change_name_btn].left - 20;
-                Gfx::drawString_494BBF(*dpi, xPos, yPos, width, Colour::black, StringIds::scenario_name_stringid, &*commonFormatArgs);
+                Gfx::drawString_494BBF(*context, xPos, yPos, width, Colour::black, StringIds::scenario_name_stringid, &*commonFormatArgs);
             }
 
             {
                 const int16_t xPos = window->x + 10;
                 int16_t yPos = window->y + widgets[widx::scenario_group].top + 1;
-                Gfx::drawString_494B3F(*dpi, xPos, yPos, Colour::black, StringIds::scenario_group);
+                Gfx::drawString_494B3F(*context, xPos, yPos, Colour::black, StringIds::scenario_group);
             }
 
             {
                 const int16_t xPos = window->x + 10;
                 int16_t yPos = window->y + widgets[widx::change_details_btn].top + 1;
-                Gfx::drawString_494B3F(*dpi, xPos, yPos, Colour::black, StringIds::scenario_details);
+                Gfx::drawString_494B3F(*context, xPos, yPos, Colour::black, StringIds::scenario_details);
             }
 
             {
@@ -1039,7 +1039,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                     commonFormatArgs[0] = stex->details;
 
                 auto& target = window->widgets[widx::change_details_btn];
-                Gfx::drawString_495224(*dpi, window->x + 16, window->y + 12 + target.top, target.left - 26, Colour::black, StringIds::black_stringid, &*commonFormatArgs);
+                Gfx::drawString_495224(*context, window->x + 16, window->y + 12 + target.top, target.left - 26, Colour::black, StringIds::black_stringid, &*commonFormatArgs);
             }
         }
 

@@ -10,9 +10,9 @@ using namespace OpenLoco::Map;
 namespace OpenLoco::Ui
 {
     // 0x0045A0E7
-    void viewport::render(Gfx::drawpixelinfo_t* dpi)
+    void viewport::render(Gfx::Context* context)
     {
-        auto contextRect = dpi->getUiRect();
+        auto contextRect = context->getUiRect();
         auto viewRect = getUiRect();
 
         if (!contextRect.intersects(viewRect))
@@ -20,11 +20,11 @@ namespace OpenLoco::Ui
             return;
         }
         auto intersection = contextRect.intersection(viewRect);
-        paint(dpi, uiToMap(intersection));
+        paint(context, uiToMap(intersection));
     }
 
     // 0x0045A1A4
-    void viewport::paint(Gfx::drawpixelinfo_t* context, const Rect& rect)
+    void viewport::paint(Gfx::Context* context, const Rect& rect)
     {
         registers regs{};
         regs.ax = rect.left();

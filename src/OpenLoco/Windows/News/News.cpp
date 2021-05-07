@@ -464,17 +464,17 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         }
 
         // 0x0042A136
-        static void sub_42A136(window* self, Gfx::drawpixelinfo_t* dpi, Message* news)
+        static void sub_42A136(window* self, Gfx::Context* context, Message* news)
         {
             registers regs;
-            regs.edi = (int32_t)dpi;
+            regs.edi = (int32_t)context;
             regs.esi = (int32_t)self;
             regs.ebp = (int32_t)news;
             call(0x0042A136, regs);
         }
 
         // 0x0042A036
-        static void drawViewportString(Gfx::drawpixelinfo_t* dpi, uint16_t x, uint16_t y, uint16_t width, uint8_t itemType, uint16_t itemIndex)
+        static void drawViewportString(Gfx::Context* context, uint16_t x, uint16_t y, uint16_t width, uint8_t itemType, uint16_t itemIndex)
         {
             auto args = FormatArguments();
 
@@ -550,7 +550,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                 case newsItemSubTypes::company:
                 case newsItemSubTypes::vehicleTab:
                 {
-                    Gfx::drawStringCentredClipped(*dpi, x, y, width, Colour::black, StringIds::black_tiny_font, &args);
+                    Gfx::drawStringCentredClipped(*context, x, y, width, Colour::black, StringIds::black_tiny_font, &args);
                     break;
                 }
 
@@ -561,13 +561,13 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         }
 
         // 0x00429872
-        static void drawLateNews(window* self, Gfx::drawpixelinfo_t* dpi, Message* news)
+        static void drawLateNews(window* self, Gfx::Context* context, Message* news)
         {
-            Gfx::drawImage(dpi, self->x, self->y, ImageIds::news_background_new_left);
+            Gfx::drawImage(context, self->x, self->y, ImageIds::news_background_new_left);
 
-            Gfx::drawImage(dpi, self->x + (windowSize.width / 2), self->y, ImageIds::news_background_new_right);
+            Gfx::drawImage(context, self->x + (windowSize.width / 2), self->y, ImageIds::news_background_new_right);
 
-            self->draw(dpi);
+            self->draw(context);
 
             char* newsString = news->messageString;
             auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
@@ -587,21 +587,21 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             int16_t y = self->y + 38;
             Gfx::point_t origin = { x, y };
 
-            Gfx::drawStringCentredWrapped(dpi, &origin, 352, Colour::black, StringIds::buffer_2039);
+            Gfx::drawStringCentredWrapped(context, &origin, 352, Colour::black, StringIds::buffer_2039);
 
             x = self->x + 1;
             y = self->y + 1;
             origin = { x, y };
 
-            Gfx::drawString_494B3F(*dpi, &origin, Colour::black, StringIds::news_date, &news->date);
+            Gfx::drawString_494B3F(*context, &origin, Colour::black, StringIds::news_date, &news->date);
 
-            self->drawViewports(dpi);
+            self->drawViewports(context);
 
-            sub_42A136(self, dpi, news);
+            sub_42A136(self, context, news);
         }
 
         // 0x00429934
-        static void drawMiddleNews(window* self, Gfx::drawpixelinfo_t* dpi, Message* news)
+        static void drawMiddleNews(window* self, Gfx::Context* context, Message* news)
         {
             if (_word_4F8BE4[news->type] & (1 << 2))
             {
@@ -614,7 +614,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                         auto width = self->widgets[Common::widx::viewport1].width() + 1;
                         auto height = self->widgets[Common::widx::viewport1].height() + 1;
                         auto colour = (1 << 25) | PaletteIndex::index_35;
-                        Gfx::drawRect(dpi, x, y, width, height, colour);
+                        Gfx::drawRect(context, x, y, width, height, colour);
                     }
                 }
             }
@@ -630,24 +630,24 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                         auto width = self->widgets[Common::widx::viewport2].width() + 1;
                         auto height = self->widgets[Common::widx::viewport2].height() + 1;
                         auto colour = (1 << 25) | PaletteIndex::index_35;
-                        Gfx::drawRect(dpi, x, y, width, height, colour);
+                        Gfx::drawRect(context, x, y, width, height, colour);
                     }
                 }
             }
         }
 
         // 0x004299E7
-        static void drawEarlyNews(window* self, Gfx::drawpixelinfo_t* dpi, Message* news)
+        static void drawEarlyNews(window* self, Gfx::Context* context, Message* news)
         {
             auto imageId = Gfx::recolour(ImageIds::news_background_old_left, PaletteIndex::index_68);
 
-            Gfx::drawImage(dpi, self->x, self->y, imageId);
+            Gfx::drawImage(context, self->x, self->y, imageId);
 
             imageId = Gfx::recolour(ImageIds::news_background_old_right, PaletteIndex::index_68);
 
-            Gfx::drawImage(dpi, self->x + (windowSize.width / 2), self->y, imageId);
+            Gfx::drawImage(context, self->x + (windowSize.width / 2), self->y, imageId);
 
-            self->draw(dpi);
+            self->draw(context);
 
             char* newsString = news->messageString;
             auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
@@ -667,36 +667,36 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             int16_t y = self->y + 38;
             Gfx::point_t origin = { x, y };
 
-            Gfx::drawStringCentredWrapped(dpi, &origin, 352, Colour::black, StringIds::buffer_2039);
+            Gfx::drawStringCentredWrapped(context, &origin, 352, Colour::black, StringIds::buffer_2039);
 
             origin.x = self->x + 4;
             origin.y = self->y + 5;
 
-            Gfx::drawString_494B3F(*dpi, &origin, Colour::black, StringIds::news_date, &news->date);
+            Gfx::drawString_494B3F(*context, &origin, Colour::black, StringIds::news_date, &news->date);
 
-            self->drawViewports(dpi);
+            self->drawViewports(context);
 
-            sub_42A136(self, dpi, news);
+            sub_42A136(self, context, news);
 
             x = self->x + 3;
             y = self->y + 5;
             auto width = self->width - 6;
             auto height = self->height;
             auto colour = (1 << 25) | PaletteIndex::index_68;
-            Gfx::drawRect(dpi, x, y, width, height, colour);
+            Gfx::drawRect(context, x, y, width, height, colour);
 
             x = self->widgets[Common::widx::viewport1].left + self->x;
             y = self->widgets[Common::widx::viewport1].top + self->y;
             width = self->widgets[Common::widx::viewport1].width();
             height = self->widgets[Common::widx::viewport1].height();
             colour = (1 << 25) | PaletteIndex::index_68;
-            Gfx::drawRect(dpi, x, y, width, height, colour);
+            Gfx::drawRect(context, x, y, width, height, colour);
         }
 
         // 0x00429761
-        static void drawStationNews(window* self, Gfx::drawpixelinfo_t* dpi, Message* news)
+        static void drawStationNews(window* self, Gfx::Context* context, Message* news)
         {
-            self->draw(dpi);
+            self->draw(context);
 
             char* newsString = news->messageString;
             auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
@@ -710,9 +710,9 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             int16_t y = self->y + 17;
             Gfx::point_t origin = { x, y };
 
-            Gfx::drawStringCentredWrapped(dpi, &origin, 338, Colour::black, StringIds::buffer_2039);
+            Gfx::drawStringCentredWrapped(context, &origin, 338, Colour::black, StringIds::buffer_2039);
 
-            self->drawViewports(dpi);
+            self->drawViewports(context);
 
             if (_word_4F8BE4[news->type] & (1 << 2))
             {
@@ -725,7 +725,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                         auto width = self->widgets[Common::widx::viewport1].width();
                         auto height = self->widgets[Common::widx::viewport1].height();
                         auto colour = (1 << 25) | PaletteIndex::index_35;
-                        Gfx::drawRect(dpi, x, y, width, height, colour);
+                        Gfx::drawRect(context, x, y, width, height, colour);
                     }
                 }
             }
@@ -741,14 +741,14 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                         auto width = self->widgets[Common::widx::viewport2].width();
                         auto height = self->widgets[Common::widx::viewport2].height();
                         auto colour = (1 << 25) | PaletteIndex::index_35;
-                        Gfx::drawRect(dpi, x, y, width, height, colour);
+                        Gfx::drawRect(context, x, y, width, height, colour);
                     }
                 }
             }
         }
 
         // 0x00429739
-        static void draw(Ui::window* self, Gfx::drawpixelinfo_t* dpi)
+        static void draw(Ui::window* self, Gfx::Context* context)
         {
             auto news = MessageManager::get(_activeMessageIndex);
 
@@ -756,21 +756,21 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             {
                 if (calcDate(news->date).year >= 1945)
                 {
-                    drawLateNews(self, dpi, news);
+                    drawLateNews(self, context, news);
 
                     if (calcDate(news->date).year < 1985)
                     {
-                        drawMiddleNews(self, dpi, news);
+                        drawMiddleNews(self, context, news);
                     }
                 }
                 else
                 {
-                    drawEarlyNews(self, dpi, news);
+                    drawEarlyNews(self, context, news);
                 }
             }
             else
             {
-                drawStationNews(self, dpi, news);
+                drawStationNews(self, context, news);
             }
 
             if (_word_4F8BE4[news->type] & (1 << 2))
@@ -782,7 +782,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                     auto y = self->widgets[Common::widx::viewport1Button].bottom - 7 + self->y;
                     auto width = self->widgets[Common::widx::viewport1Button].width() - 1;
 
-                    drawViewportString(dpi, x, y, width, _byte_4F8B08[news->type].type, news->item_id_1);
+                    drawViewportString(context, x, y, width, _byte_4F8B08[news->type].type, news->item_id_1);
                 }
             }
             if (_word_4F8BE4[news->type] & (1 << 3))
@@ -794,7 +794,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                     auto y = self->widgets[Common::widx::viewport2Button].bottom - 7 + self->y;
                     auto width = self->widgets[Common::widx::viewport2Button].width() - 1;
 
-                    drawViewportString(dpi, x, y, width, _byte_4F8B09[news->type].type, news->item_id_2);
+                    drawViewportString(context, x, y, width, _byte_4F8B09[news->type].type, news->item_id_2);
                 }
             }
         }

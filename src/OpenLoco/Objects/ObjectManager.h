@@ -13,7 +13,7 @@ namespace OpenLoco
 {
     namespace Gfx
     {
-        struct drawpixelinfo_t;
+        struct Context;
         struct point_t;
     }
 
@@ -290,5 +290,5 @@ namespace OpenLoco::ObjectManager
 
     size_t getByteLength(LoadedObjectIndex id);
 
-    void drawGenericDescription(Gfx::drawpixelinfo_t& dpi, Gfx::point_t& rowPosition, const uint16_t designed, const uint16_t obsolete);
+    void drawGenericDescription(Gfx::Context& context, Gfx::point_t& rowPosition, const uint16_t designed, const uint16_t obsolete);
 }

@@ -146,7 +146,7 @@ namespace OpenLoco::Ui
             return Rect::fromLTRB(leftTop.x, leftTop.y, rightBottom.x, rightBottom.y);
         }
 
-        void render(Gfx::drawpixelinfo_t* dpi);
+        void render(Gfx::Context* context);
         static viewport_pos mapFrom3d(Map::Pos3 loc, int32_t rotation);
         void centre2dCoordinates(int16_t x, int16_t y, int16_t z, int16_t* outX, int16_t* outY);
         SavedViewSimple toSavedView() const;
@@ -154,7 +154,7 @@ namespace OpenLoco::Ui
         Map::Pos2 getCentreScreenMapPosition() const;
 
     private:
-        void paint(Gfx::drawpixelinfo_t* context, const Ui::Rect& rect);
+        void paint(Gfx::Context* context, const Ui::Rect& rect);
     };
 
     struct viewport_config

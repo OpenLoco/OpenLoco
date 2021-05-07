@@ -96,7 +96,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         static void sub_4BD297();
         static void switchTab(window* self, widget_index widgetIndex);
         static void repositionTabs(window* self);
-        static void drawTabs(window* self, Gfx::drawpixelinfo_t* dpi);
+        static void drawTabs(window* self, Gfx::Context* context);
         static void prepareDraw(window* self);
         static void onUpdate(window* self);
         static void onResize(window* self, uint8_t height);
@@ -546,10 +546,10 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BB8C9
-        static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
+        static void draw(window* self, Gfx::Context* context)
         {
-            self->draw(dpi);
-            Common::drawTabs(self, dpi);
+            self->draw(context);
+            Common::drawTabs(self, context);
 
             auto treeId = self->var_846;
             if (treeId == 0xFFFF)
@@ -581,15 +581,15 @@ namespace OpenLoco::Ui::Windows::Terraform
             {
                 auto xPos = self->x + 3 + self->width - 17;
                 auto yPos = self->y + self->height - 13;
-                Gfx::drawString_494C78(*dpi, xPos, yPos, Colour::black, StringIds::build_cost, &args);
+                Gfx::drawString_494C78(*context, xPos, yPos, Colour::black, StringIds::build_cost, &args);
             }
             auto xPos = self->x + 3;
             auto yPos = self->y + self->height - 13;
             auto width = self->width - 19 - xPos;
-            Gfx::drawString_494BBF(*dpi, xPos, yPos, width, Colour::black, StringIds::black_stringid, &treeObj->name);
+            Gfx::drawString_494BBF(*context, xPos, yPos, width, Colour::black, StringIds::black_stringid, &treeObj->name);
         }
 
-        static void drawTreeThumb(TreeObject* treeObj, Gfx::drawpixelinfo_t* clipped)
+        static void drawTreeThumb(TreeObject* treeObj, Gfx::Context* clipped)
         {
             uint32_t image = _byte_500775[treeObj->growth] * treeObj->num_rotations;
             auto rotation = (treeObj->num_rotations - 1) & _treeRotation;
@@ -612,10 +612,10 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BB982
-        static void drawScroll(window* self, Gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
+        static void drawScroll(window* self, Gfx::Context* context, uint32_t scrollIndex)
         {
             auto shade = Colour::getShade(self->colours[1], 3);
-            Gfx::clearSingle(*dpi, shade);
+            Gfx::clearSingle(*context, shade);
 
             uint16_t xPos = 0;
             uint16_t yPos = 0;
@@ -627,19 +627,19 @@ namespace OpenLoco::Ui::Windows::Terraform
                     if (self->row_info[i] == self->var_846)
                     {
                         _lastTreeColourFlag = Colour::translucent_flag;
-                        Gfx::drawRectInset(dpi, xPos, yPos, 65, rowHeight - 1, self->colours[1], Colour::translucent_flag);
+                        Gfx::drawRectInset(context, xPos, yPos, 65, rowHeight - 1, self->colours[1], Colour::translucent_flag);
                     }
                 }
                 else
                 {
                     _lastTreeColourFlag = Colour::translucent_flag | Colour::outline_flag;
-                    Gfx::drawRectInset(dpi, xPos, yPos, 65, rowHeight - 1, self->colours[1], (Colour::translucent_flag | Colour::outline_flag));
+                    Gfx::drawRectInset(context, xPos, yPos, 65, rowHeight - 1, self->colours[1], (Colour::translucent_flag | Colour::outline_flag));
                 }
 
                 auto treeObj = ObjectManager::get<TreeObject>(self->row_info[i]);
-                Gfx::drawpixelinfo_t* clipped = nullptr;
+                Gfx::Context* clipped = nullptr;
 
-                if (Gfx::clipDrawpixelinfo(&clipped, dpi, xPos + 1, yPos + 1, 64, rowHeight - 2))
+                if (Gfx::clipContext(&clipped, context, xPos + 1, yPos + 1, 64, rowHeight - 2))
                 {
                     drawTreeThumb(treeObj, clipped);
                 }
@@ -890,10 +890,10 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BC5E7
-        static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
+        static void draw(window* self, Gfx::Context* context)
         {
-            self->draw(dpi);
-            Common::drawTabs(self, dpi);
+            self->draw(context);
+            Common::drawTabs(self, context);
 
             if (_raiseLandCost == 0x80000000)
                 return;
@@ -909,7 +909,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             auto args = FormatArguments();
             args.push<uint32_t>(_raiseLandCost);
 
-            Gfx::drawStringCentred(*dpi, xPos, yPos, Colour::black, StringIds::clear_land_cost, &args);
+            Gfx::drawStringCentred(*context, xPos, yPos, Colour::black, StringIds::clear_land_cost, &args);
         }
 
         static void initEvents()
@@ -1310,10 +1310,10 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BC909
-        static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
+        static void draw(window* self, Gfx::Context* context)
         {
-            self->draw(dpi);
-            Common::drawTabs(self, dpi);
+            self->draw(context);
+            Common::drawTabs(self, context);
 
             auto xPos = self->widgets[widx::tool_area].left + self->widgets[widx::tool_area].right;
             xPos /= 2;
@@ -1326,7 +1326,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 {
                     auto args = FormatArguments();
                     args.push<uint32_t>(_raiseLandCost);
-                    Gfx::drawStringCentred(*dpi, xPos, yPos, Colour::black, StringIds::increase_height_cost, &args);
+                    Gfx::drawStringCentred(*context, xPos, yPos, Colour::black, StringIds::increase_height_cost, &args);
                 }
             }
 
@@ -1338,7 +1338,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 {
                     auto args = FormatArguments();
                     args.push<uint32_t>(_lowerLandCost);
-                    Gfx::drawStringCentred(*dpi, xPos, yPos, Colour::black, StringIds::decrease_height_cost, &args);
+                    Gfx::drawStringCentred(*context, xPos, yPos, Colour::black, StringIds::decrease_height_cost, &args);
                 }
             }
         }
@@ -1546,10 +1546,10 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BCCFF
-        static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
+        static void draw(window* self, Gfx::Context* context)
         {
-            self->draw(dpi);
-            Common::drawTabs(self, dpi);
+            self->draw(context);
+            Common::drawTabs(self, context);
 
             auto xPos = self->widgets[widx::tool_area].left + self->widgets[widx::tool_area].right;
             xPos /= 2;
@@ -1563,7 +1563,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                     auto args = FormatArguments();
                     args.push<uint32_t>(_raiseWaterCost);
 
-                    Gfx::drawStringCentred(*dpi, xPos, yPos, Colour::black, StringIds::increase_height_cost, &args);
+                    Gfx::drawStringCentred(*context, xPos, yPos, Colour::black, StringIds::increase_height_cost, &args);
                 }
             }
 
@@ -1576,7 +1576,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                     auto args = FormatArguments();
                     args.push<uint32_t>(_lowerWaterCost);
 
-                    Gfx::drawStringCentred(*dpi, xPos, yPos, Colour::black, StringIds::decrease_height_cost, &args);
+                    Gfx::drawStringCentred(*context, xPos, yPos, Colour::black, StringIds::decrease_height_cost, &args);
                 }
             }
         }
@@ -1893,10 +1893,10 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BC0C2
-        static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
+        static void draw(window* self, Gfx::Context* context)
         {
-            self->draw(dpi);
-            Common::drawTabs(self, dpi);
+            self->draw(context);
+            Common::drawTabs(self, context);
 
             auto wallId = self->var_846;
             if (wallId == 0xFFFF)
@@ -1911,14 +1911,14 @@ namespace OpenLoco::Ui::Windows::Terraform
             auto yPos = self->y + self->height - 13;
             auto width = self->width - 19;
 
-            Gfx::drawString_494BBF(*dpi, xPos, yPos, width, Colour::black, StringIds::black_stringid, &wallObj->name);
+            Gfx::drawString_494BBF(*context, xPos, yPos, width, Colour::black, StringIds::black_stringid, &wallObj->name);
         }
 
         // 0x004BC11C
-        static void drawScroll(window* self, Gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
+        static void drawScroll(window* self, Gfx::Context* context, uint32_t scrollIndex)
         {
             auto shade = Colour::getShade(self->colours[1], 3);
-            Gfx::clearSingle(*dpi, shade);
+            Gfx::clearSingle(*context, shade);
 
             uint16_t xPos = 0;
             uint16_t yPos = 0;
@@ -1928,19 +1928,19 @@ namespace OpenLoco::Ui::Windows::Terraform
                 {
                     if (self->row_info[i] == self->var_846)
                     {
-                        Gfx::drawRectInset(dpi, xPos, yPos, 40, rowHeight, self->colours[1], Colour::translucent_flag);
+                        Gfx::drawRectInset(context, xPos, yPos, 40, rowHeight, self->colours[1], Colour::translucent_flag);
                     }
                 }
                 else
                 {
-                    Gfx::drawRectInset(dpi, xPos, yPos, 40, rowHeight, self->colours[1], (Colour::translucent_flag | Colour::outline_flag));
+                    Gfx::drawRectInset(context, xPos, yPos, 40, rowHeight, self->colours[1], (Colour::translucent_flag | Colour::outline_flag));
                 }
 
                 auto wallObj = ObjectManager::get<WallObject>(self->row_info[i]);
 
-                Gfx::drawpixelinfo_t* clipped = nullptr;
+                Gfx::Context* clipped = nullptr;
 
-                if (Gfx::clipDrawpixelinfo(&clipped, dpi, xPos + 1, yPos + 1, 39, 47))
+                if (Gfx::clipContext(&clipped, context, xPos + 1, yPos + 1, 39, 47))
                     Gfx::drawImage(clipped, 34, 28, wallObj->sprite);
 
                 xPos += 40;
@@ -2085,7 +2085,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BCF7F
-        static void drawTabs(window* self, Gfx::drawpixelinfo_t* dpi)
+        static void drawTabs(window* self, Gfx::Context* context)
         {
             auto skin = ObjectManager::get<InterfaceSkinObject>();
 
@@ -2094,14 +2094,14 @@ namespace OpenLoco::Ui::Windows::Terraform
                 uint32_t imageId = skin->img;
                 imageId += InterfaceSkin::ImageIds::toolbar_menu_bulldozer;
 
-                Widget::draw_tab(self, dpi, imageId, widx::tab_clear_area);
+                Widget::draw_tab(self, context, imageId, widx::tab_clear_area);
             }
             // Adjust Land Tab
             {
                 auto landObj = ObjectManager::get<LandObject>(_grassLand);
                 uint32_t imageId = landObj->var_16 + Land::ImageIds::toolbar_terraform_land;
 
-                Widget::draw_tab(self, dpi, imageId, widx::tab_adjust_land);
+                Widget::draw_tab(self, context, imageId, widx::tab_adjust_land);
             }
             // Adjust Water Tab
             {
@@ -2110,21 +2110,21 @@ namespace OpenLoco::Ui::Windows::Terraform
                 if (self->current_tab == widx::tab_adjust_water - widx::tab_clear_area)
                     imageId += (self->frame_no / 2) % 16;
 
-                Widget::draw_tab(self, dpi, imageId, widx::tab_adjust_water);
+                Widget::draw_tab(self, context, imageId, widx::tab_adjust_water);
             }
             // Plant Trees Tab
             {
                 uint32_t imageId = skin->img;
                 imageId += InterfaceSkin::ImageIds::toolbar_menu_plant_trees;
 
-                Widget::draw_tab(self, dpi, imageId, widx::tab_plant_trees);
+                Widget::draw_tab(self, context, imageId, widx::tab_plant_trees);
             }
             // Build Walls Tab
             {
                 uint32_t imageId = skin->img;
                 imageId += InterfaceSkin::ImageIds::toolbar_menu_build_walls;
 
-                Widget::draw_tab(self, dpi, imageId, widx::tab_build_walls);
+                Widget::draw_tab(self, context, imageId, widx::tab_build_walls);
             }
         }
 
