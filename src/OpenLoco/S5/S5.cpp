@@ -611,7 +611,7 @@ namespace OpenLoco::S5
             ObjectManager::reloadAll();
 
             _gameState = file->gameState;
-            TileManager::setElements(stdx::span<tile_element>(reinterpret_cast<tile_element*>(file->tileElements.data()), file->tileElements.size()));
+            TileManager::setElements(stdx::span<Map::TileElement>(reinterpret_cast<Map::TileElement*>(file->tileElements.data()), file->tileElements.size()));
 
             EntityManager::resetSpatialIndex();
             CompanyManager::updateColours();

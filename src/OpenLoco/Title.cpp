@@ -113,7 +113,7 @@ namespace OpenLoco::Title
     static void loadTitle()
     {
         Scenario::sub_46115C();
-        if (Intro::state() == Intro::intro_state::none)
+        if (Intro::state() == Intro::State::none)
         {
             auto backupWord = _525F62;
             auto titlePath = Environment::getPath(Environment::path_id::title);
