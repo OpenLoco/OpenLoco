@@ -401,7 +401,7 @@ namespace OpenLoco::Ui::Windows::Town
             Common::drawTabs(self, context);
 
             Gfx::Context* clipped = nullptr;
-            if (!Gfx::clipDrawpixelinfo(&clipped, context, self->x, self->y + 44, self->width, self->height - 44))
+            if (!Gfx::clipContext(&clipped, context, self->x, self->y + 44, self->width, self->height - 44))
                 return;
 
             auto town = TownManager::get(self->number);

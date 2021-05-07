@@ -639,7 +639,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 auto treeObj = ObjectManager::get<TreeObject>(self->row_info[i]);
                 Gfx::Context* clipped = nullptr;
 
-                if (Gfx::clipDrawpixelinfo(&clipped, context, xPos + 1, yPos + 1, 64, rowHeight - 2))
+                if (Gfx::clipContext(&clipped, context, xPos + 1, yPos + 1, 64, rowHeight - 2))
                 {
                     drawTreeThumb(treeObj, clipped);
                 }
@@ -1940,7 +1940,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
                 Gfx::Context* clipped = nullptr;
 
-                if (Gfx::clipDrawpixelinfo(&clipped, context, xPos + 1, yPos + 1, 39, 47))
+                if (Gfx::clipContext(&clipped, context, xPos + 1, yPos + 1, 39, 47))
                     Gfx::drawImage(clipped, 34, 28, wallObj->sprite);
 
                 xPos += 40;

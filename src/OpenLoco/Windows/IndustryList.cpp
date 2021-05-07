@@ -897,7 +897,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
                 Gfx::Context* clipped = nullptr;
 
-                if (Gfx::clipDrawpixelinfo(&clipped, context, xPos + 1, yPos + 1, 110, 110))
+                if (Gfx::clipContext(&clipped, context, xPos + 1, yPos + 1, 110, 110))
                 {
                     industryObj->drawIndustry(clipped, 56, 96);
                 }

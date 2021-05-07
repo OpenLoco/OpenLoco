@@ -2016,7 +2016,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
             Gfx::Context* clipped = nullptr;
 
-            if (Gfx::clipDrawpixelinfo(&clipped, context, x, y, width, height))
+            if (Gfx::clipContext(&clipped, context, x, y, width, height))
             {
                 const auto& roadPiece = Map::TrackData::getRoadPiece(_lastSelectedTrackPieceId);
                 const auto& lastRoadPart = roadPiece.back();
@@ -2066,7 +2066,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
             Gfx::Context* clipped = nullptr;
 
-            if (Gfx::clipDrawpixelinfo(&clipped, context, x, y, width, height))
+            if (Gfx::clipContext(&clipped, context, x, y, width, height))
             {
                 const auto& trackPiece = Map::TrackData::getTrackPiece(_lastSelectedTrackPieceId);
                 const auto& lastTrackPart = trackPiece.back();

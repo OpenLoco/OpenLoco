@@ -243,7 +243,7 @@ namespace OpenLoco::Ui::Windows::TextInput
 
         auto widget = &_widgets[Widx::input];
         Gfx::Context* clipped = nullptr;
-        if (!Gfx::clipDrawpixelinfo(&clipped, context, widget->left + 1 + window->x, widget->top + 1 + window->y, widget->width() - 2, widget->height() - 2))
+        if (!Gfx::clipContext(&clipped, context, widget->left + 1 + window->x, widget->top + 1 + window->y, widget->width() - 2, widget->height() - 2))
         {
             return;
         }

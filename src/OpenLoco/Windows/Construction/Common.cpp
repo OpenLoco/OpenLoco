@@ -469,7 +469,7 @@ namespace OpenLoco::Ui::Windows::Construction
 
                     Gfx::Context* clipped = nullptr;
 
-                    if (Gfx::clipDrawpixelinfo(&clipped, context, x, y, width, height))
+                    if (Gfx::clipContext(&clipped, context, x, y, width, height))
                     {
                         clipped->zoom_level = 1;
                         clipped->width <<= 1;
@@ -561,7 +561,7 @@ namespace OpenLoco::Ui::Windows::Construction
 
                             Gfx::Context* clipped = nullptr;
 
-                            if (Gfx::clipDrawpixelinfo(&clipped, context, x, y, width, height))
+                            if (Gfx::clipContext(&clipped, context, x, y, width, height))
                             {
                                 clipped->zoom_level = 1;
                                 clipped->width *= 2;
@@ -601,7 +601,7 @@ namespace OpenLoco::Ui::Windows::Construction
 
                     Gfx::Context* clipped = nullptr;
 
-                    if (Gfx::clipDrawpixelinfo(&clipped, context, x, y, width, height))
+                    if (Gfx::clipContext(&clipped, context, x, y, width, height))
                     {
                         auto trainSignalObject = ObjectManager::get<TrainSignalObject>(_lastSelectedSignal);
                         auto imageId = trainSignalObject->image;

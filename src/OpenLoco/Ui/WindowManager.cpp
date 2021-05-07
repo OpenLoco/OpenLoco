@@ -39,7 +39,7 @@ namespace OpenLoco::Ui::WindowManager
     static loco_global<WindowType, 0x00523364> _callingWindowType;
     static loco_global<uint16_t, 0x0052338C> _tooltipNotShownTicks;
     static loco_global<uint16_t, 0x00508F10> __508F10;
-    static loco_global<Gfx::Context, 0x0050B884> _screen_dpi;
+    static loco_global<Gfx::Context, 0x0050B884> _screenContext;
     static loco_global<uint16_t, 0x00523390> _toolWindowNumber;
     static loco_global<Ui::WindowType, 0x00523392> _toolWindowType;
     static loco_global<uint16_t, 0x00523394> _toolWidgetIdx;
@@ -1681,7 +1681,7 @@ namespace OpenLoco::Ui::WindowManager
 
         auto _width = Ui::width();
         auto _height = Ui::height();
-        Gfx::Context& _bitsDPI = _screen_dpi;
+        Gfx::Context& _bitsContext = _screenContext;
 
         // Adjust for move off screen
         // NOTE: when zooming, there can be x, y, dx, dy combinations that go off the
@@ -1696,9 +1696,9 @@ namespace OpenLoco::Ui::WindowManager
         width += lmargin + rmargin;
         height += tmargin + bmargin;
 
-        int32_t stride = _bitsDPI.width + _bitsDPI.pitch;
-        uint8_t* to = _bitsDPI.bits + y * stride + x;
-        uint8_t* from = _bitsDPI.bits + (y - dy) * stride + x - dx;
+        int32_t stride = _bitsContext.width + _bitsContext.pitch;
+        uint8_t* to = _bitsContext.bits + y * stride + x;
+        uint8_t* from = _bitsContext.bits + (y - dy) * stride + x - dx;
 
         if (dy > 0)
         {

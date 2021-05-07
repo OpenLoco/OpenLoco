@@ -1076,7 +1076,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
                 Gfx::Context* clipped = nullptr;
 
-                if (Gfx::clipDrawpixelinfo(&clipped, context, xPos + 1, yPos + 1, 110, 110))
+                if (Gfx::clipContext(&clipped, context, xPos + 1, yPos + 1, 110, 110))
                 {
                     Colour_t colour = _buildingColour;
                     if (self->row_hover != self->row_info[i])

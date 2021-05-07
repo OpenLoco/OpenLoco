@@ -244,7 +244,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
             auto width = self->widgets[widx::image].width();
             auto height = self->widgets[widx::image].height();
 
-            if (Gfx::clipDrawpixelinfo(&clipped, context, xPos, yPos, width, height))
+            if (Gfx::clipContext(&clipped, context, xPos, yPos, width, height))
             {
                 coord_t x = 0x2010;
                 coord_t y = 0x2010;

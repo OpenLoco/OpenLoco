@@ -164,7 +164,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
         auto height = self->height;
         Gfx::Context* clipped = nullptr;
 
-        Gfx::clipDrawpixelinfo(&clipped, context, x, y, width, height);
+        Gfx::clipContext(&clipped, context, x, y, width, height);
 
         if (clipped == nullptr)
             return;

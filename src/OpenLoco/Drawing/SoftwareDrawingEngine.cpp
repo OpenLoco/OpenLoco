@@ -160,14 +160,14 @@ namespace OpenLoco::Drawing
         regs.dx = rect.bottom() - 1;
         call(0x00451D98, regs);
 
-        Context windowDPI;
-        windowDPI.width = rect.width();
-        windowDPI.height = rect.height();
-        windowDPI.x = rect.left();
-        windowDPI.y = rect.top();
-        windowDPI.bits = screen_info->context.bits + rect.left() + ((screen_info->context.width + screen_info->context.pitch) * rect.top());
-        windowDPI.pitch = screen_info->context.width + screen_info->context.pitch - rect.width();
-        windowDPI.zoom_level = 0;
+        Context windowContext;
+        windowContext.width = rect.width();
+        windowContext.height = rect.height();
+        windowContext.x = rect.left();
+        windowContext.y = rect.top();
+        windowContext.bits = screen_info->context.bits + rect.left() + ((screen_info->context.width + screen_info->context.pitch) * rect.top());
+        windowContext.pitch = screen_info->context.width + screen_info->context.pitch - rect.width();
+        windowContext.zoom_level = 0;
 
         for (size_t i = 0; i < Ui::WindowManager::count(); i++)
         {
@@ -182,7 +182,7 @@ namespace OpenLoco::Drawing
             if (rect.left() >= w->x + w->width || rect.top() >= w->y + w->height)
                 continue;
 
-            windowDraw(&windowDPI, w, rect);
+            windowDraw(&windowContext, w, rect);
         }
     }
 

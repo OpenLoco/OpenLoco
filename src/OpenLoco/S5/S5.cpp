@@ -112,9 +112,9 @@ namespace OpenLoco::S5
                 {
                     tempViewport->flags = ViewportFlags::town_names_displayed | ViewportFlags::station_names_displayed;
 
-                    // Swap screen DPI with our temporary one to draw the window then revert it back
+                    // Swap screen Context with our temporary one to draw the window then revert it back
                     auto& context = Gfx::screenContext();
-                    auto backupDpi = context;
+                    auto backupContext = context;
                     context.bits = reinterpret_cast<uint8_t*>(pixels);
                     context.x = 0;
                     context.y = 0;
@@ -123,7 +123,7 @@ namespace OpenLoco::S5
                     context.pitch = 0;
                     context.zoom_level = 0;
                     Gfx::redrawScreenRect(0, 0, size.width, size.height);
-                    context = backupDpi;
+                    context = backupContext;
                 }
 
                 WindowManager::close(WindowType::previewImage);

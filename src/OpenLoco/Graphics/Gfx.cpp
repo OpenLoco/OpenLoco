@@ -41,8 +41,7 @@ namespace OpenLoco::Gfx
     constexpr uint32_t g1_count_objects = 0x40000;
     constexpr uint32_t g1_count_temporary = 0x1000;
 
-    static loco_global<Context, 0x0050B884> _screen_dpi;
-    static loco_global<Context, 0x005233B8> _windowDPI;
+    static loco_global<Context, 0x0050B884> _screenContext;
 
     static loco_global<G1Element[g1_expected_count::disc + g1_count_temporary + g1_count_objects], 0x9E2424> _g1Elements;
 
@@ -73,7 +72,7 @@ namespace OpenLoco::Gfx
 
     Context& screenContext()
     {
-        return _screen_dpi;
+        return _screenContext;
     }
 
     const PaletteMap& PaletteMap::getDefault()
@@ -1222,7 +1221,7 @@ namespace OpenLoco::Gfx
         call(0x00448D90, regs);
     }
 
-    bool clipDrawpixelinfo(Gfx::Context** dst, Gfx::Context* src, int16_t x, int16_t y, int16_t width, int16_t height)
+    bool clipContext(Gfx::Context** dst, Gfx::Context* src, int16_t x, int16_t y, int16_t width, int16_t height)
     {
         registers regs;
         regs.ax = x;
@@ -1236,9 +1235,9 @@ namespace OpenLoco::Gfx
         return *dst != nullptr;
     }
 
-    bool clipDrawpixelinfo(Gfx::Context** dst, Gfx::Context* src, point_t pos, Gfx::ui_size_t size)
+    bool clipContext(Gfx::Context** dst, Gfx::Context* src, point_t pos, Gfx::ui_size_t size)
     {
-        return clipDrawpixelinfo(dst, src, pos.x, pos.y, size.width, size.height);
+        return clipContext(dst, src, pos.x, pos.y, size.width, size.height);
     }
 
     G1Element* getG1Element(uint32_t id)

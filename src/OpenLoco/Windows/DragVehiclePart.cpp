@@ -68,7 +68,7 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
     static void draw(Ui::window* const self, Gfx::Context* const context)
     {
         Gfx::Context* clipped;
-        if (Gfx::clipDrawpixelinfo(&clipped, context, self->x, self->y, self->width, self->height))
+        if (Gfx::clipContext(&clipped, context, self->x, self->y, self->width, self->height))
         {
             Vehicle::Common::sub_4B743B(0, 0, 0, 19, _dragCarComponent, clipped);
         }

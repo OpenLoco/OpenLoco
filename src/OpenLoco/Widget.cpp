@@ -167,7 +167,7 @@ namespace OpenLoco::Ui::Widget
     void drawFrame(Gfx::Context* context, window* window, widget_t* widget, uint16_t flags, uint8_t colour)
     {
         Gfx::Context* clipped = nullptr;
-        if (Gfx::clipDrawpixelinfo(&clipped, context, widget->left + window->x, widget->top + window->y, widget->right - widget->left, 41))
+        if (Gfx::clipContext(&clipped, context, widget->left + window->x, widget->top + window->y, widget->right - widget->left, 41))
         {
             uint32_t image;
             if (window->flags & WindowFlags::flag_11)

@@ -97,7 +97,7 @@ namespace OpenLoco::Ui::Windows::ProgressBar
         self->draw(context);
 
         Gfx::Context* clipped = nullptr;
-        if (!Gfx::clipDrawpixelinfo(&clipped, context, Gfx::point_t(self->x + 2, self->y + 17), Gfx::ui_size_t(self->width - 5, self->height - 19)))
+        if (!Gfx::clipContext(&clipped, context, Gfx::point_t(self->x + 2, self->y + 17), Gfx::ui_size_t(self->width - 5, self->height - 19)))
             return;
 
         // First, draw the train track.
