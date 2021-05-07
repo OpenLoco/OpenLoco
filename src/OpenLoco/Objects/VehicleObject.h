@@ -237,8 +237,8 @@ namespace OpenLoco
         uint8_t numStartSounds;         // 0x15A use mask when accessing hasCrossingWhistle stuffed in (1 << 7)
         SoundObjectId_t startSounds[3]; // 0x15B sound array length numStartSounds highest sound is the crossing whistle
 
-        void drawPreviewImage(Gfx::Context& dpi, const int16_t x, const int16_t y) const;
-        void drawDescription(Gfx::Context& dpi, const int16_t x, const int16_t y, const int16_t width) const;
+        void drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const;
+        void drawDescription(Gfx::Context& context, const int16_t x, const int16_t y, const int16_t width) const;
         void getCargoString(char* buffer) const;
     };
 #pragma pack(pop)

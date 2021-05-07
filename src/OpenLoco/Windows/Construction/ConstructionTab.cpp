@@ -1905,14 +1905,14 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     // 0x0049D38A and 0x0049D16B
-    static void drawCostString(window* self, Gfx::Context* dpi)
+    static void drawCostString(window* self, Gfx::Context* context)
     {
         auto x = self->widgets[widx::construct].mid_x();
         x += self->x;
         auto y = self->widgets[widx::construct].bottom + self->y - 23;
 
         if (_constructionHover != 1)
-            Gfx::drawStringCentred(*dpi, x, y, Colour::black, StringIds::build_this);
+            Gfx::drawStringCentred(*context, x, y, Colour::black, StringIds::build_this);
 
         y += 11;
 
@@ -1922,13 +1922,13 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             {
                 auto args = FormatArguments();
                 args.push<uint32_t>(_trackCost);
-                Gfx::drawStringCentred(*dpi, x, y, Colour::black, StringIds::build_cost, &args);
+                Gfx::drawStringCentred(*context, x, y, Colour::black, StringIds::build_cost, &args);
             }
         }
     }
 
     // 0x0049D106
-    static void drawTrackCost(window* self, Gfx::Context* clipped, Gfx::Context* dpi, xy32 pos, uint16_t width, uint16_t height)
+    static void drawTrackCost(window* self, Gfx::Context* clipped, Gfx::Context* context, xy32 pos, uint16_t width, uint16_t height)
     {
         width >>= 1;
         height >>= 1;
@@ -1945,11 +1945,11 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
         _byte_522095 = _byte_522095 & ~(1 << 1);
 
-        drawCostString(self, dpi);
+        drawCostString(self, context);
     }
 
     // 0x0049D325
-    static void drawRoadCost(window* self, Gfx::Context* clipped, Gfx::Context* dpi, xy32 pos, uint16_t width, uint16_t height)
+    static void drawRoadCost(window* self, Gfx::Context* clipped, Gfx::Context* context, xy32 pos, uint16_t width, uint16_t height)
     {
         width >>= 1;
         height >>= 1;
@@ -1966,14 +1966,14 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
         _byte_522095 = _byte_522095 & ~(1 << 1);
 
-        drawCostString(self, dpi);
+        drawCostString(self, context);
     }
 
     // 0x0049CF36
-    static void draw(window* self, Gfx::Context* dpi)
+    static void draw(window* self, Gfx::Context* context)
     {
-        self->draw(dpi);
-        Common::drawTabs(self, dpi);
+        self->draw(context);
+        Common::drawTabs(self, context);
 
         if (self->widgets[widx::bridge].type != widget_type::none)
         {
@@ -1987,7 +1987,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                     auto x = self->x + self->widgets[widx::bridge].left + 2;
                     auto y = self->y + self->widgets[widx::bridge].top + 1;
 
-                    Gfx::drawImage(dpi, x, y, imageId);
+                    Gfx::drawImage(context, x, y, imageId);
                 }
             }
         }
@@ -2016,7 +2016,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
             Gfx::Context* clipped = nullptr;
 
-            if (Gfx::clipDrawpixelinfo(&clipped, dpi, x, y, width, height))
+            if (Gfx::clipDrawpixelinfo(&clipped, context, x, y, width, height))
             {
                 const auto& roadPiece = Map::TrackData::getRoadPiece(_lastSelectedTrackPieceId);
                 const auto& lastRoadPart = roadPiece.back();
@@ -2038,11 +2038,11 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
                 auto pos2D = coordinate3dTo2d(pos3D.x, pos3D.y, pos3D.z, gCurrentRotation);
                 xy32 pos = { pos2D.x, pos2D.y };
-                drawRoadCost(self, clipped, dpi, pos, width, height);
+                drawRoadCost(self, clipped, context, pos, width, height);
             }
             else
             {
-                drawCostString(self, dpi);
+                drawCostString(self, context);
             }
         }
         else
@@ -2066,7 +2066,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
             Gfx::Context* clipped = nullptr;
 
-            if (Gfx::clipDrawpixelinfo(&clipped, dpi, x, y, width, height))
+            if (Gfx::clipDrawpixelinfo(&clipped, context, x, y, width, height))
             {
                 const auto& trackPiece = Map::TrackData::getTrackPiece(_lastSelectedTrackPieceId);
                 const auto& lastTrackPart = trackPiece.back();
@@ -2088,11 +2088,11 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
                 auto pos2D = coordinate3dTo2d(pos3D.x, pos3D.y, pos3D.z, gCurrentRotation);
                 xy32 pos = { pos2D.x, pos2D.y };
-                drawTrackCost(self, clipped, dpi, pos, width, height);
+                drawTrackCost(self, clipped, context, pos, width, height);
             }
             else
             {
-                drawCostString(self, dpi);
+                drawCostString(self, context);
             }
         }
     }

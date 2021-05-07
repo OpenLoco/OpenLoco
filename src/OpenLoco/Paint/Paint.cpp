@@ -118,9 +118,9 @@ namespace OpenLoco::Paint
         call(0x0045E779, regs);
     }
 
-    void PaintSession::init(Gfx::Context& dpi, const uint16_t viewportFlags)
+    void PaintSession::init(Gfx::Context& context, const uint16_t viewportFlags)
     {
-        _dpi = &dpi;
+        _dpi = &context;
         _nextFreePaintStruct = &_paintEntries[0];
         _endOfPaintStructArray = &_paintEntries[3998];
         _lastPS = nullptr;
@@ -135,9 +135,9 @@ namespace OpenLoco::Paint
     }
 
     // 0x0045A6CA
-    PaintSession* allocateSession(Gfx::Context& dpi, uint16_t viewportFlags)
+    PaintSession* allocateSession(Gfx::Context& context, uint16_t viewportFlags)
     {
-        _session.init(dpi, viewportFlags);
+        _session.init(context, viewportFlags);
         return &_session;
     }
 
@@ -454,14 +454,14 @@ namespace OpenLoco::Paint
         }
     }
 
-    static bool isSpriteInteractedWithPaletteSet(Gfx::Context* dpi, uint32_t imageId, const Gfx::point_t& coords, const Gfx::PaletteMap& paletteMap)
+    static bool isSpriteInteractedWithPaletteSet(Gfx::Context* context, uint32_t imageId, const Gfx::point_t& coords, const Gfx::PaletteMap& paletteMap)
     {
         static loco_global<const uint8_t*, 0x0050B860> _paletteMap;
         static loco_global<bool, 0x00E40114> _interactionResult;
         _paletteMap = paletteMap.data();
         registers regs{};
         regs.ebx = imageId;
-        regs.edi = reinterpret_cast<int32_t>(dpi);
+        regs.edi = reinterpret_cast<int32_t>(context);
         regs.cx = coords.x;
         regs.dx = coords.y;
         call(0x00447A5F, regs);
@@ -469,7 +469,7 @@ namespace OpenLoco::Paint
     }
 
     // 0x00447A0E
-    static bool isSpriteInteractedWith(Gfx::Context* dpi, uint32_t imageId, const Gfx::point_t& coords)
+    static bool isSpriteInteractedWith(Gfx::Context* context, uint32_t imageId, const Gfx::point_t& coords)
     {
         static loco_global<bool, 0x00E40114> _interactionResult;
         static loco_global<uint32_t, 0x00E04324> _interactionFlags;
@@ -493,7 +493,7 @@ namespace OpenLoco::Paint
         {
             _interactionFlags = 0;
         }
-        return isSpriteInteractedWithPaletteSet(dpi, imageId, coords, paletteMap);
+        return isSpriteInteractedWithPaletteSet(context, imageId, coords, paletteMap);
     }
 
     // 0x0045EDFC

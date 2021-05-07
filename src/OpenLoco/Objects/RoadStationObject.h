@@ -36,8 +36,8 @@ namespace OpenLoco
         uint8_t var_2C;
         uint8_t pad_2D[0x6E - 0x2D];
 
-        void drawPreviewImage(Gfx::Context& dpi, const int16_t x, const int16_t y) const;
-        void drawDescription(Gfx::Context& dpi, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const;
+        void drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const;
+        void drawDescription(Gfx::Context& context, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const;
     };
 #pragma pack(pop)
 

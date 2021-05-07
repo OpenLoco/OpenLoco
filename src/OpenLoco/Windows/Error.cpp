@@ -27,7 +27,7 @@ namespace OpenLoco::Ui::Windows::Error
     {
         static window_event_list events;
 
-        static void draw(Ui::window* self, Gfx::Context* dpi);
+        static void draw(Ui::window* self, Gfx::Context* context);
         static void onPeriodicUpdate(Ui::window* self);
         static void initEvents();
     }
@@ -204,7 +204,7 @@ namespace OpenLoco::Ui::Windows::Error
     namespace Common
     {
         // 0x00431C05
-        static void draw(Ui::window* self, Gfx::Context* dpi)
+        static void draw(Ui::window* self, Gfx::Context* context)
         {
             uint16_t x = self->x;
             uint16_t y = self->y;
@@ -212,22 +212,22 @@ namespace OpenLoco::Ui::Windows::Error
             uint16_t height = self->height;
             auto skin = ObjectManager::get<InterfaceSkinObject>()->colour_09;
 
-            Gfx::drawRect(dpi, x + 1, y + 1, width - 2, height - 2, 0x2000000 | 45);
-            Gfx::drawRect(dpi, x + 1, y + 1, width - 2, height - 2, 0x2000000 | (116 + skin));
+            Gfx::drawRect(context, x + 1, y + 1, width - 2, height - 2, 0x2000000 | 45);
+            Gfx::drawRect(context, x + 1, y + 1, width - 2, height - 2, 0x2000000 | (116 + skin));
 
-            Gfx::drawRect(dpi, x, y + 2, 1, height - 4, 0x2000000 | 46);
-            Gfx::drawRect(dpi, x + width - 1, y + 2, 1, height - 4, 0x2000000 | 46);
-            Gfx::drawRect(dpi, x + 2, y + height - 1, width - 4, 1, 0x2000000 | 46);
-            Gfx::drawRect(dpi, x + 2, y, width - 4, 1, 0x2000000 | 46);
+            Gfx::drawRect(context, x, y + 2, 1, height - 4, 0x2000000 | 46);
+            Gfx::drawRect(context, x + width - 1, y + 2, 1, height - 4, 0x2000000 | 46);
+            Gfx::drawRect(context, x + 2, y + height - 1, width - 4, 1, 0x2000000 | 46);
+            Gfx::drawRect(context, x + 2, y, width - 4, 1, 0x2000000 | 46);
 
-            Gfx::drawRect(dpi, x + 1, y + 1, 1, 1, 0x2000000 | 46);
-            Gfx::drawRect(dpi, x + width - 1 - 1, y + 1, 1, 1, 0x2000000 | 46);
-            Gfx::drawRect(dpi, x + 1, y + height - 1 - 1, 1, 1, 0x2000000 | 46);
-            Gfx::drawRect(dpi, x + width - 1 - 1, y + height - 1 - 1, 1, 1, 0x2000000 | 46);
+            Gfx::drawRect(context, x + 1, y + 1, 1, 1, 0x2000000 | 46);
+            Gfx::drawRect(context, x + width - 1 - 1, y + 1, 1, 1, 0x2000000 | 46);
+            Gfx::drawRect(context, x + 1, y + height - 1 - 1, 1, 1, 0x2000000 | 46);
+            Gfx::drawRect(context, x + width - 1 - 1, y + height - 1 - 1, 1, 1, 0x2000000 | 46);
 
             if (_errorCompetitorId == 0xFF)
             {
-                Gfx::drawStringCentredRaw(*dpi, ((width + 1) / 2) + x - 1, y + 1, _word_9C66B3, Colour::black, &_byte_9C64B3[0]);
+                Gfx::drawStringCentredRaw(*context, ((width + 1) / 2) + x - 1, y + 1, _word_9C66B3, Colour::black, &_byte_9C64B3[0]);
             }
             else
             {
@@ -241,14 +241,14 @@ namespace OpenLoco::Ui::Windows::Error
                 imageId = Gfx::recolour(imageId, company->mainColours.primary);
                 imageId++;
 
-                Gfx::drawImage(dpi, xPos, yPos, imageId);
+                Gfx::drawImage(context, xPos, yPos, imageId);
 
                 if (company->jail_status != 0)
                 {
-                    Gfx::drawImage(dpi, xPos, yPos, ImageIds::owner_jailed);
+                    Gfx::drawImage(context, xPos, yPos, ImageIds::owner_jailed);
                 }
 
-                Gfx::drawStringCentredRaw(*dpi, self->x + 156, self->y + 20, _word_9C66B3, Colour::black, &_byte_9C64B3[0]);
+                Gfx::drawStringCentredRaw(*context, self->x + 156, self->y + 20, _word_9C66B3, Colour::black, &_byte_9C64B3[0]);
             }
         }
 

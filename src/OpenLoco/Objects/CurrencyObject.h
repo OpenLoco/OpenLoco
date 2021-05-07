@@ -20,7 +20,7 @@ namespace OpenLoco
         uint8_t factor;          // 0x0B
         // !!! TODO: verify object isn't larger.
 
-        void drawPreviewImage(Gfx::Context& dpi, const int16_t x, const int16_t y) const;
+        void drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const;
     };
 #pragma pack(pop)
 }

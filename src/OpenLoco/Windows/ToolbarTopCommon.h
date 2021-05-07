@@ -30,7 +30,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
         };
     }
 
-    void draw(window* window, Gfx::Context* dpi);
+    void draw(window* window, Gfx::Context* context);
 
     void zoomMenuMouseDown(window* window, widget_index widgetIndex);
     void rotateMenuMouseDown(window* window, widget_index widgetIndex);

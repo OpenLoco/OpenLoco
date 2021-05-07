@@ -17,8 +17,8 @@ namespace OpenLoco::Paint
     template<typename FilterType>
     static void paintEntitiesWithFilter(PaintSession& session, const Map::Pos2& loc, FilterType&& filter)
     {
-        auto* dpi = session.getContext();
-        if (Config::get().vehicles_min_scale < dpi->zoom_level)
+        auto* context = session.getContext();
+        if (Config::get().vehicles_min_scale < context->zoom_level)
         {
             return;
         }
@@ -31,11 +31,11 @@ namespace OpenLoco::Paint
         EntityManager::EntityTileList entities(loc);
         for (auto* entity : entities)
         {
-            // TODO: Create a rect from dpi dims
-            auto left = dpi->x;
-            auto top = dpi->y;
-            auto right = left + dpi->width;
-            auto bottom = top + dpi->height;
+            // TODO: Create a rect from context dims
+            auto left = context->x;
+            auto top = context->y;
+            auto right = left + context->width;
+            auto bottom = top + context->height;
 
             // TODO: Create a rect from sprite dims and use a contains function
             if (entity->sprite_top > bottom)

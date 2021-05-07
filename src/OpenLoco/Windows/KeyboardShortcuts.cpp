@@ -41,8 +41,8 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
         };
     }
 
-    static void draw(Ui::window* self, Gfx::Context* dpi);
-    static void drawScroll(Ui::window* self, Gfx::Context* dpi, uint32_t scrollIndex);
+    static void draw(Ui::window* self, Gfx::Context* context);
+    static void drawScroll(Ui::window* self, Gfx::Context* context, uint32_t scrollIndex);
     static void onMouseUp(window* self, widget_index widgetIndex);
     static void loc_4BE832(window* self);
     static std::optional<FormatArguments> tooltip(window*, widget_index);
@@ -90,18 +90,18 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
     }
 
     // 0x004BE726
-    static void draw(Ui::window* self, Gfx::Context* dpi)
+    static void draw(Ui::window* self, Gfx::Context* context)
     {
         // Draw widgets.
-        self->draw(dpi);
+        self->draw(context);
     }
 
     // 0x004BE72C
-    static void drawScroll(Ui::window* self, Gfx::Context* dpi, uint32_t scrollIndex)
+    static void drawScroll(Ui::window* self, Gfx::Context* context, uint32_t scrollIndex)
     {
         auto colour = self->colours[1];
         auto shade = Colour::getShade(colour, 4);
-        Gfx::clearSingle(*dpi, shade);
+        Gfx::clearSingle(*context, shade);
 
         auto yPos = 0;
         for (auto i = 0; i < self->row_count; i++)
@@ -109,7 +109,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
             string_id format = StringIds::black_stringid;
             if (i == self->row_hover)
             {
-                Gfx::drawRect(dpi, 0, yPos, 800, rowHeight, 0x2000030);
+                Gfx::drawRect(context, 0, yPos, 800, rowHeight, 0x2000030);
                 format = StringIds::wcolour2_stringid;
             }
 
@@ -138,7 +138,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
             formatter.push(modifierStringId);
             formatter.push(baseStringId);
 
-            Gfx::drawString_494B3F(*dpi, 0, yPos - 1, Colour::black, format, &formatter);
+            Gfx::drawString_494B3F(*context, 0, yPos - 1, Colour::black, format, &formatter);
             yPos += rowHeight;
         }
     }

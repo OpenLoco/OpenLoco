@@ -148,7 +148,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
     }
 
     // 0x00429DAA
-    static void draw(Ui::window* self, Gfx::Context* dpi)
+    static void draw(Ui::window* self, Gfx::Context* context)
     {
         if (self->var_852 != 0)
             return;
@@ -164,7 +164,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
         auto height = self->height;
         Gfx::Context* clipped = nullptr;
 
-        Gfx::clipDrawpixelinfo(&clipped, dpi, x, y, width, height);
+        Gfx::clipDrawpixelinfo(&clipped, context, x, y, width, height);
 
         if (clipped == nullptr)
             return;

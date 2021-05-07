@@ -13,9 +13,9 @@ namespace OpenLoco::Drawing
     static loco_global<Ui::ScreenInfo, 0x0050B884> screen_info;
     static loco_global<uint8_t[1], 0x00E025C4> _E025C4;
 
-    static void windowDraw(Context* dpi, Ui::window* w, Rect rect);
-    static void windowDraw(Context* dpi, Ui::window* w, int16_t left, int16_t top, int16_t right, int16_t bottom);
-    static bool windowDrawSplit(Gfx::Context* dpi, Ui::window* w, int16_t left, int16_t top, int16_t right, int16_t bottom);
+    static void windowDraw(Context* context, Ui::window* w, Rect rect);
+    static void windowDraw(Context* context, Ui::window* w, int16_t left, int16_t top, int16_t right, int16_t bottom);
+    static bool windowDrawSplit(Gfx::Context* context, Ui::window* w, int16_t left, int16_t top, int16_t right, int16_t bottom);
 
     // T[m][n]
     template<typename T>
@@ -165,8 +165,8 @@ namespace OpenLoco::Drawing
         windowDPI.height = rect.height();
         windowDPI.x = rect.left();
         windowDPI.y = rect.top();
-        windowDPI.bits = screen_info->dpi.bits + rect.left() + ((screen_info->dpi.width + screen_info->dpi.pitch) * rect.top());
-        windowDPI.pitch = screen_info->dpi.width + screen_info->dpi.pitch - rect.width();
+        windowDPI.bits = screen_info->context.bits + rect.left() + ((screen_info->context.width + screen_info->context.pitch) * rect.top());
+        windowDPI.pitch = screen_info->context.width + screen_info->context.pitch - rect.width();
         windowDPI.zoom_level = 0;
 
         for (size_t i = 0; i < Ui::WindowManager::count(); i++)
@@ -186,9 +186,9 @@ namespace OpenLoco::Drawing
         }
     }
 
-    static void windowDraw(Context* dpi, Ui::window* w, Rect rect)
+    static void windowDraw(Context* context, Ui::window* w, Rect rect)
     {
-        windowDraw(dpi, w, rect.left(), rect.top(), rect.right(), rect.bottom());
+        windowDraw(context, w, rect.left(), rect.top(), rect.right(), rect.bottom());
     }
 
     /**
@@ -200,13 +200,13 @@ namespace OpenLoco::Drawing
      * @param right @<dx>
      * @param bottom @<bp>
      */
-    static void windowDraw(Context* dpi, Ui::window* w, int16_t left, int16_t top, int16_t right, int16_t bottom)
+    static void windowDraw(Context* context, Ui::window* w, int16_t left, int16_t top, int16_t right, int16_t bottom)
     {
         if (!w->isVisible())
             return;
 
         // Split window into only the regions that require drawing
-        if (windowDrawSplit(dpi, w, left, top, right, bottom))
+        if (windowDrawSplit(context, w, left, top, right, bottom))
             return;
 
         // Clamp region
@@ -220,7 +220,7 @@ namespace OpenLoco::Drawing
             return;
 
         // Draw the window in this region
-        Ui::WindowManager::drawSingle(dpi, w, left, top, right, bottom);
+        Ui::WindowManager::drawSingle(context, w, left, top, right, bottom);
 
         for (uint32_t index = Ui::WindowManager::indexOf(w) + 1; index < Ui::WindowManager::count(); index++)
         {
@@ -230,14 +230,14 @@ namespace OpenLoco::Drawing
             if ((v->flags & Ui::WindowFlags::transparent) == 0)
                 continue;
 
-            Ui::WindowManager::drawSingle(dpi, v, left, top, right, bottom);
+            Ui::WindowManager::drawSingle(context, v, left, top, right, bottom);
         }
     }
 
     /**
      * 0x004C5EA9
      *
-     * @param dpi
+     * @param context
      * @param w @<esi>
      * @param left @<ax>
      * @param top @<bx>
@@ -245,7 +245,7 @@ namespace OpenLoco::Drawing
      * @param bottom @<bp>
      * @return
      */
-    static bool windowDrawSplit(Gfx::Context* dpi, Ui::window* w, int16_t left, int16_t top, int16_t right, int16_t bottom)
+    static bool windowDrawSplit(Gfx::Context* context, Ui::window* w, int16_t left, int16_t top, int16_t right, int16_t bottom)
     {
         // Divide the draws up for only the visible regions of the window recursively
         for (uint32_t index = Ui::WindowManager::indexOf(w) + 1; index < Ui::WindowManager::count(); index++)
@@ -264,26 +264,26 @@ namespace OpenLoco::Drawing
             if (topwindow->x > left)
             {
                 // Split draw at topwindow.left
-                windowDraw(dpi, w, left, top, topwindow->x, bottom);
-                windowDraw(dpi, w, topwindow->x, top, right, bottom);
+                windowDraw(context, w, left, top, topwindow->x, bottom);
+                windowDraw(context, w, topwindow->x, top, right, bottom);
             }
             else if (topwindow->x + topwindow->width < right)
             {
                 // Split draw at topwindow.right
-                windowDraw(dpi, w, left, top, topwindow->x + topwindow->width, bottom);
-                windowDraw(dpi, w, topwindow->x + topwindow->width, top, right, bottom);
+                windowDraw(context, w, left, top, topwindow->x + topwindow->width, bottom);
+                windowDraw(context, w, topwindow->x + topwindow->width, top, right, bottom);
             }
             else if (topwindow->y > top)
             {
                 // Split draw at topwindow.top
-                windowDraw(dpi, w, left, top, right, topwindow->y);
-                windowDraw(dpi, w, left, topwindow->y, right, bottom);
+                windowDraw(context, w, left, top, right, topwindow->y);
+                windowDraw(context, w, left, topwindow->y, right, bottom);
             }
             else if (topwindow->y + topwindow->height < bottom)
             {
                 // Split draw at topwindow.bottom
-                windowDraw(dpi, w, left, top, right, topwindow->y + topwindow->height);
-                windowDraw(dpi, w, left, topwindow->y + topwindow->height, right, bottom);
+                windowDraw(context, w, left, top, right, topwindow->y + topwindow->height);
+                windowDraw(context, w, left, topwindow->y + topwindow->height, right, bottom);
             }
 
             // Drawing for this region should be done now, exit

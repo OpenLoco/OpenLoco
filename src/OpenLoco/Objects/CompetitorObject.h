@@ -25,8 +25,8 @@ namespace OpenLoco
         uint8_t competitiveness; // 0x36
         uint8_t var_37;          // 0x37
 
-        void drawPreviewImage(Gfx::Context& dpi, const int16_t x, const int16_t y) const;
-        void drawDescription(Gfx::Context& dpi, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const;
+        void drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const;
+        void drawDescription(Gfx::Context& context, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const;
     };
     static_assert(sizeof(CompetitorObject) == 0x38);
 #pragma pack(pop)

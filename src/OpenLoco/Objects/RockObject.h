@@ -15,7 +15,7 @@ namespace OpenLoco
         string_id name;
         uint32_t image; // 0x02
 
-        void drawPreviewImage(Gfx::Context& dpi, const int16_t x, const int16_t y) const;
+        void drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const;
     };
 #pragma pack(pop)
 }

@@ -67,8 +67,8 @@ namespace OpenLoco
         MovementEdge* movementEdges; // 0xB2
         uint8_t pad_B6[0xBA - 0xB6];
 
-        void drawPreviewImage(Gfx::Context& dpi, const int16_t x, const int16_t y) const;
-        void drawDescription(Gfx::Context& dpi, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const;
+        void drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const;
+        void drawDescription(Gfx::Context& context, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const;
     };
 #pragma pack(pop)
 }

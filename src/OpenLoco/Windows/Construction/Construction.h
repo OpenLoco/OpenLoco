@@ -109,7 +109,7 @@ namespace OpenLoco::Ui::Windows::Construction
         void prepareDraw(window* self);
         void switchTab(window* self, widget_index widgetIndex);
         void repositionTabs(window* self);
-        void drawTabs(window* self, Gfx::Context* dpi);
+        void drawTabs(window* self, Gfx::Context* context);
         void initEvents();
         void sub_49FEC7();
         void onClose(window* self);

@@ -146,7 +146,7 @@ namespace OpenLoco::Ui
             return Rect::fromLTRB(leftTop.x, leftTop.y, rightBottom.x, rightBottom.y);
         }
 
-        void render(Gfx::Context* dpi);
+        void render(Gfx::Context* context);
         static viewport_pos mapFrom3d(Map::Pos3 loc, int32_t rotation);
         void centre2dCoordinates(int16_t x, int16_t y, int16_t z, int16_t* outX, int16_t* outY);
         SavedViewSimple toSavedView() const;

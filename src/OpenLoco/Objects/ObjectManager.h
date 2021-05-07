@@ -290,5 +290,5 @@ namespace OpenLoco::ObjectManager
 
     size_t getByteLength(LoadedObjectIndex id);
 
-    void drawGenericDescription(Gfx::Context& dpi, Gfx::point_t& rowPosition, const uint16_t designed, const uint16_t obsolete);
+    void drawGenericDescription(Gfx::Context& context, Gfx::point_t& rowPosition, const uint16_t designed, const uint16_t obsolete);
 }

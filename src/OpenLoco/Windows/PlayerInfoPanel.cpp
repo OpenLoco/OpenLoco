@@ -60,7 +60,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     static loco_global<uint16_t, 0x0113DC78> _113DC78; // Dropdown flags?
 
     static void prepareDraw(window* window);
-    static void draw(Ui::window* window, Gfx::Context* dpi);
+    static void draw(Ui::window* window, Gfx::Context* context);
     static void onMouseUp(Ui::window* window, widget_index widgetIndex);
     static void onMouseDown(Ui::window* window, widget_index widgetIndex);
     static void onDropdown(window* w, widget_index widgetIndex, int16_t item_index);
@@ -207,20 +207,20 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     }
 
     // 0x43944B
-    static void draw(Ui::window* window, Gfx::Context* dpi)
+    static void draw(Ui::window* window, Gfx::Context* context)
     {
         widget_t& frame = _widgets[Widx::outer_frame];
-        Gfx::drawRect(dpi, window->x + frame.left, window->y + frame.top, frame.width(), frame.height(), 0x2000000 | 52);
+        Gfx::drawRect(context, window->x + frame.left, window->y + frame.top, frame.width(), frame.height(), 0x2000000 | 52);
 
         // Draw widgets.
-        window->draw(dpi);
+        window->draw(context);
 
-        drawRectInset(dpi, window->x + frame.left + 1, window->y + frame.top + 1, frame.width() - 2, frame.height() - 2, window->colours[1], 0x30);
+        drawRectInset(context, window->x + frame.left + 1, window->y + frame.top + 1, frame.width() - 2, frame.height() - 2, window->colours[1], 0x30);
 
         auto playerCompany = CompanyManager::get(CompanyManager::getControllingId());
         auto competitor = ObjectManager::get<CompetitorObject>(playerCompany->competitor_id);
         auto image = Gfx::recolour(competitor->images[playerCompany->owner_emotion], playerCompany->mainColours.primary);
-        Gfx::drawImage(dpi, window->x + frame.left + 2, window->y + frame.top + 2, image);
+        Gfx::drawImage(context, window->x + frame.left + 2, window->y + frame.top + 2, image);
 
         auto x = window->x + frame.width() / 2 + 12;
         {
@@ -245,7 +245,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
             auto args = FormatArguments();
             args.push(playerCompany->cash.var_00);
             args.push(playerCompany->cash.var_04);
-            Gfx::drawStringCentred(*dpi, x, window->y + frame.top + 2, colour, companyValueString, &args);
+            Gfx::drawStringCentred(*context, x, window->y + frame.top + 2, colour, companyValueString, &args);
         }
 
         {
@@ -268,7 +268,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
 
             auto args = FormatArguments();
             args.push(playerCompany->performance_index);
-            Gfx::drawStringCentred(*dpi, x, window->y + frame.top + 14, colour, performanceString, &args);
+            Gfx::drawStringCentred(*context, x, window->y + frame.top + 14, colour, performanceString, &args);
         }
     }
 

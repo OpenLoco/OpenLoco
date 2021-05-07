@@ -68,7 +68,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         static void switchTab(window* window, widget_index widgetIndex);
 
         // 0x0043ECA4
-        static void drawTabs(window* window, Gfx::Context* dpi)
+        static void drawTabs(window* window, Gfx::Context* context)
         {
             auto skin = ObjectManager::get<InterfaceSkinObject>();
 
@@ -87,39 +87,39 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 else
                     imageId += optionTabImageIds[0];
 
-                Widget::draw_tab(window, dpi, imageId, widx::tab_options);
+                Widget::draw_tab(window, context, imageId, widx::tab_options);
             }
 
             // Land tab
             {
                 auto land = ObjectManager::get<LandObject>(*primaryLandObjectIndex);
                 const uint32_t imageId = land->var_16 + Land::ImageIds::toolbar_terraform_land;
-                Widget::draw_tab(window, dpi, imageId, widx::tab_land);
+                Widget::draw_tab(window, context, imageId, widx::tab_land);
             }
 
             // Forest tab
             {
                 const uint32_t imageId = skin->img + InterfaceSkin::ImageIds::toolbar_menu_plant_trees;
-                Widget::draw_tab(window, dpi, imageId, widx::tab_forests);
+                Widget::draw_tab(window, context, imageId, widx::tab_forests);
             }
 
             // Towns tab
             {
                 const uint32_t imageId = skin->img + InterfaceSkin::ImageIds::toolbar_menu_towns;
-                Widget::draw_tab(window, dpi, imageId, widx::tab_towns);
+                Widget::draw_tab(window, context, imageId, widx::tab_towns);
             }
 
             // Industries tab
             {
                 const uint32_t imageId = skin->img + InterfaceSkin::ImageIds::toolbar_menu_industries;
-                Widget::draw_tab(window, dpi, imageId, widx::tab_industries);
+                Widget::draw_tab(window, context, imageId, widx::tab_industries);
             }
         }
 
-        static void draw(window* window, Gfx::Context* dpi)
+        static void draw(window* window, Gfx::Context* context)
         {
-            window->draw(dpi);
-            drawTabs(window, dpi);
+            window->draw(context);
+            drawTabs(window, context);
         }
 
         static void prepareDraw(window* window)
@@ -171,12 +171,12 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         static window_event_list events;
 
         // 0x0043DC30
-        static void draw(window* window, Gfx::Context* dpi)
+        static void draw(window* window, Gfx::Context* context)
         {
-            Common::draw(window, dpi);
+            Common::draw(window, context);
 
             Gfx::drawString_494B3F(
-                *dpi,
+                *context,
                 window->x + 10,
                 window->y + window->widgets[widx::start_year].top,
                 Colour::black,
@@ -372,40 +372,40 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         static window_event_list events;
 
         // 0x0043DF89
-        static void draw(window* window, Gfx::Context* dpi)
+        static void draw(window* window, Gfx::Context* context)
         {
-            Common::draw(window, dpi);
+            Common::draw(window, context);
 
             Gfx::drawString_494B3F(
-                *dpi,
+                *context,
                 window->x + 10,
                 window->y + window->widgets[widx::generator].top,
                 Colour::black,
                 StringIds::generator);
 
             Gfx::drawString_494B3F(
-                *dpi,
+                *context,
                 window->x + 10,
                 window->y + window->widgets[widx::sea_level].top,
                 Colour::black,
                 StringIds::sea_level);
 
             Gfx::drawString_494B3F(
-                *dpi,
+                *context,
                 window->x + 10,
                 window->y + window->widgets[widx::min_land_height].top,
                 Colour::black,
                 StringIds::min_land_height);
 
             Gfx::drawString_494B3F(
-                *dpi,
+                *context,
                 window->x + 10,
                 window->y + window->widgets[widx::topography_style].top,
                 Colour::black,
                 StringIds::topography_style);
 
             Gfx::drawString_494B3F(
-                *dpi,
+                *context,
                 window->x + 10,
                 window->y + window->widgets[widx::hill_density].top,
                 Colour::black,
@@ -425,7 +425,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         };
 
         // 0x0043E01C
-        static void drawScroll(Ui::window* window, Gfx::Context* dpi, uint32_t scrollIndex)
+        static void drawScroll(Ui::window* window, Gfx::Context* context, uint32_t scrollIndex)
         {
             uint16_t yPos = 0;
             for (uint16_t i = 0; i < maxLandObjects; i++)
@@ -436,26 +436,26 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
                 // Draw tile icon.
                 const uint32_t imageId = landObject->var_16 + OpenLoco::Land::ImageIds::landscape_generator_tile_icon;
-                Gfx::drawImage(dpi, 2, yPos + 1, imageId);
+                Gfx::drawImage(context, 2, yPos + 1, imageId);
 
                 // Draw land description.
                 commonFormatArgs[0] = landObject->name;
-                Gfx::drawString_494BBF(*dpi, 24, yPos + 5, 121, Colour::black, StringIds::wcolour2_stringid, &*commonFormatArgs);
+                Gfx::drawString_494BBF(*context, 24, yPos + 5, 121, Colour::black, StringIds::wcolour2_stringid, &*commonFormatArgs);
 
                 // Draw rectangle.
-                Gfx::fillRectInset(dpi, 150, yPos + 5, 340, yPos + 16, window->colours[1], 0b110000);
+                Gfx::fillRectInset(context, 150, yPos + 5, 340, yPos + 16, window->colours[1], 0b110000);
 
                 // Draw current distribution setting.
                 const string_id distributionId = landDistributionLabelIds[S5::getOptions().landDistributionPatterns[i]];
                 commonFormatArgs[0] = distributionId;
-                Gfx::drawString_494BBF(*dpi, 151, yPos + 5, 177, Colour::black, StringIds::black_stringid, &*commonFormatArgs);
+                Gfx::drawString_494BBF(*context, 151, yPos + 5, 177, Colour::black, StringIds::black_stringid, &*commonFormatArgs);
 
                 // Draw rectangle (knob).
                 const uint8_t flags = window->row_hover == i ? 0b110000 : 0;
-                Gfx::fillRectInset(dpi, 329, yPos + 6, 339, yPos + 15, window->colours[1], flags);
+                Gfx::fillRectInset(context, 329, yPos + 6, 339, yPos + 15, window->colours[1], flags);
 
                 // Draw triangle (knob).
-                Gfx::drawString_494B3F(*dpi, 330, yPos + 6, Colour::black, StringIds::dropdown, nullptr);
+                Gfx::drawString_494B3F(*context, 330, yPos + 6, Colour::black, StringIds::dropdown, nullptr);
 
                 yPos += rowHeight;
             }
@@ -755,61 +755,61 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         static window_event_list events;
 
         // 0x0043E53A
-        static void draw(window* window, Gfx::Context* dpi)
+        static void draw(window* window, Gfx::Context* context)
         {
-            Common::draw(window, dpi);
+            Common::draw(window, context);
 
             Gfx::drawString_494B3F(
-                *dpi,
+                *context,
                 window->x + 10,
                 window->y + window->widgets[widx::number_of_forests].top,
                 Colour::black,
                 StringIds::number_of_forests);
 
             Gfx::drawString_494B3F(
-                *dpi,
+                *context,
                 window->x + 10,
                 window->y + window->widgets[widx::min_forest_radius].top,
                 Colour::black,
                 StringIds::min_forest_radius);
 
             Gfx::drawString_494B3F(
-                *dpi,
+                *context,
                 window->x + 10,
                 window->y + window->widgets[widx::max_forest_radius].top,
                 Colour::black,
                 StringIds::max_forest_radius);
 
             Gfx::drawString_494B3F(
-                *dpi,
+                *context,
                 window->x + 10,
                 window->y + window->widgets[widx::min_forest_density].top,
                 Colour::black,
                 StringIds::min_forest_density);
 
             Gfx::drawString_494B3F(
-                *dpi,
+                *context,
                 window->x + 10,
                 window->y + window->widgets[widx::max_forest_density].top,
                 Colour::black,
                 StringIds::max_forest_density);
 
             Gfx::drawString_494B3F(
-                *dpi,
+                *context,
                 window->x + 10,
                 window->y + window->widgets[widx::number_random_trees].top,
                 Colour::black,
                 StringIds::number_random_trees);
 
             Gfx::drawString_494B3F(
-                *dpi,
+                *context,
                 window->x + 10,
                 window->y + window->widgets[widx::min_altitude_for_trees].top,
                 Colour::black,
                 StringIds::min_altitude_for_trees);
 
             Gfx::drawString_494B3F(
-                *dpi,
+                *context,
                 window->x + 10,
                 window->y + window->widgets[widx::max_altitude_for_trees].top,
                 Colour::black,
@@ -994,19 +994,19 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         static window_event_list events;
 
         // 0x0043E9A3
-        static void draw(window* window, Gfx::Context* dpi)
+        static void draw(window* window, Gfx::Context* context)
         {
-            Common::draw(window, dpi);
+            Common::draw(window, context);
 
             Gfx::drawString_494B3F(
-                *dpi,
+                *context,
                 window->x + 10,
                 window->y + window->widgets[widx::number_of_towns].top,
                 Colour::black,
                 StringIds::number_of_towns);
 
             Gfx::drawString_494B3F(
-                *dpi,
+                *context,
                 window->x + 10,
                 window->y + window->widgets[widx::max_town_size].top,
                 Colour::black,
@@ -1136,12 +1136,12 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         static window_event_list events;
 
         // 0x0043EB9D
-        static void draw(window* window, Gfx::Context* dpi)
+        static void draw(window* window, Gfx::Context* context)
         {
-            Common::draw(window, dpi);
+            Common::draw(window, context);
 
             Gfx::drawString_494B3F(
-                *dpi,
+                *context,
                 window->x + 10,
                 window->y + window->widgets[widx::num_industries].top,
                 Colour::black,

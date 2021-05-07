@@ -6,11 +6,11 @@
 namespace OpenLoco
 {
     // 0x00490A26
-    void TrainStationObject::drawPreviewImage(Gfx::Context& dpi, const int16_t x, const int16_t y) const
+    void TrainStationObject::drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const
     {
         auto colourImage = Gfx::recolour(image, Colour::salmon_pink);
 
-        Gfx::drawImage(&dpi, x - 34, y - 34, colourImage);
+        Gfx::drawImage(&context, x - 34, y - 34, colourImage);
 
         auto colour = PaletteIndex::index_3B;
         if (!(flags & TrainStationFlags::recolourable))
@@ -20,13 +20,13 @@ namespace OpenLoco
 
         auto translucentImage = Gfx::recolourTranslucent(image + 1, colour);
 
-        Gfx::drawImage(&dpi, x - 34, y - 34, translucentImage);
+        Gfx::drawImage(&context, x - 34, y - 34, translucentImage);
     }
 
     // 0x00490A68
-    void TrainStationObject::drawDescription(Gfx::Context& dpi, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const
+    void TrainStationObject::drawDescription(Gfx::Context& context, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const
     {
         Gfx::point_t rowPosition = { x, y };
-        ObjectManager::drawGenericDescription(dpi, rowPosition, designed_year, obsolete_year);
+        ObjectManager::drawGenericDescription(context, rowPosition, designed_year, obsolete_year);
     }
 }

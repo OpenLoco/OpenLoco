@@ -11,16 +11,16 @@ namespace OpenLoco
     static const Gfx::ui_size_t objectPreviewSize = { 112, 112 };
 
     // 0x00434D5B
-    void CompetitorObject::drawPreviewImage(Gfx::Context& dpi, const int16_t x, const int16_t y) const
+    void CompetitorObject::drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const
     {
-        Gfx::drawRect(&dpi, 0, 0, objectPreviewSize.width, objectPreviewSize.height, Colour::inset(Colour::dark_brown));
+        Gfx::drawRect(&context, 0, 0, objectPreviewSize.width, objectPreviewSize.height, Colour::inset(Colour::dark_brown));
 
         auto image = Gfx::recolour(images[0], Colour::inset(Colour::dark_brown));
-        Gfx::drawImage(&dpi, x - 32, y - 32, image);
+        Gfx::drawImage(&context, x - 32, y - 32, image);
     }
 
     // 0x00434DA7
-    void CompetitorObject::drawDescription(Gfx::Context& dpi, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const
+    void CompetitorObject::drawDescription(Gfx::Context& context, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const
     {
         Gfx::point_t rowPosition = { x, y };
         {
@@ -28,7 +28,7 @@ namespace OpenLoco
             args.push<uint16_t>(intelligence);
             args.push(aiRatingToLevel(intelligence));
 
-            Gfx::drawString_494B3F(dpi, rowPosition.x, rowPosition.y, Colour::black, StringIds::company_details_intelligence, &args);
+            Gfx::drawString_494B3F(context, rowPosition.x, rowPosition.y, Colour::black, StringIds::company_details_intelligence, &args);
             rowPosition.y += descriptionRowHeight;
         }
         {
@@ -36,7 +36,7 @@ namespace OpenLoco
             args.push<uint16_t>(aggressiveness);
             args.push(aiRatingToLevel(aggressiveness));
 
-            Gfx::drawString_494B3F(dpi, rowPosition.x, rowPosition.y, Colour::black, StringIds::company_details_aggressiveness, &args);
+            Gfx::drawString_494B3F(context, rowPosition.x, rowPosition.y, Colour::black, StringIds::company_details_aggressiveness, &args);
             rowPosition.y += descriptionRowHeight;
         }
         {
@@ -44,7 +44,7 @@ namespace OpenLoco
             args.push<uint16_t>(competitiveness);
             args.push(aiRatingToLevel(competitiveness));
 
-            Gfx::drawString_494B3F(dpi, rowPosition.x, rowPosition.y, Colour::black, StringIds::company_details_competitiveness, &args);
+            Gfx::drawString_494B3F(context, rowPosition.x, rowPosition.y, Colour::black, StringIds::company_details_competitiveness, &args);
         }
     }
 

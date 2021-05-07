@@ -90,14 +90,14 @@ namespace OpenLoco::Ui::Windows::AboutMusic
     }
 
     // 0x0043B8B8
-    static void draw(Ui::window* const window, Gfx::Context* const dpi)
+    static void draw(Ui::window* const window, Gfx::Context* const context)
     {
         // Draw widgets.
-        window->draw(dpi);
+        window->draw(context);
     }
 
     // 0x0043B8BE
-    static void drawScroll(Ui::window*, Gfx::Context* const dpi, uint32_t)
+    static void drawScroll(Ui::window*, Gfx::Context* const context, uint32_t)
     {
         static const std::pair<string_id, string_id> stringsToDraw[numSongs] = {
             { StringIds::locomotion_title, StringIds::locomotion_title_credit },
@@ -141,15 +141,15 @@ namespace OpenLoco::Ui::Windows::AboutMusic
             // TODO: optimisation: don't draw past fold.
 
             // Song name
-            drawStringCentred(*dpi, x, y, Colour::black, songStrings.first, nullptr);
+            drawStringCentred(*context, x, y, Colour::black, songStrings.first, nullptr);
             y += 10;
 
             // Credit line
-            drawStringCentred(*dpi, x, y, Colour::black, songStrings.second, nullptr);
+            drawStringCentred(*context, x, y, Colour::black, songStrings.second, nullptr);
             y += 10;
 
             // Show CS' copyright after every two lines.
-            drawStringCentred(*dpi, x, y, Colour::black, StringIds::music_copyright, nullptr);
+            drawStringCentred(*context, x, y, Colour::black, StringIds::music_copyright, nullptr);
             y += 14;
         }
     }

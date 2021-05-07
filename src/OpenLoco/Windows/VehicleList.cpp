@@ -227,7 +227,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x004C2A6E
-    static void drawTabs(window* self, Gfx::Context* dpi)
+    static void drawTabs(window* self, Gfx::Context* context)
     {
         auto skin = ObjectManager::get<InterfaceSkinObject>();
         auto companyColour = CompanyManager::getCompanyColour(self->number);
@@ -304,7 +304,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
             auto imageId = isActive ? frames[self->frame_no / 2 % 8] : frames[0];
 
             uint32_t image = Gfx::recolour(skin->img + imageId, companyColour);
-            Widget::draw_tab(self, dpi, image, tab);
+            Widget::draw_tab(self, context, image, tab);
         }
     }
 
@@ -478,10 +478,10 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x004C211C
-    static void draw(window* self, Gfx::Context* dpi)
+    static void draw(window* self, Gfx::Context* context)
     {
-        self->draw(dpi);
-        drawTabs(self, dpi);
+        self->draw(context);
+        drawTabs(self, context);
 
         // Draw company owner image.
         auto company = CompanyManager::get(self->number);
@@ -489,7 +489,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         uint32_t image = Gfx::recolour(competitorObj->images[company->owner_emotion], company->mainColours.primary);
         uint16_t x = self->x + self->widgets[Widx::company_select].left + 1;
         uint16_t y = self->y + self->widgets[Widx::company_select].top + 1;
-        Gfx::drawImage(dpi, x, y, image);
+        Gfx::drawImage(context, x, y, image);
 
         static constexpr std::pair<string_id, string_id> typeToFooterStringIds[]{
             { StringIds::num_trains_singular, StringIds::num_trains_plural },
@@ -504,15 +504,15 @@ namespace OpenLoco::Ui::Windows::VehicleList
         string_id footerStringId = self->var_83C == 1 ? footerStringPair.first : footerStringPair.second;
 
         auto args = FormatArguments::common(footerStringId, self->var_83C);
-        Gfx::drawString_494B3F(*dpi, self->x + 3, self->y + self->height - 13, Colour::black, StringIds::black_stringid, &args);
+        Gfx::drawString_494B3F(*context, self->x + 3, self->y + self->height - 13, Colour::black, StringIds::black_stringid, &args);
     }
 
     // 0x004B6D43
-    static void drawVehicle(VehicleHead* vehicle, Gfx::Context* dpi, uint16_t yPos)
+    static void drawVehicle(VehicleHead* vehicle, Gfx::Context* context, uint16_t yPos)
     {
         registers regs;
         regs.esi = (int32_t)vehicle;
-        regs.edi = (int32_t)dpi;
+        regs.edi = (int32_t)context;
         regs.al = 0x40;
         regs.cx = 0;
         regs.dx = yPos;
@@ -520,10 +520,10 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x004C21CD
-    static void drawScroll(window* self, Gfx::Context* dpi, uint32_t scrollIndex)
+    static void drawScroll(window* self, Gfx::Context* context, uint32_t scrollIndex)
     {
         auto shade = Colour::getShade(self->colours[1], 1);
-        Gfx::clearSingle(*dpi, shade);
+        Gfx::clearSingle(*context, shade);
 
         auto yPos = 0;
         for (auto i = 0; i < self->var_83C; i++)
@@ -531,7 +531,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
             auto vehicleId = self->row_info[i];
 
             // Item not in rendering context, or no vehicle available for this slot?
-            if (yPos + self->row_height < dpi->y || yPos >= dpi->y + dpi->height + self->row_height || vehicleId == -1)
+            if (yPos + self->row_height < context->y || yPos >= context->y + context->height + self->row_height || vehicleId == -1)
             {
                 yPos += self->row_height;
                 continue;
@@ -541,10 +541,10 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
             // Highlight selection.
             if (head->id == self->row_hover)
-                Gfx::drawRect(dpi, 0, yPos, self->width, self->row_height, Colour::getShade(self->colours[1], 0));
+                Gfx::drawRect(context, 0, yPos, self->width, self->row_height, Colour::getShade(self->colours[1], 0));
 
             // Draw vehicle at the bottom of the row.
-            drawVehicle(head, dpi, yPos + (self->row_height - 28) / 2 + 6);
+            drawVehicle(head, context, yPos + (self->row_height - 28) / 2 + 6);
 
             // Draw vehicle status
             {
@@ -564,7 +564,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
                 // Draw status
                 yPos += 2;
-                Gfx::drawString_494BBF(*dpi, 1, yPos, 308, Colour::outline(Colour::black), format, &args);
+                Gfx::drawString_494BBF(*context, 1, yPos, 308, Colour::outline(Colour::black), format, &args);
             }
 
             auto vehicle = Vehicles::Vehicle(head);
@@ -580,7 +580,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
                 }
 
                 auto args = FormatArguments::common(profit);
-                Gfx::drawString_494BBF(*dpi, 310, yPos, 98, Colour::outline(Colour::black), format, &args);
+                Gfx::drawString_494BBF(*context, 310, yPos, 98, Colour::outline(Colour::black), format, &args);
             }
 
             // Vehicle age
@@ -591,14 +591,14 @@ namespace OpenLoco::Ui::Windows::VehicleList
                     format = StringIds::vehicle_list_age_year;
 
                 auto args = FormatArguments::common(age);
-                Gfx::drawString_494BBF(*dpi, 410, yPos, 63, Colour::outline(Colour::black), format, &args);
+                Gfx::drawString_494BBF(*context, 410, yPos, 63, Colour::outline(Colour::black), format, &args);
             }
 
             // Vehicle reliability
             {
                 int16_t reliability = vehicle.veh2->reliability;
                 auto args = FormatArguments::common(reliability);
-                Gfx::drawString_494BBF(*dpi, 475, yPos, 65, Colour::outline(Colour::black), StringIds::vehicle_list_reliability, &args);
+                Gfx::drawString_494BBF(*context, 475, yPos, 65, Colour::outline(Colour::black), StringIds::vehicle_list_reliability, &args);
             }
 
             yPos += self->row_height - 2;

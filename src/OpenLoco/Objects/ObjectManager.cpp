@@ -543,13 +543,13 @@ namespace OpenLoco::ObjectManager
     // TODO: Should only be defined in ObjectSelectionWindow
     static const uint8_t descriptionRowHeight = 10;
 
-    void drawGenericDescription(Gfx::Context& dpi, Gfx::point_t& rowPosition, const uint16_t designed, const uint16_t obsolete)
+    void drawGenericDescription(Gfx::Context& context, Gfx::point_t& rowPosition, const uint16_t designed, const uint16_t obsolete)
     {
         if (designed != 0)
         {
             FormatArguments args{};
             args.push(designed);
-            Gfx::drawString_494B3F(dpi, rowPosition.x, rowPosition.y, Colour::black, StringIds::object_selection_designed, &args);
+            Gfx::drawString_494B3F(context, rowPosition.x, rowPosition.y, Colour::black, StringIds::object_selection_designed, &args);
             rowPosition.y += descriptionRowHeight;
         }
 
@@ -557,7 +557,7 @@ namespace OpenLoco::ObjectManager
         {
             FormatArguments args{};
             args.push(obsolete);
-            Gfx::drawString_494B3F(dpi, rowPosition.x, rowPosition.y, Colour::black, StringIds::object_selection_obsolete, &args);
+            Gfx::drawString_494B3F(context, rowPosition.x, rowPosition.y, Colour::black, StringIds::object_selection_obsolete, &args);
             rowPosition.y += descriptionRowHeight;
         }
     }

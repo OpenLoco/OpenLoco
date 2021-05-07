@@ -467,7 +467,7 @@ namespace OpenLoco::Ui
         void initScrollWidgets();
         int8_t getScrollDataIndex(widget_index index);
         void setDisabledWidgetsAndInvalidate(uint32_t _disabled_widgets);
-        void drawViewports(Gfx::Context* dpi);
+        void drawViewports(Gfx::Context* context);
         void viewportCentreMain();
         void viewportSetUndergroundFlag(bool underground, Ui::viewport* vp);
         void viewportGetMapCoordsByCursor(int16_t* map_x, int16_t* map_y, int16_t* offset_x, int16_t* offset_y);
@@ -488,7 +488,7 @@ namespace OpenLoco::Ui
         void moveInsideScreenEdges();
         bool moveToCentre();
         widget_index findWidgetAt(int16_t xPos, int16_t yPos);
-        void draw(OpenLoco::Gfx::Context* dpi);
+        void draw(OpenLoco::Gfx::Context* context);
 
         void callClose();                                                                              // 0
         void callOnMouseUp(widget_index widgetIndex);                                                  // 1
@@ -516,8 +516,8 @@ namespace OpenLoco::Ui
         Ui::CursorId callCursor(int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback); // 24
         void callOnMove(int16_t xPos, int16_t yPos);                                                   // 25
         void callPrepareDraw();                                                                        // 26
-        void callDraw(Gfx::Context* dpi);                                                      // 27
-        void callDrawScroll(Gfx::Context* dpi, uint32_t scrollIndex);                          // 28
+        void callDraw(Gfx::Context* context);                                                      // 27
+        void callDrawScroll(Gfx::Context* context, uint32_t scrollIndex);                          // 28
     };
     static_assert(sizeof(window) == 0x88E);
 

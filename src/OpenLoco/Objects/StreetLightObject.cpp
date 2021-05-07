@@ -8,14 +8,14 @@ namespace OpenLoco
     static const uint8_t descriptionRowHeight = 10;
 
     // 0x00477F69
-    void StreetLightObject::drawPreviewImage(Gfx::Context& dpi, const int16_t x, const int16_t y) const
+    void StreetLightObject::drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const
     {
         Gfx::point_t imgPosition = Gfx::point_t{ x, y } - Gfx::point_t{ 20, 1 };
         for (auto i = 0; i < 3; i++)
         {
             auto imageId = (i * 4) + image;
-            Gfx::drawImage(&dpi, imgPosition.x - 14, imgPosition.y, imageId + 2);
-            Gfx::drawImage(&dpi, imgPosition.x, imgPosition.y - 7, imageId);
+            Gfx::drawImage(&context, imgPosition.x - 14, imgPosition.y, imageId + 2);
+            Gfx::drawImage(&context, imgPosition.x, imgPosition.y - 7, imageId);
             imgPosition.x += 20;
             imgPosition.y += descriptionRowHeight;
         }

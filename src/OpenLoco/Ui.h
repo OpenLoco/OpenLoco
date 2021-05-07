@@ -24,7 +24,7 @@ namespace OpenLoco::Ui
 #pragma pack(push, 1)
     struct ScreenInfo
     {
-        Gfx::Context dpi;
+        Gfx::Context context;
         int16_t width;
         int16_t height;
         int16_t width_2;

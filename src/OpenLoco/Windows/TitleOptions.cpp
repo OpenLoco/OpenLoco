@@ -30,7 +30,7 @@ namespace OpenLoco::Ui::Windows::TitleOptions
     static window_event_list _events;
 
     static void onMouseUp(window* window, widget_index widgetIndex);
-    static void draw(Ui::window* window, Gfx::Context* dpi);
+    static void draw(Ui::window* window, Gfx::Context* context);
 
     window* open()
     {
@@ -55,16 +55,16 @@ namespace OpenLoco::Ui::Windows::TitleOptions
         return window;
     }
 
-    static void draw(Ui::window* window, Gfx::Context* dpi)
+    static void draw(Ui::window* window, Gfx::Context* context)
     {
         // Draw widgets.
-        window->draw(dpi);
+        window->draw(context);
 
         int16_t x = window->x + window->width / 2;
         int16_t y = window->y + window->widgets[Widx::options_button].top + 2;
         Gfx::point_t origin = { x, y };
 
-        Gfx::drawStringCentredWrapped(dpi, &origin, window->width, Colour::white, StringIds::outlined_wcolour2_stringid, (const char*)&StringIds::options);
+        Gfx::drawStringCentredWrapped(context, &origin, window->width, Colour::white, StringIds::outlined_wcolour2_stringid, (const char*)&StringIds::options);
     }
 
     static void onMouseUp(window* window, widget_index widgetIndex)

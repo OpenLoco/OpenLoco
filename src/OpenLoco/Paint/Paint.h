@@ -121,7 +121,7 @@ namespace OpenLoco::Paint
     public:
         void generate();
         void arrangeStructs();
-        void init(Gfx::Context& dpi, const uint16_t viewportFlags);
+        void init(Gfx::Context& context, const uint16_t viewportFlags);
         [[nodiscard]] Ui::ViewportInteraction::InteractionArg getNormalInteractionInfo(const uint32_t flags);
         [[nodiscard]] Ui::ViewportInteraction::InteractionArg getStationNameInteractionInfo(const uint32_t flags);
         [[nodiscard]] Ui::ViewportInteraction::InteractionArg getTownNameInteractionInfo(const uint32_t flags);
@@ -245,7 +245,7 @@ namespace OpenLoco::Paint
         //uint32_t trackColours[4];
     };
 
-    PaintSession* allocateSession(Gfx::Context& dpi, const uint16_t viewportFlags);
+    PaintSession* allocateSession(Gfx::Context& context, const uint16_t viewportFlags);
 
     void registerHooks();
 }

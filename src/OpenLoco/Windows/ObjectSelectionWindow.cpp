@@ -254,7 +254,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     static const uint8_t rowOffsetY = 24;
 
     // 0x0047328D
-    static void drawTabs(window* self, Gfx::Context* dpi)
+    static void drawTabs(window* self, Gfx::Context* context)
     {
         auto y = self->widgets[widx::panel].top + self->y - 26;
         auto x = self->x + 3;
@@ -272,25 +272,25 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 if (_tabInformation[index].index == self->current_tab)
                 {
                     image = Gfx::recolour(ImageIds::selected_tab, self->colours[1]);
-                    Gfx::drawImage(dpi, xPos, yPos, image);
+                    Gfx::drawImage(context, xPos, yPos, image);
 
                     image = Gfx::recolour(_tabDisplayInfo[_tabInformation[index].index].image, Colour::saturated_green);
-                    Gfx::drawImage(dpi, xPos, yPos, image);
+                    Gfx::drawImage(context, xPos, yPos, image);
                 }
                 else
                 {
-                    Gfx::drawImage(dpi, xPos, yPos, image);
+                    Gfx::drawImage(context, xPos, yPos, image);
 
                     image = Gfx::recolour(_tabDisplayInfo[_tabInformation[index].index].image, Colour::saturated_green);
-                    Gfx::drawImage(dpi, xPos, yPos, image);
+                    Gfx::drawImage(context, xPos, yPos, image);
 
                     image = Gfx::recolourTranslucent(ImageIds::tab, 51);
-                    Gfx::drawImage(dpi, xPos, yPos, image);
+                    Gfx::drawImage(context, xPos, yPos, image);
 
                     if (row < 1)
                     {
                         auto colour = Colour::getShade(self->colours[1], 7);
-                        Gfx::drawRect(dpi, xPos, yPos + 26, 31, 1, colour);
+                        Gfx::drawRect(context, xPos, yPos + 26, 31, 1, colour);
                     }
                 }
                 xPos += 31;
@@ -303,21 +303,21 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     static const uint8_t descriptionRowHeight = 10;
 
     template<typename T>
-    static void callDrawPreviewImage(Gfx::Context& dpi, const Gfx::point_t& drawingOffset, void* objectPtr)
+    static void callDrawPreviewImage(Gfx::Context& context, const Gfx::point_t& drawingOffset, void* objectPtr)
     {
         auto object = reinterpret_cast<T*>(objectPtr);
-        object->drawPreviewImage(dpi, drawingOffset.x, drawingOffset.y);
+        object->drawPreviewImage(context, drawingOffset.x, drawingOffset.y);
     }
 
     // 0x00473579
-    static void drawPreviewImage(ObjectHeader* header, Gfx::Context* dpi, int16_t x, int16_t y, void* objectPtr)
+    static void drawPreviewImage(ObjectHeader* header, Gfx::Context* context, int16_t x, int16_t y, void* objectPtr)
     {
         auto type = header->getType();
 
         Gfx::Context* clipped = nullptr;
         // Clip the draw area to simplify image draw
         Gfx::point_t drawAreaPos = Gfx::point_t{ x, y } - objectPreviewOffset;
-        if (!Gfx::clipDrawpixelinfo(&clipped, dpi, drawAreaPos, objectPreviewSize))
+        if (!Gfx::clipDrawpixelinfo(&clipped, context, drawAreaPos, objectPreviewSize))
             return;
 
         switch (type)
@@ -441,19 +441,19 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     }
 
     template<typename T>
-    static void callDrawDescription(Gfx::Context& dpi, const int16_t x, const int16_t y, const int16_t width, void* objectPtr)
+    static void callDrawDescription(Gfx::Context& context, const int16_t x, const int16_t y, const int16_t width, void* objectPtr)
     {
         auto object = reinterpret_cast<T*>(objectPtr);
-        object->drawDescription(dpi, x, y, width);
+        object->drawDescription(context, x, y, width);
     }
 
-    static void drawDescription(ObjectHeader* header, window* self, Gfx::Context* dpi, int16_t x, int16_t y, void* objectPtr)
+    static void drawDescription(ObjectHeader* header, window* self, Gfx::Context* context, int16_t x, int16_t y, void* objectPtr)
     {
         Gfx::Context* clipped = nullptr;
         int16_t width = self->x + self->width - x;
         int16_t height = self->y + self->height - y;
         // Clip the draw area to simplify image draw
-        if (!Gfx::clipDrawpixelinfo(&clipped, dpi, x, y, width, height))
+        if (!Gfx::clipDrawpixelinfo(&clipped, context, x, y, width, height))
             return;
 
         switch (header->getType())
@@ -497,12 +497,12 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     }
 
     // 0x004733F5
-    static void draw(window* self, Gfx::Context* dpi)
+    static void draw(window* self, Gfx::Context* context)
     {
-        Gfx::fillRectInset(dpi, self->x, self->y + 20, self->x + self->width - 1, self->y + 20 + 60, self->colours[0], 0);
-        self->draw(dpi);
+        Gfx::fillRectInset(context, self->x, self->y + 20, self->x + self->width - 1, self->y + 20 + 60, self->colours[0], 0);
+        self->draw(context);
 
-        drawTabs(self, dpi);
+        drawTabs(self, context);
 
         bool doDefault = true;
         if (self->object != nullptr)
@@ -519,13 +519,13 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         {
             auto widget = widgets[widx::objectImage];
             auto colour = Colour::getShade(self->colours[1], 5);
-            Gfx::drawRect(dpi, self->x + widget.left, self->y + widget.top, widget.width(), widget.height(), colour);
+            Gfx::drawRect(context, self->x + widget.left, self->y + widget.top, widget.width(), widget.height(), colour);
         }
         else
         {
             auto widget = widgets[widx::objectImage];
             auto colour = Colour::getShade(self->colours[1], 0);
-            Gfx::drawRect(dpi, self->x + widget.left + 1, self->y + widget.top + 1, widget.width() - 2, widget.height() - 2, colour);
+            Gfx::drawRect(context, self->x + widget.left + 1, self->y + widget.top + 1, widget.width() - 2, widget.height() - 2, colour);
         }
 
         auto type = self->current_tab;
@@ -534,7 +534,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         args.push(_112C1C5[type]);
         args.push(ObjectManager::getMaxObjects(static_cast<object_type>(type)));
 
-        Gfx::drawString_494B3F(*dpi, self->x + 3, self->y + self->height - 12, 0, 2038, &args);
+        Gfx::drawString_494B3F(*context, self->x + 3, self->y + self->height - 12, 0, 2038, &args);
 
         if (self->row_hover == -1)
             return;
@@ -549,7 +549,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
             drawPreviewImage(
                 ObjectManager::object_index_entry::read(&objectPtr)._header,
-                dpi,
+                context,
                 widgets[widx::objectImage].mid_x() + 1 + self->x,
                 widgets[widx::objectImage].mid_y() + 1 + self->y,
                 _50D15C);
@@ -567,7 +567,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
             strncpy(buffer, ObjectManager::object_index_entry::read(&objectPtr)._name, 510);
 
-            Gfx::drawStringCentredClipped(*dpi, x, y, width, Colour::black, StringIds::buffer_2039);
+            Gfx::drawStringCentredClipped(*context, x, y, width, Colour::black, StringIds::buffer_2039);
         }
 
         {
@@ -576,7 +576,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             drawDescription(
                 ObjectManager::object_index_entry::read(&objectPtr)._header,
                 self,
-                dpi,
+                context,
                 self->widgets[widx::scrollview].right + self->x + 4,
                 y + descriptionRowHeight,
                 _50D15C);
@@ -584,9 +584,9 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     }
 
     // 0x0047361D
-    static void drawScroll(window* self, Gfx::Context* dpi, uint32_t)
+    static void drawScroll(window* self, Gfx::Context* context, uint32_t)
     {
-        Gfx::clearSingle(*dpi, Colour::getShade(self->colours[1], 4));
+        Gfx::clearSingle(*context, Colour::getShade(self->colours[1], 4));
 
         if (ObjectManager::getNumInstalledObjects() == 0)
             return;
@@ -596,7 +596,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         for (auto [i, object] : objects)
         {
             uint8_t flags = (1 << 7) | (1 << 6) | (1 << 5);
-            Gfx::fillRectInset(dpi, 2, y, 11, y + 10, self->colours[1], flags);
+            Gfx::fillRectInset(context, 2, y, 11, y + 10, self->colours[1], flags);
 
             uint8_t textColour = ControlCodes::colour_black;
 
@@ -606,7 +606,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 auto windowObjectName = ObjectManager::object_index_entry::read(&objectPtr)._name;
                 if (object._name == windowObjectName)
                 {
-                    Gfx::fillRect(dpi, 0, y, self->width, y + rowHeight - 1, (1 << 25) | PaletteIndex::index_30);
+                    Gfx::fillRect(context, 0, y, self->width, y + rowHeight - 1, (1 << 25) | PaletteIndex::index_30);
                     textColour = ControlCodes::window_colour_2;
                 }
             }
@@ -628,7 +628,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                     checkColour = Colour::inset(checkColour);
                 }
 
-                Gfx::drawString(dpi, x, y, checkColour, _strCheckmark);
+                Gfx::drawString(context, x, y, checkColour, _strCheckmark);
             }
 
             char buffer[512]{};
@@ -636,7 +636,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             strncpy(&buffer[1], object._name, 510);
             _currentFontSpriteBase = Font::medium_bold;
 
-            Gfx::drawString(dpi, 15, y, Colour::black, buffer);
+            Gfx::drawString(context, 15, y, Colour::black, buffer);
             y += rowHeight;
         }
     }

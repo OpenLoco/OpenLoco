@@ -135,9 +135,9 @@ namespace OpenLoco::Ui::Windows::PromptOkCancel
     }
 
     // 0x004470AA
-    static void draw(window* const self, Gfx::Context* const dpi)
+    static void draw(window* const self, Gfx::Context* const context)
     {
-        self->draw(dpi);
+        self->draw(context);
 
         // Prepare description string for drawing.
         char* buffer_2039 = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
@@ -147,7 +147,7 @@ namespace OpenLoco::Ui::Windows::PromptOkCancel
         args.push(StringIds::buffer_2039);
 
         auto origin = Gfx::point_t(self->x + self->width / 2, self->y + 41);
-        Gfx::drawStringCentredWrapped(dpi, &origin, self->width, Colour::black, StringIds::wcolour2_stringid, &args);
+        Gfx::drawStringCentredWrapped(context, &origin, self->width, Colour::black, StringIds::wcolour2_stringid, &args);
     }
 
     static void initEvents()

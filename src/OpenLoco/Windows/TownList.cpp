@@ -59,7 +59,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
         static void prepareDraw(window* self);
         static void repositionTabs(window* self);
-        static void drawTabs(window* self, Gfx::Context* dpi);
+        static void drawTabs(window* self, Gfx::Context* context);
         static void switchTab(window* self, widget_index widgetIndex);
         static void initEvents();
         static void refreshTownList(window* self);
@@ -135,10 +135,10 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049A0F8
-        static void drawScroll(Ui::window* self, Gfx::Context* dpi, uint32_t scrollIndex)
+        static void drawScroll(Ui::window* self, Gfx::Context* context, uint32_t scrollIndex)
         {
             auto shade = Colour::getShade(self->colours[1], 3);
-            Gfx::clearSingle(*dpi, shade);
+            Gfx::clearSingle(*context, shade);
 
             uint16_t yPos = 0;
             for (uint16_t i = 0; i < self->var_83C; i++)
@@ -146,7 +146,7 @@ namespace OpenLoco::Ui::Windows::TownList
                 TownId_t townId = self->row_info[i];
 
                 // Skip items outside of view, or irrelevant to the current filter.
-                if (yPos + rowHeight < dpi->y || yPos >= yPos + rowHeight + dpi->height || townId == (uint16_t)-1)
+                if (yPos + rowHeight < context->y || yPos >= yPos + rowHeight + context->height || townId == (uint16_t)-1)
                 {
                     yPos += rowHeight;
                     continue;
@@ -157,7 +157,7 @@ namespace OpenLoco::Ui::Windows::TownList
                 // Highlight selection.
                 if (townId == self->row_hover)
                 {
-                    Gfx::drawRect(dpi, 0, yPos, self->width, rowHeight, 0x2000030);
+                    Gfx::drawRect(context, 0, yPos, self->width, rowHeight, 0x2000030);
                     text_colour_id = StringIds::wcolour2_stringid;
                 }
 
@@ -170,14 +170,14 @@ namespace OpenLoco::Ui::Windows::TownList
                     auto args = FormatArguments();
                     args.push(town->name);
 
-                    Gfx::drawString_494BBF(*dpi, 0, yPos, 198, Colour::black, text_colour_id, &args);
+                    Gfx::drawString_494BBF(*context, 0, yPos, 198, Colour::black, text_colour_id, &args);
                 }
                 // Town Type
                 {
                     auto args = FormatArguments();
                     args.push(town->getTownSizeString());
 
-                    Gfx::drawString_494BBF(*dpi, 200, yPos, 278, Colour::black, text_colour_id, &args);
+                    Gfx::drawString_494BBF(*context, 200, yPos, 278, Colour::black, text_colour_id, &args);
                 }
                 // Town Population
                 {
@@ -185,7 +185,7 @@ namespace OpenLoco::Ui::Windows::TownList
                     args.push(StringIds::int_32);
                     args.push(town->population);
 
-                    Gfx::drawString_494BBF(*dpi, 280, yPos, 68, Colour::black, text_colour_id, &args);
+                    Gfx::drawString_494BBF(*context, 280, yPos, 68, Colour::black, text_colour_id, &args);
                 }
                 // Town Stations
                 {
@@ -193,17 +193,17 @@ namespace OpenLoco::Ui::Windows::TownList
                     args.push(StringIds::int_32);
                     args.push<int32_t>(town->num_stations);
 
-                    Gfx::drawString_494BBF(*dpi, 350, yPos, 68, Colour::black, text_colour_id, &args);
+                    Gfx::drawString_494BBF(*context, 350, yPos, 68, Colour::black, text_colour_id, &args);
                 }
                 yPos += rowHeight;
             }
         }
 
         // 0x0049A0A7
-        static void draw(Ui::window* self, Gfx::Context* dpi)
+        static void draw(Ui::window* self, Gfx::Context* context)
         {
-            self->draw(dpi);
-            Common::drawTabs(self, dpi);
+            self->draw(context);
+            Common::drawTabs(self, context);
             auto args = FormatArguments();
             auto xPos = self->x + 4;
             auto yPos = self->y + self->height - 12;
@@ -214,7 +214,7 @@ namespace OpenLoco::Ui::Windows::TownList
                 args.push(StringIds::status_towns_plural);
             args.push(self->var_83C);
 
-            Gfx::drawString_494B3F(*dpi, xPos, yPos, Colour::black, StringIds::black_stringid, &args);
+            Gfx::drawString_494B3F(*context, xPos, yPos, Colour::black, StringIds::black_stringid, &args);
         }
 
         // 0x0049A27F
@@ -624,14 +624,14 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049A627
-        static void draw(Ui::window* self, Gfx::Context* dpi)
+        static void draw(Ui::window* self, Gfx::Context* context)
         {
-            self->draw(dpi);
-            Common::drawTabs(self, dpi);
+            self->draw(context);
+            Common::drawTabs(self, context);
 
-            Gfx::drawString_494B3F(*dpi, self->x + 3, self->y + self->widgets[widx::current_size].top + 1, Colour::black, StringIds::town_size_label);
+            Gfx::drawString_494B3F(*context, self->x + 3, self->y + self->widgets[widx::current_size].top + 1, Colour::black, StringIds::town_size_label);
 
-            Gfx::drawString_494B3F(*dpi, self->x + 3, self->y + self->height - 13, Colour::black, StringIds::select_town_size);
+            Gfx::drawString_494B3F(*context, self->x + 3, self->y + self->height - 13, Colour::black, StringIds::select_town_size);
         }
 
         // 0x0049A675
@@ -823,10 +823,10 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049A9C2
-        static void draw(Ui::window* self, Gfx::Context* dpi)
+        static void draw(Ui::window* self, Gfx::Context* context)
         {
-            self->draw(dpi);
-            Common::drawTabs(self, dpi);
+            self->draw(context);
+            Common::drawTabs(self, context);
 
             auto buildingId = self->var_846;
 
@@ -840,7 +840,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
             auto buildingObj = ObjectManager::get<BuildingObject>(buildingId);
 
-            Gfx::drawString_494BBF(*dpi, self->x + 3, self->y + self->height - 13, self->width - 19, Colour::black, StringIds::black_stringid, &buildingObj->name);
+            Gfx::drawString_494BBF(*context, self->x + 3, self->y + self->height - 13, self->width - 19, Colour::black, StringIds::black_stringid, &buildingObj->name);
         }
 
         // 0x0049AB31
@@ -1051,10 +1051,10 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049AA1C
-        static void drawScroll(Ui::window* self, Gfx::Context* dpi, uint32_t scrollIndex)
+        static void drawScroll(Ui::window* self, Gfx::Context* context, uint32_t scrollIndex)
         {
             auto shade = Colour::getShade(self->colours[1], 3);
-            Gfx::clearSingle(*dpi, shade);
+            Gfx::clearSingle(*context, shade);
 
             uint16_t xPos = 0;
             uint16_t yPos = 0;
@@ -1064,19 +1064,19 @@ namespace OpenLoco::Ui::Windows::TownList
                 {
                     if (self->row_info[i] == self->var_846)
                     {
-                        Gfx::drawRectInset(dpi, xPos, yPos, 112, 112, self->colours[1], Colour::translucent_flag);
+                        Gfx::drawRectInset(context, xPos, yPos, 112, 112, self->colours[1], Colour::translucent_flag);
                     }
                 }
                 else
                 {
-                    Gfx::drawRectInset(dpi, xPos, yPos, 112, 112, self->colours[1], (Colour::translucent_flag | Colour::outline_flag));
+                    Gfx::drawRectInset(context, xPos, yPos, 112, 112, self->colours[1], (Colour::translucent_flag | Colour::outline_flag));
                 }
 
                 auto buildingObj = ObjectManager::get<BuildingObject>(self->row_info[i]);
 
                 Gfx::Context* clipped = nullptr;
 
-                if (Gfx::clipDrawpixelinfo(&clipped, dpi, xPos + 1, yPos + 1, 110, 110))
+                if (Gfx::clipDrawpixelinfo(&clipped, context, xPos + 1, yPos + 1, 110, 110))
                 {
                     Colour_t colour = _buildingColour;
                     if (self->row_hover != self->row_info[i])
@@ -1361,7 +1361,7 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049B054
-        static void drawTabs(window* self, Gfx::Context* dpi)
+        static void drawTabs(window* self, Gfx::Context* context)
         {
             auto skin = ObjectManager::get<InterfaceSkinObject>();
 
@@ -1370,7 +1370,7 @@ namespace OpenLoco::Ui::Windows::TownList
                 uint32_t imageId = skin->img;
                 imageId += InterfaceSkin::ImageIds::toolbar_menu_towns;
 
-                Widget::draw_tab(self, dpi, imageId, widx::tab_town_list);
+                Widget::draw_tab(self, context, imageId, widx::tab_town_list);
             }
 
             // Build New Towns Tab
@@ -1399,7 +1399,7 @@ namespace OpenLoco::Ui::Windows::TownList
                 else
                     imageId += buildNewTownsImageIds[0];
 
-                Widget::draw_tab(self, dpi, imageId, widx::tab_build_town);
+                Widget::draw_tab(self, context, imageId, widx::tab_build_town);
             }
 
             // Build New Buildings Tab
@@ -1428,7 +1428,7 @@ namespace OpenLoco::Ui::Windows::TownList
                 else
                     imageId += buildBuildingsImageIds[0];
 
-                Widget::draw_tab(self, dpi, imageId, widx::tab_build_buildings);
+                Widget::draw_tab(self, context, imageId, widx::tab_build_buildings);
             }
 
             // Build New Misc Buildings Tab
@@ -1457,7 +1457,7 @@ namespace OpenLoco::Ui::Windows::TownList
                 else
                     imageId += buildMiscBuildingsImageIds[0];
 
-                Widget::draw_tab(self, dpi, imageId, widx::tab_build_misc_buildings);
+                Widget::draw_tab(self, context, imageId, widx::tab_build_misc_buildings);
             }
         }
 

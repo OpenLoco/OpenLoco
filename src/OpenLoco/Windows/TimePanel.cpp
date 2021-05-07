@@ -57,7 +57,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
     static window_event_list _events;
 
     static void prepareDraw(window* window);
-    static void draw(Ui::window* self, Gfx::Context* dpi);
+    static void draw(Ui::window* self, Gfx::Context* context);
     static void onMouseUp(Ui::window* window, widget_index widgetIndex);
     static void onMouseDown(Ui::window* window, widget_index widgetIndex);
     static void textInput(window* w, widget_index widgetIndex, const char* str);
@@ -171,15 +171,15 @@ namespace OpenLoco::Ui::Windows::TimePanel
     };
 
     // 0x004397BE
-    static void draw(Ui::window* self, Gfx::Context* dpi)
+    static void draw(Ui::window* self, Gfx::Context* context)
     {
         widget_t& frame = _widgets[Widx::outer_frame];
-        Gfx::drawRect(dpi, self->x + frame.left, self->y + frame.top, frame.width(), frame.height(), 0x2000000 | 52);
+        Gfx::drawRect(context, self->x + frame.left, self->y + frame.top, frame.width(), frame.height(), 0x2000000 | 52);
 
         // Draw widgets.
-        self->draw(dpi);
+        self->draw(context);
 
-        Gfx::drawRectInset(dpi, self->x + frame.left + 1, self->y + frame.top + 1, frame.width() - 2, frame.height() - 2, self->colours[1], 0x30);
+        Gfx::drawRectInset(context, self->x + frame.left + 1, self->y + frame.top + 1, frame.width() - 2, frame.height() - 2, self->colours[1], 0x30);
 
         *(uint32_t*)&_common_format_args[0] = getCurrentDay();
         string_id format = StringIds::date_monthyear;
@@ -197,10 +197,10 @@ namespace OpenLoco::Ui::Windows::TimePanel
         {
             c = Colour::white;
         }
-        Gfx::drawStringCentred(*dpi, self->x + _widgets[Widx::date_btn].mid_x(), self->y + _widgets[Widx::date_btn].top + 1, c, format, &*_common_format_args);
+        Gfx::drawStringCentred(*context, self->x + _widgets[Widx::date_btn].mid_x(), self->y + _widgets[Widx::date_btn].top + 1, c, format, &*_common_format_args);
 
         auto skin = ObjectManager::get<InterfaceSkinObject>();
-        Gfx::drawImage(dpi, self->x + _widgets[Widx::map_chat_menu].left - 2, self->y + _widgets[Widx::map_chat_menu].top - 1, skin->img + map_sprites_by_rotation[gCurrentRotation]);
+        Gfx::drawImage(context, self->x + _widgets[Widx::map_chat_menu].left - 2, self->y + _widgets[Widx::map_chat_menu].top - 1, skin->img + map_sprites_by_rotation[gCurrentRotation]);
     }
 
     // 0x004398FB

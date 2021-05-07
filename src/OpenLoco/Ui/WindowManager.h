@@ -48,7 +48,7 @@ namespace OpenLoco::Ui::WindowManager
     window* createWindow(WindowType type, Gfx::point_t origin, Gfx::ui_size_t size, uint32_t flags, window_event_list* events);
     window* createWindowCentred(WindowType type, Gfx::ui_size_t size, uint32_t flags, window_event_list* events);
     window* createWindow(WindowType type, Gfx::ui_size_t size, uint32_t flags, window_event_list* events);
-    void drawSingle(Gfx::Context* dpi, window* w, int32_t left, int32_t top, int32_t right, int32_t bottom);
+    void drawSingle(Gfx::Context* context, window* w, int32_t left, int32_t top, int32_t right, int32_t bottom);
     void dispatchUpdateAll();
     void callEvent8OnAllWindows();
     void callEvent9OnAllWindows();

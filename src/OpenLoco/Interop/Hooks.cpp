@@ -749,8 +749,8 @@ void OpenLoco::Interop::registerHooks()
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
             auto window = (Ui::window*)regs.esi;
-            auto dpi = (Gfx::Context*)regs.edi;
-            window->draw(dpi);
+            auto context = (Gfx::Context*)regs.edi;
+            window->draw(context);
             regs = backup;
             return 0;
         });

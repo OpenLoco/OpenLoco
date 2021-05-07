@@ -9,7 +9,7 @@ using namespace OpenLoco::Interop;
 namespace OpenLoco
 {
     // 0x0042DE40
-    void BuildingObject::drawPreviewImage(Gfx::Context& dpi, const int16_t x, const int16_t y) const
+    void BuildingObject::drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const
     {
         Colour_t colour = Utility::bitScanReverse(colours);
 
@@ -18,7 +18,7 @@ namespace OpenLoco
             colour = 0;
         }
 
-        drawBuilding(&dpi, 1, x, y + 40, colour);
+        drawBuilding(&context, 1, x, y + 40, colour);
     }
 
     // 0x0042DB95
@@ -35,9 +35,9 @@ namespace OpenLoco
     }
 
     // 0x0042DE82
-    void BuildingObject::drawDescription(Gfx::Context& dpi, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const
+    void BuildingObject::drawDescription(Gfx::Context& context, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const
     {
         Gfx::point_t rowPosition = { x, y };
-        ObjectManager::drawGenericDescription(dpi, rowPosition, designedYear, obsoleteYear);
+        ObjectManager::drawGenericDescription(context, rowPosition, designedYear, obsoleteYear);
     }
 }

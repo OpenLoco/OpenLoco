@@ -108,13 +108,13 @@ namespace OpenLoco::Ui
     }
 
     // 0x0045A0B3
-    void window::drawViewports(Gfx::Context* dpi)
+    void window::drawViewports(Gfx::Context* context)
     {
         if (viewports[0] != nullptr)
-            viewports[0]->render(dpi);
+            viewports[0]->render(context);
 
         if (viewports[1] != nullptr)
-            viewports[1]->render(dpi);
+            viewports[1]->render(context);
     }
 
     // 0x0045FCE6
@@ -1368,7 +1368,7 @@ namespace OpenLoco::Ui
         event_handlers->prepare_draw(this);
     }
 
-    void window::callDraw(Gfx::Context* dpi)
+    void window::callDraw(Gfx::Context* context)
     {
         if (event_handlers->draw == nullptr)
             return;
@@ -1377,15 +1377,15 @@ namespace OpenLoco::Ui
         {
             registers regs;
             regs.esi = (int32_t)this;
-            regs.edi = (int32_t)dpi;
+            regs.edi = (int32_t)context;
             call((int32_t)this->event_handlers->draw, regs);
             return;
         }
 
-        event_handlers->draw(this, dpi);
+        event_handlers->draw(this, context);
     }
 
-    void window::callDrawScroll(Gfx::Context* dpi, uint32_t scrollIndex)
+    void window::callDrawScroll(Gfx::Context* context, uint32_t scrollIndex)
     {
         if (event_handlers->draw_scroll == nullptr)
             return;
@@ -1395,20 +1395,20 @@ namespace OpenLoco::Ui
             registers regs;
             regs.ax = scrollIndex;
             regs.esi = (int32_t)this;
-            regs.edi = (int32_t)dpi;
+            regs.edi = (int32_t)context;
             call((int32_t)event_handlers->draw_scroll, regs);
             return;
         }
 
-        event_handlers->draw_scroll(this, dpi, scrollIndex);
+        event_handlers->draw_scroll(this, context, scrollIndex);
     }
 
     // 0x004CA4DF
-    void window::draw(Gfx::Context* dpi)
+    void window::draw(Gfx::Context* context)
     {
         if ((this->flags & WindowFlags::transparent) && !(this->flags & WindowFlags::no_background))
         {
-            Gfx::fillRect(dpi, this->x, this->y, this->x + this->width - 1, this->y + this->height - 1, 0x2000000 | 52);
+            Gfx::fillRect(context, this->x, this->y, this->x + this->width - 1, this->y + this->height - 1, 0x2000000 | 52);
         }
 
         uint64_t pressed_widget = 0;
@@ -1446,9 +1446,9 @@ namespace OpenLoco::Ui
             if ((this->flags & WindowFlags::no_background) == 0)
             {
                 // Check if widget is outside the draw region
-                if (this->x + widget->left >= dpi->x + dpi->width && this->x + widget->right < dpi->x)
+                if (this->x + widget->left >= context->x + context->width && this->x + widget->right < context->x)
                 {
-                    if (this->y + widget->top >= dpi->y + dpi->height && this->y + widget->bottom < dpi->y)
+                    if (this->y + widget->top >= context->y + context->height && this->y + widget->bottom < context->y)
                     {
                         continue;
                     }
@@ -1477,15 +1477,15 @@ namespace OpenLoco::Ui
                     break;
 
                 case widget_type::panel:
-                    Widget::drawPanel(dpi, this, widget, widgetFlags, colour);
+                    Widget::drawPanel(context, this, widget, widgetFlags, colour);
                     break;
 
                 case widget_type::frame:
-                    Widget::drawFrame(dpi, this, widget, widgetFlags, colour);
+                    Widget::drawFrame(context, this, widget, widgetFlags, colour);
                     break;
 
                 case widget_type::wt_3:
-                    Widget::draw_3(dpi, this, widget, widgetFlags, colour, enabled, disabled, activated);
+                    Widget::draw_3(context, this, widget, widgetFlags, colour, enabled, disabled, activated);
                     break;
 
                 case widget_type::wt_4:
@@ -1496,15 +1496,15 @@ namespace OpenLoco::Ui
                 case widget_type::wt_6:
                 case widget_type::wt_7:
                 case widget_type::wt_8:
-                    Widget::draw_5(dpi, this, widget, widgetFlags, colour, enabled, disabled, activated);
+                    Widget::draw_5(context, this, widget, widgetFlags, colour, enabled, disabled, activated);
                     break;
 
                 case widget_type::wt_9:
-                    Widget::draw_9(dpi, this, widget, widgetFlags, colour, enabled, disabled, activated, hovered);
+                    Widget::draw_9(context, this, widget, widgetFlags, colour, enabled, disabled, activated, hovered);
                     break;
 
                 case widget_type::wt_10:
-                    Widget::draw_10(dpi, this, widget, widgetFlags, colour, enabled, disabled, activated, hovered);
+                    Widget::draw_10(context, this, widget, widgetFlags, colour, enabled, disabled, activated, hovered);
                     break;
 
                 case widget_type::wt_11:
@@ -1514,28 +1514,28 @@ namespace OpenLoco::Ui
                     {
                         assert(false); // Unused
                     }
-                    Widget::draw_11_a(dpi, this, widget, widgetFlags, colour, enabled, disabled, activated);
-                    Widget::draw_13(dpi, this, widget, widgetFlags, colour, enabled, disabled, activated);
+                    Widget::draw_11_a(context, this, widget, widgetFlags, colour, enabled, disabled, activated);
+                    Widget::draw_13(context, this, widget, widgetFlags, colour, enabled, disabled, activated);
                     break;
 
                 case widget_type::wt_13:
-                    Widget::draw_13(dpi, this, widget, widgetFlags, colour, enabled, disabled, activated);
+                    Widget::draw_13(context, this, widget, widgetFlags, colour, enabled, disabled, activated);
                     break;
 
                 case widget_type::wt_15:
-                    Widget::draw_15(dpi, this, widget, widgetFlags, colour, disabled);
+                    Widget::draw_15(context, this, widget, widgetFlags, colour, disabled);
                     break;
 
                 case widget_type::groupbox:
                     // NB: widget type 16 has been repurposed to add groupboxes; the original type 16 was unused.
-                    Widget::drawGroupbox(dpi, this, widget);
+                    Widget::drawGroupbox(context, this, widget);
                     break;
 
                 case widget_type::wt_17:
                 case widget_type::wt_18:
                 case widget_type::viewport:
-                    Widget::draw_17(dpi, this, widget, widgetFlags, colour);
-                    Widget::draw_15(dpi, this, widget, widgetFlags, colour, disabled);
+                    Widget::draw_17(context, this, widget, widgetFlags, colour);
+                    Widget::draw_15(context, this, widget, widgetFlags, colour, disabled);
                     break;
 
                 case widget_type::wt_20:
@@ -1544,39 +1544,39 @@ namespace OpenLoco::Ui
                     break;
 
                 case widget_type::caption_22:
-                    Widget::draw_22_caption(dpi, this, widget, widgetFlags, colour);
+                    Widget::draw_22_caption(context, this, widget, widgetFlags, colour);
                     break;
 
                 case widget_type::caption_23:
-                    Widget::draw_23_caption(dpi, this, widget, widgetFlags, colour);
+                    Widget::draw_23_caption(context, this, widget, widgetFlags, colour);
                     break;
 
                 case widget_type::caption_24:
-                    Widget::draw_24_caption(dpi, this, widget, widgetFlags, colour);
+                    Widget::draw_24_caption(context, this, widget, widgetFlags, colour);
                     break;
 
                 case widget_type::caption_25:
-                    Widget::draw_25_caption(dpi, this, widget, widgetFlags, colour);
+                    Widget::draw_25_caption(context, this, widget, widgetFlags, colour);
                     break;
 
                 case widget_type::scrollview:
-                    Widget::drawScrollview(dpi, this, widget, widgetFlags, colour, enabled, disabled, activated, hovered, scrollviewIndex);
+                    Widget::drawScrollview(context, this, widget, widgetFlags, colour, enabled, disabled, activated, hovered, scrollviewIndex);
                     scrollviewIndex++;
                     break;
 
                 case widget_type::checkbox:
-                    Widget::draw_27_checkbox(dpi, this, widget, widgetFlags, colour, enabled, disabled, activated);
-                    Widget::draw_27_label(dpi, this, widget, widgetFlags, colour, disabled);
+                    Widget::draw_27_checkbox(context, this, widget, widgetFlags, colour, enabled, disabled, activated);
+                    Widget::draw_27_label(context, this, widget, widgetFlags, colour, disabled);
                     break;
 
                 case widget_type::wt_28:
                     assert(false); // Unused
-                    Widget::draw_27_label(dpi, this, widget, widgetFlags, colour, disabled);
+                    Widget::draw_27_label(context, this, widget, widgetFlags, colour, disabled);
                     break;
 
                 case widget_type::wt_29:
                     assert(false); // Unused
-                    Widget::draw_29(dpi, this, widget);
+                    Widget::draw_29(context, this, widget);
                     break;
             }
         }
@@ -1584,7 +1584,7 @@ namespace OpenLoco::Ui
         if (this->flags & WindowFlags::white_border_mask)
         {
             Gfx::fillRectInset(
-                dpi,
+                context,
                 this->x,
                 this->y,
                 this->x + this->width - 1,

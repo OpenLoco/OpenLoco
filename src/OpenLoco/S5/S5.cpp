@@ -71,13 +71,13 @@ namespace OpenLoco::S5
     }
 
     // 0x0045A0B3
-    static void previewWindowDraw(window* w, Gfx::Context* dpi)
+    static void previewWindowDraw(window* w, Gfx::Context* context)
     {
         for (auto viewport : w->viewports)
         {
             if (viewport != nullptr)
             {
-                viewport->render(dpi);
+                viewport->render(context);
             }
         }
     }
@@ -113,17 +113,17 @@ namespace OpenLoco::S5
                     tempViewport->flags = ViewportFlags::town_names_displayed | ViewportFlags::station_names_displayed;
 
                     // Swap screen DPI with our temporary one to draw the window then revert it back
-                    auto& dpi = Gfx::screenContext();
-                    auto backupDpi = dpi;
-                    dpi.bits = reinterpret_cast<uint8_t*>(pixels);
-                    dpi.x = 0;
-                    dpi.y = 0;
-                    dpi.width = size.width;
-                    dpi.height = size.height;
-                    dpi.pitch = 0;
-                    dpi.zoom_level = 0;
+                    auto& context = Gfx::screenContext();
+                    auto backupDpi = context;
+                    context.bits = reinterpret_cast<uint8_t*>(pixels);
+                    context.x = 0;
+                    context.y = 0;
+                    context.width = size.width;
+                    context.height = size.height;
+                    context.pitch = 0;
+                    context.zoom_level = 0;
                     Gfx::redrawScreenRect(0, 0, size.width, size.height);
-                    dpi = backupDpi;
+                    context = backupDpi;
                 }
 
                 WindowManager::close(WindowType::previewImage);

@@ -152,10 +152,10 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
     }
 
     // 0x0049E501
-    static void draw(window* self, Gfx::Context* dpi)
+    static void draw(window* self, Gfx::Context* context)
     {
-        self->draw(dpi);
-        Common::drawTabs(self, dpi);
+        self->draw(context);
+        Common::drawTabs(self, context);
 
         auto trainSignalObject = ObjectManager::get<TrainSignalObject>(_lastSelectedSignal);
 
@@ -167,7 +167,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
             auto args = FormatArguments();
             args.push(trainSignalObject->var_0C);
 
-            Gfx::drawString_495224(*dpi, xPos, yPos, width, Colour::black, StringIds::signal_black, &args);
+            Gfx::drawString_495224(*context, xPos, yPos, width, Colour::black, StringIds::signal_black, &args);
         }
 
         auto imageId = trainSignalObject->image;
@@ -175,14 +175,14 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
         xPos = self->widgets[widx::both_directions].mid_x() + self->x;
         yPos = self->widgets[widx::both_directions].bottom + self->y - 4;
 
-        Gfx::drawImage(dpi, xPos - 8, yPos, imageId);
+        Gfx::drawImage(context, xPos - 8, yPos, imageId);
 
-        Gfx::drawImage(dpi, xPos + 8, yPos, imageId + 4);
+        Gfx::drawImage(context, xPos + 8, yPos, imageId + 4);
 
         xPos = self->widgets[widx::single_direction].mid_x() + self->x;
         yPos = self->widgets[widx::single_direction].bottom + self->y - 4;
 
-        Gfx::drawImage(dpi, xPos, yPos, imageId);
+        Gfx::drawImage(context, xPos, yPos, imageId);
 
         if (_signalCost != 0x80000000 && _signalCost != 0)
         {
@@ -192,7 +192,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
             xPos = self->x + 69;
             yPos = self->widgets[widx::single_direction].bottom + self->y + 5;
 
-            Gfx::drawStringCentred(*dpi, xPos, yPos, Colour::black, StringIds::build_cost, &args);
+            Gfx::drawStringCentred(*context, xPos, yPos, Colour::black, StringIds::build_cost, &args);
         }
     }
 
