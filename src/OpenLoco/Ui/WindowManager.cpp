@@ -1108,10 +1108,10 @@ namespace OpenLoco::Ui::WindowManager
     }
 
     // 0x004C5FC8
-    void drawSingle(Gfx::Context* _dpi, window* w, int32_t left, int32_t top, int32_t right, int32_t bottom)
+    void drawSingle(Gfx::Context* _context, window* w, int32_t left, int32_t top, int32_t right, int32_t bottom)
     {
         // Copy context so we can crop it
-        auto context = *_dpi;
+        auto context = *_context;
 
         // Clamp left to 0
         int32_t overflow = left - context.x;

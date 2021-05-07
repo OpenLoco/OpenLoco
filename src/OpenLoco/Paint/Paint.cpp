@@ -120,7 +120,7 @@ namespace OpenLoco::Paint
 
     void PaintSession::init(Gfx::Context& context, const uint16_t viewportFlags)
     {
-        _dpi = &context;
+        _context = &context;
         _nextFreePaintStruct = &_paintEntries[0];
         _endOfPaintStructArray = &_paintEntries[3998];
         _lastPS = nullptr;
@@ -584,7 +584,7 @@ namespace OpenLoco::Paint
             return interaction;
         }
 
-        auto rect = (*_dpi)->getDrawableRect();
+        auto rect = (*_context)->getDrawableRect();
 
         for (auto& station : StationManager::stations())
         {
@@ -598,7 +598,7 @@ namespace OpenLoco::Paint
                 continue;
             }
 
-            if (!station.labelFrame.contains(rect, (*_dpi)->zoom_level))
+            if (!station.labelFrame.contains(rect, (*_context)->zoom_level))
             {
                 continue;
             }
@@ -621,7 +621,7 @@ namespace OpenLoco::Paint
             return interaction;
         }
 
-        auto rect = (*_dpi)->getDrawableRect();
+        auto rect = (*_context)->getDrawableRect();
 
         for (auto& town : TownManager::towns())
         {
@@ -630,7 +630,7 @@ namespace OpenLoco::Paint
                 continue;
             }
 
-            if (!town.labelFrame.contains(rect, (*_dpi)->zoom_level))
+            if (!town.labelFrame.contains(rect, (*_context)->zoom_level))
             {
                 continue;
             }
