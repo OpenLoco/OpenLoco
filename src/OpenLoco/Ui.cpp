@@ -100,7 +100,7 @@ namespace OpenLoco::Ui
     static void update(int32_t width, int32_t height);
     static void resize(int32_t width, int32_t height);
     static int32_t convertSdlKeycodeToWindows(int32_t keyCode);
-    static Config::resolution_t getDisplayResolutionByMode(Config::ScreenMode mode);
+    static Config::Resolution getDisplayResolutionByMode(Config::ScreenMode mode);
 
 #if !(defined(__APPLE__) && defined(__MACH__))
     static void toggleFullscreenDesktop();
@@ -130,7 +130,7 @@ namespace OpenLoco::Ui
 
     void updatePalette(const palette_entry_t* entries, int32_t index, int32_t count);
 
-    static sdl_window_desc getWindowDesc(const Config::display_config& cfg)
+    static sdl_window_desc getWindowDesc(const Config::Display& cfg)
     {
         sdl_window_desc desc;
         desc.x = SDL_WINDOWPOS_CENTERED_DISPLAY(cfg.index);
@@ -157,7 +157,7 @@ namespace OpenLoco::Ui
     }
 
     // 0x00405409
-    void createWindow(const Config::display_config& cfg)
+    void createWindow(const Config::Display& cfg)
     {
 #ifdef _LOCO_WIN32_
         _hwnd = CreateWindowExA(
@@ -769,7 +769,7 @@ namespace OpenLoco::Ui
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_BUTTON_RETURNKEY_DEFAULT, title.c_str(), message.c_str(), window);
     }
 
-    static Config::resolution_t getDisplayResolutionByMode(Config::ScreenMode mode)
+    static Config::Resolution getDisplayResolutionByMode(Config::ScreenMode mode)
     {
         auto& config = Config::getNew();
         if (mode == Config::ScreenMode::window)
@@ -785,12 +785,12 @@ namespace OpenLoco::Ui
             return getDesktopResolution();
     }
 
-    Config::resolution_t getResolution()
+    Config::Resolution getResolution()
     {
         return { Ui::width(), Ui::height() };
     }
 
-    Config::resolution_t getDesktopResolution()
+    Config::Resolution getDesktopResolution()
     {
         int32_t displayIndex = SDL_GetWindowDisplayIndex(window);
         SDL_DisplayMode desktopDisplayMode;
@@ -799,7 +799,7 @@ namespace OpenLoco::Ui
         return { desktopDisplayMode.w, desktopDisplayMode.h };
     }
 
-    bool setDisplayMode(Config::ScreenMode mode, Config::resolution_t newResolution)
+    bool setDisplayMode(Config::ScreenMode mode, Config::Resolution newResolution)
     {
         // First, set the appropriate screen mode flags.
         auto flags = 0;

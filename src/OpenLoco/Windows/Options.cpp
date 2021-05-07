@@ -1333,7 +1333,7 @@ namespace OpenLoco::Ui::Windows::Options
             args.push(current_height_units);
 
             string_id current_measurement_format = StringIds::imperial;
-            if (OpenLoco::Config::get().measurement_format)
+            if (OpenLoco::Config::get().measurement_format == Config::MeasurementFormat::metric)
             {
                 current_measurement_format = StringIds::metric;
             }
@@ -1647,7 +1647,7 @@ namespace OpenLoco::Ui::Windows::Options
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::imperial);
             Dropdown::add(1, StringIds::dropdown_stringid, StringIds::metric);
-            Dropdown::setItemSelected(Config::get().measurement_format);
+            Dropdown::setItemSelected(static_cast<uint8_t>(Config::get().measurement_format));
         }
 
         // 0x004C0FB3
@@ -1657,13 +1657,13 @@ namespace OpenLoco::Ui::Windows::Options
                 return;
 
             auto& cfg = Config::get();
-            cfg.measurement_format = ax;
+            cfg.measurement_format = Config::MeasurementFormat(ax);
 
             // 0x004C0FC2
             cfg.height_marker_offset = 0;
             if ((cfg.flags & Config::Flags::showHeightAsUnits) == 0)
             {
-                cfg.height_marker_offset = 0x100 + cfg.measurement_format * 0x100;
+                cfg.height_marker_offset = cfg.measurement_format == Config::MeasurementFormat::imperial ? 0x100 : 0x200;
             }
 
             Config::write();
@@ -1705,7 +1705,7 @@ namespace OpenLoco::Ui::Windows::Options
             cfg.height_marker_offset = 0;
             if ((cfg.flags & Config::Flags::showHeightAsUnits) == 0)
             {
-                cfg.height_marker_offset = 0x100 + cfg.measurement_format * 0x100;
+                cfg.height_marker_offset = cfg.measurement_format == Config::MeasurementFormat::imperial ? 0x100 : 0x200;
             }
 
             Config::write();

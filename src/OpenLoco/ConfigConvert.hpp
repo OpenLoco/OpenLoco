@@ -48,11 +48,11 @@ namespace YAML
         }
     };
 
-    // resolution_t
+    // Resolution
     template<>
-    struct convert<resolution_t>
+    struct convert<Resolution>
     {
-        static Node encode(const resolution_t& rhs)
+        static Node encode(const Resolution& rhs)
         {
             Node node;
             node["width"] = rhs.width;
@@ -60,7 +60,7 @@ namespace YAML
             return node;
         }
 
-        static bool decode(const Node& node, resolution_t& rhs)
+        static bool decode(const Node& node, Resolution& rhs)
         {
             if (node.IsMap())
             {
