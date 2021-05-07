@@ -60,8 +60,8 @@ strings:
   50: Out
   51: Nov
   52: Dez
-  53: Impossível acessar o arquivo de gráficos
 
+  53: Impossível acessar o arquivo de gráficos
   54: Arquivo de dados ausente ou inacessível
   55: Impossível alocar memória o suficiente
   56: "{COLOUR BLACK}❌"
@@ -142,7 +142,7 @@ strings:
   128: "{SMALLFONT}{COLOUR BLACK}Inverter Sentido"
   129: "{SMALLFONT}{COLOUR BLACK}(Clique na paisagem para começar construção)"
   130: "{SMALLFONT}{COLOUR BLACK}Construir esta seção de pista"
-  131: "{SMALLFONT}{COLOUR BLACK}Construir esta seção de pista"
+  131: "{SMALLFONT}{COLOUR BLACK}Remover seção de pista anterior"
   132: "{SMALLFONT}{COLOUR BLACK}Descida íngreme"
   133: "{SMALLFONT}{COLOUR BLACK}Descida"
   134: "{SMALLFONT}{COLOUR BLACK}Plano"
@@ -156,7 +156,7 @@ strings:
   142: Impossível remover {POP16}{POP16}{POP16}{STRINGID}...
   143: Impossível construir {POP16}{POP16}{POP16}{STRINGID}...
   144: Aumente ou rebaixe o terreno primeiro
-  145: Subterrâneo/Visão interna
+  145: Visão Subterrânea
   146: Esconder vias e estradas em primeiro plano
   147: Esta estação só pode ser contruída no final da estrada
   148: Tipo errado de estação para {STRINGID}
@@ -302,26 +302,26 @@ strings:
   285: "{STRINGID} Oeste"
   286: "{STRINGID} Central"
   287: "{STRINGID} Transfer"
-  288: "{STRINGID} Halt"
-  289: "{STRINGID} Valley"
-  290: "{STRINGID} Heights"
-  291: "{STRINGID} Woods"
-  292: "{STRINGID} Lakeside"
+  288: "Parada {STRINGID}"
+  289: "Vale {STRINGID}"
+  290: "Morros de {STRINGID}"
+  291: "Bosque {STRINGID}"
+  292: "Lago de {STRINGID}"
   293: "{STRINGID} Exchange"
-  294: "{STRINGID} Airport"
-  295: "{STRINGID} Oilfield"
-  296: "{STRINGID} Mines"
-  297: "{STRINGID} Docks"
-  298: "{STRINGID} Annexe"
-  299: "{STRINGID} Sidings"
-  300: "{STRINGID} Branch"
-  301: Upper {STRINGID}
-  302: Lower {STRINGID}
-  303: "{STRINGID} Heliport"
-  304: "{STRINGID} Forest"
-  305: "{STRINGID} Junction"
-  306: "{STRINGID} Cross"
-  307: "{STRINGID} Views"
+  294: "Aeroporto de {STRINGID}"
+  295: "Petroleira de {STRINGID}"
+  296: "Minas de {STRINGID}"
+  297: "Docas de {STRINGID}"
+  298: "Anexo de {STRINGID}"
+  299: "Desvio de {STRINGID}"
+  300: "Filial de {STRINGID}"
+  301: Alto {STRINGID}
+  302: Baixo {STRINGID}
+  303: "Heliporto de {STRINGID}"
+  304: "Floresta {STRINGID}"
+  305: "Junção {STRINGID} Junction"
+  306: "Cruzamento {STRINGID} Cross"
+  307: "Vista {STRINGID}"
   308: "{STRINGID} 1"
   309: "{STRINGID} 2"
   310: "{STRINGID} 3"
@@ -388,7 +388,7 @@ strings:
   371: Falha ao carregar jogo salvo...{NEWLINE}Arquivo contém dados inválidos!
   372: "Esconder cenário e construções em primeiro plano "
   373: Somente possível construir isto na água!
-  374: Somente possível construir isto se próximo a indústria sobre a água!
+  374: Somente possível construir isto próximo a indústria sobre a água!
   375: Nome {STRINGID}
   376: "Escreva o novo nome para este {STRINGID}:"
   377: Impossível renomear este veículo...
@@ -491,7 +491,7 @@ strings:
   470: Taxiando em {STRINGID}
   471: Decolando de {STRINGID}
   472: Indo para {STRINGID}
-  473: No position{POP16}{POP16}
+  473: Sem posição{POP16}{POP16}
   474: Viajando{POP16}{POP16}
   475: "{STRINGID} - {STRINGID}"
   476: "{POP16}{POP16}{STRINGID}"
@@ -1368,19 +1368,19 @@ strings:
   1338: Escarlate
   1339: "{STRINGID}"
   1340: "{POP16}{STRINGID}"
-  1341: "{STRINGID} Transportes"
+  1341: "{STRINGID} Transportadora"
   1342: "{STRINGID} Express"
-  1343: "{STRINGID} Lines"
-  1344: "{STRINGID} Tracks"
-  1345: "{STRINGID} Coaches"
+  1343: "{STRINGID} Rodovias"
+  1344: "{STRINGID} Linhas Férreas"
+  1345: "{STRINGID} Ônibus"
   1346: "{STRINGID} Air"
-  1347: "{STRINGID} Rail"
+  1347: "{STRINGID} Ferroviária"
   1348: "{STRINGID} Carts"
-  1349: "{STRINGID} Trains"
+  1349: "{STRINGID} Trens"
   1350: "{STRINGID} Haulage"
-  1351: "{STRINGID} Shipping"
-  1352: "{STRINGID} Freight"
-  1353: "{STRINGID} Trucks"
+  1351: "{STRINGID} Frota"
+  1352: "{STRINGID} Frete"
+  1353: "{STRINGID} Caminhões"
   1354: "{COLOUR WINDOW_2}Sede"
   1355: "{COLOUR WINDOW_2}Proprietário"
   1356: "{COLOUR BLACK}@ {INT16}% juros por ano"
@@ -2183,3 +2183,81 @@ strings:
   2128: Janela
   2129: Tela Cheia
   2130: Tela Cheia Sem Borda
+  2131: Dispositivo padrão de aúdio
+  2132: "{COLOUR WINDOW_2}Fator de escala da janela:"
+  2133: "{COLOUR BLACK}+"
+  2134: "{COLOUR BLACK}-"
+  2135: "{COLOUR BLACK}{INT32_1DP}"
+  2136: "{COLOUR WINDOW_2}Zoom para posição do cursor"
+  2137: "{SMALLFONT}{COLOUR BLACK}Quando ativado, o zoom centralizará no cursor ao invés do centro da tela"
+  2138: "{COLOUR WINDOW_2}Tocar música do menu"
+  2139: "Sair para o menu"
+  2140: "Sair do OpenLoco"
+  2141: "{COLOUR WINDOW_2}Desabilitar companhias de IA"
+  2142: "{SMALLFONT}{COLOUR BLACK}Isso desabilita o 'pensamento' da IA, as tornando inefetivas.{NEWLINE}Em novos jogos, isso também previne que novas companhias de IA se formem."
+  2143: "{COLOUR WINDOW_2}Quantidade de autosaves:"
+  2144: "{COLOUR WINDOW_2}Frequência de autosaves:"
+  2145: "Nunca"
+  2146: "Todo mês"
+  2147: "Cada {INT32} meses"
+  2148: "{COLOUR WINDOW_2}Gerador:"
+  2149: Original
+  2150: Melhorado
+  2151: "Modificar veículo"
+  2152: "Clonar veículo"
+  2153: "Impossível clonar veículo..."
+  2154: "Localizar veículo na visão principal"
+  2155: "Seguir veículo na visão principal"
+  2156: "Habilitar menu de trapaças/debugging"
+  2157: "{SMALLFONT}{COLOUR BLACK}Isso adiciona um botão extra na barra de tarefas do jogo, permetindo fácil acesso a certas trapaças e opções de debug."
+  2158: "Habilitar modo sandbox"
+  2159: "Permitir direção manual"
+  2160: "Permitir construir enquanto pausado"
+  2161: "Mostrar contatdor de FPS"
+  2162: "{SMALLFONT}{COLOUR BLACK}Isso mostrará um contato no topo da tela, indicando o númer de frames desenhados por segundo."
+  2163: "Tirar limite de FPS"
+  2164: "{SMALLFONT}{COLOUR BLACK}Remove a restrição de renderização em 40Hz."
+  2165: "Hardware"
+  2166: "Renderização de mapa"
+  2167: "Inspetor de Tiles"
+  2168: "{SMALLFONT}{COLOUR BLACK}Ative para selecionar um tile no para para inspecionar."
+  2169: "Superfíce"
+  2170: "Via"
+  2171: "Estação"
+  2172: "Semáforo"
+  2173: "Construção"
+  2174: "Árvore"
+  2175: "Parede"
+  2176: "Estrada"
+  2177: "Indústria"
+  2178: "{COLOUR WINDOW_2} {STRINGID} ({STRINGID})"
+  2179: "{COLOUR WINDOW_2} {STRINGID} - {STRINGID} ({STRINGID})"
+  2180: "X:"
+  2181: "Y:"
+  2182: "{COLOUR WINDOW_2}{INT16}"
+  2183: "Dados dos elementos do tile"
+  2184: "Trapaças"
+  2185: "Trapças financeiras"
+  2186: "Trapaças de companhia"
+  2187: "Trapaças de veículos"
+  2188: "Trapaças de municípios"
+  2189: "Limpar empréstimo"
+  2190: "Limpar"
+  2191: "{COLOUR BLACK}{CURRENCY32}"
+  2192: "Selecionar companhia alvo"
+  2193: "Selecionar trapaça para aplicar"
+  2194: "Mudar controle para esse companhia"
+  2195: "Adiquirir todas posses de companhia"
+  2196: "Ativar falência"
+  2197: "Ativar estado de cadeia"
+  2198: "Aumentar fundos"
+  2199: "{COLOUR WINDOW_2}Quantidade:"
+  2200: "Adicionar"
+  2201: "Confiabilidade de veículo"
+  2202: "Mudar todas para 0 (ilimitada)"
+  2203: "Mudar todas para 100 (renovação completa)"
+  2204: "Mudar avaliação da companhia"
+  2205: "-10% em tudo"
+  2206: "+10% em tudo"
+  2207: "Min em tudo"
+  2208: "Max em tudo"
