@@ -516,8 +516,8 @@ namespace OpenLoco::Ui
         Ui::CursorId callCursor(int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback); // 24
         void callOnMove(int16_t xPos, int16_t yPos);                                                   // 25
         void callPrepareDraw();                                                                        // 26
-        void callDraw(Gfx::Context* context);                                                      // 27
-        void callDrawScroll(Gfx::Context* context, uint32_t scrollIndex);                          // 28
+        void callDraw(Gfx::Context* context);                                                          // 27
+        void callDrawScroll(Gfx::Context* context, uint32_t scrollIndex);                              // 28
     };
     static_assert(sizeof(window) == 0x88E);
 
