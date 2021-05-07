@@ -152,7 +152,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
     }
 
     // 0x0049E501
-    static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
+    static void draw(window* self, Gfx::Context* dpi)
     {
         self->draw(dpi);
         Common::drawTabs(self, dpi);

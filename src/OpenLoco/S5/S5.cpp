@@ -71,7 +71,7 @@ namespace OpenLoco::S5
     }
 
     // 0x0045A0B3
-    static void previewWindowDraw(window* w, Gfx::drawpixelinfo_t* dpi)
+    static void previewWindowDraw(window* w, Gfx::Context* dpi)
     {
         for (auto viewport : w->viewports)
         {
@@ -113,7 +113,7 @@ namespace OpenLoco::S5
                     tempViewport->flags = ViewportFlags::town_names_displayed | ViewportFlags::station_names_displayed;
 
                     // Swap screen DPI with our temporary one to draw the window then revert it back
-                    auto& dpi = Gfx::screenDpi();
+                    auto& dpi = Gfx::screenContext();
                     auto backupDpi = dpi;
                     dpi.bits = reinterpret_cast<uint8_t*>(pixels);
                     dpi.x = 0;

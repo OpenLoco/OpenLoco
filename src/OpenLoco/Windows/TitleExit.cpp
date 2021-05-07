@@ -31,7 +31,7 @@ namespace OpenLoco::Ui::Windows::TitleExit
 
     static void onMouseUp(window* window, widget_index widgetIndex);
     static void prepareDraw(Ui::window* self);
-    static void draw(Ui::window* window, Gfx::drawpixelinfo_t* dpi);
+    static void draw(Ui::window* window, Gfx::Context* dpi);
 
     window* open()
     {
@@ -66,7 +66,7 @@ namespace OpenLoco::Ui::Windows::TitleExit
     }
 
     // 0x00439236
-    static void draw(Ui::window* window, Gfx::drawpixelinfo_t* dpi)
+    static void draw(Ui::window* window, Gfx::Context* dpi)
     {
         // Draw widgets.
         window->draw(dpi);

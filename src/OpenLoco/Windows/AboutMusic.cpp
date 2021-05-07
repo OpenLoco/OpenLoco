@@ -90,14 +90,14 @@ namespace OpenLoco::Ui::Windows::AboutMusic
     }
 
     // 0x0043B8B8
-    static void draw(Ui::window* const window, Gfx::drawpixelinfo_t* const dpi)
+    static void draw(Ui::window* const window, Gfx::Context* const dpi)
     {
         // Draw widgets.
         window->draw(dpi);
     }
 
     // 0x0043B8BE
-    static void drawScroll(Ui::window*, Gfx::drawpixelinfo_t* const dpi, uint32_t)
+    static void drawScroll(Ui::window*, Gfx::Context* const dpi, uint32_t)
     {
         static const std::pair<string_id, string_id> stringsToDraw[numSongs] = {
             { StringIds::locomotion_title, StringIds::locomotion_title_credit },

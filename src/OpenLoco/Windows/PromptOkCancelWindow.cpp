@@ -135,7 +135,7 @@ namespace OpenLoco::Ui::Windows::PromptOkCancel
     }
 
     // 0x004470AA
-    static void draw(window* const self, Gfx::drawpixelinfo_t* const dpi)
+    static void draw(window* const self, Gfx::Context* const dpi)
     {
         self->draw(dpi);
 

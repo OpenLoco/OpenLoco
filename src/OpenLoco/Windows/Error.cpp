@@ -27,7 +27,7 @@ namespace OpenLoco::Ui::Windows::Error
     {
         static window_event_list events;
 
-        static void draw(Ui::window* self, Gfx::drawpixelinfo_t* dpi);
+        static void draw(Ui::window* self, Gfx::Context* dpi);
         static void onPeriodicUpdate(Ui::window* self);
         static void initEvents();
     }
@@ -204,7 +204,7 @@ namespace OpenLoco::Ui::Windows::Error
     namespace Common
     {
         // 0x00431C05
-        static void draw(Ui::window* self, Gfx::drawpixelinfo_t* dpi)
+        static void draw(Ui::window* self, Gfx::Context* dpi)
         {
             uint16_t x = self->x;
             uint16_t y = self->y;

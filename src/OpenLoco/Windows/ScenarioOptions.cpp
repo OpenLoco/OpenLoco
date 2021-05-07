@@ -86,7 +86,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         }
 
         // 0x004400A4
-        static void drawTabs(window* window, Gfx::drawpixelinfo_t* dpi)
+        static void drawTabs(window* window, Gfx::Context* dpi)
         {
             auto skin = ObjectManager::get<InterfaceSkinObject>();
 
@@ -163,7 +163,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             }
         }
 
-        static void draw(window* window, Gfx::drawpixelinfo_t* dpi)
+        static void draw(window* window, Gfx::Context* dpi)
         {
             window->draw(dpi);
             drawTabs(window, dpi);
@@ -213,7 +213,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         static window_event_list events;
 
         // 0x0043FC91
-        static void draw(Ui::window* window, Gfx::drawpixelinfo_t* dpi)
+        static void draw(Ui::window* window, Gfx::Context* dpi)
         {
             Common::draw(window, dpi);
 
@@ -612,7 +612,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         static window_event_list events;
 
         // 0x0043F4EB
-        static void draw(Ui::window* window, Gfx::drawpixelinfo_t* dpi)
+        static void draw(Ui::window* window, Gfx::Context* dpi)
         {
             Common::draw(window, dpi);
 
@@ -868,7 +868,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         static window_event_list events;
 
         // 0x0043F97D
-        static void draw(Ui::window* window, Gfx::drawpixelinfo_t* dpi)
+        static void draw(Ui::window* window, Gfx::Context* dpi)
         {
             Common::draw(window, dpi);
 
@@ -996,7 +996,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         static window_event_list events;
 
         // 0x0043F004
-        static void draw(Ui::window* window, Gfx::drawpixelinfo_t* dpi)
+        static void draw(Ui::window* window, Gfx::Context* dpi)
         {
             Common::draw(window, dpi);
 

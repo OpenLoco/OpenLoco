@@ -1905,7 +1905,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     // 0x0049D38A and 0x0049D16B
-    static void drawCostString(window* self, Gfx::drawpixelinfo_t* dpi)
+    static void drawCostString(window* self, Gfx::Context* dpi)
     {
         auto x = self->widgets[widx::construct].mid_x();
         x += self->x;
@@ -1928,7 +1928,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     // 0x0049D106
-    static void drawTrackCost(window* self, Gfx::drawpixelinfo_t* clipped, Gfx::drawpixelinfo_t* dpi, xy32 pos, uint16_t width, uint16_t height)
+    static void drawTrackCost(window* self, Gfx::Context* clipped, Gfx::Context* dpi, xy32 pos, uint16_t width, uint16_t height)
     {
         width >>= 1;
         height >>= 1;
@@ -1949,7 +1949,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     // 0x0049D325
-    static void drawRoadCost(window* self, Gfx::drawpixelinfo_t* clipped, Gfx::drawpixelinfo_t* dpi, xy32 pos, uint16_t width, uint16_t height)
+    static void drawRoadCost(window* self, Gfx::Context* clipped, Gfx::Context* dpi, xy32 pos, uint16_t width, uint16_t height)
     {
         width >>= 1;
         height >>= 1;
@@ -1970,7 +1970,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     // 0x0049CF36
-    static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
+    static void draw(window* self, Gfx::Context* dpi)
     {
         self->draw(dpi);
         Common::drawTabs(self, dpi);
@@ -2014,7 +2014,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             auto width = self->widgets[widx::construct].width();
             auto height = self->widgets[widx::construct].height();
 
-            Gfx::drawpixelinfo_t* clipped = nullptr;
+            Gfx::Context* clipped = nullptr;
 
             if (Gfx::clipDrawpixelinfo(&clipped, dpi, x, y, width, height))
             {
@@ -2064,7 +2064,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             auto width = self->widgets[widx::construct].width();
             auto height = self->widgets[widx::construct].height();
 
-            Gfx::drawpixelinfo_t* clipped = nullptr;
+            Gfx::Context* clipped = nullptr;
 
             if (Gfx::clipDrawpixelinfo(&clipped, dpi, x, y, width, height))
             {

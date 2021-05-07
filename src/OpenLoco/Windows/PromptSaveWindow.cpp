@@ -101,7 +101,7 @@ namespace OpenLoco::Ui::Windows::PromptSaveWindow
         return window;
     }
 
-    static void draw(window* const self, Gfx::drawpixelinfo_t* const dpi)
+    static void draw(window* const self, Gfx::Context* const dpi)
     {
         self->draw(dpi);
     }

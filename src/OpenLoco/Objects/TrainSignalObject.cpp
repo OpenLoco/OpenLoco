@@ -5,7 +5,7 @@
 namespace OpenLoco
 {
     // 0x004899A7
-    void TrainSignalObject::drawPreviewImage(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y) const
+    void TrainSignalObject::drawPreviewImage(Gfx::Context& dpi, const int16_t x, const int16_t y) const
     {
         auto frames = signalFrames[(((num_frames + 2) / 3) - 2)];
         auto frameCount = std::size(frames) - 1;

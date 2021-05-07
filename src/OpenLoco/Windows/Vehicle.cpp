@@ -75,12 +75,12 @@ namespace OpenLoco::Ui::Windows::Vehicle
         static void event8(window* const self);
         static void event9(window* const self);
         static size_t getNumCars(Ui::window* const self);
-        static void drawTabs(window* const window, Gfx::drawpixelinfo_t* const context);
+        static void drawTabs(window* const window, Gfx::Context* const context);
         static void pickupToolUpdate(window& self, const int16_t x, const int16_t y);
         static void pickupToolDown(window& self, const int16_t x, const int16_t y);
         static void pickupToolAbort(window& self);
         static size_t getNumCars(Ui::window* const self);
-        static void drawTabs(window* const window, Gfx::drawpixelinfo_t* const context);
+        static void drawTabs(window* const window, Gfx::Context* const context);
         static std::optional<Vehicles::Car> getCarFromScrollView(window* const self, const int16_t y);
         static std::pair<uint32_t, string_id> getPickupImageIdandTooltip(const Vehicles::VehicleHead& head, const bool isPlaced);
     }
@@ -848,7 +848,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B226D
-        static void draw(window* const self, Gfx::drawpixelinfo_t* const context)
+        static void draw(window* const self, Gfx::Context* const context)
         {
             self->draw(context);
             Common::drawTabs(self, context);
@@ -1383,7 +1383,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B3542
-        static void draw(window* const self, Gfx::drawpixelinfo_t* const context)
+        static void draw(window* const self, Gfx::Context* const context)
         {
             self->draw(context);
             Common::drawTabs(self, context);
@@ -1430,7 +1430,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B36A3
-        static void drawScroll(window* const self, Gfx::drawpixelinfo_t* const context, const uint32_t i)
+        static void drawScroll(window* const self, Gfx::Context* const context, const uint32_t i)
         {
             Gfx::clearSingle(*context, Colour::getShade(self->colours[1], 4));
             auto head = Common::getVehicle(self);
@@ -1676,7 +1676,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 004B3F0D
-        static void draw(Ui::window* const self, Gfx::drawpixelinfo_t* const context)
+        static void draw(Ui::window* const self, Gfx::Context* const context)
         {
             self->draw(context);
             Common::drawTabs(self, context);
@@ -1692,7 +1692,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // based on 0x004B40C7
-        static void drawCargoText(Gfx::drawpixelinfo_t* const pDrawpixelinfo, const int16_t x, int16_t& y, const string_id strFormat, uint8_t cargoQty, uint8_t cargoType, StationId_t stationId)
+        static void drawCargoText(Gfx::Context* const pDrawpixelinfo, const int16_t x, int16_t& y, const string_id strFormat, uint8_t cargoQty, uint8_t cargoType, StationId_t stationId)
         {
             if (cargoQty == 0)
             {
@@ -1713,7 +1713,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 004B3F62
-        static void drawScroll(window* const self, Gfx::drawpixelinfo_t* const pDrawpixelinfo, const uint32_t i)
+        static void drawScroll(window* const self, Gfx::Context* const pDrawpixelinfo, const uint32_t i)
         {
             Gfx::clearSingle(*pDrawpixelinfo, Colour::getShade(self->colours[1], 4));
             Vehicles::Vehicle train{ Common::getVehicle(self) };
@@ -2046,7 +2046,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B576C
-        static void draw(Ui::window* const self, Gfx::drawpixelinfo_t* const context)
+        static void draw(Ui::window* const self, Gfx::Context* const context)
         {
             self->draw(context);
             Common::drawTabs(self, context);
@@ -2980,7 +2980,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B4866
-        static void draw(window* const self, Gfx::drawpixelinfo_t* const context)
+        static void draw(window* const self, Gfx::Context* const context)
         {
             self->draw(context);
             Common::drawTabs(self, context);
@@ -3074,7 +3074,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         };
 
         // 0x004B4A58 based on
-        static void sub_4B4A58(window* const self, Gfx::drawpixelinfo_t* const context, const string_id strFormat, FormatArguments& args, Vehicles::Order& order, int16_t& y)
+        static void sub_4B4A58(window* const self, Gfx::Context* const context, const string_id strFormat, FormatArguments& args, Vehicles::Order& order, int16_t& y)
         {
             Gfx::point_t loc = { 8, static_cast<int16_t>(y - 1) };
             Gfx::drawString_494B3F(*context, &loc, Colour::black, strFormat, &args);
@@ -3090,7 +3090,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B48BA
-        static void drawScroll(window* const self, Gfx::drawpixelinfo_t* const pDrawpixelinfo, const uint32_t i)
+        static void drawScroll(window* const self, Gfx::Context* const pDrawpixelinfo, const uint32_t i)
         {
             Gfx::clearSingle(*pDrawpixelinfo, Colour::getShade(self->colours[1], 4));
 
@@ -3491,7 +3491,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // TODO: Move to a more appropriate file used by many windows
-        int16_t sub_4B743B(uint8_t al, uint8_t ah, int16_t cx, int16_t dx, Vehicles::VehicleBase* vehicle, Gfx::drawpixelinfo_t* const pDrawpixelinfo)
+        int16_t sub_4B743B(uint8_t al, uint8_t ah, int16_t cx, int16_t dx, Vehicles::VehicleBase* vehicle, Gfx::Context* const pDrawpixelinfo)
         {
             registers regs{};
             regs.al = al;
@@ -3537,7 +3537,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         };
 
         // 0x004B5F0D
-        static void drawTabs(window* const self, Gfx::drawpixelinfo_t* const context)
+        static void drawTabs(window* const self, Gfx::Context* const context)
         {
             auto skin = OpenLoco::ObjectManager::get<InterfaceSkinObject>();
 

@@ -440,7 +440,7 @@ namespace OpenLoco
 #endif
         Title::start();
         Gui::init();
-        Gfx::clear(Gfx::screenDpi(), 0x0A0A0A0A);
+        Gfx::clear(Gfx::screenContext(), 0x0A0A0A0A);
     }
 
     // 0x00428E47
@@ -626,7 +626,7 @@ namespace OpenLoco
             {
                 Config::get().var_72 = 16;
                 Ui::getCursorPos(addr<0x00F2538C, int32_t>(), addr<0x00F25390, int32_t>());
-                Gfx::clear(Gfx::screenDpi(), 0);
+                Gfx::clear(Gfx::screenContext(), 0);
                 addr<0x00F2539C, int32_t>() = 0;
             }
             else

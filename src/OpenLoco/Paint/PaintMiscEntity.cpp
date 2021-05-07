@@ -43,7 +43,7 @@ namespace OpenLoco::Paint
     // 0x00440331
     static void paintExhaustEntity(PaintSession& session, Exhaust* exhaustEntity)
     {
-        Gfx::drawpixelinfo_t* dpi = session.getContext();
+        Gfx::Context* dpi = session.getContext();
         if (dpi->zoom_level > 1)
         {
             return;
@@ -67,7 +67,7 @@ namespace OpenLoco::Paint
     // 0x004403C5
     static void paintRedGreenCurrencyEntity(PaintSession& session, MoneyEffect* moneyEffect)
     {
-        Gfx::drawpixelinfo_t* dpi = session.getContext();
+        Gfx::Context* dpi = session.getContext();
         if (dpi->zoom_level > 1)
         {
             return;
@@ -82,7 +82,7 @@ namespace OpenLoco::Paint
     // 0x00440400
     static void paintWindowCurrencyEntity(PaintSession& session, MoneyEffect* moneyEffect)
     {
-        Gfx::drawpixelinfo_t* dpi = session.getContext();
+        Gfx::Context* dpi = session.getContext();
         if (dpi->zoom_level > 1)
         {
             return;
@@ -98,7 +98,7 @@ namespace OpenLoco::Paint
     // 0x0044044E
     static void paintVehicleCrashParticleEntity(PaintSession& session, VehicleCrashParticle* particle)
     {
-        Gfx::drawpixelinfo_t* dpi = session.getContext();
+        Gfx::Context* dpi = session.getContext();
         if (dpi->zoom_level != 0)
         {
             return;
@@ -123,7 +123,7 @@ namespace OpenLoco::Paint
     // 0x0044051C
     static void paintExplosionCloudEntity(PaintSession& session, ExplosionCloud* particle)
     {
-        Gfx::drawpixelinfo_t* dpi = session.getContext();
+        Gfx::Context* dpi = session.getContext();
         if (dpi->zoom_level > 2)
         {
             return;
@@ -158,7 +158,7 @@ namespace OpenLoco::Paint
     // 0x00440557
     static void paintSplashEntity(PaintSession& session, Splash* particle)
     {
-        Gfx::drawpixelinfo_t* dpi = session.getContext();
+        Gfx::Context* dpi = session.getContext();
         if (dpi->zoom_level > 2)
         {
             return;
@@ -203,7 +203,7 @@ namespace OpenLoco::Paint
     // 0x00440592
     static void paintFireballEntity(PaintSession& session, Fireball* particle)
     {
-        Gfx::drawpixelinfo_t* dpi = session.getContext();
+        Gfx::Context* dpi = session.getContext();
         if (dpi->zoom_level > 2)
         {
             return;
@@ -251,7 +251,7 @@ namespace OpenLoco::Paint
     // 0x004404A6
     static void paintExplosionSmokeEntity(PaintSession& session, ExplosionSmoke* particle)
     {
-        Gfx::drawpixelinfo_t* dpi = session.getContext();
+        Gfx::Context* dpi = session.getContext();
         if (dpi->zoom_level > 1)
         {
             return;
@@ -278,7 +278,7 @@ namespace OpenLoco::Paint
     // 0x004404E1
     static void paintSmokeEntity(PaintSession& session, Smoke* particle)
     {
-        Gfx::drawpixelinfo_t* dpi = session.getContext();
+        Gfx::Context* dpi = session.getContext();
         if (dpi->zoom_level > 1)
         {
             return;

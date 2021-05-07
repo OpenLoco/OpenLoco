@@ -250,8 +250,8 @@ namespace OpenLoco::Ui
                 Ui::CursorId (*cursor)(window*, int16_t, int16_t, int16_t, Ui::CursorId);
                 void (*on_move)(window&, const int16_t x, const int16_t y);
                 void (*prepare_draw)(window*);
-                void (*draw)(window*, Gfx::drawpixelinfo_t*);
-                void (*draw_scroll)(window*, Gfx::drawpixelinfo_t*, uint32_t scrollIndex);
+                void (*draw)(window*, Gfx::Context*);
+                void (*draw_scroll)(window*, Gfx::Context*, uint32_t scrollIndex);
             };
         };
 
@@ -467,7 +467,7 @@ namespace OpenLoco::Ui
         void initScrollWidgets();
         int8_t getScrollDataIndex(widget_index index);
         void setDisabledWidgetsAndInvalidate(uint32_t _disabled_widgets);
-        void drawViewports(Gfx::drawpixelinfo_t* dpi);
+        void drawViewports(Gfx::Context* dpi);
         void viewportCentreMain();
         void viewportSetUndergroundFlag(bool underground, Ui::viewport* vp);
         void viewportGetMapCoordsByCursor(int16_t* map_x, int16_t* map_y, int16_t* offset_x, int16_t* offset_y);
@@ -488,7 +488,7 @@ namespace OpenLoco::Ui
         void moveInsideScreenEdges();
         bool moveToCentre();
         widget_index findWidgetAt(int16_t xPos, int16_t yPos);
-        void draw(OpenLoco::Gfx::drawpixelinfo_t* dpi);
+        void draw(OpenLoco::Gfx::Context* dpi);
 
         void callClose();                                                                              // 0
         void callOnMouseUp(widget_index widgetIndex);                                                  // 1
@@ -516,8 +516,8 @@ namespace OpenLoco::Ui
         Ui::CursorId callCursor(int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback); // 24
         void callOnMove(int16_t xPos, int16_t yPos);                                                   // 25
         void callPrepareDraw();                                                                        // 26
-        void callDraw(Gfx::drawpixelinfo_t* dpi);                                                      // 27
-        void callDrawScroll(Gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex);                          // 28
+        void callDraw(Gfx::Context* dpi);                                                      // 27
+        void callDrawScroll(Gfx::Context* dpi, uint32_t scrollIndex);                          // 28
     };
     static_assert(sizeof(window) == 0x88E);
 

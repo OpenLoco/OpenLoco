@@ -45,7 +45,7 @@ namespace OpenLoco::Ui::Windows::Cheats
 
         constexpr uint64_t enabledWidgets = (1 << Widx::close_button) | (1 << Widx::tab_finances) | (1 << Widx::tab_companies) | (1 << Widx::tab_vehicles) | (1 << Widx::tab_towns);
 
-        static void drawTabs(Ui::window* const self, Gfx::drawpixelinfo_t* const context)
+        static void drawTabs(Ui::window* const self, Gfx::Context* const context)
         {
             auto skin = ObjectManager::get<InterfaceSkinObject>();
 
@@ -165,7 +165,7 @@ namespace OpenLoco::Ui::Windows::Cheats
             self->activated_widgets = (1 << Common::Widx::tab_finances);
         }
 
-        static void draw(Ui::window* const self, Gfx::drawpixelinfo_t* const context)
+        static void draw(Ui::window* const self, Gfx::Context* const context)
         {
             // Draw widgets and tabs.
             self->draw(context);
@@ -337,7 +337,7 @@ namespace OpenLoco::Ui::Windows::Cheats
             }
         }
 
-        static void draw(Ui::window* const self, Gfx::drawpixelinfo_t* const context)
+        static void draw(Ui::window* const self, Gfx::Context* const context)
         {
             // Draw widgets and tabs.
             self->draw(context);
@@ -467,7 +467,7 @@ namespace OpenLoco::Ui::Windows::Cheats
             self->activated_widgets = (1 << Common::Widx::tab_vehicles);
         }
 
-        static void draw(Ui::window* const self, Gfx::drawpixelinfo_t* const context)
+        static void draw(Ui::window* const self, Gfx::Context* const context)
         {
             // Draw widgets and tabs.
             self->draw(context);
@@ -558,7 +558,7 @@ namespace OpenLoco::Ui::Windows::Cheats
             self->activated_widgets = (1 << Common::Widx::tab_towns);
         }
 
-        static void draw(Ui::window* const self, Gfx::drawpixelinfo_t* const context)
+        static void draw(Ui::window* const self, Gfx::Context* const context)
         {
             // Draw widgets and tabs.
             self->draw(context);

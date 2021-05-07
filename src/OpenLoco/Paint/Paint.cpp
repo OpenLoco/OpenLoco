@@ -118,7 +118,7 @@ namespace OpenLoco::Paint
         call(0x0045E779, regs);
     }
 
-    void PaintSession::init(Gfx::drawpixelinfo_t& dpi, const uint16_t viewportFlags)
+    void PaintSession::init(Gfx::Context& dpi, const uint16_t viewportFlags)
     {
         _dpi = &dpi;
         _nextFreePaintStruct = &_paintEntries[0];
@@ -135,7 +135,7 @@ namespace OpenLoco::Paint
     }
 
     // 0x0045A6CA
-    PaintSession* allocateSession(Gfx::drawpixelinfo_t& dpi, uint16_t viewportFlags)
+    PaintSession* allocateSession(Gfx::Context& dpi, uint16_t viewportFlags)
     {
         _session.init(dpi, viewportFlags);
         return &_session;
@@ -183,7 +183,7 @@ namespace OpenLoco::Paint
     };
 
     template<uint8_t rotation>
-    GenerationParameters generateParameters(Gfx::drawpixelinfo_t* context)
+    GenerationParameters generateParameters(Gfx::Context* context)
     {
         // TODO: Work out what these constants represent
         uint16_t numVerticalQuadrants = (context->height + (rotation == 0 ? 1040 : 1056)) >> 5;
@@ -454,7 +454,7 @@ namespace OpenLoco::Paint
         }
     }
 
-    static bool isSpriteInteractedWithPaletteSet(Gfx::drawpixelinfo_t* dpi, uint32_t imageId, const Gfx::point_t& coords, const Gfx::PaletteMap& paletteMap)
+    static bool isSpriteInteractedWithPaletteSet(Gfx::Context* dpi, uint32_t imageId, const Gfx::point_t& coords, const Gfx::PaletteMap& paletteMap)
     {
         static loco_global<const uint8_t*, 0x0050B860> _paletteMap;
         static loco_global<bool, 0x00E40114> _interactionResult;
@@ -469,7 +469,7 @@ namespace OpenLoco::Paint
     }
 
     // 0x00447A0E
-    static bool isSpriteInteractedWith(Gfx::drawpixelinfo_t* dpi, uint32_t imageId, const Gfx::point_t& coords)
+    static bool isSpriteInteractedWith(Gfx::Context* dpi, uint32_t imageId, const Gfx::point_t& coords)
     {
         static loco_global<bool, 0x00E40114> _interactionResult;
         static loco_global<uint32_t, 0x00E04324> _interactionFlags;

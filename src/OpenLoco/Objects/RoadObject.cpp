@@ -5,7 +5,7 @@
 namespace OpenLoco
 {
     // 0x00477DFE
-    void RoadObject::drawPreviewImage(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y) const
+    void RoadObject::drawPreviewImage(Gfx::Context& dpi, const int16_t x, const int16_t y) const
     {
         auto colourImage = Gfx::recolour(image, Colour::salmon_pink);
         if (var_24 == 1)

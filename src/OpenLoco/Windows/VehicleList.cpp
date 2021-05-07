@@ -227,7 +227,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x004C2A6E
-    static void drawTabs(window* self, Gfx::drawpixelinfo_t* dpi)
+    static void drawTabs(window* self, Gfx::Context* dpi)
     {
         auto skin = ObjectManager::get<InterfaceSkinObject>();
         auto companyColour = CompanyManager::getCompanyColour(self->number);
@@ -478,7 +478,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x004C211C
-    static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
+    static void draw(window* self, Gfx::Context* dpi)
     {
         self->draw(dpi);
         drawTabs(self, dpi);
@@ -508,7 +508,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x004B6D43
-    static void drawVehicle(VehicleHead* vehicle, Gfx::drawpixelinfo_t* dpi, uint16_t yPos)
+    static void drawVehicle(VehicleHead* vehicle, Gfx::Context* dpi, uint16_t yPos)
     {
         registers regs;
         regs.esi = (int32_t)vehicle;
@@ -520,7 +520,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x004C21CD
-    static void drawScroll(window* self, Gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
+    static void drawScroll(window* self, Gfx::Context* dpi, uint32_t scrollIndex)
     {
         auto shade = Colour::getShade(self->colours[1], 1);
         Gfx::clearSingle(*dpi, shade);

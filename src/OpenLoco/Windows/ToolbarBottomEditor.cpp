@@ -60,7 +60,7 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
     }
 
     // 0x0043CE65
-    static void draw(window* self, Gfx::drawpixelinfo_t* ctx)
+    static void draw(window* self, Gfx::Context* ctx)
     {
         widget_t& previous = self->widgets[widx::previous_frame];
         widget_t& next = self->widgets[widx::next_frame];

@@ -39,7 +39,7 @@ namespace OpenLoco::Ui::WindowManager
     static loco_global<WindowType, 0x00523364> _callingWindowType;
     static loco_global<uint16_t, 0x0052338C> _tooltipNotShownTicks;
     static loco_global<uint16_t, 0x00508F10> __508F10;
-    static loco_global<Gfx::drawpixelinfo_t, 0x0050B884> _screen_dpi;
+    static loco_global<Gfx::Context, 0x0050B884> _screen_dpi;
     static loco_global<uint16_t, 0x00523390> _toolWindowNumber;
     static loco_global<Ui::WindowType, 0x00523392> _toolWindowType;
     static loco_global<uint16_t, 0x00523394> _toolWidgetIdx;
@@ -1108,50 +1108,50 @@ namespace OpenLoco::Ui::WindowManager
     }
 
     // 0x004C5FC8
-    void drawSingle(Gfx::drawpixelinfo_t* _dpi, window* w, int32_t left, int32_t top, int32_t right, int32_t bottom)
+    void drawSingle(Gfx::Context* _dpi, window* w, int32_t left, int32_t top, int32_t right, int32_t bottom)
     {
-        // Copy dpi so we can crop it
-        auto dpi = *_dpi;
+        // Copy context so we can crop it
+        auto context = *_dpi;
 
         // Clamp left to 0
-        int32_t overflow = left - dpi.x;
+        int32_t overflow = left - context.x;
         if (overflow > 0)
         {
-            dpi.x += overflow;
-            dpi.width -= overflow;
-            if (dpi.width <= 0)
+            context.x += overflow;
+            context.width -= overflow;
+            if (context.width <= 0)
                 return;
-            dpi.pitch += overflow;
-            dpi.bits += overflow;
+            context.pitch += overflow;
+            context.bits += overflow;
         }
 
         // Clamp width to right
-        overflow = dpi.x + dpi.width - right;
+        overflow = context.x + context.width - right;
         if (overflow > 0)
         {
-            dpi.width -= overflow;
-            if (dpi.width <= 0)
+            context.width -= overflow;
+            if (context.width <= 0)
                 return;
-            dpi.pitch += overflow;
+            context.pitch += overflow;
         }
 
         // Clamp top to 0
-        overflow = top - dpi.y;
+        overflow = top - context.y;
         if (overflow > 0)
         {
-            dpi.y += overflow;
-            dpi.height -= overflow;
-            if (dpi.height <= 0)
+            context.y += overflow;
+            context.height -= overflow;
+            if (context.height <= 0)
                 return;
-            dpi.bits += (dpi.width + dpi.pitch) * overflow;
+            context.bits += (context.width + context.pitch) * overflow;
         }
 
         // Clamp height to bottom
-        overflow = dpi.y + dpi.height - bottom;
+        overflow = context.y + context.height - bottom;
         if (overflow > 0)
         {
-            dpi.height -= overflow;
-            if (dpi.height <= 0)
+            context.height -= overflow;
+            if (context.height <= 0)
                 return;
         }
 
@@ -1177,7 +1177,7 @@ namespace OpenLoco::Ui::WindowManager
         windowColours[3] = Colour::opaque(w->colours[3]);
 
         w->callPrepareDraw();
-        w->callDraw(&dpi);
+        w->callDraw(&context);
     }
 
     // 0x004CD3D0
@@ -1681,7 +1681,7 @@ namespace OpenLoco::Ui::WindowManager
 
         auto _width = Ui::width();
         auto _height = Ui::height();
-        Gfx::drawpixelinfo_t& _bitsDPI = _screen_dpi;
+        Gfx::Context& _bitsDPI = _screen_dpi;
 
         // Adjust for move off screen
         // NOTE: when zooming, there can be x, y, dx, dy combinations that go off the

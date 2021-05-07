@@ -47,7 +47,7 @@ namespace OpenLoco::Drawing
         const char* formatString = (_currentFPS >= 10.0f ? "%.0f" : "%.1f");
         snprintf(&buffer[3], std::size(buffer) - 3, formatString, fps);
 
-        auto& dpi = Gfx::screenDpi();
+        auto& dpi = Gfx::screenContext();
 
         // Draw text
         const int stringWidth = Gfx::getStringWidth(buffer);

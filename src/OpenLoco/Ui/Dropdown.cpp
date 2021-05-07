@@ -171,7 +171,7 @@ namespace OpenLoco::Ui::Dropdown
         }
 
         // 0x00494BF6
-        static void sub_494BF6(window* self, Gfx::drawpixelinfo_t* dpi, string_id stringId, int16_t x, int16_t y, int16_t width, Colour_t colour, FormatArguments args)
+        static void sub_494BF6(window* self, Gfx::Context* dpi, string_id stringId, int16_t x, int16_t y, int16_t width, Colour_t colour, FormatArguments args)
         {
             StringManager::formatString(_byte_112CC04, stringId, &args);
 
@@ -185,7 +185,7 @@ namespace OpenLoco::Ui::Dropdown
         }
 
         // 0x004CD00E
-        static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
+        static void draw(window* self, Gfx::Context* dpi)
         {
             self->draw(dpi);
             _windowDropdownOnpaintCellX = 0;

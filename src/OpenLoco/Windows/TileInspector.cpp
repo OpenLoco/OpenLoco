@@ -119,7 +119,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
             self->activated_widgets &= ~(1 << widx::select);
     }
 
-    static void draw(Ui::window* const self, Gfx::drawpixelinfo_t* const context)
+    static void draw(Ui::window* const self, Gfx::Context* const context)
     {
         // Draw widgets.
         self->draw(context);
@@ -333,7 +333,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
         return StringIds::empty;
     }
 
-    static void drawScroll(Ui::window* self, Gfx::drawpixelinfo_t* const context, uint32_t)
+    static void drawScroll(Ui::window* self, Gfx::Context* const context, uint32_t)
     {
         if (_currentPosition == Pos2(0, 0))
             return;

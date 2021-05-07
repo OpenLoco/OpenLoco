@@ -108,7 +108,7 @@ namespace OpenLoco::Ui
     }
 
     // 0x0045A0B3
-    void window::drawViewports(Gfx::drawpixelinfo_t* dpi)
+    void window::drawViewports(Gfx::Context* dpi)
     {
         if (viewports[0] != nullptr)
             viewports[0]->render(dpi);
@@ -1368,7 +1368,7 @@ namespace OpenLoco::Ui
         event_handlers->prepare_draw(this);
     }
 
-    void window::callDraw(Gfx::drawpixelinfo_t* dpi)
+    void window::callDraw(Gfx::Context* dpi)
     {
         if (event_handlers->draw == nullptr)
             return;
@@ -1385,7 +1385,7 @@ namespace OpenLoco::Ui
         event_handlers->draw(this, dpi);
     }
 
-    void window::callDrawScroll(Gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
+    void window::callDrawScroll(Gfx::Context* dpi, uint32_t scrollIndex)
     {
         if (event_handlers->draw_scroll == nullptr)
             return;
@@ -1404,7 +1404,7 @@ namespace OpenLoco::Ui
     }
 
     // 0x004CA4DF
-    void window::draw(Gfx::drawpixelinfo_t* dpi)
+    void window::draw(Gfx::Context* dpi)
     {
         if ((this->flags & WindowFlags::transparent) && !(this->flags & WindowFlags::no_background))
         {

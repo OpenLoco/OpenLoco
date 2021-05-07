@@ -57,7 +57,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
     static window_event_list _events;
 
     static void prepareDraw(window* window);
-    static void draw(Ui::window* self, Gfx::drawpixelinfo_t* dpi);
+    static void draw(Ui::window* self, Gfx::Context* dpi);
     static void onMouseUp(Ui::window* window, widget_index widgetIndex);
     static void onMouseDown(Ui::window* window, widget_index widgetIndex);
     static void textInput(window* w, widget_index widgetIndex, const char* str);
@@ -171,7 +171,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
     };
 
     // 0x004397BE
-    static void draw(Ui::window* self, Gfx::drawpixelinfo_t* dpi)
+    static void draw(Ui::window* self, Gfx::Context* dpi)
     {
         widget_t& frame = _widgets[Widx::outer_frame];
         Gfx::drawRect(dpi, self->x + frame.left, self->y + frame.top, frame.width(), frame.height(), 0x2000000 | 52);

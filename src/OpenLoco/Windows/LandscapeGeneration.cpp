@@ -68,7 +68,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         static void switchTab(window* window, widget_index widgetIndex);
 
         // 0x0043ECA4
-        static void drawTabs(window* window, Gfx::drawpixelinfo_t* dpi)
+        static void drawTabs(window* window, Gfx::Context* dpi)
         {
             auto skin = ObjectManager::get<InterfaceSkinObject>();
 
@@ -116,7 +116,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             }
         }
 
-        static void draw(window* window, Gfx::drawpixelinfo_t* dpi)
+        static void draw(window* window, Gfx::Context* dpi)
         {
             window->draw(dpi);
             drawTabs(window, dpi);
@@ -171,7 +171,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         static window_event_list events;
 
         // 0x0043DC30
-        static void draw(window* window, Gfx::drawpixelinfo_t* dpi)
+        static void draw(window* window, Gfx::Context* dpi)
         {
             Common::draw(window, dpi);
 
@@ -372,7 +372,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         static window_event_list events;
 
         // 0x0043DF89
-        static void draw(window* window, Gfx::drawpixelinfo_t* dpi)
+        static void draw(window* window, Gfx::Context* dpi)
         {
             Common::draw(window, dpi);
 
@@ -425,7 +425,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         };
 
         // 0x0043E01C
-        static void drawScroll(Ui::window* window, Gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
+        static void drawScroll(Ui::window* window, Gfx::Context* dpi, uint32_t scrollIndex)
         {
             uint16_t yPos = 0;
             for (uint16_t i = 0; i < maxLandObjects; i++)
@@ -755,7 +755,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         static window_event_list events;
 
         // 0x0043E53A
-        static void draw(window* window, Gfx::drawpixelinfo_t* dpi)
+        static void draw(window* window, Gfx::Context* dpi)
         {
             Common::draw(window, dpi);
 
@@ -994,7 +994,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         static window_event_list events;
 
         // 0x0043E9A3
-        static void draw(window* window, Gfx::drawpixelinfo_t* dpi)
+        static void draw(window* window, Gfx::Context* dpi)
         {
             Common::draw(window, dpi);
 
@@ -1136,7 +1136,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         static window_event_list events;
 
         // 0x0043EB9D
-        static void draw(window* window, Gfx::drawpixelinfo_t* dpi)
+        static void draw(window* window, Gfx::Context* dpi)
         {
             Common::draw(window, dpi);
 

@@ -14,7 +14,7 @@ namespace OpenLoco
     static loco_global<uint16_t, 0x0052622E> _52622E; // Tick related
 
     // 0x004B7733
-    static void drawVehicle(Gfx::drawpixelinfo_t* dpi, const VehicleObject* vehicleObject, uint8_t eax, uint8_t esi, Gfx::point_t offset)
+    static void drawVehicle(Gfx::Context* dpi, const VehicleObject* vehicleObject, uint8_t eax, uint8_t esi, Gfx::point_t offset)
     {
         // Eventually calls 0x4B777B part of 0x4B7741
         registers regs;
@@ -30,7 +30,7 @@ namespace OpenLoco
     }
 
     // 0x004B8C52
-    void VehicleObject::drawPreviewImage(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y) const
+    void VehicleObject::drawPreviewImage(Gfx::Context& dpi, const int16_t x, const int16_t y) const
     {
         // Rotation
         uint8_t unk1 = _52622E & 0x3F;
@@ -43,7 +43,7 @@ namespace OpenLoco
     static const uint8_t descriptionRowHeight = 10;
 
     // 0x004B8C9D
-    void VehicleObject::drawDescription(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y, const int16_t width) const
+    void VehicleObject::drawDescription(Gfx::Context& dpi, const int16_t x, const int16_t y, const int16_t width) const
     {
         Gfx::point_t rowPosition = { x, y };
         ObjectManager::drawGenericDescription(dpi, rowPosition, designed, obsolete);

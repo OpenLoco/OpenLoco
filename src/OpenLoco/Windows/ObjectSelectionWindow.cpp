@@ -254,7 +254,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     static const uint8_t rowOffsetY = 24;
 
     // 0x0047328D
-    static void drawTabs(window* self, Gfx::drawpixelinfo_t* dpi)
+    static void drawTabs(window* self, Gfx::Context* dpi)
     {
         auto y = self->widgets[widx::panel].top + self->y - 26;
         auto x = self->x + 3;
@@ -303,18 +303,18 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     static const uint8_t descriptionRowHeight = 10;
 
     template<typename T>
-    static void callDrawPreviewImage(Gfx::drawpixelinfo_t& dpi, const Gfx::point_t& drawingOffset, void* objectPtr)
+    static void callDrawPreviewImage(Gfx::Context& dpi, const Gfx::point_t& drawingOffset, void* objectPtr)
     {
         auto object = reinterpret_cast<T*>(objectPtr);
         object->drawPreviewImage(dpi, drawingOffset.x, drawingOffset.y);
     }
 
     // 0x00473579
-    static void drawPreviewImage(ObjectHeader* header, Gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, void* objectPtr)
+    static void drawPreviewImage(ObjectHeader* header, Gfx::Context* dpi, int16_t x, int16_t y, void* objectPtr)
     {
         auto type = header->getType();
 
-        Gfx::drawpixelinfo_t* clipped = nullptr;
+        Gfx::Context* clipped = nullptr;
         // Clip the draw area to simplify image draw
         Gfx::point_t drawAreaPos = Gfx::point_t{ x, y } - objectPreviewOffset;
         if (!Gfx::clipDrawpixelinfo(&clipped, dpi, drawAreaPos, objectPreviewSize))
@@ -441,15 +441,15 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     }
 
     template<typename T>
-    static void callDrawDescription(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y, const int16_t width, void* objectPtr)
+    static void callDrawDescription(Gfx::Context& dpi, const int16_t x, const int16_t y, const int16_t width, void* objectPtr)
     {
         auto object = reinterpret_cast<T*>(objectPtr);
         object->drawDescription(dpi, x, y, width);
     }
 
-    static void drawDescription(ObjectHeader* header, window* self, Gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, void* objectPtr)
+    static void drawDescription(ObjectHeader* header, window* self, Gfx::Context* dpi, int16_t x, int16_t y, void* objectPtr)
     {
-        Gfx::drawpixelinfo_t* clipped = nullptr;
+        Gfx::Context* clipped = nullptr;
         int16_t width = self->x + self->width - x;
         int16_t height = self->y + self->height - y;
         // Clip the draw area to simplify image draw
@@ -497,7 +497,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     }
 
     // 0x004733F5
-    static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
+    static void draw(window* self, Gfx::Context* dpi)
     {
         Gfx::fillRectInset(dpi, self->x, self->y + 20, self->x + self->width - 1, self->y + 20 + 60, self->colours[0], 0);
         self->draw(dpi);
@@ -584,7 +584,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     }
 
     // 0x0047361D
-    static void drawScroll(window* self, Gfx::drawpixelinfo_t* dpi, uint32_t)
+    static void drawScroll(window* self, Gfx::Context* dpi, uint32_t)
     {
         Gfx::clearSingle(*dpi, Colour::getShade(self->colours[1], 4));
 

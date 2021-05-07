@@ -360,7 +360,7 @@ namespace OpenLoco::Ui
 
         int32_t pitch = surface->pitch;
 
-        Gfx::drawpixelinfo_t dpi{};
+        Gfx::Context dpi{};
         dpi.bits = new uint8_t[surface->pitch * height];
         dpi.width = width;
         dpi.height = height;
@@ -454,7 +454,7 @@ namespace OpenLoco::Ui
         }
 
         // Copy pixels from the virtual screen buffer to the surface
-        auto& dpi = Gfx::screenDpi();
+        auto& dpi = Gfx::screenContext();
         if (dpi.bits != nullptr)
         {
             std::memcpy(surface->pixels, dpi.bits, surface->pitch * surface->h);

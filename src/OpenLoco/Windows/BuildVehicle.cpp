@@ -241,10 +241,10 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     static void resetTrackTypeTabSelection(Ui::window* window);
     static void setTopToolbarLastTrack(uint8_t trackType, bool isRoad);
     static void setTransportTypeTabs(Ui::window* window);
-    static void drawVehicleOverview(Gfx::drawpixelinfo_t* dpi, int16_t vehicleTypeIdx, CompanyId_t company, uint8_t eax, uint8_t esi, Gfx::point_t offset);
-    static int16_t drawVehicleInline(Gfx::drawpixelinfo_t* dpi, int16_t vehicleTypeIdx, uint8_t unk_1, CompanyId_t company, Gfx::point_t loc);
-    static void drawTransportTypeTabs(Ui::window* window, Gfx::drawpixelinfo_t* dpi);
-    static void drawTrackTypeTabs(Ui::window* window, Gfx::drawpixelinfo_t* dpi);
+    static void drawVehicleOverview(Gfx::Context* dpi, int16_t vehicleTypeIdx, CompanyId_t company, uint8_t eax, uint8_t esi, Gfx::point_t offset);
+    static int16_t drawVehicleInline(Gfx::Context* dpi, int16_t vehicleTypeIdx, uint8_t unk_1, CompanyId_t company, Gfx::point_t loc);
+    static void drawTransportTypeTabs(Ui::window* window, Gfx::Context* dpi);
+    static void drawTrackTypeTabs(Ui::window* window, Gfx::Context* dpi);
 
     static void initEvents();
 
@@ -901,7 +901,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     }
 
     // 0x4C2F23
-    static void draw(Ui::window* window, Gfx::drawpixelinfo_t* dpi)
+    static void draw(Ui::window* window, Gfx::Context* dpi)
     {
         window->draw(dpi);
         drawTransportTypeTabs(window, dpi);
@@ -1032,7 +1032,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     }
 
     // 0x4C3307
-    static void drawScroll(Ui::window* window, Gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
+    static void drawScroll(Ui::window* window, Gfx::Context* dpi, uint32_t scrollIndex)
     {
         switch (scrollIndex)
         {
@@ -1304,7 +1304,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     }
 
     // 0x4C2BFD
-    static void drawTransportTypeTabs(Ui::window* window, Gfx::drawpixelinfo_t* dpi)
+    static void drawTransportTypeTabs(Ui::window* window, Gfx::Context* dpi)
     {
         auto skin = ObjectManager::get<InterfaceSkinObject>();
         auto companyColour = CompanyManager::getCompanyColour(window->number);
@@ -1322,7 +1322,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     }
 
     // 0x4C28F1
-    static void drawTrackTypeTabs(Ui::window* window, Gfx::drawpixelinfo_t* dpi)
+    static void drawTrackTypeTabs(Ui::window* window, Gfx::Context* dpi)
     {
         auto skin = ObjectManager::get<InterfaceSkinObject>();
         auto companyColour = CompanyManager::getCompanyColour(window->number);
@@ -1392,7 +1392,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     }
 
     // 0x4B7741
-    static void drawVehicleOverview(Gfx::drawpixelinfo_t* dpi, int16_t vehicleTypeIdx, CompanyId_t company, uint8_t eax, uint8_t esi, Gfx::point_t offset)
+    static void drawVehicleOverview(Gfx::Context* dpi, int16_t vehicleTypeIdx, CompanyId_t company, uint8_t eax, uint8_t esi, Gfx::point_t offset)
     {
         registers regs;
         regs.cx = offset.x;
@@ -1406,7 +1406,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     }
 
     // 0x4B7711
-    static int16_t drawVehicleInline(Gfx::drawpixelinfo_t* dpi, int16_t vehicleTypeIdx, uint8_t unk_1, CompanyId_t company, Gfx::point_t loc)
+    static int16_t drawVehicleInline(Gfx::Context* dpi, int16_t vehicleTypeIdx, uint8_t unk_1, CompanyId_t company, Gfx::point_t loc)
     {
         registers regs;
 

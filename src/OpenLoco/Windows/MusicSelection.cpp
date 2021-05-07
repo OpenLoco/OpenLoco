@@ -38,8 +38,8 @@ namespace OpenLoco::Ui::Windows::MusicSelection
 
     static window_event_list _events;
 
-    static void draw(Ui::window* window, Gfx::drawpixelinfo_t* dpi);
-    static void drawScroll(Ui::window* window, Gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex);
+    static void draw(Ui::window* window, Gfx::Context* dpi);
+    static void drawScroll(Ui::window* window, Gfx::Context* dpi, uint32_t scrollIndex);
     static void getScrollSize(Ui::window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
     static void onMouseUp(Ui::window* window, widget_index widgetIndex);
     static void onScrollMouseDown(Ui::window* window, int16_t x, int16_t y, uint8_t scroll_index);
@@ -90,14 +90,14 @@ namespace OpenLoco::Ui::Windows::MusicSelection
     }
 
     // 0x004C165D
-    static void draw(Ui::window* window, Gfx::drawpixelinfo_t* dpi)
+    static void draw(Ui::window* window, Gfx::Context* dpi)
     {
         // Draw widgets.
         window->draw(dpi);
     }
 
     // 0x004C1663
-    static void drawScroll(Ui::window* window, Gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
+    static void drawScroll(Ui::window* window, Gfx::Context* dpi, uint32_t scrollIndex)
     {
         auto shade = Colour::getShade(window->colours[1], 4);
         Gfx::clearSingle(*dpi, shade);

@@ -35,7 +35,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGenerationConfirm
     static window_event_list events;
 
     // 0x004C18A5
-    static void draw(window* window, Gfx::drawpixelinfo_t* dpi)
+    static void draw(window* window, Gfx::Context* dpi)
     {
         window->draw(dpi);
 

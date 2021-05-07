@@ -150,7 +150,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     }
 
     // 0x004439AF
-    static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
+    static void draw(window* self, Gfx::Context* dpi)
     {
         Gfx::drawRectInset(dpi, self->x, self->y + 20, self->width, 41, self->colours[0], 0);
 
@@ -325,7 +325,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     }
 
     // 0x00443D02
-    static void drawScroll(window* self, Gfx::drawpixelinfo_t* const dpi, uint32_t)
+    static void drawScroll(window* self, Gfx::Context* const dpi, uint32_t)
     {
         auto colour = Colour::getShade(self->colours[1], 4);
         Gfx::clearSingle(*dpi, colour);

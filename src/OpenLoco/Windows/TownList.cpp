@@ -59,7 +59,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
         static void prepareDraw(window* self);
         static void repositionTabs(window* self);
-        static void drawTabs(window* self, Gfx::drawpixelinfo_t* dpi);
+        static void drawTabs(window* self, Gfx::Context* dpi);
         static void switchTab(window* self, widget_index widgetIndex);
         static void initEvents();
         static void refreshTownList(window* self);
@@ -135,7 +135,7 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049A0F8
-        static void drawScroll(Ui::window* self, Gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
+        static void drawScroll(Ui::window* self, Gfx::Context* dpi, uint32_t scrollIndex)
         {
             auto shade = Colour::getShade(self->colours[1], 3);
             Gfx::clearSingle(*dpi, shade);
@@ -200,7 +200,7 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049A0A7
-        static void draw(Ui::window* self, Gfx::drawpixelinfo_t* dpi)
+        static void draw(Ui::window* self, Gfx::Context* dpi)
         {
             self->draw(dpi);
             Common::drawTabs(self, dpi);
@@ -624,7 +624,7 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049A627
-        static void draw(Ui::window* self, Gfx::drawpixelinfo_t* dpi)
+        static void draw(Ui::window* self, Gfx::Context* dpi)
         {
             self->draw(dpi);
             Common::drawTabs(self, dpi);
@@ -823,7 +823,7 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049A9C2
-        static void draw(Ui::window* self, Gfx::drawpixelinfo_t* dpi)
+        static void draw(Ui::window* self, Gfx::Context* dpi)
         {
             self->draw(dpi);
             Common::drawTabs(self, dpi);
@@ -1051,7 +1051,7 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049AA1C
-        static void drawScroll(Ui::window* self, Gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
+        static void drawScroll(Ui::window* self, Gfx::Context* dpi, uint32_t scrollIndex)
         {
             auto shade = Colour::getShade(self->colours[1], 3);
             Gfx::clearSingle(*dpi, shade);
@@ -1074,7 +1074,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
                 auto buildingObj = ObjectManager::get<BuildingObject>(self->row_info[i]);
 
-                Gfx::drawpixelinfo_t* clipped = nullptr;
+                Gfx::Context* clipped = nullptr;
 
                 if (Gfx::clipDrawpixelinfo(&clipped, dpi, xPos + 1, yPos + 1, 110, 110))
                 {
@@ -1361,7 +1361,7 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049B054
-        static void drawTabs(window* self, Gfx::drawpixelinfo_t* dpi)
+        static void drawTabs(window* self, Gfx::Context* dpi)
         {
             auto skin = ObjectManager::get<InterfaceSkinObject>();
 

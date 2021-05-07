@@ -7,7 +7,7 @@ namespace OpenLoco
 {
     namespace Gfx
     {
-        struct drawpixelinfo_t;
+        struct Context;
     }
 
 #pragma pack(push, 1)
@@ -28,7 +28,7 @@ namespace OpenLoco
         uint16_t designed_year; // 0x1A
         uint16_t obsolete_year; // 0x1C
 
-        void drawPreviewImage(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y) const;
+        void drawPreviewImage(Gfx::Context& dpi, const int16_t x, const int16_t y) const;
     };
 #pragma pack(pop)
 

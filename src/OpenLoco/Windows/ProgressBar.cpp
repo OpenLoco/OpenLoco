@@ -92,11 +92,11 @@ namespace OpenLoco::Ui::Windows::ProgressBar
     }
 
     // 004CF7A0
-    static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
+    static void draw(window* self, Gfx::Context* dpi)
     {
         self->draw(dpi);
 
-        Gfx::drawpixelinfo_t* clipped = nullptr;
+        Gfx::Context* clipped = nullptr;
         if (!Gfx::clipDrawpixelinfo(&clipped, dpi, Gfx::point_t(self->x + 2, self->y + 17), Gfx::ui_size_t(self->width - 5, self->height - 19)))
             return;
 

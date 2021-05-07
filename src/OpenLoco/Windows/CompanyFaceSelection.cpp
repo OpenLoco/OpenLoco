@@ -208,7 +208,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     }
 
     // 0x435003
-    static void draw(window* const self, Gfx::drawpixelinfo_t* const dpi)
+    static void draw(window* const self, Gfx::Context* const dpi)
     {
         self->draw(dpi);
         if (self->row_hover == -1)
@@ -245,7 +245,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     }
 
     // 0x00435152
-    static void drawScroll(window* const self, Gfx::drawpixelinfo_t* const dpi, const uint32_t scrollIndex)
+    static void drawScroll(window* const self, Gfx::Context* const dpi, const uint32_t scrollIndex)
     {
         Gfx::clearSingle(*dpi, Colour::getShade(self->colours[1], 4));
 

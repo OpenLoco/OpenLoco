@@ -41,8 +41,8 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
         };
     }
 
-    static void draw(Ui::window* self, Gfx::drawpixelinfo_t* dpi);
-    static void drawScroll(Ui::window* self, Gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex);
+    static void draw(Ui::window* self, Gfx::Context* dpi);
+    static void drawScroll(Ui::window* self, Gfx::Context* dpi, uint32_t scrollIndex);
     static void onMouseUp(window* self, widget_index widgetIndex);
     static void loc_4BE832(window* self);
     static std::optional<FormatArguments> tooltip(window*, widget_index);
@@ -90,14 +90,14 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
     }
 
     // 0x004BE726
-    static void draw(Ui::window* self, Gfx::drawpixelinfo_t* dpi)
+    static void draw(Ui::window* self, Gfx::Context* dpi)
     {
         // Draw widgets.
         self->draw(dpi);
     }
 
     // 0x004BE72C
-    static void drawScroll(Ui::window* self, Gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
+    static void drawScroll(Ui::window* self, Gfx::Context* dpi, uint32_t scrollIndex)
     {
         auto colour = self->colours[1];
         auto shade = Colour::getShade(colour, 4);

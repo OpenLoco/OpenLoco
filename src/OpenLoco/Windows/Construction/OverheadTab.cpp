@@ -232,13 +232,13 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
     }
 
     // 0x0049EA3E
-    static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
+    static void draw(window* self, Gfx::Context* dpi)
     {
         self->draw(dpi);
         Common::drawTabs(self, dpi);
         if (_lastSelectedMods & 0xF)
         {
-            Gfx::drawpixelinfo_t* clipped = nullptr;
+            Gfx::Context* clipped = nullptr;
             auto xPos = self->x + self->widgets[widx::image].left + 1;
             auto yPos = self->y + self->widgets[widx::image].top + 1;
             auto width = self->widgets[widx::image].width();

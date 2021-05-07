@@ -55,7 +55,7 @@ namespace OpenLoco::Ui::Windows::Main
     }
 
     // 0x0043B2E4
-    static void draw(Ui::window* const window, Gfx::drawpixelinfo_t* const dpi)
+    static void draw(Ui::window* const window, Gfx::Context* const dpi)
     {
         window->drawViewports(dpi);
     }

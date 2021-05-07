@@ -94,8 +94,8 @@ namespace OpenLoco::Ui::Windows::StationList
     loco_global<uint16_t[4], 0x112C826> _common_format_args;
 
     static Ui::CursorId cursor(window* window, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback);
-    static void draw(Ui::window* window, Gfx::drawpixelinfo_t* dpi);
-    static void drawScroll(Ui::window* window, Gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex);
+    static void draw(Ui::window* window, Gfx::Context* dpi);
+    static void drawScroll(Ui::window* window, Gfx::Context* dpi, uint32_t scrollIndex);
     static void event_08(window* window);
     static void event_09(window* window);
     static void getScrollSize(Ui::window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
@@ -469,7 +469,7 @@ namespace OpenLoco::Ui::Windows::StationList
     }
 
     // 0x0049157F
-    static void drawScroll(Ui::window* window, Gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
+    static void drawScroll(Ui::window* window, Gfx::Context* dpi, uint32_t scrollIndex)
     {
         auto shade = Colour::getShade(window->colours[1], 4);
         Gfx::clearSingle(*dpi, shade);
@@ -546,7 +546,7 @@ namespace OpenLoco::Ui::Windows::StationList
     }
 
     // 00491A76
-    static void drawTabs(Ui::window* window, Gfx::drawpixelinfo_t* dpi)
+    static void drawTabs(Ui::window* window, Gfx::Context* dpi)
     {
         auto skin = ObjectManager::get<InterfaceSkinObject>();
         auto companyColour = CompanyManager::getCompanyColour(window->number);
@@ -559,7 +559,7 @@ namespace OpenLoco::Ui::Windows::StationList
     }
 
     // 0x004914D8
-    static void draw(Ui::window* window, Gfx::drawpixelinfo_t* dpi)
+    static void draw(Ui::window* window, Gfx::Context* dpi)
     {
         // Draw widgets and tabs.
         window->draw(dpi);

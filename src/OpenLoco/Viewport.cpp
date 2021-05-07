@@ -10,7 +10,7 @@ using namespace OpenLoco::Map;
 namespace OpenLoco::Ui
 {
     // 0x0045A0E7
-    void viewport::render(Gfx::drawpixelinfo_t* dpi)
+    void viewport::render(Gfx::Context* dpi)
     {
         auto contextRect = dpi->getUiRect();
         auto viewRect = getUiRect();
@@ -24,7 +24,7 @@ namespace OpenLoco::Ui
     }
 
     // 0x0045A1A4
-    void viewport::paint(Gfx::drawpixelinfo_t* context, const Rect& rect)
+    void viewport::paint(Gfx::Context* context, const Rect& rect)
     {
         registers regs{};
         regs.ax = rect.left();

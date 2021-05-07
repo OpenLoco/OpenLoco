@@ -139,7 +139,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     static void onUpdate(window* window);
     static void onTextInput(window* window, widget_index widgetIndex, const char* input);
     static Ui::CursorId onCursor(window* window, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback);
-    static void draw(Ui::window* window, Gfx::drawpixelinfo_t* dpi);
+    static void draw(Ui::window* window, Gfx::Context* dpi);
     static void prepareDraw(Ui::window* window);
 
     // static loco_global<window_event_list[1], 0x004f9ec8> _events;
@@ -209,7 +209,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     }
 
     // 0x00438EC7
-    static void draw(Ui::window* window, Gfx::drawpixelinfo_t* dpi)
+    static void draw(Ui::window* window, Gfx::Context* dpi)
     {
         // Draw widgets.
         window->draw(dpi);

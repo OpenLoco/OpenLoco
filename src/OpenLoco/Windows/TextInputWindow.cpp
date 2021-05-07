@@ -95,7 +95,7 @@ namespace OpenLoco::Ui::Windows::TextInput
     }
 
     static void prepareDraw(Ui::window* window);
-    static void draw(Ui::window* window, Gfx::drawpixelinfo_t* context);
+    static void draw(Ui::window* window, Gfx::Context* context);
     static void onMouseUp(Ui::window* window, widget_index widgetIndex);
     static void onUpdate(Ui::window* window);
 
@@ -231,7 +231,7 @@ namespace OpenLoco::Ui::Windows::TextInput
      * @param window @<esi>
      * @param context @<edi>
      */
-    static void draw(Ui::window* window, Gfx::drawpixelinfo_t* context)
+    static void draw(Ui::window* window, Gfx::Context* context)
     {
         window->draw(context);
 
@@ -242,7 +242,7 @@ namespace OpenLoco::Ui::Windows::TextInput
         Gfx::drawStringCentredWrapped(context, &position, window->width - 8, 0, StringIds::wcolour2_stringid, &_commonFormatArgs[0]);
 
         auto widget = &_widgets[Widx::input];
-        Gfx::drawpixelinfo_t* clipped = nullptr;
+        Gfx::Context* clipped = nullptr;
         if (!Gfx::clipDrawpixelinfo(&clipped, context, widget->left + 1 + window->x, widget->top + 1 + window->y, widget->width() - 2, widget->height() - 2))
         {
             return;

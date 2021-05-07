@@ -137,11 +137,11 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     static void onScrollMouseOver(window* self, int16_t x, int16_t y, uint8_t scroll_index);
     static std::optional<FormatArguments> tooltip(Ui::window* window, widget_index widgetIndex);
     static void prepareDraw(window* window);
-    static void draw(Ui::window* window, Gfx::drawpixelinfo_t* dpi);
-    static void drawSavePreview(Ui::window& window, Gfx::drawpixelinfo_t& dpi, int32_t x, int32_t y, int32_t width, int32_t height, const S5::SaveDetails& saveInfo);
-    static void drawLandscapePreview(Ui::window& window, Gfx::drawpixelinfo_t& dpi, int32_t x, int32_t y, int32_t width, int32_t height);
-    static void drawTextInput(Ui::window* window, Gfx::drawpixelinfo_t& dpi, const char* text, int32_t caret, bool showCaret);
-    static void drawScroll(Ui::window* window, Gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex);
+    static void draw(Ui::window* window, Gfx::Context* dpi);
+    static void drawSavePreview(Ui::window& window, Gfx::Context& dpi, int32_t x, int32_t y, int32_t width, int32_t height, const S5::SaveDetails& saveInfo);
+    static void drawLandscapePreview(Ui::window& window, Gfx::Context& dpi, int32_t x, int32_t y, int32_t width, int32_t height);
+    static void drawTextInput(Ui::window* window, Gfx::Context& dpi, const char* text, int32_t caret, bool showCaret);
+    static void drawScroll(Ui::window* window, Gfx::Context* dpi, uint32_t scrollIndex);
     static void upOneLevel();
     static void appendDirectory(const char* to_append);
     static void processFileForLoadSave(window* window);
@@ -417,7 +417,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     }
 
     // 0x00445E38
-    static void draw(Ui::window* window, Gfx::drawpixelinfo_t* dpi)
+    static void draw(Ui::window* window, Gfx::Context* dpi)
     {
         loco_global<char[16], 0x0112C826> _commonFormatArgs;
         static std::string _nameBuffer;
@@ -475,7 +475,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             Gfx::drawString_494B3F(*dpi, window->x + 3, window->y + filenameBox.top + 2, 0, StringIds::window_browse_filename, nullptr);
 
             // Clip to text box
-            Gfx::drawpixelinfo_t* dpi2;
+            Gfx::Context* dpi2;
             if (Gfx::clipDrawpixelinfo(
                     &dpi2,
                     dpi,
@@ -489,7 +489,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         }
     }
 
-    static void drawSavePreview(Ui::window& window, Gfx::drawpixelinfo_t& dpi, int32_t x, int32_t y, int32_t width, int32_t height, const S5::SaveDetails& saveInfo)
+    static void drawSavePreview(Ui::window& window, Gfx::Context& dpi, int32_t x, int32_t y, int32_t width, int32_t height, const S5::SaveDetails& saveInfo)
     {
         loco_global<char[16], 0x0112C826> _commonFormatArgs;
 
@@ -542,7 +542,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         }
     }
 
-    static void drawLandscapePreview(Ui::window& window, Gfx::drawpixelinfo_t& dpi, int32_t x, int32_t y, int32_t width, int32_t height)
+    static void drawLandscapePreview(Ui::window& window, Gfx::Context& dpi, int32_t x, int32_t y, int32_t width, int32_t height)
     {
         Gfx::fillRectInset(&dpi, x, y, x + width, y + height, window.colours[1], 0x30);
 
@@ -575,7 +575,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         }
     }
 
-    static void drawTextInput(Ui::window* window, Gfx::drawpixelinfo_t& dpi, const char* text, int32_t caret, bool showCaret)
+    static void drawTextInput(Ui::window* window, Gfx::Context& dpi, const char* text, int32_t caret, bool showCaret)
     {
         loco_global<char[16], 0x0112C826> _commonFormatArgs;
         loco_global<uint8_t[256], 0x001136C99> byte_1136C99;
@@ -609,7 +609,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     }
 
     // 0x00446314
-    static void drawScroll(Ui::window* window, Gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
+    static void drawScroll(Ui::window* window, Gfx::Context* dpi, uint32_t scrollIndex)
     {
         loco_global<char[16], 0x0112C826> _commonFormatArgs;
 

@@ -59,9 +59,9 @@ namespace OpenLoco::Ui::Windows::Industry
         static void renameIndustryPrompt(window* self, widget_index widgetIndex);
         static void repositionTabs(window* self);
         static void switchTab(window* self, widget_index widgetIndex);
-        static void drawTabs(window* self, Gfx::drawpixelinfo_t* dpi);
+        static void drawTabs(window* self, Gfx::Context* context);
         static void setDisabledWidgets(window* self);
-        static void draw(window* self, Gfx::drawpixelinfo_t* dpi);
+        static void draw(window* self, Gfx::Context* context);
         static void onMouseUp(window* self, widget_index widgetIndex);
         static void initEvents();
     }
@@ -129,12 +129,12 @@ namespace OpenLoco::Ui::Windows::Industry
         }
 
         // 0x00455C22
-        static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
+        static void draw(window* self, Gfx::Context* context)
         {
-            self->draw(dpi);
-            Common::drawTabs(self, dpi);
-            self->drawViewports(dpi);
-            Widget::drawViewportCentreButton(dpi, self, widx::centre_on_viewport);
+            self->draw(context);
+            Common::drawTabs(self, context);
+            self->drawViewports(context);
+            Widget::drawViewportCentreButton(context, self, widx::centre_on_viewport);
 
             const char* buffer = StringManager::getString(StringIds::buffer_1250);
             auto industry = IndustryManager::get(self->number);
@@ -147,7 +147,7 @@ namespace OpenLoco::Ui::Windows::Industry
             auto x = self->x + widget->left - 1;
             auto y = self->y + widget->top - 1;
             auto width = widget->width();
-            Gfx::drawString_494BBF(*dpi, x, y, width, Colour::black, StringIds::black_stringid, &args);
+            Gfx::drawString_494BBF(*context, x, y, width, Colour::black, StringIds::black_stringid, &args);
         }
 
         // 0x00455C86
@@ -437,10 +437,10 @@ namespace OpenLoco::Ui::Windows::Industry
         }
 
         // 0x00456705
-        static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
+        static void draw(window* self, Gfx::Context* context)
         {
-            self->draw(dpi);
-            Common::drawTabs(self, dpi);
+            self->draw(context);
+            Common::drawTabs(self, context);
 
             auto industry = IndustryManager::get(self->number);
             auto industryObj = industry->object();
@@ -453,7 +453,7 @@ namespace OpenLoco::Ui::Windows::Industry
             {
                 origin.x += 4;
                 origin.y += 10;
-                Gfx::drawString_494B3F(*dpi, xPos, yPos, Colour::black, StringIds::received_cargo);
+                Gfx::drawString_494B3F(*context, xPos, yPos, Colour::black, StringIds::received_cargo);
 
                 auto cargoNumber = 0;
                 for (const auto& receivedCargoType : industryObj->required_cargo_type)
@@ -473,7 +473,7 @@ namespace OpenLoco::Ui::Windows::Industry
                         }
                         args.push<uint32_t>(industry->required_cargo_quantity[cargoNumber]);
 
-                        origin.y = Gfx::drawString_495224(*dpi, origin.x, origin.y, 290, Colour::black, StringIds::black_stringid, &args);
+                        origin.y = Gfx::drawString_495224(*context, origin.x, origin.y, 290, Colour::black, StringIds::black_stringid, &args);
                     }
                     cargoNumber++;
                 }
@@ -484,7 +484,7 @@ namespace OpenLoco::Ui::Windows::Industry
             // Draw Last Months produced cargo stats
             if (industry->canProduceCargo())
             {
-                Gfx::drawString_494B3F(*dpi, origin.x, origin.y, Colour::black, StringIds::produced_cargo);
+                Gfx::drawString_494B3F(*context, origin.x, origin.y, Colour::black, StringIds::produced_cargo);
                 origin.y += 10;
                 origin.x += 4;
 
@@ -507,7 +507,7 @@ namespace OpenLoco::Ui::Windows::Industry
                         args.push<uint32_t>(industry->produced_cargo_quantity[cargoNumber]);
                         args.push<uint16_t>(industry->produced_cargo_transported[cargoNumber]);
 
-                        origin.y = Gfx::drawString_495224(*dpi, origin.x, origin.y, 290, Colour::black, StringIds::transported_cargo, &args);
+                        origin.y = Gfx::drawString_495224(*context, origin.x, origin.y, 290, Colour::black, StringIds::transported_cargo, &args);
                     }
                     cargoNumber++;
                 }
@@ -565,10 +565,10 @@ namespace OpenLoco::Ui::Windows::Industry
         }
 
         // 0x00456079
-        static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
+        static void draw(window* self, Gfx::Context* context)
         {
-            self->draw(dpi);
-            Common::drawTabs(self, dpi);
+            self->draw(context);
+            Common::drawTabs(self, context);
 
             // Draw Units of Cargo sub title
             const auto industry = IndustryManager::get(self->number);
@@ -582,7 +582,7 @@ namespace OpenLoco::Ui::Windows::Industry
                 int16_t x = self->x + 2;
                 int16_t y = self->y - 24 + 68;
 
-                Gfx::drawString_494B3F(*dpi, x, y, Colour::black, StringIds::production_graph_label, &args);
+                Gfx::drawString_494B3F(*context, x, y, Colour::black, StringIds::production_graph_label, &args);
             }
 
             // Draw Y label and grid lines.
@@ -593,9 +593,9 @@ namespace OpenLoco::Ui::Windows::Industry
                 auto args = FormatArguments();
                 args.push(yTick);
 
-                Gfx::drawRect(dpi, self->x + 41, yPos, 239, 1, Colour::getShade(self->colours[1], 4));
+                Gfx::drawRect(context, self->x + 41, yPos, 239, 1, Colour::getShade(self->colours[1], 4));
 
-                Gfx::drawString_494C78(*dpi, self->x + 39, yPos - 6, Colour::black, StringIds::population_graph_people, &args);
+                Gfx::drawString_494C78(*context, self->x + 39, yPos - 6, Colour::black, StringIds::population_graph_people, &args);
 
                 yTick += 1000;
             }
@@ -620,10 +620,10 @@ namespace OpenLoco::Ui::Windows::Industry
                         auto args = FormatArguments();
                         args.push(year);
 
-                        Gfx::drawStringCentred(*dpi, xPos, yPos, Colour::black, StringIds::population_graph_year, &args);
+                        Gfx::drawStringCentred(*context, xPos, yPos, Colour::black, StringIds::population_graph_year, &args);
                     }
 
-                    Gfx::drawRect(dpi, xPos, yPos + 11, 1, self->height - 74, Colour::getShade(self->colours[1], 4));
+                    Gfx::drawRect(context, xPos, yPos + 11, 1, self->height - 74, Colour::getShade(self->colours[1], 4));
                 }
 
                 const auto history = productionTabWidx == widx::tab_production ? industry->history_1 : industry->history_2;
@@ -638,7 +638,7 @@ namespace OpenLoco::Ui::Windows::Industry
                     {
                         if (yPos2 <= graphBottom)
                         {
-                            Gfx::drawLine(dpi, xPos, yPos1, xPos + 1, yPos2, Colour::getShade(self->colours[1], 7));
+                            Gfx::drawLine(context, xPos, yPos1, xPos + 1, yPos2, Colour::getShade(self->colours[1], 7));
                         }
                     }
                 }
@@ -811,7 +811,7 @@ namespace OpenLoco::Ui::Windows::Industry
             self->moveInsideScreenEdges();
         }
 
-        static void drawProductionTab(window* self, Gfx::drawpixelinfo_t* dpi, uint8_t productionTabNumber)
+        static void drawProductionTab(window* self, Gfx::Context* context, uint8_t productionTabNumber)
         {
             static const uint32_t productionTabImageIds[] = {
                 InterfaceSkin::ImageIds::tab_production_frame0,
@@ -849,17 +849,17 @@ namespace OpenLoco::Ui::Windows::Industry
 
                 auto xPos = widget.left + self->x;
                 auto yPos = widget.top + self->y;
-                Gfx::drawImage(dpi, xPos, yPos, imageId);
+                Gfx::drawImage(context, xPos, yPos, imageId);
 
                 auto caroObj = ObjectManager::get<CargoObject>(industryObj->produced_cargo_type[productionTabNumber]);
-                Gfx::drawImage(dpi, xPos + 18, yPos + 14, caroObj->unit_inline_sprite);
+                Gfx::drawImage(context, xPos + 18, yPos + 14, caroObj->unit_inline_sprite);
 
-                Widget::draw_tab(self, dpi, -2, tab);
+                Widget::draw_tab(self, context, -2, tab);
             }
         }
 
         // 0x00456A98
-        static void drawTabs(window* self, Gfx::drawpixelinfo_t* dpi)
+        static void drawTabs(window* self, Gfx::Context* context)
         {
             auto skin = ObjectManager::get<InterfaceSkinObject>();
 
@@ -867,17 +867,17 @@ namespace OpenLoco::Ui::Windows::Industry
             {
                 uint32_t imageId = skin->img;
                 imageId += InterfaceSkin::ImageIds::toolbar_menu_industries;
-                Widget::draw_tab(self, dpi, imageId, widx::tab_industry);
+                Widget::draw_tab(self, context, imageId, widx::tab_industry);
             }
 
             // Production Tab
             {
-                drawProductionTab(self, dpi, 0);
+                drawProductionTab(self, context, 0);
             }
 
             // 2nd Production Tab
             {
-                drawProductionTab(self, dpi, 1);
+                drawProductionTab(self, context, 1);
             }
 
             // Transported Tab
@@ -897,7 +897,7 @@ namespace OpenLoco::Ui::Windows::Industry
                     imageId += transportedTabImageIds[(self->frame_no / 4) % std::size(transportedTabImageIds)];
                 else
                     imageId += transportedTabImageIds[0];
-                Widget::draw_tab(self, dpi, imageId, widx::tab_transported);
+                Widget::draw_tab(self, context, imageId, widx::tab_transported);
             }
         }
 

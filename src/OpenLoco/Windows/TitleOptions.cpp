@@ -30,7 +30,7 @@ namespace OpenLoco::Ui::Windows::TitleOptions
     static window_event_list _events;
 
     static void onMouseUp(window* window, widget_index widgetIndex);
-    static void draw(Ui::window* window, Gfx::drawpixelinfo_t* dpi);
+    static void draw(Ui::window* window, Gfx::Context* dpi);
 
     window* open()
     {
@@ -55,7 +55,7 @@ namespace OpenLoco::Ui::Windows::TitleOptions
         return window;
     }
 
-    static void draw(Ui::window* window, Gfx::drawpixelinfo_t* dpi)
+    static void draw(Ui::window* window, Gfx::Context* dpi)
     {
         // Draw widgets.
         window->draw(dpi);

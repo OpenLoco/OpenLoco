@@ -56,7 +56,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
         static void initEvents();
         static void refreshIndustryList(window* self);
-        static void drawTabs(window* self, Gfx::drawpixelinfo_t* dpi);
+        static void drawTabs(window* self, Gfx::Context* dpi);
         static void prepareDraw(window* self);
         static void switchTab(window* self, widget_index widgetIndex);
     }
@@ -126,7 +126,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x00457CD9
-        static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
+        static void draw(window* self, Gfx::Context* dpi)
         {
             self->draw(dpi);
             Common::drawTabs(self, dpi);
@@ -378,7 +378,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x00457D2A
-        static void drawScroll(Ui::window* self, Gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
+        static void drawScroll(Ui::window* self, Gfx::Context* dpi, uint32_t scrollIndex)
         {
             auto shade = Colour::getShade(self->colours[1], 4);
             Gfx::clearSingle(*dpi, shade);
@@ -613,7 +613,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x0045826C
-        static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
+        static void draw(window* self, Gfx::Context* dpi)
         {
             self->draw(dpi);
             Common::drawTabs(self, dpi);
@@ -868,7 +868,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x00458352
-        static void drawScroll(Ui::window* self, Gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
+        static void drawScroll(Ui::window* self, Gfx::Context* dpi, uint32_t scrollIndex)
         {
             auto shade = Colour::getShade(self->colours[1], 4);
             Gfx::clearSingle(*dpi, shade);
@@ -895,7 +895,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
                 auto industryObj = ObjectManager::get<IndustryObject>(self->row_info[i]);
 
-                Gfx::drawpixelinfo_t* clipped = nullptr;
+                Gfx::Context* clipped = nullptr;
 
                 if (Gfx::clipDrawpixelinfo(&clipped, dpi, xPos + 1, yPos + 1, 110, 110))
                 {
@@ -1164,7 +1164,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x00458A57
-        static void drawTabs(window* self, Gfx::drawpixelinfo_t* dpi)
+        static void drawTabs(window* self, Gfx::Context* dpi)
         {
             auto skin = ObjectManager::get<InterfaceSkinObject>();
 

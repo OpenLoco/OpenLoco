@@ -41,8 +41,8 @@ namespace OpenLoco::Gfx
     constexpr uint32_t g1_count_objects = 0x40000;
     constexpr uint32_t g1_count_temporary = 0x1000;
 
-    static loco_global<drawpixelinfo_t, 0x0050B884> _screen_dpi;
-    static loco_global<drawpixelinfo_t, 0x005233B8> _windowDPI;
+    static loco_global<Context, 0x0050B884> _screen_dpi;
+    static loco_global<Context, 0x005233B8> _windowDPI;
 
     static loco_global<G1Element[g1_expected_count::disc + g1_count_temporary + g1_count_objects], 0x9E2424> _g1Elements;
 
@@ -56,7 +56,7 @@ namespace OpenLoco::Gfx
 
     static PaletteIndex_t _textColours[8] = { 0 };
 
-    Ui::Rect drawpixelinfo_t::getDrawableRect() const
+    Ui::Rect Context::getDrawableRect() const
     {
         auto zoom = zoom_level;
         auto left = x >> zoom;
@@ -66,12 +66,12 @@ namespace OpenLoco::Gfx
         return Ui::Rect::fromLTRB(left, top, right, bottom);
     }
 
-    Ui::Rect drawpixelinfo_t::getUiRect() const
+    Ui::Rect Context::getUiRect() const
     {
         return Ui::Rect::fromLTRB(x, y, x + width, y + height);
     }
 
-    drawpixelinfo_t& screenDpi()
+    Context& screenContext()
     {
         return _screen_dpi;
     }
@@ -237,7 +237,7 @@ namespace OpenLoco::Gfx
     // 0x00447485
     // edi: dpi
     // ebp: fill
-    void clear(drawpixelinfo_t& dpi, uint32_t fill)
+    void clear(Context& dpi, uint32_t fill)
     {
         int32_t w = dpi.width / (1 << dpi.zoom_level);
         int32_t h = dpi.height / (1 << dpi.zoom_level);
@@ -250,7 +250,7 @@ namespace OpenLoco::Gfx
         }
     }
 
-    void clearSingle(drawpixelinfo_t& dpi, uint8_t paletteId)
+    void clearSingle(Context& dpi, uint8_t paletteId)
     {
         auto fill = (paletteId << 24) | (paletteId << 16) | (paletteId << 8) | paletteId;
         clear(dpi, fill);
@@ -378,7 +378,7 @@ namespace OpenLoco::Gfx
     }
 
     // 0x00451189
-    static Gfx::point_t loopNewline(drawpixelinfo_t* context, Gfx::point_t origin, uint8_t* str)
+    static Gfx::point_t loopNewline(Context* context, Gfx::point_t origin, uint8_t* str)
     {
         Gfx::point_t pos = origin;
         while (true)
@@ -605,7 +605,7 @@ namespace OpenLoco::Gfx
      * @param context @<edi>
      * @param text @<esi>
      */
-    Gfx::point_t drawString(drawpixelinfo_t* context, int16_t x, int16_t y, uint8_t colour, void* str)
+    Gfx::point_t drawString(Context* context, int16_t x, int16_t y, uint8_t colour, void* str)
     {
         // 0x00E04348, 0x00E0434A
         Gfx::point_t origin = { x, y };
@@ -707,7 +707,7 @@ namespace OpenLoco::Gfx
     // esi: args
     // edi: dpi
     int16_t drawString_495224(
-        drawpixelinfo_t& dpi,
+        Context& dpi,
         int16_t x,
         int16_t y,
         int16_t width,
@@ -736,7 +736,7 @@ namespace OpenLoco::Gfx
     // esi: args
     // edi: dpi
     void drawString_494B3F(
-        drawpixelinfo_t& dpi,
+        Context& dpi,
         int16_t x,
         int16_t y,
         uint8_t colour,
@@ -762,7 +762,7 @@ namespace OpenLoco::Gfx
      * @param args @<edi>
      */
     void drawString_494B3F(
-        drawpixelinfo_t& dpi,
+        Context& dpi,
         point_t* origin,
         uint8_t colour,
         string_id stringId,
@@ -790,7 +790,7 @@ namespace OpenLoco::Gfx
     // edi: dpi
     // bp: width
     void drawString_494BBF(
-        drawpixelinfo_t& dpi,
+        Context& dpi,
         int16_t x,
         int16_t y,
         int16_t width,
@@ -817,7 +817,7 @@ namespace OpenLoco::Gfx
     // esi: args
     // edi: dpi
     void drawString_494C78(
-        drawpixelinfo_t& dpi,
+        Context& dpi,
         int16_t x,
         int16_t y,
         uint8_t colour,
@@ -842,7 +842,7 @@ namespace OpenLoco::Gfx
     // esi: args
     // edi: dpi
     void drawStringUnderline(
-        drawpixelinfo_t& dpi,
+        Context& dpi,
         int16_t x,
         int16_t y,
         uint8_t colour,
@@ -867,7 +867,7 @@ namespace OpenLoco::Gfx
     // esi: args
     // edi: dpi
     void drawStringLeftUnderline(
-        drawpixelinfo_t& dpi,
+        Context& dpi,
         int16_t x,
         int16_t y,
         uint8_t colour,
@@ -892,7 +892,7 @@ namespace OpenLoco::Gfx
     // esi: args
     // edi: dpi
     void drawStringCentred(
-        drawpixelinfo_t& dpi,
+        Context& dpi,
         int16_t x,
         int16_t y,
         uint8_t colour,
@@ -918,7 +918,7 @@ namespace OpenLoco::Gfx
     // esi: args
     // edi: dpi
     void drawStringCentredClipped(
-        drawpixelinfo_t& dpi,
+        Context& dpi,
         int16_t x,
         int16_t y,
         int16_t width,
@@ -948,7 +948,7 @@ namespace OpenLoco::Gfx
      * @param args @<esi>
      */
     void drawStringCentredWrapped(
-        drawpixelinfo_t* context,
+        Context* context,
         point_t* origin,
         uint16_t width,
         uint8_t colour,
@@ -978,7 +978,7 @@ namespace OpenLoco::Gfx
     // esi: args
     // edi: dpi
     void drawStringCentredRaw(
-        drawpixelinfo_t& dpi,
+        Context& dpi,
         int16_t x,
         int16_t y,
         int16_t width,
@@ -1018,7 +1018,7 @@ namespace OpenLoco::Gfx
     }
 
     // 0x004474BA
-    static void drawRectImpl(Gfx::drawpixelinfo_t* dpi, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t colour)
+    static void drawRectImpl(Gfx::Context* dpi, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t colour)
     {
         registers regs;
         regs.ax = left;
@@ -1030,18 +1030,18 @@ namespace OpenLoco::Gfx
         call(0x004474BA, regs);
     }
 
-    void fillRect(Gfx::drawpixelinfo_t* dpi, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t colour)
+    void fillRect(Gfx::Context* dpi, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t colour)
     {
         drawRectImpl(dpi, left, top, right, bottom, colour);
     }
 
-    void drawRect(Gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, uint16_t dx, uint16_t dy, uint32_t colour)
+    void drawRect(Gfx::Context* dpi, int16_t x, int16_t y, uint16_t dx, uint16_t dy, uint32_t colour)
     {
         // This makes the function signature more like a drawing application
         drawRectImpl(dpi, x, y, x + dx - 1, y + dy - 1, colour);
     }
 
-    void fillRectInset(Gfx::drawpixelinfo_t* dpi, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t colour, uint8_t flags)
+    void fillRectInset(Gfx::Context* dpi, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t colour, uint8_t flags)
     {
         registers regs;
         regs.ax = left;
@@ -1054,14 +1054,14 @@ namespace OpenLoco::Gfx
         call(0x004C58C7, regs);
     }
 
-    void drawRectInset(Gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, uint16_t dx, uint16_t dy, uint32_t colour, uint8_t flags)
+    void drawRectInset(Gfx::Context* dpi, int16_t x, int16_t y, uint16_t dx, uint16_t dy, uint32_t colour, uint8_t flags)
     {
         // This makes the function signature more like a drawing application
         fillRectInset(dpi, x, y, x + dx - 1, y + dy - 1, colour, flags);
     }
 
     // 0x00452DA4
-    void drawLine(Gfx::drawpixelinfo_t* dpi, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t colour)
+    void drawLine(Gfx::Context* dpi, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t colour)
     {
         registers regs;
         regs.ax = left;
@@ -1163,7 +1163,7 @@ namespace OpenLoco::Gfx
         redrawScreenRect(Rect::fromLTRB(left, top, right, bottom));
     }
 
-    void drawImage(Gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, uint32_t image)
+    void drawImage(Gfx::Context* dpi, int16_t x, int16_t y, uint32_t image)
     {
         registers regs;
         regs.cx = x;
@@ -1201,7 +1201,7 @@ namespace OpenLoco::Gfx
     loco_global<uint8_t*, 0x0050B860> _50B860;
     loco_global<uint32_t, 0x00E04324> _E04324;
 
-    void drawImageSolid(Gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, uint32_t image, uint8_t palette_index)
+    void drawImageSolid(Gfx::Context* dpi, int16_t x, int16_t y, uint32_t image, uint8_t palette_index)
     {
         uint8_t palette[256];
         memset(palette, palette_index, 256);
@@ -1210,7 +1210,7 @@ namespace OpenLoco::Gfx
         drawImagePaletteSet(dpi, x, y, image, palette);
     }
 
-    void drawImagePaletteSet(Gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, uint32_t image, uint8_t* palette)
+    void drawImagePaletteSet(Gfx::Context* dpi, int16_t x, int16_t y, uint32_t image, uint8_t* palette)
     {
         _50B860 = palette;
         _E04324 = 0x20000000;
@@ -1222,7 +1222,7 @@ namespace OpenLoco::Gfx
         call(0x00448D90, regs);
     }
 
-    bool clipDrawpixelinfo(Gfx::drawpixelinfo_t** dst, Gfx::drawpixelinfo_t* src, int16_t x, int16_t y, int16_t width, int16_t height)
+    bool clipDrawpixelinfo(Gfx::Context** dst, Gfx::Context* src, int16_t x, int16_t y, int16_t width, int16_t height)
     {
         registers regs;
         regs.ax = x;
@@ -1231,12 +1231,12 @@ namespace OpenLoco::Gfx
         regs.dx = height;
         regs.cx = y;
         call(0x4cec50, regs);
-        *dst = (Gfx::drawpixelinfo_t*)regs.edi;
+        *dst = (Gfx::Context*)regs.edi;
 
         return *dst != nullptr;
     }
 
-    bool clipDrawpixelinfo(Gfx::drawpixelinfo_t** dst, Gfx::drawpixelinfo_t* src, point_t pos, Gfx::ui_size_t size)
+    bool clipDrawpixelinfo(Gfx::Context** dst, Gfx::Context* src, point_t pos, Gfx::ui_size_t size)
     {
         return clipDrawpixelinfo(dst, src, pos.x, pos.y, size.width, size.height);
     }

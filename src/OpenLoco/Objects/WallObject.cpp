@@ -5,7 +5,7 @@
 namespace OpenLoco
 {
     // 0x004C4B0B
-    void WallObject::drawPreviewImage(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y) const
+    void WallObject::drawPreviewImage(Gfx::Context& dpi, const int16_t x, const int16_t y) const
     {
         auto image = sprite;
         image = Gfx::recolour(image, Colour::salmon_pink);

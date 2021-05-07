@@ -4,7 +4,7 @@
 namespace OpenLoco
 {
     // 0x00463BBD
-    void HillShapesObject::drawPreviewImage(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y) const
+    void HillShapesObject::drawPreviewImage(Gfx::Context& dpi, const int16_t x, const int16_t y) const
     {
         auto imageId = image + hillHeightMapCount + mountainHeightMapCount;
 

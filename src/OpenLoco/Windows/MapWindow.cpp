@@ -477,7 +477,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046D0E0
-    static void drawTabs(window* self, Gfx::drawpixelinfo_t* dpi)
+    static void drawTabs(window* self, Gfx::Context* dpi)
     {
         auto skin = ObjectManager::get<InterfaceSkinObject>();
 
@@ -566,7 +566,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046D273
-    static void drawGraphKeyOverall(window* self, Gfx::drawpixelinfo_t* dpi, uint16_t x, uint16_t* y)
+    static void drawGraphKeyOverall(window* self, Gfx::Context* dpi, uint16_t x, uint16_t* y)
     {
         static const PaletteIndex_t overallColours[] = {
             PaletteIndex::index_41,
@@ -620,7 +620,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     };
 
     // 0x0046D379
-    static void drawGraphKeyVehicles(window* self, Gfx::drawpixelinfo_t* dpi, uint16_t x, uint16_t* y)
+    static void drawGraphKeyVehicles(window* self, Gfx::Context* dpi, uint16_t x, uint16_t* y)
     {
         static const string_id lineNames[] = {
             StringIds::forbid_trains,
@@ -656,7 +656,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046D47F
-    static void drawGraphKeyIndustries(window* self, Gfx::drawpixelinfo_t* dpi, uint16_t x, uint16_t* y)
+    static void drawGraphKeyIndustries(window* self, Gfx::Context* dpi, uint16_t x, uint16_t* y)
     {
         static const PaletteIndex_t industryColours[] = {
             PaletteIndex::index_0A,
@@ -723,7 +723,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046D5A4
-    static void drawGraphKeyRoutes(window* self, Gfx::drawpixelinfo_t* dpi, uint16_t x, uint16_t* y)
+    static void drawGraphKeyRoutes(window* self, Gfx::Context* dpi, uint16_t x, uint16_t* y)
     {
         for (auto i = 0; _byte_F253DF[i] != 0xFF; i++)
         {
@@ -773,7 +773,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046D6E1
-    static void drawGraphKeyCompanies(window* self, Gfx::drawpixelinfo_t* dpi, uint16_t x, uint16_t* y)
+    static void drawGraphKeyCompanies(window* self, Gfx::Context* dpi, uint16_t x, uint16_t* y)
     {
         for (const auto& company : CompanyManager::companies())
         {
@@ -943,7 +943,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046B779
-    static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
+    static void draw(window* self, Gfx::Context* dpi)
     {
         self->draw(dpi);
         drawTabs(self, dpi);
@@ -1009,7 +1009,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046BF0F based on
-    static void drawVehicleOnMap(Gfx::drawpixelinfo_t* dpi, Vehicles::VehicleBase* vehicle, uint8_t colour)
+    static void drawVehicleOnMap(Gfx::Context* dpi, Vehicles::VehicleBase* vehicle, uint8_t colour)
     {
         if (vehicle->position.x == Location::null)
             return;
@@ -1020,7 +1020,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046C294
-    static std::pair<xy32, xy32> drawRouteLine(Gfx::drawpixelinfo_t* dpi, xy32 startPos, xy32 endPos, Pos2 stationPos, uint8_t colour)
+    static std::pair<xy32, xy32> drawRouteLine(Gfx::Context* dpi, xy32 startPos, xy32 endPos, Pos2 stationPos, uint8_t colour)
     {
         auto newStartPos = locationToMapWindowPos({ stationPos.x, stationPos.y });
 
@@ -1081,7 +1081,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046C18D
-    static void drawRoutesOnMap(Gfx::drawpixelinfo_t* dpi, Vehicles::Vehicle train)
+    static void drawRoutesOnMap(Gfx::Context* dpi, Vehicles::Vehicle train)
     {
         auto colour = getRouteColour(train);
 
@@ -1162,7 +1162,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046BE6E, 0x0046C35A
-    static void drawVehiclesOnMap(Gfx::drawpixelinfo_t* dpi, widget_index widgetIndex)
+    static void drawVehiclesOnMap(Gfx::Context* dpi, widget_index widgetIndex)
     {
         for (auto vehicle : EntityManager::VehicleList())
         {
@@ -1194,7 +1194,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046BE51, 0x0046BE34
-    static void drawRectOnMap(Gfx::drawpixelinfo_t* dpi, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t colour)
+    static void drawRectOnMap(Gfx::Context* dpi, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t colour)
     {
         if (left > right)
         {
@@ -1210,7 +1210,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046BE51
-    static void drawViewOnMap(Gfx::drawpixelinfo_t* dpi, int16_t left, int16_t top, int16_t right, int16_t bottom)
+    static void drawViewOnMap(Gfx::Context* dpi, int16_t left, int16_t top, int16_t right, int16_t bottom)
     {
         left /= 32;
         top /= 16;
@@ -1227,7 +1227,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046BE34
-    static void drawViewCornersOnMap(Gfx::drawpixelinfo_t* dpi, int16_t left, int16_t top, int16_t leftOffset, int16_t topOffset, int16_t rightOffset, int16_t bottomOffset)
+    static void drawViewCornersOnMap(Gfx::Context* dpi, int16_t left, int16_t top, int16_t leftOffset, int16_t topOffset, int16_t rightOffset, int16_t bottomOffset)
     {
         left /= 32;
         top /= 16;
@@ -1246,7 +1246,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046BAD5
-    static void drawViewportPosition(Gfx::drawpixelinfo_t* dpi)
+    static void drawViewportPosition(Gfx::Context* dpi)
     {
         auto window = WindowManager::getMainWindow();
 
@@ -1376,7 +1376,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046C481
-    static void drawTownNames(Gfx::drawpixelinfo_t* dpi)
+    static void drawTownNames(Gfx::Context* dpi)
     {
         for (const auto& town : TownManager::towns())
         {
@@ -1401,7 +1401,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046B806
-    static void drawScroll(window* self, Gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
+    static void drawScroll(window* self, Gfx::Context* dpi, uint32_t scrollIndex)
     {
         if (!(_dword_525E28 & (1 << 0)))
             return;

@@ -20,7 +20,7 @@ namespace OpenLoco::Ui::ViewportInteraction
 
 namespace OpenLoco::Gfx
 {
-    struct drawpixelinfo_t;
+    struct Context;
 }
 
 namespace OpenLoco::Paint
@@ -121,11 +121,11 @@ namespace OpenLoco::Paint
     public:
         void generate();
         void arrangeStructs();
-        void init(Gfx::drawpixelinfo_t& dpi, const uint16_t viewportFlags);
+        void init(Gfx::Context& dpi, const uint16_t viewportFlags);
         [[nodiscard]] Ui::ViewportInteraction::InteractionArg getNormalInteractionInfo(const uint32_t flags);
         [[nodiscard]] Ui::ViewportInteraction::InteractionArg getStationNameInteractionInfo(const uint32_t flags);
         [[nodiscard]] Ui::ViewportInteraction::InteractionArg getTownNameInteractionInfo(const uint32_t flags);
-        Gfx::drawpixelinfo_t* getContext() { return _dpi; }
+        Gfx::Context* getContext() { return _dpi; }
         uint8_t getRotation() { return currentRotation; }
         // TileElement or Entity
         void setCurrentItem(void* item) { _currentItem = item; }
@@ -206,7 +206,7 @@ namespace OpenLoco::Paint
     private:
         void generateTilesAndEntities(GenerationParameters&& p);
 
-        inline static Interop::loco_global<Gfx::drawpixelinfo_t*, 0x00E0C3E0> _dpi;
+        inline static Interop::loco_global<Gfx::Context*, 0x00E0C3E0> _dpi;
         inline static Interop::loco_global<PaintEntry[4000], 0x00E0C410> _paintEntries;
         inline static Interop::loco_global<PaintStruct* [1024], 0x00E3F0C0> _quadrants;
         inline static Interop::loco_global<uint32_t, 0x00E400C0> _quadrantBackIndex;
@@ -245,7 +245,7 @@ namespace OpenLoco::Paint
         //uint32_t trackColours[4];
     };
 
-    PaintSession* allocateSession(Gfx::drawpixelinfo_t& dpi, const uint16_t viewportFlags);
+    PaintSession* allocateSession(Gfx::Context& dpi, const uint16_t viewportFlags);
 
     void registerHooks();
 }

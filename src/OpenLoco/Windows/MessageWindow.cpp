@@ -59,7 +59,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         static void prepareDraw(window* self);
         static void switchTab(window* self, widget_index widgetIndex);
         static void onUpdate(window* self);
-        static void drawTabs(window* self, Gfx::drawpixelinfo_t* dpi);
+        static void drawTabs(window* self, Gfx::Context* dpi);
         static void initEvents();
     }
 
@@ -208,14 +208,14 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         }
 
         // 0x0042A5CC
-        static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
+        static void draw(window* self, Gfx::Context* dpi)
         {
             self->draw(dpi);
             Common::drawTabs(self, dpi);
         }
 
         // 0x0042A5D7
-        static void drawScroll(Ui::window* self, Gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
+        static void drawScroll(Ui::window* self, Gfx::Context* dpi, uint32_t scrollIndex)
         {
             auto colour = Colour::getShade(self->colours[1], 4);
 
@@ -506,7 +506,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         }
 
         // 0x0042AA02
-        static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
+        static void draw(window* self, Gfx::Context* dpi)
         {
             self->draw(dpi);
             Common::drawTabs(self, dpi);
@@ -646,7 +646,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         }
 
         // 0x0042AB92
-        static void drawTabs(window* self, Gfx::drawpixelinfo_t* dpi)
+        static void drawTabs(window* self, Gfx::Context* dpi)
         {
             auto skin = ObjectManager::get<InterfaceSkinObject>();
 

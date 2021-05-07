@@ -693,7 +693,7 @@ void OpenLoco::Interop::registerHooks()
         0x00451025,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
-            auto pos = Gfx::drawString((Gfx::drawpixelinfo_t*)regs.edi, regs.cx, regs.dx, regs.al, (uint8_t*)regs.esi);
+            auto pos = Gfx::drawString((Gfx::Context*)regs.edi, regs.cx, regs.dx, regs.al, (uint8_t*)regs.esi);
             regs = backup;
             regs.cx = pos.x;
             regs.dx = pos.y;
@@ -749,7 +749,7 @@ void OpenLoco::Interop::registerHooks()
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
             auto window = (Ui::window*)regs.esi;
-            auto dpi = (Gfx::drawpixelinfo_t*)regs.edi;
+            auto dpi = (Gfx::Context*)regs.edi;
             window->draw(dpi);
             regs = backup;
             return 0;

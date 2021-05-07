@@ -6,7 +6,7 @@
 namespace OpenLoco
 {
     // 0x00490A26
-    void TrainStationObject::drawPreviewImage(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y) const
+    void TrainStationObject::drawPreviewImage(Gfx::Context& dpi, const int16_t x, const int16_t y) const
     {
         auto colourImage = Gfx::recolour(image, Colour::salmon_pink);
 
@@ -24,7 +24,7 @@ namespace OpenLoco
     }
 
     // 0x00490A68
-    void TrainStationObject::drawDescription(Gfx::drawpixelinfo_t& dpi, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const
+    void TrainStationObject::drawDescription(Gfx::Context& dpi, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const
     {
         Gfx::point_t rowPosition = { x, y };
         ObjectManager::drawGenericDescription(dpi, rowPosition, designed_year, obsolete_year);

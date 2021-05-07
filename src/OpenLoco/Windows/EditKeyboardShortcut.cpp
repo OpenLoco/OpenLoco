@@ -64,7 +64,7 @@ namespace OpenLoco::Ui::Windows::EditKeyboardShortcut
     }
 
     // 0x004BE8DF
-    static void draw(Ui::window* const self, Gfx::drawpixelinfo_t* const ctx)
+    static void draw(Ui::window* const self, Gfx::Context* const ctx)
     {
         self->draw(ctx);
 

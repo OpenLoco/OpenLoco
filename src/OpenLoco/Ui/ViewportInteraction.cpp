@@ -451,8 +451,8 @@ namespace OpenLoco::Ui::ViewportInteraction
     std::pair<ViewportInteraction::InteractionArg, viewport*> getMapCoordinatesFromPos(int32_t screenX, int32_t screenY, int32_t flags)
     {
         static loco_global<uint8_t, 0x0050BF68> _50BF68; // If in get map coords
-        static loco_global<Gfx::drawpixelinfo_t, 0x00E0C3E4> _dpi1;
-        static loco_global<Gfx::drawpixelinfo_t, 0x00E0C3F4> _dpi2;
+        static loco_global<Gfx::Context, 0x00E0C3E4> _dpi1;
+        static loco_global<Gfx::Context, 0x00E0C3F4> _dpi2;
 
         _50BF68 = 1;
         ViewportInteraction::InteractionArg interaction{};

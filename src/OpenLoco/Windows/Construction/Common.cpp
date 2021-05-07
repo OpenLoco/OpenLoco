@@ -441,7 +441,7 @@ namespace OpenLoco::Ui::Windows::Construction
         }
 
         // 0x0049EFEF
-        static void drawRoadTabs(window* self, Gfx::drawpixelinfo_t* dpi)
+        static void drawRoadTabs(window* self, Gfx::Context* dpi)
         {
             auto company = CompanyManager::get(_playerCompany);
             auto companyColour = company->mainColours.primary;
@@ -467,7 +467,7 @@ namespace OpenLoco::Ui::Windows::Construction
                     if (self->current_tab == widx::tab_station - widx::tab_construction)
                         height++;
 
-                    Gfx::drawpixelinfo_t* clipped = nullptr;
+                    Gfx::Context* clipped = nullptr;
 
                     if (Gfx::clipDrawpixelinfo(&clipped, dpi, x, y, width, height))
                     {
@@ -517,7 +517,7 @@ namespace OpenLoco::Ui::Windows::Construction
         }
 
         // 0x0049ED40
-        static void drawTrackTabs(window* self, Gfx::drawpixelinfo_t* dpi)
+        static void drawTrackTabs(window* self, Gfx::Context* dpi)
         {
             auto company = CompanyManager::get(_playerCompany);
             auto companyColour = company->mainColours.primary;
@@ -559,7 +559,7 @@ namespace OpenLoco::Ui::Windows::Construction
                             if (self->current_tab == widx::tab_station - widx::tab_construction)
                                 height++;
 
-                            Gfx::drawpixelinfo_t* clipped = nullptr;
+                            Gfx::Context* clipped = nullptr;
 
                             if (Gfx::clipDrawpixelinfo(&clipped, dpi, x, y, width, height))
                             {
@@ -599,7 +599,7 @@ namespace OpenLoco::Ui::Windows::Construction
                     if (self->current_tab == widx::tab_station - widx::tab_construction)
                         height++;
 
-                    Gfx::drawpixelinfo_t* clipped = nullptr;
+                    Gfx::Context* clipped = nullptr;
 
                     if (Gfx::clipDrawpixelinfo(&clipped, dpi, x, y, width, height))
                     {
@@ -646,7 +646,7 @@ namespace OpenLoco::Ui::Windows::Construction
         }
 
         // 0x0049ED33
-        void drawTabs(window* self, Gfx::drawpixelinfo_t* dpi)
+        void drawTabs(window* self, Gfx::Context* dpi)
         {
             if (_trackType & (1 << 7))
             {

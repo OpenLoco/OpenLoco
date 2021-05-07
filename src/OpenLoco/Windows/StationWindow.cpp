@@ -63,7 +63,7 @@ namespace OpenLoco::Ui::Windows::Station
         static void renameStationPrompt(window* self, widget_index widgetIndex);
         static void repositionTabs(window* self);
         static void switchTab(window* self, widget_index widgetIndex);
-        static void drawTabs(window* self, Gfx::drawpixelinfo_t* dpi);
+        static void drawTabs(window* self, Gfx::Context* context);
         static void enableRenameByCaption(window* self);
         static void initEvents();
     }
@@ -113,12 +113,12 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048E470
-        static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
+        static void draw(window* self, Gfx::Context* context)
         {
-            self->draw(dpi);
-            Common::drawTabs(self, dpi);
-            self->drawViewports(dpi);
-            Widget::drawViewportCentreButton(dpi, self, widx::centre_on_viewport);
+            self->draw(context);
+            Common::drawTabs(self, context);
+            self->drawViewports(context);
+            Widget::drawViewportCentreButton(context, self, widx::centre_on_viewport);
 
             auto station = StationManager::get(self->number);
             const char* buffer = StringManager::getString(StringIds::buffer_1250);
@@ -131,7 +131,7 @@ namespace OpenLoco::Ui::Windows::Station
             const auto x = self->x + widget.left - 1;
             const auto y = self->y + widget.top - 1;
             const auto width = widget.width() - 1;
-            Gfx::drawString_494BBF(*dpi, x, y, width, Colour::black, StringIds::black_stringid, &args);
+            Gfx::drawString_494BBF(*context, x, y, width, Colour::black, StringIds::black_stringid, &args);
         }
 
         // 0x0048E4D4
@@ -355,10 +355,10 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048E8DE
-        static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
+        static void draw(window* self, Gfx::Context* context)
         {
-            self->draw(dpi);
-            Common::drawTabs(self, dpi);
+            self->draw(context);
+            Common::drawTabs(self, context);
 
             auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
             buffer = StringManager::formatString(buffer, StringIds::accepted_cargo_separator);
@@ -393,7 +393,7 @@ namespace OpenLoco::Ui::Windows::Station
             const auto y = self->y + widget.top - 1;
             const auto width = widget.width();
 
-            Gfx::drawString_494BBF(*dpi, x, y, width, Colour::black, StringIds::buffer_1250);
+            Gfx::drawString_494BBF(*context, x, y, width, Colour::black, StringIds::buffer_1250);
         }
 
         // 0x0048EB0B
@@ -460,9 +460,9 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048E986
-        static void drawScroll(window* self, Gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
+        static void drawScroll(window* self, Gfx::Context* context, uint32_t scrollIndex)
         {
-            Gfx::clearSingle(*dpi, Colour::getShade(self->colours[1], 4));
+            Gfx::clearSingle(*context, Colour::getShade(self->colours[1], 4));
 
             const auto station = StationManager::get(self->number);
             int16_t y = 1;
@@ -489,7 +489,7 @@ namespace OpenLoco::Ui::Windows::Station
                     for (; units > 0; units--)
                     {
                         {
-                            Gfx::drawImage(dpi, xPos, y, cargoObj->unit_inline_sprite);
+                            Gfx::drawImage(context, xPos, y, cargoObj->unit_inline_sprite);
                             xPos += 10;
                         }
                     }
@@ -509,7 +509,7 @@ namespace OpenLoco::Ui::Windows::Station
                 const auto& widget = self->widgets[widx::scrollview];
                 auto xPos = widget.width() - 14;
 
-                Gfx::drawString_494C78(*dpi, xPos, y, Colour::outline(Colour::black), cargoStr, &args);
+                Gfx::drawString_494C78(*context, xPos, y, Colour::outline(Colour::black), cargoStr, &args);
                 y += 10;
                 if (cargo.origin != self->number)
                 {
@@ -518,7 +518,7 @@ namespace OpenLoco::Ui::Windows::Station
                     args2.push(originStation->name);
                     args2.push(originStation->town);
 
-                    Gfx::drawString_494C78(*dpi, xPos, y, Colour::outline(Colour::black), StringIds::station_cargo_en_route_end, &args2);
+                    Gfx::drawString_494C78(*context, xPos, y, Colour::outline(Colour::black), StringIds::station_cargo_en_route_end, &args2);
                     y += 10;
                 }
                 y += 2;
@@ -533,7 +533,7 @@ namespace OpenLoco::Ui::Windows::Station
             {
                 auto args = FormatArguments();
                 args.push(StringIds::nothing_waiting);
-                Gfx::drawString_494B3F(*dpi, 1, 0, Colour::black, StringIds::black_stringid, &args);
+                Gfx::drawString_494B3F(*context, 1, 0, Colour::black, StringIds::black_stringid, &args);
             }
         }
 
@@ -598,10 +598,10 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048ED24
-        static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
+        static void draw(window* self, Gfx::Context* context)
         {
-            self->draw(dpi);
-            Common::drawTabs(self, dpi);
+            self->draw(context);
+            Common::drawTabs(self, context);
         }
 
         // 0x0048EE1A
@@ -654,21 +654,21 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048EF02
-        static void drawRatingBar(window* self, Gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y, uint8_t amount, Colour_t colour)
+        static void drawRatingBar(window* self, Gfx::Context* context, int16_t x, int16_t y, uint8_t amount, Colour_t colour)
         {
-            Gfx::fillRectInset(dpi, x, y, x + 99, y + 9, self->colours[1], 48);
+            Gfx::fillRectInset(context, x, y, x + 99, y + 9, self->colours[1], 48);
 
             uint16_t rating = (amount * 96) / 256;
             if (rating > 2)
             {
-                Gfx::fillRectInset(dpi, x + 2, y + 2, x + 1 + rating, y + 8, colour, 0);
+                Gfx::fillRectInset(context, x + 2, y + 2, x + 1 + rating, y + 8, colour, 0);
             }
         }
 
         // 0x0048ED2F
-        static void drawScroll(window* self, Gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
+        static void drawScroll(window* self, Gfx::Context* context, uint32_t scrollIndex)
         {
-            Gfx::clearSingle(*dpi, Colour::getShade(self->colours[1], 4));
+            Gfx::clearSingle(*context, Colour::getShade(self->colours[1], 4));
 
             const auto station = StationManager::get(self->number);
             int16_t y = 0;
@@ -683,7 +683,7 @@ namespace OpenLoco::Ui::Windows::Station
                 }
 
                 auto cargoObj = ObjectManager::get<CargoObject>(cargoId);
-                Gfx::drawString_494BBF(*dpi, 1, y, 98, 0, StringIds::wcolour2_stringid, &cargoObj->name);
+                Gfx::drawString_494BBF(*context, 1, y, 98, 0, StringIds::wcolour2_stringid, &cargoObj->name);
 
                 auto rating = cargo.rating;
                 auto colour = Colour::moss_green;
@@ -697,10 +697,10 @@ namespace OpenLoco::Ui::Windows::Station
                 }
 
                 uint8_t amount = (rating * 327) / 256;
-                drawRatingBar(self, dpi, 100, y, amount, colour);
+                drawRatingBar(self, context, 100, y, amount, colour);
 
                 uint16_t percent = rating / 2;
-                Gfx::drawString_494B3F(*dpi, 201, y, 0, StringIds::station_cargo_rating_percent, &percent);
+                Gfx::drawString_494B3F(*context, 201, y, 0, StringIds::station_cargo_rating_percent, &percent);
                 y += 10;
                 cargoId++;
             }
@@ -938,7 +938,7 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048EFBC
-        static void drawTabs(window* self, Gfx::drawpixelinfo_t* dpi)
+        static void drawTabs(window* self, Gfx::Context* context)
         {
             auto skin = ObjectManager::get<InterfaceSkinObject>();
             auto station = StationManager::get(self->number);
@@ -948,7 +948,7 @@ namespace OpenLoco::Ui::Windows::Station
             {
                 uint32_t imageId = Gfx::recolour(skin->img, companyColour);
                 imageId += InterfaceSkin::ImageIds::toolbar_menu_stations;
-                Widget::draw_tab(self, dpi, imageId, widx::tab_station);
+                Widget::draw_tab(self, context, imageId, widx::tab_station);
             }
 
             // Cargo tab
@@ -966,13 +966,13 @@ namespace OpenLoco::Ui::Windows::Station
                 else
                     imageId += cargoTabImageIds[0];
 
-                Widget::draw_tab(self, dpi, imageId, widx::tab_cargo);
+                Widget::draw_tab(self, context, imageId, widx::tab_cargo);
             }
 
             // Cargo ratings tab
             {
                 const uint32_t imageId = skin->img + InterfaceSkin::ImageIds::tab_cargo_ratings;
-                Widget::draw_tab(self, dpi, imageId, widx::tab_cargo_ratings);
+                Widget::draw_tab(self, context, imageId, widx::tab_cargo_ratings);
 
                 auto widget = self->widgets[widx::tab_cargo_ratings];
                 auto yOffset = widget.top + self->y + 14;
@@ -984,7 +984,7 @@ namespace OpenLoco::Ui::Windows::Station
                     auto& cargo = cargoStats;
                     if (!cargo.empty())
                     {
-                        Gfx::fillRect(dpi, xOffset, yOffset, xOffset + 22, yOffset + 1, (1 << 25) | PaletteIndex::index_30);
+                        Gfx::fillRect(context, xOffset, yOffset, xOffset + 22, yOffset + 1, (1 << 25) | PaletteIndex::index_30);
 
                         auto ratingColour = Colour::moss_green;
                         if (cargo.rating < 100)
@@ -995,7 +995,7 @@ namespace OpenLoco::Ui::Windows::Station
                         }
 
                         auto ratingBarLength = (cargo.rating * 30) / 256;
-                        Gfx::fillRect(dpi, xOffset, yOffset, xOffset - 1 + ratingBarLength, yOffset + 1, Colour::getShade(ratingColour, 6));
+                        Gfx::fillRect(context, xOffset, yOffset, xOffset - 1 + ratingBarLength, yOffset + 1, Colour::getShade(ratingColour, 6));
 
                         yOffset += 3;
                         totalRatingBars++;

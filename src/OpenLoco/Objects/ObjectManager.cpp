@@ -543,7 +543,7 @@ namespace OpenLoco::ObjectManager
     // TODO: Should only be defined in ObjectSelectionWindow
     static const uint8_t descriptionRowHeight = 10;
 
-    void drawGenericDescription(Gfx::drawpixelinfo_t& dpi, Gfx::point_t& rowPosition, const uint16_t designed, const uint16_t obsolete)
+    void drawGenericDescription(Gfx::Context& dpi, Gfx::point_t& rowPosition, const uint16_t designed, const uint16_t obsolete)
     {
         if (designed != 0)
         {

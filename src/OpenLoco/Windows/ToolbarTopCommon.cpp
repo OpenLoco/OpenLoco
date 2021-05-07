@@ -35,7 +35,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
     static loco_global<int8_t[18], 0x0050A006> available_objects;
 
     // 0x00439DE4
-    void draw(window* self, Gfx::drawpixelinfo_t* dpi)
+    void draw(window* self, Gfx::Context* dpi)
     {
         // Draw widgets.
         self->draw(dpi);

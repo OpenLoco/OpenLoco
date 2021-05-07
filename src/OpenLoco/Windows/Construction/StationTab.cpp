@@ -230,7 +230,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     }
 
     // 0x0049DE40
-    static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
+    static void draw(window* self, Gfx::Context* dpi)
     {
         self->draw(dpi);
         Common::drawTabs(self, dpi);

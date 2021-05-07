@@ -464,7 +464,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         }
 
         // 0x0042A136
-        static void sub_42A136(window* self, Gfx::drawpixelinfo_t* dpi, Message* news)
+        static void sub_42A136(window* self, Gfx::Context* dpi, Message* news)
         {
             registers regs;
             regs.edi = (int32_t)dpi;
@@ -474,7 +474,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         }
 
         // 0x0042A036
-        static void drawViewportString(Gfx::drawpixelinfo_t* dpi, uint16_t x, uint16_t y, uint16_t width, uint8_t itemType, uint16_t itemIndex)
+        static void drawViewportString(Gfx::Context* dpi, uint16_t x, uint16_t y, uint16_t width, uint8_t itemType, uint16_t itemIndex)
         {
             auto args = FormatArguments();
 
@@ -561,7 +561,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         }
 
         // 0x00429872
-        static void drawLateNews(window* self, Gfx::drawpixelinfo_t* dpi, Message* news)
+        static void drawLateNews(window* self, Gfx::Context* dpi, Message* news)
         {
             Gfx::drawImage(dpi, self->x, self->y, ImageIds::news_background_new_left);
 
@@ -601,7 +601,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         }
 
         // 0x00429934
-        static void drawMiddleNews(window* self, Gfx::drawpixelinfo_t* dpi, Message* news)
+        static void drawMiddleNews(window* self, Gfx::Context* dpi, Message* news)
         {
             if (_word_4F8BE4[news->type] & (1 << 2))
             {
@@ -637,7 +637,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         }
 
         // 0x004299E7
-        static void drawEarlyNews(window* self, Gfx::drawpixelinfo_t* dpi, Message* news)
+        static void drawEarlyNews(window* self, Gfx::Context* dpi, Message* news)
         {
             auto imageId = Gfx::recolour(ImageIds::news_background_old_left, PaletteIndex::index_68);
 
@@ -694,7 +694,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         }
 
         // 0x00429761
-        static void drawStationNews(window* self, Gfx::drawpixelinfo_t* dpi, Message* news)
+        static void drawStationNews(window* self, Gfx::Context* dpi, Message* news)
         {
             self->draw(dpi);
 
@@ -748,7 +748,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         }
 
         // 0x00429739
-        static void draw(Ui::window* self, Gfx::drawpixelinfo_t* dpi)
+        static void draw(Ui::window* self, Gfx::Context* dpi)
         {
             auto news = MessageManager::get(_activeMessageIndex);
 

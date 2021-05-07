@@ -166,7 +166,7 @@ namespace OpenLoco::Ui::Windows::ToolTip
     }
 
     // 0x004C9397
-    static void draw(Ui::window* window, Gfx::drawpixelinfo_t* dpi)
+    static void draw(Ui::window* window, Gfx::Context* dpi)
     {
         uint16_t x = window->x;
         uint16_t y = window->y;

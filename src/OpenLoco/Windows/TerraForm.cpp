@@ -96,7 +96,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         static void sub_4BD297();
         static void switchTab(window* self, widget_index widgetIndex);
         static void repositionTabs(window* self);
-        static void drawTabs(window* self, Gfx::drawpixelinfo_t* dpi);
+        static void drawTabs(window* self, Gfx::Context* dpi);
         static void prepareDraw(window* self);
         static void onUpdate(window* self);
         static void onResize(window* self, uint8_t height);
@@ -546,7 +546,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BB8C9
-        static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
+        static void draw(window* self, Gfx::Context* dpi)
         {
             self->draw(dpi);
             Common::drawTabs(self, dpi);
@@ -589,7 +589,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             Gfx::drawString_494BBF(*dpi, xPos, yPos, width, Colour::black, StringIds::black_stringid, &treeObj->name);
         }
 
-        static void drawTreeThumb(TreeObject* treeObj, Gfx::drawpixelinfo_t* clipped)
+        static void drawTreeThumb(TreeObject* treeObj, Gfx::Context* clipped)
         {
             uint32_t image = _byte_500775[treeObj->growth] * treeObj->num_rotations;
             auto rotation = (treeObj->num_rotations - 1) & _treeRotation;
@@ -612,7 +612,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BB982
-        static void drawScroll(window* self, Gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
+        static void drawScroll(window* self, Gfx::Context* dpi, uint32_t scrollIndex)
         {
             auto shade = Colour::getShade(self->colours[1], 3);
             Gfx::clearSingle(*dpi, shade);
@@ -637,7 +637,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 }
 
                 auto treeObj = ObjectManager::get<TreeObject>(self->row_info[i]);
-                Gfx::drawpixelinfo_t* clipped = nullptr;
+                Gfx::Context* clipped = nullptr;
 
                 if (Gfx::clipDrawpixelinfo(&clipped, dpi, xPos + 1, yPos + 1, 64, rowHeight - 2))
                 {
@@ -890,7 +890,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BC5E7
-        static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
+        static void draw(window* self, Gfx::Context* dpi)
         {
             self->draw(dpi);
             Common::drawTabs(self, dpi);
@@ -1310,7 +1310,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BC909
-        static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
+        static void draw(window* self, Gfx::Context* dpi)
         {
             self->draw(dpi);
             Common::drawTabs(self, dpi);
@@ -1546,7 +1546,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BCCFF
-        static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
+        static void draw(window* self, Gfx::Context* dpi)
         {
             self->draw(dpi);
             Common::drawTabs(self, dpi);
@@ -1893,7 +1893,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BC0C2
-        static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
+        static void draw(window* self, Gfx::Context* dpi)
         {
             self->draw(dpi);
             Common::drawTabs(self, dpi);
@@ -1915,7 +1915,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BC11C
-        static void drawScroll(window* self, Gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
+        static void drawScroll(window* self, Gfx::Context* dpi, uint32_t scrollIndex)
         {
             auto shade = Colour::getShade(self->colours[1], 3);
             Gfx::clearSingle(*dpi, shade);
@@ -1938,7 +1938,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
                 auto wallObj = ObjectManager::get<WallObject>(self->row_info[i]);
 
-                Gfx::drawpixelinfo_t* clipped = nullptr;
+                Gfx::Context* clipped = nullptr;
 
                 if (Gfx::clipDrawpixelinfo(&clipped, dpi, xPos + 1, yPos + 1, 39, 47))
                     Gfx::drawImage(clipped, 34, 28, wallObj->sprite);
@@ -2085,7 +2085,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BCF7F
-        static void drawTabs(window* self, Gfx::drawpixelinfo_t* dpi)
+        static void drawTabs(window* self, Gfx::Context* dpi)
         {
             auto skin = ObjectManager::get<InterfaceSkinObject>();
 

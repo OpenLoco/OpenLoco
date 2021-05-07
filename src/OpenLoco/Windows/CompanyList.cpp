@@ -90,9 +90,9 @@ namespace OpenLoco::Ui::Windows::CompanyList
         static void prepareDraw(window* self);
         static void switchTab(window* self, widget_index widgetIndex);
         static void refreshCompanyList(window* self);
-        static void drawTabs(window* self, Gfx::drawpixelinfo_t* dpi);
-        static void drawGraph(window* self, Gfx::drawpixelinfo_t* dpi);
-        static void drawGraphAndLegend(window* self, Gfx::drawpixelinfo_t* dpi);
+        static void drawTabs(window* self, Gfx::Context* dpi);
+        static void drawGraph(window* self, Gfx::Context* dpi);
+        static void drawGraphAndLegend(window* self, Gfx::Context* dpi);
         static void initEvents();
     }
 
@@ -435,7 +435,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         // 0x00435E56
-        static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
+        static void draw(window* self, Gfx::Context* dpi)
         {
             self->draw(dpi);
             Common::drawTabs(self, dpi);
@@ -454,7 +454,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         // 0x00435EA7
-        static void drawScroll(window* self, Gfx::drawpixelinfo_t* dpi, uint32_t scrollIndex)
+        static void drawScroll(window* self, Gfx::Context* dpi, uint32_t scrollIndex)
         {
             auto colour = Colour::getShade(self->colours[1], 3);
             Gfx::clearSingle(*dpi, colour);
@@ -657,7 +657,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         // 0x00436490
-        static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
+        static void draw(window* self, Gfx::Context* dpi)
         {
             self->draw(dpi);
             Common::drawTabs(self, dpi);
@@ -754,7 +754,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         // 0x004367B4
-        static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
+        static void draw(window* self, Gfx::Context* dpi)
         {
             self->draw(dpi);
             Common::drawTabs(self, dpi);
@@ -851,7 +851,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         // 0x00436AD8
-        static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
+        static void draw(window* self, Gfx::Context* dpi)
         {
             self->draw(dpi);
             Common::drawTabs(self, dpi);
@@ -948,7 +948,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         // 0x00436DFC
-        static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
+        static void draw(window* self, Gfx::Context* dpi)
         {
             self->draw(dpi);
             Common::drawTabs(self, dpi);
@@ -1045,7 +1045,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         // 0x00437949
-        static void drawGraphLegend(window* self, Gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y)
+        static void drawGraphLegend(window* self, Gfx::Context* dpi, int16_t x, int16_t y)
         {
             auto cargoCount = 0;
             for (uint8_t i = 0; i < ObjectManager::getMaxObjects(object_type::cargo); i++)
@@ -1079,7 +1079,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         // 0x00437120
-        static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
+        static void draw(window* self, Gfx::Context* dpi)
         {
             self->draw(dpi);
             Common::drawTabs(self, dpi);
@@ -1266,7 +1266,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         // 0x0043745A
-        static void draw(window* self, Gfx::drawpixelinfo_t* dpi)
+        static void draw(window* self, Gfx::Context* dpi)
         {
             self->draw(dpi);
             Common::drawTabs(self, dpi);
@@ -1521,7 +1521,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         // 0x00437637
-        static void drawTabs(window* self, Gfx::drawpixelinfo_t* dpi)
+        static void drawTabs(window* self, Gfx::Context* dpi)
         {
             auto skin = ObjectManager::get<InterfaceSkinObject>();
 
@@ -1678,7 +1678,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         // 0x004CF824
-        static void drawGraph(window* self, Gfx::drawpixelinfo_t* dpi)
+        static void drawGraph(window* self, Gfx::Context* dpi)
         {
             registers regs;
             regs.esi = (uint32_t)self;
@@ -1687,7 +1687,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         // 0x00437810
-        static void drawGraphLegend(window* self, Gfx::drawpixelinfo_t* dpi, int16_t x, int16_t y)
+        static void drawGraphLegend(window* self, Gfx::Context* dpi, int16_t x, int16_t y)
         {
             auto companyCount = 0;
             for (auto& company : CompanyManager::companies())
@@ -1720,7 +1720,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         // 0x004365E4
-        static void drawGraphAndLegend(window* self, Gfx::drawpixelinfo_t* dpi)
+        static void drawGraphAndLegend(window* self, Gfx::Context* dpi)
         {
             auto totalMonths = (getCurrentYear() * 12) + static_cast<uint16_t>(getCurrentMonth());
 
