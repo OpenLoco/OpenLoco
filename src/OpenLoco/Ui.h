@@ -7,9 +7,9 @@
 
 namespace OpenLoco::Config
 {
-    enum class screen_mode;
-    struct display_config;
-    struct resolution_t;
+    enum class ScreenMode;
+    struct Display;
+    struct Resolution;
 }
 
 namespace OpenLoco::Paint
@@ -75,7 +75,7 @@ namespace OpenLoco::Ui
     int32_t height();
     bool dirtyBlocksInitialised();
 
-    void createWindow(const Config::display_config& cfg);
+    void createWindow(const Config::Display& cfg);
     void initialise();
     void initialiseCursors();
     void initialiseInput();
@@ -91,10 +91,10 @@ namespace OpenLoco::Ui
     void render();
     bool processMessages();
     void showMessageBox(const std::string& title, const std::string& message);
-    Config::resolution_t getResolution();
-    Config::resolution_t getDesktopResolution();
-    bool setDisplayMode(Config::screen_mode mode, Config::resolution_t newResolution);
-    bool setDisplayMode(Config::screen_mode mode);
+    Config::Resolution getResolution();
+    Config::Resolution getDesktopResolution();
+    bool setDisplayMode(Config::ScreenMode mode, Config::Resolution newResolution);
+    bool setDisplayMode(Config::ScreenMode mode);
     void updateFullscreenResolutions();
     std::vector<Resolution> getFullscreenResolutions();
     Resolution getClosestResolution(int32_t inWidth, int32_t inHeight);

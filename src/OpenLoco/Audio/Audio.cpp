@@ -970,7 +970,7 @@ namespace OpenLoco::Audio
     // 0x0048AA0C
     void revalidateCurrentTrack()
     {
-        using music_playlist_type = Config::music_playlist_type;
+        using MusicPlaylistType = Config::MusicPlaylistType;
         auto cfg = Config::get();
 
         if (_currentSong == no_song)
@@ -979,7 +979,7 @@ namespace OpenLoco::Audio
         bool trackStillApplies = true;
         switch (cfg.music_playlist)
         {
-            case music_playlist_type::current_era:
+            case MusicPlaylistType::currentEra:
             {
                 auto currentYear = getCurrentYear();
                 auto info = _musicInfo[_currentSong];
@@ -988,10 +988,10 @@ namespace OpenLoco::Audio
                 break;
             }
 
-            case music_playlist_type::all:
+            case MusicPlaylistType::all:
                 return;
 
-            case music_playlist_type::custom:
+            case MusicPlaylistType::custom:
                 if (!cfg.enabled_music[_currentSong])
                     trackStillApplies = false;
                 break;
@@ -1007,7 +1007,7 @@ namespace OpenLoco::Audio
 
     static int32_t chooseNextMusicTrack(int32_t excludeTrack)
     {
-        using music_playlist_type = Config::music_playlist_type;
+        using MusicPlaylistType = Config::MusicPlaylistType;
 
         static std::vector<uint8_t> playlist;
         playlist.clear();
@@ -1015,7 +1015,7 @@ namespace OpenLoco::Audio
         auto cfg = Config::get();
         switch (cfg.music_playlist)
         {
-            case music_playlist_type::current_era:
+            case MusicPlaylistType::currentEra:
             {
                 auto currentYear = getCurrentYear();
                 for (auto i = 0; i < num_music_tracks; i++)
@@ -1031,7 +1031,7 @@ namespace OpenLoco::Audio
                 }
                 break;
             }
-            case music_playlist_type::all:
+            case MusicPlaylistType::all:
                 for (auto i = 0; i < num_music_tracks; i++)
                 {
                     if (i != excludeTrack)
@@ -1040,7 +1040,7 @@ namespace OpenLoco::Audio
                     }
                 }
                 break;
-            case music_playlist_type::custom:
+            case MusicPlaylistType::custom:
                 for (auto i = 0; i < num_music_tracks; i++)
                 {
                     if (i != excludeTrack && (cfg.enabled_music[i] & 1))

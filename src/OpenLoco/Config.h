@@ -7,32 +7,32 @@ namespace OpenLoco::Config
 {
 #pragma pack(push, 1)
 
-    enum flags
+    namespace Flags
     {
-        gridlines_on_landscape = (1 << 0),
-        show_height_as_units = (1 << 1),
-        landscape_smoothing = (1 << 2),
-        export_objects_with_saves = (1 << 3),
+        constexpr uint32_t gridlinesOnLandscape = (1 << 0);
+        constexpr uint32_t showHeightAsUnits = (1 << 1);
+        constexpr uint32_t landscapeSmoothing = (1 << 2);
+        constexpr uint32_t exportObjectsWithSaves = (1 << 3);
 
-        preferred_currency_for_new_games = (1 << 6),
-        preferred_currency_always = (1 << 7),
+        constexpr uint32_t preferredCurrencyForNewGames = (1 << 6);
+        constexpr uint32_t preferredCurrencyAlways = (1 << 7);
 
-        use_preferred_owner_name = (1 << 9),
-    };
+        constexpr uint32_t usePreferredOwnerName = (1 << 9);
+    }
 
-    enum measurement_format
+    enum class MeasurementFormat : uint8_t
     {
         imperial = 0,
         metric = 1,
     };
 
-    struct keyboard_shortcut_t
+    struct KeyboardShortcut
     {
         uint8_t var_0;
         uint8_t var_1;
     };
 
-    enum class newsType : uint8_t
+    enum class NewsType : uint8_t
     {
         none = 0,
         ticker,
@@ -41,21 +41,21 @@ namespace OpenLoco::Config
 
     constexpr auto newsItemSubTypeCount = 6;
 
-    enum class screen_mode
+    enum class ScreenMode
     {
         window,
         fullscreen,
-        fullscreen_borderless
+        fullscreenBorderless
     };
 
-    enum class music_playlist_type : uint8_t
+    enum class MusicPlaylistType : uint8_t
     {
-        current_era,
+        currentEra,
         all,
         custom,
     };
 
-    struct config_t
+    struct LocoConfig
     {
         uint32_t flags;                               // 0x50AEB4, 0x00
         int16_t resolution_width;                     // 0x50AEB8, 0x04
@@ -72,15 +72,15 @@ namespace OpenLoco::Config
         uint8_t max_vehicle_sounds;                   // 0x25
         uint8_t max_sound_instances;                  // 0x26
         uint8_t sound_quality;                        // 0x27
-        uint8_t measurement_format;                   // 0x50AEDC, 0x28
+        MeasurementFormat measurement_format;         // 0x50AEDC, 0x28
         uint8_t pad_29;                               // 0x29
-        keyboard_shortcut_t keyboard_shortcuts[35];   // 0x2A
+        KeyboardShortcut keyboard_shortcuts[35];      // 0x2A
         uint8_t edge_scrolling;                       // 0x70
         uint8_t vehicles_min_scale;                   // 0x50AF25, 0x71
         uint8_t var_72;                               // 0x50AF26, 0x72
-        music_playlist_type music_playlist;           // 0x50AF27, 0x73
+        MusicPlaylistType music_playlist;             // 0x50AF27, 0x73
         uint16_t height_marker_offset;                // 0x50AF28, 0x74
-        newsType news_settings[newsItemSubTypeCount]; // 0x50AF2A, 0x76
+        NewsType news_settings[newsItemSubTypeCount]; // 0x50AF2A, 0x76
         uint8_t preferred_currency[16];               // 0x7C
         uint8_t enabled_music[29];                    // 0x50AF40, 0x8C
         uint8_t pad_A9[0xCC - 0xA9];                  // 0xA9
@@ -91,12 +91,12 @@ namespace OpenLoco::Config
         uint8_t scenario_selected_tab;                // 0x115
         char preferred_name[256];                     // 0x116
     };
-    static_assert(offsetof(config_t, keyboard_shortcuts) == 0x2A);
-    static_assert(offsetof(config_t, preferred_name) == 0x116);
-    static_assert(offsetof(config_t, last_host) == 0xD4);
-    static_assert(sizeof(config_t) == 0x216);
+    static_assert(offsetof(LocoConfig, keyboard_shortcuts) == 0x2A);
+    static_assert(offsetof(LocoConfig, preferred_name) == 0x116);
+    static_assert(offsetof(LocoConfig, last_host) == 0xD4);
+    static_assert(sizeof(LocoConfig) == 0x216);
 
-    struct resolution_t
+    struct Resolution
     {
         int32_t width{};
         int32_t height{};
@@ -106,22 +106,22 @@ namespace OpenLoco::Config
             return width > 0 && height > 0;
         }
 
-        bool operator==(const resolution_t& rhs) const
+        bool operator==(const Resolution& rhs) const
         {
             return width == rhs.width && height == rhs.height;
         }
 
-        bool operator!=(const resolution_t& rhs) const
+        bool operator!=(const Resolution& rhs) const
         {
             return width != rhs.width || height != rhs.height;
         }
 
-        bool operator>(const resolution_t& rhs) const
+        bool operator>(const Resolution& rhs) const
         {
             return width > rhs.width || height > rhs.height;
         }
 
-        resolution_t& operator*=(const float scalar)
+        Resolution& operator*=(const float scalar)
         {
             width *= scalar;
             height *= scalar;
@@ -129,24 +129,24 @@ namespace OpenLoco::Config
         }
     };
 
-    struct display_config
+    struct Display
     {
-        screen_mode mode;
+        ScreenMode mode;
         int32_t index{};
-        resolution_t window_resolution = { 800, 600 };
-        resolution_t fullscreen_resolution;
+        Resolution window_resolution = { 800, 600 };
+        Resolution fullscreen_resolution;
     };
 
-    struct audio_config
+    struct Audio
     {
         std::string device;
         bool play_title_music = true;
     };
 
-    struct new_config
+    struct NewConfig
     {
-        display_config display;
-        audio_config audio;
+        Display display;
+        Audio audio;
         std::string loco_install_path;
         std::string last_save_path;
         std::string language = "en-GB";
@@ -163,11 +163,11 @@ namespace OpenLoco::Config
 
 #pragma pack(pop)
 
-    config_t& get();
-    new_config& getNew();
+    LocoConfig& get();
+    NewConfig& getNew();
 
-    config_t& read();
-    new_config& readNewConfig();
+    LocoConfig& read();
+    NewConfig& readNewConfig();
     void write();
     void writeNewConfig();
 }

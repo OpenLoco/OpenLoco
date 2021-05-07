@@ -494,9 +494,9 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 
                     auto dropdownIndex = (widgetIndex - 7) / 2;
 
-                    if (static_cast<Config::newsType>(itemIndex) != Config::get().news_settings[dropdownIndex])
+                    if (static_cast<Config::NewsType>(itemIndex) != Config::get().news_settings[dropdownIndex])
                     {
-                        Config::get().news_settings[dropdownIndex] = static_cast<Config::newsType>(itemIndex);
+                        Config::get().news_settings[dropdownIndex] = static_cast<Config::NewsType>(itemIndex);
                         Config::write();
                         Gfx::invalidateScreen();
                     }

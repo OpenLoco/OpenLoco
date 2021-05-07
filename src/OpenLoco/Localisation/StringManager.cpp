@@ -410,7 +410,7 @@ namespace OpenLoco::StringManager
                         int32_t value = args.pop<int16_t>();
 
                         const char* unit;
-                        if (measurement_format == Config::measurement_format::imperial)
+                        if (measurement_format == Config::MeasurementFormat::imperial)
                         {
                             unit = getString(StringIds::unit_mph);
                         }
@@ -448,7 +448,7 @@ namespace OpenLoco::StringManager
                         auto measurement_format = Config::get().measurement_format;
 
                         const char* unit;
-                        if (measurement_format == Config::measurement_format::imperial)
+                        if (measurement_format == Config::MeasurementFormat::imperial)
                         {
                             unit = getString(StringIds::unit_ft);
                             value = std::round(value * 3.28125);
@@ -470,15 +470,15 @@ namespace OpenLoco::StringManager
                     {
                         int32_t value = args.pop<int16_t>();
 
-                        bool show_height_as_units = Config::get().flags & Config::flags::show_height_as_units;
-                        uint8_t measurement_format = Config::get().measurement_format;
+                        bool showHeightAsUnits = Config::get().flags & Config::Flags::showHeightAsUnits;
+                        auto measurement_format = Config::get().measurement_format;
                         const char* unit;
 
-                        if (show_height_as_units)
+                        if (showHeightAsUnits)
                         {
                             unit = getString(StringIds::unit_units);
                         }
-                        else if (measurement_format == Config::measurement_format::imperial)
+                        else if (measurement_format == Config::MeasurementFormat::imperial)
                         {
                             unit = getString(StringIds::unit_ft);
                             value *= 16;
@@ -503,7 +503,7 @@ namespace OpenLoco::StringManager
                         auto measurement_format = Config::get().measurement_format;
 
                         const char* unit;
-                        if (measurement_format == Config::measurement_format::imperial)
+                        if (measurement_format == Config::MeasurementFormat::imperial)
                         {
                             unit = getString(StringIds::unit_hp);
                         }

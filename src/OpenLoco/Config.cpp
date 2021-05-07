@@ -16,22 +16,22 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Config
 {
-    static loco_global<config_t, 0x0050AEB4> _config;
-    static new_config _new_config;
+    static loco_global<LocoConfig, 0x0050AEB4> _config;
+    static NewConfig _new_config;
     static YAML::Node _config_yaml;
 
-    config_t& get()
+    LocoConfig& get()
     {
         return _config;
     }
 
-    new_config& getNew()
+    NewConfig& getNew()
     {
         return _new_config;
     }
 
     // 0x00441A6C
-    config_t& read()
+    LocoConfig& read()
     {
         call(0x00441A6C);
         return _config;
@@ -44,7 +44,7 @@ namespace OpenLoco::Config
         writeNewConfig();
     }
 
-    new_config& readNewConfig()
+    NewConfig& readNewConfig()
     {
         auto configPath = Environment::getPathNoWarning(Environment::path_id::openloco_yml);
 
@@ -59,10 +59,10 @@ namespace OpenLoco::Config
         if (displayNode && displayNode.IsMap())
         {
             auto& displayConfig = _new_config.display;
-            displayConfig.mode = displayNode["mode"].as<screen_mode>(screen_mode::window);
+            displayConfig.mode = displayNode["mode"].as<ScreenMode>(ScreenMode::window);
             displayConfig.index = displayNode["index"].as<int32_t>(0);
-            displayConfig.window_resolution = displayNode["window_resolution"].as<resolution_t>();
-            displayConfig.fullscreen_resolution = displayNode["fullscreen_resolution"].as<resolution_t>();
+            displayConfig.window_resolution = displayNode["window_resolution"].as<Resolution>();
+            displayConfig.fullscreen_resolution = displayNode["fullscreen_resolution"].as<Resolution>();
         }
 
         auto& audioNode = config["audio"];
