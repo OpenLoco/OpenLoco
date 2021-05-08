@@ -2,7 +2,7 @@
 
 namespace OpenLoco::Intro
 {
-    enum class intro_state
+    enum class State
     {
         none,
         begin,
@@ -12,8 +12,8 @@ namespace OpenLoco::Intro
     };
 
     bool isActive();
-    intro_state state();
-    void state(intro_state state);
+    State state();
+    void state(State state);
 
     void update();
 }

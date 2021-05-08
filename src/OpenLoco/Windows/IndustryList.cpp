@@ -782,7 +782,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         // 0x004585B8
         static void onUpdate(window* self)
         {
-            if (!Input::hasFlag(Input::input_flags::flag5))
+            if (!Input::hasFlag(Input::InputFlags::flag5))
             {
                 auto cursor = Input::getMouseLocation();
                 auto xPos = cursor.x;
@@ -817,7 +817,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                             }
                             else
                             {
-                                if (Input::state() != Input::input_state::scroll_left)
+                                if (Input::state() != Input::InputState::scrollLeft)
                                 {
                                     self->min_width = window_size.width;
                                     self->min_height = window_size.height;
@@ -831,7 +831,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 else
                 {
                     self->saved_view.mapX = 0;
-                    if (Input::state() != Input::input_state::scroll_left)
+                    if (Input::state() != Input::InputState::scrollLeft)
                     {
                         self->min_width = window_size.width;
                         self->min_height = window_size.height;
@@ -1041,7 +1041,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
             self->max_height = NewIndustries::window_size.height;
             Input::toolSet(self, Common::widx::tab_new_industry, 40);
 
-            Input::setFlag(Input::input_flags::flag6);
+            Input::setFlag(Input::InputFlags::flag6);
             Ui::Windows::showGridlines();
             byte_E0C3D9 = 0;
             dword_E0C39C = 0x80000000;

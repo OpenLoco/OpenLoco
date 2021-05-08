@@ -15,7 +15,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Tutorial
 {
-    static loco_global<uint8_t, 0x00508F19> _state;
+    static loco_global<TutorialState, 0x00508F19> _state;
 
     // The following two globals are unused, but left here for documentation purposes.
     static loco_global<uint16_t*, 0x009C86FC> _tutorialOffset;
@@ -29,9 +29,9 @@ namespace OpenLoco::Tutorial
 
     constexpr Config::Resolution tutorialResolution = { 1024, 768 };
 
-    tutorial_state state()
+    TutorialState state()
     {
-        return (tutorial_state)*_state;
+        return *_state;
     }
 
     void registerHooks()
@@ -132,7 +132,7 @@ namespace OpenLoco::Tutorial
                 StringIds::tutorial_3_string_1,
             };
 
-            *_state = static_cast<uint8_t>(tutorial_state::playing);
+            *_state = TutorialState::playing;
             *_tutorialString = openingStringIds[*_tutorialNumber];
 
             // Set up the scenario.
@@ -150,7 +150,7 @@ namespace OpenLoco::Tutorial
     // 0x0043C70E
     void stop()
     {
-        *_state = static_cast<uint8_t>(tutorial_state::none);
+        *_state = TutorialState::none;
         Gfx::invalidateScreen();
         Gui::resize();
     }

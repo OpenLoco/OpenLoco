@@ -5,45 +5,45 @@
 
 namespace OpenLoco::Input
 {
-    enum class mouse_button : uint16_t
+    enum class MouseButton : uint16_t
     {
         released = 0,
-        left_pressed = 1,
-        left_released = 2,
-        right_pressed = 3,
-        right_released = 4,
+        leftPressed = 1,
+        leftReleased = 2,
+        rightPressed = 3,
+        rightReleased = 4,
     };
 
-    enum class input_state
+    enum class InputState : uint8_t
     {
-        reset,              // 0
-        normal,             // 1
-        widget_pressed,     // 2
-        positioning_window, // 3
-        viewport_right,     // 4
-        dropdown_active,    // 5
-        viewport_left,      // 6
-        scroll_left,        // 7
-        resizing,           // 8
-        scroll_right,       // 9
+        reset,             // 0
+        normal,            // 1
+        widgetPressed,     // 2
+        positioningWindow, // 3
+        viewportRight,     // 4
+        dropdownActive,    // 5
+        viewportLeft,      // 6
+        scrollLeft,        // 7
+        resizing,          // 8
+        scrollRight,       // 9
     };
 
-    enum class input_flags
+    namespace InputFlags
     {
-        widget_pressed = 1 << 0,
-        flag1 = 1 << 1,
-        flag2 = 1 << 2,
-        tool_active = 1 << 3,
-        flag4 = 1 << 4,
-        flag5 = 1 << 5,
-        flag6 = 1 << 6,
-        viewport_scrolling = 1 << 7,
-    };
+        constexpr uint32_t widgetPressed = 1 << 0;
+        constexpr uint32_t flag1 = 1 << 1;
+        constexpr uint32_t flag2 = 1 << 2;
+        constexpr uint32_t toolActive = 1 << 3;
+        constexpr uint32_t flag4 = 1 << 4;
+        constexpr uint32_t flag5 = 1 << 5;
+        constexpr uint32_t flag6 = 1 << 6;
+        constexpr uint32_t viewportScrolling = 1 << 7;
+    }
 
     namespace MapSelectionFlags
     {
         constexpr uint8_t unk_04 = 1 << 4; // Vehicle orders?
-        constexpr uint8_t catchment_area = 1 << 5;
+        constexpr uint8_t catchmentArea = 1 << 5;
         constexpr uint8_t unk_6 = 1 << 6;
     };
 
@@ -57,11 +57,11 @@ namespace OpenLoco::Input
 
     void init();
     void initMouse();
-    bool hasFlag(input_flags value);
-    void setFlag(input_flags value);
-    void resetFlag(input_flags value);
-    input_state state();
-    void state(input_state);
+    bool hasFlag(uint32_t value);
+    void setFlag(uint32_t value);
+    void resetFlag(uint32_t value);
+    InputState state();
+    void state(InputState);
 
     Gfx::point_t getMouseLocation();
     Gfx::point_t getMouseLocation2();
@@ -98,8 +98,8 @@ namespace OpenLoco::Input
     void resetMapSelectionFlag(uint8_t flags);
 
     void handleKeyboard();
-    void handleMouse(int16_t x, int16_t y, mouse_button button);
-    mouse_button getLastKnownButtonState();
+    void handleMouse(int16_t x, int16_t y, MouseButton button);
+    MouseButton getLastKnownButtonState();
     void enqueueMouseButton(int32_t button);
     void moveMouse(int32_t x, int32_t y, int32_t relX, int32_t relY);
     void sub_407218();

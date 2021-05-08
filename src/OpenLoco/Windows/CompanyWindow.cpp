@@ -878,7 +878,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
                 case widx::build_hq:
                     Input::toolSet(self, widgetIndex, 43);
-                    Input::setFlag(Input::input_flags::flag5);
+                    Input::setFlag(Input::InputFlags::flag5);
                     break;
             }
         }

@@ -13,7 +13,7 @@ using namespace OpenLoco::Interop;
 namespace OpenLoco::Input
 {
     loco_global<uint32_t, 0x00523368> _flags;
-    static loco_global<uint8_t, 0x0052336D> _state;
+    static loco_global<InputState, 0x0052336D> _state;
     static int32_t _cursor_drag_start_x;
     static int32_t _cursor_drag_start_y;
     loco_global<uint32_t, 0x00525374> _cursor_drag_state;
@@ -21,32 +21,32 @@ namespace OpenLoco::Input
     void init()
     {
         _flags = 0;
-        _state = 0;
+        _state = InputState::reset;
     }
 
-    bool hasFlag(input_flags value)
+    bool hasFlag(uint32_t value)
     {
-        return (_flags & (uint32_t)value) != 0;
+        return (_flags & value) != 0;
     }
 
-    void setFlag(input_flags value)
+    void setFlag(uint32_t value)
     {
-        _flags |= (uint32_t)value;
+        _flags |= value;
     }
 
-    void resetFlag(input_flags value)
+    void resetFlag(uint32_t value)
     {
-        _flags &= ~(uint32_t)value;
+        _flags &= ~value;
     }
 
-    input_state state()
+    InputState state()
     {
-        return (input_state)*_state;
+        return *_state;
     }
 
-    void state(input_state state)
+    void state(InputState state)
     {
-        _state = (uint8_t)state;
+        _state = state;
     }
 
     // 0x00406FEC

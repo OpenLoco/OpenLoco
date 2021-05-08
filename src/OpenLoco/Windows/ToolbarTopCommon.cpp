@@ -282,7 +282,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
         auto mouseButtonUsed = Input::getLastKnownButtonState();
         window = WindowManager::getMainWindow();
 
-        if (itemIndex == 1 || mouseButtonUsed == Input::mouse_button::right_pressed)
+        if (itemIndex == 1 || mouseButtonUsed == Input::MouseButton::rightPressed)
         {
             window->viewportRotateLeft();
             TownManager::updateLabels();

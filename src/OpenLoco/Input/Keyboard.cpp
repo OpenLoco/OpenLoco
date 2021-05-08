@@ -119,10 +119,10 @@ namespace OpenLoco::Input
     {
         switch (Tutorial::state())
         {
-            case Tutorial::tutorial_state::none:
+            case Tutorial::TutorialState::none:
                 break;
 
-            case Tutorial::tutorial_state::playing:
+            case Tutorial::TutorialState::playing:
             {
                 const uint16_t next = Tutorial::nextInput();
                 _keyModifier = next;
@@ -139,7 +139,7 @@ namespace OpenLoco::Input
                 break;
             }
 
-            case Tutorial::tutorial_state::recording:
+            case Tutorial::TutorialState::recording:
             {
                 call(0x004BF005);
                 break;
@@ -352,7 +352,7 @@ namespace OpenLoco::Input
                 continue;
             }
 
-            if (Tutorial::state() == Tutorial::tutorial_state::playing)
+            if (Tutorial::state() == Tutorial::TutorialState::playing)
             {
                 Tutorial::stop();
                 continue;
@@ -368,15 +368,15 @@ namespace OpenLoco::Input
                 continue;
             }
 
-            if (Intro::state() == (Intro::intro_state)9)
+            if (Intro::state() == (Intro::State)9)
             {
-                Intro::state(Intro::intro_state::end);
+                Intro::state(Intro::State::end);
                 continue;
             }
 
-            if (Intro::state() != Intro::intro_state::none)
+            if (Intro::state() != Intro::State::none)
             {
-                Intro::state((Intro::intro_state)8);
+                Intro::state((Intro::State)8);
             }
 
             if (tryShortcut(Shortcut::sendMessage, nextKey->keyCode, _keyModifier))
@@ -389,13 +389,13 @@ namespace OpenLoco::Input
 
     static void edgeScroll()
     {
-        if (Tutorial::state() != Tutorial::tutorial_state::none)
+        if (Tutorial::state() != Tutorial::TutorialState::none)
             return;
 
         if (Config::get().edge_scrolling == 0)
             return;
 
-        if (Input::state() != input_state::normal && Input::state() != input_state::dropdown_active)
+        if (Input::state() != InputState::normal && Input::state() != InputState::dropdownActive)
             return;
 
         if (hasKeyModifier(KeyModifier::shift) || hasKeyModifier(KeyModifier::control))
@@ -434,12 +434,12 @@ namespace OpenLoco::Input
         delta.y *= 1 << viewport->zoom;
         main->viewport_configurations[0].saved_view_x += delta.x;
         main->viewport_configurations[0].saved_view_y += delta.y;
-        Input::setFlag(input_flags::viewport_scrolling);
+        Input::setFlag(InputFlags::viewportScrolling);
     }
 
     static void keyScroll()
     {
-        if (Tutorial::state() != Tutorial::tutorial_state::none)
+        if (Tutorial::state() != Tutorial::TutorialState::none)
             return;
 
         if (*_modalWindowType != WindowType::undefined)
@@ -480,7 +480,7 @@ namespace OpenLoco::Input
         delta.y *= 1 << viewport->zoom;
         main->viewport_configurations[0].saved_view_x += delta.x;
         main->viewport_configurations[0].saved_view_y += delta.y;
-        Input::setFlag(input_flags::viewport_scrolling);
+        Input::setFlag(InputFlags::viewportScrolling);
     }
 
     // 0x004BE92A
