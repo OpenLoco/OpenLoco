@@ -1,4 +1,5 @@
 #include "../Audio/Audio.h"
+#include "../Economy/Economy.h"
 #include "../GameCommands/GameCommands.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/ImageIds.h"
@@ -31,7 +32,6 @@ namespace OpenLoco::Ui::Windows::Terraform
     static loco_global<Ui::WindowType, 0x00523392> _toolWindowType;
     static loco_global<int8_t, 0x00523393> _currentTool;
     static loco_global<CompanyId_t, 0x00525E3C> _player_company;
-    static loco_global<uint32_t[32], 0x00525E5E> _currencyMultiplicationFactor;
     static loco_global<uint8_t, 0x00525FB1> _lastSelectedTree;
     static loco_global<uint8_t, 0x00525FB6> _grassLand;
     static loco_global<uint8_t, 0x00525FCA> _lastSelectedWall;
@@ -567,12 +567,12 @@ namespace OpenLoco::Ui::Windows::Terraform
                 treeCost = _lastTreeCost;
                 if (treeCost == 0x80000000)
                 {
-                    treeCost = treeObj->build_cost_factor * _currencyMultiplicationFactor[treeObj->cost_index] / (1 << 12);
+                    treeCost = Economy::getInflationAdjustedCost(treeObj->build_cost_factor, treeObj->cost_index, 12);
                 }
             }
             else
             {
-                treeCost = treeObj->build_cost_factor * _currencyMultiplicationFactor[treeObj->cost_index] / (1 << 12);
+                treeCost = Economy::getInflationAdjustedCost(treeObj->build_cost_factor, treeObj->cost_index, 12);
             }
             auto args = FormatArguments();
             args.push<uint32_t>(treeCost);

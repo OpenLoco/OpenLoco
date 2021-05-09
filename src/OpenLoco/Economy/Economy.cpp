@@ -90,4 +90,9 @@ namespace OpenLoco::Economy
             updateMonthly();
         }
     }
+
+    currency32_t getInflationAdjustedCost(uint16_t costFactor, uint8_t costIndex, uint8_t divisor)
+    {
+        return costFactor * currencyMultiplicationFactor[costIndex] / (1 << divisor);
+    }
 }

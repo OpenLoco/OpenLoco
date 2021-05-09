@@ -1,3 +1,4 @@
+#include "../Economy/Economy.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/ImageIds.h"
 #include "../Input.h"
@@ -20,8 +21,6 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
     static const Gfx::ui_size_t challengeWindowSize = { 366, 197 };
     static const Gfx::ui_size_t companiesWindowSize = { 366, 327 };
     static const Gfx::ui_size_t otherWindowSize = { 366, 217 };
-
-    static loco_global<uint32_t, 0x00525E5E> currencyMultiplicationFactor;
 
     static loco_global<uint8_t, 0x00525FB7> maxCompetingCompanies;
 
@@ -943,7 +942,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         // 0x0046E306
         static uint32_t getLoanSizeInCurrency()
         {
-            uint64_t loanSizeInCurrency = ((*startingLoanSize * *currencyMultiplicationFactor) >> 8ULL) / 100 * 100;
+            uint64_t loanSizeInCurrency = Economy::getInflationAdjustedCost(*startingLoanSize, 0, 8) / 100 * 100;
             return static_cast<uint32_t>(loanSizeInCurrency);
         }
 
@@ -955,7 +954,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             uint32_t loanSizeInCurrency = getLoanSizeInCurrency();
             *(uint32_t*)&commonFormatArgs[0] = loanSizeInCurrency;
 
-            uint64_t maxLoanSizeInCurrency = ((*maxLoanSize * *currencyMultiplicationFactor) >> 8ULL) / 100 * 100;
+            uint64_t maxLoanSizeInCurrency = Economy::getInflationAdjustedCost(*maxLoanSize, 0, 8) / 100 * 100;
             *(uint32_t*)&commonFormatArgs[2] = static_cast<uint32_t>(maxLoanSizeInCurrency);
 
             *(uint32_t*)&commonFormatArgs[4] = *loanInterestRate;
