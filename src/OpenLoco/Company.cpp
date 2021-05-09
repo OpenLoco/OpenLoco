@@ -111,7 +111,7 @@ namespace OpenLoco
         return (unlocked_vehicles[vehicleTypeIndex] & (1 << (vehicleIndex & 0x1F))) != 0;
     }
 
-    //0x00487FCC
+    // 0x00487FCC
     void Company::updateQuarterly()
     {
         for (auto& unk : var_4A8)
