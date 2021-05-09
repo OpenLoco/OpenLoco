@@ -50,10 +50,15 @@ namespace OpenLoco
     {
         struct unk4A8
         {
-            uint8_t pad_00[0x80];
-            uint32_t var_80; // 0x528
-            uint32_t var_84; // 0x52C
-            uint8_t var_88;  // 0x530
+            uint8_t var_00;
+            uint8_t pad_01[0x44 - 0x01];
+            uint8_t var_44; // 0x4EC size of var_66
+            uint8_t pad_45[0x66 - 0x45];
+            EntityId_t var_66[11]; // 0x50E unsure on size
+            currency32_t var_7C;   // 0x524
+            uint32_t var_80;       // 0x528
+            uint32_t var_84;       // 0x52C
+            uint8_t var_88;        // 0x530
             uint8_t pad_89[3];
         };
         static_assert(sizeof(unk4A8) == 0x8C);
@@ -110,6 +115,7 @@ namespace OpenLoco
         void aiThink();
         bool isVehicleIndexUnlocked(const uint8_t vehicleIndex) const;
         void recalculateTransportCounts();
+        void updateQuarterly();
     };
 #pragma pack(pop)
 
