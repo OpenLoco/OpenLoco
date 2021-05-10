@@ -1,6 +1,7 @@
 #include "../Audio/Audio.h"
 #include "../Config.h"
 #include "../Date.h"
+#include "../Economy/Economy.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/ImageIds.h"
 #include "../IndustryManager.h"
@@ -27,8 +28,6 @@ namespace OpenLoco::Ui::Windows::IndustryList
     static loco_global<Utility::prng, 0x00525E20> _prng;
     static loco_global<uint32_t, 0x00E0C394> _dword_E0C394;
     static loco_global<uint32_t, 0x00E0C398> _dword_E0C398;
-
-    static loco_global<uint32_t[32], 0x00525E5E> currencyMultiplicationFactor;
 
     namespace Common
     {
@@ -645,7 +644,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
             if ((self->var_846 == 0xFFFF && dword_E0C39C == (1ULL << 31)) || self->var_846 != 0xFFFF)
             {
-                industryCost = (industryObj->cost_factor * currencyMultiplicationFactor[industryObj->cost_index]) / 8;
+                industryCost = Economy::getInflationAdjustedCost(industryObj->cost_factor, industryObj->cost_index, 3);
             }
             auto args = FormatArguments();
             args.push(industryCost);

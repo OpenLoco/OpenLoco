@@ -2,6 +2,7 @@
 #include "../CompanyManager.h"
 #include "../Core/Optional.hpp"
 #include "../Date.h"
+#include "../Economy/Economy.h"
 #include "../Economy/Expenditures.h"
 #include "../Entities/EntityManager.h"
 #include "../GameCommands/GameCommands.h"
@@ -46,7 +47,6 @@ namespace OpenLoco::Vehicles
     static loco_global<int16_t, 0x01136254> _backupY;
     static loco_global<uint8_t, 0x01136258> _backupZ;
     static loco_global<uint16_t, 0x0113642A> _113642A; // used by build window and others
-    static loco_global<uint32_t[32], 0x00525E5E> currencyMultiplicationFactor;
     static loco_global<uint8_t, 0x00525FC5> _525FC5;
     static loco_global<uint32_t, 0x00525FB8> _orderTableLength;                                  // total used length of _987C5C
     static loco_global<EntityId_t[max_num_vehicles][max_num_routing_steps], 0x0096885C> _96885C; // Likely routing related
@@ -195,8 +195,7 @@ namespace OpenLoco::Vehicles
         sub_4BA873(newBogie);
 
         // Calculate refund cost == 7/8 * cost
-        // TODO: use FixedPoint with 6 {(1 << 6) == 64} decimals for cost_index
-        auto cost = (vehObject.cost_factor * currencyMultiplicationFactor[vehObject.cost_index]) / 64;
+        auto cost = Economy::getInflationAdjustedCost(vehObject.cost_factor, vehObject.cost_index, 6);
         newBogie->refund_cost = cost - cost / 8;
 
         if (bodyNumber == 0)
@@ -770,8 +769,7 @@ namespace OpenLoco::Vehicles
         }
         // 0x4AE733
         auto vehObject = ObjectManager::get<VehicleObject>(vehicleTypeId);
-        // TODO: use FixedPoint with 6 {(1 << 6) == 64} decimals for cost_index
-        auto cost = (vehObject->cost_factor * currencyMultiplicationFactor[vehObject->cost_index]) / 64;
+        auto cost = Economy::getInflationAdjustedCost(vehObject->cost_factor, vehObject->cost_index, 6);
         return cost;
     }
 
@@ -838,8 +836,7 @@ namespace OpenLoco::Vehicles
         }
         // 0x4AE733
         auto vehObject = ObjectManager::get<VehicleObject>(vehicleTypeId);
-        // TODO: use FixedPoint with 6 {(1 << 6) == 64} decimals for cost_index
-        auto cost = (vehObject->cost_factor * currencyMultiplicationFactor[vehObject->cost_index]) / 64;
+        auto cost = Economy::getInflationAdjustedCost(vehObject->cost_factor, vehObject->cost_index, 6);
         return cost;
     }
 

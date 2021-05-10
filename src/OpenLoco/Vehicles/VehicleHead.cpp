@@ -3,6 +3,7 @@
 #include "../Config.h"
 #include "../Core/Optional.hpp"
 #include "../Date.h"
+#include "../Economy/Economy.h"
 #include "../Entities/EntityManager.h"
 #include "../Entities/Misc.h"
 #include "../GameCommands/GameCommands.h"
@@ -35,7 +36,6 @@ using namespace OpenLoco::Literals;
 
 namespace OpenLoco::Vehicles
 {
-    static loco_global<uint32_t[32], 0x00525E5E> currencyMultiplicationFactor;
     static loco_global<uint32_t, 0x011360D0> vehicleUpdate_manhattanDistanceToStation;
     static loco_global<VehicleHead*, 0x01136118> vehicleUpdate_head;
     static loco_global<Vehicle1*, 0x0113611C> vehicleUpdate_1;
@@ -3287,7 +3287,7 @@ namespace OpenLoco::Vehicles
         for (const auto& car : train.cars)
         {
             auto* vehObj = ObjectManager::get<VehicleObject>(car.front->object_id);
-            currency32_t runCost = (vehObj->run_cost_factor * currencyMultiplicationFactor[vehObj->run_cost_index]) / 1024;
+            currency32_t runCost = Economy::getInflationAdjustedCost(vehObj->run_cost_factor, vehObj->run_cost_index, 10);
             totalRunCost += runCost;
         }
         return totalRunCost;

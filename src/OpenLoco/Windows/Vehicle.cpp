@@ -199,7 +199,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
     static loco_global<Vehicles::VehicleBogie*, 0x0113614E> _dragCarComponent;
     static loco_global<EntityId_t, 0x01136156> _dragVehicleHead;
     static loco_global<int32_t, 0x01136264> _1136264;
-    static loco_global<uint32_t[32], 0x00525E5E> currencyMultiplicationFactor;
 
     namespace Main
     {

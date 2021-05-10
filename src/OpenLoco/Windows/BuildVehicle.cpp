@@ -1,4 +1,5 @@
 #include "../CompanyManager.h"
+#include "../Economy/Economy.h"
 #include "../Entities/EntityManager.h"
 #include "../GameCommands/GameCommands.h"
 #include "../Graphics/Colour.h"
@@ -227,7 +228,6 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     static std::array<uint16_t, 6> _scrollRowHeight = { { 22, 22, 22, 22, 42, 30 } };
 
     loco_global<uint16_t[8], 0x112C826> _common_format_args;
-    static loco_global<uint32_t[32], 0x00525E5E> currencyMultiplicationFactor;
     static loco_global<uint8_t, 0x00525FC5> _525FC5;
     static loco_global<uint8_t, 0x00525FAA> last_railroad_option;
     static loco_global<uint8_t, 0x00525FAB> last_road_option;
@@ -932,14 +932,14 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
 
         {
-            auto cost = (vehicleObj->cost_factor * currencyMultiplicationFactor[vehicleObj->cost_index]) / 64;
+            auto cost = Economy::getInflationAdjustedCost(vehicleObj->cost_factor, vehicleObj->cost_index, 6);
             FormatArguments args{};
             args.push(cost);
             buffer = StringManager::formatString(buffer, StringIds::stats_cost, &args);
         }
 
         {
-            auto runningCost = (vehicleObj->run_cost_factor * currencyMultiplicationFactor[vehicleObj->run_cost_index]) / 1024;
+            auto runningCost = Economy::getInflationAdjustedCost(vehicleObj->run_cost_factor, vehicleObj->run_cost_index, 10);
             FormatArguments args{};
             args.push(runningCost);
             buffer = StringManager::formatString(buffer, StringIds::stats_running_cost, &args);
