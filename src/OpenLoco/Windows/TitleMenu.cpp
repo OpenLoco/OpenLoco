@@ -117,7 +117,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
         makeWidget({ btn_main_size * 2, 0 }, { btn_main_size, btn_main_size }, widget_type::wt_9, 1, StringIds::null, StringIds::title_menu_show_tutorial),
         makeWidget({ btn_main_size * 3, 0 }, { btn_main_size, btn_main_size }, widget_type::wt_9, 1, StringIds::null, StringIds::title_menu_scenario_editor),
         makeWidget({ btn_main_size * 4 - 31, btn_main_size - 27 }, { 31, 27 }, widget_type::wt_9, 1, StringIds::null, StringIds::title_menu_chat_tooltip),
-        makeWidget({ 0, btn_main_size }, { ww, btn_sub_height }, widget_type::wt_9, 1, StringIds::null, StringIds::title_multiplayer_toggle_tooltip),
+        makeWidget({ 0, btn_main_size }, { ww, btn_sub_height }, widget_type::none, 1, StringIds::null, StringIds::title_multiplayer_toggle_tooltip),
         widgetEnd(),
     };
 
@@ -163,7 +163,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
             &_events);
 
         window->widgets = _widgets;
-        window->enabled_widgets = (1 << Widx::scenario_list_btn) | (1 << Widx::load_game_btn) | (1 << Widx::tutorial_btn) | (1 << Widx::scenario_editor_btn) | (1 << Widx::chat_btn) | (1 << Widx::multiplayer_toggle_btn);
+        window->enabled_widgets = (1 << Widx::scenario_list_btn) | (1 << Widx::load_game_btn) | (1 << Widx::tutorial_btn) | (1 << Widx::scenario_editor_btn) | (1 << Widx::chat_btn);
 
         window->initScrollWidgets();
 
@@ -275,6 +275,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
             OpenLoco::Gfx::drawImage(context, x, y, image_id);
         }
 
+        /*
         {
             int16_t y = window->widgets[Widx::multiplayer_toggle_btn].top + 3 + window->y;
             int16_t x = window->width / 2 + window->x;
@@ -296,6 +297,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
 
             drawStringCentredClipped(*context, x, y, ww - 4, Colour::black, string, (char*)0x112c826);
         }
+        */
     }
 
     // 0x00439094
