@@ -9,6 +9,8 @@ constexpr uint16_t encodedCursorSize = rawCursorSize / 8;
 
 struct Cursor
 {
+    int x;
+    int y;
     uint8_t data[encodedCursorSize];
     uint8_t mask[encodedCursorSize];
 };
@@ -23,11 +25,13 @@ constexpr uint8_t pixBlack = 0;
 constexpr uint8_t maskTransparent = 0;
 constexpr uint8_t maskOpaque = 1;
 
-static constexpr Cursor convertCursor(std::string_view bitmap)
+static constexpr Cursor convertCursor(int x, int y, std::string_view bitmap)
 {
     assert(bitmap.length() == rawCursorSize);
 
     Cursor cursor{};
+    cursor.x =x;
+    cursor.y=y;
     uint8_t curBit{};
     uint16_t curPixel{};
     uint8_t dataByte{}, maskByte{};
