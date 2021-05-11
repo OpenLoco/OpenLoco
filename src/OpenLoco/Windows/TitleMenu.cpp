@@ -275,7 +275,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
             OpenLoco::Gfx::drawImage(context, x, y, image_id);
         }
 
-        /*
+        if (window->widgets[Widx::multiplayer_toggle_btn].type != Ui::widget_type::none)
         {
             int16_t y = window->widgets[Widx::multiplayer_toggle_btn].top + 3 + window->y;
             int16_t x = window->width / 2 + window->x;
@@ -297,7 +297,6 @@ namespace OpenLoco::Ui::Windows::TitleMenu
 
             drawStringCentredClipped(*context, x, y, ww - 4, Colour::black, string, (char*)0x112c826);
         }
-        */
     }
 
     // 0x00439094
