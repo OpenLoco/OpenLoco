@@ -970,7 +970,7 @@ namespace OpenLoco::Ui
     // 0x004CD422
     static void processMouseTool(int16_t x, int16_t y)
     {
-        if (!Input::hasFlag(Input::InputFlags::toolActive))
+        if (!Input::hasFlag(Input::Flags::toolActive))
         {
             return;
         }
@@ -1000,7 +1000,7 @@ namespace OpenLoco::Ui
         {
             if (!isTitleMode() && !isEditorMode())
             {
-                if (Tutorial::state() == Tutorial::TutorialState::none)
+                if (Tutorial::state() == Tutorial::State::none)
                 {
                     call(0x4C95A6);
                 }
@@ -1072,7 +1072,7 @@ namespace OpenLoco::Ui
                 Input::handleMouse(x, y, state);
             }
 
-            if (Input::hasFlag(Input::InputFlags::flag5))
+            if (Input::hasFlag(Input::Flags::flag5))
             {
                 Input::handleMouse(x, y, state);
             }
@@ -1106,7 +1106,7 @@ namespace OpenLoco::Ui
             Input::handleMouse(x, y, state);
         }
 
-        if (Input::hasFlag(Input::InputFlags::flag5))
+        if (Input::hasFlag(Input::Flags::flag5))
         {
             Input::handleMouse(x, y, state);
         }

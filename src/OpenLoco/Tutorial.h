@@ -4,14 +4,14 @@
 
 namespace OpenLoco::Tutorial
 {
-    enum class TutorialState : uint8_t
+    enum class State : uint8_t
     {
         none,
         playing,
         recording,
     };
 
-    TutorialState state();
+    State state();
 
     void registerHooks();
 

@@ -14,7 +14,7 @@ namespace OpenLoco::Input
         rightReleased = 4,
     };
 
-    enum class InputState : uint8_t
+    enum class State : uint8_t
     {
         reset,             // 0
         normal,            // 1
@@ -28,7 +28,7 @@ namespace OpenLoco::Input
         scrollRight,       // 9
     };
 
-    namespace InputFlags
+    namespace Flags
     {
         constexpr uint32_t widgetPressed = 1 << 0;
         constexpr uint32_t flag1 = 1 << 1;
@@ -60,8 +60,8 @@ namespace OpenLoco::Input
     bool hasFlag(uint32_t value);
     void setFlag(uint32_t value);
     void resetFlag(uint32_t value);
-    InputState state();
-    void state(InputState);
+    State state();
+    void state(State);
 
     Gfx::point_t getMouseLocation();
     Gfx::point_t getMouseLocation2();

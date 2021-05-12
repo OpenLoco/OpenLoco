@@ -78,7 +78,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
     static void activateMapSelectionTool(window* const self)
     {
         Input::toolSet(self, widx::panel, 42);
-        Input::setFlag(Input::InputFlags::flag6);
+        Input::setFlag(Input::Flags::flag6);
     }
 
     window* open()

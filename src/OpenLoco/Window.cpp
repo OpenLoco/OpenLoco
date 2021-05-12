@@ -1412,7 +1412,7 @@ namespace OpenLoco::Ui
         }
 
         uint64_t pressed_widget = 0;
-        if (Input::state() == Input::InputState::dropdownActive || Input::state() == Input::InputState::widgetPressed)
+        if (Input::state() == Input::State::dropdownActive || Input::state() == Input::State::widgetPressed)
         {
             if (Input::isPressed(type, number))
             {

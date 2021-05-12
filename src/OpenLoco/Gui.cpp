@@ -40,7 +40,7 @@ namespace OpenLoco::Gui
             Windows::PlayerInfoPanel::open();
             Windows::TimePanel::open();
 
-            if (OpenLoco::Tutorial::state() != Tutorial::TutorialState::none)
+            if (OpenLoco::Tutorial::state() != Tutorial::State::none)
             {
                 Windows::Tutorial::open();
             }
@@ -129,7 +129,7 @@ namespace OpenLoco::Gui
         window = WindowManager::find(WindowType::tutorial);
         if (window)
         {
-            if (Tutorial::state() == Tutorial::TutorialState::none)
+            if (Tutorial::state() == Tutorial::State::none)
             {
                 WindowManager::close(window);
             }

@@ -1186,7 +1186,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         static void setLegendHover(window* self, int16_t x, int16_t y)
         {
             uint32_t selectedCargo = 0;
-            if (!Input::hasFlag(Input::InputFlags::flag5))
+            if (!Input::hasFlag(Input::Flags::flag5))
             {
                 const auto location = Input::getMouseLocation2();
                 auto* frontWindow = WindowManager::findAt(location);
@@ -1377,7 +1377,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         static void setLegendHover(window* self, int16_t x, int16_t y)
         {
             uint32_t selectedCompany = 0;
-            if (!Input::hasFlag(Input::InputFlags::flag5))
+            if (!Input::hasFlag(Input::Flags::flag5))
             {
                 const auto location = Input::getMouseLocation2();
                 auto* frontWindow = WindowManager::findAt(location);

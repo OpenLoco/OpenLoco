@@ -846,7 +846,7 @@ namespace OpenLoco::Ui::Widget
         {
             isActivated = true;
         }
-        else if (Input::state() == Input::InputState::widgetPressed)
+        else if (Input::state() == Input::State::widgetPressed)
         {
             isActivated = Input::isPressed(w->type, w->number, index);
         }

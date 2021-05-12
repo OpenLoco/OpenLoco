@@ -302,7 +302,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         file_entry entry = _files[index];
 
         // Clicking a directory, with left mouse button?
-        if (Input::state() == Input::InputState::scrollLeft && entry.is_directory())
+        if (Input::state() == Input::State::scrollLeft && entry.is_directory())
         {
             appendDirectory(entry.get_name().data());
             self->invalidate();
@@ -310,7 +310,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         }
 
         // Clicking a file, with left mouse button?
-        if (Input::state() == Input::InputState::scrollLeft)
+        if (Input::state() == Input::State::scrollLeft)
         {
             // Copy the selected filename without extension to text input buffer.
             inputSession.buffer = entry.get_name();

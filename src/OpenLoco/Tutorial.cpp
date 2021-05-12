@@ -15,7 +15,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Tutorial
 {
-    static loco_global<TutorialState, 0x00508F19> _state;
+    static loco_global<State, 0x00508F19> _state;
 
     // The following two globals are unused, but left here for documentation purposes.
     static loco_global<uint16_t*, 0x009C86FC> _tutorialOffset;
@@ -29,7 +29,7 @@ namespace OpenLoco::Tutorial
 
     constexpr Config::Resolution tutorialResolution = { 1024, 768 };
 
-    TutorialState state()
+    State state()
     {
         return *_state;
     }
@@ -132,7 +132,7 @@ namespace OpenLoco::Tutorial
                 StringIds::tutorial_3_string_1,
             };
 
-            *_state = TutorialState::playing;
+            *_state = State::playing;
             *_tutorialString = openingStringIds[*_tutorialNumber];
 
             // Set up the scenario.
@@ -150,7 +150,7 @@ namespace OpenLoco::Tutorial
     // 0x0043C70E
     void stop()
     {
-        *_state = TutorialState::none;
+        *_state = State::none;
         Gfx::invalidateScreen();
         Gui::resize();
     }

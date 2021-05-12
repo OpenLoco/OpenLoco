@@ -119,10 +119,10 @@ namespace OpenLoco::Input
     {
         switch (Tutorial::state())
         {
-            case Tutorial::TutorialState::none:
+            case Tutorial::State::none:
                 break;
 
-            case Tutorial::TutorialState::playing:
+            case Tutorial::State::playing:
             {
                 const uint16_t next = Tutorial::nextInput();
                 _keyModifier = next;
@@ -139,7 +139,7 @@ namespace OpenLoco::Input
                 break;
             }
 
-            case Tutorial::TutorialState::recording:
+            case Tutorial::State::recording:
             {
                 call(0x004BF005);
                 break;
@@ -352,7 +352,7 @@ namespace OpenLoco::Input
                 continue;
             }
 
-            if (Tutorial::state() == Tutorial::TutorialState::playing)
+            if (Tutorial::state() == Tutorial::State::playing)
             {
                 Tutorial::stop();
                 continue;
@@ -389,13 +389,13 @@ namespace OpenLoco::Input
 
     static void edgeScroll()
     {
-        if (Tutorial::state() != Tutorial::TutorialState::none)
+        if (Tutorial::state() != Tutorial::State::none)
             return;
 
         if (Config::get().edge_scrolling == 0)
             return;
 
-        if (Input::state() != InputState::normal && Input::state() != InputState::dropdownActive)
+        if (Input::state() != State::normal && Input::state() != State::dropdownActive)
             return;
 
         if (hasKeyModifier(KeyModifier::shift) || hasKeyModifier(KeyModifier::control))
@@ -434,12 +434,12 @@ namespace OpenLoco::Input
         delta.y *= 1 << viewport->zoom;
         main->viewport_configurations[0].saved_view_x += delta.x;
         main->viewport_configurations[0].saved_view_y += delta.y;
-        Input::setFlag(InputFlags::viewportScrolling);
+        Input::setFlag(Flags::viewportScrolling);
     }
 
     static void keyScroll()
     {
-        if (Tutorial::state() != Tutorial::TutorialState::none)
+        if (Tutorial::state() != Tutorial::State::none)
             return;
 
         if (*_modalWindowType != WindowType::undefined)
@@ -480,7 +480,7 @@ namespace OpenLoco::Input
         delta.y *= 1 << viewport->zoom;
         main->viewport_configurations[0].saved_view_x += delta.x;
         main->viewport_configurations[0].saved_view_y += delta.y;
-        Input::setFlag(InputFlags::viewportScrolling);
+        Input::setFlag(Flags::viewportScrolling);
     }
 
     // 0x004BE92A

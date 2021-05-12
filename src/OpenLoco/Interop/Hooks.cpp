@@ -701,7 +701,7 @@ void OpenLoco::Interop::registerHooks()
             return 0;
         });
 
-    // Until handling of InputState::viewportLeft has been implemented in mouse_input...
+    // Until handling of State::viewportLeft has been implemented in mouse_input...
     registerHook(
         0x00490F6C,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {

@@ -611,7 +611,7 @@ namespace OpenLoco
             {
                 addr<0x0050C1A2, uint32_t>() += time_since_last_tick;
             }
-            if (Tutorial::state() != Tutorial::TutorialState::none)
+            if (Tutorial::state() != Tutorial::State::none)
             {
                 time_since_last_tick = 31;
             }
@@ -698,22 +698,22 @@ namespace OpenLoco
                     {
                         switch (Input::state())
                         {
-                            case InputState::reset:
-                            case InputState::normal:
-                            case InputState::dropdownActive:
-                                if (Input::hasFlag(InputFlags::viewportScrolling))
+                            case State::reset:
+                            case State::normal:
+                            case State::dropdownActive:
+                                if (Input::hasFlag(Flags::viewportScrolling))
                                 {
-                                    Input::resetFlag(InputFlags::viewportScrolling);
+                                    Input::resetFlag(Flags::viewportScrolling);
                                     numUpdates = 1;
                                 }
                                 break;
-                            case InputState::widgetPressed: break;
-                            case InputState::positioningWindow: break;
-                            case InputState::viewportRight: break;
-                            case InputState::viewportLeft: break;
-                            case InputState::scrollLeft: break;
-                            case InputState::resizing: break;
-                            case InputState::scrollRight: break;
+                            case State::widgetPressed: break;
+                            case State::positioningWindow: break;
+                            case State::viewportRight: break;
+                            case State::viewportLeft: break;
+                            case State::scrollLeft: break;
+                            case State::resizing: break;
+                            case State::scrollRight: break;
                         }
                     }
                     addr<0x0052622E, int16_t>() += numUpdates;
@@ -748,7 +748,7 @@ namespace OpenLoco
                         Audio::stopTitleMusic();
                     }
 
-                    if (Tutorial::state() != Tutorial::TutorialState::none && addr<0x0052532C, int32_t>() != 0 && addr<0x0113E2E4, int32_t>() < 0x40)
+                    if (Tutorial::state() != Tutorial::State::none && addr<0x0052532C, int32_t>() != 0 && addr<0x0113E2E4, int32_t>() < 0x40)
                     {
                         Tutorial::stop();
 

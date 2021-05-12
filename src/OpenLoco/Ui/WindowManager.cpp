@@ -1476,10 +1476,10 @@ namespace OpenLoco::Ui::WindowManager
             wheel += 17;
         }
 
-        if (Tutorial::state() != Tutorial::TutorialState::none)
+        if (Tutorial::state() != Tutorial::State::none)
             return;
 
-        if (Input::hasFlag(Input::InputFlags::flag5))
+        if (Input::hasFlag(Input::Flags::flag5))
         {
             if (OpenLoco::isTitleMode())
                 return;
