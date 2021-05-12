@@ -658,7 +658,7 @@ namespace OpenLoco::Ui::Windows::TownList
             self->frame_no++;
             self->callPrepareDraw();
             WindowManager::invalidateWidget(WindowType::townList, self->number, self->current_tab + Common::widx::tab_town_list);
-            if ((!Input::hasFlag(Input::input_flags::tool_active)) || self->type != _toolWindowType || self->number != _toolWindowNumber)
+            if ((!Input::hasFlag(Input::Flags::toolActive)) || self->type != _toolWindowType || self->number != _toolWindowNumber)
             {
                 WindowManager::close(self);
             }
@@ -745,7 +745,7 @@ namespace OpenLoco::Ui::Windows::TownList
             self->width = windowSize.width;
             self->height = windowSize.height;
             Input::toolSet(self, Common::widx::tab_build_town, 38);
-            Input::setFlag(Input::input_flags::flag6);
+            Input::setFlag(Input::Flags::flag6);
             Ui::Windows::showGridlines();
         }
 
@@ -872,7 +872,7 @@ namespace OpenLoco::Ui::Windows::TownList
         // 0x0049AD51
         static void onUpdate(window* self)
         {
-            if (!Input::hasFlag(Input::input_flags::flag5))
+            if (!Input::hasFlag(Input::Flags::flag5))
             {
                 auto cursor = Input::getMouseLocation();
                 auto xPos = cursor.x;
@@ -906,7 +906,7 @@ namespace OpenLoco::Ui::Windows::TownList
                             }
                             else
                             {
-                                if (Input::state() != Input::input_state::scroll_left)
+                                if (Input::state() != Input::State::scrollLeft)
                                 {
                                     self->min_width = windowSize.width;
                                     self->min_height = windowSize.height;
@@ -920,7 +920,7 @@ namespace OpenLoco::Ui::Windows::TownList
                 else
                 {
                     self->saved_view.mapX = 0;
-                    if (Input::state() != Input::input_state::scroll_left)
+                    if (Input::state() != Input::State::scrollLeft)
                     {
                         self->min_width = windowSize.width;
                         self->min_height = windowSize.height;
@@ -1260,7 +1260,7 @@ namespace OpenLoco::Ui::Windows::TownList
                 tab = Common::widx::tab_build_misc_buildings;
 
             Input::toolSet(self, tab, 39);
-            Input::setFlag(Input::input_flags::flag6);
+            Input::setFlag(Input::Flags::flag6);
             Ui::Windows::showGridlines();
 
             static loco_global<uint8_t, 0x01135C60> byte_1135C60;

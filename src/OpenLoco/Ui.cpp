@@ -956,7 +956,7 @@ namespace OpenLoco::Ui
 #endif
 
     // 0x004C6EE6
-    static Input::mouse_button gameGetNextInput(uint32_t* x, int16_t* y)
+    static Input::MouseButton gameGetNextInput(uint32_t* x, int16_t* y)
     {
         registers regs;
         call(0x004c6ee6, regs);
@@ -964,13 +964,13 @@ namespace OpenLoco::Ui
         *x = regs.eax;
         *y = regs.bx;
 
-        return (Input::mouse_button)regs.cx;
+        return (Input::MouseButton)regs.cx;
     }
 
     // 0x004CD422
     static void processMouseTool(int16_t x, int16_t y)
     {
-        if (!Input::hasFlag(Input::input_flags::tool_active))
+        if (!Input::hasFlag(Input::Flags::toolActive))
         {
             return;
         }
@@ -1000,7 +1000,7 @@ namespace OpenLoco::Ui
         {
             if (!isTitleMode() && !isEditorMode())
             {
-                if (Tutorial::state() == Tutorial::tutorial_state::none)
+                if (Tutorial::state() == Tutorial::State::none)
                 {
                     call(0x4C95A6);
                 }
@@ -1054,25 +1054,25 @@ namespace OpenLoco::Ui
 
             uint32_t x;
             int16_t y;
-            Input::mouse_button state;
-            while ((state = gameGetNextInput(&x, &y)) != Input::mouse_button::released)
+            Input::MouseButton state;
+            while ((state = gameGetNextInput(&x, &y)) != Input::MouseButton::released)
             {
-                if (isTitleMode() && Intro::isActive() && state == Input::mouse_button::left_pressed)
+                if (isTitleMode() && Intro::isActive() && state == Input::MouseButton::leftPressed)
                 {
-                    if (Intro::state() == Intro::intro_state::state_9)
+                    if (Intro::state() == Intro::State::state_9)
                     {
-                        Intro::state(Intro::intro_state::end);
+                        Intro::state(Intro::State::end);
                         continue;
                     }
                     else
                     {
-                        Intro::state(Intro::intro_state::state_8);
+                        Intro::state(Intro::State::state_8);
                     }
                 }
                 Input::handleMouse(x, y, state);
             }
 
-            if (Input::hasFlag(Input::input_flags::flag5))
+            if (Input::hasFlag(Input::Flags::flag5))
             {
                 Input::handleMouse(x, y, state);
             }
@@ -1100,13 +1100,13 @@ namespace OpenLoco::Ui
 
         uint32_t x;
         int16_t y;
-        Input::mouse_button state;
-        while ((state = gameGetNextInput(&x, &y)) != Input::mouse_button::released)
+        Input::MouseButton state;
+        while ((state = gameGetNextInput(&x, &y)) != Input::MouseButton::released)
         {
             Input::handleMouse(x, y, state);
         }
 
-        if (Input::hasFlag(Input::input_flags::flag5))
+        if (Input::hasFlag(Input::Flags::flag5))
         {
             Input::handleMouse(x, y, state);
         }

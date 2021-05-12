@@ -9,15 +9,15 @@ namespace OpenLoco::Intro
 
     bool isActive()
     {
-        return state() != intro_state::none;
+        return state() != State::none;
     }
 
-    intro_state state()
+    State state()
     {
-        return (intro_state)*_state;
+        return (State)*_state;
     }
 
-    void state(intro_state state)
+    void state(State state)
     {
         _state = (uint8_t)state;
     }

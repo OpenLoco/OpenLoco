@@ -228,10 +228,10 @@ namespace OpenLoco::Game
                 Audio::pauseSound();
                 Audio::unpauseSound();
 
-                if (Input::hasFlag(Input::input_flags::flag5))
+                if (Input::hasFlag(Input::Flags::flag5))
                 {
                     Input::sub_407231();
-                    Input::resetFlag(Input::input_flags::flag5);
+                    Input::resetFlag(Input::Flags::flag5);
                 }
 
                 Title::start();
@@ -263,10 +263,10 @@ namespace OpenLoco::Game
         Audio::pauseSound();
         Audio::unpauseSound();
 
-        if (Input::hasFlag(Input::input_flags::flag5))
+        if (Input::hasFlag(Input::Flags::flag5))
         {
             Input::sub_407231();
-            Input::resetFlag(Input::input_flags::flag5);
+            Input::resetFlag(Input::Flags::flag5);
         }
 
         Title::start();

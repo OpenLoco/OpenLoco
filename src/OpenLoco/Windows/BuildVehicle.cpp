@@ -584,7 +584,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             case widx::tab_build_new_ships:
             {
 
-                if (Input::hasFlag(Input::input_flags::tool_active))
+                if (Input::hasFlag(Input::Flags::toolActive))
                 {
                     Input::toolCancel(window->type, window->number);
                 }

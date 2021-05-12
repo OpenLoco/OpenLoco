@@ -35,7 +35,7 @@ namespace OpenLoco::GameCommands
             {
                 // 0x0043C369
                 // NB: tutorial recording has been omitted.
-                if (Tutorial::state() == Tutorial::tutorial_state::playing)
+                if (Tutorial::state() == Tutorial::State::playing)
                 {
                     Tutorial::stop();
                 }
