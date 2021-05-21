@@ -30,6 +30,7 @@ Includes all git commit authors. Aliases are GitHub user names.
 * Portuguese (BR) - Pedro Bledow (Kynake), Gustavo Fernandes (guKing)
 * Slovak - Peter Gaál (petergaal)
 * Spanish - extracted from original game
+* Chinese (Simplified) - (TransshipmentEnvoy)
 
 ## Graphics
 * OpenLoco Logo - Zcooger (zcooger)
