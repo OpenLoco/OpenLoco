@@ -1900,7 +1900,7 @@ strings:
   1862: "{COLOUR WINDOW_2}成功!{NEWLINE}{COLOUR BLACK}  你在{INT16}年{INT16}月内完成挑战目标"
   1863: "{COLOUR WINDOW_2}失败!{NEWLINE}{COLOUR BLACK}  你未能完成挑战目标"
   1864: "{COLOUR WINDOW_2}被对手击败!{NEWLINE}{COLOUR BLACK}  挑战目标已被{STRINGID}完成, 耗时{INT16}年{INT16}月"
-  1865: "{COLOUR WINDOW_2}Progress towards completing challenge: {COLOUR BLACK}{INT16}%"
+  1865: "{COLOUR WINDOW_2}挑战目标完成进度: {COLOUR BLACK}{INT16}%"
   1866: "{COLOUR WINDOW_2}剩余时间: {COLOUR BLACK}{INT16} years {INT16} months"
   1867: "{COLOUR WINDOW_2}已运抵货物:"
   1868: "{COLOUR BLACK}无"
@@ -1966,7 +1966,7 @@ strings:
 
   # Options/Misc
   1919: 在开始新游戏时使用首选所有者名称
-  1920: "{SMALLFONT}{COLOUR BLACK}Select this option to use the same company owner name every time you start a new game"
+  1920: "{SMALLFONT}{COLOUR BLACK}选择此选项以在每次开始新游戏时使用同样的公司所有者名称"
   1921: "{COLOUR WINDOW_2}首选所有者名称: {COLOUR BLACK}{STRINGID}"
   1922: 首选所有者名称
   1923: "输入首选所有者名称:"
@@ -2221,7 +2221,7 @@ strings:
   2166: "地图渲染"
   2167: "格块查看器"
   2168: "{SMALLFONT}{COLOUR BLACK}激活后在地图上选择须检查的格块."
-  2169: "Surface"
+  2169: "地表"
   2170: "轨道"
   2171: "站点"
   2172: "信号"
