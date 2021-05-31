@@ -303,6 +303,7 @@ namespace OpenLoco::Vehicles
         uint8_t getLoadingModifier(const VehicleBogie* bogie);
         bool updateUnloadCargoComponent(VehicleCargo& cargo, VehicleBogie* bogie);
         void updateUnloadCargo();
+        bool updateLoadCargoComponent(VehicleCargo& cargo, VehicleBogie* bogie);
         bool updateLoadCargo();
         void beginNewJourney();
         void advanceToNextRoutableOrder();
