@@ -296,9 +296,11 @@ namespace OpenLoco::Vehicles
         void checkIfAtOrderStation();
         void updateLastJourneyAverageSpeed();
         void beginUnloading();
+        void beginLoading();
         void movePlaneTo(const Map::Pos3& newLoc, const uint8_t newYaw, const Pitch newPitch);
         uint32_t updateWaterMotion(uint32_t flags);
         void moveBoatTo(const Map::Pos3& loc, const uint8_t yaw, const Pitch pitch);
+        uint8_t getLoadingModifier(const VehicleBogie* bogie);
         bool updateUnloadCargoComponent(VehicleCargo& cargo, VehicleBogie* bogie);
         void updateUnloadCargo();
         bool updateLoadCargo();
