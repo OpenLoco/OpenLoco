@@ -1,3 +1,7 @@
+21.05+ (???)
+------------------------------------------------------------------------
+- Fix: [#982] Incorrect rating calculation for cargo causing penalty for fast vehicles.
+
 21.05 (2021-05-11)
 ------------------------------------------------------------------------
 - Feature: [#184] Implement cheats window with financial, company, vehicle, and town cheats.
