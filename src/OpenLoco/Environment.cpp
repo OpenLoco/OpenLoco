@@ -53,6 +53,7 @@ namespace OpenLoco::Environment
         static constexpr const char* searchPaths[] = {
             "C:/Program Files (x86)/Atari/Locomotion",
             "C:/GOG Games/Chris Sawyer's Locomotion",
+            "C:/GOG Games/Locomotion",
         };
 
         std::cout << "Searching for Locomotion install path..." << std::endl;
