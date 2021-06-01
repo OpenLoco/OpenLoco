@@ -22,6 +22,7 @@
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Map;
 using namespace OpenLoco::Ui;
+using namespace OpenLoco::Literals;
 
 namespace OpenLoco
 {
@@ -680,19 +681,19 @@ namespace OpenLoco
             rating = 120;
         }
 
-        int32_t unk3 = std::min<uint8_t>(cargo.var_36, 250);
-        if (unk3 < 35)
+        Speed16 vehicleSpeed = std::min(cargo.vehicleSpeed, 250_mph);
+        if (vehicleSpeed > 35_mph)
         {
-            rating += unk3 / 4;
+            rating += ((vehicleSpeed - 35_mph).getRaw()) / 4;
         }
 
-        if (cargo.var_38 < 4)
+        if (cargo.vehicleAge < 4)
         {
             rating += 10;
-            if (cargo.var_38 < 2)
+            if (cargo.vehicleAge < 2)
             {
                 rating += 10;
-                if (cargo.var_38 < 1)
+                if (cargo.vehicleAge < 1)
                 {
                     rating += 13;
                 }
