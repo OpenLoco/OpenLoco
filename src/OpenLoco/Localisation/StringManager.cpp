@@ -644,4 +644,16 @@ namespace OpenLoco::StringManager
 
         *_userStrings[stringId - USER_STRINGS_START] = '\0';
     }
+
+    string_id toTownName(string_id stringId)
+    {
+        assert(stringId < TOWN_NAMES_START && stringId + TOWN_NAMES_START < TOWN_NAMES_END);
+        return string_id(TOWN_NAMES_START + stringId);
+    }
+
+    string_id fromTownName(string_id stringId)
+    {
+        assert(stringId > TOWN_NAMES_START && stringId < TOWN_NAMES_END);
+        return string_id(stringId - TOWN_NAMES_START);
+    }
 }

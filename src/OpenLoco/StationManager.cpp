@@ -153,7 +153,7 @@ namespace OpenLoco::StationManager
             if (station.empty())
                 continue;
 
-            auto nameKey = station.name - 0xA000;
+            auto nameKey = StringManager::fromTownName(station.name) - StringIds::station_town;
             if (nameKey >= 47)
                 continue;
 
@@ -170,13 +170,13 @@ namespace OpenLoco::StationManager
         {
             // Airport
             if ((realNamesInUse & (1 << 13)) != 0)
-                return string_id(0xA000 + 13);
+                return StringManager::toTownName(StringIds::station_town_airport);
         }
         else if (mode == 2)
         {
             // Heliport
             if ((realNamesInUse & (1 << 22)) != 0)
-                return string_id(0xA000 + 22);
+                return StringManager::toTownName(StringIds::station_town_heliport);
         }
         else if (mode == 3)
         {
@@ -192,7 +192,7 @@ namespace OpenLoco::StationManager
                 {
                     // Docks
                     if ((realNamesInUse & (1 << 16)) != 0)
-                        return string_id(0xA000 + 16);
+                        return StringManager::toTownName(StringIds::station_town_docks);
                 }
                 else
                     break;
@@ -203,7 +203,7 @@ namespace OpenLoco::StationManager
         // ...
 
         // 0x0048FC5C
-        uint8_t foundName = 0;
+        string_id foundName = StringIds::empty;
         for (auto i = 5; i < 47; i++)
         {
             // Skip the ones we've already tested for earlier.
@@ -214,13 +214,13 @@ namespace OpenLoco::StationManager
             bool ordinalNameIsInUse = (i >= 27 && (ordinalNamesInUse & (1 << (i - 27))) != 0);
             if (realNameIsInUse || ordinalNameIsInUse)
             {
-                foundName = i;
+                foundName = StringManager::toTownName(StringIds::station_town + i);
                 break;
             }
         }
 
-        if (foundName)
-            return string_id(foundName + 0xA000);
+        if (foundName != StringIds::empty)
+            return foundName;
 
         // Default to an ordinal string instead, e.g. 'Station 42'.
         char stationName[256] = "";
