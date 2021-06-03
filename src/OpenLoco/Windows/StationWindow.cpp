@@ -847,9 +847,6 @@ namespace OpenLoco::Ui::Windows::Station
             if (callingWidget != Common::widx::caption)
                 return;
 
-            if (strlen(input) == 0)
-                return;
-
             GameCommands::setErrorTitle(StringIds::error_cant_rename_station);
 
             uint32_t* buffer = (uint32_t*)input;

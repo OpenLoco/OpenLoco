@@ -249,6 +249,7 @@ namespace OpenLoco::StringIds
     constexpr string_id tooltip_signal_single_direction = 277;
     constexpr string_id tooltip_bridge_stats = 278;
     constexpr string_id tooltip_select_station_type = 279;
+    constexpr string_id station_name_ordinal = 280;
 
     constexpr string_id vehicle_details_weight = 328;
     constexpr string_id vehicle_details_total_power_and_weight = 329;
