@@ -2,6 +2,8 @@
 #include "CompanyManager.h"
 #include "Interop/Interop.hpp"
 #include "Localisation/FormatArguments.hpp"
+#include "Localisation/StringIds.h"
+#include "Map/TileManager.h"
 #include "OpenLoco.h"
 #include "TownManager.h"
 #include "Ui/WindowManager.h"
@@ -124,6 +126,7 @@ namespace OpenLoco::StationManager
     // 0x048F988
     string_id generateNewStationName(StationId_t stationId, TownId_t townId, Map::Pos3 position, uint8_t mode)
     {
+        /*
         auto* station = get(stationId);
         if (station == nullptr)
             return StringIds::null;
@@ -140,6 +143,90 @@ namespace OpenLoco::StationManager
 
         call(0x048F988, regs);
         return regs.bx;
+        */
+
+        // Bit mask for station names already used in the current town.
+        uint32_t realNamesInUse{};    // ebp
+        uint32_t ordinalNamesInUse{}; // edi
+        for (auto& station : stations())
+        {
+            if (station.empty())
+                continue;
+
+            auto nameKey = station.name - 0xA000;
+            if (nameKey >= 47)
+                continue;
+
+            if (station.town != townId)
+                continue;
+
+            if (nameKey < 27)
+                realNamesInUse |= (1 << nameKey);
+            else
+                ordinalNamesInUse |= (1 << (nameKey - 27));
+        }
+
+        if (mode == 1)
+        {
+            // Airport
+            if ((realNamesInUse & (1 << 13)) != 0)
+                return string_id(0xA000 + 13);
+        }
+        else if (mode == 2)
+        {
+            // Heliport
+            if ((realNamesInUse & (1 << 22)) != 0)
+                return string_id(0xA000 + 22);
+        }
+        else if (mode == 3)
+        {
+            // 0x0048FA00
+            auto tile = TileManager::get(Map::Pos2(position.x, position.y));
+            for (auto& element : tile)
+            {
+                auto* surface = element.asSurface();
+                if (surface == nullptr)
+                    continue;
+
+                if (surface->water() > 0)
+                {
+                    // Docks
+                    if ((realNamesInUse & (1 << 16)) != 0)
+                        return string_id(0xA000 + 16);
+                }
+                else
+                    break;
+            }
+        }
+
+        // 0x0048FA41
+        // ...
+
+        // 0x0048FC5C
+        uint8_t foundName = 0;
+        for (auto i = 5; i < 47; i++)
+        {
+            // Skip the ones we've already tested for earlier.
+            if (i == 13 || i == 16 || i == 22)
+                continue;
+
+            bool realNameIsInUse = (i < 27 && (realNamesInUse & (1 << i)) != 0);
+            bool ordinalNameIsInUse = (i >= 27 && (ordinalNamesInUse & (1 << (i - 27))) != 0);
+            if (realNameIsInUse || ordinalNameIsInUse)
+            {
+                foundName = i;
+                break;
+            }
+        }
+
+        if (foundName)
+            return string_id(foundName + 0xA000);
+
+        // Default to an ordinal string instead, e.g. 'Station 42'.
+        char stationName[256] = "";
+        auto args = FormatArguments::common(stationId);
+        StringManager::formatString(stationName, StringIds::station_name_ordinal, &args);
+        return StringManager::userStringAllocate(stationName, 0);
     }
 
     // 0x0049088B
