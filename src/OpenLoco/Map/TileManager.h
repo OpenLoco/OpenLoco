@@ -30,5 +30,6 @@ namespace OpenLoco::Map::TileManager
     void resetSurfaceClearance();
     void createAnimation(uint8_t type, const Pos2& pos, tile_coord_t baseZ);
     void resetAnimations();
+    uint16_t countSurroundingWaterTiles(Map::Pos2 pos);
     void registerHooks();
 }

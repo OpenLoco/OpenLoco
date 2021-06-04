@@ -213,6 +213,28 @@ namespace OpenLoco::StationManager
         }
 
         // 0x0048FA91
+        auto numSurroundingWaterTiles = TileManager::countSurroundingWaterTiles(Map::Pos2(position.x, position.y));
+        if (numSurroundingWaterTiles >= 24)
+        {
+            auto tile = TileManager::get(Map::Pos2(position.x, position.y));
+            for (auto& element : tile)
+            {
+                auto* surface = element.asSurface();
+                if (surface == nullptr)
+                    continue;
+
+                if (surface->water() == 0)
+                {
+                    // Lakeside
+                    if ((realNamesInUse & (1 << 11)) != 0)
+                        return StringManager::toTownName(StringIds::station_town_lakeside);
+                }
+                else
+                    break;
+            }
+        }
+
+        // 0x0048FAEB
         // ...
 
         // 0x0048FC5C

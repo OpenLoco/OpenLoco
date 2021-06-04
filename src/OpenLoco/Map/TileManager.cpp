@@ -549,6 +549,35 @@ namespace OpenLoco::Map::TileManager
         _numAnimations = 0;
     }
 
+    // 0x004C5596
+    uint16_t countSurroundingWaterTiles(Map::Pos2 pos)
+    {
+        pos.x = (pos.x & 0xFFE0) - 0xA0;
+        pos.y = (pos.y & 0xFFE0) - 0xA0;
+
+        uint16_t surroundingWaterTiles = 0;
+        for (uint8_t yOffset = 0; yOffset < 11; yOffset++)
+        {
+            for (uint8_t xOffset = 0; xOffset < 11; xOffset++)
+            {
+                auto tile = get(Map::Pos2(pos.x + xOffset, pos.y + yOffset));
+                for (auto& element : tile)
+                {
+                    auto* surface = element.asSurface();
+                    if (surface == nullptr)
+                        continue;
+
+                    if (surface->water() > 0)
+                        surroundingWaterTiles++;
+
+                    break;
+                }
+            }
+        }
+
+        return surroundingWaterTiles;
+    }
+
     void registerHooks()
     {
         registerHook(
@@ -556,6 +585,13 @@ namespace OpenLoco::Map::TileManager
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 createAnimation(regs.dh, { regs.ax, regs.cx }, regs.dl);
                 return 0;
+            });
+
+        registerHook(
+            0x004C5596,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                countSurroundingWaterTiles({ regs.ax, regs.cx });
+                return regs.dx;
             });
     }
 }
