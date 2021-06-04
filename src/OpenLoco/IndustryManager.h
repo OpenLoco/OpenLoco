@@ -15,4 +15,5 @@ namespace OpenLoco::IndustryManager
     void update();
     void updateMonthly();
     void createAllMapAnimations();
+    bool industryExistsAtPosition(Map::Pos2 position, int32_t flags);
 }

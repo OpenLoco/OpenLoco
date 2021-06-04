@@ -1,9 +1,11 @@
 #include "StationManager.h"
 #include "CompanyManager.h"
+#include "IndustryManager.h"
 #include "Interop/Interop.hpp"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
 #include "Map/TileManager.h"
+#include "Objects/IndustryObject.h"
 #include "OpenLoco.h"
 #include "TownManager.h"
 #include "Ui/WindowManager.h"
@@ -200,6 +202,17 @@ namespace OpenLoco::StationManager
         }
 
         // 0x0048FA41
+        if (IndustryManager::industryExistsAtPosition(Map::Pos2(position.x, position.y), IndustryObjectFlags::oilfield))
+        {
+            return StringManager::toTownName(StringIds::station_town_oilfield);
+        }
+
+        if (IndustryManager::industryExistsAtPosition(Map::Pos2(position.x, position.y), IndustryObjectFlags::mines))
+        {
+            return StringManager::toTownName(StringIds::station_town_mines);
+        }
+
+        // 0x0048FA91
         // ...
 
         // 0x0048FC5C

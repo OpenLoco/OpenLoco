@@ -1,6 +1,7 @@
 #include "IndustryManager.h"
 #include "CompanyManager.h"
 #include "Interop/Interop.hpp"
+#include "Objects/IndustryObject.h"
 #include "OpenLoco.h"
 
 using namespace OpenLoco::Interop;
@@ -58,5 +59,32 @@ namespace OpenLoco::IndustryManager
         {
             industry.createMapAnimations();
         }
+    }
+
+    // 0x048FE92
+    bool industryExistsAtPosition(Map::Pos2 position, int32_t flags)
+    {
+        for (auto& industry : industries())
+        {
+            if (industry.empty())
+                continue;
+
+            auto industryObj = industry.object();
+            if ((industryObj->flags & flags) == 0)
+                continue;
+
+            auto xDiff = industry.x - position.x;
+            if (xDiff < 0)
+                xDiff *= -1;
+
+            auto yDiff = industry.y - position.y;
+            if (yDiff < 0)
+                yDiff *= -1;
+
+            if (xDiff + yDiff < 352)
+                return true;
+        }
+
+        return false;
     }
 }
