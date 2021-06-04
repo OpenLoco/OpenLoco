@@ -2842,8 +2842,11 @@ namespace OpenLoco::Vehicles
             auto acceptedCargo = cargo.acceptedTypes;
             uint8_t chosenCargo = 0xFF;
             uint16_t highestQty = 0;
-            for (auto possibleCargo = Utility::bitScanForward(acceptedCargo); possibleCargo != -1; acceptedCargo &= ~(1 << possibleCargo))
+            for (; acceptedCargo != 0;)
             {
+                auto possibleCargo = Utility::bitScanForward(acceptedCargo);
+                acceptedCargo &= ~(1 << possibleCargo);
+
                 if (!(allPossibleCargoToWaitFor & (1 << possibleCargo)))
                 {
                     continue;
@@ -2877,10 +2880,10 @@ namespace OpenLoco::Vehicles
             {
                 break;
             }
-            auto* waitFor = order.as<OrderWaitFor>();
-            if (waitFor != nullptr)
+            auto* unloadAll = order.as<OrderUnloadAll>();
+            if (unloadAll != nullptr)
             {
-                if (waitFor->getCargo() == cargo.type)
+                if (unloadAll->getCargo() == cargo.type)
                 {
                     return false;
                 }
@@ -2930,10 +2933,11 @@ namespace OpenLoco::Vehicles
         const uint8_t typeAgeMap[] = { 0, 5, 3, 2, 0, 0 };
         stationCargo.age = std::min(stationCargo.age, typeAgeMap[static_cast<uint8_t>(vehicleType)]);
 
+        station->var_3B0 = 0;
         station->flags |= StationFlags::flag_7;
         Vehicle train(this);
         auto vehMaxSpeed = train.veh2->maxSpeed;
-        auto carAgeFactor = std::max<uint32_t>(0xFF, (getCurrentDay() - bogie->creation_day) / 256);
+        auto carAgeFactor = static_cast<uint8_t>(std::min<uint32_t>(0xFF, (getCurrentDay() - bogie->creation_day) / 256));
 
         if (stationCargo.flags & (1 << 2))
         {
