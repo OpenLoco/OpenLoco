@@ -10,7 +10,9 @@
 #include "../StationManager.h"
 #include "../Ui/WindowManager.h"
 #include "../Vehicles/Vehicle.h"
+#include "../Localisation/StringIds.h"
 #include <cassert>
+
 
 using namespace OpenLoco::Ui;
 using namespace OpenLoco::Map;

@@ -20,6 +20,7 @@
 #include "../Ui/WindowManager.h"
 #include "../Utility/Numeric.hpp"
 #include "../Widget.h"
+#include "../Localisation/StringIds.h"
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Map;

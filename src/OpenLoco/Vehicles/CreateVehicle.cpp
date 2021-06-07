@@ -15,9 +15,12 @@
 #include "../Station.h"
 #include "../Types.hpp"
 #include "../Ui/WindowManager.h"
+#include "../Localisation/StringIds.h"
 #include "Vehicle.h"
 #include <numeric>
 #include <utility>
+
+
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::GameCommands;

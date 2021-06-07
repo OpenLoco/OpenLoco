@@ -1,6 +1,7 @@
 #include "../../Audio/Audio.h"
 #include "../../Graphics/Colour.h"
 #include "../../Interop/Interop.hpp"
+#include "../../Localisation/StringIds.h"
 #include "../../Message.h"
 #include "../../MessageManager.h"
 #include "../../Widget.h"

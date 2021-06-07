@@ -16,7 +16,9 @@
 #include "../Vehicles/Vehicle.h"
 #include "../ViewportManager.h"
 #include "../Window.h"
+#include "../Localisation/StringIds.h"
 #include "WindowManager.h"
+
 
 using namespace OpenLoco::Interop;
 

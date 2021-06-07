@@ -4,6 +4,7 @@
 #include "../Scenario.h"
 #include "../Ui/ProgressBar.h"
 #include "../Ui/WindowManager.h"
+#include "../Localisation/StringIds.h"
 #include "Tile.h"
 #include "TileLoop.hpp"
 #include "TileManager.h"
@@ -11,6 +12,7 @@
 #include <cstdint>
 #include <random>
 #include <vector>
+
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Map;

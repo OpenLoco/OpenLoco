@@ -17,6 +17,7 @@
 #include "../Ui/ScrollView.h"
 #include "../Ui/WindowManager.h"
 #include "../Widget.h"
+#include "../Localisation/StringIds.h"
 
 using namespace OpenLoco::Interop;
 

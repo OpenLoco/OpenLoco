@@ -27,9 +27,12 @@
 #include "../TownManager.h"
 #include "../Ui/WindowManager.h"
 #include "../ViewportManager.h"
+#include "../Localisation/StringIds.h"
 #include "Orders.h"
 #include "Vehicle.h"
 #include <cassert>
+
+
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Literals;

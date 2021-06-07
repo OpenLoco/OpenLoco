@@ -11,9 +11,12 @@
 #include "Ui.h"
 #include "Ui/Rect.h"
 #include "Ui/ScrollView.h"
+#include "Localisation/StringIds.h"
 #include "Widget.h"
 #include <cassert>
 #include <cinttypes>
+
+
 
 using namespace OpenLoco;
 using namespace OpenLoco::Interop;
@@ -149,6 +152,84 @@ namespace OpenLoco::Ui
         }
 
         return std::nullopt;
+    }
+
+    constexpr widget_t makeWidget(Gfx::point_t origin, Gfx::ui_size_t size, widget_type type, uint8_t colour, uint32_t content, string_id tooltip)
+    {
+        widget_t out = {};
+        out.left = origin.x;
+        out.right = origin.x + size.width - 1;
+        out.top = origin.y;
+        out.bottom = origin.y + size.height - 1;
+        out.type = type;
+        out.colour = colour;
+        out.content = content;
+        out.tooltip = tooltip;
+
+        return out;
+    }
+
+    constexpr widget_t makeRemapWidget(Gfx::point_t origin, Gfx::ui_size_t size, widget_type type, uint8_t colour, uint32_t content, string_id tooltip)
+    {
+        widget_t out = makeWidget(origin, size, type, colour, content, tooltip);
+
+        // TODO: implement this as a constant.
+        out.content |= (1 << 29);
+
+        return out;
+    }
+
+    [[maybe_unused]] constexpr widget_t makeDropdownButtonWidget(Gfx::point_t origin, Gfx::ui_size_t size, widget_type type, uint8_t colour, uint32_t content, string_id tooltip)
+    {
+        const int16_t xPos = origin.x + size.width - 12;
+        const int16_t yPos = origin.y + 1;
+        const uint16_t width = 11;
+        const uint16_t height = 10;
+
+        return makeWidget({ xPos, yPos }, { width, height }, widget_type::wt_11, colour, StringIds::dropdown);
+    }
+
+    [[maybe_unused]] constexpr widget_t makeStepperDecreaseWidget(Gfx::point_t origin, Gfx::ui_size_t size, widget_type type, uint8_t colour, uint32_t content, string_id tooltip)
+    {
+        const int16_t xPos = origin.x + size.width - 26;
+        const int16_t yPos = origin.y + 1;
+        const uint16_t width = 13;
+        const uint16_t height = size.height - 2;
+
+        return makeWidget({ xPos, yPos }, { width, height }, widget_type::wt_11, colour, StringIds::stepper_minus);
+    }
+
+    [[maybe_unused]] constexpr widget_t makeStepperIncreaseWidget(Gfx::point_t origin, Gfx::ui_size_t size, widget_type type, uint8_t colour, uint32_t content, string_id tooltip)
+    {
+        const int16_t xPos = origin.x + size.width - 13;
+        const int16_t yPos = origin.y + 1;
+        const uint16_t width = 12;
+        const uint16_t height = size.height - 2;
+
+        return makeWidget({ xPos, yPos }, { width, height }, widget_type::wt_11, colour, StringIds::stepper_plus);
+    }
+
+    constexpr widget_t makeTextWidget(Gfx::point_t origin, Gfx::ui_size_t size, widget_type type, uint8_t colour, string_id content, string_id tooltip)
+    {
+        widget_t out = {};
+        out.left = origin.x;
+        out.right = origin.x + size.width - 1;
+        out.top = origin.y;
+        out.bottom = origin.y + size.height - 1;
+        out.type = type;
+        out.colour = colour;
+        out.text = content;
+        out.tooltip = tooltip;
+
+        return out;
+    }
+
+    constexpr widget_t widgetEnd()
+    {
+        widget_t out = {};
+        out.type = widget_type::end;
+
+        return out;
     }
 
     // 0x0045FD41

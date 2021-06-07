@@ -22,6 +22,7 @@
 #include "../Vehicles/Orders.h"
 #include "../Vehicles/Vehicle.h"
 #include "../Widget.h"
+#include "../Localisation/StringIds.h"
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui::WindowManager;

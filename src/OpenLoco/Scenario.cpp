@@ -16,6 +16,7 @@
 #include "TownManager.h"
 #include "Ui/WindowManager.h"
 #include "Windows/Construction/Construction.h"
+#include "Localisation/StringIds.h"
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Map;

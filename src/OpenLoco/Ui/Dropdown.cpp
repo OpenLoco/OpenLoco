@@ -8,6 +8,7 @@
 #include "../Objects/ObjectManager.h"
 #include "../Widget.h"
 #include "../Window.h"
+#include "../Localisation/StringIds.h"
 
 #include <cassert>
 #include <cstdarg>

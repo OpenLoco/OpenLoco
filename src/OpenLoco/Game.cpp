@@ -12,6 +12,7 @@
 #include "Ui/ProgressBar.h"
 #include "Ui/WindowManager.h"
 #include "Ui/WindowType.h"
+#include "Localisation/StringIds.h"
 
 namespace OpenLoco::Game
 {

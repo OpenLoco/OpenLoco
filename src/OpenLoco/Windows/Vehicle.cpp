@@ -9,6 +9,7 @@
 #include "../Interop/Interop.hpp"
 #include "../LabelFrame.h"
 #include "../Localisation/FormatArguments.hpp"
+#include "../Localisation/StringIds.h"
 #include "../Map/TileManager.h"
 #include "../Objects/CargoObject.h"
 #include "../Objects/InterfaceSkinObject.h"
@@ -27,6 +28,7 @@
 #include "../ViewportManager.h"
 #include "../Widget.h"
 #include <map>
+
 
 using namespace OpenLoco::Interop;
 

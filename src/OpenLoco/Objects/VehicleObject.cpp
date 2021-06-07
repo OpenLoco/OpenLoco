@@ -7,6 +7,7 @@
 #include "CargoObject.h"
 #include "ObjectManager.h"
 
+
 using namespace OpenLoco::Interop;
 
 namespace OpenLoco
@@ -176,4 +177,31 @@ namespace OpenLoco
             }
         }
     }
+
+namespace StringIds
+    {
+        constexpr string_id OpenLoco::StringIds::getVehicleType(const VehicleType type)
+        {
+            switch (type)
+            {
+                case VehicleType::train:
+                    return StringIds::train;
+                case VehicleType::bus:
+                    return StringIds::bus;
+                case VehicleType::truck:
+                    return StringIds::truck;
+                case VehicleType::tram:
+                    return StringIds::tram;
+                case VehicleType::aircraft:
+                    return StringIds::aircraft;
+                case VehicleType::ship:
+                    return StringIds::ship;
+            }
+            return StringIds::empty;
+        }
+    }
+
+
 }
+
+

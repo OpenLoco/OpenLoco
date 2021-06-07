@@ -1,6 +1,7 @@
 #include "../../Graphics/ImageIds.h"
 #include "../../Input.h"
 #include "../../Localisation/FormatArguments.hpp"
+#include "../../Localisation/StringIds.h"
 #include "../../Objects/ObjectManager.h"
 #include "../../Objects/TrackObject.h"
 #include "../../Objects/TrainSignalObject.h"

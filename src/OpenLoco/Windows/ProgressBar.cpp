@@ -7,6 +7,7 @@
 #include "../Ui/WindowManager.h"
 #include "../Widget.h"
 #include "../Window.h"
+#include "../Localisation/StringIds.h"
 
 #include <array>
 #include <string>
