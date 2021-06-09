@@ -225,7 +225,7 @@ namespace OpenLoco::Ui::WindowManager
 
         registerHook(
             0x0048F210,
-            [](registers& regs) -> uint8_t {
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
                 auto window = Windows::Station::open(regs.dx);
                 regs = backup;
@@ -236,7 +236,7 @@ namespace OpenLoco::Ui::WindowManager
 
         registerHook(
             0x004577FF,
-            [](registers& regs) -> uint8_t {
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
                 auto window = Windows::IndustryList::open();
                 regs = backup;
@@ -409,7 +409,7 @@ namespace OpenLoco::Ui::WindowManager
 
         registerHook(
             0x004CE3D6,
-            [](registers& regs) -> uint8_t {
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
                 Input::toolCancel();
                 regs = backup;

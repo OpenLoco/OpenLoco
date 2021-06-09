@@ -145,7 +145,7 @@ namespace OpenLoco::Paint
     {
         registerHook(
             0x004622A2,
-            [](registers& regs) -> uint8_t {
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
 
                 PaintSession session;
