@@ -785,7 +785,7 @@ void OpenLoco::Interop::registerHooks()
     // Part of 0x004691FA
     registerHook(
         0x0046959C,
-        [](registers& regs) -> uint8_t {
+        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
             int16_t x = regs.eax;
             int16_t i = regs.ebx / 6;
@@ -800,7 +800,7 @@ void OpenLoco::Interop::registerHooks()
 
     registerHook(
         0x004AB655,
-        [](registers& regs) -> uint8_t {
+        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             auto v = (Vehicles::VehicleBase*)regs.esi;
             v->asVehicleBody()->secondaryAnimationUpdate();
 
@@ -809,7 +809,7 @@ void OpenLoco::Interop::registerHooks()
 
     registerHook(
         0x004392BD,
-        [](registers& regs) -> uint8_t {
+        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             Gui::resize();
             return 0;
         });
@@ -826,7 +826,7 @@ void OpenLoco::Interop::registerHooks()
 
     registerHook(
         0x004C9513,
-        [](registers& regs) -> uint8_t {
+        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
             auto window = (Ui::window*)regs.esi;
             int16_t x = regs.ax;
@@ -850,7 +850,7 @@ void OpenLoco::Interop::registerHooks()
 
     registerHook(
         0x004CA115,
-        [](registers& regs) -> uint8_t {
+        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
             auto window = (Ui::window*)regs.esi;
             window->updateScrollWidgets();
@@ -861,7 +861,7 @@ void OpenLoco::Interop::registerHooks()
 
     registerHook(
         0x004CA17F,
-        [](registers& regs) -> uint8_t {
+        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
             auto window = (Ui::window*)regs.esi;
             window->initScrollWidgets();
@@ -900,13 +900,13 @@ void OpenLoco::Interop::registerHooks()
     // to set them all to zero this is required.
     registerHook(
         0x004422CD,
-        [](registers& regs) -> uint8_t {
+        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             return 0;
         });
 
     registerHook(
         0x0047024A,
-        [](registers& regs) -> uint8_t {
+        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
 
             auto* entity = reinterpret_cast<EntityBase*>(regs.esi);

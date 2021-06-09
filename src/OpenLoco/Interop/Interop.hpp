@@ -9,7 +9,7 @@
 
 #define assert_struct_size(x, y) static_assert(sizeof(x) == (y), "Improper struct size")
 
-#if defined(__clang__)
+#if defined(__clang__) || (defined(__GNUC__) && !defined(__MINGW32__))
 #define FORCE_ALIGN_ARG_POINTER __attribute__((force_align_arg_pointer))
 #else
 #define FORCE_ALIGN_ARG_POINTER
