@@ -16,6 +16,7 @@
 #include "../Ui/TextInput.h"
 #include "../Ui/WindowManager.h"
 #include "../Utility/String.hpp"
+#include "../Widget.h"
 #include "../Win32.h"
 
 #ifdef _WIN32
@@ -102,19 +103,19 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         scrollview,
     };
 
-    static widget_t widgets[] = {
-        makeWidget({ 0, 0 }, { 500, 380 }, widget_type::frame, 0),
-        makeWidget({ 1, 1 }, { 498, 13 }, widget_type::caption_25, 0, StringIds::buffer_2039),
-        makeWidget({ 485, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window),
-        makeWidget({ 0, 15 }, { 500, 365 }, widget_type::panel, 1),
-        makeWidget({ 473, 18 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::icon_parent_folder, StringIds::window_browse_parent_folder_tooltip),
-        makeWidget({ 88, 348 }, { 408, 14 }, widget_type::wt_17, 1),
-        makeWidget({ 426, 364 }, { 70, 12 }, widget_type::wt_11, 1, StringIds::label_button_ok),
-        makeWidget({ 3, 45 }, { 494, 323 }, widget_type::scrollview, 1, vertical),
+    static Widget widgets[] = {
+        makeWidget({ 0, 0 }, { 500, 380 }, WidgetType::frame, 0),
+        makeWidget({ 1, 1 }, { 498, 13 }, WidgetType::caption_25, 0, StringIds::buffer_2039),
+        makeWidget({ 485, 2 }, { 13, 13 }, WidgetType::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window),
+        makeWidget({ 0, 15 }, { 500, 365 }, WidgetType::panel, 1),
+        makeWidget({ 473, 18 }, { 24, 24 }, WidgetType::wt_9, 1, ImageIds::icon_parent_folder, StringIds::window_browse_parent_folder_tooltip),
+        makeWidget({ 88, 348 }, { 408, 14 }, WidgetType::wt_17, 1),
+        makeWidget({ 426, 364 }, { 70, 12 }, WidgetType::wt_11, 1, StringIds::label_button_ok),
+        makeWidget({ 3, 45 }, { 494, 323 }, WidgetType::scrollview, 1, Scrollbars::vertical),
         widgetEnd(),
     };
 
-    static window_event_list _events;
+    static WindowEventList _events;
     static loco_global<uint8_t, 0x009D9D63> _type;
     static loco_global<browse_file_type, 0x009DA284> _fileType;
     static loco_global<char[256], 0x009D9D64> _title;
@@ -128,26 +129,26 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
 
     static std::vector<file_entry> _newFiles;
 
-    static void onClose(window* window);
-    static void onResize(window* window);
-    static void onMouseUp(Ui::window* window, widget_index widgetIndex);
-    static void onUpdate(Ui::window* window);
-    static void getScrollSize(Ui::window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
-    static void onScrollMouseDown(window* self, int16_t x, int16_t y, uint8_t scroll_index);
-    static void onScrollMouseOver(window* self, int16_t x, int16_t y, uint8_t scroll_index);
-    static std::optional<FormatArguments> tooltip(Ui::window* window, widget_index widgetIndex);
-    static void prepareDraw(window* window);
-    static void draw(Ui::window* window, Gfx::Context* context);
-    static void drawSavePreview(Ui::window& window, Gfx::Context& context, int32_t x, int32_t y, int32_t width, int32_t height, const S5::SaveDetails& saveInfo);
-    static void drawLandscapePreview(Ui::window& window, Gfx::Context& context, int32_t x, int32_t y, int32_t width, int32_t height);
-    static void drawTextInput(Ui::window* window, Gfx::Context& context, const char* text, int32_t caret, bool showCaret);
-    static void drawScroll(Ui::window* window, Gfx::Context* context, uint32_t scrollIndex);
+    static void onClose(Window* window);
+    static void onResize(Window* window);
+    static void onMouseUp(Ui::Window* window, WidgetIndex_t widgetIndex);
+    static void onUpdate(Ui::Window* window);
+    static void getScrollSize(Ui::Window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
+    static void onScrollMouseDown(Window* self, int16_t x, int16_t y, uint8_t scroll_index);
+    static void onScrollMouseOver(Window* self, int16_t x, int16_t y, uint8_t scroll_index);
+    static std::optional<FormatArguments> tooltip(Ui::Window* window, WidgetIndex_t widgetIndex);
+    static void prepareDraw(Window* window);
+    static void draw(Ui::Window* window, Gfx::Context* context);
+    static void drawSavePreview(Ui::Window& window, Gfx::Context& context, int32_t x, int32_t y, int32_t width, int32_t height, const S5::SaveDetails& saveInfo);
+    static void drawLandscapePreview(Ui::Window& window, Gfx::Context& context, int32_t x, int32_t y, int32_t width, int32_t height);
+    static void drawTextInput(Ui::Window* window, Gfx::Context& context, const char* text, int32_t caret, bool showCaret);
+    static void drawScroll(Ui::Window* window, Gfx::Context* context, uint32_t scrollIndex);
     static void upOneLevel();
     static void appendDirectory(const char* to_append);
-    static void processFileForLoadSave(window* window);
-    static void processFileForDelete(window* self, file_entry& entry);
+    static void processFileForLoadSave(Window* window);
+    static void processFileForDelete(Window* self, file_entry& entry);
     static void refreshDirectoryList();
-    static void sub_446E87(window* self);
+    static void sub_446E87(Window* self);
     static bool filenameContainsInvalidChars();
 
     // 0x00445AB9
@@ -240,7 +241,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     }
 
     // 0x0044647C
-    static void onClose(window*)
+    static void onClose(Window*)
     {
         _newFiles = {};
         _numFiles = 0;
@@ -250,13 +251,13 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     }
 
     // 0x004467F6
-    static void onResize(window* window)
+    static void onResize(Window* window)
     {
         window->capSize(400, 300, 640, 800);
     }
 
     // 0x00446465
-    static void onMouseUp(Ui::window* window, widget_index widgetIndex)
+    static void onMouseUp(Ui::Window* window, WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
@@ -275,7 +276,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     }
 
     // 0x004467E1
-    static void onUpdate(Ui::window* window)
+    static void onUpdate(Ui::Window* window)
     {
         inputSession.cursorFrame++;
         if ((inputSession.cursorFrame & 0x0F) == 0)
@@ -285,13 +286,13 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     }
 
     // 0x004464A1
-    static void getScrollSize(Ui::window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+    static void getScrollSize(Ui::Window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
         *scrollHeight = window->row_height * _numFiles;
     }
 
     // 0x004464F7
-    static void onScrollMouseDown(window* self, int16_t x, int16_t y, uint8_t scrollIndex)
+    static void onScrollMouseDown(Window* self, int16_t x, int16_t y, uint8_t scrollIndex)
     {
         auto index = y / self->row_height;
         if (index > _numFiles)
@@ -328,7 +329,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     }
 
     // 0x004464B1
-    static void onScrollMouseOver(window* self, int16_t x, int16_t y, uint8_t scrollIndex)
+    static void onScrollMouseOver(Window* self, int16_t x, int16_t y, uint8_t scrollIndex)
     {
         if (WindowManager::getCurrentModalType() != WindowType::fileBrowserPrompt)
             return;
@@ -346,7 +347,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     }
 
     // 0x004467D7
-    static std::optional<FormatArguments> tooltip(Ui::window* window, widget_index widgetIndex)
+    static std::optional<FormatArguments> tooltip(Ui::Window* window, WidgetIndex_t widgetIndex)
     {
         FormatArguments args{};
         args.push(StringIds::tooltip_scroll_list);
@@ -354,7 +355,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     }
 
     // 0x00445C8F
-    static void prepareDraw(Ui::window* self)
+    static void prepareDraw(Ui::Window* self)
     {
         // TODO: replace with a fixed length!
         char* buffer = (char*)StringManager::getString(StringIds::buffer_2039);
@@ -377,19 +378,19 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             self->widgets[widx::ok_button].right = self->width - 16;
             self->widgets[widx::ok_button].top = self->height - 15;
             self->widgets[widx::ok_button].bottom = self->height - 4;
-            self->widgets[widx::ok_button].type = widget_type::wt_11;
+            self->widgets[widx::ok_button].type = WidgetType::wt_11;
 
             self->widgets[widx::text_filename].right = self->width - 4;
             self->widgets[widx::text_filename].top = self->height - 31;
             self->widgets[widx::text_filename].bottom = self->height - 18;
-            self->widgets[widx::text_filename].type = widget_type::wt_17;
+            self->widgets[widx::text_filename].type = WidgetType::wt_17;
 
             self->widgets[widx::scrollview].bottom = self->height - 34;
         }
         else
         {
-            self->widgets[widx::ok_button].type = widget_type::none;
-            self->widgets[widx::text_filename].type = widget_type::none;
+            self->widgets[widx::ok_button].type = WidgetType::none;
+            self->widgets[widx::text_filename].type = WidgetType::none;
 
             self->widgets[widx::scrollview].bottom = self->height - 4;
         }
@@ -417,7 +418,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     }
 
     // 0x00445E38
-    static void draw(Ui::window* window, Gfx::Context* context)
+    static void draw(Ui::Window* window, Gfx::Context* context)
     {
         loco_global<char[16], 0x0112C826> _commonFormatArgs;
         static std::string _nameBuffer;
@@ -469,7 +470,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         }
 
         const auto& filenameBox = window->widgets[widx::text_filename];
-        if (filenameBox.type != widget_type::none)
+        if (filenameBox.type != WidgetType::none)
         {
             // Draw filename label
             Gfx::drawString_494B3F(*context, window->x + 3, window->y + filenameBox.top + 2, 0, StringIds::window_browse_filename, nullptr);
@@ -489,7 +490,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         }
     }
 
-    static void drawSavePreview(Ui::window& window, Gfx::Context& context, int32_t x, int32_t y, int32_t width, int32_t height, const S5::SaveDetails& saveInfo)
+    static void drawSavePreview(Ui::Window& window, Gfx::Context& context, int32_t x, int32_t y, int32_t width, int32_t height, const S5::SaveDetails& saveInfo)
     {
         loco_global<char[16], 0x0112C826> _commonFormatArgs;
 
@@ -542,7 +543,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         }
     }
 
-    static void drawLandscapePreview(Ui::window& window, Gfx::Context& context, int32_t x, int32_t y, int32_t width, int32_t height)
+    static void drawLandscapePreview(Ui::Window& window, Gfx::Context& context, int32_t x, int32_t y, int32_t width, int32_t height)
     {
         Gfx::fillRectInset(&context, x, y, x + width, y + height, window.colours[1], 0x30);
 
@@ -575,7 +576,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         }
     }
 
-    static void drawTextInput(Ui::window* window, Gfx::Context& context, const char* text, int32_t caret, bool showCaret)
+    static void drawTextInput(Ui::Window* window, Gfx::Context& context, const char* text, int32_t caret, bool showCaret)
     {
         loco_global<char[16], 0x0112C826> _commonFormatArgs;
         loco_global<uint8_t[256], 0x001136C99> byte_1136C99;
@@ -609,7 +610,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     }
 
     // 0x00446314
-    static void drawScroll(Ui::window* window, Gfx::Context* context, uint32_t scrollIndex)
+    static void drawScroll(Ui::Window* window, Gfx::Context* context, uint32_t scrollIndex)
     {
         loco_global<char[16], 0x0112C826> _commonFormatArgs;
 
@@ -889,7 +890,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     }
 
     // 0x00446574
-    static void processFileForLoadSave(window* self)
+    static void processFileForLoadSave(Window* self)
     {
         if (_type == browse_type::save)
         {
@@ -955,7 +956,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     }
 
     // 0x004466CA
-    static void processFileForDelete(window* self, file_entry& entry)
+    static void processFileForDelete(Window* self, file_entry& entry)
     {
         // Create full path to target file.
         fs::path path = fs::path(&_directory[0]) / std::string(entry.get_name());
@@ -991,7 +992,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
 
     // 0x00446E87
     // TODO: only called by this window -- implement.
-    static void sub_446E87(window* self)
+    static void sub_446E87(Window* self)
     {
         registers regs;
         regs.esi = (int32_t)self;

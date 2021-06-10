@@ -5,6 +5,7 @@
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/ObjectManager.h"
 #include "../Ui/WindowManager.h"
+#include "../Widget.h"
 
 namespace OpenLoco::Ui::Windows::About
 {
@@ -22,16 +23,16 @@ namespace OpenLoco::Ui::Windows::About
         };
     }
 
-    static widget_t _widgets[] = {
-        makeWidget({ 0, 0 }, windowSize, widget_type::frame, 0),
-        makeWidget({ 1, 1 }, { windowSize.width - 2, 13 }, widget_type::caption_25, 0, StringIds::about_locomotion_caption),
-        makeWidget({ windowSize.width - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window),
-        makeWidget({ 0, 15 }, { windowSize.width, 245 }, widget_type::panel, 1),
-        makeWidget({ 100, 234 }, { windowSize.width / 2, 12 }, widget_type::wt_11, 1, StringIds::music_acknowledgements_btn),
+    static Widget _widgets[] = {
+        makeWidget({ 0, 0 }, windowSize, WidgetType::frame, 0),
+        makeWidget({ 1, 1 }, { windowSize.width - 2, 13 }, WidgetType::caption_25, 0, StringIds::about_locomotion_caption),
+        makeWidget({ windowSize.width - 15, 2 }, { 13, 13 }, WidgetType::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window),
+        makeWidget({ 0, 15 }, { windowSize.width, 245 }, WidgetType::panel, 1),
+        makeWidget({ 100, 234 }, { windowSize.width / 2, 12 }, WidgetType::wt_11, 1, StringIds::music_acknowledgements_btn),
         widgetEnd(),
     };
 
-    static window_event_list _events;
+    static WindowEventList _events;
 
     static void initEvents();
 
@@ -59,7 +60,7 @@ namespace OpenLoco::Ui::Windows::About
     }
 
     // 0x0043B4AF
-    static void onMouseUp(Ui::window* const window, const widget_index widgetIndex)
+    static void onMouseUp(Ui::Window* const window, const WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
@@ -74,7 +75,7 @@ namespace OpenLoco::Ui::Windows::About
     }
 
     // 0x0043B2E4
-    static void draw(Ui::window* const window, Gfx::Context* const context)
+    static void draw(Ui::Window* const window, Gfx::Context* const context)
     {
         // Draw widgets.
         window->draw(context);

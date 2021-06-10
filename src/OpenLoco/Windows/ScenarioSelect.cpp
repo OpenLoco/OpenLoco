@@ -12,6 +12,7 @@
 #include "../ScenarioManager.h"
 #include "../Ui/ScrollView.h"
 #include "../Ui/WindowManager.h"
+#include "../Widget.h"
 
 using namespace OpenLoco::Interop;
 
@@ -36,47 +37,47 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         };
     }
 
-    static widget_t _widgets[] = {
-        makeWidget({ 0, 0 }, { 610, 412 }, widget_type::frame, 0),
-        makeWidget({ 1, 1 }, { 608, 13 }, widget_type::caption_25, 0, StringIds::select_scenario_for_new_game),
-        makeWidget({ 595, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window),
-        makeWidget({ 0, 48 }, { 610, 364 }, widget_type::wt_3, 1),
-        makeRemapWidget({ 3, 15 }, { 91, 34 }, widget_type::wt_8, 1, ImageIds::wide_tab),
-        makeRemapWidget({ 94, 15 }, { 91, 34 }, widget_type::wt_8, 1, ImageIds::wide_tab),
-        makeRemapWidget({ 185, 15 }, { 91, 34 }, widget_type::wt_8, 1, ImageIds::wide_tab),
-        makeRemapWidget({ 276, 15 }, { 91, 34 }, widget_type::wt_8, 1, ImageIds::wide_tab),
-        makeRemapWidget({ 367, 15 }, { 91, 34 }, widget_type::wt_8, 1, ImageIds::wide_tab),
-        makeWidget({ 3, 52 }, { 431, 356 }, widget_type::scrollview, 1, scrollbars::vertical),
+    static Widget _widgets[] = {
+        makeWidget({ 0, 0 }, { 610, 412 }, WidgetType::frame, 0),
+        makeWidget({ 1, 1 }, { 608, 13 }, WidgetType::caption_25, 0, StringIds::select_scenario_for_new_game),
+        makeWidget({ 595, 2 }, { 13, 13 }, WidgetType::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window),
+        makeWidget({ 0, 48 }, { 610, 364 }, WidgetType::wt_3, 1),
+        makeRemapWidget({ 3, 15 }, { 91, 34 }, WidgetType::wt_8, 1, ImageIds::wide_tab),
+        makeRemapWidget({ 94, 15 }, { 91, 34 }, WidgetType::wt_8, 1, ImageIds::wide_tab),
+        makeRemapWidget({ 185, 15 }, { 91, 34 }, WidgetType::wt_8, 1, ImageIds::wide_tab),
+        makeRemapWidget({ 276, 15 }, { 91, 34 }, WidgetType::wt_8, 1, ImageIds::wide_tab),
+        makeRemapWidget({ 367, 15 }, { 91, 34 }, WidgetType::wt_8, 1, ImageIds::wide_tab),
+        makeWidget({ 3, 52 }, { 431, 356 }, WidgetType::scrollview, 1, Scrollbars::vertical),
         widgetEnd(),
     };
 
     constexpr auto rowHeight = 24;
 
-    static window_event_list _events;
+    static WindowEventList _events;
 
     static void initEvents();
 
     // 0x00443807
-    static void initTabs(window* self)
+    static void initTabs(Window* self)
     {
         uint16_t xPos = 3;
         for (int i = 0; i < 5; i++)
         {
-            widget_t& widget = self->widgets[widx::tab0 + i];
+            Widget& widget = self->widgets[widx::tab0 + i];
             if (ScenarioManager::hasScenariosForCategory(i))
             {
-                widget.type = widget_type::wt_8;
+                widget.type = WidgetType::wt_8;
                 widget.left = xPos;
                 widget.right = xPos + 90;
                 xPos += 91;
             }
             else
-                widget.type = widget_type::none;
+                widget.type = WidgetType::none;
         }
     }
 
     // 0x00443946
-    static void initList(window* self)
+    static void initList(Window* self)
     {
         if (self->info == 0xFFFFFFFF)
             return;
@@ -92,9 +93,9 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     }
 
     // 0x00443868
-    window* open()
+    Window* open()
     {
-        window* self = WindowManager::bringToFront(WindowType::scenarioSelect);
+        Window* self = WindowManager::bringToFront(WindowType::scenarioSelect);
         if (self != nullptr)
             return self;
 
@@ -122,12 +123,12 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
 
         // Select the last tab used, or the first available one.
         uint8_t selectedTab = Config::get().scenario_selected_tab;
-        if (self->widgets[widx::tab0 + selectedTab].type == widget_type::none)
+        if (self->widgets[widx::tab0 + selectedTab].type == WidgetType::none)
         {
             selectedTab = 0;
             for (int i = 0; i < 5; i++)
             {
-                if (self->widgets[widx::tab0 + i].type == widget_type::none)
+                if (self->widgets[widx::tab0 + i].type == WidgetType::none)
                 {
                     selectedTab = i;
                     break;
@@ -143,14 +144,14 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     }
 
     // 0x00443995
-    static void prepareDraw(window* self)
+    static void prepareDraw(Window* self)
     {
         self->activated_widgets &= ~((1 << widx::tab0) | (1 << widx::tab1) | (1 << widx::tab2) | (1 << widx::tab3) | (1 << widx::tab4));
         self->activated_widgets |= (1ULL << (self->current_tab + static_cast<uint8_t>(widx::tab0)));
     }
 
     // 0x004439AF
-    static void draw(window* self, Gfx::Context* context)
+    static void draw(Window* self, Gfx::Context* context)
     {
         Gfx::drawRectInset(context, self->x, self->y + 20, self->width, 41, self->colours[0], 0);
 
@@ -168,8 +169,8 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         // Draw tab captions.
         for (int i = 0; i < 5; i++)
         {
-            widget_t& widget = self->widgets[widx::tab0 + i];
-            if (widget.type == widget_type::none)
+            Widget& widget = self->widgets[widx::tab0 + i];
+            if (widget.type == WidgetType::none)
                 continue;
 
             const auto offset = self->current_tab == i ? 1 : 0;
@@ -325,7 +326,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     }
 
     // 0x00443D02
-    static void drawScroll(window* self, Gfx::Context* const context, uint32_t)
+    static void drawScroll(Window* self, Gfx::Context* const context, uint32_t)
     {
         auto colour = Colour::getShade(self->colours[1], 4);
         Gfx::clearSingle(*context, colour);
@@ -396,7 +397,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     }
 
     // 0x00443E9B
-    static void onMouseUp(window* self, const widget_index widgetIndex)
+    static void onMouseUp(Window* self, const WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
@@ -407,7 +408,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     }
 
     // 0x00443EA6
-    static void onMouseDown(window* self, widget_index widgetIndex)
+    static void onMouseDown(Window* self, WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
@@ -441,13 +442,13 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     }
 
     // 0x00443EF6
-    static void getScrollSize(window* self, uint32_t, uint16_t*, uint16_t* const scrollHeight)
+    static void getScrollSize(Window* self, uint32_t, uint16_t*, uint16_t* const scrollHeight)
     {
         *scrollHeight = ScenarioManager::getScenarioCountByCategory(self->current_tab) * rowHeight;
     }
 
     // 0x00443F32
-    static void onScrollMouseDown(window* self, int16_t x, int16_t y, uint8_t scroll_index)
+    static void onScrollMouseDown(Window* self, int16_t x, int16_t y, uint8_t scroll_index)
     {
         auto scenarioCount = ScenarioManager::getScenarioCountByCategory(self->current_tab);
 
@@ -473,7 +474,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     }
 
     // 0x00443FB2
-    static void onScrollMouseOver(window* self, int16_t x, int16_t y, uint8_t scroll_index)
+    static void onScrollMouseOver(Window* self, int16_t x, int16_t y, uint8_t scroll_index)
     {
         auto scenarioCount = ScenarioManager::getScenarioCountByCategory(self->current_tab);
 
@@ -490,7 +491,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     }
 
     // 0x00444001
-    static std::optional<FormatArguments> tooltip(window* self, widget_index widgetIndex)
+    static std::optional<FormatArguments> tooltip(Window* self, WidgetIndex_t widgetIndex)
     {
         FormatArguments args{};
         args.push(StringIds::tooltip_scroll_scenario_list);

@@ -8,6 +8,7 @@
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/ObjectManager.h"
 #include "../Ui/WindowManager.h"
+#include "../Widget.h"
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Input;
@@ -16,15 +17,15 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
 {
     static const int rowHeight = 10; // CJK: 13
 
-    static window_event_list _events;
+    static WindowEventList _events;
 
-    static widget_t _widgets[] = {
-        makeWidget({ 0, 0 }, { 360, 238 }, widget_type::frame, 0),
-        makeWidget({ 1, 1 }, { 358, 13 }, widget_type::caption_25, 0, StringIds::keyboard_shortcuts),
-        makeWidget({ 345, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window),
-        makeWidget({ 0, 15 }, { 360, 223 }, widget_type::panel, 1),
-        makeWidget({ 4, 19 }, { 352, 202 }, widget_type::scrollview, 1, vertical, StringIds::keyboard_shortcut_list_tip),
-        makeWidget({ 4, 223 }, { 150, 12 }, widget_type::wt_11, 1, StringIds::reset_keys, StringIds::reset_keys_tip),
+    static Widget _widgets[] = {
+        makeWidget({ 0, 0 }, { 360, 238 }, WidgetType::frame, 0),
+        makeWidget({ 1, 1 }, { 358, 13 }, WidgetType::caption_25, 0, StringIds::keyboard_shortcuts),
+        makeWidget({ 345, 2 }, { 13, 13 }, WidgetType::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window),
+        makeWidget({ 0, 15 }, { 360, 223 }, WidgetType::panel, 1),
+        makeWidget({ 4, 19 }, { 352, 202 }, WidgetType::scrollview, 1, Scrollbars::vertical, StringIds::keyboard_shortcut_list_tip),
+        makeWidget({ 4, 223 }, { 150, 12 }, WidgetType::wt_11, 1, StringIds::reset_keys, StringIds::reset_keys_tip),
         widgetEnd(),
     };
 
@@ -41,14 +42,14 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
         };
     }
 
-    static void draw(Ui::window* self, Gfx::Context* context);
-    static void drawScroll(Ui::window* self, Gfx::Context* context, uint32_t scrollIndex);
-    static void onMouseUp(window* self, widget_index widgetIndex);
-    static void loc_4BE832(window* self);
-    static std::optional<FormatArguments> tooltip(window*, widget_index);
-    static void getScrollSize(Ui::window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
-    static void onScrollMouseOver(Ui::window* self, int16_t x, int16_t y, uint8_t scroll_index);
-    static void onScrollMouseDown(Ui::window* self, int16_t x, int16_t y, uint8_t scroll_index);
+    static void draw(Ui::Window* self, Gfx::Context* context);
+    static void drawScroll(Ui::Window* self, Gfx::Context* context, uint32_t scrollIndex);
+    static void onMouseUp(Window* self, WidgetIndex_t widgetIndex);
+    static void loc_4BE832(Window* self);
+    static std::optional<FormatArguments> tooltip(Window*, WidgetIndex_t);
+    static void getScrollSize(Ui::Window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
+    static void onScrollMouseOver(Ui::Window* self, int16_t x, int16_t y, uint8_t scroll_index);
+    static void onScrollMouseDown(Ui::Window* self, int16_t x, int16_t y, uint8_t scroll_index);
 
     static void initEvents()
     {
@@ -62,9 +63,9 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
     }
 
     // 0x004BE6C7
-    window* open()
+    Window* open()
     {
-        window* window;
+        Window* window;
 
         window = WindowManager::bringToFront(WindowType::keyboardShortcuts, 0);
         if (window != nullptr)
@@ -90,14 +91,14 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
     }
 
     // 0x004BE726
-    static void draw(Ui::window* self, Gfx::Context* context)
+    static void draw(Ui::Window* self, Gfx::Context* context)
     {
         // Draw widgets.
         self->draw(context);
     }
 
     // 0x004BE72C
-    static void drawScroll(Ui::window* self, Gfx::Context* context, uint32_t scrollIndex)
+    static void drawScroll(Ui::Window* self, Gfx::Context* context, uint32_t scrollIndex)
     {
         auto colour = self->colours[1];
         auto shade = Colour::getShade(colour, 4);
@@ -144,7 +145,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
     }
 
     // 0x004BE821
-    static void onMouseUp(window* self, widget_index widgetIndex)
+    static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
@@ -159,7 +160,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
     }
 
     // 0x004BE832
-    static void loc_4BE832(window* self)
+    static void loc_4BE832(Window* self)
     {
         call(0x004BE3F3);
         OpenLoco::Config::write();
@@ -167,7 +168,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
     }
 
     // 0x004BE844
-    static std::optional<FormatArguments> tooltip(window*, widget_index)
+    static std::optional<FormatArguments> tooltip(Window*, WidgetIndex_t)
     {
         FormatArguments args{};
         args.push(StringIds::tooltip_scroll_list);
@@ -175,13 +176,13 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
     }
 
     // 0x004BE84E
-    static void getScrollSize(Ui::window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+    static void getScrollSize(Ui::Window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
         *scrollHeight = self->row_count * rowHeight;
     }
 
     // 0x004BE853
-    static void onScrollMouseOver(Ui::window* self, int16_t x, int16_t y, uint8_t scroll_index)
+    static void onScrollMouseOver(Ui::Window* self, int16_t x, int16_t y, uint8_t scroll_index)
     {
         auto row = y / rowHeight;
 
@@ -196,7 +197,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
     }
 
     // 0x004BE87B
-    static void onScrollMouseDown(Ui::window* self, int16_t x, int16_t y, uint8_t scroll_index)
+    static void onScrollMouseDown(Ui::Window* self, int16_t x, int16_t y, uint8_t scroll_index)
     {
         auto row = y / rowHeight;
 

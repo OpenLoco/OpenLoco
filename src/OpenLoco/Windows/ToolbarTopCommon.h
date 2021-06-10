@@ -30,26 +30,26 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
         };
     }
 
-    void draw(window* window, Gfx::Context* context);
+    void draw(Window* window, Gfx::Context* context);
 
-    void zoomMenuMouseDown(window* window, widget_index widgetIndex);
-    void rotateMenuMouseDown(window* window, widget_index widgetIndex);
-    void viewMenuMouseDown(window* window, widget_index widgetIndex);
-    void terraformMenuMouseDown(window* window, widget_index widgetIndex);
-    void roadMenuMouseDown(window* window, widget_index widgetIndex);
-    void townsMenuMouseDown(window* window, widget_index widgetIndex);
+    void zoomMenuMouseDown(Window* window, WidgetIndex_t widgetIndex);
+    void rotateMenuMouseDown(Window* window, WidgetIndex_t widgetIndex);
+    void viewMenuMouseDown(Window* window, WidgetIndex_t widgetIndex);
+    void terraformMenuMouseDown(Window* window, WidgetIndex_t widgetIndex);
+    void roadMenuMouseDown(Window* window, WidgetIndex_t widgetIndex);
+    void townsMenuMouseDown(Window* window, WidgetIndex_t widgetIndex);
 
-    void zoomMenuDropdown(window* window, widget_index widgetIndex, int16_t itemIndex);
-    void rotateMenuDropdown(window* window, widget_index widgetIndex, int16_t itemIndex);
-    void viewMenuDropdown(window* window, widget_index widgetIndex, int16_t itemIndex);
-    void terraformMenuDropdown(window* window, widget_index widgetIndex, int16_t itemIndex);
-    void roadMenuDropdown(window* window, widget_index widgetIndex, int16_t itemIndex);
-    void townsMenuDropdown(window* window, widget_index widgetIndex, int16_t itemIndex);
+    void zoomMenuDropdown(Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex);
+    void rotateMenuDropdown(Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex);
+    void viewMenuDropdown(Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex);
+    void terraformMenuDropdown(Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex);
+    void roadMenuDropdown(Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex);
+    void townsMenuDropdown(Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex);
 
-    void onUpdate(window* window);
-    void onResize(window* window);
-    void onMouseDown(window* window, widget_index widgetIndex);
-    void onDropdown(window* window, widget_index widgetIndex, int16_t itemIndex);
+    void onUpdate(Window* window);
+    void onResize(Window* window);
+    void onMouseDown(Window* window, WidgetIndex_t widgetIndex);
+    void onDropdown(Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex);
 
-    void rightAlignTabs(window* window, uint32_t& x, const std::initializer_list<uint32_t> widxs);
+    void rightAlignTabs(Window* window, uint32_t& x, const std::initializer_list<uint32_t> widxs);
 }

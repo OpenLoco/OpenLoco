@@ -7,6 +7,7 @@
 #include "../OpenLoco.h"
 #include "../Ui.h"
 #include "../Ui/WindowManager.h"
+#include "../Widget.h"
 
 using namespace OpenLoco::Interop;
 
@@ -22,18 +23,18 @@ namespace OpenLoco::Ui::Windows::TitleExit
         };
     }
 
-    static widget_t _widgets[] = {
-        makeWidget({ 0, 0 }, window_size, widget_type::wt_9, 1, -1, StringIds::title_menu_exit_from_game),
+    static Widget _widgets[] = {
+        makeWidget({ 0, 0 }, window_size, WidgetType::wt_9, 1, -1, StringIds::title_menu_exit_from_game),
         widgetEnd(),
     };
 
-    static window_event_list _events;
+    static WindowEventList _events;
 
-    static void onMouseUp(window* window, widget_index widgetIndex);
-    static void prepareDraw(Ui::window* self);
-    static void draw(Ui::window* window, Gfx::Context* context);
+    static void onMouseUp(Window* window, WidgetIndex_t widgetIndex);
+    static void prepareDraw(Ui::Window* self);
+    static void draw(Ui::Window* window, Gfx::Context* context);
 
-    window* open()
+    Window* open()
     {
         _events.on_mouse_up = onMouseUp;
         _events.prepare_draw = prepareDraw;
@@ -57,7 +58,7 @@ namespace OpenLoco::Ui::Windows::TitleExit
         return window;
     }
 
-    static void prepareDraw(Ui::window* self)
+    static void prepareDraw(Ui::Window* self)
     {
         auto exitString = StringManager::getString(StringIds::title_exit_game);
         self->width = Gfx::getStringWidthNewLined(exitString) + 10;
@@ -66,7 +67,7 @@ namespace OpenLoco::Ui::Windows::TitleExit
     }
 
     // 0x00439236
-    static void draw(Ui::window* window, Gfx::Context* context)
+    static void draw(Ui::Window* window, Gfx::Context* context)
     {
         // Draw widgets.
         window->draw(context);
@@ -78,7 +79,7 @@ namespace OpenLoco::Ui::Windows::TitleExit
     }
 
     // 0x00439268
-    static void onMouseUp(window* window, widget_index widgetIndex)
+    static void onMouseUp(Window* window, WidgetIndex_t widgetIndex)
     {
         if (Intro::isActive())
         {

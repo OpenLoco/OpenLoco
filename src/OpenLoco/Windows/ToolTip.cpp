@@ -8,6 +8,7 @@
 #include "../Objects/ObjectManager.h"
 #include "../Ui.h"
 #include "../Ui/WindowManager.h"
+#include "../Widget.h"
 #include <algorithm>
 #include <cstring>
 
@@ -18,7 +19,7 @@ namespace OpenLoco::Ui::Windows::ToolTip
     static loco_global<bool, 0x0052336E> _52336E;
 
     static loco_global<WindowType, 0x00523381> _tooltipWindowType;
-    static loco_global<window_number, 0x00523382> _tooltipWindowNumber;
+    static loco_global<WindowNumber_t, 0x00523382> _tooltipWindowNumber;
     static loco_global<int16_t, 0x00523384> _tooltipWidgetIndex;
 
     static loco_global<uint16_t, 0x0052338C> _tooltipNotShownTicks;
@@ -30,7 +31,7 @@ namespace OpenLoco::Ui::Windows::ToolTip
 
     static loco_global<int32_t, 0x01136F98> _currentTooltipStringId;
 
-    static window_event_list events;
+    static WindowEventList events;
 
     enum widx
     {
@@ -38,8 +39,8 @@ namespace OpenLoco::Ui::Windows::ToolTip
     };
 
     // 0x005234CC
-    widget_t _widgets[] = {
-        makeWidget({ 0, 0 }, { 200, 32 }, widget_type::wt_3, 0),
+    Widget _widgets[] = {
+        makeWidget({ 0, 0 }, { 200, 32 }, WidgetType::wt_3, 0),
         widgetEnd(),
     };
 
@@ -50,18 +51,18 @@ namespace OpenLoco::Ui::Windows::ToolTip
         registerHook(
             0x004C906B,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                Ui::Windows::ToolTip::open((Ui::window*)regs.esi, regs.edx, regs.ax, regs.bx);
+                Ui::Windows::ToolTip::open((Ui::Window*)regs.esi, regs.edx, regs.ax, regs.bx);
                 return 0;
             });
         registerHook(
             0x004C9216,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                Ui::Windows::ToolTip::update((Ui::window*)regs.esi, regs.edx, regs.di, regs.ax, regs.bx);
+                Ui::Windows::ToolTip::update((Ui::Window*)regs.esi, regs.edx, regs.di, regs.ax, regs.bx);
                 return 0;
             });
     }
 
-    static void common(const window* window, int32_t widgetIndex, string_id stringId, int16_t cursorX, int16_t cursorY, FormatArguments& args)
+    static void common(const Window* window, int32_t widgetIndex, string_id stringId, int16_t cursorX, int16_t cursorY, FormatArguments& args)
     {
         StringManager::formatString(_text, stringId, &args);
 
@@ -104,7 +105,7 @@ namespace OpenLoco::Ui::Windows::ToolTip
     }
 
     // 0x004C906B
-    void open(Ui::window* window, int32_t widgetIndex, int16_t cursorX, int16_t cursorY)
+    void open(Ui::Window* window, int32_t widgetIndex, int16_t cursorX, int16_t cursorY)
     {
         WindowManager::close(WindowType::tooltip, 0);
         if (window == nullptr || widgetIndex == -1)
@@ -140,7 +141,7 @@ namespace OpenLoco::Ui::Windows::ToolTip
     }
 
     // 0x004C9216
-    void update(Ui::window* window, int32_t widgetIndex, string_id stringId, int16_t cursorX, int16_t cursorY)
+    void update(Ui::Window* window, int32_t widgetIndex, string_id stringId, int16_t cursorX, int16_t cursorY)
     {
         WindowManager::close(WindowType::tooltip, 0);
 
@@ -166,7 +167,7 @@ namespace OpenLoco::Ui::Windows::ToolTip
     }
 
     // 0x004C9397
-    static void draw(Ui::window* window, Gfx::Context* context)
+    static void draw(Ui::Window* window, Gfx::Context* context)
     {
         uint16_t x = window->x;
         uint16_t y = window->y;
@@ -190,14 +191,14 @@ namespace OpenLoco::Ui::Windows::ToolTip
     }
 
     // 0x004C94F7
-    static void onClose(Ui::window* window)
+    static void onClose(Ui::Window* window)
     {
         auto str337 = const_cast<char*>(StringManager::getString(StringIds::buffer_337));
         str337[0] = '\0';
     }
 
     // 0x004C94FF
-    static void update(Ui::window* window)
+    static void update(Ui::Window* window)
     {
         if (_52336E == false)
         {

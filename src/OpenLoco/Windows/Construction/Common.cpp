@@ -25,9 +25,9 @@ using namespace OpenLoco::Map::TileManager;
 
 namespace OpenLoco::Ui::Windows::Construction
 {
-    static loco_global<Ui::window_number, 0x00523390> _toolWindowNumber;
+    static loco_global<Ui::WindowNumber_t, 0x00523390> _toolWindowNumber;
 
-    static window* nonTrackWindow()
+    static Window* nonTrackWindow()
     {
         auto window = WindowManager::find(WindowType::construction);
 
@@ -45,7 +45,7 @@ namespace OpenLoco::Ui::Windows::Construction
         return window;
     }
 
-    static window* trackWindow()
+    static Window* trackWindow()
     {
         auto window = WindowManager::find(WindowType::construction);
 
@@ -65,7 +65,7 @@ namespace OpenLoco::Ui::Windows::Construction
         return window;
     }
 
-    static window* createTrackConstructionWindow()
+    static Window* createTrackConstructionWindow()
     {
         Common::createConstructionWindow();
 
@@ -109,7 +109,7 @@ namespace OpenLoco::Ui::Windows::Construction
         return trackWindow();
     }
 
-    static window* createRoadConstructionWindow()
+    static Window* createRoadConstructionWindow()
     {
         Common::createConstructionWindow();
 
@@ -146,7 +146,7 @@ namespace OpenLoco::Ui::Windows::Construction
         return trackWindow();
     }
 
-    static window* createDockConstructionWindow()
+    static Window* createDockConstructionWindow()
     {
         Common::createConstructionWindow();
 
@@ -174,7 +174,7 @@ namespace OpenLoco::Ui::Windows::Construction
         return nonTrackWindow();
     }
 
-    static window* createAirportConstructionWindow()
+    static Window* createAirportConstructionWindow()
     {
         Common::createConstructionWindow();
 
@@ -201,7 +201,7 @@ namespace OpenLoco::Ui::Windows::Construction
     }
 
     // 0x004A0EAD
-    window* openAtTrack(window* main, TrackElement* track, const Pos2 pos)
+    Window* openAtTrack(Window* main, TrackElement* track, const Pos2 pos)
     {
         registers regs{};
         regs.esi = reinterpret_cast<uint32_t>(main);
@@ -210,11 +210,11 @@ namespace OpenLoco::Ui::Windows::Construction
         regs.cx = pos.y;
         call(0x004A0EAD, regs);
 
-        return reinterpret_cast<window*>(regs.esi);
+        return reinterpret_cast<Window*>(regs.esi);
     }
 
     // 0x004A147F
-    window* openAtRoad(window* main, RoadElement* track, const Pos2 pos)
+    Window* openAtRoad(Window* main, RoadElement* track, const Pos2 pos)
     {
         registers regs{};
         regs.esi = reinterpret_cast<uint32_t>(main);
@@ -223,11 +223,11 @@ namespace OpenLoco::Ui::Windows::Construction
         regs.cx = pos.y;
         call(0x004A147F, regs);
 
-        return reinterpret_cast<window*>(regs.esi);
+        return reinterpret_cast<Window*>(regs.esi);
     }
 
     // 0x004A1303
-    void setToTrackExtra(window* main, TrackElement* track, const uint8_t bh, const Pos2 pos)
+    void setToTrackExtra(Window* main, TrackElement* track, const uint8_t bh, const Pos2 pos)
     {
         registers regs{};
         regs.esi = reinterpret_cast<uint32_t>(main);
@@ -239,7 +239,7 @@ namespace OpenLoco::Ui::Windows::Construction
     }
 
     // 0x004A13C1
-    void setToRoadExtra(window* main, RoadElement* road, const uint8_t bh, const Pos2 pos)
+    void setToRoadExtra(Window* main, RoadElement* road, const uint8_t bh, const Pos2 pos)
     {
         registers regs{};
         regs.esi = reinterpret_cast<uint32_t>(main);
@@ -251,7 +251,7 @@ namespace OpenLoco::Ui::Windows::Construction
     }
 
     // 0x004A3B0D
-    window* openWithFlags(const uint32_t flags)
+    Window* openWithFlags(const uint32_t flags)
     {
         auto mainWindow = WindowManager::getMainWindow();
         if (mainWindow)
@@ -354,11 +354,11 @@ namespace OpenLoco::Ui::Windows::Construction
     {
         struct TabInformation
         {
-            widget_t* widgets;
+            Widget* widgets;
             const widx widgetIndex;
-            window_event_list* events;
+            WindowEventList* events;
             const uint64_t enabledWidgets;
-            void (*tabReset)(window*);
+            void (*tabReset)(Window*);
         };
 
         static TabInformation tabInformationByTabOffset[] = {
@@ -368,7 +368,7 @@ namespace OpenLoco::Ui::Windows::Construction
             { Overhead::widgets, widx::tab_overhead, &Overhead::events, Overhead::enabledWidgets, &Overhead::tabReset },
         };
 
-        void prepareDraw(window* self)
+        void prepareDraw(Window* self)
         {
             // Reset tab widgets if needed
             const auto& tabWidgets = tabInformationByTabOffset[self->current_tab].widgets;
@@ -384,7 +384,7 @@ namespace OpenLoco::Ui::Windows::Construction
         }
 
         // 0x0049D93A
-        void switchTab(window* self, widget_index widgetIndex)
+        void switchTab(Window* self, WidgetIndex_t widgetIndex)
         {
             if (self->current_tab == widgetIndex - widx::tab_construction)
                 return;
@@ -441,7 +441,7 @@ namespace OpenLoco::Ui::Windows::Construction
         }
 
         // 0x0049EFEF
-        static void drawRoadTabs(window* self, Gfx::Context* context)
+        static void drawRoadTabs(Window* self, Gfx::Context* context)
         {
             auto company = CompanyManager::get(_playerCompany);
             auto companyColour = company->mainColours.primary;
@@ -453,11 +453,11 @@ namespace OpenLoco::Ui::Windows::Construction
                     imageId += (self->frame_no / 4) % 32;
                 Gfx::recolour(imageId, companyColour);
 
-                Widget::draw_tab(self, context, imageId, widx::tab_construction);
+                Widget::drawTab(self, context, imageId, widx::tab_construction);
             }
             // Station Tab
             {
-                Widget::draw_tab(self, context, ImageIds::null, widx::tab_station);
+                Widget::drawTab(self, context, ImageIds::null, widx::tab_station);
                 if (!self->isDisabled(widx::tab_station))
                 {
                     auto x = self->widgets[widx::tab_station].left + self->x + 1;
@@ -488,12 +488,12 @@ namespace OpenLoco::Ui::Windows::Construction
                         Gfx::drawImage(clipped, -4, -10, imageId);
                     }
 
-                    Widget::draw_tab(self, context, -2, widx::tab_station);
+                    Widget::drawTab(self, context, -2, widx::tab_station);
                 }
             }
             // Overhead tab
             {
-                Widget::draw_tab(self, context, ImageIds::null, widx::tab_overhead);
+                Widget::drawTab(self, context, ImageIds::null, widx::tab_overhead);
                 if (!self->isDisabled(widx::tab_station))
                 {
                     auto x = self->widgets[widx::tab_overhead].left + self->x + 2;
@@ -511,13 +511,13 @@ namespace OpenLoco::Ui::Windows::Construction
                         }
                     }
 
-                    Widget::draw_tab(self, context, -2, widx::tab_overhead);
+                    Widget::drawTab(self, context, -2, widx::tab_overhead);
                 }
             }
         }
 
         // 0x0049ED40
-        static void drawTrackTabs(window* self, Gfx::Context* context)
+        static void drawTrackTabs(Window* self, Gfx::Context* context)
         {
             auto company = CompanyManager::get(_playerCompany);
             auto companyColour = company->mainColours.primary;
@@ -529,7 +529,7 @@ namespace OpenLoco::Ui::Windows::Construction
                     imageId += (self->frame_no / 4) % 15;
                 Gfx::recolour(imageId, companyColour);
 
-                Widget::draw_tab(self, context, imageId, widx::tab_construction);
+                Widget::drawTab(self, context, imageId, widx::tab_construction);
             }
             // Station Tab
             {
@@ -537,7 +537,7 @@ namespace OpenLoco::Ui::Windows::Construction
                 {
                     auto imageId = ObjectManager::get<InterfaceSkinObject>()->img + InterfaceSkin::ImageIds::toolbar_menu_airport;
 
-                    Widget::draw_tab(self, context, imageId, widx::tab_station);
+                    Widget::drawTab(self, context, imageId, widx::tab_station);
                 }
                 else
                 {
@@ -545,11 +545,11 @@ namespace OpenLoco::Ui::Windows::Construction
                     {
                         auto imageId = ObjectManager::get<InterfaceSkinObject>()->img + InterfaceSkin::ImageIds::toolbar_menu_ship_port;
 
-                        Widget::draw_tab(self, context, imageId, widx::tab_station);
+                        Widget::drawTab(self, context, imageId, widx::tab_station);
                     }
                     else
                     {
-                        Widget::draw_tab(self, context, ImageIds::null, widx::tab_station);
+                        Widget::drawTab(self, context, ImageIds::null, widx::tab_station);
                         if (!self->isDisabled(widx::tab_station))
                         {
                             auto x = self->widgets[widx::tab_station].left + self->x + 1;
@@ -582,14 +582,14 @@ namespace OpenLoco::Ui::Windows::Construction
                                 Gfx::drawImage(clipped, -4, -9, imageId);
                             }
 
-                            Widget::draw_tab(self, context, -2, widx::tab_station);
+                            Widget::drawTab(self, context, -2, widx::tab_station);
                         }
                     }
                 }
             }
             // Signal Tab
             {
-                Widget::draw_tab(self, context, ImageIds::null, widx::tab_signal);
+                Widget::drawTab(self, context, ImageIds::null, widx::tab_signal);
                 if (!self->isDisabled(widx::tab_signal))
                 {
                     auto x = self->widgets[widx::tab_signal].left + self->x + 1;
@@ -617,12 +617,12 @@ namespace OpenLoco::Ui::Windows::Construction
                         Gfx::drawImage(clipped, 15, 31, imageId);
                     }
 
-                    Widget::draw_tab(self, context, -2, widx::tab_signal);
+                    Widget::drawTab(self, context, -2, widx::tab_signal);
                 }
             }
             // Overhead Tab
             {
-                Widget::draw_tab(self, context, ImageIds::null, widx::tab_overhead);
+                Widget::drawTab(self, context, ImageIds::null, widx::tab_overhead);
                 if (!self->isDisabled(widx::tab_station))
                 {
                     auto x = self->widgets[widx::tab_overhead].left + self->x + 2;
@@ -640,13 +640,13 @@ namespace OpenLoco::Ui::Windows::Construction
                         }
                     }
 
-                    Widget::draw_tab(self, context, -2, widx::tab_overhead);
+                    Widget::drawTab(self, context, -2, widx::tab_overhead);
                 }
             }
         }
 
         // 0x0049ED33
-        void drawTabs(window* self, Gfx::Context* context)
+        void drawTabs(Window* self, Gfx::Context* context)
         {
             if (_trackType & (1 << 7))
             {
@@ -659,7 +659,7 @@ namespace OpenLoco::Ui::Windows::Construction
         }
 
         // 0x004A09DE
-        void repositionTabs(window* self)
+        void repositionTabs(Window* self)
         {
             int16_t xPos = self->widgets[widx::tab_construction].left;
             const int16_t tabWidth = self->widgets[widx::tab_construction].right - xPos;
@@ -668,11 +668,11 @@ namespace OpenLoco::Ui::Windows::Construction
             {
                 if (self->isDisabled(i))
                 {
-                    self->widgets[i].type = widget_type::none;
+                    self->widgets[i].type = WidgetType::none;
                     continue;
                 }
 
-                self->widgets[i].type = widget_type::wt_8;
+                self->widgets[i].type = WidgetType::wt_8;
                 self->widgets[i].left = xPos;
                 self->widgets[i].right = xPos + tabWidth;
                 xPos = self->widgets[i].right + 1;
@@ -687,7 +687,7 @@ namespace OpenLoco::Ui::Windows::Construction
         }
 
         // 0x0049DD14
-        void onClose(window* self)
+        void onClose(Window* self)
         {
             sub_49FEC7();
             WindowManager::viewportSetVisibility(WindowManager::ViewportVisibility::reset);
@@ -698,7 +698,7 @@ namespace OpenLoco::Ui::Windows::Construction
         }
 
         // 0x0049E437, 0x0049E76F, 0x0049ECD1
-        void onUpdate(window* self, uint8_t flag)
+        void onUpdate(Window* self, uint8_t flag)
         {
             self->frame_no++;
             self->callPrepareDraw();
@@ -757,7 +757,7 @@ namespace OpenLoco::Ui::Windows::Construction
         }
 
         // 0x0049CE33
-        void setDisabledWidgets(window* self)
+        void setDisabledWidgets(Window* self)
         {
             auto disabledWidgets = 0;
             if (isEditorMode())
@@ -1230,7 +1230,7 @@ namespace OpenLoco::Ui::Windows::Construction
         }
     }
 
-    void rotate(window* self)
+    void rotate(Window* self)
     {
         switch (self->current_tab)
         {
@@ -1243,7 +1243,7 @@ namespace OpenLoco::Ui::Windows::Construction
                 break;
 
             case Common::widx::tab_station - Common::widx::tab_construction:
-                if (self->widgets[Station::widx::rotate].type != widget_type::none)
+                if (self->widgets[Station::widx::rotate].type != WidgetType::none)
                 {
                     self->callOnMouseUp(Station::widx::rotate);
                 }

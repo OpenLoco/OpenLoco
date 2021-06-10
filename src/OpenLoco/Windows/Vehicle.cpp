@@ -47,41 +47,41 @@ namespace OpenLoco::Ui::Windows::Vehicle
             tabRoute = 8,
         };
 
-#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                                  \
-    makeWidget({ 0, 0 }, { (frameWidth), (frameHeight) }, widget_type::frame, 0),                                                                \
-        makeWidget({ 1, 1 }, { (frameWidth)-2, 13 }, widget_type::caption_24, 0, windowCaptionId),                                               \
-        makeWidget({ (frameWidth)-15, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window),           \
-        makeWidget({ 0, 41 }, { 265, 136 }, widget_type::panel, 1),                                                                              \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab_vehicle_background, StringIds::tooltip_vehicle_tab_main),     \
-        makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab_vehicle_background, StringIds::tooltip_vehicle_tab_details), \
-        makeRemapWidget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab_vehicle_background, StringIds::tooltip_vehicle_tab_cargo),   \
-        makeRemapWidget({ 96, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab_vehicle_background, StringIds::tooltip_vehicle_tab_finance), \
-        makeRemapWidget({ 158, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab_vehicle_background, StringIds::tooltip_vehicle_tab_route)
+#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                                 \
+    makeWidget({ 0, 0 }, { (frameWidth), (frameHeight) }, WidgetType::frame, 0),                                                                \
+        makeWidget({ 1, 1 }, { (frameWidth)-2, 13 }, WidgetType::caption_24, 0, windowCaptionId),                                               \
+        makeWidget({ (frameWidth)-15, 2 }, { 13, 13 }, WidgetType::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window),           \
+        makeWidget({ 0, 41 }, { 265, 136 }, WidgetType::panel, 1),                                                                              \
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab_vehicle_background, StringIds::tooltip_vehicle_tab_main),     \
+        makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab_vehicle_background, StringIds::tooltip_vehicle_tab_details), \
+        makeRemapWidget({ 65, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab_vehicle_background, StringIds::tooltip_vehicle_tab_cargo),   \
+        makeRemapWidget({ 96, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab_vehicle_background, StringIds::tooltip_vehicle_tab_finance), \
+        makeRemapWidget({ 158, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab_vehicle_background, StringIds::tooltip_vehicle_tab_route)
 
         constexpr uint64_t enabledWidgets = (1 << closeButton) | (1 << tabMain) | (1 << tabDetails) | (1 << tabCargo) | (1 << tabFinances) | (1 << tabRoute);
 
-        static Vehicles::VehicleHead* getVehicle(const window* self)
+        static Vehicles::VehicleHead* getVehicle(const Window* self)
         {
             return EntityManager::get<Vehicles::VehicleHead>(self->number);
         }
 
-        static void setActiveTabs(window* const self);
-        static void textInput(window* const self, const widget_index callingWidget, const char* const input);
-        static void renameVehicle(window* const self, const widget_index widgetIndex);
-        static void switchTab(window* const self, const widget_index widgetIndex);
-        static void repositionTabs(window* const self);
-        static void setCaptionEnableState(window* const self);
-        static void onPickup(window* const self, const widget_index pickupWidx);
-        static void event8(window* const self);
-        static void event9(window* const self);
-        static size_t getNumCars(Ui::window* const self);
-        static void drawTabs(window* const window, Gfx::Context* const context);
-        static void pickupToolUpdate(window& self, const int16_t x, const int16_t y);
-        static void pickupToolDown(window& self, const int16_t x, const int16_t y);
-        static void pickupToolAbort(window& self);
-        static size_t getNumCars(Ui::window* const self);
-        static void drawTabs(window* const window, Gfx::Context* const context);
-        static std::optional<Vehicles::Car> getCarFromScrollView(window* const self, const int16_t y);
+        static void setActiveTabs(Window* const self);
+        static void textInput(Window* const self, const WidgetIndex_t callingWidget, const char* const input);
+        static void renameVehicle(Window* const self, const WidgetIndex_t widgetIndex);
+        static void switchTab(Window* const self, const WidgetIndex_t widgetIndex);
+        static void repositionTabs(Window* const self);
+        static void setCaptionEnableState(Window* const self);
+        static void onPickup(Window* const self, const WidgetIndex_t pickupWidx);
+        static void event8(Window* const self);
+        static void event9(Window* const self);
+        static size_t getNumCars(Ui::Window* const self);
+        static void drawTabs(Window* const window, Gfx::Context* const context);
+        static void pickupToolUpdate(Window& self, const int16_t x, const int16_t y);
+        static void pickupToolDown(Window& self, const int16_t x, const int16_t y);
+        static void pickupToolAbort(Window& self);
+        static size_t getNumCars(Ui::Window* const self);
+        static void drawTabs(Window* const window, Gfx::Context* const context);
+        static std::optional<Vehicles::Car> getCarFromScrollView(Window* const self, const int16_t y);
         static std::pair<uint32_t, string_id> getPickupImageIdandTooltip(const Vehicles::VehicleHead& head, const bool isPlaced);
     }
 
@@ -99,16 +99,16 @@ namespace OpenLoco::Ui::Windows::Vehicle
         };
 
         // 0x00500434
-        static window_event_list events;
+        static WindowEventList events;
         constexpr uint64_t enabledWidgets = (1 << widx::buildNew) | (1 << widx::pickup) | (1 << widx::remove) | (1 << widx::carList) | Common::enabledWidgets;
         constexpr uint64_t holdableWidgets = 0;
 
-        static widget_t widgets[] = {
+        static Widget widgets[] = {
             commonWidgets(265, 177, StringIds::title_vehicle_details),
-            makeWidget({ 240, 44 }, { 24, 24 }, widget_type::wt_9, 1, -1, StringIds::tooltip_build_new_vehicle_for),
-            makeWidget({ 240, 68 }, { 24, 24 }, widget_type::wt_9, 1, -1, StringIds::tooltip_remove_from_track),
-            makeWidget({ 240, 96 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::rubbish_bin, StringIds::tooltip_sell_or_drag_vehicle),
-            makeWidget({ 3, 44 }, { 237, 110 }, widget_type::scrollview, 1, vertical),
+            makeWidget({ 240, 44 }, { 24, 24 }, WidgetType::wt_9, 1, -1, StringIds::tooltip_build_new_vehicle_for),
+            makeWidget({ 240, 68 }, { 24, 24 }, WidgetType::wt_9, 1, -1, StringIds::tooltip_remove_from_track),
+            makeWidget({ 240, 96 }, { 24, 24 }, WidgetType::wt_9, 1, ImageIds::rubbish_bin, StringIds::tooltip_sell_or_drag_vehicle),
+            makeWidget({ 3, 44 }, { 237, 110 }, WidgetType::scrollview, 1, Scrollbars::vertical),
             widgetEnd()
         };
     }
@@ -125,14 +125,14 @@ namespace OpenLoco::Ui::Windows::Vehicle
         };
 
         // 0x005004A8
-        static window_event_list events;
+        static WindowEventList events;
         constexpr uint64_t enabledWidgets = (1 << widx::refit) | (1 << widx::cargoList) | Common::enabledWidgets;
         constexpr uint64_t holdableWidgets = 0;
 
-        static widget_t widgets[] = {
+        static Widget widgets[] = {
             commonWidgets(265, 177, StringIds::title_vehicle_cargo),
-            makeWidget({ 240, 44 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::refit_cargo_button, StringIds::refit_vehicle_tip),
-            makeWidget({ 3, 44 }, { 259, 120 }, widget_type::scrollview, 1, vertical),
+            makeWidget({ 240, 44 }, { 24, 24 }, WidgetType::wt_9, 1, ImageIds::refit_cargo_button, StringIds::refit_vehicle_tip),
+            makeWidget({ 3, 44 }, { 259, 120 }, WidgetType::scrollview, 1, Scrollbars::vertical),
             widgetEnd()
         };
     }
@@ -142,12 +142,12 @@ namespace OpenLoco::Ui::Windows::Vehicle
         static const Gfx::ui_size_t minWindowSize = { 400, 202 };
         static const Gfx::ui_size_t maxWindowSize = minWindowSize;
 
-        static window_event_list events;
+        static WindowEventList events;
         constexpr uint64_t enabledWidgets = Common::enabledWidgets;
         constexpr uint64_t holdableWidgets = 0;
 
         // 0x00522470
-        static widget_t widgets[] = {
+        static Widget widgets[] = {
             commonWidgets(636, 319, StringIds::title_company_finances),
             widgetEnd(),
         };
@@ -173,23 +173,23 @@ namespace OpenLoco::Ui::Windows::Vehicle
         };
 
         // 0x00500554
-        static window_event_list events;
+        static WindowEventList events;
         constexpr uint64_t enabledWidgets = (1 << widx::routeList) | (1 << widx::orderForceUnload) | (1 << widx::orderWait) | (1 << widx::orderSkip) | (1 << widx::orderDelete) | (1 << widx::orderUp) | (1 << widx::orderDown) | Common::enabledWidgets;
         constexpr uint64_t holdableWidgets = 0;
         constexpr auto lineHeight = 10;
 
-        static widget_t widgets[] = {
+        static Widget widgets[] = {
             commonWidgets(265, 189, StringIds::title_vehicle_route),
-            makeWidget({ 0, 0 }, { 1, 1 }, widget_type::none, 0),
-            makeWidget({ 3, 44 }, { 118, 12 }, widget_type::wt_11, 1, StringIds::local_mode_button),
-            makeWidget({ 121, 44 }, { 119, 12 }, widget_type::wt_11, 1, StringIds::express_mode_button),
-            makeWidget({ 3, 58 }, { 237, 120 }, widget_type::scrollview, 1, vertical, StringIds::tooltip_route_scrollview),
-            makeWidget({ 240, 44 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::route_force_unload, StringIds::tooltip_route_insert_force_unload),
-            makeWidget({ 240, 68 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::route_wait, StringIds::tooltip_route_insert_wait_full_cargo),
-            makeWidget({ 240, 92 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::route_skip, StringIds::tooltip_route_skip_next_order),
-            makeWidget({ 240, 116 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::route_delete, StringIds::tooltip_route_delete_order),
-            makeWidget({ 240, 140 }, { 24, 12 }, widget_type::wt_9, 1, ImageIds::red_arrow_up, StringIds::tooltip_route_move_order_up),
-            makeWidget({ 240, 152 }, { 24, 12 }, widget_type::wt_9, 1, ImageIds::red_arrow_down, StringIds::tooltip_route_move_order_down),
+            makeWidget({ 0, 0 }, { 1, 1 }, WidgetType::none, 0),
+            makeWidget({ 3, 44 }, { 118, 12 }, WidgetType::wt_11, 1, StringIds::local_mode_button),
+            makeWidget({ 121, 44 }, { 119, 12 }, WidgetType::wt_11, 1, StringIds::express_mode_button),
+            makeWidget({ 3, 58 }, { 237, 120 }, WidgetType::scrollview, 1, Scrollbars::vertical, StringIds::tooltip_route_scrollview),
+            makeWidget({ 240, 44 }, { 24, 24 }, WidgetType::wt_9, 1, ImageIds::route_force_unload, StringIds::tooltip_route_insert_force_unload),
+            makeWidget({ 240, 68 }, { 24, 24 }, WidgetType::wt_9, 1, ImageIds::route_wait, StringIds::tooltip_route_insert_wait_full_cargo),
+            makeWidget({ 240, 92 }, { 24, 24 }, WidgetType::wt_9, 1, ImageIds::route_skip, StringIds::tooltip_route_skip_next_order),
+            makeWidget({ 240, 116 }, { 24, 24 }, WidgetType::wt_9, 1, ImageIds::route_delete, StringIds::tooltip_route_delete_order),
+            makeWidget({ 240, 140 }, { 24, 12 }, WidgetType::wt_9, 1, ImageIds::red_arrow_up, StringIds::tooltip_route_move_order_up),
+            makeWidget({ 240, 152 }, { 24, 12 }, WidgetType::wt_9, 1, ImageIds::red_arrow_down, StringIds::tooltip_route_move_order_down),
             widgetEnd(),
         };
     }
@@ -218,16 +218,16 @@ namespace OpenLoco::Ui::Windows::Vehicle
             centreViewport = 16,
         };
 
-        static widget_t widgets[] = {
+        static Widget widgets[] = {
             commonWidgets(265, 177, StringIds::stringid),
-            makeWidget({ 3, 44 }, { 237, 120 }, widget_type::viewport, 1),
-            makeWidget({ 3, 155 }, { 237, 21 }, widget_type::wt_13, 1),
-            makeWidget({ 240, 46 }, { 24, 115 }, widget_type::wt_5, 1),
-            makeWidget({ 240, 44 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::red_flag, StringIds::tooltip_stop_start),
-            makeWidget({ 240, 68 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::null, StringIds::tooltip_remove_from_track),
-            makeWidget({ 240, 92 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::pass_signal, StringIds::tooltip_pass_signal_at_danger),
-            makeWidget({ 240, 116 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::construction_right_turnaround, StringIds::tooltip_change_direction),
-            makeWidget({ 0, 0 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::null, StringIds::move_main_view_to_show_this),
+            makeWidget({ 3, 44 }, { 237, 120 }, WidgetType::viewport, 1),
+            makeWidget({ 3, 155 }, { 237, 21 }, WidgetType::wt_13, 1),
+            makeWidget({ 240, 46 }, { 24, 115 }, WidgetType::wt_5, 1),
+            makeWidget({ 240, 44 }, { 24, 24 }, WidgetType::wt_9, 1, ImageIds::red_flag, StringIds::tooltip_stop_start),
+            makeWidget({ 240, 68 }, { 24, 24 }, WidgetType::wt_9, 1, ImageIds::null, StringIds::tooltip_remove_from_track),
+            makeWidget({ 240, 92 }, { 24, 24 }, WidgetType::wt_9, 1, ImageIds::pass_signal, StringIds::tooltip_pass_signal_at_danger),
+            makeWidget({ 240, 116 }, { 24, 24 }, WidgetType::wt_9, 1, ImageIds::construction_right_turnaround, StringIds::tooltip_change_direction),
+            makeWidget({ 0, 0 }, { 24, 24 }, WidgetType::wt_9, 1, ImageIds::null, StringIds::move_main_view_to_show_this),
             widgetEnd()
         };
 
@@ -236,17 +236,17 @@ namespace OpenLoco::Ui::Windows::Vehicle
         constexpr uint64_t holdableWidgets = 1 << widx::speedControl;
 
         // 0x005003C0
-        static window_event_list events;
+        static WindowEventList events;
 
         // 0x004B5D82
-        static void resetDisabledWidgets(window* const self)
+        static void resetDisabledWidgets(Window* const self)
         {
             self->disabled_widgets = 0;
         }
 
         // 0x004B5D88
         // 0x004B32F9
-        static void createViewport(window* const self)
+        static void createViewport(Window* const self)
         {
             if (self->current_tab != (Common::widx::tabMain - Common::widx::tabMain))
             {
@@ -336,7 +336,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         static void initEvents();
 
         // 0x004B60DC
-        static window* create(const uint16_t head)
+        static Window* create(const uint16_t head)
         {
             auto* const self = WindowManager::createWindow(WindowType::vehicle, windowSize, WindowFlags::flag_11 | WindowFlags::flag_8 | WindowFlags::resizable, &events);
             self->widgets = widgets;
@@ -363,7 +363,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B6033
-        window* open(const Vehicles::VehicleBase* vehicle)
+        Window* open(const Vehicles::VehicleBase* vehicle)
         {
             const auto head = vehicle->getHead();
             auto* self = WindowManager::find(WindowType::vehicle, head);
@@ -394,7 +394,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B288F
-        static void onChangeDirection(window* const self)
+        static void onChangeDirection(Window* const self)
         {
             if (Input::isToolActive(self->type, self->number, widx::pickup))
             {
@@ -406,12 +406,12 @@ namespace OpenLoco::Ui::Windows::Vehicle
             GameCommands::do_3(self->number, Common::getVehicle(self));
         }
 
-        static void onCentreViewportControl(window* const self)
+        static void onCentreViewportControl(Window* const self)
         {
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::dropdown_viewport_move);
             Dropdown::add(1, StringIds::dropdown_stringid, StringIds::dropdown_viewport_focus);
 
-            widget_t* widget = &self->widgets[widx::centreViewport];
+            Widget* widget = &self->widgets[widx::centreViewport];
             Dropdown::showText(
                 self->x + widget->left,
                 self->y + widget->top,
@@ -426,7 +426,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B24D1
-        static void onMouseUp(window* const self, const widget_index widgetIndex)
+        static void onMouseUp(Window* const self, const WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -457,7 +457,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B30F3
-        static void onUpdate(window* const self)
+        static void onUpdate(Window* const self)
         {
             self->frame_no += 1;
             self->callPrepareDraw();
@@ -495,7 +495,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B3210
-        static void onResize(window* const self)
+        static void onResize(Window* const self)
         {
             Common::setCaptionEnableState(self);
             self->setSize(minWindowSize, maxWindowSize);
@@ -528,7 +528,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B274B
-        static void stopStartOpen(window* const self)
+        static void stopStartOpen(Window* const self)
         {
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::stop);
             Dropdown::add(1, StringIds::dropdown_stringid, StringIds::start);
@@ -541,7 +541,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 dropdownCount = 3;
             }
 
-            widget_t* widget = &self->widgets[widx::stopStart];
+            Widget* widget = &self->widgets[widx::stopStart];
             Dropdown::showText(
                 self->x + widget->left,
                 self->y + widget->top,
@@ -566,7 +566,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B2637
-        static void onSpeedControl(window* const self)
+        static void onSpeedControl(Window* const self)
         {
             Input::setClickRepeatTicks(31);
             auto pos = Input::getScrollLastLocation();
@@ -577,7 +577,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B251A
-        static void onMouseDown(window* const self, const widget_index widgetIndex)
+        static void onMouseDown(Window* const self, const WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -594,7 +594,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B253A
-        static void onStopStartDropdown(window* const self, const int16_t itemIndex)
+        static void onStopStartDropdown(Window* const self, const int16_t itemIndex)
         {
             auto item = itemIndex == -1 ? Dropdown::getHighlightedItem() : itemIndex;
             if (item == -1 || item > 2)
@@ -617,7 +617,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             GameCommands::do12(head->id, mode);
         }
 
-        static void onCentreViewportDropdown(window* const self, const int16_t itemIndex)
+        static void onCentreViewportDropdown(Window* const self, const int16_t itemIndex)
         {
             if (itemIndex <= 0)
             {
@@ -639,7 +639,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B253A
-        static void onDropdown(window* const self, const widget_index widgetIndex, const int16_t itemIndex)
+        static void onDropdown(Window* const self, const WidgetIndex_t widgetIndex, const int16_t itemIndex)
         {
             switch (widgetIndex)
             {
@@ -653,7 +653,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B2545
-        static void onToolUpdate(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
+        static void onToolUpdate(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
             if (widgetIndex != widx::pickup)
             {
@@ -663,7 +663,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B2550
-        static void onToolDown(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
+        static void onToolDown(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
             if (widgetIndex != widx::pickup)
             {
@@ -673,7 +673,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B255B
-        static void onToolAbort(window& self, const widget_index widgetIndex)
+        static void onToolAbort(Window& self, const WidgetIndex_t widgetIndex)
         {
             if (widgetIndex != widx::pickup)
             {
@@ -683,7 +683,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B31F2
-        static std::optional<FormatArguments> tooltip(Ui::window* self, widget_index)
+        static std::optional<FormatArguments> tooltip(Ui::Window* self, WidgetIndex_t)
         {
             FormatArguments args{};
 
@@ -694,7 +694,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B1EB5
-        static void prepareDraw(window* const self)
+        static void prepareDraw(Window* const self)
         {
             if (self->widgets != widgets)
             {
@@ -706,19 +706,19 @@ namespace OpenLoco::Ui::Windows::Vehicle
             auto head = Common::getVehicle(self);
             Vehicles::Vehicle train(head);
 
-            self->widgets[widx::stopStart].type = widget_type::wt_9;
-            self->widgets[widx::pickup].type = widget_type::wt_9;
-            self->widgets[widx::passSignal].type = widget_type::wt_9;
-            self->widgets[widx::changeDirection].type = widget_type::wt_9;
+            self->widgets[widx::stopStart].type = WidgetType::wt_9;
+            self->widgets[widx::pickup].type = WidgetType::wt_9;
+            self->widgets[widx::passSignal].type = WidgetType::wt_9;
+            self->widgets[widx::changeDirection].type = WidgetType::wt_9;
 
             if (head->mode != TransportMode::rail)
             {
-                self->widgets[widx::passSignal].type = widget_type::none;
+                self->widgets[widx::passSignal].type = WidgetType::none;
             }
 
             if (head->mode == TransportMode::air || head->mode == TransportMode::water)
             {
-                self->widgets[widx::changeDirection].type = widget_type::none;
+                self->widgets[widx::changeDirection].type = WidgetType::none;
             }
 
             self->disabled_widgets &= ~interactiveWidgets;
@@ -790,7 +790,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             self->widgets[widx::pickup].image = Gfx::recolour(pickupImage);
             self->widgets[widx::pickup].tooltip = pickupTooltip;
 
-            self->widgets[widx::speedControl].type = widget_type::none;
+            self->widgets[widx::speedControl].type = WidgetType::none;
 
             self->widgets[Common::widx::frame].right = self->width - 1;
             self->widgets[Common::widx::frame].bottom = self->height - 1;
@@ -806,7 +806,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 if (isPlayerCompany(head->owner))
                 {
                     viewportRight -= 27;
-                    self->widgets[widx::speedControl].type = widget_type::wt_5;
+                    self->widgets[widx::speedControl].type = WidgetType::wt_5;
                 }
             }
 
@@ -832,10 +832,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             if (!isPlayerCompany(head->owner))
             {
-                self->widgets[widx::stopStart].type = widget_type::none;
-                self->widgets[widx::pickup].type = widget_type::none;
-                self->widgets[widx::passSignal].type = widget_type::none;
-                self->widgets[widx::changeDirection].type = widget_type::none;
+                self->widgets[widx::stopStart].type = WidgetType::none;
+                self->widgets[widx::pickup].type = WidgetType::none;
+                self->widgets[widx::passSignal].type = WidgetType::none;
+                self->widgets[widx::changeDirection].type = WidgetType::none;
                 self->widgets[widx::viewport].right += 22;
             }
 
@@ -847,13 +847,13 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B226D
-        static void draw(window* const self, Gfx::Context* const context)
+        static void draw(Window* const self, Gfx::Context* const context)
         {
             self->draw(context);
             Common::drawTabs(self, context);
 
-            widget_t& pickupButton = self->widgets[widx::pickup];
-            if (pickupButton.type != widget_type::none)
+            Widget& pickupButton = self->widgets[widx::pickup];
+            if (pickupButton.type != WidgetType::none)
             {
                 if ((pickupButton.image & 0x20000000) != 0 && !self->isDisabled(widx::pickup))
                 {
@@ -890,8 +890,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     &args);
             }
 
-            widget_t& speedWidget = self->widgets[widx::speedControl];
-            if (speedWidget.type != widget_type::none)
+            Widget& speedWidget = self->widgets[widx::speedControl];
+            if (speedWidget.type != WidgetType::none)
             {
                 Gfx::drawImage(
                     context,
@@ -930,7 +930,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 FormatArguments args = {};
                 args.push(StringIds::getVehicleType(veh->vehicleType));
                 Gfx::point_t origin;
-                widget_t& button = self->widgets[widx::viewport];
+                Widget& button = self->widgets[widx::viewport];
                 origin.x = self->x + button.mid_x();
                 origin.y = self->y + button.mid_y();
                 Gfx::drawStringCentredWrapped(
@@ -964,14 +964,14 @@ namespace OpenLoco::Ui::Windows::Vehicle
     namespace Details
     {
         // 0x4B60CC
-        window* open(const Vehicles::VehicleBase* vehicle)
+        Window* open(const Vehicles::VehicleBase* vehicle)
         {
             auto self = Main::open(vehicle);
             self->callOnMouseUp(Common::widx::tabDetails);
             return self;
         }
 
-        static void cloneVehicle(window* self)
+        static void cloneVehicle(Window* self)
         {
             static loco_global<uint16_t, 0x0113642A> _113642A;
             auto head = Common::getVehicle(self);
@@ -987,7 +987,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B3823
-        static void onMouseUp(window* self, widget_index widgetIndex)
+        static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -1022,13 +1022,13 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B3D73
-        static void onResize(window* const self)
+        static void onResize(Window* const self)
         {
             Common::setCaptionEnableState(self);
             self->setSize(minWindowSize, maxWindowSize);
         }
 
-        static void onMouseDown(window* const self, const widget_index widgetIndex)
+        static void onMouseDown(Window* const self, const WidgetIndex_t widgetIndex)
         {
             if (widgetIndex != widx::buildNew)
                 return;
@@ -1036,7 +1036,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::dropdown_modify_vehicle);
             Dropdown::add(1, StringIds::dropdown_stringid, StringIds::dropdown_clone_vehicle);
 
-            widget_t* widget = &self->widgets[widx::buildNew];
+            Widget* widget = &self->widgets[widx::buildNew];
             Dropdown::showText(
                 self->x + widget->left,
                 self->y + widget->top,
@@ -1051,7 +1051,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B253A
-        static void onDropdown(window* const self, const widget_index widgetIndex, const int16_t itemIndex)
+        static void onDropdown(Window* const self, const WidgetIndex_t widgetIndex, const int16_t itemIndex)
         {
             if (widgetIndex != widx::buildNew)
                 return;
@@ -1068,7 +1068,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
         // 0x004B3C45
         // "Show <vehicle> design details and options" tab in vehicle window
-        static void onUpdate(window* self)
+        static void onUpdate(Window* self)
         {
             if (self->number == _dragVehicleHead)
             {
@@ -1114,7 +1114,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B385F
-        static void onToolUpdate(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
+        static void onToolUpdate(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
             if (widgetIndex != widx::pickup)
             {
@@ -1124,7 +1124,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B386A
-        static void onToolDown(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
+        static void onToolDown(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
             if (widgetIndex != widx::pickup)
             {
@@ -1134,7 +1134,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B3875
-        static void onToolAbort(window& self, const widget_index widgetIndex)
+        static void onToolAbort(Window& self, const WidgetIndex_t widgetIndex)
         {
             if (widgetIndex != widx::pickup)
             {
@@ -1144,13 +1144,13 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x4B38FA
-        static void getScrollSize(Ui::window* const self, const uint32_t scrollIndex, uint16_t* const width, uint16_t* const height)
+        static void getScrollSize(Ui::Window* const self, const uint32_t scrollIndex, uint16_t* const width, uint16_t* const height)
         {
             *height = static_cast<uint16_t>(Common::getNumCars(self) * self->row_height);
         }
 
         // 0x004B3B54
-        static void scrollMouseDown(window* const self, const int16_t x, const int16_t y, const uint8_t scrollIndex)
+        static void scrollMouseDown(Window* const self, const int16_t x, const int16_t y, const uint8_t scrollIndex)
         {
             auto head = Common::getVehicle(self);
             if (head->owner != CompanyManager::getControllingId())
@@ -1176,7 +1176,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B399E
-        static void scrollMouseOver(window* const self, const int16_t x, const int16_t y, const uint8_t scrollIndex)
+        static void scrollMouseOver(Window* const self, const int16_t x, const int16_t y, const uint8_t scrollIndex)
         {
             Input::setTooltipTimeout(2000);
             self->flags &= ~WindowFlags::not_scroll_view;
@@ -1270,7 +1270,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B3880 TODO: common across 3 tabs
-        static std::optional<FormatArguments> tooltip(Ui::window* self, widget_index)
+        static std::optional<FormatArguments> tooltip(Ui::Window* self, WidgetIndex_t)
         {
             FormatArguments args{};
             args.push(StringIds::tooltip_scroll_vehicle_list);
@@ -1281,7 +1281,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B3B18
-        static Ui::CursorId cursor(window* const self, const int16_t widgetIdx, const int16_t x, const int16_t y, const Ui::CursorId fallback)
+        static Ui::CursorId cursor(Window* const self, const int16_t widgetIdx, const int16_t x, const int16_t y, const Ui::CursorId fallback)
         {
             if (widgetIdx != widx::carList)
             {
@@ -1312,7 +1312,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         };
 
         // 0x004B3300
-        static void prepareDraw(window* self)
+        static void prepareDraw(Window* self)
         {
             if (self->widgets != widgets)
             {
@@ -1346,19 +1346,19 @@ namespace OpenLoco::Ui::Windows::Vehicle
             self->widgets[widx::remove].right = self->width - 2;
             self->widgets[widx::remove].left = self->width - 25;
 
-            self->widgets[widx::buildNew].type = widget_type::wt_9;
-            self->widgets[widx::pickup].type = widget_type::wt_9;
-            self->widgets[widx::remove].type = widget_type::wt_9;
+            self->widgets[widx::buildNew].type = WidgetType::wt_9;
+            self->widgets[widx::pickup].type = WidgetType::wt_9;
+            self->widgets[widx::remove].type = WidgetType::wt_9;
             // Differs to main tab! Unsure why.
             if (head->isPlaced())
             {
-                self->widgets[widx::pickup].type = widget_type::none;
+                self->widgets[widx::pickup].type = WidgetType::none;
             }
             if (head->owner != CompanyManager::getControllingId())
             {
-                self->widgets[widx::buildNew].type = widget_type::none;
-                self->widgets[widx::pickup].type = widget_type::none;
-                self->widgets[widx::remove].type = widget_type::none;
+                self->widgets[widx::buildNew].type = WidgetType::none;
+                self->widgets[widx::pickup].type = WidgetType::none;
+                self->widgets[widx::remove].type = WidgetType::none;
                 self->widgets[widx::carList].right = self->width - 4;
             }
 
@@ -1382,13 +1382,13 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B3542
-        static void draw(window* const self, Gfx::Context* const context)
+        static void draw(Window* const self, Gfx::Context* const context)
         {
             self->draw(context);
             Common::drawTabs(self, context);
 
             // TODO: identical to main tab (doesn't appear to do anything useful)
-            if (self->widgets[widx::pickup].type != widget_type::none)
+            if (self->widgets[widx::pickup].type != WidgetType::none)
             {
                 if ((self->widgets[widx::pickup].image & (1 << 29)) && !self->isDisabled(widx::pickup))
                 {
@@ -1429,7 +1429,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B36A3
-        static void drawScroll(window* const self, Gfx::Context* const context, const uint32_t i)
+        static void drawScroll(Window* const self, Gfx::Context* const context, const uint32_t i)
         {
             Gfx::clearSingle(*context, Colour::getShade(self->colours[1], 4));
             auto head = Common::getVehicle(self);
@@ -1502,7 +1502,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             events.draw_scroll = drawScroll;
         }
 
-        static Ui::window* getVehicleDetailsWindow(const Gfx::point_t& pos)
+        static Ui::Window* getVehicleDetailsWindow(const Gfx::point_t& pos)
         {
             auto vehicleWindow = WindowManager::findAt(pos);
             if (vehicleWindow == nullptr || vehicleWindow->type != WindowType::vehicle || vehicleWindow->current_tab != (Common::widx::tabDetails - Common::widx::tabMain))
@@ -1512,7 +1512,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             return vehicleWindow;
         }
 
-        static Vehicles::VehicleBase* getCarFromScrollViewPos(Ui::window& self, const Gfx::point_t& pos)
+        static Vehicles::VehicleBase* getCarFromScrollViewPos(Ui::Window& self, const Gfx::point_t& pos)
         {
             int16_t scrollX;
             int16_t scrollY;
@@ -1617,7 +1617,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
     namespace Cargo
     {
-        static void onRefitButton(window* const self, const widget_index wi);
+        static void onRefitButton(Window* const self, const WidgetIndex_t wi);
 
         static bool canRefit(Vehicles::VehicleHead* headVehicle)
         {
@@ -1638,7 +1638,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 004B3DDE
-        static void prepareDraw(window* const self)
+        static void prepareDraw(Window* const self)
         {
             if (self->widgets != widgets)
             {
@@ -1664,10 +1664,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
             widgets[widx::cargoList].bottom = self->height - 14;
             widgets[widx::refit].right = self->width - 2;
             widgets[widx::refit].left = self->width - 25;
-            widgets[widx::refit].type = widget_type::wt_9;
+            widgets[widx::refit].type = WidgetType::wt_9;
             if (!canRefit(headVehicle))
             {
-                widgets[widx::refit].type = widget_type::none;
+                widgets[widx::refit].type = WidgetType::none;
                 widgets[widx::cargoList].right = self->width - 26 + 22;
             }
 
@@ -1675,7 +1675,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 004B3F0D
-        static void draw(Ui::window* const self, Gfx::Context* const context)
+        static void draw(Ui::Window* const self, Gfx::Context* const context)
         {
             self->draw(context);
             Common::drawTabs(self, context);
@@ -1712,7 +1712,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 004B3F62
-        static void drawScroll(window* const self, Gfx::Context* const pDrawpixelinfo, const uint32_t i)
+        static void drawScroll(Window* const self, Gfx::Context* const pDrawpixelinfo, const uint32_t i)
         {
             Gfx::clearSingle(*pDrawpixelinfo, Colour::getShade(self->colours[1], 4));
             Vehicles::Vehicle train{ Common::getVehicle(self) };
@@ -1758,7 +1758,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 004B41BD
-        static void onMouseUp(window* const self, const widget_index i)
+        static void onMouseUp(Window* const self, const WidgetIndex_t i)
         {
             switch (i)
             {
@@ -1781,7 +1781,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 004B41E2
-        static void onMouseDown(window* const self, const widget_index i)
+        static void onMouseDown(Window* const self, const WidgetIndex_t i)
         {
             switch (i)
             {
@@ -1792,7 +1792,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 004B41E9
-        static void onDropdown(window* const self, const widget_index i, const int16_t dropdownIndex)
+        static void onDropdown(Window* const self, const WidgetIndex_t i, const int16_t dropdownIndex)
         {
             switch (i)
             {
@@ -1814,7 +1814,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             return (cargoObjA->unitSize * maxPrimaryCargo) / cargoObjB->unitSize;
         }
 
-        static void onRefitButton(window* const self, const widget_index wi)
+        static void onRefitButton(Window* const self, const WidgetIndex_t wi)
         {
             Vehicles::Vehicle train(Common::getVehicle(self));
             auto vehicleObject = ObjectManager::get<VehicleObject>(train.cars.firstCar.front->object_id);
@@ -1845,7 +1845,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 index++;
             }
 
-            widget_t& button = self->widgets[wi];
+            Widget& button = self->widgets[wi];
 
             Dropdown::showText(
                 self->x + button.left,
@@ -1859,7 +1859,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B4339
-        static std::optional<FormatArguments> tooltip(Ui::window* self, widget_index)
+        static std::optional<FormatArguments> tooltip(Ui::Window* self, WidgetIndex_t)
         {
             FormatArguments args{};
             args.push(StringIds::tooltip_scroll_vehicle_list);
@@ -1870,7 +1870,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B4360
-        static void getScrollSize(Ui::window* const self, const uint32_t scrollIndex, uint16_t* const width, uint16_t* const height)
+        static void getScrollSize(Ui::Window* const self, const uint32_t scrollIndex, uint16_t* const width, uint16_t* const height)
         {
             *height = static_cast<uint16_t>(Common::getNumCars(self) * self->row_height);
         }
@@ -1915,7 +1915,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B4404
-        static void scrollMouseOver(window* const self, const int16_t x, const int16_t y, const uint8_t scrollIndex)
+        static void scrollMouseOver(Window* const self, const int16_t x, const int16_t y, const uint8_t scrollIndex)
         {
             Input::setTooltipTimeout(2000);
             self->flags &= ~WindowFlags::not_scroll_view;
@@ -1967,7 +1967,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B4607
-        static void onUpdate(window* const self)
+        static void onUpdate(Window* const self)
         {
             self->frame_no += 1;
             self->callPrepareDraw();
@@ -1975,7 +1975,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B4621
-        static void onResize(window* const self)
+        static void onResize(Window* const self)
         {
             Common::setCaptionEnableState(self);
             self->setSize(minWindowSize, maxWindowSize);
@@ -2004,7 +2004,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
     namespace Finances
     {
         // 0x004B56CE
-        static void prepareDraw(window* self)
+        static void prepareDraw(Window* self)
         {
             if (self->widgets != widgets)
             {
@@ -2031,7 +2031,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B576C
-        static void draw(Ui::window* const self, Gfx::Context* const context)
+        static void draw(Ui::Window* const self, Gfx::Context* const context)
         {
             self->draw(context);
             Common::drawTabs(self, context);
@@ -2116,7 +2116,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B5945
-        static void onMouseUp(window* self, widget_index widgetIndex)
+        static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -2137,7 +2137,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B5977
-        static std::optional<FormatArguments> tooltip(Ui::window* self, widget_index)
+        static std::optional<FormatArguments> tooltip(Ui::Window* self, WidgetIndex_t)
         {
             FormatArguments args{};
             auto veh0 = Common::getVehicle(self);
@@ -2147,7 +2147,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B5995
-        static void onUpdate(window* const self)
+        static void onUpdate(Window* const self)
         {
             self->frame_no += 1;
             self->callPrepareDraw();
@@ -2155,7 +2155,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B59AF
-        static void onResize(window* const self)
+        static void onResize(Window* const self)
         {
             Common::setCaptionEnableState(self);
             self->setSize(minWindowSize, maxWindowSize);
@@ -2303,7 +2303,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B509B
-        static void close(window* const self)
+        static void close(Window* const self)
         {
             if (Input::isToolActive(self->type, self->number))
             {
@@ -2384,7 +2384,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B4B43
-        static void onMouseUp(window* const self, const widget_index widgetIndex)
+        static void onMouseUp(Window* const self, const WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -2480,14 +2480,14 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B564E
-        static void onResize(window* const self)
+        static void onResize(Window* const self)
         {
             Common::setCaptionEnableState(self);
             self->setSize(minWindowSize, maxWindowSize);
         }
 
         // 0x004B4DD3
-        static void createOrderDropdown(window* const self, const widget_index i, const string_id orderType)
+        static void createOrderDropdown(Window* const self, const WidgetIndex_t i, const string_id orderType)
         {
             auto head = Common::getVehicle(self);
             auto index = 0;
@@ -2516,7 +2516,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B4B8C
-        static void onMouseDown(window* const self, const widget_index i)
+        static void onMouseDown(Window* const self, const WidgetIndex_t i)
         {
             switch (i)
             {
@@ -2533,7 +2533,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // order argument : eax (3 - 32 bits), cx
         // Note will move orders so do not use while iterating OrderRingView
         // 0x004B4ECB
-        static void addNewOrder(window* const self, const Vehicles::Order& order)
+        static void addNewOrder(Window* const self, const Vehicles::Order& order)
         {
             auto head = Common::getVehicle(self);
             auto chosenOffset = head->sizeOfOrderTable - 1;
@@ -2563,7 +2563,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B4BAC
-        static void onDropdown(window* const self, const widget_index i, const int16_t dropdownIndex)
+        static void onDropdown(Window* const self, const WidgetIndex_t i, const int16_t dropdownIndex)
         {
             auto item = dropdownIndex == -1 ? Dropdown::getHighlightedItem() : dropdownIndex;
             if (item == -1)
@@ -2589,7 +2589,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
         // 0x004B55D1
         // "Show <vehicle> route details" tab in vehicle window
-        static void onUpdate(window* const self)
+        static void onUpdate(Window* const self)
         {
             self->frame_no += 1;
             self->callPrepareDraw();
@@ -2613,7 +2613,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B4D74
-        static std::optional<FormatArguments> tooltip(Ui::window* self, widget_index)
+        static std::optional<FormatArguments> tooltip(Ui::Window* self, WidgetIndex_t)
         {
             FormatArguments args{};
             args.push(StringIds::tooltip_scroll_orders_list);
@@ -2623,7 +2623,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B5A1A
-        static std::pair<Ui::ViewportInteraction::InteractionItem, Ui::ViewportInteraction::InteractionArg> sub_4B5A1A(window& self, const int16_t x, const int16_t y)
+        static std::pair<Ui::ViewportInteraction::InteractionItem, Ui::ViewportInteraction::InteractionArg> sub_4B5A1A(Window& self, const int16_t x, const int16_t y)
         {
             registers regs{};
             regs.esi = reinterpret_cast<uint32_t>(&self);
@@ -2641,14 +2641,14 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B5088
-        static void toolCancel(window& self, const widget_index widgetIdx)
+        static void toolCancel(Window& self, const WidgetIndex_t widgetIdx)
         {
             self.invalidate();
             Input::resetMapSelectionFlag(Input::MapSelectionFlags::unk_04);
             Gfx::invalidateScreen();
         }
 
-        static void onToolDown(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
+        static void onToolDown(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
             auto [type, args] = sub_4B5A1A(self, x, y);
             switch (type)
@@ -2730,7 +2730,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B50CE
-        static Ui::CursorId event15(window& self, const int16_t x, const int16_t y, const Ui::CursorId fallback, bool& out)
+        static Ui::CursorId event15(Window& self, const int16_t x, const int16_t y, const Ui::CursorId fallback, bool& out)
         {
             auto typeP = sub_4B5A1A(self, x, y);
             out = typeP.first != Ui::ViewportInteraction::InteractionItem::noInteraction;
@@ -2742,7 +2742,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B4D9B
-        static void getScrollSize(Ui::window* const self, const uint32_t scrollIndex, uint16_t* const width, uint16_t* const height)
+        static void getScrollSize(Ui::Window* const self, const uint32_t scrollIndex, uint16_t* const width, uint16_t* const height)
         {
             auto head = Common::getVehicle(self);
             auto table = getOrderTable(head);
@@ -2752,7 +2752,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             *height += lineHeight;
         }
 
-        static void scrollMouseDown(window* const self, const int16_t x, const int16_t y, const uint8_t scrollIndex)
+        static void scrollMouseDown(Window* const self, const int16_t x, const int16_t y, const uint8_t scrollIndex)
         {
             auto head = Common::getVehicle(self);
             auto item = y / lineHeight;
@@ -2844,7 +2844,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B530C
-        static void scrollMouseOver(window* const self, const int16_t x, const int16_t y, const uint8_t scrollIndex)
+        static void scrollMouseOver(Window* const self, const int16_t x, const int16_t y, const uint8_t scrollIndex)
         {
             self->flags &= ~WindowFlags::not_scroll_view;
             auto item = y / lineHeight;
@@ -2856,7 +2856,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B5339
-        static Ui::CursorId cursor(window* const self, const int16_t widgetIdx, const int16_t x, const int16_t y, const Ui::CursorId fallback)
+        static Ui::CursorId cursor(Window* const self, const int16_t widgetIdx, const int16_t x, const int16_t y, const Ui::CursorId fallback)
         {
             if (widgetIdx != widx::routeList)
             {
@@ -2871,14 +2871,14 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B56B8 TODO Rename
-        static void createViewport(window* const self)
+        static void createViewport(Window* const self)
         {
             auto head = Common::getVehicle(self);
             sub_470824(head);
         }
 
         // 0x004B468C
-        static void prepareDraw(window* const self)
+        static void prepareDraw(Window* const self)
         {
             if (self->widgets != widgets)
             {
@@ -2935,14 +2935,14 @@ namespace OpenLoco::Ui::Windows::Vehicle
             else
                 self->activated_widgets |= (1 << widx::localMode);
 
-            widget_type type = head->owner == CompanyManager::getControllingId() ? widget_type::wt_9 : widget_type::none;
+            WidgetType type = head->owner == CompanyManager::getControllingId() ? WidgetType::wt_9 : WidgetType::none;
             self->widgets[widx::orderForceUnload].type = type;
             self->widgets[widx::orderWait].type = type;
             self->widgets[widx::orderSkip].type = type;
             self->widgets[widx::orderDelete].type = type;
             self->widgets[widx::orderUp].type = type;
             self->widgets[widx::orderDown].type = type;
-            if (type == widget_type::none)
+            if (type == WidgetType::none)
             {
                 self->widgets[widx::routeList].right += 22;
                 self->enabled_widgets &= ~(1 << widx::expressMode | 1 << widx::localMode);
@@ -2965,7 +2965,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B4866
-        static void draw(window* const self, Gfx::Context* const context)
+        static void draw(Window* const self, Gfx::Context* const context)
         {
             self->draw(context);
             Common::drawTabs(self, context);
@@ -3059,7 +3059,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         };
 
         // 0x004B4A58 based on
-        static void sub_4B4A58(window* const self, Gfx::Context* const context, const string_id strFormat, FormatArguments& args, Vehicles::Order& order, int16_t& y)
+        static void sub_4B4A58(Window* const self, Gfx::Context* const context, const string_id strFormat, FormatArguments& args, Vehicles::Order& order, int16_t& y)
         {
             Gfx::point_t loc = { 8, static_cast<int16_t>(y - 1) };
             Gfx::drawString_494B3F(*context, &loc, Colour::black, strFormat, &args);
@@ -3075,7 +3075,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B48BA
-        static void drawScroll(window* const self, Gfx::Context* const pDrawpixelinfo, const uint32_t i)
+        static void drawScroll(Window* const self, Gfx::Context* const pDrawpixelinfo, const uint32_t i)
         {
             Gfx::clearSingle(*pDrawpixelinfo, Colour::getShade(self->colours[1], 4));
 
@@ -3190,8 +3190,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
         struct TabInformation
         {
             const widx widgetIndex;
-            widget_t* widgets;
-            window_event_list* events;
+            Widget* widgets;
+            WindowEventList* events;
             const uint64_t* enabledWidgets;
             const uint64_t* holdableWidgets;
         };
@@ -3204,7 +3204,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             { widx::tabRoute, Route::widgets, &Route::events, &Route::enabledWidgets, &Route::holdableWidgets }
         };
 
-        static void setActiveTabs(window* const self)
+        static void setActiveTabs(Window* const self)
         {
             self->activated_widgets &= ~((1 << widx::tabMain) | (1 << widx::tabDetails) | (1 << widx::tabCargo) | (1 << widx::tabFinances) | (1 << widx::tabRoute));
             self->activated_widgets |= 1ULL << (widx::tabMain + self->current_tab);
@@ -3249,7 +3249,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B26C0
-        static void textInput(window* const self, const widget_index callingWidget, const char* const input)
+        static void textInput(Window* const self, const WidgetIndex_t callingWidget, const char* const input)
         {
             if (callingWidget != widx::caption)
             {
@@ -3269,7 +3269,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B29C0
-        static void pickupToolUpdate(window& self, const int16_t x, const int16_t y)
+        static void pickupToolUpdate(Window& self, const int16_t x, const int16_t y)
         {
             registers regs;
             regs.esi = reinterpret_cast<int32_t>(&self);
@@ -3279,7 +3279,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B2C74
-        static void pickupToolDown(window& self, const int16_t x, const int16_t y)
+        static void pickupToolDown(Window& self, const int16_t x, const int16_t y)
         {
             registers regs;
             regs.esi = reinterpret_cast<int32_t>(&self);
@@ -3289,7 +3289,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B3035
-        static void pickupToolAbort(window& self)
+        static void pickupToolAbort(Window& self)
         {
             auto head = getVehicle(&self);
             if (head->tile_x == -1 || !(head->var_38 & Vehicles::Flags38::isGhost))
@@ -3315,7 +3315,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B2680
-        static void renameVehicle(window* self, widget_index widgetIndex)
+        static void renameVehicle(Window* self, WidgetIndex_t widgetIndex)
         {
             auto vehicle = getVehicle(self);
             if (vehicle != nullptr)
@@ -3329,7 +3329,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B2566
-        static void switchTab(window* self, widget_index widgetIndex)
+        static void switchTab(Window* self, WidgetIndex_t widgetIndex)
         {
             Input::toolCancel(self->type, self->number);
             TextInput::sub_4CE6C9(self->type, self->number);
@@ -3366,7 +3366,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B5ECD
-        static void repositionTabs(window* const self)
+        static void repositionTabs(Window* const self)
         {
             int16_t xPos = self->widgets[widx::tabMain].left;
             const int16_t tabWidth = self->widgets[widx::tabMain].right - xPos;
@@ -3383,7 +3383,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B1E94
-        static void setCaptionEnableState(window* const self)
+        static void setCaptionEnableState(Window* const self)
         {
             self->enabled_widgets |= 1 << widx::caption;
             auto head = getVehicle(self);
@@ -3394,13 +3394,13 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B45DD, 0x004B55A7, 0x004B3C1B
-        static void event8(window* const self)
+        static void event8(Window* const self)
         {
             self->flags |= WindowFlags::not_scroll_view;
         }
 
         // 0x004B45E5, 0x004B55B6, 0x004B3C23
-        static void event9(window* const self)
+        static void event9(Window* const self)
         {
             if (self->flags & WindowFlags::not_scroll_view)
             {
@@ -3423,7 +3423,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         };
 
         // 0x004B28E2
-        static void onPickup(window* const self, const widget_index pickupWidx)
+        static void onPickup(Window* const self, const WidgetIndex_t pickupWidx)
         {
             self->invalidate();
             auto head = getVehicle(self);
@@ -3463,7 +3463,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
         }
 
-        static size_t getNumCars(Ui::window* const self)
+        static size_t getNumCars(Ui::Window* const self)
         {
             Vehicles::Vehicle train(Common::getVehicle(self));
 
@@ -3490,7 +3490,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B5CC1
-        static std::optional<Vehicles::Car> getCarFromScrollView(window* const self, const int16_t y)
+        static std::optional<Vehicles::Car> getCarFromScrollView(Window* const self, const int16_t y)
         {
             Vehicles::Vehicle train(getVehicle(self));
 
@@ -3522,7 +3522,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         };
 
         // 0x004B5F0D
-        static void drawTabs(window* const self, Gfx::Context* const context)
+        static void drawTabs(Window* const self, Gfx::Context* const context)
         {
             auto skin = OpenLoco::ObjectManager::get<InterfaceSkinObject>();
 
@@ -3536,7 +3536,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 frame = (self->frame_no >> mainTab.frameSpeed) & 0x7;
             }
 
-            Widget::draw_tab(
+            Widget::drawTab(
                 self,
                 context,
                 Gfx::recolour(skin->img + mainTab.image + frame, CompanyManager::getCompanyColour(self->owner)),
@@ -3547,7 +3547,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 frame = (self->frame_no >> 1) & 0xF;
             }
-            Widget::draw_tab(
+            Widget::drawTab(
                 self,
                 context,
                 skin->img + InterfaceSkin::ImageIds::tab_wrench_frame0 + frame,
@@ -3558,7 +3558,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 frame = (self->frame_no >> 3) & 0x3;
             }
-            Widget::draw_tab(
+            Widget::drawTab(
                 self,
                 context,
                 skin->img + InterfaceSkin::ImageIds::tab_cargo_delivered_frame0 + frame,
@@ -3569,7 +3569,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 frame = (self->frame_no >> 4) & 0x3;
             }
-            Widget::draw_tab(
+            Widget::drawTab(
                 self,
                 context,
                 skin->img + InterfaceSkin::ImageIds::tab_routes_frame_0 + frame,
@@ -3580,7 +3580,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 frame = (self->frame_no >> 1) & 0xF;
             }
-            Widget::draw_tab(
+            Widget::drawTab(
                 self,
                 context,
                 skin->img + InterfaceSkin::ImageIds::tab_finances_frame0 + frame,

@@ -12,6 +12,7 @@
 #include "../Objects/ObjectManager.h"
 #include "../OpenLoco.h"
 #include "../Ui/WindowManager.h"
+#include "../Widget.h"
 
 using namespace OpenLoco::Interop;
 
@@ -25,7 +26,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
 
     static const Gfx::ui_size_t windowSize = { 400, 272 };
     static constexpr uint32_t rowHeight = 10;
-    static window_event_list events;
+    static WindowEventList events;
 
     enum widx
     {
@@ -38,13 +39,13 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     };
 
     // 0x509680
-    static widget_t widgets[] = {
-        makeWidget({ 0, 0 }, windowSize, widget_type::frame, 0),
-        makeWidget({ 1, 1 }, { 398, 13 }, widget_type::caption_24, 0, StringIds::company_face_selection_title),
-        makeWidget({ 385, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window),
-        makeWidget({ 0, 15 }, { 400, 257 }, widget_type::panel, 1),
-        makeWidget({ 4, 19 }, { 188, 248 }, widget_type::scrollview, 1, vertical, StringIds::tooltip_company_face_selection),
-        makeWidget({ 265, 23 }, { 66, 66 }, widget_type::wt_5, 1),
+    static Widget widgets[] = {
+        makeWidget({ 0, 0 }, windowSize, WidgetType::frame, 0),
+        makeWidget({ 1, 1 }, { 398, 13 }, WidgetType::caption_24, 0, StringIds::company_face_selection_title),
+        makeWidget({ 385, 2 }, { 13, 13 }, WidgetType::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window),
+        makeWidget({ 0, 15 }, { 400, 257 }, WidgetType::panel, 1),
+        makeWidget({ 4, 19 }, { 188, 248 }, WidgetType::scrollview, 1, Scrollbars::vertical, StringIds::tooltip_company_face_selection),
+        makeWidget({ 265, 23 }, { 66, 66 }, WidgetType::wt_5, 1),
         widgetEnd(),
     };
 
@@ -110,13 +111,13 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     }
 
     // 0x004352A4
-    static void onClose(window* const self)
+    static void onClose(Window* const self)
     {
         ObjectManager::freeScenarioText();
     }
 
     // 0x435299
-    static void onMouseUp(window* const self, const widget_index widgetIndex)
+    static void onMouseUp(Window* const self, const WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
@@ -127,7 +128,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     }
 
     // 0x4352BB
-    static void getScrollSize(window* const self, const uint32_t scrollIndex, uint16_t* const scrollWidth, uint16_t* const scrollHeight)
+    static void getScrollSize(Window* const self, const uint32_t scrollIndex, uint16_t* const scrollWidth, uint16_t* const scrollHeight)
     {
         *scrollHeight = _numberCompetitorObjects * rowHeight;
     }
@@ -154,7 +155,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     }
 
     // 0x00435314
-    static void scrollMouseDown(window* const self, const int16_t x, const int16_t y, const uint8_t scroll_index)
+    static void scrollMouseDown(Window* const self, const int16_t x, const int16_t y, const uint8_t scroll_index)
     {
         const auto objIndex = getObjectFromSelection(y);
 
@@ -173,7 +174,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     }
 
     // 0x004352C7
-    static void scrollMouseOver(window* const self, const int16_t x, const int16_t y, const uint8_t scroll_index)
+    static void scrollMouseOver(Window* const self, const int16_t x, const int16_t y, const uint8_t scroll_index)
     {
         auto [rowIndex, object] = getObjectFromSelection(y);
         if (self->row_hover == rowIndex)
@@ -191,7 +192,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     }
 
     // 0x4352B1
-    static std::optional<FormatArguments> tooltip(window* const self, const widget_index)
+    static std::optional<FormatArguments> tooltip(Window* const self, const WidgetIndex_t)
     {
         FormatArguments args{};
         args.push(StringIds::tooltip_scroll_list);
@@ -199,7 +200,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     }
 
     // 0x434FE8
-    static void prepareDraw(window* const self)
+    static void prepareDraw(Window* const self)
     {
         const auto company = CompanyManager::get(self->owner);
 
@@ -208,7 +209,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     }
 
     // 0x435003
-    static void draw(window* const self, Gfx::Context* const context)
+    static void draw(Window* const self, Gfx::Context* const context)
     {
         self->draw(context);
         if (self->row_hover == -1)
@@ -245,7 +246,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     }
 
     // 0x00435152
-    static void drawScroll(window* const self, Gfx::Context* const context, const uint32_t scrollIndex)
+    static void drawScroll(Window* const self, Gfx::Context* const context, const uint32_t scrollIndex)
     {
         Gfx::clearSingle(*context, Colour::getShade(self->colours[1], 4));
 

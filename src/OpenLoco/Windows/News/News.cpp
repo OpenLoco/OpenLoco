@@ -17,6 +17,7 @@
 #include "../../TownManager.h"
 #include "../../Vehicles/Vehicle.h"
 #include "../../ViewportManager.h"
+#include "../../Widget.h"
 #include "../../Window.h"
 
 using namespace OpenLoco::Interop;
@@ -25,15 +26,15 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 {
     namespace News1
     {
-        widget_t widgets[] = {
-            commonWidgets(360, 117, widget_type::wt_3),
+        Widget widgets[] = {
+            commonWidgets(360, 117, WidgetType::wt_3),
             widgetEnd(),
         };
 
-        window_event_list events;
+        WindowEventList events;
 
         // 0x00429BB7
-        static void onMouseUp(window* self, widget_index widgetIndex)
+        static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -142,7 +143,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         }
 
         // 0x00429D2C
-        static void onUpdate(window* self)
+        static void onUpdate(Window* self)
         {
             uint16_t height = _word_525CE0 + 4;
 
@@ -173,7 +174,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             }
         }
 
-        static SavedView getView(window* self, Message* news, uint16_t itemId, uint8_t itemType, bool* selectable)
+        static SavedView getView(Window* self, Message* news, uint16_t itemId, uint8_t itemType, bool* selectable)
         {
             SavedView view;
             view.mapX = -1;
@@ -271,7 +272,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         }
 
         // 0x00429209
-        void initViewport(window* self)
+        void initViewport(Window* self)
         {
             SavedView view;
             view.mapX = -1;
@@ -297,17 +298,17 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                 }
             }
 
-            self->widgets[Common::widx::viewport1].type = widget_type::none;
-            self->widgets[Common::widx::viewport1Button].type = widget_type::none;
+            self->widgets[Common::widx::viewport1].type = WidgetType::none;
+            self->widgets[Common::widx::viewport1Button].type = WidgetType::none;
 
             if (!view.isEmpty())
             {
-                self->widgets[Common::widx::viewport1].type = widget_type::viewport;
+                self->widgets[Common::widx::viewport1].type = WidgetType::viewport;
             }
 
             if (selectable)
             {
-                self->widgets[Common::widx::viewport1Button].type = widget_type::wt_9;
+                self->widgets[Common::widx::viewport1Button].type = WidgetType::wt_9;
             }
 
             uint32_t ecx = view.surfaceZ << 16 | view.rotation << 8 | (uint8_t)view.zoomLevel;
@@ -397,17 +398,17 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                 }
             }
 
-            self->widgets[Common::widx::viewport2].type = widget_type::none;
-            self->widgets[Common::widx::viewport2Button].type = widget_type::none;
+            self->widgets[Common::widx::viewport2].type = WidgetType::none;
+            self->widgets[Common::widx::viewport2Button].type = WidgetType::none;
 
             if (!view.isEmpty())
             {
-                self->widgets[Common::widx::viewport2].type = widget_type::viewport;
+                self->widgets[Common::widx::viewport2].type = WidgetType::viewport;
             }
 
             if (selectable)
             {
-                self->widgets[Common::widx::viewport2Button].type = widget_type::wt_9;
+                self->widgets[Common::widx::viewport2Button].type = WidgetType::wt_9;
             }
 
             ecx = view.surfaceZ << 16 | view.rotation << 8 | (uint8_t)view.zoomLevel;
@@ -464,7 +465,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         }
 
         // 0x0042A136
-        static void sub_42A136(window* self, Gfx::Context* context, Message* news)
+        static void sub_42A136(Window* self, Gfx::Context* context, Message* news)
         {
             registers regs;
             regs.edi = (int32_t)context;
@@ -561,7 +562,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         }
 
         // 0x00429872
-        static void drawLateNews(window* self, Gfx::Context* context, Message* news)
+        static void drawLateNews(Window* self, Gfx::Context* context, Message* news)
         {
             Gfx::drawImage(context, self->x, self->y, ImageIds::news_background_new_left);
 
@@ -601,7 +602,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         }
 
         // 0x00429934
-        static void drawMiddleNews(window* self, Gfx::Context* context, Message* news)
+        static void drawMiddleNews(Window* self, Gfx::Context* context, Message* news)
         {
             if (_word_4F8BE4[news->type] & (1 << 2))
             {
@@ -637,7 +638,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         }
 
         // 0x004299E7
-        static void drawEarlyNews(window* self, Gfx::Context* context, Message* news)
+        static void drawEarlyNews(Window* self, Gfx::Context* context, Message* news)
         {
             auto imageId = Gfx::recolour(ImageIds::news_background_old_left, PaletteIndex::index_68);
 
@@ -694,7 +695,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         }
 
         // 0x00429761
-        static void drawStationNews(window* self, Gfx::Context* context, Message* news)
+        static void drawStationNews(Window* self, Gfx::Context* context, Message* news)
         {
             self->draw(context);
 
@@ -748,7 +749,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         }
 
         // 0x00429739
-        static void draw(Ui::window* self, Gfx::Context* context)
+        static void draw(Ui::Window* self, Gfx::Context* context)
         {
             auto news = MessageManager::get(_activeMessageIndex);
 
@@ -811,8 +812,8 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
     namespace News2
     {
-        widget_t widgets[] = {
-            commonWidgets(360, 159, widget_type::wt_5),
+        Widget widgets[] = {
+            commonWidgets(360, 159, WidgetType::wt_5),
             widgetEnd(),
         };
     }

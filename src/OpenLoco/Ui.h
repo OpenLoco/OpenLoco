@@ -19,7 +19,7 @@ namespace OpenLoco::Paint
 
 namespace OpenLoco::Ui
 {
-    struct viewport;
+    struct Viewport;
 
 #pragma pack(push, 1)
     struct ScreenInfo
@@ -175,6 +175,6 @@ namespace OpenLoco::Ui
         InteractionArg getItemLeft(int16_t tempX, int16_t tempY);
         InteractionArg rightOver(int16_t x, int16_t y);
 
-        std::pair<ViewportInteraction::InteractionArg, Ui::viewport*> getMapCoordinatesFromPos(int32_t screenX, int32_t screenY, int32_t flags);
+        std::pair<ViewportInteraction::InteractionArg, Ui::Viewport*> getMapCoordinatesFromPos(int32_t screenX, int32_t screenY, int32_t flags);
     }
 }

@@ -66,14 +66,14 @@ namespace OpenLoco::Ui::Dropdown
     void show(int16_t x, int16_t y, int16_t width, int16_t height, Colour_t colour, size_t count, uint8_t itemHeight, uint8_t flags);
     void show(int16_t x, int16_t y, int16_t width, int16_t height, Colour_t colour, size_t count, uint8_t flags);
     void showImage(int16_t x, int16_t y, int16_t width, int16_t height, int16_t heightOffset, Colour_t colour, uint8_t columnCount, uint8_t count);
-    void showBelow(window* window, widget_index widgetIndex, size_t count, uint8_t flags);
-    void showBelow(window* window, widget_index widgetIndex, size_t count, int8_t itemHeight, uint8_t flags);
+    void showBelow(Window* window, WidgetIndex_t widgetIndex, size_t count, uint8_t flags);
+    void showBelow(Window* window, WidgetIndex_t widgetIndex, size_t count, int8_t itemHeight, uint8_t flags);
     void showText(int16_t x, int16_t y, int16_t width, int16_t height, uint8_t itemHeight, Colour_t colour, size_t count, uint8_t flags);
     void showText(int16_t x, int16_t y, int16_t width, int16_t height, Colour_t colour, size_t count, uint8_t flags);
     void showText2(int16_t x, int16_t y, int16_t width, int16_t height, uint8_t itemHeight, Colour_t colour, size_t count, uint8_t flags);
     void showText2(int16_t x, int16_t y, int16_t width, int16_t height, Colour_t colour, size_t count, uint8_t flags);
 
-    void populateCompanySelect(window* window, widget_t* widget);
+    void populateCompanySelect(Window* window, Widget* widget);
     CompanyId_t getCompanyIdFromSelection(int16_t itemIndex);
     uint16_t getItemArgument(const uint8_t index, const uint8_t argument);
     uint16_t getItemsPerRow(uint8_t itemCount);

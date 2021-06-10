@@ -3,6 +3,7 @@
 #include "../Interop/Interop.hpp"
 #include "../OpenLoco.h"
 #include "../Ui/WindowManager.h"
+#include "../Widget.h"
 
 using namespace OpenLoco::Interop;
 
@@ -18,17 +19,17 @@ namespace OpenLoco::Ui::Windows::TitleLogo
         };
     }
 
-    static widget_t _widgets[] = {
-        makeWidget({ 0, 0 }, window_size, widget_type::wt_3, 0),
+    static Widget _widgets[] = {
+        makeWidget({ 0, 0 }, window_size, WidgetType::wt_3, 0),
         widgetEnd(),
     };
 
-    static window_event_list _events;
+    static WindowEventList _events;
 
-    static void onMouseUp(window* window, widget_index widgetIndex);
-    static void draw(Ui::window* window, Gfx::Context* context);
+    static void onMouseUp(Window* window, WidgetIndex_t widgetIndex);
+    static void draw(Ui::Window* window, Gfx::Context* context);
 
-    window* open()
+    Window* open()
     {
         _events.on_mouse_up = onMouseUp;
         _events.draw = draw;
@@ -52,13 +53,13 @@ namespace OpenLoco::Ui::Windows::TitleLogo
     }
 
     // 0x00439298
-    static void draw(Ui::window* window, Gfx::Context* context)
+    static void draw(Ui::Window* window, Gfx::Context* context)
     {
         Gfx::drawImage(context, window->x, window->y, ImageIds::locomotion_logo);
     }
 
     // 0x004392AD
-    static void onMouseUp(window* window, widget_index widgetIndex)
+    static void onMouseUp(Window* window, WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {

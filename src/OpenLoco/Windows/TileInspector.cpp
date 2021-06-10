@@ -24,6 +24,7 @@
 #include "../Objects/WallObject.h"
 #include "../Station.h"
 #include "../Ui/WindowManager.h"
+#include "../Widget.h"
 #include <map>
 
 using namespace OpenLoco::Interop;
@@ -58,30 +59,30 @@ namespace OpenLoco::Ui::Windows::TileInspector
         };
     }
 
-    static widget_t _widgets[] = {
-        makeWidget({ 0, 0 }, windowSize, widget_type::frame, 0),
-        makeWidget({ 1, 1 }, { windowSize.width - 2, 13 }, widget_type::caption_25, 0, StringIds::tile_inspector),
-        makeWidget({ windowSize.width - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window),
-        makeWidget({ 0, 15 }, { windowSize.width, windowSize.height - 15 }, widget_type::panel, 1),
-        makeStepperWidgets({ 19, 24 }, { 55, 12 }, widget_type::wt_17, 1),
-        makeStepperWidgets({ 92, 24 }, { 55, 12 }, widget_type::wt_17, 1),
-        makeWidget({ windowSize.width - 26, 18 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::construction_new_position, StringIds::tile_inspector_select_btn_tooltip),
-        makeWidget({ 4, 46 }, { windowSize.width - 8, 100 }, widget_type::scrollview, 1, Ui::scrollbars::vertical),
-        makeWidget({ 4, 148 }, { windowSize.width - 8, 30 }, widget_type::groupbox, 1, StringIds::tile_element_data),
+    static Widget _widgets[] = {
+        makeWidget({ 0, 0 }, windowSize, WidgetType::frame, 0),
+        makeWidget({ 1, 1 }, { windowSize.width - 2, 13 }, WidgetType::caption_25, 0, StringIds::tile_inspector),
+        makeWidget({ windowSize.width - 15, 2 }, { 13, 13 }, WidgetType::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window),
+        makeWidget({ 0, 15 }, { windowSize.width, windowSize.height - 15 }, WidgetType::panel, 1),
+        makeStepperWidgets({ 19, 24 }, { 55, 12 }, WidgetType::wt_17, 1),
+        makeStepperWidgets({ 92, 24 }, { 55, 12 }, WidgetType::wt_17, 1),
+        makeWidget({ windowSize.width - 26, 18 }, { 24, 24 }, WidgetType::wt_9, 1, ImageIds::construction_new_position, StringIds::tile_inspector_select_btn_tooltip),
+        makeWidget({ 4, 46 }, { windowSize.width - 8, 100 }, WidgetType::scrollview, 1, Ui::Scrollbars::vertical),
+        makeWidget({ 4, 148 }, { windowSize.width - 8, 30 }, WidgetType::groupbox, 1, StringIds::tile_element_data),
         widgetEnd(),
     };
 
-    static window_event_list _events;
+    static WindowEventList _events;
 
     static void initEvents();
 
-    static void activateMapSelectionTool(window* const self)
+    static void activateMapSelectionTool(Window* const self)
     {
         Input::toolSet(self, widx::panel, 42);
         Input::setFlag(Input::Flags::flag6);
     }
 
-    window* open()
+    Window* open()
     {
         auto window = WindowManager::bringToFront(WindowType::tileInspector);
         if (window != nullptr)
@@ -111,7 +112,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
         return window;
     }
 
-    static void prepareDraw(window* self)
+    static void prepareDraw(Window* self)
     {
         if (Input::isToolActive(WindowType::tileInspector))
             self->activated_widgets |= (1 << widx::select);
@@ -119,7 +120,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
             self->activated_widgets &= ~(1 << widx::select);
     }
 
-    static void draw(Ui::window* const self, Gfx::Context* const context)
+    static void draw(Ui::Window* const self, Gfx::Context* const context)
     {
         // Draw widgets.
         self->draw(context);
@@ -333,7 +334,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
         return StringIds::empty;
     }
 
-    static void drawScroll(Ui::window* self, Gfx::Context* const context, uint32_t)
+    static void drawScroll(Ui::Window* self, Gfx::Context* const context, uint32_t)
     {
         if (_currentPosition == Pos2(0, 0))
             return;
@@ -386,7 +387,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
         }
     }
 
-    static void scrollMouseDown(window* const self, const int16_t x, const int16_t y, const uint8_t scrollIndex)
+    static void scrollMouseDown(Window* const self, const int16_t x, const int16_t y, const uint8_t scrollIndex)
     {
         auto index = y / self->row_height;
         if (index >= self->row_count)
@@ -400,7 +401,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
         }
     }
 
-    static void scrollMouseOver(window* const self, const int16_t x, const int16_t y, const uint8_t scrollIndex)
+    static void scrollMouseOver(Window* const self, const int16_t x, const int16_t y, const uint8_t scrollIndex)
     {
         auto index = y / self->row_height;
         if (index >= self->row_count)
@@ -413,7 +414,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
         }
     }
 
-    static void onMouseUp(Ui::window* const self, const widget_index widgetIndex)
+    static void onMouseUp(Ui::Window* const self, const WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
@@ -447,7 +448,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
         }
     }
 
-    static void getScrollSize(Ui::window* self, uint32_t, uint16_t*, uint16_t* const scrollHeight)
+    static void getScrollSize(Ui::Window* self, uint32_t, uint16_t*, uint16_t* const scrollHeight)
     {
         if (_currentPosition == Pos2(0, 0))
         {
@@ -458,7 +459,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
         *scrollHeight = self->row_count * self->row_height;
     }
 
-    static void onToolUpdate(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
+    static void onToolUpdate(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
     {
         if (widgetIndex != widx::panel)
             return;
@@ -468,7 +469,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
         TileManager::setMapSelectionSingleTile(x, y);
     }
 
-    static void onToolDown(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
+    static void onToolDown(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
     {
         if (widgetIndex != widx::panel || !(_mapSelectionFlags & 1))
             return;
@@ -482,7 +483,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
         self.invalidate();
     }
 
-    static void onClose(window* self)
+    static void onClose(Window* self)
     {
         Input::toolCancel();
     }

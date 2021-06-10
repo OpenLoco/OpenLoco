@@ -22,6 +22,7 @@
 #include "../Ui/Dropdown.h"
 #include "../Ui/WindowManager.h"
 #include "../Vehicles/Vehicle.h"
+#include "../Widget.h"
 #include "ToolbarTopCommon.h"
 #include <map>
 
@@ -51,33 +52,33 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         };
     }
 
-    static widget_t _widgets[] = {
-        makeWidget({ 0, 0 }, { 30, 28 }, widget_type::wt_7, 0),
-        makeWidget({ 30, 0 }, { 30, 28 }, widget_type::wt_7, 0),
-        makeWidget({ 60, 0 }, { 30, 28 }, widget_type::wt_7, 0),
+    static Widget _widgets[] = {
+        makeWidget({ 0, 0 }, { 30, 28 }, WidgetType::wt_7, 0),
+        makeWidget({ 30, 0 }, { 30, 28 }, WidgetType::wt_7, 0),
+        makeWidget({ 60, 0 }, { 30, 28 }, WidgetType::wt_7, 0),
 
-        makeWidget({ 104, 0 }, { 30, 28 }, widget_type::wt_7, 1),
-        makeWidget({ 134, 0 }, { 30, 28 }, widget_type::wt_7, 1),
-        makeWidget({ 164, 0 }, { 30, 28 }, widget_type::wt_7, 1),
+        makeWidget({ 104, 0 }, { 30, 28 }, WidgetType::wt_7, 1),
+        makeWidget({ 134, 0 }, { 30, 28 }, WidgetType::wt_7, 1),
+        makeWidget({ 164, 0 }, { 30, 28 }, WidgetType::wt_7, 1),
 
-        makeWidget({ 267, 0 }, { 30, 28 }, widget_type::wt_7, 2),
-        makeWidget({ 387, 0 }, { 30, 28 }, widget_type::wt_7, 2),
-        makeWidget({ 357, 0 }, { 30, 28 }, widget_type::wt_7, 2),
-        makeWidget({ 417, 0 }, { 30, 28 }, widget_type::wt_7, 2),
-        makeWidget({ 417, 0 }, { 30, 28 }, widget_type::wt_7, 2),
+        makeWidget({ 267, 0 }, { 30, 28 }, WidgetType::wt_7, 2),
+        makeWidget({ 387, 0 }, { 30, 28 }, WidgetType::wt_7, 2),
+        makeWidget({ 357, 0 }, { 30, 28 }, WidgetType::wt_7, 2),
+        makeWidget({ 417, 0 }, { 30, 28 }, WidgetType::wt_7, 2),
+        makeWidget({ 417, 0 }, { 30, 28 }, WidgetType::wt_7, 2),
 
-        makeWidget({ 490, 0 }, { 30, 28 }, widget_type::wt_7, 3),
-        makeWidget({ 520, 0 }, { 30, 28 }, widget_type::wt_7, 3),
-        makeWidget({ 460, 0 }, { 30, 28 }, widget_type::wt_7, 3),
+        makeWidget({ 490, 0 }, { 30, 28 }, WidgetType::wt_7, 3),
+        makeWidget({ 520, 0 }, { 30, 28 }, WidgetType::wt_7, 3),
+        makeWidget({ 460, 0 }, { 30, 28 }, WidgetType::wt_7, 3),
         widgetEnd(),
     };
 
-    static window_event_list _events;
+    static WindowEventList _events;
 
-    static void onMouseDown(window* window, widget_index widgetIndex);
-    static void onDropdown(window* window, widget_index widgetIndex, int16_t itemIndex);
-    static void prepareDraw(window* window);
-    static void draw(window* window, Gfx::Context* context);
+    static void onMouseDown(Window* window, WidgetIndex_t widgetIndex);
+    static void onDropdown(Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex);
+    static void prepareDraw(Window* window);
+    static void draw(Window* window, Gfx::Context* context);
 
     // 0x00438B26
     void open()
@@ -115,7 +116,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     }
 
     // 0x0043B0F7
-    static void loadsaveMenuMouseDown(window* window, widget_index widgetIndex)
+    static void loadsaveMenuMouseDown(Window* window, WidgetIndex_t widgetIndex)
     {
         Dropdown::add(0, StringIds::menu_load_game);
         Dropdown::add(1, StringIds::menu_save_game);
@@ -176,7 +177,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     }
 
     // 0x0043B154
-    static void loadsaveMenuDropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
+    static void loadsaveMenuDropdown(Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
             itemIndex = Dropdown::getHighlightedItem();
@@ -221,7 +222,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     }
 
     // 0x0043B04B
-    static void audioMenuMouseDown(window* window, widget_index widgetIndex)
+    static void audioMenuMouseDown(Window* window, WidgetIndex_t widgetIndex)
     {
         Dropdown::add(0, StringIds::dropdown_without_checkmark, StringIds::menu_mute);
         Dropdown::add(1, StringIds::dropdown_without_checkmark, StringIds::menu_play_music);
@@ -239,7 +240,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     }
 
     // 0x0043B0B8
-    static void audioMenuDropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
+    static void audioMenuDropdown(Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
             itemIndex = Dropdown::getHighlightedItem();
@@ -272,7 +273,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         }
     }
 
-    static void cheatsMenuMouseDown(window* window, widget_index widgetIndex)
+    static void cheatsMenuMouseDown(Window* window, WidgetIndex_t widgetIndex)
     {
         Dropdown::add(0, StringIds::cheats);
         Dropdown::add(1, StringIds::tile_inspector);
@@ -293,7 +294,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             Dropdown::setItemSelected(5);
     }
 
-    static void cheatsMenuDropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
+    static void cheatsMenuDropdown(Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
             itemIndex = 0;
@@ -332,7 +333,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     }
 
     // 0x0043A2B0
-    static void railroadMenuMouseDown(window* window, widget_index widgetIndex)
+    static void railroadMenuMouseDown(Window* window, WidgetIndex_t widgetIndex)
     {
         // Load objects.
         registers regs;
@@ -380,7 +381,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     }
 
     // 0x0043A39F
-    static void railroadMenuDropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
+    static void railroadMenuDropdown(Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
             itemIndex = Dropdown::getHighlightedItem();
@@ -393,7 +394,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     }
 
     // 0x0043A965
-    static void portMenuMouseDown(window* window, widget_index widgetIndex)
+    static void portMenuMouseDown(Window* window, WidgetIndex_t widgetIndex)
     {
         uint8_t ddIndex = 0;
         auto interface = ObjectManager::get<InterfaceSkinObject>();
@@ -424,7 +425,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     }
 
     // 0x0043AA0A
-    static void portMenuDropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
+    static void portMenuDropdown(Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
             itemIndex = Dropdown::getHighlightedItem();
@@ -462,7 +463,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     // clang-format on
 
     // 0x0043AD1F
-    static void buildVehiclesMenuMouseDown(window* window, widget_index widgetIndex)
+    static void buildVehiclesMenuMouseDown(Window* window, WidgetIndex_t widgetIndex)
     {
         auto company = CompanyManager::get(CompanyManager::getControllingId());
         uint16_t available_vehicles = company->available_vehicles;
@@ -490,7 +491,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     }
 
     // 0x0043ADC7
-    static void buildVehiclesMenuDropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
+    static void buildVehiclesMenuDropdown(Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
             itemIndex = Dropdown::getHighlightedItem();
@@ -505,7 +506,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     }
 
     // 0x0043ABCB
-    static void vehiclesMenuMouseDown(window* window, widget_index widgetIndex)
+    static void vehiclesMenuMouseDown(Window* window, WidgetIndex_t widgetIndex)
     {
         auto player_company_id = CompanyManager::getControllingId();
         auto company = CompanyManager::get(player_company_id);
@@ -554,7 +555,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     }
 
     // 0x0043ACEF
-    static void vehiclesMenuDropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
+    static void vehiclesMenuDropdown(Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
             itemIndex = Dropdown::getHighlightedItem();
@@ -569,7 +570,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     }
 
     // 0x0043A4E9
-    static void stationsMenuMouseDown(window* window, widget_index widgetIndex)
+    static void stationsMenuMouseDown(Window* window, WidgetIndex_t widgetIndex)
     {
         auto interface = ObjectManager::get<InterfaceSkinObject>();
         uint32_t sprite_base = interface->img;
@@ -588,7 +589,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     }
 
     // 0x0043A596
-    static void stationsMenuDropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
+    static void stationsMenuDropdown(Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
             itemIndex = Dropdown::getHighlightedItem();
@@ -600,7 +601,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     }
 
     // 0x0043A071
-    static void onMouseDown(window* window, widget_index widgetIndex)
+    static void onMouseDown(Window* window, WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
@@ -642,7 +643,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         }
     }
 
-    static void onDropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
+    static void onDropdown(Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         switch (widgetIndex)
         {
@@ -685,13 +686,13 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     }
 
     // 0x00439DE4
-    static void draw(window* window, Gfx::Context* context)
+    static void draw(Window* window, Gfx::Context* context)
     {
         Common::draw(window, context);
 
         uint32_t company_colour = CompanyManager::getPlayerCompanyColour();
 
-        if (window->widgets[Common::Widx::railroad_menu].type != widget_type::none)
+        if (window->widgets[Common::Widx::railroad_menu].type != WidgetType::none)
         {
             uint32_t x = window->widgets[Common::Widx::railroad_menu].left + window->x;
             uint32_t y = window->widgets[Common::Widx::railroad_menu].top + window->y;
@@ -782,7 +783,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     }
 
     // 0x00439BCB
-    static void prepareDraw(window* window)
+    static void prepareDraw(Window* window)
     {
         auto interface = ObjectManager::get<InterfaceSkinObject>();
 
@@ -799,7 +800,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 
         if (Config::getNew().cheats_menu_enabled)
         {
-            window->widgets[Widx::cheats_menu].type = widget_type::wt_7;
+            window->widgets[Widx::cheats_menu].type = WidgetType::wt_7;
             auto& baseWidget = window->widgets[Widx::cheats_menu];
             window->widgets[Common::Widx::zoom_menu].left = baseWidget.left + 14 + (baseWidget.width() * 1);
             window->widgets[Common::Widx::rotate_menu].left = baseWidget.left + 14 + (baseWidget.width() * 2);
@@ -807,7 +808,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         }
         else
         {
-            window->widgets[Widx::cheats_menu].type = widget_type::none;
+            window->widgets[Widx::cheats_menu].type = WidgetType::none;
             auto& baseWidget = window->widgets[Common::Widx::audio_menu];
             window->widgets[Common::Widx::zoom_menu].left = baseWidget.left + 14 + (baseWidget.width() * 1);
             window->widgets[Common::Widx::rotate_menu].left = baseWidget.left + 14 + (baseWidget.width() * 2);
@@ -843,36 +844,36 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             window->widgets[Common::Widx::port_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_ports, 0);
 
         if (last_road_option != 0xFF)
-            window->widgets[Common::Widx::road_menu].type = widget_type::wt_7;
+            window->widgets[Common::Widx::road_menu].type = WidgetType::wt_7;
         else
-            window->widgets[Common::Widx::road_menu].type = widget_type::none;
+            window->widgets[Common::Widx::road_menu].type = WidgetType::none;
 
         if (last_railroad_option != 0xFF)
-            window->widgets[Common::Widx::railroad_menu].type = widget_type::wt_7;
+            window->widgets[Common::Widx::railroad_menu].type = WidgetType::wt_7;
         else
-            window->widgets[Common::Widx::railroad_menu].type = widget_type::none;
+            window->widgets[Common::Widx::railroad_menu].type = WidgetType::none;
 
         if (addr<0x00525FAC, int8_t>() != -1 || addr<0x00525FAD, int8_t>() != -1)
-            window->widgets[Common::Widx::port_menu].type = widget_type::wt_7;
+            window->widgets[Common::Widx::port_menu].type = WidgetType::wt_7;
         else
-            window->widgets[Common::Widx::port_menu].type = widget_type::none;
+            window->widgets[Common::Widx::port_menu].type = WidgetType::none;
 
         uint32_t x = std::max(640, Ui::width()) - 1;
         Common::rightAlignTabs(window, x, { Common::Widx::towns_menu, Common::Widx::stations_menu, Common::Widx::vehicles_menu });
         x -= 11;
         Common::rightAlignTabs(window, x, { Common::Widx::build_vehicles_menu });
 
-        if (window->widgets[Common::Widx::port_menu].type != widget_type::none)
+        if (window->widgets[Common::Widx::port_menu].type != WidgetType::none)
         {
             Common::rightAlignTabs(window, x, { Common::Widx::port_menu });
         }
 
-        if (window->widgets[Common::Widx::road_menu].type != widget_type::none)
+        if (window->widgets[Common::Widx::road_menu].type != WidgetType::none)
         {
             Common::rightAlignTabs(window, x, { Common::Widx::road_menu });
         }
 
-        if (window->widgets[Common::Widx::railroad_menu].type != widget_type::none)
+        if (window->widgets[Common::Widx::railroad_menu].type != WidgetType::none)
         {
             Common::rightAlignTabs(window, x, { Common::Widx::railroad_menu });
         }

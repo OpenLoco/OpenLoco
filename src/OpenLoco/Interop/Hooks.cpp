@@ -31,6 +31,7 @@
 #include "../Utility/String.hpp"
 #include "../Vehicles/Vehicle.h"
 #include "../ViewportManager.h"
+#include "../Widget.h"
 #include "Interop.hpp"
 
 using namespace OpenLoco;
@@ -749,7 +750,7 @@ void OpenLoco::Interop::registerHooks()
         0x004CA4DF,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
-            auto window = (Ui::window*)regs.esi;
+            auto window = (Ui::Window*)regs.esi;
             auto context = (Gfx::Context*)regs.edi;
             window->draw(context);
             regs = backup;
@@ -820,7 +821,7 @@ void OpenLoco::Interop::registerHooks()
         0x004C6456,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
-            auto window = (Ui::window*)regs.esi;
+            auto window = (Ui::Window*)regs.esi;
             window->viewportsUpdatePosition();
             regs = backup;
             return 0;
@@ -830,7 +831,7 @@ void OpenLoco::Interop::registerHooks()
         0x004C9513,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
-            auto window = (Ui::window*)regs.esi;
+            auto window = (Ui::Window*)regs.esi;
             int16_t x = regs.ax;
             int16_t y = regs.bx;
 
@@ -854,7 +855,7 @@ void OpenLoco::Interop::registerHooks()
         0x004CA115,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
-            auto window = (Ui::window*)regs.esi;
+            auto window = (Ui::Window*)regs.esi;
             window->updateScrollWidgets();
             regs = backup;
 
@@ -865,7 +866,7 @@ void OpenLoco::Interop::registerHooks()
         0x004CA17F,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
-            auto window = (Ui::window*)regs.esi;
+            auto window = (Ui::Window*)regs.esi;
             window->initScrollWidgets();
             regs = backup;
 

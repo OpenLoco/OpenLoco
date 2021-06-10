@@ -83,7 +83,7 @@ namespace OpenLoco::S5
     }
 
     // 0x0045A0B3
-    static void previewWindowDraw(window* w, Gfx::Context* context)
+    static void previewWindowDraw(Window* w, Gfx::Context* context)
     {
         for (auto viewport : w->viewports)
         {
@@ -102,7 +102,7 @@ namespace OpenLoco::S5
             auto mapPosXY = mainViewport->getCentreMapPosition();
             auto mapPosXYZ = Pos3(mapPosXY.x, mapPosXY.y, TileManager::getHeight(mapPosXY));
 
-            static window_event_list eventList; // 0x4FB3F0
+            static WindowEventList eventList; // 0x4FB3F0
             eventList.draw = previewWindowDraw;
 
             auto tempWindow = WindowManager::createWindow(

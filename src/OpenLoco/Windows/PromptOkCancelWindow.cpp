@@ -6,6 +6,7 @@
 #include "../OpenLoco.h"
 #include "../Ui.h"
 #include "../Ui/WindowManager.h"
+#include "../Widget.h"
 #include <SDL2/SDL.h>
 #include <cstring>
 
@@ -37,16 +38,16 @@ namespace OpenLoco::Ui::Windows::PromptOkCancel
         cancelButton,
     };
 
-    static widget_t _widgets[] = {
-        makeWidget({ 0, 0 }, { 280, 92 }, widget_type::panel, 0),
-        makeWidget({ 1, 1 }, { 278, 13 }, widget_type::caption_22, 0, StringIds::buffer_2039),
-        makeWidget({ 267, 2 }, { 11, 11 }, widget_type::wt_11, 0, StringIds::close_window_cross, StringIds::tooltip_close_window),
-        makeWidget({ 20, 77 }, { 100, 12 }, widget_type::wt_11, 0, StringIds::label_ok),
-        makeWidget({ 160, 77 }, { 100, 12 }, widget_type::wt_11, 0, StringIds::label_button_cancel),
+    static Widget _widgets[] = {
+        makeWidget({ 0, 0 }, { 280, 92 }, WidgetType::panel, 0),
+        makeWidget({ 1, 1 }, { 278, 13 }, WidgetType::caption_22, 0, StringIds::buffer_2039),
+        makeWidget({ 267, 2 }, { 11, 11 }, WidgetType::wt_11, 0, StringIds::close_window_cross, StringIds::tooltip_close_window),
+        makeWidget({ 20, 77 }, { 100, 12 }, WidgetType::wt_11, 0, StringIds::label_ok),
+        makeWidget({ 160, 77 }, { 100, 12 }, WidgetType::wt_11, 0, StringIds::label_button_cancel),
         widgetEnd(),
     };
 
-    static window_event_list _events;
+    static WindowEventList _events;
     static void initEvents();
 
     // 0x00446F6B
@@ -110,7 +111,7 @@ namespace OpenLoco::Ui::Windows::PromptOkCancel
     }
 
     // 0x00447093
-    static void prepareDraw(window* const self)
+    static void prepareDraw(Window* const self)
     {
         // Prepare title string for drawing.
         char* buffer_2039 = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
@@ -118,7 +119,7 @@ namespace OpenLoco::Ui::Windows::PromptOkCancel
     }
 
     // 0x004470FD
-    static void onMouseUp(window* const self, const widget_index widgetIndex)
+    static void onMouseUp(Window* const self, const WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
@@ -135,7 +136,7 @@ namespace OpenLoco::Ui::Windows::PromptOkCancel
     }
 
     // 0x004470AA
-    static void draw(window* const self, Gfx::Context* const context)
+    static void draw(Window* const self, Gfx::Context* const context)
     {
         self->draw(context);
 

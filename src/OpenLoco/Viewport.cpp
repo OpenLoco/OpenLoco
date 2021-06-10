@@ -11,18 +11,18 @@ namespace OpenLoco::Ui
 {
     static loco_global<uint32_t, 0x00E3F0B8> _rotation;
 
-    int viewport::getRotation() const
+    int Viewport::getRotation() const
     {
         return _rotation;
     }
 
-    void viewport::setRotation(int32_t value)
+    void Viewport::setRotation(int32_t value)
     {
         _rotation = value;
     }
 
     // 0x0045A0E7
-    void viewport::render(Gfx::Context* context)
+    void Viewport::render(Gfx::Context* context)
     {
         auto contextRect = context->getUiRect();
         auto viewRect = getUiRect();
@@ -36,7 +36,7 @@ namespace OpenLoco::Ui
     }
 
     // 0x0045A1A4
-    void viewport::paint(Gfx::Context* context, const Rect& rect)
+    void Viewport::paint(Gfx::Context* context, const Rect& rect)
     {
         registers regs{};
         regs.ax = rect.left();
@@ -49,7 +49,7 @@ namespace OpenLoco::Ui
     }
 
     // 0x004CA444
-    void viewport::centre2dCoordinates(int16_t _x, int16_t _y, int16_t _z, int16_t* outX, int16_t* outY)
+    void Viewport::centre2dCoordinates(int16_t _x, int16_t _y, int16_t _z, int16_t* outX, int16_t* outY)
     {
         auto centre = Map::coordinate3dTo2d(_x, _y, _z, getRotation());
 
@@ -57,7 +57,7 @@ namespace OpenLoco::Ui
         *outY = centre.y - view_height / 2;
     }
 
-    SavedViewSimple viewport::toSavedView() const
+    SavedViewSimple Viewport::toSavedView() const
     {
         SavedViewSimple result;
         result.mapX = view_x + (view_width >> 1);
@@ -67,7 +67,7 @@ namespace OpenLoco::Ui
         return result;
     }
 
-    viewport_pos viewport::mapFrom3d(Map::Pos3 loc, int32_t rotation)
+    viewport_pos Viewport::mapFrom3d(Map::Pos3 loc, int32_t rotation)
     {
         Ui::viewport_pos result;
         switch (rotation & 3)
@@ -92,7 +92,7 @@ namespace OpenLoco::Ui
         return result;
     }
 
-    Pos2 viewport::getCentreMapPosition() const
+    Pos2 Viewport::getCentreMapPosition() const
     {
         registers regs;
         regs.ax = view_x + view_width / 2;
@@ -102,7 +102,7 @@ namespace OpenLoco::Ui
         return { regs.ax, regs.bx };
     }
 
-    Pos2 viewport::getCentreScreenMapPosition() const
+    Pos2 Viewport::getCentreScreenMapPosition() const
     {
         registers regs;
         regs.ax = x + width / 2;

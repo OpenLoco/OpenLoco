@@ -8,6 +8,7 @@
 #include "../../Objects/TrackExtraObject.h"
 #include "../../Objects/TrackObject.h"
 #include "../../Ui/Dropdown.h"
+#include "../../Widget.h"
 #include "Construction.h"
 
 using namespace OpenLoco::Interop;
@@ -18,22 +19,22 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
 {
     static loco_global<int32_t, 0x00E3F0B8> gCurrentRotation;
 
-    widget_t widgets[] = {
+    Widget widgets[] = {
         commonWidgets(138, 192, StringIds::stringid_2),
-        makeWidget({ 3, 45 }, { 132, 12 }, widget_type::checkbox, 1, StringIds::empty, StringIds::tooltip_select_track_mod),
-        makeWidget({ 3, 57 }, { 132, 12 }, widget_type::checkbox, 1, StringIds::empty, StringIds::tooltip_select_track_mod),
-        makeWidget({ 3, 69 }, { 132, 12 }, widget_type::checkbox, 1, StringIds::empty, StringIds::tooltip_select_track_mod),
-        makeWidget({ 3, 81 }, { 132, 12 }, widget_type::checkbox, 1, StringIds::empty, StringIds::tooltip_select_track_mod),
-        makeWidget({ 35, 110 }, { 66, 66 }, widget_type::wt_3, 1),
-        makeWidget({ 3, 95 }, { 132, 12 }, widget_type::wt_18, 1, 0xFFFFFFFF, StringIds::tooltip_select_track_to_upgrade),
-        makeWidget({ 123, 96 }, { 11, 10 }, widget_type::wt_11, 1, StringIds::dropdown, StringIds::tooltip_select_track_to_upgrade),
+        makeWidget({ 3, 45 }, { 132, 12 }, WidgetType::checkbox, 1, StringIds::empty, StringIds::tooltip_select_track_mod),
+        makeWidget({ 3, 57 }, { 132, 12 }, WidgetType::checkbox, 1, StringIds::empty, StringIds::tooltip_select_track_mod),
+        makeWidget({ 3, 69 }, { 132, 12 }, WidgetType::checkbox, 1, StringIds::empty, StringIds::tooltip_select_track_mod),
+        makeWidget({ 3, 81 }, { 132, 12 }, WidgetType::checkbox, 1, StringIds::empty, StringIds::tooltip_select_track_mod),
+        makeWidget({ 35, 110 }, { 66, 66 }, WidgetType::wt_3, 1),
+        makeWidget({ 3, 95 }, { 132, 12 }, WidgetType::wt_18, 1, 0xFFFFFFFF, StringIds::tooltip_select_track_to_upgrade),
+        makeWidget({ 123, 96 }, { 11, 10 }, WidgetType::wt_11, 1, StringIds::dropdown, StringIds::tooltip_select_track_to_upgrade),
         widgetEnd(),
     };
 
-    window_event_list events;
+    WindowEventList events;
 
     // 0x0049EBD1
-    static void onMouseUp(window* self, widget_index widgetIndex)
+    static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
@@ -67,7 +68,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
     }
 
     // 0x0049EBFC
-    static void onMouseDown(window* self, widget_index widgetIndex)
+    static void onMouseDown(Window* self, WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
@@ -101,7 +102,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
     }
 
     // 0x0049EC09
-    static void onDropdown(window* self, widget_index widgetIndex, int16_t itemIndex)
+    static void onDropdown(Window* self, WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (widgetIndex != widx::track_dropdown)
             return;
@@ -114,13 +115,13 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
     }
 
     // 0x0049ECD1
-    static void onUpdate(window* self)
+    static void onUpdate(Window* self)
     {
         Common::onUpdate(self, (1 << 5));
     }
 
     // 0x0049EC15
-    static void onToolUpdate(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
+    static void onToolUpdate(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
     {
         registers regs;
         regs.esi = (int32_t)&self;
@@ -131,7 +132,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
     }
 
     // 0x0049EC20
-    static void onToolDown(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
+    static void onToolDown(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
     {
         registers regs;
         regs.esi = (int32_t)&self;
@@ -141,10 +142,10 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
         call(0x0049EC20, regs);
     }
 
-    static void setCheckbox(window* self, widget_index checkboxIndex, string_id name)
+    static void setCheckbox(Window* self, WidgetIndex_t checkboxIndex, string_id name)
     {
         auto widgetIndex = checkboxIndex + widx::checkbox_1;
-        self->widgets[widgetIndex].type = widget_type::checkbox;
+        self->widgets[widgetIndex].type = WidgetType::checkbox;
         self->widgets[widgetIndex].text = name;
 
         if (_lastSelectedMods & (1 << checkboxIndex))
@@ -152,16 +153,16 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
     }
 
     // 0x0049E7D3
-    static void prepareDraw(window* self)
+    static void prepareDraw(Window* self)
     {
         Common::prepareDraw(self);
 
         self->activated_widgets &= ~(1 << widx::checkbox_1 | 1 << widx::checkbox_2 | 1 << widx::checkbox_3 | 1 << widx::checkbox_4);
 
-        self->widgets[widx::checkbox_1].type = widget_type::none;
-        self->widgets[widx::checkbox_2].type = widget_type::none;
-        self->widgets[widx::checkbox_3].type = widget_type::none;
-        self->widgets[widx::checkbox_4].type = widget_type::none;
+        self->widgets[widx::checkbox_1].type = WidgetType::none;
+        self->widgets[widx::checkbox_2].type = WidgetType::none;
+        self->widgets[widx::checkbox_3].type = WidgetType::none;
+        self->widgets[widx::checkbox_4].type = WidgetType::none;
 
         if (_trackType & (1 << 7))
         {
@@ -199,17 +200,17 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
 
         //self->activated_widgets = activatedWidgets;
 
-        self->widgets[widx::image].type = widget_type::none;
-        self->widgets[widx::track].type = widget_type::none;
-        self->widgets[widx::track_dropdown].type = widget_type::none;
+        self->widgets[widx::image].type = WidgetType::none;
+        self->widgets[widx::track].type = WidgetType::none;
+        self->widgets[widx::track_dropdown].type = WidgetType::none;
 
         self->widgets[widx::image].tooltip = StringIds::null;
 
         if (_lastSelectedMods & 0xF)
         {
-            self->widgets[widx::image].type = widget_type::wt_3;
-            self->widgets[widx::track].type = widget_type::wt_18;
-            self->widgets[widx::track_dropdown].type = widget_type::wt_11;
+            self->widgets[widx::image].type = WidgetType::wt_3;
+            self->widgets[widx::track].type = WidgetType::wt_18;
+            self->widgets[widx::track_dropdown].type = WidgetType::wt_11;
 
             self->widgets[widx::image].tooltip = StringIds::upgrade_track_with_mods;
 
@@ -232,7 +233,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
     }
 
     // 0x0049EA3E
-    static void draw(window* self, Gfx::Context* context)
+    static void draw(Window* self, Gfx::Context* context)
     {
         self->draw(context);
         Common::drawTabs(self, context);
@@ -291,7 +292,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
         }
     }
 
-    void tabReset(window* self)
+    void tabReset(Window* self)
     {
         self->callOnMouseDown(Overhead::widx::image);
     }

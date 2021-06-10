@@ -13,7 +13,7 @@ using namespace OpenLoco::Config;
 
 namespace OpenLoco::Ui::Windows::NewsWindow
 {
-    static void createNewsWindow(Gfx::ui_size_t windowSize, widget_t* widgets, uint8_t colour, bool isOld, uint32_t flags)
+    static void createNewsWindow(Gfx::ui_size_t windowSize, Widget* widgets, uint8_t colour, bool isOld, uint32_t flags)
     {
         _word_525CE0 = 5;
 
@@ -239,7 +239,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         }
     }
 
-    void close(window* self)
+    void close(Window* self)
     {
         // Only affects the newspaper view; the ticker ignores this widget
         self->callOnMouseUp(1);

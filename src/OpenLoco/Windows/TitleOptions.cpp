@@ -7,6 +7,7 @@
 #include "../OpenLoco.h"
 #include "../Ui.h"
 #include "../Ui/WindowManager.h"
+#include "../Widget.h"
 
 using namespace OpenLoco::Interop;
 
@@ -22,17 +23,17 @@ namespace OpenLoco::Ui::Windows::TitleOptions
         };
     }
 
-    static widget_t _widgets[] = {
-        makeWidget({ 0, 0 }, window_size, widget_type::wt_9, 1, -1),
+    static Widget _widgets[] = {
+        makeWidget({ 0, 0 }, window_size, WidgetType::wt_9, 1, -1),
         widgetEnd(),
     };
 
-    static window_event_list _events;
+    static WindowEventList _events;
 
-    static void onMouseUp(window* window, widget_index widgetIndex);
-    static void draw(Ui::window* window, Gfx::Context* context);
+    static void onMouseUp(Window* window, WidgetIndex_t widgetIndex);
+    static void draw(Ui::Window* window, Gfx::Context* context);
 
-    window* open()
+    Window* open()
     {
         _events.on_mouse_up = onMouseUp;
         _events.draw = draw;
@@ -55,7 +56,7 @@ namespace OpenLoco::Ui::Windows::TitleOptions
         return window;
     }
 
-    static void draw(Ui::window* window, Gfx::Context* context)
+    static void draw(Ui::Window* window, Gfx::Context* context)
     {
         // Draw widgets.
         window->draw(context);
@@ -67,7 +68,7 @@ namespace OpenLoco::Ui::Windows::TitleOptions
         Gfx::drawStringCentredWrapped(context, &origin, window->width, Colour::white, StringIds::outlined_wcolour2_stringid, (const char*)&StringIds::options);
     }
 
-    static void onMouseUp(window* window, widget_index widgetIndex)
+    static void onMouseUp(Window* window, WidgetIndex_t widgetIndex)
     {
         if (Intro::isActive())
         {

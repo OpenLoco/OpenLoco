@@ -43,21 +43,21 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
         const uint64_t enabledWidgets = (1 << widx::close_button) | (1 << widx::tab_industry_list) | (1 << widx::tab_new_industry);
 
-#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                        \
-    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, widget_type::frame, 0),                                                          \
-        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, widget_type::caption_25, 0, windowCaptionId),                                     \
-        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window), \
-        makeWidget({ 0, 41 }, { frameWidth, 154 }, widget_type::panel, 1),                                                             \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_industries_list),               \
-        makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_fund_new_industries)
+#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                       \
+    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, WidgetType::frame, 0),                                                          \
+        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, WidgetType::caption_25, 0, windowCaptionId),                                     \
+        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, WidgetType::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window), \
+        makeWidget({ 0, 41 }, { frameWidth, 154 }, WidgetType::panel, 1),                                                             \
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_industries_list),               \
+        makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_fund_new_industries)
 
-        static window_event_list _events;
+        static WindowEventList _events;
 
         static void initEvents();
-        static void refreshIndustryList(window* self);
-        static void drawTabs(window* self, Gfx::Context* context);
-        static void prepareDraw(window* self);
-        static void switchTab(window* self, widget_index widgetIndex);
+        static void refreshIndustryList(Window* self);
+        static void drawTabs(Window* self, Gfx::Context* context);
+        static void prepareDraw(Window* self);
+        static void switchTab(Window* self, WidgetIndex_t widgetIndex);
     }
 
     namespace IndustryList
@@ -78,16 +78,16 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << sort_industry_name) | (1 << sort_industry_status) | (1 << sort_industry_production_transported) | (1 << scrollview);
 
-        widget_t widgets[] = {
+        Widget widgets[] = {
             commonWidgets(600, 197, StringIds::title_industries),
-            makeWidget({ 4, 44 }, { 199, 11 }, widget_type::wt_14, 1, ImageIds::null, StringIds::sort_industry_name),
-            makeWidget({ 204, 44 }, { 204, 11 }, widget_type::wt_14, 1, ImageIds::null, StringIds::sort_industry_status),
-            makeWidget({ 444, 44 }, { 159, 11 }, widget_type::wt_14, 1, ImageIds::null, StringIds::sort_industry_production_transported),
-            makeWidget({ 3, 56 }, { 593, 125 }, widget_type::scrollview, 1, scrollbars::vertical),
+            makeWidget({ 4, 44 }, { 199, 11 }, WidgetType::wt_14, 1, ImageIds::null, StringIds::sort_industry_name),
+            makeWidget({ 204, 44 }, { 204, 11 }, WidgetType::wt_14, 1, ImageIds::null, StringIds::sort_industry_status),
+            makeWidget({ 444, 44 }, { 159, 11 }, WidgetType::wt_14, 1, ImageIds::null, StringIds::sort_industry_production_transported),
+            makeWidget({ 3, 56 }, { 593, 125 }, WidgetType::scrollview, 1, Scrollbars::vertical),
             widgetEnd(),
         };
 
-        static window_event_list events;
+        static WindowEventList events;
 
         enum SortMode : uint16_t
         {
@@ -97,7 +97,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         };
 
         // 0x00457B94
-        static void prepareDraw(window* self)
+        static void prepareDraw(Window* self)
         {
             Common::prepareDraw(self);
 
@@ -125,7 +125,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x00457CD9
-        static void draw(window* self, Gfx::Context* context)
+        static void draw(Window* self, Gfx::Context* context)
         {
             self->draw(context);
             Common::drawTabs(self, context);
@@ -143,7 +143,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x00457EC4
-        static void onMouseUp(window* self, widget_index widgetIndex)
+        static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -176,7 +176,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         //0x00458172
-        static void onScrollMouseDown(Ui::window* self, int16_t x, int16_t y, uint8_t scroll_index)
+        static void onScrollMouseDown(Ui::Window* self, int16_t x, int16_t y, uint8_t scroll_index)
         {
             uint16_t currentRow = y / rowHeight;
             if (currentRow > self->var_83C)
@@ -190,7 +190,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x00458140
-        static void onScrollMouseOver(Ui::window* self, int16_t x, int16_t y, uint8_t scroll_index)
+        static void onScrollMouseOver(Ui::Window* self, int16_t x, int16_t y, uint8_t scroll_index)
         {
             self->flags &= ~(WindowFlags::not_scroll_view);
 
@@ -284,7 +284,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x00457991
-        static void updateIndustryList(window* self)
+        static void updateIndustryList(Window* self)
         {
             auto chosenIndustry = -1;
 
@@ -349,7 +349,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x004580AE
-        static void onUpdate(window* self)
+        static void onUpdate(Window* self)
         {
             self->frame_no++;
 
@@ -363,7 +363,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x00457EE8
-        static std::optional<FormatArguments> tooltip(Ui::window* self, widget_index widgetIndex)
+        static std::optional<FormatArguments> tooltip(Ui::Window* self, WidgetIndex_t widgetIndex)
         {
             FormatArguments args{};
             args.push(StringIds::tooltip_scroll_industry_list);
@@ -371,13 +371,13 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x00458108
-        static void getScrollSize(window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+        static void getScrollSize(Window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
         {
             *scrollHeight = rowHeight * self->var_83C;
         }
 
         // 0x00457D2A
-        static void drawScroll(Ui::window* self, Gfx::Context* context, uint32_t scrollIndex)
+        static void drawScroll(Ui::Window* self, Gfx::Context* context, uint32_t scrollIndex)
         {
             auto shade = Colour::getShade(self->colours[1], 4);
             Gfx::clearSingle(*context, shade);
@@ -445,7 +445,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x00458113
-        static Ui::CursorId cursor(window* self, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback)
+        static Ui::CursorId cursor(Window* self, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback)
         {
             if (widgetIdx != widx::scrollview)
                 return fallback;
@@ -458,13 +458,13 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x004580DE
-        static void event_08(window* self)
+        static void event_08(Window* self)
         {
             self->flags |= WindowFlags::not_scroll_view;
         }
 
         // 0x004580E6
-        static void event_09(window* self)
+        static void event_09(Window* self)
         {
             if ((self->flags & WindowFlags::not_scroll_view) == 0)
                 return;
@@ -477,7 +477,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x00457FCA
-        static void tabReset(window* self)
+        static void tabReset(Window* self)
         {
             self->min_width = minDimensions.width;
             self->min_height = minDimensions.height;
@@ -506,7 +506,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
     }
 
     // 0x004577FF
-    window* open()
+    Window* open()
     {
         auto window = WindowManager::bringToFront(WindowType::industryList, 0);
         if (window != nullptr)
@@ -583,16 +583,16 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << scrollview);
 
-        widget_t widgets[] = {
+        Widget widgets[] = {
             commonWidgets(577, 171, StringIds::title_fund_new_industries),
-            makeWidget({ 3, 45 }, { 549, 111 }, widget_type::scrollview, 1, scrollbars::vertical),
+            makeWidget({ 3, 45 }, { 549, 111 }, WidgetType::scrollview, 1, Scrollbars::vertical),
             widgetEnd(),
         };
 
-        static window_event_list events;
+        static WindowEventList events;
 
         // 0x0045819F
-        static void prepareDraw(window* self)
+        static void prepareDraw(Window* self)
         {
             Common::prepareDraw(self);
 
@@ -612,7 +612,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x0045826C
-        static void draw(window* self, Gfx::Context* context)
+        static void draw(Window* self, Gfx::Context* context)
         {
             self->draw(context);
             Common::drawTabs(self, context);
@@ -668,7 +668,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x0045843A
-        static void onMouseUp(window* self, widget_index widgetIndex)
+        static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -689,7 +689,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         //0x00458966
-        static void onScrollMouseDown(Ui::window* self, int16_t x, int16_t y, uint8_t scrollIndex)
+        static void onScrollMouseDown(Ui::Window* self, int16_t x, int16_t y, uint8_t scrollIndex)
         {
             int16_t xPos = (x / rowHeight);
             int16_t yPos = (y / rowHeight) * 5;
@@ -716,7 +716,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x00458721
-        static void onScrollMouseOver(Ui::window* self, int16_t x, int16_t y, uint8_t scrollIndex)
+        static void onScrollMouseOver(Ui::Window* self, int16_t x, int16_t y, uint8_t scrollIndex)
         {
             auto index = getRowIndex(x, y);
             uint16_t rowInfo = 0xFFFF;
@@ -780,14 +780,14 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x004585B8
-        static void onUpdate(window* self)
+        static void onUpdate(Window* self)
         {
             if (!Input::hasFlag(Input::Flags::flag5))
             {
                 auto cursor = Input::getMouseLocation();
                 auto xPos = cursor.x;
                 auto yPos = cursor.y;
-                window* activeWindow = WindowManager::findAt(xPos, yPos);
+                Window* activeWindow = WindowManager::findAt(xPos, yPos);
                 if (activeWindow == self)
                 {
                     xPos -= self->x;
@@ -798,7 +798,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                     {
                         xPos = cursor.x;
                         yPos = cursor.y;
-                        widget_index activeWidget = self->findWidgetAt(xPos, yPos);
+                        WidgetIndex_t activeWidget = self->findWidgetAt(xPos, yPos);
 
                         if (activeWidget > Common::widx::panel)
                         {
@@ -850,7 +850,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x00458455
-        static std::optional<FormatArguments> tooltip(Ui::window* self, widget_index widgetIndex)
+        static std::optional<FormatArguments> tooltip(Ui::Window* self, WidgetIndex_t widgetIndex)
         {
             FormatArguments args{};
             args.push(StringIds::tooltip_scroll_new_industry_list);
@@ -858,7 +858,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x004586EA
-        static void getScrollSize(window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+        static void getScrollSize(Window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
         {
             *scrollHeight = (4 + self->var_83C) / 5;
             if (*scrollHeight == 0)
@@ -867,7 +867,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x00458352
-        static void drawScroll(Ui::window* self, Gfx::Context* context, uint32_t scrollIndex)
+        static void drawScroll(Ui::Window* self, Gfx::Context* context, uint32_t scrollIndex)
         {
             auto shade = Colour::getShade(self->colours[1], 4);
             Gfx::clearSingle(*context, shade);
@@ -912,7 +912,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x00458708
-        static void event_08(window* self)
+        static void event_08(Window* self)
         {
             if (self->var_846 != 0xFFFF)
                 self->var_846 = 0xFFFF;
@@ -920,7 +920,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x0045848A
-        static void onToolUpdate(window& self, const widget_index widgetIndex, int16_t x, const int16_t y)
+        static void onToolUpdate(Window& self, const WidgetIndex_t widgetIndex, int16_t x, const int16_t y)
         {
             registers regs;
             regs.esi = (int32_t)&self;
@@ -931,7 +931,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x0045851F
-        static void onToolDown(window& self, const widget_index widgetIndex, int16_t x, const int16_t y)
+        static void onToolDown(Window& self, const WidgetIndex_t widgetIndex, int16_t x, const int16_t y)
         {
             registers regs;
             regs.esi = (int32_t)&self;
@@ -949,21 +949,21 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x004585AD
-        static void onToolAbort(window& self, const widget_index widgetIndex)
+        static void onToolAbort(Window& self, const WidgetIndex_t widgetIndex)
         {
             sub_458C09();
             Ui::Windows::hideGridlines();
         }
 
         // 0x0045845F
-        static void onClose(window* self)
+        static void onClose(Window* self)
         {
             if (Input::isToolActive(self->type, self->number))
                 Input::toolCancel();
         }
 
         // 0x00458B51
-        static void updateActiveThumb(window* self)
+        static void updateActiveThumb(Window* self)
         {
             uint16_t scrollHeight = 0;
             self->callGetScrollSize(0, 0, &scrollHeight);
@@ -986,7 +986,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x00458AAF
-        static void updateBuildableIndustries(window* self)
+        static void updateBuildableIndustries(Window* self)
         {
             auto industryCount = 0;
             for (uint16_t i = 0; i < ObjectManager::getMaxObjects(ObjectType::industry); i++)
@@ -1033,7 +1033,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x00457FFE
-        static void tabReset(window* self)
+        static void tabReset(Window* self)
         {
             self->min_width = NewIndustries::window_size.width;
             self->min_height = NewIndustries::window_size.height;
@@ -1058,7 +1058,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x004589E8
-        static void onResize(window* self)
+        static void onResize(Window* self)
         {
             self->invalidate();
             Gfx::ui_size_t minWindowSize = { self->min_width, self->min_height };
@@ -1092,9 +1092,9 @@ namespace OpenLoco::Ui::Windows::IndustryList
     {
         struct TabInformation
         {
-            widget_t* widgets;
+            Widget* widgets;
             const widx widgetIndex;
-            window_event_list* events;
+            WindowEventList* events;
             const uint64_t enabledWidgets;
         };
 
@@ -1104,7 +1104,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         };
 
         // 0x00457B94
-        static void prepareDraw(window* self)
+        static void prepareDraw(Window* self)
         {
             // Reset tab widgets if needed.
             auto tabWidgets = tabInformationByTabOffset[self->current_tab].widgets;
@@ -1131,7 +1131,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x00457F27
-        static void switchTab(window* self, widget_index widgetIndex)
+        static void switchTab(Window* self, WidgetIndex_t widgetIndex)
         {
             if (Input::isToolActive(self->type, self->number))
                 Input::toolCancel();
@@ -1163,7 +1163,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x00458A57
-        static void drawTabs(window* self, Gfx::Context* context)
+        static void drawTabs(Window* self, Gfx::Context* context)
         {
             auto skin = ObjectManager::get<InterfaceSkinObject>();
 
@@ -1172,7 +1172,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 uint32_t imageId = skin->img;
                 imageId += InterfaceSkin::ImageIds::toolbar_menu_industries;
 
-                Widget::draw_tab(self, context, imageId, widx::tab_industry_list);
+                Widget::drawTab(self, context, imageId, widx::tab_industry_list);
             }
 
             // Fund New Industries Tab
@@ -1201,12 +1201,12 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 else
                     imageId += fundNewIndustriesImageIds[0];
 
-                Widget::draw_tab(self, context, imageId, widx::tab_new_industry);
+                Widget::drawTab(self, context, imageId, widx::tab_new_industry);
             }
         }
 
         // 0x00457964
-        static void refreshIndustryList(window* window)
+        static void refreshIndustryList(Window* window)
         {
             window->row_count = 0;
 

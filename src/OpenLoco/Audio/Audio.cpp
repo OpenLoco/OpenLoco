@@ -473,7 +473,7 @@ namespace OpenLoco::Audio
         return ObjectManager::get<SoundObject>(idx);
     }
 
-    static viewport* findBestViewportForSound(viewport_pos vpos)
+    static Viewport* findBestViewportForSound(viewport_pos vpos)
     {
         auto w = WindowManager::find(WindowType::main, 0);
         if (w != nullptr)
@@ -519,7 +519,7 @@ namespace OpenLoco::Audio
         }
     }
 
-    static int32_t calculateVolumeFromViewport(SoundId id, const Map::Pos3& mpos, const viewport& viewport)
+    static int32_t calculateVolumeFromViewport(SoundId id, const Map::Pos3& mpos, const Viewport& viewport)
     {
         auto volume = 0;
         auto zVol = 0;
@@ -612,7 +612,7 @@ namespace OpenLoco::Audio
             volume += getVolumeForSoundId(id);
             if (pan == play_at_location)
             {
-                auto vpos = viewport::mapFrom3d(loc, current_rotation);
+                auto vpos = Viewport::mapFrom3d(loc, current_rotation);
                 auto viewport = findBestViewportForSound(vpos);
                 if (viewport == nullptr)
                 {

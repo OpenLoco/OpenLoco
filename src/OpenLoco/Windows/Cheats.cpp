@@ -33,19 +33,19 @@ namespace OpenLoco::Ui::Windows::Cheats
             };
         }
 
-#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                        \
-    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, widget_type::frame, 0),                                                          \
-        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, widget_type::caption_25, 0, windowCaptionId),                                     \
-        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window), \
-        makeWidget({ 0, 41 }, { frameWidth, frameHeight - 41 }, widget_type::panel, 1),                                                \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab),                                                   \
-        makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab),                                                  \
-        makeRemapWidget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab),                                                  \
-        makeRemapWidget({ 96, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab)
+#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                       \
+    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, WidgetType::frame, 0),                                                          \
+        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, WidgetType::caption_25, 0, windowCaptionId),                                     \
+        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, WidgetType::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window), \
+        makeWidget({ 0, 41 }, { frameWidth, frameHeight - 41 }, WidgetType::panel, 1),                                                \
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab),                                                   \
+        makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab),                                                  \
+        makeRemapWidget({ 65, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab),                                                  \
+        makeRemapWidget({ 96, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab)
 
         constexpr uint64_t enabledWidgets = (1 << Widx::close_button) | (1 << Widx::tab_finances) | (1 << Widx::tab_companies) | (1 << Widx::tab_vehicles) | (1 << Widx::tab_towns);
 
-        static void drawTabs(Ui::window* const self, Gfx::Context* const context)
+        static void drawTabs(Ui::Window* const self, Gfx::Context* const context)
         {
             auto skin = ObjectManager::get<InterfaceSkinObject>();
 
@@ -76,13 +76,13 @@ namespace OpenLoco::Ui::Windows::Cheats
                 else
                     imageId += financesTabImageIds[0];
 
-                Widget::draw_tab(self, context, imageId, Widx::tab_finances);
+                Widget::drawTab(self, context, imageId, Widx::tab_finances);
             }
 
             // Companies tab
             {
                 const uint32_t imageId = skin->img + InterfaceSkin::ImageIds::tab_company;
-                Widget::draw_tab(self, context, imageId, Widx::tab_companies);
+                Widget::drawTab(self, context, imageId, Widx::tab_companies);
             }
 
             // Vehicles tab
@@ -109,24 +109,24 @@ namespace OpenLoco::Ui::Windows::Cheats
 
                 imageId = Gfx::recolour(imageId, companyColour);
 
-                Widget::draw_tab(self, context, imageId, Widx::tab_vehicles);
+                Widget::drawTab(self, context, imageId, Widx::tab_vehicles);
             }
 
             // Towns tab
             {
                 const uint32_t imageId = skin->img + InterfaceSkin::ImageIds::toolbar_menu_towns;
-                Widget::draw_tab(self, context, imageId, Widx::tab_towns);
+                Widget::drawTab(self, context, imageId, Widx::tab_towns);
             }
         }
 
-        static void switchTab(window* self, widget_index widgetIndex);
+        static void switchTab(Window* self, WidgetIndex_t widgetIndex);
     }
 
     namespace Finances
     {
         constexpr Gfx::ui_size_t windowSize = { 250, 124 };
 
-        static window_event_list _events;
+        static WindowEventList _events;
 
         namespace Widx
         {
@@ -143,14 +143,14 @@ namespace OpenLoco::Ui::Windows::Cheats
             };
         }
 
-        static widget_t _widgets[] = {
+        static Widget _widgets[] = {
             commonWidgets(windowSize.width, windowSize.height, StringIds::financial_cheats),
-            makeWidget({ 4, 48 }, { windowSize.width - 8, 33 }, widget_type::groupbox, 1, StringIds::cheat_increase_funds),
-            makeStepperWidgets({ 80, 62 }, { 95, 12 }, widget_type::wt_17, 1, StringIds::empty),
-            makeWidget({ 180, 62 }, { 60, 12 }, widget_type::wt_11, 1, StringIds::cheat_add),
-            makeWidget({ 4, 86 }, { windowSize.width - 8, 33 }, widget_type::groupbox, 1, StringIds::cheat_clear_loan),
-            makeWidget({ 80, 100 }, { 95, 12 }, widget_type::wt_17, 1),
-            makeWidget({ 180, 100 }, { 60, 12 }, widget_type::wt_11, 1, StringIds::cheat_clear),
+            makeWidget({ 4, 48 }, { windowSize.width - 8, 33 }, WidgetType::groupbox, 1, StringIds::cheat_increase_funds),
+            makeStepperWidgets({ 80, 62 }, { 95, 12 }, WidgetType::wt_17, 1, StringIds::empty),
+            makeWidget({ 180, 62 }, { 60, 12 }, WidgetType::wt_11, 1, StringIds::cheat_add),
+            makeWidget({ 4, 86 }, { windowSize.width - 8, 33 }, WidgetType::groupbox, 1, StringIds::cheat_clear_loan),
+            makeWidget({ 80, 100 }, { 95, 12 }, WidgetType::wt_17, 1),
+            makeWidget({ 180, 100 }, { 60, 12 }, WidgetType::wt_11, 1, StringIds::cheat_clear),
             widgetEnd(),
         };
 
@@ -160,12 +160,12 @@ namespace OpenLoco::Ui::Windows::Cheats
 
         static currency32_t _cashIncreaseStep = 10'000;
 
-        static void prepareDraw(window* self)
+        static void prepareDraw(Window* self)
         {
             self->activated_widgets = (1 << Common::Widx::tab_finances);
         }
 
-        static void draw(Ui::window* const self, Gfx::Context* const context)
+        static void draw(Ui::Window* const self, Gfx::Context* const context)
         {
             // Draw widgets and tabs.
             self->draw(context);
@@ -216,7 +216,7 @@ namespace OpenLoco::Ui::Windows::Cheats
             }
         }
 
-        static void onMouseUp(Ui::window* const self, const widget_index widgetIndex)
+        static void onMouseUp(Ui::Window* const self, const WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -243,7 +243,7 @@ namespace OpenLoco::Ui::Windows::Cheats
             }
         }
 
-        static void onMouseDown(window* self, widget_index widgetIndex)
+        static void onMouseDown(Window* self, WidgetIndex_t widgetIndex)
         {
             static loco_global<uint16_t, 0x00523376> _clickRepeatTicks;
 
@@ -269,7 +269,7 @@ namespace OpenLoco::Ui::Windows::Cheats
             }
         }
 
-        static void onUpdate(window* const self)
+        static void onUpdate(Window* const self)
         {
             self->frame_no += 1;
             self->callPrepareDraw();
@@ -290,7 +290,7 @@ namespace OpenLoco::Ui::Windows::Cheats
     {
         constexpr Gfx::ui_size_t windowSize = { 250, 172 };
 
-        static window_event_list _events;
+        static WindowEventList _events;
 
         namespace Widx
         {
@@ -307,15 +307,15 @@ namespace OpenLoco::Ui::Windows::Cheats
             };
         }
 
-        static widget_t _widgets[] = {
+        static Widget _widgets[] = {
             commonWidgets(windowSize.width, windowSize.height, StringIds::company_cheats),
-            makeWidget({ 4, 48 }, { windowSize.width - 8, 33 }, widget_type::groupbox, 1, StringIds::cheat_select_target_company),
-            makeDropdownWidgets({ 10, 62 }, { windowSize.width - 20, 12 }, widget_type::wt_17, 1),
-            makeWidget({ 4, 86 }, { windowSize.width - 8, 80 }, widget_type::groupbox, 1, StringIds::cheat_select_cheat_to_apply),
-            makeWidget({ 10, 100 }, { windowSize.width - 20, 12 }, widget_type::wt_11, 1, StringIds::cheat_switch_to_company),
-            makeWidget({ 10, 116 }, { windowSize.width - 20, 12 }, widget_type::wt_11, 1, StringIds::cheat_acquire_company_assets),
-            makeWidget({ 10, 132 }, { windowSize.width - 20, 12 }, widget_type::wt_11, 1, StringIds::cheat_toggle_bankruptcy),
-            makeWidget({ 10, 148 }, { windowSize.width - 20, 12 }, widget_type::wt_11, 1, StringIds::cheat_toggle_jail_status),
+            makeWidget({ 4, 48 }, { windowSize.width - 8, 33 }, WidgetType::groupbox, 1, StringIds::cheat_select_target_company),
+            makeDropdownWidgets({ 10, 62 }, { windowSize.width - 20, 12 }, WidgetType::wt_17, 1),
+            makeWidget({ 4, 86 }, { windowSize.width - 8, 80 }, WidgetType::groupbox, 1, StringIds::cheat_select_cheat_to_apply),
+            makeWidget({ 10, 100 }, { windowSize.width - 20, 12 }, WidgetType::wt_11, 1, StringIds::cheat_switch_to_company),
+            makeWidget({ 10, 116 }, { windowSize.width - 20, 12 }, WidgetType::wt_11, 1, StringIds::cheat_acquire_company_assets),
+            makeWidget({ 10, 132 }, { windowSize.width - 20, 12 }, WidgetType::wt_11, 1, StringIds::cheat_toggle_bankruptcy),
+            makeWidget({ 10, 148 }, { windowSize.width - 20, 12 }, WidgetType::wt_11, 1, StringIds::cheat_toggle_jail_status),
             widgetEnd(),
         };
 
@@ -323,7 +323,7 @@ namespace OpenLoco::Ui::Windows::Cheats
 
         static CompanyId_t _targetCompanyId{};
 
-        static void prepareDraw(window* self)
+        static void prepareDraw(Window* self)
         {
             self->activated_widgets = (1 << Common::Widx::tab_companies);
 
@@ -337,7 +337,7 @@ namespace OpenLoco::Ui::Windows::Cheats
             }
         }
 
-        static void draw(Ui::window* const self, Gfx::Context* const context)
+        static void draw(Ui::Window* const self, Gfx::Context* const context)
         {
             // Draw widgets and tabs.
             self->draw(context);
@@ -355,7 +355,7 @@ namespace OpenLoco::Ui::Windows::Cheats
                 &company->name);
         }
 
-        static void onMouseUp(Ui::window* const self, const widget_index widgetIndex)
+        static void onMouseUp(Ui::Window* const self, const WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -400,13 +400,13 @@ namespace OpenLoco::Ui::Windows::Cheats
             }
         }
 
-        static void onMouseDown(window* self, widget_index widgetIndex)
+        static void onMouseDown(Window* self, WidgetIndex_t widgetIndex)
         {
             if (widgetIndex == Widx::target_company_dropdown)
                 Dropdown::populateCompanySelect(self, &self->widgets[widgetIndex]);
         }
 
-        static void onDropdown(window* self, widget_index widgetIndex, int16_t itemIndex)
+        static void onDropdown(Window* self, WidgetIndex_t widgetIndex, int16_t itemIndex)
         {
             if (itemIndex == -1)
                 return;
@@ -418,7 +418,7 @@ namespace OpenLoco::Ui::Windows::Cheats
             }
         }
 
-        static void onUpdate(window* const self)
+        static void onUpdate(Window* const self)
         {
             self->frame_no += 1;
             self->callPrepareDraw();
@@ -440,7 +440,7 @@ namespace OpenLoco::Ui::Windows::Cheats
     {
         constexpr Gfx::ui_size_t windowSize = { 250, 103 };
 
-        static window_event_list _events;
+        static WindowEventList _events;
 
         namespace Widx
         {
@@ -452,29 +452,29 @@ namespace OpenLoco::Ui::Windows::Cheats
             };
         }
 
-        static widget_t _widgets[] = {
+        static Widget _widgets[] = {
             commonWidgets(windowSize.width, windowSize.height, StringIds::vehicle_cheats),
-            makeWidget({ 4, 48 }, { windowSize.width - 8, 49 }, widget_type::groupbox, 1, StringIds::cheat_set_vehicle_reliability),
-            makeWidget({ 10, 62 }, { windowSize.width - 20, 12 }, widget_type::wt_11, 1, StringIds::cheat_reliability_zero),
-            makeWidget({ 10, 78 }, { windowSize.width - 20, 12 }, widget_type::wt_11, 1, StringIds::cheat_reliability_hundred),
+            makeWidget({ 4, 48 }, { windowSize.width - 8, 49 }, WidgetType::groupbox, 1, StringIds::cheat_set_vehicle_reliability),
+            makeWidget({ 10, 62 }, { windowSize.width - 20, 12 }, WidgetType::wt_11, 1, StringIds::cheat_reliability_zero),
+            makeWidget({ 10, 78 }, { windowSize.width - 20, 12 }, WidgetType::wt_11, 1, StringIds::cheat_reliability_hundred),
             widgetEnd(),
         };
 
         static uint64_t enabledWidgets = Common::enabledWidgets | (1 << Widx::reliablity_all_to_zero) | (1 << Widx::reliablity_all_to_hundred);
 
-        static void prepareDraw(window* self)
+        static void prepareDraw(Window* self)
         {
             self->activated_widgets = (1 << Common::Widx::tab_vehicles);
         }
 
-        static void draw(Ui::window* const self, Gfx::Context* const context)
+        static void draw(Ui::Window* const self, Gfx::Context* const context)
         {
             // Draw widgets and tabs.
             self->draw(context);
             Common::drawTabs(self, context);
         }
 
-        static void onMouseUp(Ui::window* const self, const widget_index widgetIndex)
+        static void onMouseUp(Ui::Window* const self, const WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -507,7 +507,7 @@ namespace OpenLoco::Ui::Windows::Cheats
             }
         }
 
-        static void onUpdate(window* const self)
+        static void onUpdate(Window* const self)
         {
             self->frame_no += 1;
             self->callPrepareDraw();
@@ -527,7 +527,7 @@ namespace OpenLoco::Ui::Windows::Cheats
     {
         constexpr Gfx::ui_size_t windowSize = { 250, 103 };
 
-        static window_event_list _events;
+        static WindowEventList _events;
 
         namespace Widx
         {
@@ -541,31 +541,31 @@ namespace OpenLoco::Ui::Windows::Cheats
             };
         }
 
-        static widget_t _widgets[] = {
+        static Widget _widgets[] = {
             commonWidgets(windowSize.width, windowSize.height, StringIds::town_cheats),
-            makeWidget({ 4, 48 }, { windowSize.width - 8, 49 }, widget_type::groupbox, 1, StringIds::cheat_set_ratings),
-            makeWidget({ 10, 62 }, { (windowSize.width - 26) / 2, 12 }, widget_type::wt_11, 1, StringIds::cheat_ratings_min_10pct),
-            makeWidget({ 3 + (windowSize.width / 2), 62 }, { (windowSize.width - 26) / 2, 12 }, widget_type::wt_11, 1, StringIds::cheat_ratings_plus_10pct),
-            makeWidget({ 10, 78 }, { (windowSize.width - 26) / 2, 12 }, widget_type::wt_11, 1, StringIds::cheat_ratings_to_min),
-            makeWidget({ 3 + (windowSize.width / 2), 78 }, { (windowSize.width - 26) / 2, 12 }, widget_type::wt_11, 1, StringIds::cheat_ratings_to_max),
+            makeWidget({ 4, 48 }, { windowSize.width - 8, 49 }, WidgetType::groupbox, 1, StringIds::cheat_set_ratings),
+            makeWidget({ 10, 62 }, { (windowSize.width - 26) / 2, 12 }, WidgetType::wt_11, 1, StringIds::cheat_ratings_min_10pct),
+            makeWidget({ 3 + (windowSize.width / 2), 62 }, { (windowSize.width - 26) / 2, 12 }, WidgetType::wt_11, 1, StringIds::cheat_ratings_plus_10pct),
+            makeWidget({ 10, 78 }, { (windowSize.width - 26) / 2, 12 }, WidgetType::wt_11, 1, StringIds::cheat_ratings_to_min),
+            makeWidget({ 3 + (windowSize.width / 2), 78 }, { (windowSize.width - 26) / 2, 12 }, WidgetType::wt_11, 1, StringIds::cheat_ratings_to_max),
             widgetEnd(),
         };
 
         static uint64_t enabledWidgets = Common::enabledWidgets | (1 << Widx::ratings_all_min_10pct) | (1 << Widx::ratings_all_plus_10pct) | (1 << Widx::ratings_all_to_min) | (1 << Widx::ratings_all_to_max);
 
-        static void prepareDraw(window* self)
+        static void prepareDraw(Window* self)
         {
             self->activated_widgets = (1 << Common::Widx::tab_towns);
         }
 
-        static void draw(Ui::window* const self, Gfx::Context* const context)
+        static void draw(Ui::Window* const self, Gfx::Context* const context)
         {
             // Draw widgets and tabs.
             self->draw(context);
             Common::drawTabs(self, context);
         }
 
-        static void onMouseUp(Ui::window* const self, const widget_index widgetIndex)
+        static void onMouseUp(Ui::Window* const self, const WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -610,7 +610,7 @@ namespace OpenLoco::Ui::Windows::Cheats
             }
         }
 
-        static void onUpdate(window* const self)
+        static void onUpdate(Window* const self)
         {
             self->frame_no += 1;
             self->callPrepareDraw();
@@ -628,7 +628,7 @@ namespace OpenLoco::Ui::Windows::Cheats
 
     static void initEvents();
 
-    window* open()
+    Window* open()
     {
         auto window = WindowManager::bringToFront(WindowType::cheats);
         if (window != nullptr)
@@ -659,9 +659,9 @@ namespace OpenLoco::Ui::Windows::Cheats
     {
         struct TabInformation
         {
-            widget_t* widgets;
-            widget_index widgetIndex;
-            window_event_list* events;
+            Widget* widgets;
+            WidgetIndex_t widgetIndex;
+            WindowEventList* events;
             const uint64_t* enabledWidgets;
             const uint64_t* holdableWidgets;
             Gfx::ui_size_t windowSize;
@@ -676,7 +676,7 @@ namespace OpenLoco::Ui::Windows::Cheats
         };
         // clang-format on
 
-        static void switchTab(window* self, widget_index widgetIndex)
+        static void switchTab(Window* self, WidgetIndex_t widgetIndex)
         {
             self->current_tab = widgetIndex - Widx::tab_finances;
             self->frame_no = 0;

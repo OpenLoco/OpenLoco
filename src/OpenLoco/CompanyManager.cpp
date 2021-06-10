@@ -269,7 +269,7 @@ namespace OpenLoco::CompanyManager
         r1.ax = screenPosition.x;
         r1.bx = screenPosition.y;
         call(0x0045F1A7, r1);
-        Ui::viewport* vp = (Ui::viewport*)r1.edi;
+        Ui::Viewport* vp = (Ui::Viewport*)r1.edi;
         auto mapPosition = Map::Pos2(r1.ax, r1.bx);
 
         // Happens if center of viewport is obstructed. Probably estimates the centre location

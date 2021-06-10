@@ -17,6 +17,7 @@
 #include "../Ui.h"
 #include "../Ui/Dropdown.h"
 #include "../Ui/WindowManager.h"
+#include "../Widget.h"
 #include <map>
 
 using namespace OpenLoco::Interop;
@@ -43,33 +44,33 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     static void companyValueMouseUp();
 
     // 0x00509d08
-    static widget_t _widgets[] = {
-        makeWidget({ 0, 0 }, { 140, 29 }, widget_type::wt_3, 0),
-        makeWidget({ 2, 2 }, { 136, 25 }, widget_type::wt_3, 0),
-        makeWidget({ 1, 1 }, { 26, 26 }, widget_type::wt_9, 0),
-        makeWidget({ 27, 2 }, { 111, 12 }, widget_type::wt_9, 0, ImageIds::null, StringIds::tooltip_company_value),
-        makeWidget({ 27, 14 }, { 111, 12 }, widget_type::wt_9, 0, ImageIds::null, StringIds::tooltip_performance_index),
+    static Widget _widgets[] = {
+        makeWidget({ 0, 0 }, { 140, 29 }, WidgetType::wt_3, 0),
+        makeWidget({ 2, 2 }, { 136, 25 }, WidgetType::wt_3, 0),
+        makeWidget({ 1, 1 }, { 26, 26 }, WidgetType::wt_9, 0),
+        makeWidget({ 27, 2 }, { 111, 12 }, WidgetType::wt_9, 0, ImageIds::null, StringIds::tooltip_company_value),
+        makeWidget({ 27, 14 }, { 111, 12 }, WidgetType::wt_9, 0, ImageIds::null, StringIds::tooltip_performance_index),
         widgetEnd(),
     };
 
-    static window_event_list _events;
+    static WindowEventList _events;
     std::vector<const Company*> _sortedCompanies;
 
     static loco_global<uint16_t, 0x0050A004> _50A004;
     static loco_global<int32_t, 0x00e3f0b8> gCurrentRotation;
     static loco_global<uint16_t, 0x0113DC78> _113DC78; // Dropdown flags?
 
-    static void prepareDraw(window* window);
-    static void draw(Ui::window* window, Gfx::Context* context);
-    static void onMouseUp(Ui::window* window, widget_index widgetIndex);
-    static void onMouseDown(Ui::window* window, widget_index widgetIndex);
-    static void onDropdown(window* w, widget_index widgetIndex, int16_t item_index);
-    static Ui::CursorId onCursor(Ui::window* window, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback);
-    static std::optional<FormatArguments> tooltip(Ui::window* window, widget_index widgetIndex);
-    static void onUpdate(window* w);
+    static void prepareDraw(Window* window);
+    static void draw(Ui::Window* window, Gfx::Context* context);
+    static void onMouseUp(Ui::Window* window, WidgetIndex_t widgetIndex);
+    static void onMouseDown(Ui::Window* window, WidgetIndex_t widgetIndex);
+    static void onDropdown(Window* w, WidgetIndex_t widgetIndex, int16_t item_index);
+    static Ui::CursorId onCursor(Ui::Window* window, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback);
+    static std::optional<FormatArguments> tooltip(Ui::Window* window, WidgetIndex_t widgetIndex);
+    static void onUpdate(Window* w);
 
     // 0x43AA4C
-    static void playerMouseDown(Ui::window* self, widget_index widgetIndex)
+    static void playerMouseDown(Ui::Window* self, WidgetIndex_t widgetIndex)
     {
         _sortedCompanies.clear();
 
@@ -175,7 +176,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     }
 
     // 0x00438BC7
-    window* open()
+    Window* open()
     {
         initEvents();
 
@@ -201,15 +202,15 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     }
 
     // 0x004393E7
-    static void prepareDraw(window* window)
+    static void prepareDraw(Window* window)
     {
-        window->widgets[Widx::inner_frame].type = widget_type::none;
+        window->widgets[Widx::inner_frame].type = WidgetType::none;
     }
 
     // 0x43944B
-    static void draw(Ui::window* window, Gfx::Context* context)
+    static void draw(Ui::Window* window, Gfx::Context* context)
     {
-        widget_t& frame = _widgets[Widx::outer_frame];
+        Widget& frame = _widgets[Widx::outer_frame];
         Gfx::drawRect(context, window->x + frame.left, window->y + frame.top, frame.width(), frame.height(), 0x2000000 | 52);
 
         // Draw widgets.
@@ -273,7 +274,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     }
 
     // 0x004395A4
-    static void onMouseUp(Ui::window* window, widget_index widgetIndex)
+    static void onMouseUp(Ui::Window* window, WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
@@ -287,7 +288,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     }
 
     // 0x004395B1
-    static void onMouseDown(Ui::window* window, widget_index widgetIndex)
+    static void onMouseDown(Ui::Window* window, WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
@@ -298,7 +299,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     }
 
     // 0x004395BC
-    static void onDropdown(window* w, widget_index widgetIndex, int16_t item_index)
+    static void onDropdown(Window* w, WidgetIndex_t widgetIndex, int16_t item_index)
     {
         switch (widgetIndex)
         {
@@ -321,7 +322,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     }
 
     // 0x004395DE
-    static Ui::CursorId onCursor(Ui::window* window, int16_t widgetIndex, int16_t xPos, int16_t yPos, Ui::CursorId fallback)
+    static Ui::CursorId onCursor(Ui::Window* window, int16_t widgetIndex, int16_t xPos, int16_t yPos, Ui::CursorId fallback)
     {
         switch (widgetIndex)
         {
@@ -334,7 +335,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     }
 
     // 0x004395F5
-    static std::optional<FormatArguments> tooltip(Ui::window* window, widget_index widgetIndex)
+    static std::optional<FormatArguments> tooltip(Ui::Window* window, WidgetIndex_t widgetIndex)
     {
         FormatArguments args{};
         switch (widgetIndex)
@@ -371,7 +372,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     }
 
     // 0x00439670
-    static void onUpdate(window* w)
+    static void onUpdate(Window* w)
     {
         w->var_854++;
         if (w->var_854 >= 24)

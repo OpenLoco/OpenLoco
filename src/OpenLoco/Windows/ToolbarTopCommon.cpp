@@ -20,6 +20,7 @@
 #include "../TownManager.h"
 #include "../Ui/Dropdown.h"
 #include "../Vehicles/Vehicle.h"
+#include "../Widget.h"
 #include <map>
 
 using namespace OpenLoco::Interop;
@@ -35,14 +36,14 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
     static loco_global<int8_t[18], 0x0050A006> available_objects;
 
     // 0x00439DE4
-    void draw(window* self, Gfx::Context* context)
+    void draw(Window* self, Gfx::Context* context)
     {
         // Draw widgets.
         self->draw(context);
 
         uint32_t company_colour = CompanyManager::getPlayerCompanyColour();
 
-        if (self->widgets[Widx::road_menu].type != widget_type::none && last_road_option != 0xFF)
+        if (self->widgets[Widx::road_menu].type != WidgetType::none && last_road_option != 0xFF)
         {
             uint32_t x = self->widgets[Widx::road_menu].left + self->x;
             uint32_t y = self->widgets[Widx::road_menu].top + self->y;
@@ -79,7 +80,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
     }
 
     // 0x0043A78E
-    void zoomMenuMouseDown(window* window, widget_index widgetIndex)
+    void zoomMenuMouseDown(Window* window, WidgetIndex_t widgetIndex)
     {
         auto interface = ObjectManager::get<InterfaceSkinObject>();
 
@@ -118,7 +119,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
     }
 
     // 0x0043A5C5
-    void rotateMenuMouseDown(window* window, widget_index widgetIndex)
+    void rotateMenuMouseDown(Window* window, WidgetIndex_t widgetIndex)
     {
         auto interface = ObjectManager::get<InterfaceSkinObject>();
 
@@ -129,7 +130,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
     }
 
     // 0x0043ADF6
-    void viewMenuMouseDown(window* window, widget_index widgetIndex)
+    void viewMenuMouseDown(Window* window, WidgetIndex_t widgetIndex)
     {
         Dropdown::add(0, StringIds::dropdown_without_checkmark, StringIds::menu_underground_view);
         Dropdown::add(1, StringIds::dropdown_without_checkmark, StringIds::menu_hide_foreground_tracks_roads);
@@ -173,7 +174,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
     }
 
     // 0x0043A3C3
-    void terraformMenuMouseDown(window* window, widget_index widgetIndex)
+    void terraformMenuMouseDown(Window* window, WidgetIndex_t widgetIndex)
     {
         auto interface = ObjectManager::get<InterfaceSkinObject>();
         auto land = ObjectManager::get<LandObject>(addr<0x00525FB6, uint8_t>());
@@ -189,7 +190,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
     }
 
     // 0x0043A19F
-    void roadMenuMouseDown(window* window, widget_index widgetIndex)
+    void roadMenuMouseDown(Window* window, WidgetIndex_t widgetIndex)
     {
         // Load objects.
         registers regs;
@@ -237,7 +238,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
     }
 
     // 0x0043A8CE
-    void townsMenuMouseDown(window* window, widget_index widgetIndex)
+    void townsMenuMouseDown(Window* window, WidgetIndex_t widgetIndex)
     {
         auto interface = ObjectManager::get<InterfaceSkinObject>();
         Dropdown::add(0, StringIds::menu_sprite_stringid, { interface->img + InterfaceSkin::ImageIds::toolbar_menu_towns, StringIds::menu_towns });
@@ -247,7 +248,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
     }
 
     // 0x0043A86D
-    void zoomMenuDropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
+    void zoomMenuDropdown(Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
             itemIndex = Dropdown::getHighlightedItem();
@@ -274,7 +275,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
     }
 
     // 0x0043A624
-    void rotateMenuDropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
+    void rotateMenuDropdown(Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
             itemIndex = Dropdown::getHighlightedItem();
@@ -299,7 +300,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
     }
 
     // 0x0043AF37
-    void viewMenuDropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
+    void viewMenuDropdown(Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
             itemIndex = Dropdown::getHighlightedItem();
@@ -328,7 +329,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
     }
 
     // 0x0043A4A8
-    void terraformMenuDropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
+    void terraformMenuDropdown(Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
             itemIndex = Dropdown::getHighlightedItem();
@@ -358,7 +359,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
     }
 
     // 0x0043A28C
-    void roadMenuDropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
+    void roadMenuDropdown(Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
             itemIndex = Dropdown::getHighlightedItem();
@@ -371,7 +372,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
     }
 
     // 0x0043A932
-    void townsMenuDropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
+    void townsMenuDropdown(Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
             itemIndex = Dropdown::getHighlightedItem();
@@ -388,7 +389,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
         }
     }
 
-    void onDropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
+    void onDropdown(Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         switch (widgetIndex)
         {
@@ -419,7 +420,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
     }
 
     // 0x0043A071
-    void onMouseDown(window* window, widget_index widgetIndex)
+    void onMouseDown(Window* window, WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
@@ -449,13 +450,13 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
         }
     }
 
-    void onUpdate(window* window)
+    void onUpdate(Window* window)
     {
         zoom_ticks++;
     }
 
     // 0x0043A17E
-    void onResize(window* window)
+    void onResize(Window* window)
     {
         auto main = WindowManager::getMainWindow();
         if (main == nullptr)
@@ -464,7 +465,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
             window->setDisabledWidgetsAndInvalidate(0);
     }
 
-    void rightAlignTabs(window* window, uint32_t& x, const std::initializer_list<uint32_t> widxs)
+    void rightAlignTabs(Window* window, uint32_t& x, const std::initializer_list<uint32_t> widxs)
     {
         for (const auto& widx : widxs)
         {

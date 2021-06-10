@@ -54,7 +54,7 @@ namespace OpenLoco::Ui
         constexpr uint32_t station_names_displayed = 1 << 10;
     }
 
-    struct viewport
+    struct Viewport
     {
         int16_t width;       // 0x00
         int16_t height;      // 0x02
@@ -154,7 +154,7 @@ namespace OpenLoco::Ui
         void paint(Gfx::Context* context, const Ui::Rect& rect);
     };
 
-    struct viewport_config
+    struct ViewportConfig
     {
         uint16_t viewport_target_sprite; // 0x0
         int16_t saved_view_x;            // 0x2

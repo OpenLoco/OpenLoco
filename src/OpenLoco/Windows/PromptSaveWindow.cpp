@@ -8,6 +8,7 @@
 #include "../OpenLoco.h"
 #include "../Ui.h"
 #include "../Ui/WindowManager.h"
+#include "../Widget.h"
 #include <array>
 #include <cstring>
 
@@ -28,22 +29,22 @@ namespace OpenLoco::Ui::Windows::PromptSaveWindow
         cancelButton,
     };
 
-    static widget_t _widgets[] = {
-        makeWidget({ 0, 0 }, { 260, 48 }, widget_type::panel, 0),
-        makeWidget({ 1, 1 }, { 258, 13 }, widget_type::caption_22, 0, StringIds::empty),
-        makeWidget({ 247, 2 }, { 11, 11 }, widget_type::wt_11, 0, StringIds::close_window_cross, StringIds::tooltip_close_window),
-        makeWidget({ 2, 17 }, { 256, 12 }, widget_type::wt_13, 0, StringIds::empty),
-        makeWidget({ 8, 33 }, { 78, 12 }, widget_type::wt_11, 0, StringIds::label_button_save),
-        makeWidget({ 91, 33 }, { 78, 12 }, widget_type::wt_11, 0, StringIds::label_button_dont_save),
-        makeWidget({ 174, 33 }, { 78, 12 }, widget_type::wt_11, 0, StringIds::label_button_cancel),
+    static Widget _widgets[] = {
+        makeWidget({ 0, 0 }, { 260, 48 }, WidgetType::panel, 0),
+        makeWidget({ 1, 1 }, { 258, 13 }, WidgetType::caption_22, 0, StringIds::empty),
+        makeWidget({ 247, 2 }, { 11, 11 }, WidgetType::wt_11, 0, StringIds::close_window_cross, StringIds::tooltip_close_window),
+        makeWidget({ 2, 17 }, { 256, 12 }, WidgetType::wt_13, 0, StringIds::empty),
+        makeWidget({ 8, 33 }, { 78, 12 }, WidgetType::wt_11, 0, StringIds::label_button_save),
+        makeWidget({ 91, 33 }, { 78, 12 }, WidgetType::wt_11, 0, StringIds::label_button_dont_save),
+        makeWidget({ 174, 33 }, { 78, 12 }, WidgetType::wt_11, 0, StringIds::label_button_cancel),
         widgetEnd(),
     };
 
-    static window_event_list _events;
+    static WindowEventList _events;
     static void initEvents();
 
     // 0x0043C27E
-    window* open(uint16_t savePromptType)
+    Window* open(uint16_t savePromptType)
     {
         auto window = WindowManager::bringToFront(WindowType::saveGamePrompt);
         if (window == nullptr)
@@ -101,13 +102,13 @@ namespace OpenLoco::Ui::Windows::PromptSaveWindow
         return window;
     }
 
-    static void draw(window* const self, Gfx::Context* const context)
+    static void draw(Window* const self, Gfx::Context* const context)
     {
         self->draw(context);
     }
 
     // 0x0043C3F4
-    static void onMouseUp(window* const self, const widget_index widgetIndex)
+    static void onMouseUp(Window* const self, const WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
@@ -133,7 +134,7 @@ namespace OpenLoco::Ui::Windows::PromptSaveWindow
     }
 
     // 0x0043C577
-    static void onClose(window* const self)
+    static void onClose(Window* const self)
     {
         unsetPauseFlag(2);
         Audio::unpauseSound();

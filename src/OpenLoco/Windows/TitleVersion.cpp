@@ -3,21 +3,22 @@
 #include "../OpenLoco.h"
 #include "../Ui.h"
 #include "../Ui/WindowManager.h"
+#include "../Widget.h"
 #include "../Window.h"
 
 using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::TitleVersion
 {
-    static widget_t widgets[] = {
-        { widget_type::end, 0, 0, 0, 0, 0, { 0 }, 0 }
+    static Widget widgets[] = {
+        { WidgetType::end, 0, 0, 0, 0, 0, { 0 }, 0 }
     };
 
-    static Ui::window_event_list _events;
+    static Ui::WindowEventList _events;
 
-    static void draw(Ui::window* window, Gfx::Context* context);
+    static void draw(Ui::Window* window, Gfx::Context* context);
 
-    window* open()
+    Window* open()
     {
         auto width = 512;
         auto height = 16;
@@ -29,14 +30,14 @@ namespace OpenLoco::Ui::Windows::TitleVersion
             &_events);
         window->widgets = widgets;
 
-        _events.prepare_draw = (void (*)(Ui::window*))0x0042A035;
+        _events.prepare_draw = (void (*)(Ui::Window*))0x0042A035;
         _events.draw = draw;
 
         return window;
     }
 
     // 0x00439236
-    static void draw(Ui::window* window, Gfx::Context* context)
+    static void draw(Ui::Window* window, Gfx::Context* context)
     {
         auto versionInfo = getVersionInfo();
         Gfx::drawString(context, window->x, window->y, Colour::white | FormatFlags::textflag_5, (void*)versionInfo.c_str());

@@ -7,6 +7,7 @@
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/ObjectManager.h"
 #include "../Ui/WindowManager.h"
+#include "../Widget.h"
 
 using namespace OpenLoco::Interop;
 
@@ -28,16 +29,16 @@ namespace OpenLoco::Ui::Windows::AboutMusic
         };
     }
 
-    static widget_t _widgets[] = {
-        makeWidget({ 0, 0 }, windowSize, widget_type::frame, 0),
-        makeWidget({ 1, 1 }, { windowSize.width - 2, 13 }, widget_type::caption_25, 0, StringIds::music_acknowledgements_caption),
-        makeWidget({ windowSize.width - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window),
-        makeWidget({ 0, 15 }, { windowSize.width, 297 }, widget_type::panel, 1),
-        makeWidget({ 4, 18 }, { windowSize.width - 8, 289 }, widget_type::scrollview, 1, Ui::scrollbars::vertical),
+    static Widget _widgets[] = {
+        makeWidget({ 0, 0 }, windowSize, WidgetType::frame, 0),
+        makeWidget({ 1, 1 }, { windowSize.width - 2, 13 }, WidgetType::caption_25, 0, StringIds::music_acknowledgements_caption),
+        makeWidget({ windowSize.width - 15, 2 }, { 13, 13 }, WidgetType::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window),
+        makeWidget({ 0, 15 }, { windowSize.width, 297 }, WidgetType::panel, 1),
+        makeWidget({ 4, 18 }, { windowSize.width - 8, 289 }, WidgetType::scrollview, 1, Ui::Scrollbars::vertical),
         widgetEnd(),
     };
 
-    static window_event_list _events;
+    static WindowEventList _events;
 
     static void initEvents();
 
@@ -65,7 +66,7 @@ namespace OpenLoco::Ui::Windows::AboutMusic
     }
 
     // 0x0043BFB0
-    static void onMouseUp(Ui::window* const window, const widget_index widgetIndex)
+    static void onMouseUp(Ui::Window* const window, const WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
@@ -76,13 +77,13 @@ namespace OpenLoco::Ui::Windows::AboutMusic
     }
 
     // 0x0043BFBB
-    static void getScrollSize(Ui::window*, uint32_t, uint16_t*, uint16_t* const scrollHeight)
+    static void getScrollSize(Ui::Window*, uint32_t, uint16_t*, uint16_t* const scrollHeight)
     {
         *scrollHeight = numSongs * (10 + 10 + 14);
     }
 
     // 0x0043BFC0
-    static std::optional<FormatArguments> tooltip(Ui::window*, widget_index)
+    static std::optional<FormatArguments> tooltip(Ui::Window*, WidgetIndex_t)
     {
         FormatArguments args{};
         args.push(StringIds::tooltip_scroll_credits_list);
@@ -90,14 +91,14 @@ namespace OpenLoco::Ui::Windows::AboutMusic
     }
 
     // 0x0043B8B8
-    static void draw(Ui::window* const window, Gfx::Context* const context)
+    static void draw(Ui::Window* const window, Gfx::Context* const context)
     {
         // Draw widgets.
         window->draw(context);
     }
 
     // 0x0043B8BE
-    static void drawScroll(Ui::window*, Gfx::Context* const context, uint32_t)
+    static void drawScroll(Ui::Window*, Gfx::Context* const context, uint32_t)
     {
         static const std::pair<string_id, string_id> stringsToDraw[numSongs] = {
             { StringIds::locomotion_title, StringIds::locomotion_title_credit },

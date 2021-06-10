@@ -47,24 +47,24 @@ namespace OpenLoco::Ui::Windows::Station
 
         const uint64_t enabledWidgets = (1 << widx::caption) | (1 << widx::close_button) | (1 << widx::tab_station) | (1 << widx::tab_cargo) | (1 << widx::tab_cargo_ratings);
 
-#define commonWidgets(frameWidth, frameHeight)                                                                                         \
-    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, widget_type::frame, 0),                                                          \
-        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, widget_type::caption_23, 0, StringIds::title_station),                            \
-        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window), \
-        makeWidget({ 0, 41 }, { frameWidth, 95 }, widget_type::panel, 1),                                                              \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_station),                       \
-        makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_station_cargo),                \
-        makeRemapWidget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_station_cargo_ratings)
+#define commonWidgets(frameWidth, frameHeight)                                                                                        \
+    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, WidgetType::frame, 0),                                                          \
+        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, WidgetType::caption_23, 0, StringIds::title_station),                            \
+        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, WidgetType::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window), \
+        makeWidget({ 0, 41 }, { frameWidth, 95 }, WidgetType::panel, 1),                                                              \
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_station),                       \
+        makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_station_cargo),                \
+        makeRemapWidget({ 65, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_station_cargo_ratings)
 
         // Defined at the bottom of this file.
-        static void prepareDraw(window* self);
-        static void textInput(window* self, widget_index callingWidget, const char* input);
-        static void update(window* self);
-        static void renameStationPrompt(window* self, widget_index widgetIndex);
-        static void repositionTabs(window* self);
-        static void switchTab(window* self, widget_index widgetIndex);
-        static void drawTabs(window* self, Gfx::Context* context);
-        static void enableRenameByCaption(window* self);
+        static void prepareDraw(Window* self);
+        static void textInput(Window* self, WidgetIndex_t callingWidget, const char* input);
+        static void update(Window* self);
+        static void renameStationPrompt(Window* self, WidgetIndex_t widgetIndex);
+        static void repositionTabs(Window* self);
+        static void switchTab(Window* self, WidgetIndex_t widgetIndex);
+        static void drawTabs(Window* self, Gfx::Context* context);
+        static void enableRenameByCaption(Window* self);
         static void initEvents();
     }
 
@@ -79,21 +79,21 @@ namespace OpenLoco::Ui::Windows::Station
             centre_on_viewport,
         };
 
-        widget_t widgets[] = {
+        Widget widgets[] = {
             // commonWidgets(windowSize.width, windowSize.height),
             commonWidgets(223, 136),
-            makeWidget({ 3, 44 }, { 195, 80 }, widget_type::viewport, 1, 0xFFFFFFFE),
-            makeWidget({ 3, 115 }, { 195, 21 }, widget_type::wt_13, 1),
-            makeWidget({ 0, 0 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::null, StringIds::move_main_view_to_show_this),
+            makeWidget({ 3, 44 }, { 195, 80 }, WidgetType::viewport, 1, 0xFFFFFFFE),
+            makeWidget({ 3, 115 }, { 195, 21 }, WidgetType::wt_13, 1),
+            makeWidget({ 0, 0 }, { 24, 24 }, WidgetType::wt_9, 1, ImageIds::null, StringIds::move_main_view_to_show_this),
             widgetEnd(),
         };
 
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << centre_on_viewport);
 
-        static window_event_list events;
+        static WindowEventList events;
 
         // 0x0048E352
-        static void prepareDraw(window* self)
+        static void prepareDraw(Window* self)
         {
             Common::prepareDraw(self);
 
@@ -113,7 +113,7 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048E470
-        static void draw(window* self, Gfx::Context* context)
+        static void draw(Window* self, Gfx::Context* context)
         {
             self->draw(context);
             Common::drawTabs(self, context);
@@ -135,7 +135,7 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048E4D4
-        static void onMouseUp(window* self, widget_index widgetIndex)
+        static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -160,10 +160,10 @@ namespace OpenLoco::Ui::Windows::Station
             }
         }
 
-        static void initViewport(window* self);
+        static void initViewport(Window* self);
 
         // 0x0048E70B
-        static void onResize(window* self)
+        static void onResize(Window* self)
         {
             Common::enableRenameByCaption(self);
 
@@ -189,7 +189,7 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048F11B
-        static void initViewport(window* self)
+        static void initViewport(Window* self)
         {
             if (self->current_tab != 0)
                 return;
@@ -263,7 +263,7 @@ namespace OpenLoco::Ui::Windows::Station
     }
 
     // 0x0048F210
-    window* open(uint16_t stationId)
+    Window* open(uint16_t stationId)
     {
         auto window = WindowManager::bringToFront(WindowType::station, stationId);
         if (window != nullptr)
@@ -320,20 +320,20 @@ namespace OpenLoco::Ui::Windows::Station
             station_catchment,
         };
 
-        static widget_t widgets[] = {
+        static Widget widgets[] = {
             commonWidgets(223, 136),
-            makeWidget({ 3, 44 }, { 217, 80 }, widget_type::scrollview, 1, 2),
-            makeWidget({ 3, 125 }, { 195, 10 }, widget_type::wt_13, 1),
-            makeWidget({ 198, 44 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::show_station_catchment, StringIds::station_catchment),
+            makeWidget({ 3, 44 }, { 217, 80 }, WidgetType::scrollview, 1, 2),
+            makeWidget({ 3, 125 }, { 195, 10 }, WidgetType::wt_13, 1),
+            makeWidget({ 198, 44 }, { 24, 24 }, WidgetType::wt_9, 1, ImageIds::show_station_catchment, StringIds::station_catchment),
             widgetEnd(),
         };
 
-        static window_event_list events;
+        static WindowEventList events;
 
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << station_catchment);
 
         // 0x0048E7C0
-        static void prepareDraw(window* self)
+        static void prepareDraw(Window* self)
         {
             Common::prepareDraw(self);
 
@@ -355,7 +355,7 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048E8DE
-        static void draw(window* self, Gfx::Context* context)
+        static void draw(Window* self, Gfx::Context* context)
         {
             self->draw(context);
             Common::drawTabs(self, context);
@@ -397,7 +397,7 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048EB0B
-        static void onMouseUp(window* self, widget_index widgetIndex)
+        static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -428,7 +428,7 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048EBB7
-        static void onResize(window* self)
+        static void onResize(Window* self)
         {
             Common::enableRenameByCaption(self);
 
@@ -436,7 +436,7 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048EB64
-        static void getScrollSize(window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+        static void getScrollSize(Window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
         {
             auto station = StationManager::get(self->number);
             *scrollHeight = 0;
@@ -452,7 +452,7 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048EB4F
-        static std::optional<FormatArguments> tooltip(Ui::window* window, widget_index widgetIndex)
+        static std::optional<FormatArguments> tooltip(Ui::Window* window, WidgetIndex_t widgetIndex)
         {
             FormatArguments args{};
             args.push(StringIds::tooltip_scroll_cargo_list);
@@ -460,7 +460,7 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048E986
-        static void drawScroll(window* self, Gfx::Context* context, uint32_t scrollIndex)
+        static void drawScroll(Window* self, Gfx::Context* context, uint32_t scrollIndex)
         {
             Gfx::clearSingle(*context, Colour::getShade(self->colours[1], 4));
 
@@ -538,7 +538,7 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048EC21
-        static void onClose(window* self)
+        static void onClose(Window* self)
         {
             if (self->number == _lastSelectedStation)
             {
@@ -573,17 +573,17 @@ namespace OpenLoco::Ui::Windows::Station
             status_bar,
         };
 
-        static widget_t widgets[] = {
+        static Widget widgets[] = {
             commonWidgets(249, 136),
-            makeWidget({ 3, 44 }, { 244, 80 }, widget_type::scrollview, 1, 2),
-            makeWidget({ 3, 125 }, { 221, 11 }, widget_type::wt_13, 1),
+            makeWidget({ 3, 44 }, { 244, 80 }, WidgetType::scrollview, 1, 2),
+            makeWidget({ 3, 125 }, { 221, 11 }, WidgetType::wt_13, 1),
             widgetEnd(),
         };
 
-        static window_event_list events;
+        static WindowEventList events;
 
         // 0x0048EC3B
-        static void prepareDraw(window* self)
+        static void prepareDraw(Window* self)
         {
             Common::prepareDraw(self);
 
@@ -598,14 +598,14 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048ED24
-        static void draw(window* self, Gfx::Context* context)
+        static void draw(Window* self, Gfx::Context* context)
         {
             self->draw(context);
             Common::drawTabs(self, context);
         }
 
         // 0x0048EE1A
-        static void onMouseUp(window* self, widget_index widgetIndex)
+        static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -626,7 +626,7 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048EE97
-        static void onResize(window* self)
+        static void onResize(Window* self)
         {
             Common::enableRenameByCaption(self);
 
@@ -634,7 +634,7 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048EE4A
-        static void getScrollSize(window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+        static void getScrollSize(Window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
         {
             auto station = StationManager::get(self->number);
             *scrollHeight = 0;
@@ -646,7 +646,7 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048EE73
-        static std::optional<FormatArguments> tooltip(Ui::window* window, widget_index widgetIndex)
+        static std::optional<FormatArguments> tooltip(Ui::Window* window, WidgetIndex_t widgetIndex)
         {
             FormatArguments args{};
             args.push(StringIds::tooltip_scroll_ratings_list);
@@ -654,7 +654,7 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048EF02
-        static void drawRatingBar(window* self, Gfx::Context* context, int16_t x, int16_t y, uint8_t amount, Colour_t colour)
+        static void drawRatingBar(Window* self, Gfx::Context* context, int16_t x, int16_t y, uint8_t amount, Colour_t colour)
         {
             Gfx::fillRectInset(context, x, y, x + 99, y + 9, self->colours[1], 48);
 
@@ -666,7 +666,7 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048ED2F
-        static void drawScroll(window* self, Gfx::Context* context, uint32_t scrollIndex)
+        static void drawScroll(Window* self, Gfx::Context* context, uint32_t scrollIndex)
         {
             Gfx::clearSingle(*context, Colour::getShade(self->colours[1], 4));
 
@@ -774,9 +774,9 @@ namespace OpenLoco::Ui::Windows::Station
     {
         struct TabInformation
         {
-            widget_t* widgets;
+            Widget* widgets;
             const widx widgetIndex;
-            window_event_list* events;
+            WindowEventList* events;
             const uint64_t* enabledWidgets;
         };
 
@@ -787,7 +787,7 @@ namespace OpenLoco::Ui::Windows::Station
         };
 
         // 0x0048E352, 0x0048E7C0 and 0x0048EC3B
-        static void prepareDraw(window* self)
+        static void prepareDraw(Window* self)
         {
             // Reset tab widgets if needed.
             auto tabWidgets = tabInformationByTabOffset[self->current_tab].widgets;
@@ -842,7 +842,7 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048E5DF
-        static void textInput(window* self, widget_index callingWidget, const char* input)
+        static void textInput(Window* self, WidgetIndex_t callingWidget, const char* input)
         {
             if (callingWidget != Common::widx::caption)
                 return;
@@ -859,7 +859,7 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048E6F1
-        static void update(window* self)
+        static void update(Window* self)
         {
             self->frame_no++;
             self->callPrepareDraw();
@@ -867,7 +867,7 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048E5E7
-        static void renameStationPrompt(window* self, widget_index widgetIndex)
+        static void renameStationPrompt(Window* self, WidgetIndex_t widgetIndex)
         {
             auto station = StationManager::get(self->number);
             auto args = FormatArguments();
@@ -879,7 +879,7 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048EF82, 0x0048EF88
-        static void repositionTabs(window* self)
+        static void repositionTabs(Window* self)
         {
             int16_t xPos = self->widgets[widx::tab_station].left;
             const int16_t tabWidth = self->widgets[widx::tab_station].right - xPos;
@@ -896,7 +896,7 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048E520
-        static void switchTab(window* self, widget_index widgetIndex)
+        static void switchTab(Window* self, WidgetIndex_t widgetIndex)
         {
             if (widgetIndex != widx::tab_cargo)
             {
@@ -938,7 +938,7 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048EFBC
-        static void drawTabs(window* self, Gfx::Context* context)
+        static void drawTabs(Window* self, Gfx::Context* context)
         {
             auto skin = ObjectManager::get<InterfaceSkinObject>();
             auto station = StationManager::get(self->number);
@@ -948,7 +948,7 @@ namespace OpenLoco::Ui::Windows::Station
             {
                 uint32_t imageId = Gfx::recolour(skin->img, companyColour);
                 imageId += InterfaceSkin::ImageIds::toolbar_menu_stations;
-                Widget::draw_tab(self, context, imageId, widx::tab_station);
+                Widget::drawTab(self, context, imageId, widx::tab_station);
             }
 
             // Cargo tab
@@ -966,13 +966,13 @@ namespace OpenLoco::Ui::Windows::Station
                 else
                     imageId += cargoTabImageIds[0];
 
-                Widget::draw_tab(self, context, imageId, widx::tab_cargo);
+                Widget::drawTab(self, context, imageId, widx::tab_cargo);
             }
 
             // Cargo ratings tab
             {
                 const uint32_t imageId = skin->img + InterfaceSkin::ImageIds::tab_cargo_ratings;
-                Widget::draw_tab(self, context, imageId, widx::tab_cargo_ratings);
+                Widget::drawTab(self, context, imageId, widx::tab_cargo_ratings);
 
                 auto widget = self->widgets[widx::tab_cargo_ratings];
                 auto yOffset = widget.top + self->y + 14;
@@ -1007,7 +1007,7 @@ namespace OpenLoco::Ui::Windows::Station
         }
 
         // 0x0048E32C
-        static void enableRenameByCaption(window* self)
+        static void enableRenameByCaption(Window* self)
         {
             auto station = StationManager::get(self->number);
             if (station->owner != 255)

@@ -18,6 +18,7 @@
 #include "../Ui/Dropdown.h"
 #include "../Ui/WindowManager.h"
 #include "../ViewportManager.h"
+#include "../Widget.h"
 
 using namespace OpenLoco::Interop;
 
@@ -111,40 +112,40 @@ namespace OpenLoco::Ui::Windows::TitleMenu
         };
     }
 
-    static widget_t _widgets[] = {
-        makeWidget({ 0, 0 }, { btn_main_size, btn_main_size }, widget_type::wt_9, 1, StringIds::null, StringIds::title_menu_new_game),
-        makeWidget({ btn_main_size, 0 }, { btn_main_size, btn_main_size }, widget_type::wt_9, 1, StringIds::null, StringIds::title_menu_load_game),
-        makeWidget({ btn_main_size * 2, 0 }, { btn_main_size, btn_main_size }, widget_type::wt_9, 1, StringIds::null, StringIds::title_menu_show_tutorial),
-        makeWidget({ btn_main_size * 3, 0 }, { btn_main_size, btn_main_size }, widget_type::wt_9, 1, StringIds::null, StringIds::title_menu_scenario_editor),
-        makeWidget({ btn_main_size * 4 - 31, btn_main_size - 27 }, { 31, 27 }, widget_type::wt_9, 1, StringIds::null, StringIds::title_menu_chat_tooltip),
-        makeWidget({ 0, btn_main_size }, { ww, btn_sub_height }, widget_type::none, 1, StringIds::null, StringIds::title_multiplayer_toggle_tooltip),
+    static Widget _widgets[] = {
+        makeWidget({ 0, 0 }, { btn_main_size, btn_main_size }, WidgetType::wt_9, 1, StringIds::null, StringIds::title_menu_new_game),
+        makeWidget({ btn_main_size, 0 }, { btn_main_size, btn_main_size }, WidgetType::wt_9, 1, StringIds::null, StringIds::title_menu_load_game),
+        makeWidget({ btn_main_size * 2, 0 }, { btn_main_size, btn_main_size }, WidgetType::wt_9, 1, StringIds::null, StringIds::title_menu_show_tutorial),
+        makeWidget({ btn_main_size * 3, 0 }, { btn_main_size, btn_main_size }, WidgetType::wt_9, 1, StringIds::null, StringIds::title_menu_scenario_editor),
+        makeWidget({ btn_main_size * 4 - 31, btn_main_size - 27 }, { 31, 27 }, WidgetType::wt_9, 1, StringIds::null, StringIds::title_menu_chat_tooltip),
+        makeWidget({ 0, btn_main_size }, { ww, btn_sub_height }, WidgetType::none, 1, StringIds::null, StringIds::title_multiplayer_toggle_tooltip),
         widgetEnd(),
     };
 
-    static window_event_list _events;
+    static WindowEventList _events;
 
-    static void sub_439112(window* window);
+    static void sub_439112(Window* window);
     static void sub_4391CC(int16_t itemIndex);
     static void sub_43918F(const char* string);
     static void sub_4391DA();
     static void sub_4391E2();
     static void sub_43910A();
-    static void sub_439163(Ui::window* callingWindow, widget_index callingWidget);
+    static void sub_439163(Ui::Window* callingWindow, WidgetIndex_t callingWidget);
     static void sub_439102();
     static void sub_46E328();
 
-    static void onMouseUp(Ui::window* window, widget_index widgetIndex);
-    static void onMouseDown(Ui::window* window, widget_index widgetIndex);
-    static void onDropdown(Ui::window* window, widget_index widgetIndex, int16_t itemIndex);
-    static void onUpdate(window* window);
-    static void onTextInput(window* window, widget_index widgetIndex, const char* input);
-    static Ui::CursorId onCursor(window* window, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback);
-    static void draw(Ui::window* window, Gfx::Context* context);
-    static void prepareDraw(Ui::window* window);
+    static void onMouseUp(Ui::Window* window, WidgetIndex_t widgetIndex);
+    static void onMouseDown(Ui::Window* window, WidgetIndex_t widgetIndex);
+    static void onDropdown(Ui::Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex);
+    static void onUpdate(Window* window);
+    static void onTextInput(Window* window, WidgetIndex_t widgetIndex, const char* input);
+    static Ui::CursorId onCursor(Window* window, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback);
+    static void draw(Ui::Window* window, Gfx::Context* context);
+    static void prepareDraw(Ui::Window* window);
 
-    // static loco_global<window_event_list[1], 0x004f9ec8> _events;
+    // static loco_global<WindowEventList[1], 0x004f9ec8> _events;
 
-    window* open()
+    Window* open()
     {
         _events.on_mouse_up = onMouseUp;
         _events.on_mouse_down = onMouseDown;
@@ -175,11 +176,11 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     }
 
     // 0x00438E0B
-    static void prepareDraw(Ui::window* window)
+    static void prepareDraw(Ui::Window* window)
     {
         window->disabled_widgets = 0;
-        window->widgets[Widx::tutorial_btn].type = Ui::widget_type::wt_9;
-        window->widgets[Widx::scenario_editor_btn].type = Ui::widget_type::wt_9;
+        window->widgets[Widx::tutorial_btn].type = Ui::WidgetType::wt_9;
+        window->widgets[Widx::scenario_editor_btn].type = Ui::WidgetType::wt_9;
 
         // TODO: add widget::set_origin()
         window->widgets[Widx::scenario_list_btn].left = 0;
@@ -190,31 +191,31 @@ namespace OpenLoco::Ui::Windows::TitleMenu
         window->widgets[Widx::tutorial_btn].right = btn_main_size * 3 - 1;
         window->widgets[Widx::scenario_editor_btn].left = btn_main_size * 3;
         window->widgets[Widx::scenario_editor_btn].right = btn_main_size * 4 - 1;
-        window->widgets[Widx::chat_btn].type = Ui::widget_type::none;
+        window->widgets[Widx::chat_btn].type = Ui::WidgetType::none;
 
         if (OpenLoco::isNetworked())
         {
-            window->widgets[Widx::tutorial_btn].type = Ui::widget_type::none;
-            window->widgets[Widx::scenario_editor_btn].type = Ui::widget_type::none;
+            window->widgets[Widx::tutorial_btn].type = Ui::WidgetType::none;
+            window->widgets[Widx::scenario_editor_btn].type = Ui::WidgetType::none;
 
             window->widgets[Widx::scenario_list_btn].left = btn_main_size;
             window->widgets[Widx::scenario_list_btn].right = btn_main_size * 2 - 1;
             window->widgets[Widx::load_game_btn].left = btn_main_size * 2;
             window->widgets[Widx::load_game_btn].right = btn_main_size * 3 - 1;
 
-            window->widgets[Widx::chat_btn].type = Ui::widget_type::wt_9;
+            window->widgets[Widx::chat_btn].type = Ui::WidgetType::wt_9;
             auto* skin = ObjectManager::get<InterfaceSkinObject>();
             window->widgets[Widx::chat_btn].image = skin->img + InterfaceSkin::ImageIds::phone;
         }
     }
 
     // 0x00438EC7
-    static void draw(Ui::window* window, Gfx::Context* context)
+    static void draw(Ui::Window* window, Gfx::Context* context)
     {
         // Draw widgets.
         window->draw(context);
 
-        if (window->widgets[Widx::scenario_list_btn].type != Ui::widget_type::none)
+        if (window->widgets[Widx::scenario_list_btn].type != Ui::WidgetType::none)
         {
             int16_t x = window->widgets[Widx::scenario_list_btn].left + window->x;
             int16_t y = window->widgets[Widx::scenario_list_btn].top + window->y;
@@ -229,7 +230,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
             OpenLoco::Gfx::drawImage(context, x, y, ImageIds::title_menu_sparkle);
         }
 
-        if (window->widgets[Widx::load_game_btn].type != Ui::widget_type::none)
+        if (window->widgets[Widx::load_game_btn].type != Ui::WidgetType::none)
         {
             int16_t x = window->widgets[Widx::load_game_btn].left + window->x;
             int16_t y = window->widgets[Widx::load_game_btn].top + window->y;
@@ -244,7 +245,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
             OpenLoco::Gfx::drawImage(context, x, y, ImageIds::title_menu_save);
         }
 
-        if (window->widgets[Widx::tutorial_btn].type != Ui::widget_type::none)
+        if (window->widgets[Widx::tutorial_btn].type != Ui::WidgetType::none)
         {
             int16_t x = window->widgets[Widx::tutorial_btn].left + window->x;
             int16_t y = window->widgets[Widx::tutorial_btn].top + window->y;
@@ -261,7 +262,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
             OpenLoco::Gfx::drawImage(context, x, y, ImageIds::title_menu_lesson_l);
         }
 
-        if (window->widgets[Widx::scenario_editor_btn].type != Ui::widget_type::none)
+        if (window->widgets[Widx::scenario_editor_btn].type != Ui::WidgetType::none)
         {
             int16_t x = window->widgets[Widx::scenario_editor_btn].left + window->x;
             int16_t y = window->widgets[Widx::scenario_editor_btn].top + window->y;
@@ -275,7 +276,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
             OpenLoco::Gfx::drawImage(context, x, y, image_id);
         }
 
-        if (window->widgets[Widx::multiplayer_toggle_btn].type != Ui::widget_type::none)
+        if (window->widgets[Widx::multiplayer_toggle_btn].type != Ui::WidgetType::none)
         {
             int16_t y = window->widgets[Widx::multiplayer_toggle_btn].top + 3 + window->y;
             int16_t x = window->width / 2 + window->x;
@@ -300,7 +301,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     }
 
     // 0x00439094
-    static void onMouseUp(Ui::window* window, widget_index widgetIndex)
+    static void onMouseUp(Ui::Window* window, WidgetIndex_t widgetIndex)
     {
         if (Intro::isActive())
         {
@@ -330,7 +331,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     }
 
     // 0x004390D1
-    static void onMouseDown(Ui::window* window, widget_index widgetIndex)
+    static void onMouseDown(Ui::Window* window, WidgetIndex_t widgetIndex)
     {
         sub_46E328();
         switch (widgetIndex)
@@ -342,7 +343,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     }
 
     // 0x004390DD
-    static void onDropdown(Ui::window* window, widget_index widgetIndex, int16_t itemIndex)
+    static void onDropdown(Ui::Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         sub_46E328();
         switch (widgetIndex)
@@ -354,7 +355,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     }
 
     // 0x004390ED
-    static void onTextInput(window* window, widget_index widgetIndex, const char* input)
+    static void onTextInput(Window* window, WidgetIndex_t widgetIndex, const char* input)
     {
         switch (widgetIndex)
         {
@@ -365,7 +366,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     }
 
     // 0x004390f8
-    static Ui::CursorId onCursor(window* window, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback)
+    static Ui::CursorId onCursor(Window* window, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback)
     {
         // Reset tooltip timeout to keep tooltips open.
         addr<0x0052338A, uint16_t>() = 2000;
@@ -398,13 +399,13 @@ namespace OpenLoco::Ui::Windows::TitleMenu
         EditorController::init();
     }
 
-    static void sub_439112(window* window)
+    static void sub_439112(Window* window)
     {
         Dropdown::add(0, StringIds::tutorial_1_title);
         Dropdown::add(1, StringIds::tutorial_2_title);
         Dropdown::add(2, StringIds::tutorial_3_title);
 
-        widget_t* widget = &window->widgets[Widx::tutorial_btn];
+        Widget* widget = &window->widgets[Widx::tutorial_btn];
         Dropdown::showText(
             window->x + widget->left,
             window->y + widget->top,
@@ -415,7 +416,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
             0x80);
     }
 
-    static void sub_439163(Ui::window* callingWindow, widget_index callingWidget)
+    static void sub_439163(Ui::Window* callingWindow, WidgetIndex_t callingWidget)
     {
         WindowManager::close(WindowType::multiplayer);
 
@@ -461,7 +462,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     }
 
     // 0x004391F9
-    static void onUpdate(window* window)
+    static void onUpdate(Window* window)
     {
         window->var_846++;
 
