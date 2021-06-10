@@ -1131,6 +1131,14 @@ namespace OpenLoco::Audio
         }
     }
 
+    // 0x0048AAD2
+    void resetMusic()
+    {
+        stopBackgroundMusic();
+        _currentSong = no_song;
+        _lastSong = no_song;
+    }
+
     // 0x0048AAE8
     void stopBackgroundMusic()
     {

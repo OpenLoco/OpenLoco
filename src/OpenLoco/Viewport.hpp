@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Graphics/Gfx.h"
-#include "Interop/Interop.hpp"
 #include "Location.hpp"
 #include "Map/Map.hpp"
 #include "Types.hpp"
@@ -112,10 +111,8 @@ namespace OpenLoco::Ui
             return out;
         }
 
-        constexpr int getRotation() const
-        {
-            return Interop::addr<0x00e3f0b8, int32_t>();
-        }
+        int getRotation() const;
+        void setRotation(int32_t value);
 
         /**
          * Maps a 2D viewport position to a UI (screen) position.

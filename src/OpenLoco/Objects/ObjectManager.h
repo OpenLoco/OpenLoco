@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../Core/Optional.hpp"
-
+#include "../Core/Span.hpp"
 #include <cstddef>
 #include <cstdint>
 #include <cstdio>
@@ -11,6 +11,8 @@
 
 namespace OpenLoco
 {
+    class SawyerStreamWriter;
+
     namespace Gfx
     {
         struct Context;
@@ -141,6 +143,11 @@ namespace OpenLoco
      * a specific object type.
      */
     using LoadedObjectIndex = size_t;
+
+    /**
+     * Represents an index / ID of a specific object type.
+     */
+    using LoadedObjectId = size_t;
 #pragma pack(pop)
 }
 
@@ -150,6 +157,7 @@ namespace OpenLoco::ObjectManager
 
     constexpr size_t getMaxObjects(object_type type)
     {
+        // 0x004FE250
         constexpr size_t counts[] = {
             1,   // interface,
             128, // sound,
@@ -275,6 +283,12 @@ namespace OpenLoco::ObjectManager
     };
 #pragma pack(pop)
 
+    struct LoadObjectsResult
+    {
+        bool success{};
+        ObjectHeader problemObject;
+    };
+
     uint32_t getNumInstalledObjects();
     std::vector<std::pair<uint32_t, object_index_entry>> getAvailableObjects(object_type type);
     void freeScenarioText();
@@ -286,6 +300,11 @@ namespace OpenLoco::ObjectManager
     ObjectHeader* getHeader(LoadedObjectIndex id);
     std::vector<ObjectHeader> getHeaders();
 
+    LoadObjectsResult loadAll(stdx::span<ObjectHeader> objects);
+    bool tryInstallObject(const ObjectHeader& object, stdx::span<const uint8_t> data);
+    void writePackedObjects(SawyerStreamWriter& fs, const std::vector<ObjectHeader>& packedObjects);
+
+    void unloadAll();
     void unload(LoadedObjectIndex index);
 
     size_t getByteLength(LoadedObjectIndex id);

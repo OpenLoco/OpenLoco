@@ -52,7 +52,13 @@ namespace OpenLoco::StationManager
     // 0x0048DDC3
     void updateLabels()
     {
-        call(0x0048DDC3);
+        for (auto& station : stations())
+        {
+            if (!station.empty())
+            {
+                station.updateLabel();
+            }
+        }
     }
 
     // 0x00437F29

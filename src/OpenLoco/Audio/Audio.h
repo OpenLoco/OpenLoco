@@ -120,6 +120,7 @@ namespace OpenLoco::Audio
 
     void revalidateCurrentTrack();
 
+    void resetMusic();
     void playBackgroundMusic();
     void stopBackgroundMusic();
     void playTitleScreenMusic();

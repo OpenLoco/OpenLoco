@@ -9,6 +9,18 @@ using namespace OpenLoco::Map;
 
 namespace OpenLoco::Ui
 {
+    static loco_global<uint32_t, 0x00E3F0B8> _rotation;
+
+    int viewport::getRotation() const
+    {
+        return _rotation;
+    }
+
+    void viewport::setRotation(int32_t value)
+    {
+        _rotation = value;
+    }
+
     // 0x0045A0E7
     void viewport::render(Gfx::Context* context)
     {

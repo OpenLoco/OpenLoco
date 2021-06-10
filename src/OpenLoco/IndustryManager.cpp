@@ -52,4 +52,18 @@ namespace OpenLoco::IndustryManager
         call(0x0045383B);
     }
 
+    // 0x00459D2D
+    void createAllMapAnimations()
+    {
+        if (!(addr<0x00525E28, uint32_t>() & (1 << 0)))
+            return;
+
+        for (auto& industry : industries())
+        {
+            if (!industry.empty())
+            {
+                industry.createMapAnimations();
+            }
+        }
+    }
 }

@@ -13,6 +13,23 @@ using namespace OpenLoco::Map;
 
 namespace OpenLoco
 {
+    struct Unk4F9274
+    {
+        Pos2 pos;
+        uint8_t unk;
+    };
+    static const Unk4F9274 word_4F9274[] = {
+        { { 0, 0 }, 0 },
+        { { Location::null, 0 }, 0 }
+    };
+    static const Unk4F9274 word_4F927C[] = {
+        { { 0, 0 }, 0 },
+        { { 0, 32 }, 1 },
+        { { 32, 32 }, 2 },
+        { { 32, 0 }, 3 },
+        { { Location::null, 0 }, 0 }
+    };
+
     IndustryId_t Industry::id() const
     {
         auto first = (Industry*)0x005C455C;
@@ -212,5 +229,45 @@ namespace OpenLoco
         regs.dl = dl;
         regs.dh = id();
         call(0x00454A43, regs);
+    }
+
+    // 0x00459D43
+    void Industry::createMapAnimations()
+    {
+        for (size_t i = 0; i < numTiles; i++)
+        {
+            auto& tilePos = tiles[i];
+            auto baseZ = (tilePos.z & ~Location::null) / 4;
+            auto tile = TileManager::get(tilePos);
+
+            for (auto& el : tile)
+            {
+                auto industryEl = el.asIndustry();
+                if (industryEl == nullptr)
+                    continue;
+
+                if (industryEl->baseZ() != baseZ)
+                    continue;
+
+                auto tileIndustry = industryEl->industry();
+                if (tileIndustry != nullptr)
+                {
+                    auto industryObject = tileIndustry->object();
+                    if (industryObject != nullptr)
+                    {
+                        auto animOffsets = word_4F9274;
+                        if (industryObject->var_C6 & (1 << industryEl->var_6_1F()))
+                        {
+                            animOffsets = word_4F927C;
+                        }
+                        while (animOffsets[0].pos.x != Location::null)
+                        {
+                            TileManager::createAnimation(3, animOffsets->pos + tilePos, baseZ);
+                            animOffsets++;
+                        }
+                    }
+                }
+            }
+        }
     }
 }

@@ -51,6 +51,7 @@ namespace OpenLoco::EntityManager
 
     EntityId_t firstQuadrantId(const Map::Pos2& loc);
     void resetSpatialIndex();
+    void updateSpatialIndex();
 
     EntityBase* createEntityMisc();
     EntityBase* createEntityMoney();

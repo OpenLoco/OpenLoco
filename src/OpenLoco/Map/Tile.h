@@ -94,6 +94,7 @@ namespace OpenLoco::Map
             _flags &= ~ElementFlags::flag_6;
             _flags |= state == true ? ElementFlags::flag_6 : 0;
         }
+        void setClearZ(uint8_t value) { _clear_z = value; }
         bool isLast() const;
 
         std::array<uint8_t, 8>& rawData()
@@ -301,12 +302,12 @@ namespace OpenLoco::Map
     private:
         IndustryId_t _industryId;
         uint8_t _5;
-        uint8_t _6;
-        uint8_t _7;
+        uint16_t _6;
 
     public:
         OpenLoco::IndustryId_t industryId() const { return _industryId; }
         OpenLoco::Industry* industry() const;
+        uint8_t var_6_1F() const;
     };
 #pragma pack(pop)
 

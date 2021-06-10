@@ -449,6 +449,12 @@ namespace OpenLoco
         call(0x00428E47);
     }
 
+    // 0x00444387
+    void sub_444387()
+    {
+        call(0x00444387);
+    }
+
     // 0x0046E388
     static void sub_46E388()
     {

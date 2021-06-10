@@ -10,34 +10,42 @@ using namespace OpenLoco::Interop;
 namespace OpenLoco::Ui::ProgressBar
 {
     static bool _isInternalWindow = false;
-    static char _captionBuffer[256] = {};
 
     // 0x004CF5DA
-    static void loadingWindowCreate(string_id captionStringId)
+    static void loadingWindowCreate(std::string_view caption)
     {
         // TODO: platform-specific implementation?
+        static loco_global<char[512], 0x0112CC04> _stringFormatBuffer;
+        memset(_stringFormatBuffer, 0, 512);
+        caption.copy(_stringFormatBuffer, caption.size());
+
         registers regs;
-        regs.eax = captionStringId;
-        call(0x004CF5DA, regs);
+        call(0x004CF5EE, regs);
+    }
+
+    void begin(std::string_view caption)
+    {
+        if (isInitialised())
+        {
+            _isInternalWindow = true;
+            Windows::ProgressBar::open(caption);
+        }
+        else
+        {
+            loadingWindowCreate(caption);
+        }
     }
 
     // 0x004CF5C5
     void begin(string_id captionStringId)
     {
-        if (isInitialised())
+        char _captionBuffer[256] = {};
+        if (captionStringId != StringIds::null)
         {
-            _isInternalWindow = true;
-            if (captionStringId != StringIds::null)
-            {
-                auto args = FormatArguments::common();
-                StringManager::formatString(_captionBuffer, std::size(_captionBuffer), captionStringId, &args);
-            }
-            Windows::ProgressBar::open(_captionBuffer);
+            auto args = FormatArguments::common();
+            StringManager::formatString(_captionBuffer, std::size(_captionBuffer), captionStringId, &args);
         }
-        else
-        {
-            loadingWindowCreate(captionStringId);
-        }
+        begin(_captionBuffer);
     }
 
     // 0x004CF631

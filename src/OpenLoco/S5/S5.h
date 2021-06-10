@@ -11,15 +11,17 @@ namespace OpenLoco::S5
     {
         savedGame = 0,
         scenario = 1,
+        objects = 2,
         landscape = 3,
     };
 
-    enum S5Flags : uint8_t
+    namespace S5Flags
     {
-        isRaw = 1 << 0,
-        isDump = 1 << 1,
-        hasSaveDetails = 1 << 3,
-    };
+        constexpr uint8_t isRaw = 1 << 0;
+        constexpr uint8_t isDump = 1 << 1;
+        constexpr uint8_t isTitleSequence = 1 << 2;
+        constexpr uint8_t hasSaveDetails = 1 << 3;
+    }
 
 #pragma pack(push, 1)
     struct Header
@@ -216,6 +218,12 @@ namespace OpenLoco::S5
     };
     static_assert(sizeof(TileElement) == 8);
 
+    namespace S5FixFlags
+    {
+        constexpr uint16_t fixFlag0 = 1 << 0;
+        constexpr uint16_t fixFlag1 = 1 << 1;
+    }
+
     struct GameState
     {
         uint32_t rng[2];                  // 0x000000 (0x00525E18)
@@ -239,7 +247,9 @@ namespace OpenLoco::S5
         uint8_t pad_0156[0x02BC - 0x156]; // 0x000156
         char scenarioName[64];            // 0x0002BC (0x005260D4)
         char scenarioDetails[256];        // 0x0002FC (0x00526114)
-        uint8_t pad_03FC[0xB96C - 0x3FC]; // 0x0003FC
+        uint8_t pad_03FC[0x434 - 0x3FC];  // 0x0003FC
+        uint16_t fixFlags;                // 0x000434 (0x0052624C)
+        uint8_t pad_0436[0xB96C - 0x436]; // 0x0003FC
         Company companies[15];            // 0x00B96C (0x00531784)
         Town towns[80];                   // 0x092444 (0x005B825C)
         Industry industries[128];         // 0x09E744 (0x005C455C)
@@ -261,6 +271,12 @@ namespace OpenLoco::S5
         std::vector<TileElement> tileElements;
     };
 
+    namespace LoadFlags
+    {
+        constexpr uint32_t titleSequence = 1 << 0;
+        constexpr uint32_t twoPlayer = 1 << 1;
+    }
+
     enum SaveFlags : uint32_t
     {
         packCustomObjects = 1 << 0,
@@ -281,4 +297,6 @@ namespace OpenLoco::S5
     Options& getPreviewOptions();
     bool save(const fs::path& path, SaveFlags flags);
     void registerHooks();
+
+    bool load(const fs::path& path, uint32_t flags);
 }

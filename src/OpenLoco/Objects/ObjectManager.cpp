@@ -1,19 +1,30 @@
 #include "ObjectManager.h"
+#include "../Core/FileSystem.hpp"
 #include "../Graphics/Colour.h"
 #include "../Graphics/Gfx.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/FormatArguments.hpp"
 #include "../Localisation/StringIds.h"
+#include "../S5/SawyerStream.h"
+#include "../Ui/ProgressBar.h"
+#include "../Utility/Numeric.hpp"
+#include <iterator>
 #include <vector>
 
 using namespace OpenLoco::Interop;
 
 namespace OpenLoco::ObjectManager
 {
+    constexpr auto objectChecksumMagic = 0xF369A75B;
 #pragma pack(push, 1)
     struct ObjectEntry2 : public ObjectHeader
     {
         uint32_t dataSize;
+        ObjectEntry2(ObjectHeader head, uint32_t size)
+            : ObjectHeader(head)
+            , dataSize(size)
+        {
+        }
     };
     static_assert(sizeof(ObjectEntry2) == 0x14);
 
@@ -63,6 +74,8 @@ namespace OpenLoco::ObjectManager
     loco_global<CompetitorObject* [32], 0x0050D0B8> _competitorObjects;
     loco_global<ScenarioTextObject* [1], 0x0050D138> _scenarioTextObjects;
 
+    loco_global<uint32_t, 0x0050D154> _totalNumImages;
+
     // 0x00470F3C
     void loadIndex()
     {
@@ -72,6 +85,11 @@ namespace OpenLoco::ObjectManager
     ObjectHeader* getHeader(LoadedObjectIndex id)
     {
         return &objectEntries[id];
+    }
+
+    static object_repository_item& getRepositoryItem(object_type type)
+    {
+        return object_repository[static_cast<uint8_t>(type)];
     }
 
     template<>
@@ -422,7 +440,7 @@ namespace OpenLoco::ObjectManager
         if ((header.flags & 0xFF) != 0xFF)
         {
             auto objectType = header.getType();
-            const auto& typedObjectList = object_repository[static_cast<size_t>(objectType)];
+            const auto& typedObjectList = getRepositoryItem(objectType);
             auto maxObjectsForType = getMaxObjects(objectType);
             for (size_t i = 0; i < maxObjectsForType; i++)
             {
@@ -471,6 +489,18 @@ namespace OpenLoco::ObjectManager
         drawPreview,
     };
 
+    static bool callObjectFunction(const ObjectHeader& header, object& obj, const ObjectProcedure proc)
+    {
+        auto objectType = header.getType();
+        auto objectProcTable = (const uintptr_t*)0x004FE1C8;
+        auto objectProc = objectProcTable[static_cast<size_t>(objectType)];
+
+        registers regs;
+        regs.al = static_cast<uint8_t>(proc);
+        regs.esi = reinterpret_cast<uint32_t>(&obj);
+        return (call(objectProc, regs) & X86_FLAG_CARRY) == 0;
+    }
+
     static bool callObjectFunction(LoadedObjectIndex index, ObjectProcedure proc)
     {
         auto objectHeader = getHeader(index);
@@ -479,17 +509,314 @@ namespace OpenLoco::ObjectManager
             auto obj = get<object>(index);
             if (obj != nullptr)
             {
-                auto objectType = objectHeader->getType();
-                auto objectProcTable = (const uintptr_t*)0x004FE1C8;
-                auto objectProc = objectProcTable[static_cast<size_t>(objectType)];
-
-                registers regs;
-                regs.al = static_cast<uint8_t>(proc);
-                regs.esi = reinterpret_cast<uint32_t>(obj);
-                return (call(objectProc, regs) & X86_FLAG_CARRY) != 0;
+                return callObjectFunction(*objectHeader, *obj, proc);
             }
         }
         throw std::runtime_error("Object not loaded at this index");
+    }
+
+    // 0x00471BC5
+    static bool load(const ObjectHeader& header, LoadedObjectId id)
+    {
+        registers regs;
+        regs.ebp = reinterpret_cast<uint32_t>(&header);
+        regs.ecx = static_cast<int32_t>(id);
+        return (call(0x00471BC5, regs) & X86_FLAG_CARRY) == 0;
+    }
+
+    static LoadedObjectId getObjectId(LoadedObjectIndex index)
+    {
+        size_t objectType = 0;
+        while (objectType < maxObjectTypes)
+        {
+            auto count = getMaxObjects(static_cast<object_type>(objectType));
+            if (index < count)
+            {
+                return static_cast<LoadedObjectId>(index);
+            }
+            index -= count;
+            objectType++;
+        }
+        return std::numeric_limits<LoadedObjectId>::max();
+    }
+
+    LoadObjectsResult loadAll(stdx::span<ObjectHeader> objects)
+    {
+        LoadObjectsResult result;
+        result.success = true;
+
+        unloadAll();
+
+        LoadedObjectIndex index = 0;
+        for (const auto& header : objects)
+        {
+            auto id = getObjectId(index);
+            if (!load(header, id))
+            {
+                result.success = false;
+                result.problemObject = header;
+                unloadAll();
+                break;
+            }
+            index++;
+        }
+        return result;
+    }
+
+    // 0x00472754
+    static uint32_t computeChecksum(stdx::span<const uint8_t> data, uint32_t seed)
+    {
+        auto checksum = seed;
+        for (auto d : data)
+        {
+            checksum = Utility::rol(checksum ^ d, 11);
+        }
+        return checksum;
+    }
+
+    // 0x0047270B
+    static bool computeObjectChecksum(const ObjectHeader& object, stdx::span<const uint8_t> data)
+    {
+        // Compute the checksum of header and data
+
+        // Annoyingly the header you need to only compute the first byte of the flags
+        stdx::span<const uint8_t> headerFlag(reinterpret_cast<const uint8_t*>(&object), 1);
+        auto checksum = computeChecksum(headerFlag, objectChecksumMagic);
+
+        // And then the name
+        stdx::span<const uint8_t> headerName(reinterpret_cast<const uint8_t*>(&object.name), sizeof(ObjectHeader::name));
+        checksum = computeChecksum(headerName, checksum);
+
+        // Finally compute the datas checksum
+        checksum = computeChecksum(data, checksum);
+
+        return checksum == object.checksum;
+    }
+
+    static bool partialLoad(const ObjectHeader& header, stdx::span<uint8_t> objectData)
+    {
+        auto type = header.getType();
+        size_t index = 0;
+        for (; index < getMaxObjects(type); ++index)
+        {
+            if (getRepositoryItem(type).objects[index] == reinterpret_cast<object*>(-1))
+            {
+                break;
+            }
+        }
+        // No slot found. Not possible except if unload all had not been called
+        if (index >= getMaxObjects(type))
+        {
+            return false;
+        }
+
+        auto* obj = reinterpret_cast<object*>(objectData.data());
+        getRepositoryItem(type).objects[index] = obj;
+        getRepositoryItem(type).object_entry_extendeds[index] = ObjectEntry2(header, objectData.size());
+        return true;
+    }
+
+    // TODO: Move
+    static void miniMessageLoop()
+    {
+        call(0x004072EC);
+    }
+
+    static constexpr SawyerEncoding getBestEncodingForObjectType(object_type type)
+    {
+        switch (type)
+        {
+            case object_type::competitor:
+                return SawyerEncoding::uncompressed;
+            default:
+                return SawyerEncoding::runLengthSingle;
+            case object_type::currency:
+                return SawyerEncoding::runLengthMulti;
+            case object_type::town_names:
+            case object_type::scenario_text:
+                return SawyerEncoding::rotate;
+        }
+    }
+
+    // 0x00472633
+    // 0x004722FF
+    void writePackedObjects(SawyerStreamWriter& fs, const std::vector<ObjectHeader>& packedObjects)
+    {
+        // TODO at some point, change this to just pack the object file directly from
+        //      disc rather than using the in-memory version. This then avoids having
+        //      to unload the object temporarily to save the S5.
+        for (const auto& header : packedObjects)
+        {
+            auto index = ObjectManager::findIndex(header);
+            if (index)
+            {
+                // Unload the object so that the object data is restored to
+                // its original file state
+                ObjectManager::unload(*index);
+
+                auto encodingType = getBestEncodingForObjectType(header.getType());
+                auto obj = ObjectManager::get<object>(*index);
+                auto objSize = ObjectManager::getByteLength(*index);
+
+                fs.write(header);
+                fs.writeChunk(encodingType, obj, objSize);
+            }
+            else
+            {
+                throw std::runtime_error("Unable to pack object: object not loaded");
+            }
+        }
+    }
+
+    static void permutateObjectFilename(std::string& filename)
+    {
+        auto* firstChar = filename.c_str();
+        auto* endChar = &filename[filename.size()];
+        auto* c = endChar;
+        do
+        {
+            c--;
+            if (c == firstChar)
+            {
+                filename = "00000000";
+                break;
+            }
+            if (*c < '0')
+            {
+                *c = '/';
+            }
+            if (*c == '9')
+            {
+                *c = '@';
+            }
+            if (*c == 'Z')
+            {
+                *c = '/';
+            }
+            *c = *c + 1;
+        } while (*c == '0');
+    }
+
+    static void sanatiseObjectFilename(std::string& filename)
+    {
+        // Trim string at first space (note this copies vanilla but maybe shouldn't)
+        auto space = filename.find_first_of(' ');
+        if (space != std::string::npos)
+        {
+            filename = filename.substr(0, space);
+        }
+        // Make filename uppercase
+        std::transform(std::begin(filename), std::end(filename), std::begin(filename), toupper);
+    }
+
+    // All object files are based on their internal object header name but
+    // there is a chance of a name collision this function works out if the name
+    // is possible and if not permutates the name until it is valid.
+    static fs::path findObjectPath(std::string& filename)
+    {
+        loco_global<char[257], 0x0050B635> _pathObjects;
+        auto objPath = fs::path(_pathObjects.get());
+
+        bool permutateName = false;
+        do
+        {
+            if (permutateName)
+            {
+                permutateObjectFilename(filename);
+            }
+            objPath.replace_filename(filename);
+            objPath.replace_extension(".DAT");
+            permutateName = true;
+        } while (fs::exists(objPath));
+        return objPath;
+    }
+
+    // 0x0047285C
+    static bool installObject(const ObjectHeader& objectHeader)
+    {
+        // Prepare progress bar
+        char caption[512];
+        auto* str = StringManager::formatString(caption, sizeof(caption), StringIds::installing_new_data);
+        strcat(str, objectHeader.name);
+        Ui::ProgressBar::begin(caption);
+        Ui::ProgressBar::setProgress(50);
+        miniMessageLoop();
+
+        // Get new file path
+        std::string filename(objectHeader.getName());
+        sanatiseObjectFilename(filename);
+        auto objPath = findObjectPath(filename);
+
+        // Create new file and output object file
+        Ui::ProgressBar::setProgress(180);
+        SawyerStreamWriter stream(objPath);
+        writePackedObjects(stream, { objectHeader });
+
+        // Free file
+        stream.close();
+        Ui::ProgressBar::setProgress(240);
+        Ui::ProgressBar::setProgress(255);
+        Ui::ProgressBar::end();
+        return true;
+    }
+
+    static bool isObjectInstalled(const ObjectHeader& objectHeader)
+    {
+        const auto objects = getAvailableObjects(objectHeader.getType());
+        auto res = std::find_if(std::begin(objects), std::end(objects), [&objectHeader](auto& obj) { return *obj.second._header == objectHeader; });
+        return res != std::end(objects);
+    }
+
+    // 0x00472687 based on
+    bool tryInstallObject(const ObjectHeader& objectHeader, stdx::span<const uint8_t> data)
+    {
+        unloadAll();
+        if (!computeObjectChecksum(objectHeader, data))
+        {
+            return false;
+        }
+        // Copy the object into Loco freeable memory (required for when partialLoad loads the object)
+        uint8_t* objectData = static_cast<uint8_t*>(malloc(data.size()));
+        if (objectData == nullptr)
+        {
+            return false;
+        }
+        std::copy(std::begin(data), std::end(data), objectData);
+
+        auto* obj = reinterpret_cast<object*>(objectData);
+        if (!callObjectFunction(objectHeader, *obj, ObjectProcedure::validate))
+        {
+            return false;
+        }
+
+        if (_totalNumImages >= 266266)
+        {
+            return false;
+        }
+
+        // Warning this saves a copy of the objectData pointer and must be unloaded prior to exiting this function
+        if (!partialLoad(objectHeader, stdx::span(objectData, data.size())))
+        {
+            return false;
+        }
+
+        // Object already installed so no need to install it
+        if (isObjectInstalled(objectHeader))
+        {
+            unloadAll();
+            return false;
+        }
+
+        bool result = installObject(objectHeader);
+
+        unloadAll();
+        return result;
+    }
+
+    // 0x00472031
+    void unloadAll()
+    {
+        call(0x00472031);
     }
 
     void unload(LoadedObjectIndex index)

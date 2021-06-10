@@ -43,9 +43,11 @@ namespace OpenLoco::Scenario
     static loco_global<uint16_t, 0x00526241> objectiveTimeLimitUntilYear;
 
     // 0x0046115C
-    static void sub_46115C()
+    void sub_46115C()
     {
-        call(0x0046115C);
+        addr<0x00525E28, uint32_t>() = 0;
+        TileManager::resetAnimations();
+        addr<0x0052624C, uint16_t>() = S5::S5FixFlags::fixFlag0 | S5::S5FixFlags::fixFlag1;
     }
 
     // 0x004C4BC0

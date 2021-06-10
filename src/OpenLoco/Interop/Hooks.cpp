@@ -17,6 +17,7 @@
 #include "../Gui.h"
 #include "../Input.h"
 #include "../Map/Tile.h"
+#include "../Map/TileManager.h"
 #include "../Paint/Paint.h"
 #include "../Platform/Platform.h"
 #include "../S5/S5.h"
@@ -765,6 +766,7 @@ void OpenLoco::Interop::registerHooks()
         });
 
     Ui::ProgressBar::registerHooks();
+    OpenLoco::Map::TileManager::registerHooks();
     Ui::Windows::PromptBrowse::registerHooks();
     Ui::Windows::TextInput::registerHooks();
     Ui::Windows::ToolTip::registerHooks();
@@ -895,14 +897,6 @@ void OpenLoco::Interop::registerHooks()
     // quite annoying when it's sometimes only the player's own
     // vehicles that are using it.
     writeNop(0x004776DD, 6);
-    // Remove this when sub_441FA7 has been fully implemented
-    // Although this looks like a basic writeRet it is also changing the flags
-    // to set them all to zero this is required.
-    registerHook(
-        0x004422CD,
-        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            return 0;
-        });
 
     registerHook(
         0x0047024A,

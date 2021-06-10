@@ -334,4 +334,16 @@ namespace OpenLoco::CompanyManager
         company->cash -= cost;
         company->expenditures[0][static_cast<uint8_t>(type)] -= payment;
     }
+
+    // 0x004302EF
+    void updateColours()
+    {
+        size_t index = 0;
+        for (auto& company : companies())
+        {
+            _company_colours[index] = company.mainColours.primary;
+            index++;
+        }
+        _company_colours[CompanyId::neutral] = 1;
+    }
 }

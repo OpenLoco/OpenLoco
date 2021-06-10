@@ -23,7 +23,8 @@ namespace OpenLoco
         uint8_t pad_02[0x0A - 0x02];
         uint16_t nameSingular; // 0x0A
         uint16_t namePlural;   // 0x0C
-        uint8_t pad_0E[0xCA - 0x0E];
+        uint8_t pad_0E[0xC6 - 0x0E];
+        uint32_t var_C6;
         uint16_t designedYear; // 0xCA start year
         uint16_t obsoleteYear; // 0xCC end year
         uint8_t var_CE;
@@ -50,5 +51,6 @@ namespace OpenLoco
         void drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const;
         void drawIndustry(Gfx::Context* clipped, int16_t x, int16_t y) const;
     };
+    static_assert(sizeof(IndustryObject) == 0xF1);
 #pragma pack(pop)
 }

@@ -107,6 +107,7 @@ namespace OpenLoco
         char* getStatusString(char* buffer);
         bool updateCargo();
         int32_t calculateCargoRating(const StationCargoStats& cargo) const;
+        void updateLabel();
         void invalidate();
         void invalidateWindow();
         void setCatchmentDisplay(uint8_t flags);
