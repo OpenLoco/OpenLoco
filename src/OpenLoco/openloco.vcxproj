@@ -253,6 +253,7 @@
     <ClInclude Include="Localisation\StringIds.h" />
     <ClInclude Include="Localisation\Unicode.h" />
     <ClInclude Include="Location.hpp" />
+    <ClInclude Include="LocoFixedVector.h" />
     <ClInclude Include="Map\Map.hpp" />
     <ClInclude Include="Map\MapGenerator.h" />
     <ClInclude Include="Map\Tile.h" />
