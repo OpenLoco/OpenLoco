@@ -2,6 +2,7 @@
 
 #include "Types.hpp"
 #include <cstddef>
+#include <cstdlib>
 #include <vector>
 
 namespace OpenLoco::Map::TrackData
