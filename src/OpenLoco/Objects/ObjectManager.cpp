@@ -87,6 +87,11 @@ namespace OpenLoco::ObjectManager
         return &objectEntries[id];
     }
 
+    static object_repository_item& getRepositoryItem(object_type type)
+    {
+        return object_repository[static_cast<uint8_t>(type)];
+    }
+
     template<>
     object* get(size_t id)
     {
@@ -435,7 +440,7 @@ namespace OpenLoco::ObjectManager
         if ((header.flags & 0xFF) != 0xFF)
         {
             auto objectType = header.getType();
-            const auto& typedObjectList = object_repository[static_cast<size_t>(objectType)];
+            const auto& typedObjectList = getRepositoryItem(objectType);
             auto maxObjectsForType = getMaxObjects(objectType);
             for (size_t i = 0; i < maxObjectsForType; i++)
             {
@@ -594,7 +599,7 @@ namespace OpenLoco::ObjectManager
         size_t index = 0;
         for (; index < getMaxObjects(type); ++index)
         {
-            if (object_repository[static_cast<uint8_t>(type)].objects[index] == reinterpret_cast<object*>(-1))
+            if (getRepositoryItem(type).objects[index] == reinterpret_cast<object*>(-1))
             {
                 break;
             }
@@ -606,8 +611,8 @@ namespace OpenLoco::ObjectManager
         }
 
         auto* obj = reinterpret_cast<object*>(objectData.data());
-        object_repository[static_cast<uint8_t>(type)].objects[index] = obj;
-        object_repository[static_cast<uint8_t>(type)].object_entry_extendeds[index] = ObjectEntry2(header, objectData.size());
+        getRepositoryItem(type).objects[index] = obj;
+        getRepositoryItem(type).object_entry_extendeds[index] = ObjectEntry2(header, objectData.size());
         return true;
     }
 
