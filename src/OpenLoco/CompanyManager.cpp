@@ -43,10 +43,9 @@ namespace OpenLoco::CompanyManager
         _updating_company_id = id;
     }
 
-    std::array<Company, max_companies>& companies()
+    LocoFixedVector<Company> companies()
     {
-        auto arr = (std::array<Company, max_companies>*)_companies.get();
-        return *arr;
+        return LocoFixedVector<Company>(_companies);
     }
 
     Company* get(CompanyId_t id)
@@ -121,8 +120,6 @@ namespace OpenLoco::CompanyManager
     {
         for (auto& company : companies())
         {
-            if (company.empty())
-                continue;
             company.updateQuarterly();
         }
     }
@@ -165,7 +162,7 @@ namespace OpenLoco::CompanyManager
             for (const auto& company : companies())
             {
                 auto id = company.id();
-                if (!company.empty() && id != _player_company[0] && id != _player_company[1])
+                if (id != _player_company[0] && id != _player_company[1])
                 {
                     companies_active++;
                 }
@@ -339,7 +336,7 @@ namespace OpenLoco::CompanyManager
     void updateColours()
     {
         size_t index = 0;
-        for (auto& company : companies())
+        for (auto& company : _companies)
         {
             _company_colours[index] = company.mainColours.primary;
             index++;

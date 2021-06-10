@@ -803,9 +803,6 @@ namespace OpenLoco::Ui::Dropdown
             int16_t maxPerformanceIndex = -1;
             for (const auto& company : CompanyManager::companies())
             {
-                if (company.empty())
-                    continue;
-
                 if (companyOrdered[company.id()] & 1)
                     continue;
 

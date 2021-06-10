@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Company.h"
+#include "LocoFixedVector.h"
 #include "Map/Map.hpp"
 #include "Types.hpp"
 #include <array>
@@ -14,7 +15,7 @@ namespace OpenLoco::CompanyManager
     CompanyId_t updatingCompanyId();
     void updatingCompanyId(CompanyId_t id);
 
-    std::array<Company, max_companies>& companies();
+    LocoFixedVector<Company> companies();
     Company* get(CompanyId_t id);
     CompanyId_t getControllingId();
     CompanyId_t getSecondaryPlayerId();

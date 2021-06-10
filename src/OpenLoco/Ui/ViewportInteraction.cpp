@@ -249,11 +249,6 @@ namespace OpenLoco::Ui::ViewportInteraction
 
         for (auto& company : CompanyManager::companies())
         {
-            if (company.empty())
-            {
-                continue;
-            }
-
             if (company.headquarters_x != pos.x || company.headquarters_y != pos.y || company.headquarters_z != pos.z)
             {
                 continue;

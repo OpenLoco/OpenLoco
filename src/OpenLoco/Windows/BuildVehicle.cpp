@@ -1139,7 +1139,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     // 0x4C28D2
     static void setDisabledTransportTabs(Ui::Window* window)
     {
-        auto availableVehicles = CompanyManager::companies()[window->number].available_vehicles;
+        auto availableVehicles = CompanyManager::get(window->number)->available_vehicles;
         // By shifting by 4 the available_vehicles flags align with the tabs flags
         auto disabledTabs = (availableVehicles << 4) ^ ((1 << widx::tab_build_new_trains) | (1 << widx::tab_build_new_buses) | (1 << widx::tab_build_new_trucks) | (1 << widx::tab_build_new_trams) | (1 << widx::tab_build_new_aircraft) | (1 << widx::tab_build_new_ships));
         window->disabled_widgets = disabledTabs;

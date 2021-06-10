@@ -777,11 +777,6 @@ namespace OpenLoco::Ui::Windows::MapWindow
     {
         for (const auto& company : CompanyManager::companies())
         {
-            if (company.empty())
-            {
-                continue;
-            }
-
             auto index = company.id();
             auto colour = Colour::getShade(company.mainColours.primary, 6);
 
