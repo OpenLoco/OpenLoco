@@ -97,6 +97,8 @@ namespace OpenLoco::Config
     static_assert(offsetof(LocoConfig, last_host) == 0xD4);
     static_assert(sizeof(LocoConfig) == 0x216);
 
+#pragma pack(pop)
+
     struct Resolution
     {
         int32_t width{};
@@ -161,8 +163,6 @@ namespace OpenLoco::Config
         bool showFPS = false;
         bool uncapFPS = false;
     };
-
-#pragma pack(pop)
 
     LocoConfig& get();
     NewConfig& getNew();
