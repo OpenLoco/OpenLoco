@@ -860,14 +860,8 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
         if (industryIndex == -1)
         {
-            auto industryCount = 0;
-            for (const auto& industry : IndustryManager::industries())
-            {
-                if (industry.empty())
-                    continue;
-
-                industryCount++;
-            }
+            auto industries = IndustryManager::industries();
+            auto industryCount = std::distance(std::begin(industries), std::end(industries));
 
             auto stringId = StringIds::status_num_industries_plural;
 
@@ -884,9 +878,6 @@ namespace OpenLoco::Ui::Windows::MapWindow
             auto industryCount = 0;
             for (const auto& industry : IndustryManager::industries())
             {
-                if (industry.empty())
-                    continue;
-
                 if (industry.object_id == industryIndex)
                 {
                     industryCount++;
