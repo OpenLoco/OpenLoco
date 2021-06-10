@@ -108,7 +108,9 @@ if (NOT MSVC)
     -Wformat \
     -Wignored-qualifiers \
     -Winit-self \
-    -Wmissing-declarations \
+    -Wno-missing-declarations \
+    -Wno-effc++ \
+    -Wno-shadow \
     -Wnon-virtual-dtor \
     -Wnull-dereference \
     -Wstrict-aliasing \
@@ -260,8 +262,7 @@ else()
 	find_package(OpenAL CONFIG REQUIRED)
 	set(OPENAL_LIBRARIES OpenAL::OpenAL)
 endif()
-find_package(yaml-cpp REQUIRED HINTS /usr/lib32/cmake/yaml-cpp)
-include_directories(${YAML_CPP_INCLUDE_DIR})
+include_directories("${CMAKE_SOURCE_DIR}/yaml-cpp/include")
 set(YAML_CPP_LIBRARIES yaml-cpp)
 
 # breakpad is also required
@@ -293,6 +294,8 @@ else ()
         set_target_properties(${PROJECT} PROPERTIES LINK_FLAGS ${LOCO_SEGMENT_LINKER_FLAGS})
     endif ()
 endif ()
+
+add_subdirectory(yaml-cpp)
 
 target_link_libraries(${PROJECT} ${SDL2_LIBRARIES})
 target_link_libraries(${PROJECT} ${YAML_CPP_LIBRARIES})
