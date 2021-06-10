@@ -1,6 +1,7 @@
 21.05+ (???)
 ------------------------------------------------------------------------
 - Fix: [#982] Incorrect rating calculation for cargo causing penalty for fast vehicles.
+- Technical: [#986] Stack misalignment in GCC builds caused unexplained crashes on Linux and Mac during interop hooks with loco.exe.
 
 21.05 (2021-05-11)
 ------------------------------------------------------------------------
