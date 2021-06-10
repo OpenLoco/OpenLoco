@@ -133,9 +133,6 @@ namespace OpenLoco::Ui::Windows::StationList
 
         for (auto& station : StationManager::stations())
         {
-            if (station.empty())
-                continue;
-
             if (station.owner == window->number)
             {
                 station.flags &= ~StationFlags::flag_4;
@@ -225,14 +222,8 @@ namespace OpenLoco::Ui::Windows::StationList
     {
         auto edi = -1;
 
-        auto i = -1;
-
         for (auto& station : StationManager::stations())
         {
-            i++;
-            if (station.empty())
-                continue;
-
             if (station.owner != window->number)
                 continue;
 
@@ -248,13 +239,13 @@ namespace OpenLoco::Ui::Windows::StationList
 
             if (edi == -1)
             {
-                edi = i;
+                edi = station.id();
                 continue;
             }
 
             if (getOrder(SortMode(window->sort_mode), station, *StationManager::get(edi)))
             {
-                edi = i;
+                edi = station.id();
             }
         }
 

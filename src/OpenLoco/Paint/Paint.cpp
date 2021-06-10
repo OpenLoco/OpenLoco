@@ -588,11 +588,6 @@ namespace OpenLoco::Paint
 
         for (auto& station : StationManager::stations())
         {
-            if (station.empty())
-            {
-                continue;
-            }
-
             if (station.flags & StationFlags::flag_5)
             {
                 continue;

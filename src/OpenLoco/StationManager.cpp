@@ -19,10 +19,9 @@ namespace OpenLoco::StationManager
         call(0x0048B1D8);
     }
 
-    std::array<Station, max_stations>& stations()
+    LocoFixedVector<Station> stations()
     {
-        auto arr = (std::array<Station, max_stations>*)_stations.get();
-        return *arr;
+        return LocoFixedVector<Station>(_stations);
     }
 
     Station* get(StationId_t id)
@@ -54,10 +53,7 @@ namespace OpenLoco::StationManager
     {
         for (auto& station : stations())
         {
-            if (!station.empty())
-            {
-                station.updateLabel();
-            }
+            station.updateLabel();
         }
     }
 
@@ -94,34 +90,31 @@ namespace OpenLoco::StationManager
 
         for (auto& station : stations())
         {
-            if (!station.empty())
+            if (station.stationTileSize == 0)
             {
-                if (station.stationTileSize == 0)
+                station.var_29++;
+                if (station.var_29 != 5 && isPlayerCompany(station.owner))
                 {
-                    station.var_29++;
-                    if (station.var_29 != 5 && isPlayerCompany(station.owner))
-                    {
-                        sub_437F29(station.owner, 8);
-                    }
-                    if (station.var_29 >= 10)
-                    {
-                        sub_49E1F1(station.id());
-                        station.invalidate();
-                        station.sub_48F7D1();
-                    }
+                    sub_437F29(station.owner, 8);
                 }
-                else
+                if (station.var_29 >= 10)
                 {
-                    station.var_29 = 0;
+                    sub_49E1F1(station.id());
+                    station.invalidate();
+                    station.sub_48F7D1();
                 }
-                if (station.updateCargo())
+            }
+            else
+            {
+                station.var_29 = 0;
+            }
+            if (station.updateCargo())
+            {
+                auto town = TownManager::get(station.town);
+                if (town != nullptr && !(town->flags & TownFlags::ratingAdjusted))
                 {
-                    auto town = TownManager::get(station.town);
-                    if (town != nullptr && !(town->flags & TownFlags::ratingAdjusted))
-                    {
-                        town->flags |= TownFlags::ratingAdjusted;
-                        town->adjustCompanyRating(station.owner, 1);
-                    }
+                    town->flags |= TownFlags::ratingAdjusted;
+                    town->adjustCompanyRating(station.owner, 1);
                 }
             }
         }
@@ -130,7 +123,7 @@ namespace OpenLoco::StationManager
     // 0x0049088B
     void zeroUnused()
     {
-        for (auto& station : stations())
+        for (auto& station : _stations)
         {
             if (station.empty())
             {
