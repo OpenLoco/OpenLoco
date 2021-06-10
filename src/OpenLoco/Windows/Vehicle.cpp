@@ -1822,7 +1822,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             auto primaryCargoId = Utility::bitScanForward(vehicleObject->primary_cargo_types);
 
             int32_t index = 0;
-            for (uint16_t cargoId = 0; cargoId < ObjectManager::getMaxObjects(object_type::cargo); cargoId++)
+            for (uint16_t cargoId = 0; cargoId < ObjectManager::getMaxObjects(ObjectType::cargo); cargoId++)
             {
                 auto cargoObject = ObjectManager::get<CargoObject>(cargoId);
                 if (cargoObject == nullptr)
@@ -2491,7 +2491,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         {
             auto head = Common::getVehicle(self);
             auto index = 0;
-            for (uint16_t cargoId = 0; cargoId < ObjectManager::getMaxObjects(object_type::cargo); ++cargoId)
+            for (uint16_t cargoId = 0; cargoId < ObjectManager::getMaxObjects(ObjectType::cargo); ++cargoId)
             {
                 if (!(head->var_4E & (1 << cargoId)))
                 {

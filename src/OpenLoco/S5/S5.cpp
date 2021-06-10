@@ -159,18 +159,18 @@ namespace OpenLoco::S5
         return saveDetails;
     }
 
-    static constexpr SawyerEncoding getBestEncodingForObjectType(object_type type)
+    static constexpr SawyerEncoding getBestEncodingForObjectType(ObjectType type)
     {
         switch (type)
         {
-            case object_type::competitor:
+            case ObjectType::competitor:
                 return SawyerEncoding::uncompressed;
             default:
                 return SawyerEncoding::runLengthSingle;
-            case object_type::currency:
+            case ObjectType::currency:
                 return SawyerEncoding::runLengthMulti;
-            case object_type::town_names:
-            case object_type::scenario_text:
+            case ObjectType::townNames:
+            case ObjectType::scenarioText:
                 return SawyerEncoding::rotate;
         }
     }
@@ -192,7 +192,7 @@ namespace OpenLoco::S5
                 ObjectManager::unload(*index);
 
                 auto encodingType = getBestEncodingForObjectType(header.getType());
-                auto obj = ObjectManager::get<object>(*index);
+                auto obj = ObjectManager::get<Object>(*index);
                 auto objSize = ObjectManager::getByteLength(*index);
 
                 fs.write(header);

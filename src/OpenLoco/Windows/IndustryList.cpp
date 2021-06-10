@@ -989,7 +989,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         static void updateBuildableIndustries(window* self)
         {
             auto industryCount = 0;
-            for (uint16_t i = 0; i < ObjectManager::getMaxObjects(object_type::industry); i++)
+            for (uint16_t i = 0; i < ObjectManager::getMaxObjects(ObjectType::industry); i++)
             {
                 auto industryObj = ObjectManager::get<IndustryObject>(i);
                 if (industryObj == nullptr)

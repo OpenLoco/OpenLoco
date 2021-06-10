@@ -254,7 +254,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         {
             overallGraphKeySize,
             std::size(_vehicleTypeCounts),
-            ObjectManager::getMaxObjects(object_type::industry),
+            ObjectManager::getMaxObjects(ObjectType::industry),
             0,
             CompanyManager::max_companies,
         }
@@ -692,7 +692,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             PaletteIndex::index_12,
         };
 
-        for (uint8_t i = 0; i < ObjectManager::getMaxObjects(object_type::industry); i++)
+        for (uint8_t i = 0; i < ObjectManager::getMaxObjects(ObjectType::industry); i++)
         {
             auto industry = ObjectManager::get<IndustryObject>(i);
 
