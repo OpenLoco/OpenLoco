@@ -233,7 +233,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             StringIds::objective_deliver_a_certain_amount_of_cargo,
         };
 
-        static const uint8_t maxCargoObjects = static_cast<uint8_t>(ObjectManager::getMaxObjects(object_type::cargo));
+        static const uint8_t maxCargoObjects = static_cast<uint8_t>(ObjectManager::getMaxObjects(ObjectType::cargo));
         static int16_t cargoByDropdownIndex[maxCargoObjects] = { -1 };
 
         // 0x0043FD51

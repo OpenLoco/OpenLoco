@@ -19,28 +19,28 @@ namespace OpenLoco
         struct point_t;
     }
 
-    enum class object_type
+    enum class ObjectType
     {
-        interface_skin,
+        interfaceSkin,
         sound,
         currency,
         steam,
         rock,
         water,
         land,
-        town_names,
+        townNames,
         cargo,
         wall,
-        track_signal,
-        level_crossing,
-        street_light,
+        trackSignal,
+        levelCrossing,
+        streetLight,
         tunnel,
         bridge,
-        track_station,
-        track_extra,
+        trackStation,
+        trackExtra,
         track,
-        road_station,
-        road_extra,
+        roadStation,
+        roadExtra,
         road,
         airport,
         dock,
@@ -48,17 +48,17 @@ namespace OpenLoco
         tree,
         snow,
         climate,
-        hill_shapes,
+        hillShapes,
         building,
         scaffolding,
         industry,
         region,
         competitor,
-        scenario_text,
+        scenarioText,
     };
 
-    struct object;
-    struct object_entry_extended;
+    struct Object;
+    struct ObjectEntryExtended;
     struct CargoObject;
     struct InterfaceSkinObject;
     struct SoundObject;
@@ -67,7 +67,7 @@ namespace OpenLoco
     struct RockObject;
     struct WaterObject;
     struct LandObject;
-    struct town_names_object;
+    struct TownNamesObject;
     struct WallObject;
     struct TrainSignalObject;
     struct LevelCrossingObject;
@@ -115,9 +115,9 @@ namespace OpenLoco
             return (flags >> 6) & 0x3;
         }
 
-        constexpr object_type getType() const
+        constexpr ObjectType getType() const
         {
-            return static_cast<object_type>(flags & 0x3F);
+            return static_cast<ObjectType>(flags & 0x3F);
         }
 
         constexpr bool isCustom() const
@@ -155,7 +155,7 @@ namespace OpenLoco::ObjectManager
 {
     void loadIndex();
 
-    constexpr size_t getMaxObjects(object_type type)
+    constexpr size_t getMaxObjects(ObjectType type)
     {
         // 0x004FE250
         constexpr size_t counts[] = {
@@ -166,19 +166,19 @@ namespace OpenLoco::ObjectManager
             8,   // rock,
             1,   // water,
             32,  // surface,
-            1,   // town_names,
+            1,   // townNames,
             32,  // cargo,
             32,  // wall,
             16,  // train_signal,
-            4,   // level_crossing,
-            1,   // street_light,
+            4,   // levelCrossing,
+            1,   // streetLight,
             16,  // tunnel,
             8,   // bridge,
             16,  // train_station,
-            8,   // track_extra,
+            8,   // trackExtra,
             8,   // track,
-            16,  // road_station,
-            4,   // road_extra,
+            16,  // roadStation,
+            4,   // roadExtra,
             8,   // road,
             8,   // airport,
             8,   // dock,
@@ -186,13 +186,13 @@ namespace OpenLoco::ObjectManager
             64,  // tree,
             1,   // snow,
             1,   // climate,
-            1,   // hill_shapes,
+            1,   // hillShapes,
             128, // building,
             1,   // scaffolding,
             16,  // industry,
             1,   // region,
             32,  // competitor,
-            1    // scenario_text,
+            1    // scenarioText,
         };
         return counts[(size_t)type];
     };
@@ -207,7 +207,7 @@ namespace OpenLoco::ObjectManager
     T* get(size_t id);
 
     template<>
-    object* get(size_t id);
+    Object* get(size_t id);
     template<>
     InterfaceSkinObject* get();
     template<>
@@ -256,30 +256,30 @@ namespace OpenLoco::ObjectManager
     ScenarioTextObject* get();
 
 #pragma pack(push, 1)
-    struct header2
+    struct ObjectHeader2
     {
         uint8_t pad_00[0x04 - 0x00];
     };
 
-    struct header3
+    struct ObjectHeader3
     {
         uint32_t var_00;      // image count?
         uint8_t pad_04[0x08]; // competitor stats?
     };
 
-    struct object_index_entry
+    struct ObjectIndexEntry
     {
         ObjectHeader* _header;
         char* _filename;
         char* _name;
 
-        static object_index_entry read(std::byte** ptr);
+        static ObjectIndexEntry read(std::byte** ptr);
     };
 
     struct ObjIndexPair
     {
         int16_t index;
-        object_index_entry object;
+        ObjectIndexEntry object;
     };
 #pragma pack(pop)
 
@@ -290,13 +290,13 @@ namespace OpenLoco::ObjectManager
     };
 
     uint32_t getNumInstalledObjects();
-    std::vector<std::pair<uint32_t, object_index_entry>> getAvailableObjects(object_type type);
+    std::vector<std::pair<uint32_t, ObjectIndexEntry>> getAvailableObjects(ObjectType type);
     void freeScenarioText();
     void getScenarioText(ObjectHeader& object);
     std::optional<LoadedObjectIndex> findIndex(const ObjectHeader& header);
-    std::optional<LoadedObjectIndex> findIndex(const object_index_entry& object);
+    std::optional<LoadedObjectIndex> findIndex(const ObjectIndexEntry& object);
     void reloadAll();
-    ObjIndexPair getActiveObject(object_type objectType, uint8_t* edi);
+    ObjIndexPair getActiveObject(ObjectType objectType, uint8_t* edi);
     ObjectHeader* getHeader(LoadedObjectIndex id);
     std::vector<ObjectHeader> getHeaders();
 

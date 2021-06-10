@@ -184,7 +184,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         static void refreshTreeList(window* self)
         {
             auto treeCount = 0;
-            for (uint16_t i = 0; i < ObjectManager::getMaxObjects(object_type::tree); i++)
+            for (uint16_t i = 0; i < ObjectManager::getMaxObjects(ObjectType::tree); i++)
             {
                 auto treeObj = ObjectManager::get<TreeObject>(i);
                 if (treeObj == nullptr)
@@ -1010,7 +1010,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             Dropdown::showImage(xPos, yPos, 20, 20, heightOffset, colour, count, landCount);
 
             auto landIndex = 0;
-            for (uint16_t i = 0; i < ObjectManager::getMaxObjects(object_type::land); i++)
+            for (uint16_t i = 0; i < ObjectManager::getMaxObjects(ObjectType::land); i++)
             {
                 auto landObj = ObjectManager::get<LandObject>(i);
                 if (landObj == nullptr)
@@ -1645,7 +1645,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         static void refreshWallList(window* self)
         {
             auto wallCount = 0;
-            for (uint16_t i = 0; i < ObjectManager::getMaxObjects(object_type::wall); i++)
+            for (uint16_t i = 0; i < ObjectManager::getMaxObjects(ObjectType::wall); i++)
             {
                 auto wallObj = ObjectManager::get<WallObject>(i);
                 if (wallObj == nullptr)

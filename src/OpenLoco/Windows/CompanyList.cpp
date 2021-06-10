@@ -1048,7 +1048,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         static void drawGraphLegend(window* self, Gfx::Context* context, int16_t x, int16_t y)
         {
             auto cargoCount = 0;
-            for (uint8_t i = 0; i < ObjectManager::getMaxObjects(object_type::cargo); i++)
+            for (uint8_t i = 0; i < ObjectManager::getMaxObjects(ObjectType::cargo); i++)
             {
                 auto cargo = ObjectManager::get<CargoObject>(i);
                 if (cargo == nullptr)
@@ -1094,7 +1094,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             _dword_113DD50 = 0;
 
             auto count = 0;
-            for (uint8_t i = 0; i < ObjectManager::getMaxObjects(object_type::cargo); i++)
+            for (uint8_t i = 0; i < ObjectManager::getMaxObjects(ObjectType::cargo); i++)
             {
                 auto cargo = ObjectManager::get<CargoObject>(i);
                 if (cargo == nullptr)
@@ -1167,7 +1167,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x004375F7
         static void buildDeliveredCargoPaymentsTable()
         {
-            for (uint8_t cargoItem = 0; cargoItem < ObjectManager::getMaxObjects(object_type::cargo); ++cargoItem)
+            for (uint8_t cargoItem = 0; cargoItem < ObjectManager::getMaxObjects(ObjectType::cargo); ++cargoItem)
             {
                 auto* cargoObj = ObjectManager::get<CargoObject>(cargoItem);
                 if (cargoObj == nullptr)
@@ -1196,7 +1196,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 {
                     auto listY = yDiff;
                     uint8_t cargoItem = 0;
-                    for (; cargoItem < ObjectManager::getMaxObjects(object_type::cargo); ++cargoItem)
+                    for (; cargoItem < ObjectManager::getMaxObjects(ObjectType::cargo); ++cargoItem)
                     {
                         auto* cargoObj = ObjectManager::get<CargoObject>(cargoItem);
                         if (cargoObj == nullptr)

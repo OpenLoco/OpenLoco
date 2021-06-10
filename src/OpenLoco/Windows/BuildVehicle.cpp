@@ -219,7 +219,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     }
 
     static loco_global<int16_t, 0x01136268> _numAvailableVehicles;
-    static loco_global<uint16_t[ObjectManager::getMaxObjects(object_type::vehicle)], 0x0113626A> _availableVehicles;
+    static loco_global<uint16_t[ObjectManager::getMaxObjects(ObjectType::vehicle)], 0x0113626A> _availableVehicles;
     static loco_global<uint16_t, 0x0113642A> _113642A;
     static loco_global<int32_t, 0x011364E8> _buildTargetVehicle; // -1 for no target VehicleHead
     static loco_global<uint32_t, 0x011364EC> _numTrackTypeTabs;
@@ -419,7 +419,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         };
         std::vector<build_item> buildableVehicles;
 
-        for (uint16_t vehicleObjIndex = 0; vehicleObjIndex < ObjectManager::getMaxObjects(object_type::vehicle); ++vehicleObjIndex)
+        for (uint16_t vehicleObjIndex = 0; vehicleObjIndex < ObjectManager::getMaxObjects(ObjectType::vehicle); ++vehicleObjIndex)
         {
             auto vehicleObj = ObjectManager::get<VehicleObject>(vehicleObjIndex);
             if (vehicleObj == nullptr)

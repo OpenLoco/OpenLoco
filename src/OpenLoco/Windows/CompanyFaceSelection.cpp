@@ -65,7 +65,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
         }
 
         _inUseCompetitors.clear();
-        for (const auto& object : ObjectManager::getAvailableObjects(object_type::competitor))
+        for (const auto& object : ObjectManager::getAvailableObjects(ObjectType::competitor))
         {
             auto competitorId = ObjectManager::findIndex(object.second);
             if (competitorId)
@@ -140,15 +140,15 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     static ObjectManager::ObjIndexPair getObjectFromSelection(const int16_t& y)
     {
         const int16_t rowIndex = y / rowHeight;
-        const auto objects = ObjectManager::getAvailableObjects(object_type::competitor);
+        const auto objects = ObjectManager::getAvailableObjects(ObjectType::competitor);
         if (rowIndex < 0 || static_cast<uint16_t>(rowIndex) >= objects.size())
         {
-            return { -1, ObjectManager::object_index_entry{} };
+            return { -1, ObjectManager::ObjectIndexEntry{} };
         }
 
         if (isInUseCompetitor(objects[rowIndex].first))
         {
-            return { -1, ObjectManager::object_index_entry{} };
+            return { -1, ObjectManager::ObjectIndexEntry{} };
         }
         return { rowIndex, objects[rowIndex].second };
     }
@@ -236,7 +236,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
             auto str = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
             *str++ = ControlCodes::window_colour_2;
             auto objectPtr = self->object;
-            strcpy(str, ObjectManager::object_index_entry::read(&objectPtr)._name);
+            strcpy(str, ObjectManager::ObjectIndexEntry::read(&objectPtr)._name);
             Gfx::drawStringCentredClipped(*context, x, y, width, Colour::black, StringIds::buffer_2039);
         }
 
@@ -250,7 +250,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
         Gfx::clearSingle(*context, Colour::getShade(self->colours[1], 4));
 
         auto index = 0;
-        for (const auto& object : ObjectManager::getAvailableObjects(object_type::competitor))
+        for (const auto& object : ObjectManager::getAvailableObjects(ObjectType::competitor))
         {
             const auto y = index * rowHeight;
             uint8_t inlineColour = ControlCodes::colour_black;

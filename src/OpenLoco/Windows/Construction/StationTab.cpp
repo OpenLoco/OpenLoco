@@ -335,7 +335,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         else
         {
             yPos--;
-            for (uint8_t i = 0; i < ObjectManager::getMaxObjects(object_type::cargo); i++)
+            for (uint8_t i = 0; i < ObjectManager::getMaxObjects(ObjectType::cargo); i++)
             {
                 if (_constructingStationAcceptedCargoTypes & (1 << i))
                 {
@@ -364,7 +364,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         else
         {
             yPos--;
-            for (uint8_t i = 0; i < ObjectManager::getMaxObjects(object_type::cargo); i++)
+            for (uint8_t i = 0; i < ObjectManager::getMaxObjects(ObjectType::cargo); i++)
             {
                 if (_constructingStationProducedCargoTypes & (1 << i))
                 {

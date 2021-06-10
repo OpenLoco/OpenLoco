@@ -28,17 +28,17 @@ namespace OpenLoco::ObjectManager
     };
     static_assert(sizeof(ObjectEntry2) == 0x14);
 
-    struct object_repository_item
+    struct ObjectRepositoryItem
     {
-        object** objects;
+        Object** objects;
         ObjectEntry2* object_entry_extendeds;
     };
-    static_assert(sizeof(object_repository_item) == 8);
+    static_assert(sizeof(ObjectRepositoryItem) == 8);
 #pragma pack(pop)
 
     loco_global<ObjectEntry2[maxObjects], 0x1125A90> objectEntries;
-    loco_global<object_repository_item[64], 0x4FE0B8> object_repository;
-    loco_global<object* [maxObjects], 0x0050C3D0> _allObjects;
+    loco_global<ObjectRepositoryItem[64], 0x4FE0B8> object_repository;
+    loco_global<Object* [maxObjects], 0x0050C3D0> _allObjects;
     loco_global<InterfaceSkinObject* [1], 0x0050C3D0> _interfaceObjects;
     loco_global<SoundObject* [128], 0x0050C3D4> _soundObjects;
     loco_global<CurrencyObject* [1], 0x0050C5D4> _currencyObjects;
@@ -46,7 +46,7 @@ namespace OpenLoco::ObjectManager
     loco_global<RockObject* [8], 0x0050C658> _rockObjects;
     loco_global<WaterObject* [1], 0x0050C678> _waterObjects;
     loco_global<LandObject* [32], 0x0050C67C> _landObjects;
-    loco_global<town_names_object* [1], 0x0050C6FC> _townNamesObjects;
+    loco_global<TownNamesObject* [1], 0x0050C6FC> _townNamesObjects;
     loco_global<CargoObject* [32], 0x0050C700> _cargoObjects;
     loco_global<WallObject* [32], 0x0050C780> _wallObjects;
     loco_global<TrainSignalObject* [16], 0x0050C800> _trainSignalObjects;
@@ -87,13 +87,13 @@ namespace OpenLoco::ObjectManager
         return &objectEntries[id];
     }
 
-    static object_repository_item& getRepositoryItem(object_type type)
+    static ObjectRepositoryItem& getRepositoryItem(ObjectType type)
     {
         return object_repository[static_cast<uint8_t>(type)];
     }
 
     template<>
-    object* get(size_t id)
+    Object* get(size_t id)
     {
         auto obj = _allObjects[id];
         if (obj == (void*)-1)
@@ -344,9 +344,9 @@ namespace OpenLoco::ObjectManager
     }
     */
 
-    object_index_entry object_index_entry::read(std::byte** ptr)
+    ObjectIndexEntry ObjectIndexEntry::read(std::byte** ptr)
     {
-        object_index_entry entry{};
+        ObjectIndexEntry entry{};
 
         entry._header = (ObjectHeader*)*ptr;
         *ptr += sizeof(ObjectHeader);
@@ -355,14 +355,14 @@ namespace OpenLoco::ObjectManager
         *ptr += strlen(entry._filename) + 1;
 
         // decoded_chunk_size
-        //header2* h2 = (header2*)ptr;
-        *ptr += sizeof(header2);
+        //ObjectHeader2* h2 = (ObjectHeader2*)ptr;
+        *ptr += sizeof(ObjectHeader2);
 
         entry._name = (char*)*ptr;
         *ptr += strlen(entry._name) + 1;
 
-        //header3* h3 = (header3*)ptr;
-        *ptr += sizeof(header3);
+        //ObjectHeader3* h3 = (ObjectHeader3*)ptr;
+        *ptr += sizeof(ObjectHeader3);
 
         uint8_t* countA = (uint8_t*)*ptr;
         *ptr += sizeof(uint8_t);
@@ -391,16 +391,16 @@ namespace OpenLoco::ObjectManager
         return *_installedObjectCount;
     }
 
-    std::vector<std::pair<uint32_t, object_index_entry>> getAvailableObjects(object_type type)
+    std::vector<std::pair<uint32_t, ObjectIndexEntry>> getAvailableObjects(ObjectType type)
     {
         auto ptr = (std::byte*)_installedObjectList;
-        std::vector<std::pair<uint32_t, object_index_entry>> list;
+        std::vector<std::pair<uint32_t, ObjectIndexEntry>> list;
 
         for (uint32_t i = 0; i < _installedObjectCount; i++)
         {
-            auto entry = object_index_entry::read(&ptr);
+            auto entry = ObjectIndexEntry::read(&ptr);
             if (entry._header->getType() == type)
-                list.emplace_back(std::pair<uint32_t, object_index_entry>(i, entry));
+                list.emplace_back(std::pair<uint32_t, ObjectIndexEntry>(i, entry));
         }
 
         return list;
@@ -420,13 +420,13 @@ namespace OpenLoco::ObjectManager
         call(0x0047176D, regs);
     }
 
-    static LoadedObjectIndex getLoadedObjectIndex(object_type objectType, size_t index)
+    static LoadedObjectIndex getLoadedObjectIndex(ObjectType objectType, size_t index)
     {
         auto baseIndex = 0;
         size_t type = 0;
         while (type != static_cast<size_t>(objectType))
         {
-            auto maxObjectsForType = getMaxObjects(static_cast<object_type>(type));
+            auto maxObjectsForType = getMaxObjects(static_cast<ObjectType>(type));
             baseIndex += maxObjectsForType;
             type++;
         }
@@ -445,7 +445,7 @@ namespace OpenLoco::ObjectManager
             for (size_t i = 0; i < maxObjectsForType; i++)
             {
                 auto obj = typedObjectList.objects[i];
-                if (obj != nullptr && obj != reinterpret_cast<object*>(-1))
+                if (obj != nullptr && obj != reinterpret_cast<Object*>(-1))
                 {
                     const auto& objHeader = typedObjectList.object_entry_extendeds[i];
                     if (objHeader.isCustom())
@@ -470,7 +470,7 @@ namespace OpenLoco::ObjectManager
 
     // 0x004720EB
     // Returns std::nullopt if not loaded
-    std::optional<LoadedObjectIndex> findIndex(const object_index_entry& object)
+    std::optional<LoadedObjectIndex> findIndex(const ObjectIndexEntry& object)
     {
         return findIndex(*object._header);
     }
@@ -489,7 +489,7 @@ namespace OpenLoco::ObjectManager
         drawPreview,
     };
 
-    static bool callObjectFunction(const ObjectHeader& header, object& obj, const ObjectProcedure proc)
+    static bool callObjectFunction(const ObjectHeader& header, Object& obj, const ObjectProcedure proc)
     {
         auto objectType = header.getType();
         auto objectProcTable = (const uintptr_t*)0x004FE1C8;
@@ -506,7 +506,7 @@ namespace OpenLoco::ObjectManager
         auto objectHeader = getHeader(index);
         if (objectHeader != nullptr)
         {
-            auto obj = get<object>(index);
+            auto obj = get<Object>(index);
             if (obj != nullptr)
             {
                 return callObjectFunction(*objectHeader, *obj, proc);
@@ -529,7 +529,7 @@ namespace OpenLoco::ObjectManager
         size_t objectType = 0;
         while (objectType < maxObjectTypes)
         {
-            auto count = getMaxObjects(static_cast<object_type>(objectType));
+            auto count = getMaxObjects(static_cast<ObjectType>(objectType));
             if (index < count)
             {
                 return static_cast<LoadedObjectId>(index);
@@ -599,7 +599,7 @@ namespace OpenLoco::ObjectManager
         size_t index = 0;
         for (; index < getMaxObjects(type); ++index)
         {
-            if (getRepositoryItem(type).objects[index] == reinterpret_cast<object*>(-1))
+            if (getRepositoryItem(type).objects[index] == reinterpret_cast<Object*>(-1))
             {
                 break;
             }
@@ -610,7 +610,7 @@ namespace OpenLoco::ObjectManager
             return false;
         }
 
-        auto* obj = reinterpret_cast<object*>(objectData.data());
+        auto* obj = reinterpret_cast<Object*>(objectData.data());
         getRepositoryItem(type).objects[index] = obj;
         getRepositoryItem(type).object_entry_extendeds[index] = ObjectEntry2(header, objectData.size());
         return true;
@@ -622,18 +622,18 @@ namespace OpenLoco::ObjectManager
         call(0x004072EC);
     }
 
-    static constexpr SawyerEncoding getBestEncodingForObjectType(object_type type)
+    static constexpr SawyerEncoding getBestEncodingForObjectType(ObjectType type)
     {
         switch (type)
         {
-            case object_type::competitor:
+            case ObjectType::competitor:
                 return SawyerEncoding::uncompressed;
             default:
                 return SawyerEncoding::runLengthSingle;
-            case object_type::currency:
+            case ObjectType::currency:
                 return SawyerEncoding::runLengthMulti;
-            case object_type::town_names:
-            case object_type::scenario_text:
+            case ObjectType::townNames:
+            case ObjectType::scenarioText:
                 return SawyerEncoding::rotate;
         }
     }
@@ -655,7 +655,7 @@ namespace OpenLoco::ObjectManager
                 ObjectManager::unload(*index);
 
                 auto encodingType = getBestEncodingForObjectType(header.getType());
-                auto obj = ObjectManager::get<object>(*index);
+                auto obj = ObjectManager::get<Object>(*index);
                 auto objSize = ObjectManager::getByteLength(*index);
 
                 fs.write(header);
@@ -783,7 +783,7 @@ namespace OpenLoco::ObjectManager
         }
         std::copy(std::begin(data), std::end(data), objectData);
 
-        auto* obj = reinterpret_cast<object*>(objectData);
+        auto* obj = reinterpret_cast<Object*>(objectData);
         if (!callObjectFunction(objectHeader, *obj, ObjectProcedure::validate))
         {
             return false;
@@ -836,7 +836,7 @@ namespace OpenLoco::ObjectManager
 
         for (size_t i = 0; i < ObjectManager::maxObjects; i++)
         {
-            auto obj = ObjectManager::get<object>(i);
+            auto obj = ObjectManager::get<Object>(i);
             if (obj != nullptr)
             {
                 auto entry = getHeader(i);
@@ -852,7 +852,7 @@ namespace OpenLoco::ObjectManager
     }
 
     // 0x00472AFE
-    ObjIndexPair getActiveObject(object_type objectType, uint8_t* edi)
+    ObjIndexPair getActiveObject(ObjectType objectType, uint8_t* edi)
     {
         const auto objects = getAvailableObjects(objectType);
 
@@ -864,7 +864,7 @@ namespace OpenLoco::ObjectManager
             }
         }
 
-        return { -1, object_index_entry{} };
+        return { -1, ObjectIndexEntry{} };
     }
 
     // TODO: Should only be defined in ObjectSelectionWindow

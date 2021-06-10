@@ -1502,7 +1502,7 @@ namespace OpenLoco::Ui::Windows::Options
             widget_t dropdown = w->widgets[Widx::currency];
             Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], _112C185, 0x80);
             int index = -1;
-            for (auto object : ObjectManager::getAvailableObjects(object_type::currency))
+            for (auto object : ObjectManager::getAvailableObjects(ObjectType::currency))
             {
                 index++;
                 Dropdown::add(index, StringIds::dropdown_stringptr, object.second._name);
@@ -1526,12 +1526,12 @@ namespace OpenLoco::Ui::Windows::Options
             uint8_t* _11364A0 = (uint8_t*)*__11364A0;
 
             int index = -1;
-            for (auto object : ObjectManager::getAvailableObjects(object_type::currency))
+            for (auto object : ObjectManager::getAvailableObjects(ObjectType::currency))
             {
                 index++;
                 if (index == ax)
                 {
-                    auto ebp = ObjectManager::getActiveObject(object_type::currency, _11364A0);
+                    auto ebp = ObjectManager::getActiveObject(ObjectType::currency, _11364A0);
 
                     if (ebp.index != -1)
                     {
@@ -1562,7 +1562,7 @@ namespace OpenLoco::Ui::Windows::Options
             Dropdown::show(w->x + dropdown.left, w->y + dropdown.top, dropdown.width() - 4, dropdown.height(), w->colours[1], _112C185, 0x80);
 
             int index = -1;
-            for (auto object : ObjectManager::getAvailableObjects(object_type::currency))
+            for (auto object : ObjectManager::getAvailableObjects(ObjectType::currency))
             {
                 index++;
                 Dropdown::add(index, StringIds::dropdown_stringptr, object.second._name);
@@ -1581,7 +1581,7 @@ namespace OpenLoco::Ui::Windows::Options
             }
 
             int index = -1;
-            for (auto object : ObjectManager::getAvailableObjects(object_type::currency))
+            for (auto object : ObjectManager::getAvailableObjects(ObjectType::currency))
             {
                 index++;
 

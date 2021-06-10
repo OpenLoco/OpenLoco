@@ -30,7 +30,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
     static loco_global<uint8_t, 0x00526247> industryFlags;
 
-    static constexpr size_t maxLandObjects = ObjectManager::getMaxObjects(object_type::land);
+    static constexpr size_t maxLandObjects = ObjectManager::getMaxObjects(ObjectType::land);
 
     static loco_global<uint16_t[10], 0x0112C826> commonFormatArgs;
 
