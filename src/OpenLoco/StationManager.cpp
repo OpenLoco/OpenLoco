@@ -89,10 +89,7 @@ namespace OpenLoco::StationManager
     {
         for (auto& town : TownManager::towns())
         {
-            if (!town.empty())
-            {
-                town.flags &= ~TownFlags::ratingAdjusted;
-            }
+            town.flags &= ~TownFlags::ratingAdjusted;
         }
 
         for (auto& station : stations())

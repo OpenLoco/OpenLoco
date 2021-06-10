@@ -1366,9 +1366,6 @@ namespace OpenLoco::Ui::Windows::MapWindow
     {
         for (const auto& town : TownManager::towns())
         {
-            if (town.empty())
-                continue;
-
             auto townPos = locationToMapWindowPos({ town.x, town.y });
 
             StringManager::formatString(_stringFormatBuffer, town.name);

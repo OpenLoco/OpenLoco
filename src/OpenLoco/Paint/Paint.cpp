@@ -625,11 +625,6 @@ namespace OpenLoco::Paint
 
         for (auto& town : TownManager::towns())
         {
-            if (town.empty())
-            {
-                continue;
-            }
-
             if (!town.labelFrame.contains(rect, (*_context)->zoom_level))
             {
                 continue;

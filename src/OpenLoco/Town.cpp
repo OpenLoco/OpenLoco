@@ -13,18 +13,6 @@ namespace OpenLoco
         return name == StringIds::null;
     }
 
-    TownId_t Town::id() const
-    {
-        // TODO check if this is stored in Town structure
-        //      otherwise add it when possible
-        auto index = static_cast<size_t>(this - &TownManager::towns()[0]);
-        if (index > TownManager::max_towns)
-        {
-            index = TownId::null;
-        }
-        return static_cast<TownId_t>(index);
-    }
-
     // 0x0049742F
     void Town::update()
     {

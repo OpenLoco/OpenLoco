@@ -17,10 +17,9 @@ namespace OpenLoco::TownManager
         call(0x00496B38);
     }
 
-    std::array<Town, max_towns>& towns()
+    LocoFixedVector<Town> towns()
     {
-        auto arr = (std::array<Town, max_towns>*)_towns.get();
-        return *arr;
+        return LocoFixedVector<Town>(_towns);
     }
 
     Town* get(TownId_t id)
@@ -56,9 +55,6 @@ namespace OpenLoco::TownManager
     {
         for (Town& town : towns())
         {
-            if (town.empty())
-                continue;
-
             town.updateLabel();
         }
     }
@@ -68,9 +64,6 @@ namespace OpenLoco::TownManager
     {
         for (Town& currTown : towns())
         {
-            if (currTown.empty())
-                continue;
-
             // Scroll history
             if (currTown.history_size == std::size(currTown.history))
             {
@@ -153,4 +146,16 @@ namespace OpenLoco::TownManager
         Ui::WindowManager::invalidate(Ui::WindowType::town);
     }
 
+}
+
+OpenLoco::TownId_t OpenLoco::Town::id() const
+{
+    // TODO check if this is stored in Town structure
+    //      otherwise add it when possible
+    auto index = static_cast<size_t>(this - &TownManager::_towns[0]);
+    if (index > TownManager::max_towns)
+    {
+        index = TownId::null;
+    }
+    return static_cast<OpenLoco::TownId_t>(index);
 }

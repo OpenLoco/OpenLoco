@@ -359,27 +359,20 @@ namespace OpenLoco::Ui::Windows::TownList
         static void updateTownList(Window* self)
         {
             auto chosenTown = -1;
-
-            auto i = -1;
-
             for (auto& town : TownManager::towns())
             {
-                i++;
-                if (town.empty())
-                    continue;
-
                 if ((town.flags & TownFlags::sorted) != 0)
                     continue;
 
                 if (chosenTown == -1)
                 {
-                    chosenTown = i;
+                    chosenTown = town.id();
                     continue;
                 }
 
                 if (getOrder(SortMode(self->sort_mode), town, *TownManager::get(chosenTown)))
                 {
-                    chosenTown = i;
+                    chosenTown = town.id();
                 }
             }
 
@@ -1509,9 +1502,6 @@ namespace OpenLoco::Ui::Windows::TownList
 
             for (auto& town : TownManager::towns())
             {
-                if (town.empty())
-                    continue;
-
                 town.flags &= ~TownFlags::sorted;
             }
         }
