@@ -348,6 +348,7 @@ namespace OpenLoco
         Audio::close();
         Ui::disposeCursors();
         Ui::disposeInput();
+        Localisation::unloadLanguageFile();
 
         auto tempFilePath = Environment::getPathNoWarning(Environment::path_id::_1tmp);
         if (fs::exists(tempFilePath))

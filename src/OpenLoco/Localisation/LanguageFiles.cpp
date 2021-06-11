@@ -18,6 +18,7 @@ using namespace OpenLoco::Interop;
 namespace OpenLoco::Localisation
 {
     static loco_global<char* [0xFFFF], 0x005183FC> _strings;
+    static std::vector<std::unique_ptr<char[]>> _strings_owner;
 
     static std::map<std::string, uint8_t, std::less<>> basicCommands = {
         { "INT16_1DP", ControlCodes::int16_decimals },
@@ -50,11 +51,11 @@ namespace OpenLoco::Localisation
         { "GREEN", ControlCodes::colour_green },
     };
 
-    static char* readString(const char* value, size_t size)
+    static std::unique_ptr<char[]> readString(const char* value, size_t size)
     {
         // Take terminating NULL character in account
-        char* str = (char*)malloc(size + 1);
-        char* out = str;
+        auto str = std::make_unique<char[]>(size + 1);
+        char* out = str.get();
 
         utf8_t* ptr = (utf8_t*)value;
         while (true)
@@ -242,10 +243,13 @@ namespace OpenLoco::Localisation
                     continue;
 
                 std::string new_string = it->second.as<std::string>();
-                char* processed_string = readString(new_string.data(), new_string.length());
+                _strings_owner.emplace_back(readString(new_string.data(), new_string.length()));
+                char* processed_string = _strings_owner.back().get();
 
                 if (processed_string != nullptr)
+                {
                     _strings[id] = processed_string;
+                }
             }
 
             return true;
@@ -274,5 +278,10 @@ namespace OpenLoco::Localisation
         languageFile = languageDir / (config.language + ".yml");
         if (!loadLanguageStringTable(languageFile))
             throw std::runtime_error("Could not load the " + config.language + " language file!");
+    }
+
+    void unloadLanguageFile()
+    {
+        _strings_owner.clear();
     }
 }
