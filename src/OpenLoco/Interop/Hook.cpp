@@ -10,6 +10,7 @@
 #else
 #include <sys/mman.h>
 #endif // _WIN32
+#include "../Console.h"
 #include "Interop.hpp"
 
 namespace OpenLoco::Interop
@@ -30,7 +31,7 @@ namespace OpenLoco::Interop
     *(data + 2) = ((addr)&0x00ff0000) >> 16;  \
     *(data + 3) = ((addr)&0xff000000) >> 24;
 
-    static void hookFunc(uintptr_t address, uintptr_t hookAddress, int32_t stacksize)
+    static bool hookFunc(uintptr_t address, uintptr_t hookAddress, int32_t stacksize)
     {
         int32_t i = 0;
         uint8_t data[HOOK_BYTE_COUNT] = { 0 };
@@ -149,12 +150,19 @@ namespace OpenLoco::Interop
 
         data[i++] = 0xC3; // retn
 
+        bool done;
 #ifdef _WIN32
-        WriteProcessMemory(GetCurrentProcess(), (LPVOID)address, data, i, 0);
+        done = WriteProcessMemory(GetCurrentProcess(), (LPVOID)address, data, i, 0);
+        if (!done)
+        {
+            Console::error("WriteProcessMemory failed! address = 0x%08x, size = %u, GetLastError() = 0x%08x", address, i, GetLastError());
+        }
 #else
+        done = true;
         // We own the pages with PROT_WRITE | PROT_EXEC, we can simply just memcpy the data
         memcpy((void*)address, data, i);
 #endif // _WIN32
+        return done;
     }
 
     void registerHook(uintptr_t address, hook_function function)
@@ -175,6 +183,7 @@ namespace OpenLoco::Interop
         }
         if (_hookTableOffset > _maxHooks)
         {
+            Console::error("Failed registering hook for 0x%08x. Ran out of hook table space", address);
             return;
         }
         uint32_t hookaddress = (uint32_t)_hookTableAddress + (_hookTableOffset * HOOK_BYTE_COUNT);
