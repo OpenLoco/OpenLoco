@@ -186,20 +186,32 @@ namespace OpenLoco::Interop
             Console::error("Failed registering hook for 0x%08x. Ran out of hook table space", address);
             return;
         }
-        uint32_t hookaddress = (uint32_t)_hookTableAddress + (_hookTableOffset * HOOK_BYTE_COUNT);
-        uint8_t data[9];
-        int32_t i = 0;
-        data[i++] = 0xE9; // jmp
+        // Do a few retries here. This can fail on some versions of wine which inexplicably would fail on
+        // WriteProcessMemory for specific addresses that we fully own, but skipping over failing entry would work.
+        bool done = false;
+        int retries = 10;
+        while (!done && retries > 0)
+        {
+            uint32_t hookaddress = (uint32_t)_hookTableAddress + (_hookTableOffset * HOOK_BYTE_COUNT);
+            uint8_t data[9];
+            int32_t i = 0;
+            data[i++] = 0xE9; // jmp
 
-        WRITE_ADDRESS_STRICTALIAS(&data[i], hookaddress - address - i - 4);
-        i += 4;
+            WRITE_ADDRESS_STRICTALIAS(&data[i], hookaddress - address - i - 4);
+            i += 4;
 
-        data[i++] = 0xC3; // retn
+            data[i++] = 0xC3; // retn
 
-        writeMemory(address, data, i);
+            writeMemory(address, data, i);
 
-        hookFunc(hookaddress, (uintptr_t)function, 0);
-        _hookTableOffset++;
+            done = hookFunc(hookaddress, (uintptr_t)function, 0);
+            _hookTableOffset++;
+            retries--;
+            if (!done)
+            {
+                Console::error("Failed registering hook for 0x%08x. Retries left: %d", address, retries);
+            }
+        }
     }
 
     void writeRet(uint32_t address)
