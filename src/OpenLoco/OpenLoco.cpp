@@ -344,7 +344,11 @@ namespace OpenLoco
     // 0x004BE65E
     [[noreturn]] void exitCleanly()
     {
+        Audio::disposeDSound();
         Audio::close();
+        Ui::disposeCursors();
+        Ui::disposeInput();
+        Localisation::unloadLanguageFile();
 
         auto tempFilePath = Environment::getPathNoWarning(Environment::path_id::_1tmp);
         if (fs::exists(tempFilePath))
@@ -1170,9 +1174,7 @@ namespace OpenLoco
                 Ui::initialiseInput();
                 Audio::initialiseDSound();
                 run();
-                Audio::disposeDSound();
-                Ui::disposeCursors();
-                Ui::disposeInput();
+                exitCleanly();
 
                 // TODO extra clean up code
             }
