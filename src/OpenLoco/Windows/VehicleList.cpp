@@ -95,9 +95,45 @@ namespace OpenLoco::Ui::Windows::VehicleList
     static Widx getTabFromType(VehicleType type);
     static void initEvents();
 
+    StationId_t _activeStationId = {};
+
+    static bool refreshActiveStation(Window* self)
+    {
+        auto stationWindow = WindowManager::find(WindowType::station);
+        if (stationWindow != nullptr)
+        {
+            _activeStationId = stationWindow->number;
+            return true;
+        }
+        else
+        {
+            _activeStationId = 0xFFFF;
+            return false;
+        }
+    }
+
+    using Vehicles::VehicleHead;
+
+    static bool vehicleStopsAtActiveStation(const VehicleHead* head)
+    {
+        auto orders = Vehicles::OrderRingView(head->orderTableOffset);
+        for (auto& order : orders)
+        {
+            auto* stationOrder = order.as<Vehicles::OrderStation>();
+            if (stationOrder == nullptr)
+                continue;
+
+            const auto stationId = stationOrder->getStation();
+            if (stationId == _activeStationId)
+                return true;
+        }
+        return false;
+    }
+
     // 0x004C1D4F
     static void refreshVehicleList(Window* self)
     {
+        refreshActiveStation(self);
         self->row_count = 0;
         for (auto vehicle : EntityManager::VehicleList())
         {
@@ -107,11 +143,12 @@ namespace OpenLoco::Ui::Windows::VehicleList
             if (vehicle->owner != self->number)
                 continue;
 
+            if (_activeStationId != 0xFFFF && !vehicleStopsAtActiveStation(vehicle))
+                continue;
+
             vehicle->var_0C &= ~Vehicles::Flags0C::sorted;
         }
     }
-
-    using Vehicles::VehicleHead;
 
     // 0x004C1E4F
     static bool orderByName(const VehicleHead& lhs, const VehicleHead& rhs)
@@ -188,6 +225,9 @@ namespace OpenLoco::Ui::Windows::VehicleList
                 continue;
 
             if (vehicle->var_0C & Vehicles::Flags0C::sorted)
+                continue;
+
+            if (_activeStationId != 0xFFFF && !vehicleStopsAtActiveStation(vehicle))
                 continue;
 
             if (insertId == -1)
