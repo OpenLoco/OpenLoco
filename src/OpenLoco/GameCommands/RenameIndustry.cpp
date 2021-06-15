@@ -53,7 +53,7 @@ namespace OpenLoco::GameCommands
             return 0;
 
         char renameStringBuffer[37] = "";
-        memcpy(renameStringBuffer, renameBuffer, sizeof(renameStringBuffer));
+        memcpy(renameStringBuffer, renameBuffer, sizeof(renameBuffer));
         renameStringBuffer[36] = '\0';
 
         // Ensure the new name isn't empty.
