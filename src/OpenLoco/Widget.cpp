@@ -37,7 +37,7 @@ namespace OpenLoco::Ui
 
     static loco_global<char[2], 0x005045F8> _strCheckmark;
 
-    void draw_11_c(Gfx::Context* context, Window* window, Widget* widget, uint8_t colour, bool disabled, int16_t x, int16_t y, string_id string);
+    void draw_11_c(Gfx::Context* context, const Window* window, Widget* widget, uint8_t colour, bool disabled, int16_t x, int16_t y, string_id string);
     void draw_14(Gfx::Context* context, Widget* widget, uint8_t colour, bool disabled, int16_t x, int16_t y, string_id string);
 
     static void sub_4CF3EB(const Gfx::Context* context, const Window* window, const Widget* widget, int16_t x, int16_t y, uint8_t colour, int16_t width)
@@ -53,6 +53,145 @@ namespace OpenLoco::Ui
         call(0x004CF3EB, regs);
     }
 
+    void Widget::draw(Gfx::Context* context, Window* window, const uint64_t pressedWidgets, const uint64_t toolWidgets, const uint64_t hoveredWidgets, uint8_t& scrollviewIndex)
+    {
+        if ((window->flags & WindowFlags::no_background) == 0)
+        {
+            // Check if widget is outside the draw region
+            if (window->x + left >= context->x + context->width && window->x + right < context->x)
+            {
+                if (window->y + top >= context->y + context->height && window->y + bottom < context->y)
+                {
+                    return;
+                }
+            }
+        }
+
+        uint16_t widgetFlags = 0;
+        if (colour == 0 && window->flags & WindowFlags::flag_11)
+        {
+            widgetFlags = 0x80;
+        }
+
+        uint8_t wndColour = window->colours[colour];
+        auto widgetIndex = this - &window->widgets[0];
+        bool enabled = (window->enabled_widgets & (1ULL << widgetIndex)) != 0;
+        bool disabled = (window->disabled_widgets & (1ULL << widgetIndex)) != 0;
+        bool activated = (window->activated_widgets & (1ULL << widgetIndex)) != 0;
+        activated |= (pressedWidgets & (1ULL << widgetIndex)) != 0;
+        activated |= (toolWidgets & (1ULL << widgetIndex)) != 0;
+        bool hovered = (hoveredWidgets & (1ULL << widgetIndex)) != 0;
+
+        switch (type)
+        {
+            case WidgetType::none:
+            case WidgetType::end:
+                break;
+
+            case WidgetType::panel:
+                Widget::drawPanel(context, window, this, widgetFlags, wndColour);
+                break;
+
+            case WidgetType::frame:
+                Widget::drawFrame(context, window, this, widgetFlags, wndColour);
+                break;
+
+            case WidgetType::wt_3:
+                Widget::draw_3(context, window, this, widgetFlags, wndColour, enabled, disabled, activated);
+                break;
+
+            case WidgetType::wt_4:
+                assert(false); // Unused
+                break;
+
+            case WidgetType::wt_5:
+            case WidgetType::wt_6:
+            case WidgetType::wt_7:
+            case WidgetType::wt_8:
+                Widget::draw_5(context, window, this, widgetFlags, wndColour, enabled, disabled, activated);
+                break;
+
+            case WidgetType::wt_9:
+                Widget::draw_9(context, window, this, widgetFlags, wndColour, enabled, disabled, activated, hovered);
+                break;
+
+            case WidgetType::wt_10:
+                Widget::draw_10(context, window, this, widgetFlags, wndColour, enabled, disabled, activated, hovered);
+                break;
+
+            case WidgetType::wt_11:
+            case WidgetType::wt_12:
+            case WidgetType::wt_14:
+                if (type == WidgetType::wt_12)
+                {
+                    assert(false); // Unused
+                }
+                Widget::draw_11_a(context, window, this, widgetFlags, wndColour, enabled, disabled, activated);
+                Widget::draw_13(context, window, this, widgetFlags, wndColour, enabled, disabled, activated);
+                break;
+
+            case WidgetType::wt_13:
+                Widget::draw_13(context, window, this, widgetFlags, wndColour, enabled, disabled, activated);
+                break;
+
+            case WidgetType::wt_15:
+                Widget::draw_15(context, window, this, widgetFlags, wndColour, disabled);
+                break;
+
+            case WidgetType::groupbox:
+                // NB: widget type 16 has been repurposed to add groupboxes; the original type 16 was unused.
+                Widget::drawGroupbox(context, window, this);
+                break;
+
+            case WidgetType::wt_17:
+            case WidgetType::wt_18:
+            case WidgetType::viewport:
+                Widget::draw_17(context, window, this, widgetFlags, wndColour);
+                Widget::draw_15(context, window, this, widgetFlags, wndColour, disabled);
+                break;
+
+            case WidgetType::wt_20:
+            case WidgetType::wt_21:
+                assert(false); // Unused
+                break;
+
+            case WidgetType::caption_22:
+                Widget::draw_22_caption(context, window, this, widgetFlags, wndColour);
+                break;
+
+            case WidgetType::caption_23:
+                Widget::draw_23_caption(context, window, this, widgetFlags, wndColour);
+                break;
+
+            case WidgetType::caption_24:
+                Widget::draw_24_caption(context, window, this, widgetFlags, wndColour);
+                break;
+
+            case WidgetType::caption_25:
+                Widget::draw_25_caption(context, window, this, widgetFlags, wndColour);
+                break;
+
+            case WidgetType::scrollview:
+                Widget::drawScrollview(context, window, this, widgetFlags, wndColour, enabled, disabled, activated, hovered, scrollviewIndex);
+                scrollviewIndex++;
+                break;
+
+            case WidgetType::checkbox:
+                Widget::draw_27_checkbox(context, window, this, widgetFlags, wndColour, enabled, disabled, activated);
+                Widget::draw_27_label(context, window, this, widgetFlags, wndColour, disabled);
+                break;
+
+            case WidgetType::wt_28:
+                assert(false); // Unused
+                Widget::draw_27_label(context, window, this, widgetFlags, wndColour, disabled);
+                break;
+
+            case WidgetType::wt_29:
+                assert(false); // Unused
+                Widget::draw_29(context, window, this);
+                break;
+        }
+    }
     // 0x004CF487
     void Widget::drawViewportCentreButton(Gfx::Context* context, const Window* window, const WidgetIndex_t widgetIndex)
     {
@@ -73,7 +212,7 @@ namespace OpenLoco::Ui
     }
 
     // 0x004CAB8E
-    static void draw_resize_handle(Gfx::Context* context, Window* window, Widget* widget, uint8_t colour)
+    static void draw_resize_handle(Gfx::Context* context, const Window* window, Widget* widget, uint8_t colour)
     {
         if (!(window->flags & WindowFlags::resizable))
         {
@@ -152,7 +291,7 @@ namespace OpenLoco::Ui
     }
 
     // 0x004CAB58
-    void Widget::drawPanel(Gfx::Context* context, Window* window, Widget* widget, uint16_t flags, uint8_t colour)
+    void Widget::drawPanel(Gfx::Context* context, const Window* window, Widget* widget, uint16_t flags, uint8_t colour)
     {
         Gfx::fillRectInset(context, window->x + widget->left, window->y + widget->top, window->x + widget->right, window->y + widget->bottom, colour, flags);
 
@@ -160,7 +299,7 @@ namespace OpenLoco::Ui
     }
 
     // 0x004CAAB9
-    void Widget::drawFrame(Gfx::Context* context, Window* window, Widget* widget, uint16_t flags, uint8_t colour)
+    void Widget::drawFrame(Gfx::Context* context, const Window* window, Widget* widget, uint16_t flags, uint8_t colour)
     {
         Gfx::Context* clipped = nullptr;
         if (Gfx::clipContext(&clipped, context, widget->left + window->x, widget->top + window->y, widget->right - widget->left, 41))
@@ -198,7 +337,7 @@ namespace OpenLoco::Ui
         draw_resize_handle(context, window, widget, colour);
     }
 
-    void Widget::draw_3(Gfx::Context* context, Window* window, Widget* widget, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated)
+    void Widget::draw_3(Gfx::Context* context, const Window* window, Widget* widget, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated)
     {
         int16_t top, left, bottom, right;
         top = window->y + widget->top;
@@ -234,7 +373,7 @@ namespace OpenLoco::Ui
     }
 
     // 0x004CABFE
-    void Widget::draw_5(Gfx::Context* context, Window* window, Widget* widget, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated)
+    void Widget::draw_5(Gfx::Context* context, const Window* window, Widget* widget, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated)
     {
         if (widget->content == -1)
         {
@@ -274,7 +413,7 @@ namespace OpenLoco::Ui
     }
 
     // 0x004CACD4
-    void Widget::draw_9(Gfx::Context* context, Window* window, Widget* widget, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated, bool hovered)
+    void Widget::draw_9(Gfx::Context* context, const Window* window, Widget* widget, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated, bool hovered)
     {
         if (!disabled && hovered)
         {
@@ -313,7 +452,7 @@ namespace OpenLoco::Ui
     }
 
     // 0x004CAC5F
-    void Widget::draw_10(Gfx::Context* context, Window* window, Widget* widget, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated, bool hovered)
+    void Widget::draw_10(Gfx::Context* context, const Window* window, Widget* widget, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated, bool hovered)
     {
         if (widget->content == -1)
         {
@@ -351,7 +490,7 @@ namespace OpenLoco::Ui
     }
 
     // 0x004CB164
-    void Widget::draw_11_a(Gfx::Context* context, Window* window, Widget* widget, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated)
+    void Widget::draw_11_a(Gfx::Context* context, const Window* window, Widget* widget, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated)
     {
         int left = window->x + widget->left;
         int right = window->x + widget->right;
@@ -367,7 +506,7 @@ namespace OpenLoco::Ui
     }
 
     // 0x004CB1BE
-    void Widget::draw_13(Gfx::Context* context, Window* window, Widget* widget, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated)
+    void Widget::draw_13(Gfx::Context* context, const Window* window, Widget* widget, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated)
     {
         if (widget->content == -1)
         {
@@ -399,7 +538,7 @@ namespace OpenLoco::Ui
     }
 
     // 0x004CB21D
-    void draw_11_c(Gfx::Context* context, Window* window, Widget* widget, uint8_t colour, bool disabled, int16_t x, int16_t y, string_id string)
+    void draw_11_c(Gfx::Context* context, const Window* window, Widget* widget, uint8_t colour, bool disabled, int16_t x, int16_t y, string_id string)
     {
         colour &= 0x7F;
         if (disabled)
@@ -428,7 +567,7 @@ namespace OpenLoco::Ui
     }
 
     // 0x4CB2D6
-    void Widget::draw_15(Gfx::Context* context, Window* window, Widget* widget, uint16_t flags, uint8_t colour, bool disabled)
+    void Widget::draw_15(Gfx::Context* context, const Window* window, Widget* widget, uint16_t flags, uint8_t colour, bool disabled)
     {
         if (widget->content == -1 || widget->content == -2)
         {
@@ -445,13 +584,13 @@ namespace OpenLoco::Ui
     }
 
     // 0x4CB29C
-    void Widget::draw_17(Gfx::Context* context, Window* window, Widget* widget, uint16_t flags, uint8_t colour)
+    void Widget::draw_17(Gfx::Context* context, const Window* window, Widget* widget, uint16_t flags, uint8_t colour)
     {
         Gfx::fillRectInset(context, window->x + widget->left, window->y + widget->top, window->x + widget->right, window->y + widget->bottom, colour, flags | 0x60);
     }
 
     // 0x004CA6AE
-    void Widget::draw_22_caption(Gfx::Context* context, Window* window, Widget* widget, uint16_t flags, uint8_t colour)
+    void Widget::draw_22_caption(Gfx::Context* context, const Window* window, Widget* widget, uint16_t flags, uint8_t colour)
     {
         int left = window->x + widget->left;
         int right = window->x + widget->right;
@@ -468,7 +607,7 @@ namespace OpenLoco::Ui
     }
 
     // 0x004CA750
-    void Widget::draw_23_caption(Gfx::Context* context, Window* window, Widget* widget, uint16_t flags, uint8_t colour)
+    void Widget::draw_23_caption(Gfx::Context* context, const Window* window, Widget* widget, uint16_t flags, uint8_t colour)
     {
         stringFormatBuffer[0] = ControlCodes::colour_black;
         StringManager::formatString(&stringFormatBuffer[1], widget->text, _commonFormatArgs);
@@ -488,7 +627,7 @@ namespace OpenLoco::Ui
     }
 
     // 0x004CA7F6
-    void Widget::draw_24_caption(Gfx::Context* context, Window* window, Widget* widget, uint16_t flags, uint8_t colour)
+    void Widget::draw_24_caption(Gfx::Context* context, const Window* window, Widget* widget, uint16_t flags, uint8_t colour)
     {
         stringFormatBuffer[0] = ControlCodes::window_colour_1;
         StringManager::formatString(&stringFormatBuffer[1], widget->text, _commonFormatArgs);
@@ -505,7 +644,7 @@ namespace OpenLoco::Ui
     }
 
     // 0x004CA88B
-    void Widget::draw_25_caption(Gfx::Context* context, Window* window, Widget* widget, uint16_t flags, uint8_t colour)
+    void Widget::draw_25_caption(Gfx::Context* context, const Window* window, Widget* widget, uint16_t flags, uint8_t colour)
     {
         stringFormatBuffer[0] = ControlCodes::colour_white;
         StringManager::formatString(&stringFormatBuffer[1], widget->text, _commonFormatArgs);
@@ -521,9 +660,9 @@ namespace OpenLoco::Ui
         Gfx::drawString(context, x, window->y + widget->top + 1, FormatFlags::textflag_5 | Colour::black, stringFormatBuffer);
     }
 
-    static void draw_hscroll(Gfx::Context* context, Window* window, Widget* widget, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated, bool hovered, int16_t scrollview_index)
+    static void draw_hscroll(Gfx::Context* context, const Window* window, Widget* widget, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated, bool hovered, int16_t scrollview_index)
     {
-        Ui::ScrollArea* scroll_area = &window->scroll_areas[scrollview_index];
+        const auto* scroll_area = &window->scroll_areas[scrollview_index];
 
         uint16_t ax = window->x + widget->left + 1;
         uint16_t cx = window->y + widget->top + 1;
@@ -586,9 +725,9 @@ namespace OpenLoco::Ui
         // popa
     }
 
-    static void draw_vscroll(Gfx::Context* context, Window* window, Widget* widget, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated, bool hovered, int16_t scrollview_index)
+    static void draw_vscroll(Gfx::Context* context, const Window* window, Widget* widget, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated, bool hovered, int16_t scrollview_index)
     {
-        Ui::ScrollArea* scroll_area = &window->scroll_areas[scrollview_index];
+        const auto* scroll_area = &window->scroll_areas[scrollview_index];
 
         uint16_t ax = window->x + widget->left + 1;
         uint16_t cx = window->y + widget->top + 1;
@@ -666,7 +805,7 @@ namespace OpenLoco::Ui
         right--;
         bottom--;
 
-        Ui::ScrollArea* scroll_area = &window->scroll_areas[scrollview_index];
+        const auto* scroll_area = &window->scroll_areas[scrollview_index];
 
         _currentFontSpriteBase = Font::medium_bold;
         if (scroll_area->flags & Ui::ScrollView::ScrollFlags::hscrollbarVisible)
@@ -728,7 +867,7 @@ namespace OpenLoco::Ui
     }
 
     // 0x004CB00B
-    void Widget::draw_27_checkbox(Gfx::Context* context, Window* window, Widget* widget, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated)
+    void Widget::draw_27_checkbox(Gfx::Context* context, const Window* window, Widget* widget, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated)
     {
         if (enabled)
         {
@@ -750,7 +889,7 @@ namespace OpenLoco::Ui
     }
 
     // 0x004CB080
-    void Widget::draw_27_label(Gfx::Context* context, Window* window, Widget* widget, uint16_t flags, uint8_t colour, bool disabled)
+    void Widget::draw_27_label(Gfx::Context* context, const Window* window, Widget* widget, uint16_t flags, uint8_t colour, bool disabled)
     {
         if (widget->content == -1)
         {
@@ -768,7 +907,7 @@ namespace OpenLoco::Ui
     }
 
     // 0x004CA679
-    void Widget::draw_29(Gfx::Context* context, Window* window, Widget* widget)
+    void Widget::draw_29(Gfx::Context* context, const Window* window, Widget* widget)
     {
         int left = window->x + widget->left;
         int right = window->x + widget->right;
@@ -777,7 +916,7 @@ namespace OpenLoco::Ui
         Gfx::fillRect(context, left, top, right, bottom, Colour::getShade(Colour::black, 5));
     }
 
-    void Widget::drawGroupbox(Gfx::Context* const context, Window* const window, Widget* widget)
+    void Widget::drawGroupbox(Gfx::Context* const context, const Window* window, Widget* widget)
     {
         const uint8_t colour = window->colours[widget->colour] & 0x7F;
         int32_t l = window->x + widget->left + 5;

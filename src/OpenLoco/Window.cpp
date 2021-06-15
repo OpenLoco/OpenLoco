@@ -1467,8 +1467,8 @@ namespace OpenLoco::Ui
             hovered_widget = 1ULL << Input::getHoveredWidgetIndex();
         }
 
-        int scrollviewIndex = 0;
-        for (int widgetIndex = 0; widgetIndex < 64; widgetIndex++)
+        uint8_t scrollviewIndex = 0;
+        for (WidgetIndex_t widgetIndex = 0; widgetIndex < 64; widgetIndex++)
         {
             auto widget = &this->widgets[widgetIndex];
 
@@ -1477,142 +1477,7 @@ namespace OpenLoco::Ui
                 break;
             }
 
-            if ((this->flags & WindowFlags::no_background) == 0)
-            {
-                // Check if widget is outside the draw region
-                if (this->x + widget->left >= context->x + context->width && this->x + widget->right < context->x)
-                {
-                    if (this->y + widget->top >= context->y + context->height && this->y + widget->bottom < context->y)
-                    {
-                        continue;
-                    }
-                }
-            }
-
-            uint16_t widgetFlags = 0;
-            if (widget->colour == 0 && this->flags & WindowFlags::flag_11)
-            {
-                widgetFlags = 0x80;
-            }
-
-            uint8_t colour = this->colours[widget->colour];
-
-            bool enabled = (this->enabled_widgets & (1ULL << widgetIndex)) != 0;
-            bool disabled = (this->disabled_widgets & (1ULL << widgetIndex)) != 0;
-            bool activated = (this->activated_widgets & (1ULL << widgetIndex)) != 0;
-            activated |= (pressed_widget & (1ULL << widgetIndex)) != 0;
-            activated |= (tool_widget & (1ULL << widgetIndex)) != 0;
-            bool hovered = (hovered_widget & (1ULL << widgetIndex)) != 0;
-
-            switch (widget->type)
-            {
-                case WidgetType::none:
-                case WidgetType::end:
-                    break;
-
-                case WidgetType::panel:
-                    Widget::drawPanel(context, this, widget, widgetFlags, colour);
-                    break;
-
-                case WidgetType::frame:
-                    Widget::drawFrame(context, this, widget, widgetFlags, colour);
-                    break;
-
-                case WidgetType::wt_3:
-                    Widget::draw_3(context, this, widget, widgetFlags, colour, enabled, disabled, activated);
-                    break;
-
-                case WidgetType::wt_4:
-                    assert(false); // Unused
-                    break;
-
-                case WidgetType::wt_5:
-                case WidgetType::wt_6:
-                case WidgetType::wt_7:
-                case WidgetType::wt_8:
-                    Widget::draw_5(context, this, widget, widgetFlags, colour, enabled, disabled, activated);
-                    break;
-
-                case WidgetType::wt_9:
-                    Widget::draw_9(context, this, widget, widgetFlags, colour, enabled, disabled, activated, hovered);
-                    break;
-
-                case WidgetType::wt_10:
-                    Widget::draw_10(context, this, widget, widgetFlags, colour, enabled, disabled, activated, hovered);
-                    break;
-
-                case WidgetType::wt_11:
-                case WidgetType::wt_12:
-                case WidgetType::wt_14:
-                    if (widget->type == WidgetType::wt_12)
-                    {
-                        assert(false); // Unused
-                    }
-                    Widget::draw_11_a(context, this, widget, widgetFlags, colour, enabled, disabled, activated);
-                    Widget::draw_13(context, this, widget, widgetFlags, colour, enabled, disabled, activated);
-                    break;
-
-                case WidgetType::wt_13:
-                    Widget::draw_13(context, this, widget, widgetFlags, colour, enabled, disabled, activated);
-                    break;
-
-                case WidgetType::wt_15:
-                    Widget::draw_15(context, this, widget, widgetFlags, colour, disabled);
-                    break;
-
-                case WidgetType::groupbox:
-                    // NB: widget type 16 has been repurposed to add groupboxes; the original type 16 was unused.
-                    Widget::drawGroupbox(context, this, widget);
-                    break;
-
-                case WidgetType::wt_17:
-                case WidgetType::wt_18:
-                case WidgetType::viewport:
-                    Widget::draw_17(context, this, widget, widgetFlags, colour);
-                    Widget::draw_15(context, this, widget, widgetFlags, colour, disabled);
-                    break;
-
-                case WidgetType::wt_20:
-                case WidgetType::wt_21:
-                    assert(false); // Unused
-                    break;
-
-                case WidgetType::caption_22:
-                    Widget::draw_22_caption(context, this, widget, widgetFlags, colour);
-                    break;
-
-                case WidgetType::caption_23:
-                    Widget::draw_23_caption(context, this, widget, widgetFlags, colour);
-                    break;
-
-                case WidgetType::caption_24:
-                    Widget::draw_24_caption(context, this, widget, widgetFlags, colour);
-                    break;
-
-                case WidgetType::caption_25:
-                    Widget::draw_25_caption(context, this, widget, widgetFlags, colour);
-                    break;
-
-                case WidgetType::scrollview:
-                    Widget::drawScrollview(context, this, widget, widgetFlags, colour, enabled, disabled, activated, hovered, scrollviewIndex);
-                    scrollviewIndex++;
-                    break;
-
-                case WidgetType::checkbox:
-                    Widget::draw_27_checkbox(context, this, widget, widgetFlags, colour, enabled, disabled, activated);
-                    Widget::draw_27_label(context, this, widget, widgetFlags, colour, disabled);
-                    break;
-
-                case WidgetType::wt_28:
-                    assert(false); // Unused
-                    Widget::draw_27_label(context, this, widget, widgetFlags, colour, disabled);
-                    break;
-
-                case WidgetType::wt_29:
-                    assert(false); // Unused
-                    Widget::draw_29(context, this, widget);
-                    break;
-            }
+            widget->draw(context, this, pressed_widget, tool_widget, hovered_widget, scrollviewIndex);
         }
 
         if (this->flags & WindowFlags::white_border_mask)
