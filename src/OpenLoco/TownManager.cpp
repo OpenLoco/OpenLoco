@@ -103,7 +103,8 @@ namespace OpenLoco::TownManager
             }
 
             // Write new history point.
-            currTown.history[currTown.history_size - 1] = popSteps & 0xFF;
+            auto histIndex = std::clamp<int32_t>(currTown.history_size - 1, 0, std::size(currTown.history));
+            currTown.history[histIndex] = popSteps & 0xFF;
 
             // Find historical maximum population.
             uint8_t maxPopulation = 0;
