@@ -46,26 +46,26 @@ namespace OpenLoco::Ui::Windows::StationList
         scrollview,
     };
 
-    static widget_t _widgets[] = {
-        makeWidget({ 0, 0 }, { 600, 197 }, widget_type::frame, 0),
-        makeWidget({ 1, 1 }, { 598, 13 }, widget_type::caption_24, 0, StringIds::stringid_all_stations),
-        makeWidget({ 585, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window),
-        makeWidget({ 0, 41 }, { 600, 155 }, widget_type::panel, 1),
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_all_stations),
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_rail_stations),
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_road_stations),
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_airports),
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_ship_ports),
-        makeWidget({ 0, 14 }, { 26, 26 }, widget_type::wt_9, 0, StringIds::null, StringIds::tooltip_select_company),
-        makeWidget({ 4, 43 }, { 200, 12 }, widget_type::wt_14, 1, StringIds::null, StringIds::tooltip_sort_by_name),
-        makeWidget({ 204, 43 }, { 200, 12 }, widget_type::wt_14, 1, StringIds::null, StringIds::tooltip_sort_by_station_status),
-        makeWidget({ 404, 43 }, { 90, 12 }, widget_type::wt_14, 1, StringIds::null, StringIds::tooltip_sort_by_total_units_waiting),
-        makeWidget({ 494, 43 }, { 120, 12 }, widget_type::wt_14, 1, StringIds::null, StringIds::tooltip_sort_by_cargo_accepted),
-        makeWidget({ 3, 56 }, { 594, 126 }, widget_type::scrollview, 1, scrollbars::vertical),
+    static Widget _widgets[] = {
+        makeWidget({ 0, 0 }, { 600, 197 }, WidgetType::frame, 0),
+        makeWidget({ 1, 1 }, { 598, 13 }, WidgetType::caption_24, 0, StringIds::stringid_all_stations),
+        makeWidget({ 585, 2 }, { 13, 13 }, WidgetType::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window),
+        makeWidget({ 0, 41 }, { 600, 155 }, WidgetType::panel, 1),
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_all_stations),
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_rail_stations),
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_road_stations),
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_airports),
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_ship_ports),
+        makeWidget({ 0, 14 }, { 26, 26 }, WidgetType::wt_9, 0, StringIds::null, StringIds::tooltip_select_company),
+        makeWidget({ 4, 43 }, { 200, 12 }, WidgetType::wt_14, 1, StringIds::null, StringIds::tooltip_sort_by_name),
+        makeWidget({ 204, 43 }, { 200, 12 }, WidgetType::wt_14, 1, StringIds::null, StringIds::tooltip_sort_by_station_status),
+        makeWidget({ 404, 43 }, { 90, 12 }, WidgetType::wt_14, 1, StringIds::null, StringIds::tooltip_sort_by_total_units_waiting),
+        makeWidget({ 494, 43 }, { 120, 12 }, WidgetType::wt_14, 1, StringIds::null, StringIds::tooltip_sort_by_cargo_accepted),
+        makeWidget({ 3, 56 }, { 594, 126 }, WidgetType::scrollview, 1, Scrollbars::vertical),
         widgetEnd(),
     };
 
-    static window_event_list _events;
+    static WindowEventList _events;
 
     struct TabDetails
     {
@@ -93,20 +93,20 @@ namespace OpenLoco::Ui::Windows::StationList
 
     loco_global<uint16_t[4], 0x112C826> _common_format_args;
 
-    static Ui::CursorId cursor(window* window, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback);
-    static void draw(Ui::window* window, Gfx::Context* context);
-    static void drawScroll(Ui::window* window, Gfx::Context* context, uint32_t scrollIndex);
-    static void event_08(window* window);
-    static void event_09(window* window);
-    static void getScrollSize(Ui::window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
-    static void onDropdown(Ui::window* window, widget_index widgetIndex, int16_t itemIndex);
-    static void onMouseDown(Ui::window* window, widget_index widgetIndex);
-    static void onMouseUp(Ui::window* window, widget_index widgetIndex);
-    static void onScrollMouseDown(Ui::window* window, int16_t x, int16_t y, uint8_t scroll_index);
-    static void onScrollMouseOver(Ui::window* window, int16_t x, int16_t y, uint8_t scroll_index);
-    static void onUpdate(window* window);
-    static void prepareDraw(Ui::window* window);
-    static std::optional<FormatArguments> tooltip(Ui::window* window, widget_index widgetIndex);
+    static Ui::CursorId cursor(Window* window, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback);
+    static void draw(Ui::Window* window, Gfx::Context* context);
+    static void drawScroll(Ui::Window* window, Gfx::Context* context, uint32_t scrollIndex);
+    static void event_08(Window* window);
+    static void event_09(Window* window);
+    static void getScrollSize(Ui::Window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
+    static void onDropdown(Ui::Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex);
+    static void onMouseDown(Ui::Window* window, WidgetIndex_t widgetIndex);
+    static void onMouseUp(Ui::Window* window, WidgetIndex_t widgetIndex);
+    static void onScrollMouseDown(Ui::Window* window, int16_t x, int16_t y, uint8_t scroll_index);
+    static void onScrollMouseOver(Ui::Window* window, int16_t x, int16_t y, uint8_t scroll_index);
+    static void onUpdate(Window* window);
+    static void prepareDraw(Ui::Window* window);
+    static std::optional<FormatArguments> tooltip(Ui::Window* window, WidgetIndex_t widgetIndex);
 
     static void initEvents()
     {
@@ -127,7 +127,7 @@ namespace OpenLoco::Ui::Windows::StationList
     }
 
     // 0x004910E8
-    static void refreshStationList(window* window)
+    static void refreshStationList(Window* window)
     {
         window->row_count = 0;
 
@@ -221,7 +221,7 @@ namespace OpenLoco::Ui::Windows::StationList
     }
 
     // 0x0049111A
-    static void updateStationList(window* window)
+    static void updateStationList(Window* window)
     {
         auto edi = -1;
 
@@ -296,9 +296,9 @@ namespace OpenLoco::Ui::Windows::StationList
     }
 
     // 0x00490F6C
-    window* open(CompanyId_t companyId)
+    Window* open(CompanyId_t companyId)
     {
-        window* window = WindowManager::bringToFront(WindowType::stationList, companyId);
+        Window* window = WindowManager::bringToFront(WindowType::stationList, companyId);
         if (window != nullptr)
         {
             if (Input::isToolActive(window->type, window->number))
@@ -356,12 +356,12 @@ namespace OpenLoco::Ui::Windows::StationList
         return window;
     }
 
-    window* open(CompanyId_t companyId, uint8_t type)
+    Window* open(CompanyId_t companyId, uint8_t type)
     {
         if (type > 4)
             throw std::domain_error("Unexpected station type");
 
-        window* station_list = open(companyId);
+        Window* station_list = open(companyId);
         widx target = tabInformationByType[type].widgetIndex;
         station_list->callOnMouseUp(target);
 
@@ -369,7 +369,7 @@ namespace OpenLoco::Ui::Windows::StationList
     }
 
     // 0x004919A4
-    static Ui::CursorId cursor(window* window, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback)
+    static Ui::CursorId cursor(Window* window, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback)
     {
         if (widgetIdx != widx::scrollview)
             return fallback;
@@ -382,13 +382,13 @@ namespace OpenLoco::Ui::Windows::StationList
     }
 
     // 0x0049196F
-    static void event_08(window* window)
+    static void event_08(Window* window)
     {
         window->flags |= WindowFlags::not_scroll_view;
     }
 
     // 0x00491977
-    static void event_09(window* window)
+    static void event_09(Window* window)
     {
         if ((window->flags & WindowFlags::not_scroll_view) == 0)
             return;
@@ -401,7 +401,7 @@ namespace OpenLoco::Ui::Windows::StationList
     }
 
     // 0x00491344
-    static void prepareDraw(Ui::window* window)
+    static void prepareDraw(Ui::Window* window)
     {
         // Reset active tab.
         window->activated_widgets &= ~((1 << tab_all_stations) | (1 << tab_rail_stations) | (1 << tab_road_stations) | (1 << tab_airports) | (1 << tab_ship_ports));
@@ -460,7 +460,7 @@ namespace OpenLoco::Ui::Windows::StationList
             if (window->isDisabled(tabInfo.widgetIndex))
                 continue;
 
-            widget_t& tab = window->widgets[tabInfo.widgetIndex];
+            Widget& tab = window->widgets[tabInfo.widgetIndex];
 
             tab.left = new_tab_x;
             new_tab_x += tab_width;
@@ -469,7 +469,7 @@ namespace OpenLoco::Ui::Windows::StationList
     }
 
     // 0x0049157F
-    static void drawScroll(Ui::window* window, Gfx::Context* context, uint32_t scrollIndex)
+    static void drawScroll(Ui::Window* window, Gfx::Context* context, uint32_t scrollIndex)
     {
         auto shade = Colour::getShade(window->colours[1], 4);
         Gfx::clearSingle(*context, shade);
@@ -546,7 +546,7 @@ namespace OpenLoco::Ui::Windows::StationList
     }
 
     // 00491A76
-    static void drawTabs(Ui::window* window, Gfx::Context* context)
+    static void drawTabs(Ui::Window* window, Gfx::Context* context)
     {
         auto skin = ObjectManager::get<InterfaceSkinObject>();
         auto companyColour = CompanyManager::getCompanyColour(window->number);
@@ -554,12 +554,12 @@ namespace OpenLoco::Ui::Windows::StationList
         for (const auto& tab : tabInformationByType)
         {
             uint32_t image = Gfx::recolour(skin->img + tab.imageId, companyColour);
-            Widget::draw_tab(window, context, image, tab.widgetIndex);
+            Widget::drawTab(window, context, image, tab.widgetIndex);
         }
     }
 
     // 0x004914D8
-    static void draw(Ui::window* window, Gfx::Context* context)
+    static void draw(Ui::Window* window, Gfx::Context* context)
     {
         // Draw widgets and tabs.
         window->draw(context);
@@ -583,7 +583,7 @@ namespace OpenLoco::Ui::Windows::StationList
     }
 
     // 0x004917BB
-    static void onDropdown(Ui::window* window, widget_index widgetIndex, int16_t itemIndex)
+    static void onDropdown(Ui::Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (widgetIndex != widx::company_select)
             return;
@@ -620,14 +620,14 @@ namespace OpenLoco::Ui::Windows::StationList
     }
 
     // 0x004917B0
-    static void onMouseDown(Ui::window* window, widget_index widgetIndex)
+    static void onMouseDown(Ui::Window* window, WidgetIndex_t widgetIndex)
     {
         if (widgetIndex == widx::company_select)
             Dropdown::populateCompanySelect(window, &window->widgets[widgetIndex]);
     }
 
     // 0x00491785
-    static void onMouseUp(Ui::window* window, widget_index widgetIndex)
+    static void onMouseUp(Ui::Window* window, WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
@@ -682,7 +682,7 @@ namespace OpenLoco::Ui::Windows::StationList
     }
 
     // 0x00491A0C
-    static void onScrollMouseDown(Ui::window* window, int16_t x, int16_t y, uint8_t scroll_index)
+    static void onScrollMouseDown(Ui::Window* window, int16_t x, int16_t y, uint8_t scroll_index)
     {
         uint16_t currentRow = y / rowHeight;
         if (currentRow > window->var_83C)
@@ -696,7 +696,7 @@ namespace OpenLoco::Ui::Windows::StationList
     }
 
     // 0x004919D1
-    static void onScrollMouseOver(Ui::window* window, int16_t x, int16_t y, uint8_t scroll_index)
+    static void onScrollMouseOver(Ui::Window* window, int16_t x, int16_t y, uint8_t scroll_index)
     {
         window->flags &= ~(WindowFlags::not_scroll_view);
 
@@ -714,7 +714,7 @@ namespace OpenLoco::Ui::Windows::StationList
     }
 
     // 0x0049193F
-    static void onUpdate(window* window)
+    static void onUpdate(Window* window)
     {
         window->frame_no++;
 
@@ -728,13 +728,13 @@ namespace OpenLoco::Ui::Windows::StationList
     }
 
     // 0x00491999
-    static void getScrollSize(Ui::window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+    static void getScrollSize(Ui::Window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
         *scrollHeight = rowHeight * window->var_83C;
     }
 
     // 0x00491841
-    static std::optional<FormatArguments> tooltip(Ui::window* window, widget_index widgetIndex)
+    static std::optional<FormatArguments> tooltip(Ui::Window* window, WidgetIndex_t widgetIndex)
     {
         FormatArguments args{};
         args.push(StringIds::tooltip_scroll_station_list);

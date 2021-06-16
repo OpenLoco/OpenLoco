@@ -38,6 +38,7 @@
 #include "../Objects/WallObject.h"
 #include "../Objects/WaterObject.h"
 #include "../Ui/WindowManager.h"
+#include "../Widget.h"
 #include "../Window.h"
 
 using namespace OpenLoco::Interop;
@@ -82,22 +83,22 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         objectImage,
     };
 
-    widget_t widgets[] = {
-        makeWidget({ 0, 0 }, { 600, 398 }, widget_type::frame, 0),
-        makeWidget({ 1, 1 }, { 598, 13 }, widget_type::caption_25, 0, StringIds::title_object_selection),
-        makeWidget({ 585, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window),
-        makeWidget({ 0, 65 }, { 600, 333 }, widget_type::panel, 1),
-        makeWidget({ 3, 15 }, { 589, 50 }, widget_type::wt_5, 1),
-        makeWidget({ 470, 20 }, { 122, 12 }, widget_type::wt_11, 0, StringIds::object_selection_advanced, StringIds::object_selection_advanced_tooltip),
-        makeWidget({ 4, 68 }, { 288, 317 }, widget_type::scrollview, 1, vertical),
-        makeWidget({ 391, 68 }, { 114, 114 }, widget_type::wt_9, 1),
+    Widget widgets[] = {
+        makeWidget({ 0, 0 }, { 600, 398 }, WidgetType::frame, 0),
+        makeWidget({ 1, 1 }, { 598, 13 }, WidgetType::caption_25, 0, StringIds::title_object_selection),
+        makeWidget({ 585, 2 }, { 13, 13 }, WidgetType::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window),
+        makeWidget({ 0, 65 }, { 600, 333 }, WidgetType::panel, 1),
+        makeWidget({ 3, 15 }, { 589, 50 }, WidgetType::wt_5, 1),
+        makeWidget({ 470, 20 }, { 122, 12 }, WidgetType::wt_11, 0, StringIds::object_selection_advanced, StringIds::object_selection_advanced_tooltip),
+        makeWidget({ 4, 68 }, { 288, 317 }, WidgetType::scrollview, 1, Scrollbars::vertical),
+        makeWidget({ 391, 68 }, { 114, 114 }, WidgetType::wt_9, 1),
         widgetEnd(),
     };
 
-    static window_event_list _events;
+    static WindowEventList _events;
 
     // 0x00473154
-    static void sub_473154(window* self)
+    static void sub_473154(Window* self)
     {
         registers regs;
         regs.esi = (uintptr_t)self;
@@ -105,7 +106,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     }
 
     // 0x004731EE
-    static void sub_4731EE(window* self, ObjectType eax)
+    static void sub_4731EE(Window* self, ObjectType eax)
     {
         registers regs;
         regs.eax = static_cast<uint32_t>(eax);
@@ -114,7 +115,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     }
 
     // 0x00472BBC
-    static ObjectManager::ObjIndexPair sub_472BBC(window* self)
+    static ObjectManager::ObjIndexPair sub_472BBC(Window* self)
     {
         const auto objects = ObjectManager::getAvailableObjects(static_cast<ObjectType>(self->current_tab));
 
@@ -143,7 +144,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     }
 
     // 0x00472A20
-    Ui::window* open()
+    Ui::Window* open()
     {
         auto window = WindowManager::bringToFront(WindowType::objectSelection);
 
@@ -227,14 +228,14 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     };
 
     // 0x004733AC
-    static void prepareDraw(Ui::window* self)
+    static void prepareDraw(Ui::Window* self)
     {
         self->activated_widgets |= (1 << widx::objectImage);
-        widgets[widx::closeButton].type = widget_type::wt_9;
+        widgets[widx::closeButton].type = WidgetType::wt_9;
 
         if (isEditorMode())
         {
-            widgets[widx::closeButton].type = widget_type::none;
+            widgets[widx::closeButton].type = WidgetType::none;
         }
 
         self->activated_widgets &= ~(1 << widx::advancedButton);
@@ -254,7 +255,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     static const uint8_t rowOffsetY = 24;
 
     // 0x0047328D
-    static void drawTabs(window* self, Gfx::Context* context)
+    static void drawTabs(Window* self, Gfx::Context* context)
     {
         auto y = self->widgets[widx::panel].top + self->y - 26;
         auto x = self->x + 3;
@@ -447,7 +448,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         object->drawDescription(context, x, y, width);
     }
 
-    static void drawDescription(ObjectHeader* header, window* self, Gfx::Context* context, int16_t x, int16_t y, void* objectPtr)
+    static void drawDescription(ObjectHeader* header, Window* self, Gfx::Context* context, int16_t x, int16_t y, void* objectPtr)
     {
         Gfx::Context* clipped = nullptr;
         int16_t width = self->x + self->width - x;
@@ -497,7 +498,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     }
 
     // 0x004733F5
-    static void draw(window* self, Gfx::Context* context)
+    static void draw(Window* self, Gfx::Context* context)
     {
         Gfx::fillRectInset(context, self->x, self->y + 20, self->x + self->width - 1, self->y + 20 + 60, self->colours[0], 0);
         self->draw(context);
@@ -584,7 +585,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     }
 
     // 0x0047361D
-    static void drawScroll(window* self, Gfx::Context* context, uint32_t)
+    static void drawScroll(Window* self, Gfx::Context* context, uint32_t)
     {
         Gfx::clearSingle(*context, Colour::getShade(self->colours[1], 4));
 
@@ -648,7 +649,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     }
 
     // 0x004737BA
-    static void onMouseUp(window* self, widget_index w)
+    static void onMouseUp(Window* self, WidgetIndex_t w)
     {
         switch (w)
         {
@@ -730,13 +731,13 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     }
 
     // 0x004738ED
-    static void getScrollSize(window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+    static void getScrollSize(Window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
         *scrollHeight = _tabObjectCounts[self->current_tab] * rowHeight;
     }
 
     // 0x00473900
-    static std::optional<FormatArguments> tooltip(Ui::window* window, widget_index widgetIndex)
+    static std::optional<FormatArguments> tooltip(Ui::Window* window, WidgetIndex_t widgetIndex)
     {
         FormatArguments args{};
         args.push(StringIds::tooltip_object_list);
@@ -744,7 +745,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     }
 
     // 0x00472B54
-    static ObjectManager::ObjIndexPair getObjectFromSelection(window* self, int16_t& y)
+    static ObjectManager::ObjIndexPair getObjectFromSelection(Window* self, int16_t& y)
     {
         const auto objects = ObjectManager::getAvailableObjects(static_cast<ObjectType>(self->current_tab));
 
@@ -761,7 +762,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     }
 
     // 0x0047390A
-    static void onScrollMouseOver(Ui::window* self, int16_t x, int16_t y, uint8_t scroll_index)
+    static void onScrollMouseOver(Ui::Window* self, int16_t x, int16_t y, uint8_t scroll_index)
     {
         auto objIndex = getObjectFromSelection(self, y);
 
@@ -791,7 +792,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     }
 
     // 0x00473948
-    static void onScrollMouseDown(Ui::window* self, int16_t x, int16_t y, uint8_t scroll_index)
+    static void onScrollMouseDown(Ui::Window* self, int16_t x, int16_t y, uint8_t scroll_index)
     {
         auto objIndex = getObjectFromSelection(self, y);
         auto index = objIndex.index;
@@ -859,7 +860,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     }
 
     // 0x004739DD
-    static void onClose(window* self)
+    static void onClose(Window* self)
     {
         if (!isEditorMode())
             return;
@@ -872,7 +873,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     }
 
     // 0x00473A04
-    static void onUpdate(window* self)
+    static void onUpdate(Window* self)
     {
         WindowManager::invalidateWidget(WindowType::objectSelection, self->number, widx::objectImage);
     }

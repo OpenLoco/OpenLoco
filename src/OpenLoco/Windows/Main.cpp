@@ -3,6 +3,7 @@
 #include "../Map/Tile.h"
 #include "../Ui/WindowManager.h"
 #include "../ViewportManager.h"
+#include "../Widget.h"
 
 using namespace OpenLoco::Interop;
 
@@ -18,12 +19,12 @@ namespace OpenLoco::Ui::Windows::Main
         };
     }
 
-    static widget_t _widgets[] = {
-        makeWidget({ 0, 0 }, { 0, 0 }, widget_type::viewport, 0, 0xFFFFFFFE),
+    static Widget _widgets[] = {
+        makeWidget({ 0, 0 }, { 0, 0 }, WidgetType::viewport, 0, 0xFFFFFFFE),
         widgetEnd(),
     };
 
-    static window_event_list _events;
+    static WindowEventList _events;
 
     static void initEvents();
 
@@ -55,7 +56,7 @@ namespace OpenLoco::Ui::Windows::Main
     }
 
     // 0x0043B2E4
-    static void draw(Ui::window* const window, Gfx::Context* const context)
+    static void draw(Ui::Window* const window, Gfx::Context* const context)
     {
         window->drawViewports(context);
     }

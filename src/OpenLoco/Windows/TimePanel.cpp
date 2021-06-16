@@ -15,6 +15,7 @@
 #include "../Ui.h"
 #include "../Ui/Dropdown.h"
 #include "../Ui/WindowManager.h"
+#include "../Widget.h"
 
 using namespace OpenLoco::Interop;
 
@@ -40,31 +41,31 @@ namespace OpenLoco::Ui::Windows::TimePanel
     static void formatChallenge(FormatArguments& args);
     static void processChatMessage(const char* str);
     static void togglePaused();
-    static void changeGameSpeed(window* w, uint8_t speed);
+    static void changeGameSpeed(Window* w, uint8_t speed);
 
-    static widget_t _widgets[] = {
-        makeWidget({ 0, 0 }, { 140, 29 }, widget_type::wt_3, 0),                                                                                        // 0,
-        makeWidget({ 2, 2 }, { 136, 25 }, widget_type::wt_3, 0),                                                                                        // 1,
-        makeWidget({ 113, 1 }, { 26, 26 }, widget_type::wt_9, 0),                                                                                       // 2,
-        makeWidget({ 2, 2 }, { 111, 12 }, widget_type::wt_9, 0, ImageIds::null, StringIds::tooltip_daymonthyear_challenge),                             // 3,
-        makeRemapWidget({ 18, 15 }, { 20, 12 }, widget_type::wt_9, 0, ImageIds::speed_pause, StringIds::tooltip_speed_pause),                           // 4,
-        makeRemapWidget({ 38, 15 }, { 20, 12 }, widget_type::wt_9, 0, ImageIds::speed_normal, StringIds::tooltip_speed_normal),                         // 5,
-        makeRemapWidget({ 58, 15 }, { 20, 12 }, widget_type::wt_9, 0, ImageIds::speed_fast_forward, StringIds::tooltip_speed_fast_forward),             // 6,
-        makeRemapWidget({ 78, 15 }, { 20, 12 }, widget_type::wt_9, 0, ImageIds::speed_extra_fast_forward, StringIds::tooltip_speed_extra_fast_forward), // 7,
+    static Widget _widgets[] = {
+        makeWidget({ 0, 0 }, { 140, 29 }, WidgetType::wt_3, 0),                                                                                        // 0,
+        makeWidget({ 2, 2 }, { 136, 25 }, WidgetType::wt_3, 0),                                                                                        // 1,
+        makeWidget({ 113, 1 }, { 26, 26 }, WidgetType::wt_9, 0),                                                                                       // 2,
+        makeWidget({ 2, 2 }, { 111, 12 }, WidgetType::wt_9, 0, ImageIds::null, StringIds::tooltip_daymonthyear_challenge),                             // 3,
+        makeRemapWidget({ 18, 15 }, { 20, 12 }, WidgetType::wt_9, 0, ImageIds::speed_pause, StringIds::tooltip_speed_pause),                           // 4,
+        makeRemapWidget({ 38, 15 }, { 20, 12 }, WidgetType::wt_9, 0, ImageIds::speed_normal, StringIds::tooltip_speed_normal),                         // 5,
+        makeRemapWidget({ 58, 15 }, { 20, 12 }, WidgetType::wt_9, 0, ImageIds::speed_fast_forward, StringIds::tooltip_speed_fast_forward),             // 6,
+        makeRemapWidget({ 78, 15 }, { 20, 12 }, WidgetType::wt_9, 0, ImageIds::speed_extra_fast_forward, StringIds::tooltip_speed_extra_fast_forward), // 7,
         widgetEnd(),
     };
 
-    static window_event_list _events;
+    static WindowEventList _events;
 
-    static void prepareDraw(window* window);
-    static void draw(Ui::window* self, Gfx::Context* context);
-    static void onMouseUp(Ui::window* window, widget_index widgetIndex);
-    static void onMouseDown(Ui::window* window, widget_index widgetIndex);
-    static void textInput(window* w, widget_index widgetIndex, const char* str);
-    static void onDropdown(window* w, widget_index widgetIndex, int16_t item_index);
-    static Ui::CursorId onCursor(window* w, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback);
-    static std::optional<FormatArguments> tooltip(Ui::window* window, widget_index widgetIndex);
-    static void onUpdate(window* w);
+    static void prepareDraw(Window* window);
+    static void draw(Ui::Window* self, Gfx::Context* context);
+    static void onMouseUp(Ui::Window* window, WidgetIndex_t widgetIndex);
+    static void onMouseDown(Ui::Window* window, WidgetIndex_t widgetIndex);
+    static void textInput(Window* w, WidgetIndex_t widgetIndex, const char* str);
+    static void onDropdown(Window* w, WidgetIndex_t widgetIndex, int16_t item_index);
+    static Ui::CursorId onCursor(Window* w, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback);
+    static std::optional<FormatArguments> tooltip(Ui::Window* window, WidgetIndex_t widgetIndex);
+    static void onUpdate(Window* w);
 
     static loco_global<uint16_t, 0x0050A004> _50A004;
     static loco_global<uint8_t, 0x00526231> objectiveFlags;
@@ -75,7 +76,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
 
     loco_global<uint16_t[8], 0x112C826> _common_format_args;
 
-    window* open()
+    Window* open()
     {
         _events.on_mouse_up = onMouseUp;
         _events.event_03 = onMouseDown;
@@ -111,9 +112,9 @@ namespace OpenLoco::Ui::Windows::TimePanel
     }
 
     // 0x004396A4
-    static void prepareDraw(window* window)
+    static void prepareDraw(Window* window)
     {
-        _widgets[Widx::inner_frame].type = widget_type::none;
+        _widgets[Widx::inner_frame].type = WidgetType::none;
         _widgets[Widx::pause_btn].image = Gfx::recolour(ImageIds::speed_pause);
         _widgets[Widx::normal_speed_btn].image = Gfx::recolour(ImageIds::speed_normal);
         _widgets[Widx::fast_forward_btn].image = Gfx::recolour(ImageIds::speed_fast_forward);
@@ -138,8 +139,8 @@ namespace OpenLoco::Ui::Windows::TimePanel
 
         if (isNetworked())
         {
-            _widgets[Widx::fast_forward_btn].type = widget_type::none;
-            _widgets[Widx::extra_fast_forward_btn].type = widget_type::none;
+            _widgets[Widx::fast_forward_btn].type = WidgetType::none;
+            _widgets[Widx::extra_fast_forward_btn].type = WidgetType::none;
 
             _widgets[Widx::pause_btn].left = 38;
             _widgets[Widx::pause_btn].right = 57;
@@ -148,8 +149,8 @@ namespace OpenLoco::Ui::Windows::TimePanel
         }
         else
         {
-            _widgets[Widx::fast_forward_btn].type = widget_type::wt_9;
-            _widgets[Widx::extra_fast_forward_btn].type = widget_type::wt_9;
+            _widgets[Widx::fast_forward_btn].type = WidgetType::wt_9;
+            _widgets[Widx::extra_fast_forward_btn].type = WidgetType::wt_9;
 
             _widgets[Widx::pause_btn].left = 18;
             _widgets[Widx::pause_btn].right = 37;
@@ -171,9 +172,9 @@ namespace OpenLoco::Ui::Windows::TimePanel
     };
 
     // 0x004397BE
-    static void draw(Ui::window* self, Gfx::Context* context)
+    static void draw(Ui::Window* self, Gfx::Context* context)
     {
-        widget_t& frame = _widgets[Widx::outer_frame];
+        Widget& frame = _widgets[Widx::outer_frame];
         Gfx::drawRect(context, self->x + frame.left, self->y + frame.top, frame.width(), frame.height(), 0x2000000 | 52);
 
         // Draw widgets.
@@ -204,7 +205,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
     }
 
     // 0x004398FB
-    static void onMouseUp(Ui::window* window, widget_index widgetIndex)
+    static void onMouseUp(Ui::Window* window, WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
@@ -227,7 +228,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
     }
 
     // 0x0043A67F
-    static void mapMouseDown(Ui::window* self, widget_index widgetIndex)
+    static void mapMouseDown(Ui::Window* self, WidgetIndex_t widgetIndex)
     {
         auto skin = ObjectManager::get<InterfaceSkinObject>();
 
@@ -247,7 +248,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
     }
 
     // 0x0043A72F
-    static void mapDropdown(window* self, widget_index widgetIndex, int16_t itemIndex)
+    static void mapDropdown(Window* self, WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
             itemIndex = Dropdown::getHighlightedItem();
@@ -280,7 +281,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
     }
 
     // 0x043992E
-    static void onMouseDown(Ui::window* window, widget_index widgetIndex)
+    static void onMouseDown(Ui::Window* window, WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
@@ -291,7 +292,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
     }
 
     // 0x439939
-    static void onDropdown(window* w, widget_index widgetIndex, int16_t item_index)
+    static void onDropdown(Window* w, WidgetIndex_t widgetIndex, int16_t item_index)
     {
         switch (widgetIndex)
         {
@@ -302,7 +303,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
     }
 
     // 0x00439944
-    static Ui::CursorId onCursor(Ui::window* self, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback)
+    static Ui::CursorId onCursor(Ui::Window* self, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback)
     {
         switch (widgetIdx)
         {
@@ -315,7 +316,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
     }
 
     // 0x00439955
-    static std::optional<FormatArguments> tooltip(Ui::window* window, widget_index widgetIndex)
+    static std::optional<FormatArguments> tooltip(Ui::Window* window, WidgetIndex_t widgetIndex)
     {
         FormatArguments args{};
         switch (widgetIndex)
@@ -368,7 +369,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
     }
 
     // 0x00439A15
-    static void textInput(window* w, widget_index widgetIndex, const char* str)
+    static void textInput(Window* w, WidgetIndex_t widgetIndex, const char* str)
     {
         switch (widgetIndex)
         {
@@ -397,7 +398,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
     // 0x00439A70 (speed: 0)
     // 0x00439A93 (speed: 1)
     // 0x00439AB6 (speed: 2)
-    static void changeGameSpeed(window* w, uint8_t speed)
+    static void changeGameSpeed(Window* w, uint8_t speed)
     {
         if (getPauseFlags() & 1)
         {
@@ -414,7 +415,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
     }
 
     // 0x00439AD9
-    static void onUpdate(window* w)
+    static void onUpdate(Window* w)
     {
         w->var_854 += 1;
         if (w->var_854 >= 24)

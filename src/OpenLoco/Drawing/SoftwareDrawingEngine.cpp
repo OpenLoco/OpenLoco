@@ -13,9 +13,9 @@ namespace OpenLoco::Drawing
     static loco_global<Ui::ScreenInfo, 0x0050B884> screen_info;
     static loco_global<uint8_t[1], 0x00E025C4> _E025C4;
 
-    static void windowDraw(Context* context, Ui::window* w, Rect rect);
-    static void windowDraw(Context* context, Ui::window* w, int16_t left, int16_t top, int16_t right, int16_t bottom);
-    static bool windowDrawSplit(Gfx::Context* context, Ui::window* w, int16_t left, int16_t top, int16_t right, int16_t bottom);
+    static void windowDraw(Context* context, Ui::Window* w, Rect rect);
+    static void windowDraw(Context* context, Ui::Window* w, int16_t left, int16_t top, int16_t right, int16_t bottom);
+    static bool windowDrawSplit(Gfx::Context* context, Ui::Window* w, int16_t left, int16_t top, int16_t right, int16_t bottom);
 
     // T[m][n]
     template<typename T>
@@ -186,7 +186,7 @@ namespace OpenLoco::Drawing
         }
     }
 
-    static void windowDraw(Context* context, Ui::window* w, Rect rect)
+    static void windowDraw(Context* context, Ui::Window* w, Rect rect)
     {
         windowDraw(context, w, rect.left(), rect.top(), rect.right(), rect.bottom());
     }
@@ -200,7 +200,7 @@ namespace OpenLoco::Drawing
      * @param right @<dx>
      * @param bottom @<bp>
      */
-    static void windowDraw(Context* context, Ui::window* w, int16_t left, int16_t top, int16_t right, int16_t bottom)
+    static void windowDraw(Context* context, Ui::Window* w, int16_t left, int16_t top, int16_t right, int16_t bottom)
     {
         if (!w->isVisible())
             return;
@@ -245,7 +245,7 @@ namespace OpenLoco::Drawing
      * @param bottom @<bp>
      * @return
      */
-    static bool windowDrawSplit(Gfx::Context* context, Ui::window* w, int16_t left, int16_t top, int16_t right, int16_t bottom)
+    static bool windowDrawSplit(Gfx::Context* context, Ui::Window* w, int16_t left, int16_t top, int16_t right, int16_t bottom)
     {
         // Divide the draws up for only the visible regions of the window recursively
         for (uint32_t index = Ui::WindowManager::indexOf(w) + 1; index < Ui::WindowManager::count(); index++)

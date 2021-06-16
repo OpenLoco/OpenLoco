@@ -22,6 +22,7 @@
 #include "../Ui/Dropdown.h"
 #include "../Ui/WindowManager.h"
 #include "../Vehicles/Vehicle.h"
+#include "../Widget.h"
 #include "ToolbarTopCommon.h"
 
 using namespace OpenLoco::Interop;
@@ -39,32 +40,32 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
         };
     }
 
-    static widget_t _widgets[] = {
-        makeWidget({ 0, 0 }, { 30, 28 }, widget_type::wt_7, 0),  // 0
-        makeWidget({ 30, 0 }, { 30, 28 }, widget_type::wt_7, 0), // 1
-        makeWidget({ 60, 0 }, { 30, 28 }, widget_type::wt_7, 0), // 2
+    static Widget _widgets[] = {
+        makeWidget({ 0, 0 }, { 30, 28 }, WidgetType::wt_7, 0),  // 0
+        makeWidget({ 30, 0 }, { 30, 28 }, WidgetType::wt_7, 0), // 1
+        makeWidget({ 60, 0 }, { 30, 28 }, WidgetType::wt_7, 0), // 2
 
-        makeWidget({ 104, 0 }, { 30, 28 }, widget_type::wt_7, 1), // 3
-        makeWidget({ 134, 0 }, { 30, 28 }, widget_type::wt_7, 1), // 4
-        makeWidget({ 164, 0 }, { 30, 28 }, widget_type::wt_7, 1), // 5
+        makeWidget({ 104, 0 }, { 30, 28 }, WidgetType::wt_7, 1), // 3
+        makeWidget({ 134, 0 }, { 30, 28 }, WidgetType::wt_7, 1), // 4
+        makeWidget({ 164, 0 }, { 30, 28 }, WidgetType::wt_7, 1), // 5
 
-        makeWidget({ 267, 0 }, { 30, 28 }, widget_type::wt_7, 2), // 6
-        makeWidget({ 0, 0 }, { 1, 1 }, widget_type::none, 0),     // 7
-        makeWidget({ 357, 0 }, { 30, 28 }, widget_type::wt_7, 2), // 8
-        makeWidget({ 0, 0 }, { 1, 1 }, widget_type::none, 0),     // 9
-        makeWidget({ 0, 0 }, { 1, 1 }, widget_type::none, 0),     // 10
+        makeWidget({ 267, 0 }, { 30, 28 }, WidgetType::wt_7, 2), // 6
+        makeWidget({ 0, 0 }, { 1, 1 }, WidgetType::none, 0),     // 7
+        makeWidget({ 357, 0 }, { 30, 28 }, WidgetType::wt_7, 2), // 8
+        makeWidget({ 0, 0 }, { 1, 1 }, WidgetType::none, 0),     // 9
+        makeWidget({ 0, 0 }, { 1, 1 }, WidgetType::none, 0),     // 10
 
-        makeWidget({ 0, 0 }, { 1, 1 }, widget_type::none, 0),     // 11
-        makeWidget({ 0, 0 }, { 1, 1 }, widget_type::none, 0),     // 12
-        makeWidget({ 460, 0 }, { 30, 28 }, widget_type::wt_7, 3), // 13
+        makeWidget({ 0, 0 }, { 1, 1 }, WidgetType::none, 0),     // 11
+        makeWidget({ 0, 0 }, { 1, 1 }, WidgetType::none, 0),     // 12
+        makeWidget({ 460, 0 }, { 30, 28 }, WidgetType::wt_7, 3), // 13
         widgetEnd(),
     };
 
-    static window_event_list _events;
+    static WindowEventList _events;
 
-    static void onMouseDown(window* window, widget_index widgetIndex);
-    static void onDropdown(window* window, widget_index widgetIndex, int16_t itemIndex);
-    static void prepareDraw(window* window);
+    static void onMouseDown(Window* window, WidgetIndex_t widgetIndex);
+    static void onDropdown(Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex);
+    static void prepareDraw(Window* window);
 
     static void initEvents()
     {
@@ -107,7 +108,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
     }
 
     // 0x0043D638
-    static void loadsaveMenuMouseDown(window* window, widget_index widgetIndex)
+    static void loadsaveMenuMouseDown(Window* window, WidgetIndex_t widgetIndex)
     {
         Dropdown::add(0, StringIds::load_landscape);
         Dropdown::add(1, StringIds::save_landscape);
@@ -123,7 +124,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
     }
 
     // 0x0043D695
-    static void loadsaveMenuDropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
+    static void loadsaveMenuDropdown(Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
             itemIndex = Dropdown::getHighlightedItem();
@@ -168,7 +169,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
     }
 
     // 0x0043D789
-    static void audioMenuMouseDown(window* window, widget_index widgetIndex)
+    static void audioMenuMouseDown(Window* window, WidgetIndex_t widgetIndex)
     {
         Dropdown::add(0, StringIds::dropdown_without_checkmark, StringIds::menu_mute);
         Dropdown::showBelow(window, widgetIndex, 1, 0);
@@ -180,7 +181,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
     }
 
     // 0x0043D7C1
-    static void audioMenuDropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
+    static void audioMenuDropdown(Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
             itemIndex = Dropdown::getHighlightedItem();
@@ -194,7 +195,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
     }
 
     // 0x004402BC
-    static void mapGenerationMenuMouseDown(window* window, widget_index widgetIndex)
+    static void mapGenerationMenuMouseDown(Window* window, WidgetIndex_t widgetIndex)
     {
         Dropdown::add(0, StringIds::landscape_generation_options);
         Dropdown::showBelow(window, widgetIndex, 1, 0);
@@ -202,7 +203,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
     }
 
     // 0x004402DA
-    static void mapGenerationMenuDropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
+    static void mapGenerationMenuDropdown(Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (itemIndex == -1)
             itemIndex = Dropdown::getHighlightedItem();
@@ -216,7 +217,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
     }
 
     // 0x0043D541
-    static void onMouseDown(window* window, widget_index widgetIndex)
+    static void onMouseDown(Window* window, WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
@@ -239,7 +240,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
     }
 
     // 0x0043D5A6
-    static void onDropdown(window* window, widget_index widgetIndex, int16_t itemIndex)
+    static void onDropdown(Window* window, WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         switch (widgetIndex)
         {
@@ -262,7 +263,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
     }
 
     // 0x0043D2F3
-    static void prepareDraw(window* window)
+    static void prepareDraw(Window* window)
     {
         uint32_t x = std::max(640, Ui::width()) - 1;
 
@@ -272,30 +273,30 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
 
         if (EditorController::getCurrentStep() == EditorController::Step::landscapeEditor)
         {
-            window->widgets[Common::Widx::zoom_menu].type = widget_type::wt_7;
-            window->widgets[Common::Widx::rotate_menu].type = widget_type::wt_7;
-            window->widgets[Common::Widx::view_menu].type = widget_type::wt_7;
-            window->widgets[Common::Widx::terraform_menu].type = widget_type::wt_7;
-            window->widgets[Widx::map_generation_menu].type = widget_type::wt_7;
-            window->widgets[Common::Widx::towns_menu].type = widget_type::wt_7;
+            window->widgets[Common::Widx::zoom_menu].type = WidgetType::wt_7;
+            window->widgets[Common::Widx::rotate_menu].type = WidgetType::wt_7;
+            window->widgets[Common::Widx::view_menu].type = WidgetType::wt_7;
+            window->widgets[Common::Widx::terraform_menu].type = WidgetType::wt_7;
+            window->widgets[Widx::map_generation_menu].type = WidgetType::wt_7;
+            window->widgets[Common::Widx::towns_menu].type = WidgetType::wt_7;
             if (last_road_option != 0xFF)
             {
-                window->widgets[Common::Widx::road_menu].type = widget_type::wt_7;
+                window->widgets[Common::Widx::road_menu].type = WidgetType::wt_7;
             }
             else
             {
-                window->widgets[Common::Widx::road_menu].type = widget_type::none;
+                window->widgets[Common::Widx::road_menu].type = WidgetType::none;
             }
         }
         else
         {
-            window->widgets[Common::Widx::zoom_menu].type = widget_type::none;
-            window->widgets[Common::Widx::rotate_menu].type = widget_type::none;
-            window->widgets[Common::Widx::view_menu].type = widget_type::none;
-            window->widgets[Common::Widx::terraform_menu].type = widget_type::none;
-            window->widgets[Widx::map_generation_menu].type = widget_type::none;
-            window->widgets[Common::Widx::road_menu].type = widget_type::none;
-            window->widgets[Common::Widx::towns_menu].type = widget_type::none;
+            window->widgets[Common::Widx::zoom_menu].type = WidgetType::none;
+            window->widgets[Common::Widx::rotate_menu].type = WidgetType::none;
+            window->widgets[Common::Widx::view_menu].type = WidgetType::none;
+            window->widgets[Common::Widx::terraform_menu].type = WidgetType::none;
+            window->widgets[Widx::map_generation_menu].type = WidgetType::none;
+            window->widgets[Common::Widx::road_menu].type = WidgetType::none;
+            window->widgets[Common::Widx::towns_menu].type = WidgetType::none;
         }
 
         auto interface = ObjectManager::get<InterfaceSkinObject>();

@@ -174,7 +174,7 @@ namespace OpenLoco::Input::ShortcutManager
     // 0x004BF0FE
     static void zoomViewOut()
     {
-        window* main = WindowManager::getMainWindow();
+        Window* main = WindowManager::getMainWindow();
         if (main == nullptr)
             return;
 
@@ -186,7 +186,7 @@ namespace OpenLoco::Input::ShortcutManager
     // 0x004BF115
     static void zoomViewIn()
     {
-        window* main = WindowManager::getMainWindow();
+        Window* main = WindowManager::getMainWindow();
         if (main == nullptr)
             return;
 
@@ -198,7 +198,7 @@ namespace OpenLoco::Input::ShortcutManager
     // 0x004BF12C
     static void rotateView()
     {
-        window* main = WindowManager::getMainWindow();
+        Window* main = WindowManager::getMainWindow();
         if (main == nullptr)
             return;
 

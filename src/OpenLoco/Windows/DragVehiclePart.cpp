@@ -3,6 +3,7 @@
 #include "../OpenLoco.h"
 #include "../Ui/WindowManager.h"
 #include "../Vehicles/Vehicle.h"
+#include "../Widget.h"
 
 using namespace OpenLoco::Interop;
 
@@ -13,11 +14,11 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
         frame
     };
 
-    static window_event_list events;
+    static WindowEventList events;
 
     // 0x00522504
-    static widget_t widgets[] = {
-        makeWidget({ 0, 0 }, { 150, 60 }, widget_type::wt_3, 0),
+    static Widget widgets[] = {
+        makeWidget({ 0, 0 }, { 150, 60 }, WidgetType::wt_3, 0),
         widgetEnd()
     };
 
@@ -48,7 +49,7 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
     }
 
     // 0x004B62FE
-    static Ui::CursorId cursor(window* const self, const int16_t widgetIdx, const int16_t x, const int16_t y, const Ui::CursorId fallback)
+    static Ui::CursorId cursor(Window* const self, const int16_t widgetIdx, const int16_t x, const int16_t y, const Ui::CursorId fallback)
     {
         self->height = 0; // Set to zero so that skipped in window find
         Vehicle::Details::scrollDrag(Input::getScrollLastLocation());
@@ -56,7 +57,7 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
         return CursorId::unk_26;
     }
 
-    static void onMove(window& self, const int16_t x, const int16_t y)
+    static void onMove(Window& self, const int16_t x, const int16_t y)
     {
         self.height = 0; // Set to zero so that skipped in window find
         Vehicle::Details::scrollDragEnd(Input::getScrollLastLocation());
@@ -65,7 +66,7 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
         WindowManager::invalidate(WindowType::vehicle, _dragVehicleHead);
     }
 
-    static void draw(Ui::window* const self, Gfx::Context* const context)
+    static void draw(Ui::Window* const self, Gfx::Context* const context)
     {
         Gfx::Context* clipped;
         if (Gfx::clipContext(&clipped, context, self->x, self->y, self->width, self->height))

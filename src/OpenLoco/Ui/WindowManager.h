@@ -22,51 +22,51 @@ namespace OpenLoco::Ui::WindowManager
     void registerHooks();
     WindowType getCurrentModalType();
     void setCurrentModalType(WindowType type);
-    window* get(size_t index);
-    size_t indexOf(window* pWindow);
+    Window* get(size_t index);
+    size_t indexOf(Window* pWindow);
     size_t count();
 
     void updateViewports();
     void update();
-    window* getMainWindow();
-    viewport* getMainViewport();
-    window* find(WindowType type);
-    window* find(WindowType type, window_number number);
-    window* findAt(int16_t x, int16_t y);
-    window* findAt(Gfx::point_t point);
-    window* findAtAlt(int16_t x, int16_t y);
-    window* bringToFront(window* window);
-    window* bringToFront(WindowType type, uint16_t id = 0);
+    Window* getMainWindow();
+    Viewport* getMainViewport();
+    Window* find(WindowType type);
+    Window* find(WindowType type, WindowNumber_t number);
+    Window* findAt(int16_t x, int16_t y);
+    Window* findAt(Gfx::point_t point);
+    Window* findAtAlt(int16_t x, int16_t y);
+    Window* bringToFront(Window* window);
+    Window* bringToFront(WindowType type, uint16_t id = 0);
     void invalidate(WindowType type);
-    void invalidate(WindowType type, window_number number);
-    void invalidateWidget(WindowType type, window_number number, uint8_t widget_index);
+    void invalidate(WindowType type, WindowNumber_t number);
+    void invalidateWidget(WindowType type, WindowNumber_t number, uint8_t widget_index);
     void invalidateAllWindowsAfterInput();
     void close(WindowType type);
     void close(WindowType type, uint16_t id);
-    void close(window* window);
-    window* createWindow(WindowType type, Gfx::ui_size_t size, uint32_t flags, window_event_list* events);
-    window* createWindow(WindowType type, Gfx::point_t origin, Gfx::ui_size_t size, uint32_t flags, window_event_list* events);
-    window* createWindowCentred(WindowType type, Gfx::ui_size_t size, uint32_t flags, window_event_list* events);
-    window* createWindow(WindowType type, Gfx::ui_size_t size, uint32_t flags, window_event_list* events);
-    void drawSingle(Gfx::Context* context, window* w, int32_t left, int32_t top, int32_t right, int32_t bottom);
+    void close(Window* window);
+    Window* createWindow(WindowType type, Gfx::ui_size_t size, uint32_t flags, WindowEventList* events);
+    Window* createWindow(WindowType type, Gfx::point_t origin, Gfx::ui_size_t size, uint32_t flags, WindowEventList* events);
+    Window* createWindowCentred(WindowType type, Gfx::ui_size_t size, uint32_t flags, WindowEventList* events);
+    Window* createWindow(WindowType type, Gfx::ui_size_t size, uint32_t flags, WindowEventList* events);
+    void drawSingle(Gfx::Context* context, Window* w, int32_t left, int32_t top, int32_t right, int32_t bottom);
     void dispatchUpdateAll();
     void callEvent8OnAllWindows();
     void callEvent9OnAllWindows();
     void callViewportRotateEventOnAllWindows();
     void relocateWindows();
-    void sub_4CEE0B(window* self);
-    void sub_4B93A5(window_number number);
+    void sub_4CEE0B(Window* self);
+    void sub_4B93A5(WindowNumber_t number);
     void closeConstructionWindows();
     void closeTopmost();
     void allWheelInput();
-    bool isInFront(Ui::window* w);
-    bool isInFrontAlt(Ui::window* w);
-    Ui::window* findWindowShowing(const viewport_pos& position);
+    bool isInFront(Ui::Window* w);
+    bool isInFrontAlt(Ui::Window* w);
+    Ui::Window* findWindowShowing(const viewport_pos& position);
     void closeAllFloatingWindows();
     int32_t getCurrentRotation();
     void setCurrentRotation(int32_t value);
 
-    void viewportShiftPixels(Ui::window* window, Ui::viewport* viewport, int16_t dX, int16_t dY);
+    void viewportShiftPixels(Ui::Window* window, Ui::Viewport* viewport, int16_t dX, int16_t dY);
     void viewportSetVisibility(ViewportVisibility flags);
 }
 
@@ -97,14 +97,14 @@ namespace OpenLoco::Ui::Windows
 
     namespace BuildVehicle
     {
-        window* open(uint32_t vehicle, uint32_t flags);
-        void sub_4B92A5(Ui::window* window);
+        Window* open(uint32_t vehicle, uint32_t flags);
+        void sub_4B92A5(Ui::Window* window);
         void registerHooks();
     }
 
     namespace Cheats
     {
-        window* open();
+        Window* open();
     }
 
     namespace CompanyFaceSelection
@@ -115,26 +115,26 @@ namespace OpenLoco::Ui::Windows
     namespace CompanyList
     {
         void openPerformanceIndexes();
-        window* open();
+        Window* open();
     }
 
     namespace CompanyWindow
     {
-        window* open(CompanyId_t companyId);
-        window* openAndSetName();
-        window* openChallenge(CompanyId_t companyId);
-        window* openFinances(CompanyId_t companyId);
+        Window* open(CompanyId_t companyId);
+        Window* openAndSetName();
+        Window* openChallenge(CompanyId_t companyId);
+        Window* openFinances(CompanyId_t companyId);
     }
 
     namespace Construction
     {
-        window* openWithFlags(uint32_t flags);
-        window* openAtTrack(window* main, Map::TrackElement* track, const Map::Pos2 pos);
-        window* openAtRoad(window* main, Map::RoadElement* track, const Map::Pos2 pos);
-        void setToTrackExtra(window* main, Map::TrackElement* track, const uint8_t bh, const Map::Pos2 pos);
-        void setToRoadExtra(window* main, Map::RoadElement* track, const uint8_t bh, const Map::Pos2 pos);
+        Window* openWithFlags(uint32_t flags);
+        Window* openAtTrack(Window* main, Map::TrackElement* track, const Map::Pos2 pos);
+        Window* openAtRoad(Window* main, Map::RoadElement* track, const Map::Pos2 pos);
+        void setToTrackExtra(Window* main, Map::TrackElement* track, const uint8_t bh, const Map::Pos2 pos);
+        void setToRoadExtra(Window* main, Map::RoadElement* track, const uint8_t bh, const Map::Pos2 pos);
         void sub_4A6FAC();
-        void rotate(window* self);
+        void rotate(Window* self);
         void registerHooks();
     }
 
@@ -145,7 +145,7 @@ namespace OpenLoco::Ui::Windows
 
     namespace EditKeyboardShortcut
     {
-        window* open(uint8_t shortcutIndex);
+        Window* open(uint8_t shortcutIndex);
     }
 
     namespace Error
@@ -157,27 +157,27 @@ namespace OpenLoco::Ui::Windows
 
     namespace Industry
     {
-        window* open(IndustryId_t id);
+        Window* open(IndustryId_t id);
     }
 
     namespace IndustryList
     {
-        window* open();
+        Window* open();
     }
 
     namespace KeyboardShortcuts
     {
-        window* open();
+        Window* open();
     }
 
     namespace LandscapeGeneration
     {
-        window* open();
+        Window* open();
     }
 
     namespace LandscapeGenerationConfirm
     {
-        window* open(int32_t prompt_type);
+        Window* open(int32_t prompt_type);
     }
 
     namespace Main
@@ -205,36 +205,36 @@ namespace OpenLoco::Ui::Windows
 
     namespace MusicSelection
     {
-        window* open();
+        Window* open();
     }
     namespace NewsWindow
     {
         void open(uint16_t messageIndex);
         void openLastMessage();
-        void close(Ui::window* window);
+        void close(Ui::Window* window);
     }
 
     namespace ObjectSelectionWindow
     {
-        window* open();
+        Window* open();
     }
 
     namespace Options
     {
-        window* open();
-        window* openMusicSettings();
+        Window* open();
+        Window* openMusicSettings();
         constexpr uint8_t tab_offset_music = 2;
     }
 
     namespace PlayerInfoPanel
     {
-        window* open();
+        Window* open();
         void invalidateFrame();
     }
 
     namespace ProgressBar
     {
-        window* open(std::string_view captionString);
+        Window* open(std::string_view captionString);
         void setProgress(uint8_t value);
         void close();
     }
@@ -259,40 +259,40 @@ namespace OpenLoco::Ui::Windows
 
     namespace PromptSaveWindow
     {
-        window* open(uint16_t savePromptType);
+        Window* open(uint16_t savePromptType);
     }
 
     namespace ScenarioOptions
     {
-        window* open();
+        Window* open();
     }
 
     namespace ScenarioSelect
     {
-        window* open();
+        Window* open();
     }
 
     namespace Station
     {
-        window* open(uint16_t id);
+        Window* open(uint16_t id);
         void showStationCatchment(uint16_t windowNumber);
     }
 
     namespace StationList
     {
-        window* open(CompanyId_t companyId);
-        window* open(CompanyId_t companyId, uint8_t type);
+        Window* open(CompanyId_t companyId);
+        Window* open(CompanyId_t companyId, uint8_t type);
     }
 
     namespace Terraform
     {
-        window* open();
+        Window* open();
         void openClearArea();
         void openAdjustLand();
         void openAdjustWater();
         void openPlantTrees();
         void openBuildWalls();
-        bool rotate(window*);
+        bool rotate(Window*);
         void registerHooks();
     }
 
@@ -300,8 +300,8 @@ namespace OpenLoco::Ui::Windows
     {
         void registerHooks();
 
-        void openTextInput(Ui::window* w, string_id title, string_id message, string_id value, int callingWidget, void* valueArgs);
-        void sub_4CE6C9(WindowType type, window_number number);
+        void openTextInput(Ui::Window* w, string_id title, string_id message, string_id value, int callingWidget, void* valueArgs);
+        void sub_4CE6C9(WindowType type, WindowNumber_t number);
         void cancel();
         void handleInput(uint32_t charCode, uint32_t keyCode);
         void sub_4CE6FF();
@@ -309,39 +309,39 @@ namespace OpenLoco::Ui::Windows
 
     namespace TileInspector
     {
-        window* open();
+        Window* open();
     }
 
     namespace TimePanel
     {
-        window* open();
+        Window* open();
         void invalidateFrame();
     }
 
     namespace TitleExit
     {
-        window* open();
+        Window* open();
     }
 
     namespace TitleLogo
     {
-        window* open();
+        Window* open();
     }
 
     namespace TitleMenu
     {
-        window* open();
+        Window* open();
         void editorInit();
     }
 
     namespace TitleOptions
     {
-        window* open();
+        Window* open();
     }
 
     namespace TitleVersion
     {
-        window* open();
+        Window* open();
     }
 
     namespace ToolbarBottom::Editor
@@ -362,25 +362,25 @@ namespace OpenLoco::Ui::Windows
     namespace ToolTip
     {
         void registerHooks();
-        void open(Ui::window* window, int32_t widgetIndex, int16_t x, int16_t y);
-        void update(Ui::window* window, int32_t widgetIndex, string_id stringId, int16_t x, int16_t y);
+        void open(Ui::Window* window, int32_t widgetIndex, int16_t x, int16_t y);
+        void update(Ui::Window* window, int32_t widgetIndex, string_id stringId, int16_t x, int16_t y);
         void set_52336E(bool value);
         void closeAndReset();
     }
 
     namespace Town
     {
-        window* open(uint16_t townId);
+        Window* open(uint16_t townId);
     }
 
     namespace TownList
     {
-        window* open();
+        Window* open();
     }
 
     namespace Tutorial
     {
-        window* open();
+        Window* open();
     }
 
     namespace Vehicle
@@ -388,11 +388,11 @@ namespace OpenLoco::Ui::Windows
         void registerHooks();
         namespace Main
         {
-            window* open(const Vehicles::VehicleBase* vehicle);
+            Window* open(const Vehicles::VehicleBase* vehicle);
         }
         namespace Details
         {
-            window* open(const Vehicles::VehicleBase* vehicle);
+            Window* open(const Vehicles::VehicleBase* vehicle);
             void scrollDrag(const Gfx::point_t& pos);
             void scrollDragEnd(const Gfx::point_t& pos);
         }
@@ -405,6 +405,6 @@ namespace OpenLoco::Ui::Windows
 
     namespace VehicleList
     {
-        window* open(CompanyId_t companyId, VehicleType type);
+        Window* open(CompanyId_t companyId, VehicleType type);
     }
 }

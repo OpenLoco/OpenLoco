@@ -52,13 +52,13 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
         constexpr uint64_t enabledWidgets = (1 << close_button) | (1 << viewport1Button) | (1 << viewport2Button);
 
-#define commonWidgets(frameWidth, frameHeight, frameType)                                                                              \
-    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, frameType, 0),                                                                   \
-        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window), \
-        makeWidget({ 2, frameHeight - 73 }, { 168, 64 }, widget_type::viewport, 0, 0xFFFFFFFE),                                        \
-        makeWidget({ 180, frameHeight - 73 }, { 168, 64 }, widget_type::viewport, 0, 0xFFFFFFFE),                                      \
-        makeWidget({ 2, frameHeight - 75 }, { 180, 75 }, widget_type::wt_9, 0),                                                        \
-        makeWidget({ 2, frameHeight - 75 }, { 180, 75 }, widget_type::wt_9, 0)
+#define commonWidgets(frameWidth, frameHeight, frameType)                                                                             \
+    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, frameType, 0),                                                                  \
+        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, WidgetType::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window), \
+        makeWidget({ 2, frameHeight - 73 }, { 168, 64 }, WidgetType::viewport, 0, 0xFFFFFFFE),                                        \
+        makeWidget({ 180, frameHeight - 73 }, { 168, 64 }, WidgetType::viewport, 0, 0xFFFFFFFE),                                      \
+        makeWidget({ 2, frameHeight - 75 }, { 180, 75 }, WidgetType::wt_9, 0),                                                        \
+        makeWidget({ 2, frameHeight - 75 }, { 180, 75 }, WidgetType::wt_9, 0)
 
         void initEvents();
     }
@@ -67,9 +67,9 @@ namespace OpenLoco::Ui::Windows::NewsWindow
     {
         static const Gfx::ui_size_t windowSize = { 360, 117 };
 
-        extern widget_t widgets[7];
+        extern Widget widgets[7];
 
-        extern window_event_list events;
+        extern WindowEventList events;
 
         enum newsItemSubTypes
         {
@@ -82,14 +82,14 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         };
 
         void initEvents();
-        void initViewport(window* self);
+        void initViewport(Window* self);
     }
 
     namespace News2
     {
         static const Gfx::ui_size_t windowSize = { 360, 159 };
 
-        extern widget_t widgets[7];
+        extern Widget widgets[7];
     }
 
     namespace Ticker
@@ -102,9 +102,9 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         };
         constexpr uint64_t enabledWidgets = (1 << widx::frame);
 
-        extern widget_t widgets[2];
+        extern Widget widgets[2];
 
-        extern window_event_list events;
+        extern WindowEventList events;
 
         void initEvents();
     }

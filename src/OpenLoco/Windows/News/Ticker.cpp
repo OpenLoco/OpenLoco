@@ -3,21 +3,22 @@
 #include "../../Interop/Interop.hpp"
 #include "../../Message.h"
 #include "../../MessageManager.h"
+#include "../../Widget.h"
 #include "News.h"
 
 using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
 {
-    widget_t widgets[] = {
-        makeWidget({ 0, 0 }, { 111, 26 }, widget_type::wt_3, 0),
+    Widget widgets[] = {
+        makeWidget({ 0, 0 }, { 111, 26 }, WidgetType::wt_3, 0),
         widgetEnd(),
     };
 
-    window_event_list events;
+    WindowEventList events;
 
     // 0x00429EA2
-    static void onMouseUp(window* self, widget_index widgetIndex)
+    static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
     {
         if (widgetIndex != 0)
             return;
@@ -36,7 +37,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
     }
 
     // 0x00429FE4
-    static void onResize(window* self)
+    static void onResize(Window* self)
     {
         auto y = Ui::height() - windowSize.height + 1;
         auto x = Ui::width() - windowSize.width - 27;
@@ -54,7 +55,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
     }
 
     // 0x00429EEB
-    static void onUpdate(window* self)
+    static void onUpdate(Window* self)
     {
         auto window = WindowManager::findAtAlt(_cursorX2, _cursorY2);
 
@@ -148,7 +149,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
     }
 
     // 0x00429DAA
-    static void draw(Ui::window* self, Gfx::Context* context)
+    static void draw(Ui::Window* self, Gfx::Context* context)
     {
         if (self->var_852 != 0)
             return;

@@ -7,6 +7,7 @@
 #include "../Objects/ObjectManager.h"
 #include "../Ui/TextInput.h"
 #include "../Ui/WindowManager.h"
+#include "../Widget.h"
 #include "../Win32.h"
 #include <cassert>
 
@@ -27,7 +28,7 @@ using namespace OpenLoco::Interop;
 namespace OpenLoco::Ui::Windows::TextInput
 {
     static int16_t _callingWidget;
-    static window_number _callingWindowNumber;
+    static WindowNumber_t _callingWindowNumber;
     static loco_global<WindowType, 0x523364> _callingWindowType;
 
     static char _formatArgs[16];
@@ -39,7 +40,7 @@ namespace OpenLoco::Ui::Windows::TextInput
     static loco_global<char[16], 0x0112C826> _commonFormatArgs;
     static loco_global<int32_t, 0x0112C876> _currentFontSpriteBase;
 
-    static window_event_list _events;
+    static WindowEventList _events;
 
     namespace Widx
     {
@@ -54,13 +55,13 @@ namespace OpenLoco::Ui::Windows::TextInput
         };
     }
 
-    static widget_t _widgets[] = {
-        makeWidget({ 0, 0 }, { 330, 90 }, widget_type::frame, 0),
-        makeWidget({ 1, 1 }, { 328, 13 }, widget_type::caption_25, 0),
-        makeWidget({ 315, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window),
-        makeWidget({ 0, 15 }, { 330, 75 }, widget_type::panel, 1),
-        makeWidget({ 4, 58 }, { 322, 14 }, widget_type::wt_17, 1),
-        makeTextWidget({ 256, 74 }, { 70, 12 }, widget_type::wt_11, 1, StringIds::label_button_ok),
+    static Widget _widgets[] = {
+        makeWidget({ 0, 0 }, { 330, 90 }, WidgetType::frame, 0),
+        makeWidget({ 1, 1 }, { 328, 13 }, WidgetType::caption_25, 0),
+        makeWidget({ 315, 2 }, { 13, 13 }, WidgetType::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window),
+        makeWidget({ 0, 15 }, { 330, 75 }, WidgetType::panel, 1),
+        makeWidget({ 4, 58 }, { 322, 14 }, WidgetType::wt_17, 1),
+        makeTextWidget({ 256, 74 }, { 70, 12 }, WidgetType::wt_11, 1, StringIds::label_button_ok),
         widgetEnd(),
     };
 
@@ -70,7 +71,7 @@ namespace OpenLoco::Ui::Windows::TextInput
             0x004CE523,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                openTextInput((Ui::window*)regs.esi, regs.ax, regs.bx, regs.cx, regs.dx, (void*)0x0112C836);
+                openTextInput((Ui::Window*)regs.esi, regs.ax, regs.bx, regs.cx, regs.dx, (void*)0x0112C836);
                 regs = backup;
                 return 0;
             });
@@ -79,7 +80,7 @@ namespace OpenLoco::Ui::Windows::TextInput
             0x004CE6C9,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                sub_4CE6C9((WindowType)regs.cl, (window_number)regs.dx);
+                sub_4CE6C9((WindowType)regs.cl, (WindowNumber_t)regs.dx);
                 regs = backup;
                 return 0;
             });
@@ -94,10 +95,10 @@ namespace OpenLoco::Ui::Windows::TextInput
             });
     }
 
-    static void prepareDraw(Ui::window* window);
-    static void draw(Ui::window* window, Gfx::Context* context);
-    static void onMouseUp(Ui::window* window, widget_index widgetIndex);
-    static void onUpdate(Ui::window* window);
+    static void prepareDraw(Ui::Window* window);
+    static void draw(Ui::Window* window, Gfx::Context* context);
+    static void onMouseUp(Ui::Window* window, WidgetIndex_t widgetIndex);
+    static void onUpdate(Ui::Window* window);
 
     /**
      * 0x004CE523
@@ -108,7 +109,7 @@ namespace OpenLoco::Ui::Windows::TextInput
      * @param value @<cx>
      * @param callingWidget @<dx>
      */
-    void openTextInput(Ui::window* caller, string_id title, string_id message, string_id value, int callingWidget, void* valueArgs)
+    void openTextInput(Ui::Window* caller, string_id title, string_id message, string_id value, int callingWidget, void* valueArgs)
     {
         _title = title;
         _message = message;
@@ -164,11 +165,11 @@ namespace OpenLoco::Ui::Windows::TextInput
             window->owner = CompanyManager::getControllingId();
         }
 
-        _widgets[Widx::title].type = widget_type::caption_25;
+        _widgets[Widx::title].type = WidgetType::caption_25;
         if (window->owner != CompanyId::null)
         {
             window->flags |= WindowFlags::flag_11;
-            _widgets[Widx::title].type = widget_type::caption_24;
+            _widgets[Widx::title].type = WidgetType::caption_24;
         }
     }
 
@@ -178,7 +179,7 @@ namespace OpenLoco::Ui::Windows::TextInput
      * @param type @<cl>
      * @param number @<dx>
      */
-    void sub_4CE6C9(WindowType type, window_number number)
+    void sub_4CE6C9(WindowType type, WindowNumber_t number)
     {
         auto window = WindowManager::find(WindowType::textInput, 0);
         if (window == nullptr)
@@ -219,7 +220,7 @@ namespace OpenLoco::Ui::Windows::TextInput
      *
      * @param window @<esi>
      */
-    static void prepareDraw(Ui::window* window)
+    static void prepareDraw(Ui::Window* window)
     {
         _widgets[Widx::title].text = _title;
         memcpy(_commonFormatArgs, _formatArgs, 16);
@@ -231,7 +232,7 @@ namespace OpenLoco::Ui::Windows::TextInput
      * @param window @<esi>
      * @param context @<edi>
      */
-    static void draw(Ui::window* window, Gfx::Context* context)
+    static void draw(Ui::Window* window, Gfx::Context* context)
     {
         window->draw(context);
 
@@ -271,7 +272,7 @@ namespace OpenLoco::Ui::Windows::TextInput
     }
 
     // 0x004CE8B6
-    static void onMouseUp(Ui::window* window, widget_index widgetIndex)
+    static void onMouseUp(Ui::Window* window, WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
@@ -291,7 +292,7 @@ namespace OpenLoco::Ui::Windows::TextInput
     }
 
     // 0x004CE8FA
-    static void onUpdate(Ui::window* window)
+    static void onUpdate(Ui::Window* window)
     {
         inputSession.cursorFrame++;
         if ((inputSession.cursorFrame % 16) == 0)

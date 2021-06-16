@@ -90,22 +90,22 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
     const uint64_t enabledWidgets = (1 << closeButton) | (1 << tabOverall) | (1 << tabVehicles) | (1 << tabIndustries) | (1 << tabRoutes) | (1 << tabOwnership);
 
-    widget_t widgets[] = {
-        makeWidget({ 0, 0 }, { 350, 272 }, widget_type::frame, 0),
-        makeWidget({ 1, 1 }, { 348, 13 }, widget_type::caption_25, 0),
-        makeWidget({ 335, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window),
-        makeWidget({ 0, 41 }, { 350, 230 }, widget_type::panel, 1),
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_6, 1, ImageIds::tab, StringIds::tab_map_overall),
-        makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_6, 1, ImageIds::tab, StringIds::tab_map_vehicles),
-        makeRemapWidget({ 65, 15 }, { 31, 27 }, widget_type::wt_6, 1, ImageIds::tab, StringIds::tab_map_industries),
-        makeRemapWidget({ 96, 15 }, { 31, 27 }, widget_type::wt_6, 1, ImageIds::tab, StringIds::tab_map_routes),
-        makeRemapWidget({ 158, 15 }, { 31, 27 }, widget_type::wt_6, 1, ImageIds::tab, StringIds::tab_map_ownership),
-        makeWidget({ 3, 44 }, { 240, 215 }, widget_type::scrollview, 1, horizontal | vertical),
-        makeWidget({ 3, 250 }, { 322, 21 }, widget_type::wt_13, 1),
+    Widget widgets[] = {
+        makeWidget({ 0, 0 }, { 350, 272 }, WidgetType::frame, 0),
+        makeWidget({ 1, 1 }, { 348, 13 }, WidgetType::caption_25, 0),
+        makeWidget({ 335, 2 }, { 13, 13 }, WidgetType::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window),
+        makeWidget({ 0, 41 }, { 350, 230 }, WidgetType::panel, 1),
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_6, 1, ImageIds::tab, StringIds::tab_map_overall),
+        makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::wt_6, 1, ImageIds::tab, StringIds::tab_map_vehicles),
+        makeRemapWidget({ 65, 15 }, { 31, 27 }, WidgetType::wt_6, 1, ImageIds::tab, StringIds::tab_map_industries),
+        makeRemapWidget({ 96, 15 }, { 31, 27 }, WidgetType::wt_6, 1, ImageIds::tab, StringIds::tab_map_routes),
+        makeRemapWidget({ 158, 15 }, { 31, 27 }, WidgetType::wt_6, 1, ImageIds::tab, StringIds::tab_map_ownership),
+        makeWidget({ 3, 44 }, { 240, 215 }, WidgetType::scrollview, 1, Scrollbars::horizontal | Scrollbars::vertical),
+        makeWidget({ 3, 250 }, { 322, 21 }, WidgetType::wt_13, 1),
         widgetEnd()
     };
 
-    static window_event_list events;
+    static WindowEventList events;
 
     static Pos2 mapWindowPosToLocation(xy32 pos)
     {
@@ -160,7 +160,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046B8E6
-    static void onClose(window* self)
+    static void onClose(Window* self)
     {
         _lastMapWindowSize = Gfx::ui_size_t(self->width, self->height);
         _lastMapWindowVar88A = self->var_88A;
@@ -171,7 +171,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046B8CF
-    static void onMouseUp(window* self, widget_index widgetIndex)
+    static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
@@ -200,7 +200,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046B9F7
-    static void onResize(window* self)
+    static void onResize(Window* self)
     {
         self->flags |= WindowFlags::resizable;
         self->min_width = 350;
@@ -213,7 +213,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046C544
-    static void sub_46C544(window* self)
+    static void sub_46C544(Window* self)
     {
         registers regs;
         regs.esi = (int32_t)self;
@@ -221,7 +221,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046D34D based on
-    static void setHoverItem(window* self, int16_t y, int index)
+    static void setHoverItem(Window* self, int16_t y, int index)
     {
         uint32_t itemHover;
 
@@ -260,7 +260,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         }
     };
 
-    static void setHoverItemTab(window* self, int16_t legendLeft, int16_t legendBottom)
+    static void setHoverItemTab(Window* self, int16_t legendLeft, int16_t legendBottom)
     {
         uint8_t i = 0;
         int16_t y = 0;
@@ -339,7 +339,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     static uint16_t mapFrameNumber = 0;
 
     // 0x0046BA5B
-    static void onUpdate(window* self)
+    static void onUpdate(Window* self)
     {
         self->frame_no++;
         self->callPrepareDraw();
@@ -371,7 +371,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046B9E7
-    static void getScrollSize(window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+    static void getScrollSize(Window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
         self->callPrepareDraw();
         *scrollWidth = map_columns * 2;
@@ -391,7 +391,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046B97C
-    static void scrollMouseDown(window* self, int16_t x, int16_t y, uint8_t scrollIndex)
+    static void scrollMouseDown(Window* self, int16_t x, int16_t y, uint8_t scrollIndex)
     {
         auto pos = mapWindowPosToLocation({ x, y });
 
@@ -399,7 +399,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046B946
-    static std::optional<FormatArguments> tooltip(window* self, widget_index widgetIndex)
+    static std::optional<FormatArguments> tooltip(Window* self, WidgetIndex_t widgetIndex)
     {
         FormatArguments args{};
         args.push(StringIds::tooltip_scroll_map);
@@ -407,7 +407,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046D223
-    static void leftAlignTabs(window* self, uint8_t firstTabIndex, uint8_t lastTabIndex)
+    static void leftAlignTabs(Window* self, uint8_t firstTabIndex, uint8_t lastTabIndex)
     {
         auto disabledWidgets = self->disabled_widgets;
         auto pos = self->widgets[firstTabIndex].left;
@@ -415,11 +415,11 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
         for (auto index = firstTabIndex; index <= lastTabIndex; index++)
         {
-            self->widgets[index].type = widget_type::none;
+            self->widgets[index].type = WidgetType::none;
 
             if (!(disabledWidgets & (1ULL << index)))
             {
-                self->widgets[index].type = widget_type::wt_8;
+                self->widgets[index].type = WidgetType::wt_8;
 
                 self->widgets[index].left = pos;
                 pos += tabWidth;
@@ -431,7 +431,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046B6BF
-    static void prepareDraw(window* self)
+    static void prepareDraw(Window* self)
     {
         const string_id captionText[] = {
             StringIds::title_map,
@@ -477,7 +477,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046D0E0
-    static void drawTabs(window* self, Gfx::Context* context)
+    static void drawTabs(Window* self, Gfx::Context* context)
     {
         auto skin = ObjectManager::get<InterfaceSkinObject>();
 
@@ -486,7 +486,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             uint32_t imageId = skin->img;
             imageId += InterfaceSkin::ImageIds::toolbar_menu_map_north;
 
-            Widget::draw_tab(self, context, imageId, widx::tabOverall);
+            Widget::drawTab(self, context, imageId, widx::tabOverall);
         }
 
         // tabVehicles,
@@ -520,7 +520,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
                 imageId = Gfx::recolour(imageId, colour);
 
-                Widget::draw_tab(self, context, imageId, widx::tabVehicles);
+                Widget::drawTab(self, context, imageId, widx::tabVehicles);
             }
         }
 
@@ -529,7 +529,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             uint32_t imageId = skin->img;
             imageId += InterfaceSkin::ImageIds::toolbar_menu_industries;
 
-            Widget::draw_tab(self, context, imageId, widx::tabIndustries);
+            Widget::drawTab(self, context, imageId, widx::tabIndustries);
         }
 
         // tabRoutes,
@@ -549,7 +549,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
                 else
                     imageId += routeImageIds[0];
 
-                Widget::draw_tab(self, context, imageId, widx::tabRoutes);
+                Widget::drawTab(self, context, imageId, widx::tabRoutes);
             }
         }
 
@@ -560,13 +560,13 @@ namespace OpenLoco::Ui::Windows::MapWindow
                 uint32_t imageId = skin->img;
                 imageId += InterfaceSkin::ImageIds::tab_companies;
 
-                Widget::draw_tab(self, context, imageId, widx::tabOwnership);
+                Widget::drawTab(self, context, imageId, widx::tabOwnership);
             }
         }
     }
 
     // 0x0046D273
-    static void drawGraphKeyOverall(window* self, Gfx::Context* context, uint16_t x, uint16_t* y)
+    static void drawGraphKeyOverall(Window* self, Gfx::Context* context, uint16_t x, uint16_t* y)
     {
         static const PaletteIndex_t overallColours[] = {
             PaletteIndex::index_41,
@@ -620,7 +620,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     };
 
     // 0x0046D379
-    static void drawGraphKeyVehicles(window* self, Gfx::Context* context, uint16_t x, uint16_t* y)
+    static void drawGraphKeyVehicles(Window* self, Gfx::Context* context, uint16_t x, uint16_t* y)
     {
         static const string_id lineNames[] = {
             StringIds::forbid_trains,
@@ -656,7 +656,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046D47F
-    static void drawGraphKeyIndustries(window* self, Gfx::Context* context, uint16_t x, uint16_t* y)
+    static void drawGraphKeyIndustries(Window* self, Gfx::Context* context, uint16_t x, uint16_t* y)
     {
         static const PaletteIndex_t industryColours[] = {
             PaletteIndex::index_0A,
@@ -723,7 +723,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046D5A4
-    static void drawGraphKeyRoutes(window* self, Gfx::Context* context, uint16_t x, uint16_t* y)
+    static void drawGraphKeyRoutes(Window* self, Gfx::Context* context, uint16_t x, uint16_t* y)
     {
         for (auto i = 0; _byte_F253DF[i] != 0xFF; i++)
         {
@@ -773,7 +773,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046D6E1
-    static void drawGraphKeyCompanies(window* self, Gfx::Context* context, uint16_t x, uint16_t* y)
+    static void drawGraphKeyCompanies(Window* self, Gfx::Context* context, uint16_t x, uint16_t* y)
     {
         for (const auto& company : CompanyManager::companies())
         {
@@ -807,7 +807,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046D81F
-    static void formatVehicleString(window* self, FormatArguments args)
+    static void formatVehicleString(Window* self, FormatArguments args)
     {
         static const string_id vehicleStringSingular[] = {
             StringIds::num_trains_singular,
@@ -859,7 +859,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046D87C
-    static void formatIndustryString(window* self, FormatArguments args)
+    static void formatIndustryString(Window* self, FormatArguments args)
     {
         int16_t industryIndex = Utility::bitScanForward(self->var_854);
 
@@ -943,7 +943,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046B779
-    static void draw(window* self, Gfx::Context* context)
+    static void draw(Window* self, Gfx::Context* context)
     {
         self->draw(context);
         drawTabs(self, context);
@@ -1111,7 +1111,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046C426
-    static uint8_t getVehicleColour(widget_index widgetIndex, Vehicles::Vehicle train, Vehicles::Car car)
+    static uint8_t getVehicleColour(WidgetIndex_t widgetIndex, Vehicles::Vehicle train, Vehicles::Car car)
     {
         auto colour = PaletteIndex::index_15;
 
@@ -1162,7 +1162,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046BE6E, 0x0046C35A
-    static void drawVehiclesOnMap(Gfx::Context* context, widget_index widgetIndex)
+    static void drawVehiclesOnMap(Gfx::Context* context, WidgetIndex_t widgetIndex)
     {
         for (auto vehicle : EntityManager::VehicleList())
         {
@@ -1401,7 +1401,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046B806
-    static void drawScroll(window* self, Gfx::Context* context, uint32_t scrollIndex)
+    static void drawScroll(Window* self, Gfx::Context* context, uint32_t scrollIndex)
     {
         if (!(_dword_525E28 & (1 << 0)))
             return;

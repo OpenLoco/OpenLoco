@@ -7,6 +7,7 @@
 #include "../OpenLoco.h"
 #include "../Ui.h"
 #include "../Ui/WindowManager.h"
+#include "../Widget.h"
 
 namespace OpenLoco::Ui::Windows::Tutorial
 {
@@ -17,17 +18,17 @@ namespace OpenLoco::Ui::Windows::Tutorial
 
     constexpr Gfx::ui_size_t windowSize = { 140, 29 };
 
-    widget_t widgets[] = {
-        makeWidget({ 0, 0 }, windowSize, widget_type::wt_3, 0),
+    Widget widgets[] = {
+        makeWidget({ 0, 0 }, windowSize, WidgetType::wt_3, 0),
         widgetEnd(),
     };
 
-    static window_event_list _events;
+    static WindowEventList _events;
 
     static void initEvents();
 
     // 0x00438CAE
-    window* open()
+    Window* open()
     {
         initEvents();
 
@@ -52,13 +53,13 @@ namespace OpenLoco::Ui::Windows::Tutorial
     }
 
     // 0x00439B3D
-    static void prepareDraw(window* self)
+    static void prepareDraw(Window* self)
     {
         self->widgets[Widx::frame].right = self->width - 1;
     }
 
     // 0x00439B4A
-    static void draw(window* self, Gfx::Context* context)
+    static void draw(Window* self, Gfx::Context* context)
     {
         static constexpr string_id titleStringIds[] = {
             StringIds::tutorial_1_title,

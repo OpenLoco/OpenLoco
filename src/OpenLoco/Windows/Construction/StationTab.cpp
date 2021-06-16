@@ -12,6 +12,7 @@
 #include "../../Objects/TrainStationObject.h"
 #include "../../StationManager.h"
 #include "../../Ui/Dropdown.h"
+#include "../../Widget.h"
 #include "Construction.h"
 
 using namespace OpenLoco::Interop;
@@ -20,19 +21,19 @@ using namespace OpenLoco::Map::TileManager;
 
 namespace OpenLoco::Ui::Windows::Construction::Station
 {
-    widget_t widgets[] = {
+    Widget widgets[] = {
         commonWidgets(138, 190, StringIds::stringid_2),
-        makeWidget({ 3, 45 }, { 132, 12 }, widget_type::wt_18, 1, 0xFFFFFFFF, StringIds::tooltip_select_station_type),
-        makeWidget({ 123, 46 }, { 11, 10 }, widget_type::wt_11, 1, StringIds::dropdown, StringIds::tooltip_select_station_type),
-        makeWidget({ 35, 60 }, { 68, 68 }, widget_type::wt_3, 1),
-        makeWidget({ 112, 104 }, { 24, 24 }, widget_type::wt_9, 1, ImageIds::rotate_object, StringIds::rotate_90),
+        makeWidget({ 3, 45 }, { 132, 12 }, WidgetType::wt_18, 1, 0xFFFFFFFF, StringIds::tooltip_select_station_type),
+        makeWidget({ 123, 46 }, { 11, 10 }, WidgetType::wt_11, 1, StringIds::dropdown, StringIds::tooltip_select_station_type),
+        makeWidget({ 35, 60 }, { 68, 68 }, WidgetType::wt_3, 1),
+        makeWidget({ 112, 104 }, { 24, 24 }, WidgetType::wt_9, 1, ImageIds::rotate_object, StringIds::rotate_90),
         widgetEnd(),
     };
 
-    window_event_list events;
+    WindowEventList events;
 
     // 0x0049E228
-    static void onMouseUp(window* self, widget_index widgetIndex)
+    static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
@@ -71,7 +72,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     }
 
     // 0x0049E249
-    static void onMouseDown(window* self, widget_index widgetIndex)
+    static void onMouseDown(Window* self, WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
@@ -116,7 +117,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     }
 
     // 0x0049E256
-    static void onDropdown(window* self, widget_index widgetIndex, int16_t itemIndex)
+    static void onDropdown(Window* self, WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (widgetIndex == widx::station_dropdown)
         {
@@ -149,13 +150,13 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     }
 
     // 0x0049E437
-    static void onUpdate(window* self)
+    static void onUpdate(Window* self)
     {
         Common::onUpdate(self, (1 << 3));
     }
 
     // 0x0049E421
-    static void onToolUpdate(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
+    static void onToolUpdate(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
     {
         registers regs;
         regs.esi = (int32_t)&self;
@@ -166,7 +167,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     }
 
     // 0x0049E42C
-    static void onToolDown(window& self, const widget_index widgetIndex, const int16_t x, const int16_t y)
+    static void onToolDown(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
     {
         registers regs;
         regs.esi = (int32_t)&self;
@@ -177,17 +178,17 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     }
 
     // 0x0049DD39
-    static void prepareDraw(window* self)
+    static void prepareDraw(Window* self)
     {
         Common::prepareDraw(self);
 
-        self->widgets[widx::rotate].type = widget_type::none;
+        self->widgets[widx::rotate].type = WidgetType::none;
 
         auto args = FormatArguments();
 
         if (_byte_1136063 & (1 << 7))
         {
-            self->widgets[widx::rotate].type = widget_type::wt_9;
+            self->widgets[widx::rotate].type = WidgetType::wt_9;
 
             auto airportObj = ObjectManager::get<AirportObject>(_lastSelectedStationType);
 
@@ -230,7 +231,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     }
 
     // 0x0049DE40
-    static void draw(window* self, Gfx::Context* context)
+    static void draw(Window* self, Gfx::Context* context)
     {
         self->draw(context);
         Common::drawTabs(self, context);
@@ -381,7 +382,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         }
     }
 
-    void tabReset(window* self)
+    void tabReset(Window* self)
     {
         self->callOnMouseDown(Station::widx::image);
     }

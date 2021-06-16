@@ -7,6 +7,7 @@
 #include "../Objects/ObjectManager.h"
 #include "../Scenario.h"
 #include "../Ui/WindowManager.h"
+#include "../Widget.h"
 
 using namespace OpenLoco::Interop;
 
@@ -23,19 +24,19 @@ namespace OpenLoco::Ui::Windows::LandscapeGenerationConfirm
         button_cancel = 4,
     };
 
-    static widget_t widgets[] = {
-        makeWidget({ 0, 0 }, { 280, 92 }, widget_type::panel, 0),
-        makeWidget({ 1, 1 }, { 278, 13 }, widget_type::caption_22, 0),
-        makeWidget({ 267, 2 }, { 11, 11 }, widget_type::wt_11, 0, StringIds::close_window_cross, StringIds::tooltip_close_window),
-        makeWidget({ 20, 77 }, { 100, 12 }, widget_type::wt_11, 0, StringIds::label_ok),
-        makeWidget({ 160, 77 }, { 100, 12 }, widget_type::wt_11, 0, StringIds::label_button_cancel),
+    static Widget widgets[] = {
+        makeWidget({ 0, 0 }, { 280, 92 }, WidgetType::panel, 0),
+        makeWidget({ 1, 1 }, { 278, 13 }, WidgetType::caption_22, 0),
+        makeWidget({ 267, 2 }, { 11, 11 }, WidgetType::wt_11, 0, StringIds::close_window_cross, StringIds::tooltip_close_window),
+        makeWidget({ 20, 77 }, { 100, 12 }, WidgetType::wt_11, 0, StringIds::label_ok),
+        makeWidget({ 160, 77 }, { 100, 12 }, WidgetType::wt_11, 0, StringIds::label_button_cancel),
         widgetEnd()
     };
 
-    static window_event_list events;
+    static WindowEventList events;
 
     // 0x004C18A5
-    static void draw(window* window, Gfx::Context* context)
+    static void draw(Window* window, Gfx::Context* context)
     {
         window->draw(context);
 
@@ -48,7 +49,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGenerationConfirm
     }
 
     // 0x004C18E4
-    static void onMouseUp(window* window, widget_index widgetIndex)
+    static void onMouseUp(Window* window, WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
@@ -76,7 +77,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGenerationConfirm
     }
 
     // 0x004C180C
-    window* open(int32_t prompt_type)
+    Window* open(int32_t prompt_type)
     {
         auto window = WindowManager::bringToFront(WindowType::landscapeGenerationConfirm, 0);
         if (window == nullptr)

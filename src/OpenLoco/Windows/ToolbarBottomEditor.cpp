@@ -2,6 +2,7 @@
 #include "../Graphics/Colour.h"
 #include "../Graphics/ImageIds.h"
 #include "../Input.h"
+#include "../Widget.h"
 #include <map>
 
 namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
@@ -16,13 +17,13 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
 
     static const uint16_t windowHeight = 32;
 
-    static window_event_list _events;
+    static WindowEventList _events;
 
-    static widget_t _widgets[] = {
-        makeWidget({ 0, 0 }, { 200, 34 }, widget_type::wt_3, 0),
-        makeWidget({ 2, 2 }, { 196, 30 }, widget_type::wt_9, 0),
-        makeWidget({ 440, 0 }, { 200, 34 }, widget_type::wt_3, 0),
-        makeWidget({ 442, 2 }, { 196, 30 }, widget_type::wt_9, 0),
+    static Widget _widgets[] = {
+        makeWidget({ 0, 0 }, { 200, 34 }, WidgetType::wt_3, 0),
+        makeWidget({ 2, 2 }, { 196, 30 }, WidgetType::wt_9, 0),
+        makeWidget({ 440, 0 }, { 200, 34 }, WidgetType::wt_3, 0),
+        makeWidget({ 442, 2 }, { 196, 30 }, WidgetType::wt_9, 0),
         widgetEnd(),
     };
 
@@ -36,20 +37,20 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
     };
 
     // 0x0043CE21
-    static void prepareDraw(window* self)
+    static void prepareDraw(Window* self)
     {
-        self->widgets[widx::next_button].type = widget_type::wt_9;
-        self->widgets[widx::next_frame].type = widget_type::wt_3;
+        self->widgets[widx::next_button].type = WidgetType::wt_9;
+        self->widgets[widx::next_frame].type = WidgetType::wt_3;
 
         if (EditorController::canGoBack())
         {
-            self->widgets[widx::previous_button].type = widget_type::wt_9;
-            self->widgets[widx::previous_frame].type = widget_type::wt_3;
+            self->widgets[widx::previous_button].type = WidgetType::wt_9;
+            self->widgets[widx::previous_frame].type = WidgetType::wt_3;
         }
         else
         {
-            self->widgets[widx::previous_button].type = widget_type::none;
-            self->widgets[widx::previous_frame].type = widget_type::none;
+            self->widgets[widx::previous_button].type = WidgetType::none;
+            self->widgets[widx::previous_frame].type = WidgetType::none;
         }
 
         // 0x0043CDD1
@@ -60,10 +61,10 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
     }
 
     // 0x0043CE65
-    static void draw(window* self, Gfx::Context* ctx)
+    static void draw(Window* self, Gfx::Context* ctx)
     {
-        widget_t& previous = self->widgets[widx::previous_frame];
-        widget_t& next = self->widgets[widx::next_frame];
+        Widget& previous = self->widgets[widx::previous_frame];
+        Widget& next = self->widgets[widx::next_frame];
 
         if (EditorController::canGoBack())
         {
@@ -107,7 +108,7 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
     }
 
     // 0x0043D0ED
-    static void onMouseUp(window*, widget_index i)
+    static void onMouseUp(Window*, WidgetIndex_t i)
     {
         switch (i)
         {

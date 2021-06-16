@@ -94,29 +94,29 @@ namespace OpenLoco::Ui::Windows::Construction
             tab_overhead,
         };
 
-#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                        \
-    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, widget_type::frame, 0),                                                          \
-        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, widget_type::caption_24, 0, windowCaptionId),                                     \
-        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window), \
-        makeWidget({ 0, 41 }, { frameWidth, frameHeight - 41 }, widget_type::wt_3, 1),                                                 \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tab_track_road_construction),           \
-        makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tab_station_construction),             \
-        makeRemapWidget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tab_signal_construction),              \
-        makeRemapWidget({ 96, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tab_electrification_construction)
+#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                       \
+    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, WidgetType::frame, 0),                                                          \
+        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, WidgetType::caption_24, 0, windowCaptionId),                                     \
+        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, WidgetType::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window), \
+        makeWidget({ 0, 41 }, { frameWidth, frameHeight - 41 }, WidgetType::wt_3, 1),                                                 \
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tab_track_road_construction),           \
+        makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tab_station_construction),             \
+        makeRemapWidget({ 65, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tab_signal_construction),              \
+        makeRemapWidget({ 96, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tab_electrification_construction)
 
         constexpr uint64_t enabledWidgets = (1 << widx::caption) | (1 << widx::close_button) | (1 << widx::tab_construction) | (1 << widx::tab_station) | (1 << widx::tab_signal) | (1 << widx::tab_overhead);
 
-        void prepareDraw(window* self);
-        void switchTab(window* self, widget_index widgetIndex);
-        void repositionTabs(window* self);
-        void drawTabs(window* self, Gfx::Context* context);
+        void prepareDraw(Window* self);
+        void switchTab(Window* self, WidgetIndex_t widgetIndex);
+        void repositionTabs(Window* self);
+        void drawTabs(Window* self, Gfx::Context* context);
         void initEvents();
         void sub_49FEC7();
-        void onClose(window* self);
-        void onUpdate(window* self, uint8_t flag);
+        void onClose(Window* self);
+        void onUpdate(Window* self, uint8_t flag);
         void sub_4CD454();
         void setTrackOptions(const uint8_t trackType);
-        void setDisabledWidgets(window* self);
+        void setDisabledWidgets(Window* self);
         void createConstructionWindow();
         void refreshAirportList(uint8_t* stationList);
         void refreshDockList(uint8_t* stationList);
@@ -190,14 +190,14 @@ namespace OpenLoco::Ui::Windows::Construction
         };
         //clang-format on
 
-        extern widget_t widgets[32];
+        extern Widget widgets[32];
 
-        extern window_event_list events;
+        extern WindowEventList events;
         constexpr uint64_t enabledWidgets = Common::enabledWidgets | allConstruction;
 
         void reset();
         void activateSelectedConstructionWidgets();
-        void tabReset(window* self);
+        void tabReset(Window* self);
         void initEvents();
         void drawTrack(uint16_t x, uint16_t y, uint16_t selectedMods, uint16_t di, uint8_t trackType, uint8_t trackPieceId, uint16_t colour, uint8_t bh);
         void drawRoad(uint16_t x, uint16_t y, uint16_t selectedMods, uint16_t di, uint8_t trackType, uint8_t trackPieceId, uint16_t colour, uint8_t bh);
@@ -213,12 +213,12 @@ namespace OpenLoco::Ui::Windows::Construction
             rotate,
         };
 
-        extern widget_t widgets[13];
+        extern Widget widgets[13];
 
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << station) | (1 << station_dropdown) | (1 << image) | (1 << rotate);
 
-        extern window_event_list events;
-        void tabReset(window* self);
+        extern WindowEventList events;
+        void tabReset(Window* self);
         void initEvents();
     }
 
@@ -232,12 +232,12 @@ namespace OpenLoco::Ui::Windows::Construction
             single_direction,
         };
 
-        extern widget_t widgets[13];
+        extern Widget widgets[13];
 
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << signal) | (1 << signal_dropdown) | (1 << both_directions) | (1 << single_direction);
 
-        extern window_event_list events;
-        void tabReset(window* self);
+        extern WindowEventList events;
+        void tabReset(Window* self);
         void initEvents();
     }
 
@@ -254,12 +254,12 @@ namespace OpenLoco::Ui::Windows::Construction
             track_dropdown,
         };
 
-        extern widget_t widgets[16];
+        extern Widget widgets[16];
 
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << checkbox_1) | (1 << checkbox_2) | (1 << checkbox_3) | (1 << checkbox_4) | (1 << image) | (1 << track) | (1 << track_dropdown);
 
-        extern window_event_list events;
-        void tabReset(window* self);
+        extern WindowEventList events;
+        void tabReset(Window* self);
         void initEvents();
     }
 }

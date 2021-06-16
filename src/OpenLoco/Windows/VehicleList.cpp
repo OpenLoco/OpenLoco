@@ -30,7 +30,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     static const Gfx::ui_size_t max_dimensions = { 550, 1200 };
     static const Gfx::ui_size_t min_dimensions = { 220, 160 };
 
-    static window_event_list _events;
+    static WindowEventList _events;
 
     enum Widx
     {
@@ -52,23 +52,23 @@ namespace OpenLoco::Ui::Windows::VehicleList
         scrollview,
     };
 
-    widget_t _widgets[] = {
-        makeWidget({ 0, 0 }, { 550, 213 }, widget_type::frame, 0),
-        makeWidget({ 1, 1 }, { 548, 13 }, widget_type::caption_24, 0),
-        makeWidget({ 535, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window),
-        makeWidget({ 0, 41 }, { 550, 172 }, widget_type::panel, 1),
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_trains),
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_buses),
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_trucks),
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_trams),
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_aircraft),
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_ships),
-        makeWidget({ 0, 14 }, { 26, 26 }, widget_type::wt_9, 0, StringIds::null, StringIds::tooltip_select_company),
-        makeWidget({ 4, 43 }, { 310, 12 }, widget_type::wt_14, 1, StringIds::null, StringIds::tooltip_sort_by_name),
-        makeWidget({ 314, 43 }, { 100, 12 }, widget_type::wt_14, 1, StringIds::null, StringIds::tooltip_sort_by_profit),
-        makeWidget({ 414, 43 }, { 65, 12 }, widget_type::wt_14, 1, StringIds::null, StringIds::tooltip_sort_by_age),
-        makeWidget({ 479, 43 }, { 67, 12 }, widget_type::wt_14, 1, StringIds::null, StringIds::tooltip_sort_by_reliability),
-        makeWidget({ 3, 56 }, { 544, 138 }, widget_type::scrollview, 1, scrollbars::vertical),
+    Widget _widgets[] = {
+        makeWidget({ 0, 0 }, { 550, 213 }, WidgetType::frame, 0),
+        makeWidget({ 1, 1 }, { 548, 13 }, WidgetType::caption_24, 0),
+        makeWidget({ 535, 2 }, { 13, 13 }, WidgetType::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window),
+        makeWidget({ 0, 41 }, { 550, 172 }, WidgetType::panel, 1),
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_trains),
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_buses),
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_trucks),
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_trams),
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_aircraft),
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_ships),
+        makeWidget({ 0, 14 }, { 26, 26 }, WidgetType::wt_9, 0, StringIds::null, StringIds::tooltip_select_company),
+        makeWidget({ 4, 43 }, { 310, 12 }, WidgetType::wt_14, 1, StringIds::null, StringIds::tooltip_sort_by_name),
+        makeWidget({ 314, 43 }, { 100, 12 }, WidgetType::wt_14, 1, StringIds::null, StringIds::tooltip_sort_by_profit),
+        makeWidget({ 414, 43 }, { 65, 12 }, WidgetType::wt_14, 1, StringIds::null, StringIds::tooltip_sort_by_age),
+        makeWidget({ 479, 43 }, { 67, 12 }, WidgetType::wt_14, 1, StringIds::null, StringIds::tooltip_sort_by_reliability),
+        makeWidget({ 3, 56 }, { 544, 138 }, WidgetType::scrollview, 1, Scrollbars::vertical),
         widgetEnd()
     };
 
@@ -96,7 +96,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     static void initEvents();
 
     // 0x004C1D4F
-    static void refreshVehicleList(window* self)
+    static void refreshVehicleList(Window* self)
     {
         self->row_count = 0;
         for (auto vehicle : EntityManager::VehicleList())
@@ -175,7 +175,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x004C1D92
-    static void updateVehicleList(window* self)
+    static void updateVehicleList(Window* self)
     {
         int16_t insertId = -1;
 
@@ -227,12 +227,12 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x004C2A6E
-    static void drawTabs(window* self, Gfx::Context* context)
+    static void drawTabs(Window* self, Gfx::Context* context)
     {
         auto skin = ObjectManager::get<InterfaceSkinObject>();
         auto companyColour = CompanyManager::getCompanyColour(self->number);
 
-        static std::pair<widget_index, std::array<uint32_t, 8>> tabAnimations[] = {
+        static std::pair<WidgetIndex_t, std::array<uint32_t, 8>> tabAnimations[] = {
             { Widx::tab_trains, {
                                     InterfaceSkin::ImageIds::vehicle_train_frame_0,
                                     InterfaceSkin::ImageIds::vehicle_train_frame_1,
@@ -304,12 +304,12 @@ namespace OpenLoco::Ui::Windows::VehicleList
             auto imageId = isActive ? frames[self->frame_no / 2 % 8] : frames[0];
 
             uint32_t image = Gfx::recolour(skin->img + imageId, companyColour);
-            Widget::draw_tab(self, context, image, tab);
+            Widget::drawTab(self, context, image, tab);
         }
     }
 
     // 0x004C28A5
-    static void disableUnavailableVehicleTypes(window* self)
+    static void disableUnavailableVehicleTypes(Window* self)
     {
         // The original game looks at all companies here. We only look at the current company instead.
         auto company = CompanyManager::get(self->number);
@@ -319,9 +319,9 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x004C1AA2
-    static window* create(CompanyId_t companyId)
+    static Window* create(CompanyId_t companyId)
     {
-        window* self = WindowManager::createWindow(
+        Window* self = WindowManager::createWindow(
             WindowType::vehicleList,
             window_size,
             WindowFlags::flag_11,
@@ -342,9 +342,9 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x004C19DC
-    window* open(CompanyId_t companyId, VehicleType type)
+    Window* open(CompanyId_t companyId, VehicleType type)
     {
-        window* self = WindowManager::bringToFront(WindowType::vehicleList, companyId);
+        Window* self = WindowManager::bringToFront(WindowType::vehicleList, companyId);
         if (self != nullptr)
         {
             self->callOnMouseUp(VehicleList::getTabFromType(type));
@@ -395,7 +395,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x4C2865
-    static void setTransportTypeTabs(window* self)
+    static void setTransportTypeTabs(Window* self)
     {
         auto disabledWidgets = self->disabled_widgets >> Widx::tab_trains;
         auto widget = self->widgets + Widx::tab_trains;
@@ -405,11 +405,11 @@ namespace OpenLoco::Ui::Windows::VehicleList
         {
             if (disabledWidgets & (1ULL << i))
             {
-                widget->type = widget_type::none;
+                widget->type = WidgetType::none;
             }
             else
             {
-                widget->type = widget_type::wt_8;
+                widget->type = WidgetType::wt_8;
                 widget->left = tabX;
                 widget->right = tabX + tabWidth;
                 tabX += tabWidth + 1;
@@ -418,7 +418,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x004C1F88
-    static void prepareDraw(window* self)
+    static void prepareDraw(Window* self)
     {
         // The original game was setting widget sets here. As all tabs are the same, this has been omitted.
         self->activated_widgets &= ~_tabWidgets;
@@ -478,7 +478,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x004C211C
-    static void draw(window* self, Gfx::Context* context)
+    static void draw(Window* self, Gfx::Context* context)
     {
         self->draw(context);
         drawTabs(self, context);
@@ -520,7 +520,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x004C21CD
-    static void drawScroll(window* self, Gfx::Context* context, uint32_t scrollIndex)
+    static void drawScroll(Window* self, Gfx::Context* context, uint32_t scrollIndex)
     {
         auto shade = Colour::getShade(self->colours[1], 1);
         Gfx::clearSingle(*context, shade);
@@ -606,7 +606,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x004C24F7
-    static void switchTab(window* self, VehicleType type)
+    static void switchTab(Window* self, VehicleType type)
     {
         if (Input::isToolActive(self->type, self->number))
             Input::toolCancel();
@@ -646,7 +646,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x004C2409
-    static void onMouseUp(window* self, widget_index widgetIndex)
+    static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
@@ -684,14 +684,14 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x004C2434
-    static void onMouseDown(window* self, widget_index widgetIndex)
+    static void onMouseDown(Window* self, WidgetIndex_t widgetIndex)
     {
         if (widgetIndex == Widx::company_select)
             Dropdown::populateCompanySelect(self, &self->widgets[widgetIndex]);
     }
 
     // 0x004C243F
-    static void onDropdown(Ui::window* self, widget_index widgetIndex, int16_t itemIndex)
+    static void onDropdown(Ui::Window* self, WidgetIndex_t widgetIndex, int16_t itemIndex)
     {
         if (widgetIndex != Widx::company_select)
             return;
@@ -729,7 +729,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x004C24CA
-    static std::optional<FormatArguments> tooltip(window* self, widget_index widgetIndex)
+    static std::optional<FormatArguments> tooltip(Window* self, WidgetIndex_t widgetIndex)
     {
         FormatArguments args{};
         args.push(StringIds::tooltip_scroll_vehicle_list);
@@ -737,7 +737,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x004C260B
-    static void onUpdate(window* self)
+    static void onUpdate(Window* self)
     {
         self->frame_no++;
         self->callPrepareDraw();
@@ -753,13 +753,13 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x004C2640
-    static void event_08(window* self)
+    static void event_08(Window* self)
     {
         self->flags |= WindowFlags::not_scroll_view;
     }
 
     // 0x004C2648
-    static void event_09(window* self)
+    static void event_09(Window* self)
     {
         if (self->flags & WindowFlags::not_scroll_view)
         {
@@ -768,13 +768,13 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x004C265B
-    static void getScrollSize(window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+    static void getScrollSize(Window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
         *scrollHeight = self->var_83C * self->row_height;
     }
 
     // 0x004C266D
-    static CursorId cursor(window* self, int16_t widgetIdx, int16_t xPos, int16_t yPos, CursorId fallback)
+    static CursorId cursor(Window* self, int16_t widgetIdx, int16_t xPos, int16_t yPos, CursorId fallback)
     {
         if (widgetIdx != Widx::scrollview)
             return fallback;
@@ -787,7 +787,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x004C26A4
-    static void onScrollMouseOver(window* self, int16_t x, int16_t y, uint8_t scroll_index)
+    static void onScrollMouseOver(Window* self, int16_t x, int16_t y, uint8_t scroll_index)
     {
         Input::setTooltipTimeout(2000);
 
@@ -847,7 +847,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x004C27C0
-    static void onScrollMouseDown(window* self, int16_t x, int16_t y, uint8_t scroll_index)
+    static void onScrollMouseDown(Window* self, int16_t x, int16_t y, uint8_t scroll_index)
     {
         uint16_t currentRow = y / self->row_height;
         if (currentRow >= self->var_83C)
@@ -865,7 +865,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     }
 
     // 0x004C2820
-    static void onResize(window* self)
+    static void onResize(Window* self)
     {
         self->flags |= WindowFlags::resizable;
 

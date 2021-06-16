@@ -10,6 +10,7 @@
 #include "../Objects/ObjectManager.h"
 #include "../OpenLoco.h"
 #include "../Ui/WindowManager.h"
+#include "../Widget.h"
 
 using namespace OpenLoco::Interop;
 
@@ -25,10 +26,10 @@ namespace OpenLoco::Ui::Windows::Error
 
     namespace Common
     {
-        static window_event_list events;
+        static WindowEventList events;
 
-        static void draw(Ui::window* self, Gfx::Context* context);
-        static void onPeriodicUpdate(Ui::window* self);
+        static void draw(Ui::Window* self, Gfx::Context* context);
+        static void onPeriodicUpdate(Ui::Window* self);
         static void initEvents();
     }
     namespace Error
@@ -38,8 +39,8 @@ namespace OpenLoco::Ui::Windows::Error
             frame,
         };
 
-        widget_t widgets[] = {
-            makeWidget({ 0, 0 }, { 200, 42 }, widget_type::wt_3, 0),
+        Widget widgets[] = {
+            makeWidget({ 0, 0 }, { 200, 42 }, WidgetType::wt_3, 0),
             widgetEnd(),
         };
     }
@@ -52,9 +53,9 @@ namespace OpenLoco::Ui::Windows::Error
             innerFrame,
         };
 
-        widget_t widgets[] = {
-            makeWidget({ 0, 0 }, { 250, 70 }, widget_type::wt_3, 0),
-            makeWidget({ 3, 3 }, { 64, 64 }, widget_type::wt_3, 1),
+        Widget widgets[] = {
+            makeWidget({ 0, 0 }, { 250, 70 }, WidgetType::wt_3, 0),
+            makeWidget({ 3, 3 }, { 64, 64 }, WidgetType::wt_3, 1),
             widgetEnd(),
         };
     }
@@ -204,7 +205,7 @@ namespace OpenLoco::Ui::Windows::Error
     namespace Common
     {
         // 0x00431C05
-        static void draw(Ui::window* self, Gfx::Context* context)
+        static void draw(Ui::Window* self, Gfx::Context* context)
         {
             uint16_t x = self->x;
             uint16_t y = self->y;
@@ -253,7 +254,7 @@ namespace OpenLoco::Ui::Windows::Error
         }
 
         // 0x00431E1B
-        static void onPeriodicUpdate(Ui::window* self)
+        static void onPeriodicUpdate(Ui::Window* self)
         {
             self->var_846++;
             if (self->var_846 >= 7)

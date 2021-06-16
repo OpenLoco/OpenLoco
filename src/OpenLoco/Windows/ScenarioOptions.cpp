@@ -64,20 +64,20 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
         const uint64_t enabledWidgets = (1 << widx::tab_challenge) | (1 << widx::tab_companies) | (1 << widx::tab_finances) | (1 << widx::tab_scenario);
 
-#define commonWidgets(frameHeight, windowCaptionId)                                                                         \
-    makeWidget({ 0, 0 }, { 366, frameHeight }, widget_type::frame, 0),                                                      \
-        makeWidget({ 1, 1 }, { 364, 13 }, widget_type::caption_25, 0, windowCaptionId),                                     \
-        makeWidget({ 0, 41 }, { 366, 175 }, widget_type::panel, 1),                                                         \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_scenario_challenge), \
-        makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_company_options),   \
-        makeRemapWidget({ 65, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_financial_options), \
-        makeRemapWidget({ 96, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_scenario_options)
+#define commonWidgets(frameHeight, windowCaptionId)                                                                        \
+    makeWidget({ 0, 0 }, { 366, frameHeight }, WidgetType::frame, 0),                                                      \
+        makeWidget({ 1, 1 }, { 364, 13 }, WidgetType::caption_25, 0, windowCaptionId),                                     \
+        makeWidget({ 0, 41 }, { 366, 175 }, WidgetType::panel, 1),                                                         \
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_scenario_challenge), \
+        makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_company_options),   \
+        makeRemapWidget({ 65, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_financial_options), \
+        makeRemapWidget({ 96, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_scenario_options)
 
         // Defined at the bottom of this file.
         static void initEvents();
 
         // 0x00440082
-        static void update(window* window)
+        static void update(Window* window)
         {
             window->frame_no++;
             window->callPrepareDraw();
@@ -85,7 +85,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         }
 
         // 0x004400A4
-        static void drawTabs(window* window, Gfx::Context* context)
+        static void drawTabs(Window* window, Gfx::Context* context)
         {
             auto skin = ObjectManager::get<InterfaceSkinObject>();
 
@@ -116,13 +116,13 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                 else
                     imageId += challengeTabImageIds[0];
 
-                Widget::draw_tab(window, context, imageId, widx::tab_challenge);
+                Widget::drawTab(window, context, imageId, widx::tab_challenge);
             }
 
             // Companies tab
             {
                 const uint32_t imageId = skin->img + InterfaceSkin::ImageIds::tab_companies;
-                Widget::draw_tab(window, context, imageId, widx::tab_companies);
+                Widget::drawTab(window, context, imageId, widx::tab_companies);
             }
 
             // Finances tab
@@ -152,25 +152,25 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                 else
                     imageId += financesTabImageIds[0];
 
-                Widget::draw_tab(window, context, imageId, widx::tab_finances);
+                Widget::drawTab(window, context, imageId, widx::tab_finances);
             }
 
             // Scenario details tab
             {
                 const uint32_t imageId = skin->img + InterfaceSkin::ImageIds::tab_scenario_details;
-                Widget::draw_tab(window, context, imageId, widx::tab_scenario);
+                Widget::drawTab(window, context, imageId, widx::tab_scenario);
             }
         }
 
-        static void draw(window* window, Gfx::Context* context)
+        static void draw(Window* window, Gfx::Context* context)
         {
             window->draw(context);
             drawTabs(window, context);
         }
 
-        static void prepareDraw(window* self);
+        static void prepareDraw(Window* self);
 
-        static void switchTab(window* self, widget_index widgetIndex);
+        static void switchTab(Window* self, WidgetIndex_t widgetIndex);
     }
 
     namespace Challenge
@@ -195,24 +195,24 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << widx::objective_type) | (1 << widx::objective_type_btn) | (1 << widx::objective_value_down) | (1 << widx::objective_value_up) | (1 << widx::objective_cargo) | (1 << widx::objective_cargo_btn) | (1 << widx::check_be_top_company) | (1 << widx::check_be_within_top_three_companies) | (1 << widx::check_time_limit) | (1 << widx::time_limit_value_down) | (1 << widx::time_limit_value_up);
         const uint64_t holdableWidgets = (1 << widx::objective_value_down) | (1 << widx::objective_value_up) | (1 << widx::time_limit_value_down) | (1 << widx::time_limit_value_up);
 
-        static widget_t widgets[] = {
+        static Widget widgets[] = {
             commonWidgets(197, StringIds::title_scenario_challenge),
-            makeWidget({ 10, 52 }, { 346, 12 }, widget_type::wt_18, 1),
-            makeWidget({ 344, 53 }, { 11, 10 }, widget_type::wt_11, 1, StringIds::dropdown),
-            makeStepperWidgets({ 10, 67 }, { 163, 12 }, widget_type::wt_17, 1),
-            makeWidget({ 193, 67 }, { 163, 12 }, widget_type::wt_18, 1),
-            makeWidget({ 344, 68 }, { 11, 10 }, widget_type::wt_11, 1, StringIds::dropdown),
-            makeWidget({ 10, 83 }, { 346, 12 }, widget_type::checkbox, 1, StringIds::and_be_the_top_company),
-            makeWidget({ 10, 98 }, { 346, 12 }, widget_type::checkbox, 1, StringIds::and_be_within_the_top_companies),
-            makeWidget({ 10, 113 }, { 346, 12 }, widget_type::checkbox, 1, StringIds::with_a_time_limit),
-            makeStepperWidgets({ 256, 112 }, { 100, 12 }, widget_type::wt_17, 1, StringIds::time_limit_years_value),
+            makeWidget({ 10, 52 }, { 346, 12 }, WidgetType::wt_18, 1),
+            makeWidget({ 344, 53 }, { 11, 10 }, WidgetType::wt_11, 1, StringIds::dropdown),
+            makeStepperWidgets({ 10, 67 }, { 163, 12 }, WidgetType::wt_17, 1),
+            makeWidget({ 193, 67 }, { 163, 12 }, WidgetType::wt_18, 1),
+            makeWidget({ 344, 68 }, { 11, 10 }, WidgetType::wt_11, 1, StringIds::dropdown),
+            makeWidget({ 10, 83 }, { 346, 12 }, WidgetType::checkbox, 1, StringIds::and_be_the_top_company),
+            makeWidget({ 10, 98 }, { 346, 12 }, WidgetType::checkbox, 1, StringIds::and_be_within_the_top_companies),
+            makeWidget({ 10, 113 }, { 346, 12 }, WidgetType::checkbox, 1, StringIds::with_a_time_limit),
+            makeStepperWidgets({ 256, 112 }, { 100, 12 }, WidgetType::wt_17, 1, StringIds::time_limit_years_value),
             widgetEnd(),
         };
 
-        static window_event_list events;
+        static WindowEventList events;
 
         // 0x0043FC91
-        static void draw(Ui::window* window, Gfx::Context* context)
+        static void draw(Ui::Window* window, Gfx::Context* context)
         {
             Common::draw(window, context);
 
@@ -237,7 +237,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         static int16_t cargoByDropdownIndex[maxCargoObjects] = { -1 };
 
         // 0x0043FD51
-        static void onDropdown(window* self, widget_index widgetIndex, int16_t itemIndex)
+        static void onDropdown(Window* self, WidgetIndex_t widgetIndex, int16_t itemIndex)
         {
             if (itemIndex == -1)
                 return;
@@ -258,13 +258,13 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         }
 
         // 0x0043FD14
-        static void onMouseDown(window* self, widget_index widgetIndex)
+        static void onMouseDown(Window* self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
                 case widx::objective_type_btn:
                 {
-                    widget_t& target = self->widgets[widx::objective_type];
+                    Widget& target = self->widgets[widx::objective_type];
                     Dropdown::show(self->x + target.left, self->y + target.top, target.width() - 4, target.height(), self->colours[1], std::size(objectiveTypeLabelIds), 0x80);
 
                     for (size_t i = 0; i < std::size(objectiveTypeLabelIds); i++)
@@ -362,7 +362,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                             numCargoObjects++;
                     }
 
-                    widget_t& target = self->widgets[widx::objective_cargo];
+                    Widget& target = self->widgets[widx::objective_cargo];
                     Dropdown::show(self->x + target.left, self->y + target.top, target.width() - 4, target.height(), self->colours[1], numCargoObjects, 0x80);
 
                     uint16_t dropdownIndex = 0;
@@ -400,7 +400,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         }
 
         // 0x0043FCED
-        static void onMouseUp(window* self, widget_index widgetIndex)
+        static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -429,16 +429,16 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         }
 
         // 0x0043FB0C
-        static void prepareDraw(window* self)
+        static void prepareDraw(Window* self)
         {
             Common::prepareDraw(self);
 
             widgets[widx::objective_type].text = objectiveTypeLabelIds[*objectiveType];
-            widgets[widx::objective_cargo].type = widget_type::none;
-            widgets[widx::objective_cargo_btn].type = widget_type::none;
-            widgets[widx::time_limit_value].type = widget_type::none;
-            widgets[widx::time_limit_value_down].type = widget_type::none;
-            widgets[widx::time_limit_value_up].type = widget_type::none;
+            widgets[widx::objective_cargo].type = WidgetType::none;
+            widgets[widx::objective_cargo_btn].type = WidgetType::none;
+            widgets[widx::time_limit_value].type = WidgetType::none;
+            widgets[widx::time_limit_value_down].type = WidgetType::none;
+            widgets[widx::time_limit_value_up].type = WidgetType::none;
 
             switch (*objectiveType)
             {
@@ -463,8 +463,8 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
                     auto cargo = ObjectManager::get<CargoObject>(*objectiveDeliveredCargoType);
                     widgets[widx::objective_cargo].text = cargo->name;
-                    widgets[widx::objective_cargo].type = widget_type::wt_18;
-                    widgets[widx::objective_cargo_btn].type = widget_type::wt_11;
+                    widgets[widx::objective_cargo].type = WidgetType::wt_18;
+                    widgets[widx::objective_cargo_btn].type = WidgetType::wt_11;
                     break;
             }
 
@@ -479,9 +479,9 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             if ((*objectiveFlags & Scenario::objective_flags::within_time_limit) != 0)
             {
                 self->activated_widgets |= 1 << widx::check_time_limit;
-                widgets[widx::time_limit_value].type = widget_type::wt_17;
-                widgets[widx::time_limit_value_down].type = widget_type::wt_11;
-                widgets[widx::time_limit_value_up].type = widget_type::wt_11;
+                widgets[widx::time_limit_value].type = WidgetType::wt_17;
+                widgets[widx::time_limit_value_down].type = WidgetType::wt_11;
+                widgets[widx::time_limit_value_up].type = WidgetType::wt_11;
                 commonFormatArgs[3] = *objectiveTimeLimitYears;
             }
         }
@@ -498,7 +498,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
     }
 
     // 0x0043EE58
-    window* open()
+    Window* open()
     {
         auto window = WindowManager::bringToFront(WindowType::scenarioOptions, 0);
         if (window != nullptr)
@@ -580,38 +580,38 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             player_forbid_ships,
         };
 
-        static widget_t widgets[] = {
+        static Widget widgets[] = {
             commonWidgets(327, StringIds::title_company_options),
-            makeStepperWidgets({ 256, 52 }, { 100, 12 }, widget_type::wt_17, 1, StringIds::max_competing_companies_value),
-            makeStepperWidgets({ 256, 67 }, { 100, 12 }, widget_type::wt_17, 1, StringIds::delay_before_competing_companies_start_months),
-            makeWidget({ 246, 102 }, { 110, 12 }, widget_type::wt_18, 1),
-            makeWidget({ 344, 103 }, { 11, 10 }, widget_type::wt_11, 1, StringIds::dropdown),
-            makeWidget({ 246, 117 }, { 110, 12 }, widget_type::wt_18, 1),
-            makeWidget({ 344, 118 }, { 11, 10 }, widget_type::wt_11, 1, StringIds::dropdown),
-            makeWidget({ 246, 132 }, { 110, 12 }, widget_type::wt_18, 1),
-            makeWidget({ 344, 133 }, { 11, 10 }, widget_type::wt_11, 1, StringIds::dropdown),
-            makeWidget({ 15, 160 }, { 341, 12 }, widget_type::checkbox, 1, StringIds::forbid_trains),
-            makeWidget({ 15, 172 }, { 341, 12 }, widget_type::checkbox, 1, StringIds::forbid_buses),
-            makeWidget({ 15, 184 }, { 341, 12 }, widget_type::checkbox, 1, StringIds::forbid_trucks),
-            makeWidget({ 15, 196 }, { 341, 12 }, widget_type::checkbox, 1, StringIds::forbid_trams),
-            makeWidget({ 15, 208 }, { 341, 12 }, widget_type::checkbox, 1, StringIds::forbid_aircraft),
-            makeWidget({ 15, 220 }, { 341, 12 }, widget_type::checkbox, 1, StringIds::forbid_ships),
-            makeWidget({ 15, 247 }, { 341, 12 }, widget_type::checkbox, 1, StringIds::forbid_trains),
-            makeWidget({ 15, 259 }, { 341, 12 }, widget_type::checkbox, 1, StringIds::forbid_buses),
-            makeWidget({ 15, 271 }, { 341, 12 }, widget_type::checkbox, 1, StringIds::forbid_trucks),
-            makeWidget({ 15, 283 }, { 341, 12 }, widget_type::checkbox, 1, StringIds::forbid_trams),
-            makeWidget({ 15, 295 }, { 341, 12 }, widget_type::checkbox, 1, StringIds::forbid_aircraft),
-            makeWidget({ 15, 307 }, { 341, 12 }, widget_type::checkbox, 1, StringIds::forbid_ships),
+            makeStepperWidgets({ 256, 52 }, { 100, 12 }, WidgetType::wt_17, 1, StringIds::max_competing_companies_value),
+            makeStepperWidgets({ 256, 67 }, { 100, 12 }, WidgetType::wt_17, 1, StringIds::delay_before_competing_companies_start_months),
+            makeWidget({ 246, 102 }, { 110, 12 }, WidgetType::wt_18, 1),
+            makeWidget({ 344, 103 }, { 11, 10 }, WidgetType::wt_11, 1, StringIds::dropdown),
+            makeWidget({ 246, 117 }, { 110, 12 }, WidgetType::wt_18, 1),
+            makeWidget({ 344, 118 }, { 11, 10 }, WidgetType::wt_11, 1, StringIds::dropdown),
+            makeWidget({ 246, 132 }, { 110, 12 }, WidgetType::wt_18, 1),
+            makeWidget({ 344, 133 }, { 11, 10 }, WidgetType::wt_11, 1, StringIds::dropdown),
+            makeWidget({ 15, 160 }, { 341, 12 }, WidgetType::checkbox, 1, StringIds::forbid_trains),
+            makeWidget({ 15, 172 }, { 341, 12 }, WidgetType::checkbox, 1, StringIds::forbid_buses),
+            makeWidget({ 15, 184 }, { 341, 12 }, WidgetType::checkbox, 1, StringIds::forbid_trucks),
+            makeWidget({ 15, 196 }, { 341, 12 }, WidgetType::checkbox, 1, StringIds::forbid_trams),
+            makeWidget({ 15, 208 }, { 341, 12 }, WidgetType::checkbox, 1, StringIds::forbid_aircraft),
+            makeWidget({ 15, 220 }, { 341, 12 }, WidgetType::checkbox, 1, StringIds::forbid_ships),
+            makeWidget({ 15, 247 }, { 341, 12 }, WidgetType::checkbox, 1, StringIds::forbid_trains),
+            makeWidget({ 15, 259 }, { 341, 12 }, WidgetType::checkbox, 1, StringIds::forbid_buses),
+            makeWidget({ 15, 271 }, { 341, 12 }, WidgetType::checkbox, 1, StringIds::forbid_trucks),
+            makeWidget({ 15, 283 }, { 341, 12 }, WidgetType::checkbox, 1, StringIds::forbid_trams),
+            makeWidget({ 15, 295 }, { 341, 12 }, WidgetType::checkbox, 1, StringIds::forbid_aircraft),
+            makeWidget({ 15, 307 }, { 341, 12 }, WidgetType::checkbox, 1, StringIds::forbid_ships),
             widgetEnd(),
         };
 
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << widx::max_competing_companies_down) | (1 << widx::max_competing_companies_up) | (1 << widx::delay_before_competing_companies_start_down) | (1 << widx::delay_before_competing_companies_start_up) | (1 << widx::preferred_intelligence) | (1 << widx::preferred_intelligence_btn) | (1 << widx::preferred_aggressiveness) | (1 << widx::preferred_aggressiveness_btn) | (1 << widx::preferred_competitiveness) | (1 << widx::preferred_competitiveness_btn) | (1 << widx::competitor_forbid_trains) | (1 << widx::competitor_forbid_buses) | (1 << widx::competitor_forbid_trucks) | (1 << widx::competitor_forbid_trams) | (1 << widx::competitor_forbid_aircraft) | (1 << widx::competitor_forbid_ships) | (1 << widx::player_forbid_trains) | (1 << widx::player_forbid_buses) | (1 << widx::player_forbid_trucks) | (1 << widx::player_forbid_trams) | (1 << widx::player_forbid_aircraft) | (1 << widx::player_forbid_ships);
         const uint64_t holdableWidgets = (1 << widx::max_competing_companies_down) | (1 << widx::max_competing_companies_up) | (1 << widx::delay_before_competing_companies_start_down) | (1 << widx::delay_before_competing_companies_start_up);
 
-        static window_event_list events;
+        static WindowEventList events;
 
         // 0x0043F4EB
-        static void draw(Ui::window* window, Gfx::Context* context)
+        static void draw(Ui::Window* window, Gfx::Context* context)
         {
             Common::draw(window, context);
 
@@ -672,7 +672,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         };
 
         // 0x0043F67C
-        static void onDropdown(window* self, widget_index widgetIndex, int16_t itemIndex)
+        static void onDropdown(Window* self, WidgetIndex_t widgetIndex, int16_t itemIndex)
         {
             if (itemIndex == -1)
                 return;
@@ -696,7 +696,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         }
 
         // 0x0043F639
-        static void onMouseDown(window* self, widget_index widgetIndex)
+        static void onMouseDown(Window* self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -722,7 +722,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
                 case widx::preferred_intelligence_btn:
                 {
-                    widget_t& target = self->widgets[widx::preferred_intelligence];
+                    Widget& target = self->widgets[widx::preferred_intelligence];
                     Dropdown::show(self->x + target.left, self->y + target.top, target.width() - 4, target.height(), self->colours[1], std::size(preferenceLabelIds), 0x80);
 
                     for (size_t i = 0; i < std::size(preferenceLabelIds); i++)
@@ -734,7 +734,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
                 case widx::preferred_aggressiveness_btn:
                 {
-                    widget_t& target = self->widgets[widx::preferred_aggressiveness];
+                    Widget& target = self->widgets[widx::preferred_aggressiveness];
                     Dropdown::show(self->x + target.left, self->y + target.top, target.width() - 4, target.height(), self->colours[1], std::size(preferenceLabelIds), 0x80);
 
                     for (size_t i = 0; i < std::size(preferenceLabelIds); i++)
@@ -746,7 +746,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
                 case widx::preferred_competitiveness_btn:
                 {
-                    widget_t& target = self->widgets[widx::preferred_competitiveness];
+                    Widget& target = self->widgets[widx::preferred_competitiveness];
                     Dropdown::show(self->x + target.left, self->y + target.top, target.width() - 4, target.height(), self->colours[1], std::size(preferenceLabelIds), 0x80);
 
                     for (size_t i = 0; i < std::size(preferenceLabelIds); i++)
@@ -759,7 +759,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         }
 
         // 0x0043F60C
-        static void onMouseUp(window* self, widget_index widgetIndex)
+        static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -809,7 +809,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         }
 
         // 0x0043F40C
-        static void prepareDraw(window* self)
+        static void prepareDraw(Window* self)
         {
             Common::prepareDraw(self);
 
@@ -853,21 +853,21 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             loan_interest_rate_up,
         };
 
-        static widget_t widgets[] = {
+        static Widget widgets[] = {
             commonWidgets(217, StringIds::title_financial_options),
-            makeStepperWidgets({ 256, 52 }, { 100, 12 }, widget_type::wt_17, 1, StringIds::starting_loan_value),
-            makeStepperWidgets({ 256, 67 }, { 100, 12 }, widget_type::wt_17, 1, StringIds::max_loan_size_value),
-            makeStepperWidgets({ 256, 82 }, { 100, 12 }, widget_type::wt_17, 1, StringIds::loan_interest_rate_value),
+            makeStepperWidgets({ 256, 52 }, { 100, 12 }, WidgetType::wt_17, 1, StringIds::starting_loan_value),
+            makeStepperWidgets({ 256, 67 }, { 100, 12 }, WidgetType::wt_17, 1, StringIds::max_loan_size_value),
+            makeStepperWidgets({ 256, 82 }, { 100, 12 }, WidgetType::wt_17, 1, StringIds::loan_interest_rate_value),
             widgetEnd(),
         };
 
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << widx::starting_loan_down) | (1 << widx::starting_loan_up) | (1 << widx::max_loan_size_down) | (1 << widx::max_loan_size_up) | (1 << widx::loan_interest_rate_down) | (1 << widx::loan_interest_rate_up);
         const uint64_t holdableWidgets = (1 << widx::starting_loan_down) | (1 << widx::starting_loan_up) | (1 << widx::max_loan_size_down) | (1 << widx::max_loan_size_up) | (1 << widx::loan_interest_rate_down) | (1 << widx::loan_interest_rate_up);
 
-        static window_event_list events;
+        static WindowEventList events;
 
         // 0x0043F97D
-        static void draw(Ui::window* window, Gfx::Context* context)
+        static void draw(Ui::Window* window, Gfx::Context* context)
         {
             Common::draw(window, context);
 
@@ -890,7 +890,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             }
         }
 
-        static void onMouseDown(window* self, widget_index widgetIndex)
+        static void onMouseDown(Window* self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -926,7 +926,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             self->invalidate();
         }
 
-        static void onMouseUp(window* self, widget_index widgetIndex)
+        static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -947,7 +947,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         }
 
         // 0x0043F8CF
-        static void prepareDraw(window* self)
+        static void prepareDraw(Window* self)
         {
             Common::prepareDraw(self);
 
@@ -980,22 +980,22 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             change_details_btn,
         };
 
-        static widget_t widgets[] = {
+        static Widget widgets[] = {
             commonWidgets(217, StringIds::title_scenario_options),
-            makeWidget({ 281, 52 }, { 75, 12 }, widget_type::wt_11, 1, StringIds::change),
-            makeWidget({ 196, 67 }, { 160, 12 }, widget_type::wt_18, 1, StringIds::empty),
-            makeWidget({ 344, 68 }, { 11, 10 }, widget_type::wt_11, 1, StringIds::dropdown),
-            makeWidget({ 281, 82 }, { 75, 12 }, widget_type::wt_11, 1, StringIds::change),
+            makeWidget({ 281, 52 }, { 75, 12 }, WidgetType::wt_11, 1, StringIds::change),
+            makeWidget({ 196, 67 }, { 160, 12 }, WidgetType::wt_18, 1, StringIds::empty),
+            makeWidget({ 344, 68 }, { 11, 10 }, WidgetType::wt_11, 1, StringIds::dropdown),
+            makeWidget({ 281, 82 }, { 75, 12 }, WidgetType::wt_11, 1, StringIds::change),
             widgetEnd(),
         };
 
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << widx::change_name_btn) | (1 << widx::scenario_group) | (1 << widx::scenario_group_btn) | (1 << widx::change_details_btn);
         const uint64_t holdableWidgets = 0;
 
-        static window_event_list events;
+        static WindowEventList events;
 
         // 0x0043F004
-        static void draw(Ui::window* window, Gfx::Context* context)
+        static void draw(Ui::Window* window, Gfx::Context* context)
         {
             Common::draw(window, context);
 
@@ -1051,7 +1051,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         };
 
         // 0x0043F14B
-        static void onDropdown(window* self, widget_index widgetIndex, int16_t itemIndex)
+        static void onDropdown(Window* self, WidgetIndex_t widgetIndex, int16_t itemIndex)
         {
             if (widgetIndex == widx::scenario_group_btn && itemIndex != -1)
             {
@@ -1061,11 +1061,11 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         }
 
         // 0x0043F140
-        static void onMouseDown(window* self, widget_index widgetIndex)
+        static void onMouseDown(Window* self, WidgetIndex_t widgetIndex)
         {
             if (widgetIndex == widx::scenario_group_btn)
             {
-                widget_t& target = self->widgets[widx::scenario_group];
+                Widget& target = self->widgets[widx::scenario_group];
                 Dropdown::show(self->x + target.left, self->y + target.top, target.width() - 4, target.height(), self->colours[1], std::size(scenarioGroupLabelIds), 0x80);
 
                 for (size_t i = 0; i < std::size(scenarioGroupLabelIds); i++)
@@ -1076,7 +1076,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         }
 
         // 0x0043F11F
-        static void onMouseUp(window* self, widget_index widgetIndex)
+        static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -1108,7 +1108,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         }
 
         // 0x0043EF8B
-        static void prepareDraw(window* self)
+        static void prepareDraw(Window* self)
         {
             Common::prepareDraw(self);
 
@@ -1116,7 +1116,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         }
 
         // 0x0043F156
-        static void textInput(window* self, widget_index callingWidget, const char* input)
+        static void textInput(Window* self, WidgetIndex_t callingWidget, const char* input)
         {
             switch (callingWidget)
             {
@@ -1154,9 +1154,9 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
     {
         struct TabInformation
         {
-            widget_t* widgets;
+            Widget* widgets;
             const widx widgetIndex;
-            window_event_list* events;
+            WindowEventList* events;
             const uint64_t* enabledWidgets;
             const uint64_t* holdableWidgets;
         };
@@ -1168,7 +1168,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             { Scenario::widgets, widx::tab_scenario, &Scenario::events, &Scenario::enabledWidgets, &Scenario::holdableWidgets }
         };
 
-        static void prepareDraw(window* self)
+        static void prepareDraw(Window* self)
         {
             // Reset tab widgets if needed.
             auto tabWidgets = tabInformationByTabOffset[self->current_tab].widgets;
@@ -1194,7 +1194,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
         }
 
         // 0x0043F16B
-        static void switchTab(window* self, widget_index widgetIndex)
+        static void switchTab(Window* self, WidgetIndex_t widgetIndex)
         {
             if (Input::isToolActive(self->type, self->number))
                 Input::toolCancel();

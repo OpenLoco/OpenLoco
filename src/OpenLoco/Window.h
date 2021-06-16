@@ -17,38 +17,17 @@
 
 namespace OpenLoco::Ui
 {
-    using widget_index = int8_t;
-    using window_number = uint16_t;
-    enum class widget_type : uint8_t;
-    struct window;
+    using WidgetIndex_t = int8_t;
+    using WindowNumber_t = uint16_t;
+    enum class WidgetType : uint8_t;
+    struct Window;
+    struct Widget;
 
 #pragma pack(push, 1)
 
-    struct viewport;
+    struct Viewport;
 
-    struct widget_t
-    {
-        widget_type type; // 0x00
-        uint8_t colour;   // 0x01
-        int16_t left;     // 0x02
-        int16_t right;    // 0x04
-        int16_t top;      // 0x06
-        int16_t bottom;   // 0x08
-        union
-        {
-            uint32_t image;
-            string_id text;
-            int32_t content;
-        };
-        string_id tooltip; // 0x0E
-
-        int16_t mid_x() const;
-        int16_t mid_y() const;
-        uint16_t width() const;
-        uint16_t height() const;
-    };
-
-    enum class widget_type : uint8_t
+    enum class WidgetType : uint8_t
     {
         none = 0,
         panel = 1,
@@ -83,102 +62,15 @@ namespace OpenLoco::Ui
         end = 30,
     };
 
-    enum scrollbars : uint8_t
+    namespace Scrollbars
     {
-        none = 0,
-        horizontal = (1 << 0),
-        vertical = (1 << 1),
-        both = (1 << 0) | (1 << 1),
-    };
-
-    static constexpr widget_t makeWidget(Gfx::point_t origin, Gfx::ui_size_t size, widget_type type, uint8_t colour, uint32_t content = 0xFFFFFFFF, string_id tooltip = StringIds::null)
-    {
-        widget_t out = {};
-        out.left = origin.x;
-        out.right = origin.x + size.width - 1;
-        out.top = origin.y;
-        out.bottom = origin.y + size.height - 1;
-        out.type = type;
-        out.colour = colour;
-        out.content = content;
-        out.tooltip = tooltip;
-
-        return out;
+        constexpr uint8_t none = 0;
+        constexpr uint8_t horizontal = (1 << 0);
+        constexpr uint8_t vertical = (1 << 1);
+        constexpr uint8_t both = horizontal | vertical;
     }
 
-    constexpr widget_t makeRemapWidget(Gfx::point_t origin, Gfx::ui_size_t size, widget_type type, uint8_t colour, uint32_t content = 0xFFFFFFFF, string_id tooltip = StringIds::null)
-    {
-        widget_t out = makeWidget(origin, size, type, colour, content, tooltip);
-
-        // TODO: implement this as a constant.
-        out.content |= (1 << 29);
-
-        return out;
-    }
-
-#define makeDropdownWidgets(...) \
-    makeWidget(__VA_ARGS__),     \
-        makeDropdownButtonWidget(__VA_ARGS__)
-
-    [[maybe_unused]] static constexpr widget_t makeDropdownButtonWidget(Gfx::point_t origin, Gfx::ui_size_t size, [[maybe_unused]] widget_type type, uint8_t colour, [[maybe_unused]] uint32_t content = 0xFFFFFFFF, [[maybe_unused]] string_id tooltip = StringIds::null)
-    {
-        const int16_t xPos = origin.x + size.width - 12;
-        const int16_t yPos = origin.y + 1;
-        const uint16_t width = 11;
-        const uint16_t height = 10;
-
-        return makeWidget({ xPos, yPos }, { width, height }, widget_type::wt_11, colour, StringIds::dropdown);
-    }
-
-#define makeStepperWidgets(...)                 \
-    makeWidget(__VA_ARGS__),                    \
-        makeStepperDecreaseWidget(__VA_ARGS__), \
-        makeStepperIncreaseWidget(__VA_ARGS__)
-
-    [[maybe_unused]] static constexpr widget_t makeStepperDecreaseWidget(Gfx::point_t origin, Gfx::ui_size_t size, [[maybe_unused]] widget_type type, uint8_t colour, [[maybe_unused]] uint32_t content = 0xFFFFFFFF, [[maybe_unused]] string_id tooltip = StringIds::null)
-    {
-        const int16_t xPos = origin.x + size.width - 26;
-        const int16_t yPos = origin.y + 1;
-        const uint16_t width = 13;
-        const uint16_t height = size.height - 2;
-
-        return makeWidget({ xPos, yPos }, { width, height }, widget_type::wt_11, colour, StringIds::stepper_minus);
-    }
-
-    [[maybe_unused]] static constexpr widget_t makeStepperIncreaseWidget(Gfx::point_t origin, Gfx::ui_size_t size, [[maybe_unused]] widget_type type, uint8_t colour, [[maybe_unused]] uint32_t content = 0xFFFFFFFF, [[maybe_unused]] string_id tooltip = StringIds::null)
-    {
-        const int16_t xPos = origin.x + size.width - 13;
-        const int16_t yPos = origin.y + 1;
-        const uint16_t width = 12;
-        const uint16_t height = size.height - 2;
-
-        return makeWidget({ xPos, yPos }, { width, height }, widget_type::wt_11, colour, StringIds::stepper_plus);
-    }
-
-    constexpr widget_t makeTextWidget(Gfx::point_t origin, Gfx::ui_size_t size, widget_type type, uint8_t colour, string_id content, string_id tooltip = StringIds::null)
-    {
-        widget_t out = {};
-        out.left = origin.x;
-        out.right = origin.x + size.width - 1;
-        out.top = origin.y;
-        out.bottom = origin.y + size.height - 1;
-        out.type = type;
-        out.colour = colour;
-        out.text = content;
-        out.tooltip = tooltip;
-
-        return out;
-    }
-
-    constexpr widget_t widgetEnd()
-    {
-        widget_t out = {};
-        out.type = widget_type::end;
-
-        return out;
-    }
-
-    struct scroll_area_t
+    struct ScrollArea
     {
         uint16_t flags;          // 0x00
         int16_t contentOffsetX;  // 0x02
@@ -216,46 +108,46 @@ namespace OpenLoco::Ui
         constexpr uint32_t flag_31 = 1 << 31;
     }
 
-    struct window_event_list
+    struct WindowEventList
     {
         union
         {
             void* events[29];
             struct
             {
-                void (*on_close)(window*);
-                void (*on_mouse_up)(window*, widget_index);
-                void (*on_resize)(window*);
-                void (*event_03)(window*, widget_index); // mouse_over?
-                void (*on_mouse_down)(window*, widget_index);
-                void (*on_dropdown)(window*, widget_index, int16_t);
-                void (*on_periodic_update)(window*);
-                void (*on_update)(window*);
-                void (*event_08)(window*);
-                void (*event_09)(window*);
-                void (*on_tool_update)(window&, const widget_index, const int16_t, const int16_t);
-                void (*on_tool_down)(window&, const widget_index, const int16_t, const int16_t);
-                void (*toolDragContinue)(window&, const widget_index, const int16_t, const int16_t);
-                void (*toolDragEnd)(window&, const widget_index);
-                void (*on_tool_abort)(window&, const widget_index);
-                Ui::CursorId (*event_15)(window&, const int16_t x, const int16_t y, const Ui::CursorId, bool&);
-                void (*get_scroll_size)(window*, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
-                void (*scroll_mouse_down)(Ui::window*, int16_t x, int16_t y, uint8_t scroll_index);
-                void (*scroll_mouse_drag)(Ui::window*, int16_t x, int16_t y, uint8_t scroll_index);
-                void (*scroll_mouse_over)(Ui::window* window, int16_t x, int16_t y, uint8_t scroll_index);
-                void (*text_input)(window*, widget_index, const char*);
-                void (*viewport_rotate)(window*);
+                void (*on_close)(Window*);
+                void (*on_mouse_up)(Window*, WidgetIndex_t);
+                void (*on_resize)(Window*);
+                void (*event_03)(Window*, WidgetIndex_t); // mouse_over?
+                void (*on_mouse_down)(Window*, WidgetIndex_t);
+                void (*on_dropdown)(Window*, WidgetIndex_t, int16_t);
+                void (*on_periodic_update)(Window*);
+                void (*on_update)(Window*);
+                void (*event_08)(Window*);
+                void (*event_09)(Window*);
+                void (*on_tool_update)(Window&, const WidgetIndex_t, const int16_t, const int16_t);
+                void (*on_tool_down)(Window&, const WidgetIndex_t, const int16_t, const int16_t);
+                void (*toolDragContinue)(Window&, const WidgetIndex_t, const int16_t, const int16_t);
+                void (*toolDragEnd)(Window&, const WidgetIndex_t);
+                void (*on_tool_abort)(Window&, const WidgetIndex_t);
+                Ui::CursorId (*event_15)(Window&, const int16_t x, const int16_t y, const Ui::CursorId, bool&);
+                void (*get_scroll_size)(Window*, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
+                void (*scroll_mouse_down)(Ui::Window*, int16_t x, int16_t y, uint8_t scroll_index);
+                void (*scroll_mouse_drag)(Ui::Window*, int16_t x, int16_t y, uint8_t scroll_index);
+                void (*scroll_mouse_over)(Ui::Window* window, int16_t x, int16_t y, uint8_t scroll_index);
+                void (*text_input)(Window*, WidgetIndex_t, const char*);
+                void (*viewport_rotate)(Window*);
                 uint32_t event_22;
-                std::optional<FormatArguments> (*tooltip)(window*, widget_index);
-                Ui::CursorId (*cursor)(window*, int16_t, int16_t, int16_t, Ui::CursorId);
-                void (*on_move)(window&, const int16_t x, const int16_t y);
-                void (*prepare_draw)(window*);
-                void (*draw)(window*, Gfx::Context*);
-                void (*draw_scroll)(window*, Gfx::Context*, uint32_t scrollIndex);
+                std::optional<FormatArguments> (*tooltip)(Window*, WidgetIndex_t);
+                Ui::CursorId (*cursor)(Window*, int16_t, int16_t, int16_t, Ui::CursorId);
+                void (*on_move)(Window&, const int16_t x, const int16_t y);
+                void (*prepare_draw)(Window*);
+                void (*draw)(Window*, Gfx::Context*);
+                void (*draw_scroll)(Window*, Gfx::Context*, uint32_t scrollIndex);
             };
         };
 
-        window_event_list()
+        WindowEventList()
         {
             // Set all events to a `ret` instruction
             std::fill_n(events, 29, (void*)0x0042A034);
@@ -342,15 +234,15 @@ namespace OpenLoco::Ui
         }
     };
 
-    struct window
+    struct Window
     {
-        window_event_list* event_handlers;                 // 0x00
-        Ui::viewport* viewports[2] = { nullptr, nullptr }; // 0x04
+        WindowEventList* event_handlers;                   // 0x00
+        Ui::Viewport* viewports[2] = { nullptr, nullptr }; // 0x04
         uint64_t enabled_widgets = 0;                      // 0x0C
         uint64_t disabled_widgets = 0;                     // 0x14
         uint64_t activated_widgets = 0;                    // 0x1C
         uint64_t holdable_widgets = 0;                     // 0x24
-        widget_t* widgets;                                 // 0x2C
+        Widget* widgets;                                   // 0x2C
         int16_t x;                                         // 0x30
         int16_t y;                                         // 0x32
         uint16_t width;                                    // 0x34
@@ -359,9 +251,9 @@ namespace OpenLoco::Ui
         uint16_t max_width;                                // 0x3a
         uint16_t min_height;                               // 0x3c
         uint16_t max_height;                               // 0x3e
-        window_number number = 0;                          // 0x40
+        WindowNumber_t number = 0;                         // 0x40
         uint32_t flags;                                    // 0x42
-        scroll_area_t scroll_areas[2];                     // 0x46
+        ScrollArea scroll_areas[2];                        // 0x46
         int16_t row_info[1000];                            // 0x6A
         uint16_t row_count;                                // 0x83A
         uint16_t var_83C;
@@ -387,11 +279,11 @@ namespace OpenLoco::Ui
             uintptr_t info;
         };
         uint8_t pad_85E[0x870 - 0x85E];
-        uint16_t current_tab = 0;                   // 0x870
-        uint16_t frame_no = 0;                      // 0x872
-        uint16_t current_secondary_tab = 0;         // 0x874
-        viewport_config viewport_configurations[2]; // 0x876
-        WindowType type;                            // 0x882
+        uint16_t current_tab = 0;                  // 0x870
+        uint16_t frame_no = 0;                     // 0x872
+        uint16_t current_secondary_tab = 0;        // 0x874
+        ViewportConfig viewport_configurations[2]; // 0x876
+        WindowType type;                           // 0x882
         uint8_t pad_883[1];
         CompanyId_t owner = CompanyId::null; // 0x884
         uint8_t var_885 = 0xFF;
@@ -399,7 +291,7 @@ namespace OpenLoco::Ui
         int16_t var_88A;
         int16_t var_88C;
 
-        window(Gfx::point_t position, Gfx::ui_size_t size);
+        Window(Gfx::point_t position, Gfx::ui_size_t size);
 
         constexpr bool setSize(Gfx::ui_size_t minSize, Gfx::ui_size_t maxSize)
         {
@@ -456,8 +348,8 @@ namespace OpenLoco::Ui
 
         bool isEnabled(int8_t widget_index);
         bool isDisabled(int8_t widget_index);
-        bool isActivated(widget_index index);
-        bool isHoldable(widget_index index);
+        bool isActivated(WidgetIndex_t index);
+        bool isHoldable(WidgetIndex_t index);
         bool canResize();
         void capSize(int32_t minWidth, int32_t minHeight, int32_t maxWidth, int32_t maxHeight);
         void viewportsUpdatePosition();
@@ -465,11 +357,11 @@ namespace OpenLoco::Ui
         void invalidate();
         void updateScrollWidgets();
         void initScrollWidgets();
-        int8_t getScrollDataIndex(widget_index index);
+        int8_t getScrollDataIndex(WidgetIndex_t index);
         void setDisabledWidgetsAndInvalidate(uint32_t _disabled_widgets);
         void drawViewports(Gfx::Context* context);
         void viewportCentreMain();
-        void viewportSetUndergroundFlag(bool underground, Ui::viewport* vp);
+        void viewportSetUndergroundFlag(bool underground, Ui::Viewport* vp);
         void viewportGetMapCoordsByCursor(int16_t* map_x, int16_t* map_y, int16_t* offset_x, int16_t* offset_y);
         void moveWindowToLocation(viewport_pos pos);
         void viewportCentreOnTile(const Map::Pos3& loc);
@@ -488,15 +380,15 @@ namespace OpenLoco::Ui
         bool move(int16_t dx, int16_t dy);
         void moveInsideScreenEdges();
         bool moveToCentre();
-        widget_index findWidgetAt(int16_t xPos, int16_t yPos);
+        WidgetIndex_t findWidgetAt(int16_t xPos, int16_t yPos);
         void draw(OpenLoco::Gfx::Context* context);
 
         void callClose();                                                                              // 0
-        void callOnMouseUp(widget_index widgetIndex);                                                  // 1
-        Ui::window* callOnResize();                                                                    // 2
+        void callOnMouseUp(WidgetIndex_t widgetIndex);                                                 // 1
+        Ui::Window* callOnResize();                                                                    // 2
         void call_3(int8_t widget_index);                                                              // 3
         void callOnMouseDown(int8_t widget_index);                                                     // 4
-        void callOnDropdown(widget_index widget_index, int16_t item_index);                            // 5
+        void callOnDropdown(WidgetIndex_t widget_index, int16_t item_index);                           // 5
         void callOnPeriodicUpdate();                                                                   // 6
         void callUpdate();                                                                             // 7
         void call_8();                                                                                 // 8
@@ -511,7 +403,7 @@ namespace OpenLoco::Ui
         void callScrollMouseDown(int16_t x, int16_t y, uint8_t scroll_index);                          // 17
         void callScrollMouseDrag(int16_t x, int16_t y, uint8_t scroll_index);                          // 18
         void callScrollMouseOver(int16_t x, int16_t y, uint8_t scroll_index);                          // 19
-        void callTextInput(widget_index caller, const char* buffer);                                   // 20
+        void callTextInput(WidgetIndex_t caller, const char* buffer);                                  // 20
         void callViewportRotate();                                                                     // 21
         std::optional<FormatArguments> callTooltip(int16_t widget_index);                              // 23
         Ui::CursorId callCursor(int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback); // 24
@@ -520,7 +412,7 @@ namespace OpenLoco::Ui
         void callDraw(Gfx::Context* context);                                                          // 27
         void callDrawScroll(Gfx::Context* context, uint32_t scrollIndex);                              // 28
     };
-    static_assert(sizeof(window) == 0x88E);
+    static_assert(sizeof(Window) == 0x88E);
 
     Map::Pos2 viewportCoordToMapCoord(int16_t x, int16_t y, int16_t z, int32_t rotation);
     std::optional<Map::Pos2> screenGetMapXyWithZ(const xy32& mouse, const int16_t z);

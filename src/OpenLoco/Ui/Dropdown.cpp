@@ -6,6 +6,7 @@
 #include "../Localisation/FormatArguments.hpp"
 #include "../Objects/CompetitorObject.h"
 #include "../Objects/ObjectManager.h"
+#include "../Widget.h"
 #include "../Window.h"
 
 #include <cassert>
@@ -22,7 +23,7 @@ namespace OpenLoco::Ui::Dropdown
     static loco_global<uint8_t[31], 0x00504619> _byte_504619;
     static loco_global<std::uint8_t[33], 0x005046FA> _appropriateImageDropdownItemsPerRow;
     static loco_global<Ui::WindowType, 0x0052336F> _pressedWindowType;
-    static loco_global<Ui::window_number, 0x00523370> _pressedWindowNumber;
+    static loco_global<Ui::WindowNumber_t, 0x00523370> _pressedWindowNumber;
     static loco_global<int32_t, 0x00523372> _pressedWidgetIndex;
     static loco_global<int16_t, 0x112C876> _currentFontSpriteBase;
     static loco_global<char[512], 0x0112CC04> _byte_112CC04;
@@ -149,15 +150,15 @@ namespace OpenLoco::Ui::Dropdown
             frame = 0,
         };
 
-        widget_t widgets[] = {
-            makeWidget({ 0, 0 }, { 1, 1 }, widget_type::wt_3, 0),
+        Widget widgets[] = {
+            makeWidget({ 0, 0 }, { 1, 1 }, WidgetType::wt_3, 0),
             widgetEnd()
         };
 
-        static window_event_list events;
+        static WindowEventList events;
 
         // 0x004CD015
-        static void onUpdate(window* self)
+        static void onUpdate(Window* self)
         {
             self->invalidate();
         }
@@ -171,7 +172,7 @@ namespace OpenLoco::Ui::Dropdown
         }
 
         // 0x00494BF6
-        static void sub_494BF6(window* self, Gfx::Context* context, string_id stringId, int16_t x, int16_t y, int16_t width, Colour_t colour, FormatArguments args)
+        static void sub_494BF6(Window* self, Gfx::Context* context, string_id stringId, int16_t x, int16_t y, int16_t width, Colour_t colour, FormatArguments args)
         {
             StringManager::formatString(_byte_112CC04, stringId, &args);
 
@@ -185,7 +186,7 @@ namespace OpenLoco::Ui::Dropdown
         }
 
         // 0x004CD00E
-        static void draw(window* self, Gfx::Context* context)
+        static void draw(Window* self, Gfx::Context* context)
         {
             self->draw(context);
             _windowDropdownOnpaintCellX = 0;
@@ -624,7 +625,7 @@ namespace OpenLoco::Ui::Dropdown
     }
 
     // 0x004CC989
-    void showBelow(window* window, widget_index widgetIndex, size_t count, int8_t itemHeight, uint8_t flags)
+    void showBelow(Window* window, WidgetIndex_t widgetIndex, size_t count, int8_t itemHeight, uint8_t flags)
     {
         assert(count < std::numeric_limits<uint8_t>::max());
 
@@ -673,7 +674,7 @@ namespace OpenLoco::Ui::Dropdown
     }
 
     // 0x004CC989
-    void showBelow(window* window, widget_index widgetIndex, size_t count, uint8_t flags)
+    void showBelow(Window* window, WidgetIndex_t widgetIndex, size_t count, uint8_t flags)
     {
         showBelow(window, widgetIndex, count, 0, flags & ~(1 << 6));
     }
@@ -794,7 +795,7 @@ namespace OpenLoco::Ui::Dropdown
     }
 
     // 0x004CF2B3
-    void populateCompanySelect(window* window, widget_t* widget)
+    void populateCompanySelect(Window* window, Widget* widget)
     {
         std::array<bool, 16> companyOrdered = {};
 

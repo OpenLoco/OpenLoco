@@ -174,13 +174,13 @@ namespace OpenLoco::Vehicles
     struct Vehicle2or6 : VehicleBase
     {
         uint8_t pad_24[0x44 - 0x24];
-        SoundObjectId_t drivingSoundId;        // 0x44
-        uint8_t drivingSoundVolume;            // 0x45 channel attribute volume related
-        uint16_t drivingSoundFrequency;        // 0x46 channel attribute frequency
-        uint16_t objectId;                     // 0x48 vehicle object (used for sound)
-        uint16_t var_4A;                       // sound-related flag(s)
-        Ui::window_number sound_window_number; // 0x4C
-        Ui::WindowType sound_window_type;      // 0x4E
+        SoundObjectId_t drivingSoundId;         // 0x44
+        uint8_t drivingSoundVolume;             // 0x45 channel attribute volume related
+        uint16_t drivingSoundFrequency;         // 0x46 channel attribute frequency
+        uint16_t objectId;                      // 0x48 vehicle object (used for sound)
+        uint16_t var_4A;                        // sound-related flag(s)
+        Ui::WindowNumber_t sound_window_number; // 0x4C
+        Ui::WindowType sound_window_type;       // 0x4E
         uint8_t pad_4F[0x56 - 0x4F];
         uint32_t var_56;
         uint8_t pad_5A[0x73 - 0x5A];
@@ -390,13 +390,13 @@ namespace OpenLoco::Vehicles
         uint8_t pad_3C[0x42 - 0x3C]; // 0x3C
         TransportMode mode;          // 0x42 field same in all vehicles
         uint8_t pad_43;
-        SoundObjectId_t drivingSoundId;        // 0x44
-        uint8_t drivingSoundVolume;            // 0x45 channel attribute volume related
-        uint16_t drivingSoundFrequency;        // 0x46 channel attribute frequency
-        uint16_t objectId;                     // 0x48 vehicle object (used for sound)
-        uint16_t var_4A;                       // sound-related flag(s) common with tail
-        Ui::window_number sound_window_number; // 0x4C common with tail
-        Ui::WindowType sound_window_type;      // 0x4E common with tail
+        SoundObjectId_t drivingSoundId;         // 0x44
+        uint8_t drivingSoundVolume;             // 0x45 channel attribute volume related
+        uint16_t drivingSoundFrequency;         // 0x46 channel attribute frequency
+        uint16_t objectId;                      // 0x48 vehicle object (used for sound)
+        uint16_t var_4A;                        // sound-related flag(s) common with tail
+        Ui::WindowNumber_t sound_window_number; // 0x4C common with tail
+        Ui::WindowType sound_window_type;       // 0x4E common with tail
         uint8_t pad_4F;
         uint16_t totalPower;  // 0x50 maybe not used by aircraft and ship
         uint16_t totalWeight; // 0x52
@@ -534,14 +534,14 @@ namespace OpenLoco::Vehicles
         uint8_t pad_3C[0x42 - 0x3C]; // 0x3C
         TransportMode mode;          // 0x42 field same in all vehicles
         uint8_t pad_43;
-        SoundObjectId_t drivingSoundId;        // 0x44
-        uint8_t drivingSoundVolume;            // 0x45 channel attribute volume related
-        uint16_t drivingSoundFrequency;        // 0x46 channel attribute frequency
-        uint16_t objectId;                     // 0x48 vehicle object (used for sound)
-        uint16_t var_4A;                       // sound-related flag(s) common with veh_2
-        Ui::window_number sound_window_number; // 0x4C common with veh_2
-        Ui::WindowType sound_window_type;      // 0x4E common with veh_2
-        uint16_t trainDanglingTimeout;         // 0x4F counts up when no cars on train
+        SoundObjectId_t drivingSoundId;         // 0x44
+        uint8_t drivingSoundVolume;             // 0x45 channel attribute volume related
+        uint16_t drivingSoundFrequency;         // 0x46 channel attribute frequency
+        uint16_t objectId;                      // 0x48 vehicle object (used for sound)
+        uint16_t var_4A;                        // sound-related flag(s) common with veh_2
+        Ui::WindowNumber_t sound_window_number; // 0x4C common with veh_2
+        Ui::WindowType sound_window_type;       // 0x4E common with veh_2
+        uint16_t trainDanglingTimeout;          // 0x4F counts up when no cars on train
     };
     static_assert(sizeof(VehicleTail) == 0x51); // Can't use offset_of change this to last field if more found
 

@@ -189,31 +189,31 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     };
 
     // 0x5231D0
-    static widget_t _widgets[] = {
-        makeWidget({ 0, 0 }, { 380, 233 }, widget_type::frame, 0),
-        makeWidget({ 1, 1 }, { 378, 13 }, widget_type::caption_24, 0),
-        makeWidget({ 365, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window),
-        makeWidget({ 0, 41 }, { 380, 192 }, widget_type::panel, 1),
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_build_new_train_vehicles),
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_build_new_buses),
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_build_new_trucks),
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_build_new_trams),
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_build_new_aircraft),
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_build_new_ships),
-        makeRemapWidget({ 5, 43 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_vehicles_for),
-        makeRemapWidget({ 36, 43 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_vehicles_for),
-        makeRemapWidget({ 67, 43 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_vehicles_for),
-        makeRemapWidget({ 98, 43 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_vehicles_for),
-        makeRemapWidget({ 129, 43 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_vehicles_for),
-        makeRemapWidget({ 160, 43 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_vehicles_for),
-        makeRemapWidget({ 191, 43 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_vehicles_for),
-        makeRemapWidget({ 222, 43 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_vehicles_for),
-        makeWidget({ 3, 72 }, { 374, 146 }, widget_type::scrollview, 1, scrollbars::vertical),
-        makeWidget({ 250, 44 }, { 180, 66 }, widget_type::scrollview, 1, scrollbars::none),
+    static Widget _widgets[] = {
+        makeWidget({ 0, 0 }, { 380, 233 }, WidgetType::frame, 0),
+        makeWidget({ 1, 1 }, { 378, 13 }, WidgetType::caption_24, 0),
+        makeWidget({ 365, 2 }, { 13, 13 }, WidgetType::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window),
+        makeWidget({ 0, 41 }, { 380, 192 }, WidgetType::panel, 1),
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_build_new_train_vehicles),
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_build_new_buses),
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_build_new_trucks),
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_build_new_trams),
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_build_new_aircraft),
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_build_new_ships),
+        makeRemapWidget({ 5, 43 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_vehicles_for),
+        makeRemapWidget({ 36, 43 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_vehicles_for),
+        makeRemapWidget({ 67, 43 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_vehicles_for),
+        makeRemapWidget({ 98, 43 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_vehicles_for),
+        makeRemapWidget({ 129, 43 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_vehicles_for),
+        makeRemapWidget({ 160, 43 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_vehicles_for),
+        makeRemapWidget({ 191, 43 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_vehicles_for),
+        makeRemapWidget({ 222, 43 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_vehicles_for),
+        makeWidget({ 3, 72 }, { 374, 146 }, WidgetType::scrollview, 1, Scrollbars::vertical),
+        makeWidget({ 250, 44 }, { 180, 66 }, WidgetType::scrollview, 1, Scrollbars::none),
         widgetEnd(),
     };
 
-    static constexpr uint32_t widxToTrackTypeTab(widget_index widgetIndex)
+    static constexpr uint32_t widxToTrackTypeTab(WidgetIndex_t widgetIndex)
     {
         return widgetIndex - widx::tab_track_type_0;
     }
@@ -234,22 +234,22 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     static loco_global<uint8_t, 0x0052622C> last_build_vehicles_option; // Type is VehicleType
     static loco_global<uint16_t, 0x0052622E> _52622E;                   // Tick related
 
-    static window_event_list _events;
+    static WindowEventList _events;
 
-    static void setDisabledTransportTabs(Ui::window* window);
-    static void setTrackTypeTabs(Ui::window* window);
-    static void resetTrackTypeTabSelection(Ui::window* window);
+    static void setDisabledTransportTabs(Ui::Window* window);
+    static void setTrackTypeTabs(Ui::Window* window);
+    static void resetTrackTypeTabSelection(Ui::Window* window);
     static void setTopToolbarLastTrack(uint8_t trackType, bool isRoad);
-    static void setTransportTypeTabs(Ui::window* window);
+    static void setTransportTypeTabs(Ui::Window* window);
     static void drawVehicleOverview(Gfx::Context* context, int16_t vehicleTypeIdx, CompanyId_t company, uint8_t eax, uint8_t esi, Gfx::point_t offset);
     static int16_t drawVehicleInline(Gfx::Context* context, int16_t vehicleTypeIdx, uint8_t unk_1, CompanyId_t company, Gfx::point_t loc);
-    static void drawTransportTypeTabs(Ui::window* window, Gfx::Context* context);
-    static void drawTrackTypeTabs(Ui::window* window, Gfx::Context* context);
+    static void drawTransportTypeTabs(Ui::Window* window, Gfx::Context* context);
+    static void drawTrackTypeTabs(Ui::Window* window, Gfx::Context* context);
 
     static void initEvents();
 
     // 0x4C1C64
-    static window* create(CompanyId_t company)
+    static Window* create(CompanyId_t company)
     {
         initEvents();
         auto window = WindowManager::createWindow(WindowType::buildVehicle, window_size, WindowFlags::flag_11, &_events);
@@ -270,13 +270,13 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     /* 0x4C1AF7
      * depending on flags (1<<31) vehicle is a tab id or a VehicleHead thing_id
      */
-    window* open(uint32_t vehicle, uint32_t flags)
+    Window* open(uint32_t vehicle, uint32_t flags)
     {
         auto window = WindowManager::bringToFront(WindowType::buildVehicle, CompanyManager::getControllingId());
         bool tabMode = flags & (1 << 31);
         if (window)
         {
-            widget_index tab = widx::tab_build_new_trains;
+            WidgetIndex_t tab = widx::tab_build_new_trains;
             if (!tabMode)
             {
                 auto veh = EntityManager::get<Vehicles::VehicleHead>(vehicle);
@@ -354,7 +354,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             }
         }
 
-        widget_index widgetIndex = widx::tab_track_type_0;
+        WidgetIndex_t widgetIndex = widx::tab_track_type_0;
         for (uint32_t trackTypeTab = 0; trackTypeTab < _numTrackTypeTabs; trackTypeTab++)
         {
             if (targetTrackType == _TrackTypesForTab[trackTypeTab])
@@ -374,7 +374,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             0x004B92A5,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                sub_4B92A5((Ui::window*)regs.esi);
+                sub_4B92A5((Ui::Window*)regs.esi);
                 regs = backup;
                 return 0;
             });
@@ -494,7 +494,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         _numAvailableVehicles = static_cast<int16_t>(buildableVehicles.size());
     }
 
-    static Ui::window* getTopEditingVehicleWindow()
+    static Ui::Window* getTopEditingVehicleWindow()
     {
         for (auto i = (int32_t)WindowManager::count() - 1; i >= 0; i--)
         {
@@ -521,7 +521,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
      *
      * @param window @<esi>
      */
-    void sub_4B92A5(Ui::window* window)
+    void sub_4B92A5(Ui::Window* window)
     {
         auto w = getTopEditingVehicleWindow();
         int32_t vehicleId = -1;
@@ -568,7 +568,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     }
 
     // 0x4C3576
-    static void onMouseUp(Ui::window* window, widget_index widgetIndex)
+    static void onMouseUp(Ui::Window* window, WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {
@@ -657,7 +657,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     }
 
     // 0x4C3929
-    static void onResize(window* window)
+    static void onResize(Window* window)
     {
         window->flags |= WindowFlags::resizable;
         auto minWidth = std::max<int16_t>(_numTrackTypeTabs * 31 + 195, 380);
@@ -706,13 +706,13 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     }
 
     // 0x4C3923
-    static void onPeriodicUpdate(window* window)
+    static void onPeriodicUpdate(Window* window)
     {
         sub_4B92A5(window);
     }
 
     // 0x4C377B
-    static void onUpdate(window* window)
+    static void onUpdate(Window* window)
     {
         window->frame_no++;
         window->callPrepareDraw();
@@ -723,13 +723,13 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     }
 
     // 0x4C37B9
-    static void getScrollSize(Ui::window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+    static void getScrollSize(Ui::Window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
         *scrollHeight = window->var_83C * window->row_height;
     }
 
     // 0x4C384B
-    static void onScrollMouseDown(Ui::window* window, int16_t x, int16_t y, uint8_t scroll_index)
+    static void onScrollMouseDown(Ui::Window* window, int16_t x, int16_t y, uint8_t scroll_index)
     {
         if (scroll_index != scrollIdx::vehicle_selection)
         {
@@ -773,7 +773,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     }
 
     // 0x4C3802
-    static void onScrollMouseOver(Ui::window* window, int16_t x, int16_t y, uint8_t scroll_index)
+    static void onScrollMouseOver(Ui::Window* window, int16_t x, int16_t y, uint8_t scroll_index)
     {
         if (scroll_index != scrollIdx::vehicle_selection)
         {
@@ -795,7 +795,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     }
 
     // 0x4C370C
-    static std::optional<FormatArguments> tooltip(Ui::window* window, widget_index widgetIndex)
+    static std::optional<FormatArguments> tooltip(Ui::Window* window, WidgetIndex_t widgetIndex)
     {
         FormatArguments args{};
         if (widgetIndex < widx::tab_track_type_0 || widgetIndex >= widx::scrollview_vehicle_selection)
@@ -838,7 +838,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     }
 
     // 0x4C37CB
-    static Ui::CursorId cursor(window* window, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback)
+    static Ui::CursorId cursor(Window* window, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback)
     {
         if (widgetIdx != widx::scrollview_vehicle_selection)
         {
@@ -860,7 +860,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     }
 
     // 0x4C2E5C
-    static void prepareDraw(Ui::window* window)
+    static void prepareDraw(Ui::Window* window)
     {
         if (window->widgets != _widgets)
         {
@@ -901,7 +901,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     }
 
     // 0x4C2F23
-    static void draw(Ui::window* window, Gfx::Context* context)
+    static void draw(Ui::Window* window, Gfx::Context* context)
     {
         window->draw(context);
         drawTransportTypeTabs(window, context);
@@ -1032,7 +1032,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     }
 
     // 0x4C3307
-    static void drawScroll(Ui::window* window, Gfx::Context* context, uint32_t scrollIndex)
+    static void drawScroll(Ui::Window* window, Gfx::Context* context, uint32_t scrollIndex)
     {
         switch (scrollIndex)
         {
@@ -1137,7 +1137,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     }
 
     // 0x4C28D2
-    static void setDisabledTransportTabs(Ui::window* window)
+    static void setDisabledTransportTabs(Ui::Window* window)
     {
         auto availableVehicles = CompanyManager::companies()[window->number].available_vehicles;
         // By shifting by 4 the available_vehicles flags align with the tabs flags
@@ -1146,7 +1146,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     }
 
     // 0x4C2D8A
-    static void setTrackTypeTabs(Ui::window* window)
+    static void setTrackTypeTabs(Ui::Window* window)
     {
         VehicleType currentTransportTabType = _transportTypeTabInformation[window->current_tab].type;
         generateBuildableVehiclesArray(currentTransportTabType, 0xFF, nullptr);
@@ -1173,21 +1173,21 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             {
                 // Reset the tabs
                 _TrackTypesForTab[0] = -1;
-                window->widgets[tab_track_type_0].type = widget_type::wt_8;
-                for (widget_index j = tab_track_type_1; j <= tab_track_type_7; ++j)
+                window->widgets[tab_track_type_0].type = WidgetType::wt_8;
+                for (WidgetIndex_t j = tab_track_type_1; j <= tab_track_type_7; ++j)
                 {
-                    window->widgets[j].type = widget_type::none;
+                    window->widgets[j].type = WidgetType::none;
                 }
                 return;
             }
         }
 
-        widget_index trackTypeTab = tab_track_type_0;
+        WidgetIndex_t trackTypeTab = tab_track_type_0;
         auto trackType = 0;
         for (trackType = Utility::bitScanForward(railTrackTypes); trackType != -1 && trackTypeTab <= tab_track_type_7; trackType = Utility::bitScanForward(railTrackTypes))
         {
             railTrackTypes &= ~(1 << trackType);
-            window->widgets[trackTypeTab].type = widget_type::wt_8;
+            window->widgets[trackTypeTab].type = WidgetType::wt_8;
             _TrackTypesForTab[widxToTrackTypeTab(trackTypeTab)] = trackType;
             trackTypeTab++;
         }
@@ -1197,7 +1197,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             for (trackType = Utility::bitScanForward(roadTrackTypes); trackType != -1 && trackTypeTab <= tab_track_type_7; trackType = Utility::bitScanForward(roadTrackTypes))
             {
                 roadTrackTypes &= ~(1 << trackType);
-                window->widgets[trackTypeTab].type = widget_type::wt_8;
+                window->widgets[trackTypeTab].type = WidgetType::wt_8;
                 _TrackTypesForTab[widxToTrackTypeTab(trackTypeTab)] = trackType | (1 << 7);
                 trackTypeTab++;
             }
@@ -1207,13 +1207,13 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
         for (; trackTypeTab <= tab_track_type_7; ++trackTypeTab)
         {
-            window->widgets[trackTypeTab].type = widget_type::none;
+            window->widgets[trackTypeTab].type = WidgetType::none;
         }
     }
 
     // 0x4C1CBE
     // if previous track tab on previous transport type tab is also compatible keeps it on that track type
-    static void resetTrackTypeTabSelection(Ui::window* window)
+    static void resetTrackTypeTabSelection(Ui::Window* window)
     {
         auto transportType = _transportTypeTabInformation[window->current_tab].type;
         if (transportType == VehicleType::aircraft || transportType == VehicleType::ship)
@@ -1281,7 +1281,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     }
 
     // 0x4C2865 common for build vehicle window and vehicle list
-    static void setTransportTypeTabs(Ui::window* window)
+    static void setTransportTypeTabs(Ui::Window* window)
     {
         auto disabledWidgets = window->disabled_widgets >> widx::tab_build_new_trains;
         auto widget = window->widgets + widx::tab_build_new_trains;
@@ -1291,11 +1291,11 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         {
             if (disabledWidgets & (1ULL << i))
             {
-                widget->type = widget_type::none;
+                widget->type = WidgetType::none;
             }
             else
             {
-                widget->type = widget_type::wt_8;
+                widget->type = WidgetType::wt_8;
                 widget->left = tabX;
                 widget->right = tabX + tabWidth;
                 tabX += tabWidth + 1;
@@ -1304,7 +1304,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     }
 
     // 0x4C2BFD
-    static void drawTransportTypeTabs(Ui::window* window, Gfx::Context* context)
+    static void drawTransportTypeTabs(Ui::Window* window, Gfx::Context* context)
     {
         auto skin = ObjectManager::get<InterfaceSkinObject>();
         auto companyColour = CompanyManager::getCompanyColour(window->number);
@@ -1317,12 +1317,12 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 frameNo = (window->frame_no / 2) & 0xF;
             }
             uint32_t image = Gfx::recolour(skin->img + tab.imageIds[frameNo], companyColour);
-            Widget::draw_tab(window, context, image, tab.widgetIndex);
+            Widget::drawTab(window, context, image, tab.widgetIndex);
         }
     }
 
     // 0x4C28F1
-    static void drawTrackTypeTabs(Ui::window* window, Gfx::Context* context)
+    static void drawTrackTypeTabs(Ui::Window* window, Gfx::Context* context)
     {
         auto skin = ObjectManager::get<InterfaceSkinObject>();
         auto companyColour = CompanyManager::getCompanyColour(window->number);
@@ -1387,7 +1387,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 img = Gfx::recolour(img, companyColour);
             }
 
-            Widget::draw_tab(window, context, img, tab + widx::tab_track_type_0);
+            Widget::drawTab(window, context, img, tab + widx::tab_track_type_0);
         }
     }
 

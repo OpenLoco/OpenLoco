@@ -5,6 +5,7 @@
 #include "../Interop/Interop.hpp"
 #include "../OpenLoco.h"
 #include "../Ui/WindowManager.h"
+#include "../Widget.h"
 #include "../Window.h"
 
 #include <array>
@@ -24,14 +25,14 @@ namespace OpenLoco::Ui::Windows::ProgressBar
 
     constexpr Gfx::ui_size_t windowSize = { 350, 47 };
 
-    widget_t widgets[] = {
-        makeWidget({ 0, 0 }, { 350, 47 }, widget_type::frame, 0),
-        makeWidget({ 1, 1 }, { 348, 13 }, widget_type::caption_25, 0, StringIds::buffer_1250),
-        makeWidget({ 0, 15 }, { 350, 32 }, widget_type::panel, 1),
+    Widget widgets[] = {
+        makeWidget({ 0, 0 }, { 350, 47 }, WidgetType::frame, 0),
+        makeWidget({ 1, 1 }, { 348, 13 }, WidgetType::caption_25, 0, StringIds::buffer_1250),
+        makeWidget({ 0, 15 }, { 350, 32 }, WidgetType::panel, 1),
         widgetEnd(),
     };
 
-    static window_event_list _events;
+    static WindowEventList _events;
 
     static std::string _captionString;
     static uint8_t _progressBarStyle = 0; // 0x005233C8
@@ -41,7 +42,7 @@ namespace OpenLoco::Ui::Windows::ProgressBar
     static void initEvents();
 
     // 0x004CF6E2
-    window* open(std::string_view captionString)
+    Window* open(std::string_view captionString)
     {
         _captionString = captionString;
         setScreenFlag(ScreenFlags::progressBarActive);
@@ -85,14 +86,14 @@ namespace OpenLoco::Ui::Windows::ProgressBar
     }
 
     // 0x004CF78A
-    static void prepareDraw(window* self)
+    static void prepareDraw(Window* self)
     {
         char* buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
         strncpy(buffer, _captionString.c_str(), 256);
     }
 
     // 004CF7A0
-    static void draw(window* self, Gfx::Context* context)
+    static void draw(Window* self, Gfx::Context* context)
     {
         self->draw(context);
 

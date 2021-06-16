@@ -9,6 +9,7 @@
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/ObjectManager.h"
 #include "../Ui/WindowManager.h"
+#include "../Widget.h"
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Input;
@@ -17,14 +18,14 @@ namespace OpenLoco::Ui::Windows::EditKeyboardShortcut
 {
     constexpr Gfx::ui_size_t windowSize = { 280, 72 };
 
-    static window_event_list events;
+    static WindowEventList events;
     static loco_global<uint8_t, 0x011364A4> _11364A4;
 
-    static widget_t _widgets[] = {
-        makeWidget({ 0, 0 }, windowSize, widget_type::frame, 0, 0xFFFFFFFF),                                                 // 0,
-        makeWidget({ 1, 1 }, { windowSize.width - 2, 13 }, widget_type::caption_25, 0, StringIds::change_keyboard_shortcut), // 1,
-        makeWidget({ 265, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window),   // 2,
-        makeWidget({ 0, 15 }, { windowSize.width, 57 }, widget_type::panel, 1, 0xFFFFFFFF),                                  // 3,
+    static Widget _widgets[] = {
+        makeWidget({ 0, 0 }, windowSize, WidgetType::frame, 0, 0xFFFFFFFF),                                                 // 0,
+        makeWidget({ 1, 1 }, { windowSize.width - 2, 13 }, WidgetType::caption_25, 0, StringIds::change_keyboard_shortcut), // 1,
+        makeWidget({ 265, 2 }, { 13, 13 }, WidgetType::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window),   // 2,
+        makeWidget({ 0, 15 }, { windowSize.width, 57 }, WidgetType::panel, 1, 0xFFFFFFFF),                                  // 3,
         widgetEnd(),
     };
 
@@ -42,7 +43,7 @@ namespace OpenLoco::Ui::Windows::EditKeyboardShortcut
     }
 
     // 0x004BF7B9
-    window* open(const uint8_t shortcutIndex)
+    Window* open(const uint8_t shortcutIndex)
     {
         WindowManager::close(WindowType::editKeyboardShortcut);
         _11364A4 = shortcutIndex;
@@ -64,7 +65,7 @@ namespace OpenLoco::Ui::Windows::EditKeyboardShortcut
     }
 
     // 0x004BE8DF
-    static void draw(Ui::window* const self, Gfx::Context* const ctx)
+    static void draw(Ui::Window* const self, Gfx::Context* const ctx)
     {
         self->draw(ctx);
 
@@ -75,7 +76,7 @@ namespace OpenLoco::Ui::Windows::EditKeyboardShortcut
     }
 
     // 0x004BE821
-    static void onMouseUp(window* const self, const widget_index widgetIndex)
+    static void onMouseUp(Window* const self, const WidgetIndex_t widgetIndex)
     {
         switch (widgetIndex)
         {

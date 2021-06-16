@@ -26,7 +26,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::MessageWindow
 {
-    static loco_global<Ui::window_number, 0x00523390> _toolWindowNumber;
+    static loco_global<Ui::WindowNumber_t, 0x00523390> _toolWindowNumber;
     static loco_global<Ui::WindowType, 0x00523392> _toolWindowType;
     static loco_global<CompanyId_t, 0x00525E3C> _playerCompany;
     static loco_global<uint16_t, 0x005271CE> _messageCount;
@@ -46,20 +46,20 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 
         const uint64_t enabledWidgets = (1 << widx::close_button) | (1 << widx::tab_messages) | (1 << widx::tab_settings);
 
-#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                        \
-    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, widget_type::frame, 0),                                                          \
-        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, widget_type::caption_24, 0, windowCaptionId),                                     \
-        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, widget_type::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window), \
-        makeWidget({ 0, 41 }, { 366, 175 }, widget_type::panel, 1),                                                                    \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_recent_messages),               \
-        makeRemapWidget({ 34, 15 }, { 31, 27 }, widget_type::wt_8, 1, ImageIds::tab, StringIds::tooltip_message_options)
+#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                       \
+    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, WidgetType::frame, 0),                                                          \
+        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, WidgetType::caption_24, 0, windowCaptionId),                                     \
+        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, WidgetType::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window), \
+        makeWidget({ 0, 41 }, { 366, 175 }, WidgetType::panel, 1),                                                                    \
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_recent_messages),               \
+        makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_message_options)
 
-        static window_event_list _events;
+        static WindowEventList _events;
 
-        static void prepareDraw(window* self);
-        static void switchTab(window* self, widget_index widgetIndex);
-        static void onUpdate(window* self);
-        static void drawTabs(window* self, Gfx::Context* context);
+        static void prepareDraw(Window* self);
+        static void switchTab(Window* self, WidgetIndex_t widgetIndex);
+        static void onUpdate(Window* self);
+        static void drawTabs(Window* self, Gfx::Context* context);
         static void initEvents();
     }
 
@@ -76,16 +76,16 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 
         const uint64_t enabledWidgets = Common::enabledWidgets | (1 << scrollview);
 
-        widget_t widgets[] = {
+        Widget widgets[] = {
             commonWidgets(366, 217, StringIds::title_messages),
-            makeWidget({ 3, 45 }, { 360, 146 }, widget_type::scrollview, 1, scrollbars::vertical),
+            makeWidget({ 3, 45 }, { 360, 146 }, WidgetType::scrollview, 1, Scrollbars::vertical),
             widgetEnd(),
         };
 
-        static window_event_list events;
+        static WindowEventList events;
 
         // 0x0042A6F5
-        static void onMouseUp(window* self, widget_index widgetIndex)
+        static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -101,7 +101,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         }
 
         // 0x0042A95A
-        static void onResize(window* self)
+        static void onResize(Window* self)
         {
             auto scrollview = self->widgets[widx::scrollview];
             auto scrollarea = self->scroll_areas[0];
@@ -118,13 +118,13 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         }
 
         // 0x0042A847
-        static void event_08(window* self)
+        static void event_08(Window* self)
         {
             self->flags |= WindowFlags::not_scroll_view;
         }
 
         // 0x0042A84F
-        static void event_09(window* self)
+        static void event_09(Window* self)
         {
             if (!(self->flags & WindowFlags::not_scroll_view))
                 return;
@@ -137,13 +137,13 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         }
 
         // 0x0042A871
-        static void getScrollSize(window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
+        static void getScrollSize(Window* self, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
         {
             *scrollHeight = _messageCount * messageHeight;
         }
 
         // 0x0042A8B9
-        static void scrollMouseDown(Ui::window* self, int16_t x, int16_t y, uint8_t scrollIndex)
+        static void scrollMouseDown(Ui::Window* self, int16_t x, int16_t y, uint8_t scrollIndex)
         {
             auto messageIndex = y / messageHeight;
 
@@ -173,7 +173,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         }
 
         // 0x0042A87C
-        static void scrollMouseOver(Ui::window* self, int16_t x, int16_t y, uint8_t scrollIndex)
+        static void scrollMouseOver(Ui::Window* self, int16_t x, int16_t y, uint8_t scrollIndex)
         {
             self->flags &= ~(WindowFlags::not_scroll_view);
 
@@ -191,7 +191,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         }
 
         // 0x0042A70C
-        static std::optional<FormatArguments> tooltip(Ui::window* self, widget_index widgetIndex)
+        static std::optional<FormatArguments> tooltip(Ui::Window* self, WidgetIndex_t widgetIndex)
         {
             FormatArguments args{};
             args.push(StringIds::tooltip_scroll_message_list);
@@ -199,7 +199,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         }
 
         // 0x0042A545
-        static void prepareDraw(window* self)
+        static void prepareDraw(Window* self)
         {
             Common::prepareDraw(self);
 
@@ -208,14 +208,14 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         }
 
         // 0x0042A5CC
-        static void draw(window* self, Gfx::Context* context)
+        static void draw(Window* self, Gfx::Context* context)
         {
             self->draw(context);
             Common::drawTabs(self, context);
         }
 
         // 0x0042A5D7
-        static void drawScroll(Ui::window* self, Gfx::Context* context, uint32_t scrollIndex)
+        static void drawScroll(Ui::Window* self, Gfx::Context* context, uint32_t scrollIndex)
         {
             auto colour = Colour::getShade(self->colours[1], 4);
 
@@ -269,7 +269,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         }
 
         // 0x0042A7B9
-        static void tabReset(window* self)
+        static void tabReset(Window* self)
         {
             self->min_width = minWindowSize.width;
             self->min_height = minWindowSize.height;
@@ -397,27 +397,27 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 
         static constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << widx::company_major_news) | (1 << widx::company_major_news_dropdown) | (1 << widx::competitor_major_news) | (1 << widx::competitor_major_news_dropdown) | (1 << widx::company_minor_news) | (1 << widx::company_minor_news_dropdown) | (1 << widx::competitor_minor_news) | (1 << widx::competitor_minor_news_dropdown) | (1 << widx::general_news) | (1 << widx::general_news_dropdown) | (1 << widx::advice) | (1 << widx::advice_dropdown);
 
-        widget_t widgets[] = {
+        Widget widgets[] = {
             commonWidgets(366, 217, StringIds::title_messages),
-            makeWidget({ 236, 47 }, { 124, 12 }, widget_type::wt_18, 1),
-            makeWidget({ 348, 48 }, { 11, 10 }, widget_type::wt_11, 1, StringIds::dropdown),
-            makeWidget({ 236, 62 }, { 124, 12 }, widget_type::wt_18, 1),
-            makeWidget({ 348, 63 }, { 11, 10 }, widget_type::wt_11, 1, StringIds::dropdown),
-            makeWidget({ 236, 77 }, { 124, 12 }, widget_type::wt_18, 1),
-            makeWidget({ 348, 78 }, { 11, 10 }, widget_type::wt_11, 1, StringIds::dropdown),
-            makeWidget({ 236, 92 }, { 124, 12 }, widget_type::wt_18, 1),
-            makeWidget({ 348, 93 }, { 11, 10 }, widget_type::wt_11, 1, StringIds::dropdown),
-            makeWidget({ 236, 107 }, { 124, 12 }, widget_type::wt_18, 1),
-            makeWidget({ 348, 108 }, { 11, 10 }, widget_type::wt_11, 1, StringIds::dropdown),
-            makeWidget({ 236, 122 }, { 124, 12 }, widget_type::wt_18, 1),
-            makeWidget({ 348, 123 }, { 11, 10 }, widget_type::wt_11, 1, StringIds::dropdown),
+            makeWidget({ 236, 47 }, { 124, 12 }, WidgetType::wt_18, 1),
+            makeWidget({ 348, 48 }, { 11, 10 }, WidgetType::wt_11, 1, StringIds::dropdown),
+            makeWidget({ 236, 62 }, { 124, 12 }, WidgetType::wt_18, 1),
+            makeWidget({ 348, 63 }, { 11, 10 }, WidgetType::wt_11, 1, StringIds::dropdown),
+            makeWidget({ 236, 77 }, { 124, 12 }, WidgetType::wt_18, 1),
+            makeWidget({ 348, 78 }, { 11, 10 }, WidgetType::wt_11, 1, StringIds::dropdown),
+            makeWidget({ 236, 92 }, { 124, 12 }, WidgetType::wt_18, 1),
+            makeWidget({ 348, 93 }, { 11, 10 }, WidgetType::wt_11, 1, StringIds::dropdown),
+            makeWidget({ 236, 107 }, { 124, 12 }, WidgetType::wt_18, 1),
+            makeWidget({ 348, 108 }, { 11, 10 }, WidgetType::wt_11, 1, StringIds::dropdown),
+            makeWidget({ 236, 122 }, { 124, 12 }, WidgetType::wt_18, 1),
+            makeWidget({ 348, 123 }, { 11, 10 }, WidgetType::wt_11, 1, StringIds::dropdown),
             widgetEnd(),
         };
 
-        static window_event_list events;
+        static WindowEventList events;
 
         // 0x0042AA84
-        static void onMouseUp(window* self, widget_index widgetIndex)
+        static void onMouseUp(Window* self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -433,7 +433,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         }
 
         // 0x0042AA9F
-        static void onMouseDown(window* self, widget_index widgetIndex)
+        static void onMouseDown(Window* self, WidgetIndex_t widgetIndex)
         {
             switch (widgetIndex)
             {
@@ -472,7 +472,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         }
 
         // 0x0042AAAC
-        static void onDropdown(window* self, Ui::widget_index widgetIndex, int16_t itemIndex)
+        static void onDropdown(Window* self, Ui::WidgetIndex_t widgetIndex, int16_t itemIndex)
         {
             switch (widgetIndex)
             {
@@ -506,7 +506,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         }
 
         // 0x0042AA02
-        static void draw(window* self, Gfx::Context* context)
+        static void draw(Window* self, Gfx::Context* context)
         {
             self->draw(context);
             Common::drawTabs(self, context);
@@ -548,7 +548,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         }
 
         // 0x0042A7E8
-        static void tabReset(window* self)
+        static void tabReset(Window* self)
         {
             self->min_width = windowSize.width;
             self->min_height = windowSize.height;
@@ -573,9 +573,9 @@ namespace OpenLoco::Ui::Windows::MessageWindow
     {
         struct TabInformation
         {
-            widget_t* widgets;
+            Widget* widgets;
             const widx widgetIndex;
-            window_event_list* events;
+            WindowEventList* events;
             const uint64_t enabledWidgets;
         };
 
@@ -584,7 +584,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
             { Settings::widgets, widx::tab_settings, &Settings::events, Settings::enabledWidgets },
         };
 
-        static void prepareDraw(window* self)
+        static void prepareDraw(Window* self)
         {
             // Reset tab widgets if needed.
             auto tabWidgets = tabInformationByTabOffset[self->current_tab].widgets;
@@ -611,7 +611,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         }
 
         // 0x0042A716
-        static void switchTab(window* self, widget_index widgetIndex)
+        static void switchTab(Window* self, WidgetIndex_t widgetIndex)
         {
             if (Input::isToolActive(self->type, self->number))
                 Input::toolCancel();
@@ -646,7 +646,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         }
 
         // 0x0042AB92
-        static void drawTabs(window* self, Gfx::Context* context)
+        static void drawTabs(Window* self, Gfx::Context* context)
         {
             auto skin = ObjectManager::get<InterfaceSkinObject>();
 
@@ -655,7 +655,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
                 uint32_t imageId = skin->img;
                 imageId += InterfaceSkin::ImageIds::tab_messages;
 
-                Widget::draw_tab(self, context, imageId, widx::tab_messages);
+                Widget::drawTab(self, context, imageId, widx::tab_messages);
             }
 
             // Setting Tab
@@ -663,12 +663,12 @@ namespace OpenLoco::Ui::Windows::MessageWindow
                 uint32_t imageId = skin->img;
                 imageId += InterfaceSkin::ImageIds::tab_message_settings;
 
-                Widget::draw_tab(self, context, imageId, widx::tab_settings);
+                Widget::drawTab(self, context, imageId, widx::tab_settings);
             }
         }
 
         // 0x0042A826 and 0x0042AB6A
-        static void onUpdate(window* self)
+        static void onUpdate(Window* self)
         {
             self->frame_no++;
             self->callPrepareDraw();

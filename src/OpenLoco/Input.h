@@ -66,27 +66,27 @@ namespace OpenLoco::Input
     Gfx::point_t getMouseLocation();
     Gfx::point_t getMouseLocation2();
     bool isHovering(Ui::WindowType);
-    bool isHovering(Ui::WindowType, Ui::window_number);
-    bool isHovering(Ui::WindowType type, Ui::window_number number, Ui::widget_index widgetIndex);
-    Ui::widget_index getHoveredWidgetIndex();
+    bool isHovering(Ui::WindowType, Ui::WindowNumber_t);
+    bool isHovering(Ui::WindowType type, Ui::WindowNumber_t number, Ui::WidgetIndex_t widgetIndex);
+    Ui::WidgetIndex_t getHoveredWidgetIndex();
 
-    bool isDropdownActive(Ui::WindowType type, Ui::widget_index index);
+    bool isDropdownActive(Ui::WindowType type, Ui::WidgetIndex_t index);
 
-    bool isPressed(Ui::WindowType type, Ui::window_number number);
-    bool isPressed(Ui::WindowType type, Ui::window_number number, Ui::widget_index index);
-    Ui::widget_index getPressedWidgetIndex();
-    void setPressedWidgetIndex(Ui::widget_index index);
+    bool isPressed(Ui::WindowType type, Ui::WindowNumber_t number);
+    bool isPressed(Ui::WindowType type, Ui::WindowNumber_t number, Ui::WidgetIndex_t index);
+    Ui::WidgetIndex_t getPressedWidgetIndex();
+    void setPressedWidgetIndex(Ui::WidgetIndex_t index);
 
     void updateCursorPosition();
 
-    Ui::window* toolGetActiveWindow();
+    Ui::Window* toolGetActiveWindow();
     bool isToolActive(Ui::WindowType);
 
-    bool isToolActive(Ui::WindowType, Ui::window_number);
-    bool isToolActive(Ui::WindowType, Ui::window_number, int16_t);
-    bool toolSet(Ui::window* w, int16_t widgetIndex, uint8_t tool);
+    bool isToolActive(Ui::WindowType, Ui::WindowNumber_t);
+    bool isToolActive(Ui::WindowType, Ui::WindowNumber_t, int16_t);
+    bool toolSet(Ui::Window* w, int16_t widgetIndex, uint8_t tool);
     void toolCancel();
-    void toolCancel(Ui::WindowType, Ui::window_number);
+    void toolCancel(Ui::WindowType, Ui::WindowNumber_t);
     int16_t getToolWidgetIndex();
 
     void enqueueText(const char* text);
@@ -108,7 +108,7 @@ namespace OpenLoco::Input
     void processMouseOver(int16_t x, int16_t y);
     void processKeyboardInput();
 
-    void windowPositionBegin(int16_t x, int16_t y, Ui::window* window, Ui::widget_index widget_index);
+    void windowPositionBegin(int16_t x, int16_t y, Ui::Window* window, Ui::WidgetIndex_t widget_index);
 
     Gfx::point_t getScrollLastLocation();
     Gfx::point_t getDragLastLocation();
