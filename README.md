@@ -91,7 +91,8 @@ Regardless of platform, the following libraries/dependencies are required:
 2. Open a new Developer Command Prompt for VS 2019, then navigate to the repository (e.g. `cd C:\GitHub\OpenLoco`).
 3. Run `msbuild openloco.sln /t:restore;build`
 4. Run `mklink /D bin\data ..\data` or `xcopy data bin\data /EIY`
-5. Run the game, `bin\openloco`
+5. Run `mklink openloco.exe bin\` or `copy openloco.exe bin\`
+6. Run the game, `bin\openloco`
 
 ### Linux / macOS:
 The standard CMake build procedure is to install the required libraries, then:
