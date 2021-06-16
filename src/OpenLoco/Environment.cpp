@@ -8,6 +8,7 @@
 #include <cstring>
 #include <fstream>
 #include <iostream>
+#include "SystemPopups/system_message_popup.h"
 
 using namespace OpenLoco::Interop;
 
@@ -202,6 +203,7 @@ namespace OpenLoco::Environment
         catch (const std::exception& e)
         {
             std::fprintf(stderr, "Unable to create directory: %s\n", e.what());
+            SystemUtils::system_message_popup("Unable to create directory:", e.what()); 
         }
     }
 

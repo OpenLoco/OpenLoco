@@ -108,6 +108,7 @@
     <ClCompile Include="ScenarioManager.cpp" />
     <ClCompile Include="Station.cpp" />
     <ClCompile Include="StationManager.cpp" />
+    <ClCompile Include="SystemPopups\system_message_popup.cpp" />
     <ClCompile Include="Title.cpp" />
     <ClCompile Include="Town.cpp" />
     <ClCompile Include="TownManager.cpp" />
@@ -310,6 +311,7 @@
     <ClInclude Include="Speed.hpp" />
     <ClInclude Include="Station.h" />
     <ClInclude Include="StationManager.h" />
+    <ClInclude Include="SystemPopups\system_message_popup.h" />
     <ClInclude Include="Title.h" />
     <ClInclude Include="Town.h" />
     <ClInclude Include="TownManager.h" />
