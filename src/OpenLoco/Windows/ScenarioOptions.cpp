@@ -1179,7 +1179,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             }
 
             // Activate the current tab.
-            self->activated_widgets &= ~((1 << widx::tab_challenge) | (1 << widx::tab_companies) | (1 << widx::tab_challenge) | (1 << widx::tab_scenario));
+            self->activated_widgets &= ~((1 << widx::tab_challenge) | (1 << widx::tab_companies) | (1 << widx::tab_finances) | (1 << widx::tab_scenario));
             widx widgetIndex = tabInformationByTabOffset[self->current_tab].widgetIndex;
             self->activated_widgets |= (1ULL << widgetIndex);
 
