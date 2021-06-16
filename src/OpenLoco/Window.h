@@ -67,7 +67,7 @@ namespace OpenLoco::Ui
         constexpr uint8_t none = 0;
         constexpr uint8_t horizontal = (1 << 0);
         constexpr uint8_t vertical = (1 << 1);
-        constexpr uint8_t both = (1 << 0) | (1 << 1);
+        constexpr uint8_t both = horizontal | vertical;
     }
 
     struct ScrollArea
