@@ -100,6 +100,7 @@
     <ClCompile Include="Paint\PaintEntity.cpp" />
     <ClCompile Include="Paint\PaintMiscEntity.cpp" />
     <ClCompile Include="Paint\PaintVehicle.cpp" />
+    <ClCompile Include="Platform\Crash.cpp" />
     <ClCompile Include="Platform\Platform.Posix.cpp" />
     <ClCompile Include="Platform\Platform.Windows.cpp" />
     <ClCompile Include="S5\S5.cpp" />

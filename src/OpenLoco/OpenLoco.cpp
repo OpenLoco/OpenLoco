@@ -46,6 +46,7 @@
 #include "MultiPlayer.h"
 #include "Objects/ObjectManager.h"
 #include "OpenLoco.h"
+#include "Platform/Crash.h"
 #include "Platform/Platform.h"
 #include "S5/S5.h"
 #include "Scenario.h"
@@ -1158,6 +1159,7 @@ namespace OpenLoco
     // 0x00406D13
     void main()
     {
+        crash_init();
         auto versionInfo = OpenLoco::getVersionInfo();
         std::cout << versionInfo << std::endl;
         try
