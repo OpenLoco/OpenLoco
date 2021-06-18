@@ -24,11 +24,11 @@ namespace OpenLoco::Ui::Windows::About
     }
 
     static Widget _widgets[] = {
-        makeWidget({ 0, 0 }, windowSize, WidgetType::frame, 0),
-        makeWidget({ 1, 1 }, { windowSize.width - 2, 13 }, WidgetType::caption_25, 0, StringIds::about_locomotion_caption),
-        makeWidget({ windowSize.width - 15, 2 }, { 13, 13 }, WidgetType::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window),
-        makeWidget({ 0, 15 }, { windowSize.width, 245 }, WidgetType::panel, 1),
-        makeWidget({ 100, 234 }, { windowSize.width / 2, 12 }, WidgetType::wt_11, 1, StringIds::music_acknowledgements_btn),
+        makeWidget({ 0, 0 }, windowSize, WidgetType::frame, ColourIndex::primary),
+        makeWidget({ 1, 1 }, { windowSize.width - 2, 13 }, WidgetType::caption_25, ColourIndex::primary, StringIds::about_locomotion_caption),
+        makeWidget({ windowSize.width - 15, 2 }, { 13, 13 }, WidgetType::wt_9, ColourIndex::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+        makeWidget({ 0, 15 }, { windowSize.width, 245 }, WidgetType::panel, ColourIndex::secondary),
+        makeWidget({ 100, 234 }, { windowSize.width / 2, 12 }, WidgetType::wt_11, ColourIndex::secondary, StringIds::music_acknowledgements_btn),
         widgetEnd(),
     };
 

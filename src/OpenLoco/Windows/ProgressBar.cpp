@@ -26,9 +26,9 @@ namespace OpenLoco::Ui::Windows::ProgressBar
     constexpr Gfx::ui_size_t windowSize = { 350, 47 };
 
     Widget widgets[] = {
-        makeWidget({ 0, 0 }, { 350, 47 }, WidgetType::frame, 0),
-        makeWidget({ 1, 1 }, { 348, 13 }, WidgetType::caption_25, 0, StringIds::buffer_1250),
-        makeWidget({ 0, 15 }, { 350, 32 }, WidgetType::panel, 1),
+        makeWidget({ 0, 0 }, { 350, 47 }, WidgetType::frame, ColourIndex::primary),
+        makeWidget({ 1, 1 }, { 348, 13 }, WidgetType::caption_25, ColourIndex::primary, StringIds::buffer_1250),
+        makeWidget({ 0, 15 }, { 350, 32 }, WidgetType::panel, ColourIndex::secondary),
         widgetEnd(),
     };
 

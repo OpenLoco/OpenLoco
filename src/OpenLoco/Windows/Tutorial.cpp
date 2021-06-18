@@ -19,7 +19,7 @@ namespace OpenLoco::Ui::Windows::Tutorial
     constexpr Gfx::ui_size_t windowSize = { 140, 29 };
 
     Widget widgets[] = {
-        makeWidget({ 0, 0 }, windowSize, WidgetType::wt_3, 0),
+        makeWidget({ 0, 0 }, windowSize, WidgetType::wt_3, ColourIndex::primary),
         widgetEnd(),
     };
 

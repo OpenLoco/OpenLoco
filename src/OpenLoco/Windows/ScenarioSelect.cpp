@@ -38,16 +38,16 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     }
 
     static Widget _widgets[] = {
-        makeWidget({ 0, 0 }, { 610, 412 }, WidgetType::frame, 0),
-        makeWidget({ 1, 1 }, { 608, 13 }, WidgetType::caption_25, 0, StringIds::select_scenario_for_new_game),
-        makeWidget({ 595, 2 }, { 13, 13 }, WidgetType::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window),
-        makeWidget({ 0, 48 }, { 610, 364 }, WidgetType::wt_3, 1),
-        makeRemapWidget({ 3, 15 }, { 91, 34 }, WidgetType::wt_8, 1, ImageIds::wide_tab),
-        makeRemapWidget({ 94, 15 }, { 91, 34 }, WidgetType::wt_8, 1, ImageIds::wide_tab),
-        makeRemapWidget({ 185, 15 }, { 91, 34 }, WidgetType::wt_8, 1, ImageIds::wide_tab),
-        makeRemapWidget({ 276, 15 }, { 91, 34 }, WidgetType::wt_8, 1, ImageIds::wide_tab),
-        makeRemapWidget({ 367, 15 }, { 91, 34 }, WidgetType::wt_8, 1, ImageIds::wide_tab),
-        makeWidget({ 3, 52 }, { 431, 356 }, WidgetType::scrollview, 1, Scrollbars::vertical),
+        makeWidget({ 0, 0 }, { 610, 412 }, WidgetType::frame, ColourIndex::primary),
+        makeWidget({ 1, 1 }, { 608, 13 }, WidgetType::caption_25, ColourIndex::primary, StringIds::select_scenario_for_new_game),
+        makeWidget({ 595, 2 }, { 13, 13 }, WidgetType::wt_9, ColourIndex::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+        makeWidget({ 0, 48 }, { 610, 364 }, WidgetType::wt_3, ColourIndex::secondary),
+        makeRemapWidget({ 3, 15 }, { 91, 34 }, WidgetType::wt_8, ColourIndex::secondary, ImageIds::wide_tab),
+        makeRemapWidget({ 94, 15 }, { 91, 34 }, WidgetType::wt_8, ColourIndex::secondary, ImageIds::wide_tab),
+        makeRemapWidget({ 185, 15 }, { 91, 34 }, WidgetType::wt_8, ColourIndex::secondary, ImageIds::wide_tab),
+        makeRemapWidget({ 276, 15 }, { 91, 34 }, WidgetType::wt_8, ColourIndex::secondary, ImageIds::wide_tab),
+        makeRemapWidget({ 367, 15 }, { 91, 34 }, WidgetType::wt_8, ColourIndex::secondary, ImageIds::wide_tab),
+        makeWidget({ 3, 52 }, { 431, 356 }, WidgetType::scrollview, ColourIndex::secondary, Scrollbars::vertical),
         widgetEnd(),
     };
 

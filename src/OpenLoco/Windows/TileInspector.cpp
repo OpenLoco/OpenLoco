@@ -60,15 +60,15 @@ namespace OpenLoco::Ui::Windows::TileInspector
     }
 
     static Widget _widgets[] = {
-        makeWidget({ 0, 0 }, windowSize, WidgetType::frame, 0),
-        makeWidget({ 1, 1 }, { windowSize.width - 2, 13 }, WidgetType::caption_25, 0, StringIds::tile_inspector),
-        makeWidget({ windowSize.width - 15, 2 }, { 13, 13 }, WidgetType::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window),
-        makeWidget({ 0, 15 }, { windowSize.width, windowSize.height - 15 }, WidgetType::panel, 1),
-        makeStepperWidgets({ 19, 24 }, { 55, 12 }, WidgetType::wt_17, 1),
-        makeStepperWidgets({ 92, 24 }, { 55, 12 }, WidgetType::wt_17, 1),
-        makeWidget({ windowSize.width - 26, 18 }, { 24, 24 }, WidgetType::wt_9, 1, ImageIds::construction_new_position, StringIds::tile_inspector_select_btn_tooltip),
-        makeWidget({ 4, 46 }, { windowSize.width - 8, 100 }, WidgetType::scrollview, 1, Ui::Scrollbars::vertical),
-        makeWidget({ 4, 148 }, { windowSize.width - 8, 30 }, WidgetType::groupbox, 1, StringIds::tile_element_data),
+        makeWidget({ 0, 0 }, windowSize, WidgetType::frame, ColourIndex::primary),
+        makeWidget({ 1, 1 }, { windowSize.width - 2, 13 }, WidgetType::caption_25, ColourIndex::primary, StringIds::tile_inspector),
+        makeWidget({ windowSize.width - 15, 2 }, { 13, 13 }, WidgetType::wt_9, ColourIndex::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+        makeWidget({ 0, 15 }, { windowSize.width, windowSize.height - 15 }, WidgetType::panel, ColourIndex::secondary),
+        makeStepperWidgets({ 19, 24 }, { 55, 12 }, WidgetType::wt_17, ColourIndex::secondary),
+        makeStepperWidgets({ 92, 24 }, { 55, 12 }, WidgetType::wt_17, ColourIndex::secondary),
+        makeWidget({ windowSize.width - 26, 18 }, { 24, 24 }, WidgetType::wt_9, ColourIndex::secondary, ImageIds::construction_new_position, StringIds::tile_inspector_select_btn_tooltip),
+        makeWidget({ 4, 46 }, { windowSize.width - 8, 100 }, WidgetType::scrollview, ColourIndex::secondary, Ui::Scrollbars::vertical),
+        makeWidget({ 4, 148 }, { windowSize.width - 8, 30 }, WidgetType::groupbox, ColourIndex::secondary, StringIds::tile_element_data),
         widgetEnd(),
     };
 

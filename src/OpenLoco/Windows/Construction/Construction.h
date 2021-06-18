@@ -95,14 +95,14 @@ namespace OpenLoco::Ui::Windows::Construction
         };
 
 #define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                       \
-    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, WidgetType::frame, 0),                                                          \
-        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, WidgetType::caption_24, 0, windowCaptionId),                                     \
-        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, WidgetType::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window), \
-        makeWidget({ 0, 41 }, { frameWidth, frameHeight - 41 }, WidgetType::wt_3, 1),                                                 \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tab_track_road_construction),           \
-        makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tab_station_construction),             \
-        makeRemapWidget({ 65, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tab_signal_construction),              \
-        makeRemapWidget({ 96, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tab_electrification_construction)
+    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, WidgetType::frame, ColourIndex::primary),                                                          \
+        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, WidgetType::caption_24, ColourIndex::primary, windowCaptionId),                                     \
+        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, WidgetType::wt_9, ColourIndex::primary, ImageIds::close_button, StringIds::tooltip_close_window), \
+        makeWidget({ 0, 41 }, { frameWidth, frameHeight - 41 }, WidgetType::wt_3, ColourIndex::secondary),                                                 \
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, ColourIndex::secondary, ImageIds::tab, StringIds::tab_track_road_construction),           \
+        makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::wt_8, ColourIndex::secondary, ImageIds::tab, StringIds::tab_station_construction),             \
+        makeRemapWidget({ 65, 15 }, { 31, 27 }, WidgetType::wt_8, ColourIndex::secondary, ImageIds::tab, StringIds::tab_signal_construction),              \
+        makeRemapWidget({ 96, 15 }, { 31, 27 }, WidgetType::wt_8, ColourIndex::secondary, ImageIds::tab, StringIds::tab_electrification_construction)
 
         constexpr uint64_t enabledWidgets = (1 << widx::caption) | (1 << widx::close_button) | (1 << widx::tab_construction) | (1 << widx::tab_station) | (1 << widx::tab_signal) | (1 << widx::tab_overhead);
 

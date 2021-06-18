@@ -64,14 +64,14 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
         const uint64_t enabledWidgets = (1 << widx::tab_challenge) | (1 << widx::tab_companies) | (1 << widx::tab_finances) | (1 << widx::tab_scenario);
 
-#define commonWidgets(frameHeight, windowCaptionId)                                                                        \
-    makeWidget({ 0, 0 }, { 366, frameHeight }, WidgetType::frame, 0),                                                      \
-        makeWidget({ 1, 1 }, { 364, 13 }, WidgetType::caption_25, 0, windowCaptionId),                                     \
-        makeWidget({ 0, 41 }, { 366, 175 }, WidgetType::panel, 1),                                                         \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_scenario_challenge), \
-        makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_company_options),   \
-        makeRemapWidget({ 65, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_financial_options), \
-        makeRemapWidget({ 96, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_scenario_options)
+#define commonWidgets(frameHeight, windowCaptionId)                                                                                             \
+    makeWidget({ 0, 0 }, { 366, frameHeight }, WidgetType::frame, ColourIndex::primary),                                                        \
+        makeWidget({ 1, 1 }, { 364, 13 }, WidgetType::caption_25, ColourIndex::primary, windowCaptionId),                                       \
+        makeWidget({ 0, 41 }, { 366, 175 }, WidgetType::panel, ColourIndex::secondary),                                                         \
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, ColourIndex::secondary, ImageIds::tab, StringIds::tooltip_scenario_challenge), \
+        makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::wt_8, ColourIndex::secondary, ImageIds::tab, StringIds::tooltip_company_options),   \
+        makeRemapWidget({ 65, 15 }, { 31, 27 }, WidgetType::wt_8, ColourIndex::secondary, ImageIds::tab, StringIds::tooltip_financial_options), \
+        makeRemapWidget({ 96, 15 }, { 31, 27 }, WidgetType::wt_8, ColourIndex::secondary, ImageIds::tab, StringIds::tooltip_scenario_options)
 
         // Defined at the bottom of this file.
         static void initEvents();
@@ -197,15 +197,15 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
         static Widget widgets[] = {
             commonWidgets(197, StringIds::title_scenario_challenge),
-            makeWidget({ 10, 52 }, { 346, 12 }, WidgetType::wt_18, 1),
-            makeWidget({ 344, 53 }, { 11, 10 }, WidgetType::wt_11, 1, StringIds::dropdown),
-            makeStepperWidgets({ 10, 67 }, { 163, 12 }, WidgetType::wt_17, 1),
-            makeWidget({ 193, 67 }, { 163, 12 }, WidgetType::wt_18, 1),
-            makeWidget({ 344, 68 }, { 11, 10 }, WidgetType::wt_11, 1, StringIds::dropdown),
-            makeWidget({ 10, 83 }, { 346, 12 }, WidgetType::checkbox, 1, StringIds::and_be_the_top_company),
-            makeWidget({ 10, 98 }, { 346, 12 }, WidgetType::checkbox, 1, StringIds::and_be_within_the_top_companies),
-            makeWidget({ 10, 113 }, { 346, 12 }, WidgetType::checkbox, 1, StringIds::with_a_time_limit),
-            makeStepperWidgets({ 256, 112 }, { 100, 12 }, WidgetType::wt_17, 1, StringIds::time_limit_years_value),
+            makeWidget({ 10, 52 }, { 346, 12 }, WidgetType::wt_18, ColourIndex::secondary),
+            makeWidget({ 344, 53 }, { 11, 10 }, WidgetType::wt_11, ColourIndex::secondary, StringIds::dropdown),
+            makeStepperWidgets({ 10, 67 }, { 163, 12 }, WidgetType::wt_17, ColourIndex::secondary),
+            makeWidget({ 193, 67 }, { 163, 12 }, WidgetType::wt_18, ColourIndex::secondary),
+            makeWidget({ 344, 68 }, { 11, 10 }, WidgetType::wt_11, ColourIndex::secondary, StringIds::dropdown),
+            makeWidget({ 10, 83 }, { 346, 12 }, WidgetType::checkbox, ColourIndex::secondary, StringIds::and_be_the_top_company),
+            makeWidget({ 10, 98 }, { 346, 12 }, WidgetType::checkbox, ColourIndex::secondary, StringIds::and_be_within_the_top_companies),
+            makeWidget({ 10, 113 }, { 346, 12 }, WidgetType::checkbox, ColourIndex::secondary, StringIds::with_a_time_limit),
+            makeStepperWidgets({ 256, 112 }, { 100, 12 }, WidgetType::wt_17, ColourIndex::secondary, StringIds::time_limit_years_value),
             widgetEnd(),
         };
 
@@ -582,26 +582,26 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
         static Widget widgets[] = {
             commonWidgets(327, StringIds::title_company_options),
-            makeStepperWidgets({ 256, 52 }, { 100, 12 }, WidgetType::wt_17, 1, StringIds::max_competing_companies_value),
-            makeStepperWidgets({ 256, 67 }, { 100, 12 }, WidgetType::wt_17, 1, StringIds::delay_before_competing_companies_start_months),
-            makeWidget({ 246, 102 }, { 110, 12 }, WidgetType::wt_18, 1),
-            makeWidget({ 344, 103 }, { 11, 10 }, WidgetType::wt_11, 1, StringIds::dropdown),
-            makeWidget({ 246, 117 }, { 110, 12 }, WidgetType::wt_18, 1),
-            makeWidget({ 344, 118 }, { 11, 10 }, WidgetType::wt_11, 1, StringIds::dropdown),
-            makeWidget({ 246, 132 }, { 110, 12 }, WidgetType::wt_18, 1),
-            makeWidget({ 344, 133 }, { 11, 10 }, WidgetType::wt_11, 1, StringIds::dropdown),
-            makeWidget({ 15, 160 }, { 341, 12 }, WidgetType::checkbox, 1, StringIds::forbid_trains),
-            makeWidget({ 15, 172 }, { 341, 12 }, WidgetType::checkbox, 1, StringIds::forbid_buses),
-            makeWidget({ 15, 184 }, { 341, 12 }, WidgetType::checkbox, 1, StringIds::forbid_trucks),
-            makeWidget({ 15, 196 }, { 341, 12 }, WidgetType::checkbox, 1, StringIds::forbid_trams),
-            makeWidget({ 15, 208 }, { 341, 12 }, WidgetType::checkbox, 1, StringIds::forbid_aircraft),
-            makeWidget({ 15, 220 }, { 341, 12 }, WidgetType::checkbox, 1, StringIds::forbid_ships),
-            makeWidget({ 15, 247 }, { 341, 12 }, WidgetType::checkbox, 1, StringIds::forbid_trains),
-            makeWidget({ 15, 259 }, { 341, 12 }, WidgetType::checkbox, 1, StringIds::forbid_buses),
-            makeWidget({ 15, 271 }, { 341, 12 }, WidgetType::checkbox, 1, StringIds::forbid_trucks),
-            makeWidget({ 15, 283 }, { 341, 12 }, WidgetType::checkbox, 1, StringIds::forbid_trams),
-            makeWidget({ 15, 295 }, { 341, 12 }, WidgetType::checkbox, 1, StringIds::forbid_aircraft),
-            makeWidget({ 15, 307 }, { 341, 12 }, WidgetType::checkbox, 1, StringIds::forbid_ships),
+            makeStepperWidgets({ 256, 52 }, { 100, 12 }, WidgetType::wt_17, ColourIndex::secondary, StringIds::max_competing_companies_value),
+            makeStepperWidgets({ 256, 67 }, { 100, 12 }, WidgetType::wt_17, ColourIndex::secondary, StringIds::delay_before_competing_companies_start_months),
+            makeWidget({ 246, 102 }, { 110, 12 }, WidgetType::wt_18, ColourIndex::secondary),
+            makeWidget({ 344, 103 }, { 11, 10 }, WidgetType::wt_11, ColourIndex::secondary, StringIds::dropdown),
+            makeWidget({ 246, 117 }, { 110, 12 }, WidgetType::wt_18, ColourIndex::secondary),
+            makeWidget({ 344, 118 }, { 11, 10 }, WidgetType::wt_11, ColourIndex::secondary, StringIds::dropdown),
+            makeWidget({ 246, 132 }, { 110, 12 }, WidgetType::wt_18, ColourIndex::secondary),
+            makeWidget({ 344, 133 }, { 11, 10 }, WidgetType::wt_11, ColourIndex::secondary, StringIds::dropdown),
+            makeWidget({ 15, 160 }, { 341, 12 }, WidgetType::checkbox, ColourIndex::secondary, StringIds::forbid_trains),
+            makeWidget({ 15, 172 }, { 341, 12 }, WidgetType::checkbox, ColourIndex::secondary, StringIds::forbid_buses),
+            makeWidget({ 15, 184 }, { 341, 12 }, WidgetType::checkbox, ColourIndex::secondary, StringIds::forbid_trucks),
+            makeWidget({ 15, 196 }, { 341, 12 }, WidgetType::checkbox, ColourIndex::secondary, StringIds::forbid_trams),
+            makeWidget({ 15, 208 }, { 341, 12 }, WidgetType::checkbox, ColourIndex::secondary, StringIds::forbid_aircraft),
+            makeWidget({ 15, 220 }, { 341, 12 }, WidgetType::checkbox, ColourIndex::secondary, StringIds::forbid_ships),
+            makeWidget({ 15, 247 }, { 341, 12 }, WidgetType::checkbox, ColourIndex::secondary, StringIds::forbid_trains),
+            makeWidget({ 15, 259 }, { 341, 12 }, WidgetType::checkbox, ColourIndex::secondary, StringIds::forbid_buses),
+            makeWidget({ 15, 271 }, { 341, 12 }, WidgetType::checkbox, ColourIndex::secondary, StringIds::forbid_trucks),
+            makeWidget({ 15, 283 }, { 341, 12 }, WidgetType::checkbox, ColourIndex::secondary, StringIds::forbid_trams),
+            makeWidget({ 15, 295 }, { 341, 12 }, WidgetType::checkbox, ColourIndex::secondary, StringIds::forbid_aircraft),
+            makeWidget({ 15, 307 }, { 341, 12 }, WidgetType::checkbox, ColourIndex::secondary, StringIds::forbid_ships),
             widgetEnd(),
         };
 
@@ -855,9 +855,9 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
         static Widget widgets[] = {
             commonWidgets(217, StringIds::title_financial_options),
-            makeStepperWidgets({ 256, 52 }, { 100, 12 }, WidgetType::wt_17, 1, StringIds::starting_loan_value),
-            makeStepperWidgets({ 256, 67 }, { 100, 12 }, WidgetType::wt_17, 1, StringIds::max_loan_size_value),
-            makeStepperWidgets({ 256, 82 }, { 100, 12 }, WidgetType::wt_17, 1, StringIds::loan_interest_rate_value),
+            makeStepperWidgets({ 256, 52 }, { 100, 12 }, WidgetType::wt_17, ColourIndex::secondary, StringIds::starting_loan_value),
+            makeStepperWidgets({ 256, 67 }, { 100, 12 }, WidgetType::wt_17, ColourIndex::secondary, StringIds::max_loan_size_value),
+            makeStepperWidgets({ 256, 82 }, { 100, 12 }, WidgetType::wt_17, ColourIndex::secondary, StringIds::loan_interest_rate_value),
             widgetEnd(),
         };
 
@@ -982,10 +982,10 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
         static Widget widgets[] = {
             commonWidgets(217, StringIds::title_scenario_options),
-            makeWidget({ 281, 52 }, { 75, 12 }, WidgetType::wt_11, 1, StringIds::change),
-            makeWidget({ 196, 67 }, { 160, 12 }, WidgetType::wt_18, 1, StringIds::empty),
-            makeWidget({ 344, 68 }, { 11, 10 }, WidgetType::wt_11, 1, StringIds::dropdown),
-            makeWidget({ 281, 82 }, { 75, 12 }, WidgetType::wt_11, 1, StringIds::change),
+            makeWidget({ 281, 52 }, { 75, 12 }, WidgetType::wt_11, ColourIndex::secondary, StringIds::change),
+            makeWidget({ 196, 67 }, { 160, 12 }, WidgetType::wt_18, ColourIndex::secondary, StringIds::empty),
+            makeWidget({ 344, 68 }, { 11, 10 }, WidgetType::wt_11, ColourIndex::secondary, StringIds::dropdown),
+            makeWidget({ 281, 82 }, { 75, 12 }, WidgetType::wt_11, ColourIndex::secondary, StringIds::change),
             widgetEnd(),
         };
 

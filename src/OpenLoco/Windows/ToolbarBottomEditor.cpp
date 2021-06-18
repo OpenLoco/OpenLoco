@@ -20,10 +20,10 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
     static WindowEventList _events;
 
     static Widget _widgets[] = {
-        makeWidget({ 0, 0 }, { 200, 34 }, WidgetType::wt_3, 0),
-        makeWidget({ 2, 2 }, { 196, 30 }, WidgetType::wt_9, 0),
-        makeWidget({ 440, 0 }, { 200, 34 }, WidgetType::wt_3, 0),
-        makeWidget({ 442, 2 }, { 196, 30 }, WidgetType::wt_9, 0),
+        makeWidget({ 0, 0 }, { 200, 34 }, WidgetType::wt_3, ColourIndex::primary),
+        makeWidget({ 2, 2 }, { 196, 30 }, WidgetType::wt_9, ColourIndex::primary),
+        makeWidget({ 440, 0 }, { 200, 34 }, WidgetType::wt_3, ColourIndex::primary),
+        makeWidget({ 442, 2 }, { 196, 30 }, WidgetType::wt_9, ColourIndex::primary),
         widgetEnd(),
     };
 

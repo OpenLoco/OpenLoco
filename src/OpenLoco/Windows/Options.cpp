@@ -147,17 +147,17 @@ namespace OpenLoco::Ui::Windows::Options
             Widget::drawTab(w, ctx, ImageIds::tab_miscellaneous, Widx::tab_miscellaneous);
         }
 
-#define common_options_widgets(window_size, window_caption_id)                                                                                          \
-    makeWidget({ 0, 0 }, window_size, WidgetType::frame, 0),                                                                                            \
-        makeWidget({ 1, 1 }, { (uint16_t)(window_size.width - 2), 13 }, WidgetType::caption_25, 0, window_caption_id),                                  \
-        makeWidget({ (int16_t)(window_size.width - 15), 2 }, { 13, 13 }, WidgetType::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window), \
-        makeWidget({ 0, 41 }, { window_size.width, 102 }, WidgetType::panel, 1),                                                                        \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::display_options),                                         \
-        makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::sound_options),                                          \
-        makeRemapWidget({ 65, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::music_options),                                          \
-        makeRemapWidget({ 96, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::regional_options),                                       \
-        makeRemapWidget({ 127, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::control_options),                                       \
-        makeRemapWidget({ 158, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::miscellaneous_options)
+#define common_options_widgets(window_size, window_caption_id)                                                                                                             \
+    makeWidget({ 0, 0 }, window_size, WidgetType::frame, ColourIndex::primary),                                                                                            \
+        makeWidget({ 1, 1 }, { (uint16_t)(window_size.width - 2), 13 }, WidgetType::caption_25, ColourIndex::primary, window_caption_id),                                  \
+        makeWidget({ (int16_t)(window_size.width - 15), 2 }, { 13, 13 }, WidgetType::wt_9, ColourIndex::primary, ImageIds::close_button, StringIds::tooltip_close_window), \
+        makeWidget({ 0, 41 }, { window_size.width, 102 }, WidgetType::panel, ColourIndex::secondary),                                                                      \
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, ColourIndex::secondary, ImageIds::tab, StringIds::display_options),                                       \
+        makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::wt_8, ColourIndex::secondary, ImageIds::tab, StringIds::sound_options),                                        \
+        makeRemapWidget({ 65, 15 }, { 31, 27 }, WidgetType::wt_8, ColourIndex::secondary, ImageIds::tab, StringIds::music_options),                                        \
+        makeRemapWidget({ 96, 15 }, { 31, 27 }, WidgetType::wt_8, ColourIndex::secondary, ImageIds::tab, StringIds::regional_options),                                     \
+        makeRemapWidget({ 127, 15 }, { 31, 27 }, WidgetType::wt_8, ColourIndex::secondary, ImageIds::tab, StringIds::control_options),                                     \
+        makeRemapWidget({ 158, 15 }, { 31, 27 }, WidgetType::wt_8, ColourIndex::secondary, ImageIds::tab, StringIds::miscellaneous_options)
 
         static constexpr int tabWidgets = (1 << Widx::tab_display) | (1 << Widx::tab_sound) | (1 << Widx::tab_music) | (1 << Widx::tab_regional) | (1 << Widx::tab_controls) | (1 << Widx::tab_miscellaneous);
 
@@ -196,19 +196,19 @@ namespace OpenLoco::Ui::Windows::Options
 
         static Widget _widgets[] = {
             common_options_widgets(_window_size, StringIds::options_title_display),
-            makeWidget({ 4, 49 }, { 392, 97 }, WidgetType::groupbox, 1, StringIds::frame_hardware),
-            makeDropdownWidgets({ 235, 63 }, { 154, 12 }, WidgetType::wt_18, 1, StringIds::empty),
-            makeDropdownWidgets({ 235, 79 }, { 154, 12 }, WidgetType::wt_18, 1, StringIds::display_resolution_label_format),
-            makeStepperWidgets({ 235, 95 }, { 154, 12 }, WidgetType::wt_17, 1, StringIds::empty),
-            makeWidget({ 10, 111 }, { 174, 12 }, WidgetType::checkbox, 1, StringIds::option_uncap_fps, StringIds::option_uncap_fps_tooltip),
-            makeWidget({ 10, 127 }, { 174, 12 }, WidgetType::checkbox, 1, StringIds::option_show_fps_counter, StringIds::option_show_fps_counter_tooltip),
+            makeWidget({ 4, 49 }, { 392, 97 }, WidgetType::groupbox, ColourIndex::secondary, StringIds::frame_hardware),
+            makeDropdownWidgets({ 235, 63 }, { 154, 12 }, WidgetType::wt_18, ColourIndex::secondary, StringIds::empty),
+            makeDropdownWidgets({ 235, 79 }, { 154, 12 }, WidgetType::wt_18, ColourIndex::secondary, StringIds::display_resolution_label_format),
+            makeStepperWidgets({ 235, 95 }, { 154, 12 }, WidgetType::wt_17, ColourIndex::secondary, StringIds::empty),
+            makeWidget({ 10, 111 }, { 174, 12 }, WidgetType::checkbox, ColourIndex::secondary, StringIds::option_uncap_fps, StringIds::option_uncap_fps_tooltip),
+            makeWidget({ 10, 127 }, { 174, 12 }, WidgetType::checkbox, ColourIndex::secondary, StringIds::option_show_fps_counter, StringIds::option_show_fps_counter_tooltip),
 
-            makeWidget({ 4, 150 }, { 392, 96 }, WidgetType::groupbox, 1, StringIds::frame_map_rendering),
-            makeDropdownWidgets({ 235, 164 }, { 154, 12 }, WidgetType::wt_18, 1, StringIds::empty, StringIds::vehicles_min_scale_tip),
-            makeDropdownWidgets({ 235, 180 }, { 154, 12 }, WidgetType::wt_18, 1, StringIds::empty, StringIds::station_names_min_scale_tip),
-            makeDropdownWidgets({ 235, 196 }, { 154, 12 }, WidgetType::wt_18, 1, StringIds::empty),
-            makeWidget({ 10, 211 }, { 346, 12 }, WidgetType::checkbox, 1, StringIds::landscape_smoothing, StringIds::landscape_smoothing_tip),
-            makeWidget({ 10, 227 }, { 346, 12 }, WidgetType::checkbox, 1, StringIds::gridlines_on_landscape, StringIds::gridlines_on_landscape_tip),
+            makeWidget({ 4, 150 }, { 392, 96 }, WidgetType::groupbox, ColourIndex::secondary, StringIds::frame_map_rendering),
+            makeDropdownWidgets({ 235, 164 }, { 154, 12 }, WidgetType::wt_18, ColourIndex::secondary, StringIds::empty, StringIds::vehicles_min_scale_tip),
+            makeDropdownWidgets({ 235, 180 }, { 154, 12 }, WidgetType::wt_18, ColourIndex::secondary, StringIds::empty, StringIds::station_names_min_scale_tip),
+            makeDropdownWidgets({ 235, 196 }, { 154, 12 }, WidgetType::wt_18, ColourIndex::secondary, StringIds::empty),
+            makeWidget({ 10, 211 }, { 346, 12 }, WidgetType::checkbox, ColourIndex::secondary, StringIds::landscape_smoothing, StringIds::landscape_smoothing_tip),
+            makeWidget({ 10, 227 }, { 346, 12 }, WidgetType::checkbox, ColourIndex::secondary, StringIds::gridlines_on_landscape, StringIds::gridlines_on_landscape_tip),
             widgetEnd(),
         };
 
@@ -694,9 +694,9 @@ namespace OpenLoco::Ui::Windows::Options
 
         static Widget _widgets[] = {
             common_options_widgets(_window_size, StringIds::options_title_sound),
-            makeWidget({ 10, 49 }, { 346, 12 }, WidgetType::wt_18, 1, StringIds::stringid),
-            makeWidget({ 344, 50 }, { 11, 10 }, WidgetType::wt_11, 1, StringIds::dropdown),
-            makeWidget({ 10, 65 }, { 346, 12 }, WidgetType::checkbox, 1, StringIds::play_title_music),
+            makeWidget({ 10, 49 }, { 346, 12 }, WidgetType::wt_18, ColourIndex::secondary, StringIds::stringid),
+            makeWidget({ 344, 50 }, { 11, 10 }, WidgetType::wt_11, ColourIndex::secondary, StringIds::dropdown),
+            makeWidget({ 10, 65 }, { 346, 12 }, WidgetType::checkbox, ColourIndex::secondary, StringIds::play_title_music),
             widgetEnd(),
         };
 
@@ -885,15 +885,15 @@ namespace OpenLoco::Ui::Windows::Options
 
         static Widget _widgets[] = {
             common_options_widgets(_window_size, StringIds::options_title_music),
-            makeWidget({ 160, 49 }, { 196, 12 }, WidgetType::wt_18, 1, StringIds::stringid),
-            makeWidget({ 344, 50 }, { 11, 10 }, WidgetType::wt_11, 1, StringIds::dropdown),
-            makeWidget({ 10, 64 }, { 24, 24 }, WidgetType::wt_9, 1, ImageIds::music_controls_stop, StringIds::music_controls_stop_tip),
-            makeWidget({ 34, 64 }, { 24, 24 }, WidgetType::wt_9, 1, ImageIds::music_controls_play, StringIds::music_controls_play_tip),
-            makeWidget({ 58, 64 }, { 24, 24 }, WidgetType::wt_9, 1, ImageIds::music_controls_next, StringIds::music_controls_next_tip),
-            makeWidget({ 256, 64 }, { 109, 24 }, WidgetType::wt_5, 1, -1, StringIds::set_volume_tip),
-            makeWidget({ 10, 93 }, { 346, 12 }, WidgetType::wt_18, 1, StringIds::arg2_stringid),
-            makeWidget({ 344, 94 }, { 11, 10 }, WidgetType::wt_11, 1, StringIds::dropdown),
-            makeWidget({ 183, 108 }, { 173, 12 }, WidgetType::wt_11, 1, StringIds::edit_music_selection, StringIds::edit_music_selection_tip),
+            makeWidget({ 160, 49 }, { 196, 12 }, WidgetType::wt_18, ColourIndex::secondary, StringIds::stringid),
+            makeWidget({ 344, 50 }, { 11, 10 }, WidgetType::wt_11, ColourIndex::secondary, StringIds::dropdown),
+            makeWidget({ 10, 64 }, { 24, 24 }, WidgetType::wt_9, ColourIndex::secondary, ImageIds::music_controls_stop, StringIds::music_controls_stop_tip),
+            makeWidget({ 34, 64 }, { 24, 24 }, WidgetType::wt_9, ColourIndex::secondary, ImageIds::music_controls_play, StringIds::music_controls_play_tip),
+            makeWidget({ 58, 64 }, { 24, 24 }, WidgetType::wt_9, ColourIndex::secondary, ImageIds::music_controls_next, StringIds::music_controls_next_tip),
+            makeWidget({ 256, 64 }, { 109, 24 }, WidgetType::wt_5, ColourIndex::secondary, -1, StringIds::set_volume_tip),
+            makeWidget({ 10, 93 }, { 346, 12 }, WidgetType::wt_18, ColourIndex::secondary, StringIds::arg2_stringid),
+            makeWidget({ 344, 94 }, { 11, 10 }, WidgetType::wt_11, ColourIndex::secondary, StringIds::dropdown),
+            makeWidget({ 183, 108 }, { 173, 12 }, WidgetType::wt_11, ColourIndex::secondary, StringIds::edit_music_selection, StringIds::edit_music_selection_tip),
             widgetEnd(),
         };
 
@@ -1271,18 +1271,18 @@ namespace OpenLoco::Ui::Windows::Options
 
         static Widget _widgets[] = {
             common_options_widgets(_window_size, StringIds::options_title_regional),
-            makeWidget({ 183, 49 }, { 173, 12 }, WidgetType::wt_18, 1, StringIds::stringptr),
-            makeWidget({ 344, 50 }, { 11, 10 }, WidgetType::wt_11, 1, StringIds::dropdown),
-            makeWidget({ 183, 69 }, { 173, 12 }, WidgetType::wt_18, 1, StringIds::arg12_stringid),
-            makeWidget({ 344, 70 }, { 11, 10 }, WidgetType::wt_11, 1, StringIds::dropdown),
-            makeWidget({ 183, 84 }, { 173, 12 }, WidgetType::wt_18, 1, StringIds::arg6_stringid),
-            makeWidget({ 344, 85 }, { 11, 10 }, WidgetType::wt_11, 1, StringIds::dropdown),
-            makeWidget({ 183, 104 }, { 173, 12 }, WidgetType::wt_18, 1, StringIds::arg10_stringid, StringIds::current_game_currency_tip),
-            makeWidget({ 344, 105 }, { 11, 10 }, WidgetType::wt_11, 1, StringIds::dropdown, StringIds::current_game_currency_tip),
-            makeWidget({ 183, 119 }, { 173, 12 }, WidgetType::wt_18, 1, StringIds::preferred_currency_buffer, StringIds::new_game_currency_tip),
-            makeWidget({ 344, 120 }, { 11, 10 }, WidgetType::wt_11, 1, StringIds::dropdown, StringIds::new_game_currency_tip),
-            makeWidget({ 10, 134 }, { 346, 12 }, WidgetType::checkbox, 1, StringIds::use_preferred_currency_new_game, StringIds::use_preferred_currency_new_game_tip),
-            makeWidget({ 10, 148 }, { 346, 12 }, WidgetType::checkbox, 1, StringIds::use_preferred_currency_always, StringIds::use_preferred_currency_always_tip),
+            makeWidget({ 183, 49 }, { 173, 12 }, WidgetType::wt_18, ColourIndex::secondary, StringIds::stringptr),
+            makeWidget({ 344, 50 }, { 11, 10 }, WidgetType::wt_11, ColourIndex::secondary, StringIds::dropdown),
+            makeWidget({ 183, 69 }, { 173, 12 }, WidgetType::wt_18, ColourIndex::secondary, StringIds::arg12_stringid),
+            makeWidget({ 344, 70 }, { 11, 10 }, WidgetType::wt_11, ColourIndex::secondary, StringIds::dropdown),
+            makeWidget({ 183, 84 }, { 173, 12 }, WidgetType::wt_18, ColourIndex::secondary, StringIds::arg6_stringid),
+            makeWidget({ 344, 85 }, { 11, 10 }, WidgetType::wt_11, ColourIndex::secondary, StringIds::dropdown),
+            makeWidget({ 183, 104 }, { 173, 12 }, WidgetType::wt_18, ColourIndex::secondary, StringIds::arg10_stringid, StringIds::current_game_currency_tip),
+            makeWidget({ 344, 105 }, { 11, 10 }, WidgetType::wt_11, ColourIndex::secondary, StringIds::dropdown, StringIds::current_game_currency_tip),
+            makeWidget({ 183, 119 }, { 173, 12 }, WidgetType::wt_18, ColourIndex::secondary, StringIds::preferred_currency_buffer, StringIds::new_game_currency_tip),
+            makeWidget({ 344, 120 }, { 11, 10 }, WidgetType::wt_11, ColourIndex::secondary, StringIds::dropdown, StringIds::new_game_currency_tip),
+            makeWidget({ 10, 134 }, { 346, 12 }, WidgetType::checkbox, ColourIndex::secondary, StringIds::use_preferred_currency_new_game, StringIds::use_preferred_currency_new_game_tip),
+            makeWidget({ 10, 148 }, { 346, 12 }, WidgetType::checkbox, ColourIndex::secondary, StringIds::use_preferred_currency_always, StringIds::use_preferred_currency_always_tip),
             widgetEnd(),
         };
 
@@ -1750,9 +1750,9 @@ namespace OpenLoco::Ui::Windows::Options
 
         static Widget _widgets[] = {
             common_options_widgets(_window_size, StringIds::options_title_controls),
-            makeWidget({ 10, 49 }, { 346, 12 }, WidgetType::checkbox, 1, StringIds::scroll_screen_edge, StringIds::scroll_screen_edge_tip),
-            makeWidget({ 10, 64 }, { 346, 12 }, WidgetType::checkbox, 1, StringIds::zoom_to_cursor, StringIds::zoom_to_cursor_tip),
-            makeWidget({ 26, 79 }, { 160, 12 }, WidgetType::wt_11, 1, StringIds::customise_keys, StringIds::customise_keys_tip),
+            makeWidget({ 10, 49 }, { 346, 12 }, WidgetType::checkbox, ColourIndex::secondary, StringIds::scroll_screen_edge, StringIds::scroll_screen_edge_tip),
+            makeWidget({ 10, 64 }, { 346, 12 }, WidgetType::checkbox, ColourIndex::secondary, StringIds::zoom_to_cursor, StringIds::zoom_to_cursor_tip),
+            makeWidget({ 26, 79 }, { 160, 12 }, WidgetType::wt_11, ColourIndex::secondary, StringIds::customise_keys, StringIds::customise_keys_tip),
             widgetEnd(),
         };
 
@@ -1899,15 +1899,15 @@ namespace OpenLoco::Ui::Windows::Options
 
         static Widget _widgets[] = {
             common_options_widgets(_window_size, StringIds::options_title_miscellaneous),
-            makeWidget({ 10, 49 }, { 400, 12 }, WidgetType::checkbox, 1, StringIds::option_cheat_menu_enable, StringIds::tooltip_option_cheat_menu_enable),
-            makeWidget({ 10, 64 }, { 400, 12 }, WidgetType::checkbox, 1, StringIds::disable_vehicle_breakdowns),
-            makeWidget({ 10, 79 }, { 400, 12 }, WidgetType::checkbox, 1, StringIds::disableAICompanies, StringIds::disableAICompanies_tip),
-            makeWidget({ 10, 94 }, { 400, 12 }, WidgetType::checkbox, 1, StringIds::use_preferred_owner_name, StringIds::use_preferred_owner_name_tip),
-            makeWidget({ 335, 109 }, { 75, 12 }, WidgetType::wt_11, 1, StringIds::change),
-            makeWidget({ 10, 124 }, { 400, 12 }, WidgetType::checkbox, 1, StringIds::export_plugin_objects, StringIds::export_plugin_objects_tip),
-            makeWidget({ 250, 139 }, { 156, 12 }, WidgetType::wt_18, 1, StringIds::empty),
-            makeWidget({ 394, 140 }, { 11, 10 }, WidgetType::wt_11, 1, StringIds::dropdown),
-            makeStepperWidgets({ 250, 154 }, { 156, 12 }, WidgetType::wt_17, 1, StringIds::empty),
+            makeWidget({ 10, 49 }, { 400, 12 }, WidgetType::checkbox, ColourIndex::secondary, StringIds::option_cheat_menu_enable, StringIds::tooltip_option_cheat_menu_enable),
+            makeWidget({ 10, 64 }, { 400, 12 }, WidgetType::checkbox, ColourIndex::secondary, StringIds::disable_vehicle_breakdowns),
+            makeWidget({ 10, 79 }, { 400, 12 }, WidgetType::checkbox, ColourIndex::secondary, StringIds::disableAICompanies, StringIds::disableAICompanies_tip),
+            makeWidget({ 10, 94 }, { 400, 12 }, WidgetType::checkbox, ColourIndex::secondary, StringIds::use_preferred_owner_name, StringIds::use_preferred_owner_name_tip),
+            makeWidget({ 335, 109 }, { 75, 12 }, WidgetType::wt_11, ColourIndex::secondary, StringIds::change),
+            makeWidget({ 10, 124 }, { 400, 12 }, WidgetType::checkbox, ColourIndex::secondary, StringIds::export_plugin_objects, StringIds::export_plugin_objects_tip),
+            makeWidget({ 250, 139 }, { 156, 12 }, WidgetType::wt_18, ColourIndex::secondary, StringIds::empty),
+            makeWidget({ 394, 140 }, { 11, 10 }, WidgetType::wt_11, ColourIndex::secondary, StringIds::dropdown),
+            makeStepperWidgets({ 250, 154 }, { 156, 12 }, WidgetType::wt_17, ColourIndex::secondary, StringIds::empty),
             widgetEnd(),
         };
 

@@ -39,11 +39,11 @@ namespace OpenLoco::Ui::Windows::PromptOkCancel
     };
 
     static Widget _widgets[] = {
-        makeWidget({ 0, 0 }, { 280, 92 }, WidgetType::panel, 0),
-        makeWidget({ 1, 1 }, { 278, 13 }, WidgetType::caption_22, 0, StringIds::buffer_2039),
-        makeWidget({ 267, 2 }, { 11, 11 }, WidgetType::wt_11, 0, StringIds::close_window_cross, StringIds::tooltip_close_window),
-        makeWidget({ 20, 77 }, { 100, 12 }, WidgetType::wt_11, 0, StringIds::label_ok),
-        makeWidget({ 160, 77 }, { 100, 12 }, WidgetType::wt_11, 0, StringIds::label_button_cancel),
+        makeWidget({ 0, 0 }, { 280, 92 }, WidgetType::panel, ColourIndex::primary),
+        makeWidget({ 1, 1 }, { 278, 13 }, WidgetType::caption_22, ColourIndex::primary, StringIds::buffer_2039),
+        makeWidget({ 267, 2 }, { 11, 11 }, WidgetType::wt_11, ColourIndex::primary, StringIds::close_window_cross, StringIds::tooltip_close_window),
+        makeWidget({ 20, 77 }, { 100, 12 }, WidgetType::wt_11, ColourIndex::primary, StringIds::label_ok),
+        makeWidget({ 160, 77 }, { 100, 12 }, WidgetType::wt_11, ColourIndex::primary, StringIds::label_button_cancel),
         widgetEnd(),
     };
 

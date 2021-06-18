@@ -53,23 +53,23 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     }
 
     static Widget _widgets[] = {
-        makeWidget({ 0, 0 }, { 30, 28 }, WidgetType::wt_7, 0),
-        makeWidget({ 30, 0 }, { 30, 28 }, WidgetType::wt_7, 0),
-        makeWidget({ 60, 0 }, { 30, 28 }, WidgetType::wt_7, 0),
+        makeWidget({ 0, 0 }, { 30, 28 }, WidgetType::wt_7, ColourIndex::primary),
+        makeWidget({ 30, 0 }, { 30, 28 }, WidgetType::wt_7, ColourIndex::primary),
+        makeWidget({ 60, 0 }, { 30, 28 }, WidgetType::wt_7, ColourIndex::primary),
 
-        makeWidget({ 104, 0 }, { 30, 28 }, WidgetType::wt_7, 1),
-        makeWidget({ 134, 0 }, { 30, 28 }, WidgetType::wt_7, 1),
-        makeWidget({ 164, 0 }, { 30, 28 }, WidgetType::wt_7, 1),
+        makeWidget({ 104, 0 }, { 30, 28 }, WidgetType::wt_7, ColourIndex::secondary),
+        makeWidget({ 134, 0 }, { 30, 28 }, WidgetType::wt_7, ColourIndex::secondary),
+        makeWidget({ 164, 0 }, { 30, 28 }, WidgetType::wt_7, ColourIndex::secondary),
 
-        makeWidget({ 267, 0 }, { 30, 28 }, WidgetType::wt_7, 2),
-        makeWidget({ 387, 0 }, { 30, 28 }, WidgetType::wt_7, 2),
-        makeWidget({ 357, 0 }, { 30, 28 }, WidgetType::wt_7, 2),
-        makeWidget({ 417, 0 }, { 30, 28 }, WidgetType::wt_7, 2),
-        makeWidget({ 417, 0 }, { 30, 28 }, WidgetType::wt_7, 2),
+        makeWidget({ 267, 0 }, { 30, 28 }, WidgetType::wt_7, ColourIndex::tertiary),
+        makeWidget({ 387, 0 }, { 30, 28 }, WidgetType::wt_7, ColourIndex::tertiary),
+        makeWidget({ 357, 0 }, { 30, 28 }, WidgetType::wt_7, ColourIndex::tertiary),
+        makeWidget({ 417, 0 }, { 30, 28 }, WidgetType::wt_7, ColourIndex::tertiary),
+        makeWidget({ 417, 0 }, { 30, 28 }, WidgetType::wt_7, ColourIndex::tertiary),
 
-        makeWidget({ 490, 0 }, { 30, 28 }, WidgetType::wt_7, 3),
-        makeWidget({ 520, 0 }, { 30, 28 }, WidgetType::wt_7, 3),
-        makeWidget({ 460, 0 }, { 30, 28 }, WidgetType::wt_7, 3),
+        makeWidget({ 490, 0 }, { 30, 28 }, WidgetType::wt_7, ColourIndex::quaternary),
+        makeWidget({ 520, 0 }, { 30, 28 }, WidgetType::wt_7, ColourIndex::quaternary),
+        makeWidget({ 460, 0 }, { 30, 28 }, WidgetType::wt_7, ColourIndex::quaternary),
         widgetEnd(),
     };
 

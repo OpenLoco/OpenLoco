@@ -23,10 +23,10 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 {
     Widget widgets[] = {
         commonWidgets(138, 190, StringIds::stringid_2),
-        makeWidget({ 3, 45 }, { 132, 12 }, WidgetType::wt_18, 1, 0xFFFFFFFF, StringIds::tooltip_select_station_type),
-        makeWidget({ 123, 46 }, { 11, 10 }, WidgetType::wt_11, 1, StringIds::dropdown, StringIds::tooltip_select_station_type),
-        makeWidget({ 35, 60 }, { 68, 68 }, WidgetType::wt_3, 1),
-        makeWidget({ 112, 104 }, { 24, 24 }, WidgetType::wt_9, 1, ImageIds::rotate_object, StringIds::rotate_90),
+        makeWidget({ 3, 45 }, { 132, 12 }, WidgetType::wt_18, ColourIndex::secondary, 0xFFFFFFFF, StringIds::tooltip_select_station_type),
+        makeWidget({ 123, 46 }, { 11, 10 }, WidgetType::wt_11, ColourIndex::secondary, StringIds::dropdown, StringIds::tooltip_select_station_type),
+        makeWidget({ 35, 60 }, { 68, 68 }, WidgetType::wt_3, ColourIndex::secondary),
+        makeWidget({ 112, 104 }, { 24, 24 }, WidgetType::wt_9, ColourIndex::secondary, ImageIds::rotate_object, StringIds::rotate_90),
         widgetEnd(),
     };
 

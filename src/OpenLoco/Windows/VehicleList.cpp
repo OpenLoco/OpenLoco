@@ -53,22 +53,22 @@ namespace OpenLoco::Ui::Windows::VehicleList
     };
 
     Widget _widgets[] = {
-        makeWidget({ 0, 0 }, { 550, 213 }, WidgetType::frame, 0),
-        makeWidget({ 1, 1 }, { 548, 13 }, WidgetType::caption_24, 0),
-        makeWidget({ 535, 2 }, { 13, 13 }, WidgetType::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window),
-        makeWidget({ 0, 41 }, { 550, 172 }, WidgetType::panel, 1),
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_trains),
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_buses),
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_trucks),
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_trams),
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_aircraft),
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_ships),
-        makeWidget({ 0, 14 }, { 26, 26 }, WidgetType::wt_9, 0, StringIds::null, StringIds::tooltip_select_company),
-        makeWidget({ 4, 43 }, { 310, 12 }, WidgetType::wt_14, 1, StringIds::null, StringIds::tooltip_sort_by_name),
-        makeWidget({ 314, 43 }, { 100, 12 }, WidgetType::wt_14, 1, StringIds::null, StringIds::tooltip_sort_by_profit),
-        makeWidget({ 414, 43 }, { 65, 12 }, WidgetType::wt_14, 1, StringIds::null, StringIds::tooltip_sort_by_age),
-        makeWidget({ 479, 43 }, { 67, 12 }, WidgetType::wt_14, 1, StringIds::null, StringIds::tooltip_sort_by_reliability),
-        makeWidget({ 3, 56 }, { 544, 138 }, WidgetType::scrollview, 1, Scrollbars::vertical),
+        makeWidget({ 0, 0 }, { 550, 213 }, WidgetType::frame, ColourIndex::primary),
+        makeWidget({ 1, 1 }, { 548, 13 }, WidgetType::caption_24, ColourIndex::primary),
+        makeWidget({ 535, 2 }, { 13, 13 }, WidgetType::wt_9, ColourIndex::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+        makeWidget({ 0, 41 }, { 550, 172 }, WidgetType::panel, ColourIndex::secondary),
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, ColourIndex::secondary, ImageIds::tab, StringIds::tooltip_trains),
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, ColourIndex::secondary, ImageIds::tab, StringIds::tooltip_buses),
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, ColourIndex::secondary, ImageIds::tab, StringIds::tooltip_trucks),
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, ColourIndex::secondary, ImageIds::tab, StringIds::tooltip_trams),
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, ColourIndex::secondary, ImageIds::tab, StringIds::tooltip_aircraft),
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, ColourIndex::secondary, ImageIds::tab, StringIds::tooltip_ships),
+        makeWidget({ 0, 14 }, { 26, 26 }, WidgetType::wt_9, ColourIndex::primary, StringIds::null, StringIds::tooltip_select_company),
+        makeWidget({ 4, 43 }, { 310, 12 }, WidgetType::wt_14, ColourIndex::secondary, StringIds::null, StringIds::tooltip_sort_by_name),
+        makeWidget({ 314, 43 }, { 100, 12 }, WidgetType::wt_14, ColourIndex::secondary, StringIds::null, StringIds::tooltip_sort_by_profit),
+        makeWidget({ 414, 43 }, { 65, 12 }, WidgetType::wt_14, ColourIndex::secondary, StringIds::null, StringIds::tooltip_sort_by_age),
+        makeWidget({ 479, 43 }, { 67, 12 }, WidgetType::wt_14, ColourIndex::secondary, StringIds::null, StringIds::tooltip_sort_by_reliability),
+        makeWidget({ 3, 56 }, { 544, 138 }, WidgetType::scrollview, ColourIndex::secondary, Scrollbars::vertical),
         widgetEnd()
     };
 

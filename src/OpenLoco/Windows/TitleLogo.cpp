@@ -20,7 +20,7 @@ namespace OpenLoco::Ui::Windows::TitleLogo
     }
 
     static Widget _widgets[] = {
-        makeWidget({ 0, 0 }, window_size, WidgetType::wt_3, 0),
+        makeWidget({ 0, 0 }, window_size, WidgetType::wt_3, ColourIndex::primary),
         widgetEnd(),
     };
 

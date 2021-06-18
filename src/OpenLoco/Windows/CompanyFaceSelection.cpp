@@ -40,12 +40,12 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
 
     // 0x509680
     static Widget widgets[] = {
-        makeWidget({ 0, 0 }, windowSize, WidgetType::frame, 0),
-        makeWidget({ 1, 1 }, { 398, 13 }, WidgetType::caption_24, 0, StringIds::company_face_selection_title),
-        makeWidget({ 385, 2 }, { 13, 13 }, WidgetType::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window),
-        makeWidget({ 0, 15 }, { 400, 257 }, WidgetType::panel, 1),
-        makeWidget({ 4, 19 }, { 188, 248 }, WidgetType::scrollview, 1, Scrollbars::vertical, StringIds::tooltip_company_face_selection),
-        makeWidget({ 265, 23 }, { 66, 66 }, WidgetType::wt_5, 1),
+        makeWidget({ 0, 0 }, windowSize, WidgetType::frame, ColourIndex::primary),
+        makeWidget({ 1, 1 }, { 398, 13 }, WidgetType::caption_24, ColourIndex::primary, StringIds::company_face_selection_title),
+        makeWidget({ 385, 2 }, { 13, 13 }, WidgetType::wt_9, ColourIndex::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+        makeWidget({ 0, 15 }, { 400, 257 }, WidgetType::panel, ColourIndex::secondary),
+        makeWidget({ 4, 19 }, { 188, 248 }, WidgetType::scrollview, ColourIndex::secondary, Scrollbars::vertical, StringIds::tooltip_company_face_selection),
+        makeWidget({ 265, 23 }, { 66, 66 }, WidgetType::wt_5, ColourIndex::secondary),
         widgetEnd(),
     };
 

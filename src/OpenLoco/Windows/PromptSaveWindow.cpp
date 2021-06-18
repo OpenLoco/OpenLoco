@@ -30,13 +30,13 @@ namespace OpenLoco::Ui::Windows::PromptSaveWindow
     };
 
     static Widget _widgets[] = {
-        makeWidget({ 0, 0 }, { 260, 48 }, WidgetType::panel, 0),
-        makeWidget({ 1, 1 }, { 258, 13 }, WidgetType::caption_22, 0, StringIds::empty),
-        makeWidget({ 247, 2 }, { 11, 11 }, WidgetType::wt_11, 0, StringIds::close_window_cross, StringIds::tooltip_close_window),
-        makeWidget({ 2, 17 }, { 256, 12 }, WidgetType::wt_13, 0, StringIds::empty),
-        makeWidget({ 8, 33 }, { 78, 12 }, WidgetType::wt_11, 0, StringIds::label_button_save),
-        makeWidget({ 91, 33 }, { 78, 12 }, WidgetType::wt_11, 0, StringIds::label_button_dont_save),
-        makeWidget({ 174, 33 }, { 78, 12 }, WidgetType::wt_11, 0, StringIds::label_button_cancel),
+        makeWidget({ 0, 0 }, { 260, 48 }, WidgetType::panel, ColourIndex::primary),
+        makeWidget({ 1, 1 }, { 258, 13 }, WidgetType::caption_22, ColourIndex::primary, StringIds::empty),
+        makeWidget({ 247, 2 }, { 11, 11 }, WidgetType::wt_11, ColourIndex::primary, StringIds::close_window_cross, StringIds::tooltip_close_window),
+        makeWidget({ 2, 17 }, { 256, 12 }, WidgetType::wt_13, ColourIndex::primary, StringIds::empty),
+        makeWidget({ 8, 33 }, { 78, 12 }, WidgetType::wt_11, ColourIndex::primary, StringIds::label_button_save),
+        makeWidget({ 91, 33 }, { 78, 12 }, WidgetType::wt_11, ColourIndex::primary, StringIds::label_button_dont_save),
+        makeWidget({ 174, 33 }, { 78, 12 }, WidgetType::wt_11, ColourIndex::primary, StringIds::label_button_cancel),
         widgetEnd(),
     };
 

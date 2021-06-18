@@ -42,15 +42,15 @@ namespace OpenLoco::Ui::Windows::Industry
 
         const uint64_t enabledWidgets = (1 << widx::caption) | (1 << widx::close_button) | (1 << widx::tab_industry) | (1 << widx::tab_production) | (1 << widx::tab_production_2) | (1 << widx::tab_transported);
 
-#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                       \
-    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, WidgetType::frame, 0),                                                          \
-        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, WidgetType::caption_25, 0, windowCaptionId),                                     \
-        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, WidgetType::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window), \
-        makeWidget({ 0, 41 }, { frameWidth, 95 }, WidgetType::panel, 1),                                                              \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_industry),                      \
-        makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_production_graph),             \
-        makeRemapWidget({ 65, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_production_graph),             \
-        makeRemapWidget({ 96, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_statistics)
+#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                                          \
+    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, WidgetType::frame, ColourIndex::primary),                                                          \
+        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, WidgetType::caption_25, ColourIndex::primary, windowCaptionId),                                     \
+        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, WidgetType::wt_9, ColourIndex::primary, ImageIds::close_button, StringIds::tooltip_close_window), \
+        makeWidget({ 0, 41 }, { frameWidth, 95 }, WidgetType::panel, ColourIndex::secondary),                                                            \
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, ColourIndex::secondary, ImageIds::tab, StringIds::tooltip_industry),                    \
+        makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::wt_8, ColourIndex::secondary, ImageIds::tab, StringIds::tooltip_production_graph),           \
+        makeRemapWidget({ 65, 15 }, { 31, 27 }, WidgetType::wt_8, ColourIndex::secondary, ImageIds::tab, StringIds::tooltip_production_graph),           \
+        makeRemapWidget({ 96, 15 }, { 31, 27 }, WidgetType::wt_8, ColourIndex::secondary, ImageIds::tab, StringIds::tooltip_statistics)
 
         // Defined at the bottom of this file.
         static void prepareDraw(Window* self);
@@ -84,10 +84,10 @@ namespace OpenLoco::Ui::Windows::Industry
 
         static Widget widgets[] = {
             commonWidgets(223, 137, StringIds::title_town),
-            makeWidget({ 3, 44 }, { 195, 80 }, WidgetType::viewport, 1, 0xFFFFFFFE),
-            makeWidget({ 3, 115 }, { 195, 21 }, WidgetType::wt_13, 1),
-            makeWidget({ 0, 0 }, { 24, 24 }, WidgetType::wt_9, 1, ImageIds::null, StringIds::move_main_view_to_show_this),
-            makeWidget({ 198, 44 }, { 24, 24 }, WidgetType::wt_9, 1, ImageIds::rubbish_bin, StringIds::demolish_this_industry),
+            makeWidget({ 3, 44 }, { 195, 80 }, WidgetType::viewport, ColourIndex::secondary, 0xFFFFFFFE),
+            makeWidget({ 3, 115 }, { 195, 21 }, WidgetType::wt_13, ColourIndex::secondary),
+            makeWidget({ 0, 0 }, { 24, 24 }, WidgetType::wt_9, ColourIndex::secondary, ImageIds::null, StringIds::move_main_view_to_show_this),
+            makeWidget({ 198, 44 }, { 24, 24 }, WidgetType::wt_9, ColourIndex::secondary, ImageIds::rubbish_bin, StringIds::demolish_this_industry),
             widgetEnd(),
         };
 
