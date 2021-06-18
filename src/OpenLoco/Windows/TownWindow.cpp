@@ -45,14 +45,14 @@ namespace OpenLoco::Ui::Windows::Town
 
         const uint64_t enabledWidgets = (1 << widx::caption) | (1 << widx::close_button) | (1 << widx::tab_town) | (1 << widx::tab_population) | (1 << widx::tab_company_ratings);
 
-#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                       \
-    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, WidgetType::frame, 0),                                                          \
-        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, WidgetType::caption_25, 0, windowCaptionId),                                     \
-        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, WidgetType::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window), \
-        makeWidget({ 0, 41 }, { frameWidth, 120 }, WidgetType::panel, 1),                                                             \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_town),                          \
-        makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_population_graph),             \
-        makeRemapWidget({ 65, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_town_ratings_each_company)
+#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                                           \
+    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, WidgetType::frame, WindowColour::primary),                                                          \
+        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, WidgetType::caption_25, WindowColour::primary, windowCaptionId),                                     \
+        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, WidgetType::wt_9, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window), \
+        makeWidget({ 0, 41 }, { frameWidth, 120 }, WidgetType::panel, WindowColour::secondary),                                                           \
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_town),                        \
+        makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_population_graph),           \
+        makeRemapWidget({ 65, 15 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_town_ratings_each_company)
 
         // Defined at the bottom of this file.
         static void prepareDraw(Window* self);
@@ -78,11 +78,11 @@ namespace OpenLoco::Ui::Windows::Town
 
         static Widget widgets[] = {
             commonWidgets(223, 161, StringIds::title_town),
-            makeWidget({ 3, 44 }, { 195, 104 }, WidgetType::viewport, 1, 0xFFFFFFFE),
-            makeWidget({ 3, 139 }, { 195, 21 }, WidgetType::wt_13, 1),
-            makeWidget({ 0, 0 }, { 24, 24 }, WidgetType::wt_9, 1, ImageIds::null, StringIds::move_main_view_to_show_this),
-            makeWidget({ 198, 44 }, { 24, 24 }, WidgetType::wt_9, 1, ImageIds::town_expand, StringIds::expand_this_town),
-            makeWidget({ 198, 68 }, { 24, 24 }, WidgetType::wt_9, 1, ImageIds::rubbish_bin, StringIds::demolish_this_town),
+            makeWidget({ 3, 44 }, { 195, 104 }, WidgetType::viewport, WindowColour::secondary, 0xFFFFFFFE),
+            makeWidget({ 3, 139 }, { 195, 21 }, WidgetType::wt_13, WindowColour::secondary),
+            makeWidget({ 0, 0 }, { 24, 24 }, WidgetType::wt_9, WindowColour::secondary, ImageIds::null, StringIds::move_main_view_to_show_this),
+            makeWidget({ 198, 44 }, { 24, 24 }, WidgetType::wt_9, WindowColour::secondary, ImageIds::town_expand, StringIds::expand_this_town),
+            makeWidget({ 198, 68 }, { 24, 24 }, WidgetType::wt_9, WindowColour::secondary, ImageIds::rubbish_bin, StringIds::demolish_this_town),
             widgetEnd(),
         };
 
@@ -353,8 +353,8 @@ namespace OpenLoco::Ui::Windows::Town
             auto skin = ObjectManager::get<InterfaceSkinObject>();
             if (skin != nullptr)
             {
-                window->colours[0] = skin->colour_0B;
-                window->colours[1] = skin->colour_0C;
+                window->setColour(WindowColour::primary, skin->colour_0B);
+                window->setColour(WindowColour::secondary, skin->colour_0C);
             }
             // 0x00499C0D end
 
@@ -414,7 +414,7 @@ namespace OpenLoco::Ui::Windows::Town
                 args.push(yTick);
 
                 const uint16_t xPos = 39;
-                Gfx::drawRect(clipped, xPos, yPos, 241, 1, Colour::getShade(self->colours[1], 4));
+                Gfx::drawRect(clipped, xPos, yPos, 241, 1, Colour::getShade(self->getColour(WindowColour::secondary), 4));
 
                 Gfx::drawString_494C78(*clipped, xPos, yPos - 6, Colour::black, StringIds::population_graph_people, &args);
 
@@ -441,7 +441,7 @@ namespace OpenLoco::Ui::Windows::Town
                         Gfx::drawStringCentred(*clipped, xPos, yPos, Colour::black, StringIds::population_graph_year, &args);
                     }
 
-                    Gfx::drawRect(clipped, xPos, 11, 1, self->height - 66, Colour::getShade(self->colours[1], 4));
+                    Gfx::drawRect(clipped, xPos, 11, 1, self->height - 66, Colour::getShade(self->getColour(WindowColour::secondary), 4));
                 }
 
                 // Draw population graph
@@ -450,7 +450,7 @@ namespace OpenLoco::Ui::Windows::Town
 
                 // Do not draw current segment yet; it may be zeroed.
                 if (i < town->history_size - 1)
-                    Gfx::drawLine(clipped, xPos, yPos1, xPos + 1, yPos2, Colour::getShade(self->colours[1], 7));
+                    Gfx::drawLine(clipped, xPos, yPos1, xPos + 1, yPos2, Colour::getShade(self->getColour(WindowColour::secondary), 7));
 
                 month--;
                 if (month < 0)
@@ -758,7 +758,7 @@ namespace OpenLoco::Ui::Windows::Town
                     InterfaceSkin::ImageIds::tab_population_frame7,
                 };
 
-                uint32_t imageId = Gfx::recolour(skin->img, self->colours[1]);
+                uint32_t imageId = Gfx::recolour(skin->img, self->getColour(WindowColour::secondary));
                 if (self->current_tab == widx::tab_population - widx::tab_town)
                     imageId += populationTabImageIds[(self->frame_no / 4) % std::size(populationTabImageIds)];
                 else

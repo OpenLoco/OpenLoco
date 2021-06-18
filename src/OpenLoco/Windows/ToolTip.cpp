@@ -40,7 +40,7 @@ namespace OpenLoco::Ui::Windows::ToolTip
 
     // 0x005234CC
     Widget _widgets[] = {
-        makeWidget({ 0, 0 }, { 200, 32 }, WidgetType::wt_3, 0),
+        makeWidget({ 0, 0 }, { 200, 32 }, WidgetType::wt_3, WindowColour::primary),
         widgetEnd(),
     };
 

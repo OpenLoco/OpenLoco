@@ -91,17 +91,17 @@ namespace OpenLoco::Ui::Windows::MapWindow
     const uint64_t enabledWidgets = (1 << closeButton) | (1 << tabOverall) | (1 << tabVehicles) | (1 << tabIndustries) | (1 << tabRoutes) | (1 << tabOwnership);
 
     Widget widgets[] = {
-        makeWidget({ 0, 0 }, { 350, 272 }, WidgetType::frame, 0),
-        makeWidget({ 1, 1 }, { 348, 13 }, WidgetType::caption_25, 0),
-        makeWidget({ 335, 2 }, { 13, 13 }, WidgetType::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window),
-        makeWidget({ 0, 41 }, { 350, 230 }, WidgetType::panel, 1),
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_6, 1, ImageIds::tab, StringIds::tab_map_overall),
-        makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::wt_6, 1, ImageIds::tab, StringIds::tab_map_vehicles),
-        makeRemapWidget({ 65, 15 }, { 31, 27 }, WidgetType::wt_6, 1, ImageIds::tab, StringIds::tab_map_industries),
-        makeRemapWidget({ 96, 15 }, { 31, 27 }, WidgetType::wt_6, 1, ImageIds::tab, StringIds::tab_map_routes),
-        makeRemapWidget({ 158, 15 }, { 31, 27 }, WidgetType::wt_6, 1, ImageIds::tab, StringIds::tab_map_ownership),
-        makeWidget({ 3, 44 }, { 240, 215 }, WidgetType::scrollview, 1, Scrollbars::horizontal | Scrollbars::vertical),
-        makeWidget({ 3, 250 }, { 322, 21 }, WidgetType::wt_13, 1),
+        makeWidget({ 0, 0 }, { 350, 272 }, WidgetType::frame, WindowColour::primary),
+        makeWidget({ 1, 1 }, { 348, 13 }, WidgetType::caption_25, WindowColour::primary),
+        makeWidget({ 335, 2 }, { 13, 13 }, WidgetType::wt_9, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+        makeWidget({ 0, 41 }, { 350, 230 }, WidgetType::panel, WindowColour::secondary),
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_6, WindowColour::secondary, ImageIds::tab, StringIds::tab_map_overall),
+        makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::wt_6, WindowColour::secondary, ImageIds::tab, StringIds::tab_map_vehicles),
+        makeRemapWidget({ 65, 15 }, { 31, 27 }, WidgetType::wt_6, WindowColour::secondary, ImageIds::tab, StringIds::tab_map_industries),
+        makeRemapWidget({ 96, 15 }, { 31, 27 }, WidgetType::wt_6, WindowColour::secondary, ImageIds::tab, StringIds::tab_map_routes),
+        makeRemapWidget({ 158, 15 }, { 31, 27 }, WidgetType::wt_6, WindowColour::secondary, ImageIds::tab, StringIds::tab_map_ownership),
+        makeWidget({ 3, 44 }, { 240, 215 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::horizontal | Scrollbars::vertical),
+        makeWidget({ 3, 250 }, { 322, 21 }, WidgetType::wt_13, WindowColour::secondary),
         widgetEnd()
     };
 
@@ -1505,8 +1505,8 @@ namespace OpenLoco::Ui::Windows::MapWindow
         }
 
         auto skin = ObjectManager::get<InterfaceSkinObject>();
-        window->colours[0] = skin->colour_0B;
-        window->colours[1] = skin->colour_0F;
+        window->setColour(WindowColour::primary, skin->colour_0B);
+        window->setColour(WindowColour::secondary, skin->colour_0F);
 
         window->var_846 = getCurrentRotation();
 

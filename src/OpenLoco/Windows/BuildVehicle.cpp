@@ -190,26 +190,26 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
 
     // 0x5231D0
     static Widget _widgets[] = {
-        makeWidget({ 0, 0 }, { 380, 233 }, WidgetType::frame, 0),
-        makeWidget({ 1, 1 }, { 378, 13 }, WidgetType::caption_24, 0),
-        makeWidget({ 365, 2 }, { 13, 13 }, WidgetType::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window),
-        makeWidget({ 0, 41 }, { 380, 192 }, WidgetType::panel, 1),
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_build_new_train_vehicles),
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_build_new_buses),
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_build_new_trucks),
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_build_new_trams),
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_build_new_aircraft),
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_build_new_ships),
-        makeRemapWidget({ 5, 43 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_vehicles_for),
-        makeRemapWidget({ 36, 43 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_vehicles_for),
-        makeRemapWidget({ 67, 43 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_vehicles_for),
-        makeRemapWidget({ 98, 43 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_vehicles_for),
-        makeRemapWidget({ 129, 43 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_vehicles_for),
-        makeRemapWidget({ 160, 43 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_vehicles_for),
-        makeRemapWidget({ 191, 43 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_vehicles_for),
-        makeRemapWidget({ 222, 43 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_vehicles_for),
-        makeWidget({ 3, 72 }, { 374, 146 }, WidgetType::scrollview, 1, Scrollbars::vertical),
-        makeWidget({ 250, 44 }, { 180, 66 }, WidgetType::scrollview, 1, Scrollbars::none),
+        makeWidget({ 0, 0 }, { 380, 233 }, WidgetType::frame, WindowColour::primary),
+        makeWidget({ 1, 1 }, { 378, 13 }, WidgetType::caption_24, WindowColour::primary),
+        makeWidget({ 365, 2 }, { 13, 13 }, WidgetType::wt_9, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+        makeWidget({ 0, 41 }, { 380, 192 }, WidgetType::panel, WindowColour::secondary),
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_new_train_vehicles),
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_new_buses),
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_new_trucks),
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_new_trams),
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_new_aircraft),
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_new_ships),
+        makeRemapWidget({ 5, 43 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
+        makeRemapWidget({ 36, 43 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
+        makeRemapWidget({ 67, 43 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
+        makeRemapWidget({ 98, 43 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
+        makeRemapWidget({ 129, 43 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
+        makeRemapWidget({ 160, 43 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
+        makeRemapWidget({ 191, 43 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
+        makeRemapWidget({ 222, 43 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_vehicles_for),
+        makeWidget({ 3, 72 }, { 374, 146 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
+        makeWidget({ 250, 44 }, { 180, 66 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::none),
         widgetEnd(),
     };
 
@@ -261,7 +261,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         auto skin = OpenLoco::ObjectManager::get<InterfaceSkinObject>();
         if (skin != nullptr)
         {
-            window->colours[1] = skin->colour_0A;
+            window->setColour(WindowColour::secondary, skin->colour_0A);
         }
         setDisabledTransportTabs(window);
         return window;
@@ -1038,7 +1038,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         {
             case scrollIdx::vehicle_selection:
             {
-                auto colour = Colour::getShade(window->colours[1], 4);
+                auto colour = Colour::getShade(window->getColour(WindowColour::secondary), 4);
                 Gfx::clear(*context, colour * 0x01010101);
                 if (window->var_83C == 0)
                 {
@@ -1099,7 +1099,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             }
             case scrollIdx::vehicle_preview:
             {
-                auto colour = Colour::getShade(window->colours[1], 0);
+                auto colour = Colour::getShade(window->getColour(WindowColour::secondary), 0);
                 // Gfx::clear needs the colour copied to each byte of eax
                 Gfx::clear(*context, colour * 0x01010101);
 
@@ -1331,13 +1331,13 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         auto top = window->y + 69;
         auto right = left + window->width - 187;
         auto bottom = top;
-        Gfx::fillRect(context, left, top, right, bottom, Colour::getShade(window->colours[1], 7));
+        Gfx::fillRect(context, left, top, right, bottom, Colour::getShade(window->getColour(WindowColour::secondary), 7));
 
         left = window->x + window->width - 187;
         top = window->y + 41;
         right = left;
         bottom = top + 27;
-        Gfx::fillRect(context, left, top, right, bottom, Colour::getShade(window->colours[1], 7));
+        Gfx::fillRect(context, left, top, right, bottom, Colour::getShade(window->getColour(WindowColour::secondary), 7));
 
         for (uint32_t tab = 0; tab < _numTrackTypeTabs; ++tab)
         {
@@ -1348,7 +1348,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 top = widget.top + window->y + 26;
                 right = left + 29;
                 bottom = top;
-                Gfx::fillRect(context, left, top, right, bottom, Colour::getShade(window->colours[1], 5));
+                Gfx::fillRect(context, left, top, right, bottom, Colour::getShade(window->getColour(WindowColour::secondary), 5));
             }
 
             auto img = 0;

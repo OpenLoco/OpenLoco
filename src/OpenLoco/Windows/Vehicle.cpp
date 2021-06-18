@@ -47,16 +47,16 @@ namespace OpenLoco::Ui::Windows::Vehicle
             tabRoute = 8,
         };
 
-#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                                 \
-    makeWidget({ 0, 0 }, { (frameWidth), (frameHeight) }, WidgetType::frame, 0),                                                                \
-        makeWidget({ 1, 1 }, { (frameWidth)-2, 13 }, WidgetType::caption_24, 0, windowCaptionId),                                               \
-        makeWidget({ (frameWidth)-15, 2 }, { 13, 13 }, WidgetType::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window),           \
-        makeWidget({ 0, 41 }, { 265, 136 }, WidgetType::panel, 1),                                                                              \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab_vehicle_background, StringIds::tooltip_vehicle_tab_main),     \
-        makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab_vehicle_background, StringIds::tooltip_vehicle_tab_details), \
-        makeRemapWidget({ 65, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab_vehicle_background, StringIds::tooltip_vehicle_tab_cargo),   \
-        makeRemapWidget({ 96, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab_vehicle_background, StringIds::tooltip_vehicle_tab_finance), \
-        makeRemapWidget({ 158, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab_vehicle_background, StringIds::tooltip_vehicle_tab_route)
+#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                                                       \
+    makeWidget({ 0, 0 }, { (frameWidth), (frameHeight) }, WidgetType::frame, WindowColour::primary),                                                                  \
+        makeWidget({ 1, 1 }, { (frameWidth)-2, 13 }, WidgetType::caption_24, WindowColour::primary, windowCaptionId),                                                 \
+        makeWidget({ (frameWidth)-15, 2 }, { 13, 13 }, WidgetType::wt_9, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),             \
+        makeWidget({ 0, 41 }, { 265, 136 }, WidgetType::panel, WindowColour::secondary),                                                                              \
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab_vehicle_background, StringIds::tooltip_vehicle_tab_main),     \
+        makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab_vehicle_background, StringIds::tooltip_vehicle_tab_details), \
+        makeRemapWidget({ 65, 15 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab_vehicle_background, StringIds::tooltip_vehicle_tab_cargo),   \
+        makeRemapWidget({ 96, 15 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab_vehicle_background, StringIds::tooltip_vehicle_tab_finance), \
+        makeRemapWidget({ 158, 15 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab_vehicle_background, StringIds::tooltip_vehicle_tab_route)
 
         constexpr uint64_t enabledWidgets = (1 << closeButton) | (1 << tabMain) | (1 << tabDetails) | (1 << tabCargo) | (1 << tabFinances) | (1 << tabRoute);
 
@@ -105,10 +105,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
         static Widget widgets[] = {
             commonWidgets(265, 177, StringIds::title_vehicle_details),
-            makeWidget({ 240, 44 }, { 24, 24 }, WidgetType::wt_9, 1, -1, StringIds::tooltip_build_new_vehicle_for),
-            makeWidget({ 240, 68 }, { 24, 24 }, WidgetType::wt_9, 1, -1, StringIds::tooltip_remove_from_track),
-            makeWidget({ 240, 96 }, { 24, 24 }, WidgetType::wt_9, 1, ImageIds::rubbish_bin, StringIds::tooltip_sell_or_drag_vehicle),
-            makeWidget({ 3, 44 }, { 237, 110 }, WidgetType::scrollview, 1, Scrollbars::vertical),
+            makeWidget({ 240, 44 }, { 24, 24 }, WidgetType::wt_9, WindowColour::secondary, -1, StringIds::tooltip_build_new_vehicle_for),
+            makeWidget({ 240, 68 }, { 24, 24 }, WidgetType::wt_9, WindowColour::secondary, -1, StringIds::tooltip_remove_from_track),
+            makeWidget({ 240, 96 }, { 24, 24 }, WidgetType::wt_9, WindowColour::secondary, ImageIds::rubbish_bin, StringIds::tooltip_sell_or_drag_vehicle),
+            makeWidget({ 3, 44 }, { 237, 110 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
             widgetEnd()
         };
     }
@@ -131,8 +131,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
         static Widget widgets[] = {
             commonWidgets(265, 177, StringIds::title_vehicle_cargo),
-            makeWidget({ 240, 44 }, { 24, 24 }, WidgetType::wt_9, 1, ImageIds::refit_cargo_button, StringIds::refit_vehicle_tip),
-            makeWidget({ 3, 44 }, { 259, 120 }, WidgetType::scrollview, 1, Scrollbars::vertical),
+            makeWidget({ 240, 44 }, { 24, 24 }, WidgetType::wt_9, WindowColour::secondary, ImageIds::refit_cargo_button, StringIds::refit_vehicle_tip),
+            makeWidget({ 3, 44 }, { 259, 120 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
             widgetEnd()
         };
     }
@@ -180,16 +180,16 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
         static Widget widgets[] = {
             commonWidgets(265, 189, StringIds::title_vehicle_route),
-            makeWidget({ 0, 0 }, { 1, 1 }, WidgetType::none, 0),
-            makeWidget({ 3, 44 }, { 118, 12 }, WidgetType::wt_11, 1, StringIds::local_mode_button),
-            makeWidget({ 121, 44 }, { 119, 12 }, WidgetType::wt_11, 1, StringIds::express_mode_button),
-            makeWidget({ 3, 58 }, { 237, 120 }, WidgetType::scrollview, 1, Scrollbars::vertical, StringIds::tooltip_route_scrollview),
-            makeWidget({ 240, 44 }, { 24, 24 }, WidgetType::wt_9, 1, ImageIds::route_force_unload, StringIds::tooltip_route_insert_force_unload),
-            makeWidget({ 240, 68 }, { 24, 24 }, WidgetType::wt_9, 1, ImageIds::route_wait, StringIds::tooltip_route_insert_wait_full_cargo),
-            makeWidget({ 240, 92 }, { 24, 24 }, WidgetType::wt_9, 1, ImageIds::route_skip, StringIds::tooltip_route_skip_next_order),
-            makeWidget({ 240, 116 }, { 24, 24 }, WidgetType::wt_9, 1, ImageIds::route_delete, StringIds::tooltip_route_delete_order),
-            makeWidget({ 240, 140 }, { 24, 12 }, WidgetType::wt_9, 1, ImageIds::red_arrow_up, StringIds::tooltip_route_move_order_up),
-            makeWidget({ 240, 152 }, { 24, 12 }, WidgetType::wt_9, 1, ImageIds::red_arrow_down, StringIds::tooltip_route_move_order_down),
+            makeWidget({ 0, 0 }, { 1, 1 }, WidgetType::none, WindowColour::primary),
+            makeWidget({ 3, 44 }, { 118, 12 }, WidgetType::wt_11, WindowColour::secondary, StringIds::local_mode_button),
+            makeWidget({ 121, 44 }, { 119, 12 }, WidgetType::wt_11, WindowColour::secondary, StringIds::express_mode_button),
+            makeWidget({ 3, 58 }, { 237, 120 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical, StringIds::tooltip_route_scrollview),
+            makeWidget({ 240, 44 }, { 24, 24 }, WidgetType::wt_9, WindowColour::secondary, ImageIds::route_force_unload, StringIds::tooltip_route_insert_force_unload),
+            makeWidget({ 240, 68 }, { 24, 24 }, WidgetType::wt_9, WindowColour::secondary, ImageIds::route_wait, StringIds::tooltip_route_insert_wait_full_cargo),
+            makeWidget({ 240, 92 }, { 24, 24 }, WidgetType::wt_9, WindowColour::secondary, ImageIds::route_skip, StringIds::tooltip_route_skip_next_order),
+            makeWidget({ 240, 116 }, { 24, 24 }, WidgetType::wt_9, WindowColour::secondary, ImageIds::route_delete, StringIds::tooltip_route_delete_order),
+            makeWidget({ 240, 140 }, { 24, 12 }, WidgetType::wt_9, WindowColour::secondary, ImageIds::red_arrow_up, StringIds::tooltip_route_move_order_up),
+            makeWidget({ 240, 152 }, { 24, 12 }, WidgetType::wt_9, WindowColour::secondary, ImageIds::red_arrow_down, StringIds::tooltip_route_move_order_down),
             widgetEnd(),
         };
     }
@@ -220,14 +220,14 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
         static Widget widgets[] = {
             commonWidgets(265, 177, StringIds::stringid),
-            makeWidget({ 3, 44 }, { 237, 120 }, WidgetType::viewport, 1),
-            makeWidget({ 3, 155 }, { 237, 21 }, WidgetType::wt_13, 1),
-            makeWidget({ 240, 46 }, { 24, 115 }, WidgetType::wt_5, 1),
-            makeWidget({ 240, 44 }, { 24, 24 }, WidgetType::wt_9, 1, ImageIds::red_flag, StringIds::tooltip_stop_start),
-            makeWidget({ 240, 68 }, { 24, 24 }, WidgetType::wt_9, 1, ImageIds::null, StringIds::tooltip_remove_from_track),
-            makeWidget({ 240, 92 }, { 24, 24 }, WidgetType::wt_9, 1, ImageIds::pass_signal, StringIds::tooltip_pass_signal_at_danger),
-            makeWidget({ 240, 116 }, { 24, 24 }, WidgetType::wt_9, 1, ImageIds::construction_right_turnaround, StringIds::tooltip_change_direction),
-            makeWidget({ 0, 0 }, { 24, 24 }, WidgetType::wt_9, 1, ImageIds::null, StringIds::move_main_view_to_show_this),
+            makeWidget({ 3, 44 }, { 237, 120 }, WidgetType::viewport, WindowColour::secondary),
+            makeWidget({ 3, 155 }, { 237, 21 }, WidgetType::wt_13, WindowColour::secondary),
+            makeWidget({ 240, 46 }, { 24, 115 }, WidgetType::wt_5, WindowColour::secondary),
+            makeWidget({ 240, 44 }, { 24, 24 }, WidgetType::wt_9, WindowColour::secondary, ImageIds::red_flag, StringIds::tooltip_stop_start),
+            makeWidget({ 240, 68 }, { 24, 24 }, WidgetType::wt_9, WindowColour::secondary, ImageIds::null, StringIds::tooltip_remove_from_track),
+            makeWidget({ 240, 92 }, { 24, 24 }, WidgetType::wt_9, WindowColour::secondary, ImageIds::pass_signal, StringIds::tooltip_pass_signal_at_danger),
+            makeWidget({ 240, 116 }, { 24, 24 }, WidgetType::wt_9, WindowColour::secondary, ImageIds::construction_right_turnaround, StringIds::tooltip_change_direction),
+            makeWidget({ 0, 0 }, { 24, 24 }, WidgetType::wt_9, WindowColour::secondary, ImageIds::null, StringIds::move_main_view_to_show_this),
             widgetEnd()
         };
 
@@ -358,7 +358,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             _dragVehicleHead = EntityId::null;
 
             const auto* skin = ObjectManager::get<InterfaceSkinObject>();
-            self->colours[1] = skin->colour_0A;
+            self->setColour(WindowColour::secondary, skin->colour_0A);
             return self;
         }
 
@@ -417,7 +417,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 self->y + widget->top,
                 widget->width(),
                 widget->height(),
-                self->colours[1],
+                self->getColour(WindowColour::secondary),
                 2,
                 0);
 
@@ -547,7 +547,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 self->y + widget->top,
                 widget->width(),
                 widget->height(),
-                self->colours[1],
+                self->getColour(WindowColour::secondary),
                 dropdownCount,
                 0);
 
@@ -897,7 +897,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     context,
                     self->x + speedWidget.left,
                     self->y + speedWidget.top + 10,
-                    Gfx::recolour(ImageIds::speed_control_track, self->colours[1]));
+                    Gfx::recolour(ImageIds::speed_control_track, self->getColour(WindowColour::secondary)));
 
                 Gfx::drawStringCentred(
                     *context,
@@ -917,7 +917,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     context,
                     self->x + speedWidget.left + 1,
                     self->y + speedWidget.top + 57 - veh->var_6E,
-                    Gfx::recolour(ImageIds::speed_control_thumb, self->colours[1]));
+                    Gfx::recolour(ImageIds::speed_control_thumb, self->getColour(WindowColour::secondary)));
             }
 
             if (self->viewports[0] != nullptr)
@@ -1042,7 +1042,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 self->y + widget->top,
                 widget->width(),
                 widget->height(),
-                self->colours[1],
+                self->getColour(WindowColour::secondary),
                 2,
                 0);
 
@@ -1431,7 +1431,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004B36A3
         static void drawScroll(Window* const self, Gfx::Context* const context, const uint32_t i)
         {
-            Gfx::clearSingle(*context, Colour::getShade(self->colours[1], 4));
+            Gfx::clearSingle(*context, Colour::getShade(self->getColour(WindowColour::secondary), 4));
             auto head = Common::getVehicle(self);
             OpenLoco::Vehicles::Vehicle train{ head };
             Gfx::point_t pos{ 0, 0 };
@@ -1459,7 +1459,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 if (car.front == _dragCarComponent)
                 {
                     al = 12;
-                    ah = self->colours[1];
+                    ah = self->getColour(WindowColour::secondary);
                 }
                 auto x = Common::sub_4B743B(al, ah, 0, y, car.front, context);
 
@@ -1714,7 +1714,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 004B3F62
         static void drawScroll(Window* const self, Gfx::Context* const pDrawpixelinfo, const uint32_t i)
         {
-            Gfx::clearSingle(*pDrawpixelinfo, Colour::getShade(self->colours[1], 4));
+            Gfx::clearSingle(*pDrawpixelinfo, Colour::getShade(self->getColour(WindowColour::secondary), 4));
             Vehicles::Vehicle train{ Common::getVehicle(self) };
             int16_t y = 0;
             for (auto& car : train.cars)
@@ -1852,7 +1852,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 self->y + button.top,
                 button.width(),
                 button.height(),
-                self->colours[1],
+                self->getColour(WindowColour::secondary),
                 index,
                 0);
             Dropdown::setHighlightedItem(0);
@@ -2511,7 +2511,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             auto y = self->widgets[i].top + self->y;
             auto width = self->widgets[i].width();
             auto height = self->widgets[i].height();
-            Dropdown::showText(x, y, width, height, self->colours[1], index, 0);
+            Dropdown::showText(x, y, width, height, self->getColour(WindowColour::secondary), index, 0);
             Dropdown::setHighlightedItem(0);
         }
 
@@ -3077,7 +3077,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004B48BA
         static void drawScroll(Window* const self, Gfx::Context* const pDrawpixelinfo, const uint32_t i)
         {
-            Gfx::clearSingle(*pDrawpixelinfo, Colour::getShade(self->colours[1], 4));
+            Gfx::clearSingle(*pDrawpixelinfo, Colour::getShade(self->getColour(WindowColour::secondary), 4));
 
             auto head = Common::getVehicle(self);
             Vehicles::Vehicle train(head);

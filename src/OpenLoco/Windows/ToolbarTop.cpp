@@ -53,23 +53,23 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     }
 
     static Widget _widgets[] = {
-        makeWidget({ 0, 0 }, { 30, 28 }, WidgetType::wt_7, 0),
-        makeWidget({ 30, 0 }, { 30, 28 }, WidgetType::wt_7, 0),
-        makeWidget({ 60, 0 }, { 30, 28 }, WidgetType::wt_7, 0),
+        makeWidget({ 0, 0 }, { 30, 28 }, WidgetType::wt_7, WindowColour::primary),
+        makeWidget({ 30, 0 }, { 30, 28 }, WidgetType::wt_7, WindowColour::primary),
+        makeWidget({ 60, 0 }, { 30, 28 }, WidgetType::wt_7, WindowColour::primary),
 
-        makeWidget({ 104, 0 }, { 30, 28 }, WidgetType::wt_7, 1),
-        makeWidget({ 134, 0 }, { 30, 28 }, WidgetType::wt_7, 1),
-        makeWidget({ 164, 0 }, { 30, 28 }, WidgetType::wt_7, 1),
+        makeWidget({ 104, 0 }, { 30, 28 }, WidgetType::wt_7, WindowColour::secondary),
+        makeWidget({ 134, 0 }, { 30, 28 }, WidgetType::wt_7, WindowColour::secondary),
+        makeWidget({ 164, 0 }, { 30, 28 }, WidgetType::wt_7, WindowColour::secondary),
 
-        makeWidget({ 267, 0 }, { 30, 28 }, WidgetType::wt_7, 2),
-        makeWidget({ 387, 0 }, { 30, 28 }, WidgetType::wt_7, 2),
-        makeWidget({ 357, 0 }, { 30, 28 }, WidgetType::wt_7, 2),
-        makeWidget({ 417, 0 }, { 30, 28 }, WidgetType::wt_7, 2),
-        makeWidget({ 417, 0 }, { 30, 28 }, WidgetType::wt_7, 2),
+        makeWidget({ 267, 0 }, { 30, 28 }, WidgetType::wt_7, WindowColour::tertiary),
+        makeWidget({ 387, 0 }, { 30, 28 }, WidgetType::wt_7, WindowColour::tertiary),
+        makeWidget({ 357, 0 }, { 30, 28 }, WidgetType::wt_7, WindowColour::tertiary),
+        makeWidget({ 417, 0 }, { 30, 28 }, WidgetType::wt_7, WindowColour::tertiary),
+        makeWidget({ 417, 0 }, { 30, 28 }, WidgetType::wt_7, WindowColour::tertiary),
 
-        makeWidget({ 490, 0 }, { 30, 28 }, WidgetType::wt_7, 3),
-        makeWidget({ 520, 0 }, { 30, 28 }, WidgetType::wt_7, 3),
-        makeWidget({ 460, 0 }, { 30, 28 }, WidgetType::wt_7, 3),
+        makeWidget({ 490, 0 }, { 30, 28 }, WidgetType::wt_7, WindowColour::quaternary),
+        makeWidget({ 520, 0 }, { 30, 28 }, WidgetType::wt_7, WindowColour::quaternary),
+        makeWidget({ 460, 0 }, { 30, 28 }, WidgetType::wt_7, WindowColour::quaternary),
         widgetEnd(),
     };
 
@@ -108,10 +108,10 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         auto skin = ObjectManager::get<InterfaceSkinObject>();
         if (skin != nullptr)
         {
-            window->colours[0] = skin->colour_12;
-            window->colours[1] = skin->colour_13;
-            window->colours[2] = skin->colour_14;
-            window->colours[3] = skin->colour_15;
+            window->setColour(WindowColour::primary, skin->colour_12);
+            window->setColour(WindowColour::secondary, skin->colour_13);
+            window->setColour(WindowColour::tertiary, skin->colour_14);
+            window->setColour(WindowColour::quaternary, skin->colour_15);
         }
     }
 
@@ -713,7 +713,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             }
 
             auto interface = ObjectManager::get<InterfaceSkinObject>();
-            uint32_t bg_image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_transparent, window->colours[2]);
+            uint32_t bg_image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_transparent, window->getColour(WindowColour::tertiary));
 
             y--;
             if (Input::isDropdownActive(Ui::WindowType::topToolbar, Common::Widx::railroad_menu))
@@ -743,7 +743,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
 
             auto interface = ObjectManager::get<InterfaceSkinObject>();
             uint32_t fg_image = Gfx::recolour(interface->img + button_face_image_ids[static_cast<uint8_t>(*last_vehicles_option)], company_colour);
-            uint32_t bg_image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_transparent, window->colours[3]);
+            uint32_t bg_image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_empty_transparent, window->getColour(WindowColour::quaternary));
 
             y--;
             if (Input::isDropdownActive(Ui::WindowType::topToolbar, Common::Widx::vehicles_menu))
@@ -790,12 +790,12 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         if (!Audio::isAudioEnabled())
         {
             window->activated_widgets |= (1 << Common::Widx::audio_menu);
-            window->widgets[Common::Widx::audio_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_audio_inactive, window->colours[0]);
+            window->widgets[Common::Widx::audio_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_audio_inactive, window->getColour(WindowColour::primary));
         }
         else
         {
             window->activated_widgets &= ~(1 << Common::Widx::audio_menu);
-            window->widgets[Common::Widx::audio_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_audio_active, window->colours[0]);
+            window->widgets[Common::Widx::audio_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_audio_active, window->getColour(WindowColour::primary));
         }
 
         if (Config::getNew().cheats_menu_enabled)

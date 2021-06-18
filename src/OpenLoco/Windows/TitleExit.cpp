@@ -24,7 +24,7 @@ namespace OpenLoco::Ui::Windows::TitleExit
     }
 
     static Widget _widgets[] = {
-        makeWidget({ 0, 0 }, window_size, WidgetType::wt_9, 1, -1, StringIds::title_menu_exit_from_game),
+        makeWidget({ 0, 0 }, window_size, WidgetType::wt_9, WindowColour::secondary, -1, StringIds::title_menu_exit_from_game),
         widgetEnd(),
     };
 
@@ -52,8 +52,8 @@ namespace OpenLoco::Ui::Windows::TitleExit
 
         window->initScrollWidgets();
 
-        window->colours[0] = Colour::translucent(Colour::saturated_green);
-        window->colours[1] = Colour::translucent(Colour::saturated_green);
+        window->setColour(WindowColour::primary, Colour::translucent(Colour::saturated_green));
+        window->setColour(WindowColour::secondary, Colour::translucent(Colour::saturated_green));
 
         return window;
     }

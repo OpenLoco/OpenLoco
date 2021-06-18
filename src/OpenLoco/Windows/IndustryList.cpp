@@ -43,13 +43,13 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
         const uint64_t enabledWidgets = (1 << widx::close_button) | (1 << widx::tab_industry_list) | (1 << widx::tab_new_industry);
 
-#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                       \
-    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, WidgetType::frame, 0),                                                          \
-        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, WidgetType::caption_25, 0, windowCaptionId),                                     \
-        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, WidgetType::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window), \
-        makeWidget({ 0, 41 }, { frameWidth, 154 }, WidgetType::panel, 1),                                                             \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_industries_list),               \
-        makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_fund_new_industries)
+#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                                           \
+    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, WidgetType::frame, WindowColour::primary),                                                          \
+        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, WidgetType::caption_25, WindowColour::primary, windowCaptionId),                                     \
+        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, WidgetType::wt_9, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window), \
+        makeWidget({ 0, 41 }, { frameWidth, 154 }, WidgetType::panel, WindowColour::secondary),                                                           \
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_industries_list),             \
+        makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_fund_new_industries)
 
         static WindowEventList _events;
 
@@ -80,10 +80,10 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
         Widget widgets[] = {
             commonWidgets(600, 197, StringIds::title_industries),
-            makeWidget({ 4, 44 }, { 199, 11 }, WidgetType::wt_14, 1, ImageIds::null, StringIds::sort_industry_name),
-            makeWidget({ 204, 44 }, { 204, 11 }, WidgetType::wt_14, 1, ImageIds::null, StringIds::sort_industry_status),
-            makeWidget({ 444, 44 }, { 159, 11 }, WidgetType::wt_14, 1, ImageIds::null, StringIds::sort_industry_production_transported),
-            makeWidget({ 3, 56 }, { 593, 125 }, WidgetType::scrollview, 1, Scrollbars::vertical),
+            makeWidget({ 4, 44 }, { 199, 11 }, WidgetType::wt_14, WindowColour::secondary, ImageIds::null, StringIds::sort_industry_name),
+            makeWidget({ 204, 44 }, { 204, 11 }, WidgetType::wt_14, WindowColour::secondary, ImageIds::null, StringIds::sort_industry_status),
+            makeWidget({ 444, 44 }, { 159, 11 }, WidgetType::wt_14, WindowColour::secondary, ImageIds::null, StringIds::sort_industry_production_transported),
+            makeWidget({ 3, 56 }, { 593, 125 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
             widgetEnd(),
         };
 
@@ -379,7 +379,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         // 0x00457D2A
         static void drawScroll(Ui::Window* self, Gfx::Context* context, uint32_t scrollIndex)
         {
-            auto shade = Colour::getShade(self->colours[1], 4);
+            auto shade = Colour::getShade(self->getColour(WindowColour::secondary), 4);
             Gfx::clearSingle(*context, shade);
 
             uint16_t yPos = 0;
@@ -543,8 +543,8 @@ namespace OpenLoco::Ui::Windows::IndustryList
             window->flags |= WindowFlags::resizable;
 
             auto skin = ObjectManager::get<InterfaceSkinObject>();
-            window->colours[0] = skin->colour_0B;
-            window->colours[1] = skin->colour_0C;
+            window->setColour(WindowColour::primary, skin->colour_0B);
+            window->setColour(WindowColour::secondary, skin->colour_0C);
 
             // 0x00457878 end
 
@@ -585,7 +585,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
         Widget widgets[] = {
             commonWidgets(577, 171, StringIds::title_fund_new_industries),
-            makeWidget({ 3, 45 }, { 549, 111 }, WidgetType::scrollview, 1, Scrollbars::vertical),
+            makeWidget({ 3, 45 }, { 549, 111 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
             widgetEnd(),
         };
 
@@ -869,7 +869,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         // 0x00458352
         static void drawScroll(Ui::Window* self, Gfx::Context* context, uint32_t scrollIndex)
         {
-            auto shade = Colour::getShade(self->colours[1], 4);
+            auto shade = Colour::getShade(self->getColour(WindowColour::secondary), 4);
             Gfx::clearSingle(*context, shade);
 
             loco_global<uint16_t, 0x00E0C3C6> word_E0C3C6;
@@ -883,13 +883,13 @@ namespace OpenLoco::Ui::Windows::IndustryList
                     if (self->row_info[i] == self->var_846)
                     {
                         word_E0C3C6 = Colour::translucent_flag;
-                        Gfx::drawRectInset(context, xPos, yPos, rowHeight, rowHeight, self->colours[1], Colour::translucent_flag);
+                        Gfx::drawRectInset(context, xPos, yPos, rowHeight, rowHeight, self->getColour(WindowColour::secondary), Colour::translucent_flag);
                     }
                 }
                 else
                 {
                     word_E0C3C6 = Colour::translucent_flag | Colour::outline_flag;
-                    Gfx::drawRectInset(context, xPos, yPos, rowHeight, rowHeight, self->colours[1], (Colour::translucent_flag | Colour::outline_flag));
+                    Gfx::drawRectInset(context, xPos, yPos, rowHeight, rowHeight, self->getColour(WindowColour::secondary), (Colour::translucent_flag | Colour::outline_flag));
                 }
 
                 auto industryObj = ObjectManager::get<IndustryObject>(self->row_info[i]);

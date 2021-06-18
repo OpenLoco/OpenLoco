@@ -29,11 +29,11 @@ namespace OpenLoco::Ui::Windows::MusicSelection
     };
 
     static Widget _widgets[] = {
-        makeWidget({ 0, 0 }, { 360, 238 }, WidgetType::frame, 0),
-        makeWidget({ 1, 1 }, { 358, 13 }, WidgetType::caption_25, 0, StringIds::music_selection_title),
-        makeWidget({ 345, 2 }, { 13, 13 }, WidgetType::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window),
-        makeWidget({ 0, 15 }, { 360, 223 }, WidgetType::panel, 1),
-        makeWidget({ 4, 19 }, { 352, 218 }, WidgetType::scrollview, 1, Scrollbars::vertical, StringIds::music_selection_tooltip),
+        makeWidget({ 0, 0 }, { 360, 238 }, WidgetType::frame, WindowColour::primary),
+        makeWidget({ 1, 1 }, { 358, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::music_selection_title),
+        makeWidget({ 345, 2 }, { 13, 13 }, WidgetType::wt_9, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+        makeWidget({ 0, 15 }, { 360, 223 }, WidgetType::panel, WindowColour::secondary),
+        makeWidget({ 4, 19 }, { 352, 218 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical, StringIds::music_selection_tooltip),
         widgetEnd(),
     };
 
@@ -81,8 +81,8 @@ namespace OpenLoco::Ui::Windows::MusicSelection
         window->initScrollWidgets();
 
         auto interface = ObjectManager::get<InterfaceSkinObject>();
-        window->colours[0] = interface->colour_0B;
-        window->colours[1] = interface->colour_10;
+        window->setColour(WindowColour::primary, interface->colour_0B);
+        window->setColour(WindowColour::secondary, interface->colour_10);
 
         window->row_count = Audio::num_music_tracks;
         window->row_hover = -1;
@@ -100,7 +100,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
     // 0x004C1663
     static void drawScroll(Ui::Window* window, Gfx::Context* context, uint32_t scrollIndex)
     {
-        auto shade = Colour::getShade(window->colours[1], 4);
+        auto shade = Colour::getShade(window->getColour(WindowColour::secondary), 4);
         Gfx::clearSingle(*context, shade);
 
         auto config = Config::get();
@@ -118,15 +118,15 @@ namespace OpenLoco::Ui::Windows::MusicSelection
             }
 
             // Draw checkbox.
-            Gfx::fillRectInset(context, 2, y, 11, y + 10, window->colours[1], 0xE0);
+            Gfx::fillRectInset(context, 2, y, 11, y + 10, window->getColour(WindowColour::secondary), 0xE0);
 
             // Draw checkmark if track is enabled.
             if (config.enabled_music[i])
-                Gfx::drawString_494B3F(*context, 2, y, window->colours[1], StringIds::wcolour2_stringid, (void*)&StringIds::checkmark);
+                Gfx::drawString_494B3F(*context, 2, y, window->getColour(WindowColour::secondary), StringIds::wcolour2_stringid, (void*)&StringIds::checkmark);
 
             // Draw track name.
             string_id music_title_id = Audio::getMusicInfo(i)->title_id;
-            Gfx::drawString_494B3F(*context, 15, y, window->colours[1], text_colour_id, (void*)&music_title_id);
+            Gfx::drawString_494B3F(*context, 15, y, window->getColour(WindowColour::secondary), text_colour_id, (void*)&music_title_id);
 
             y += rowHeight;
         }

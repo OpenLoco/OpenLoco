@@ -39,11 +39,11 @@ namespace OpenLoco::Ui::Windows::PromptOkCancel
     };
 
     static Widget _widgets[] = {
-        makeWidget({ 0, 0 }, { 280, 92 }, WidgetType::panel, 0),
-        makeWidget({ 1, 1 }, { 278, 13 }, WidgetType::caption_22, 0, StringIds::buffer_2039),
-        makeWidget({ 267, 2 }, { 11, 11 }, WidgetType::wt_11, 0, StringIds::close_window_cross, StringIds::tooltip_close_window),
-        makeWidget({ 20, 77 }, { 100, 12 }, WidgetType::wt_11, 0, StringIds::label_ok),
-        makeWidget({ 160, 77 }, { 100, 12 }, WidgetType::wt_11, 0, StringIds::label_button_cancel),
+        makeWidget({ 0, 0 }, { 280, 92 }, WidgetType::panel, WindowColour::primary),
+        makeWidget({ 1, 1 }, { 278, 13 }, WidgetType::caption_22, WindowColour::primary, StringIds::buffer_2039),
+        makeWidget({ 267, 2 }, { 11, 11 }, WidgetType::wt_11, WindowColour::primary, StringIds::close_window_cross, StringIds::tooltip_close_window),
+        makeWidget({ 20, 77 }, { 100, 12 }, WidgetType::wt_11, WindowColour::primary, StringIds::label_ok),
+        makeWidget({ 160, 77 }, { 100, 12 }, WidgetType::wt_11, WindowColour::primary, StringIds::label_button_cancel),
         widgetEnd(),
     };
 
@@ -75,8 +75,8 @@ namespace OpenLoco::Ui::Windows::PromptOkCancel
 
         window->enabled_widgets = (1 << widx::closeButton) | (1 << widx::okButton) | (1 << widx::cancelButton);
         window->initScrollWidgets();
-        window->colours[0] = Colour::translucent(Colour::salmon_pink);
-        window->colours[1] = Colour::translucent(Colour::salmon_pink);
+        window->setColour(WindowColour::primary, Colour::translucent(Colour::salmon_pink));
+        window->setColour(WindowColour::secondary, Colour::translucent(Colour::salmon_pink));
         window->flags |= Ui::WindowFlags::transparent;
 
         _result = 0;

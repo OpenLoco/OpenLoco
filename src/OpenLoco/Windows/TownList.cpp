@@ -47,15 +47,15 @@ namespace OpenLoco::Ui::Windows::TownList
 
         const uint64_t enabledWidgets = (1 << widx::close_button) | (1 << widx::tab_town_list) | (1 << widx::tab_build_town) | (1 << widx::tab_build_buildings) | (1 << widx::tab_build_misc_buildings);
 
-#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                       \
-    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, WidgetType::frame, 0),                                                          \
-        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, WidgetType::caption_25, 0, windowCaptionId),                                     \
-        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, WidgetType::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window), \
-        makeWidget({ 0, 41 }, { frameWidth, 155 }, WidgetType::panel, 1),                                                             \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_town_list),                     \
-        makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_build_town),                   \
-        makeRemapWidget({ 65, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_build_buildings),              \
-        makeRemapWidget({ 96, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_build_misc_buildings)
+#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                                           \
+    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, WidgetType::frame, WindowColour::primary),                                                          \
+        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, WidgetType::caption_25, WindowColour::primary, windowCaptionId),                                     \
+        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, WidgetType::wt_9, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window), \
+        makeWidget({ 0, 41 }, { frameWidth, 155 }, WidgetType::panel, WindowColour::secondary),                                                           \
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_town_list),                   \
+        makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_town),                 \
+        makeRemapWidget({ 65, 15 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_buildings),            \
+        makeRemapWidget({ 96, 15 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_misc_buildings)
 
         static void prepareDraw(Window* self);
         static void repositionTabs(Window* self);
@@ -87,11 +87,11 @@ namespace OpenLoco::Ui::Windows::TownList
 
         Widget widgets[] = {
             commonWidgets(600, 197, StringIds::title_towns),
-            makeWidget({ 4, 43 }, { 200, 12 }, WidgetType::wt_14, 1, ImageIds::null, StringIds::tooltip_sort_by_name),
-            makeWidget({ 204, 43 }, { 80, 12 }, WidgetType::wt_14, 1, ImageIds::null, StringIds::tooltip_sort_town_type),
-            makeWidget({ 284, 43 }, { 70, 12 }, WidgetType::wt_14, 1, ImageIds::null, StringIds::tooltip_sort_population),
-            makeWidget({ 354, 43 }, { 70, 12 }, WidgetType::wt_14, 1, ImageIds::null, StringIds::tooltip_sort_stations),
-            makeWidget({ 3, 56 }, { 594, 126 }, WidgetType::scrollview, 1, 2),
+            makeWidget({ 4, 43 }, { 200, 12 }, WidgetType::wt_14, WindowColour::secondary, ImageIds::null, StringIds::tooltip_sort_by_name),
+            makeWidget({ 204, 43 }, { 80, 12 }, WidgetType::wt_14, WindowColour::secondary, ImageIds::null, StringIds::tooltip_sort_town_type),
+            makeWidget({ 284, 43 }, { 70, 12 }, WidgetType::wt_14, WindowColour::secondary, ImageIds::null, StringIds::tooltip_sort_population),
+            makeWidget({ 354, 43 }, { 70, 12 }, WidgetType::wt_14, WindowColour::secondary, ImageIds::null, StringIds::tooltip_sort_stations),
+            makeWidget({ 3, 56 }, { 594, 126 }, WidgetType::scrollview, WindowColour::secondary, 2),
             widgetEnd(),
         };
 
@@ -137,7 +137,7 @@ namespace OpenLoco::Ui::Windows::TownList
         // 0x0049A0F8
         static void drawScroll(Ui::Window* self, Gfx::Context* context, uint32_t scrollIndex)
         {
-            auto shade = Colour::getShade(self->colours[1], 3);
+            auto shade = Colour::getShade(self->getColour(WindowColour::secondary), 3);
             Gfx::clearSingle(*context, shade);
 
             uint16_t yPos = 0;
@@ -549,8 +549,8 @@ namespace OpenLoco::Ui::Windows::TownList
             window->flags |= WindowFlags::resizable;
 
             auto skin = ObjectManager::get<InterfaceSkinObject>();
-            window->colours[0] = skin->colour_0B;
-            window->colours[1] = skin->colour_0C;
+            window->setColour(WindowColour::primary, skin->colour_0B);
+            window->setColour(WindowColour::secondary, skin->colour_0C);
 
             // 0x00499CFC end
 
@@ -594,8 +594,8 @@ namespace OpenLoco::Ui::Windows::TownList
 
         Widget widgets[] = {
             commonWidgets(220, 87, StringIds::title_build_new_towns),
-            makeWidget({ 100, 45 }, { 117, 12 }, WidgetType::wt_18, 1, ImageIds::null, StringIds::tooltip_select_town_size),
-            makeWidget({ 205, 46 }, { 11, 10 }, WidgetType::wt_11, 1, StringIds::dropdown),
+            makeWidget({ 100, 45 }, { 117, 12 }, WidgetType::wt_18, WindowColour::secondary, ImageIds::null, StringIds::tooltip_select_town_size),
+            makeWidget({ 205, 46 }, { 11, 10 }, WidgetType::wt_11, WindowColour::secondary, StringIds::dropdown),
             widgetEnd(),
         };
 
@@ -782,9 +782,9 @@ namespace OpenLoco::Ui::Windows::TownList
 
         Widget widgets[] = {
             commonWidgets(640, 172, StringIds::title_build_new_buildings),
-            makeWidget({ 2, 45 }, { 573, 112 }, WidgetType::scrollview, 1, 2),
-            makeWidget({ 575, 46 }, { 24, 24 }, WidgetType::wt_9, 1, ImageIds::rotate_object, StringIds::rotate_object_90),
-            makeWidget({ 579, 91 }, { 16, 16 }, WidgetType::wt_10, 1, ImageIds::null, StringIds::tooltip_object_colour),
+            makeWidget({ 2, 45 }, { 573, 112 }, WidgetType::scrollview, WindowColour::secondary, 2),
+            makeWidget({ 575, 46 }, { 24, 24 }, WidgetType::wt_9, WindowColour::secondary, ImageIds::rotate_object, StringIds::rotate_object_90),
+            makeWidget({ 579, 91 }, { 16, 16 }, WidgetType::wt_10, WindowColour::secondary, ImageIds::null, StringIds::tooltip_object_colour),
             widgetEnd(),
         };
 
@@ -1053,7 +1053,7 @@ namespace OpenLoco::Ui::Windows::TownList
         // 0x0049AA1C
         static void drawScroll(Ui::Window* self, Gfx::Context* context, uint32_t scrollIndex)
         {
-            auto shade = Colour::getShade(self->colours[1], 3);
+            auto shade = Colour::getShade(self->getColour(WindowColour::secondary), 3);
             Gfx::clearSingle(*context, shade);
 
             uint16_t xPos = 0;
@@ -1064,12 +1064,12 @@ namespace OpenLoco::Ui::Windows::TownList
                 {
                     if (self->row_info[i] == self->var_846)
                     {
-                        Gfx::drawRectInset(context, xPos, yPos, 112, 112, self->colours[1], Colour::translucent_flag);
+                        Gfx::drawRectInset(context, xPos, yPos, 112, 112, self->getColour(WindowColour::secondary), Colour::translucent_flag);
                     }
                 }
                 else
                 {
-                    Gfx::drawRectInset(context, xPos, yPos, 112, 112, self->colours[1], (Colour::translucent_flag | Colour::outline_flag));
+                    Gfx::drawRectInset(context, xPos, yPos, 112, 112, self->getColour(WindowColour::secondary), (Colour::translucent_flag | Colour::outline_flag));
                 }
 
                 auto buildingObj = ObjectManager::get<BuildingObject>(self->row_info[i]);

@@ -45,11 +45,11 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
 
     // 0x00509d08
     static Widget _widgets[] = {
-        makeWidget({ 0, 0 }, { 140, 29 }, WidgetType::wt_3, 0),
-        makeWidget({ 2, 2 }, { 136, 25 }, WidgetType::wt_3, 0),
-        makeWidget({ 1, 1 }, { 26, 26 }, WidgetType::wt_9, 0),
-        makeWidget({ 27, 2 }, { 111, 12 }, WidgetType::wt_9, 0, ImageIds::null, StringIds::tooltip_company_value),
-        makeWidget({ 27, 14 }, { 111, 12 }, WidgetType::wt_9, 0, ImageIds::null, StringIds::tooltip_performance_index),
+        makeWidget({ 0, 0 }, { 140, 29 }, WidgetType::wt_3, WindowColour::primary),
+        makeWidget({ 2, 2 }, { 136, 25 }, WidgetType::wt_3, WindowColour::primary),
+        makeWidget({ 1, 1 }, { 26, 26 }, WidgetType::wt_9, WindowColour::primary),
+        makeWidget({ 27, 2 }, { 111, 12 }, WidgetType::wt_9, WindowColour::primary, ImageIds::null, StringIds::tooltip_company_value),
+        makeWidget({ 27, 14 }, { 111, 12 }, WidgetType::wt_9, WindowColour::primary, ImageIds::null, StringIds::tooltip_performance_index),
         widgetEnd(),
     };
 
@@ -194,8 +194,8 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
         auto skin = ObjectManager::get<InterfaceSkinObject>();
         if (skin != nullptr)
         {
-            window->colours[0] = Colour::translucent(skin->colour_16);
-            window->colours[1] = Colour::translucent(skin->colour_16);
+            window->setColour(WindowColour::primary, Colour::translucent(skin->colour_16));
+            window->setColour(WindowColour::secondary, Colour::translucent(skin->colour_16));
         }
 
         return window;
@@ -216,7 +216,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
         // Draw widgets.
         window->draw(context);
 
-        drawRectInset(context, window->x + frame.left + 1, window->y + frame.top + 1, frame.width() - 2, frame.height() - 2, window->colours[1], 0x30);
+        drawRectInset(context, window->x + frame.left + 1, window->y + frame.top + 1, frame.width() - 2, frame.height() - 2, window->getColour(WindowColour::secondary), 0x30);
 
         auto playerCompany = CompanyManager::get(CompanyManager::getControllingId());
         auto competitor = ObjectManager::get<CompetitorObject>(playerCompany->competitor_id);
@@ -238,7 +238,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
                 }
             }
 
-            auto colour = Colour::opaque(window->colours[0]);
+            auto colour = Colour::opaque(window->getColour(WindowColour::primary));
             if (Input::isHovering(WindowType::playerInfoToolbar, 0, Widx::company_value))
             {
                 colour = Colour::white;
@@ -261,7 +261,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
                 performanceString = StringIds::player_info_performance_decrease;
             }
 
-            auto colour = window->colours[0] & 0x7F;
+            auto colour = window->getColour(WindowColour::primary) & 0x7F;
             if (Input::isHovering(WindowType::playerInfoToolbar, 0, Widx::performance_index))
             {
                 colour = Colour::white;

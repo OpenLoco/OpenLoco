@@ -11,7 +11,7 @@ using namespace OpenLoco::Interop;
 namespace OpenLoco::Ui::Windows::TitleVersion
 {
     static Widget widgets[] = {
-        { WidgetType::end, 0, 0, 0, 0, 0, { 0 }, 0 }
+        widgetEnd()
     };
 
     static Ui::WindowEventList _events;

@@ -41,23 +41,23 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
     }
 
     static Widget _widgets[] = {
-        makeWidget({ 0, 0 }, { 30, 28 }, WidgetType::wt_7, 0),  // 0
-        makeWidget({ 30, 0 }, { 30, 28 }, WidgetType::wt_7, 0), // 1
-        makeWidget({ 60, 0 }, { 30, 28 }, WidgetType::wt_7, 0), // 2
+        makeWidget({ 0, 0 }, { 30, 28 }, WidgetType::wt_7, WindowColour::primary),  // 0
+        makeWidget({ 30, 0 }, { 30, 28 }, WidgetType::wt_7, WindowColour::primary), // 1
+        makeWidget({ 60, 0 }, { 30, 28 }, WidgetType::wt_7, WindowColour::primary), // 2
 
-        makeWidget({ 104, 0 }, { 30, 28 }, WidgetType::wt_7, 1), // 3
-        makeWidget({ 134, 0 }, { 30, 28 }, WidgetType::wt_7, 1), // 4
-        makeWidget({ 164, 0 }, { 30, 28 }, WidgetType::wt_7, 1), // 5
+        makeWidget({ 104, 0 }, { 30, 28 }, WidgetType::wt_7, WindowColour::secondary), // 3
+        makeWidget({ 134, 0 }, { 30, 28 }, WidgetType::wt_7, WindowColour::secondary), // 4
+        makeWidget({ 164, 0 }, { 30, 28 }, WidgetType::wt_7, WindowColour::secondary), // 5
 
-        makeWidget({ 267, 0 }, { 30, 28 }, WidgetType::wt_7, 2), // 6
-        makeWidget({ 0, 0 }, { 1, 1 }, WidgetType::none, 0),     // 7
-        makeWidget({ 357, 0 }, { 30, 28 }, WidgetType::wt_7, 2), // 8
-        makeWidget({ 0, 0 }, { 1, 1 }, WidgetType::none, 0),     // 9
-        makeWidget({ 0, 0 }, { 1, 1 }, WidgetType::none, 0),     // 10
+        makeWidget({ 267, 0 }, { 30, 28 }, WidgetType::wt_7, WindowColour::tertiary), // 6
+        makeWidget({ 0, 0 }, { 1, 1 }, WidgetType::none, WindowColour::primary),      // 7
+        makeWidget({ 357, 0 }, { 30, 28 }, WidgetType::wt_7, WindowColour::tertiary), // 8
+        makeWidget({ 0, 0 }, { 1, 1 }, WidgetType::none, WindowColour::primary),      // 9
+        makeWidget({ 0, 0 }, { 1, 1 }, WidgetType::none, WindowColour::primary),      // 10
 
-        makeWidget({ 0, 0 }, { 1, 1 }, WidgetType::none, 0),     // 11
-        makeWidget({ 0, 0 }, { 1, 1 }, WidgetType::none, 0),     // 12
-        makeWidget({ 460, 0 }, { 30, 28 }, WidgetType::wt_7, 3), // 13
+        makeWidget({ 0, 0 }, { 1, 1 }, WidgetType::none, WindowColour::primary),        // 11
+        makeWidget({ 0, 0 }, { 1, 1 }, WidgetType::none, WindowColour::primary),        // 12
+        makeWidget({ 460, 0 }, { 30, 28 }, WidgetType::wt_7, WindowColour::quaternary), // 13
         widgetEnd(),
     };
 
@@ -92,18 +92,18 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
         window->widgets = _widgets;
         window->enabled_widgets = (1 << Common::Widx::loadsave_menu) | (1 << Common::Widx::audio_menu) | (1 << Common::Widx::zoom_menu) | (1 << Common::Widx::rotate_menu) | (1 << Common::Widx::view_menu) | (1 << Common::Widx::terraform_menu) | (1 << Widx::map_generation_menu) | (1 << Common::Widx::road_menu) | (1 << Common::Widx::towns_menu);
         window->initScrollWidgets();
-        window->colours[0] = Colour::grey;
-        window->colours[1] = Colour::grey;
-        window->colours[2] = Colour::grey;
-        window->colours[3] = Colour::grey;
+        window->setColour(WindowColour::primary, Colour::grey);
+        window->setColour(WindowColour::secondary, Colour::grey);
+        window->setColour(WindowColour::tertiary, Colour::grey);
+        window->setColour(WindowColour::quaternary, Colour::grey);
 
         auto skin = ObjectManager::get<InterfaceSkinObject>();
         if (skin != nullptr)
         {
-            window->colours[0] = skin->colour_12;
-            window->colours[1] = skin->colour_13;
-            window->colours[2] = skin->colour_14;
-            window->colours[3] = skin->colour_15;
+            window->setColour(WindowColour::primary, skin->colour_12);
+            window->setColour(WindowColour::secondary, skin->colour_13);
+            window->setColour(WindowColour::tertiary, skin->colour_14);
+            window->setColour(WindowColour::quaternary, skin->colour_15);
         }
     }
 
@@ -303,12 +303,12 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
         if (!Audio::isAudioEnabled())
         {
             window->activated_widgets |= (1 << Common::Widx::audio_menu);
-            window->widgets[Common::Widx::audio_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_audio_inactive, window->colours[0]);
+            window->widgets[Common::Widx::audio_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_audio_inactive, window->getColour(WindowColour::primary));
         }
         else
         {
             window->activated_widgets &= ~(1 << Common::Widx::audio_menu);
-            window->widgets[Common::Widx::audio_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_audio_active, window->colours[0]);
+            window->widgets[Common::Widx::audio_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_audio_active, window->getColour(WindowColour::primary));
         }
 
         window->widgets[Common::Widx::loadsave_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_loadsave, 0);

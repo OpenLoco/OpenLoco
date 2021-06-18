@@ -19,7 +19,7 @@ namespace OpenLoco::Ui::Windows::Tutorial
     constexpr Gfx::ui_size_t windowSize = { 140, 29 };
 
     Widget widgets[] = {
-        makeWidget({ 0, 0 }, windowSize, WidgetType::wt_3, 0),
+        makeWidget({ 0, 0 }, windowSize, WidgetType::wt_3, WindowColour::primary),
         widgetEnd(),
     };
 
@@ -45,8 +45,8 @@ namespace OpenLoco::Ui::Windows::Tutorial
         auto skin = ObjectManager::get<InterfaceSkinObject>();
         if (skin != nullptr)
         {
-            window->colours[0] = Colour::translucent(skin->colour_06);
-            window->colours[1] = Colour::translucent(skin->colour_07);
+            window->setColour(WindowColour::primary, Colour::translucent(skin->colour_06));
+            window->setColour(WindowColour::secondary, Colour::translucent(skin->colour_07));
         }
 
         return window;

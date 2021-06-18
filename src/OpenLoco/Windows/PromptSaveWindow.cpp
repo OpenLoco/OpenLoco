@@ -30,13 +30,13 @@ namespace OpenLoco::Ui::Windows::PromptSaveWindow
     };
 
     static Widget _widgets[] = {
-        makeWidget({ 0, 0 }, { 260, 48 }, WidgetType::panel, 0),
-        makeWidget({ 1, 1 }, { 258, 13 }, WidgetType::caption_22, 0, StringIds::empty),
-        makeWidget({ 247, 2 }, { 11, 11 }, WidgetType::wt_11, 0, StringIds::close_window_cross, StringIds::tooltip_close_window),
-        makeWidget({ 2, 17 }, { 256, 12 }, WidgetType::wt_13, 0, StringIds::empty),
-        makeWidget({ 8, 33 }, { 78, 12 }, WidgetType::wt_11, 0, StringIds::label_button_save),
-        makeWidget({ 91, 33 }, { 78, 12 }, WidgetType::wt_11, 0, StringIds::label_button_dont_save),
-        makeWidget({ 174, 33 }, { 78, 12 }, WidgetType::wt_11, 0, StringIds::label_button_cancel),
+        makeWidget({ 0, 0 }, { 260, 48 }, WidgetType::panel, WindowColour::primary),
+        makeWidget({ 1, 1 }, { 258, 13 }, WidgetType::caption_22, WindowColour::primary, StringIds::empty),
+        makeWidget({ 247, 2 }, { 11, 11 }, WidgetType::wt_11, WindowColour::primary, StringIds::close_window_cross, StringIds::tooltip_close_window),
+        makeWidget({ 2, 17 }, { 256, 12 }, WidgetType::wt_13, WindowColour::primary, StringIds::empty),
+        makeWidget({ 8, 33 }, { 78, 12 }, WidgetType::wt_11, WindowColour::primary, StringIds::label_button_save),
+        makeWidget({ 91, 33 }, { 78, 12 }, WidgetType::wt_11, WindowColour::primary, StringIds::label_button_dont_save),
+        makeWidget({ 174, 33 }, { 78, 12 }, WidgetType::wt_11, WindowColour::primary, StringIds::label_button_cancel),
         widgetEnd(),
     };
 
@@ -61,7 +61,7 @@ namespace OpenLoco::Ui::Windows::PromptSaveWindow
             window->widgets = _widgets;
             window->enabled_widgets = (1 << widx::closeButton) | (1 << widx::saveButton) | (1 << widx::dontSaveButton) | (1 << widx::cancelButton);
             window->initScrollWidgets();
-            window->colours[0] = Colour::translucent(Colour::salmon_pink);
+            window->setColour(WindowColour::primary, Colour::translucent(Colour::salmon_pink));
             window->flags |= Ui::WindowFlags::transparent;
 
             setPauseFlag(1 << 1);

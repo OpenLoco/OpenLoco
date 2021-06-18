@@ -72,18 +72,18 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
         const uint64_t enabledWidgets = (1 << widx::close_button) | (1 << widx::tab_company_list) | (1 << widx::tab_performance) | (1 << widx::tab_cargo_units) | (1 << widx::tab_cargo_distance) | (1 << widx::tab_values) | (1 << widx::tab_payment_rates) | (1 << widx::tab_speed_records);
 
-#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                       \
-    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, WidgetType::frame, 0),                                                          \
-        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, WidgetType::caption_25, 0, windowCaptionId),                                     \
-        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, WidgetType::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window), \
-        makeWidget({ 0, 41 }, { frameWidth, 231 }, WidgetType::panel, 1),                                                             \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tab_compare_companies),                 \
-        makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tab_company_performance),              \
-        makeRemapWidget({ 65, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tab_cargo_graphs),                     \
-        makeRemapWidget({ 96, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tab_cargo_distance_graphs),            \
-        makeRemapWidget({ 127, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tab_company_values),                  \
-        makeRemapWidget({ 158, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tab_cargo_payment_rates),             \
-        makeRemapWidget({ 189, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tab_speed_records)
+#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                                           \
+    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, WidgetType::frame, WindowColour::primary),                                                          \
+        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, WidgetType::caption_25, WindowColour::primary, windowCaptionId),                                     \
+        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, WidgetType::wt_9, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window), \
+        makeWidget({ 0, 41 }, { frameWidth, 231 }, WidgetType::panel, WindowColour::secondary),                                                           \
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab, StringIds::tab_compare_companies),               \
+        makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab, StringIds::tab_company_performance),            \
+        makeRemapWidget({ 65, 15 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab, StringIds::tab_cargo_graphs),                   \
+        makeRemapWidget({ 96, 15 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab, StringIds::tab_cargo_distance_graphs),          \
+        makeRemapWidget({ 127, 15 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab, StringIds::tab_company_values),                \
+        makeRemapWidget({ 158, 15 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab, StringIds::tab_cargo_payment_rates),           \
+        makeRemapWidget({ 189, 15 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab, StringIds::tab_speed_records)
 
         static void onMouseUp(Window* self, WidgetIndex_t widgetIndex);
         static void onUpdate(Window* self);
@@ -117,11 +117,11 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
         Widget widgets[] = {
             commonWidgets(640, 272, StringIds::title_company_list),
-            makeWidget({ 4, 43 }, { 175, 12 }, WidgetType::wt_14, 1, ImageIds::null, StringIds::tooltip_sort_company_name),
-            makeWidget({ 179, 43 }, { 210, 12 }, WidgetType::wt_14, 1, ImageIds::null, StringIds::tooltip_sort_company_status),
-            makeWidget({ 389, 43 }, { 145, 12 }, WidgetType::wt_14, 1, ImageIds::null, StringIds::tooltip_sort_company_performance),
-            makeWidget({ 534, 43 }, { 100, 12 }, WidgetType::wt_14, 1, ImageIds::null, StringIds::tooltip_sort_company_value),
-            makeWidget({ 3, 56 }, { 634, 201 }, WidgetType::scrollview, 1, Scrollbars::vertical),
+            makeWidget({ 4, 43 }, { 175, 12 }, WidgetType::wt_14, WindowColour::secondary, ImageIds::null, StringIds::tooltip_sort_company_name),
+            makeWidget({ 179, 43 }, { 210, 12 }, WidgetType::wt_14, WindowColour::secondary, ImageIds::null, StringIds::tooltip_sort_company_status),
+            makeWidget({ 389, 43 }, { 145, 12 }, WidgetType::wt_14, WindowColour::secondary, ImageIds::null, StringIds::tooltip_sort_company_performance),
+            makeWidget({ 534, 43 }, { 100, 12 }, WidgetType::wt_14, WindowColour::secondary, ImageIds::null, StringIds::tooltip_sort_company_value),
+            makeWidget({ 3, 56 }, { 634, 201 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
             widgetEnd(),
         };
 
@@ -456,7 +456,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
         // 0x00435EA7
         static void drawScroll(Window* self, Gfx::Context* context, uint32_t scrollIndex)
         {
-            auto colour = Colour::getShade(self->colours[1], 3);
+            auto colour = Colour::getShade(self->getColour(WindowColour::secondary), 3);
             Gfx::clearSingle(*context, colour);
 
             auto yBottom = 0;
@@ -604,8 +604,8 @@ namespace OpenLoco::Ui::Windows::CompanyList
             Common::refreshCompanyList(window);
 
             auto skin = ObjectManager::get<InterfaceSkinObject>();
-            window->colours[0] = skin->colour_0B;
-            window->colours[1] = skin->colour_0C;
+            window->setColour(WindowColour::primary, skin->colour_0B);
+            window->setColour(WindowColour::secondary, skin->colour_0C);
 
             window->var_854 = 0;
         }
@@ -1552,7 +1552,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 else
                     imageId += performanceImageIds[0];
 
-                imageId = Gfx::recolour(imageId, self->colours[1]);
+                imageId = Gfx::recolour(imageId, self->getColour(WindowColour::secondary));
 
                 Widget::drawTab(self, context, imageId, widx::tab_performance);
             }
@@ -1576,7 +1576,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 else
                     imageId += cargoUnitsImageIds[0];
 
-                imageId = Gfx::recolour(imageId, self->colours[1]);
+                imageId = Gfx::recolour(imageId, self->getColour(WindowColour::secondary));
 
                 Widget::drawTab(self, context, imageId, widx::tab_cargo_units);
             }
@@ -1600,7 +1600,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 else
                     imageId += cargoDistanceImageIds[0];
 
-                imageId = Gfx::recolour(imageId, self->colours[1]);
+                imageId = Gfx::recolour(imageId, self->getColour(WindowColour::secondary));
 
                 Widget::drawTab(self, context, imageId, widx::tab_cargo_distance);
             }
@@ -1624,7 +1624,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 else
                     imageId += companyValuesImageIds[0];
 
-                imageId = Gfx::recolour(imageId, self->colours[1]);
+                imageId = Gfx::recolour(imageId, self->getColour(WindowColour::secondary));
 
                 Widget::drawTab(self, context, imageId, widx::tab_values);
 
@@ -1657,7 +1657,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 uint32_t imageId = skin->img;
                 imageId += InterfaceSkin::ImageIds::tab_awards;
 
-                imageId = Gfx::recolour(imageId, self->colours[1]);
+                imageId = Gfx::recolour(imageId, self->getColour(WindowColour::secondary));
 
                 Widget::drawTab(self, context, imageId, widx::tab_speed_records);
             }

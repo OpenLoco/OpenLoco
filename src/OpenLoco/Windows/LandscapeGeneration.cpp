@@ -51,16 +51,16 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
         const uint64_t enabled_widgets = (1 << widx::close_button) | (1 << tab_options) | (1 << tab_land) | (1 << tab_forests) | (1 << tab_towns) | (1 << tab_industries);
 
-#define common_options_widgets(frame_height, window_caption_id)                                                                       \
-    makeWidget({ 0, 0 }, { 366, frame_height }, WidgetType::frame, 0),                                                                \
-        makeWidget({ 1, 1 }, { 364, 13 }, WidgetType::caption_25, 0, window_caption_id),                                              \
-        makeWidget({ 351, 2 }, { 13, 13 }, WidgetType::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window),             \
-        makeWidget({ 0, 41 }, { 366, 175 }, WidgetType::panel, 1),                                                                    \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_landscape_generation_options),  \
-        makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_landscape_generation_land),    \
-        makeRemapWidget({ 65, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_landscape_generation_forests), \
-        makeRemapWidget({ 96, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_landscape_generation_towns),   \
-        makeRemapWidget({ 127, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_landscape_generation_industries)
+#define common_options_widgets(frame_height, window_caption_id)                                                                                             \
+    makeWidget({ 0, 0 }, { 366, frame_height }, WidgetType::frame, WindowColour::primary),                                                                  \
+        makeWidget({ 1, 1 }, { 364, 13 }, WidgetType::caption_25, WindowColour::primary, window_caption_id),                                                \
+        makeWidget({ 351, 2 }, { 13, 13 }, WidgetType::wt_9, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),               \
+        makeWidget({ 0, 41 }, { 366, 175 }, WidgetType::panel, WindowColour::secondary),                                                                    \
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_landscape_generation_options),  \
+        makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_landscape_generation_land),    \
+        makeRemapWidget({ 65, 15 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_landscape_generation_forests), \
+        makeRemapWidget({ 96, 15 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_landscape_generation_towns),   \
+        makeRemapWidget({ 127, 15 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_landscape_generation_industries)
 
         // Defined at the bottom of this file.
         static void initEvents();
@@ -162,9 +162,9 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
         static Widget widgets[] = {
             common_options_widgets(217, StringIds::title_landscape_generation_options),
-            makeStepperWidgets({ 256, 52 }, { 100, 12 }, WidgetType::wt_18, 1, StringIds::start_year_value),
-            makeWidget({ 10, 68 }, { 346, 12 }, WidgetType::checkbox, 1, StringIds::label_generate_random_landscape_when_game_starts, StringIds::tooltip_generate_random_landscape_when_game_starts),
-            makeWidget({ 196, 200 }, { 160, 12 }, WidgetType::wt_11, 1, StringIds::button_generate_landscape, StringIds::tooltip_generate_random_landscape),
+            makeStepperWidgets({ 256, 52 }, { 100, 12 }, WidgetType::wt_18, WindowColour::secondary, StringIds::start_year_value),
+            makeWidget({ 10, 68 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::label_generate_random_landscape_when_game_starts, StringIds::tooltip_generate_random_landscape_when_game_starts),
+            makeWidget({ 196, 200 }, { 160, 12 }, WidgetType::wt_11, WindowColour::secondary, StringIds::button_generate_landscape, StringIds::tooltip_generate_random_landscape),
             widgetEnd()
         };
 
@@ -313,8 +313,8 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             window->row_hover = -1;
 
             auto interface = ObjectManager::get<InterfaceSkinObject>();
-            window->colours[0] = interface->colour_0B;
-            window->colours[1] = interface->colour_0E;
+            window->setColour(WindowColour::primary, interface->colour_0B);
+            window->setColour(WindowColour::secondary, interface->colour_0E);
         }
         // End of 0x0043DAEA
 
@@ -359,13 +359,13 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
         static Widget widgets[] = {
             common_options_widgets(247, StringIds::title_landscape_generation_land),
-            makeDropdownWidgets({ 176, 52 }, { 180, 12 }, WidgetType::wt_18, 1),
-            makeStepperWidgets({ 256, 67 }, { 100, 12 }, WidgetType::wt_18, 1, StringIds::sea_level_units),
-            makeStepperWidgets({ 256, 82 }, { 100, 12 }, WidgetType::wt_18, 1, StringIds::min_land_height_units),
-            makeDropdownWidgets({ 176, 97 }, { 180, 12 }, WidgetType::wt_18, 1),
-            makeStepperWidgets({ 256, 112 }, { 100, 12 }, WidgetType::wt_18, 1, StringIds::hill_density_percent),
-            makeWidget({ 10, 128 }, { 346, 12 }, WidgetType::checkbox, 1, StringIds::create_hills_right_up_to_edge_of_map),
-            makeWidget({ 4, 142 }, { 358, 100 }, WidgetType::scrollview, 1, Scrollbars::vertical),
+            makeDropdownWidgets({ 176, 52 }, { 180, 12 }, WidgetType::wt_18, WindowColour::secondary),
+            makeStepperWidgets({ 256, 67 }, { 100, 12 }, WidgetType::wt_18, WindowColour::secondary, StringIds::sea_level_units),
+            makeStepperWidgets({ 256, 82 }, { 100, 12 }, WidgetType::wt_18, WindowColour::secondary, StringIds::min_land_height_units),
+            makeDropdownWidgets({ 176, 97 }, { 180, 12 }, WidgetType::wt_18, WindowColour::secondary),
+            makeStepperWidgets({ 256, 112 }, { 100, 12 }, WidgetType::wt_18, WindowColour::secondary, StringIds::hill_density_percent),
+            makeWidget({ 10, 128 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::create_hills_right_up_to_edge_of_map),
+            makeWidget({ 4, 142 }, { 358, 100 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
             widgetEnd()
         };
 
@@ -443,7 +443,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 Gfx::drawString_494BBF(*context, 24, yPos + 5, 121, Colour::black, StringIds::wcolour2_stringid, &*commonFormatArgs);
 
                 // Draw rectangle.
-                Gfx::fillRectInset(context, 150, yPos + 5, 340, yPos + 16, window->colours[1], 0b110000);
+                Gfx::fillRectInset(context, 150, yPos + 5, 340, yPos + 16, window->getColour(WindowColour::secondary), 0b110000);
 
                 // Draw current distribution setting.
                 const string_id distributionId = landDistributionLabelIds[S5::getOptions().landDistributionPatterns[i]];
@@ -452,7 +452,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
                 // Draw rectangle (knob).
                 const uint8_t flags = window->row_hover == i ? 0b110000 : 0;
-                Gfx::fillRectInset(context, 329, yPos + 6, 339, yPos + 15, window->colours[1], flags);
+                Gfx::fillRectInset(context, 329, yPos + 6, 339, yPos + 15, window->getColour(WindowColour::secondary), flags);
 
                 // Draw triangle (knob).
                 Gfx::drawString_494B3F(*context, 330, yPos + 6, Colour::black, StringIds::dropdown, nullptr);
@@ -546,7 +546,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 case widx::generator_btn:
                 {
                     Widget& target = window->widgets[widx::generator];
-                    Dropdown::show(window->x + target.left, window->y + target.top, target.width() - 4, target.height(), window->colours[1], std::size(generatorIds), 0x80);
+                    Dropdown::show(window->x + target.left, window->y + target.top, target.width() - 4, target.height(), window->getColour(WindowColour::secondary), std::size(generatorIds), 0x80);
 
                     for (size_t i = 0; i < std::size(generatorIds); i++)
                         Dropdown::add(i, generatorIds[i]);
@@ -558,7 +558,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 case widx::topography_style_btn:
                 {
                     Widget& target = window->widgets[widx::topography_style];
-                    Dropdown::show(window->x + target.left, window->y + target.top, target.width() - 4, target.height(), window->colours[1], std::size(topographyStyleIds), 0x80);
+                    Dropdown::show(window->x + target.left, window->y + target.top, target.width() - 4, target.height(), window->getColour(WindowColour::secondary), std::size(topographyStyleIds), 0x80);
 
                     for (size_t i = 0; i < std::size(topographyStyleIds); i++)
                         Dropdown::add(i, topographyStyleIds[i]);
@@ -642,7 +642,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             const Widget& target = window->widgets[widx::scrollview];
             const int16_t dropdownX = window->x + target.left + 151;
             const int16_t dropdownY = window->y + target.top + 6 + landIndex * rowHeight - window->scroll_areas[0].contentOffsetY;
-            Dropdown::show(dropdownX, dropdownY, 188, 12, window->colours[1], std::size(landDistributionLabelIds), 0x80);
+            Dropdown::show(dropdownX, dropdownY, 188, 12, window->getColour(WindowColour::secondary), std::size(landDistributionLabelIds), 0x80);
 
             for (size_t i = 0; i < std::size(landDistributionLabelIds); i++)
                 Dropdown::add(i, StringIds::dropdown_stringid, landDistributionLabelIds[i]);
@@ -741,14 +741,14 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
         static Widget widgets[] = {
             common_options_widgets(217, StringIds::title_landscape_generation_forests),
-            makeStepperWidgets({ 256, 52 }, { 100, 12 }, WidgetType::wt_18, 1, StringIds::number_of_forests_value),
-            makeStepperWidgets({ 256, 67 }, { 100, 12 }, WidgetType::wt_18, 1, StringIds::min_forest_radius_blocks),
-            makeStepperWidgets({ 256, 82 }, { 100, 12 }, WidgetType::wt_18, 1, StringIds::max_forest_radius_blocks),
-            makeStepperWidgets({ 256, 97 }, { 100, 12 }, WidgetType::wt_18, 1, StringIds::min_forest_density_percent),
-            makeStepperWidgets({ 256, 112 }, { 100, 12 }, WidgetType::wt_18, 1, StringIds::max_forest_density_percent),
-            makeStepperWidgets({ 256, 127 }, { 100, 12 }, WidgetType::wt_18, 1, StringIds::number_random_trees_value),
-            makeStepperWidgets({ 256, 142 }, { 100, 12 }, WidgetType::wt_18, 1, StringIds::min_altitude_for_trees_height),
-            makeStepperWidgets({ 256, 157 }, { 100, 12 }, WidgetType::wt_18, 1, StringIds::max_altitude_for_trees_height),
+            makeStepperWidgets({ 256, 52 }, { 100, 12 }, WidgetType::wt_18, WindowColour::secondary, StringIds::number_of_forests_value),
+            makeStepperWidgets({ 256, 67 }, { 100, 12 }, WidgetType::wt_18, WindowColour::secondary, StringIds::min_forest_radius_blocks),
+            makeStepperWidgets({ 256, 82 }, { 100, 12 }, WidgetType::wt_18, WindowColour::secondary, StringIds::max_forest_radius_blocks),
+            makeStepperWidgets({ 256, 97 }, { 100, 12 }, WidgetType::wt_18, WindowColour::secondary, StringIds::min_forest_density_percent),
+            makeStepperWidgets({ 256, 112 }, { 100, 12 }, WidgetType::wt_18, WindowColour::secondary, StringIds::max_forest_density_percent),
+            makeStepperWidgets({ 256, 127 }, { 100, 12 }, WidgetType::wt_18, WindowColour::secondary, StringIds::number_random_trees_value),
+            makeStepperWidgets({ 256, 142 }, { 100, 12 }, WidgetType::wt_18, WindowColour::secondary, StringIds::min_altitude_for_trees_height),
+            makeStepperWidgets({ 256, 157 }, { 100, 12 }, WidgetType::wt_18, WindowColour::secondary, StringIds::max_altitude_for_trees_height),
             widgetEnd()
         };
 
@@ -985,9 +985,9 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
         static Widget widgets[] = {
             common_options_widgets(217, StringIds::title_landscape_generation_towns),
-            makeStepperWidgets({ 256, 52 }, { 100, 12 }, WidgetType::wt_18, 1, StringIds::number_of_towns_value),
-            makeWidget({ 176, 67 }, { 180, 12 }, WidgetType::wt_18, 1),
-            makeWidget({ 344, 68 }, { 11, 10 }, WidgetType::wt_11, 1, StringIds::dropdown),
+            makeStepperWidgets({ 256, 52 }, { 100, 12 }, WidgetType::wt_18, WindowColour::secondary, StringIds::number_of_towns_value),
+            makeWidget({ 176, 67 }, { 180, 12 }, WidgetType::wt_18, WindowColour::secondary),
+            makeWidget({ 344, 68 }, { 11, 10 }, WidgetType::wt_11, WindowColour::secondary, StringIds::dropdown),
             widgetEnd()
         };
 
@@ -1060,7 +1060,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 case widx::max_town_size_btn:
                 {
                     Widget& target = window->widgets[widx::max_town_size];
-                    Dropdown::show(window->x + target.left, window->y + target.top, target.width() - 4, target.height(), window->colours[1], std::size(townSizeLabels), 0x80);
+                    Dropdown::show(window->x + target.left, window->y + target.top, target.width() - 4, target.height(), window->getColour(WindowColour::secondary), std::size(townSizeLabels), 0x80);
 
                     for (size_t i = 0; i < std::size(townSizeLabels); i++)
                         Dropdown::add(i, townSizeLabels[i]);
@@ -1126,10 +1126,10 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
         static Widget widgets[] = {
             common_options_widgets(217, StringIds::title_landscape_generation_industries),
-            makeWidget({ 176, 52 }, { 180, 12 }, WidgetType::wt_18, 1),
-            makeWidget({ 344, 53 }, { 11, 10 }, WidgetType::wt_11, 1, StringIds::dropdown),
-            makeWidget({ 10, 68 }, { 346, 12 }, WidgetType::checkbox, 1, StringIds::allow_industries_to_close_down_during_game),
-            makeWidget({ 10, 83 }, { 346, 12 }, WidgetType::checkbox, 1, StringIds::allow_new_industries_to_start_up_during_game),
+            makeWidget({ 176, 52 }, { 180, 12 }, WidgetType::wt_18, WindowColour::secondary),
+            makeWidget({ 344, 53 }, { 11, 10 }, WidgetType::wt_11, WindowColour::secondary, StringIds::dropdown),
+            makeWidget({ 10, 68 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::allow_industries_to_close_down_during_game),
+            makeWidget({ 10, 83 }, { 346, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::allow_new_industries_to_start_up_during_game),
             widgetEnd()
         };
 
@@ -1171,7 +1171,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 return;
 
             Widget& target = window->widgets[widx::num_industries];
-            Dropdown::show(window->x + target.left, window->y + target.top, target.width() - 4, target.height(), window->colours[1], std::size(numIndustriesLabels), 0x80);
+            Dropdown::show(window->x + target.left, window->y + target.top, target.width() - 4, target.height(), window->getColour(WindowColour::secondary), std::size(numIndustriesLabels), 0x80);
 
             for (size_t i = 0; i < std::size(numIndustriesLabels); i++)
                 Dropdown::add(i, numIndustriesLabels[i]);

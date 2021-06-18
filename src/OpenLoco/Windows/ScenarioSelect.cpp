@@ -38,16 +38,16 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     }
 
     static Widget _widgets[] = {
-        makeWidget({ 0, 0 }, { 610, 412 }, WidgetType::frame, 0),
-        makeWidget({ 1, 1 }, { 608, 13 }, WidgetType::caption_25, 0, StringIds::select_scenario_for_new_game),
-        makeWidget({ 595, 2 }, { 13, 13 }, WidgetType::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window),
-        makeWidget({ 0, 48 }, { 610, 364 }, WidgetType::wt_3, 1),
-        makeRemapWidget({ 3, 15 }, { 91, 34 }, WidgetType::wt_8, 1, ImageIds::wide_tab),
-        makeRemapWidget({ 94, 15 }, { 91, 34 }, WidgetType::wt_8, 1, ImageIds::wide_tab),
-        makeRemapWidget({ 185, 15 }, { 91, 34 }, WidgetType::wt_8, 1, ImageIds::wide_tab),
-        makeRemapWidget({ 276, 15 }, { 91, 34 }, WidgetType::wt_8, 1, ImageIds::wide_tab),
-        makeRemapWidget({ 367, 15 }, { 91, 34 }, WidgetType::wt_8, 1, ImageIds::wide_tab),
-        makeWidget({ 3, 52 }, { 431, 356 }, WidgetType::scrollview, 1, Scrollbars::vertical),
+        makeWidget({ 0, 0 }, { 610, 412 }, WidgetType::frame, WindowColour::primary),
+        makeWidget({ 1, 1 }, { 608, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::select_scenario_for_new_game),
+        makeWidget({ 595, 2 }, { 13, 13 }, WidgetType::wt_9, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+        makeWidget({ 0, 48 }, { 610, 364 }, WidgetType::wt_3, WindowColour::secondary),
+        makeRemapWidget({ 3, 15 }, { 91, 34 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::wide_tab),
+        makeRemapWidget({ 94, 15 }, { 91, 34 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::wide_tab),
+        makeRemapWidget({ 185, 15 }, { 91, 34 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::wide_tab),
+        makeRemapWidget({ 276, 15 }, { 91, 34 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::wide_tab),
+        makeRemapWidget({ 367, 15 }, { 91, 34 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::wide_tab),
+        makeWidget({ 3, 52 }, { 431, 356 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
         widgetEnd(),
     };
 
@@ -113,8 +113,8 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         self->enabled_widgets = (1 << widx::close) | (1 << widx::tab0) | (1 << widx::tab1) | (1 << widx::tab2) | (1 << widx::tab3) | (1 << widx::tab4);
         self->initScrollWidgets();
 
-        self->colours[0] = Colour::black;
-        self->colours[1] = Colour::saturated_green;
+        self->setColour(WindowColour::primary, Colour::black);
+        self->setColour(WindowColour::secondary, Colour::saturated_green);
 
         self->var_846 = 0xFFFF;
         self->var_85A = static_cast<int32_t>(0xFFFFFFFF);
@@ -153,7 +153,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     // 0x004439AF
     static void draw(Window* self, Gfx::Context* context)
     {
-        Gfx::drawRectInset(context, self->x, self->y + 20, self->width, 41, self->colours[0], 0);
+        Gfx::drawRectInset(context, self->x, self->y + 20, self->width, 41, self->getColour(WindowColour::primary), 0);
 
         // Draw widgets.
         self->draw(context);
@@ -227,7 +227,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         // Outline for preview image
         {
             x = baseX + 20;
-            Gfx::drawRectInset(context, x, y, 130, 130, self->colours[1], 0x30);
+            Gfx::drawRectInset(context, x, y, 130, 130, self->getColour(WindowColour::secondary), 0x30);
 
             x += 1;
             y += 1;
@@ -261,7 +261,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             y += 1;
 
             // No preview image -- a placeholder will have to do.
-            auto image = Gfx::recolour(ImageIds::random_map_watermark, self->colours[1]);
+            auto image = Gfx::recolour(ImageIds::random_map_watermark, self->getColour(WindowColour::secondary));
             Gfx::drawImage(context, x, y, image);
 
             x += 64;
@@ -328,7 +328,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     // 0x00443D02
     static void drawScroll(Window* self, Gfx::Context* const context, uint32_t)
     {
-        auto colour = Colour::getShade(self->colours[1], 4);
+        auto colour = Colour::getShade(self->getColour(WindowColour::secondary), 4);
         Gfx::clearSingle(*context, colour);
 
         using namespace ScenarioManager;

@@ -79,16 +79,16 @@ namespace OpenLoco::Ui::Windows::Terraform
 
         const uint64_t enabledWidgets = (1 << widx::close_button) | (1 << widx::tab_adjust_land) | (1 << widx::tab_adjust_water) | (1 << widx::tab_build_walls) | (1 << widx::tab_clear_area) | (1 << widx::tab_plant_trees);
 
-#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                       \
-    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, WidgetType::frame, 0),                                                          \
-        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, WidgetType::caption_24, 0, windowCaptionId),                                     \
-        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, WidgetType::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window), \
-        makeWidget({ 0, 41 }, { 130, 74 }, WidgetType::panel, 1),                                                                     \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_6, 1, ImageIds::tab, StringIds::tooltip_clear_land),                    \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_6, 1, ImageIds::tab, StringIds::tooltip_adjust_land),                   \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_6, 1, ImageIds::tab, StringIds::tooltip_adjust_water),                  \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_6, 1, ImageIds::tab, StringIds::tooltip_plant_trees),                   \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_6, 1, ImageIds::tab, StringIds::tooltip_build_walls)
+#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                                           \
+    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, WidgetType::frame, WindowColour::primary),                                                          \
+        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, WidgetType::caption_24, WindowColour::primary, windowCaptionId),                                     \
+        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, WidgetType::wt_9, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window), \
+        makeWidget({ 0, 41 }, { 130, 74 }, WidgetType::panel, WindowColour::secondary),                                                                   \
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_6, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_clear_land),                  \
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_6, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_adjust_land),                 \
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_6, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_adjust_water),                \
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_6, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_plant_trees),                 \
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_6, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_build_walls)
 
         static WindowEventList _events;
 
@@ -124,11 +124,11 @@ namespace OpenLoco::Ui::Windows::Terraform
 
         Widget widgets[] = {
             commonWidgets(634, 162, StringIds::title_plant_trees),
-            makeWidget({ 3, 45 }, { 605, 101 }, WidgetType::scrollview, 1, Scrollbars::vertical),
-            makeWidget({ 609, 46 }, { 24, 24 }, WidgetType::wt_9, 1, ImageIds::rotate_object, StringIds::rotate_object_90),
-            makeWidget({ 609, 70 }, { 24, 24 }, WidgetType::wt_10, 1, ImageIds::null, StringIds::tooltip_object_colour),
-            makeWidget({ 609, 94 }, { 24, 24 }, WidgetType::wt_9, 1, ImageIds::plant_cluster_selected_tree, StringIds::plant_cluster_selected_tree),
-            makeWidget({ 609, 118 }, { 24, 24 }, WidgetType::wt_9, 1, ImageIds::plant_cluster_random_tree, StringIds::plant_cluster_random_tree),
+            makeWidget({ 3, 45 }, { 605, 101 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
+            makeWidget({ 609, 46 }, { 24, 24 }, WidgetType::wt_9, WindowColour::secondary, ImageIds::rotate_object, StringIds::rotate_object_90),
+            makeWidget({ 609, 70 }, { 24, 24 }, WidgetType::wt_10, WindowColour::secondary, ImageIds::null, StringIds::tooltip_object_colour),
+            makeWidget({ 609, 94 }, { 24, 24 }, WidgetType::wt_9, WindowColour::secondary, ImageIds::plant_cluster_selected_tree, StringIds::plant_cluster_selected_tree),
+            makeWidget({ 609, 118 }, { 24, 24 }, WidgetType::wt_9, WindowColour::secondary, ImageIds::plant_cluster_random_tree, StringIds::plant_cluster_random_tree),
             widgetEnd(),
         };
 
@@ -614,7 +614,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BB982
         static void drawScroll(Window* self, Gfx::Context* context, uint32_t scrollIndex)
         {
-            auto shade = Colour::getShade(self->colours[1], 3);
+            auto shade = Colour::getShade(self->getColour(WindowColour::secondary), 3);
             Gfx::clearSingle(*context, shade);
 
             uint16_t xPos = 0;
@@ -627,13 +627,13 @@ namespace OpenLoco::Ui::Windows::Terraform
                     if (self->row_info[i] == self->var_846)
                     {
                         _lastTreeColourFlag = Colour::translucent_flag;
-                        Gfx::drawRectInset(context, xPos, yPos, 65, rowHeight - 1, self->colours[1], Colour::translucent_flag);
+                        Gfx::drawRectInset(context, xPos, yPos, 65, rowHeight - 1, self->getColour(WindowColour::secondary), Colour::translucent_flag);
                     }
                 }
                 else
                 {
                     _lastTreeColourFlag = Colour::translucent_flag | Colour::outline_flag;
-                    Gfx::drawRectInset(context, xPos, yPos, 65, rowHeight - 1, self->colours[1], (Colour::translucent_flag | Colour::outline_flag));
+                    Gfx::drawRectInset(context, xPos, yPos, 65, rowHeight - 1, self->getColour(WindowColour::secondary), (Colour::translucent_flag | Colour::outline_flag));
                 }
 
                 auto treeObj = ObjectManager::get<TreeObject>(self->row_info[i]);
@@ -713,7 +713,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             window->max_height = PlantTrees::windowSize.height;
 
             auto skin = ObjectManager::get<InterfaceSkinObject>();
-            window->colours[1] = skin->colour_0E;
+            window->setColour(WindowColour::secondary, skin->colour_0E);
 
             // End of 0x004BB586
 
@@ -760,9 +760,9 @@ namespace OpenLoco::Ui::Windows::Terraform
 
         Widget widgets[] = {
             commonWidgets(130, 105, StringIds::clear_area),
-            makeWidget({ 33 + 16, 45 }, { 64, 44 }, WidgetType::wt_3, 1, ImageIds::tool_area, StringIds::tooltip_clear_area),
-            makeWidget({ 34 + 16, 46 }, { 16, 16 }, WidgetType::wt_7, 1, Gfx::recolour(ImageIds::decrease_tool_area, Colour::white), StringIds::tooltip_decrease_clear_area),
-            makeWidget({ 80 + 16, 72 }, { 16, 16 }, WidgetType::wt_7, 1, Gfx::recolour(ImageIds::increase_tool_area, Colour::white), StringIds::tooltip_increase_clear_area),
+            makeWidget({ 33 + 16, 45 }, { 64, 44 }, WidgetType::wt_3, WindowColour::secondary, ImageIds::tool_area, StringIds::tooltip_clear_area),
+            makeWidget({ 34 + 16, 46 }, { 16, 16 }, WidgetType::wt_7, WindowColour::secondary, Gfx::recolour(ImageIds::decrease_tool_area, Colour::white), StringIds::tooltip_decrease_clear_area),
+            makeWidget({ 80 + 16, 72 }, { 16, 16 }, WidgetType::wt_7, WindowColour::secondary, Gfx::recolour(ImageIds::increase_tool_area, Colour::white), StringIds::tooltip_increase_clear_area),
             widgetEnd(),
         };
 
@@ -942,10 +942,10 @@ namespace OpenLoco::Ui::Windows::Terraform
 
         Widget widgets[] = {
             commonWidgets(130, 105, StringIds::title_adjust_land),
-            makeWidget({ 33 + 16, 45 }, { 64, 44 }, WidgetType::wt_3, 1, ImageIds::tool_area, StringIds::tooltip_adjust_land_tool),
-            makeWidget({ 34 + 16, 46 }, { 16, 16 }, WidgetType::wt_7, 1, Gfx::recolour(ImageIds::decrease_tool_area, Colour::white), StringIds::tooltip_decrease_adjust_land_area),
-            makeWidget({ 80 + 16, 72 }, { 16, 16 }, WidgetType::wt_7, 1, Gfx::recolour(ImageIds::increase_tool_area, Colour::white), StringIds::tooltip_increase_adjust_land_area),
-            makeWidget({ 55 + 16, 92 }, { 20, 20 }, WidgetType::wt_6, 0),
+            makeWidget({ 33 + 16, 45 }, { 64, 44 }, WidgetType::wt_3, WindowColour::secondary, ImageIds::tool_area, StringIds::tooltip_adjust_land_tool),
+            makeWidget({ 34 + 16, 46 }, { 16, 16 }, WidgetType::wt_7, WindowColour::secondary, Gfx::recolour(ImageIds::decrease_tool_area, Colour::white), StringIds::tooltip_decrease_adjust_land_area),
+            makeWidget({ 80 + 16, 72 }, { 16, 16 }, WidgetType::wt_7, WindowColour::secondary, Gfx::recolour(ImageIds::increase_tool_area, Colour::white), StringIds::tooltip_increase_adjust_land_area),
+            makeWidget({ 55 + 16, 92 }, { 20, 20 }, WidgetType::wt_6, WindowColour::primary),
             widgetEnd(),
         };
 
@@ -1004,7 +1004,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             auto xPos = self->widgets[widgetIndex].left + self->x;
             auto yPos = self->widgets[widgetIndex].bottom + self->y;
             auto heightOffset = self->widgets[widgetIndex].height() - 18;
-            auto colour = self->colours[1] | 0x80;
+            auto colour = self->getColour(WindowColour::secondary) | 0x80;
             auto count = Dropdown::getItemsPerRow(landCount);
 
             Dropdown::showImage(xPos, yPos, 20, 20, heightOffset, colour, count, landCount);
@@ -1373,9 +1373,9 @@ namespace OpenLoco::Ui::Windows::Terraform
 
         Widget widgets[] = {
             commonWidgets(130, 105, StringIds::title_adjust_water),
-            makeWidget({ 33 + 16, 45 }, { 64, 44 }, WidgetType::wt_3, 1, ImageIds::tool_area, StringIds::tooltip_adjust_water_tool),
-            makeWidget({ 34 + 16, 46 }, { 16, 16 }, WidgetType::wt_7, 1, Gfx::recolour(ImageIds::decrease_tool_area, Colour::white), StringIds::tooltip_decrease_adjust_water_area),
-            makeWidget({ 80 + 16, 72 }, { 16, 16 }, WidgetType::wt_7, 1, Gfx::recolour(ImageIds::increase_tool_area, Colour::white), StringIds::tooltip_increase_adjust_water_area),
+            makeWidget({ 33 + 16, 45 }, { 64, 44 }, WidgetType::wt_3, WindowColour::secondary, ImageIds::tool_area, StringIds::tooltip_adjust_water_tool),
+            makeWidget({ 34 + 16, 46 }, { 16, 16 }, WidgetType::wt_7, WindowColour::secondary, Gfx::recolour(ImageIds::decrease_tool_area, Colour::white), StringIds::tooltip_decrease_adjust_water_area),
+            makeWidget({ 80 + 16, 72 }, { 16, 16 }, WidgetType::wt_7, WindowColour::secondary, Gfx::recolour(ImageIds::increase_tool_area, Colour::white), StringIds::tooltip_increase_adjust_water_area),
             widgetEnd(),
         };
 
@@ -1612,7 +1612,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
         Widget widgets[] = {
             commonWidgets(418, 108, StringIds::title_build_walls),
-            makeWidget({ 2, 45 }, { 391, 48 }, WidgetType::scrollview, 1, Scrollbars::vertical),
+            makeWidget({ 2, 45 }, { 391, 48 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
             widgetEnd(),
         };
 
@@ -1917,7 +1917,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BC11C
         static void drawScroll(Window* self, Gfx::Context* context, uint32_t scrollIndex)
         {
-            auto shade = Colour::getShade(self->colours[1], 3);
+            auto shade = Colour::getShade(self->getColour(WindowColour::secondary), 3);
             Gfx::clearSingle(*context, shade);
 
             uint16_t xPos = 0;
@@ -1928,12 +1928,12 @@ namespace OpenLoco::Ui::Windows::Terraform
                 {
                     if (self->row_info[i] == self->var_846)
                     {
-                        Gfx::drawRectInset(context, xPos, yPos, 40, rowHeight, self->colours[1], Colour::translucent_flag);
+                        Gfx::drawRectInset(context, xPos, yPos, 40, rowHeight, self->getColour(WindowColour::secondary), Colour::translucent_flag);
                     }
                 }
                 else
                 {
-                    Gfx::drawRectInset(context, xPos, yPos, 40, rowHeight, self->colours[1], (Colour::translucent_flag | Colour::outline_flag));
+                    Gfx::drawRectInset(context, xPos, yPos, 40, rowHeight, self->getColour(WindowColour::secondary), (Colour::translucent_flag | Colour::outline_flag));
                 }
 
                 auto wallObj = ObjectManager::get<WallObject>(self->row_info[i]);

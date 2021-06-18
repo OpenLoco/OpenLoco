@@ -60,15 +60,15 @@ namespace OpenLoco::Ui::Windows::TileInspector
     }
 
     static Widget _widgets[] = {
-        makeWidget({ 0, 0 }, windowSize, WidgetType::frame, 0),
-        makeWidget({ 1, 1 }, { windowSize.width - 2, 13 }, WidgetType::caption_25, 0, StringIds::tile_inspector),
-        makeWidget({ windowSize.width - 15, 2 }, { 13, 13 }, WidgetType::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window),
-        makeWidget({ 0, 15 }, { windowSize.width, windowSize.height - 15 }, WidgetType::panel, 1),
-        makeStepperWidgets({ 19, 24 }, { 55, 12 }, WidgetType::wt_17, 1),
-        makeStepperWidgets({ 92, 24 }, { 55, 12 }, WidgetType::wt_17, 1),
-        makeWidget({ windowSize.width - 26, 18 }, { 24, 24 }, WidgetType::wt_9, 1, ImageIds::construction_new_position, StringIds::tile_inspector_select_btn_tooltip),
-        makeWidget({ 4, 46 }, { windowSize.width - 8, 100 }, WidgetType::scrollview, 1, Ui::Scrollbars::vertical),
-        makeWidget({ 4, 148 }, { windowSize.width - 8, 30 }, WidgetType::groupbox, 1, StringIds::tile_element_data),
+        makeWidget({ 0, 0 }, windowSize, WidgetType::frame, WindowColour::primary),
+        makeWidget({ 1, 1 }, { windowSize.width - 2, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::tile_inspector),
+        makeWidget({ windowSize.width - 15, 2 }, { 13, 13 }, WidgetType::wt_9, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+        makeWidget({ 0, 15 }, { windowSize.width, windowSize.height - 15 }, WidgetType::panel, WindowColour::secondary),
+        makeStepperWidgets({ 19, 24 }, { 55, 12 }, WidgetType::wt_17, WindowColour::secondary),
+        makeStepperWidgets({ 92, 24 }, { 55, 12 }, WidgetType::wt_17, WindowColour::secondary),
+        makeWidget({ windowSize.width - 26, 18 }, { 24, 24 }, WidgetType::wt_9, WindowColour::secondary, ImageIds::construction_new_position, StringIds::tile_inspector_select_btn_tooltip),
+        makeWidget({ 4, 46 }, { windowSize.width - 8, 100 }, WidgetType::scrollview, WindowColour::secondary, Ui::Scrollbars::vertical),
+        makeWidget({ 4, 148 }, { windowSize.width - 8, 30 }, WidgetType::groupbox, WindowColour::secondary, StringIds::tile_element_data),
         widgetEnd(),
     };
 
@@ -104,8 +104,8 @@ namespace OpenLoco::Ui::Windows::TileInspector
         window->initScrollWidgets();
 
         auto skin = ObjectManager::get<InterfaceSkinObject>();
-        window->colours[0] = skin->colour_0B;
-        window->colours[1] = skin->colour_0C;
+        window->setColour(WindowColour::primary, skin->colour_0B);
+        window->setColour(WindowColour::secondary, skin->colour_0C);
 
         activateMapSelectionTool(window);
 

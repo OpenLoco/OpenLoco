@@ -44,14 +44,14 @@ namespace OpenLoco::Ui::Windows::TimePanel
     static void changeGameSpeed(Window* w, uint8_t speed);
 
     static Widget _widgets[] = {
-        makeWidget({ 0, 0 }, { 140, 29 }, WidgetType::wt_3, 0),                                                                                        // 0,
-        makeWidget({ 2, 2 }, { 136, 25 }, WidgetType::wt_3, 0),                                                                                        // 1,
-        makeWidget({ 113, 1 }, { 26, 26 }, WidgetType::wt_9, 0),                                                                                       // 2,
-        makeWidget({ 2, 2 }, { 111, 12 }, WidgetType::wt_9, 0, ImageIds::null, StringIds::tooltip_daymonthyear_challenge),                             // 3,
-        makeRemapWidget({ 18, 15 }, { 20, 12 }, WidgetType::wt_9, 0, ImageIds::speed_pause, StringIds::tooltip_speed_pause),                           // 4,
-        makeRemapWidget({ 38, 15 }, { 20, 12 }, WidgetType::wt_9, 0, ImageIds::speed_normal, StringIds::tooltip_speed_normal),                         // 5,
-        makeRemapWidget({ 58, 15 }, { 20, 12 }, WidgetType::wt_9, 0, ImageIds::speed_fast_forward, StringIds::tooltip_speed_fast_forward),             // 6,
-        makeRemapWidget({ 78, 15 }, { 20, 12 }, WidgetType::wt_9, 0, ImageIds::speed_extra_fast_forward, StringIds::tooltip_speed_extra_fast_forward), // 7,
+        makeWidget({ 0, 0 }, { 140, 29 }, WidgetType::wt_3, WindowColour::primary),                                                                                        // 0,
+        makeWidget({ 2, 2 }, { 136, 25 }, WidgetType::wt_3, WindowColour::primary),                                                                                        // 1,
+        makeWidget({ 113, 1 }, { 26, 26 }, WidgetType::wt_9, WindowColour::primary),                                                                                       // 2,
+        makeWidget({ 2, 2 }, { 111, 12 }, WidgetType::wt_9, WindowColour::primary, ImageIds::null, StringIds::tooltip_daymonthyear_challenge),                             // 3,
+        makeRemapWidget({ 18, 15 }, { 20, 12 }, WidgetType::wt_9, WindowColour::primary, ImageIds::speed_pause, StringIds::tooltip_speed_pause),                           // 4,
+        makeRemapWidget({ 38, 15 }, { 20, 12 }, WidgetType::wt_9, WindowColour::primary, ImageIds::speed_normal, StringIds::tooltip_speed_normal),                         // 5,
+        makeRemapWidget({ 58, 15 }, { 20, 12 }, WidgetType::wt_9, WindowColour::primary, ImageIds::speed_fast_forward, StringIds::tooltip_speed_fast_forward),             // 6,
+        makeRemapWidget({ 78, 15 }, { 20, 12 }, WidgetType::wt_9, WindowColour::primary, ImageIds::speed_extra_fast_forward, StringIds::tooltip_speed_extra_fast_forward), // 7,
         widgetEnd(),
     };
 
@@ -104,8 +104,8 @@ namespace OpenLoco::Ui::Windows::TimePanel
         auto skin = ObjectManager::get<InterfaceSkinObject>();
         if (skin != nullptr)
         {
-            window->colours[0] = Colour::translucent(skin->colour_17);
-            window->colours[1] = Colour::translucent(skin->colour_17);
+            window->setColour(WindowColour::primary, Colour::translucent(skin->colour_17));
+            window->setColour(WindowColour::secondary, Colour::translucent(skin->colour_17));
         }
 
         return window;
@@ -180,7 +180,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
         // Draw widgets.
         self->draw(context);
 
-        Gfx::drawRectInset(context, self->x + frame.left + 1, self->y + frame.top + 1, frame.width() - 2, frame.height() - 2, self->colours[1], 0x30);
+        Gfx::drawRectInset(context, self->x + frame.left + 1, self->y + frame.top + 1, frame.width() - 2, frame.height() - 2, self->getColour(WindowColour::secondary), 0x30);
 
         *(uint32_t*)&_common_format_args[0] = getCurrentDay();
         string_id format = StringIds::date_monthyear;
@@ -193,7 +193,7 @@ namespace OpenLoco::Ui::Windows::TimePanel
             }
         }
 
-        Colour_t c = Colour::opaque(self->colours[0]);
+        Colour_t c = Colour::opaque(self->getColour(WindowColour::primary));
         if (Input::isHovering(WindowType::timeToolbar, 0, Widx::date_btn))
         {
             c = Colour::white;

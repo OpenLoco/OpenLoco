@@ -23,10 +23,10 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 {
     Widget widgets[] = {
         commonWidgets(138, 190, StringIds::stringid_2),
-        makeWidget({ 3, 45 }, { 132, 12 }, WidgetType::wt_18, 1, 0xFFFFFFFF, StringIds::tooltip_select_station_type),
-        makeWidget({ 123, 46 }, { 11, 10 }, WidgetType::wt_11, 1, StringIds::dropdown, StringIds::tooltip_select_station_type),
-        makeWidget({ 35, 60 }, { 68, 68 }, WidgetType::wt_3, 1),
-        makeWidget({ 112, 104 }, { 24, 24 }, WidgetType::wt_9, 1, ImageIds::rotate_object, StringIds::rotate_90),
+        makeWidget({ 3, 45 }, { 132, 12 }, WidgetType::wt_18, WindowColour::secondary, 0xFFFFFFFF, StringIds::tooltip_select_station_type),
+        makeWidget({ 123, 46 }, { 11, 10 }, WidgetType::wt_11, WindowColour::secondary, StringIds::dropdown, StringIds::tooltip_select_station_type),
+        makeWidget({ 35, 60 }, { 68, 68 }, WidgetType::wt_3, WindowColour::secondary),
+        makeWidget({ 112, 104 }, { 24, 24 }, WidgetType::wt_9, WindowColour::secondary, ImageIds::rotate_object, StringIds::rotate_90),
         widgetEnd(),
     };
 
@@ -87,7 +87,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
                 auto yPos = widget.top + self->y;
                 auto width = widget.width() + 2;
                 auto height = widget.height();
-                Dropdown::show(xPos, yPos, width, height, self->colours[1], stationCount, (1 << 7));
+                Dropdown::show(xPos, yPos, width, height, self->getColour(WindowColour::secondary), stationCount, (1 << 7));
 
                 if (_byte_1136063 & (1 << 7))
                 {
@@ -300,7 +300,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         xPos = self->x + 3;
         yPos = self->widgets[widx::image].bottom + self->y + 16;
         auto width = self->width - 4;
-        Gfx::drawRectInset(context, xPos, yPos, width, 1, self->colours[1], (1 << 5));
+        Gfx::drawRectInset(context, xPos, yPos, width, 1, self->getColour(WindowColour::secondary), (1 << 5));
 
         if (!(_byte_522096 & (1 << 3)))
             return;

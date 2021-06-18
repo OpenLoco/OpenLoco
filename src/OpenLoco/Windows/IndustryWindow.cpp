@@ -42,15 +42,15 @@ namespace OpenLoco::Ui::Windows::Industry
 
         const uint64_t enabledWidgets = (1 << widx::caption) | (1 << widx::close_button) | (1 << widx::tab_industry) | (1 << widx::tab_production) | (1 << widx::tab_production_2) | (1 << widx::tab_transported);
 
-#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                       \
-    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, WidgetType::frame, 0),                                                          \
-        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, WidgetType::caption_25, 0, windowCaptionId),                                     \
-        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, WidgetType::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window), \
-        makeWidget({ 0, 41 }, { frameWidth, 95 }, WidgetType::panel, 1),                                                              \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_industry),                      \
-        makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_production_graph),             \
-        makeRemapWidget({ 65, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_production_graph),             \
-        makeRemapWidget({ 96, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_statistics)
+#define commonWidgets(frameWidth, frameHeight, windowCaptionId)                                                                                           \
+    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, WidgetType::frame, WindowColour::primary),                                                          \
+        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, WidgetType::caption_25, WindowColour::primary, windowCaptionId),                                     \
+        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, WidgetType::wt_9, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window), \
+        makeWidget({ 0, 41 }, { frameWidth, 95 }, WidgetType::panel, WindowColour::secondary),                                                            \
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_industry),                    \
+        makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_production_graph),           \
+        makeRemapWidget({ 65, 15 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_production_graph),           \
+        makeRemapWidget({ 96, 15 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_statistics)
 
         // Defined at the bottom of this file.
         static void prepareDraw(Window* self);
@@ -84,10 +84,10 @@ namespace OpenLoco::Ui::Windows::Industry
 
         static Widget widgets[] = {
             commonWidgets(223, 137, StringIds::title_town),
-            makeWidget({ 3, 44 }, { 195, 80 }, WidgetType::viewport, 1, 0xFFFFFFFE),
-            makeWidget({ 3, 115 }, { 195, 21 }, WidgetType::wt_13, 1),
-            makeWidget({ 0, 0 }, { 24, 24 }, WidgetType::wt_9, 1, ImageIds::null, StringIds::move_main_view_to_show_this),
-            makeWidget({ 198, 44 }, { 24, 24 }, WidgetType::wt_9, 1, ImageIds::rubbish_bin, StringIds::demolish_this_industry),
+            makeWidget({ 3, 44 }, { 195, 80 }, WidgetType::viewport, WindowColour::secondary, 0xFFFFFFFE),
+            makeWidget({ 3, 115 }, { 195, 21 }, WidgetType::wt_13, WindowColour::secondary),
+            makeWidget({ 0, 0 }, { 24, 24 }, WidgetType::wt_9, WindowColour::secondary, ImageIds::null, StringIds::move_main_view_to_show_this),
+            makeWidget({ 198, 44 }, { 24, 24 }, WidgetType::wt_9, WindowColour::secondary, ImageIds::rubbish_bin, StringIds::demolish_this_industry),
             widgetEnd(),
         };
 
@@ -313,8 +313,8 @@ namespace OpenLoco::Ui::Windows::Industry
             auto skin = ObjectManager::get<InterfaceSkinObject>();
             if (skin != nullptr)
             {
-                window->colours[0] = skin->colour_0B;
-                window->colours[1] = skin->colour_0C;
+                window->setColour(WindowColour::primary, skin->colour_0B);
+                window->setColour(WindowColour::secondary, skin->colour_0C);
             }
             // 0x00456DBC end
 
@@ -593,7 +593,7 @@ namespace OpenLoco::Ui::Windows::Industry
                 auto args = FormatArguments();
                 args.push(yTick);
 
-                Gfx::drawRect(context, self->x + 41, yPos, 239, 1, Colour::getShade(self->colours[1], 4));
+                Gfx::drawRect(context, self->x + 41, yPos, 239, 1, Colour::getShade(self->getColour(WindowColour::secondary), 4));
 
                 Gfx::drawString_494C78(*context, self->x + 39, yPos - 6, Colour::black, StringIds::population_graph_people, &args);
 
@@ -623,7 +623,7 @@ namespace OpenLoco::Ui::Windows::Industry
                         Gfx::drawStringCentred(*context, xPos, yPos, Colour::black, StringIds::population_graph_year, &args);
                     }
 
-                    Gfx::drawRect(context, xPos, yPos + 11, 1, self->height - 74, Colour::getShade(self->colours[1], 4));
+                    Gfx::drawRect(context, xPos, yPos + 11, 1, self->height - 74, Colour::getShade(self->getColour(WindowColour::secondary), 4));
                 }
 
                 const auto history = productionTabWidx == widx::tab_production ? industry->history_1 : industry->history_2;
@@ -638,7 +638,7 @@ namespace OpenLoco::Ui::Windows::Industry
                     {
                         if (yPos2 <= graphBottom)
                         {
-                            Gfx::drawLine(context, xPos, yPos1, xPos + 1, yPos2, Colour::getShade(self->colours[1], 7));
+                            Gfx::drawLine(context, xPos, yPos1, xPos + 1, yPos2, Colour::getShade(self->getColour(WindowColour::secondary), 7));
                         }
                     }
                 }
@@ -840,7 +840,7 @@ namespace OpenLoco::Ui::Windows::Industry
 
             if (industryObj->produced_cargo_type[productionTabNumber] != 0xFF)
             {
-                imageId = Gfx::recolour(skin->img, self->colours[1]);
+                imageId = Gfx::recolour(skin->img, self->getColour(WindowColour::secondary));
 
                 if (self->current_tab == tab - widx::tab_industry)
                     imageId += productionTabImageIds[(self->frame_no / 4) % std::size(productionTabImageIds)];

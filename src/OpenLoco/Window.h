@@ -62,6 +62,15 @@ namespace OpenLoco::Ui
         end = 30,
     };
 
+    enum class WindowColour : uint8_t
+    {
+        primary,
+        secondary,
+        tertiary,
+        quaternary,
+        count
+    };
+
     namespace Scrollbars
     {
         constexpr uint8_t none = 0;
@@ -287,7 +296,7 @@ namespace OpenLoco::Ui
         uint8_t pad_883[1];
         CompanyId_t owner = CompanyId::null; // 0x884
         uint8_t var_885 = 0xFF;
-        uint8_t colours[4]; // 0x886
+        uint8_t colours[static_cast<uint8_t>(WindowColour::count)]; // 0x886
         int16_t var_88A;
         int16_t var_88C;
 
@@ -334,6 +343,17 @@ namespace OpenLoco::Ui
         constexpr void setSize(Gfx::ui_size_t size)
         {
             setSize(size, size);
+        }
+
+        constexpr uint8_t getColour(WindowColour index) const
+        {
+            assert(index < WindowColour::count);
+            return colours[static_cast<uint8_t>(index)];
+        }
+        constexpr void setColour(WindowColour index, Colour_t colour)
+        {
+            assert(index < WindowColour::count);
+            colours[static_cast<uint8_t>(index)] = colour;
         }
 
         bool isVisible()

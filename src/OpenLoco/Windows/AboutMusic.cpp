@@ -30,11 +30,11 @@ namespace OpenLoco::Ui::Windows::AboutMusic
     }
 
     static Widget _widgets[] = {
-        makeWidget({ 0, 0 }, windowSize, WidgetType::frame, 0),
-        makeWidget({ 1, 1 }, { windowSize.width - 2, 13 }, WidgetType::caption_25, 0, StringIds::music_acknowledgements_caption),
-        makeWidget({ windowSize.width - 15, 2 }, { 13, 13 }, WidgetType::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window),
-        makeWidget({ 0, 15 }, { windowSize.width, 297 }, WidgetType::panel, 1),
-        makeWidget({ 4, 18 }, { windowSize.width - 8, 289 }, WidgetType::scrollview, 1, Ui::Scrollbars::vertical),
+        makeWidget({ 0, 0 }, windowSize, WidgetType::frame, WindowColour::primary),
+        makeWidget({ 1, 1 }, { windowSize.width - 2, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::music_acknowledgements_caption),
+        makeWidget({ windowSize.width - 15, 2 }, { 13, 13 }, WidgetType::wt_9, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+        makeWidget({ 0, 15 }, { windowSize.width, 297 }, WidgetType::panel, WindowColour::secondary),
+        makeWidget({ 4, 18 }, { windowSize.width - 8, 289 }, WidgetType::scrollview, WindowColour::secondary, Ui::Scrollbars::vertical),
         widgetEnd(),
     };
 
@@ -61,8 +61,8 @@ namespace OpenLoco::Ui::Windows::AboutMusic
         window->initScrollWidgets();
 
         const auto interface = ObjectManager::get<InterfaceSkinObject>();
-        window->colours[0] = interface->colour_0B;
-        window->colours[1] = interface->colour_10;
+        window->setColour(WindowColour::primary, interface->colour_0B);
+        window->setColour(WindowColour::secondary, interface->colour_10);
     }
 
     // 0x0043BFB0

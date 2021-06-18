@@ -113,12 +113,12 @@ namespace OpenLoco::Ui::Windows::TitleMenu
     }
 
     static Widget _widgets[] = {
-        makeWidget({ 0, 0 }, { btn_main_size, btn_main_size }, WidgetType::wt_9, 1, StringIds::null, StringIds::title_menu_new_game),
-        makeWidget({ btn_main_size, 0 }, { btn_main_size, btn_main_size }, WidgetType::wt_9, 1, StringIds::null, StringIds::title_menu_load_game),
-        makeWidget({ btn_main_size * 2, 0 }, { btn_main_size, btn_main_size }, WidgetType::wt_9, 1, StringIds::null, StringIds::title_menu_show_tutorial),
-        makeWidget({ btn_main_size * 3, 0 }, { btn_main_size, btn_main_size }, WidgetType::wt_9, 1, StringIds::null, StringIds::title_menu_scenario_editor),
-        makeWidget({ btn_main_size * 4 - 31, btn_main_size - 27 }, { 31, 27 }, WidgetType::wt_9, 1, StringIds::null, StringIds::title_menu_chat_tooltip),
-        makeWidget({ 0, btn_main_size }, { ww, btn_sub_height }, WidgetType::none, 1, StringIds::null, StringIds::title_multiplayer_toggle_tooltip),
+        makeWidget({ 0, 0 }, { btn_main_size, btn_main_size }, WidgetType::wt_9, WindowColour::secondary, StringIds::null, StringIds::title_menu_new_game),
+        makeWidget({ btn_main_size, 0 }, { btn_main_size, btn_main_size }, WidgetType::wt_9, WindowColour::secondary, StringIds::null, StringIds::title_menu_load_game),
+        makeWidget({ btn_main_size * 2, 0 }, { btn_main_size, btn_main_size }, WidgetType::wt_9, WindowColour::secondary, StringIds::null, StringIds::title_menu_show_tutorial),
+        makeWidget({ btn_main_size * 3, 0 }, { btn_main_size, btn_main_size }, WidgetType::wt_9, WindowColour::secondary, StringIds::null, StringIds::title_menu_scenario_editor),
+        makeWidget({ btn_main_size * 4 - 31, btn_main_size - 27 }, { 31, 27 }, WidgetType::wt_9, WindowColour::secondary, StringIds::null, StringIds::title_menu_chat_tooltip),
+        makeWidget({ 0, btn_main_size }, { ww, btn_sub_height }, WidgetType::none, WindowColour::secondary, StringIds::null, StringIds::title_multiplayer_toggle_tooltip),
         widgetEnd(),
     };
 
@@ -168,8 +168,8 @@ namespace OpenLoco::Ui::Windows::TitleMenu
 
         window->initScrollWidgets();
 
-        window->colours[0] = Colour::translucent(Colour::saturated_green);
-        window->colours[1] = Colour::translucent(Colour::saturated_green);
+        window->setColour(WindowColour::primary, Colour::translucent(Colour::saturated_green));
+        window->setColour(WindowColour::secondary, Colour::translucent(Colour::saturated_green));
         window->var_846 = 0;
 
         return window;
@@ -411,7 +411,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
             window->y + widget->top,
             widget->width(),
             widget->height(),
-            Colour::translucent(window->colours[0]),
+            Colour::translucent(window->getColour(WindowColour::primary)),
             3,
             0x80);
     }

@@ -56,12 +56,12 @@ namespace OpenLoco::Ui::Windows::TextInput
     }
 
     static Widget _widgets[] = {
-        makeWidget({ 0, 0 }, { 330, 90 }, WidgetType::frame, 0),
-        makeWidget({ 1, 1 }, { 328, 13 }, WidgetType::caption_25, 0),
-        makeWidget({ 315, 2 }, { 13, 13 }, WidgetType::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window),
-        makeWidget({ 0, 15 }, { 330, 75 }, WidgetType::panel, 1),
-        makeWidget({ 4, 58 }, { 322, 14 }, WidgetType::wt_17, 1),
-        makeTextWidget({ 256, 74 }, { 70, 12 }, WidgetType::wt_11, 1, StringIds::label_button_ok),
+        makeWidget({ 0, 0 }, { 330, 90 }, WidgetType::frame, WindowColour::primary),
+        makeWidget({ 1, 1 }, { 328, 13 }, WidgetType::caption_25, WindowColour::primary),
+        makeWidget({ 315, 2 }, { 13, 13 }, WidgetType::wt_9, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+        makeWidget({ 0, 15 }, { 330, 75 }, WidgetType::panel, WindowColour::secondary),
+        makeWidget({ 4, 58 }, { 322, 14 }, WidgetType::wt_17, WindowColour::secondary),
+        makeTextWidget({ 256, 74 }, { 70, 12 }, WidgetType::wt_11, WindowColour::secondary, StringIds::label_button_ok),
         widgetEnd(),
     };
 
@@ -146,22 +146,22 @@ namespace OpenLoco::Ui::Windows::TextInput
 
         caller = WindowManager::find(_callingWindowType, _callingWindowNumber);
 
-        window->colours[0] = caller->colours[0];
-        window->colours[1] = caller->colours[1];
+        window->setColour(WindowColour::primary, caller->getColour(WindowColour::primary));
+        window->setColour(WindowColour::secondary, caller->getColour(WindowColour::secondary));
         window->owner = caller->owner;
 
         if (caller->type == WindowType::titleMenu)
         {
             InterfaceSkinObject* interface = ObjectManager::get<InterfaceSkinObject>();
-            window->colours[0] = interface->colour_0B;
-            window->colours[1] = interface->colour_0C;
+            window->setColour(WindowColour::primary, interface->colour_0B);
+            window->setColour(WindowColour::secondary, interface->colour_0C);
             window->owner = CompanyId::null;
         }
 
         if (caller->type == WindowType::timeToolbar)
         {
             InterfaceSkinObject* interface = ObjectManager::get<InterfaceSkinObject>();
-            window->colours[1] = interface->colour_0A;
+            window->setColour(WindowColour::secondary, interface->colour_0A);
             window->owner = CompanyManager::getControllingId();
         }
 
@@ -268,7 +268,7 @@ namespace OpenLoco::Ui::Windows::TextInput
         *((string_id*)(&_commonFormatArgs[0])) = StringIds::buffer_2039;
         position = { inputSession.xOffset, 1 };
         Gfx::drawString_494B3F(*clipped, &position, 0, StringIds::black_stringid, _commonFormatArgs);
-        Gfx::fillRect(clipped, position.x, position.y, position.x, position.y + 9, Colour::getShade(window->colours[1], 9));
+        Gfx::fillRect(clipped, position.x, position.y, position.x, position.y + 9, Colour::getShade(window->getColour(WindowColour::secondary), 9));
     }
 
     // 0x004CE8B6

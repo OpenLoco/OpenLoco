@@ -47,21 +47,21 @@ namespace OpenLoco::Ui::Windows::StationList
     };
 
     static Widget _widgets[] = {
-        makeWidget({ 0, 0 }, { 600, 197 }, WidgetType::frame, 0),
-        makeWidget({ 1, 1 }, { 598, 13 }, WidgetType::caption_24, 0, StringIds::stringid_all_stations),
-        makeWidget({ 585, 2 }, { 13, 13 }, WidgetType::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window),
-        makeWidget({ 0, 41 }, { 600, 155 }, WidgetType::panel, 1),
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_all_stations),
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_rail_stations),
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_road_stations),
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_airports),
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, 1, ImageIds::tab, StringIds::tooltip_ship_ports),
-        makeWidget({ 0, 14 }, { 26, 26 }, WidgetType::wt_9, 0, StringIds::null, StringIds::tooltip_select_company),
-        makeWidget({ 4, 43 }, { 200, 12 }, WidgetType::wt_14, 1, StringIds::null, StringIds::tooltip_sort_by_name),
-        makeWidget({ 204, 43 }, { 200, 12 }, WidgetType::wt_14, 1, StringIds::null, StringIds::tooltip_sort_by_station_status),
-        makeWidget({ 404, 43 }, { 90, 12 }, WidgetType::wt_14, 1, StringIds::null, StringIds::tooltip_sort_by_total_units_waiting),
-        makeWidget({ 494, 43 }, { 120, 12 }, WidgetType::wt_14, 1, StringIds::null, StringIds::tooltip_sort_by_cargo_accepted),
-        makeWidget({ 3, 56 }, { 594, 126 }, WidgetType::scrollview, 1, Scrollbars::vertical),
+        makeWidget({ 0, 0 }, { 600, 197 }, WidgetType::frame, WindowColour::primary),
+        makeWidget({ 1, 1 }, { 598, 13 }, WidgetType::caption_24, WindowColour::primary, StringIds::stringid_all_stations),
+        makeWidget({ 585, 2 }, { 13, 13 }, WidgetType::wt_9, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+        makeWidget({ 0, 41 }, { 600, 155 }, WidgetType::panel, WindowColour::secondary),
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_all_stations),
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_rail_stations),
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_road_stations),
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_airports),
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_ship_ports),
+        makeWidget({ 0, 14 }, { 26, 26 }, WidgetType::wt_9, WindowColour::primary, StringIds::null, StringIds::tooltip_select_company),
+        makeWidget({ 4, 43 }, { 200, 12 }, WidgetType::wt_14, WindowColour::secondary, StringIds::null, StringIds::tooltip_sort_by_name),
+        makeWidget({ 204, 43 }, { 200, 12 }, WidgetType::wt_14, WindowColour::secondary, StringIds::null, StringIds::tooltip_sort_by_station_status),
+        makeWidget({ 404, 43 }, { 90, 12 }, WidgetType::wt_14, WindowColour::secondary, StringIds::null, StringIds::tooltip_sort_by_total_units_waiting),
+        makeWidget({ 494, 43 }, { 120, 12 }, WidgetType::wt_14, WindowColour::secondary, StringIds::null, StringIds::tooltip_sort_by_cargo_accepted),
+        makeWidget({ 3, 56 }, { 594, 126 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
         widgetEnd(),
     };
 
@@ -334,7 +334,7 @@ namespace OpenLoco::Ui::Windows::StationList
             window->flags |= WindowFlags::resizable;
 
             auto interface = ObjectManager::get<InterfaceSkinObject>();
-            window->colours[1] = interface->colour_0A;
+            window->setColour(WindowColour::secondary, interface->colour_0A);
         }
 
         // TODO: only needs to be called once.
@@ -471,7 +471,7 @@ namespace OpenLoco::Ui::Windows::StationList
     // 0x0049157F
     static void drawScroll(Ui::Window* window, Gfx::Context* context, uint32_t scrollIndex)
     {
-        auto shade = Colour::getShade(window->colours[1], 4);
+        auto shade = Colour::getShade(window->getColour(WindowColour::secondary), 4);
         Gfx::clearSingle(*context, shade);
 
         uint16_t yPos = 0;

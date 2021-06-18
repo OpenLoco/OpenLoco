@@ -20,12 +20,12 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
     static WindowEventList _events;
 
     static Widget _widgets[] = {
-        makeWidget({ 0, 0 }, { 360, 238 }, WidgetType::frame, 0),
-        makeWidget({ 1, 1 }, { 358, 13 }, WidgetType::caption_25, 0, StringIds::keyboard_shortcuts),
-        makeWidget({ 345, 2 }, { 13, 13 }, WidgetType::wt_9, 0, ImageIds::close_button, StringIds::tooltip_close_window),
-        makeWidget({ 0, 15 }, { 360, 223 }, WidgetType::panel, 1),
-        makeWidget({ 4, 19 }, { 352, 202 }, WidgetType::scrollview, 1, Scrollbars::vertical, StringIds::keyboard_shortcut_list_tip),
-        makeWidget({ 4, 223 }, { 150, 12 }, WidgetType::wt_11, 1, StringIds::reset_keys, StringIds::reset_keys_tip),
+        makeWidget({ 0, 0 }, { 360, 238 }, WidgetType::frame, WindowColour::primary),
+        makeWidget({ 1, 1 }, { 358, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::keyboard_shortcuts),
+        makeWidget({ 345, 2 }, { 13, 13 }, WidgetType::wt_9, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+        makeWidget({ 0, 15 }, { 360, 223 }, WidgetType::panel, WindowColour::secondary),
+        makeWidget({ 4, 19 }, { 352, 202 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical, StringIds::keyboard_shortcut_list_tip),
+        makeWidget({ 4, 223 }, { 150, 12 }, WidgetType::wt_11, WindowColour::secondary, StringIds::reset_keys, StringIds::reset_keys_tip),
         widgetEnd(),
     };
 
@@ -81,8 +81,8 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
         window->initScrollWidgets();
 
         auto skin = ObjectManager::get<InterfaceSkinObject>();
-        window->colours[0] = skin->colour_0B;
-        window->colours[1] = skin->colour_10;
+        window->setColour(WindowColour::primary, skin->colour_0B);
+        window->setColour(WindowColour::secondary, skin->colour_10);
 
         window->row_count = static_cast<uint16_t>(ShortcutManager::count());
         window->row_hover = -1;
@@ -100,7 +100,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
     // 0x004BE72C
     static void drawScroll(Ui::Window* self, Gfx::Context* context, uint32_t scrollIndex)
     {
-        auto colour = self->colours[1];
+        auto colour = self->getColour(WindowColour::secondary);
         auto shade = Colour::getShade(colour, 4);
         Gfx::clearSingle(*context, shade);
 

@@ -20,7 +20,7 @@ namespace OpenLoco::Ui::Windows::TitleLogo
     }
 
     static Widget _widgets[] = {
-        makeWidget({ 0, 0 }, window_size, WidgetType::wt_3, 0),
+        makeWidget({ 0, 0 }, window_size, WidgetType::wt_3, WindowColour::primary),
         widgetEnd(),
     };
 
@@ -46,8 +46,8 @@ namespace OpenLoco::Ui::Windows::TitleLogo
 
         window->initScrollWidgets();
 
-        window->colours[0] = Colour::translucent(Colour::grey);
-        window->colours[1] = Colour::translucent(Colour::grey);
+        window->setColour(WindowColour::primary, Colour::translucent(Colour::grey));
+        window->setColour(WindowColour::secondary, Colour::translucent(Colour::grey));
 
         return window;
     }
