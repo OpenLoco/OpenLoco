@@ -347,10 +347,12 @@ namespace OpenLoco::Ui
 
         constexpr uint8_t getColour(WindowColour index) const
         {
+            assert(index < WindowColour::count);
             return colours[static_cast<uint8_t>(index)];
         }
         constexpr void setColour(WindowColour index, Colour_t colour)
         {
+            assert(index < WindowColour::count);
             colours[static_cast<uint8_t>(index)] = colour;
         }
 
