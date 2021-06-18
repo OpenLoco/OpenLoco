@@ -13,7 +13,7 @@
 #define assert_struct_size(x, y)
 #endif
 
-#if defined(__clang__) || (defined(__GNUC__) && !defined(__MINGW32__))
+#if (defined(__clang__) || (defined(__GNUC__) && !defined(__MINGW32__))) && defined(__SSE2__)
 #define FORCE_ALIGN_ARG_POINTER __attribute__((force_align_arg_pointer))
 #else
 #define FORCE_ALIGN_ARG_POINTER
