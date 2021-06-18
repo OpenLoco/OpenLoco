@@ -58,8 +58,8 @@ namespace OpenLoco::Ui::Windows::EditKeyboardShortcut
         window->initScrollWidgets();
 
         const auto skin = ObjectManager::get<InterfaceSkinObject>();
-        window->colours[0] = skin->colour_0B;
-        window->colours[1] = skin->colour_10;
+        window->setColour(WindowColour::primary, skin->colour_0B);
+        window->setColour(WindowColour::secondary, skin->colour_10);
 
         return window;
     }

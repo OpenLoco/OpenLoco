@@ -265,7 +265,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                 case widx::objective_type_btn:
                 {
                     Widget& target = self->widgets[widx::objective_type];
-                    Dropdown::show(self->x + target.left, self->y + target.top, target.width() - 4, target.height(), self->colours[1], std::size(objectiveTypeLabelIds), 0x80);
+                    Dropdown::show(self->x + target.left, self->y + target.top, target.width() - 4, target.height(), self->getColour(WindowColour::secondary), std::size(objectiveTypeLabelIds), 0x80);
 
                     for (size_t i = 0; i < std::size(objectiveTypeLabelIds); i++)
                         Dropdown::add(i, StringIds::dropdown_stringid, objectiveTypeLabelIds[i]);
@@ -363,7 +363,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                     }
 
                     Widget& target = self->widgets[widx::objective_cargo];
-                    Dropdown::show(self->x + target.left, self->y + target.top, target.width() - 4, target.height(), self->colours[1], numCargoObjects, 0x80);
+                    Dropdown::show(self->x + target.left, self->y + target.top, target.width() - 4, target.height(), self->getColour(WindowColour::secondary), numCargoObjects, 0x80);
 
                     uint16_t dropdownIndex = 0;
                     for (uint16_t cargoIdx = 0; cargoIdx < maxCargoObjects; cargoIdx++)
@@ -522,8 +522,8 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             auto skin = ObjectManager::get<InterfaceSkinObject>();
             if (skin != nullptr)
             {
-                window->colours[0] = skin->colour_0B;
-                window->colours[1] = skin->colour_0E;
+                window->setColour(WindowColour::primary, skin->colour_0B);
+                window->setColour(WindowColour::secondary, skin->colour_0E);
             }
             // 0x0043EEFF end
 
@@ -723,7 +723,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                 case widx::preferred_intelligence_btn:
                 {
                     Widget& target = self->widgets[widx::preferred_intelligence];
-                    Dropdown::show(self->x + target.left, self->y + target.top, target.width() - 4, target.height(), self->colours[1], std::size(preferenceLabelIds), 0x80);
+                    Dropdown::show(self->x + target.left, self->y + target.top, target.width() - 4, target.height(), self->getColour(WindowColour::secondary), std::size(preferenceLabelIds), 0x80);
 
                     for (size_t i = 0; i < std::size(preferenceLabelIds); i++)
                         Dropdown::add(i, StringIds::dropdown_stringid, preferenceLabelIds[i]);
@@ -735,7 +735,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                 case widx::preferred_aggressiveness_btn:
                 {
                     Widget& target = self->widgets[widx::preferred_aggressiveness];
-                    Dropdown::show(self->x + target.left, self->y + target.top, target.width() - 4, target.height(), self->colours[1], std::size(preferenceLabelIds), 0x80);
+                    Dropdown::show(self->x + target.left, self->y + target.top, target.width() - 4, target.height(), self->getColour(WindowColour::secondary), std::size(preferenceLabelIds), 0x80);
 
                     for (size_t i = 0; i < std::size(preferenceLabelIds); i++)
                         Dropdown::add(i, StringIds::dropdown_stringid, preferenceLabelIds[i]);
@@ -747,7 +747,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
                 case widx::preferred_competitiveness_btn:
                 {
                     Widget& target = self->widgets[widx::preferred_competitiveness];
-                    Dropdown::show(self->x + target.left, self->y + target.top, target.width() - 4, target.height(), self->colours[1], std::size(preferenceLabelIds), 0x80);
+                    Dropdown::show(self->x + target.left, self->y + target.top, target.width() - 4, target.height(), self->getColour(WindowColour::secondary), std::size(preferenceLabelIds), 0x80);
 
                     for (size_t i = 0; i < std::size(preferenceLabelIds); i++)
                         Dropdown::add(i, StringIds::dropdown_stringid, preferenceLabelIds[i]);
@@ -1066,7 +1066,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             if (widgetIndex == widx::scenario_group_btn)
             {
                 Widget& target = self->widgets[widx::scenario_group];
-                Dropdown::show(self->x + target.left, self->y + target.top, target.width() - 4, target.height(), self->colours[1], std::size(scenarioGroupLabelIds), 0x80);
+                Dropdown::show(self->x + target.left, self->y + target.top, target.width() - 4, target.height(), self->getColour(WindowColour::secondary), std::size(scenarioGroupLabelIds), 0x80);
 
                 for (size_t i = 0; i < std::size(scenarioGroupLabelIds); i++)
                     Dropdown::add(i, StringIds::dropdown_stringid, scenarioGroupLabelIds[i]);

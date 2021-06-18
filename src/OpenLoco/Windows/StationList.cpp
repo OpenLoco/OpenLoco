@@ -334,7 +334,7 @@ namespace OpenLoco::Ui::Windows::StationList
             window->flags |= WindowFlags::resizable;
 
             auto interface = ObjectManager::get<InterfaceSkinObject>();
-            window->colours[1] = interface->colour_0A;
+            window->setColour(WindowColour::secondary, interface->colour_0A);
         }
 
         // TODO: only needs to be called once.
@@ -471,7 +471,7 @@ namespace OpenLoco::Ui::Windows::StationList
     // 0x0049157F
     static void drawScroll(Ui::Window* window, Gfx::Context* context, uint32_t scrollIndex)
     {
-        auto shade = Colour::getShade(window->colours[1], 4);
+        auto shade = Colour::getShade(window->getColour(WindowColour::secondary), 4);
         Gfx::clearSingle(*context, shade);
 
         uint16_t yPos = 0;

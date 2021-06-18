@@ -58,8 +58,8 @@ namespace OpenLoco::Ui::Windows::ProgressBar
 
         window->widgets = widgets;
         window->initScrollWidgets();
-        window->colours[0] = Colour::black;
-        window->colours[1] = Colour::black;
+        window->setColour(WindowColour::primary, Colour::black);
+        window->setColour(WindowColour::secondary, Colour::black);
 
         setProgress(0);
         return window;

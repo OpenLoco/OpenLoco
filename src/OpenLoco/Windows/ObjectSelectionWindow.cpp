@@ -178,8 +178,8 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         }
 
         auto skin = ObjectManager::get<InterfaceSkinObject>();
-        window->colours[0] = skin->colour_0B;
-        window->colours[1] = skin->colour_0C;
+        window->setColour(WindowColour::primary, skin->colour_0B);
+        window->setColour(WindowColour::secondary, skin->colour_0C);
 
         return window;
     }
@@ -269,10 +269,10 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 if (_tabInformation[index].row != row)
                     continue;
 
-                auto image = Gfx::recolour(ImageIds::tab, self->colours[1]);
+                auto image = Gfx::recolour(ImageIds::tab, self->getColour(WindowColour::secondary));
                 if (_tabInformation[index].index == self->current_tab)
                 {
-                    image = Gfx::recolour(ImageIds::selected_tab, self->colours[1]);
+                    image = Gfx::recolour(ImageIds::selected_tab, self->getColour(WindowColour::secondary));
                     Gfx::drawImage(context, xPos, yPos, image);
 
                     image = Gfx::recolour(_tabDisplayInfo[_tabInformation[index].index].image, Colour::saturated_green);
@@ -290,7 +290,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
                     if (row < 1)
                     {
-                        auto colour = Colour::getShade(self->colours[1], 7);
+                        auto colour = Colour::getShade(self->getColour(WindowColour::secondary), 7);
                         Gfx::drawRect(context, xPos, yPos + 26, 31, 1, colour);
                     }
                 }
@@ -500,7 +500,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     // 0x004733F5
     static void draw(Window* self, Gfx::Context* context)
     {
-        Gfx::fillRectInset(context, self->x, self->y + 20, self->x + self->width - 1, self->y + 20 + 60, self->colours[0], 0);
+        Gfx::fillRectInset(context, self->x, self->y + 20, self->x + self->width - 1, self->y + 20 + 60, self->getColour(WindowColour::primary), 0);
         self->draw(context);
 
         drawTabs(self, context);
@@ -519,13 +519,13 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         if (doDefault)
         {
             auto widget = widgets[widx::objectImage];
-            auto colour = Colour::getShade(self->colours[1], 5);
+            auto colour = Colour::getShade(self->getColour(WindowColour::secondary), 5);
             Gfx::drawRect(context, self->x + widget.left, self->y + widget.top, widget.width(), widget.height(), colour);
         }
         else
         {
             auto widget = widgets[widx::objectImage];
-            auto colour = Colour::getShade(self->colours[1], 0);
+            auto colour = Colour::getShade(self->getColour(WindowColour::secondary), 0);
             Gfx::drawRect(context, self->x + widget.left + 1, self->y + widget.top + 1, widget.width() - 2, widget.height() - 2, colour);
         }
 
@@ -587,7 +587,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     // 0x0047361D
     static void drawScroll(Window* self, Gfx::Context* context, uint32_t)
     {
-        Gfx::clearSingle(*context, Colour::getShade(self->colours[1], 4));
+        Gfx::clearSingle(*context, Colour::getShade(self->getColour(WindowColour::secondary), 4));
 
         if (ObjectManager::getNumInstalledObjects() == 0)
             return;
@@ -597,7 +597,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         for (auto [i, object] : objects)
         {
             uint8_t flags = (1 << 7) | (1 << 6) | (1 << 5);
-            Gfx::fillRectInset(context, 2, y, 11, y + 10, self->colours[1], flags);
+            Gfx::fillRectInset(context, 2, y, 11, y + 10, self->getColour(WindowColour::secondary), flags);
 
             uint8_t textColour = ControlCodes::colour_black;
 
@@ -622,7 +622,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                     _currentFontSpriteBase = Font::m1;
                 }
 
-                auto checkColour = Colour::opaque(self->colours[1]);
+                auto checkColour = Colour::opaque(self->getColour(WindowColour::secondary));
 
                 if (_50D144[i] & 0x1C)
                 {

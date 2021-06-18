@@ -75,8 +75,8 @@ namespace OpenLoco::Ui::Windows::PromptOkCancel
 
         window->enabled_widgets = (1 << widx::closeButton) | (1 << widx::okButton) | (1 << widx::cancelButton);
         window->initScrollWidgets();
-        window->colours[0] = Colour::translucent(Colour::salmon_pink);
-        window->colours[1] = Colour::translucent(Colour::salmon_pink);
+        window->setColour(WindowColour::primary, Colour::translucent(Colour::salmon_pink));
+        window->setColour(WindowColour::secondary, Colour::translucent(Colour::salmon_pink));
         window->flags |= Ui::WindowFlags::transparent;
 
         _result = 0;

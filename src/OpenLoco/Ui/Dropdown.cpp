@@ -221,7 +221,7 @@ namespace OpenLoco::Ui::Dropdown
                                 }
                             }
 
-                            auto colour = Colour::opaque(self->colours[0]);
+                            auto colour = Colour::opaque(self->getColour(WindowColour::primary));
 
                             if (itemCount == _dropdownHighlightedIndex)
                             {
@@ -232,7 +232,7 @@ namespace OpenLoco::Ui::Dropdown
                             {
                                 if (itemCount < 32)
                                 {
-                                    colour = Colour::inset(Colour::opaque(self->colours[0]));
+                                    colour = Colour::inset(Colour::opaque(self->getColour(WindowColour::primary)));
                                 }
                             }
 
@@ -261,14 +261,14 @@ namespace OpenLoco::Ui::Dropdown
                     auto x = _windowDropdownOnpaintCellX * _dropdownItemWidth + self->x + 2;
                     auto y = _windowDropdownOnpaintCellY * _dropdownItemHeight + self->y + 1 + _dropdownItemHeight / 2;
 
-                    if (!(self->colours[0] & Colour::translucent_flag))
+                    if (!(self->getColour(WindowColour::primary) & Colour::translucent_flag))
                     {
-                        Gfx::drawRect(context, x, y, _dropdownItemWidth - 1, 1, Colour::getShade(self->colours[0], 3));
-                        Gfx::drawRect(context, x, y + 1, _dropdownItemWidth - 1, 1, Colour::getShade(self->colours[0], 7));
+                        Gfx::drawRect(context, x, y, _dropdownItemWidth - 1, 1, Colour::getShade(self->getColour(WindowColour::primary), 3));
+                        Gfx::drawRect(context, x, y + 1, _dropdownItemWidth - 1, 1, Colour::getShade(self->getColour(WindowColour::primary), 7));
                     }
                     else
                     {
-                        uint32_t colour = _byte_5045FA[Colour::opaque(self->colours[0])] | (1 << 25);
+                        uint32_t colour = _byte_5045FA[Colour::opaque(self->getColour(WindowColour::primary))] | (1 << 25);
                         colour++;
                         Gfx::drawRect(context, x, y, _dropdownItemWidth - 1, 1, colour);
                         colour++;
@@ -306,7 +306,7 @@ namespace OpenLoco::Ui::Dropdown
             common::initEvents();
 
             common::widgets[0].windowColour = WindowColour::primary;
-            window->colours[0] = colour;
+            window->setColour(WindowColour::primary, colour);
 
             _dropdownHighlightedIndex = -1;
             _dropdownDisabledItems = 0;

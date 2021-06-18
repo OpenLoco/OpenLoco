@@ -104,8 +104,8 @@ namespace OpenLoco::Ui::Windows::TileInspector
         window->initScrollWidgets();
 
         auto skin = ObjectManager::get<InterfaceSkinObject>();
-        window->colours[0] = skin->colour_0B;
-        window->colours[1] = skin->colour_0C;
+        window->setColour(WindowColour::primary, skin->colour_0B);
+        window->setColour(WindowColour::secondary, skin->colour_0C);
 
         activateMapSelectionTool(window);
 

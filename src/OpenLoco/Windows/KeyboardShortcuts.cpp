@@ -81,8 +81,8 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
         window->initScrollWidgets();
 
         auto skin = ObjectManager::get<InterfaceSkinObject>();
-        window->colours[0] = skin->colour_0B;
-        window->colours[1] = skin->colour_10;
+        window->setColour(WindowColour::primary, skin->colour_0B);
+        window->setColour(WindowColour::secondary, skin->colour_10);
 
         window->row_count = static_cast<uint16_t>(ShortcutManager::count());
         window->row_hover = -1;
@@ -100,7 +100,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
     // 0x004BE72C
     static void drawScroll(Ui::Window* self, Gfx::Context* context, uint32_t scrollIndex)
     {
-        auto colour = self->colours[1];
+        auto colour = self->getColour(WindowColour::secondary);
         auto shade = Colour::getShade(colour, 4);
         Gfx::clearSingle(*context, shade);
 

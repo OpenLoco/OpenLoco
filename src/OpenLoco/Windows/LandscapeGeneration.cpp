@@ -313,8 +313,8 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             window->row_hover = -1;
 
             auto interface = ObjectManager::get<InterfaceSkinObject>();
-            window->colours[0] = interface->colour_0B;
-            window->colours[1] = interface->colour_0E;
+            window->setColour(WindowColour::primary, interface->colour_0B);
+            window->setColour(WindowColour::secondary, interface->colour_0E);
         }
         // End of 0x0043DAEA
 
@@ -443,7 +443,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 Gfx::drawString_494BBF(*context, 24, yPos + 5, 121, Colour::black, StringIds::wcolour2_stringid, &*commonFormatArgs);
 
                 // Draw rectangle.
-                Gfx::fillRectInset(context, 150, yPos + 5, 340, yPos + 16, window->colours[1], 0b110000);
+                Gfx::fillRectInset(context, 150, yPos + 5, 340, yPos + 16, window->getColour(WindowColour::secondary), 0b110000);
 
                 // Draw current distribution setting.
                 const string_id distributionId = landDistributionLabelIds[S5::getOptions().landDistributionPatterns[i]];
@@ -452,7 +452,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
                 // Draw rectangle (knob).
                 const uint8_t flags = window->row_hover == i ? 0b110000 : 0;
-                Gfx::fillRectInset(context, 329, yPos + 6, 339, yPos + 15, window->colours[1], flags);
+                Gfx::fillRectInset(context, 329, yPos + 6, 339, yPos + 15, window->getColour(WindowColour::secondary), flags);
 
                 // Draw triangle (knob).
                 Gfx::drawString_494B3F(*context, 330, yPos + 6, Colour::black, StringIds::dropdown, nullptr);
@@ -546,7 +546,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 case widx::generator_btn:
                 {
                     Widget& target = window->widgets[widx::generator];
-                    Dropdown::show(window->x + target.left, window->y + target.top, target.width() - 4, target.height(), window->colours[1], std::size(generatorIds), 0x80);
+                    Dropdown::show(window->x + target.left, window->y + target.top, target.width() - 4, target.height(), window->getColour(WindowColour::secondary), std::size(generatorIds), 0x80);
 
                     for (size_t i = 0; i < std::size(generatorIds); i++)
                         Dropdown::add(i, generatorIds[i]);
@@ -558,7 +558,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 case widx::topography_style_btn:
                 {
                     Widget& target = window->widgets[widx::topography_style];
-                    Dropdown::show(window->x + target.left, window->y + target.top, target.width() - 4, target.height(), window->colours[1], std::size(topographyStyleIds), 0x80);
+                    Dropdown::show(window->x + target.left, window->y + target.top, target.width() - 4, target.height(), window->getColour(WindowColour::secondary), std::size(topographyStyleIds), 0x80);
 
                     for (size_t i = 0; i < std::size(topographyStyleIds); i++)
                         Dropdown::add(i, topographyStyleIds[i]);
@@ -642,7 +642,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
             const Widget& target = window->widgets[widx::scrollview];
             const int16_t dropdownX = window->x + target.left + 151;
             const int16_t dropdownY = window->y + target.top + 6 + landIndex * rowHeight - window->scroll_areas[0].contentOffsetY;
-            Dropdown::show(dropdownX, dropdownY, 188, 12, window->colours[1], std::size(landDistributionLabelIds), 0x80);
+            Dropdown::show(dropdownX, dropdownY, 188, 12, window->getColour(WindowColour::secondary), std::size(landDistributionLabelIds), 0x80);
 
             for (size_t i = 0; i < std::size(landDistributionLabelIds); i++)
                 Dropdown::add(i, StringIds::dropdown_stringid, landDistributionLabelIds[i]);
@@ -1060,7 +1060,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 case widx::max_town_size_btn:
                 {
                     Widget& target = window->widgets[widx::max_town_size];
-                    Dropdown::show(window->x + target.left, window->y + target.top, target.width() - 4, target.height(), window->colours[1], std::size(townSizeLabels), 0x80);
+                    Dropdown::show(window->x + target.left, window->y + target.top, target.width() - 4, target.height(), window->getColour(WindowColour::secondary), std::size(townSizeLabels), 0x80);
 
                     for (size_t i = 0; i < std::size(townSizeLabels); i++)
                         Dropdown::add(i, townSizeLabels[i]);
@@ -1171,7 +1171,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
                 return;
 
             Widget& target = window->widgets[widx::num_industries];
-            Dropdown::show(window->x + target.left, window->y + target.top, target.width() - 4, target.height(), window->colours[1], std::size(numIndustriesLabels), 0x80);
+            Dropdown::show(window->x + target.left, window->y + target.top, target.width() - 4, target.height(), window->getColour(WindowColour::secondary), std::size(numIndustriesLabels), 0x80);
 
             for (size_t i = 0; i < std::size(numIndustriesLabels); i++)
                 Dropdown::add(i, numIndustriesLabels[i]);

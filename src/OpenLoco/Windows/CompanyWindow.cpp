@@ -574,7 +574,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         window->saved_view.clear();
 
         auto skin = ObjectManager::get<InterfaceSkinObject>();
-        window->colours[1] = skin->colour_0A;
+        window->setColour(WindowColour::secondary, skin->colour_0A);
 
         window->flags |= WindowFlags::resizable;
 
@@ -1627,7 +1627,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 // Add zebra stripes to even labels.
                 if (i % 2 == 0)
                 {
-                    auto colour = Colour::getShade(self->colours[1], 6) | 0x1000000;
+                    auto colour = Colour::getShade(self->getColour(WindowColour::secondary), 6) | 0x1000000;
                     Gfx::fillRect(context, self->x + 4, y, self->x + 129, y + 9, colour);
                 }
 
@@ -1797,7 +1797,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 // Add zebra stripes to even labels.
                 if (i % 2 == 0)
                 {
-                    auto colour = Colour::getShade(self->colours[1], 6) | 0x1000000;
+                    auto colour = Colour::getShade(self->getColour(WindowColour::secondary), 6) | 0x1000000;
                     Gfx::fillRect(context, 0, y, expenditureColumnWidth * 17, y + 9, colour);
                 }
 
@@ -2588,7 +2588,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             // Details tab
             {
-                const uint32_t imageId = Gfx::recolour(skin->img + InterfaceSkin::ImageIds::tab_company_details, self->colours[0]);
+                const uint32_t imageId = Gfx::recolour(skin->img + InterfaceSkin::ImageIds::tab_company_details, self->getColour(WindowColour::primary));
                 Widget::drawTab(self, context, imageId, widx::tab_details);
             }
 

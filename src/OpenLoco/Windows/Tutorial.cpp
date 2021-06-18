@@ -45,8 +45,8 @@ namespace OpenLoco::Ui::Windows::Tutorial
         auto skin = ObjectManager::get<InterfaceSkinObject>();
         if (skin != nullptr)
         {
-            window->colours[0] = Colour::translucent(skin->colour_06);
-            window->colours[1] = Colour::translucent(skin->colour_07);
+            window->setColour(WindowColour::primary, Colour::translucent(skin->colour_06));
+            window->setColour(WindowColour::secondary, Colour::translucent(skin->colour_07));
         }
 
         return window;

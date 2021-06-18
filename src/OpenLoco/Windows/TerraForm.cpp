@@ -614,7 +614,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BB982
         static void drawScroll(Window* self, Gfx::Context* context, uint32_t scrollIndex)
         {
-            auto shade = Colour::getShade(self->colours[1], 3);
+            auto shade = Colour::getShade(self->getColour(WindowColour::secondary), 3);
             Gfx::clearSingle(*context, shade);
 
             uint16_t xPos = 0;
@@ -627,13 +627,13 @@ namespace OpenLoco::Ui::Windows::Terraform
                     if (self->row_info[i] == self->var_846)
                     {
                         _lastTreeColourFlag = Colour::translucent_flag;
-                        Gfx::drawRectInset(context, xPos, yPos, 65, rowHeight - 1, self->colours[1], Colour::translucent_flag);
+                        Gfx::drawRectInset(context, xPos, yPos, 65, rowHeight - 1, self->getColour(WindowColour::secondary), Colour::translucent_flag);
                     }
                 }
                 else
                 {
                     _lastTreeColourFlag = Colour::translucent_flag | Colour::outline_flag;
-                    Gfx::drawRectInset(context, xPos, yPos, 65, rowHeight - 1, self->colours[1], (Colour::translucent_flag | Colour::outline_flag));
+                    Gfx::drawRectInset(context, xPos, yPos, 65, rowHeight - 1, self->getColour(WindowColour::secondary), (Colour::translucent_flag | Colour::outline_flag));
                 }
 
                 auto treeObj = ObjectManager::get<TreeObject>(self->row_info[i]);
@@ -713,7 +713,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             window->max_height = PlantTrees::windowSize.height;
 
             auto skin = ObjectManager::get<InterfaceSkinObject>();
-            window->colours[1] = skin->colour_0E;
+            window->setColour(WindowColour::secondary, skin->colour_0E);
 
             // End of 0x004BB586
 
@@ -1004,7 +1004,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             auto xPos = self->widgets[widgetIndex].left + self->x;
             auto yPos = self->widgets[widgetIndex].bottom + self->y;
             auto heightOffset = self->widgets[widgetIndex].height() - 18;
-            auto colour = self->colours[1] | 0x80;
+            auto colour = self->getColour(WindowColour::secondary) | 0x80;
             auto count = Dropdown::getItemsPerRow(landCount);
 
             Dropdown::showImage(xPos, yPos, 20, 20, heightOffset, colour, count, landCount);
@@ -1917,7 +1917,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BC11C
         static void drawScroll(Window* self, Gfx::Context* context, uint32_t scrollIndex)
         {
-            auto shade = Colour::getShade(self->colours[1], 3);
+            auto shade = Colour::getShade(self->getColour(WindowColour::secondary), 3);
             Gfx::clearSingle(*context, shade);
 
             uint16_t xPos = 0;
@@ -1928,12 +1928,12 @@ namespace OpenLoco::Ui::Windows::Terraform
                 {
                     if (self->row_info[i] == self->var_846)
                     {
-                        Gfx::drawRectInset(context, xPos, yPos, 40, rowHeight, self->colours[1], Colour::translucent_flag);
+                        Gfx::drawRectInset(context, xPos, yPos, 40, rowHeight, self->getColour(WindowColour::secondary), Colour::translucent_flag);
                     }
                 }
                 else
                 {
-                    Gfx::drawRectInset(context, xPos, yPos, 40, rowHeight, self->colours[1], (Colour::translucent_flag | Colour::outline_flag));
+                    Gfx::drawRectInset(context, xPos, yPos, 40, rowHeight, self->getColour(WindowColour::secondary), (Colour::translucent_flag | Colour::outline_flag));
                 }
 
                 auto wallObj = ObjectManager::get<WallObject>(self->row_info[i]);

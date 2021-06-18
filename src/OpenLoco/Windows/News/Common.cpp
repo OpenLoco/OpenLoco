@@ -36,7 +36,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         Common::initEvents();
 
         window->initScrollWidgets();
-        window->colours[0] = colour;
+        window->setColour(WindowColour::primary, colour);
 
         _dword_525CD0 = 0xFFFFFFFF;
         _dword_525CD4 = 0xFFFFFFFF;
@@ -141,7 +141,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                 window->initScrollWidgets();
 
                 auto skin = ObjectManager::get<InterfaceSkinObject>();
-                window->colours[0] = Colour::translucent(skin->colour_0C);
+                window->setColour(WindowColour::primary, Colour::translucent(skin->colour_0C));
 
                 window->var_852 = 0;
 

@@ -55,8 +55,8 @@ namespace OpenLoco::Ui::Windows::About
         window->initScrollWidgets();
 
         const auto interface = ObjectManager::get<InterfaceSkinObject>();
-        window->colours[0] = interface->colour_0B;
-        window->colours[1] = interface->colour_10;
+        window->setColour(WindowColour::primary, interface->colour_0B);
+        window->setColour(WindowColour::secondary, interface->colour_10);
     }
 
     // 0x0043B4AF

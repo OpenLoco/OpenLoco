@@ -113,8 +113,8 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         self->enabled_widgets = (1 << widx::close) | (1 << widx::tab0) | (1 << widx::tab1) | (1 << widx::tab2) | (1 << widx::tab3) | (1 << widx::tab4);
         self->initScrollWidgets();
 
-        self->colours[0] = Colour::black;
-        self->colours[1] = Colour::saturated_green;
+        self->setColour(WindowColour::primary, Colour::black);
+        self->setColour(WindowColour::secondary, Colour::saturated_green);
 
         self->var_846 = 0xFFFF;
         self->var_85A = static_cast<int32_t>(0xFFFFFFFF);
@@ -153,7 +153,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     // 0x004439AF
     static void draw(Window* self, Gfx::Context* context)
     {
-        Gfx::drawRectInset(context, self->x, self->y + 20, self->width, 41, self->colours[0], 0);
+        Gfx::drawRectInset(context, self->x, self->y + 20, self->width, 41, self->getColour(WindowColour::primary), 0);
 
         // Draw widgets.
         self->draw(context);
@@ -227,7 +227,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         // Outline for preview image
         {
             x = baseX + 20;
-            Gfx::drawRectInset(context, x, y, 130, 130, self->colours[1], 0x30);
+            Gfx::drawRectInset(context, x, y, 130, 130, self->getColour(WindowColour::secondary), 0x30);
 
             x += 1;
             y += 1;
@@ -261,7 +261,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             y += 1;
 
             // No preview image -- a placeholder will have to do.
-            auto image = Gfx::recolour(ImageIds::random_map_watermark, self->colours[1]);
+            auto image = Gfx::recolour(ImageIds::random_map_watermark, self->getColour(WindowColour::secondary));
             Gfx::drawImage(context, x, y, image);
 
             x += 64;
@@ -328,7 +328,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     // 0x00443D02
     static void drawScroll(Window* self, Gfx::Context* const context, uint32_t)
     {
-        auto colour = Colour::getShade(self->colours[1], 4);
+        auto colour = Colour::getShade(self->getColour(WindowColour::secondary), 4);
         Gfx::clearSingle(*context, colour);
 
         using namespace ScenarioManager;

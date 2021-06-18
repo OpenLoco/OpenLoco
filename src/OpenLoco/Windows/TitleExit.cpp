@@ -52,8 +52,8 @@ namespace OpenLoco::Ui::Windows::TitleExit
 
         window->initScrollWidgets();
 
-        window->colours[0] = Colour::translucent(Colour::saturated_green);
-        window->colours[1] = Colour::translucent(Colour::saturated_green);
+        window->setColour(WindowColour::primary, Colour::translucent(Colour::saturated_green));
+        window->setColour(WindowColour::secondary, Colour::translucent(Colour::saturated_green));
 
         return window;
     }

@@ -137,7 +137,7 @@ namespace OpenLoco::Ui::Windows::TownList
         // 0x0049A0F8
         static void drawScroll(Ui::Window* self, Gfx::Context* context, uint32_t scrollIndex)
         {
-            auto shade = Colour::getShade(self->colours[1], 3);
+            auto shade = Colour::getShade(self->getColour(WindowColour::secondary), 3);
             Gfx::clearSingle(*context, shade);
 
             uint16_t yPos = 0;
@@ -549,8 +549,8 @@ namespace OpenLoco::Ui::Windows::TownList
             window->flags |= WindowFlags::resizable;
 
             auto skin = ObjectManager::get<InterfaceSkinObject>();
-            window->colours[0] = skin->colour_0B;
-            window->colours[1] = skin->colour_0C;
+            window->setColour(WindowColour::primary, skin->colour_0B);
+            window->setColour(WindowColour::secondary, skin->colour_0C);
 
             // 0x00499CFC end
 
@@ -1053,7 +1053,7 @@ namespace OpenLoco::Ui::Windows::TownList
         // 0x0049AA1C
         static void drawScroll(Ui::Window* self, Gfx::Context* context, uint32_t scrollIndex)
         {
-            auto shade = Colour::getShade(self->colours[1], 3);
+            auto shade = Colour::getShade(self->getColour(WindowColour::secondary), 3);
             Gfx::clearSingle(*context, shade);
 
             uint16_t xPos = 0;
@@ -1064,12 +1064,12 @@ namespace OpenLoco::Ui::Windows::TownList
                 {
                     if (self->row_info[i] == self->var_846)
                     {
-                        Gfx::drawRectInset(context, xPos, yPos, 112, 112, self->colours[1], Colour::translucent_flag);
+                        Gfx::drawRectInset(context, xPos, yPos, 112, 112, self->getColour(WindowColour::secondary), Colour::translucent_flag);
                     }
                 }
                 else
                 {
-                    Gfx::drawRectInset(context, xPos, yPos, 112, 112, self->colours[1], (Colour::translucent_flag | Colour::outline_flag));
+                    Gfx::drawRectInset(context, xPos, yPos, 112, 112, self->getColour(WindowColour::secondary), (Colour::translucent_flag | Colour::outline_flag));
                 }
 
                 auto buildingObj = ObjectManager::get<BuildingObject>(self->row_info[i]);

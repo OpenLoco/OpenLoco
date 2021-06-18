@@ -334,7 +334,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         self->frame_no = 0;
 
         auto skin = ObjectManager::get<InterfaceSkinObject>();
-        self->colours[1] = skin->colour_0A;
+        self->setColour(WindowColour::secondary, skin->colour_0A);
 
         disableUnavailableVehicleTypes(self);
 
@@ -522,7 +522,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     // 0x004C21CD
     static void drawScroll(Window* self, Gfx::Context* context, uint32_t scrollIndex)
     {
-        auto shade = Colour::getShade(self->colours[1], 1);
+        auto shade = Colour::getShade(self->getColour(WindowColour::secondary), 1);
         Gfx::clearSingle(*context, shade);
 
         auto yPos = 0;
@@ -541,7 +541,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
             // Highlight selection.
             if (head->id == self->row_hover)
-                Gfx::drawRect(context, 0, yPos, self->width, self->row_height, Colour::getShade(self->colours[1], 0));
+                Gfx::drawRect(context, 0, yPos, self->width, self->row_height, Colour::getShade(self->getColour(WindowColour::secondary), 0));
 
             // Draw vehicle at the bottom of the row.
             drawVehicle(head, context, yPos + (self->row_height - 28) / 2 + 6);

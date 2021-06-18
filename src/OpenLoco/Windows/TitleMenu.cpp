@@ -168,8 +168,8 @@ namespace OpenLoco::Ui::Windows::TitleMenu
 
         window->initScrollWidgets();
 
-        window->colours[0] = Colour::translucent(Colour::saturated_green);
-        window->colours[1] = Colour::translucent(Colour::saturated_green);
+        window->setColour(WindowColour::primary, Colour::translucent(Colour::saturated_green));
+        window->setColour(WindowColour::secondary, Colour::translucent(Colour::saturated_green));
         window->var_846 = 0;
 
         return window;
@@ -411,7 +411,7 @@ namespace OpenLoco::Ui::Windows::TitleMenu
             window->y + widget->top,
             widget->width(),
             widget->height(),
-            Colour::translucent(window->colours[0]),
+            Colour::translucent(window->getColour(WindowColour::primary)),
             3,
             0x80);
     }

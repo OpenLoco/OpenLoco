@@ -146,22 +146,22 @@ namespace OpenLoco::Ui::Windows::TextInput
 
         caller = WindowManager::find(_callingWindowType, _callingWindowNumber);
 
-        window->colours[0] = caller->colours[0];
-        window->colours[1] = caller->colours[1];
+        window->setColour(WindowColour::primary, caller->getColour(WindowColour::primary));
+        window->setColour(WindowColour::secondary, caller->getColour(WindowColour::secondary));
         window->owner = caller->owner;
 
         if (caller->type == WindowType::titleMenu)
         {
             InterfaceSkinObject* interface = ObjectManager::get<InterfaceSkinObject>();
-            window->colours[0] = interface->colour_0B;
-            window->colours[1] = interface->colour_0C;
+            window->setColour(WindowColour::primary, interface->colour_0B);
+            window->setColour(WindowColour::secondary, interface->colour_0C);
             window->owner = CompanyId::null;
         }
 
         if (caller->type == WindowType::timeToolbar)
         {
             InterfaceSkinObject* interface = ObjectManager::get<InterfaceSkinObject>();
-            window->colours[1] = interface->colour_0A;
+            window->setColour(WindowColour::secondary, interface->colour_0A);
             window->owner = CompanyManager::getControllingId();
         }
 
@@ -268,7 +268,7 @@ namespace OpenLoco::Ui::Windows::TextInput
         *((string_id*)(&_commonFormatArgs[0])) = StringIds::buffer_2039;
         position = { inputSession.xOffset, 1 };
         Gfx::drawString_494B3F(*clipped, &position, 0, StringIds::black_stringid, _commonFormatArgs);
-        Gfx::fillRect(clipped, position.x, position.y, position.x, position.y + 9, Colour::getShade(window->colours[1], 9));
+        Gfx::fillRect(clipped, position.x, position.y, position.x, position.y + 9, Colour::getShade(window->getColour(WindowColour::secondary), 9));
     }
 
     // 0x004CE8B6

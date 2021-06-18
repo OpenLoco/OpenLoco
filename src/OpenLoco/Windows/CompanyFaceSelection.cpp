@@ -102,7 +102,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
             _9C68F2 = id;
             self->owner = id;
             const auto* skin = ObjectManager::get<InterfaceSkinObject>();
-            self->colours[1] = skin->colour_0A;
+            self->setColour(WindowColour::secondary, skin->colour_0A);
             findAllInUseCompetitors(id);
             self->row_count = _numberCompetitorObjects;
             self->row_hover = -1;
@@ -218,7 +218,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
         }
 
         {
-            const auto colour = Colour::getShade(self->colours[1], 0);
+            const auto colour = Colour::getShade(self->getColour(WindowColour::secondary), 0);
             const auto l = self->x + 1 + self->widgets[widx::face_frame].left;
             const auto t = self->y + 1 + self->widgets[widx::face_frame].top;
             const auto r = self->x - 1 + self->widgets[widx::face_frame].right;
@@ -248,7 +248,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
     // 0x00435152
     static void drawScroll(Window* const self, Gfx::Context* const context, const uint32_t scrollIndex)
     {
-        Gfx::clearSingle(*context, Colour::getShade(self->colours[1], 4));
+        Gfx::clearSingle(*context, Colour::getShade(self->getColour(WindowColour::secondary), 4));
 
         auto index = 0;
         for (const auto& object : ObjectManager::getAvailableObjects(ObjectType::competitor))
@@ -270,7 +270,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
             if (isInUseCompetitor(object.first))
             {
                 _currentFontSpriteBase = Font::m1;
-                stringColour = Colour::opaque(self->colours[1]) | (1 << 6);
+                stringColour = Colour::opaque(self->getColour(WindowColour::secondary)) | (1 << 6);
             }
             Gfx::drawString(context, 0, y - 1, stringColour, const_cast<char*>(name.c_str()));
 

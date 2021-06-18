@@ -214,8 +214,8 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             auto& widget = window->widgets[widx::text_filename];
             inputSession.calculateTextOffset(widget.width());
 
-            window->colours[0] = Colour::black;
-            window->colours[1] = Colour::saturated_green;
+            window->setColour(WindowColour::primary, Colour::black);
+            window->setColour(WindowColour::secondary, Colour::saturated_green);
 
             WindowManager::setCurrentModalType(WindowType::fileBrowserPrompt);
             promptTickLoop(
@@ -494,7 +494,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     {
         loco_global<char[16], 0x0112C826> _commonFormatArgs;
 
-        Gfx::fillRectInset(&context, x, y, x + width, y + height, window.colours[1], 0x30);
+        Gfx::fillRectInset(&context, x, y, x + width, y + height, window.getColour(WindowColour::secondary), 0x30);
 
         auto imageId = 0;
         auto g1 = Gfx::getG1Element(imageId);
@@ -545,7 +545,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
 
     static void drawLandscapePreview(Ui::Window& window, Gfx::Context& context, int32_t x, int32_t y, int32_t width, int32_t height)
     {
-        Gfx::fillRectInset(&context, x, y, x + width, y + height, window.colours[1], 0x30);
+        Gfx::fillRectInset(&context, x, y, x + width, y + height, window.getColour(WindowColour::secondary), 0x30);
 
         if (S5::getPreviewOptions().scenarioFlags & Scenario::flags::landscape_generation_done)
         {
@@ -569,7 +569,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         else
         {
             // Randomly generated landscape
-            auto imageId = ImageIds::random_map_watermark | (window.colours[1] << 19) | 0x20000000;
+            auto imageId = ImageIds::random_map_watermark | (window.getColour(WindowColour::secondary) << 19) | 0x20000000;
             Gfx::drawImage(&context, x, y, imageId);
             Gfx::point_t origin = { (int16_t)(x + 64), (int16_t)(y + 60) };
             Gfx::drawStringCentredWrapped(&context, &origin, 128, 0, StringIds::randomly_generated_landscape);
@@ -604,7 +604,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                 Gfx::drawString_494B3F(context, &origin, 0, StringIds::black_stringid, _commonFormatArgs);
 
                 // Draw vertical caret
-                Gfx::drawRect(&context, origin.x, origin.y, 1, 9, byte_1136C99[window->colours[1] * 8]);
+                Gfx::drawRect(&context, origin.x, origin.y, 1, 9, byte_1136C99[window->getColour(WindowColour::secondary) * 8]);
             }
         }
     }
@@ -617,7 +617,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         static std::string _nameBuffer;
 
         // Background
-        Gfx::clearSingle(*context, Colour::getShade(window->colours[1], 4));
+        Gfx::clearSingle(*context, Colour::getShade(window->getColour(WindowColour::secondary), 4));
 
         // Directories / files
         auto y = 0;

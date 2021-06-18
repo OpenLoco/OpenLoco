@@ -261,7 +261,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         auto skin = OpenLoco::ObjectManager::get<InterfaceSkinObject>();
         if (skin != nullptr)
         {
-            window->colours[1] = skin->colour_0A;
+            window->setColour(WindowColour::secondary, skin->colour_0A);
         }
         setDisabledTransportTabs(window);
         return window;
@@ -1038,7 +1038,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         {
             case scrollIdx::vehicle_selection:
             {
-                auto colour = Colour::getShade(window->colours[1], 4);
+                auto colour = Colour::getShade(window->getColour(WindowColour::secondary), 4);
                 Gfx::clear(*context, colour * 0x01010101);
                 if (window->var_83C == 0)
                 {
@@ -1099,7 +1099,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
             }
             case scrollIdx::vehicle_preview:
             {
-                auto colour = Colour::getShade(window->colours[1], 0);
+                auto colour = Colour::getShade(window->getColour(WindowColour::secondary), 0);
                 // Gfx::clear needs the colour copied to each byte of eax
                 Gfx::clear(*context, colour * 0x01010101);
 
@@ -1331,13 +1331,13 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         auto top = window->y + 69;
         auto right = left + window->width - 187;
         auto bottom = top;
-        Gfx::fillRect(context, left, top, right, bottom, Colour::getShade(window->colours[1], 7));
+        Gfx::fillRect(context, left, top, right, bottom, Colour::getShade(window->getColour(WindowColour::secondary), 7));
 
         left = window->x + window->width - 187;
         top = window->y + 41;
         right = left;
         bottom = top + 27;
-        Gfx::fillRect(context, left, top, right, bottom, Colour::getShade(window->colours[1], 7));
+        Gfx::fillRect(context, left, top, right, bottom, Colour::getShade(window->getColour(WindowColour::secondary), 7));
 
         for (uint32_t tab = 0; tab < _numTrackTypeTabs; ++tab)
         {
@@ -1348,7 +1348,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 top = widget.top + window->y + 26;
                 right = left + 29;
                 bottom = top;
-                Gfx::fillRect(context, left, top, right, bottom, Colour::getShade(window->colours[1], 5));
+                Gfx::fillRect(context, left, top, right, bottom, Colour::getShade(window->getColour(WindowColour::secondary), 5));
             }
 
             auto img = 0;

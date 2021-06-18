@@ -60,7 +60,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
                 auto width = widget.width() + 2;
                 auto height = widget.height();
 
-                Dropdown::show(xPos, yPos, width, height, self->colours[1], signalCount, (1 << 7));
+                Dropdown::show(xPos, yPos, width, height, self->getColour(WindowColour::secondary), signalCount, (1 << 7));
 
                 for (auto signalIndex = 0; signalIndex < signalCount; signalIndex++)
                 {

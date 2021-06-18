@@ -86,8 +86,8 @@ namespace OpenLoco::Ui::Windows::LandscapeGenerationConfirm
             window->widgets = widgets;
             window->enabled_widgets = (1 << widx::close_button) | (1 << widx::button_ok) | (1 << widx::button_cancel);
             window->initScrollWidgets();
-            window->colours[0] = Colour::translucent(Colour::salmon_pink);
-            window->colours[1] = Colour::translucent(Colour::salmon_pink);
+            window->setColour(WindowColour::primary, Colour::translucent(Colour::salmon_pink));
+            window->setColour(WindowColour::secondary, Colour::translucent(Colour::salmon_pink));
             window->flags |= WindowFlags::transparent;
 
             // TODO(avgeffen): only needs to be called once.

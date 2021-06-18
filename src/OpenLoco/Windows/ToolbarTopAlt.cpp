@@ -92,18 +92,18 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
         window->widgets = _widgets;
         window->enabled_widgets = (1 << Common::Widx::loadsave_menu) | (1 << Common::Widx::audio_menu) | (1 << Common::Widx::zoom_menu) | (1 << Common::Widx::rotate_menu) | (1 << Common::Widx::view_menu) | (1 << Common::Widx::terraform_menu) | (1 << Widx::map_generation_menu) | (1 << Common::Widx::road_menu) | (1 << Common::Widx::towns_menu);
         window->initScrollWidgets();
-        window->colours[0] = Colour::grey;
-        window->colours[1] = Colour::grey;
-        window->colours[2] = Colour::grey;
-        window->colours[3] = Colour::grey;
+        window->setColour(WindowColour::primary, Colour::grey);
+        window->setColour(WindowColour::secondary, Colour::grey);
+        window->setColour(WindowColour::tertiary, Colour::grey);
+        window->setColour(WindowColour::quaternary, Colour::grey);
 
         auto skin = ObjectManager::get<InterfaceSkinObject>();
         if (skin != nullptr)
         {
-            window->colours[0] = skin->colour_12;
-            window->colours[1] = skin->colour_13;
-            window->colours[2] = skin->colour_14;
-            window->colours[3] = skin->colour_15;
+            window->setColour(WindowColour::primary, skin->colour_12);
+            window->setColour(WindowColour::secondary, skin->colour_13);
+            window->setColour(WindowColour::tertiary, skin->colour_14);
+            window->setColour(WindowColour::quaternary, skin->colour_15);
         }
     }
 
@@ -303,12 +303,12 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
         if (!Audio::isAudioEnabled())
         {
             window->activated_widgets |= (1 << Common::Widx::audio_menu);
-            window->widgets[Common::Widx::audio_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_audio_inactive, window->colours[0]);
+            window->widgets[Common::Widx::audio_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_audio_inactive, window->getColour(WindowColour::primary));
         }
         else
         {
             window->activated_widgets &= ~(1 << Common::Widx::audio_menu);
-            window->widgets[Common::Widx::audio_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_audio_active, window->colours[0]);
+            window->widgets[Common::Widx::audio_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_audio_active, window->getColour(WindowColour::primary));
         }
 
         window->widgets[Common::Widx::loadsave_menu].image = Gfx::recolour(interface->img + InterfaceSkin::ImageIds::toolbar_loadsave, 0);

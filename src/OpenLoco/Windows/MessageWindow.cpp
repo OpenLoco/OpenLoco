@@ -217,7 +217,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         // 0x0042A5D7
         static void drawScroll(Ui::Window* self, Gfx::Context* context, uint32_t scrollIndex)
         {
-            auto colour = Colour::getShade(self->colours[1], 4);
+            auto colour = Colour::getShade(self->getColour(WindowColour::secondary), 4);
 
             Gfx::clearSingle(*context, colour);
 
@@ -341,7 +341,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 
             window->owner = _playerCompany;
             auto skin = ObjectManager::get<InterfaceSkinObject>();
-            window->colours[1] = skin->colour_0A;
+            window->setColour(WindowColour::secondary, skin->colour_0A);
 
             window->width = Messages::minWindowSize.width;
             window->height = Messages::minWindowSize.height;
@@ -457,7 +457,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
                     auto height = widget.height() + 2;
                     auto flags = 1 << 7;
 
-                    Dropdown::show(xPos, yPos, width, height, self->colours[1], 3, flags);
+                    Dropdown::show(xPos, yPos, width, height, self->getColour(WindowColour::secondary), 3, flags);
 
                     Dropdown::add(0, StringIds::dropdown_stringid, StringIds::message_off);
                     Dropdown::add(1, StringIds::dropdown_stringid, StringIds::message_ticker);

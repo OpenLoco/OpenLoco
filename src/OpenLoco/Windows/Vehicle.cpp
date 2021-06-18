@@ -358,7 +358,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             _dragVehicleHead = EntityId::null;
 
             const auto* skin = ObjectManager::get<InterfaceSkinObject>();
-            self->colours[1] = skin->colour_0A;
+            self->setColour(WindowColour::secondary, skin->colour_0A);
             return self;
         }
 
@@ -417,7 +417,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 self->y + widget->top,
                 widget->width(),
                 widget->height(),
-                self->colours[1],
+                self->getColour(WindowColour::secondary),
                 2,
                 0);
 
@@ -547,7 +547,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 self->y + widget->top,
                 widget->width(),
                 widget->height(),
-                self->colours[1],
+                self->getColour(WindowColour::secondary),
                 dropdownCount,
                 0);
 
@@ -897,7 +897,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     context,
                     self->x + speedWidget.left,
                     self->y + speedWidget.top + 10,
-                    Gfx::recolour(ImageIds::speed_control_track, self->colours[1]));
+                    Gfx::recolour(ImageIds::speed_control_track, self->getColour(WindowColour::secondary)));
 
                 Gfx::drawStringCentred(
                     *context,
@@ -917,7 +917,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     context,
                     self->x + speedWidget.left + 1,
                     self->y + speedWidget.top + 57 - veh->var_6E,
-                    Gfx::recolour(ImageIds::speed_control_thumb, self->colours[1]));
+                    Gfx::recolour(ImageIds::speed_control_thumb, self->getColour(WindowColour::secondary)));
             }
 
             if (self->viewports[0] != nullptr)
@@ -1042,7 +1042,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 self->y + widget->top,
                 widget->width(),
                 widget->height(),
-                self->colours[1],
+                self->getColour(WindowColour::secondary),
                 2,
                 0);
 
@@ -1431,7 +1431,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004B36A3
         static void drawScroll(Window* const self, Gfx::Context* const context, const uint32_t i)
         {
-            Gfx::clearSingle(*context, Colour::getShade(self->colours[1], 4));
+            Gfx::clearSingle(*context, Colour::getShade(self->getColour(WindowColour::secondary), 4));
             auto head = Common::getVehicle(self);
             OpenLoco::Vehicles::Vehicle train{ head };
             Gfx::point_t pos{ 0, 0 };
@@ -1459,7 +1459,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 if (car.front == _dragCarComponent)
                 {
                     al = 12;
-                    ah = self->colours[1];
+                    ah = self->getColour(WindowColour::secondary);
                 }
                 auto x = Common::sub_4B743B(al, ah, 0, y, car.front, context);
 
@@ -1714,7 +1714,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 004B3F62
         static void drawScroll(Window* const self, Gfx::Context* const pDrawpixelinfo, const uint32_t i)
         {
-            Gfx::clearSingle(*pDrawpixelinfo, Colour::getShade(self->colours[1], 4));
+            Gfx::clearSingle(*pDrawpixelinfo, Colour::getShade(self->getColour(WindowColour::secondary), 4));
             Vehicles::Vehicle train{ Common::getVehicle(self) };
             int16_t y = 0;
             for (auto& car : train.cars)
@@ -1852,7 +1852,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 self->y + button.top,
                 button.width(),
                 button.height(),
-                self->colours[1],
+                self->getColour(WindowColour::secondary),
                 index,
                 0);
             Dropdown::setHighlightedItem(0);
@@ -2511,7 +2511,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             auto y = self->widgets[i].top + self->y;
             auto width = self->widgets[i].width();
             auto height = self->widgets[i].height();
-            Dropdown::showText(x, y, width, height, self->colours[1], index, 0);
+            Dropdown::showText(x, y, width, height, self->getColour(WindowColour::secondary), index, 0);
             Dropdown::setHighlightedItem(0);
         }
 
@@ -3077,7 +3077,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004B48BA
         static void drawScroll(Window* const self, Gfx::Context* const pDrawpixelinfo, const uint32_t i)
         {
-            Gfx::clearSingle(*pDrawpixelinfo, Colour::getShade(self->colours[1], 4));
+            Gfx::clearSingle(*pDrawpixelinfo, Colour::getShade(self->getColour(WindowColour::secondary), 4));
 
             auto head = Common::getVehicle(self);
             Vehicles::Vehicle train(head);

@@ -798,7 +798,7 @@ namespace OpenLoco::Ui::Windows::Construction
             window->owner = _playerCompany;
 
             auto skin = ObjectManager::get<InterfaceSkinObject>();
-            window->colours[1] = skin->colour_0D;
+            window->setColour(WindowColour::secondary, skin->colour_0D);
 
             WindowManager::sub_4CEE0B(window);
             Ui::Windows::showDirectionArrows();
