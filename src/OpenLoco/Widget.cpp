@@ -68,12 +68,12 @@ namespace OpenLoco::Ui
         }
 
         uint16_t widgetFlags = 0;
-        if (wndColourIndex == ColourIndex::primary && window->flags & WindowFlags::flag_11)
+        if (windowColour == WindowColour::primary && window->flags & WindowFlags::flag_11)
         {
             widgetFlags = 0x80;
         }
 
-        uint8_t wndColour = window->getColour(wndColourIndex);
+        uint8_t wndColour = window->getColour(windowColour);
         auto widgetIndex = this - &window->widgets[0];
         bool enabled = (window->enabled_widgets & (1ULL << widgetIndex)) != 0;
         bool disabled = (window->disabled_widgets & (1ULL << widgetIndex)) != 0;
@@ -918,7 +918,7 @@ namespace OpenLoco::Ui
 
     void Widget::drawGroupbox(Gfx::Context* const context, const Window* window, Widget* widget)
     {
-        const uint8_t colour = window->getColour(widget->wndColourIndex) & 0x7F;
+        const uint8_t colour = window->getColour(widget->windowColour) & 0x7F;
         int32_t l = window->x + widget->left + 5;
         int32_t t = window->y + widget->top;
         int32_t r = window->x + widget->right;

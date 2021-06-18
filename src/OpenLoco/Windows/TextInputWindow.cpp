@@ -56,12 +56,12 @@ namespace OpenLoco::Ui::Windows::TextInput
     }
 
     static Widget _widgets[] = {
-        makeWidget({ 0, 0 }, { 330, 90 }, WidgetType::frame, ColourIndex::primary),
-        makeWidget({ 1, 1 }, { 328, 13 }, WidgetType::caption_25, ColourIndex::primary),
-        makeWidget({ 315, 2 }, { 13, 13 }, WidgetType::wt_9, ColourIndex::primary, ImageIds::close_button, StringIds::tooltip_close_window),
-        makeWidget({ 0, 15 }, { 330, 75 }, WidgetType::panel, ColourIndex::secondary),
-        makeWidget({ 4, 58 }, { 322, 14 }, WidgetType::wt_17, ColourIndex::secondary),
-        makeTextWidget({ 256, 74 }, { 70, 12 }, WidgetType::wt_11, ColourIndex::secondary, StringIds::label_button_ok),
+        makeWidget({ 0, 0 }, { 330, 90 }, WidgetType::frame, WindowColour::primary),
+        makeWidget({ 1, 1 }, { 328, 13 }, WidgetType::caption_25, WindowColour::primary),
+        makeWidget({ 315, 2 }, { 13, 13 }, WidgetType::wt_9, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+        makeWidget({ 0, 15 }, { 330, 75 }, WidgetType::panel, WindowColour::secondary),
+        makeWidget({ 4, 58 }, { 322, 14 }, WidgetType::wt_17, WindowColour::secondary),
+        makeTextWidget({ 256, 74 }, { 70, 12 }, WidgetType::wt_11, WindowColour::secondary, StringIds::label_button_ok),
         widgetEnd(),
     };
 

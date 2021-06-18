@@ -47,14 +47,14 @@ namespace OpenLoco::Ui::Windows::Station
 
         const uint64_t enabledWidgets = (1 << widx::caption) | (1 << widx::close_button) | (1 << widx::tab_station) | (1 << widx::tab_cargo) | (1 << widx::tab_cargo_ratings);
 
-#define commonWidgets(frameWidth, frameHeight)                                                                                                           \
-    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, WidgetType::frame, ColourIndex::primary),                                                          \
-        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, WidgetType::caption_23, ColourIndex::primary, StringIds::title_station),                            \
-        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, WidgetType::wt_9, ColourIndex::primary, ImageIds::close_button, StringIds::tooltip_close_window), \
-        makeWidget({ 0, 41 }, { frameWidth, 95 }, WidgetType::panel, ColourIndex::secondary),                                                            \
-        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, ColourIndex::secondary, ImageIds::tab, StringIds::tooltip_station),                     \
-        makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::wt_8, ColourIndex::secondary, ImageIds::tab, StringIds::tooltip_station_cargo),              \
-        makeRemapWidget({ 65, 15 }, { 31, 27 }, WidgetType::wt_8, ColourIndex::secondary, ImageIds::tab, StringIds::tooltip_station_cargo_ratings)
+#define commonWidgets(frameWidth, frameHeight)                                                                                                            \
+    makeWidget({ 0, 0 }, { frameWidth, frameHeight }, WidgetType::frame, WindowColour::primary),                                                          \
+        makeWidget({ 1, 1 }, { frameWidth - 2, 13 }, WidgetType::caption_23, WindowColour::primary, StringIds::title_station),                            \
+        makeWidget({ frameWidth - 15, 2 }, { 13, 13 }, WidgetType::wt_9, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window), \
+        makeWidget({ 0, 41 }, { frameWidth, 95 }, WidgetType::panel, WindowColour::secondary),                                                            \
+        makeRemapWidget({ 3, 15 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_station),                     \
+        makeRemapWidget({ 34, 15 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_station_cargo),              \
+        makeRemapWidget({ 65, 15 }, { 31, 27 }, WidgetType::wt_8, WindowColour::secondary, ImageIds::tab, StringIds::tooltip_station_cargo_ratings)
 
         // Defined at the bottom of this file.
         static void prepareDraw(Window* self);
@@ -82,9 +82,9 @@ namespace OpenLoco::Ui::Windows::Station
         Widget widgets[] = {
             // commonWidgets(windowSize.width, windowSize.height),
             commonWidgets(223, 136),
-            makeWidget({ 3, 44 }, { 195, 80 }, WidgetType::viewport, ColourIndex::secondary, 0xFFFFFFFE),
-            makeWidget({ 3, 115 }, { 195, 21 }, WidgetType::wt_13, ColourIndex::secondary),
-            makeWidget({ 0, 0 }, { 24, 24 }, WidgetType::wt_9, ColourIndex::secondary, ImageIds::null, StringIds::move_main_view_to_show_this),
+            makeWidget({ 3, 44 }, { 195, 80 }, WidgetType::viewport, WindowColour::secondary, 0xFFFFFFFE),
+            makeWidget({ 3, 115 }, { 195, 21 }, WidgetType::wt_13, WindowColour::secondary),
+            makeWidget({ 0, 0 }, { 24, 24 }, WidgetType::wt_9, WindowColour::secondary, ImageIds::null, StringIds::move_main_view_to_show_this),
             widgetEnd(),
         };
 
@@ -322,9 +322,9 @@ namespace OpenLoco::Ui::Windows::Station
 
         static Widget widgets[] = {
             commonWidgets(223, 136),
-            makeWidget({ 3, 44 }, { 217, 80 }, WidgetType::scrollview, ColourIndex::secondary, 2),
-            makeWidget({ 3, 125 }, { 195, 10 }, WidgetType::wt_13, ColourIndex::secondary),
-            makeWidget({ 198, 44 }, { 24, 24 }, WidgetType::wt_9, ColourIndex::secondary, ImageIds::show_station_catchment, StringIds::station_catchment),
+            makeWidget({ 3, 44 }, { 217, 80 }, WidgetType::scrollview, WindowColour::secondary, 2),
+            makeWidget({ 3, 125 }, { 195, 10 }, WidgetType::wt_13, WindowColour::secondary),
+            makeWidget({ 198, 44 }, { 24, 24 }, WidgetType::wt_9, WindowColour::secondary, ImageIds::show_station_catchment, StringIds::station_catchment),
             widgetEnd(),
         };
 
@@ -575,8 +575,8 @@ namespace OpenLoco::Ui::Windows::Station
 
         static Widget widgets[] = {
             commonWidgets(249, 136),
-            makeWidget({ 3, 44 }, { 244, 80 }, WidgetType::scrollview, ColourIndex::secondary, 2),
-            makeWidget({ 3, 125 }, { 221, 11 }, WidgetType::wt_13, ColourIndex::secondary),
+            makeWidget({ 3, 44 }, { 244, 80 }, WidgetType::scrollview, WindowColour::secondary, 2),
+            makeWidget({ 3, 125 }, { 221, 11 }, WidgetType::wt_13, WindowColour::secondary),
             widgetEnd(),
         };
 

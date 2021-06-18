@@ -41,23 +41,23 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
     }
 
     static Widget _widgets[] = {
-        makeWidget({ 0, 0 }, { 30, 28 }, WidgetType::wt_7, ColourIndex::primary),  // 0
-        makeWidget({ 30, 0 }, { 30, 28 }, WidgetType::wt_7, ColourIndex::primary), // 1
-        makeWidget({ 60, 0 }, { 30, 28 }, WidgetType::wt_7, ColourIndex::primary), // 2
+        makeWidget({ 0, 0 }, { 30, 28 }, WidgetType::wt_7, WindowColour::primary),  // 0
+        makeWidget({ 30, 0 }, { 30, 28 }, WidgetType::wt_7, WindowColour::primary), // 1
+        makeWidget({ 60, 0 }, { 30, 28 }, WidgetType::wt_7, WindowColour::primary), // 2
 
-        makeWidget({ 104, 0 }, { 30, 28 }, WidgetType::wt_7, ColourIndex::secondary), // 3
-        makeWidget({ 134, 0 }, { 30, 28 }, WidgetType::wt_7, ColourIndex::secondary), // 4
-        makeWidget({ 164, 0 }, { 30, 28 }, WidgetType::wt_7, ColourIndex::secondary), // 5
+        makeWidget({ 104, 0 }, { 30, 28 }, WidgetType::wt_7, WindowColour::secondary), // 3
+        makeWidget({ 134, 0 }, { 30, 28 }, WidgetType::wt_7, WindowColour::secondary), // 4
+        makeWidget({ 164, 0 }, { 30, 28 }, WidgetType::wt_7, WindowColour::secondary), // 5
 
-        makeWidget({ 267, 0 }, { 30, 28 }, WidgetType::wt_7, ColourIndex::tertiary), // 6
-        makeWidget({ 0, 0 }, { 1, 1 }, WidgetType::none, ColourIndex::primary),      // 7
-        makeWidget({ 357, 0 }, { 30, 28 }, WidgetType::wt_7, ColourIndex::tertiary), // 8
-        makeWidget({ 0, 0 }, { 1, 1 }, WidgetType::none, ColourIndex::primary),      // 9
-        makeWidget({ 0, 0 }, { 1, 1 }, WidgetType::none, ColourIndex::primary),      // 10
+        makeWidget({ 267, 0 }, { 30, 28 }, WidgetType::wt_7, WindowColour::tertiary), // 6
+        makeWidget({ 0, 0 }, { 1, 1 }, WidgetType::none, WindowColour::primary),      // 7
+        makeWidget({ 357, 0 }, { 30, 28 }, WidgetType::wt_7, WindowColour::tertiary), // 8
+        makeWidget({ 0, 0 }, { 1, 1 }, WidgetType::none, WindowColour::primary),      // 9
+        makeWidget({ 0, 0 }, { 1, 1 }, WidgetType::none, WindowColour::primary),      // 10
 
-        makeWidget({ 0, 0 }, { 1, 1 }, WidgetType::none, ColourIndex::primary),        // 11
-        makeWidget({ 0, 0 }, { 1, 1 }, WidgetType::none, ColourIndex::primary),        // 12
-        makeWidget({ 460, 0 }, { 30, 28 }, WidgetType::wt_7, ColourIndex::quaternary), // 13
+        makeWidget({ 0, 0 }, { 1, 1 }, WidgetType::none, WindowColour::primary),        // 11
+        makeWidget({ 0, 0 }, { 1, 1 }, WidgetType::none, WindowColour::primary),        // 12
+        makeWidget({ 460, 0 }, { 30, 28 }, WidgetType::wt_7, WindowColour::quaternary), // 13
         widgetEnd(),
     };
 

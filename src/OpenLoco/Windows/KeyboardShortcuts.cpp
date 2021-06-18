@@ -20,12 +20,12 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
     static WindowEventList _events;
 
     static Widget _widgets[] = {
-        makeWidget({ 0, 0 }, { 360, 238 }, WidgetType::frame, ColourIndex::primary),
-        makeWidget({ 1, 1 }, { 358, 13 }, WidgetType::caption_25, ColourIndex::primary, StringIds::keyboard_shortcuts),
-        makeWidget({ 345, 2 }, { 13, 13 }, WidgetType::wt_9, ColourIndex::primary, ImageIds::close_button, StringIds::tooltip_close_window),
-        makeWidget({ 0, 15 }, { 360, 223 }, WidgetType::panel, ColourIndex::secondary),
-        makeWidget({ 4, 19 }, { 352, 202 }, WidgetType::scrollview, ColourIndex::secondary, Scrollbars::vertical, StringIds::keyboard_shortcut_list_tip),
-        makeWidget({ 4, 223 }, { 150, 12 }, WidgetType::wt_11, ColourIndex::secondary, StringIds::reset_keys, StringIds::reset_keys_tip),
+        makeWidget({ 0, 0 }, { 360, 238 }, WidgetType::frame, WindowColour::primary),
+        makeWidget({ 1, 1 }, { 358, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::keyboard_shortcuts),
+        makeWidget({ 345, 2 }, { 13, 13 }, WidgetType::wt_9, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+        makeWidget({ 0, 15 }, { 360, 223 }, WidgetType::panel, WindowColour::secondary),
+        makeWidget({ 4, 19 }, { 352, 202 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical, StringIds::keyboard_shortcut_list_tip),
+        makeWidget({ 4, 223 }, { 150, 12 }, WidgetType::wt_11, WindowColour::secondary, StringIds::reset_keys, StringIds::reset_keys_tip),
         widgetEnd(),
     };
 

@@ -151,7 +151,7 @@ namespace OpenLoco::Ui::Dropdown
         };
 
         Widget widgets[] = {
-            makeWidget({ 0, 0 }, { 1, 1 }, WidgetType::wt_3, ColourIndex::primary),
+            makeWidget({ 0, 0 }, { 1, 1 }, WidgetType::wt_3, WindowColour::primary),
             widgetEnd()
         };
 
@@ -305,7 +305,7 @@ namespace OpenLoco::Ui::Dropdown
 
             common::initEvents();
 
-            common::widgets[0].wndColourIndex = ColourIndex::primary;
+            common::widgets[0].windowColour = WindowColour::primary;
             window->colours[0] = colour;
 
             _dropdownHighlightedIndex = -1;
@@ -645,7 +645,7 @@ namespace OpenLoco::Ui::Dropdown
         WindowManager::invalidateWidget(_pressedWindowType, _pressedWindowNumber, _pressedWidgetIndex);
 
         auto widget = window->widgets[widgetIndex];
-        auto colour = window->getColour(widget.wndColourIndex);
+        auto colour = window->getColour(widget.windowColour);
         colour = Colour::translucent(colour);
 
         auto x = widget.left + window->x;
@@ -833,7 +833,7 @@ namespace OpenLoco::Ui::Dropdown
         }
         auto x = widget->left + window->x;
         auto y = widget->top + window->y;
-        auto colour = Colour::translucent(window->getColour(widget->wndColourIndex));
+        auto colour = Colour::translucent(window->getColour(widget->windowColour));
 
         showText(x, y, widget->width(), widget->height(), 25, colour, index, (1 << 6));
 

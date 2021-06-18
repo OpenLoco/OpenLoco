@@ -21,13 +21,13 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
 
     Widget widgets[] = {
         commonWidgets(138, 192, StringIds::stringid_2),
-        makeWidget({ 3, 45 }, { 132, 12 }, WidgetType::checkbox, ColourIndex::secondary, StringIds::empty, StringIds::tooltip_select_track_mod),
-        makeWidget({ 3, 57 }, { 132, 12 }, WidgetType::checkbox, ColourIndex::secondary, StringIds::empty, StringIds::tooltip_select_track_mod),
-        makeWidget({ 3, 69 }, { 132, 12 }, WidgetType::checkbox, ColourIndex::secondary, StringIds::empty, StringIds::tooltip_select_track_mod),
-        makeWidget({ 3, 81 }, { 132, 12 }, WidgetType::checkbox, ColourIndex::secondary, StringIds::empty, StringIds::tooltip_select_track_mod),
-        makeWidget({ 35, 110 }, { 66, 66 }, WidgetType::wt_3, ColourIndex::secondary),
-        makeWidget({ 3, 95 }, { 132, 12 }, WidgetType::wt_18, ColourIndex::secondary, 0xFFFFFFFF, StringIds::tooltip_select_track_to_upgrade),
-        makeWidget({ 123, 96 }, { 11, 10 }, WidgetType::wt_11, ColourIndex::secondary, StringIds::dropdown, StringIds::tooltip_select_track_to_upgrade),
+        makeWidget({ 3, 45 }, { 132, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::empty, StringIds::tooltip_select_track_mod),
+        makeWidget({ 3, 57 }, { 132, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::empty, StringIds::tooltip_select_track_mod),
+        makeWidget({ 3, 69 }, { 132, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::empty, StringIds::tooltip_select_track_mod),
+        makeWidget({ 3, 81 }, { 132, 12 }, WidgetType::checkbox, WindowColour::secondary, StringIds::empty, StringIds::tooltip_select_track_mod),
+        makeWidget({ 35, 110 }, { 66, 66 }, WidgetType::wt_3, WindowColour::secondary),
+        makeWidget({ 3, 95 }, { 132, 12 }, WidgetType::wt_18, WindowColour::secondary, 0xFFFFFFFF, StringIds::tooltip_select_track_to_upgrade),
+        makeWidget({ 123, 96 }, { 11, 10 }, WidgetType::wt_11, WindowColour::secondary, StringIds::dropdown, StringIds::tooltip_select_track_to_upgrade),
         widgetEnd(),
     };
 

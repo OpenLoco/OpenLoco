@@ -104,14 +104,14 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     };
 
     static Widget widgets[] = {
-        makeWidget({ 0, 0 }, { 500, 380 }, WidgetType::frame, ColourIndex::primary),
-        makeWidget({ 1, 1 }, { 498, 13 }, WidgetType::caption_25, ColourIndex::primary, StringIds::buffer_2039),
-        makeWidget({ 485, 2 }, { 13, 13 }, WidgetType::wt_9, ColourIndex::primary, ImageIds::close_button, StringIds::tooltip_close_window),
-        makeWidget({ 0, 15 }, { 500, 365 }, WidgetType::panel, ColourIndex::secondary),
-        makeWidget({ 473, 18 }, { 24, 24 }, WidgetType::wt_9, ColourIndex::secondary, ImageIds::icon_parent_folder, StringIds::window_browse_parent_folder_tooltip),
-        makeWidget({ 88, 348 }, { 408, 14 }, WidgetType::wt_17, ColourIndex::secondary),
-        makeWidget({ 426, 364 }, { 70, 12 }, WidgetType::wt_11, ColourIndex::secondary, StringIds::label_button_ok),
-        makeWidget({ 3, 45 }, { 494, 323 }, WidgetType::scrollview, ColourIndex::secondary, Scrollbars::vertical),
+        makeWidget({ 0, 0 }, { 500, 380 }, WidgetType::frame, WindowColour::primary),
+        makeWidget({ 1, 1 }, { 498, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::buffer_2039),
+        makeWidget({ 485, 2 }, { 13, 13 }, WidgetType::wt_9, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+        makeWidget({ 0, 15 }, { 500, 365 }, WidgetType::panel, WindowColour::secondary),
+        makeWidget({ 473, 18 }, { 24, 24 }, WidgetType::wt_9, WindowColour::secondary, ImageIds::icon_parent_folder, StringIds::window_browse_parent_folder_tooltip),
+        makeWidget({ 88, 348 }, { 408, 14 }, WidgetType::wt_17, WindowColour::secondary),
+        makeWidget({ 426, 364 }, { 70, 12 }, WidgetType::wt_11, WindowColour::secondary, StringIds::label_button_ok),
+        makeWidget({ 3, 45 }, { 494, 323 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
         widgetEnd(),
     };
 

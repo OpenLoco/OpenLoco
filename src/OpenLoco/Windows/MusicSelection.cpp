@@ -29,11 +29,11 @@ namespace OpenLoco::Ui::Windows::MusicSelection
     };
 
     static Widget _widgets[] = {
-        makeWidget({ 0, 0 }, { 360, 238 }, WidgetType::frame, ColourIndex::primary),
-        makeWidget({ 1, 1 }, { 358, 13 }, WidgetType::caption_25, ColourIndex::primary, StringIds::music_selection_title),
-        makeWidget({ 345, 2 }, { 13, 13 }, WidgetType::wt_9, ColourIndex::primary, ImageIds::close_button, StringIds::tooltip_close_window),
-        makeWidget({ 0, 15 }, { 360, 223 }, WidgetType::panel, ColourIndex::secondary),
-        makeWidget({ 4, 19 }, { 352, 218 }, WidgetType::scrollview, ColourIndex::secondary, Scrollbars::vertical, StringIds::music_selection_tooltip),
+        makeWidget({ 0, 0 }, { 360, 238 }, WidgetType::frame, WindowColour::primary),
+        makeWidget({ 1, 1 }, { 358, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::music_selection_title),
+        makeWidget({ 345, 2 }, { 13, 13 }, WidgetType::wt_9, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
+        makeWidget({ 0, 15 }, { 360, 223 }, WidgetType::panel, WindowColour::secondary),
+        makeWidget({ 4, 19 }, { 352, 218 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical, StringIds::music_selection_tooltip),
         widgetEnd(),
     };
 

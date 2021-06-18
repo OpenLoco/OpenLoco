@@ -25,11 +25,11 @@ namespace OpenLoco::Ui::Windows::LandscapeGenerationConfirm
     };
 
     static Widget widgets[] = {
-        makeWidget({ 0, 0 }, { 280, 92 }, WidgetType::panel, ColourIndex::primary),
-        makeWidget({ 1, 1 }, { 278, 13 }, WidgetType::caption_22, ColourIndex::primary),
-        makeWidget({ 267, 2 }, { 11, 11 }, WidgetType::wt_11, ColourIndex::primary, StringIds::close_window_cross, StringIds::tooltip_close_window),
-        makeWidget({ 20, 77 }, { 100, 12 }, WidgetType::wt_11, ColourIndex::primary, StringIds::label_ok),
-        makeWidget({ 160, 77 }, { 100, 12 }, WidgetType::wt_11, ColourIndex::primary, StringIds::label_button_cancel),
+        makeWidget({ 0, 0 }, { 280, 92 }, WidgetType::panel, WindowColour::primary),
+        makeWidget({ 1, 1 }, { 278, 13 }, WidgetType::caption_22, WindowColour::primary),
+        makeWidget({ 267, 2 }, { 11, 11 }, WidgetType::wt_11, WindowColour::primary, StringIds::close_window_cross, StringIds::tooltip_close_window),
+        makeWidget({ 20, 77 }, { 100, 12 }, WidgetType::wt_11, WindowColour::primary, StringIds::label_ok),
+        makeWidget({ 160, 77 }, { 100, 12 }, WidgetType::wt_11, WindowColour::primary, StringIds::label_button_cancel),
         widgetEnd()
     };
 
