@@ -823,8 +823,8 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
             self->activated_widgets &= ~((1 << widx::competitor_forbid_trains) | (1 << widx::competitor_forbid_buses) | (1 << widx::competitor_forbid_trucks) | (1 << widx::competitor_forbid_trams) | (1 << widx::competitor_forbid_aircraft) | (1 << widx::competitor_forbid_ships) | (1 << widx::player_forbid_trains) | (1 << widx::player_forbid_buses) | (1 << widx::player_forbid_trucks) | (1 << widx::player_forbid_trams) | (1 << widx::player_forbid_aircraft) | (1 << widx::player_forbid_ships));
 
             // TODO(avgeffen): replace with wicked smart widget-id kerfuffle, someday.
-            self->activated_widgets |= *forbiddenVehiclesCompetitors << static_cast<uint64_t>(widx::competitor_forbid_trains);
-            self->activated_widgets |= *forbiddenVehiclesPlayers << static_cast<uint64_t>(widx::player_forbid_trains);
+            self->activated_widgets |= static_cast<uint64_t>(*forbiddenVehiclesCompetitors) << widx::competitor_forbid_trains;
+            self->activated_widgets |= static_cast<uint64_t>(*forbiddenVehiclesPlayers) << widx::player_forbid_trains;
         }
 
         static void initEvents()
