@@ -1159,7 +1159,14 @@ namespace OpenLoco
     // 0x00406D13
     void main()
     {
-        crash_init();
+        if (!OpenLoco::platform::isRunningInWine())
+        {
+            crash_init();
+        }
+        else
+        {
+            std::printf("Detected wine, not installing crash handler as it doesn't provide useful data. Consider using native builds of OpenLoco instead.\n");
+        }
         auto versionInfo = OpenLoco::getVersionInfo();
         std::cout << versionInfo << std::endl;
         try
