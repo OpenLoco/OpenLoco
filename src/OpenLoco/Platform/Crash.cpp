@@ -26,6 +26,23 @@ static bool OnCrash(
     }
     wchar_t dumpFilePath[MAX_PATH];
     swprintf_s(dumpFilePath, std::size(dumpFilePath), L"%s\\%s.dmp", dumpPath, miniDumpId);
+
+    wchar_t dumpFilePathNew[MAX_PATH];
+    swprintf_s(
+        dumpFilePathNew, std::size(dumpFilePathNew), L"%s\\%s(%s).dmp", dumpPath, miniDumpId, _wszCommitSha1Short);
+
+    // Try to rename the files
+    if (_wrename(dumpFilePath, dumpFilePathNew) == 0)
+    {
+        std::wcscpy(dumpFilePath, dumpFilePathNew);
+    }
+
+    // Log information to output
+    wprintf(L"Dump Path: %s\n", dumpPath);
+    wprintf(L"Dump File Path: %s\n", dumpFilePath);
+    wprintf(L"Dump Id: %s\n", miniDumpId);
+    wprintf(L"Commit: %s\n", _wszCommitSha1Short);
+
     constexpr const wchar_t* MessageFormat = L"A crash has occurred and a dump was created at\n%s.\n\nPlease file an issue "
                                              L"with OpenLoco on GitHub and provide "
                                              L"the dump and saved game there.\n\n\nCommit: %s\n\n";
