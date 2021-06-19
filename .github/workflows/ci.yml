@@ -46,7 +46,7 @@ jobs:
         run: |
             $ErrorView = 'NormalView'
             New-Item -ItemType Directory artefacts | Out-Null
-            Copy-Item CHANGELOG.md,CONTRIBUTORS.md,LICENSE,bin\*.dll artefacts
+            Copy-Item CHANGELOG.md,CONTRIBUTORS.md,LICENSE,bin\*.dll,bin\*.pdb artefacts
             Copy-Item data\language -Destination artefacts\data\language -Recurse
             Copy-Item loco.exe artefacts\openloco.exe
             Push-Location artefacts
