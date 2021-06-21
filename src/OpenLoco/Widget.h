@@ -7,6 +7,7 @@
 
 namespace OpenLoco::Ui
 {
+#pragma pack(push, 1)
     struct Widget
     {
         WidgetType type;           // 0x00
@@ -65,6 +66,8 @@ namespace OpenLoco::Ui
 
         static void drawGroupbox(Gfx::Context* const context, const Window* window, Widget* widget);
     };
+#pragma pack(pop)
+    static_assert(sizeof(Widget) == 0x10);
 
     static constexpr Widget makeWidget(Gfx::point_t origin, Gfx::ui_size_t size, WidgetType type, WindowColour colour, uint32_t content = 0xFFFFFFFF, string_id tooltip = StringIds::null)
     {
