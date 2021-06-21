@@ -4,6 +4,7 @@
 - Fix: [#1008] Inability to decrease max altitude for trees in landscape editor.
 - Technical: [#986] Stack misalignment in GCC builds caused unexplained crashes on Linux and Mac during interop hooks with loco.exe.
 - Technical: [#993] Retry hook installation to fix incompatibles with older wine versions.
+- Technical: [#1006] Add breakpad-based dumping for MSVC builds
 
 21.05 (2021-05-11)
 ------------------------------------------------------------------------
