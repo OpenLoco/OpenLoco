@@ -37,7 +37,7 @@ namespace OpenLoco::Ui
         vehicleList = 27,
         buildVehicle = 28,
         stationList = 29,
-
+        mapTooltip = 30,
         objectSelection = 31,
         townList = 32,
         town = 33,
