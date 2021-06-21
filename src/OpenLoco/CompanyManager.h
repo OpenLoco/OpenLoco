@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Company.h"
-#include "LocoFixedVector.h"
+#include "Core/LocoFixedVector.hpp"
 #include "Map/Map.hpp"
 #include "Types.hpp"
 #include <array>

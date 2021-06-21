@@ -1,7 +1,7 @@
 #pragma once
 
+#include "Core/LocoFixedVector.hpp"
 #include "Industry.h"
-#include "LocoFixedVector.h"
 #include <array>
 #include <cstddef>
 

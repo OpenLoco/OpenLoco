@@ -214,6 +214,7 @@
     <ClInclude Include="Config.h" />
     <ClInclude Include="Console.h" />
     <ClInclude Include="Core\FileSystem.hpp" />
+    <ClInclude Include="Core\LocoFixedVector.hpp" />
     <ClInclude Include="Core\Optional.hpp" />
     <ClInclude Include="Core\Span.hpp" />
     <ClInclude Include="Date.h" />
@@ -253,7 +254,6 @@
     <ClInclude Include="Localisation\StringIds.h" />
     <ClInclude Include="Localisation\Unicode.h" />
     <ClInclude Include="Location.hpp" />
-    <ClInclude Include="LocoFixedVector.h" />
     <ClInclude Include="Map\Map.hpp" />
     <ClInclude Include="Map\MapGenerator.h" />
     <ClInclude Include="Map\Tile.h" />
