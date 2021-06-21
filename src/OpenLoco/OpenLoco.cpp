@@ -74,6 +74,7 @@ namespace OpenLoco
 
     static double _accumulator = 0.0;
     static Timepoint _lastUpdate = Clock::now();
+    static CExceptionHandler _exHandler = nullptr;
 
 #ifdef _WIN32
     loco_global<HINSTANCE, 0x0113E0B4> ghInstance;
@@ -358,6 +359,7 @@ namespace OpenLoco
             printf("Removing temp file '%s'\n", path8.c_str());
             fs::remove(tempFilePath);
         }
+        crashClose(_exHandler);
 
         // SDL_Quit();
         exit(0);
@@ -1161,11 +1163,11 @@ namespace OpenLoco
     {
         if (!OpenLoco::platform::isRunningInWine())
         {
-            crash_init();
+            _exHandler = crashInit();
         }
         else
         {
-            std::printf("Detected wine, not installing crash handler as it doesn't provide useful data. Consider using native builds of OpenLoco instead.\n");
+            Console::log("Detected wine, not installing crash handler as it doesn't provide useful data. Consider using native builds of OpenLoco instead.\n");
         }
         auto versionInfo = OpenLoco::getVersionInfo();
         std::cout << versionInfo << std::endl;

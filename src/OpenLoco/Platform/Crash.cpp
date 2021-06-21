@@ -6,17 +6,17 @@
 #include <ShlObj.h>
 #include <client/windows/handler/exception_handler.h>
 
-static bool OnCrash(
+static bool onCrash(
     const wchar_t* dumpPath, const wchar_t* miniDumpId, void* context, EXCEPTION_POINTERS* exinfo,
     MDRawAssertionInfo* assertion, bool succeeded)
 {
     if (!succeeded)
     {
-        constexpr const char* DumpFailedMessage = "Failed to create the dump. Please file an issue with OpenLoco on GitHub and "
+        constexpr const char* dumpFailedMessage = "Failed to create the dump. Please file an issue with OpenLoco on GitHub and "
                                                   "provide latest save, and provide "
                                                   "information about what you did before the crash occurred.";
-        printf("%s\n", DumpFailedMessage);
-        MessageBoxA(nullptr, DumpFailedMessage, "OpenLoco", MB_OK | MB_ICONERROR);
+        printf("%s\n", dumpFailedMessage);
+        MessageBoxA(nullptr, dumpFailedMessage, "OpenLoco", MB_OK | MB_ICONERROR);
         return succeeded;
     }
     wchar_t dumpFilePath[MAX_PATH];
@@ -42,7 +42,7 @@ static bool OnCrash(
 
     constexpr const wchar_t* MessageFormat = L"A crash has occurred and a dump was created at\n%s.\n\nPlease file an issue "
                                              L"with OpenLoco on GitHub and provide "
-                                             L"the dump and saved game there.\n\n\nVersion: %s\n\n";
+                                             L"the dump and most recently saved game there.\n\n\nVersion: %s\n\n";
     wchar_t message[MAX_PATH * 2];
     swprintf_s(message, MessageFormat, dumpFilePath, version.c_str());
     MessageBoxW(nullptr, message, L"OpenLoco", MB_OK | MB_ICONERROR);
@@ -69,7 +69,7 @@ static bool OnCrash(
     return succeeded;
 }
 
-static std::wstring GetDumpDirectory()
+static std::wstring getDumpDirectory()
 {
     auto user_dir = OpenLoco::platform::getUserDirectory();
     auto result = OpenLoco::Utility::toUtf16(user_dir.string());
@@ -80,14 +80,21 @@ static std::wstring GetDumpDirectory()
 // Using non-null pipe name here lets breakpad try setting OOP crash handling
 constexpr const wchar_t* PipeName = L"openloco-bpad";
 
-CExceptionHandler crash_init()
+CExceptionHandler crashInit()
 {
 #if defined(USE_BREAKPAD)
     // Path must exist and be RW!
     auto exHandler = new google_breakpad::ExceptionHandler(
-        GetDumpDirectory(), 0, OnCrash, 0, google_breakpad::ExceptionHandler::HANDLER_ALL, MiniDumpWithDataSegs, PipeName, 0);
-    return reinterpret_cast<CExceptionHandler>(exHandler);
+        getDumpDirectory(), 0, onCrash, 0, google_breakpad::ExceptionHandler::HANDLER_ALL, MiniDumpWithDataSegs, PipeName, 0);
+    return exHandler;
 #else  // USE_BREAKPAD
     return nullptr;
+#endif // USE_BREAKPAD
+}
+
+void crashClose(CExceptionHandler exHandler)
+{
+#if defined(USE_BREAKPAD)
+    delete exHandler;
 #endif // USE_BREAKPAD
 }

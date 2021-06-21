@@ -302,6 +302,7 @@
     <ClInclude Include="Paint\PaintEntity.h" />
     <ClInclude Include="Paint\PaintMiscEntity.h" />
     <ClInclude Include="Paint\PaintVehicle.h" />
+    <ClInclude Include="Platform/Crash.h" />
     <ClInclude Include="Platform\Platform.h" />
     <ClInclude Include="ProgressBar.h" />
     <ClInclude Include="S5\S5.h" />
