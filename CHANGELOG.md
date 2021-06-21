@@ -1,6 +1,7 @@
 21.05+ (???)
 ------------------------------------------------------------------------
 - Fix: [#982] Incorrect rating calculation for cargo causing penalty for fast vehicles.
+- Fix: [#1008] Inability to decrease max altitude for trees in landscape editor.
 - Technical: [#986] Stack misalignment in GCC builds caused unexplained crashes on Linux and Mac during interop hooks with loco.exe.
 - Technical: [#993] Retry hook installation to fix incompatibles with older wine versions.
 
