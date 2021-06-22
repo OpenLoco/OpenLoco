@@ -14,9 +14,8 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::MapToolTip
 {
-    static loco_global<std::byte[40], 0x0050A018> _mapTooltipFormatArguments;
     static loco_global<CompanyId_t, 0x0050A040> _mapTooltipOwner;
-    static loco_global<uint16_t, 0x00523348> _mapTooltip523348;
+    static loco_global<uint16_t, 0x00523348> _mapTooltipTimeout;
 
     static WindowEventList events;
 
@@ -36,7 +35,7 @@ namespace OpenLoco::Ui::Windows::MapToolTip
     // 0x004CEEA7
     void open()
     {
-        _mapTooltip523348++;
+        _mapTooltipTimeout++;
         auto cursor = Input::getMouseLocation();
 
         static Gfx::point_t tooltipLocation = {};
@@ -44,13 +43,14 @@ namespace OpenLoco::Ui::Windows::MapToolTip
             || (std::abs(tooltipLocation.y - cursor.y) > 5)
             || Input::hasFlag(Input::Flags::flag5))
         {
-            _mapTooltip523348 = 0;
+            _mapTooltipTimeout = 0;
         }
 
         tooltipLocation = cursor;
-        StringManager::ArgsWrapper args(_mapTooltipFormatArguments);
-        auto firstArg = args.pop<string_id>();
-        if (_mapTooltip523348 < 25 || firstArg == StringIds::null || Input::hasFlag(Input::Flags::flag5) || Input::hasKeyModifier(Input::KeyModifier::control) || Input::hasKeyModifier(Input::KeyModifier::shift) || WindowManager::find(WindowType::error) != nullptr)
+        auto args = FormatArguments::mapToolTip();
+        StringManager::ArgsWrapper argsWrap(&args);
+        auto firstArg = argsWrap.pop<string_id>();
+        if (_mapTooltipTimeout < 25 || firstArg == StringIds::null || Input::hasFlag(Input::Flags::flag5) || Input::hasKeyModifier(Input::KeyModifier::control) || Input::hasKeyModifier(Input::KeyModifier::shift) || WindowManager::find(WindowType::error) != nullptr)
         {
             WindowManager::close(WindowType::mapTooltip);
             return;
@@ -107,8 +107,9 @@ namespace OpenLoco::Ui::Windows::MapToolTip
     // 0x004CF010
     static void draw(Window* self, Gfx::Context* context)
     {
-        StringManager::ArgsWrapper args(_mapTooltipFormatArguments);
-        auto firstArg = args.pop<string_id>();
+        auto args = FormatArguments::mapToolTip();
+        StringManager::ArgsWrapper argsWrap(&args);
+        auto firstArg = argsWrap.pop<string_id>();
         if (firstArg == StringIds::null)
         {
             return;
@@ -117,12 +118,12 @@ namespace OpenLoco::Ui::Windows::MapToolTip
         if (_mapTooltipOwner == CompanyId::null || _mapTooltipOwner == CompanyManager::getControllingId())
         {
             Gfx::point_t origin(self->x + self->width / 2, self->y + self->height / 2 - 5);
-            Gfx::drawStringCentredWrapped(context, &origin, self->width, Colour::black, StringIds::outlined_wcolour2_stringid, _mapTooltipFormatArguments);
+            Gfx::drawStringCentredWrapped(context, &origin, self->width, Colour::black, StringIds::outlined_wcolour2_stringid, &args);
         }
         else
         {
             Gfx::point_t origin(self->x + self->width / 2 + 13, self->y + self->height / 2 - 5);
-            auto width = Gfx::drawStringCentredWrapped(context, &origin, self->width - 28, Colour::black, StringIds::outlined_wcolour2_stringid, _mapTooltipFormatArguments);
+            auto width = Gfx::drawStringCentredWrapped(context, &origin, self->width - 28, Colour::black, StringIds::outlined_wcolour2_stringid, &args);
 
             auto left = self->width / 2 + self->x + 13 - width / 2 - 28;
             auto top = self->height / 2 - 13 + self->y;
