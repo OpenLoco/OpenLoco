@@ -119,6 +119,17 @@ namespace OpenLoco::platform
         }
         return drives;
     }
+
+    bool isRunningInWine()
+    {
+        HMODULE ntdllMod = GetModuleHandleW(L"ntdll.dll");
+
+        if (ntdllMod && GetProcAddress(ntdllMod, "wine_get_version"))
+        {
+            return true;
+        }
+        return false;
+    }
 }
 
 #endif

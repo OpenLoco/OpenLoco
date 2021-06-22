@@ -116,6 +116,11 @@ namespace OpenLoco::platform
         return input;
     }
 #endif // !(defined(__APPLE__) && defined(__MACH__))
+
+    bool isRunningInWine()
+    {
+        return false;
+    }
 }
 
 #endif

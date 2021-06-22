@@ -46,6 +46,7 @@
 #include "MultiPlayer.h"
 #include "Objects/ObjectManager.h"
 #include "OpenLoco.h"
+#include "Platform/Crash.h"
 #include "Platform/Platform.h"
 #include "S5/S5.h"
 #include "Scenario.h"
@@ -73,6 +74,7 @@ namespace OpenLoco
 
     static double _accumulator = 0.0;
     static Timepoint _lastUpdate = Clock::now();
+    static CExceptionHandler _exHandler = nullptr;
 
 #ifdef _WIN32
     loco_global<HINSTANCE, 0x0113E0B4> ghInstance;
@@ -357,6 +359,7 @@ namespace OpenLoco
             printf("Removing temp file '%s'\n", path8.c_str());
             fs::remove(tempFilePath);
         }
+        crashClose(_exHandler);
 
         // SDL_Quit();
         exit(0);
@@ -1158,6 +1161,14 @@ namespace OpenLoco
     // 0x00406D13
     void main()
     {
+        if (!OpenLoco::platform::isRunningInWine())
+        {
+            _exHandler = crashInit();
+        }
+        else
+        {
+            Console::log("Detected wine, not installing crash handler as it doesn't provide useful data. Consider using native builds of OpenLoco instead.\n");
+        }
         auto versionInfo = OpenLoco::getVersionInfo();
         std::cout << versionInfo << std::endl;
         try
