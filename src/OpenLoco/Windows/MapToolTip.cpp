@@ -60,9 +60,11 @@ namespace OpenLoco::Ui::Windows::MapToolTip
         auto maxY = Ui::height() - height;
         int16_t y = cursor.y + 15; // Normally, we'd display the tooltip 15 lower
         if (y > maxY)
+        {
             // If y is too large, the tooltip could be forced below the cursor if we'd just clamped y,
             // so we'll subtract a bit more
             y -= height + 19;
+        }
 
         auto width = 240;
         int16_t x = width <= Ui::width() ? std::clamp(cursor.x - (width / 2), 0, Ui::width() - width) : 0;
