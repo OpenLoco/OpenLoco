@@ -1,6 +1,10 @@
+#include "../CompanyManager.h"
+#include "../Graphics/Colour.h"
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
+#include "../Localisation/ArgsWrapper.hpp"
 #include "../Localisation/FormatArguments.hpp"
+#include "../Objects/CompetitorObject.h"
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Ui.h"
 #include "../Ui/WindowManager.h"
@@ -10,7 +14,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::MapToolTip
 {
-    static loco_global<string_id[20], 0x0050A018> _mapTooltipFormatArguments;
+    static loco_global<std::byte[40], 0x0050A018> _mapTooltipFormatArguments;
     static loco_global<CompanyId_t, 0x0050A040> _mapTooltipOwner;
     static loco_global<uint16_t, 0x00523348> _mapTooltip523348;
 
@@ -44,8 +48,9 @@ namespace OpenLoco::Ui::Windows::MapToolTip
         }
 
         tooltipLocation = cursor;
-
-        if (_mapTooltip523348 < 25 || _mapTooltipFormatArguments[0] == StringIds::null || Input::hasFlag(Input::Flags::flag5) || Input::hasKeyModifier(Input::KeyModifier::control) || Input::hasKeyModifier(Input::KeyModifier::shift) || WindowManager::find(WindowType::error) != nullptr)
+        StringManager::ArgsWrapper args(_mapTooltipFormatArguments);
+        auto firstArg = args.pop<string_id>();
+        if (_mapTooltip523348 < 25 || firstArg == StringIds::null || Input::hasFlag(Input::Flags::flag5) || Input::hasKeyModifier(Input::KeyModifier::control) || Input::hasKeyModifier(Input::KeyModifier::shift) || WindowManager::find(WindowType::error) != nullptr)
         {
             WindowManager::close(WindowType::mapTooltip);
             return;
@@ -53,14 +58,14 @@ namespace OpenLoco::Ui::Windows::MapToolTip
 
         auto height = 55;
         auto maxY = Ui::height() - height;
-        auto y = cursor.y + 15; // Normally, we'd display the tooltip 15 lower
+        int16_t y = cursor.y + 15; // Normally, we'd display the tooltip 15 lower
         if (y > maxY)
             // If y is too large, the tooltip could be forced below the cursor if we'd just clamped y,
             // so we'll subtract a bit more
             y -= height + 19;
 
         auto width = 240;
-        auto x = width <= Ui::width() ? std::clamp(cursor.x - (width / 2), 0, Ui::width() - width) : 0;
+        int16_t x = width <= Ui::width() ? std::clamp(cursor.x - (width / 2), 0, Ui::width() - width) : 0;
 
         auto* window = WindowManager::find(WindowType::mapTooltip);
         if (window != nullptr)
@@ -74,7 +79,7 @@ namespace OpenLoco::Ui::Windows::MapToolTip
         else
         {
             initEvents();
-            auto* window = WindowManager::createWindow(WindowType::mapTooltip, { x, y }, { width, height }, WindowFlags::stick_to_front | WindowFlags::transparent | WindowFlags::no_background, &events);
+            window = WindowManager::createWindow(WindowType::mapTooltip, Gfx::point_t(x, y), Gfx::ui_size_t(width, height), WindowFlags::stick_to_front | WindowFlags::transparent | WindowFlags::no_background, &events);
             window->widgets = _widgets;
             auto* skin = ObjectManager::get<InterfaceSkinObject>();
             window->setColour(WindowColour::secondary, skin->colour_06);
@@ -102,6 +107,38 @@ namespace OpenLoco::Ui::Windows::MapToolTip
     // 0x004CF010
     static void draw(Window* self, Gfx::Context* context)
     {
+        StringManager::ArgsWrapper args(_mapTooltipFormatArguments);
+        auto firstArg = args.pop<string_id>();
+        if (firstArg == StringIds::null)
+        {
+            return;
+        }
+
+        if (_mapTooltipOwner == CompanyId::null || _mapTooltipOwner == CompanyManager::getControllingId())
+        {
+            Gfx::point_t origin = { self->x + self->width / 2,
+                                    self->y + self->height / 2 - 5 };
+            Gfx::drawStringCentredWrapped(context, &origin, self->width, Colour::black, StringIds::outlined_wcolour2_stringid, _mapTooltipFormatArguments);
+        }
+        else
+        {
+            Gfx::point_t origin = { self->x + self->width / 2 + 13,
+                                    self->y + self->height / 2 - 5 };
+            Gfx::drawStringCentredWrapped(context, &origin, self->width - 28, Colour::black, StringIds::outlined_wcolour2_stringid, _mapTooltipFormatArguments);
+
+            auto left = self->width / 2 + self->x + 13 - origin.x / 2 - 28;
+            auto top = self->height / 2 - 13 + self->y;
+            auto right = left + 25;
+            auto bottom = top + 25;
+
+            Gfx::fillRect(context, left, top, right, bottom, Colour::aquamarine);
+
+            auto* company = CompanyManager::get(_mapTooltipOwner);
+            auto* competitor = ObjectManager::get<CompetitorObject>(company->competitor_id);
+            auto imageId = Gfx::recolour(competitor->images[company->owner_emotion], company->mainColours.primary);
+
+            Gfx::drawImage(context, left + 1, top + 1, imageId);
+        }
     }
 
     static void initEvents()
