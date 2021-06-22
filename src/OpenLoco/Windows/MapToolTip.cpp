@@ -116,17 +116,15 @@ namespace OpenLoco::Ui::Windows::MapToolTip
 
         if (_mapTooltipOwner == CompanyId::null || _mapTooltipOwner == CompanyManager::getControllingId())
         {
-            Gfx::point_t origin = { self->x + self->width / 2,
-                                    self->y + self->height / 2 - 5 };
+            Gfx::point_t origin(self->x + self->width / 2, self->y + self->height / 2 - 5);
             Gfx::drawStringCentredWrapped(context, &origin, self->width, Colour::black, StringIds::outlined_wcolour2_stringid, _mapTooltipFormatArguments);
         }
         else
         {
-            Gfx::point_t origin = { self->x + self->width / 2 + 13,
-                                    self->y + self->height / 2 - 5 };
-            Gfx::drawStringCentredWrapped(context, &origin, self->width - 28, Colour::black, StringIds::outlined_wcolour2_stringid, _mapTooltipFormatArguments);
+            Gfx::point_t origin(self->x + self->width / 2 + 13, self->y + self->height / 2 - 5);
+            auto width = Gfx::drawStringCentredWrapped(context, &origin, self->width - 28, Colour::black, StringIds::outlined_wcolour2_stringid, _mapTooltipFormatArguments);
 
-            auto left = self->width / 2 + self->x + 13 - origin.x / 2 - 28;
+            auto left = self->width / 2 + self->x + 13 - width / 2 - 28;
             auto top = self->height / 2 - 13 + self->y;
             auto right = left + 25;
             auto bottom = top + 25;

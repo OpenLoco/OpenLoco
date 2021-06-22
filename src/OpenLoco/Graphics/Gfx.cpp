@@ -945,8 +945,9 @@ namespace OpenLoco::Gfx
      * @param colour @<al>
      * @param stringId @<bx>
      * @param args @<esi>
+     * returns width @<ax>
      */
-    void drawStringCentredWrapped(
+    uint16_t drawStringCentredWrapped(
         Context* context,
         point_t* origin,
         uint16_t width,
@@ -966,6 +967,7 @@ namespace OpenLoco::Gfx
 
         origin->x = regs.cx;
         origin->y = regs.dx;
+        return regs.ax;
     }
 
     // 0x00494E33

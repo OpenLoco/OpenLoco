@@ -203,7 +203,7 @@ namespace OpenLoco::Gfx
         uint8_t colour,
         string_id stringId,
         const void* args = nullptr);
-    void drawStringCentredWrapped(
+    uint16_t drawStringCentredWrapped(
         Context* context,
         point_t* origin,
         uint16_t width,
