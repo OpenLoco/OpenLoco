@@ -41,7 +41,7 @@ namespace OpenLoco::GameCommands
             // Second phase: change ownership of all stations that currently belong to the target company.
             for (auto& station : StationManager::stations())
             {
-                if (station.empty() || station.owner != targetCompanyId)
+                if (station.owner != targetCompanyId)
                     continue;
 
                 station.owner = ourCompanyId;

@@ -288,26 +288,20 @@ namespace OpenLoco::Ui::Windows::IndustryList
         {
             auto chosenIndustry = -1;
 
-            auto i = -1;
-
             for (auto& industry : IndustryManager::industries())
             {
-                i++;
-                if (industry.empty())
-                    continue;
-
                 if ((industry.flags & IndustryFlags::sorted) != 0)
                     continue;
 
                 if (chosenIndustry == -1)
                 {
-                    chosenIndustry = i;
+                    chosenIndustry = industry.id();
                     continue;
                 }
 
                 if (getOrder(SortMode(self->sort_mode), industry, *IndustryManager::get(chosenIndustry)))
                 {
-                    chosenIndustry = i;
+                    chosenIndustry = industry.id();
                 }
             }
 
@@ -1212,9 +1206,6 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
             for (auto& industry : IndustryManager::industries())
             {
-                if (industry.empty())
-                    continue;
-
                 industry.flags &= ~IndustryFlags::sorted;
             }
         }

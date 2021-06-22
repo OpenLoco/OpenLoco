@@ -15,10 +15,9 @@ namespace OpenLoco::IndustryManager
         call(0x00453214);
     }
 
-    std::array<Industry, max_industries>& industries()
+    LocoFixedVector<Industry> industries()
     {
-        auto arr = (std::array<Industry, max_industries>*)_industries.get();
-        return *arr;
+        return LocoFixedVector<Industry>(_industries);
     }
 
     Industry* get(IndustryId_t id)
@@ -38,10 +37,7 @@ namespace OpenLoco::IndustryManager
             CompanyManager::updatingCompanyId(CompanyId::neutral);
             for (auto& industry : industries())
             {
-                if (!industry.empty())
-                {
-                    industry.update();
-                }
+                industry.update();
             }
         }
     }
@@ -60,10 +56,7 @@ namespace OpenLoco::IndustryManager
 
         for (auto& industry : industries())
         {
-            if (!industry.empty())
-            {
-                industry.createMapAnimations();
-            }
+            industry.createMapAnimations();
         }
     }
 }

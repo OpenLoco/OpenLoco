@@ -59,7 +59,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
         std::vector<uint8_t> takenCompetitorIds;
         for (const auto& c : CompanyManager::companies())
         {
-            if (!c.empty() && c.id() != id)
+            if (c.id() != id)
             {
                 takenCompetitorIds.push_back(c.competitor_id);
             }

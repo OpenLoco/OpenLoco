@@ -777,11 +777,6 @@ namespace OpenLoco::Ui::Windows::MapWindow
     {
         for (const auto& company : CompanyManager::companies())
         {
-            if (company.empty())
-            {
-                continue;
-            }
-
             auto index = company.id();
             auto colour = Colour::getShade(company.mainColours.primary, 6);
 
@@ -865,14 +860,8 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
         if (industryIndex == -1)
         {
-            auto industryCount = 0;
-            for (const auto& industry : IndustryManager::industries())
-            {
-                if (industry.empty())
-                    continue;
-
-                industryCount++;
-            }
+            auto industries = IndustryManager::industries();
+            auto industryCount = std::distance(std::begin(industries), std::end(industries));
 
             auto stringId = StringIds::status_num_industries_plural;
 
@@ -889,9 +878,6 @@ namespace OpenLoco::Ui::Windows::MapWindow
             auto industryCount = 0;
             for (const auto& industry : IndustryManager::industries())
             {
-                if (industry.empty())
-                    continue;
-
                 if (industry.object_id == industryIndex)
                 {
                     industryCount++;
@@ -1380,9 +1366,6 @@ namespace OpenLoco::Ui::Windows::MapWindow
     {
         for (const auto& town : TownManager::towns())
         {
-            if (town.empty())
-                continue;
-
             auto townPos = locationToMapWindowPos({ town.x, town.y });
 
             StringManager::formatString(_stringFormatBuffer, town.name);

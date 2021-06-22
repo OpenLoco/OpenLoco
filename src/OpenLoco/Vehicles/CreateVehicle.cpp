@@ -62,8 +62,6 @@ namespace OpenLoco::Vehicles
 
         const auto& companies = CompanyManager::companies();
         auto totalAiVehicles = std::accumulate(companies.begin(), companies.end(), 0, [](int32_t& total, const auto& company) {
-            if (company.empty())
-                return total;
             if (isPlayerCompany(company.id()))
                 return total;
             return total + std::accumulate(std::begin(company.transportTypeCount), std::end(company.transportTypeCount), 0);
