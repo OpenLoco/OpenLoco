@@ -215,6 +215,7 @@
     <ClInclude Include="Config.h" />
     <ClInclude Include="Console.h" />
     <ClInclude Include="Core\FileSystem.hpp" />
+    <ClInclude Include="Core\LocoFixedVector.hpp" />
     <ClInclude Include="Core\Optional.hpp" />
     <ClInclude Include="Core\Span.hpp" />
     <ClInclude Include="Date.h" />

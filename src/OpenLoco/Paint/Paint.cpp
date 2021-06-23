@@ -588,11 +588,6 @@ namespace OpenLoco::Paint
 
         for (auto& station : StationManager::stations())
         {
-            if (station.empty())
-            {
-                continue;
-            }
-
             if (station.flags & StationFlags::flag_5)
             {
                 continue;
@@ -625,11 +620,6 @@ namespace OpenLoco::Paint
 
         for (auto& town : TownManager::towns())
         {
-            if (town.empty())
-            {
-                continue;
-            }
-
             if (!town.labelFrame.contains(rect, (*_context)->zoom_level))
             {
                 continue;

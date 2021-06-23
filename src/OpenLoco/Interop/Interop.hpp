@@ -287,6 +287,8 @@ namespace OpenLoco::Interop
         typedef type& reference;
         typedef const type& const_reference;
         typedef loco_global_iterator<T> iterator;
+        static constexpr auto address = TAddress;
+        static constexpr auto endAddress = TAddress + TCount * sizeof(type);
 
     private:
         pointer _Myfirst;

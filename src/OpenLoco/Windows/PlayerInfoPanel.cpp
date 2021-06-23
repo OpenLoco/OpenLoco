@@ -76,10 +76,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
 
         for (const auto& c : CompanyManager::companies())
         {
-            if (!c.empty())
-            {
-                _sortedCompanies.push_back(&c);
-            }
+            _sortedCompanies.push_back(&c);
         }
 
         sort(

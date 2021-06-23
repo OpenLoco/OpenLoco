@@ -254,26 +254,20 @@ namespace OpenLoco::Ui::Windows::CompanyList
         {
             auto chosenCompany = -1;
 
-            auto i = -1;
-
             for (auto& company : CompanyManager::companies())
             {
-                i++;
-                if (company.empty())
-                    continue;
-
                 if ((company.challenge_flags & CompanyFlags::sorted) != 0)
                     continue;
 
                 if (chosenCompany == -1)
                 {
-                    chosenCompany = i;
+                    chosenCompany = company.id();
                     continue;
                 }
 
                 if (getOrder(SortMode(self->sort_mode), company, *CompanyManager::get(chosenCompany)))
                 {
-                    chosenCompany = i;
+                    chosenCompany = company.id();
                 }
             }
 
@@ -675,9 +669,6 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             for (auto& company : CompanyManager::companies())
             {
-                if (company.empty())
-                    continue;
-
                 if (maxHistorySize < company.history_size)
                     maxHistorySize = company.history_size;
             }
@@ -686,9 +677,6 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             for (auto& company : CompanyManager::companies())
             {
-                if (company.empty())
-                    continue;
-
                 auto companyId = company.id();
                 auto companyColour = CompanyManager::getCompanyColour(companyId);
 
@@ -772,9 +760,6 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             for (auto& company : CompanyManager::companies())
             {
-                if (company.empty())
-                    continue;
-
                 if (maxHistorySize < company.history_size)
                     maxHistorySize = company.history_size;
             }
@@ -783,9 +768,6 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             for (auto& company : CompanyManager::companies())
             {
-                if (company.empty())
-                    continue;
-
                 auto companyId = company.id();
                 auto companyColour = CompanyManager::getCompanyColour(companyId);
 
@@ -869,9 +851,6 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             for (auto& company : CompanyManager::companies())
             {
-                if (company.empty())
-                    continue;
-
                 if (maxHistorySize < company.history_size)
                     maxHistorySize = company.history_size;
             }
@@ -880,9 +859,6 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             for (auto& company : CompanyManager::companies())
             {
-                if (company.empty())
-                    continue;
-
                 auto companyId = company.id();
                 auto companyColour = CompanyManager::getCompanyColour(companyId);
 
@@ -966,9 +942,6 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             for (auto& company : CompanyManager::companies())
             {
-                if (company.empty())
-                    continue;
-
                 if (maxHistorySize < company.history_size)
                     maxHistorySize = company.history_size;
             }
@@ -977,9 +950,6 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             for (auto& company : CompanyManager::companies())
             {
-                if (company.empty())
-                    continue;
-
                 auto companyId = company.id();
                 auto companyColour = CompanyManager::getCompanyColour(companyId);
 
@@ -1388,8 +1358,6 @@ namespace OpenLoco::Ui::Windows::CompanyList
                     auto listY = yDiff;
                     for (auto& company : CompanyManager::companies())
                     {
-                        if (company.empty())
-                            continue;
                         listY -= 10;
                         if (listY <= 0)
                         {
@@ -1670,9 +1638,6 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
             for (auto& company : CompanyManager::companies())
             {
-                if (company.empty())
-                    continue;
-
                 company.challenge_flags &= ~CompanyFlags::sorted;
             }
         }
@@ -1692,9 +1657,6 @@ namespace OpenLoco::Ui::Windows::CompanyList
             auto companyCount = 0;
             for (auto& company : CompanyManager::companies())
             {
-                if (company.empty())
-                    continue;
-
                 auto companyColour = CompanyManager::getCompanyColour(company.id());
                 auto colour = Colour::getShade(companyColour, 6);
                 auto stringId = StringIds::small_black_string;
