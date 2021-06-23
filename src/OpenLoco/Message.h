@@ -12,6 +12,7 @@ namespace OpenLoco
 
     enum class MessageType
     {
+        cantWaitForFullLoad = 0,
         industryClosingDown = 1,
         cargoNowAccepted = 9,
         cargoNoLongerAccepted = 10,

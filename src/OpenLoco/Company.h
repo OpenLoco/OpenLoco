@@ -80,7 +80,7 @@ namespace OpenLoco
         uint8_t numExpenditureMonths;                                                  // 0x57
         currency32_t expenditures[expenditureHistoryCapacity][ExpenditureType::Count]; // 0x58
         uint32_t startedDate;                                                          // 0x0498
-        uint8_t pad_49C[0x4A0 - 0x49C];
+        uint32_t var_49C;
         uint32_t var_4A0;
         uint8_t pad_4A4[0x4A8 - 0x4A4];
         unk4A8 var_4A8[60];
