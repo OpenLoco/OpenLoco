@@ -232,61 +232,61 @@ namespace OpenLoco::Ui
 
     void Widget::sub_4CADE8(Gfx::Context* context, const Window* window, uint8_t colour, bool enabled, bool disabled, bool activated)
     {
-        int16_t x_place_for_image = left + window->x;
-        int16_t y_place_for_image = top + window->y;
-        uint32_t new_image = image;
+        int16_t xPlaceForImage = left + window->x;
+        int16_t yPlaceForImage = top + window->y;
+        uint32_t imageId = image;
         if (type == WidgetType::wt_6 || type == WidgetType::wt_7 || type == WidgetType::wt_8 || type == WidgetType::wt_4)
         {
             if (activated)
             {
                 // TODO: remove image addition
-                new_image++;
+                imageId++;
             }
         }
 
         if (disabled)
         {
-            if (new_image & (1 << 31))
+            if (imageId & (1 << 31))
             {
                 return;
             }
 
-            new_image &= 0x7FFFF;
+            imageId &= 0x7FFFF;
             uint8_t c;
             if (colour & OpenLoco::Colour::translucent_flag)
             {
                 c = OpenLoco::Colour::getShade(colour & 0x7F, 4);
-                Gfx::drawImageSolid(context, x_place_for_image + 1, y_place_for_image + 1, new_image, c);
+                Gfx::drawImageSolid(context, xPlaceForImage + 1, yPlaceForImage + 1, imageId, c);
                 c = OpenLoco::Colour::getShade(colour & 0x7F, 2);
-                Gfx::drawImageSolid(context, x_place_for_image, y_place_for_image, new_image, c);
+                Gfx::drawImageSolid(context, xPlaceForImage, yPlaceForImage, imageId, c);
             }
             else
             {
                 c = OpenLoco::Colour::getShade(colour & 0x7F, 6);
-                Gfx::drawImageSolid(context, x_place_for_image + 1, y_place_for_image + 1, new_image, c);
+                Gfx::drawImageSolid(context, xPlaceForImage + 1, yPlaceForImage + 1, imageId, c);
                 c = OpenLoco::Colour::getShade(colour & 0x7F, 4);
-                Gfx::drawImageSolid(context, x_place_for_image, y_place_for_image, new_image, c);
+                Gfx::drawImageSolid(context, xPlaceForImage, yPlaceForImage, imageId, c);
             }
 
             return;
         }
 
-        if (new_image & (1 << 31))
+        if (imageId & (1 << 31))
         {
             // 0x4CAE5F
             assert(false);
         }
 
-        if ((new_image & (1 << 30)) == 0)
+        if ((imageId & (1 << 30)) == 0)
         {
-            new_image |= colour << 19;
+            imageId |= colour << 19;
         }
         else
         {
-            new_image &= ~(1 << 30);
+            imageId &= ~(1 << 30);
         }
 
-        Gfx::drawImage(context, x_place_for_image, y_place_for_image, new_image);
+        Gfx::drawImage(context, xPlaceForImage, yPlaceForImage, imageId);
     }
 
     // 0x004CAB58
@@ -303,16 +303,16 @@ namespace OpenLoco::Ui
         Gfx::Context* clipped = nullptr;
         if (Gfx::clipContext(&clipped, context, left + window->x, top + window->y, right - left, 41))
         {
-            uint32_t frame = image;
+            uint32_t imageId = image;
             if (window->flags & WindowFlags::flag_11)
             {
-                frame = 0x20000000 | 2322 | ((colour & 0x7F) << 19);
+                imageId = Gfx::recolour(2322, Colour::opaque(colour));
             }
             else
             {
-                frame = 0x20000000 | 2323 | ((colour & 0x7F) << 19);
+                imageId = Gfx::recolour(2323, Colour::opaque(colour));
             }
-            Gfx::drawImage(clipped, 0, 0, frame);
+            Gfx::drawImage(clipped, 0, 0, imageId);
         }
 
         uint8_t shade;
@@ -338,11 +338,11 @@ namespace OpenLoco::Ui
 
     void Widget::draw_3(Gfx::Context* context, const Window* window, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated)
     {
-        int16_t top_rect, left_rect, bottom_rect, right_rect;
-        top_rect = window->y + top;
-        left_rect = window->x + left;
-        right_rect = window->x + right;
-        bottom_rect = window->y + bottom;
+        int16_t t, l, b, r;
+        t = window->y + top;
+        l = window->x + left;
+        r = window->x + right;
+        b = window->y + bottom;
 
         if (activated)
         {
@@ -352,16 +352,16 @@ namespace OpenLoco::Ui
         if (content == -2)
         {
             flags |= 0x10;
-            Gfx::fillRectInset(context, left_rect, top_rect, right_rect, bottom_rect, colour, flags);
+            Gfx::fillRectInset(context, l, t, r, b, colour, flags);
             return;
         }
 
         if (window->flags & WindowFlags::flag_6)
         {
-            Gfx::fillRect(context, left_rect, top_rect, right_rect, bottom_rect, 0x2000000 | 52);
+            Gfx::fillRect(context, l, t, r, b, 0x2000000 | 52);
         }
 
-        Gfx::fillRectInset(context, left_rect, top_rect, right_rect, bottom_rect, colour, flags);
+        Gfx::fillRectInset(context, l, t, r, b, colour, flags);
 
         if (content == -1)
         {
