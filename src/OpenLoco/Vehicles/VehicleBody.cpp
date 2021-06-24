@@ -982,9 +982,10 @@ namespace OpenLoco::Vehicles
                     continue;
                 if (track->baseZ() != frontBogie->tile_base_z)
                     continue;
-                if (track->trackIdAndDirection() != frontBogie->var_2C)
+                if (track->trackId() != ((frontBogie->var_2C >> 3) & 0x3F))
                     continue;
-
+                if (track->unkDirection() != (frontBogie->var_2C & 0x3))
+                    continue;
                 if (!track->hasStationElement())
                     continue;
 
