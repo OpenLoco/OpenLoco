@@ -619,11 +619,13 @@ namespace OpenLoco::Ui::Windows::VehicleList
             { StringIds::num_ships_singular, StringIds::num_ships_plural },
         };
 
-        auto& footerStringPair = typeToFooterStringIds[self->current_tab];
-        string_id footerStringId = self->var_83C == 1 ? footerStringPair.first : footerStringPair.second;
+        {
+            auto& footerStringPair = typeToFooterStringIds[self->current_tab];
+            string_id footerStringId = self->var_83C == 1 ? footerStringPair.first : footerStringPair.second;
 
-        auto args = FormatArguments::common(footerStringId, self->var_83C);
-        Gfx::drawString_494B3F(*context, self->x + 3, self->y + self->height - 13, Colour::black, StringIds::black_stringid, &args);
+            auto args = FormatArguments::common(footerStringId, self->var_83C);
+            Gfx::drawString_494B3F(*context, self->x + 3, self->y + self->height - 13, Colour::black, StringIds::black_stringid, &args);
+        }
 
         static constexpr std::pair<FilterMode, string_id> typeToFilterStringIds[]{
             { FilterMode::allVehicles, StringIds::all_vehicles },
