@@ -627,17 +627,18 @@ namespace OpenLoco::Ui::Windows::VehicleList
             Gfx::drawString_494B3F(*context, self->x + 3, self->y + self->height - 13, Colour::black, StringIds::black_stringid, &args);
         }
 
-        static constexpr std::pair<FilterMode, string_id> typeToFilterStringIds[]{
-            { FilterMode::allVehicles, StringIds::all_vehicles },
-            { FilterMode::stoppingAt, StringIds::stopping_at_station },
-            { FilterMode::transportingCargo, StringIds::transporting_cargo },
+        static constexpr std::array<string_id, 3> typeToFilterStringIds{
+            StringIds::all_vehicles,
+            StringIds::stopping_at_station,
+            StringIds::transporting_cargo,
         };
 
         {
             // Show current filter type
-            auto args = FormatArguments::common(typeToFilterStringIds[self->var_88A]);
+            string_id filter = typeToFilterStringIds[self->var_88A];
+            auto args = FormatArguments::common(filter);
             auto* widget = &self->widgets[Widx::filter_type];
-            Gfx::drawString_494B3F(*context, self->x + widget->left, self->y + widget->top, Colour::black, StringIds::wcolour2_stringid, &args);
+            Gfx::drawString_494BBF(*context, self->x + widget->left + 1, self->y + widget->top, widget->width() - 15, Colour::black, StringIds::wcolour2_stringid, &args);
         }
 
         if (isCargoFilterActive(self))
@@ -650,7 +651,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
             args.push(cargoObj->unit_inline_sprite);
 
             auto* widget = &self->widgets[Widx::cargo_type];
-            Gfx::drawString_494B3F(*context, self->x + widget->left, self->y + widget->top, Colour::black, StringIds::wcolour2_stringid, &args);
+            Gfx::drawString_494BBF(*context, self->x + widget->left + 1, self->y + widget->top, widget->width() - 15, Colour::black, StringIds::wcolour2_stringid, &args);
         }
     }
 
