@@ -1606,4 +1606,13 @@ namespace OpenLoco::StringIds
     constexpr string_id cheat_ratings_plus_10pct = 2206;
     constexpr string_id cheat_ratings_to_min = 2207;
     constexpr string_id cheat_ratings_to_max = 2208;
+    constexpr string_id all_vehicles = 2209;
+    constexpr string_id stopping_at_station = 2210;
+    constexpr string_id transporting_cargo = 2211;
+    constexpr string_id carrying_cargoid_sprite = 2212;
+    constexpr string_id carrying_cargoid_sprite_selected = 2213;
+    constexpr string_id no_station_selected = 2214;
+    constexpr string_id no_cargo_selected = 2215;
+    constexpr string_id tooltip_open_station_window_to_filter = 2216;
+    constexpr string_id tooltip_select_cargo_type = 2217;
 }

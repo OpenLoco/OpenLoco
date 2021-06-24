@@ -23,20 +23,6 @@
 
 using namespace OpenLoco::Interop;
 
-namespace OpenLoco::StringIds
-{
-    // TODO: move these -- they're just here to prevent having to recompile everything when strings are added
-    constexpr string_id all_vehicles = 2209;
-    constexpr string_id stopping_at_station = 2210;
-    constexpr string_id transporting_cargo = 2211;
-    constexpr string_id carrying_cargoid_sprite = 2212;
-    constexpr string_id carrying_cargoid_sprite_selected = 2213;
-    constexpr string_id no_station_selected = 2214;
-    constexpr string_id no_cargo_selected = 2215;
-    constexpr string_id tooltip_open_station_window_to_filter = 2216;
-    constexpr string_id tooltip_select_cargo_type = 2217;
-}
-
 namespace OpenLoco::Ui::Windows::VehicleList
 {
     static loco_global<VehicleType, 0x00525FAF> _lastVehiclesOption;
