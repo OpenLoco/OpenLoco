@@ -7,6 +7,7 @@
 #include "../Interop/Interop.hpp"
 #include "../Localisation/FormatArguments.hpp"
 #include "../Localisation/StringIds.h"
+#include "../Objects/CargoObject.h"
 #include "../Objects/CompetitorObject.h"
 #include "../Objects/InterfaceSkinObject.h"
 #include "../OpenLoco.h"
@@ -21,6 +22,17 @@
 #include <utility>
 
 using namespace OpenLoco::Interop;
+
+namespace OpenLoco::StringIds
+{
+    // TODO: move these -- they're just here to prevent having to recompile everything when strings are added
+    constexpr string_id all_vehicles = 2209;
+    constexpr string_id stopping_at_station = 2210;
+    constexpr string_id transporting_cargo = 2211;
+    constexpr string_id carrying_cargoid_sprite = 2212;
+    constexpr string_id no_station_selected = 2213;
+    constexpr string_id tooltip_open_station_window_to_filter = 2214;
+}
 
 namespace OpenLoco::Ui::Windows::VehicleList
 {
@@ -50,6 +62,10 @@ namespace OpenLoco::Ui::Windows::VehicleList
         sort_age,
         sort_reliability,
         scrollview,
+        filter_type,
+        filter_type_btn,
+        cargo_type,
+        cargo_type_btn,
     };
 
     Widget _widgets[] = {
@@ -69,11 +85,17 @@ namespace OpenLoco::Ui::Windows::VehicleList
         makeWidget({ 414, 43 }, { 65, 12 }, WidgetType::wt_14, WindowColour::secondary, StringIds::null, StringIds::tooltip_sort_by_age),
         makeWidget({ 479, 43 }, { 67, 12 }, WidgetType::wt_14, WindowColour::secondary, StringIds::null, StringIds::tooltip_sort_by_reliability),
         makeWidget({ 3, 56 }, { 544, 138 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
+        makeDropdownWidgets({ 300 - 16, 200 }, { 100, 12 }, WidgetType::wt_18, WindowColour::secondary, StringIds::empty),
+        makeDropdownWidgets({ 402 - 16, 200 }, { 150, 12 }, WidgetType::wt_18, WindowColour::secondary, StringIds::empty),
         widgetEnd()
     };
 
+    // clang-format off
     constexpr uint16_t _tabWidgets = (1 << Widx::tab_trains) | (1 << Widx::tab_buses) | (1 << Widx::tab_trucks) | (1 << Widx::tab_trams) | (1 << Widx::tab_aircraft) | (1 << Widx::tab_ships);
-    constexpr uint64_t _enabledWidgets = (1 << Widx::close_button) | _tabWidgets | (1 << Widx::company_select) | (1 << Widx::sort_name) | (1 << Widx::sort_profit) | (1 << Widx::sort_age) | (1 << Widx::sort_reliability) | (1 << Widx::scrollview);
+    constexpr uint64_t _enabledWidgets = (1ULL << Widx::close_button) | _tabWidgets | (1ULL << Widx::company_select) |
+        (1ULL << Widx::sort_name) | (1ULL << Widx::sort_profit) | (1ULL << Widx::sort_age) | (1ULL << Widx::sort_reliability) |
+        (1ULL << Widx::scrollview) | (1ULL << Widx::filter_type) | (1ULL << Widx::filter_type_btn) | (1ULL << Widx::cargo_type) | (1ULL << Widx::cargo_type_btn);
+    // clang-format on
 
     enum SortMode : uint16_t
     {
@@ -81,6 +103,13 @@ namespace OpenLoco::Ui::Windows::VehicleList
         Profit,
         Age,
         Reliability,
+    };
+
+    enum FilterMode : uint8_t
+    {
+        allVehicles,
+        stoppingAt,
+        transportingCargo,
     };
 
     static const uint8_t row_heights[] = {
@@ -95,26 +124,37 @@ namespace OpenLoco::Ui::Windows::VehicleList
     static Widx getTabFromType(VehicleType type);
     static void initEvents();
 
-    StationId_t _activeStationId = {};
+    constexpr bool isStationFilterActive(const Window* self)
+    {
+        return self->var_88A == static_cast<int16_t>(FilterMode::stoppingAt) && self->var_88C != -1;
+    }
+
+    constexpr bool isCargoFilterActive(const Window* self)
+    {
+        return self->var_88A == static_cast<int16_t>(FilterMode::transportingCargo) && self->var_88C != -1;
+    }
 
     static bool refreshActiveStation(Window* self)
     {
+        if (!isStationFilterActive(self))
+            return false;
+
         auto stationWindow = WindowManager::find(WindowType::station);
         if (stationWindow != nullptr)
         {
-            _activeStationId = stationWindow->number;
+            self->var_88C = stationWindow->number;
             return true;
         }
         else
         {
-            _activeStationId = 0xFFFF;
+            self->var_88C = -1;
             return false;
         }
     }
 
     using Vehicles::VehicleHead;
 
-    static bool vehicleStopsAtActiveStation(const VehicleHead* head)
+    static bool vehicleStopsAtActiveStation(const VehicleHead* head, StationId_t filterStationId)
     {
         auto orders = Vehicles::OrderRingView(head->orderTableOffset);
         for (auto& order : orders)
@@ -124,7 +164,25 @@ namespace OpenLoco::Ui::Windows::VehicleList
                 continue;
 
             const auto stationId = stationOrder->getStation();
-            if (stationId == _activeStationId)
+            if (stationId == filterStationId)
+                return true;
+        }
+        return false;
+    }
+
+    static bool vehicleIsTransportingCargo(const VehicleHead* head, int16_t filterCargoId)
+    {
+        auto orders = Vehicles::OrderRingView(head->orderTableOffset);
+        for (auto& order : orders)
+        {
+            Vehicles::OrderCargo* cargoOrder = order.as<Vehicles::OrderUnloadAll>();
+            if (cargoOrder == nullptr)
+                cargoOrder = order.as<Vehicles::OrderWaitFor>();
+            if (cargoOrder == nullptr)
+                continue;
+
+            const auto cargoId = cargoOrder->getCargo();
+            if (cargoId == filterCargoId)
                 return true;
         }
         return false;
@@ -143,7 +201,10 @@ namespace OpenLoco::Ui::Windows::VehicleList
             if (vehicle->owner != self->number)
                 continue;
 
-            if (_activeStationId != 0xFFFF && !vehicleStopsAtActiveStation(vehicle))
+            if (isStationFilterActive(self) && !vehicleStopsAtActiveStation(vehicle, self->var_88C))
+                continue;
+
+            if (isCargoFilterActive(self) && !vehicleIsTransportingCargo(vehicle, self->var_88C))
                 continue;
 
             vehicle->var_0C &= ~Vehicles::Flags0C::sorted;
@@ -227,7 +288,10 @@ namespace OpenLoco::Ui::Windows::VehicleList
             if (vehicle->var_0C & Vehicles::Flags0C::sorted)
                 continue;
 
-            if (_activeStationId != 0xFFFF && !vehicleStopsAtActiveStation(vehicle))
+            if (isStationFilterActive(self) && !vehicleStopsAtActiveStation(vehicle, self->var_88C))
+                continue;
+
+            if (isCargoFilterActive(self) && !vehicleIsTransportingCargo(vehicle, self->var_88C))
                 continue;
 
             if (insertId == -1)
@@ -403,6 +467,8 @@ namespace OpenLoco::Ui::Windows::VehicleList
         self->sort_mode = 0;
         self->var_83C = 0;
         self->row_hover = -1;
+        self->var_88A = static_cast<int16_t>(FilterMode::allVehicles);
+        self->var_88C = -1;
 
         refreshVehicleList(self);
 
@@ -514,6 +580,19 @@ namespace OpenLoco::Ui::Windows::VehicleList
         self->widgets[Widx::sort_age].text = self->sort_mode == SortMode::Age ? StringIds::table_header_age_desc : StringIds::table_header_age;
         self->widgets[Widx::sort_reliability].text = self->sort_mode == SortMode::Reliability ? StringIds::table_header_reliability_desc : StringIds::table_header_reliability;
 
+        // Reposition filter dropdowns
+        self->widgets[Widx::filter_type].top = self->height - 13;
+        self->widgets[Widx::filter_type].bottom = self->height - 2;
+
+        self->widgets[Widx::filter_type_btn].top = self->height - 12;
+        self->widgets[Widx::filter_type_btn].bottom = self->height - 3;
+
+        self->widgets[Widx::cargo_type].top = self->height - 13;
+        self->widgets[Widx::cargo_type].bottom = self->height - 2;
+
+        self->widgets[Widx::cargo_type_btn].top = self->height - 12;
+        self->widgets[Widx::cargo_type_btn].bottom = self->height - 3;
+
         setTransportTypeTabs(self);
     }
 
@@ -545,6 +624,32 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
         auto args = FormatArguments::common(footerStringId, self->var_83C);
         Gfx::drawString_494B3F(*context, self->x + 3, self->y + self->height - 13, Colour::black, StringIds::black_stringid, &args);
+
+        static constexpr std::pair<FilterMode, string_id> typeToFilterStringIds[]{
+            { FilterMode::allVehicles, StringIds::all_vehicles },
+            { FilterMode::stoppingAt, StringIds::stopping_at_station },
+            { FilterMode::transportingCargo, StringIds::transporting_cargo },
+        };
+
+        {
+            // Show current filter type
+            auto args = FormatArguments::common(typeToFilterStringIds[self->var_88A]);
+            auto* widget = &self->widgets[Widx::filter_type];
+            Gfx::drawString_494B3F(*context, self->x + widget->left, self->y + widget->top, Colour::black, StringIds::wcolour2_stringid, &args);
+        }
+
+        if (isCargoFilterActive(self))
+        {
+            // Show current cargo filter
+            auto cargoObj = ObjectManager::get<CargoObject>(self->var_88C);
+            FormatArguments args{};
+            args.push(StringIds::carrying_cargoid_sprite);
+            args.push(cargoObj->name);
+            args.push(cargoObj->unit_inline_sprite);
+
+            auto* widget = &self->widgets[Widx::cargo_type];
+            Gfx::drawString_494B3F(*context, self->x + widget->left, self->y + widget->top, Colour::black, StringIds::wcolour2_stringid, &args);
+        }
     }
 
     // 0x004B6D43
@@ -728,14 +833,48 @@ namespace OpenLoco::Ui::Windows::VehicleList
     {
         if (widgetIndex == Widx::company_select)
             Dropdown::populateCompanySelect(self, &self->widgets[widgetIndex]);
+
+        else if (widgetIndex == Widx::filter_type_btn)
+        {
+            Widget dropdown = self->widgets[Widx::filter_type];
+            Dropdown::show(self->x + dropdown.left, self->y + dropdown.top, dropdown.width() + 50, dropdown.height(), self->getColour(WindowColour::secondary), 3, 0x80);
+
+            Dropdown::add(0, StringIds::dropdown_stringid, StringIds::all_vehicles);
+            Dropdown::add(1, StringIds::dropdown_stringid, StringIds::stopping_at_station);
+            Dropdown::add(2, StringIds::dropdown_stringid, StringIds::transporting_cargo);
+            Dropdown::setItemSelected(self->var_88A);
+        }
+        else if (widgetIndex == Widx::cargo_type_btn)
+        {
+            auto index = 0;
+            auto selectedIndex = -1;
+            for (uint16_t cargoId = 0; cargoId < ObjectManager::getMaxObjects(ObjectType::cargo); ++cargoId)
+            {
+                auto cargoObj = ObjectManager::get<CargoObject>(cargoId);
+                if (cargoObj == nullptr)
+                    continue;
+
+                FormatArguments args{};
+                args.push(cargoObj->name);
+                args.push(cargoObj->unit_inline_sprite);
+                args.push(cargoId);
+                Dropdown::add(index, StringIds::carrying_cargoid_sprite, args);
+                index++;
+
+                if (index == self->var_88C)
+                    selectedIndex = index;
+            }
+
+            Widget dropdown = self->widgets[Widx::cargo_type];
+            Dropdown::showText(self->x + dropdown.left, self->y + dropdown.top, dropdown.width() + 4, dropdown.height(), self->getColour(WindowColour::secondary), index, 0);
+            if (selectedIndex != -1)
+                Dropdown::setItemSelected(selectedIndex);
+        }
     }
 
     // 0x004C243F
-    static void onDropdown(Ui::Window* self, WidgetIndex_t widgetIndex, int16_t itemIndex)
+    static void onCompanyDropdown(Ui::Window* self, int16_t itemIndex)
     {
-        if (widgetIndex != Widx::company_select)
-            return;
-
         if (itemIndex == -1)
             return;
 
@@ -766,6 +905,26 @@ namespace OpenLoco::Ui::Windows::VehicleList
         self->callPrepareDraw();
         self->initScrollWidgets();
         self->invalidate();
+    }
+
+    static void onDropdown(Ui::Window* self, WidgetIndex_t widgetIndex, int16_t itemIndex)
+    {
+        if (widgetIndex == Widx::company_select)
+            return onCompanyDropdown(self, itemIndex);
+
+        if (widgetIndex == filter_type_btn && itemIndex != -1)
+        {
+            if (self->var_88A != itemIndex)
+            {
+                self->var_88A = itemIndex;
+                self->var_88C = -1;
+            }
+        }
+
+        else if (widgetIndex == cargo_type_btn && itemIndex != -1)
+        {
+            self->var_88C = Dropdown::getItemArgument(itemIndex, 3);
+        }
     }
 
     // 0x004C24CA
