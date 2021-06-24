@@ -127,19 +127,19 @@ namespace OpenLoco::Ui::Windows::VehicleList
     static Widx getTabFromType(VehicleType type);
     static void initEvents();
 
-    constexpr bool isStationFilterActive(const Window* self)
+    constexpr bool isStationFilterActive(const Window* self, bool checkSelection = true)
     {
-        return self->var_88A == static_cast<int16_t>(FilterMode::stoppingAt) && self->var_88C != -1;
+        return self->var_88A == static_cast<int16_t>(FilterMode::stoppingAt) && (!checkSelection || self->var_88C != -1);
     }
 
-    constexpr bool isCargoFilterActive(const Window* self)
+    constexpr bool isCargoFilterActive(const Window* self, bool checkSelection = true)
     {
-        return self->var_88A == static_cast<int16_t>(FilterMode::transportingCargo) && self->var_88C != -1;
+        return self->var_88A == static_cast<int16_t>(FilterMode::transportingCargo) && (!checkSelection || self->var_88C != -1);
     }
 
     static bool refreshActiveStation(Window* self)
     {
-        if (self->var_88A != static_cast<int16_t>(FilterMode::stoppingAt))
+        if (!isStationFilterActive(self, false))
             return false;
 
         auto stationWindow = WindowManager::find(WindowType::station);
@@ -658,30 +658,50 @@ namespace OpenLoco::Ui::Windows::VehicleList
             Gfx::drawString_494BBF(*context, self->x + widget->left + 1, self->y + widget->top, widget->width() - 15, Colour::black, StringIds::wcolour2_stringid, &args);
         }
 
-        if (isStationFilterActive(self))
+        if (isStationFilterActive(self, false))
         {
-            auto station = StationManager::get(self->var_88C);
-            FormatArguments args{};
-            args.push(station->name);
-            args.push(station->town);
-            // args.push(stationTypeImages[(station->flags & 0xF)]);
+            if (self->var_88C != -1)
+            {
+                auto station = StationManager::get(self->var_88C);
+                FormatArguments args{};
+                args.push(station->name);
+                args.push(station->town);
+                // args.push(stationTypeImages[(station->flags & 0xF)]);
 
-            auto* widget = &self->widgets[Widx::cargo_type];
-            Gfx::drawString_494BBF(*context, self->x + widget->left + 1, self->y + widget->top, widget->width() - 15, Colour::black, StringIds::wcolour2_stringid, &args);
+                auto* widget = &self->widgets[Widx::cargo_type];
+                Gfx::drawString_494BBF(*context, self->x + widget->left + 1, self->y + widget->top, widget->width() - 15, Colour::black, StringIds::wcolour2_stringid, &args);
+            }
+            else
+            {
+                FormatArguments args{};
+                args.push(StringIds::no_station_selected);
+                auto* widget = &self->widgets[Widx::cargo_type];
+                Gfx::drawString_494BBF(*context, self->x + widget->left + 1, self->y + widget->top, widget->width() - 15, Colour::black, StringIds::wcolour2_stringid, &args);
+            }
         }
 
-        if (isCargoFilterActive(self))
+        if (isCargoFilterActive(self, false))
         {
-            // Show current cargo filter
-            auto cargoObj = ObjectManager::get<CargoObject>(self->var_88C);
-            FormatArguments args{};
-            args.push(StringIds::carrying_cargoid_sprite);
-            args.push(cargoObj->name);
-            args.push(cargoObj->unit_inline_sprite);
+            if (self->var_88C != -1)
+            {
+                // Show current cargo filter
+                auto cargoObj = ObjectManager::get<CargoObject>(self->var_88C);
+                FormatArguments args{};
+                args.push(StringIds::carrying_cargoid_sprite);
+                args.push(cargoObj->name);
+                args.push(cargoObj->unit_inline_sprite);
 
-            auto* widget = &self->widgets[Widx::cargo_type];
-            // NB: the -9 in the xpos is to compensate for a hack due to the cargo dropdown limitation (only three args per item)
-            Gfx::drawString_494BBF(*context, self->x + widget->left - 9, self->y + widget->top, widget->width() - 15, Colour::black, StringIds::wcolour2_stringid, &args);
+                auto* widget = &self->widgets[Widx::cargo_type];
+                // NB: the -9 in the xpos is to compensate for a hack due to the cargo dropdown limitation (only three args per item)
+                Gfx::drawString_494BBF(*context, self->x + widget->left - 9, self->y + widget->top, widget->width() - 15, Colour::black, StringIds::wcolour2_stringid, &args);
+            }
+            else
+            {
+                FormatArguments args{};
+                args.push(StringIds::no_cargo_selected);
+                auto* widget = &self->widgets[Widx::cargo_type];
+                Gfx::drawString_494BBF(*context, self->x + widget->left + 1, self->y + widget->top, widget->width() - 15, Colour::black, StringIds::wcolour2_stringid, &args);
+            }
         }
     }
 
