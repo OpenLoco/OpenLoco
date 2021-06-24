@@ -960,22 +960,22 @@ namespace OpenLoco::Vehicles
             var_55 = 0;
         }
 
-        bool itemFound = false;
+        bool stationFound = false;
 
-        // Looking for a bridge? or something on top
+        // Looking for a station
         if (steam_obj->var_08 & (1 << 2))
         {
             auto tile = Map::TileManager::get(frontBogie->tile_x, frontBogie->tile_y);
 
             for (auto& el : tile)
             {
-                if (itemFound && !(el.isGhost() || el.isFlag5()))
+                if (stationFound && !(el.isGhost() || el.isFlag5()))
                 {
                     break;
                 }
                 else
                 {
-                    itemFound = false;
+                    stationFound = false;
                 }
                 auto track = el.asTrack();
                 if (track == nullptr)
@@ -990,11 +990,11 @@ namespace OpenLoco::Vehicles
                     continue;
 
                 if (!track->isLast())
-                    itemFound = true;
+                    stationFound = true;
             }
         }
 
-        if (itemFound)
+        if (stationFound)
         {
             auto soundId = static_cast<SoundObjectId_t>(steam_obj->var_1F[var_55 + (steam_obj->sound_effect >> 1)]);
 
