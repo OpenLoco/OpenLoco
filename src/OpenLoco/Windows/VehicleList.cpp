@@ -636,11 +636,13 @@ namespace OpenLoco::Ui::Windows::VehicleList
             { StringIds::num_ships_singular, StringIds::num_ships_plural },
         };
 
+        FormatArguments args = {};
+
         {
             auto& footerStringPair = typeToFooterStringIds[self->current_tab];
             string_id footerStringId = self->var_83C == 1 ? footerStringPair.first : footerStringPair.second;
 
-            auto args = FormatArguments::common(footerStringId, self->var_83C);
+            args = FormatArguments::common(footerStringId, self->var_83C);
             Gfx::drawString_494B3F(*context, self->x + 3, self->y + self->height - 13, Colour::black, StringIds::black_stringid, &args);
         }
 
@@ -653,55 +655,51 @@ namespace OpenLoco::Ui::Windows::VehicleList
         {
             // Show current filter type
             string_id filter = typeToFilterStringIds[self->var_88A];
-            auto args = FormatArguments::common(filter);
+            args = FormatArguments::common(filter);
             auto* widget = &self->widgets[Widx::filter_type];
             Gfx::drawString_494BBF(*context, self->x + widget->left + 1, self->y + widget->top, widget->width() - 15, Colour::black, StringIds::wcolour2_stringid, &args);
         }
 
+        auto* widget = &self->widgets[Widx::cargo_type];
+        auto xPos = self->x + widget->left + 1;
+        bool filterActive = false;
+
         if (isStationFilterActive(self, false))
         {
+            filterActive = true;
             if (self->var_88C != -1)
             {
                 auto station = StationManager::get(self->var_88C);
-                FormatArguments args{};
-                args.push(station->name);
-                args.push(station->town);
-                // args.push(stationTypeImages[(station->flags & 0xF)]);
-
-                auto* widget = &self->widgets[Widx::cargo_type];
-                Gfx::drawString_494BBF(*context, self->x + widget->left + 1, self->y + widget->top, widget->width() - 15, Colour::black, StringIds::wcolour2_stringid, &args);
+                args = FormatArguments::common(station->name, station->town);
             }
             else
             {
-                FormatArguments args{};
-                args.push(StringIds::no_station_selected);
-                auto* widget = &self->widgets[Widx::cargo_type];
-                Gfx::drawString_494BBF(*context, self->x + widget->left + 1, self->y + widget->top, widget->width() - 15, Colour::black, StringIds::wcolour2_stringid, &args);
+                args = FormatArguments::common(StringIds::no_station_selected);
             }
         }
 
-        if (isCargoFilterActive(self, false))
+        else if (isCargoFilterActive(self, false))
         {
+            filterActive = true;
             if (self->var_88C != -1)
             {
-                // Show current cargo filter
+                // Show current cargo
                 auto cargoObj = ObjectManager::get<CargoObject>(self->var_88C);
-                FormatArguments args{};
-                args.push(StringIds::carrying_cargoid_sprite);
-                args.push(cargoObj->name);
-                args.push(cargoObj->unit_inline_sprite);
+                args = FormatArguments::common(StringIds::carrying_cargoid_sprite, cargoObj->name, cargoObj->unit_inline_sprite);
 
-                auto* widget = &self->widgets[Widx::cargo_type];
                 // NB: the -9 in the xpos is to compensate for a hack due to the cargo dropdown limitation (only three args per item)
-                Gfx::drawString_494BBF(*context, self->x + widget->left - 9, self->y + widget->top, widget->width() - 15, Colour::black, StringIds::wcolour2_stringid, &args);
+                xPos = self->x + widget->left - 9;
             }
             else
             {
-                FormatArguments args{};
-                args.push(StringIds::no_cargo_selected);
-                auto* widget = &self->widgets[Widx::cargo_type];
-                Gfx::drawString_494BBF(*context, self->x + widget->left + 1, self->y + widget->top, widget->width() - 15, Colour::black, StringIds::wcolour2_stringid, &args);
+                args = FormatArguments::common(StringIds::no_cargo_selected);
             }
+        }
+
+        if (filterActive)
+        {
+            // Draw filter text as prepared
+            Gfx::drawString_494BBF(*context, xPos, self->y + widget->top, widget->width() - 15, Colour::black, StringIds::wcolour2_stringid, &args);
         }
     }
 
