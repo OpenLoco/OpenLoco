@@ -166,7 +166,7 @@ namespace OpenLoco::Vehicles
             else
             {
                 ah = vehicle_arr_4F865C[frontBogie->var_2C >> 2];
-                if (((frontBogie->var_2C >> 3) == 12) || ((frontBogie->var_2C >> 3) == 13))
+                if ((frontBogie->var_2C.trackId() == 12) || (frontBogie->var_2C.trackId() == 13))
                 {
                     if (frontBogie->var_2E >= 48)
                     {
@@ -982,9 +982,9 @@ namespace OpenLoco::Vehicles
                     continue;
                 if (track->baseZ() != frontBogie->tile_base_z)
                     continue;
-                if (track->trackId() != ((frontBogie->var_2C >> 3) & 0x3F))
+                if (track->trackId() != frontBogie->var_2C.trackId())
                     continue;
-                if (track->unkDirection() != (frontBogie->var_2C & 0x3))
+                if (track->unkDirection() != frontBogie->var_2C.cardinalDirection())
                     continue;
                 if (!track->hasStationElement())
                     continue;
@@ -1225,12 +1225,12 @@ namespace OpenLoco::Vehicles
         auto yaw = (sprite_yaw + 16) & 0x3F;
         auto firstBogie = var_38 & Flags38::isReversed ? backBogie : frontBogie;
         auto unkFactor = 5;
-        if (!trackIdToSparkDirection[firstBogie->var_2C / 8])
+        if (!trackIdToSparkDirection[firstBogie->var_2C.trackId()])
         {
             unkFactor = -5;
         }
 
-        if (firstBogie->var_2C & (1 << 2))
+        if (firstBogie->var_2C.isDiagonal())
         {
             unkFactor = -unkFactor;
         }

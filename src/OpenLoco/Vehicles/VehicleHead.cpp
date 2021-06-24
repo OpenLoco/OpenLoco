@@ -2526,8 +2526,8 @@ namespace OpenLoco::Vehicles
             case TransportMode::rail:
             {
                 auto tile = Map::TileManager::get(Pos2{ bogie->tile_x, bogie->tile_y });
-                auto direction = bogie->var_2C & 3;
-                auto trackId = (bogie->var_2C >> 3) & 0x3F;
+                auto direction = bogie->var_2C.cardinalDirection();
+                auto trackId = bogie->var_2C.trackId();
                 auto loadingModifier = 12;
                 auto* elStation = tile.trackStation(trackId, direction, bogie->tile_base_z);
                 if (elStation != nullptr)
@@ -2545,8 +2545,8 @@ namespace OpenLoco::Vehicles
             case TransportMode::road:
             {
                 auto tile = Map::TileManager::get(Pos2{ bogie->tile_x, bogie->tile_y });
-                auto direction = bogie->var_2C & 3;
-                auto roadId = (bogie->var_2C >> 3) & 0xF;
+                auto direction = bogie->var_2C.cardinalDirection();
+                auto roadId = bogie->var_2C.roadId();
                 auto loadingModifier = 2;
                 auto* elStation = tile.roadStation(roadId, direction, bogie->tile_base_z);
                 if (elStation != nullptr)
@@ -3204,8 +3204,8 @@ namespace OpenLoco::Vehicles
 
     static StationId_t tryFindStationAt(VehicleBogie* bogie)
     {
-        auto direction = bogie->var_2C & 3;
-        auto trackId = (bogie->var_2C >> 3) & 0x3F;
+        auto direction = bogie->var_2C.cardinalDirection();
+        auto trackId = bogie->var_2C.trackId();
 
         auto tile = TileManager::get(Map::Pos2{ bogie->tile_x, bogie->tile_y });
         auto* elStation = tile.trackStation(trackId, direction, bogie->tile_base_z);
@@ -3332,7 +3332,7 @@ namespace OpenLoco::Vehicles
                 if (elRoad->isGhost() || elRoad->isFlag5())
                     continue;
 
-                if (elRoad->roadId() != ((veh->var_2C >> 3) & 0xF))
+                if (elRoad->roadId() != veh->var_2C.roadId())
                     continue;
 
                 return true;
@@ -3354,10 +3354,10 @@ namespace OpenLoco::Vehicles
                 if (elTrack->isGhost() || elTrack->isFlag5())
                     continue;
 
-                if (elTrack->unkDirection() != (veh->var_2C & 0x3))
+                if (elTrack->unkDirection() != veh->var_2C.cardinalDirection())
                     continue;
 
-                if (elTrack->trackId() != ((veh->var_2C >> 3) & 0x3F))
+                if (elTrack->trackId() != veh->var_2C.trackId())
                     continue;
 
                 return true;
