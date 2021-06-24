@@ -982,7 +982,7 @@ namespace OpenLoco::Vehicles
                     continue;
                 if (track->baseZ() != frontBogie->tile_base_z)
                     continue;
-                if (track->unkZ() != smokeLoc.z)
+                if (track->trackIdAndDirection() != frontBogie->var_2C)
                     continue;
 
                 if (!track->hasStationElement())
