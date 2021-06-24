@@ -30,8 +30,11 @@ namespace OpenLoco::StringIds
     constexpr string_id stopping_at_station = 2210;
     constexpr string_id transporting_cargo = 2211;
     constexpr string_id carrying_cargoid_sprite = 2212;
-    constexpr string_id no_station_selected = 2213;
-    constexpr string_id tooltip_open_station_window_to_filter = 2214;
+    constexpr string_id carrying_cargoid_sprite_selected = 2213;
+    constexpr string_id no_station_selected = 2214;
+    constexpr string_id no_cargo_selected = 2215;
+    constexpr string_id tooltip_open_station_window_to_filter = 2216;
+    constexpr string_id tooltip_select_cargo_type = 2217;
 }
 
 namespace OpenLoco::Ui::Windows::VehicleList
@@ -85,7 +88,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         makeWidget({ 414, 43 }, { 65, 12 }, WidgetType::wt_14, WindowColour::secondary, StringIds::null, StringIds::tooltip_sort_by_age),
         makeWidget({ 479, 43 }, { 67, 12 }, WidgetType::wt_14, WindowColour::secondary, StringIds::null, StringIds::tooltip_sort_by_reliability),
         makeWidget({ 3, 56 }, { 544, 138 }, WidgetType::scrollview, WindowColour::secondary, Scrollbars::vertical),
-        makeDropdownWidgets({ 300 - 16, 200 }, { 100, 12 }, WidgetType::wt_18, WindowColour::secondary, StringIds::empty),
+        makeDropdownWidgets({ 280 - 16, 200 }, { 120, 12 }, WidgetType::wt_18, WindowColour::secondary, StringIds::empty),
         makeDropdownWidgets({ 402 - 16, 200 }, { 150, 12 }, WidgetType::wt_18, WindowColour::secondary, StringIds::empty),
         widgetEnd()
     };
@@ -136,7 +139,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
     static bool refreshActiveStation(Window* self)
     {
-        if (!isStationFilterActive(self))
+        if (self->var_88A != static_cast<int16_t>(FilterMode::stoppingAt))
             return false;
 
         auto stationWindow = WindowManager::find(WindowType::station);
@@ -593,6 +596,20 @@ namespace OpenLoco::Ui::Windows::VehicleList
         self->widgets[Widx::cargo_type_btn].top = self->height - 12;
         self->widgets[Widx::cargo_type_btn].bottom = self->height - 3;
 
+        // Disable cargo dropdown if not applicable
+        if (self->var_88A != FilterMode::transportingCargo)
+            self->disabled_widgets |= (1 << Widx::cargo_type) | (1 << Widx::cargo_type_btn);
+        else
+            self->disabled_widgets &= ~((1 << Widx::cargo_type) | (1 << Widx::cargo_type_btn));
+
+        // Set appropriate tooltip
+        static constexpr std::array<string_id, 3> filterTooltipByType = {
+            StringIds::null,
+            StringIds::tooltip_open_station_window_to_filter,
+            StringIds::tooltip_select_cargo_type,
+        };
+        self->widgets[Widx::cargo_type_btn].tooltip = filterTooltipByType[self->var_88A];
+
         setTransportTypeTabs(self);
     }
 
@@ -641,6 +658,18 @@ namespace OpenLoco::Ui::Windows::VehicleList
             Gfx::drawString_494BBF(*context, self->x + widget->left + 1, self->y + widget->top, widget->width() - 15, Colour::black, StringIds::wcolour2_stringid, &args);
         }
 
+        if (isStationFilterActive(self))
+        {
+            auto station = StationManager::get(self->var_88C);
+            FormatArguments args{};
+            args.push(station->name);
+            args.push(station->town);
+            // args.push(stationTypeImages[(station->flags & 0xF)]);
+
+            auto* widget = &self->widgets[Widx::cargo_type];
+            Gfx::drawString_494BBF(*context, self->x + widget->left + 1, self->y + widget->top, widget->width() - 15, Colour::black, StringIds::wcolour2_stringid, &args);
+        }
+
         if (isCargoFilterActive(self))
         {
             // Show current cargo filter
@@ -651,7 +680,8 @@ namespace OpenLoco::Ui::Windows::VehicleList
             args.push(cargoObj->unit_inline_sprite);
 
             auto* widget = &self->widgets[Widx::cargo_type];
-            Gfx::drawString_494BBF(*context, self->x + widget->left + 1, self->y + widget->top, widget->width() - 15, Colour::black, StringIds::wcolour2_stringid, &args);
+            // NB: the -9 in the xpos is to compensate for a hack due to the cargo dropdown limitation (only three args per item)
+            Gfx::drawString_494BBF(*context, self->x + widget->left - 9, self->y + widget->top, widget->width() - 15, Colour::black, StringIds::wcolour2_stringid, &args);
         }
     }
 
@@ -840,7 +870,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
         else if (widgetIndex == Widx::filter_type_btn)
         {
             Widget dropdown = self->widgets[Widx::filter_type];
-            Dropdown::show(self->x + dropdown.left, self->y + dropdown.top, dropdown.width() + 50, dropdown.height(), self->getColour(WindowColour::secondary), 3, 0x80);
+            Dropdown::show(self->x + dropdown.left, self->y + dropdown.top, dropdown.width() - 4, dropdown.height(), self->getColour(WindowColour::secondary), 3, 0x80);
 
             Dropdown::add(0, StringIds::dropdown_stringid, StringIds::all_vehicles);
             Dropdown::add(1, StringIds::dropdown_stringid, StringIds::stopping_at_station);
@@ -862,14 +892,15 @@ namespace OpenLoco::Ui::Windows::VehicleList
                 args.push(cargoObj->unit_inline_sprite);
                 args.push(cargoId);
                 Dropdown::add(index, StringIds::carrying_cargoid_sprite, args);
-                index++;
 
                 if (index == self->var_88C)
                     selectedIndex = index;
+
+                index++;
             }
 
             Widget dropdown = self->widgets[Widx::cargo_type];
-            Dropdown::showText(self->x + dropdown.left, self->y + dropdown.top, dropdown.width() + 4, dropdown.height(), self->getColour(WindowColour::secondary), index, 0);
+            Dropdown::showText(self->x + dropdown.left, self->y + dropdown.top, dropdown.width() - 4, dropdown.height(), self->getColour(WindowColour::secondary), index, 0);
             if (selectedIndex != -1)
                 Dropdown::setItemSelected(selectedIndex);
         }
