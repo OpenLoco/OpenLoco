@@ -1230,7 +1230,7 @@ namespace OpenLoco::Vehicles
             unkFactor = -5;
         }
 
-        if (firstBogie->var_2C.road.isUnk2())
+        if (firstBogie->var_2C.road.isRightLane())
         {
             unkFactor = -unkFactor;
         }

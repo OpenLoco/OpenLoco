@@ -932,7 +932,7 @@ namespace OpenLoco::Vehicles
 
         if (track_type == 0xFF || ObjectManager::get<RoadObject>(track_type)->flags & Flags12::isRoad)
         {
-            if (train.veh1->var_2C.road.isUnk7())
+            if (train.veh1->var_2C.road.isBackToFront())
             {
                 param1 = 128;
                 turnaroundAtSignalTimeout = 544;
@@ -942,7 +942,7 @@ namespace OpenLoco::Vehicles
         {
             // Tram
             turnaroundAtSignalTimeout = tramSignalTimeout;
-            if (train.veh1->var_2C.road.isUnk7())
+            if (train.veh1->var_2C.road.isBackToFront())
             {
                 param1 = 64;
                 turnaroundAtSignalTimeout = 128;

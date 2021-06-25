@@ -124,8 +124,12 @@ namespace OpenLoco::Vehicles
             }
             constexpr uint8_t id() const { return (_data >> 3) & 0xF; }
             constexpr uint8_t cardinalDirection() const { return _data & 0x3; }
-            constexpr bool isUnk2() const { return _data & (1 << 2); }
-            constexpr bool isUnk7() const { return _data & (1 << 7); }
+            // Used by road and tram vehicles
+            constexpr bool isRightLane() const { return _data & (1 << 2); }
+            // Road vehicles are briefly back to front when reaching dead ends
+            // Trams can stay back to front
+            constexpr bool isBackToFront() const { return _data & (1 << 7); }
+            // Related to road vehicles turning around
             constexpr bool isUnk8() const { return _data & (1 << 8); }
             constexpr bool operator==(const _RoadAndDirection other) const { return _data == other._data; }
             constexpr bool operator!=(const _RoadAndDirection other) const { return !(_data == other._data); }
