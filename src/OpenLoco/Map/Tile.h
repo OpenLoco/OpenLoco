@@ -251,7 +251,6 @@ namespace OpenLoco::Map
 
     public:
         bool hasStationElement() const { return (_type & 0x80) != 0; }
-        uint8_t unkZ() const { return (_type & 0x03) | ((_4 & 0x3F) << 3); }
         bool hasSignal() const { return (_type & 0x40) != 0; }
         uint8_t unkDirection() const { return _type & 0x03; }
         uint8_t trackId() const { return _4 & 0x3F; } // _4
