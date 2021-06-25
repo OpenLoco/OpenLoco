@@ -101,19 +101,46 @@ namespace OpenLoco::Vehicles
 #pragma pack(push, 1)
     struct TrackAndDirection
     {
-        uint16_t _data;
+        struct _TrackAndDirection
+        {
+            uint16_t _data;
+            constexpr _TrackAndDirection(uint8_t id, uint8_t direction)
+                : _data((id << 3) | direction)
+            {
+            }
+            constexpr uint8_t id() const { return (_data >> 3) & 0x3F; }
+            constexpr uint8_t cardinalDirection() const { return _data & 0x3; }
+            constexpr uint8_t fullDirection() const { return _data & 0x7; }
+            constexpr bool isDiagonal() const { return _data & (1 << 2); }
+            constexpr bool operator==(const _TrackAndDirection other) const { return _data == other._data; }
+            constexpr bool operator!=(const _TrackAndDirection other) const { return !(_data == other._data); }
+        };
+        struct _RoadAndDirection
+        {
+            uint16_t _data;
+            constexpr _RoadAndDirection(uint8_t id, uint8_t direction)
+                : _data((id << 3) | direction)
+            {
+            }
+            constexpr uint8_t id() const { return (_data >> 3) & 0xF; }
+            constexpr uint8_t cardinalDirection() const { return _data & 0x3; }
+            constexpr bool isUnk2() const { return _data & (1 << 2); }
+            constexpr bool isUnk7() const { return _data & (1 << 7); }
+            constexpr bool isUnk8() const { return _data & (1 << 8); }
+            constexpr bool operator==(const _RoadAndDirection other) const { return _data == other._data; }
+            constexpr bool operator!=(const _RoadAndDirection other) const { return !(_data == other._data); }
+        };
+
+        union
+        {
+            _TrackAndDirection track;
+            _RoadAndDirection road;
+        };
 
         constexpr TrackAndDirection(uint8_t id, uint8_t direction)
-            : _data((id << 3) | direction)
+            : track(id, direction)
         {
         }
-        constexpr uint8_t trackId() const { return (_data >> 3) & 0x3F; }
-        constexpr uint8_t roadId() const { return (_data >> 3) & 0xF; }
-        constexpr uint8_t cardinalDirection() const { return _data & 0x3; }
-        constexpr uint8_t fullDirection() const { return _data & 0x7; }
-        constexpr bool isDiagonal() const { return _data & (1 << 2); }
-        constexpr bool operator==(const TrackAndDirection other) const { return _data == other._data; }
-        constexpr bool operator!=(const TrackAndDirection other) const { return !(_data == other._data); }
     };
     static_assert(sizeof(TrackAndDirection) == 2);
 

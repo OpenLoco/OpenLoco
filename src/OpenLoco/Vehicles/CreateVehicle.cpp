@@ -648,7 +648,7 @@ namespace OpenLoco::Vehicles
         regs.cx = y;
         regs.bx = unk2;
         regs.dl = baseZ;
-        regs.ebp = unk1._data;
+        regs.ebp = unk1.track._data;
         call(0x004B05E4, regs);
     }
 

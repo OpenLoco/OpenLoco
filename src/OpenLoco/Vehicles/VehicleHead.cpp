@@ -932,7 +932,7 @@ namespace OpenLoco::Vehicles
 
         if (track_type == 0xFF || ObjectManager::get<RoadObject>(track_type)->flags & Flags12::isRoad)
         {
-            if (train.veh1->var_2C & (1 << 7))
+            if (train.veh1->var_2C.road.isUnk7())
             {
                 param1 = 128;
                 turnaroundAtSignalTimeout = 544;
@@ -942,7 +942,7 @@ namespace OpenLoco::Vehicles
         {
             // Tram
             turnaroundAtSignalTimeout = tramSignalTimeout;
-            if (train.veh1->var_2C & (1 << 7))
+            if (train.veh1->var_2C.road.isUnk7())
             {
                 param1 = 64;
                 turnaroundAtSignalTimeout = 128;
@@ -2526,8 +2526,8 @@ namespace OpenLoco::Vehicles
             case TransportMode::rail:
             {
                 auto tile = Map::TileManager::get(Pos2{ bogie->tile_x, bogie->tile_y });
-                auto direction = bogie->var_2C.cardinalDirection();
-                auto trackId = bogie->var_2C.trackId();
+                auto direction = bogie->var_2C.track.cardinalDirection();
+                auto trackId = bogie->var_2C.track.id();
                 auto loadingModifier = 12;
                 auto* elStation = tile.trackStation(trackId, direction, bogie->tile_base_z);
                 if (elStation != nullptr)
@@ -2545,8 +2545,8 @@ namespace OpenLoco::Vehicles
             case TransportMode::road:
             {
                 auto tile = Map::TileManager::get(Pos2{ bogie->tile_x, bogie->tile_y });
-                auto direction = bogie->var_2C.cardinalDirection();
-                auto roadId = bogie->var_2C.roadId();
+                auto direction = bogie->var_2C.road.cardinalDirection();
+                auto roadId = bogie->var_2C.road.id();
                 auto loadingModifier = 2;
                 auto* elStation = tile.roadStation(roadId, direction, bogie->tile_base_z);
                 if (elStation != nullptr)
@@ -3204,8 +3204,8 @@ namespace OpenLoco::Vehicles
 
     static StationId_t tryFindStationAt(VehicleBogie* bogie)
     {
-        auto direction = bogie->var_2C.cardinalDirection();
-        auto trackId = bogie->var_2C.trackId();
+        auto direction = bogie->var_2C.track.cardinalDirection();
+        auto trackId = bogie->var_2C.track.id();
 
         auto tile = TileManager::get(Map::Pos2{ bogie->tile_x, bogie->tile_y });
         auto* elStation = tile.trackStation(trackId, direction, bogie->tile_base_z);
@@ -3332,7 +3332,7 @@ namespace OpenLoco::Vehicles
                 if (elRoad->isGhost() || elRoad->isFlag5())
                     continue;
 
-                if (elRoad->roadId() != veh->var_2C.roadId())
+                if (elRoad->roadId() != veh->var_2C.road.id())
                     continue;
 
                 return true;
@@ -3354,10 +3354,10 @@ namespace OpenLoco::Vehicles
                 if (elTrack->isGhost() || elTrack->isFlag5())
                     continue;
 
-                if (elTrack->unkDirection() != veh->var_2C.cardinalDirection())
+                if (elTrack->unkDirection() != veh->var_2C.track.cardinalDirection())
                     continue;
 
-                if (elTrack->trackId() != veh->var_2C.trackId())
+                if (elTrack->trackId() != veh->var_2C.track.id())
                     continue;
 
                 return true;
