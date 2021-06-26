@@ -8,7 +8,6 @@
 #include <cassert>
 
 using namespace OpenLoco::Interop;
-using OpenLoco::ImageIds::frame_background_image;
 
 namespace OpenLoco::Ui
 {
@@ -312,8 +311,7 @@ namespace OpenLoco::Ui
             }
             else
             {
-                // TODO Add constant int Graphics/ImageIds.h for 2323
-                imageId = Gfx::recolour(2323, Colour::opaque(colour));
+                imageId = Gfx::recolour(ImageIds::frame_background_image_alt, Colour::opaque(colour));
             }
             Gfx::drawImage(clipped, 0, 0, imageId);
         }

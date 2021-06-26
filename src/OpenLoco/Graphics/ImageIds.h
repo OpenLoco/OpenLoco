@@ -19,9 +19,8 @@ namespace OpenLoco::ImageIds
     constexpr uint32_t icon_folder = 2311;
 
     constexpr uint32_t close_button = 2321;
-
     constexpr uint32_t frame_background_image = 2322;
-
+    constexpr uint32_t frame_background_image_alt = 2323;
     constexpr uint32_t inline_green_up_arrow = 2324;
     constexpr uint32_t inline_red_down_arrow = 2325;
     constexpr uint32_t progressbar_style0_frame0 = 2326;
