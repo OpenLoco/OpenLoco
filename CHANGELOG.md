@@ -1,5 +1,6 @@
 21.05+ (???)
 ------------------------------------------------------------------------
+- Feature: [#856] Allow filtering the vehicle list by station or cargo type.
 - Fix: [#982] Incorrect rating calculation for cargo causing penalty for fast vehicles.
 - Fix: [#1008] Inability to decrease max altitude for trees in landscape editor.
 - Fix: [#1016] Incorrect detection of station causing incorrect smoke sounds.
