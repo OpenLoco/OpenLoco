@@ -105,7 +105,6 @@ namespace OpenLoco::Ui
                 break;
 
             case WidgetType::wt_5:
-            case WidgetType::wt_5:
             case WidgetType::wt_6:
             case WidgetType::wt_7:
             case WidgetType::wt_8:

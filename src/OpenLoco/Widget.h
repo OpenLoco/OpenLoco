@@ -35,7 +35,6 @@ namespace OpenLoco::Ui
         void draw(Gfx::Context* context, Window* window, const uint64_t pressedWidgets, const uint64_t toolWidgets, const uint64_t hoveredWidgets, uint8_t& scrollviewIndex);
 
     private:
-        // TODO: Make these normal member functions
         void sub_4CADE8(Gfx::Context* context, const Window* window, uint8_t colour, bool enabled, bool disabled, bool activated);
 
         void drawPanel(Gfx::Context* context, const Window* window, uint16_t flags, uint8_t colour);
