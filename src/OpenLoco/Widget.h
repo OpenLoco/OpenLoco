@@ -35,36 +35,29 @@ namespace OpenLoco::Ui
         void draw(Gfx::Context* context, Window* window, const uint64_t pressedWidgets, const uint64_t toolWidgets, const uint64_t hoveredWidgets, uint8_t& scrollviewIndex);
 
     private:
-        // TODO: Make these normal member functions
-        static void sub_4CADE8(Gfx::Context* context, const Window* window, const Widget* widget, uint8_t colour, bool enabled, bool disabled, bool activated);
+        void sub_4CADE8(Gfx::Context* context, const Window* window, uint8_t colour, bool enabled, bool disabled, bool activated);
 
-        static void drawPanel(Gfx::Context* context, const Window* window, Widget* widget, uint16_t flags, uint8_t colour);
-        static void drawFrame(Gfx::Context* context, const Window* window, Widget* widget, uint16_t flags, uint8_t colour);
-        static void draw_3(Gfx::Context* context, const Window* window, Widget* widget, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated);
+        void drawPanel(Gfx::Context* context, const Window* window, uint16_t flags, uint8_t colour);
+        void drawFrame(Gfx::Context* context, const Window* window, uint16_t flags, uint8_t colour);
 
-        static void draw_5(Gfx::Context* context, const Window* window, Widget* widget, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated);
+        void draw_3(Gfx::Context* context, const Window* window, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated);
+        void draw_5(Gfx::Context* context, const Window* window, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated);
+        void draw_9(Gfx::Context* context, const Window* window, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated, bool hovered);
+        void draw_10(Gfx::Context* context, const Window* window, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated, bool hovered);
+        void draw_11_a(Gfx::Context* context, const Window* window, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated);
+        void draw_13(Gfx::Context* context, const Window* window, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated);
+        void draw_15(Gfx::Context* context, const Window* window, uint16_t flags, uint8_t colour, bool disabled);
+        void draw_17(Gfx::Context* context, const Window* window, uint16_t flags, uint8_t colour);
+        void draw_22_caption(Gfx::Context* context, const Window* window, uint16_t flags, uint8_t colour);
+        void draw_23_caption(Gfx::Context* context, const Window* window, uint16_t flags, uint8_t colour);
+        void draw_24_caption(Gfx::Context* context, const Window* window, uint16_t flags, uint8_t colour);
+        void draw_25_caption(Gfx::Context* context, const Window* window, uint16_t flags, uint8_t colour);
+        void drawScrollview(Gfx::Context* context, Window* window, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated, bool hovered, int scrollview_index);
+        void draw_27_checkbox(Gfx::Context* context, const Window* window, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated);
+        void draw_27_label(Gfx::Context* context, const Window* window, uint16_t flags, uint8_t colour, bool disabled);
+        void draw_29(Gfx::Context* context, const Window* window);
 
-        static void draw_9(Gfx::Context* context, const Window* window, Widget* widget, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated, bool hovered);
-        static void draw_10(Gfx::Context* context, const Window* window, Widget* widget, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated, bool hovered);
-
-        static void draw_11_a(Gfx::Context* context, const Window* window, Widget* widget, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated);
-        static void draw_13(Gfx::Context* context, const Window* window, Widget* widget, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated);
-
-        static void draw_15(Gfx::Context* context, const Window* window, Widget* widget, uint16_t flags, uint8_t colour, bool disabled);
-
-        static void draw_17(Gfx::Context* context, const Window* window, Widget* widget, uint16_t flags, uint8_t colour);
-
-        static void draw_22_caption(Gfx::Context* context, const Window* window, Widget* widget, uint16_t flags, uint8_t colour);
-        static void draw_23_caption(Gfx::Context* context, const Window* window, Widget* widget, uint16_t flags, uint8_t colour);
-        static void draw_24_caption(Gfx::Context* context, const Window* window, Widget* widget, uint16_t flags, uint8_t colour);
-        static void draw_25_caption(Gfx::Context* context, const Window* window, Widget* widget, uint16_t flags, uint8_t colour);
-        static void drawScrollview(Gfx::Context* context, Window* window, Widget* widget, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated, bool hovered, int scrollview_index);
-        static void draw_27_checkbox(Gfx::Context* context, const Window* window, Widget* widget, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated);
-        static void draw_27_label(Gfx::Context* context, const Window* window, Widget* widget, uint16_t flags, uint8_t colour, bool disabled);
-
-        static void draw_29(Gfx::Context* context, const Window* window, Widget* widget);
-
-        static void drawGroupbox(Gfx::Context* const context, const Window* window, Widget* widget);
+        void drawGroupbox(Gfx::Context* const context, const Window* window);
     };
 #pragma pack(pop)
     static_assert(sizeof(Widget) == 0x10);
