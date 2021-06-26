@@ -8,6 +8,7 @@
 #include <cassert>
 
 using namespace OpenLoco::Interop;
+using OpenLoco::ImageIds::frame_background_image;
 
 namespace OpenLoco::Ui
 {
@@ -97,13 +98,14 @@ namespace OpenLoco::Ui
                 break;
 
             case WidgetType::wt_3:
-                draw_3(context, window,  widgetFlags, wndColour, enabled, disabled, activated);
+                draw_3(context, window, widgetFlags, wndColour, enabled, disabled, activated);
                 break;
 
             case WidgetType::wt_4:
                 assert(false); // Unused
                 break;
 
+            case WidgetType::wt_5:
             case WidgetType::wt_5:
             case WidgetType::wt_6:
             case WidgetType::wt_7:
@@ -306,10 +308,11 @@ namespace OpenLoco::Ui
             uint32_t imageId = image;
             if (window->flags & WindowFlags::flag_11)
             {
-                imageId = Gfx::recolour(2322, Colour::opaque(colour));
+                imageId = Gfx::recolour(frame_background_image, Colour::opaque(colour));
             }
             else
             {
+                // TODO Add constant int Graphics/ImageIds.h for 2323
                 imageId = Gfx::recolour(2323, Colour::opaque(colour));
             }
             Gfx::drawImage(clipped, 0, 0, imageId);
@@ -396,19 +399,19 @@ namespace OpenLoco::Ui
             return;
         }
 
-        // TODO: Remove added_image addition
-        uint32_t added_image = image + 2;
+        // TODO: Remove addedImage addition
+        uint32_t addedImage = image + 2;
 
-        if ((added_image & (1 << 30)) == 0)
+        if ((addedImage & (1 << 30)) == 0)
         {
-            added_image |= colour << 19;
+            addedImage |= colour << 19;
         }
         else
         {
-            added_image &= ~(1 << 30);
+            addedImage &= ~(1 << 30);
         }
 
-        Gfx::drawImage(context, window->x + left, window->y + top, added_image);
+        Gfx::drawImage(context, window->x + left, window->y + top, addedImage);
     }
 
     // 0x004CACD4
@@ -458,50 +461,50 @@ namespace OpenLoco::Ui
             return;
         }
 
-        uint32_t added_image = image;
+        uint32_t addedImage = image;
 
         if (enabled)
         {
-            // TODO: Remove added_image addition
-            added_image += 2;
+            // TODO: Remove addedImage addition
+            addedImage += 2;
 
             if (!activated)
             {
-                added_image -= 1;
+                addedImage -= 1;
 
                 if (!hovered)
                 {
-                    added_image -= 1;
+                    addedImage -= 1;
                 }
             }
         }
 
-        if ((added_image & (1 << 30)) == 0)
+        if ((addedImage & (1 << 30)) == 0)
         {
-            added_image |= colour << 19;
+            addedImage |= colour << 19;
         }
         else
         {
-            added_image &= ~(1 << 30);
+            addedImage &= ~(1 << 30);
         }
 
-        Gfx::drawImage(context, window->x + left, window->y + top, added_image);
+        Gfx::drawImage(context, window->x + left, window->y + top, addedImage);
     }
 
     // 0x004CB164
     void Widget::draw_11_a(Gfx::Context* context, const Window* window, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated)
     {
-        int rect_left = window->x + left;
-        int rect_right = window->x + right;
-        int rect_top = window->y + top;
-        int rect_bottom = window->y + bottom;
+        int l = window->x + left;
+        int r = window->x + right;
+        int t = window->y + top;
+        int b = window->y + bottom;
 
         if (activated)
         {
             flags |= 0x20;
         }
 
-        Gfx::fillRectInset(context, rect_left, rect_top, rect_right, rect_bottom, colour, flags);
+        Gfx::fillRectInset(context, l, t, r, b, colour, flags);
     }
 
     // 0x004CB1BE
@@ -591,16 +594,16 @@ namespace OpenLoco::Ui
     // 0x004CA6AE
     void Widget::draw_22_caption(Gfx::Context* context, const Window* window, uint16_t flags, uint8_t colour)
     {
-        int rect_left = window->x + left;
-        int rect_right = window->x + right;
-        int rect_top = window->y + top;
-        int rect_bottom = window->y + bottom;
-        Gfx::fillRectInset(context, rect_left, rect_top, rect_right, rect_bottom, colour, flags | 0x60);
-        Gfx::fillRect(context, rect_left + 1, rect_top + 1, rect_right - 1, rect_bottom - 1, 0x2000000 | 46);
+        int l = window->x + left;
+        int r = window->x + right;
+        int t = window->y + top;
+        int b = window->y + bottom;
+        Gfx::fillRectInset(context, l, t, r, b, colour, flags | 0x60);
+        Gfx::fillRect(context, l + 1, t + 1, r - 1, b - 1, 0x2000000 | 46);
 
-        int16_t width = rect_right - rect_left - 4 - 10;
-        int16_t y = rect_top + window->y + 1;
-        int16_t x = rect_left + window->x + 2 + (width / 2);
+        int16_t width = r - l - 4 - 10;
+        int16_t y = t + window->y + 1;
+        int16_t x = l + window->x + 2 + (width / 2);
 
         Gfx::drawStringCentredClipped(*context, x, y, width, Colour::white | FormatFlags::textflag_5, text, _commonFormatArgs);
     }
@@ -792,17 +795,17 @@ namespace OpenLoco::Ui
     // 0x004CB31C
     void Widget::drawScrollview(Gfx::Context* context, Window* window, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated, bool hovered, int scrollview_index)
     {
-        int16_t scroll_view_left = window->x + left;
-        int16_t scroll_view_top = window->y + top;
-        int16_t scroll_view_right = window->x + right;
-        int16_t scroll_view_bottom = window->y + bottom;
+        int16_t l = window->x + left;
+        int16_t t = window->y + top;
+        int16_t r = window->x + right;
+        int16_t b = window->y + bottom;
 
-        Gfx::fillRectInset(context, scroll_view_left, scroll_view_top, scroll_view_right, scroll_view_bottom, colour, flags | 0x60);
+        Gfx::fillRectInset(context, l, t, r, b, colour, flags | 0x60);
 
-        scroll_view_left++;
-        scroll_view_top++;
-        scroll_view_right--;
-        scroll_view_bottom--;
+        l++;
+        t++;
+        r--;
+        b--;
 
         const auto* scroll_area = &window->scroll_areas[scrollview_index];
 
@@ -810,47 +813,47 @@ namespace OpenLoco::Ui
         if (scroll_area->flags & Ui::ScrollView::ScrollFlags::hscrollbarVisible)
         {
             draw_hscroll(context, window, this, flags, colour, enabled, disabled, activated, hovered, scrollview_index);
-            scroll_view_bottom -= 11;
+            b -= 11;
         }
 
         if (scroll_area->flags & Ui::ScrollView::ScrollFlags::vscrollbarVisible)
         {
             draw_vscroll(context, window, this, flags, colour, enabled, disabled, activated, hovered, scrollview_index);
-            scroll_view_right -= 11;
+            r -= 11;
         }
 
         Gfx::Context cropped = *context;
-        scroll_view_bottom++;
-        scroll_view_right++;
+        b++;
+        r++;
 
-        if (scroll_view_left > cropped.x)
+        if (l > cropped.x)
         {
-            int offset = scroll_view_left - cropped.x;
+            int offset = l - cropped.x;
             cropped.width -= offset;
-            cropped.x = scroll_view_left;
+            cropped.x = l;
             cropped.pitch += offset;
 
             cropped.bits += offset;
         }
 
-        int16_t bp = cropped.x + cropped.width - scroll_view_right;
+        int16_t bp = cropped.x + cropped.width - r;
         if (bp > 0)
         {
             cropped.width -= bp;
             cropped.pitch += bp;
         }
 
-        if (scroll_view_top > cropped.y)
+        if (t > cropped.y)
         {
-            int offset = scroll_view_top - cropped.y;
+            int offset = t - cropped.y;
             cropped.height -= offset;
-            cropped.y = scroll_view_top;
+            cropped.y = t;
 
             int aex = (cropped.pitch + cropped.width) * offset;
             cropped.bits += aex;
         }
 
-        bp = cropped.y + cropped.height - scroll_view_bottom;
+        bp = cropped.y + cropped.height - b;
         if (bp > 0)
         {
             cropped.height -= bp;
@@ -858,8 +861,8 @@ namespace OpenLoco::Ui
 
         if (cropped.width > 0 && cropped.height > 0)
         {
-            cropped.x -= scroll_view_left - scroll_area->contentOffsetX;
-            cropped.y -= scroll_view_top - scroll_area->contentOffsetY;
+            cropped.x -= l - scroll_area->contentOffsetX;
+            cropped.y -= t - scroll_area->contentOffsetY;
 
             window->callDrawScroll(&cropped, scrollview_index);
         }
@@ -908,11 +911,11 @@ namespace OpenLoco::Ui
     // 0x004CA679
     void Widget::draw_29(Gfx::Context* context, const Window* window)
     {
-        int rect_left = window->x + left;
-        int rect_right = window->x + right;
-        int rect_top = window->y + top;
-        int rect_bottom = window->y + bottom;
-        Gfx::fillRect(context, rect_left, rect_top, rect_right, rect_bottom, Colour::getShade(Colour::black, 5));
+        int l = window->x + left;
+        int r = window->x + right;
+        int t = window->y + top;
+        int b = window->y + bottom;
+        Gfx::fillRect(context, l, t, r, b, Colour::getShade(Colour::black, 5));
     }
 
     void Widget::drawGroupbox(Gfx::Context* const context, const Window* window)
