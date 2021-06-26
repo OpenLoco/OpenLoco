@@ -308,7 +308,7 @@ namespace OpenLoco::Ui
             uint32_t imageId = image;
             if (window->flags & WindowFlags::flag_11)
             {
-                imageId = Gfx::recolour(frame_background_image, Colour::opaque(colour));
+                imageId = Gfx::recolour(ImageIds::frame_background_image, Colour::opaque(colour));
             }
             else
             {
