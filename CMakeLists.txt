@@ -169,7 +169,7 @@ file(GLOB_RECURSE OLOCO_HEADERS "src/*.h" "src/*.hpp")
 
 if (APPLE)
     file(GLOB_RECURSE OLOCO_MM_SOURCES "src/*.mm")
-    set_source_files_properties(${OLOCO_MM_SOURCES} PROPERTIES COMPILE_FLAGS "-x objective-c++ -fmodules")
+    set_source_files_properties(${OLOCO_MM_SOURCES} PROPERTIES COMPILE_FLAGS "-x objective-c++")
 endif ()
 
 set(PIE_FLAG "-fno-pie")
