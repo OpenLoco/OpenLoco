@@ -285,21 +285,21 @@ if (APPLE)
     set(ICON_OUTPUT "${CMAKE_BINARY_DIR}/AppIcon.icns")
     set(SOURCE_ICON_DIR "${CMAKE_CURRENT_SOURCE_DIR}/resources/logo")
 
-    add_custom_command(OUTPUT ${ICON_OUTPUT}
-        COMMAND cp icon_x16.png   ${ICON_TARGET}/icon_16x16.png
-        COMMAND cp icon_x32.png   ${ICON_TARGET}/icon_16x16@2x.png
-        COMMAND cp icon_x32.png   ${ICON_TARGET}/icon_32x32.png
-        COMMAND cp icon_x64.png   ${ICON_TARGET}/icon_32x32@2x.png
-        COMMAND cp icon_x128.png  ${ICON_TARGET}/icon_128x128.png
-        COMMAND cp icon_x256.png  ${ICON_TARGET}/icon_128x128@2x.png
-        COMMAND cp icon_x256.png  ${ICON_TARGET}/icon_256x256.png
-        COMMAND cp icon_x512.png  ${ICON_TARGET}/icon_256x256@2x.png
-        COMMAND cp icon_x512.png  ${ICON_TARGET}/icon_512x512.png
-        COMMAND cp icon_x1024.png ${ICON_TARGET}/icon_512x512@2x.png
-        COMMAND iconutil -c icns ${ICON_TARGET}
-        WORKING_DIRECTORY ${SOURCE_ICON_DIR})
+#    add_custom_command(OUTPUT ${ICON_OUTPUT}
+#        COMMAND cp icon_x16.png   ${ICON_TARGET}/icon_16x16.png
+#        COMMAND cp icon_x32.png   ${ICON_TARGET}/icon_16x16@2x.png
+#        COMMAND cp icon_x32.png   ${ICON_TARGET}/icon_32x32.png
+#        COMMAND cp icon_x64.png   ${ICON_TARGET}/icon_32x32@2x.png
+#        COMMAND cp icon_x128.png  ${ICON_TARGET}/icon_128x128.png
+#        COMMAND cp icon_x256.png  ${ICON_TARGET}/icon_128x128@2x.png
+#        COMMAND cp icon_x256.png  ${ICON_TARGET}/icon_256x256.png
+#        COMMAND cp icon_x512.png  ${ICON_TARGET}/icon_256x256@2x.png
+#        COMMAND cp icon_x512.png  ${ICON_TARGET}/icon_512x512.png
+#        COMMAND cp icon_x1024.png ${ICON_TARGET}/icon_512x512@2x.png
+#        COMMAND iconutil -c icns ${ICON_TARGET}
+#        WORKING_DIRECTORY ${SOURCE_ICON_DIR})
 
-    set(BUNDLE_RESOURCES ${ICON_OUTPUT})
+    set(BUNDLE_RESOURCES "")
     list(APPEND BUNDLE_RESOURCES ${CMAKE_CURRENT_SOURCE_DIR}/CHANGELOG.md)
     list(APPEND BUNDLE_RESOURCES ${CMAKE_CURRENT_SOURCE_DIR}/CONTRIBUTORS.MD)
     set_target_properties(${PROJECT} PROPERTIES RESOURCE "${BUNDLE_RESOURCES}")
