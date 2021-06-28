@@ -117,24 +117,15 @@ namespace OpenLoco::Vehicles
                 break;
             case TransportMode::air:
                 continueUpdating = updateAir();
-                if (continueUpdating)
-                {
-                    tryCreateInitialMovementSound();
-                }
                 break;
             case TransportMode::water:
                 continueUpdating = updateWater();
-                if (continueUpdating)
-                {
-                    tryCreateInitialMovementSound();
-                }
                 break;
         }
-        // TODO move to here when all update mode functions implemented
-        //if (continueUpdating)
-        //{
-        //    tryCreateInitialMovementSound();
-        //}
+        if (continueUpdating)
+        {
+            tryCreateInitialMovementSound();
+        }
         return continueUpdating;
     }
 
@@ -877,7 +868,6 @@ namespace OpenLoco::Vehicles
         {
             updateUnloadCargo();
 
-            tryCreateInitialMovementSound();
             return true;
         }
         else if (status == Status::loading)
@@ -981,7 +971,6 @@ namespace OpenLoco::Vehicles
         {
             status = Status::travelling;
         }
-        tryCreateInitialMovementSound();
         return true;
     }
 
@@ -994,7 +983,6 @@ namespace OpenLoco::Vehicles
             var_52 = 1;
             sub_4ADB47(false);
             var_52 = temp;
-            tryCreateInitialMovementSound();
             return true;
         }
         else
@@ -1024,7 +1012,6 @@ namespace OpenLoco::Vehicles
         auto* vehType2 = train.veh2;
         if (vehType2->var_36 != var_36 || vehType2->var_2E != var_2E)
         {
-            tryCreateInitialMovementSound();
             return true;
         }
 
@@ -1035,11 +1022,7 @@ namespace OpenLoco::Vehicles
         {
             stationId = StationId::null;
             status = Status::brokenDown;
-
-            tryCreateInitialMovementSound();
-            return true;
         }
-        tryCreateInitialMovementSound();
         return true;
     }
 
@@ -1073,14 +1056,12 @@ namespace OpenLoco::Vehicles
         Vehicle train(this);
         if (var_36 != train.veh2->var_36 || train.veh2->var_2E != var_2E)
         {
-            tryCreateInitialMovementSound();
             return true;
         }
 
         // Manual control is going too fast at this point to stop at the station
         if (var_0C & Flags0C::manualControl)
         {
-            tryCreateInitialMovementSound();
             return true;
         }
 
@@ -1089,7 +1070,6 @@ namespace OpenLoco::Vehicles
         updateLastJourneyAverageSpeed();
         beginUnloading();
 
-        tryCreateInitialMovementSound();
         return true;
     }
 
@@ -1098,7 +1078,6 @@ namespace OpenLoco::Vehicles
     {
         if (updateLoadCargo())
         {
-            tryCreateInitialMovementSound();
             return true;
         }
 
@@ -1108,7 +1087,6 @@ namespace OpenLoco::Vehicles
 
         if (var_0C & Flags0C::manualControl)
         {
-            tryCreateInitialMovementSound();
             return true;
         }
 
@@ -1117,7 +1095,6 @@ namespace OpenLoco::Vehicles
             return sub_4A8F22();
         }
 
-        tryCreateInitialMovementSound();
         return true;
     }
 
@@ -1153,7 +1130,6 @@ namespace OpenLoco::Vehicles
         {
             status = Status::approaching;
             stationId = nextStation;
-            tryCreateInitialMovementSound();
             return true;
         }
         else if (al == 2)
@@ -1161,14 +1137,12 @@ namespace OpenLoco::Vehicles
             Vehicle train(this);
             if (var_36 != train.veh2->var_36 || train.veh2->var_2E != var_2E)
             {
-                tryCreateInitialMovementSound();
                 return true;
             }
             return sub_4A8F22();
         }
         else
         {
-            tryCreateInitialMovementSound();
             return true;
         }
     }
@@ -1181,14 +1155,12 @@ namespace OpenLoco::Vehicles
         {
             status = Status::approaching;
             stationId = nextStation;
-            tryCreateInitialMovementSound();
             return true;
         }
         else if (al == 3)
         {
             if (train.veh2->var_36 != var_36 || train.veh2->var_2E != var_2E)
             {
-                tryCreateInitialMovementSound();
                 return true;
             }
 
@@ -1201,7 +1173,6 @@ namespace OpenLoco::Vehicles
             {
                 var_5C = 2;
                 vehType1->var_48 |= 1 << 0;
-                tryCreateInitialMovementSound();
                 return true;
             }
 
@@ -1219,14 +1190,12 @@ namespace OpenLoco::Vehicles
                     {
                         var_5C = 2;
                         vehType1->var_48 |= 1 << 0;
-                        tryCreateInitialMovementSound();
                         return true;
                     }
                     return landReverseFromSignal();
                 }
 
                 // Keep waiting at the signal
-                tryCreateInitialMovementSound();
                 return true;
             }
             else
@@ -1239,7 +1208,6 @@ namespace OpenLoco::Vehicles
                         {
                             var_5C = 2;
                             vehType1->var_48 |= 1 << 0;
-                            tryCreateInitialMovementSound();
                             return true;
                         }
                     }
@@ -1256,7 +1224,6 @@ namespace OpenLoco::Vehicles
                 }
 
                 // Keep waiting at the signal
-                tryCreateInitialMovementSound();
                 return true;
             }
         }
@@ -1282,7 +1249,6 @@ namespace OpenLoco::Vehicles
             }
             else
             {
-                tryCreateInitialMovementSound();
                 return true;
             }
         }
@@ -1296,7 +1262,6 @@ namespace OpenLoco::Vehicles
 
         if (var_36 != train.veh2->var_36 || train.veh2->var_2E != var_2E)
         {
-            tryCreateInitialMovementSound();
             return true;
         }
         return sub_4A8F22();
