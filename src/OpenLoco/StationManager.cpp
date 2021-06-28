@@ -125,6 +125,9 @@ namespace OpenLoco::StationManager
     string_id generateNewStationName(StationId_t stationId, TownId_t townId, Map::Pos3 position, uint8_t mode)
     {
         auto* station = get(stationId);
+        if (station == nullptr)
+            return StringIds::null;
+
         station->name = StringIds::null;
 
         registers regs;
