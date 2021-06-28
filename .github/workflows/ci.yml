@@ -99,6 +99,8 @@ jobs:
     container: openloco/osxcross:latest
     steps:
       - uses: actions/checkout@v1
+      - run: |
+          ln -s /usr/osxcross/SDK/MacOSX10.13.sdk/System /System
       - shell: bash
         run: |
           curl -L https://github.com/OpenLoco/Dependencies/releases/download/v1.3.0/openloco.dependencies.macos.1.3.0.zip -o dependencies.zip
