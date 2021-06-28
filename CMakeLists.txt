@@ -223,6 +223,7 @@ if ("${CMAKE_SYSTEM_NAME}" MATCHES "(Free|Net|Open|DragonFly)BSD")
     include_directories(${YAML_CPP_INCLUDE_DIR})
 else()
     find_package(yaml-cpp REQUIRED HINTS /usr/lib32/cmake/yaml-cpp)
+    include_directories(${YAML_CPP_INCLUDE_DIR})
 endif()
 
 # Disable optimizations for interop.cpp for all compilers, to allow optimized
