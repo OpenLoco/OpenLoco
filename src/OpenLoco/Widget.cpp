@@ -40,17 +40,12 @@ namespace OpenLoco::Ui
     void draw_11_c(Gfx::Context* context, const Window* window, Widget* widget, uint8_t colour, bool disabled, int16_t x, int16_t y, string_id string);
     void draw_14(Gfx::Context* context, Widget* widget, uint8_t colour, bool disabled, int16_t x, int16_t y, string_id string);
 
-    static void sub_4CF3EB(const Gfx::Context* context, const Window* window, const Widget* widget, int16_t x, int16_t y, uint8_t colour, int16_t width)
+    // 0x004CF3EB
+    static void drawStationNameBackground(Gfx::Context* context, const Window* window, const Widget* widget, int16_t x, int16_t y, uint8_t colour, int16_t width)
     {
-        registers regs;
-        regs.eax = colour;
-        regs.bx = width;
-        regs.cx = x;
-        regs.dx = y;
-        regs.esi = (uint32_t)window;
-        regs.edi = (uint32_t)context;
-        regs.ebp = (uint32_t)widget;
-        call(0x004CF3EB, regs);
+        Gfx::drawImage(context, x - 4, y, Gfx::recolour(ImageIds::curved_border_left, colour));
+        Gfx::drawImage(context, x + width, y, Gfx::recolour(ImageIds::curved_border_right, colour));
+        Gfx::fillRect(context, x, y, x + width - 1, y + 11, Colour::getShade(colour, 5));
     }
 
     void Widget::draw(Gfx::Context* context, Window* window, const uint64_t pressedWidgets, const uint64_t toolWidgets, const uint64_t hoveredWidgets, uint8_t& scrollviewIndex)
@@ -620,7 +615,7 @@ namespace OpenLoco::Ui
         x -= width / 2;
         int16_t y = window->y + top + 1;
 
-        sub_4CF3EB(context, window, this, x, y, colour, width);
+        drawStationNameBackground(context, window, this, x, y, colour, width);
 
         Gfx::drawString(context, x, y, Colour::black, stringFormatBuffer);
     }
