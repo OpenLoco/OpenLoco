@@ -115,6 +115,7 @@ namespace OpenLoco::StringManager
     char* formatString(char* buffer, size_t bufferLen, string_id id, const void* args = nullptr);
     string_id userStringAllocate(char* str, uint8_t cl);
     void emptyUserString(string_id stringId);
+    string_id isTownName(string_id stringId);
     string_id toTownName(string_id stringId);
     string_id fromTownName(string_id stringId);
 }

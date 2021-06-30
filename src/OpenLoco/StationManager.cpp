@@ -155,6 +155,9 @@ namespace OpenLoco::StationManager
             if (station.empty())
                 continue;
 
+            if (!StringManager::isTownName(station.name))
+                continue;
+
             auto nameKey = StringManager::fromTownName(station.name) - StringIds::station_town;
             if (nameKey >= 47)
                 continue;
@@ -247,7 +250,7 @@ namespace OpenLoco::StationManager
 
             bool realNameIsInUse = (i < 27 && (realNamesInUse & (1 << i)) != 0);
             bool ordinalNameIsInUse = (i >= 27 && (ordinalNamesInUse & (1 << (i - 27))) != 0);
-            if (realNameIsInUse || ordinalNameIsInUse)
+            if (!(realNameIsInUse || ordinalNameIsInUse))
             {
                 foundName = StringManager::toTownName(StringIds::station_town + i);
                 break;
