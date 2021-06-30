@@ -578,6 +578,16 @@ namespace OpenLoco::Map::TileManager
         return surroundingWaterTiles;
     }
 
+    // 0x004BE048
+    uint16_t countSurroundingTrees(Map::Pos2 pos)
+    {
+        registers regs;
+        regs.ax = pos.x;
+        regs.cx = pos.y;
+        call(0x004BE048, regs);
+        return regs.dx;
+    }
+
     void registerHooks()
     {
         registerHook(

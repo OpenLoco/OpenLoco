@@ -240,6 +240,22 @@ namespace OpenLoco::StationManager
         }
 
         // 0x0048FAEB
+        auto numSurroundingTrees = TileManager::countSurroundingTrees(Map::Pos2(position.x, position.y));
+        if (numSurroundingTrees > 40)
+        {
+            // Forest
+            if ((realNamesInUse & (1 << 23)) != 0)
+                return StringManager::toTownName(StringIds::station_town_forest);
+        }
+        else if (numSurroundingTrees > 20)
+        {
+            // Woods
+            if ((realNamesInUse & (1 << 10)) != 0)
+                return StringManager::toTownName(StringIds::station_town_woods);
+        }
+
+        // 0x0048FB29
+
         // ...
 
         // 0x0048FC5C
