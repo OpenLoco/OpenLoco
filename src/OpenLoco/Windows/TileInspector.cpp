@@ -33,7 +33,6 @@ using namespace OpenLoco::Map;
 namespace OpenLoco::Ui::Windows::TileInspector
 {
     static loco_global<int8_t, 0x00523393> _currentTool;
-    static loco_global<uint16_t, 0x00F24484> _mapSelectionFlags;
 
     static Pos2 _currentPosition{};
 
@@ -465,13 +464,13 @@ namespace OpenLoco::Ui::Windows::TileInspector
             return;
 
         TileManager::mapInvalidateSelectionRect();
-        *_mapSelectionFlags &= ~(1 << 0);
+        Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
         TileManager::setMapSelectionSingleTile(x, y);
     }
 
     static void onToolDown(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
     {
-        if (widgetIndex != widx::panel || !(_mapSelectionFlags & 1))
+        if (widgetIndex != widx::panel || !Input::hasMapSelectionFlag(Input::MapSelectionFlags::enable))
             return;
 
         _currentPosition = TileManager::screenPosToMapPos(x, y);

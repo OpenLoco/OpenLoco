@@ -7,12 +7,6 @@
 
 namespace OpenLoco::Map::TileManager
 {
-    namespace MapSelectFlag
-    {
-        constexpr uint16_t enable = (1 << 0);
-        constexpr uint16_t enableConstruct = (1 << 1);
-    }
-
     constexpr size_t maxElements = 0x6C000;
 
     void initialise();
