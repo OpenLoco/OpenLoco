@@ -326,9 +326,13 @@ namespace OpenLoco::StationManager
         string_id foundName = StringIds::empty;
         for (auto i = 5; i < 47; i++)
         {
-            // Skip the ones we've already tested for earlier.
-            if (i == 13 || i == 16 || i == 22)
-                continue;
+            // At several positions, skip the entries we've already tested for earlier.
+            if (i == 8)
+                i = 12;
+            else if (i == 13)
+                i = 17;
+            else if (i == 22)
+                i = 24;
 
             bool realNameIsInUse = (i < 27 && (realNamesInUse & (1 << i)) != 0);
             bool ordinalNameIsInUse = (i >= 27 && (ordinalNamesInUse & (1 << (i - 27))) != 0);
