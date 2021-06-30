@@ -282,8 +282,45 @@ namespace OpenLoco::StationManager
         if ((realNamesInUse & (1 << 0)) != 0)
             return StringManager::toTownName(StringIds::station_town);
 
-        // TODO: north/south/east/west/central
-        // ...
+        auto town = TownManager::get(townId);
+        {
+            auto xDiff = std::abs(position.x - town->x);
+            auto yDiff = std::abs(position.y - town->y);
+            if (xDiff + yDiff <= 120)
+            {
+                // Central
+                if ((realNamesInUse & (1 << 5)) != 0)
+                    return StringManager::toTownName(StringIds::station_town_central);
+            }
+        }
+
+        if (position.x <= town->x && position.y <= town->y)
+        {
+            // North
+            if ((realNamesInUse & (1 << 1)) != 0)
+                return StringManager::toTownName(StringIds::station_town_north);
+        }
+
+        if (position.x >= town->x && position.y >= town->y)
+        {
+            // South
+            if ((realNamesInUse & (1 << 2)) != 0)
+                return StringManager::toTownName(StringIds::station_town_south);
+        }
+
+        if (position.x <= town->x && position.y >= town->y)
+        {
+            // East
+            if ((realNamesInUse & (1 << 3)) != 0)
+                return StringManager::toTownName(StringIds::station_town_east);
+        }
+
+        if (position.x >= town->x && position.y <= town->y)
+        {
+            // West
+            if ((realNamesInUse & (1 << 4)) != 0)
+                return StringManager::toTownName(StringIds::station_town_west);
+        }
 
         // 0x0048FC5C
         string_id foundName = StringIds::empty;
