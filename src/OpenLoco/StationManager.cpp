@@ -253,7 +253,36 @@ namespace OpenLoco::StationManager
         }
 
         // 0x0048FB29
+        {
+            auto tile = TileManager::get(Map::Pos2(position.x, position.y));
+            for (auto& element : tile)
+            {
+                auto* surface = element.asSurface();
+                if (surface == nullptr)
+                    continue;
 
+                auto townHeightDiff = (position.z / 4) - surface->baseZ();
+                if (townHeightDiff > 20)
+                {
+                    // Heights
+                    if ((realNamesInUse & (1 << 9)) != 0)
+                        return StringManager::toTownName(StringIds::station_town_heights);
+                }
+                else if (townHeightDiff < -20)
+                {
+                    // Valley
+                    if ((realNamesInUse & (1 << 8)) != 0)
+                        return StringManager::toTownName(StringIds::station_town_valley);
+                }
+                break;
+            }
+        }
+
+        // 0x0048FB8B
+        if ((realNamesInUse & (1 << 0)) != 0)
+            return StringManager::toTownName(StringIds::station_town);
+
+        // TODO: north/south/east/west/central
         // ...
 
         // 0x0048FC5C
