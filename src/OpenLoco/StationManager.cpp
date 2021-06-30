@@ -199,8 +199,7 @@ namespace OpenLoco::StationManager
                     if ((realNamesInUse & (1 << 16)) != 0)
                         return StringManager::toTownName(StringIds::station_town_docks);
                 }
-                else
-                    break;
+                break;
             }
         }
 
@@ -234,8 +233,7 @@ namespace OpenLoco::StationManager
                     if ((realNamesInUse & (1 << 11)) != 0)
                         return StringManager::toTownName(StringIds::station_town_lakeside);
                 }
-                else
-                    break;
+                break;
             }
         }
 
