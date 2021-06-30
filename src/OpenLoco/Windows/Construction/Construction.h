@@ -28,7 +28,6 @@ namespace OpenLoco::Ui::Windows::Construction
     static loco_global<uint8_t, 0x00525FAD> _lastShipPort;
     static loco_global<uint8_t, 0x00525FAE> _byte_525FAE;
     static loco_global<Gfx::Context*, 0x00E0C3E0> _dword_E0C3E0;
-    static loco_global<uint16_t, 0x00F24484> _mapSelectionFlags;
     constexpr uint16_t mapSelectedTilesSize = 300;
     static loco_global<Pos2[mapSelectedTilesSize], 0x00F24490> _mapSelectedTiles;
     static loco_global<int32_t, 0x112C876> _currentFontSpriteBase;

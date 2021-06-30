@@ -24,7 +24,6 @@ namespace OpenLoco::Map::TileManager
     static loco_global<TileElement*, 0x005230C8> _elements;
     static loco_global<TileElement* [0x30004], 0x00E40134> _tiles;
     static loco_global<TileElement*, 0x00F00134> _elementsEnd;
-    static loco_global<uint16_t, 0x00F24484> _mapSelectionFlags;
     static loco_global<coord_t, 0x00F24486> _mapSelectionAX;
     static loco_global<coord_t, 0x00F24488> _mapSelectionBX;
     static loco_global<coord_t, 0x00F2448A> _mapSelectionAY;
@@ -340,9 +339,9 @@ namespace OpenLoco::Map::TileManager
         if (xPos == 0x8000)
             return 0x8000;
 
-        if ((_mapSelectionFlags & 1) == 0)
+        if (!Input::hasMapSelectionFlag(Input::MapSelectionFlags::enable))
         {
-            _mapSelectionFlags = _mapSelectionFlags | 1;
+            Input::setMapSelectionFlags(Input::MapSelectionFlags::enable);
             count++;
         }
 
@@ -422,9 +421,9 @@ namespace OpenLoco::Map::TileManager
             return 0x8000;
 
         auto count = 0;
-        if ((_mapSelectionFlags & 1) == 0)
+        if (!Input::hasMapSelectionFlag(Input::MapSelectionFlags::enable))
         {
-            _mapSelectionFlags = _mapSelectionFlags | 1;
+            Input::setMapSelectionFlags(Input::MapSelectionFlags::enable);
             count++;
         }
 
@@ -471,7 +470,7 @@ namespace OpenLoco::Map::TileManager
     // 0x004610F2
     void mapInvalidateSelectionRect()
     {
-        if ((Input::getMapSelectionFlags() & MapSelectFlag::enable) != 0)
+        if (Input::hasMapSelectionFlag(Input::MapSelectionFlags::enable))
         {
             for (coord_t x = _mapSelectionAX; x <= _mapSelectionBX; x += 32)
             {
@@ -494,7 +493,7 @@ namespace OpenLoco::Map::TileManager
     // 0x0046112C
     void mapInvalidateMapSelectionTiles()
     {
-        if ((Input::getMapSelectionFlags() & MapSelectFlag::enableConstruct) == 0)
+        if (!Input::hasMapSelectionFlag(Input::MapSelectionFlags::enableConstruct))
             return;
 
         for (uint16_t index = 0; index < mapSelectedTilesSize; ++index)

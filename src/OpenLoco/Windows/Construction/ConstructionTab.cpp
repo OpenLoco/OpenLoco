@@ -279,7 +279,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     static void activateSelectedRoadWidgets(Window* window)
     {
         TileManager::mapInvalidateMapSelectionTiles();
-        _mapSelectionFlags = _mapSelectionFlags | (1 << 3) | (1 << 1);
+        Input::setMapSelectionFlags(Input::MapSelectionFlags::enableConstruct | Input::MapSelectionFlags::unk_03);
 
         auto road = getRoadPieceId(_lastSelectedTrackPiece, _lastSelectedTrackGradient, _constructionRotation);
 
@@ -474,7 +474,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     static void activateSelectedTrackWidgets(Window* window)
     {
         TileManager::mapInvalidateMapSelectionTiles();
-        _mapSelectionFlags = _mapSelectionFlags | (1 << 3) | (1 << 1);
+        Input::setMapSelectionFlags(Input::MapSelectionFlags::enableConstruct | Input::MapSelectionFlags::unk_03);
 
         auto track = getTrackPieceId(_lastSelectedTrackPiece, _lastSelectedTrackGradient, _constructionRotation);
 
@@ -1644,7 +1644,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             int16_t roadHeight = 0;
 
             auto i = 0;
-            if (_mapSelectionFlags & (1 << 1))
+            if (Input::hasMapSelectionFlag(Input::MapSelectionFlags::enableConstruct))
             {
                 for (auto& tile = _mapSelectedTiles[i]; tile.x != -1; tile = _mapSelectedTiles[++i])
                 {
@@ -1662,7 +1662,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             }
             // loc_4A23F8
             _word_1136000 = roadHeight;
-            _mapSelectionFlags = _mapSelectionFlags & ~((1 << 2) | (1 << 1) | (1 << 0));
+            Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable | Input::MapSelectionFlags::enableConstruct | Input::MapSelectionFlags::unk_02);
 
             auto height = sub_478361(x, y);
             Pos2 mapPos;
@@ -1745,7 +1745,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             int16_t trackHeight = 0;
             auto i = 0;
 
-            if (_mapSelectionFlags & (1 << 1))
+            if (Input::hasMapSelectionFlag(Input::MapSelectionFlags::enableConstruct))
             {
                 for (auto& tile = _mapSelectedTiles[i]; tile.x != -1; tile = _mapSelectedTiles[++i])
                 {
@@ -1762,7 +1762,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 }
             }
             _word_1136000 = trackHeight;
-            _mapSelectionFlags = _mapSelectionFlags & ~((1 << 2) | (1 << 1) | (1 << 0));
+            Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable | Input::MapSelectionFlags::enableConstruct | Input::MapSelectionFlags::unk_02);
 
             auto height = sub_4A4011(x, y);
             Pos2 mapPos;

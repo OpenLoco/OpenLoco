@@ -25,7 +25,6 @@ using namespace OpenLoco::Map;
 namespace OpenLoco::Ui::Windows::Station
 {
     static loco_global<uint8_t[map_size], 0x00F00484> _byte_F00484;
-    static loco_global<uint16_t, 0x00F24484> _mapSelectionFlags;
     static loco_global<uint16_t, 0x00112C786> _lastSelectedStation;
 
     namespace Common

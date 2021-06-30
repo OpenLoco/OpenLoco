@@ -49,7 +49,6 @@ namespace OpenLoco::Ui::Windows::Terraform
     static loco_global<uint8_t, 0x0113649A> _byte_113649A;
     static loco_global<uint8_t, 0x0113649E> _treeClusterType;
     static loco_global<int16_t, 0x0050A000> _adjustToolSize;
-    static loco_global<uint16_t, 0x00F24484> _mapSelectionFlags;
     static loco_global<uint32_t, 0x00F2530C> _raiseLandCost;
     static loco_global<uint32_t, 0x00F25310> _lowerLandCost;
     static loco_global<uint32_t, 0x01136484> _lastTreeCost;
@@ -829,7 +828,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
         static void clearLand(uint8_t flags)
         {
-            if ((_mapSelectionFlags & 1))
+            if (Input::hasMapSelectionFlag(Input::MapSelectionFlags::enable))
             {
                 int16_t x = _mapSelectionAX + _mapSelectionBX;
                 int16_t y = _mapSelectionAY + _mapSelectionBY;
@@ -871,9 +870,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             if (widgetIndex == Common::widx::panel)
             {
                 TileManager::mapInvalidateSelectionRect();
-
-                // Reset map selection
-                _mapSelectionFlags = _mapSelectionFlags & ~(1 << 0);
+                Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
             }
         }
 
@@ -1156,7 +1153,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             if (_currentTool != 3)
             {
-                _mapSelectionFlags = _mapSelectionFlags & ~(1 << 0);
+                Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
                 if (_adjustLandToolSize != 1)
                 {
                     auto count = TileManager::setMapSelectionTiles(x, y);
@@ -1180,7 +1177,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             }
             else
             {
-                if (!(_mapSelectionFlags & 1))
+                if (!Input::hasMapSelectionFlag(Input::MapSelectionFlags::enable))
                     return;
             }
 
@@ -1206,7 +1203,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         {
             if (widgetIndex != Common::widx::panel)
                 return;
-            if (!(_mapSelectionFlags & 1))
+            if (!Input::hasMapSelectionFlag(Input::MapSelectionFlags::enable))
                 return;
 
             // CHANGE: Allows the player to change land type outside of the scenario editor.
@@ -1279,8 +1276,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             {
                 TileManager::mapInvalidateSelectionRect();
 
-                // Reset map selection
-                _mapSelectionFlags = _mapSelectionFlags & ~(1 << 0);
+                Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
                 _currentTool = 18;
             }
         }
@@ -1527,8 +1523,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             {
                 TileManager::mapInvalidateSelectionRect();
 
-                // Reset map selection
-                _mapSelectionFlags = _mapSelectionFlags & ~(1 << 0);
+                Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
                 _currentTool = 19;
             }
         }

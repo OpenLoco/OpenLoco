@@ -321,8 +321,7 @@ namespace OpenLoco::Input
             Map::TileManager::mapInvalidateSelectionRect();
             Map::TileManager::mapInvalidateMapSelectionTiles();
 
-            // Reset map selection
-            _mapSelectionFlags = _mapSelectionFlags & 0xFFE0;
+            resetMapSelectionFlag(MapSelectionFlags::enable | MapSelectionFlags::enableConstruct | MapSelectionFlags::unk_02 | MapSelectionFlags::unk_03 | MapSelectionFlags::unk_04);
 
             if (_toolWidgetIndex >= 0)
             {
