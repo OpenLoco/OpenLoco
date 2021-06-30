@@ -553,7 +553,7 @@ namespace OpenLoco::Map::TileManager
     {
         registerHook(
             0x004612A6,
-            [](registers& regs) -> uint8_t {
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 createAnimation(regs.dh, { regs.ax, regs.cx }, regs.dl);
                 return 0;
             });
