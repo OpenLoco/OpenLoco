@@ -6,6 +6,7 @@
 #include "../Interop/Interop.hpp"
 #include "../Localisation/FormatArguments.hpp"
 #include "../Localisation/StringIds.h"
+#include "../Map/TileManager.h"
 #include "../Objects/BuildingObject.h"
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/ObjectManager.h"
@@ -970,9 +971,37 @@ namespace OpenLoco::Ui::Windows::TownList
             Ui::Windows::hideGridlines();
         }
 
+        static Map::Pos2 sub_49B3B2(const int16_t x, const int16_t y)
+        {
+            auto* townListWnd = WindowManager::find(WindowType::townList);
+            if (townListWnd == nullptr)
+            {
+                return { 0x8000, 0 };
+            }
+
+            if (townListWnd->current_tab != (Common::widx::tab_build_misc_buildings - Common::widx::tab_town_list) && townListWnd->current_tab != (Common::widx::tab_build_buildings - Common::widx::tab_town_list))
+            {
+                return { 0x8000, 0 };
+            }
+
+            if (townListWnd->row_hover == -1)
+            {
+                return { 0x8000, 0 };
+            }
+
+
+            registers regs;
+            regs.ax = x;
+            regs.bx = y;
+            call(0x0049B37F, regs);
+            return Map::Pos2(regs.ax, regs.cx);
+        }
+
         // 0x0049ABF0
         static void onToolUpdate(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
+            Map::TileManager::mapInvalidateSelectionRect();
+            Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
             registers regs;
             regs.esi = (int32_t)&self;
             regs.dx = widgetIndex;
