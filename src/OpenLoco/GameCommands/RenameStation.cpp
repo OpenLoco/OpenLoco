@@ -71,7 +71,7 @@ namespace OpenLoco::GameCommands
         if (strlen(renameStringBuffer) == 0)
         {
             string_id oldStringId = station->name;
-            station->name = StationManager::generateNewStationName(stationId, station->town, Map::Pos3(station->x, station->y, station->z), 0);
+            station->name = StationManager::generateNewStationName(_stationId, station->town, Map::Pos3(station->x, station->y, station->z), 0);
             StringManager::emptyUserString(oldStringId);
 
             station->updateLabel();
