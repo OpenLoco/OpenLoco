@@ -32,7 +32,6 @@ namespace OpenLoco::Ui
     }
 
     static loco_global<int32_t, 0x112C876> _currentFontSpriteBase;
-    static loco_global<char[512], 0x0112CC04> stringFormatBuffer;
     static loco_global<char[1], 0x112C826> _commonFormatArgs;
 
     static loco_global<char[2], 0x005045F8> _strCheckmark;
@@ -608,55 +607,58 @@ namespace OpenLoco::Ui
     // 0x004CA750
     void Widget::draw_23_caption(Gfx::Context* context, const Window* window, uint16_t flags, uint8_t colour)
     {
-        stringFormatBuffer[0] = ControlCodes::colour_black;
-        StringManager::formatString(&stringFormatBuffer[1], text, _commonFormatArgs);
+        char stringBuffer[512];
+        stringBuffer[0] = ControlCodes::colour_black;
+        StringManager::formatString(&stringBuffer[1], text, _commonFormatArgs);
 
         int16_t width = right - left - 4 - 14;
         int16_t x = left + window->x + 2 + (width / 2);
 
         _currentFontSpriteBase = Font::medium_bold;
-        width = Gfx::clipString(width - 8, stringFormatBuffer);
+        width = Gfx::clipString(width - 8, stringBuffer);
 
         x -= width / 2;
         int16_t y = window->y + top + 1;
 
         sub_4CF3EB(context, window, this, x, y, colour, width);
 
-        Gfx::drawString(context, x, y, Colour::black, stringFormatBuffer);
+        Gfx::drawString(context, x, y, Colour::black, stringBuffer);
     }
 
     // 0x004CA7F6
     void Widget::draw_24_caption(Gfx::Context* context, const Window* window, uint16_t flags, uint8_t colour)
     {
-        stringFormatBuffer[0] = ControlCodes::window_colour_1;
-        StringManager::formatString(&stringFormatBuffer[1], text, _commonFormatArgs);
+        char stringBuffer[512];
+        stringBuffer[0] = ControlCodes::window_colour_1;
+        StringManager::formatString(&stringBuffer[1], text, _commonFormatArgs);
 
         int16_t x = left + window->x + 2;
         int16_t width = right - left - 4 - 14;
         x = x + (width / 2);
 
         _currentFontSpriteBase = Font::medium_bold;
-        int16_t stringWidth = Gfx::clipString(width - 8, stringFormatBuffer);
+        int16_t stringWidth = Gfx::clipString(width - 8, stringBuffer);
         x -= (stringWidth - 1) / 2;
 
-        Gfx::drawString(context, x, window->y + top + 1, FormatFlags::textflag_5 | Colour::black, stringFormatBuffer);
+        Gfx::drawString(context, x, window->y + top + 1, FormatFlags::textflag_5 | Colour::black, stringBuffer);
     }
 
     // 0x004CA88B
     void Widget::draw_25_caption(Gfx::Context* context, const Window* window, uint16_t flags, uint8_t colour)
     {
-        stringFormatBuffer[0] = ControlCodes::colour_white;
-        StringManager::formatString(&stringFormatBuffer[1], text, _commonFormatArgs);
+        char stringBuffer[512];
+        stringBuffer[0] = ControlCodes::colour_white;
+        StringManager::formatString(&stringBuffer[1], text, _commonFormatArgs);
 
         int16_t x = left + window->x + 2;
         int16_t width = right - left - 4 - 14;
         x = x + (width / 2);
 
         _currentFontSpriteBase = Font::medium_bold;
-        int16_t stringWidth = Gfx::clipString(width - 8, stringFormatBuffer);
+        int16_t stringWidth = Gfx::clipString(width - 8, stringBuffer);
         x -= (stringWidth - 1) / 2;
 
-        Gfx::drawString(context, x, window->y + top + 1, FormatFlags::textflag_5 | Colour::black, stringFormatBuffer);
+        Gfx::drawString(context, x, window->y + top + 1, FormatFlags::textflag_5 | Colour::black, stringBuffer);
     }
 
     static void draw_hscroll(Gfx::Context* context, const Window* window, Widget* widget, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated, bool hovered, int16_t scrollview_index)
