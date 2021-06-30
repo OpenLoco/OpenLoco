@@ -70,6 +70,10 @@ namespace OpenLoco::GameCommands
         // If an empty string is given, generate one instead.
         if (strlen(renameStringBuffer) == 0)
         {
+            // Bailing out early?
+            if ((flags & GameCommands::Flags::apply) == 0)
+                return 0;
+
             string_id oldStringId = station->name;
             station->name = StationManager::generateNewStationName(_stationId, station->town, Map::Pos3(station->x, station->y, station->z), 0);
             StringManager::emptyUserString(oldStringId);
