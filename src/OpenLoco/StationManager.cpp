@@ -332,4 +332,16 @@ namespace OpenLoco::StationManager
             }
         }
     }
+
+    void registerHooks()
+    {
+        // Can be removed once the createStation function has been implemented (used by place.*Station game commands)
+        registerHook(
+            0x048F988,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                StationId_t stationId = static_cast<StationId_t>((0x005E6EDC - regs.esi) / sizeof(Station));
+                regs.bx = generateNewStationName(stationId, regs.ebx, Map::Pos3(regs.ax, regs.cx, regs.dh), regs.dl);
+                return 0;
+            });
+    }
 }

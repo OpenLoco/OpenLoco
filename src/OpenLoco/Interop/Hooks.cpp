@@ -23,6 +23,7 @@
 #include "../S5/S5.h"
 #include "../Scenario.h"
 #include "../Station.h"
+#include "../StationManager.h"
 #include "../Title.h"
 #include "../Tutorial.h"
 #include "../Ui.h"
@@ -780,6 +781,7 @@ void OpenLoco::Interop::registerHooks()
     Ui::ViewportManager::registerHooks();
     GameCommands::registerHooks();
     Scenario::registerHooks();
+    StationManager::registerHooks();
     S5::registerHooks();
     Title::registerHooks();
     OpenLoco::Tutorial::registerHooks();
