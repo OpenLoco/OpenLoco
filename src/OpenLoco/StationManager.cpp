@@ -207,12 +207,14 @@ namespace OpenLoco::StationManager
         // 0x0048FA41
         if (IndustryManager::industryExistsAtPosition(Map::Pos2(position.x, position.y), IndustryObjectFlags::oilfield))
         {
-            return StringManager::toTownName(StringIds::station_town_oilfield);
+            if ((realNamesInUse & (1 << 14)) != 0)
+                return StringManager::toTownName(StringIds::station_town_oilfield);
         }
 
         if (IndustryManager::industryExistsAtPosition(Map::Pos2(position.x, position.y), IndustryObjectFlags::mines))
         {
-            return StringManager::toTownName(StringIds::station_town_mines);
+            if ((realNamesInUse & (1 << 15)) != 0)
+                return StringManager::toTownName(StringIds::station_town_mines);
         }
 
         // 0x0048FA91
