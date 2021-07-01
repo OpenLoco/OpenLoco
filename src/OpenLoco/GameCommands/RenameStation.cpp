@@ -67,39 +67,36 @@ namespace OpenLoco::GameCommands
         if (strcmp(currentStationName, renameStringBuffer) == 0)
             return 0;
 
+        string_id oldStringId = station->name;
+
         // If an empty string is given, generate one instead.
         if (strlen(renameStringBuffer) == 0)
         {
-            // Bailing out early?
+            // Are we bailing out early?
             if ((flags & GameCommands::Flags::apply) == 0)
                 return 0;
 
-            string_id oldStringId = station->name;
             station->name = StationManager::generateNewStationName(_stationId, station->town, Map::Pos3(station->x, station->y, station->z), 0);
-            StringManager::emptyUserString(oldStringId);
-
-            station->updateLabel();
-            Gfx::invalidateScreen();
-            return 0;
         }
-
-        // Allocate a string id for the new name.
-        string_id allocatedStringId = StringManager::userStringAllocate(renameStringBuffer, 0);
-        if (allocatedStringId == StringIds::empty)
-            return GameCommands::FAILURE;
-
-        // Bailing out early?
-        if ((flags & GameCommands::Flags::apply) == 0)
+        else
         {
-            StringManager::emptyUserString(allocatedStringId);
-            return 0;
+            // Allocate a string id for the new name.
+            string_id allocatedStringId = StringManager::userStringAllocate(renameStringBuffer, 0);
+            if (allocatedStringId == StringIds::empty)
+                return GameCommands::FAILURE;
+
+            // Are we bailing out early?
+            if ((flags & GameCommands::Flags::apply) == 0)
+            {
+                StringManager::emptyUserString(allocatedStringId);
+                return 0;
+            }
+
+            // Apply the new name to the station.
+            station->name = allocatedStringId;
         }
 
-        // Apply the new name to the station.
-        string_id oldStringId = station->name;
-        station->name = allocatedStringId;
         StringManager::emptyUserString(oldStringId);
-
         station->updateLabel();
         Gfx::invalidateScreen();
         return 0;
