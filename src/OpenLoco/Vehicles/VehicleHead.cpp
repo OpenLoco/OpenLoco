@@ -11,6 +11,7 @@
 #include "../IndustryManager.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/FormatArguments.hpp"
+#include "../Localisation/StringIds.h"
 #include "../Map/TileManager.h"
 #include "../Math/Bound.hpp"
 #include "../Math/Trigonometry.hpp"

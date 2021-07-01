@@ -5,6 +5,7 @@
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/FormatArguments.hpp"
+#include "../Localisation/StringIds.h"
 #include "../Localisation/StringManager.h"
 #include "../Objects/CargoObject.h"
 #include "../Objects/ObjectManager.h"

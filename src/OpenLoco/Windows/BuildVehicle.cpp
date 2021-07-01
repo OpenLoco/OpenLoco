@@ -7,6 +7,7 @@
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/FormatArguments.hpp"
+#include "../Localisation/StringIds.h"
 #include "../Map/Map.hpp"
 #include "../Objects/CargoObject.h"
 #include "../Objects/InterfaceSkinObject.h"

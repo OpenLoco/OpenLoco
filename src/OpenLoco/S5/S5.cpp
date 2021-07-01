@@ -9,6 +9,7 @@
 #include "../Gui.h"
 #include "../IndustryManager.h"
 #include "../Interop/Interop.hpp"
+#include "../Localisation/StringIds.h"
 #include "../Localisation/StringManager.h"
 #include "../Map/TileManager.h"
 #include "../Objects/ObjectManager.h"

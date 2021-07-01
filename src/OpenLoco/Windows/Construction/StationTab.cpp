@@ -2,6 +2,7 @@
 #include "../../Graphics/ImageIds.h"
 #include "../../Input.h"
 #include "../../Localisation/FormatArguments.hpp"
+#include "../../Localisation/StringIds.h"
 #include "../../Objects/AirportObject.h"
 #include "../../Objects/CargoObject.h"
 #include "../../Objects/DockObject.h"

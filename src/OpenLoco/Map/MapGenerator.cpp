@@ -1,5 +1,6 @@
 #include "MapGenerator.h"
 #include "../Interop/Interop.hpp"
+#include "../Localisation/StringIds.h"
 #include "../S5/S5.h"
 #include "../Scenario.h"
 #include "../Ui/ProgressBar.h"

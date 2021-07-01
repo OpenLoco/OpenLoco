@@ -1,7 +1,5 @@
 #pragma once
-
 #include "../Localisation/StringIds.h"
-#include "../Localisation/StringManager.h"
 #include "../Speed.hpp"
 
 namespace OpenLoco
@@ -246,7 +244,7 @@ namespace OpenLoco
 
     namespace StringIds
     {
-        constexpr string_id getVehicleType(VehicleType type)
+        constexpr string_id getVehicleType(const VehicleType type)
         {
             switch (type)
             {

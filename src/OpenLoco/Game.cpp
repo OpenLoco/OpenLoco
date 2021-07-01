@@ -6,6 +6,7 @@
 #include "GameException.hpp"
 #include "Input.h"
 #include "Interop/Interop.hpp"
+#include "Localisation/StringIds.h"
 #include "MultiPlayer.h"
 #include "S5/S5.h"
 #include "Title.h"

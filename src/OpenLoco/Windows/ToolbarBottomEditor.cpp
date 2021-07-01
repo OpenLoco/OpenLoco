@@ -2,6 +2,7 @@
 #include "../Graphics/Colour.h"
 #include "../Graphics/ImageIds.h"
 #include "../Input.h"
+#include "../Localisation/StringIds.h"
 #include "../Widget.h"
 #include <map>
 

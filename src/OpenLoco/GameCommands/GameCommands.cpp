@@ -3,6 +3,7 @@
 #include "../Company.h"
 #include "../CompanyManager.h"
 #include "../Localisation/FormatArguments.hpp"
+#include "../Localisation/StringIds.h"
 #include "../Map/Tile.h"
 #include "../Objects/ObjectManager.h"
 #include "../Objects/RoadObject.h"

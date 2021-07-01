@@ -3,10 +3,12 @@
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/FormatArguments.hpp"
+#include "../Localisation/StringIds.h"
 #include "../OpenLoco.h"
 #include "../Ui.h"
 #include "../Ui/WindowManager.h"
 #include "../Widget.h"
+
 #include <SDL2/SDL.h>
 #include <cstring>
 
