@@ -737,13 +737,15 @@ namespace OpenLoco::ObjectManager
         // Prepare progress bar
         char caption[512];
         auto* str = StringManager::formatString(caption, sizeof(caption), StringIds::installing_new_data);
-        strcat(str, objectHeader.name);
+        // Convert object name to string so it is properly terminated
+        std::string objectname(objectHeader.getName());
+        strcat(str, objectname.c_str());
         Ui::ProgressBar::begin(caption);
         Ui::ProgressBar::setProgress(50);
         miniMessageLoop();
 
         // Get new file path
-        std::string filename(objectHeader.getName());
+        std::string filename = objectname;
         sanatiseObjectFilename(filename);
         auto objPath = findObjectPath(filename);
 
