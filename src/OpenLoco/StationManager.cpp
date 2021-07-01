@@ -174,13 +174,13 @@ namespace OpenLoco::StationManager
         if (mode == 1)
         {
             // Airport
-            if ((realNamesInUse & (1 << 13)) != 0)
+            if ((realNamesInUse & (1 << 13)) == 0)
                 return StringManager::toTownName(StringIds::station_town_airport);
         }
         else if (mode == 2)
         {
             // Heliport
-            if ((realNamesInUse & (1 << 22)) != 0)
+            if ((realNamesInUse & (1 << 22)) == 0)
                 return StringManager::toTownName(StringIds::station_town_heliport);
         }
         else if (mode == 3)
@@ -196,7 +196,7 @@ namespace OpenLoco::StationManager
                 if (surface->water() > 0)
                 {
                     // Docks
-                    if ((realNamesInUse & (1 << 16)) != 0)
+                    if ((realNamesInUse & (1 << 16)) == 0)
                         return StringManager::toTownName(StringIds::station_town_docks);
                 }
                 break;
@@ -206,13 +206,13 @@ namespace OpenLoco::StationManager
         // 0x0048FA41
         if (IndustryManager::industryExistsAtPosition(Map::Pos2(position.x, position.y), IndustryObjectFlags::oilfield))
         {
-            if ((realNamesInUse & (1 << 14)) != 0)
+            if ((realNamesInUse & (1 << 14)) == 0)
                 return StringManager::toTownName(StringIds::station_town_oilfield);
         }
 
         if (IndustryManager::industryExistsAtPosition(Map::Pos2(position.x, position.y), IndustryObjectFlags::mines))
         {
-            if ((realNamesInUse & (1 << 15)) != 0)
+            if ((realNamesInUse & (1 << 15)) == 0)
                 return StringManager::toTownName(StringIds::station_town_mines);
         }
 
@@ -230,7 +230,7 @@ namespace OpenLoco::StationManager
                 if (surface->water() == 0)
                 {
                     // Lakeside
-                    if ((realNamesInUse & (1 << 11)) != 0)
+                    if ((realNamesInUse & (1 << 11)) == 0)
                         return StringManager::toTownName(StringIds::station_town_lakeside);
                 }
                 break;
@@ -242,13 +242,13 @@ namespace OpenLoco::StationManager
         if (numSurroundingTrees > 40)
         {
             // Forest
-            if ((realNamesInUse & (1 << 23)) != 0)
+            if ((realNamesInUse & (1 << 23)) == 0)
                 return StringManager::toTownName(StringIds::station_town_forest);
         }
         else if (numSurroundingTrees > 20)
         {
             // Woods
-            if ((realNamesInUse & (1 << 10)) != 0)
+            if ((realNamesInUse & (1 << 10)) == 0)
                 return StringManager::toTownName(StringIds::station_town_woods);
         }
 
@@ -265,13 +265,13 @@ namespace OpenLoco::StationManager
                 if (townHeightDiff > 20)
                 {
                     // Heights
-                    if ((realNamesInUse & (1 << 9)) != 0)
+                    if ((realNamesInUse & (1 << 9)) == 0)
                         return StringManager::toTownName(StringIds::station_town_heights);
                 }
                 else if (townHeightDiff < -20)
                 {
                     // Valley
-                    if ((realNamesInUse & (1 << 8)) != 0)
+                    if ((realNamesInUse & (1 << 8)) == 0)
                         return StringManager::toTownName(StringIds::station_town_valley);
                 }
                 break;
@@ -279,7 +279,7 @@ namespace OpenLoco::StationManager
         }
 
         // 0x0048FB8B
-        if ((realNamesInUse & (1 << 0)) != 0)
+        if ((realNamesInUse & (1 << 0)) == 0)
             return StringManager::toTownName(StringIds::station_town);
 
         auto town = TownManager::get(townId);
@@ -289,7 +289,7 @@ namespace OpenLoco::StationManager
             if (xDiff + yDiff <= 120)
             {
                 // Central
-                if ((realNamesInUse & (1 << 5)) != 0)
+                if ((realNamesInUse & (1 << 5)) == 0)
                     return StringManager::toTownName(StringIds::station_town_central);
             }
         }
@@ -297,28 +297,28 @@ namespace OpenLoco::StationManager
         if (position.x <= town->x && position.y <= town->y)
         {
             // North
-            if ((realNamesInUse & (1 << 1)) != 0)
+            if ((realNamesInUse & (1 << 1)) == 0)
                 return StringManager::toTownName(StringIds::station_town_north);
         }
 
         if (position.x >= town->x && position.y >= town->y)
         {
             // South
-            if ((realNamesInUse & (1 << 2)) != 0)
+            if ((realNamesInUse & (1 << 2)) == 0)
                 return StringManager::toTownName(StringIds::station_town_south);
         }
 
         if (position.x <= town->x && position.y >= town->y)
         {
             // East
-            if ((realNamesInUse & (1 << 3)) != 0)
+            if ((realNamesInUse & (1 << 3)) == 0)
                 return StringManager::toTownName(StringIds::station_town_east);
         }
 
         if (position.x >= town->x && position.y <= town->y)
         {
             // West
-            if ((realNamesInUse & (1 << 4)) != 0)
+            if ((realNamesInUse & (1 << 4)) == 0)
                 return StringManager::toTownName(StringIds::station_town_west);
         }
 
