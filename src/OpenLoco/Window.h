@@ -4,7 +4,6 @@
 #include "Core/Optional.hpp"
 #include "Graphics/Gfx.h"
 #include "Interop/Interop.hpp"
-#include "Localisation/StringManager.h"
 #include "Map/Tile.h"
 #include "Objects/ObjectManager.h"
 #include "Types.hpp"

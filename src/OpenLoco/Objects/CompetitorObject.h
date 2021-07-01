@@ -1,5 +1,5 @@
 #pragma once
-#include "../Localisation/StringManager.h"
+#include "../Types.hpp"
 #include <array>
 
 namespace OpenLoco
