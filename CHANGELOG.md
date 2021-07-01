@@ -2,6 +2,7 @@
 ------------------------------------------------------------------------
 - Feature: [#856] Allow filtering the vehicle list by station or cargo type.
 - Fix: [#982] Incorrect rating calculation for cargo causing penalty for fast vehicles.
+- Fix: [#984] Unable to reset/regenerate station names by using an empty name.
 - Fix: [#1008] Inability to decrease max altitude for trees in landscape editor.
 - Fix: [#1016] Incorrect detection of station causing incorrect smoke sounds.
 - Technical: [#986] Stack misalignment in GCC builds caused unexplained crashes on Linux and Mac during interop hooks with loco.exe.

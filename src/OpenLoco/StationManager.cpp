@@ -1,6 +1,7 @@
 #include "StationManager.h"
 #include "CompanyManager.h"
 #include "Interop/Interop.hpp"
+#include "Localisation/FormatArguments.hpp"
 #include "OpenLoco.h"
 #include "TownManager.h"
 #include "Ui/WindowManager.h"
@@ -118,6 +119,27 @@ namespace OpenLoco::StationManager
                 }
             }
         }
+    }
+
+    // 0x048F988
+    string_id generateNewStationName(StationId_t stationId, TownId_t townId, Map::Pos3 position, uint8_t mode)
+    {
+        auto* station = get(stationId);
+        if (station == nullptr)
+            return StringIds::null;
+
+        station->name = StringIds::null;
+
+        registers regs;
+        regs.esi = reinterpret_cast<int32_t>(station);
+        regs.ebx = townId;
+        regs.dh = static_cast<uint8_t>(position.z / 4);
+        regs.dl = mode;
+        regs.ax = position.x & 0xFFE0;
+        regs.cx = position.y & 0xFFE0;
+
+        call(0x048F988, regs);
+        return regs.bx;
     }
 
     // 0x0049088B
