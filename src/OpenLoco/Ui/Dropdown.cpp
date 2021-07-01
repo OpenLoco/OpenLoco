@@ -4,11 +4,11 @@
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/FormatArguments.hpp"
+#include "../Localisation/StringIds.h"
 #include "../Objects/CompetitorObject.h"
 #include "../Objects/ObjectManager.h"
 #include "../Widget.h"
 #include "../Window.h"
-#include "../Localisation/StringIds.h"
 
 #include <cassert>
 #include <cstdarg>

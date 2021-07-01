@@ -6,6 +6,7 @@
 #include "Graphics/Gfx.h"
 #include "IndustryManager.h"
 #include "Interop/Interop.hpp"
+#include "Localisation/StringIds.h"
 #include "Map/MapGenerator.h"
 #include "Map/TileManager.h"
 #include "Objects/CargoObject.h"
@@ -16,7 +17,6 @@
 #include "TownManager.h"
 #include "Ui/WindowManager.h"
 #include "Windows/Construction/Construction.h"
-#include "Localisation/StringIds.h"
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Map;

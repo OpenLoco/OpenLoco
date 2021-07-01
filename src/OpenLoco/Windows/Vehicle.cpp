@@ -29,7 +29,6 @@
 #include "../Widget.h"
 #include <map>
 
-
 using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::Vehicle

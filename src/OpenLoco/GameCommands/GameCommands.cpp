@@ -3,6 +3,7 @@
 #include "../Company.h"
 #include "../CompanyManager.h"
 #include "../Localisation/FormatArguments.hpp"
+#include "../Localisation/StringIds.h"
 #include "../Map/Tile.h"
 #include "../Objects/ObjectManager.h"
 #include "../Objects/RoadObject.h"
@@ -10,9 +11,7 @@
 #include "../StationManager.h"
 #include "../Ui/WindowManager.h"
 #include "../Vehicles/Vehicle.h"
-#include "../Localisation/StringIds.h"
 #include <cassert>
-
 
 using namespace OpenLoco::Ui;
 using namespace OpenLoco::Map;

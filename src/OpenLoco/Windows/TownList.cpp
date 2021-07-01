@@ -18,7 +18,6 @@
 #include "../Utility/Numeric.hpp"
 #include "../Widget.h"
 
-
 using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::TownList

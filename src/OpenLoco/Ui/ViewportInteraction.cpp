@@ -5,6 +5,7 @@
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/FormatArguments.hpp"
+#include "../Localisation/StringIds.h"
 #include "../Localisation/StringManager.h"
 #include "../Objects/CargoObject.h"
 #include "../Objects/ObjectManager.h"
@@ -16,9 +17,7 @@
 #include "../Vehicles/Vehicle.h"
 #include "../ViewportManager.h"
 #include "../Window.h"
-#include "../Localisation/StringIds.h"
 #include "WindowManager.h"
-
 
 using namespace OpenLoco::Interop;
 

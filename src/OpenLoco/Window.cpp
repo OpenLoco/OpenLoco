@@ -6,17 +6,15 @@
 #include "Input.h"
 #include "Interop/Interop.hpp"
 #include "Localisation/FormatArguments.hpp"
+#include "Localisation/StringIds.h"
 #include "Map/Tile.h"
 #include "Map/TileManager.h"
 #include "Ui.h"
 #include "Ui/Rect.h"
 #include "Ui/ScrollView.h"
-#include "Localisation/StringIds.h"
 #include "Widget.h"
 #include <cassert>
 #include <cinttypes>
-
-
 
 using namespace OpenLoco;
 using namespace OpenLoco::Interop;

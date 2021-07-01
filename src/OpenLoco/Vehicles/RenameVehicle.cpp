@@ -3,14 +3,12 @@
 #include "../GameCommands/GameCommands.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/FormatArguments.hpp"
+#include "../Localisation/StringIds.h"
 #include "../Localisation/StringManager.h"
 #include "../Types.hpp"
-#include "../Localisation/StringIds.h"
 #include "Vehicle.h"
 #include <array>
 #include <unordered_map>
-
-
 
 using namespace OpenLoco::Interop;
 

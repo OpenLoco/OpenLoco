@@ -11,6 +11,7 @@
 #include "../IndustryManager.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/FormatArguments.hpp"
+#include "../Localisation/StringIds.h"
 #include "../Map/TileManager.h"
 #include "../Math/Bound.hpp"
 #include "../Math/Trigonometry.hpp"
@@ -27,12 +28,9 @@
 #include "../TownManager.h"
 #include "../Ui/WindowManager.h"
 #include "../ViewportManager.h"
-#include "../Localisation/StringIds.h"
 #include "Orders.h"
 #include "Vehicle.h"
 #include <cassert>
-
-
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Literals;

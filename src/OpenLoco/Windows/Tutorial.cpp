@@ -10,8 +10,6 @@
 #include "../Ui/WindowManager.h"
 #include "../Widget.h"
 
-
-
 namespace OpenLoco::Ui::Windows::Tutorial
 {
     enum Widx

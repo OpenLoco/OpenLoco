@@ -3,11 +3,11 @@
 #include "../Graphics/Gfx.h"
 #include "../Graphics/ImageIds.h"
 #include "../Interop/Interop.hpp"
+#include "../Localisation/StringIds.h"
 #include "../OpenLoco.h"
 #include "../Ui/WindowManager.h"
 #include "../Widget.h"
 #include "../Window.h"
-#include "../Localisation/StringIds.h"
 
 #include <array>
 #include <string>

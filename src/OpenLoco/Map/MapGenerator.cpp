@@ -1,10 +1,10 @@
 #include "MapGenerator.h"
 #include "../Interop/Interop.hpp"
+#include "../Localisation/StringIds.h"
 #include "../S5/S5.h"
 #include "../Scenario.h"
 #include "../Ui/ProgressBar.h"
 #include "../Ui/WindowManager.h"
-#include "../Localisation/StringIds.h"
 #include "Tile.h"
 #include "TileLoop.hpp"
 #include "TileManager.h"
@@ -12,7 +12,6 @@
 #include <cstdint>
 #include <random>
 #include <vector>
-
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Map;
