@@ -174,7 +174,7 @@ namespace OpenLoco::StationManager
                 if (surface == nullptr)
                     continue;
 
-                if (surface->water() > 0)
+                if (surface->water() == 0)
                 {
                     // Docks
                     if ((realNamesInUse & (1 << 16)) == 0)
