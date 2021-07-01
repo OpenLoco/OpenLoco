@@ -36,6 +36,8 @@ include(CheckCXXCompilerFlag)
 
 option(STRICT "Build with warnings as errors" YES)
 
+option(USE_BREAKPAD "Build with google breakpad" NO)
+
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake;${CMAKE_MODULE_PATH}")
 
 # Describe current version in terms of closest tag
@@ -225,6 +227,60 @@ else()
     find_package(yaml-cpp REQUIRED HINTS /usr/lib32/cmake/yaml-cpp)
 endif()
 
+# use breakpad 
+include(FetchContent)
+include(ProcessorCount)
+ProcessorCount(CURRENT_PROCESSOR_COUNT)
+
+set(ExternalContentBase "${CMAKE_BINARY_DIR}/external")
+if (USE_BREAKPAD)
+    find_package(Threads REQUIRED)
+
+    message(STATUS "USE_BREAKPAD set, adding dependency of breakpad ...")
+    set(EXTERNAL_BREAKPAD_SRC "${ExternalContentBase}/breakpad/workspace")
+    set(EXTERNAL_BREAKPAD_INSTALL "${ExternalContentBase}/breakpad/install")
+
+    FetchContent_Declare(breakpad_repo
+        DOWNLOAD_DIR ${EXTERNAL_BREAKPAD_SRC}
+        SOURCE_DIR ${EXTERNAL_BREAKPAD_SRC}
+        GIT_REPOSITORY https://chromium.googlesource.com/breakpad/breakpad
+    )
+    FetchContent_Declare(breakpad_dep_lss
+        DOWNLOAD_DIR "${EXTERNAL_BREAKPAD_SRC}/src/third_party/lss"
+        SOURCE_DIR "${EXTERNAL_BREAKPAD_SRC}/src/third_party/lss"
+        GIT_REPOSITORY https://chromium.googlesource.com/linux-syscall-support
+    )
+    if (NOT breakpad_repo-POPULATED)
+        message(STATUS "Downloading breakpad repo into ${EXTERNAL_BREAKPAD_SRC} ...")
+        FetchContent_Populate(breakpad_repo)
+    endif()
+    if (NOT breakpad_dep_lss-POPULATED)
+        message(STATUS "Downloading breakpad dependency into ${EXTERNAL_BREAKPAD_SRC}/src/third_party/lss ...")
+        FetchContent_Populate(breakpad_dep_lss)
+    endif()
+
+    message(STATUS "Configure breakpad...")
+    execute_process(
+        WORKING_DIRECTORY ${EXTERNAL_BREAKPAD_SRC}
+        COMMAND ./configure --enable-m32 --prefix ${EXTERNAL_BREAKPAD_INSTALL} 
+    )
+    message(STATUS "Build breakpad with ${CURRENT_PROCESSOR_COUNT} jobs ...")
+    execute_process(
+        WORKING_DIRECTORY ${EXTERNAL_BREAKPAD_SRC}
+        COMMAND make -j${CURRENT_PROCESSOR_COUNT}
+    )
+    message(STATUS "Install breakpad...")
+    execute_process(
+        WORKING_DIRECTORY ${EXTERNAL_BREAKPAD_SRC}
+        COMMAND make install
+    )
+
+    set(ENV{PKG_CONFIG_PATH} "$ENV{PKG_CONFIG_PATH}:${EXTERNAL_BREAKPAD_INSTALL}/lib/pkgconfig")
+    pkg_check_modules(BREAKPAD REQUIRED IMPORTED_TARGET breakpad-client)
+    pkg_get_variable(BREAKPAD_PREFIX breakpad-client prefix)
+    set(BREAKPAD_DUMP_SYMS_EXE "${BREAKPAD_PREFIX}/bin/dump_syms")
+endif()
+
 # Disable optimizations for interop.cpp for all compilers, to allow optimized
 # builds without need for -fno-omit-frame-pointer
 set_source_files_properties("${CMAKE_CURRENT_SOURCE_DIR}/src/OpenLoco/Interop/Interop.cpp" PROPERTIES COMPILE_FLAGS "-fno-omit-frame-pointer -O0")
@@ -326,6 +382,21 @@ else ()
     # Dummy target to ease invocation
     add_custom_target(${PROJECT}-headers-check)
 endif ()
+
+# Breakpad
+if (USE_BREAKPAD)
+    message(STATUS "Define USE_BREAKPAD")
+    target_compile_definitions(${PROJECT} PRIVATE -DUSE_BREAKPAD)
+    # store the symbol file for breakpad
+    add_custom_command(TARGET ${PROJECT} POST_BUILD
+        COMMAND ${BREAKPAD_DUMP_SYMS_EXE} $<TARGET_FILE:${PROJECT}>
+                                        > ${CMAKE_BINARY_DIR}/${PROJECT}.sym
+    )  
+    target_link_libraries(${PROJECT} 
+        PkgConfig::BREAKPAD
+        Threads::Threads
+    )
+endif()
 
 install(FILES "distribution/linux/openloco.desktop" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/applications")
 install(FILES "resources/logo/icon_x16.png" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/16x16/apps" RENAME "openloco.png")
