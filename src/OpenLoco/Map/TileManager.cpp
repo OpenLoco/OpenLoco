@@ -620,15 +620,15 @@ namespace OpenLoco::Map::TileManager
         registerHook(
             0x004BE048,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                countSurroundingTrees({ regs.ax, regs.cx });
-                return regs.dx;
+                regs.dx = countSurroundingTrees({ regs.ax, regs.cx });
+                return 0;
             });
 
         registerHook(
             0x004C5596,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                countSurroundingWaterTiles({ regs.ax, regs.cx });
-                return regs.dx;
+                regs.dx = countSurroundingWaterTiles({ regs.ax, regs.cx });
+                return 0;
             });
     }
 }
