@@ -581,11 +581,30 @@ namespace OpenLoco::Map::TileManager
     // 0x004BE048
     uint16_t countSurroundingTrees(Map::Pos2 pos)
     {
-        registers regs;
-        regs.ax = pos.x;
-        regs.cx = pos.y;
-        call(0x004BE048, regs);
-        return regs.dx;
+        pos.x = (pos.x & 0xFFE0) - 0xA0;
+        pos.y = (pos.y & 0xFFE0) - 0xA0;
+
+        uint16_t surroundingTrees = 0;
+        for (uint8_t yOffset = 0; yOffset < 11; yOffset++)
+        {
+            for (uint8_t xOffset = 0; xOffset < 11; xOffset++)
+            {
+                auto tile = get(Map::Pos2(pos.x + xOffset, pos.y + yOffset));
+                for (auto& element : tile)
+                {
+                    auto* tree = element.asTree();
+                    if (tree == nullptr)
+                        continue;
+
+                    if (tree->isGhost())
+                        continue;
+
+                    surroundingTrees++;
+                }
+            }
+        }
+
+        return surroundingTrees;
     }
 
     void registerHooks()
@@ -595,6 +614,14 @@ namespace OpenLoco::Map::TileManager
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 createAnimation(regs.dh, { regs.ax, regs.cx }, regs.dl);
                 return 0;
+            });
+
+        // This hook can be removed once sub_4599B3 has been implemented
+        registerHook(
+            0x004BE048,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                countSurroundingTrees({ regs.ax, regs.cx });
+                return regs.dx;
             });
 
         registerHook(
