@@ -100,11 +100,8 @@ namespace OpenLoco::GameCommands
         station->name = allocatedStringId;
         StringManager::emptyUserString(oldStringId);
 
-        // Recalculate labels for the station and (surrounding) stations.
         station->updateLabel();
-        StationManager::updateLabels();
         Gfx::invalidateScreen();
-
         return 0;
     }
 
