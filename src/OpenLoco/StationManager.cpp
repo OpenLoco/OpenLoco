@@ -271,7 +271,8 @@ namespace OpenLoco::StationManager
 
         // 0x0048FB29
         {
-            auto tile = TileManager::get(Map::Pos2(position.x, position.y));
+            auto* town = TownManager::get(townId);
+            auto tile = TileManager::get(Map::Pos2(town->x, town->y));
             auto* surface = tile.surface();
             if (surface != nullptr)
             {
