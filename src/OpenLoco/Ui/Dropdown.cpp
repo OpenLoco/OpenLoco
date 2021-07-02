@@ -570,7 +570,7 @@ namespace OpenLoco::Ui::Dropdown
         _dropdownItemCount = count;
         _dropdownColumnCount = columnCount;
 
-        _dropdownRowCount = _dropdownItemCount / _dropdownColumnCount + 1 * (_dropdownItemCount % _dropdownColumnCount);
+        _dropdownRowCount = _dropdownItemCount / _dropdownColumnCount + ((_dropdownItemCount % _dropdownColumnCount) ? 1 : 0);
         uint16_t dropdownWidth = _dropdownItemWidth * _dropdownColumnCount + 3;
         common::widgets[0].right = dropdownWidth;
         uint16_t dropdownHeight = _dropdownItemHeight * _dropdownRowCount + 3;
