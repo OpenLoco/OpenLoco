@@ -63,7 +63,7 @@ namespace OpenLoco::IndustryManager
     }
 
     // 0x048FE92
-    bool industryNearPosition(Map::Pos2 position, uint32_t flags)
+    bool industryNearPosition(const Map::Pos2& position, uint32_t flags)
     {
         for (auto& industry : industries())
         {

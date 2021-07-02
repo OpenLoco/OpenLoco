@@ -550,7 +550,7 @@ namespace OpenLoco::Map::TileManager
     }
 
     // 0x004C5596
-    uint16_t countSurroundingWaterTiles(Map::Pos2 pos)
+    uint16_t countSurroundingWaterTiles(const Pos2& pos)
     {
         // Search a 10x10 area centred at pos.
         // Initial tile position is the top left of the area.
@@ -561,7 +561,7 @@ namespace OpenLoco::Map::TileManager
         {
             for (uint8_t xOffset = 0; xOffset < 11; xOffset++)
             {
-                auto tile = get(Map::TilePos2(tilePos.x + xOffset, tilePos.y + yOffset));
+                auto tile = get(tilePos + Map::TilePos2(xOffset, yOffset));
                 auto* surface = tile.surface();
                 if (surface != nullptr && surface->water() > 0)
                     surroundingWaterTiles++;
@@ -572,7 +572,7 @@ namespace OpenLoco::Map::TileManager
     }
 
     // 0x004BE048
-    uint16_t countSurroundingTrees(Map::Pos2 pos)
+    uint16_t countSurroundingTrees(const Pos2& pos)
     {
         // Search a 10x10 area centred at pos.
         // Initial tile position is the top left of the area.
