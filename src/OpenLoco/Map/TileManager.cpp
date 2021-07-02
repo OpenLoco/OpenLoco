@@ -561,17 +561,9 @@ namespace OpenLoco::Map::TileManager
             for (uint8_t xOffset = 0; xOffset < 11; xOffset++)
             {
                 auto tile = get(Map::Pos2(pos.x + xOffset, pos.y + yOffset));
-                for (auto& element : tile)
-                {
-                    auto* surface = element.asSurface();
-                    if (surface == nullptr)
-                        continue;
-
-                    if (surface->water() > 0)
-                        surroundingWaterTiles++;
-
-                    break;
-                }
+                auto* surface = tile.surface();
+                if (surface != nullptr && surface->water() > 0)
+                    surroundingWaterTiles++;
             }
         }
 
@@ -592,6 +584,8 @@ namespace OpenLoco::Map::TileManager
                 auto tile = get(Map::Pos2(pos.x + xOffset, pos.y + yOffset));
                 for (auto& element : tile)
                 {
+                    // NB: vanilla was checking for trees above the surface element.
+                    // This has been omitted from our implementation.
                     auto* tree = element.asTree();
                     if (tree == nullptr)
                         continue;

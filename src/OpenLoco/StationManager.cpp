@@ -218,19 +218,12 @@ namespace OpenLoco::StationManager
         {
             // 0x0048FA00
             auto tile = TileManager::get(Map::Pos2(position.x, position.y));
-            for (auto& element : tile)
+            auto* surface = tile.surface();
+            if (surface != nullptr && surface->water() == 0)
             {
-                auto* surface = element.asSurface();
-                if (surface == nullptr)
-                    continue;
-
-                if (surface->water() == 0)
-                {
-                    // Docks
-                    if (!realNamesInUse.test(StationName::townDocks))
-                        return StringManager::toTownName(StringIds::station_town_docks);
-                }
-                break;
+                // Docks
+                if (!realNamesInUse.test(StationName::townDocks))
+                    return StringManager::toTownName(StringIds::station_town_docks);
             }
         }
 
@@ -252,19 +245,12 @@ namespace OpenLoco::StationManager
         if (numSurroundingWaterTiles >= 24)
         {
             auto tile = TileManager::get(Map::Pos2(position.x, position.y));
-            for (auto& element : tile)
+            auto* surface = tile.surface();
+            if (surface != nullptr && surface->water() == 0)
             {
-                auto* surface = element.asSurface();
-                if (surface == nullptr)
-                    continue;
-
-                if (surface->water() == 0)
-                {
-                    // Lakeside
-                    if (!realNamesInUse.test(StationName::townLakeside))
-                        return StringManager::toTownName(StringIds::station_town_lakeside);
-                }
-                break;
+                // Lakeside
+                if (!realNamesInUse.test(StationName::townLakeside))
+                    return StringManager::toTownName(StringIds::station_town_lakeside);
             }
         }
 
@@ -286,12 +272,9 @@ namespace OpenLoco::StationManager
         // 0x0048FB29
         {
             auto tile = TileManager::get(Map::Pos2(position.x, position.y));
-            for (auto& element : tile)
+            auto* surface = tile.surface();
+            if (surface != nullptr)
             {
-                auto* surface = element.asSurface();
-                if (surface == nullptr)
-                    continue;
-
                 auto townHeightDiff = (position.z / 4) - surface->baseZ();
                 if (townHeightDiff > 20)
                 {
@@ -305,7 +288,6 @@ namespace OpenLoco::StationManager
                     if (!realNamesInUse.test(StationName::townValley))
                         return StringManager::toTownName(StringIds::station_town_valley);
                 }
-                break;
             }
         }
 
