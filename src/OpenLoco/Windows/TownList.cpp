@@ -984,11 +984,8 @@ namespace OpenLoco::Ui::Windows::TownList
         {
             if (widgetIndex == widx::object_colour)
             {
-                registers regs;
-                regs.edx = widgetIndex;
-                regs.esi = (int32_t)self;
-                regs.edi = (int32_t)&self->widgets[widgetIndex];
-                call(0x0049AB72, regs);
+                auto obj = ObjectManager::get<BuildingObject>(self->row_hover);
+                Dropdown::showColour(self, &self->widgets[widgetIndex], obj->colours, _buildingColour, self->getColour(WindowColour::secondary));
             }
         }
 
