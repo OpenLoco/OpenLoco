@@ -12,7 +12,10 @@ namespace OpenLoco::ImageIds
 
     constexpr uint32_t text_palette = 2169;
 
+    constexpr uint32_t window_resize_handle = 2305;
     constexpr uint32_t colour_swatch_recolourable = 2306;
+    constexpr uint32_t colour_swatch_recolourable_raised = 2307;
+    constexpr uint32_t colour_swatch_recolourable_pressed = 2308;
 
     constexpr uint32_t company_list_dropdown_icon = 2309;
     constexpr uint32_t icon_parent_folder = 2310;

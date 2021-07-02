@@ -220,7 +220,7 @@ namespace OpenLoco::Ui
 
         int16_t x = widget->right + window->x - 18;
         int16_t y = widget->bottom + window->y - 18;
-        uint32_t image = 0x20000000 | 2305 | (colour << 19);
+        uint32_t image = Gfx::recolour(ImageIds::window_resize_handle, colour);
         Gfx::drawImage(context, x, y, image);
     }
 

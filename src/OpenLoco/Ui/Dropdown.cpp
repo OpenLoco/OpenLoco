@@ -1,6 +1,7 @@
 #include "Dropdown.h"
 #include "../CompanyManager.h"
 #include "../Console.h"
+#include "../Graphics/ImageIds.h"
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/FormatArguments.hpp"
@@ -552,12 +553,12 @@ namespace OpenLoco::Ui::Dropdown
      * @param heightOffset
      */
 
-    void showImage(int16_t x, int16_t y, int16_t width, int16_t height, int16_t heightOffset, Colour_t colour, uint8_t columnCount, uint8_t count)
+    void showImage(int16_t x, int16_t y, int16_t width, int16_t height, int16_t heightOffset, Colour_t colour, uint8_t columnCount, uint8_t count, uint8_t flags)
     {
         assert(count < std::numeric_limits<uint8_t>::max());
         assert(count < std::size(_appropriateImageDropdownItemsPerRow));
 
-        common::setColourAndInputFlags(colour, count);
+        common::setColourAndInputFlags(colour, flags);
 
         WindowManager::close(WindowType::dropdown, 0);
         _word_113DC78 = 0;
@@ -789,6 +790,52 @@ namespace OpenLoco::Ui::Dropdown
     void showText2(int16_t x, int16_t y, int16_t width, int16_t height, Colour_t colour, size_t count, uint8_t flags)
     {
         showText2(x, y, width, height, 0, colour, count, flags & ~(1 << 6));
+    }
+
+    /**
+     * 0x004CCF8C
+     * window @ <esi>
+     * widget @ <edi>
+     * availableColours @<ebp>
+     * dropdownColour @<al>
+     * selectedColour @<ah>
+     */
+    void showColour(const Window* window, const Widget* widget, uint32_t availableColours, Colour_t selectedColour, Colour_t dropdownColour)
+    {
+        uint8_t count = 0;
+        for (uint8_t i = 0; i < 32; i++)
+        {
+            if (availableColours & (1 << i))
+                count++;
+        }
+
+        const uint8_t columnCount = getItemsPerRow(count);
+        const uint8_t flags = 0x80;
+        const uint8_t itemWidth = 16;
+        const uint8_t itemHeight = 16;
+        const int16_t x = window->x + widget->left;
+        const int16_t y = window->y + widget->top;
+        const int16_t heightOffset = widget->height() + 1;
+
+        showImage(x, y, itemWidth, itemHeight, heightOffset, dropdownColour, columnCount, count, flags);
+
+        uint8_t currentIndex = 0;
+        for (uint8_t i = 0; i < 32; i++)
+        {
+            if (!(availableColours & (1 << i)))
+                continue;
+
+            if (i == selectedColour)
+                Dropdown::setHighlightedItem(currentIndex);
+
+            auto args = FormatArguments();
+            args.push(Gfx::recolour(ImageIds::colour_swatch_recolourable_raised, i));
+            args.push<uint16_t>(i);
+
+            Dropdown::add(currentIndex, 0xFFFE, args);
+
+            currentIndex++;
+        }
     }
 
     // 0x004CF2B3
