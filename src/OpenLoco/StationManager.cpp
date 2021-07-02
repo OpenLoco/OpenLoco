@@ -346,10 +346,10 @@ namespace OpenLoco::StationManager
             { StationName::townViews, StringIds::station_town_views },
         };
 
-        for (auto namePair : additionalNamePairs)
+        for (auto [name, stringId] : additionalNamePairs)
         {
-            if (!realNamesInUse.test(namePair.first))
-                return StringManager::toTownName(namePair.second);
+            if (!realNamesInUse.test(name))
+                return StringManager::toTownName(stringId);
         }
 
         // Ordinal names to try
@@ -376,10 +376,10 @@ namespace OpenLoco::StationManager
             { StationName::townOrd20, StringIds::station_town_ord_20 },
         };
 
-        for (auto namePair : ordinalNamePairs)
+        for (auto [name, stringId] : ordinalNamePairs)
         {
-            if (!ordinalNamesInUse.test(namePair.first))
-                return StringManager::toTownName(namePair.second);
+            if (!ordinalNamesInUse.test(name))
+                return StringManager::toTownName(stringId);
         }
 
         // Default to an ordinal string instead, e.g. 'Station 42'.
