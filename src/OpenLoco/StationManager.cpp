@@ -228,23 +228,23 @@ namespace OpenLoco::StationManager
         }
 
         // 0x0048FA41
-        if (IndustryManager::industryNearPosition(Map::Pos2(position.x, position.y), IndustryObjectFlags::oilfield))
+        if (IndustryManager::industryNearPosition(position, IndustryObjectFlags::oilfield))
         {
             if (!realNamesInUse.test(StationName::townOilfield))
                 return StringManager::toTownName(StringIds::station_town_oilfield);
         }
 
-        if (IndustryManager::industryNearPosition(Map::Pos2(position.x, position.y), IndustryObjectFlags::mines))
+        if (IndustryManager::industryNearPosition(position, IndustryObjectFlags::mines))
         {
             if (!realNamesInUse.test(StationName::townMines))
                 return StringManager::toTownName(StringIds::station_town_mines);
         }
 
         // 0x0048FA91
-        auto numSurroundingWaterTiles = TileManager::countSurroundingWaterTiles(Map::Pos2(position.x, position.y));
+        auto numSurroundingWaterTiles = TileManager::countSurroundingWaterTiles(position);
         if (numSurroundingWaterTiles >= 24)
         {
-            auto tile = TileManager::get(Map::Pos2(position.x, position.y));
+            auto tile = TileManager::get(position);
             auto* surface = tile.surface();
             if (surface != nullptr && surface->water() == 0)
             {
@@ -255,7 +255,7 @@ namespace OpenLoco::StationManager
         }
 
         // 0x0048FAEB
-        auto numSurroundingTrees = TileManager::countSurroundingTrees(Map::Pos2(position.x, position.y));
+        auto numSurroundingTrees = TileManager::countSurroundingTrees(position);
         if (numSurroundingTrees > 40)
         {
             // Forest
