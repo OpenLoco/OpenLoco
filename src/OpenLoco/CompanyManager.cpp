@@ -343,4 +343,56 @@ namespace OpenLoco::CompanyManager
         }
         _company_colours[CompanyId::neutral] = 1;
     }
+
+    uint32_t competingColourMask(CompanyId_t companyId)
+    {
+        const uint32_t similarColourMask[] = {
+            0b11,
+            0b11,
+            0b100,
+            0b11000,
+            0b11000,
+            0b100000,
+            0b11000000,
+            0b11000000,
+            0b1100000000,
+            0b1100000000,
+            0b11110000000000,
+            0b11110000000000,
+            0b11110000000000,
+            0b11110000000000,
+            0b1100000000000000,
+            0b1100000000000000,
+            0b10110000000000000000,
+            0b10110000000000000000,
+            0b101000000000000000000,
+            0b10110000000000000000,
+            0b101000000000000000000,
+            0b11000000000000000000000,
+            0b11000000000000000000000,
+            0b100000000000000000000000,
+            0b1000000000000000000000000,
+            0b10000000000000000000000000,
+            0b1100000000000000000000000000,
+            0b1100000000000000000000000000,
+            0b110000000000000000000000000000,
+            0b110000000000000000000000000000,
+            0b1000000000000000000000000000000,
+        };
+
+        uint32_t mask = 0;
+        for (auto& company : companies())
+        {
+            if (company.id() == companyId)
+                continue;
+
+            mask |= similarColourMask[company.mainColours.primary];
+        }
+        return mask;
+    }
+
+    uint32_t competingColourMask()
+    {
+        return competingColourMask(_updating_company_id);
+    }
 }

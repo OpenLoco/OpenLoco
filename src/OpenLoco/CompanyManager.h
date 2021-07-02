@@ -44,4 +44,6 @@ namespace OpenLoco::CompanyManager
 
     void spendMoneyEffect(const Map::Pos3& loc, const CompanyId_t company, const currency32_t amount);
     void applyPaymentToCompany(const CompanyId_t id, const currency32_t payment, const ExpenditureType type);
+    uint32_t competingColourMask(CompanyId_t companyId);
+    uint32_t competingColourMask();
 }
