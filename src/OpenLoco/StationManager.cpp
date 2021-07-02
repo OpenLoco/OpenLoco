@@ -11,6 +11,8 @@
 #include "Ui/WindowManager.h"
 #include "Window.h"
 
+#include <bitset>
+
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui;
 
@@ -128,9 +130,60 @@ namespace OpenLoco::StationManager
     // 0x048F988
     string_id generateNewStationName(StationId_t stationId, TownId_t townId, Map::Pos3 position, uint8_t mode)
     {
+        enum StationName : uint8_t
+        {
+            townDefault,
+            townNorth,
+            townSouth,
+            townEast,
+            townWest,
+            townCentral,
+            townTransfer,
+            townHalt,
+            townValley,
+            townHeights,
+            townWoods,
+            townLakeside,
+            townExchange,
+            townAirport,
+            townOilfield,
+            townMines,
+            townDocks,
+            townAnnexe,
+            townSidings,
+            townBranch,
+            upperTown,
+            lowerTown,
+            townHeliport,
+            townForest,
+            townJunction,
+            townCross,
+            townViews,
+            townOrd1,
+            townOrd2,
+            townOrd3,
+            townOrd4,
+            townOrd5,
+            townOrd6,
+            townOrd7,
+            townOrd8,
+            townOrd9,
+            townOrd10,
+            townOrd11,
+            townOrd12,
+            townOrd13,
+            townOrd14,
+            townOrd15,
+            townOrd16,
+            townOrd17,
+            townOrd18,
+            townOrd19,
+            townOrd20,
+        };
+
         // Bit mask for station names already used in the current town.
-        uint32_t realNamesInUse{};    // ebp
-        uint32_t ordinalNamesInUse{}; // edi
+        std::bitset<27> realNamesInUse{};    // ebp
+        std::bitset<20> ordinalNamesInUse{}; // edi
         for (auto& station : stations())
         {
             if (station.empty())
@@ -140,28 +193,28 @@ namespace OpenLoco::StationManager
                 continue;
 
             auto nameKey = StringManager::fromTownName(station.name) - StringIds::station_town;
-            if (nameKey >= 47)
+            if (nameKey > StationName::townOrd20)
                 continue;
 
             if (station.town != townId)
                 continue;
 
-            if (nameKey < 27)
-                realNamesInUse |= (1 << nameKey);
+            if (nameKey < StationName::townOrd1)
+                realNamesInUse.set(nameKey, true);
             else
-                ordinalNamesInUse |= (1 << (nameKey - 27));
+                ordinalNamesInUse.set(nameKey, true);
         }
 
         if (mode == 1)
         {
             // Airport
-            if ((realNamesInUse & (1 << 13)) == 0)
+            if (!realNamesInUse.test(StationName::townAirport))
                 return StringManager::toTownName(StringIds::station_town_airport);
         }
         else if (mode == 2)
         {
             // Heliport
-            if ((realNamesInUse & (1 << 22)) == 0)
+            if (!realNamesInUse.test(StationName::townHeliport))
                 return StringManager::toTownName(StringIds::station_town_heliport);
         }
         else if (mode == 3)
@@ -177,7 +230,7 @@ namespace OpenLoco::StationManager
                 if (surface->water() == 0)
                 {
                     // Docks
-                    if ((realNamesInUse & (1 << 16)) == 0)
+                    if (!realNamesInUse.test(StationName::townDocks))
                         return StringManager::toTownName(StringIds::station_town_docks);
                 }
                 break;
@@ -187,13 +240,13 @@ namespace OpenLoco::StationManager
         // 0x0048FA41
         if (IndustryManager::industryExistsAtPosition(Map::Pos2(position.x, position.y), IndustryObjectFlags::oilfield))
         {
-            if ((realNamesInUse & (1 << 14)) == 0)
+            if (!realNamesInUse.test(StationName::townOilfield))
                 return StringManager::toTownName(StringIds::station_town_oilfield);
         }
 
         if (IndustryManager::industryExistsAtPosition(Map::Pos2(position.x, position.y), IndustryObjectFlags::mines))
         {
-            if ((realNamesInUse & (1 << 15)) == 0)
+            if (!realNamesInUse.test(StationName::townMines))
                 return StringManager::toTownName(StringIds::station_town_mines);
         }
 
@@ -211,7 +264,7 @@ namespace OpenLoco::StationManager
                 if (surface->water() == 0)
                 {
                     // Lakeside
-                    if ((realNamesInUse & (1 << 11)) == 0)
+                    if (!realNamesInUse.test(StationName::townLakeside))
                         return StringManager::toTownName(StringIds::station_town_lakeside);
                 }
                 break;
@@ -223,13 +276,13 @@ namespace OpenLoco::StationManager
         if (numSurroundingTrees > 40)
         {
             // Forest
-            if ((realNamesInUse & (1 << 23)) == 0)
+            if (!realNamesInUse.test(StationName::townForest))
                 return StringManager::toTownName(StringIds::station_town_forest);
         }
         else if (numSurroundingTrees > 20)
         {
             // Woods
-            if ((realNamesInUse & (1 << 10)) == 0)
+            if (!realNamesInUse.test(StationName::townWoods))
                 return StringManager::toTownName(StringIds::station_town_woods);
         }
 
@@ -246,13 +299,13 @@ namespace OpenLoco::StationManager
                 if (townHeightDiff > 20)
                 {
                     // Heights
-                    if ((realNamesInUse & (1 << 9)) == 0)
+                    if (!realNamesInUse.test(StationName::townHeights))
                         return StringManager::toTownName(StringIds::station_town_heights);
                 }
                 else if (townHeightDiff < -20)
                 {
                     // Valley
-                    if ((realNamesInUse & (1 << 8)) == 0)
+                    if (!realNamesInUse.test(StationName::townValley))
                         return StringManager::toTownName(StringIds::station_town_valley);
                 }
                 break;
@@ -260,7 +313,7 @@ namespace OpenLoco::StationManager
         }
 
         // 0x0048FB8B
-        if ((realNamesInUse & (1 << 0)) == 0)
+        if (!realNamesInUse.test(StationName::townDefault))
             return StringManager::toTownName(StringIds::station_town);
 
         auto town = TownManager::get(townId);
@@ -270,7 +323,7 @@ namespace OpenLoco::StationManager
             if (xDiff + yDiff <= 120)
             {
                 // Central
-                if ((realNamesInUse & (1 << 5)) == 0)
+                if (!realNamesInUse.test(StationName::townCentral))
                     return StringManager::toTownName(StringIds::station_town_central);
             }
         }
@@ -278,54 +331,78 @@ namespace OpenLoco::StationManager
         if (position.x <= town->x && position.y <= town->y)
         {
             // North
-            if ((realNamesInUse & (1 << 1)) == 0)
+            if (!realNamesInUse.test(StationName::townNorth))
                 return StringManager::toTownName(StringIds::station_town_north);
         }
 
         if (position.x >= town->x && position.y >= town->y)
         {
             // South
-            if ((realNamesInUse & (1 << 2)) == 0)
+            if (!realNamesInUse.test(StationName::townSouth))
                 return StringManager::toTownName(StringIds::station_town_south);
         }
 
         if (position.x <= town->x && position.y >= town->y)
         {
             // East
-            if ((realNamesInUse & (1 << 3)) == 0)
+            if (!realNamesInUse.test(StationName::townEast))
                 return StringManager::toTownName(StringIds::station_town_east);
         }
 
         if (position.x >= town->x && position.y <= town->y)
         {
             // West
-            if ((realNamesInUse & (1 << 4)) == 0)
+            if (!realNamesInUse.test(StationName::townWest))
                 return StringManager::toTownName(StringIds::station_town_west);
         }
 
-        // 0x0048FC5C
-        string_id foundName = StringIds::empty;
-        for (auto i = 5; i < 47; i++)
-        {
-            // At several positions, skip the entries we've already tested for earlier.
-            if (i == 8)
-                i = 12;
-            else if (i == 13)
-                i = 17;
-            else if (i == 22)
-                i = 24;
+        // Additional names to try
+        static const std::pair<const StationName, const string_id> additionalNamePairs[] = {
+            { StationName::townTransfer, StringIds::station_town_transfer },
+            { StationName::townHalt, StringIds::station_town_halt },
+            { StationName::townAnnexe, StringIds::station_town_annexe },
+            { StationName::townSidings, StringIds::station_town_sidings },
+            { StationName::townBranch, StringIds::station_town_branch },
+            { StationName::townJunction, StringIds::station_town_junction },
+            { StationName::townCross, StringIds::station_town_cross },
+            { StationName::townViews, StringIds::station_town_views },
+        };
 
-            bool realNameIsInUse = (i < 27 && (realNamesInUse & (1 << i)) != 0);
-            bool ordinalNameIsInUse = (i >= 27 && (ordinalNamesInUse & (1 << (i - 27))) != 0);
-            if (!(realNameIsInUse || ordinalNameIsInUse))
-            {
-                foundName = StringManager::toTownName(StringIds::station_town + i);
-                break;
-            }
+        for (auto namePair : additionalNamePairs)
+        {
+            if (!realNamesInUse.test(namePair.first))
+                return StringManager::toTownName(namePair.second);
         }
 
-        if (foundName != StringIds::empty)
-            return foundName;
+        // Ordinal names to try
+        static const std::pair<const StationName, const string_id> ordinalNamePairs[] = {
+            { StationName::townOrd1, StringIds::station_town_ord_1 },
+            { StationName::townOrd2, StringIds::station_town_ord_2 },
+            { StationName::townOrd3, StringIds::station_town_ord_3 },
+            { StationName::townOrd4, StringIds::station_town_ord_4 },
+            { StationName::townOrd5, StringIds::station_town_ord_5 },
+            { StationName::townOrd6, StringIds::station_town_ord_6 },
+            { StationName::townOrd7, StringIds::station_town_ord_7 },
+            { StationName::townOrd8, StringIds::station_town_ord_8 },
+            { StationName::townOrd9, StringIds::station_town_ord_9 },
+            { StationName::townOrd10, StringIds::station_town_ord_10 },
+            { StationName::townOrd11, StringIds::station_town_ord_11 },
+            { StationName::townOrd12, StringIds::station_town_ord_12 },
+            { StationName::townOrd13, StringIds::station_town_ord_13 },
+            { StationName::townOrd14, StringIds::station_town_ord_14 },
+            { StationName::townOrd15, StringIds::station_town_ord_15 },
+            { StationName::townOrd16, StringIds::station_town_ord_16 },
+            { StationName::townOrd17, StringIds::station_town_ord_17 },
+            { StationName::townOrd18, StringIds::station_town_ord_18 },
+            { StationName::townOrd19, StringIds::station_town_ord_19 },
+            { StationName::townOrd20, StringIds::station_town_ord_20 },
+        };
+
+        for (auto namePair : ordinalNamePairs)
+        {
+            if (!ordinalNamesInUse.test(namePair.first))
+                return StringManager::toTownName(namePair.second);
+        }
 
         // Default to an ordinal string instead, e.g. 'Station 42'.
         char stationName[256] = "";
