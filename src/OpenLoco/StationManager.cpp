@@ -186,9 +186,6 @@ namespace OpenLoco::StationManager
         std::bitset<20> ordinalNamesInUse{}; // edi
         for (auto& station : stations())
         {
-            if (station.empty())
-                continue;
-
             if (!StringManager::isTownName(station.name))
                 continue;
 
@@ -238,13 +235,13 @@ namespace OpenLoco::StationManager
         }
 
         // 0x0048FA41
-        if (IndustryManager::industryExistsAtPosition(Map::Pos2(position.x, position.y), IndustryObjectFlags::oilfield))
+        if (IndustryManager::industryNearPosition(Map::Pos2(position.x, position.y), IndustryObjectFlags::oilfield))
         {
             if (!realNamesInUse.test(StationName::townOilfield))
                 return StringManager::toTownName(StringIds::station_town_oilfield);
         }
 
-        if (IndustryManager::industryExistsAtPosition(Map::Pos2(position.x, position.y), IndustryObjectFlags::mines))
+        if (IndustryManager::industryNearPosition(Map::Pos2(position.x, position.y), IndustryObjectFlags::mines))
         {
             if (!realNamesInUse.test(StationName::townMines))
                 return StringManager::toTownName(StringIds::station_town_mines);
@@ -318,9 +315,8 @@ namespace OpenLoco::StationManager
 
         auto town = TownManager::get(townId);
         {
-            auto xDiff = std::abs(position.x - town->x);
-            auto yDiff = std::abs(position.y - town->y);
-            if (xDiff + yDiff <= 120)
+            auto manhattanDistance = Math::Vector::manhattanDistance(position, Map::Pos2{ town->x, town->y });
+            if (manhattanDistance / 32 <= 9)
             {
                 // Central
                 if (!realNamesInUse.test(StationName::townCentral))
@@ -438,7 +434,7 @@ namespace OpenLoco::StationManager
         registerHook(
             0x048F988,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                StationId_t stationId = static_cast<StationId_t>((0x005E6EDC - regs.esi) / sizeof(Station));
+                auto stationId = (reinterpret_cast<Station*>(regs.esi))->id();
                 regs.bx = generateNewStationName(stationId, regs.ebx, Map::Pos3(regs.ax, regs.cx, regs.dh), regs.dl);
                 return 0;
             });
