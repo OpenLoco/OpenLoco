@@ -43,7 +43,7 @@ namespace OpenLoco::Vehicles
     static loco_global<int32_t, 0x011360FC> _11360FC;
     static loco_global<VehicleHead*, 0x01136240> _backupVeh0;
     static loco_global<int16_t, 0x01136248> _backup2E;
-    static loco_global<int16_t, 0x0113624C> _backup2C;
+    static loco_global<TrackAndDirection, 0x0113624C> _backup2C;
     static loco_global<int16_t, 0x01136250> _backupX;
     static loco_global<int16_t, 0x01136254> _backupY;
     static loco_global<uint8_t, 0x01136258> _backupZ;
@@ -139,7 +139,7 @@ namespace OpenLoco::Vehicles
         newBogie->tile_y = 0;
         newBogie->tile_base_z = 0;
         newBogie->var_2E = 0;
-        newBogie->var_2C = 0;
+        newBogie->var_2C = TrackAndDirection(0, 0);
         newBogie->var_36 = lastVeh->getVar36();
         newBogie->object_id = vehicleTypeId;
 
@@ -258,7 +258,7 @@ namespace OpenLoco::Vehicles
         newBody->tile_y = 0;
         newBody->tile_base_z = 0;
         newBody->var_2E = 0;
-        newBody->var_2C = 0;
+        newBody->var_2C = TrackAndDirection(0, 0);
         newBody->var_36 = lastVeh->getVar36();
         newBody->var_38 = Flags38::unk_0; // different to create bogie
         newBody->object_id = vehicleTypeId;
@@ -468,7 +468,7 @@ namespace OpenLoco::Vehicles
         newHead->tile_base_z = 0;
         newHead->var_28 = 0;
         newHead->var_2E = 0;
-        newHead->var_2C = 0;
+        newHead->var_2C = TrackAndDirection(0, 0);
         newHead->var_36 = orderId * max_num_routing_steps;
         newHead->var_14 = 0;
         newHead->var_09 = 0;
@@ -506,7 +506,7 @@ namespace OpenLoco::Vehicles
         newVeh1->tile_base_z = 0;
         newVeh1->var_28 = 0;
         newVeh1->var_2E = 0;
-        newVeh1->var_2C = 0;
+        newVeh1->var_2C = TrackAndDirection(0, 0);
         newVeh1->var_36 = lastVeh->getVar36();
         newVeh1->var_14 = 0;
         newVeh1->var_09 = 0;
@@ -537,7 +537,7 @@ namespace OpenLoco::Vehicles
         newVeh2->tile_base_z = 0;
         newVeh2->var_28 = 0;
         newVeh2->var_2E = 0;
-        newVeh2->var_2C = 0;
+        newVeh2->var_2C = TrackAndDirection(0, 0);
         newVeh2->var_36 = lastVeh->getVar36();
         newVeh2->var_14 = 0;
         newVeh2->var_09 = 0;
@@ -574,7 +574,7 @@ namespace OpenLoco::Vehicles
         newTail->tile_base_z = 0;
         newTail->var_28 = 0;
         newTail->var_2E = 0;
-        newTail->var_2C = 0;
+        newTail->var_2C = TrackAndDirection(0, 0);
         newTail->var_36 = lastVeh->getVar36();
         newTail->var_14 = 0;
         newTail->var_09 = 0;
@@ -640,7 +640,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004B05E4
-    static void placeDownVehicle(VehicleHead* const head, const coord_t x, const coord_t y, const uint8_t baseZ, const uint16_t unk1, const uint16_t unk2)
+    static void placeDownVehicle(VehicleHead* const head, const coord_t x, const coord_t y, const uint8_t baseZ, const TrackAndDirection unk1, const uint16_t unk2)
     {
         registers regs{};
         regs.esi = reinterpret_cast<int32_t>(head);
@@ -648,7 +648,7 @@ namespace OpenLoco::Vehicles
         regs.cx = y;
         regs.bx = unk2;
         regs.dl = baseZ;
-        regs.ebp = unk1;
+        regs.ebp = unk1.track._data;
         call(0x004B05E4, regs);
     }
 

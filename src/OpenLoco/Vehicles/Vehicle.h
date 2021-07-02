@@ -99,6 +99,55 @@ namespace OpenLoco::Vehicles
     constexpr uint8_t cAirportMovementNodeNull = 0xFF;
 
 #pragma pack(push, 1)
+    struct TrackAndDirection
+    {
+        struct _TrackAndDirection
+        {
+            uint16_t _data;
+            constexpr _TrackAndDirection(uint8_t id, uint8_t direction)
+                : _data((id << 3) | direction)
+            {
+            }
+            constexpr uint8_t id() const { return (_data >> 3) & 0x3F; }
+            constexpr uint8_t cardinalDirection() const { return _data & 0x3; }
+            constexpr uint8_t fullDirection() const { return _data & 0x7; }
+            constexpr bool isDiagonal() const { return _data & (1 << 2); }
+            constexpr bool operator==(const _TrackAndDirection other) const { return _data == other._data; }
+            constexpr bool operator!=(const _TrackAndDirection other) const { return !(_data == other._data); }
+        };
+        struct _RoadAndDirection
+        {
+            uint16_t _data;
+            constexpr _RoadAndDirection(uint8_t id, uint8_t direction)
+                : _data((id << 3) | direction)
+            {
+            }
+            constexpr uint8_t id() const { return (_data >> 3) & 0xF; }
+            constexpr uint8_t cardinalDirection() const { return _data & 0x3; }
+            // Used by road and tram vehicles
+            constexpr bool isRightLane() const { return _data & (1 << 2); }
+            // Road vehicles are briefly back to front when reaching dead ends
+            // Trams can stay back to front
+            constexpr bool isBackToFront() const { return _data & (1 << 7); }
+            // Related to road vehicles turning around
+            constexpr bool isUnk8() const { return _data & (1 << 8); }
+            constexpr bool operator==(const _RoadAndDirection other) const { return _data == other._data; }
+            constexpr bool operator!=(const _RoadAndDirection other) const { return !(_data == other._data); }
+        };
+
+        union
+        {
+            _TrackAndDirection track;
+            _RoadAndDirection road;
+        };
+
+        constexpr TrackAndDirection(uint8_t id, uint8_t direction)
+            : track(id, direction)
+        {
+        }
+    };
+    static_assert(sizeof(TrackAndDirection) == 2);
+
     struct VehicleBase : EntityBase
     {
     private:
@@ -205,7 +254,7 @@ namespace OpenLoco::Vehicles
         uint8_t pad_24[0x26 - 0x24];
         EntityId_t head; // 0x26
         uint32_t var_28;
-        uint16_t var_2C;
+        TrackAndDirection var_2C;
         uint16_t var_2E;
         int16_t tile_x;      // 0x30
         int16_t tile_y;      // 0x32
@@ -347,7 +396,7 @@ namespace OpenLoco::Vehicles
         uint8_t pad_24[0x26 - 0x24];
         EntityId_t head; // 0x26
         uint32_t var_28;
-        uint16_t var_2C;
+        TrackAndDirection var_2C;
         uint16_t var_2E;
         int16_t tile_x;      // 0x30
         int16_t tile_y;      // 0x32
@@ -379,7 +428,7 @@ namespace OpenLoco::Vehicles
         uint8_t pad_24[0x26 - 0x24];
         EntityId_t head; // 0x26
         uint32_t var_28;
-        uint16_t var_2C;
+        TrackAndDirection var_2C;
         uint16_t var_2E;
         int16_t tile_x;      // 0x30
         int16_t tile_y;      // 0x32
@@ -425,7 +474,7 @@ namespace OpenLoco::Vehicles
         ColourScheme colour_scheme; // 0x24
         EntityId_t head;            // 0x26
         uint8_t pad_28[0x2C - 0x28];
-        uint16_t var_2C;
+        TrackAndDirection var_2C;
         uint16_t var_2E;
         int16_t tile_x;      // 0x30
         int16_t tile_y;      // 0x32
@@ -480,7 +529,7 @@ namespace OpenLoco::Vehicles
         ColourScheme colour_scheme; // 0x24
         EntityId_t head;            // 0x26
         uint8_t pad_28[0x2C - 0x28];
-        uint16_t var_2C;
+        TrackAndDirection var_2C;
         uint16_t var_2E;
         int16_t tile_x;      // 0x30
         int16_t tile_y;      // 0x32
@@ -523,7 +572,7 @@ namespace OpenLoco::Vehicles
         uint8_t pad_24[0x26 - 0x24];
         EntityId_t head; // 0x26
         uint32_t var_28;
-        uint16_t var_2C;
+        TrackAndDirection var_2C;
         uint16_t var_2E;
         int16_t tile_x;      // 0x30
         int16_t tile_y;      // 0x32
