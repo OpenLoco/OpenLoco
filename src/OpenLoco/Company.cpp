@@ -145,7 +145,7 @@ namespace OpenLoco
     static void updateHeadquartersColourAtTile(const Map::TilePos2& pos, uint8_t zPos, Colour_t newColour)
     {
         auto tile = Map::TileManager::get(pos);
-        for (auto element : tile)
+        for (auto& element : tile)
         {
             if (element.baseZ() != zPos)
                 continue;
