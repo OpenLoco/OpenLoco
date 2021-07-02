@@ -552,15 +552,16 @@ namespace OpenLoco::Map::TileManager
     // 0x004C5596
     uint16_t countSurroundingWaterTiles(Map::Pos2 pos)
     {
-        pos.x = (pos.x & 0xFFE0) - 0xA0;
-        pos.y = (pos.y & 0xFFE0) - 0xA0;
+        // Search a 10x10 area centred at pos.
+        // Initial tile position is the top left of the area.
+        auto tilePos = Map::TilePos2(pos) - Map::TilePos2(5, 5);
 
         uint16_t surroundingWaterTiles = 0;
         for (uint8_t yOffset = 0; yOffset < 11; yOffset++)
         {
             for (uint8_t xOffset = 0; xOffset < 11; xOffset++)
             {
-                auto tile = get(Map::Pos2(pos.x + xOffset, pos.y + yOffset));
+                auto tile = get(Map::TilePos2(tilePos.x + xOffset, tilePos.y + yOffset));
                 auto* surface = tile.surface();
                 if (surface != nullptr && surface->water() > 0)
                     surroundingWaterTiles++;
@@ -573,15 +574,16 @@ namespace OpenLoco::Map::TileManager
     // 0x004BE048
     uint16_t countSurroundingTrees(Map::Pos2 pos)
     {
-        pos.x = (pos.x & 0xFFE0) - 0xA0;
-        pos.y = (pos.y & 0xFFE0) - 0xA0;
+        // Search a 10x10 area centred at pos.
+        // Initial tile position is the top left of the area.
+        auto tilePos = Map::TilePos2(pos) - Map::TilePos2(5, 5);
 
         uint16_t surroundingTrees = 0;
         for (uint8_t yOffset = 0; yOffset < 11; yOffset++)
         {
             for (uint8_t xOffset = 0; xOffset < 11; xOffset++)
             {
-                auto tile = get(Map::Pos2(pos.x + xOffset, pos.y + yOffset));
+                auto tile = get(Map::TilePos2(tilePos.x + xOffset, tilePos.y + yOffset));
                 for (auto& element : tile)
                 {
                     // NB: vanilla was checking for trees above the surface element.
