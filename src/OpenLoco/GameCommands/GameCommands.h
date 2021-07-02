@@ -666,6 +666,9 @@ namespace OpenLoco::GameCommands
         return GameCommands::doCommand(GameCommand::cheat, regs) != FAILURE;
     }
 
+    // Defined in GameCommands/ChangeCompanyColour.cpp
+    void changeCompanyColour(registers& regs);
+
     // Defined in GameCommands/Cheat.cpp
     void cheat(registers& regs);
 
