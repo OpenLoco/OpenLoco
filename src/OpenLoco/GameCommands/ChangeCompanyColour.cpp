@@ -43,6 +43,9 @@ namespace OpenLoco::GameCommands
                     colours->secondary = value;
             }
 
+            company->updateVehicleColours();
+            CompanyManager::updateColours();
+            company->updateHeadquartersColour();
             Ui::WindowManager::invalidate(Ui::WindowType::company);
             return 0;
         }

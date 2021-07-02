@@ -115,8 +115,6 @@ namespace OpenLoco::Map
             return type() == TClass ? (TType*)this : nullptr;
         }
 
-        uint8_t baseZ() const { return _base_z; }
-
     public:
         SurfaceElement* asSurface() const { return as<SurfaceElement, ElementType::surface>(); }
         TrackElement* asTrack() const { return as<TrackElement, ElementType::track>(); }
@@ -206,12 +204,13 @@ namespace OpenLoco::Map
     private:
         uint8_t _4;
         uint8_t _5;
-        uint8_t _6;
-        uint8_t _7;
+        uint16_t _6;
 
     public:
         bool has_40() const { return (_type & 0x40) != 0; }
         bool hasStationElement() const { return (_type & 0x80) != 0; }
+        uint8_t colour() const { return _6 >> 11; }
+        void setColour(Colour_t colour) { _6 = (_6 & 0x7FF) | (colour << 11); }
         uint8_t objectId() const { return _4; }
         BuildingObject* object() const;
         uint8_t multiTileIndex() const { return _5 & 3; }
