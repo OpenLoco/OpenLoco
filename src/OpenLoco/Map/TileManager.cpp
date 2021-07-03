@@ -562,7 +562,7 @@ namespace OpenLoco::Map::TileManager
             for (uint8_t xOffset = 0; xOffset < 11; xOffset++)
             {
                 auto tilePos = initialTilePos + Map::TilePos2(xOffset, yOffset);
-                if (tilePos.x < 0 || tilePos.y < 0)
+                if (!Map::validCoords(tilePos))
                     continue;
 
                 auto tile = get(tilePos);
@@ -588,7 +588,7 @@ namespace OpenLoco::Map::TileManager
             for (uint8_t xOffset = 0; xOffset < 11; xOffset++)
             {
                 auto tilePos = initialTilePos + Map::TilePos2(xOffset, yOffset);
-                if (tilePos.x < 0 || tilePos.y < 0)
+                if (!Map::validCoords(tilePos))
                     continue;
 
                 auto tile = get(tilePos);
