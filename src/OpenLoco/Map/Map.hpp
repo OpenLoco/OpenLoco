@@ -26,4 +26,25 @@ namespace OpenLoco::Map
     static_assert(sizeof(Pos2) == 4);
     static_assert(sizeof(Pos3) == 6);
     static_assert(sizeof(TilePos2) == 4);
+
+    constexpr bool validCoord(coord_t coord)
+    {
+        return coord >= 0 && coord < map_columns;
+    }
+
+    constexpr bool validTileCoord(coord_t coord)
+    {
+        return coord >= 0 && coord < map_width;
+    }
+
+    template<typename TType>
+    constexpr bool validCoords(const TType& coords)
+    {
+        return validCoord(coords.x) && validCoord(coords.y);
+    }
+
+    constexpr bool validCoords(const TilePos2& coords)
+    {
+        return validTileCoord(coords.x) && validTileCoord(coords.y);
+    }
 }
