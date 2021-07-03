@@ -38,12 +38,12 @@ namespace OpenLoco::Map
     }
 
     template<typename TType>
-    constexpr bool validCoords(TType coords)
+    constexpr bool validCoords(const TType& coords)
     {
         return validCoord(coords.x) && validCoord(coords.y);
     }
 
-    constexpr bool validCoords(TilePos2 coords)
+    constexpr bool validCoords(const TilePos2& coords)
     {
         return validTileCoord(coords.x) && validTileCoord(coords.y);
     }
