@@ -561,7 +561,11 @@ namespace OpenLoco::Map::TileManager
         {
             for (uint8_t xOffset = 0; xOffset < 11; xOffset++)
             {
-                auto tile = get(initialTilePos + Map::TilePos2(xOffset, yOffset));
+                auto tilePos = initialTilePos + Map::TilePos2(xOffset, yOffset);
+                if (tilePos.x < 0 || tilePos.y < 0)
+                    continue;
+
+                auto tile = get(tilePos);
                 auto* surface = tile.surface();
                 if (surface != nullptr && surface->water() > 0)
                     surroundingWaterTiles++;
@@ -583,7 +587,11 @@ namespace OpenLoco::Map::TileManager
         {
             for (uint8_t xOffset = 0; xOffset < 11; xOffset++)
             {
-                auto tile = get(initialTilePos + Map::TilePos2(xOffset, yOffset));
+                auto tilePos = initialTilePos + Map::TilePos2(xOffset, yOffset);
+                if (tilePos.x < 0 || tilePos.y < 0)
+                    continue;
+
+                auto tile = get(tilePos);
                 for (auto& element : tile)
                 {
                     // NB: vanilla was checking for trees above the surface element.
