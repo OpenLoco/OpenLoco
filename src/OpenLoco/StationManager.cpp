@@ -1,11 +1,17 @@
 #include "StationManager.h"
 #include "CompanyManager.h"
+#include "IndustryManager.h"
 #include "Interop/Interop.hpp"
 #include "Localisation/FormatArguments.hpp"
+#include "Localisation/StringIds.h"
+#include "Map/TileManager.h"
+#include "Objects/IndustryObject.h"
 #include "OpenLoco.h"
 #include "TownManager.h"
 #include "Ui/WindowManager.h"
 #include "Window.h"
+
+#include <bitset>
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui;
@@ -124,22 +130,264 @@ namespace OpenLoco::StationManager
     // 0x048F988
     string_id generateNewStationName(StationId_t stationId, TownId_t townId, Map::Pos3 position, uint8_t mode)
     {
-        auto* station = get(stationId);
-        if (station == nullptr)
-            return StringIds::null;
+        enum StationName : uint8_t
+        {
+            townDefault,
+            townNorth,
+            townSouth,
+            townEast,
+            townWest,
+            townCentral,
+            townTransfer,
+            townHalt,
+            townValley,
+            townHeights,
+            townWoods,
+            townLakeside,
+            townExchange,
+            townAirport,
+            townOilfield,
+            townMines,
+            townDocks,
+            townAnnexe,
+            townSidings,
+            townBranch,
+            upperTown,
+            lowerTown,
+            townHeliport,
+            townForest,
+            townJunction,
+            townCross,
+            townViews,
+            townOrd1,
+            townOrd2,
+            townOrd3,
+            townOrd4,
+            townOrd5,
+            townOrd6,
+            townOrd7,
+            townOrd8,
+            townOrd9,
+            townOrd10,
+            townOrd11,
+            townOrd12,
+            townOrd13,
+            townOrd14,
+            townOrd15,
+            townOrd16,
+            townOrd17,
+            townOrd18,
+            townOrd19,
+            townOrd20,
+        };
 
-        station->name = StringIds::null;
+        // Bit mask for station names already used in the current town.
+        std::bitset<27> realNamesInUse{};    // ebp
+        std::bitset<20> ordinalNamesInUse{}; // edi
+        for (auto& station : stations())
+        {
+            if (!StringManager::isTownName(station.name))
+                continue;
 
-        registers regs;
-        regs.esi = reinterpret_cast<int32_t>(station);
-        regs.ebx = townId;
-        regs.dh = static_cast<uint8_t>(position.z / 4);
-        regs.dl = mode;
-        regs.ax = position.x & 0xFFE0;
-        regs.cx = position.y & 0xFFE0;
+            auto nameKey = StringManager::fromTownName(station.name) - StringIds::station_town;
+            if (nameKey > StationName::townOrd20)
+                continue;
 
-        call(0x048F988, regs);
-        return regs.bx;
+            if (station.town != townId)
+                continue;
+
+            if (nameKey < StationName::townOrd1)
+                realNamesInUse.set(nameKey, true);
+            else
+                ordinalNamesInUse.set(nameKey, true);
+        }
+
+        if (mode == 1)
+        {
+            // Airport
+            if (!realNamesInUse.test(StationName::townAirport))
+                return StringManager::toTownName(StringIds::station_town_airport);
+        }
+        else if (mode == 2)
+        {
+            // Heliport
+            if (!realNamesInUse.test(StationName::townHeliport))
+                return StringManager::toTownName(StringIds::station_town_heliport);
+        }
+        else if (mode == 3)
+        {
+            // 0x0048FA00
+            auto tile = TileManager::get(Map::Pos2(position.x, position.y));
+            auto* surface = tile.surface();
+            if (surface != nullptr && surface->water() == 0)
+            {
+                // Docks
+                if (!realNamesInUse.test(StationName::townDocks))
+                    return StringManager::toTownName(StringIds::station_town_docks);
+            }
+        }
+
+        // 0x0048FA41
+        if (IndustryManager::industryNearPosition(position, IndustryObjectFlags::oilfield))
+        {
+            if (!realNamesInUse.test(StationName::townOilfield))
+                return StringManager::toTownName(StringIds::station_town_oilfield);
+        }
+
+        if (IndustryManager::industryNearPosition(position, IndustryObjectFlags::mines))
+        {
+            if (!realNamesInUse.test(StationName::townMines))
+                return StringManager::toTownName(StringIds::station_town_mines);
+        }
+
+        // 0x0048FA91
+        auto numSurroundingWaterTiles = TileManager::countSurroundingWaterTiles(position);
+        if (numSurroundingWaterTiles >= 24)
+        {
+            auto tile = TileManager::get(position);
+            auto* surface = tile.surface();
+            if (surface != nullptr && surface->water() == 0)
+            {
+                // Lakeside
+                if (!realNamesInUse.test(StationName::townLakeside))
+                    return StringManager::toTownName(StringIds::station_town_lakeside);
+            }
+        }
+
+        // 0x0048FAEB
+        auto numSurroundingTrees = TileManager::countSurroundingTrees(position);
+        if (numSurroundingTrees > 40)
+        {
+            // Forest
+            if (!realNamesInUse.test(StationName::townForest))
+                return StringManager::toTownName(StringIds::station_town_forest);
+        }
+        else if (numSurroundingTrees > 20)
+        {
+            // Woods
+            if (!realNamesInUse.test(StationName::townWoods))
+                return StringManager::toTownName(StringIds::station_town_woods);
+        }
+
+        // 0x0048FB29
+        {
+            auto* town = TownManager::get(townId);
+            auto tile = TileManager::get(Map::Pos2(town->x, town->y));
+            auto* surface = tile.surface();
+            if (surface != nullptr)
+            {
+                auto townHeightDiff = (position.z / 4) - surface->baseZ();
+                if (townHeightDiff > 20)
+                {
+                    // Heights
+                    if (!realNamesInUse.test(StationName::townHeights))
+                        return StringManager::toTownName(StringIds::station_town_heights);
+                }
+                else if (townHeightDiff < -20)
+                {
+                    // Valley
+                    if (!realNamesInUse.test(StationName::townValley))
+                        return StringManager::toTownName(StringIds::station_town_valley);
+                }
+            }
+        }
+
+        // 0x0048FB8B
+        if (!realNamesInUse.test(StationName::townDefault))
+            return StringManager::toTownName(StringIds::station_town);
+
+        auto town = TownManager::get(townId);
+        {
+            auto manhattanDistance = Math::Vector::manhattanDistance(position, Map::Pos2{ town->x, town->y });
+            if (manhattanDistance / Map::tile_size <= 9)
+            {
+                // Central
+                if (!realNamesInUse.test(StationName::townCentral))
+                    return StringManager::toTownName(StringIds::station_town_central);
+            }
+        }
+
+        if (position.x <= town->x && position.y <= town->y)
+        {
+            // North
+            if (!realNamesInUse.test(StationName::townNorth))
+                return StringManager::toTownName(StringIds::station_town_north);
+        }
+
+        if (position.x >= town->x && position.y >= town->y)
+        {
+            // South
+            if (!realNamesInUse.test(StationName::townSouth))
+                return StringManager::toTownName(StringIds::station_town_south);
+        }
+
+        if (position.x <= town->x && position.y >= town->y)
+        {
+            // East
+            if (!realNamesInUse.test(StationName::townEast))
+                return StringManager::toTownName(StringIds::station_town_east);
+        }
+
+        if (position.x >= town->x && position.y <= town->y)
+        {
+            // West
+            if (!realNamesInUse.test(StationName::townWest))
+                return StringManager::toTownName(StringIds::station_town_west);
+        }
+
+        // Additional names to try
+        static const std::pair<const StationName, const string_id> additionalNamePairs[] = {
+            { StationName::townTransfer, StringIds::station_town_transfer },
+            { StationName::townHalt, StringIds::station_town_halt },
+            { StationName::townAnnexe, StringIds::station_town_annexe },
+            { StationName::townSidings, StringIds::station_town_sidings },
+            { StationName::townBranch, StringIds::station_town_branch },
+            { StationName::townJunction, StringIds::station_town_junction },
+            { StationName::townCross, StringIds::station_town_cross },
+            { StationName::townViews, StringIds::station_town_views },
+        };
+
+        for (auto [name, stringId] : additionalNamePairs)
+        {
+            if (!realNamesInUse.test(name))
+                return StringManager::toTownName(stringId);
+        }
+
+        // Ordinal names to try
+        static const std::pair<const StationName, const string_id> ordinalNamePairs[] = {
+            { StationName::townOrd1, StringIds::station_town_ord_1 },
+            { StationName::townOrd2, StringIds::station_town_ord_2 },
+            { StationName::townOrd3, StringIds::station_town_ord_3 },
+            { StationName::townOrd4, StringIds::station_town_ord_4 },
+            { StationName::townOrd5, StringIds::station_town_ord_5 },
+            { StationName::townOrd6, StringIds::station_town_ord_6 },
+            { StationName::townOrd7, StringIds::station_town_ord_7 },
+            { StationName::townOrd8, StringIds::station_town_ord_8 },
+            { StationName::townOrd9, StringIds::station_town_ord_9 },
+            { StationName::townOrd10, StringIds::station_town_ord_10 },
+            { StationName::townOrd11, StringIds::station_town_ord_11 },
+            { StationName::townOrd12, StringIds::station_town_ord_12 },
+            { StationName::townOrd13, StringIds::station_town_ord_13 },
+            { StationName::townOrd14, StringIds::station_town_ord_14 },
+            { StationName::townOrd15, StringIds::station_town_ord_15 },
+            { StationName::townOrd16, StringIds::station_town_ord_16 },
+            { StationName::townOrd17, StringIds::station_town_ord_17 },
+            { StationName::townOrd18, StringIds::station_town_ord_18 },
+            { StationName::townOrd19, StringIds::station_town_ord_19 },
+            { StationName::townOrd20, StringIds::station_town_ord_20 },
+        };
+
+        for (auto [name, stringId] : ordinalNamePairs)
+        {
+            if (!ordinalNamesInUse.test(name))
+                return StringManager::toTownName(stringId);
+        }
+
+        // Default to an ordinal string instead, e.g. 'Station 42'.
+        char stationName[256] = "";
+        auto args = FormatArguments::common(stationId);
+        StringManager::formatString(stationName, StringIds::station_name_ordinal, &args);
+        return StringManager::userStringAllocate(stationName, 0);
     }
 
     // 0x0049088B
@@ -161,5 +409,17 @@ namespace OpenLoco::StationManager
                 }
             }
         }
+    }
+
+    void registerHooks()
+    {
+        // Can be removed once the createStation function has been implemented (used by place.*Station game commands)
+        registerHook(
+            0x048F988,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                auto stationId = (reinterpret_cast<Station*>(regs.esi))->id();
+                regs.bx = generateNewStationName(stationId, regs.ebx, Map::Pos3(regs.ax, regs.cx, regs.dh), regs.dl);
+                return 0;
+            });
     }
 }

@@ -17,4 +17,5 @@ namespace OpenLoco::StationManager
     void updateDaily();
     string_id generateNewStationName(StationId_t stationId, TownId_t townId, Map::Pos3 position, uint8_t mode);
     void zeroUnused();
+    void registerHooks();
 }

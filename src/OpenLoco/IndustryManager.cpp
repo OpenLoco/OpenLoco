@@ -1,6 +1,8 @@
 #include "IndustryManager.h"
 #include "CompanyManager.h"
 #include "Interop/Interop.hpp"
+#include "Math/Vector.hpp"
+#include "Objects/IndustryObject.h"
 #include "OpenLoco.h"
 
 using namespace OpenLoco::Interop;
@@ -58,5 +60,22 @@ namespace OpenLoco::IndustryManager
         {
             industry.createMapAnimations();
         }
+    }
+
+    // 0x048FE92
+    bool industryNearPosition(const Map::Pos2& position, uint32_t flags)
+    {
+        for (auto& industry : industries())
+        {
+            auto industryObj = industry.object();
+            if ((industryObj->flags & flags) == 0)
+                continue;
+
+            auto manhattanDistance = Math::Vector::manhattanDistance(Map::Pos2{ industry.x, industry.y }, position);
+            if (manhattanDistance / Map::tile_size < 11)
+                return true;
+        }
+
+        return false;
     }
 }

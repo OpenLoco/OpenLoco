@@ -549,12 +549,81 @@ namespace OpenLoco::Map::TileManager
         _numAnimations = 0;
     }
 
+    // 0x004C5596
+    uint16_t countSurroundingWaterTiles(const Pos2& pos)
+    {
+        // Search a 10x10 area centred at pos.
+        // Initial tile position is the top left of the area.
+        auto initialTilePos = Map::TilePos2(pos) - Map::TilePos2(5, 5);
+
+        uint16_t surroundingWaterTiles = 0;
+        for (uint8_t yOffset = 0; yOffset < 11; yOffset++)
+        {
+            for (uint8_t xOffset = 0; xOffset < 11; xOffset++)
+            {
+                auto tile = get(initialTilePos + Map::TilePos2(xOffset, yOffset));
+                auto* surface = tile.surface();
+                if (surface != nullptr && surface->water() > 0)
+                    surroundingWaterTiles++;
+            }
+        }
+
+        return surroundingWaterTiles;
+    }
+
+    // 0x004BE048
+    uint16_t countSurroundingTrees(const Pos2& pos)
+    {
+        // Search a 10x10 area centred at pos.
+        // Initial tile position is the top left of the area.
+        auto initialTilePos = Map::TilePos2(pos) - Map::TilePos2(5, 5);
+
+        uint16_t surroundingTrees = 0;
+        for (uint8_t yOffset = 0; yOffset < 11; yOffset++)
+        {
+            for (uint8_t xOffset = 0; xOffset < 11; xOffset++)
+            {
+                auto tile = get(initialTilePos + Map::TilePos2(xOffset, yOffset));
+                for (auto& element : tile)
+                {
+                    // NB: vanilla was checking for trees above the surface element.
+                    // This has been omitted from our implementation.
+                    auto* tree = element.asTree();
+                    if (tree == nullptr)
+                        continue;
+
+                    if (tree->isGhost())
+                        continue;
+
+                    surroundingTrees++;
+                }
+            }
+        }
+
+        return surroundingTrees;
+    }
+
     void registerHooks()
     {
         registerHook(
             0x004612A6,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 createAnimation(regs.dh, { regs.ax, regs.cx }, regs.dl);
+                return 0;
+            });
+
+        // This hook can be removed once sub_4599B3 has been implemented
+        registerHook(
+            0x004BE048,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                regs.dx = countSurroundingTrees({ regs.ax, regs.cx });
+                return 0;
+            });
+
+        registerHook(
+            0x004C5596,
+            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
+                regs.dx = countSurroundingWaterTiles({ regs.ax, regs.cx });
                 return 0;
             });
     }

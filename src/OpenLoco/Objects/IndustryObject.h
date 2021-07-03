@@ -12,6 +12,8 @@ namespace OpenLoco
     namespace IndustryObjectFlags
     {
         constexpr uint32_t built_on_water = 1 << 8;
+        constexpr uint32_t oilfield = 1 << 13;
+        constexpr uint32_t mines = 1 << 14;
         constexpr uint32_t can_be_founded_by_user = 1 << 16;
         constexpr uint32_t requires_all_cargo = 1 << 17;
         constexpr uint32_t flag_28 = 1 << 28;
