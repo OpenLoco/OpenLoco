@@ -1,8 +1,10 @@
 #include "Company.h"
 #include "Entities/EntityManager.h"
+#include "Graphics/Gfx.h"
 #include "Interop/Interop.hpp"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
+#include "Map/TileManager.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
 #include <algorithm>
@@ -130,5 +132,66 @@ namespace OpenLoco
             }
             unk.var_7C = totalRunCost;
         }
+    }
+
+    // 0x004B8ED2
+    void Company::updateVehicleColours()
+    {
+        for (auto v : EntityManager::VehicleList())
+        {
+            if (v->owner != id())
+            {
+                continue;
+            }
+            Vehicles::Vehicle train(v);
+            for (auto& car : train.cars)
+            {
+                auto* vehObject = car.body->object();
+                auto colour = mainColours;
+                if (customVehicleColoursSet & (1 << vehObject->colour_type))
+                {
+                    colour = vehicleColours[vehObject->colour_type - 1];
+                }
+                for (auto& carComponent : car)
+                {
+                    carComponent.front->colour_scheme = colour;
+                    carComponent.back->colour_scheme = colour;
+                    carComponent.body->colour_scheme = colour;
+                }
+            }
+        }
+        Gfx::invalidateScreen();
+    }
+
+    // 0x0042F0C1
+    static void updateHeadquartersColourAtTile(const Map::TilePos2& pos, uint8_t zPos, Colour_t newColour)
+    {
+        auto tile = Map::TileManager::get(pos);
+        for (auto& element : tile)
+        {
+            if (element.baseZ() != zPos)
+                continue;
+
+            auto building = element.asBuilding();
+            if (building == nullptr)
+                continue;
+
+            building->setColour(newColour);
+            return;
+        }
+    }
+
+    // 0x0042F07B
+    void Company::updateHeadquartersColour()
+    {
+        if (headquarters_x == -1)
+            return;
+
+        Colour_t colour = mainColours.primary;
+        auto hqPos = Map::TilePos2(Map::Pos2(headquarters_x, headquarters_y));
+        updateHeadquartersColourAtTile(hqPos + Map::TilePos2(0, 0), headquarters_z, colour);
+        updateHeadquartersColourAtTile(hqPos + Map::TilePos2(1, 0), headquarters_z, colour);
+        updateHeadquartersColourAtTile(hqPos + Map::TilePos2(1, 1), headquarters_z, colour);
+        updateHeadquartersColourAtTile(hqPos + Map::TilePos2(0, 1), headquarters_z, colour);
     }
 }

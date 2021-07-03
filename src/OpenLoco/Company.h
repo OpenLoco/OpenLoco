@@ -116,6 +116,8 @@ namespace OpenLoco
         bool isVehicleIndexUnlocked(const uint8_t vehicleIndex) const;
         void recalculateTransportCounts();
         void updateQuarterly();
+        void updateVehicleColours();
+        void updateHeadquartersColour();
     };
 #pragma pack(pop)
 

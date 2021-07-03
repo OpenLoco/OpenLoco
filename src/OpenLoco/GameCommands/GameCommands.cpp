@@ -65,7 +65,7 @@ namespace OpenLoco::GameCommands
         { GameCommand::gc_unk_16,                    nullptr,                   0x0048C402, true  },
         { GameCommand::gc_unk_17,                    nullptr,                   0x004A6479, true  },
         { GameCommand::gc_unk_18,                    nullptr,                   0x004A668A, true  },
-        { GameCommand::changeCompanyColourScheme,    nullptr,                   0x0043483D, false },
+        { GameCommand::changeCompanyColourScheme,    changeCompanyColour,       0x0043483D, false },
         { GameCommand::pauseGame,                    togglePause,               0x00431E32, false },
         { GameCommand::loadSaveQuitGame,             loadSaveQuit,              0x0043BFCB, false },
         { GameCommand::gc_unk_22,                    nullptr,                   0x004BB392, true  },
