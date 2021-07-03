@@ -1,6 +1,7 @@
 #include "../Audio/Audio.h"
 #include "../CompanyManager.h"
 #include "../GameException.hpp"
+#include "../Localisation/StringIds.h"
 #include "../OpenLoco.h"
 #include "../Ui/WindowManager.h"
 #include "../Ui/WindowType.h"
@@ -18,7 +19,7 @@ namespace OpenLoco::GameCommands
 
         auto* company = CompanyManager::get(companyId);
 
-        if ((flags & Flags::apply) == 1)
+        if (flags & Flags::apply)
         {
             // Toggling vehicle palette
             if (toggleMode)
@@ -58,10 +59,10 @@ namespace OpenLoco::GameCommands
                 return 0;
 
             // Check whether the requested colour is available
-            uint32_t availableColours = 0x7FFFFFFFF & ~CompanyManager::competingColourMask(companyId);
-            if (!(availableColours & value))
+            uint32_t unavailableColours = CompanyManager::competingColourMask(companyId);
+            if (unavailableColours & (1 << value))
             {
-                setErrorText(0);
+                setErrorText(StringIds::empty);
                 return GameCommands::FAILURE;
             }
         }
