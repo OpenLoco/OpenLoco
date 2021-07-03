@@ -554,14 +554,14 @@ namespace OpenLoco::Map::TileManager
     {
         // Search a 10x10 area centred at pos.
         // Initial tile position is the top left of the area.
-        auto tilePos = Map::TilePos2(pos) - Map::TilePos2(5, 5);
+        auto initialTilePos = Map::TilePos2(pos) - Map::TilePos2(5, 5);
 
         uint16_t surroundingWaterTiles = 0;
         for (uint8_t yOffset = 0; yOffset < 11; yOffset++)
         {
             for (uint8_t xOffset = 0; xOffset < 11; xOffset++)
             {
-                auto tile = get(tilePos + Map::TilePos2(xOffset, yOffset));
+                auto tile = get(initialTilePos + Map::TilePos2(xOffset, yOffset));
                 auto* surface = tile.surface();
                 if (surface != nullptr && surface->water() > 0)
                     surroundingWaterTiles++;
@@ -576,14 +576,14 @@ namespace OpenLoco::Map::TileManager
     {
         // Search a 10x10 area centred at pos.
         // Initial tile position is the top left of the area.
-        auto tilePos = Map::TilePos2(pos) - Map::TilePos2(5, 5);
+        auto initialTilePos = Map::TilePos2(pos) - Map::TilePos2(5, 5);
 
         uint16_t surroundingTrees = 0;
         for (uint8_t yOffset = 0; yOffset < 11; yOffset++)
         {
             for (uint8_t xOffset = 0; xOffset < 11; xOffset++)
             {
-                auto tile = get(Map::TilePos2(tilePos.x + xOffset, tilePos.y + yOffset));
+                auto tile = get(initialTilePos + Map::TilePos2(xOffset, yOffset));
                 for (auto& element : tile)
                 {
                     // NB: vanilla was checking for trees above the surface element.
