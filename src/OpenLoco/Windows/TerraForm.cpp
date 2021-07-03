@@ -299,13 +299,10 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BBAEA
         static void onMouseDown(Window* self, WidgetIndex_t widgetIndex)
         {
-            if (widgetIndex == widx::object_colour)
+            if (widgetIndex == widx::object_colour && self->row_hover != -1)
             {
-                registers regs;
-                regs.edx = widgetIndex;
-                regs.esi = (uint32_t)self;
-                regs.edi = (int32_t)&self->widgets[widgetIndex];
-                call(0x004BBD59, regs);
+                auto obj = ObjectManager::get<TreeObject>(self->row_hover);
+                Dropdown::showColour(self, &self->widgets[widgetIndex], obj->colours, _treeColour, self->getColour(WindowColour::secondary));
             }
         }
 

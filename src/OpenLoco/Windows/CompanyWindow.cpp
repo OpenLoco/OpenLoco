@@ -1384,11 +1384,18 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 case main_colour_aircraft:
                 case main_colour_ships:
                 {
-                    registers regs;
-                    regs.edx = widgetIndex;
-                    regs.esi = (int32_t)self;
-                    regs.edi = (int32_t)&self->widgets[widgetIndex];
-                    call(0x00433119, regs);
+                    auto* company = CompanyManager::get(self->number);
+                    Colour_t selectedColour;
+                    if (widgetIndex != main_colour_scheme)
+                    {
+                        auto vehicleType = widgetIndex - main_colour_steam_locomotives;
+                        selectedColour = company->vehicleColours[vehicleType].primary;
+                    }
+                    else
+                        selectedColour = company->mainColours.primary;
+
+                    auto availableColours = 0x7FFFFFFF & ~(CompanyManager::competingColourMask(self->number));
+                    Dropdown::showColour(self, &self->widgets[widgetIndex], availableColours, selectedColour, self->getColour(WindowColour::secondary));
                     break;
                 }
 
@@ -1404,11 +1411,18 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 case secondary_colour_aircraft:
                 case secondary_colour_ships:
                 {
-                    registers regs;
-                    regs.edx = widgetIndex;
-                    regs.esi = (int32_t)self;
-                    regs.edi = (int32_t)&self->widgets[widgetIndex];
-                    call(0x00433183, regs);
+                    auto* company = CompanyManager::get(self->number);
+                    Colour_t selectedColour;
+                    if (widgetIndex != secondary_colour_scheme)
+                    {
+                        auto vehicleType = widgetIndex - secondary_colour_steam_locomotives;
+                        selectedColour = company->vehicleColours[vehicleType].secondary;
+                    }
+                    else
+                        selectedColour = company->mainColours.secondary;
+
+                    auto availableColours = 0x7FFFFFFF;
+                    Dropdown::showColour(self, &self->widgets[widgetIndex], availableColours, selectedColour, self->getColour(WindowColour::secondary));
                     break;
                 }
             }
