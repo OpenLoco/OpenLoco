@@ -1,5 +1,6 @@
 #include "Company.h"
 #include "Entities/EntityManager.h"
+#include "Graphics/Gfx.h"
 #include "Interop/Interop.hpp"
 #include "Localisation/FormatArguments.hpp"
 #include "Localisation/StringIds.h"
@@ -136,9 +137,30 @@ namespace OpenLoco
     // 0x004B8ED2
     void Company::updateVehicleColours()
     {
-        registers regs;
-        regs.dl = id();
-        call(0x004B8ED2, regs);
+        for (auto v : EntityManager::VehicleList())
+        {
+            if (v->owner != id())
+            {
+                continue;
+            }
+            Vehicles::Vehicle train(v);
+            for (auto& car : train.cars)
+            {
+                auto* vehObject = car.body->object();
+                auto colour = mainColours;
+                if (customVehicleColoursSet & (1 << vehObject->colour_type))
+                {
+                    colour = vehicleColours[vehObject->colour_type - 1];
+                }
+                for (auto& carComponent : car)
+                {
+                    carComponent.front->colour_scheme = colour;
+                    carComponent.back->colour_scheme = colour;
+                    carComponent.body->colour_scheme = colour;
+                }
+            }
+        }
+        Gfx::invalidateScreen();
     }
 
     // 0x0042F0C1
