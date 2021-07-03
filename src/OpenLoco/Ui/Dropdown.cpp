@@ -547,12 +547,12 @@ namespace OpenLoco::Ui::Dropdown
      * @param y
      * @param width
      * @param height
-     * @param colour
-     * @param count
-     * @param columnCount
      * @param heightOffset
+     * @param colour
+     * @param columnCount
+     * @param count
+     * @param flags
      */
-
     void showImage(int16_t x, int16_t y, int16_t width, int16_t height, int16_t heightOffset, Colour_t colour, uint8_t columnCount, uint8_t count, uint8_t flags)
     {
         assert(count < std::numeric_limits<uint8_t>::max());
