@@ -1,5 +1,6 @@
 #include "../Audio/Audio.h"
 #include "../Config.h"
+#include "../GameCommands/GameCommands.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/ImageIds.h"
 #include "../Input.h"
@@ -23,9 +24,13 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::TownList
 {
-    static loco_global<uint32_t, 0x01135C34> dword_1135C34;
+    static loco_global<currency32_t, 0x01135C34> dword_1135C34;
+    static loco_global<bool, 0x01135C60> _buildingGhostPlaced;
+    static loco_global<Map::Pos3, 0x01135C50> _buildingGhostPos;
     static loco_global<Colour_t, 0x01135C61> _buildingColour;
+    static loco_global<Colour_t, 0x01135C62> _buildingGhostType;
     static loco_global<uint8_t, 0x01135C63> _buildingRotation;
+    static loco_global<uint8_t, 0x01135C64> _buildingGhostRotation;
     static loco_global<uint8_t, 0x01135C65> _buildingVariation;
     static loco_global<uint8_t, 0x01135C66> _townSize;
     static loco_global<uint8_t, 0x00525FC8> _lastSelectedBuilding;
@@ -988,6 +993,7 @@ namespace OpenLoco::Ui::Windows::TownList
                 regs.dl = type;
                 regs.dh = variation;
                 regs.bh = rotation | (buildImmediately ? 0x80 : 0);
+                return regs;
             }
         };
 
@@ -1012,6 +1018,14 @@ namespace OpenLoco::Ui::Windows::TownList
                 regs.dl = type;
             }
         };
+
+        // 0x0049B32A
+        static currency32_t placeBuildingGhost(const BuildingPlacementArgs& placementArgs)
+        {
+            auto regs = registers(placementArgs);
+            call(0x0049B32A, regs);
+            return regs.ebx;
+        }
 
         // 0x0049B3B2
         static std::optional<BuildingPlacementArgs> getBuildingPlacementArgsFromCursor(const int16_t x, const int16_t y)
@@ -1062,6 +1076,7 @@ namespace OpenLoco::Ui::Windows::TownList
             {
                 args.buildImmediately = true; //bh
             }
+            return { args };
         }
 
         // 0x0049ABF0
@@ -1077,13 +1092,27 @@ namespace OpenLoco::Ui::Windows::TownList
             }
 
             Input::setMapSelectionFlags(Input::MapSelectionFlags::enable);
+            Map::TileManager::setMapSelectionCorner(4);
+            auto* building = ObjectManager::get<BuildingObject>(placementArgs->type);
+            auto posB = Map::Pos2(placementArgs->pos) + (building->flags & BuildingObjectFlags::large_tile ? Map::Pos2(32, 32) : Map::Pos2(0, 0));
+            Map::TileManager::setMapSelectionArea(placementArgs->pos, posB);
+            Map::TileManager::mapInvalidateSelectionRect();
 
-            registers regs;
-            regs.esi = (int32_t)&self;
-            regs.dx = widgetIndex;
-            regs.ax = x;
-            regs.bx = y;
-            call(0x0049ABF0, regs);
+            if (_buildingGhostPlaced)
+            {
+                if (*_buildingGhostPos == placementArgs->pos && _buildingGhostRotation == placementArgs->rotation && _buildingGhostType == placementArgs->type)
+                {
+                    return;
+                }
+            }
+
+            sub_49B37F();
+            auto cost = placeBuildingGhost(*placementArgs);
+            if (cost != dword_1135C34)
+            {
+                dword_1135C34 = cost;
+                self.invalidate();
+            }
         }
 
         // 0x0049ACBD
@@ -1256,7 +1285,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
                     Audio::playSound(Audio::SoundId::clickDown, loc, pan);
                     self->saved_view.mapX = -16;
-                    dword_1135C34 = 0x80000000;
+                    dword_1135C34 = GameCommands::FAILURE;
                     _buildingVariation = 0;
                     self->invalidate();
                     break;
@@ -1374,7 +1403,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
             static loco_global<uint8_t, 0x01135C60> byte_1135C60;
             byte_1135C60 = 0;
-            dword_1135C34 = 0x80000000;
+            dword_1135C34 = GameCommands::FAILURE;
             self->var_83C = 0;
             self->row_hover = -1;
             self->var_846 = -1;
