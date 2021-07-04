@@ -37,8 +37,7 @@ namespace OpenLoco::Map
         return coord >= 0 && coord < map_width;
     }
 
-    template<typename TType>
-    constexpr bool validCoords(const TType& coords)
+    constexpr bool validCoords(const Pos2& coords)
     {
         return validCoord(coords.x) && validCoord(coords.y);
     }
