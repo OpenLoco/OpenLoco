@@ -258,7 +258,7 @@ namespace OpenLoco::Localisation
         catch (const std::exception& e)
         {
             std::cerr << e.what() << "\n";
-            SystemUtils::system_message_popup("Uncaught Exception:", e.what()); 
+            platform::system_message_popup("Uncaught Exception:", e.what()); 
             return false;
         }
     }

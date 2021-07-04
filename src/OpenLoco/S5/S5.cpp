@@ -371,7 +371,7 @@ namespace OpenLoco::S5
         catch (const std::exception& e)
         {
             std::fprintf(stderr, "Unable to save S5: %s\n", e.what());
-            SystemUtils::system_message_popup("Unable to save S5:", e.what()); 
+            platform::system_message_popup("Unable to save S5:", e.what()); 
             return false;
         }
     }
@@ -669,7 +669,7 @@ namespace OpenLoco::S5
         catch (const LoadException& e)
         {
             std::fprintf(stderr, "Unable to load S5: %s\n", e.what());
-            SystemUtils::system_message_popup("Unable to load S5:", e.what()); 
+            platform::system_message_popup("Unable to load S5:", e.what()); 
             _loadErrorCode = 255;
             _loadErrorMessage = e.getLocalisedMessage();
             return false;
@@ -677,7 +677,7 @@ namespace OpenLoco::S5
         catch (const std::exception& e)
         {
             std::fprintf(stderr, "Unable to load S5: %s\n", e.what());
-            SystemUtils::system_message_popup("Unable to load S5:", e.what()); 
+            platform::system_message_popup("Unable to load S5:", e.what()); 
             _loadErrorCode = 255;
             _loadErrorMessage = StringIds::null;
             return false;

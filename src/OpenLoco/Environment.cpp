@@ -203,7 +203,7 @@ namespace OpenLoco::Environment
         catch (const std::exception& e)
         {
             std::fprintf(stderr, "Unable to create directory: %s\n", e.what());
-            SystemUtils::system_message_popup("Unable to create directory:", e.what()); 
+            platform::system_message_popup("Unable to create directory:", e.what()); 
         }
     }
 
