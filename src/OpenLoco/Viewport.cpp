@@ -95,8 +95,7 @@ namespace OpenLoco::Ui
     Map::Pos2 Viewport::viewposToPos2(const viewport_pos& loc, const coord_t z, const int32_t rotation)
     {
         constexpr uint8_t inverseRotationMapping[4] = { 0, 3, 2, 1 };
-        Map::Pos2 result = { loc.y - loc.x / 2 + z,
-                             loc.y + loc.x / 2 + z };
+        const auto result = Map::Pos2(loc.y - loc.x / 2 + z, loc.y + loc.x / 2 + z);
         return Math::Vector::rotate(result, inverseRotationMapping[rotation]);
     }
 

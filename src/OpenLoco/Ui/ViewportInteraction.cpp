@@ -533,10 +533,10 @@ namespace OpenLoco::Ui::ViewportInteraction
             waterHeight = surface->water() * 16;
         }
 
-        auto minPosition = info.pos;                  // E40128/A
-        auto maxPosition = info.pos + Pos2{ 31, 31 }; // E4012C/E
+        const auto minPosition = info.pos;                  // E40128/A
+        const auto maxPosition = info.pos + Pos2{ 31, 31 }; // E4012C/E
         auto mapPos = info.pos + Pos2{ 16, 16 };
-        auto initialVPPos = viewport->uiToMap(screenCoords);
+        const auto initialVPPos = viewport->uiToMap(screenCoords);
 
         for (int32_t i = 0; i < 5; i++)
         {
@@ -551,9 +551,9 @@ namespace OpenLoco::Ui::ViewportInteraction
         }
 
         // Determine to which edge the cursor is closest
-        uint32_t closestEdge = 0; // ecx
-        auto xNibble = mapPos.x & 0x1F;
-        auto yNibble = mapPos.y & 0x1F;
+        [[maybe_unused]] uint32_t closestEdge = 0; // ecx
+        const auto xNibble = mapPos.x & 0x1F;
+        const auto yNibble = mapPos.y & 0x1F;
         if (xNibble < yNibble)
         {
             if (xNibble + yNibble < 32)
@@ -576,6 +576,6 @@ namespace OpenLoco::Ui::ViewportInteraction
                 closestEdge = 2;
             }
         }
-        return { Pos2{ mapPos.x & 0xFFE0, mapPos.y & 0xFFE0 } };
+        return { Pos2(mapPos.x & 0xFFE0, mapPos.y & 0xFFE0) };
     }
 }
