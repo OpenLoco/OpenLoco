@@ -26,7 +26,7 @@ namespace OpenLoco::Ui::Windows::TownList
     static loco_global<uint32_t, 0x01135C34> dword_1135C34;
     static loco_global<Colour_t, 0x01135C61> _buildingColour;
     static loco_global<uint8_t, 0x01135C63> _buildingRotation;
-    static loco_global<uint8_t, 0x01135C65> byte_1135C65;
+    static loco_global<uint8_t, 0x01135C65> _buildingVariation;
     static loco_global<uint8_t, 0x01135C66> _townSize;
     static loco_global<uint8_t, 0x00525FC8> _lastSelectedBuilding;
     static loco_global<uint8_t, 0x00525FC9> _lastSelectedMiscBuilding;
@@ -971,30 +971,97 @@ namespace OpenLoco::Ui::Windows::TownList
             Ui::Windows::hideGridlines();
         }
 
-        static Map::Pos2 sub_49B3B2(const int16_t x, const int16_t y)
+        struct BuildingPlacementArgs
+        {
+            Map::Pos3 pos;
+            uint8_t rotation;
+            uint8_t type;
+            uint8_t variation;
+            bool buildImmediately = false; // No scaffolding required (editor mode)
+            explicit operator registers() const
+            {
+
+                registers regs;
+                regs.ax = pos.x;
+                regs.cx = pos.y;
+                regs.di = pos.z;
+                regs.dl = type;
+                regs.dh = variation;
+                regs.bh = rotation | (buildImmediately ? 0x80 : 0);
+            }
+        };
+
+        struct BuildingRemovalArgs
+        {
+            BuildingRemovalArgs() = default;
+            BuildingRemovalArgs(const BuildingPlacementArgs& place)
+                : pos(place.pos)
+                , type(place.type)
+            {
+            }
+
+            Map::Pos3 pos;
+            uint8_t type;
+            explicit operator registers() const
+            {
+
+                registers regs;
+                regs.ax = pos.x;
+                regs.cx = pos.y;
+                regs.di = pos.z;
+                regs.dl = type;
+            }
+        };
+
+        // 0x0049B3B2
+        static std::optional<BuildingPlacementArgs> getBuildingPlacementArgsFromCursor(const int16_t x, const int16_t y)
         {
             auto* townListWnd = WindowManager::find(WindowType::townList);
             if (townListWnd == nullptr)
             {
-                return { 0x8000, 0 };
+                return {};
             }
 
             if (townListWnd->current_tab != (Common::widx::tab_build_misc_buildings - Common::widx::tab_town_list) && townListWnd->current_tab != (Common::widx::tab_build_buildings - Common::widx::tab_town_list))
             {
-                return { 0x8000, 0 };
+                return {};
             }
 
             if (townListWnd->row_hover == -1)
             {
-                return { 0x8000, 0 };
+                return {};
             }
 
+            const auto pos = ViewportInteraction::getTileStartAtCursor({ x, y }); //ax,cx
+            if (!pos)
+            {
+                return {};
+            }
 
-            registers regs;
-            regs.ax = x;
-            regs.bx = y;
-            call(0x0049B37F, regs);
-            return Map::Pos2(regs.ax, regs.cx);
+            // TODO: modify getTileStartAtCursor to return the viewport then use its rotation
+            static loco_global<int32_t, 0x00E3F0B8> gCurrentRotation;
+
+            BuildingPlacementArgs args;
+            args.rotation = (_buildingRotation - gCurrentRotation) & 0x3; //bh
+            auto tile = Map::TileManager::get(*pos);
+            const auto* surface = tile.surface();
+            if (surface == nullptr)
+            {
+                return {};
+            }
+
+            auto z = surface->baseZ() * 4; //di
+            if (surface->slope())
+            {
+                z += 16;
+            }
+            args.pos = Map::Pos3(pos->x, pos->y, z);
+            args.type = townListWnd->row_hover;  //dl
+            args.variation = _buildingVariation; //dh
+            if (isEditorMode())
+            {
+                args.buildImmediately = true; //bh
+            }
         }
 
         // 0x0049ABF0
@@ -1002,6 +1069,15 @@ namespace OpenLoco::Ui::Windows::TownList
         {
             Map::TileManager::mapInvalidateSelectionRect();
             Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
+            auto placementArgs = getBuildingPlacementArgsFromCursor(x, y);
+            if (!placementArgs)
+            {
+                sub_49B37F();
+                return;
+            }
+
+            Input::setMapSelectionFlags(Input::MapSelectionFlags::enable);
+
             registers regs;
             regs.esi = (int32_t)&self;
             regs.dx = widgetIndex;
@@ -1181,7 +1257,7 @@ namespace OpenLoco::Ui::Windows::TownList
                     Audio::playSound(Audio::SoundId::clickDown, loc, pan);
                     self->saved_view.mapX = -16;
                     dword_1135C34 = 0x80000000;
-                    byte_1135C65 = 0;
+                    _buildingVariation = 0;
                     self->invalidate();
                     break;
                 }
@@ -1306,7 +1382,7 @@ namespace OpenLoco::Ui::Windows::TownList
             updateBuildingList(self);
             updateBuildingColours(self);
 
-            byte_1135C65 = 0;
+            _buildingVariation = 0;
         }
 
         static void initEvents()
