@@ -23,6 +23,8 @@
     }
 }
 
+//Uncomment for additional platform implementations:
+
 //#ifdef _WIN64
 ////define something for Windows (64-bit only)
 //#else
