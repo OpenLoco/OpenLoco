@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Graphics/Gfx.h"
+#include "Location.hpp"
 #include "Map/Map.hpp"
 #include <string>
 #include <vector>
@@ -176,5 +177,6 @@ namespace OpenLoco::Ui
         InteractionArg rightOver(int16_t x, int16_t y);
 
         std::pair<ViewportInteraction::InteractionArg, Ui::Viewport*> getMapCoordinatesFromPos(int32_t screenX, int32_t screenY, int32_t flags);
+        std::optional<Map::Pos2> getTileStartAtCursor(const xy32& screenCoords);
     }
 }
