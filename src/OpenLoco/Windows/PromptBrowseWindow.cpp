@@ -17,6 +17,7 @@
 #include "../Ui/WindowManager.h"
 #include "../Utility/String.hpp"
 #include "../Win32.h"
+#include "../SystemPopups/system_message_popup.h"
 
 #ifdef _WIN32
 #ifndef NOMINMAX
@@ -766,6 +767,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                 catch (const fs::filesystem_error& err)
                 {
                     Console::error("Invalid directory or file: %s", err.what());
+                    SystemUtils::system_message_popup("Invalid directory or file:", err.what()); 
                 }
             }
         }

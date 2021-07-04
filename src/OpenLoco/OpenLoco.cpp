@@ -59,6 +59,7 @@
 #include "Ui/WindowManager.h"
 #include "Utility/Numeric.hpp"
 #include "ViewportManager.h"
+#include "SystemPopups/system_message_popup.h"
 
 #pragma warning(disable : 4611) // interaction between '_setjmp' and C++ object destruction is non - portable
 
@@ -916,6 +917,7 @@ namespace OpenLoco
         catch (const std::exception& e)
         {
             std::fprintf(stderr, "Unable to clean autosaves: %s\n", e.what());
+            SystemUtils::system_message_popup("Unable to clean autosaves:", e.what()); 
         }
     }
 
@@ -951,6 +953,7 @@ namespace OpenLoco
         catch (const std::exception& e)
         {
             std::fprintf(stderr, "Unable to autosave game: %s\n", e.what());
+            SystemUtils::system_message_popup("Unable to autosave game:", e.what()); 
         }
     }
 
@@ -1182,6 +1185,7 @@ namespace OpenLoco
         catch (const std::exception& ex)
         {
             std::cerr << ex.what() << std::endl;
+            SystemUtils::system_message_popup("Uncaught Exception in main(); :", ex.what()); 
         }
     }
 }
