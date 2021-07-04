@@ -40,11 +40,6 @@ namespace OpenLoco::Ui::Windows::Terraform
     static loco_global<uint8_t, 0x009C870F> _clearAreaToolSize;
     static loco_global<uint8_t, 0x009C8710> _adjustWaterToolSize;
     static loco_global<uint8_t, 0x00F003D2> _lastSelectedLand;
-    static loco_global<coord_t, 0x00F24486> _mapSelectionAX;
-    static loco_global<coord_t, 0x00F24488> _mapSelectionBX;
-    static loco_global<coord_t, 0x00F2448A> _mapSelectionAY;
-    static loco_global<coord_t, 0x00F2448C> _mapSelectionBY;
-    static loco_global<uint16_t, 0x00F2448E> _word_F2448E;
     static loco_global<uint8_t, 0x01136496> _treeRotation;
     static loco_global<uint8_t, 0x01136497> _treeColour;
     static loco_global<uint8_t, 0x0113649A> _byte_113649A;
@@ -828,13 +823,8 @@ namespace OpenLoco::Ui::Windows::Terraform
         {
             if (Input::hasMapSelectionFlag(Input::MapSelectionFlags::enable))
             {
-                int16_t x = _mapSelectionAX + _mapSelectionBX;
-                int16_t y = _mapSelectionAY + _mapSelectionBY;
-                x /= 2;
-                y /= 2;
-                Pos2 centre = { x, y };
-                Pos2 pointA = { _mapSelectionAX, _mapSelectionAY };
-                Pos2 pointB = { _mapSelectionBX, _mapSelectionBY };
+                auto[pointA, pointB] = Map::TileManager::getMapSelectionArea();
+                Pos2 centre = (pointA + pointB) / 2;
                 GameCommands::setErrorTitle(StringIds::error_cant_clear_entire_area);
 
                 GameCommands::do_66(centre, pointA, pointB, flags);
@@ -1075,13 +1065,8 @@ namespace OpenLoco::Ui::Windows::Terraform
             if ((flags & 1))
                 Common::sub_4A69DD();
 
-            int16_t x = _mapSelectionAX + _mapSelectionBX;
-            int16_t y = _mapSelectionAY + _mapSelectionBY;
-            x /= 2;
-            y /= 2;
-            Pos2 centre = { x, y };
-            Pos2 pointA = { _mapSelectionAX, _mapSelectionAY };
-            Pos2 pointB = { _mapSelectionBX, _mapSelectionBY };
+            auto [pointA, pointB] = Map::TileManager::getMapSelectionArea();
+            auto centre = (pointA + pointB) / 2;
             GameCommands::setErrorTitle(StringIds::error_cant_lower_land_here);
 
             if (_adjustToolSize == 0)
@@ -1091,8 +1076,8 @@ namespace OpenLoco::Ui::Windows::Terraform
             }
             else
             {
-                uint16_t di = _word_F2448E;
-                cost = GameCommands::do_26(centre, pointA, pointB, di, flags);
+                auto corner = Map::TileManager::getMapSelectionCorner();
+                cost = GameCommands::do_26(centre, pointA, pointB, corner, flags);
             }
             return cost;
         }
@@ -1104,13 +1089,8 @@ namespace OpenLoco::Ui::Windows::Terraform
             if ((flags & 1))
                 Common::sub_4A69DD();
 
-            int16_t x = _mapSelectionAX + _mapSelectionBX;
-            int16_t y = _mapSelectionAY + _mapSelectionBY;
-            x /= 2;
-            y /= 2;
-            Pos2 centre = { x, y };
-            Pos2 pointA = { _mapSelectionAX, _mapSelectionAY };
-            Pos2 pointB = { _mapSelectionBX, _mapSelectionBY };
+            auto [pointA, pointB] = Map::TileManager::getMapSelectionArea();
+            auto centre = (pointA + pointB) / 2;
             GameCommands::setErrorTitle(StringIds::error_cant_raise_land_here);
 
             if (_adjustToolSize == 0)
@@ -1120,8 +1100,8 @@ namespace OpenLoco::Ui::Windows::Terraform
             }
             else
             {
-                uint16_t di = _word_F2448E;
-                cost = GameCommands::do_25(centre, pointA, pointB, di, flags);
+                uint16_t corner = Map::TileManager::getMapSelectionCorner();
+                cost = GameCommands::do_25(centre, pointA, pointB, corner, flags);
             }
             return cost;
         }
@@ -1210,8 +1190,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 if (_lastSelectedLand != 0xFF)
                 {
                     GameCommands::setErrorTitle(StringIds::error_cant_change_land_type);
-                    Pos2 pointA = { _mapSelectionAX, _mapSelectionAY };
-                    Pos2 pointB = { _mapSelectionBX, _mapSelectionBY };
+                    auto [pointA, pointB] = Map::TileManager::getMapSelectionArea();
 
                     GameCommands::do_24(pointA, pointB, _lastSelectedLand, Flags::apply);
                 }
@@ -1450,8 +1429,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         {
             Common::sub_4A69DD();
             GameCommands::setErrorTitle(StringIds::error_cant_raise_water_here);
-            Pos2 pointA = { _mapSelectionAX, _mapSelectionAY };
-            Pos2 pointB = { _mapSelectionBX, _mapSelectionBY };
+            auto [pointA, pointB] = Map::TileManager::getMapSelectionArea();
 
             GameCommands::do_28(pointA, pointB, flags);
         }
@@ -1460,8 +1438,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         {
             Common::sub_4A69DD();
             GameCommands::setErrorTitle(StringIds::error_cant_raise_water_here);
-            Pos2 pointA = { _mapSelectionAX, _mapSelectionAY };
-            Pos2 pointB = { _mapSelectionBX, _mapSelectionBY };
+            auto [pointA, pointB] = Map::TileManager::getMapSelectionArea();
 
             GameCommands::do_29(pointA, pointB, flags);
         }
