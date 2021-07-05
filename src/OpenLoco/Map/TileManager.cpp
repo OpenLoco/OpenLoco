@@ -49,6 +49,29 @@ namespace OpenLoco::Map::TileManager
         return stdx::span<TileElement>(_elements, getElementsEnd());
     }
 
+    void setMapSelectionArea(const Pos2& locA, const Pos2& locB)
+    {
+        _mapSelectionAX = locA.x;
+        _mapSelectionAY = locA.y;
+        _mapSelectionBX = locB.x;
+        _mapSelectionBY = locB.y;
+    }
+
+    std::pair<Pos2, Pos2> getMapSelectionArea()
+    {
+        return std::make_pair(Pos2{ _mapSelectionAX, _mapSelectionAY }, Pos2{ _mapSelectionBX, _mapSelectionBY });
+    }
+
+    void setMapSelectionCorner(const uint8_t corner)
+    {
+        _word_F2448E = corner;
+    }
+
+    uint8_t getMapSelectionCorner()
+    {
+        return _word_F2448E;
+    }
+
     TileElement* getElementsEnd()
     {
         return _elementsEnd;
