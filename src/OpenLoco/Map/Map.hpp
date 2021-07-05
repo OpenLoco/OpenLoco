@@ -29,12 +29,12 @@ namespace OpenLoco::Map
 
     constexpr bool validCoord(coord_t coord)
     {
-        return coord >= 0 && coord < map_columns;
+        return coord >= 0 && coord < map_width;
     }
 
     constexpr bool validTileCoord(coord_t coord)
     {
-        return coord >= 0 && coord < map_width;
+        return coord >= 0 && coord < map_columns;
     }
 
     constexpr bool validCoords(const Pos2& coords)
