@@ -22,7 +22,9 @@ namespace OpenLoco
     struct BuildingObject
     {
         string_id name;
-        uint8_t pad_02[0x90 - 0x02];
+        uint8_t pad_02[0x07 - 0x02];
+        uint8_t numVariations; //0x7
+        uint8_t pad_08[0x90 - 0x08];
         uint32_t colours;      // 0x90
         uint16_t designedYear; // 0x94
         uint16_t obsoleteYear; // 0x96
@@ -39,4 +41,5 @@ namespace OpenLoco
         void drawDescription(Gfx::Context& context, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const;
     };
 #pragma pack(pop)
+    static_assert(sizeof(BuildingObject) == 0xAA);
 }

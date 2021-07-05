@@ -976,51 +976,8 @@ namespace OpenLoco::Ui::Windows::TownList
             Ui::Windows::hideGridlines();
         }
 
-        struct BuildingPlacementArgs
-        {
-            Map::Pos3 pos;
-            uint8_t rotation;
-            uint8_t type;
-            uint8_t variation;
-            bool buildImmediately = false; // No scaffolding required (editor mode)
-            explicit operator registers() const
-            {
-
-                registers regs;
-                regs.ax = pos.x;
-                regs.cx = pos.y;
-                regs.di = pos.z;
-                regs.dl = type;
-                regs.dh = variation;
-                regs.bh = rotation | (buildImmediately ? 0x80 : 0);
-                return regs;
-            }
-        };
-
-        struct BuildingRemovalArgs
-        {
-            BuildingRemovalArgs() = default;
-            BuildingRemovalArgs(const BuildingPlacementArgs& place)
-                : pos(place.pos)
-                , type(place.type)
-            {
-            }
-
-            Map::Pos3 pos;
-            uint8_t type;
-            explicit operator registers() const
-            {
-
-                registers regs;
-                regs.ax = pos.x;
-                regs.cx = pos.y;
-                regs.di = pos.z;
-                regs.dl = type;
-            }
-        };
-
         // 0x0049B32A
-        static currency32_t placeBuildingGhost(const BuildingPlacementArgs& placementArgs)
+        static currency32_t placeBuildingGhost(const GameCommands::BuildingPlacementArgs& placementArgs)
         {
             auto regs = registers(placementArgs);
             call(0x0049B32A, regs);
@@ -1028,7 +985,7 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049B3B2
-        static std::optional<BuildingPlacementArgs> getBuildingPlacementArgsFromCursor(const int16_t x, const int16_t y)
+        static std::optional<GameCommands::BuildingPlacementArgs> getBuildingPlacementArgsFromCursor(const int16_t x, const int16_t y)
         {
             auto* townListWnd = WindowManager::find(WindowType::townList);
             if (townListWnd == nullptr)
@@ -1055,7 +1012,7 @@ namespace OpenLoco::Ui::Windows::TownList
             // TODO: modify getTileStartAtCursor to return the viewport then use its rotation
             static loco_global<int32_t, 0x00E3F0B8> gCurrentRotation;
 
-            BuildingPlacementArgs args;
+            GameCommands::BuildingPlacementArgs args;
             args.rotation = (_buildingRotation - gCurrentRotation) & 0x3; //bh
             auto tile = Map::TileManager::get(*pos);
             const auto* surface = tile.surface();
@@ -1118,12 +1075,24 @@ namespace OpenLoco::Ui::Windows::TownList
         // 0x0049ACBD
         static void onToolDown(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
-            registers regs;
-            regs.esi = (int32_t)&self;
-            regs.dx = widgetIndex;
-            regs.ax = x;
-            regs.bx = y;
-            call(0x0049ACBD, regs);
+            sub_49B37F();
+            auto placementArgs = getBuildingPlacementArgsFromCursor(x, y);
+            if (placementArgs)
+            {
+                GameCommands::setErrorTitle(StringIds::error_cant_build_this_here);
+                if (GameCommands::do_44(*placementArgs, GameCommands::Flags::apply | GameCommands::Flags::flag_1))
+                {
+                    Audio::playSound(Audio::SoundId::construct, GameCommands::getPosition());
+                }
+            }
+
+            uint8_t variation = 0;
+            if (self.row_hover != -1)
+            {
+                auto* buildingObj = ObjectManager::get<BuildingObject>(self.row_hover);
+                variation = (_buildingVariation + 1) % buildingObj->numVariations;
+            }
+            _buildingVariation = variation;
         }
 
         // 0x0049AB52

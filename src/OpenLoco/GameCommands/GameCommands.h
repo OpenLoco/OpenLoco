@@ -77,7 +77,7 @@ namespace OpenLoco::GameCommands
         gc_unk_41 = 41,
         gc_unk_42 = 42,
         removeRoadStation = 43,
-        gc_unk_44 = 44,
+        createBuilding = 44,
         removeBuilding = 45,
         renameTown = 46,
         createIndustry = 47,
@@ -596,6 +596,33 @@ namespace OpenLoco::GameCommands
         return doCommand(GameCommand::removeRoadStation, regs) != FAILURE;
     }
 
+    struct BuildingPlacementArgs
+    {
+        Map::Pos3 pos;
+        uint8_t rotation;
+        uint8_t type;
+        uint8_t variation;
+        bool buildImmediately = false; // No scaffolding required (editor mode)
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.ax = pos.x;
+            regs.cx = pos.y;
+            regs.di = pos.z;
+            regs.dl = type;
+            regs.dh = variation;
+            regs.bh = rotation | (buildImmediately ? 0x80 : 0);
+            return regs;
+        }
+    };
+
+    inline bool do_44(const BuildingPlacementArgs& placementArgs, uint8_t flags)
+    {
+        registers regs = registers(placementArgs);
+        regs.bl = flags;
+        return doCommand(GameCommand::createBuilding, regs) != FAILURE;
+    }
+
     struct BuildingRemovalArgs
     {
         BuildingRemovalArgs() = default;
@@ -603,8 +630,14 @@ namespace OpenLoco::GameCommands
             : pos(regs.ax, regs.cx, regs.di)
         {
         }
+        BuildingRemovalArgs(const BuildingPlacementArgs& place)
+            : pos(place.pos)
+            , type(place.type)
+        {
+        }
 
         Map::Pos3 pos;
+        uint8_t type;
 
         explicit operator registers() const
         {
@@ -612,6 +645,7 @@ namespace OpenLoco::GameCommands
             regs.ax = pos.x;
             regs.cx = pos.y;
             regs.di = pos.z;
+            regs.dl = type;
             return regs;
         }
     };
