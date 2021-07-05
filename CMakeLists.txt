@@ -217,14 +217,8 @@ find_package(SDL2_mixer REQUIRED)
 
 find_package(PNG REQUIRED)
 
-# The hint provided here is targetting Arch Linux, a distro of choice for many contributors
-if ("${CMAKE_SYSTEM_NAME}" MATCHES "(Free|Net|Open|DragonFly)BSD")
-    find_package(yaml-cpp REQUIRED)
-    include_directories(${YAML_CPP_INCLUDE_DIR})
-else()
-    find_package(yaml-cpp REQUIRED HINTS /usr/lib32/cmake/yaml-cpp)
-    include_directories(${YAML_CPP_INCLUDE_DIR})
-endif()
+find_package(yaml-cpp REQUIRED HINTS /usr/lib32/cmake/yaml-cpp)
+include_directories(${YAML_CPP_INCLUDE_DIR})
 
 # Disable optimizations for interop.cpp for all compilers, to allow optimized
 # builds without need for -fno-omit-frame-pointer
