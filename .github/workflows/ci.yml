@@ -116,7 +116,7 @@ jobs:
           eval "$(/usr/osxcross/bin/i386-apple-darwin17-osxcross-conf)"
           mkdir build && cd build
           export LD_LIBRARY_PATH="/usr/osxcross/lib:$LD_LIBRARY_PATH"
-          cmake .. "-DCMAKE_TOOLCHAIN_FILE=../toolchain.cmake" -DVCPKG_TARGET_TRIPLET=x86-osx
+          cmake .. "-DCMAKE_TOOLCHAIN_FILE=../cmake/osxcross_toolchain.cmake" -DVCPKG_TARGET_TRIPLET=x86-osx
           make -j2
           zip -r openloco.zip openloco.app
       - name: Archive production artifacts
