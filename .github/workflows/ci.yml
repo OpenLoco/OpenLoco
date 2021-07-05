@@ -94,3 +94,34 @@ jobs:
           mkdir build
           cd build
           cmake ../ ${OPENLOCO_CMAKE_OPTS} && ninja -k0
+  mac:
+    runs-on: ubuntu-latest
+    container: marijnvdwerf/openloco-osxcross:0.2
+    steps:
+      - uses: actions/checkout@v1
+      - run: |
+          ln -s /usr/osxcross/SDK/MacOSX10.13.sdk/System /System
+      - shell: bash
+        run: |
+          curl -L https://github.com/OpenLoco/Dependencies/releases/download/v1.3.0/openloco.dependencies.macos.1.3.0.zip -o dependencies.zip
+          unzip dependencies.zip -d vcpkg/
+      - shell: bash
+        env:
+          OSXCROSS_HOST: i386-apple-darwin17
+          TOOLCHAIN1: ${{ github.workspace }}/osxcross/tools/toolchain.cmake
+          TOOLCHAIN2: ${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake
+          MACOSX_DEPLOYMENT_TARGET: 10.13
+        run: |
+          /usr/osxcross/bin/i386-apple-darwin17-osxcross-conf
+          eval "$(/usr/osxcross/bin/i386-apple-darwin17-osxcross-conf)"
+          mkdir build && cd build
+          export LD_LIBRARY_PATH="/usr/osxcross/lib:$LD_LIBRARY_PATH"
+          cmake .. "-DCMAKE_TOOLCHAIN_FILE=../cmake/osxcross_toolchain.cmake" -DVCPKG_TARGET_TRIPLET=x86-osx
+          make -j2
+          zip -r openloco.zip openloco.app
+      - name: Archive production artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: "OpenLoco-macOS"
+          path: build/openloco.zip
+
