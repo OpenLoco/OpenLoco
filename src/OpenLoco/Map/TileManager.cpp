@@ -57,7 +57,8 @@ namespace OpenLoco::Map::TileManager
         _mapSelectionBY = locB.y;
     }
 
-    std::pair<Pos2, Pos2> getMapSelectionArea() {
+    std::pair<Pos2, Pos2> getMapSelectionArea()
+    {
         return std::make_pair(Pos2{ _mapSelectionAX, _mapSelectionAY }, Pos2{ _mapSelectionBX, _mapSelectionBY });
     }
 
@@ -66,7 +67,8 @@ namespace OpenLoco::Map::TileManager
         _word_F2448E = corner;
     }
 
-    uint8_t getMapSelectionCorner() {
+    uint8_t getMapSelectionCorner()
+    {
         return _word_F2448E;
     }
 

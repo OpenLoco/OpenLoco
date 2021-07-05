@@ -823,7 +823,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         {
             if (Input::hasMapSelectionFlag(Input::MapSelectionFlags::enable))
             {
-                auto[pointA, pointB] = Map::TileManager::getMapSelectionArea();
+                auto [pointA, pointB] = Map::TileManager::getMapSelectionArea();
                 Pos2 centre = (pointA + pointB) / 2;
                 GameCommands::setErrorTitle(StringIds::error_cant_clear_entire_area);
 
