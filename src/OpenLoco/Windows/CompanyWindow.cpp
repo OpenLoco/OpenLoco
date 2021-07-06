@@ -853,17 +853,8 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                     break;
 
                 case widx::centre_on_viewport:
-                {
-                    if (self->viewports[0] == nullptr)
-                        break;
-
-                    // Centre viewport on HQ.
-                    // TODO(avgeffen): move/implement.
-                    registers regs;
-                    regs.esi = (int32_t)self;
-                    call(0x00432C45, regs);
+                    self->viewportCentreMain();
                     break;
-                }
             }
         }
 
