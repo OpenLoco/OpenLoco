@@ -637,10 +637,8 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
     {
         const Gfx::ui_size_t windowSize = { 340, 194 };
 
-        loco_global<coord_t, 0x009C68D6> _9C68D6; // likely tool x,y,z
-        loco_global<coord_t, 0x009C68D8> _9C68D8;
-        loco_global<coord_t, 0x009C68DA> _9C68DA;
-        loco_global<uint8_t, 0x009C68EF> _9C68EF;
+        loco_global<Map::Pos3, 0x009C68D6> _headquarterGhostPos;
+        loco_global<bool, 0x009C68EF> _headquarterGhostPlaced;
 
         enum widx
         {
@@ -890,13 +888,16 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             }
         }
 
-        static void sub_434E94()
+        // 0x00434E94
+        static void removeHeadquarterGhost()
         {
-            if (_9C68EF & (1 << 0))
+            if (_headquarterGhostPlaced)
             {
-                _9C68EF = _9C68EF & ~(1 << 0);
+                _headquarterGhostPlaced = false;
                 auto flags = GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6;
-                GameCommands::do_55(flags, _9C68D6, _9C68D8, _9C68DA);
+                GameCommands::HeadquarterRemovalArgs args;
+                args.pos = _headquarterGhostPos;
+                GameCommands::do_55(flags, args);
             }
         }
 
@@ -908,18 +909,21 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // regs.cx = tileX (tile coordinate)
         // regs.ax = tileY (tile coordinate)
         // regs.di = tileZ (height)
+        // regs.bh = rotaion and buildImmediately
         // regs.dx = dx - company index (value 1 in testing case)
-        static void sub_434EC7(const int16_t mouseX, const int16_t mouseY, coord_t& tileX, coord_t& tileY, coord_t& tileZ, int16_t& dx)
+        static std::optional<GameCommands::HeadquarterPlacementArgs> sub_434EC7(const int16_t mouseX, const int16_t mouseY)
         {
             registers regs;
             regs.ax = mouseX;
             regs.bx = mouseY;
 
             call(0x00434EC7, regs);
-            tileX = regs.cx;
-            tileY = regs.ax;
-            tileZ = regs.di;
-            dx = regs.dx;
+            if (regs.ax == static_cast<int16_t>(0x8000))
+            {
+                return {};
+            }
+            GameCommands::HeadquarterPlacementArgs args(regs);
+            return { args };
         }
 
         // 0x00432CA1
@@ -940,19 +944,17 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // regs.bx = mouseY;
         static void onToolDown(Window& self, const WidgetIndex_t widgetIndex, const int16_t mouseX, const int16_t mouseY)
         {
-            sub_434E94();
+            removeHeadquarterGhost();
 
-            coord_t tileX, tileY, tileZ;
-            int16_t dx;
-            sub_434EC7(mouseX, mouseY, tileX, tileY, tileZ, dx);
-            if (tileY == Location::null)
+            auto placementArgs = sub_434EC7(mouseX, mouseY);
+            if (!placementArgs)
             {
                 return;
             }
 
             GameCommands::setErrorTitle(StringIds::error_cant_build_this_here);
             uint8_t flags = GameCommands::Flags::apply | GameCommands::Flags::flag_1;
-            auto commandResult = GameCommands::do_54(flags, tileY, tileX, tileZ, dx);
+            auto commandResult = GameCommands::do_54(flags, *placementArgs);
             if (commandResult != GameCommands::FAILURE)
             {
                 Input::toolCancel();
@@ -962,7 +964,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // 0x00432D7A
         static void onToolAbort(Window& self, const WidgetIndex_t widgetIndex)
         {
-            sub_434E94();
+            removeHeadquarterGhost();
             Ui::Windows::hideGridlines();
         }
 
