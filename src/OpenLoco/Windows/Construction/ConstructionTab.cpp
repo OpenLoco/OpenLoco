@@ -314,7 +314,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
             Pos2 pos = { roadPart.x, roadPart.y };
 
-            pos = rotate2dCoordinate(pos, rotation);
+            pos = Math::Vector::rotate(pos, rotation);
 
             pos.x += x;
             pos.y += y;
@@ -507,7 +507,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             }
             Pos2 pos = { trackPart.x, trackPart.y };
 
-            pos = rotate2dCoordinate(pos, rotation);
+            pos = Math::Vector::rotate(pos, rotation);
 
             pos.x += x;
             pos.y += y;
@@ -2031,7 +2031,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                     pos3D.y = 0;
                 }
 
-                auto rotatedPos = rotate2dCoordinate({ pos3D.x, pos3D.y }, _byte_1136078 & 3);
+                auto rotatedPos = Math::Vector::rotate(pos3D, _byte_1136078 & 3);
                 pos3D.x = rotatedPos.x / 2;
                 pos3D.y = rotatedPos.y / 2;
                 pos3D.x += 0x2010;
@@ -2081,7 +2081,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                     pos3D.y = 0;
                 }
 
-                auto rotatedPos = rotate2dCoordinate({ pos3D.x, pos3D.y }, _byte_1136078 & 3);
+                auto rotatedPos = Math::Vector::rotate(pos3D, _byte_1136078 & 3);
                 pos3D.x = rotatedPos.x / 2;
                 pos3D.y = rotatedPos.y / 2;
                 pos3D.x += 0x2010;
