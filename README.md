@@ -8,11 +8,12 @@ An open source re-implementation of Chris Sawyer's Locomotion. A construction an
 # Contents
 - 1 - [Introduction](#1-introduction)
 - 2 - [Downloading the game (pre-built)](#2-downloading-the-game-pre-built)
-- 3 - [Building the game](#3-building-the-game)
-  - 3.1 - [Building prerequisites](#31-building-prerequisites)
-  - 3.2 - [Compiling and running](#32-compiling-and-running)
-- 4 - [Licence](#4-licence)
-- 5 - [More information](#5-more-information)
+- 3 - [Contributing](#3-contributing)
+- 4 - [Compiling the game](#4-compiling-the-game)
+  - 4.1 - [Building prerequisites](#41-building-prerequisites)
+  - 4.2 - [Compiling and running](#42-compiling-and-running)
+- 5 - [Licence](#5-licence)
+- 6 - [More information](#6-more-information)
 
 ---
 
@@ -116,7 +117,7 @@ cp -r ../data ./data
 
 ---
 
-# 5 More information
+# 6 More information
 - [GitHub](https://github.com/OpenLoco/OpenLoco)
 - [TT-Forums](https://www.tt-forums.net)
 - [Locomotion subreddit](https://www.reddit.com/r/locomotion/)
