@@ -545,7 +545,7 @@ namespace OpenLoco::Ui::ViewportInteraction
             {
                 z = TileManager::getHeight(mapPos);
             }
-            mapPos = Viewport::viewposToPos2(initialVPPos, z, viewport->getRotation());
+            mapPos = viewportCoordToMapCoord(initialVPPos.x, initialVPPos.y, z, viewport->getRotation());
             mapPos.x = std::clamp(mapPos.x, minPosition.x, maxPosition.x);
             mapPos.y = std::clamp(mapPos.y, minPosition.y, maxPosition.y);
         }
