@@ -54,6 +54,9 @@ It can be bought at e.g. [Steam](https://store.steampowered.com/app/356430/) or 
 We warmly welcome any contributions to the project, e.g. for C++ code (game implementation, bug fixes, features) or localisation (new translations).
 Please have a look at our [issues for newcomers](https://github.com/OpenLoco/OpenLoco/labels/good%20first%20issue).
 
+For code contributions, please stick to our [code style](https://github.com/OpenLoco/OpenLoco/wiki/Coding-Style).
+You can use `clang-format` to apply these guidelines automatically.
+
 ---
 
 # 4 Compiling the game
