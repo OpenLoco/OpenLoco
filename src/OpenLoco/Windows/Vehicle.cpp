@@ -2666,7 +2666,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     const auto& trackPiece = Map::TrackData::getTrackPiece(trackId);
                     const auto& trackPart = trackPiece[trackElement->sequenceIndex()];
 
-                    auto offsetToFirstTile = Map::rotate2dCoordinate({ trackPart.x, trackPart.y }, trackElement->unkDirection());
+                    auto offsetToFirstTile = Math::Vector::rotate(Pos2{ trackPart.x, trackPart.y }, trackElement->unkDirection());
                     auto firstTilePos = args.pos - offsetToFirstTile;
                     TilePos2 tPos{ firstTilePos };
                     height -= trackPart.z;
@@ -2714,7 +2714,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     const auto& roadPiece = Map::TrackData::getRoadPiece(roadId);
                     const auto& roadPart = roadPiece[roadElement->sequenceIndex()];
 
-                    auto offsetToFirstTile = Map::rotate2dCoordinate({ roadPart.x, roadPart.y }, roadElement->unkDirection());
+                    auto offsetToFirstTile = Math::Vector::rotate(Pos2{ roadPart.x, roadPart.y }, roadElement->unkDirection());
                     auto firstTilePos = args.pos - offsetToFirstTile;
                     TilePos2 tPos{ firstTilePos };
                     height -= roadPart.z;

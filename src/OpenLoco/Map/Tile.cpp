@@ -219,31 +219,4 @@ namespace OpenLoco::Map
 
         return coordinate_2d;
     }
-
-    Pos2 rotate2dCoordinate(Pos2 pos, uint8_t rotation)
-    {
-        Pos2 coordinate2D;
-
-        switch (rotation)
-        {
-            default:
-            case 0:
-                coordinate2D = pos;
-                break;
-            case 1:
-                coordinate2D.x = pos.y;
-                coordinate2D.y = -pos.x;
-                break;
-            case 2:
-                coordinate2D.x = -pos.x;
-                coordinate2D.y = -pos.y;
-                break;
-            case 3:
-                coordinate2D.x = -pos.y;
-                coordinate2D.y = pos.x;
-                break;
-        }
-
-        return coordinate2D;
-    }
 }

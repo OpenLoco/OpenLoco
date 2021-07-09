@@ -31,7 +31,6 @@ namespace OpenLoco::Map
     constexpr Pos2 offsets[4] = { { 0, 0 }, { 0, 32 }, { 32, 32 }, { 32, 0 } };
 
     Ui::viewport_pos coordinate3dTo2d(int16_t x, int16_t y, int16_t z, int rotation);
-    Pos2 rotate2dCoordinate(Pos2 pos, uint8_t rotation);
 
     enum class ElementType
     {

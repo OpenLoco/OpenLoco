@@ -462,8 +462,8 @@ namespace OpenLoco
                     Pos2 minPos(airportObject->min_x * 32, airportObject->min_y * 32);
                     Pos2 maxPos(airportObject->max_x * 32, airportObject->max_y * 32);
 
-                    minPos = rotate2dCoordinate(minPos, stationElement->rotation());
-                    maxPos = rotate2dCoordinate(maxPos, stationElement->rotation());
+                    minPos = Math::Vector::rotate(minPos, stationElement->rotation());
+                    maxPos = Math::Vector::rotate(maxPos, stationElement->rotation());
 
                     minPos.x += pos.x;
                     minPos.y += pos.y;
