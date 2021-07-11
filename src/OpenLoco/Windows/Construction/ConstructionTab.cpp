@@ -1535,23 +1535,6 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         return { std::make_pair(regs.di, regs.dl) };
     }
 
-    // 0x00460781
-    // regs.ax = x;
-    // regs.bx = y;
-    // returns
-    // regs.ax = 0x8000 - probably in case of failure
-    static Pos2 sub_460781(int16_t x, int16_t y)
-    {
-        registers regs;
-        regs.ax = x;
-        regs.bx = y;
-        call(0x00460781, regs);
-
-        Pos2 mapPos = { regs.ax, regs.bx };
-
-        return mapPos;
-    }
-
     static void constructionLoop(Pos2 mapPos, uint32_t maxRetries, int16_t height)
     {
         while (true)
@@ -1666,34 +1649,28 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable | Input::MapSelectionFlags::enableConstruct | Input::MapSelectionFlags::unk_02);
 
             auto height = sub_478361(x, y);
-            Pos2 mapPos;
+            std::optional<Pos2> mapPos;
 
             if (height)
             {
-                auto pos = screenGetMapXyWithZ(xy32(x, y), height->first);
-                if (pos)
+                mapPos = screenGetMapXyWithZ(xy32(x, y), height->first);
+                if (mapPos)
                 {
-                    mapPos.x = pos->x;
-                    mapPos.y = pos->y;
-                    mapPos.x &= 0xFFE0;
-                    mapPos.y &= 0xFFE0;
+                    mapPos->x &= 0xFFE0;
+                    mapPos->y &= 0xFFE0;
                     _byte_113605D = 1;
                     _word_1135FFE = roadHeight;
                 }
-                else
-                {
-                    mapPos.x = -32768;
-                }
             }
 
-            if (!height || mapPos.x == -32768)
+            if (!height || !mapPos)
             {
-                mapPos = sub_460781(x, y);
+                mapPos = ViewportInteraction::getTileStartAtCursor({ x, y });
 
-                if (mapPos.x == -32768)
+                if (!mapPos)
                     return;
 
-                auto constructionHeight = getConstructionHeight(mapPos, roadHeight, false);
+                auto constructionHeight = getConstructionHeight(*mapPos, roadHeight, false);
 
                 if (constructionHeight)
                     roadHeight = *constructionHeight;
@@ -1730,7 +1707,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 roadHeight = _word_1135FFE;
             }
 
-            constructionLoop(mapPos, maxRetries, roadHeight);
+            constructionLoop(*mapPos, maxRetries, roadHeight);
         }
         else
         {
@@ -1766,37 +1743,31 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable | Input::MapSelectionFlags::enableConstruct | Input::MapSelectionFlags::unk_02);
 
             auto height = sub_4A4011(x, y);
-            Pos2 mapPos;
+            std::optional<Pos2> mapPos;
 
             if (height)
             {
                 if (_word_4F7B62[height->second] == 0)
                 {
-                    auto pos = screenGetMapXyWithZ(xy32(x, y), height->first);
-                    if (pos)
+                    mapPos = screenGetMapXyWithZ(xy32(x, y), height->first);
+                    if (mapPos)
                     {
-                        mapPos.x = pos->x;
-                        mapPos.y = pos->y;
-                        mapPos.x &= 0xFFE0;
-                        mapPos.y &= 0xFFE0;
+                        mapPos->x &= 0xFFE0;
+                        mapPos->y &= 0xFFE0;
                         _byte_113605D = 1;
                         _word_1135FFE = trackHeight;
-                    }
-                    else
-                    {
-                        mapPos.x = -32768;
                     }
                 }
             }
 
-            if (!height || mapPos.x == -32768 || _word_4F7B62[track->id * 8] != 0)
+            if (!height || !mapPos || _word_4F7B62[track->id * 8] != 0)
             {
-                mapPos = sub_460781(x, y);
+                mapPos = ViewportInteraction::getTileStartAtCursor({ x, y });
 
-                if (mapPos.x == -32768)
+                if (!mapPos)
                     return;
 
-                auto constructionHeight = getConstructionHeight(mapPos, trackHeight, false);
+                auto constructionHeight = getConstructionHeight(*mapPos, trackHeight, false);
 
                 if (constructionHeight)
                     trackHeight = *constructionHeight;
@@ -1833,7 +1804,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 trackHeight = _word_1135FFE;
             }
 
-            constructionLoop(mapPos, maxRetries, trackHeight);
+            constructionLoop(*mapPos, maxRetries, trackHeight);
         }
     }
 

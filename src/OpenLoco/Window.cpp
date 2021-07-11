@@ -163,27 +163,9 @@ namespace OpenLoco::Ui
     // Note: in the original code: regs.dx: x/2 (probably not used anywhere)
     Map::Pos2 viewportCoordToMapCoord(int16_t x, int16_t y, int16_t z, int32_t rotation)
     {
-        Map::Pos2 ret{};
-        switch (rotation)
-        {
-            case 0:
-                ret.x = -(x >> 1) + y + z;
-                ret.y = (x >> 1) + y + z;
-                break;
-            case 1:
-                ret.x = -(x >> 1) - y - z;
-                ret.y = -(x >> 1) + y + z;
-                break;
-            case 2:
-                ret.x = (x >> 1) - y - z;
-                ret.y = -(x >> 1) - y - z;
-                break;
-            case 3:
-                ret.x = (x >> 1) + y + z;
-                ret.y = (x >> 1) - y - z;
-                break;
-        }
-        return ret;
+        constexpr uint8_t inverseRotationMapping[4] = { 0, 3, 2, 1 };
+        const auto result = Map::Pos2(y - (x >> 1) + z, y + (x >> 1) + z);
+        return Math::Vector::rotate(result, inverseRotationMapping[rotation]);
     }
 
     // 0x004C641F

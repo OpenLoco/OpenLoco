@@ -7,6 +7,7 @@
 #include "../Localisation/FormatArguments.hpp"
 #include "../Localisation/StringIds.h"
 #include "../Localisation/StringManager.h"
+#include "../Map/TileManager.h"
 #include "../Objects/CargoObject.h"
 #include "../Objects/ObjectManager.h"
 #include "../Paint/Paint.h"
@@ -506,5 +507,75 @@ namespace OpenLoco::Ui::ViewportInteraction
         }
         _50BF68 = 0;
         return std::make_pair(interaction, chosenV);
+    }
+
+    // 0x00460781
+    // regs.ax = screenCoords.x;
+    // regs.bx = screenCoords.y;
+    // returns
+    // regs.edx = InteractionInfo.value (unsure if ever used)
+    // regs.ax = mapX, 0x8000 - in case of failure
+    // regs.bx = mapY
+    // regs.ecx = closestEdge (unsure if ever used)
+    std::optional<Pos2> getTileStartAtCursor(const xy32& screenCoords)
+    {
+        auto [info, viewport] = getMapCoordinatesFromPos(screenCoords.x, screenCoords.y, ~(InteractionItemFlags::surface | InteractionItemFlags::water));
+
+        if (info.type == InteractionItem::noInteraction)
+        {
+            return {};
+        }
+
+        int16_t waterHeight = 0; // E40130
+        if (info.type == InteractionItem::water)
+        {
+            auto* surface = static_cast<const SurfaceElement*>(info.object);
+            waterHeight = surface->water() * 16;
+        }
+
+        const auto minPosition = info.pos;                  // E40128/A
+        const auto maxPosition = info.pos + Pos2{ 31, 31 }; // E4012C/E
+        auto mapPos = info.pos + Pos2{ 16, 16 };
+        const auto initialVPPos = viewport->uiToMap(screenCoords);
+
+        for (int32_t i = 0; i < 5; i++)
+        {
+            int16_t z = waterHeight;
+            if (info.type != InteractionItem::water)
+            {
+                z = TileManager::getHeight(mapPos);
+            }
+            mapPos = viewportCoordToMapCoord(initialVPPos.x, initialVPPos.y, z, viewport->getRotation());
+            mapPos.x = std::clamp(mapPos.x, minPosition.x, maxPosition.x);
+            mapPos.y = std::clamp(mapPos.y, minPosition.y, maxPosition.y);
+        }
+
+        // Determine to which edge the cursor is closest
+        [[maybe_unused]] uint32_t closestEdge = 0; // ecx
+        const auto xNibble = mapPos.x & 0x1F;
+        const auto yNibble = mapPos.y & 0x1F;
+        if (xNibble < yNibble)
+        {
+            if (xNibble + yNibble < 32)
+            {
+                closestEdge = 0;
+            }
+            else
+            {
+                closestEdge = 1;
+            }
+        }
+        else
+        {
+            if (xNibble + yNibble < 32)
+            {
+                closestEdge = 3;
+            }
+            else
+            {
+                closestEdge = 2;
+            }
+        }
+        return { Pos2(mapPos.x & 0xFFE0, mapPos.y & 0xFFE0) };
     }
 }
