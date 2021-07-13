@@ -1,5 +1,15 @@
-version: '2'
+version: "2"
 services:
+  openloco-docker:
+    build: .
+    environment:
+      - "GAMEFILES=/openloco/gamefiles"
+      - "DISPLAY=192.168.1.165:0"
+    volumes:
+      - "./gamefiles:/openloco/gamefiles"
+      - "/tmp/.X11-unix:/tmp/.X11-unix"
+      - "~/.config/OpenLoco:/root/.config/OpenLoco"
+
   openloco-gcc32:
     image: openloco/openloco:ubuntu-i686
     working_dir: /openloco/bin.gcc
