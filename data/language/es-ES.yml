@@ -1243,8 +1243,8 @@ strings:
   1213: "{COLOUR WINDOW_2}{STRINGID})"
   1214: ¡No hay sitio para más pedidos de vehículos!
   1215: ¡Hay demasiados pedidos para este vehículo!
-  1216: "- - Local - -"
-  1217: "- - Expreso - -"
+  1216: "Local"
+  1217: "Expreso"
   1218: "{COLOUR BLACK}- - Sin ruta definida - -"
   1219: "{COLOUR BLACK}- - Fin de la lista de rutas - -"
   1220: Parada en {STRINGID}

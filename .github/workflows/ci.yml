@@ -2,7 +2,7 @@ name: CI
 on: [push, pull_request]
 env:
   OPENLOCO_BUILD_SERVER: GitHub
-  OPENLOCO_VERSION: 20.05.1
+  OPENLOCO_VERSION: 21.05
 jobs:
   check-code-formatting:
     name: Check code formatting
@@ -17,6 +17,7 @@ jobs:
   windows:
     name: Windows
     runs-on: windows-latest
+    needs: [check-code-formatting]
     env:
       CONFIGURATION: Release
     steps:
@@ -45,7 +46,7 @@ jobs:
         run: |
             $ErrorView = 'NormalView'
             New-Item -ItemType Directory artefacts | Out-Null
-            Copy-Item CHANGELOG.md,CONTRIBUTORS.md,LICENSE,bin\*.dll artefacts
+            Copy-Item CHANGELOG.md,CONTRIBUTORS.md,LICENSE,bin\*.dll,bin\*.pdb artefacts
             Copy-Item data\language -Destination artefacts\data\language -Recurse
             Copy-Item loco.exe artefacts\openloco.exe
             Push-Location artefacts
@@ -56,3 +57,40 @@ jobs:
         with:
           name: "OpenLoco-Windows-Win32"
           path: artefacts/openloco-*-win32.zip
+  ubuntu:
+    name: Ubuntu i686
+    runs-on: ubuntu-latest
+    needs: [check-code-formatting]
+    container:
+      image: openloco/openloco:ubuntu-i686
+    strategy:
+      matrix:
+        compiler: ['g++', 'clang++']
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Build OpenLoco
+        shell: bash
+        env:
+          OPENLOCO_CMAKE_OPTS: "-G Ninja -DCMAKE_CXX_COMPILER=${{ matrix.compiler }} -DCMAKE_BUILD_TYPE=release -DOPENLOCO_USE_CCACHE=OFF -DSDL2_DIR=/usr/lib/i386-linux-gnu/cmake/SDL2 -DSDL2_MIXER_PATH=/usr/lib/i386-linux-gnu -Dyaml-cpp_DIR=/usr/lib/i386-linux-gnu/cmake/yaml-cpp -DPNG_LIBRARY=/usr/lib/i386-linux-gnu/libpng16.so -DPNG_PNG_INCLUDE_DIR=/usr/include -DZLIB_LIBRARY=/usr/lib/i386-linux-gnu/libz.so"
+        run: |
+          mkdir build
+          cd build
+          cmake ../ ${OPENLOCO_CMAKE_OPTS} && ninja -k0
+  fedora:
+    name: Fedora i686 MinGW32
+    runs-on: ubuntu-latest
+    needs: [check-code-formatting]
+    container:
+      image: openloco/openloco:fedora-mingw32
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Build OpenLoco
+        shell: bash
+        env:
+          OPENLOCO_CMAKE_OPTS: "-G Ninja -DCMAKE_TOOLCHAIN_FILE=../CMakeLists_mingw.txt -DCMAKE_BUILD_TYPE=release -DOPENLOCO_USE_CCACHE=OFF -DSDL2_DIR=/usr/i686-w64-mingw32/sys-root/mingw/lib/cmake/SDL2/ -DSDL2_MIXER_PATH=/usr/i686-w64-mingw32/sys-root/mingw/ -Dyaml-cpp_DIR=/usr/i686-w64-mingw32/sys-root/mingw/CMake/ -DPNG_LIBRARY=/usr/i686-w64-mingw32/sys-root/mingw/bin/libpng16-16.dll -DPNG_PNG_INCLUDE_DIR=/usr/i686-w64-mingw32/sys-root/mingw/include"
+        run: |
+          mkdir build
+          cd build
+          cmake ../ ${OPENLOCO_CMAKE_OPTS} && ninja -k0

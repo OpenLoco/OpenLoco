@@ -8,18 +8,19 @@ An open source re-implementation of Chris Sawyer's Locomotion. A construction an
 # Contents
 - 1 - [Introduction](#1-introduction)
 - 2 - [Downloading the game (pre-built)](#2-downloading-the-game-pre-built)
-- 3 - [Building the game](#3-building-the-game)
-  - 3.1 - [Building prerequisites](#31-building-prerequisites)
-  - 3.2 - [Compiling and running](#32-compiling-and-running)
-- 4 - [Licence](#5-licence)
-- 5 - [More information](#6-more-information)
+- 3 - [Contributing](#3-contributing)
+- 4 - [Compiling the game](#4-compiling-the-game)
+  - 4.1 - [Building prerequisites](#41-building-prerequisites)
+  - 4.2 - [Compiling and running](#42-compiling-and-running)
+- 5 - [Licence](#5-licence)
+- 6 - [More information](#6-more-information)
 
 ---
 
 ### Build Status
-|             | Windows | Linux / Mac | Download |
-|-------------|---------|-------------|----------|
-| **master**  | ![CI](https://github.com/OpenLoco/OpenLoco/workflows/CI/badge.svg) | [![Travis CI](https://travis-ci.org/OpenLoco/OpenLoco.svg?branch=master)](https://travis-ci.org/OpenLoco/OpenLoco) | [![GitHub release](https://img.shields.io/github/release/OpenLoco/OpenLoco.svg)](https://github.com/OpenLoco/OpenLoco/releases) |
+|             | Windows / Linux | Download |
+|-------------|-----------------|----------|
+| **master**  | ![CI](https://github.com/OpenLoco/OpenLoco/workflows/CI/badge.svg) | [![GitHub release](https://img.shields.io/github/release/OpenLoco/OpenLoco.svg)](https://github.com/OpenLoco/OpenLoco/releases) |
 
 ### Chat
 
@@ -40,17 +41,33 @@ Recent implementation efforts have focussed on re-implementing the UI, so that t
 
 # 2 Downloading the game (pre-built)
 
-OpenLoco requires original files of Chris Sawyer's Locomotion to play. It can be bought at either [Steam](https://store.steampowered.com/app/356430/) or [GOG.com](https://www.gog.com/game/chris_sawyers_locomotion).
+The latest releases can be [downloaded from GitHub](https://github.com/OpenLoco/OpenLoco/releases). Releases are currently provided for Windows and macOS (32-bit only).
+For Linux and BSD distributions, we currently do not provide any builds. Please refer to the next section to compile the game manually.
 
-The latest release can be found on [GitHub](https://github.com/OpenLoco/OpenLoco/releases).
+Please note that OpenLoco requires the asset files of the original Chris Sawyer's Locomotion to play the game.
+It can be bought at e.g. [Steam](https://store.steampowered.com/app/356430/) or [GOG.com](https://www.gog.com/game/chris_sawyers_locomotion).
 
 ---
 
-# 3 Building the game
+# 3 Contributing
 
-## 3.1 Building prerequisites
+We warmly welcome any contributions to the project, e.g. for C++ code (game implementation, bug fixes, features) or localisation (new translations).
+Please have a look at our [issues for newcomers](https://github.com/OpenLoco/OpenLoco/labels/good%20first%20issue).
 
-OpenLoco requires original files of Chris Sawyer's Locomotion to play. It can be bought at either [Steam](https://store.steampowered.com/app/356430/) or [GOG.com](https://www.gog.com/game/chris_sawyers_locomotion).
+For code contributions, please stick to our [code style](https://github.com/OpenLoco/OpenLoco/wiki/Coding-Style).
+You can use `clang-format` to apply these guidelines automatically.
+
+---
+
+# 4 Compiling the game
+
+If you would like to contribute code to OpenLoco, please follow the instructions below to get started compiling the game.
+Alternatively, we have platform-specific guides for [Ubuntu](https://github.com/OpenLoco/OpenLoco/wiki/Building-on-Ubuntu) and [macOS](https://github.com/OpenLoco/OpenLoco/wiki/Building-on-macOS).
+
+If you just want to play the game, you can just [download the latest release](https://github.com/OpenLoco/OpenLoco/releases) from GitHub.
+Releases are currently provided for Windows and macOS (32-bit only).
+
+## 4.1 Building prerequisites
 
 Regardless of platform, the following libraries/dependencies are required:
 - [libpng](http://www.libpng.org/pub/png/libpng.html)
@@ -72,13 +89,14 @@ Regardless of platform, the following libraries/dependencies are required:
 
 ---
 
-## 3.2 Compiling and running
+## 4.2 Compiling and running
 ### Windows:
 1. Check out the repository. This can be done using [GitHub Desktop](https://desktop.github.com) or [other tools](https://help.github.com/articles/which-remote-url-should-i-use).
 2. Open a new Developer Command Prompt for VS 2019, then navigate to the repository (e.g. `cd C:\GitHub\OpenLoco`).
 3. Run `msbuild openloco.sln /t:restore;build`
 4. Run `mklink /D bin\data ..\data` or `xcopy data bin\data /EIY`
-5. Run the game, `bin\openloco`
+5. Run `mklink openloco.exe bin\` or `copy openloco.exe bin\`
+6. Run the game, `bin\openloco`
 
 ### Linux / macOS:
 The standard CMake build procedure is to install the required libraries, then:
@@ -97,12 +115,12 @@ cp -r ../data ./data
 ```
 ---
 
-# 4 Licence
+# 5 Licence
 **OpenLoco** is licensed under the MIT License.
 
 ---
 
-# 5 More information
+# 6 More information
 - [GitHub](https://github.com/OpenLoco/OpenLoco)
 - [TT-Forums](https://www.tt-forums.net)
 - [Locomotion subreddit](https://www.reddit.com/r/locomotion/)

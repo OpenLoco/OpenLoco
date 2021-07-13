@@ -1,0 +1,87 @@
+#include "../Tutorial.h"
+#include "../Graphics/Colour.h"
+#include "../Graphics/Gfx.h"
+#include "../Localisation/FormatArguments.hpp"
+#include "../Localisation/StringIds.h"
+#include "../Objects/InterfaceSkinObject.h"
+#include "../Objects/ObjectManager.h"
+#include "../OpenLoco.h"
+#include "../Ui.h"
+#include "../Ui/WindowManager.h"
+#include "../Widget.h"
+
+namespace OpenLoco::Ui::Windows::Tutorial
+{
+    enum Widx
+    {
+        frame,
+    };
+
+    constexpr Gfx::ui_size_t windowSize = { 140, 29 };
+
+    Widget widgets[] = {
+        makeWidget({ 0, 0 }, windowSize, WidgetType::wt_3, WindowColour::primary),
+        widgetEnd(),
+    };
+
+    static WindowEventList _events;
+
+    static void initEvents();
+
+    // 0x00438CAE
+    Window* open()
+    {
+        initEvents();
+
+        auto window = WindowManager::createWindow(
+            WindowType::tutorial,
+            Gfx::point_t(windowSize.width, Ui::height() - 27),
+            Gfx::ui_size_t(Ui::width() - 280, 27),
+            WindowFlags::stick_to_front | WindowFlags::transparent | WindowFlags::no_background,
+            &_events);
+
+        window->widgets = widgets;
+        window->initScrollWidgets();
+
+        auto skin = ObjectManager::get<InterfaceSkinObject>();
+        if (skin != nullptr)
+        {
+            window->setColour(WindowColour::primary, Colour::translucent(skin->colour_06));
+            window->setColour(WindowColour::secondary, Colour::translucent(skin->colour_07));
+        }
+
+        return window;
+    }
+
+    // 0x00439B3D
+    static void prepareDraw(Window* self)
+    {
+        self->widgets[Widx::frame].right = self->width - 1;
+    }
+
+    // 0x00439B4A
+    static void draw(Window* self, Gfx::Context* context)
+    {
+        static constexpr string_id titleStringIds[] = {
+            StringIds::tutorial_1_title,
+            StringIds::tutorial_2_title,
+            StringIds::tutorial_3_title,
+        };
+
+        auto tutorialNumber = OpenLoco::Tutorial::getTutorialNumber();
+        auto args = FormatArguments::common(titleStringIds[tutorialNumber]);
+
+        auto& widget = self->widgets[Widx::frame];
+        auto yPos = self->y + widget.top + 4;
+        Gfx::drawStringCentred(*context, self->x + widget.mid_x(), yPos, Colour::black, StringIds::tutorial_text, &args);
+
+        yPos += 10;
+        Gfx::drawStringCentred(*context, self->x + widget.mid_x(), yPos, Colour::black, StringIds::tutorial_control, nullptr);
+    }
+
+    static void initEvents()
+    {
+        _events.draw = draw;
+        _events.prepare_draw = prepareDraw;
+    }
+}

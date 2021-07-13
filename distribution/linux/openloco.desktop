@@ -1,0 +1,22 @@
+# http://standards.freedesktop.org/desktop-entry-spec/desktop-entry-spec-1.0.html
+[Desktop Entry]
+Type=Application
+Version=1.0
+Exec=openloco %u
+Icon=openloco
+Name=OpenLoco
+GenericName=Transport management game
+GenericName[nl]=Transportbedrijfsimulator
+Comment=Open Source re-implementation of Chris Sawyer's Locomotion.
+Comment[ca]=Reimplementació de codi obert del Chris Sawyer's Locomotion.
+Comment[cs]=Open Source remake hry Chris Sawyer's Locomotion.
+Comment[de]=Quelloffene Neuimplementierung von Chris Sawyer's Locomotion.
+Comment[es]=Re-implementación de código abierto de Chris Sawyer's Locomotion.
+Comment[fr]=Ré-implémentation libre (Open Source) de Chris Sawyer's Locomotion.
+Comment[it]=Versione Open Source di Chris Sawyer's Locomotion.
+Comment[nb]=Open Source re-implementasjon av Chris Sawyer's Locomotion.
+Comment[nl]=Een opensource-versie van Chris Sawyer's Locomotion.
+Comment[pt]=Reimplementação em código aberto do Chris Sawyer's Locomotion.
+Comment[ru]=Ремейк с открытым исходным кодом игры Chris Sawyer's Locomotion.
+Comment[sv]=Open Source om-implementation av Chris Sawyer's Locomotion.
+Categories=Game;Simulation;

@@ -1,0 +1,2263 @@
+header:
+  locale: zh-CN
+  english_name: Chinese (Simplified)
+  native_name: 中文 (简体)
+  loco_original_id: 10
+strings:
+  0: ""
+  1: "{POP16}"
+  2: 新公司{POP16}
+  3: 未命名{POP16}
+  4: 列车 {INT16}
+  5: 公交车 {INT16}
+  6: 货车 {INT16}
+  7: 电车 {INT16}
+  8: 飞机 {INT16}
+  9: 船只 {INT16}
+
+  # Days
+  10: 1日
+  11: 2日
+  12: 3日
+  13: 4日
+  14: 5日
+  15: 6日
+  16: 7日
+  17: 8日
+  18: 9日
+  19: 10日
+  20: 11日
+  21: 12日
+  22: 13日
+  23: 14日
+  24: 15日
+  25: 16日
+  26: 17日
+  27: 18日
+  28: 19日
+  29: 20日
+  30: 21日
+  31: 22日
+  32: 23日
+  33: 24日
+  34: 25日
+  35: 26日
+  36: 27日
+  37: 28日
+  38: 29日
+  39: 30日
+  40: 31日
+
+  41: 1月
+  42: 2月
+  43: 3月
+  44: 4月
+  45: 5月
+  46: 6月
+  47: 7月
+  48: 8月
+  49: 9月
+  50: 10月
+  51: 11月
+  52: 12月
+
+  53: 图形数据文件无法访问
+  54: 数据文件缺失或无法访问
+  55: 无法分配足够内存
+  56: "{COLOUR BLACK}❌"
+  57: 该名称已被使用
+  58: 定义的名称过多
+  59: 现金不足 - 需要 {CURRENCY32}
+  60: "{SMALLFONT}{COLOUR BLACK}关闭窗口"
+  61: 游戏初始化失败
+  62: 无法以最小化形式启动游戏
+  63: 无法初始化图形系统
+  64: CD密钥{INT32 RAW}对你的Locomotion CD无效!{COLOUR WINDOW_1}{COLOUR WINDOW_1}卸载Chris Sawyer's Locomotion并使用正确的CD密钥安装
+
+  65: "{UINT16 RAW} x {UINT16 RAW}"
+  66: "{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{UINT16 RAW} x {UINT16 RAW}"
+
+  67: About 'Chris Sawyer's Locomotion'
+  68: Chris Sawyer's Locomotion
+  69: "{COLOUR WINDOW_2}Version 4.02.176 (UK English)"
+  70: "{COLOUR WINDOW_2}Copyright © 2004 Chris Sawyer, All Rights Reserved"
+  71: "{COLOUR WINDOW_2}Designed & Programmed by Chris Sawyer"
+  72: "{COLOUR WINDOW_2}Graphics by Simon Foster"
+  73: "{COLOUR WINDOW_2}Sound & Music by Allister Brimble"
+  74: "{COLOUR WINDOW_2}Title Music by John Broomhall"
+  75: "{COLOUR WINDOW_2}Representation by Jacqui Lyons at Marjacq Ltd."
+  76: "{COLOUR WINDOW_2}Thanks to:-"
+  77: "{COLOUR WINDOW_2}Katrina Morrin, Natasha Morrin, Jim Wills"
+  78: ""
+  79: ""
+  80: ""
+  81: ""
+  82: ""
+  83: ""
+  84: ""
+
+  85: "{STRINGID}"
+  86: "{POP16}{STRINGID}"
+  87: "{POP16}{POP16}{STRINGID}"
+  88: "{POP16}{POP16}{POP16}{STRINGID}"
+  89: "{POP16}{POP16}{POP16}{POP16}{STRINGID}"
+  90: "{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}"
+  91: "{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}"
+  92: "{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}"
+  93: "{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}"
+  94: "{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}"
+  95: "{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}"
+  96: "{COLOUR BLACK}▼"
+  97: "{SMALLFONT}{COLOUR BLACK}{STRINGID}"
+  98: 太低!
+  99: 太高!
+  100: 无法在此处降低地面...
+  101: 无法在此处升高地面...
+  102: 此处已有物体
+  103: 载入游戏
+  104: 保存游戏
+  105: 退出场景编辑器
+  106: 退出游戏
+  107: 截图
+  108: 截图
+  109: 截图已保存为'{STRING}'
+  110: 截图失败!
+  111: 地形数据区已满!
+  112: 无法同时在地上与地下建造
+  113: "{STRINGID}"
+  114: "{SMALLFONT}{COLOUR BLACK}左转弯道"
+  115: "{SMALLFONT}{COLOUR BLACK}右转弯道"
+  116: "{SMALLFONT}{COLOUR BLACK}左转弯道(半径小)"
+  117: "{SMALLFONT}{COLOUR BLACK}右转弯道(半径小)"
+  118: "{SMALLFONT}{COLOUR BLACK}左转弯道(半径极小)"
+  119: "{SMALLFONT}{COLOUR BLACK}右转弯道(半径极小)"
+  120: "{SMALLFONT}{COLOUR BLACK}左转弯道(半径大)"
+  121: "{SMALLFONT}{COLOUR BLACK}右转弯道(半径大)"
+  122: "{SMALLFONT}{COLOUR BLACK}直道"
+  123: "{SMALLFONT}{COLOUR BLACK}S型弯道(向左)"
+  124: "{SMALLFONT}{COLOUR BLACK}S型弯道(向右)"
+  125: "{SMALLFONT}{COLOUR BLACK}S型弯道(向复线轨道左侧)"
+  126: "{SMALLFONT}{COLOUR BLACK}S型弯道(向复线轨道右侧)"
+  127: "{SMALLFONT}{COLOUR BLACK}S型弯道(向单线轨道)"
+  128: "{SMALLFONT}{COLOUR BLACK}折返线"
+  129: "{SMALLFONT}{COLOUR BLACK}(点击地面以开始建造)"
+  130: "{SMALLFONT}{COLOUR BLACK}建造当前轨道区段"
+  131: "{SMALLFONT}{COLOUR BLACK}移除上一个轨道区段"
+  132: "{SMALLFONT}{COLOUR BLACK}急下坡"
+  133: "{SMALLFONT}{COLOUR BLACK}下坡"
+  134: "{SMALLFONT}{COLOUR BLACK}水平"
+  135: "{SMALLFONT}{COLOUR BLACK}上坡"
+  136: "{SMALLFONT}{COLOUR BLACK}急上坡"
+  137: "{COLOUR WINDOW_2}建造..."
+  138: "{COLOUR WINDOW_2}费用: {COLOUR BLACK}{CURRENCY32}"
+  139: 无法在此处设置信号...
+  140: 无法在此处设置信号...
+  141: 无法移除信号...
+  142: 无法移除{POP16}{POP16}{POP16}{STRINGID}...
+  143: 无法建造{POP16}{POP16}{POP16}{STRINGID}...
+  144: 需要先升高或降低地面
+  145: 地下视角
+  146: 隐藏前景轨道与道路
+  147: 车站只能在道路末端建造
+  148: "{STRINGID}车站类型错误"
+  149: 车站与{STRINGID}不兼容
+  150: 此处已有道口
+  151: 道口只能设置在相同高度的直行道路与轨道处
+  152: 不可能的交叉点
+  153: 交叉点必须完全水平
+  154: "此处已有{STRINGID} / 交叉点高度错误"
+  155: 此处已被建造
+  156: 无法穿越{STRINGID}或与其交叉
+  157: 不可能的交叉点
+  158: 信号
+  159: 车站
+  160: 机场
+  161: 港口
+  162: 此处已有车站
+  163: 此处已有信号
+  164: 无法移除机场...
+  165: 无法移除港口...
+  166: 无法移除车站...
+  167: 错误的轨道/道路!
+  168: 桥梁类型必须匹配
+  169: 无法在交叉点使用桥梁
+  170: 不可能的轨道组合
+  171: 游戏内对象过多
+  172: 顺时针旋转
+  173: 逆时针旋转
+  174: "OpenLoco: 初次启动..."
+  175: "OpenLoco: 检查对象文件..."
+  176: 载入游戏
+  177: 退出游戏
+  178: 退出游戏
+  179: 退出场景编辑器
+  180: 载入地形
+  181: 载入前保存?
+  182: 退出前保存?
+  183: 退出前保存?
+  184: 保存
+  185: 不保存
+  186: 取消
+  187: 确认
+
+  188: "{SMALLFONT}{COLOUR BLACK}向左滚动{STRINGID}"
+  189: "{SMALLFONT}{COLOUR BLACK}向右滚动{STRINGID}"
+  190: "{SMALLFONT}{COLOUR BLACK}快速向左滚动{STRINGID}"
+  191: "{SMALLFONT}{COLOUR BLACK}快速向右滚动{STRINGID}"
+  192: "{SMALLFONT}{COLOUR BLACK}向左/右滚动{STRINGID}"
+  193: "{SMALLFONT}{COLOUR BLACK}向上滚动{STRINGID}"
+  194: "{SMALLFONT}{COLOUR BLACK}向下滚动{STRINGID}"
+  195: "{SMALLFONT}{COLOUR BLACK}快速向上滚动{STRINGID}"
+  196: "{SMALLFONT}{COLOUR BLACK}快速向下滚动{STRINGID}"
+  197: "{SMALLFONT}{COLOUR BLACK}向上/下滚动{STRINGID}"
+
+  198: 地图
+  199: 载具列表
+  200: 新载具列表
+  201: 列表
+  202: 树木列表
+  203: 调度指令列表
+  204: 站点列表
+  205: 城镇列表
+  206: 工业设施列表
+  207: 新工业设施列表
+  208: 建筑列表
+  209: 墙列表
+  210: 评分列表
+  211: 货物列表
+  212: 消息列表
+  213: 公司列表
+  214: 场景列表
+  215: credits list
+
+  216: "{COLOUR WINDOW_2}▲{COLOUR BLACK}  {CURRENCY32}"
+  217: "{COLOUR WINDOW_2}▼{COLOUR BLACK}  {CURRENCY32}"
+  218: 无法切换至所选模式
+  219: "{COLOUR WINDOW_2}费用: {COLOUR BLACK}{CURRENCY32}"
+  220: (玩家 1)
+  221: (玩家 2)
+  222: 无法更换配色方案...
+  223: 放大
+  224: 缩小
+  225: 城镇
+  226: 工业设施
+  227: 机场
+  228: 港口
+  229: 地形生成选项
+  230: ""
+  231: 🛤
+  232: 🛣️
+  233: 🛤🛣️
+  234: ☁️
+  235: 🛤☁️
+  236: 🛣️☁️
+  237: 🛤🛣️☁️
+  238: 🌊
+  239: 🛤🌊
+  240: 🛣️🌊
+  241: 🛤🛣️🌊
+  242: ☁️🌊
+  243: 🛤☁️🌊
+  244: 🛣️☁️🌊
+  245: 🛤🛣️☁️🌊
+  246: "{STRINGID}"
+  247: "{STRINGID} - 明细"
+  248: "{STRINGID} - 财务"
+  249: "{STRINGID} - 送达货物"
+  250: "{STRINGID} - 配色方案"
+  251: "{STRINGID} - 挑战目标"
+  252: "{SMALLFONT}{COLOUR BLACK}改变方向"
+  253: "{SMALLFONT}{COLOUR BLACK}忽略信号"
+  254: "{SMALLFONT}{COLOUR BLACK}从轨道/道路上移除{POP16}{STRINGID}"
+  255: "{SMALLFONT}{COLOUR BLACK}在轨道/道路上放置{POP16}{STRINGID}"
+  256: "{SMALLFONT}{COLOUR BLACK}从机场移除{POP16}{STRINGID}"
+  257: "{SMALLFONT}{COLOUR BLACK}在机场放置{POP16}{STRINGID}"
+  258: "{SMALLFONT}{COLOUR BLACK}从水中移除{POP16}{STRINGID}"
+  259: "{SMALLFONT}{COLOUR BLACK}在港口中放置{POP16}{STRINGID}"
+  260: 无法启动{POP16}{POP16}{POP16}{STRINGID}...
+  261: 无法手动控制{POP16}{POP16}{POP16}{STRINGID}...
+  262: 无法停止{POP16}{POP16}{POP16}{STRINGID}...
+  263: "{VELOCITY}"
+  264: 无限{POP16}
+  265: 停止
+  266: 启动
+  267: 手动
+  268: "{SMALLFONT}{COLOUR BLACK}选择需要升级的轨道/道路"
+  269: "{SMALLFONT}{COLOUR BLACK}停止/启动 {POP16}{STRINGID}"
+  270: "{COLOUR BLACK}{STRINGID}"
+  271: "{SMALLFONT}{COLOUR BLACK}轨道/道路建设"
+  272: "{SMALLFONT}{COLOUR BLACK}车站建设"
+  273: "{SMALLFONT}{COLOUR BLACK}信号建设"
+  274: "{SMALLFONT}{COLOUR BLACK}轨道电气化与其它设备"
+  275: "{SMALLFONT}{COLOUR BLACK}选择信号种类"
+  276: "{SMALLFONT}{COLOUR BLACK}设置双向信号"
+  277: "{SMALLFONT}{COLOUR BLACK}设置单向信号(列车不允许反向通过)"
+  278: "{SMALLFONT}{COLOUR BLACK}{POP16}{STRINGID}{NEWLINE}最大速度:  {STRINGID}{NEWLINE}最大离地高度:  {HEIGHT}"
+  279: "{SMALLFONT}{COLOUR BLACK}选择车站类型"
+  280: 车站 {INT16}
+  281: "{STRINGID}"
+  282: "{STRINGID} 北"
+  283: "{STRINGID} 南"
+  284: "{STRINGID} 东"
+  285: "{STRINGID} 西"
+  286: "{STRINGID} 中央"
+  287: "{STRINGID} 广场"
+  288: "{STRINGID} 庄"
+  289: "{STRINGID} 谷"
+  290: "{STRINGID} 台"
+  291: "{STRINGID} 林"
+  292: "{STRINGID} 塘"
+  293: "{STRINGID} 汇"
+  294: "{STRINGID} 机场"
+  295: "{STRINGID} 油田"
+  296: "{STRINGID} 矿"
+  297: "{STRINGID} 码头"
+  298: "{STRINGID} 新区"
+  299: "{STRINGID} 侧线"
+  300: "{STRINGID} 支线"
+  301: 前{STRINGID}
+  302: 后{STRINGID}
+  303: "{STRINGID} 停机坪"
+  304: "{STRINGID} 林场"
+  305: "{STRINGID} 岔"
+  306: "{STRINGID} 口"
+  307: "{STRINGID} 景"
+  308: "{STRINGID} 1"
+  309: "{STRINGID} 2"
+  310: "{STRINGID} 3"
+  311: "{STRINGID} 4"
+  312: "{STRINGID} 5"
+  313: "{STRINGID} 6"
+  314: "{STRINGID} 7"
+  315: "{STRINGID} 8"
+  316: "{STRINGID} 9"
+  317: "{STRINGID} 10"
+  318: "{STRINGID} 11"
+  319: "{STRINGID} 12"
+  320: "{STRINGID} 13"
+  321: "{STRINGID} 14"
+  322: "{STRINGID} 15"
+  323: "{STRINGID} 16"
+  324: "{STRINGID} 17"
+  325: "{STRINGID} 18"
+  326: "{STRINGID} 19"
+  327: "{STRINGID} 20"
+  328: "{COLOUR WINDOW_2}{POP16}重量: {COLOUR BLACK}{INT32}t"
+  329: "{COLOUR WINDOW_2}功率: {COLOUR BLACK}{POWER}{COLOUR WINDOW_2} 重量: {COLOUR BLACK}{INT32}t"
+  330: "{COLOUR WINDOW_2}最高速度: {COLOUR BLACK}{VELOCITY}{POP16}{COLOUR WINDOW_2} 可靠性: {COLOUR BLACK}{INT16}%"
+  331: "{COLOUR WINDOW_2}最高速度: {COLOUR BLACK}{VELOCITY} / {VELOCITY}{COLOUR WINDOW_2} 可靠性: {COLOUR BLACK}{INT16}%"
+  332: "{SMALLFONT}{COLOUR BLACK}出售 {POP16}{STRINGID}{NEWLINE}(或将单个载具拖动至此以出售)"
+  333: "{SMALLFONT}{COLOUR BLACK}为{POP16}{STRINGID}创建新的载具"
+  334: "{COLOUR BLACK}(点击视图以设置{STRINGID}的初始位置)"
+  335: 载具不兼容
+  336: 游戏内载具过多
+  337: ""
+  338: ""
+  339: "{SMALLFONT}{COLOUR BLACK}{STRINGID}"
+  340: "{NEWLINE}创建日期:  {DATE MY}"
+  341: "{NEWLINE}价值:  {CURRENCY32}"
+  342: "{NEWLINE}功率:  {POWER}"
+  343: "{NEWLINE}重量:  {INT16}t"
+  344: "{NEWLINE}最高速度:  {VELOCITY}"
+  345: " ({VELOCITY} / {STRINGID})"
+  346: "{NEWLINE}可靠性:  {INT16}%"
+  347: "{STRINGID} {STRINGID}"
+  348: 单个区间
+  349: 闭塞区间
+  350: 所有已连接的轨道
+  351: "警告:轨道太多!{NEWLINE}部分选中的轨道可能没有被升级"
+  352: "{SMALLFONT}{COLOUR BLACK}使用这些设备升级轨道"
+  353: "{SMALLFONT}{COLOUR BLACK}(点击以将该项增加到选中的轨道上)"
+  354: "{SMALLFONT}{COLOUR BLACK}选择要添加到轨道的项目"
+  355: "{SMALLFONT}{COLOUR BLACK}将主视角移至该位置"
+  356: 超出地图边界!
+  357: 不能同时在水面与水下建造!
+  358: 距离水面过近!
+  359: 无法在水下建造!
+  360: 只能在地上建造!
+  361: 只能在平地建造
+  362: 载入游戏
+  363: 载入地形
+  364: 保存地形
+  365: 保存游戏
+  366: 保存场景
+  367: OpenLoco 存档文件
+  368: OpenLoco 场景文件
+  369: OpenLoco 地形文件
+  370: 游戏保存失败!
+  371: 载入存档失败...{NEWLINE}文件含有无效数据!
+  372: 隐藏前景景物与建筑
+  373: 只能在水上建造!
+  374: 与水上工业相邻时只能在水上建造!
+  375: 名称 {STRINGID}
+  376: "为{STRINGID}输入新名称:"
+  377: 无法重命名此载具...
+  378: 需要桥梁
+  379: 离地高度对此类桥梁过高
+  380: 桥梁已达到最大离地高度
+  381: "{STRINGID}需要桥梁"
+  382: 桥梁类型不适用该配置
+  383: 站点名称
+  384: "为{STRINGID}站点输入新名称:"
+  385: 无法重命名站点...
+  386: 无效的站点名称
+  387: 无法移动载具...
+  388: 无法使列车反向...
+  389: 无法出售载具...
+  390: 无法出售{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}...
+  391: "{STRINGID}"
+  392: "{STRINGID}"
+  393: "{STRINGID}车站站台"
+  394: "{STRINGID}车站站房/公交站"
+  395: "{SMALLFONT}{COLOUR BLACK}高亮此站点的覆盖范围"
+  396: 静音
+  397: 播放音乐
+  398: "{COLOUR RED}破产!"
+  399: "{STRINGID}不允许在{STRINGID}等待满载货物"
+  400: "{STRINGID} has slipped to a halt on an incline"
+  401: "{STRINGID}现在接受{STRINGID}"
+  402: "{STRINGID}不在接受{STRINGID}"
+  403: 新运输公司!{NEWLINE}{STRINGID}在{STRINGID}附近开始建设!
+  404: "{STRINGID}无法降落在{STRINGID},由于机场不合适"
+  405: 市民欢庆!{NEWLINE}{STRINGID}初次抵达{STRINGID}!
+  406: 市民欢庆!{NEWLINE}初次{STRINGID}运输抵达{STRINGID}!
+  407: 工人欢庆!{NEWLINE}{STRINGID}初次运至{STRINGID}!
+  408: 新载具发明 -{NEWLINE}“{STRINGID}”!
+  409: "{STRINGID}从“{STRINGID}”升职为“{STRINGID}”!"
+  410: 新{STRINGID}正在{STRINGID}附近建设!
+  411: 恭喜!{NEWLINE}你已成功完成挑战目标!
+  412: 失败!{NEWLINE}你的挑战目标已失败!
+  413: 落败!{NEWLINE}{STRINGID}已完成挑战目标!
+  414: 破产警告!若不提高绩效{NEWLINE}{STRINGID}将会在6个月内关停!
+  415: 最终警告!若不提高绩效{NEWLINE}{STRINGID}将会在3个月内关停!
+  416: 破产!{NEWLINE}{STRINGID}已宣布破产并关停!
+  417: 破产!{NEWLINE}{STRINGID}已宣布破产并关停!
+  418: "{STRINGID}已撞毁!"
+  419: 公司丑闻!{NEWLINE}{STRINGID}因试图抢劫入狱!
+  420: 新{STRINGID}速度纪录!{NEWLINE}{STRINGID}在站点间达到平均速度{VELOCITY}!
+
+  421: "{MOVE_X 10}{STRINGID}"
+  422: »{MOVE_X 10}{STRINGID}
+
+  423: "{NEWLINE 1 2}{SPRITE}{NEWLINE 26 8}{STRINGID}"
+
+  424: "{MOVE_X 10}{STRING}"
+  425: »{MOVE_X 10}{STRING}
+
+  426: 轨道与道路高度标记
+  427: 地面高度标记
+  428: 单行道指向箭头
+  429: 显示城镇名称
+  430: 显示站点名称
+  431: "{NEWLINE}{COLOUR WINDOW_3}同意 "
+  432: "1/8 "
+  433: "1/4 "
+  434: "3/8 "
+  435: "1/2 "
+  436: "5/8 "
+  437: "3/4 "
+  438: "7/8 "
+  439: ", "
+  440: "{NEWLINE}{COLOUR WINDOW_3}生产 "
+  441: "{NEWLINE}{COLOUR WINDOW_3}建设中"
+  442: "{STRINGID}{NEWLINE}{COLOUR WINDOW_3}为 {STRINGID} 所有"
+  443: "{MOVE_X 10}{STRINGID}"
+  444: ✓{MOVE_X 10}{STRINGID}
+  445: 无法移动...
+  446: 墙 & 围栏
+  447: 种树
+  448: 无法在此处放置...
+  449: 无法在此处种植...
+  450: "{OUTLINE}{COLOUR WINDOW_2}{STRINGID}"
+  451: "{STRINGID}{NEWLINE}{COLOUR WINDOW_3}右击以修改"
+  452: "{STRINGID}{NEWLINE}{COLOUR WINDOW_3}右击以移除"
+  453: "{TINYFONT}{COLOUR BLACK}{STRINGID}"
+  454: "{COLOUR RED}{STRINGID}"
+  455: "{COLOUR BLACK}{STRINGID}"
+  456: "{COLOUR BLACK}{STRINGID} {STRINGID}"
+  457: "{COLOUR WINDOW_2}{STRINGID}"
+  458: "{COLOUR WHITE}{STRINGID}"
+  459: 正在停止{POP16}{POP16}
+  460: / 等待信号{POP16}{POP16}
+  461: "{VELOCITY}{POP16}"
+  462: "{COLOUR RED}已撞毁!{POP16}{POP16}"
+  463: "{COLOUR RED}无路可走!{POP16}{POP16}"
+  464: "{COLOUR RED}抛锚{POP16}{POP16}"
+  465: 已停止{POP16}{POP16}
+  466: 正在{STRINGID}装载
+  467: 正在{STRINGID}卸载
+  468: 正在抵近{STRINGID}
+  469: 正在{STRINGID}降落
+  470: 正在{STRINGID}滑行
+  471: 正在从{STRINGID}起飞
+  472: 正在前往{STRINGID}
+  473: 没有位置{POP16}{POP16}
+  474: 运行中{POP16}{POP16}
+  475: "{STRINGID} - {STRINGID}"
+  476: "{POP16}{POP16}{STRINGID}"
+  477: 无法降低此处水面...
+  478: 无法升高此处水面...
+  479: (无)
+  480: "{STRING}"
+  481: "{COLOUR RED}已关闭 - - "
+  482: "{COLOUR YELLOW}{STRINGID} - - "
+  483: 地面斜坡不合适
+  484: 无法在水下建造!
+  485: 地面类型不合适
+  486: "{COLOUR BLACK}▴"
+  487: "{COLOUR BLACK}▾"
+  488: 列车
+  489: 列车
+  490: 列车
+  491: 列车
+  492: "{INT16}列列车"
+  493: "{INT16}列列车"
+  494: 列车 {INT16}
+  495: 船
+  496: 船
+  497: 船
+  498: 船
+  499: "{INT16}艘船"
+  500: "{INT16}艘船"
+  501: 船 {INT16}
+  502: 轨道
+  503: 轨道
+  504: 轨道
+  505: 轨道
+  506: "{INT16}段轨道"
+  507: "{INT16}段轨道"
+  508: 轨道 {INT16}
+  509: docking platform
+  510: docking platforms
+  511: Docking platform
+  512: Docking platforms
+  513: "{INT16} docking platform"
+  514: "{INT16} docking platforms"
+  515: Docking platform {INT16}
+  516: 站点
+  517: 站点
+  518: 站点
+  519: 站点
+  520: "{INT16}个站点"
+  521: "{INT16}个站点"
+  522: 站点 {INT16}
+  523: 载具
+  524: 载具
+  525: 载具
+  526: 载具
+  527: "{INT16}个载具"
+  528: "{INT16}个载具"
+  529: 载具 {INT16}
+  530: 建筑
+  531: 建筑
+  532: 建筑
+  533: 建筑
+  534: "{INT16}栋建筑"
+  535: "{INT16}栋建筑"
+  536: 建筑 {INT16}
+  537: structure
+  538: structures
+  539: Structure
+  540: Structures
+  541: "{INT16} structure"
+  542: "{INT16} structures"
+  543: Structure {INT16}
+  544: 船
+  545: 船
+  546: 船
+  547: 船
+  548: "{INT16}艘船"
+  549: "{INT16}艘船"
+  550: 船 {INT16}
+  551: 城镇
+  552: 城镇
+  553: 城镇
+  554: 城镇
+  555: "{INT16}座城镇"
+  556: "{INT16}座城镇"
+  557: 城镇 {INT16}
+  558: 工业设施
+  559: 工业设施
+  560: 工业设施
+  561: 工业设施
+  562: "{INT16}处工业设施"
+  563: "{INT16}处工业设施"
+  564: 工业设施 {INT16}
+  565: "{SMALLFONT}{COLOUR BLACK}将对象旋转90°"
+  566: 需要平地
+  567: 无法改变地面类型...
+  568: "{OUTLINE}{COLOUR GREEN}+ {CURRENCY32}"
+  569: "{OUTLINE}{COLOUR RED}- {CURRENCY32}"
+  570: "{OUTLINE}{COLOUR WINDOW_1}+ {CURRENCY32}"
+  571: "{OUTLINE}{COLOUR WINDOW_1}- {CURRENCY32}"
+  572: "{CURRENCY48}"
+  573: "{COLOUR RED}{CURRENCY48}"
+  574: "{SMALLFONT}{COLOUR BLACK}显示{POP16}{STRINGID}视角"
+  575: "{SMALLFONT}{COLOUR BLACK}显示{POP16}{STRINGID}设计明细与选项"
+  576: "{SMALLFONT}{COLOUR BLACK}显示{POP16}{STRINGID}内的货物/乘客"
+  577: "{SMALLFONT}{COLOUR BLACK}显示{POP16}{STRINGID}路线明细"
+  578: "{SMALLFONT}{COLOUR BLACK}显示{POP16}{STRINGID}运行费用与收入"
+  579: "{SMALLFONT}{COLOUR BLACK}显示新的建造位置"
+  580: "{SMALLFONT}{COLOUR BLACK}旋转90°"
+  581: "此处已有{STRINGID}"
+  582: "{CURRENCY32}"
+  583: 无法在此处建造...
+  584: "{DATE MY}"
+  585: OpenLoco
+  586: 请在下列驱动器插入Locomotion CD:-
+  587: "{COLOUR WINDOW_2}开销/收入"
+  588: 列车运行收入
+  589: 列车运行费用
+  590: 公交车运行收入
+  591: 公交车运行费用
+  592: 货车运行收入
+  593: 货车运行费用
+  594: 电车运行收入
+  595: 电车运行费用
+  596: 飞机运行收入
+  597: 飞机运行费用
+  598: 船只运行收入
+  599: 船只运行费用
+  600: 建设
+  601: 载具购买
+  602: 载具处置
+  603: 贷款利息
+  604: 杂项
+  605: "{UINT16 RAW}"
+  606: +{CURRENCY48}
+  607: "{CURRENCY48}"
+  608: "{COLOUR WINDOW_2}贷款:"
+  609: "{POP16}{POP16}{POP16}{POP16}{CURRENCY32}"
+  610: 无法继续贷款!
+  611: 没有足够现金!
+  612: 无法还贷!
+  613: "{SMALLFONT}{COLOUR BLACK}开始新游戏"
+  614: "{SMALLFONT}{COLOUR BLACK}载入存档"
+  615: "{SMALLFONT}{COLOUR BLACK}显示教程"
+  616: "{SMALLFONT}{COLOUR BLACK}退出游戏"
+  617: 小村
+  618: 村
+  619: 镇
+  620: 城
+  621: 都市
+  622: 轨道/道路不合适
+  623: 轨道/道路对车站不合适
+  624: 无法在交叉点建造车站
+  625: 无法在交叉点设置信号
+  626: 无法在车站内设置信号
+  627: "{STRINGID}{NEWLINE}{COLOUR WINDOW_3}{STRINGID}"
+  628: "{STRINGID}{NEWLINE}{COLOUR WINDOW_3}{STRINGID}"
+  629: "{STRINGID}{NEWLINE}{COLOUR WINDOW_3}{STRINGID} {STRINGID}"
+  630: "{COLOUR WINDOW_2}现金:  {MOVE_X 81}{COLOUR RED}破产!"
+  631: "{COLOUR WINDOW_2}现金:  {MOVE_X 81}{COLOUR BLACK}{CURRENCY48}"
+  632: "{COLOUR WINDOW_2}现金:  {MOVE_X 81}{COLOUR RED}{CURRENCY48}"
+  633: "{COLOUR WINDOW_2}公司价值: {COLOUR BLACK}{CURRENCY48}"
+  634: "{COLOUR WINDOW_2}载具利润: 每月{COLOUR BLACK}{CURRENCY48}"
+
+  635: 1月
+  636: 2月
+  637: 3月
+  638: 4月
+  639: 5月
+  640: 6月
+  641: 7月
+  642: 8月
+  643: 9月
+  644: 10月
+  645: 11月
+  646: 12月
+
+  647: "{SMALLFONT}{COLOUR BLACK}{DATE DMY}{STRINGID}"
+  648: 选择新游戏的场景
+  649: ""
+  650: "{COLOUR WINDOW_2}音质:"
+  651: 低
+  652: 中
+  653: 高
+  654: 选项
+  655: "{COLOUR WINDOW_2}货币:"
+  656: "{COLOUR WINDOW_2}距离和速度:"
+  657: "{COLOUR WINDOW_2}高度:"
+  658: 英制
+  659: 公制
+  660: 单位
+  661: 真实值
+  662: "{COLOUR WINDOW_2}显示分辨率:"
+  663: 地形光滑
+  664: "{SMALLFONT}{COLOUR BLACK}开启/关闭tile edge smoothing"
+  665: 地形网格线
+  666: "{SMALLFONT}{COLOUR BLACK}开启/关闭地形网格线"
+  667: 银行拒绝增加贷款!
+  668: "{SMALLFONT}{COLOUR BLACK}点击地形以移除树木和建筑"
+  669: "{SMALLFONT}{COLOUR BLACK}减小地面清理区域"
+  670: "{SMALLFONT}{COLOUR BLACK}增大地面清理区域"
+  671: "{SMALLFONT}{COLOUR BLACK}减小地形调整区域"
+  672: "{SMALLFONT}{COLOUR BLACK}增大地形调整区域"
+  673: "{SMALLFONT}{COLOUR BLACK}减小水面调整区域"
+  674: "{SMALLFONT}{COLOUR BLACK}增大水面调整区域"
+  675: 地形调整
+  676: 水面调整
+  677: "{SMALLFONT}{COLOUR BLACK}点击地面并向上/下拖动以升高/降低水面"
+  678: "{SMALLFONT}{COLOUR BLACK}点击地面并向上/下拖动以升高/降低地面"
+  679: 清理区域
+  680: 清理区域
+  681: 地形调整
+  682: 水面调整
+  683: 种树
+  684: 建墙
+  685: "{STRINGID} - 载具明细"
+  686: "{STRINGID} - 货物"
+  687: "{STRINGID} - 路线"
+  688: "{STRINGID} - 财务"
+  689: "{COLOUR WINDOW_2}列车: {COLOUR BLACK}{INT16}"
+  690: "{COLOUR WINDOW_2}公交车: {COLOUR BLACK}{INT16}"
+  691: "{COLOUR WINDOW_2}货车: {COLOUR BLACK}{INT16}"
+  692: "{COLOUR WINDOW_2}电车: {COLOUR BLACK}{INT16}"
+  693: "{COLOUR WINDOW_2}飞机: {COLOUR BLACK}{INT16}"
+  694: "{COLOUR WINDOW_2}船只: {COLOUR BLACK}{INT16}"
+  695: "{NEWLINE}挑战目标失败!"
+  696: "{NEWLINE}挑战目标完成!"
+  697: "{SMALLFONT}{COLOUR BLACK}绩效指标: {INT16_1DP}% “{STRINGID}”"
+  698: "{SMALLFONT}{COLOUR BLACK}公司价值: {CURRENCY48}{NEWLINE}载具利润: {CURRENCY48}/month"
+  699: "{NEWLINE}挑战目标进度: {INT16}%{STRINGID}"
+  700: "{NEWLINE}剩余时间: {COLOUR BLACK}{INT16}年{INT16}月"
+  701: 自定义键位...
+  702: 快捷键
+  703: 重置键位
+  704: "{SMALLFONT}{COLOUR BLACK}将所有快捷键恢复为默认设置"
+  705: 关闭最上层窗口
+  706: 关闭所有悬浮窗口
+  707: 取消建设模式
+  708: 暂停/恢复游戏
+  709: 缩小视角
+  710: 放大视角
+  711: 旋转视角
+  712: 旋转建设对象
+  713: 开启/关闭地下视角
+  714: 隐藏/显示前景轨道与道路
+  715: 隐藏/显示前景景物
+  716: 隐藏/显示地面高度标记
+  717: 隐藏/显示轨道与道路高度标记
+  718: 隐藏/显示单行道方向箭头
+  719: 地形调整
+  720: 水面调整
+  721: 种树
+  722: 拆除区域
+  723: 建造轨道
+  724: 建造道路
+  725: 建造机场
+  726: 建造港口
+  727: 创建新载具
+  728: 显示载具列表
+  729: 显示站点列表
+  730: 显示城镇列表
+  731: 显示工业设施列表
+  732: 显示地图
+  733: 显示公司列表
+  734: 显示公司信息
+  735: 显示财务信息
+  736: 显示公告列表
+  737: 截图
+  738: 取消或显示上一个公告
+  739: 发送消息(双人模式)
+
+  # Virtual-Key Codes
+  740: ???
+  741: ???
+  742: ???
+  743: ???
+  744: ???
+  745: ???
+  746: ???
+  747: ???
+  748: Backspace
+  749: Tab
+  750: ???
+  751: ???
+  752: Clear
+  753: Return
+  754: ???
+  755: ???
+  756: ???
+  757: ???
+  758: Alt/Menu
+  759: Pause
+  760: Caps
+  761: ???
+  762: ???
+  763: ???
+  764: ???
+  765: ???
+  766: ???
+  767: Escape
+  768: ???
+  769: ???
+  770: ???
+  771: ???
+  772: Spacebar
+  773: PgUp
+  774: PgDn
+  775: End
+  776: Home
+  777: Left
+  778: Up
+  779: Right
+  780: Down
+  781: Select
+  782: Print
+  783: Execute
+  784: Snapshot
+  785: Insert
+  786: Delete
+  787: Help
+  788: "0"
+  789: "1"
+  790: "2"
+  791: "3"
+  792: "4"
+  793: "5"
+  794: "6"
+  795: "7"
+  796: "8"
+  797: "9"
+  798: ???
+  799: ???
+  800: ???
+  801: ???
+  802: ???
+  803: ???
+  804: ???
+  805: A
+  806: B
+  807: C
+  808: D
+  809: E
+  810: F
+  811: G
+  812: H
+  813: I
+  814: J
+  815: K
+  816: L
+  817: M
+  818: N
+  819: O
+  820: P
+  821: Q
+  822: R
+  823: S
+  824: T
+  825: U
+  826: V
+  827: W
+  828: X
+  829: Y
+  830: Z
+  831: ???
+  832: ???
+  833: Menu
+  834: ???
+  835: ???
+  836: NumPad 0
+  837: NumPad 1
+  838: NumPad 2
+  839: NumPad 3
+  840: NumPad 4
+  841: NumPad 5
+  842: NumPad 6
+  843: NumPad 7
+  844: NumPad 8
+  845: NumPad 9
+  846: NumPad *
+  847: NumPad +
+  848: ???
+  849: NumPad -
+  850: NumPad .
+  851: NumPad /
+  852: F1
+  853: F2
+  854: F3
+  855: F4
+  856: F5
+  857: F6
+  858: F7
+  859: F8
+  860: F9
+  861: F10
+  862: F11
+  863: F12
+  864: F13
+  865: F14
+  866: F15
+  867: F16
+  868: F17
+  869: F18
+  870: F19
+  871: F20
+  872: F21
+  873: F22
+  874: F23
+  875: F24
+  876: ???
+  877: ???
+  878: ???
+  879: ???
+  880: ???
+  881: ???
+  882: ???
+  883: ???
+  884: NumLock
+  885: Scroll
+  886: ???
+  887: ???
+  888: ???
+  889: ???
+  890: ???
+  891: ???
+  892: ???
+  893: ???
+  894: ???
+  895: ???
+  896: ???
+  897: ???
+  898: ???
+  899: ???
+  900: ???
+  901: ???
+  902: ???
+  903: ???
+  904: ???
+  905: ???
+  906: ???
+  907: ???
+  908: ???
+  909: ???
+  910: ???
+  911: ???
+  912: ???
+  913: ???
+  914: ???
+  915: ???
+  916: ???
+  917: ???
+  918: ???
+  919: ???
+  920: ???
+  921: ???
+  922: ???
+  923: ???
+  924: ???
+  925: ???
+  926: ;
+  927: =
+  928: ","
+  929: "-"
+  930: .
+  931: /
+  932: "'"
+  933: ???
+  934: ???
+  935: ???
+  936: ???
+  937: ???
+  938: ???
+  939: ???
+  940: ???
+  941: ???
+  942: ???
+  943: ???
+  944: ???
+  945: ???
+  946: ???
+  947: ???
+  948: ???
+  949: ???
+  950: ???
+  951: ???
+  952: ???
+  953: ???
+  954: ???
+  955: ???
+  956: ???
+  957: ???
+  958: ???
+  959: "["
+  960: \
+  961: "]"
+  962: "#"
+  963: Bar
+  964: ???
+  965: ???
+  966: ???
+  967: ???
+  968: ???
+  969: ???
+  970: ???
+  971: ???
+  972: ???
+  973: ???
+  974: ???
+  975: ???
+  976: ???
+  977: ???
+  978: ???
+  979: ???
+  980: ???
+  981: ???
+  982: ???
+  983: ???
+  984: ???
+  985: ???
+  986: ???
+  987: ???
+  988: ???
+  989: ???
+  990: ???
+  991: ???
+  992: ???
+  993: ???
+  994: ???
+  995: ???
+
+  996: "{STRINGID}:{MOVE_X 215}{STRINGID}{STRINGID}"
+  997: "SHIFT + "
+  998: "CTRL + "
+  999: 修改快捷键
+  1000: "{COLOUR WINDOW_2}为以下功能按下新的快捷键:{NEWLINE}{NEWLINE_SMALLER}{COLOUR BLACK}“{STRINGID}”"
+  1001: "{SMALLFONT}{COLOUR BLACK}点击快捷键描述以选择新的键位"
+  1002: 当光标悬停在屏幕边缘时滚动视角
+  1003: "{SMALLFONT}{COLOUR BLACK}选择是否在光标悬停在屏幕边缘时滚动视角"
+  1004: "{SMALLFONT}{COLOUR BLACK}查看或更改键位设置"
+  1005: 地图
+  1006: 地图 - 载具
+  1007: 地图 - 工业设施
+  1008: 地图 - 运输路线
+  1009: 地图 - 公司
+  1010: 强制使用软件缓冲区混合(Software Buffer Mixing)
+  1011: "{SMALLFONT}{COLOUR BLACK}若游戏在声音开始播放时轻微停顿或声音被干扰，选择此选项以提高性能"
+  1012: 场景成功安装
+  1013: 场景已被安装
+  1014: "{OUTLINE}{COLOUR WINDOW_1}{STRINGID}"
+  1015: "{OUTLINE}{COLOUR WINDOW_2}(按任意键或点击光标以控制)"
+  1016: 另一个Chris Sawyer's Locomotion程序已在运行
+
+  1017: 音乐说明...
+  1018: 音乐说明
+  1019: "{COLOUR BLACK}Copyright © Chris Sawyer"
+  1020: "{COLOUR WINDOW_2}Locomotion Title"
+  1021: "{COLOUR BLACK}John Broomhall (Guitar played by Keith Thompson)"
+  1022: "{COLOUR WINDOW_2}Long Dusty Road"
+  1023: "{COLOUR BLACK}Allister Brimble (Trumpet played by Brian Moore)"
+  1024: "{COLOUR WINDOW_2}Flying High"
+  1025: "{COLOUR BLACK}Allister Brimble"
+  1026: "{COLOUR WINDOW_2}Gettin' On The Gas"
+  1027: "{COLOUR BLACK}Allister Brimble"
+  1028: "{COLOUR WINDOW_2}Jumpin' The Rails"
+  1029: "{COLOUR BLACK}Allister Brimble"
+  1030: "{COLOUR WINDOW_2}Smooth Running"
+  1031: "{COLOUR BLACK}Allister Brimble"
+  1032: "{COLOUR WINDOW_2}Traffic Jam"
+  1033: "{COLOUR BLACK}Allister Brimble"
+  1034: "{COLOUR WINDOW_2}Never Stop 'til You Get There"
+  1035: "{COLOUR BLACK}Allister Brimble"
+  1036: "{COLOUR WINDOW_2}Soaring Away"
+  1037: "{COLOUR BLACK}Allister Brimble"
+  1038: "{COLOUR WINDOW_2}Techno Torture"
+  1039: "{COLOUR BLACK}Allister Brimble"
+  1040: "{COLOUR WINDOW_2}Everlasting High-Rise"
+  1041: "{COLOUR BLACK}Allister Brimble"
+  1042: "{COLOUR WINDOW_2}Solace"
+  1043: "{COLOUR BLACK}Scott Joplin (Performed by Peter James Adcock)"
+  1044: "{COLOUR WINDOW_2}Chrysanthemum"
+  1045: "{COLOUR BLACK}Scott Joplin (Performed by Peter James Adcock)"
+  1046: "{COLOUR WINDOW_2}Eugenia"
+  1047: "{COLOUR BLACK}Scott Joplin (Performed by Peter James Adcock)"
+  1048: "{COLOUR WINDOW_2}The Ragtime Dance"
+  1049: "{COLOUR BLACK}Scott Joplin (Performed by Peter James Adcock)"
+  1050: "{COLOUR WINDOW_2}Easy Winners"
+  1051: "{COLOUR BLACK}Scott Joplin (Performed by Peter James Adcock)"
+  1052: "{COLOUR WINDOW_2}Setting Off"
+  1053: "{COLOUR BLACK}Allister Brimble (Trumpet played by Brian Moore, Clarinet played by John Glanfield)"
+  1054: "{COLOUR WINDOW_2}A Traveller's Seranade"
+  1055: "{COLOUR BLACK}David Punshon"
+  1056: "{COLOUR WINDOW_2}Latino Trip"
+  1057: "{COLOUR BLACK}David Punshon"
+  1058: "{COLOUR WINDOW_2}A Good Head Of Steam"
+  1059: "{COLOUR BLACK}Allister Brimble"
+  1060: "{COLOUR WINDOW_2}Hop To The Bop"
+  1061: "{COLOUR BLACK}David Punshon"
+  1062: "{COLOUR WINDOW_2}The City Lights"
+  1063: "{COLOUR BLACK}Allister Brimble"
+  1064: "{COLOUR WINDOW_2}Steamin' Down Town"
+  1065: "{COLOUR BLACK}David Punshon"
+  1066: "{COLOUR WINDOW_2}Bright Expectations"
+  1067: "{COLOUR BLACK}Allister Brimble"
+  1068: "{COLOUR WINDOW_2}Mo' Station"
+  1069: "{COLOUR BLACK}John Broomhall"
+  1070: "{COLOUR WINDOW_2}Far Out"
+  1071: "{COLOUR BLACK}John Broomhall"
+  1072: "{COLOUR WINDOW_2}Running On Time"
+  1073: "{COLOUR BLACK}Allister Brimble"
+  1074: "{COLOUR WINDOW_2}Get Me To Gladstone Bay"
+  1075: "{COLOUR BLACK}Allister Brimble"
+  1076: "{COLOUR WINDOW_2}Chuggin' Along"
+  1077: "{COLOUR BLACK}Allister Brimble (Trumpet played by Brian Moore)"
+  1078: "{COLOUR WINDOW_2}Don't Lose Your Rag"
+  1079: "{COLOUR BLACK}Allister Brimble"
+  1080: "{COLOUR WINDOW_2}Sandy Track Blues"
+  1081: "{COLOUR BLACK}Allister Brimble"
+
+  1082: 无法载入存档...
+  1083: 文件含有无效数据
+  1084: 文件不是单人游戏存档
+  1085: 文件不是双人游戏存档
+  1086: 请稍等...
+  1087: 正在初始化...
+  1088: 载入中...
+  1089: "安装新数据: "
+
+  1090: 白色
+  1091: 半透明
+  1092: "{COLOUR WINDOW_2}建设标记:"
+  1093: "{COLOUR WINDOW_2}显示载具的最小缩放比例:"
+  1094: "{COLOUR WINDOW_2}w:"
+  1095: "1"
+  1096: 1/2
+  1097: 1/4
+  1098: 1/8
+  1099: "{SMALLFONT}{COLOUR BLACK}选择显示载具的最小缩放比例"
+  1100: "{SMALLFONT}{COLOUR BLACK}选择显示载具的最小缩放比例"
+
+  1101: "{COLOUR WINDOW_2}主配色方案:"
+  1102: "{COLOUR BLACK}蒸汽机车:"
+  1103: "{COLOUR BLACK}内燃机车:"
+  1104: "{COLOUR BLACK}电力机车:"
+  1105: "{COLOUR BLACK}动车组:"
+  1106: "{COLOUR BLACK}客运车厢:"
+  1107: "{COLOUR BLACK}货运车厢:"
+  1108: "{COLOUR BLACK}公交车:"
+  1109: "{COLOUR BLACK}货车:"
+  1110: "{COLOUR BLACK}飞机:"
+  1111: "{COLOUR BLACK}船只:"
+  1112: "{SMALLFONT}{COLOUR BLACK}公司总部与明细"
+  1113: "{SMALLFONT}{COLOUR BLACK}公司所有者与状态"
+  1114: "{SMALLFONT}{COLOUR BLACK}公司财务"
+  1115: "{SMALLFONT}{COLOUR BLACK}运抵货物"
+  1116: "{SMALLFONT}{COLOUR BLACK}公司配色方案"
+  1117: "{SMALLFONT}{COLOUR BLACK}本游戏中公司的挑战目标"
+  1118: "{COLOUR WINDOW_2}以下采用特殊的配色方案:"
+  1119: "{SMALLFONT}{COLOUR BLACK}选择主色"
+  1120: "{SMALLFONT}{COLOUR BLACK}选择配色(仅在部分载具类型上使用)"
+  1121: "{SMALLFONT}{COLOUR BLACK}选择是否对此类载具使用不同的配色方案"
+  1122: "{STRINGID} - 列车"
+  1123: "{STRINGID} - 公交车"
+  1124: "{STRINGID} - 货车"
+  1125: "{STRINGID} - 电车"
+  1126: "{STRINGID} - 飞机"
+  1127: "{STRINGID} - 船只"
+  1128: "{STRINGID} - 所有站点"
+  1129: "{STRINGID} - 火车站"
+  1130: "{STRINGID} - 道路站"
+  1131: "{STRINGID} - 机场"
+  1132: "{STRINGID} - 港口"
+  1133: 所有站点
+  1134: 火车站
+  1135: 道路站
+  1136: 机场
+  1137: 港口
+  1138: "{COLOUR WINDOW_2}{STRINGID} - {STRINGID}"
+  1139: "{COLOUR WINDOW_2}{STRINGID} - {STRINGID} {STRINGID}"
+  1140: "{COLOUR WINDOW_2}{CURRENCY32}"
+  1141: "{COLOUR RED}-{CURRENCY32}"
+  1142: "{COLOUR WINDOW_2}{INT16}年"
+  1143: "{COLOUR WINDOW_2}{INT16}年"
+  1144: "{COLOUR WINDOW_2}{INT16}%"
+  1145: "{COLOUR BLACK}名称"
+  1146: "{COLOUR BLACK}名称 ▼"
+  1147: "{COLOUR BLACK}月利润"
+  1148: "{COLOUR BLACK}月利润 ▼"
+  1149: "{COLOUR BLACK}年龄"
+  1150: "{COLOUR BLACK}年龄 ▼"
+  1151: "{COLOUR BLACK}可靠性"
+  1152: "{COLOUR BLACK}可靠性 ▼"
+  1153: "{SMALLFONT}{COLOUR BLACK}按名称排序列表"
+  1154: "{SMALLFONT}{COLOUR BLACK}按利润排序列表"
+  1155: "{SMALLFONT}{COLOUR BLACK}按年龄排序列表"
+  1156: "{SMALLFONT}{COLOUR BLACK}按可靠性排序列表"
+  1157: 载具必须先停止!
+  1158: 载具已撞毁!
+  1159: 载具已抛锚!
+  1160: 载具无法找到前进路线!
+  1161: 没有足够空间，或已有其它载具
+  1162: 其它载具抵近中，或已有其它载具
+  1163: 无法在此处放置{POP16}{POP16}{POP16}{STRINGID}...
+  1164: 无法移除{POP16}{POP16}{POP16}{STRINGID}...
+  1165: 无法忽略信号...
+  1166: 此载具需要{STRINGID}
+  1167: 列车为空!
+  1168: 列车没有驾驶室!
+  1169: 列车需要牵引机车或动力车
+  1170: "目的地:{STRINGID} / 始发地:{STRINGID}"
+  1171: 空
+  1172: "{SMALLFONT}{COLOUR BLACK}{STRINGID}"
+  1173: "{NEWLINE}容量:  {STRINGID}"
+  1174: "{NEWLINE}+ {STRINGID}"
+  1175: 游戏内已有太多站点!
+  1176: 站点过大!
+  1177: 需要先建立城镇!
+  1178: "{SMALLFONT}{COLOUR BLACK}显示总览地图"
+  1179: "{SMALLFONT}{COLOUR BLACK}在地图上显示载具类型"
+  1180: "{SMALLFONT}{COLOUR BLACK}在地图上显示工业设施类型"
+  1181: "{SMALLFONT}{COLOUR BLACK}在地图上显示运输路线"
+  1182: "{SMALLFONT}{COLOUR BLACK}在地图上显示公司所有权"
+  1183: 站点范围过大!
+  1184: 无法将{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}加入{STRINGID}...
+  1185: 无法建造{POP16}{POP16}{POP16}{POP16}{POP16}{STRINGID}...
+  1186: "{COLOUR BLACK}选择新载具"
+  1187: "{COLOUR BLACK}选择载具以加入{STRINGID}"
+  1188: "{SMALLFONT}{COLOUR BLACK}创建新的机车/车厢"
+  1189: "{SMALLFONT}{COLOUR BLACK}创建新的公交车"
+  1190: "{SMALLFONT}{COLOUR BLACK}创建新的火车"
+  1191: "{SMALLFONT}{COLOUR BLACK}创建新的电车"
+  1192: "{SMALLFONT}{COLOUR BLACK}创建新的飞机"
+  1193: "{SMALLFONT}{COLOUR BLACK}创建新的船只"
+  1194: "{SMALLFONT}{COLOUR BLACK}列车"
+  1195: "{SMALLFONT}{COLOUR BLACK}公交车"
+  1196: "{SMALLFONT}{COLOUR BLACK}火车"
+  1197: "{SMALLFONT}{COLOUR BLACK}电车"
+  1198: "{SMALLFONT}{COLOUR BLACK}飞机"
+  1199: "{SMALLFONT}{COLOUR BLACK}船只"
+  1200: "{SMALLFONT}{COLOUR BLACK}所有站点"
+  1201: "{SMALLFONT}{COLOUR BLACK}火车站"
+  1202: "{SMALLFONT}{COLOUR BLACK}道路站"
+  1203: "{SMALLFONT}{COLOUR BLACK}机场"
+  1204: "{SMALLFONT}{COLOUR BLACK}港口"
+  1205: "{SMALLFONT}{COLOUR BLACK}清理地面区域"
+  1206: "{SMALLFONT}{COLOUR BLACK}树"
+  1207: "{SMALLFONT}{COLOUR BLACK}调整或创建地形"
+  1208: "{SMALLFONT}{COLOUR BLACK}调整或创建水面"
+  1209: "{SMALLFONT}{COLOUR BLACK}墙与围栏"
+  1210: "{SMALLFONT}{COLOUR BLACK}选择对象颜色"
+  1211: "{COLOUR WINDOW_2}{STRINGID}"
+  1212: "{COLOUR WINDOW_2}{STRINGID} (始发地: "
+  1213: "{COLOUR WINDOW_2}{STRINGID})"
+  1214: 没有空间容纳更多调度指令!
+  1215: 此载具调度指令过多!
+  1216: "慢车"
+  1217: "快车"
+  1218: "{COLOUR BLACK}- - 未定义路线 - -"
+  1219: "{COLOUR BLACK}- - 路线列表结束 - -"
+  1220: 在{STRINGID}停车
+  1221: 经过{STRINGID}
+  1222: 经过路径点
+  1223: 卸载所有{STRINGID} {SPRITE}
+  1224: 等待满载{STRINGID} {SPRITE}
+  1225: 卸载所有{STRINGID} {SPRITE}
+  1226: 等待满载{STRINGID} {SPRITE}
+  1227: "{COLOUR WINDOW_2}▶"
+  1228: 无法插入调度指令...
+  1229: "{COLOUR WINDOW_3}点击插入新的调度指令{NEWLINE}以经过此处的路径点"
+  1230: "{COLOUR WINDOW_3}点击插入新的调度指令{NEWLINE}以在{STRINGID}停车"
+  1231: "{COLOUR WINDOW_3}再次点击以将上一个调度指令{NEWLINE}更改为经过{STRINGID}"
+  1232: "{SMALLFONT}{COLOUR BLACK}插入调度指令以等待满载货物"
+  1233: "{SMALLFONT}{COLOUR BLACK}插入调度指令以强制卸载货物, 即使站点不接受此类货物"
+  1234: "{SMALLFONT}{COLOUR BLACK}跳转到列表中下一个调度指令"
+  1235: "{SMALLFONT}{COLOUR BLACK}删除最后一个或所选的调度指令"
+  1236: "{COLOUR BLACK}点击站点或路径点以设置路线"
+  1237: "{SMALLFONT}{COLOUR BLACK}点击调度指令以选中它, 双击以将视角移动至该站点/路径点"
+  1238: "{SMALLFONT}{COLOUR BLACK}选择一个指令以复制到选中的载具"
+  1239: "{STRINGID} {STRINGID}{NEWLINE}{COLOUR WINDOW_3}{STRINGID}"
+  1240: 创建列车
+  1241: 创建公交车
+  1242: 创建货车
+  1243: 创建电车
+  1244: 创建飞机
+  1245: 创建船只
+  1246: 只能放置在{STRINGID}上...
+  1247: 道路
+  1248: "{COLOUR BLACK}没有可用的载具"
+  1249: "{COLOUR BLACK}没有可用且兼容的车辆以添加到{STRINGID}"
+  1250: ""
+  1251: "{COLOUR WINDOW_2} 费用: {COLOUR BLACK}{CURRENCY32}"
+  1252: "{NEWLINE}{COLOUR WINDOW_2} 需要: {COLOUR BLACK}"
+  1253: "{NEWLINE}{COLOUR WINDOW_2} 功率: {COLOUR BLACK}{POWER}"
+  1254: "{NEWLINE}{COLOUR WINDOW_2} 重量: {COLOUR BLACK}{INT16}t"
+  1255: "{NEWLINE}{COLOUR WINDOW_2} 最高速度: {COLOUR BLACK}{VELOCITY}"
+  1256: "{NEWLINE}{COLOUR WINDOW_2} 设计时间: {COLOUR BLACK}{UINT16 RAW}"
+  1257: "{NEWLINE}{COLOUR WINDOW_2} 容量: {COLOUR BLACK}{STRINGID}"
+  1258: " + {STRINGID}"
+  1259: " ( + {STRINGID}若在急坡上)"
+  1260: " ({VELOCITY} / {STRINGID})"
+  1261: 或 {STRINGID}
+  1262: "{NEWLINE}{COLOUR WINDOW_2} 运行费用: {COLOUR BLACK}{CURRENCY32}/month"
+  1263: " (可改装)"
+  1264: "{INT16} 列车"
+  1265: "{INT16} 公交车"
+  1266: "{INT16} 货车"
+  1267: "{INT16} 电车"
+  1268: "{INT16} 飞机"
+  1269: "{INT16} 船只"
+  1270: "{INT16} 列车"
+  1271: "{INT16} 公交车"
+  1272: "{INT16} 货车"
+  1273: "{INT16} 电车"
+  1274: "{INT16} 飞机"
+  1275: "{INT16} 船只"
+  1276: 列车
+  1277: 公交车
+  1278: 货车
+  1279: 电车
+  1280: 飞机
+  1281: 船只
+  1282: "{COLOUR WINDOW_2}总计: {COLOUR BLACK}{STRINGID}"
+  1283: 空
+  1284: "{SMALLFONT}{COLOUR BLACK}载重: "
+  1285: 需要额外的{STRINGID}
+  1286: "{SMALLFONT}{COLOUR BLACK}{STRINGID}的载具"
+  1287: "{SPRITE}{NEWLINE 31 8} {STRINGID}"
+  1288: "{POP16}{POP16}{NEWLINE 31 8} {STRINGID}"
+  1289: "{SPRITE}{NEWLINE 31 8} {STRINGID} 建设"
+  1290: "{STRINGID} 地方政府拒绝许可!"
+  1291: 城镇
+  1292: 建立新城镇
+  1293: 建造单独的城镇建筑
+  1294: 建造其它建筑
+  1295: "{COLOUR BLACK}人口"
+  1296: "{COLOUR BLACK}人口 ▼"
+  1297: "{SMALLFONT}{COLOUR BLACK}按人口排序列表"
+  1298: "{INT32}"
+  1299: "{COLOUR BLACK}站点"
+  1300: "{COLOUR BLACK}站点 ▼"
+  1301: "{SMALLFONT}{COLOUR BLACK}按站点数量排序列表"
+  1302: "{COLOUR BLACK}城镇"
+  1303: "{COLOUR BLACK}城镇 ▼"
+  1304: "{STRINGID} 人口 {INT32}"
+  1305: "{SMALLFONT}{COLOUR BLACK}按城镇类型排序列表"
+  1306: "{COLOUR BLACK}类型"
+  1307: "{COLOUR BLACK}类型 ▼"
+  1308: 城镇名称
+  1309: "为{STRINGID}输入新名称:"
+  1310: "{COLOUR BLACK}{STRINGID} 人口 {INT32}"
+  1311: 无法重命名城镇...
+  1312: 新站点
+  1313: "{COLOUR BLACK}({STRINGID})"
+  1314: "{COLOUR WINDOW_2}覆盖范围{NEWLINE}  接受: "
+  1315: "{COLOUR WINDOW_2}  生产: "
+  1316: "{COLOUR BLACK}无"
+  1317: 工业设施太多
+  1318: 工业设施
+  1319: 资助新的工业设施
+  1320: 建造工业设施
+  1321: "{SMALLFONT}{COLOUR BLACK}城镇列表"
+  1322: "{SMALLFONT}{COLOUR BLACK}建立城镇"
+  1323: "{SMALLFONT}{COLOUR BLACK}建造单独的城镇建筑"
+  1324: "{SMALLFONT}{COLOUR BLACK}建造其它建筑"
+  1325: "{SMALLFONT}{COLOUR BLACK}工业设施列表"
+  1326: "{SMALLFONT}{COLOUR BLACK}资助新的工业设施"
+  1327: "{SMALLFONT}{COLOUR BLACK}建造工业设施"
+  1328: 黑
+  1329: 银
+  1330: 象牙白
+  1331: 靛蓝
+  1332: 蔚蓝
+  1333: 翡翠绿
+  1334: 金
+  1335: 琥珀色
+  1336: 青铜色
+  1337: 暗红
+  1338: 鲜红
+  1339: "{STRINGID}"
+  1340: "{POP16}{STRINGID}"
+  1341: "{STRINGID} 运输"
+  1342: "{STRINGID} 速运"
+  1343: "{STRINGID} 航线"
+  1344: "{STRINGID} 轨道"
+  1345: "{STRINGID} 公交"
+  1346: "{STRINGID} 航空"
+  1347: "{STRINGID} 铁路"
+  1348: "{STRINGID} 散货"
+  1349: "{STRINGID} 列车"
+  1350: "{STRINGID} 托运"
+  1351: "{STRINGID} 航运"
+  1352: "{STRINGID} 货运"
+  1353: "{STRINGID} 货车"
+  1354: "{COLOUR WINDOW_2}总部"
+  1355: "{COLOUR WINDOW_2}所有者"
+  1356: "{COLOUR BLACK}@ {INT16}% 年利率"
+  1357: "{COLOUR BLACK}{SMALLFONT}{INT32}"
+  1358: "{COLOUR BLACK}{SMALLFONT}{UINT16 RAW}"
+  1359: "{STRINGID}"
+  1360: "{STRINGID} - 人口"
+  1361: "{STRINGID} 地方政府"
+  1362: "{STRINGID} - 月产量"
+  1363: "{STRINGID} - 统计数字"
+  1364: "{STRINGID} {STRINGID}"
+  1365: "{SMALLFONT}{COLOUR BLACK}拆除此工业设施"
+  1366: 建设中
+  1367: "正在生产 "
+  1368: "生产 "
+  1369: "生产 "
+  1370: " 以生产 "
+  1371: "需要 "
+  1372: "需要 "
+  1373: " 与 "
+  1374: " 或 "
+  1375: ", "
+  1376: "{SMALLFONT}{COLOUR BLACK}按工业设施状态排序列表"
+  1377: "{SMALLFONT}{COLOUR BLACK}按产品运输比例排序列表"
+  1378: "{COLOUR BLACK}状态"
+  1379: "{COLOUR BLACK}状态 ▼"
+  1380: "{COLOUR BLACK}已运输产品"
+  1381: "{COLOUR BLACK}已运输产品 ▼"
+  1382: "{SMALLFONT}{COLOUR BLACK}按工业设施名称排序列表"
+  1383: "{COLOUR BLACK}工业设施"
+  1384: "{COLOUR BLACK}工业设施 ▼"
+  1385: "{COLOUR BLACK}没有可用的工业设施"
+  1386: "{SMALLFONT}{COLOUR BLACK}城镇"
+  1387: "{SMALLFONT}{COLOUR BLACK}人口曲线"
+  1388: "{SMALLFONT}{COLOUR BLACK}城镇对各个公司的评分"
+  1389: "{SMALLFONT}{COLOUR BLACK}工业设施"
+  1390: "{SMALLFONT}{COLOUR BLACK}产能曲线"
+  1391: "{COLOUR BLACK}{SMALLFONT}({STRINGID})"
+  1392: "{SMALLFONT}{COLOUR BLACK}完全废弃此城镇(以及周围所有工业设施)"
+  1393: 无法移动城镇...
+  1394: 所有临近此城镇的站点必须先被移除
+  1395: 距离另一座城镇太近
+  1396: 城镇太多
+  1397: 距离另一座城镇太近, 或位置不合适
+  1398: "{SMALLFONT}{COLOUR BLACK}选择需要建立的城镇大小"
+  1399: 1 (小)
+  1400: "2"
+  1401: 3 (中)
+  1402: "4"
+  1403: "5"
+  1404: 6 (大)
+  1405: "7"
+  1406: 8 (巨)
+  1407: "{COLOUR BLACK}城镇大小:"
+  1408: "{COLOUR BLACK}(点击地面以建立新城镇)"
+  1409: "{SMALLFONT}{COLOUR BLACK}扩展此城镇"
+  1410: 距离另一个工业设施太近
+  1411: 必须先在附近建立城镇
+  1412: "{SMALLFONT}{COLOUR BLACK}种一簇所选类型的树"
+  1413: "{SMALLFONT}{COLOUR BLACK}种一簇随机类型的树"
+  1414: "{SMALLFONT}{COLOUR BLACK}统计"
+  1415: "{COLOUR WINDOW_2}上月接收:"
+  1416: "{COLOUR WINDOW_2}上月生产:"
+  1417: "{COLOUR BLACK}{STRINGID} ({INT16}% 已运输)"
+  1418: "{COLOUR BLACK}{INT16}%"
+  1419: 即将关停
+  1420: 属于{STRINGID}
+  1421: "{STRINGID}属于{STRINGID}"
+  1422: 信号属于{STRINGID}
+  1423: "{COLOUR BLACK}{INT16}%"
+  1424: "{COLOUR BLACK}{TINYFONT}{DATE DMY}"
+  1425: 消息
+  1426: "{SMALLFONT}{COLOUR BLACK}显示最近的消息"
+  1427: "{SMALLFONT}{COLOUR BLACK}消息选项"
+  1428: 消息选项
+  1429: "{TINYFONT}{DATE DMY}"
+  1430: " + "
+  1431: " 等待中"
+  1432: 没有乘客/货物等待
+  1433: "{COLOUR BLACK}状态"
+  1434: "{COLOUR BLACK}状态 ▼"
+  1435: "{COLOUR BLACK}等待总计"
+  1436: "{COLOUR BLACK}等待总计 ▼"
+  1437: "{COLOUR BLACK}接受"
+  1438: "{COLOUR BLACK}接受 ▼"
+  1439: "{SMALLFONT}{COLOUR BLACK}按站点状态排序列表"
+  1440: "{SMALLFONT}{COLOUR BLACK}按总计等待量排序列表"
+  1441: "{SMALLFONT}{COLOUR BLACK}按可接受货物排序列表"
+  1442: "{INT32} 单位"
+  1443: ", "
+  1444: "{NEWLINE}接收 "
+  1445: "{COLOUR BLACK}接收: "
+  1446: 无
+  1447: "{SMALLFONT}{COLOUR BLACK}站点"
+  1448: "{SMALLFONT}{COLOUR BLACK}等待中的货物与已接收的货物"
+  1449: "{SMALLFONT}{COLOUR BLACK}货物评分"
+  1450: 不允许拆除
+  1451: 另一个公司即将在此处建造
+  1452: 太长!
+  1453: "{SMALLFONT}{COLOUR BLACK}建造或移动总部"
+  1454: "{SMALLFONT}{COLOUR BLACK}修改所有者名称"
+  1455: "{COLOUR BLACK}(暂未建成)"
+  1456: 命名公司
+  1457: "输入新公司名称:"
+  1458: 无法重命名此公司...
+  1459: 命名所有者
+  1460: "输入新所有者名称:"
+  1461: 无法改变所有者名称...
+  1462: 总部
+  1463: "{STRINGID} 总部"
+  1464: "{STRINGID} 地方政府不允许移除正在使用的道路"
+  1465: "{SMALLFONT}{COLOUR BLACK}选择公司"
+  1466: 双人游戏
+  1467: 双人游戏 - 选项
+  1468: "{COLOUR BLACK}为了建立双人游戏, 一台计算机需要被设为主机, 随后另一台计算机需要连接在主机上.{NEWLINE}{NEWLINE}请选择:"
+  1469: ""
+  1470: "{COLOUR BLACK}设置此计算机为主机..."
+  1471: "{COLOUR BLACK}错误: 无法设置此计算机为主机"
+  1472: "{COLOUR BLACK}主机设置完成 - 等待另一台计算机连接..."
+  1473: ""
+  1474: ""
+  1475: ""
+  1476: "{COLOUR BLACK}尝试连接..."
+  1477: "{COLOUR BLACK}错误: 无法找到或连接主机"
+  1478: "{COLOUR BLACK}成功!{NEWLINE}你已连接至: {STRINGID}"
+  1479: "{COLOUR BLACK}当前连接至: {STRINGID}{NEWLINE}{NEWLINE}点击下方以断开连接并返回单人模式"
+  1480: "{COLOUR WINDOW_2}设置此计算机为主机"
+  1481: "{COLOUR WINDOW_2}连接至主机"
+  1482: "{COLOUR WINDOW_2}断开连接"
+  1483: 输入主机地址
+  1484: "输入需要连接的主机的IP地址或名称, 或留空以在局域网中搜索:"
+  1485: "{COLOUR RED}警告: 你以连接至另一个版本的Chris Sawyer's Locomotion, 双人游戏性能可能无法保证"
+
+  # Options
+  1486: "{SMALLFONT}{COLOUR BLACK}显示选项"
+  1487: "{SMALLFONT}{COLOUR BLACK}声音选项"
+  1488: "{SMALLFONT}{COLOUR BLACK}音乐选项"
+  1489: "{SMALLFONT}{COLOUR BLACK}区域选项"
+  1490: "{SMALLFONT}{COLOUR BLACK}控制选项"
+  1491: "{SMALLFONT}{COLOUR BLACK}其它选项"
+  1492: 选项 - 显示
+  1493: 选项 - 声音
+  1494: 选项 - 音乐
+  1495: 选项 - 区域
+  1496: 选项 - 控制
+  1497: 选项 - 其它
+
+  # Options/Currency
+  1498: 总是使用首选货币
+  1499: "{SMALLFONT}{COLOUR BLACK}总是使用首选货币"
+  1500: 当开始新游戏时使用首选货币
+  1501: "{SMALLFONT}{COLOUR BLACK}选择此选项以覆盖场景的默认货币"
+  1502: "{SMALLFONT}{COLOUR BLACK}选择当前游戏的货币"
+  1503: "{SMALLFONT}{COLOUR BLACK}选择创建新场景时的默认货币"
+  1504: "{COLOUR WINDOW_2}当前货币:"
+  1505: "{COLOUR WINDOW_2}首选货币:"
+  1506: ""
+
+  1507: "当前公司主要新闻:"
+  1508: "其它公司主要新闻:"
+  1509: "当前公司次要新闻:"
+  1510: "其它公司次要新闻:"
+  1511: "一般新闻:"
+  1512: "建议:"
+  1513: 关闭
+  1514: Ticker Message
+  1515: 新闻窗口
+  1516: "{COLOUR WINDOW_2}月运行费用: {COLOUR BLACK}{CURRENCY32}"
+  1517: "{COLOUR WINDOW_2}月利润: {COLOUR BLACK}{CURRENCY32}"
+  1518: 列车
+  1519: 公交车
+  1520: 货车
+  1521: 电车
+  1522: 飞机
+  1523: 船只
+  1524: 机场
+  1525: 港口
+  1526: 调度指令对飞机无效
+  1527: 调度指令对船只无效
+  1528: 站点为其它公司所有
+  1529: 没有水!
+  1530: 船只目前需要水道
+  1531: 目前至少被一个载具使用
+  1532: "{SMALLFONT}{COLOUR BLACK}改装载具以运载不同类型的货物"
+  1533: 无法改装此载具以运载不同类型的货物
+  1534: 码头前方需要水
+
+  1535: "{COLOUR WINDOW_2}当前播放:"
+  1536: "{SMALLFONT}{COLOUR BLACK}停止音乐"
+  1537: "{SMALLFONT}{COLOUR BLACK}播放音乐"
+  1538: "{SMALLFONT}{COLOUR BLACK}下一首音乐"
+  1539: 仅播放当前时代的音乐
+  1540: 播放所有音乐
+  1541: 播放自定义选择的音乐
+  1542: 修改选择...
+  1543: "{SMALLFONT}{COLOUR BLACK}编辑音乐选择列表"
+  1544: 编辑音乐选择
+  1545: "{SMALLFONT}{COLOUR BLACK}点击音乐以选择/反选"
+  1546: ✓
+  1547: "{COLOUR WINDOW_2}音量:"
+  1548: "{SMALLFONT}{COLOUR BLACK}设置音乐音量"
+  1549: 音乐选项
+  1550: 选择{STRINGID}所有者的肖像
+  1551: "{SMALLFONT}{COLOUR BLACK}点击以选择公司所有者的肖像"
+  1552: 已被其它公司选择
+  1553: 无法选择肖像...
+  1554: 机场
+  1555: 码头
+  1556: "{COLOUR WINDOW_2}公司建立: {COLOUR BLACK}{DATE MY}"
+  1557: "{COLOUR WINDOW_2}绩效指标: {COLOUR BLACK}{INT16_1DP}% {NEWLINE}  “{STRINGID}”"
+  1558: "{COLOUR WINDOW_2}绩效指标: {COLOUR BLACK}{INT16_1DP}%{SPRITE 2325}{NEWLINE}  “{STRINGID}”"
+  1559: "{COLOUR WINDOW_2}绩效指标: {COLOUR BLACK}{INT16_1DP}%{SPRITE 2324}{NEWLINE}  “{STRINGID}”"
+  1560: "{COLOUR WINDOW_2}所有者: {COLOUR BLACK}{STRINGID}"
+  1561: 低
+  1562: 中
+  1563: 高
+  1564: "{COLOUR WINDOW_2}智能: {COLOUR BLACK}{INT16} ({STRINGID})"
+  1565: "{COLOUR WINDOW_2}攻击性: {COLOUR BLACK}{INT16} ({STRINGID})"
+  1566: "{COLOUR WINDOW_2}竞争力: {COLOUR BLACK}{INT16} ({STRINGID})"
+  1567: "{SMALLFONT}{COLOUR BLACK}在单人模式与双人模式间切换"
+  1568: "{OUTLINE}{COLOUR WINDOW_2}单人模式"
+  1569: "{OUTLINE}{COLOUR WINDOW_2}双人模式: 已连接至{STRINGID}"
+  1570: 新手
+  1571: 简单
+  1572: 中等
+  1573: 挑战
+  1574: 专家
+  1575: 区域 / 物体选择
+  1576: 地形编辑器
+  1577: 场景选项
+  1578: 保存场景
+  1579: "返回到上一步:"
+  1580: "前进到下一步:"
+  1581: 载入地形
+  1582: 保存地形
+  1583: 生成地形中...
+  1584: 无法清理整个区域...
+  1585: 地形生成 - 选项
+  1586: 地形生成 - 地表
+  1587: 地形生成 - 森林
+  1588: 地形生成 - 城镇
+  1589: 地形生成 - 工业设施
+  1590: "{SMALLFONT}{COLOUR BLACK}地形生成通用选项"
+  1591: "{SMALLFONT}{COLOUR BLACK}地表生成选项"
+  1592: "{SMALLFONT}{COLOUR BLACK}森林生成选项"
+  1593: "{SMALLFONT}{COLOUR BLACK}城镇生成选项"
+  1594: "{SMALLFONT}{COLOUR BLACK}工业设施生成选项"
+
+  1595: "[None]"
+  1596: Chuggin' Along
+  1597: Long Dusty Road
+  1598: Flying High
+  1599: Gettin' On The Gas
+  1600: Jumpin' The Rails
+  1601: Smooth Running
+  1602: Traffic Jam
+  1603: Never Stop 'til You Get There
+  1604: Soaring Away
+  1605: Techno Torture
+  1606: Everlasting High-Rise
+  1607: Solace
+  1608: Chrysanthemum
+  1609: Eugenia
+  1610: The Ragtime Dance
+  1611: Easy Winners
+  1612: Setting Off
+  1613: A Traveller's Seranade
+  1614: Latino Trip
+  1615: A Good Head Of Steam
+  1616: Hop To The Bop
+  1617: The City Lights
+  1618: Steamin' Down Town
+  1619: Bright Expectations
+  1620: Mo' Station
+  1621: Far Out
+  1622: Running On Time
+  1623: Get Me To Gladstone Bay
+  1624: Sandy Track Blues
+
+  1625: "{UINT16 RAW}"
+  1626: "{COLOUR WINDOW_2}开始年份:"
+  1627: 仅在游戏开始时生成随机地形
+  1628: "{SMALLFONT}{COLOUR BLACK}每次在新游戏开始时生成随机地形"
+  1629: 生成新地形
+  1630: "{SMALLFONT}{COLOUR BLACK}生成一个新的随机地形(当前地形将被丢弃)"
+  1631: 确认
+  1632: 生成新地形
+  1633: 随机地形选项
+  1634: 是否确定生成新地形, 丢弃当前地形?
+  1635: 是否确定每次在游戏开始时生成新地形?{NEWLINE}选择此选项表示当前地形将被丢弃
+  1636: "{COLOUR WINDOW_2}海平面:"
+  1637: +{INT16} 单位
+  1638: "{COLOUR WINDOW_2}森林数量:"
+  1639: "{INT16}"
+  1640: "{COLOUR WINDOW_2}最小森林半径:"
+  1641: "{POP16}{INT16} 格"
+  1642: "{COLOUR WINDOW_2}最大森林半径:"
+  1643: "{POP16}{POP16}{INT16} 格"
+  1644: "{COLOUR WINDOW_2}最小森林密度:"
+  1645: "{POP16}{POP16}{POP16}{INT16}%"
+  1646: "{COLOUR WINDOW_2}最大森林密度:"
+  1647: "{POP16}{POP16}{POP16}{POP16}{INT16}%"
+  1648: "{COLOUR WINDOW_2}随机单棵树数量:"
+  1649: "{POP16}{POP16}{POP16}{POP16}{POP16}{INT16}"
+  1650: "{COLOUR WINDOW_2}树的最低高度:"
+  1651: "{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{HEIGHT}"
+  1652: "{COLOUR WINDOW_2}树的最高高度:"
+  1653: "{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{POP16}{HEIGHT}"
+  1654: "{COLOUR WINDOW_2}最低地面高度:"
+  1655: "{POP16}{INT16} 单位"
+  1656: "{COLOUR WINDOW_2}地形风格:"
+  1657: 平地
+  1658: 丘陵
+  1659: 山地
+  1660: 半山地, 半丘陵
+  1661: 半山地, 半平地
+  1662: "{COLOUR WINDOW_2}丘陵密度:"
+  1663: "{POP16}{POP16}{INT16}%"
+  1664: "{COLOUR WINDOW_2}城镇数量:"
+  1665: "{INT16}"
+  1666: "{COLOUR WINDOW_2}最大城镇大小:"
+  1667: 低
+  1668: 中
+  1669: 高
+  1670: "{COLOUR WINDOW_2}工业设施数量:"
+  1671: 至少需要建立一座城镇
+  1672: 无法前进至下一个编辑器阶段...
+  1673: 暂无法保存场景...
+  1674: "{SMALLFONT}{COLOUR BLACK}场景选项"
+  1675: "{SMALLFONT}{COLOUR BLACK}场景挑战目标"
+  1676: "{SMALLFONT}{COLOUR BLACK}公司选项"
+  1677: "{SMALLFONT}{COLOUR BLACK}财务选项"
+  1678: 场景选项
+  1679: 场景挑战目标
+  1680: 公司选项
+  1681: 财务选项
+  1682: "{COLOUR WINDOW_2}最大竞争对手数量:"
+  1683: "{INT16}"
+  1684: "{COLOUR WINDOW_2}竞争对手启动前延迟:"
+  1685: "{POP16}{INT16} 月"
+  1686: "{COLOUR WINDOW_2}选择竞争对手:"
+  1687: "{COLOUR WINDOW_2}首选智能:"
+  1688: "{COLOUR WINDOW_2}首选攻击性:"
+  1689: "{COLOUR WINDOW_2}首选竞争力:"
+  1690: 任意
+  1691: 低
+  1692: 中
+  1693: 高
+  1694: "{COLOUR WINDOW_2}初始贷款:"
+  1695: "{CURRENCY32}"
+  1696: "{COLOUR WINDOW_2}最大贷款数量:"
+  1697: "{POP16}{POP16}{CURRENCY32}"
+  1698: "{COLOUR WINDOW_2}贷款利率:"
+  1699: "{POP16}{POP16}{POP16}{POP16}{INT16}%"
+  1700: 修改...
+  1701: "{COLOUR WINDOW_2}场景名称: {COLOUR BLACK}{STRINGID}"
+  1702: "{COLOUR WINDOW_2}场景组别:"
+  1703: "{COLOUR WINDOW_2}场景描述:"
+  1704: 场景名称
+  1705: 输入场景名称:-
+  1706: 场景描述
+  1707: 输入场景描述:-
+  1708: 暂无描述
+  1709: 未命名
+  1710: 地形保存失败!
+  1711: 场景保存失败!
+  1712: 向另一个玩家传输数据...
+  1713: 从另一个玩家接收数据...
+  1714: 请稍等 - 另一个玩家正在保存游戏...
+  1715: 请稍等 - 另一个玩家正在载入游戏...
+  1716: 发送消息
+  1717: 发送消息
+  1718: "输入发送至{STRINGID}的消息:"
+  1719: ""
+  1720: "{COLOUR WINDOW_2}连接超时:"
+  1721: "{INT16} 秒."
+  1722: 双人游戏数据连接失败!
+  1723: "{COLOUR WINDOW_2} 设计时间: {COLOUR BLACK}{UINT16 RAW}"
+  1724: "{COLOUR WINDOW_2} 过时时间: {COLOUR BLACK}{UINT16 RAW}"
+  1725: "{COLOUR WINDOW_2} 功率: {COLOUR BLACK}{POWER}"
+  1726: "{COLOUR WINDOW_2} 重量: {COLOUR BLACK}{INT16}t"
+  1727: "{COLOUR WINDOW_2} 最高速度: {COLOUR BLACK}{VELOCITY}"
+  1728: "{COLOUR WINDOW_2} 容量: {COLOUR BLACK}{STRINGID}"
+  1729: 建立连接中...
+  1730: 任意位置
+  1731: 没有位置
+  1732: 远离水
+  1733: 临近水
+  1734: 山地上
+  1735: 远离山地
+  1736: 在小的随机区域中
+  1737: 在大的随机区域中
+  1738: 悬崖周围
+  1739: 在地图边缘创建丘陵
+  1740: "{SMALLFONT}{COLOUR BLACK}场景编辑器"
+  1741: "{STRINGID} 运输"
+  1742: 地图
+  1743: "{NEWLINE 1 2}{SPRITE}{NEWLINE 33 8}公司列表"
+  1744: "{NEWLINE 0 8}{STRINGID}{NEWLINE 25 2}{SPRITE}{NEWLINE 51 2}{STRINGID}{NEWLINE 51 12}{COLOUR WINDOW_1}{INT16_1DP}% “{STRINGID}”"
+  1745: 公司
+  1746: 公司绩效指标
+  1747: 每月送抵货物数量
+  1748: 公司价值
+  1749: 货物运费单价
+  1750: "{SMALLFONT}{COLOUR BLACK}公司对比"
+  1751: "{SMALLFONT}{COLOUR BLACK}公司绩效指标曲线"
+  1752: "{SMALLFONT}{COLOUR BLACK}各公司运抵货物曲线"
+  1753: "{SMALLFONT}{COLOUR BLACK}公司价值曲线"
+  1754: "{SMALLFONT}{COLOUR BLACK}货物运费单价"
+  1755: "{SMALLFONT}{COLOUR BLACK}按公司名称排序列表"
+  1756: "{SMALLFONT}{COLOUR BLACK}按公司状态排序列表"
+  1757: "{SMALLFONT}{COLOUR BLACK}按绩效指标排序列表"
+  1758: "{SMALLFONT}{COLOUR BLACK}按公司价值排序列表"
+  1759: "{COLOUR BLACK}公司"
+  1760: "{COLOUR BLACK}公司 ▼"
+  1761: "{COLOUR BLACK}状态"
+  1762: "{COLOUR BLACK}状态 ▼"
+  1763: "{COLOUR BLACK}绩效指标"
+  1764: "{COLOUR BLACK}绩效指标 ▼"
+  1765: "{COLOUR BLACK}公司价值"
+  1766: "{COLOUR BLACK}公司价值 ▼"
+  1767: "{NEWLINE 1 2}{SPRITE}{NEWLINE 27 8}{STRINGID}"
+  1768: "{NEWLINE 0 3}{INT16_1DP}%        {NEWLINE 0 13}“{STRINGID}”"
+  1769: "{NEWLINE 0 3}{INT16_1DP}%{SPRITE 2325}{NEWLINE 0 13}“{STRINGID}”"
+  1770: "{NEWLINE 0 3}{INT16_1DP}%{SPRITE 2324}{NEWLINE 0 13}“{STRINGID}”"
+  1771: "{NEWLINE 0 8}{CURRENCY48}"
+  1772: 铺路工
+  1773: 工程师
+  1774: 线路经理
+  1775: 运输调度
+  1776: 线路主管
+  1777: 总监
+  1778: 首席执行官
+  1779: 董事
+  1780: 总裁
+  1781: 大亨
+  1782: "{INT16} 公司"
+  1783: "{INT16} 公司"
+  1784: "{RAWDATE MY SHORT}"
+  1785: "{INT16_1DP}%"
+  1786: "{SMALLFONT}{COLOUR BLACK}{STRINGID}"
+  1787: "{INT32}"
+  1788: "{INT16_1DP}%"
+  1789: "         {INT16_1DP}% {SPRITE 2325}"
+  1790: "         {INT16_1DP}% {SPRITE 2324}"
+  1791: "{SMALLFONT}{COLOUR BLACK}{CURRENCY48}"
+  1792: "{SMALLFONT}{COLOUR BLACK}{STRINGID}"
+  1793: "{SMALLFONT}{COLOUR WHITE}{STRINGID}"
+  1794: 机场不适合此飞机
+  1795: "{COLOUR BLACK}£"
+  1796: "{INT16} 日"
+  1797: "{CURRENCY32}"
+  1798: "{SMALLFONT}{COLOUR BLACK}运输{INT16}单位货物经过{INT16}格距离的运费"
+  1799: "{SMALLFONT}{COLOUR BLACK}运输时间"
+  1800: "*  暂停  *"
+  1801: 地方政府不允许在此处建设另一个机场
+  1802: 城镇
+  1803: 工业设施
+  1804: 道路
+  1805: 铁路
+  1806: 站点
+  1807: 植被
+  1808: 飞机航线
+  1809: 船只航线
+  1810: ""
+  1811: 正在建设 {STRINGID}, 临近 {STRINGID}
+  1812: 正在建设 {STRINGID}, 临近 {STRINGID}
+  1813: 正在建设 {STRINGID}, 临近 {STRINGID}
+  1814: 检查{STRINGID}附近的服务
+  1815: 调查{STRINGID}附近的地形
+  1816: "{COLOUR RED}破产!"
+  1817: "{SMALLFONT}{COLOUR BLACK}暂停游戏"
+  1818: "{SMALLFONT}{COLOUR BLACK}正常速度"
+  1819: "{SMALLFONT}{COLOUR BLACK}较快速度"
+  1820: "{SMALLFONT}{COLOUR BLACK}极快速度"
+  1821: "{COLOUR BLACK}随机生成的地形"
+  1822: "{COLOUR WINDOW_2}开始时间: {COLOUR BLACK}{UINT16 RAW}"
+  1823: "{COLOUR WINDOW_2}竞争对手: {COLOUR BLACK}无"
+  1824: "{COLOUR WINDOW_2}竞争对手: {COLOUR BLACK}最多{INT16}"
+  1825: "{COLOUR BLACK}{MOVE_X 10}(在{INT16}月内不会建立)"
+  1826: "{COLOUR BLACK}{MOVE_X 10}(在{INT16}月内不会建立)"
+  1827: "{COLOUR WINDOW_2}载具出售价值: {COLOUR BLACK}{CURRENCY32}"
+  1828: "{COLOUR WINDOW_2}上一次收入: {COLOUR BLACK}N/A"
+  1829: "{COLOUR WINDOW_2}上一次收入时间: {COLOUR BLACK}{DATE DMY}"
+  1830: "{COLOUR BLACK}{STRINGID}已运输{INT16}格距离, 耗时{INT16}日 = {CURRENCY32}"
+  1831: "{COLOUR WINDOW_2}最早建设年份: {COLOUR BLACK}{UINT16 RAW}"
+  1832: "{COLOUR WINDOW_2}最近建设年份: {COLOUR BLACK}{UINT16 RAW}"
+  1833: "{COLOUR WINDOW_2}地方政府对运输公司的评分:"
+  1834: 恶劣
+  1835: 糟糕
+  1836: 一般
+  1837: 良好
+  1838: 极好
+  1839: "{COLOUR WINDOW_2}{STRINGID}: {COLOUR BLACK}{INT16}% ({STRINGID})"
+  1840: "公司价值达到: {CURRENCY32}{STRINGID}{STRINGID}"
+  1841: "载具月利润达到: {CURRENCY32}{STRINGID}{STRINGID}"
+  1842: "绩效指标达到: {INT16_1DP}% (“{STRINGID}”){STRINGID}{STRINGID}"
+  1843: "运输: {STRINGID}{STRINGID}{STRINGID}"
+  1844: "并成为绩效最好的公司"
+  1845: "并成为绩效前三的公司"
+  1846: "在{INT16}年内"
+  1847: "在{UINT16 RAW}年年末"
+  1848: ...并成为最好的公司
+  1849: ...并成为前三的公司
+  1850: "...在以下时限内:"
+  1851: "{COLOUR WINDOW_2}挑战目标:"
+  1852: "{COLOUR BLACK}  {STRINGID}"
+  1853: 公司价值达到某个目标
+  1854: 载具月利润达到某个目标
+  1855: 绩效指标达到某个目标
+  1856: 运输货物量达到某个目标
+  1857: "{CURRENCY32}"
+  1858: "{INT16_1DP}%"
+  1859: "{INT32}"
+  1860: "{POP16}{POP16}{POP16}{INT16} 年"
+  1861: "{SMALLFONT}(为{STRINGID}完成, 耗时{INT16}年{INT16}月)"
+  1862: "{COLOUR WINDOW_2}成功!{NEWLINE}{COLOUR BLACK}  你在{INT16}年{INT16}月内完成挑战目标"
+  1863: "{COLOUR WINDOW_2}失败!{NEWLINE}{COLOUR BLACK}  你未能完成挑战目标"
+  1864: "{COLOUR WINDOW_2}被对手击败!{NEWLINE}{COLOUR BLACK}  挑战目标已被{STRINGID}完成, 耗时{INT16}年{INT16}月"
+  1865: "{COLOUR WINDOW_2}挑战目标完成进度: {COLOUR BLACK}{INT16}%"
+  1866: "{COLOUR WINDOW_2}剩余时间: {COLOUR BLACK}{INT16} years {INT16} months"
+  1867: "{COLOUR WINDOW_2}已运抵货物:"
+  1868: "{COLOUR BLACK}无"
+
+  1869: "{OUTLINE}{COLOUR WINDOW_2}退出{NEWLINE}游戏"
+
+  1870: 公司已破产!
+  1871: 允许工业设施在游戏过程中关停
+  1872: 允许工业设施在游戏过程中开张
+  1873: 共享额外的公司所有者肖像
+  1874: "{SMALLFONT}{COLOUR BLACK}选择此选项以在连接过程中发送自定义公司所有者肖像文件至另一台计算机"
+  1875: "{COLOUR WINDOW_2}禁止竞争对手使用:"
+  1876: "{COLOUR WINDOW_2}禁止玩家使用:"
+  1877: "{NEWLINE}在此停止: {STRINGID}"
+  1878: ", {STRINGID}"
+
+  1879: "教程1: 在城镇内建立公交服务"
+  1880: "教程2: 在两座城镇间建立公交服务"
+  1881: "教程3: 在两座城镇间建立铁路服务"
+
+  # Tutorial 1
+  1882: "{SMALLFONT}{COLOUR BLACK}我们将设立公交服务以在城镇内运输乘客。第一步是选择一座城镇..."
+  1883: "{SMALLFONT}{COLOUR BLACK}按住鼠标右键并移动鼠标以滚动视角查看整个城镇..."
+  1884: "{SMALLFONT}{COLOUR BLACK}Boulders Bay是最大的城镇, 会产生最多的乘客. 使用鼠标滚轮或缩放图标放大..."
+  1885: "{SMALLFONT}{COLOUR BLACK}所有道路相关的建设都在道路建设窗口中完成..."
+  1886: "{SMALLFONT}{COLOUR BLACK}我们在此城镇中不需要为我们的公交服务建设新路, 只需建设公交车站..."
+  1887: "{SMALLFONT}{COLOUR BLACK}我们的公交服务会从城镇一边前往另一边..."
+  1888: "{SMALLFONT}{COLOUR BLACK}蓝色高亮区域为站点的覆盖区域。区域内建筑越多, 使用你的车站的乘客也越多..."
+  1889: "{SMALLFONT}{COLOUR BLACK}确认车站所在位置能够接受乘客, 否则乘客无法下车也不会付钱。检查建设窗口底部的“覆盖区域”文字..."
+  1890: "{SMALLFONT}{COLOUR BLACK}当你对选址满意后, 点击鼠标左键来建造车站..."
+  1891: "{SMALLFONT}{COLOUR BLACK}我们会在城镇另一侧建设第二个车站..."
+  1892: "{SMALLFONT}{COLOUR BLACK}现在我们需要购买一辆公交车..."
+  1893: "{SMALLFONT}{COLOUR BLACK}我们有两种公交车可选。让我们选能运载更过乘客的较新的型号..."
+  1894: "{SMALLFONT}{COLOUR BLACK}移动光标来将公交车置与道路上并点击鼠标左键以实际放置它..."
+  1895: "{SMALLFONT}{COLOUR BLACK}在我们启动公交车之前它需要先知道要去哪里。选择载具窗口中的路线明细标签..."
+  1896: "{SMALLFONT}{COLOUR BLACK}点击屏幕中的车站以设定路线..."
+  1897: "{SMALLFONT}{COLOUR BLACK}现在我们启动公交车..."
+  1898: "{SMALLFONT}{COLOUR BLACK}让我们观看它搭载的第一位乘客..."
+
+  # Tutorial 2
+  1899: "{SMALLFONT}{COLOUR BLACK}我们将会在Boulder Bay和Breakers Bridge设立公交服务来运输乘客。由于没有连接两座城镇的道路, 我们需要先建造一条道路..."
+  1900: "{SMALLFONT}{COLOUR BLACK}选择新路段的方向, 并点击屏幕以开始建设..."
+  1901: "{SMALLFONT}{COLOUR BLACK}点击'建造'图标将会建造同类型的更多路段..."
+  1902: "{SMALLFONT}{COLOUR BLACK}在继续下一步前, 这里有一个快速开始道路建设的方法..."
+  1903: "{SMALLFONT}{COLOUR BLACK}只要在你想要延伸的道路末尾点击鼠标右键..."
+  1904: "{SMALLFONT}{COLOUR BLACK}我们需要在这里左转, 所以选择一个左转弯道..."
+  1905: "{SMALLFONT}{COLOUR BLACK}然后现在重新开始建造直道..."
+  1906: "{SMALLFONT}{COLOUR BLACK}道路建造完成, 现在来建造车站..."
+  1907: "{SMALLFONT}{COLOUR BLACK}最后我们购买一辆公交车并启动它..."
+  1908: "{SMALLFONT}{COLOUR BLACK}这会是一条相当繁忙的线路, 所以我们购买第二辆公交车..."
+  1909: "{SMALLFONT}{COLOUR BLACK}为了快速将公交车1的路线复制到公交车2, 只要点击公交车1的'路线列表结束'文字..."
+
+  # Tutorial 3
+  1910: "{SMALLFONT}{COLOUR BLACK}让我们开始在最大的两座城市之间设立铁路客运服务..."
+  1911: "{SMALLFONT}{COLOUR BLACK}火车站只能在直道上建造并且需要足够长来容纳列车 - 这是我们将会建造车站的地方..."
+  1912: "{SMALLFONT}{COLOUR BLACK}现在建造车站..."
+  1913: "{SMALLFONT}{COLOUR BLACK}现在创建列车。我们需要机车来牵引列车, 以及车厢来运载乘客..."
+  1914: "{SMALLFONT}{COLOUR BLACK}由于轨道为单线, 无须设置调度指令 - 只须启动列车..."
+  1915: "{SMALLFONT}{COLOUR BLACK}让我们延伸轨道来建造一个交叉口以建造前往第三座城镇的支线。右击轨道打开轨道建设窗口, 此时已准备好建设交叉口..."
+  1916: "{SMALLFONT}{COLOUR BLACK}由于轨道布局不再简单我们需要给列车一条路线..."
+  1917: "{SMALLFONT}{COLOUR BLACK}我们可以增加第二列列车, 但是我们先要设置信号以防止列车碰撞..."
+  1918: "{SMALLFONT}{COLOUR BLACK}信号将轨道分为3个独立的'闭塞区间', 同一时刻只允许一列列车在区间中运行..."
+
+  # Options/Misc
+  1919: 在开始新游戏时使用首选所有者名称
+  1920: "{SMALLFONT}{COLOUR BLACK}选择此选项以在每次开始新游戏时使用同样的公司所有者名称"
+  1921: "{COLOUR WINDOW_2}首选所有者名称: {COLOUR BLACK}{STRINGID}"
+  1922: 首选所有者名称
+  1923: "输入首选所有者名称:"
+
+  1924: "{COLOUR BLACK}{TINYFONT}功率"
+  1925: "{COLOUR BLACK}{TINYFONT}刹车"
+  1926: "{SMALLFONT}{COLOUR BLACK}将调度指令在调度列表中上移"
+  1927: "{SMALLFONT}{COLOUR BLACK}将调度指令在调度列表中下移"
+  1928: 无法在只读介质中直接运行游戏
+
+  1929: Atari Inc. Credits...
+  1930: "{COLOUR WINDOW_2}Licensed to Atari Inc."
+  1931: Atari Inc. Credits
+
+  1932: 游戏版本不兼容 - 无法连接!
+  1933: "{SMALLFONT}{COLOUR BLACK}向另一个玩家发送一条短消息"
+  1934: 另一个玩家
+  1935: "另一个玩家已经退出游戏: 双人模式已断开"
+
+  1936: "{COLOUR YELLOW}Use of this product is subject to the terms of a license agreement{NEWLINE}found in the product's “ReadMe” file and in the manual"
+  1937: "{COLOUR YELLOW}ESRB Notice: Game experience may change during online play"
+  1938: "{COLOUR TOPAZ}Some forms of transport in this game have names that may be similar to those of real vehicles."
+  1939: "{COLOUR TOPAZ}This is a device to help players relate to the fictional universe of the game."
+  1940: "{COLOUR TOPAZ}The qualities (including speed, capacity, reliability, and cost) that have been attributed to various"
+  1941: "{COLOUR TOPAZ}vehicles are for game purposes only and are not intended to represent those of real"
+  1942: "{COLOUR TOPAZ}commercially available machines whether similarly named or not."
+
+  1943: "{COLOUR WINDOW_2}Senior Producer:  Thomas J. Zahorik"
+  1944: "{COLOUR WINDOW_2}Senior Brand Manager:  Jeff Foley"
+  1945: "{COLOUR WINDOW_2}Executive Producer:  Bob Welch"
+  1946: "{COLOUR WINDOW_2}Director of Technology:  Paul Hellier"
+  1947: "{COLOUR WINDOW_2}Director of Marketing:  Peter Matiss"
+  1948: "{COLOUR WINDOW_2}Director of Creative Services:  Steve Martin"
+  1949: "{COLOUR WINDOW_2}Graphic Designer:  Rod Tilley"
+  1950: "{COLOUR WINDOW_2}Director of Editorial & Documentation Services:  Elizabeth Mackney"
+  1951: "{COLOUR WINDOW_2}Documentation Specialist:  Kurt Carlson"
+  1952: "{COLOUR WINDOW_2}Copywriter:  Paul Collin"
+  1953: "{COLOUR WINDOW_2}Manual Writer:  David Ellis"
+  1954: "{COLOUR WINDOW_2}Director of Publishing Support:  Michael Gilmartin"
+  1955: "{COLOUR WINDOW_2}Q.A. Managers:  Bill Carroll, Dave Strang"
+  1956: "{COLOUR WINDOW_2}Q.A. Supervisor:  Jason Cordero"
+  1957: "{COLOUR WINDOW_2}I.T. Manager/Western Region:  Ken Ford"
+  1958: "{COLOUR WINDOW_2}Manager of Technical Support:  Michael Vetsch"
+  1959: "{COLOUR WINDOW_2}Lead Tester:  Marshall Clevesy"
+  1960: "{COLOUR WINDOW_2}Assistant Lead Tester:  Sean McLaren"
+  1961: "{COLOUR WINDOW_2}Testers:  Randy Alfonso, Leticia Dueñas, John Hockaday, Tony Hsu, Brandon Reed, Nessie Rilveria"
+  1962: "{COLOUR WINDOW_2}Compatibility Lab Supervisor:  Dave Strang "
+  1963: "{COLOUR WINDOW_2}Compatibility Test Lead:  Cuong Vu"
+  1964: "{COLOUR WINDOW_2}Compatibility Analysts:  Randy Buchholz, Mark Florentino, Chris McQuinn, Scotte Kramer, Patricia-Jean Cody"
+  1965: "{COLOUR WINDOW_2}Engineering Services Specialist:  Ken Edwards"
+  1966: "{COLOUR WINDOW_2}Engineering Services Technicians:  Eugene Lai, Dan Burkhead"
+  1967: "{COLOUR WINDOW_2}Special Thanks:  John Billington, Cecelia Hernandez"
+  1968: "{COLOUR WINDOW_2}"
+  1969: "{COLOUR WINDOW_2}"
+  1970: "{COLOUR WINDOW_2}"
+  1971: "{COLOUR WINDOW_2}"
+  1972: "{COLOUR WINDOW_2}"
+  1973: "{COLOUR WINDOW_2}"
+  1974: "{COLOUR WINDOW_2}"
+  1975: "{COLOUR WINDOW_2}"
+  1976: "{COLOUR WINDOW_2}"
+  1977: "{COLOUR WINDOW_2}"
+  1978: "{COLOUR WINDOW_2}"
+  1979: "{COLOUR WINDOW_2}"
+  1980: "{COLOUR WINDOW_2}"
+  1981: "{COLOUR WINDOW_2}"
+  1982: "{COLOUR WINDOW_2}"
+
+  1983: "每月运抵的货物量: 距离 x 单位"
+  1984: "{SMALLFONT}{COLOUR BLACK}各公司运抵货物距离曲线"
+  1985: "{COLOUR WINDOW_2}上次运行平均速度: {COLOUR BLACK}{VELOCITY}"
+  1986: 地面
+  1987: 空气
+  1988: 水
+  1989: 列车
+  1990: 公交车
+  1991: 货车
+  1992: 电车
+  1993: 飞机
+  1994: 船只
+  1995: "{SMALLFONT}{COLOUR BLACK}速度纪录"
+  1996: 速度纪录
+  1997: "{COLOUR WINDOW_2}地面速度纪录: {COLOUR BLACK}{VELOCITY}"
+  1998: "{COLOUR WINDOW_2}航空速度纪录: {COLOUR BLACK}{VELOCITY}"
+  1999: "{COLOUR WINDOW_2}水运速度纪录: {COLOUR BLACK}{VELOCITY}"
+  2000: "{COLOUR BLACK}由{STRINGID}获得, 时间{DATE DMY}"
+  2001: 确认显示模式变化
+  2002: "{COLOUR WINDOW_2}显示分辨率已改变为{UINT16 RAW} x {UINT16 RAW}"
+  2003: "{COLOUR WINDOW_2}_"
+  2004: "{COLOUR WINDOW_2}文件名:"
+  2005: "{COLOUR WINDOW_2}目录: {COLOUR BLACK}{STRINGID}"
+  2006: "{SMALLFONT}{COLOUR BLACK}向上一级至父目录"
+  2007: "{COLOUR WINDOW_2}公司: {COLOUR BLACK}{STRINGID}"
+  2008: "{COLOUR WINDOW_2}日期: {COLOUR BLACK}{DATE DMY}"
+  2009: "{COLOUR WINDOW_2}挑战目标进度: {COLOUR BLACK}{INT16}%"
+  2010: "{COLOUR WINDOW_2}挑战目标: {COLOUR BLACK}已完成"
+  2011: "{COLOUR WINDOW_2}挑战目标: {COLOUR BLACK}已失败"
+  2012: "是否替换已有文件: “{STRINGID}”?"
+  2013: 替换
+  2014: "是否删除文件: “{STRINGID}”?"
+  2015: 删除
+  2016: "错误: 无效的文件名"
+  2017: 工业设施名称
+  2018: "为{STRINGID}输入新名称:"
+  2019: 无法重命名工业设施...
+  2020: "{NEWLINE 0 1}{SPRITE}{SMALLFONT}{NEWLINE 45 1}最高速度: {STRINGID}{NEWLINE 45 11}高度限制: {HEIGHT}"
+  2021: 找到重复CD密钥 - 无法连接!
+  2022: "{COLOUR BLACK}{SMALLFONT}(计算机名称 = {STRINGID})"
+  2023: 第一
+  2024: 第二
+  2025: 第三
+  2026: 第四
+  2027: 第五
+  2028: 第六
+  2029: 第七
+  2030: 第八
+  2031: 第九
+  2032: 第十
+  2033: 第十一
+  2034: 第十二
+  2035: 第十三
+  2036: 第十四
+  2037: 第十五
+  2038: "{COLOUR BLACK}{INT16} 已选择 (最多 {INT16})"
+  2039: ""
+  2040: ""
+  2041: "{COLOUR BLACK}(ID: "
+  2042: "无法找到以下项目的数据: "
+  2043: 图形空间不足
+  2044: 此类项目选择过多
+  2045: "以下项目须先被选择: "
+  2046: 此项目正在使用中
+  2047: 此项目为其它项目所需
+  2048: 始终需要此项目
+  2049: 无法选择此项目
+  2050: 无法反选此项目
+  2051: 无效的项目选择
+  2052: 选择项目 - {STRINGID}
+  2053: 界面风格
+  2054: 声音
+  2055: 货币
+  2056: 动画效果
+  2057: 垂直地面
+  2058: 水面
+  2059: 地面
+  2060: 城镇名称
+  2061: 货物
+  2062: 墙
+  2063: 信号
+  2064: 平交道口
+  2065: 路灯
+  2066: 隧道
+  2067: 桥梁
+  2068: 火车站
+  2069: 轨道附加设备
+  2070: 轨道
+  2071: 道路站
+  2072: 道路附加设备
+  2073: 道路
+  2074: 机场
+  2075: 港口
+  2076: 载具
+  2077: 树
+  2078: 雪
+  2079: 气候
+  2080: 地图生成数据
+  2081: 建筑
+  2082: 脚手架
+  2083: 工业设施
+  2084: 区域
+  2085: 公司所有者
+  2086: 场景描述
+  2087: 对象列表
+  2088: "缺失对象数据, ID: "
+  2089: 使用存档导出插件对象
+  2090: "{SMALLFONT}{COLOUR BLACK}选择是否保存存档或场景所需的插件附加的对象数据(未随主产品分发的额外内容), 使得它们可以在没有附加数据的情况下载入"
+  2091: 必须选择至少一种一般双向道路
+  2092: 必须选择一种脚手架
+  2093: 高级
+  2094: "{SMALLFONT}{COLOUR BLACK}允许高级独立项目选择"
+  2095: "{COLOUR WHITE}{BIGFONT}£"
+  2096: 新项目成功安装
+  2097: 必须选择至少一种工业设施
+  2098: 必须选择至少一种城镇建筑
+  2099: 必须选择一种公司总部建筑
+  2100: 只能选择一种公司总部建筑
+  2101: 必须选择一种界面
+  2102: 必须选择至少一种载具
+  2103: 必须选择至少一种地面
+  2104: 必须选择一种货币
+  2105: 必须选择一种水面
+  2106: 必须选择一种城镇命名风格
+  2107: 必须选择至少一种平交道口
+  2108: 必须选择一种路灯
+  2109: 必须选择一种雪(即使未被使用)
+  2110: 必须选择一种气候
+  2111: 必须选择一种地图生成数据类型
+  2112: 必须选择一个区域
+  2113: 英里/小时
+  2114: 千米/小时
+  2115: "小时:"
+  2116: "小时:"
+  2117: 分钟
+  2118: "分钟:"
+  2119: 秒
+  2120: " 单位"
+  2121: 英尺
+  2122: 米
+  2123: 马力
+  2124: 千瓦
+  2125: "{COLOUR WINDOW_2}语言:"
+  2126: "{COLOUR WINDOW_2}关闭载具抛锚"
+  2127: "{COLOUR WINDOW_2}显示模式:"
+  2128: 窗口化
+  2129: 全屏
+  2130: 全屏(无缝窗口)
+  2131: 默认声音设备
+  2132: "{COLOUR WINDOW_2}窗口缩放等级:"
+  2133: "{COLOUR BLACK}+"
+  2134: "{COLOUR BLACK}-"
+  2135: "{COLOUR BLACK}{INT32_1DP}"
+  2136: "{COLOUR WINDOW_2}缩放至光标位置"
+  2137: "{SMALLFONT}{COLOUR BLACK}启用时, 会在光标周围放大, 而不是屏幕中心."
+  2138: "{COLOUR WINDOW_2}播放标题画面音乐"
+  2139: "退出"
+  2140: "退出 OpenLoco"
+  2141: "{COLOUR WINDOW_2}禁用AI公司"
+  2142: "{SMALLFONT}{COLOUR BLACK}这阻止AI'思考', 导致它们失效。{NEWLINE}在新游戏中, 这还会阻止建立新AI公司。"
+  2143: "{COLOUR WINDOW_2}自动存档数量:"
+  2144: "{COLOUR WINDOW_2}自动存档频率:"
+  2145: "永不"
+  2146: "每月"
+  2147: "每{INT32}月"
+  2148: "{COLOUR WINDOW_2}地形生成器:"
+  2149: 原版
+  2150: 改进
+  2151: "修改载具"
+  2152: "复制载具"
+  2153: "无法复制载具..."
+  2154: "在画面上定位载具"
+  2155: "在画面上跟随载具"
+  2156: "启用作弊/调试工具栏"
+  2157: "{SMALLFONT}{COLOUR BLACK}将为游戏工具栏添加一个额外按钮, 使得使用特定作弊与调试选项更容易使用."
+  2158: "启用沙盒模式"
+  2159: "允许手动驾驶"
+  2160: "允许在暂停时建造"
+  2161: "显示帧率"
+  2162: "{SMALLFONT}{COLOUR BLACK}将在屏幕顶部显示一个计数器, 表示当前帧率."
+  2163: "取消帧率限制"
+  2164: "{SMALLFONT}{COLOUR BLACK}移除渲染频率40Hz的限制。"
+  2165: "硬件"
+  2166: "地图渲染"
+  2167: "格块查看器"
+  2168: "{SMALLFONT}{COLOUR BLACK}激活后在地图上选择须检查的格块."
+  2169: "地表"
+  2170: "轨道"
+  2171: "站点"
+  2172: "信号"
+  2173: "建筑"
+  2174: "树"
+  2175: "墙"
+  2176: "道路"
+  2177: "工业设施"
+  2178: "{COLOUR WINDOW_2} {STRINGID} ({STRINGID})"
+  2179: "{COLOUR WINDOW_2} {STRINGID} - {STRINGID} ({STRINGID})"
+  2180: "X:"
+  2181: "Y:"
+  2182: "{COLOUR WINDOW_2}{INT16}"
+  2183: "格块元素数据"
+  2184: "作弊"
+  2185: "财务"
+  2186: "公司"
+  2187: "载具"
+  2188: "城镇"
+  2189: "清除贷款"
+  2190: "清除"
+  2191: "{COLOUR BLACK}{CURRENCY32}"
+  2192: "选择目标公司"
+  2193: "选择需要应用的作弊选项"
+  2194: "切换至此公司"
+  2195: "获得公司所有资产"
+  2196: "切换破产状态"
+  2197: "切换监禁状态"
+  2198: "增加款项"
+  2199: "{COLOUR WINDOW_2}数量:"
+  2200: "增加"
+  2201: "载具可靠性"
+  2202: "设置为0(无限)"
+  2203: "设置为100(全新)"
+  2204: "这是公司评分"
+  2205: "在所有地方-10%"
+  2206: "在所有地方+10%"
+  2207: "在所有地方设为最小值"
+  2208: "在所有地方设为最大值"

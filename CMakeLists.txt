@@ -3,6 +3,21 @@ cmake_policy(VERSION 3.9)
 
 set (PROJECT openloco)
 
+# Note: Searching for CCache must be before project() so project() can use CCache too
+# if it is available
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+
+find_package(CCache)
+
+if (CCache_FOUND)
+    option(OPENLOCO_USE_CCACHE "Use CCache to improve recompilation speed (optional)" ON)
+    if (OPENLOCO_USE_CCACHE)
+        # Use e.g. "ccache clang++" instead of "clang++"
+        set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCache_EXECUTABLE}")
+        set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK    "${CCache_EXECUTABLE}")
+    endif (OPENLOCO_USE_CCACHE)
+endif (CCache_FOUND)
+
 project(${PROJECT} CXX)
 
 if (APPLE)
@@ -52,8 +67,8 @@ execute_process(
 )
 
 # To avoid unnecessary rebuilds, set the current branch and short sha1 hash
-# only for the one file that uses these definitions: version.cpp
-set_property(SOURCE ${CMAKE_SOURCE_DIR}/src/openloco/version.cpp
+# only for the one file that uses these definitions: Version.cpp
+set_property(SOURCE ${CMAKE_SOURCE_DIR}/src/OpenLoco/Version.cpp
     PROPERTY COMPILE_DEFINITIONS
     OPENLOCO_VERSION_TAG="${OPENLOCO_VERSION_TAG}"
     OPENLOCO_BRANCH="${OPENLOCO_BRANCH}"
@@ -148,12 +163,9 @@ set(DEBUG_LEVEL 0 CACHE STRING "Select debug level for compilation. Use value in
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DDEBUG=${DEBUG_LEVEL}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DDEBUG=${DEBUG_LEVEL}")
 
-# include lib
-include_directories("lib/")
 # add source files
 file(GLOB_RECURSE OLOCO_SOURCES "src/*.cpp")
 file(GLOB_RECURSE OLOCO_HEADERS "src/*.h" "src/*.hpp")
-
 
 if (APPLE)
     file(GLOB_RECURSE OLOCO_MM_SOURCES "src/*.mm")
@@ -215,7 +227,7 @@ endif()
 
 # Disable optimizations for interop.cpp for all compilers, to allow optimized
 # builds without need for -fno-omit-frame-pointer
-set_source_files_properties("${CMAKE_CURRENT_SOURCE_DIR}/src/openloco/interop/interop.cpp" PROPERTIES COMPILE_FLAGS -fno-omit-frame-pointer)
+set_source_files_properties("${CMAKE_CURRENT_SOURCE_DIR}/src/OpenLoco/Interop/Interop.cpp" PROPERTIES COMPILE_FLAGS "-fno-omit-frame-pointer -O0")
 
 if (NOT CMAKE_CXX_STANDARD)
     set(CMAKE_CXX_STANDARD 17)
@@ -238,13 +250,15 @@ if (NOT MINGW)
     add_dependencies(${PROJECT} segfiles)
 endif()
 
-target_compile_definitions(${PROJECT} PRIVATE _NO_LOCO_WIN32_=1)
 if (NOT APPLE)
     target_link_libraries(${PROJECT} stdc++fs)
 endif()
 
 if (MINGW)
-    target_compile_definitions(${PROJECT} PRIVATE _WIN32_WINNT=0x0600 SDL_MAIN_HANDLED=1)
+    target_compile_definitions(${PROJECT} PRIVATE _WIN32_WINNT=0x0501 SDL_MAIN_HANDLED=1)
+    target_link_libraries(${PROJECT} imm32 winmm version)
+else ()
+    target_compile_definitions(${PROJECT} PRIVATE _NO_LOCO_WIN32_=1)
 endif()
 
 if (APPLE)
@@ -308,9 +322,16 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     set_target_properties(${PROJECT}-headers-check PROPERTIES LINKER_LANGUAGE CXX)
 	set_source_files_properties(${OLOCO_HEADERS} PROPERTIES LANGUAGE CXX)
     add_definitions("-x c++ -Wno-pragma-once-outside-header -Wno-unused-const-variable")
-	get_target_property(OPENLOCO_INCLUDE_DIRS ${PROJECT} INCLUDE_DIRECTORIES)
-	set_target_properties(${PROJECT}-headers-check PROPERTIES INCLUDE_DIRECTORIES "${OPENLOCO_INCLUDE_DIRS}")
 else ()
     # Dummy target to ease invocation
     add_custom_target(${PROJECT}-headers-check)
 endif ()
+
+install(FILES "distribution/linux/openloco.desktop" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/applications")
+install(FILES "resources/logo/icon_x16.png" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/16x16/apps" RENAME "openloco.png")
+install(FILES "resources/logo/icon_x32.png" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/32x32/apps" RENAME "openloco.png")
+install(FILES "resources/logo/icon_x64.png" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/64x64/apps" RENAME "openloco.png")
+install(FILES "resources/logo/icon_x128.png" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/128x128/apps" RENAME "openloco.png")
+install(FILES "resources/logo/icon_x256.png" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/256x256/apps" RENAME "openloco.png")
+install(FILES "resources/logo/icon_x512.png" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/512x512/apps" RENAME "openloco.png")
+install(FILES "resources/logo/icon_steam.svg" DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor/scalable/apps" RENAME "openloco.svg")

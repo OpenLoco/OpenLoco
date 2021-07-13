@@ -1243,8 +1243,8 @@ strings:
   1213: "{COLOUR WINDOW_2}{STRINGID})"
   1214: No space for more vehicle orders!
   1215: Too many orders for this vehicle!
-  1216: "- - Lokaal - -"
-  1217: "- - Express - -"
+  1216: "Lokaal"
+  1217: "Express"
   1218: "{COLOUR BLACK}- - Geen route gedefinieerd - -"
   1219: "{COLOUR BLACK}- - Einde van routelijst - -"
   1220: Stop op {STRINGID}
