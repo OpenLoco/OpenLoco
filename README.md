@@ -113,6 +113,32 @@ ln -s ../data
 OR
 cp -r ../data ./data 
 ```
+
+#### Docker for macOS
+
+Since OpenLoco does not run on 64-bits, it's not yet possible to run on the latests macOS. You could run it with docker, which can emulate 32-bit. Disclaimer: this is only for tryout perposes and far from stable.
+
+1. Install Docker Desktop
+1. Install x11
+   `brew install --cask xquartz`
+1. Install socat
+   `brew install socat`
+1. Place Locomotion gamefiles somewhere you can easily find them back. (i.e. `$SRC/gamefiles`)
+1. Build the docker image:
+   `docker build . -t openloco`
+
+##### Run the app in macOS
+
+1. Forward the unix display client:
+   `socat TCP-LISTEN:6000,reuseaddr,fork UNIX-CLIENT:\"$DISPLAY\"`
+1. Export IP adress
+   `export MAC_IP=$(ifconfig en0 | grep inet | awk '$1=="inet" {print $2}')`
+1. Add X11 authority:
+   `xhost + $MAC_IP`
+1. Open XQuartz.app (after running socat!)
+1. Run the container with
+   `docker run --rm -it -e DISPLAY=$MAC_IP:0 -v /tmp/.X11-unix:/tmp/.X11-unix -v $(pwd)/gamefiles:/openloco/gamefiles openloco`
+
 ---
 
 # 5 Licence
