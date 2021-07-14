@@ -87,8 +87,8 @@ namespace OpenLoco::GameCommands
         gc_unk_51 = 51,
         gc_unk_52 = 52,
         gc_unk_53 = 53,
-        removeCompanyHeadquarters = 54,
-        buildCompanyHeadquarters = 55,
+        buildCompanyHeadquarters = 54,
+        removeCompanyHeadquarters = 55,
         gc_unk_56 = 56,
         gc_unk_57 = 57,
         gc_unk_58 = 58,
@@ -445,31 +445,71 @@ namespace OpenLoco::GameCommands
         return doCommand(GameCommand::removeTown, regs) != FAILURE;
     }
 
-    // Remove company headquarters (or build - needs to be checked)
-    // Note: The game seems to call do_55, then do_54 in success case and returns 0x0 code
-    //       if we try to build over the existing only do_54 is called and it returns 0x80000000 (in regs.ebx)
-    inline uint32_t do_54(uint8_t bl, uint16_t ax, uint16_t cx, uint16_t di, uint16_t dx)
+    struct HeadquarterPlacementArgs
     {
-        registers regs;
+        HeadquarterPlacementArgs() = default;
+        explicit HeadquarterPlacementArgs(const registers regs)
+            : pos(regs.ax, regs.cx, regs.di)
+            , rotation(regs.bh & 0x3)
+            , type(regs.dl)
+            , buildImmediately(regs.bh & 0x80)
+        {
+        }
+
+        Map::Pos3 pos;
+        uint8_t rotation;
+        uint8_t type;
+        bool buildImmediately = false; // No scaffolding required (editor mode)
+        explicit operator registers() const
+        {
+
+            registers regs;
+            regs.ax = pos.x;
+            regs.cx = pos.y;
+            regs.di = pos.z;
+            regs.dx = type;
+            regs.bh = rotation | (buildImmediately ? 0x80 : 0);
+            return regs;
+        }
+    };
+
+    struct HeadquarterRemovalArgs
+    {
+        HeadquarterRemovalArgs() = default;
+        explicit HeadquarterRemovalArgs(const HeadquarterPlacementArgs& place)
+            : pos(place.pos)
+        {
+        }
+        explicit HeadquarterRemovalArgs(const registers regs)
+            : pos(regs.ax, regs.cx, regs.di)
+        {
+        }
+
+        Map::Pos3 pos;
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.ax = pos.x;
+            regs.cx = pos.y;
+            regs.di = pos.z;
+            return regs;
+        }
+    };
+
+    // Build company headquarters
+    inline uint32_t do_54(uint8_t bl, const HeadquarterPlacementArgs& args)
+    {
+        registers regs = registers(args);
         regs.bl = bl; // flags
-        regs.cx = cx; // x
-        regs.ax = ax; // y
-        regs.di = di; // z
-        regs.dx = dx; // company index (value 1 in testing case)
-        return doCommand(GameCommand::removeCompanyHeadquarters, regs);
+        return doCommand(GameCommand::buildCompanyHeadquarters, regs);
     }
 
-    // Build company headquarters (or remove - needs to be checked)
-    // Note: The game seems to call do_55, then do_54 in success case
-    //       if we try to build over the existing one do_55 is not called
-    inline void do_55(uint8_t bl, uint16_t ax, uint16_t cx, uint16_t di)
+    // Remove company headquarters
+    inline void do_55(uint8_t bl, const HeadquarterRemovalArgs& args)
     {
-        registers regs;
+        registers regs = registers(args);
         regs.bl = bl; // flags
-        regs.cx = cx; // x?
-        regs.ax = ax; // y?
-        regs.di = di; // z?
-        doCommand(GameCommand::buildCompanyHeadquarters, regs);
+        doCommand(GameCommand::removeCompanyHeadquarters, regs);
     }
 
     inline bool do_59(EntityId_t head)
