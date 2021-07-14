@@ -1,5 +1,7 @@
 FROM ubuntu:18.04
 
+ENV PULSE_SERVER=host.docker.internal
+
 WORKDIR /openloco
 
 RUN dpkg --add-architecture i386 && \
@@ -8,7 +10,7 @@ RUN dpkg --add-architecture i386 && \
     libmikmod-dev:i386 libfishsound1-dev:i386 libsmpeg-dev:i386 liboggz2-dev:i386 libflac-dev:i386 libfluidsynth-dev:i386 libsdl2-mixer-dev:i386 libsdl2-mixer-2.0-0:i386 \
     libsdl2-dev:i386 libsdl2-2.0-0:i386 \
     libpng16-16:i386 \
-    pulseaudio-utils alsa-utils libasound2 libasound2-plugins pulseaudio pulseaudio-utils \ 
+    pulseaudio-utils alsa-utils libasound2 libasound2-plugins pulseaudio pulseaudio-utils alsa-utils alsa-tools libasound2-plugins:i386 \ 
     pkg-config:i386 gcc-multilib g++-multilib git libsdl2-dev:i386 libsdl2-mixer-dev:i386 ninja-build libpng-dev:i386 libyaml-cpp-dev:i386 \
     clang cmake \
     pkg-config:i386 \
@@ -20,14 +22,20 @@ RUN dpkg --add-architecture i386 && \
     libsdl2-dev:i386 \
     libsdl2-mixer-dev:i386 \
     libpng-dev:i386 \
-    libyaml-cpp-dev:i386
+    libyaml-cpp-dev:i386 \
+    gdb gdbserver mesa-utils libgl1-mesa-glx
 
-COPY . /openloco
+COPY CMakeLists.txt .
+COPY cmake ./cmake
+COPY loco.exe ./loco.exe
+COPY resources ./resources
+COPY distribution/linux ./distribution/linux
+COPY src ./src
 
 WORKDIR /openloco/build
 
 RUN cmake .. -G Ninja \
-    -DCMAKE_BUILD_TYPE=release \
+    # -DCMAKE_BUILD_TYPE=release \
     -DOPENLOCO_USE_CCACHE=OFF \
     -DSDL2_DIR=/usr/lib/i386-linux-gnu/cmake/SDL2 \
     -DSDL2_MIXER_PATH=/usr/lib/i386-linux-gnu \
@@ -46,6 +54,7 @@ RUN mkdir -p $HOME/.config/OpenLoco && mkdir -p /root/.config/OpenLoco/save/ && 
     touch $HOME/.config/OpenLoco/openloco.yml && \
     echo 'loco_install_path: /openloco/gamefiles' > $HOME/.config/OpenLoco/openloco.yml && \
     chmod 777 -R $HOME/.config/OpenLoco
+RUN echo "set auto-load safe-path /" >> /root/.gdbinit
 
-ENTRYPOINT [ "/openloco/build/openloco" ]
-CMD [ "/openloco/build/openloco" ]
+ENTRYPOINT ["gdb", "-ex", "run", "/openloco/build/openloco" ]
+CMD [ "gdb", "-ex", "run", "/openloco/build/openloco" ]

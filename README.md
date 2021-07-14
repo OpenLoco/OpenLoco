@@ -123,6 +123,8 @@ Since OpenLoco does not run on 64-bits, it's not yet possible to run on the late
    `brew install --cask xquartz`
 1. Install socat
    `brew install socat`
+1. Install pulseaudio for audio passthrough
+   `brew install pulseaudio`
 1. Place Locomotion gamefiles somewhere you can easily find them back. (i.e. `$SRC/gamefiles`)
 1. Build the docker image:
    `docker build . -t openloco`
@@ -131,13 +133,12 @@ Since OpenLoco does not run on 64-bits, it's not yet possible to run on the late
 
 1. Forward the unix display client:
    `socat TCP-LISTEN:6000,reuseaddr,fork UNIX-CLIENT:\"$DISPLAY\"`
-1. Export IP adress
-   `export MAC_IP=$(ifconfig en0 | grep inet | awk '$1=="inet" {print $2}')`
-1. Add X11 authority:
-   `xhost + $MAC_IP`
-1. Open XQuartz.app (after running socat!)
+1. Start pulseaudio server: (if already running, make sure to stop the daemon which doesn't load tcp `brew service stop pulseaudio`)
+   `pulseaudio --load=module-native-protocol-tcp --exit-idle-time=-1`
 1. Run the container with
-   `docker run --rm -it -e DISPLAY=$MAC_IP:0 -v /tmp/.X11-unix:/tmp/.X11-unix -v $(pwd)/gamefiles:/openloco/gamefiles openloco`
+   `docker run --rm -it -e PULSE_SERVER=host.docker.internal -e DISPLAY=host.docker.internal:0 -v /tmp/.X11-unix:/tmp/.X11-unix -v $(pwd)/gamefiles:/openloco/gamefiles -v $HOME/.config/OpenLoco:/root/.config/OpenLoco -v ~/.config/pulse:/root/.config/pulse --cap-add=SYS_PTRACE --security-opt seccomp=unconfined openloco`
+
+Or just run the consolidated command: `sh run-mac.sh`
 
 ---
 
