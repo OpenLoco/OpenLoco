@@ -376,6 +376,7 @@ namespace OpenLoco::Ui::Windows
     namespace TownList
     {
         Window* open();
+        void reset();
     }
 
     namespace Tutorial
