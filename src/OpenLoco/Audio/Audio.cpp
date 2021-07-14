@@ -612,7 +612,7 @@ namespace OpenLoco::Audio
             volume += getVolumeForSoundId(id);
             if (pan == play_at_location)
             {
-                auto vpos = Viewport::mapFrom3d(loc, current_rotation);
+                auto vpos = Map::gameToScreen(loc, current_rotation);
                 auto viewport = findBestViewportForSound(vpos);
                 if (viewport == nullptr)
                 {

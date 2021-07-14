@@ -30,7 +30,7 @@ namespace OpenLoco::Map
     // 0x004F9296, 0x4F9298
     constexpr Pos2 offsets[4] = { { 0, 0 }, { 0, 32 }, { 32, 32 }, { 32, 0 } };
 
-    Ui::viewport_pos coordinate3dTo2d(int16_t x, int16_t y, int16_t z, int rotation);
+    Ui::viewport_pos gameToScreen(const Pos3& loc, int rotation);
 
     enum class ElementType
     {

@@ -32,7 +32,7 @@ static Pos2 _offsets[4] = {
 // 0x0046959C
 void Map::SurfaceElement::createWave(int16_t x, int16_t y, int animationIndex)
 {
-    auto coord2D = coordinate3dTo2d(x + 16, y + 16, this->water() * 16, gCurrentRotation);
+    auto coord2D = gameToScreen({ x + 16, y + 16, this->water() * 16 }, gCurrentRotation);
     auto w = WindowManager::findWindowShowing(coord2D);
     if (w == nullptr)
         return;

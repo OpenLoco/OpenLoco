@@ -2281,7 +2281,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 }
 
                 auto [loc, str] = sub_470B76(*order, i);
-                const auto pos = coordinate3dTo2d(loc.x, loc.y, loc.z, WindowManager::getCurrentRotation());
+                const auto pos = gameToScreen(loc, WindowManager::getCurrentRotation());
                 auto stringWidth = Gfx::getStringWidth(str);
                 for (auto zoom = 0; zoom < 4; ++zoom)
                 {
