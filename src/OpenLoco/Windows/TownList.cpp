@@ -596,7 +596,6 @@ namespace OpenLoco::Ui::Windows::TownList
         static WindowEventList events;
 
         constexpr string_id townSizeNames[9] = {
-            StringIds::tooltip_select_town_size,
             StringIds::town_size_1,
             StringIds::town_size_2,
             StringIds::town_size_3,
@@ -614,7 +613,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
             Common::repositionTabs(self);
 
-            self->widgets[widx::current_size].text = townSizeNames[_townSize];
+            self->widgets[widx::current_size].text = townSizeNames[_townSize - 1];
         }
 
         // 0x0049A627
@@ -706,9 +705,9 @@ namespace OpenLoco::Ui::Windows::TownList
 
             Dropdown::show(self->x + currentSizeWidget.left, self->y + currentSizeWidget.top, currentSizeWidget.width() - 2, currentSizeWidget.height(), self->getColour(WindowColour::secondary), 8, (1 << 7));
 
-            for (size_t i = 1; i < std::size(townSizeNames); ++i)
+            for (size_t i = 0; i < std::size(townSizeNames); ++i)
             {
-                Dropdown::add(i - 1, townSizeNames[i]);
+                Dropdown::add(i, townSizeNames[i]);
             }
 
             Dropdown::setHighlightedItem(_townSize - 1);
