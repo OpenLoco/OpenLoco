@@ -14,7 +14,11 @@ namespace OpenLoco::TownManager
     // 0x00496B38
     void reset()
     {
-        call(0x00496B38);
+        for (auto& town : _towns)
+        {
+            town.name = StringIds::null;
+        }
+        Ui::Windows::TownList::reset();
     }
 
     LocoFixedVector<Town> towns()

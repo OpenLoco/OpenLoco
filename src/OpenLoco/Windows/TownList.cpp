@@ -574,6 +574,15 @@ namespace OpenLoco::Ui::Windows::TownList
         return window;
     }
 
+    // 0x00496B50
+    void reset()
+    {
+        _lastSelectedBuilding = 0xFF;
+        _lastSelectedMiscBuilding = 0xFF;
+        _buildingRotation = 2;
+        _townSize = 3;
+    }
+
     namespace BuildTowns
     {
         static const Gfx::ui_size_t windowSize = { 220, 87 };
