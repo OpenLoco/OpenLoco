@@ -316,10 +316,10 @@ namespace OpenLoco::Ui::ViewportManager
 
     void invalidate(const Map::Pos2 pos, coord_t zMin, coord_t zMax, ZoomLevel zoom, int radius)
     {
-        auto axbx = Map::gameToScreen({ pos.x + 16, pos.y + 16, zMax }, currentRotation);
+        auto axbx = Map::gameToScreen(Map::Pos3(pos.x + 16, pos.y + 16, zMax), currentRotation);
         axbx.x -= radius;
         axbx.y -= radius;
-        auto dxbp = Map::gameToScreen({ pos.x + 16, pos.y + 16, zMin }, currentRotation);
+        auto dxbp = Map::gameToScreen(Map::Pos3(pos.x + 16, pos.y + 16, zMin), currentRotation);
         dxbp.x += radius;
         dxbp.y += radius;
 
