@@ -507,11 +507,10 @@ namespace OpenLoco::Ui
     void Window::viewportGetMapCoordsByCursor(int16_t* map_x, int16_t* map_y, int16_t* offset_x, int16_t* offset_y)
     {
         // Get mouse position to offset against.
-        int32_t mouse_x, mouse_y;
-        Ui::getCursorPos(mouse_x, mouse_y);
+        const auto mouse = Ui::getCursorPos();
 
         // Compute map coordinate by mouse position.
-        auto res = ViewportInteraction::getMapCoordinatesFromPos(mouse_x, mouse_y, 0);
+        auto res = ViewportInteraction::getMapCoordinatesFromPos(mouse.x, mouse.y, 0);
         auto& interaction = res.first;
         *map_x = interaction.pos.x;
         *map_y = interaction.pos.y;
@@ -522,8 +521,8 @@ namespace OpenLoco::Ui
         const auto dest = v->centre2dCoordinates({ *map_x, *map_y, base_height });
 
         // Rebase mouse position onto centre of window, and compensate for zoom level.
-        int16_t rebased_x = ((this->width >> 1) - mouse_x) * (1 << v->zoom),
-                rebased_y = ((this->height >> 1) - mouse_y) * (1 << v->zoom);
+        int16_t rebased_x = ((this->width >> 1) - mouse.x) * (1 << v->zoom),
+                rebased_y = ((this->height >> 1) - mouse.y) * (1 << v->zoom);
 
         // Compute cursor offset relative to tile.
         ViewportConfig* vc = &this->viewport_configurations[0];
@@ -612,12 +611,11 @@ namespace OpenLoco::Ui
         const auto dest = v->centre2dCoordinates({ map_x, map_y, base_height });
 
         // Get mouse position to offset against.
-        int32_t mouse_x, mouse_y;
-        Ui::getCursorPos(mouse_x, mouse_y);
+        const auto mouse = Ui::getCursorPos();
 
         // Rebase mouse position onto centre of window, and compensate for zoom level.
-        int16_t rebased_x = ((this->width >> 1) - mouse_x) * (1 << v->zoom),
-                rebased_y = ((this->height >> 1) - mouse_y) * (1 << v->zoom);
+        int16_t rebased_x = ((this->width >> 1) - mouse.x) * (1 << v->zoom),
+                rebased_y = ((this->height >> 1) - mouse.y) * (1 << v->zoom);
 
         // Apply offset to the viewport.
         ViewportConfig* vc = &this->viewport_configurations[0];

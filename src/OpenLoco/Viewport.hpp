@@ -144,7 +144,7 @@ namespace OpenLoco::Ui
         }
 
         void render(Gfx::Context* context);
-        viewport_pos centre2dCoordinates(const Pos3& loc);
+        viewport_pos centre2dCoordinates(const Map::Pos3& loc);
         SavedViewSimple toSavedView() const;
 
         viewport_pos getCentre() const;
