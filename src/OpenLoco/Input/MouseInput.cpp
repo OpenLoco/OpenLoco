@@ -2,6 +2,7 @@
 #include "../CompanyManager.h"
 #include "../Console.h"
 #include "../Entities/EntityManager.h"
+#include "../GameCommands/GameCommands.h"
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/StringIds.h"
@@ -648,11 +649,13 @@ namespace OpenLoco::Input
     // 0x004BB116 TODO: Move to a better file
     static void treeInteract(Map::TreeElement* tree, const Map::Pos2 pos)
     {
-        registers regs{};
-        regs.edx = reinterpret_cast<uint32_t>(tree);
-        regs.ax = pos.x;
-        regs.cx = pos.y;
-        call(0x004BB116, regs);
+        GameCommands::setErrorTitle(StringIds::error_cant_remove_this);
+        GameCommands::TreeRemovalArgs args;
+        args.pos = pos;
+        args.baseZ = tree->baseZ();
+        args.elementType = tree->rawData()[0];
+        args.type = tree->treeObjectId();
+        GameCommands::do_22(GameCommands::Flags::apply, args);
     }
 
     // 0x0042D9BF TODO: Move to a better file
@@ -678,11 +681,11 @@ namespace OpenLoco::Input
     // 0x0042F007 TODO: Move to a better file
     static void headquarterInteract(Map::BuildingElement* building, const Map::Pos2 pos)
     {
-        registers regs{};
-        regs.edx = reinterpret_cast<uint32_t>(building);
-        regs.ax = pos.x;
-        regs.cx = pos.y;
-        call(0x0042F007, regs);
+        GameCommands::setErrorTitle(StringIds::error_cant_remove_this);
+        GameCommands::HeadquarterRemovalArgs args;
+        Pos2 firstTile = pos - Map::offsets[building->multiTileIndex()];
+        args.pos = Pos3(firstTile.x, firstTile.y, building->baseZ() * 4);
+        GameCommands::do_55(GameCommands::Flags::apply, args);
     }
 
     // 0x004C74BB

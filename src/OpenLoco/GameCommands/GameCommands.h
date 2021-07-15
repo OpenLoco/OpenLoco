@@ -284,6 +284,41 @@ namespace OpenLoco::GameCommands
         doCommand(GameCommand::loadSaveQuitGame, regs);
     }
 
+    struct TreeRemovalArgs
+    {
+        TreeRemovalArgs() = default;
+        explicit TreeRemovalArgs(const registers regs)
+            : pos(regs.ax, regs.cx)
+            , baseZ(regs.dl)
+            , type(regs.dh)
+            , elementType(regs.bh)
+        {
+        }
+
+        Map::Pos2 pos;
+        uint8_t baseZ;
+        uint8_t type;
+        uint8_t elementType;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.ax = pos.x;
+            regs.cx = pos.y;
+            regs.dl = baseZ;
+            regs.dh = type;
+            regs.bh = elementType;
+            return regs;
+        }
+    };
+
+    inline void do_22(uint8_t flags, const TreeRemovalArgs& args)
+    {
+        registers regs = registers(args);
+        regs.bl = flags;
+        doCommand(GameCommand::removeTree, regs);
+    }
+
     // Change Land Material
     inline void do_24(Map::Pos2 pointA, Map::Pos2 pointB, uint8_t landType, uint8_t flags)
     {
