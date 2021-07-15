@@ -139,6 +139,8 @@ namespace OpenLoco::StringIds
     constexpr string_id build_this = 137;
     constexpr string_id build_cost = 138;
 
+    constexpr string_id cant_remove_signal = 141;
+
     constexpr string_id menu_underground_view = 145;
     constexpr string_id menu_hide_foreground_tracks_roads = 146;
 

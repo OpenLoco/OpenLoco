@@ -593,13 +593,44 @@ namespace OpenLoco::Input
     // 0x004A5AA1 TODO: Move to a better file
     static void signalInteract(Window* main, Map::SignalElement* signal, const uint8_t bh, const Map::Pos2 pos)
     {
-        registers regs{};
-        regs.esi = reinterpret_cast<uint32_t>(main);
-        regs.edx = reinterpret_cast<uint32_t>(signal);
-        regs.bh = bh;
-        regs.ax = pos.x;
-        regs.cx = pos.y;
-        call(0x004A5AA1, regs);
+        auto* track = reinterpret_cast<Map::TileElement*>(signal - 1)->asTrack();
+        if (track == nullptr)
+        {
+            return;
+        }
+
+        uint16_t unkFlags = 1 << 15;
+        if (bh != 0)
+        {
+            unkFlags = 1 << 14;
+        }
+        if (!Input::isToolActive(WindowType::construction, 11 /* Ui::Windows::Construction::Signal::widx::signal_direction */))
+        {
+            if (signal->hasLeftSignal() && signal->hasRightSignal())
+            {
+                unkFlags = (1 << 15) | (1 << 14);
+            }
+        }
+
+        GameCommands::SignalRemovalArgs args;
+        args.pos = { pos.x, pos.y, track->baseZ() * 4 };
+        args.rotation = track->unkDirection();
+        args.trackId = track->trackId();
+        args.index = track->sequenceIndex();
+        args.type = track->trackObjectId();
+        args.flags = unkFlags;
+
+        auto* window = WindowManager::find(WindowType::construction);
+        if (window != nullptr)
+        {
+            Ui::Windows::Construction::sub_49FEC7();
+        }
+
+        GameCommands::setErrorTitle(StringIds::cant_remove_signal);
+        if (GameCommands::do_14(GameCommands::Flags::apply, args))
+        {
+            Audio::playSound(Audio::SoundId::demolish, GameCommands::getPosition());
+        }
     }
 
     // 0x004A5B66 TODO: Move to a better file
@@ -613,7 +644,7 @@ namespace OpenLoco::Input
 
         GameCommands::setErrorTitle(StringIds::cant_remove_station);
         GameCommands::TrackStationRemovalArgs args;
-        args.pos = { pos.x, pos.y, station->baseZ() * 4 };
+        args.pos = { pos.x, pos.y, track->baseZ() * 4 };
         args.rotation = track->unkDirection();
         args.trackId = track->trackId();
         args.index = track->sequenceIndex();
@@ -635,7 +666,7 @@ namespace OpenLoco::Input
 
         GameCommands::setErrorTitle(StringIds::cant_remove_station);
         GameCommands::RoadStationRemovalArgs args;
-        args.pos = { pos.x, pos.y, station->baseZ() * 4 };
+        args.pos = { pos.x, pos.y, road->baseZ() * 4 };
         args.rotation = road->unkDirection();
         args.roadId = road->roadId();
         args.index = road->sequenceIndex();

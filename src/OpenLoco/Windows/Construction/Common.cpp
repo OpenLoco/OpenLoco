@@ -362,6 +362,13 @@ namespace OpenLoco::Ui::Windows::Construction
         return window->current_tab == Common::widx::tab_station - Common::widx::tab_construction;
     }
 
+    // 0x0049FEC7
+    void sub_49FEC7()
+    {
+        registers regs;
+        call(0x0049FEC7, regs);
+    }
+
     namespace Common
     {
         struct TabInformation
@@ -411,7 +418,7 @@ namespace OpenLoco::Ui::Windows::Construction
                 Construction::activateSelectedConstructionWidgets();
             }
 
-            Common::sub_49FEC7();
+            sub_49FEC7();
             TileManager::mapInvalidateMapSelectionTiles();
             Input::resetMapSelectionFlag(Input::MapSelectionFlags::enableConstruct);
             _trackCost = 0x80000000;
@@ -689,13 +696,6 @@ namespace OpenLoco::Ui::Windows::Construction
                 self->widgets[i].right = xPos + tabWidth;
                 xPos = self->widgets[i].right + 1;
             }
-        }
-
-        // 0x0049FEC7
-        void sub_49FEC7()
-        {
-            registers regs;
-            call(0x0049FEC7, regs);
         }
 
         // 0x0049DD14
@@ -1154,7 +1154,7 @@ namespace OpenLoco::Ui::Windows::Construction
         // 0x004A3A50
         void sub_4A3A50()
         {
-            Common::sub_49FEC7();
+            sub_49FEC7();
             setTrackOptions(_trackType);
             refreshStationList(_stationList, _trackType, TransportMode::road);
 
@@ -1250,7 +1250,7 @@ namespace OpenLoco::Ui::Windows::Construction
                 if (_constructionHover == 1)
                 {
                     self->callOnMouseUp(Construction::widx::rotate_90);
-                    Common::sub_49FEC7();
+                    sub_49FEC7();
                 }
                 break;
 
