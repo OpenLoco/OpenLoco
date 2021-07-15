@@ -66,7 +66,7 @@ namespace OpenLoco::GameCommands
         changeCompanyName = 30,
         changeCompanyOwnerName = 31,
         gc_unk_32 = 32,
-        gc_unk_33 = 33,
+        removeWall = 33,
         gc_unk_34 = 34,
         vehicleOrderInsert = 35,
         vehicleOrderDelete = 36,
@@ -78,7 +78,7 @@ namespace OpenLoco::GameCommands
         gc_unk_42 = 42,
         gc_unk_43 = 43,
         gc_unk_44 = 44,
-        gc_unk_45 = 45,
+        removeBuilding = 45,
         renameTown = 46,
         createIndustry = 47,
         removeIndustry = 48,
@@ -421,6 +421,38 @@ namespace OpenLoco::GameCommands
         return doCommand(GameCommand::changeCompanyOwnerName, regs) != FAILURE;
     }
 
+    struct WallRemovalArgs
+    {
+        WallRemovalArgs() = default;
+        explicit WallRemovalArgs(const registers regs)
+            : pos(regs.ax, regs.cx)
+            , baseZ(regs.dh)
+            , rotation(regs.dl)
+        {
+        }
+
+        Map::Pos2 pos;
+        uint8_t baseZ;
+        uint8_t rotation;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.ax = pos.x;
+            regs.cx = pos.y;
+            regs.dh = baseZ;
+            regs.dl = rotation;
+            return regs;
+        }
+    };
+
+    inline void do_33(uint8_t flags, const WallRemovalArgs& args)
+    {
+        registers regs = registers(args);
+        regs.bl = flags;
+        doCommand(GameCommand::removeWall, regs);
+    }
+
     inline bool do_35(EntityId_t head, uint64_t rawOrder, uint32_t orderOffset)
     {
         registers regs;
@@ -447,6 +479,33 @@ namespace OpenLoco::GameCommands
         regs.bl = Flags::apply;
         regs.di = head;
         return doCommand(GameCommand::vehicleOrderSkip, regs);
+    }
+
+    struct BuildingRemovalArgs
+    {
+        BuildingRemovalArgs() = default;
+        explicit BuildingRemovalArgs(const registers regs)
+            : pos(regs.ax, regs.cx, regs.di)
+        {
+        }
+
+        Map::Pos3 pos;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.ax = pos.x;
+            regs.cx = pos.y;
+            regs.di = pos.z;
+            return regs;
+        }
+    };
+
+    inline void do_45(uint8_t flags, const BuildingRemovalArgs& args)
+    {
+        registers regs = registers(args);
+        regs.bl = flags;
+        doCommand(GameCommand::removeBuilding, regs);
     }
 
     // Rename town

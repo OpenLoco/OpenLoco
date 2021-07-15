@@ -236,7 +236,8 @@ namespace OpenLoco::Map
         uint8_t _7;
 
     public:
-        uint8_t wallObjectId() const { return _4; } // _4
+        uint8_t wallObjectId() const { return _4; }      // _4
+        uint8_t rotation() const { return _type & 0x3; } // _0
     };
 
     struct TrackElement : public TileElementBase

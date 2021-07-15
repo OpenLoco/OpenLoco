@@ -661,21 +661,22 @@ namespace OpenLoco::Input
     // 0x0042D9BF TODO: Move to a better file
     static void buildingInteract(Map::BuildingElement* building, const Map::Pos2 pos)
     {
-        registers regs{};
-        regs.edx = reinterpret_cast<uint32_t>(building);
-        regs.ax = pos.x;
-        regs.cx = pos.y;
-        call(0x0042D9BF, regs);
+        GameCommands::setErrorTitle(StringIds::error_cant_remove_this);
+        GameCommands::BuildingRemovalArgs args;
+        Pos2 firstTile = pos - Map::offsets[building->multiTileIndex()];
+        args.pos = Pos3(firstTile.x, firstTile.y, building->baseZ() * 4);
+        GameCommands::do_45(GameCommands::Flags::apply, args);
     }
 
     // 0x004C4809 TODO: Move to a better file
     static void wallInteract(Map::WallElement* wall, const Map::Pos2 pos)
     {
-        registers regs{};
-        regs.edx = reinterpret_cast<uint32_t>(wall);
-        regs.ax = pos.x;
-        regs.cx = pos.y;
-        call(0x004C4809, regs);
+        GameCommands::setErrorTitle(StringIds::error_cant_remove_this);
+        GameCommands::WallRemovalArgs args;
+        args.pos = pos;
+        args.rotation = wall->rotation();
+        args.baseZ = wall->baseZ();
+        GameCommands::do_33(GameCommands::Flags::apply, args);
     }
 
     // 0x0042F007 TODO: Move to a better file
