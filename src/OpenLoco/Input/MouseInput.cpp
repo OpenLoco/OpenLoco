@@ -627,6 +627,11 @@ namespace OpenLoco::Input
     // 0x004A5C58 TODO: Move to a better file
     static void airportInteract(Window* main, Map::StationElement* station, const Map::Pos2 pos)
     {
+        if (!Ui::Windows::Construction::isStationTabOpen())
+        {
+            Ui::Windows::Construction::openWithFlags(1ULL << 31);
+            return;
+        }
         registers regs{};
         regs.esi = reinterpret_cast<uint32_t>(main);
         regs.edx = reinterpret_cast<uint32_t>(station);
