@@ -632,23 +632,31 @@ namespace OpenLoco::Input
             Ui::Windows::Construction::openWithFlags(1ULL << 31);
             return;
         }
-        registers regs{};
-        regs.esi = reinterpret_cast<uint32_t>(main);
-        regs.edx = reinterpret_cast<uint32_t>(station);
-        regs.ax = pos.x;
-        regs.cx = pos.y;
-        call(0x004A5C58, regs);
+        GameCommands::setErrorTitle(StringIds::cant_remove_airport);
+        GameCommands::AirportRemovalArgs args;
+        args.pos = { pos.x, pos.y, station->baseZ() * 4 };
+        if (GameCommands::do_57(GameCommands::Flags::apply, args))
+        {
+            Audio::playSound(Audio::SoundId::demolish, GameCommands::getPosition());
+        }
     }
 
     // 0x004A5CC5 TODO: Move to a better file
     static void dockInteract(Window* main, Map::StationElement* station, const Map::Pos2 pos)
     {
-        registers regs{};
-        regs.esi = reinterpret_cast<uint32_t>(main);
-        regs.edx = reinterpret_cast<uint32_t>(station);
-        regs.ax = pos.x;
-        regs.cx = pos.y;
-        call(0x004A5CC5, regs);
+        if (!Ui::Windows::Construction::isStationTabOpen())
+        {
+            Ui::Windows::Construction::openWithFlags(1ULL << 30);
+            return;
+        }
+        GameCommands::setErrorTitle(StringIds::cant_remove_ship_port);
+        GameCommands::PortRemovalArgs args;
+        Pos2 firstTile = pos - Map::offsets[station->multiTileIndex()];
+        args.pos = Pos3(firstTile.x, firstTile.y, station->baseZ() * 4);
+        if (GameCommands::do_61(GameCommands::Flags::apply, args))
+        {
+            Audio::playSound(Audio::SoundId::demolish, GameCommands::getPosition());
+        }
     }
 
     // 0x004BB116 TODO: Move to a better file

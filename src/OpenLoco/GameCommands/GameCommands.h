@@ -90,11 +90,11 @@ namespace OpenLoco::GameCommands
         buildCompanyHeadquarters = 54,
         removeCompanyHeadquarters = 55,
         gc_unk_56 = 56,
-        gc_unk_57 = 57,
+        removeAirport = 57,
         gc_unk_58 = 58,
         vehicleAbortPickupAir = 59,
         gc_unk_60 = 60,
-        gc_unk_61 = 61,
+        removePort = 61,
         gc_unk_62 = 62,
         vehicleAbortPickupWater = 63,
         vehicleRefit = 64,
@@ -606,12 +606,66 @@ namespace OpenLoco::GameCommands
         doCommand(GameCommand::removeCompanyHeadquarters, regs);
     }
 
+    struct AirportRemovalArgs
+    {
+        AirportRemovalArgs() = default;
+        explicit AirportRemovalArgs(const registers regs)
+            : pos(regs.ax, regs.cx, regs.di)
+        {
+        }
+
+        Map::Pos3 pos;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.ax = pos.x;
+            regs.cx = pos.y;
+            regs.di = pos.z;
+            return regs;
+        }
+    };
+
+    inline bool do_57(uint8_t flags, const AirportRemovalArgs& args)
+    {
+        registers regs = registers(args);
+        regs.bl = flags;
+        return doCommand(GameCommand::removeAirport, regs) != FAILURE;
+    }
+
     inline bool do_59(EntityId_t head)
     {
         registers regs;
         regs.bl = Flags::apply | Flags::flag_3 | Flags::flag_6;
         regs.di = head;
         return doCommand(GameCommand::vehicleAbortPickupAir, regs) != FAILURE;
+    }
+
+    struct PortRemovalArgs
+    {
+        PortRemovalArgs() = default;
+        explicit PortRemovalArgs(const registers regs)
+            : pos(regs.ax, regs.cx, regs.di)
+        {
+        }
+
+        Map::Pos3 pos;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.ax = pos.x;
+            regs.cx = pos.y;
+            regs.di = pos.z;
+            return regs;
+        }
+    };
+
+    inline bool do_61(uint8_t flags, const PortRemovalArgs& args)
+    {
+        registers regs = registers(args);
+        regs.bl = flags;
+        return doCommand(GameCommand::removePort, regs) != FAILURE;
     }
 
     inline bool do_63(EntityId_t head)
