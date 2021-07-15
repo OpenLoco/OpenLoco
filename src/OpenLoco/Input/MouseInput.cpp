@@ -605,23 +605,45 @@ namespace OpenLoco::Input
     // 0x004A5B66 TODO: Move to a better file
     static void trackStationInteract(Window* main, Map::StationElement* station, const Map::Pos2 pos)
     {
-        registers regs{};
-        regs.esi = reinterpret_cast<uint32_t>(main);
-        regs.edx = reinterpret_cast<uint32_t>(station);
-        regs.ax = pos.x;
-        regs.cx = pos.y;
-        call(0x004A5B66, regs);
+        auto* track = reinterpret_cast<Map::TileElement*>(station - 1)->asTrack();
+        if (track == nullptr)
+        {
+            return;
+        }
+
+        GameCommands::setErrorTitle(StringIds::cant_remove_station);
+        GameCommands::TrackStationRemovalArgs args;
+        args.pos = { pos.x, pos.y, station->baseZ() * 4 };
+        args.rotation = track->unkDirection();
+        args.trackId = track->trackId();
+        args.index = track->sequenceIndex();
+        args.type = track->trackObjectId();
+        if (GameCommands::do_16(GameCommands::Flags::apply, args))
+        {
+            Audio::playSound(Audio::SoundId::demolish, GameCommands::getPosition());
+        }
     }
 
     // 0x004A5BDF TODO: Move to a better file
     static void roadStationInteract(Window* main, Map::StationElement* station, const Map::Pos2 pos)
     {
-        registers regs{};
-        regs.esi = reinterpret_cast<uint32_t>(main);
-        regs.edx = reinterpret_cast<uint32_t>(station);
-        regs.ax = pos.x;
-        regs.cx = pos.y;
-        call(0x004A5BDF, regs);
+        auto* road = reinterpret_cast<Map::TileElement*>(station - 1)->asRoad();
+        if (road == nullptr)
+        {
+            return;
+        }
+
+        GameCommands::setErrorTitle(StringIds::cant_remove_station);
+        GameCommands::RoadStationRemovalArgs args;
+        args.pos = { pos.x, pos.y, station->baseZ() * 4 };
+        args.rotation = road->unkDirection();
+        args.roadId = road->roadId();
+        args.index = road->sequenceIndex();
+        args.type = road->roadObjectId();
+        if (GameCommands::do_43(GameCommands::Flags::apply, args))
+        {
+            Audio::playSound(Audio::SoundId::demolish, GameCommands::getPosition());
+        }
     }
 
     // 0x004A5C58 TODO: Move to a better file
