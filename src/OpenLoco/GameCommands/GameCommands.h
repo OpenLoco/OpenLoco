@@ -55,7 +55,7 @@ namespace OpenLoco::GameCommands
         changeCompanyColourScheme = 19,
         pauseGame = 20,
         loadSaveQuitGame = 21,
-        gc_unk_22 = 22,
+        removeTree = 22,
         gc_unk_23 = 23,
         changeLandMaterial = 24,
         raiseLand = 25,

@@ -68,7 +68,7 @@ namespace OpenLoco::GameCommands
         { GameCommand::changeCompanyColourScheme,    changeCompanyColour,       0x0043483D, false },
         { GameCommand::pauseGame,                    togglePause,               0x00431E32, false },
         { GameCommand::loadSaveQuitGame,             loadSaveQuit,              0x0043BFCB, false },
-        { GameCommand::gc_unk_22,                    nullptr,                   0x004BB392, true  },
+        { GameCommand::removeTree,                   nullptr,                   0x004BB392, true  },
         { GameCommand::gc_unk_23,                    nullptr,                   0x004BB138, true  },
         { GameCommand::changeLandMaterial,           nullptr,                   0x00468EDD, true  },
         { GameCommand::raiseLand,                    nullptr,                   0x00463702, true  },

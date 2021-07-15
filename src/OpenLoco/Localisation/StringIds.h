@@ -370,7 +370,7 @@ namespace OpenLoco::StringIds
 
     constexpr string_id dropdown_without_checkmark = 443;
     constexpr string_id dropdown_with_checkmark = 444;
-
+    constexpr string_id error_cant_remove_this = 445;
     constexpr string_id title_build_walls = 446;
     constexpr string_id title_plant_trees = 447;
 
