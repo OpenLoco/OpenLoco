@@ -591,7 +591,7 @@ namespace OpenLoco::Input
     }
 
     // 0x004A5AA1 TODO: Move to a better file
-    static void signalInteract(Window* main, Map::SignalElement* signal, const uint8_t bh, const Map::Pos2 pos)
+    static void signalInteract(Map::SignalElement* signal, const bool isLeftSignal, const Map::Pos2 pos)
     {
         auto* track = reinterpret_cast<Map::TileElement*>(signal - 1)->asTrack();
         if (track == nullptr)
@@ -599,21 +599,21 @@ namespace OpenLoco::Input
             return;
         }
 
-        uint16_t unkFlags = 1 << 15;
-        if (bh != 0)
+        uint16_t unkFlags = 1 << 15; // right
+        if (isLeftSignal)
         {
-            unkFlags = 1 << 14;
+            unkFlags = 1 << 14; // left
         }
         if (!Input::isToolActive(WindowType::construction, 11 /* Ui::Windows::Construction::Signal::widx::signal_direction */))
         {
             if (signal->hasLeftSignal() && signal->hasRightSignal())
             {
-                unkFlags = (1 << 15) | (1 << 14);
+                unkFlags = (1 << 15) | (1 << 14); // both
             }
         }
 
         GameCommands::SignalRemovalArgs args;
-        args.pos = { pos.x, pos.y, track->baseZ() * 4 };
+        args.pos = Pos3(pos.x, pos.y, track->baseZ() * 4);
         args.rotation = track->unkDirection();
         args.trackId = track->trackId();
         args.index = track->sequenceIndex();
@@ -634,7 +634,7 @@ namespace OpenLoco::Input
     }
 
     // 0x004A5B66 TODO: Move to a better file
-    static void trackStationInteract(Window* main, Map::StationElement* station, const Map::Pos2 pos)
+    static void trackStationInteract(Map::StationElement* station, const Map::Pos2 pos)
     {
         auto* track = reinterpret_cast<Map::TileElement*>(station - 1)->asTrack();
         if (track == nullptr)
@@ -644,7 +644,7 @@ namespace OpenLoco::Input
 
         GameCommands::setErrorTitle(StringIds::cant_remove_station);
         GameCommands::TrackStationRemovalArgs args;
-        args.pos = { pos.x, pos.y, track->baseZ() * 4 };
+        args.pos = Pos3(pos.x, pos.y, track->baseZ() * 4);
         args.rotation = track->unkDirection();
         args.trackId = track->trackId();
         args.index = track->sequenceIndex();
@@ -656,7 +656,7 @@ namespace OpenLoco::Input
     }
 
     // 0x004A5BDF TODO: Move to a better file
-    static void roadStationInteract(Window* main, Map::StationElement* station, const Map::Pos2 pos)
+    static void roadStationInteract(Map::StationElement* station, const Map::Pos2 pos)
     {
         auto* road = reinterpret_cast<Map::TileElement*>(station - 1)->asRoad();
         if (road == nullptr)
@@ -666,7 +666,7 @@ namespace OpenLoco::Input
 
         GameCommands::setErrorTitle(StringIds::cant_remove_station);
         GameCommands::RoadStationRemovalArgs args;
-        args.pos = { pos.x, pos.y, road->baseZ() * 4 };
+        args.pos = Pos3(pos.x, pos.y, road->baseZ() * 4);
         args.rotation = road->unkDirection();
         args.roadId = road->roadId();
         args.index = road->sequenceIndex();
@@ -678,7 +678,7 @@ namespace OpenLoco::Input
     }
 
     // 0x004A5C58 TODO: Move to a better file
-    static void airportInteract(Window* main, Map::StationElement* station, const Map::Pos2 pos)
+    static void airportInteract(Map::StationElement* station, const Map::Pos2 pos)
     {
         if (!Ui::Windows::Construction::isStationTabOpen())
         {
@@ -687,7 +687,7 @@ namespace OpenLoco::Input
         }
         GameCommands::setErrorTitle(StringIds::cant_remove_airport);
         GameCommands::AirportRemovalArgs args;
-        args.pos = { pos.x, pos.y, station->baseZ() * 4 };
+        args.pos = Pos3(pos.x, pos.y, station->baseZ() * 4);
         if (GameCommands::do_57(GameCommands::Flags::apply, args))
         {
             Audio::playSound(Audio::SoundId::demolish, GameCommands::getPosition());
@@ -695,7 +695,7 @@ namespace OpenLoco::Input
     }
 
     // 0x004A5CC5 TODO: Move to a better file
-    static void dockInteract(Window* main, Map::StationElement* station, const Map::Pos2 pos)
+    static void dockInteract(Map::StationElement* station, const Map::Pos2 pos)
     {
         if (!Ui::Windows::Construction::isStationTabOpen())
         {
@@ -717,8 +717,7 @@ namespace OpenLoco::Input
     {
         GameCommands::setErrorTitle(StringIds::error_cant_remove_this);
         GameCommands::TreeRemovalArgs args;
-        args.pos = pos;
-        args.baseZ = tree->baseZ();
+        args.pos = Pos3(pos.x, pos.y, tree->baseZ() * 4);
         args.elementType = tree->rawData()[0];
         args.type = tree->treeObjectId();
         GameCommands::do_22(GameCommands::Flags::apply, args);
@@ -739,9 +738,8 @@ namespace OpenLoco::Input
     {
         GameCommands::setErrorTitle(StringIds::error_cant_remove_this);
         GameCommands::WallRemovalArgs args;
-        args.pos = pos;
+        args.pos = Pos3(pos.x, pos.y, wall->baseZ() * 4);
         args.rotation = wall->rotation();
-        args.baseZ = wall->baseZ();
         GameCommands::do_33(GameCommands::Flags::apply, args);
     }
 
@@ -921,7 +919,7 @@ namespace OpenLoco::Input
                         auto signal = ((Map::TileElement*)interaction.object)->asSignal();
                         if (signal != nullptr)
                         {
-                            signalInteract(window, signal, interaction.unkBh, interaction.pos);
+                            signalInteract(signal, interaction.unkBh != 0, interaction.pos);
                         }
                         break;
                     }
@@ -930,7 +928,7 @@ namespace OpenLoco::Input
                         auto station = ((Map::TileElement*)interaction.object)->asStation();
                         if (station != nullptr)
                         {
-                            trackStationInteract(window, station, interaction.pos);
+                            trackStationInteract(station, interaction.pos);
                         }
                         break;
                     }
@@ -939,7 +937,7 @@ namespace OpenLoco::Input
                         auto station = ((Map::TileElement*)interaction.object)->asStation();
                         if (station != nullptr)
                         {
-                            roadStationInteract(window, station, interaction.pos);
+                            roadStationInteract(station, interaction.pos);
                         }
                         break;
                     }
@@ -948,7 +946,7 @@ namespace OpenLoco::Input
                         auto station = ((Map::TileElement*)interaction.object)->asStation();
                         if (station != nullptr)
                         {
-                            airportInteract(window, station, interaction.pos);
+                            airportInteract(station, interaction.pos);
                         }
                         break;
                     }
@@ -957,7 +955,7 @@ namespace OpenLoco::Input
                         auto station = ((Map::TileElement*)interaction.object)->asStation();
                         if (station != nullptr)
                         {
-                            dockInteract(window, station, interaction.pos);
+                            dockInteract(station, interaction.pos);
                         }
                         break;
                     }

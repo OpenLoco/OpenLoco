@@ -368,15 +368,13 @@ namespace OpenLoco::GameCommands
     {
         TreeRemovalArgs() = default;
         explicit TreeRemovalArgs(const registers regs)
-            : pos(regs.ax, regs.cx)
-            , baseZ(regs.dl)
+            : pos(regs.ax, regs.cx, regs.dl * 4)
             , type(regs.dh)
             , elementType(regs.bh)
         {
         }
 
-        Map::Pos2 pos;
-        uint8_t baseZ;
+        Map::Pos3 pos;
         uint8_t type;
         uint8_t elementType;
 
@@ -385,7 +383,7 @@ namespace OpenLoco::GameCommands
             registers regs;
             regs.ax = pos.x;
             regs.cx = pos.y;
-            regs.dl = baseZ;
+            regs.dl = pos.z / 4;
             regs.dh = type;
             regs.bh = elementType;
             return regs;
@@ -505,14 +503,12 @@ namespace OpenLoco::GameCommands
     {
         WallRemovalArgs() = default;
         explicit WallRemovalArgs(const registers regs)
-            : pos(regs.ax, regs.cx)
-            , baseZ(regs.dh)
+            : pos(regs.ax, regs.cx, regs.dh * 4)
             , rotation(regs.dl)
         {
         }
 
-        Map::Pos2 pos;
-        uint8_t baseZ;
+        Map::Pos3 pos;
         uint8_t rotation;
 
         explicit operator registers() const
@@ -520,7 +516,7 @@ namespace OpenLoco::GameCommands
             registers regs;
             regs.ax = pos.x;
             regs.cx = pos.y;
-            regs.dh = baseZ;
+            regs.dh = pos.z / 4;
             regs.dl = rotation;
             return regs;
         }
