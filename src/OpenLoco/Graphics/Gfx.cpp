@@ -301,12 +301,17 @@ namespace OpenLoco::Gfx
                 case ControlCodes::window_colour_1:
                 case ControlCodes::window_colour_2:
                 case ControlCodes::window_colour_3:
-                case 0x10:
+                case ControlCodes::window_colour_4:
                     break;
 
                 case ControlCodes::inline_sprite_str:
                     curString.push_back(*++chr);
                     curString.push_back(*++chr);
+                    curString.push_back(*++chr);
+                    curString.push_back(*++chr);
+                    break;
+
+                case ControlCodes::newline_x_y:
                     curString.push_back(*++chr);
                     curString.push_back(*++chr);
                     break;
