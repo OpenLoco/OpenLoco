@@ -258,12 +258,91 @@ namespace OpenLoco::Gfx
     // 0x004957C4
     int16_t clipString(int16_t width, char* string)
     {
+        if (width < 6)
+        {
+            *string = '\0';
+            return 0;
+        }
 
-        registers regs;
-        regs.di = width;
-        regs.esi = (int32_t)string;
-        call(0x004957C4, regs);
-        return regs.cx;
+        // If width of the full string is less than allowed width then we don't need to clip
+        auto clippedWidth = getStringWidth(string);
+        if (clippedWidth <= width)
+        {
+            return clippedWidth;
+        }
+
+        // Append each character 1 by 1 with an ellipsis on the end until width is exceeded
+        std::string bestString;
+        std::string curString;
+
+        for (const auto* chr = string; *chr != '\0'; ++chr)
+        {
+            curString.push_back(*chr);
+            switch (*chr)
+            {
+                case ControlCodes::move_x:
+                    curString.push_back(*++chr);
+                    break;
+
+                case ControlCodes::adjust_palette:
+                case 3:
+                case 4:
+                    curString.push_back(*++chr);
+                    break;
+
+                case ControlCodes::newline:
+                case ControlCodes::newline_smaller:
+                case ControlCodes::font_small:
+                case ControlCodes::font_large:
+                case ControlCodes::font_bold:
+                case ControlCodes::font_regular:
+                case ControlCodes::outline:
+                case ControlCodes::outline_off:
+                case ControlCodes::window_colour_1:
+                case ControlCodes::window_colour_2:
+                case ControlCodes::window_colour_3:
+                case 0x10:
+                    break;
+
+                case ControlCodes::inline_sprite_str:
+                    curString.push_back(*++chr);
+                    curString.push_back(*++chr);
+                    curString.push_back(*++chr);
+                    curString.push_back(*++chr);
+                    break;
+
+                default:
+                    if (*chr <= 0x16)
+                    {
+                        curString.push_back(*++chr);
+                        curString.push_back(*++chr);
+                    }
+                    else if (*chr < 32)
+                    {
+                        curString.push_back(*++chr);
+                        curString.push_back(*++chr);
+                        curString.push_back(*++chr);
+                        curString.push_back(*++chr);
+                    }
+                    break;
+            }
+
+            auto ellipseString = curString;
+            ellipseString.append("...");
+
+            auto ellipsedWidth = getStringWidth(ellipseString.c_str());
+            if (ellipsedWidth < width)
+            {
+                // Keep best string with ellipse
+                bestString = ellipseString;
+            }
+            else
+            {
+                strcpy(string, bestString.c_str());
+                return getStringWidth(string);
+            }
+        }
+        return getStringWidth(string);
     }
 
     /**
