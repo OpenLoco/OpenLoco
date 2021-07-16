@@ -53,6 +53,7 @@ namespace OpenLoco
         constexpr uint8_t window_colour_1 = 13;
         constexpr uint8_t window_colour_2 = 14;
         constexpr uint8_t window_colour_3 = 15;
+        constexpr uint8_t window_colour_4 = 16;
 
         // Arguments: int8_t, int8_t
         constexpr uint8_t newline_x_y = 17;

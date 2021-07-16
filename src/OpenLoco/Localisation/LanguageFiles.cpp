@@ -44,6 +44,7 @@ namespace OpenLoco::Localisation
         { "WINDOW_1", ControlCodes::window_colour_1 },
         { "WINDOW_2", ControlCodes::window_colour_2 },
         { "WINDOW_3", ControlCodes::window_colour_3 },
+        { "WINDOW_4", ControlCodes::window_colour_4 },
         { "WHITE", ControlCodes::colour_white },
         { "YELLOW", ControlCodes::colour_yellow },
         { "TOPAZ", ControlCodes::colour_topaz },
