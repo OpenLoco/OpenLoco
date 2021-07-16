@@ -327,7 +327,7 @@ namespace OpenLoco::Gfx
                 case ControlCodes::window_colour_1:
                 case ControlCodes::window_colour_2:
                 case ControlCodes::window_colour_3:
-                case 0x10:
+                case ControlCodes::window_colour_4:
                     break;
 
                 case ControlCodes::inline_sprite_str:
@@ -493,6 +493,12 @@ namespace OpenLoco::Gfx
                 case ControlCodes::window_colour_3:
                 {
                     int hue = _windowColours[2];
+                    setTextColours(Colour::getShade(hue, 9), PaletteIndex::index_0A, PaletteIndex::index_0A);
+                    break;
+                }
+                case ControlCodes::window_colour_4:
+                {
+                    int hue = _windowColours[3];
                     setTextColours(Colour::getShade(hue, 9), PaletteIndex::index_0A, PaletteIndex::index_0A);
                     break;
                 }
