@@ -1,73 +1,10 @@
+#include "Cursor.h"
 #include <cassert>
 #include <cstdint>
 #include <cstdio>
 #include <string_view>
 
-constexpr uint16_t cursorDimSize = 32;
-constexpr uint16_t rawCursorSize = cursorDimSize * cursorDimSize;
-constexpr uint16_t encodedCursorSize = rawCursorSize / 8;
-
-struct Cursor
-{
-    int x;
-    int y;
-    uint8_t data[encodedCursorSize];
-    uint8_t mask[encodedCursorSize];
-};
-
-constexpr char rawTransparent = ' ';
-constexpr char rawWhite = '.';
-constexpr char rawBlack = 'X';
-
-constexpr uint8_t pixWhite = 1;
-constexpr uint8_t pixBlack = 0;
-
-constexpr uint8_t maskTransparent = 0;
-constexpr uint8_t maskOpaque = 1;
-
-static constexpr Cursor convertCursor(int x, int y, std::string_view bitmap)
-{
-    assert(bitmap.length() == rawCursorSize);
-
-    Cursor cursor{};
-    cursor.x =x;
-    cursor.y=y;
-    uint8_t curBit{};
-    uint16_t curPixel{};
-    uint8_t dataByte{}, maskByte{};
-    for (uint8_t rawPixel : bitmap)
-    {
-        // Convert raw pixel character into monochrome pixel data.
-        uint8_t pix = pixBlack;
-        if (rawPixel == rawWhite)
-            pix = pixWhite;
-        dataByte |= (pix << curBit);
-
-        // Second, create a visibility mask.
-        uint8_t mask = maskTransparent;
-        if (rawPixel != rawTransparent)
-            mask = maskOpaque;
-        maskByte |= (mask << curBit);
-
-        // Save data once 8 chars have been processed.
-        curBit = (curBit + 1) % 8;
-        if (curBit == 0)
-        {
-            cursor.data[curPixel] = dataByte;
-            cursor.mask[curPixel] = maskByte;
-
-            dataByte = 0;
-            maskByte = 0;
-            curPixel++;
-        }
-    }
-
-    // Set the final bytes.
-    cursor.data[curPixel] = dataByte;
-    cursor.mask[curPixel] = maskByte;
-
-    return cursor;
-}
+using namespace OpenLoco::Ui;
 
 static void printCursorData(const Cursor cursor)
 {
@@ -117,42 +54,43 @@ static void printCursorMask(const Cursor cursor)
     }
 }
 
-static int test()
+int _main()
 {
-    Cursor cursor1 = convertCursor(
-        "                                "
-        "                                "
-        "               XXXXXXXXXXXXX    "
-        "              X.............X   "
-        "           X  X.XX..XX..XX..X   "
-        "          XXXXX.X...X...X...X   "
-        "         X....X.X...X...X...X   "
-        "         XXX..X.X...X...X...X   "
-        "      XXXXXX..X.X...X...X...X   "
-        "     X........X.XX..XX..XX..X   "
-        "     X........X.............X   "
-        "     X..XX....XXXXXXXXXXXX.X    "
-        "     X.XX.X..X...X  XX.XX X     "
-        "     XXX.X.XXXXXXX  X.X.X X     "
-        "       XX.X         XX.X        "
-        "        XX           XX         "
-        "                                "
-        "    XXXXX                       "
-        "    X...X                       "
-        "    X...X                       "
-        "    X...X                       "
-        "    X...X                       "
-        "    X...X                       "
-        "    X...X                       "
-        "    X...X                       "
-        "XXXXX...XXXXX                   "
-        " X.........X                    "
-        "  X.......X                     "
-        "   X.....X                      "
-        "    X...X                       "
-        "     X.X                        "
-        "      X                         ");
+    Cursor cursor1 = Cursor(
+        1, 2, "                                "
+              "                                "
+              "               XXXXXXXXXXXXX    "
+              "              X.............X   "
+              "           X  X.XX..XX..XX..X   "
+              "          XXXXX.X...X...X...X   "
+              "         X....X.X...X...X...X   "
+              "         XXX..X.X...X...X...X   "
+              "      XXXXXX..X.X...X...X...X   "
+              "     X........X.XX..XX..XX..X   "
+              "     X........X.............X   "
+              "     X..XX....XXXXXXXXXXXX.X    "
+              "     X.XX.X..X...X  XX.XX X     "
+              "     XXX.X.XXXXXXX  X.X.X X     "
+              "       XX.X         XX.X        "
+              "        XX           XX         "
+              "                                "
+              "    XXXXX                       "
+              "    X...X                       "
+              "    X...X                       "
+              "    X...X                       "
+              "    X...X                       "
+              "    X...X                       "
+              "    X...X                       "
+              "    X...X                       "
+              "XXXXX...XXXXX                   "
+              " X.........X                    "
+              "  X.......X                     "
+              "   X.....X                      "
+              "    X...X                       "
+              "     X.X                        "
+              "      X                         ");
 
     printCursorData(cursor1);
     printCursorMask(cursor1);
+    return 0;
 }

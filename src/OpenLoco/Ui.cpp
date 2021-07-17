@@ -1,3 +1,4 @@
+#include "Ui/Cursor.h"
 #include "Win32.h"
 #include <algorithm>
 #include <cmath>
@@ -236,1625 +237,1580 @@ namespace OpenLoco::Ui
         SDL_RestoreWindow(window);
     }
 
-    static Cursor cursor116 = convertCursor(
+    static Cursor cursor116 = Cursor(
         0, 0,
-        "X                               ",
-        "XX                              ",
-        "X.X                             ",
-        "X..X                            ",
-        "X...X                           ",
-        "X....X                          ",
-        "X.....X                         ",
-        "X......X                        ",
-        "X.......X                       ",
-        "X........X                      ",
-        "X.....XXXXX                     ",
-        "X..X..X                         ",
-        "X.X X..X                        ",
-        "XX  X..X                        ",
-        "X    X..X                       ",
-        "     X..X                       ",
-        "      X..X                      ",
-        "      X..X                      ",
-        "       XX                       ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
+        "X                               "
+        "XX                              "
+        "X.X                             "
+        "X..X                            "
+        "X...X                           "
+        "X....X                          "
+        "X.....X                         "
+        "X......X                        "
+        "X.......X                       "
+        "X........X                      "
+        "X.....XXXXX                     "
+        "X..X..X                         "
+        "X.X X..X                        "
+        "XX  X..X                        "
+        "X    X..X                       "
+        "     X..X                       "
+        "      X..X                      "
+        "      X..X                      "
+        "       XX                       "
         "                                "
-    );
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                ");
 
-    static Cursor cursor165 = convertCursor(
+    static Cursor cursor165 = Cursor(
         0, 0,
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
         "                                "
-    );
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                ");
 
-    static Cursor cursor109 = convertCursor(
+    static Cursor cursor109 = Cursor(
         16, 0,
-        "                X               ",
-        "               X.X              ",
-        "              X...X             ",
-        "             X.....X            ",
-        "            X.......X           ",
-        "           X.........X          ",
-        "           XXXX...XXXX          ",
-        "              X...X             ",
-        "              X...X             ",
-        "              X...X             ",
-        "              X...X             ",
-        "              X...X             ",
-        "              XXXXX             ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
+        "                X               "
+        "               X.X              "
+        "              X...X             "
+        "             X.....X            "
+        "            X.......X           "
+        "           X.........X          "
+        "           XXXX...XXXX          "
+        "              X...X             "
+        "              X...X             "
+        "              X...X             "
+        "              X...X             "
+        "              X...X             "
+        "              XXXXX             "
         "                                "
-    );
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                ");
 
-    static Cursor cursor110 = convertCursor(
+    static Cursor cursor110 = Cursor(
         16, 16,
-        "                                ",
-        "                X               ",
-        "               X.X              ",
-        "              X.X.X             ",
-        "             X.X X.X            ",
-        "            X.X   X.X           ",
-        "           X.XXX XXX.X          ",
-        "          X....X X....X         ",
-        "           XXX.XXX.XXX          ",
-        "             X.....X            ",
-        "              XXXXX             ",
-        "                                ",
-        "                                ",
-        "                X               ",
-        "               X.X              ",
-        "              X...X             ",
-        "               X.X              ",
-        "                X               ",
-        "                                ",
-        "                                ",
-        "              XXXXX             ",
-        "             X.....X            ",
-        "             X.XXX.X            ",
-        "           XXX.X X.XXX          ",
-        "          X....X X....X         ",
-        "           X.XXX XXX.X          ",
-        "            X.X   X.X           ",
-        "             X.X X.X            ",
-        "              X.X.X             ",
-        "               X.X              ",
-        "                X               ",
         "                                "
-    );
+        "                X               "
+        "               X.X              "
+        "              X.X.X             "
+        "             X.X X.X            "
+        "            X.X   X.X           "
+        "           X.XXX XXX.X          "
+        "          X....X X....X         "
+        "           XXX.XXX.XXX          "
+        "             X.....X            "
+        "              XXXXX             "
+        "                                "
+        "                                "
+        "                X               "
+        "               X.X              "
+        "              X...X             "
+        "               X.X              "
+        "                X               "
+        "                                "
+        "                                "
+        "              XXXXX             "
+        "             X.....X            "
+        "             X.XXX.X            "
+        "           XXX.X X.XXX          "
+        "          X....X X....X         "
+        "           X.XXX XXX.X          "
+        "            X.X   X.X           "
+        "             X.X X.X            "
+        "              X.X.X             "
+        "               X.X              "
+        "                X               "
+        "                                ");
 
-    static Cursor cursor112 = convertCursor(
+    static Cursor cursor112 = Cursor(
         9, 3,
-        "                                ",
-        "                                ",
-        "                                ",
-        "         XX                     ",
-        "        X..X                    ",
-        "        X..X                    ",
-        "        X..X                    ",
-        "        X..X                    ",
-        "        X..XXX                  ",
-        "        X..X..XXX               ",
-        "        X..X..X..XX             ",
-        "        X..X..X..X.X            ",
-        "    XXX X..X..X..X..X           ",
-        "    X..XX........X..X           ",
-        "    X...X...........X           ",
-        "     X..X...........X           ",
-        "      X.X...........X           ",
-        "      X.............X           ",
-        "       X............X           ",
-        "       X...........X            ",
-        "        X..........X            ",
-        "        X..........X            ",
-        "         X........X             ",
-        "         X........X             ",
-        "         XXXXXXXXXX             ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
         "                                "
-    );
+        "                                "
+        "                                "
+        "         XX                     "
+        "        X..X                    "
+        "        X..X                    "
+        "        X..X                    "
+        "        X..X                    "
+        "        X..XXX                  "
+        "        X..X..XXX               "
+        "        X..X..X..XX             "
+        "        X..X..X..X.X            "
+        "    XXX X..X..X..X..X           "
+        "    X..XX........X..X           "
+        "    X...X...........X           "
+        "     X..X...........X           "
+        "      X.X...........X           "
+        "      X.............X           "
+        "       X............X           "
+        "       X...........X            "
+        "        X..........X            "
+        "        X..........X            "
+        "         X........X             "
+        "         X........X             "
+        "         XXXXXXXXXX             "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                ");
 
-    static Cursor cursor120 = convertCursor(
+    static Cursor cursor120 = Cursor(
         16, 17,
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                           XXX  ",
-        "                      XXXXX...X ",
-        "                XXXXXX....XX.X  ",
-        "               X.....XXX.XX...X ",
-        "          XXXXXXXXX.X X.XX XXX  ",
-        "         X......XX.X X....X     ",
-        "          XXXX.XX.XXX XXXX      ",
-        "  XXXXXXXX  X.XX.....X          ",
-        " X........XX.X  XXXXX           ",
-        " X........X.XXXX                ",
-        "  XXXX...X......X               ",
-        "    X...X XXXXXX                ",
-        "   X...X                        ",
-        "  X...XXXX                      ",
-        " X........X                     ",
-        " X........X                     ",
-        "  XXXXXXXX                      ",
-        "                                ",
-        "                                ",
-        "                                ",
         "                                "
-    );
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                           XXX  "
+        "                      XXXXX...X "
+        "                XXXXXX....XX.X  "
+        "               X.....XXX.XX...X "
+        "          XXXXXXXXX.X X.XX XXX  "
+        "         X......XX.X X....X     "
+        "          XXXX.XX.XXX XXXX      "
+        "  XXXXXXXX  X.XX.....X          "
+        " X........XX.X  XXXXX           "
+        " X........X.XXXX                "
+        "  XXXX...X......X               "
+        "    X...X XXXXXX                "
+        "   X...X                        "
+        "  X...XXXX                      "
+        " X........X                     "
+        " X........X                     "
+        "  XXXXXXXX                      "
+        "                                "
+        "                                "
+        "                                "
+        "                                ");
 
-    static Cursor cursor119 = convertCursor(
+    static Cursor cursor119 = Cursor(
         7, 7,
-        ".......                         ",
-        ".XXXX.                          ",
-        ".XXX.                           ",
-        ".XXX.                           ",
-        ".X..X.                          ",
-        "..  .X.                         ",
-        ".    .X.                        ",
-        "      .X.                       ",
-        "       .X.    .                 ",
-        "        .X.  ..                 ",
-        "         .X..X.                 ",
-        "          .XXX.                 ",
-        "          .XXX.                 ",
-        "         .XXXX.                 ",
-        "        .......                 ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
+        ".......                         "
+        ".XXXX.                          "
+        ".XXX.                           "
+        ".XXX.                           "
+        ".X..X.                          "
+        "..  .X.                         "
+        ".    .X.                        "
+        "      .X.                       "
+        "       .X.    .                 "
+        "        .X.  ..                 "
+        "         .X..X.                 "
+        "          .XXX.                 "
+        "          .XXX.                 "
+        "         .XXXX.                 "
+        "        .......                 "
         "                                "
-    );
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                ");
 
-    static Cursor cursor124 = convertCursor(
+    static Cursor cursor124 = Cursor(
         15, 31,
-        "             XXXXX              ",
-        "            X....XX             ",
-        "           X..XX..XX            ",
-        "           X.XXXX.XX            ",
-        "           X.XXXX.XX            ",
-        "           X..XX..XX            ",
-        "            X....XX             ",
-        "            XXXXXXX             ",
-        "            XXXXXXX             ",
-        "           X.XXX..XX            ",
-        "           X..X...XX            ",
-        "          X....X...XX           ",
-        "          X...XX...XX           ",
-        "         X...X  X...XX          ",
-        "         X...X  X...XX          ",
-        "        X...X    X...XX         ",
-        "        X..X      X..XX         ",
-        "       X...X      X...XX        ",
-        "       X..X        X..XX        ",
-        "      X..X          X..XX       ",
-        "      X..X          X..XX       ",
-        "     X..X            X..XX      ",
-        "     X..X            X..XX      ",
-        "     X..X            X..XX      ",
-        "     X..X            X..XX      ",
-        "     X..X            X..XX      ",
-        "     X...X          X...XX      ",
-        "      X..X          X..XX       ",
-        "       X..X        X..XX        ",
-        "        X..X      X..XX         ",
-        "         XX.X    X.XXX          ",
-        "           XXX  XXXX            "
-    );
+        "             XXXXX              "
+        "            X....XX             "
+        "           X..XX..XX            "
+        "           X.XXXX.XX            "
+        "           X.XXXX.XX            "
+        "           X..XX..XX            "
+        "            X....XX             "
+        "            XXXXXXX             "
+        "            XXXXXXX             "
+        "           X.XXX..XX            "
+        "           X..X...XX            "
+        "          X....X...XX           "
+        "          X...XX...XX           "
+        "         X...X  X...XX          "
+        "         X...X  X...XX          "
+        "        X...X    X...XX         "
+        "        X..X      X..XX         "
+        "       X...X      X...XX        "
+        "       X..X        X..XX        "
+        "      X..X          X..XX       "
+        "      X..X          X..XX       "
+        "     X..X            X..XX      "
+        "     X..X            X..XX      "
+        "     X..X            X..XX      "
+        "     X..X            X..XX      "
+        "     X..X            X..XX      "
+        "     X...X          X...XX      "
+        "      X..X          X..XX       "
+        "       X..X        X..XX        "
+        "        X..X      X..XX         "
+        "         XX.X    X.XXX          "
+        "           XXX  XXXX            ");
 
-    static Cursor cursor131 = convertCursor(
+    static Cursor cursor131 = Cursor(
         6, 31,
-        "                                ",
-        "                 XXX            ",
-        "               XX...X  XXX      ",
-        "              X......XX...X     ",
-        "             XXX...........XX   ",
-        "             XXX.X...........X  ",
-        "              XXX............X  ",
-        "               XXX............X ",
-        "              XXX.....X.......X ",
-        "              XXXX.X.........X  ",
-        "             XXXXXXXX..X....X   ",
-        "            XXXX.XX.XXX......X  ",
-        "            XXX.X.XXX...X.....X ",
-        "            XXXX.X...X....X...X ",
-        "            XXXXX.X.X....X...XX ",
-        "            XXXXXXXXXX.....X.XX ",
-        "             XXXXXX.XXX.X...XX  ",
-        "    XXXXX      XXXXXXXXXXX.XX   ",
-        "    X...X        XXXXX.XXXXX    ",
-        "    X...X         XXX.X         ",
-        "    X...X          XX.X         ",
-        "    X...X          XX.X         ",
-        "    X...X          X..X         ",
-        "    X...X          X..X         ",
-        "    X...X          X...X        ",
-        "XXXXX...XXXXX    XX.....X       ",
-        " X.........X   XX........XX     ",
-        "  X.......X   X.....X..XX..X    ",
-        "   X.....X     XXX.X X.X XX     ",
-        "    X...X         X   X         ",
-        "     X.X                        ",
-        "      X                         "
-    );
-
-    static Cursor cursor127 = convertCursor(
-        6, 31,
-        "               .     .          ",
-        "           .       .    .      .",
-        "                 .     .   . .  ",
-        "             . .    .     .     ",
-        "                  .   . .      .",
-        "                .   .      .    ",
-        "                   .     .      ",
-        "                      .         ",
-        "                    .   .       ",
-        "                      .         ",
-        "                     X          ",
-        "                    XXX         ",
-        "                    X.X         ",
-        "                 XXXX.XXXX      ",
-        "               XX...X.XX..XX    ",
-        "              X....X.XXXXX..X   ",
-        "              X.....XXXXX...X   ",
-        "    XXXXX     XXX.........XXX   ",
-        "    X...X     X..XXXXXXXXX.XX   ",
-        "    X...X      X.......XXXXX    ",
-        "    X...X       XXX...XXXXX     ",
-        "    X...X         XXXXXXX       ",
-        "    X...X          X.XXX        ",
-        "    X...X          X..XX        ",
-        "    X...X          X..XX        ",
-        "XXXXX...XXXXX     X..XXXX       ",
-        " X.........X     X..XXX.XX      ",
-        "  X.......X     X.......XXX     ",
-        "   X.....X      XX.....XX.X     ",
-        "    X...X        XXXXXXXXX      ",
-        "     X.X           XXXXX        ",
-        "      X                         "
-    );
-
-    static Cursor cursor128 = convertCursor(
-        6, 31,
-        "                                ",
-        "                                ",
-        "             X             X    ",
-        "             XXX      XX  XX    ",
-        "              X.X    X..X  XX   ",
-        "               X.X   X..X  XX   ",
-        "                X.XX X.XX X.X   ",
-        "                 X..X.X XX.X    ",
-        "                  X....X..X     ",
-        "                  X......X      ",
-        "                   X....X       ",
-        "                   X....X       ",
-        "                    X..X        ",
-        "                    X...X       ",
-        "                    X...X       ",
-        "                     X.X        ",
-        "                     X.X        ",
-        "    XXXXX           X...X       ",
-        "    X...X            X..X       ",
-        "    X...X            X.X        ",
-        "    X...X           XX.X        ",
-        "    X...X           X..X        ",
-        "    X...X         XXXXXXX       ",
-        "    X...X         X.....X       ",
-        "    X...X         X.....X       ",
-        "XXXXX...XXXXX     X.....X       ",
-        " X.........X      X.....X       ",
-        "  X.......X       X.....X       ",
-        "   X.....X       XXXXXXXXX      ",
-        "    X...X       X.........X     ",
-        "     X.X        XXXXXXXXXXX     ",
-        "      X                         "
-    );
-
-    static Cursor cursor129 = convertCursor(
-        6, 31,
-        "                                ",
-        "                                ",
-        "             XX                 ",
-        "             X.XX               ",
-        "             X...XX             ",
-        "             X.....XX           ",
-        "             XX......XX         ",
-        "             X.XX......XX       ",
-        "             X.X XX......XX     ",
-        "            XX.X   XX......XX   ",
-        "          XX..XX     XX......X  ",
-        "        XX......XX     XX....X  ",
-        "        XXXX......XX     XX..X  ",
-        "        X.X XX......XX     XXX  ",
-        "        X.X  XXX......XX   X.X  ",
-        "         X      XX......XX X.X  ",
-        "                XXXX......XX.X  ",
-        "    XXXXX       X.X XX......XX  ",
-        "    X...X       X.X   XX..XXXX  ",
-        "    X...X        X     XXX X.X  ",
-        "    X...X              XXX X.X  ",
-        "    X...X              X.X  X   ",
-        "    X...X              X.X      ",
-        "    X...X               X       ",
-        "    X...X                       ",
-        "XXXXX...XXXXX                   ",
-        " X.........X                    ",
-        "  X.......X                     ",
-        "   X.....X                      ",
-        "    X...X                       ",
-        "     X.X                        ",
-        "      X                         "
-    );
-
-    static Cursor cursor130 = convertCursor(
-        14, 16,
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "              X                 ",
-        "             X.X                ",
-        "             X.X                ",
-        "             X.X                ",
-        "             X.X                ",
-        "             X.X                ",
-        "             X.X                ",
-        "             X.X                ",
-        "              X                 ",
-        "                                ",
-        "    XXXXXXX   X   XXXXXXX       ",
-        "   X.......X X.X X.......X      ",
-        "    XXXXXXX   X   XXXXXXX       ",
-        "                                ",
-        "              X                 ",
-        "             X.X                ",
-        "             X.X                ",
-        "             X.X                ",
-        "             X.X                ",
-        "             X.X                ",
-        "             X.X                ",
-        "             X.X                ",
-        "              X                 ",
-        "                                ",
-        "                                ",
-        "                                ",
         "                                "
-    );
+        "                 XXX            "
+        "               XX...X  XXX      "
+        "              X......XX...X     "
+        "             XXX...........XX   "
+        "             XXX.X...........X  "
+        "              XXX............X  "
+        "               XXX............X "
+        "              XXX.....X.......X "
+        "              XXXX.X.........X  "
+        "             XXXXXXXX..X....X   "
+        "            XXXX.XX.XXX......X  "
+        "            XXX.X.XXX...X.....X "
+        "            XXXX.X...X....X...X "
+        "            XXXXX.X.X....X...XX "
+        "            XXXXXXXXXX.....X.XX "
+        "             XXXXXX.XXX.X...XX  "
+        "    XXXXX      XXXXXXXXXXX.XX   "
+        "    X...X        XXXXX.XXXXX    "
+        "    X...X         XXX.X         "
+        "    X...X          XX.X         "
+        "    X...X          XX.X         "
+        "    X...X          X..X         "
+        "    X...X          X..X         "
+        "    X...X          X...X        "
+        "XXXXX...XXXXX    XX.....X       "
+        " X.........X   XX........XX     "
+        "  X.......X   X.....X..XX..X    "
+        "   X.....X     XXX.X X.X XX     "
+        "    X...X         X   X         "
+        "     X.X                        "
+        "      X                         ");
 
-    static Cursor cursor132 = convertCursor(
+    static Cursor cursor127 = Cursor(
         6, 31,
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                   XXX          ",
-        "                  X   X         ",
-        "                  XXXXX         ",
-        "                XX....XXX       ",
-        "               X........XX      ",
-        "              X..X.X.XXXXXX     ",
-        "              X..........XX     ",
-        "              XXXXXXXXXXXXX     ",
-        "               X.......XXX      ",
-        "               X.X......XX      ",
-        "               X.X.X....XX      ",
-        "    XXXXX      X.X.X.....X      ",
-        "    X...X      X.X.X...X.X      ",
-        "    X...X      X.X.X...X.X      ",
-        "    X...X      X.X.X.X.X.X      ",
-        "    X...X      X.X.X.X.X.X      ",
-        "    X...X      X.X.X.X.X.X      ",
-        "    X...X      X.X.X.X.X.X      ",
-        "    X...X      X.X.X.X.X.X      ",
-        "XXXXX...XXXXX  X.X.X.X.X.X      ",
-        " X.........X   X.X.X.X.X.X      ",
-        "  X.......X    XXXXXXXXXXX      ",
-        "   X.....X                      ",
-        "    X...X                       ",
-        "     X.X                        ",
-        "      X                         "
-    );
+        "               .     .          "
+        "           .       .    .      ."
+        "                 .     .   . .  "
+        "             . .    .     .     "
+        "                  .   . .      ."
+        "                .   .      .    "
+        "                   .     .      "
+        "                      .         "
+        "                    .   .       "
+        "                      .         "
+        "                     X          "
+        "                    XXX         "
+        "                    X.X         "
+        "                 XXXX.XXXX      "
+        "               XX...X.XX..XX    "
+        "              X....X.XXXXX..X   "
+        "              X.....XXXXX...X   "
+        "    XXXXX     XXX.........XXX   "
+        "    X...X     X..XXXXXXXXX.XX   "
+        "    X...X      X.......XXXXX    "
+        "    X...X       XXX...XXXXX     "
+        "    X...X         XXXXXXX       "
+        "    X...X          X.XXX        "
+        "    X...X          X..XX        "
+        "    X...X          X..XX        "
+        "XXXXX...XXXXX     X..XXXX       "
+        " X.........X     X..XXX.XX      "
+        "  X.......X     X.......XXX     "
+        "   X.....X      XX.....XX.X     "
+        "    X...X        XXXXXXXXX      "
+        "     X.X           XXXXX        "
+        "      X                         ");
 
-    static Cursor cursor133 = convertCursor(
+    static Cursor cursor128 = Cursor(
         6, 31,
-        "                   XXX          ",
-        "                  X...X         ",
-        "                 X.....X        ",
-        "                XXXXXXXXX       ",
-        "                 XXXX..X        ",
-        "                 XX....X        ",
-        "                 XX....X        ",
-        "                  XX..X         ",
-        "                  XXXXX         ",
-        "                   XXX          ",
-        "                   X.X          ",
-        "                X  X.X  X       ",
-        "               XXXXX.XXXXX      ",
-        "                X  X.X  X       ",
-        "                   X.X          ",
-        "                   X.X          ",
-        "                   X.X          ",
-        "    XXXXX          X.X          ",
-        "    X...X          X.X          ",
-        "    X...X          X.X          ",
-        "    X...X          X.X          ",
-        "    X...X          X.X          ",
-        "    X...X          X.X          ",
-        "    X...X          XXX          ",
-        "    X...X          XXX          ",
-        "XXXXX...XXXXX     XX..X         ",
-        " X.........X     XX....X        ",
-        "  X.......X      XX....X        ",
-        "   X.....X       XXX...X        ",
-        "    X...X        XXXXX.X        ",
-        "     X.X        XXXXXXXXX       ",
-        "      X                         "
-    );
+        "                                "
+        "                                "
+        "             X             X    "
+        "             XXX      XX  XX    "
+        "              X.X    X..X  XX   "
+        "               X.X   X..X  XX   "
+        "                X.XX X.XX X.X   "
+        "                 X..X.X XX.X    "
+        "                  X....X..X     "
+        "                  X......X      "
+        "                   X....X       "
+        "                   X....X       "
+        "                    X..X        "
+        "                    X...X       "
+        "                    X...X       "
+        "                     X.X        "
+        "                     X.X        "
+        "    XXXXX           X...X       "
+        "    X...X            X..X       "
+        "    X...X            X.X        "
+        "    X...X           XX.X        "
+        "    X...X           X..X        "
+        "    X...X         XXXXXXX       "
+        "    X...X         X.....X       "
+        "    X...X         X.....X       "
+        "XXXXX...XXXXX     X.....X       "
+        " X.........X      X.....X       "
+        "  X.......X       X.....X       "
+        "   X.....X       XXXXXXXXX      "
+        "    X...X       X.........X     "
+        "     X.X        XXXXXXXXXXX     "
+        "      X                         ");
 
-    static Cursor cursor138 = convertCursor(
+    static Cursor cursor129 = Cursor(
         6, 31,
-        "                                ",
-        "   XX                           ",
-        "  X.XX                          ",
-        " X..XXX  XX                     ",
-        " X....XXX.XX                    ",
-        "  X.....X.XX   XX               ",
-        "  X.XX....XXX X.XX              ",
-        "  X.XXXX....XXX.XX   XX         ",
-        "  X.XX  X.....X.XX  X.XX        ",
-        "  X.XX  X.XX.....XX X.XX   XX   ",
-        " XX.XX  X.XXXX.....XX.XX  X.XX  ",
-        " XXXXX  X.XX  X.X.....XX  X.XX  ",
-        "   XXXX X.XX  X.XXX....XX X.XX  ",
-        "     XXXX.XX  X.XX XX....XX.XX  ",
-        "       XXXXX  X.XX  X.X.....XX  ",
-        "         XXXX X.XX  X.XXX....XX ",
-        "           XXXX.XX  X.XX XX..XX ",
-        "    XXXXX    XXXXX  X.XX  X.XXX ",
-        "    X...X      XXXX X.XX  X.XX  ",
-        "    X...X        XXXX.XX  X.XX  ",
-        "    X...X          XXXXX  X.XX  ",
-        "    X...X            XXXX X.XX  ",
-        "    X...X              XXXX.XX  ",
-        "    X...X                XXXX   ",
-        "    X...X                  XX   ",
-        "XXXXX...XXXXX                   ",
-        " X.........X                    ",
-        "  X.......X                     ",
-        "   X.....X                      ",
-        "    X...X                       ",
-        "     X.X                        ",
-        "      X                         "
-    );
+        "                                "
+        "                                "
+        "             XX                 "
+        "             X.XX               "
+        "             X...XX             "
+        "             X.....XX           "
+        "             XX......XX         "
+        "             X.XX......XX       "
+        "             X.X XX......XX     "
+        "            XX.X   XX......XX   "
+        "          XX..XX     XX......X  "
+        "        XX......XX     XX....X  "
+        "        XXXX......XX     XX..X  "
+        "        X.X XX......XX     XXX  "
+        "        X.X  XXX......XX   X.X  "
+        "         X      XX......XX X.X  "
+        "                XXXX......XX.X  "
+        "    XXXXX       X.X XX......XX  "
+        "    X...X       X.X   XX..XXXX  "
+        "    X...X        X     XXX X.X  "
+        "    X...X              XXX X.X  "
+        "    X...X              X.X  X   "
+        "    X...X              X.X      "
+        "    X...X               X       "
+        "    X...X                       "
+        "XXXXX...XXXXX                   "
+        " X.........X                    "
+        "  X.......X                     "
+        "   X.....X                      "
+        "    X...X                       "
+        "     X.X                        "
+        "      X                         ");
 
-    static Cursor cursor137 = convertCursor(
+    static Cursor cursor130 = Cursor(
+        14, 16,
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "              X                 "
+        "             X.X                "
+        "             X.X                "
+        "             X.X                "
+        "             X.X                "
+        "             X.X                "
+        "             X.X                "
+        "             X.X                "
+        "              X                 "
+        "                                "
+        "    XXXXXXX   X   XXXXXXX       "
+        "   X.......X X.X X.......X      "
+        "    XXXXXXX   X   XXXXXXX       "
+        "                                "
+        "              X                 "
+        "             X.X                "
+        "             X.X                "
+        "             X.X                "
+        "             X.X                "
+        "             X.X                "
+        "             X.X                "
+        "             X.X                "
+        "              X                 "
+        "                                "
+        "                                "
+        "                                "
+        "                                ");
+
+    static Cursor cursor132 = Cursor(
         6, 31,
-        "                   X            ",
-        "                  X.X           ",
-        "                 X...X          ",
-        "           XX    X...X    XX    ",
-        "          X..X   X.X.X   X..X   ",
-        "          X...X  X.X.X  X...X   ",
-        "           X...X X.X.X X...X    ",
-        "            X.X.X XXX X.X.X     ",
-        "             X.XX XXX XX.X      ",
-        "              XXXX...XXXX       ",
-        "         XXXXX  X..X..X  XXXXX  ",
-        "        X.....XX.X...XXXX.....X ",
-        "       X...XXX.XX...X..XXXXX...X",
-        "        X.....XX..X...XXX.....X ",
-        "         XXXXX  X...X.X  XXXXX  ",
-        "              XXXXX..XXXX       ",
-        "             X.XX XXX XX.X      ",
-        "    XXXXX   X.X.X XXX X.X.X     ",
-        "    X...X  X...X X.X.X X...X    ",
-        "    X...X  X..X  X.X.X  X..X    ",
-        "    X...X   XX   X...X   XX XX  ",
-        "    X...X  XX    X...X    XX..X ",
-        "    X...X X..XX  X...X   X....X ",
-        "    X...X X....X  X.X   X.....X ",
-        "    X...X X.....X XXX  X..X..X  ",
-        "XXXXX...XXXXX.X.X XXX X..X...X  ",
-        " X.........X...X.XX.X X.X...X   ",
-        "  X.......X X...XXX.XX.X...X    ",
-        "   X.....X   XX..X..X.X..XX     ",
-        "    X...X      XX......XX       ",
-        "     X.X         XXXXXX         ",
-        "      X                         "
-    );
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                   XXX          "
+        "                  X   X         "
+        "                  XXXXX         "
+        "                XX....XXX       "
+        "               X........XX      "
+        "              X..X.X.XXXXXX     "
+        "              X..........XX     "
+        "              XXXXXXXXXXXXX     "
+        "               X.......XXX      "
+        "               X.X......XX      "
+        "               X.X.X....XX      "
+        "    XXXXX      X.X.X.....X      "
+        "    X...X      X.X.X...X.X      "
+        "    X...X      X.X.X...X.X      "
+        "    X...X      X.X.X.X.X.X      "
+        "    X...X      X.X.X.X.X.X      "
+        "    X...X      X.X.X.X.X.X      "
+        "    X...X      X.X.X.X.X.X      "
+        "    X...X      X.X.X.X.X.X      "
+        "XXXXX...XXXXX  X.X.X.X.X.X      "
+        " X.........X   X.X.X.X.X.X      "
+        "  X.......X    XXXXXXXXXXX      "
+        "   X.....X                      "
+        "    X...X                       "
+        "     X.X                        "
+        "      X                         ");
 
-    static Cursor cursor139 = convertCursor(
+    static Cursor cursor133 = Cursor(
         6, 31,
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "           XX                   ",
-        "         XX..XX                 ",
-        "       XX....X.XX               ",
-        "     XX..X..X....XX             ",
-        "   XX.X...X..X...X.XX           ",
-        " XX...X...XXX.X..X...XX         ",
-        " XXXX..XXX.....X.X...X.XX       ",
-        "   XXXX...X..XXXXXXXXX...XX     ",
-        "     XXXX..XX...X.....X..X.XX   ",
-        "       XXXX.....X.....X..X...XX ",
-        "         XXXX..X.X...X.X.XXXX..X",
-        "           XXXX...X.X...X....XXX",
-        "    XXXXX    XXXX..X.X..X..XXXX ",
-        "    X...X      XXXX...X..XXXX   ",
-        "    X...X        XXXX..XXXX     ",
-        "    X...X          XXXXXX       ",
-        "    X...X            XX         ",
-        "    X...X                       ",
-        "    X...X                       ",
-        "    X...X                       ",
-        "XXXXX...XXXXX                   ",
-        " X.........X                    ",
-        "  X.......X                     ",
-        "   X.....X                      ",
-        "    X...X                       ",
-        "     X.X                        ",
-        "      X                         "
-    );
+        "                   XXX          "
+        "                  X...X         "
+        "                 X.....X        "
+        "                XXXXXXXXX       "
+        "                 XXXX..X        "
+        "                 XX....X        "
+        "                 XX....X        "
+        "                  XX..X         "
+        "                  XXXXX         "
+        "                   XXX          "
+        "                   X.X          "
+        "                X  X.X  X       "
+        "               XXXXX.XXXXX      "
+        "                X  X.X  X       "
+        "                   X.X          "
+        "                   X.X          "
+        "                   X.X          "
+        "    XXXXX          X.X          "
+        "    X...X          X.X          "
+        "    X...X          X.X          "
+        "    X...X          X.X          "
+        "    X...X          X.X          "
+        "    X...X          X.X          "
+        "    X...X          XXX          "
+        "    X...X          XXX          "
+        "XXXXX...XXXXX     XX..X         "
+        " X.........X     XX....X        "
+        "  X.......X      XX....X        "
+        "   X.....X       XXX...X        "
+        "    X...X        XXXXX.X        "
+        "     X.X        XXXXXXXXX       "
+        "      X                         ");
 
-    static Cursor cursor141 = convertCursor(
+    static Cursor cursor138 = Cursor(
         6, 31,
-        "                                ",
-        "                          XX    ",
-        "                         X..X   ",
-        "                        X.X..X  ",
-        "                       X.X X..X ",
-        "                      X.X   X.XX",
-        "                      X.X  X.XX ",
-        "                      X..XX.XX  ",
-        "                     X.....XX   ",
-        "                    X...XXXX    ",
-        "                   X...XX       ",
-        "              XX  X.X.X         ",
-        "             X..XX...XX         ",
-        "            X..XX...XX          ",
-        "           X.X.X...XX           ",
-        "          X...X...XX            ",
-        "          X..X...XXXX           ",
-        "    XXXXXX...X.XXXX..X          ",
-        "    X...XX...XXXXX...X          ",
-        "    X...XX....XX..X.X           ",
-        "    X...X X........X            ",
-        "    X...X  X......X             ",
-        "    X...X   X...XX              ",
-        "    X...X    XXX                ",
-        "    X...X                       ",
-        "XXXXX...XXXXX                   ",
-        " X.........X                    ",
-        "  X.......X                     ",
-        "   X.....X                      ",
-        "    X...X                       ",
-        "     X.X                        ",
-        "      X                         "
-    );
+        "                                "
+        "   XX                           "
+        "  X.XX                          "
+        " X..XXX  XX                     "
+        " X....XXX.XX                    "
+        "  X.....X.XX   XX               "
+        "  X.XX....XXX X.XX              "
+        "  X.XXXX....XXX.XX   XX         "
+        "  X.XX  X.....X.XX  X.XX        "
+        "  X.XX  X.XX.....XX X.XX   XX   "
+        " XX.XX  X.XXXX.....XX.XX  X.XX  "
+        " XXXXX  X.XX  X.X.....XX  X.XX  "
+        "   XXXX X.XX  X.XXX....XX X.XX  "
+        "     XXXX.XX  X.XX XX....XX.XX  "
+        "       XXXXX  X.XX  X.X.....XX  "
+        "         XXXX X.XX  X.XXX....XX "
+        "           XXXX.XX  X.XX XX..XX "
+        "    XXXXX    XXXXX  X.XX  X.XXX "
+        "    X...X      XXXX X.XX  X.XX  "
+        "    X...X        XXXX.XX  X.XX  "
+        "    X...X          XXXXX  X.XX  "
+        "    X...X            XXXX X.XX  "
+        "    X...X              XXXX.XX  "
+        "    X...X                XXXX   "
+        "    X...X                  XX   "
+        "XXXXX...XXXXX                   "
+        " X.........X                    "
+        "  X.......X                     "
+        "   X.....X                      "
+        "    X...X                       "
+        "     X.X                        "
+        "      X                         ");
 
-    static Cursor cursor142 = convertCursor(
+    static Cursor cursor137 = Cursor(
         6, 31,
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "    X     X     X     X         ",
-        "    X     X     X     X         ",
-        "   X.X   X.X   X.X   X.X        ",
-        " XX...XXX...XXX...XXX...XX      ",
-        "X...X.....X.....X.....X...X     ",
-        " XXX XXXXX XXXXX XXXXX XXX      ",
-        "                                ",
-        "          X     X     X     X   ",
-        "          X     X     X     X   ",
-        "         X.X   X.X   X.X   X.X  ",
-        "        X...XXX...XXX...XXX...X ",
-        "    XXXXX.X.....X.....X.....X..X",
-        "    X...XX XXXXX XXXXX XXXXX XX ",
-        "    X...X                       ",
-        "    X...X       X     X         ",
-        "    X...X       X     X         ",
-        "    X...X      X.X   X.X        ",
-        "    X...X    XX...XXX...XX      ",
-        "XXXXX...XXXXX...X.....X...X     ",
-        " X.........X XXX XXXXX XXX      ",
-        "  X.......X                     ",
-        "   X.....X                      ",
-        "    X...X                       ",
-        "     X.X                        ",
-        "      X                         "
-    );
+        "                   X            "
+        "                  X.X           "
+        "                 X...X          "
+        "           XX    X...X    XX    "
+        "          X..X   X.X.X   X..X   "
+        "          X...X  X.X.X  X...X   "
+        "           X...X X.X.X X...X    "
+        "            X.X.X XXX X.X.X     "
+        "             X.XX XXX XX.X      "
+        "              XXXX...XXXX       "
+        "         XXXXX  X..X..X  XXXXX  "
+        "        X.....XX.X...XXXX.....X "
+        "       X...XXX.XX...X..XXXXX...X"
+        "        X.....XX..X...XXX.....X "
+        "         XXXXX  X...X.X  XXXXX  "
+        "              XXXXX..XXXX       "
+        "             X.XX XXX XX.X      "
+        "    XXXXX   X.X.X XXX X.X.X     "
+        "    X...X  X...X X.X.X X...X    "
+        "    X...X  X..X  X.X.X  X..X    "
+        "    X...X   XX   X...X   XX XX  "
+        "    X...X  XX    X...X    XX..X "
+        "    X...X X..XX  X...X   X....X "
+        "    X...X X....X  X.X   X.....X "
+        "    X...X X.....X XXX  X..X..X  "
+        "XXXXX...XXXXX.X.X XXX X..X...X  "
+        " X.........X...X.XX.X X.X...X   "
+        "  X.......X X...XXX.XX.X...X    "
+        "   X.....X   XX..X..X.X..XX     "
+        "    X...X      XX......XX       "
+        "     X.X         XXXXXX         "
+        "      X                         ");
 
-    static Cursor cursor143 = convertCursor(
+    static Cursor cursor139 = Cursor(
         6, 31,
-        "                                ",
-        "                                ",
-        "                   X  XXXXXX    ",
-        "                  X.X X....X    ",
-        "                 X...X XXXX     ",
-        "                X..X..XX..X     ",
-        "               X...XX..X..X     ",
-        "              X.....XX....X     ",
-        "             X...XXXXXX...X     ",
-        "            X.........XX..X     ",
-        "           X....XXXXXXXXX..X    ",
-        "          X.............XX..X   ",
-        "         X...XXXXXXXXXXXXXX..X  ",
-        "        XXXX.............XXXXXX ",
-        "           X...............X    ",
-        "           X...............X    ",
-        "           X...XXXX.XXXXXX.X    ",
-        "           X...X  X.X    X.X    ",
-        "    XXXXX  X...X  X.X    X.X    ",
-        "    X...X  X...X  X.X    X.X    ",
-        "    X...X  X...X  X.XXXXXX.X    ",
-        "    X...X  X...X  X........X    ",
-        "    X...X  X...X  X........X    ",
-        "    X...X  XXXXXXXXXXXXXXXXX    ",
-        "    X...X                       ",
-        "XXXXX...XXXXX                   ",
-        " X.........X                    ",
-        "  X.......X                     ",
-        "   X.....X                      ",
-        "    X...X                       ",
-        "     X.X                        ",
-        "      X                         "
-    );
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "           XX                   "
+        "         XX..XX                 "
+        "       XX....X.XX               "
+        "     XX..X..X....XX             "
+        "   XX.X...X..X...X.XX           "
+        " XX...X...XXX.X..X...XX         "
+        " XXXX..XXX.....X.X...X.XX       "
+        "   XXXX...X..XXXXXXXXX...XX     "
+        "     XXXX..XX...X.....X..X.XX   "
+        "       XXXX.....X.....X..X...XX "
+        "         XXXX..X.X...X.X.XXXX..X"
+        "           XXXX...X.X...X....XXX"
+        "    XXXXX    XXXX..X.X..X..XXXX "
+        "    X...X      XXXX...X..XXXX   "
+        "    X...X        XXXX..XXXX     "
+        "    X...X          XXXXXX       "
+        "    X...X            XX         "
+        "    X...X                       "
+        "    X...X                       "
+        "    X...X                       "
+        "XXXXX...XXXXX                   "
+        " X.........X                    "
+        "  X.......X                     "
+        "   X.....X                      "
+        "    X...X                       "
+        "     X.X                        "
+        "      X                         ");
 
-    static Cursor cursor144 = convertCursor(
+    static Cursor cursor141 = Cursor(
         6, 31,
-        "            X   X X             ",
-        "              X     X           ",
-        "                 X              ",
-        "              X  X              ",
-        "             XXXX XX            ",
-        "           XXXXXXXXXXX          ",
-        "           X.XXXX....X          ",
-        "          XX.......XXXX         ",
-        "         XXX.XX..XXX..X         ",
-        "         X.XX.X.X...X..X        ",
-        "        X......X...XXX..X       ",
-        "      XX....X.......X.X..XXX    ",
-        "     X.....XX......X.XXXX...X   ",
-        "   XX.....XX........X.X.X.X..XX ",
-        "  X...XXXX....X......XXX.XXXXXXX",
-        " XXXXX   X.XXXXXX...XXXXXXX XX  ",
-        " X      XXXX    XX.XX   XX      ",
-        "         X        X             ",
-        "    XXXXX                       ",
-        "    X...X                       ",
-        "    X...X                       ",
-        "    X...X                       ",
-        "    X...X                       ",
-        "    X...X                       ",
-        "    X...X                       ",
-        "XXXXX...XXXXX                   ",
-        " X.........X                    ",
-        "  X.......X                     ",
-        "   X.....X                      ",
-        "    X...X                       ",
-        "     X.X                        ",
-        "      X                         "
-    );
+        "                                "
+        "                          XX    "
+        "                         X..X   "
+        "                        X.X..X  "
+        "                       X.X X..X "
+        "                      X.X   X.XX"
+        "                      X.X  X.XX "
+        "                      X..XX.XX  "
+        "                     X.....XX   "
+        "                    X...XXXX    "
+        "                   X...XX       "
+        "              XX  X.X.X         "
+        "             X..XX...XX         "
+        "            X..XX...XX          "
+        "           X.X.X...XX           "
+        "          X...X...XX            "
+        "          X..X...XXXX           "
+        "    XXXXXX...X.XXXX..X          "
+        "    X...XX...XXXXX...X          "
+        "    X...XX....XX..X.X           "
+        "    X...X X........X            "
+        "    X...X  X......X             "
+        "    X...X   X...XX              "
+        "    X...X    XXX                "
+        "    X...X                       "
+        "XXXXX...XXXXX                   "
+        " X.........X                    "
+        "  X.......X                     "
+        "   X.....X                      "
+        "    X...X                       "
+        "     X.X                        "
+        "      X                         ");
 
-    static Cursor cursor145 = convertCursor(
+    static Cursor cursor142 = Cursor(
         6, 31,
-        "                                ",
-        "      XXX                       ",
-        "     X...X                      ",
-        "     X....X                     ",
-        "      X....X                    ",
-        "       X...X                    ",
-        "        XXX  X                  ",
-        "           XX.X                 ",
-        "           X..X                 ",
-        "            XX                  ",
-        "                                ",
-        "       XXX         XXX          ",
-        "      X...X       X...X         ",
-        "      X....X      X....X        ",
-        "       X....X      X....X       ",
-        "        X...X       X...X       ",
-        "         XXX  X      XXX  X     ",
-        "            XX.X        XX.X    ",
-        "    XXXXX   X..X        X..X    ",
-        "    X...X    XX          XX     ",
-        "    X...X                       ",
-        "    X...X           XXX         ",
-        "    X...X          X...X        ",
-        "    X...X          X....X       ",
-        "    X...X           X....X      ",
-        "XXXXX...XXXXX        X...X      ",
-        " X.........X          XXX  X    ",
-        "  X.......X              XX.X   ",
-        "   X.....X               X..X   ",
-        "    X...X                 XX    ",
-        "     X.X                        ",
-        "      X                         "
-    );
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "    X     X     X     X         "
+        "    X     X     X     X         "
+        "   X.X   X.X   X.X   X.X        "
+        " XX...XXX...XXX...XXX...XX      "
+        "X...X.....X.....X.....X...X     "
+        " XXX XXXXX XXXXX XXXXX XXX      "
+        "                                "
+        "          X     X     X     X   "
+        "          X     X     X     X   "
+        "         X.X   X.X   X.X   X.X  "
+        "        X...XXX...XXX...XXX...X "
+        "    XXXXX.X.....X.....X.....X..X"
+        "    X...XX XXXXX XXXXX XXXXX XX "
+        "    X...X                       "
+        "    X...X       X     X         "
+        "    X...X       X     X         "
+        "    X...X      X.X   X.X        "
+        "    X...X    XX...XXX...XX      "
+        "XXXXX...XXXXX...X.....X...X     "
+        " X.........X XXX XXXXX XXX      "
+        "  X.......X                     "
+        "   X.....X                      "
+        "    X...X                       "
+        "     X.X                        "
+        "      X                         ");
 
-    static Cursor cursor158 = convertCursor(
+    static Cursor cursor143 = Cursor(
+        6, 31,
+        "                                "
+        "                                "
+        "                   X  XXXXXX    "
+        "                  X.X X....X    "
+        "                 X...X XXXX     "
+        "                X..X..XX..X     "
+        "               X...XX..X..X     "
+        "              X.....XX....X     "
+        "             X...XXXXXX...X     "
+        "            X.........XX..X     "
+        "           X....XXXXXXXXX..X    "
+        "          X.............XX..X   "
+        "         X...XXXXXXXXXXXXXX..X  "
+        "        XXXX.............XXXXXX "
+        "           X...............X    "
+        "           X...............X    "
+        "           X...XXXX.XXXXXX.X    "
+        "           X...X  X.X    X.X    "
+        "    XXXXX  X...X  X.X    X.X    "
+        "    X...X  X...X  X.X    X.X    "
+        "    X...X  X...X  X.XXXXXX.X    "
+        "    X...X  X...X  X........X    "
+        "    X...X  X...X  X........X    "
+        "    X...X  XXXXXXXXXXXXXXXXX    "
+        "    X...X                       "
+        "XXXXX...XXXXX                   "
+        " X.........X                    "
+        "  X.......X                     "
+        "   X.....X                      "
+        "    X...X                       "
+        "     X.X                        "
+        "      X                         ");
+
+    static Cursor cursor144 = Cursor(
+        6, 31,
+        "            X   X X             "
+        "              X     X           "
+        "                 X              "
+        "              X  X              "
+        "             XXXX XX            "
+        "           XXXXXXXXXXX          "
+        "           X.XXXX....X          "
+        "          XX.......XXXX         "
+        "         XXX.XX..XXX..X         "
+        "         X.XX.X.X...X..X        "
+        "        X......X...XXX..X       "
+        "      XX....X.......X.X..XXX    "
+        "     X.....XX......X.XXXX...X   "
+        "   XX.....XX........X.X.X.X..XX "
+        "  X...XXXX....X......XXX.XXXXXXX"
+        " XXXXX   X.XXXXXX...XXXXXXX XX  "
+        " X      XXXX    XX.XX   XX      "
+        "         X        X             "
+        "    XXXXX                       "
+        "    X...X                       "
+        "    X...X                       "
+        "    X...X                       "
+        "    X...X                       "
+        "    X...X                       "
+        "    X...X                       "
+        "XXXXX...XXXXX                   "
+        " X.........X                    "
+        "  X.......X                     "
+        "   X.....X                      "
+        "    X...X                       "
+        "     X.X                        "
+        "      X                         ");
+
+    static Cursor cursor145 = Cursor(
+        6, 31,
+        "                                "
+        "      XXX                       "
+        "     X...X                      "
+        "     X....X                     "
+        "      X....X                    "
+        "       X...X                    "
+        "        XXX  X                  "
+        "           XX.X                 "
+        "           X..X                 "
+        "            XX                  "
+        "                                "
+        "       XXX         XXX          "
+        "      X...X       X...X         "
+        "      X....X      X....X        "
+        "       X....X      X....X       "
+        "        X...X       X...X       "
+        "         XXX  X      XXX  X     "
+        "            XX.X        XX.X    "
+        "    XXXXX   X..X        X..X    "
+        "    X...X    XX          XX     "
+        "    X...X                       "
+        "    X...X           XXX         "
+        "    X...X          X...X        "
+        "    X...X          X....X       "
+        "    X...X           X....X      "
+        "XXXXX...XXXXX        X...X      "
+        " X.........X          XXX  X    "
+        "  X.......X              XX.X   "
+        "   X.....X               X..X   "
+        "    X...X                 XX    "
+        "     X.X                        "
+        "      X                         ");
+
+    static Cursor cursor158 = Cursor(
         7, 30,
-        "                                ",
-        "                           XXX  ",
-        "                         XXXXXX ",
-        "                        XXXXX.X ",
-        "                       XXXXX.XX ",
-        "                      XXXXX..X  ",
-        "              XX     XXXXX..XX  ",
-        "             XXXX    X..X..XX   ",
-        "            XXXXXX  X....XXX    ",
-        "           XX.XXXXXXX....XX     ",
-        "          XXXX.XXXX.....XX      ",
-        "         XXXXXX.XXX...XX        ",
-        "        XXXXXXXX.XX...X         ",
-        "        XX.XXXXXX.XXXXX         ",
-        "         XXXXXXXXX.XXXXX        ",
-        "          XX.XXXXXX.XXXXX       ",
-        "           XX.XXXXXX.XXXXX      ",
-        "     XXXXX  XXXXXXXXX.XXXX      ",
-        "     X...X   XX.X..XXX.XXX      ",
-        "     X...X    XX.....XXXX       ",
-        "     X...X     XX.....XX        ",
-        "     X...X      XX...XX         ",
-        "     X...X       XX.XX          ",
-        "     X...X        X.X           ",
-        " XXXXX...XXXXX     X            ",
-        "  X.........X                   ",
-        "   X.......X                    ",
-        "    X.....X                     ",
-        "     X...X                      ",
-        "      X.X                       ",
-        "       X                        ",
         "                                "
-    );
+        "                           XXX  "
+        "                         XXXXXX "
+        "                        XXXXX.X "
+        "                       XXXXX.XX "
+        "                      XXXXX..X  "
+        "              XX     XXXXX..XX  "
+        "             XXXX    X..X..XX   "
+        "            XXXXXX  X....XXX    "
+        "           XX.XXXXXXX....XX     "
+        "          XXXX.XXXX.....XX      "
+        "         XXXXXX.XXX...XX        "
+        "        XXXXXXXX.XX...X         "
+        "        XX.XXXXXX.XXXXX         "
+        "         XXXXXXXXX.XXXXX        "
+        "          XX.XXXXXX.XXXXX       "
+        "           XX.XXXXXX.XXXXX      "
+        "     XXXXX  XXXXXXXXX.XXXX      "
+        "     X...X   XX.X..XXX.XXX      "
+        "     X...X    XX.....XXXX       "
+        "     X...X     XX.....XX        "
+        "     X...X      XX...XX         "
+        "     X...X       XX.XX          "
+        "     X...X        X.X           "
+        " XXXXX...XXXXX     X            "
+        "  X.........X                   "
+        "   X.......X                    "
+        "    X.....X                     "
+        "     X...X                      "
+        "      X.X                       "
+        "       X                        "
+        "                                ");
 
-    static Cursor cursor159 = convertCursor(
+    static Cursor cursor159 = Cursor(
         6, 31,
-        "  X                         X   ",
-        " X.X                       X.X  ",
-        "X...X                     X...X ",
-        " X.X                       X.X  ",
-        " XXXXXXXXXXXXXXXXXXXXXXXXXXXXX  ",
-        " X.XX.....................XX.X  ",
-        " X.X X...................X X.X  ",
-        " X.X X...................X X.X  ",
-        " X.X X...................X X.X  ",
-        " X.XXX....................XX.X  ",
-        " X.XXXXXXXXXXXXXXXXXXXXXXXXX.X  ",
-        " X.X                       X.X  ",
-        " X.X                       X.X  ",
-        " X.X                       X.X  ",
-        " X.X                       X.X  ",
-        " X.X                       X.X  ",
-        " X.X                       X.X  ",
-        " X.XXXXXX                  X.X  ",
-        "XX.XX...X                  X.X  ",
-        " X.XX...X             X X XX.X X",
-        " X.XX...X                  X.X  ",
-        "XX.XX...X                  X.X  ",
-        " X.XX...X            X X XXX.X  ",
-        "    X...X                       ",
-        "    X...X               XX X  X ",
-        "XXXXX...XXXXX       XXX         ",
-        " X.........X                    ",
-        "  X.......X                     ",
-        "   X.....X                      ",
-        "    X...X                       ",
-        "     X.X                        ",
-        "      X                         "
-    );
+        "  X                         X   "
+        " X.X                       X.X  "
+        "X...X                     X...X "
+        " X.X                       X.X  "
+        " XXXXXXXXXXXXXXXXXXXXXXXXXXXXX  "
+        " X.XX.....................XX.X  "
+        " X.X X...................X X.X  "
+        " X.X X...................X X.X  "
+        " X.X X...................X X.X  "
+        " X.XXX....................XX.X  "
+        " X.XXXXXXXXXXXXXXXXXXXXXXXXX.X  "
+        " X.X                       X.X  "
+        " X.X                       X.X  "
+        " X.X                       X.X  "
+        " X.X                       X.X  "
+        " X.X                       X.X  "
+        " X.X                       X.X  "
+        " X.XXXXXX                  X.X  "
+        "XX.XX...X                  X.X  "
+        " X.XX...X             X X XX.X X"
+        " X.XX...X                  X.X  "
+        "XX.XX...X                  X.X  "
+        " X.XX...X            X X XXX.X  "
+        "    X...X                       "
+        "    X...X               XX X  X "
+        "XXXXX...XXXXX       XXX         "
+        " X.........X                    "
+        "  X.......X                     "
+        "   X.....X                      "
+        "    X...X                       "
+        "     X.X                        "
+        "      X                         ");
 
-    static Cursor cursor161 = convertCursor(
+    static Cursor cursor161 = Cursor(
         15, 17,
-        "             XX    X            ",
-        "            X..X  XXX           ",
-        "            X..X  X..X          ",
-        "      XX    X...X X..X          ",
-        "     X..X   X...X X..X  XX      ",
-        "     X...X  X....XX...XX..X     ",
-        "     X....X  X...XX...XX...X    ",
-        "     XX...X  X...XX....XX..X    ",
-        "      X....X X....X....XX..X    ",
-        "      XX....XX....X....X...X    ",
-        "       X.....X....X....X...X    ",
-        "       XX....XX........X...X    ",
-        "        X.....X.............X   ",
-        "        XX..................X   ",
-        "         XX.................X   ",
-        "          X.................X   ",
-        "          XX................X   ",
-        "          XX................X   ",
-        "           X................X   ",
-        "           X................X   ",
-        "           X...............X    ",
-        "           X...............X    ",
-        "          X................X    ",
-        "          X................X    ",
-        "    XXXXXX.................X    ",
-        "   X........................X   ",
-        "   X.X......................X   ",
-        "   X..X.....................X   ",
-        "    XXXX....XXXX.............X  ",
-        "       XXXXXX  XX............X  ",
-        "                XX.........XX   ",
-        "                 XXXXXXXXXX     "
-    );
+        "             XX    X            "
+        "            X..X  XXX           "
+        "            X..X  X..X          "
+        "      XX    X...X X..X          "
+        "     X..X   X...X X..X  XX      "
+        "     X...X  X....XX...XX..X     "
+        "     X....X  X...XX...XX...X    "
+        "     XX...X  X...XX....XX..X    "
+        "      X....X X....X....XX..X    "
+        "      XX....XX....X....X...X    "
+        "       X.....X....X....X...X    "
+        "       XX....XX........X...X    "
+        "        X.....X.............X   "
+        "        XX..................X   "
+        "         XX.................X   "
+        "          X.................X   "
+        "          XX................X   "
+        "          XX................X   "
+        "           X................X   "
+        "           X................X   "
+        "           X...............X    "
+        "           X...............X    "
+        "          X................X    "
+        "          X................X    "
+        "    XXXXXX.................X    "
+        "   X........................X   "
+        "   X.X......................X   "
+        "   X..X.....................X   "
+        "    XXXX....XXXX.............X  "
+        "       XXXXXX  XX............X  "
+        "                XX.........XX   "
+        "                 XXXXXXXXXX     ");
 
-    static Cursor cursor160 = convertCursor(
+    static Cursor cursor160 = Cursor(
         15, 17,
-        "                                ",
-        "          XXXX  XXX             ",
-        "         X....XX...X            ",
-        "         X.....XX...XX          ",
-        "          X.....X....XXX        ",
-        "    XXX   X......X....X.X       ",
-        "   X...XX  XX....XX...X..X      ",
-        "   X.....XX XX...XX....X..X     ",
-        "   XX......X X....X....X..X     ",
-        "    XX......XX....X....X...X    ",
-        "     XX......X....X....X...X    ",
-        "      XX.....XX........X...X    ",
-        "        X.....X.............X   ",
-        "        XX..................X   ",
-        "         XX.................X   ",
-        "          X.................X   ",
-        "          XX................X   ",
-        "          XX................X   ",
-        "           X................X   ",
-        "           X................X   ",
-        "     XXX   X...............X    ",
-        "    X...X  X...............X    ",
-        "    X....XX................X    ",
-        "    X.X....................X    ",
-        "    X.X....................X    ",
-        "     X......................X   ",
-        "     X......................X   ",
-        "      XXX...................X   ",
-        "         XXXXXXX.............X  ",
-        "               XX............X  ",
-        "                XX.........XX   ",
-        "                 XXXXXXXXXX     "
-    );
+        "                                "
+        "          XXXX  XXX             "
+        "         X....XX...X            "
+        "         X.....XX...XX          "
+        "          X.....X....XXX        "
+        "    XXX   X......X....X.X       "
+        "   X...XX  XX....XX...X..X      "
+        "   X.....XX XX...XX....X..X     "
+        "   XX......X X....X....X..X     "
+        "    XX......XX....X....X...X    "
+        "     XX......X....X....X...X    "
+        "      XX.....XX........X...X    "
+        "        X.....X.............X   "
+        "        XX..................X   "
+        "         XX.................X   "
+        "          X.................X   "
+        "          XX................X   "
+        "          XX................X   "
+        "           X................X   "
+        "           X................X   "
+        "     XXX   X...............X    "
+        "    X...X  X...............X    "
+        "    X....XX................X    "
+        "    X.X....................X    "
+        "    X.X....................X    "
+        "     X......................X   "
+        "     X......................X   "
+        "      XXX...................X   "
+        "         XXXXXXX.............X  "
+        "               XX............X  "
+        "                XX.........XX   "
+        "                 XXXXXXXXXX     ");
 
-    static Cursor cursor163 = convertCursor(
+    static Cursor cursor163 = Cursor(
         6, 31,
-        "                                ",
-        "                                ",
-        "                                ",
-        "        XXX           XXXXXXX   ",
-        "       XX.XX   XX     XXXXXXX   ",
-        "        X.X   X..X XXXX  X      ",
-        "       XXXXXXXXXXXXX..X  X      ",
-        "       X.XX..X..X..X..XXXXXX    ",
-        "       XXXX..X..X..X..X....X    ",
-        "       XXXX..X..X..X..X.XX.X    ",
-        "       XXXXXXXXXXXXXXXX....X    ",
-        "      XXXXXXXXXXXXXXXXX....X    ",
-        "       XXX.X.XX.X.XX.XXXXXXXX   ",
-        "      X.XX...XX...XX...XX.X     ",
-        "       XX XXX  XXX  XXX  X      ",
-        "                                ",
-        "                                ",
-        "    XXXXX                       ",
-        "    X...X                       ",
-        "    X...X                       ",
-        "    X...X                       ",
-        "    X...X                       ",
-        "    X...X                       ",
-        "    X...X                       ",
-        "    X...X                       ",
-        "XXXXX...XXXXX                   ",
-        " X.........X                    ",
-        "  X.......X                     ",
-        "   X.....X                      ",
-        "    X...X                       ",
-        "     X.X                        ",
-        "      X                         "
-    );
+        "                                "
+        "                                "
+        "                                "
+        "        XXX           XXXXXXX   "
+        "       XX.XX   XX     XXXXXXX   "
+        "        X.X   X..X XXXX  X      "
+        "       XXXXXXXXXXXXX..X  X      "
+        "       X.XX..X..X..X..XXXXXX    "
+        "       XXXX..X..X..X..X....X    "
+        "       XXXX..X..X..X..X.XX.X    "
+        "       XXXXXXXXXXXXXXXX....X    "
+        "      XXXXXXXXXXXXXXXXX....X    "
+        "       XXX.X.XX.X.XX.XXXXXXXX   "
+        "      X.XX...XX...XX...XX.X     "
+        "       XX XXX  XXX  XXX  X      "
+        "                                "
+        "                                "
+        "    XXXXX                       "
+        "    X...X                       "
+        "    X...X                       "
+        "    X...X                       "
+        "    X...X                       "
+        "    X...X                       "
+        "    X...X                       "
+        "    X...X                       "
+        "XXXXX...XXXXX                   "
+        " X.........X                    "
+        "  X.......X                     "
+        "   X.....X                      "
+        "    X...X                       "
+        "     X.X                        "
+        "      X                         ");
 
-    static Cursor cursor162 = convertCursor(
+    static Cursor cursor162 = Cursor(
         25, 31,
-        "                                ",
-        "                                ",
-        "                                ",
-        "   XXXXXXX           XXX        ",
-        "   XXXXXXX     XX   XX.XX       ",
-        "      X  XXXX X..X   X.X        ",
-        "      X  X..XXXXXXXXXXXXX       ",
-        "    XXXXXX..X..X..X..XX.X       ",
-        "    X....X..X..X..X..XXXX       ",
-        "    X.XX.X..X..X..X..XXXX       ",
-        "    X....XXXXXXXXXXXXXXXX       ",
-        "    X....XXXXXXXXXXXXXXXXX      ",
-        "   XXXXXXXX.XX.X.XX.X.XXX       ",
-        "     X.XX...XX...XX...XX.X      ",
-        "      X  XXX  XXX  XXX XX       ",
-        "                                ",
-        "                                ",
-        "                       XXXXX    ",
-        "                       X...X    ",
-        "                       X...X    ",
-        "                       X...X    ",
-        "                       X...X    ",
-        "                       X...X    ",
-        "                       X...X    ",
-        "                       X...X    ",
-        "                   XXXXX...XXXXX",
-        "                    X.........X ",
-        "                     X.......X  ",
-        "                      X.....X   ",
-        "                       X...X    ",
-        "                        X.X     ",
-        "                         X      "
-    );
+        "                                "
+        "                                "
+        "                                "
+        "   XXXXXXX           XXX        "
+        "   XXXXXXX     XX   XX.XX       "
+        "      X  XXXX X..X   X.X        "
+        "      X  X..XXXXXXXXXXXXX       "
+        "    XXXXXX..X..X..X..XX.X       "
+        "    X....X..X..X..X..XXXX       "
+        "    X.XX.X..X..X..X..XXXX       "
+        "    X....XXXXXXXXXXXXXXXX       "
+        "    X....XXXXXXXXXXXXXXXXX      "
+        "   XXXXXXXX.XX.X.XX.X.XXX       "
+        "     X.XX...XX...XX...XX.X      "
+        "      X  XXX  XXX  XXX XX       "
+        "                                "
+        "                                "
+        "                       XXXXX    "
+        "                       X...X    "
+        "                       X...X    "
+        "                       X...X    "
+        "                       X...X    "
+        "                       X...X    "
+        "                       X...X    "
+        "                       X...X    "
+        "                   XXXXX...XXXXX"
+        "                    X.........X "
+        "                     X.......X  "
+        "                      X.....X   "
+        "                       X...X    "
+        "                        X.X     "
+        "                         X      ");
 
-    static Cursor cursor173 = convertCursor(
+    static Cursor cursor173 = Cursor(
         6, 31,
-        "                                ",
-        "                                ",
-        "       XXXXXXXXXXXXXXXXXXXXX    ",
-        "      X.....................X   ",
-        "      X.XXX.XXX.XXX.XXX.XXX.X   ",
-        "      X.XXX.XXX.XXX.XXX.XXX.X   ",
-        "      X.XX..XX..XX..XX..XX..X   ",
-        "      X....................X    ",
-        "      X....................X    ",
-        "      XXXXX.XXX.XXX.XXX.XXX.X   ",
-        "      XXX.X.XXX.XXX.XXX.XXX.X   ",
-        "      XXX.X.XX..XX..XX..XX..X   ",
-        "      X.X.XXX..........XX...X   ",
-        "      X.X.X..X........X..X..X   ",
-        "       XXXX..XXXXXXXXXX..XXX    ",
-        "           XX          XX       ",
-        "                                ",
-        "    XXXXX                       ",
-        "    X...X                       ",
-        "    X...X                       ",
-        "    X...X                       ",
-        "    X...X                       ",
-        "    X...X                       ",
-        "    X...X                       ",
-        "    X...X                       ",
-        "XXXXX...XXXXX                   ",
-        " X.........X                    ",
-        "  X.......X                     ",
-        "   X.....X                      ",
-        "    X...X                       ",
-        "     X.X                        ",
-        "      X                         "
-    );
+        "                                "
+        "                                "
+        "       XXXXXXXXXXXXXXXXXXXXX    "
+        "      X.....................X   "
+        "      X.XXX.XXX.XXX.XXX.XXX.X   "
+        "      X.XXX.XXX.XXX.XXX.XXX.X   "
+        "      X.XX..XX..XX..XX..XX..X   "
+        "      X....................X    "
+        "      X....................X    "
+        "      XXXXX.XXX.XXX.XXX.XXX.X   "
+        "      XXX.X.XXX.XXX.XXX.XXX.X   "
+        "      XXX.X.XX..XX..XX..XX..X   "
+        "      X.X.XXX..........XX...X   "
+        "      X.X.X..X........X..X..X   "
+        "       XXXX..XXXXXXXXXX..XXX    "
+        "           XX          XX       "
+        "                                "
+        "    XXXXX                       "
+        "    X...X                       "
+        "    X...X                       "
+        "    X...X                       "
+        "    X...X                       "
+        "    X...X                       "
+        "    X...X                       "
+        "    X...X                       "
+        "XXXXX...XXXXX                   "
+        " X.........X                    "
+        "  X.......X                     "
+        "   X.....X                      "
+        "    X...X                       "
+        "     X.X                        "
+        "      X                         ");
 
-    static Cursor cursor172 = convertCursor(
+    static Cursor cursor172 = Cursor(
         25, 31,
-        "                                ",
-        "                                ",
-        "    XXXXXXXXXXXXXXXXXXXXX       ",
-        "   X.....................X      ",
-        "   X.XXX.XXX.XXX.XXX.XXX.X      ",
-        "   X.XXX.XXX.XXX.XXX.XXX.X      ",
-        "   X..XX..XX..XX..XX..XX.X      ",
-        "    X....................X      ",
-        "    X....................X      ",
-        "   X.XXX.XXX.XXX.XXX.XXXXX      ",
-        "   X.XXX.XXX.XXX.XXX.X.XXX      ",
-        "   X..XX..XX..XX..XX.X.XXX      ",
-        "   X...XX..........XXX.X.X      ",
-        "   X..X..X........X..X.X.X      ",
-        "    XXX..XXXXXXXXXX..XXXX       ",
-        "       XX          XX           ",
-        "                                ",
-        "                       XXXXX    ",
-        "                       X...X    ",
-        "                       X...X    ",
-        "                       X...X    ",
-        "                       X...X    ",
-        "                       X...X    ",
-        "                       X...X    ",
-        "                       X...X    ",
-        "                   XXXXX...XXXXX",
-        "                    X.........X ",
-        "                     X.......X  ",
-        "                      X.....X   ",
-        "                       X...X    ",
-        "                        X.X     ",
-        "                         X      "
-    );
+        "                                "
+        "                                "
+        "    XXXXXXXXXXXXXXXXXXXXX       "
+        "   X.....................X      "
+        "   X.XXX.XXX.XXX.XXX.XXX.X      "
+        "   X.XXX.XXX.XXX.XXX.XXX.X      "
+        "   X..XX..XX..XX..XX..XX.X      "
+        "    X....................X      "
+        "    X....................X      "
+        "   X.XXX.XXX.XXX.XXX.XXXXX      "
+        "   X.XXX.XXX.XXX.XXX.X.XXX      "
+        "   X..XX..XX..XX..XX.X.XXX      "
+        "   X...XX..........XXX.X.X      "
+        "   X..X..X........X..X.X.X      "
+        "    XXX..XXXXXXXXXX..XXXX       "
+        "       XX          XX           "
+        "                                "
+        "                       XXXXX    "
+        "                       X...X    "
+        "                       X...X    "
+        "                       X...X    "
+        "                       X...X    "
+        "                       X...X    "
+        "                       X...X    "
+        "                       X...X    "
+        "                   XXXXX...XXXXX"
+        "                    X.........X "
+        "                     X.......X  "
+        "                      X.....X   "
+        "                       X...X    "
+        "                        X.X     "
+        "                         X      ");
 
-    static Cursor cursor178 = convertCursor(
+    static Cursor cursor178 = Cursor(
         6, 31,
-        "                                ",
-        "                                ",
-        "               XXXXXXXXXXXXX    ",
-        "              X.............X   ",
-        "           X  X.XX..XX..XX..X   ",
-        "          XXXXX.X...X...X...X   ",
-        "         X....X.X...X...X...X   ",
-        "         XXX..X.X...X...X...X   ",
-        "      XXXXXX..X.X...X...X...X   ",
-        "     X........X.XX..XX..XX..X   ",
-        "     X........X.............X   ",
-        "     X..XX....XXXXXXXXXXXX.X    ",
-        "     X.XX.X..X...X  XX.XX X     ",
-        "     XXX.X.XXXXXXX  X.X.X X     ",
-        "       XX.X         XX.X        ",
-        "        XX           XX         ",
-        "                                ",
-        "    XXXXX                       ",
-        "    X...X                       ",
-        "    X...X                       ",
-        "    X...X                       ",
-        "    X...X                       ",
-        "    X...X                       ",
-        "    X...X                       ",
-        "    X...X                       ",
-        "XXXXX...XXXXX                   ",
-        " X.........X                    ",
-        "  X.......X                     ",
-        "   X.....X                      ",
-        "    X...X                       ",
-        "     X.X                        ",
-        "      X                         "
-    );
+        "                                "
+        "                                "
+        "               XXXXXXXXXXXXX    "
+        "              X.............X   "
+        "           X  X.XX..XX..XX..X   "
+        "          XXXXX.X...X...X...X   "
+        "         X....X.X...X...X...X   "
+        "         XXX..X.X...X...X...X   "
+        "      XXXXXX..X.X...X...X...X   "
+        "     X........X.XX..XX..XX..X   "
+        "     X........X.............X   "
+        "     X..XX....XXXXXXXXXXXX.X    "
+        "     X.XX.X..X...X  XX.XX X     "
+        "     XXX.X.XXXXXXX  X.X.X X     "
+        "       XX.X         XX.X        "
+        "        XX           XX         "
+        "                                "
+        "    XXXXX                       "
+        "    X...X                       "
+        "    X...X                       "
+        "    X...X                       "
+        "    X...X                       "
+        "    X...X                       "
+        "    X...X                       "
+        "    X...X                       "
+        "XXXXX...XXXXX                   "
+        " X.........X                    "
+        "  X.......X                     "
+        "   X.....X                      "
+        "    X...X                       "
+        "     X.X                        "
+        "      X                         ");
 
-    static Cursor cursor177 = convertCursor(
+    static Cursor cursor177 = Cursor(
         25, 31,
-        "                                ",
-        "                                ",
-        "    XXXXXXXXXXXXX               ",
-        "   X.............X              ",
-        "   X..XX..XX..XX.X  X           ",
-        "   X...X...X...X.XXXXX          ",
-        "   X...X...X...X.X....X         ",
-        "   X...X...X...X.X..XXX         ",
-        "   X...X...X...X.X..XXXXXX      ",
-        "   X..XX..XX..XX.X........X     ",
-        "   X.............X........X     ",
-        "    X.XXXXXXXXXXXX....XX..X     ",
-        "     X XX.XX  X...X..X.XX.X     ",
-        "     X X.X.X  XXXXXXX.X.XXX     ",
-        "        X.XX         X.XX       ",
-        "         XX           XX        ",
-        "                                ",
-        "                       XXXXX    ",
-        "                       X...X    ",
-        "                       X...X    ",
-        "                       X...X    ",
-        "                       X...X    ",
-        "                       X...X    ",
-        "                       X...X    ",
-        "                       X...X    ",
-        "                   XXXXX...XXXXX",
-        "                    X.........X ",
-        "                     X.......X  ",
-        "                      X.....X   ",
-        "                       X...X    ",
-        "                        X.X     ",
-        "                         X      "
-    );
+        "                                "
+        "                                "
+        "    XXXXXXXXXXXXX               "
+        "   X.............X              "
+        "   X..XX..XX..XX.X  X           "
+        "   X...X...X...X.XXXXX          "
+        "   X...X...X...X.X....X         "
+        "   X...X...X...X.X..XXX         "
+        "   X...X...X...X.X..XXXXXX      "
+        "   X..XX..XX..XX.X........X     "
+        "   X.............X........X     "
+        "    X.XXXXXXXXXXXX....XX..X     "
+        "     X XX.XX  X...X..X.XX.X     "
+        "     X X.X.X  XXXXXXX.X.XXX     "
+        "        X.XX         X.XX       "
+        "         XX           XX        "
+        "                                "
+        "                       XXXXX    "
+        "                       X...X    "
+        "                       X...X    "
+        "                       X...X    "
+        "                       X...X    "
+        "                       X...X    "
+        "                       X...X    "
+        "                       X...X    "
+        "                   XXXXX...XXXXX"
+        "                    X.........X "
+        "                     X.......X  "
+        "                      X.....X   "
+        "                       X...X    "
+        "                        X.X     "
+        "                         X      ");
 
-    static Cursor cursor175 = convertCursor(
+    static Cursor cursor175 = Cursor(
         6, 31,
-        "           XX                   ",
-        "          X..X                  ",
-        "         X.XX.X                 ",
-        "        X.X  X.X                ",
-        "         X.XX.X                 ",
-        "          X..X                  ",
-        "        XXXXXXXXXXXXXXXXXXX     ",
-        "       X...................X    ",
-        "       XXXXXXXXXXXXXXXXXXXXX    ",
-        "      XXX.X.XXX.XXX.XXX.X.XXX   ",
-        "      X.X.X.X.X.X.X.X.X.X.X.X   ",
-        "      XXX.X.XXX.XXX.XXX.X.XXX   ",
-        "      X...X.............X...X   ",
-        "      X...X.............X...X   ",
-        "       XXXXXXXXXXXXXXXXXXXXX    ",
-        "          XX XX     XX XX       ",
-        "                                ",
-        "    XXXXX                       ",
-        "    X...X                       ",
-        "    X...X                       ",
-        "    X...X                       ",
-        "    X...X                       ",
-        "    X...X                       ",
-        "    X...X                       ",
-        "    X...X                       ",
-        "XXXXX...XXXXX                   ",
-        " X.........X                    ",
-        "  X.......X                     ",
-        "   X.....X                      ",
-        "    X...X                       ",
-        "     X.X                        ",
-        "      X                         "
-    );
+        "           XX                   "
+        "          X..X                  "
+        "         X.XX.X                 "
+        "        X.X  X.X                "
+        "         X.XX.X                 "
+        "          X..X                  "
+        "        XXXXXXXXXXXXXXXXXXX     "
+        "       X...................X    "
+        "       XXXXXXXXXXXXXXXXXXXXX    "
+        "      XXX.X.XXX.XXX.XXX.X.XXX   "
+        "      X.X.X.X.X.X.X.X.X.X.X.X   "
+        "      XXX.X.XXX.XXX.XXX.X.XXX   "
+        "      X...X.............X...X   "
+        "      X...X.............X...X   "
+        "       XXXXXXXXXXXXXXXXXXXXX    "
+        "          XX XX     XX XX       "
+        "                                "
+        "    XXXXX                       "
+        "    X...X                       "
+        "    X...X                       "
+        "    X...X                       "
+        "    X...X                       "
+        "    X...X                       "
+        "    X...X                       "
+        "    X...X                       "
+        "XXXXX...XXXXX                   "
+        " X.........X                    "
+        "  X.......X                     "
+        "   X.....X                      "
+        "    X...X                       "
+        "     X.X                        "
+        "      X                         ");
 
-    static Cursor cursor176 = convertCursor(
+    static Cursor cursor176 = Cursor(
         25, 31,
-        "                   XX           ",
-        "                  X..X          ",
-        "                 X.XX.X         ",
-        "                X.X  X.X        ",
-        "                 X.XX.X         ",
-        "                  X..X          ",
-        "     XXXXXXXXXXXXXXXXXXX        ",
-        "    X...................X       ",
-        "    XXXXXXXXXXXXXXXXXXXXX       ",
-        "   XXX.X.XXX.XXX.XXX.X.XXX      ",
-        "   X.X.X.X.X.X.X.X.X.X.X.X      ",
-        "   XXX.X.XXX.XXX.XXX.X.XXX      ",
-        "   X...X.............X...X      ",
-        "   X...X.............X...X      ",
-        "    XXXXXXXXXXXXXXXXXXXXX       ",
-        "       XX XX     XX XX          ",
-        "                                ",
-        "                       XXXXX    ",
-        "                       X...X    ",
-        "                       X...X    ",
-        "                       X...X    ",
-        "                       X...X    ",
-        "                       X...X    ",
-        "                       X...X    ",
-        "                       X...X    ",
-        "                   XXXXX...XXXXX",
-        "                    X.........X ",
-        "                     X.......X  ",
-        "                      X.....X   ",
-        "                       X...X    ",
-        "                        X.X     ",
-        "                         X      "
-    );
+        "                   XX           "
+        "                  X..X          "
+        "                 X.XX.X         "
+        "                X.X  X.X        "
+        "                 X.XX.X         "
+        "                  X..X          "
+        "     XXXXXXXXXXXXXXXXXXX        "
+        "    X...................X       "
+        "    XXXXXXXXXXXXXXXXXXXXX       "
+        "   XXX.X.XXX.XXX.XXX.X.XXX      "
+        "   X.X.X.X.X.X.X.X.X.X.X.X      "
+        "   XXX.X.XXX.XXX.XXX.X.XXX      "
+        "   X...X.............X...X      "
+        "   X...X.............X...X      "
+        "    XXXXXXXXXXXXXXXXXXXXX       "
+        "       XX XX     XX XX          "
+        "                                "
+        "                       XXXXX    "
+        "                       X...X    "
+        "                       X...X    "
+        "                       X...X    "
+        "                       X...X    "
+        "                       X...X    "
+        "                       X...X    "
+        "                       X...X    "
+        "                   XXXXX...XXXXX"
+        "                    X.........X "
+        "                     X.......X  "
+        "                      X.....X   "
+        "                       X...X    "
+        "                        X.X     "
+        "                         X      ");
 
-    static Cursor cursor180 = convertCursor(
+    static Cursor cursor180 = Cursor(
         6, 31,
-        "                           XXXXX",
-        "                          X..X.X",
-        "                         X...X.X",
-        "                        X...X.X ",
-        "                       X....X.X ",
-        "                      X.....X.X ",
-        "    XXXXXXXXXXXXXXXXXX.....X.X  ",
-        "   XXX.....................XXX  ",
-        " XX..........................X  ",
-        "XX.X.X.X.X.X.X.X.X.X.X.X....X   ",
-        "XX.........................X    ",
-        "XX........XXXXXXXX........X     ",
-        " XX......X........XX...XXX      ",
-        "   XXXXXX..XXXXXX...XXX         ",
-        "        XXX.X....XXX            ",
-        "          X.X.....XXX           ",
-        "          X.X....XX             ",
-        "    XXXXX  XXXXXX               ",
-        "    X...X                       ",
-        "    X...X                       ",
-        "    X...X                       ",
-        "    X...X                       ",
-        "    X...X                       ",
-        "    X...X                       ",
-        "    X...X                       ",
-        "XXXXX...XXXXX                   ",
-        " X.........X                    ",
-        "  X.......X                     ",
-        "   X.....X                      ",
-        "    X...X                       ",
-        "     X.X                        ",
-        "      X                         "
-    );
+        "                           XXXXX"
+        "                          X..X.X"
+        "                         X...X.X"
+        "                        X...X.X "
+        "                       X....X.X "
+        "                      X.....X.X "
+        "    XXXXXXXXXXXXXXXXXX.....X.X  "
+        "   XXX.....................XXX  "
+        " XX..........................X  "
+        "XX.X.X.X.X.X.X.X.X.X.X.X....X   "
+        "XX.........................X    "
+        "XX........XXXXXXXX........X     "
+        " XX......X........XX...XXX      "
+        "   XXXXXX..XXXXXX...XXX         "
+        "        XXX.X....XXX            "
+        "          X.X.....XXX           "
+        "          X.X....XX             "
+        "    XXXXX  XXXXXX               "
+        "    X...X                       "
+        "    X...X                       "
+        "    X...X                       "
+        "    X...X                       "
+        "    X...X                       "
+        "    X...X                       "
+        "    X...X                       "
+        "XXXXX...XXXXX                   "
+        " X.........X                    "
+        "  X.......X                     "
+        "   X.....X                      "
+        "    X...X                       "
+        "     X.X                        "
+        "      X                         ");
 
-    static Cursor cursor179 = convertCursor(
+    static Cursor cursor179 = Cursor(
         6, 31,
-        "         X                      ",
-        "         X                      ",
-        "         X               X      ",
-        "         X               X      ",
-        "         X               X      ",
-        "         X    XXXX       X      ",
-        "        XXX   XXXX       X      ",
-        "       X...X  X..X       X      ",
-        "       X....XXXXXXXXXX   X      ",
-        "       X..............X  X      ",
-        "XXXXXXX......XX.XX.XX..XXXXXX   ",
-        "X............................X  ",
-        " XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-        "  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-        "  XX....X..X.X..XXXX.XX..XXX.XXX",
-        "   XXXXXXXXXXXXXXXXXXXXXXXXXXXX ",
-        "                                ",
-        "    XXXXX                       ",
-        "    X...X                       ",
-        "    X...X                       ",
-        "    X...X                       ",
-        "    X...X                       ",
-        "    X...X                       ",
-        "    X...X                       ",
-        "    X...X                       ",
-        "XXXXX...XXXXX                   ",
-        " X.........X                    ",
-        "  X.......X                     ",
-        "   X.....X                      ",
-        "    X...X                       ",
-        "     X.X                        ",
-        "      X                         "
-    );
+        "         X                      "
+        "         X                      "
+        "         X               X      "
+        "         X               X      "
+        "         X               X      "
+        "         X    XXXX       X      "
+        "        XXX   XXXX       X      "
+        "       X...X  X..X       X      "
+        "       X....XXXXXXXXXX   X      "
+        "       X..............X  X      "
+        "XXXXXXX......XX.XX.XX..XXXXXX   "
+        "X............................X  "
+        " XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+        "  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+        "  XX....X..X.X..XXXX.XX..XXX.XXX"
+        "   XXXXXXXXXXXXXXXXXXXXXXXXXXXX "
+        "                                "
+        "    XXXXX                       "
+        "    X...X                       "
+        "    X...X                       "
+        "    X...X                       "
+        "    X...X                       "
+        "    X...X                       "
+        "    X...X                       "
+        "    X...X                       "
+        "XXXXX...XXXXX                   "
+        " X.........X                    "
+        "  X.......X                     "
+        "   X.....X                      "
+        "    X...X                       "
+        "     X.X                        "
+        "      X                         ");
 
-    static Cursor cursor164 = convertCursor(
+    static Cursor cursor164 = Cursor(
         14, 16,
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "                                ",
-        "              X                 ",
-        "             X.X                ",
-        "             X.X                ",
-        "           XXX.XXX              ",
-        "          X.......X             ",
-        "           X.....X              ",
-        "            X...X               ",
-        "       X     X.X     X          ",
-        "      X.X     X     X.X         ",
-        "      X..X         X..X         ",
-        "    XXX...X   X   X...XXX       ",
-        "   X.......X X.X X.......X      ",
-        "    XXX...X   X   X...XXX       ",
-        "      X..X         X..X         ",
-        "      X.X     X     X.X         ",
-        "       X     X.X     X          ",
-        "            X...X               ",
-        "           X.....X              ",
-        "          X.......X             ",
-        "           XXX.XXX              ",
-        "             X.X                ",
-        "             X.X                ",
-        "              X                 ",
-        "                                ",
-        "                                ",
-        "                                ",
         "                                "
-    );
+        "                                "
+        "                                "
+        "                                "
+        "                                "
+        "              X                 "
+        "             X.X                "
+        "             X.X                "
+        "           XXX.XXX              "
+        "          X.......X             "
+        "           X.....X              "
+        "            X...X               "
+        "       X     X.X     X          "
+        "      X.X     X     X.X         "
+        "      X..X         X..X         "
+        "    XXX...X   X   X...XXX       "
+        "   X.......X X.X X.......X      "
+        "    XXX...X   X   X...XXX       "
+        "      X..X         X..X         "
+        "      X.X     X     X.X         "
+        "       X     X.X     X          "
+        "            X...X               "
+        "           X.....X              "
+        "          X.......X             "
+        "           XXX.XXX              "
+        "             X.X                "
+        "             X.X                "
+        "              X                 "
+        "                                "
+        "                                "
+        "                                "
+        "                                ");
 
-    static Cursor cursor169 = convertCursor(
+    static Cursor cursor169 = Cursor(
         6, 31,
-        "            XXXXXXXXXXXX        ",
-        "            X..........XX       ",
-        "            XXXXX.X.XX.X.X      ",
-        "            XXXXXXXXXXXX..X     ",
-        "            X..........XX..X    ",
-        "            X.XX.XX.XX.X.X.X    ",
-        "            X.X..X..X..X..XX    ",
-        "            X..........X.X.X    ",
-        "            X.XX.XX.XX.X.X.X    ",
-        "            X.X..XX.XX.X...X    ",
-        "     XXX    X..........X.X.X    ",
-        "    X...X   X.XX.XX.XX.XXXXXXX  ",
-        "   X.....X  X.X..XX.XX.X.....XX ",
-        "   X.XXX.X  X..........XXXXXXX.X",
-        "XXXX.X...XXXX.XX.XX.XX.X.X.X.XXX",
-        "X...........X.XX.X..XX.X.....X.X",
-        "X.X.XXXXX.X.X..........X.X.X.X.X",
-        "X...........X.XX.XX.XX.X.X.X.X.X",
-        "X.X..XXX..X.X.X..XX.X..X.....X.X",
-        "X....XX.....X..........X.X.X.X.X",
-        "X.X..XX...X.X.XX.XX.XX.X.X.X.X.X",
-        "X...XXXXX...X.X..XX.XX.X.....X.X",
-        "X...X...XX..X....XX....X.X.X.X.X",
-        "XXXXX...XXXXXXXXXXXXXXXXXXXXXXXX",
-        "    X...XX                      ",
-        "XXXXX...XXXXX X XXXXXXXXXXXXXXX ",
-        " X.........XX                   ",
-        "  X.......XX     XX X XXXXX XX  ",
-        "   X.....XX                     ",
-        "    X...XX               XXXX   ",
-        "     X.XX                       ",
-        "      XX                        "
-    );
+        "            XXXXXXXXXXXX        "
+        "            X..........XX       "
+        "            XXXXX.X.XX.X.X      "
+        "            XXXXXXXXXXXX..X     "
+        "            X..........XX..X    "
+        "            X.XX.XX.XX.X.X.X    "
+        "            X.X..X..X..X..XX    "
+        "            X..........X.X.X    "
+        "            X.XX.XX.XX.X.X.X    "
+        "            X.X..XX.XX.X...X    "
+        "     XXX    X..........X.X.X    "
+        "    X...X   X.XX.XX.XX.XXXXXXX  "
+        "   X.....X  X.X..XX.XX.X.....XX "
+        "   X.XXX.X  X..........XXXXXXX.X"
+        "XXXX.X...XXXX.XX.XX.XX.X.X.X.XXX"
+        "X...........X.XX.X..XX.X.....X.X"
+        "X.X.XXXXX.X.X..........X.X.X.X.X"
+        "X...........X.XX.XX.XX.X.X.X.X.X"
+        "X.X..XXX..X.X.X..XX.X..X.....X.X"
+        "X....XX.....X..........X.X.X.X.X"
+        "X.X..XX...X.X.XX.XX.XX.X.X.X.X.X"
+        "X...XXXXX...X.X..XX.XX.X.....X.X"
+        "X...X...XX..X....XX....X.X.X.X.X"
+        "XXXXX...XXXXXXXXXXXXXXXXXXXXXXXX"
+        "    X...XX                      "
+        "XXXXX...XXXXX X XXXXXXXXXXXXXXX "
+        " X.........XX                   "
+        "  X.......XX     XX X XXXXX XX  "
+        "   X.....XX                     "
+        "    X...XX               XXXX   "
+        "     X.XX                       "
+        "      XX                        ");
 
-    static Cursor cursor168 = convertCursor(
+    static Cursor cursor168 = Cursor(
         6, 31,
-        "                                ",
-        "                                ",
-        "                                ",
-        "          XXXXXXXXXXXX          ",
-        "          X..........XX         ",
-        "          XXXXX.X.XX.X.X        ",
-        "          XXXXXXXXXXXX..X       ",
-        "          X..........XX..X      ",
-        "          X.XX.XX.XX.X.X.X      ",
-        "          X.X..X..X..X..XX      ",
-        "          X..........X.X.X      ",
-        "          X.XX.XX.XX.X.X.X      ",
-        "          X.X..XX.XX.X...X      ",
-        "          X..........X.X.X      ",
-        "          X.XX.XX.XX.X.X.X      ",
-        "          X.XX.X..XX.X...X      ",
-        "          X..........X.X.X      ",
-        "          X.XX.XX.XX.X.X.X      ",
-        "          X.X..XX.X..X...X      ",
-        "          X..........X.X.X      ",
-        "          X.XX.XX.XX.X.X.X      ",
-        "    XXXXX X.X..XX.XX.X...X      ",
-        "    X...X X....XX....X.X.X      ",
-        "    X...X XXXXXXXXXXXXXXXX      ",
-        "    X...X                       ",
-        "XXXXX...XXXXX                   ",
-        " X.........X                    ",
-        "  X.......X                     ",
-        "   X.....X                      ",
-        "    X...X                       ",
-        "     X.X                        ",
-        "      X                         "
-    );
+        "                                "
+        "                                "
+        "                                "
+        "          XXXXXXXXXXXX          "
+        "          X..........XX         "
+        "          XXXXX.X.XX.X.X        "
+        "          XXXXXXXXXXXX..X       "
+        "          X..........XX..X      "
+        "          X.XX.XX.XX.X.X.X      "
+        "          X.X..X..X..X..XX      "
+        "          X..........X.X.X      "
+        "          X.XX.XX.XX.X.X.X      "
+        "          X.X..XX.XX.X...X      "
+        "          X..........X.X.X      "
+        "          X.XX.XX.XX.X.X.X      "
+        "          X.XX.X..XX.X...X      "
+        "          X..........X.X.X      "
+        "          X.XX.XX.XX.X.X.X      "
+        "          X.X..XX.X..X...X      "
+        "          X..........X.X.X      "
+        "          X.XX.XX.XX.X.X.X      "
+        "    XXXXX X.X..XX.XX.X...X      "
+        "    X...X X....XX....X.X.X      "
+        "    X...X XXXXXXXXXXXXXXXX      "
+        "    X...X                       "
+        "XXXXX...XXXXX                   "
+        " X.........X                    "
+        "  X.......X                     "
+        "   X.....X                      "
+        "    X...X                       "
+        "     X.X                        "
+        "      X                         ");
 
-    static Cursor cursor170 = convertCursor(
+    static Cursor cursor170 = Cursor(
         6, 31,
-        "                       XX   XX  ",
-        "                      XX.X XX.X ",
-        "                      XX.X XX.X ",
-        "                  XX  XXXX XXXX ",
-        "                 XX.X XX.X XX.X ",
-        "                 XX.X XXXX XXXX ",
-        "                 XXXX XX.X XX.X ",
-        "                 XX.X XX.X XX.X ",
-        "          XX     XXXX XXXX XX.X ",
-        "        XX..X    XX.X XX..XXX.X ",
-        "      XX..XX.X   XX.XX..XX.XX.X ",
-        "    XX..XXXXX.X  XXX..XXXXX.X.X ",
-        "  XX..XXX...XX.XXX..XXX...XX.XX ",
-        "  X.XXX....X.XX...XXX..X...XX.X ",
-        "  XXX...XX....XXXXX.XX...X..XXX ",
-        "  X...X........XX......X.....XX ",
-        "  X.XX.XX.XX.XX.X.XX.XX.XX.XX.X ",
-        "  X.XX.XX.XX.XX.X.XX.XX.XX.XX.X ",
-        "  X.XX.XX.XX.XX.X.XX.XX.XX.XX.X ",
-        "  X.XX.XX.XX.XX.X.XX.XX.XX.XX.X ",
-        "  XX.....X......X.........X...X ",
-        "  X.XXXXXX..X.XXX..XX...X....XX ",
-        "  X.X...XX......X.........XX..X ",
-        "  XXX...XXXXXXXXXXXXXXXXXXXXXXX ",
-        "    X...X                       ",
-        "XXXXX...XXXXX                   ",
-        " X.........X                    ",
-        "  X.......X                     ",
-        "   X.....X                      ",
-        "    X...X                       ",
-        "     X.X                        ",
-        "      X                         "
-    );
+        "                       XX   XX  "
+        "                      XX.X XX.X "
+        "                      XX.X XX.X "
+        "                  XX  XXXX XXXX "
+        "                 XX.X XX.X XX.X "
+        "                 XX.X XXXX XXXX "
+        "                 XXXX XX.X XX.X "
+        "                 XX.X XX.X XX.X "
+        "          XX     XXXX XXXX XX.X "
+        "        XX..X    XX.X XX..XXX.X "
+        "      XX..XX.X   XX.XX..XX.XX.X "
+        "    XX..XXXXX.X  XXX..XXXXX.X.X "
+        "  XX..XXX...XX.XXX..XXX...XX.XX "
+        "  X.XXX....X.XX...XXX..X...XX.X "
+        "  XXX...XX....XXXXX.XX...X..XXX "
+        "  X...X........XX......X.....XX "
+        "  X.XX.XX.XX.XX.X.XX.XX.XX.XX.X "
+        "  X.XX.XX.XX.XX.X.XX.XX.XX.XX.X "
+        "  X.XX.XX.XX.XX.X.XX.XX.XX.XX.X "
+        "  X.XX.XX.XX.XX.X.XX.XX.XX.XX.X "
+        "  XX.....X......X.........X...X "
+        "  X.XXXXXX..X.XXX..XX...X....XX "
+        "  X.X...XX......X.........XX..X "
+        "  XXX...XXXXXXXXXXXXXXXXXXXXXXX "
+        "    X...X                       "
+        "XXXXX...XXXXX                   "
+        " X.........X                    "
+        "  X.......X                     "
+        "   X.....X                      "
+        "    X...X                       "
+        "     X.X                        "
+        "      X                         ");
 
-    static Cursor cursor184 = convertCursor(
+    static Cursor cursor184 = Cursor(
         6, 31,
-        "                 XXX            ",
-        "               XX...X           ",
-        "             XX....X            ",
-        "            X..XX.X             ",
-        "            X..X X    XXXXXXX   ",
-        "            XXX      X.......X  ",
-        " XX         X.X      X.XXX.X.X  ",
-        " X.X      XXX.XXXXXXXX.XXX.X.X  ",
-        "  X.X    X...........X.XXX.X.X  ",
-        "   X.X   X.XXXXXX....X.XXX.X.X  ",
-        "   X.X   X.XX.X......X.......X  ",
-        "    X.XXXXXXXXXXX..XXXX......X  ",
-        "    X.X..........X...........X  ",
-        "    X.X....XXXXXXXXXXX.XX.XXX   ",
-        "    X.XXXXX..X..X..X..X..X..XX  ",
-        "   X.X   X.XX.XX.XX.XX.XX.XX.X  ",
-        "   X.X   X.XX.XX.XX.XX.XX.XX.X  ",
-        " XX.X     X..X..X..X..X..X..X   ",
-        "X..X       XXXXXXXXXXXXXXXXX    ",
-        " XX XXXXX                       ",
-        "    X...X                       ",
-        "    X...X                       ",
-        "    X...X                       ",
-        "    X...X                       ",
-        "    X...X                       ",
-        "XXXXX...XXXXX                   ",
-        " X.........X                    ",
-        "  X.......X                     ",
-        "   X.....X                      ",
-        "    X...X                       ",
-        "     X.X                        ",
-        "      X                         "
-    );
+        "                 XXX            "
+        "               XX...X           "
+        "             XX....X            "
+        "            X..XX.X             "
+        "            X..X X    XXXXXXX   "
+        "            XXX      X.......X  "
+        " XX         X.X      X.XXX.X.X  "
+        " X.X      XXX.XXXXXXXX.XXX.X.X  "
+        "  X.X    X...........X.XXX.X.X  "
+        "   X.X   X.XXXXXX....X.XXX.X.X  "
+        "   X.X   X.XX.X......X.......X  "
+        "    X.XXXXXXXXXXX..XXXX......X  "
+        "    X.X..........X...........X  "
+        "    X.X....XXXXXXXXXXX.XX.XXX   "
+        "    X.XXXXX..X..X..X..X..X..XX  "
+        "   X.X   X.XX.XX.XX.XX.XX.XX.X  "
+        "   X.X   X.XX.XX.XX.XX.XX.XX.X  "
+        " XX.X     X..X..X..X..X..X..X   "
+        "X..X       XXXXXXXXXXXXXXXXX    "
+        " XX XXXXX                       "
+        "    X...X                       "
+        "    X...X                       "
+        "    X...X                       "
+        "    X...X                       "
+        "    X...X                       "
+        "XXXXX...XXXXX                   "
+        " X.........X                    "
+        "  X.......X                     "
+        "   X.....X                      "
+        "    X...X                       "
+        "     X.X                        "
+        "      X                         ");
 
-    static Cursor cursor185 = convertCursor(
+    static Cursor cursor185 = Cursor(
         6, 31,
-        "                X               ",
-        "               X.X              ",
-        "               X.X              ",
-        "               X.X              ",
-        "               X.X              ",
-        "               XXX              ",
-        "             XXXXXXXXXXXXXXX    ",
-        "            X...X.....XX..X     ",
-        "            X..XXX....XX.X      ",
-        "            X...X.....XX..X     ",
-        "             XXXXXXXXXXXXXXX    ",
-        "               X.X              ",
-        "               X.X              ",
-        "               X.X              ",
-        "               X.X              ",
-        "               X.X              ",
-        "               X.X              ",
-        "               X.X              ",
-        "               X.X              ",
-        "    XXXXX      X.X              ",
-        "    X...X      X.X              ",
-        "    X...X      X.X              ",
-        "    X...X      X.X              ",
-        "    X...X     XX.XX             ",
-        "    X...X     XXXXX             ",
-        "XXXXX...XXXXX XXX.X             ",
-        " X.........X  XXXXX             ",
-        "  X.......X   XXX.X             ",
-        "   X.....X    XXX.X             ",
-        "    X...X     XXXXX             ",
-        "     X.X       XXX              ",
-        "      X                         "
-    );
+        "                X               "
+        "               X.X              "
+        "               X.X              "
+        "               X.X              "
+        "               X.X              "
+        "               XXX              "
+        "             XXXXXXXXXXXXXXX    "
+        "            X...X.....XX..X     "
+        "            X..XXX....XX.X      "
+        "            X...X.....XX..X     "
+        "             XXXXXXXXXXXXXXX    "
+        "               X.X              "
+        "               X.X              "
+        "               X.X              "
+        "               X.X              "
+        "               X.X              "
+        "               X.X              "
+        "               X.X              "
+        "               X.X              "
+        "    XXXXX      X.X              "
+        "    X...X      X.X              "
+        "    X...X      X.X              "
+        "    X...X      X.X              "
+        "    X...X     XX.XX             "
+        "    X...X     XXXXX             "
+        "XXXXX...XXXXX XXX.X             "
+        " X.........X  XXXXX             "
+        "  X.......X   XXX.X             "
+        "   X.....X    XXX.X             "
+        "    X...X     XXXXX             "
+        "     X.X       XXX              "
+        "      X                         ");
 
-    static Cursor cursor186 = convertCursor(
+    static Cursor cursor186 = Cursor(
         6, 31,
-        "                 XXXXX          ",
-        "                X.....X         ",
-        "              XXX.....XXX       ",
-        "            XX..XX...XX..XX     ",
-        "           X..X..X...X..X..X    ",
-        "          X.X..XXX...XXX..X.X   ",
-        "         X...XXX  XXX  XXX...X  ",
-        "         X...XX         XX...X  ",
-        "        X.XX.X           X.XX.X ",
-        "        X...XX           XX...X ",
-        "        XXXXX             XXXXX ",
-        "        X...X             X...X ",
-        "       XXXXXXXX         XXXXXXXX",
-        "       X......X         X......X",
-        "        XXXXXX           XXXXXX ",
-        "        X...XXXXXXXXXXXXXXX...X ",
-        "        X...X X X X X X X X...X ",
-        "        X...X X X X X X X X...X ",
-        "        X...X X X X X X X X...X ",
-        "    XXXXX                       ",
-        "    X...X                       ",
-        "    X...X                       ",
-        "    X...X                       ",
-        "    X...X                       ",
-        "    X...X                       ",
-        "XXXXX...XXXXX                   ",
-        " X.........X                    ",
-        "  X.......X                     ",
-        "   X.....X                      ",
-        "    X...X                       ",
-        "     X.X                        ",
-        "      X                         "
-    );
+        "                 XXXXX          "
+        "                X.....X         "
+        "              XXX.....XXX       "
+        "            XX..XX...XX..XX     "
+        "           X..X..X...X..X..X    "
+        "          X.X..XXX...XXX..X.X   "
+        "         X...XXX  XXX  XXX...X  "
+        "         X...XX         XX...X  "
+        "        X.XX.X           X.XX.X "
+        "        X...XX           XX...X "
+        "        XXXXX             XXXXX "
+        "        X...X             X...X "
+        "       XXXXXXXX         XXXXXXXX"
+        "       X......X         X......X"
+        "        XXXXXX           XXXXXX "
+        "        X...XXXXXXXXXXXXXXX...X "
+        "        X...X X X X X X X X...X "
+        "        X...X X X X X X X X...X "
+        "        X...X X X X X X X X...X "
+        "    XXXXX                       "
+        "    X...X                       "
+        "    X...X                       "
+        "    X...X                       "
+        "    X...X                       "
+        "    X...X                       "
+        "XXXXX...XXXXX                   "
+        " X.........X                    "
+        "  X.......X                     "
+        "   X.....X                      "
+        "    X...X                       "
+        "     X.X                        "
+        "      X                         ");
 
-    static Cursor cursor189 = convertCursor(
+    static Cursor cursor189 = Cursor(
         6, 31,
-        "                 XXXXXXX        ",
-        "              XXX.......XXX     ",
-        "            XX...XXXXXXX...XX   ",
-        "           X..XXXXXX.XXXXXX..X  ",
-        "          X.XXX.X X.X.X X.XXX.X ",
-        "         X.XX X.X  X.X  X.X XX.X",
-        "         XXXXXXXXXXXXXXXXXXXXXXX",
-        "         X.....................X",
-        "         X.X.X.X.X.X.X.X.X.X.X.X",
-        "         XXXXXXXXXXXXXXXXXXXXXXX",
-        "         XXX                 XXX",
-        "         X.X                 X.X",
-        "         X.X                 X.X",
-        "         X.X                 X.X",
-        "         X.X                 X.X",
-        "         X.X                 X.X",
-        "         XXXXX             XXXXX",
-        "         X....X           X....X",
-        "         XXXXXX           XXXXXX",
-        "    XXXXXX...X             X...X",
-        "    X...XXXXXX             XXXXX",
-        "    X...X                       ",
-        "    X...X                       ",
-        "    X...X                       ",
-        "    X...X                       ",
-        "XXXXX...XXXXX                   ",
-        " X.........X                    ",
-        "  X.......X                     ",
-        "   X.....X                      ",
-        "    X...X                       ",
-        "     X.X                        ",
-        "      X                         "
-    );
+        "                 XXXXXXX        "
+        "              XXX.......XXX     "
+        "            XX...XXXXXXX...XX   "
+        "           X..XXXXXX.XXXXXX..X  "
+        "          X.XXX.X X.X.X X.XXX.X "
+        "         X.XX X.X  X.X  X.X XX.X"
+        "         XXXXXXXXXXXXXXXXXXXXXXX"
+        "         X.....................X"
+        "         X.X.X.X.X.X.X.X.X.X.X.X"
+        "         XXXXXXXXXXXXXXXXXXXXXXX"
+        "         XXX                 XXX"
+        "         X.X                 X.X"
+        "         X.X                 X.X"
+        "         X.X                 X.X"
+        "         X.X                 X.X"
+        "         X.X                 X.X"
+        "         XXXXX             XXXXX"
+        "         X....X           X....X"
+        "         XXXXXX           XXXXXX"
+        "    XXXXXX...X             X...X"
+        "    X...XXXXXX             XXXXX"
+        "    X...X                       "
+        "    X...X                       "
+        "    X...X                       "
+        "    X...X                       "
+        "XXXXX...XXXXX                   "
+        " X.........X                    "
+        "  X.......X                     "
+        "   X.....X                      "
+        "    X...X                       "
+        "     X.X                        "
+        "      X                         ");
 
     // 0x00452001
     void initialiseCursors()
