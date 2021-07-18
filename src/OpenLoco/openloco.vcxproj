@@ -117,6 +117,7 @@
     <ClCompile Include="TrackData.cpp" />
     <ClCompile Include="Tutorial.cpp" />
     <ClCompile Include="Ui.cpp" />
+    <ClCompile Include="Ui\Cursor.cpp" />
     <ClCompile Include="Ui\Dropdown.cpp" />
     <ClCompile Include="Ui\ProgressBar.cpp" />
     <ClCompile Include="Ui\Screenshot.cpp" />
