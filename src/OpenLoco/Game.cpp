@@ -277,8 +277,8 @@ namespace OpenLoco::Game
             if (Game::saveLandscapeOpen())
             {
                 // 0x0043C4B3
-                auto path = fs::path(&_savePath[0]).replace_extension(S5::extensionSC5).u8string();
-                std::strncpy(&_currentScenarioFilename[0], path.c_str(), std::size(_currentScenarioFilename));
+                auto path = fs::u8path(&_savePath[0]).replace_extension(S5::extensionSC5);
+                std::strncpy(&_currentScenarioFilename[0], path.u8string().c_str(), std::size(_currentScenarioFilename));
 
                 if (!S5::save(path, S5::SaveFlags::scenario))
                     Ui::Windows::Error::open(StringIds::landscape_save_failed, StringIds::null);
@@ -291,8 +291,8 @@ namespace OpenLoco::Game
             if (Game::saveSaveGameOpen())
             {
                 // 0x0043C446
-                auto path = fs::path(&_savePath[0]).replace_extension(S5::extensionSV5).u8string();
-                std::strncpy(&_currentScenarioFilename[0], path.c_str(), std::size(_currentScenarioFilename));
+                auto path = fs::u8path(&_savePath[0]).replace_extension(S5::extensionSV5);
+                std::strncpy(&_currentScenarioFilename[0], path.u8string().c_str(), std::size(_currentScenarioFilename));
 
                 S5::SaveFlags flags = {};
                 if (Config::get().flags & Config::Flags::exportObjectsWithSaves)

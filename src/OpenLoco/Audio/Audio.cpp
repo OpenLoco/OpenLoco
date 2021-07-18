@@ -723,7 +723,7 @@ namespace OpenLoco::Audio
     // 0x0040194E
     bool loadChannel(ChannelId id, const char* path, int32_t c)
     {
-        return loadChannel(id, fs::path(path), c);
+        return loadChannel(id, fs::u8path(path), c);
     }
 
     // 0x00401999

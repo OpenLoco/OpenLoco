@@ -234,7 +234,7 @@ namespace OpenLoco::Localisation
     {
         try
         {
-            YAML::Node node = YAML::LoadFile(languageFile.string());
+            YAML::Node node = YAML::LoadFile(languageFile.u8string());
             node = node["strings"];
 
             for (YAML::const_iterator it = node.begin(); it != node.end(); ++it)

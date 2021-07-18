@@ -959,7 +959,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     static void processFileForDelete(Window* self, file_entry& entry)
     {
         // Create full path to target file.
-        fs::path path = fs::path(&_directory[0]) / std::string(entry.get_name());
+        fs::path path = fs::u8path(&_directory[0]) / std::string(entry.get_name());
 
         // Append extension to filename.
         path += getExtensionFromFileType(_fileType);

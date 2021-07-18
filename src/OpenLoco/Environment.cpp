@@ -71,7 +71,7 @@ namespace OpenLoco::Environment
     static fs::path resolveLocoInstallPath()
     {
         auto& cfg = Config::getNew();
-        auto path = fs::path(cfg.loco_install_path);
+        auto path = fs::u8path(cfg.loco_install_path);
         if (!path.empty())
         {
             if (validateLocoInstallPath(path))

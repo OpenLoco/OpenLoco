@@ -715,7 +715,7 @@ namespace OpenLoco::ObjectManager
     static fs::path findObjectPath(std::string& filename)
     {
         loco_global<char[257], 0x0050B635> _pathObjects;
-        auto objPath = fs::path(_pathObjects.get());
+        auto objPath = fs::u8path(_pathObjects.get());
 
         bool permutateName = false;
         do
