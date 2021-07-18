@@ -9,7 +9,7 @@ namespace OpenLoco::platform
 {
     uint32_t getTime();
     fs::path getUserDirectory();
-    std::string promptDirectory(const std::string& title);
+    fs::path promptDirectory(const std::string& title);
     fs::path GetCurrentExecutablePath();
     std::vector<fs::path> getDrives();
     bool isRunningInWine();

@@ -52,9 +52,9 @@ namespace OpenLoco::platform
         return pszPath;
     }
 
-    std::string promptDirectory(const std::string& title)
+    fs::path promptDirectory(const std::string& title)
     {
-        std::string result;
+        fs::path result;
 
         // Initialize COM and get a pointer to the shell memory allocator
         LPMALLOC lpMalloc;
@@ -68,7 +68,7 @@ namespace OpenLoco::platform
             LPITEMIDLIST pidl = SHBrowseForFolderW(&bi);
             if (pidl != nullptr)
             {
-                result = Utility::toUtf8(SHGetPathFromIDListLongPath(pidl));
+                result = fs::path(SHGetPathFromIDListLongPath(pidl).c_str());
             }
             CoTaskMemFree(pidl);
         }
@@ -85,7 +85,7 @@ namespace OpenLoco::platform
         return result;
     }
 
-    static std::string WIN32_GetModuleFileNameW(HMODULE hModule)
+    static fs::path WIN32_GetModuleFileNameW(HMODULE hModule)
     {
         uint32_t wExePathCapacity = MAX_PATH;
         std::unique_ptr<wchar_t[]> wExePath;
@@ -96,12 +96,12 @@ namespace OpenLoco::platform
             wExePath = std::make_unique<wchar_t[]>(wExePathCapacity);
             size = GetModuleFileNameW(hModule, wExePath.get(), wExePathCapacity);
         } while (size >= wExePathCapacity);
-        return Utility::toUtf8(wExePath.get());
+        return fs::path(wExePath.get());
     }
 
     fs::path GetCurrentExecutablePath()
     {
-        return fs::u8path(WIN32_GetModuleFileNameW(nullptr));
+        return WIN32_GetModuleFileNameW(nullptr);
     }
 
     std::vector<fs::path> getDrives()

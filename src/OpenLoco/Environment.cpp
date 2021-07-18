@@ -94,7 +94,7 @@ namespace OpenLoco::Environment
             std::cerr << "Unable to find install path for Locomotion." << std::endl
                       << "You will need to manually provide it." << std::endl;
             Ui::showMessageBox("OpenLoco", "Select your Locomotion install path.");
-            path = fs::u8path(platform::promptDirectory("Select your Locomotion install path."));
+            path = platform::promptDirectory("Select your Locomotion install path.");
             if (validateLocoInstallPath(path))
             {
                 cfg.loco_install_path = path.make_preferred().u8string();
