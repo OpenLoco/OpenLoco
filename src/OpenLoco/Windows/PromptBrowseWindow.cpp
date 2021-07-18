@@ -703,7 +703,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                     return path;
                 }
             }
-            return str / fs::path();
+            return path / fs::path();
         }
     }
 

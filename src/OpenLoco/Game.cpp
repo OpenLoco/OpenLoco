@@ -142,8 +142,8 @@ namespace OpenLoco::Game
             if (Game::loadLandscapeOpen())
             {
                 // 0x0043C087
-                auto path = fs::path(&_savePath[0]).replace_extension(S5::extensionSC5).u8string();
-                std::strncpy(&_currentScenarioFilename[0], path.c_str(), std::size(_currentScenarioFilename));
+                auto path = fs::u8path(&_savePath[0]).replace_extension(S5::extensionSC5);
+                std::strncpy(&_currentScenarioFilename[0], path.u8string().c_str(), std::size(_currentScenarioFilename));
 
                 if (sub_4424CE())
                 {
@@ -157,8 +157,8 @@ namespace OpenLoco::Game
             if (Game::loadSaveGameOpen())
             {
                 // 0x0043C033
-                auto path = fs::path(&_savePath[0]).replace_extension(S5::extensionSV5).u8string();
-                std::strncpy(&_currentScenarioFilename[0], path.c_str(), std::size(_currentScenarioFilename));
+                auto path = fs::u8path(&_savePath[0]).replace_extension(S5::extensionSV5);
+                std::strncpy(&_currentScenarioFilename[0], path.u8string().c_str(), std::size(_currentScenarioFilename));
 
                 if (S5::load(path, 0))
                 {

@@ -216,10 +216,17 @@ namespace OpenLoco::Environment
         auto& configLastSavePath = Config::getNew().last_save_path;
         if (!configLastSavePath.empty())
         {
-            auto directory = fs::u8path(configLastSavePath);
-            if (fs::is_directory(directory))
+            // Getting the directory can fail if config is bad.
+            try
             {
-                saveDirectory = directory;
+                auto directory = fs::u8path(configLastSavePath);
+                if (fs::is_directory(directory))
+                {
+                    saveDirectory = directory;
+                }
+            }
+            catch (std::system_error&)
+            {
             }
         }
         setDirectory(_path_saves_single_player, saveDirectory);
