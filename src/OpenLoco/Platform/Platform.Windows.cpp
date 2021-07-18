@@ -101,7 +101,7 @@ namespace OpenLoco::platform
 
     fs::path GetCurrentExecutablePath()
     {
-        return WIN32_GetModuleFileNameW(nullptr);
+        return fs::u8path(WIN32_GetModuleFileNameW(nullptr));
     }
 
     std::vector<fs::path> getDrives()
