@@ -1,4 +1,4 @@
-21.05+ (???)
+21.07 (2021-07-18)
 ------------------------------------------------------------------------
 - Feature: [#856] Allow filtering the vehicle list by station or cargo type.
 - Fix: [#982] Incorrect rating calculation for cargo causing penalty for fast vehicles.
