@@ -1,3 +1,4 @@
+#include "Ui/Cursor.h"
 #include "Win32.h"
 #include <algorithm>
 #include <cmath>
@@ -5,8 +6,8 @@
 #include <cstring>
 #include <iostream>
 #include <limits>
+#include <map>
 #include <stdexcept>
-#include <vector>
 
 #ifdef _WIN32
 #include "../../resources/Resource.h"
@@ -94,7 +95,7 @@ namespace OpenLoco::Ui
     static SDL_Surface* surface;
     static SDL_Surface* RGBASurface;
     static SDL_Palette* palette;
-    static std::vector<SDL_Cursor*> _cursors;
+    static std::map<CursorId, SDL_Cursor*> _cursors;
 
     static void setWindowIcon();
     static void update(int32_t width, int32_t height);
@@ -236,23 +237,66 @@ namespace OpenLoco::Ui
         SDL_RestoreWindow(window);
     }
 
+    static SDL_Cursor* loadCursor(Cursor& cursor)
+    {
+        return SDL_CreateCursor(cursor.data, cursor.mask, 32, 32, cursor.x, cursor.y);
+    }
+
     // 0x00452001
     void initialiseCursors()
     {
-        _cursors.push_back(SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_ARROW));
-        _cursors.push_back(nullptr);
-        _cursors.push_back(nullptr);
-        _cursors.push_back(SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZENS));
-        _cursors.push_back(SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_HAND));
-        _cursors.push_back(SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_WAIT));
-        _cursors.push_back(SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZENWSE));
+        _cursors[CursorId::pointer] = loadCursor(Cursor::pointer);
+        _cursors[CursorId::blank] = loadCursor(Cursor::blank);
+        _cursors[CursorId::upArrow] = loadCursor(Cursor::upArrow);
+        _cursors[CursorId::upDownArrow] = loadCursor(Cursor::upDownArrow);
+        _cursors[CursorId::handPointer] = loadCursor(Cursor::handPointer);
+        _cursors[CursorId::busy] = loadCursor(Cursor::busy);
+        _cursors[CursorId::diagonalArrows] = loadCursor(Cursor::diagonalArrows);
+        _cursors[CursorId::unk_7] = loadCursor(Cursor::cursor124);
+        _cursors[CursorId::unk_8] = loadCursor(Cursor::cursor131);
+        _cursors[CursorId::unk_9] = loadCursor(Cursor::cursor127);
+        _cursors[CursorId::unk_10] = loadCursor(Cursor::cursor128);
+        _cursors[CursorId::unk_11] = loadCursor(Cursor::cursor129);
+        _cursors[CursorId::unk_12] = loadCursor(Cursor::cursor130);
+        _cursors[CursorId::unk_13] = loadCursor(Cursor::cursor132);
+        _cursors[CursorId::unk_14] = loadCursor(Cursor::cursor133);
+        _cursors[CursorId::unk_15] = loadCursor(Cursor::cursor138);
+        _cursors[CursorId::unk_16] = loadCursor(Cursor::cursor137);
+        _cursors[CursorId::unk_17] = loadCursor(Cursor::cursor139);
+        _cursors[CursorId::unk_18] = loadCursor(Cursor::cursor141);
+        _cursors[CursorId::unk_19] = loadCursor(Cursor::cursor142);
+        _cursors[CursorId::unk_20] = loadCursor(Cursor::cursor143);
+        _cursors[CursorId::unk_21] = loadCursor(Cursor::cursor144);
+        _cursors[CursorId::unk_22] = loadCursor(Cursor::cursor145);
+        _cursors[CursorId::unk_23] = loadCursor(Cursor::cursor158);
+        _cursors[CursorId::unk_24] = loadCursor(Cursor::cursor159);
+        _cursors[CursorId::unk_25] = loadCursor(Cursor::cursor161);
+        _cursors[CursorId::unk_26] = loadCursor(Cursor::cursor160);
+        _cursors[CursorId::unk_27] = loadCursor(Cursor::cursor163);
+        _cursors[CursorId::unk_28] = loadCursor(Cursor::cursor162);
+        _cursors[CursorId::unk_29] = loadCursor(Cursor::cursor173);
+        _cursors[CursorId::unk_30] = loadCursor(Cursor::cursor172);
+        _cursors[CursorId::unk_31] = loadCursor(Cursor::cursor178);
+        _cursors[CursorId::unk_32] = loadCursor(Cursor::cursor177);
+        _cursors[CursorId::unk_33] = loadCursor(Cursor::cursor175);
+        _cursors[CursorId::unk_34] = loadCursor(Cursor::cursor176);
+        _cursors[CursorId::unk_35] = loadCursor(Cursor::cursor180);
+        _cursors[CursorId::unk_36] = loadCursor(Cursor::cursor179);
+        _cursors[CursorId::inwardArrows] = loadCursor(Cursor::inwardArrows);
+        _cursors[CursorId::unk_38] = loadCursor(Cursor::cursor169);
+        _cursors[CursorId::unk_39] = loadCursor(Cursor::cursor168);
+        _cursors[CursorId::unk_40] = loadCursor(Cursor::cursor170);
+        _cursors[CursorId::unk_41] = loadCursor(Cursor::cursor184);
+        _cursors[CursorId::unk_42] = loadCursor(Cursor::cursor185);
+        _cursors[CursorId::unk_43] = loadCursor(Cursor::cursor186);
+        _cursors[CursorId::unk_44] = loadCursor(Cursor::cursor189);
     }
 
     void disposeCursors()
     {
         for (auto cursor : _cursors)
         {
-            SDL_FreeCursor(cursor);
+            SDL_FreeCursor(cursor.second);
         }
         _cursors.clear();
     }
@@ -263,20 +307,13 @@ namespace OpenLoco::Ui
     {
         if (_cursors.size() > 0)
         {
-            auto index = (size_t)id;
-            if (index >= _cursors.size())
+            if (_cursors.find(id) == _cursors.end())
             {
                 // Default to cursor 0
-                index = 0;
+                id = CursorId::pointer;
             }
 
-            auto cursor = _cursors[index];
-            if (cursor == nullptr && index != 0)
-            {
-                // Default to cursor 0
-                cursor = _cursors[0];
-            }
-            SDL_SetCursor(cursor);
+            SDL_SetCursor(_cursors[id]);
         }
     }
 
