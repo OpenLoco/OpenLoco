@@ -323,6 +323,7 @@
     <ClInclude Include="Tutorial.h" />
     <ClInclude Include="Types.hpp" />
     <ClInclude Include="Ui.h" />
+    <ClInclude Include="Ui\Cursor.h" />
     <ClInclude Include="Ui\Dropdown.h" />
     <ClInclude Include="Ui\ProgressBar.h" />
     <ClInclude Include="Ui\Rect.h" />
