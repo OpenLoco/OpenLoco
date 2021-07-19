@@ -336,16 +336,6 @@ namespace OpenLoco::Ui::Dropdown
             flags &= ~(1 << 7);
         }
 
-        // 0x004955BC
-        static uint16_t getStringWidth(char* buffer)
-        {
-            registers regs;
-            regs.esi = (int32_t)buffer;
-            call(0x004955BC, regs);
-
-            return regs.cx;
-        }
-
         // 0x004CCAB2
         static void showText(int16_t x, int16_t y, int16_t width, int16_t height, uint8_t itemHeight, Colour_t colour, size_t count, uint8_t flags)
         {
@@ -371,7 +361,7 @@ namespace OpenLoco::Ui::Dropdown
 
                 _currentFontSpriteBase = Font::medium_bold;
 
-                auto stringWidth = getStringWidth(_byte_112CC04);
+                auto stringWidth = Gfx::getMaxStringWidth(_byte_112CC04);
 
                 maxStringWidth = std::max(maxStringWidth, stringWidth);
             }

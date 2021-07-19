@@ -355,6 +355,103 @@ namespace OpenLoco::Gfx
         return width;
     }
 
+    /**
+     * 0x004955BC
+     *
+     * @param buffer @<esi>
+     * @return width @<cx>
+     */
+    uint16_t getMaxStringWidth(const char* buffer)
+    {
+        uint16_t width = 0;
+        uint16_t maxWidth = 0;
+        const uint8_t* str = reinterpret_cast<const uint8_t*>(buffer);
+        int16_t fontSpriteBase = _currentFontSpriteBase;
+
+        while (*str != (uint8_t)0)
+        {
+            const uint8_t chr = *str;
+            str++;
+
+            if (chr >= 32)
+            {
+                width += _characterWidths[chr - 32 + fontSpriteBase];
+                continue;
+            }
+
+            switch (chr)
+            {
+                case ControlCodes::move_x:
+                    maxWidth = std::max(width, maxWidth);
+                    width = *str;
+                    str++;
+                    break;
+
+                case ControlCodes::adjust_palette:
+                case 3:
+                case 4:
+                    str++;
+                    break;
+
+                case ControlCodes::newline:
+                case ControlCodes::newline_smaller:
+                    continue;
+
+                case ControlCodes::font_small:
+                    fontSpriteBase = Font::small;
+                    break;
+
+                case ControlCodes::font_large:
+                    fontSpriteBase = Font::large;
+                    break;
+
+                case ControlCodes::font_bold:
+                    fontSpriteBase = Font::medium_bold;
+                    break;
+
+                case ControlCodes::font_regular:
+                    fontSpriteBase = Font::medium_normal;
+                    break;
+
+                case ControlCodes::outline:
+                case ControlCodes::outline_off:
+                case ControlCodes::window_colour_1:
+                case ControlCodes::window_colour_2:
+                case ControlCodes::window_colour_3:
+                case ControlCodes::window_colour_4:
+                    break;
+
+                case ControlCodes::newline_x_y:
+                    maxWidth = std::max(width, maxWidth);
+                    width = *str;
+                    str += 2;
+                    break;
+
+                case ControlCodes::inline_sprite_str:
+                {
+                    const uint32_t image = reinterpret_cast<const uint32_t*>(str)[0];
+                    const uint32_t imageId = image & 0x7FFFF;
+                    str += 4;
+                    width += _g1Elements[imageId].width;
+                    break;
+                }
+
+                default:
+                    if (chr <= 0x16)
+                    {
+                        str += 2;
+                    }
+                    else
+                    {
+                        str += 4;
+                    }
+                    break;
+            }
+        }
+        maxWidth = std::max(width, maxWidth);
+        return maxWidth;
+    }
+
     static void setTextColours(PaletteIndex_t pal1, PaletteIndex_t pal2, PaletteIndex_t pal3)
     {
         if ((_currentFontFlags & text_draw_flags::inset) != 0)
