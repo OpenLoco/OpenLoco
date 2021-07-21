@@ -175,7 +175,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                     activateSelectedConstructionWidgets();
                     break;
                 }
-                Common::sub_49FEC7();
+                sub_49FEC7();
                 WindowManager::viewportSetVisibility(WindowManager::ViewportVisibility::overgroundView);
                 Input::toolSet(self, widx::construct, 12);
                 Input::setFlag(Input::Flags::flag6);
@@ -1211,7 +1211,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     static void changeTrackPiece(uint8_t trackPiece, bool slope)
     {
         _byte_113603A = 0xFF;
-        Common::sub_49FEC7();
+        sub_49FEC7();
 
         if (slope)
             _lastSelectedTrackGradient = trackPiece;
@@ -1326,7 +1326,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             case widx::s_bend_dual_track_left:
             {
                 _byte_113603A = 0xFF;
-                Common::sub_49FEC7();
+                sub_49FEC7();
                 _lastSelectedTrackPiece = TrackPiece::s_bend_to_dual_track;
                 _trackCost = 0x80000000;
                 if (self->widgets[widx::s_bend_dual_track_left].image != ImageIds::construction_s_bend_dual_track_left)
@@ -1345,7 +1345,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             case widx::s_bend_dual_track_right:
             {
                 _byte_113603A = 0xFF;
-                Common::sub_49FEC7();
+                sub_49FEC7();
                 _lastSelectedTrackPiece = TrackPiece::s_bend_to_single_track;
                 _trackCost = 0x80000000;
                 if (self->widgets[widx::s_bend_dual_track_right].image != ImageIds::construction_s_bend_dual_track_right)
@@ -1412,7 +1412,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
                 // TODO: & ~(1 << 7) added to prevent crashing when selecting bridges for road/trams
                 _scenarioBridges[_trackType & ~(1 << 7)] = bridge;
-                Common::sub_49FEC7();
+                sub_49FEC7();
                 _trackCost = 0x80000000;
                 activateSelectedConstructionWidgets();
             }
@@ -1617,7 +1617,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         if (_trackType & (1 << 7))
         {
             mapInvalidateMapSelectionTiles();
-            Common::sub_49FEC7();
+            sub_49FEC7();
 
             auto road = getRoadPieceId(_lastSelectedTrackPiece, _lastSelectedTrackGradient, _constructionRotation);
 
@@ -1712,7 +1712,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         else
         {
             mapInvalidateMapSelectionTiles();
-            Common::sub_49FEC7();
+            sub_49FEC7();
 
             auto track = getTrackPieceId(_lastSelectedTrackPiece, _lastSelectedTrackGradient, _constructionRotation);
 

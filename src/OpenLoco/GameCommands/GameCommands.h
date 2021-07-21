@@ -49,13 +49,13 @@ namespace OpenLoco::GameCommands
         gc_unk_13 = 13,
         gc_unk_14 = 14,
         gc_unk_15 = 15,
-        gc_unk_16 = 16,
+        removeTrackStation = 16,
         gc_unk_17 = 17,
         gc_unk_18 = 18,
         changeCompanyColourScheme = 19,
         pauseGame = 20,
         loadSaveQuitGame = 21,
-        gc_unk_22 = 22,
+        removeTree = 22,
         gc_unk_23 = 23,
         changeLandMaterial = 24,
         raiseLand = 25,
@@ -66,7 +66,7 @@ namespace OpenLoco::GameCommands
         changeCompanyName = 30,
         changeCompanyOwnerName = 31,
         gc_unk_32 = 32,
-        gc_unk_33 = 33,
+        removeWall = 33,
         gc_unk_34 = 34,
         vehicleOrderInsert = 35,
         vehicleOrderDelete = 36,
@@ -76,9 +76,9 @@ namespace OpenLoco::GameCommands
         gc_unk_40 = 40,
         gc_unk_41 = 41,
         gc_unk_42 = 42,
-        gc_unk_43 = 43,
+        removeRoadStation = 43,
         gc_unk_44 = 44,
-        gc_unk_45 = 45,
+        removeBuilding = 45,
         renameTown = 46,
         createIndustry = 47,
         removeIndustry = 48,
@@ -90,11 +90,11 @@ namespace OpenLoco::GameCommands
         buildCompanyHeadquarters = 54,
         removeCompanyHeadquarters = 55,
         gc_unk_56 = 56,
-        gc_unk_57 = 57,
+        removeAirport = 57,
         gc_unk_58 = 58,
         vehicleAbortPickupAir = 59,
         gc_unk_60 = 60,
-        gc_unk_61 = 61,
+        removePort = 61,
         gc_unk_62 = 62,
         vehicleAbortPickupWater = 63,
         vehicleRefit = 64,
@@ -243,6 +243,86 @@ namespace OpenLoco::GameCommands
         doCommand(GameCommand::vehicleLocalExpress, regs);
     }
 
+    struct SignalRemovalArgs
+    {
+        SignalRemovalArgs() = default;
+        explicit SignalRemovalArgs(const registers regs)
+            : pos(regs.ax, regs.cx, regs.di)
+            , rotation(regs.bh & 0x3)
+            , trackId(regs.dl & 0x3F)
+            , index(regs.dh & 0xF)
+            , type(regs.bp & 0xF)
+            , flags(regs.edi >> 16)
+        {
+        }
+
+        Map::Pos3 pos;
+        uint8_t rotation;
+        uint8_t trackId;
+        uint8_t index;
+        uint8_t type;
+        uint16_t flags;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.ax = pos.x;
+            regs.cx = pos.y;
+            regs.edi = pos.z | (flags << 16);
+            regs.bh = rotation;
+            regs.dl = trackId;
+            regs.dh = index;
+            regs.bp = type;
+            return regs;
+        }
+    };
+
+    inline bool do_14(uint8_t flags, const SignalRemovalArgs& args)
+    {
+        registers regs = registers(args);
+        regs.bl = flags;
+        return doCommand(GameCommand::gc_unk_14, regs) != FAILURE;
+    }
+
+    struct TrackStationRemovalArgs
+    {
+        TrackStationRemovalArgs() = default;
+        explicit TrackStationRemovalArgs(const registers regs)
+            : pos(regs.ax, regs.cx, regs.di)
+            , rotation(regs.bh & 0x3)
+            , trackId(regs.dl & 0x3F)
+            , index(regs.dh & 0xF)
+            , type(regs.bp & 0xF)
+        {
+        }
+
+        Map::Pos3 pos;
+        uint8_t rotation;
+        uint8_t trackId;
+        uint8_t index;
+        uint8_t type;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.ax = pos.x;
+            regs.cx = pos.y;
+            regs.di = pos.z;
+            regs.bh = rotation;
+            regs.dl = trackId;
+            regs.dh = index;
+            regs.bp = type;
+            return regs;
+        }
+    };
+
+    inline bool do_16(uint8_t flags, const TrackStationRemovalArgs& args)
+    {
+        registers regs = registers(args);
+        regs.bl = flags;
+        return doCommand(GameCommand::removeTrackStation, regs) != FAILURE;
+    }
+
     // Change company colour scheme
     inline void do_19(int8_t isPrimary, int8_t value, int8_t colourType, int8_t setColourMode, uint8_t companyId)
     {
@@ -282,6 +362,39 @@ namespace OpenLoco::GameCommands
         regs.dl = dl; // [ 0 = save, 1 = close save prompt, 2 = don't save ]
         regs.di = di; // [ 0 = load game, 1 = return to title screen, 2 = quit to desktop ]
         doCommand(GameCommand::loadSaveQuitGame, regs);
+    }
+
+    struct TreeRemovalArgs
+    {
+        TreeRemovalArgs() = default;
+        explicit TreeRemovalArgs(const registers regs)
+            : pos(regs.ax, regs.cx, regs.dl * 4)
+            , type(regs.dh)
+            , elementType(regs.bh)
+        {
+        }
+
+        Map::Pos3 pos;
+        uint8_t type;
+        uint8_t elementType;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.ax = pos.x;
+            regs.cx = pos.y;
+            regs.dl = pos.z / 4;
+            regs.dh = type;
+            regs.bh = elementType;
+            return regs;
+        }
+    };
+
+    inline void do_22(uint8_t flags, const TreeRemovalArgs& args)
+    {
+        registers regs = registers(args);
+        regs.bl = flags;
+        doCommand(GameCommand::removeTree, regs);
     }
 
     // Change Land Material
@@ -386,6 +499,36 @@ namespace OpenLoco::GameCommands
         return doCommand(GameCommand::changeCompanyOwnerName, regs) != FAILURE;
     }
 
+    struct WallRemovalArgs
+    {
+        WallRemovalArgs() = default;
+        explicit WallRemovalArgs(const registers regs)
+            : pos(regs.ax, regs.cx, regs.dh * 4)
+            , rotation(regs.dl)
+        {
+        }
+
+        Map::Pos3 pos;
+        uint8_t rotation;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.ax = pos.x;
+            regs.cx = pos.y;
+            regs.dh = pos.z / 4;
+            regs.dl = rotation;
+            return regs;
+        }
+    };
+
+    inline void do_33(uint8_t flags, const WallRemovalArgs& args)
+    {
+        registers regs = registers(args);
+        regs.bl = flags;
+        doCommand(GameCommand::removeWall, regs);
+    }
+
     inline bool do_35(EntityId_t head, uint64_t rawOrder, uint32_t orderOffset)
     {
         registers regs;
@@ -412,6 +555,72 @@ namespace OpenLoco::GameCommands
         regs.bl = Flags::apply;
         regs.di = head;
         return doCommand(GameCommand::vehicleOrderSkip, regs);
+    }
+
+    struct RoadStationRemovalArgs
+    {
+        RoadStationRemovalArgs() = default;
+        explicit RoadStationRemovalArgs(const registers regs)
+            : pos(regs.ax, regs.cx, regs.di)
+            , rotation(regs.bh & 0x3)
+            , roadId(regs.dl & 0xF)
+            , index(regs.dh & 0x3)
+            , type(regs.bp & 0xF)
+        {
+        }
+
+        Map::Pos3 pos;
+        uint8_t rotation;
+        uint8_t roadId;
+        uint8_t index;
+        uint8_t type;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.ax = pos.x;
+            regs.cx = pos.y;
+            regs.di = pos.z;
+            regs.bh = rotation;
+            regs.dl = roadId;
+            regs.dh = index;
+            regs.bp = type;
+            return regs;
+        }
+    };
+
+    inline bool do_43(uint8_t flags, const RoadStationRemovalArgs& args)
+    {
+        registers regs = registers(args);
+        regs.bl = flags;
+        return doCommand(GameCommand::removeRoadStation, regs) != FAILURE;
+    }
+
+    struct BuildingRemovalArgs
+    {
+        BuildingRemovalArgs() = default;
+        explicit BuildingRemovalArgs(const registers regs)
+            : pos(regs.ax, regs.cx, regs.di)
+        {
+        }
+
+        Map::Pos3 pos;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.ax = pos.x;
+            regs.cx = pos.y;
+            regs.di = pos.z;
+            return regs;
+        }
+    };
+
+    inline void do_45(uint8_t flags, const BuildingRemovalArgs& args)
+    {
+        registers regs = registers(args);
+        regs.bl = flags;
+        doCommand(GameCommand::removeBuilding, regs);
     }
 
     // Rename town
@@ -512,12 +721,66 @@ namespace OpenLoco::GameCommands
         doCommand(GameCommand::removeCompanyHeadquarters, regs);
     }
 
+    struct AirportRemovalArgs
+    {
+        AirportRemovalArgs() = default;
+        explicit AirportRemovalArgs(const registers regs)
+            : pos(regs.ax, regs.cx, regs.di)
+        {
+        }
+
+        Map::Pos3 pos;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.ax = pos.x;
+            regs.cx = pos.y;
+            regs.di = pos.z;
+            return regs;
+        }
+    };
+
+    inline bool do_57(uint8_t flags, const AirportRemovalArgs& args)
+    {
+        registers regs = registers(args);
+        regs.bl = flags;
+        return doCommand(GameCommand::removeAirport, regs) != FAILURE;
+    }
+
     inline bool do_59(EntityId_t head)
     {
         registers regs;
         regs.bl = Flags::apply | Flags::flag_3 | Flags::flag_6;
         regs.di = head;
         return doCommand(GameCommand::vehicleAbortPickupAir, regs) != FAILURE;
+    }
+
+    struct PortRemovalArgs
+    {
+        PortRemovalArgs() = default;
+        explicit PortRemovalArgs(const registers regs)
+            : pos(regs.ax, regs.cx, regs.di)
+        {
+        }
+
+        Map::Pos3 pos;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.ax = pos.x;
+            regs.cx = pos.y;
+            regs.di = pos.z;
+            return regs;
+        }
+    };
+
+    inline bool do_61(uint8_t flags, const PortRemovalArgs& args)
+    {
+        registers regs = registers(args);
+        regs.bl = flags;
+        return doCommand(GameCommand::removePort, regs) != FAILURE;
     }
 
     inline bool do_63(EntityId_t head)

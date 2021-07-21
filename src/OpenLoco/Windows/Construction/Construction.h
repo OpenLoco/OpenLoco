@@ -110,7 +110,6 @@ namespace OpenLoco::Ui::Windows::Construction
         void repositionTabs(Window* self);
         void drawTabs(Window* self, Gfx::Context* context);
         void initEvents();
-        void sub_49FEC7();
         void onClose(Window* self);
         void onUpdate(Window* self, uint8_t flag);
         void sub_4CD454();

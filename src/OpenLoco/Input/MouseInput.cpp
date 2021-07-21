@@ -2,6 +2,7 @@
 #include "../CompanyManager.h"
 #include "../Console.h"
 #include "../Entities/EntityManager.h"
+#include "../GameCommands/GameCommands.h"
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/StringIds.h"
@@ -590,99 +591,166 @@ namespace OpenLoco::Input
     }
 
     // 0x004A5AA1 TODO: Move to a better file
-    static void signalInteract(Window* main, Map::SignalElement* signal, const uint8_t bh, const Map::Pos2 pos)
+    static void signalInteract(Map::SignalElement* signal, const bool isLeftSignal, const Map::Pos2 pos)
     {
-        registers regs{};
-        regs.esi = reinterpret_cast<uint32_t>(main);
-        regs.edx = reinterpret_cast<uint32_t>(signal);
-        regs.bh = bh;
-        regs.ax = pos.x;
-        regs.cx = pos.y;
-        call(0x004A5AA1, regs);
+        auto* track = reinterpret_cast<Map::TileElement*>(signal - 1)->asTrack();
+        if (track == nullptr)
+        {
+            return;
+        }
+
+        uint16_t unkFlags = 1 << 15; // right
+        if (isLeftSignal)
+        {
+            unkFlags = 1 << 14; // left
+        }
+        if (!Input::isToolActive(WindowType::construction, 11 /* Ui::Windows::Construction::Signal::widx::signal_direction */))
+        {
+            if (signal->hasLeftSignal() && signal->hasRightSignal())
+            {
+                unkFlags = (1 << 15) | (1 << 14); // both
+            }
+        }
+
+        GameCommands::SignalRemovalArgs args;
+        args.pos = Pos3(pos.x, pos.y, track->baseZ() * 4);
+        args.rotation = track->unkDirection();
+        args.trackId = track->trackId();
+        args.index = track->sequenceIndex();
+        args.type = track->trackObjectId();
+        args.flags = unkFlags;
+
+        auto* window = WindowManager::find(WindowType::construction);
+        if (window != nullptr)
+        {
+            Ui::Windows::Construction::sub_49FEC7();
+        }
+
+        GameCommands::setErrorTitle(StringIds::cant_remove_signal);
+        if (GameCommands::do_14(GameCommands::Flags::apply, args))
+        {
+            Audio::playSound(Audio::SoundId::demolish, GameCommands::getPosition());
+        }
     }
 
     // 0x004A5B66 TODO: Move to a better file
-    static void trackStationInteract(Window* main, Map::StationElement* station, const Map::Pos2 pos)
+    static void trackStationInteract(Map::StationElement* station, const Map::Pos2 pos)
     {
-        registers regs{};
-        regs.esi = reinterpret_cast<uint32_t>(main);
-        regs.edx = reinterpret_cast<uint32_t>(station);
-        regs.ax = pos.x;
-        regs.cx = pos.y;
-        call(0x004A5B66, regs);
+        auto* track = reinterpret_cast<Map::TileElement*>(station - 1)->asTrack();
+        if (track == nullptr)
+        {
+            return;
+        }
+
+        GameCommands::setErrorTitle(StringIds::cant_remove_station);
+        GameCommands::TrackStationRemovalArgs args;
+        args.pos = Pos3(pos.x, pos.y, track->baseZ() * 4);
+        args.rotation = track->unkDirection();
+        args.trackId = track->trackId();
+        args.index = track->sequenceIndex();
+        args.type = track->trackObjectId();
+        if (GameCommands::do_16(GameCommands::Flags::apply, args))
+        {
+            Audio::playSound(Audio::SoundId::demolish, GameCommands::getPosition());
+        }
     }
 
     // 0x004A5BDF TODO: Move to a better file
-    static void roadStationInteract(Window* main, Map::StationElement* station, const Map::Pos2 pos)
+    static void roadStationInteract(Map::StationElement* station, const Map::Pos2 pos)
     {
-        registers regs{};
-        regs.esi = reinterpret_cast<uint32_t>(main);
-        regs.edx = reinterpret_cast<uint32_t>(station);
-        regs.ax = pos.x;
-        regs.cx = pos.y;
-        call(0x004A5BDF, regs);
+        auto* road = reinterpret_cast<Map::TileElement*>(station - 1)->asRoad();
+        if (road == nullptr)
+        {
+            return;
+        }
+
+        GameCommands::setErrorTitle(StringIds::cant_remove_station);
+        GameCommands::RoadStationRemovalArgs args;
+        args.pos = Pos3(pos.x, pos.y, road->baseZ() * 4);
+        args.rotation = road->unkDirection();
+        args.roadId = road->roadId();
+        args.index = road->sequenceIndex();
+        args.type = road->roadObjectId();
+        if (GameCommands::do_43(GameCommands::Flags::apply, args))
+        {
+            Audio::playSound(Audio::SoundId::demolish, GameCommands::getPosition());
+        }
     }
 
     // 0x004A5C58 TODO: Move to a better file
-    static void airportInteract(Window* main, Map::StationElement* station, const Map::Pos2 pos)
+    static void airportInteract(Map::StationElement* station, const Map::Pos2 pos)
     {
-        registers regs{};
-        regs.esi = reinterpret_cast<uint32_t>(main);
-        regs.edx = reinterpret_cast<uint32_t>(station);
-        regs.ax = pos.x;
-        regs.cx = pos.y;
-        call(0x004A5C58, regs);
+        if (!Ui::Windows::Construction::isStationTabOpen())
+        {
+            Ui::Windows::Construction::openWithFlags(1ULL << 31);
+            return;
+        }
+        GameCommands::setErrorTitle(StringIds::cant_remove_airport);
+        GameCommands::AirportRemovalArgs args;
+        args.pos = Pos3(pos.x, pos.y, station->baseZ() * 4);
+        if (GameCommands::do_57(GameCommands::Flags::apply, args))
+        {
+            Audio::playSound(Audio::SoundId::demolish, GameCommands::getPosition());
+        }
     }
 
     // 0x004A5CC5 TODO: Move to a better file
-    static void dockInteract(Window* main, Map::StationElement* station, const Map::Pos2 pos)
+    static void dockInteract(Map::StationElement* station, const Map::Pos2 pos)
     {
-        registers regs{};
-        regs.esi = reinterpret_cast<uint32_t>(main);
-        regs.edx = reinterpret_cast<uint32_t>(station);
-        regs.ax = pos.x;
-        regs.cx = pos.y;
-        call(0x004A5CC5, regs);
+        if (!Ui::Windows::Construction::isStationTabOpen())
+        {
+            Ui::Windows::Construction::openWithFlags(1ULL << 30);
+            return;
+        }
+        GameCommands::setErrorTitle(StringIds::cant_remove_ship_port);
+        GameCommands::PortRemovalArgs args;
+        Pos2 firstTile = pos - Map::offsets[station->multiTileIndex()];
+        args.pos = Pos3(firstTile.x, firstTile.y, station->baseZ() * 4);
+        if (GameCommands::do_61(GameCommands::Flags::apply, args))
+        {
+            Audio::playSound(Audio::SoundId::demolish, GameCommands::getPosition());
+        }
     }
 
     // 0x004BB116 TODO: Move to a better file
     static void treeInteract(Map::TreeElement* tree, const Map::Pos2 pos)
     {
-        registers regs{};
-        regs.edx = reinterpret_cast<uint32_t>(tree);
-        regs.ax = pos.x;
-        regs.cx = pos.y;
-        call(0x004BB116, regs);
+        GameCommands::setErrorTitle(StringIds::error_cant_remove_this);
+        GameCommands::TreeRemovalArgs args;
+        args.pos = Pos3(pos.x, pos.y, tree->baseZ() * 4);
+        args.elementType = tree->rawData()[0];
+        args.type = tree->treeObjectId();
+        GameCommands::do_22(GameCommands::Flags::apply, args);
     }
 
     // 0x0042D9BF TODO: Move to a better file
     static void buildingInteract(Map::BuildingElement* building, const Map::Pos2 pos)
     {
-        registers regs{};
-        regs.edx = reinterpret_cast<uint32_t>(building);
-        regs.ax = pos.x;
-        regs.cx = pos.y;
-        call(0x0042D9BF, regs);
+        GameCommands::setErrorTitle(StringIds::error_cant_remove_this);
+        GameCommands::BuildingRemovalArgs args;
+        Pos2 firstTile = pos - Map::offsets[building->multiTileIndex()];
+        args.pos = Pos3(firstTile.x, firstTile.y, building->baseZ() * 4);
+        GameCommands::do_45(GameCommands::Flags::apply, args);
     }
 
     // 0x004C4809 TODO: Move to a better file
     static void wallInteract(Map::WallElement* wall, const Map::Pos2 pos)
     {
-        registers regs{};
-        regs.edx = reinterpret_cast<uint32_t>(wall);
-        regs.ax = pos.x;
-        regs.cx = pos.y;
-        call(0x004C4809, regs);
+        GameCommands::setErrorTitle(StringIds::error_cant_remove_this);
+        GameCommands::WallRemovalArgs args;
+        args.pos = Pos3(pos.x, pos.y, wall->baseZ() * 4);
+        args.rotation = wall->rotation();
+        GameCommands::do_33(GameCommands::Flags::apply, args);
     }
 
     // 0x0042F007 TODO: Move to a better file
     static void headquarterInteract(Map::BuildingElement* building, const Map::Pos2 pos)
     {
-        registers regs{};
-        regs.edx = reinterpret_cast<uint32_t>(building);
-        regs.ax = pos.x;
-        regs.cx = pos.y;
-        call(0x0042F007, regs);
+        GameCommands::setErrorTitle(StringIds::error_cant_remove_this);
+        GameCommands::HeadquarterRemovalArgs args;
+        Pos2 firstTile = pos - Map::offsets[building->multiTileIndex()];
+        args.pos = Pos3(firstTile.x, firstTile.y, building->baseZ() * 4);
+        GameCommands::do_55(GameCommands::Flags::apply, args);
     }
 
     // 0x004C74BB
@@ -851,7 +919,7 @@ namespace OpenLoco::Input
                         auto signal = ((Map::TileElement*)interaction.object)->asSignal();
                         if (signal != nullptr)
                         {
-                            signalInteract(window, signal, interaction.unkBh, interaction.pos);
+                            signalInteract(signal, interaction.unkBh != 0, interaction.pos);
                         }
                         break;
                     }
@@ -860,7 +928,7 @@ namespace OpenLoco::Input
                         auto station = ((Map::TileElement*)interaction.object)->asStation();
                         if (station != nullptr)
                         {
-                            trackStationInteract(window, station, interaction.pos);
+                            trackStationInteract(station, interaction.pos);
                         }
                         break;
                     }
@@ -869,7 +937,7 @@ namespace OpenLoco::Input
                         auto station = ((Map::TileElement*)interaction.object)->asStation();
                         if (station != nullptr)
                         {
-                            roadStationInteract(window, station, interaction.pos);
+                            roadStationInteract(station, interaction.pos);
                         }
                         break;
                     }
@@ -878,7 +946,7 @@ namespace OpenLoco::Input
                         auto station = ((Map::TileElement*)interaction.object)->asStation();
                         if (station != nullptr)
                         {
-                            airportInteract(window, station, interaction.pos);
+                            airportInteract(station, interaction.pos);
                         }
                         break;
                     }
@@ -887,7 +955,7 @@ namespace OpenLoco::Input
                         auto station = ((Map::TileElement*)interaction.object)->asStation();
                         if (station != nullptr)
                         {
-                            dockInteract(window, station, interaction.pos);
+                            dockInteract(station, interaction.pos);
                         }
                         break;
                     }

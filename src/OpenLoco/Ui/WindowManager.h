@@ -134,7 +134,9 @@ namespace OpenLoco::Ui::Windows
         void setToTrackExtra(Window* main, Map::TrackElement* track, const uint8_t bh, const Map::Pos2 pos);
         void setToRoadExtra(Window* main, Map::RoadElement* track, const uint8_t bh, const Map::Pos2 pos);
         void sub_4A6FAC();
+        bool isStationTabOpen();
         void rotate(Window* self);
+        void sub_49FEC7();
         void registerHooks();
     }
 

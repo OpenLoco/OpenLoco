@@ -139,8 +139,14 @@ namespace OpenLoco::StringIds
     constexpr string_id build_this = 137;
     constexpr string_id build_cost = 138;
 
+    constexpr string_id cant_remove_signal = 141;
+
     constexpr string_id menu_underground_view = 145;
     constexpr string_id menu_hide_foreground_tracks_roads = 146;
+
+    constexpr string_id cant_remove_airport = 164;
+    constexpr string_id cant_remove_ship_port = 165;
+    constexpr string_id cant_remove_station = 166;
 
     constexpr string_id too_many_objects_in_game = 171;
     constexpr string_id menu_rotate_clockwise = 172;
@@ -370,7 +376,7 @@ namespace OpenLoco::StringIds
 
     constexpr string_id dropdown_without_checkmark = 443;
     constexpr string_id dropdown_with_checkmark = 444;
-
+    constexpr string_id error_cant_remove_this = 445;
     constexpr string_id title_build_walls = 446;
     constexpr string_id title_plant_trees = 447;
 
