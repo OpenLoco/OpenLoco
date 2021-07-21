@@ -38,10 +38,12 @@ namespace OpenLoco
 
     namespace ControlCodes
     {
-        // Arguments: uint8_t
+        // Arguments (1 byte): uint8_t
         constexpr uint8_t move_x = 1;
+        constexpr uint8_t adjust_palette = 2; // Not used
+        // 3-4 Not used
 
-        constexpr uint8_t adjust_palette = 2;
+        // Arguments: none
         constexpr uint8_t newline = 5;
         constexpr uint8_t newline_smaller = 6;
         constexpr uint8_t font_small = 7;
@@ -53,14 +55,23 @@ namespace OpenLoco
         constexpr uint8_t window_colour_1 = 13;
         constexpr uint8_t window_colour_2 = 14;
         constexpr uint8_t window_colour_3 = 15;
-        constexpr uint8_t window_colour_4 = 16;
+        constexpr uint8_t window_colour_4 = 16; // Not used
 
-        // Arguments: int8_t, int8_t
+        // Arguments (2 bytes): int8_t, int8_t
         constexpr uint8_t newline_x_y = 17;
+        // 18-22 Not used
 
-        // Arguments: uint32_t
+        // Arguments (4 bytes): uint32_t
         constexpr uint8_t inline_sprite_str = 23;
+        // 24-31 Not used
 
+        // Arguments in Args buffer
+        // Note:
+        // Pre formatString:
+        //     ControlCodes valid args in args buffer.
+        // Post formatString:
+        //     ControlCodes are invalid
+        //     inline_sprite_args replaced with inline_sprite_str, arg is in string
         constexpr uint8_t int32_grouped = 123 + 0;
         constexpr uint8_t int32_ungrouped = 123 + 1;
         constexpr uint8_t int16_decimals = 123 + 2;
@@ -83,6 +94,7 @@ namespace OpenLoco
         constexpr uint8_t power = 123 + 19;
         constexpr uint8_t inline_sprite_args = 123 + 20;
 
+        // Arguments: none
         constexpr uint8_t colour_black = 144;
         constexpr uint8_t colour_grey = 145;
         constexpr uint8_t colour_white = 146;
