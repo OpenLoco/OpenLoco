@@ -108,7 +108,7 @@ namespace OpenLoco::platform
         return exePath;
     }
 
-    std::string promptDirectory(const std::string& Title)
+    fs::path promptDirectory(const std::string& Title)
     {
         std::string input;
         std::cout << "Type your Locomotion path: ";

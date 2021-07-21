@@ -27,7 +27,7 @@ namespace OpenLoco::Localisation
             if (filename.substr(filename.size() - 4, 4) != ".yml")
                 continue;
 
-            std::fstream stream(filename);
+            std::fstream stream(entry.path());
             if (!stream.is_open())
                 continue;
 

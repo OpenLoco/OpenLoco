@@ -71,7 +71,7 @@ namespace OpenLoco::Environment
     static fs::path resolveLocoInstallPath()
     {
         auto& cfg = Config::getNew();
-        auto path = fs::path(cfg.loco_install_path);
+        auto path = fs::u8path(cfg.loco_install_path);
         if (!path.empty())
         {
             if (validateLocoInstallPath(path))
@@ -110,7 +110,7 @@ namespace OpenLoco::Environment
 
     static fs::path getLocoInstallPath()
     {
-        return _path_install.get();
+        return fs::u8path(_path_install.get());
     }
 
 #ifndef _WIN32
@@ -216,10 +216,17 @@ namespace OpenLoco::Environment
         auto& configLastSavePath = Config::getNew().last_save_path;
         if (!configLastSavePath.empty())
         {
-            auto directory = fs::u8path(configLastSavePath);
-            if (fs::is_directory(directory))
+            // Getting the directory can fail if config is bad.
+            try
             {
-                saveDirectory = directory;
+                auto directory = fs::u8path(configLastSavePath);
+                if (fs::is_directory(directory))
+                {
+                    saveDirectory = directory;
+                }
+            }
+            catch (std::system_error&)
+            {
             }
         }
         setDirectory(_path_saves_single_player, saveDirectory);

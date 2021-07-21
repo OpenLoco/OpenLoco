@@ -19,7 +19,7 @@ namespace OpenLoco::platform
         }
     }
 
-    std::string promptDirectory(const std::string &title)
+    fs::path promptDirectory(const std::string &title)
     {
         @autoreleasepool
         {
