@@ -27,6 +27,10 @@ namespace OpenLoco::Map::TileManager
     void mapInvalidateSelectionRect();
     void mapInvalidateTileFull(Map::Pos2 pos);
     void mapInvalidateMapSelectionTiles();
+    void setMapSelectionArea(const Pos2& locA, const Pos2& locB);
+    std::pair<Pos2, Pos2> getMapSelectionArea();
+    void setMapSelectionCorner(const uint8_t corner);
+    uint8_t getMapSelectionCorner();
     void resetSurfaceClearance();
     void createAnimation(uint8_t type, const Pos2& pos, tile_coord_t baseZ);
     void resetAnimations();
