@@ -135,6 +135,7 @@ namespace OpenLoco::Gfx
 
     int16_t clipString(int16_t width, char* string);
     uint16_t getStringWidth(const char* buffer);
+    uint16_t getMaxStringWidth(const char* buffer);
 
     Gfx::point_t drawString(Context* context, int16_t x, int16_t y, uint8_t colour, void* str);
 
