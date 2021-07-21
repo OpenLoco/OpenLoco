@@ -41,10 +41,9 @@ namespace OpenLoco
         // Arguments (1 byte): uint8_t
         constexpr uint8_t move_x = 1;
         constexpr uint8_t adjust_palette = 2; // Not used
-        // 3 Not used
-        // 4 Not used
+        // 3-4 Not used
 
-        // Arguements: none
+        // Arguments: none
         constexpr uint8_t newline = 5;
         constexpr uint8_t newline_smaller = 6;
         constexpr uint8_t font_small = 7;
@@ -60,22 +59,11 @@ namespace OpenLoco
 
         // Arguments (2 bytes): int8_t, int8_t
         constexpr uint8_t newline_x_y = 17;
-        // 18 Not used
-        // 19 Not used
-        // 20 Not used
-        // 21 Not used
-        // 22 Not used
+        // 18-22 Not used
 
         // Arguments (4 bytes): uint32_t
         constexpr uint8_t inline_sprite_str = 23;
-        // 24 Not used
-        // 25 Not used
-        // 26 Not used
-        // 27 Not used
-        // 28 Not used
-        // 29 Not used
-        // 30 Not used
-        // 31 Not used
+        // 24-31 Not used
 
         // Arguments in Args buffer
         // Note:
