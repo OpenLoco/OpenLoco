@@ -918,9 +918,10 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             }
         }
 
-        uint8_t getHeadquarterBuildingType()
+        // 0x00434F2D
+        static uint8_t getHeadquarterBuildingType()
         {
-            for (auto i = 0; i < ObjectManager::getMaxObjects(ObjectType::building); ++i)
+            for (size_t i = 0; i < ObjectManager::getMaxObjects(ObjectType::building); ++i)
             {
                 auto* buildingObj = ObjectManager::get<BuildingObject>(i);
                 if (buildingObj == nullptr)
@@ -930,7 +931,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
                 if (buildingObj->flags & BuildingObjectFlags::is_headquarters)
                 {
-                    return i;
+                    return static_cast<uint8_t>(i);
                 }
             }
             return 0;
@@ -945,7 +946,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // regs.di = tileZ (height)
         // regs.bh = rotaion and buildImmediately
         // regs.dx = dx - company index (value 1 in testing case)
-        static std::optional<GameCommands::HeadquarterPlacementArgs> sub_434EC7(const int16_t mouseX, const int16_t mouseY)
+        static std::optional<GameCommands::HeadquarterPlacementArgs> getHeadquarterPlacementArgsFromCursor(const int16_t mouseX, const int16_t mouseY)
         {
             auto pos = ViewportInteraction::getTileStartAtCursor({ mouseX, mouseY });
             if (!pos)
@@ -984,7 +985,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         {
             Map::TileManager::mapInvalidateSelectionRect();
             Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
-            auto placementArgs = sub_434EC7(x, y);
+            auto placementArgs = getHeadquarterPlacementArgsFromCursor(x, y);
             if (!placementArgs)
             {
                 removeHeadquarterGhost();
@@ -994,7 +995,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             Input::setMapSelectionFlags(Input::MapSelectionFlags::enable);
             Map::TileManager::setMapSelectionCorner(4);
 
-            auto* building = ObjectManager::get<BuildingObject>(placementArgs->type);
+            // TODO: This selection may be incorrect if getHeadquarterBuildingType returns 0
             auto posB = Map::Pos2(placementArgs->pos) + Map::Pos2(32, 32);
             Map::TileManager::setMapSelectionArea(placementArgs->pos, posB);
             Map::TileManager::mapInvalidateSelectionRect();
@@ -1020,7 +1021,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         {
             removeHeadquarterGhost();
 
-            auto placementArgs = sub_434EC7(mouseX, mouseY);
+            auto placementArgs = getHeadquarterPlacementArgsFromCursor(mouseX, mouseY);
             if (!placementArgs)
             {
                 return;
