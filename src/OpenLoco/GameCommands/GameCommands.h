@@ -630,14 +630,12 @@ namespace OpenLoco::GameCommands
             : pos(regs.ax, regs.cx, regs.di)
         {
         }
-        BuildingRemovalArgs(const BuildingPlacementArgs& place)
+        explicit BuildingRemovalArgs(const BuildingPlacementArgs& place)
             : pos(place.pos)
-            , type(place.type)
         {
         }
 
         Map::Pos3 pos;
-        uint8_t type;
 
         explicit operator registers() const
         {
@@ -645,7 +643,6 @@ namespace OpenLoco::GameCommands
             regs.ax = pos.x;
             regs.cx = pos.y;
             regs.di = pos.z;
-            regs.dl = type;
             return regs;
         }
     };
