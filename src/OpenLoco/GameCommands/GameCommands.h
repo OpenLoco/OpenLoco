@@ -598,17 +598,29 @@ namespace OpenLoco::GameCommands
 
     struct BuildingPlacementArgs
     {
+        BuildingPlacementArgs() = default;
+        explicit BuildingPlacementArgs(const registers regs)
+            : pos(regs.ax, regs.cx, regs.di)
+            , rotation(regs.bh & 0x3)
+            , type(regs.dl)
+            , variation(regs.dh)
+            , colour(regs.edi >> 16)
+            , buildImmediately(regs.bh & 0x80)
+        {
+        }
+
         Map::Pos3 pos;
         uint8_t rotation;
         uint8_t type;
         uint8_t variation;
+        Colour_t colour;
         bool buildImmediately = false; // No scaffolding required (editor mode)
         explicit operator registers() const
         {
             registers regs;
             regs.ax = pos.x;
             regs.cx = pos.y;
-            regs.di = pos.z;
+            regs.edi = pos.z | (colour << 16);
             regs.dl = type;
             regs.dh = variation;
             regs.bh = rotation | (buildImmediately ? 0x80 : 0);

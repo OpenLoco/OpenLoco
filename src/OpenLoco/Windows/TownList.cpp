@@ -1014,6 +1014,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
             GameCommands::BuildingPlacementArgs args;
             args.rotation = (_buildingRotation - gCurrentRotation) & 0x3; //bh
+            args.colour = _buildingColour;
             auto tile = Map::TileManager::get(*pos);
             const auto* surface = tile.surface();
             if (surface == nullptr)
