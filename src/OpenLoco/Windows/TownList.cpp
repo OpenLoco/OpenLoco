@@ -958,7 +958,7 @@ namespace OpenLoco::Ui::Windows::TownList
             if (itemIndex == -1)
                 return;
 
-            _buildingColour = Dropdown::getItemArgument(itemIndex, 4);
+            _buildingColour = Dropdown::getItemArgument(itemIndex, 2);
             self->invalidate();
         }
 
