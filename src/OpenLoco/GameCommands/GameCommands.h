@@ -637,10 +637,10 @@ namespace OpenLoco::GameCommands
     }
 
     // Remove industry
-    inline bool do_48(uint8_t industryId)
+    inline bool do_48(uint8_t flags, uint8_t industryId)
     {
         registers regs;
-        regs.bl = Flags::apply;
+        regs.bl = flags;
         regs.dx = industryId;
         return doCommand(GameCommand::removeIndustry, regs) != FAILURE;
     }

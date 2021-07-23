@@ -2,6 +2,7 @@
 #include "../Config.h"
 #include "../Date.h"
 #include "../Economy/Economy.h"
+#include "../GameCommands/GameCommands.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/ImageIds.h"
 #include "../IndustryManager.h"
@@ -24,7 +25,8 @@ using namespace OpenLoco::Interop;
 namespace OpenLoco::Ui::Windows::IndustryList
 {
     static loco_global<uint32_t, 0x00E0C39C> dword_E0C39C;
-    static loco_global<uint8_t, 0x00E0C3D9> byte_E0C3D9;
+    static loco_global<bool, 0x00E0C3D9> _industryGhostPlaced;
+    static loco_global<uint8_t, 0x00E0C3DB> _industryGhostId;
     static loco_global<uint8_t, 0x00525FC7> _lastSelectedIndustry;
     static loco_global<Utility::prng, 0x00525E20> _prng;
     static loco_global<uint32_t, 0x00E0C394> _dword_E0C394;
@@ -937,16 +939,19 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x00458C09
-        static void sub_458C09()
+        static void removeIndustryGhost()
         {
-            registers regs;
-            call(0x00458C09, regs);
+            if (_industryGhostPlaced)
+            {
+                _industryGhostPlaced = false;
+                GameCommands::do_48(GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6, _industryGhostId);
+            }
         }
 
         // 0x004585AD
         static void onToolAbort(Window& self, const WidgetIndex_t widgetIndex)
         {
-            sub_458C09();
+            removeIndustryGhost();
             Ui::Windows::hideGridlines();
         }
 
@@ -1038,7 +1043,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
             Input::setFlag(Input::Flags::flag6);
             Ui::Windows::showGridlines();
-            byte_E0C3D9 = 0;
+            _industryGhostPlaced = false;
             dword_E0C39C = 0x80000000;
 
             self->var_83C = 0;
