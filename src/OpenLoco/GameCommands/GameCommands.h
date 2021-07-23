@@ -91,12 +91,12 @@ namespace OpenLoco::GameCommands
         removeCompanyHeadquarters = 55,
         gc_unk_56 = 56,
         removeAirport = 57,
-        gc_unk_58 = 58,
-        vehicleAbortPickupAir = 59,
+        vehiclePlaceAir = 58,
+        vehiclePickupAir = 59,
         gc_unk_60 = 60,
         removePort = 61,
-        gc_unk_62 = 62,
-        vehicleAbortPickupWater = 63,
+        vehiclePlaceWater = 62,
+        vehiclePickupWater = 63,
         vehicleRefit = 64,
         changeCompanyFace = 65,
         clearLand = 66,
@@ -833,7 +833,7 @@ namespace OpenLoco::GameCommands
         registers regs;
         regs.bl = Flags::apply | Flags::flag_3 | Flags::flag_6;
         regs.di = head;
-        return doCommand(GameCommand::vehicleAbortPickupAir, regs) != FAILURE;
+        return doCommand(GameCommand::vehiclePickupAir, regs) != FAILURE;
     }
 
     struct PortRemovalArgs
@@ -868,7 +868,7 @@ namespace OpenLoco::GameCommands
         registers regs;
         regs.bl = Flags::apply | Flags::flag_3 | Flags::flag_6;
         regs.di = head;
-        return doCommand(GameCommand::vehicleAbortPickupWater, regs) != FAILURE;
+        return doCommand(GameCommand::vehiclePickupWater, regs) != FAILURE;
     }
 
     // Refit vehicle

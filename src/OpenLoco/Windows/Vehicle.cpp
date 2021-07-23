@@ -3269,14 +3269,93 @@ namespace OpenLoco::Ui::Windows::Vehicle
             GameCommands::do_10(0, 0, buffer[6], buffer[7], buffer[8]);
         }
 
+        // 0x0050029C
+        static const std::array<std::array<uint8_t, 2>, 6> typeToTool = {
+            { std::array<uint8_t, 2>{ { 27, 28 } },
+              std::array<uint8_t, 2>{ { 29, 30 } },
+              std::array<uint8_t, 2>{ { 31, 32 } },
+              std::array<uint8_t, 2>{ { 33, 34 } },
+              std::array<uint8_t, 2>{ { 35, 35 } },
+              std::array<uint8_t, 2>{ { 36, 36 } } }
+        };
+
+        // 0x00427595
+        static std::optional<GameCommands::VehicleWaterPlacementArgs> getVehicleWaterPlacementArgsFromCursor(const int16_t x, const int16_t y) {
+            static loco_global<int16_t, 0x0113600C> _113600C;
+            static loco_global<int16_t, 0x0113600E> _113600E;
+
+            _113600C = x;
+            _113600E = y;
+
+            auto pos = ViewportInteraction::getTileStartAtCursor({ x, y });
+            if (!pos)
+            {
+                return {};
+            }
+
+            // Search 8x8 area centerd on mouse pos
+            Map::Pos2 initialPos = *pos + Map::Pos2(16, 16) - Map::TilePos2(4,4);
+            for (auto i = 0; i < 8; ++i)
+            {
+                for (auto j = 0; j < 8; ++j)
+                {
+                    auto loc = initialPos + Map::TilePos2(i, j);
+                    if (!Map::validCoords(loc))
+                    {
+                        continue;
+                    }
+
+                    auto tile = Map::TileManager::get(loc);
+                    for (auto& el : tile)
+                    {
+                        auto* elStation = el.asStation();
+                        if (elStation == nullptr)
+                        {
+                            continue;
+                        }
+
+                        if (elStation->stationType() != StationType::docks)
+                        {
+                            continue;
+                        }
+
+                        if (elStation->multiTileIndex() != 0)
+                        {
+                            continue;
+                        }
+
+                        // get dock loc
+                    }
+                }
+            }
+        }
+        // 0x004B2B9E
+        static void pickupToolUpdateWater(const Vehicles::VehicleHead& head, const int16_t x, const int16_t y)
+        {
+        }
+
         // 0x004B29C0
         static void pickupToolUpdate(Window& self, const int16_t x, const int16_t y)
         {
-            registers regs;
-            regs.esi = reinterpret_cast<int32_t>(&self);
-            regs.ax = x;
-            regs.bx = y;
-            call(0x004B29C0, regs);
+            static loco_global<int8_t, 0x00523393> _currentTool;
+            auto* head = getVehicle(&self);
+            _currentTool = typeToTool[static_cast<uint8_t>(head->vehicleType)][_pickupDirection != 0 ? 1 : 0];
+
+            switch (head->mode)
+            {
+                case TransportMode::rail:
+                    // 0x004B2A11
+                    break;
+                case TransportMode::road:
+                    // 0x004B2A03
+                    break;
+                case TransportMode::air:
+                    // 0x004B2AFA
+                    break;
+                case TransportMode::water:
+                    // 0x004B2B9E
+                    break;
+            }
         }
 
         // 0x004B2C74
@@ -3412,16 +3491,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 }
             }
         }
-
-        // 0x0050029C
-        static const std::array<std::array<uint8_t, 2>, 6> typeToTool = {
-            { std::array<uint8_t, 2>{ { 27, 28 } },
-              std::array<uint8_t, 2>{ { 29, 30 } },
-              std::array<uint8_t, 2>{ { 31, 32 } },
-              std::array<uint8_t, 2>{ { 33, 34 } },
-              std::array<uint8_t, 2>{ { 35, 35 } },
-              std::array<uint8_t, 2>{ { 36, 36 } } }
-        };
 
         // 0x004B28E2
         static void onPickup(Window* const self, const WidgetIndex_t pickupWidx)
