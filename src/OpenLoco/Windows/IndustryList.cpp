@@ -933,7 +933,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         // 0x00458BB5
         static currency32_t placeIndustryGhost(const GameCommands::IndustryPlacementArgs& placementArgs)
         {
-            auto res = GameCommands::do_47(GameCommands::Flags::apply | GameCommands::Flags::flag_1 | GameCommands::Flags::flag_2 | GameCommands::Flags::flag_6, placementArgs);
+            auto res = GameCommands::do_47(GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6, placementArgs);
             if (res == GameCommands::FAILURE)
             {
                 return res;
