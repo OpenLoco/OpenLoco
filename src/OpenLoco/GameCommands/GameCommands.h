@@ -643,8 +643,8 @@ namespace OpenLoco::GameCommands
             : pos(regs.ax, regs.cx)
             , type(regs.dl)
             , buildImmediately(regs.bh & 0x80)
-            , srand0(regs.edi)
-            , srand1(regs.ebp)
+            , srand0(regs.ebp)
+            , srand1(regs.edi)
         {
         }
 
@@ -660,13 +660,13 @@ namespace OpenLoco::GameCommands
             regs.ax = pos.x;
             regs.cx = pos.y;
             regs.dl = type | (buildImmediately ? 0x80 : 0);
-            regs.edi = srand0;
-            regs.ebp = srand1;
+            regs.ebp = srand0;
+            regs.edi = srand1;
             return regs;
         }
     };
 
-    inline currency32_t do_47(uint8_t flags, const IndustryPlacementArgs& placementArgs)
+    inline uint32_t do_47(uint8_t flags, const IndustryPlacementArgs& placementArgs)
     {
         registers regs = registers(placementArgs);
         regs.bl = flags;

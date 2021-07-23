@@ -930,6 +930,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
             }
         }
 
+        // 0x00458BB5
         static currency32_t placeIndustryGhost(const GameCommands::IndustryPlacementArgs& placementArgs)
         {
             auto res = GameCommands::do_47(GameCommands::Flags::apply | GameCommands::Flags::flag_1 | GameCommands::Flags::flag_2 | GameCommands::Flags::flag_6, placementArgs);
@@ -944,6 +945,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
             return res;
         }
 
+        // 0x0045857B
         static std::optional<GameCommands::IndustryPlacementArgs> getIndustryPlacementArgsFromCursor(const int16_t x, const int16_t y)
         {
             auto* industryListWnd = WindowManager::find(WindowType::industryList);
@@ -971,8 +973,8 @@ namespace OpenLoco::Ui::Windows::IndustryList
             GameCommands::IndustryPlacementArgs args;
             args.pos = *pos;
             args.type = industryListWnd->row_hover; //dl
-            args.srand0 = _dword_E0C398;
-            args.srand1 = _dword_E0C394;
+            args.srand0 = _dword_E0C394;
+            args.srand1 = _dword_E0C398;
             if (isEditorMode())
             {
                 args.buildImmediately = true; //bh
@@ -1017,12 +1019,19 @@ namespace OpenLoco::Ui::Windows::IndustryList
         // 0x0045851F
         static void onToolDown(Window& self, const WidgetIndex_t widgetIndex, int16_t x, const int16_t y)
         {
-            registers regs;
-            regs.esi = (int32_t)&self;
-            regs.dx = widgetIndex;
-            regs.ax = x;
-            regs.bx = y;
-            call(0x0045851F, regs);
+            removeIndustryGhost();
+            auto placementArgs = getIndustryPlacementArgsFromCursor(x, y);
+            if (placementArgs)
+            {
+                if (GameCommands::do_47(GameCommands::Flags::apply, *placementArgs) != GameCommands::FAILURE)
+                {
+                    Audio::playSound(Audio::SoundId::construct, GameCommands::getPosition());
+                }
+            }
+
+            _prng->randNext();
+            _dword_E0C394 = _prng->srand_0();
+            _dword_E0C398 = _prng->srand_1();
         }
 
         // 0x004585AD
