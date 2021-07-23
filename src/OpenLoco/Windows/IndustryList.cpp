@@ -643,7 +643,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
             if (self->var_846 == 0xFFFF)
                 industryCost = dword_E0C39C;
 
-            if ((self->var_846 == 0xFFFF && dword_E0C39C == (1ULL << 31)) || self->var_846 != 0xFFFF)
+            if ((self->var_846 == 0xFFFF && dword_E0C39C == static_cast<currency32_t>(0x80000000)) || self->var_846 != 0xFFFF)
             {
                 industryCost = Economy::getInflationAdjustedCost(industryObj->cost_factor, industryObj->cost_index, 3);
             }
