@@ -3379,7 +3379,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return;
             }
 
-            if (_1136264 == 0 && * _ghostVehiclePos == placementArgs->pos)
+            if (_1136264 == 0 && *_ghostVehiclePos == placementArgs->pos)
             {
                 return;
             }
@@ -3390,6 +3390,97 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 _1136264 = 0;
             }
         }
+
+        // 0x00426F0B
+        static std::optional<GameCommands::VehicleAirPlacementArgs> getVehicleAirPlacementArgsFromCursor(const Vehicles::VehicleHead& head, const int16_t x, const int16_t y)
+        {
+            static loco_global<int16_t, 0x0113600C> _113600C;
+            static loco_global<int16_t, 0x0113600E> _113600E;
+
+            _113600C = x;
+            _113600E = y;
+
+            auto res = ViewportInteraction::getMapCoordinatesFromPos(x, y, ~ViewportInteraction::InteractionItemFlags::station);
+            auto* elStation = static_cast<Map::StationElement*>(res.first.object);
+            if (res.first.type != ViewportInteraction::InteractionItem::airport)
+            {
+                res = ViewportInteraction::getMapCoordinatesFromPos(x, y, ~(ViewportInteraction::InteractionItemFlags::surface | ViewportInteraction::InteractionItemFlags::water));
+                const auto& interaction = res.first;
+                if (interaction.type == ViewportInteraction::InteractionItem::noInteraction)
+                {
+                    return {};
+                }
+
+                bool stationFound = false;
+                for (auto& station : StationManager::stations())
+                {
+                    if (!(station.flags & StationFlags::flag_6))
+                    {
+                        continue;
+                    }
+                    if (station.flags & StationFlags::flag_5)
+                    {
+                        continue;
+                    }
+
+                    if (std::abs(interaction.pos.x - station.unk_tile_x) > 5 * 32)
+                    {
+                        continue;
+                    }
+                    if (std::abs(interaction.pos.y - station.unk_tile_y) > 5 * 32)
+                    {
+                        continue;
+                    }
+
+                    auto tile = TileManager::get(Map::Pos2{ station.unk_tile_x, station.unk_tile_y });
+                    for (auto& el : tile)
+                    {
+                        elStation = el.asStation();
+                        if (elStation == nullptr)
+                        {
+                            continue;
+                        }
+
+                        if (elStation->isFlag5() || elStation->isGhost())
+                        {
+                            continue;
+                        }
+
+                        if (elStation->stationType() != StationType::airport)
+                        {
+                            continue;
+                        }
+
+                        stationFound = true;
+                    }
+                }
+
+                if (!stationFound)
+                {
+                    return {};
+                }
+            }
+
+            if (elStation->isFlag5() || elStation->isGhost())
+            {
+                return {};
+            }
+
+            GameCommands::VehicleAirPlacementArgs placementArgs;
+            placementArgs.stationId = elStation->stationId();
+            placementArgs.head = head.id;
+            auto* airportObj = ObjectManager::get<AirportObject>(elStation->objectId());
+
+            int32_t bestDistance = std::numeric_limits<int32_t>::max();
+            for (auto node = airportObj->numMovementNodes - 1; node > -1; node--)
+            {
+            }
+        }
+
+        static void removeAirplaneGhost(const Vehicles::VehicleHead& head) {}
+
+        // 0x004B2AFA
+        static void pickupToolUpdateAir(const Vehicles::VehicleHead& head, const int16_t x, const int16_t y) {}
 
         // 0x004B29C0
         static void pickupToolUpdate(Window& self, const int16_t x, const int16_t y)

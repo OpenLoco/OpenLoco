@@ -828,6 +828,37 @@ namespace OpenLoco::GameCommands
         return doCommand(GameCommand::removeAirport, regs) != FAILURE;
     }
 
+    struct VehicleAirPlacementArgs
+    {
+        VehicleAirPlacementArgs() = default;
+        explicit VehicleAirPlacementArgs(const registers regs)
+            : stationId(regs.bp)
+            , airportNode(regs.dl)
+            , head(regs.di)
+        {
+        }
+
+        StationId_t stationId;
+        uint8_t airportNode;
+        EntityId_t head;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.bp = stationId;
+            regs.di = head;
+            regs.dl = airportNode;
+            return regs;
+        }
+    };
+
+    inline bool do_58(uint8_t flags, const VehicleAirPlacementArgs& args)
+    {
+        registers regs = registers(args);
+        regs.bl = flags;
+        return doCommand(GameCommand::vehiclePlaceAir, regs) != FAILURE;
+    }
+
     inline bool do_59(EntityId_t head)
     {
         registers regs;
