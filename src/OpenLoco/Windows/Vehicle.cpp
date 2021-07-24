@@ -3298,7 +3298,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
 
             // Search 8x8 area centerd on mouse pos
-            Map::Pos2 initialPos = *pos + Map::Pos2(16, 16) - Map::TilePos2(4, 4);
+            const auto centerPos = *pos + Map::Pos2(16, 16);
+            Map::Pos2 initialPos = *pos - Map::TilePos2(4, 4);
             int32_t bestDistance = std::numeric_limits<int32_t>::max();
             Map::Pos3 bestLoc;
 
@@ -3306,7 +3307,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 for (auto j = 0; j < 8; ++j)
                 {
-                    auto loc = initialPos + Map::TilePos2(i, j);
+                    const auto loc = initialPos + Map::TilePos2(i, j);
                     if (!Map::validCoords(loc))
                     {
                         continue;
@@ -3335,7 +3336,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                         auto* dockObject = ObjectManager::get<DockObject>(elStation->objectId());
                         auto boatLoc = firstTile + TilePos2{ 1, 1 } + Math::Vector::rotate(dockObject->boatPosition, elStation->rotation());
 
-                        auto distance = Math::Vector::manhattanDistance(boatLoc, *pos);
+                        auto distance = Math::Vector::manhattanDistance(boatLoc, centerPos);
                         if (distance < bestDistance)
                         {
                             bestDistance = distance;
@@ -3356,34 +3357,37 @@ namespace OpenLoco::Ui::Windows::Vehicle
             return { args };
         }
 
-        // 0x004B2B9E
-        static void pickupToolUpdateWater(const Vehicles::VehicleHead& head, const int16_t x, const int16_t y)
+        static void removeBoatGhost(const Vehicles::VehicleHead& head)
         {
-            auto placementArgs = getVehicleWaterPlacementArgsFromCursor(head, x, y);
-
-            int32_t unk = placementArgs ? 0 : -1;
-            if (*_ghostVehiclePos == placementArgs->pos && unk == *_1136264)
-            {
-                return;
-            }
-            _ghostVehiclePos = placementArgs->pos;
-            _1136264 = unk;
-
             // Note: dont use isPlaced as we need to know if its a ghost
             // consider creating isGhostPlaced
             if (head.tile_x != -1 && (head.var_38 & Vehicles::Flags38::isGhost))
             {
                 GameCommands::do_63(head.id);
             }
+            _1136264 = -1;
+        }
 
-            if (unk == -1)
+        // 0x004B2B9E
+        static void pickupToolUpdateWater(const Vehicles::VehicleHead& head, const int16_t x, const int16_t y)
+        {
+            auto placementArgs = getVehicleWaterPlacementArgsFromCursor(head, x, y);
+
+            if (!placementArgs)
             {
+                removeBoatGhost(head);
                 return;
             }
 
-            if (!GameCommands::do_62(GameCommands::Flags::apply | GameCommands::Flags::flag_6 | GameCommands::Flags::flag_3, *placementArgs))
+            if (_1136264 == 0 && * _ghostVehiclePos == placementArgs->pos)
             {
-                _1136264 = -1;
+                return;
+            }
+            _ghostVehiclePos = placementArgs->pos;
+            removeBoatGhost(head);
+            if (GameCommands::do_62(GameCommands::Flags::apply | GameCommands::Flags::flag_6 | GameCommands::Flags::flag_3, *placementArgs))
+            {
+                _1136264 = 0;
             }
         }
 
