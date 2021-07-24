@@ -11,7 +11,9 @@
 #include "../Localisation/FormatArguments.hpp"
 #include "../Localisation/StringIds.h"
 #include "../Map/TileManager.h"
+#include "../Objects/AirportObject.h"
 #include "../Objects/CargoObject.h"
+#include "../Objects/DockObject.h"
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/ObjectManager.h"
 #include "../Objects/RoadObject.h"
@@ -200,6 +202,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
     static loco_global<Vehicles::VehicleBogie*, 0x0113614E> _dragCarComponent;
     static loco_global<EntityId_t, 0x01136156> _dragVehicleHead;
     static loco_global<int32_t, 0x01136264> _1136264;
+    static loco_global<Map::Pos3, 0x0113625E> _ghostVehiclePos;
 
     namespace Main
     {
@@ -3280,7 +3283,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
         };
 
         // 0x00427595
-        static std::optional<GameCommands::VehicleWaterPlacementArgs> getVehicleWaterPlacementArgsFromCursor(const int16_t x, const int16_t y) {
+        static std::optional<GameCommands::VehicleWaterPlacementArgs> getVehicleWaterPlacementArgsFromCursor(const Vehicles::VehicleHead& head, const int16_t x, const int16_t y)
+        {
             static loco_global<int16_t, 0x0113600C> _113600C;
             static loco_global<int16_t, 0x0113600E> _113600E;
 
@@ -3294,7 +3298,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
 
             // Search 8x8 area centerd on mouse pos
-            Map::Pos2 initialPos = *pos + Map::Pos2(16, 16) - Map::TilePos2(4,4);
+            Map::Pos2 initialPos = *pos + Map::Pos2(16, 16) - Map::TilePos2(4, 4);
+            int32_t bestDistance = std::numeric_limits<int32_t>::max();
+            Map::Pos3 bestLoc;
+
             for (auto i = 0; i < 8; ++i)
             {
                 for (auto j = 0; j < 8; ++j)
@@ -3324,14 +3331,60 @@ namespace OpenLoco::Ui::Windows::Vehicle
                             continue;
                         }
 
-                        // get dock loc
+                        auto firstTile = loc - Map::offsets[elStation->multiTileIndex()];
+                        auto* dockObject = ObjectManager::get<DockObject>(elStation->objectId());
+                        auto boatLoc = firstTile + TilePos2{ 1, 1 } + Math::Vector::rotate(dockObject->boatPosition, elStation->rotation());
+
+                        auto distance = Math::Vector::manhattanDistance(boatLoc, *pos);
+                        if (distance < bestDistance)
+                        {
+                            bestDistance = distance;
+                            bestLoc = Map::Pos3(loc.x, loc.y, elStation->baseZ() * 4);
+                        }
                     }
                 }
             }
+
+            if (bestDistance == std::numeric_limits<int32_t>::max())
+            {
+                return {};
+            }
+
+            GameCommands::VehicleWaterPlacementArgs args;
+            args.pos = bestLoc;
+            args.head = head.id;
+            return { args };
         }
+
         // 0x004B2B9E
         static void pickupToolUpdateWater(const Vehicles::VehicleHead& head, const int16_t x, const int16_t y)
         {
+            auto placementArgs = getVehicleWaterPlacementArgsFromCursor(head, x, y);
+
+            int32_t unk = placementArgs ? 0 : -1;
+            if (*_ghostVehiclePos == placementArgs->pos && unk == *_1136264)
+            {
+                return;
+            }
+            _ghostVehiclePos = placementArgs->pos;
+            _1136264 = unk;
+
+            // Note: dont use isPlaced as we need to know if its a ghost
+            // consider creating isGhostPlaced
+            if (head.tile_x != -1 && (head.var_38 & Vehicles::Flags38::isGhost))
+            {
+                GameCommands::do_63(head.id);
+            }
+
+            if (unk == -1)
+            {
+                return;
+            }
+
+            if (!GameCommands::do_62(GameCommands::Flags::apply | GameCommands::Flags::flag_6 | GameCommands::Flags::flag_3, *placementArgs))
+            {
+                _1136264 = -1;
+            }
         }
 
         // 0x004B29C0
@@ -3353,7 +3406,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     // 0x004B2AFA
                     break;
                 case TransportMode::water:
-                    // 0x004B2B9E
+                    pickupToolUpdateWater(*head, x, y);
                     break;
             }
         }

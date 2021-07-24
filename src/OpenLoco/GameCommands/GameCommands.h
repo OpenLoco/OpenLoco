@@ -863,6 +863,36 @@ namespace OpenLoco::GameCommands
         return doCommand(GameCommand::removePort, regs) != FAILURE;
     }
 
+    struct VehicleWaterPlacementArgs
+    {
+        VehicleWaterPlacementArgs() = default;
+        explicit VehicleWaterPlacementArgs(const registers regs)
+            : pos(regs.ax, regs.cx, regs.dx)
+            , head(regs.di)
+        {
+        }
+
+        Map::Pos3 pos;
+        EntityId_t head;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.ax = pos.x;
+            regs.cx = pos.y;
+            regs.dx = pos.z;
+            regs.di = head;
+            return regs;
+        }
+    };
+
+    inline bool do_62(uint8_t flags, const VehicleWaterPlacementArgs& args)
+    {
+        registers regs = registers(args);
+        regs.bl = flags;
+        return doCommand(GameCommand::vehiclePlaceWater, regs) != FAILURE;
+    }
+
     inline bool do_63(EntityId_t head)
     {
         registers regs;
