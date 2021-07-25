@@ -202,7 +202,9 @@ namespace OpenLoco::Ui::Windows::Vehicle
     static loco_global<Vehicles::VehicleBogie*, 0x0113614E> _dragCarComponent;
     static loco_global<EntityId_t, 0x01136156> _dragVehicleHead;
     static loco_global<int32_t, 0x01136264> _1136264;
+    static loco_global<uint8_t, 0x01136264> _ghostAirportNode;
     static loco_global<Map::Pos3, 0x0113625E> _ghostVehiclePos;
+    static loco_global<StationId_t, 0x0113625A> _ghostAirportStationId;
 
     namespace Main
     {
@@ -3406,7 +3408,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     continue;
                 }
 
-                if (elStation->baseZ() != station->unk_tile_z)
+                if (elStation->baseZ() != station->unk_tile_z / 4)
                 {
                     elStation = nullptr;
                     continue;
@@ -3495,6 +3497,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                         }
 
                         stationFound = true;
+                        break;
                     }
                 }
 
@@ -3515,6 +3518,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             auto* airportObj = ObjectManager::get<AirportObject>(elStation->objectId());
 
             int32_t bestDistance = std::numeric_limits<int32_t>::max();
+            uint8_t bestNode = 0;
             for (auto node = airportObj->numMovementNodes - 1; node > -1; node--)
             {
                 const auto& movementNode = airportObj->movementNodes[node];
@@ -3527,13 +3531,59 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 {
                     continue;
                 }
+
+                auto viewPos = Viewport::mapFrom3d(*nodeLoc, res.second->getRotation());
+                auto uiPos = res.second->mapToUi(viewPos);
+                auto distance = Math::Vector::manhattanDistance(uiPos, xy32{ x, y });
+                if (distance < bestDistance)
+                {
+                    bestDistance = distance;
+                    bestNode = node;
+                }
             }
+
+            if (bestDistance == std::numeric_limits<int32_t>::max())
+            {
+                return {};
+            }
+
+            placementArgs.airportNode = bestNode;
+            return { placementArgs };
         }
 
-        static void removeAirplaneGhost(const Vehicles::VehicleHead& head) {}
+        static void removeAirplaneGhost(const Vehicles::VehicleHead& head)
+        {
+            // Note: dont use isPlaced as we need to know if its a ghost
+            // consider creating isGhostPlaced
+            if (head.tile_x != -1 && (head.var_38 & Vehicles::Flags38::isGhost))
+            {
+                GameCommands::do_59(head.id);
+            }
+            _ghostAirportStationId = StationId::null;
+        }
 
         // 0x004B2AFA
-        static void pickupToolUpdateAir(const Vehicles::VehicleHead& head, const int16_t x, const int16_t y) {}
+        static void pickupToolUpdateAir(const Vehicles::VehicleHead& head, const int16_t x, const int16_t y)
+        {
+            auto placementArgs = getVehicleAirPlacementArgsFromCursor(head, x, y);
+            if (!placementArgs)
+            {
+                removeAirplaneGhost(head);
+                return;
+            }
+
+            if (_ghostAirportStationId != StationId::null && *_ghostAirportStationId == placementArgs->stationId && *_ghostAirportNode == placementArgs->airportNode)
+            {
+                return;
+            }
+
+            removeAirplaneGhost(head);
+            if (GameCommands::do_58(GameCommands::Flags::apply | GameCommands::Flags::flag_6 | GameCommands::Flags::flag_3, *placementArgs))
+            {
+                _ghostAirportNode = placementArgs->airportNode;
+                _ghostAirportStationId = placementArgs->stationId;
+            }
+        }
 
         // 0x004B29C0
         static void pickupToolUpdate(Window& self, const int16_t x, const int16_t y)
@@ -3551,7 +3601,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     // 0x004B2A03
                     break;
                 case TransportMode::air:
-                    // 0x004B2AFA
+                    pickupToolUpdateAir(*head, x, y);
                     break;
                 case TransportMode::water:
                     pickupToolUpdateWater(*head, x, y);
