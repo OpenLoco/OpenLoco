@@ -3592,6 +3592,55 @@ namespace OpenLoco::Ui::Windows::Vehicle
             return {};
         }
 
+        // 0x004A43E4
+        static uint16_t getTrackProgressAtCursor(const xy32& cursorLoc, Ui::Viewport& viewport, const TrackElement& trackElement, const Map::Pos3& loc)
+        {
+            const auto& trackDataArr = Map::TrackData::getTrackPiece(trackElement.trackId());
+            const auto& trackData = trackDataArr[trackElement.sequenceIndex()];
+            auto trackOffset2 = Math::Vector::rotate(Map::Pos2(trackData.x, trackData.y), trackElement.unkDirection());
+            auto trackOffset = Map::Pos3(trackOffset2.x, trackOffset2.y, trackData.z);
+            auto trackFirstTile = loc - trackOffset;
+            uint16_t trackAndDirection = trackElement.unkDirection() | (trackElement.trackId() << 3);
+
+            int32_t bestDistance = std::numeric_limits<int32_t>::max();
+            uint16_t bestProgress = 0;
+            const auto& moveInfoArr = Map::TrackData::getTrackSubPositon(trackAndDirection);
+            for (const auto& moveInfo : moveInfoArr)
+            {
+                auto potentialLoc = trackFirstTile + moveInfo.loc;
+                auto viewPos = Viewport::mapFrom3d(potentialLoc, viewport.getRotation());
+                auto uiPos = viewport.mapToUi(viewPos);
+                auto distance = Math::Vector::manhattanDistance(uiPos, cursorLoc);
+                if (distance < bestDistance)
+                {
+                    bestDistance = distance;
+                    bestProgress = std::distance(&*moveInfoArr.begin(), &moveInfo);
+                }
+            }
+            return bestProgress;
+        }
+
+        // 0x004A40C5
+        static std::optional<uint16_t> getTrackAtCursor(const int16_t x, const int16_t y)
+        {
+            static loco_global<int16_t, 0x0113600C> _113600C;
+            static loco_global<int16_t, 0x0113600E> _113600E;
+
+            _113600C = x;
+            _113600E = y;
+            auto [interaction, viewport] = ViewportInteraction::getMapCoordinatesFromPos(x, y, ~ViewportInteraction::InteractionItemFlags::track);
+            if (interaction.type != ViewportInteraction::InteractionItem::track)
+            {
+                return {};
+            }
+
+            auto* trackElement = static_cast<Map::TrackElement*>(interaction.object);
+            Map::Pos3 loc(interaction.pos.x, interaction.pos.y, trackElement->baseZ() * 4);
+            auto rotation = trackElement->unkDirection();
+            auto trackId = trackElement->trackId();
+            auto trackObjectId = trackElement->trackObjectId();
+        }
+
         // 0x004B6444
         static std::optional<GameCommands::VehiclePlacementArgs> getVehicleRailPlacementArgsFromCursor(const Vehicles::VehicleHead& head, const int16_t x, const int16_t y) { return {}; }
 
