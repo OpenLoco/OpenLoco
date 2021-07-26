@@ -192,31 +192,9 @@ namespace OpenLoco::Map
      * @param rotation
      * @return
      */
-    Ui::viewport_pos coordinate3dTo2d(int16_t x, int16_t y, int16_t z, int rotation)
+    Ui::viewport_pos gameToScreen(const Pos3& loc, int rotation)
     {
-        Ui::viewport_pos coordinate_2d;
-
-        switch (rotation)
-        {
-            default:
-            case 0:
-                coordinate_2d.x = y - x;
-                coordinate_2d.y = ((y + x) >> 1) - z;
-                break;
-            case 1:
-                coordinate_2d.x = -y - x;
-                coordinate_2d.y = ((y - x) >> 1) - z;
-                break;
-            case 2:
-                coordinate_2d.x = -y + x;
-                coordinate_2d.y = ((-y - x) >> 1) - z;
-                break;
-            case 3:
-                coordinate_2d.x = y + x;
-                coordinate_2d.y = ((-y + x) >> 1) - z;
-                break;
-        }
-
-        return coordinate_2d;
+        auto rotLoc = Math::Vector::rotate(loc, rotation);
+        return Ui::viewport_pos(rotLoc.y - rotLoc.x, ((rotLoc.y + rotLoc.x) >> 1) - loc.z);
     }
 }
