@@ -205,6 +205,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
     static loco_global<uint8_t, 0x01136264> _ghostAirportNode;
     static loco_global<Map::Pos3, 0x0113625E> _ghostVehiclePos;
     static loco_global<StationId_t, 0x0113625A> _ghostAirportStationId;
+    static loco_global<uint32_t, 0x0113625A> _ghostLandTrackAndDirection;
 
     namespace Main
     {
@@ -3585,6 +3586,51 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
         }
 
+        // 0x00479707
+        static std::optional<GameCommands::VehiclePlacementArgs> getVehicleRoadPlacementArgsFromCursor(const Vehicles::VehicleHead& head, const int16_t x, const int16_t y)
+        {
+            return {};
+        }
+
+        // 0x004B6444
+        static std::optional<GameCommands::VehiclePlacementArgs> getVehicleRailPlacementArgsFromCursor(const Vehicles::VehicleHead& head, const int16_t x, const int16_t y) { return {}; }
+
+        static void removeLandGhost(const Vehicles::VehicleHead& head)
+        {
+            // Note: dont use isPlaced as we need to know if its a ghost
+            // consider creating isGhostPlaced
+            if (head.tile_x != -1 && (head.var_38 & Vehicles::Flags38::isGhost))
+            {
+                GameCommands::do_2(head.id);
+            }
+            _1136264 = -1;
+        }
+
+        // 0x004B2A1D
+        template<typename GetPlacementArgsFunc>
+        static void pickupToolUpdateLand(const Vehicles::VehicleHead& head, const int16_t x, const int16_t y, GetPlacementArgsFunc&& getPlacementArgs)
+        {
+            auto placementArgs = getPlacementArgs(head, x, y);
+            if (!placementArgs)
+            {
+                removeLandGhost(head);
+                return;
+            }
+
+            if (_1136264 != -1 && *_ghostLandTrackAndDirection == placementArgs->trackAndDirection && *_ghostVehiclePos == placementArgs->pos && *_1136264 == placementArgs->unk)
+            {
+                return;
+            }
+
+            removeLandGhost(head);
+            if (GameCommands::do_1(GameCommands::Flags::apply | GameCommands::Flags::flag_6 | GameCommands::Flags::flag_3, *placementArgs))
+            {
+                _ghostLandTrackAndDirection = placementArgs->trackAndDirection;
+                _ghostVehiclePos = placementArgs->pos;
+                _1136264 = placementArgs->unk;
+            }
+        }
+
         // 0x004B29C0
         static void pickupToolUpdate(Window& self, const int16_t x, const int16_t y)
         {
@@ -3595,10 +3641,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
             switch (head->mode)
             {
                 case TransportMode::rail:
-                    // 0x004B2A11
+                    pickupToolUpdateLand(*head, x, y, getVehicleRailPlacementArgsFromCursor);
                     break;
                 case TransportMode::road:
-                    // 0x004B2A03
+                    pickupToolUpdateLand(*head, x, y, getVehicleRoadPlacementArgsFromCursor);
                     break;
                 case TransportMode::air:
                     pickupToolUpdateAir(*head, x, y);
@@ -3622,6 +3668,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004B3035
         static void pickupToolAbort(Window& self)
         {
+            // TODO: refactor to use removeAirplaneGhost family of functions
             auto head = getVehicle(&self);
             if (head->tile_x == -1 || !(head->var_38 & Vehicles::Flags38::isGhost))
             {

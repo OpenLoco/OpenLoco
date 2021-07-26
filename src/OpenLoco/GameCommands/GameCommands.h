@@ -139,6 +139,42 @@ namespace OpenLoco::GameCommands
         doCommand(GameCommand::vehicleRearrange, regs);
     }
 
+    struct VehiclePlacementArgs
+    {
+        VehiclePlacementArgs() = default;
+        explicit VehiclePlacementArgs(const registers regs)
+            : pos(regs.ax, regs.cx, regs.dx * 4)
+            , trackAndDirection(regs.bp)
+            , unk(regs.ebx >> 16)
+            , head(regs.di)
+        {
+        }
+
+        Map::Pos3 pos;
+        uint16_t trackAndDirection;
+        uint16_t unk;
+        EntityId_t head;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.bp = trackAndDirection;
+            regs.di = head;
+            regs.ax = pos.x;
+            regs.cx = pos.y;
+            regs.dx = pos.z / 4;
+            regs.ebx = regs.bl | (unk << 16);
+            return regs;
+        }
+    };
+
+    inline bool do_1(uint8_t flags, const VehiclePlacementArgs& args)
+    {
+        registers regs = registers(args);
+        regs.bl = flags;
+        return doCommand(GameCommand::vehiclePlace, regs) != FAILURE;
+    }
+
     inline bool do_2(EntityId_t head)
     {
         registers regs;
