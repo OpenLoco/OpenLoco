@@ -3533,7 +3533,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     continue;
                 }
 
-                auto viewPos = Viewport::mapFrom3d(*nodeLoc, res.second->getRotation());
+                auto viewPos = Map::gameToScreen(*nodeLoc, res.second->getRotation());
                 auto uiPos = res.second->mapToUi(viewPos);
                 auto distance = Math::Vector::manhattanDistance(uiPos, xy32{ x, y });
                 if (distance < bestDistance)
@@ -3608,7 +3608,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             for (const auto& moveInfo : moveInfoArr)
             {
                 auto potentialLoc = trackFirstTile + moveInfo.loc;
-                auto viewPos = Viewport::mapFrom3d(potentialLoc, viewport.getRotation());
+                auto viewPos = Map::gameToScreen(potentialLoc, viewport.getRotation());
                 auto uiPos = viewport.mapToUi(viewPos);
                 auto distance = Math::Vector::manhattanDistance(uiPos, cursorLoc);
                 if (distance < bestDistance)
