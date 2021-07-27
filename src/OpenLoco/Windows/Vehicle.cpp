@@ -3650,6 +3650,16 @@ namespace OpenLoco::Ui::Windows::Vehicle
             return { placementArgs };
         }
 
+#pragma pack(push, 1)
+        struct UnkTrack
+        {
+            uint8_t var_00; // 0x00
+            uint8_t var_01; // 0x01
+            Map::Pos3 pos;  // 0x02
+        };
+        static_assert(sizeof(UnkTrack) == 0x8);
+#pragma pack(pop)
+
         // 0x004B6444
         static std::optional<GameCommands::VehiclePlacementArgs> getVehicleRailPlacementArgsFromCursor(const Vehicles::VehicleHead& head, const int16_t x, const int16_t y)
         {
@@ -3673,7 +3683,20 @@ namespace OpenLoco::Ui::Windows::Vehicle
             unkYaw &= 0x3F;
             if (unkYaw <= 0x20)
             {
-                // move start
+                static loco_global<UnkTrack[352], 0x004F7B5C> _4F7B5C;
+                static loco_global<Map::Pos2[352], 0x00503C6C> _503C6C;
+                const auto& unkItem = _4F7B5C[placementArgs->trackAndDirection];
+                placementArgs->pos += unkItem.pos;
+                if (unkItem.var_01 < 12)
+                {
+                    placementArgs->pos -= _503C6C[unkItem.var_01];
+                }
+                placementArgs->unk = std::max<uint16_t>(static_cast<uint16_t>(moveInfoArr.size()) - placementArgs->unk, 0);
+                if (placementArgs->unk >= moveInfoArr.size())
+                {
+                    placementArgs->unk = static_cast<uint16_t>(moveInfoArr.size()) - 1;
+                }
+                placementArgs->trackAndDirection ^= (1 << 2);
             }
             return placementArgs;
         }

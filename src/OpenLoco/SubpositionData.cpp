@@ -5,8 +5,9 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Map::TrackData
 {
-    static loco_global<const MoveInfo*[352], 0x04D9724> _4D9724; // 44 trackId's * 8 directions
-    const std::vector<MoveInfo> getTrackSubPositon(uint16_t trackAndDirection) {
+    static loco_global<const MoveInfo* [352], 0x04D9724> _4D9724; // 44 trackId's * 8 directions
+    const std::vector<MoveInfo> getTrackSubPositon(uint16_t trackAndDirection)
+    {
         auto* moveInfoStart = _4D9724[trackAndDirection];
         auto moveInfoSize = *(reinterpret_cast<const uint16_t*>(moveInfoStart) - 1);
         std::vector<MoveInfo> moveInfoArr;
