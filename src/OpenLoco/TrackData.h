@@ -34,16 +34,4 @@ namespace OpenLoco::Map::TrackData
 
     const std::vector<PreviewTrack>& getTrackPiece(size_t trackId);
     const std::vector<PreviewTrack>& getRoadPiece(size_t trackId);
-
-#pragma pack(push, 1)
-    struct MoveInfo
-    {
-        Map::Pos3 loc; // 0x00
-        uint8_t yaw;   // 0x06
-        uint8_t pitch; // 0x07
-    };
-#pragma pack(pop)
-    static_assert(sizeof(MoveInfo) == 0x8);
-
-    const std::vector<MoveInfo>& getTrackSubPositon(uint16_t trackAndDirection);
 }

@@ -23,6 +23,7 @@
 #include "../OpenLoco.h"
 #include "../StationManager.h"
 #include "../TrackData.h"
+#include "../SubpositionData.h"
 #include "../Ui/Dropdown.h"
 #include "../Ui/ScrollView.h"
 #include "../Ui/WindowManager.h"
@@ -3604,7 +3605,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             int32_t bestDistance = std::numeric_limits<int32_t>::max();
             uint16_t bestProgress = 0;
-            const auto& moveInfoArr = Map::TrackData::getTrackSubPositon(trackAndDirection);
+            const auto moveInfoArr = Map::TrackData::getTrackSubPositon(trackAndDirection);
             for (const auto& moveInfo : moveInfoArr)
             {
                 auto potentialLoc = trackFirstTile + moveInfo.loc;
