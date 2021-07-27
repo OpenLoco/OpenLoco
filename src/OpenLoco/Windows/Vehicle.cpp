@@ -3659,6 +3659,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return {};
             }
 
+            placementArgs->head = head.id;
             const auto moveInfoArr = Map::TrackData::getTrackSubPositon(placementArgs->trackAndDirection);
             const auto& moveInfo = moveInfoArr[placementArgs->unk];
             // TODO: modify getTrackAtCursor to return the viewport then use its rotation

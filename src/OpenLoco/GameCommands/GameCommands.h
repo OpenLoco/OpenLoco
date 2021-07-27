@@ -158,12 +158,12 @@ namespace OpenLoco::GameCommands
         explicit operator registers() const
         {
             registers regs;
-            regs.bp = trackAndDirection;
+            regs.ebp = trackAndDirection;
             regs.di = head;
             regs.ax = pos.x;
             regs.cx = pos.y;
             regs.dx = pos.z / 4;
-            regs.ebx = regs.bl | (unk << 16);
+            regs.ebx = (regs.ebx & 0xFFFF) | (unk << 16);
             return regs;
         }
     };
