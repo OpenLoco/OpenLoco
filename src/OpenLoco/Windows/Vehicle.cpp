@@ -22,8 +22,8 @@
 #include "../Objects/WaterObject.h"
 #include "../OpenLoco.h"
 #include "../StationManager.h"
-#include "../TrackData.h"
 #include "../SubpositionData.h"
+#include "../TrackData.h"
 #include "../Ui/Dropdown.h"
 #include "../Ui/ScrollView.h"
 #include "../Ui/WindowManager.h"
@@ -3622,7 +3622,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004A40C5
-        static std::optional<uint16_t> getTrackAtCursor(const int16_t x, const int16_t y)
+        static std::optional<GameCommands::VehiclePlacementArgs> getTrackAtCursor(const int16_t x, const int16_t y)
         {
             static loco_global<int16_t, 0x0113600C> _113600C;
             static loco_global<int16_t, 0x0113600E> _113600E;
@@ -3637,13 +3637,45 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             auto* trackElement = static_cast<Map::TrackElement*>(interaction.object);
             Map::Pos3 loc(interaction.pos.x, interaction.pos.y, trackElement->baseZ() * 4);
-            auto rotation = trackElement->unkDirection();
-            auto trackId = trackElement->trackId();
-            auto trackObjectId = trackElement->trackObjectId();
+            auto progress = getTrackProgressAtCursor({ x, y }, *viewport, *trackElement, loc);
+            const auto& trackDataArr = Map::TrackData::getTrackPiece(trackElement->trackId());
+            const auto& trackData = trackDataArr[trackElement->sequenceIndex()];
+            auto trackOffset2 = Math::Vector::rotate(Map::Pos2(trackData.x, trackData.y), trackElement->unkDirection());
+            auto trackOffset = Map::Pos3(trackOffset2.x, trackOffset2.y, trackData.z);
+            auto trackFirstTile = loc - trackOffset;
+            GameCommands::VehiclePlacementArgs placementArgs;
+            placementArgs.pos = trackFirstTile;
+            placementArgs.unk = progress;
+            placementArgs.trackAndDirection = trackElement->unkDirection() | (trackElement->trackId() << 3);
+            return { placementArgs };
         }
 
         // 0x004B6444
-        static std::optional<GameCommands::VehiclePlacementArgs> getVehicleRailPlacementArgsFromCursor(const Vehicles::VehicleHead& head, const int16_t x, const int16_t y) { return {}; }
+        static std::optional<GameCommands::VehiclePlacementArgs> getVehicleRailPlacementArgsFromCursor(const Vehicles::VehicleHead& head, const int16_t x, const int16_t y)
+        {
+            auto placementArgs = getTrackAtCursor(x, y);
+            if (!placementArgs)
+            {
+                return {};
+            }
+
+            const auto moveInfoArr = Map::TrackData::getTrackSubPositon(placementArgs->trackAndDirection);
+            const auto& moveInfo = moveInfoArr[placementArgs->unk];
+            // TODO: modify getTrackAtCursor to return the viewport then use its rotation
+            static loco_global<int32_t, 0x00E3F0B8> gCurrentRotation;
+            uint8_t unkYaw = moveInfo.yaw + (gCurrentRotation << 4);
+            unkYaw -= 0x37;
+            if (_pickupDirection != 0)
+            {
+                unkYaw -= 0x20;
+            }
+            unkYaw &= 0x3F;
+            if (unkYaw <= 0x20)
+            {
+                // move start
+            }
+            return placementArgs;
+        }
 
         static void removeLandGhost(const Vehicles::VehicleHead& head)
         {
