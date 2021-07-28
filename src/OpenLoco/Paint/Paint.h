@@ -43,7 +43,7 @@ namespace OpenLoco::Paint
         uint8_t pad_0D;
         AttachedPaintStruct* next; // 0x0E
     };
-    static_assert(sizeof(AttachedPaintStruct) == 0x12);
+    assert_struct_size(AttachedPaintStruct, 0x12);
 
     struct PaintStringStruct
     {
@@ -56,7 +56,7 @@ namespace OpenLoco::Paint
         uint8_t* yOffsets; // 0x1A
         uint16_t colour;   // 0x1E
     };
-    static_assert(sizeof(PaintStringStruct) == 0x20);
+    assert_struct_size(PaintStringStruct, 0x20);
 
     struct PaintStructBoundBox
     {
@@ -104,7 +104,7 @@ namespace OpenLoco::Paint
             EntityBase* entity;            // 0x30
         };
     };
-    static_assert(sizeof(PaintStruct) == 0x34);
+    assert_struct_size(PaintStruct, 0x34);
 
     union PaintEntry
     {
@@ -112,7 +112,7 @@ namespace OpenLoco::Paint
         AttachedPaintStruct attached;
         PaintStringStruct string;
     };
-    static_assert(sizeof(PaintEntry) == 0x34);
+    assert_struct_size(PaintEntry, 0x34);
 #pragma pack(pop)
     struct GenerationParameters;
 

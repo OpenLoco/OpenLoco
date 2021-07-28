@@ -34,7 +34,7 @@ namespace OpenLoco::ObjectManager
         Object** objects;
         ObjectEntry2* object_entry_extendeds;
     };
-    static_assert(sizeof(ObjectRepositoryItem) == 8);
+    assert_struct_size(ObjectRepositoryItem, 8);
 #pragma pack(pop)
 
     loco_global<ObjectEntry2[maxObjects], 0x1125A90> objectEntries;

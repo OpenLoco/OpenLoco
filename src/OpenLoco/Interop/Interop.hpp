@@ -7,7 +7,11 @@
 #include <stdexcept>
 #include <vector>
 
+#if defined(__i386__)
 #define assert_struct_size(x, y) static_assert(sizeof(x) == (y), "Improper struct size")
+#else
+#define assert_struct_size(x, y)
+#endif
 
 #if defined(__clang__) || (defined(__GNUC__) && !defined(__MINGW32__))
 #define FORCE_ALIGN_ARG_POINTER __attribute__((force_align_arg_pointer))
