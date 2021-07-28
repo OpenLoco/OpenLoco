@@ -607,7 +607,7 @@ static void registerAudioHooks()
     registerHook(
         0x0048A4BF,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            Audio::playSound((Vehicles::Vehicle2or6*)regs.esi);
+            Audio::playSound(X86Pointer<Vehicles::Vehicle2or6>(regs.esi));
             return 0;
         });
     registerHook(
@@ -696,7 +696,7 @@ void OpenLoco::Interop::registerHooks()
         0x00451025,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
-            auto pos = Gfx::drawString((Gfx::Context*)regs.edi, regs.cx, regs.dx, regs.al, (uint8_t*)regs.esi);
+            auto pos = Gfx::drawString(X86Pointer<Gfx::Context>(regs.edi), regs.cx, regs.dx, regs.al, X86Pointer<uint8_t>(regs.esi));
             regs = backup;
             regs.cx = pos.x;
             regs.dx = pos.y;
@@ -716,7 +716,9 @@ void OpenLoco::Interop::registerHooks()
         0x004958C6,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
-            char* buffer = StringManager::formatString((char*)regs.edi, regs.eax, (void*)regs.ecx);
+            char* buffer = X86Pointer<char>(regs.edi);
+            void* args = X86Pointer(regs.ecx);
+            buffer = StringManager::formatString(buffer, regs.eax, args);
             regs = backup;
             regs.edi = X86Pointer(buffer);
             return 0;
@@ -751,8 +753,8 @@ void OpenLoco::Interop::registerHooks()
         0x004CA4DF,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
-            auto window = (Ui::Window*)regs.esi;
-            auto context = (Gfx::Context*)regs.edi;
+            Ui::Window* window = X86Pointer<Ui::Window>(regs.esi);
+            auto context = X86Pointer<Gfx::Context>(regs.edi);
             window->draw(context);
             regs = backup;
             return 0;
@@ -795,7 +797,7 @@ void OpenLoco::Interop::registerHooks()
             int16_t x = regs.eax;
             int16_t i = regs.ebx / 6;
             int16_t y = regs.ecx;
-            Map::SurfaceElement* surface = (Map::SurfaceElement*)regs.esi;
+            Map::SurfaceElement* surface = X86Pointer<Map::SurfaceElement>(regs.esi);
 
             surface->createWave(x, y, i);
 
@@ -806,7 +808,7 @@ void OpenLoco::Interop::registerHooks()
     registerHook(
         0x004AB655,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            auto v = (Vehicles::VehicleBase*)regs.esi;
+            Vehicles::VehicleBase* v = X86Pointer<Vehicles::VehicleBase>(regs.esi);
             v->asVehicleBody()->secondaryAnimationUpdate();
 
             return 0;
@@ -823,7 +825,7 @@ void OpenLoco::Interop::registerHooks()
         0x004C6456,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
-            auto window = (Ui::Window*)regs.esi;
+            Ui::Window* window = X86Pointer<Ui::Window>(regs.esi);
             window->viewportsUpdatePosition();
             regs = backup;
             return 0;
@@ -833,7 +835,7 @@ void OpenLoco::Interop::registerHooks()
         0x004C9513,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
-            auto window = (Ui::Window*)regs.esi;
+            Ui::Window* window = X86Pointer<Ui::Window>(regs.esi);
             int16_t x = regs.ax;
             int16_t y = regs.bx;
 
@@ -857,7 +859,7 @@ void OpenLoco::Interop::registerHooks()
         0x004CA115,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
-            auto window = (Ui::Window*)regs.esi;
+            Ui::Window* window = X86Pointer<Ui::Window>(regs.esi);
             window->updateScrollWidgets();
             regs = backup;
 
@@ -868,7 +870,7 @@ void OpenLoco::Interop::registerHooks()
         0x004CA17F,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
-            auto window = (Ui::Window*)regs.esi;
+            Ui::Window* window = X86Pointer<Ui::Window>(regs.esi);
             window->initScrollWidgets();
             regs = backup;
 

@@ -23,20 +23,32 @@ constexpr int32_t DEFAULT_REG_VAL = 0xCCCCCCCC;
 
 namespace OpenLoco::Interop
 {
+    template<typename T = void>
     class X86Pointer
     {
     private:
         uintptr_t _ptr;
 
     public:
-        X86Pointer(const void* x)
+        X86Pointer(const T* x)
         {
             _ptr = reinterpret_cast<uintptr_t>(x);
         }
+
+        X86Pointer(const uint32_t ptr)
+        {
+            _ptr = ptr;
+        }
+
         operator uint32_t() const
         {
             return (uint32_t)_ptr;
         }
+
+        operator T*() const
+        {
+            return reinterpret_cast<T*>(_ptr);
+        };
     };
 
 #pragma pack(push, 1)

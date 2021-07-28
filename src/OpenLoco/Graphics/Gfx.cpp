@@ -1419,7 +1419,7 @@ namespace OpenLoco::Gfx
         regs.dx = height;
         regs.cx = y;
         call(0x4cec50, regs);
-        *dst = (Gfx::Context*)regs.edi;
+        *dst = X86Pointer<Gfx::Context>(regs.edi);
 
         return *dst != nullptr;
     }

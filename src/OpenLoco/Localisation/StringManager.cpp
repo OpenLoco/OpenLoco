@@ -102,7 +102,7 @@ namespace OpenLoco::StringManager
         regs.edi = X86Pointer(buffer);
 
         call(0x00495F35, regs);
-        return (char*)regs.edi;
+        return X86Pointer<char>(regs.edi);
     }
 
     static char* formatInt32Ungrouped(int32_t value, char* buffer)
@@ -112,7 +112,7 @@ namespace OpenLoco::StringManager
         regs.edi = X86Pointer(buffer);
 
         call(0x495E2A, regs);
-        return (char*)regs.edi;
+        return X86Pointer<char>(regs.edi);
     }
 
     static char* formatInt48Grouped(uint64_t value, char* buffer, uint8_t separator)
@@ -124,7 +124,7 @@ namespace OpenLoco::StringManager
         regs.ebx = (uint32_t)separator;
 
         call(0x496052, regs);
-        return (char*)regs.edi;
+        return X86Pointer<char>(regs.edi);
     }
 
     static char* formatShortWithDecimals(int16_t value, char* buffer)
@@ -134,7 +134,7 @@ namespace OpenLoco::StringManager
         regs.edi = X86Pointer(buffer);
 
         call(0x4963FC, regs);
-        return (char*)regs.edi;
+        return X86Pointer<char>(regs.edi);
     }
 
     static char* formatIntWithDecimals(int32_t value, char* buffer)
@@ -144,7 +144,7 @@ namespace OpenLoco::StringManager
         regs.edi = X86Pointer(buffer);
 
         call(0x4962F1, regs);
-        return (char*)regs.edi;
+        return X86Pointer<char>(regs.edi);
     }
 
     // 0x00495D09

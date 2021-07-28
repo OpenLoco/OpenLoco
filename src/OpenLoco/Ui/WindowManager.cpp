@@ -798,7 +798,7 @@ namespace OpenLoco::Ui::WindowManager
         regs.esi = X86Pointer(w);
         call(0x004CC750, regs);
 
-        return (Window*)regs.esi;
+        return X86Pointer<Window>(regs.esi);
     }
 
     // 0x004CD3A9
