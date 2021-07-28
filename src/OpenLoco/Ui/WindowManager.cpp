@@ -128,7 +128,7 @@ namespace OpenLoco::Ui::WindowManager
                 registers backup = regs;
                 auto* w = Windows::Vehicle::Main::open(reinterpret_cast<Vehicles::VehicleBase*>(regs.edx));
                 regs = backup;
-                regs.esi = reinterpret_cast<int32_t>(w);
+                regs.esi = X86Pointer(w);
                 return 0;
             });
 
@@ -219,7 +219,7 @@ namespace OpenLoco::Ui::WindowManager
                 registers backup = regs;
                 auto window = Windows::Town::open(regs.dx);
                 regs = backup;
-                regs.esi = (uintptr_t)window;
+                regs.esi = X86Pointer(window);
 
                 return 0;
             });
@@ -230,7 +230,7 @@ namespace OpenLoco::Ui::WindowManager
                 registers backup = regs;
                 auto window = Windows::Station::open(regs.dx);
                 regs = backup;
-                regs.esi = (uintptr_t)window;
+                regs.esi = X86Pointer(window);
 
                 return 0;
             });
@@ -241,7 +241,7 @@ namespace OpenLoco::Ui::WindowManager
                 registers backup = regs;
                 auto window = Windows::IndustryList::open();
                 regs = backup;
-                regs.esi = (uintptr_t)window;
+                regs.esi = X86Pointer(window);
 
                 return 0;
             });
@@ -292,7 +292,7 @@ namespace OpenLoco::Ui::WindowManager
                 registers backup = regs;
                 auto window = findAt(regs.ax, regs.bx);
                 regs = backup;
-                regs.esi = (uintptr_t)window;
+                regs.esi = X86Pointer(window);
 
                 return 0;
             });
@@ -303,7 +303,7 @@ namespace OpenLoco::Ui::WindowManager
                 registers backup = regs;
                 auto window = findAtAlt(regs.ax, regs.bx);
                 regs = backup;
-                regs.esi = (uintptr_t)window;
+                regs.esi = X86Pointer(window);
 
                 return 0;
             });
@@ -321,7 +321,7 @@ namespace OpenLoco::Ui::WindowManager
                     w = find((WindowType)regs.cx, regs.dx);
                 }
 
-                regs.esi = (uintptr_t)w;
+                regs.esi = X86Pointer(w);
                 if (w == nullptr)
                 {
                     return X86_FLAG_ZERO;
@@ -423,7 +423,7 @@ namespace OpenLoco::Ui::WindowManager
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 auto w = getMainWindow();
 
-                regs.esi = (uintptr_t)w;
+                regs.esi = X86Pointer(w);
                 if (w == nullptr)
                 {
                     return X86_FLAG_CARRY;
@@ -450,7 +450,7 @@ namespace OpenLoco::Ui::WindowManager
                 auto w = createWindow((WindowType)regs.cl, Gfx::point_t(regs.ax, regs.eax >> 16), Gfx::ui_size_t(regs.bx, regs.ebx >> 16), regs.ecx >> 8, (WindowEventList*)regs.edx);
                 regs = backup;
 
-                regs.esi = (uintptr_t)w;
+                regs.esi = X86Pointer(w);
                 return 0;
             });
 
@@ -462,7 +462,7 @@ namespace OpenLoco::Ui::WindowManager
                 auto w = createWindow((WindowType)regs.cl, Gfx::ui_size_t(regs.bx, (((uint32_t)regs.ebx) >> 16)), regs.ecx >> 8, (WindowEventList*)regs.edx);
                 regs = backup;
 
-                regs.esi = (uintptr_t)w;
+                regs.esi = X86Pointer(w);
                 return 0;
             });
 
@@ -484,7 +484,7 @@ namespace OpenLoco::Ui::WindowManager
                 auto w = bringToFront((WindowType)regs.cx, regs.dx);
                 regs = backup;
 
-                regs.esi = (uintptr_t)w;
+                regs.esi = X86Pointer(w);
                 if (w == nullptr)
                 {
                     return X86_FLAG_ZERO;
@@ -795,7 +795,7 @@ namespace OpenLoco::Ui::WindowManager
     Window* bringToFront(Window* w)
     {
         registers regs;
-        regs.esi = (uint32_t)w;
+        regs.esi = X86Pointer(w);
         call(0x004CC750, regs);
 
         return (Window*)regs.esi;

@@ -486,8 +486,8 @@ namespace OpenLoco::S5
     static void object_create_identifier_name(char* dst, const ObjectHeader& header)
     {
         registers regs;
-        regs.edi = reinterpret_cast<int32_t>(dst);
-        regs.ebp = reinterpret_cast<int32_t>(&header);
+        regs.edi = X86Pointer(dst);
+        regs.ebp = X86Pointer(&header);
         call(0x00473BC7, regs);
     }
 

@@ -337,7 +337,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     {
         // Load objects.
         registers regs;
-        regs.edi = (uint32_t)&available_objects[0];
+        regs.edi = X86Pointer(&available_objects[0]);
         call(0x004A6841, regs);
 
         // Sanity check: any objects available?

@@ -191,7 +191,7 @@ namespace OpenLoco::CompanyManager
     string_id getOwnerStatus(CompanyId_t id, FormatArguments& args)
     {
         registers regs;
-        regs.esi = (int32_t)get(id);
+        regs.esi = X86Pointer(get(id));
         call(0x00438047, regs);
 
         args.push(regs.ecx);
@@ -202,7 +202,7 @@ namespace OpenLoco::CompanyManager
     OwnerStatus getOwnerStatus(CompanyId_t id)
     {
         registers regs;
-        regs.esi = (int32_t)get(id);
+        regs.esi = X86Pointer(get(id));
         call(0x00438047, regs);
 
         OwnerStatus ownerStatus;

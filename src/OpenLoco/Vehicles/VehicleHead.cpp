@@ -814,7 +814,7 @@ namespace OpenLoco::Vehicles
     void VehicleHead::removeDanglingTrain()
     {
         registers regs;
-        regs.esi = reinterpret_cast<int32_t>(this);
+        regs.esi = X86Pointer(this);
         call(0x004AF06E, regs);
     }
 
@@ -2256,7 +2256,7 @@ namespace OpenLoco::Vehicles
     void VehicleHead::updateLastJourneyAverageSpeed()
     {
         registers regs;
-        regs.esi = reinterpret_cast<int32_t>(this);
+        regs.esi = X86Pointer(this);
         call(0x004BACAF, regs);
     }
 
@@ -2800,7 +2800,7 @@ namespace OpenLoco::Vehicles
     bool VehicleHead::updateLoadCargo()
     {
         registers regs;
-        regs.esi = reinterpret_cast<int32_t>(this);
+        regs.esi = X86Pointer(this);
         return call(0x004BA142, regs) & (1 << 8);
     }
 
@@ -2862,7 +2862,7 @@ namespace OpenLoco::Vehicles
     std::tuple<StationId_t, Map::Pos2, Map::Pos3> VehicleHead::sub_427FC9()
     {
         registers regs;
-        regs.esi = reinterpret_cast<int32_t>(this);
+        regs.esi = X86Pointer(this);
         call(0x00427FC9, regs);
         Map::Pos2 headTarget = { regs.ax, regs.cx };
         Map::Pos3 stationTarget = { regs.di, regs.bp, regs.dx };
@@ -2889,7 +2889,7 @@ namespace OpenLoco::Vehicles
     void VehicleHead::sub_4AD778()
     {
         registers regs;
-        regs.esi = reinterpret_cast<int32_t>(this);
+        regs.esi = X86Pointer(this);
         call(0x004AD778, regs);
     }
 
@@ -2897,7 +2897,7 @@ namespace OpenLoco::Vehicles
     void VehicleHead::sub_4AA625()
     {
         registers regs;
-        regs.esi = reinterpret_cast<int32_t>(this);
+        regs.esi = X86Pointer(this);
         call(0x004AA625, regs);
     }
 
@@ -2905,7 +2905,7 @@ namespace OpenLoco::Vehicles
     std::tuple<uint8_t, uint8_t, StationId_t> VehicleHead::sub_4ACEE7(uint32_t unk1, uint32_t var_113612C)
     {
         registers regs;
-        regs.esi = reinterpret_cast<int32_t>(this);
+        regs.esi = X86Pointer(this);
         regs.eax = unk1;
         regs.ebx = var_113612C;
         call(0x004ACEE7, regs);
@@ -2917,7 +2917,7 @@ namespace OpenLoco::Vehicles
     bool VehicleHead::sub_4AC1C2()
     {
         registers regs;
-        regs.esi = reinterpret_cast<int32_t>(this);
+        regs.esi = X86Pointer(this);
         return call(0x004AC1C2, regs) & (1 << 8);
     }
 
@@ -2925,7 +2925,7 @@ namespace OpenLoco::Vehicles
     bool VehicleHead::sub_4AC0A3()
     {
         registers regs;
-        regs.esi = reinterpret_cast<int32_t>(this);
+        regs.esi = X86Pointer(this);
         return call(0x004AC0A3, regs) & (1 << 8);
     }
 
@@ -2933,7 +2933,7 @@ namespace OpenLoco::Vehicles
     bool VehicleHead::sub_4ACCDC()
     {
         registers regs;
-        regs.esi = reinterpret_cast<int32_t>(this);
+        regs.esi = X86Pointer(this);
         return call(0x004ACCDC, regs) & (1 << 8);
     }
 
@@ -2941,7 +2941,7 @@ namespace OpenLoco::Vehicles
     void VehicleHead::sub_4AD93A()
     {
         registers regs;
-        regs.esi = reinterpret_cast<int32_t>(this);
+        regs.esi = X86Pointer(this);
         call(0x004AD93A, regs);
     }
 
@@ -3043,7 +3043,7 @@ namespace OpenLoco::Vehicles
     void VehicleHead::sub_4ADB47(bool unk)
     {
         registers regs;
-        regs.esi = reinterpret_cast<int32_t>(this);
+        regs.esi = X86Pointer(this);
         regs.eax = unk ? 1 : 0;
         call(0x004ADB47, regs);
     }
@@ -3173,7 +3173,7 @@ namespace OpenLoco::Vehicles
     void VehicleHead::sub_4B7CC3()
     {
         registers regs{};
-        regs.esi = reinterpret_cast<int32_t>(this);
+        regs.esi = X86Pointer(this);
         call(0x004B7CC3, regs);
     }
 
@@ -3251,7 +3251,7 @@ namespace OpenLoco::Vehicles
     void VehicleHead::liftUpVehicle()
     {
         registers regs{};
-        regs.esi = reinterpret_cast<uint32_t>(this);
+        regs.esi = X86Pointer(this);
         call(0x004B08DD, regs);
     }
 

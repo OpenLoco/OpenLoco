@@ -19,6 +19,22 @@ constexpr int32_t DEFAULT_REG_VAL = 0xCCCCCCCC;
 
 namespace OpenLoco::Interop
 {
+    class X86Pointer
+    {
+    private:
+        uintptr_t _ptr;
+
+    public:
+        X86Pointer(const void* x)
+        {
+            _ptr = reinterpret_cast<uintptr_t>(x);
+        }
+        operator uint32_t() const
+        {
+            return (uint32_t)_ptr;
+        }
+    };
+
 #pragma pack(push, 1)
     /**
     * x86 register structure, only used for easy interop to Locomotion code.

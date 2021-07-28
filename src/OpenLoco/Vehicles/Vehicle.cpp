@@ -81,7 +81,7 @@ namespace OpenLoco::Vehicles
     void VehicleBase::sub_4AA464()
     {
         registers regs;
-        regs.esi = reinterpret_cast<int32_t>(this);
+        regs.esi = X86Pointer(this);
         call(0x004AA464, regs);
     }
 
@@ -89,7 +89,7 @@ namespace OpenLoco::Vehicles
     {
         int32_t result = 0;
         registers regs;
-        regs.esi = (int32_t)this;
+        regs.esi = X86Pointer(this);
         switch (getSubType())
         {
             case VehicleThingType::head:

@@ -188,7 +188,7 @@ namespace OpenLoco::Ui::Windows::Town
                         for (uint32_t j = ebx; j > 0; j--)
                         {
                             registers regs;
-                            regs.esi = (int32_t)town;
+                            regs.esi = X86Pointer(town);
                             regs.eax = 0xFF;
 
                             call(0x00498116, regs);

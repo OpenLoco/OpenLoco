@@ -41,7 +41,7 @@ namespace OpenLoco
     void Company::aiThink()
     {
         registers regs;
-        regs.esi = (int32_t)this;
+        regs.esi = X86Pointer(this);
         call(0x00430762, regs);
     }
 

@@ -101,7 +101,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     static void sub_473154(Window* self)
     {
         registers regs;
-        regs.esi = (uintptr_t)self;
+        regs.esi = X86Pointer(self);
         call(0x00473154, regs);
     }
 
@@ -110,7 +110,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     {
         registers regs;
         regs.eax = static_cast<uint32_t>(eax);
-        regs.esi = (uintptr_t)self;
+        regs.esi = X86Pointer(self);
         call(0x004731EE, regs);
     }
 
@@ -786,7 +786,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     {
         registers regs;
         regs.bx = bx;
-        regs.ebp = (uintptr_t)ebp;
+        regs.ebp = X86Pointer(ebp);
 
         return call(0x00473D1D, regs) & (1 << 8);
     }

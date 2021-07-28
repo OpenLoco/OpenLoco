@@ -348,7 +348,7 @@ namespace OpenLoco::Ui::ViewportManager
                 registers backup = regs;
                 auto viewport = create(regs, 0);
                 regs = backup;
-                regs.edi = reinterpret_cast<uint32_t>(viewport);
+                regs.edi = X86Pointer(viewport);
                 return 0;
             });
         registerHook(
@@ -357,7 +357,7 @@ namespace OpenLoco::Ui::ViewportManager
                 registers backup = regs;
                 auto viewport = create(regs, 1);
                 regs = backup;
-                regs.edi = reinterpret_cast<uint32_t>(viewport);
+                regs.edi = X86Pointer(viewport);
                 return 0;
             });
         registerHook(
@@ -451,7 +451,7 @@ namespace OpenLoco::Ui::ViewportManager
                 regs.bl = static_cast<uint8_t>(interaction.type);
                 regs.bh = static_cast<uint8_t>(interaction.unkBh);
                 regs.edx = static_cast<uint32_t>(interaction.value);
-                regs.edi = reinterpret_cast<uint32_t>(vp);
+                regs.edi = X86Pointer(vp);
                 return 0;
             });
     }

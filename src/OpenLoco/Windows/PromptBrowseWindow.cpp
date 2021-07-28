@@ -404,8 +404,8 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
 
         // Resume the original prepare_draw routine beyond the widget repositioning.
         registers regs;
-        regs.edi = (int32_t)buffer;
-        regs.esi = (int32_t)self;
+        regs.edi = X86Pointer(buffer);
+        regs.esi = X86Pointer(self);
         call(0x00445D91, regs);
     }
 
@@ -995,7 +995,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     static void sub_446E87(Window* self)
     {
         registers regs;
-        regs.esi = (int32_t)self;
+        regs.esi = X86Pointer(self);
         call(0x00446E87, regs);
     }
 }

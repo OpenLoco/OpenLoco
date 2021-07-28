@@ -693,8 +693,8 @@ namespace OpenLoco::Ui::Windows::VehicleList
     static void drawVehicle(VehicleHead* vehicle, Gfx::Context* context, uint16_t yPos)
     {
         registers regs;
-        regs.esi = (int32_t)vehicle;
-        regs.edi = (int32_t)context;
+        regs.esi = X86Pointer(vehicle);
+        regs.edi = X86Pointer(context);
         regs.al = 0x40;
         regs.cx = 0;
         regs.dx = yPos;

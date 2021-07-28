@@ -657,7 +657,7 @@ void OpenLoco::Interop::registerHooks()
             // TODO: use Utility::strlcpy with the buffer size instead of std::strcpy, if possible
             std::strcpy(buffer, path.make_preferred().u8string().c_str());
 
-            regs.ebx = (int32_t)buffer;
+            regs.ebx = X86Pointer(buffer);
             return 0;
         });
 
@@ -718,7 +718,7 @@ void OpenLoco::Interop::registerHooks()
             registers backup = regs;
             char* buffer = StringManager::formatString((char*)regs.edi, regs.eax, (void*)regs.ecx);
             regs = backup;
-            regs.edi = (uint32_t)buffer;
+            regs.edi = X86Pointer(buffer);
             return 0;
         });
 
@@ -843,11 +843,11 @@ void OpenLoco::Interop::registerHooks()
             regs.edx = widgetIndex;
             if (widgetIndex == -1)
             {
-                regs.edi = (uintptr_t)&window->widgets[0];
+                regs.edi = X86Pointer(&window->widgets[0]);
             }
             else
             {
-                regs.edi = (uintptr_t)&window->widgets[widgetIndex];
+                regs.edi = X86Pointer(&window->widgets[widgetIndex]);
             }
 
             return 0;

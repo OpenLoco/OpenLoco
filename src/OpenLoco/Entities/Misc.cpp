@@ -14,7 +14,7 @@ namespace OpenLoco
     void MiscBase::update()
     {
         registers regs;
-        regs.esi = reinterpret_cast<uint32_t>(this);
+        regs.esi = X86Pointer(this);
         call(0x004405CD, regs);
     }
 

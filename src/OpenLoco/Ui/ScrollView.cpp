@@ -307,9 +307,9 @@ namespace OpenLoco::Ui::ScrollView
     {
         registers regs;
 
-        regs.esi = (uintptr_t)window;
+        regs.esi = X86Pointer(window);
         regs.ebx = window->getScrollDataIndex(widgetIndex) * sizeof(ScrollArea);
-        regs.edi = (uintptr_t)&window->widgets[widgetIndex];
+        regs.edi = X86Pointer(&window->widgets[widgetIndex]);
         call(0x4CA1ED, regs);
     }
 

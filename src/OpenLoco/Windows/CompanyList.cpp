@@ -1647,8 +1647,8 @@ namespace OpenLoco::Ui::Windows::CompanyList
         static void drawGraph(Window* self, Gfx::Context* context)
         {
             registers regs;
-            regs.esi = (uint32_t)self;
-            regs.edi = (uint32_t)context;
+            regs.esi = X86Pointer(self);
+            regs.edi = X86Pointer(context);
             call(0x004CF824, regs);
         }
 

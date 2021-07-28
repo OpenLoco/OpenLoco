@@ -386,7 +386,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 registers backup = regs;
                 auto window = open(regs.eax, regs.eax);
                 regs = backup;
-                regs.esi = (int32_t)window;
+                regs.esi = X86Pointer(window);
                 return 0;
             });
     }
@@ -1402,7 +1402,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         regs.esi = esi;
         regs.ebx = company;
         regs.ebp = vehicleTypeIdx;
-        regs.edi = (uintptr_t)context;
+        regs.edi = X86Pointer(context);
         call(0x4B7741, regs);
     }
 
@@ -1415,7 +1415,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
         regs.ebx = company;
         regs.cx = loc.x;
         regs.dx = loc.y;
-        regs.edi = (uintptr_t)context;
+        regs.edi = X86Pointer(context);
         regs.ebp = vehicleTypeIdx;
         call(0x4B7711, regs);
         // Returns right coordinate of the drawing

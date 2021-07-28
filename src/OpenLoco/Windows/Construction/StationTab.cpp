@@ -160,7 +160,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     static void onToolUpdate(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
     {
         registers regs;
-        regs.esi = (int32_t)&self;
+        regs.esi = X86Pointer(&self);
         regs.dx = widgetIndex;
         regs.ax = x;
         regs.bx = y;
@@ -171,7 +171,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
     static void onToolDown(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
     {
         registers regs;
-        regs.esi = (int32_t)&self;
+        regs.esi = X86Pointer(&self);
         regs.dx = widgetIndex;
         regs.ax = x;
         regs.bx = y;
