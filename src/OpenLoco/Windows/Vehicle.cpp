@@ -3639,7 +3639,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             auto roadFirstTile = loc - roadOffset;
             GameCommands::VehiclePlacementArgs placementArgs;
             placementArgs.pos = roadFirstTile;
-            placementArgs.unk = progress;
+            placementArgs.trackProgress = progress;
             placementArgs.trackAndDirection = roadElement->unkDirection() | (roadElement->roadId() << 3);
             return { placementArgs };
         }
@@ -3665,7 +3665,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             placementArgs->head = head.id;
             const auto moveInfoArr = Map::TrackData::getRoadSubPositon(placementArgs->trackAndDirection);
-            const auto& moveInfo = moveInfoArr[placementArgs->unk];
+            const auto& moveInfo = moveInfoArr[placementArgs->trackProgress];
             // TODO: modify getTrackAtCursor to return the viewport then use its rotation
             static loco_global<int32_t, 0x00E3F0B8> gCurrentRotation;
             uint8_t unkYaw = moveInfo.yaw + (gCurrentRotation << 4);
@@ -3685,10 +3685,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 {
                     placementArgs->pos -= _503C6C[unkItem.var_01];
                 }
-                placementArgs->unk = std::max<uint16_t>(static_cast<uint16_t>(moveInfoArr.size()) - placementArgs->unk, 0);
-                if (placementArgs->unk >= moveInfoArr.size())
+                placementArgs->trackProgress = std::max<uint16_t>(static_cast<uint16_t>(moveInfoArr.size()) - placementArgs->trackProgress, 0);
+                if (placementArgs->trackProgress >= moveInfoArr.size())
                 {
-                    placementArgs->unk = static_cast<uint16_t>(moveInfoArr.size()) - 1;
+                    placementArgs->trackProgress = static_cast<uint16_t>(moveInfoArr.size()) - 1;
                 }
                 placementArgs->trackAndDirection ^= (1 << 2);
             }
@@ -3747,11 +3747,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
             auto trackFirstTile = loc - trackOffset;
             GameCommands::VehiclePlacementArgs placementArgs;
             placementArgs.pos = trackFirstTile;
-            placementArgs.unk = progress;
+            placementArgs.trackProgress = progress;
             placementArgs.trackAndDirection = trackElement->unkDirection() | (trackElement->trackId() << 3);
             return { placementArgs };
         }
-
 
         // 0x004B6444
         static std::optional<GameCommands::VehiclePlacementArgs> getVehicleRailPlacementArgsFromCursor(const Vehicles::VehicleHead& head, const int16_t x, const int16_t y)
@@ -3764,7 +3763,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             placementArgs->head = head.id;
             const auto moveInfoArr = Map::TrackData::getTrackSubPositon(placementArgs->trackAndDirection);
-            const auto& moveInfo = moveInfoArr[placementArgs->unk];
+            const auto& moveInfo = moveInfoArr[placementArgs->trackProgress];
             // TODO: modify getTrackAtCursor to return the viewport then use its rotation
             static loco_global<int32_t, 0x00E3F0B8> gCurrentRotation;
             uint8_t unkYaw = moveInfo.yaw + (gCurrentRotation << 4);
@@ -3784,10 +3783,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 {
                     placementArgs->pos -= _503C6C[unkItem.var_01];
                 }
-                placementArgs->unk = std::max<uint16_t>(static_cast<uint16_t>(moveInfoArr.size()) - placementArgs->unk, 0);
-                if (placementArgs->unk >= moveInfoArr.size())
+                placementArgs->trackProgress = std::max<uint16_t>(static_cast<uint16_t>(moveInfoArr.size()) - placementArgs->trackProgress, 0);
+                if (placementArgs->trackProgress >= moveInfoArr.size())
                 {
-                    placementArgs->unk = static_cast<uint16_t>(moveInfoArr.size()) - 1;
+                    placementArgs->trackProgress = static_cast<uint16_t>(moveInfoArr.size()) - 1;
                 }
                 placementArgs->trackAndDirection ^= (1 << 2);
             }

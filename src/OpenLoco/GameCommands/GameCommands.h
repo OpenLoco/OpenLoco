@@ -145,14 +145,14 @@ namespace OpenLoco::GameCommands
         explicit VehiclePlacementArgs(const registers regs)
             : pos(regs.ax, regs.cx, regs.dx * 4)
             , trackAndDirection(regs.bp)
-            , unk(regs.ebx >> 16)
+            , trackProgress(regs.ebx >> 16)
             , head(regs.di)
         {
         }
 
         Map::Pos3 pos;
         uint16_t trackAndDirection;
-        uint16_t unk;
+        uint16_t trackProgress;
         EntityId_t head;
 
         explicit operator registers() const
@@ -163,7 +163,7 @@ namespace OpenLoco::GameCommands
             regs.ax = pos.x;
             regs.cx = pos.y;
             regs.dx = pos.z / 4;
-            regs.ebx = (regs.ebx & 0xFFFF) | (unk << 16);
+            regs.ebx = (regs.ebx & 0xFFFF) | (trackProgress << 16);
             return regs;
         }
     };
