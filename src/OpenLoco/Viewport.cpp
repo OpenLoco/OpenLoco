@@ -2,6 +2,7 @@
 #include "Graphics/Gfx.h"
 #include "Interop/Interop.hpp"
 #include "Map/Tile.h"
+#include "Map/TileManager.h"
 #include "Window.h"
 
 using namespace OpenLoco::Interop;
@@ -67,22 +68,27 @@ namespace OpenLoco::Ui
         return result;
     }
 
+    // 0x0045F997
     Pos2 Viewport::getCentreMapPosition() const
     {
-        registers regs;
-        regs.ax = view_x + view_width / 2;
-        regs.bx = view_y + view_height / 2;
-        regs.edx = getRotation();
-        call(0x0045F997, regs);
-        return { regs.ax, regs.bx };
+        viewport_pos initialVPPos = { view_x + view_width / 2,
+                                      view_y + view_height / 2 };
+
+        const auto rotation = getRotation();
+        // Vanilla unrolled on rotation at this point
+
+        auto result = viewportCoordToMapCoord(initialVPPos.x, initialVPPos.y, 0, rotation);
+        for (auto i = 0; i < 6; i++)
+        {
+            const auto z = Map::TileManager::getHeight(result);
+            result = viewportCoordToMapCoord(initialVPPos.x, initialVPPos.y, z, rotation);
+        }
+
+        return result;
     }
 
     Pos2 Viewport::getCentreScreenMapPosition() const
     {
-        registers regs;
-        regs.ax = x + width / 2;
-        regs.bx = y + height / 2;
-        call(0x0045F1A7, regs);
-        return { regs.ax, regs.bx };
+        return TileManager::screenGetMapXY(x + width / 2, y + height / 2);
     }
 }
