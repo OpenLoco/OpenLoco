@@ -298,11 +298,11 @@ namespace OpenLoco::CompanyManager
             }
 
             auto centre = view->getCentreScreenMapPosition();
-            if (centre.x == Location::null)
+            if (!centre)
             {
                 return;
             }
-            pos = Map::Pos3(centre.x, centre.y, Map::TileManager::getHeight(centre).landHeight);
+            pos = Map::Pos3(centre->x, centre->y, Map::TileManager::getHeight(*centre).landHeight);
         }
 
         pos.z += 10;

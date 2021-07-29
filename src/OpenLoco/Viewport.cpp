@@ -87,8 +87,13 @@ namespace OpenLoco::Ui
         return result;
     }
 
-    Pos2 Viewport::getCentreScreenMapPosition() const
+    std::optional<Pos2> Viewport::getCentreScreenMapPosition() const
     {
-        return TileManager::screenGetMapXY(x + width / 2, y + height / 2);
+        auto res = TileManager::screenGetMapXY({ x + width / 2, y + height / 2 });
+        if (!res)
+        {
+            return {};
+        }
+        return { res->first };
     }
 }

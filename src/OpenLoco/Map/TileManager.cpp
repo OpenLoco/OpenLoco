@@ -2,6 +2,7 @@
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
 #include "../Map/Map.hpp"
+#include "../Ui.h"
 #include "../ViewportManager.h"
 
 using namespace OpenLoco::Interop;
@@ -341,26 +342,44 @@ namespace OpenLoco::Map::TileManager
     }
 
     // 0x0045F1A7
-    Pos2 screenGetMapXY(int16_t x, int16_t y)
+    std::optional<std::pair<Pos2, Ui::Viewport*>> screenGetMapXY(const xy32& screenCoords)
     {
-        registers regs;
-        regs.ax = x;
-        regs.bx = y;
-        call(0x0045F1A7, regs);
-        Pos2 pos = { regs.ax, regs.bx };
-        return pos;
+        auto [info, viewport] = Ui::ViewportInteraction::getMapCoordinatesFromPos(screenCoords.x, screenCoords.y, ~Ui::ViewportInteraction::InteractionItemFlags::surface);
+
+        if (info.type == Ui::ViewportInteraction::InteractionItem::noInteraction)
+        {
+            return {};
+        }
+
+        const auto minPosition = info.pos;                  // E40128/A
+        const auto maxPosition = info.pos + Pos2{ 31, 31 }; // E4012C/E
+        auto mapPos = info.pos + Pos2{ 16, 16 };
+        const auto initialVPPos = viewport->uiToMap(screenCoords);
+
+        for (int32_t i = 0; i < 5; i++)
+        {
+            const auto z = TileManager::getHeight(mapPos);
+            mapPos = Ui::viewportCoordToMapCoord(initialVPPos.x, initialVPPos.y, z, viewport->getRotation());
+            mapPos.x = std::clamp(mapPos.x, minPosition.x, maxPosition.x);
+            mapPos.y = std::clamp(mapPos.y, minPosition.y, maxPosition.y);
+        }
+
+        return { std::make_pair(mapPos, viewport) };
     }
 
+    // TODO: Return std::optional
     uint16_t setMapSelectionTiles(int16_t x, int16_t y)
     {
-        auto pos = screenGetMapXY(x, y);
+        auto res = screenGetMapXY({ x, y });
 
-        uint16_t xPos = pos.x;
-        uint16_t yPos = pos.y;
-        uint8_t count = 0;
-
-        if (xPos == 0x8000)
+        if (!res)
+        {
             return 0x8000;
+        }
+
+        uint16_t xPos = res->first.x;
+        uint16_t yPos = res->first.y;
+        uint8_t count = 0;
 
         if (!Input::hasMapSelectionFlag(Input::MapSelectionFlags::enable))
         {
