@@ -3815,7 +3815,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return;
             }
 
-            if (_1136264 != -1 && *_ghostLandTrackAndDirection == placementArgs->trackAndDirection && *_ghostVehiclePos == placementArgs->pos && *_1136264 == placementArgs->unk)
+            if (_1136264 != -1 && *_ghostLandTrackAndDirection == placementArgs->trackAndDirection && *_ghostVehiclePos == placementArgs->pos && *_1136264 == placementArgs->trackProgress)
             {
                 return;
             }
@@ -3825,7 +3825,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 _ghostLandTrackAndDirection = placementArgs->trackAndDirection;
                 _ghostVehiclePos = placementArgs->pos;
-                _1136264 = placementArgs->unk;
+                _1136264 = placementArgs->trackProgress;
             }
         }
 
