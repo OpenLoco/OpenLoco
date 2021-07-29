@@ -262,17 +262,17 @@ namespace OpenLoco::CompanyManager
         screenPosition.x = viewport->x + viewport->width / 2;
         screenPosition.y = viewport->y + viewport->height / 2;
 
-        registers r1;
-        r1.ax = screenPosition.x;
-        r1.bx = screenPosition.y;
-        call(0x0045F1A7, r1); // TileManager::screenGetMapXY
-        Ui::Viewport* vp = (Ui::Viewport*)r1.edi;
-        auto mapPosition = Map::Pos2(r1.ax, r1.bx);
+        auto res = Map::TileManager::screenGetMapXY({ screenPosition.x, screenPosition.y });
 
-        // Happens if center of viewport is obstructed. Probably estimates the centre location
-        if (mapPosition.x == Location::null || viewport != vp)
+        Map::Pos2 mapPosition{};
+        if (!res || res->second != viewport)
         {
+            // Happens if center of viewport is obstructed. Probably estimates the centre location
             mapPosition = viewport->getCentreMapPosition();
+        }
+        else
+        {
+            mapPosition = res->first;
         }
 
         GameCommands::do_73(mapPosition);
