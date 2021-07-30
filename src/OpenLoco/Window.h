@@ -163,8 +163,8 @@ namespace OpenLoco::Ui
 
     struct SavedViewSimple
     {
-        coord_t mapX;
-        coord_t mapY;
+        coord_t viewX;
+        coord_t viewY;
         ZoomLevel zoomLevel;
         int8_t rotation;
     };

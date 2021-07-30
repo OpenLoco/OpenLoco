@@ -258,11 +258,9 @@ namespace OpenLoco::CompanyManager
         if (viewport == nullptr)
             return;
 
-        Gfx::point_t screenPosition;
-        screenPosition.x = viewport->x + viewport->width / 2;
-        screenPosition.y = viewport->y + viewport->height / 2;
+        auto screenPosition = viewport->getUiCentre();
 
-        auto res = Map::TileManager::screenGetMapXY({ screenPosition.x, screenPosition.y });
+        auto res = Map::TileManager::screenGetMapXY(screenPosition);
 
         Map::Pos2 mapPosition{};
         if (!res || res->second != viewport)

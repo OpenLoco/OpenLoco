@@ -755,8 +755,8 @@ namespace OpenLoco::Ui
         {
             auto& config = viewport_configurations[0];
             config.viewport_target_sprite = EntityId::null;
-            config.saved_view_x = savedView.mapX;
-            config.saved_view_y = savedView.mapY;
+            config.saved_view_x = savedView.viewX;
+            config.saved_view_y = savedView.viewY;
 
             auto zoom = static_cast<int32_t>(savedView.zoomLevel) - viewport->zoom;
             if (zoom != 0)
