@@ -441,26 +441,57 @@ namespace OpenLoco::Map::TileManager
     }
 
     // 0x0045FD8E
-    Pos3 screenPosToMapPos(int16_t x, int16_t y)
+    // NOTE: Original call screenGetMapXY within this function
+    // instead OpenLoco has split it in two. Also note that result of original
+    // was a Pos2 start i.e. (& 0xFFE0) both components
+    uint8_t getQuadrantFromPos(const Map::Pos2& loc)
     {
-        registers regs;
-        regs.ax = x;
-        regs.bx = y;
-        call(0x0045FD8E, regs);
-        Pos3 pos = { regs.ax, regs.bx, regs.cx };
-        return pos;
+        // Determine to which quadrants the cursor is closest 4 == all quadrants
+        const auto xNibbleCentre = std::abs((loc.x & 0xFFE0) + 16 - loc.x);
+        const auto yNibbleCentre = std::abs((loc.y & 0xFFE0) + 16 - loc.y);
+        if (std::max(xNibbleCentre, yNibbleCentre) <= 7)
+        {
+            // Is centre so all quadrants
+            return 4;
+        }
+
+        const auto xNibble = loc.x & 0x1F;
+        const auto yNibble = loc.y & 0x1F;
+        if (xNibble > 16)
+        {
+            if (yNibble >= 16)
+            {
+                return 0;
+            }
+            else
+            {
+                return 1;
+            }
+        }
+        else
+        {
+            if (yNibble >= 16)
+            {
+                return 3;
+            }
+            else
+            {
+                return 2;
+            }
+        }
     }
 
     uint16_t setMapSelectionSingleTile(int16_t x, int16_t y, bool setQuadrant)
     {
-        auto pos = screenPosToMapPos(x, y);
-
-        uint16_t xPos = pos.x;
-        uint16_t yPos = pos.y;
-        uint16_t cursorQuadrant = pos.z;
-
-        if (xPos == 0x8000)
+        auto res = screenGetMapXY({ x, y });
+        if (!res)
+        {
             return 0x8000;
+        }
+
+        uint16_t xPos = res->first.x & 0xFFE0;
+        uint16_t yPos = res->first.y & 0xFFE0;
+        uint16_t cursorQuadrant = getQuadrantFromPos(res->first);
 
         auto count = 0;
         if (!Input::hasMapSelectionFlag(Input::MapSelectionFlags::enable))

@@ -22,7 +22,7 @@ namespace OpenLoco::Map::TileManager
     void reorganise();
     std::optional<std::pair<Pos2, Ui::Viewport*>> screenGetMapXY(const xy32& screenCoords);
     uint16_t setMapSelectionTiles(int16_t x, int16_t y);
-    Pos3 screenPosToMapPos(int16_t x, int16_t y);
+    uint8_t getQuadrantFromPos(const Map::Pos2& loc);
     uint16_t setMapSelectionSingleTile(int16_t x, int16_t y, bool setQuadrant = false);
     void mapInvalidateSelectionRect();
     void mapInvalidateTileFull(Map::Pos2 pos);
