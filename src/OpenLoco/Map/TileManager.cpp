@@ -440,21 +440,12 @@ namespace OpenLoco::Map::TileManager
         return count;
     }
 
-    // 0x0045FD8E
+    // 0x0045FE05
     // NOTE: Original call screenGetMapXY within this function
     // instead OpenLoco has split it in two. Also note that result of original
     // was a Pos2 start i.e. (& 0xFFE0) both components
-    uint8_t getQuadrantFromPos(const Map::Pos2& loc)
+    static uint8_t getQuadrantFromPos(const Map::Pos2& loc)
     {
-        // Determine to which quadrants the cursor is closest 4 == all quadrants
-        const auto xNibbleCentre = std::abs((loc.x & 0xFFE0) + 16 - loc.x);
-        const auto yNibbleCentre = std::abs((loc.y & 0xFFE0) + 16 - loc.y);
-        if (std::max(xNibbleCentre, yNibbleCentre) <= 7)
-        {
-            // Is centre so all quadrants
-            return 4;
-        }
-
         const auto xNibble = loc.x & 0x1F;
         const auto yNibble = loc.y & 0x1F;
         if (xNibble > 16)
@@ -481,6 +472,24 @@ namespace OpenLoco::Map::TileManager
         }
     }
 
+    // 0x0045FD8E
+    // NOTE: Original call screenGetMapXY within this function
+    // instead OpenLoco has split it in two. Also note that result of original
+    // was a Pos2 start i.e. (& 0xFFE0) both components
+    uint8_t getQuadrantOrCentreFromPos(const Map::Pos2& loc)
+    {
+        // Determine to which quadrants the cursor is closest 4 == all quadrants
+        const auto xNibbleCentre = std::abs((loc.x & 0xFFE0) + 16 - loc.x);
+        const auto yNibbleCentre = std::abs((loc.y & 0xFFE0) + 16 - loc.y);
+        if (std::max(xNibbleCentre, yNibbleCentre) <= 7)
+        {
+            // Is centre so all quadrants
+            return 4;
+        }
+
+        return getQuadrantFromPos(loc);
+    }
+
     uint16_t setMapSelectionSingleTile(int16_t x, int16_t y, bool setQuadrant)
     {
         auto res = screenGetMapXY({ x, y });
@@ -491,7 +500,7 @@ namespace OpenLoco::Map::TileManager
 
         uint16_t xPos = res->first.x & 0xFFE0;
         uint16_t yPos = res->first.y & 0xFFE0;
-        uint16_t cursorQuadrant = getQuadrantFromPos(res->first);
+        uint16_t cursorQuadrant = getQuadrantOrCentreFromPos(res->first);
 
         auto count = 0;
         if (!Input::hasMapSelectionFlag(Input::MapSelectionFlags::enable))
