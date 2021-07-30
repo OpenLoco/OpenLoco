@@ -580,11 +580,11 @@ namespace OpenLoco::Ui::ViewportInteraction
     }
 
     // 0x0045F1A7
-    std::optional<std::pair<Pos2, Ui::Viewport*>> getSurfaceLocFromUi(const xy32& screenCoords)
+    std::optional<std::pair<Pos2, Viewport*>> getSurfaceLocFromUi(const xy32& screenCoords)
     {
-        auto [info, viewport] = Ui::ViewportInteraction::getMapCoordinatesFromPos(screenCoords.x, screenCoords.y, ~Ui::ViewportInteraction::InteractionItemFlags::surface);
+        auto [info, viewport] = getMapCoordinatesFromPos(screenCoords.x, screenCoords.y, ~InteractionItemFlags::surface);
 
-        if (info.type == Ui::ViewportInteraction::InteractionItem::noInteraction)
+        if (info.type == InteractionItem::noInteraction)
         {
             return {};
         }
@@ -597,7 +597,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         for (int32_t i = 0; i < 5; i++)
         {
             const auto z = TileManager::getHeight(mapPos);
-            mapPos = Ui::viewportCoordToMapCoord(initialVPPos.x, initialVPPos.y, z, viewport->getRotation());
+            mapPos = viewportCoordToMapCoord(initialVPPos.x, initialVPPos.y, z, viewport->getRotation());
             mapPos.x = std::clamp(mapPos.x, minPosition.x, maxPosition.x);
             mapPos.y = std::clamp(mapPos.y, minPosition.y, maxPosition.y);
         }
