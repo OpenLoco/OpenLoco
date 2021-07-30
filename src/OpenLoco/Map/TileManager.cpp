@@ -341,36 +341,10 @@ namespace OpenLoco::Map::TileManager
         }
     }
 
-    // 0x0045F1A7
-    std::optional<std::pair<Pos2, Ui::Viewport*>> screenGetMapXY(const xy32& screenCoords)
-    {
-        auto [info, viewport] = Ui::ViewportInteraction::getMapCoordinatesFromPos(screenCoords.x, screenCoords.y, ~Ui::ViewportInteraction::InteractionItemFlags::surface);
-
-        if (info.type == Ui::ViewportInteraction::InteractionItem::noInteraction)
-        {
-            return {};
-        }
-
-        const auto minPosition = info.pos;                  // E40128/A
-        const auto maxPosition = info.pos + Pos2{ 31, 31 }; // E4012C/E
-        auto mapPos = info.pos + Pos2{ 16, 16 };
-        const auto initialVPPos = viewport->uiToMap(screenCoords);
-
-        for (int32_t i = 0; i < 5; i++)
-        {
-            const auto z = TileManager::getHeight(mapPos);
-            mapPos = Ui::viewportCoordToMapCoord(initialVPPos.x, initialVPPos.y, z, viewport->getRotation());
-            mapPos.x = std::clamp(mapPos.x, minPosition.x, maxPosition.x);
-            mapPos.y = std::clamp(mapPos.y, minPosition.y, maxPosition.y);
-        }
-
-        return { std::make_pair(mapPos, viewport) };
-    }
-
     // TODO: Return std::optional
     uint16_t setMapSelectionTiles(int16_t x, int16_t y)
     {
-        auto res = screenGetMapXY({ x, y });
+        auto res = Ui::ViewportInteraction::getSurfaceLocFromUi({ x, y });
 
         if (!res)
         {
@@ -440,59 +414,9 @@ namespace OpenLoco::Map::TileManager
         return count;
     }
 
-    // 0x0045FE05
-    // NOTE: Original call screenGetMapXY within this function
-    // instead OpenLoco has split it in two. Also note that result of original
-    // was a Pos2 start i.e. (& 0xFFE0) both components
-    static uint8_t getQuadrantFromPos(const Map::Pos2& loc)
-    {
-        const auto xNibble = loc.x & 0x1F;
-        const auto yNibble = loc.y & 0x1F;
-        if (xNibble > 16)
-        {
-            if (yNibble >= 16)
-            {
-                return 0;
-            }
-            else
-            {
-                return 1;
-            }
-        }
-        else
-        {
-            if (yNibble >= 16)
-            {
-                return 3;
-            }
-            else
-            {
-                return 2;
-            }
-        }
-    }
-
-    // 0x0045FD8E
-    // NOTE: Original call screenGetMapXY within this function
-    // instead OpenLoco has split it in two. Also note that result of original
-    // was a Pos2 start i.e. (& 0xFFE0) both components
-    uint8_t getQuadrantOrCentreFromPos(const Map::Pos2& loc)
-    {
-        // Determine to which quadrants the cursor is closest 4 == all quadrants
-        const auto xNibbleCentre = std::abs((loc.x & 0xFFE0) + 16 - loc.x);
-        const auto yNibbleCentre = std::abs((loc.y & 0xFFE0) + 16 - loc.y);
-        if (std::max(xNibbleCentre, yNibbleCentre) <= 7)
-        {
-            // Is centre so all quadrants
-            return 4;
-        }
-
-        return getQuadrantFromPos(loc);
-    }
-
     uint16_t setMapSelectionSingleTile(int16_t x, int16_t y, bool setQuadrant)
     {
-        auto res = screenGetMapXY({ x, y });
+        auto res = Ui::ViewportInteraction::getSurfaceLocFromUi({ x, y });
         if (!res)
         {
             return 0x8000;
@@ -500,7 +424,7 @@ namespace OpenLoco::Map::TileManager
 
         uint16_t xPos = res->first.x & 0xFFE0;
         uint16_t yPos = res->first.y & 0xFFE0;
-        uint16_t cursorQuadrant = getQuadrantOrCentreFromPos(res->first);
+        uint16_t cursorQuadrant = Ui::ViewportInteraction::getQuadrantOrCentreFromPos(res->first);
 
         auto count = 0;
         if (!Input::hasMapSelectionFlag(Input::MapSelectionFlags::enable))

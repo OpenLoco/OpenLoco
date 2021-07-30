@@ -20,9 +20,7 @@ namespace OpenLoco::Map::TileManager
     TileHeight getHeight(const Pos2& pos);
     void updateTilePointers();
     void reorganise();
-    std::optional<std::pair<Pos2, Ui::Viewport*>> screenGetMapXY(const xy32& screenCoords);
     uint16_t setMapSelectionTiles(int16_t x, int16_t y);
-    uint8_t getQuadrantOrCentreFromPos(const Map::Pos2& loc);
     uint16_t setMapSelectionSingleTile(int16_t x, int16_t y, bool setQuadrant = false);
     void mapInvalidateSelectionRect();
     void mapInvalidateTileFull(Map::Pos2 pos);

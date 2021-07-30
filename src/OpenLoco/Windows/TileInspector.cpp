@@ -473,7 +473,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
         if (widgetIndex != widx::panel || !Input::hasMapSelectionFlag(Input::MapSelectionFlags::enable))
             return;
 
-        auto res = TileManager::screenGetMapXY({ x, y });
+        auto res = Ui::ViewportInteraction::getSurfaceLocFromUi({ x, y });
         if (!res)
         {
             return;

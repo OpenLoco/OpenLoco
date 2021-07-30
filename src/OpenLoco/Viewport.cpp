@@ -101,7 +101,7 @@ namespace OpenLoco::Ui
 
     std::optional<Pos2> Viewport::getCentreScreenMapPosition() const
     {
-        auto res = TileManager::screenGetMapXY(getUiCentre());
+        auto res = Ui::ViewportInteraction::getSurfaceLocFromUi(getUiCentre());
         if (!res)
         {
             return {};

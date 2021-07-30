@@ -260,7 +260,7 @@ namespace OpenLoco::CompanyManager
 
         auto screenPosition = viewport->getUiCentre();
 
-        auto res = Map::TileManager::screenGetMapXY(screenPosition);
+        auto res = Ui::ViewportInteraction::getSurfaceLocFromUi(screenPosition);
 
         Map::Pos2 mapPosition{};
         if (!res || res->second != viewport)
