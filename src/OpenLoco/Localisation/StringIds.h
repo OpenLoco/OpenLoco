@@ -374,6 +374,7 @@ namespace OpenLoco::StringIds
     constexpr string_id menu_town_names_displayed = 429;
     constexpr string_id menu_station_names_displayed = 430;
 
+    constexpr string_id string_owned_by_string = 442;
     constexpr string_id dropdown_without_checkmark = 443;
     constexpr string_id dropdown_with_checkmark = 444;
     constexpr string_id error_cant_remove_this = 445;
@@ -382,6 +383,7 @@ namespace OpenLoco::StringIds
 
     constexpr string_id cant_plant_this_here = 449;
     constexpr string_id outlined_wcolour2_stringid = 450;
+    constexpr string_id stringid_right_click_to_modify = 451;
 
     constexpr string_id black_tiny_font = 453;
     constexpr string_id red_stringid = 454;

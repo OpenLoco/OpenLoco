@@ -10,6 +10,7 @@
 #include "../Map/TileManager.h"
 #include "../Objects/CargoObject.h"
 #include "../Objects/ObjectManager.h"
+#include "../Objects/TrackObject.h"
 #include "../Paint/Paint.h"
 #include "../StationManager.h"
 #include "../TownManager.h"
@@ -401,6 +402,39 @@ namespace OpenLoco::Ui::ViewportInteraction
         return InteractionArg{};
     }
 
+    // 0x004CE1D4
+    static bool rightOverTrack(InteractionArg& interaction)
+    {
+        interaction.type = InteractionItem::track;
+        auto* tileElement = reinterpret_cast<Map::TileElement*>(interaction.object);
+        auto* track = tileElement->asTrack();
+        if (track == nullptr)
+            return false;
+
+        if (track->isGhost())
+        {
+            return false;
+        }
+
+        if (Ui::Windows::MapToolTip::getTooltipTimeout() < 45)
+        {
+            return true;
+        }
+
+        auto* trackObj = ObjectManager::get<TrackObject>(track->trackObjectId());
+        if (track->owner() == CompanyManager::getControllingId())
+        {
+            auto args = FormatArguments::mapToolTip(StringIds::stringid_right_click_to_modify, trackObj->name);
+        }
+        else
+        {
+            auto* company = CompanyManager::get(track->owner());
+            auto args = FormatArguments::mapToolTip(StringIds::string_owned_by_string, trackObj->name, company->name);
+            Windows::MapToolTip::setOwner(track->owner());
+        }
+        return true;
+    }
+
     // 0x004CDB2B
     InteractionArg rightOver(int16_t x, int16_t y)
     {
@@ -428,6 +462,63 @@ namespace OpenLoco::Ui::ViewportInteraction
             }
         }
 
+        bool hasInteraction = false;
+        auto [interaction, viewport] = getMapCoordinatesFromPos(x, y, interactionsToExclude);
+        switch (interaction.type)
+        {
+            case InteractionItem::track:
+                hasInteraction = rightOverTrack(interaction);
+                break;
+            case InteractionItem::entity:
+                // 0x4CE186
+                break;
+            case InteractionItem::trackExtra:
+                // 0x4CE188
+                break;
+            case InteractionItem::signal:
+                // 0x4CDBEA
+                break;
+            case InteractionItem::trackStation:
+                // 0x4CDD8C
+                break;
+            case InteractionItem::roadStation:
+                // 0x4CDDF2
+                break;
+            case InteractionItem::airport:
+                // 0x4CDC26
+                break;
+            case InteractionItem::dock:
+                // 0x4CDCD9
+                break;
+            case InteractionItem::road:
+                // 0x4CE2C1
+                break;
+            case InteractionItem::roadExtra:
+                // 0x4CE271
+                break;
+            case InteractionItem::noInteraction:
+            case InteractionItem::surface:
+            case InteractionItem::industryTree:
+            case InteractionItem::water:
+            case InteractionItem::tree:
+            case InteractionItem::wall:
+            case InteractionItem::townLabel:
+            case InteractionItem::stationLabel:
+            case InteractionItem::bridge:
+            case InteractionItem::building:
+            case InteractionItem::industry:
+            case InteractionItem::headquarterBuilding:
+                // 0x4CDB9A
+                break;
+        }
+        if (hasInteraction)
+        {
+            return interaction;
+        }
+        else
+        {
+            // return InteractionArg{};
+        }
         registers regs;
         regs.ax = x;
         regs.bx = y;
