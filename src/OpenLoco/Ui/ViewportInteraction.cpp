@@ -617,6 +617,78 @@ namespace OpenLoco::Ui::ViewportInteraction
         return true;
     }
 
+    // 0x004CDC26
+    static bool rightOverAirport(InteractionArg& interaction)
+    {
+        auto* tileElement = reinterpret_cast<Map::TileElement*>(interaction.object);
+        auto* elStation = tileElement->asStation();
+        if (elStation == nullptr)
+        {
+            return false;
+        }
+
+        if (elStation->isGhost())
+        {
+            return false;
+        }
+
+        if (elStation->owner() != CompanyManager::getControllingId())
+        {
+            return false;
+        }
+
+        auto* station = StationManager::get(elStation->stationId());
+        auto args = FormatArguments::mapToolTip();
+        if (Windows::Construction::isStationTabOpen())
+        {
+            args.push(StringIds::stringid_right_click_to_remove);
+        }
+        else
+        {
+            args.push(StringIds::stringid_right_click_to_modify);
+        }
+        args.push(StringIds::quote_string_quote);
+        args.push(station->name);
+        args.push(station->town);
+        return true;
+    }
+
+    // 0x004CDCD9
+    static bool rightOverDock(InteractionArg& interaction)
+    {
+        auto* tileElement = reinterpret_cast<Map::TileElement*>(interaction.object);
+        auto* elStation = tileElement->asStation();
+        if (elStation == nullptr)
+        {
+            return false;
+        }
+
+        if (elStation->isGhost())
+        {
+            return false;
+        }
+
+        if (elStation->owner() != CompanyManager::getControllingId())
+        {
+            return false;
+        }
+
+        auto* station = StationManager::get(elStation->stationId());
+        auto args = FormatArguments::mapToolTip();
+        if (Windows::Construction::isStationTabOpen())
+        {
+            args.push(StringIds::stringid_right_click_to_remove);
+        }
+        else
+        {
+            args.push(StringIds::stringid_right_click_to_modify);
+        }
+        args.push(StringIds::quote_string_quote2);
+        args.push(station->name);
+        args.push(station->town);
+        return true;
+    }
+
     // 0x004CDB2B
     InteractionArg rightOver(int16_t x, int16_t y)
     {
@@ -667,10 +739,10 @@ namespace OpenLoco::Ui::ViewportInteraction
                 hasInteraction = rightOverRoadStation(interaction);
                 break;
             case InteractionItem::airport:
-                // 0x4CDC26
+                hasInteraction = rightOverAirport(interaction);
                 break;
             case InteractionItem::dock:
-                // 0x4CDCD9
+                hasInteraction = rightOverDock(interaction);
                 break;
             case InteractionItem::road:
                 hasInteraction = rightOverRoad(interaction);

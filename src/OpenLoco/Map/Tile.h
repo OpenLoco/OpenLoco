@@ -192,6 +192,7 @@ namespace OpenLoco::Map
         uint16_t _station_id;
 
     public:
+        uint8_t owner() const { return _4 & 0xF; } // _4l
         uint8_t objectId() const { return _5 & 0x1F; }
         StationType stationType() const;
         uint8_t rotation() const { return _type & 0x3; }

@@ -362,7 +362,8 @@ namespace OpenLoco::StringIds
     constexpr string_id cant_reverse_train = 388;
 
     constexpr string_id cant_sell_string_id = 390;
-
+    constexpr string_id quote_string_quote = 391;
+    constexpr string_id quote_string_quote2 = 392;
     constexpr string_id string_station_platform = 393;
     constexpr string_id string_station_building_bus_stop = 394;
 
