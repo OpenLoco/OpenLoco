@@ -429,12 +429,12 @@ namespace OpenLoco::Ui::ViewportInteraction
         auto* trackObj = ObjectManager::get<TrackObject>(track->trackObjectId());
         if (track->owner() == CompanyManager::getControllingId())
         {
-            auto args = FormatArguments::mapToolTip(StringIds::stringid_right_click_to_modify, trackObj->name);
+            FormatArguments::mapToolTip(StringIds::stringid_right_click_to_modify, trackObj->name);
         }
         else
         {
             auto* company = CompanyManager::get(track->owner());
-            auto args = FormatArguments::mapToolTip(StringIds::string_owned_by_string, trackObj->name, company->name);
+            FormatArguments::mapToolTip(StringIds::string_owned_by_string, trackObj->name, company->name);
             Windows::MapToolTip::setOwner(track->owner());
         }
         return true;
@@ -464,7 +464,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         }
         auto* trackObj = ObjectManager::get<TrackObject>(track->trackObjectId());
         auto* trackExtraObj = ObjectManager::get<TrackExtraObject>(trackObj->mods[interaction.unkBh]);
-        auto args = FormatArguments::mapToolTip(StringIds::stringid_right_click_to_remove, trackExtraObj->name);
+        FormatArguments::mapToolTip(StringIds::stringid_right_click_to_remove, trackExtraObj->name);
         return true;
     }
 
@@ -493,7 +493,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         {
             return false;
         }
-        auto args = FormatArguments::mapToolTip(StringIds::stringid_right_click_to_remove, StringIds::capt_signal);
+        FormatArguments::mapToolTip(StringIds::stringid_right_click_to_remove, StringIds::capt_signal);
         return true;
     }
 
@@ -524,7 +524,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         }
 
         auto* station = StationManager::get(elStation->stationId());
-        auto args = FormatArguments::mapToolTip(StringIds::stringid_right_click_to_remove, StringIds::string_station_platform, station->name, station->town);
+        FormatArguments::mapToolTip(StringIds::stringid_right_click_to_remove, StringIds::string_station_platform, station->name, station->town);
         return true;
     }
 
@@ -550,12 +550,12 @@ namespace OpenLoco::Ui::ViewportInteraction
         auto* roadObj = ObjectManager::get<RoadObject>(road->roadObjectId());
         if (road->owner() == CompanyManager::getControllingId() || road->owner() == CompanyId::neutral)
         {
-            auto args = FormatArguments::mapToolTip(StringIds::stringid_right_click_to_modify, roadObj->name);
+            FormatArguments::mapToolTip(StringIds::stringid_right_click_to_modify, roadObj->name);
         }
         else
         {
             auto* company = CompanyManager::get(road->owner());
-            auto args = FormatArguments::mapToolTip(StringIds::string_owned_by_string, roadObj->name, company->name);
+            FormatArguments::mapToolTip(StringIds::string_owned_by_string, roadObj->name, company->name);
             Windows::MapToolTip::setOwner(road->owner());
         }
         return true;
@@ -585,7 +585,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         }
         auto* roadObj = ObjectManager::get<RoadObject>(road->roadObjectId());
         auto* roadExtraObj = ObjectManager::get<TrackExtraObject>(roadObj->mods[interaction.unkBh]);
-        auto args = FormatArguments::mapToolTip(StringIds::stringid_right_click_to_remove, roadExtraObj->name);
+        FormatArguments::mapToolTip(StringIds::stringid_right_click_to_remove, roadExtraObj->name);
         return true;
     }
 
@@ -616,7 +616,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         }
 
         auto* station = StationManager::get(elStation->stationId());
-        auto args = FormatArguments::mapToolTip(StringIds::stringid_right_click_to_remove, StringIds::string_station_building_bus_stop, station->name, station->town);
+        FormatArguments::mapToolTip(StringIds::stringid_right_click_to_remove, StringIds::string_station_building_bus_stop, station->name, station->town);
         return true;
     }
 
@@ -703,7 +703,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         }
 
         auto* treeObj = ObjectManager::get<TreeObject>(tree->treeObjectId());
-        auto args = FormatArguments::mapToolTip(StringIds::stringid_right_click_to_remove, treeObj->name);
+        FormatArguments::mapToolTip(StringIds::stringid_right_click_to_remove, treeObj->name);
         return true;
     }
 
@@ -722,7 +722,7 @@ namespace OpenLoco::Ui::ViewportInteraction
             return false;
         }
         auto* wallObj = ObjectManager::get<WallObject>(wall->wallObjectId());
-        auto args = FormatArguments::mapToolTip(StringIds::stringid_right_click_to_remove, wallObj->name);
+        FormatArguments::mapToolTip(StringIds::stringid_right_click_to_remove, wallObj->name);
         return true;
     }
 
@@ -763,7 +763,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         {
             if (company.headquarters_x == firstTile.x && company.headquarters_y == firstTile.y && company.headquarters_z == height)
             {
-                auto args = FormatArguments::mapToolTip(StringIds::stringid_right_click_to_remove, StringIds::stringid_headquarters, company.name);
+                FormatArguments::mapToolTip(StringIds::stringid_right_click_to_remove, StringIds::stringid_headquarters, company.name);
                 return true;
             }
         }
@@ -864,7 +864,7 @@ namespace OpenLoco::Ui::ViewportInteraction
                 }
             }
         }
-        auto args = FormatArguments::mapToolTip(StringIds::buffer_338);
+        FormatArguments::mapToolTip(StringIds::buffer_338);
         return true;
     }
 
@@ -896,7 +896,8 @@ namespace OpenLoco::Ui::ViewportInteraction
         }
 
         bool hasInteraction = false;
-        auto [interaction, viewport] = getMapCoordinatesFromPos(x, y, interactionsToExclude);
+        auto res = getMapCoordinatesFromPos(x, y, interactionsToExclude);
+        auto& interaction = res.first;
         switch (interaction.type)
         {
             case InteractionItem::track:
