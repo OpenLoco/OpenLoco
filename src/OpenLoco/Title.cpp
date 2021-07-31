@@ -93,14 +93,14 @@ namespace OpenLoco::Title
     // ?load selected objects?
     static void sub_474874()
     {
-        call(0x00474874);
+        call(0x00474874); // editorLoadSelectedObjects
     }
 
     // 0x00473B91
     // object flags free 0
     static void sub_473B91()
     {
-        call(0x00473B91);
+        call(0x00473B91); // editorObjectFlagsFree0
     }
 
     // 0x004284C8

@@ -519,11 +519,6 @@ namespace OpenLoco::S5
         }
     };
 
-    static void sub_42F7F8()
-    {
-        call(0x0042F7F8);
-    }
-
     static void sub_4BAEC4()
     {
         addr<0x001136496, uint8_t>() = 2;
@@ -598,7 +593,7 @@ namespace OpenLoco::S5
                 setObjectErrorMessage(loadObjectResult.problemObject);
                 if (flags & LoadFlags::twoPlayer)
                 {
-                    sub_42F7F8();
+                    CompanyManager::reset();
                     addr<0x00525F62, uint16_t>() = 0;
                     return false;
                 }
