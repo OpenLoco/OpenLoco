@@ -1037,6 +1037,7 @@ namespace OpenLoco::StringIds
     constexpr string_id prompt_enter_new_name_for_owner = 1460;
     constexpr string_id cannot_change_owner_name = 1461;
     constexpr string_id headquarters = 1462;
+    constexpr string_id stringid_headquarters = 1462;
 
     constexpr string_id tooltip_select_company = 1465;
 

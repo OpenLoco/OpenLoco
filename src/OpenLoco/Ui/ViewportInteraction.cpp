@@ -8,6 +8,7 @@
 #include "../Localisation/StringIds.h"
 #include "../Localisation/StringManager.h"
 #include "../Map/TileManager.h"
+#include "../Objects/BuildingObject.h"
 #include "../Objects/CargoObject.h"
 #include "../Objects/ObjectManager.h"
 #include "../Objects/RoadObject.h"
@@ -547,7 +548,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         }
 
         auto* roadObj = ObjectManager::get<RoadObject>(road->roadObjectId());
-        if (road->owner() == CompanyManager::getControllingId())
+        if (road->owner() == CompanyManager::getControllingId() || road->owner() == CompanyId::neutral)
         {
             auto args = FormatArguments::mapToolTip(StringIds::stringid_right_click_to_modify, roadObj->name);
         }
@@ -725,6 +726,50 @@ namespace OpenLoco::Ui::ViewportInteraction
         return true;
     }
 
+    // 0x004CDE78
+    // Note: this is only when in a constructing mode
+    static bool rightOverBuildingConstruct(InteractionArg& interaction)
+    {
+        auto* tileElement = reinterpret_cast<Map::TileElement*>(interaction.object);
+        auto* building = tileElement->asBuilding();
+        if (building == nullptr)
+        {
+            return false;
+        }
+
+        auto* buildingObj = building->object();
+        auto args = FormatArguments::mapToolTip();
+        if (isEditorMode() || !(buildingObj->flags & BuildingObjectFlags::undestructible))
+        {
+            args.push(StringIds::stringid_right_click_to_remove);
+        }
+        args.push(buildingObj->name);
+        return true;
+    }
+
+    // 0x004CE107
+    static bool rightOverHeadquarters(InteractionArg& interaction)
+    {
+        auto* tileElement = reinterpret_cast<Map::TileElement*>(interaction.object);
+        auto* building = tileElement->asBuilding();
+        if (building == nullptr)
+        {
+            return false;
+        }
+
+        auto firstTile = interaction.pos - Map::offsets[building->multiTileIndex()];
+        auto height = building->baseZ();
+        for (auto& company : CompanyManager::companies())
+        {
+            if (company.headquarters_x == firstTile.x && company.headquarters_y == firstTile.y && company.headquarters_z == height)
+            {
+                auto args = FormatArguments::mapToolTip(StringIds::stringid_right_click_to_remove, StringIds::stringid_headquarters, company.name);
+                return true;
+            }
+        }
+        return false;
+    }
+
     // 0x004CDB2B
     InteractionArg rightOver(int16_t x, int16_t y)
     {
@@ -809,10 +854,10 @@ namespace OpenLoco::Ui::ViewportInteraction
                         hasInteraction = rightOverWall(interaction);
                         break;
                     case InteractionItem::building:
-                        // 0x4CDE78
+                        hasInteraction = rightOverBuildingConstruct(interaction);
                         break;
                     case InteractionItem::headquarterBuilding:
-                        // 0x4CE107
+                        hasInteraction = rightOverHeadquarters(interaction);
                         break;
                     default:
                         hasInteraction = true;
