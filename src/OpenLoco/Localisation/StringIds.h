@@ -144,6 +144,11 @@ namespace OpenLoco::StringIds
     constexpr string_id menu_underground_view = 145;
     constexpr string_id menu_hide_foreground_tracks_roads = 146;
 
+    constexpr string_id capt_signal = 158;
+    constexpr string_id capt_station = 159;
+    constexpr string_id capt_airport = 160;
+    constexpr string_id capt_ship_port = 161;
+
     constexpr string_id cant_remove_airport = 164;
     constexpr string_id cant_remove_ship_port = 165;
     constexpr string_id cant_remove_station = 166;
@@ -357,6 +362,8 @@ namespace OpenLoco::StringIds
     constexpr string_id cant_reverse_train = 388;
 
     constexpr string_id cant_sell_string_id = 390;
+
+    constexpr string_id string_station_platform = 393;
 
     constexpr string_id station_catchment = 395;
     constexpr string_id menu_mute = 396;

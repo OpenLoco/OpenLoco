@@ -464,6 +464,66 @@ namespace OpenLoco::Ui::ViewportInteraction
         return true;
     }
 
+    // 0x004CDBEA
+    static bool rightOverSignal(InteractionArg& interaction)
+    {
+        auto* tileElement = reinterpret_cast<Map::TileElement*>(interaction.object);
+        auto* signal = tileElement->asSignal();
+        auto* track = (tileElement - 1)->asTrack();
+        if (signal == nullptr || track == nullptr)
+        {
+            return false;
+        }
+
+        if (signal->isGhost())
+        {
+            return false;
+        }
+        if (!Windows::Construction::isSignalTabOpen())
+        {
+            interaction.object = track;
+            return rightOverTrack(interaction);
+        }
+
+        if (track->owner() != CompanyManager::getControllingId())
+        {
+            return false;
+        }
+        auto args = FormatArguments::mapToolTip(StringIds::stringid_right_click_to_remove, StringIds::capt_signal);
+        return true;
+    }
+
+    // 0x004CDD8C
+    static bool rightOverTrackStation(InteractionArg& interaction)
+    {
+        auto* tileElement = reinterpret_cast<Map::TileElement*>(interaction.object);
+        auto* elStation = tileElement->asStation();
+        auto* track = (tileElement - 1)->asTrack();
+        if (elStation == nullptr || track == nullptr)
+        {
+            return false;
+        }
+
+        if (elStation->isGhost())
+        {
+            return false;
+        }
+        if (!Windows::Construction::isStationTabOpen())
+        {
+            interaction.object = track;
+            return rightOverTrack(interaction);
+        }
+
+        if (track->owner() != CompanyManager::getControllingId())
+        {
+            return false;
+        }
+
+        auto* station = StationManager::get(elStation->stationId());
+        auto args = FormatArguments::mapToolTip(StringIds::stringid_right_click_to_remove, StringIds::string_station_platform, station->name, station->town);
+        return true;
+    }
+
     // 0x004CDB2B
     InteractionArg rightOver(int16_t x, int16_t y)
     {
@@ -505,10 +565,10 @@ namespace OpenLoco::Ui::ViewportInteraction
                 hasInteraction = rightOverTrackExtra(interaction);
                 break;
             case InteractionItem::signal:
-                // 0x4CDBEA
+                hasInteraction = rightOverSignal(interaction);
                 break;
             case InteractionItem::trackStation:
-                // 0x4CDD8C
+                hasInteraction = rightOverTrackStation(interaction);
                 break;
             case InteractionItem::roadStation:
                 // 0x4CDDF2

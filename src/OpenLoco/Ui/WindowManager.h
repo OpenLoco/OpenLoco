@@ -136,6 +136,7 @@ namespace OpenLoco::Ui::Windows
         void sub_4A6FAC();
         bool isStationTabOpen();
         bool isOverheadTabOpen();
+        bool isSignalTabOpen();
         bool rotate(Window* self);
         void removeConstructionGhosts();
         void registerHooks();
