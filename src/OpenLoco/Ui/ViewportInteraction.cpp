@@ -10,6 +10,7 @@
 #include "../Map/TileManager.h"
 #include "../Objects/CargoObject.h"
 #include "../Objects/ObjectManager.h"
+#include "../Objects/TrackExtraObject.h"
 #include "../Objects/TrackObject.h"
 #include "../Paint/Paint.h"
 #include "../StationManager.h"
@@ -435,6 +436,34 @@ namespace OpenLoco::Ui::ViewportInteraction
         return true;
     }
 
+    // 0x004CE18F
+    static bool rightOverTrackExtra(InteractionArg& interaction)
+    {
+        if (!Windows::Construction::isOverheadTabOpen())
+        {
+            return rightOverTrack(interaction);
+        }
+
+        auto* tileElement = reinterpret_cast<Map::TileElement*>(interaction.object);
+        auto* track = tileElement->asTrack();
+        if (track == nullptr)
+            return false;
+
+        if (track->isGhost())
+        {
+            return false;
+        }
+
+        if (!(track->unk_7u() & (1 << interaction.unkBh)))
+        {
+            return rightOverTrack(interaction);
+        }
+        auto* trackObj = ObjectManager::get<TrackObject>(track->trackObjectId());
+        auto* trackExtraObj = ObjectManager::get<TrackExtraObject>(trackObj->mods[interaction.unkBh]);
+        auto args = FormatArguments::mapToolTip(StringIds::stringid_right_click_to_remove, trackExtraObj->name);
+        return true;
+    }
+
     // 0x004CDB2B
     InteractionArg rightOver(int16_t x, int16_t y)
     {
@@ -470,10 +499,10 @@ namespace OpenLoco::Ui::ViewportInteraction
                 hasInteraction = rightOverTrack(interaction);
                 break;
             case InteractionItem::entity:
-                // 0x4CE186
+                // No interaction
                 break;
             case InteractionItem::trackExtra:
-                // 0x4CE188
+                hasInteraction = rightOverTrackExtra(interaction);
                 break;
             case InteractionItem::signal:
                 // 0x4CDBEA

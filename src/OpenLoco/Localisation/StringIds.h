@@ -384,6 +384,7 @@ namespace OpenLoco::StringIds
     constexpr string_id cant_plant_this_here = 449;
     constexpr string_id outlined_wcolour2_stringid = 450;
     constexpr string_id stringid_right_click_to_modify = 451;
+    constexpr string_id stringid_right_click_to_remove = 452;
 
     constexpr string_id black_tiny_font = 453;
     constexpr string_id red_stringid = 454;

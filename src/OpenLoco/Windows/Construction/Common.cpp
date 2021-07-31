@@ -362,6 +362,18 @@ namespace OpenLoco::Ui::Windows::Construction
         return window->current_tab == Common::widx::tab_station - Common::widx::tab_construction;
     }
 
+    // 0x004A69EE
+    bool isOverheadTabOpen()
+    {
+        auto* window = WindowManager::find(WindowType::construction);
+        if (window == nullptr)
+        {
+            return false;
+        }
+
+        return window->current_tab == Common::widx::tab_overhead - Common::widx::tab_construction;
+    }
+
     // 0x0049FEC7
     void removeConstructionGhosts()
     {
