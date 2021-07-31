@@ -770,6 +770,104 @@ namespace OpenLoco::Ui::ViewportInteraction
         return false;
     }
 
+    constexpr std::array<string_id, 7> quantityToString = {
+        StringIds::quantity_eigth,
+        StringIds::quantity_quarter,
+        StringIds::quantity_three_eigths,
+        StringIds::quantity_half,
+        StringIds::quantity_five_eigths,
+        StringIds::quantity_three_quarters,
+        StringIds::quantity_seven_eigths,
+    };
+
+    // 0x004CDEB8
+    // Note: this is only when in a none constructing mode
+    static bool rightOverBuilding(InteractionArg& interaction)
+    {
+        interaction.type = InteractionItem::buildingInfo;
+        if (Ui::Windows::MapToolTip::getTooltipTimeout() < 45)
+        {
+            return true;
+        }
+
+        auto* tileElement = reinterpret_cast<Map::TileElement*>(interaction.object);
+        auto* building = tileElement->asBuilding();
+        if (building == nullptr)
+        {
+            return false;
+        }
+
+        auto* buildingObj = building->object();
+        auto* buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_338));
+        buffer = StringManager::formatString(buffer, buildingObj->name);
+        if (!building->hasHighTypeFlag())
+        {
+            buffer = StringManager::formatString(buffer, StringIds::under_construction);
+        }
+        else
+        {
+            if (buildingObj->var_A0[0] != 0 || buildingObj->var_A0[1] != 0)
+            {
+                buffer = StringManager::formatString(buffer, StringIds::produces);
+                bool requiresComma = false;
+                for (auto i = 0; i < 2; ++i)
+                {
+                    if (buildingObj->var_A0[i] != 0)
+                    {
+                        if (requiresComma)
+                        {
+                            buffer = StringManager::formatString(buffer, StringIds::comma);
+                        }
+                        requiresComma = true;
+                        auto* cargo = ObjectManager::get<CargoObject>(buildingObj->producedCargoType[i]);
+                        buffer = StringManager::formatString(buffer, cargo->name);
+                    }
+                }
+            }
+            if (buildingObj->var_A6[0] != 0 || buildingObj->var_A6[1] != 0 || buildingObj->var_A8[0] != 0 || buildingObj->var_A8[1] != 0)
+            {
+                buffer = StringManager::formatString(buffer, StringIds::accepts);
+                bool requiresComma = false;
+                for (auto i = 0; i < 2; ++i)
+                {
+                    if (buildingObj->var_A6[i] != 0)
+                    {
+                        if (requiresComma)
+                        {
+                            buffer = StringManager::formatString(buffer, StringIds::comma);
+                        }
+                        if (buildingObj->var_A6[i] < 8)
+                        {
+                            buffer = StringManager::formatString(buffer, quantityToString[buildingObj->var_A6[i]]);
+                        }
+                        requiresComma = true;
+                        auto* cargo = ObjectManager::get<CargoObject>(buildingObj->producedCargoType[i]);
+                        buffer = StringManager::formatString(buffer, cargo->name);
+                    }
+                }
+                for (auto i = 0; i < 2; ++i)
+                {
+                    if (buildingObj->var_A8[i] != 0)
+                    {
+                        if (requiresComma)
+                        {
+                            buffer = StringManager::formatString(buffer, StringIds::comma);
+                        }
+                        if (buildingObj->var_A8[i] < 8)
+                        {
+                            buffer = StringManager::formatString(buffer, quantityToString[buildingObj->var_A8[i]]);
+                        }
+                        requiresComma = true;
+                        auto* cargo = ObjectManager::get<CargoObject>(buildingObj->var_A4[i]);
+                        buffer = StringManager::formatString(buffer, cargo->name);
+                    }
+                }
+            }
+        }
+        auto args = FormatArguments::mapToolTip(StringIds::buffer_338);
+        return true;
+    }
+
     // 0x004CDB2B
     InteractionArg rightOver(int16_t x, int16_t y)
     {
@@ -838,8 +936,7 @@ namespace OpenLoco::Ui::ViewportInteraction
                     {
                         if (interaction.type == InteractionItem::building)
                         {
-                            // 0x004CDEB8
-                            // hasInteraction = rightOverBuilding(interaction);
+                            hasInteraction = rightOverBuilding(interaction);
                         }
                         break;
                     }
@@ -871,22 +968,8 @@ namespace OpenLoco::Ui::ViewportInteraction
         }
         else
         {
-            // return InteractionArg{};
+            return InteractionArg{};
         }
-        registers regs;
-        regs.ax = x;
-        regs.bx = y;
-        regs.edx = interactionsToExclude;
-
-        call(0x004CDB3F, regs);
-        InteractionArg result;
-        result.value = regs.edx;
-        result.pos.x = regs.ax;
-        result.pos.y = regs.cx;
-        result.unkBh = regs.bh;
-        result.type = static_cast<InteractionItem>(regs.bl);
-
-        return result;
     }
 
     // 0x00459E54

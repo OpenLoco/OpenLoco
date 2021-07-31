@@ -382,7 +382,17 @@ namespace OpenLoco::StringIds
     constexpr string_id menu_one_way_direction_arrows = 428;
     constexpr string_id menu_town_names_displayed = 429;
     constexpr string_id menu_station_names_displayed = 430;
-
+    constexpr string_id accepts = 431;
+    constexpr string_id quantity_eigth = 432;
+    constexpr string_id quantity_quarter = 433;
+    constexpr string_id quantity_three_eigths = 434;
+    constexpr string_id quantity_half = 435;
+    constexpr string_id quantity_five_eigths = 436;
+    constexpr string_id quantity_three_quarters = 437;
+    constexpr string_id quantity_seven_eigths = 438;
+    constexpr string_id comma = 439;
+    constexpr string_id produces = 440;
+    constexpr string_id under_construction = 441;
     constexpr string_id string_owned_by_string = 442;
     constexpr string_id dropdown_without_checkmark = 443;
     constexpr string_id dropdown_with_checkmark = 444;
