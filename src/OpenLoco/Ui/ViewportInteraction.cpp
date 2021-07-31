@@ -10,6 +10,7 @@
 #include "../Map/TileManager.h"
 #include "../Objects/CargoObject.h"
 #include "../Objects/ObjectManager.h"
+#include "../Objects/RoadObject.h"
 #include "../Objects/TrackExtraObject.h"
 #include "../Objects/TrackObject.h"
 #include "../Paint/Paint.h"
@@ -454,7 +455,7 @@ namespace OpenLoco::Ui::ViewportInteraction
             return false;
         }
 
-        if (!(track->unk_7u() & (1 << interaction.unkBh)))
+        if (!track->hasMod(interaction.unkBh))
         {
             return rightOverTrack(interaction);
         }
@@ -524,6 +525,98 @@ namespace OpenLoco::Ui::ViewportInteraction
         return true;
     }
 
+    // 0x004CE2C1
+    static bool rightOverRoad(InteractionArg& interaction)
+    {
+        interaction.type = InteractionItem::road;
+        auto* tileElement = reinterpret_cast<Map::TileElement*>(interaction.object);
+        auto* road = tileElement->asRoad();
+        if (road == nullptr)
+            return false;
+
+        if (road->isGhost())
+        {
+            return false;
+        }
+
+        if (Ui::Windows::MapToolTip::getTooltipTimeout() < 45)
+        {
+            return true;
+        }
+
+        auto* roadObj = ObjectManager::get<RoadObject>(road->roadObjectId());
+        if (road->owner() == CompanyManager::getControllingId())
+        {
+            auto args = FormatArguments::mapToolTip(StringIds::stringid_right_click_to_modify, roadObj->name);
+        }
+        else
+        {
+            auto* company = CompanyManager::get(road->owner());
+            auto args = FormatArguments::mapToolTip(StringIds::string_owned_by_string, roadObj->name, company->name);
+            Windows::MapToolTip::setOwner(road->owner());
+        }
+        return true;
+    }
+
+    // 0x004CE271
+    static bool rightOverRoadExtra(InteractionArg& interaction)
+    {
+        if (!Windows::Construction::isOverheadTabOpen())
+        {
+            return rightOverRoad(interaction);
+        }
+
+        auto* tileElement = reinterpret_cast<Map::TileElement*>(interaction.object);
+        auto* road = tileElement->asRoad();
+        if (road == nullptr)
+            return false;
+
+        if (road->isGhost())
+        {
+            return false;
+        }
+
+        if (!road->hasMod(interaction.unkBh))
+        {
+            return rightOverRoad(interaction);
+        }
+        auto* roadObj = ObjectManager::get<RoadObject>(road->roadObjectId());
+        auto* roadExtraObj = ObjectManager::get<TrackExtraObject>(roadObj->mods[interaction.unkBh]);
+        auto args = FormatArguments::mapToolTip(StringIds::stringid_right_click_to_remove, roadExtraObj->name);
+        return true;
+    }
+
+    // 0x004CDDF2
+    static bool rightOverRoadStation(InteractionArg& interaction)
+    {
+        auto* tileElement = reinterpret_cast<Map::TileElement*>(interaction.object);
+        auto* elStation = tileElement->asStation();
+        auto* road = (tileElement - 1)->asRoad();
+        if (elStation == nullptr || road == nullptr)
+        {
+            return false;
+        }
+
+        if (elStation->isGhost())
+        {
+            return false;
+        }
+        if (!Windows::Construction::isStationTabOpen())
+        {
+            interaction.object = road;
+            return rightOverRoad(interaction);
+        }
+
+        if (road->owner() != CompanyManager::getControllingId())
+        {
+            return false;
+        }
+
+        auto* station = StationManager::get(elStation->stationId());
+        auto args = FormatArguments::mapToolTip(StringIds::stringid_right_click_to_remove, StringIds::string_station_building_bus_stop, station->name, station->town);
+        return true;
+    }
+
     // 0x004CDB2B
     InteractionArg rightOver(int16_t x, int16_t y)
     {
@@ -571,7 +664,7 @@ namespace OpenLoco::Ui::ViewportInteraction
                 hasInteraction = rightOverTrackStation(interaction);
                 break;
             case InteractionItem::roadStation:
-                // 0x4CDDF2
+                hasInteraction = rightOverRoadStation(interaction);
                 break;
             case InteractionItem::airport:
                 // 0x4CDC26
@@ -580,10 +673,10 @@ namespace OpenLoco::Ui::ViewportInteraction
                 // 0x4CDCD9
                 break;
             case InteractionItem::road:
-                // 0x4CE2C1
+                hasInteraction = rightOverRoad(interaction);
                 break;
             case InteractionItem::roadExtra:
-                // 0x4CE271
+                hasInteraction = rightOverRoadExtra(interaction);
                 break;
             case InteractionItem::noInteraction:
             case InteractionItem::surface:

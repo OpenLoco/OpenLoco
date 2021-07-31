@@ -260,7 +260,7 @@ namespace OpenLoco::Map
         uint8_t unk_6() const { return _6; }               // _6
         uint8_t owner() const { return _7 & 0xF; }         // _7l
         void setOwner(uint8_t newOwner) { _7 = (_7 & 0xF0) | (newOwner & 0xF); }
-        uint8_t unk_7u() const { return _7 >> 4; } // _7u
+        bool hasMod(uint8_t mod) const { return _7 & (1 << (4 + mod)); } // _7u
     };
 
     struct SignalElement : public TileElementBase
@@ -292,7 +292,8 @@ namespace OpenLoco::Map
         uint8_t roadObjectId() const { return _5 >> 4; }   // _5u
         uint8_t sequenceIndex() const { return _5 & 0x3; } // _5l
         bool hasStationElement() const { return (_type & 0x80) != 0; }
-        uint8_t owner() const { return _7 & 0xF; } // _7l
+        bool hasMod(uint8_t mod) const { return _7 & (1 << (mod + 6)); } // _7u (bits 6 and 7)
+        uint8_t owner() const { return _7 & 0xF; }                       // _7l
         void setOwner(uint8_t newOwner) { _7 = (_7 & 0xF0) | (newOwner & 0xF); }
     };
 

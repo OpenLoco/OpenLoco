@@ -364,6 +364,7 @@ namespace OpenLoco::StringIds
     constexpr string_id cant_sell_string_id = 390;
 
     constexpr string_id string_station_platform = 393;
+    constexpr string_id string_station_building_bus_stop = 394;
 
     constexpr string_id station_catchment = 395;
     constexpr string_id menu_mute = 396;
