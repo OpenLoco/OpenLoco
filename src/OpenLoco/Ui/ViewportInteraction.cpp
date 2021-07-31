@@ -13,6 +13,8 @@
 #include "../Objects/RoadObject.h"
 #include "../Objects/TrackExtraObject.h"
 #include "../Objects/TrackObject.h"
+#include "../Objects/TreeObject.h"
+#include "../Objects/WallObject.h"
 #include "../Paint/Paint.h"
 #include "../StationManager.h"
 #include "../TownManager.h"
@@ -689,6 +691,40 @@ namespace OpenLoco::Ui::ViewportInteraction
         return true;
     }
 
+    // 0x004CDE58
+    static bool rightOverTree(InteractionArg& interaction)
+    {
+        auto* tileElement = reinterpret_cast<Map::TileElement*>(interaction.object);
+        auto* tree = tileElement->asTree();
+        if (tree == nullptr)
+        {
+            return false;
+        }
+
+        auto* treeObj = ObjectManager::get<TreeObject>(tree->treeObjectId());
+        auto args = FormatArguments::mapToolTip(StringIds::stringid_right_click_to_remove, treeObj->name);
+        return true;
+    }
+
+    // 0x004CE0D8
+    static bool rightOverWall(InteractionArg& interaction)
+    {
+        auto* tileElement = reinterpret_cast<Map::TileElement*>(interaction.object);
+        auto* wall = tileElement->asWall();
+        if (wall == nullptr)
+        {
+            return false;
+        }
+
+        if (!isEditorMode())
+        {
+            return false;
+        }
+        auto* wallObj = ObjectManager::get<WallObject>(wall->wallObjectId());
+        auto args = FormatArguments::mapToolTip(StringIds::stringid_right_click_to_remove, wallObj->name);
+        return true;
+    }
+
     // 0x004CDB2B
     InteractionArg rightOver(int16_t x, int16_t y)
     {
@@ -750,19 +786,38 @@ namespace OpenLoco::Ui::ViewportInteraction
             case InteractionItem::roadExtra:
                 hasInteraction = rightOverRoadExtra(interaction);
                 break;
-            case InteractionItem::noInteraction:
-            case InteractionItem::surface:
-            case InteractionItem::industryTree:
-            case InteractionItem::water:
-            case InteractionItem::tree:
-            case InteractionItem::wall:
-            case InteractionItem::townLabel:
-            case InteractionItem::stationLabel:
-            case InteractionItem::bridge:
-            case InteractionItem::building:
-            case InteractionItem::industry:
-            case InteractionItem::headquarterBuilding:
-                // 0x4CDB9A
+            default:
+                if (Input::hasFlag(Input::Flags::toolActive) || Input::hasFlag(Input::Flags::flag6))
+                {
+                    if (WindowManager::find(WindowType::construction) == nullptr)
+                    {
+                        if (interaction.type == InteractionItem::building)
+                        {
+                            // 0x004CDEB8
+                            // hasInteraction = rightOverBuilding(interaction);
+                        }
+                        break;
+                    }
+                }
+                // 0x4CDBC5
+                switch (interaction.type)
+                {
+                    case InteractionItem::tree:
+                        hasInteraction = rightOverTree(interaction);
+                        break;
+                    case InteractionItem::wall:
+                        hasInteraction = rightOverWall(interaction);
+                        break;
+                    case InteractionItem::building:
+                        // 0x4CDE78
+                        break;
+                    case InteractionItem::headquarterBuilding:
+                        // 0x4CE107
+                        break;
+                    default:
+                        hasInteraction = true;
+                        break;
+                }
                 break;
         }
         if (hasInteraction)
