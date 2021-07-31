@@ -80,12 +80,6 @@ namespace OpenLoco::Map
         uint8_t baseZ() const { return _base_z; }
         uint8_t clearZ() const { return _clear_z; }
 
-        bool hasHighTypeFlag() const { return _type & 0x80; }
-        void setHighTypeFlag(bool state)
-        {
-            _type &= ~0x80;
-            _type |= state ? 0x80 : 0;
-        }
         bool isGhost() const { return _flags & ElementFlags::ghost; }
         bool isFlag5() const { return _flags & ElementFlags::flag_5; }
         void setFlag6(bool state)
@@ -182,6 +176,12 @@ namespace OpenLoco::Map
             _type |= state ? 0x40 : 0;
         }
         void createWave(int16_t x, int16_t y, int animationIndex);
+        bool hasHighTypeFlag() const { return _type & 0x80; }
+        void setHighTypeFlag(bool state)
+        {
+            _type &= ~0x80;
+            _type |= state ? 0x80 : 0;
+        }
     };
 
     struct StationElement : public TileElementBase
@@ -209,7 +209,7 @@ namespace OpenLoco::Map
 
     public:
         bool has_40() const { return (_type & 0x40) != 0; }
-        bool hasStationElement() const { return (_type & 0x80) != 0; }
+        bool isConstructed() const { return (_type & 0x80) != 0; }
         uint8_t colour() const { return _6 >> 11; }
         void setColour(Colour_t colour) { _6 = (_6 & 0x7FF) | (colour << 11); }
         uint8_t objectId() const { return _4; }
@@ -309,6 +309,7 @@ namespace OpenLoco::Map
         OpenLoco::IndustryId_t industryId() const { return _industryId; }
         OpenLoco::Industry* industry() const;
         uint8_t var_6_1F() const;
+        bool hasHighTypeFlag() const { return _type & 0x80; } // isConstructed?
     };
 #pragma pack(pop)
 
