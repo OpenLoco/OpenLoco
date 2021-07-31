@@ -199,7 +199,7 @@ namespace OpenLoco::StationManager
             if (nameKey < StationName::townOrd1)
                 realNamesInUse.set(nameKey, true);
             else
-                ordinalNamesInUse.set(nameKey, true);
+                ordinalNamesInUse.set(nameKey - StationName::townOrd1, true);
         }
 
         if (mode == 1)
@@ -379,7 +379,7 @@ namespace OpenLoco::StationManager
 
         for (auto [name, stringId] : ordinalNamePairs)
         {
-            if (!ordinalNamesInUse.test(name))
+            if (!ordinalNamesInUse.test(name - StationName::townOrd1))
                 return StringManager::toTownName(stringId);
         }
 
