@@ -3470,11 +3470,11 @@ namespace OpenLoco::Ui::Windows::Vehicle
                         continue;
                     }
 
-                    if (std::abs(interaction.pos.x - station.unk_tile_x) > 5 * 32)
+                    if (std::abs(interaction.pos.x - station.unk_tile_x) > 5 * Map::tile_size)
                     {
                         continue;
                     }
-                    if (std::abs(interaction.pos.y - station.unk_tile_y) > 5 * 32)
+                    if (std::abs(interaction.pos.y - station.unk_tile_y) > 5 * Map::tile_size)
                     {
                         continue;
                     }
@@ -3590,16 +3590,21 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004A43E4
         static uint16_t getRoadProgressAtCursor(const xy32& cursorLoc, Ui::Viewport& viewport, const RoadElement& roadElement, const Map::Pos3& loc)
         {
+            // Get the coordinates of the first tile of the possibly multitile road
             const auto& roadDataArr = Map::TrackData::getRoadPiece(roadElement.roadId());
             const auto& roadData = roadDataArr[roadElement.sequenceIndex()];
             auto roadOffset2 = Math::Vector::rotate(Map::Pos2(roadData.x, roadData.y), roadElement.unkDirection());
             auto roadOffset = Map::Pos3(roadOffset2.x, roadOffset2.y, roadData.z);
             auto roadFirstTile = loc - roadOffset;
-            uint16_t trackAndDirection = roadElement.unkDirection() | (roadElement.roadId() << 3);
 
+            // Get the movement info for this specific road id
+            uint16_t trackAndDirection = roadElement.unkDirection() | (roadElement.roadId() << 3);
+            const auto moveInfoArr = Map::TrackData::getRoadSubPositon(trackAndDirection);
+
+            // This iterates the movement info trying to find the distance along the road that is as close as possible
+            // to the cursors location.
             int32_t bestDistance = std::numeric_limits<int32_t>::max();
             uint16_t bestProgress = 0;
-            const auto moveInfoArr = Map::TrackData::getRoadSubPositon(trackAndDirection);
             for (const auto& moveInfo : moveInfoArr)
             {
                 auto potentialLoc = roadFirstTile + moveInfo.loc;
@@ -3629,14 +3634,18 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return {};
             }
 
+            // Get the best progress along the road relative to the cursor
             auto* roadElement = static_cast<Map::RoadElement*>(interaction.object);
             Map::Pos3 loc(interaction.pos.x, interaction.pos.y, roadElement->baseZ() * 4);
             auto progress = getRoadProgressAtCursor({ x, y }, *viewport, *roadElement, loc);
+
+            // Get the coordinates of the first tile of the possibly multitile road
             const auto& roadDataArr = Map::TrackData::getRoadPiece(roadElement->roadId());
             const auto& roadData = roadDataArr[roadElement->sequenceIndex()];
             auto roadOffset2 = Math::Vector::rotate(Map::Pos2(roadData.x, roadData.y), roadElement->unkDirection());
             auto roadOffset = Map::Pos3(roadOffset2.x, roadOffset2.y, roadData.z);
             auto roadFirstTile = loc - roadOffset;
+
             GameCommands::VehiclePlacementArgs placementArgs;
             placementArgs.pos = roadFirstTile;
             placementArgs.trackProgress = progress;
@@ -3698,16 +3707,21 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004A43E4
         static uint16_t getTrackProgressAtCursor(const xy32& cursorLoc, Ui::Viewport& viewport, const TrackElement& trackElement, const Map::Pos3& loc)
         {
+            // Get the coordinates of the first tile of the possibly multitile track
             const auto& trackDataArr = Map::TrackData::getTrackPiece(trackElement.trackId());
             const auto& trackData = trackDataArr[trackElement.sequenceIndex()];
             auto trackOffset2 = Math::Vector::rotate(Map::Pos2(trackData.x, trackData.y), trackElement.unkDirection());
             auto trackOffset = Map::Pos3(trackOffset2.x, trackOffset2.y, trackData.z);
             auto trackFirstTile = loc - trackOffset;
-            uint16_t trackAndDirection = trackElement.unkDirection() | (trackElement.trackId() << 3);
 
+            // Get the movement info for this specific track id
+            uint16_t trackAndDirection = trackElement.unkDirection() | (trackElement.trackId() << 3);
+            const auto moveInfoArr = Map::TrackData::getTrackSubPositon(trackAndDirection);
+
+            // This iterates the movement info trying to find the distance along the track that is as close as possible
+            // to the cursors location.
             int32_t bestDistance = std::numeric_limits<int32_t>::max();
             uint16_t bestProgress = 0;
-            const auto moveInfoArr = Map::TrackData::getTrackSubPositon(trackAndDirection);
             for (const auto& moveInfo : moveInfoArr)
             {
                 auto potentialLoc = trackFirstTile + moveInfo.loc;
@@ -3737,14 +3751,18 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 return {};
             }
 
+            // Get the best progress along the track relative to the cursor
             auto* trackElement = static_cast<Map::TrackElement*>(interaction.object);
             Map::Pos3 loc(interaction.pos.x, interaction.pos.y, trackElement->baseZ() * 4);
             auto progress = getTrackProgressAtCursor({ x, y }, *viewport, *trackElement, loc);
+
+            // Get the coordinates of the first tile of the possibly multitile road
             const auto& trackDataArr = Map::TrackData::getTrackPiece(trackElement->trackId());
             const auto& trackData = trackDataArr[trackElement->sequenceIndex()];
             auto trackOffset2 = Math::Vector::rotate(Map::Pos2(trackData.x, trackData.y), trackElement->unkDirection());
             auto trackOffset = Map::Pos3(trackOffset2.x, trackOffset2.y, trackData.z);
             auto trackFirstTile = loc - trackOffset;
+
             GameCommands::VehiclePlacementArgs placementArgs;
             placementArgs.pos = trackFirstTile;
             placementArgs.trackProgress = progress;
