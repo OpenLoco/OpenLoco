@@ -34,12 +34,6 @@ namespace OpenLoco::Game
 
     static loco_global<char[512], 0x0112CE04> _savePath;
 
-    // 0x004072EC
-    static void sub_4072EC()
-    {
-        call(0x004072EC);
-    }
-
     // 0x0046DB4C
     static void sub_46DB4C()
     {
@@ -61,7 +55,7 @@ namespace OpenLoco::Game
         bool confirm = Ui::Windows::PromptBrowse::open(type, &_savePath[0], filter, titleBuffer);
 
         Audio::unpauseSound();
-        sub_4072EC();
+        Ui::processMessagesMini();
         unsetPauseFlag(1 << 2);
         Gfx::invalidateScreen();
         Ui::ProgressBar::sub_4CF63B();

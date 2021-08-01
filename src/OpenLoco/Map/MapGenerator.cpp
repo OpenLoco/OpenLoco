@@ -465,21 +465,16 @@ namespace OpenLoco::Map::MapGenerator
         call(0x0042E6F2);
     }
 
-    static void miniMessageLoop()
-    {
-        call(0x004072EC);
-    }
-
     static void updateProgress(uint8_t value)
     {
-        miniMessageLoop();
+        Ui::processMessagesMini();
         Ui::ProgressBar::setProgress(value);
     }
 
     // 0x0043C90C
     void generate(const S5::Options& options)
     {
-        miniMessageLoop();
+        Ui::processMessagesMini();
 
         WindowManager::close(WindowType::town);
         WindowManager::close(WindowType::industry);

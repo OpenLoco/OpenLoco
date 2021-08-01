@@ -126,6 +126,7 @@ namespace OpenLoco::Ui
     void triggerResize();
     void render();
     bool processMessages();
+    bool processMessagesMini();
     void showMessageBox(const std::string& title, const std::string& message);
     Config::Resolution getResolution();
     Config::Resolution getDesktopResolution();

@@ -6,6 +6,7 @@
 #include "../Localisation/FormatArguments.hpp"
 #include "../Localisation/StringIds.h"
 #include "../S5/SawyerStream.h"
+#include "../Ui.h"
 #include "../Ui/ProgressBar.h"
 #include "../Utility/Numeric.hpp"
 #include <iterator>
@@ -616,12 +617,6 @@ namespace OpenLoco::ObjectManager
         return true;
     }
 
-    // TODO: Move
-    static void miniMessageLoop()
-    {
-        call(0x004072EC);
-    }
-
     static constexpr SawyerEncoding getBestEncodingForObjectType(ObjectType type)
     {
         switch (type)
@@ -742,7 +737,7 @@ namespace OpenLoco::ObjectManager
         strcat(str, objectname.c_str());
         Ui::ProgressBar::begin(caption);
         Ui::ProgressBar::setProgress(50);
-        miniMessageLoop();
+        Ui::processMessagesMini();
 
         // Get new file path
         std::string filename = objectname;

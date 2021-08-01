@@ -1316,7 +1316,7 @@ namespace OpenLoco::Gfx
 
         if (Input::hasFlag(Input::Flags::flag5))
         {
-            call(0x004072EC); // NOP on _NO_LOCO_WIN32_
+            Ui::processMessagesMini();
         }
         else
         {
