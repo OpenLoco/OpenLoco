@@ -243,7 +243,7 @@ namespace OpenLoco::Gfx
     void redrawScreenRect(Ui::Rect rect);
     void redrawScreenRect(int16_t left, int16_t top, int16_t right, int16_t bottom);
 
-    std::optional<Gfx::Context> clipContext(Gfx::Context& src, const Ui::Rect& newRect);
+    std::optional<Gfx::Context> clipContext(const Gfx::Context& src, const Ui::Rect& newRect);
     bool clipContext(Gfx::Context** dst, Gfx::Context* src, int16_t x, int16_t y, int16_t width, int16_t height);
     bool clipContext(Gfx::Context** dst, Gfx::Context* src, Ui::Point pos, Ui::Size size);
     G1Element* getG1Element(uint32_t id);

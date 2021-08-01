@@ -243,7 +243,7 @@ namespace OpenLoco::Ui::Windows::TextInput
         Gfx::drawStringCentredWrapped(*context, position, window->width - 8, 0, StringIds::wcolour2_stringid, &_commonFormatArgs[0]);
 
         auto widget = &_widgets[Widx::input];
-        auto clipped = Gfx::clipContext(*context, { widget->left + 1 + window->x, widget->top + 1 + window->y, widget->width() - 2, widget->height() - 2 });
+        auto clipped = Gfx::clipContext(*context, Ui::Rect(widget->left + 1 + window->x, widget->top + 1 + window->y, widget->width() - 2, widget->height() - 2));
         if (!clipped)
         {
             return;

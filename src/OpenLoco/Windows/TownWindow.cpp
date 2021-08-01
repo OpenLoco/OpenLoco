@@ -400,7 +400,7 @@ namespace OpenLoco::Ui::Windows::Town
             self->draw(context);
             Common::drawTabs(self, context);
 
-            auto clipped = Gfx::clipContext(*context, { self->x, self->y + 44, self->width, self->height - 44 });
+            auto clipped = Gfx::clipContext(*context, Ui::Rect(self->x, self->y + 44, self->width, self->height - 44));
             if (!clipped)
                 return;
 

@@ -1411,46 +1411,16 @@ namespace OpenLoco::Gfx
     }
 
     // 0x004CEC50
-    std::optional<Gfx::Context> clipContext(Gfx::Context& src, const Ui::Rect& newRect)
+    std::optional<Gfx::Context> clipContext(const Gfx::Context& src, const Ui::Rect& newRect)
     {
-
-        Gfx::Context newContext(src);
-        newContext.zoom_level = 0;
-
-        if (newRect.origin.x > src.x)
-        {
-            const auto dx = newRect.origin.x - src.x;
-            newContext.width -= dx;
-            newContext.x = newRect.origin.x;
-            newContext.pitch += dx;
-            newContext.bits += dx;
-        }
-
-        const auto oldRight = src.x + src.width;
-        const auto newRight = newRect.right();
-        if (newRight < oldRight)
-        {
-            const auto dx = oldRight - newRight;
-            newContext.width -= dx;
-            newContext.pitch += dx;
-        }
-
-        if (newRect.origin.y > src.y)
-        {
-            const auto dy = newRect.origin.y - src.y;
-            newContext.height -= dy;
-            newContext.y = newRect.origin.y;
-            const auto dBits = (newContext.pitch + newContext.width) * dy;
-            newContext.bits += dBits;
-        }
-
-        const auto oldBottom = src.y + src.height;
-        const auto newBottom = newRect.bottom();
-        if (newBottom < oldBottom)
-        {
-            const auto dy = oldBottom - newBottom;
-            newContext.height -= dy;
-        }
+        const Ui::Rect oldRect = src.getUiRect();
+        Ui::Rect intersect = oldRect.intersection(newRect);
+        const auto stride = oldRect.size.width + src.pitch;
+        const int16_t newPitch = stride - intersect.size.width;
+        auto* newBits = src.bits + (stride * (intersect.origin.y - oldRect.origin.y) + (intersect.origin.x - oldRect.origin.x));
+        intersect.origin.x = std::max(0, oldRect.origin.x - newRect.origin.x);
+        intersect.origin.y = std::max(0, oldRect.origin.y - newRect.origin.y);
+        Gfx::Context newContext{ newBits, intersect.origin.x, intersect.origin.y, static_cast<int16_t>(intersect.size.width), static_cast<int16_t>(intersect.size.height), newPitch, 0 };
 
         if (newContext.width <= 0 || newContext.height <= 0)
         {
