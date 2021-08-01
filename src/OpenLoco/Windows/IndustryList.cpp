@@ -2,6 +2,7 @@
 #include "../Config.h"
 #include "../Date.h"
 #include "../Economy/Economy.h"
+#include "../GameCommands/GameCommands.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/ImageIds.h"
 #include "../IndustryManager.h"
@@ -10,6 +11,7 @@
 #include "../Localisation/FormatArguments.hpp"
 #include "../Localisation/StringIds.h"
 #include "../Map/Map.hpp"
+#include "../Map/TileManager.h"
 #include "../Objects/CargoObject.h"
 #include "../Objects/IndustryObject.h"
 #include "../Objects/InterfaceSkinObject.h"
@@ -23,8 +25,12 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::IndustryList
 {
-    static loco_global<uint32_t, 0x00E0C39C> dword_E0C39C;
-    static loco_global<uint8_t, 0x00E0C3D9> byte_E0C3D9;
+    static loco_global<currency32_t, 0x00E0C39C> dword_E0C39C;
+    static loco_global<bool, 0x00E0C3D9> _industryGhostPlaced;
+    static loco_global<Map::Pos2, 0x00E0C3C2> _industryGhostPos;
+    static loco_global<uint8_t, 0x00E0C3C9> _industryLastPlacedId;
+    static loco_global<uint8_t, 0x00E0C3DA> _industryGhostType;
+    static loco_global<uint8_t, 0x00E0C3DB> _industryGhostId;
     static loco_global<uint8_t, 0x00525FC7> _lastSelectedIndustry;
     static loco_global<Utility::prng, 0x00525E20> _prng;
     static loco_global<uint32_t, 0x00E0C394> _dword_E0C394;
@@ -637,7 +643,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
             if (self->var_846 == 0xFFFF)
                 industryCost = dword_E0C39C;
 
-            if ((self->var_846 == 0xFFFF && dword_E0C39C == (1ULL << 31)) || self->var_846 != 0xFFFF)
+            if ((self->var_846 == 0xFFFF && dword_E0C39C == static_cast<currency32_t>(0x80000000)) || self->var_846 != 0xFFFF)
             {
                 industryCost = Economy::getInflationAdjustedCost(industryObj->cost_factor, industryObj->cost_index, 3);
             }
@@ -914,39 +920,124 @@ namespace OpenLoco::Ui::Windows::IndustryList
             self->invalidate();
         }
 
+        // 0x00458C09
+        static void removeIndustryGhost()
+        {
+            if (_industryGhostPlaced)
+            {
+                _industryGhostPlaced = false;
+                GameCommands::do_48(GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6, _industryGhostId);
+            }
+        }
+
+        // 0x00458BB5
+        static currency32_t placeIndustryGhost(const GameCommands::IndustryPlacementArgs& placementArgs)
+        {
+            auto res = GameCommands::do_47(GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6, placementArgs);
+            if (res == GameCommands::FAILURE)
+            {
+                return res;
+            }
+            _industryGhostPos = placementArgs.pos;
+            _industryGhostType = placementArgs.type;
+            _industryGhostId = _industryLastPlacedId;
+            _industryGhostPlaced = true;
+            return res;
+        }
+
+        // 0x0045857B
+        static std::optional<GameCommands::IndustryPlacementArgs> getIndustryPlacementArgsFromCursor(const int16_t x, const int16_t y)
+        {
+            auto* industryListWnd = WindowManager::find(WindowType::industryList);
+            if (industryListWnd == nullptr)
+            {
+                return {};
+            }
+
+            if (industryListWnd->current_tab != (Common::widx::tab_new_industry - Common::widx::tab_industry_list))
+            {
+                return {};
+            }
+
+            if (industryListWnd->row_hover == -1)
+            {
+                return {};
+            }
+
+            const auto pos = ViewportInteraction::getTileStartAtCursor({ x, y }); //ax,cx
+            if (!pos)
+            {
+                return {};
+            }
+
+            GameCommands::IndustryPlacementArgs args;
+            args.pos = *pos;
+            args.type = industryListWnd->row_hover; //dl
+            args.srand0 = _dword_E0C394;
+            args.srand1 = _dword_E0C398;
+            if (isEditorMode())
+            {
+                args.buildImmediately = true; //bh
+            }
+            return { args };
+        }
+
         // 0x0045848A
         static void onToolUpdate(Window& self, const WidgetIndex_t widgetIndex, int16_t x, const int16_t y)
         {
-            registers regs;
-            regs.esi = (int32_t)&self;
-            regs.dx = widgetIndex;
-            regs.ax = x;
-            regs.bx = y;
-            call(0x0045848A, regs);
+            Map::TileManager::mapInvalidateSelectionRect();
+            Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
+            auto placementArgs = getIndustryPlacementArgsFromCursor(x, y);
+            if (!placementArgs)
+            {
+                removeIndustryGhost();
+                return;
+            }
+
+            Input::setMapSelectionFlags(Input::MapSelectionFlags::enable);
+            Map::TileManager::setMapSelectionCorner(4);
+            Map::TileManager::setMapSelectionArea(placementArgs->pos, placementArgs->pos);
+            Map::TileManager::mapInvalidateSelectionRect();
+
+            if (_industryGhostPlaced)
+            {
+                if (*_industryGhostPos == placementArgs->pos && _industryGhostType == placementArgs->type)
+                {
+                    return;
+                }
+            }
+
+            removeIndustryGhost();
+            auto cost = placeIndustryGhost(*placementArgs);
+            if (cost != dword_E0C39C)
+            {
+                dword_E0C39C = cost;
+                self.invalidate();
+            }
         }
 
         // 0x0045851F
         static void onToolDown(Window& self, const WidgetIndex_t widgetIndex, int16_t x, const int16_t y)
         {
-            registers regs;
-            regs.esi = (int32_t)&self;
-            regs.dx = widgetIndex;
-            regs.ax = x;
-            regs.bx = y;
-            call(0x0045851F, regs);
-        }
+            removeIndustryGhost();
+            auto placementArgs = getIndustryPlacementArgsFromCursor(x, y);
+            if (placementArgs)
+            {
+                if (GameCommands::do_47(GameCommands::Flags::apply, *placementArgs) != GameCommands::FAILURE)
+                {
+                    Audio::playSound(Audio::SoundId::construct, GameCommands::getPosition());
+                }
+            }
 
-        // 0x00458C09
-        static void sub_458C09()
-        {
-            registers regs;
-            call(0x00458C09, regs);
+            _prng->randNext();
+            _dword_E0C394 = _prng->srand_0();
+            _dword_E0C398 = _prng->srand_1();
         }
 
         // 0x004585AD
         static void onToolAbort(Window& self, const WidgetIndex_t widgetIndex)
         {
-            sub_458C09();
+            removeIndustryGhost();
             Ui::Windows::hideGridlines();
         }
 
@@ -1038,7 +1129,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
             Input::setFlag(Input::Flags::flag6);
             Ui::Windows::showGridlines();
-            byte_E0C3D9 = 0;
+            _industryGhostPlaced = false;
             dword_E0C39C = 0x80000000;
 
             self->var_83C = 0;

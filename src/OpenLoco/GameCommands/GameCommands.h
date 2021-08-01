@@ -636,11 +636,48 @@ namespace OpenLoco::GameCommands
         doCommand(GameCommand::renameTown, regs);
     }
 
+    struct IndustryPlacementArgs
+    {
+        IndustryPlacementArgs() = default;
+        explicit IndustryPlacementArgs(const registers regs)
+            : pos(regs.ax, regs.cx)
+            , type(regs.dl)
+            , buildImmediately(regs.bh & 0x80)
+            , srand0(regs.ebp)
+            , srand1(regs.edi)
+        {
+        }
+
+        Map::Pos2 pos;
+        uint8_t type;
+        bool buildImmediately = false; // No scaffolding required (editor mode)
+        uint32_t srand0;
+        uint32_t srand1;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.ax = pos.x;
+            regs.cx = pos.y;
+            regs.dl = type | (buildImmediately ? 0x80 : 0);
+            regs.ebp = srand0;
+            regs.edi = srand1;
+            return regs;
+        }
+    };
+
+    inline uint32_t do_47(uint8_t flags, const IndustryPlacementArgs& placementArgs)
+    {
+        registers regs = registers(placementArgs);
+        regs.bl = flags;
+        return doCommand(GameCommand::createIndustry, regs);
+    }
+
     // Remove industry
-    inline bool do_48(uint8_t industryId)
+    inline bool do_48(uint8_t flags, uint8_t industryId)
     {
         registers regs;
-        regs.bl = Flags::apply;
+        regs.bl = flags;
         regs.dx = industryId;
         return doCommand(GameCommand::removeIndustry, regs) != FAILURE;
     }
