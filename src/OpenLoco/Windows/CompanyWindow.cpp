@@ -11,6 +11,7 @@
 #include "../Localisation/FormatArguments.hpp"
 #include "../Localisation/StringIds.h"
 #include "../Map/TileManager.h"
+#include "../Objects/BuildingObject.h"
 #include "../Objects/CargoObject.h"
 #include "../Objects/CompetitorObject.h"
 #include "../Objects/InterfaceSkinObject.h"
@@ -638,6 +639,8 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         const Gfx::ui_size_t windowSize = { 340, 194 };
 
         loco_global<Map::Pos3, 0x009C68D6> _headquarterGhostPos;
+        loco_global<uint8_t, 0x009C68F0> _headquarterGhostRotation;
+        loco_global<uint8_t, 0x009C68F1> _headquarterGhostType;
         loco_global<bool, 0x009C68EF> _headquarterGhostPlaced;
 
         enum widx
@@ -901,6 +904,38 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             }
         }
 
+        // 0x00434E3F
+        static void placeHeadquarterGhost(const GameCommands::HeadquarterPlacementArgs& args)
+        {
+            removeHeadquarterGhost();
+            auto flags = GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6;
+            if (GameCommands::do_54(flags, args) != GameCommands::FAILURE)
+            {
+                _headquarterGhostPlaced = true;
+                _headquarterGhostPos = args.pos;
+                _headquarterGhostRotation = args.rotation;
+                _headquarterGhostType = args.type;
+            }
+        }
+
+        // 0x00434F2D
+        static uint8_t getHeadquarterBuildingType()
+        {
+            for (size_t i = 0; i < ObjectManager::getMaxObjects(ObjectType::building); ++i)
+            {
+                auto* buildingObj = ObjectManager::get<BuildingObject>(i);
+                if (buildingObj == nullptr)
+                {
+                    continue;
+                }
+
+                if (buildingObj->flags & BuildingObjectFlags::is_headquarters)
+                {
+                    return static_cast<uint8_t>(i);
+                }
+            }
+            return 0;
+        }
         // 0x00434EC7
         // input:
         // regs.ax = mouseX;
@@ -911,30 +946,70 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // regs.di = tileZ (height)
         // regs.bh = rotaion and buildImmediately
         // regs.dx = dx - company index (value 1 in testing case)
-        static std::optional<GameCommands::HeadquarterPlacementArgs> sub_434EC7(const int16_t mouseX, const int16_t mouseY)
+        static std::optional<GameCommands::HeadquarterPlacementArgs> getHeadquarterPlacementArgsFromCursor(const int16_t mouseX, const int16_t mouseY)
         {
-            registers regs;
-            regs.ax = mouseX;
-            regs.bx = mouseY;
-
-            call(0x00434EC7, regs);
-            if (regs.ax == static_cast<int16_t>(0x8000))
+            auto pos = ViewportInteraction::getTileStartAtCursor({ mouseX, mouseY });
+            if (!pos)
             {
                 return {};
             }
-            GameCommands::HeadquarterPlacementArgs args(regs);
+            // TODO: modify getTileStartAtCursor to return the viewport then use its rotation
+            static loco_global<int32_t, 0x00E3F0B8> gCurrentRotation;
+
+            GameCommands::HeadquarterPlacementArgs args;
+            args.type = getHeadquarterBuildingType();
+            args.rotation = (gCurrentRotation + 2) & 3;
+
+            auto tile = Map::TileManager::get(*pos);
+            const auto* surface = tile.surface();
+            if (surface == nullptr)
+            {
+                return {};
+            }
+
+            auto z = surface->baseZ() * 4; //di
+            if (surface->slope())
+            {
+                z += 16;
+            }
+            args.pos = Map::Pos3(pos->x, pos->y, z);
+            if (isEditorMode())
+            {
+                args.buildImmediately = true; //bh
+            }
             return { args };
         }
 
         // 0x00432CA1
         static void onToolUpdate(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
-            registers regs;
-            regs.esi = (int32_t)&self;
-            regs.dx = widgetIndex;
-            regs.ax = x;
-            regs.bx = y;
-            call(0x00432CA1, regs);
+            Map::TileManager::mapInvalidateSelectionRect();
+            Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
+            auto placementArgs = getHeadquarterPlacementArgsFromCursor(x, y);
+            if (!placementArgs)
+            {
+                removeHeadquarterGhost();
+                return;
+            }
+
+            Input::setMapSelectionFlags(Input::MapSelectionFlags::enable);
+            Map::TileManager::setMapSelectionCorner(4);
+
+            // TODO: This selection may be incorrect if getHeadquarterBuildingType returns 0
+            auto posB = Map::Pos2(placementArgs->pos) + Map::Pos2(32, 32);
+            Map::TileManager::setMapSelectionArea(placementArgs->pos, posB);
+            Map::TileManager::mapInvalidateSelectionRect();
+
+            if (_headquarterGhostPlaced)
+            {
+                if (*_headquarterGhostPos == placementArgs->pos && _headquarterGhostRotation == placementArgs->rotation && _headquarterGhostType == placementArgs->type)
+                {
+                    return;
+                }
+            }
+
+            removeHeadquarterGhost();
+            placeHeadquarterGhost(*placementArgs);
         }
 
         // 0x00432D45
@@ -946,7 +1021,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         {
             removeHeadquarterGhost();
 
-            auto placementArgs = sub_434EC7(mouseX, mouseY);
+            auto placementArgs = getHeadquarterPlacementArgsFromCursor(mouseX, mouseY);
             if (!placementArgs)
             {
                 return;
