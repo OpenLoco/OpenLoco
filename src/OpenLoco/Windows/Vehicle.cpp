@@ -11,7 +11,9 @@
 #include "../Localisation/FormatArguments.hpp"
 #include "../Localisation/StringIds.h"
 #include "../Map/TileManager.h"
+#include "../Objects/AirportObject.h"
 #include "../Objects/CargoObject.h"
+#include "../Objects/DockObject.h"
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/ObjectManager.h"
 #include "../Objects/RoadObject.h"
@@ -20,6 +22,7 @@
 #include "../Objects/WaterObject.h"
 #include "../OpenLoco.h"
 #include "../StationManager.h"
+#include "../SubpositionData.h"
 #include "../TrackData.h"
 #include "../Ui/Dropdown.h"
 #include "../Ui/ScrollView.h"
@@ -200,6 +203,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
     static loco_global<Vehicles::VehicleBogie*, 0x0113614E> _dragCarComponent;
     static loco_global<EntityId_t, 0x01136156> _dragVehicleHead;
     static loco_global<int32_t, 0x01136264> _1136264;
+    static loco_global<uint8_t, 0x01136264> _ghostAirportNode;
+    static loco_global<Map::Pos3, 0x0113625E> _ghostVehiclePos;
+    static loco_global<StationId_t, 0x0113625A> _ghostAirportStationId;
+    static loco_global<uint32_t, 0x0113625A> _ghostLandTrackAndDirection;
 
     namespace Main
     {
@@ -3269,14 +3276,599 @@ namespace OpenLoco::Ui::Windows::Vehicle
             GameCommands::do_10(0, 0, buffer[6], buffer[7], buffer[8]);
         }
 
+        // 0x0050029C
+        static const std::array<std::array<uint8_t, 2>, 6> typeToTool = {
+            { std::array<uint8_t, 2>{ { 27, 28 } },
+              std::array<uint8_t, 2>{ { 29, 30 } },
+              std::array<uint8_t, 2>{ { 31, 32 } },
+              std::array<uint8_t, 2>{ { 33, 34 } },
+              std::array<uint8_t, 2>{ { 35, 35 } },
+              std::array<uint8_t, 2>{ { 36, 36 } } }
+        };
+
+        // 0x00427595
+        static std::optional<GameCommands::VehicleWaterPlacementArgs> getVehicleWaterPlacementArgsFromCursor(const Vehicles::VehicleHead& head, const int16_t x, const int16_t y)
+        {
+            static loco_global<int16_t, 0x0113600C> _113600C;
+            static loco_global<int16_t, 0x0113600E> _113600E;
+
+            _113600C = x;
+            _113600E = y;
+
+            auto pos = ViewportInteraction::getTileStartAtCursor({ x, y });
+            if (!pos)
+            {
+                return {};
+            }
+
+            // Search 8x8 area centerd on mouse pos
+            const auto centerPos = *pos + Map::Pos2(16, 16);
+            Map::Pos2 initialPos = *pos - Map::TilePos2(4, 4);
+            int32_t bestDistance = std::numeric_limits<int32_t>::max();
+            Map::Pos3 bestLoc;
+
+            for (auto i = 0; i < 8; ++i)
+            {
+                for (auto j = 0; j < 8; ++j)
+                {
+                    const auto loc = initialPos + Map::TilePos2(i, j);
+                    if (!Map::validCoords(loc))
+                    {
+                        continue;
+                    }
+
+                    auto tile = Map::TileManager::get(loc);
+                    for (auto& el : tile)
+                    {
+                        auto* elStation = el.asStation();
+                        if (elStation == nullptr)
+                        {
+                            continue;
+                        }
+
+                        if (elStation->stationType() != StationType::docks)
+                        {
+                            continue;
+                        }
+
+                        if (elStation->multiTileIndex() != 0)
+                        {
+                            continue;
+                        }
+
+                        auto firstTile = loc - Map::offsets[elStation->multiTileIndex()];
+                        auto* dockObject = ObjectManager::get<DockObject>(elStation->objectId());
+                        auto boatLoc = firstTile + TilePos2{ 1, 1 } + Math::Vector::rotate(dockObject->boatPosition, elStation->rotation());
+
+                        auto distance = Math::Vector::manhattanDistance(boatLoc, centerPos);
+                        if (distance < bestDistance)
+                        {
+                            bestDistance = distance;
+                            bestLoc = Map::Pos3(loc.x, loc.y, elStation->baseZ() * 4);
+                        }
+                    }
+                }
+            }
+
+            if (bestDistance == std::numeric_limits<int32_t>::max())
+            {
+                return {};
+            }
+
+            GameCommands::VehicleWaterPlacementArgs args;
+            args.pos = bestLoc;
+            args.head = head.id;
+            return { args };
+        }
+
+        static void removeBoatGhost(const Vehicles::VehicleHead& head)
+        {
+            // Note: dont use isPlaced as we need to know if its a ghost
+            // consider creating isGhostPlaced
+            if (head.tile_x != -1 && (head.var_38 & Vehicles::Flags38::isGhost))
+            {
+                GameCommands::do_63(head.id);
+            }
+            _1136264 = -1;
+        }
+
+        // 0x004B2B9E
+        static void pickupToolUpdateWater(const Vehicles::VehicleHead& head, const int16_t x, const int16_t y)
+        {
+            auto placementArgs = getVehicleWaterPlacementArgsFromCursor(head, x, y);
+
+            if (!placementArgs)
+            {
+                removeBoatGhost(head);
+                return;
+            }
+
+            if (_1136264 == 0 && *_ghostVehiclePos == placementArgs->pos)
+            {
+                return;
+            }
+            _ghostVehiclePos = placementArgs->pos;
+            removeBoatGhost(head);
+            if (GameCommands::do_62(GameCommands::Flags::apply | GameCommands::Flags::flag_6 | GameCommands::Flags::flag_3, *placementArgs))
+            {
+                _1136264 = 0;
+            }
+        }
+
+        // 0x00426D52
+        // used to return NodeMovementFlags on ebx
+        static std::optional<Map::Pos3> getAirportMovementNodeLoc(const StationId_t stationId, uint8_t node)
+        {
+            auto* station = StationManager::get(stationId);
+            auto tile = TileManager::get(Map::Pos2{ station->unk_tile_x, station->unk_tile_y });
+            Map::StationElement* elStation = nullptr;
+            for (auto& el : tile)
+            {
+                elStation = el.asStation();
+                if (elStation == nullptr)
+                {
+                    continue;
+                }
+
+                if (elStation->baseZ() != station->unk_tile_z / 4)
+                {
+                    elStation = nullptr;
+                    continue;
+                }
+                break;
+            }
+
+            if (elStation == nullptr)
+            {
+                return {};
+            }
+
+            auto* airportObj = ObjectManager::get<AirportObject>(elStation->objectId());
+            const auto& movementNode = airportObj->movementNodes[node];
+            auto nodeOffset = Math::Vector::rotate(Map::Pos2(movementNode.x, movementNode.y) - Map::Pos2(16, 16), elStation->rotation()) + Map::Pos2(16, 16);
+            auto nodeLoc = Map::Pos3{ nodeOffset.x, nodeOffset.y, movementNode.y } + Map::Pos3{ station->unk_tile_x, station->unk_tile_y, station->unk_tile_z };
+            if (!(movementNode.flags & AirportMovementNodeFlags::taxiing))
+            {
+                nodeLoc.z = station->unk_tile_z + 255;
+                if (!(movementNode.flags & AirportMovementNodeFlags::inFlight))
+                {
+                    nodeLoc.z = 30 * 32;
+                }
+            }
+            return { nodeLoc };
+        }
+
+        // 0x00426F0B
+        static std::optional<GameCommands::VehicleAirPlacementArgs> getVehicleAirPlacementArgsFromCursor(const Vehicles::VehicleHead& head, const int16_t x, const int16_t y)
+        {
+            static loco_global<int16_t, 0x0113600C> _113600C;
+            static loco_global<int16_t, 0x0113600E> _113600E;
+
+            _113600C = x;
+            _113600E = y;
+
+            auto res = ViewportInteraction::getMapCoordinatesFromPos(x, y, ~ViewportInteraction::InteractionItemFlags::station);
+            auto* elStation = static_cast<Map::StationElement*>(res.first.object);
+            if (res.first.type != ViewportInteraction::InteractionItem::airport)
+            {
+                res = ViewportInteraction::getMapCoordinatesFromPos(x, y, ~(ViewportInteraction::InteractionItemFlags::surface | ViewportInteraction::InteractionItemFlags::water));
+                const auto& interaction = res.first;
+                if (interaction.type == ViewportInteraction::InteractionItem::noInteraction)
+                {
+                    return {};
+                }
+
+                bool stationFound = false;
+                for (auto& station : StationManager::stations())
+                {
+                    if (!(station.flags & StationFlags::flag_6))
+                    {
+                        continue;
+                    }
+                    if (station.flags & StationFlags::flag_5)
+                    {
+                        continue;
+                    }
+
+                    if (std::abs(interaction.pos.x - station.unk_tile_x) > 5 * Map::tile_size)
+                    {
+                        continue;
+                    }
+                    if (std::abs(interaction.pos.y - station.unk_tile_y) > 5 * Map::tile_size)
+                    {
+                        continue;
+                    }
+
+                    auto tile = TileManager::get(Map::Pos2{ station.unk_tile_x, station.unk_tile_y });
+                    for (auto& el : tile)
+                    {
+                        elStation = el.asStation();
+                        if (elStation == nullptr)
+                        {
+                            continue;
+                        }
+
+                        if (elStation->isFlag5() || elStation->isGhost())
+                        {
+                            continue;
+                        }
+
+                        if (elStation->stationType() != StationType::airport)
+                        {
+                            continue;
+                        }
+
+                        stationFound = true;
+                        break;
+                    }
+                }
+
+                if (!stationFound)
+                {
+                    return {};
+                }
+            }
+
+            if (elStation->isFlag5() || elStation->isGhost())
+            {
+                return {};
+            }
+
+            GameCommands::VehicleAirPlacementArgs placementArgs;
+            placementArgs.stationId = elStation->stationId();
+            placementArgs.head = head.id;
+            auto* airportObj = ObjectManager::get<AirportObject>(elStation->objectId());
+
+            int32_t bestDistance = std::numeric_limits<int32_t>::max();
+            uint8_t bestNode = 0;
+            for (auto node = airportObj->numMovementNodes - 1; node > -1; node--)
+            {
+                const auto& movementNode = airportObj->movementNodes[node];
+                if (!(movementNode.flags & AirportMovementNodeFlags::terminal))
+                {
+                    continue;
+                }
+                auto nodeLoc = getAirportMovementNodeLoc(placementArgs.stationId, node);
+                if (!nodeLoc)
+                {
+                    continue;
+                }
+
+                auto viewPos = Map::gameToScreen(*nodeLoc, res.second->getRotation());
+                auto uiPos = res.second->mapToUi(viewPos);
+                auto distance = Math::Vector::manhattanDistance(uiPos, xy32{ x, y });
+                if (distance < bestDistance)
+                {
+                    bestDistance = distance;
+                    bestNode = node;
+                }
+            }
+
+            if (bestDistance == std::numeric_limits<int32_t>::max())
+            {
+                return {};
+            }
+
+            placementArgs.airportNode = bestNode;
+            return { placementArgs };
+        }
+
+        static void removeAirplaneGhost(const Vehicles::VehicleHead& head)
+        {
+            // Note: dont use isPlaced as we need to know if its a ghost
+            // consider creating isGhostPlaced
+            if (head.tile_x != -1 && (head.var_38 & Vehicles::Flags38::isGhost))
+            {
+                GameCommands::do_59(head.id);
+            }
+            _ghostAirportStationId = StationId::null;
+        }
+
+        // 0x004B2AFA
+        static void pickupToolUpdateAir(const Vehicles::VehicleHead& head, const int16_t x, const int16_t y)
+        {
+            auto placementArgs = getVehicleAirPlacementArgsFromCursor(head, x, y);
+            if (!placementArgs)
+            {
+                removeAirplaneGhost(head);
+                return;
+            }
+
+            if (_ghostAirportStationId != StationId::null && *_ghostAirportStationId == placementArgs->stationId && *_ghostAirportNode == placementArgs->airportNode)
+            {
+                return;
+            }
+
+            removeAirplaneGhost(head);
+            if (GameCommands::do_58(GameCommands::Flags::apply | GameCommands::Flags::flag_6 | GameCommands::Flags::flag_3, *placementArgs))
+            {
+                _ghostAirportNode = placementArgs->airportNode;
+                _ghostAirportStationId = placementArgs->stationId;
+            }
+        }
+
+        // 0x004A43E4
+        static uint16_t getRoadProgressAtCursor(const xy32& cursorLoc, Ui::Viewport& viewport, const RoadElement& roadElement, const Map::Pos3& loc)
+        {
+            // Get the coordinates of the first tile of the possibly multitile road
+            const auto& roadDataArr = Map::TrackData::getRoadPiece(roadElement.roadId());
+            const auto& roadData = roadDataArr[roadElement.sequenceIndex()];
+            auto roadOffset2 = Math::Vector::rotate(Map::Pos2(roadData.x, roadData.y), roadElement.unkDirection());
+            auto roadOffset = Map::Pos3(roadOffset2.x, roadOffset2.y, roadData.z);
+            auto roadFirstTile = loc - roadOffset;
+
+            // Get the movement info for this specific road id
+            uint16_t trackAndDirection = roadElement.unkDirection() | (roadElement.roadId() << 3);
+            const auto moveInfoArr = Map::TrackData::getRoadSubPositon(trackAndDirection);
+
+            // This iterates the movement info trying to find the distance along the road that is as close as possible
+            // to the cursors location.
+            int32_t bestDistance = std::numeric_limits<int32_t>::max();
+            uint16_t bestProgress = 0;
+            for (const auto& moveInfo : moveInfoArr)
+            {
+                auto potentialLoc = roadFirstTile + moveInfo.loc;
+                auto viewPos = Map::gameToScreen(potentialLoc, viewport.getRotation());
+                auto uiPos = viewport.mapToUi(viewPos);
+                auto distance = Math::Vector::manhattanDistance(uiPos, cursorLoc);
+                if (distance < bestDistance)
+                {
+                    bestDistance = distance;
+                    bestProgress = std::distance(&*moveInfoArr.begin(), &moveInfo);
+                }
+            }
+            return bestProgress;
+        }
+
+        // 0x00478415
+        static std::optional<GameCommands::VehiclePlacementArgs> getRoadAtCursor(const int16_t x, const int16_t y)
+        {
+            static loco_global<int16_t, 0x0113600C> _113600C;
+            static loco_global<int16_t, 0x0113600E> _113600E;
+
+            _113600C = x;
+            _113600E = y;
+            auto [interaction, viewport] = ViewportInteraction::getMapCoordinatesFromPos(x, y, ~ViewportInteraction::InteractionItemFlags::roadAndTram);
+            if (interaction.type != ViewportInteraction::InteractionItem::road)
+            {
+                return {};
+            }
+
+            // Get the best progress along the road relative to the cursor
+            auto* roadElement = static_cast<Map::RoadElement*>(interaction.object);
+            Map::Pos3 loc(interaction.pos.x, interaction.pos.y, roadElement->baseZ() * 4);
+            auto progress = getRoadProgressAtCursor({ x, y }, *viewport, *roadElement, loc);
+
+            // Get the coordinates of the first tile of the possibly multitile road
+            const auto& roadDataArr = Map::TrackData::getRoadPiece(roadElement->roadId());
+            const auto& roadData = roadDataArr[roadElement->sequenceIndex()];
+            auto roadOffset2 = Math::Vector::rotate(Map::Pos2(roadData.x, roadData.y), roadElement->unkDirection());
+            auto roadOffset = Map::Pos3(roadOffset2.x, roadOffset2.y, roadData.z);
+            auto roadFirstTile = loc - roadOffset;
+
+            GameCommands::VehiclePlacementArgs placementArgs;
+            placementArgs.pos = roadFirstTile;
+            placementArgs.trackProgress = progress;
+            placementArgs.trackAndDirection = roadElement->unkDirection() | (roadElement->roadId() << 3);
+            return { placementArgs };
+        }
+
+#pragma pack(push, 1)
+        struct UnkTrack
+        {
+            uint8_t var_00; // 0x00
+            uint8_t var_01; // 0x01
+            Map::Pos3 pos;  // 0x02
+        };
+        static_assert(sizeof(UnkTrack) == 0x8);
+#pragma pack(pop)
+
+        // 0x00479707
+        static std::optional<GameCommands::VehiclePlacementArgs> getVehicleRoadPlacementArgsFromCursor(const Vehicles::VehicleHead& head, const int16_t x, const int16_t y)
+        {
+            auto placementArgs = getRoadAtCursor(x, y);
+            if (!placementArgs)
+            {
+                return {};
+            }
+
+            placementArgs->head = head.id;
+            const auto moveInfoArr = Map::TrackData::getRoadSubPositon(placementArgs->trackAndDirection);
+            const auto& moveInfo = moveInfoArr[placementArgs->trackProgress];
+            // TODO: modify getTrackAtCursor to return the viewport then use its rotation
+            static loco_global<int32_t, 0x00E3F0B8> gCurrentRotation;
+            uint8_t unkYaw = moveInfo.yaw + (gCurrentRotation << 4);
+            unkYaw -= 0x37;
+            if (_pickupDirection != 0)
+            {
+                unkYaw -= 0x20;
+            }
+            unkYaw &= 0x3F;
+            if (unkYaw <= 0x20)
+            {
+                static loco_global<UnkTrack[352], 0x004F6F8C> _4F6F8C;
+                static loco_global<Map::Pos2[352], 0x00503C6C> _503C6C;
+                const auto& unkItem = _4F6F8C[placementArgs->trackAndDirection];
+                placementArgs->pos += unkItem.pos;
+                if (unkItem.var_01 < 12)
+                {
+                    placementArgs->pos -= _503C6C[unkItem.var_01];
+                }
+                placementArgs->trackProgress = std::max<uint16_t>(static_cast<uint16_t>(moveInfoArr.size()) - placementArgs->trackProgress, 0);
+                if (placementArgs->trackProgress >= moveInfoArr.size())
+                {
+                    placementArgs->trackProgress = static_cast<uint16_t>(moveInfoArr.size()) - 1;
+                }
+                placementArgs->trackAndDirection ^= (1 << 2);
+            }
+            return placementArgs;
+        }
+
+        // 0x004A43E4
+        static uint16_t getTrackProgressAtCursor(const xy32& cursorLoc, Ui::Viewport& viewport, const TrackElement& trackElement, const Map::Pos3& loc)
+        {
+            // Get the coordinates of the first tile of the possibly multitile track
+            const auto& trackDataArr = Map::TrackData::getTrackPiece(trackElement.trackId());
+            const auto& trackData = trackDataArr[trackElement.sequenceIndex()];
+            auto trackOffset2 = Math::Vector::rotate(Map::Pos2(trackData.x, trackData.y), trackElement.unkDirection());
+            auto trackOffset = Map::Pos3(trackOffset2.x, trackOffset2.y, trackData.z);
+            auto trackFirstTile = loc - trackOffset;
+
+            // Get the movement info for this specific track id
+            uint16_t trackAndDirection = trackElement.unkDirection() | (trackElement.trackId() << 3);
+            const auto moveInfoArr = Map::TrackData::getTrackSubPositon(trackAndDirection);
+
+            // This iterates the movement info trying to find the distance along the track that is as close as possible
+            // to the cursors location.
+            int32_t bestDistance = std::numeric_limits<int32_t>::max();
+            uint16_t bestProgress = 0;
+            for (const auto& moveInfo : moveInfoArr)
+            {
+                auto potentialLoc = trackFirstTile + moveInfo.loc;
+                auto viewPos = Map::gameToScreen(potentialLoc, viewport.getRotation());
+                auto uiPos = viewport.mapToUi(viewPos);
+                auto distance = Math::Vector::manhattanDistance(uiPos, cursorLoc);
+                if (distance < bestDistance)
+                {
+                    bestDistance = distance;
+                    bestProgress = std::distance(&*moveInfoArr.begin(), &moveInfo);
+                }
+            }
+            return bestProgress;
+        }
+
+        // 0x004A40C5
+        static std::optional<GameCommands::VehiclePlacementArgs> getTrackAtCursor(const int16_t x, const int16_t y)
+        {
+            static loco_global<int16_t, 0x0113600C> _113600C;
+            static loco_global<int16_t, 0x0113600E> _113600E;
+
+            _113600C = x;
+            _113600E = y;
+            auto [interaction, viewport] = ViewportInteraction::getMapCoordinatesFromPos(x, y, ~ViewportInteraction::InteractionItemFlags::track);
+            if (interaction.type != ViewportInteraction::InteractionItem::track)
+            {
+                return {};
+            }
+
+            // Get the best progress along the track relative to the cursor
+            auto* trackElement = static_cast<Map::TrackElement*>(interaction.object);
+            Map::Pos3 loc(interaction.pos.x, interaction.pos.y, trackElement->baseZ() * 4);
+            auto progress = getTrackProgressAtCursor({ x, y }, *viewport, *trackElement, loc);
+
+            // Get the coordinates of the first tile of the possibly multitile road
+            const auto& trackDataArr = Map::TrackData::getTrackPiece(trackElement->trackId());
+            const auto& trackData = trackDataArr[trackElement->sequenceIndex()];
+            auto trackOffset2 = Math::Vector::rotate(Map::Pos2(trackData.x, trackData.y), trackElement->unkDirection());
+            auto trackOffset = Map::Pos3(trackOffset2.x, trackOffset2.y, trackData.z);
+            auto trackFirstTile = loc - trackOffset;
+
+            GameCommands::VehiclePlacementArgs placementArgs;
+            placementArgs.pos = trackFirstTile;
+            placementArgs.trackProgress = progress;
+            placementArgs.trackAndDirection = trackElement->unkDirection() | (trackElement->trackId() << 3);
+            return { placementArgs };
+        }
+
+        // 0x004B6444
+        static std::optional<GameCommands::VehiclePlacementArgs> getVehicleRailPlacementArgsFromCursor(const Vehicles::VehicleHead& head, const int16_t x, const int16_t y)
+        {
+            auto placementArgs = getTrackAtCursor(x, y);
+            if (!placementArgs)
+            {
+                return {};
+            }
+
+            placementArgs->head = head.id;
+            const auto moveInfoArr = Map::TrackData::getTrackSubPositon(placementArgs->trackAndDirection);
+            const auto& moveInfo = moveInfoArr[placementArgs->trackProgress];
+            // TODO: modify getTrackAtCursor to return the viewport then use its rotation
+            static loco_global<int32_t, 0x00E3F0B8> gCurrentRotation;
+            uint8_t unkYaw = moveInfo.yaw + (gCurrentRotation << 4);
+            unkYaw -= 0x37;
+            if (_pickupDirection != 0)
+            {
+                unkYaw -= 0x20;
+            }
+            unkYaw &= 0x3F;
+            if (unkYaw <= 0x20)
+            {
+                static loco_global<UnkTrack[352], 0x004F7B5C> _4F7B5C;
+                static loco_global<Map::Pos2[352], 0x00503C6C> _503C6C;
+                const auto& unkItem = _4F7B5C[placementArgs->trackAndDirection];
+                placementArgs->pos += unkItem.pos;
+                if (unkItem.var_01 < 12)
+                {
+                    placementArgs->pos -= _503C6C[unkItem.var_01];
+                }
+                placementArgs->trackProgress = std::max<uint16_t>(static_cast<uint16_t>(moveInfoArr.size()) - placementArgs->trackProgress, 0);
+                if (placementArgs->trackProgress >= moveInfoArr.size())
+                {
+                    placementArgs->trackProgress = static_cast<uint16_t>(moveInfoArr.size()) - 1;
+                }
+                placementArgs->trackAndDirection ^= (1 << 2);
+            }
+            return placementArgs;
+        }
+
+        static void removeLandGhost(const Vehicles::VehicleHead& head)
+        {
+            // Note: dont use isPlaced as we need to know if its a ghost
+            // consider creating isGhostPlaced
+            if (head.tile_x != -1 && (head.var_38 & Vehicles::Flags38::isGhost))
+            {
+                GameCommands::do_2(head.id);
+            }
+            _1136264 = -1;
+        }
+
+        // 0x004B2A1D
+        template<typename GetPlacementArgsFunc>
+        static void pickupToolUpdateLand(const Vehicles::VehicleHead& head, const int16_t x, const int16_t y, GetPlacementArgsFunc&& getPlacementArgs)
+        {
+            auto placementArgs = getPlacementArgs(head, x, y);
+            if (!placementArgs)
+            {
+                removeLandGhost(head);
+                return;
+            }
+
+            if (_1136264 != -1 && *_ghostLandTrackAndDirection == placementArgs->trackAndDirection && *_ghostVehiclePos == placementArgs->pos && *_1136264 == placementArgs->trackProgress)
+            {
+                return;
+            }
+
+            removeLandGhost(head);
+            if (GameCommands::do_1(GameCommands::Flags::apply | GameCommands::Flags::flag_6 | GameCommands::Flags::flag_3, *placementArgs))
+            {
+                _ghostLandTrackAndDirection = placementArgs->trackAndDirection;
+                _ghostVehiclePos = placementArgs->pos;
+                _1136264 = placementArgs->trackProgress;
+            }
+        }
+
         // 0x004B29C0
         static void pickupToolUpdate(Window& self, const int16_t x, const int16_t y)
         {
-            registers regs;
-            regs.esi = reinterpret_cast<int32_t>(&self);
-            regs.ax = x;
-            regs.bx = y;
-            call(0x004B29C0, regs);
+            static loco_global<int8_t, 0x00523393> _currentTool;
+            auto* head = getVehicle(&self);
+            _currentTool = typeToTool[static_cast<uint8_t>(head->vehicleType)][_pickupDirection != 0 ? 1 : 0];
+
+            switch (head->mode)
+            {
+                case TransportMode::rail:
+                    pickupToolUpdateLand(*head, x, y, getVehicleRailPlacementArgsFromCursor);
+                    break;
+                case TransportMode::road:
+                    pickupToolUpdateLand(*head, x, y, getVehicleRoadPlacementArgsFromCursor);
+                    break;
+                case TransportMode::air:
+                    pickupToolUpdateAir(*head, x, y);
+                    break;
+                case TransportMode::water:
+                    pickupToolUpdateWater(*head, x, y);
+                    break;
+            }
         }
 
         // 0x004B2C74
@@ -3292,6 +3884,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004B3035
         static void pickupToolAbort(Window& self)
         {
+            // TODO: refactor to use removeAirplaneGhost family of functions
             auto head = getVehicle(&self);
             if (head->tile_x == -1 || !(head->var_38 & Vehicles::Flags38::isGhost))
             {
@@ -3412,16 +4005,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 }
             }
         }
-
-        // 0x0050029C
-        static const std::array<std::array<uint8_t, 2>, 6> typeToTool = {
-            { std::array<uint8_t, 2>{ { 27, 28 } },
-              std::array<uint8_t, 2>{ { 29, 30 } },
-              std::array<uint8_t, 2>{ { 31, 32 } },
-              std::array<uint8_t, 2>{ { 33, 34 } },
-              std::array<uint8_t, 2>{ { 35, 35 } },
-              std::array<uint8_t, 2>{ { 36, 36 } } }
-        };
 
         // 0x004B28E2
         static void onPickup(Window* const self, const WidgetIndex_t pickupWidx)

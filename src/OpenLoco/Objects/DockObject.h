@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../Map/Map.hpp"
 #include "../Types.hpp"
 
 namespace OpenLoco
@@ -24,7 +25,7 @@ namespace OpenLoco
         uint8_t pad_14[0x20 - 0x14];
         uint16_t designed_year; // 0x20
         uint16_t obsolete_year; // 0x22
-        uint8_t pad_24[0x28 - 0x24];
+        Map::Pos2 boatPosition; // 0x24
 
         void drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const;
         void drawDescription(Gfx::Context& context, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const;

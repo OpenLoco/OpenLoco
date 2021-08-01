@@ -91,12 +91,12 @@ namespace OpenLoco::GameCommands
         removeCompanyHeadquarters = 55,
         gc_unk_56 = 56,
         removeAirport = 57,
-        gc_unk_58 = 58,
-        vehicleAbortPickupAir = 59,
+        vehiclePlaceAir = 58,
+        vehiclePickupAir = 59,
         gc_unk_60 = 60,
         removePort = 61,
-        gc_unk_62 = 62,
-        vehicleAbortPickupWater = 63,
+        vehiclePlaceWater = 62,
+        vehiclePickupWater = 63,
         vehicleRefit = 64,
         changeCompanyFace = 65,
         clearLand = 66,
@@ -137,6 +137,42 @@ namespace OpenLoco::GameCommands
         regs.dx = source;
         regs.di = dest;
         doCommand(GameCommand::vehicleRearrange, regs);
+    }
+
+    struct VehiclePlacementArgs
+    {
+        VehiclePlacementArgs() = default;
+        explicit VehiclePlacementArgs(const registers regs)
+            : pos(regs.ax, regs.cx, regs.dx * 4)
+            , trackAndDirection(regs.bp)
+            , trackProgress(regs.ebx >> 16)
+            , head(regs.di)
+        {
+        }
+
+        Map::Pos3 pos;
+        uint16_t trackAndDirection;
+        uint16_t trackProgress;
+        EntityId_t head;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.ebp = trackAndDirection;
+            regs.di = head;
+            regs.ax = pos.x;
+            regs.cx = pos.y;
+            regs.dx = pos.z / 4;
+            regs.ebx = (regs.ebx & 0xFFFF) | (trackProgress << 16);
+            return regs;
+        }
+    };
+
+    inline bool do_1(uint8_t flags, const VehiclePlacementArgs& args)
+    {
+        registers regs = registers(args);
+        regs.bl = flags;
+        return doCommand(GameCommand::vehiclePlace, regs) != FAILURE;
     }
 
     inline bool do_2(EntityId_t head)
@@ -828,12 +864,43 @@ namespace OpenLoco::GameCommands
         return doCommand(GameCommand::removeAirport, regs) != FAILURE;
     }
 
+    struct VehicleAirPlacementArgs
+    {
+        VehicleAirPlacementArgs() = default;
+        explicit VehicleAirPlacementArgs(const registers regs)
+            : stationId(regs.bp)
+            , airportNode(regs.dl)
+            , head(regs.di)
+        {
+        }
+
+        StationId_t stationId;
+        uint8_t airportNode;
+        EntityId_t head;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.bp = stationId;
+            regs.di = head;
+            regs.dl = airportNode;
+            return regs;
+        }
+    };
+
+    inline bool do_58(uint8_t flags, const VehicleAirPlacementArgs& args)
+    {
+        registers regs = registers(args);
+        regs.bl = flags;
+        return doCommand(GameCommand::vehiclePlaceAir, regs) != FAILURE;
+    }
+
     inline bool do_59(EntityId_t head)
     {
         registers regs;
         regs.bl = Flags::apply | Flags::flag_3 | Flags::flag_6;
         regs.di = head;
-        return doCommand(GameCommand::vehicleAbortPickupAir, regs) != FAILURE;
+        return doCommand(GameCommand::vehiclePickupAir, regs) != FAILURE;
     }
 
     struct PortRemovalArgs
@@ -863,12 +930,42 @@ namespace OpenLoco::GameCommands
         return doCommand(GameCommand::removePort, regs) != FAILURE;
     }
 
+    struct VehicleWaterPlacementArgs
+    {
+        VehicleWaterPlacementArgs() = default;
+        explicit VehicleWaterPlacementArgs(const registers regs)
+            : pos(regs.ax, regs.cx, regs.dx)
+            , head(regs.di)
+        {
+        }
+
+        Map::Pos3 pos;
+        EntityId_t head;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.ax = pos.x;
+            regs.cx = pos.y;
+            regs.dx = pos.z;
+            regs.di = head;
+            return regs;
+        }
+    };
+
+    inline bool do_62(uint8_t flags, const VehicleWaterPlacementArgs& args)
+    {
+        registers regs = registers(args);
+        regs.bl = flags;
+        return doCommand(GameCommand::vehiclePlaceWater, regs) != FAILURE;
+    }
+
     inline bool do_63(EntityId_t head)
     {
         registers regs;
         regs.bl = Flags::apply | Flags::flag_3 | Flags::flag_6;
         regs.di = head;
-        return doCommand(GameCommand::vehicleAbortPickupWater, regs) != FAILURE;
+        return doCommand(GameCommand::vehiclePickupWater, regs) != FAILURE;
     }
 
     // Refit vehicle
