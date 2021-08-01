@@ -1410,6 +1410,55 @@ namespace OpenLoco::Gfx
         call(0x00448D90, regs);
     }
 
+    // 0x004CEC50
+    std::optional<Gfx::Context> clipContext(Gfx::Context& src, const Ui::Rect& newRect)
+    {
+
+        Gfx::Context newContext(src);
+        newContext.zoom_level = 0;
+
+        if (newRect.origin.x > src.x)
+        {
+            const auto dx = newRect.origin.x - src.x;
+            newContext.width -= dx;
+            newContext.x = newRect.origin.x;
+            newContext.pitch += dx;
+            newContext.bits += dx;
+        }
+
+        const auto oldRight = src.x + src.width;
+        const auto newRight = newRect.right();
+        if (newRight < oldRight)
+        {
+            const auto dx = oldRight - newRight;
+            newContext.width -= dx;
+            newContext.pitch += dx;
+        }
+
+        if (newRect.origin.y > src.y)
+        {
+            const auto dy = newRect.origin.y - src.y;
+            newContext.height -= dy;
+            newContext.y = newRect.origin.y;
+            const auto dBits = (newContext.pitch + newContext.width) * dy;
+            newContext.bits += dBits;
+        }
+
+        const auto oldBottom = src.y + src.height;
+        const auto newBottom = newRect.bottom();
+        if (newBottom < oldBottom)
+        {
+            const auto dy = oldBottom - newBottom;
+            newContext.height -= dy;
+        }
+
+        if (newContext.width <= 0 || newContext.height <= 0)
+        {
+            return {};
+        }
+        return { newContext };
+    }
+
     bool clipContext(Gfx::Context** dst, Gfx::Context* src, int16_t x, int16_t y, int16_t width, int16_t height)
     {
         registers regs;

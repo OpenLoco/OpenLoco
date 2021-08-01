@@ -166,9 +166,9 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
         auto height = self->height;
         Gfx::Context* clipped = nullptr;
 
-        Gfx::clipContext(&clipped, context, x, y, width, height);
+        auto clipped = Gfx::clipContext(*context, { x, y, width, height });
 
-        if (clipped == nullptr)
+        if (!clipped)
             return;
 
         auto colour = Colour::getShade(Colour::white, 5);
@@ -222,7 +222,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
         }
         uint32_t ebp = (((_word_525CE0 & ~(1 << 15)) >> 2) << 16) | 109;
 
-        sub_4950EF(clipped, StringIds::buffer_2039, (1 << 18), ebp, 55, 0);
+        sub_4950EF(&*clipped, StringIds::buffer_2039, (1 << 18), ebp, 55, 0);
     }
 
     void initEvents()
