@@ -1,11 +1,13 @@
 #include "../Audio/Audio.h"
 #include "../Config.h"
+#include "../GameCommands/GameCommands.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/ImageIds.h"
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
 #include "../Localisation/FormatArguments.hpp"
 #include "../Localisation/StringIds.h"
+#include "../Map/TileManager.h"
 #include "../Objects/BuildingObject.h"
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/ObjectManager.h"
@@ -22,10 +24,14 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::TownList
 {
-    static loco_global<uint32_t, 0x01135C34> dword_1135C34;
+    static loco_global<currency32_t, 0x01135C34> dword_1135C34;
+    static loco_global<bool, 0x01135C60> _buildingGhostPlaced;
+    static loco_global<Map::Pos3, 0x01135C50> _buildingGhostPos;
     static loco_global<Colour_t, 0x01135C61> _buildingColour;
+    static loco_global<Colour_t, 0x01135C62> _buildingGhostType;
     static loco_global<uint8_t, 0x01135C63> _buildingRotation;
-    static loco_global<uint8_t, 0x01135C65> byte_1135C65;
+    static loco_global<uint8_t, 0x01135C64> _buildingGhostRotation;
+    static loco_global<uint8_t, 0x01135C65> _buildingVariation;
     static loco_global<uint8_t, 0x01135C66> _townSize;
     static loco_global<uint8_t, 0x00525FC8> _lastSelectedBuilding;
     static loco_global<uint8_t, 0x00525FC9> _lastSelectedMiscBuilding;
@@ -952,7 +958,7 @@ namespace OpenLoco::Ui::Windows::TownList
             if (itemIndex == -1)
                 return;
 
-            _buildingColour = Dropdown::getItemArgument(itemIndex, 4);
+            _buildingColour = Dropdown::getItemArgument(itemIndex, 2);
             self->invalidate();
         }
 
@@ -970,26 +976,124 @@ namespace OpenLoco::Ui::Windows::TownList
             Ui::Windows::hideGridlines();
         }
 
+        // 0x0049B32A
+        static currency32_t placeBuildingGhost(const GameCommands::BuildingPlacementArgs& placementArgs)
+        {
+            auto regs = registers(placementArgs);
+            call(0x0049B32A, regs);
+            return regs.ebx;
+        }
+
+        // 0x0049B3B2
+        static std::optional<GameCommands::BuildingPlacementArgs> getBuildingPlacementArgsFromCursor(const int16_t x, const int16_t y)
+        {
+            auto* townListWnd = WindowManager::find(WindowType::townList);
+            if (townListWnd == nullptr)
+            {
+                return {};
+            }
+
+            if (townListWnd->current_tab != (Common::widx::tab_build_misc_buildings - Common::widx::tab_town_list) && townListWnd->current_tab != (Common::widx::tab_build_buildings - Common::widx::tab_town_list))
+            {
+                return {};
+            }
+
+            if (townListWnd->row_hover == -1)
+            {
+                return {};
+            }
+
+            const auto pos = ViewportInteraction::getTileStartAtCursor({ x, y }); //ax,cx
+            if (!pos)
+            {
+                return {};
+            }
+
+            // TODO: modify getTileStartAtCursor to return the viewport then use its rotation
+            static loco_global<int32_t, 0x00E3F0B8> gCurrentRotation;
+
+            GameCommands::BuildingPlacementArgs args;
+            args.rotation = (_buildingRotation - gCurrentRotation) & 0x3; //bh
+            args.colour = _buildingColour;
+            auto tile = Map::TileManager::get(*pos);
+            const auto* surface = tile.surface();
+            if (surface == nullptr)
+            {
+                return {};
+            }
+
+            auto z = surface->baseZ() * 4; //di
+            if (surface->slope())
+            {
+                z += 16;
+            }
+            args.pos = Map::Pos3(pos->x, pos->y, z);
+            args.type = townListWnd->row_hover;  //dl
+            args.variation = _buildingVariation; //dh
+            if (isEditorMode())
+            {
+                args.buildImmediately = true; //bh
+            }
+            return { args };
+        }
+
         // 0x0049ABF0
         static void onToolUpdate(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
-            registers regs;
-            regs.esi = (int32_t)&self;
-            regs.dx = widgetIndex;
-            regs.ax = x;
-            regs.bx = y;
-            call(0x0049ABF0, regs);
+            Map::TileManager::mapInvalidateSelectionRect();
+            Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
+            auto placementArgs = getBuildingPlacementArgsFromCursor(x, y);
+            if (!placementArgs)
+            {
+                sub_49B37F();
+                return;
+            }
+
+            Input::setMapSelectionFlags(Input::MapSelectionFlags::enable);
+            Map::TileManager::setMapSelectionCorner(4);
+            auto* building = ObjectManager::get<BuildingObject>(placementArgs->type);
+            auto posB = Map::Pos2(placementArgs->pos) + (building->flags & BuildingObjectFlags::large_tile ? Map::Pos2(32, 32) : Map::Pos2(0, 0));
+            Map::TileManager::setMapSelectionArea(placementArgs->pos, posB);
+            Map::TileManager::mapInvalidateSelectionRect();
+
+            if (_buildingGhostPlaced)
+            {
+                if (*_buildingGhostPos == placementArgs->pos && _buildingGhostRotation == placementArgs->rotation && _buildingGhostType == placementArgs->type)
+                {
+                    return;
+                }
+            }
+
+            sub_49B37F();
+            auto cost = placeBuildingGhost(*placementArgs);
+            if (cost != dword_1135C34)
+            {
+                dword_1135C34 = cost;
+                self.invalidate();
+            }
         }
 
         // 0x0049ACBD
         static void onToolDown(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
-            registers regs;
-            regs.esi = (int32_t)&self;
-            regs.dx = widgetIndex;
-            regs.ax = x;
-            regs.bx = y;
-            call(0x0049ACBD, regs);
+            sub_49B37F();
+            auto placementArgs = getBuildingPlacementArgsFromCursor(x, y);
+            if (placementArgs)
+            {
+                GameCommands::setErrorTitle(StringIds::error_cant_build_this_here);
+                if (GameCommands::do_44(*placementArgs, GameCommands::Flags::apply | GameCommands::Flags::flag_1))
+                {
+                    Audio::playSound(Audio::SoundId::construct, GameCommands::getPosition());
+                }
+            }
+
+            uint8_t variation = 0;
+            if (self.row_hover != -1)
+            {
+                auto* buildingObj = ObjectManager::get<BuildingObject>(self.row_hover);
+                variation = (_buildingVariation + 1) % buildingObj->numVariations;
+            }
+            _buildingVariation = variation;
         }
 
         // 0x0049AB52
@@ -1151,8 +1255,8 @@ namespace OpenLoco::Ui::Windows::TownList
 
                     Audio::playSound(Audio::SoundId::clickDown, loc, pan);
                     self->saved_view.mapX = -16;
-                    dword_1135C34 = 0x80000000;
-                    byte_1135C65 = 0;
+                    dword_1135C34 = GameCommands::FAILURE;
+                    _buildingVariation = 0;
                     self->invalidate();
                     break;
                 }
@@ -1269,7 +1373,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
             static loco_global<uint8_t, 0x01135C60> byte_1135C60;
             byte_1135C60 = 0;
-            dword_1135C34 = 0x80000000;
+            dword_1135C34 = GameCommands::FAILURE;
             self->var_83C = 0;
             self->row_hover = -1;
             self->var_846 = -1;
@@ -1277,7 +1381,7 @@ namespace OpenLoco::Ui::Windows::TownList
             updateBuildingList(self);
             updateBuildingColours(self);
 
-            byte_1135C65 = 0;
+            _buildingVariation = 0;
         }
 
         static void initEvents()

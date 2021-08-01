@@ -1,5 +1,6 @@
 21.07+ (???)
 ------------------------------------------------------------------------
+- Fix: [#1035] Incorrect colour selection when building buildings.
 - Fix: [#1070] Crash when naming stations after exhausting natural names.
 
 21.07 (2021-07-18)
