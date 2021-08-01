@@ -1429,25 +1429,6 @@ namespace OpenLoco::Gfx
         return { newContext };
     }
 
-    bool clipContext(Gfx::Context** dst, Gfx::Context* src, int16_t x, int16_t y, int16_t width, int16_t height)
-    {
-        registers regs;
-        regs.ax = x;
-        regs.bx = width;
-        regs.edi = X86Pointer(src);
-        regs.dx = height;
-        regs.cx = y;
-        call(0x4cec50, regs);
-        *dst = X86Pointer<Gfx::Context>(regs.edi);
-
-        return *dst != nullptr;
-    }
-
-    bool clipContext(Gfx::Context** dst, Gfx::Context* src, Point pos, Ui::Size size)
-    {
-        return clipContext(dst, src, pos.x, pos.y, size.width, size.height);
-    }
-
     G1Element* getG1Element(uint32_t id)
     {
         if (id < _g1Elements.size())

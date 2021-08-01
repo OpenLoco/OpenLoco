@@ -316,10 +316,10 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     {
         auto type = header->getType();
 
-        Gfx::Context* clipped = nullptr;
         // Clip the draw area to simplify image draw
         Ui::Point drawAreaPos = Ui::Point{ x, y } - objectPreviewOffset;
-        if (!Gfx::clipContext(&clipped, context, drawAreaPos, objectPreviewSize))
+        auto clipped = Gfx::clipContext(*context, Ui::Rect(drawAreaPos.x, drawAreaPos.y, objectPreviewSize.width, objectPreviewSize.height));
+        if (!clipped)
             return;
 
         switch (type)
@@ -451,11 +451,11 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
     static void drawDescription(ObjectHeader* header, Window* self, Gfx::Context* context, int16_t x, int16_t y, void* objectPtr)
     {
-        Gfx::Context* clipped = nullptr;
         int16_t width = self->x + self->width - x;
         int16_t height = self->y + self->height - y;
         // Clip the draw area to simplify image draw
-        if (!Gfx::clipContext(&clipped, context, x, y, width, height))
+        auto clipped = Gfx::clipContext(*context, Ui::Rect(x, y, width, height));
+        if (!clipped)
             return;
 
         switch (header->getType())

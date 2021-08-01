@@ -476,14 +476,8 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             Gfx::drawString_494B3F(*context, window->x + 3, window->y + filenameBox.top + 2, 0, StringIds::window_browse_filename, nullptr);
 
             // Clip to text box
-            Gfx::Context* context2;
-            if (Gfx::clipContext(
-                    &context2,
-                    context,
-                    window->x + filenameBox.left + 1,
-                    window->y + filenameBox.top + 1,
-                    filenameBox.right - filenameBox.left - 1,
-                    filenameBox.bottom - filenameBox.top - 1))
+            auto context2 = Gfx::clipContext(*context, Ui::Rect(window->x + filenameBox.left + 1, window->y + filenameBox.top + 1, filenameBox.right - filenameBox.left - 1, filenameBox.bottom - filenameBox.top - 1));
+            if (context2)
             {
                 drawTextInput(window, *context2, inputSession.buffer.c_str(), inputSession.cursorPosition, (inputSession.cursorFrame & 0x10) == 0);
             }

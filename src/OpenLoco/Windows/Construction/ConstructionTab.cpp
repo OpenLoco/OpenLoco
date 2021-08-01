@@ -1987,9 +1987,8 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             auto width = self->widgets[widx::construct].width();
             auto height = self->widgets[widx::construct].height();
 
-            Gfx::Context* clipped = nullptr;
-
-            if (Gfx::clipContext(&clipped, context, x, y, width, height))
+            auto clipped = Gfx::clipContext(*context, Ui::Rect(x, y, width, height));
+            if (clipped)
             {
                 const auto& roadPiece = Map::TrackData::getRoadPiece(_lastSelectedTrackPieceId);
                 const auto& lastRoadPart = roadPiece.back();
@@ -2010,8 +2009,9 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 pos3D.z += 0x1CC;
 
                 auto pos2D = gameToScreen(pos3D, gCurrentRotation);
+
                 Point pos = { pos2D.x, pos2D.y };
-                drawRoadCost(self, clipped, context, pos, width, height);
+                drawRoadCost(self, &*clipped, context, pos, width, height);
             }
             else
             {
@@ -2037,9 +2037,8 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             auto width = self->widgets[widx::construct].width();
             auto height = self->widgets[widx::construct].height();
 
-            Gfx::Context* clipped = nullptr;
-
-            if (Gfx::clipContext(&clipped, context, x, y, width, height))
+            auto clipped = Gfx::clipContext(*context, Ui::Rect(x, y, width, height));
+            if (clipped)
             {
                 const auto& trackPiece = Map::TrackData::getTrackPiece(_lastSelectedTrackPieceId);
                 const auto& lastTrackPart = trackPiece.back();
@@ -2060,8 +2059,9 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 pos3D.z += 0x1CC;
 
                 auto pos2D = gameToScreen(pos3D, gCurrentRotation);
+
                 Point pos = { pos2D.x, pos2D.y };
-                drawTrackCost(self, clipped, context, pos, width, height);
+                drawTrackCost(self, &*clipped, context, pos, width, height);
             }
             else
             {
