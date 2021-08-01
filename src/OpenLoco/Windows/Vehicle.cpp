@@ -3295,7 +3295,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             _113600C = x;
             _113600E = y;
 
-            auto pos = ViewportInteraction::getTileStartAtCursor({ x, y });
+            auto pos = ViewportInteraction::getSurfaceOrWaterLocFromUi({ x, y });
             if (!pos)
             {
                 return {};

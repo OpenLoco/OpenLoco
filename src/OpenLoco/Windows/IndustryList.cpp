@@ -964,7 +964,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 return {};
             }
 
-            const auto pos = ViewportInteraction::getTileStartAtCursor({ x, y }); //ax,cx
+            const auto pos = ViewportInteraction::getSurfaceOrWaterLocFromUi({ x, y }); //ax,cx
             if (!pos)
             {
                 return {};
