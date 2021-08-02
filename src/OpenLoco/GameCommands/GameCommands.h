@@ -65,7 +65,7 @@ namespace OpenLoco::GameCommands
         lowerWater = 29,
         changeCompanyName = 30,
         changeCompanyOwnerName = 31,
-        gc_unk_32 = 32,
+        createWall = 32,
         removeWall = 33,
         gc_unk_34 = 34,
         vehicleOrderInsert = 35,
@@ -535,10 +535,51 @@ namespace OpenLoco::GameCommands
         return doCommand(GameCommand::changeCompanyOwnerName, regs) != FAILURE;
     }
 
+    struct WallPlacementArgs
+    {
+        WallPlacementArgs() = default;
+        explicit WallPlacementArgs(const registers& regs)
+            : pos(regs.ax, regs.cx, regs.di)
+            , rotation(regs.dl)
+            , type(regs.bh)
+            , unk(regs.dh)
+            , primaryColour(regs.bp & 0xFF)
+            , secondaryColour((regs.bp >> 8) & 0xFF)
+        {
+        }
+
+        Map::Pos3 pos;
+        uint8_t rotation;
+        uint8_t type;
+        uint8_t unk;
+        Colour_t primaryColour;
+        Colour_t secondaryColour;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.ax = pos.x;
+            regs.cx = pos.y;
+            regs.dl = rotation;
+            regs.dh = unk;
+            regs.di = pos.z;
+            regs.bp = primaryColour | (secondaryColour << 8);
+            regs.bh = type;
+            return regs;
+        }
+    };
+
+    inline bool do_32(uint8_t flags, const WallPlacementArgs& args)
+    {
+        registers regs = registers(args);
+        regs.bl = flags;
+        return doCommand(GameCommand::createWall, regs) != FAILURE;
+    }
+
     struct WallRemovalArgs
     {
         WallRemovalArgs() = default;
-        explicit WallRemovalArgs(const registers regs)
+        explicit WallRemovalArgs(const registers& regs)
             : pos(regs.ax, regs.cx, regs.dh * 4)
             , rotation(regs.dl)
         {

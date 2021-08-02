@@ -551,17 +551,8 @@ namespace OpenLoco::Ui::ViewportInteraction
         }
 
         // Determine to which edge the cursor is closest
-        [[maybe_unused]] uint32_t closestEdge = 0; // ecx
-        const auto xNibble = mapPos.x & 0x1F;
-        const auto yNibble = mapPos.y & 0x1F;
-        if (xNibble < yNibble)
-        {
-            closestEdge = (xNibble + yNibble < 32) ? 0 : 1;
-        }
-        else
-        {
-            closestEdge = (xNibble + yNibble < 32) ? 3 : 2;
-        }
+        [[maybe_unused]] uint32_t closestEdge = getSideFromPos(mapPos); // ecx
+
         return { Pos2(mapPos.x & 0xFFE0, mapPos.y & 0xFFE0) };
     }
 
@@ -606,6 +597,24 @@ namespace OpenLoco::Ui::ViewportInteraction
         else
         {
             return (yNibble >= 16) ? 3 : 2;
+        }
+    }
+
+    // 0x0045FE4C
+    // NOTE: Original call getSurfaceLocFromUi within this function
+    // instead OpenLoco has split it in two. Also note that result of original
+    // was a Pos2 start i.e. (& 0xFFE0) both components
+    uint8_t getSideFromPos(const Map::Pos2& loc)
+    {
+        const auto xNibble = loc.x & 0x1F;
+        const auto yNibble = loc.y & 0x1F;
+        if (xNibble < yNibble)
+        {
+            return (xNibble + yNibble < 32) ? 0 : 1;
+        }
+        else
+        {
+            return (xNibble + yNibble < 32) ? 3 : 2;
         }
     }
 

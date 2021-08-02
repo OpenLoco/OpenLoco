@@ -41,18 +41,19 @@ namespace OpenLoco::Ui::Windows::Terraform
     static loco_global<uint8_t, 0x00F003D2> _lastSelectedLand;
     static loco_global<uint8_t, 0x01136496> _treeRotation;
     static loco_global<uint8_t, 0x01136497> _treeColour;
-    static loco_global<uint8_t, 0x0113649A> _byte_113649A;
+    static loco_global<uint8_t, 0x0113649A> _terraformGhostPlaced;
     static loco_global<uint8_t, 0x0113649E> _treeClusterType;
     static loco_global<int16_t, 0x0050A000> _adjustToolSize;
     static loco_global<uint32_t, 0x00F2530C> _raiseLandCost;
     static loco_global<uint32_t, 0x00F25310> _lowerLandCost;
     static loco_global<uint32_t, 0x01136484> _lastTreeCost;
-    static loco_global<uint16_t, 0x01136488> _word_1136488;
-    static loco_global<uint16_t, 0x0113648A> _word_113648A;
+    static loco_global<Map::WallElement*, 0x01136470> _lastPlacedWall;
+    static loco_global<Map::Pos2, 0x01136488> _terraformGhostPos;
     static loco_global<uint16_t, 0x01136490> _lastTreeColourFlag;
-    static loco_global<uint8_t, 0x01136499> _byte_1136499;
+    static loco_global<uint8_t, 0x01136499> _terraformGhostBaseZ;
     static loco_global<uint8_t, 0x0113649B> _byte_113649B;
-    static loco_global<uint8_t, 0x0113649C> _byte_113649C;
+    static loco_global<uint8_t, 0x0113649C> _terraformGhostType;
+    static loco_global<uint8_t, 0x0113649D> _terraformGhostRotation;
     static loco_global<uint32_t, 0x0113652C> _raiseWaterCost;
     static loco_global<uint32_t, 0x01136528> _lowerWaterCost;
 
@@ -96,6 +97,12 @@ namespace OpenLoco::Ui::Windows::Terraform
         static void onResize(Window* self, uint8_t height);
         static void onMouseUp(Window* self, WidgetIndex_t widgetIndex);
         static void sub_4A69DD();
+
+        namespace GhostPlaced
+        {
+            constexpr uint8_t tree = (1 << 0);
+            constexpr uint8_t wall = (1 << 1);
+        }
     }
 
     namespace PlantTrees
@@ -225,7 +232,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         {
             Input::toolSet(self, Common::widx::panel, CursorId::plantTree);
             Input::setFlag(Input::Flags::flag6);
-            _byte_113649A = 0;
+            _terraformGhostPlaced = 0;
             _lastTreeCost = 0x80000000;
             self->var_83C = 0;
             self->row_hover = -1;
@@ -689,7 +696,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             window->number = 0;
             window->current_tab = Common::widx::tab_plant_trees - Common::widx::tab_clear_area;
             window->frame_no = 0;
-            _byte_113649A = 0;
+            _terraformGhostPlaced = 0;
             _lastTreeCost = 0x80000000;
             window->owner = _player_company;
             window->var_846 = 0xFFFF;
@@ -1648,10 +1655,12 @@ namespace OpenLoco::Ui::Windows::Terraform
             updateActiveThumb(self);
         }
 
+        static void removeWallGhost();
+
         // 0x004BC21C
         static void onClose(Window* self)
         {
-            Common::sub_4BD297();
+            removeWallGhost();
             Ui::Windows::hideGridlines();
         }
 
@@ -1660,7 +1669,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         {
             Input::toolSet(self, Common::widx::panel, CursorId::placeFence);
             Input::setFlag(Input::Flags::flag6);
-            _byte_113649A = 0;
+            _terraformGhostPlaced = 0;
             self->var_83C = 0;
             self->row_hover = -1;
             refreshWallList(self);
@@ -1760,26 +1769,107 @@ namespace OpenLoco::Ui::Windows::Terraform
             }
         }
 
+        // 0x004BD297 (bits of)
+        static void removeWallGhost()
+        {
+            if (_terraformGhostPlaced & Common::GhostPlaced::wall)
+            {
+                _terraformGhostPlaced = _terraformGhostPlaced & ~Common::GhostPlaced::wall;
+                GameCommands::WallRemovalArgs args;
+                args.pos = Map::Pos3((*_terraformGhostPos).x, (*_terraformGhostPos).y, _terraformGhostBaseZ * 4);
+                args.rotation = _terraformGhostRotation;
+                GameCommands::do_33(GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6, args);
+            }
+        }
+
+        static void placeWallGhost(const GameCommands::WallPlacementArgs& placementArgs)
+        {
+            removeWallGhost();
+
+            if (GameCommands::do_32(GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6, placementArgs))
+            {
+                _terraformGhostPos = placementArgs.pos;
+                _terraformGhostRotation = placementArgs.rotation;
+                _byte_113649B = placementArgs.rotation; // Unsure why duplicated
+                _terraformGhostType = placementArgs.type;
+                _terraformGhostBaseZ = (*_lastPlacedWall)->baseZ();
+                _terraformGhostPlaced |= Common::GhostPlaced::wall;
+            }
+        }
+
+        // 0x004BD48E
+        static std::optional<GameCommands::WallPlacementArgs> getWallPlacementArgsFromCursor(const int16_t x, const int16_t y)
+        {
+            auto* self = WindowManager::find(WindowType::terraform);
+            if (self == nullptr)
+            {
+                return {};
+            }
+
+            auto res = ViewportInteraction::getSurfaceLocFromUi({ x, y });
+            if (!res)
+            {
+                return {};
+            }
+
+            if (self->row_hover == 0xFFFF)
+            {
+                return {};
+            }
+
+            GameCommands::WallPlacementArgs args;
+            // 0 for Z value means game command finds first available height
+            args.pos = Map::Pos3(res->first.x & 0xFFE0, res->first.y & 0xFFE0, 0);
+            args.type = self->row_hover;
+            args.rotation = ViewportInteraction::getSideFromPos(res->first);
+            args.primaryColour = Colour::black;
+            args.secondaryColour = Colour::black;
+            args.unk = 0;
+            return { args };
+        }
+
         // 0x004BC227
         static void onToolUpdate(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
-            registers regs;
-            regs.esi = X86Pointer(&self);
-            regs.dx = widgetIndex;
-            regs.ax = x;
-            regs.bx = y;
-            call(0x004BC227, regs);
+            Map::TileManager::mapInvalidateSelectionRect();
+            Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
+            auto placementArgs = getWallPlacementArgsFromCursor(x, y);
+            if (!placementArgs)
+            {
+                removeWallGhost();
+                return;
+            }
+
+            Input::setMapSelectionFlags(Input::MapSelectionFlags::enable);
+            Map::TileManager::setMapSelectionCorner(placementArgs->rotation + 10);
+            Map::TileManager::setMapSelectionArea(placementArgs->pos, placementArgs->pos);
+            Map::TileManager::mapInvalidateSelectionRect();
+
+            if (_terraformGhostPlaced & Common::GhostPlaced::wall)
+            {
+                if (*_terraformGhostPos == placementArgs->pos && _terraformGhostRotation == placementArgs->rotation && _terraformGhostType == placementArgs->type)
+                {
+                    return;
+                }
+            }
+
+            removeWallGhost();
+            _terraformGhostRotation = placementArgs->rotation;
+            placeWallGhost(*placementArgs);
         }
 
         // 0x004BC232
         static void onToolDown(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
-            registers regs;
-            regs.esi = X86Pointer(&self);
-            regs.dx = widgetIndex;
-            regs.ax = x;
-            regs.bx = y;
-            call(0x004BC232, regs);
+            removeWallGhost();
+            auto placementArgs = getWallPlacementArgsFromCursor(x, y);
+            if (placementArgs)
+            {
+                if (GameCommands::do_32(GameCommands::Flags::apply, *placementArgs))
+                {
+                    Audio::playSound(Audio::SoundId::construct, GameCommands::getPosition());
+                }
+            }
         }
 
         // 0x004BC359
@@ -2100,6 +2190,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BD297
         static void sub_4BD297()
         {
+            BuildWalls::removeWallGhost();
             registers regs;
             call(0x004BD297, regs);
         }
