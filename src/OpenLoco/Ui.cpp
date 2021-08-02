@@ -680,6 +680,27 @@ namespace OpenLoco::Ui
         }
     }
 
+    // 0x004072EC
+    bool processMessagesMini()
+    {
+#ifdef _LOCO_WIN32_
+        return ((bool (*)())0x004072EC)();
+#else
+        using namespace Input;
+
+        SDL_Event e;
+        while (SDL_PollEvent(&e))
+        {
+            switch (e.type)
+            {
+                case SDL_QUIT:
+                    return false;
+            }
+        }
+        return false;
+#endif
+    }
+
     // 0x0040726D
     bool processMessages()
     {
