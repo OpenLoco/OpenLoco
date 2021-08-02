@@ -2,6 +2,7 @@
 #include "Graphics/Gfx.h"
 #include "Interop/Interop.hpp"
 #include "Map/Tile.h"
+#include "Map/TileManager.h"
 #include "Window.h"
 
 using namespace OpenLoco::Interop;
@@ -60,29 +61,50 @@ namespace OpenLoco::Ui
     SavedViewSimple Viewport::toSavedView() const
     {
         SavedViewSimple result;
-        result.mapX = view_x + (view_width >> 1);
-        result.mapY = view_y + (view_height >> 1);
+        const auto centre = getCentre();
+        result.viewX = centre.x;
+        result.viewY = centre.y;
         result.zoomLevel = static_cast<ZoomLevel>(zoom);
         result.rotation = getRotation();
         return result;
     }
 
-    Pos2 Viewport::getCentreMapPosition() const
+    viewport_pos Viewport::getCentre() const
     {
-        registers regs;
-        regs.ax = view_x + view_width / 2;
-        regs.bx = view_y + view_height / 2;
-        regs.edx = getRotation();
-        call(0x0045F997, regs);
-        return { regs.ax, regs.bx };
+        return viewport_pos(view_x + view_width / 2, view_y + view_height / 2);
     }
 
-    Pos2 Viewport::getCentreScreenMapPosition() const
+    xy32 Viewport::getUiCentre() const
     {
-        registers regs;
-        regs.ax = x + width / 2;
-        regs.bx = y + height / 2;
-        call(0x0045F1A7, regs);
-        return { regs.ax, regs.bx };
+        return { x + width / 2,
+                 y + height / 2 };
+    }
+
+    // 0x0045F997
+    Pos2 Viewport::getCentreMapPosition() const
+    {
+        const viewport_pos initialVPPos = getCentre();
+
+        const auto rotation = getRotation();
+        // Vanilla unrolled on rotation at this point
+
+        auto result = viewportCoordToMapCoord(initialVPPos.x, initialVPPos.y, 0, rotation);
+        for (auto i = 0; i < 6; i++)
+        {
+            const auto z = Map::TileManager::getHeight(result);
+            result = viewportCoordToMapCoord(initialVPPos.x, initialVPPos.y, z, rotation);
+        }
+
+        return result;
+    }
+
+    std::optional<Pos2> Viewport::getCentreScreenMapPosition() const
+    {
+        auto res = Ui::ViewportInteraction::getSurfaceLocFromUi(getUiCentre());
+        if (!res)
+        {
+            return {};
+        }
+        return { res->first };
     }
 }

@@ -948,12 +948,12 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // regs.dx = dx - company index (value 1 in testing case)
         static std::optional<GameCommands::HeadquarterPlacementArgs> getHeadquarterPlacementArgsFromCursor(const int16_t mouseX, const int16_t mouseY)
         {
-            auto pos = ViewportInteraction::getTileStartAtCursor({ mouseX, mouseY });
+            auto pos = ViewportInteraction::getSurfaceOrWaterLocFromUi({ mouseX, mouseY });
             if (!pos)
             {
                 return {};
             }
-            // TODO: modify getTileStartAtCursor to return the viewport then use its rotation
+            // TODO: modify getSurfaceOrWaterLocFromUi to return the viewport then use its rotation
             static loco_global<int32_t, 0x00E3F0B8> gCurrentRotation;
 
             GameCommands::HeadquarterPlacementArgs args;

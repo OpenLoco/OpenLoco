@@ -1003,13 +1003,13 @@ namespace OpenLoco::Ui::Windows::TownList
                 return {};
             }
 
-            const auto pos = ViewportInteraction::getTileStartAtCursor({ x, y }); //ax,cx
+            const auto pos = ViewportInteraction::getSurfaceOrWaterLocFromUi({ x, y }); //ax,cx
             if (!pos)
             {
                 return {};
             }
 
-            // TODO: modify getTileStartAtCursor to return the viewport then use its rotation
+            // TODO: modify getSurfaceOrWaterLocFromUi to return the viewport then use its rotation
             static loco_global<int32_t, 0x00E3F0B8> gCurrentRotation;
 
             GameCommands::BuildingPlacementArgs args;

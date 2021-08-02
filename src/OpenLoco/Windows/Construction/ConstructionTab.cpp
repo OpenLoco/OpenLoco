@@ -1665,7 +1665,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
             if (!height || !mapPos)
             {
-                mapPos = ViewportInteraction::getTileStartAtCursor({ x, y });
+                mapPos = ViewportInteraction::getSurfaceOrWaterLocFromUi({ x, y });
 
                 if (!mapPos)
                     return;
@@ -1762,7 +1762,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
             if (!height || !mapPos || _word_4F7B62[track->id * 8] != 0)
             {
-                mapPos = ViewportInteraction::getTileStartAtCursor({ x, y });
+                mapPos = ViewportInteraction::getSurfaceOrWaterLocFromUi({ x, y });
 
                 if (!mapPos)
                     return;

@@ -255,8 +255,8 @@ namespace OpenLoco::S5
         }
         std::memcpy(file->requiredObjects, requiredObjects.data(), sizeof(file->requiredObjects));
         file->gameState = _gameState;
-        file->gameState.savedViewX = savedView.mapX;
-        file->gameState.savedViewY = savedView.mapY;
+        file->gameState.savedViewX = savedView.viewX;
+        file->gameState.savedViewY = savedView.viewY;
         file->gameState.savedViewZoom = static_cast<uint8_t>(savedView.zoomLevel);
         file->gameState.savedViewRotation = savedView.rotation;
         file->gameState.magicNumber = magicNumber; // Match implementation at 0x004437FC
@@ -632,8 +632,8 @@ namespace OpenLoco::S5
             if (mainWindow != nullptr)
             {
                 SavedViewSimple savedView;
-                savedView.mapX = file->gameState.savedViewX;
-                savedView.mapY = file->gameState.savedViewY;
+                savedView.viewX = file->gameState.savedViewX;
+                savedView.viewY = file->gameState.savedViewY;
                 savedView.zoomLevel = static_cast<ZoomLevel>(file->gameState.savedViewZoom);
                 savedView.rotation = file->gameState.savedViewRotation;
                 mainWindow->viewportFromSavedView(savedView);

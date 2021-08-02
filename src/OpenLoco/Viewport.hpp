@@ -146,8 +146,11 @@ namespace OpenLoco::Ui
         void render(Gfx::Context* context);
         void centre2dCoordinates(int16_t x, int16_t y, int16_t z, int16_t* outX, int16_t* outY);
         SavedViewSimple toSavedView() const;
+
+        viewport_pos getCentre() const;
+        xy32 getUiCentre() const;
         Map::Pos2 getCentreMapPosition() const;
-        Map::Pos2 getCentreScreenMapPosition() const;
+        std::optional<Map::Pos2> getCentreScreenMapPosition() const;
 
     private:
         void paint(Gfx::Context* context, const Ui::Rect& rect);

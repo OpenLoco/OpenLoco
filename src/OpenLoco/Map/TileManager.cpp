@@ -2,6 +2,7 @@
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
 #include "../Map/Map.hpp"
+#include "../Ui.h"
 #include "../ViewportManager.h"
 
 using namespace OpenLoco::Interop;
@@ -340,27 +341,19 @@ namespace OpenLoco::Map::TileManager
         }
     }
 
-    // 0x0045F1A7
-    Pos2 screenGetMapXY(int16_t x, int16_t y)
-    {
-        registers regs;
-        regs.ax = x;
-        regs.bx = y;
-        call(0x0045F1A7, regs);
-        Pos2 pos = { regs.ax, regs.bx };
-        return pos;
-    }
-
+    // TODO: Return std::optional
     uint16_t setMapSelectionTiles(int16_t x, int16_t y)
     {
-        auto pos = screenGetMapXY(x, y);
+        auto res = Ui::ViewportInteraction::getSurfaceLocFromUi({ x, y });
 
-        uint16_t xPos = pos.x;
-        uint16_t yPos = pos.y;
-        uint8_t count = 0;
-
-        if (xPos == 0x8000)
+        if (!res)
+        {
             return 0x8000;
+        }
+
+        uint16_t xPos = res->first.x;
+        uint16_t yPos = res->first.y;
+        uint8_t count = 0;
 
         if (!Input::hasMapSelectionFlag(Input::MapSelectionFlags::enable))
         {
@@ -421,27 +414,17 @@ namespace OpenLoco::Map::TileManager
         return count;
     }
 
-    // 0x0045FD8E
-    Pos3 screenPosToMapPos(int16_t x, int16_t y)
-    {
-        registers regs;
-        regs.ax = x;
-        regs.bx = y;
-        call(0x0045FD8E, regs);
-        Pos3 pos = { regs.ax, regs.bx, regs.cx };
-        return pos;
-    }
-
     uint16_t setMapSelectionSingleTile(int16_t x, int16_t y, bool setQuadrant)
     {
-        auto pos = screenPosToMapPos(x, y);
-
-        uint16_t xPos = pos.x;
-        uint16_t yPos = pos.y;
-        uint16_t cursorQuadrant = pos.z;
-
-        if (xPos == 0x8000)
+        auto res = Ui::ViewportInteraction::getSurfaceLocFromUi({ x, y });
+        if (!res)
+        {
             return 0x8000;
+        }
+
+        uint16_t xPos = res->first.x & 0xFFE0;
+        uint16_t yPos = res->first.y & 0xFFE0;
+        uint16_t cursorQuadrant = Ui::ViewportInteraction::getQuadrantOrCentreFromPos(res->first);
 
         auto count = 0;
         if (!Input::hasMapSelectionFlag(Input::MapSelectionFlags::enable))

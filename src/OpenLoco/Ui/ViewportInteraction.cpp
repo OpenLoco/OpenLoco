@@ -517,7 +517,7 @@ namespace OpenLoco::Ui::ViewportInteraction
     // regs.ax = mapX, 0x8000 - in case of failure
     // regs.bx = mapY
     // regs.ecx = closestEdge (unsure if ever used)
-    std::optional<Pos2> getTileStartAtCursor(const xy32& screenCoords)
+    std::optional<Pos2> getSurfaceOrWaterLocFromUi(const xy32& screenCoords)
     {
         auto [info, viewport] = getMapCoordinatesFromPos(screenCoords.x, screenCoords.y, ~(InteractionItemFlags::surface | InteractionItemFlags::water));
 
@@ -556,26 +556,74 @@ namespace OpenLoco::Ui::ViewportInteraction
         const auto yNibble = mapPos.y & 0x1F;
         if (xNibble < yNibble)
         {
-            if (xNibble + yNibble < 32)
-            {
-                closestEdge = 0;
-            }
-            else
-            {
-                closestEdge = 1;
-            }
+            closestEdge = (xNibble + yNibble < 32) ? 0 : 1;
         }
         else
         {
-            if (xNibble + yNibble < 32)
-            {
-                closestEdge = 3;
-            }
-            else
-            {
-                closestEdge = 2;
-            }
+            closestEdge = (xNibble + yNibble < 32) ? 3 : 2;
         }
         return { Pos2(mapPos.x & 0xFFE0, mapPos.y & 0xFFE0) };
+    }
+
+    // 0x0045F1A7
+    std::optional<std::pair<Pos2, Viewport*>> getSurfaceLocFromUi(const xy32& screenCoords)
+    {
+        auto [info, viewport] = getMapCoordinatesFromPos(screenCoords.x, screenCoords.y, ~InteractionItemFlags::surface);
+
+        if (info.type == InteractionItem::noInteraction)
+        {
+            return {};
+        }
+
+        const auto minPosition = info.pos;                  // E40128/A
+        const auto maxPosition = info.pos + Pos2{ 31, 31 }; // E4012C/E
+        auto mapPos = info.pos + Pos2{ 16, 16 };
+        const auto initialVPPos = viewport->uiToMap(screenCoords);
+
+        for (int32_t i = 0; i < 5; i++)
+        {
+            const auto z = TileManager::getHeight(mapPos);
+            mapPos = viewportCoordToMapCoord(initialVPPos.x, initialVPPos.y, z, viewport->getRotation());
+            mapPos.x = std::clamp(mapPos.x, minPosition.x, maxPosition.x);
+            mapPos.y = std::clamp(mapPos.y, minPosition.y, maxPosition.y);
+        }
+
+        return { std::make_pair(mapPos, viewport) };
+    }
+
+    // 0x0045FE05
+    // NOTE: Original call getSurfaceLocFromUi within this function
+    // instead OpenLoco has split it in two. Also note that result of original
+    // was a Pos2 start i.e. (& 0xFFE0) both components
+    static uint8_t getQuadrantFromPos(const Map::Pos2& loc)
+    {
+        const auto xNibble = loc.x & 0x1F;
+        const auto yNibble = loc.y & 0x1F;
+        if (xNibble > 16)
+        {
+            return (yNibble >= 16) ? 0 : 1;
+        }
+        else
+        {
+            return (yNibble >= 16) ? 3 : 2;
+        }
+    }
+
+    // 0x0045FD8E
+    // NOTE: Original call getSurfaceLocFromUi within this function
+    // instead OpenLoco has split it in two. Also note that result of original
+    // was a Pos2 start i.e. (& 0xFFE0) both components
+    uint8_t getQuadrantOrCentreFromPos(const Map::Pos2& loc)
+    {
+        // Determine to which quadrants the cursor is closest 4 == all quadrants
+        const auto xNibbleCentre = std::abs((loc.x & 0xFFE0) + 16 - loc.x);
+        const auto yNibbleCentre = std::abs((loc.y & 0xFFE0) + 16 - loc.y);
+        if (std::max(xNibbleCentre, yNibbleCentre) <= 7)
+        {
+            // Is centre so all quadrants
+            return 4;
+        }
+
+        return getQuadrantFromPos(loc);
     }
 }

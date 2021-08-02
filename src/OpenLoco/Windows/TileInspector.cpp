@@ -34,7 +34,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
 {
     static loco_global<int8_t, 0x00523393> _currentTool;
 
-    static Pos2 _currentPosition{};
+    static TilePos2 _currentPosition{};
 
     constexpr Gfx::ui_size_t windowSize = { 250, 182 };
 
@@ -139,13 +139,13 @@ namespace OpenLoco::Ui::Windows::TileInspector
         // Coord X/Y values
         {
             FormatArguments args = {};
-            args.push<int16_t>(_currentPosition.x / Map::tile_size);
+            args.push<int16_t>(_currentPosition.x);
             auto& widget = self->widgets[widx::xPos];
             Gfx::drawString_494B3F(*context, self->x + widget.left + 2, self->y + widget.top + 1, Colour::black, StringIds::tile_inspector_coord, &args);
         }
         {
             FormatArguments args = {};
-            args.push<int16_t>(_currentPosition.y / Map::tile_size);
+            args.push<int16_t>(_currentPosition.y);
             auto& widget = self->widgets[widx::yPos];
             Gfx::drawString_494B3F(*context, self->x + widget.left + 2, self->y + widget.top + 1, Colour::black, StringIds::tile_inspector_coord, &args);
         }
@@ -335,7 +335,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
 
     static void drawScroll(Ui::Window* self, Gfx::Context* const context, uint32_t)
     {
-        if (_currentPosition == Pos2(0, 0))
+        if (_currentPosition == TilePos2(0, 0))
             return;
 
         auto tile = TileManager::get(_currentPosition);
@@ -426,22 +426,22 @@ namespace OpenLoco::Ui::Windows::TileInspector
                 break;
 
             case widx::xPosDecrease:
-                _currentPosition.x = std::clamp<coord_t>(_currentPosition.x - Map::tile_size, 1, Map::map_width);
+                _currentPosition.x = std::clamp<coord_t>(_currentPosition.x - 1, 1, Map::map_columns);
                 self->invalidate();
                 break;
 
             case widx::xPosIncrease:
-                _currentPosition.x = std::clamp<coord_t>(_currentPosition.x + Map::tile_size, 1, Map::map_width);
+                _currentPosition.x = std::clamp<coord_t>(_currentPosition.x + 1, 1, Map::map_columns);
                 self->invalidate();
                 break;
 
             case widx::yPosDecrease:
-                _currentPosition.y = std::clamp<coord_t>(_currentPosition.y - Map::tile_size, 1, Map::map_height);
+                _currentPosition.y = std::clamp<coord_t>(_currentPosition.y - 1, 1, Map::map_rows);
                 self->invalidate();
                 break;
 
             case widx::yPosIncrease:
-                _currentPosition.y = std::clamp<coord_t>(_currentPosition.y + Map::tile_size, 1, Map::map_height);
+                _currentPosition.y = std::clamp<coord_t>(_currentPosition.y + 1, 1, Map::map_rows);
                 self->invalidate();
                 break;
         }
@@ -449,7 +449,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
 
     static void getScrollSize(Ui::Window* self, uint32_t, uint16_t*, uint16_t* const scrollHeight)
     {
-        if (_currentPosition == Pos2(0, 0))
+        if (_currentPosition == TilePos2(0, 0))
         {
             *scrollHeight = 0;
             return;
@@ -473,7 +473,12 @@ namespace OpenLoco::Ui::Windows::TileInspector
         if (widgetIndex != widx::panel || !Input::hasMapSelectionFlag(Input::MapSelectionFlags::enable))
             return;
 
-        _currentPosition = TileManager::screenPosToMapPos(x, y);
+        auto res = Ui::ViewportInteraction::getSurfaceLocFromUi({ x, y });
+        if (!res)
+        {
+            return;
+        }
+        _currentPosition = res->first;
         auto tile = TileManager::get(_currentPosition);
 
         self.row_count = static_cast<uint16_t>(tile.size());
