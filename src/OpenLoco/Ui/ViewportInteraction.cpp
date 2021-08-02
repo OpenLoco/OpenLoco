@@ -556,25 +556,11 @@ namespace OpenLoco::Ui::ViewportInteraction
         const auto yNibble = mapPos.y & 0x1F;
         if (xNibble < yNibble)
         {
-            if (xNibble + yNibble < 32)
-            {
-                closestEdge = 0;
-            }
-            else
-            {
-                closestEdge = 1;
-            }
+            closestEdge = (xNibble + yNibble < 32) ? 0 : 1;
         }
         else
         {
-            if (xNibble + yNibble < 32)
-            {
-                closestEdge = 3;
-            }
-            else
-            {
-                closestEdge = 2;
-            }
+            closestEdge = (xNibble + yNibble < 32) ? 3 : 2;
         }
         return { Pos2(mapPos.x & 0xFFE0, mapPos.y & 0xFFE0) };
     }
@@ -615,25 +601,11 @@ namespace OpenLoco::Ui::ViewportInteraction
         const auto yNibble = loc.y & 0x1F;
         if (xNibble > 16)
         {
-            if (yNibble >= 16)
-            {
-                return 0;
-            }
-            else
-            {
-                return 1;
-            }
+            return (yNibble >= 16) ? 0 : 1;
         }
         else
         {
-            if (yNibble >= 16)
-            {
-                return 3;
-            }
-            else
-            {
-                return 2;
-            }
+            return (yNibble >= 16) ? 3 : 2;
         }
     }
 
