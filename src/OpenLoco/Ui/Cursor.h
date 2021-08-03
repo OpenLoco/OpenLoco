@@ -21,11 +21,9 @@ namespace OpenLoco::Ui
         uint8_t data[encodedCursorSize]{};
         uint8_t mask[encodedCursorSize]{};
 
-        static Cursor pointer;
         static Cursor blank;
         static Cursor upArrow;
         static Cursor upDownArrow;
-        static Cursor handPointer;
         static Cursor busy;
         static Cursor diagonalArrows;
         static Cursor cursor124;

@@ -6,41 +6,6 @@
 
 namespace OpenLoco::Ui
 {
-    Cursor Cursor::pointer = Cursor(
-        0, 0,
-        "X                               "
-        "XX                              "
-        "X.X                             "
-        "X..X                            "
-        "X...X                           "
-        "X....X                          "
-        "X.....X                         "
-        "X......X                        "
-        "X.......X                       "
-        "X........X                      "
-        "X.....XXXXX                     "
-        "X..X..X                         "
-        "X.X X..X                        "
-        "XX  X..X                        "
-        "X    X..X                       "
-        "     X..X                       "
-        "      X..X                      "
-        "      X..X                      "
-        "       XX                       "
-        "                                "
-        "                                "
-        "                                "
-        "                                "
-        "                                "
-        "                                "
-        "                                "
-        "                                "
-        "                                "
-        "                                "
-        "                                "
-        "                                "
-        "                                ");
-
     Cursor Cursor::blank = Cursor(
         0, 0,
         "                                "
@@ -144,41 +109,6 @@ namespace OpenLoco::Ui
         "              X.X.X             "
         "               X.X              "
         "                X               "
-        "                                ");
-
-    Cursor Cursor::handPointer = Cursor(
-        9, 3,
-        "                                "
-        "                                "
-        "                                "
-        "         XX                     "
-        "        X..X                    "
-        "        X..X                    "
-        "        X..X                    "
-        "        X..X                    "
-        "        X..XXX                  "
-        "        X..X..XXX               "
-        "        X..X..X..XX             "
-        "        X..X..X..X.X            "
-        "    XXX X..X..X..X..X           "
-        "    X..XX........X..X           "
-        "    X...X...........X           "
-        "     X..X...........X           "
-        "      X.X...........X           "
-        "      X.............X           "
-        "       X............X           "
-        "       X...........X            "
-        "        X..........X            "
-        "        X..........X            "
-        "         X........X             "
-        "         X........X             "
-        "         XXXXXXXXXX             "
-        "                                "
-        "                                "
-        "                                "
-        "                                "
-        "                                "
-        "                                "
         "                                ");
 
     Cursor Cursor::busy = Cursor(
