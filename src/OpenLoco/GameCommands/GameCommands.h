@@ -190,7 +190,7 @@ namespace OpenLoco::GameCommands
         regs.bl = Flags::apply;
         regs.dx = vehicleHead;
         // Bug in game command 3 requires to set edi to a vehicle prior to calling
-        regs.edi = reinterpret_cast<uint32_t>(head);
+        regs.edi = X86Pointer(head);
 
         doCommand(GameCommand::vehicleReverse, regs);
     }
@@ -1009,7 +1009,7 @@ namespace OpenLoco::GameCommands
     {
         registers regs;
         regs.bl = Flags::apply;
-        regs.ebp = reinterpret_cast<int32_t>(filename);
+        regs.ebp = X86Pointer(filename);
         doCommand(GameCommand::loadMultiplayerMap, regs);
     }
 

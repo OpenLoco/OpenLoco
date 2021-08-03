@@ -2634,7 +2634,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         static std::pair<Ui::ViewportInteraction::InteractionItem, Ui::ViewportInteraction::InteractionArg> sub_4B5A1A(Window& self, const int16_t x, const int16_t y)
         {
             registers regs{};
-            regs.esi = reinterpret_cast<uint32_t>(&self);
+            regs.esi = X86Pointer(&self);
             regs.ax = x;
             regs.cx = y;
             regs.bl = 0; // Not set during function but needed to indicate failure
@@ -3875,7 +3875,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         static void pickupToolDown(Window& self, const int16_t x, const int16_t y)
         {
             registers regs;
-            regs.esi = reinterpret_cast<int32_t>(&self);
+            regs.esi = X86Pointer(&self);
             regs.ax = x;
             regs.bx = y;
             call(0x004B2C74, regs);
@@ -4067,8 +4067,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
             regs.ah = ah;
             regs.cx = cx;
             regs.dx = dx;
-            regs.esi = reinterpret_cast<uint32_t>(vehicle);
-            regs.edi = reinterpret_cast<uint32_t>(pDrawpixelinfo);
+            regs.esi = X86Pointer(vehicle);
+            regs.edi = X86Pointer(pDrawpixelinfo);
             call(0x004B743B, regs);
             return regs.cx;
         }

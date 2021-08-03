@@ -24,8 +24,8 @@ namespace OpenLoco
         regs.esi = esi;
         regs.bl = Colour::saturated_green;
         regs.bh = 2;
-        regs.ebp = (uintptr_t)vehicleObject;
-        regs.edi = (uintptr_t)context;
+        regs.ebp = X86Pointer(vehicleObject);
+        regs.edi = X86Pointer(context);
         call(0x4B7733, regs);
     }
 

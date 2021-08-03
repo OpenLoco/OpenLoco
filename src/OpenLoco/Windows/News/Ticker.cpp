@@ -145,7 +145,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow::Ticker
         regs.cx = x;
         regs.dx = y;
         regs.ebp = ebp;
-        regs.edi = (int32_t)clipped;
+        regs.edi = X86Pointer(clipped);
         call(0x004950EF, regs);
     }
 

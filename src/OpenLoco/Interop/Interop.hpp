@@ -7,7 +7,11 @@
 #include <stdexcept>
 #include <vector>
 
+#if defined(__i386__)
 #define assert_struct_size(x, y) static_assert(sizeof(x) == (y), "Improper struct size")
+#else
+#define assert_struct_size(x, y)
+#endif
 
 #if defined(__clang__) || (defined(__GNUC__) && !defined(__MINGW32__))
 #define FORCE_ALIGN_ARG_POINTER __attribute__((force_align_arg_pointer))
@@ -19,6 +23,34 @@ constexpr int32_t DEFAULT_REG_VAL = 0xCCCCCCCC;
 
 namespace OpenLoco::Interop
 {
+    template<typename T = void>
+    class X86Pointer
+    {
+    private:
+        uintptr_t _ptr;
+
+    public:
+        X86Pointer(const T* x)
+        {
+            _ptr = reinterpret_cast<uintptr_t>(x);
+        }
+
+        X86Pointer(const uint32_t ptr)
+        {
+            _ptr = ptr;
+        }
+
+        operator uint32_t() const
+        {
+            return (uint32_t)_ptr;
+        }
+
+        operator T*() const
+        {
+            return reinterpret_cast<T*>(_ptr);
+        };
+    };
+
 #pragma pack(push, 1)
     /**
     * x86 register structure, only used for easy interop to Locomotion code.

@@ -10,7 +10,7 @@ namespace OpenLoco::VehicleManager
     void determineAvailableVehicles(Company& company)
     {
         registers regs;
-        regs.esi = reinterpret_cast<int32_t>(&company);
+        regs.esi = X86Pointer(&company);
         call(0x004C3A0C, regs);
     }
 }

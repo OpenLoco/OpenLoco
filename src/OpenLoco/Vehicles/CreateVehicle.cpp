@@ -635,7 +635,7 @@ namespace OpenLoco::Vehicles
     static void sub_4AF7A4(VehicleHead* const veh0)
     {
         registers regs{};
-        regs.esi = reinterpret_cast<int32_t>(veh0);
+        regs.esi = X86Pointer(veh0);
         call(0x004AF7A4, regs);
     }
 
@@ -643,7 +643,7 @@ namespace OpenLoco::Vehicles
     static void placeDownVehicle(VehicleHead* const head, const coord_t x, const coord_t y, const uint8_t baseZ, const uint16_t unk1, const uint16_t unk2)
     {
         registers regs{};
-        regs.esi = reinterpret_cast<int32_t>(head);
+        regs.esi = X86Pointer(head);
         regs.ax = x;
         regs.cx = y;
         regs.bx = unk2;

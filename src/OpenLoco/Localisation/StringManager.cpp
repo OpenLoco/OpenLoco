@@ -99,20 +99,20 @@ namespace OpenLoco::StringManager
     {
         registers regs;
         regs.eax = (uint32_t)value;
-        regs.edi = (uint32_t)buffer;
+        regs.edi = X86Pointer(buffer);
 
         call(0x00495F35, regs);
-        return (char*)regs.edi;
+        return X86Pointer<char>(regs.edi);
     }
 
     static char* formatInt32Ungrouped(int32_t value, char* buffer)
     {
         registers regs;
         regs.eax = (uint32_t)value;
-        regs.edi = (uint32_t)buffer;
+        regs.edi = X86Pointer(buffer);
 
         call(0x495E2A, regs);
-        return (char*)regs.edi;
+        return X86Pointer<char>(regs.edi);
     }
 
     static char* formatInt48Grouped(uint64_t value, char* buffer, uint8_t separator)
@@ -120,31 +120,31 @@ namespace OpenLoco::StringManager
         registers regs;
         regs.eax = (uint32_t)value;
         regs.edx = (uint32_t)(value / (1ULL << 32)); // regs.dx = (uint16_t)(value >> 32);
-        regs.edi = (uint32_t)buffer;
+        regs.edi = X86Pointer(buffer);
         regs.ebx = (uint32_t)separator;
 
         call(0x496052, regs);
-        return (char*)regs.edi;
+        return X86Pointer<char>(regs.edi);
     }
 
     static char* formatShortWithDecimals(int16_t value, char* buffer)
     {
         registers regs;
         regs.eax = (uint32_t)value;
-        regs.edi = (uint32_t)buffer;
+        regs.edi = X86Pointer(buffer);
 
         call(0x4963FC, regs);
-        return (char*)regs.edi;
+        return X86Pointer<char>(regs.edi);
     }
 
     static char* formatIntWithDecimals(int32_t value, char* buffer)
     {
         registers regs;
         regs.eax = (uint32_t)value;
-        regs.edi = (uint32_t)buffer;
+        regs.edi = X86Pointer(buffer);
 
         call(0x4962F1, regs);
-        return (char*)regs.edi;
+        return X86Pointer<char>(regs.edi);
     }
 
     // 0x00495D09

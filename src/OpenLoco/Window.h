@@ -430,7 +430,7 @@ namespace OpenLoco::Ui
         void callDraw(Gfx::Context* context);                                                          // 27
         void callDrawScroll(Gfx::Context* context, uint32_t scrollIndex);                              // 28
     };
-    static_assert(sizeof(Window) == 0x88E);
+    assert_struct_size(Window, 0x88E);
 
     Map::Pos2 viewportCoordToMapCoord(int16_t x, int16_t y, int16_t z, int32_t rotation);
     std::optional<Map::Pos2> screenGetMapXyWithZ(const xy32& mouse, const int16_t z);

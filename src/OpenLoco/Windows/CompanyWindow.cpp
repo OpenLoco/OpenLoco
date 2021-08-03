@@ -1993,7 +1993,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         static void sub_4C8DBF(Window* self)
         {
             registers regs;
-            regs.esi = (int32_t)self;
+            regs.esi = X86Pointer(self);
             call(0x004C8DBF, regs);
         }
 

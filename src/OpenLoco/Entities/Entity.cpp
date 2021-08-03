@@ -20,7 +20,7 @@ void EntityBase::moveTo(const Map::Pos3& loc)
     regs.ax = loc.x;
     regs.cx = loc.y;
     regs.dx = loc.z;
-    regs.esi = (int32_t)this;
+    regs.esi = X86Pointer(this);
     call(0x0046FC83, regs);
 }
 

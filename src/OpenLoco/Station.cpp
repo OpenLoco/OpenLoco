@@ -746,7 +746,7 @@ namespace OpenLoco
     void Station::updateLabel()
     {
         registers regs;
-        regs.esi = reinterpret_cast<int32_t>(this);
+        regs.esi = X86Pointer(this);
         call(0x0048DCA5, regs);
     }
 

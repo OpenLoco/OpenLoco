@@ -468,9 +468,9 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         static void sub_42A136(Window* self, Gfx::Context* context, Message* news)
         {
             registers regs;
-            regs.edi = (int32_t)context;
-            regs.esi = (int32_t)self;
-            regs.ebp = (int32_t)news;
+            regs.edi = X86Pointer(context);
+            regs.esi = X86Pointer(self);
+            regs.ebp = X86Pointer(news);
             call(0x0042A136, regs);
         }
 

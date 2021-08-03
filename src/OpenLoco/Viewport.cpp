@@ -44,8 +44,8 @@ namespace OpenLoco::Ui
         regs.bx = rect.top();
         regs.dx = rect.right();
         regs.bp = rect.bottom();
-        regs.esi = reinterpret_cast<uint32_t>(this);
-        regs.edi = reinterpret_cast<uint32_t>(context);
+        regs.esi = X86Pointer(this);
+        regs.edi = X86Pointer(context);
         call(0x0045A1A4, regs);
     }
 

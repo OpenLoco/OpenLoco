@@ -217,7 +217,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     static void sub_46C544(Window* self)
     {
         registers regs;
-        regs.esi = (int32_t)self;
+        regs.esi = X86Pointer(self);
         call(0x0046C544, regs);
     }
 

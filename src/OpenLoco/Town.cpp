@@ -17,7 +17,7 @@ namespace OpenLoco
     void Town::update()
     {
         registers regs;
-        regs.esi = (int32_t)this;
+        regs.esi = X86Pointer(this);
         call(0x0049742F, regs);
     }
 
@@ -25,7 +25,7 @@ namespace OpenLoco
     void Town::updateLabel()
     {
         registers regs;
-        regs.esi = (int32_t)this;
+        regs.esi = X86Pointer(this);
         call(0x00497616, regs);
     }
 
