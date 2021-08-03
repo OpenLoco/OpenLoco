@@ -225,7 +225,15 @@ namespace OpenLoco::Input::ShortcutManager
         window = WindowManager::find(WindowType::construction);
         if (window != nullptr)
         {
-            Ui::Windows::Construction::rotate(window);
+            if (Ui::Windows::Construction::rotate(window))
+                return;
+        }
+
+        window = WindowManager::find(WindowType::townList);
+        if (window != nullptr)
+        {
+            if (Ui::Windows::TownList::rotate(window))
+                return;
         }
     }
 

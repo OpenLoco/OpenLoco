@@ -1406,6 +1406,23 @@ namespace OpenLoco::Ui::Windows::TownList
         }
     }
 
+    bool rotate(Window* self)
+    {
+        if (self->current_tab >= Common::widx::tab_build_buildings - Common::widx::tab_town_list)
+        {
+            if (!self->isDisabled(BuildBuildings::widx::rotate_object))
+            {
+                if (self->widgets[BuildBuildings::widx::rotate_object].type != WidgetType::none)
+                {
+                    self->callOnMouseUp(BuildBuildings::widx::rotate_object);
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     namespace Common
     {
         struct TabInformation

@@ -1242,7 +1242,7 @@ namespace OpenLoco::Ui::Windows::Construction
         }
     }
 
-    void rotate(Window* self)
+    bool rotate(Window* self)
     {
         switch (self->current_tab)
         {
@@ -1251,6 +1251,7 @@ namespace OpenLoco::Ui::Windows::Construction
                 {
                     self->callOnMouseUp(Construction::widx::rotate_90);
                     sub_49FEC7();
+                    return true;
                 }
                 break;
 
@@ -1258,9 +1259,11 @@ namespace OpenLoco::Ui::Windows::Construction
                 if (self->widgets[Station::widx::rotate].type != WidgetType::none)
                 {
                     self->callOnMouseUp(Station::widx::rotate);
+                    return true;
                 }
                 break;
         }
+        return false;
     }
 
     void registerHooks()
