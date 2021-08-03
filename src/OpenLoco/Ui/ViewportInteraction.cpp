@@ -586,7 +586,7 @@ namespace OpenLoco::Ui::ViewportInteraction
     // NOTE: Original call getSurfaceLocFromUi within this function
     // instead OpenLoco has split it in two. Also note that result of original
     // was a Pos2 start i.e. (& 0xFFE0) both components
-    static uint8_t getQuadrantFromPos(const Map::Pos2& loc)
+    uint8_t getQuadrantFromPos(const Map::Pos2& loc)
     {
         const auto xNibble = loc.x & 0x1F;
         const auto yNibble = loc.y & 0x1F;

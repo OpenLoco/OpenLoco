@@ -56,7 +56,7 @@ namespace OpenLoco::GameCommands
         pauseGame = 20,
         loadSaveQuitGame = 21,
         removeTree = 22,
-        gc_unk_23 = 23,
+        createTree = 23,
         changeLandMaterial = 24,
         raiseLand = 25,
         lowerLand = 26,
@@ -431,6 +431,46 @@ namespace OpenLoco::GameCommands
         registers regs = registers(args);
         regs.bl = flags;
         doCommand(GameCommand::removeTree, regs);
+    }
+
+    struct TreePlacementArgs
+    {
+        TreePlacementArgs() = default;
+        explicit TreePlacementArgs(const registers& regs)
+            : pos(regs.ax, regs.cx)
+            , rotation(regs.di & 0x3)
+            , type(regs.bh)
+            , quadrant(regs.dl)
+            , colour(regs.dh)
+            , buildImmediately(regs.di & 0x8000)
+        {
+        }
+
+        Map::Pos2 pos;
+        uint8_t rotation;
+        uint8_t type;
+        uint8_t quadrant;
+        Colour_t colour;
+        bool buildImmediately = false;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.ax = pos.x;
+            regs.cx = pos.y;
+            regs.dl = quadrant;
+            regs.dh = colour;
+            regs.di = rotation | (buildImmediately ? 0x8000 : 0);
+            regs.bh = type;
+            return regs;
+        }
+    };
+
+    inline uint32_t do_23(uint8_t flags, const TreePlacementArgs& args)
+    {
+        registers regs = registers(args);
+        regs.bl = flags;
+        return doCommand(GameCommand::createTree, regs);
     }
 
     // Change Land Material
