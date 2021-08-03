@@ -1307,7 +1307,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 return fallback;
             }
-            return CursorId::unk_25;
+            return CursorId::openHand;
         }
 
         static const std::map<VehicleType, uint32_t> additionalVehicleButtonByVehicleType{
