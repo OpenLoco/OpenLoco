@@ -1,4 +1,5 @@
 #include "../Audio/Audio.h"
+#include "../CompanyManager.h"
 #include "../Economy/Economy.h"
 #include "../GameCommands/GameCommands.h"
 #include "../Graphics/Colour.h"
@@ -454,7 +455,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 return {};
             }
 
-            if (self->row_hover == 0xFFFF)
+            if (self->row_hover == -1)
             {
                 return {};
             }
@@ -509,6 +510,45 @@ namespace OpenLoco::Ui::Windows::Terraform
             _lastTreeCost = placeTreeGhost(*placementArgs);
         }
 
+        // 0x004BDDC6
+        static void selectedTreeToolDown()
+        {
+            // dx = 320
+            // bx = 3
+            const auto numAttempts = (320 * 320 * 3) / 8192;
+            for (auto i = 0; i < numAttempts; ++i)
+            {
+                auto& rng = gPrng();
+                auto random = rng.randNext(std::numeric_limits<uint16_t>::max()) * 320 / 65536;
+                auto random2 = rng.randNext(0x3FFF);
+                auto random3 = random2;
+                if (random2 & (1 << 13))
+                {
+                    if (random2 & (1 << 12))
+                    {
+                        random2 = -random2;
+                        //-0x00501B50[random2 & 0xFFF]
+                    }
+                    else
+                    {
+                        //-0x00501B50[random2 & 0xFFF]
+                    }
+                }
+                else
+                {
+                    if (random2 & (1 << 12))
+                    {
+                        random2 = -random2;
+                        // 0x00501B50[random2 & 0xFFF]
+                    }
+                    else
+                    {
+                        // 0x00501B50[random2 & 0xFFF]
+                    }
+                }
+            }
+        }
+
         // 0x004BBB20
         static void onToolDown(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
@@ -525,8 +565,19 @@ namespace OpenLoco::Ui::Windows::Terraform
                         }
                         break;
                     case treeCluster::selected:
-                        // 0x004BD39D
+                    {
+                        // TODO: Lock behind sandbox/editor
+                        auto previousId = CompanyManager::updatingCompanyId();
+                        CompanyManager::updatingCompanyId(CompanyId::neutral);
+
+                        auto height = TileManager::getHeight(placementArgs->pos);
+                        Audio::playSound(Audio::SoundId::construct, Map::Pos3{ placementArgs->pos.x, placementArgs->pos.y, height.landHeight });
+
+                        selectedTreeToolDown();
+                        // TODO: Lock behind sandbox/editor
+                        CompanyManager::updatingCompanyId(previousId);
                         break;
+                    }
                     case treeCluster::random:
                         // 0x004BD3E6
                         break;
@@ -1923,7 +1974,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 return {};
             }
 
-            if (self->row_hover == 0xFFFF)
+            if (self->row_hover == -1)
             {
                 return {};
             }
