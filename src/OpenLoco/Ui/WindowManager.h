@@ -135,7 +135,7 @@ namespace OpenLoco::Ui::Windows
         void setToRoadExtra(Window* main, Map::RoadElement* track, const uint8_t bh, const Map::Pos2 pos);
         void sub_4A6FAC();
         bool isStationTabOpen();
-        void rotate(Window* self);
+        bool rotate(Window* self);
         void sub_49FEC7();
         void registerHooks();
     }
@@ -379,6 +379,7 @@ namespace OpenLoco::Ui::Windows
     {
         Window* open();
         void reset();
+        bool rotate(Window* self);
     }
 
     namespace Tutorial
