@@ -2612,7 +2612,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             if (!Input::isToolActive(WindowType::vehicle, self->number))
             {
-                if (Input::toolSet(self, widx::tool, 12))
+                if (Input::toolSet(self, widx::tool, CursorId::crosshair))
                 {
                     self->invalidate();
                     sub_470824(Common::getVehicle(self));
@@ -3277,13 +3277,15 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x0050029C
-        static const std::array<std::array<uint8_t, 2>, 6> typeToTool = {
-            { std::array<uint8_t, 2>{ { 27, 28 } },
-              std::array<uint8_t, 2>{ { 29, 30 } },
-              std::array<uint8_t, 2>{ { 31, 32 } },
-              std::array<uint8_t, 2>{ { 33, 34 } },
-              std::array<uint8_t, 2>{ { 35, 35 } },
-              std::array<uint8_t, 2>{ { 36, 36 } } }
+        static constexpr std::array<std::array<CursorId, 2>, 6> typeToToolCursor = {
+            {
+                { { CursorId::placeTrain, CursorId::placeTrainAlt } },
+                { { CursorId::placeBus, CursorId::placeBusAlt } },
+                { { CursorId::placeTruck, CursorId::placeTruckAlt } },
+                { { CursorId::placeTram, CursorId::placeTramAlt } },
+                { { CursorId::placePlane, CursorId::placePlane } },
+                { { CursorId::placeShip, CursorId::placeShip } },
+            }
         };
 
         // 0x00427595
@@ -3850,9 +3852,9 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004B29C0
         static void pickupToolUpdate(Window& self, const int16_t x, const int16_t y)
         {
-            static loco_global<int8_t, 0x00523393> _currentTool;
+            static loco_global<CursorId, 0x00523393> _currentToolCursor;
             auto* head = getVehicle(&self);
-            _currentTool = typeToTool[static_cast<uint8_t>(head->vehicleType)][_pickupDirection != 0 ? 1 : 0];
+            _currentToolCursor = typeToToolCursor[static_cast<uint8_t>(head->vehicleType)][_pickupDirection != 0 ? 1 : 0];
 
             switch (head->mode)
             {
@@ -4013,8 +4015,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
             auto head = getVehicle(self);
             if (!head->isPlaced())
             {
-                auto tool = typeToTool[static_cast<uint8_t>(head->vehicleType)][_pickupDirection != 0 ? 1 : 0];
-                if (Input::toolSet(self, pickupWidx, tool))
+                CursorId cursor = typeToToolCursor[static_cast<uint8_t>(head->vehicleType)][_pickupDirection != 0 ? 1 : 0];
+                if (Input::toolSet(self, pickupWidx, cursor))
                 {
                     _1136264 = -1;
                 }

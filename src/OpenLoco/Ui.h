@@ -42,7 +42,7 @@ namespace OpenLoco::Ui
     };
 #pragma pack(pop)
 
-    enum class CursorId
+    enum class CursorId : uint8_t
     {
         pointer = 0,
         blank = 1,

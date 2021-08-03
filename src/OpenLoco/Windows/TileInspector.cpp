@@ -32,8 +32,6 @@ using namespace OpenLoco::Map;
 
 namespace OpenLoco::Ui::Windows::TileInspector
 {
-    static loco_global<int8_t, 0x00523393> _currentTool;
-
     static TilePos2 _currentPosition{};
 
     constexpr Gfx::ui_size_t windowSize = { 250, 182 };
@@ -77,7 +75,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
 
     static void activateMapSelectionTool(Window* const self)
     {
-        Input::toolSet(self, widx::panel, 42);
+        Input::toolSet(self, widx::panel, CursorId::crosshair);
         Input::setFlag(Input::Flags::flag6);
     }
 
