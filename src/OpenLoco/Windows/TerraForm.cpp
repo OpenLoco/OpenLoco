@@ -11,6 +11,7 @@
 #include "../Map/Map.hpp"
 #include "../Map/Tile.h"
 #include "../Map/TileManager.h"
+#include "../Math/Trigonometry.hpp"
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/LandObject.h"
 #include "../Objects/ObjectManager.h"
@@ -511,74 +512,29 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BDDC6
-        static void selectedTreeToolDown(const GameCommands::TreePlacementArgs& baseArgs, const uint16_t range, const uint16_t density)
+        static void clusterSelectedTreeToolDown(const GameCommands::TreePlacementArgs& baseArgs, const uint16_t range, const uint16_t density)
         {
-            static loco_global<int16_t[4096], 0x00501B50> _501B50;
-            const auto numAttempts = (range * range * density) / 8192;
-            for (auto i = 0; i < numAttempts; ++i)
+            const auto numPlacements = (range * range * density) / 8192;
+            for (auto i = 0; i < numPlacements; ++i)
             {
+                // Choose a random offset in a circle
                 auto& rng = gPrng();
                 auto randomMagnitude = rng.randNext(std::numeric_limits<uint16_t>::max()) * range / 65536;
-                auto random2 = rng.randNext(3);
-                auto random3 = rng.randNext(4096);
-                auto xOffset = 0;
-                if (random2 & (1 << 1))
-                {
-                    if (random2 & (1 << 0))
-                    {
-                        xOffset = -_501B50[(-random3) & 0xFFF];
-                    }
-                    else
-                    {
-                        xOffset = -_501B50[random3 & 0xFFF];
-                    }
-                }
-                else
-                {
-                    if (random2 & (1 << 0))
-                    {
-                        xOffset = _501B50[(-random3) & 0xFFF];
-                    }
-                    else
-                    {
-                        xOffset = _501B50[random3 & 0xFFF];
-                    }
-                }
-                auto yOffset = 0;
-                if (random2 & (1 << 1))
-                {
-                    if (random2 & (1 << 0))
-                    {
-                        yOffset = _501B50[random3 & 0xFFF];
-                    }
-                    else
-                    {
-                        yOffset = -_501B50[(-random3) & 0xFFF];
-                    }
-                }
-                else
-                {
-                    if (random2 & (1 << 0))
-                    {
-                        yOffset = -_501B50[random3 & 0xFFF];
-                    }
-                    else
-                    {
-                        yOffset = _501B50[(-random3) & 0xFFF];
-                    }
-                }
+                auto randomDirection = rng.randNext(Math::Trigonometry::directionPrecisionHigh - 1);
+                Map::Pos2 randomOffset(
+                    Math::Trigonometry::integerSinePrecisionHigh(randomDirection, randomMagnitude),
+                    Math::Trigonometry::integerCosinePrecisionHigh(randomDirection, randomMagnitude));
 
-                xOffset = xOffset * randomMagnitude / 32768;
-                yOffset = yOffset * randomMagnitude / 32768;
                 GameCommands::TreePlacementArgs args;
-                Map::Pos2 loc(xOffset + baseArgs.pos.x, yOffset + baseArgs.pos.y);
-                args.quadrant = ViewportInteraction::getQuadrantFromPos(loc);
-                args.pos = Map::Pos2(loc.x & 0xFFE0, loc.y & 0xFFE0);
+                Map::Pos2 newLoc = randomOffset + baseArgs.pos;
+                args.quadrant = ViewportInteraction::getQuadrantFromPos(newLoc);
+                args.pos = Map::Pos2(newLoc.x & 0xFFE0, newLoc.y & 0xFFE0);
+                // Note: this is not the same as the randomDirection above as it is the trees rotation
                 args.rotation = rng.randNext(3);
                 args.colour = 0;
                 args.type = baseArgs.type;
                 args.buildImmediately = true;
-                args.unkFlag = true;
+                args.unkFlag = true; // Expenditure related??
                 do_23(GameCommands::Flags::apply, args);
             }
         }
@@ -607,7 +563,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                         auto height = TileManager::getHeight(placementArgs->pos);
                         Audio::playSound(Audio::SoundId::construct, Map::Pos3{ placementArgs->pos.x, placementArgs->pos.y, height.landHeight });
 
-                        selectedTreeToolDown(*placementArgs, 320, 3);
+                        clusterSelectedTreeToolDown(*placementArgs, 320, 3);
                         // TODO: Lock behind sandbox/editor
                         CompanyManager::updatingCompanyId(previousId);
                         break;
