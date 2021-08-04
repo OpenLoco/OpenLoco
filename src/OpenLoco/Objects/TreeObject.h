@@ -24,6 +24,18 @@ namespace OpenLoco
         0,
     } };
 
+    namespace TreeObjectFlags
+    {
+        constexpr uint16_t hasSnowVariation = (1 << 0);
+        constexpr uint16_t unk1 = (1 << 1);
+        constexpr uint16_t veryHighAltitude = (1 << 2);
+        constexpr uint16_t highAltitude = (1 << 3);
+        constexpr uint16_t requiresWater = (1 << 4);
+        constexpr uint16_t unk5 = (1 << 5);
+        constexpr uint16_t droughtResistant = (1 << 6);
+        constexpr uint16_t unk7 = (1 << 7);
+    }
+
 #pragma pack(push, 1)
     struct TreeObject
     {
@@ -34,7 +46,7 @@ namespace OpenLoco
         uint8_t var_05;
         uint8_t num_rotations; // 0x06 (1,2,4)
         uint8_t growth;        // 0x07 (number of tree size images)
-        uint16_t var_08;       // 0x08
+        uint16_t flags;       // 0x08
         uint32_t sprites[12];  // 0x0A
         uint8_t pad_3A[0x3D - 0x3A];
         uint8_t season_state; // 0x3D (index for sprites, seasons + dying)

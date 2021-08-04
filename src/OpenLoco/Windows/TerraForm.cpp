@@ -558,39 +558,39 @@ namespace OpenLoco::Ui::Windows::Terraform
             uint16_t mustNotTreeFlags = 0;
             if (unk)
             {
-                mustNotTreeFlags |= (1 << 1);
+                mustNotTreeFlags |= TreeObjectFlags::unk1;
             }
 
             uint16_t mustTreeFlags = 0;
             if (surface->baseZ() - 4 > _currentSnowLine)
             {
-                mustTreeFlags |= (1 << 0);
+                mustTreeFlags |= TreeObjectFlags::hasSnowVariation;
             }
             if (surface->baseZ() > 68)
             {
-                mustTreeFlags |= (1 << 2);
+                mustTreeFlags |= TreeObjectFlags::veryHighAltitude;
             }
             if (surface->baseZ() > 48)
             {
-                mustTreeFlags |= (1 << 2);
+                mustTreeFlags |= TreeObjectFlags::highAltitude;
             }
 
             auto* landObj = ObjectManager::get<LandObject>(surface->terrain());
-            mustNotTreeFlags |= (1 << 6);
+            mustNotTreeFlags |= TreeObjectFlags::droughtResistant;
             if (landObj->var_05 & (1 << 2))
             {
-                mustTreeFlags |= (1 << 6);
-                mustNotTreeFlags &= ~(1 << 6);
+                mustTreeFlags |= TreeObjectFlags::droughtResistant;
+                mustNotTreeFlags &= ~TreeObjectFlags::droughtResistant;
             }
             if (landObj->var_05 & (1 << 3))
             {
                 return {};
             }
-            mustNotTreeFlags |= (1 << 4);
+            mustNotTreeFlags |= TreeObjectFlags::requiresWater;
             const uint16_t numSameTypeSurfaces = TileManager::countSurroundingWaterTiles(loc);
             if (numSameTypeSurfaces >= 8)
             {
-                mustNotTreeFlags &= ~(1 << 4);
+                mustNotTreeFlags &= ~TreeObjectFlags::requiresWater;
             }
 
             std::vector<uint8_t> selectableTrees;
@@ -601,12 +601,12 @@ namespace OpenLoco::Ui::Windows::Terraform
                 {
                     continue;
                 }
-                if (treeObj->var_08 & mustNotTreeFlags)
+                if (treeObj->flags & mustNotTreeFlags)
                 {
                     continue;
                 }
 
-                if ((treeObj->var_08 & mustTreeFlags) != mustTreeFlags)
+                if ((treeObj->flags & mustTreeFlags) != mustTreeFlags)
                 {
                     continue;
                 }
