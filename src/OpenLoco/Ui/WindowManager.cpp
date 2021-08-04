@@ -794,11 +794,44 @@ namespace OpenLoco::Ui::WindowManager
     // TODO: hook
     Window* bringToFront(Window* w)
     {
-        registers regs;
-        regs.esi = X86Pointer(w);
-        call(0x004CC750, regs);
+        if (w->flags & (WindowFlags::stick_to_back | WindowFlags::stick_to_front))
+        {
+            return w;
+        }
 
-        return X86Pointer<Window>(regs.esi);
+        Window* frontMostWnd = nullptr;
+        for (auto i = count(); i != 0; --i)
+        {
+            if (!(_windows[i - 1].flags & WindowFlags::stick_to_back))
+            {
+                frontMostWnd = &_windows[i - 1];
+                break;
+            }
+        }
+        if (frontMostWnd != nullptr && frontMostWnd != &_windows[0] && frontMostWnd != w)
+        {
+            std::swap(*frontMostWnd, *w);
+            w = frontMostWnd;
+            w->invalidate();
+        }
+
+        const auto right = w->x + w->width;
+        // If window is almost offscreen to the left
+        if (right < 20)
+        {
+            const auto shiftRight = 20 - w->x;
+            w->x = 20;
+            for (auto* vp : w->viewports)
+            {
+                if (vp != nullptr)
+                {
+                    vp->x += shiftRight;
+                }
+            }
+            w->invalidate();
+        }
+
+        return w;
     }
 
     // 0x004CD3A9
