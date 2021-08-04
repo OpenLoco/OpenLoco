@@ -342,17 +342,10 @@ namespace OpenLoco::Map::TileManager
     }
 
     // TODO: Return std::optional
-    uint16_t setMapSelectionTiles(int16_t x, int16_t y)
+    uint16_t setMapSelectionTiles(const Map::Pos2& loc, const uint8_t selectionType)
     {
-        auto res = Ui::ViewportInteraction::getSurfaceLocFromUi({ x, y });
-
-        if (!res)
-        {
-            return 0x8000;
-        }
-
-        uint16_t xPos = res->first.x;
-        uint16_t yPos = res->first.y;
+        uint16_t xPos = loc.x;
+        uint16_t yPos = loc.y;
         uint8_t count = 0;
 
         if (!Input::hasMapSelectionFlag(Input::MapSelectionFlags::enable))
@@ -361,9 +354,9 @@ namespace OpenLoco::Map::TileManager
             count++;
         }
 
-        if (_word_F2448E != 4)
+        if (_word_F2448E != selectionType)
         {
-            _word_F2448E = 4;
+            _word_F2448E = selectionType;
             count++;
         }
 
@@ -414,17 +407,11 @@ namespace OpenLoco::Map::TileManager
         return count;
     }
 
-    uint16_t setMapSelectionSingleTile(int16_t x, int16_t y, bool setQuadrant)
+    uint16_t setMapSelectionSingleTile(const Map::Pos2& loc, bool setQuadrant)
     {
-        auto res = Ui::ViewportInteraction::getSurfaceLocFromUi({ x, y });
-        if (!res)
-        {
-            return 0x8000;
-        }
-
-        uint16_t xPos = res->first.x & 0xFFE0;
-        uint16_t yPos = res->first.y & 0xFFE0;
-        uint16_t cursorQuadrant = Ui::ViewportInteraction::getQuadrantOrCentreFromPos(res->first);
+        uint16_t xPos = loc.x & 0xFFE0;
+        uint16_t yPos = loc.y & 0xFFE0;
+        uint16_t cursorQuadrant = Ui::ViewportInteraction::getQuadrantOrCentreFromPos(loc);
 
         auto count = 0;
         if (!Input::hasMapSelectionFlag(Input::MapSelectionFlags::enable))

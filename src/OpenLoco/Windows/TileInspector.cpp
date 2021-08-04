@@ -463,7 +463,11 @@ namespace OpenLoco::Ui::Windows::TileInspector
 
         TileManager::mapInvalidateSelectionRect();
         Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
-        TileManager::setMapSelectionSingleTile(x, y);
+        auto res = Ui::ViewportInteraction::getSurfaceLocFromUi({ x, y });
+        if (res)
+        {
+            TileManager::setMapSelectionSingleTile(res->first);
+        }
     }
 
     static void onToolDown(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
