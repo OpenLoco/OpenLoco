@@ -542,7 +542,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         static loco_global<uint8_t, 0x00525FB4> _currentSnowLine;
 
         // 0x004BDF19
-        std::optional<uint8_t> getRandomTreeTypeFromSurface(const Map::TilePos2& loc, bool unk)
+        static std::optional<uint8_t> getRandomTreeTypeFromSurface(const Map::TilePos2& loc, bool unk)
         {
             if (!Map::validCoords(loc))
             {
@@ -577,12 +577,13 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             auto* landObj = ObjectManager::get<LandObject>(surface->terrain());
             mustNotTreeFlags |= TreeObjectFlags::droughtResistant;
-            if (landObj->var_05 & (1 << 2))
+            if (landObj->flags & LandObjectFlags::isDesert)
             {
                 mustTreeFlags |= TreeObjectFlags::droughtResistant;
                 mustNotTreeFlags &= ~TreeObjectFlags::droughtResistant;
             }
-            if (landObj->var_05 & (1 << 3))
+
+            if (landObj->flags & LandObjectFlags::noTrees)
             {
                 return {};
             }
