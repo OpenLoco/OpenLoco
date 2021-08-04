@@ -1736,7 +1736,8 @@ namespace OpenLoco::Ui::Windows::Terraform
             {
                 Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
 
-                auto [interaction, viewport] = ViewportInteraction::getMapCoordinatesFromPos(x, y, ~(ViewportInteraction::InteractionItemFlags::surface | ViewportInteraction::InteractionItemFlags::water));
+                auto res = ViewportInteraction::getMapCoordinatesFromPos(x, y, ~(ViewportInteraction::InteractionItemFlags::surface | ViewportInteraction::InteractionItemFlags::water));
+                auto& interaction = res.first;
                 if (interaction.type == ViewportInteraction::InteractionItem::noInteraction)
                 {
                     setAdjustCost(0x80000000, 0x80000000);
@@ -2605,8 +2606,11 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004A69DD
         static void sub_4A69DD()
         {
-            registers regs;
-            call(0x004A69DD, regs);
+            auto* window = WindowManager::find(WindowType::construction);
+            if (window != nullptr)
+            {
+                Ui::Windows::Construction::sub_49FEC7();
+            }
         }
 
         static void initEvents()
