@@ -1102,12 +1102,26 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BC677
         static void onToolUpdate(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
-            registers regs;
-            regs.esi = X86Pointer(&self);
-            regs.dx = widgetIndex;
-            regs.ax = x;
-            regs.bx = y;
-            call(0x004BC677, regs);
+            Map::TileManager::mapInvalidateSelectionRect();
+            Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
+            auto res = Map::TileManager::setMapSelectionTiles(x, y);
+            if (res == 0)
+            {
+                return;
+            }
+            uint32_t cost = 0x80000000;
+            if (res != 0x8000)
+            {
+                const auto [pointA, pointB] = Map::TileManager::getMapSelectionArea();
+                const Pos2 centre = (pointA + pointB) / 2;
+                cost = GameCommands::do_66(centre, pointA, pointB, GameCommands::Flags::flag_2 | GameCommands::Flags::flag_6);
+            }
+
+            if (cost != _raiseLandCost)
+            {
+                _raiseLandCost = cost;
+                WindowManager::invalidate(WindowType::terraform);
+            }
         }
 
         static void clearLand(uint8_t flags)
