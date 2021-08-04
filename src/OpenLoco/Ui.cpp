@@ -83,6 +83,7 @@ namespace OpenLoco::Ui
     loco_global<ScreenInfo, 0x0050B884> screen_info;
     static loco_global<uint16_t, 0x00523390> _toolWindowNumber;
     static loco_global<Ui::WindowType, 0x00523392> _toolWindowType;
+    static loco_global<Ui::CursorId, 0x00523393> _currentToolCursor;
     static loco_global<uint16_t, 0x00523394> _toolWidgetIdx;
     loco_global<set_palette_func, 0x0052524C> set_palette_callback;
     static loco_global<uint32_t, 0x00525E28> _525E28;
@@ -345,6 +346,16 @@ namespace OpenLoco::Ui
     void showCursor()
     {
         SDL_ShowCursor(1);
+    }
+
+    void setToolCursor(CursorId id)
+    {
+        _currentToolCursor = id;
+    }
+
+    CursorId getToolCursor()
+    {
+        return *_currentToolCursor;
     }
 
     // 0x0040447F

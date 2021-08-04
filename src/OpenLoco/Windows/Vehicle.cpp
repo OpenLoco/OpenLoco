@@ -3852,9 +3852,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004B29C0
         static void pickupToolUpdate(Window& self, const int16_t x, const int16_t y)
         {
-            static loco_global<CursorId, 0x00523393> _currentToolCursor;
             auto* head = getVehicle(&self);
-            _currentToolCursor = typeToToolCursor[static_cast<uint8_t>(head->vehicleType)][_pickupDirection != 0 ? 1 : 0];
+            Ui::setToolCursor(typeToToolCursor[static_cast<uint8_t>(head->vehicleType)][_pickupDirection != 0 ? 1 : 0]);
 
             switch (head->mode)
             {

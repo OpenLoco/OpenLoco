@@ -31,7 +31,6 @@ namespace OpenLoco::Ui::Windows::Terraform
     static loco_global<std::uint8_t[10], 0x00500775> _byte_500775;
     static loco_global<int16_t, 0x0052337A> _dragLastY;
     static loco_global<Ui::WindowType, 0x00523392> _toolWindowType;
-    static loco_global<CursorId, 0x00523393> _currentToolCursor;
     static loco_global<CompanyId_t, 0x00525E3C> _player_company;
     static loco_global<uint8_t, 0x00525FB1> _lastSelectedTree;
     static loco_global<uint8_t, 0x00525FB6> _grassLand;
@@ -1129,7 +1128,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             TileManager::mapInvalidateSelectionRect();
 
-            if (_currentToolCursor != CursorId::upDownArrow)
+            if (Ui::getToolCursor() != CursorId::upDownArrow)
             {
                 Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
                 if (_adjustLandToolSize != 1)
@@ -1196,7 +1195,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 }
             }
 
-            _currentToolCursor = CursorId::upDownArrow;
+            Ui::setToolCursor(CursorId::upDownArrow);
         }
 
         // 0x004BC9E2
@@ -1254,7 +1253,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 TileManager::mapInvalidateSelectionRect();
 
                 Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
-                _currentToolCursor = CursorId::landTool;
+                Ui::setToolCursor(CursorId::landTool);
             }
         }
 
@@ -1499,7 +1498,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 TileManager::mapInvalidateSelectionRect();
 
                 Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
-                _currentToolCursor = CursorId::waterTool;
+                Ui::setToolCursor(CursorId::waterTool);
             }
         }
 

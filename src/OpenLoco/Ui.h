@@ -122,6 +122,8 @@ namespace OpenLoco::Ui
     void setCursorPos(int32_t x, int32_t y);
     void hideCursor();
     void showCursor();
+    void setToolCursor(CursorId id);
+    CursorId getToolCursor();
     void update();
     void triggerResize();
     void render();
