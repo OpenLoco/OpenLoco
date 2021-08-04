@@ -245,11 +245,11 @@ namespace OpenLoco::Ui
     // 0x00452001
     void initialiseCursors()
     {
-        _cursors[CursorId::pointer] = loadCursor(Cursor::pointer);
+        _cursors[CursorId::pointer] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_ARROW);
         _cursors[CursorId::blank] = loadCursor(Cursor::blank);
         _cursors[CursorId::upArrow] = loadCursor(Cursor::upArrow);
         _cursors[CursorId::upDownArrow] = loadCursor(Cursor::upDownArrow);
-        _cursors[CursorId::handPointer] = loadCursor(Cursor::handPointer);
+        _cursors[CursorId::handPointer] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_HAND);
         _cursors[CursorId::busy] = loadCursor(Cursor::busy);
         _cursors[CursorId::diagonalArrows] = loadCursor(Cursor::diagonalArrows);
         _cursors[CursorId::unk_7] = loadCursor(Cursor::cursor124);
