@@ -80,7 +80,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
             {
                 _isSignalBothDirections = 1;
                 Input::toolCancel();
-                Input::toolSet(self, widgetIndex, 42);
+                Input::toolSet(self, widgetIndex, CursorId::placeSignal);
                 break;
             }
 
@@ -88,7 +88,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
             {
                 _isSignalBothDirections = 0;
                 Input::toolCancel();
-                Input::toolSet(self, widgetIndex, 42);
+                Input::toolSet(self, widgetIndex, CursorId::placeSignal);
                 break;
             }
         }

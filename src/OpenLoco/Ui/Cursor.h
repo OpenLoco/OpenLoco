@@ -26,44 +26,44 @@ namespace OpenLoco::Ui
         static Cursor upDownArrow;
         static Cursor busy;
         static Cursor diagonalArrows;
-        static Cursor cursor124;
-        static Cursor cursor131;
-        static Cursor cursor127;
-        static Cursor cursor128;
-        static Cursor cursor129;
-        static Cursor cursor130;
-        static Cursor cursor132;
-        static Cursor cursor133;
-        static Cursor cursor138;
-        static Cursor cursor137;
-        static Cursor cursor139;
-        static Cursor cursor141;
-        static Cursor cursor142;
-        static Cursor cursor143;
-        static Cursor cursor144;
-        static Cursor cursor145;
-        static Cursor cursor158;
-        static Cursor cursor159;
-        static Cursor cursor161;
-        static Cursor cursor160;
-        static Cursor cursor163;
-        static Cursor cursor162;
-        static Cursor cursor173;
-        static Cursor cursor172;
-        static Cursor cursor178;
-        static Cursor cursor177;
-        static Cursor cursor175;
-        static Cursor cursor176;
-        static Cursor cursor180;
-        static Cursor cursor179;
+        static Cursor picker;        // 124
+        static Cursor plantTree;     // 131
+        static Cursor placeFountain; // 127
+        static Cursor placeStatue;   // 128
+        static Cursor placeBench;    // 129
+        static Cursor crosshair;     // 130
+        static Cursor placeTrashBin; // 132
+        static Cursor placeLantern;  // 133
+        static Cursor placeFence;    // 138
+        static Cursor placeFlowers;  // 137
+        static Cursor placePath;     // 139
+        static Cursor landTool;      // 141
+        static Cursor waterTool;     // 142
+        static Cursor placeHome;     // 143
+        static Cursor placeVolcano;  // 144
+        static Cursor footsteps;     // 145
+        static Cursor brush;         // 158
+        static Cursor placeBanner;   // 159
+        static Cursor openHand;      // 161
+        static Cursor dragHand;      // 160
+        static Cursor placeTrain;    // 163
+        static Cursor placeTrainAlt; // 162
+        static Cursor placeBus;      // 173
+        static Cursor placeBusAlt;   // 172
+        static Cursor placeTruck;    // 178
+        static Cursor placeTruckAlt; // 177
+        static Cursor placeTram;     // 175
+        static Cursor placeTramAlt;  // 176
+        static Cursor placePlane;    // 180
+        static Cursor placeShip;     // 179
         static Cursor inwardArrows;
-        static Cursor cursor169;
-        static Cursor cursor168;
-        static Cursor cursor170;
-        static Cursor cursor184;
-        static Cursor cursor185;
-        static Cursor cursor186;
-        static Cursor cursor189;
+        static Cursor placeTown;     // 169
+        static Cursor placeBuilding; // 168
+        static Cursor placeFactory;  // 170
+        static Cursor bulldozerTool; // 184
+        static Cursor placeSignal;   // 185
+        static Cursor placeHQ;       // 186
+        static Cursor placeStation;  // 189
 
     public:
         constexpr Cursor(int x, int y, std::string_view bitmap);

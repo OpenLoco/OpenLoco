@@ -181,7 +181,7 @@ namespace OpenLoco::Ui
         "                                "
         "                                ");
 
-    Cursor Cursor::cursor124 = Cursor(
+    Cursor Cursor::picker = Cursor(
         15, 31,
         "             XXXXX              "
         "            X....XX             "
@@ -216,7 +216,7 @@ namespace OpenLoco::Ui
         "         XX.X    X.XXX          "
         "           XXX  XXXX            ");
 
-    Cursor Cursor::cursor131 = Cursor(
+    Cursor Cursor::plantTree = Cursor(
         6, 31,
         "                                "
         "                 XXX            "
@@ -251,7 +251,7 @@ namespace OpenLoco::Ui
         "     X.X                        "
         "      X                         ");
 
-    Cursor Cursor::cursor127 = Cursor(
+    Cursor Cursor::placeFountain = Cursor(
         6, 31,
         "               .     .          "
         "           .       .    .      ."
@@ -286,7 +286,7 @@ namespace OpenLoco::Ui
         "     X.X           XXXXX        "
         "      X                         ");
 
-    Cursor Cursor::cursor128 = Cursor(
+    Cursor Cursor::placeStatue = Cursor(
         6, 31,
         "                                "
         "                                "
@@ -321,7 +321,7 @@ namespace OpenLoco::Ui
         "     X.X        XXXXXXXXXXX     "
         "      X                         ");
 
-    Cursor Cursor::cursor129 = Cursor(
+    Cursor Cursor::placeBench = Cursor(
         6, 31,
         "                                "
         "                                "
@@ -356,7 +356,7 @@ namespace OpenLoco::Ui
         "     X.X                        "
         "      X                         ");
 
-    Cursor Cursor::cursor130 = Cursor(
+    Cursor Cursor::crosshair = Cursor(
         14, 16,
         "                                "
         "                                "
@@ -391,7 +391,7 @@ namespace OpenLoco::Ui
         "                                "
         "                                ");
 
-    Cursor Cursor::cursor132 = Cursor(
+    Cursor Cursor::placeTrashBin = Cursor(
         6, 31,
         "                                "
         "                                "
@@ -426,7 +426,7 @@ namespace OpenLoco::Ui
         "     X.X                        "
         "      X                         ");
 
-    Cursor Cursor::cursor133 = Cursor(
+    Cursor Cursor::placeLantern = Cursor(
         6, 31,
         "                   XXX          "
         "                  X...X         "
@@ -461,7 +461,7 @@ namespace OpenLoco::Ui
         "     X.X        XXXXXXXXX       "
         "      X                         ");
 
-    Cursor Cursor::cursor138 = Cursor(
+    Cursor Cursor::placeFence = Cursor(
         6, 31,
         "                                "
         "   XX                           "
@@ -496,7 +496,7 @@ namespace OpenLoco::Ui
         "     X.X                        "
         "      X                         ");
 
-    Cursor Cursor::cursor137 = Cursor(
+    Cursor Cursor::placeFlowers = Cursor(
         6, 31,
         "                   X            "
         "                  X.X           "
@@ -531,7 +531,7 @@ namespace OpenLoco::Ui
         "     X.X         XXXXXX         "
         "      X                         ");
 
-    Cursor Cursor::cursor139 = Cursor(
+    Cursor Cursor::placePath = Cursor(
         6, 31,
         "                                "
         "                                "
@@ -566,7 +566,7 @@ namespace OpenLoco::Ui
         "     X.X                        "
         "      X                         ");
 
-    Cursor Cursor::cursor141 = Cursor(
+    Cursor Cursor::landTool = Cursor(
         6, 31,
         "                                "
         "                          XX    "
@@ -601,7 +601,7 @@ namespace OpenLoco::Ui
         "     X.X                        "
         "      X                         ");
 
-    Cursor Cursor::cursor142 = Cursor(
+    Cursor Cursor::waterTool = Cursor(
         6, 31,
         "                                "
         "                                "
@@ -636,7 +636,7 @@ namespace OpenLoco::Ui
         "     X.X                        "
         "      X                         ");
 
-    Cursor Cursor::cursor143 = Cursor(
+    Cursor Cursor::placeHome = Cursor(
         6, 31,
         "                                "
         "                                "
@@ -671,7 +671,7 @@ namespace OpenLoco::Ui
         "     X.X                        "
         "      X                         ");
 
-    Cursor Cursor::cursor144 = Cursor(
+    Cursor Cursor::placeVolcano = Cursor(
         6, 31,
         "            X   X X             "
         "              X     X           "
@@ -706,7 +706,7 @@ namespace OpenLoco::Ui
         "     X.X                        "
         "      X                         ");
 
-    Cursor Cursor::cursor145 = Cursor(
+    Cursor Cursor::footsteps = Cursor(
         6, 31,
         "                                "
         "      XXX                       "
@@ -741,7 +741,7 @@ namespace OpenLoco::Ui
         "     X.X                        "
         "      X                         ");
 
-    Cursor Cursor::cursor158 = Cursor(
+    Cursor Cursor::brush = Cursor(
         7, 30,
         "                                "
         "                           XXX  "
@@ -776,7 +776,7 @@ namespace OpenLoco::Ui
         "       X                        "
         "                                ");
 
-    Cursor Cursor::cursor159 = Cursor(
+    Cursor Cursor::placeBanner = Cursor(
         6, 31,
         "  X                         X   "
         " X.X                       X.X  "
@@ -811,7 +811,7 @@ namespace OpenLoco::Ui
         "     X.X                        "
         "      X                         ");
 
-    Cursor Cursor::cursor161 = Cursor(
+    Cursor Cursor::openHand = Cursor(
         15, 17,
         "             XX    X            "
         "            X..X  XXX           "
@@ -846,7 +846,7 @@ namespace OpenLoco::Ui
         "                XX.........XX   "
         "                 XXXXXXXXXX     ");
 
-    Cursor Cursor::cursor160 = Cursor(
+    Cursor Cursor::dragHand = Cursor(
         15, 17,
         "                                "
         "          XXXX  XXX             "
@@ -881,7 +881,7 @@ namespace OpenLoco::Ui
         "                XX.........XX   "
         "                 XXXXXXXXXX     ");
 
-    Cursor Cursor::cursor163 = Cursor(
+    Cursor Cursor::placeTrain = Cursor(
         6, 31,
         "                                "
         "                                "
@@ -916,7 +916,7 @@ namespace OpenLoco::Ui
         "     X.X                        "
         "      X                         ");
 
-    Cursor Cursor::cursor162 = Cursor(
+    Cursor Cursor::placeTrainAlt = Cursor(
         25, 31,
         "                                "
         "                                "
@@ -951,7 +951,7 @@ namespace OpenLoco::Ui
         "                        X.X     "
         "                         X      ");
 
-    Cursor Cursor::cursor173 = Cursor(
+    Cursor Cursor::placeBus = Cursor(
         6, 31,
         "                                "
         "                                "
@@ -986,7 +986,7 @@ namespace OpenLoco::Ui
         "     X.X                        "
         "      X                         ");
 
-    Cursor Cursor::cursor172 = Cursor(
+    Cursor Cursor::placeBusAlt = Cursor(
         25, 31,
         "                                "
         "                                "
@@ -1021,7 +1021,7 @@ namespace OpenLoco::Ui
         "                        X.X     "
         "                         X      ");
 
-    Cursor Cursor::cursor178 = Cursor(
+    Cursor Cursor::placeTruck = Cursor(
         6, 31,
         "                                "
         "                                "
@@ -1056,7 +1056,7 @@ namespace OpenLoco::Ui
         "     X.X                        "
         "      X                         ");
 
-    Cursor Cursor::cursor177 = Cursor(
+    Cursor Cursor::placeTruckAlt = Cursor(
         25, 31,
         "                                "
         "                                "
@@ -1091,7 +1091,7 @@ namespace OpenLoco::Ui
         "                        X.X     "
         "                         X      ");
 
-    Cursor Cursor::cursor175 = Cursor(
+    Cursor Cursor::placeTram = Cursor(
         6, 31,
         "           XX                   "
         "          X..X                  "
@@ -1126,7 +1126,7 @@ namespace OpenLoco::Ui
         "     X.X                        "
         "      X                         ");
 
-    Cursor Cursor::cursor176 = Cursor(
+    Cursor Cursor::placeTramAlt = Cursor(
         25, 31,
         "                   XX           "
         "                  X..X          "
@@ -1161,7 +1161,7 @@ namespace OpenLoco::Ui
         "                        X.X     "
         "                         X      ");
 
-    Cursor Cursor::cursor180 = Cursor(
+    Cursor Cursor::placePlane = Cursor(
         6, 31,
         "                           XXXXX"
         "                          X..X.X"
@@ -1196,7 +1196,7 @@ namespace OpenLoco::Ui
         "     X.X                        "
         "      X                         ");
 
-    Cursor Cursor::cursor179 = Cursor(
+    Cursor Cursor::placeShip = Cursor(
         6, 31,
         "         X                      "
         "         X                      "
@@ -1266,7 +1266,7 @@ namespace OpenLoco::Ui
         "                                "
         "                                ");
 
-    Cursor Cursor::cursor169 = Cursor(
+    Cursor Cursor::placeTown = Cursor(
         6, 31,
         "            XXXXXXXXXXXX        "
         "            X..........XX       "
@@ -1301,7 +1301,7 @@ namespace OpenLoco::Ui
         "     X.XX                       "
         "      XX                        ");
 
-    Cursor Cursor::cursor168 = Cursor(
+    Cursor Cursor::placeBuilding = Cursor(
         6, 31,
         "                                "
         "                                "
@@ -1336,7 +1336,7 @@ namespace OpenLoco::Ui
         "     X.X                        "
         "      X                         ");
 
-    Cursor Cursor::cursor170 = Cursor(
+    Cursor Cursor::placeFactory = Cursor(
         6, 31,
         "                       XX   XX  "
         "                      XX.X XX.X "
@@ -1371,7 +1371,7 @@ namespace OpenLoco::Ui
         "     X.X                        "
         "      X                         ");
 
-    Cursor Cursor::cursor184 = Cursor(
+    Cursor Cursor::bulldozerTool = Cursor(
         6, 31,
         "                 XXX            "
         "               XX...X           "
@@ -1406,7 +1406,7 @@ namespace OpenLoco::Ui
         "     X.X                        "
         "      X                         ");
 
-    Cursor Cursor::cursor185 = Cursor(
+    Cursor Cursor::placeSignal = Cursor(
         6, 31,
         "                X               "
         "               X.X              "
@@ -1441,7 +1441,7 @@ namespace OpenLoco::Ui
         "     X.X       XXX              "
         "      X                         ");
 
-    Cursor Cursor::cursor186 = Cursor(
+    Cursor Cursor::placeHQ = Cursor(
         6, 31,
         "                 XXXXX          "
         "                X.....X         "
@@ -1476,7 +1476,7 @@ namespace OpenLoco::Ui
         "     X.X                        "
         "      X                         ");
 
-    Cursor Cursor::cursor189 = Cursor(
+    Cursor Cursor::placeStation = Cursor(
         6, 31,
         "                 XXXXXXX        "
         "              XXX.......XXX     "

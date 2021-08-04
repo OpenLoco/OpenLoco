@@ -83,6 +83,7 @@ namespace OpenLoco::Ui
     loco_global<ScreenInfo, 0x0050B884> screen_info;
     static loco_global<uint16_t, 0x00523390> _toolWindowNumber;
     static loco_global<Ui::WindowType, 0x00523392> _toolWindowType;
+    static loco_global<Ui::CursorId, 0x00523393> _currentToolCursor;
     static loco_global<uint16_t, 0x00523394> _toolWidgetIdx;
     loco_global<set_palette_func, 0x0052524C> set_palette_callback;
     static loco_global<uint32_t, 0x00525E28> _525E28;
@@ -252,44 +253,44 @@ namespace OpenLoco::Ui
         _cursors[CursorId::handPointer] = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_HAND);
         _cursors[CursorId::busy] = loadCursor(Cursor::busy);
         _cursors[CursorId::diagonalArrows] = loadCursor(Cursor::diagonalArrows);
-        _cursors[CursorId::unk_7] = loadCursor(Cursor::cursor124);
-        _cursors[CursorId::unk_8] = loadCursor(Cursor::cursor131);
-        _cursors[CursorId::unk_9] = loadCursor(Cursor::cursor127);
-        _cursors[CursorId::unk_10] = loadCursor(Cursor::cursor128);
-        _cursors[CursorId::unk_11] = loadCursor(Cursor::cursor129);
-        _cursors[CursorId::unk_12] = loadCursor(Cursor::cursor130);
-        _cursors[CursorId::unk_13] = loadCursor(Cursor::cursor132);
-        _cursors[CursorId::unk_14] = loadCursor(Cursor::cursor133);
-        _cursors[CursorId::unk_15] = loadCursor(Cursor::cursor138);
-        _cursors[CursorId::unk_16] = loadCursor(Cursor::cursor137);
-        _cursors[CursorId::unk_17] = loadCursor(Cursor::cursor139);
-        _cursors[CursorId::unk_18] = loadCursor(Cursor::cursor141);
-        _cursors[CursorId::unk_19] = loadCursor(Cursor::cursor142);
-        _cursors[CursorId::unk_20] = loadCursor(Cursor::cursor143);
-        _cursors[CursorId::unk_21] = loadCursor(Cursor::cursor144);
-        _cursors[CursorId::unk_22] = loadCursor(Cursor::cursor145);
-        _cursors[CursorId::unk_23] = loadCursor(Cursor::cursor158);
-        _cursors[CursorId::unk_24] = loadCursor(Cursor::cursor159);
-        _cursors[CursorId::unk_25] = loadCursor(Cursor::cursor161);
-        _cursors[CursorId::unk_26] = loadCursor(Cursor::cursor160);
-        _cursors[CursorId::unk_27] = loadCursor(Cursor::cursor163);
-        _cursors[CursorId::unk_28] = loadCursor(Cursor::cursor162);
-        _cursors[CursorId::unk_29] = loadCursor(Cursor::cursor173);
-        _cursors[CursorId::unk_30] = loadCursor(Cursor::cursor172);
-        _cursors[CursorId::unk_31] = loadCursor(Cursor::cursor178);
-        _cursors[CursorId::unk_32] = loadCursor(Cursor::cursor177);
-        _cursors[CursorId::unk_33] = loadCursor(Cursor::cursor175);
-        _cursors[CursorId::unk_34] = loadCursor(Cursor::cursor176);
-        _cursors[CursorId::unk_35] = loadCursor(Cursor::cursor180);
-        _cursors[CursorId::unk_36] = loadCursor(Cursor::cursor179);
+        _cursors[CursorId::picker] = loadCursor(Cursor::picker);
+        _cursors[CursorId::plantTree] = loadCursor(Cursor::plantTree);
+        _cursors[CursorId::placeFountain] = loadCursor(Cursor::placeFountain);
+        _cursors[CursorId::placeStatue] = loadCursor(Cursor::placeStatue);
+        _cursors[CursorId::placeBench] = loadCursor(Cursor::placeBench);
+        _cursors[CursorId::crosshair] = loadCursor(Cursor::crosshair);
+        _cursors[CursorId::placeTrashBin] = loadCursor(Cursor::placeTrashBin);
+        _cursors[CursorId::placeLantern] = loadCursor(Cursor::placeLantern);
+        _cursors[CursorId::placeFence] = loadCursor(Cursor::placeFence);
+        _cursors[CursorId::placeFlowers] = loadCursor(Cursor::placeFlowers);
+        _cursors[CursorId::placePath] = loadCursor(Cursor::placePath);
+        _cursors[CursorId::landTool] = loadCursor(Cursor::landTool);
+        _cursors[CursorId::waterTool] = loadCursor(Cursor::waterTool);
+        _cursors[CursorId::placeHome] = loadCursor(Cursor::placeHome);
+        _cursors[CursorId::placeVolcano] = loadCursor(Cursor::placeVolcano);
+        _cursors[CursorId::footsteps] = loadCursor(Cursor::footsteps);
+        _cursors[CursorId::brush] = loadCursor(Cursor::brush);
+        _cursors[CursorId::placeBanner] = loadCursor(Cursor::placeBanner);
+        _cursors[CursorId::openHand] = loadCursor(Cursor::openHand);
+        _cursors[CursorId::dragHand] = loadCursor(Cursor::dragHand);
+        _cursors[CursorId::placeTrain] = loadCursor(Cursor::placeTrain);
+        _cursors[CursorId::placeTrainAlt] = loadCursor(Cursor::placeTrainAlt);
+        _cursors[CursorId::placeBus] = loadCursor(Cursor::placeBus);
+        _cursors[CursorId::placeBusAlt] = loadCursor(Cursor::placeBusAlt);
+        _cursors[CursorId::placeTruck] = loadCursor(Cursor::placeTruck);
+        _cursors[CursorId::placeTruckAlt] = loadCursor(Cursor::placeTruckAlt);
+        _cursors[CursorId::placeTram] = loadCursor(Cursor::placeTram);
+        _cursors[CursorId::placeTramAlt] = loadCursor(Cursor::placeTramAlt);
+        _cursors[CursorId::placePlane] = loadCursor(Cursor::placePlane);
+        _cursors[CursorId::placeShip] = loadCursor(Cursor::placeShip);
         _cursors[CursorId::inwardArrows] = loadCursor(Cursor::inwardArrows);
-        _cursors[CursorId::unk_38] = loadCursor(Cursor::cursor169);
-        _cursors[CursorId::unk_39] = loadCursor(Cursor::cursor168);
-        _cursors[CursorId::unk_40] = loadCursor(Cursor::cursor170);
-        _cursors[CursorId::unk_41] = loadCursor(Cursor::cursor184);
-        _cursors[CursorId::unk_42] = loadCursor(Cursor::cursor185);
-        _cursors[CursorId::unk_43] = loadCursor(Cursor::cursor186);
-        _cursors[CursorId::unk_44] = loadCursor(Cursor::cursor189);
+        _cursors[CursorId::placeTown] = loadCursor(Cursor::placeTown);
+        _cursors[CursorId::placeBuilding] = loadCursor(Cursor::placeBuilding);
+        _cursors[CursorId::placeFactory] = loadCursor(Cursor::placeFactory);
+        _cursors[CursorId::bulldozerTool] = loadCursor(Cursor::bulldozerTool);
+        _cursors[CursorId::placeSignal] = loadCursor(Cursor::placeSignal);
+        _cursors[CursorId::placeHQ] = loadCursor(Cursor::placeHQ);
+        _cursors[CursorId::placeStation] = loadCursor(Cursor::placeStation);
     }
 
     void disposeCursors()
@@ -345,6 +346,16 @@ namespace OpenLoco::Ui
     void showCursor()
     {
         SDL_ShowCursor(1);
+    }
+
+    void setToolCursor(CursorId id)
+    {
+        _currentToolCursor = id;
+    }
+
+    CursorId getToolCursor()
+    {
+        return *_currentToolCursor;
     }
 
     // 0x0040447F

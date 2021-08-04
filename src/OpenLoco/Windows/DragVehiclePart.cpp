@@ -54,7 +54,7 @@ namespace OpenLoco::Ui::Windows::DragVehiclePart
         self->height = 0; // Set to zero so that skipped in window find
         Vehicle::Details::scrollDrag(Input::getScrollLastLocation());
         self->height = 60;
-        return CursorId::unk_26;
+        return CursorId::dragHand;
     }
 
     static void onMove(Window& self, const int16_t x, const int16_t y)

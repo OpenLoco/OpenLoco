@@ -85,7 +85,6 @@ namespace OpenLoco::Input
     static loco_global<uint16_t, 0x0052338E> _ticksSinceDragStart;
     static loco_global<Ui::WindowNumber_t, 0x00523390> _toolWindowNumber;
     static loco_global<Ui::WindowType, 0x00523392> _toolWindowType;
-    static loco_global<int8_t, 0x00523393> _currentTool;
     static loco_global<int16_t, 0x00523394> _toolWidgetIndex;
 
     static loco_global<int16_t, 0x005233A4> _5233A4;
@@ -286,8 +285,7 @@ namespace OpenLoco::Input
     // tool (al)
     // widgetIndex (dx)
     // w (esi)
-    // TODO: Maybe create a an enum similar to TOOL_IDX in OpenRCT2 for tool (instead of uint8_t)
-    bool toolSet(Ui::Window* w, int16_t widgetIndex, uint8_t tool)
+    bool toolSet(Ui::Window* w, int16_t widgetIndex, CursorId cursorId)
     {
         if (Input::hasFlag(Input::Flags::toolActive))
         {
@@ -305,7 +303,7 @@ namespace OpenLoco::Input
 
         Input::setFlag(Input::Flags::toolActive);
         Input::resetFlag(Input::Flags::flag6);
-        _currentTool = tool;
+        Ui::setToolCursor(cursorId);
         _toolWindowType = w->type;
         _toolWindowNumber = w->number;
         _toolWidgetIndex = widgetIndex;
@@ -2005,7 +2003,7 @@ namespace OpenLoco::Input
                         if (Input::hasFlag(Flags::toolActive))
                         {
                             // 3
-                            cursorId = (Ui::CursorId)*_currentTool;
+                            cursorId = Ui::getToolCursor();
                             auto wnd = Ui::WindowManager::find(_toolWindowType, _toolWindowNumber);
                             if (wnd)
                             {

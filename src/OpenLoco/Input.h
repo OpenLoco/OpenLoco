@@ -88,7 +88,7 @@ namespace OpenLoco::Input
 
     bool isToolActive(Ui::WindowType, Ui::WindowNumber_t);
     bool isToolActive(Ui::WindowType, Ui::WindowNumber_t, int16_t);
-    bool toolSet(Ui::Window* w, int16_t widgetIndex, uint8_t tool);
+    bool toolSet(Ui::Window* w, int16_t widgetIndex, Ui::CursorId cursorId);
     void toolCancel();
     void toolCancel(Ui::WindowType, Ui::WindowNumber_t);
     int16_t getToolWidgetIndex();
