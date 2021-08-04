@@ -443,7 +443,7 @@ namespace OpenLoco::GameCommands
             , quadrant(regs.dl)
             , colour(regs.dh)
             , buildImmediately(regs.di & 0x8000)
-            , unkFlag(regs.di & 0x4000)
+            , requiresFullClearance(regs.di & 0x4000)
         {
         }
 
@@ -453,7 +453,7 @@ namespace OpenLoco::GameCommands
         uint8_t quadrant;
         Colour_t colour;
         bool buildImmediately = false;
-        bool unkFlag = false;
+        bool requiresFullClearance = false;
 
         explicit operator registers() const
         {
@@ -462,7 +462,7 @@ namespace OpenLoco::GameCommands
             regs.cx = pos.y;
             regs.dl = quadrant;
             regs.dh = colour;
-            regs.di = rotation | (buildImmediately ? 0x8000 : 0) | (unkFlag ? 0x4000 : 0);
+            regs.di = rotation | (buildImmediately ? 0x8000 : 0) | (requiresFullClearance ? 0x4000 : 0);
             regs.bh = type;
             return regs;
         }

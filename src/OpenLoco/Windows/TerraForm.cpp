@@ -534,8 +534,123 @@ namespace OpenLoco::Ui::Windows::Terraform
                 args.colour = 0;
                 args.type = baseArgs.type;
                 args.buildImmediately = true;
-                args.unkFlag = true; // Expenditure related??
+                args.requiresFullClearance = true;
                 do_23(GameCommands::Flags::apply, args);
+            }
+        }
+
+        static loco_global<uint8_t, 0x00525FB4> _currentSnowLine;
+
+        // 0x004BDF19
+        std::optional<uint8_t> getRandomTreeTypeFromSurface(const Map::TilePos2& loc, bool unk)
+        {
+            if (!Map::validCoords(loc))
+            {
+                return {};
+            }
+
+            auto* surface = Map::TileManager::get(loc).surface();
+            if (surface == nullptr)
+            {
+                return {};
+            }
+
+            uint16_t mustNotTreeFlags = 0;
+            if (unk)
+            {
+                mustNotTreeFlags |= (1 << 1);
+            }
+
+            uint16_t mustTreeFlags = 0;
+            if (surface->baseZ() - 4 > _currentSnowLine)
+            {
+                mustTreeFlags |= (1 << 0);
+            }
+            if (surface->baseZ() > 68)
+            {
+                mustTreeFlags |= (1 << 2);
+            }
+            if (surface->baseZ() > 48)
+            {
+                mustTreeFlags |= (1 << 2);
+            }
+
+            auto* landObj = ObjectManager::get<LandObject>(surface->terrain());
+            mustNotTreeFlags |= (1 << 6);
+            if (landObj->var_05 & (1 << 2))
+            {
+                mustTreeFlags |= (1 << 6);
+                mustNotTreeFlags &= ~(1 << 6);
+            }
+            if (landObj->var_05 & (1 << 3))
+            {
+                return {};
+            }
+            mustNotTreeFlags |= (1 << 4);
+            const uint16_t numSameTypeSurfaces = TileManager::countSurroundingWaterTiles(loc);
+            if (numSameTypeSurfaces >= 8)
+            {
+                mustNotTreeFlags &= ~(1 << 4);
+            }
+
+            std::vector<uint8_t> selectableTrees;
+            for (uint8_t i = 0; i < ObjectManager::getMaxObjects(ObjectType::tree); ++i)
+            {
+                auto* treeObj = ObjectManager::get<TreeObject>(i);
+                if (treeObj == nullptr)
+                {
+                    continue;
+                }
+                if (treeObj->var_08 & mustNotTreeFlags)
+                {
+                    continue;
+                }
+
+                if ((treeObj->var_08 & mustTreeFlags) != mustTreeFlags)
+                {
+                    continue;
+                }
+                selectableTrees.push_back(i);
+            }
+
+            if (selectableTrees.empty())
+            {
+                return {};
+            }
+
+            auto& rng = gPrng();
+            return { selectableTrees[rng.randNext(selectableTrees.size() - 1)] };
+        }
+
+        // 0x004BDC67
+        static void clusterSurfaceTypeTreeToolDown(const GameCommands::TreePlacementArgs& baseArgs, const uint16_t range, const uint16_t density)
+        {
+            const auto numPlacements = (range * range * density) / 8192;
+            for (auto i = 0; i < numPlacements; ++i)
+            {
+                // Choose a random offset in a circle
+                auto& rng = gPrng();
+                auto randomMagnitude = rng.randNext(std::numeric_limits<uint16_t>::max()) * range / 65536;
+                auto randomDirection = rng.randNext(Math::Trigonometry::directionPrecisionHigh - 1);
+                Map::Pos2 randomOffset(
+                    Math::Trigonometry::integerSinePrecisionHigh(randomDirection, randomMagnitude),
+                    Math::Trigonometry::integerCosinePrecisionHigh(randomDirection, randomMagnitude));
+
+                GameCommands::TreePlacementArgs args;
+                Map::Pos2 newLoc = randomOffset + baseArgs.pos;
+                args.quadrant = ViewportInteraction::getQuadrantFromPos(newLoc);
+                args.pos = Map::Pos2(newLoc.x & 0xFFE0, newLoc.y & 0xFFE0);
+                // Note: this is not the same as the randomDirection above as it is the trees rotation
+                args.rotation = rng.randNext(3);
+                args.colour = 0;
+                auto type = getRandomTreeTypeFromSurface(newLoc, false);
+                if (type)
+                {
+                    args.type = *type;
+                    args.buildImmediately = true;
+                    args.requiresFullClearance = true;
+                    do_23(GameCommands::Flags::apply, args);
+                }
             }
         }
 
@@ -569,7 +684,16 @@ namespace OpenLoco::Ui::Windows::Terraform
                         break;
                     }
                     case treeCluster::random:
-                        // 0x004BD3E6
+                        // TODO: Lock behind sandbox/editor
+                        auto previousId = CompanyManager::updatingCompanyId();
+                        CompanyManager::updatingCompanyId(CompanyId::neutral);
+
+                        auto height = TileManager::getHeight(placementArgs->pos);
+                        Audio::playSound(Audio::SoundId::construct, Map::Pos3{ placementArgs->pos.x, placementArgs->pos.y, height.landHeight });
+
+                        clusterSurfaceTypeTreeToolDown(*placementArgs, 384, 4);
+                        // TODO: Lock behind sandbox/editor
+                        CompanyManager::updatingCompanyId(previousId);
                         break;
                 }
             }
