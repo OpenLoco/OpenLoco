@@ -2151,7 +2151,8 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BC232
         static void onToolDown(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
-            if (widgetIndex != Common::widx::panel) {
+            if (widgetIndex != Common::widx::panel)
+            {
                 return;
             }
             removeWallGhost();
