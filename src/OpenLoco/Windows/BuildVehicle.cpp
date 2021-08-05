@@ -1033,15 +1033,15 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     }
 
     // 0x4C3307
-    static void drawScroll(Ui::Window* window, Gfx::Context* context, uint32_t scrollIndex)
+    static void drawScroll(Ui::Window& window, Gfx::Context& context, const uint32_t scrollIndex)
     {
         switch (scrollIndex)
         {
             case scrollIdx::vehicle_selection:
             {
-                auto colour = Colour::getShade(window->getColour(WindowColour::secondary), 4);
-                Gfx::clear(*context, colour * 0x01010101);
-                if (window->var_83C == 0)
+                auto colour = Colour::getShade(window.getColour(WindowColour::secondary), 4);
+                Gfx::clear(context, colour * 0x01010101);
+                if (window.var_83C == 0)
                 {
                     auto defaultMessage = StringIds::no_vehicles_available;
                     FormatArguments args{};
@@ -1053,67 +1053,67 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                         args.push(vehicle->ordinalNumber);
                     }
 
-                    auto widget = window->widgets[widx::scrollview_vehicle_selection];
+                    auto widget = window.widgets[widx::scrollview_vehicle_selection];
                     auto width = widget.right - widget.left - 17;
-                    auto y = (window->row_height - 10) / 2;
-                    Gfx::drawString_495224(*context, 3, y, width, Colour::black, defaultMessage, &args);
+                    auto y = (window.row_height - 10) / 2;
+                    Gfx::drawString_495224(context, 3, y, width, Colour::black, defaultMessage, &args);
                 }
                 else
                 {
                     int16_t y = 0;
-                    for (auto i = 0; i < window->var_83C; ++i, y += window->row_height)
+                    for (auto i = 0; i < window.var_83C; ++i, y += window.row_height)
                     {
-                        if (y + window->row_height + 30 <= context->y)
+                        if (y + window.row_height + 30 <= context.y)
                         {
                             continue;
                         }
 
-                        if (y >= context->y + context->height + 30)
+                        if (y >= context.y + context.height + 30)
                         {
                             continue;
                         }
 
-                        auto vehicleType = window->row_info[i];
+                        auto vehicleType = window.row_info[i];
                         if (vehicleType == -1)
                         {
                             continue;
                         }
 
                         auto colouredString = StringIds::black_stringid;
-                        if (window->row_hover == vehicleType)
+                        if (window.row_hover == vehicleType)
                         {
-                            Gfx::fillRect(context, 0, y, window->width, y + window->row_height - 1, 0x2000030);
+                            Gfx::fillRect(&context, 0, y, window.width, y + window.row_height - 1, 0x2000030);
                             colouredString = StringIds::wcolour2_stringid;
                         }
 
-                        int16_t half = (window->row_height - 22) / 2;
-                        auto x = drawVehicleInline(context, vehicleType, 0, CompanyManager::getControllingId(), { 0, static_cast<int16_t>(y + half) });
+                        int16_t half = (window.row_height - 22) / 2;
+                        auto x = drawVehicleInline(&context, vehicleType, 0, CompanyManager::getControllingId(), { 0, static_cast<int16_t>(y + half) });
 
                         auto vehicleObj = ObjectManager::get<VehicleObject>(vehicleType);
                         FormatArguments args{};
                         args.push(vehicleObj->name);
-                        half = (window->row_height - 10) / 2;
-                        Gfx::drawString_494B3F(*context, x + 3, y + half, Colour::black, colouredString, &args);
+                        half = (window.row_height - 10) / 2;
+                        Gfx::drawString_494B3F(context, x + 3, y + half, Colour::black, colouredString, &args);
                     }
                 }
                 break;
             }
             case scrollIdx::vehicle_preview:
             {
-                auto colour = Colour::getShade(window->getColour(WindowColour::secondary), 0);
+                auto colour = Colour::getShade(window.getColour(WindowColour::secondary), 0);
                 // Gfx::clear needs the colour copied to each byte of eax
-                Gfx::clear(*context, colour * 0x01010101);
+                Gfx::clear(context, colour * 0x01010101);
 
-                if (window->row_hover == -1)
+                if (window.row_hover == -1)
                 {
                     break;
                 }
 
                 uint8_t unk1 = _52622E & 0x3F;
                 uint8_t unk2 = ((_52622E + 2) / 4) & 0x3F;
-                drawVehicleOverview(context, window->row_hover, CompanyManager::getControllingId(), unk1, unk2, { 90, 37 });
+                drawVehicleOverview(&context, window.row_hover, CompanyManager::getControllingId(), unk1, unk2, { 90, 37 });
 
-                auto vehicleObj = ObjectManager::get<VehicleObject>(window->row_hover);
+                auto vehicleObj = ObjectManager::get<VehicleObject>(window.row_hover);
                 auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
                 buffer = StringManager::formatString(buffer, vehicleObj->name);
                 auto usableCargoTypes = vehicleObj->primary_cargo_types | vehicleObj->secondary_cargo_types;
@@ -1131,7 +1131,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                 *buffer++ = '\0';
                 FormatArguments args{};
                 args.push(StringIds::buffer_1250);
-                Gfx::drawStringCentredClipped(*context, 89, 52, 177, 0x20, StringIds::wcolour2_stringid, &args);
+                Gfx::drawStringCentredClipped(context, 89, 52, 177, 0x20, StringIds::wcolour2_stringid, &args);
                 break;
             }
         }

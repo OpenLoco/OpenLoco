@@ -1413,7 +1413,7 @@ namespace OpenLoco::Ui
             return;
         }
 
-        event_handlers->draw_scroll(this, context, scrollIndex);
+        event_handlers->draw_scroll(*this, *context, scrollIndex);
     }
 
     // 0x004CA4DF

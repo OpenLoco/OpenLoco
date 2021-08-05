@@ -378,18 +378,18 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x00457D2A
-        static void drawScroll(Ui::Window* self, Gfx::Context* context, uint32_t scrollIndex)
+        static void drawScroll(Ui::Window& self, Gfx::Context& context, const uint32_t scrollIndex)
         {
-            auto shade = Colour::getShade(self->getColour(WindowColour::secondary), 4);
-            Gfx::clearSingle(*context, shade);
+            auto shade = Colour::getShade(self.getColour(WindowColour::secondary), 4);
+            Gfx::clearSingle(context, shade);
 
             uint16_t yPos = 0;
-            for (uint16_t i = 0; i < self->var_83C; i++)
+            for (uint16_t i = 0; i < self.var_83C; i++)
             {
-                IndustryId_t industryId = self->row_info[i];
+                IndustryId_t industryId = self.row_info[i];
 
                 // Skip items outside of view, or irrelevant to the current filter.
-                if (yPos + rowHeight < context->y || yPos >= yPos + rowHeight + context->height || industryId == IndustryId::null)
+                if (yPos + rowHeight < context.y || yPos >= yPos + rowHeight + context.height || industryId == IndustryId::null)
                 {
                     yPos += rowHeight;
                     continue;
@@ -398,9 +398,9 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 string_id text_colour_id = StringIds::black_stringid;
 
                 // Highlight selection.
-                if (industryId == self->row_hover)
+                if (industryId == self.row_hover)
                 {
-                    Gfx::drawRect(context, 0, yPos, self->width, rowHeight, 0x2000030);
+                    Gfx::drawRect(&context, 0, yPos, self.width, rowHeight, 0x2000030);
                     text_colour_id = StringIds::wcolour2_stringid;
                 }
 
@@ -414,7 +414,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                     args.push(industry->name);
                     args.push(industry->town);
 
-                    Gfx::drawString_494BBF(*context, 0, yPos, 198, Colour::black, text_colour_id, &args);
+                    Gfx::drawString_494BBF(context, 0, yPos, 198, Colour::black, text_colour_id, &args);
                 }
                 // Industry Status
                 {
@@ -424,7 +424,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                     auto args = FormatArguments();
                     args.push(StringIds::buffer_1250);
 
-                    Gfx::drawString_494BBF(*context, 200, yPos, 238, Colour::black, text_colour_id, &args);
+                    Gfx::drawString_494BBF(context, 200, yPos, 238, Colour::black, text_colour_id, &args);
                 }
                 // Industry Production Delivered
                 {
@@ -439,7 +439,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                     auto args = FormatArguments();
                     args.push<uint16_t>(productionTransported);
 
-                    Gfx::drawString_494BBF(*context, 440, yPos, 138, Colour::black, StringIds::production_transported_percent, &args);
+                    Gfx::drawString_494BBF(context, 440, yPos, 138, Colour::black, StringIds::production_transported_percent, &args);
                 }
                 yPos += rowHeight;
             }
@@ -868,36 +868,36 @@ namespace OpenLoco::Ui::Windows::IndustryList
         }
 
         // 0x00458352
-        static void drawScroll(Ui::Window* self, Gfx::Context* context, uint32_t scrollIndex)
+        static void drawScroll(Ui::Window& self, Gfx::Context& context, const uint32_t scrollIndex)
         {
-            auto shade = Colour::getShade(self->getColour(WindowColour::secondary), 4);
-            Gfx::clearSingle(*context, shade);
+            auto shade = Colour::getShade(self.getColour(WindowColour::secondary), 4);
+            Gfx::clearSingle(context, shade);
 
             loco_global<uint16_t, 0x00E0C3C6> word_E0C3C6;
             uint16_t xPos = 0;
             uint16_t yPos = 0;
-            for (uint16_t i = 0; i < self->var_83C; i++)
+            for (uint16_t i = 0; i < self.var_83C; i++)
             {
                 word_E0C3C6 = 0xFFFF;
-                if (self->row_info[i] != self->row_hover)
+                if (self.row_info[i] != self.row_hover)
                 {
-                    if (self->row_info[i] == self->var_846)
+                    if (self.row_info[i] == self.var_846)
                     {
                         word_E0C3C6 = Colour::translucent_flag;
-                        Gfx::drawRectInset(context, xPos, yPos, rowHeight, rowHeight, self->getColour(WindowColour::secondary), Colour::translucent_flag);
+                        Gfx::drawRectInset(&context, xPos, yPos, rowHeight, rowHeight, self.getColour(WindowColour::secondary), Colour::translucent_flag);
                     }
                 }
                 else
                 {
                     word_E0C3C6 = Colour::translucent_flag | Colour::outline_flag;
-                    Gfx::drawRectInset(context, xPos, yPos, rowHeight, rowHeight, self->getColour(WindowColour::secondary), (Colour::translucent_flag | Colour::outline_flag));
+                    Gfx::drawRectInset(&context, xPos, yPos, rowHeight, rowHeight, self.getColour(WindowColour::secondary), (Colour::translucent_flag | Colour::outline_flag));
                 }
 
-                auto industryObj = ObjectManager::get<IndustryObject>(self->row_info[i]);
+                auto industryObj = ObjectManager::get<IndustryObject>(self.row_info[i]);
 
                 Gfx::Context* clipped = nullptr;
 
-                if (Gfx::clipContext(&clipped, context, xPos + 1, yPos + 1, 110, 110))
+                if (Gfx::clipContext(&clipped, &context, xPos + 1, yPos + 1, 110, 110))
                 {
                     industryObj->drawIndustry(clipped, 56, 96);
                 }

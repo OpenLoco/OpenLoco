@@ -142,7 +142,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     static void drawSavePreview(Ui::Window& window, Gfx::Context& context, int32_t x, int32_t y, int32_t width, int32_t height, const S5::SaveDetails& saveInfo);
     static void drawLandscapePreview(Ui::Window& window, Gfx::Context& context, int32_t x, int32_t y, int32_t width, int32_t height);
     static void drawTextInput(Ui::Window* window, Gfx::Context& context, const char* text, int32_t caret, bool showCaret);
-    static void drawScroll(Ui::Window* window, Gfx::Context* context, uint32_t scrollIndex);
+    static void drawScroll(Ui::Window& window, Gfx::Context& context, const uint32_t scrollIndex);
     static void upOneLevel();
     static void appendDirectory(const char* to_append);
     static void processFileForLoadSave(Window* window);
@@ -610,29 +610,29 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     }
 
     // 0x00446314
-    static void drawScroll(Ui::Window* window, Gfx::Context* context, uint32_t scrollIndex)
+    static void drawScroll(Ui::Window& window, Gfx::Context& context, const uint32_t scrollIndex)
     {
         loco_global<char[16], 0x0112C826> _commonFormatArgs;
 
         static std::string _nameBuffer;
 
         // Background
-        Gfx::clearSingle(*context, Colour::getShade(window->getColour(WindowColour::secondary), 4));
+        Gfx::clearSingle(context, Colour::getShade(window.getColour(WindowColour::secondary), 4));
 
         // Directories / files
         auto y = 0;
-        auto lineHeight = window->row_height;
+        auto lineHeight = window.row_height;
         for (auto i = 0; i < _numFiles; i++)
         {
-            if (y + lineHeight >= context->y && y <= context->y + context->height)
+            if (y + lineHeight >= context.y && y <= context.y + context.height)
             {
                 auto file = _files[i];
 
                 // Draw the row highlight
                 auto stringId = StringIds::black_stringid;
-                if (i == window->var_85A)
+                if (i == window.var_85A)
                 {
-                    Gfx::drawRect(context, 0, y, window->width, lineHeight, 0x2000000 | 48);
+                    Gfx::drawRect(&context, 0, y, window.width, lineHeight, 0x2000000 | 48);
                     stringId = StringIds::wcolour2_stringid;
                 }
 
@@ -640,7 +640,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                 auto x = 1;
                 if (file.is_directory())
                 {
-                    Gfx::drawImage(context, x, y, ImageIds::icon_folder);
+                    Gfx::drawImage(&context, x, y, ImageIds::icon_folder);
                     x += 14;
                 }
 
@@ -649,7 +649,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
 
                 // Draw the name
                 setCommonArgsStringptr(_nameBuffer.c_str());
-                Gfx::drawString_494B3F(*context, x, y, 0, stringId, _commonFormatArgs);
+                Gfx::drawString_494B3F(context, x, y, 0, stringId, _commonFormatArgs);
             }
             y += lineHeight;
         }

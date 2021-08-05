@@ -142,18 +142,18 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049A0F8
-        static void drawScroll(Ui::Window* self, Gfx::Context* context, uint32_t scrollIndex)
+        static void drawScroll(Ui::Window& self, Gfx::Context& context, const uint32_t scrollIndex)
         {
-            auto shade = Colour::getShade(self->getColour(WindowColour::secondary), 3);
-            Gfx::clearSingle(*context, shade);
+            auto shade = Colour::getShade(self.getColour(WindowColour::secondary), 3);
+            Gfx::clearSingle(context, shade);
 
             uint16_t yPos = 0;
-            for (uint16_t i = 0; i < self->var_83C; i++)
+            for (uint16_t i = 0; i < self.var_83C; i++)
             {
-                TownId_t townId = self->row_info[i];
+                TownId_t townId = self.row_info[i];
 
                 // Skip items outside of view, or irrelevant to the current filter.
-                if (yPos + rowHeight < context->y || yPos >= yPos + rowHeight + context->height || townId == (uint16_t)-1)
+                if (yPos + rowHeight < context.y || yPos >= yPos + rowHeight + context.height || townId == (uint16_t)-1)
                 {
                     yPos += rowHeight;
                     continue;
@@ -162,9 +162,9 @@ namespace OpenLoco::Ui::Windows::TownList
                 string_id text_colour_id = StringIds::black_stringid;
 
                 // Highlight selection.
-                if (townId == self->row_hover)
+                if (townId == self.row_hover)
                 {
-                    Gfx::drawRect(context, 0, yPos, self->width, rowHeight, 0x2000030);
+                    Gfx::drawRect(&context, 0, yPos, self.width, rowHeight, 0x2000030);
                     text_colour_id = StringIds::wcolour2_stringid;
                 }
 
@@ -177,14 +177,14 @@ namespace OpenLoco::Ui::Windows::TownList
                     auto args = FormatArguments();
                     args.push(town->name);
 
-                    Gfx::drawString_494BBF(*context, 0, yPos, 198, Colour::black, text_colour_id, &args);
+                    Gfx::drawString_494BBF(context, 0, yPos, 198, Colour::black, text_colour_id, &args);
                 }
                 // Town Type
                 {
                     auto args = FormatArguments();
                     args.push(town->getTownSizeString());
 
-                    Gfx::drawString_494BBF(*context, 200, yPos, 278, Colour::black, text_colour_id, &args);
+                    Gfx::drawString_494BBF(context, 200, yPos, 278, Colour::black, text_colour_id, &args);
                 }
                 // Town Population
                 {
@@ -192,7 +192,7 @@ namespace OpenLoco::Ui::Windows::TownList
                     args.push(StringIds::int_32);
                     args.push(town->population);
 
-                    Gfx::drawString_494BBF(*context, 280, yPos, 68, Colour::black, text_colour_id, &args);
+                    Gfx::drawString_494BBF(context, 280, yPos, 68, Colour::black, text_colour_id, &args);
                 }
                 // Town Stations
                 {
@@ -200,7 +200,7 @@ namespace OpenLoco::Ui::Windows::TownList
                     args.push(StringIds::int_32);
                     args.push<int32_t>(town->num_stations);
 
-                    Gfx::drawString_494BBF(*context, 350, yPos, 68, Colour::black, text_colour_id, &args);
+                    Gfx::drawString_494BBF(context, 350, yPos, 68, Colour::black, text_colour_id, &args);
                 }
                 yPos += rowHeight;
             }
@@ -1159,35 +1159,35 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049AA1C
-        static void drawScroll(Ui::Window* self, Gfx::Context* context, uint32_t scrollIndex)
+        static void drawScroll(Ui::Window& self, Gfx::Context& context, const uint32_t scrollIndex)
         {
-            auto shade = Colour::getShade(self->getColour(WindowColour::secondary), 3);
-            Gfx::clearSingle(*context, shade);
+            auto shade = Colour::getShade(self.getColour(WindowColour::secondary), 3);
+            Gfx::clearSingle(context, shade);
 
             uint16_t xPos = 0;
             uint16_t yPos = 0;
-            for (uint16_t i = 0; i < self->var_83C; i++)
+            for (uint16_t i = 0; i < self.var_83C; i++)
             {
-                if (self->row_info[i] != self->row_hover)
+                if (self.row_info[i] != self.row_hover)
                 {
-                    if (self->row_info[i] == self->var_846)
+                    if (self.row_info[i] == self.var_846)
                     {
-                        Gfx::drawRectInset(context, xPos, yPos, 112, 112, self->getColour(WindowColour::secondary), Colour::translucent_flag);
+                        Gfx::drawRectInset(&context, xPos, yPos, 112, 112, self.getColour(WindowColour::secondary), Colour::translucent_flag);
                     }
                 }
                 else
                 {
-                    Gfx::drawRectInset(context, xPos, yPos, 112, 112, self->getColour(WindowColour::secondary), (Colour::translucent_flag | Colour::outline_flag));
+                    Gfx::drawRectInset(&context, xPos, yPos, 112, 112, self.getColour(WindowColour::secondary), (Colour::translucent_flag | Colour::outline_flag));
                 }
 
-                auto buildingObj = ObjectManager::get<BuildingObject>(self->row_info[i]);
+                auto buildingObj = ObjectManager::get<BuildingObject>(self.row_info[i]);
 
                 Gfx::Context* clipped = nullptr;
 
-                if (Gfx::clipContext(&clipped, context, xPos + 1, yPos + 1, 110, 110))
+                if (Gfx::clipContext(&clipped, &context, xPos + 1, yPos + 1, 110, 110))
                 {
                     Colour_t colour = _buildingColour;
-                    if (self->row_hover != self->row_info[i])
+                    if (self.row_hover != self.row_info[i])
                     {
                         colour = Utility::bitScanReverse(buildingObj->colours);
                         if (colour == 0xFF)

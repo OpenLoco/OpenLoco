@@ -95,7 +95,7 @@ namespace OpenLoco::Ui::Windows::StationList
 
     static Ui::CursorId cursor(Window* window, int16_t widgetIdx, int16_t xPos, int16_t yPos, Ui::CursorId fallback);
     static void draw(Ui::Window* window, Gfx::Context* context);
-    static void drawScroll(Ui::Window* window, Gfx::Context* context, uint32_t scrollIndex);
+    static void drawScroll(Ui::Window& window, Gfx::Context& context, const uint32_t scrollIndex);
     static void event_08(Window* window);
     static void event_09(Window* window);
     static void getScrollSize(Ui::Window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
@@ -460,18 +460,18 @@ namespace OpenLoco::Ui::Windows::StationList
     }
 
     // 0x0049157F
-    static void drawScroll(Ui::Window* window, Gfx::Context* context, uint32_t scrollIndex)
+    static void drawScroll(Ui::Window& window, Gfx::Context& context, const uint32_t scrollIndex)
     {
-        auto shade = Colour::getShade(window->getColour(WindowColour::secondary), 4);
-        Gfx::clearSingle(*context, shade);
+        auto shade = Colour::getShade(window.getColour(WindowColour::secondary), 4);
+        Gfx::clearSingle(context, shade);
 
         uint16_t yPos = 0;
-        for (uint16_t i = 0; i < window->var_83C; i++)
+        for (uint16_t i = 0; i < window.var_83C; i++)
         {
-            StationId_t stationId = window->row_info[i];
+            StationId_t stationId = window.row_info[i];
 
             // Skip items outside of view, or irrelevant to the current filter.
-            if (yPos + rowHeight < context->y || yPos >= yPos + rowHeight + context->height || stationId == (uint16_t)-1)
+            if (yPos + rowHeight < context.y || yPos >= yPos + rowHeight + context.height || stationId == (uint16_t)-1)
             {
                 yPos += rowHeight;
                 continue;
@@ -480,9 +480,9 @@ namespace OpenLoco::Ui::Windows::StationList
             string_id text_colour_id = StringIds::black_stringid;
 
             // Highlight selection.
-            if (stationId == window->row_hover)
+            if (stationId == window.row_hover)
             {
-                Gfx::drawRect(context, 0, yPos, window->width, rowHeight, 0x2000030);
+                Gfx::drawRect(&context, 0, yPos, window.width, rowHeight, 0x2000030);
                 text_colour_id = StringIds::wcolour2_stringid;
             }
 
@@ -494,14 +494,14 @@ namespace OpenLoco::Ui::Windows::StationList
             _common_format_args[2] = station->town;
             _common_format_args[3] = getTransportIconsFromStationFlags(station->flags);
 
-            Gfx::drawString_494BBF(*context, 0, yPos, 198, Colour::black, text_colour_id, &*_common_format_args);
+            Gfx::drawString_494BBF(context, 0, yPos, 198, Colour::black, text_colour_id, &*_common_format_args);
 
             // Then the station's current status.
             char* buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_1250));
             station->getStatusString(buffer);
 
             _common_format_args[0] = StringIds::buffer_1250;
-            Gfx::drawString_494BBF(*context, 200, yPos, 198, Colour::black, text_colour_id, &*_common_format_args);
+            Gfx::drawString_494BBF(context, 200, yPos, 198, Colour::black, text_colour_id, &*_common_format_args);
 
             // Total units waiting.
             uint16_t totalUnits = 0;
@@ -510,7 +510,7 @@ namespace OpenLoco::Ui::Windows::StationList
 
             _common_format_args[0] = StringIds::num_units;
             *(uint32_t*)&_common_format_args[1] = totalUnits;
-            Gfx::drawString_494BBF(*context, 400, yPos, 88, Colour::black, text_colour_id, &*_common_format_args);
+            Gfx::drawString_494BBF(context, 400, yPos, 88, Colour::black, text_colour_id, &*_common_format_args);
 
             // And, finally, what goods the station accepts.
             char* ptr = buffer;
@@ -530,7 +530,7 @@ namespace OpenLoco::Ui::Windows::StationList
             }
 
             _common_format_args[0] = StringIds::buffer_1250;
-            Gfx::drawString_494BBF(*context, 490, yPos, 118, Colour::black, text_colour_id, &*_common_format_args);
+            Gfx::drawString_494BBF(context, 490, yPos, 118, Colour::black, text_colour_id, &*_common_format_args);
 
             yPos += rowHeight;
         }

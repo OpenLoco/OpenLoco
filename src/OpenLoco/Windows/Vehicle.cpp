@@ -1437,53 +1437,53 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004B36A3
-        static void drawScroll(Window* const self, Gfx::Context* const context, const uint32_t i)
+        static void drawScroll(Window& self, Gfx::Context& context, const uint32_t i)
         {
-            Gfx::clearSingle(*context, Colour::getShade(self->getColour(WindowColour::secondary), 4));
-            auto head = Common::getVehicle(self);
+            Gfx::clearSingle(context, Colour::getShade(self.getColour(WindowColour::secondary), 4));
+            auto head = Common::getVehicle(&self);
             OpenLoco::Vehicles::Vehicle train{ head };
             Gfx::point_t pos{ 0, 0 };
             for (auto& car : train.cars)
             {
                 string_id carStr = StringIds::black_stringid;
-                if (self->row_hover == car.front->id)
+                if (self.row_hover == car.front->id)
                 {
                     carStr = StringIds::wcolour2_stringid;
 
                     int16_t top = pos.y;
-                    int16_t bottom = pos.y + self->row_height - 1;
+                    int16_t bottom = pos.y + self.row_height - 1;
                     if (_dragCarComponent != nullptr)
                     {
                         bottom = pos.y;
                         top = pos.y - 1;
                         carStr = StringIds::black_stringid;
                     }
-                    Gfx::fillRect(context, 0, top, self->width, bottom, 0x2000030);
+                    Gfx::fillRect(&context, 0, top, self.width, bottom, 0x2000030);
                 }
 
-                int16_t y = pos.y + (self->row_height - 22) / 2;
+                int16_t y = pos.y + (self.row_height - 22) / 2;
                 uint8_t al = 0;
                 uint8_t ah = 0;
                 if (car.front == _dragCarComponent)
                 {
                     al = 12;
-                    ah = self->getColour(WindowColour::secondary);
+                    ah = self.getColour(WindowColour::secondary);
                 }
-                auto x = Common::sub_4B743B(al, ah, 0, y, car.front, context);
+                auto x = Common::sub_4B743B(al, ah, 0, y, car.front, &context);
 
                 auto vehicleObj = ObjectManager::get<VehicleObject>(car.front->object_id);
                 FormatArguments args{};
                 args.push(vehicleObj->name);
                 x += 2;
-                y = pos.y + (self->row_height / 2) - 6;
-                Gfx::drawString_494B3F(*context, x, y, Colour::black, carStr, &args);
+                y = pos.y + (self.row_height / 2) - 6;
+                Gfx::drawString_494B3F(context, x, y, Colour::black, carStr, &args);
 
-                pos.y += self->row_height;
+                pos.y += self.row_height;
             }
 
-            if (self->row_hover == train.tail->id && _dragCarComponent != nullptr)
+            if (self.row_hover == train.tail->id && _dragCarComponent != nullptr)
             {
-                Gfx::fillRect(context, 0, pos.y - 1, self->width, pos.y, 0x2000030);
+                Gfx::fillRect(&context, 0, pos.y - 1, self.width, pos.y, 0x2000030);
             }
         }
 
@@ -1699,7 +1699,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // based on 0x004B40C7
-        static void drawCargoText(Gfx::Context* const pDrawpixelinfo, const int16_t x, int16_t& y, const string_id strFormat, uint8_t cargoQty, uint8_t cargoType, StationId_t stationId)
+        static void drawCargoText(Gfx::Context& context, const int16_t x, int16_t& y, const string_id strFormat, uint8_t cargoQty, uint8_t cargoType, StationId_t stationId)
         {
             if (cargoQty == 0)
             {
@@ -1715,53 +1715,53 @@ namespace OpenLoco::Ui::Windows::Vehicle
             args.push<uint32_t>(cargoQty);
             args.push(station->name);
             args.push(station->town);
-            Gfx::drawString_494B3F(*pDrawpixelinfo, x, y, Colour::black, strFormat, &args);
+            Gfx::drawString_494B3F(context, x, y, Colour::black, strFormat, &args);
             y += 10;
         }
 
         // 004B3F62
-        static void drawScroll(Window* const self, Gfx::Context* const pDrawpixelinfo, const uint32_t i)
+        static void drawScroll(Window& self, Gfx::Context& context, const uint32_t i)
         {
-            Gfx::clearSingle(*pDrawpixelinfo, Colour::getShade(self->getColour(WindowColour::secondary), 4));
-            Vehicles::Vehicle train{ Common::getVehicle(self) };
+            Gfx::clearSingle(context, Colour::getShade(self.getColour(WindowColour::secondary), 4));
+            Vehicles::Vehicle train{ Common::getVehicle(&self) };
             int16_t y = 0;
             for (auto& car : train.cars)
             {
                 string_id strFormat = StringIds::black_stringid;
                 auto front = car.front;
                 auto body = car.body;
-                if (front->id == self->row_hover)
+                if (front->id == self.row_hover)
                 {
-                    Gfx::fillRect(pDrawpixelinfo, 0, y, self->width, y + self->row_height - 1, 0x2000030);
+                    Gfx::fillRect(&context, 0, y, self.width, y + self.row_height - 1, 0x2000030);
                     strFormat = StringIds::wcolour2_stringid;
                 }
                 // Get width of the drawing
-                auto width = Common::sub_4B743B(1, 0, 0, y, front, pDrawpixelinfo);
+                auto width = Common::sub_4B743B(1, 0, 0, y, front, &context);
                 // Actually draw it
-                width = Common::sub_4B743B(0, 0, 24 - width, (self->row_height - 22) / 2 + y, car.front, pDrawpixelinfo);
+                width = Common::sub_4B743B(0, 0, 24 - width, (self.row_height - 22) / 2 + y, car.front, &context);
 
                 if (body->primaryCargo.type != 0xFF)
                 {
 
-                    int16_t cargoTextHeight = self->row_height / 2 + y - ((self->row_height - 22) / 2) - 10;
+                    int16_t cargoTextHeight = self.row_height / 2 + y - ((self.row_height - 22) / 2) - 10;
                     if (front->secondaryCargo.qty != 0 || body->primaryCargo.qty != 0)
                     {
                         if (body->primaryCargo.qty == 0 || front->secondaryCargo.qty == 0)
                         {
                             cargoTextHeight += 5;
                         }
-                        drawCargoText(pDrawpixelinfo, width, cargoTextHeight, strFormat, body->primaryCargo.qty, body->primaryCargo.type, body->primaryCargo.townFrom);
-                        drawCargoText(pDrawpixelinfo, width, cargoTextHeight, strFormat, front->secondaryCargo.qty, front->secondaryCargo.type, front->secondaryCargo.townFrom);
+                        drawCargoText(context, width, cargoTextHeight, strFormat, body->primaryCargo.qty, body->primaryCargo.type, body->primaryCargo.townFrom);
+                        drawCargoText(context, width, cargoTextHeight, strFormat, front->secondaryCargo.qty, front->secondaryCargo.type, front->secondaryCargo.townFrom);
                     }
                     else
                     {
                         FormatArguments args{};
                         args.push<string_id>(StringIds::cargo_empty);
-                        Gfx::drawString_494B3F(*pDrawpixelinfo, width, cargoTextHeight + 5, Colour::black, strFormat, &args);
+                        Gfx::drawString_494B3F(context, width, cargoTextHeight + 5, Colour::black, strFormat, &args);
                     }
                 }
 
-                y += self->row_height;
+                y += self.row_height;
             }
         }
 
@@ -3067,33 +3067,33 @@ namespace OpenLoco::Ui::Windows::Vehicle
         };
 
         // 0x004B4A58 based on
-        static void sub_4B4A58(Window* const self, Gfx::Context* const context, const string_id strFormat, FormatArguments& args, Vehicles::Order& order, int16_t& y)
+        static void sub_4B4A58(Window& self, Gfx::Context& context, const string_id strFormat, FormatArguments& args, Vehicles::Order& order, int16_t& y)
         {
             Gfx::point_t loc = { 8, static_cast<int16_t>(y - 1) };
-            Gfx::drawString_494B3F(*context, &loc, Colour::black, strFormat, &args);
+            Gfx::drawString_494B3F(context, &loc, Colour::black, strFormat, &args);
             if (order.hasFlag(Vehicles::OrderFlags::HasNumber))
             {
-                if (Input::isToolActive(self->type, self->number))
+                if (Input::isToolActive(self.type, self.number))
                 {
                     auto imageId = numberCircle[_113646A - 1];
-                    Gfx::drawImage(context, loc.x + 3, loc.y + 1, Gfx::recolour(imageId, Colour::white));
+                    Gfx::drawImage(&context, loc.x + 3, loc.y + 1, Gfx::recolour(imageId, Colour::white));
                 }
                 _113646A++;
             }
         }
 
         // 0x004B48BA
-        static void drawScroll(Window* const self, Gfx::Context* const pDrawpixelinfo, const uint32_t i)
+        static void drawScroll(Window& self, Gfx::Context& context, const uint32_t i)
         {
-            Gfx::clearSingle(*pDrawpixelinfo, Colour::getShade(self->getColour(WindowColour::secondary), 4));
+            Gfx::clearSingle(context, Colour::getShade(self.getColour(WindowColour::secondary), 4));
 
-            auto head = Common::getVehicle(self);
+            auto head = Common::getVehicle(&self);
             Vehicles::Vehicle train(head);
 
             auto rowNum = 0;
             if (head->sizeOfOrderTable == 1)
             {
-                Gfx::drawString_494B3F(*pDrawpixelinfo, 8, 0, Colour::black, StringIds::no_route_defined);
+                Gfx::drawString_494B3F(context, 8, 0, Colour::black, StringIds::no_route_defined);
                 rowNum++; // Used to move down the text
             }
 
@@ -3102,15 +3102,15 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 int16_t y = rowNum * lineHeight;
                 auto strFormat = StringIds::black_stringid;
-                if (self->var_842 == rowNum)
+                if (self.var_842 == rowNum)
                 {
-                    Gfx::fillRect(pDrawpixelinfo, 0, y, self->width, y + 9, Colour::aquamarine);
+                    Gfx::fillRect(&context, 0, y, self.width, y + 9, Colour::aquamarine);
                     strFormat = StringIds::white_stringid;
                 }
-                if (self->row_hover == rowNum)
+                if (self.row_hover == rowNum)
                 {
                     strFormat = StringIds::wcolour2_stringid;
-                    Gfx::fillRect(pDrawpixelinfo, 0, y, self->width, y + 9, 0x2000030);
+                    Gfx::fillRect(&context, 0, y, self.width, y + 9, 0x2000030);
                 }
 
                 FormatArguments args{};
@@ -3138,10 +3138,10 @@ namespace OpenLoco::Ui::Windows::Vehicle
                     }
                 }
 
-                sub_4B4A58(self, pDrawpixelinfo, strFormat, args, order, y);
+                sub_4B4A58(self, context, strFormat, args, order, y);
                 if (head->currentOrder + head->orderTableOffset == order.getOffset())
                 {
-                    Gfx::drawString_494B3F(*pDrawpixelinfo, 1, y - 1, Colour::black, StringIds::orders_current_order);
+                    Gfx::drawString_494B3F(context, 1, y - 1, Colour::black, StringIds::orders_current_order);
                 }
 
                 rowNum++;
@@ -3150,20 +3150,20 @@ namespace OpenLoco::Ui::Windows::Vehicle
             // Output the end of orders
             Gfx::point_t loc = { 8, static_cast<int16_t>(rowNum * lineHeight) };
             auto strFormat = StringIds::black_stringid;
-            if (self->var_842 == rowNum)
+            if (self.var_842 == rowNum)
             {
-                Gfx::fillRect(pDrawpixelinfo, 0, loc.y, self->width, loc.y + lineHeight, Colour::aquamarine);
+                Gfx::fillRect(&context, 0, loc.y, self.width, loc.y + lineHeight, Colour::aquamarine);
                 strFormat = StringIds::white_stringid;
             }
-            if (self->row_hover == rowNum)
+            if (self.row_hover == rowNum)
             {
                 strFormat = StringIds::wcolour2_stringid;
-                Gfx::fillRect(pDrawpixelinfo, 0, loc.y, self->width, loc.y + lineHeight, 0x2000030);
+                Gfx::fillRect(&context, 0, loc.y, self.width, loc.y + lineHeight, 0x2000030);
             }
 
             loc.y -= 1;
             auto args = FormatArguments::common(orderString[0]);
-            Gfx::drawString_494B3F(*pDrawpixelinfo, &loc, Colour::black, strFormat, &args);
+            Gfx::drawString_494B3F(context, &loc, Colour::black, strFormat, &args);
         }
 
         static void initEvents()

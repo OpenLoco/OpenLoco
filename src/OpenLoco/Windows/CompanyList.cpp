@@ -449,34 +449,34 @@ namespace OpenLoco::Ui::Windows::CompanyList
         }
 
         // 0x00435EA7
-        static void drawScroll(Window* self, Gfx::Context* context, uint32_t scrollIndex)
+        static void drawScroll(Window& self, Gfx::Context& context, const uint32_t scrollIndex)
         {
-            auto colour = Colour::getShade(self->getColour(WindowColour::secondary), 3);
-            Gfx::clearSingle(*context, colour);
+            auto colour = Colour::getShade(self.getColour(WindowColour::secondary), 3);
+            Gfx::clearSingle(context, colour);
 
             auto yBottom = 0;
-            for (auto i = 0; i < self->var_83C; i++, yBottom += 25)
+            for (auto i = 0; i < self.var_83C; i++, yBottom += 25)
             {
                 auto yTop = yBottom + 25;
 
-                if (yTop <= context->y)
+                if (yTop <= context.y)
                     continue;
 
-                yTop = context->y + context->height;
+                yTop = context.y + context.height;
 
                 if (yBottom >= yTop)
                     continue;
 
-                auto rowItem = self->row_info[i];
+                auto rowItem = self.row_info[i];
 
                 if (rowItem == -1)
                     continue;
 
                 auto stringId = StringIds::black_stringid;
 
-                if (rowItem == self->row_hover)
+                if (rowItem == self.row_hover)
                 {
-                    Gfx::drawRect(context, 0, yBottom, self->width, 24, (1 << 25) | PaletteIndex::index_30);
+                    Gfx::drawRect(&context, 0, yBottom, self.width, 24, (1 << 25) | PaletteIndex::index_30);
 
                     stringId = StringIds::wcolour2_stringid;
                 }
@@ -491,7 +491,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                     args.push(imageId);
                     args.push(company->name);
 
-                    Gfx::drawString_494BBF(*context, 0, yBottom - 1, 173, Colour::black, stringId, &args);
+                    Gfx::drawString_494BBF(context, 0, yBottom - 1, 173, Colour::black, stringId, &args);
                 }
 
                 {
@@ -502,7 +502,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                     args.push(ownerStatus.argument1);
                     args.push(ownerStatus.argument2);
 
-                    Gfx::drawString_494BBF(*context, 175, yBottom + 7, 208, Colour::black, stringId, &args);
+                    Gfx::drawString_494BBF(context, 175, yBottom + 7, 208, Colour::black, stringId, &args);
                 }
 
                 auto performanceStringId = StringIds::performance_index;
@@ -523,7 +523,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                     args.push(performanceStringId);
                     formatPerformanceIndex(company->performance_index, args);
 
-                    Gfx::drawString_494BBF(*context, 385, yBottom - 1, 143, Colour::black, stringId, &args);
+                    Gfx::drawString_494BBF(context, 385, yBottom - 1, 143, Colour::black, stringId, &args);
                 }
 
                 {
@@ -532,7 +532,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
                     args.push(StringIds::company_value_currency);
                     args.push(company->companyValueHistory[0]);
 
-                    Gfx::drawString_494BBF(*context, 530, yBottom - 1, 98, Colour::black, stringId, &args);
+                    Gfx::drawString_494BBF(context, 530, yBottom - 1, 98, Colour::black, stringId, &args);
                 }
             }
         }

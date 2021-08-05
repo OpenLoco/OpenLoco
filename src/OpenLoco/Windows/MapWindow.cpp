@@ -1385,12 +1385,12 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046B806
-    static void drawScroll(Window* self, Gfx::Context* context, uint32_t scrollIndex)
+    static void drawScroll(Window& self, Gfx::Context& context, const uint32_t scrollIndex)
     {
         if (!(_dword_525E28 & (1 << 0)))
             return;
 
-        Gfx::clearSingle(*context, PaletteIndex::index_0A);
+        Gfx::clearSingle(context, PaletteIndex::index_0A);
 
         auto element = Gfx::getG1Element(0);
         auto backupElement = *element;
@@ -1406,22 +1406,22 @@ namespace OpenLoco::Ui::Windows::MapWindow
         Gfx::getG1Element(0)->y_offset = -8;
         Gfx::getG1Element(0)->flags = 0;
 
-        Gfx::drawImage(context, 0, 0, 0);
+        Gfx::drawImage(&context, 0, 0, 0);
 
         *element = backupElement;
 
-        if (self->current_tab + widx::tabOverall == widx::tabVehicles)
+        if (self.current_tab + widx::tabOverall == widx::tabVehicles)
         {
             countVehiclesOnMap();
         }
 
-        drawVehiclesOnMap(context, self->current_tab + widx::tabOverall);
+        drawVehiclesOnMap(&context, self.current_tab + widx::tabOverall);
 
-        drawViewportPosition(context);
+        drawViewportPosition(&context);
 
-        if (self->saved_view.mapX & (1 << 0))
+        if (self.saved_view.mapX & (1 << 0))
         {
-            drawTownNames(context);
+            drawTownNames(&context);
         }
     }
 

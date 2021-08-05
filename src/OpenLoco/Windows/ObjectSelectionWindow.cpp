@@ -586,29 +586,29 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     }
 
     // 0x0047361D
-    static void drawScroll(Window* self, Gfx::Context* context, uint32_t)
+    static void drawScroll(Window& self, Gfx::Context& context, const uint32_t)
     {
-        Gfx::clearSingle(*context, Colour::getShade(self->getColour(WindowColour::secondary), 4));
+        Gfx::clearSingle(context, Colour::getShade(self.getColour(WindowColour::secondary), 4));
 
         if (ObjectManager::getNumInstalledObjects() == 0)
             return;
 
         int y = 0;
-        auto objects = ObjectManager::getAvailableObjects(static_cast<ObjectType>(self->current_tab));
+        auto objects = ObjectManager::getAvailableObjects(static_cast<ObjectType>(self.current_tab));
         for (auto [i, object] : objects)
         {
             uint8_t flags = (1 << 7) | (1 << 6) | (1 << 5);
-            Gfx::fillRectInset(context, 2, y, 11, y + 10, self->getColour(WindowColour::secondary), flags);
+            Gfx::fillRectInset(&context, 2, y, 11, y + 10, self.getColour(WindowColour::secondary), flags);
 
             uint8_t textColour = ControlCodes::colour_black;
 
-            auto objectPtr = self->object;
+            auto objectPtr = self.object;
             if (objectPtr != nullptr)
             {
                 auto windowObjectName = ObjectManager::ObjectIndexEntry::read(&objectPtr)._name;
                 if (object._name == windowObjectName)
                 {
-                    Gfx::fillRect(context, 0, y, self->width, y + rowHeight - 1, (1 << 25) | PaletteIndex::index_30);
+                    Gfx::fillRect(&context, 0, y, self.width, y + rowHeight - 1, (1 << 25) | PaletteIndex::index_30);
                     textColour = ControlCodes::window_colour_2;
                 }
             }
@@ -623,14 +623,14 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                     _currentFontSpriteBase = Font::m1;
                 }
 
-                auto checkColour = Colour::opaque(self->getColour(WindowColour::secondary));
+                auto checkColour = Colour::opaque(self.getColour(WindowColour::secondary));
 
                 if (_50D144[i] & 0x1C)
                 {
                     checkColour = Colour::inset(checkColour);
                 }
 
-                Gfx::drawString(context, x, y, checkColour, _strCheckmark);
+                Gfx::drawString(&context, x, y, checkColour, _strCheckmark);
             }
 
             char buffer[512]{};
@@ -638,7 +638,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             strncpy(&buffer[1], object._name, 510);
             _currentFontSpriteBase = Font::medium_bold;
 
-            Gfx::drawString(context, 15, y, Colour::black, buffer);
+            Gfx::drawString(&context, 15, y, Colour::black, buffer);
             y += rowHeight;
         }
     }

@@ -326,22 +326,22 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     }
 
     // 0x00443D02
-    static void drawScroll(Window* self, Gfx::Context* const context, uint32_t)
+    static void drawScroll(Window& self, Gfx::Context& context, const uint32_t)
     {
-        auto colour = Colour::getShade(self->getColour(WindowColour::secondary), 4);
-        Gfx::clearSingle(*context, colour);
+        auto colour = Colour::getShade(self.getColour(WindowColour::secondary), 4);
+        Gfx::clearSingle(context, colour);
 
         using namespace ScenarioManager;
-        auto scenarioCount = getScenarioCountByCategory(self->current_tab);
+        auto scenarioCount = getScenarioCountByCategory(self.current_tab);
 
         int16_t y = 0;
         for (auto i = 0; i < scenarioCount; i++)
         {
-            auto* scenarioInfo = getNthScenarioFromCategory(self->current_tab, i);
+            auto* scenarioInfo = getNthScenarioFromCategory(self.current_tab, i);
             if (scenarioInfo == nullptr)
                 continue;
 
-            if (y + rowHeight < context->y || y > context->y + context->height)
+            if (y + rowHeight < context.y || y > context.y + context.height)
             {
                 y += rowHeight;
                 continue;
@@ -349,9 +349,9 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
 
             // Highlight selected item
             auto formatStringId = StringIds::black_stringid;
-            if (scenarioInfo == reinterpret_cast<ScenarioIndexEntry*>(self->info))
+            if (scenarioInfo == reinterpret_cast<ScenarioIndexEntry*>(self.info))
             {
-                Gfx::drawRect(context, 0, y, self->width, rowHeight - 1, 0x2000000 | 48);
+                Gfx::drawRect(&context, 0, y, self.width, rowHeight - 1, 0x2000000 | 48);
                 formatStringId = StringIds::wcolour2_stringid;
             }
 
@@ -364,7 +364,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
                 args.push(StringIds::buffer_2039);
 
                 const int16_t x = 210;
-                Gfx::drawStringCentred(*context, x, y + 1, Colour::black, formatStringId, &args);
+                Gfx::drawStringCentred(context, x, y + 1, Colour::black, formatStringId, &args);
             }
 
             // Completed?
@@ -375,7 +375,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             }
 
             // Draw checkmark to indicate completion
-            Gfx::drawImage(context, self->widgets[widx::list].width() - ScrollView::barWidth - 25, y + 1, ImageIds::scenario_completed_tick);
+            Gfx::drawImage(&context, self.widgets[widx::list].width() - ScrollView::barWidth - 25, y + 1, ImageIds::scenario_completed_tick);
 
             // 'Completed by' info
             {
@@ -388,8 +388,8 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
                 args.push<uint16_t>(scenarioInfo->completedMonths / 12);
                 args.push<uint16_t>(scenarioInfo->completedMonths % 12);
 
-                const int16_t x = (self->widgets[widx::list].width() - ScrollView::barWidth) / 2;
-                Gfx::drawStringCentred(*context, x, y + 10, Colour::black, formatStringId, &args);
+                const int16_t x = (self.widgets[widx::list].width() - ScrollView::barWidth) / 2;
+                Gfx::drawStringCentred(context, x, y + 10, Colour::black, formatStringId, &args);
             }
 
             y += rowHeight;
