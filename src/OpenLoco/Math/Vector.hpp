@@ -7,10 +7,11 @@
 namespace OpenLoco::Math::Vector
 {
 #pragma pack(push, 1)
-    template<typename T, T TResolution>
+    template<typename T, T TResolution, bool TIsGameSpace = true>
     struct TVector2
     {
         static constexpr auto Resolution = TResolution;
+        static constexpr auto IsGameSpace = TIsGameSpace;
 
         T x = 0;
         T y = 0;
@@ -236,8 +237,8 @@ namespace OpenLoco::Math::Vector
         return res;
     }
 
-    template<typename T, T TResolution>
-    static constexpr auto manhattanDistance(const TVector2<T, TResolution>& lhs, const TVector2<T, TResolution>& rhs)
+    template<typename T, T TResolution, bool TIsGameSpace>
+    static constexpr auto manhattanDistance(const TVector2<T, TResolution, TIsGameSpace>& lhs, const TVector2<T, TResolution, TIsGameSpace>& rhs)
     {
         return std::abs(lhs.x - rhs.x) + std::abs(lhs.y - rhs.y);
     }
