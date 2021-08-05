@@ -2796,12 +2796,269 @@ namespace OpenLoco::Vehicles
         beginLoading();
     }
 
+    // 0x004BA19D
+    bool VehicleHead::updateLoadCargoComponent(VehicleCargo& cargo, VehicleBogie* bogie)
+    {
+        if (cargo.maxQty == 0)
+            return false;
+        if (stationId == StationId::null)
+            return false;
+
+        uint8_t loadingModifier = getLoadingModifier(bogie);
+
+        auto* station = StationManager::get(stationId);
+        auto orders = getCurrentOrders();
+        if (cargo.qty == 0)
+        {
+            // bitmask of cargo to wait for
+            uint32_t cargoToWaitFor = 0;
+            for (auto& order : orders)
+            {
+                auto* waitFor = order.as<OrderWaitFor>();
+                if (waitFor != nullptr)
+                {
+                    cargoToWaitFor |= (1 << waitFor->getCargo());
+                }
+                if (order.hasFlag(OrderFlags::IsRoutable))
+                {
+                    break;
+                }
+            }
+            // bitmask of all cargo from orders
+            uint32_t allPossibleCargoToWaitFor = 0;
+            for (auto& order : orders)
+            {
+                auto* waitFor = order.as<OrderWaitFor>();
+                if (waitFor != nullptr)
+                {
+                    allPossibleCargoToWaitFor |= (1 << waitFor->getCargo());
+                }
+            }
+            if (allPossibleCargoToWaitFor == 0)
+            {
+                allPossibleCargoToWaitFor = 0xFFFFFFFF;
+            }
+
+            auto acceptedCargo = cargo.acceptedTypes;
+            uint8_t chosenCargo = 0xFF;
+            uint16_t highestQty = 0;
+            for (; acceptedCargo != 0;)
+            {
+                auto possibleCargo = Utility::bitScanForward(acceptedCargo);
+                acceptedCargo &= ~(1 << possibleCargo);
+
+                if (!(allPossibleCargoToWaitFor & (1 << possibleCargo)))
+                {
+                    continue;
+                }
+                if (cargoToWaitFor & (1 << possibleCargo))
+                {
+                    chosenCargo = possibleCargo;
+                    highestQty = std::numeric_limits<uint16_t>::max();
+                }
+                else
+                {
+                    if (highestQty < station->cargo_stats[possibleCargo].quantity)
+                    {
+                        highestQty = station->cargo_stats[possibleCargo].quantity;
+                        chosenCargo = possibleCargo;
+                    }
+                }
+            }
+            if (highestQty != 0)
+            {
+                if (cargo.type != chosenCargo)
+                {
+                    cargo.type = chosenCargo;
+                }
+            }
+        }
+
+        for (auto& order : orders)
+        {
+            if (!order.hasFlag(OrderFlags::HasCargo))
+            {
+                break;
+            }
+            auto* unloadAll = order.as<OrderUnloadAll>();
+            if (unloadAll != nullptr)
+            {
+                if (unloadAll->getCargo() == cargo.type)
+                {
+                    return false;
+                }
+            }
+        }
+
+        if (cargo.qty == cargo.maxQty)
+        {
+            return false;
+        }
+
+        auto* cargoObj = ObjectManager::get<CargoObject>(cargo.type);
+        auto& stationCargo = station->cargo_stats[cargo.type];
+        auto qtyTransferred = std::min<uint16_t>(cargo.maxQty - cargo.qty, stationCargo.quantity);
+        cargoTransferTimeout = static_cast<uint16_t>(std::min<uint32_t>((cargoObj->var_4 * qtyTransferred * loadingModifier) / 256, std::numeric_limits<uint16_t>::max()));
+
+        if (stationCargo.quantity != 0)
+        {
+            if (cargo.qty == 0)
+            {
+                cargo.townFrom = stationCargo.origin;
+                cargo.numDays = stationCargo.enroute_age;
+            }
+            else
+            {
+                cargo.numDays = std::max(cargo.numDays, stationCargo.enroute_age);
+
+                auto* cargoSourceStation = StationManager::get(stationCargo.origin);
+                auto stationLoc = Map::Pos2{ station->x, station->y };
+                auto cargoSourceLoc = Map::Pos2{ cargoSourceStation->x, cargoSourceStation->y };
+
+                auto stationSourceDistance = Math::Vector::distance(stationLoc, cargoSourceLoc);
+
+                auto* sourceStation = StationManager::get(cargo.townFrom);
+                auto sourceLoc = Map::Pos2{ sourceStation->x, sourceStation->y };
+                auto cargoSourceDistance = Math::Vector::distance(stationLoc, sourceLoc);
+                if (cargoSourceDistance >= stationSourceDistance)
+                {
+                    cargo.townFrom = stationCargo.origin;
+                }
+            }
+        }
+
+        stationCargo.quantity -= qtyTransferred;
+        station->updateCargoDistribution();
+        cargo.qty += qtyTransferred;
+        const uint8_t typeAgeMap[] = { 0, 5, 3, 2, 0, 0 };
+        stationCargo.age = std::min(stationCargo.age, typeAgeMap[static_cast<uint8_t>(vehicleType)]);
+
+        station->var_3B0 = 0;
+        station->flags |= StationFlags::flag_7;
+        Vehicle train(this);
+        auto vehMaxSpeed = train.veh2->maxSpeed;
+        auto carAgeFactor = static_cast<uint8_t>(std::min<uint32_t>(0xFF, (getCurrentDay() - bogie->creation_day) / 256));
+
+        if (stationCargo.flags & (1 << 2))
+        {
+            stationCargo.vehicleSpeed = (stationCargo.vehicleSpeed + vehMaxSpeed) / 2;
+            stationCargo.vehicleAge = (stationCargo.vehicleAge + carAgeFactor) / 2;
+        }
+        else
+        {
+            stationCargo.flags |= (1 << 2);
+            stationCargo.vehicleSpeed = vehMaxSpeed;
+            stationCargo.vehicleAge = carAgeFactor;
+        }
+
+        auto* company = CompanyManager::get(owner);
+        company->var_49C |= 1 << cargo.type;
+        sub_4B7CC3();
+        Ui::WindowManager::invalidate(Ui::WindowType::vehicle, id);
+        return true;
+    }
+
     // 0x004BA142 returns false when loaded
     bool VehicleHead::updateLoadCargo()
     {
-        registers regs;
-        regs.esi = X86Pointer(this);
-        return call(0x004BA142, regs) & (1 << 8);
+        if (cargoTransferTimeout != 0)
+        {
+            cargoTransferTimeout--;
+            return true;
+        }
+
+        Vehicle train(this);
+        for (auto& car : train.cars)
+        {
+            for (auto& carComponent : car)
+            {
+                if (carComponent.front->var_5F & Flags5F::unk_0)
+                {
+                    carComponent.front->var_5F &= ~Flags5F::unk_0;
+                    if (carComponent.front->secondaryCargo.type == 0xFF)
+                    {
+                        return true;
+                    }
+                    updateLoadCargoComponent(carComponent.front->secondaryCargo, carComponent.front);
+                    return true;
+                }
+                else if (carComponent.back->var_5F & Flags5F::unk_0)
+                {
+                    carComponent.back->var_5F &= ~Flags5F::unk_0;
+                    return true;
+                }
+                else if (carComponent.body->var_5F & Flags5F::unk_0)
+                {
+                    carComponent.body->var_5F &= ~Flags5F::unk_0;
+                    if (carComponent.body->primaryCargo.type == 0xFF)
+                    {
+                        return true;
+                    }
+                    if (updateLoadCargoComponent(carComponent.body->primaryCargo, carComponent.back))
+                    {
+                        carComponent.body->updateCargoSprite();
+                    }
+                    return true;
+                }
+            }
+        }
+
+        auto orders = getCurrentOrders();
+        for (auto& order : orders)
+        {
+            if (!order.hasFlag(OrderFlags::HasCargo))
+            {
+                currentOrder = order.getOffset() - orderTableOffset;
+                Ui::WindowManager::sub_4B93A5(id);
+                break;
+            }
+            auto* waitFor = order.as<OrderWaitFor>();
+            if (waitFor == nullptr)
+            {
+                continue;
+            }
+
+            bool cantWait = false;
+            for (auto& car : train.cars)
+            {
+                for (auto& carComponent : car)
+                {
+                    if (carComponent.front->secondaryCargo.type == waitFor->getCargo() && carComponent.front->secondaryCargo.maxQty != carComponent.front->secondaryCargo.qty)
+                    {
+                        if (!(var_5F & Flags5F::unk_0))
+                        {
+                            beginLoading();
+                            return true;
+                        }
+                        if (owner == CompanyManager::getControllingId())
+                        {
+                            MessageManager::post(MessageType::cantWaitForFullLoad, owner, id, stationId);
+                        }
+                        cantWait = true;
+                        break;
+                    }
+                    if (carComponent.body->primaryCargo.type == waitFor->getCargo() && carComponent.body->primaryCargo.maxQty != carComponent.body->primaryCargo.qty)
+                    {
+                        if (!(var_5F & Flags5F::unk_0))
+                        {
+                            beginLoading();
+                            return true;
+                        }
+                        if (owner == CompanyManager::getControllingId())
+                        {
+                            MessageManager::post(MessageType::cantWaitForFullLoad, owner, id, stationId);
+                        }
+                        cantWait = true;
+                        break;
+                    }
+                }
+                if (cantWait)
+                {
+                    break;
+                }
+            }
+        }
+        return false;
     }
 
     // 0x004BAC74
