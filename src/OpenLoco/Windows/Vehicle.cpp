@@ -3916,6 +3916,40 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
         }
 
+        // 0x004B2F1C
+        static void pickupToolDownWater(Window& self, const Vehicles::VehicleHead& head, const int16_t x, const int16_t y)
+        {
+            auto placementArgs = getVehicleWaterPlacementArgsFromCursor(head, x, y);
+            if (!placementArgs)
+            {
+                pickupToolError(head);
+                return;
+            }
+
+            if (_1136264 == 0 && *_ghostVehiclePos == placementArgs->pos)
+            {
+                if (head.tile_x != -1 && (head.var_38 & Vehicles::Flags38::isGhost))
+                {
+                    // Will convert inplace vehicle into non ghost
+                    placementArgs->convertGhost = true;
+                }
+            }
+            if (!placementArgs->convertGhost)
+            {
+                removeBoatGhost(head);
+            }
+            auto args = FormatArguments::common();
+            args.skip(6);
+            args.push(head.name);
+            args.push(head.ordinalNumber);
+            GameCommands::setErrorTitle(StringIds::cant_place_string_id_here);
+            if (GameCommands::do_62(GameCommands::Flags::apply, *placementArgs))
+            {
+                Input::toolCancel();
+                self.callOnMouseUp(Common::widx::tabMain);
+            }
+        }
+
         // 0x004B2C74
         static void pickupToolDown(Window& self, const int16_t x, const int16_t y)
         {
@@ -3923,16 +3957,16 @@ namespace OpenLoco::Ui::Windows::Vehicle
             switch (head->mode)
             {
                 case TransportMode::rail:
-                    //pickupToolDownLand(*head, x, y, getVehicleRailPlacementArgsFromCursor);
+                    //pickupToolDownLand(self, *head, x, y, getVehicleRailPlacementArgsFromCursor);
                     break;
                 case TransportMode::road:
-                    //pickupToolDownLand(*head, x, y, getVehicleRoadPlacementArgsFromCursor);
+                    //pickupToolDownLand(self, *head, x, y, getVehicleRoadPlacementArgsFromCursor);
                     break;
                 case TransportMode::air:
                     pickupToolDownAir(self, *head, x, y);
                     break;
                 case TransportMode::water:
-                    //pickupToolDownWater(*head, x, y);
+                    pickupToolDownWater(self, *head, x, y);
                     break;
             }
         }
