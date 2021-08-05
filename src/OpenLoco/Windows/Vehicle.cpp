@@ -3829,7 +3829,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
 
             removeLandGhost(head);
-            if (GameCommands::doCommand(GameCommands::Flags::apply | GameCommands::Flags::flag_6 | GameCommands::Flags::flag_3, *placementArgs) != GameCommands::FAILURE)
+            if (GameCommands::doCommand(*placementArgs, GameCommands::Flags::apply | GameCommands::Flags::flag_6 | GameCommands::Flags::flag_3) != GameCommands::FAILURE)
             {
                 _ghostLandTrackAndDirection = placementArgs->trackAndDirection;
                 _ghostVehiclePos = placementArgs->pos;

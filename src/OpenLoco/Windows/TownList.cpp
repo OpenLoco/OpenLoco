@@ -1105,7 +1105,7 @@ namespace OpenLoco::Ui::Windows::TownList
             {
                 GameCommands::setErrorTitle(StringIds::error_cant_build_this_here);
 
-                if (GameCommands::doCommand(GameCommands::Flags::apply | GameCommands::Flags::flag_1, *placementArgs) != GameCommands::FAILURE)
+                if (GameCommands::doCommand(*placementArgs, GameCommands::Flags::apply | GameCommands::Flags::flag_1) != GameCommands::FAILURE)
                 {
                     Audio::playSound(Audio::SoundId::construct, GameCommands::getPosition());
                 }

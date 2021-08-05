@@ -131,7 +131,7 @@ namespace OpenLoco::GameCommands
     bool sub_431E6A(const CompanyId_t company, Map::TileElement* const tile = nullptr);
 
     template<typename T>
-    uint32_t doCommand(uint8_t flags, const T& args)
+    uint32_t doCommand(const T& args, uint8_t flags)
     {
         registers regs = registers(args);
         regs.bl = flags;
