@@ -1238,6 +1238,9 @@ namespace OpenLoco::GameCommands
     // Defined in GameCommands/LoadSaveQuit.cpp
     void loadSaveQuit(registers& regs);
 
+    // Defined in GameCommands/RemoveTree.cpp
+    void removeTree(registers& regs);
+
     // Defined in GameCommands/RenameIndustry.cpp
     void renameIndustry(registers& regs);
 

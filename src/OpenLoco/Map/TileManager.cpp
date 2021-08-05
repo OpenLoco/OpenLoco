@@ -86,6 +86,13 @@ namespace OpenLoco::Map::TileManager
         TileManager::updateTilePointers();
     }
 
+    void removeElement(TileElement& element)
+    {
+        registers regs;
+        regs.esi = X86Pointer(&element);
+        call(0x004BB432, regs);
+    }
+
     TileElement** getElementIndex()
     {
         return _tiles.get();

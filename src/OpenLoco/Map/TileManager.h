@@ -17,6 +17,7 @@ namespace OpenLoco::Map::TileManager
     Tile get(Pos2 pos);
     Tile get(coord_t x, coord_t y);
     void setElements(stdx::span<TileElement> elements);
+    void removeElement(TileElement& element);
     TileHeight getHeight(const Pos2& pos);
     void updateTilePointers();
     void reorganise();
