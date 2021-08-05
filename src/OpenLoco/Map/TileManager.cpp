@@ -89,7 +89,7 @@ namespace OpenLoco::Map::TileManager
     void removeElement(TileElement& element)
     {
         registers regs;
-        regs.esi = reinterpret_cast<uint32_t>(&element);
+        regs.esi = X86Pointer(&element);
         call(0x004BB432, regs);
     }
 

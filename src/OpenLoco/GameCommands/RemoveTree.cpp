@@ -12,7 +12,7 @@ using namespace OpenLoco::Interop;
 namespace OpenLoco::GameCommands
 {
     // 0x004BB392
-    static uint32_t removeTree(Map::Pos3 pos, uint8_t type, uint8_t elementType, uint8_t flags)
+    static uint32_t removeTree(const Map::Pos3& pos, const uint8_t type, const uint8_t elementType, const uint8_t flags)
     {
         GameCommands::setExpenditureType(ExpenditureType::Construction);
 
@@ -31,7 +31,7 @@ namespace OpenLoco::GameCommands
 
             auto treeElement = element.asTree();
             if (treeElement == nullptr)
-                return FAILURE;
+                continue;
 
             if (treeElement->treeObjectId() != type)
                 continue;
