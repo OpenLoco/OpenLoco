@@ -480,6 +480,10 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BBB15
         static void onToolUpdate(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
+            if (widgetIndex != Common::widx::panel)
+            {
+                return;
+            }
             Map::TileManager::mapInvalidateSelectionRect();
             Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
             auto placementArgs = getTreePlacementArgsFromCursor(x, y);
@@ -658,6 +662,10 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BBB20
         static void onToolDown(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
+            if (widgetIndex != Common::widx::panel)
+            {
+                return;
+            }
             removeTreeGhost();
             auto placementArgs = getTreePlacementArgsFromCursor(x, y);
             if (placementArgs)
@@ -665,6 +673,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 switch (_treeClusterType)
                 {
                     case treeCluster::none:
+                        GameCommands::setErrorTitle(StringIds::cant_plant_this_here);
                         if (GameCommands::do_23(GameCommands::Flags::apply, *placementArgs) != GameCommands::FAILURE)
                         {
                             Audio::playSound(Audio::SoundId::construct, GameCommands::getPosition());
@@ -2108,6 +2117,10 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BC227
         static void onToolUpdate(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
+            if (widgetIndex != Common::widx::panel)
+            {
+                return;
+            }
             Map::TileManager::mapInvalidateSelectionRect();
             Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
             auto placementArgs = getWallPlacementArgsFromCursor(x, y);
@@ -2138,10 +2151,14 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BC232
         static void onToolDown(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
+            if (widgetIndex != Common::widx::panel) {
+                return;
+            }
             removeWallGhost();
             auto placementArgs = getWallPlacementArgsFromCursor(x, y);
             if (placementArgs)
             {
+                GameCommands::setErrorTitle(StringIds::error_cant_build_this_here);
                 if (GameCommands::do_32(GameCommands::Flags::apply, *placementArgs))
                 {
                     Audio::playSound(Audio::SoundId::construct, GameCommands::getPosition());
