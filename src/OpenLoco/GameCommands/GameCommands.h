@@ -954,12 +954,14 @@ namespace OpenLoco::GameCommands
             : stationId(regs.bp)
             , airportNode(regs.dl)
             , head(regs.di)
+            , convertGhost((regs.ebx >> 16) == 0xFFFF)
         {
         }
 
         StationId_t stationId;
         uint8_t airportNode;
         EntityId_t head;
+        bool convertGhost = false;
 
         explicit operator registers() const
         {
@@ -967,6 +969,7 @@ namespace OpenLoco::GameCommands
             regs.bp = stationId;
             regs.di = head;
             regs.dl = airportNode;
+            regs.ebx = convertGhost ? 0xFFFF0000 : 0;
             return regs;
         }
     };
@@ -1019,11 +1022,13 @@ namespace OpenLoco::GameCommands
         explicit VehicleWaterPlacementArgs(const registers regs)
             : pos(regs.ax, regs.cx, regs.dx)
             , head(regs.di)
+            , convertGhost((regs.ebx >> 16) == 0xFFFF)
         {
         }
 
         Map::Pos3 pos;
         EntityId_t head;
+        bool convertGhost = false;
 
         explicit operator registers() const
         {
@@ -1032,6 +1037,7 @@ namespace OpenLoco::GameCommands
             regs.cx = pos.y;
             regs.dx = pos.z;
             regs.di = head;
+            regs.ebx = convertGhost ? 0xFFFF0000 : 0;
             return regs;
         }
     };

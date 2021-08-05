@@ -3872,14 +3872,69 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
         }
 
+        // 0x004B2D8A
+        static void pickupToolError(const Vehicles::VehicleHead& head)
+        {
+            auto args = FormatArguments::common();
+            args.skip(6);
+            args.push(head.name);
+            args.push(head.ordinalNumber);
+            Error::open(StringIds::cant_place_string_id_here, StringIds::null);
+        }
+
+        // 0x004B2E18
+        static void pickupToolDownAir(Window& self, const Vehicles::VehicleHead& head, const int16_t x, const int16_t y)
+        {
+            auto placementArgs = getVehicleAirPlacementArgsFromCursor(head, x, y);
+            if (!placementArgs)
+            {
+                pickupToolError(head);
+                return;
+            }
+
+            if (*_ghostAirportStationId == placementArgs->stationId && *_ghostAirportNode == placementArgs->airportNode)
+            {
+                if (head.tile_x != -1 && (head.var_38 & Vehicles::Flags38::isGhost))
+                {
+                    // Will convert inplace vehicle into non ghost
+                    placementArgs->convertGhost = true;
+                }
+            }
+            if (!placementArgs->convertGhost)
+            {
+                removeAirplaneGhost(head);
+            }
+            auto args = FormatArguments::common();
+            args.skip(6);
+            args.push(head.name);
+            args.push(head.ordinalNumber);
+            GameCommands::setErrorTitle(StringIds::cant_place_string_id_here);
+            if (GameCommands::do_58(GameCommands::Flags::apply, *placementArgs))
+            {
+                Input::toolCancel();
+                self.callOnMouseUp(Common::widx::tabMain);
+            }
+        }
+
         // 0x004B2C74
         static void pickupToolDown(Window& self, const int16_t x, const int16_t y)
         {
-            registers regs;
-            regs.esi = X86Pointer(&self);
-            regs.ax = x;
-            regs.bx = y;
-            call(0x004B2C74, regs);
+            auto* head = getVehicle(&self);
+            switch (head->mode)
+            {
+                case TransportMode::rail:
+                    //pickupToolDownLand(*head, x, y, getVehicleRailPlacementArgsFromCursor);
+                    break;
+                case TransportMode::road:
+                    //pickupToolDownLand(*head, x, y, getVehicleRoadPlacementArgsFromCursor);
+                    break;
+                case TransportMode::air:
+                    pickupToolDownAir(self, *head, x, y);
+                    break;
+                case TransportMode::water:
+                    //pickupToolDownWater(*head, x, y);
+                    break;
+            }
         }
 
         // 0x004B3035
