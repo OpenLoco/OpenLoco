@@ -901,7 +901,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 auto flags = GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6;
                 GameCommands::HeadquarterRemovalArgs args;
                 args.pos = _headquarterGhostPos;
-                GameCommands::do_55(flags, args);
+                GameCommands::doCommand(args, flags);
             }
         }
 
@@ -910,7 +910,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         {
             removeHeadquarterGhost();
             auto flags = GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6;
-            if (GameCommands::do_54(flags, args) != GameCommands::FAILURE)
+            if (GameCommands::doCommand(args, flags) != GameCommands::FAILURE)
             {
                 _headquarterGhostPlaced = true;
                 _headquarterGhostPos = args.pos;
@@ -1030,7 +1030,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             GameCommands::setErrorTitle(StringIds::error_cant_build_this_here);
             uint8_t flags = GameCommands::Flags::apply | GameCommands::Flags::flag_1;
-            auto commandResult = GameCommands::do_54(flags, *placementArgs);
+            auto commandResult = GameCommands::doCommand(*placementArgs, flags);
             if (commandResult != GameCommands::FAILURE)
             {
                 Input::toolCancel();

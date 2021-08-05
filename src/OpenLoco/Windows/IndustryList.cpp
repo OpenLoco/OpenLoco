@@ -932,7 +932,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
         // 0x00458BB5
         static currency32_t placeIndustryGhost(const GameCommands::IndustryPlacementArgs& placementArgs)
         {
-            auto res = GameCommands::do_47(GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6, placementArgs);
+            auto res = GameCommands::doCommand(placementArgs, GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6);
             if (res == GameCommands::FAILURE)
             {
                 return res;
@@ -1023,7 +1023,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
             if (placementArgs)
             {
                 GameCommands::setErrorTitle(StringIds::error_cant_build_this_here);
-                if (GameCommands::do_47(GameCommands::Flags::apply, *placementArgs) != GameCommands::FAILURE)
+                if (GameCommands::doCommand(*placementArgs, GameCommands::Flags::apply) != GameCommands::FAILURE)
                 {
                     Audio::playSound(Audio::SoundId::construct, GameCommands::getPosition());
                 }

@@ -686,7 +686,7 @@ namespace OpenLoco::Input
         GameCommands::setErrorTitle(StringIds::cant_remove_airport);
         GameCommands::AirportRemovalArgs args;
         args.pos = Pos3(pos.x, pos.y, station->baseZ() * 4);
-        if (GameCommands::do_57(GameCommands::Flags::apply, args))
+        if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE)
         {
             Audio::playSound(Audio::SoundId::demolish, GameCommands::getPosition());
         }
@@ -704,7 +704,7 @@ namespace OpenLoco::Input
         GameCommands::PortRemovalArgs args;
         Pos2 firstTile = pos - Map::offsets[station->multiTileIndex()];
         args.pos = Pos3(firstTile.x, firstTile.y, station->baseZ() * 4);
-        if (GameCommands::do_61(GameCommands::Flags::apply, args))
+        if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE)
         {
             Audio::playSound(Audio::SoundId::demolish, GameCommands::getPosition());
         }
@@ -748,7 +748,7 @@ namespace OpenLoco::Input
         GameCommands::HeadquarterRemovalArgs args;
         Pos2 firstTile = pos - Map::offsets[building->multiTileIndex()];
         args.pos = Pos3(firstTile.x, firstTile.y, building->baseZ() * 4);
-        GameCommands::do_55(GameCommands::Flags::apply, args);
+        GameCommands::doCommand(args, GameCommands::Flags::apply);
     }
 
     // 0x004C74BB
