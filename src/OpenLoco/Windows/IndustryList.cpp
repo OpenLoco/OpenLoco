@@ -1023,6 +1023,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
             auto placementArgs = getIndustryPlacementArgsFromCursor(x, y);
             if (placementArgs)
             {
+                GameCommands::setErrorTitle(StringIds::error_cant_build_this_here);
                 if (GameCommands::do_47(GameCommands::Flags::apply, *placementArgs) != GameCommands::FAILURE)
                 {
                     Audio::playSound(Audio::SoundId::construct, GameCommands::getPosition());
