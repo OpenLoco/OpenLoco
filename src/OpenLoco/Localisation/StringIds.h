@@ -380,6 +380,7 @@ namespace OpenLoco::StringIds
     constexpr string_id title_build_walls = 446;
     constexpr string_id title_plant_trees = 447;
 
+    constexpr string_id cant_plant_this_here = 449;
     constexpr string_id outlined_wcolour2_stringid = 450;
 
     constexpr string_id black_tiny_font = 453;

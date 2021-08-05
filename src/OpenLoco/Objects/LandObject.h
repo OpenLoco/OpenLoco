@@ -9,13 +9,23 @@ namespace OpenLoco
         struct Context;
     }
 
+    namespace LandObjectFlags
+    {
+        constexpr uint8_t unk0 = (1 << 0);
+        constexpr uint8_t unk1 = (1 << 1);
+        constexpr uint8_t isDesert = (1 << 2);
+        constexpr uint8_t noTrees = (1 << 3);
+    }
+
 #pragma pack(push, 1)
     struct LandObject
     {
         string_id name;
         uint8_t cost_index; // 0x02
         uint8_t var_03;
-        uint8_t pad_04[0x8 - 0x04];
+        uint8_t pad_04;
+        uint8_t flags; //0x05
+        uint8_t pad_06[0x8 - 0x6];
         uint8_t cost_factor; // 0x08
         uint8_t pad_09[0x0A - 0x09];
         uint32_t image; // 0x0A

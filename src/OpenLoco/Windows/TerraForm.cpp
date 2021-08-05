@@ -1,4 +1,5 @@
 #include "../Audio/Audio.h"
+#include "../CompanyManager.h"
 #include "../Economy/Economy.h"
 #include "../GameCommands/GameCommands.h"
 #include "../Graphics/Colour.h"
@@ -10,6 +11,7 @@
 #include "../Map/Map.hpp"
 #include "../Map/Tile.h"
 #include "../Map/TileManager.h"
+#include "../Math/Trigonometry.hpp"
 #include "../Objects/InterfaceSkinObject.h"
 #include "../Objects/LandObject.h"
 #include "../Objects/ObjectManager.h"
@@ -41,18 +43,22 @@ namespace OpenLoco::Ui::Windows::Terraform
     static loco_global<uint8_t, 0x00F003D2> _lastSelectedLand;
     static loco_global<uint8_t, 0x01136496> _treeRotation;
     static loco_global<uint8_t, 0x01136497> _treeColour;
-    static loco_global<uint8_t, 0x0113649A> _byte_113649A;
+    static loco_global<uint8_t, 0x0113649A> _terraformGhostPlaced;
     static loco_global<uint8_t, 0x0113649E> _treeClusterType;
     static loco_global<int16_t, 0x0050A000> _adjustToolSize;
     static loco_global<uint32_t, 0x00F2530C> _raiseLandCost;
     static loco_global<uint32_t, 0x00F25310> _lowerLandCost;
     static loco_global<uint32_t, 0x01136484> _lastTreeCost;
-    static loco_global<uint16_t, 0x01136488> _word_1136488;
-    static loco_global<uint16_t, 0x0113648A> _word_113648A;
+    static loco_global<Map::TileElement*, 0x01136470> _lastPlacedWall;
+    static loco_global<Map::TileElement*, 0x01136470> _lastPlacedTree;
+    static loco_global<Map::Pos2, 0x01136488> _terraformGhostPos;
     static loco_global<uint16_t, 0x01136490> _lastTreeColourFlag;
-    static loco_global<uint8_t, 0x01136499> _byte_1136499;
-    static loco_global<uint8_t, 0x0113649B> _byte_113649B;
-    static loco_global<uint8_t, 0x0113649C> _byte_113649C;
+    static loco_global<uint16_t, 0x01136492> _terraformGhostTreeRotationFlag;
+    static loco_global<uint8_t, 0x01136499> _terraformGhostBaseZ;
+    static loco_global<uint8_t, 0x0113649B> _terraformGhostTreeElementType;
+    static loco_global<uint8_t, 0x0113649C> _terraformGhostType;
+    static loco_global<uint8_t, 0x0113649D> _terraformGhostRotation; // wall
+    static loco_global<uint8_t, 0x0113649D> _terraformGhostQuadrant; // tree
     static loco_global<uint32_t, 0x0113652C> _raiseWaterCost;
     static loco_global<uint32_t, 0x01136528> _lowerWaterCost;
 
@@ -87,7 +93,6 @@ namespace OpenLoco::Ui::Windows::Terraform
         static WindowEventList _events;
 
         static void initEvents();
-        static void sub_4BD297();
         static void switchTab(Window* self, WidgetIndex_t widgetIndex);
         static void repositionTabs(Window* self);
         static void drawTabs(Window* self, Gfx::Context* context);
@@ -96,6 +101,12 @@ namespace OpenLoco::Ui::Windows::Terraform
         static void onResize(Window* self, uint8_t height);
         static void onMouseUp(Window* self, WidgetIndex_t widgetIndex);
         static void sub_4A69DD();
+
+        namespace GhostPlaced
+        {
+            constexpr uint8_t tree = (1 << 0);
+            constexpr uint8_t wall = (1 << 1);
+        }
     }
 
     namespace PlantTrees
@@ -213,10 +224,12 @@ namespace OpenLoco::Ui::Windows::Terraform
             updateTreeColours(self);
         }
 
+        static void removeTreeGhost();
+
         // 0x004BBB0A
         static void onClose(Window* self)
         {
-            Common::sub_4BD297();
+            removeTreeGhost();
             Ui::Windows::hideGridlines();
         }
 
@@ -225,7 +238,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         {
             Input::toolSet(self, Common::widx::panel, CursorId::plantTree);
             Input::setFlag(Input::Flags::flag6);
-            _byte_113649A = 0;
+            _terraformGhostPlaced = 0;
             _lastTreeCost = 0x80000000;
             self->var_83C = 0;
             self->row_hover = -1;
@@ -394,27 +407,306 @@ namespace OpenLoco::Ui::Windows::Terraform
                 self->invalidate();
             }
         }
+        // 0x004BD297 (bits of)
+        static void removeTreeGhost()
+        {
+            if (_terraformGhostPlaced & Common::GhostPlaced::tree)
+            {
+                _terraformGhostPlaced = _terraformGhostPlaced & ~Common::GhostPlaced::tree;
+                GameCommands::TreeRemovalArgs args;
+                args.pos = Map::Pos3((*_terraformGhostPos).x, (*_terraformGhostPos).y, _terraformGhostBaseZ * 4);
+                args.type = _terraformGhostType;
+                args.elementType = _terraformGhostTreeElementType;
+                GameCommands::do_22(GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6, args);
+            }
+        }
+
+        // 0x004BD237
+        static currency32_t placeTreeGhost(const GameCommands::TreePlacementArgs& placementArgs)
+        {
+            removeTreeGhost();
+
+            auto res = GameCommands::do_23(GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6, placementArgs);
+            if (res != GameCommands::FAILURE)
+            {
+                _terraformGhostPos = placementArgs.pos;
+                _terraformGhostTreeElementType = (*_lastPlacedTree)->rawData()[0];
+                _terraformGhostType = placementArgs.type;
+                _terraformGhostBaseZ = (*_lastPlacedTree)->baseZ();
+                _terraformGhostPlaced |= Common::GhostPlaced::tree;
+
+                _terraformGhostQuadrant = placementArgs.quadrant;
+                _terraformGhostTreeRotationFlag = placementArgs.rotation | (placementArgs.buildImmediately ? 0x8000 : 0);
+            }
+            return res;
+        }
+
+        // 0x004BD1D9
+        static std::optional<GameCommands::TreePlacementArgs> getTreePlacementArgsFromCursor(const int16_t x, const int16_t y)
+        {
+            auto* self = WindowManager::find(WindowType::terraform);
+            if (self == nullptr)
+            {
+                return {};
+            }
+
+            auto res = ViewportInteraction::getSurfaceLocFromUi({ x, y });
+            if (!res)
+            {
+                return {};
+            }
+
+            if (self->row_hover == -1)
+            {
+                return {};
+            }
+            // TODO: modify getSurfaceOrWaterLocFromUi to return the viewport then use its rotation
+            static loco_global<int32_t, 0x00E3F0B8> gCurrentRotation;
+
+            GameCommands::TreePlacementArgs args;
+            // 0 for Z value means game command finds first available height
+            args.pos = Map::Pos3(res->first.x & 0xFFE0, res->first.y & 0xFFE0, 0);
+            args.type = self->row_hover;
+            args.quadrant = ViewportInteraction::getQuadrantFromPos(res->first) ^ (1 << 1);
+            args.colour = _treeColour;
+            args.rotation = (_treeRotation - gCurrentRotation) & 0x3;
+            if (isEditorMode())
+            {
+                args.buildImmediately = true;
+            }
+            return { args };
+        }
 
         // 0x004BBB15
         static void onToolUpdate(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
-            registers regs;
-            regs.esi = X86Pointer(&self);
-            regs.dx = widgetIndex;
-            regs.ax = x;
-            regs.bx = y;
-            call(0x004BBB15, regs);
+            if (widgetIndex != Common::widx::panel)
+            {
+                return;
+            }
+            Map::TileManager::mapInvalidateSelectionRect();
+            Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
+            auto placementArgs = getTreePlacementArgsFromCursor(x, y);
+            if (!placementArgs)
+            {
+                removeTreeGhost();
+                return;
+            }
+
+            Input::setMapSelectionFlags(Input::MapSelectionFlags::enable);
+            Map::TileManager::setMapSelectionCorner((placementArgs->quadrant ^ (1 << 1)) + 6);
+            Map::TileManager::setMapSelectionArea(placementArgs->pos, placementArgs->pos);
+            Map::TileManager::mapInvalidateSelectionRect();
+
+            if (_terraformGhostPlaced & Common::GhostPlaced::tree)
+            {
+                if (*_terraformGhostPos == placementArgs->pos
+                    && _terraformGhostQuadrant == placementArgs->quadrant
+                    && _terraformGhostType == placementArgs->type
+                    && _terraformGhostTreeRotationFlag == (placementArgs->rotation | (placementArgs->buildImmediately ? 0x8000 : 0)))
+                {
+                    return;
+                }
+            }
+
+            removeTreeGhost();
+            _terraformGhostQuadrant = placementArgs->quadrant;
+            _terraformGhostTreeRotationFlag = placementArgs->rotation | (placementArgs->buildImmediately ? 0x8000 : 0);
+            _lastTreeCost = placeTreeGhost(*placementArgs);
+        }
+
+        // 0x004BDDC6
+        static void clusterSelectedTreeToolDown(const GameCommands::TreePlacementArgs& baseArgs, const uint16_t range, const uint16_t density)
+        {
+            const auto numPlacements = (range * range * density) / 8192;
+            for (auto i = 0; i < numPlacements; ++i)
+            {
+                // Choose a random offset in a circle
+                auto& rng = gPrng();
+                auto randomMagnitude = rng.randNext(std::numeric_limits<uint16_t>::max()) * range / 65536;
+                auto randomDirection = rng.randNext(Math::Trigonometry::directionPrecisionHigh - 1);
+                Map::Pos2 randomOffset(
+                    Math::Trigonometry::integerSinePrecisionHigh(randomDirection, randomMagnitude),
+                    Math::Trigonometry::integerCosinePrecisionHigh(randomDirection, randomMagnitude));
+
+                GameCommands::TreePlacementArgs args;
+                Map::Pos2 newLoc = randomOffset + baseArgs.pos;
+                args.quadrant = ViewportInteraction::getQuadrantFromPos(newLoc);
+                args.pos = Map::Pos2(newLoc.x & 0xFFE0, newLoc.y & 0xFFE0);
+                // Note: this is not the same as the randomDirection above as it is the trees rotation
+                args.rotation = rng.randNext(3);
+                args.colour = 0;
+                args.type = baseArgs.type;
+                args.buildImmediately = true;
+                args.requiresFullClearance = true;
+                do_23(GameCommands::Flags::apply, args);
+            }
+        }
+
+        static loco_global<uint8_t, 0x00525FB4> _currentSnowLine;
+
+        // 0x004BDF19
+        static std::optional<uint8_t> getRandomTreeTypeFromSurface(const Map::TilePos2& loc, bool unk)
+        {
+            if (!Map::validCoords(loc))
+            {
+                return {};
+            }
+
+            auto* surface = Map::TileManager::get(loc).surface();
+            if (surface == nullptr)
+            {
+                return {};
+            }
+
+            uint16_t mustNotTreeFlags = 0;
+            if (unk)
+            {
+                mustNotTreeFlags |= TreeObjectFlags::unk1;
+            }
+
+            uint16_t mustTreeFlags = 0;
+            if (surface->baseZ() - 4 > _currentSnowLine)
+            {
+                mustTreeFlags |= TreeObjectFlags::hasSnowVariation;
+            }
+            if (surface->baseZ() > 68)
+            {
+                mustTreeFlags |= TreeObjectFlags::veryHighAltitude;
+            }
+            if (surface->baseZ() > 48)
+            {
+                mustTreeFlags |= TreeObjectFlags::highAltitude;
+            }
+
+            auto* landObj = ObjectManager::get<LandObject>(surface->terrain());
+            mustNotTreeFlags |= TreeObjectFlags::droughtResistant;
+            if (landObj->flags & LandObjectFlags::isDesert)
+            {
+                mustTreeFlags |= TreeObjectFlags::droughtResistant;
+                mustNotTreeFlags &= ~TreeObjectFlags::droughtResistant;
+            }
+
+            if (landObj->flags & LandObjectFlags::noTrees)
+            {
+                return {};
+            }
+            mustNotTreeFlags |= TreeObjectFlags::requiresWater;
+            const uint16_t numSameTypeSurfaces = TileManager::countSurroundingWaterTiles(loc);
+            if (numSameTypeSurfaces >= 8)
+            {
+                mustNotTreeFlags &= ~TreeObjectFlags::requiresWater;
+            }
+
+            std::vector<uint8_t> selectableTrees;
+            for (uint8_t i = 0; i < ObjectManager::getMaxObjects(ObjectType::tree); ++i)
+            {
+                auto* treeObj = ObjectManager::get<TreeObject>(i);
+                if (treeObj == nullptr)
+                {
+                    continue;
+                }
+                if (treeObj->flags & mustNotTreeFlags)
+                {
+                    continue;
+                }
+
+                if ((treeObj->flags & mustTreeFlags) != mustTreeFlags)
+                {
+                    continue;
+                }
+                selectableTrees.push_back(i);
+            }
+
+            if (selectableTrees.empty())
+            {
+                return {};
+            }
+
+            auto& rng = gPrng();
+            return { selectableTrees[rng.randNext(selectableTrees.size() - 1)] };
+        }
+
+        // 0x004BDC67
+        static void clusterSurfaceTypeTreeToolDown(const GameCommands::TreePlacementArgs& baseArgs, const uint16_t range, const uint16_t density)
+        {
+            const auto numPlacements = (range * range * density) / 8192;
+            for (auto i = 0; i < numPlacements; ++i)
+            {
+                // Choose a random offset in a circle
+                auto& rng = gPrng();
+                auto randomMagnitude = rng.randNext(std::numeric_limits<uint16_t>::max()) * range / 65536;
+                auto randomDirection = rng.randNext(Math::Trigonometry::directionPrecisionHigh - 1);
+                Map::Pos2 randomOffset(
+                    Math::Trigonometry::integerSinePrecisionHigh(randomDirection, randomMagnitude),
+                    Math::Trigonometry::integerCosinePrecisionHigh(randomDirection, randomMagnitude));
+
+                GameCommands::TreePlacementArgs args;
+                Map::Pos2 newLoc = randomOffset + baseArgs.pos;
+                args.quadrant = ViewportInteraction::getQuadrantFromPos(newLoc);
+                args.pos = Map::Pos2(newLoc.x & 0xFFE0, newLoc.y & 0xFFE0);
+                // Note: this is not the same as the randomDirection above as it is the trees rotation
+                args.rotation = rng.randNext(3);
+                args.colour = 0;
+                auto type = getRandomTreeTypeFromSurface(newLoc, false);
+                if (type)
+                {
+                    args.type = *type;
+                    args.buildImmediately = true;
+                    args.requiresFullClearance = true;
+                    do_23(GameCommands::Flags::apply, args);
+                }
+            }
         }
 
         // 0x004BBB20
         static void onToolDown(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
-            registers regs;
-            regs.esi = X86Pointer(&self);
-            regs.dx = widgetIndex;
-            regs.ax = x;
-            regs.bx = y;
-            call(0x004BBB20, regs);
+            if (widgetIndex != Common::widx::panel)
+            {
+                return;
+            }
+            removeTreeGhost();
+            auto placementArgs = getTreePlacementArgsFromCursor(x, y);
+            if (placementArgs)
+            {
+                switch (_treeClusterType)
+                {
+                    case treeCluster::none:
+                        GameCommands::setErrorTitle(StringIds::cant_plant_this_here);
+                        if (GameCommands::do_23(GameCommands::Flags::apply, *placementArgs) != GameCommands::FAILURE)
+                        {
+                            Audio::playSound(Audio::SoundId::construct, GameCommands::getPosition());
+                        }
+                        break;
+                    case treeCluster::selected:
+                    {
+                        // TODO: Lock behind sandbox/editor
+                        auto previousId = CompanyManager::updatingCompanyId();
+                        CompanyManager::updatingCompanyId(CompanyId::neutral);
+
+                        auto height = TileManager::getHeight(placementArgs->pos);
+                        Audio::playSound(Audio::SoundId::construct, Map::Pos3{ placementArgs->pos.x, placementArgs->pos.y, height.landHeight });
+
+                        clusterSelectedTreeToolDown(*placementArgs, 320, 3);
+                        // TODO: Lock behind sandbox/editor
+                        CompanyManager::updatingCompanyId(previousId);
+                        break;
+                    }
+                    case treeCluster::random:
+                        // TODO: Lock behind sandbox/editor
+                        auto previousId = CompanyManager::updatingCompanyId();
+                        CompanyManager::updatingCompanyId(CompanyId::neutral);
+
+                        auto height = TileManager::getHeight(placementArgs->pos);
+                        Audio::playSound(Audio::SoundId::construct, Map::Pos3{ placementArgs->pos.x, placementArgs->pos.y, height.landHeight });
+
+                        clusterSurfaceTypeTreeToolDown(*placementArgs, 384, 4);
+                        // TODO: Lock behind sandbox/editor
+                        CompanyManager::updatingCompanyId(previousId);
+                        break;
+                }
+            }
         }
 
         // 0x004BBEC1
@@ -689,7 +981,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             window->number = 0;
             window->current_tab = Common::widx::tab_plant_trees - Common::widx::tab_clear_area;
             window->frame_no = 0;
-            _byte_113649A = 0;
+            _terraformGhostPlaced = 0;
             _lastTreeCost = 0x80000000;
             window->owner = _player_company;
             window->var_846 = 0xFFFF;
@@ -1648,10 +1940,12 @@ namespace OpenLoco::Ui::Windows::Terraform
             updateActiveThumb(self);
         }
 
+        static void removeWallGhost();
+
         // 0x004BC21C
         static void onClose(Window* self)
         {
-            Common::sub_4BD297();
+            removeWallGhost();
             Ui::Windows::hideGridlines();
         }
 
@@ -1660,7 +1954,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         {
             Input::toolSet(self, Common::widx::panel, CursorId::placeFence);
             Input::setFlag(Input::Flags::flag6);
-            _byte_113649A = 0;
+            _terraformGhostPlaced = 0;
             self->var_83C = 0;
             self->row_hover = -1;
             refreshWallList(self);
@@ -1760,26 +2054,117 @@ namespace OpenLoco::Ui::Windows::Terraform
             }
         }
 
+        // 0x004BD297 (bits of)
+        static void removeWallGhost()
+        {
+            if (_terraformGhostPlaced & Common::GhostPlaced::wall)
+            {
+                _terraformGhostPlaced = _terraformGhostPlaced & ~Common::GhostPlaced::wall;
+                GameCommands::WallRemovalArgs args;
+                args.pos = Map::Pos3((*_terraformGhostPos).x, (*_terraformGhostPos).y, _terraformGhostBaseZ * 4);
+                args.rotation = _terraformGhostRotation;
+                GameCommands::do_33(GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6, args);
+            }
+        }
+
+        // 0x004BD4C8
+        static void placeWallGhost(const GameCommands::WallPlacementArgs& placementArgs)
+        {
+            removeWallGhost();
+
+            if (GameCommands::do_32(GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6, placementArgs))
+            {
+                _terraformGhostPos = placementArgs.pos;
+                _terraformGhostRotation = placementArgs.rotation;
+                _terraformGhostTreeElementType = placementArgs.rotation; // Unsure why duplicated not used
+                _terraformGhostType = placementArgs.type;
+                _terraformGhostBaseZ = (*_lastPlacedWall)->baseZ();
+                _terraformGhostPlaced |= Common::GhostPlaced::wall;
+            }
+        }
+
+        // 0x004BD48E
+        static std::optional<GameCommands::WallPlacementArgs> getWallPlacementArgsFromCursor(const int16_t x, const int16_t y)
+        {
+            auto* self = WindowManager::find(WindowType::terraform);
+            if (self == nullptr)
+            {
+                return {};
+            }
+
+            auto res = ViewportInteraction::getSurfaceLocFromUi({ x, y });
+            if (!res)
+            {
+                return {};
+            }
+
+            if (self->row_hover == -1)
+            {
+                return {};
+            }
+
+            GameCommands::WallPlacementArgs args;
+            // 0 for Z value means game command finds first available height
+            args.pos = Map::Pos3(res->first.x & 0xFFE0, res->first.y & 0xFFE0, 0);
+            args.type = self->row_hover;
+            args.rotation = ViewportInteraction::getSideFromPos(res->first);
+            args.primaryColour = Colour::black;
+            args.secondaryColour = Colour::black;
+            args.unk = 0;
+            return { args };
+        }
+
         // 0x004BC227
         static void onToolUpdate(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
-            registers regs;
-            regs.esi = X86Pointer(&self);
-            regs.dx = widgetIndex;
-            regs.ax = x;
-            regs.bx = y;
-            call(0x004BC227, regs);
+            if (widgetIndex != Common::widx::panel)
+            {
+                return;
+            }
+            Map::TileManager::mapInvalidateSelectionRect();
+            Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
+            auto placementArgs = getWallPlacementArgsFromCursor(x, y);
+            if (!placementArgs)
+            {
+                removeWallGhost();
+                return;
+            }
+
+            Input::setMapSelectionFlags(Input::MapSelectionFlags::enable);
+            Map::TileManager::setMapSelectionCorner(placementArgs->rotation + 10);
+            Map::TileManager::setMapSelectionArea(placementArgs->pos, placementArgs->pos);
+            Map::TileManager::mapInvalidateSelectionRect();
+
+            if (_terraformGhostPlaced & Common::GhostPlaced::wall)
+            {
+                if (*_terraformGhostPos == placementArgs->pos && _terraformGhostRotation == placementArgs->rotation && _terraformGhostType == placementArgs->type)
+                {
+                    return;
+                }
+            }
+
+            removeWallGhost();
+            _terraformGhostRotation = placementArgs->rotation;
+            placeWallGhost(*placementArgs);
         }
 
         // 0x004BC232
         static void onToolDown(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
-            registers regs;
-            regs.esi = X86Pointer(&self);
-            regs.dx = widgetIndex;
-            regs.ax = x;
-            regs.bx = y;
-            call(0x004BC232, regs);
+            if (widgetIndex != Common::widx::panel)
+            {
+                return;
+            }
+            removeWallGhost();
+            auto placementArgs = getWallPlacementArgsFromCursor(x, y);
+            if (placementArgs)
+            {
+                GameCommands::setErrorTitle(StringIds::error_cant_build_this_here);
+                if (GameCommands::do_32(GameCommands::Flags::apply, *placementArgs))
+                {
+                    Audio::playSound(Audio::SoundId::construct, GameCommands::getPosition());
+                }
+            }
         }
 
         // 0x004BC359
@@ -2095,13 +2480,6 @@ namespace OpenLoco::Ui::Windows::Terraform
 
                 Widget::drawTab(self, context, imageId, widx::tab_build_walls);
             }
-        }
-
-        // 0x004BD297
-        static void sub_4BD297()
-        {
-            registers regs;
-            call(0x004BD297, regs);
         }
 
         // 0x004BBB2B

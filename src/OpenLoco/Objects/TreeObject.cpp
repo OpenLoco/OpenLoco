@@ -28,7 +28,7 @@ namespace OpenLoco
 
         Gfx::point_t treePos = Gfx::point_t{ x, y } + Gfx::point_t{ 0, 48 };
 
-        if (var_08 & (1 << 0))
+        if (flags & TreeObjectFlags::hasSnowVariation)
         {
             auto snowImage = treeGrowth[growth] * num_rotations;
             snowImage += rotation;

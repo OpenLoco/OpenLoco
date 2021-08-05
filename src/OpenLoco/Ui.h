@@ -217,6 +217,8 @@ namespace OpenLoco::Ui
         std::pair<ViewportInteraction::InteractionArg, Ui::Viewport*> getMapCoordinatesFromPos(int32_t screenX, int32_t screenY, int32_t flags);
         std::optional<Map::Pos2> getSurfaceOrWaterLocFromUi(const xy32& screenCoords);
         uint8_t getQuadrantOrCentreFromPos(const Map::Pos2& loc);
+        uint8_t getQuadrantFromPos(const Map::Pos2& loc);
+        uint8_t getSideFromPos(const Map::Pos2& loc);
         std::optional<std::pair<Map::Pos2, Ui::Viewport*>> getSurfaceLocFromUi(const xy32& screenCoords);
     }
 }

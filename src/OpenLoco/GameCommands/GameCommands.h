@@ -56,7 +56,7 @@ namespace OpenLoco::GameCommands
         pauseGame = 20,
         loadSaveQuitGame = 21,
         removeTree = 22,
-        gc_unk_23 = 23,
+        createTree = 23,
         changeLandMaterial = 24,
         raiseLand = 25,
         lowerLand = 26,
@@ -65,7 +65,7 @@ namespace OpenLoco::GameCommands
         lowerWater = 29,
         changeCompanyName = 30,
         changeCompanyOwnerName = 31,
-        gc_unk_32 = 32,
+        createWall = 32,
         removeWall = 33,
         gc_unk_34 = 34,
         vehicleOrderInsert = 35,
@@ -433,6 +433,48 @@ namespace OpenLoco::GameCommands
         doCommand(GameCommand::removeTree, regs);
     }
 
+    struct TreePlacementArgs
+    {
+        TreePlacementArgs() = default;
+        explicit TreePlacementArgs(const registers& regs)
+            : pos(regs.ax, regs.cx)
+            , rotation(regs.di & 0x3)
+            , type(regs.bh)
+            , quadrant(regs.dl)
+            , colour(regs.dh)
+            , buildImmediately(regs.di & 0x8000)
+            , requiresFullClearance(regs.di & 0x4000)
+        {
+        }
+
+        Map::Pos2 pos;
+        uint8_t rotation;
+        uint8_t type;
+        uint8_t quadrant;
+        Colour_t colour;
+        bool buildImmediately = false;
+        bool requiresFullClearance = false;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.ax = pos.x;
+            regs.cx = pos.y;
+            regs.dl = quadrant;
+            regs.dh = colour;
+            regs.di = rotation | (buildImmediately ? 0x8000 : 0) | (requiresFullClearance ? 0x4000 : 0);
+            regs.bh = type;
+            return regs;
+        }
+    };
+
+    inline uint32_t do_23(uint8_t flags, const TreePlacementArgs& args)
+    {
+        registers regs = registers(args);
+        regs.bl = flags;
+        return doCommand(GameCommand::createTree, regs);
+    }
+
     // Change Land Material
     inline void do_24(Map::Pos2 pointA, Map::Pos2 pointB, uint8_t landType, uint8_t flags)
     {
@@ -535,10 +577,51 @@ namespace OpenLoco::GameCommands
         return doCommand(GameCommand::changeCompanyOwnerName, regs) != FAILURE;
     }
 
+    struct WallPlacementArgs
+    {
+        WallPlacementArgs() = default;
+        explicit WallPlacementArgs(const registers& regs)
+            : pos(regs.ax, regs.cx, regs.di)
+            , rotation(regs.dl)
+            , type(regs.bh)
+            , unk(regs.dh)
+            , primaryColour(regs.bp & 0xFF)
+            , secondaryColour((regs.bp >> 8) & 0xFF)
+        {
+        }
+
+        Map::Pos3 pos;
+        uint8_t rotation;
+        uint8_t type;
+        uint8_t unk;
+        Colour_t primaryColour;
+        Colour_t secondaryColour;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.ax = pos.x;
+            regs.cx = pos.y;
+            regs.dl = rotation;
+            regs.dh = unk;
+            regs.di = pos.z;
+            regs.bp = primaryColour | (secondaryColour << 8);
+            regs.bh = type;
+            return regs;
+        }
+    };
+
+    inline bool do_32(uint8_t flags, const WallPlacementArgs& args)
+    {
+        registers regs = registers(args);
+        regs.bl = flags;
+        return doCommand(GameCommand::createWall, regs) != FAILURE;
+    }
+
     struct WallRemovalArgs
     {
         WallRemovalArgs() = default;
-        explicit WallRemovalArgs(const registers regs)
+        explicit WallRemovalArgs(const registers& regs)
             : pos(regs.ax, regs.cx, regs.dh * 4)
             , rotation(regs.dl)
         {

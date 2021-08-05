@@ -113,4 +113,8 @@ namespace OpenLoco::Math::Trigonometry
     {
         return computeXYVector(computeXYMagnitude(height, pitch), yaw);
     }
+
+    constexpr auto directionPrecisionHigh = 0x4000;
+    int32_t integerSinePrecisionHigh(uint16_t direction, int32_t magnitude);
+    int32_t integerCosinePrecisionHigh(uint16_t direction, int32_t magnitude);
 }
