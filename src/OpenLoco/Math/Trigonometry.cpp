@@ -33,7 +33,7 @@ namespace OpenLoco::Math::Trigonometry
                 value = _quarterSine[direction & 0xFFF];
             }
         }
-        return value * magnitude / 32768;
+        return value * magnitude / 0x8000;
     }
 
     int32_t integerCosinePrecisionHigh(uint16_t direction, int32_t magnitude)
@@ -62,6 +62,6 @@ namespace OpenLoco::Math::Trigonometry
                 value = _quarterSine[(-direction) & 0xFFF];
             }
         }
-        return value * magnitude / 32768;
+        return value * magnitude / 0x8000;
     }
 }
