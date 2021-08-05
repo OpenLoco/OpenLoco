@@ -895,34 +895,34 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BB982
-        static void drawScroll(Window* self, Gfx::Context* context, uint32_t scrollIndex)
+        static void drawScroll(Window& self, Gfx::Context& context, const uint32_t scrollIndex)
         {
-            auto shade = Colour::getShade(self->getColour(WindowColour::secondary), 3);
-            Gfx::clearSingle(*context, shade);
+            auto shade = Colour::getShade(self.getColour(WindowColour::secondary), 3);
+            Gfx::clearSingle(context, shade);
 
             uint16_t xPos = 0;
             uint16_t yPos = 0;
-            for (uint16_t i = 0; i < self->var_83C; i++)
+            for (uint16_t i = 0; i < self.var_83C; i++)
             {
                 _lastTreeColourFlag = 0xFFFF;
-                if (self->row_info[i] != self->row_hover)
+                if (self.row_info[i] != self.row_hover)
                 {
-                    if (self->row_info[i] == self->var_846)
+                    if (self.row_info[i] == self.var_846)
                     {
                         _lastTreeColourFlag = Colour::translucent_flag;
-                        Gfx::drawRectInset(context, xPos, yPos, 65, rowHeight - 1, self->getColour(WindowColour::secondary), Colour::translucent_flag);
+                        Gfx::drawRectInset(&context, xPos, yPos, 65, rowHeight - 1, self.getColour(WindowColour::secondary), Colour::translucent_flag);
                     }
                 }
                 else
                 {
                     _lastTreeColourFlag = Colour::translucent_flag | Colour::outline_flag;
-                    Gfx::drawRectInset(context, xPos, yPos, 65, rowHeight - 1, self->getColour(WindowColour::secondary), (Colour::translucent_flag | Colour::outline_flag));
+                    Gfx::drawRectInset(&context, xPos, yPos, 65, rowHeight - 1, self.getColour(WindowColour::secondary), (Colour::translucent_flag | Colour::outline_flag));
                 }
 
-                auto treeObj = ObjectManager::get<TreeObject>(self->row_info[i]);
+                auto treeObj = ObjectManager::get<TreeObject>(self.row_info[i]);
                 Gfx::Context* clipped = nullptr;
 
-                if (Gfx::clipContext(&clipped, context, xPos + 1, yPos + 1, 64, rowHeight - 2))
+                if (Gfx::clipContext(&clipped, &context, xPos + 1, yPos + 1, 64, rowHeight - 2))
                 {
                     drawTreeThumb(treeObj, clipped);
                 }
@@ -2332,32 +2332,32 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         // 0x004BC11C
-        static void drawScroll(Window* self, Gfx::Context* context, uint32_t scrollIndex)
+        static void drawScroll(Window& self, Gfx::Context& context, uint32_t scrollIndex)
         {
-            auto shade = Colour::getShade(self->getColour(WindowColour::secondary), 3);
-            Gfx::clearSingle(*context, shade);
+            auto shade = Colour::getShade(self.getColour(WindowColour::secondary), 3);
+            Gfx::clearSingle(context, shade);
 
             uint16_t xPos = 0;
             uint16_t yPos = 0;
-            for (uint16_t i = 0; i < self->var_83C; i++)
+            for (uint16_t i = 0; i < self.var_83C; i++)
             {
-                if (self->row_info[i] != self->row_hover)
+                if (self.row_info[i] != self.row_hover)
                 {
-                    if (self->row_info[i] == self->var_846)
+                    if (self.row_info[i] == self.var_846)
                     {
-                        Gfx::drawRectInset(context, xPos, yPos, 40, rowHeight, self->getColour(WindowColour::secondary), Colour::translucent_flag);
+                        Gfx::drawRectInset(&context, xPos, yPos, 40, rowHeight, self.getColour(WindowColour::secondary), Colour::translucent_flag);
                     }
                 }
                 else
                 {
-                    Gfx::drawRectInset(context, xPos, yPos, 40, rowHeight, self->getColour(WindowColour::secondary), (Colour::translucent_flag | Colour::outline_flag));
+                    Gfx::drawRectInset(&context, xPos, yPos, 40, rowHeight, self.getColour(WindowColour::secondary), (Colour::translucent_flag | Colour::outline_flag));
                 }
 
-                auto wallObj = ObjectManager::get<WallObject>(self->row_info[i]);
+                auto wallObj = ObjectManager::get<WallObject>(self.row_info[i]);
 
                 Gfx::Context* clipped = nullptr;
 
-                if (Gfx::clipContext(&clipped, context, xPos + 1, yPos + 1, 39, 47))
+                if (Gfx::clipContext(&clipped, &context, xPos + 1, yPos + 1, 39, 47))
                     Gfx::drawImage(clipped, 34, 28, wallObj->sprite);
 
                 xPos += 40;

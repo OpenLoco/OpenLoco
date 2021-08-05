@@ -1870,38 +1870,38 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         }
 
         // 0x0043361E
-        static void drawScroll(Window* self, Gfx::Context* context, uint32_t scrollIndex)
+        static void drawScroll(Window& self, Gfx::Context& context, const uint32_t scrollIndex)
         {
-            int16_t y = 47 - self->widgets[widx::scrollview].top + 14;
+            int16_t y = 47 - self.widgets[widx::scrollview].top + 14;
 
             for (uint8_t i = 0; i < static_cast<uint8_t>(ExpenditureType::Count); i++)
             {
                 // Add zebra stripes to even labels.
                 if (i % 2 == 0)
                 {
-                    auto colour = Colour::getShade(self->getColour(WindowColour::secondary), 6) | 0x1000000;
-                    Gfx::fillRect(context, 0, y, expenditureColumnWidth * 17, y + 9, colour);
+                    auto colour = Colour::getShade(self.getColour(WindowColour::secondary), 6) | 0x1000000;
+                    Gfx::fillRect(&context, 0, y, expenditureColumnWidth * 17, y + 9, colour);
                 }
 
                 y += 10;
             }
 
-            const auto company = CompanyManager::get(self->number);
+            const auto company = CompanyManager::get(self.number);
 
             uint32_t curYear = getCurrentYear();
             uint8_t expenditureYears = std::min<uint8_t>(company->numExpenditureMonths, expenditureHistoryCapacity);
 
             // Paint years on top of scroll area.
-            int16_t x = 132 - self->widgets[widx::scrollview].left + expenditureColumnWidth;
+            int16_t x = 132 - self.widgets[widx::scrollview].left + expenditureColumnWidth;
             for (auto i = 0; i < expenditureYears; i++)
             {
-                y = 46 - self->widgets[widx::scrollview].top;
+                y = 46 - self.widgets[widx::scrollview].top;
 
                 uint16_t columnYear = curYear - (expenditureYears - i) + 1;
                 uint8_t columnIndex = expenditureYears - i - 1;
-                drawFinanceYear(context, x, y, columnYear, curYear);
-                auto sum = drawFinanceExpenditureColumn(context, x, y, columnIndex, *company);
-                drawFinanceSum(context, x, y, sum);
+                drawFinanceYear(&context, x, y, columnYear, curYear);
+                auto sum = drawFinanceExpenditureColumn(&context, x, y, columnIndex, *company);
+                drawFinanceSum(&context, x, y, sum);
 
                 x += expenditureColumnWidth;
             }

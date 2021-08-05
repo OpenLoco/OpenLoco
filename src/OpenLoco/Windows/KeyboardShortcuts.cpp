@@ -43,7 +43,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
     }
 
     static void draw(Ui::Window* self, Gfx::Context* context);
-    static void drawScroll(Ui::Window* self, Gfx::Context* context, uint32_t scrollIndex);
+    static void drawScroll(Ui::Window& self, Gfx::Context& context, const uint32_t scrollIndex);
     static void onMouseUp(Window* self, WidgetIndex_t widgetIndex);
     static void loc_4BE832(Window* self);
     static std::optional<FormatArguments> tooltip(Window*, WidgetIndex_t);
@@ -98,19 +98,19 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
     }
 
     // 0x004BE72C
-    static void drawScroll(Ui::Window* self, Gfx::Context* context, uint32_t scrollIndex)
+    static void drawScroll(Ui::Window& self, Gfx::Context& context, const uint32_t scrollIndex)
     {
-        auto colour = self->getColour(WindowColour::secondary);
+        auto colour = self.getColour(WindowColour::secondary);
         auto shade = Colour::getShade(colour, 4);
-        Gfx::clearSingle(*context, shade);
+        Gfx::clearSingle(context, shade);
 
         auto yPos = 0;
-        for (auto i = 0; i < self->row_count; i++)
+        for (auto i = 0; i < self.row_count; i++)
         {
             string_id format = StringIds::black_stringid;
-            if (i == self->row_hover)
+            if (i == self.row_hover)
             {
-                Gfx::drawRect(context, 0, yPos, 800, rowHeight, 0x2000030);
+                Gfx::drawRect(&context, 0, yPos, 800, rowHeight, 0x2000030);
                 format = StringIds::wcolour2_stringid;
             }
 
@@ -139,7 +139,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
             formatter.push(modifierStringId);
             formatter.push(baseStringId);
 
-            Gfx::drawString_494B3F(*context, 0, yPos - 1, Colour::black, format, &formatter);
+            Gfx::drawString_494B3F(context, 0, yPos - 1, Colour::black, format, &formatter);
             yPos += rowHeight;
         }
     }

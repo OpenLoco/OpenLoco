@@ -150,7 +150,7 @@ namespace OpenLoco::Ui
                 void (*on_move)(Window&, const int16_t x, const int16_t y);
                 void (*prepare_draw)(Window*);
                 void (*draw)(Window*, Gfx::Context*);
-                void (*draw_scroll)(Window*, Gfx::Context*, uint32_t scrollIndex);
+                void (*draw_scroll)(Window&, Gfx::Context&, const uint32_t scrollIndex);
             };
         };
 

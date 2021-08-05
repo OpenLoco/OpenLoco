@@ -331,7 +331,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
         return StringIds::empty;
     }
 
-    static void drawScroll(Ui::Window* self, Gfx::Context* const context, uint32_t)
+    static void drawScroll(Ui::Window& self, Gfx::Context& context, const uint32_t)
     {
         if (_currentPosition == TilePos2(0, 0))
             return;
@@ -342,14 +342,14 @@ namespace OpenLoco::Ui::Windows::TileInspector
         for (auto& element : tile)
         {
             string_id formatString;
-            if (self->var_842 == rowNum)
+            if (self.var_842 == rowNum)
             {
-                Gfx::fillRect(context, 0, yPos, self->width, yPos + self->row_height, Colour::aquamarine);
+                Gfx::fillRect(&context, 0, yPos, self.width, yPos + self.row_height, Colour::aquamarine);
                 formatString = StringIds::white_stringid;
             }
-            else if (self->row_hover == rowNum)
+            else if (self.row_hover == rowNum)
             {
-                Gfx::fillRect(context, 0, yPos, self->width, yPos + self->row_height, 0x2000030);
+                Gfx::fillRect(&context, 0, yPos, self.width, yPos + self.row_height, 0x2000030);
                 formatString = StringIds::wcolour2_stringid;
             }
             else
@@ -378,9 +378,9 @@ namespace OpenLoco::Ui::Windows::TileInspector
                 args.push(elementName);
             }
 
-            Gfx::drawString_494B3F(*context, 0, yPos, Colour::black, formatString, &args);
+            Gfx::drawString_494B3F(context, 0, yPos, Colour::black, formatString, &args);
             rowNum++;
-            yPos += self->row_height;
+            yPos += self.row_height;
         }
     }
 

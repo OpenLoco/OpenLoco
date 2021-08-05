@@ -425,7 +425,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
         };
 
         // 0x0043E01C
-        static void drawScroll(Ui::Window* window, Gfx::Context* context, uint32_t scrollIndex)
+        static void drawScroll(Ui::Window& window, Gfx::Context& context, const uint32_t scrollIndex)
         {
             uint16_t yPos = 0;
             for (uint16_t i = 0; i < maxLandObjects; i++)
@@ -436,26 +436,26 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
                 // Draw tile icon.
                 const uint32_t imageId = landObject->var_16 + OpenLoco::Land::ImageIds::landscape_generator_tile_icon;
-                Gfx::drawImage(context, 2, yPos + 1, imageId);
+                Gfx::drawImage(&context, 2, yPos + 1, imageId);
 
                 // Draw land description.
                 commonFormatArgs[0] = landObject->name;
-                Gfx::drawString_494BBF(*context, 24, yPos + 5, 121, Colour::black, StringIds::wcolour2_stringid, &*commonFormatArgs);
+                Gfx::drawString_494BBF(context, 24, yPos + 5, 121, Colour::black, StringIds::wcolour2_stringid, &*commonFormatArgs);
 
                 // Draw rectangle.
-                Gfx::fillRectInset(context, 150, yPos + 5, 340, yPos + 16, window->getColour(WindowColour::secondary), 0b110000);
+                Gfx::fillRectInset(&context, 150, yPos + 5, 340, yPos + 16, window.getColour(WindowColour::secondary), 0b110000);
 
                 // Draw current distribution setting.
                 const string_id distributionId = landDistributionLabelIds[S5::getOptions().landDistributionPatterns[i]];
                 commonFormatArgs[0] = distributionId;
-                Gfx::drawString_494BBF(*context, 151, yPos + 5, 177, Colour::black, StringIds::black_stringid, &*commonFormatArgs);
+                Gfx::drawString_494BBF(context, 151, yPos + 5, 177, Colour::black, StringIds::black_stringid, &*commonFormatArgs);
 
                 // Draw rectangle (knob).
-                const uint8_t flags = window->row_hover == i ? 0b110000 : 0;
-                Gfx::fillRectInset(context, 329, yPos + 6, 339, yPos + 15, window->getColour(WindowColour::secondary), flags);
+                const uint8_t flags = window.row_hover == i ? 0b110000 : 0;
+                Gfx::fillRectInset(&context, 329, yPos + 6, 339, yPos + 15, window.getColour(WindowColour::secondary), flags);
 
                 // Draw triangle (knob).
-                Gfx::drawString_494B3F(*context, 330, yPos + 6, Colour::black, StringIds::dropdown, nullptr);
+                Gfx::drawString_494B3F(context, 330, yPos + 6, Colour::black, StringIds::dropdown, nullptr);
 
                 yPos += rowHeight;
             }

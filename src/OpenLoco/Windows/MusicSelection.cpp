@@ -40,7 +40,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
     static WindowEventList _events;
 
     static void draw(Ui::Window* window, Gfx::Context* context);
-    static void drawScroll(Ui::Window* window, Gfx::Context* context, uint32_t scrollIndex);
+    static void drawScroll(Ui::Window& window, Gfx::Context& context, const uint32_t scrollIndex);
     static void getScrollSize(Ui::Window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
     static void onMouseUp(Ui::Window* window, WidgetIndex_t widgetIndex);
     static void onScrollMouseDown(Ui::Window* window, int16_t x, int16_t y, uint8_t scroll_index);
@@ -98,35 +98,35 @@ namespace OpenLoco::Ui::Windows::MusicSelection
     }
 
     // 0x004C1663
-    static void drawScroll(Ui::Window* window, Gfx::Context* context, uint32_t scrollIndex)
+    static void drawScroll(Ui::Window& window, Gfx::Context& context, const uint32_t scrollIndex)
     {
-        auto shade = Colour::getShade(window->getColour(WindowColour::secondary), 4);
-        Gfx::clearSingle(*context, shade);
+        auto shade = Colour::getShade(window.getColour(WindowColour::secondary), 4);
+        Gfx::clearSingle(context, shade);
 
         auto config = Config::get();
 
         uint16_t y = 0;
-        for (uint16_t i = 0; i < window->row_count; i++)
+        for (uint16_t i = 0; i < window.row_count; i++)
         {
             string_id text_colour_id = StringIds::black_stringid;
 
             // Draw hovered track
-            if (i == window->row_hover)
+            if (i == window.row_hover)
             {
-                Gfx::drawRect(context, 0, y, 800, rowHeight, 0x2000030);
+                Gfx::drawRect(&context, 0, y, 800, rowHeight, 0x2000030);
                 text_colour_id = StringIds::wcolour2_stringid;
             }
 
             // Draw checkbox.
-            Gfx::fillRectInset(context, 2, y, 11, y + 10, window->getColour(WindowColour::secondary), 0xE0);
+            Gfx::fillRectInset(&context, 2, y, 11, y + 10, window.getColour(WindowColour::secondary), 0xE0);
 
             // Draw checkmark if track is enabled.
             if (config.enabled_music[i])
-                Gfx::drawString_494B3F(*context, 2, y, window->getColour(WindowColour::secondary), StringIds::wcolour2_stringid, (void*)&StringIds::checkmark);
+                Gfx::drawString_494B3F(context, 2, y, window.getColour(WindowColour::secondary), StringIds::wcolour2_stringid, (void*)&StringIds::checkmark);
 
             // Draw track name.
             string_id music_title_id = Audio::getMusicInfo(i)->title_id;
-            Gfx::drawString_494B3F(*context, 15, y, window->getColour(WindowColour::secondary), text_colour_id, (void*)&music_title_id);
+            Gfx::drawString_494B3F(context, 15, y, window.getColour(WindowColour::secondary), text_colour_id, (void*)&music_title_id);
 
             y += rowHeight;
         }

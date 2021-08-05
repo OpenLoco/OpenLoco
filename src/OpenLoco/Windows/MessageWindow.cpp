@@ -215,22 +215,22 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         }
 
         // 0x0042A5D7
-        static void drawScroll(Ui::Window* self, Gfx::Context* context, uint32_t scrollIndex)
+        static void drawScroll(Ui::Window& self, Gfx::Context& context, const uint32_t scrollIndex)
         {
-            auto colour = Colour::getShade(self->getColour(WindowColour::secondary), 4);
+            auto colour = Colour::getShade(self.getColour(WindowColour::secondary), 4);
 
-            Gfx::clearSingle(*context, colour);
+            Gfx::clearSingle(context, colour);
 
             auto height = 0;
             for (auto i = 0; i < _messageCount; i++)
             {
-                if (height + messageHeight <= context->y)
+                if (height + messageHeight <= context.y)
                 {
                     height += messageHeight;
                     continue;
                 }
 
-                if (height >= context->y + context->height)
+                if (height >= context.y + context.height)
                 {
                     height += messageHeight;
                     continue;
@@ -244,9 +244,9 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 
                 auto stringId = StringIds::black_stringid;
 
-                if (self->row_hover == i)
+                if (self.row_hover == i)
                 {
-                    Gfx::drawRect(context, 0, height, self->width, 38, (1 << 25) | PaletteIndex::index_30);
+                    Gfx::drawRect(&context, 0, height, self.width, 38, (1 << 25) | PaletteIndex::index_30);
                     stringId = StringIds::wcolour2_stringid;
                 }
 
@@ -255,14 +255,14 @@ namespace OpenLoco::Ui::Windows::MessageWindow
                     args.push(StringIds::tiny_font_date);
                     args.push(message->date);
 
-                    Gfx::drawString_494B3F(*context, 0, height, Colour::black, stringId, &args);
+                    Gfx::drawString_494B3F(context, 0, height, Colour::black, stringId, &args);
                 }
                 {
                     auto args = FormatArguments();
                     args.push(StringIds::buffer_2039);
 
-                    auto width = self->widgets[widx::scrollview].width() - 14;
-                    Gfx::drawString_495224(*context, 0, height + 6, width, Colour::black, stringId, &args);
+                    auto width = self.widgets[widx::scrollview].width() - 14;
+                    Gfx::drawString_495224(context, 0, height + 6, width, Colour::black, stringId, &args);
                     height += messageHeight;
                 }
             }
