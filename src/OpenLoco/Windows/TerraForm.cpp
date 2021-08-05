@@ -1102,12 +1102,27 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004BC677
         static void onToolUpdate(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
-            registers regs;
-            regs.esi = X86Pointer(&self);
-            regs.dx = widgetIndex;
-            regs.ax = x;
-            regs.bx = y;
-            call(0x004BC677, regs);
+            Map::TileManager::mapInvalidateSelectionRect();
+            Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
+
+            uint32_t cost = 0x80000000;
+            auto res = Ui::ViewportInteraction::getSurfaceLocFromUi({ x, y });
+            if (res)
+            {
+                if (Map::TileManager::setMapSelectionTiles(res->first, 4) == 0)
+                {
+                    return;
+                }
+                const auto [pointA, pointB] = Map::TileManager::getMapSelectionArea();
+                const Pos2 centre = (pointA + pointB) / 2;
+                cost = GameCommands::do_66(centre, pointA, pointB, GameCommands::Flags::flag_2 | GameCommands::Flags::flag_6);
+            }
+
+            if (cost != _raiseLandCost)
+            {
+                _raiseLandCost = cost;
+                WindowManager::invalidate(WindowType::terraform);
+            }
         }
 
         static void clearLand(uint8_t flags)
@@ -1423,25 +1438,27 @@ namespace OpenLoco::Ui::Windows::Terraform
             if (Ui::getToolCursor() != CursorId::upDownArrow)
             {
                 Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
-                if (_adjustLandToolSize != 1)
+                auto res = Ui::ViewportInteraction::getSurfaceLocFromUi({ x, y });
+                if (res)
                 {
-                    auto count = TileManager::setMapSelectionTiles(x, y);
+                    if (_adjustLandToolSize != 1)
+                    {
+                        auto count = TileManager::setMapSelectionTiles(res->first, 4);
 
-                    if (count == 0x8000)
-                        xPos = 0x8000;
+                        if (!count)
+                            return;
+                    }
+                    else
+                    {
+                        auto count = TileManager::setMapSelectionSingleTile(res->first, true);
 
-                    if (!count)
-                        return;
+                        if (!count)
+                            return;
+                    }
                 }
                 else
                 {
-                    auto count = TileManager::setMapSelectionSingleTile(x, y, true);
-
-                    if (count == 0x8000)
-                        xPos = 0x8000;
-
-                    if (!count)
-                        return;
+                    xPos = 0x8000;
                 }
             }
             else
@@ -1694,26 +1711,72 @@ namespace OpenLoco::Ui::Windows::Terraform
             }
         }
 
+        static void setAdjustCost(uint32_t raiseCost, uint32_t lowerCost)
+        {
+            if (_raiseWaterCost == raiseCost)
+            {
+                if (_lowerWaterCost == lowerCost)
+                    return;
+            }
+
+            _raiseWaterCost = raiseCost;
+            _lowerWaterCost = lowerCost;
+
+            WindowManager::invalidate(WindowType::terraform);
+        }
+
         // 0x004BCDB4
         static void onToolUpdate(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
-            registers regs;
-            regs.esi = X86Pointer(&self);
-            regs.dx = widgetIndex;
-            regs.ax = x;
-            regs.bx = y;
-            call(0x004BCDB4, regs);
+            if (widgetIndex != Common::widx::panel)
+                return;
+            TileManager::mapInvalidateSelectionRect();
+
+            if (Ui::getToolCursor() != CursorId::upDownArrow)
+            {
+                Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
+
+                auto res = ViewportInteraction::getMapCoordinatesFromPos(x, y, ~(ViewportInteraction::InteractionItemFlags::surface | ViewportInteraction::InteractionItemFlags::water));
+                auto& interaction = res.first;
+                if (interaction.type == ViewportInteraction::InteractionItem::noInteraction)
+                {
+                    setAdjustCost(0x80000000, 0x80000000);
+                    return;
+                }
+                if (!TileManager::setMapSelectionTiles(interaction.pos + Map::Pos2(16, 16), 5))
+                {
+                    //no change in selection
+                    return;
+                }
+            }
+            else
+            {
+                if (!Input::hasMapSelectionFlag(Input::MapSelectionFlags::enable))
+                    return;
+            }
+
+            if (isEditorMode())
+            {
+                setAdjustCost(0x80000000, 0x80000000);
+            }
+            else
+            {
+                auto [pointA, pointB] = Map::TileManager::getMapSelectionArea();
+                auto lowerCost = GameCommands::do_29(pointA, pointB, 0);
+                auto raiseCost = GameCommands::do_28(pointA, pointB, 0);
+                setAdjustCost(raiseCost, lowerCost);
+            }
         }
 
         // 0x004BCDCA
         static void onToolDown(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
-            registers regs;
-            regs.esi = X86Pointer(&self);
-            regs.dx = widgetIndex;
-            regs.ax = x;
-            regs.bx = y;
-            call(0x004BCDCA, regs);
+            if (widgetIndex != Common::widx::panel)
+                return;
+            if (!Input::hasMapSelectionFlag(Input::MapSelectionFlags::enable))
+                return;
+
+            Ui::setToolCursor(CursorId::upDownArrow);
         }
 
         static void raiseWater(uint8_t flags)
@@ -2543,8 +2606,11 @@ namespace OpenLoco::Ui::Windows::Terraform
         // 0x004A69DD
         static void sub_4A69DD()
         {
-            registers regs;
-            call(0x004A69DD, regs);
+            auto* window = WindowManager::find(WindowType::construction);
+            if (window != nullptr)
+            {
+                Ui::Windows::Construction::sub_49FEC7();
+            }
         }
 
         static void initEvents()
