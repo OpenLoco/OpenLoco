@@ -9,59 +9,15 @@ namespace OpenLoco::Math::Trigonometry
 
     int32_t integerSinePrecisionHigh(uint16_t direction, int32_t magnitude)
     {
-        int16_t value = 0;
         // Build the full sine wave from the quarter wave by subtraction of direction/magnitude
-        if (direction & (1 << 13))
-        {
-            if (direction & (1 << 12))
-            {
-                value = -_quarterSine[(-direction) & 0xFFF];
-            }
-            else
-            {
-                value = -_quarterSine[direction & 0xFFF];
-            }
-        }
-        else
-        {
-            if (direction & (1 << 12))
-            {
-                value = _quarterSine[(-direction) & 0xFFF];
-            }
-            else
-            {
-                value = _quarterSine[direction & 0xFFF];
-            }
-        }
+        const auto sineIndex = ((direction & (1 << 12)) ? -direction : direction) & 0xFFF;
+        const auto value = (direction & (1 << 13)) ? -_quarterSine[sineIndex] : _quarterSine[sineIndex];
         return value * magnitude / 0x8000;
     }
 
     int32_t integerCosinePrecisionHigh(uint16_t direction, int32_t magnitude)
     {
-        auto value = 0;
-        // Build the full cosine wave from the quarter wave by subtraction of direction/magnitude
-        if (direction & (1 << 13))
-        {
-            if (direction & (1 << 12))
-            {
-                value = _quarterSine[direction & 0xFFF];
-            }
-            else
-            {
-                value = -_quarterSine[(-direction) & 0xFFF];
-            }
-        }
-        else
-        {
-            if (direction & (1 << 12))
-            {
-                value = -_quarterSine[direction & 0xFFF];
-            }
-            else
-            {
-                value = _quarterSine[(-direction) & 0xFFF];
-            }
-        }
-        return value * magnitude / 0x8000;
+        // Cosine is Sine plus pi/2
+        return integerSinePrecisionHigh(direction + directionPrecisionHigh / 4, magnitude);
     }
 }
