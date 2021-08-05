@@ -138,6 +138,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     // 0x00473A95
     static void sub_473A95()
     {
+        // Title::sub_473A95
         registers regs;
         regs.eax = 0;
         call(0x00473A95, regs);

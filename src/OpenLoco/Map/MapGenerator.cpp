@@ -527,7 +527,7 @@ namespace OpenLoco::Map::MapGenerator
         updateProgress(255);
 
         call(0x004969E0);
-        call(0x004748D4);
+        Scenario::sub_4748D4();
         Ui::ProgressBar::end();
     }
 }

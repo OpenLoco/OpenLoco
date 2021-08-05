@@ -200,7 +200,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             registers regs2;
             regs2.ebp = X86Pointer(&scenarioInfo->currency);
             call(0x00471BCE, regs2);
-            call(0x0047237D); // reset_loaded_objects
+            ObjectManager::reloadAll();
             call(0x0046E07B); // load currency gfx
         }
 
