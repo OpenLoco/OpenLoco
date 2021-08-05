@@ -30,6 +30,9 @@ namespace OpenLoco::GameCommands
                 continue;
 
             auto treeElement = element.asTree();
+            if (treeElement == nullptr)
+                return FAILURE;
+
             if (treeElement->treeObjectId() != type)
                 continue;
 
@@ -45,7 +48,7 @@ namespace OpenLoco::GameCommands
             return removalCost;
         }
 
-        return 0;
+        return FAILURE;
     }
 
     void removeTree(registers& regs)
