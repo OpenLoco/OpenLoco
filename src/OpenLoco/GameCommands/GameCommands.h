@@ -130,6 +130,13 @@ namespace OpenLoco::GameCommands
     uint32_t doCommand(GameCommand command, const registers& registers);
     bool sub_431E6A(const CompanyId_t company, Map::TileElement* const tile = nullptr);
 
+    template<typename T>
+    uint32_t doCommand(uint8_t flags, const T& args) {
+        registers regs = registers(args);
+        regs.bl = flags;
+        return doCommand(T::command, regs);
+    }
+
     inline void do_0(EntityId_t source, EntityId_t dest)
     {
         registers regs;
@@ -141,6 +148,8 @@ namespace OpenLoco::GameCommands
 
     struct VehiclePlacementArgs
     {
+        static constexpr auto command = GameCommand::vehiclePlace;
+
         VehiclePlacementArgs() = default;
         explicit VehiclePlacementArgs(const registers regs)
             : pos(regs.ax, regs.cx, regs.dx * 4)
@@ -169,13 +178,6 @@ namespace OpenLoco::GameCommands
             return regs;
         }
     };
-
-    inline bool do_1(uint8_t flags, const VehiclePlacementArgs& args)
-    {
-        registers regs = registers(args);
-        regs.bl = flags;
-        return doCommand(GameCommand::vehiclePlace, regs) != FAILURE;
-    }
 
     inline bool do_2(EntityId_t head)
     {
