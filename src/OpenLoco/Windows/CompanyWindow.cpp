@@ -1995,7 +1995,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         // For the finances the most recent data on the scroll view is the data
         // most off to the right of the scroll. This function moves to the last
         // page of data as far to the right of the scroll.
-        static void moveScrollToMostRecentData(Window* self)
+        static void scrollToLatestData(Window* self)
         {
             self->initScrollWidgets();
             self->scroll_areas[0].contentOffsetX = 0x7FFF;
@@ -2031,7 +2031,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             if (widgetIndex == Common::widx::company_select)
             {
                 Common::switchCompany(self, itemIndex);
-                moveScrollToMostRecentData(self);
+                scrollToLatestData(self);
                 self->invalidate();
             }
         }
@@ -2117,7 +2117,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         Common::disableChallengeTab(window);
         window->initScrollWidgets();
         window->moveInsideScreenEdges();
-        Finances::moveScrollToMostRecentData(window);
+        Finances::scrollToLatestData(window);
 
         return window;
     }
@@ -2649,7 +2649,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             self->moveInsideScreenEdges();
 
             if (tabInfo.widgetIndex == widx::tab_finances)
-                Finances::moveScrollToMostRecentData(self);
+                Finances::scrollToLatestData(self);
         }
 
         // 0x0043252E
