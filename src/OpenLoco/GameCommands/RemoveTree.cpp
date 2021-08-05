@@ -12,7 +12,7 @@ using namespace OpenLoco::Interop;
 namespace OpenLoco::GameCommands
 {
     // 0x004BB392
-    uint32_t removeTree(Map::Pos3 pos, uint8_t type, uint8_t elementType, uint8_t flags)
+    static uint32_t removeTree(Map::Pos3 pos, uint8_t type, uint8_t elementType, uint8_t flags)
     {
         GameCommands::setExpenditureType(ExpenditureType::Construction);
 
@@ -50,6 +50,7 @@ namespace OpenLoco::GameCommands
 
     void removeTree(registers& regs)
     {
-        regs.ebx = removeTree({ regs.ax, regs.cx, regs.dl }, regs.dh, regs.bh, regs.bl);
+        TreeRemovalArgs args(regs);
+        regs.ebx = removeTree(args.pos, args.type, args.elementType, regs.bl);
     }
 }
