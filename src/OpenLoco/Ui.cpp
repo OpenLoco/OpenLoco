@@ -319,13 +319,15 @@ namespace OpenLoco::Ui
     }
 
     // 0x00407FCD
-    void getCursorPos(int32_t& x, int32_t& y)
+    xy32 getCursorPos()
     {
+        int x = 0, y = 0;
         SDL_GetMouseState(&x, &y);
 
         auto scale = Config::getNew().scale_factor;
         x /= scale;
         y /= scale;
+        return { x, y };
     }
 
     // 0x00407FEE

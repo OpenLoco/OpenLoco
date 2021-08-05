@@ -285,7 +285,7 @@ namespace OpenLoco::Ui
             }
             this->callOnResize();
 
-            int16_t centreX, centreY;
+            viewport_pos centre;
 
             if (config->viewport_target_sprite != 0xFFFF)
             {
@@ -296,7 +296,7 @@ namespace OpenLoco::Ui
 
                 viewportSetUndergroundFlag(underground, viewport);
 
-                viewport->centre2dCoordinates(entity->position.x, entity->position.y, entity->position.z + 12, &centreX, &centreY);
+                centre = viewport->centre2dCoordinates(entity->position + Pos3{ 0, 0, 12 });
             }
             else
             {
@@ -336,50 +336,50 @@ namespace OpenLoco::Ui
                     config->saved_view_y = coord_2d.y - viewport->view_height / 2;
                 }
 
-                centreX = config->saved_view_x;
-                centreY = config->saved_view_y;
+                centre.x = config->saved_view_x;
+                centre.y = config->saved_view_y;
 
                 if (this->flags & WindowFlags::scrolling_to_location)
                 {
                     bool flippedX = false;
-                    centreX -= viewport->view_x;
-                    if (centreX < 0)
+                    centre.x -= viewport->view_x;
+                    if (centre.x < 0)
                     {
-                        centreX = -centreX;
+                        centre.x = -centre.x;
                         flippedX = true;
                     }
 
                     bool flippedY = false;
-                    centreY -= viewport->view_y;
-                    if (centreY < 0)
+                    centre.y -= viewport->view_y;
+                    if (centre.y < 0)
                     {
-                        centreY = -centreY;
+                        centre.y = -centre.y;
                         flippedY = true;
                     }
 
-                    centreX = (centreX + 7) / 8; // ceil(centreX / 8.0);
-                    centreY = (centreY + 7) / 8; // ceil(centreX / 8.0);
+                    centre.x = (centre.x + 7) / 8; // ceil(centreX / 8.0);
+                    centre.y = (centre.y + 7) / 8; // ceil(centreX / 8.0);
 
-                    if (centreX == 0 && centreY == 0)
+                    if (centre.x == 0 && centre.y == 0)
                     {
                         this->flags &= ~WindowFlags::scrolling_to_location;
                     }
 
                     if (flippedX)
                     {
-                        centreX = -centreX;
+                        centre.x = -centre.x;
                     }
 
                     if (flippedY)
                     {
-                        centreY = -centreY;
+                        centre.y = -centre.y;
                     }
 
-                    centreX += viewport->view_x;
-                    centreY += viewport->view_y;
+                    centre.x += viewport->view_x;
+                    centre.y += viewport->view_y;
                 }
             }
-            viewportMove(centreX, centreY, this, viewport);
+            viewportMove(centre.x, centre.y, this, viewport);
         }
     }
 
@@ -507,29 +507,27 @@ namespace OpenLoco::Ui
     void Window::viewportGetMapCoordsByCursor(int16_t* map_x, int16_t* map_y, int16_t* offset_x, int16_t* offset_y)
     {
         // Get mouse position to offset against.
-        int32_t mouse_x, mouse_y;
-        Ui::getCursorPos(mouse_x, mouse_y);
+        const auto mouse = Ui::getCursorPos();
 
         // Compute map coordinate by mouse position.
-        auto res = ViewportInteraction::getMapCoordinatesFromPos(mouse_x, mouse_y, 0);
+        auto res = ViewportInteraction::getMapCoordinatesFromPos(mouse.x, mouse.y, 0);
         auto& interaction = res.first;
         *map_x = interaction.pos.x;
         *map_y = interaction.pos.y;
 
         // Get viewport coordinates centring around the tile.
-        int32_t base_height = TileManager::getHeight({ *map_x, *map_y }).landHeight;
-        int16_t dest_x, dest_y;
+        auto base_height = TileManager::getHeight({ *map_x, *map_y }).landHeight;
         Viewport* v = this->viewports[0];
-        v->centre2dCoordinates(*map_x, *map_y, base_height, &dest_x, &dest_y);
+        const auto dest = v->centre2dCoordinates({ *map_x, *map_y, base_height });
 
         // Rebase mouse position onto centre of window, and compensate for zoom level.
-        int16_t rebased_x = ((this->width >> 1) - mouse_x) * (1 << v->zoom),
-                rebased_y = ((this->height >> 1) - mouse_y) * (1 << v->zoom);
+        int16_t rebased_x = ((this->width >> 1) - mouse.x) * (1 << v->zoom),
+                rebased_y = ((this->height >> 1) - mouse.y) * (1 << v->zoom);
 
         // Compute cursor offset relative to tile.
         ViewportConfig* vc = &this->viewport_configurations[0];
-        *offset_x = (vc->saved_view_x - (dest_x + rebased_x)) * (1 << v->zoom);
-        *offset_y = (vc->saved_view_y - (dest_y + rebased_y)) * (1 << v->zoom);
+        *offset_x = (vc->saved_view_x - (dest.x + rebased_x)) * (1 << v->zoom);
+        *offset_y = (vc->saved_view_y - (dest.y + rebased_y)) * (1 << v->zoom);
     }
 
     // 0x004C6801
@@ -608,23 +606,21 @@ namespace OpenLoco::Ui
     void Window::viewportCentreTileAroundCursor(int16_t map_x, int16_t map_y, int16_t offset_x, int16_t offset_y)
     {
         // Get viewport coordinates centring around the tile.
-        int16_t dest_x, dest_y;
-        int32_t base_height = TileManager::getHeight({ map_x, map_y }).landHeight;
+        auto base_height = TileManager::getHeight({ map_x, map_y }).landHeight;
         Viewport* v = this->viewports[0];
-        v->centre2dCoordinates(map_x, map_y, base_height, &dest_x, &dest_y);
+        const auto dest = v->centre2dCoordinates({ map_x, map_y, base_height });
 
         // Get mouse position to offset against.
-        int32_t mouse_x, mouse_y;
-        Ui::getCursorPos(mouse_x, mouse_y);
+        const auto mouse = Ui::getCursorPos();
 
         // Rebase mouse position onto centre of window, and compensate for zoom level.
-        int16_t rebased_x = ((this->width >> 1) - mouse_x) * (1 << v->zoom),
-                rebased_y = ((this->height >> 1) - mouse_y) * (1 << v->zoom);
+        int16_t rebased_x = ((this->width >> 1) - mouse.x) * (1 << v->zoom),
+                rebased_y = ((this->height >> 1) - mouse.y) * (1 << v->zoom);
 
         // Apply offset to the viewport.
         ViewportConfig* vc = &this->viewport_configurations[0];
-        vc->saved_view_x = dest_x + rebased_x + (offset_x / (1 << v->zoom));
-        vc->saved_view_y = dest_y + rebased_y + (offset_y / (1 << v->zoom));
+        vc->saved_view_x = dest.x + rebased_x + (offset_x / (1 << v->zoom));
+        vc->saved_view_y = dest.y + rebased_y + (offset_y / (1 << v->zoom));
     }
 
     void Window::viewportFocusOnEntity(uint16_t targetEntity)

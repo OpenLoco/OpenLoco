@@ -60,7 +60,9 @@ namespace OpenLoco::Input
         if (_cursor_drag_state == 0)
         {
             _cursor_drag_state = 1;
-            Ui::getCursorPos(_cursor_drag_start_x, _cursor_drag_start_y);
+            auto cursor = Ui::getCursorPos();
+            _cursor_drag_start_x = cursor.x;
+            _cursor_drag_start_y = cursor.y;
             Ui::hideCursor();
         }
     }
@@ -77,11 +79,10 @@ namespace OpenLoco::Input
 
     Gfx::point_t getNextDragOffset()
     {
-        int32_t currentX, currentY;
-        Ui::getCursorPos(currentX, currentY);
+        auto current = Ui::getCursorPos();
 
-        auto deltaX = currentX - _cursor_drag_start_x;
-        auto deltaY = currentY - _cursor_drag_start_y;
+        auto deltaX = current.x - _cursor_drag_start_x;
+        auto deltaY = current.y - _cursor_drag_start_y;
 
         Ui::setCursorPos(_cursor_drag_start_x, _cursor_drag_start_y);
 

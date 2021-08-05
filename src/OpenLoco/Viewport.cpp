@@ -50,12 +50,11 @@ namespace OpenLoco::Ui
     }
 
     // 0x004CA444
-    void Viewport::centre2dCoordinates(int16_t _x, int16_t _y, int16_t _z, int16_t* outX, int16_t* outY)
+    viewport_pos Viewport::centre2dCoordinates(const Pos3& loc)
     {
-        auto centre = Map::gameToScreen({ _x, _y, _z }, getRotation());
+        auto centre = Map::gameToScreen(loc, getRotation());
 
-        *outX = centre.x - view_width / 2;
-        *outY = centre.y - view_height / 2;
+        return viewport_pos(centre.x - view_width / 2, centre.y - view_height / 2);
     }
 
     SavedViewSimple Viewport::toSavedView() const
