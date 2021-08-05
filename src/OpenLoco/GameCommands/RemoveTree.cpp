@@ -26,7 +26,7 @@ namespace OpenLoco::GameCommands
             if (element.rawData()[0] != elementType)
                 continue;
 
-            if (element.baseZ() != pos.z)
+            if (element.baseZ() * 4 != pos.z)
                 continue;
 
             auto treeElement = element.asTree();
