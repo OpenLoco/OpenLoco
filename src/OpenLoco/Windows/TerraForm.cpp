@@ -1732,7 +1732,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 return;
             TileManager::mapInvalidateSelectionRect();
 
-            if (_currentTool != 3)
+            if (Ui::getToolCursor() != CursorId::upDownArrow)
             {
                 Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
 
@@ -1776,7 +1776,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             if (!Input::hasMapSelectionFlag(Input::MapSelectionFlags::enable))
                 return;
 
-            _currentTool = 3;
+            Ui::setToolCursor(CursorId::upDownArrow);
         }
 
         static void raiseWater(uint8_t flags)
