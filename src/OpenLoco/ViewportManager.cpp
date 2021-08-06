@@ -41,7 +41,7 @@ namespace OpenLoco::Ui::ViewportManager
             _viewports.end());
     }
 
-    static Viewport* initViewport(Gfx::point_t origin, Gfx::ui_size_t size, ZoomLevel zoom)
+    static Viewport* initViewport(Ui::Point origin, Ui::UiSize size, ZoomLevel zoom)
     {
         auto vp = _viewports.emplace_back(std::make_unique<Viewport>()).get();
 
@@ -139,7 +139,7 @@ namespace OpenLoco::Ui::ViewportManager
      * 2.
      * dx : thing_id
      */
-    Viewport* create(Window* window, int viewportIndex, Gfx::point_t origin, Gfx::ui_size_t size, ZoomLevel zoom, EntityId_t thing_id)
+    Viewport* create(Window* window, int viewportIndex, Ui::Point origin, Ui::UiSize size, ZoomLevel zoom, EntityId_t thing_id)
     {
         Viewport* viewport = initViewport(origin, size, zoom);
 
@@ -168,7 +168,7 @@ namespace OpenLoco::Ui::ViewportManager
      * 2.
      * dx : thing_id
      */
-    Viewport* create(Window* window, int viewportIndex, Gfx::point_t origin, Gfx::ui_size_t size, ZoomLevel zoom, Map::Pos3 tile)
+    Viewport* create(Window* window, int viewportIndex, Ui::Point origin, Ui::UiSize size, ZoomLevel zoom, Map::Pos3 tile)
     {
         Viewport* viewport = initViewport(origin, size, zoom);
 

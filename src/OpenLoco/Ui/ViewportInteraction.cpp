@@ -412,7 +412,7 @@ namespace OpenLoco::Ui::ViewportInteraction
 
         // TODO: Handle in the paint functions
         // Get the viewport and add extra flags for hidden scenery
-        auto screenPos = Gfx::point_t(x, y);
+        auto screenPos = Ui::Point(x, y);
         auto w = WindowManager::findAt(screenPos);
         if (w != nullptr)
         {
@@ -453,7 +453,7 @@ namespace OpenLoco::Ui::ViewportInteraction
 
         _50BF68 = 1;
         ViewportInteraction::InteractionArg interaction{};
-        Gfx::point_t screenPos = { static_cast<int16_t>(screenX), static_cast<int16_t>(screenY) };
+        Ui::Point screenPos = { static_cast<int16_t>(screenX), static_cast<int16_t>(screenY) };
         auto w = WindowManager::findAt(screenPos);
         if (w == nullptr)
         {

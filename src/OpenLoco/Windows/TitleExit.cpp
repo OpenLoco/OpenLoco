@@ -13,7 +13,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::TitleExit
 {
-    static const Gfx::ui_size_t window_size = { 40, 28 };
+    static const Ui::UiSize window_size = { 40, 28 };
 
     namespace Widx
     {
@@ -42,7 +42,7 @@ namespace OpenLoco::Ui::Windows::TitleExit
 
         auto window = OpenLoco::Ui::WindowManager::createWindow(
             WindowType::titleExit,
-            Gfx::point_t(Ui::width() - window_size.width, Ui::height() - window_size.height),
+            Ui::Point(Ui::width() - window_size.width, Ui::height() - window_size.height),
             window_size,
             WindowFlags::stick_to_front | WindowFlags::transparent | WindowFlags::no_background | WindowFlags::flag_6,
             &_events);
@@ -74,7 +74,7 @@ namespace OpenLoco::Ui::Windows::TitleExit
 
         int16_t x = window->x + window->width / 2;
         int16_t y = window->y + window->widgets[Widx::exit_button].top + 8;
-        Gfx::point_t origin = { x, y };
+        Ui::Point origin = { x, y };
         Gfx::drawStringCentredWrapped(*context, origin, window->width, Colour::black, StringIds::title_exit_game);
     }
 

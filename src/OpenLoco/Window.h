@@ -298,9 +298,9 @@ namespace OpenLoco::Ui
         int16_t var_88A;
         int16_t var_88C;
 
-        Window(Gfx::point_t position, Gfx::ui_size_t size);
+        Window(Ui::Point position, Ui::UiSize size);
 
-        constexpr bool setSize(Gfx::ui_size_t minSize, Gfx::ui_size_t maxSize)
+        constexpr bool setSize(Ui::UiSize minSize, Ui::UiSize maxSize)
         {
             bool hasResized = false;
 
@@ -338,7 +338,7 @@ namespace OpenLoco::Ui
             return hasResized;
         }
 
-        constexpr void setSize(Gfx::ui_size_t size)
+        constexpr void setSize(Ui::UiSize size)
         {
             setSize(size, size);
         }

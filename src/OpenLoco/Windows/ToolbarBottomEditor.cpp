@@ -128,8 +128,8 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
     {
         initEvents();
 
-        Gfx::point_t origin = Gfx::point_t(0, Ui::height() - windowHeight);
-        Gfx::ui_size_t windowSize = Gfx::ui_size_t(Ui::width(), windowHeight);
+        Ui::Point origin = Ui::Point(0, Ui::height() - windowHeight);
+        Ui::UiSize windowSize = Ui::UiSize(Ui::width(), windowHeight);
         auto window = WindowManager::createWindow(
             WindowType::editorToolbar,
             origin,

@@ -124,7 +124,7 @@ namespace OpenLoco::Ui::Windows::Cheats
 
     namespace Finances
     {
-        constexpr Gfx::ui_size_t windowSize = { 250, 124 };
+        constexpr Ui::UiSize windowSize = { 250, 124 };
 
         static WindowEventList _events;
 
@@ -288,7 +288,7 @@ namespace OpenLoco::Ui::Windows::Cheats
 
     namespace Companies
     {
-        constexpr Gfx::ui_size_t windowSize = { 250, 172 };
+        constexpr Ui::UiSize windowSize = { 250, 172 };
 
         static WindowEventList _events;
 
@@ -438,7 +438,7 @@ namespace OpenLoco::Ui::Windows::Cheats
 
     namespace Vehicles
     {
-        constexpr Gfx::ui_size_t windowSize = { 250, 103 };
+        constexpr Ui::UiSize windowSize = { 250, 103 };
 
         static WindowEventList _events;
 
@@ -525,7 +525,7 @@ namespace OpenLoco::Ui::Windows::Cheats
 
     namespace Towns
     {
-        constexpr Gfx::ui_size_t windowSize = { 250, 103 };
+        constexpr Ui::UiSize windowSize = { 250, 103 };
 
         static WindowEventList _events;
 
@@ -664,7 +664,7 @@ namespace OpenLoco::Ui::Windows::Cheats
             WindowEventList* events;
             const uint64_t* enabledWidgets;
             const uint64_t* holdableWidgets;
-            Gfx::ui_size_t windowSize;
+            Ui::UiSize windowSize;
         };
 
         // clang-format off

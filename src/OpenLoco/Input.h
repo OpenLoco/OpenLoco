@@ -67,8 +67,8 @@ namespace OpenLoco::Input
     State state();
     void state(State);
 
-    Gfx::point_t getMouseLocation();
-    Gfx::point_t getMouseLocation2();
+    Ui::Point getMouseLocation();
+    Ui::Point getMouseLocation2();
     bool isHovering(Ui::WindowType);
     bool isHovering(Ui::WindowType, Ui::WindowNumber_t);
     bool isHovering(Ui::WindowType type, Ui::WindowNumber_t number, Ui::WidgetIndex_t widgetIndex);
@@ -108,16 +108,16 @@ namespace OpenLoco::Input
     void moveMouse(int32_t x, int32_t y, int32_t relX, int32_t relY);
     void sub_407218();
     void sub_407231();
-    Gfx::point_t getNextDragOffset();
+    Ui::Point getNextDragOffset();
     void processMouseOver(int16_t x, int16_t y);
     void processKeyboardInput();
 
     void windowPositionBegin(int16_t x, int16_t y, Ui::Window* window, Ui::WidgetIndex_t widget_index);
 
-    Gfx::point_t getScrollLastLocation();
-    Gfx::point_t getDragLastLocation();
-    Gfx::point_t getTooltipMouseLocation();
-    void setTooltipMouseLocation(const Gfx::point_t& loc);
+    Ui::Point getScrollLastLocation();
+    Ui::Point getDragLastLocation();
+    Ui::Point getTooltipMouseLocation();
+    void setTooltipMouseLocation(const Ui::Point& loc);
     uint16_t getTooltipTimeout();
     void setTooltipTimeout(uint16_t tooltipTimeout);
 

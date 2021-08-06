@@ -37,7 +37,7 @@ namespace OpenLoco
     // 0x0042DE82
     void BuildingObject::drawDescription(Gfx::Context& context, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const
     {
-        Gfx::point_t rowPosition = { x, y };
+        Ui::Point rowPosition = { x, y };
         ObjectManager::drawGenericDescription(context, rowPosition, designedYear, obsoleteYear);
     }
 }

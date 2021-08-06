@@ -14,7 +14,7 @@ namespace OpenLoco
     static loco_global<uint16_t, 0x0052622E> _52622E; // Tick related
 
     // 0x004B7733
-    static void drawVehicle(Gfx::Context* context, const VehicleObject* vehicleObject, uint8_t eax, uint8_t esi, Gfx::point_t offset)
+    static void drawVehicle(Gfx::Context* context, const VehicleObject* vehicleObject, uint8_t eax, uint8_t esi, Ui::Point offset)
     {
         // Eventually calls 0x4B777B part of 0x4B7741
         registers regs;
@@ -36,7 +36,7 @@ namespace OpenLoco
         uint8_t unk1 = _52622E & 0x3F;
         uint8_t unk2 = ((_52622E + 2) / 4) & 0x3F;
 
-        drawVehicle(&context, this, unk1, unk2, Gfx::point_t{ x, y } + Gfx::point_t{ 0, 19 });
+        drawVehicle(&context, this, unk1, unk2, Ui::Point{ x, y } + Ui::Point{ 0, 19 });
     }
 
     // TODO: Should only be defined in ObjectSelectionWindow
@@ -45,7 +45,7 @@ namespace OpenLoco
     // 0x004B8C9D
     void VehicleObject::drawDescription(Gfx::Context& context, const int16_t x, const int16_t y, const int16_t width) const
     {
-        Gfx::point_t rowPosition = { x, y };
+        Ui::Point rowPosition = { x, y };
         ObjectManager::drawGenericDescription(context, rowPosition, designed, obsolete);
         if (power != 0 && (mode == TransportMode::road || mode == TransportMode::rail))
         {

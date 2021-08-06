@@ -46,7 +46,7 @@ using namespace OpenLoco::Interop;
 namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 {
     static constexpr int rowHeight = 12;
-    static Gfx::ui_size_t windowSize = { 600, 398 };
+    static Ui::UiSize windowSize = { 600, 398 };
 
     static loco_global<uint8_t[999], 0x004FE384> _4FE384;
 
@@ -300,12 +300,12 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         }
     }
 
-    static const Gfx::point_t objectPreviewOffset = { 56, 56 };
-    static const Gfx::ui_size_t objectPreviewSize = { 112, 112 };
+    static const Ui::Point objectPreviewOffset = { 56, 56 };
+    static const Ui::UiSize objectPreviewSize = { 112, 112 };
     static const uint8_t descriptionRowHeight = 10;
 
     template<typename T>
-    static void callDrawPreviewImage(Gfx::Context& context, const Gfx::point_t& drawingOffset, void* objectPtr)
+    static void callDrawPreviewImage(Gfx::Context& context, const Ui::Point& drawingOffset, void* objectPtr)
     {
         auto object = reinterpret_cast<T*>(objectPtr);
         object->drawPreviewImage(context, drawingOffset.x, drawingOffset.y);
@@ -318,7 +318,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
         Gfx::Context* clipped = nullptr;
         // Clip the draw area to simplify image draw
-        Gfx::point_t drawAreaPos = Gfx::point_t{ x, y } - objectPreviewOffset;
+        Ui::Point drawAreaPos = Ui::Point{ x, y } - objectPreviewOffset;
         if (!Gfx::clipContext(&clipped, context, drawAreaPos, objectPreviewSize))
             return;
 

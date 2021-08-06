@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Graphics/Types.h"
+#include "Types.hpp"
 #include <algorithm>
 #include <cstddef>
 
@@ -9,11 +9,11 @@ namespace OpenLoco::Ui
     class Rect
     {
     public:
-        Gfx::ui_size_t size;
-        Gfx::point_t origin;
+        Ui::UiSize size;
+        Ui::Point origin;
         Rect(int16_t x, int16_t y, uint16_t width, uint16_t height)
-            : size(Gfx::ui_size_t(width, height))
-            , origin(Gfx::point_t(x, y))
+            : size(Ui::UiSize(width, height))
+            , origin(Ui::Point(x, y))
         {
         }
 

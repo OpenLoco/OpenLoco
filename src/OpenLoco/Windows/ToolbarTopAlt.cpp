@@ -86,7 +86,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Editor
         auto window = WindowManager::createWindow(
             WindowType::topToolbar,
             { 0, 0 },
-            Gfx::ui_size_t(Ui::width(), 28),
+            Ui::UiSize(Ui::width(), 28),
             WindowFlags::stick_to_front | WindowFlags::transparent | WindowFlags::no_background,
             &_events);
         window->widgets = _widgets;

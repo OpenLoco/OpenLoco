@@ -571,7 +571,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             // Randomly generated landscape
             auto imageId = ImageIds::random_map_watermark | (window.getColour(WindowColour::secondary) << 19) | 0x20000000;
             Gfx::drawImage(&context, x, y, imageId);
-            Gfx::point_t origin = { (int16_t)(x + 64), (int16_t)(y + 60) };
+            Ui::Point origin = { (int16_t)(x + 64), (int16_t)(y + 60) };
             Gfx::drawStringCentredWrapped(context, origin, 128, 0, StringIds::randomly_generated_landscape);
         }
     }
@@ -583,7 +583,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         static std::string gbuffer;
 
         // Draw text box text
-        Gfx::point_t origin = { 0, 1 };
+        Ui::Point origin = { 0, 1 };
         setCommonArgsStringptr(text);
         Gfx::drawString_494B3F(context, &origin, 0, StringIds::black_stringid, _commonFormatArgs);
 

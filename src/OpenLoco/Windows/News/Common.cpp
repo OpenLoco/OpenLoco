@@ -13,7 +13,7 @@ using namespace OpenLoco::Config;
 
 namespace OpenLoco::Ui::Windows::NewsWindow
 {
-    static void createNewsWindow(Gfx::ui_size_t windowSize, Widget* widgets, uint8_t colour, bool isOld, uint32_t flags)
+    static void createNewsWindow(Ui::UiSize windowSize, Widget* widgets, uint8_t colour, bool isOld, uint32_t flags)
     {
         _word_525CE0 = 5;
 
@@ -26,7 +26,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
         }
 
         int16_t x = (Ui::width() / 2) - (windowSize.width / 2);
-        Gfx::point_t origin = { x, y };
+        Ui::Point origin = { x, y };
 
         auto window = WindowManager::createWindow(WindowType::news, origin, windowSize, flags, &News1::events);
 
@@ -128,7 +128,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                 _word_525CE0 = 0;
                 int16_t x = Ui::width() - 138;
                 int16_t y = Ui::height() - 25;
-                Gfx::point_t origin = { x, y };
+                Ui::Point origin = { x, y };
                 uint32_t flags = WindowFlags::stick_to_front | WindowFlags::viewport_no_scrolling | WindowFlags::transparent | WindowFlags::flag_7;
 
                 auto window = WindowManager::createWindow(WindowType::news, origin, Ticker::windowSize, flags, &Ticker::events);

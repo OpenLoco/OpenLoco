@@ -26,7 +26,7 @@ namespace OpenLoco
     // 0x00490A68
     void TrainStationObject::drawDescription(Gfx::Context& context, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const
     {
-        Gfx::point_t rowPosition = { x, y };
+        Ui::Point rowPosition = { x, y };
         ObjectManager::drawGenericDescription(context, rowPosition, designed_year, obsolete_year);
     }
 }

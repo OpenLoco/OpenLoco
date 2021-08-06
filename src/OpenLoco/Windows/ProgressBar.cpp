@@ -24,7 +24,7 @@ namespace OpenLoco::Ui::Windows::ProgressBar
         panel,
     };
 
-    constexpr Gfx::ui_size_t windowSize = { 350, 47 };
+    constexpr Ui::UiSize windowSize = { 350, 47 };
 
     Widget widgets[] = {
         makeWidget({ 0, 0 }, { 350, 47 }, WidgetType::frame, WindowColour::primary),
@@ -99,7 +99,7 @@ namespace OpenLoco::Ui::Windows::ProgressBar
         self->draw(context);
 
         Gfx::Context* clipped = nullptr;
-        if (!Gfx::clipContext(&clipped, context, Gfx::point_t(self->x + 2, self->y + 17), Gfx::ui_size_t(self->width - 5, self->height - 19)))
+        if (!Gfx::clipContext(&clipped, context, Ui::Point(self->x + 2, self->y + 17), Ui::UiSize(self->width - 5, self->height - 19)))
             return;
 
         // First, draw the train track.

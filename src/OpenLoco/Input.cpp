@@ -77,7 +77,7 @@ namespace OpenLoco::Input
         }
     }
 
-    Gfx::point_t getNextDragOffset()
+    Ui::Point getNextDragOffset()
     {
         auto current = Ui::getCursorPos();
 

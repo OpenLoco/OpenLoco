@@ -10,9 +10,9 @@
 namespace OpenLoco::Drawing
 {
     using Clock_t = std::chrono::high_resolution_clock;
-    using TimePoint_t = Clock_t::time_point;
+    using TimePoint = Clock_t::time_point;
 
-    static TimePoint_t _referenceTime;
+    static TimePoint _referenceTime;
     static uint32_t _currentFrameCount;
     static float _currentFPS;
 

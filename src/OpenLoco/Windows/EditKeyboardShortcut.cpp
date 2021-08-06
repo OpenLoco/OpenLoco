@@ -16,7 +16,7 @@ using namespace OpenLoco::Input;
 
 namespace OpenLoco::Ui::Windows::EditKeyboardShortcut
 {
-    constexpr Gfx::ui_size_t windowSize = { 280, 72 };
+    constexpr Ui::UiSize windowSize = { 280, 72 };
 
     static WindowEventList events;
     static loco_global<uint8_t, 0x011364A4> _11364A4;
@@ -71,7 +71,7 @@ namespace OpenLoco::Ui::Windows::EditKeyboardShortcut
 
         FormatArguments args{};
         args.push(ShortcutManager::getName(static_cast<Shortcut>(*_11364A4)));
-        auto point = Gfx::point_t(self->x + 140, self->y + 32);
+        auto point = Ui::Point(self->x + 140, self->y + 32);
         Gfx::drawStringCentredWrapped(*ctx, point, 272, 0, StringIds::change_keyboard_shortcut_desc, &args);
     }
 

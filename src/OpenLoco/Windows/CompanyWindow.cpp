@@ -95,7 +95,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
     namespace Status
     {
-        static const Gfx::ui_size_t windowSize = { 270, 182 };
+        static const Ui::UiSize windowSize = { 270, 182 };
 
         enum widx
         {
@@ -222,7 +222,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             {
                 auto args = FormatArguments::common(company->owner_name);
                 auto& widget = self->widgets[widx::change_owner_name];
-                auto origin = Gfx::point_t(self->x + (widget.left + widget.right) / 2, self->y + widget.top + 5);
+                auto origin = Ui::Point(self->x + (widget.left + widget.right) / 2, self->y + widget.top + 5);
                 Gfx::drawStringCentredWrapped(
                     *context,
                     origin,
@@ -376,11 +376,11 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         {
             Common::enableRenameByCaption(self);
 
-            self->setSize(Status::windowSize, Gfx::ui_size_t(640, 400));
+            self->setSize(Status::windowSize, Ui::UiSize(640, 400));
 
             if (self->viewports[0] != nullptr)
             {
-                Gfx::ui_size_t proposedDims(self->width - 123, self->height - 59);
+                Ui::UiSize proposedDims(self->width - 123, self->height - 59);
                 auto& viewport = self->viewports[0];
                 if (proposedDims.width != viewport->width || proposedDims.height != viewport->height)
                 {
@@ -403,8 +403,8 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             }
 
             auto& widget = self->widgets[widx::viewport];
-            auto origin = Gfx::point_t(widget.left + self->x + 1, widget.top + self->y + 1);
-            auto size = Gfx::ui_size_t(widget.width() - 2, widget.height() - 2);
+            auto origin = Ui::Point(widget.left + self->x + 1, widget.top + self->y + 1);
+            auto size = Ui::UiSize(widget.width() - 2, widget.height() - 2);
             if (view.isThingView())
             {
                 ViewportManager::create(self, 0, origin, size, self->saved_view.zoomLevel, view.thingId);
@@ -636,7 +636,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
     namespace Details
     {
-        const Gfx::ui_size_t windowSize = { 340, 194 };
+        const Ui::UiSize windowSize = { 340, 194 };
 
         loco_global<Map::Pos3, 0x009C68D6> _headquarterGhostPos;
         loco_global<uint8_t, 0x009C68F0> _headquarterGhostRotation;
@@ -816,7 +816,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             if (company->headquarters_x == -1)
             {
                 auto width = self->widgets[widx::viewport].width();
-                Gfx::point_t loc = {
+                Ui::Point loc = {
                     static_cast<int16_t>(self->x + self->widgets[widx::viewport].left + width / 2),
                     static_cast<int16_t>(self->y + self->widgets[widx::viewport].top + self->widgets[widx::viewport].height() / 2 - 5)
                 };
@@ -1067,8 +1067,8 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             }
 
             auto& widget = self->widgets[widx::viewport];
-            auto origin = Gfx::point_t(widget.left + self->x + 1, widget.top + self->y + 1);
-            auto size = Gfx::ui_size_t(widget.width() - 2, widget.height() - 2);
+            auto origin = Ui::Point(widget.left + self->x + 1, widget.top + self->y + 1);
+            auto size = Ui::UiSize(widget.width() - 2, widget.height() - 2);
 
             ViewportManager::create(self, 0, origin, size, self->saved_view.zoomLevel, view.getPos());
             self->flags |= WindowFlags::viewport_no_scrolling;
@@ -1152,7 +1152,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
     namespace ColourScheme
     {
-        const Gfx::ui_size_t windowSize = { 265, 252 };
+        const Ui::UiSize windowSize = { 265, 252 };
 
         enum widx
         {
@@ -1594,7 +1594,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
     namespace Finances
     {
-        const Gfx::ui_size_t windowSize = { 636, 319 };
+        const Ui::UiSize windowSize = { 636, 319 };
 
         enum widx
         {
@@ -2096,7 +2096,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
     namespace CargoDelivered
     {
-        const Gfx::ui_size_t windowSize = { 240, 382 };
+        const Ui::UiSize windowSize = { 240, 382 };
 
         static Widget widgets[] = {
             commonWidgets(240, 382, StringIds::title_company_cargo_delivered),
@@ -2286,7 +2286,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         static loco_global<uint16_t, 0x00526243> objectiveMonthsInChallenge;
         static loco_global<uint16_t, 0x00526245> objectiveCompletedChallengeInMonths;
 
-        const Gfx::ui_size_t windowSize = { 320, 182 };
+        const Ui::UiSize windowSize = { 320, 182 };
 
         static Widget widgets[] = {
             commonWidgets(320, 182, StringIds::title_company_challenge),
@@ -2506,7 +2506,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             const widx widgetIndex;
             WindowEventList* events;
             const uint64_t* enabledWidgets;
-            const Gfx::ui_size_t* windowSize;
+            const Ui::UiSize* windowSize;
         };
 
         static TabInformation tabInformationByTabOffset[] = {

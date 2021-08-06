@@ -13,7 +13,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::AboutMusic
 {
-    constexpr Gfx::ui_size_t windowSize = { 500, 312 };
+    constexpr Ui::UiSize windowSize = { 500, 312 };
 
     constexpr uint16_t numSongs = 31;
 

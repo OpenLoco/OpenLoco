@@ -334,6 +334,7 @@
     <ClInclude Include="Ui\Screenshot.h" />
     <ClInclude Include="Ui\ScrollView.h" />
     <ClInclude Include="Ui\TextInput.h" />
+    <ClInclude Include="Ui\Types.hpp" />
     <ClInclude Include="Ui\WindowManager.h" />
     <ClInclude Include="Ui\WindowType.h" />
     <ClInclude Include="Utility\Collection.hpp" />

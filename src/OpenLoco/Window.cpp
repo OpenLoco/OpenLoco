@@ -28,7 +28,7 @@ namespace OpenLoco::Ui
         return (uint32_t)e < 0x004D7000;
     }
 
-    Window::Window(Gfx::point_t position, Gfx::ui_size_t size)
+    Window::Window(Ui::Point position, Ui::UiSize size)
         : x(position.x)
         , y(position.y)
         , width(size.width)
@@ -809,7 +809,7 @@ namespace OpenLoco::Ui
     // 0x004CD320
     void Window::moveInsideScreenEdges()
     {
-        Gfx::point_t offset = { 0, 0 };
+        Ui::Point offset = { 0, 0 };
 
         const int16_t xOvershoot = this->x + this->width - Ui::width();
 
@@ -831,7 +831,7 @@ namespace OpenLoco::Ui
         if (this->y - 28 < 0)
             offset.y -= this->y - 28;
 
-        if (offset == 0)
+        if (offset == Ui::Point(0, 0))
             return;
 
         this->invalidate();

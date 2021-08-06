@@ -9,7 +9,7 @@
 
 namespace OpenLoco::Ui::Windows::About
 {
-    constexpr Gfx::ui_size_t windowSize = { 400, 260 };
+    constexpr Ui::UiSize windowSize = { 400, 260 };
 
     namespace widx
     {
