@@ -155,7 +155,7 @@ namespace OpenLoco::GameCommands
         uint16_t trackAndDirection;
         uint16_t trackProgress;
         EntityId_t head;
-        bool convertGhost;
+        bool convertGhost = false;
 
         explicit operator registers() const
         {
