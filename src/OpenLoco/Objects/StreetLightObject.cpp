@@ -1,6 +1,5 @@
 #include "StreetLightObject.h"
 #include "../Graphics/Gfx.h"
-#include "../Graphics/Types.h"
 
 namespace OpenLoco
 {

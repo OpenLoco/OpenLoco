@@ -242,7 +242,6 @@
     <ClInclude Include="Graphics\Colour.h" />
     <ClInclude Include="Graphics\Gfx.h" />
     <ClInclude Include="Graphics\ImageIds.h" />
-    <ClInclude Include="Graphics\Types.h" />
     <ClInclude Include="Gui.h" />
     <ClInclude Include="Industry.h" />
     <ClInclude Include="IndustryManager.h" />
