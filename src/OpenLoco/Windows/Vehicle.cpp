@@ -3655,16 +3655,6 @@ namespace OpenLoco::Ui::Windows::Vehicle
             return { placementArgs };
         }
 
-#pragma pack(push, 1)
-        struct UnkTrack
-        {
-            uint8_t var_00; // 0x00
-            uint8_t var_01; // 0x01
-            Map::Pos3 pos;  // 0x02
-        };
-        static_assert(sizeof(UnkTrack) == 0x8);
-#pragma pack(pop)
-
         // 0x00479707
         static std::optional<GameCommands::VehiclePlacementArgs> getVehicleRoadPlacementArgsFromCursor(const Vehicles::VehicleHead& head, const int16_t x, const int16_t y)
         {
@@ -3688,13 +3678,12 @@ namespace OpenLoco::Ui::Windows::Vehicle
             unkYaw &= 0x3F;
             if (unkYaw <= 0x20)
             {
-                static loco_global<UnkTrack[352], 0x004F6F8C> _4F6F8C;
                 static loco_global<Map::Pos2[352], 0x00503C6C> _503C6C;
-                const auto& unkItem = _4F6F8C[placementArgs->trackAndDirection];
+                const auto& unkItem = TrackData::getUnkRoad(placementArgs->trackAndDirection);
                 placementArgs->pos += unkItem.pos;
-                if (unkItem.var_01 < 12)
+                if (unkItem.rotationEnd < 12)
                 {
-                    placementArgs->pos -= _503C6C[unkItem.var_01];
+                    placementArgs->pos -= _503C6C[unkItem.rotationEnd];
                 }
                 placementArgs->trackProgress = std::max<uint16_t>(static_cast<uint16_t>(moveInfoArr.size()) - placementArgs->trackProgress, 0);
                 if (placementArgs->trackProgress >= moveInfoArr.size())
@@ -3795,13 +3784,12 @@ namespace OpenLoco::Ui::Windows::Vehicle
             unkYaw &= 0x3F;
             if (unkYaw <= 0x20)
             {
-                static loco_global<UnkTrack[352], 0x004F7B5C> _4F7B5C;
                 static loco_global<Map::Pos2[352], 0x00503C6C> _503C6C;
-                const auto& unkItem = _4F7B5C[placementArgs->trackAndDirection];
+                const auto& unkItem = TrackData::getUnkTrack(placementArgs->trackAndDirection);
                 placementArgs->pos += unkItem.pos;
-                if (unkItem.var_01 < 12)
+                if (unkItem.rotationEnd < 12)
                 {
-                    placementArgs->pos -= _503C6C[unkItem.var_01];
+                    placementArgs->pos -= _503C6C[unkItem.rotationEnd];
                 }
                 placementArgs->trackProgress = std::max<uint16_t>(static_cast<uint16_t>(moveInfoArr.size()) - placementArgs->trackProgress, 0);
                 if (placementArgs->trackProgress >= moveInfoArr.size())

@@ -20,7 +20,6 @@ using namespace OpenLoco::Map::TileManager;
 
 namespace OpenLoco::Ui::Windows::Construction::Construction
 {
-    static loco_global<uint16_t[351][4], 0x004F7B62> _word_4F7B62; // TODO: Not sure on size?
     static loco_global<uint8_t, 0x00508F09> _byte_508F09;
     static loco_global<uint8_t, 0x00522090> _byte_522090;
     static loco_global<uint8_t, 0x00522091> _byte_522091;
@@ -1508,7 +1507,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     // 0x00478361
-    static std::optional<std::pair<int16_t, int16_t>> sub_478361(int16_t x, int16_t y)
+    static std::optional<std::pair<int16_t, int16_t>> getExistingRoadAtLoc(int16_t x, int16_t y)
     {
         registers regs;
         regs.ax = x;
@@ -1522,7 +1521,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     // 0x004A4011
-    static std::optional<std::pair<int16_t, int16_t>> sub_4A4011(int16_t x, int16_t y)
+    static std::optional<std::pair<int16_t, int16_t>> getExistingTrackAtLoc(int16_t x, int16_t y)
     {
         registers regs;
         regs.ax = x;
@@ -1650,22 +1649,23 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         _word_1136000 = roadHeight;
         Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable | Input::MapSelectionFlags::enableConstruct | Input::MapSelectionFlags::unk_02);
 
-        auto height = sub_478361(x, y);
+        const auto existingRoad = getExistingRoadAtLoc(x, y);
         std::optional<Pos2> mapPos;
 
-        if (height)
+        if (existingRoad)
         {
-            mapPos = screenGetMapXyWithZ(Point(x, y), height->first);
+            const auto& existingHeight = existingRoad->first;
+            mapPos = screenGetMapXyWithZ(Point(x, y), existingHeight);
             if (mapPos)
             {
                 mapPos->x &= 0xFFE0;
                 mapPos->y &= 0xFFE0;
-                _byte_113605D = 1;
+                _makeJunction = 1;
                 _word_1135FFE = roadHeight;
             }
         }
 
-        if (!height || !mapPos)
+        if (!existingRoad || !mapPos)
         {
             mapPos = ViewportInteraction::getSurfaceOrWaterLocFromUi({ x, y });
 
@@ -1677,12 +1677,12 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             if (constructionHeight)
                 roadHeight = *constructionHeight;
 
-            _byte_113605D = 0;
+            _makeJunction = 0;
         }
         Input::toolCancel();
 
         auto maxRetries = 0;
-        if (Input::hasKeyModifier(Input::KeyModifier::shift) || _byte_113605D != 1)
+        if (Input::hasKeyModifier(Input::KeyModifier::shift) || _makeJunction != 1)
         {
             const auto& roadPiece = Map::TrackData::getRoadPiece(_byte_1136065);
             auto maxRoadPieceHeight = getMaxPieceHeight(roadPiece);
@@ -1736,25 +1736,26 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         _word_1136000 = trackHeight;
         Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable | Input::MapSelectionFlags::enableConstruct | Input::MapSelectionFlags::unk_02);
 
-        auto height = sub_4A4011(x, y);
+        auto existingTrack = getExistingTrackAtLoc(x, y);
         std::optional<Pos2> mapPos;
 
-        if (height)
+        if (existingTrack)
         {
-            if (_word_4F7B62[height->second] == 0)
+            auto [existingHeight, existingTrackId] = *existingTrack;
+            if (TrackData::getUnkTrack(existingTrackId << 3).pos.z == 0)
             {
-                mapPos = screenGetMapXyWithZ(Point(x, y), height->first);
+                mapPos = screenGetMapXyWithZ(Point(x, y), existingHeight);
                 if (mapPos)
                 {
                     mapPos->x &= 0xFFE0;
                     mapPos->y &= 0xFFE0;
-                    _byte_113605D = 1;
+                    _makeJunction = 1;
                     _word_1135FFE = trackHeight;
                 }
             }
         }
 
-        if (!height || !mapPos || _word_4F7B62[track->id * 8] != 0)
+        if (!existingTrack || !mapPos || TrackData::getUnkTrack(track->id << 3).pos.z != 0)
         {
             mapPos = ViewportInteraction::getSurfaceOrWaterLocFromUi({ x, y });
 
@@ -1766,12 +1767,12 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             if (constructionHeight)
                 trackHeight = *constructionHeight;
 
-            _byte_113605D = 0;
+            _makeJunction = 0;
         }
         Input::toolCancel();
 
         auto maxRetries = 0;
-        if (Input::hasKeyModifier(Input::KeyModifier::shift) || _byte_113605D != 1)
+        if (Input::hasKeyModifier(Input::KeyModifier::shift) || _makeJunction != 1)
         {
             const auto& trackPiece = Map::TrackData::getTrackPiece(_byte_1136065);
             auto maxTrackPieceHeight = getMaxPieceHeight(trackPiece);

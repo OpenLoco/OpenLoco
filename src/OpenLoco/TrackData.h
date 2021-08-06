@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Map/Map.hpp"
 #include "Types.hpp"
 #include <cstddef>
 #include <cstdlib>
@@ -32,6 +33,19 @@ namespace OpenLoco::Map::TrackData
         constexpr uint8_t diagonal = 1 << 7;
     }
 
+#pragma pack(push, 1)
+    // Pos is difference from the next first tile and the track first tile
+    struct TrackCoordinates
+    {
+        uint8_t rotationBegin; // 0x00
+        uint8_t rotationEnd;   // 0x01
+        Map::Pos3 pos;         // 0x02
+    };
+    static_assert(sizeof(TrackCoordinates) == 0x8);
+#pragma pack(pop)
+
     const std::vector<PreviewTrack>& getTrackPiece(size_t trackId);
     const std::vector<PreviewTrack>& getRoadPiece(size_t trackId);
+    const TrackCoordinates& getUnkTrack(uint16_t trackAndDirection);
+    const TrackCoordinates& getUnkRoad(uint16_t trackAndDirection);
 }
