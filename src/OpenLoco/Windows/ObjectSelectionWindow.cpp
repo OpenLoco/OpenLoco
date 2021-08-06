@@ -630,7 +630,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                     checkColour = Colour::inset(checkColour);
                 }
 
-                Gfx::drawString(&context, x, y, checkColour, _strCheckmark);
+                Gfx::drawString(context, x, y, checkColour, _strCheckmark);
             }
 
             char buffer[512]{};
@@ -638,7 +638,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             strncpy(&buffer[1], object._name, 510);
             _currentFontSpriteBase = Font::medium_bold;
 
-            Gfx::drawString(&context, 15, y, Colour::black, buffer);
+            Gfx::drawString(context, 15, y, Colour::black, buffer);
             y += rowHeight;
         }
     }

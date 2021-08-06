@@ -177,7 +177,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             auto origin = Gfx::point_t(widget.mid_x() + self->x, widget.mid_y() + self->y - 3 - offset);
             const string_id caption = scenarioGroupIds[i];
 
-            Gfx::drawStringCentredWrapped(context, &origin, widget.width() - 4, Colour::black, StringIds::wcolour2_stringid, &caption);
+            Gfx::drawStringCentredWrapped(*context, origin, widget.width() - 4, Colour::black, StringIds::wcolour2_stringid, &caption);
         }
 
         // Scenario selected?
@@ -272,7 +272,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
 
             // Overlay random map note.
             auto origin = Gfx::point_t(x, y);
-            Gfx::drawStringCentredWrapped(context, &origin, 128, Colour::black, StringIds::wcolour2_stringid, &args);
+            Gfx::drawStringCentredWrapped(*context, origin, 128, Colour::black, StringIds::wcolour2_stringid, &args);
         }
 
         {

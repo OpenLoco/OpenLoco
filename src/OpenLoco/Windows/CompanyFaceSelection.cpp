@@ -273,7 +273,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
                 _currentFontSpriteBase = Font::m1;
                 stringColour = Colour::opaque(self.getColour(WindowColour::secondary)) | (1 << 6);
             }
-            Gfx::drawString(&context, 0, y - 1, stringColour, const_cast<char*>(name.c_str()));
+            Gfx::drawString(context, 0, y - 1, stringColour, const_cast<char*>(name.c_str()));
 
             index++;
         }

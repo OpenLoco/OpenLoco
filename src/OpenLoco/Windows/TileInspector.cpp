@@ -159,7 +159,7 @@ namespace OpenLoco::Ui::Windows::TileInspector
             snprintf(&buffer[1], std::size(buffer) - 1, "Data: %02x %02x %02x %02x %02x %02x %02x %02x", data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7]);
 
             auto widget = self->widgets[widx::detailsGroup];
-            Gfx::drawString(context, self->x + widget.left + 7, self->y + widget.top + 14, Colour::black, buffer);
+            Gfx::drawString(*context, self->x + widget.left + 7, self->y + widget.top + 14, Colour::black, buffer);
         }
     }
 
