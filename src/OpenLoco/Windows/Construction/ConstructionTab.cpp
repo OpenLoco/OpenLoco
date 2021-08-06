@@ -175,7 +175,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                     activateSelectedConstructionWidgets();
                     break;
                 }
-                sub_49FEC7();
+                removeConstructionGhosts();
                 WindowManager::viewportSetVisibility(WindowManager::ViewportVisibility::overgroundView);
                 Input::toolSet(self, widx::construct, CursorId::crosshair);
                 Input::setFlag(Input::Flags::flag6);
@@ -1211,7 +1211,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     static void changeTrackPiece(uint8_t trackPiece, bool slope)
     {
         _byte_113603A = 0xFF;
-        sub_49FEC7();
+        removeConstructionGhosts();
 
         if (slope)
             _lastSelectedTrackGradient = trackPiece;
@@ -1326,7 +1326,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             case widx::s_bend_dual_track_left:
             {
                 _byte_113603A = 0xFF;
-                sub_49FEC7();
+                removeConstructionGhosts();
                 _lastSelectedTrackPiece = TrackPiece::s_bend_to_dual_track;
                 _trackCost = 0x80000000;
                 if (self->widgets[widx::s_bend_dual_track_left].image != ImageIds::construction_s_bend_dual_track_left)
@@ -1345,7 +1345,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             case widx::s_bend_dual_track_right:
             {
                 _byte_113603A = 0xFF;
-                sub_49FEC7();
+                removeConstructionGhosts();
                 _lastSelectedTrackPiece = TrackPiece::s_bend_to_single_track;
                 _trackCost = 0x80000000;
                 if (self->widgets[widx::s_bend_dual_track_right].image != ImageIds::construction_s_bend_dual_track_right)
@@ -1412,7 +1412,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
                 // TODO: & ~(1 << 7) added to prevent crashing when selecting bridges for road/trams
                 _scenarioBridges[_trackType & ~(1 << 7)] = bridge;
-                sub_49FEC7();
+                removeConstructionGhosts();
                 _trackCost = 0x80000000;
                 activateSelectedConstructionWidgets();
             }
@@ -1608,10 +1608,21 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         call(0x0049DC8C, regs);
     }
 
+    static int16_t getMaxPieceHeight(const std::vector<TrackData::PreviewTrack>& piece)
+    {
+        int16_t maxPieceHeight = 0;
+
+        for (const auto& part : piece)
+        {
+            maxPieceHeight = std::max(maxPieceHeight, part.z);
+        }
+        return maxPieceHeight;
+    }
+
     static void onToolDownRoad(const int16_t x, const int16_t y)
     {
         mapInvalidateMapSelectionTiles();
-        sub_49FEC7();
+        removeConstructionGhosts();
 
         auto road = getRoadPieceId(_lastSelectedTrackPiece, _lastSelectedTrackGradient, _constructionRotation);
 
@@ -1626,10 +1637,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         {
             for (auto& tile = _mapSelectedTiles[i]; tile.x != -1; tile = _mapSelectedTiles[++i])
             {
-                if (tile.x >= 0x2FFF)
-                    continue;
-
-                if (tile.y >= 0x2FFF)
+                if (!Map::validCoords(tile))
                     continue;
 
                 auto height = getConstructionHeight(_mapSelectedTiles[i], roadHeight, true);
@@ -1677,13 +1685,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         if (Input::hasKeyModifier(Input::KeyModifier::shift) || _byte_113605D != 1)
         {
             const auto& roadPiece = Map::TrackData::getRoadPiece(_byte_1136065);
-            auto maxRoadPieceHeight = 0;
-
-            for (const auto& roadPart : roadPiece)
-            {
-                if (maxRoadPieceHeight > roadPart.z)
-                    maxRoadPieceHeight = roadPart.z;
-            }
+            auto maxRoadPieceHeight = getMaxPieceHeight(roadPiece);
 
             roadHeight -= maxRoadPieceHeight;
             roadHeight -= 16;
@@ -1707,7 +1709,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     static void onToolDownTrack(const int16_t x, const int16_t y)
     {
         mapInvalidateMapSelectionTiles();
-        sub_49FEC7();
+        removeConstructionGhosts();
 
         auto track = getTrackPieceId(_lastSelectedTrackPiece, _lastSelectedTrackGradient, _constructionRotation);
 
@@ -1722,10 +1724,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         {
             for (auto& tile = _mapSelectedTiles[i]; tile.x != -1; tile = _mapSelectedTiles[++i])
             {
-                if (tile.x >= 0x2FFF)
-                    continue;
-
-                if (tile.y >= 0x2FFF)
+                if (!Map::validCoords(tile))
                     continue;
 
                 auto height = getConstructionHeight(_mapSelectedTiles[i], trackHeight, true);
@@ -1775,13 +1774,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         if (Input::hasKeyModifier(Input::KeyModifier::shift) || _byte_113605D != 1)
         {
             const auto& trackPiece = Map::TrackData::getTrackPiece(_byte_1136065);
-            auto maxTrackPieceHeight = 0;
-
-            for (const auto& trackPart : trackPiece)
-            {
-                if (maxTrackPieceHeight > trackPart.z)
-                    maxTrackPieceHeight = trackPart.z;
-            }
+            auto maxTrackPieceHeight = getMaxPieceHeight(trackPiece);
 
             trackHeight -= maxTrackPieceHeight;
             trackHeight -= 16;

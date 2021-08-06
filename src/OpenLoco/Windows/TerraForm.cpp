@@ -2605,7 +2605,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             auto* window = WindowManager::find(WindowType::construction);
             if (window != nullptr)
             {
-                Ui::Windows::Construction::sub_49FEC7();
+                Ui::Windows::Construction::removeConstructionGhosts();
             }
         }
 
