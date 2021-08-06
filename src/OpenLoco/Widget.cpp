@@ -617,7 +617,7 @@ namespace OpenLoco::Ui
 
         drawStationNameBackground(context, window, this, x, y, colour, width);
 
-        Gfx::drawString(context, x, y, Colour::black, stringBuffer);
+        Gfx::drawString(*context, x, y, Colour::black, stringBuffer);
     }
 
     // 0x004CA7F6
@@ -635,7 +635,7 @@ namespace OpenLoco::Ui
         int16_t stringWidth = Gfx::clipString(width - 8, stringBuffer);
         x -= (stringWidth - 1) / 2;
 
-        Gfx::drawString(context, x, window->y + top + 1, FormatFlags::textflag_5 | Colour::black, stringBuffer);
+        Gfx::drawString(*context, x, window->y + top + 1, FormatFlags::textflag_5 | Colour::black, stringBuffer);
     }
 
     // 0x004CA88B
@@ -653,7 +653,7 @@ namespace OpenLoco::Ui
         int16_t stringWidth = Gfx::clipString(width - 8, stringBuffer);
         x -= (stringWidth - 1) / 2;
 
-        Gfx::drawString(context, x, window->y + top + 1, FormatFlags::textflag_5 | Colour::black, stringBuffer);
+        Gfx::drawString(*context, x, window->y + top + 1, FormatFlags::textflag_5 | Colour::black, stringBuffer);
     }
 
     static void draw_hscroll(Gfx::Context* context, const Window* window, Widget* widget, uint16_t flags, uint8_t colour, bool enabled, bool disabled, bool activated, bool hovered, int16_t scrollview_index)
@@ -683,7 +683,7 @@ namespace OpenLoco::Ui
         // popa
 
         // pusha
-        Gfx::drawString(context, ax + 2, cx, Colour::black, (char*)0x005045F2);
+        Gfx::drawString(*context, ax + 2, cx, Colour::black, (char*)0x005045F2);
         // popa
 
         // pusha
@@ -696,7 +696,7 @@ namespace OpenLoco::Ui
         // popa
 
         // pusha
-        Gfx::drawString(context, bx - 6 - 1, cx, Colour::black, (char*)0x005045F5);
+        Gfx::drawString(*context, bx - 6 - 1, cx, Colour::black, (char*)0x005045F5);
         // popa
 
         // pusha
@@ -748,7 +748,7 @@ namespace OpenLoco::Ui
         // popa
 
         // pusha
-        Gfx::drawString(context, ax + 1, cx - 1, Colour::black, (char*)0x005045EC);
+        Gfx::drawString(*context, ax + 1, cx - 1, Colour::black, (char*)0x005045EC);
         // popa
 
         // pusha
@@ -761,7 +761,7 @@ namespace OpenLoco::Ui
         // popa
 
         // pusha
-        Gfx::drawString(context, ax + 1, dx - 8 - 1, Colour::black, (char*)0x005045EF);
+        Gfx::drawString(*context, ax + 1, dx - 8 - 1, Colour::black, (char*)0x005045EF);
         // popa
 
         // pusha
@@ -880,7 +880,7 @@ namespace OpenLoco::Ui
         if (activated)
         {
             _currentFontSpriteBase = Font::medium_bold;
-            Gfx::drawString(context, window->x + left, window->y + top, colour & 0x7F, _strCheckmark);
+            Gfx::drawString(*context, window->x + left, window->y + top, colour & 0x7F, _strCheckmark);
         }
     }
 
@@ -927,7 +927,7 @@ namespace OpenLoco::Ui
             char buffer[512] = { 0 };
             StringManager::formatString(buffer, sizeof(buffer), text);
 
-            Gfx::drawString(context, l, t, colour, buffer);
+            Gfx::drawString(*context, l, t, colour, buffer);
             textEndPos = l + Gfx::getStringWidth(buffer) + 1;
         }
 

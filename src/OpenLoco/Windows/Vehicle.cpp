@@ -942,8 +942,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 origin.x = self->x + button.mid_x();
                 origin.y = self->y + button.mid_y();
                 Gfx::drawStringCentredWrapped(
-                    context,
-                    &origin,
+                    *context,
+                    origin,
                     button.width() - 6,
                     Colour::black,
                     StringIds::click_on_view_select_string_id_start,

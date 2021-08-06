@@ -137,7 +137,7 @@ namespace OpenLoco::Gfx
     uint16_t getStringWidth(const char* buffer);
     uint16_t getMaxStringWidth(const char* buffer);
 
-    Gfx::point_t drawString(Context* context, int16_t x, int16_t y, uint8_t colour, void* str);
+    Gfx::point_t drawString(Context& context, int16_t x, int16_t y, uint8_t colour, void* str);
 
     int16_t drawString_495224(
         Context& context,
@@ -205,8 +205,8 @@ namespace OpenLoco::Gfx
         string_id stringId,
         const void* args = nullptr);
     uint16_t drawStringCentredWrapped(
-        Context* context,
-        point_t* origin,
+        Context& context,
+        point_t& origin,
         uint16_t width,
         uint8_t colour,
         string_id stringId,

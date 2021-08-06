@@ -572,7 +572,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             auto imageId = ImageIds::random_map_watermark | (window.getColour(WindowColour::secondary) << 19) | 0x20000000;
             Gfx::drawImage(&context, x, y, imageId);
             Gfx::point_t origin = { (int16_t)(x + 64), (int16_t)(y + 60) };
-            Gfx::drawStringCentredWrapped(&context, &origin, 128, 0, StringIds::randomly_generated_landscape);
+            Gfx::drawStringCentredWrapped(context, origin, 128, 0, StringIds::randomly_generated_landscape);
         }
     }
 

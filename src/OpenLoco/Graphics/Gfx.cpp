@@ -791,38 +791,38 @@ namespace OpenLoco::Gfx
      * @param context @<edi>
      * @param text @<esi>
      */
-    Gfx::point_t drawString(Context* context, int16_t x, int16_t y, uint8_t colour, void* str)
+    Gfx::point_t drawString(Context& context, const int16_t x, const int16_t y, uint8_t colour, void* str)
     {
         // 0x00E04348, 0x00E0434A
         Gfx::point_t origin = { x, y };
 
         if (colour == FormatFlags::fe)
         {
-            return loopNewline(context, origin, (uint8_t*)str);
+            return loopNewline(&context, origin, (uint8_t*)str);
         }
 
         if (colour == FormatFlags::fd)
         {
             _currentFontFlags = 0;
             setTextColour(0);
-            return loopNewline(context, origin, (uint8_t*)str);
+            return loopNewline(&context, origin, (uint8_t*)str);
         }
 
-        if (x >= context->x + context->width)
+        if (x >= context.x + context.width)
             return origin;
 
-        if (x < context->x - 1280)
+        if (x < context.x - 1280)
             return origin;
 
-        if (y >= context->y + context->height)
+        if (y >= context.y + context.height)
             return origin;
 
-        if (y < context->y - 90)
+        if (y < context.y - 90)
             return origin;
 
         if (colour == FormatFlags::ff)
         {
-            return loopNewline(context, origin, (uint8_t*)str);
+            return loopNewline(&context, origin, (uint8_t*)str);
         }
 
         _currentFontFlags = 0;
@@ -881,7 +881,7 @@ namespace OpenLoco::Gfx
             setTextColours(Colour::getShade(colour, 9), PaletteIndex::index_0A, PaletteIndex::index_0A);
         }
 
-        return loopNewline(context, origin, (uint8_t*)str);
+        return loopNewline(&context, origin, (uint8_t*)str);
     }
 
     // 0x00495224
@@ -1135,25 +1135,25 @@ namespace OpenLoco::Gfx
      * returns width @<ax>
      */
     uint16_t drawStringCentredWrapped(
-        Context* context,
-        point_t* origin,
+        Context& context,
+        point_t& origin,
         uint16_t width,
         uint8_t colour,
         string_id stringId,
         const void* args)
     {
         registers regs;
-        regs.edi = X86Pointer(context);
+        regs.edi = X86Pointer(&context);
         regs.esi = X86Pointer(args);
-        regs.cx = origin->x;
-        regs.dx = origin->y;
+        regs.cx = origin.x;
+        regs.dx = origin.y;
         regs.bp = width;
         regs.al = colour;
         regs.bx = stringId;
         call(0x00494ECF, regs);
 
-        origin->x = regs.cx;
-        origin->y = regs.dx;
+        origin.x = regs.cx;
+        origin.y = regs.dx;
         return regs.ax;
     }
 

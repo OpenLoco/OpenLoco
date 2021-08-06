@@ -224,8 +224,8 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 auto& widget = self->widgets[widx::change_owner_name];
                 auto origin = Gfx::point_t(self->x + (widget.left + widget.right) / 2, self->y + widget.top + 5);
                 Gfx::drawStringCentredWrapped(
-                    context,
-                    &origin,
+                    *context,
+                    origin,
                     widget.right - widget.left,
                     Colour::black,
                     StringIds::black_stringid,
@@ -821,7 +821,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                     static_cast<int16_t>(self->y + self->widgets[widx::viewport].top + self->widgets[widx::viewport].height() / 2 - 5)
                 };
                 width -= 2;
-                Gfx::drawStringCentredWrapped(context, &loc, width, Colour::black, StringIds::not_yet_constructed);
+                Gfx::drawStringCentredWrapped(*context, loc, width, Colour::black, StringIds::not_yet_constructed);
             }
 
             if (self->viewports[0] != nullptr)

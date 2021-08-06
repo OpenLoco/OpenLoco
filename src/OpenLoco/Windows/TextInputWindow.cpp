@@ -240,7 +240,7 @@ namespace OpenLoco::Ui::Windows::TextInput
         memcpy(&_commonFormatArgs[2], _formatArgs + 8, 8);
 
         Gfx::point_t position = { (int16_t)(window->x + window->width / 2), (int16_t)(window->y + 30) };
-        Gfx::drawStringCentredWrapped(context, &position, window->width - 8, 0, StringIds::wcolour2_stringid, &_commonFormatArgs[0]);
+        Gfx::drawStringCentredWrapped(*context, position, window->width - 8, 0, StringIds::wcolour2_stringid, &_commonFormatArgs[0]);
 
         auto widget = &_widgets[Widx::input];
         Gfx::Context* clipped = nullptr;
