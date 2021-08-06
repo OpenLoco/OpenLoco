@@ -147,6 +147,7 @@ namespace OpenLoco::GameCommands
             , trackAndDirection(regs.bp)
             , trackProgress(regs.ebx >> 16)
             , head(regs.di)
+            , convertGhost((regs.ebx >> 16) == 0xFFFF)
         {
         }
 
@@ -154,6 +155,7 @@ namespace OpenLoco::GameCommands
         uint16_t trackAndDirection;
         uint16_t trackProgress;
         EntityId_t head;
+        bool convertGhost = false;
 
         explicit operator registers() const
         {
@@ -163,7 +165,7 @@ namespace OpenLoco::GameCommands
             regs.ax = pos.x;
             regs.cx = pos.y;
             regs.dx = pos.z / 4;
-            regs.ebx = (regs.ebx & 0xFFFF) | (trackProgress << 16);
+            regs.ebx = convertGhost ? 0xFFFF0000 : (trackProgress << 16);
             return regs;
         }
     };
@@ -954,12 +956,14 @@ namespace OpenLoco::GameCommands
             : stationId(regs.bp)
             , airportNode(regs.dl)
             , head(regs.di)
+            , convertGhost((regs.ebx >> 16) == 0xFFFF)
         {
         }
 
         StationId_t stationId;
         uint8_t airportNode;
         EntityId_t head;
+        bool convertGhost = false;
 
         explicit operator registers() const
         {
@@ -967,6 +971,7 @@ namespace OpenLoco::GameCommands
             regs.bp = stationId;
             regs.di = head;
             regs.dl = airportNode;
+            regs.ebx = convertGhost ? 0xFFFF0000 : 0;
             return regs;
         }
     };
@@ -1019,11 +1024,13 @@ namespace OpenLoco::GameCommands
         explicit VehicleWaterPlacementArgs(const registers regs)
             : pos(regs.ax, regs.cx, regs.dx)
             , head(regs.di)
+            , convertGhost((regs.ebx >> 16) == 0xFFFF)
         {
         }
 
         Map::Pos3 pos;
         EntityId_t head;
+        bool convertGhost = false;
 
         explicit operator registers() const
         {
@@ -1032,6 +1039,7 @@ namespace OpenLoco::GameCommands
             regs.cx = pos.y;
             regs.dx = pos.z;
             regs.di = head;
+            regs.ebx = convertGhost ? 0xFFFF0000 : 0;
             return regs;
         }
     };

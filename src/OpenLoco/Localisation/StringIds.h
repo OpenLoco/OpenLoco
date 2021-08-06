@@ -762,6 +762,7 @@ namespace OpenLoco::StringIds
     constexpr string_id vehicle_has_broken_down = 1159;
     constexpr string_id vehicle_is_stuck = 1160;
 
+    constexpr string_id cant_place_string_id_here = 1163;
     constexpr string_id cant_remove_string_id = 1164;
     constexpr string_id cant_pass_signal_at_danger = 1165;
 
