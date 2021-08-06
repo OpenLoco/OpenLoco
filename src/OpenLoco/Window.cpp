@@ -125,7 +125,7 @@ namespace OpenLoco::Ui
     // regs.bp:  z
     // Output:
     // {x: regs.ax, y: regs.bx}
-    std::optional<Map::Pos2> screenGetMapXyWithZ(const xy32& mouse, const int16_t z)
+    std::optional<Map::Pos2> screenGetMapXyWithZ(const Point& mouse, const int16_t z)
     {
         Window* w = WindowManager::findAt(mouse.x, mouse.y);
         if (w == nullptr)

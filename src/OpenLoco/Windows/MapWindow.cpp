@@ -108,7 +108,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
     static WindowEventList events;
 
-    static Pos2 mapWindowPosToLocation(xy32 pos)
+    static Pos2 mapWindowPosToLocation(Point pos)
     {
         pos.x = ((pos.x + 8) - map_columns) / 2;
         pos.y = ((pos.y + 8)) / 2;
@@ -131,7 +131,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         return { 0, 0 }; // unreachable
     }
 
-    static xy32 locationToMapWindowPos(Pos2 pos)
+    static Point locationToMapWindowPos(Pos2 pos)
     {
         int32_t x = pos.x;
         int32_t y = pos.y;
@@ -157,7 +157,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         x /= tile_size;
         y /= tile_size;
 
-        return { static_cast<int32_t>(-x + y + map_columns - 8), static_cast<int32_t>(x + y - 8) };
+        return Point(-x + y + map_columns - 8, x + y - 8);
     }
 
     // 0x0046B8E6
@@ -1007,7 +1007,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046C294
-    static std::pair<xy32, xy32> drawRouteLine(Gfx::Context* context, xy32 startPos, xy32 endPos, Pos2 stationPos, uint8_t colour)
+    static std::pair<Point, Point> drawRouteLine(Gfx::Context* context, Point startPos, Point endPos, Pos2 stationPos, uint8_t colour)
     {
         auto newStartPos = locationToMapWindowPos({ stationPos.x, stationPos.y });
 
@@ -1075,8 +1075,8 @@ namespace OpenLoco::Ui::Windows::MapWindow
         if (!colour)
             return;
 
-        xy32 startPos = { Location::null, 0 };
-        xy32 endPos = { Location::null, 0 };
+        Point startPos = { Location::null, 0 };
+        Point endPos = { Location::null, 0 };
         for (auto& order : Vehicles::OrderRingView(train.head->orderTableOffset))
         {
             if (order.hasFlag(Vehicles::OrderFlags::HasStation))

@@ -1653,7 +1653,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
             if (height)
             {
-                mapPos = screenGetMapXyWithZ(xy32(x, y), height->first);
+                mapPos = screenGetMapXyWithZ(Point(x, y), height->first);
                 if (mapPos)
                 {
                     mapPos->x &= 0xFFE0;
@@ -1749,7 +1749,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             {
                 if (_word_4F7B62[height->second] == 0)
                 {
-                    mapPos = screenGetMapXyWithZ(xy32(x, y), height->first);
+                    mapPos = screenGetMapXyWithZ(Point(x, y), height->first);
                     if (mapPos)
                     {
                         mapPos->x &= 0xFFE0;
@@ -1901,7 +1901,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     // 0x0049D106
-    static void drawTrackCost(Window* self, Gfx::Context* clipped, Gfx::Context* context, xy32 pos, uint16_t width, uint16_t height)
+    static void drawTrackCost(Window* self, Gfx::Context* clipped, Gfx::Context* context, Point pos, uint16_t width, uint16_t height)
     {
         width >>= 1;
         height >>= 1;
@@ -1922,7 +1922,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     // 0x0049D325
-    static void drawRoadCost(Window* self, Gfx::Context* clipped, Gfx::Context* context, xy32 pos, uint16_t width, uint16_t height)
+    static void drawRoadCost(Window* self, Gfx::Context* clipped, Gfx::Context* context, Point pos, uint16_t width, uint16_t height)
     {
         width >>= 1;
         height >>= 1;
@@ -2010,7 +2010,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 pos3D.z += 0x1CC;
 
                 auto pos2D = gameToScreen(pos3D, gCurrentRotation);
-                xy32 pos = { pos2D.x, pos2D.y };
+                Point pos = { pos2D.x, pos2D.y };
                 drawRoadCost(self, clipped, context, pos, width, height);
             }
             else
@@ -2060,7 +2060,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 pos3D.z += 0x1CC;
 
                 auto pos2D = gameToScreen(pos3D, gCurrentRotation);
-                xy32 pos = { pos2D.x, pos2D.y };
+                Point pos = { pos2D.x, pos2D.y };
                 drawTrackCost(self, clipped, context, pos, width, height);
             }
             else

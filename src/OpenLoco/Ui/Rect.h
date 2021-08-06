@@ -10,10 +10,10 @@ namespace OpenLoco::Ui
     {
     public:
         Ui::UiSize size;
-        Ui::Point origin;
+        Ui::Point32 origin;
         Rect(int16_t x, int16_t y, uint16_t width, uint16_t height)
             : size(Ui::UiSize(width, height))
-            , origin(Ui::Point(x, y))
+            , origin(Ui::Point32(x, y))
         {
         }
 

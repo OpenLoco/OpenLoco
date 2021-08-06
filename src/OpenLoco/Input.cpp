@@ -14,8 +14,7 @@ namespace OpenLoco::Input
 {
     loco_global<uint32_t, 0x00523368> _flags;
     static loco_global<State, 0x0052336D> _state;
-    static int32_t _cursor_drag_start_x;
-    static int32_t _cursor_drag_start_y;
+    static Ui::Point32 _cursor_drag_start;
     loco_global<uint32_t, 0x00525374> _cursor_drag_state;
 
     void init()
@@ -61,8 +60,7 @@ namespace OpenLoco::Input
         {
             _cursor_drag_state = 1;
             auto cursor = Ui::getCursorPos();
-            _cursor_drag_start_x = cursor.x;
-            _cursor_drag_start_y = cursor.y;
+            _cursor_drag_start = cursor;
             Ui::hideCursor();
         }
     }
@@ -72,7 +70,7 @@ namespace OpenLoco::Input
         if (_cursor_drag_state != 0)
         {
             _cursor_drag_state = 0;
-            Ui::setCursorPos(_cursor_drag_start_x, _cursor_drag_start_y);
+            Ui::setCursorPos(_cursor_drag_start.x, _cursor_drag_start.y);
             Ui::showCursor();
         }
     }
@@ -81,11 +79,10 @@ namespace OpenLoco::Input
     {
         auto current = Ui::getCursorPos();
 
-        auto deltaX = current.x - _cursor_drag_start_x;
-        auto deltaY = current.y - _cursor_drag_start_y;
+        auto delta = current - _cursor_drag_start;
 
-        Ui::setCursorPos(_cursor_drag_start_x, _cursor_drag_start_y);
+        Ui::setCursorPos(_cursor_drag_start.x, _cursor_drag_start.y);
 
-        return { static_cast<int16_t>(deltaX), static_cast<int16_t>(deltaY) };
+        return { static_cast<int16_t>(delta.x), static_cast<int16_t>(delta.y) };
     }
 }

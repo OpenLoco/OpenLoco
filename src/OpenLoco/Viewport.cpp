@@ -73,7 +73,7 @@ namespace OpenLoco::Ui
         return viewport_pos(view_x + view_width / 2, view_y + view_height / 2);
     }
 
-    xy32 Viewport::getUiCentre() const
+    Point Viewport::getUiCentre() const
     {
         return { x + width / 2,
                  y + height / 2 };

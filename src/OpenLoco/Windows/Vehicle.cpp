@@ -3538,7 +3538,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
                 auto viewPos = Map::gameToScreen(*nodeLoc, res.second->getRotation());
                 auto uiPos = res.second->mapToUi(viewPos);
-                auto distance = Math::Vector::manhattanDistance(uiPos, xy32{ x, y });
+                auto distance = Math::Vector::manhattanDistance(uiPos, Point{ x, y });
                 if (distance < bestDistance)
                 {
                     bestDistance = distance;
@@ -3590,7 +3590,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004A43E4
-        static uint16_t getRoadProgressAtCursor(const xy32& cursorLoc, Ui::Viewport& viewport, const RoadElement& roadElement, const Map::Pos3& loc)
+        static uint16_t getRoadProgressAtCursor(const Point& cursorLoc, Ui::Viewport& viewport, const RoadElement& roadElement, const Map::Pos3& loc)
         {
             // Get the coordinates of the first tile of the possibly multitile road
             const auto& roadDataArr = Map::TrackData::getRoadPiece(roadElement.roadId());
@@ -3707,7 +3707,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004A43E4
-        static uint16_t getTrackProgressAtCursor(const xy32& cursorLoc, Ui::Viewport& viewport, const TrackElement& trackElement, const Map::Pos3& loc)
+        static uint16_t getTrackProgressAtCursor(const Point& cursorLoc, Ui::Viewport& viewport, const TrackElement& trackElement, const Map::Pos3& loc)
         {
             // Get the coordinates of the first tile of the possibly multitile track
             const auto& trackDataArr = Map::TrackData::getTrackPiece(trackElement.trackId());
