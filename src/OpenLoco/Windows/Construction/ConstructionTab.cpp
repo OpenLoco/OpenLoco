@@ -1608,6 +1608,200 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         call(0x0049DC8C, regs);
     }
 
+    static void onToolDownRoad(const int16_t x, const int16_t y)
+    {
+        mapInvalidateMapSelectionTiles();
+        sub_49FEC7();
+
+        auto road = getRoadPieceId(_lastSelectedTrackPiece, _lastSelectedTrackGradient, _constructionRotation);
+
+        if (!road)
+            return;
+
+        _byte_1136065 = road->id;
+        int16_t roadHeight = 0;
+
+        auto i = 0;
+        if (Input::hasMapSelectionFlag(Input::MapSelectionFlags::enableConstruct))
+        {
+            for (auto& tile = _mapSelectedTiles[i]; tile.x != -1; tile = _mapSelectedTiles[++i])
+            {
+                if (tile.x >= 0x2FFF)
+                    continue;
+
+                if (tile.y >= 0x2FFF)
+                    continue;
+
+                auto height = getConstructionHeight(_mapSelectedTiles[i], roadHeight, true);
+
+                if (height)
+                    roadHeight = *height;
+            }
+        }
+        // loc_4A23F8
+        _word_1136000 = roadHeight;
+        Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable | Input::MapSelectionFlags::enableConstruct | Input::MapSelectionFlags::unk_02);
+
+        auto height = sub_478361(x, y);
+        std::optional<Pos2> mapPos;
+
+        if (height)
+        {
+            mapPos = screenGetMapXyWithZ(Point(x, y), height->first);
+            if (mapPos)
+            {
+                mapPos->x &= 0xFFE0;
+                mapPos->y &= 0xFFE0;
+                _byte_113605D = 1;
+                _word_1135FFE = roadHeight;
+            }
+        }
+
+        if (!height || !mapPos)
+        {
+            mapPos = ViewportInteraction::getSurfaceOrWaterLocFromUi({ x, y });
+
+            if (!mapPos)
+                return;
+
+            auto constructionHeight = getConstructionHeight(*mapPos, roadHeight, false);
+
+            if (constructionHeight)
+                roadHeight = *constructionHeight;
+
+            _byte_113605D = 0;
+        }
+        Input::toolCancel();
+
+        auto maxRetries = 0;
+        if (Input::hasKeyModifier(Input::KeyModifier::shift) || _byte_113605D != 1)
+        {
+            const auto& roadPiece = Map::TrackData::getRoadPiece(_byte_1136065);
+            auto maxRoadPieceHeight = 0;
+
+            for (const auto& roadPart : roadPiece)
+            {
+                if (maxRoadPieceHeight > roadPart.z)
+                    maxRoadPieceHeight = roadPart.z;
+            }
+
+            roadHeight -= maxRoadPieceHeight;
+            roadHeight -= 16;
+            maxRetries = 2;
+
+            if (Input::hasKeyModifier(Input::KeyModifier::shift))
+            {
+                maxRetries = 0x80000008;
+                roadHeight -= 16;
+            }
+        }
+        else
+        {
+            maxRetries = 1;
+            roadHeight = _word_1135FFE;
+        }
+
+        constructionLoop(*mapPos, maxRetries, roadHeight);
+    }
+
+    static void onToolDownTrack(const int16_t x, const int16_t y)
+    {
+        mapInvalidateMapSelectionTiles();
+        sub_49FEC7();
+
+        auto track = getTrackPieceId(_lastSelectedTrackPiece, _lastSelectedTrackGradient, _constructionRotation);
+
+        if (!track)
+            return;
+
+        _byte_1136065 = track->id;
+        int16_t trackHeight = 0;
+        auto i = 0;
+
+        if (Input::hasMapSelectionFlag(Input::MapSelectionFlags::enableConstruct))
+        {
+            for (auto& tile = _mapSelectedTiles[i]; tile.x != -1; tile = _mapSelectedTiles[++i])
+            {
+                if (tile.x >= 0x2FFF)
+                    continue;
+
+                if (tile.y >= 0x2FFF)
+                    continue;
+
+                auto height = getConstructionHeight(_mapSelectedTiles[i], trackHeight, true);
+
+                if (height)
+                    trackHeight = *height;
+            }
+        }
+        _word_1136000 = trackHeight;
+        Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable | Input::MapSelectionFlags::enableConstruct | Input::MapSelectionFlags::unk_02);
+
+        auto height = sub_4A4011(x, y);
+        std::optional<Pos2> mapPos;
+
+        if (height)
+        {
+            if (_word_4F7B62[height->second] == 0)
+            {
+                mapPos = screenGetMapXyWithZ(Point(x, y), height->first);
+                if (mapPos)
+                {
+                    mapPos->x &= 0xFFE0;
+                    mapPos->y &= 0xFFE0;
+                    _byte_113605D = 1;
+                    _word_1135FFE = trackHeight;
+                }
+            }
+        }
+
+        if (!height || !mapPos || _word_4F7B62[track->id * 8] != 0)
+        {
+            mapPos = ViewportInteraction::getSurfaceOrWaterLocFromUi({ x, y });
+
+            if (!mapPos)
+                return;
+
+            auto constructionHeight = getConstructionHeight(*mapPos, trackHeight, false);
+
+            if (constructionHeight)
+                trackHeight = *constructionHeight;
+
+            _byte_113605D = 0;
+        }
+        Input::toolCancel();
+
+        auto maxRetries = 0;
+        if (Input::hasKeyModifier(Input::KeyModifier::shift) || _byte_113605D != 1)
+        {
+            const auto& trackPiece = Map::TrackData::getTrackPiece(_byte_1136065);
+            auto maxTrackPieceHeight = 0;
+
+            for (const auto& trackPart : trackPiece)
+            {
+                if (maxTrackPieceHeight > trackPart.z)
+                    maxTrackPieceHeight = trackPart.z;
+            }
+
+            trackHeight -= maxTrackPieceHeight;
+            trackHeight -= 16;
+            maxRetries = 2;
+
+            if (Input::hasKeyModifier(Input::KeyModifier::shift))
+            {
+                maxRetries = 0x80000008;
+                trackHeight -= 16;
+            }
+        }
+        else
+        {
+            maxRetries = 1;
+            trackHeight = _word_1135FFE;
+        }
+
+        constructionLoop(*mapPos, maxRetries, trackHeight);
+    }
+
     // 0x0049DC97
     static void onToolDown(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
     {
@@ -1616,195 +1810,11 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
         if (_trackType & (1 << 7))
         {
-            mapInvalidateMapSelectionTiles();
-            sub_49FEC7();
-
-            auto road = getRoadPieceId(_lastSelectedTrackPiece, _lastSelectedTrackGradient, _constructionRotation);
-
-            if (!road)
-                return;
-
-            _byte_1136065 = road->id;
-            int16_t roadHeight = 0;
-
-            auto i = 0;
-            if (Input::hasMapSelectionFlag(Input::MapSelectionFlags::enableConstruct))
-            {
-                for (auto& tile = _mapSelectedTiles[i]; tile.x != -1; tile = _mapSelectedTiles[++i])
-                {
-                    if (tile.x >= 0x2FFF)
-                        continue;
-
-                    if (tile.y >= 0x2FFF)
-                        continue;
-
-                    auto height = getConstructionHeight(_mapSelectedTiles[i], roadHeight, true);
-
-                    if (height)
-                        roadHeight = *height;
-                }
-            }
-            // loc_4A23F8
-            _word_1136000 = roadHeight;
-            Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable | Input::MapSelectionFlags::enableConstruct | Input::MapSelectionFlags::unk_02);
-
-            auto height = sub_478361(x, y);
-            std::optional<Pos2> mapPos;
-
-            if (height)
-            {
-                mapPos = screenGetMapXyWithZ(Point(x, y), height->first);
-                if (mapPos)
-                {
-                    mapPos->x &= 0xFFE0;
-                    mapPos->y &= 0xFFE0;
-                    _byte_113605D = 1;
-                    _word_1135FFE = roadHeight;
-                }
-            }
-
-            if (!height || !mapPos)
-            {
-                mapPos = ViewportInteraction::getSurfaceOrWaterLocFromUi({ x, y });
-
-                if (!mapPos)
-                    return;
-
-                auto constructionHeight = getConstructionHeight(*mapPos, roadHeight, false);
-
-                if (constructionHeight)
-                    roadHeight = *constructionHeight;
-
-                _byte_113605D = 0;
-            }
-            Input::toolCancel();
-
-            auto maxRetries = 0;
-            if (Input::hasKeyModifier(Input::KeyModifier::shift) || _byte_113605D != 1)
-            {
-                const auto& roadPiece = Map::TrackData::getRoadPiece(_byte_1136065);
-                auto maxRoadPieceHeight = 0;
-
-                for (const auto& roadPart : roadPiece)
-                {
-                    if (maxRoadPieceHeight > roadPart.z)
-                        maxRoadPieceHeight = roadPart.z;
-                }
-
-                roadHeight -= maxRoadPieceHeight;
-                roadHeight -= 16;
-                maxRetries = 2;
-
-                if (Input::hasKeyModifier(Input::KeyModifier::shift))
-                {
-                    maxRetries = 0x80000008;
-                    roadHeight -= 16;
-                }
-            }
-            else
-            {
-                maxRetries = 1;
-                roadHeight = _word_1135FFE;
-            }
-
-            constructionLoop(*mapPos, maxRetries, roadHeight);
+            onToolDownRoad(x, y);
         }
         else
         {
-            mapInvalidateMapSelectionTiles();
-            sub_49FEC7();
-
-            auto track = getTrackPieceId(_lastSelectedTrackPiece, _lastSelectedTrackGradient, _constructionRotation);
-
-            if (!track)
-                return;
-
-            _byte_1136065 = track->id;
-            int16_t trackHeight = 0;
-            auto i = 0;
-
-            if (Input::hasMapSelectionFlag(Input::MapSelectionFlags::enableConstruct))
-            {
-                for (auto& tile = _mapSelectedTiles[i]; tile.x != -1; tile = _mapSelectedTiles[++i])
-                {
-                    if (tile.x >= 0x2FFF)
-                        continue;
-
-                    if (tile.y >= 0x2FFF)
-                        continue;
-
-                    auto height = getConstructionHeight(_mapSelectedTiles[i], trackHeight, true);
-
-                    if (height)
-                        trackHeight = *height;
-                }
-            }
-            _word_1136000 = trackHeight;
-            Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable | Input::MapSelectionFlags::enableConstruct | Input::MapSelectionFlags::unk_02);
-
-            auto height = sub_4A4011(x, y);
-            std::optional<Pos2> mapPos;
-
-            if (height)
-            {
-                if (_word_4F7B62[height->second] == 0)
-                {
-                    mapPos = screenGetMapXyWithZ(Point(x, y), height->first);
-                    if (mapPos)
-                    {
-                        mapPos->x &= 0xFFE0;
-                        mapPos->y &= 0xFFE0;
-                        _byte_113605D = 1;
-                        _word_1135FFE = trackHeight;
-                    }
-                }
-            }
-
-            if (!height || !mapPos || _word_4F7B62[track->id * 8] != 0)
-            {
-                mapPos = ViewportInteraction::getSurfaceOrWaterLocFromUi({ x, y });
-
-                if (!mapPos)
-                    return;
-
-                auto constructionHeight = getConstructionHeight(*mapPos, trackHeight, false);
-
-                if (constructionHeight)
-                    trackHeight = *constructionHeight;
-
-                _byte_113605D = 0;
-            }
-            Input::toolCancel();
-
-            auto maxRetries = 0;
-            if (Input::hasKeyModifier(Input::KeyModifier::shift) || _byte_113605D != 1)
-            {
-                const auto& trackPiece = Map::TrackData::getTrackPiece(_byte_1136065);
-                auto maxTrackPieceHeight = 0;
-
-                for (const auto& trackPart : trackPiece)
-                {
-                    if (maxTrackPieceHeight > trackPart.z)
-                        maxTrackPieceHeight = trackPart.z;
-                }
-
-                trackHeight -= maxTrackPieceHeight;
-                trackHeight -= 16;
-                maxRetries = 2;
-
-                if (Input::hasKeyModifier(Input::KeyModifier::shift))
-                {
-                    maxRetries = 0x80000008;
-                    trackHeight -= 16;
-                }
-            }
-            else
-            {
-                maxRetries = 1;
-                trackHeight = _word_1135FFE;
-            }
-
-            constructionLoop(*mapPos, maxRetries, trackHeight);
+            onToolDownTrack(x, y);
         }
     }
 
