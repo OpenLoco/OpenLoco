@@ -670,10 +670,10 @@ namespace OpenLoco::Ui::Windows::Terraform
             auto placementArgs = getTreePlacementArgsFromCursor(x, y);
             if (placementArgs)
             {
+                GameCommands::setErrorTitle(StringIds::cant_plant_this_here);
                 switch (_treeClusterType)
                 {
                     case treeCluster::none:
-                        GameCommands::setErrorTitle(StringIds::cant_plant_this_here);
                         if (GameCommands::do_23(GameCommands::Flags::apply, *placementArgs) != GameCommands::FAILURE)
                         {
                             Audio::playSound(Audio::SoundId::construct, GameCommands::getPosition());
