@@ -1610,28 +1610,6 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         return maxHeight;
     }
 
-    static int16_t getNewConstructionHeight(const Pos2& mapPos, int16_t oldConstructionHeight)
-    {
-        auto tileHeight = getConstructionHeight(mapPos);
-
-        if (!tileHeight)
-        {
-            return oldConstructionHeight;
-        }
-        auto newConstructionHeight = oldConstructionHeight;
-        if (tileHeight->landHeight > _word_1136000)
-        {
-            newConstructionHeight = _word_1136000;
-        }
-
-        if (tileHeight->waterHeight > newConstructionHeight)
-        {
-            newConstructionHeight = tileHeight->waterHeight;
-        }
-
-        return newConstructionHeight;
-    }
-
     static std::optional<std::pair<Map::TilePos2, int16_t>> tryMakeRoadJunctionAtLoc(const int16_t x, const int16_t y)
     {
         const auto existingRoad = getExistingRoadAtLoc(x, y);
@@ -1685,40 +1663,41 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         return { std::make_pair(Map::TilePos2(*mapPos), height) };
     }
 
-    static void onToolDownRoad(const int16_t x, const int16_t y)
+    template<typename TGetPieceId, typename TTryMakeJunction, typename TGetPiece>
+    static void onToolDownT(const int16_t x, const int16_t y, TGetPieceId&& getPieceId, TTryMakeJunction&& tryMakeJunction, TGetPiece&& getPiece)
     {
         mapInvalidateMapSelectionTiles();
         removeConstructionGhosts();
 
-        auto road = getRoadPieceId(_lastSelectedTrackPiece, _lastSelectedTrackGradient, _constructionRotation);
+        auto pieceId = getPieceId(_lastSelectedTrackPiece, _lastSelectedTrackGradient, _constructionRotation);
 
-        if (!road)
+        if (!pieceId)
             return;
 
-        _byte_1136065 = road->id;
+        _byte_1136065 = pieceId->id;
 
-        int16_t roadHeight = getMaxConstructHeightFromExistingSelection();
-        // loc_4A23F8
-        _word_1136000 = roadHeight;
+        int16_t constructHeight = getMaxConstructHeightFromExistingSelection();
+        _word_1136000 = constructHeight;
+
         Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable | Input::MapSelectionFlags::enableConstruct | Input::MapSelectionFlags::unk_02);
 
         Pos2 constructPos;
-        auto roadJunctRes = tryMakeRoadJunctionAtLoc(x, y);
-        if (roadJunctRes)
+        const auto junctionRes = tryMakeJunction(x, y);
+        if (junctionRes)
         {
-            constructPos = roadJunctRes->first;
+            constructPos = junctionRes->first;
             _makeJunction = 1;
-            _word_1135FFE = roadJunctRes->second;
+            _word_1135FFE = junctionRes->second;
         }
         else
         {
-            auto constRes = getConstructionPos(x, y, _word_1136000);
+            const auto constRes = getConstructionPos(x, y, _word_1136000);
             if (!constRes)
             {
                 return;
             }
             constructPos = constRes->first;
-            roadHeight = constRes->second;
+            constructHeight = constRes->second;
 
             _makeJunction = 0;
         }
@@ -1727,89 +1706,25 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         auto maxRetries = 0;
         if (Input::hasKeyModifier(Input::KeyModifier::shift) || _makeJunction != 1)
         {
-            const auto& roadPiece = Map::TrackData::getRoadPiece(_byte_1136065);
-            auto maxRoadPieceHeight = getMaxPieceHeight(roadPiece);
+            const auto& piece = getPiece(_byte_1136065);
 
-            roadHeight -= maxRoadPieceHeight;
-            roadHeight -= 16;
+            constructHeight -= getMaxPieceHeight(piece);
+            constructHeight -= 16;
             maxRetries = 2;
 
             if (Input::hasKeyModifier(Input::KeyModifier::shift))
             {
                 maxRetries = 0x80000008;
-                roadHeight -= 16;
+                constructHeight -= 16;
             }
         }
         else
         {
             maxRetries = 1;
-            roadHeight = _word_1135FFE;
+            constructHeight = _word_1135FFE;
         }
 
-        constructionLoop(constructPos, maxRetries, roadHeight);
-    }
-
-    static void onToolDownTrack(const int16_t x, const int16_t y)
-    {
-        mapInvalidateMapSelectionTiles();
-        removeConstructionGhosts();
-
-        auto track = getTrackPieceId(_lastSelectedTrackPiece, _lastSelectedTrackGradient, _constructionRotation);
-
-        if (!track)
-            return;
-
-        _byte_1136065 = track->id;
-        int16_t trackHeight = getMaxConstructHeightFromExistingSelection();
-        _word_1136000 = trackHeight;
-        Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable | Input::MapSelectionFlags::enableConstruct | Input::MapSelectionFlags::unk_02);
-
-        const auto trackJuncRes = tryMakeTrackJunctionAtLoc(x, y);
-        Map::Pos2 constructPos;
-
-        if (trackJuncRes)
-        {
-            constructPos = trackJuncRes->first;
-            _makeJunction = 1;
-            _word_1135FFE = trackJuncRes->second;
-        }
-        else
-        {
-            auto constRes = getConstructionPos(x, y, _word_1136000);
-            if (!constRes)
-            {
-                return;
-            }
-            constructPos = constRes->first;
-            trackHeight = constRes->second;
-
-            _makeJunction = 0;
-        }
-        Input::toolCancel();
-
-        auto maxRetries = 0;
-        if (Input::hasKeyModifier(Input::KeyModifier::shift) || _makeJunction != 1)
-        {
-            const auto& trackPiece = Map::TrackData::getTrackPiece(_byte_1136065);
-            auto maxTrackPieceHeight = getMaxPieceHeight(trackPiece);
-
-            trackHeight -= maxTrackPieceHeight;
-            trackHeight -= 16;
-            maxRetries = 2;
-
-            if (Input::hasKeyModifier(Input::KeyModifier::shift))
-            {
-                maxRetries = 0x80000008;
-                trackHeight -= 16;
-            }
-        }
-        else
-        {
-            maxRetries = 1;
-            trackHeight = _word_1135FFE;
-        }
-
-        constructionLoop(constructPos, maxRetries, trackHeight);
+        constructionLoop(constructPos, maxRetries, constructHeight);
     }
 
     // 0x0049DC97
@@ -1820,11 +1735,11 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
         if (_trackType & (1 << 7))
         {
-            onToolDownRoad(x, y);
+            onToolDownT(x, y, getRoadPieceId, tryMakeRoadJunctionAtLoc, TrackData::getRoadPiece);
         }
         else
         {
-            onToolDownTrack(x, y);
+            onToolDownT(x, y, getTrackPieceId, tryMakeTrackJunctionAtLoc, TrackData::getTrackPiece);
         }
     }
 
