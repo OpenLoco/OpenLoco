@@ -1444,8 +1444,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         sub_49FD66();
     }
 
-    // 0x004A2395
-    static std::optional<int16_t> getConstructionHeight(const Pos2& mapPos, int16_t height, bool isSelected)
+    static std::optional<Map::TileHeight> getConstructionHeight(const Pos2& mapPos)
     {
         auto tile = TileManager::get(mapPos);
 
@@ -1454,28 +1453,39 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         if (surfaceTile == nullptr)
             return std::nullopt;
 
-        int16_t tileHeight = surfaceTile->baseZ() * 4;
-
+        Map::TileHeight height = { surfaceTile->baseZ() * 4, surfaceTile->water() * 16 };
         if (surfaceTile->slopeCorners())
         {
-            tileHeight += 16;
+            height.landHeight += 16;
         }
 
         if (surfaceTile->isSlopeDoubleHeight())
         {
-            tileHeight += 16;
+            height.landHeight += 16;
+        }
+        return { height };
+    }
+
+    // 0x004A2395
+    static std::optional<int16_t> getConstructionHeight(const Pos2& mapPos, int16_t height, bool isSelected)
+    {
+        auto tileHeight = getConstructionHeight(mapPos);
+
+        if (!tileHeight)
+        {
+            return std::nullopt;
         }
 
         if (isSelected)
         {
-            if (tileHeight > height)
+            if (tileHeight->landHeight > height)
             {
-                height = tileHeight;
+                height = tileHeight->landHeight;
             }
         }
         else
         {
-            if (tileHeight > _word_1136000)
+            if (tileHeight->landHeight > _word_1136000)
             {
                 height = _word_1136000;
             }
@@ -1483,23 +1493,21 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
         if (isSelected)
         {
-            if (surfaceTile->water())
+            if (tileHeight->waterHeight)
             {
-                tileHeight = surfaceTile->water() * 16;
-                tileHeight += 16;
+                tileHeight->waterHeight += 16;
 
-                if (tileHeight > height)
+                if (tileHeight->waterHeight > height)
                 {
-                    height = tileHeight;
+                    height = tileHeight->waterHeight;
                 }
             }
         }
         else
         {
-            tileHeight = surfaceTile->water() * 16;
-            if (tileHeight > height)
+            if (tileHeight->waterHeight > height)
             {
-                height = tileHeight;
+                height = tileHeight->waterHeight;
             }
         }
 
