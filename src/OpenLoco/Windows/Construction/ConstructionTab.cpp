@@ -1444,6 +1444,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         sub_49FD66();
     }
 
+    // Simplified TileManager::getHeight that only considers flat height
     static std::optional<Map::TileHeight> getConstructionHeight(const Pos2& mapPos)
     {
         auto tile = TileManager::get(mapPos);
@@ -1647,10 +1648,19 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 if (!Map::validCoords(tile))
                     continue;
 
-                auto height = getConstructionHeight(_mapSelectedTiles[i], roadHeight, true);
+                const auto tileHeight = getConstructionHeight(_mapSelectedTiles[i]);
+                if (!tileHeight)
+                {
+                    continue;
+                }
 
-                if (height)
-                    roadHeight = *height;
+                roadHeight = std::max(tileHeight->landHeight, roadHeight);
+
+                if (tileHeight->waterHeight)
+                {
+                    // Constructing over water is always +16
+                    roadHeight = std::max<int16_t>(tileHeight->waterHeight + 16, roadHeight);
+                }
             }
         }
         // loc_4A23F8
@@ -2106,5 +2116,4 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         events.prepare_draw = prepareDraw;
         events.draw = draw;
     }
-
 }
