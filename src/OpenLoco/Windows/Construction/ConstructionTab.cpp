@@ -1632,17 +1632,36 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         return newConstructionHeight;
     }
 
-    std::optional<std::pair<Map::TilePos2, int16_t>> tryMakeRoadJunctionAtLoc(const int16_t x, const int16_t y) {
+    static std::optional<std::pair<Map::TilePos2, int16_t>> tryMakeRoadJunctionAtLoc(const int16_t x, const int16_t y)
+    {
         const auto existingRoad = getExistingRoadAtLoc(x, y);
-        std::optional<Pos2> mapPos;
 
         if (existingRoad)
         {
             const auto& existingHeight = existingRoad->first;
-            mapPos = screenGetMapXyWithZ(Point(x, y), existingHeight);
+            const auto mapPos = screenGetMapXyWithZ(Point(x, y), existingHeight);
             if (mapPos)
             {
                 return { std::make_pair(Map::TilePos2(*mapPos), existingHeight) };
+            }
+        }
+        return std::nullopt;
+    }
+
+    static std::optional<std::pair<Map::TilePos2, int16_t>> tryMakeTrackJunctionAtLoc(const int16_t x, const int16_t y)
+    {
+        const auto existingTrack = getExistingTrackAtLoc(x, y);
+
+        if (existingTrack)
+        {
+            const auto [existingHeight, existingTrackId] = *existingTrack;
+            if (TrackData::getUnkTrack(existingTrackId << 3).pos.z == 0)
+            {
+                const auto mapPos = screenGetMapXyWithZ(Point(x, y), existingHeight);
+                if (mapPos)
+                {
+                    return { std::make_pair(Map::TilePos2(*mapPos), existingHeight) };
+                }
             }
         }
         return std::nullopt;
@@ -1745,33 +1764,23 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         _word_1136000 = trackHeight;
         Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable | Input::MapSelectionFlags::enableConstruct | Input::MapSelectionFlags::unk_02);
 
-        auto existingTrack = getExistingTrackAtLoc(x, y);
-        std::optional<Pos2> mapPos;
+        const auto trackJuncRes = tryMakeTrackJunctionAtLoc(x, y);
+        Map::Pos2 constructPos;
 
-        if (existingTrack)
+        if (trackJuncRes)
         {
-            auto [existingHeight, existingTrackId] = *existingTrack;
-            if (TrackData::getUnkTrack(existingTrackId << 3).pos.z == 0)
-            {
-                mapPos = screenGetMapXyWithZ(Point(x, y), existingHeight);
-                if (mapPos)
-                {
-                    mapPos->x &= 0xFFE0;
-                    mapPos->y &= 0xFFE0;
-                    _makeJunction = 1;
-                    _word_1135FFE = trackHeight;
-                }
-            }
+            constructPos = trackJuncRes->first;
+            _makeJunction = 1;
+            _word_1135FFE = trackJuncRes->second;
         }
-
-        if (!existingTrack || !mapPos)
+        else
         {
             auto constRes = getConstructionPos(x, y, _word_1136000);
             if (!constRes)
             {
                 return;
             }
-            *mapPos = constRes->first;
+            constructPos = constRes->first;
             trackHeight = constRes->second;
 
             _makeJunction = 0;
@@ -1800,7 +1809,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             trackHeight = _word_1135FFE;
         }
 
-        constructionLoop(*mapPos, maxRetries, trackHeight);
+        constructionLoop(constructPos, maxRetries, trackHeight);
     }
 
     // 0x0049DC97
