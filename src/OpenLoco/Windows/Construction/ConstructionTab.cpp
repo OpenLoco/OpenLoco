@@ -1627,22 +1627,14 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         return maxPieceHeight;
     }
 
-    static void onToolDownRoad(const int16_t x, const int16_t y)
+    // 0 if nothing currently selected
+    static int16_t getMaxConstructHeightFromExistingSelection()
     {
-        mapInvalidateMapSelectionTiles();
-        removeConstructionGhosts();
+        int16_t maxHeight = 0;
 
-        auto road = getRoadPieceId(_lastSelectedTrackPiece, _lastSelectedTrackGradient, _constructionRotation);
-
-        if (!road)
-            return;
-
-        _byte_1136065 = road->id;
-        int16_t roadHeight = 0;
-
-        auto i = 0;
         if (Input::hasMapSelectionFlag(Input::MapSelectionFlags::enableConstruct))
         {
+            auto i = 0;
             for (auto& tile = _mapSelectedTiles[i]; tile.x != -1; tile = _mapSelectedTiles[++i])
             {
                 if (!Map::validCoords(tile))
@@ -1654,15 +1646,31 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                     continue;
                 }
 
-                roadHeight = std::max(tileHeight->landHeight, roadHeight);
+                maxHeight = std::max(tileHeight->landHeight, maxHeight);
 
                 if (tileHeight->waterHeight)
                 {
                     // Constructing over water is always +16
-                    roadHeight = std::max<int16_t>(tileHeight->waterHeight + 16, roadHeight);
+                    maxHeight = std::max<int16_t>(tileHeight->waterHeight + 16, maxHeight);
                 }
             }
         }
+        return maxHeight;
+    }
+
+    static void onToolDownRoad(const int16_t x, const int16_t y)
+    {
+        mapInvalidateMapSelectionTiles();
+        removeConstructionGhosts();
+
+        auto road = getRoadPieceId(_lastSelectedTrackPiece, _lastSelectedTrackGradient, _constructionRotation);
+
+        if (!road)
+            return;
+
+        _byte_1136065 = road->id;
+
+        int16_t roadHeight = getMaxConstructHeightFromExistingSelection();
         // loc_4A23F8
         _word_1136000 = roadHeight;
         Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable | Input::MapSelectionFlags::enableConstruct | Input::MapSelectionFlags::unk_02);
@@ -1735,22 +1743,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             return;
 
         _byte_1136065 = track->id;
-        int16_t trackHeight = 0;
-        auto i = 0;
-
-        if (Input::hasMapSelectionFlag(Input::MapSelectionFlags::enableConstruct))
-        {
-            for (auto& tile = _mapSelectedTiles[i]; tile.x != -1; tile = _mapSelectedTiles[++i])
-            {
-                if (!Map::validCoords(tile))
-                    continue;
-
-                auto height = getConstructionHeight(_mapSelectedTiles[i], trackHeight, true);
-
-                if (height)
-                    trackHeight = *height;
-            }
-        }
+        int16_t trackHeight = getMaxConstructHeightFromExistingSelection();
         _word_1136000 = trackHeight;
         Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable | Input::MapSelectionFlags::enableConstruct | Input::MapSelectionFlags::unk_02);
 
