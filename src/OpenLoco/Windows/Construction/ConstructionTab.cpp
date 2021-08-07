@@ -1467,29 +1467,6 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         return { height };
     }
 
-    // 0x004A2395
-    static std::optional<int16_t> getConstructionHeight(const Pos2& mapPos, int16_t height)
-    {
-        auto tileHeight = getConstructionHeight(mapPos);
-
-        if (!tileHeight)
-        {
-            return std::nullopt;
-        }
-
-        if (tileHeight->landHeight > _word_1136000)
-        {
-            height = _word_1136000;
-        }
-
-        if (tileHeight->waterHeight > height)
-        {
-            height = tileHeight->waterHeight;
-        }
-
-        return height;
-    }
-
     // 0x00478361
     static std::optional<std::pair<int16_t, int16_t>> getExistingRoadAtLoc(int16_t x, int16_t y)
     {
@@ -1633,6 +1610,28 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         return maxHeight;
     }
 
+    static int16_t getNewConstructionHeight(const Pos2& mapPos, int16_t oldConstructionHeight)
+    {
+        auto tileHeight = getConstructionHeight(mapPos);
+
+        if (!tileHeight)
+        {
+            return oldConstructionHeight;
+        }
+        auto newConstructionHeight = oldConstructionHeight;
+        if (tileHeight->landHeight > _word_1136000)
+        {
+            newConstructionHeight = _word_1136000;
+        }
+
+        if (tileHeight->waterHeight > newConstructionHeight)
+        {
+            newConstructionHeight = tileHeight->waterHeight;
+        }
+
+        return newConstructionHeight;
+    }
+
     static void onToolDownRoad(const int16_t x, const int16_t y)
     {
         mapInvalidateMapSelectionTiles();
@@ -1673,10 +1672,14 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             if (!mapPos)
                 return;
 
-            auto constructionHeight = getConstructionHeight(*mapPos, roadHeight);
+            auto tileHeight = getConstructionHeight(*mapPos);
+            if (!tileHeight)
+            {
+                return;
+            }
 
-            if (constructionHeight)
-                roadHeight = *constructionHeight;
+            roadHeight = std::min(tileHeight->landHeight, *_word_1136000);
+            roadHeight = std::max(roadHeight, tileHeight->waterHeight);
 
             _makeJunction = 0;
         }
@@ -1748,10 +1751,14 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             if (!mapPos)
                 return;
 
-            auto constructionHeight = getConstructionHeight(*mapPos, trackHeight);
+            auto tileHeight = getConstructionHeight(*mapPos);
+            if (!tileHeight)
+            {
+                return;
+            }
 
-            if (constructionHeight)
-                trackHeight = *constructionHeight;
+            trackHeight = std::min(tileHeight->landHeight, *_word_1136000);
+            trackHeight = std::max(trackHeight, tileHeight->waterHeight);
 
             _makeJunction = 0;
         }
