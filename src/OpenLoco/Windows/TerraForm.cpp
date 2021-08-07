@@ -681,29 +681,29 @@ namespace OpenLoco::Ui::Windows::Terraform
                         break;
                     case treeCluster::selected:
                     {
-                        // TODO: Lock behind sandbox/editor
                         auto previousId = CompanyManager::updatingCompanyId();
-                        CompanyManager::updatingCompanyId(CompanyId::neutral);
+                        if (isEditorMode())
+                            CompanyManager::updatingCompanyId(CompanyId::neutral);
 
                         auto height = TileManager::getHeight(placementArgs->pos);
                         Audio::playSound(Audio::SoundId::construct, Map::Pos3{ placementArgs->pos.x, placementArgs->pos.y, height.landHeight });
 
                         clusterSelectedTreeToolDown(*placementArgs, 320, 3);
-                        // TODO: Lock behind sandbox/editor
-                        CompanyManager::updatingCompanyId(previousId);
+                        if (isEditorMode())
+                            CompanyManager::updatingCompanyId(previousId);
                         break;
                     }
                     case treeCluster::random:
-                        // TODO: Lock behind sandbox/editor
                         auto previousId = CompanyManager::updatingCompanyId();
-                        CompanyManager::updatingCompanyId(CompanyId::neutral);
+                        if (isEditorMode())
+                            CompanyManager::updatingCompanyId(CompanyId::neutral);
 
                         auto height = TileManager::getHeight(placementArgs->pos);
                         Audio::playSound(Audio::SoundId::construct, Map::Pos3{ placementArgs->pos.x, placementArgs->pos.y, height.landHeight });
 
                         clusterSurfaceTypeTreeToolDown(*placementArgs, 384, 4);
-                        // TODO: Lock behind sandbox/editor
-                        CompanyManager::updatingCompanyId(previousId);
+                        if (isEditorMode())
+                            CompanyManager::updatingCompanyId(previousId);
                         break;
                 }
             }
