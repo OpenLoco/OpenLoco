@@ -1468,7 +1468,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     // 0x004A2395
-    static std::optional<int16_t> getConstructionHeight(const Pos2& mapPos, int16_t height, bool isSelected)
+    static std::optional<int16_t> getConstructionHeight(const Pos2& mapPos, int16_t height)
     {
         auto tileHeight = getConstructionHeight(mapPos);
 
@@ -1477,39 +1477,14 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             return std::nullopt;
         }
 
-        if (isSelected)
+        if (tileHeight->landHeight > _word_1136000)
         {
-            if (tileHeight->landHeight > height)
-            {
-                height = tileHeight->landHeight;
-            }
-        }
-        else
-        {
-            if (tileHeight->landHeight > _word_1136000)
-            {
-                height = _word_1136000;
-            }
+            height = _word_1136000;
         }
 
-        if (isSelected)
+        if (tileHeight->waterHeight > height)
         {
-            if (tileHeight->waterHeight)
-            {
-                tileHeight->waterHeight += 16;
-
-                if (tileHeight->waterHeight > height)
-                {
-                    height = tileHeight->waterHeight;
-                }
-            }
-        }
-        else
-        {
-            if (tileHeight->waterHeight > height)
-            {
-                height = tileHeight->waterHeight;
-            }
+            height = tileHeight->waterHeight;
         }
 
         return height;
@@ -1698,7 +1673,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             if (!mapPos)
                 return;
 
-            auto constructionHeight = getConstructionHeight(*mapPos, roadHeight, false);
+            auto constructionHeight = getConstructionHeight(*mapPos, roadHeight);
 
             if (constructionHeight)
                 roadHeight = *constructionHeight;
@@ -1773,7 +1748,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             if (!mapPos)
                 return;
 
-            auto constructionHeight = getConstructionHeight(*mapPos, trackHeight, false);
+            auto constructionHeight = getConstructionHeight(*mapPos, trackHeight);
 
             if (constructionHeight)
                 trackHeight = *constructionHeight;
