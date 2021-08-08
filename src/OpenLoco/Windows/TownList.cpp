@@ -963,16 +963,21 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049B37F
-        static void sub_49B37F()
+        static void removeBuildingGhost()
         {
-            registers regs;
-            call(0x0049B37F, regs);
+            if (_buildingGhostPlaced)
+            {
+                GameCommands::BuildingRemovalArgs args;
+                args.pos = _buildingGhostPos;
+                GameCommands::do_45(GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6, args);
+                _buildingGhostPlaced = false;
+            }
         }
 
         // 0x0049AD46
         static void onToolAbort(Window& self, const WidgetIndex_t widgetIndex)
         {
-            sub_49B37F();
+            removeBuildingGhost();
             Ui::Windows::hideGridlines();
         }
 
@@ -1045,7 +1050,7 @@ namespace OpenLoco::Ui::Windows::TownList
             auto placementArgs = getBuildingPlacementArgsFromCursor(x, y);
             if (!placementArgs)
             {
-                sub_49B37F();
+                removeBuildingGhost();
                 return;
             }
 
@@ -1064,7 +1069,7 @@ namespace OpenLoco::Ui::Windows::TownList
                 }
             }
 
-            sub_49B37F();
+            removeBuildingGhost();
             auto cost = placeBuildingGhost(*placementArgs);
             if (cost != dword_1135C34)
             {
@@ -1076,7 +1081,7 @@ namespace OpenLoco::Ui::Windows::TownList
         // 0x0049ACBD
         static void onToolDown(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
-            sub_49B37F();
+            removeBuildingGhost();
             auto placementArgs = getBuildingPlacementArgsFromCursor(x, y);
             if (placementArgs)
             {
