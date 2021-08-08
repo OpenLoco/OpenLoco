@@ -931,7 +931,7 @@ namespace OpenLoco::Ui::ViewportInteraction
                 hasInteraction = rightOverRoadExtra(interaction);
                 break;
             default:
-                if (Input::hasFlag(Input::Flags::toolActive) || Input::hasFlag(Input::Flags::flag6))
+                if (!(Input::hasFlag(Input::Flags::toolActive) && Input::hasFlag(Input::Flags::flag6)))
                 {
                     if (WindowManager::find(WindowType::construction) == nullptr)
                     {
