@@ -895,11 +895,10 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
                 auto industryObj = ObjectManager::get<IndustryObject>(self.row_info[i]);
 
-                Gfx::Context* clipped = nullptr;
-
-                if (Gfx::clipContext(&clipped, &context, xPos + 1, yPos + 1, 110, 110))
+                auto clipped = Gfx::clipContext(context, Ui::Rect(xPos + 1, yPos + 1, 110, 110));
+                if (clipped)
                 {
-                    industryObj->drawIndustry(clipped, 56, 96);
+                    industryObj->drawIndustry(&*clipped, 56, 96);
                 }
 
                 xPos += rowHeight;

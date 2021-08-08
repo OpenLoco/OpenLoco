@@ -1410,23 +1410,23 @@ namespace OpenLoco::Gfx
         call(0x00448D90, regs);
     }
 
-    bool clipContext(Gfx::Context** dst, Gfx::Context* src, int16_t x, int16_t y, int16_t width, int16_t height)
+    // 0x004CEC50
+    std::optional<Gfx::Context> clipContext(const Gfx::Context& src, const Ui::Rect& newRect)
     {
-        registers regs;
-        regs.ax = x;
-        regs.bx = width;
-        regs.edi = X86Pointer(src);
-        regs.dx = height;
-        regs.cx = y;
-        call(0x4cec50, regs);
-        *dst = X86Pointer<Gfx::Context>(regs.edi);
+        const Ui::Rect oldRect = src.getUiRect();
+        Ui::Rect intersect = oldRect.intersection(newRect);
+        const auto stride = oldRect.size.width + src.pitch;
+        const int16_t newPitch = stride - intersect.size.width;
+        auto* newBits = src.bits + (stride * (intersect.origin.y - oldRect.origin.y) + (intersect.origin.x - oldRect.origin.x));
+        intersect.origin.x = std::max(0, oldRect.origin.x - newRect.origin.x);
+        intersect.origin.y = std::max(0, oldRect.origin.y - newRect.origin.y);
+        Gfx::Context newContext{ newBits, static_cast<int16_t>(intersect.origin.x), static_cast<int16_t>(intersect.origin.y), static_cast<int16_t>(intersect.size.width), static_cast<int16_t>(intersect.size.height), newPitch, 0 };
 
-        return *dst != nullptr;
-    }
-
-    bool clipContext(Gfx::Context** dst, Gfx::Context* src, Point pos, Ui::Size size)
-    {
-        return clipContext(dst, src, pos.x, pos.y, size.width, size.height);
+        if (newContext.width <= 0 || newContext.height <= 0)
+        {
+            return {};
+        }
+        return { newContext };
     }
 
     G1Element* getG1Element(uint32_t id)

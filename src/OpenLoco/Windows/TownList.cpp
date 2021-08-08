@@ -1205,9 +1205,8 @@ namespace OpenLoco::Ui::Windows::TownList
 
                 auto buildingObj = ObjectManager::get<BuildingObject>(self.row_info[i]);
 
-                Gfx::Context* clipped = nullptr;
-
-                if (Gfx::clipContext(&clipped, &context, xPos + 1, yPos + 1, 110, 110))
+                auto clipped = Gfx::clipContext(context, Ui::Rect(xPos + 1, yPos + 1, 110, 110));
+                if (clipped)
                 {
                     Colour_t colour = _buildingColour;
                     if (self.row_hover != self.row_info[i])
@@ -1217,7 +1216,7 @@ namespace OpenLoco::Ui::Windows::TownList
                             colour = 0;
                     }
 
-                    buildingObj->drawBuilding(clipped, _buildingRotation, 56, 96, colour);
+                    buildingObj->drawBuilding(&*clipped, _buildingRotation, 56, 96, colour);
                 }
 
                 xPos += 112;

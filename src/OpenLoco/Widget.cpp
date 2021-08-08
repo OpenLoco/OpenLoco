@@ -294,8 +294,8 @@ namespace OpenLoco::Ui
     // 0x004CAAB9
     void Widget::drawFrame(Gfx::Context* context, const Window* window, uint16_t flags, uint8_t colour)
     {
-        Gfx::Context* clipped = nullptr;
-        if (Gfx::clipContext(&clipped, context, left + window->x, top + window->y, right - left, 41))
+        auto clipped = Gfx::clipContext(*context, Ui::Rect(left + window->x, top + window->y, right - left, 41));
+        if (clipped)
         {
             uint32_t imageId = image;
             if (window->flags & WindowFlags::flag_11)
@@ -306,7 +306,7 @@ namespace OpenLoco::Ui
             {
                 imageId = Gfx::recolour(ImageIds::frame_background_image_alt, Colour::opaque(colour));
             }
-            Gfx::drawImage(clipped, 0, 0, imageId);
+            Gfx::drawImage(&*clipped, 0, 0, imageId);
         }
 
         uint8_t shade;

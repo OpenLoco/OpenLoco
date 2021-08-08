@@ -243,8 +243,8 @@ namespace OpenLoco::Ui::Windows::TextInput
         Gfx::drawStringCentredWrapped(*context, position, window->width - 8, 0, StringIds::wcolour2_stringid, &_commonFormatArgs[0]);
 
         auto widget = &_widgets[Widx::input];
-        Gfx::Context* clipped = nullptr;
-        if (!Gfx::clipContext(&clipped, context, widget->left + 1 + window->x, widget->top + 1 + window->y, widget->width() - 2, widget->height() - 2))
+        auto clipped = Gfx::clipContext(*context, Ui::Rect(widget->left + 1 + window->x, widget->top + 1 + window->y, widget->width() - 2, widget->height() - 2));
+        if (!clipped)
         {
             return;
         }
@@ -268,7 +268,7 @@ namespace OpenLoco::Ui::Windows::TextInput
         *((string_id*)(&_commonFormatArgs[0])) = StringIds::buffer_2039;
         position = { inputSession.xOffset, 1 };
         Gfx::drawString_494B3F(*clipped, &position, 0, StringIds::black_stringid, _commonFormatArgs);
-        Gfx::fillRect(clipped, position.x, position.y, position.x, position.y + 9, Colour::getShade(window->getColour(WindowColour::secondary), 9));
+        Gfx::fillRect(&*clipped, position.x, position.y, position.x, position.y + 9, Colour::getShade(window->getColour(WindowColour::secondary), 9));
     }
 
     // 0x004CE8B6

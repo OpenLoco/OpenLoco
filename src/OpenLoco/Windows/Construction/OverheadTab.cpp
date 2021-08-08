@@ -240,13 +240,12 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
         Common::drawTabs(self, context);
         if (_lastSelectedMods & 0xF)
         {
-            Gfx::Context* clipped = nullptr;
             auto xPos = self->x + self->widgets[widx::image].left + 1;
             auto yPos = self->y + self->widgets[widx::image].top + 1;
             auto width = self->widgets[widx::image].width();
             auto height = self->widgets[widx::image].height();
-
-            if (Gfx::clipContext(&clipped, context, xPos, yPos, width, height))
+            auto clipped = Gfx::clipContext(*context, Ui::Rect(xPos, yPos, width, height));
+            if (clipped)
             {
                 coord_t x = 0x2010;
                 coord_t y = 0x2010;
@@ -259,7 +258,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
                 clipped->x += screenPos.x;
                 clipped->y += screenPos.y;
 
-                _dword_E0C3E0 = clipped;
+                _dword_E0C3E0 = &*clipped;
 
                 x = 0x2000;
                 y = 0x2000;
@@ -278,6 +277,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
                     Construction::drawTrack(x, y, _lastSelectedMods, 0x1D0, _trackType, 0, companyColour, gCurrentRotation);
                 }
                 _byte_522095 = _byte_522095 & ~(1 << 0);
+                _dword_E0C3E0 = nullptr;
             }
         }
 

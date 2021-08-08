@@ -486,9 +486,8 @@ namespace OpenLoco::Ui::Windows::Construction
                     if (self->current_tab == widx::tab_station - widx::tab_construction)
                         height++;
 
-                    Gfx::Context* clipped = nullptr;
-
-                    if (Gfx::clipContext(&clipped, context, x, y, width, height))
+                    auto clipped = Gfx::clipContext(*context, Ui::Rect(x, y, width, height));
+                    if (clipped)
                     {
                         clipped->zoom_level = 1;
                         clipped->width <<= 1;
@@ -497,14 +496,14 @@ namespace OpenLoco::Ui::Windows::Construction
                         clipped->y <<= 1;
                         auto roadStationObj = ObjectManager::get<RoadStationObject>(_lastSelectedStationType);
                         auto imageId = Gfx::recolour(roadStationObj->image, companyColour);
-                        Gfx::drawImage(clipped, -4, -10, imageId);
+                        Gfx::drawImage(&*clipped, -4, -10, imageId);
                         auto colour = _byte_5045FA[companyColour];
                         if (!(roadStationObj->flags & RoadStationFlags::recolourable))
                         {
                             colour = PaletteIndex::index_2E;
                         }
                         imageId = Gfx::recolour(roadStationObj->image, colour) + 1;
-                        Gfx::drawImage(clipped, -4, -10, imageId);
+                        Gfx::drawImage(&*clipped, -4, -10, imageId);
                     }
 
                     Widget::drawTab(self, context, -2, widx::tab_station);
@@ -578,9 +577,8 @@ namespace OpenLoco::Ui::Windows::Construction
                             if (self->current_tab == widx::tab_station - widx::tab_construction)
                                 height++;
 
-                            Gfx::Context* clipped = nullptr;
-
-                            if (Gfx::clipContext(&clipped, context, x, y, width, height))
+                            auto clipped = Gfx::clipContext(*context, Ui::Rect(x, y, width, height));
+                            if (clipped)
                             {
                                 clipped->zoom_level = 1;
                                 clipped->width *= 2;
@@ -590,7 +588,7 @@ namespace OpenLoco::Ui::Windows::Construction
 
                                 auto trainStationObj = ObjectManager::get<TrainStationObject>(_lastSelectedStationType);
                                 auto imageId = Gfx::recolour(trainStationObj->image + TrainStation::ImageIds::preview_image, companyColour);
-                                Gfx::drawImage(clipped, -4, -9, imageId);
+                                Gfx::drawImage(&*clipped, -4, -9, imageId);
 
                                 auto colour = _byte_5045FA[companyColour];
                                 if (!(trainStationObj->flags & TrainStationFlags::recolourable))
@@ -598,7 +596,7 @@ namespace OpenLoco::Ui::Windows::Construction
                                     colour = PaletteIndex::index_2E;
                                 }
                                 imageId = Gfx::recolourTranslucent(trainStationObj->image + TrainStation::ImageIds::preview_image_windows, colour);
-                                Gfx::drawImage(clipped, -4, -9, imageId);
+                                Gfx::drawImage(&*clipped, -4, -9, imageId);
                             }
 
                             Widget::drawTab(self, context, -2, widx::tab_station);
@@ -618,9 +616,8 @@ namespace OpenLoco::Ui::Windows::Construction
                     if (self->current_tab == widx::tab_station - widx::tab_construction)
                         height++;
 
-                    Gfx::Context* clipped = nullptr;
-
-                    if (Gfx::clipContext(&clipped, context, x, y, width, height))
+                    auto clipped = Gfx::clipContext(*context, Ui::Rect(x, y, width, height));
+                    if (clipped)
                     {
                         auto trainSignalObject = ObjectManager::get<TrainSignalObject>(_lastSelectedSignal);
                         auto imageId = trainSignalObject->image;
@@ -633,7 +630,7 @@ namespace OpenLoco::Ui::Windows::Construction
                             frameIndex <<= 3;
                             imageId += frameIndex;
                         }
-                        Gfx::drawImage(clipped, 15, 31, imageId);
+                        Gfx::drawImage(&*clipped, 15, 31, imageId);
                     }
 
                     Widget::drawTab(self, context, -2, widx::tab_signal);
