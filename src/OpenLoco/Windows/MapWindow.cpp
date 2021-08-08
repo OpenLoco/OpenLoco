@@ -1013,7 +1013,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
         if (endPos.x != Location::null)
         {
-            Gfx::drawLine(context, endPos.x, endPos.y, newStartPos.x, newStartPos.y, colour);
+            Gfx::drawLine(*context, endPos.x, endPos.y, newStartPos.x, newStartPos.y, colour);
         }
 
         endPos = newStartPos;
@@ -1094,7 +1094,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         if (startPos.x == Location::null || endPos.x == Location::null)
             return;
 
-        Gfx::drawLine(context, startPos.x, startPos.y, endPos.x, endPos.y, *colour);
+        Gfx::drawLine(*context, startPos.x, startPos.y, endPos.x, endPos.y, *colour);
     }
 
     // 0x0046C426

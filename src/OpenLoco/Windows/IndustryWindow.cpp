@@ -637,7 +637,7 @@ namespace OpenLoco::Ui::Windows::Industry
                     {
                         if (yPos2 <= graphBottom)
                         {
-                            Gfx::drawLine(context, xPos, yPos1, xPos + 1, yPos2, Colour::getShade(self->getColour(WindowColour::secondary), 7));
+                            Gfx::drawLine(*context, xPos, yPos1, xPos + 1, yPos2, Colour::getShade(self->getColour(WindowColour::secondary), 7));
                         }
                     }
                 }

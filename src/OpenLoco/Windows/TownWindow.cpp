@@ -450,7 +450,7 @@ namespace OpenLoco::Ui::Windows::Town
 
                 // Do not draw current segment yet; it may be zeroed.
                 if (i < town->history_size - 1)
-                    Gfx::drawLine(&*clipped, xPos, yPos1, xPos + 1, yPos2, Colour::getShade(self->getColour(WindowColour::secondary), 7));
+                    Gfx::drawLine(*clipped, xPos, yPos1, xPos + 1, yPos2, Colour::getShade(self->getColour(WindowColour::secondary), 7));
 
                 month--;
                 if (month < 0)

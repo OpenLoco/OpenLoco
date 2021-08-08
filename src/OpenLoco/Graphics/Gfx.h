@@ -225,7 +225,7 @@ namespace OpenLoco::Gfx
     void drawRect(Gfx::Context& context, int16_t x, int16_t y, uint16_t dx, uint16_t dy, uint32_t colour);
     void fillRectInset(Gfx::Context& context, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t colour, uint8_t flags);
     void drawRectInset(Gfx::Context& context, int16_t x, int16_t y, uint16_t dx, uint16_t dy, uint32_t colour, uint8_t flags);
-    void drawLine(Gfx::Context* context, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t colour);
+    void drawLine(Gfx::Context& context, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t colour);
     void drawImage(Gfx::Context* context, int16_t x, int16_t y, uint32_t image);
     void drawImageSolid(Gfx::Context* context, int16_t x, int16_t y, uint32_t image, uint8_t palette_index);
     void drawImagePaletteSet(Gfx::Context* context, int16_t x, int16_t y, uint32_t image, uint8_t* palette);

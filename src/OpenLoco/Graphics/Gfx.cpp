@@ -1249,7 +1249,7 @@ namespace OpenLoco::Gfx
     }
 
     // 0x00452DA4
-    void drawLine(Gfx::Context* context, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t colour)
+    void drawLine(Gfx::Context& context, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t colour)
     {
         registers regs;
         regs.ax = left;
@@ -1257,7 +1257,7 @@ namespace OpenLoco::Gfx
         regs.cx = right;
         regs.dx = bottom;
         regs.ebp = colour;
-        regs.edi = X86Pointer(context);
+        regs.edi = X86Pointer(&context);
         call(0x00452DA4, regs);
     }
 
