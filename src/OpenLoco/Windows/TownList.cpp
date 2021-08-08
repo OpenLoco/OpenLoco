@@ -694,23 +694,34 @@ namespace OpenLoco::Ui::Windows::TownList
         // 0x0049A710
         static void onToolUpdate(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
-            registers regs;
-            regs.esi = X86Pointer(&self);
-            regs.dx = widgetIndex;
-            regs.ax = x;
-            regs.bx = y;
-            call(0x0049A710, regs);
+            Map::TileManager::mapInvalidateSelectionRect();
+            Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
+
+            auto mapPos = Ui::ViewportInteraction::getSurfaceOrWaterLocFromUi({ x, y });
+            if (mapPos)
+            {
+                Input::setMapSelectionFlags(Input::MapSelectionFlags::enable);
+                Map::TileManager::setMapSelectionCorner(4);
+                Map::TileManager::setMapSelectionArea(*mapPos, *mapPos);
+                Map::TileManager::mapInvalidateSelectionRect();
+            }
         }
 
         // 0x0049A75E
         static void onToolDown(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
-            registers regs;
-            regs.esi = X86Pointer(&self);
-            regs.dx = widgetIndex;
-            regs.ax = x;
-            regs.bx = y;
-            call(0x0049A75E, regs);
+            auto mapPos = Ui::ViewportInteraction::getSurfaceOrWaterLocFromUi({ x, y });
+            if (mapPos)
+            {
+                GameCommands::setErrorTitle(StringIds::error_cant_build_this_here);
+                GameCommands::TownPlacementArgs placementArgs;
+                placementArgs.pos = *mapPos;
+                placementArgs.size = _townSize;
+                if (GameCommands::do_49(placementArgs, GameCommands::Flags::apply) != GameCommands::FAILURE)
+                {
+                    Audio::playSound(Audio::SoundId::construct, GameCommands::getPosition());
+                }
+            }
         }
 
         // 0x0049A69E
@@ -963,25 +974,37 @@ namespace OpenLoco::Ui::Windows::TownList
         }
 
         // 0x0049B37F
-        static void sub_49B37F()
+        static void removeBuildingGhost()
         {
-            registers regs;
-            call(0x0049B37F, regs);
+            if (_buildingGhostPlaced)
+            {
+                GameCommands::BuildingRemovalArgs args;
+                args.pos = _buildingGhostPos;
+                GameCommands::do_45(GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6, args);
+                _buildingGhostPlaced = false;
+            }
         }
 
         // 0x0049AD46
         static void onToolAbort(Window& self, const WidgetIndex_t widgetIndex)
         {
-            sub_49B37F();
+            removeBuildingGhost();
             Ui::Windows::hideGridlines();
         }
 
         // 0x0049B32A
         static currency32_t placeBuildingGhost(const GameCommands::BuildingPlacementArgs& placementArgs)
         {
-            auto regs = registers(placementArgs);
-            call(0x0049B32A, regs);
-            return regs.ebx;
+            removeBuildingGhost();
+            auto res = GameCommands::do_44(placementArgs, GameCommands::Flags::apply | GameCommands::Flags::flag_1 | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6);
+            if (res != GameCommands::FAILURE)
+            {
+                _buildingGhostPos = placementArgs.pos;
+                _buildingGhostType = placementArgs.type;
+                _buildingGhostRotation = placementArgs.rotation;
+                _buildingGhostPlaced = true;
+            }
+            return res;
         }
 
         // 0x0049B3B2
@@ -1045,7 +1068,7 @@ namespace OpenLoco::Ui::Windows::TownList
             auto placementArgs = getBuildingPlacementArgsFromCursor(x, y);
             if (!placementArgs)
             {
-                sub_49B37F();
+                removeBuildingGhost();
                 return;
             }
 
@@ -1064,7 +1087,7 @@ namespace OpenLoco::Ui::Windows::TownList
                 }
             }
 
-            sub_49B37F();
+            removeBuildingGhost();
             auto cost = placeBuildingGhost(*placementArgs);
             if (cost != dword_1135C34)
             {
@@ -1076,12 +1099,12 @@ namespace OpenLoco::Ui::Windows::TownList
         // 0x0049ACBD
         static void onToolDown(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
-            sub_49B37F();
+            removeBuildingGhost();
             auto placementArgs = getBuildingPlacementArgsFromCursor(x, y);
             if (placementArgs)
             {
                 GameCommands::setErrorTitle(StringIds::error_cant_build_this_here);
-                if (GameCommands::do_44(*placementArgs, GameCommands::Flags::apply | GameCommands::Flags::flag_1))
+                if (GameCommands::do_44(*placementArgs, GameCommands::Flags::apply | GameCommands::Flags::flag_1) != GameCommands::FAILURE)
                 {
                     Audio::playSound(Audio::SoundId::construct, GameCommands::getPosition());
                 }
