@@ -175,12 +175,12 @@ namespace OpenLoco::Ui::Windows::TimePanel
     static void draw(Ui::Window* self, Gfx::Context* context)
     {
         Widget& frame = _widgets[Widx::outer_frame];
-        Gfx::drawRect(context, self->x + frame.left, self->y + frame.top, frame.width(), frame.height(), 0x2000000 | 52);
+        Gfx::drawRect(*context, self->x + frame.left, self->y + frame.top, frame.width(), frame.height(), 0x2000000 | 52);
 
         // Draw widgets.
         self->draw(context);
 
-        Gfx::drawRectInset(context, self->x + frame.left + 1, self->y + frame.top + 1, frame.width() - 2, frame.height() - 2, self->getColour(WindowColour::secondary), 0x30);
+        Gfx::drawRectInset(*context, self->x + frame.left + 1, self->y + frame.top + 1, frame.width() - 2, frame.height() - 2, self->getColour(WindowColour::secondary), 0x30);
 
         *(uint32_t*)&_common_format_args[0] = getCurrentDay();
         string_id format = StringIds::date_monthyear;

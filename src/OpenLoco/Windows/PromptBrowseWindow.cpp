@@ -488,7 +488,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     {
         loco_global<char[16], 0x0112C826> _commonFormatArgs;
 
-        Gfx::fillRectInset(&context, x, y, x + width, y + height, window.getColour(WindowColour::secondary), 0x30);
+        Gfx::fillRectInset(context, x, y, x + width, y + height, window.getColour(WindowColour::secondary), 0x30);
 
         auto imageId = 0;
         auto g1 = Gfx::getG1Element(imageId);
@@ -539,7 +539,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
 
     static void drawLandscapePreview(Ui::Window& window, Gfx::Context& context, int32_t x, int32_t y, int32_t width, int32_t height)
     {
-        Gfx::fillRectInset(&context, x, y, x + width, y + height, window.getColour(WindowColour::secondary), 0x30);
+        Gfx::fillRectInset(context, x, y, x + width, y + height, window.getColour(WindowColour::secondary), 0x30);
 
         if (S5::getPreviewOptions().scenarioFlags & Scenario::flags::landscape_generation_done)
         {
@@ -598,7 +598,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                 Gfx::drawString_494B3F(context, &origin, 0, StringIds::black_stringid, _commonFormatArgs);
 
                 // Draw vertical caret
-                Gfx::drawRect(&context, origin.x, origin.y, 1, 9, byte_1136C99[window->getColour(WindowColour::secondary) * 8]);
+                Gfx::drawRect(context, origin.x, origin.y, 1, 9, byte_1136C99[window->getColour(WindowColour::secondary) * 8]);
             }
         }
     }
@@ -626,7 +626,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                 auto stringId = StringIds::black_stringid;
                 if (i == window.var_85A)
                 {
-                    Gfx::drawRect(&context, 0, y, window.width, lineHeight, 0x2000000 | 48);
+                    Gfx::drawRect(context, 0, y, window.width, lineHeight, 0x2000000 | 48);
                     stringId = StringIds::wcolour2_stringid;
                 }
 

@@ -400,7 +400,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 // Highlight selection.
                 if (industryId == self.row_hover)
                 {
-                    Gfx::drawRect(&context, 0, yPos, self.width, rowHeight, 0x2000030);
+                    Gfx::drawRect(context, 0, yPos, self.width, rowHeight, 0x2000030);
                     text_colour_id = StringIds::wcolour2_stringid;
                 }
 
@@ -884,13 +884,13 @@ namespace OpenLoco::Ui::Windows::IndustryList
                     if (self.row_info[i] == self.var_846)
                     {
                         word_E0C3C6 = Colour::translucent_flag;
-                        Gfx::drawRectInset(&context, xPos, yPos, rowHeight, rowHeight, self.getColour(WindowColour::secondary), Colour::translucent_flag);
+                        Gfx::drawRectInset(context, xPos, yPos, rowHeight, rowHeight, self.getColour(WindowColour::secondary), Colour::translucent_flag);
                     }
                 }
                 else
                 {
                     word_E0C3C6 = Colour::translucent_flag | Colour::outline_flag;
-                    Gfx::drawRectInset(&context, xPos, yPos, rowHeight, rowHeight, self.getColour(WindowColour::secondary), (Colour::translucent_flag | Colour::outline_flag));
+                    Gfx::drawRectInset(context, xPos, yPos, rowHeight, rowHeight, self.getColour(WindowColour::secondary), (Colour::translucent_flag | Colour::outline_flag));
                 }
 
                 auto industryObj = ObjectManager::get<IndustryObject>(self.row_info[i]);

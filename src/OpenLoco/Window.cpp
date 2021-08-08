@@ -1421,7 +1421,7 @@ namespace OpenLoco::Ui
     {
         if ((this->flags & WindowFlags::transparent) && !(this->flags & WindowFlags::no_background))
         {
-            Gfx::fillRect(context, this->x, this->y, this->x + this->width - 1, this->y + this->height - 1, 0x2000000 | 52);
+            Gfx::fillRect(*context, this->x, this->y, this->x + this->width - 1, this->y + this->height - 1, 0x2000000 | 52);
         }
 
         uint64_t pressed_widget = 0;
@@ -1462,7 +1462,7 @@ namespace OpenLoco::Ui
         if (this->flags & WindowFlags::white_border_mask)
         {
             Gfx::fillRectInset(
-                context,
+                *context,
                 this->x,
                 this->y,
                 this->x + this->width - 1,

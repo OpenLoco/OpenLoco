@@ -292,7 +292,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                     if (row < 1)
                     {
                         auto colour = Colour::getShade(self->getColour(WindowColour::secondary), 7);
-                        Gfx::drawRect(context, xPos, yPos + 26, 31, 1, colour);
+                        Gfx::drawRect(*context, xPos, yPos + 26, 31, 1, colour);
                     }
                 }
                 xPos += 31;
@@ -501,7 +501,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     // 0x004733F5
     static void draw(Window* self, Gfx::Context* context)
     {
-        Gfx::fillRectInset(context, self->x, self->y + 20, self->x + self->width - 1, self->y + 20 + 60, self->getColour(WindowColour::primary), 0);
+        Gfx::fillRectInset(*context, self->x, self->y + 20, self->x + self->width - 1, self->y + 20 + 60, self->getColour(WindowColour::primary), 0);
         self->draw(context);
 
         drawTabs(self, context);
@@ -521,13 +521,13 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         {
             auto widget = widgets[widx::objectImage];
             auto colour = Colour::getShade(self->getColour(WindowColour::secondary), 5);
-            Gfx::drawRect(context, self->x + widget.left, self->y + widget.top, widget.width(), widget.height(), colour);
+            Gfx::drawRect(*context, self->x + widget.left, self->y + widget.top, widget.width(), widget.height(), colour);
         }
         else
         {
             auto widget = widgets[widx::objectImage];
             auto colour = Colour::getShade(self->getColour(WindowColour::secondary), 0);
-            Gfx::drawRect(context, self->x + widget.left + 1, self->y + widget.top + 1, widget.width() - 2, widget.height() - 2, colour);
+            Gfx::drawRect(*context, self->x + widget.left + 1, self->y + widget.top + 1, widget.width() - 2, widget.height() - 2, colour);
         }
 
         auto type = self->current_tab;
@@ -598,7 +598,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         for (auto [i, object] : objects)
         {
             uint8_t flags = (1 << 7) | (1 << 6) | (1 << 5);
-            Gfx::fillRectInset(&context, 2, y, 11, y + 10, self.getColour(WindowColour::secondary), flags);
+            Gfx::fillRectInset(context, 2, y, 11, y + 10, self.getColour(WindowColour::secondary), flags);
 
             uint8_t textColour = ControlCodes::colour_black;
 
@@ -608,7 +608,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 auto windowObjectName = ObjectManager::ObjectIndexEntry::read(&objectPtr)._name;
                 if (object._name == windowObjectName)
                 {
-                    Gfx::fillRect(&context, 0, y, self.width, y + rowHeight - 1, (1 << 25) | PaletteIndex::index_30);
+                    Gfx::fillRect(context, 0, y, self.width, y + rowHeight - 1, (1 << 25) | PaletteIndex::index_30);
                     textColour = ControlCodes::window_colour_2;
                 }
             }

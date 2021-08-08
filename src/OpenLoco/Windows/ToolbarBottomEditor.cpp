@@ -69,17 +69,17 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
 
         if (EditorController::canGoBack())
         {
-            Gfx::drawRect(ctx, previous.left + self->x, previous.top + self->y, previous.width(), previous.height(), 0x2000000 | 52);
+            Gfx::drawRect(*ctx, previous.left + self->x, previous.top + self->y, previous.width(), previous.height(), 0x2000000 | 52);
         }
-        Gfx::drawRect(ctx, next.left + self->x, next.top + self->y, next.width(), next.height(), 0x2000000 | 52);
+        Gfx::drawRect(*ctx, next.left + self->x, next.top + self->y, next.width(), next.height(), 0x2000000 | 52);
 
         self->draw(ctx);
 
         if (EditorController::canGoBack())
         {
-            Gfx::drawRectInset(ctx, previous.left + self->x + 1, previous.top + self->y + 1, previous.width() - 2, previous.height() - 2, self->getColour(WindowColour::secondary), 0x30);
+            Gfx::drawRectInset(*ctx, previous.left + self->x + 1, previous.top + self->y + 1, previous.width() - 2, previous.height() - 2, self->getColour(WindowColour::secondary), 0x30);
         }
-        Gfx::drawRectInset(ctx, next.left + self->x + 1, next.top + self->y + 1, next.width() - 2, next.height() - 2, self->getColour(WindowColour::secondary), 0x30);
+        Gfx::drawRectInset(*ctx, next.left + self->x + 1, next.top + self->y + 1, next.width() - 2, next.height() - 2, self->getColour(WindowColour::secondary), 0x30);
 
         Gfx::drawStringCentred(*ctx, (previous.right + next.left) / 2 + self->x, self->y + self->height - 12, Colour::opaque(self->getColour(WindowColour::tertiary)) | Colour::outline_flag, _stepNames[EditorController::getCurrentStep()]);
 

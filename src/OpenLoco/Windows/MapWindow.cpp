@@ -592,7 +592,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             auto colour = overallColours[i];
             if (!(self->var_854 & (1 << i)) || !(mapFrameNumber & (1 << 2)))
             {
-                Gfx::drawRect(context, x, *y + 3, 5, 5, colour);
+                Gfx::drawRect(*context, x, *y + 3, 5, 5, colour);
             }
             auto args = FormatArguments();
             args.push(lineNames[i]);
@@ -638,7 +638,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             {
                 auto colour = vehicleTypeColours[i];
 
-                Gfx::drawRect(context, x, *y + 3, 5, 5, colour);
+                Gfx::drawRect(*context, x, *y + 3, 5, 5, colour);
             }
             auto args = FormatArguments();
             args.push(lineNames[i]);
@@ -704,7 +704,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             {
                 auto colour = industryColours[_byte_F253CE[i]];
 
-                Gfx::drawRect(context, x, *y + 3, 5, 5, colour);
+                Gfx::drawRect(*context, x, *y + 3, 5, 5, colour);
             }
 
             auto args = FormatArguments();
@@ -733,7 +733,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
             if (!(self->var_854 & (1 << i)) || !(mapFrameNumber & (1 << 2)))
             {
-                Gfx::drawRect(context, x, *y + 3, 5, 5, colour);
+                Gfx::drawRect(*context, x, *y + 3, 5, 5, colour);
             }
 
             auto routeType = StringIds::map_routes_aircraft;
@@ -783,7 +783,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
             if (!(self->var_854 & (1 << index)) || !(mapFrameNumber & (1 << 2)))
             {
-                Gfx::drawRect(context, x, *y + 3, 5, 5, colour);
+                Gfx::drawRect(*context, x, *y + 3, 5, 5, colour);
             }
 
             auto args = FormatArguments();
@@ -1003,7 +1003,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
         auto trainPos = locationToMapWindowPos(vehicle->position);
 
-        Gfx::fillRect(context, trainPos.x, trainPos.y, trainPos.x, trainPos.y, colour);
+        Gfx::fillRect(*context, trainPos.x, trainPos.y, trainPos.x, trainPos.y, colour);
     }
 
     // 0x0046C294
@@ -1013,7 +1013,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
         if (endPos.x != Location::null)
         {
-            Gfx::drawLine(context, endPos.x, endPos.y, newStartPos.x, newStartPos.y, colour);
+            Gfx::drawLine(*context, endPos.x, endPos.y, newStartPos.x, newStartPos.y, colour);
         }
 
         endPos = newStartPos;
@@ -1094,7 +1094,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         if (startPos.x == Location::null || endPos.x == Location::null)
             return;
 
-        Gfx::drawLine(context, startPos.x, startPos.y, endPos.x, endPos.y, *colour);
+        Gfx::drawLine(*context, startPos.x, startPos.y, endPos.x, endPos.y, *colour);
     }
 
     // 0x0046C426
@@ -1193,7 +1193,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             std::swap(top, bottom);
         }
 
-        Gfx::fillRect(context, left, top, right, bottom, colour);
+        Gfx::fillRect(*context, left, top, right, bottom, colour);
     }
 
     // 0x0046BE51

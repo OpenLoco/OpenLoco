@@ -153,7 +153,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
     // 0x004439AF
     static void draw(Window* self, Gfx::Context* context)
     {
-        Gfx::drawRectInset(context, self->x, self->y + 20, self->width, 41, self->getColour(WindowColour::primary), 0);
+        Gfx::drawRectInset(*context, self->x, self->y + 20, self->width, 41, self->getColour(WindowColour::primary), 0);
 
         // Draw widgets.
         self->draw(context);
@@ -227,7 +227,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
         // Outline for preview image
         {
             x = baseX + 20;
-            Gfx::drawRectInset(context, x, y, 130, 130, self->getColour(WindowColour::secondary), 0x30);
+            Gfx::drawRectInset(*context, x, y, 130, 130, self->getColour(WindowColour::secondary), 0x30);
 
             x += 1;
             y += 1;
@@ -351,7 +351,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             auto formatStringId = StringIds::black_stringid;
             if (scenarioInfo == reinterpret_cast<ScenarioIndexEntry*>(self.info))
             {
-                Gfx::drawRect(&context, 0, y, self.width, rowHeight - 1, 0x2000000 | 48);
+                Gfx::drawRect(context, 0, y, self.width, rowHeight - 1, 0x2000000 | 48);
                 formatStringId = StringIds::wcolour2_stringid;
             }
 

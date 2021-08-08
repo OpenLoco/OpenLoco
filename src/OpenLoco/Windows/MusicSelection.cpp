@@ -113,12 +113,12 @@ namespace OpenLoco::Ui::Windows::MusicSelection
             // Draw hovered track
             if (i == window.row_hover)
             {
-                Gfx::drawRect(&context, 0, y, 800, rowHeight, 0x2000030);
+                Gfx::drawRect(context, 0, y, 800, rowHeight, 0x2000030);
                 text_colour_id = StringIds::wcolour2_stringid;
             }
 
             // Draw checkbox.
-            Gfx::fillRectInset(&context, 2, y, 11, y + 10, window.getColour(WindowColour::secondary), 0xE0);
+            Gfx::fillRectInset(context, 2, y, 11, y + 10, window.getColour(WindowColour::secondary), 0xE0);
 
             // Draw checkmark if track is enabled.
             if (config.enabled_music[i])

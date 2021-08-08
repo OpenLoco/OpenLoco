@@ -615,7 +615,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                         auto width = self->widgets[Common::widx::viewport1].width() + 1;
                         auto height = self->widgets[Common::widx::viewport1].height() + 1;
                         auto colour = (1 << 25) | PaletteIndex::index_35;
-                        Gfx::drawRect(context, x, y, width, height, colour);
+                        Gfx::drawRect(*context, x, y, width, height, colour);
                     }
                 }
             }
@@ -631,7 +631,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                         auto width = self->widgets[Common::widx::viewport2].width() + 1;
                         auto height = self->widgets[Common::widx::viewport2].height() + 1;
                         auto colour = (1 << 25) | PaletteIndex::index_35;
-                        Gfx::drawRect(context, x, y, width, height, colour);
+                        Gfx::drawRect(*context, x, y, width, height, colour);
                     }
                 }
             }
@@ -684,14 +684,14 @@ namespace OpenLoco::Ui::Windows::NewsWindow
             auto width = self->width - 6;
             auto height = self->height;
             auto colour = (1 << 25) | PaletteIndex::index_68;
-            Gfx::drawRect(context, x, y, width, height, colour);
+            Gfx::drawRect(*context, x, y, width, height, colour);
 
             x = self->widgets[Common::widx::viewport1].left + self->x;
             y = self->widgets[Common::widx::viewport1].top + self->y;
             width = self->widgets[Common::widx::viewport1].width();
             height = self->widgets[Common::widx::viewport1].height();
             colour = (1 << 25) | PaletteIndex::index_68;
-            Gfx::drawRect(context, x, y, width, height, colour);
+            Gfx::drawRect(*context, x, y, width, height, colour);
         }
 
         // 0x00429761
@@ -726,7 +726,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                         auto width = self->widgets[Common::widx::viewport1].width();
                         auto height = self->widgets[Common::widx::viewport1].height();
                         auto colour = (1 << 25) | PaletteIndex::index_35;
-                        Gfx::drawRect(context, x, y, width, height, colour);
+                        Gfx::drawRect(*context, x, y, width, height, colour);
                     }
                 }
             }
@@ -742,7 +742,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                         auto width = self->widgets[Common::widx::viewport2].width();
                         auto height = self->widgets[Common::widx::viewport2].height();
                         auto colour = (1 << 25) | PaletteIndex::index_35;
-                        Gfx::drawRect(context, x, y, width, height, colour);
+                        Gfx::drawRect(*context, x, y, width, height, colour);
                     }
                 }
             }

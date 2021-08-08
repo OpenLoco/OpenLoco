@@ -655,12 +655,12 @@ namespace OpenLoco::Ui::Windows::Station
         // 0x0048EF02
         static void drawRatingBar(Window* self, Gfx::Context* context, int16_t x, int16_t y, uint8_t amount, Colour_t colour)
         {
-            Gfx::fillRectInset(context, x, y, x + 99, y + 9, self->getColour(WindowColour::secondary), 48);
+            Gfx::fillRectInset(*context, x, y, x + 99, y + 9, self->getColour(WindowColour::secondary), 48);
 
             uint16_t rating = (amount * 96) / 256;
             if (rating > 2)
             {
-                Gfx::fillRectInset(context, x + 2, y + 2, x + 1 + rating, y + 8, colour, 0);
+                Gfx::fillRectInset(*context, x + 2, y + 2, x + 1 + rating, y + 8, colour, 0);
             }
         }
 
@@ -980,7 +980,7 @@ namespace OpenLoco::Ui::Windows::Station
                     auto& cargo = cargoStats;
                     if (!cargo.empty())
                     {
-                        Gfx::fillRect(context, xOffset, yOffset, xOffset + 22, yOffset + 1, (1 << 25) | PaletteIndex::index_30);
+                        Gfx::fillRect(*context, xOffset, yOffset, xOffset + 22, yOffset + 1, (1 << 25) | PaletteIndex::index_30);
 
                         auto ratingColour = Colour::moss_green;
                         if (cargo.rating < 100)
@@ -991,7 +991,7 @@ namespace OpenLoco::Ui::Windows::Station
                         }
 
                         auto ratingBarLength = (cargo.rating * 30) / 256;
-                        Gfx::fillRect(context, xOffset, yOffset, xOffset - 1 + ratingBarLength, yOffset + 1, Colour::getShade(ratingColour, 6));
+                        Gfx::fillRect(*context, xOffset, yOffset, xOffset - 1 + ratingBarLength, yOffset + 1, Colour::getShade(ratingColour, 6));
 
                         yOffset += 3;
                         totalRatingBars++;
