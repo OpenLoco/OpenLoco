@@ -1462,7 +1462,7 @@ namespace OpenLoco::Ui
         if (this->flags & WindowFlags::white_border_mask)
         {
             Gfx::fillRectInset(
-                context,
+                *context,
                 this->x,
                 this->y,
                 this->x + this->width - 1,

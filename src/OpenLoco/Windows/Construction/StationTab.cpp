@@ -301,7 +301,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         xPos = self->x + 3;
         yPos = self->widgets[widx::image].bottom + self->y + 16;
         auto width = self->width - 4;
-        Gfx::drawRectInset(context, xPos, yPos, width, 1, self->getColour(WindowColour::secondary), (1 << 5));
+        Gfx::drawRectInset(*context, xPos, yPos, width, 1, self->getColour(WindowColour::secondary), (1 << 5));
 
         if (!(_byte_522096 & (1 << 3)))
             return;

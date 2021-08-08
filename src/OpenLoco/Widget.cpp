@@ -199,7 +199,7 @@ namespace OpenLoco::Ui
             if (Input::isPressed(window->type, window->number, widgetIndex))
                 flags = 0x20;
 
-            Gfx::drawRectInset(context, widget.left + window->x, widget.top + window->y, widget.width(), widget.height(), Colour::translucent(window->getColour(WindowColour::secondary)), flags);
+            Gfx::drawRectInset(*context, widget.left + window->x, widget.top + window->y, widget.width(), widget.height(), Colour::translucent(window->getColour(WindowColour::secondary)), flags);
         }
 
         Gfx::drawImage(context, widget.left + window->x, widget.top + window->y, Gfx::recolour(ImageIds::centre_viewport, window->getColour(WindowColour::secondary)));
@@ -286,7 +286,7 @@ namespace OpenLoco::Ui
     // 0x004CAB58
     void Widget::drawPanel(Gfx::Context* context, const Window* window, uint16_t flags, uint8_t colour)
     {
-        Gfx::fillRectInset(context, window->x + left, window->y + top, window->x + right, window->y + bottom, colour, flags);
+        Gfx::fillRectInset(*context, window->x + left, window->y + top, window->x + right, window->y + bottom, colour, flags);
 
         draw_resize_handle(context, window, this, colour);
     }
@@ -346,7 +346,7 @@ namespace OpenLoco::Ui
         if (content == -2)
         {
             flags |= 0x10;
-            Gfx::fillRectInset(context, l, t, r, b, colour, flags);
+            Gfx::fillRectInset(*context, l, t, r, b, colour, flags);
             return;
         }
 
@@ -355,7 +355,7 @@ namespace OpenLoco::Ui
             Gfx::fillRect(*context, l, t, r, b, 0x2000000 | 52);
         }
 
-        Gfx::fillRectInset(context, l, t, r, b, colour, flags);
+        Gfx::fillRectInset(*context, l, t, r, b, colour, flags);
 
         if (content == -1)
         {
@@ -428,12 +428,12 @@ namespace OpenLoco::Ui
                 // 0x004CABE8
 
                 flags |= 0x10;
-                Gfx::fillRectInset(context, l, t, r, b, colour, flags);
+                Gfx::fillRectInset(*context, l, t, r, b, colour, flags);
 
                 return;
             }
 
-            Gfx::fillRectInset(context, l, t, r, b, colour, flags);
+            Gfx::fillRectInset(*context, l, t, r, b, colour, flags);
         }
 
         if (content == -1)
@@ -495,7 +495,7 @@ namespace OpenLoco::Ui
             flags |= 0x20;
         }
 
-        Gfx::fillRectInset(context, l, t, r, b, colour, flags);
+        Gfx::fillRectInset(*context, l, t, r, b, colour, flags);
     }
 
     // 0x004CB1BE
@@ -579,7 +579,7 @@ namespace OpenLoco::Ui
     // 0x4CB29C
     void Widget::draw_17(Gfx::Context* context, const Window* window, uint16_t flags, uint8_t colour)
     {
-        Gfx::fillRectInset(context, window->x + left, window->y + top, window->x + right, window->y + bottom, colour, flags | 0x60);
+        Gfx::fillRectInset(*context, window->x + left, window->y + top, window->x + right, window->y + bottom, colour, flags | 0x60);
     }
 
     // 0x004CA6AE
@@ -589,7 +589,7 @@ namespace OpenLoco::Ui
         int r = window->x + right;
         int t = window->y + top;
         int b = window->y + bottom;
-        Gfx::fillRectInset(context, l, t, r, b, colour, flags | 0x60);
+        Gfx::fillRectInset(*context, l, t, r, b, colour, flags | 0x60);
         Gfx::fillRect(*context, l + 1, t + 1, r - 1, b - 1, 0x2000000 | 46);
 
         int16_t width = r - l - 4 - 10;
@@ -679,7 +679,7 @@ namespace OpenLoco::Ui
         {
             f = flags | 0x20;
         }
-        Gfx::fillRectInset(context, ax, cx, ax + 9, dx, colour, f);
+        Gfx::fillRectInset(*context, ax, cx, ax + 9, dx, colour, f);
         // popa
 
         // pusha
@@ -692,7 +692,7 @@ namespace OpenLoco::Ui
         {
             f = flags | 0x20;
         }
-        Gfx::fillRectInset(context, bx - 9, cx, bx, dx, colour, f);
+        Gfx::fillRectInset(*context, bx - 9, cx, bx, dx, colour, f);
         // popa
 
         // pusha
@@ -717,7 +717,7 @@ namespace OpenLoco::Ui
         {
             f = 0x20;
         }
-        Gfx::fillRectInset(context, ax - 1 + scroll_area->h_thumb_left, cx, ax - 1 + scroll_area->h_thumb_right, dx, colour, f);
+        Gfx::fillRectInset(*context, ax - 1 + scroll_area->h_thumb_left, cx, ax - 1 + scroll_area->h_thumb_right, dx, colour, f);
         // popa
     }
 
@@ -744,7 +744,7 @@ namespace OpenLoco::Ui
         {
             f = flags | 0x20;
         }
-        Gfx::fillRectInset(context, ax, cx, bx, cx + 9, colour, f);
+        Gfx::fillRectInset(*context, ax, cx, bx, cx + 9, colour, f);
         // popa
 
         // pusha
@@ -757,7 +757,7 @@ namespace OpenLoco::Ui
         {
             f = flags | 0x20;
         }
-        Gfx::fillRectInset(context, ax, dx - 9, bx, dx, colour, f);
+        Gfx::fillRectInset(*context, ax, dx - 9, bx, dx, colour, f);
         // popa
 
         // pusha
@@ -782,7 +782,7 @@ namespace OpenLoco::Ui
         {
             f = flags | 0x20;
         }
-        Gfx::fillRectInset(context, ax, cx - 1 + scroll_area->v_thumb_top, bx, cx - 1 + scroll_area->v_thumb_bottom, colour, f);
+        Gfx::fillRectInset(*context, ax, cx - 1 + scroll_area->v_thumb_top, bx, cx - 1 + scroll_area->v_thumb_bottom, colour, f);
         // popa
     }
 
@@ -794,7 +794,7 @@ namespace OpenLoco::Ui
         int16_t r = window->x + right;
         int16_t b = window->y + bottom;
 
-        Gfx::fillRectInset(context, l, t, r, b, colour, flags | 0x60);
+        Gfx::fillRectInset(*context, l, t, r, b, colour, flags | 0x60);
 
         l++;
         t++;
@@ -868,7 +868,7 @@ namespace OpenLoco::Ui
         if (enabled)
         {
             Gfx::fillRectInset(
-                context,
+                *context,
                 window->x + left,
                 window->y + top,
                 window->x + left + 9,

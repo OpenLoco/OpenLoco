@@ -488,7 +488,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     {
         loco_global<char[16], 0x0112C826> _commonFormatArgs;
 
-        Gfx::fillRectInset(&context, x, y, x + width, y + height, window.getColour(WindowColour::secondary), 0x30);
+        Gfx::fillRectInset(context, x, y, x + width, y + height, window.getColour(WindowColour::secondary), 0x30);
 
         auto imageId = 0;
         auto g1 = Gfx::getG1Element(imageId);
@@ -539,7 +539,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
 
     static void drawLandscapePreview(Ui::Window& window, Gfx::Context& context, int32_t x, int32_t y, int32_t width, int32_t height)
     {
-        Gfx::fillRectInset(&context, x, y, x + width, y + height, window.getColour(WindowColour::secondary), 0x30);
+        Gfx::fillRectInset(context, x, y, x + width, y + height, window.getColour(WindowColour::secondary), 0x30);
 
         if (S5::getPreviewOptions().scenarioFlags & Scenario::flags::landscape_generation_done)
         {

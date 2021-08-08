@@ -1195,12 +1195,12 @@ namespace OpenLoco::Ui::Windows::TownList
                 {
                     if (self.row_info[i] == self.var_846)
                     {
-                        Gfx::drawRectInset(&context, xPos, yPos, 112, 112, self.getColour(WindowColour::secondary), Colour::translucent_flag);
+                        Gfx::drawRectInset(context, xPos, yPos, 112, 112, self.getColour(WindowColour::secondary), Colour::translucent_flag);
                     }
                 }
                 else
                 {
-                    Gfx::drawRectInset(&context, xPos, yPos, 112, 112, self.getColour(WindowColour::secondary), (Colour::translucent_flag | Colour::outline_flag));
+                    Gfx::drawRectInset(context, xPos, yPos, 112, 112, self.getColour(WindowColour::secondary), (Colour::translucent_flag | Colour::outline_flag));
                 }
 
                 auto buildingObj = ObjectManager::get<BuildingObject>(self.row_info[i]);
