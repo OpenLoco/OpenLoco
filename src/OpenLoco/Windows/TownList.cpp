@@ -713,6 +713,7 @@ namespace OpenLoco::Ui::Windows::TownList
             auto mapPos = Ui::ViewportInteraction::getSurfaceOrWaterLocFromUi({ x, y });
             if (mapPos)
             {
+                GameCommands::setErrorTitle(StringIds::error_cant_build_this_here);
                 GameCommands::TownPlacementArgs placementArgs;
                 placementArgs.pos = *mapPos;
                 placementArgs.size = _townSize;
