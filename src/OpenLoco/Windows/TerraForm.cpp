@@ -604,6 +604,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         static void clusterToolDown(const GameCommands::TreePlacementArgs& baseArgs, const uint16_t range, const uint16_t density, TTreeTypeFunc&& getTreeType)
         {
             const auto numPlacements = (range * range * density) / 8192;
+            uint16_t numErrors = 0;
             for (auto i = 0; i < numPlacements; ++i)
             {
                 // Choose a random offset in a circle
@@ -629,8 +630,22 @@ namespace OpenLoco::Ui::Windows::Terraform
                 args.type = *type;
                 args.buildImmediately = true;
                 args.requiresFullClearance = true;
+
+                // First query if we can place a tree at this location; skip if we can't.
+                auto queryRes = do_23(0, args);
+                if (queryRes == GameCommands::FAILURE)
+                {
+                    numErrors++;
+                    continue;
+                }
+
+                // Actually place the tree
                 do_23(GameCommands::Flags::apply, args);
             }
+
+            // Not a single tree placed?
+            if (numErrors == numPlacements)
+                Error::open(StringIds::cant_plant_this_here, StringIds::empty);
         }
 
         // 0x004BBB20
