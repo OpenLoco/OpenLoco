@@ -18,7 +18,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::ScenarioSelect
 {
-    constexpr Ui::UiSize windowSize = { 610, 412 };
+    constexpr Ui::Size windowSize = { 610, 412 };
 
     namespace widx
     {

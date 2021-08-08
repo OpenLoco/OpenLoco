@@ -16,7 +16,7 @@ using namespace OpenLoco::Input;
 
 namespace OpenLoco::Ui::Windows::EditKeyboardShortcut
 {
-    constexpr Ui::UiSize windowSize = { 280, 72 };
+    constexpr Ui::Size windowSize = { 280, 72 };
 
     static WindowEventList events;
     static loco_global<uint8_t, 0x011364A4> _11364A4;

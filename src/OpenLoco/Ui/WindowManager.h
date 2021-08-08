@@ -44,10 +44,10 @@ namespace OpenLoco::Ui::WindowManager
     void close(WindowType type);
     void close(WindowType type, uint16_t id);
     void close(Window* window);
-    Window* createWindow(WindowType type, Ui::UiSize size, uint32_t flags, WindowEventList* events);
-    Window* createWindow(WindowType type, Ui::Point origin, Ui::UiSize size, uint32_t flags, WindowEventList* events);
-    Window* createWindowCentred(WindowType type, Ui::UiSize size, uint32_t flags, WindowEventList* events);
-    Window* createWindow(WindowType type, Ui::UiSize size, uint32_t flags, WindowEventList* events);
+    Window* createWindow(WindowType type, Ui::Size size, uint32_t flags, WindowEventList* events);
+    Window* createWindow(WindowType type, Ui::Point origin, Ui::Size size, uint32_t flags, WindowEventList* events);
+    Window* createWindowCentred(WindowType type, Ui::Size size, uint32_t flags, WindowEventList* events);
+    Window* createWindow(WindowType type, Ui::Size size, uint32_t flags, WindowEventList* events);
     void drawSingle(Gfx::Context* context, Window* w, int32_t left, int32_t top, int32_t right, int32_t bottom);
     void dispatchUpdateAll();
     void callEvent8OnAllWindows();

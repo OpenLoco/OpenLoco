@@ -127,7 +127,7 @@ namespace OpenLoco::Ui::Windows::Construction
 
     namespace Construction
     {
-        static const Ui::UiSize windowSize = { 138, 276 };
+        static const Ui::Size windowSize = { 138, 276 };
 
         enum widx
         {

@@ -65,8 +65,8 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 
     namespace Messages
     {
-        static const Ui::UiSize minWindowSize = { 366, 217 };
-        static const Ui::UiSize maxWindowSize = { 366, 1200 };
+        static const Ui::Size minWindowSize = { 366, 217 };
+        static const Ui::Size maxWindowSize = { 366, 1200 };
         static int8_t messageHeight = 39;
 
         enum widx
@@ -377,7 +377,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 
     namespace Settings
     {
-        static const Ui::UiSize windowSize = { 366, 139 };
+        static const Ui::Size windowSize = { 366, 139 };
 
         enum widx
         {

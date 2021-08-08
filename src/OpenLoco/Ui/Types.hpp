@@ -11,12 +11,12 @@ namespace OpenLoco::Ui
     static_assert(sizeof(Point) == 4);
     static_assert(sizeof(Point32) == 8);
 
-    struct UiSize
+    struct Size
     {
         uint16_t width = 0;
         uint16_t height = 0;
 
-        constexpr UiSize(const uint16_t _width, const uint16_t _height)
+        constexpr Size(const uint16_t _width, const uint16_t _height)
             : width(_width)
             , height(_height)
         {

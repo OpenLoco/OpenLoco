@@ -352,7 +352,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
                     uint16_t viewportWidth = self->widgets[Common::widx::viewport1].width();
                     uint16_t viewportHeight = 62;
-                    Ui::UiSize viewportSize = { viewportWidth, viewportHeight };
+                    Ui::Size viewportSize = { viewportWidth, viewportHeight };
 
                     if (_word_4F8BE4[news->type] & (1 << 1))
                     {
@@ -444,7 +444,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
                     uint16_t viewportWidth = self->widgets[Common::widx::viewport2].width();
                     uint16_t viewportHeight = 62;
-                    Ui::UiSize viewportSize = { viewportWidth, viewportHeight };
+                    Ui::Size viewportSize = { viewportWidth, viewportHeight };
 
                     if (_word_4F8BE4[news->type] & (1 << 1))
                     {

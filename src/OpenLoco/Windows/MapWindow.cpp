@@ -49,7 +49,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     };
     static loco_global<uint8_t[256], 0x004FDC5C> _byte_4FDC5C;
     static loco_global<uint32_t, 0x0526284> _lastMapWindowFlags;
-    static loco_global<Ui::UiSize, 0x00526288> _lastMapWindowSize;
+    static loco_global<Ui::Size, 0x00526288> _lastMapWindowSize;
     static loco_global<uint16_t, 0x0052628C> _lastMapWindowVar88A;
     static loco_global<uint16_t, 0x0052628E> _lastMapWindowVar88C;
     static loco_global<int32_t, 0x00E3F0B8> gCurrentRotation;
@@ -163,7 +163,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     // 0x0046B8E6
     static void onClose(Window* self)
     {
-        _lastMapWindowSize = Ui::UiSize(self->width, self->height);
+        _lastMapWindowSize = Ui::Size(self->width, self->height);
         _lastMapWindowVar88A = self->var_88A;
         _lastMapWindowVar88C = self->var_88C;
         _lastMapWindowFlags = self->flags | WindowFlags::flag_31;
@@ -208,8 +208,8 @@ namespace OpenLoco::Ui::Windows::MapWindow
         self->max_width = 800;
         self->max_height = 800;
 
-        Ui::UiSize minWindowSize = { self->min_width, self->min_height };
-        Ui::UiSize maxWindowSize = { self->max_width, self->max_height };
+        Ui::Size minWindowSize = { self->min_width, self->min_height };
+        Ui::Size maxWindowSize = { self->max_width, self->max_height };
         self->setSize(minWindowSize, maxWindowSize);
     }
 
@@ -1465,7 +1465,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             return;
 
         _dword_F253A8 = static_cast<uint8_t*>(ptr);
-        Ui::UiSize size = { 350, 272 };
+        Ui::Size size = { 350, 272 };
 
         if (_lastMapWindowFlags != 0)
         {

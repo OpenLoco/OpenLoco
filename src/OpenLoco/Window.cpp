@@ -28,7 +28,7 @@ namespace OpenLoco::Ui
         return (uint32_t)e < 0x004D7000;
     }
 
-    Window::Window(Ui::Point position, Ui::UiSize size)
+    Window::Window(Ui::Point position, Ui::Size size)
         : x(position.x)
         , y(position.y)
         , width(size.width)

@@ -13,7 +13,7 @@ using namespace OpenLoco::Config;
 
 namespace OpenLoco::Ui::Windows::NewsWindow
 {
-    static void createNewsWindow(Ui::UiSize windowSize, Widget* widgets, uint8_t colour, bool isOld, uint32_t flags)
+    static void createNewsWindow(Ui::Size windowSize, Widget* widgets, uint8_t colour, bool isOld, uint32_t flags)
     {
         _word_525CE0 = 5;
 

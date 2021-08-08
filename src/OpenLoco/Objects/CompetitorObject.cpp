@@ -8,7 +8,7 @@ namespace OpenLoco
 {
     // TODO: Should only be defined in ObjectSelectionWindow
     static const uint8_t descriptionRowHeight = 10;
-    static const Ui::UiSize objectPreviewSize = { 112, 112 };
+    static const Ui::Size objectPreviewSize = { 112, 112 };
 
     // 0x00434D5B
     void CompetitorObject::drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const

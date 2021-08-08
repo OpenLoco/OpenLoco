@@ -25,7 +25,7 @@ namespace OpenLoco::Ui::Windows::TitleVersion
         auto window = OpenLoco::Ui::WindowManager::createWindow(
             WindowType::openLocoVersion,
             Ui::Point(8, Ui::height() - height),
-            Ui::UiSize(width, height),
+            Ui::Size(width, height),
             WindowFlags::stick_to_front | WindowFlags::transparent | WindowFlags::no_background | WindowFlags::flag_6,
             &_events);
         window->widgets = widgets;

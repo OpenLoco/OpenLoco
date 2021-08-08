@@ -69,9 +69,9 @@ namespace OpenLoco::Ui::Windows::IndustryList
 
     namespace IndustryList
     {
-        static const Ui::UiSize windowSize = { 600, 197 };
-        static const Ui::UiSize maxDimensions = { 600, 900 };
-        static const Ui::UiSize minDimensions = { 192, 100 };
+        static const Ui::Size windowSize = { 600, 197 };
+        static const Ui::Size maxDimensions = { 600, 900 };
+        static const Ui::Size minDimensions = { 192, 100 };
 
         static const uint8_t rowHeight = 10;
 
@@ -573,7 +573,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
     namespace NewIndustries
     {
 
-        static const Ui::UiSize window_size = { 578, 172 };
+        static const Ui::Size window_size = { 578, 172 };
 
         static const uint8_t rowHeight = 112;
 
@@ -1148,8 +1148,8 @@ namespace OpenLoco::Ui::Windows::IndustryList
         static void onResize(Window* self)
         {
             self->invalidate();
-            Ui::UiSize minWindowSize = { self->min_width, self->min_height };
-            Ui::UiSize maxWindowSize = { self->max_width, self->max_height };
+            Ui::Size minWindowSize = { self->min_width, self->min_height };
+            Ui::Size maxWindowSize = { self->max_width, self->max_height };
             bool hasResized = self->setSize(minWindowSize, maxWindowSize);
             if (hasResized)
                 updateActiveThumb(self);

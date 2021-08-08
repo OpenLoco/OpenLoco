@@ -294,7 +294,7 @@ namespace OpenLoco::Ui::Dropdown
         }
 
         // 0x004CCF1E
-        static void open(Ui::Point origin, Ui::UiSize size, Colour_t colour)
+        static void open(Ui::Point origin, Ui::Size size, Colour_t colour)
         {
             auto window = WindowManager::createWindow(WindowType::dropdown, origin, size, WindowFlags::stick_to_front, &common::events);
 
@@ -374,7 +374,7 @@ namespace OpenLoco::Ui::Dropdown
             widgets[0].bottom = dropdownHeight;
             dropdownHeight++;
 
-            Ui::UiSize size = { static_cast<uint16_t>(_dropdownItemWidth), dropdownHeight };
+            Ui::Size size = { static_cast<uint16_t>(_dropdownItemWidth), dropdownHeight };
             Ui::Point origin = { x, y };
             origin.y += height;
 
@@ -466,7 +466,7 @@ namespace OpenLoco::Ui::Dropdown
         int16_t dropdownHeight = (static_cast<int16_t>(count) * _dropdownItemHeight) + 3;
         common::widgets[0].bottom = dropdownHeight;
         dropdownHeight++;
-        Ui::UiSize size = { static_cast<uint16_t>(width), static_cast<uint16_t>(height) };
+        Ui::Size size = { static_cast<uint16_t>(width), static_cast<uint16_t>(height) };
         Ui::Point origin = { x, y };
         origin.y += height;
 
@@ -567,7 +567,7 @@ namespace OpenLoco::Ui::Dropdown
         common::widgets[0].bottom = dropdownHeight;
         dropdownHeight++;
 
-        Ui::UiSize size = { dropdownWidth, dropdownHeight };
+        Ui::Size size = { dropdownWidth, dropdownHeight };
         Ui::Point origin = { x, y };
         origin.y += heightOffset;
 
@@ -734,7 +734,7 @@ namespace OpenLoco::Ui::Dropdown
         common::widgets[0].bottom = dropdownHeight;
         dropdownHeight++;
 
-        Ui::UiSize size = { static_cast<uint16_t>(width), static_cast<uint16_t>(height) };
+        Ui::Size size = { static_cast<uint16_t>(width), static_cast<uint16_t>(height) };
         Ui::Point origin = { x, y };
         origin.y += height;
 

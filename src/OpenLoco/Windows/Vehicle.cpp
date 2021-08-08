@@ -91,8 +91,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
     namespace Details
     {
-        static const Ui::UiSize minWindowSize = { 192, 148 };
-        static const Ui::UiSize maxWindowSize = { 400, 440 };
+        static const Ui::Size minWindowSize = { 192, 148 };
+        static const Ui::Size maxWindowSize = { 400, 440 };
 
         enum widx
         {
@@ -119,8 +119,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
     namespace Cargo
     {
-        static const Ui::UiSize minWindowSize = { 192, 142 };
-        static const Ui::UiSize maxWindowSize = { 400, 440 };
+        static const Ui::Size minWindowSize = { 192, 142 };
+        static const Ui::Size maxWindowSize = { 400, 440 };
 
         enum widx
         {
@@ -143,8 +143,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
     namespace Finances
     {
-        static const Ui::UiSize minWindowSize = { 400, 202 };
-        static const Ui::UiSize maxWindowSize = minWindowSize;
+        static const Ui::Size minWindowSize = { 400, 202 };
+        static const Ui::Size maxWindowSize = minWindowSize;
 
         static WindowEventList events;
         constexpr uint64_t enabledWidgets = Common::enabledWidgets;
@@ -159,8 +159,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
     namespace Route
     {
-        static const Ui::UiSize minWindowSize = { 265, 178 };
-        static const Ui::UiSize maxWindowSize = { 600, 440 };
+        static const Ui::Size minWindowSize = { 265, 178 };
+        static const Ui::Size maxWindowSize = { 600, 440 };
 
         enum widx
         {
@@ -210,9 +210,9 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
     namespace Main
     {
-        static const Ui::UiSize windowSize = { 265, 177 };
-        static const Ui::UiSize minWindowSize = { 192, 177 };
-        static const Ui::UiSize maxWindowSize = { 600, 440 };
+        static const Ui::Size windowSize = { 265, 177 };
+        static const Ui::Size minWindowSize = { 192, 177 };
+        static const Ui::Size maxWindowSize = { 600, 440 };
 
         enum widx
         {
@@ -318,7 +318,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 auto widget = &self->widgets[widx::viewport];
                 auto origin = Ui::Point(widget->left + self->x + 1, widget->top + self->y + 1);
-                auto size = Ui::UiSize(widget->width() - 2, widget->height() - 2);
+                auto size = Ui::Size(widget->width() - 2, widget->height() - 2);
                 ViewportManager::create(self, 0, origin, size, self->saved_view.zoomLevel, targetThing);
                 self->invalidate();
                 self->flags |= WindowFlags::viewport_no_scrolling;

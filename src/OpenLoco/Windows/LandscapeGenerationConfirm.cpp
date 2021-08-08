@@ -13,7 +13,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::LandscapeGenerationConfirm
 {
-    static const Ui::UiSize window_size = { 280, 92 };
+    static const Ui::Size window_size = { 280, 92 };
 
     enum widx
     {

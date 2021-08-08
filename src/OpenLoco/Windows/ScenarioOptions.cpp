@@ -18,9 +18,9 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::ScenarioOptions
 {
-    static const Ui::UiSize challengeWindowSize = { 366, 197 };
-    static const Ui::UiSize companiesWindowSize = { 366, 327 };
-    static const Ui::UiSize otherWindowSize = { 366, 217 };
+    static const Ui::Size challengeWindowSize = { 366, 197 };
+    static const Ui::Size companiesWindowSize = { 366, 327 };
+    static const Ui::Size otherWindowSize = { 366, 217 };
 
     static loco_global<uint8_t, 0x00525FB7> maxCompetingCompanies;
 
@@ -1216,7 +1216,7 @@ namespace OpenLoco::Ui::Windows::ScenarioOptions
 
             self->invalidate();
 
-            const Ui::UiSize* newSize;
+            const Ui::Size* newSize;
             if (widgetIndex == widx::tab_challenge)
                 newSize = &challengeWindowSize;
             else if (widgetIndex == widx::tab_companies)

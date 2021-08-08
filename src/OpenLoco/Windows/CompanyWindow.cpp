@@ -95,7 +95,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
     namespace Status
     {
-        static const Ui::UiSize windowSize = { 270, 182 };
+        static const Ui::Size windowSize = { 270, 182 };
 
         enum widx
         {
@@ -376,11 +376,11 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         {
             Common::enableRenameByCaption(self);
 
-            self->setSize(Status::windowSize, Ui::UiSize(640, 400));
+            self->setSize(Status::windowSize, Ui::Size(640, 400));
 
             if (self->viewports[0] != nullptr)
             {
-                Ui::UiSize proposedDims(self->width - 123, self->height - 59);
+                Ui::Size proposedDims(self->width - 123, self->height - 59);
                 auto& viewport = self->viewports[0];
                 if (proposedDims.width != viewport->width || proposedDims.height != viewport->height)
                 {
@@ -404,7 +404,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             auto& widget = self->widgets[widx::viewport];
             auto origin = Ui::Point(widget.left + self->x + 1, widget.top + self->y + 1);
-            auto size = Ui::UiSize(widget.width() - 2, widget.height() - 2);
+            auto size = Ui::Size(widget.width() - 2, widget.height() - 2);
             if (view.isThingView())
             {
                 ViewportManager::create(self, 0, origin, size, self->saved_view.zoomLevel, view.thingId);
@@ -636,7 +636,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
     namespace Details
     {
-        const Ui::UiSize windowSize = { 340, 194 };
+        const Ui::Size windowSize = { 340, 194 };
 
         loco_global<Map::Pos3, 0x009C68D6> _headquarterGhostPos;
         loco_global<uint8_t, 0x009C68F0> _headquarterGhostRotation;
@@ -1068,7 +1068,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             auto& widget = self->widgets[widx::viewport];
             auto origin = Ui::Point(widget.left + self->x + 1, widget.top + self->y + 1);
-            auto size = Ui::UiSize(widget.width() - 2, widget.height() - 2);
+            auto size = Ui::Size(widget.width() - 2, widget.height() - 2);
 
             ViewportManager::create(self, 0, origin, size, self->saved_view.zoomLevel, view.getPos());
             self->flags |= WindowFlags::viewport_no_scrolling;
@@ -1152,7 +1152,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
     namespace ColourScheme
     {
-        const Ui::UiSize windowSize = { 265, 252 };
+        const Ui::Size windowSize = { 265, 252 };
 
         enum widx
         {
@@ -1594,7 +1594,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
     namespace Finances
     {
-        const Ui::UiSize windowSize = { 636, 319 };
+        const Ui::Size windowSize = { 636, 319 };
 
         enum widx
         {
@@ -2096,7 +2096,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
     namespace CargoDelivered
     {
-        const Ui::UiSize windowSize = { 240, 382 };
+        const Ui::Size windowSize = { 240, 382 };
 
         static Widget widgets[] = {
             commonWidgets(240, 382, StringIds::title_company_cargo_delivered),
@@ -2286,7 +2286,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         static loco_global<uint16_t, 0x00526243> objectiveMonthsInChallenge;
         static loco_global<uint16_t, 0x00526245> objectiveCompletedChallengeInMonths;
 
-        const Ui::UiSize windowSize = { 320, 182 };
+        const Ui::Size windowSize = { 320, 182 };
 
         static Widget widgets[] = {
             commonWidgets(320, 182, StringIds::title_company_challenge),
@@ -2506,7 +2506,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             const widx widgetIndex;
             WindowEventList* events;
             const uint64_t* enabledWidgets;
-            const Ui::UiSize* windowSize;
+            const Ui::Size* windowSize;
         };
 
         static TabInformation tabInformationByTabOffset[] = {

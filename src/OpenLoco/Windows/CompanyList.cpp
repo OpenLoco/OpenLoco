@@ -99,9 +99,9 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
     namespace CompanyList
     {
-        static const Ui::UiSize maxWindowSize = { 640, 470 };
-        static const Ui::UiSize minWindowSize = { 300, 272 };
-        static const Ui::UiSize windowSize = { 640, 272 };
+        static const Ui::Size maxWindowSize = { 640, 470 };
+        static const Ui::Size minWindowSize = { 300, 272 };
+        static const Ui::Size windowSize = { 640, 272 };
 
         static const uint8_t rowHeight = 25;
 
@@ -585,7 +585,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
         if (window == nullptr)
         {
-            Ui::UiSize windowSize = { 640, 272 };
+            Ui::Size windowSize = { 640, 272 };
 
             window = WindowManager::createWindow(WindowType::companyList, windowSize, 0, &CompanyList::events);
 
@@ -634,7 +634,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
     namespace CompanyPerformance
     {
-        static const Ui::UiSize windowSize = { 635, 322 };
+        static const Ui::Size windowSize = { 635, 322 };
 
         const uint64_t enabledWidgets = Common::enabledWidgets;
 
@@ -725,7 +725,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
     namespace CargoUnits
     {
-        static const Ui::UiSize windowSize = { 640, 272 };
+        static const Ui::Size windowSize = { 640, 272 };
 
         const uint64_t enabledWidgets = Common::enabledWidgets;
 
@@ -816,7 +816,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
     namespace CargoDistance
     {
-        static const Ui::UiSize windowSize = { 660, 272 };
+        static const Ui::Size windowSize = { 660, 272 };
 
         const uint64_t enabledWidgets = Common::enabledWidgets;
 
@@ -907,7 +907,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
     namespace CompanyValues
     {
-        static const Ui::UiSize windowSize = { 685, 322 };
+        static const Ui::Size windowSize = { 685, 322 };
 
         const uint64_t enabledWidgets = Common::enabledWidgets;
 
@@ -998,7 +998,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
     namespace CargoPaymentRates
     {
-        static const Ui::UiSize windowSize = { 495, 342 };
+        static const Ui::Size windowSize = { 495, 342 };
 
         const uint64_t enabledWidgets = Common::enabledWidgets;
 
@@ -1219,7 +1219,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
     namespace CompanySpeedRecords
     {
-        static const Ui::UiSize windowSize = { 495, 169 };
+        static const Ui::Size windowSize = { 495, 169 };
 
         const uint64_t enabledWidgets = Common::enabledWidgets;
 

@@ -27,7 +27,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::BuildVehicle
 {
-    static const Ui::UiSize window_size = { 380, 233 };
+    static const Ui::Size window_size = { 380, 233 };
 
     enum widx
     {

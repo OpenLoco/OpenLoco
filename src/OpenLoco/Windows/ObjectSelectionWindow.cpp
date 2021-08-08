@@ -46,7 +46,7 @@ using namespace OpenLoco::Interop;
 namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 {
     static constexpr int rowHeight = 12;
-    static Ui::UiSize windowSize = { 600, 398 };
+    static Ui::Size windowSize = { 600, 398 };
 
     static loco_global<uint8_t[999], 0x004FE384> _4FE384;
 
@@ -301,7 +301,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
     }
 
     static const Ui::Point objectPreviewOffset = { 56, 56 };
-    static const Ui::UiSize objectPreviewSize = { 112, 112 };
+    static const Ui::Size objectPreviewSize = { 112, 112 };
     static const uint8_t descriptionRowHeight = 10;
 
     template<typename T>

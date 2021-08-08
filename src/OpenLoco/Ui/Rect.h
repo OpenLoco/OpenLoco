@@ -9,10 +9,10 @@ namespace OpenLoco::Ui
     class Rect
     {
     public:
-        Ui::UiSize size;
+        Ui::Size size;
         Ui::Point32 origin;
         Rect(int16_t x, int16_t y, uint16_t width, uint16_t height)
-            : size(Ui::UiSize(width, height))
+            : size(Ui::Size(width, height))
             , origin(Ui::Point32(x, y))
         {
         }

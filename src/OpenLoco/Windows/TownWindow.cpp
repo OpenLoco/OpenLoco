@@ -26,7 +26,7 @@ using namespace OpenLoco::GameCommands;
 
 namespace OpenLoco::Ui::Windows::Town
 {
-    static const Ui::UiSize windowSize = { 223, 161 };
+    static const Ui::Size windowSize = { 223, 161 };
 
     static loco_global<uint16_t[10], 0x0112C826> commonFormatArgs;
 
@@ -232,7 +232,7 @@ namespace OpenLoco::Ui::Windows::Town
         {
             // Call to sub_498E9B has been deliberately omitted.
 
-            self->setSize(Ui::UiSize(192, 161), Ui::UiSize(600, 440));
+            self->setSize(Ui::Size(192, 161), Ui::Size(600, 440));
 
             if (self->viewports[0] != nullptr)
             {
@@ -301,7 +301,7 @@ namespace OpenLoco::Ui::Windows::Town
                 auto widget = &self->widgets[widx::viewport];
                 auto tile = Map::Pos3({ town->x, town->y, tileZ });
                 auto origin = Ui::Point(widget->left + self->x + 1, widget->top + self->y + 1);
-                auto size = Ui::UiSize(widget->width() - 2, widget->height() - 2);
+                auto size = Ui::Size(widget->width() - 2, widget->height() - 2);
                 ViewportManager::create(self, 0, origin, size, self->saved_view.zoomLevel, tile);
                 self->invalidate();
                 self->flags |= WindowFlags::viewport_no_scrolling;
@@ -491,7 +491,7 @@ namespace OpenLoco::Ui::Windows::Town
         {
             // Call to sub_498E9B has been deliberately omitted.
 
-            self->setSize(Ui::UiSize(299, 172), Ui::UiSize(299, 327));
+            self->setSize(Ui::Size(299, 172), Ui::Size(299, 327));
         }
 
         static void initEvents()
@@ -589,7 +589,7 @@ namespace OpenLoco::Ui::Windows::Town
         {
             // Call to sub_498E9B has been deliberately omitted.
 
-            self->setSize(Ui::UiSize(340, 208), Ui::UiSize(340, 208));
+            self->setSize(Ui::Size(340, 208), Ui::Size(340, 208));
         }
 
         static void initEvents()

@@ -129,7 +129,7 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
         initEvents();
 
         Ui::Point origin = Ui::Point(0, Ui::height() - windowHeight);
-        Ui::UiSize windowSize = Ui::UiSize(Ui::width(), windowHeight);
+        Ui::Size windowSize = Ui::Size(Ui::width(), windowHeight);
         auto window = WindowManager::createWindow(
             WindowType::editorToolbar,
             origin,

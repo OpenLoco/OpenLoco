@@ -95,7 +95,7 @@ namespace OpenLoco::S5
         }
     }
 
-    static void drawPreviewImage(void* pixels, Ui::UiSize size)
+    static void drawPreviewImage(void* pixels, Ui::Size size)
     {
         auto mainViewport = WindowManager::getMainViewport();
         if (mainViewport != nullptr)

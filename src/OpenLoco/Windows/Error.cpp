@@ -137,7 +137,7 @@ namespace OpenLoco::Ui::Windows::Error
 
             x = std::clamp(_cursorX - (width / 2), 0, Ui::width() - width);
 
-            Ui::UiSize windowSize = { width, height };
+            Ui::Size windowSize = { width, height };
 
             auto error = WindowManager::createWindow(
                 WindowType::error,

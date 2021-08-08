@@ -1424,7 +1424,7 @@ namespace OpenLoco::Gfx
         return *dst != nullptr;
     }
 
-    bool clipContext(Gfx::Context** dst, Gfx::Context* src, Point pos, Ui::UiSize size)
+    bool clipContext(Gfx::Context** dst, Gfx::Context* src, Point pos, Ui::Size size)
     {
         return clipContext(dst, src, pos.x, pos.y, size.width, size.height);
     }

@@ -111,7 +111,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
     namespace PlantTrees
     {
-        static const Ui::UiSize windowSize = { 634, 162 };
+        static const Ui::Size windowSize = { 634, 162 };
 
         static const uint8_t rowHeight = 102;
         static const uint8_t columnWidth = 66;
@@ -296,8 +296,8 @@ namespace OpenLoco::Ui::Windows::Terraform
         static void onResize(Window* self)
         {
             self->invalidate();
-            Ui::UiSize minWindowSize = { self->min_width, self->min_height };
-            Ui::UiSize maxWindowSize = { self->max_width, self->max_height };
+            Ui::Size minWindowSize = { self->min_width, self->min_height };
+            Ui::Size maxWindowSize = { self->max_width, self->max_height };
             bool hasResized = self->setSize(minWindowSize, maxWindowSize);
             if (hasResized)
                 updateActiveThumb(self);
@@ -1923,7 +1923,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
     namespace BuildWalls
     {
-        static const Ui::UiSize windowSize = { 418, 108 };
+        static const Ui::Size windowSize = { 418, 108 };
 
         static const uint8_t rowHeight = 48;
 
@@ -2027,8 +2027,8 @@ namespace OpenLoco::Ui::Windows::Terraform
         static void onResize(Window* self)
         {
             self->invalidate();
-            Ui::UiSize minWindowSize = { self->min_width, self->min_height };
-            Ui::UiSize maxWindowSize = { self->max_width, self->max_height };
+            Ui::Size minWindowSize = { self->min_width, self->min_height };
+            Ui::Size maxWindowSize = { self->max_width, self->max_height };
             bool hasResized = self->setSize(minWindowSize, maxWindowSize);
             if (hasResized)
                 updateActiveThumb(self);
@@ -2417,7 +2417,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
             // CHANGE: width set to 161 to include building walls tab
             uint16_t width = 161;
-            Ui::UiSize windowSize = { width, height };
+            Ui::Size windowSize = { width, height };
             self->setSize(windowSize, windowSize);
         }
 

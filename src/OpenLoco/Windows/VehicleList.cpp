@@ -27,9 +27,9 @@ namespace OpenLoco::Ui::Windows::VehicleList
 {
     static loco_global<VehicleType, 0x00525FAF> _lastVehiclesOption;
 
-    static const Ui::UiSize window_size = { 550, 213 };
-    static const Ui::UiSize max_dimensions = { 550, 1200 };
-    static const Ui::UiSize min_dimensions = { 220, 160 };
+    static const Ui::Size window_size = { 550, 213 };
+    static const Ui::Size max_dimensions = { 550, 1200 };
+    static const Ui::Size min_dimensions = { 220, 160 };
 
     static WindowEventList _events;
 

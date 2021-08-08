@@ -21,9 +21,9 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::StationList
 {
-    static const Ui::UiSize window_size = { 600, 197 };
-    static const Ui::UiSize max_dimensions = { 640, 1200 };
-    static const Ui::UiSize min_dimensions = { 192, 100 };
+    static const Ui::Size window_size = { 600, 197 };
+    static const Ui::Size max_dimensions = { 640, 1200 };
+    static const Ui::Size min_dimensions = { 192, 100 };
 
     static const uint8_t rowHeight = 10; // CJK: 13
 

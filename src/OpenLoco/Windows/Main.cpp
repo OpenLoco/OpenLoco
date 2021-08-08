@@ -41,7 +41,7 @@ namespace OpenLoco::Ui::Windows::Main
         auto window = WindowManager::createWindow(
             WindowType::main,
             { 0, 0 },
-            Ui::UiSize(uiWidth, uiHeight),
+            Ui::Size(uiWidth, uiHeight),
             Ui::WindowFlags::stick_to_back,
             &_events);
         window->widgets = _widgets;

@@ -166,7 +166,7 @@ namespace OpenLoco::Ui::Windows::Options
 
     namespace Display
     {
-        static const Ui::UiSize _window_size = { 400, 250 };
+        static const Ui::Size _window_size = { 400, 250 };
 
         namespace Widx
         {
@@ -678,7 +678,7 @@ namespace OpenLoco::Ui::Windows::Options
 
     namespace Sound
     {
-        static const Ui::UiSize _window_size = { 366, 84 };
+        static const Ui::Size _window_size = { 366, 84 };
 
         namespace Widx
         {
@@ -863,7 +863,7 @@ namespace OpenLoco::Ui::Windows::Options
 
     namespace Music
     {
-        static const Ui::UiSize _window_size = { 366, 129 };
+        static const Ui::Size _window_size = { 366, 129 };
 
         namespace Widx
         {
@@ -1246,7 +1246,7 @@ namespace OpenLoco::Ui::Windows::Options
 
     namespace Regional
     {
-        static const Ui::UiSize _window_size = { 366, 167 };
+        static const Ui::Size _window_size = { 366, 167 };
 
         namespace Widx
         {
@@ -1746,7 +1746,7 @@ namespace OpenLoco::Ui::Windows::Options
 
         static constexpr uint64_t enabledWidgets = Common::enabledWidgets | (1 << Controls::Widx::edge_scrolling) | (1 << Controls::Widx::customize_keys) | (1 << Controls::Widx::zoom_to_cursor);
 
-        static const Ui::UiSize _window_size = { 366, 99 };
+        static const Ui::Size _window_size = { 366, 99 };
 
         static Widget _widgets[] = {
             common_options_widgets(_window_size, StringIds::options_title_controls),
@@ -1875,7 +1875,7 @@ namespace OpenLoco::Ui::Windows::Options
 
     namespace Misc
     {
-        static const Ui::UiSize _window_size = { 420, 174 };
+        static const Ui::Size _window_size = { 420, 174 };
 
         namespace Widx
         {
@@ -2417,7 +2417,7 @@ namespace OpenLoco::Ui::Windows::Options
     {
         Widget* widgets;
         WindowEventList* events;
-        Ui::UiSize windowSize;
+        Ui::Size windowSize;
         const uint64_t* enabledWidgets;
     };
 

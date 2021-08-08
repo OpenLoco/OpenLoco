@@ -29,9 +29,9 @@ namespace OpenLoco::Ui::Windows::Station
 
     namespace Common
     {
-        static const Ui::UiSize minWindowSize = { 192, 136 };
+        static const Ui::Size minWindowSize = { 192, 136 };
 
-        static const Ui::UiSize maxWindowSize = { 600, 440 };
+        static const Ui::Size maxWindowSize = { 600, 440 };
 
         enum widx
         {
@@ -69,7 +69,7 @@ namespace OpenLoco::Ui::Windows::Station
 
     namespace Station
     {
-        static const Ui::UiSize windowSize = { 223, 136 };
+        static const Ui::Size windowSize = { 223, 136 };
 
         enum widx
         {
@@ -235,7 +235,7 @@ namespace OpenLoco::Ui::Windows::Station
                 auto widget = &self->widgets[widx::viewport];
                 auto tile = Map::Pos3({ station->x, station->y, station->z });
                 auto origin = Ui::Point(widget->left + self->x + 1, widget->top + self->y + 1);
-                auto size = Ui::UiSize(widget->width() - 2, widget->height() - 2);
+                auto size = Ui::Size(widget->width() - 2, widget->height() - 2);
                 ViewportManager::create(self, 0, origin, size, self->saved_view.zoomLevel, tile);
                 self->invalidate();
                 self->flags |= WindowFlags::viewport_no_scrolling;
@@ -562,9 +562,9 @@ namespace OpenLoco::Ui::Windows::Station
 
     namespace CargoRatings
     {
-        static const Ui::UiSize windowSize = { 249, 136 };
+        static const Ui::Size windowSize = { 249, 136 };
 
-        static const Ui::UiSize maxWindowSize = { 249, 440 };
+        static const Ui::Size maxWindowSize = { 249, 440 };
 
         enum widx
         {

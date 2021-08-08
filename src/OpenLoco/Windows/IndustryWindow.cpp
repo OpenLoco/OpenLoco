@@ -67,11 +67,11 @@ namespace OpenLoco::Ui::Windows::Industry
 
     namespace Industry
     {
-        static const Ui::UiSize windowSize = { 223, 137 };
+        static const Ui::Size windowSize = { 223, 137 };
 
-        static const Ui::UiSize minWindowSize = { 192, 137 };
+        static const Ui::Size minWindowSize = { 192, 137 };
 
-        static const Ui::UiSize maxWindowSize = { 600, 440 };
+        static const Ui::Size maxWindowSize = { 600, 440 };
 
         enum widx
         {
@@ -261,7 +261,7 @@ namespace OpenLoco::Ui::Windows::Industry
                 auto widget = &self->widgets[widx::viewport];
                 auto tile = Map::Pos3({ industry->x, industry->y, tileZ });
                 auto origin = Ui::Point(widget->left + self->x + 1, widget->top + self->y + 1);
-                auto size = Ui::UiSize(widget->width() - 2, widget->height() - 2);
+                auto size = Ui::Size(widget->width() - 2, widget->height() - 2);
                 ViewportManager::create(self, 0, origin, size, self->saved_view.zoomLevel, tile);
                 self->invalidate();
                 self->flags |= WindowFlags::viewport_no_scrolling;
@@ -343,9 +343,9 @@ namespace OpenLoco::Ui::Windows::Industry
     namespace Production
     {
 
-        static const Ui::UiSize minWindowSize = { 299, 282 };
+        static const Ui::Size minWindowSize = { 299, 282 };
 
-        static const Ui::UiSize maxWindowSize = { 299, 337 };
+        static const Ui::Size maxWindowSize = { 299, 337 };
 
         static WindowEventList events;
 
@@ -378,9 +378,9 @@ namespace OpenLoco::Ui::Windows::Industry
 
     namespace Production2
     {
-        static const Ui::UiSize minWindowSize = { 299, 282 };
+        static const Ui::Size minWindowSize = { 299, 282 };
 
-        static const Ui::UiSize maxWindowSize = { 299, 337 };
+        static const Ui::Size maxWindowSize = { 299, 337 };
 
         static Widget widgets[] = {
             commonWidgets(222, 136, StringIds::title_industry_monthly_production),
@@ -418,7 +418,7 @@ namespace OpenLoco::Ui::Windows::Industry
 
     namespace Transported
     {
-        static const Ui::UiSize windowSize = { 300, 127 };
+        static const Ui::Size windowSize = { 300, 127 };
 
         static Widget widgets[] = {
             commonWidgets(300, 126, StringIds::title_statistics),
