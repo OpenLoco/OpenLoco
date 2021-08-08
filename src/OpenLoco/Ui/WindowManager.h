@@ -135,6 +135,8 @@ namespace OpenLoco::Ui::Windows
         void setToRoadExtra(Window* main, Map::RoadElement* track, const uint8_t bh, const Map::Pos2 pos);
         void sub_4A6FAC();
         bool isStationTabOpen();
+        bool isOverheadTabOpen();
+        bool isSignalTabOpen();
         bool rotate(Window* self);
         void removeConstructionGhosts();
         void registerHooks();
@@ -191,6 +193,7 @@ namespace OpenLoco::Ui::Windows
     {
         void open();
         void setOwner(CompanyId_t company);
+        uint16_t getTooltipTimeout();
         void reset();
     }
 

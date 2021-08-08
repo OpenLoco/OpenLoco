@@ -359,7 +359,7 @@ namespace OpenLoco
                             {
                                 auto buildingEl = el.asBuilding();
 
-                                if (buildingEl == nullptr || buildingEl->has_40() || !buildingEl->hasStationElement())
+                                if (buildingEl == nullptr || buildingEl->has_40() || !buildingEl->isConstructed())
                                 {
                                     break;
                                 }

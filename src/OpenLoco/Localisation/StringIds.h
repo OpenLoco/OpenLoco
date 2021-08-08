@@ -144,6 +144,11 @@ namespace OpenLoco::StringIds
     constexpr string_id menu_underground_view = 145;
     constexpr string_id menu_hide_foreground_tracks_roads = 146;
 
+    constexpr string_id capt_signal = 158;
+    constexpr string_id capt_station = 159;
+    constexpr string_id capt_airport = 160;
+    constexpr string_id capt_ship_port = 161;
+
     constexpr string_id cant_remove_airport = 164;
     constexpr string_id cant_remove_ship_port = 165;
     constexpr string_id cant_remove_station = 166;
@@ -357,6 +362,10 @@ namespace OpenLoco::StringIds
     constexpr string_id cant_reverse_train = 388;
 
     constexpr string_id cant_sell_string_id = 390;
+    constexpr string_id quote_string_quote = 391;
+    constexpr string_id quote_string_quote2 = 392;
+    constexpr string_id string_station_platform = 393;
+    constexpr string_id string_station_building_bus_stop = 394;
 
     constexpr string_id station_catchment = 395;
     constexpr string_id menu_mute = 396;
@@ -373,7 +382,18 @@ namespace OpenLoco::StringIds
     constexpr string_id menu_one_way_direction_arrows = 428;
     constexpr string_id menu_town_names_displayed = 429;
     constexpr string_id menu_station_names_displayed = 430;
-
+    constexpr string_id accepts = 431;
+    constexpr string_id quantity_eigth = 432;
+    constexpr string_id quantity_quarter = 433;
+    constexpr string_id quantity_three_eigths = 434;
+    constexpr string_id quantity_half = 435;
+    constexpr string_id quantity_five_eigths = 436;
+    constexpr string_id quantity_three_quarters = 437;
+    constexpr string_id quantity_seven_eigths = 438;
+    constexpr string_id comma = 439;
+    constexpr string_id produces = 440;
+    constexpr string_id under_construction = 441;
+    constexpr string_id string_owned_by_string = 442;
     constexpr string_id dropdown_without_checkmark = 443;
     constexpr string_id dropdown_with_checkmark = 444;
     constexpr string_id error_cant_remove_this = 445;
@@ -382,6 +402,8 @@ namespace OpenLoco::StringIds
 
     constexpr string_id cant_plant_this_here = 449;
     constexpr string_id outlined_wcolour2_stringid = 450;
+    constexpr string_id stringid_right_click_to_modify = 451;
+    constexpr string_id stringid_right_click_to_remove = 452;
 
     constexpr string_id black_tiny_font = 453;
     constexpr string_id red_stringid = 454;
@@ -1025,6 +1047,7 @@ namespace OpenLoco::StringIds
     constexpr string_id prompt_enter_new_name_for_owner = 1460;
     constexpr string_id cannot_change_owner_name = 1461;
     constexpr string_id headquarters = 1462;
+    constexpr string_id stringid_headquarters = 1462;
 
     constexpr string_id tooltip_select_company = 1465;
 

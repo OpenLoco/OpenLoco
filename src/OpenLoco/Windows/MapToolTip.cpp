@@ -94,6 +94,11 @@ namespace OpenLoco::Ui::Windows::MapToolTip
         _mapTooltipOwner = company;
     }
 
+    uint16_t getTooltipTimeout()
+    {
+        return _mapTooltipTimeout;
+    }
+
     void reset()
     {
         setOwner(CompanyId::null);

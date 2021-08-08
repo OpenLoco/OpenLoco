@@ -80,12 +80,6 @@ namespace OpenLoco::Map
         uint8_t baseZ() const { return _base_z; }
         uint8_t clearZ() const { return _clear_z; }
 
-        bool hasHighTypeFlag() const { return _type & 0x80; }
-        void setHighTypeFlag(bool state)
-        {
-            _type &= ~0x80;
-            _type |= state ? 0x80 : 0;
-        }
         bool isGhost() const { return _flags & ElementFlags::ghost; }
         bool isFlag5() const { return _flags & ElementFlags::flag_5; }
         void setFlag6(bool state)
@@ -182,6 +176,12 @@ namespace OpenLoco::Map
             _type |= state ? 0x40 : 0;
         }
         void createWave(int16_t x, int16_t y, int animationIndex);
+        bool hasHighTypeFlag() const { return _type & 0x80; }
+        void setHighTypeFlag(bool state)
+        {
+            _type &= ~0x80;
+            _type |= state ? 0x80 : 0;
+        }
     };
 
     struct StationElement : public TileElementBase
@@ -192,6 +192,7 @@ namespace OpenLoco::Map
         uint16_t _station_id;
 
     public:
+        uint8_t owner() const { return _4 & 0xF; } // _4l
         uint8_t objectId() const { return _5 & 0x1F; }
         StationType stationType() const;
         uint8_t rotation() const { return _type & 0x3; }
@@ -208,7 +209,7 @@ namespace OpenLoco::Map
 
     public:
         bool has_40() const { return (_type & 0x40) != 0; }
-        bool hasStationElement() const { return (_type & 0x80) != 0; }
+        bool isConstructed() const { return (_type & 0x80) != 0; }
         uint8_t colour() const { return _6 >> 11; }
         void setColour(Colour_t colour) { _6 = (_6 & 0x7FF) | (colour << 11); }
         uint8_t objectId() const { return _4; }
@@ -260,7 +261,7 @@ namespace OpenLoco::Map
         uint8_t unk_6() const { return _6; }               // _6
         uint8_t owner() const { return _7 & 0xF; }         // _7l
         void setOwner(uint8_t newOwner) { _7 = (_7 & 0xF0) | (newOwner & 0xF); }
-        uint8_t unk_7u() const { return _7 >> 4; } // _7u
+        bool hasMod(uint8_t mod) const { return _7 & (1 << (4 + mod)); } // _7u
     };
 
     struct SignalElement : public TileElementBase
@@ -292,7 +293,8 @@ namespace OpenLoco::Map
         uint8_t roadObjectId() const { return _5 >> 4; }   // _5u
         uint8_t sequenceIndex() const { return _5 & 0x3; } // _5l
         bool hasStationElement() const { return (_type & 0x80) != 0; }
-        uint8_t owner() const { return _7 & 0xF; } // _7l
+        bool hasMod(uint8_t mod) const { return _7 & (1 << (mod + 6)); } // _7u (bits 6 and 7)
+        uint8_t owner() const { return _7 & 0xF; }                       // _7l
         void setOwner(uint8_t newOwner) { _7 = (_7 & 0xF0) | (newOwner & 0xF); }
     };
 
@@ -307,6 +309,7 @@ namespace OpenLoco::Map
         OpenLoco::IndustryId_t industryId() const { return _industryId; }
         OpenLoco::Industry* industry() const;
         uint8_t var_6_1F() const;
+        bool hasHighTypeFlag() const { return _type & 0x80; } // isConstructed?
     };
 #pragma pack(pop)
 

@@ -8,8 +8,14 @@
 #include "../Localisation/StringIds.h"
 #include "../Localisation/StringManager.h"
 #include "../Map/TileManager.h"
+#include "../Objects/BuildingObject.h"
 #include "../Objects/CargoObject.h"
 #include "../Objects/ObjectManager.h"
+#include "../Objects/RoadObject.h"
+#include "../Objects/TrackExtraObject.h"
+#include "../Objects/TrackObject.h"
+#include "../Objects/TreeObject.h"
+#include "../Objects/WallObject.h"
 #include "../Paint/Paint.h"
 #include "../StationManager.h"
 #include "../TownManager.h"
@@ -401,6 +407,467 @@ namespace OpenLoco::Ui::ViewportInteraction
         return InteractionArg{};
     }
 
+    // 0x004CE1D4
+    static bool rightOverTrack(InteractionArg& interaction)
+    {
+        interaction.type = InteractionItem::track;
+        auto* tileElement = reinterpret_cast<Map::TileElement*>(interaction.object);
+        auto* track = tileElement->asTrack();
+        if (track == nullptr)
+            return false;
+
+        if (track->isGhost())
+        {
+            return false;
+        }
+
+        if (Ui::Windows::MapToolTip::getTooltipTimeout() < 45)
+        {
+            return true;
+        }
+
+        auto* trackObj = ObjectManager::get<TrackObject>(track->trackObjectId());
+        if (track->owner() == CompanyManager::getControllingId())
+        {
+            FormatArguments::mapToolTip(StringIds::stringid_right_click_to_modify, trackObj->name);
+        }
+        else
+        {
+            auto* company = CompanyManager::get(track->owner());
+            FormatArguments::mapToolTip(StringIds::string_owned_by_string, trackObj->name, company->name);
+            Windows::MapToolTip::setOwner(track->owner());
+        }
+        return true;
+    }
+
+    // 0x004CE18F
+    static bool rightOverTrackExtra(InteractionArg& interaction)
+    {
+        if (!Windows::Construction::isOverheadTabOpen())
+        {
+            return rightOverTrack(interaction);
+        }
+
+        auto* tileElement = reinterpret_cast<Map::TileElement*>(interaction.object);
+        auto* track = tileElement->asTrack();
+        if (track == nullptr)
+            return false;
+
+        if (track->isGhost())
+        {
+            return false;
+        }
+
+        if (!track->hasMod(interaction.unkBh))
+        {
+            return rightOverTrack(interaction);
+        }
+        auto* trackObj = ObjectManager::get<TrackObject>(track->trackObjectId());
+        auto* trackExtraObj = ObjectManager::get<TrackExtraObject>(trackObj->mods[interaction.unkBh]);
+        FormatArguments::mapToolTip(StringIds::stringid_right_click_to_remove, trackExtraObj->name);
+        return true;
+    }
+
+    // 0x004CDBEA
+    static bool rightOverSignal(InteractionArg& interaction)
+    {
+        auto* tileElement = reinterpret_cast<Map::TileElement*>(interaction.object);
+        auto* signal = tileElement->asSignal();
+        auto* track = (tileElement - 1)->asTrack();
+        if (signal == nullptr || track == nullptr)
+        {
+            return false;
+        }
+
+        if (signal->isGhost())
+        {
+            return false;
+        }
+        if (!Windows::Construction::isSignalTabOpen())
+        {
+            interaction.object = track;
+            return rightOverTrack(interaction);
+        }
+
+        if (track->owner() != CompanyManager::getControllingId())
+        {
+            return false;
+        }
+        FormatArguments::mapToolTip(StringIds::stringid_right_click_to_remove, StringIds::capt_signal);
+        return true;
+    }
+
+    // 0x004CDD8C
+    static bool rightOverTrackStation(InteractionArg& interaction)
+    {
+        auto* tileElement = reinterpret_cast<Map::TileElement*>(interaction.object);
+        auto* elStation = tileElement->asStation();
+        auto* track = (tileElement - 1)->asTrack();
+        if (elStation == nullptr || track == nullptr)
+        {
+            return false;
+        }
+
+        if (elStation->isGhost())
+        {
+            return false;
+        }
+        if (!Windows::Construction::isStationTabOpen())
+        {
+            interaction.object = track;
+            return rightOverTrack(interaction);
+        }
+
+        if (track->owner() != CompanyManager::getControllingId())
+        {
+            return false;
+        }
+
+        auto* station = StationManager::get(elStation->stationId());
+        FormatArguments::mapToolTip(StringIds::stringid_right_click_to_remove, StringIds::string_station_platform, station->name, station->town);
+        return true;
+    }
+
+    // 0x004CE2C1
+    static bool rightOverRoad(InteractionArg& interaction)
+    {
+        interaction.type = InteractionItem::road;
+        auto* tileElement = reinterpret_cast<Map::TileElement*>(interaction.object);
+        auto* road = tileElement->asRoad();
+        if (road == nullptr)
+            return false;
+
+        if (road->isGhost())
+        {
+            return false;
+        }
+
+        if (Ui::Windows::MapToolTip::getTooltipTimeout() < 45)
+        {
+            return true;
+        }
+
+        auto* roadObj = ObjectManager::get<RoadObject>(road->roadObjectId());
+        if (road->owner() == CompanyManager::getControllingId() || road->owner() == CompanyId::neutral)
+        {
+            FormatArguments::mapToolTip(StringIds::stringid_right_click_to_modify, roadObj->name);
+        }
+        else
+        {
+            auto* company = CompanyManager::get(road->owner());
+            FormatArguments::mapToolTip(StringIds::string_owned_by_string, roadObj->name, company->name);
+            Windows::MapToolTip::setOwner(road->owner());
+        }
+        return true;
+    }
+
+    // 0x004CE271
+    static bool rightOverRoadExtra(InteractionArg& interaction)
+    {
+        if (!Windows::Construction::isOverheadTabOpen())
+        {
+            return rightOverRoad(interaction);
+        }
+
+        auto* tileElement = reinterpret_cast<Map::TileElement*>(interaction.object);
+        auto* road = tileElement->asRoad();
+        if (road == nullptr)
+            return false;
+
+        if (road->isGhost())
+        {
+            return false;
+        }
+
+        if (!road->hasMod(interaction.unkBh))
+        {
+            return rightOverRoad(interaction);
+        }
+        auto* roadObj = ObjectManager::get<RoadObject>(road->roadObjectId());
+        auto* roadExtraObj = ObjectManager::get<TrackExtraObject>(roadObj->mods[interaction.unkBh]);
+        FormatArguments::mapToolTip(StringIds::stringid_right_click_to_remove, roadExtraObj->name);
+        return true;
+    }
+
+    // 0x004CDDF2
+    static bool rightOverRoadStation(InteractionArg& interaction)
+    {
+        auto* tileElement = reinterpret_cast<Map::TileElement*>(interaction.object);
+        auto* elStation = tileElement->asStation();
+        auto* road = (tileElement - 1)->asRoad();
+        if (elStation == nullptr || road == nullptr)
+        {
+            return false;
+        }
+
+        if (elStation->isGhost())
+        {
+            return false;
+        }
+        if (!Windows::Construction::isStationTabOpen())
+        {
+            interaction.object = road;
+            return rightOverRoad(interaction);
+        }
+
+        if (road->owner() != CompanyManager::getControllingId())
+        {
+            return false;
+        }
+
+        auto* station = StationManager::get(elStation->stationId());
+        FormatArguments::mapToolTip(StringIds::stringid_right_click_to_remove, StringIds::string_station_building_bus_stop, station->name, station->town);
+        return true;
+    }
+
+    // 0x004CDC26
+    static bool rightOverAirport(InteractionArg& interaction)
+    {
+        auto* tileElement = reinterpret_cast<Map::TileElement*>(interaction.object);
+        auto* elStation = tileElement->asStation();
+        if (elStation == nullptr)
+        {
+            return false;
+        }
+
+        if (elStation->isGhost())
+        {
+            return false;
+        }
+
+        if (elStation->owner() != CompanyManager::getControllingId())
+        {
+            return false;
+        }
+
+        auto* station = StationManager::get(elStation->stationId());
+        auto args = FormatArguments::mapToolTip();
+        if (Windows::Construction::isStationTabOpen())
+        {
+            args.push(StringIds::stringid_right_click_to_remove);
+        }
+        else
+        {
+            args.push(StringIds::stringid_right_click_to_modify);
+        }
+        args.push(StringIds::quote_string_quote);
+        args.push(station->name);
+        args.push(station->town);
+        return true;
+    }
+
+    // 0x004CDCD9
+    static bool rightOverDock(InteractionArg& interaction)
+    {
+        auto* tileElement = reinterpret_cast<Map::TileElement*>(interaction.object);
+        auto* elStation = tileElement->asStation();
+        if (elStation == nullptr)
+        {
+            return false;
+        }
+
+        if (elStation->isGhost())
+        {
+            return false;
+        }
+
+        if (elStation->owner() != CompanyManager::getControllingId())
+        {
+            return false;
+        }
+
+        auto* station = StationManager::get(elStation->stationId());
+        auto args = FormatArguments::mapToolTip();
+        if (Windows::Construction::isStationTabOpen())
+        {
+            args.push(StringIds::stringid_right_click_to_remove);
+        }
+        else
+        {
+            args.push(StringIds::stringid_right_click_to_modify);
+        }
+        args.push(StringIds::quote_string_quote2);
+        args.push(station->name);
+        args.push(station->town);
+        return true;
+    }
+
+    // 0x004CDE58
+    static bool rightOverTree(InteractionArg& interaction)
+    {
+        auto* tileElement = reinterpret_cast<Map::TileElement*>(interaction.object);
+        auto* tree = tileElement->asTree();
+        if (tree == nullptr)
+        {
+            return false;
+        }
+
+        auto* treeObj = ObjectManager::get<TreeObject>(tree->treeObjectId());
+        FormatArguments::mapToolTip(StringIds::stringid_right_click_to_remove, treeObj->name);
+        return true;
+    }
+
+    // 0x004CE0D8
+    static bool rightOverWall(InteractionArg& interaction)
+    {
+        auto* tileElement = reinterpret_cast<Map::TileElement*>(interaction.object);
+        auto* wall = tileElement->asWall();
+        if (wall == nullptr)
+        {
+            return false;
+        }
+
+        if (!isEditorMode())
+        {
+            return false;
+        }
+        auto* wallObj = ObjectManager::get<WallObject>(wall->wallObjectId());
+        FormatArguments::mapToolTip(StringIds::stringid_right_click_to_remove, wallObj->name);
+        return true;
+    }
+
+    // 0x004CDE78
+    // Note: this is only when in a constructing mode
+    static bool rightOverBuildingConstruct(InteractionArg& interaction)
+    {
+        auto* tileElement = reinterpret_cast<Map::TileElement*>(interaction.object);
+        auto* building = tileElement->asBuilding();
+        if (building == nullptr)
+        {
+            return false;
+        }
+
+        auto* buildingObj = building->object();
+        auto args = FormatArguments::mapToolTip();
+        if (isEditorMode() || !(buildingObj->flags & BuildingObjectFlags::undestructible))
+        {
+            args.push(StringIds::stringid_right_click_to_remove);
+        }
+        args.push(buildingObj->name);
+        return true;
+    }
+
+    // 0x004CE107
+    static bool rightOverHeadquarters(InteractionArg& interaction)
+    {
+        auto* tileElement = reinterpret_cast<Map::TileElement*>(interaction.object);
+        auto* building = tileElement->asBuilding();
+        if (building == nullptr)
+        {
+            return false;
+        }
+
+        auto firstTile = interaction.pos - Map::offsets[building->multiTileIndex()];
+        auto height = building->baseZ();
+        for (auto& company : CompanyManager::companies())
+        {
+            if (company.headquarters_x == firstTile.x && company.headquarters_y == firstTile.y && company.headquarters_z == height)
+            {
+                FormatArguments::mapToolTip(StringIds::stringid_right_click_to_remove, StringIds::stringid_headquarters, company.name);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    constexpr std::array<string_id, 7> quantityToString = {
+        StringIds::quantity_eigth,
+        StringIds::quantity_quarter,
+        StringIds::quantity_three_eigths,
+        StringIds::quantity_half,
+        StringIds::quantity_five_eigths,
+        StringIds::quantity_three_quarters,
+        StringIds::quantity_seven_eigths,
+    };
+
+    // 0x004CDEB8
+    // Note: this is only when in a none constructing mode
+    static bool rightOverBuilding(InteractionArg& interaction)
+    {
+        interaction.type = InteractionItem::buildingInfo;
+        if (Ui::Windows::MapToolTip::getTooltipTimeout() < 45)
+        {
+            return true;
+        }
+
+        auto* tileElement = reinterpret_cast<Map::TileElement*>(interaction.object);
+        auto* building = tileElement->asBuilding();
+        if (building == nullptr)
+        {
+            return false;
+        }
+
+        auto* buildingObj = building->object();
+        auto* buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_338));
+        buffer = StringManager::formatString(buffer, buildingObj->name);
+        if (!building->isConstructed())
+        {
+            buffer = StringManager::formatString(buffer, StringIds::under_construction);
+        }
+        else
+        {
+            if (buildingObj->var_A0[0] != 0 || buildingObj->var_A0[1] != 0)
+            {
+                buffer = StringManager::formatString(buffer, StringIds::produces);
+                bool requiresComma = false;
+                for (auto i = 0; i < 2; ++i)
+                {
+                    if (buildingObj->var_A0[i] != 0)
+                    {
+                        if (requiresComma)
+                        {
+                            buffer = StringManager::formatString(buffer, StringIds::comma);
+                        }
+                        requiresComma = true;
+                        auto* cargo = ObjectManager::get<CargoObject>(buildingObj->producedCargoType[i]);
+                        buffer = StringManager::formatString(buffer, cargo->name);
+                    }
+                }
+            }
+            if (buildingObj->var_A6[0] != 0 || buildingObj->var_A6[1] != 0 || buildingObj->var_A8[0] != 0 || buildingObj->var_A8[1] != 0)
+            {
+                buffer = StringManager::formatString(buffer, StringIds::accepts);
+                bool requiresComma = false;
+                for (auto i = 0; i < 2; ++i)
+                {
+                    if (buildingObj->var_A6[i] != 0)
+                    {
+                        if (requiresComma)
+                        {
+                            buffer = StringManager::formatString(buffer, StringIds::comma);
+                        }
+                        if (buildingObj->var_A6[i] < 8)
+                        {
+                            buffer = StringManager::formatString(buffer, quantityToString[buildingObj->var_A6[i]]);
+                        }
+                        requiresComma = true;
+                        auto* cargo = ObjectManager::get<CargoObject>(buildingObj->producedCargoType[i]);
+                        buffer = StringManager::formatString(buffer, cargo->name);
+                    }
+                }
+                for (auto i = 0; i < 2; ++i)
+                {
+                    if (buildingObj->var_A8[i] != 0)
+                    {
+                        if (requiresComma)
+                        {
+                            buffer = StringManager::formatString(buffer, StringIds::comma);
+                        }
+                        if (buildingObj->var_A8[i] < 8)
+                        {
+                            buffer = StringManager::formatString(buffer, quantityToString[buildingObj->var_A8[i]]);
+                        }
+                        requiresComma = true;
+                        auto* cargo = ObjectManager::get<CargoObject>(buildingObj->var_A4[i]);
+                        buffer = StringManager::formatString(buffer, cargo->name);
+                    }
+                }
+            }
+        }
+        FormatArguments::mapToolTip(StringIds::buffer_338);
+        return true;
+    }
+
     // 0x004CDB2B
     InteractionArg rightOver(int16_t x, int16_t y)
     {
@@ -428,20 +895,75 @@ namespace OpenLoco::Ui::ViewportInteraction
             }
         }
 
-        registers regs;
-        regs.ax = x;
-        regs.bx = y;
-        regs.edx = interactionsToExclude;
-
-        call(0x004CDB3F, regs);
-        InteractionArg result;
-        result.value = regs.edx;
-        result.pos.x = regs.ax;
-        result.pos.y = regs.cx;
-        result.unkBh = regs.bh;
-        result.type = static_cast<InteractionItem>(regs.bl);
-
-        return result;
+        bool hasInteraction = false;
+        auto res = getMapCoordinatesFromPos(x, y, interactionsToExclude);
+        auto& interaction = res.first;
+        switch (interaction.type)
+        {
+            case InteractionItem::track:
+                hasInteraction = rightOverTrack(interaction);
+                break;
+            case InteractionItem::entity:
+                // No interaction
+                break;
+            case InteractionItem::trackExtra:
+                hasInteraction = rightOverTrackExtra(interaction);
+                break;
+            case InteractionItem::signal:
+                hasInteraction = rightOverSignal(interaction);
+                break;
+            case InteractionItem::trackStation:
+                hasInteraction = rightOverTrackStation(interaction);
+                break;
+            case InteractionItem::roadStation:
+                hasInteraction = rightOverRoadStation(interaction);
+                break;
+            case InteractionItem::airport:
+                hasInteraction = rightOverAirport(interaction);
+                break;
+            case InteractionItem::dock:
+                hasInteraction = rightOverDock(interaction);
+                break;
+            case InteractionItem::road:
+                hasInteraction = rightOverRoad(interaction);
+                break;
+            case InteractionItem::roadExtra:
+                hasInteraction = rightOverRoadExtra(interaction);
+                break;
+            default:
+                if (!(Input::hasFlag(Input::Flags::toolActive) && Input::hasFlag(Input::Flags::flag6)))
+                {
+                    if (WindowManager::find(WindowType::construction) == nullptr)
+                    {
+                        if (interaction.type == InteractionItem::building)
+                        {
+                            hasInteraction = rightOverBuilding(interaction);
+                        }
+                        break;
+                    }
+                }
+                // 0x4CDBC5
+                switch (interaction.type)
+                {
+                    case InteractionItem::tree:
+                        hasInteraction = rightOverTree(interaction);
+                        break;
+                    case InteractionItem::wall:
+                        hasInteraction = rightOverWall(interaction);
+                        break;
+                    case InteractionItem::building:
+                        hasInteraction = rightOverBuildingConstruct(interaction);
+                        break;
+                    case InteractionItem::headquarterBuilding:
+                        hasInteraction = rightOverHeadquarters(interaction);
+                        break;
+                    default:
+                        hasInteraction = true;
+                        break;
+                }
+                break;
+        }
+        return hasInteraction ? interaction : InteractionArg{};
     }
 
     // 0x00459E54

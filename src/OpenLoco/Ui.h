@@ -168,6 +168,7 @@ namespace OpenLoco::Ui
             building = 19,
             industry = 20,
             headquarterBuilding = 21,
+            buildingInfo = 22,
         };
 
         namespace InteractionItemFlags // Bridge missing?
