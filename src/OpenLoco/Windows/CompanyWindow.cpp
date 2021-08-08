@@ -2005,7 +2005,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             const Ui::Widget& widget = self->widgets[widx::scrollview];
 
             const auto x = std::max<int16_t>(0, self->scroll_areas[0].contentOffsetX);
-            auto widgetWidth = widget.width();
+            auto widgetWidth = widget.width() - 2;
             if (self->scroll_areas[0].flags & ScrollView::ScrollFlags::vscrollbarVisible)
             {
                 widgetWidth -= ScrollView::barWidth;
