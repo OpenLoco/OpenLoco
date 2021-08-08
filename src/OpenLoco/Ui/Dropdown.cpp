@@ -202,7 +202,7 @@ namespace OpenLoco::Ui::Dropdown
                     {
                         auto x = _windowDropdownOnpaintCellX * _dropdownItemWidth + self->x + 2;
                         auto y = _windowDropdownOnpaintCellY * _dropdownItemHeight + self->y + 2;
-                        Gfx::drawRect(context, x, y, _dropdownItemWidth, _dropdownItemHeight, (1 << 25) | PaletteIndex::index_2E);
+                        Gfx::drawRect(*context, x, y, _dropdownItemWidth, _dropdownItemHeight, (1 << 25) | PaletteIndex::index_2E);
                     }
 
                     auto args = FormatArguments();
@@ -265,16 +265,16 @@ namespace OpenLoco::Ui::Dropdown
 
                     if (!(self->getColour(WindowColour::primary) & Colour::translucent_flag))
                     {
-                        Gfx::drawRect(context, x, y, _dropdownItemWidth - 1, 1, Colour::getShade(self->getColour(WindowColour::primary), 3));
-                        Gfx::drawRect(context, x, y + 1, _dropdownItemWidth - 1, 1, Colour::getShade(self->getColour(WindowColour::primary), 7));
+                        Gfx::drawRect(*context, x, y, _dropdownItemWidth - 1, 1, Colour::getShade(self->getColour(WindowColour::primary), 3));
+                        Gfx::drawRect(*context, x, y + 1, _dropdownItemWidth - 1, 1, Colour::getShade(self->getColour(WindowColour::primary), 7));
                     }
                     else
                     {
                         uint32_t colour = _byte_5045FA[Colour::opaque(self->getColour(WindowColour::primary))] | (1 << 25);
                         colour++;
-                        Gfx::drawRect(context, x, y, _dropdownItemWidth - 1, 1, colour);
+                        Gfx::drawRect(*context, x, y, _dropdownItemWidth - 1, 1, colour);
                         colour++;
-                        Gfx::drawRect(context, x, y + 1, _dropdownItemWidth - 1, 1, colour);
+                        Gfx::drawRect(*context, x, y + 1, _dropdownItemWidth - 1, 1, colour);
                     }
                 }
 

@@ -174,18 +174,18 @@ namespace OpenLoco::Ui::Windows::ToolTip
         uint16_t width = window->width;
         uint16_t height = window->height;
 
-        Gfx::drawRect(context, x + 1, y + 1, width - 2, height - 2, 0x2000000 | 45);
-        Gfx::drawRect(context, x + 1, y + 1, width - 2, height - 2, 0x2000000 | (116 + ObjectManager::get<InterfaceSkinObject>()->colour_08));
+        Gfx::drawRect(*context, x + 1, y + 1, width - 2, height - 2, 0x2000000 | 45);
+        Gfx::drawRect(*context, x + 1, y + 1, width - 2, height - 2, 0x2000000 | (116 + ObjectManager::get<InterfaceSkinObject>()->colour_08));
 
-        Gfx::drawRect(context, x, y + 2, 1, height - 4, 0x2000000 | 46);
-        Gfx::drawRect(context, x + width - 1, y + 2, 1, height - 4, 0x2000000 | 46);
-        Gfx::drawRect(context, x + 2, y + height - 1, width - 4, 1, 0x2000000 | 46);
-        Gfx::drawRect(context, x + 2, y, width - 4, 1, 0x2000000 | 46);
+        Gfx::drawRect(*context, x, y + 2, 1, height - 4, 0x2000000 | 46);
+        Gfx::drawRect(*context, x + width - 1, y + 2, 1, height - 4, 0x2000000 | 46);
+        Gfx::drawRect(*context, x + 2, y + height - 1, width - 4, 1, 0x2000000 | 46);
+        Gfx::drawRect(*context, x + 2, y, width - 4, 1, 0x2000000 | 46);
 
-        Gfx::drawRect(context, x + 1, y + 1, 1, 1, 0x2000000 | 46);
-        Gfx::drawRect(context, x + width - 1 - 1, y + 1, 1, 1, 0x2000000 | 46);
-        Gfx::drawRect(context, x + 1, y + height - 1 - 1, 1, 1, 0x2000000 | 46);
-        Gfx::drawRect(context, x + width - 1 - 1, y + height - 1 - 1, 1, 1, 0x2000000 | 46);
+        Gfx::drawRect(*context, x + 1, y + 1, 1, 1, 0x2000000 | 46);
+        Gfx::drawRect(*context, x + width - 1 - 1, y + 1, 1, 1, 0x2000000 | 46);
+        Gfx::drawRect(*context, x + 1, y + height - 1 - 1, 1, 1, 0x2000000 | 46);
+        Gfx::drawRect(*context, x + width - 1 - 1, y + height - 1 - 1, 1, 1, 0x2000000 | 46);
 
         Gfx::drawStringCentredRaw(*context, ((width + 1) / 2) + x - 1, y + 1, _lineBreakCount, Colour::black, _text);
     }

@@ -69,9 +69,9 @@ namespace OpenLoco::Ui::Windows::ToolbarBottom::Editor
 
         if (EditorController::canGoBack())
         {
-            Gfx::drawRect(ctx, previous.left + self->x, previous.top + self->y, previous.width(), previous.height(), 0x2000000 | 52);
+            Gfx::drawRect(*ctx, previous.left + self->x, previous.top + self->y, previous.width(), previous.height(), 0x2000000 | 52);
         }
-        Gfx::drawRect(ctx, next.left + self->x, next.top + self->y, next.width(), next.height(), 0x2000000 | 52);
+        Gfx::drawRect(*ctx, next.left + self->x, next.top + self->y, next.width(), next.height(), 0x2000000 | 52);
 
         self->draw(ctx);
 

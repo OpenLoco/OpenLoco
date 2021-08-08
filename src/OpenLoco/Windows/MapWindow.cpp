@@ -592,7 +592,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             auto colour = overallColours[i];
             if (!(self->var_854 & (1 << i)) || !(mapFrameNumber & (1 << 2)))
             {
-                Gfx::drawRect(context, x, *y + 3, 5, 5, colour);
+                Gfx::drawRect(*context, x, *y + 3, 5, 5, colour);
             }
             auto args = FormatArguments();
             args.push(lineNames[i]);
@@ -638,7 +638,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             {
                 auto colour = vehicleTypeColours[i];
 
-                Gfx::drawRect(context, x, *y + 3, 5, 5, colour);
+                Gfx::drawRect(*context, x, *y + 3, 5, 5, colour);
             }
             auto args = FormatArguments();
             args.push(lineNames[i]);
@@ -704,7 +704,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             {
                 auto colour = industryColours[_byte_F253CE[i]];
 
-                Gfx::drawRect(context, x, *y + 3, 5, 5, colour);
+                Gfx::drawRect(*context, x, *y + 3, 5, 5, colour);
             }
 
             auto args = FormatArguments();
@@ -733,7 +733,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
             if (!(self->var_854 & (1 << i)) || !(mapFrameNumber & (1 << 2)))
             {
-                Gfx::drawRect(context, x, *y + 3, 5, 5, colour);
+                Gfx::drawRect(*context, x, *y + 3, 5, 5, colour);
             }
 
             auto routeType = StringIds::map_routes_aircraft;
@@ -783,7 +783,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
             if (!(self->var_854 & (1 << index)) || !(mapFrameNumber & (1 << 2)))
             {
-                Gfx::drawRect(context, x, *y + 3, 5, 5, colour);
+                Gfx::drawRect(*context, x, *y + 3, 5, 5, colour);
             }
 
             auto args = FormatArguments();

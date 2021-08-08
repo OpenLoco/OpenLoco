@@ -1223,10 +1223,10 @@ namespace OpenLoco::Gfx
         drawRectImpl(context, left, top, right, bottom, colour);
     }
 
-    void drawRect(Gfx::Context* context, int16_t x, int16_t y, uint16_t dx, uint16_t dy, uint32_t colour)
+    void drawRect(Gfx::Context& context, int16_t x, int16_t y, uint16_t dx, uint16_t dy, uint32_t colour)
     {
         // This makes the function signature more like a drawing application
-        drawRectImpl(*context, x, y, x + dx - 1, y + dy - 1, colour);
+        drawRectImpl(context, x, y, x + dx - 1, y + dy - 1, colour);
     }
 
     void fillRectInset(Gfx::Context* context, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t colour, uint8_t flags)

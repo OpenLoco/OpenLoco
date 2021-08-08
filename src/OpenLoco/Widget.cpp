@@ -192,8 +192,8 @@ namespace OpenLoco::Ui
         auto& widget = window->widgets[widgetIndex];
         if (Input::isHovering(window->type, window->number, widgetIndex))
         {
-            Gfx::drawRect(context, widget.left + window->x, widget.top + window->y, widget.width(), widget.height(), 0x2000000 | 54);
-            Gfx::drawRect(context, widget.left + window->x, widget.top + window->y, widget.width(), widget.height(), 0x2000000 | 52);
+            Gfx::drawRect(*context, widget.left + window->x, widget.top + window->y, widget.width(), widget.height(), 0x2000000 | 54);
+            Gfx::drawRect(*context, widget.left + window->x, widget.top + window->y, widget.width(), widget.height(), 0x2000000 | 52);
 
             uint8_t flags = 0;
             if (Input::isPressed(window->type, window->number, widgetIndex))
@@ -1001,7 +1001,7 @@ namespace OpenLoco::Ui
                 Gfx::drawImage(ctx, pos.x, pos.y + 1, imageId);
             }
             Gfx::drawImage(ctx, pos.x, pos.y, (1 << 30) | (51 << 19) | ImageIds::tab);
-            Gfx::drawRect(ctx, pos.x, pos.y + 26, 31, 1, Colour::getShade(w->getColour(WindowColour::secondary), 7));
+            Gfx::drawRect(*ctx, pos.x, pos.y + 26, 31, 1, Colour::getShade(w->getColour(WindowColour::secondary), 7));
         }
     }
 }

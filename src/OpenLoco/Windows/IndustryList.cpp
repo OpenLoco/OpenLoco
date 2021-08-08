@@ -400,7 +400,7 @@ namespace OpenLoco::Ui::Windows::IndustryList
                 // Highlight selection.
                 if (industryId == self.row_hover)
                 {
-                    Gfx::drawRect(&context, 0, yPos, self.width, rowHeight, 0x2000030);
+                    Gfx::drawRect(context, 0, yPos, self.width, rowHeight, 0x2000030);
                     text_colour_id = StringIds::wcolour2_stringid;
                 }
 

@@ -213,18 +213,18 @@ namespace OpenLoco::Ui::Windows::Error
             uint16_t height = self->height;
             auto skin = ObjectManager::get<InterfaceSkinObject>()->colour_09;
 
-            Gfx::drawRect(context, x + 1, y + 1, width - 2, height - 2, 0x2000000 | 45);
-            Gfx::drawRect(context, x + 1, y + 1, width - 2, height - 2, 0x2000000 | (116 + skin));
+            Gfx::drawRect(*context, x + 1, y + 1, width - 2, height - 2, 0x2000000 | 45);
+            Gfx::drawRect(*context, x + 1, y + 1, width - 2, height - 2, 0x2000000 | (116 + skin));
 
-            Gfx::drawRect(context, x, y + 2, 1, height - 4, 0x2000000 | 46);
-            Gfx::drawRect(context, x + width - 1, y + 2, 1, height - 4, 0x2000000 | 46);
-            Gfx::drawRect(context, x + 2, y + height - 1, width - 4, 1, 0x2000000 | 46);
-            Gfx::drawRect(context, x + 2, y, width - 4, 1, 0x2000000 | 46);
+            Gfx::drawRect(*context, x, y + 2, 1, height - 4, 0x2000000 | 46);
+            Gfx::drawRect(*context, x + width - 1, y + 2, 1, height - 4, 0x2000000 | 46);
+            Gfx::drawRect(*context, x + 2, y + height - 1, width - 4, 1, 0x2000000 | 46);
+            Gfx::drawRect(*context, x + 2, y, width - 4, 1, 0x2000000 | 46);
 
-            Gfx::drawRect(context, x + 1, y + 1, 1, 1, 0x2000000 | 46);
-            Gfx::drawRect(context, x + width - 1 - 1, y + 1, 1, 1, 0x2000000 | 46);
-            Gfx::drawRect(context, x + 1, y + height - 1 - 1, 1, 1, 0x2000000 | 46);
-            Gfx::drawRect(context, x + width - 1 - 1, y + height - 1 - 1, 1, 1, 0x2000000 | 46);
+            Gfx::drawRect(*context, x + 1, y + 1, 1, 1, 0x2000000 | 46);
+            Gfx::drawRect(*context, x + width - 1 - 1, y + 1, 1, 1, 0x2000000 | 46);
+            Gfx::drawRect(*context, x + 1, y + height - 1 - 1, 1, 1, 0x2000000 | 46);
+            Gfx::drawRect(*context, x + width - 1 - 1, y + height - 1 - 1, 1, 1, 0x2000000 | 46);
 
             if (_errorCompetitorId == 0xFF)
             {

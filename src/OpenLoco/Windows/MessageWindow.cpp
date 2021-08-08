@@ -246,7 +246,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 
                 if (self.row_hover == i)
                 {
-                    Gfx::drawRect(&context, 0, height, self.width, 38, (1 << 25) | PaletteIndex::index_30);
+                    Gfx::drawRect(context, 0, height, self.width, 38, (1 << 25) | PaletteIndex::index_30);
                     stringId = StringIds::wcolour2_stringid;
                 }
 

@@ -208,7 +208,7 @@ namespace OpenLoco::Ui::Windows::PlayerInfoPanel
     static void draw(Ui::Window* window, Gfx::Context* context)
     {
         Widget& frame = _widgets[Widx::outer_frame];
-        Gfx::drawRect(context, window->x + frame.left, window->y + frame.top, frame.width(), frame.height(), 0x2000000 | 52);
+        Gfx::drawRect(*context, window->x + frame.left, window->y + frame.top, frame.width(), frame.height(), 0x2000000 | 52);
 
         // Draw widgets.
         window->draw(context);

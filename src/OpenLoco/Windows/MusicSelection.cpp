@@ -113,7 +113,7 @@ namespace OpenLoco::Ui::Windows::MusicSelection
             // Draw hovered track
             if (i == window.row_hover)
             {
-                Gfx::drawRect(&context, 0, y, 800, rowHeight, 0x2000030);
+                Gfx::drawRect(context, 0, y, 800, rowHeight, 0x2000030);
                 text_colour_id = StringIds::wcolour2_stringid;
             }
 

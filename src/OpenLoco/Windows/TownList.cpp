@@ -164,7 +164,7 @@ namespace OpenLoco::Ui::Windows::TownList
                 // Highlight selection.
                 if (townId == self.row_hover)
                 {
-                    Gfx::drawRect(&context, 0, yPos, self.width, rowHeight, 0x2000030);
+                    Gfx::drawRect(context, 0, yPos, self.width, rowHeight, 0x2000030);
                     text_colour_id = StringIds::wcolour2_stringid;
                 }
 

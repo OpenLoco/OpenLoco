@@ -292,7 +292,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                     if (row < 1)
                     {
                         auto colour = Colour::getShade(self->getColour(WindowColour::secondary), 7);
-                        Gfx::drawRect(context, xPos, yPos + 26, 31, 1, colour);
+                        Gfx::drawRect(*context, xPos, yPos + 26, 31, 1, colour);
                     }
                 }
                 xPos += 31;
@@ -521,13 +521,13 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         {
             auto widget = widgets[widx::objectImage];
             auto colour = Colour::getShade(self->getColour(WindowColour::secondary), 5);
-            Gfx::drawRect(context, self->x + widget.left, self->y + widget.top, widget.width(), widget.height(), colour);
+            Gfx::drawRect(*context, self->x + widget.left, self->y + widget.top, widget.width(), widget.height(), colour);
         }
         else
         {
             auto widget = widgets[widx::objectImage];
             auto colour = Colour::getShade(self->getColour(WindowColour::secondary), 0);
-            Gfx::drawRect(context, self->x + widget.left + 1, self->y + widget.top + 1, widget.width() - 2, widget.height() - 2, colour);
+            Gfx::drawRect(*context, self->x + widget.left + 1, self->y + widget.top + 1, widget.width() - 2, widget.height() - 2, colour);
         }
 
         auto type = self->current_tab;

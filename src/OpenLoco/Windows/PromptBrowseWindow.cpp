@@ -598,7 +598,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                 Gfx::drawString_494B3F(context, &origin, 0, StringIds::black_stringid, _commonFormatArgs);
 
                 // Draw vertical caret
-                Gfx::drawRect(&context, origin.x, origin.y, 1, 9, byte_1136C99[window->getColour(WindowColour::secondary) * 8]);
+                Gfx::drawRect(context, origin.x, origin.y, 1, 9, byte_1136C99[window->getColour(WindowColour::secondary) * 8]);
             }
         }
     }
@@ -626,7 +626,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                 auto stringId = StringIds::black_stringid;
                 if (i == window.var_85A)
                 {
-                    Gfx::drawRect(&context, 0, y, window.width, lineHeight, 0x2000000 | 48);
+                    Gfx::drawRect(context, 0, y, window.width, lineHeight, 0x2000000 | 48);
                     stringId = StringIds::wcolour2_stringid;
                 }
 

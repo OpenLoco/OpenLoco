@@ -110,7 +110,7 @@ namespace OpenLoco::Ui::Windows::KeyboardShortcuts
             string_id format = StringIds::black_stringid;
             if (i == self.row_hover)
             {
-                Gfx::drawRect(&context, 0, yPos, 800, rowHeight, 0x2000030);
+                Gfx::drawRect(context, 0, yPos, 800, rowHeight, 0x2000030);
                 format = StringIds::wcolour2_stringid;
             }
 

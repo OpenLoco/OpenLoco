@@ -723,7 +723,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
 
             // Highlight selection.
             if (head->id == self.row_hover)
-                Gfx::drawRect(&context, 0, yPos, self.width, self.row_height, Colour::getShade(self.getColour(WindowColour::secondary), 0));
+                Gfx::drawRect(context, 0, yPos, self.width, self.row_height, Colour::getShade(self.getColour(WindowColour::secondary), 0));
 
             // Draw vehicle at the bottom of the row.
             drawVehicle(head, &context, yPos + (self.row_height - 28) / 2 + 6);
