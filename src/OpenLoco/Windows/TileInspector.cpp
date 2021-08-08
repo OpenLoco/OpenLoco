@@ -344,12 +344,12 @@ namespace OpenLoco::Ui::Windows::TileInspector
             string_id formatString;
             if (self.var_842 == rowNum)
             {
-                Gfx::fillRect(&context, 0, yPos, self.width, yPos + self.row_height, Colour::aquamarine);
+                Gfx::fillRect(context, 0, yPos, self.width, yPos + self.row_height, Colour::aquamarine);
                 formatString = StringIds::white_stringid;
             }
             else if (self.row_hover == rowNum)
             {
-                Gfx::fillRect(&context, 0, yPos, self.width, yPos + self.row_height, 0x2000030);
+                Gfx::fillRect(context, 0, yPos, self.width, yPos + self.row_height, 0x2000030);
                 formatString = StringIds::wcolour2_stringid;
             }
             else

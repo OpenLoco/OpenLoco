@@ -1458,7 +1458,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                         top = pos.y - 1;
                         carStr = StringIds::black_stringid;
                     }
-                    Gfx::fillRect(&context, 0, top, self.width, bottom, 0x2000030);
+                    Gfx::fillRect(context, 0, top, self.width, bottom, 0x2000030);
                 }
 
                 int16_t y = pos.y + (self.row_height - 22) / 2;
@@ -1483,7 +1483,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             if (self.row_hover == train.tail->id && _dragCarComponent != nullptr)
             {
-                Gfx::fillRect(&context, 0, pos.y - 1, self.width, pos.y, 0x2000030);
+                Gfx::fillRect(context, 0, pos.y - 1, self.width, pos.y, 0x2000030);
             }
         }
 
@@ -1732,7 +1732,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 auto body = car.body;
                 if (front->id == self.row_hover)
                 {
-                    Gfx::fillRect(&context, 0, y, self.width, y + self.row_height - 1, 0x2000030);
+                    Gfx::fillRect(context, 0, y, self.width, y + self.row_height - 1, 0x2000030);
                     strFormat = StringIds::wcolour2_stringid;
                 }
                 // Get width of the drawing
@@ -3104,13 +3104,13 @@ namespace OpenLoco::Ui::Windows::Vehicle
                 auto strFormat = StringIds::black_stringid;
                 if (self.var_842 == rowNum)
                 {
-                    Gfx::fillRect(&context, 0, y, self.width, y + 9, Colour::aquamarine);
+                    Gfx::fillRect(context, 0, y, self.width, y + 9, Colour::aquamarine);
                     strFormat = StringIds::white_stringid;
                 }
                 if (self.row_hover == rowNum)
                 {
                     strFormat = StringIds::wcolour2_stringid;
-                    Gfx::fillRect(&context, 0, y, self.width, y + 9, 0x2000030);
+                    Gfx::fillRect(context, 0, y, self.width, y + 9, 0x2000030);
                 }
 
                 FormatArguments args{};
@@ -3152,13 +3152,13 @@ namespace OpenLoco::Ui::Windows::Vehicle
             auto strFormat = StringIds::black_stringid;
             if (self.var_842 == rowNum)
             {
-                Gfx::fillRect(&context, 0, loc.y, self.width, loc.y + lineHeight, Colour::aquamarine);
+                Gfx::fillRect(context, 0, loc.y, self.width, loc.y + lineHeight, Colour::aquamarine);
                 strFormat = StringIds::white_stringid;
             }
             if (self.row_hover == rowNum)
             {
                 strFormat = StringIds::wcolour2_stringid;
-                Gfx::fillRect(&context, 0, loc.y, self.width, loc.y + lineHeight, 0x2000030);
+                Gfx::fillRect(context, 0, loc.y, self.width, loc.y + lineHeight, 0x2000030);
             }
 
             loc.y -= 1;

@@ -608,7 +608,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
                 auto windowObjectName = ObjectManager::ObjectIndexEntry::read(&objectPtr)._name;
                 if (object._name == windowObjectName)
                 {
-                    Gfx::fillRect(&context, 0, y, self.width, y + rowHeight - 1, (1 << 25) | PaletteIndex::index_30);
+                    Gfx::fillRect(context, 0, y, self.width, y + rowHeight - 1, (1 << 25) | PaletteIndex::index_30);
                     textColour = ControlCodes::window_colour_2;
                 }
             }

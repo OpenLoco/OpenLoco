@@ -221,7 +221,7 @@ namespace OpenLoco::Gfx
     uint16_t getStringWidthNewLined(const char* buffer);
     std::pair<uint16_t, uint16_t> wrapString(const char* buffer, uint16_t stringWidth);
 
-    void fillRect(Gfx::Context* context, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t colour);
+    void fillRect(Gfx::Context& context, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t colour);
     void drawRect(Gfx::Context* context, int16_t x, int16_t y, uint16_t dx, uint16_t dy, uint32_t colour);
     void fillRectInset(Gfx::Context* context, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t colour, uint8_t flags);
     void drawRectInset(Gfx::Context* context, int16_t x, int16_t y, uint16_t dx, uint16_t dy, uint32_t colour, uint8_t flags);

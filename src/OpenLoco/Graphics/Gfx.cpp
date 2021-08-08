@@ -1206,7 +1206,7 @@ namespace OpenLoco::Gfx
     }
 
     // 0x004474BA
-    static void drawRectImpl(Gfx::Context* context, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t colour)
+    static void drawRectImpl(Gfx::Context& context, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t colour)
     {
         registers regs;
         regs.ax = left;
@@ -1214,11 +1214,11 @@ namespace OpenLoco::Gfx
         regs.cx = top;
         regs.dx = bottom;
         regs.ebp = colour;
-        regs.edi = X86Pointer(context);
+        regs.edi = X86Pointer(&context);
         call(0x004474BA, regs);
     }
 
-    void fillRect(Gfx::Context* context, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t colour)
+    void fillRect(Gfx::Context& context, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t colour)
     {
         drawRectImpl(context, left, top, right, bottom, colour);
     }
@@ -1226,7 +1226,7 @@ namespace OpenLoco::Gfx
     void drawRect(Gfx::Context* context, int16_t x, int16_t y, uint16_t dx, uint16_t dy, uint32_t colour)
     {
         // This makes the function signature more like a drawing application
-        drawRectImpl(context, x, y, x + dx - 1, y + dy - 1, colour);
+        drawRectImpl(*context, x, y, x + dx - 1, y + dy - 1, colour);
     }
 
     void fillRectInset(Gfx::Context* context, int16_t left, int16_t top, int16_t right, int16_t bottom, uint32_t colour, uint8_t flags)

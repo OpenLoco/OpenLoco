@@ -1003,7 +1003,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
         auto trainPos = locationToMapWindowPos(vehicle->position);
 
-        Gfx::fillRect(context, trainPos.x, trainPos.y, trainPos.x, trainPos.y, colour);
+        Gfx::fillRect(*context, trainPos.x, trainPos.y, trainPos.x, trainPos.y, colour);
     }
 
     // 0x0046C294
@@ -1193,7 +1193,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             std::swap(top, bottom);
         }
 
-        Gfx::fillRect(context, left, top, right, bottom, colour);
+        Gfx::fillRect(*context, left, top, right, bottom, colour);
     }
 
     // 0x0046BE51

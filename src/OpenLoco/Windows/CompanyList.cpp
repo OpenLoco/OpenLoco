@@ -1036,7 +1036,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
                 if (!(self->var_854 & (1 << cargoCount)) || !(_word_9C68C7 & (1 << 2)))
                 {
-                    Gfx::fillRect(context, x, y + 3, x + 4, y + 7, colour);
+                    Gfx::fillRect(*context, x, y + 3, x + 4, y + 7, colour);
                 }
 
                 auto args = FormatArguments();
@@ -1669,7 +1669,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
                 if (!(self->var_854 & (1 << companyCount)) || !(_word_9C68C7 & (1 << 2)))
                 {
-                    Gfx::fillRect(context, x, y + 3, x + 4, y + 7, colour);
+                    Gfx::fillRect(*context, x, y + 3, x + 4, y + 7, colour);
                 }
 
                 auto args = FormatArguments();

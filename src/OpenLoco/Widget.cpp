@@ -44,7 +44,7 @@ namespace OpenLoco::Ui
     {
         Gfx::drawImage(context, x - 4, y, Gfx::recolour(ImageIds::curved_border_left, colour));
         Gfx::drawImage(context, x + width, y, Gfx::recolour(ImageIds::curved_border_right, colour));
-        Gfx::fillRect(context, x, y, x + width - 1, y + 11, Colour::getShade(colour, 5));
+        Gfx::fillRect(*context, x, y, x + width - 1, y + 11, Colour::getShade(colour, 5));
     }
 
     void Widget::draw(Gfx::Context* context, Window* window, const uint64_t pressedWidgets, const uint64_t toolWidgets, const uint64_t hoveredWidgets, uint8_t& scrollviewIndex)
@@ -320,7 +320,7 @@ namespace OpenLoco::Ui
         }
 
         Gfx::fillRect(
-            context,
+            *context,
             window->x + right,
             window->y + top,
             window->x + right,
@@ -352,7 +352,7 @@ namespace OpenLoco::Ui
 
         if (window->flags & WindowFlags::flag_6)
         {
-            Gfx::fillRect(context, l, t, r, b, 0x2000000 | 52);
+            Gfx::fillRect(*context, l, t, r, b, 0x2000000 | 52);
         }
 
         Gfx::fillRectInset(context, l, t, r, b, colour, flags);
@@ -590,7 +590,7 @@ namespace OpenLoco::Ui
         int t = window->y + top;
         int b = window->y + bottom;
         Gfx::fillRectInset(context, l, t, r, b, colour, flags | 0x60);
-        Gfx::fillRect(context, l + 1, t + 1, r - 1, b - 1, 0x2000000 | 46);
+        Gfx::fillRect(*context, l + 1, t + 1, r - 1, b - 1, 0x2000000 | 46);
 
         int16_t width = r - l - 4 - 10;
         int16_t y = t + window->y + 1;
@@ -700,15 +700,15 @@ namespace OpenLoco::Ui
         // popa
 
         // pusha
-        Gfx::fillRect(context, ax + 10, cx, bx - 10, dx, Colour::getShade(colour, 7));
-        Gfx::fillRect(context, ax + 10, cx, bx - 10, dx, 0x1000000 | Colour::getShade(colour, 3));
+        Gfx::fillRect(*context, ax + 10, cx, bx - 10, dx, Colour::getShade(colour, 7));
+        Gfx::fillRect(*context, ax + 10, cx, bx - 10, dx, 0x1000000 | Colour::getShade(colour, 3));
         // popa
 
         // pusha
-        Gfx::fillRect(context, ax + 10, cx + 2, bx - 10, cx + 2, Colour::getShade(colour, 3));
-        Gfx::fillRect(context, ax + 10, cx + 3, bx - 10, cx + 3, Colour::getShade(colour, 7));
-        Gfx::fillRect(context, ax + 10, cx + 7, bx - 10, cx + 7, Colour::getShade(colour, 3));
-        Gfx::fillRect(context, ax + 10, cx + 8, bx - 10, cx + 8, Colour::getShade(colour, 7));
+        Gfx::fillRect(*context, ax + 10, cx + 2, bx - 10, cx + 2, Colour::getShade(colour, 3));
+        Gfx::fillRect(*context, ax + 10, cx + 3, bx - 10, cx + 3, Colour::getShade(colour, 7));
+        Gfx::fillRect(*context, ax + 10, cx + 7, bx - 10, cx + 7, Colour::getShade(colour, 3));
+        Gfx::fillRect(*context, ax + 10, cx + 8, bx - 10, cx + 8, Colour::getShade(colour, 7));
         // popa
 
         // pusha
@@ -765,15 +765,15 @@ namespace OpenLoco::Ui
         // popa
 
         // pusha
-        Gfx::fillRect(context, ax, cx + 10, bx, dx - 10, Colour::getShade(colour, 7));
-        Gfx::fillRect(context, ax, cx + 10, bx, dx - 10, 0x1000000 | Colour::getShade(colour, 3));
+        Gfx::fillRect(*context, ax, cx + 10, bx, dx - 10, Colour::getShade(colour, 7));
+        Gfx::fillRect(*context, ax, cx + 10, bx, dx - 10, 0x1000000 | Colour::getShade(colour, 3));
         // popa
 
         // pusha
-        Gfx::fillRect(context, ax + 2, cx + 10, ax + 2, dx - 10, Colour::getShade(colour, 3));
-        Gfx::fillRect(context, ax + 3, cx + 10, ax + 3, dx - 10, Colour::getShade(colour, 7));
-        Gfx::fillRect(context, ax + 7, cx + 10, ax + 7, dx - 10, Colour::getShade(colour, 3));
-        Gfx::fillRect(context, ax + 8, cx + 10, ax + 8, dx - 10, Colour::getShade(colour, 7));
+        Gfx::fillRect(*context, ax + 2, cx + 10, ax + 2, dx - 10, Colour::getShade(colour, 3));
+        Gfx::fillRect(*context, ax + 3, cx + 10, ax + 3, dx - 10, Colour::getShade(colour, 7));
+        Gfx::fillRect(*context, ax + 7, cx + 10, ax + 7, dx - 10, Colour::getShade(colour, 3));
+        Gfx::fillRect(*context, ax + 8, cx + 10, ax + 8, dx - 10, Colour::getShade(colour, 7));
         // popa
 
         // pusha
@@ -909,7 +909,7 @@ namespace OpenLoco::Ui
         int r = window->x + right;
         int t = window->y + top;
         int b = window->y + bottom;
-        Gfx::fillRect(context, l, t, r, b, Colour::getShade(Colour::black, 5));
+        Gfx::fillRect(*context, l, t, r, b, Colour::getShade(Colour::black, 5));
     }
 
     void Widget::drawGroupbox(Gfx::Context* const context, const Window* window)
@@ -938,24 +938,24 @@ namespace OpenLoco::Ui
         b = window->y + bottom;
 
         // Border left of text
-        Gfx::fillRect(context, l, t, l + 4, t, Colour::getShade(colour, 4));
-        Gfx::fillRect(context, l + 1, t + 1, l + 4, t + 1, Colour::getShade(colour, 7));
+        Gfx::fillRect(*context, l, t, l + 4, t, Colour::getShade(colour, 4));
+        Gfx::fillRect(*context, l + 1, t + 1, l + 4, t + 1, Colour::getShade(colour, 7));
 
         // Border right of text
-        Gfx::fillRect(context, textEndPos, t, r - 1, t, Colour::getShade(colour, 4));
-        Gfx::fillRect(context, textEndPos, t + 1, r - 2, t + 1, Colour::getShade(colour, 7));
+        Gfx::fillRect(*context, textEndPos, t, r - 1, t, Colour::getShade(colour, 4));
+        Gfx::fillRect(*context, textEndPos, t + 1, r - 2, t + 1, Colour::getShade(colour, 7));
 
         // Border right
-        Gfx::fillRect(context, r - 1, t + 1, r - 1, b - 1, Colour::getShade(colour, 4));
-        Gfx::fillRect(context, r, t, r, b, Colour::getShade(colour, 7));
+        Gfx::fillRect(*context, r - 1, t + 1, r - 1, b - 1, Colour::getShade(colour, 4));
+        Gfx::fillRect(*context, r, t, r, b, Colour::getShade(colour, 7));
 
         // Border bottom
-        Gfx::fillRect(context, l, b - 1, r - 2, b - 1, Colour::getShade(colour, 4));
-        Gfx::fillRect(context, l, b, r - 1, b, Colour::getShade(colour, 7));
+        Gfx::fillRect(*context, l, b - 1, r - 2, b - 1, Colour::getShade(colour, 4));
+        Gfx::fillRect(*context, l, b, r - 1, b, Colour::getShade(colour, 7));
 
         // Border left
-        Gfx::fillRect(context, l, t + 1, l, b - 2, Colour::getShade(colour, 4));
-        Gfx::fillRect(context, l + 1, t + 2, l + 1, b - 2, Colour::getShade(colour, 7));
+        Gfx::fillRect(*context, l, t + 1, l, b - 2, Colour::getShade(colour, 4));
+        Gfx::fillRect(*context, l + 1, t + 2, l + 1, b - 2, Colour::getShade(colour, 7));
     }
 
     // 0x004CF194

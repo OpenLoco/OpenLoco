@@ -980,7 +980,7 @@ namespace OpenLoco::Ui::Windows::Station
                     auto& cargo = cargoStats;
                     if (!cargo.empty())
                     {
-                        Gfx::fillRect(context, xOffset, yOffset, xOffset + 22, yOffset + 1, (1 << 25) | PaletteIndex::index_30);
+                        Gfx::fillRect(*context, xOffset, yOffset, xOffset + 22, yOffset + 1, (1 << 25) | PaletteIndex::index_30);
 
                         auto ratingColour = Colour::moss_green;
                         if (cargo.rating < 100)
@@ -991,7 +991,7 @@ namespace OpenLoco::Ui::Windows::Station
                         }
 
                         auto ratingBarLength = (cargo.rating * 30) / 256;
-                        Gfx::fillRect(context, xOffset, yOffset, xOffset - 1 + ratingBarLength, yOffset + 1, Colour::getShade(ratingColour, 6));
+                        Gfx::fillRect(*context, xOffset, yOffset, xOffset - 1 + ratingBarLength, yOffset + 1, Colour::getShade(ratingColour, 6));
 
                         yOffset += 3;
                         totalRatingBars++;

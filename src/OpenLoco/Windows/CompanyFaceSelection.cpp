@@ -224,7 +224,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
             const auto t = self->y + 1 + self->widgets[widx::face_frame].top;
             const auto r = self->x - 1 + self->widgets[widx::face_frame].right;
             const auto b = self->y - 1 + self->widgets[widx::face_frame].bottom;
-            Gfx::fillRect(context, l, t, r, b, colour);
+            Gfx::fillRect(*context, l, t, r, b, colour);
 
             const CompetitorObject* competitor = _loadedObject;
             uint32_t img = competitor->images[0] + 1 + (1 << 29);
@@ -260,7 +260,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
             if (index == self.row_hover)
             {
                 inlineColour = ControlCodes::window_colour_2;
-                Gfx::fillRect(&context, 0, y, self.width, y + 9, 0x2000000 | 48);
+                Gfx::fillRect(context, 0, y, self.width, y + 9, 0x2000000 | 48);
             }
 
             std::string name(object.second._name);

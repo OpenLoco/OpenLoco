@@ -1710,7 +1710,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 if (i % 2 == 0)
                 {
                     auto colour = Colour::getShade(self->getColour(WindowColour::secondary), 6) | 0x1000000;
-                    Gfx::fillRect(context, self->x + 4, y, self->x + 129, y + 9, colour);
+                    Gfx::fillRect(*context, self->x + 4, y, self->x + 129, y + 9, colour);
                 }
 
                 auto args = FormatArguments::common(ExpenditureLabels[i]);
@@ -1866,7 +1866,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
 
             Gfx::drawString_494C78(*context, x, y, Colour::black, mainFormat, &args);
 
-            Gfx::fillRect(context, x - expenditureColumnWidth + 10, y - 2, x, y - 2, Colour::aquamarine);
+            Gfx::fillRect(*context, x - expenditureColumnWidth + 10, y - 2, x, y - 2, Colour::aquamarine);
         }
 
         // 0x0043361E
@@ -1880,7 +1880,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 if (i % 2 == 0)
                 {
                     auto colour = Colour::getShade(self.getColour(WindowColour::secondary), 6) | 0x1000000;
-                    Gfx::fillRect(&context, 0, y, expenditureColumnWidth * 17, y + 9, colour);
+                    Gfx::fillRect(context, 0, y, expenditureColumnWidth * 17, y + 9, colour);
                 }
 
                 y += 10;
