@@ -749,11 +749,11 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    inline bool do_44(const BuildingPlacementArgs& placementArgs, uint8_t flags)
+    inline uint32_t do_44(const BuildingPlacementArgs& placementArgs, uint8_t flags)
     {
         registers regs = registers(placementArgs);
         regs.bl = flags;
-        return doCommand(GameCommand::createBuilding, regs) != FAILURE;
+        return doCommand(GameCommand::createBuilding, regs);
     }
 
     struct BuildingRemovalArgs
