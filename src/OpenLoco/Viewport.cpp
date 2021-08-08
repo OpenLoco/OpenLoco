@@ -75,8 +75,7 @@ namespace OpenLoco::Ui
 
     Point Viewport::getUiCentre() const
     {
-        return { x + width / 2,
-                 y + height / 2 };
+        return Point(x + width / 2, y + height / 2);
     }
 
     // 0x0045F997
