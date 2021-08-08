@@ -1495,7 +1495,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         return { std::make_pair(regs.di, regs.dl) };
     }
 
-    static void constructionLoop(Pos2 mapPos, uint32_t maxRetries, int16_t height)
+    static void constructionLoop(const Pos2& mapPos, uint32_t maxRetries, int16_t height)
     {
         while (true)
         {
