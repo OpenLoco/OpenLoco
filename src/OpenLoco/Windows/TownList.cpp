@@ -710,12 +710,17 @@ namespace OpenLoco::Ui::Windows::TownList
         // 0x0049A75E
         static void onToolDown(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
-            registers regs;
-            regs.esi = X86Pointer(&self);
-            regs.dx = widgetIndex;
-            regs.ax = x;
-            regs.bx = y;
-            call(0x0049A75E, regs);
+            auto mapPos = Ui::ViewportInteraction::getSurfaceOrWaterLocFromUi({ x, y });
+            if (mapPos)
+            {
+                GameCommands::TownPlacementArgs placementArgs;
+                placementArgs.pos = *mapPos;
+                placementArgs.size = _townSize;
+                if (GameCommands::do_49(placementArgs, GameCommands::Flags::apply) != GameCommands::FAILURE)
+                {
+                    Audio::playSound(Audio::SoundId::construct, GameCommands::getPosition());
+                }
+            }
         }
 
         // 0x0049A69E

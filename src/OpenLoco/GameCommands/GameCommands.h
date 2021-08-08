@@ -846,6 +846,35 @@ namespace OpenLoco::GameCommands
         return doCommand(GameCommand::removeIndustry, regs) != FAILURE;
     }
 
+    struct TownPlacementArgs
+    {
+        TownPlacementArgs() = default;
+        explicit TownPlacementArgs(const registers regs)
+            : pos(regs.ax, regs.cx)
+            , size(regs.dl)
+        {
+        }
+
+        Map::Pos2 pos;
+        uint8_t size;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.ax = pos.x;
+            regs.cx = pos.y;
+            regs.edx = size;
+            return regs;
+        }
+    };
+
+    inline uint32_t do_49(const TownPlacementArgs& args, uint8_t flags)
+    {
+        registers regs = registers(args);
+        regs.bl = flags;
+        return doCommand(GameCommand::createTown, regs);
+    }
+
     // Remove town
     inline bool do_50(uint8_t townId)
     {
