@@ -601,7 +601,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
         // 0x004BDC67 & 0x004BDDC6
         template<typename TTreeTypeFunc>
-        static void clusterToolDown(const GameCommands::TreePlacementArgs& baseArgs, const uint16_t range, const uint16_t density, TTreeTypeFunc&& getTreeType)
+        static bool clusterToolDown(const GameCommands::TreePlacementArgs& baseArgs, const uint16_t range, const uint16_t density, TTreeTypeFunc&& getTreeType)
         {
             const auto numPlacements = (range * range * density) / 8192;
             uint16_t numErrors = 0;
@@ -643,9 +643,12 @@ namespace OpenLoco::Ui::Windows::Terraform
                 do_23(GameCommands::Flags::apply, args);
             }
 
-            // Not a single tree placed?
-            if (numErrors == numPlacements)
-                Error::open(StringIds::cant_plant_this_here, StringIds::empty);
+            // Have we placed any trees?
+            if (numErrors < numPlacements)
+                return true;
+
+            Error::open(StringIds::cant_plant_this_here, StringIds::empty);
+            return false;
         }
 
         // 0x004BBB20
@@ -674,10 +677,12 @@ namespace OpenLoco::Ui::Windows::Terraform
                         if (isEditorMode())
                             CompanyManager::updatingCompanyId(CompanyId::neutral);
 
-                        auto height = TileManager::getHeight(placementArgs->pos);
-                        Audio::playSound(Audio::SoundId::construct, Map::Pos3{ placementArgs->pos.x, placementArgs->pos.y, height.landHeight });
+                        if (clusterToolDown(*placementArgs, 320, 3, [type = placementArgs->type](const Map::TilePos2&, bool) { return std::optional<uint8_t>(type); }))
+                        {
+                            auto height = TileManager::getHeight(placementArgs->pos);
+                            Audio::playSound(Audio::SoundId::construct, Map::Pos3{ placementArgs->pos.x, placementArgs->pos.y, height.landHeight });
+                        }
 
-                        clusterToolDown(*placementArgs, 320, 3, [type = placementArgs->type](const Map::TilePos2&, bool) { return std::optional<uint8_t>(type); });
                         if (isEditorMode())
                             CompanyManager::updatingCompanyId(previousId);
                         break;
@@ -687,10 +692,12 @@ namespace OpenLoco::Ui::Windows::Terraform
                         if (isEditorMode())
                             CompanyManager::updatingCompanyId(CompanyId::neutral);
 
-                        auto height = TileManager::getHeight(placementArgs->pos);
-                        Audio::playSound(Audio::SoundId::construct, Map::Pos3{ placementArgs->pos.x, placementArgs->pos.y, height.landHeight });
+                        if (clusterToolDown(*placementArgs, 384, 4, getRandomTreeTypeFromSurface))
+                        {
+                            auto height = TileManager::getHeight(placementArgs->pos);
+                            Audio::playSound(Audio::SoundId::construct, Map::Pos3{ placementArgs->pos.x, placementArgs->pos.y, height.landHeight });
+                        }
 
-                        clusterToolDown(*placementArgs, 384, 4, getRandomTreeTypeFromSurface);
                         if (isEditorMode())
                             CompanyManager::updatingCompanyId(previousId);
                         break;
