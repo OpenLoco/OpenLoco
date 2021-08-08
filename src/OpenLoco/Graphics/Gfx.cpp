@@ -1420,7 +1420,7 @@ namespace OpenLoco::Gfx
         auto* newBits = src.bits + (stride * (intersect.origin.y - oldRect.origin.y) + (intersect.origin.x - oldRect.origin.x));
         intersect.origin.x = std::max(0, oldRect.origin.x - newRect.origin.x);
         intersect.origin.y = std::max(0, oldRect.origin.y - newRect.origin.y);
-        Gfx::Context newContext{ newBits, intersect.origin.x, intersect.origin.y, static_cast<int16_t>(intersect.size.width), static_cast<int16_t>(intersect.size.height), newPitch, 0 };
+        Gfx::Context newContext{ newBits, static_cast<int16_t>(intersect.origin.x), static_cast<int16_t>(intersect.origin.y), static_cast<int16_t>(intersect.size.width), static_cast<int16_t>(intersect.size.height), newPitch, 0 };
 
         if (newContext.width <= 0 || newContext.height <= 0)
         {
