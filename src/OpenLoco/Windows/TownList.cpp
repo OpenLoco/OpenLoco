@@ -995,7 +995,7 @@ namespace OpenLoco::Ui::Windows::TownList
         static currency32_t placeBuildingGhost(const GameCommands::BuildingPlacementArgs& placementArgs)
         {
             removeBuildingGhost();
-            auto res = GameCommands::do_44(placementArgs, GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6);
+            auto res = GameCommands::do_44(placementArgs, GameCommands::Flags::apply | GameCommands::Flags::flag_1 | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6);
             if (res != GameCommands::FAILURE)
             {
                 _buildingGhostPos = placementArgs.pos;
