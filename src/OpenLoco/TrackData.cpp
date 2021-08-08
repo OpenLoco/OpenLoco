@@ -1,4 +1,5 @@
 #include "TrackData.h"
+#include "Interop/Interop.hpp"
 #include <array>
 #include <cassert>
 
@@ -302,5 +303,18 @@ namespace OpenLoco::Map::TrackData
     {
         assert(trackId < roadPieces.size());
         return roadPieces[trackId];
+    }
+
+    static Interop::loco_global<TrackCoordinates[80], 0x004F6F8C> _4F6F8C;
+    static Interop::loco_global<TrackCoordinates[352], 0x004F7B5C> _4F7B5C;
+
+    const TrackCoordinates& getUnkTrack(uint16_t trackAndDirection)
+    {
+        return _4F7B5C[trackAndDirection];
+    }
+
+    const TrackCoordinates& getUnkRoad(uint16_t trackAndDirection)
+    {
+        return _4F6F8C[trackAndDirection];
     }
 }

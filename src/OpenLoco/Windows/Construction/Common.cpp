@@ -363,7 +363,7 @@ namespace OpenLoco::Ui::Windows::Construction
     }
 
     // 0x0049FEC7
-    void sub_49FEC7()
+    void removeConstructionGhosts()
     {
         registers regs;
         call(0x0049FEC7, regs);
@@ -418,7 +418,7 @@ namespace OpenLoco::Ui::Windows::Construction
                 Construction::activateSelectedConstructionWidgets();
             }
 
-            sub_49FEC7();
+            removeConstructionGhosts();
             TileManager::mapInvalidateMapSelectionTiles();
             Input::resetMapSelectionFlag(Input::MapSelectionFlags::enableConstruct);
             _trackCost = 0x80000000;
@@ -698,7 +698,7 @@ namespace OpenLoco::Ui::Windows::Construction
         // 0x0049DD14
         void onClose(Window* self)
         {
-            sub_49FEC7();
+            removeConstructionGhosts();
             WindowManager::viewportSetVisibility(WindowManager::ViewportVisibility::reset);
             TileManager::mapInvalidateMapSelectionTiles();
             Input::resetMapSelectionFlag(Input::MapSelectionFlags::enableConstruct);
@@ -719,7 +719,7 @@ namespace OpenLoco::Ui::Windows::Construction
             if (!(_byte_522096 & flag))
                 return;
 
-            sub_49FEC7();
+            removeConstructionGhosts();
         }
 
         void initEvents()
@@ -1151,7 +1151,7 @@ namespace OpenLoco::Ui::Windows::Construction
         // 0x004A3A50
         void sub_4A3A50()
         {
-            sub_49FEC7();
+            removeConstructionGhosts();
             setTrackOptions(_trackType);
             refreshStationList(_stationList, _trackType, TransportMode::road);
 
@@ -1247,7 +1247,7 @@ namespace OpenLoco::Ui::Windows::Construction
                 if (_constructionHover == 1)
                 {
                     self->callOnMouseUp(Construction::widx::rotate_90);
-                    sub_49FEC7();
+                    removeConstructionGhosts();
                     return true;
                 }
                 break;

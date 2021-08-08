@@ -621,7 +621,7 @@ namespace OpenLoco::Input
         auto* window = WindowManager::find(WindowType::construction);
         if (window != nullptr)
         {
-            Ui::Windows::Construction::sub_49FEC7();
+            Ui::Windows::Construction::removeConstructionGhosts();
         }
 
         GameCommands::setErrorTitle(StringIds::cant_remove_signal);

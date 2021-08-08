@@ -51,7 +51,7 @@ namespace OpenLoco::Ui::Windows::Construction
     static loco_global<uint16_t, 0x01135FD8> _word_1135FD8;
     static loco_global<uint16_t, 0x01135FE4> _lastSelectedMods;
     static loco_global<uint16_t, 0x01135FFE> _word_1135FFE;
-    static loco_global<uint16_t, 0x01136000> _word_1136000;
+    static loco_global<int16_t, 0x01136000> _word_1136000;
     static loco_global<uint8_t[17], 0x0113601D> _signalList;
     static loco_global<uint8_t, 0x0113602E> _lastSelectedSignal;
     static loco_global<uint8_t, 0x0113602F> _isSignalBothDirections;
@@ -61,7 +61,7 @@ namespace OpenLoco::Ui::Windows::Construction
     static loco_global<uint8_t[17], 0x0113603B> _stationList;
     static loco_global<uint8_t, 0x0113604C> _lastSelectedStationType;
     static loco_global<uint8_t[4], 0x01136054> _modList;
-    static loco_global<uint8_t, 0x0113605D> _byte_113605D;
+    static loco_global<uint8_t, 0x0113605D> _makeJunction;
     static loco_global<uint8_t, 0x01136061> _constructionHover;
     static loco_global<uint8_t, 0x01136062> _trackType;
     static loco_global<uint8_t, 0x01136063> _byte_1136063;
