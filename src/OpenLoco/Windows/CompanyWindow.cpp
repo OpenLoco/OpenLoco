@@ -2001,28 +2001,19 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             self->scroll_areas[0].contentOffsetX = 0x7FFF;
             self->scroll_areas[0].contentWidth = 0;
             self->updateScrollWidgets();
-            for (WidgetIndex_t scrollWidx = 0;; ++scrollWidx)
+
+            const Ui::Widget& widget = self->widgets[widx::scrollview];
+
+            const auto x = std::max<int16_t>(0, self->scroll_areas[0].contentOffsetX);
+            auto widgetWidth = widget.width();
+            if (self->scroll_areas[0].flags & ScrollView::ScrollFlags::vscrollbarVisible)
             {
-                const Ui::Widget& widget = self->widgets[scrollWidx];
-
-                if (widget.type == WidgetType::end)
-                    break;
-
-                if (widget.type != WidgetType::scrollview)
-                    continue;
-
-                const auto x = std::max<int16_t>(0, self->scroll_areas[0].contentOffsetX);
-                auto widgetWidth = widget.width();
-                if (self->scroll_areas[0].flags & ScrollView::ScrollFlags::vscrollbarVisible)
-                {
-                    widgetWidth -= ScrollView::barWidth;
-                }
-                // This gets the offset of the last full page (widgetWidth) of the scroll view
-                const auto newOffset = std::max(0, self->scroll_areas[0].contentWidth - widgetWidth);
-                self->scroll_areas[0].contentOffsetX = std::min<int16_t>(x, newOffset);
-                ScrollView::updateThumbs(self, scrollWidx);
-                break;
+                widgetWidth -= ScrollView::barWidth;
             }
+            // This gets the offset of the last full page (widgetWidth) of the scroll view
+            const auto newOffset = std::max(0, self->scroll_areas[0].contentWidth - widgetWidth);
+            self->scroll_areas[0].contentOffsetX = std::min<int16_t>(x, newOffset);
+            ScrollView::updateThumbs(self, widx::scrollview);
         }
 
         // 0x00433868
