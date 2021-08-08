@@ -1645,7 +1645,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         return std::nullopt;
     }
 
-    std::optional<std::pair<Map::TilePos2, int16_t>> getConstructionPos(const int16_t x, const int16_t y, const int16_t baseHeight)
+    static std::optional<std::pair<Map::TilePos2, int16_t>> getConstructionPos(const int16_t x, const int16_t y, const int16_t baseHeight)
     {
         auto mapPos = ViewportInteraction::getSurfaceOrWaterLocFromUi({ x, y });
 
