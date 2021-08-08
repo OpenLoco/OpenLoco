@@ -18,7 +18,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::ScenarioSelect
 {
-    constexpr Gfx::ui_size_t windowSize = { 610, 412 };
+    constexpr Ui::Size windowSize = { 610, 412 };
 
     namespace widx
     {
@@ -103,8 +103,8 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
 
         self = WindowManager::createWindow(
             WindowType::scenarioSelect,
-            Gfx::point_t({ static_cast<int16_t>(width() / 2 - windowSize.width / 2),
-                           std::max<int16_t>(height() / 2 - windowSize.height / 2, 28) }),
+            Ui::Point({ static_cast<int16_t>(width() / 2 - windowSize.width / 2),
+                        std::max<int16_t>(height() / 2 - windowSize.height / 2, 28) }),
             windowSize,
             WindowFlags::stick_to_front | WindowFlags::flag_12,
             &_events);
@@ -174,7 +174,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
                 continue;
 
             const auto offset = self->current_tab == i ? 1 : 0;
-            auto origin = Gfx::point_t(widget.mid_x() + self->x, widget.mid_y() + self->y - 3 - offset);
+            auto origin = Ui::Point(widget.mid_x() + self->x, widget.mid_y() + self->y - 3 - offset);
             const string_id caption = scenarioGroupIds[i];
 
             Gfx::drawStringCentredWrapped(*context, origin, widget.width() - 4, Colour::black, StringIds::wcolour2_stringid, &caption);
@@ -271,7 +271,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
             args.push(StringIds::randomly_generated_landscape);
 
             // Overlay random map note.
-            auto origin = Gfx::point_t(x, y);
+            auto origin = Ui::Point(x, y);
             Gfx::drawStringCentredWrapped(*context, origin, 128, Colour::black, StringIds::wcolour2_stringid, &args);
         }
 
@@ -289,7 +289,7 @@ namespace OpenLoco::Ui::Windows::ScenarioSelect
 
             // Challenge header
             y += 5;
-            auto origin = Gfx::point_t(x, y);
+            auto origin = Ui::Point(x, y);
             Gfx::drawString_494B3F(*context, &origin, Colour::black, StringIds::challenge_label, nullptr);
 
             // Challenge text

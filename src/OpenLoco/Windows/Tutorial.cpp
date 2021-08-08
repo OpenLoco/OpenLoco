@@ -17,7 +17,7 @@ namespace OpenLoco::Ui::Windows::Tutorial
         frame,
     };
 
-    constexpr Gfx::ui_size_t windowSize = { 140, 29 };
+    constexpr Ui::Size windowSize = { 140, 29 };
 
     Widget widgets[] = {
         makeWidget({ 0, 0 }, windowSize, WidgetType::wt_3, WindowColour::primary),
@@ -35,8 +35,8 @@ namespace OpenLoco::Ui::Windows::Tutorial
 
         auto window = WindowManager::createWindow(
             WindowType::tutorial,
-            Gfx::point_t(windowSize.width, Ui::height() - 27),
-            Gfx::ui_size_t(Ui::width() - 280, 27),
+            Ui::Point(windowSize.width, Ui::height() - 27),
+            Ui::Size(Ui::width() - 280, 27),
             WindowFlags::stick_to_front | WindowFlags::transparent | WindowFlags::no_background,
             &_events);
 

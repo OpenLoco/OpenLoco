@@ -166,7 +166,7 @@ namespace OpenLoco::Ui::WindowManager
             0x0045FCE6,
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
-                xy32 mouse = { regs.ax, regs.bx };
+                Point mouse = { regs.ax, regs.bx };
                 auto pos = Ui::screenGetMapXyWithZ(mouse, regs.bp);
                 regs = backup;
                 if (pos)
@@ -447,7 +447,7 @@ namespace OpenLoco::Ui::WindowManager
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
 
-                auto w = createWindow((WindowType)regs.cl, Gfx::point_t(regs.ax, regs.eax >> 16), Gfx::ui_size_t(regs.bx, regs.ebx >> 16), regs.ecx >> 8, (WindowEventList*)regs.edx);
+                auto w = createWindow((WindowType)regs.cl, Ui::Point(regs.ax, regs.eax >> 16), Ui::Size(regs.bx, regs.ebx >> 16), regs.ecx >> 8, (WindowEventList*)regs.edx);
                 regs = backup;
 
                 regs.esi = X86Pointer(w);
@@ -459,7 +459,7 @@ namespace OpenLoco::Ui::WindowManager
             [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
                 registers backup = regs;
 
-                auto w = createWindow((WindowType)regs.cl, Gfx::ui_size_t(regs.bx, (((uint32_t)regs.ebx) >> 16)), regs.ecx >> 8, (WindowEventList*)regs.edx);
+                auto w = createWindow((WindowType)regs.cl, Ui::Size(regs.bx, (((uint32_t)regs.ebx) >> 16)), regs.ecx >> 8, (WindowEventList*)regs.edx);
                 regs = backup;
 
                 regs.esi = X86Pointer(w);
@@ -653,7 +653,7 @@ namespace OpenLoco::Ui::WindowManager
         return nullptr;
     }
 
-    Window* findAt(Gfx::point_t point)
+    Window* findAt(Ui::Point point)
     {
         return findAt(point.x, point.y);
     }
@@ -855,7 +855,7 @@ namespace OpenLoco::Ui::WindowManager
      * @param width @<bx>
      * @param height @<cx>
      */
-    static bool windowFitsWithinSpace(Gfx::point_t position, Gfx::ui_size_t size)
+    static bool windowFitsWithinSpace(Ui::Point position, Ui::Size size)
     {
         if (position.x < 0)
             return false;
@@ -891,8 +891,8 @@ namespace OpenLoco::Ui::WindowManager
     // 0x004C9F27
     static Window* createWindowOnScreen(
         WindowType type,
-        Gfx::point_t origin,
-        Gfx::ui_size_t size,
+        Ui::Point origin,
+        Ui::Size size,
         uint32_t flags,
         WindowEventList* events)
     {
@@ -902,7 +902,7 @@ namespace OpenLoco::Ui::WindowManager
     }
 
     // 0x004C9BA2
-    static bool windowFitsOnScreen(Gfx::point_t origin, Gfx::ui_size_t size)
+    static bool windowFitsOnScreen(Ui::Point origin, Ui::Size size)
     {
         if (origin.x < -(size.width / 4))
             return false;
@@ -929,11 +929,11 @@ namespace OpenLoco::Ui::WindowManager
      */
     Window* createWindow(
         WindowType type,
-        Gfx::ui_size_t size,
+        Ui::Size size,
         uint32_t flags,
         WindowEventList* events)
     {
-        Gfx::point_t position{};
+        Ui::Point position{};
 
         position.x = 0;  // dx
         position.y = 30; // ax
@@ -1057,8 +1057,8 @@ namespace OpenLoco::Ui::WindowManager
      */
     Window* createWindow(
         WindowType type,
-        Gfx::point_t origin,
-        Gfx::ui_size_t size,
+        Ui::Point origin,
+        Ui::Size size,
         uint32_t flags,
         WindowEventList* events)
     {
@@ -1134,11 +1134,11 @@ namespace OpenLoco::Ui::WindowManager
         return &_windows[dstIndex];
     }
 
-    Window* createWindowCentred(WindowType type, Gfx::ui_size_t size, uint32_t flags, WindowEventList* events)
+    Window* createWindowCentred(WindowType type, Ui::Size size, uint32_t flags, WindowEventList* events)
     {
         auto x = (Ui::width() / 2) - (size.width / 2);
         auto y = std::max(28, (Ui::height() / 2) - (size.height / 2));
-        return createWindow(type, Gfx::point_t(x, y), size, flags, events);
+        return createWindow(type, Ui::Point(x, y), size, flags, events);
     }
 
     // 0x004C5FC8
@@ -1537,7 +1537,7 @@ namespace OpenLoco::Ui::WindowManager
             return;
         }
 
-        const Gfx::point_t cursorPosition = Input::getMouseLocation();
+        const Ui::Point cursorPosition = Input::getMouseLocation();
         auto window = findAt(cursorPosition);
 
         if (window != nullptr)

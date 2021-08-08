@@ -963,7 +963,7 @@ namespace OpenLoco::Ui
     {
         auto widget = &w->widgets[index];
 
-        Gfx::point_t pos = {};
+        Ui::Point pos = {};
         pos.x = widget->left + w->x;
         pos.y = widget->top + w->y;
 

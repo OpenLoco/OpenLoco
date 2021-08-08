@@ -784,7 +784,7 @@ namespace OpenLoco::Input
                     return;
                 }
 
-                Gfx::point_t dragOffset = { x, y };
+                Ui::Point dragOffset = { x, y };
                 if (Tutorial::state() != Tutorial::State::playing)
                 {
                     // Fix #151: use relative drag from one frame to the next rather than
@@ -2054,32 +2054,32 @@ namespace OpenLoco::Input
         }
     }
 
-    Gfx::point_t getMouseLocation()
+    Ui::Point getMouseLocation()
     {
-        return Gfx::point_t(_cursorX, _cursorY);
+        return Ui::Point(_cursorX, _cursorY);
     }
 
-    Gfx::point_t getMouseLocation2()
+    Ui::Point getMouseLocation2()
     {
-        return Gfx::point_t(_cursorX2, _cursorY2);
+        return Ui::Point(_cursorX2, _cursorY2);
     }
 
-    Gfx::point_t getTooltipMouseLocation()
+    Ui::Point getTooltipMouseLocation()
     {
-        return Gfx::point_t(_tooltipCursorX, _tooltipCursorY);
+        return Ui::Point(_tooltipCursorX, _tooltipCursorY);
     }
 
-    Gfx::point_t getDragLastLocation()
+    Ui::Point getDragLastLocation()
     {
-        return Gfx::point_t(_dragLastX, _dragLastY);
+        return Ui::Point(_dragLastX, _dragLastY);
     }
 
-    Gfx::point_t getScrollLastLocation()
+    Ui::Point getScrollLastLocation()
     {
-        return Gfx::point_t(_5233A4, _5233A6);
+        return Ui::Point(_5233A4, _5233A6);
     }
 
-    void setTooltipMouseLocation(const Gfx::point_t& loc)
+    void setTooltipMouseLocation(const Ui::Point& loc)
     {
         _tooltipCursorX = loc.x;
         _tooltipCursorY = loc.y;

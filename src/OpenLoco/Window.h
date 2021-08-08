@@ -298,9 +298,9 @@ namespace OpenLoco::Ui
         int16_t var_88A;
         int16_t var_88C;
 
-        Window(Gfx::point_t position, Gfx::ui_size_t size);
+        Window(Ui::Point position, Ui::Size size);
 
-        constexpr bool setSize(Gfx::ui_size_t minSize, Gfx::ui_size_t maxSize)
+        constexpr bool setSize(Ui::Size minSize, Ui::Size maxSize)
         {
             bool hasResized = false;
 
@@ -338,7 +338,7 @@ namespace OpenLoco::Ui
             return hasResized;
         }
 
-        constexpr void setSize(Gfx::ui_size_t size)
+        constexpr void setSize(Ui::Size size)
         {
             setSize(size, size);
         }
@@ -433,6 +433,6 @@ namespace OpenLoco::Ui
     assert_struct_size(Window, 0x88E);
 
     Map::Pos2 viewportCoordToMapCoord(int16_t x, int16_t y, int16_t z, int32_t rotation);
-    std::optional<Map::Pos2> screenGetMapXyWithZ(const xy32& mouse, const int16_t z);
+    std::optional<Map::Pos2> screenGetMapXyWithZ(const Point& mouse, const int16_t z);
 #pragma pack(pop)
 }

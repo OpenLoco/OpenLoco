@@ -49,7 +49,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     };
     static loco_global<uint8_t[256], 0x004FDC5C> _byte_4FDC5C;
     static loco_global<uint32_t, 0x0526284> _lastMapWindowFlags;
-    static loco_global<Gfx::ui_size_t, 0x00526288> _lastMapWindowSize;
+    static loco_global<Ui::Size, 0x00526288> _lastMapWindowSize;
     static loco_global<uint16_t, 0x0052628C> _lastMapWindowVar88A;
     static loco_global<uint16_t, 0x0052628E> _lastMapWindowVar88C;
     static loco_global<int32_t, 0x00E3F0B8> gCurrentRotation;
@@ -108,7 +108,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
 
     static WindowEventList events;
 
-    static Pos2 mapWindowPosToLocation(xy32 pos)
+    static Pos2 mapWindowPosToLocation(Point pos)
     {
         pos.x = ((pos.x + 8) - map_columns) / 2;
         pos.y = ((pos.y + 8)) / 2;
@@ -131,7 +131,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         return { 0, 0 }; // unreachable
     }
 
-    static xy32 locationToMapWindowPos(Pos2 pos)
+    static Point locationToMapWindowPos(Pos2 pos)
     {
         int32_t x = pos.x;
         int32_t y = pos.y;
@@ -157,13 +157,13 @@ namespace OpenLoco::Ui::Windows::MapWindow
         x /= tile_size;
         y /= tile_size;
 
-        return { static_cast<int32_t>(-x + y + map_columns - 8), static_cast<int32_t>(x + y - 8) };
+        return Point(-x + y + map_columns - 8, x + y - 8);
     }
 
     // 0x0046B8E6
     static void onClose(Window* self)
     {
-        _lastMapWindowSize = Gfx::ui_size_t(self->width, self->height);
+        _lastMapWindowSize = Ui::Size(self->width, self->height);
         _lastMapWindowVar88A = self->var_88A;
         _lastMapWindowVar88C = self->var_88C;
         _lastMapWindowFlags = self->flags | WindowFlags::flag_31;
@@ -208,8 +208,8 @@ namespace OpenLoco::Ui::Windows::MapWindow
         self->max_width = 800;
         self->max_height = 800;
 
-        Gfx::ui_size_t minWindowSize = { self->min_width, self->min_height };
-        Gfx::ui_size_t maxWindowSize = { self->max_width, self->max_height };
+        Ui::Size minWindowSize = { self->min_width, self->min_height };
+        Ui::Size maxWindowSize = { self->max_width, self->max_height };
         self->setSize(minWindowSize, maxWindowSize);
     }
 
@@ -1007,7 +1007,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
     }
 
     // 0x0046C294
-    static std::pair<xy32, xy32> drawRouteLine(Gfx::Context* context, xy32 startPos, xy32 endPos, Pos2 stationPos, uint8_t colour)
+    static std::pair<Point, Point> drawRouteLine(Gfx::Context* context, Point startPos, Point endPos, Pos2 stationPos, uint8_t colour)
     {
         auto newStartPos = locationToMapWindowPos({ stationPos.x, stationPos.y });
 
@@ -1075,8 +1075,8 @@ namespace OpenLoco::Ui::Windows::MapWindow
         if (!colour)
             return;
 
-        xy32 startPos = { Location::null, 0 };
-        xy32 endPos = { Location::null, 0 };
+        Point startPos = { Location::null, 0 };
+        Point endPos = { Location::null, 0 };
         for (auto& order : Vehicles::OrderRingView(train.head->orderTableOffset))
         {
             if (order.hasFlag(Vehicles::OrderFlags::HasStation))
@@ -1465,7 +1465,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
             return;
 
         _dword_F253A8 = static_cast<uint8_t*>(ptr);
-        Gfx::ui_size_t size = { 350, 272 };
+        Ui::Size size = { 350, 272 };
 
         if (_lastMapWindowFlags != 0)
         {

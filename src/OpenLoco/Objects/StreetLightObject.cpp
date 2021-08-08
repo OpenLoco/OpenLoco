@@ -1,6 +1,5 @@
 #include "StreetLightObject.h"
 #include "../Graphics/Gfx.h"
-#include "../Graphics/Types.h"
 
 namespace OpenLoco
 {
@@ -10,7 +9,7 @@ namespace OpenLoco
     // 0x00477F69
     void StreetLightObject::drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const
     {
-        Gfx::point_t imgPosition = Gfx::point_t{ x, y } - Gfx::point_t{ 20, 1 };
+        Ui::Point imgPosition = Ui::Point{ x, y } - Ui::Point{ 20, 1 };
         for (auto i = 0; i < 3; i++)
         {
             auto imageId = (i * 4) + image;

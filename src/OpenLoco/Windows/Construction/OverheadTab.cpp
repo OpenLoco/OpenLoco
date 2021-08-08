@@ -252,7 +252,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
                 coord_t y = 0x2010;
 
                 auto rotCoord = Math::Vector::rotate(Pos2{ x, y }, gCurrentRotation);
-                Gfx::point_t screenPos = { static_cast<int16_t>(rotCoord.y - rotCoord.x), static_cast<int16_t>(((rotCoord.x + rotCoord.y) >> 1) - 460) };
+                Ui::Point screenPos = { static_cast<int16_t>(rotCoord.y - rotCoord.x), static_cast<int16_t>(((rotCoord.x + rotCoord.y) >> 1) - 460) };
 
                 screenPos.x -= (self->widgets[widx::image].width() / 2);
                 screenPos.y -= ((self->widgets[widx::image].width() / 2) + 16);

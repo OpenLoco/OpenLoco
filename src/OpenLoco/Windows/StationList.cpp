@@ -21,9 +21,9 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::StationList
 {
-    static const Gfx::ui_size_t window_size = { 600, 197 };
-    static const Gfx::ui_size_t max_dimensions = { 640, 1200 };
-    static const Gfx::ui_size_t min_dimensions = { 192, 100 };
+    static const Ui::Size window_size = { 600, 197 };
+    static const Ui::Size max_dimensions = { 640, 1200 };
+    static const Ui::Size min_dimensions = { 192, 100 };
 
     static const uint8_t rowHeight = 10; // CJK: 13
 
@@ -569,7 +569,7 @@ namespace OpenLoco::Ui::Windows::StationList
         _common_format_args[1] = window->var_83C;
 
         // Draw number of stations.
-        auto origin = Gfx::point_t(window->x + 4, window->y + window->height - 12);
+        auto origin = Ui::Point(window->x + 4, window->y + window->height - 12);
         Gfx::drawString_494B3F(*context, &origin, Colour::black, StringIds::black_stringid, &*_common_format_args);
     }
 

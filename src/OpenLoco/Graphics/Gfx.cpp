@@ -558,9 +558,9 @@ namespace OpenLoco::Gfx
     }
 
     // 0x00451189
-    static Gfx::point_t loopNewline(Context* context, Gfx::point_t origin, uint8_t* str)
+    static Ui::Point loopNewline(Context* context, Ui::Point origin, uint8_t* str)
     {
-        Gfx::point_t pos = origin;
+        Ui::Point pos = origin;
         while (true)
         {
             // When offscreen in y dimension don't draw text
@@ -791,10 +791,10 @@ namespace OpenLoco::Gfx
      * @param context @<edi>
      * @param text @<esi>
      */
-    Gfx::point_t drawString(Context& context, const int16_t x, const int16_t y, uint8_t colour, void* str)
+    Ui::Point drawString(Context& context, int16_t x, int16_t y, uint8_t colour, void* str)
     {
         // 0x00E04348, 0x00E0434A
-        Gfx::point_t origin = { x, y };
+        Ui::Point origin = { x, y };
 
         if (colour == FormatFlags::fe)
         {
@@ -949,7 +949,7 @@ namespace OpenLoco::Gfx
      */
     void drawString_494B3F(
         Context& context,
-        point_t* origin,
+        Point* origin,
         uint8_t colour,
         string_id stringId,
         const void* args)
@@ -1136,7 +1136,7 @@ namespace OpenLoco::Gfx
      */
     uint16_t drawStringCentredWrapped(
         Context& context,
-        point_t& origin,
+        Point& origin,
         uint16_t width,
         uint8_t colour,
         string_id stringId,
@@ -1424,7 +1424,7 @@ namespace OpenLoco::Gfx
         return *dst != nullptr;
     }
 
-    bool clipContext(Gfx::Context** dst, Gfx::Context* src, point_t pos, Gfx::ui_size_t size)
+    bool clipContext(Gfx::Context** dst, Gfx::Context* src, Point pos, Ui::Size size)
     {
         return clipContext(dst, src, pos.x, pos.y, size.width, size.height);
     }

@@ -412,7 +412,7 @@ namespace OpenLoco::Ui::ViewportInteraction
 
         // TODO: Handle in the paint functions
         // Get the viewport and add extra flags for hidden scenery
-        auto screenPos = Gfx::point_t(x, y);
+        auto screenPos = Ui::Point(x, y);
         auto w = WindowManager::findAt(screenPos);
         if (w != nullptr)
         {
@@ -453,7 +453,7 @@ namespace OpenLoco::Ui::ViewportInteraction
 
         _50BF68 = 1;
         ViewportInteraction::InteractionArg interaction{};
-        Gfx::point_t screenPos = { static_cast<int16_t>(screenX), static_cast<int16_t>(screenY) };
+        Ui::Point screenPos = { static_cast<int16_t>(screenX), static_cast<int16_t>(screenY) };
         auto w = WindowManager::findAt(screenPos);
         if (w == nullptr)
         {
@@ -517,7 +517,7 @@ namespace OpenLoco::Ui::ViewportInteraction
     // regs.ax = mapX, 0x8000 - in case of failure
     // regs.bx = mapY
     // regs.ecx = closestEdge (unsure if ever used)
-    std::optional<Pos2> getSurfaceOrWaterLocFromUi(const xy32& screenCoords)
+    std::optional<Pos2> getSurfaceOrWaterLocFromUi(const Point& screenCoords)
     {
         auto [info, viewport] = getMapCoordinatesFromPos(screenCoords.x, screenCoords.y, ~(InteractionItemFlags::surface | InteractionItemFlags::water));
 
@@ -557,7 +557,7 @@ namespace OpenLoco::Ui::ViewportInteraction
     }
 
     // 0x0045F1A7
-    std::optional<std::pair<Pos2, Viewport*>> getSurfaceLocFromUi(const xy32& screenCoords)
+    std::optional<std::pair<Pos2, Viewport*>> getSurfaceLocFromUi(const Point& screenCoords)
     {
         auto [info, viewport] = getMapCoordinatesFromPos(screenCoords.x, screenCoords.y, ~InteractionItemFlags::surface);
 

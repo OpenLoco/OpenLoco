@@ -73,7 +73,7 @@ namespace OpenLoco::Ui
             return (vpos.y >= view_y && vpos.y < view_y + view_height && vpos.x >= view_x && vpos.x < view_x + view_width);
         }
 
-        constexpr bool containsUi(const xy32& pos)
+        constexpr bool containsUi(const Point& pos)
         {
             return (pos.x >= x && pos.x < x + width && pos.y >= y && pos.y < y + height);
         }
@@ -117,17 +117,17 @@ namespace OpenLoco::Ui
         /**
          * Maps a 2D viewport position to a UI (screen) position.
          */
-        xy32 mapToUi(const viewport_pos& vpos)
+        Point mapToUi(const viewport_pos& vpos)
         {
             auto uiX = x + ((vpos.x - view_x) >> zoom);
             auto uiY = y + ((vpos.y - view_y) >> zoom);
-            return { uiX, uiY };
+            return Point(uiX, uiY);
         }
 
         /**
          * Maps a UI (screen) position to a 2D viewport position.
          */
-        viewport_pos uiToMap(const xy32& pos)
+        viewport_pos uiToMap(const Point& pos)
         {
             int16_t viewport_x = ((pos.x - x) << zoom) + view_x;
             int16_t viewport_y = ((pos.y - y) << zoom) + view_y;
@@ -138,8 +138,8 @@ namespace OpenLoco::Ui
          */
         Rect uiToMap(const Rect& rect)
         {
-            auto leftTop = uiToMap({ rect.left(), rect.top() });
-            auto rightBottom = uiToMap({ rect.right(), rect.bottom() });
+            auto leftTop = uiToMap(Point(rect.left(), rect.top()));
+            auto rightBottom = uiToMap(Point(rect.right(), rect.bottom()));
             return Rect::fromLTRB(leftTop.x, leftTop.y, rightBottom.x, rightBottom.y);
         }
 
@@ -148,7 +148,7 @@ namespace OpenLoco::Ui
         SavedViewSimple toSavedView() const;
 
         viewport_pos getCentre() const;
-        xy32 getUiCentre() const;
+        Point getUiCentre() const;
         Map::Pos2 getCentreMapPosition() const;
         std::optional<Map::Pos2> getCentreScreenMapPosition() const;
 

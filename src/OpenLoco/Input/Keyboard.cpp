@@ -401,7 +401,7 @@ namespace OpenLoco::Input
         if (hasKeyModifier(KeyModifier::shift) || hasKeyModifier(KeyModifier::control))
             return;
 
-        Gfx::point_t delta = { 0, 0 };
+        Ui::Point delta = { 0, 0 };
         auto cursor = getMouseLocation();
 
         if (cursor.x == 0)
@@ -448,7 +448,7 @@ namespace OpenLoco::Input
         if (WindowManager::find(WindowType::textInput) != nullptr)
             return;
 
-        Gfx::point_t delta = { 0, 0 };
+        Ui::Point delta = { 0, 0 };
 
         if (_keyboardState[DIK_LEFT] & 0x80)
             delta.x -= 8;

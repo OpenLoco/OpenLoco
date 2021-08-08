@@ -38,7 +38,7 @@ namespace OpenLoco::Ui::Windows::MapToolTip
         _mapTooltipTimeout++;
         auto cursor = Input::getMouseLocation();
 
-        static Gfx::point_t tooltipLocation = {};
+        static Ui::Point tooltipLocation = {};
         if ((std::abs(tooltipLocation.x - cursor.x) > 5)
             || (std::abs(tooltipLocation.y - cursor.y) > 5)
             || Input::hasFlag(Input::Flags::flag5))
@@ -81,7 +81,7 @@ namespace OpenLoco::Ui::Windows::MapToolTip
         else
         {
             initEvents();
-            window = WindowManager::createWindow(WindowType::mapTooltip, Gfx::point_t(x, y), Gfx::ui_size_t(width, height), WindowFlags::stick_to_front | WindowFlags::transparent | WindowFlags::no_background, &events);
+            window = WindowManager::createWindow(WindowType::mapTooltip, Ui::Point(x, y), Ui::Size(width, height), WindowFlags::stick_to_front | WindowFlags::transparent | WindowFlags::no_background, &events);
             window->widgets = _widgets;
             auto* skin = ObjectManager::get<InterfaceSkinObject>();
             window->setColour(WindowColour::secondary, skin->colour_06);
@@ -119,12 +119,12 @@ namespace OpenLoco::Ui::Windows::MapToolTip
 
         if (_mapTooltipOwner == CompanyId::null || _mapTooltipOwner == CompanyManager::getControllingId())
         {
-            Gfx::point_t origin(self->x + self->width / 2, self->y + self->height / 2 - 5);
+            Ui::Point origin(self->x + self->width / 2, self->y + self->height / 2 - 5);
             Gfx::drawStringCentredWrapped(*context, origin, self->width, Colour::black, StringIds::outlined_wcolour2_stringid, &args);
         }
         else
         {
-            Gfx::point_t origin(self->x + self->width / 2 + 13, self->y + self->height / 2 - 5);
+            Ui::Point origin(self->x + self->width / 2 + 13, self->y + self->height / 2 - 5);
             auto width = Gfx::drawStringCentredWrapped(*context, origin, self->width - 28, Colour::black, StringIds::outlined_wcolour2_stringid, &args);
 
             auto left = self->width / 2 + self->x + 13 - width / 2 - 28;

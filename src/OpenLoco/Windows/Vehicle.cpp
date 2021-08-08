@@ -91,8 +91,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
     namespace Details
     {
-        static const Gfx::ui_size_t minWindowSize = { 192, 148 };
-        static const Gfx::ui_size_t maxWindowSize = { 400, 440 };
+        static const Ui::Size minWindowSize = { 192, 148 };
+        static const Ui::Size maxWindowSize = { 400, 440 };
 
         enum widx
         {
@@ -119,8 +119,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
     namespace Cargo
     {
-        static const Gfx::ui_size_t minWindowSize = { 192, 142 };
-        static const Gfx::ui_size_t maxWindowSize = { 400, 440 };
+        static const Ui::Size minWindowSize = { 192, 142 };
+        static const Ui::Size maxWindowSize = { 400, 440 };
 
         enum widx
         {
@@ -143,8 +143,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
     namespace Finances
     {
-        static const Gfx::ui_size_t minWindowSize = { 400, 202 };
-        static const Gfx::ui_size_t maxWindowSize = minWindowSize;
+        static const Ui::Size minWindowSize = { 400, 202 };
+        static const Ui::Size maxWindowSize = minWindowSize;
 
         static WindowEventList events;
         constexpr uint64_t enabledWidgets = Common::enabledWidgets;
@@ -159,8 +159,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
     namespace Route
     {
-        static const Gfx::ui_size_t minWindowSize = { 265, 178 };
-        static const Gfx::ui_size_t maxWindowSize = { 600, 440 };
+        static const Ui::Size minWindowSize = { 265, 178 };
+        static const Ui::Size maxWindowSize = { 600, 440 };
 
         enum widx
         {
@@ -210,9 +210,9 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
     namespace Main
     {
-        static const Gfx::ui_size_t windowSize = { 265, 177 };
-        static const Gfx::ui_size_t minWindowSize = { 192, 177 };
-        static const Gfx::ui_size_t maxWindowSize = { 600, 440 };
+        static const Ui::Size windowSize = { 265, 177 };
+        static const Ui::Size minWindowSize = { 192, 177 };
+        static const Ui::Size maxWindowSize = { 600, 440 };
 
         enum widx
         {
@@ -317,8 +317,8 @@ namespace OpenLoco::Ui::Windows::Vehicle
             if (self->viewports[0] == nullptr)
             {
                 auto widget = &self->widgets[widx::viewport];
-                auto origin = Gfx::point_t(widget->left + self->x + 1, widget->top + self->y + 1);
-                auto size = Gfx::ui_size_t(widget->width() - 2, widget->height() - 2);
+                auto origin = Ui::Point(widget->left + self->x + 1, widget->top + self->y + 1);
+                auto size = Ui::Size(widget->width() - 2, widget->height() - 2);
                 ViewportManager::create(self, 0, origin, size, self->saved_view.zoomLevel, targetThing);
                 self->invalidate();
                 self->flags |= WindowFlags::viewport_no_scrolling;
@@ -937,7 +937,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             {
                 FormatArguments args = {};
                 args.push(StringIds::getVehicleType(veh->vehicleType));
-                Gfx::point_t origin;
+                Ui::Point origin;
                 Widget& button = self->widgets[widx::viewport];
                 origin.x = self->x + button.mid_x();
                 origin.y = self->y + button.mid_y();
@@ -1407,7 +1407,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
             auto head = Common::getVehicle(self);
             OpenLoco::Vehicles::Vehicle train{ head };
-            Gfx::point_t pos = { static_cast<int16_t>(self->x + 3), static_cast<int16_t>(self->y + self->height - 23) };
+            Ui::Point pos = { static_cast<int16_t>(self->x + 3), static_cast<int16_t>(self->y + self->height - 23) };
 
             {
                 FormatArguments args{};
@@ -1442,7 +1442,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             Gfx::clearSingle(context, Colour::getShade(self.getColour(WindowColour::secondary), 4));
             auto head = Common::getVehicle(&self);
             OpenLoco::Vehicles::Vehicle train{ head };
-            Gfx::point_t pos{ 0, 0 };
+            Ui::Point pos{ 0, 0 };
             for (auto& car : train.cars)
             {
                 string_id carStr = StringIds::black_stringid;
@@ -1510,7 +1510,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             events.draw_scroll = drawScroll;
         }
 
-        static Ui::Window* getVehicleDetailsWindow(const Gfx::point_t& pos)
+        static Ui::Window* getVehicleDetailsWindow(const Ui::Point& pos)
         {
             auto vehicleWindow = WindowManager::findAt(pos);
             if (vehicleWindow == nullptr || vehicleWindow->type != WindowType::vehicle || vehicleWindow->current_tab != (Common::widx::tabDetails - Common::widx::tabMain))
@@ -1520,7 +1520,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             return vehicleWindow;
         }
 
-        static Vehicles::VehicleBase* getCarFromScrollViewPos(Ui::Window& self, const Gfx::point_t& pos)
+        static Vehicles::VehicleBase* getCarFromScrollViewPos(Ui::Window& self, const Ui::Point& pos)
         {
             int16_t scrollX;
             int16_t scrollY;
@@ -1544,7 +1544,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             return car->front;
         }
 
-        void scrollDrag(const Gfx::point_t& pos)
+        void scrollDrag(const Ui::Point& pos)
         {
             auto vehicleWindow = getVehicleDetailsWindow(pos);
             if (vehicleWindow == nullptr)
@@ -1596,7 +1596,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
         }
 
-        void scrollDragEnd(const Gfx::point_t& pos)
+        void scrollDragEnd(const Ui::Point& pos)
         {
             auto vehicleWindow = getVehicleDetailsWindow(pos);
             if (vehicleWindow == nullptr && _dragCarComponent != nullptr)
@@ -2044,7 +2044,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             self->draw(context);
             Common::drawTabs(self, context);
 
-            auto pos = Gfx::point_t(self->x + 4, self->y + 46);
+            auto pos = Ui::Point(self->x + 4, self->y + 46);
 
             auto head = Common::getVehicle(self);
             Vehicles::Vehicle train(head);
@@ -2981,7 +2981,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             if (Input::isToolActive(WindowType::vehicle, self->number))
             {
                 // Location at bottom left edge of window
-                Gfx::point_t loc{ static_cast<int16_t>(self->x + 3), static_cast<int16_t>(self->y + self->height - 13) };
+                Ui::Point loc{ static_cast<int16_t>(self->x + 3), static_cast<int16_t>(self->y + self->height - 13) };
 
                 Gfx::drawString_494BBF(*context, loc.x, loc.y, self->width - 14, Colour::black, StringIds::route_click_on_waypoint);
             }
@@ -3069,7 +3069,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         // 0x004B4A58 based on
         static void sub_4B4A58(Window& self, Gfx::Context& context, const string_id strFormat, FormatArguments& args, Vehicles::Order& order, int16_t& y)
         {
-            Gfx::point_t loc = { 8, static_cast<int16_t>(y - 1) };
+            Ui::Point loc = { 8, static_cast<int16_t>(y - 1) };
             Gfx::drawString_494B3F(context, &loc, Colour::black, strFormat, &args);
             if (order.hasFlag(Vehicles::OrderFlags::HasNumber))
             {
@@ -3148,7 +3148,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
 
             // Output the end of orders
-            Gfx::point_t loc = { 8, static_cast<int16_t>(rowNum * lineHeight) };
+            Ui::Point loc = { 8, static_cast<int16_t>(rowNum * lineHeight) };
             auto strFormat = StringIds::black_stringid;
             if (self.var_842 == rowNum)
             {
@@ -3538,7 +3538,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
 
                 auto viewPos = Map::gameToScreen(*nodeLoc, res.second->getRotation());
                 auto uiPos = res.second->mapToUi(viewPos);
-                auto distance = Math::Vector::manhattanDistance(uiPos, xy32{ x, y });
+                auto distance = Math::Vector::manhattanDistance(uiPos, Point{ x, y });
                 if (distance < bestDistance)
                 {
                     bestDistance = distance;
@@ -3590,7 +3590,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004A43E4
-        static uint16_t getRoadProgressAtCursor(const xy32& cursorLoc, Ui::Viewport& viewport, const RoadElement& roadElement, const Map::Pos3& loc)
+        static uint16_t getRoadProgressAtCursor(const Point& cursorLoc, Ui::Viewport& viewport, const RoadElement& roadElement, const Map::Pos3& loc)
         {
             // Get the coordinates of the first tile of the possibly multitile road
             const auto& roadDataArr = Map::TrackData::getRoadPiece(roadElement.roadId());
@@ -3707,7 +3707,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
         }
 
         // 0x004A43E4
-        static uint16_t getTrackProgressAtCursor(const xy32& cursorLoc, Ui::Viewport& viewport, const TrackElement& trackElement, const Map::Pos3& loc)
+        static uint16_t getTrackProgressAtCursor(const Point& cursorLoc, Ui::Viewport& viewport, const TrackElement& trackElement, const Map::Pos3& loc)
         {
             // Get the coordinates of the first tile of the possibly multitile track
             const auto& trackDataArr = Map::TrackData::getTrackPiece(trackElement.trackId());

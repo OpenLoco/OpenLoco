@@ -326,7 +326,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         xPos = self->x + 2;
         yPos = self->widgets[widx::image].bottom + self->y + 29;
-        Gfx::point_t origin = { xPos, yPos };
+        Ui::Point origin = { xPos, yPos };
 
         Gfx::drawString_494B3F(*context, &origin, Colour::black, StringIds::catchment_area_accepts);
 

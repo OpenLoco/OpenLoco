@@ -4,7 +4,7 @@
 #include "../OpenLoco.h"
 #include "../Types.hpp"
 #include "../Ui/Rect.h"
-#include "Types.h"
+#include "../Ui/Types.hpp"
 #include <cstdint>
 
 namespace OpenLoco
@@ -137,7 +137,7 @@ namespace OpenLoco::Gfx
     uint16_t getStringWidth(const char* buffer);
     uint16_t getMaxStringWidth(const char* buffer);
 
-    Gfx::point_t drawString(Context& context, int16_t x, int16_t y, uint8_t colour, void* str);
+    Ui::Point drawString(Context& context, int16_t x, int16_t y, uint8_t colour, void* str);
 
     int16_t drawString_495224(
         Context& context,
@@ -156,7 +156,7 @@ namespace OpenLoco::Gfx
         const void* args = nullptr);
     void drawString_494B3F(
         Context& context,
-        point_t* origin,
+        Ui::Point* origin,
         uint8_t colour,
         string_id stringId,
         const void* args = nullptr);
@@ -206,7 +206,7 @@ namespace OpenLoco::Gfx
         const void* args = nullptr);
     uint16_t drawStringCentredWrapped(
         Context& context,
-        point_t& origin,
+        Ui::Point& origin,
         uint16_t width,
         uint8_t colour,
         string_id stringId,
@@ -244,6 +244,6 @@ namespace OpenLoco::Gfx
     void redrawScreenRect(int16_t left, int16_t top, int16_t right, int16_t bottom);
 
     bool clipContext(Gfx::Context** dst, Gfx::Context* src, int16_t x, int16_t y, int16_t width, int16_t height);
-    bool clipContext(Gfx::Context** dst, Gfx::Context* src, Gfx::point_t pos, Gfx::ui_size_t size);
+    bool clipContext(Gfx::Context** dst, Gfx::Context* src, Ui::Point pos, Ui::Size size);
     G1Element* getG1Element(uint32_t id);
 }

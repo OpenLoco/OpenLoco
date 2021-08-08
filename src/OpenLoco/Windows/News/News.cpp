@@ -348,11 +348,11 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                 {
                     int16_t x = self->widgets[Common::widx::viewport1].left + 1 + self->x;
                     int16_t y = self->widgets[Common::widx::viewport1].top + 1 + self->y;
-                    Gfx::point_t origin = { x, y };
+                    Ui::Point origin = { x, y };
 
                     uint16_t viewportWidth = self->widgets[Common::widx::viewport1].width();
                     uint16_t viewportHeight = 62;
-                    Gfx::ui_size_t viewportSize = { viewportWidth, viewportHeight };
+                    Ui::Size viewportSize = { viewportWidth, viewportHeight };
 
                     if (_word_4F8BE4[news->type] & (1 << 1))
                     {
@@ -440,11 +440,11 @@ namespace OpenLoco::Ui::Windows::NewsWindow
                 {
                     int16_t x = self->widgets[Common::widx::viewport2].left + 1 + self->x;
                     int16_t y = self->widgets[Common::widx::viewport2].top + 1 + self->y;
-                    Gfx::point_t origin = { x, y };
+                    Ui::Point origin = { x, y };
 
                     uint16_t viewportWidth = self->widgets[Common::widx::viewport2].width();
                     uint16_t viewportHeight = 62;
-                    Gfx::ui_size_t viewportSize = { viewportWidth, viewportHeight };
+                    Ui::Size viewportSize = { viewportWidth, viewportHeight };
 
                     if (_word_4F8BE4[news->type] & (1 << 1))
                     {
@@ -586,7 +586,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
             int16_t x = (self->width / 2) + self->x;
             int16_t y = self->y + 38;
-            Gfx::point_t origin = { x, y };
+            Ui::Point origin = { x, y };
 
             Gfx::drawStringCentredWrapped(*context, origin, 352, Colour::black, StringIds::buffer_2039);
 
@@ -666,7 +666,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
             int16_t x = (self->width / 2) + self->x;
             int16_t y = self->y + 38;
-            Gfx::point_t origin = { x, y };
+            Ui::Point origin = { x, y };
 
             Gfx::drawStringCentredWrapped(*context, origin, 352, Colour::black, StringIds::buffer_2039);
 
@@ -709,7 +709,7 @@ namespace OpenLoco::Ui::Windows::NewsWindow
 
             int16_t x = (self->width / 2) + self->x;
             int16_t y = self->y + 17;
-            Gfx::point_t origin = { x, y };
+            Ui::Point origin = { x, y };
 
             Gfx::drawStringCentredWrapped(*context, origin, 338, Colour::black, StringIds::buffer_2039);
 

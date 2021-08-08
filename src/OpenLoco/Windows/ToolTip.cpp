@@ -96,8 +96,8 @@ namespace OpenLoco::Ui::Windows::ToolTip
 
         auto tooltip = WindowManager::createWindow(
             WindowType::tooltip,
-            Gfx::point_t(x, y),
-            Gfx::ui_size_t(width, height),
+            Ui::Point(x, y),
+            Ui::Size(width, height),
             WindowFlags::stick_to_front | WindowFlags::transparent | WindowFlags::flag_7,
             &events);
         tooltip->widgets = _widgets;

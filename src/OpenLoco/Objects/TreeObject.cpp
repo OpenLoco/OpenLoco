@@ -26,7 +26,7 @@ namespace OpenLoco
             image = Gfx::recolour(image, colour);
         }
 
-        Gfx::point_t treePos = Gfx::point_t{ x, y } + Gfx::point_t{ 0, 48 };
+        Ui::Point treePos = Ui::Point{ x, y } + Ui::Point{ 0, 48 };
 
         if (flags & TreeObjectFlags::hasSnowVariation)
         {

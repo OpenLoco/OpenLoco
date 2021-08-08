@@ -19,8 +19,8 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::LandscapeGeneration
 {
-    static const Gfx::ui_size_t window_size = { 366, 217 };
-    static const Gfx::ui_size_t land_tab_size = { 366, 247 };
+    static const Ui::Size window_size = { 366, 217 };
+    static const Ui::Size land_tab_size = { 366, 247 };
 
     static const uint8_t rowHeight = 22; // CJK: 22
 
@@ -1319,7 +1319,7 @@ namespace OpenLoco::Ui::Windows::LandscapeGeneration
 
             window->invalidate();
 
-            const Gfx::ui_size_t* newSize = &window_size;
+            const Ui::Size* newSize = &window_size;
             if (widgetIndex == widx::tab_land)
                 newSize = &land_tab_size;
 

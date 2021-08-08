@@ -27,7 +27,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::BuildVehicle
 {
-    static const Gfx::ui_size_t window_size = { 380, 233 };
+    static const Ui::Size window_size = { 380, 233 };
 
     enum widx
     {
@@ -242,8 +242,8 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     static void resetTrackTypeTabSelection(Ui::Window* window);
     static void setTopToolbarLastTrack(uint8_t trackType, bool isRoad);
     static void setTransportTypeTabs(Ui::Window* window);
-    static void drawVehicleOverview(Gfx::Context* context, int16_t vehicleTypeIdx, CompanyId_t company, uint8_t eax, uint8_t esi, Gfx::point_t offset);
-    static int16_t drawVehicleInline(Gfx::Context* context, int16_t vehicleTypeIdx, uint8_t unk_1, CompanyId_t company, Gfx::point_t loc);
+    static void drawVehicleOverview(Gfx::Context* context, int16_t vehicleTypeIdx, CompanyId_t company, uint8_t eax, uint8_t esi, Ui::Point offset);
+    static int16_t drawVehicleInline(Gfx::Context* context, int16_t vehicleTypeIdx, uint8_t unk_1, CompanyId_t company, Ui::Point loc);
     static void drawTransportTypeTabs(Ui::Window* window, Gfx::Context* context);
     static void drawTrackTypeTabs(Ui::Window* window, Gfx::Context* context);
 
@@ -1393,7 +1393,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     }
 
     // 0x4B7741
-    static void drawVehicleOverview(Gfx::Context* context, int16_t vehicleTypeIdx, CompanyId_t company, uint8_t eax, uint8_t esi, Gfx::point_t offset)
+    static void drawVehicleOverview(Gfx::Context* context, int16_t vehicleTypeIdx, CompanyId_t company, uint8_t eax, uint8_t esi, Ui::Point offset)
     {
         registers regs;
         regs.cx = offset.x;
@@ -1407,7 +1407,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     }
 
     // 0x4B7711
-    static int16_t drawVehicleInline(Gfx::Context* context, int16_t vehicleTypeIdx, uint8_t unk_1, CompanyId_t company, Gfx::point_t loc)
+    static int16_t drawVehicleInline(Gfx::Context* context, int16_t vehicleTypeIdx, uint8_t unk_1, CompanyId_t company, Ui::Point loc)
     {
         registers regs;
 

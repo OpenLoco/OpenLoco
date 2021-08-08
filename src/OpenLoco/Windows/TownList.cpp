@@ -75,9 +75,9 @@ namespace OpenLoco::Ui::Windows::TownList
 
     namespace TownList
     {
-        static const Gfx::ui_size_t windowSize = { 600, 197 };
-        static const Gfx::ui_size_t maxDimensions = { 600, 900 };
-        static const Gfx::ui_size_t minDimensions = { 192, 100 };
+        static const Ui::Size windowSize = { 600, 197 };
+        static const Ui::Size maxDimensions = { 600, 900 };
+        static const Ui::Size minDimensions = { 192, 100 };
 
         static const uint8_t rowHeight = 10;
 
@@ -522,7 +522,7 @@ namespace OpenLoco::Ui::Windows::TownList
         else
         {
             // 0x00499CFC
-            auto origin = Gfx::point_t(Ui::width() - TownList::windowSize.width, 30);
+            auto origin = Ui::Point(Ui::width() - TownList::windowSize.width, 30);
 
             window = WindowManager::createWindow(
                 WindowType::townList,
@@ -591,7 +591,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
     namespace BuildTowns
     {
-        static const Gfx::ui_size_t windowSize = { 220, 87 };
+        static const Ui::Size windowSize = { 220, 87 };
 
         enum widx
         {
@@ -791,7 +791,7 @@ namespace OpenLoco::Ui::Windows::TownList
 
     namespace BuildBuildings
     {
-        static const Gfx::ui_size_t windowSize = { 600, 172 };
+        static const Ui::Size windowSize = { 600, 172 };
 
         static const uint8_t rowHeight = 112;
 
@@ -1157,8 +1157,8 @@ namespace OpenLoco::Ui::Windows::TownList
         static void onResize(Window* self)
         {
             self->invalidate();
-            Gfx::ui_size_t minWindowSize = { self->min_width, self->min_height };
-            Gfx::ui_size_t maxWindowSize = { self->max_width, self->max_height };
+            Ui::Size minWindowSize = { self->min_width, self->min_height };
+            Ui::Size maxWindowSize = { self->max_width, self->max_height };
             bool hasResized = self->setSize(minWindowSize, maxWindowSize);
             if (hasResized)
                 updateActiveThumb(self);

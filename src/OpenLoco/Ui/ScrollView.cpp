@@ -530,7 +530,7 @@ namespace OpenLoco::Ui::ScrollView
         else
         {
             Ui::ScrollView::ScrollPart scrollArea;
-            Gfx::point_t point;
+            Ui::Point point;
             Ui::ScrollView::getPart(w, widget, x, y, &point.x, &point.y, &scrollArea, &scrollIndex);
             if (scrollArea != _currentScrollArea)
             {

@@ -24,8 +24,8 @@ namespace OpenLoco::Ui::Windows::TitleVersion
         auto height = 16;
         auto window = OpenLoco::Ui::WindowManager::createWindow(
             WindowType::openLocoVersion,
-            Gfx::point_t(8, Ui::height() - height),
-            Gfx::ui_size_t(width, height),
+            Ui::Point(8, Ui::height() - height),
+            Ui::Size(width, height),
             WindowFlags::stick_to_front | WindowFlags::transparent | WindowFlags::no_background | WindowFlags::flag_6,
             &_events);
         window->widgets = widgets;

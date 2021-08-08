@@ -294,7 +294,7 @@ namespace OpenLoco::Ui::Dropdown
         }
 
         // 0x004CCF1E
-        static void open(Gfx::point_t origin, Gfx::ui_size_t size, Colour_t colour)
+        static void open(Ui::Point origin, Ui::Size size, Colour_t colour)
         {
             auto window = WindowManager::createWindow(WindowType::dropdown, origin, size, WindowFlags::stick_to_front, &common::events);
 
@@ -374,8 +374,8 @@ namespace OpenLoco::Ui::Dropdown
             widgets[0].bottom = dropdownHeight;
             dropdownHeight++;
 
-            Gfx::ui_size_t size = { static_cast<uint16_t>(_dropdownItemWidth), dropdownHeight };
-            Gfx::point_t origin = { x, y };
+            Ui::Size size = { static_cast<uint16_t>(_dropdownItemWidth), dropdownHeight };
+            Ui::Point origin = { x, y };
             origin.y += height;
 
             if ((size.height + origin.y) > Ui::height() || origin.y < 0)
@@ -466,8 +466,8 @@ namespace OpenLoco::Ui::Dropdown
         int16_t dropdownHeight = (static_cast<int16_t>(count) * _dropdownItemHeight) + 3;
         common::widgets[0].bottom = dropdownHeight;
         dropdownHeight++;
-        Gfx::ui_size_t size = { static_cast<uint16_t>(width), static_cast<uint16_t>(height) };
-        Gfx::point_t origin = { x, y };
+        Ui::Size size = { static_cast<uint16_t>(width), static_cast<uint16_t>(height) };
+        Ui::Point origin = { x, y };
         origin.y += height;
 
         size.height = dropdownHeight;
@@ -567,8 +567,8 @@ namespace OpenLoco::Ui::Dropdown
         common::widgets[0].bottom = dropdownHeight;
         dropdownHeight++;
 
-        Gfx::ui_size_t size = { dropdownWidth, dropdownHeight };
-        Gfx::point_t origin = { x, y };
+        Ui::Size size = { dropdownWidth, dropdownHeight };
+        Ui::Point origin = { x, y };
         origin.y += heightOffset;
 
         size.height = dropdownHeight;
@@ -734,8 +734,8 @@ namespace OpenLoco::Ui::Dropdown
         common::widgets[0].bottom = dropdownHeight;
         dropdownHeight++;
 
-        Gfx::ui_size_t size = { static_cast<uint16_t>(width), static_cast<uint16_t>(height) };
-        Gfx::point_t origin = { x, y };
+        Ui::Size size = { static_cast<uint16_t>(width), static_cast<uint16_t>(height) };
+        Ui::Point origin = { x, y };
         origin.y += height;
 
         size.height = dropdownHeight;

@@ -28,7 +28,7 @@ namespace OpenLoco::Ui
         return (uint32_t)e < 0x004D7000;
     }
 
-    Window::Window(Gfx::point_t position, Gfx::ui_size_t size)
+    Window::Window(Ui::Point position, Ui::Size size)
         : x(position.x)
         , y(position.y)
         , width(size.width)
@@ -125,7 +125,7 @@ namespace OpenLoco::Ui
     // regs.bp:  z
     // Output:
     // {x: regs.ax, y: regs.bx}
-    std::optional<Map::Pos2> screenGetMapXyWithZ(const xy32& mouse, const int16_t z)
+    std::optional<Map::Pos2> screenGetMapXyWithZ(const Point& mouse, const int16_t z)
     {
         Window* w = WindowManager::findAt(mouse.x, mouse.y);
         if (w == nullptr)
@@ -809,7 +809,7 @@ namespace OpenLoco::Ui
     // 0x004CD320
     void Window::moveInsideScreenEdges()
     {
-        Gfx::point_t offset = { 0, 0 };
+        Ui::Point offset = { 0, 0 };
 
         const int16_t xOvershoot = this->x + this->width - Ui::width();
 
@@ -831,7 +831,7 @@ namespace OpenLoco::Ui
         if (this->y - 28 < 0)
             offset.y -= this->y - 28;
 
-        if (offset == 0)
+        if (offset == Ui::Point(0, 0))
             return;
 
         this->invalidate();

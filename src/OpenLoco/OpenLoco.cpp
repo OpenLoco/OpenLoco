@@ -639,8 +639,7 @@ namespace OpenLoco
             {
                 Config::get().var_72 = 16;
                 const auto cursor = Ui::getCursorPos();
-                addr<0x00F2538C, int32_t>() = cursor.x;
-                addr<0x00F25390, int32_t>() = cursor.y;
+                addr<0x00F2538C, Ui::Point32>() = cursor;
                 Gfx::clear(Gfx::screenContext(), 0);
                 addr<0x00F2539C, int32_t>() = 0;
             }
@@ -789,8 +788,7 @@ namespace OpenLoco
                 {
                     addr<0x005252DC, int32_t>() = 1;
                     const auto cursor = Ui::getCursorPos();
-                    addr<0x00F2538C, int32_t>() = cursor.x;
-                    addr<0x00F25390, int32_t>() = cursor.y;
+                    addr<0x00F2538C, Ui::Point32>() = cursor;
                     Ui::setCursorPos(addr<0x00F2538C, int32_t>(), addr<0x00F25390, int32_t>());
                 }
             }

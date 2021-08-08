@@ -65,8 +65,8 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 
     namespace Messages
     {
-        static const Gfx::ui_size_t minWindowSize = { 366, 217 };
-        static const Gfx::ui_size_t maxWindowSize = { 366, 1200 };
+        static const Ui::Size minWindowSize = { 366, 217 };
+        static const Ui::Size maxWindowSize = { 366, 1200 };
         static int8_t messageHeight = 39;
 
         enum widx
@@ -315,7 +315,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
         {
             int16_t y = 29;
             int16_t x = Ui::width() - 366;
-            Gfx::point_t origin = { x, y };
+            Ui::Point origin = { x, y };
 
             window = WindowManager::createWindow(
                 WindowType::messages,
@@ -377,7 +377,7 @@ namespace OpenLoco::Ui::Windows::MessageWindow
 
     namespace Settings
     {
-        static const Gfx::ui_size_t windowSize = { 366, 139 };
+        static const Ui::Size windowSize = { 366, 139 };
 
         enum widx
         {

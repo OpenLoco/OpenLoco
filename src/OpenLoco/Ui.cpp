@@ -319,7 +319,7 @@ namespace OpenLoco::Ui
     }
 
     // 0x00407FCD
-    xy32 getCursorPos()
+    Point32 getCursorPos()
     {
         int x = 0, y = 0;
         SDL_GetMouseState(&x, &y);

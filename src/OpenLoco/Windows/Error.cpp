@@ -137,11 +137,11 @@ namespace OpenLoco::Ui::Windows::Error
 
             x = std::clamp(_cursorX - (width / 2), 0, Ui::width() - width);
 
-            Gfx::ui_size_t windowSize = { width, height };
+            Ui::Size windowSize = { width, height };
 
             auto error = WindowManager::createWindow(
                 WindowType::error,
-                Gfx::point_t(x, y),
+                Ui::Point(x, y),
                 windowSize,
                 WindowFlags::stick_to_front | WindowFlags::transparent | WindowFlags::flag_7,
                 &Common::events);

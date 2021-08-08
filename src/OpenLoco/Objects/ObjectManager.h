@@ -2,6 +2,7 @@
 
 #include "../Core/Optional.hpp"
 #include "../Core/Span.hpp"
+#include "../Ui/Types.hpp"
 #include <cstddef>
 #include <cstdint>
 #include <cstdio>
@@ -16,7 +17,6 @@ namespace OpenLoco
     namespace Gfx
     {
         struct Context;
-        struct point_t;
     }
 
     enum class ObjectType
@@ -309,5 +309,5 @@ namespace OpenLoco::ObjectManager
 
     size_t getByteLength(LoadedObjectIndex id);
 
-    void drawGenericDescription(Gfx::Context& context, Gfx::point_t& rowPosition, const uint16_t designed, const uint16_t obsolete);
+    void drawGenericDescription(Gfx::Context& context, Ui::Point& rowPosition, const uint16_t designed, const uint16_t obsolete);
 }

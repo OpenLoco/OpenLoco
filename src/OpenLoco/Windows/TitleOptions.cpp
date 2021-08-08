@@ -13,7 +13,7 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::TitleOptions
 {
-    static const Gfx::ui_size_t window_size = { 60, 15 };
+    static const Ui::Size window_size = { 60, 15 };
 
     namespace Widx
     {
@@ -40,7 +40,7 @@ namespace OpenLoco::Ui::Windows::TitleOptions
 
         auto window = WindowManager::createWindow(
             WindowType::titleOptions,
-            Gfx::point_t(Ui::width() - window_size.width, 0),
+            Ui::Point(Ui::width() - window_size.width, 0),
             window_size,
             WindowFlags::stick_to_front | WindowFlags::transparent | WindowFlags::no_background | WindowFlags::flag_6,
             &_events);
@@ -63,7 +63,7 @@ namespace OpenLoco::Ui::Windows::TitleOptions
 
         int16_t x = window->x + window->width / 2;
         int16_t y = window->y + window->widgets[Widx::options_button].top + 2;
-        Gfx::point_t origin = { x, y };
+        Ui::Point origin = { x, y };
 
         Gfx::drawStringCentredWrapped(*context, origin, window->width, Colour::white, StringIds::outlined_wcolour2_stringid, (const char*)&StringIds::options);
     }
