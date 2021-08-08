@@ -694,12 +694,17 @@ namespace OpenLoco::Ui::Windows::TownList
         // 0x0049A710
         static void onToolUpdate(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
         {
-            registers regs;
-            regs.esi = X86Pointer(&self);
-            regs.dx = widgetIndex;
-            regs.ax = x;
-            regs.bx = y;
-            call(0x0049A710, regs);
+            Map::TileManager::mapInvalidateSelectionRect();
+            Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable);
+
+            auto mapPos = Ui::ViewportInteraction::getSurfaceOrWaterLocFromUi({ x, y });
+            if (mapPos)
+            {
+                Input::setMapSelectionFlags(Input::MapSelectionFlags::enable);
+                Map::TileManager::setMapSelectionCorner(4);
+                Map::TileManager::setMapSelectionArea(*mapPos, *mapPos);
+                Map::TileManager::mapInvalidateSelectionRect();
+            }
         }
 
         // 0x0049A75E
