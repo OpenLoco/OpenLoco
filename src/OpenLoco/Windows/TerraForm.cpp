@@ -515,34 +515,6 @@ namespace OpenLoco::Ui::Windows::Terraform
             _lastTreeCost = placeTreeGhost(*placementArgs);
         }
 
-        // 0x004BDDC6
-        static void clusterSelectedTreeToolDown(const GameCommands::TreePlacementArgs& baseArgs, const uint16_t range, const uint16_t density)
-        {
-            const auto numPlacements = (range * range * density) / 8192;
-            for (auto i = 0; i < numPlacements; ++i)
-            {
-                // Choose a random offset in a circle
-                auto& rng = gPrng();
-                auto randomMagnitude = rng.randNext(std::numeric_limits<uint16_t>::max()) * range / 65536;
-                auto randomDirection = rng.randNext(Math::Trigonometry::directionPrecisionHigh - 1);
-                Map::Pos2 randomOffset(
-                    Math::Trigonometry::integerSinePrecisionHigh(randomDirection, randomMagnitude),
-                    Math::Trigonometry::integerCosinePrecisionHigh(randomDirection, randomMagnitude));
-
-                GameCommands::TreePlacementArgs args;
-                Map::Pos2 newLoc = randomOffset + baseArgs.pos;
-                args.quadrant = ViewportInteraction::getQuadrantFromPos(newLoc);
-                args.pos = Map::Pos2(newLoc.x & 0xFFE0, newLoc.y & 0xFFE0);
-                // Note: this is not the same as the randomDirection above as it is the trees rotation
-                args.rotation = rng.randNext(3);
-                args.colour = 0;
-                args.type = baseArgs.type;
-                args.buildImmediately = true;
-                args.requiresFullClearance = true;
-                do_23(GameCommands::Flags::apply, args);
-            }
-        }
-
         static loco_global<uint8_t, 0x00525FB4> _currentSnowLine;
 
         // 0x004BDF19
@@ -627,8 +599,9 @@ namespace OpenLoco::Ui::Windows::Terraform
             return { selectableTrees[rng.randNext(selectableTrees.size() - 1)] };
         }
 
-        // 0x004BDC67
-        static void clusterSurfaceTypeTreeToolDown(const GameCommands::TreePlacementArgs& baseArgs, const uint16_t range, const uint16_t density)
+        // 0x004BDC67 & 0x004BDDC6
+        template<typename TTreeTypeFunc>
+        static void clusterToolDown(const GameCommands::TreePlacementArgs& baseArgs, const uint16_t range, const uint16_t density, TTreeTypeFunc&& getTreeType)
         {
             const auto numPlacements = (range * range * density) / 8192;
             for (auto i = 0; i < numPlacements; ++i)
@@ -648,14 +621,15 @@ namespace OpenLoco::Ui::Windows::Terraform
                 // Note: this is not the same as the randomDirection above as it is the trees rotation
                 args.rotation = rng.randNext(3);
                 args.colour = 0;
-                auto type = getRandomTreeTypeFromSurface(newLoc, false);
-                if (type)
+                auto type = getTreeType(newLoc, false);
+                if (!type)
                 {
-                    args.type = *type;
-                    args.buildImmediately = true;
-                    args.requiresFullClearance = true;
-                    do_23(GameCommands::Flags::apply, args);
+                    continue;
                 }
+                args.type = *type;
+                args.buildImmediately = true;
+                args.requiresFullClearance = true;
+                do_23(GameCommands::Flags::apply, args);
             }
         }
 
@@ -688,7 +662,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                         auto height = TileManager::getHeight(placementArgs->pos);
                         Audio::playSound(Audio::SoundId::construct, Map::Pos3{ placementArgs->pos.x, placementArgs->pos.y, height.landHeight });
 
-                        clusterSelectedTreeToolDown(*placementArgs, 320, 3);
+                        clusterToolDown(*placementArgs, 320, 3, [type = placementArgs->type](const Map::TilePos2&, bool) { return std::optional<uint8_t>(type); });
                         if (isEditorMode())
                             CompanyManager::updatingCompanyId(previousId);
                         break;
@@ -701,7 +675,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                         auto height = TileManager::getHeight(placementArgs->pos);
                         Audio::playSound(Audio::SoundId::construct, Map::Pos3{ placementArgs->pos.x, placementArgs->pos.y, height.landHeight });
 
-                        clusterSurfaceTypeTreeToolDown(*placementArgs, 384, 4);
+                        clusterToolDown(*placementArgs, 384, 4, getRandomTreeTypeFromSurface);
                         if (isEditorMode())
                             CompanyManager::updatingCompanyId(previousId);
                         break;
