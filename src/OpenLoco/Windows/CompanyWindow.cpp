@@ -19,6 +19,7 @@
 #include "../OpenLoco.h"
 #include "../Scenario.h"
 #include "../Ui/Dropdown.h"
+#include "../Ui/ScrollView.h"
 #include "../Ui/WindowManager.h"
 #include "../Vehicles/Vehicle.h"
 #include "../ViewportManager.h"
@@ -1990,11 +1991,29 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             }
         }
 
-        static void sub_4C8DBF(Window* self)
+        // 0x004C8DBF
+        // For the finances the most recent data on the scroll view is the data
+        // most off to the right of the scroll. This function moves to the last
+        // page of data as far to the right of the scroll.
+        static void scrollToLatestData(Window* self)
         {
-            registers regs;
-            regs.esi = X86Pointer(self);
-            call(0x004C8DBF, regs);
+            self->initScrollWidgets();
+            self->scroll_areas[0].contentOffsetX = 0x7FFF;
+            self->scroll_areas[0].contentWidth = 0;
+            self->updateScrollWidgets();
+
+            const Ui::Widget& widget = self->widgets[widx::scrollview];
+
+            const auto x = std::max<int16_t>(0, self->scroll_areas[0].contentOffsetX);
+            auto widgetWidth = widget.width() - 2;
+            if (self->scroll_areas[0].flags & ScrollView::ScrollFlags::vscrollbarVisible)
+            {
+                widgetWidth -= ScrollView::barWidth;
+            }
+            // This gets the offset of the last full page (widgetWidth) of the scroll view
+            const auto newOffset = std::max(0, self->scroll_areas[0].contentWidth - widgetWidth);
+            self->scroll_areas[0].contentOffsetX = std::min<int16_t>(x, newOffset);
+            ScrollView::updateThumbs(self, widx::scrollview);
         }
 
         // 0x00433868
@@ -2003,7 +2022,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             if (widgetIndex == Common::widx::company_select)
             {
                 Common::switchCompany(self, itemIndex);
-                sub_4C8DBF(self);
+                scrollToLatestData(self);
                 self->invalidate();
             }
         }
@@ -2089,7 +2108,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
         Common::disableChallengeTab(window);
         window->initScrollWidgets();
         window->moveInsideScreenEdges();
-        Finances::sub_4C8DBF(window);
+        Finances::scrollToLatestData(window);
 
         return window;
     }
@@ -2621,7 +2640,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             self->moveInsideScreenEdges();
 
             if (tabInfo.widgetIndex == widx::tab_finances)
-                Finances::sub_4C8DBF(self);
+                Finances::scrollToLatestData(self);
         }
 
         // 0x0043252E
