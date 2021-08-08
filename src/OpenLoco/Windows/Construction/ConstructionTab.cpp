@@ -1454,7 +1454,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         if (surfaceTile == nullptr)
             return std::nullopt;
 
-        Map::TileHeight height = { surfaceTile->baseZ() * 4, surfaceTile->water() * 16 };
+        Map::TileHeight height = { static_cast<coord_t>(surfaceTile->baseZ() * 4), static_cast<coord_t>(surfaceTile->water() * 16) };
         if (surfaceTile->slopeCorners())
         {
             height.landHeight += 16;
