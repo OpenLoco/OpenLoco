@@ -963,14 +963,7 @@ namespace OpenLoco::Ui::ViewportInteraction
                 }
                 break;
         }
-        if (hasInteraction)
-        {
-            return interaction;
-        }
-        else
-        {
-            return InteractionArg{};
-        }
+        return hasInteraction ? interaction : InteractionArg{};
     }
 
     // 0x00459E54
