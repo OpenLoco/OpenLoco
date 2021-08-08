@@ -835,19 +835,18 @@ namespace OpenLoco
     static loco_global<int8_t, 0x0050C197> _50C197;
     static loco_global<string_id, 0x0050C198> _50C198;
 
-    static void sub_42DF8B(building_element* el)
+    static void sub_42DF8B(Map::BuildingElement* el)
     {
-        // call(0x0042DF8B);
-
-        if (el->var_5b())
+        // Only update tile index 0
+        if (el->multiTileIndex())
             return;
 
-        if (el->is_flag_4())
+        if (el->isGhost())
             return;
 
         auto object = el->object();
 
-        if (!el->has_station_element())
+        if (!el->hasStationElement())
         {
             // 0x00042DFB3
         }
@@ -857,7 +856,7 @@ namespace OpenLoco
 
         // 0x0042E2AB
 
-        town_id_t townId;
+        TownId_t townId;
         {
             registers regs;
 
@@ -865,15 +864,15 @@ namespace OpenLoco
             townId = regs.bx;
         }
 
-        if (townId == town_id::null)
+        if (townId == TownId::null)
             return;
 
-        auto town = townmgr::get(townId);
+        auto* town = TownManager::get(townId);
 
-        if (!el->has_station_element())
+        if (!el->hasStationElement())
         {
             el->data()[5] += 0x20; // sets carry
-            if (carry && el->var_6a() != 0x3F && (object->var_98 & 1) == 0)
+            if (carry && el->var_6a() != 0x3F && (object->flags & BuildingObjectFlags::large_tile) == 0)
             {
                 // probably has to do with large buildings
                 // update field 6 +1 for all parts
@@ -881,10 +880,10 @@ namespace OpenLoco
         }
 
         // 0x0042E3A1
-        if (el->has_station_element() && el->var_6a() >= 40)
+        if (el->hasStationElement() && el->var_6a() >= 40)
         {
 
-            if ((town->prng->rand_next() &= 0xFFFF) <= 16)
+            if ((town->prng.randNext() & 0xFFFF) <= 16)
             {
                 throw std::exception(); // return false;
             }

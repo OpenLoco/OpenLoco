@@ -38,8 +38,8 @@ namespace OpenLoco
         coord_t y;             // 0x04
         uint16_t flags;        // 0x06
         LabelFrame labelFrame; // 0x08
-        uint8_t pad_28[0x30 - 0x28];
-        uint32_t population; // 0x30
+        Utility::prng prng;    // 0x28
+        uint32_t population;   // 0x30
         uint8_t pad_34[0x38 - 0x34];
         uint16_t var_38;
         int16_t company_ratings[15];    // 0x3A
