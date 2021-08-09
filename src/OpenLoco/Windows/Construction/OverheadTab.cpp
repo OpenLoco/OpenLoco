@@ -1,4 +1,6 @@
+#include "../../Audio/Audio.h"
 #include "../../CompanyManager.h"
+#include "../../GameCommands/GameCommands.h"
 #include "../../Graphics/ImageIds.h"
 #include "../../Input.h"
 #include "../../Localisation/FormatArguments.hpp"
@@ -121,26 +123,232 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
         Common::onUpdate(self, (1 << 5));
     }
 
+    static std::optional<GameCommands::RoadModsPlacementArgs> getRoadModsPlacementArgsFromCursor(const int16_t x, const int16_t y)
+    {
+        static loco_global<Ui::Point, 0x0113600C> _113600C;
+        static loco_global<Viewport*, 0x01135F52> _1135F52;
+
+        _113600C = { x, y };
+
+        auto [interaction, viewport] = ViewportInteraction::getMapCoordinatesFromPos(x, y, ~(ViewportInteraction::InteractionItemFlags::roadAndTram));
+        _1135F52 = viewport;
+
+        if (interaction.type != ViewportInteraction::InteractionItem::road)
+        {
+            return std::nullopt;
+        }
+
+        auto* elRoad = reinterpret_cast<Map::TileElement*>(interaction.object)->asRoad();
+        if (elRoad == nullptr)
+        {
+            return std::nullopt;
+        }
+
+        GameCommands::RoadModsPlacementArgs args;
+        args.type = _lastSelectedMods;
+        args.pos = Map::Pos3(interaction.pos.x, interaction.pos.y, elRoad->baseZ() * 4);
+        args.rotation = elRoad->unkDirection();
+        args.roadId = elRoad->roadId();
+        args.index = elRoad->sequenceIndex();
+        args.roadObjType = elRoad->roadObjectId();
+        args.modSection = _lastSelectedTrackModSection;
+        return { args };
+    }
+
+    static std::optional<GameCommands::TrackModsPlacementArgs> getTrackModsPlacementArgsFromCursor(const int16_t x, const int16_t y)
+    {
+        static loco_global<Ui::Point, 0x0113600C> _113600C;
+        static loco_global<Viewport*, 0x01135F52> _1135F52;
+
+        _113600C = { x, y };
+
+        auto [interaction, viewport] = ViewportInteraction::getMapCoordinatesFromPos(x, y, ~(ViewportInteraction::InteractionItemFlags::track));
+        _1135F52 = viewport;
+
+        if (interaction.type != ViewportInteraction::InteractionItem::track)
+        {
+            return std::nullopt;
+        }
+
+        auto* elTrack = reinterpret_cast<Map::TileElement*>(interaction.object)->asTrack();
+        if (elTrack == nullptr)
+        {
+            return std::nullopt;
+        }
+
+        GameCommands::TrackModsPlacementArgs args;
+        args.type = _lastSelectedMods;
+        args.pos = Map::Pos3(interaction.pos.x, interaction.pos.y, elTrack->baseZ() * 4);
+        args.rotation = elTrack->unkDirection();
+        args.trackId = elTrack->trackId();
+        args.index = elTrack->sequenceIndex();
+        args.trackObjType = elTrack->trackObjectId();
+        args.modSection = _lastSelectedTrackModSection;
+        return { args };
+    }
+
+    static uint32_t placeRoadModGhost(const GameCommands::RoadModsPlacementArgs& args)
+    {
+        auto res = GameCommands::do_40(GameCommands::Flags::apply | GameCommands::Flags::flag_1 | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6, args);
+        if (res != GameCommands::FAILURE)
+        {
+            _byte_522096 = _byte_522096 | (1 << 4);
+            _modGhostPos = args.pos;
+            _modGhostRotation = args.rotation;
+            _modGhostTrackId = args.roadId;
+            _modGhostTileIndex = args.index;
+            _modGhostTrackObjId = args.roadObjType | (1 << 7); // This looks wrong!
+        }
+        return res;
+    }
+
+    static uint32_t placeTrackModGhost(const GameCommands::TrackModsPlacementArgs& args)
+    {
+        auto res = GameCommands::do_17(GameCommands::Flags::apply | GameCommands::Flags::flag_1 | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6, args);
+        if (res != GameCommands::FAILURE)
+        {
+            _byte_522096 = _byte_522096 | (1 << 4);
+            _modGhostPos = args.pos;
+            _modGhostRotation = args.rotation;
+            _modGhostTrackId = args.trackId;
+            _modGhostTileIndex = args.index;
+            _modGhostTrackObjId = args.trackObjType;
+        }
+        return res;
+    }
+
     // 0x0049EC15
     static void onToolUpdate(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
     {
-        registers regs;
-        regs.esi = X86Pointer(&self);
-        regs.dx = widgetIndex;
-        regs.ax = x;
-        regs.bx = y;
-        call(0x0049EC15, regs);
+        if (widgetIndex != widx::image)
+        {
+            return;
+        }
+
+        if (_trackType & (1 << 7))
+        {
+            auto placementArgs = getRoadModsPlacementArgsFromCursor(x, y);
+            if (!placementArgs || ((placementArgs->roadObjType | (1 << 7)) != _trackType))
+            {
+                removeConstructionGhosts();
+                if (_modCost != 0x80000000)
+                {
+                    _modCost = 0x80000000;
+                    self.invalidate();
+                }
+                return;
+            }
+
+            if (_byte_522096 & (1 << 4))
+            {
+                if (*_modGhostPos == placementArgs->pos
+                    && _modGhostRotation == placementArgs->rotation
+                    && _modGhostTrackId == placementArgs->roadId
+                    && _modGhostTileIndex == placementArgs->index
+                    && _modGhostTrackObjId == placementArgs->roadObjType)
+                {
+                    return;
+                }
+            }
+
+            removeConstructionGhosts();
+
+            auto cost = placeRoadModGhost(*placementArgs);
+            if (cost != _modCost)
+            {
+                _modCost = cost;
+                self.invalidate();
+            }
+        }
+        else
+        {
+            auto placementArgs = getTrackModsPlacementArgsFromCursor(x, y);
+            if (!placementArgs || (placementArgs->trackObjType != _trackType))
+            {
+                removeConstructionGhosts();
+                if (_modCost != 0x80000000)
+                {
+                    _modCost = 0x80000000;
+                    self.invalidate();
+                }
+                return;
+            }
+
+            if (_byte_522096 & (1 << 4))
+            {
+                if (*_modGhostPos == placementArgs->pos
+                    && _modGhostRotation == placementArgs->rotation
+                    && _modGhostTrackId == placementArgs->trackId
+                    && _modGhostTileIndex == placementArgs->index
+                    && _modGhostTrackObjId == placementArgs->trackObjType)
+                {
+                    return;
+                }
+            }
+
+            removeConstructionGhosts();
+
+            auto cost = placeTrackModGhost(*placementArgs);
+            if (cost != _modCost)
+            {
+                _modCost = cost;
+                self.invalidate();
+            }
+        }
     }
 
     // 0x0049EC20
     static void onToolDown(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
     {
-        registers regs;
-        regs.esi = X86Pointer(&self);
-        regs.dx = widgetIndex;
-        regs.ax = x;
-        regs.bx = y;
-        call(0x0049EC20, regs);
+        if (widgetIndex != widx::image)
+        {
+            return;
+        }
+
+        removeConstructionGhosts();
+
+        if (_trackType & (1 << 7))
+        {
+            auto args = getRoadModsPlacementArgsFromCursor(x, y);
+            if (!args)
+            {
+                return;
+            }
+
+            if ((args->roadObjType | (1 << 7)) != _trackType)
+            {
+                Error::open(StringIds::error_cant_build_this_here, StringIds::wrong_type_of_track_road);
+                return;
+            }
+            GameCommands::setErrorTitle(StringIds::error_cant_build_this_here);
+            auto res = GameCommands::do_40(GameCommands::Flags::apply, *args);
+            if (res == GameCommands::FAILURE || res == 0)
+            {
+                return;
+            }
+            Audio::playSound(Audio::SoundId::construct, GameCommands::getPosition());
+        }
+        else
+        {
+            auto args = getTrackModsPlacementArgsFromCursor(x, y);
+            if (!args)
+            {
+                return;
+            }
+
+            if (args->trackObjType != _trackType)
+            {
+                Error::open(StringIds::error_cant_build_this_here, StringIds::wrong_type_of_track_road);
+                return;
+            }
+            GameCommands::setErrorTitle(StringIds::error_cant_build_this_here);
+            auto res = GameCommands::do_17(GameCommands::Flags::apply, *args);
+            if (res == GameCommands::FAILURE || res == 0)
+            {
+                return;
+            }
+            Audio::playSound(Audio::SoundId::construct, GameCommands::getPosition());
+        }
     }
 
     static void setCheckbox(Window* self, WidgetIndex_t checkboxIndex, string_id name)
