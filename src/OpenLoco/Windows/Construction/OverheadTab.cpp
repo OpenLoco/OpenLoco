@@ -231,7 +231,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
             if (!placementArgs || ((placementArgs->roadObjType | (1 << 7)) != _trackType))
             {
                 removeConstructionGhosts();
-                if (0x80000000 != _modCost)
+                if (_modCost != 0x80000000)
                 {
                     _modCost = 0x80000000;
                     self.invalidate();
@@ -241,7 +241,11 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
 
             if (_byte_522096 & (1 << 4))
             {
-                if (*_modGhostPos == placementArgs->pos && _modGhostRotation == placementArgs->rotation && _modGhostTrackId == placementArgs->roadId && _modGhostTileIndex == placementArgs->index && _modGhostTrackObjId == placementArgs->roadObjType)
+                if (*_modGhostPos == placementArgs->pos
+                    && _modGhostRotation == placementArgs->rotation
+                    && _modGhostTrackId == placementArgs->roadId
+                    && _modGhostTileIndex == placementArgs->index
+                    && _modGhostTrackObjId == placementArgs->roadObjType)
                 {
                     return;
                 }
@@ -262,7 +266,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
             if (!placementArgs || (placementArgs->trackObjType != _trackType))
             {
                 removeConstructionGhosts();
-                if (0x80000000 != _modCost)
+                if (_modCost != 0x80000000)
                 {
                     _modCost = 0x80000000;
                     self.invalidate();
@@ -272,7 +276,11 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
 
             if (_byte_522096 & (1 << 4))
             {
-                if (*_modGhostPos == placementArgs->pos && _modGhostRotation == placementArgs->rotation && _modGhostTrackId == placementArgs->trackId && _modGhostTileIndex == placementArgs->index && _modGhostTrackObjId == placementArgs->trackObjType)
+                if (*_modGhostPos == placementArgs->pos
+                    && _modGhostRotation == placementArgs->rotation
+                    && _modGhostTrackId == placementArgs->trackId
+                    && _modGhostTileIndex == placementArgs->index
+                    && _modGhostTrackObjId == placementArgs->trackObjType)
                 {
                     return;
                 }
