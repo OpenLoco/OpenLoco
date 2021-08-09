@@ -50,8 +50,8 @@ namespace OpenLoco::GameCommands
         gc_unk_14 = 14,
         gc_unk_15 = 15,
         removeTrackStation = 16,
-        gc_unk_17 = 17,
-        gc_unk_18 = 18,
+        createTrackMod = 17,
+        removeTrackMod = 18,
         changeCompanyColourScheme = 19,
         pauseGame = 20,
         loadSaveQuitGame = 21,
@@ -74,7 +74,7 @@ namespace OpenLoco::GameCommands
         gc_unk_38 = 38,
         gc_unk_39 = 39,
         createRoadMod = 40,
-        gc_unk_41 = 41,
+        removeRoadMod = 41,
         gc_unk_42 = 42,
         removeRoadStation = 43,
         createBuilding = 44,
@@ -359,6 +359,49 @@ namespace OpenLoco::GameCommands
         registers regs = registers(args);
         regs.bl = flags;
         return doCommand(GameCommand::removeTrackStation, regs) != FAILURE;
+    }
+
+    struct TrackModsPlacementArgs
+    {
+        TrackModsPlacementArgs() = default;
+        explicit TrackModsPlacementArgs(const registers& regs)
+            : pos(regs.ax, regs.cx, regs.di)
+            , rotation(regs.bh & 0x3)
+            , trackId(regs.dl & 0x3F)
+            , index(regs.dh & 0x3)
+            , type((regs.edi >> 16) & 0xF)
+            , trackObjType(regs.ebp & 0xFF)
+            , modSection((regs.ebp >> 16) & 0xFF)
+        {
+        }
+
+        Map::Pos3 pos;
+        uint8_t rotation;
+        uint8_t trackId;
+        uint8_t index;
+        uint8_t type;
+        uint8_t trackObjType;
+        uint8_t modSection;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.ax = pos.x;
+            regs.cx = pos.y;
+            regs.bh = rotation;
+            regs.dl = trackId;
+            regs.dh = index;
+            regs.edi = pos.z | (type << 16);
+            regs.ebp = trackObjType | (modSection << 16);
+            return regs;
+        }
+    };
+
+    inline uint32_t do_17(uint8_t flags, const TrackModsPlacementArgs& args)
+    {
+        registers regs = registers(args);
+        regs.bl = flags;
+        return doCommand(GameCommand::createTrackMod, regs);
     }
 
     // Change company colour scheme
