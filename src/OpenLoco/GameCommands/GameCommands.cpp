@@ -86,7 +86,7 @@ namespace OpenLoco::GameCommands
         { GameCommand::vehicleOrderSkip,             Vehicles::orderSkip,       0x0047071A, false },
         { GameCommand::gc_unk_38,                    nullptr,                   0x00475FBC, true  },
         { GameCommand::gc_unk_39,                    nullptr,                   0x004775A5, true  },
-        { GameCommand::gc_unk_40,                    nullptr,                   0x0047A21E, true  },
+        { GameCommand::createRoadMod,                 nullptr,                   0x0047A21E, true  },
         { GameCommand::gc_unk_41,                    nullptr,                   0x0047A42F, true  },
         { GameCommand::gc_unk_42,                    nullptr,                   0x0048C708, true  },
         { GameCommand::removeRoadStation,            nullptr,                   0x0048D2AC, true  },

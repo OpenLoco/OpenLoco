@@ -152,6 +152,7 @@ namespace OpenLoco::StringIds
     constexpr string_id cant_remove_airport = 164;
     constexpr string_id cant_remove_ship_port = 165;
     constexpr string_id cant_remove_station = 166;
+    constexpr string_id wrong_type_of_track_road = 167;
 
     constexpr string_id too_many_objects_in_game = 171;
     constexpr string_id menu_rotate_clockwise = 172;

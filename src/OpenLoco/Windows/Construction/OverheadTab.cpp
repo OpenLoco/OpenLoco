@@ -1,4 +1,6 @@
+#include "../../Audio/Audio.h"
 #include "../../CompanyManager.h"
+#include "../../GameCommands/GameCommands.h"
 #include "../../Graphics/ImageIds.h"
 #include "../../Input.h"
 #include "../../Localisation/FormatArguments.hpp"
@@ -135,12 +137,64 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
     // 0x0049EC20
     static void onToolDown(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
     {
-        registers regs;
-        regs.esi = X86Pointer(&self);
-        regs.dx = widgetIndex;
-        regs.ax = x;
-        regs.bx = y;
-        call(0x0049EC20, regs);
+        if (widgetIndex != widx::image)
+        {
+            return;
+        }
+
+        if (_trackType & (1 << 7))
+        {
+            static loco_global<Ui::Point, 0x0113600C> _113600C;
+            static loco_global<Viewport*, 0x01135F52> _1135F52;
+
+            _113600C = { x, y };
+
+            auto [interaction, viewport] = ViewportInteraction::getMapCoordinatesFromPos(x, y, ~(ViewportInteraction::InteractionItemFlags::roadAndTram));
+            _1135F52 = viewport;
+
+            if (interaction.type != ViewportInteraction::InteractionItem::road)
+            {
+                return;
+            }
+
+            auto* elRoad = reinterpret_cast<Map::TileElement*>(interaction.object)->asRoad();
+            if (elRoad == nullptr)
+            {
+                return;
+            }
+
+
+            GameCommands::RoadModsPlacementArgs args;
+            args.type = _lastSelectedMods;
+            args.pos = Map::Pos3(interaction.pos.x, interaction.pos.y, elRoad->baseZ() * 4);
+            args.rotation = elRoad->unkDirection();
+            args.roadId = elRoad->roadId();
+            args.index = elRoad->sequenceIndex();
+            args.roadObjType = elRoad->roadObjectId();
+            args.modSection = _lastSelectedTrackModSection;
+
+            if ((args.roadObjType | (1 << 7)) != _trackType)
+            {
+                Error::open(StringIds::error_cant_build_this_here, StringIds::wrong_type_of_track_road);
+                return;
+            }
+            GameCommands::setErrorTitle(StringIds::error_cant_build_this_here);
+            auto res = GameCommands::do_40(GameCommands::Flags::apply, args);
+            if (res == GameCommands::FAILURE || res == 0)
+            {
+                return;
+            }
+            Audio::playSound(Audio::SoundId::construct, GameCommands::getPosition());
+        }
+        else
+        {
+            registers regs;
+            regs.esi = X86Pointer(&self);
+            regs.dx = widgetIndex;
+            regs.ax = x;
+            regs.bx = y;
+            call(0x0049EC20, regs);
+        }
     }
 
     static void setCheckbox(Window* self, WidgetIndex_t checkboxIndex, string_id name)
