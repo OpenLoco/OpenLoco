@@ -36,6 +36,7 @@ namespace OpenLoco::Ui::Windows::Construction
     static loco_global<uint32_t, 0x01135F42> _dword_1135F42;
     static loco_global<uint32_t, 0x01135F46> _modCost;
     static loco_global<uint32_t, 0x01135F4E> _signalCost;
+    static loco_global<Map::TrackElement*, 0x01135F4A> _1135F4A;
     static loco_global<uint32_t, 0x01135F6C> _stationCost;
     static loco_global<uint32_t, 0x01135F70> _constructingStationId;
     static loco_global<uint32_t, 0x01135F74> _constructingStationAcceptedCargoTypes;
@@ -93,6 +94,7 @@ namespace OpenLoco::Ui::Windows::Construction
     static loco_global<uint8_t, 0x01136078> _byte_1136078;
     static loco_global<uint8_t, 0x01136079> _lastSelectedTrackPieceId;
     static loco_global<uint8_t, 0x0113607E> _byte_113607E;
+    static loco_global<Map::TileElement, 0x01136090> _backupTileElement;
 
     namespace Common
     {
@@ -121,6 +123,7 @@ namespace OpenLoco::Ui::Windows::Construction
         constexpr uint64_t enabledWidgets = (1 << widx::caption) | (1 << widx::close_button) | (1 << widx::tab_construction) | (1 << widx::tab_station) | (1 << widx::tab_signal) | (1 << widx::tab_overhead);
 
         void prepareDraw(Window* self);
+        void resetWindow(Window& self, WidgetIndex_t tabWidgetIndex);
         void switchTab(Window* self, WidgetIndex_t widgetIndex);
         void repositionTabs(Window* self);
         void drawTabs(Window* self, Gfx::Context* context);

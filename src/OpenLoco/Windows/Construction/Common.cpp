@@ -16,6 +16,7 @@
 #include "../../Objects/TrainSignalObject.h"
 #include "../../Objects/TrainStationObject.h"
 #include "../../StationManager.h"
+#include "../../TrackData.h"
 #include "../../Widget.h"
 #include "Construction.h"
 
@@ -200,17 +201,130 @@ namespace OpenLoco::Ui::Windows::Construction
         return nonTrackWindow();
     }
 
+    // Reverse direction map?
+    static loco_global<uint8_t[16], 0x00503CAC> _503CAC;
+    static loco_global<Map::Pos2[16], 0x00503C6C> _503C6C;
+
     // 0x004A0EAD
     Window* openAtTrack(Window* main, TrackElement* track, const Pos2 pos)
     {
-        registers regs{};
-        regs.esi = X86Pointer(main);
-        regs.edx = X86Pointer(track);
-        regs.ax = pos.x;
-        regs.cx = pos.y;
-        call(0x004A0EAD, regs);
+        auto* viewport = main->viewports[0];
+        _backupTileElement = *reinterpret_cast<TileElement*>(track);
+        auto* copyElement = (*_backupTileElement).asTrack();
+        if (copyElement == nullptr)
+        {
+            return nullptr;
+        }
 
-        return reinterpret_cast<Window*>(regs.esi);
+        if (copyElement->owner() != CompanyManager::getControllingId())
+        {
+            return nullptr;
+        }
+
+        removeConstructionGhosts();
+        auto* wnd = WindowManager::find(WindowType::construction);
+        if (wnd == nullptr)
+        {
+            WindowManager::closeConstructionWindows();
+            Common::createConstructionWindow();
+        }
+        else
+        {
+            Common::resetWindow(*wnd, Common::widx::tab_construction);
+        }
+
+        _trackType = copyElement->trackObjectId();
+        _byte_1136063 = 0;
+        Common::setTrackOptions(_trackType);
+
+        _constructionHover = 0;
+        _byte_113607E = 1;
+        _trackCost = 0x80000000;
+        _byte_1136076 = 0;
+        _1135F4A = copyElement;
+        _lastSelectedTrackModSection = 0;
+
+        const auto& piece = TrackData::getTrackPiece(copyElement->trackId())[copyElement->sequenceIndex()];
+        const auto firstTileOffset = Math::Vector::rotate(Map::Pos2(piece.x, piece.y), copyElement->unkDirection());
+        const auto firstTile = Map::Pos3(pos.x, pos.y, copyElement->baseZ() * 4) - Map::Pos3(firstTileOffset.x, firstTileOffset.y, piece.z);
+
+        // Get coordinates of the next tile after the end of the track piece
+        const auto trackAndDirection = (copyElement->trackId() << 3) | copyElement->unkDirection();
+        const auto& trackSize = TrackData::getUnkTrack(trackAndDirection);
+        const auto nextTile = firstTile + trackSize.pos;
+        _1135FC6 = nextTile;
+        _1135FCC = trackSize.rotationEnd;
+
+        // Get coordinates of the previous tile before the start of the track piece
+        const auto unk = _503CAC[trackSize.rotationBegin];
+        auto previousTile = firstTile;
+        _word_1135FD4 = unk;
+        if (unk < 12)
+        {
+            previousTile += _503C6C[unk];
+        }
+        _1135FCE = previousTile;
+
+        // Side is goverened by distance mouse is to either next or previous track coordinate
+        const auto vpPosNext = gameToScreen(nextTile + Map::Pos3(16, 16, 0), viewport->getRotation());
+        const auto uiPosNext = viewport->mapToUi(vpPosNext);
+        const auto distanceToNext = Math::Vector::manhattanDistance(uiPosNext, Input::getDragLastLocation());
+
+        const auto vpPosPrevious = gameToScreen(previousTile + Map::Pos3(16, 16, 0), viewport->getRotation());
+        const auto uiPosPrevious = viewport->mapToUi(vpPosPrevious);
+        const auto distanceToPrevious = Math::Vector::manhattanDistance(uiPosPrevious, Input::getDragLastLocation());
+
+        const auto chosenLoc = distanceToNext < distanceToPrevious ? nextTile : previousTile;
+        const auto chosenRotation = distanceToNext < distanceToPrevious ? _1135FCC : _word_1135FD4;
+        _x = chosenLoc.x;
+        _y = chosenLoc.y;
+        _word_1135FB8 = chosenLoc.z;
+        _constructionRotation = chosenRotation;
+        _lastSelectedTrackPiece = 0;
+        _lastSelectedTrackGradient = 0;
+
+        Common::refreshSignalList(_signalList, _trackType);
+        auto lastSignal = _scenarioSignals[_trackType];
+
+        if (lastSignal == 0xFF)
+            lastSignal = _signalList[0];
+
+        _lastSelectedSignal = lastSignal;
+
+        Common::refreshStationList(_stationList, _trackType, TransportMode::rail);
+
+        auto lastStation = _scenarioTrainStations[_trackType];
+
+        if (lastStation == 0xFF)
+            lastStation = _stationList[0];
+
+        _lastSelectedStationType = lastStation;
+
+        Common::refreshBridgeList(_bridgeList, _trackType, TransportMode::rail);
+
+        auto lastBridge = _scenarioBridges[_trackType];
+
+        if (lastBridge == 0xFF)
+            lastBridge = _bridgeList[0];
+
+        _lastSelectedBridge = lastBridge;
+
+        if (copyElement->has_4_80())
+        {
+            _lastSelectedBridge = copyElement->bridge();
+        }
+        Common::refreshModList(_modList, _trackType, TransportMode::rail);
+
+        _lastSelectedMods = copyElement->mods();
+        _byte_113603A = 0;
+        auto* window = WindowManager::find(WindowType::construction);
+
+        if (window != nullptr)
+        {
+            Common::setDisabledWidgets(window);
+        }
+
+        return window;
     }
 
     // 0x004A147F
@@ -424,6 +538,24 @@ namespace OpenLoco::Ui::Windows::Construction
             // Activate the current tab
             self->activated_widgets &= ~((1ULL << tab_construction) | (1ULL << tab_overhead) | (1ULL << tab_signal) | (1ULL << tab_station));
             self->activated_widgets |= (1ULL << Common::tabInformationByTabOffset[self->current_tab].widgetIndex);
+        }
+
+        // 0x004A0EF4
+        void resetWindow(Window& self, WidgetIndex_t tabWidgetIndex)
+        {
+            self.current_tab = tabWidgetIndex - widx::tab_construction;
+
+            const auto& tabInfo = tabInformationByTabOffset[tabWidgetIndex - widx::tab_construction];
+
+            self.enabled_widgets = tabInfo.enabledWidgets;
+            self.event_handlers = tabInfo.events;
+            self.activated_widgets = 0;
+            self.widgets = tabInfo.widgets;
+
+            setDisabledWidgets(&self);
+
+            self.width = self.widgets[widx::frame].right + 1;
+            self.height = self.widgets[widx::frame].bottom + 1;
         }
 
         // 0x0049D93A
