@@ -59,9 +59,6 @@ namespace OpenLoco::Ui::Windows::Construction
     static loco_global<int16_t, 0x01136000> _word_1136000;
     static loco_global<uint16_t, 0x01136002> _signalGhostSides;
     static loco_global<Map::Pos3, 0x01136004> _signalGhostPos;
-    static loco_global<uint8_t, 0x0113600D> _signalGhostRotation;
-    static loco_global<uint8_t, 0x0113600E> _signalGhostTrackId;
-    static loco_global<uint8_t, 0x0113600F> _signalGhostTileIndex;
     static loco_global<uint16_t, 0x0113600A> _signalGhostTrackObjId;
     static loco_global<uint8_t, 0x01136010> _modGhostTrackObjId;
     static loco_global<uint8_t[17], 0x0113601D> _signalList;
@@ -72,6 +69,9 @@ namespace OpenLoco::Ui::Windows::Construction
     static loco_global<uint8_t, 0x0113603A> _byte_113603A;
     static loco_global<uint8_t[17], 0x0113603B> _stationList;
     static loco_global<uint8_t, 0x0113604C> _lastSelectedStationType;
+    static loco_global<uint8_t, 0x0113604D> _signalGhostRotation;
+    static loco_global<uint8_t, 0x0113604E> _signalGhostTrackId;
+    static loco_global<uint8_t, 0x0113604F> _signalGhostTileIndex;
     static loco_global<uint8_t[4], 0x01136054> _modList;
     static loco_global<uint8_t, 0x01136058> _modGhostRotation;
     static loco_global<uint8_t, 0x01136059> _modGhostTrackId;
