@@ -138,7 +138,8 @@ namespace OpenLoco::StringIds
     constexpr string_id tooltip_steep_slope_up = 136;
     constexpr string_id build_this = 137;
     constexpr string_id build_cost = 138;
-
+    constexpr string_id cant_build_signal_here = 139;
+    constexpr string_id cant_build_signals_here = 140;
     constexpr string_id cant_remove_signal = 141;
 
     constexpr string_id menu_underground_view = 145;

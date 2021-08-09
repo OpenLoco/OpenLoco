@@ -1,3 +1,4 @@
+#include "../../Audio/Audio.h"
 #include "../../GameCommands/GameCommands.h"
 #include "../../Graphics/ImageIds.h"
 #include "../../Input.h"
@@ -261,12 +262,33 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
     // 0x0049E75A
     static void onToolDown(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
     {
-        registers regs;
-        regs.esi = X86Pointer(&self);
-        regs.dx = widgetIndex;
-        regs.ax = x;
-        regs.bx = y;
-        call(0x0049E75A, regs);
+        if (widgetIndex != widx::single_direction && widgetIndex != widx::both_directions)
+        {
+            return;
+        }
+
+        removeConstructionGhosts();
+
+        const bool isBothDirections = widgetIndex == widx::both_directions;
+        auto args = getSignalPlacementArgsFromCursor(x, y, isBothDirections);
+        if (!args)
+        {
+            return;
+        }
+
+        if (args->trackObjType != _trackType)
+        {
+            Error::open(StringIds::cant_build_signal_here, StringIds::wrong_type_of_track_road);
+            return;
+        }
+
+        GameCommands::setErrorTitle(isBothDirections ? StringIds::cant_build_signals_here : StringIds::cant_build_signal_here);
+        auto res = GameCommands::do_13(GameCommands::Flags::apply, *args);
+        if (res == GameCommands::FAILURE)
+        {
+            return;
+        }
+        Audio::playSound(Audio::SoundId::construct, GameCommands::getPosition());
     }
 
     // 0x0049E499
