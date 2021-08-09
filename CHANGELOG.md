@@ -5,6 +5,7 @@
 - Fix: [#1094] Repeated clicking on construction window not always working.
 - Change: [#298] Planting clusters of trees now costs money and influences ratings outside of editor mode.
 - Change: [#1079] Allow rotating buildings in town list by keyboard shortcut.
+- Change: [#1095] Only expenditure sums are now drawn in red, not the individual expenses.
 
 21.07 (2021-07-18)
 ------------------------------------------------------------------------
