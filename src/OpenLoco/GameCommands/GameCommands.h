@@ -46,8 +46,8 @@ namespace OpenLoco::GameCommands
         vehicleRename = 10,
         changeStationName = 11,
         vehicleLocalExpress = 12,
-        gc_unk_13 = 13,
-        gc_unk_14 = 14,
+        createSignal = 13,
+        removeSignal = 14,
         gc_unk_15 = 15,
         removeTrackStation = 16,
         createTrackMod = 17,
@@ -321,7 +321,7 @@ namespace OpenLoco::GameCommands
     {
         registers regs = registers(args);
         regs.bl = flags;
-        return doCommand(GameCommand::gc_unk_13, regs);
+        return doCommand(GameCommand::createSignal, regs);
     }
 
     struct SignalRemovalArgs
@@ -362,7 +362,7 @@ namespace OpenLoco::GameCommands
     {
         registers regs = registers(args);
         regs.bl = flags;
-        return doCommand(GameCommand::gc_unk_14, regs) != FAILURE;
+        return doCommand(GameCommand::removeSignal, regs) != FAILURE;
     }
 
     struct TrackStationRemovalArgs
