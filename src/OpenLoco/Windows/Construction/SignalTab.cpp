@@ -1,3 +1,4 @@
+#include "../../GameCommands/GameCommands.h"
 #include "../../Graphics/ImageIds.h"
 #include "../../Input.h"
 #include "../../Localisation/FormatArguments.hpp"
@@ -114,15 +115,104 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
         Common::onUpdate(self, (1 << 2));
     }
 
+    static std::optional<GameCommands::SignalPlacementArgs> getSignalPlacementArgsFromCursor(const int16_t x, const int16_t y, const bool isBothDirectons)
+    {
+        static loco_global<Ui::Point, 0x0113600C> _113600C;
+        static loco_global<Viewport*, 0x01135F52> _1135F52;
+
+        _113600C = { x, y };
+
+        auto [interaction, viewport] = ViewportInteraction::getMapCoordinatesFromPos(x, y, ~(ViewportInteraction::InteractionItemFlags::track));
+        _1135F52 = viewport;
+
+        if (interaction.type != ViewportInteraction::InteractionItem::track)
+        {
+            return std::nullopt;
+        }
+
+        auto* elTrack = reinterpret_cast<Map::TileElement*>(interaction.object)->asTrack();
+        if (elTrack == nullptr)
+        {
+            return std::nullopt;
+        }
+
+        GameCommands::SignalPlacementArgs args;
+        args.type = _lastSelectedSignal;
+        args.pos = Map::Pos3(interaction.pos.x, interaction.pos.y, elTrack->baseZ() * 4);
+        args.rotation = elTrack->unkDirection();
+        args.trackId = elTrack->trackId();
+        args.index = elTrack->sequenceIndex();
+        args.trackObjType = elTrack->trackObjectId();
+        if (isBothDirectons)
+        {
+            args.sides = 0xC000;
+        }
+        else
+        {
+            // 0x004A45BB
+        }
+        return { args };
+    }
+
+    static uint32_t placeSignalGhost(const GameCommands::SignalPlacementArgs& args)
+    {
+        auto res = GameCommands::do_13(GameCommands::Flags::apply | GameCommands::Flags::flag_1 | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6, args);
+        if (res != GameCommands::FAILURE)
+        {
+            _byte_522096 = _byte_522096 | (1 << 2);
+            _signalGhostPos = args.pos;
+            _signalGhostRotation = args.rotation;
+            _signalGhostTrackId = args.trackId;
+            _signalGhostTileIndex = args.index;
+            _signalGhostSides = args.sides;
+            _signalGhostTrackObjId = args.trackObjType;
+        }
+        return res;
+    }
+
     // 0x0049E745
     static void onToolUpdate(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
     {
-        registers regs;
-        regs.esi = X86Pointer(&self);
-        regs.dx = widgetIndex;
-        regs.ax = x;
-        regs.bx = y;
-        call(0x0049E745, regs);
+        if (widgetIndex != widx::single_direction && widgetIndex != widx::both_directions)
+        {
+            return;
+        }
+
+        const bool isBothDirections = widgetIndex == widx::both_directions;
+
+        auto placementArgs = getSignalPlacementArgsFromCursor(x, y, isBothDirections);
+        if (!placementArgs || (placementArgs->trackObjType != _trackType))
+        {
+            removeConstructionGhosts();
+            if (_signalCost != 0x80000000)
+            {
+                _signalCost = 0x80000000;
+                self.invalidate();
+            }
+            return;
+        }
+
+        if (_byte_522096 & (1 << 2))
+        {
+            if (*_signalGhostPos == placementArgs->pos
+                && _signalGhostRotation == placementArgs->rotation
+                && _signalGhostTrackId == placementArgs->trackId
+                && _signalGhostTileIndex == placementArgs->index
+                && _signalGhostSides == placementArgs->sides
+                && _signalGhostTrackObjId == placementArgs->trackObjType)
+            {
+                return;
+            }
+        }
+
+        removeConstructionGhosts();
+
+        auto cost = placeSignalGhost(*placementArgs);
+        if (cost != _signalCost)
+        {
+            _signalCost = cost;
+            self.invalidate();
+        }
     }
 
     // 0x0049E75A

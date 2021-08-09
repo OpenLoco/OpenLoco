@@ -53,6 +53,12 @@ namespace OpenLoco::Ui::Windows::Construction
     static loco_global<Map::Pos3, 0x01135FF8> _modGhostPos;
     static loco_global<uint16_t, 0x01135FFE> _word_1135FFE;
     static loco_global<int16_t, 0x01136000> _word_1136000;
+    static loco_global<uint16_t, 0x01136002> _signalGhostSides;
+    static loco_global<Map::Pos3, 0x01136004> _signalGhostPos;
+    static loco_global<uint8_t, 0x0113600D> _signalGhostRotation;
+    static loco_global<uint8_t, 0x0113600E> _signalGhostTrackId;
+    static loco_global<uint8_t, 0x0113600F> _signalGhostTileIndex;
+    static loco_global<uint16_t, 0x0113600A> _signalGhostTrackObjId;
     static loco_global<uint8_t, 0x01136010> _modGhostTrackObjId;
     static loco_global<uint8_t[17], 0x0113601D> _signalList;
     static loco_global<uint8_t, 0x0113602E> _lastSelectedSignal;

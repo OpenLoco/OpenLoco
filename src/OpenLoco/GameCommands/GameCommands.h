@@ -281,6 +281,49 @@ namespace OpenLoco::GameCommands
         doCommand(GameCommand::vehicleLocalExpress, regs);
     }
 
+    struct SignalPlacementArgs
+    {
+        SignalPlacementArgs() = default;
+        explicit SignalPlacementArgs(const registers& regs)
+            : pos(regs.ax, regs.cx, regs.di)
+            , rotation(regs.bh & 0x3)
+            , trackId(regs.dl & 0x3F)
+            , index(regs.dh & 0x3)
+            , type((regs.edi >> 16) & 0xFF)
+            , trackObjType(regs.ebp & 0xFF)
+            , sides((regs.edi >> 16) & 0xC000)
+        {
+        }
+
+        Map::Pos3 pos;
+        uint8_t rotation;
+        uint8_t trackId;
+        uint8_t index;
+        uint8_t type;
+        uint8_t trackObjType;
+        uint16_t sides;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.ax = pos.x;
+            regs.cx = pos.y;
+            regs.bh = rotation;
+            regs.dl = trackId;
+            regs.dh = index;
+            regs.edi = pos.z | (type << 16) | ((sides & 0xC000) << 16);
+            regs.ebp = trackObjType;
+            return regs;
+        }
+    };
+
+    inline uint32_t do_13(uint8_t flags, const SignalPlacementArgs& args)
+    {
+        registers regs = registers(args);
+        regs.bl = flags;
+        return doCommand(GameCommand::gc_unk_13, regs);
+    }
+
     struct SignalRemovalArgs
     {
         SignalRemovalArgs() = default;
