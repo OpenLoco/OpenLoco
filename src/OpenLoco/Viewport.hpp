@@ -117,7 +117,7 @@ namespace OpenLoco::Ui
         /**
          * Maps a 2D viewport position to a UI (screen) position.
          */
-        Point mapToUi(const viewport_pos& vpos)
+        Point mapToUi(const viewport_pos& vpos) const
         {
             auto uiX = x + ((vpos.x - view_x) >> zoom);
             auto uiY = y + ((vpos.y - view_y) >> zoom);
@@ -127,7 +127,7 @@ namespace OpenLoco::Ui
         /**
          * Maps a UI (screen) position to a 2D viewport position.
          */
-        viewport_pos uiToMap(const Point& pos)
+        viewport_pos uiToMap(const Point& pos) const
         {
             int16_t viewport_x = ((pos.x - x) << zoom) + view_x;
             int16_t viewport_y = ((pos.y - y) << zoom) + view_y;

@@ -6,6 +6,7 @@
 #include "../../Objects/ObjectManager.h"
 #include "../../Objects/TrackObject.h"
 #include "../../Objects/TrainSignalObject.h"
+#include "../../TrackData.h"
 #include "../../Ui/Dropdown.h"
 #include "../../Widget.h"
 #include "Construction.h"
@@ -115,6 +116,48 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
         Common::onUpdate(self, (1 << 2));
     }
 
+    // Reverse direction map?
+    static loco_global<uint8_t[16], 0x00503CAC> _503CAC;
+    static loco_global<Map::Pos2[16], 0x00503C6C> _503C6C;
+
+    // 0x004A417A
+    // false for left, true for right
+    static bool getSide(const Map::Pos3& loc, const Point& mousePos, const TrackElement& elTrack, const Viewport& viewport)
+    {
+        // Get coordinates of first tile of track piece under the mouse
+        const auto& piece = TrackData::getTrackPiece(elTrack.trackId())[elTrack.sequenceIndex()];
+        const auto rotPos = Math::Vector::rotate(Map::Pos2(piece.x, piece.y), elTrack.unkDirection());
+        const auto firstTile = loc - Map::Pos3(rotPos.x, rotPos.y, piece.z);
+
+        // Get coordinates of the next tile after the end of the track piece
+        const auto trackAndDirection = (elTrack.trackId() << 3) | elTrack.unkDirection();
+        const auto& trackSize = TrackData::getUnkTrack(trackAndDirection);
+        const auto nextTile = firstTile + trackSize.pos;
+        _1135FC6 = nextTile;
+        _1135FCC = trackSize.rotationEnd;
+
+        // Get coordinates of the previous tile before the start of the track piece
+        const auto unk = _503CAC[trackSize.rotationBegin];
+        auto previousTile = firstTile;
+        _word_1135FD4 = unk;
+        if (unk < 12)
+        {
+            previousTile += _503C6C[unk];
+        }
+        _1135FCE = previousTile;
+
+        // Side is goverened by distance mouse is to either next or previous track coordinate
+        const auto vpPosNext = gameToScreen(nextTile + Map::Pos3(16, 16, 0), viewport.getRotation());
+        const auto uiPosNext = viewport.mapToUi(vpPosNext);
+        const auto distanceToNext = Math::Vector::manhattanDistance(uiPosNext, mousePos);
+
+        const auto vpPosPrevious = gameToScreen(previousTile + Map::Pos3(16, 16, 0), viewport.getRotation());
+        const auto uiPosPrevious = viewport.mapToUi(vpPosPrevious);
+        const auto distanceToPrevious = Math::Vector::manhattanDistance(uiPosPrevious, mousePos);
+
+        return distanceToNext <= distanceToPrevious;
+    }
+
     static std::optional<GameCommands::SignalPlacementArgs> getSignalPlacementArgsFromCursor(const int16_t x, const int16_t y, const bool isBothDirectons)
     {
         static loco_global<Ui::Point, 0x0113600C> _113600C;
@@ -149,7 +192,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
         }
         else
         {
-            // 0x004A45BB
+            args.sides = getSide(args.pos, { x, y }, *elTrack, *viewport) ? 0x8000 : 0x4000;
         }
         return { args };
     }
