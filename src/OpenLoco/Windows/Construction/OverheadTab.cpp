@@ -187,15 +187,106 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
         return { args };
     }
 
+    static uint32_t placeRoadModGhost(const GameCommands::RoadModsPlacementArgs& args)
+    {
+        auto res = GameCommands::do_40(GameCommands::Flags::apply | GameCommands::Flags::flag_1 | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6, args);
+        if (res != GameCommands::FAILURE)
+        {
+            _byte_522096 = _byte_522096 | (1 << 4);
+            _modGhostPos = args.pos;
+            _modGhostRotation = args.rotation;
+            _modGhostTrackId = args.roadId;
+            _modGhostTileIndex = args.index;
+            _modGhostTrackObjId = args.roadObjType | (1 << 7); // This looks wrong!
+        }
+        return res;
+    }
+
+    static uint32_t placeTrackModGhost(const GameCommands::TrackModsPlacementArgs& args)
+    {
+        auto res = GameCommands::do_17(GameCommands::Flags::apply | GameCommands::Flags::flag_1 | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6, args);
+        if (res != GameCommands::FAILURE)
+        {
+            _byte_522096 = _byte_522096 | (1 << 4);
+            _modGhostPos = args.pos;
+            _modGhostRotation = args.rotation;
+            _modGhostTrackId = args.trackId;
+            _modGhostTileIndex = args.index;
+            _modGhostTrackObjId = args.trackObjType;
+        }
+        return res;
+    }
+
     // 0x0049EC15
     static void onToolUpdate(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
     {
-        registers regs;
-        regs.esi = X86Pointer(&self);
-        regs.dx = widgetIndex;
-        regs.ax = x;
-        regs.bx = y;
-        call(0x0049EC15, regs);
+        if (widgetIndex != widx::image)
+        {
+            return;
+        }
+
+        if (_trackType & (1 << 7))
+        {
+            auto placementArgs = getRoadModsPlacementArgsFromCursor(x, y);
+            if (!placementArgs || ((placementArgs->roadObjType | (1 << 7)) != _trackType))
+            {
+                removeConstructionGhosts();
+                if (0x80000000 != _modCost)
+                {
+                    _modCost = 0x80000000;
+                    self.invalidate();
+                }
+                return;
+            }
+
+            if (_byte_522096 & (1 << 4))
+            {
+                if (*_modGhostPos == placementArgs->pos && _modGhostRotation == placementArgs->rotation && _modGhostTrackId == placementArgs->roadId && _modGhostTileIndex == placementArgs->index && _modGhostTrackObjId == placementArgs->roadObjType)
+                {
+                    return;
+                }
+            }
+
+            removeConstructionGhosts();
+
+            auto cost = placeRoadModGhost(*placementArgs);
+            if (cost != _modCost)
+            {
+                _modCost = cost;
+                self.invalidate();
+            }
+        }
+        else
+        {
+            auto placementArgs = getTrackModsPlacementArgsFromCursor(x, y);
+            if (!placementArgs || (placementArgs->trackObjType != _trackType))
+            {
+                removeConstructionGhosts();
+                if (0x80000000 != _modCost)
+                {
+                    _modCost = 0x80000000;
+                    self.invalidate();
+                }
+                return;
+            }
+
+            if (_byte_522096 & (1 << 4))
+            {
+                if (*_modGhostPos == placementArgs->pos && _modGhostRotation == placementArgs->rotation && _modGhostTrackId == placementArgs->trackId && _modGhostTileIndex == placementArgs->index && _modGhostTrackObjId == placementArgs->trackObjType)
+                {
+                    return;
+                }
+            }
+
+            removeConstructionGhosts();
+
+            auto cost = placeTrackModGhost(*placementArgs);
+            if (cost != _modCost)
+            {
+                _modCost = cost;
+                self.invalidate();
+            }
+        }
     }
 
     // 0x0049EC20
