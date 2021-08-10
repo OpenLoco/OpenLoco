@@ -161,15 +161,11 @@ namespace OpenLoco::CompanyManager
             int32_t companies_active = 0;
             for (const auto& company : companies())
             {
-                auto id = company.id();
-                if (id != _player_company[0] && id != _player_company[1])
-                {
+                if (!isPlayerCompany(company.id()))
                     companies_active++;
-                }
             }
 
             auto& prng = gPrng();
-
             if (prng.randNext(16) == 0)
             {
                 if (prng.randNext(_company_max_competing) + 1 > companies_active)
