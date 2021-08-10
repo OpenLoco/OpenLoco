@@ -417,7 +417,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 args.pos = Map::Pos3((*_terraformGhostPos).x, (*_terraformGhostPos).y, _terraformGhostBaseZ * 4);
                 args.type = _terraformGhostType;
                 args.elementType = _terraformGhostTreeElementType;
-                GameCommands::do_22(GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6, args);
+                GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6);
             }
         }
 
@@ -426,7 +426,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         {
             removeTreeGhost();
 
-            auto res = GameCommands::do_23(GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6, placementArgs);
+            auto res = GameCommands::doCommand(placementArgs, GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6);
             if (res != GameCommands::FAILURE)
             {
                 _terraformGhostPos = placementArgs.pos;
@@ -632,7 +632,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 args.requiresFullClearance = true;
 
                 // First query if we can place a tree at this location; skip if we can't.
-                auto queryRes = do_23(0, args);
+                auto queryRes = doCommand(args, 0);
                 if (queryRes == GameCommands::FAILURE)
                 {
                     numErrors++;
@@ -640,7 +640,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 }
 
                 // Actually place the tree
-                do_23(GameCommands::Flags::apply, args);
+                doCommand(args, GameCommands::Flags::apply);
             }
 
             // Have we placed any trees?
@@ -666,7 +666,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 switch (_treeClusterType)
                 {
                     case treeCluster::none:
-                        if (GameCommands::do_23(GameCommands::Flags::apply, *placementArgs) != GameCommands::FAILURE)
+                        if (GameCommands::doCommand(*placementArgs, GameCommands::Flags::apply) != GameCommands::FAILURE)
                         {
                             Audio::playSound(Audio::SoundId::construct, GameCommands::getPosition());
                         }
@@ -2121,7 +2121,7 @@ namespace OpenLoco::Ui::Windows::Terraform
                 GameCommands::WallRemovalArgs args;
                 args.pos = Map::Pos3((*_terraformGhostPos).x, (*_terraformGhostPos).y, _terraformGhostBaseZ * 4);
                 args.rotation = _terraformGhostRotation;
-                GameCommands::do_33(GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6, args);
+                GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6);
             }
         }
 
@@ -2130,7 +2130,7 @@ namespace OpenLoco::Ui::Windows::Terraform
         {
             removeWallGhost();
 
-            if (GameCommands::do_32(GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6, placementArgs))
+            if (GameCommands::doCommand(placementArgs, GameCommands::Flags::apply | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6) != GameCommands::FAILURE)
             {
                 _terraformGhostPos = placementArgs.pos;
                 _terraformGhostRotation = placementArgs.rotation;
@@ -2218,7 +2218,7 @@ namespace OpenLoco::Ui::Windows::Terraform
             if (placementArgs)
             {
                 GameCommands::setErrorTitle(StringIds::error_cant_build_this_here);
-                if (GameCommands::do_32(GameCommands::Flags::apply, *placementArgs))
+                if (GameCommands::doCommand(*placementArgs, GameCommands::Flags::apply) != GameCommands::FAILURE)
                 {
                     Audio::playSound(Audio::SoundId::construct, GameCommands::getPosition());
                 }

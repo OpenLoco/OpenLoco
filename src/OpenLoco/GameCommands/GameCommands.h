@@ -152,7 +152,7 @@ namespace OpenLoco::GameCommands
         static constexpr auto command = GameCommand::vehiclePlace;
 
         VehiclePlacementArgs() = default;
-        explicit VehiclePlacementArgs(const registers regs)
+        explicit VehiclePlacementArgs(const registers& regs)
             : pos(regs.ax, regs.cx, regs.dx * 4)
             , trackAndDirection(regs.bp)
             , trackProgress(regs.ebx >> 16)
@@ -286,6 +286,8 @@ namespace OpenLoco::GameCommands
 
     struct SignalPlacementArgs
     {
+        static constexpr auto command = GameCommand::createSignal;
+
         SignalPlacementArgs() = default;
         explicit SignalPlacementArgs(const registers& regs)
             : pos(regs.ax, regs.cx, regs.di)
@@ -320,19 +322,12 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    inline uint32_t do_13(uint8_t flags, const SignalPlacementArgs& args)
-    {
-        registers regs = registers(args);
-        regs.bl = flags;
-        return doCommand(GameCommand::createSignal, regs);
-    }
-
     struct SignalRemovalArgs
     {
         static constexpr auto command = GameCommand::removeSignal;
 
         SignalRemovalArgs() = default;
-        explicit SignalRemovalArgs(const registers regs)
+        explicit SignalRemovalArgs(const registers& regs)
             : pos(regs.ax, regs.cx, regs.di)
             , rotation(regs.bh & 0x3)
             , trackId(regs.dl & 0x3F)
@@ -368,7 +363,7 @@ namespace OpenLoco::GameCommands
         static constexpr auto command = GameCommand::removeTrackStation;
 
         TrackStationRemovalArgs() = default;
-        explicit TrackStationRemovalArgs(const registers regs)
+        explicit TrackStationRemovalArgs(const registers& regs)
             : pos(regs.ax, regs.cx, regs.di)
             , rotation(regs.bh & 0x3)
             , trackId(regs.dl & 0x3F)
@@ -399,6 +394,8 @@ namespace OpenLoco::GameCommands
 
     struct TrackModsPlacementArgs
     {
+        static constexpr auto command = GameCommand::createTrackMod;
+
         TrackModsPlacementArgs() = default;
         explicit TrackModsPlacementArgs(const registers& regs)
             : pos(regs.ax, regs.cx, regs.di)
@@ -432,13 +429,6 @@ namespace OpenLoco::GameCommands
             return regs;
         }
     };
-
-    inline uint32_t do_17(uint8_t flags, const TrackModsPlacementArgs& args)
-    {
-        registers regs = registers(args);
-        regs.bl = flags;
-        return doCommand(GameCommand::createTrackMod, regs);
-    }
 
     // Change company colour scheme
     inline void do_19(int8_t isPrimary, int8_t value, int8_t colourType, int8_t setColourMode, uint8_t companyId)
@@ -486,7 +476,7 @@ namespace OpenLoco::GameCommands
         static constexpr auto command = GameCommand::removeTree;
 
         TreeRemovalArgs() = default;
-        explicit TreeRemovalArgs(const registers regs)
+        explicit TreeRemovalArgs(const registers& regs)
             : pos(regs.ax, regs.cx, regs.dl * 4)
             , type(regs.dh)
             , elementType(regs.bh)
@@ -511,6 +501,8 @@ namespace OpenLoco::GameCommands
 
     struct TreePlacementArgs
     {
+        static constexpr auto command = GameCommand::createTree;
+
         TreePlacementArgs() = default;
         explicit TreePlacementArgs(const registers& regs)
             : pos(regs.ax, regs.cx)
@@ -543,13 +535,6 @@ namespace OpenLoco::GameCommands
             return regs;
         }
     };
-
-    inline uint32_t do_23(uint8_t flags, const TreePlacementArgs& args)
-    {
-        registers regs = registers(args);
-        regs.bl = flags;
-        return doCommand(GameCommand::createTree, regs);
-    }
 
     // Change Land Material
     inline void do_24(Map::Pos2 pointA, Map::Pos2 pointB, uint8_t landType, uint8_t flags)
@@ -655,6 +640,8 @@ namespace OpenLoco::GameCommands
 
     struct WallPlacementArgs
     {
+        static constexpr auto command = GameCommand::createWall;
+
         WallPlacementArgs() = default;
         explicit WallPlacementArgs(const registers& regs)
             : pos(regs.ax, regs.cx, regs.di)
@@ -686,13 +673,6 @@ namespace OpenLoco::GameCommands
             return regs;
         }
     };
-
-    inline bool do_32(uint8_t flags, const WallPlacementArgs& args)
-    {
-        registers regs = registers(args);
-        regs.bl = flags;
-        return doCommand(GameCommand::createWall, regs) != FAILURE;
-    }
 
     struct WallRemovalArgs
     {
@@ -749,6 +729,8 @@ namespace OpenLoco::GameCommands
 
     struct RoadModsPlacementArgs
     {
+        static constexpr auto command = GameCommand::createRoadMod;
+
         RoadModsPlacementArgs() = default;
         explicit RoadModsPlacementArgs(const registers& regs)
             : pos(regs.ax, regs.cx, regs.di)
@@ -783,19 +765,12 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    inline uint32_t do_40(uint8_t flags, const RoadModsPlacementArgs& args)
-    {
-        registers regs = registers(args);
-        regs.bl = flags;
-        return doCommand(GameCommand::createRoadMod, regs);
-    }
-
     struct RoadStationRemovalArgs
     {
         static constexpr auto command = GameCommand::removeRoadStation;
 
         RoadStationRemovalArgs() = default;
-        explicit RoadStationRemovalArgs(const registers regs)
+        explicit RoadStationRemovalArgs(const registers& regs)
             : pos(regs.ax, regs.cx, regs.di)
             , rotation(regs.bh & 0x3)
             , roadId(regs.dl & 0xF)
@@ -829,7 +804,7 @@ namespace OpenLoco::GameCommands
         static constexpr auto command = GameCommand::createBuilding;
 
         BuildingPlacementArgs() = default;
-        explicit BuildingPlacementArgs(const registers regs)
+        explicit BuildingPlacementArgs(const registers& regs)
             : pos(regs.ax, regs.cx, regs.di)
             , rotation(regs.bh & 0x3)
             , type(regs.dl)
@@ -863,7 +838,7 @@ namespace OpenLoco::GameCommands
         static constexpr auto command = GameCommand::removeBuilding;
 
         BuildingRemovalArgs() = default;
-        explicit BuildingRemovalArgs(const registers regs)
+        explicit BuildingRemovalArgs(const registers& regs)
             : pos(regs.ax, regs.cx, regs.di)
         {
         }
@@ -902,7 +877,7 @@ namespace OpenLoco::GameCommands
         static constexpr auto command = GameCommand::createIndustry;
 
         IndustryPlacementArgs() = default;
-        explicit IndustryPlacementArgs(const registers regs)
+        explicit IndustryPlacementArgs(const registers& regs)
             : pos(regs.ax, regs.cx)
             , type(regs.dl)
             , buildImmediately(regs.bh & 0x80)
@@ -940,8 +915,10 @@ namespace OpenLoco::GameCommands
 
     struct TownPlacementArgs
     {
+        static constexpr auto command = GameCommand::createTown;
+
         TownPlacementArgs() = default;
-        explicit TownPlacementArgs(const registers regs)
+        explicit TownPlacementArgs(const registers& regs)
             : pos(regs.ax, regs.cx)
             , size(regs.dl)
         {
@@ -960,13 +937,6 @@ namespace OpenLoco::GameCommands
         }
     };
 
-    inline uint32_t do_49(const TownPlacementArgs& args, uint8_t flags)
-    {
-        registers regs = registers(args);
-        regs.bl = flags;
-        return doCommand(GameCommand::createTown, regs);
-    }
-
     // Remove town
     inline bool do_50(uint8_t townId)
     {
@@ -981,7 +951,7 @@ namespace OpenLoco::GameCommands
         static constexpr auto command = GameCommand::buildCompanyHeadquarters;
 
         HeadquarterPlacementArgs() = default;
-        explicit HeadquarterPlacementArgs(const registers regs)
+        explicit HeadquarterPlacementArgs(const registers& regs)
             : pos(regs.ax, regs.cx, regs.di)
             , rotation(regs.bh & 0x3)
             , type(regs.dl)
@@ -1015,7 +985,7 @@ namespace OpenLoco::GameCommands
             : pos(place.pos)
         {
         }
-        explicit HeadquarterRemovalArgs(const registers regs)
+        explicit HeadquarterRemovalArgs(const registers& regs)
             : pos(regs.ax, regs.cx, regs.di)
         {
         }
@@ -1036,7 +1006,7 @@ namespace OpenLoco::GameCommands
         static constexpr auto command = GameCommand::removeAirport;
 
         AirportRemovalArgs() = default;
-        explicit AirportRemovalArgs(const registers regs)
+        explicit AirportRemovalArgs(const registers& regs)
             : pos(regs.ax, regs.cx, regs.di)
         {
         }
@@ -1058,7 +1028,7 @@ namespace OpenLoco::GameCommands
         static constexpr auto command = GameCommand::vehiclePlaceAir;
 
         VehicleAirPlacementArgs() = default;
-        explicit VehicleAirPlacementArgs(const registers regs)
+        explicit VehicleAirPlacementArgs(const registers& regs)
             : stationId(regs.bp)
             , airportNode(regs.dl)
             , head(regs.di)
@@ -1095,7 +1065,7 @@ namespace OpenLoco::GameCommands
         static constexpr auto command = GameCommand::removePort;
 
         PortRemovalArgs() = default;
-        explicit PortRemovalArgs(const registers regs)
+        explicit PortRemovalArgs(const registers& regs)
             : pos(regs.ax, regs.cx, regs.di)
         {
         }
@@ -1117,7 +1087,7 @@ namespace OpenLoco::GameCommands
         static constexpr auto command = GameCommand::vehiclePlaceWater;
 
         VehicleWaterPlacementArgs() = default;
-        explicit VehicleWaterPlacementArgs(const registers regs)
+        explicit VehicleWaterPlacementArgs(const registers& regs)
             : pos(regs.ax, regs.cx, regs.dx)
             , head(regs.di)
             , convertGhost((regs.ebx >> 16) == 0xFFFF)

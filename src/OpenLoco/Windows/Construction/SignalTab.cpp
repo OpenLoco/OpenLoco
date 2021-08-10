@@ -173,7 +173,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
 
     static uint32_t placeSignalGhost(const GameCommands::SignalPlacementArgs& args)
     {
-        auto res = GameCommands::do_13(GameCommands::Flags::apply | GameCommands::Flags::flag_1 | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6, args);
+        auto res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::flag_1 | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6);
         if (res != GameCommands::FAILURE)
         {
             _byte_522096 = _byte_522096 | (1 << 2);
@@ -256,7 +256,7 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
         }
 
         GameCommands::setErrorTitle(isBothDirections ? StringIds::cant_build_signals_here : StringIds::cant_build_signal_here);
-        auto res = GameCommands::do_13(GameCommands::Flags::apply, *args);
+        auto res = GameCommands::doCommand(*args, GameCommands::Flags::apply);
         if (res == GameCommands::FAILURE)
         {
             return;
