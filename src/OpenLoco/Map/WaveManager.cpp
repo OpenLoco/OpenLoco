@@ -1,4 +1,5 @@
 #include "WaveManager.h"
+#include "../Core/LocoFixedVector.hpp"
 #include "../Interop/Interop.hpp"
 #include "../Ui/WindowManager.h"
 #include "../Utility/Prng.hpp"
@@ -15,6 +16,10 @@ namespace OpenLoco::Map::WaveManager
     {
         Map::Pos2 loc;  // 0x00
         uint16_t frame; // 0x04
+        bool empty() const
+        {
+            return loc.x == Location::null;
+        }
     };
 #pragma pack(pop)
 
@@ -27,6 +32,11 @@ namespace OpenLoco::Map::WaveManager
         Pos2(0, +32),
         Pos2(0, -32),
     };
+
+    static LocoFixedVector<Wave> waves()
+    {
+        return LocoFixedVector<Wave>(_waves);
+    }
 
     // 0x0046959C
     void createWave(SurfaceElement& surface, int16_t x, int16_t y, uint8_t waveIndex)
@@ -67,7 +77,35 @@ namespace OpenLoco::Map::WaveManager
     // 0x004C56F6
     void update()
     {
-        call(0x004C56F6);
+        if (!(addr<0x00525E28, uint32_t>() & 1) || (scenarioTicks() & 0x3))
+        {
+            return;
+        }
+
+        for (auto& wave : waves())
+        {
+            auto tile = TileManager::get(wave.loc);
+            auto* surface = tile.surface();
+            if (surface == nullptr)
+            {
+                wave.loc.x = Location::null;
+                continue;
+            }
+
+            ViewportManager::invalidate(wave.loc, surface->water() * 4, surface->water() * 4, ZoomLevel::full);
+
+            if (surface->water())
+            {
+                wave.frame++;
+                if (wave.frame < 16)
+                {
+                    continue;
+                }
+            }
+            // Wave removed if 16 frames or no water
+            wave.loc.x = Location::null;
+            surface->setFlag6(false);
+        }
     }
 
     // 0x004C4BC0
