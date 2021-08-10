@@ -221,21 +221,6 @@ namespace OpenLoco::CompanyManager
         return regs.bx;
     }
 
-    OwnerStatus getOwnerStatus(CompanyId_t id)
-    {
-        registers regs;
-        regs.esi = X86Pointer(get(id));
-        call(0x00438047, regs);
-
-        OwnerStatus ownerStatus;
-
-        ownerStatus.string = regs.bx;
-        ownerStatus.argument1 = regs.ecx;
-        ownerStatus.argument2 = regs.edx;
-
-        return ownerStatus;
-    }
-
     // 0x004383ED
     void updateOwnerStatus()
     {
