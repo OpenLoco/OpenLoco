@@ -798,7 +798,7 @@ void OpenLoco::Interop::registerHooks()
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
             int16_t x = regs.eax;
-            int16_t i = regs.ebx / 6;
+            uint8_t i = regs.ebx / 6;
             int16_t y = regs.ecx;
             Map::SurfaceElement* surface = X86Pointer<Map::SurfaceElement>(regs.esi);
 

@@ -13,8 +13,7 @@ namespace OpenLoco::Map::WaveManager
 #pragma pack(push, 1)
     struct Wave
     {
-        uint16_t x;     // 0x00
-        uint16_t y;     // 0x02
+        Map::Pos2 loc;  // 0x00
         uint16_t frame; // 0x04
     };
 #pragma pack(pop)
@@ -30,7 +29,7 @@ namespace OpenLoco::Map::WaveManager
     };
 
     // 0x0046959C
-    void createWave(SurfaceElement& surface, int16_t x, int16_t y, int32_t animationIndex)
+    void createWave(SurfaceElement& surface, int16_t x, int16_t y, uint8_t waveIndex)
     {
         auto coord2D = gameToScreen(Pos3(x + 16, y + 16, surface.water() * 16), WindowManager::getCurrentRotation());
         auto w = WindowManager::findWindowShowing(coord2D);
@@ -58,9 +57,8 @@ namespace OpenLoco::Map::WaveManager
                 return;
         }
 
-        _waves[animationIndex].x = x;
-        _waves[animationIndex].y = y;
-        _waves[animationIndex].frame = 0;
+        _waves[waveIndex].loc = Map::Pos2(x, y);
+        _waves[waveIndex].frame = 0;
         surface.setFlag6(true);
 
         ViewportManager::invalidate({ x, y }, surface.water() * 16, surface.water() * 16, ZoomLevel::full);
@@ -75,6 +73,9 @@ namespace OpenLoco::Map::WaveManager
     // 0x004C4BC0
     void reset()
     {
-        call(0x004C4BC0);
+        for (auto& wave : _waves)
+        {
+            wave.loc.x = Location::null;
+        }
     }
 }
