@@ -201,10 +201,6 @@ namespace OpenLoco::Ui::Windows::Construction
         return nonTrackWindow();
     }
 
-    // Reverse direction map?
-    static loco_global<uint8_t[16], 0x00503CAC> _503CAC;
-    static loco_global<Map::Pos2[16], 0x00503C6C> _503C6C;
-
     // 0x004A0EAD
     Window* openAtTrack(Window* main, TrackElement* track, const Pos2 pos)
     {
@@ -251,7 +247,7 @@ namespace OpenLoco::Ui::Windows::Construction
         const auto chosenRotation = isCloserToNext ? _nextTileRotation : _previousTileRotation;
         _x = chosenLoc.x;
         _y = chosenLoc.y;
-        _word_1135FB8 = chosenLoc.z;
+        _constructionZ = chosenLoc.z;
         _constructionRotation = chosenRotation;
         _lastSelectedTrackPiece = 0;
         _lastSelectedTrackGradient = 0;
@@ -341,7 +337,7 @@ namespace OpenLoco::Ui::Windows::Construction
         const auto chosenRotation = isCloserToNext ? _nextTileRotation : _previousTileRotation;
         _x = chosenLoc.x;
         _y = chosenLoc.y;
-        _word_1135FB8 = chosenLoc.z;
+        _constructionZ = chosenLoc.z;
         _constructionRotation = chosenRotation;
         _lastSelectedTrackPiece = 0;
         _lastSelectedTrackGradient = 0;
@@ -470,7 +466,7 @@ namespace OpenLoco::Ui::Windows::Construction
         _byte_1136063 = flags >> 24;
         _x = 0x1800;
         _y = 0x1800;
-        _word_1135FB8 = 0x100;
+        _constructionZ = 0x100;
         _constructionRotation = 0;
         _constructionHover = 0;
         _byte_113607E = 1;
@@ -606,6 +602,10 @@ namespace OpenLoco::Ui::Windows::Construction
             self.width = self.widgets[widx::frame].right + 1;
             self.height = self.widgets[widx::frame].bottom + 1;
         }
+
+        // Reverse direction map?
+        static loco_global<uint8_t[16], 0x00503CAC> _503CAC;
+        static loco_global<Map::Pos2[16], 0x00503C6C> _503C6C;
 
         void setNextAndPreviousTrackTile(const TrackElement& elTrack, const Map::Pos2& pos)
         {

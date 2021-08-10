@@ -43,7 +43,7 @@ namespace OpenLoco::Ui::Windows::Construction
     static loco_global<uint16_t, 0x01135F86> _word_1135F86;
     static loco_global<uint16_t, 0x01135FB4> _x;
     static loco_global<uint16_t, 0x01135FB6> _y;
-    static loco_global<uint16_t, 0x01135FB8> _word_1135FB8;
+    static loco_global<uint16_t, 0x01135FB8> _constructionZ;
     static loco_global<uint16_t, 0x01135FBA> _word_1135FBA;
     static loco_global<uint16_t, 0x01135FBC> _word_1135FBC;
     static loco_global<uint16_t, 0x01135FBE> _word_1135FBE;
