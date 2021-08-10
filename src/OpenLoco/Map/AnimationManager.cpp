@@ -47,6 +47,12 @@ namespace OpenLoco::Map::AnimationManager
         _numAnimations = 0;
     }
 
+    // 0x004612EC
+    void update()
+    {
+        call(0x004612EC);
+    }
+
     void registerHooks()
     {
         registerHook(

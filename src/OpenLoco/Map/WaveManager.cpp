@@ -65,4 +65,10 @@ namespace OpenLoco::Map::WaveManager
 
         ViewportManager::invalidate({ x, y }, surface.water() * 16, surface.water() * 16, ZoomLevel::full);
     }
+
+    // 0x004C56F6
+    void update()
+    {
+        call(0x004C56F6);
+    }
 }
