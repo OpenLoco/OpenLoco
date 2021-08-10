@@ -230,45 +230,48 @@ namespace OpenLoco::CompanyManager
             StringIds::company_status_surveying_landscape,
         };
 
-        string_id statusString = observationStatusStrings[company.observation_status];
-        if (company.observation_town_id == 0xFFFF)
+        string_id statusString = observationStatusStrings[company.observationStatus];
+        if (company.observationTownId == 0xFFFF)
             return statusString;
 
-        switch (company.observation_status)
+        switch (company.observationStatus)
         {
-            case 1:
-                if (company.observation_object & 0x80)
+            case ObservationStatus::buildingTrackRoad:
+                if (company.observationObject & 0x80)
                 {
-                    auto* obj = ObjectManager::get<RoadObject>(company.observation_object & 0xFF7F);
+                    auto* obj = ObjectManager::get<RoadObject>(company.observationObject & 0xFF7F);
                     if (obj != nullptr)
                         args.push(obj->name);
                 }
                 else
                 {
-                    auto* obj = ObjectManager::get<TrackObject>(company.observation_object);
+                    auto* obj = ObjectManager::get<TrackObject>(company.observationObject);
                     if (obj != nullptr)
                         args.push(obj->name);
                 }
                 break;
 
-            case 2:
+            case ObservationStatus::buildingAirport:
             {
-                auto* obj = ObjectManager::get<AirportObject>(company.observation_object);
+                auto* obj = ObjectManager::get<AirportObject>(company.observationObject);
                 if (obj != nullptr)
                     args.push(obj->name);
                 break;
             }
 
-            case 3:
+            case ObservationStatus::buildingDock:
             {
-                auto* obj = ObjectManager::get<DockObject>(company.observation_object);
+                auto* obj = ObjectManager::get<DockObject>(company.observationObject);
                 if (obj != nullptr)
                     args.push(obj->name);
                 break;
             }
+
+            default:
+                break;
         }
 
-        auto* town = TownManager::get(company.observation_town_id);
+        auto* town = TownManager::get(company.observationTownId);
         args.push(town->name);
 
         return statusString;
