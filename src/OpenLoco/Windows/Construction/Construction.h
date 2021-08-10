@@ -36,7 +36,6 @@ namespace OpenLoco::Ui::Windows::Construction
     static loco_global<uint32_t, 0x01135F42> _dword_1135F42;
     static loco_global<uint32_t, 0x01135F46> _modCost;
     static loco_global<uint32_t, 0x01135F4E> _signalCost;
-    static loco_global<Map::TrackElement*, 0x01135F4A> _1135F4A;
     static loco_global<uint32_t, 0x01135F6C> _stationCost;
     static loco_global<uint32_t, 0x01135F70> _constructingStationId;
     static loco_global<uint32_t, 0x01135F74> _constructingStationAcceptedCargoTypes;
@@ -142,6 +141,7 @@ namespace OpenLoco::Ui::Windows::Construction
         void sub_4A3A50();
         void refreshSignalList(uint8_t* signalList, uint8_t trackType);
         void setNextAndPreviousTrackTile(const TrackElement& elTrack, const Map::Pos2& pos);
+        void setNextAndPreviousRoadTile(const RoadElement& elRoad, const Map::Pos2& pos);
         bool isPointCloserToNextOrPreviousTile(const Point& point, const Viewport& viewport);
     }
 
