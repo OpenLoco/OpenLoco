@@ -2,6 +2,7 @@
 #include "Config.h"
 #include "Entities/EntityManager.h"
 #include "Entities/Misc.h"
+#include "Graphics/Colour.h"
 #include "GameCommands/GameCommands.h"
 #include "Interop/Interop.hpp"
 #include "Localisation/FormatArguments.hpp"
@@ -30,7 +31,32 @@ namespace OpenLoco::CompanyManager
     // 0x0042F7F8
     void reset()
     {
-        call(0x0042F7F8);
+        // First, empty all non-empty companies.
+        for (auto& company : companies())
+            company.name = StringIds::empty;
+
+        _byte_525FCB = 0;
+
+        // Reset player companies depending on network mode.
+        if (isNetworkHost())
+        {
+            _player_company[0] = 1;
+            _player_company[1] = 0;
+        }
+        else if (isNetworked())
+        {
+            _player_company[0] = 0;
+            _player_company[1] = 1;
+        }
+        else
+        {
+            _player_company[0] = 0;
+            _player_company[1] = 0xFF;
+        }
+
+        // Reset primary company colours.
+        _companies[0].mainColours.primary = Colour::saturated_green;
+        updateColours();
     }
 
     CompanyId_t updatingCompanyId()
