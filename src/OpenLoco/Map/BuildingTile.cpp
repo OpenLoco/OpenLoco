@@ -3,6 +3,7 @@
 #include "../StationManager.h"
 #include "../TownManager.h"
 #include "../ViewportManager.h"
+#include "AnimationManager.h"
 #include "Tile.h"
 #include "TileManager.h"
 
@@ -64,7 +65,7 @@ namespace OpenLoco::Map
                     setClearZ(newClearHeight);
                     if (buildingObj->var_AD != 0)
                     {
-                        TileManager::createAnimation(5, loc, baseZ());
+                        AnimationManager::createAnimation(5, loc, baseZ());
                     }
                     if (buildingObj->flags & BuildingObjectFlags::large_tile)
                     {

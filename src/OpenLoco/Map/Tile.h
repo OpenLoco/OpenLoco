@@ -175,7 +175,6 @@ namespace OpenLoco::Map
             _type &= ~0x40;
             _type |= state ? 0x40 : 0;
         }
-        void createWave(int16_t x, int16_t y, int animationIndex);
         bool hasHighTypeFlag() const { return _type & 0x80; }
         void setHighTypeFlag(bool state)
         {

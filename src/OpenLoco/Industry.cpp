@@ -1,6 +1,7 @@
 #include "Industry.h"
 #include "Interop/Interop.hpp"
 #include "Localisation/StringIds.h"
+#include "Map/AnimationManager.h"
 #include "Map/TileManager.h"
 #include "Objects/CargoObject.h"
 #include "Objects/IndustryObject.h"
@@ -262,7 +263,7 @@ namespace OpenLoco
                         }
                         while (animOffsets[0].pos.x != Location::null)
                         {
-                            TileManager::createAnimation(3, animOffsets->pos + tilePos, baseZ);
+                            AnimationManager::createAnimation(3, animOffsets->pos + tilePos, baseZ);
                             animOffsets++;
                         }
                     }

@@ -31,8 +31,6 @@ namespace OpenLoco::Map::TileManager
     void setMapSelectionCorner(const uint8_t corner);
     uint8_t getMapSelectionCorner();
     void resetSurfaceClearance();
-    void createAnimation(uint8_t type, const Pos2& pos, tile_coord_t baseZ);
-    void resetAnimations();
     uint16_t countSurroundingWaterTiles(const Pos2& pos);
     uint16_t countSurroundingTrees(const Pos2& pos);
     void update();

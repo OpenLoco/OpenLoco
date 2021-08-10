@@ -16,8 +16,10 @@
 #include "../Graphics/Gfx.h"
 #include "../Gui.h"
 #include "../Input.h"
+#include "../Map/AnimationManager.h"
 #include "../Map/Tile.h"
 #include "../Map/TileManager.h"
+#include "../Map/WaveManager.h"
 #include "../Paint/Paint.h"
 #include "../Platform/Platform.h"
 #include "../S5/S5.h"
@@ -770,7 +772,8 @@ void OpenLoco::Interop::registerHooks()
         });
 
     Ui::ProgressBar::registerHooks();
-    OpenLoco::Map::TileManager::registerHooks();
+    Map::TileManager::registerHooks();
+    Map::AnimationManager::registerHooks();
     Ui::Windows::PromptBrowse::registerHooks();
     Ui::Windows::TextInput::registerHooks();
     Ui::Windows::ToolTip::registerHooks();
@@ -799,7 +802,7 @@ void OpenLoco::Interop::registerHooks()
             int16_t y = regs.ecx;
             Map::SurfaceElement* surface = X86Pointer<Map::SurfaceElement>(regs.esi);
 
-            surface->createWave(x, y, i);
+            WaveManager::createWave(*surface, x, y, i);
 
             regs = backup;
             return 0;

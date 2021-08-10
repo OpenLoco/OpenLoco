@@ -7,6 +7,7 @@
 #include "IndustryManager.h"
 #include "Interop/Interop.hpp"
 #include "Localisation/StringIds.h"
+#include "Map/AnimationManager.h"
 #include "Map/MapGenerator.h"
 #include "Map/TileManager.h"
 #include "Objects/CargoObject.h"
@@ -47,7 +48,7 @@ namespace OpenLoco::Scenario
     void sub_46115C()
     {
         addr<0x00525E28, uint32_t>() = 0;
-        TileManager::resetAnimations();
+        AnimationManager::resetAnimations();
         addr<0x0052624C, uint16_t>() = S5::S5FixFlags::fixFlag0 | S5::S5FixFlags::fixFlag1;
     }
 

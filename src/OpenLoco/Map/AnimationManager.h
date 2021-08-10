@@ -1,0 +1,9 @@
+#pragma once
+#include "Map.hpp"
+
+namespace OpenLoco::Map::AnimationManager
+{
+    void createAnimation(uint8_t type, const Pos2& pos, tile_coord_t baseZ);
+    void resetAnimations();
+    void registerHooks();
+}
