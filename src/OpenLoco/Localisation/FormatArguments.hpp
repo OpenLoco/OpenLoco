@@ -66,6 +66,11 @@ namespace OpenLoco
             _buffer = nextOffset;
         }
 
+        void rewind()
+        {
+            _buffer = _bufferStart;
+        }
+
         const void* operator&()
         {
             return _bufferStart;

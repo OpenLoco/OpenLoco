@@ -3,11 +3,17 @@
 #include "Entities/EntityManager.h"
 #include "Entities/Misc.h"
 #include "GameCommands/GameCommands.h"
+#include "Graphics/Colour.h"
 #include "Interop/Interop.hpp"
 #include "Localisation/FormatArguments.hpp"
 #include "Map/Tile.h"
 #include "Map/TileManager.h"
+#include "Objects/AirportObject.h"
+#include "Objects/DockObject.h"
+#include "Objects/RoadObject.h"
+#include "Objects/TrackObject.h"
 #include "OpenLoco.h"
+#include "TownManager.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleManager.h"
@@ -30,7 +36,32 @@ namespace OpenLoco::CompanyManager
     // 0x0042F7F8
     void reset()
     {
-        call(0x0042F7F8);
+        // First, empty all non-empty companies.
+        for (auto& company : companies())
+            company.name = StringIds::empty;
+
+        _byte_525FCB = 0;
+
+        // Reset player companies depending on network mode.
+        if (isNetworkHost())
+        {
+            _player_company[0] = 1;
+            _player_company[1] = 0;
+        }
+        else if (isNetworked())
+        {
+            _player_company[0] = 0;
+            _player_company[1] = 1;
+        }
+        else
+        {
+            _player_company[0] = 0;
+            _player_company[1] = 0xFF;
+        }
+
+        // Reset primary company colours.
+        _companies[0].mainColours.primary = Colour::saturated_green;
+        updateColours();
     }
 
     CompanyId_t updatingCompanyId()
@@ -161,15 +192,11 @@ namespace OpenLoco::CompanyManager
             int32_t companies_active = 0;
             for (const auto& company : companies())
             {
-                auto id = company.id();
-                if (id != _player_company[0] && id != _player_company[1])
-                {
+                if (!isPlayerCompany(company.id()))
                     companies_active++;
-                }
             }
 
             auto& prng = gPrng();
-
             if (prng.randNext(16) == 0)
             {
                 if (prng.randNext(_company_max_competing) + 1 > companies_active)
@@ -190,28 +217,64 @@ namespace OpenLoco::CompanyManager
     // Returns a string between 1810 and 1816 with up to two arguments.
     string_id getOwnerStatus(CompanyId_t id, FormatArguments& args)
     {
-        registers regs;
-        regs.esi = X86Pointer(get(id));
-        call(0x00438047, regs);
+        auto& company = _companies[id];
+        if (company.challenge_flags & CompanyFlags::bankrupt)
+            return StringIds::company_status_bankrupt;
 
-        args.push(regs.ecx);
-        args.push(regs.edx);
-        return regs.bx;
-    }
+        const string_id observationStatusStrings[] = {
+            StringIds::company_status_empty,
+            StringIds::company_status_building_track_road,
+            StringIds::company_status_building_airport,
+            StringIds::company_status_building_dock,
+            StringIds::company_status_checking_services,
+            StringIds::company_status_surveying_landscape,
+        };
 
-    OwnerStatus getOwnerStatus(CompanyId_t id)
-    {
-        registers regs;
-        regs.esi = X86Pointer(get(id));
-        call(0x00438047, regs);
+        string_id statusString = observationStatusStrings[company.observationStatus];
+        if (company.observationStatus == ObservationStatus::empty || company.observationTownId == 0xFFFF)
+            return StringIds::company_status_empty;
 
-        OwnerStatus ownerStatus;
+        switch (company.observationStatus)
+        {
+            case ObservationStatus::buildingTrackRoad:
+                if (company.observationObject & 0x80)
+                {
+                    auto* obj = ObjectManager::get<RoadObject>(company.observationObject & 0xFF7F);
+                    if (obj != nullptr)
+                        args.push(obj->name);
+                }
+                else
+                {
+                    auto* obj = ObjectManager::get<TrackObject>(company.observationObject);
+                    if (obj != nullptr)
+                        args.push(obj->name);
+                }
+                break;
 
-        ownerStatus.string = regs.bx;
-        ownerStatus.argument1 = regs.ecx;
-        ownerStatus.argument2 = regs.edx;
+            case ObservationStatus::buildingAirport:
+            {
+                auto* obj = ObjectManager::get<AirportObject>(company.observationObject);
+                if (obj != nullptr)
+                    args.push(obj->name);
+                break;
+            }
 
-        return ownerStatus;
+            case ObservationStatus::buildingDock:
+            {
+                auto* obj = ObjectManager::get<DockObject>(company.observationObject);
+                if (obj != nullptr)
+                    args.push(obj->name);
+                break;
+            }
+
+            default:
+                break;
+        }
+
+        auto* town = TownManager::get(company.observationTownId);
+        args.push(town->name);
+
+        return statusString;
     }
 
     // 0x004383ED

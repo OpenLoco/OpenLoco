@@ -29,16 +29,8 @@ namespace OpenLoco::CompanyManager
     void determineAvailableVehicles();
     currency32_t calculateDeliveredCargoPayment(uint8_t cargoItem, int32_t numUnits, int32_t distance, uint16_t numDays);
 
-    struct OwnerStatus
-    {
-        string_id string;
-        uint32_t argument1;
-        uint32_t argument2;
-    };
-
     Company* getOpponent();
     string_id getOwnerStatus(CompanyId_t id, FormatArguments& args);
-    OwnerStatus getOwnerStatus(CompanyId_t id);
     void updateOwnerStatus();
     void updateColours();
 

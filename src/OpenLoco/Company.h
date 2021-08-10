@@ -41,6 +41,16 @@ namespace OpenLoco
         tycoon                // 90 - 100%
     };
 
+    enum ObservationStatus : uint8_t
+    {
+        empty,
+        buildingTrackRoad,
+        buildingAirport,
+        buildingDock,
+        checkingServices,
+        surveyingLandscape,
+    };
+
     void formatPerformanceIndex(const int16_t performanceIndex, FormatArguments& args);
 
     constexpr size_t expenditureHistoryCapacity = 16;
@@ -97,11 +107,13 @@ namespace OpenLoco
         currency48_t vehicleProfit;                  // 0x8B9E
         uint16_t transportTypeCount[6];              // 0x8BA4
         uint8_t var_8BB0[9];
-        uint8_t pad_8BB9[0x8BBC - 0x8BB9];
-        EntityId_t observation_thing; // 0x8BBC;
-        int16_t observation_x;        // 0x8BBE;
-        int16_t observation_y;        // 0x8BC0;
-        uint8_t pad_8BC2[0x8BCE - 0x8BC2];
+        ObservationStatus observationStatus; // 0x8BB9;
+        TownId_t observationTownId;          // 0x8BBA;
+        EntityId_t observation_thing;        // 0x8BBC;
+        int16_t observation_x;               // 0x8BBE;
+        int16_t observation_y;               // 0x8BC0;
+        uint16_t observationObject;          // 0x8BC2;
+        uint8_t pad_8BC4[0x8BCE - 0x8BC4];
         uint32_t cargoDelivered[32]; // 0x8BCE;
         uint8_t challengeProgress;   // 0x8C4E - percent completed on challenge
         uint8_t pad_8C4F;

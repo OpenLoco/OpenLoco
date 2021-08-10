@@ -495,12 +495,11 @@ namespace OpenLoco::Ui::Windows::CompanyList
                 }
 
                 {
-
                     auto args = FormatArguments();
-                    CompanyManager::OwnerStatus ownerStatus = CompanyManager::getOwnerStatus(company->id());
-                    args.push(ownerStatus.string);
-                    args.push(ownerStatus.argument1);
-                    args.push(ownerStatus.argument2);
+                    args.skip(sizeof(string_id));
+                    string_id ownerStatus = CompanyManager::getOwnerStatus(company->id(), args);
+                    args.rewind();
+                    args.push(ownerStatus);
 
                     Gfx::drawString_494BBF(context, 175, yBottom + 7, 208, Colour::black, stringId, &args);
                 }
