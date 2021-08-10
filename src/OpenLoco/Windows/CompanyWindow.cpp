@@ -1827,24 +1827,16 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
                 currency48_t expenditures = company.expenditures[columnIndex][j];
                 sum += expenditures;
 
-                string_id mainFormat = StringIds::black_stringid;
-                string_id currFormat = StringIds::plus_currency48;
-                if (expenditures < 0)
-                {
-                    mainFormat = StringIds::red_stringid;
-                    currFormat = StringIds::currency48;
-                }
-
                 if (expenditures != 0)
                 {
-                    auto args = FormatArguments::common(currFormat, expenditures);
+                    auto args = FormatArguments::common(StringIds::currency48, expenditures);
 
                     Gfx::drawString_494C78(
                         *context,
                         x,
                         y,
                         Colour::black,
-                        mainFormat,
+                        StringIds::black_stringid,
                         &args);
                 }
                 y += 10;
