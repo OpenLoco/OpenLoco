@@ -1,3 +1,5 @@
+#include "../../Audio/Audio.h"
+#include "../../GameCommands/GameCommands.h"
 #include "../../Graphics/ImageIds.h"
 #include "../../Input.h"
 #include "../../Localisation/FormatArguments.hpp"
@@ -5,6 +7,7 @@
 #include "../../Objects/ObjectManager.h"
 #include "../../Objects/TrackObject.h"
 #include "../../Objects/TrainSignalObject.h"
+#include "../../TrackData.h"
 #include "../../Ui/Dropdown.h"
 #include "../../Widget.h"
 #include "Construction.h"
@@ -114,26 +117,178 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
         Common::onUpdate(self, (1 << 2));
     }
 
+    // Reverse direction map?
+    static loco_global<uint8_t[16], 0x00503CAC> _503CAC;
+    static loco_global<Map::Pos2[16], 0x00503C6C> _503C6C;
+
+    // 0x004A417A
+    // false for left, true for right
+    static bool getSide(const Map::Pos3& loc, const Point& mousePos, const TrackElement& elTrack, const Viewport& viewport)
+    {
+        // Get coordinates of first tile of track piece under the mouse
+        const auto& piece = TrackData::getTrackPiece(elTrack.trackId())[elTrack.sequenceIndex()];
+        const auto rotPos = Math::Vector::rotate(Map::Pos2(piece.x, piece.y), elTrack.unkDirection());
+        const auto firstTile = loc - Map::Pos3(rotPos.x, rotPos.y, piece.z);
+
+        // Get coordinates of the next tile after the end of the track piece
+        const auto trackAndDirection = (elTrack.trackId() << 3) | elTrack.unkDirection();
+        const auto& trackSize = TrackData::getUnkTrack(trackAndDirection);
+        const auto nextTile = firstTile + trackSize.pos;
+        _1135FC6 = nextTile;
+        _1135FCC = trackSize.rotationEnd;
+
+        // Get coordinates of the previous tile before the start of the track piece
+        const auto unk = _503CAC[trackSize.rotationBegin];
+        auto previousTile = firstTile;
+        _word_1135FD4 = unk;
+        if (unk < 12)
+        {
+            previousTile += _503C6C[unk];
+        }
+        _1135FCE = previousTile;
+
+        // Side is goverened by distance mouse is to either next or previous track coordinate
+        const auto vpPosNext = gameToScreen(nextTile + Map::Pos3(16, 16, 0), viewport.getRotation());
+        const auto uiPosNext = viewport.mapToUi(vpPosNext);
+        const auto distanceToNext = Math::Vector::manhattanDistance(uiPosNext, mousePos);
+
+        const auto vpPosPrevious = gameToScreen(previousTile + Map::Pos3(16, 16, 0), viewport.getRotation());
+        const auto uiPosPrevious = viewport.mapToUi(vpPosPrevious);
+        const auto distanceToPrevious = Math::Vector::manhattanDistance(uiPosPrevious, mousePos);
+
+        return distanceToNext <= distanceToPrevious;
+    }
+
+    static std::optional<GameCommands::SignalPlacementArgs> getSignalPlacementArgsFromCursor(const int16_t x, const int16_t y, const bool isBothDirectons)
+    {
+        static loco_global<Ui::Point, 0x0113600C> _113600C;
+        static loco_global<Viewport*, 0x01135F52> _1135F52;
+
+        _113600C = { x, y };
+
+        auto [interaction, viewport] = ViewportInteraction::getMapCoordinatesFromPos(x, y, ~(ViewportInteraction::InteractionItemFlags::track));
+        _1135F52 = viewport;
+
+        if (interaction.type != ViewportInteraction::InteractionItem::track)
+        {
+            return std::nullopt;
+        }
+
+        auto* elTrack = reinterpret_cast<Map::TileElement*>(interaction.object)->asTrack();
+        if (elTrack == nullptr)
+        {
+            return std::nullopt;
+        }
+
+        GameCommands::SignalPlacementArgs args;
+        args.type = _lastSelectedSignal;
+        args.pos = Map::Pos3(interaction.pos.x, interaction.pos.y, elTrack->baseZ() * 4);
+        args.rotation = elTrack->unkDirection();
+        args.trackId = elTrack->trackId();
+        args.index = elTrack->sequenceIndex();
+        args.trackObjType = elTrack->trackObjectId();
+        if (isBothDirectons)
+        {
+            args.sides = 0xC000;
+        }
+        else
+        {
+            args.sides = getSide(args.pos, { x, y }, *elTrack, *viewport) ? 0x8000 : 0x4000;
+        }
+        return { args };
+    }
+
+    static uint32_t placeSignalGhost(const GameCommands::SignalPlacementArgs& args)
+    {
+        auto res = GameCommands::do_13(GameCommands::Flags::apply | GameCommands::Flags::flag_1 | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6, args);
+        if (res != GameCommands::FAILURE)
+        {
+            _byte_522096 = _byte_522096 | (1 << 2);
+            _signalGhostPos = args.pos;
+            _signalGhostRotation = args.rotation;
+            _signalGhostTrackId = args.trackId;
+            _signalGhostTileIndex = args.index;
+            _signalGhostSides = args.sides;
+            _signalGhostTrackObjId = args.trackObjType;
+        }
+        return res;
+    }
+
     // 0x0049E745
     static void onToolUpdate(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
     {
-        registers regs;
-        regs.esi = X86Pointer(&self);
-        regs.dx = widgetIndex;
-        regs.ax = x;
-        regs.bx = y;
-        call(0x0049E745, regs);
+        if (widgetIndex != widx::single_direction && widgetIndex != widx::both_directions)
+        {
+            return;
+        }
+
+        const bool isBothDirections = widgetIndex == widx::both_directions;
+
+        auto placementArgs = getSignalPlacementArgsFromCursor(x, y, isBothDirections);
+        if (!placementArgs || (placementArgs->trackObjType != _trackType))
+        {
+            removeConstructionGhosts();
+            if (_signalCost != 0x80000000)
+            {
+                _signalCost = 0x80000000;
+                self.invalidate();
+            }
+            return;
+        }
+
+        if (_byte_522096 & (1 << 2))
+        {
+            if (*_signalGhostPos == placementArgs->pos
+                && _signalGhostRotation == placementArgs->rotation
+                && _signalGhostTrackId == placementArgs->trackId
+                && _signalGhostTileIndex == placementArgs->index
+                && _signalGhostSides == placementArgs->sides
+                && _signalGhostTrackObjId == placementArgs->trackObjType)
+            {
+                return;
+            }
+        }
+
+        removeConstructionGhosts();
+
+        auto cost = placeSignalGhost(*placementArgs);
+        if (cost != _signalCost)
+        {
+            _signalCost = cost;
+            self.invalidate();
+        }
     }
 
     // 0x0049E75A
     static void onToolDown(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
     {
-        registers regs;
-        regs.esi = X86Pointer(&self);
-        regs.dx = widgetIndex;
-        regs.ax = x;
-        regs.bx = y;
-        call(0x0049E75A, regs);
+        if (widgetIndex != widx::single_direction && widgetIndex != widx::both_directions)
+        {
+            return;
+        }
+
+        removeConstructionGhosts();
+
+        const bool isBothDirections = widgetIndex == widx::both_directions;
+        auto args = getSignalPlacementArgsFromCursor(x, y, isBothDirections);
+        if (!args)
+        {
+            return;
+        }
+
+        if (args->trackObjType != _trackType)
+        {
+            Error::open(StringIds::cant_build_signal_here, StringIds::wrong_type_of_track_road);
+            return;
+        }
+
+        GameCommands::setErrorTitle(isBothDirections ? StringIds::cant_build_signals_here : StringIds::cant_build_signal_here);
+        auto res = GameCommands::do_13(GameCommands::Flags::apply, *args);
+        if (res == GameCommands::FAILURE)
+        {
+            return;
+        }
+        Audio::playSound(Audio::SoundId::construct, GameCommands::getPosition());
     }
 
     // 0x0049E499
