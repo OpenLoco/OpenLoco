@@ -48,10 +48,10 @@ namespace OpenLoco::Ui::Windows::Construction
     static loco_global<uint16_t, 0x01135FBA> _word_1135FBA;
     static loco_global<uint16_t, 0x01135FBC> _word_1135FBC;
     static loco_global<uint16_t, 0x01135FBE> _word_1135FBE;
-    static loco_global<Map::Pos3, 0x01135FC6> _1135FC6;
-    static loco_global<uint16_t, 0x01135FCC> _1135FCC;
-    static loco_global<Map::Pos3, 0x01135FCE> _1135FCE;
-    static loco_global<uint16_t, 0x01135FD4> _word_1135FD4;
+    static loco_global<Map::Pos3, 0x01135FC6> _nextTile;
+    static loco_global<uint16_t, 0x01135FCC> _nextTileRotation;
+    static loco_global<Map::Pos3, 0x01135FCE> _previousTile;
+    static loco_global<uint16_t, 0x01135FD4> _previousTileRotation;
     static loco_global<uint16_t, 0x01135FD6> _word_1135FD6;
     static loco_global<uint16_t, 0x01135FD8> _word_1135FD8;
     static loco_global<uint16_t, 0x01135FE4> _lastSelectedMods;
@@ -141,6 +141,8 @@ namespace OpenLoco::Ui::Windows::Construction
         void refreshModList(uint8_t* modList, uint8_t trackType, TransportMode transportMode);
         void sub_4A3A50();
         void refreshSignalList(uint8_t* signalList, uint8_t trackType);
+        void setNextAndPreviousTrackTile(const TrackElement& elTrack, const Map::Pos2& pos);
+        bool isPointCloserToNextOrPreviousTile(const Point& point, const Viewport& viewport);
     }
 
     namespace Construction

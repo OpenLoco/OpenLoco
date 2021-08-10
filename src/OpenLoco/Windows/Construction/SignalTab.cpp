@@ -125,38 +125,11 @@ namespace OpenLoco::Ui::Windows::Construction::Signal
     // false for left, true for right
     static bool getSide(const Map::Pos3& loc, const Point& mousePos, const TrackElement& elTrack, const Viewport& viewport)
     {
-        // Get coordinates of first tile of track piece under the mouse
-        const auto& piece = TrackData::getTrackPiece(elTrack.trackId())[elTrack.sequenceIndex()];
-        const auto rotPos = Math::Vector::rotate(Map::Pos2(piece.x, piece.y), elTrack.unkDirection());
-        const auto firstTile = loc - Map::Pos3(rotPos.x, rotPos.y, piece.z);
+        Common::setNextAndPreviousTrackTile(elTrack, loc);
 
-        // Get coordinates of the next tile after the end of the track piece
-        const auto trackAndDirection = (elTrack.trackId() << 3) | elTrack.unkDirection();
-        const auto& trackSize = TrackData::getUnkTrack(trackAndDirection);
-        const auto nextTile = firstTile + trackSize.pos;
-        _1135FC6 = nextTile;
-        _1135FCC = trackSize.rotationEnd;
+        const bool isCloserToNext = Common::isPointCloserToNextOrPreviousTile(mousePos, viewport);
 
-        // Get coordinates of the previous tile before the start of the track piece
-        const auto unk = _503CAC[trackSize.rotationBegin];
-        auto previousTile = firstTile;
-        _word_1135FD4 = unk;
-        if (unk < 12)
-        {
-            previousTile += _503C6C[unk];
-        }
-        _1135FCE = previousTile;
-
-        // Side is goverened by distance mouse is to either next or previous track coordinate
-        const auto vpPosNext = gameToScreen(nextTile + Map::Pos3(16, 16, 0), viewport.getRotation());
-        const auto uiPosNext = viewport.mapToUi(vpPosNext);
-        const auto distanceToNext = Math::Vector::manhattanDistance(uiPosNext, mousePos);
-
-        const auto vpPosPrevious = gameToScreen(previousTile + Map::Pos3(16, 16, 0), viewport.getRotation());
-        const auto uiPosPrevious = viewport.mapToUi(vpPosPrevious);
-        const auto distanceToPrevious = Math::Vector::manhattanDistance(uiPosPrevious, mousePos);
-
-        return distanceToNext <= distanceToPrevious;
+        return isCloserToNext;
     }
 
     static std::optional<GameCommands::SignalPlacementArgs> getSignalPlacementArgsFromCursor(const int16_t x, const int16_t y, const bool isBothDirectons)

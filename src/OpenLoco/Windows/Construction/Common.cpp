@@ -244,38 +244,12 @@ namespace OpenLoco::Ui::Windows::Construction
         _1135F4A = copyElement;
         _lastSelectedTrackModSection = 0;
 
-        const auto& piece = TrackData::getTrackPiece(copyElement->trackId())[copyElement->sequenceIndex()];
-        const auto firstTileOffset = Math::Vector::rotate(Map::Pos2(piece.x, piece.y), copyElement->unkDirection());
-        const auto firstTile = Map::Pos3(pos.x, pos.y, copyElement->baseZ() * 4) - Map::Pos3(firstTileOffset.x, firstTileOffset.y, piece.z);
+        Common::setNextAndPreviousTrackTile(*copyElement, pos);
 
-        // Get coordinates of the next tile after the end of the track piece
-        const auto trackAndDirection = (copyElement->trackId() << 3) | copyElement->unkDirection();
-        const auto& trackSize = TrackData::getUnkTrack(trackAndDirection);
-        const auto nextTile = firstTile + trackSize.pos;
-        _1135FC6 = nextTile;
-        _1135FCC = trackSize.rotationEnd;
+        const bool isCloserToNext = Common::isPointCloserToNextOrPreviousTile(Input::getDragLastLocation(), *viewport);
 
-        // Get coordinates of the previous tile before the start of the track piece
-        const auto unk = _503CAC[trackSize.rotationBegin];
-        auto previousTile = firstTile;
-        _word_1135FD4 = unk;
-        if (unk < 12)
-        {
-            previousTile += _503C6C[unk];
-        }
-        _1135FCE = previousTile;
-
-        // Side is goverened by distance mouse is to either next or previous track coordinate
-        const auto vpPosNext = gameToScreen(nextTile + Map::Pos3(16, 16, 0), viewport->getRotation());
-        const auto uiPosNext = viewport->mapToUi(vpPosNext);
-        const auto distanceToNext = Math::Vector::manhattanDistance(uiPosNext, Input::getDragLastLocation());
-
-        const auto vpPosPrevious = gameToScreen(previousTile + Map::Pos3(16, 16, 0), viewport->getRotation());
-        const auto uiPosPrevious = viewport->mapToUi(vpPosPrevious);
-        const auto distanceToPrevious = Math::Vector::manhattanDistance(uiPosPrevious, Input::getDragLastLocation());
-
-        const auto chosenLoc = distanceToNext < distanceToPrevious ? nextTile : previousTile;
-        const auto chosenRotation = distanceToNext < distanceToPrevious ? _1135FCC : _word_1135FD4;
+        const auto chosenLoc = isCloserToNext ? *_nextTile : *_previousTile;
+        const auto chosenRotation = isCloserToNext ? _nextTileRotation : _previousTileRotation;
         _x = chosenLoc.x;
         _y = chosenLoc.y;
         _word_1135FB8 = chosenLoc.z;
@@ -556,6 +530,44 @@ namespace OpenLoco::Ui::Windows::Construction
 
             self.width = self.widgets[widx::frame].right + 1;
             self.height = self.widgets[widx::frame].bottom + 1;
+        }
+
+        void setNextAndPreviousTrackTile(const TrackElement& elTrack, const Map::Pos2& pos)
+        {
+            const auto& piece = TrackData::getTrackPiece(elTrack.trackId())[elTrack.sequenceIndex()];
+            const auto firstTileOffset = Math::Vector::rotate(Map::Pos2(piece.x, piece.y), elTrack.unkDirection());
+            const auto firstTile = Map::Pos3(pos.x, pos.y, elTrack.baseZ() * 4) - Map::Pos3(firstTileOffset.x, firstTileOffset.y, piece.z);
+
+            // Get coordinates of the next tile after the end of the track piece
+            const auto trackAndDirection = (elTrack.trackId() << 3) | elTrack.unkDirection();
+            const auto& trackSize = TrackData::getUnkTrack(trackAndDirection);
+            const auto nextTile = firstTile + trackSize.pos;
+            _nextTile = nextTile;
+            _nextTileRotation = trackSize.rotationEnd;
+
+            // Get coordinates of the previous tile before the start of the track piece
+            const auto unk = _503CAC[trackSize.rotationBegin];
+            auto previousTile = firstTile;
+            _previousTileRotation = unk;
+            if (unk < 12)
+            {
+                previousTile += _503C6C[unk];
+            }
+            _previousTile = previousTile;
+        }
+
+        // True for next, false for previous
+        bool isPointCloserToNextOrPreviousTile(const Point& point, const Viewport& viewport)
+        {
+            const auto vpPosNext = gameToScreen(*_nextTile + Map::Pos3(16, 16, 0), viewport.getRotation());
+            const auto uiPosNext = viewport.mapToUi(vpPosNext);
+            const auto distanceToNext = Math::Vector::manhattanDistance(uiPosNext, Input::getDragLastLocation());
+
+            const auto vpPosPrevious = gameToScreen(*_previousTile + Map::Pos3(16, 16, 0), viewport.getRotation());
+            const auto uiPosPrevious = viewport.mapToUi(vpPosPrevious);
+            const auto distanceToPrevious = Math::Vector::manhattanDistance(uiPosPrevious, Input::getDragLastLocation());
+
+            return distanceToNext < distanceToPrevious;
         }
 
         // 0x0049D93A
