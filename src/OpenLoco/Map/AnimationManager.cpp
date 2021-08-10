@@ -42,7 +42,7 @@ namespace OpenLoco::Map::AnimationManager
     }
 
     // 0x00461166
-    void resetAnimations()
+    void reset()
     {
         _numAnimations = 0;
     }

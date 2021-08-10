@@ -10,6 +10,7 @@
 #include "Map/AnimationManager.h"
 #include "Map/MapGenerator.h"
 #include "Map/TileManager.h"
+#include "Map/WaveManager.h"
 #include "Objects/CargoObject.h"
 #include "Objects/ClimateObject.h"
 #include "S5/S5.h"
@@ -48,14 +49,8 @@ namespace OpenLoco::Scenario
     void sub_46115C()
     {
         addr<0x00525E28, uint32_t>() = 0;
-        AnimationManager::resetAnimations();
+        AnimationManager::reset();
         addr<0x0052624C, uint16_t>() = S5::S5FixFlags::fixFlag0 | S5::S5FixFlags::fixFlag1;
-    }
-
-    // 0x004C4BC0
-    static void sub_4C4BC0()
-    {
-        call(0x004C4BC0);
     }
 
     Season nextSeason(Season season)
@@ -181,7 +176,7 @@ namespace OpenLoco::Scenario
 
         Ui::Windows::Construction::Construction::reset();
         sub_46115C();
-        sub_4C4BC0();
+        WaveManager::reset();
 
         initialiseDate(1900);
         initialiseSnowLine();

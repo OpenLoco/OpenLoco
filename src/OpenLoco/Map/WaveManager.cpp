@@ -71,4 +71,10 @@ namespace OpenLoco::Map::WaveManager
     {
         call(0x004C56F6);
     }
+
+    // 0x004C4BC0
+    void reset()
+    {
+        call(0x004C4BC0);
+    }
 }
