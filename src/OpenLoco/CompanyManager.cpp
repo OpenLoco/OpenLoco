@@ -8,7 +8,12 @@
 #include "Localisation/FormatArguments.hpp"
 #include "Map/Tile.h"
 #include "Map/TileManager.h"
+#include "Objects/AirportObject.h"
+#include "Objects/DockObject.h"
+#include "Objects/RoadObject.h"
+#include "Objects/TrackObject.h"
 #include "OpenLoco.h"
+#include "TownManager.h"
 #include "Ui/WindowManager.h"
 #include "Vehicles/Vehicle.h"
 #include "Vehicles/VehicleManager.h"
@@ -212,13 +217,61 @@ namespace OpenLoco::CompanyManager
     // Returns a string between 1810 and 1816 with up to two arguments.
     string_id getOwnerStatus(CompanyId_t id, FormatArguments& args)
     {
-        registers regs;
-        regs.esi = X86Pointer(get(id));
-        call(0x00438047, regs);
+        auto& company = _companies[id];
+        if (company.challenge_flags & CompanyFlags::bankrupt)
+            return StringIds::company_status_bankrupt;
 
-        args.push(regs.ecx);
-        args.push(regs.edx);
-        return regs.bx;
+        const string_id observationStatusStrings[] = {
+            StringIds::company_status_empty,
+            StringIds::company_status_building_track_road,
+            StringIds::company_status_building_airport,
+            StringIds::company_status_building_dock,
+            StringIds::company_status_checking_services,
+            StringIds::company_status_surveying_landscape,
+        };
+
+        string_id statusString = observationStatusStrings[company.observation_status];
+        if (company.observation_town_id == 0xFFFF)
+            return statusString;
+
+        switch (company.observation_status)
+        {
+            case 1:
+                if (company.observation_object & 0x80)
+                {
+                    auto* obj = ObjectManager::get<RoadObject>(company.observation_object & 0xFF7F);
+                    if (obj != nullptr)
+                        args.push(obj->name);
+                }
+                else
+                {
+                    auto* obj = ObjectManager::get<TrackObject>(company.observation_object);
+                    if (obj != nullptr)
+                        args.push(obj->name);
+                }
+                break;
+
+            case 2:
+            {
+                auto* obj = ObjectManager::get<AirportObject>(company.observation_object);
+                if (obj != nullptr)
+                    args.push(obj->name);
+                break;
+            }
+
+            case 3:
+            {
+                auto* obj = ObjectManager::get<DockObject>(company.observation_object);
+                if (obj != nullptr)
+                    args.push(obj->name);
+                break;
+            }
+        }
+
+        auto* town = TownManager::get(company.observation_town_id);
+        args.push(town->name);
+
+        return statusString;
     }
 
     // 0x004383ED

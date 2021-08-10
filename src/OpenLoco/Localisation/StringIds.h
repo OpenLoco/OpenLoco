@@ -1366,7 +1366,13 @@ namespace OpenLoco::StringIds
     constexpr string_id map_key_vegetation = 1807;
     constexpr string_id map_routes_aircraft = 1808;
     constexpr string_id map_routes_ships = 1809;
-
+    constexpr string_id company_status_empty = 1810;
+    constexpr string_id company_status_building_track_road = 1811;
+    constexpr string_id company_status_building_airport = 1812;
+    constexpr string_id company_status_building_dock = 1813;
+    constexpr string_id company_status_checking_services = 1814;
+    constexpr string_id company_status_surveying_landscape = 1815;
+    constexpr string_id company_status_bankrupt = 1816;
     constexpr string_id tooltip_speed_pause = 1817;
     constexpr string_id tooltip_speed_normal = 1818;
     constexpr string_id tooltip_speed_fast_forward = 1819;
