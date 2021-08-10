@@ -1,4 +1,5 @@
 #include "TileManager.h"
+#include "../CompanyManager.h"
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
 #include "../Map/Map.hpp"
@@ -33,6 +34,7 @@ namespace OpenLoco::Map::TileManager
     static loco_global<int16_t, 0x0050A000> _adjustToolSize;
     static loco_global<uint16_t, 0x00525F6C> _numAnimations;
     static loco_global<TileAnimation[maxAnimations], 0x0094C6DC> _animations;
+    static loco_global<Map::Pos2, 0x00525F6E> _startUpdateLocation;
 
     constexpr uint16_t mapSelectedTilesSize = 300;
     static loco_global<Pos2[mapSelectedTilesSize], 0x00F24490> _mapSelectedTiles;
@@ -609,6 +611,79 @@ namespace OpenLoco::Map::TileManager
         }
 
         return surroundingTrees;
+    }
+
+    static bool update(TileElement& el, const Map::Pos2& loc)
+    {
+        registers regs;
+        regs.ax = loc.x;
+        regs.cx = loc.y;
+        regs.esi = X86Pointer(&el);
+        regs.bl = el.data()[0] & 0x3F;
+
+        switch (el.type())
+        {
+            case ElementType::surface:
+                call(0x004691FA, regs);
+                break;
+            case ElementType::building:
+                call(0x0042DF8B, regs);
+                break;
+            case ElementType::tree:
+                call(0x004BD52B, regs);
+                break;
+            case ElementType::road:
+                call(0x00477FC2, regs);
+                break;
+            case ElementType::industry:
+                call(0x00456FF7, regs);
+                break;
+            case ElementType::track: break;
+            case ElementType::station: break;
+            case ElementType::signal: break;
+            case ElementType::wall: break;
+        }
+        return regs.esi != 0;
+    }
+
+    // 0x00463ABA
+    void update()
+    {
+        if ((addr<0x00525E28, uint32_t>() & 1) == 0)
+        {
+            return;
+        }
+
+        CompanyManager::updatingCompanyId(CompanyId::neutral);
+        auto pos = *_startUpdateLocation;
+        for (; pos.y < Map::map_height; pos.y += 16 * Map::tile_size)
+        {
+            for (; pos.x < Map::map_width; pos.x += 16 * Map::tile_size)
+            {
+                auto tile = TileManager::get(pos);
+                for (auto& el : tile)
+                {
+                    if (el.isGhost())
+                        continue;
+
+                    // If update removed/added tiles we must stop loop as pointer is invalid
+                    if (!update(el, pos))
+                    {
+                        break;
+                    }
+                }
+            }
+            pos.x -= Map::map_width;
+        }
+        pos.y -= Map::map_height;
+
+        const TilePos2 tilePos(pos);
+        const uint8_t shift = (tilePos.y << 4) + tilePos.x + 9;
+        _startUpdateLocation = TilePos2(shift & 0xF, shift >> 4);
+        if (shift == 0)
+        {
+            call(0x004574E8);
+        }
     }
 
     void registerHooks()

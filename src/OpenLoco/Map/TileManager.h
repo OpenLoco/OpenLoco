@@ -35,5 +35,6 @@ namespace OpenLoco::Map::TileManager
     void resetAnimations();
     uint16_t countSurroundingWaterTiles(const Pos2& pos);
     uint16_t countSurroundingTrees(const Pos2& pos);
+    void update();
     void registerHooks();
 }

@@ -43,6 +43,7 @@
 #include "Localisation/LanguageFiles.h"
 #include "Localisation/Languages.h"
 #include "Localisation/StringIds.h"
+#include "Map/TileManager.h"
 #include "MultiPlayer.h"
 #include "Objects/ObjectManager.h"
 #include "OpenLoco.h"
@@ -843,7 +844,7 @@ namespace OpenLoco
         call(0x004613F0);
         addr<0x00F25374, uint8_t>() = S5::getOptions().madeAnyChanges;
         dateTick();
-        call(0x00463ABA);
+        Map::TileManager::update();
         call(0x004C56F6);
         TownManager::update();
         IndustryManager::update();
