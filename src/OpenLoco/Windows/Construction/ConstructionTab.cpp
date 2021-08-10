@@ -1503,7 +1503,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             _byte_113607E = 0;
             _x = mapPos.x;
             _y = mapPos.y;
-            _word_1135FB8 = height;
+            _constructionZ = height;
             _byte_522096 = 0;
             _byte_1136066 = 0;
 

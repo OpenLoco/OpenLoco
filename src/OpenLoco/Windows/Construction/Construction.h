@@ -43,14 +43,14 @@ namespace OpenLoco::Ui::Windows::Construction
     static loco_global<uint16_t, 0x01135F86> _word_1135F86;
     static loco_global<uint16_t, 0x01135FB4> _x;
     static loco_global<uint16_t, 0x01135FB6> _y;
-    static loco_global<uint16_t, 0x01135FB8> _word_1135FB8;
+    static loco_global<uint16_t, 0x01135FB8> _constructionZ;
     static loco_global<uint16_t, 0x01135FBA> _word_1135FBA;
     static loco_global<uint16_t, 0x01135FBC> _word_1135FBC;
     static loco_global<uint16_t, 0x01135FBE> _word_1135FBE;
-    static loco_global<Map::Pos3, 0x01135FC6> _1135FC6;
-    static loco_global<uint16_t, 0x01135FCC> _1135FCC;
-    static loco_global<Map::Pos3, 0x01135FCE> _1135FCE;
-    static loco_global<uint16_t, 0x01135FD4> _word_1135FD4;
+    static loco_global<Map::Pos3, 0x01135FC6> _nextTile;
+    static loco_global<uint16_t, 0x01135FCC> _nextTileRotation;
+    static loco_global<Map::Pos3, 0x01135FCE> _previousTile;
+    static loco_global<uint16_t, 0x01135FD4> _previousTileRotation;
     static loco_global<uint16_t, 0x01135FD6> _word_1135FD6;
     static loco_global<uint16_t, 0x01135FD8> _word_1135FD8;
     static loco_global<uint16_t, 0x01135FE4> _lastSelectedMods;
@@ -93,6 +93,7 @@ namespace OpenLoco::Ui::Windows::Construction
     static loco_global<uint8_t, 0x01136078> _byte_1136078;
     static loco_global<uint8_t, 0x01136079> _lastSelectedTrackPieceId;
     static loco_global<uint8_t, 0x0113607E> _byte_113607E;
+    static loco_global<Map::TileElement, 0x01136090> _backupTileElement;
 
     namespace Common
     {
@@ -121,6 +122,7 @@ namespace OpenLoco::Ui::Windows::Construction
         constexpr uint64_t enabledWidgets = (1 << widx::caption) | (1 << widx::close_button) | (1 << widx::tab_construction) | (1 << widx::tab_station) | (1 << widx::tab_signal) | (1 << widx::tab_overhead);
 
         void prepareDraw(Window* self);
+        void resetWindow(Window& self, WidgetIndex_t tabWidgetIndex);
         void switchTab(Window* self, WidgetIndex_t widgetIndex);
         void repositionTabs(Window* self);
         void drawTabs(Window* self, Gfx::Context* context);
@@ -138,6 +140,9 @@ namespace OpenLoco::Ui::Windows::Construction
         void refreshModList(uint8_t* modList, uint8_t trackType, TransportMode transportMode);
         void sub_4A3A50();
         void refreshSignalList(uint8_t* signalList, uint8_t trackType);
+        void setNextAndPreviousTrackTile(const TrackElement& elTrack, const Map::Pos2& pos);
+        void setNextAndPreviousRoadTile(const RoadElement& elRoad, const Map::Pos2& pos);
+        bool isPointCloserToNextOrPreviousTile(const Point& point, const Viewport& viewport);
     }
 
     namespace Construction

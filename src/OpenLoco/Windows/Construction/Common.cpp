@@ -16,6 +16,7 @@
 #include "../../Objects/TrainSignalObject.h"
 #include "../../Objects/TrainStationObject.h"
 #include "../../StationManager.h"
+#include "../../TrackData.h"
 #include "../../Widget.h"
 #include "Construction.h"
 
@@ -203,27 +204,185 @@ namespace OpenLoco::Ui::Windows::Construction
     // 0x004A0EAD
     Window* openAtTrack(Window* main, TrackElement* track, const Pos2 pos)
     {
-        registers regs{};
-        regs.esi = X86Pointer(main);
-        regs.edx = X86Pointer(track);
-        regs.ax = pos.x;
-        regs.cx = pos.y;
-        call(0x004A0EAD, regs);
+        auto* viewport = main->viewports[0];
+        _backupTileElement = *reinterpret_cast<TileElement*>(track);
+        auto* copyElement = (*_backupTileElement).asTrack();
+        if (copyElement == nullptr)
+        {
+            return nullptr;
+        }
 
-        return reinterpret_cast<Window*>(regs.esi);
+        if (copyElement->owner() != CompanyManager::getControllingId())
+        {
+            return nullptr;
+        }
+
+        removeConstructionGhosts();
+        auto* wnd = WindowManager::find(WindowType::construction);
+        if (wnd == nullptr)
+        {
+            WindowManager::closeConstructionWindows();
+            Common::createConstructionWindow();
+        }
+        else
+        {
+            Common::resetWindow(*wnd, Common::widx::tab_construction);
+        }
+
+        _trackType = copyElement->trackObjectId();
+        _byte_1136063 = 0;
+        Common::setTrackOptions(_trackType);
+
+        _constructionHover = 0;
+        _byte_113607E = 1;
+        _trackCost = 0x80000000;
+        _byte_1136076 = 0;
+        _lastSelectedTrackModSection = 0;
+
+        Common::setNextAndPreviousTrackTile(*copyElement, pos);
+
+        const bool isCloserToNext = Common::isPointCloserToNextOrPreviousTile(Input::getDragLastLocation(), *viewport);
+
+        const auto chosenLoc = isCloserToNext ? *_nextTile : *_previousTile;
+        const auto chosenRotation = isCloserToNext ? _nextTileRotation : _previousTileRotation;
+        _x = chosenLoc.x;
+        _y = chosenLoc.y;
+        _constructionZ = chosenLoc.z;
+        _constructionRotation = chosenRotation;
+        _lastSelectedTrackPiece = 0;
+        _lastSelectedTrackGradient = 0;
+
+        Common::refreshSignalList(_signalList, _trackType);
+        auto lastSignal = _scenarioSignals[_trackType];
+
+        if (lastSignal == 0xFF)
+            lastSignal = _signalList[0];
+
+        _lastSelectedSignal = lastSignal;
+
+        Common::refreshStationList(_stationList, _trackType, TransportMode::rail);
+
+        auto lastStation = _scenarioTrainStations[_trackType];
+
+        if (lastStation == 0xFF)
+            lastStation = _stationList[0];
+
+        _lastSelectedStationType = lastStation;
+
+        Common::refreshBridgeList(_bridgeList, _trackType, TransportMode::rail);
+
+        auto lastBridge = _scenarioBridges[_trackType];
+
+        if (lastBridge == 0xFF)
+            lastBridge = _bridgeList[0];
+
+        _lastSelectedBridge = lastBridge;
+
+        if (copyElement->has_4_80())
+        {
+            _lastSelectedBridge = copyElement->bridge();
+        }
+        Common::refreshModList(_modList, _trackType, TransportMode::rail);
+
+        _lastSelectedMods = copyElement->mods();
+        _byte_113603A = 0;
+        auto* window = WindowManager::find(WindowType::construction);
+
+        if (window != nullptr)
+        {
+            Common::setDisabledWidgets(window);
+        }
+
+        return window;
     }
 
     // 0x004A147F
-    Window* openAtRoad(Window* main, RoadElement* track, const Pos2 pos)
+    Window* openAtRoad(Window* main, RoadElement* road, const Pos2 pos)
     {
-        registers regs{};
-        regs.esi = X86Pointer(main);
-        regs.edx = X86Pointer(track);
-        regs.ax = pos.x;
-        regs.cx = pos.y;
-        call(0x004A147F, regs);
+        auto* viewport = main->viewports[0];
+        _backupTileElement = *reinterpret_cast<TileElement*>(road);
+        auto* copyElement = (*_backupTileElement).asRoad();
+        if (copyElement == nullptr)
+        {
+            return nullptr;
+        }
 
-        return reinterpret_cast<Window*>(regs.esi);
+        removeConstructionGhosts();
+        auto* wnd = WindowManager::find(WindowType::construction);
+        if (wnd == nullptr)
+        {
+            WindowManager::closeConstructionWindows();
+            Common::createConstructionWindow();
+        }
+        else
+        {
+            Common::resetWindow(*wnd, Common::widx::tab_construction);
+        }
+
+        _trackType = copyElement->roadObjectId() | (1 << 7);
+        _byte_1136063 = 0;
+        Common::setTrackOptions(_trackType);
+
+        _constructionHover = 0;
+        _byte_113607E = 1;
+        _trackCost = 0x80000000;
+        _byte_1136076 = 0;
+        _lastSelectedTrackModSection = 0;
+
+        Common::setNextAndPreviousRoadTile(*copyElement, pos);
+
+        const bool isCloserToNext = Common::isPointCloserToNextOrPreviousTile(Input::getDragLastLocation(), *viewport);
+
+        const auto chosenLoc = isCloserToNext ? *_nextTile : *_previousTile;
+        const auto chosenRotation = isCloserToNext ? _nextTileRotation : _previousTileRotation;
+        _x = chosenLoc.x;
+        _y = chosenLoc.y;
+        _constructionZ = chosenLoc.z;
+        _constructionRotation = chosenRotation;
+        _lastSelectedTrackPiece = 0;
+        _lastSelectedTrackGradient = 0;
+        _lastSelectedSignal = 0xFF;
+
+        Common::refreshStationList(_stationList, _trackType, TransportMode::road);
+
+        auto lastStation = _scenarioRoadStations[(_trackType & ~(1ULL << 7))];
+
+        if (lastStation == 0xFF)
+            lastStation = _stationList[0];
+
+        _lastSelectedStationType = lastStation;
+
+        Common::refreshBridgeList(_bridgeList, _trackType, TransportMode::road);
+
+        auto lastBridge = _scenarioBridges[(_trackType & ~(1ULL << 7))];
+
+        if (lastBridge == 0xFF)
+            lastBridge = _bridgeList[0];
+
+        _lastSelectedBridge = lastBridge;
+        if (copyElement->has_4_80())
+        {
+            _lastSelectedBridge = copyElement->bridge();
+        }
+
+        Common::refreshModList(_modList, _trackType, TransportMode::road);
+
+        _lastSelectedMods = 0;
+        auto* roadObj = ObjectManager::get<RoadObject>(_trackType & ~(1ULL << 7));
+        if (roadObj->flags & Flags12::unk_03)
+        {
+            _lastSelectedMods = copyElement->mods();
+        }
+        _byte_113603A = 0;
+
+        auto* window = WindowManager::find(WindowType::construction);
+
+        if (window != nullptr)
+        {
+            Common::setDisabledWidgets(window);
+        }
+
+        return window;
     }
 
     // 0x004A1303
@@ -307,7 +466,7 @@ namespace OpenLoco::Ui::Windows::Construction
         _byte_1136063 = flags >> 24;
         _x = 0x1800;
         _y = 0x1800;
-        _word_1135FB8 = 0x100;
+        _constructionZ = 0x100;
         _constructionRotation = 0;
         _constructionHover = 0;
         _byte_113607E = 1;
@@ -424,6 +583,90 @@ namespace OpenLoco::Ui::Windows::Construction
             // Activate the current tab
             self->activated_widgets &= ~((1ULL << tab_construction) | (1ULL << tab_overhead) | (1ULL << tab_signal) | (1ULL << tab_station));
             self->activated_widgets |= (1ULL << Common::tabInformationByTabOffset[self->current_tab].widgetIndex);
+        }
+
+        // 0x004A0EF4
+        void resetWindow(Window& self, WidgetIndex_t tabWidgetIndex)
+        {
+            self.current_tab = tabWidgetIndex - widx::tab_construction;
+
+            const auto& tabInfo = tabInformationByTabOffset[tabWidgetIndex - widx::tab_construction];
+
+            self.enabled_widgets = tabInfo.enabledWidgets;
+            self.event_handlers = tabInfo.events;
+            self.activated_widgets = 0;
+            self.widgets = tabInfo.widgets;
+
+            setDisabledWidgets(&self);
+
+            self.width = self.widgets[widx::frame].right + 1;
+            self.height = self.widgets[widx::frame].bottom + 1;
+        }
+
+        // Reverse direction map?
+        static loco_global<uint8_t[16], 0x00503CAC> _503CAC;
+        static loco_global<Map::Pos2[16], 0x00503C6C> _503C6C;
+
+        void setNextAndPreviousTrackTile(const TrackElement& elTrack, const Map::Pos2& pos)
+        {
+            const auto& piece = TrackData::getTrackPiece(elTrack.trackId())[elTrack.sequenceIndex()];
+            const auto firstTileOffset = Math::Vector::rotate(Map::Pos2(piece.x, piece.y), elTrack.unkDirection());
+            const auto firstTile = Map::Pos3(pos.x, pos.y, elTrack.baseZ() * 4) - Map::Pos3(firstTileOffset.x, firstTileOffset.y, piece.z);
+
+            // Get coordinates of the next tile after the end of the track piece
+            const auto trackAndDirection = (elTrack.trackId() << 3) | elTrack.unkDirection();
+            const auto& trackSize = TrackData::getUnkTrack(trackAndDirection);
+            const auto nextTile = firstTile + trackSize.pos;
+            _nextTile = nextTile;
+            _nextTileRotation = trackSize.rotationEnd;
+
+            // Get coordinates of the previous tile before the start of the track piece
+            const auto unk = _503CAC[trackSize.rotationBegin];
+            auto previousTile = firstTile;
+            _previousTileRotation = unk;
+            if (unk < 12)
+            {
+                previousTile += _503C6C[unk];
+            }
+            _previousTile = previousTile;
+        }
+
+        void setNextAndPreviousRoadTile(const RoadElement& elRoad, const Map::Pos2& pos)
+        {
+            const auto& piece = TrackData::getTrackPiece(elRoad.roadId())[elRoad.sequenceIndex()];
+            const auto firstTileOffset = Math::Vector::rotate(Map::Pos2(piece.x, piece.y), elRoad.unkDirection());
+            const auto firstTile = Map::Pos3(pos.x, pos.y, elRoad.baseZ() * 4) - Map::Pos3(firstTileOffset.x, firstTileOffset.y, piece.z);
+
+            // Get coordinates of the next tile after the end of the track piece
+            const auto trackAndDirection = (elRoad.roadId() << 3) | elRoad.unkDirection();
+            const auto& trackSize = TrackData::getUnkRoad(trackAndDirection);
+            const auto nextTile = firstTile + trackSize.pos;
+            _nextTile = nextTile;
+            _nextTileRotation = trackSize.rotationEnd;
+
+            // Get coordinates of the previous tile before the start of the track piece
+            const auto unk = _503CAC[trackSize.rotationBegin];
+            auto previousTile = firstTile;
+            _previousTileRotation = unk;
+            if (unk < 12)
+            {
+                previousTile += _503C6C[unk];
+            }
+            _previousTile = previousTile;
+        }
+
+        // True for next, false for previous
+        bool isPointCloserToNextOrPreviousTile(const Point& point, const Viewport& viewport)
+        {
+            const auto vpPosNext = gameToScreen(*_nextTile + Map::Pos3(16, 16, 0), viewport.getRotation());
+            const auto uiPosNext = viewport.mapToUi(vpPosNext);
+            const auto distanceToNext = Math::Vector::manhattanDistance(uiPosNext, Input::getDragLastLocation());
+
+            const auto vpPosPrevious = gameToScreen(*_previousTile + Map::Pos3(16, 16, 0), viewport.getRotation());
+            const auto uiPosPrevious = viewport.mapToUi(vpPosPrevious);
+            const auto distanceToPrevious = Math::Vector::manhattanDistance(uiPosPrevious, Input::getDragLastLocation());
+
+            return distanceToNext < distanceToPrevious;
         }
 
         // 0x0049D93A
