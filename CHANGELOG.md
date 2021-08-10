@@ -3,9 +3,9 @@
 - Fix: [#1035] Incorrect colour selection when building buildings.
 - Fix: [#1070] Crash when naming stations after exhausting natural names.
 - Fix: [#1094] Repeated clicking on construction window not always working.
+- Fix: [#1095] Individual expenses are drawn in red, not just the expenditure sums.
 - Change: [#298] Planting clusters of trees now costs money and influences ratings outside of editor mode.
 - Change: [#1079] Allow rotating buildings in town list by keyboard shortcut.
-- Change: [#1095] Only expenditure sums are now drawn in red, not the individual expenses.
 
 21.07 (2021-07-18)
 ------------------------------------------------------------------------
