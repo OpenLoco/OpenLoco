@@ -613,6 +613,61 @@ namespace OpenLoco::Map::TileManager
         return surroundingTrees;
     }
 
+    static void sub_42DF8B(Map::BuildingElement* el, const Map::Pos2& loc)
+    {
+        // Only update tile index 0
+        if (el->multiTileIndex())
+            return;
+
+        if (el->isGhost())
+            return;
+
+        auto object = el->object();
+
+        if (!el->hasStationElement())
+        {
+            // 0x00042DFB3
+        }
+
+        if (el->has_40())
+            return;
+
+        // 0x0042E2AB
+
+        TownId_t townId;
+        {
+            registers regs;
+
+            call(0x00497E52, regs);
+            townId = regs.bx;
+        }
+
+        if (townId == TownId::null)
+            return;
+
+        auto* town = TownManager::get(townId);
+
+        if (!el->hasStationElement())
+        {
+            el->data()[5] += 0x20; // sets carry
+            if (carry && el->var_6a() != 0x3F && (object->flags & BuildingObjectFlags::large_tile) == 0)
+            {
+                // probably has to do with large buildings
+                // update field 6 +1 for all parts
+            }
+        }
+
+        // 0x0042E3A1
+        if (el->hasStationElement() && el->var_6a() >= 40)
+        {
+
+            if ((town->prng.randNext() & 0xFFFF) <= 16)
+            {
+                throw std::exception(); // return false;
+            }
+        }
+    }
+
     static bool update(TileElement& el, const Map::Pos2& loc)
     {
         registers regs;
@@ -627,7 +682,7 @@ namespace OpenLoco::Map::TileManager
                 call(0x004691FA, regs);
                 break;
             case ElementType::building:
-                call(0x0042DF8B, regs);
+                sub_42DF8B(el.asBuilding(), loc);
                 break;
             case ElementType::tree:
                 call(0x004BD52B, regs);
