@@ -119,7 +119,7 @@ namespace OpenLoco::Map
                             continue;
                         }
                         elBuilding2->setConstructed(isConstructed);
-                        elBuilding2->setUnk5u(++newUnk5u);
+                        elBuilding2->setUnk5u(newUnk5u);
                         elBuilding2->setUnk6l(newUnk6l);
                         Ui::ViewportManager::invalidate(pos, elBuilding2->baseZ() * 4, elBuilding2->clearZ() * 4, ZoomLevel::quarter);
                     }
