@@ -660,11 +660,11 @@ namespace OpenLoco::Ui::Windows::Construction
         {
             const auto vpPosNext = gameToScreen(*_nextTile + Map::Pos3(16, 16, 0), viewport.getRotation());
             const auto uiPosNext = viewport.mapToUi(vpPosNext);
-            const auto distanceToNext = Math::Vector::manhattanDistance(uiPosNext, Input::getDragLastLocation());
+            const auto distanceToNext = Math::Vector::manhattanDistance(uiPosNext, point);
 
             const auto vpPosPrevious = gameToScreen(*_previousTile + Map::Pos3(16, 16, 0), viewport.getRotation());
             const auto uiPosPrevious = viewport.mapToUi(vpPosPrevious);
-            const auto distanceToPrevious = Math::Vector::manhattanDistance(uiPosPrevious, Input::getDragLastLocation());
+            const auto distanceToPrevious = Math::Vector::manhattanDistance(uiPosPrevious, point);
 
             return distanceToNext < distanceToPrevious;
         }
