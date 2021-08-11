@@ -150,6 +150,33 @@ namespace OpenLoco::TownManager
         Ui::WindowManager::invalidate(Ui::WindowType::town);
     }
 
+    // 0x00497DC1
+    std::optional<std::pair<TownId_t, uint8_t>> getClosestTownAndUnk(const Map::Pos2& loc)
+    {
+        int32_t closestDistance = std::numeric_limits<uint16_t>::max();
+        auto closestTown = TownId::null; // ebx
+        for (const auto& town : towns())
+        {
+            const auto distance = Math::Vector::manhattanDistance(Map::Pos2(town.x, town.y), loc);
+            if (distance < closestDistance)
+            {
+                closestDistance = distance;
+                closestTown = town.id();
+            }
+        }
+
+        if (closestDistance == std::numeric_limits<uint16_t>::max())
+        {
+            return std::nullopt;
+        }
+
+        const auto* town = get(closestTown);
+        const int32_t realDistance = Math::Vector::distance(Map::Pos2(town->x, town->y), loc);
+        const auto unk = std::clamp((realDistance - town->var_38 * 4 + 512) / 128, 0, 4);
+        const uint8_t invUnk = std::min(4 - unk, 3); //edx
+        return { std::make_pair(town->id(), invUnk) };
+    }
+
 }
 
 OpenLoco::TownId_t OpenLoco::Town::id() const

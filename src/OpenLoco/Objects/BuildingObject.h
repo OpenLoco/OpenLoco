@@ -32,8 +32,8 @@ namespace OpenLoco
         uint16_t obsoleteYear;        // 0x96
         uint8_t flags;                // 0x98
         uint8_t pad_99[0xA0 - 0x99];
-        uint8_t var_A0[2];
-        uint8_t producedCargoType[2];
+        uint8_t producedQuantity[2];  // 0xA0
+        uint8_t producedCargoType[2]; // 0xA2
         uint8_t var_A4[2];
         uint8_t var_A6[2];
         uint8_t var_A8[2];

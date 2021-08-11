@@ -806,13 +806,13 @@ namespace OpenLoco::Ui::ViewportInteraction
         }
         else
         {
-            if (buildingObj->var_A0[0] != 0 || buildingObj->var_A0[1] != 0)
+            if (buildingObj->producedQuantity[0] != 0 || buildingObj->producedQuantity[1] != 0)
             {
                 buffer = StringManager::formatString(buffer, StringIds::produces);
                 bool requiresComma = false;
                 for (auto i = 0; i < 2; ++i)
                 {
-                    if (buildingObj->var_A0[i] != 0)
+                    if (buildingObj->producedQuantity[i] != 0)
                     {
                         if (requiresComma)
                         {
