@@ -1,5 +1,5 @@
 name: CI
-on: [push, pull_request]
+on: [push, pull_request, workflow_dispatch]
 env:
   OPENLOCO_BUILD_SERVER: GitHub
   OPENLOCO_VERSION: 21.08
@@ -17,18 +17,19 @@ jobs:
   windows:
     name: Windows
     runs-on: windows-latest
-    needs: [check-code-formatting]
+    needs: check-code-formatting
     env:
       CONFIGURATION: Release
+      POWERSHELL_TELEMETRY_OPTOUT: 1
     steps:
       - name: Checkout
-        uses: actions/checkout@v1
-      - name: Build OpenRCT2
-        shell: pwsh
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Build OpenLoco
         run: |
-            $ErrorView = 'NormalView'
-            $installPath = &"C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" -version 16.0 -property installationpath
-            $instanceId = &"C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" -version 16.0 -property instanceid
+            $installPath = vswhere -latest -property installationpath
+            $instanceId = vswhere -latest -property instanceid
             Import-Module "$installPath\Common7\Tools\Microsoft.VisualStudio.DevShell.dll"
             Enter-VsDevShell $instanceId
             if (-not $env:GITHUB_REF.StartsWith("refs/tags/"))
@@ -39,73 +40,72 @@ jobs:
             $env:OPENLOCO_SHA1_SHORT=$env:GITHUB_SHA.Substring(0, 7)
             $env:GIT_DESCRIBE = (git describe HEAD | sed -E "s/-g.+$//")
             Write-Host "%GIT_DESCRIBE% = $env:GIT_DESCRIBE"
-            msbuild openloco.sln /t:restore
-            msbuild openloco.sln
-      - name: Build artefacts
-        shell: pwsh
+            msbuild openloco.sln -m -t:restore
+            msbuild openloco.sln -m
+      - name: Build artifacts
         run: |
-            $ErrorView = 'NormalView'
-            New-Item -ItemType Directory artefacts | Out-Null
-            Copy-Item CHANGELOG.md,CONTRIBUTORS.md,LICENSE,bin\*.dll,bin\*.pdb artefacts
-            Copy-Item data\language -Destination artefacts\data\language -Recurse
-            Copy-Item loco.exe artefacts\openloco.exe
-            Push-Location artefacts
-              7z a -tzip -mx9 -mtc=off -r openloco-v${env:OPENLOCO_VERSION}-win32.zip *
-            Pop-Location
-      - name: Upload artefacts (CI)
-        uses: actions/upload-artifact@v2-preview
+            mkdir artifacts | Out-Null
+            Copy-Item CHANGELOG.md,CONTRIBUTORS.md,LICENSE,loco.exe,bin\*.dll,bin\*.pdb artifacts
+            Copy-Item data\language artifacts\data\language -Recurse
+            Rename-Item artifacts\loco.exe openloco.exe
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
         with:
-          name: "OpenLoco-Windows-Win32"
-          path: artefacts/openloco-*-win32.zip
+          name: OpenLoco-${{ runner.os }}-Win32
+          path: artifacts
+          if-no-files-found: error
   ubuntu:
     name: Ubuntu i686
     runs-on: ubuntu-latest
-    needs: [check-code-formatting]
-    container:
-      image: openloco/openloco:ubuntu-i686
+    needs: check-code-formatting
+    container: openloco/openloco:ubuntu-i686
     strategy:
+      fail-fast: false
       matrix:
-        compiler: ['g++', 'clang++']
+        compiler: [g++, clang++]
     steps:
       - name: Checkout
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Build OpenLoco
-        shell: bash
-        env:
-          OPENLOCO_CMAKE_OPTS: "-G Ninja -DCMAKE_CXX_COMPILER=${{ matrix.compiler }} -DCMAKE_BUILD_TYPE=release -DOPENLOCO_USE_CCACHE=OFF -DSDL2_DIR=/usr/lib/i386-linux-gnu/cmake/SDL2 -DSDL2_MIXER_PATH=/usr/lib/i386-linux-gnu -Dyaml-cpp_DIR=/usr/lib/i386-linux-gnu/cmake/yaml-cpp -DPNG_LIBRARY=/usr/lib/i386-linux-gnu/libpng16.so -DPNG_PNG_INCLUDE_DIR=/usr/include -DZLIB_LIBRARY=/usr/lib/i386-linux-gnu/libz.so"
         run: |
           mkdir build
           cd build
-          cmake ../ ${OPENLOCO_CMAKE_OPTS} && ninja -k0
+          cmake .. -G Ninja -DCMAKE_CXX_COMPILER=${{ matrix.compiler }} -DCMAKE_BUILD_TYPE=release -DOPENLOCO_USE_CCACHE=OFF -DSDL2_DIR=/usr/lib/i386-linux-gnu/cmake/SDL2 -DSDL2_MIXER_PATH=/usr/lib/i386-linux-gnu -Dyaml-cpp_DIR=/usr/lib/i386-linux-gnu/cmake/yaml-cpp -DPNG_LIBRARY=/usr/lib/i386-linux-gnu/libpng16.so -DPNG_PNG_INCLUDE_DIR=/usr/include -DZLIB_LIBRARY=/usr/lib/i386-linux-gnu/libz.so
+          ninja -k0
   fedora:
     name: Fedora i686 MinGW32
     runs-on: ubuntu-latest
-    needs: [check-code-formatting]
-    container:
-      image: openloco/openloco:fedora-mingw32
+    needs: check-code-formatting
+    container: openloco/openloco:fedora-mingw32
     steps:
       - name: Checkout
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Build OpenLoco
-        shell: bash
-        env:
-          OPENLOCO_CMAKE_OPTS: "-G Ninja -DCMAKE_TOOLCHAIN_FILE=../CMakeLists_mingw.txt -DCMAKE_BUILD_TYPE=release -DOPENLOCO_USE_CCACHE=OFF -DSDL2_DIR=/usr/i686-w64-mingw32/sys-root/mingw/lib/cmake/SDL2/ -DSDL2_MIXER_PATH=/usr/i686-w64-mingw32/sys-root/mingw/ -Dyaml-cpp_DIR=/usr/i686-w64-mingw32/sys-root/mingw/CMake/ -DPNG_LIBRARY=/usr/i686-w64-mingw32/sys-root/mingw/bin/libpng16-16.dll -DPNG_PNG_INCLUDE_DIR=/usr/i686-w64-mingw32/sys-root/mingw/include"
         run: |
-          mkdir build
+          cmake -B build -G Ninja -DCMAKE_TOOLCHAIN_FILE=../CMakeLists_mingw.txt -DCMAKE_BUILD_TYPE=release -DOPENLOCO_USE_CCACHE=OFF -DSDL2_DIR=/usr/i686-w64-mingw32/sys-root/mingw/lib/cmake/SDL2/ -DSDL2_MIXER_PATH=/usr/i686-w64-mingw32/sys-root/mingw/ -Dyaml-cpp_DIR=/usr/i686-w64-mingw32/sys-root/mingw/CMake/ -DPNG_LIBRARY=/usr/i686-w64-mingw32/sys-root/mingw/bin/libpng16-16.dll -DPNG_PNG_INCLUDE_DIR=/usr/i686-w64-mingw32/sys-root/mingw/include
           cd build
-          cmake ../ ${OPENLOCO_CMAKE_OPTS} && ninja -k0
+          ninja -k0
   mac:
+    name: macOS i686 osxcross
     runs-on: ubuntu-latest
+    needs: check-code-formatting
     container: openloco/osxcross:latest
     steps:
-      - uses: actions/checkout@v1
-      - run: |
-          ln -s /usr/osxcross/SDK/MacOSX10.13.sdk/System /System
-      - shell: bash
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Install dependencies
+        env:
+          dependency_ver: 1.3.0
         run: |
-          curl -L https://github.com/OpenLoco/Dependencies/releases/download/v1.3.0/openloco.dependencies.macos.1.3.0.zip -o dependencies.zip
-          unzip dependencies.zip -d vcpkg/
-      - shell: bash
+          ln -s /usr/osxcross/SDK/MacOSX10.13.sdk/System /System
+          curl -LfO "https://github.com/OpenLoco/Dependencies/releases/download/v${dependency_ver}/openloco.dependencies.macos.${dependency_ver}.zip"
+          unzip openloco.dependencies.macos.${dependency_ver}.zip -d vcpkg
+      - name: Build
         env:
           OSXCROSS_HOST: i386-apple-darwin17
           TOOLCHAIN1: ${{ github.workspace }}/osxcross/tools/toolchain.cmake
@@ -113,15 +113,16 @@ jobs:
           MACOSX_DEPLOYMENT_TARGET: 10.13
         run: |
           /usr/osxcross/bin/i386-apple-darwin17-osxcross-conf
-          eval "$(/usr/osxcross/bin/i386-apple-darwin17-osxcross-conf)"
-          mkdir build && cd build
-          export LD_LIBRARY_PATH="/usr/osxcross/lib:$LD_LIBRARY_PATH"
-          cmake .. "-DCMAKE_TOOLCHAIN_FILE=../cmake/osxcross_toolchain.cmake" -DVCPKG_TARGET_TRIPLET=x86-osx
-          make -j2
-          zip -r openloco.zip openloco.app
+          eval $(/usr/osxcross/bin/i386-apple-darwin17-osxcross-conf)
+          mkdir build
+          cd build
+          export LD_LIBRARY_PATH=/usr/osxcross/lib:$LD_LIBRARY_PATH
+          cmake .. -DCMAKE_TOOLCHAIN_FILE=../cmake/osxcross_toolchain.cmake -DVCPKG_TARGET_TRIPLET=x86-osx
+          make -j$(getconf _NPROCESSORS_ONLN)
+          tar -cvzf ../openloco.tar.gz openloco.app
       - name: Archive production artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: "OpenLoco-macOS"
-          path: build/openloco.zip
-
+          name: OpenLoco-macOS
+          path: openloco.tar.gz
+          if-no-files-found: error
