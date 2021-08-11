@@ -23,23 +23,27 @@ namespace OpenLoco
     {
         string_id name;
         uint8_t pad_02[0x07 - 0x02];
-        uint8_t numVariations; //0x7
-        uint8_t pad_08[0x90 - 0x08];
-        uint32_t colours;      // 0x90
-        uint16_t designedYear; // 0x94
-        uint16_t obsoleteYear; // 0x96
-        uint8_t flags;         // 0x98
+        uint8_t numVariations;    //0x7
+        uint8_t* varationHeights; // 0x8
+        uint8_t pad_0C[0x10 - 0x0C];
+        uint8_t* variationsArr10[32]; // 0x10
+        uint32_t colours;             // 0x90
+        uint16_t designedYear;        // 0x94
+        uint16_t obsoleteYear;        // 0x96
+        uint8_t flags;                // 0x98
         uint8_t pad_99[0xA0 - 0x99];
-        uint8_t var_A0[2];
-        uint8_t producedCargoType[2];
+        uint8_t producedQuantity[2];  // 0xA0
+        uint8_t producedCargoType[2]; // 0xA2
         uint8_t var_A4[2];
         uint8_t var_A6[2];
         uint8_t var_A8[2];
+        uint8_t pad_AA[0xAD - 0xAA];
+        uint8_t var_AD;
 
         void drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const;
         void drawBuilding(Gfx::Context* clipped, uint8_t buildingRotation, int16_t x, int16_t y, Colour_t colour) const;
         void drawDescription(Gfx::Context& context, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const;
     };
 #pragma pack(pop)
-    static_assert(sizeof(BuildingObject) == 0xAA);
+    static_assert(sizeof(BuildingObject) == 0xAE);
 }

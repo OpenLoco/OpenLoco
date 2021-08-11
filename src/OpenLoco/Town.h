@@ -38,8 +38,8 @@ namespace OpenLoco
         coord_t y;             // 0x04
         uint16_t flags;        // 0x06
         LabelFrame labelFrame; // 0x08
-        uint8_t pad_28[0x30 - 0x28];
-        uint32_t population; // 0x30
+        Utility::prng prng;    // 0x28
+        uint32_t population;   // 0x30
         uint8_t pad_34[0x38 - 0x34];
         uint16_t var_38;
         int16_t company_ratings[15];    // 0x3A
@@ -51,7 +51,7 @@ namespace OpenLoco
         uint8_t pad_150[0x158 - 0x150];
         uint16_t monthly_cargo_delivered[32];
         uint32_t cargo_influence_flags;
-        uint8_t pad_19C[0x1A4 - 0x19C];
+        uint16_t var_19C[2][2];
         uint8_t build_speed; // 0x1A4, 1=slow build speed, 4=fast build speed
         uint8_t unk_1A5;
         uint16_t num_stations; // 0x1A6

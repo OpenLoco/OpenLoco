@@ -627,8 +627,15 @@ namespace OpenLoco::Map::TileManager
                 call(0x004691FA, regs);
                 break;
             case ElementType::building:
-                call(0x0042DF8B, regs);
-                break;
+            {
+                auto* elBuilding = el.asBuilding();
+
+                if (elBuilding == nullptr) // Can never happen
+                {
+                    return false;
+                }
+                return elBuilding->update(loc);
+            }
             case ElementType::tree:
                 call(0x004BD52B, regs);
                 break;

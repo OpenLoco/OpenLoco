@@ -62,6 +62,7 @@
     <ClCompile Include="Localisation\Languages.cpp" />
     <ClCompile Include="Localisation\StringManager.cpp" />
     <ClCompile Include="Localisation\Unicode.cpp" />
+    <ClCompile Include="Map\BuildingTile.cpp" />
     <ClCompile Include="Map\MapGenerator.cpp" />
     <ClCompile Include="Map\SurfaceTile.cpp" />
     <ClCompile Include="Map\Tile.cpp" />

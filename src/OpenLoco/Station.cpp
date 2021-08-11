@@ -377,7 +377,7 @@ namespace OpenLoco
                                     {
                                         cargoSearchState.addScore(cargoId, obj->var_A6[i]);
 
-                                        if (obj->var_A0[i] != 0)
+                                        if (obj->producedQuantity[i] != 0)
                                         {
                                             cargoSearchState.addProducedCargoType(cargoId);
                                         }

@@ -411,6 +411,18 @@ namespace OpenLoco::StationManager
         }
     }
 
+    // 0x0042F2FE
+    uint16_t sendProducedCargoToStations(const uint8_t cargoType, const uint8_t cargoQty, const Map::Pos2& pos, const Map::TilePos2& size)
+    {
+        registers regs;
+        regs.ax = pos.x;
+        regs.cx = pos.y;
+        regs.dx = size.x | (size.y << 8);
+        regs.bh = cargoType;
+        regs.bl = cargoQty;
+        call(0x0042F2FE, regs);
+        return regs.bx;
+    }
     void registerHooks()
     {
         // Can be removed once the createStation function has been implemented (used by place.*Station game commands)
