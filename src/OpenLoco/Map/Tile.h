@@ -233,6 +233,7 @@ namespace OpenLoco::Map
             _6 &= ~0x3F;
             _6 |= value & 0x3F;
         }
+        bool update(const Map::Pos2& loc);
     };
 
     struct TreeElement : public TileElementBase

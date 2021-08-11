@@ -1,12 +1,8 @@
 #include "TileManager.h"
 #include "../CompanyManager.h"
-#include "../GameCommands/GameCommands.h"
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
 #include "../Map/Map.hpp"
-#include "../Objects/BuildingObject.h"
-#include "../StationManager.h"
-#include "../TownManager.h"
 #include "../Ui.h"
 #include "../ViewportManager.h"
 
@@ -617,207 +613,6 @@ namespace OpenLoco::Map::TileManager
         return surroundingTrees;
     }
 
-    static void sub_497DC1(const Map::Pos2& loc, uint32_t population, uint32_t unk1, uint16_t rating, uint16_t unk3)
-    {
-        registers regs;
-        regs.edi = population;
-        regs.esi = unk1;
-        regs.ebp = rating | (unk3 << 16);
-        regs.ax = loc.x;
-        regs.cx = loc.y;
-        call(0x00497DC1, regs);
-    }
-
-    // 0x0042DF8B
-    static bool updateBuilding(BuildingElement& elBuilding, const Map::Pos2& loc)
-    {
-        // Only update from tile index 0 of multi tile buildings
-        if (elBuilding.multiTileIndex())
-        {
-            return true;
-        }
-
-        if (elBuilding.isGhost())
-        {
-            return true;
-        }
-
-        auto* buildingObj = elBuilding.object();
-        if (!elBuilding.isConstructed())
-        {
-            auto newUnk5u = elBuilding.unk5u();
-            auto newUnk6l = elBuilding.unk6l();
-            auto isConstructed = false;
-            if (elBuilding.unk5u() != 7)
-            {
-                newUnk5u++;
-            }
-            else
-            {
-                auto* unkVariation = buildingObj->variationsArr10[elBuilding.variation()];
-                if (unkVariation[elBuilding.unk6l() + 1] != 0xFF)
-                {
-                    newUnk5u = 0;
-                    newUnk6l++;
-                }
-                else
-                {
-                    auto totalHeight = 3;
-                    for (; *unkVariation != 0xFF; unkVariation++)
-                    {
-                        totalHeight += buildingObj->varationHeights[*unkVariation];
-                    }
-                    Ui::ViewportManager::invalidate(loc, elBuilding.baseZ() * 4, elBuilding.clearZ() * 4, ZoomLevel::quarter);
-
-                    const auto newClearHeight = elBuilding.baseZ() + totalHeight / 4;
-                    elBuilding.setClearZ(newClearHeight);
-                    if (buildingObj->var_AD != 0)
-                    {
-                        createAnimation(5, loc, elBuilding.baseZ());
-                    }
-                    if (buildingObj->flags & BuildingObjectFlags::large_tile)
-                    {
-                        for (auto i = 1; i < 4; ++i)
-                        {
-                            const auto pos = loc + Map::offsets[i];
-                            auto tile = get(pos);
-                            for (auto& el : tile)
-                            {
-                                auto* elBuilding2 = el.asBuilding();
-                                if (elBuilding2 == nullptr)
-                                {
-                                    continue;
-                                }
-                                if (elBuilding2->baseZ() != elBuilding.baseZ())
-                                {
-                                    continue;
-                                }
-
-                                Ui::ViewportManager::invalidate(pos, elBuilding2->baseZ() * 4, elBuilding2->clearZ() * 4, ZoomLevel::quarter);
-                                elBuilding2->setClearZ(newClearHeight);
-                            }
-                        }
-                    }
-
-                    sub_497DC1(loc, buildingObj->producedQuantity[0], 0, 0, 0);
-
-                    newUnk5u = 0;
-                    newUnk6l = 0;
-                    isConstructed = true;
-                }
-            }
-            elBuilding.setConstructed(isConstructed);
-            elBuilding.setUnk5u(newUnk5u);
-            elBuilding.setUnk6l(newUnk6l);
-            Ui::ViewportManager::invalidate(loc, elBuilding.baseZ() * 4, elBuilding.clearZ() * 4, ZoomLevel::quarter);
-            if (buildingObj->flags & BuildingObjectFlags::large_tile)
-            {
-                for (auto i = 1; i < 4; ++i)
-                {
-                    const auto pos = loc + Map::offsets[i];
-                    auto tile = get(pos);
-                    for (auto& el : tile)
-                    {
-                        auto* elBuilding2 = el.asBuilding();
-                        if (elBuilding2 == nullptr)
-                        {
-                            continue;
-                        }
-                        if (elBuilding2->baseZ() != elBuilding.baseZ())
-                        {
-                            continue;
-                        }
-                        elBuilding2->setConstructed(isConstructed);
-                        elBuilding2->setUnk5u(++newUnk5u);
-                        elBuilding2->setUnk6l(newUnk6l);
-                        Ui::ViewportManager::invalidate(pos, elBuilding2->baseZ() * 4, elBuilding2->clearZ() * 4, ZoomLevel::quarter);
-                    }
-                }
-            }
-        }
-
-        if (elBuilding.has_40())
-        {
-            return true;
-        }
-
-        auto res = TownManager::getClosestTownAndUnk(loc);
-        if (!res)
-        {
-            return true;
-        }
-
-        auto* town = TownManager::get(res->first);
-        if (elBuilding.isConstructed())
-        {
-            elBuilding.setUnk5u(elBuilding.unk5u() + 1);
-            if (!elBuilding.unk5u() && elBuilding.unk6l() != 63)
-            {
-                const auto newUnk6l = elBuilding.unk6l() + 1;
-
-                elBuilding.setUnk6l(newUnk6l);
-                if (buildingObj->flags & BuildingObjectFlags::large_tile)
-                {
-                    for (auto i = 1; i < 4; ++i)
-                    {
-                        const auto pos = loc + Map::offsets[i];
-                        auto tile = get(pos);
-                        for (auto& el : tile)
-                        {
-                            auto* elBuilding2 = el.asBuilding();
-                            if (elBuilding2 == nullptr)
-                            {
-                                continue;
-                            }
-                            if (elBuilding2->baseZ() != elBuilding.baseZ())
-                            {
-                                continue;
-                            }
-                            elBuilding2->setUnk6l(newUnk6l);
-                        }
-                    }
-                }
-            }
-        }
-
-        if (elBuilding.isConstructed() && elBuilding.unk6l() >= 40)
-        {
-            if (town->prng.randNext(0xFFFF) <= 16)
-            {
-                GameCommands::BuildingRemovalArgs args;
-                args.pos = Map::Pos3(loc.x, loc.y, elBuilding.baseZ() * 4);
-                GameCommands::do_45(GameCommands::Flags::apply, args);
-                return false;
-            }
-        }
-
-        if (elBuilding.isConstructed())
-        {
-            // This is purely to keep things in sync when confirmed no desync move
-            // rand call into loop and force a desync.
-            const uint16_t randVal = town->prng.randNext(0xFFFF);
-            const uint8_t randArr[2] = { static_cast<uint8_t>(randVal), static_cast<uint8_t>(randVal >> 8) };
-            for (auto i = 0; i < 2; ++i)
-            {
-                if (randArr[i] >= buildingObj->producedQuantity[i])
-                {
-                    continue;
-                }
-
-                auto producedAmount = randArr[i] / 4 + 1;
-                if ((addr<0x00525E28, uint32_t>() & (1 << 1)) != 0)
-                {
-                    producedAmount = (producedAmount + 1) / 2;
-                }
-                town->var_19C[i][0] += producedAmount;
-
-                const auto size = (buildingObj->flags & BuildingObjectFlags::large_tile) ? Map::TilePos2(2, 2) : Map::TilePos2(1, 1);
-                town->var_19C[i][1] += StationManager::sendProducedCargoToStations(buildingObj->producedCargoType[i], producedAmount, loc, size) & 0xFF;
-            }
-        }
-        return true;
-    }
-
     static bool update(TileElement& el, const Map::Pos2& loc)
     {
         registers regs;
@@ -839,7 +634,7 @@ namespace OpenLoco::Map::TileManager
                 {
                     return false;
                 }
-                return updateBuilding(*elBuilding, loc);
+                return elBuilding->update(loc);
             }
             case ElementType::tree:
                 call(0x004BD52B, regs);
