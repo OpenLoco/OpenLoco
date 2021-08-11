@@ -203,7 +203,7 @@ namespace OpenLoco::Map
                 town->var_19C[i][0] += producedAmount;
 
                 const auto size = (buildingObj->flags & BuildingObjectFlags::large_tile) ? Map::TilePos2(2, 2) : Map::TilePos2(1, 1);
-                town->var_19C[i][1] += StationManager::sendProducedCargoToStations(buildingObj->producedCargoType[i], producedAmount, loc, size) & 0xFF;
+                town->var_19C[i][1] += StationManager::deliverCargoToNearbyStations(buildingObj->producedCargoType[i], producedAmount, loc, size) & 0xFF;
             }
         }
         return true;

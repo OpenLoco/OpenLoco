@@ -12,6 +12,7 @@
 #include "Window.h"
 
 #include <bitset>
+#include <numeric>
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui;
@@ -412,17 +413,94 @@ namespace OpenLoco::StationManager
     }
 
     // 0x0042F2FE
-    uint16_t sendProducedCargoToStations(const uint8_t cargoType, const uint8_t cargoQty, const Map::Pos2& pos, const Map::TilePos2& size)
+    uint16_t deliverCargoToNearbyStations(const uint8_t cargoType, const uint8_t cargoQty, const Map::Pos2& pos, const Map::TilePos2& size)
     {
-        registers regs;
-        regs.ax = pos.x;
-        regs.cx = pos.y;
-        regs.dx = size.x | (size.y << 8);
-        regs.bh = cargoType;
-        regs.bl = cargoQty;
-        call(0x0042F2FE, regs);
-        return regs.bx;
+        const auto initialLoc = TilePos2(pos) - TilePos2(4, 4);
+        const auto searchSize = size + TilePos2(8, 8);
+        std::vector<std::pair<StationId_t, uint8_t>> foundStations;
+        for (TilePos2 searchOffset{ 0, 0 }; searchOffset.y < searchSize.y; ++searchOffset.y)
+        {
+            for (; searchOffset.x < searchSize.x; ++searchOffset.x)
+            {
+                const auto searchLoc = initialLoc + searchOffset;
+                if (!Map::validCoords(searchLoc))
+                {
+                    continue;
+                }
+
+                const auto tile = TileManager::get(searchLoc);
+                for (const auto& el : tile)
+                {
+                    auto* elStation = el.asStation();
+                    if (elStation == nullptr)
+                    {
+                        continue;
+                    }
+
+                    if (elStation->isFlag5() || elStation->isGhost())
+                    {
+                        continue;
+                    }
+
+                    if (foundStations.size() > 15)
+                    {
+                        continue;
+                    }
+                    auto res = std::find_if(foundStations.begin(), foundStations.end(), [stationId = elStation->stationId()](const std::pair<StationId_t, uint8_t>& item) { return item.first == stationId; });
+                    if (res != foundStations.end())
+                    {
+                        continue;
+                    }
+                    auto* station = get(elStation->stationId());
+                    if (station == nullptr)
+                    {
+                        continue;
+                    }
+                    if (!(station->cargo_stats[cargoType].flags & (1 << 1)))
+                    {
+                        continue;
+                    }
+
+                    foundStations.push_back(std::make_pair(elStation->stationId(), station->cargo_stats[cargoType].rating));
+                }
+            }
+            searchOffset.x = 0;
+        }
+
+        if (foundStations.empty())
+        {
+            return 0;
+        }
+
+        const auto ratingTotal = std::accumulate(foundStations.begin(), foundStations.end(), 0, [](const int32_t a, const std::pair<StationId_t, uint8_t>& b) { return a + b.second * b.second; });
+        if (ratingTotal == 0)
+        {
+            return 0;
+        }
+
+        uint16_t cargoQtyDelivered = 0;
+        for (const auto& [stationId, rating] : foundStations)
+        {
+            auto* station = get(stationId);
+            if (station == nullptr)
+            {
+                continue;
+            }
+
+            const auto defaultShare = (rating * rating * cargoQty) / ratingTotal;
+            const auto alternateShare = (rating * cargoQty) / 256;
+            auto share = std::min(defaultShare, alternateShare);
+            if (rating > 66)
+            {
+                share++;
+            }
+            cargoQtyDelivered += share;
+            station->deliverCargoToStation(cargoType, share);
+        }
+
+        return std::min<uint16_t>(cargoQtyDelivered, cargoQty);
     }
+
     void registerHooks()
     {
         // Can be removed once the createStation function has been implemented (used by place.*Station game commands)
