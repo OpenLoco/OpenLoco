@@ -220,15 +220,15 @@ namespace OpenLoco::Map
         uint8_t objectId() const { return _4; }
         BuildingObject* object() const;
         uint8_t multiTileIndex() const { return _5 & 3; }
-        uint8_t unk5u() const { return _5 >> 5; }
+        uint8_t unk5u() const { return _5 >> 5; } // likely age related as well (higher precision)
         void setUnk5u(uint8_t value)
         {
             _5 &= ~0xE0;
             _5 |= value << 5;
         }
         uint8_t variation() const { return (_6 >> 6) & 0x1F; }
-        uint8_t unk6l() const { return _6 & 0x3F; }
-        void setUnk6l(uint8_t value)
+        uint8_t age() const { return _6 & 0x3F; } // 6l
+        void setAge(uint8_t value)                // 6l
         {
             _6 &= ~0x3F;
             _6 |= value & 0x3F;

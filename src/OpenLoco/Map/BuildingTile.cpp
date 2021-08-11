@@ -37,7 +37,7 @@ namespace OpenLoco::Map
         if (!isConstructed())
         {
             auto newUnk5u = unk5u();
-            auto newUnk6l = unk6l();
+            auto newAge = age();
             auto isConstructed = false;
             if (unk5u() != 7)
             {
@@ -46,10 +46,10 @@ namespace OpenLoco::Map
             else
             {
                 auto* unkVariation = buildingObj->variationsArr10[variation()];
-                if (unkVariation[unk6l() + 1] != 0xFF)
+                if (unkVariation[age() + 1] != 0xFF)
                 {
                     newUnk5u = 0;
-                    newUnk6l++;
+                    newAge++;
                 }
                 else
                 {
@@ -93,13 +93,13 @@ namespace OpenLoco::Map
                     sub_497DC1(loc, buildingObj->producedQuantity[0], 0, 0, 0);
 
                     newUnk5u = 0;
-                    newUnk6l = 0;
+                    newAge = 0;
                     isConstructed = true;
                 }
             }
             setConstructed(isConstructed);
             setUnk5u(newUnk5u);
-            setUnk6l(newUnk6l);
+            setAge(newAge);
             Ui::ViewportManager::invalidate(loc, baseZ() * 4, clearZ() * 4, ZoomLevel::quarter);
             if (buildingObj->flags & BuildingObjectFlags::large_tile)
             {
@@ -120,7 +120,7 @@ namespace OpenLoco::Map
                         }
                         elBuilding2->setConstructed(isConstructed);
                         elBuilding2->setUnk5u(newUnk5u);
-                        elBuilding2->setUnk6l(newUnk6l);
+                        elBuilding2->setAge(newAge);
                         Ui::ViewportManager::invalidate(pos, elBuilding2->baseZ() * 4, elBuilding2->clearZ() * 4, ZoomLevel::quarter);
                     }
                 }
@@ -142,11 +142,11 @@ namespace OpenLoco::Map
         if (isConstructed())
         {
             setUnk5u(unk5u() + 1);
-            if (!unk5u() && unk6l() != 63)
+            if (!unk5u() && age() != 63)
             {
-                const auto newUnk6l = unk6l() + 1;
+                const auto newAge = age() + 1;
 
-                setUnk6l(newUnk6l);
+                setAge(newAge);
                 if (buildingObj->flags & BuildingObjectFlags::large_tile)
                 {
                     for (auto i = 1; i < 4; ++i)
@@ -164,14 +164,14 @@ namespace OpenLoco::Map
                             {
                                 continue;
                             }
-                            elBuilding2->setUnk6l(newUnk6l);
+                            elBuilding2->setAge(newAge);
                         }
                     }
                 }
             }
         }
 
-        if (isConstructed() && unk6l() >= 40)
+        if (isConstructed() && age() >= 40)
         {
             if (town->prng.randNext(0xFFFF) <= 16)
             {
