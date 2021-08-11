@@ -417,6 +417,7 @@ namespace OpenLoco::StationManager
     {
         const auto initialLoc = TilePos2(pos) - TilePos2(4, 4);
         const auto searchSize = size + TilePos2(8, 8);
+        // TODO: Use a fixed size array (max size 15)
         std::vector<std::pair<StationId_t, uint8_t>> foundStations;
         for (TilePos2 searchOffset{ 0, 0 }; searchOffset.y < searchSize.y; ++searchOffset.y)
         {
@@ -444,7 +445,7 @@ namespace OpenLoco::StationManager
 
                     if (foundStations.size() > 15)
                     {
-                        continue;
+                        break;
                     }
                     auto res = std::find_if(foundStations.begin(), foundStations.end(), [stationId = elStation->stationId()](const std::pair<StationId_t, uint8_t>& item) { return item.first == stationId; });
                     if (res != foundStations.end())
