@@ -3,6 +3,7 @@
 #include "../Input.h"
 #include "../Interop/Interop.hpp"
 #include "../Map/Map.hpp"
+#include "../Objects/BuildingObject.h"
 #include "../Ui.h"
 #include "../ViewportManager.h"
 
@@ -611,6 +612,117 @@ namespace OpenLoco::Map::TileManager
         }
 
         return surroundingTrees;
+    }
+
+    // 0x0042DF8B
+    static bool updateBuilding(BuildingElement& elBuilding, const Map::Pos2& loc)
+    {
+        // Only update from tile index 0 of multi tile buildings
+        if (elBuilding.multiTileIndex())
+        {
+            return true;
+        }
+
+        if (elBuilding.isGhost())
+        {
+            return true;
+        }
+
+        auto* buildingObj = elBuilding.object();
+        if (!elBuilding.isConstructed())
+        {
+            auto newUnk5u = elBuilding.unk5u();
+            auto newUnk6l = elBuilding.unk6l();
+            auto isConstructed = false;
+            if (elBuilding.unk5u() != 7)
+            {
+                newUnk5u++;
+            }
+            else
+            {
+                auto* unkVariation = buildingObj->variationsArr10[elBuilding.variation()];
+                if (unkVariation[elBuilding.unk6l() + 1] != 0xFF)
+                {
+                    newUnk5u = 0;
+                    newUnk6l++;
+                }
+                else
+                {
+                    auto totalHeight = 3;
+                    for (; *unkVariation != 0xFF; unkVariation++)
+                    {
+                        totalHeight += buildingObj->varationHeights[*unkVariation];
+                    }
+                    Ui::ViewportManager::invalidate(loc, elBuilding.baseZ() * 4, elBuilding.clearZ() * 4, ZoomLevel::quarter);
+
+                    const auto newClearHeight = elBuilding.baseZ() + totalHeight / 4;
+                    elBuilding.setClearZ(newClearHeight);
+                    if (buildingObj->var_AD != 0)
+                    {
+                        createAnimation(5, loc, elBuilding.baseZ());
+                    }
+                    if (buildingObj->flags & BuildingObjectFlags::large_tile)
+                    {
+                        for (auto i = 1; i < 4; ++i)
+                        {
+                            const auto pos = loc + Map::offsets[i];
+                            auto tile = get(pos);
+                            for (auto& el : tile)
+                            {
+                                auto* elBuilding2 = el.asBuilding();
+                                if (elBuilding2 == nullptr)
+                                {
+                                    continue;
+                                }
+                                if (elBuilding2->baseZ() != elBuilding.baseZ())
+                                {
+                                    continue;
+                                }
+
+                                Ui::ViewportManager::invalidate(pos, elBuilding2->baseZ() * 4, elBuilding2->clearZ() * 4, ZoomLevel::quarter);
+                                elBuilding2->setClearZ(newClearHeight);
+                            }
+                        }
+                    }
+
+                    buildingObj->var_A0[0];
+                    // call(0x00497DC1);
+
+                    newUnk5u = 0;
+                    newUnk6l = 0;
+                    isConstructed = true;
+                }
+            }
+            elBuilding.setConstructed(isConstructed);
+            elBuilding.setUnk5u(newUnk5u);
+            elBuilding.setUnk6l(newUnk6l);
+            Ui::ViewportManager::invalidate(loc, elBuilding.baseZ() * 4, elBuilding.clearZ() * 4, ZoomLevel::quarter);
+            if (buildingObj->flags & BuildingObjectFlags::large_tile)
+            {
+                for (auto i = 1; i < 4; ++i)
+                {
+                    const auto pos = loc + Map::offsets[i];
+                    auto tile = get(pos);
+                    for (auto& el : tile)
+                    {
+                        auto* elBuilding2 = el.asBuilding();
+                        if (elBuilding2 == nullptr)
+                        {
+                            continue;
+                        }
+                        if (elBuilding2->baseZ() != elBuilding.baseZ())
+                        {
+                            continue;
+                        }
+                        elBuilding.setConstructed(isConstructed);
+                        elBuilding.setUnk5u(++newUnk5u);
+                        elBuilding.setUnk6l(newUnk6l);
+                        Ui::ViewportManager::invalidate(pos, elBuilding2->baseZ() * 4, elBuilding2->clearZ() * 4, ZoomLevel::quarter);
+                    }
+                }
+            }
+        }
+        // 0x0042E2AB
     }
 
     static bool update(TileElement& el, const Map::Pos2& loc)
