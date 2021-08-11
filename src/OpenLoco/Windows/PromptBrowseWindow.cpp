@@ -295,7 +295,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     static void onScrollMouseDown(Window* self, int16_t x, int16_t y, uint8_t scrollIndex)
     {
         auto index = y / self->row_height;
-        if (index > _numFiles)
+        if (index >= _numFiles)
             return;
 
         Audio::playSound(Audio::SoundId::clickDown, self->x + (self->width / 2));
