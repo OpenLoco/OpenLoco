@@ -699,7 +699,6 @@ namespace OpenLoco::Map::TileManager
                         }
                     }
 
-                    buildingObj->producedQuantity[0];
                     sub_497DC1(loc, buildingObj->producedQuantity[0], 0, 0, 0);
 
                     newUnk5u = 0;
@@ -833,7 +832,15 @@ namespace OpenLoco::Map::TileManager
                 call(0x004691FA, regs);
                 break;
             case ElementType::building:
-                return updateBuilding(*el.asBuilding(), loc);
+            {
+                auto* elBuilding = el.asBuilding();
+
+                if (elBuilding == nullptr) // Can never happen
+                {
+                    return false;
+                }
+                return updateBuilding(*elBuilding, loc);
+            }
             case ElementType::tree:
                 call(0x004BD52B, regs);
                 break;
