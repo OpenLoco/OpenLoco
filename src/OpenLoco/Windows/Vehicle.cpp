@@ -3966,7 +3966,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             args.push(head.name);
             args.push(head.ordinalNumber);
             GameCommands::setErrorTitle(StringIds::cant_place_string_id_here);
-            if (GameCommands::doCommand(*placementArgs, GameCommands::Flags::apply))
+            if (GameCommands::doCommand(*placementArgs, GameCommands::Flags::apply) != GameCommands::FAILURE)
             {
                 Input::toolCancel();
                 self.callOnMouseUp(Common::widx::tabMain);

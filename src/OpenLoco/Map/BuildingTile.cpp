@@ -178,7 +178,7 @@ namespace OpenLoco::Map
             {
                 GameCommands::BuildingRemovalArgs args;
                 args.pos = Map::Pos3(loc.x, loc.y, baseZ() * 4);
-                GameCommands::do_45(GameCommands::Flags::apply, args);
+                GameCommands::doCommand(args, GameCommands::Flags::apply);
                 return false;
             }
         }
