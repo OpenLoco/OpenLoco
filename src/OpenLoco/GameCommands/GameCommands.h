@@ -89,7 +89,7 @@ namespace OpenLoco::GameCommands
         gc_unk_53 = 53,
         buildCompanyHeadquarters = 54,
         removeCompanyHeadquarters = 55,
-        gc_unk_56 = 56,
+        createAirport = 56,
         removeAirport = 57,
         vehiclePlaceAir = 58,
         vehiclePickupAir = 59,
@@ -1101,6 +1101,32 @@ namespace OpenLoco::GameCommands
             regs.ax = pos.x;
             regs.cx = pos.y;
             regs.di = pos.z;
+            return regs;
+        }
+    };
+
+    struct AirportPlacementArgs
+    {
+        AirportPlacementArgs() = default;
+        explicit AirportPlacementArgs(const registers regs)
+            : pos(regs.ax, regs.cx, regs.di)
+            , rotation(regs.bh)
+            , type(regs.dl)
+        {
+        }
+
+        Map::Pos3 pos;
+        uint8_t rotation;
+        uint8_t type;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.ax = pos.x;
+            regs.cx = pos.y;
+            regs.di = pos.z;
+            regs.bh = rotation;
+            regs.dl = type;
             return regs;
         }
     };

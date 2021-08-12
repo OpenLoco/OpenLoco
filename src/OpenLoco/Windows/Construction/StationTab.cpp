@@ -1,4 +1,5 @@
 #include "../../CompanyManager.h"
+#include "../../GameCommands/GameCommands.h"
 #include "../../Graphics/ImageIds.h"
 #include "../../Input.h"
 #include "../../Localisation/FormatArguments.hpp"
@@ -167,15 +168,108 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         call(0x0049E421, regs);
     }
 
+    // 0x004A47D9
+    static std::optional<GameCommands::AirportPlacementArgs> getAirportPlacementArgsFromCursor(const int16_t x, const int16_t y)
+    {
+        auto pos = ViewportInteraction::getSurfaceOrWaterLocFromUi({ x, y });
+        if (!pos)
+        {
+            return std::nullopt;
+        }
+
+        GameCommands::AirportPlacementArgs placementArgs;
+        placementArgs.type = _lastSelectedStationType;
+        placementArgs.rotation = _constructionRotation;
+        auto* airportObject = ObjectManager::get<AirportObject>(placementArgs.type);
+        TilePos2 minPos(airportObject->min_x, airportObject->min_y);
+        TilePos2 maxPos(airportObject->max_x, airportObject->max_y);
+
+        minPos = Math::Vector::rotate(minPos, placementArgs.rotation);
+        maxPos = Math::Vector::rotate(maxPos, placementArgs.rotation);
+
+        minPos += *pos;
+        maxPos += *pos;
+
+        if (minPos.x > maxPos.x)
+        {
+            std::swap(minPos.x, maxPos.x);
+        }
+
+        if (minPos.y > maxPos.y)
+        {
+            std::swap(minPos.y, maxPos.y);
+        }
+
+        static loco_global<Map::Pos2, 0x001135F7C> _1135F7C;
+        static loco_global<Map::Pos2, 0x001135F80> _1135F90;
+
+        _1135F7C = minPos;
+        _1135F90 = maxPos;
+        auto maxBaseZ = 0;
+        for (auto checkPos = minPos; checkPos.y < maxPos.y; ++checkPos.y)
+        {
+            for (checkPos.x = minPos.x; checkPos.x < maxPos.x; ++checkPos.x)
+            {
+                const auto tile = TileManager::get(checkPos);
+                const auto* surface = tile.surface();
+                if (surface == nullptr)
+                {
+                    return std::nullopt;
+                }
+
+                const auto baseZ = surface->water() ? surface->water() * 4 : surface->baseZ();
+                maxBaseZ = std::max(maxBaseZ, baseZ);
+            }
+        }
+        placementArgs.pos = Map::Pos3(pos->x, pos->y, maxBaseZ * 4);
+        return { placementArgs };
+    }
+
+    // 0x004A5550
+    static void onToolDownAirport(const int16_t x, const int16_t y)
+    {
+        static loco_global<Ui::Point, 0x0113600C> _113600C;
+        _113600C = Point(x, y);
+        removeConstructionGhosts();
+
+        const auto args = getAirportPlacementArgsFromCursor(x, y);
+        if (!args)
+        {
+            return;
+        }
+
+        const auto* airportObject = ObjectManager::get<AirportObject>(_lastSelectedStationType);
+        auto formatArgs = FormatArguments::common();
+        formatArgs.skip(3 * sizeof(string_id));
+        formatArgs.push(airportObject->name);
+        GameCommands::setErrorTitle(StringIds::cant_build_pop3_string);
+        GameCommands::doCommand(*args, GameCommands::Flags::apply);
+    }
+
     // 0x0049E42C
     static void onToolDown(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
     {
-        registers regs;
-        regs.esi = X86Pointer(&self);
-        regs.dx = widgetIndex;
-        regs.ax = x;
-        regs.bx = y;
-        call(0x0049E42C, regs);
+        if (widgetIndex != widx::image)
+        {
+            return;
+        }
+
+        if (_byte_1136063 & (1 << 7))
+        {
+            onToolDownAirport(x, y);
+        }
+        else if (_byte_1136063 & (1 << 6))
+        {
+            //water 0x004A55AB
+        }
+        else if (_trackType & (1 << 7))
+        {
+            //road 0x004A548F
+        }
+        else
+        {
+            //track 0x004A5390
+        }
     }
 
     // 0x0049DD39
