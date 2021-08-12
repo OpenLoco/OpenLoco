@@ -1,12 +1,14 @@
 #include "../../CompanyManager.h"
 #include "../../GameCommands/GameCommands.h"
 #include "../../Graphics/ImageIds.h"
+#include "../../Industry.h"
 #include "../../Input.h"
 #include "../../Localisation/FormatArguments.hpp"
 #include "../../Localisation/StringIds.h"
 #include "../../Objects/AirportObject.h"
 #include "../../Objects/CargoObject.h"
 #include "../../Objects/DockObject.h"
+#include "../../Objects/IndustryObject.h"
 #include "../../Objects/ObjectManager.h"
 #include "../../Objects/RoadObject.h"
 #include "../../Objects/RoadStationObject.h"
@@ -14,6 +16,7 @@
 #include "../../Objects/TrainStationObject.h"
 #include "../../StationManager.h"
 #include "../../Ui/Dropdown.h"
+#include "../../Vehicles/Vehicle.h"
 #include "../../Widget.h"
 #include "Construction.h"
 
@@ -168,6 +171,9 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         call(0x0049E421, regs);
     }
 
+    static loco_global<Map::Pos2, 0x001135F7C> _1135F7C;
+    static loco_global<Map::Pos2, 0x001135F80> _1135F90;
+
     // 0x004A47D9
     static std::optional<GameCommands::AirportPlacementArgs> getAirportPlacementArgsFromCursor(const int16_t x, const int16_t y)
     {
@@ -200,9 +206,6 @@ namespace OpenLoco::Ui::Windows::Construction::Station
             std::swap(minPos.y, maxPos.y);
         }
 
-        static loco_global<Map::Pos2, 0x001135F7C> _1135F7C;
-        static loco_global<Map::Pos2, 0x001135F80> _1135F90;
-
         _1135F7C = minPos;
         _1135F90 = maxPos;
         auto maxBaseZ = 0;
@@ -210,6 +213,10 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         {
             for (checkPos.x = minPos.x; checkPos.x < maxPos.x; ++checkPos.x)
             {
+                if (!validCoords(checkPos))
+                {
+                    continue;
+                }
                 const auto tile = TileManager::get(checkPos);
                 const auto* surface = tile.surface();
                 if (surface == nullptr)
@@ -246,6 +253,152 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         GameCommands::doCommand(*args, GameCommands::Flags::apply);
     }
 
+    // 0x004A4903
+    static std::optional<GameCommands::PortPlacementArgs> getDockPlacementArgsFromCursor(const int16_t x, const int16_t y)
+    {
+        auto pos = ViewportInteraction::getSurfaceOrWaterLocFromUi({ x, y });
+        if (!pos)
+        {
+            return std::nullopt;
+        }
+
+        // count of water on each side of the placement
+        static loco_global<uint8_t[4], 0x00113608B> _nearbyWaterCount;
+
+        std::fill(std::begin(_nearbyWaterCount), std::end(_nearbyWaterCount), 0);
+
+        uint8_t directionOfIndustry = 0xFF;
+        uint8_t waterHeight = 0;
+        _1135F7C = *pos;
+        _1135F90 = *pos + TilePos2(1, 1);
+        const auto minSearch = *pos - TilePos2(1, 1);
+        const auto maxSearch = *pos + TilePos2(2, 2);
+        for (auto checkPos = minSearch; checkPos.y <= maxSearch.y; checkPos.y += Map::tile_size)
+        {
+            for (checkPos.x = minSearch.x; checkPos.x <= maxSearch.x; checkPos.x += Map::tile_size)
+            {
+                const auto tile = TileManager::get(checkPos);
+                bool surfaceFound = false;
+                for (auto el : tile)
+                {
+                    if (surfaceFound)
+                    {
+                        const auto* elIndustry = el.asIndustry();
+                        if (elIndustry == nullptr)
+                        {
+                            continue;
+                        }
+                        if (elIndustry->isGhost())
+                        {
+                            continue;
+                        }
+
+                        auto* industry = elIndustry->industry();
+                        auto* industryObj = industry->object();
+                        if (!(industryObj->flags & IndustryObjectFlags::built_on_water))
+                        {
+                            continue;
+                        }
+
+                        if ((checkPos.x >= _1135F7C->x && checkPos.x <= _1135F90->x) || (checkPos.y >= _1135F7C->y && checkPos.y <= _1135F90->y))
+                        {
+                            // Get the rotation from the port to the industry
+                            const auto diff = checkPos - *_1135F7C - Map::Pos2(16, 16);
+                            const auto yaw = OpenLoco::Vehicles::calculateYaw0FromVector(diff.x, diff.y);
+                            const auto rotation = (yaw / 16) & 0x3;
+                            directionOfIndustry = rotation;
+                        }
+                        // store loc calculateYaw0FromVector
+                    }
+                    const auto* surface = el.asSurface();
+                    if (surface == nullptr)
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        surfaceFound = true;
+
+                        if (!surface->water())
+                        {
+                            continue;
+                        }
+                        waterHeight = surface->water() * 4;
+                        if (waterHeight - 4 == surface->baseZ() && surface->isSlopeDoubleHeight())
+                        {
+                            continue;
+                        }
+
+                        if ((checkPos.x >= _1135F7C->x && checkPos.x <= _1135F90->x) || (checkPos.y >= _1135F7C->y && checkPos.y <= _1135F90->y))
+                        {
+                            // Get the rotation from the port to the water
+                            const auto diff = checkPos - *_1135F7C - Map::Pos2(16, 16);
+                            const auto yaw = OpenLoco::Vehicles::calculateYaw0FromVector(diff.x, diff.y);
+                            const auto rotation = ((yaw / 16) + 2) & 0x3;
+                            _nearbyWaterCount[rotation]++;
+                        }
+                    }
+                }
+            }
+        }
+
+        if (waterHeight == 0)
+        {
+            return std::nullopt;
+        }
+
+        GameCommands::PortPlacementArgs placementArgs;
+        placementArgs.type = _lastSelectedStationType;
+        placementArgs.pos = Map::Pos3(pos->x, pos->y, waterHeight * 4);
+        if (directionOfIndustry != 0xFF)
+        {
+            placementArgs.rotation = directionOfIndustry;
+        }
+        else
+        {
+            auto res = std::find_if(std::begin(_nearbyWaterCount), std::end(_nearbyWaterCount), [](uint8_t value) { return value >= 2; });
+            if (res != std::end(_nearbyWaterCount))
+            {
+                placementArgs.rotation = std::distance(std::begin(_nearbyWaterCount), res);
+            }
+            else
+            {
+                res = std::find_if(std::begin(_nearbyWaterCount), std::end(_nearbyWaterCount), [](uint8_t value) { return value >= 1; });
+                if (res != std::end(_nearbyWaterCount))
+                {
+                    placementArgs.rotation = std::distance(std::begin(_nearbyWaterCount), res);
+                }
+                else
+                {
+                    static loco_global<uint8_t, 0x00113608A> _113608A; // ai rotation??
+                    placementArgs.rotation = _113608A;
+                }
+            }
+        }
+        return { placementArgs };
+    }
+
+    // 0x004A55AB
+    static void onToolDownDock(const int16_t x, const int16_t y)
+    {
+        static loco_global<Ui::Point, 0x0113600C> _113600C;
+        _113600C = Point(x, y);
+        removeConstructionGhosts();
+
+        const auto args = getDockPlacementArgsFromCursor(x, y);
+        if (!args)
+        {
+            return;
+        }
+
+        const auto* dockObject = ObjectManager::get<DockObject>(_lastSelectedStationType);
+        auto formatArgs = FormatArguments::common();
+        formatArgs.skip(3 * sizeof(string_id));
+        formatArgs.push(dockObject->name);
+        GameCommands::setErrorTitle(StringIds::cant_build_pop3_string);
+        GameCommands::do_60(*args, GameCommands::Flags::apply);
+    }
+
     // 0x0049E42C
     static void onToolDown(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
     {
@@ -260,7 +413,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         }
         else if (_byte_1136063 & (1 << 6))
         {
-            //water 0x004A55AB
+            onToolDownDock(x, y);
         }
         else if (_trackType & (1 << 7))
         {

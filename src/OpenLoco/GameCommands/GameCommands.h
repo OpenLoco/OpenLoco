@@ -93,7 +93,7 @@ namespace OpenLoco::GameCommands
         removeAirport = 57,
         vehiclePlaceAir = 58,
         vehiclePickupAir = 59,
-        gc_unk_60 = 60,
+        createPort = 60,
         removePort = 61,
         vehiclePlaceWater = 62,
         vehiclePickupWater = 63,
@@ -1188,6 +1188,39 @@ namespace OpenLoco::GameCommands
         regs.bl = Flags::apply | Flags::flag_3 | Flags::flag_6;
         regs.di = head;
         return doCommand(GameCommand::vehiclePickupAir, regs) != FAILURE;
+    }
+
+    struct PortPlacementArgs
+    {
+        PortPlacementArgs() = default;
+        explicit PortPlacementArgs(const registers& regs)
+            : pos(regs.ax, regs.cx, regs.di)
+            , rotation(regs.bh)
+            , type(regs.dl)
+        {
+        }
+
+        Map::Pos3 pos;
+        uint8_t rotation;
+        uint8_t type;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.ax = pos.x;
+            regs.cx = pos.y;
+            regs.di = pos.z;
+            regs.bh = rotation;
+            regs.dl = type;
+            return regs;
+        }
+    };
+
+    inline bool do_60(const PortPlacementArgs& args, uint8_t flags)
+    {
+        registers regs = registers(args);
+        regs.bl = flags;
+        return doCommand(GameCommand::createPort, regs) != FAILURE;
     }
 
     struct PortRemovalArgs
