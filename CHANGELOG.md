@@ -1,5 +1,6 @@
 21.07+ (???)
 ------------------------------------------------------------------------
+- Fix: [#366] People and mail cargo incorrectly delivered to far away stations.
 - Fix: [#1035] Incorrect colour selection when building buildings.
 - Fix: [#1070] Crash when naming stations after exhausting natural names.
 - Fix: [#1094] Repeated clicking on construction window not always working.
