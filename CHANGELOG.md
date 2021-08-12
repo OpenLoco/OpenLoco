@@ -1,4 +1,4 @@
-21.07+ (???)
+21.08 (2021-08-12)
 ------------------------------------------------------------------------
 - Fix: [#366] People and mail cargo incorrectly delivered to far away stations.
 - Fix: [#1035] Incorrect colour selection when building buildings.
