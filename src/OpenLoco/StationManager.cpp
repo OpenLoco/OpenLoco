@@ -416,12 +416,12 @@ namespace OpenLoco::StationManager
     uint16_t deliverCargoToNearbyStations(const uint8_t cargoType, const uint8_t cargoQty, const Map::Pos2& pos, const Map::TilePos2& size)
     {
         const auto initialLoc = TilePos2(pos) - TilePos2(4, 4);
-        const auto searchSize = size + TilePos2(8, 8);
+        const auto catchmentSize = size + TilePos2(8, 8);
         // TODO: Use a fixed size array (max size 15)
         std::vector<std::pair<StationId_t, uint8_t>> foundStations;
-        for (TilePos2 searchOffset{ 0, 0 }; searchOffset.y < searchSize.y; ++searchOffset.y)
+        for (TilePos2 searchOffset{ 0, 0 }; searchOffset.y < catchmentSize.y; ++searchOffset.y)
         {
-            for (; searchOffset.x < searchSize.x; ++searchOffset.x)
+            for (; searchOffset.x < catchmentSize.x; ++searchOffset.x)
             {
                 const auto searchLoc = initialLoc + searchOffset;
                 if (!Map::validCoords(searchLoc))
