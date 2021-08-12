@@ -43,7 +43,9 @@
 #include "Localisation/LanguageFiles.h"
 #include "Localisation/Languages.h"
 #include "Localisation/StringIds.h"
+#include "Map/AnimationManager.h"
 #include "Map/TileManager.h"
+#include "Map/WaveManager.h"
 #include "MultiPlayer.h"
 #include "Objects/ObjectManager.h"
 #include "OpenLoco.h"
@@ -810,12 +812,6 @@ namespace OpenLoco
         }
     }
 
-    // 0x004612EC
-    static void invalidate_map_animations()
-    {
-        call(0x004612EC);
-    }
-
     static void sub_46FFCA()
     {
         addr<0x010E7D3C, uint32_t>() = 0x2A0015;
@@ -845,7 +841,7 @@ namespace OpenLoco
         addr<0x00F25374, uint8_t>() = S5::getOptions().madeAnyChanges;
         dateTick();
         Map::TileManager::update();
-        call(0x004C56F6);
+        WaveManager::update();
         TownManager::update();
         IndustryManager::update();
         EntityManager::updateVehicles();
@@ -854,7 +850,7 @@ namespace OpenLoco
         EntityManager::updateMiscEntities();
         sub_46FFCA();
         CompanyManager::update();
-        invalidate_map_animations();
+        AnimationManager::update();
         Audio::updateVehicleNoise();
         Audio::updateAmbientNoise();
         Title::update();

@@ -16,8 +16,10 @@
 #include "../Graphics/Gfx.h"
 #include "../Gui.h"
 #include "../Input.h"
+#include "../Map/AnimationManager.h"
 #include "../Map/Tile.h"
 #include "../Map/TileManager.h"
+#include "../Map/WaveManager.h"
 #include "../Paint/Paint.h"
 #include "../Platform/Platform.h"
 #include "../S5/S5.h"
@@ -770,7 +772,8 @@ void OpenLoco::Interop::registerHooks()
         });
 
     Ui::ProgressBar::registerHooks();
-    OpenLoco::Map::TileManager::registerHooks();
+    Map::TileManager::registerHooks();
+    Map::AnimationManager::registerHooks();
     Ui::Windows::PromptBrowse::registerHooks();
     Ui::Windows::TextInput::registerHooks();
     Ui::Windows::ToolTip::registerHooks();
@@ -791,15 +794,13 @@ void OpenLoco::Interop::registerHooks()
 
     // Part of 0x004691FA
     registerHook(
-        0x0046959C,
+        0x0046956E,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
-            int16_t x = regs.eax;
-            int16_t i = regs.ebx / 6;
-            int16_t y = regs.ecx;
+            Map::Pos2 pos(regs.ax, regs.cx);
             Map::SurfaceElement* surface = X86Pointer<Map::SurfaceElement>(regs.esi);
 
-            surface->createWave(x, y, i);
+            WaveManager::createWave(*surface, pos);
 
             regs = backup;
             return 0;

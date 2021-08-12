@@ -10,19 +10,6 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Map::TileManager
 {
-
-#pragma pack(push, 1)
-    struct TileAnimation
-    {
-        uint8_t baseZ;
-        uint8_t type;
-        Map::Pos2 pos;
-    };
-    static_assert(sizeof(TileAnimation) == 6);
-#pragma pack(pop)
-
-    constexpr size_t maxAnimations = 0x2000;
-
     static loco_global<TileElement*, 0x005230C8> _elements;
     static loco_global<TileElement* [0x30004], 0x00E40134> _tiles;
     static loco_global<TileElement*, 0x00F00134> _elementsEnd;
@@ -32,8 +19,6 @@ namespace OpenLoco::Map::TileManager
     static loco_global<coord_t, 0x00F2448C> _mapSelectionBY;
     static loco_global<uint16_t, 0x00F2448E> _word_F2448E;
     static loco_global<int16_t, 0x0050A000> _adjustToolSize;
-    static loco_global<uint16_t, 0x00525F6C> _numAnimations;
-    static loco_global<TileAnimation[maxAnimations], 0x0094C6DC> _animations;
     static loco_global<Map::Pos2, 0x00525F6E> _startUpdateLocation;
 
     constexpr uint16_t mapSelectedTilesSize = 300;
@@ -524,33 +509,6 @@ namespace OpenLoco::Map::TileManager
         }
     }
 
-    // 0x004612A6
-    void createAnimation(uint8_t type, const Pos2& pos, tile_coord_t baseZ)
-    {
-        if (_numAnimations >= maxAnimations)
-            return;
-
-        for (size_t i = 0; i < _numAnimations; i++)
-        {
-            auto& animation = _animations[i];
-            if (animation.type == type && animation.pos == pos && animation.baseZ == baseZ)
-            {
-                return;
-            }
-        }
-
-        auto& newAnimation = _animations[_numAnimations++];
-        newAnimation.baseZ = baseZ;
-        newAnimation.type = type;
-        newAnimation.pos = pos;
-    }
-
-    // 0x00461166
-    void resetAnimations()
-    {
-        _numAnimations = 0;
-    }
-
     // 0x004C5596
     uint16_t countSurroundingWaterTiles(const Pos2& pos)
     {
@@ -695,13 +653,6 @@ namespace OpenLoco::Map::TileManager
 
     void registerHooks()
     {
-        registerHook(
-            0x004612A6,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                createAnimation(regs.dh, { regs.ax, regs.cx }, regs.dl);
-                return 0;
-            });
-
         // This hook can be removed once sub_4599B3 has been implemented
         registerHook(
             0x004BE048,

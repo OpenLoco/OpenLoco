@@ -185,6 +185,11 @@ namespace OpenLoco::S5
         uint8_t pad_0[0x6];
     };
 
+    struct Wave
+    {
+        uint8_t pad_0[0x6];
+    };
+
     struct TileElement
     {
     private:
@@ -256,7 +261,10 @@ namespace OpenLoco::S5
         Station stations[1024];           // 0x0C10C4 (0x005E6EDC)
         Entity entities[20000];           // 0x1B58C4 (0x006DB6DC)
         Animation animations[8192];       // 0x4268C4 (0x0094C6DC)
-        uint8_t pad_4328C4[0x6DD80];      // 0x4328C4 (0x009586DC)
+        Wave waves[64];                   // 0x4328C4 (0x009586DC)
+        uint8_t userStrings[2048][32];    // 0x432A44 (0x0095885C)
+        uint16_t routings[1000][64];      // 0x442A44 (0x0096885C)
+        uint8_t orders[256000];           // 0x461E44 (0x0096885C)
     };
 #pragma pack(pop)
     static_assert(sizeof(GameState) == 0x4A0644);

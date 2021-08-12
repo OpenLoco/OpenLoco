@@ -63,10 +63,12 @@
     <ClCompile Include="Localisation\StringManager.cpp" />
     <ClCompile Include="Localisation\Unicode.cpp" />
     <ClCompile Include="Map\BuildingTile.cpp" />
+    <ClCompile Include="Map\AnimationManager.cpp" />
     <ClCompile Include="Map\MapGenerator.cpp" />
     <ClCompile Include="Map\SurfaceTile.cpp" />
     <ClCompile Include="Map\Tile.cpp" />
     <ClCompile Include="Map\TileManager.cpp" />
+    <ClCompile Include="Map\WaveManager.cpp" />
     <ClCompile Include="Math\Trigonometry.cpp" />
     <ClCompile Include="Math\Vector.cpp" />
     <ClCompile Include="MessageManager.cpp" />
@@ -261,11 +263,13 @@
     <ClInclude Include="Localisation\StringIds.h" />
     <ClInclude Include="Localisation\Unicode.h" />
     <ClInclude Include="Location.hpp" />
+    <ClInclude Include="Map\AnimationManager.h" />
     <ClInclude Include="Map\Map.hpp" />
     <ClInclude Include="Map\MapGenerator.h" />
     <ClInclude Include="Map\Tile.h" />
     <ClInclude Include="Map\TileLoop.hpp" />
     <ClInclude Include="Map\TileManager.h" />
+    <ClInclude Include="Map\WaveManager.h" />
     <ClInclude Include="Math\Bound.hpp" />
     <ClInclude Include="Math\Trigonometry.hpp" />
     <ClInclude Include="Math\Vector.hpp" />
