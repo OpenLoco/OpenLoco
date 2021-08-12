@@ -111,6 +111,7 @@ namespace OpenLoco
         void invalidate();
         void invalidateWindow();
         void setCatchmentDisplay(uint8_t flags);
+        void deliverCargoToStation(const uint8_t cargoType, const uint8_t cargoQuantity);
         void deliverCargoToTown(uint8_t cargoType, uint16_t cargoQuantity);
         void updateCargoDistribution();
 

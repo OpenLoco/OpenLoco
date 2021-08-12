@@ -528,6 +528,16 @@ namespace OpenLoco
         twn->monthly_cargo_delivered[cargoType] = Math::Bound::add(twn->monthly_cargo_delivered[cargoType], cargoQuantity);
     }
 
+    // 0x0042F489
+    void Station::deliverCargoToStation(const uint8_t cargoType, const uint8_t cargoQuantity)
+    {
+        auto& cargoStats = cargo_stats[cargoType];
+        cargoStats.quantity = Math::Bound::add(cargoStats.quantity, cargoQuantity);
+        cargoStats.enroute_age = 0;
+        cargoStats.origin = id();
+        updateCargoDistribution();
+    }
+
     // 0x0048F7D1
     void Station::sub_48F7D1()
     {
