@@ -189,7 +189,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
 
     static uint32_t placeRoadModGhost(const GameCommands::RoadModsPlacementArgs& args)
     {
-        auto res = GameCommands::do_40(GameCommands::Flags::apply | GameCommands::Flags::flag_1 | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6, args);
+        auto res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::flag_1 | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6);
         if (res != GameCommands::FAILURE)
         {
             _byte_522096 = _byte_522096 | (1 << 4);
@@ -204,7 +204,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
 
     static uint32_t placeTrackModGhost(const GameCommands::TrackModsPlacementArgs& args)
     {
-        auto res = GameCommands::do_17(GameCommands::Flags::apply | GameCommands::Flags::flag_1 | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6, args);
+        auto res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::flag_1 | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6);
         if (res != GameCommands::FAILURE)
         {
             _byte_522096 = _byte_522096 | (1 << 4);
@@ -321,7 +321,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
                 return;
             }
             GameCommands::setErrorTitle(StringIds::error_cant_build_this_here);
-            auto res = GameCommands::do_40(GameCommands::Flags::apply, *args);
+            auto res = GameCommands::doCommand(*args, GameCommands::Flags::apply);
             if (res == GameCommands::FAILURE || res == 0)
             {
                 return;
@@ -342,7 +342,7 @@ namespace OpenLoco::Ui::Windows::Construction::Overhead
                 return;
             }
             GameCommands::setErrorTitle(StringIds::error_cant_build_this_here);
-            auto res = GameCommands::do_17(GameCommands::Flags::apply, *args);
+            auto res = GameCommands::doCommand(*args, GameCommands::Flags::apply);
             if (res == GameCommands::FAILURE || res == 0)
             {
                 return;

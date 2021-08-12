@@ -625,7 +625,7 @@ namespace OpenLoco::Input
         }
 
         GameCommands::setErrorTitle(StringIds::cant_remove_signal);
-        if (GameCommands::do_14(GameCommands::Flags::apply, args))
+        if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE)
         {
             Audio::playSound(Audio::SoundId::demolish, GameCommands::getPosition());
         }
@@ -647,7 +647,7 @@ namespace OpenLoco::Input
         args.trackId = track->trackId();
         args.index = track->sequenceIndex();
         args.type = track->trackObjectId();
-        if (GameCommands::do_16(GameCommands::Flags::apply, args))
+        if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE)
         {
             Audio::playSound(Audio::SoundId::demolish, GameCommands::getPosition());
         }
@@ -669,7 +669,7 @@ namespace OpenLoco::Input
         args.roadId = road->roadId();
         args.index = road->sequenceIndex();
         args.type = road->roadObjectId();
-        if (GameCommands::do_43(GameCommands::Flags::apply, args))
+        if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE)
         {
             Audio::playSound(Audio::SoundId::demolish, GameCommands::getPosition());
         }
@@ -686,7 +686,7 @@ namespace OpenLoco::Input
         GameCommands::setErrorTitle(StringIds::cant_remove_airport);
         GameCommands::AirportRemovalArgs args;
         args.pos = Pos3(pos.x, pos.y, station->baseZ() * 4);
-        if (GameCommands::do_57(GameCommands::Flags::apply, args))
+        if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE)
         {
             Audio::playSound(Audio::SoundId::demolish, GameCommands::getPosition());
         }
@@ -704,7 +704,7 @@ namespace OpenLoco::Input
         GameCommands::PortRemovalArgs args;
         Pos2 firstTile = pos - Map::offsets[station->multiTileIndex()];
         args.pos = Pos3(firstTile.x, firstTile.y, station->baseZ() * 4);
-        if (GameCommands::do_61(GameCommands::Flags::apply, args))
+        if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE)
         {
             Audio::playSound(Audio::SoundId::demolish, GameCommands::getPosition());
         }
@@ -718,7 +718,7 @@ namespace OpenLoco::Input
         args.pos = Pos3(pos.x, pos.y, tree->baseZ() * 4);
         args.elementType = tree->rawData()[0];
         args.type = tree->treeObjectId();
-        GameCommands::do_22(GameCommands::Flags::apply, args);
+        GameCommands::doCommand(args, GameCommands::Flags::apply);
     }
 
     // 0x0042D9BF TODO: Move to a better file
@@ -728,7 +728,7 @@ namespace OpenLoco::Input
         GameCommands::BuildingRemovalArgs args;
         Pos2 firstTile = pos - Map::offsets[building->multiTileIndex()];
         args.pos = Pos3(firstTile.x, firstTile.y, building->baseZ() * 4);
-        GameCommands::do_45(GameCommands::Flags::apply, args);
+        GameCommands::doCommand(args, GameCommands::Flags::apply);
     }
 
     // 0x004C4809 TODO: Move to a better file
@@ -738,7 +738,7 @@ namespace OpenLoco::Input
         GameCommands::WallRemovalArgs args;
         args.pos = Pos3(pos.x, pos.y, wall->baseZ() * 4);
         args.rotation = wall->rotation();
-        GameCommands::do_33(GameCommands::Flags::apply, args);
+        GameCommands::doCommand(args, GameCommands::Flags::apply);
     }
 
     // 0x0042F007 TODO: Move to a better file
@@ -748,7 +748,7 @@ namespace OpenLoco::Input
         GameCommands::HeadquarterRemovalArgs args;
         Pos2 firstTile = pos - Map::offsets[building->multiTileIndex()];
         args.pos = Pos3(firstTile.x, firstTile.y, building->baseZ() * 4);
-        GameCommands::do_55(GameCommands::Flags::apply, args);
+        GameCommands::doCommand(args, GameCommands::Flags::apply);
     }
 
     // 0x004C74BB

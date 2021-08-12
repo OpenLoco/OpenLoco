@@ -3391,7 +3391,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
             _ghostVehiclePos = placementArgs->pos;
             removeBoatGhost(head);
-            if (GameCommands::do_62(GameCommands::Flags::apply | GameCommands::Flags::flag_6 | GameCommands::Flags::flag_3, *placementArgs))
+            if (GameCommands::doCommand(*placementArgs, GameCommands::Flags::apply | GameCommands::Flags::flag_6 | GameCommands::Flags::flag_3) != GameCommands::FAILURE)
             {
                 _1136264 = 0;
             }
@@ -3582,7 +3582,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
 
             removeAirplaneGhost(head);
-            if (GameCommands::do_58(GameCommands::Flags::apply | GameCommands::Flags::flag_6 | GameCommands::Flags::flag_3, *placementArgs))
+            if (GameCommands::doCommand(*placementArgs, GameCommands::Flags::apply | GameCommands::Flags::flag_6 | GameCommands::Flags::flag_3) != GameCommands::FAILURE)
             {
                 _ghostAirportNode = placementArgs->airportNode;
                 _ghostAirportStationId = placementArgs->stationId;
@@ -3829,7 +3829,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             }
 
             removeLandGhost(head);
-            if (GameCommands::do_1(GameCommands::Flags::apply | GameCommands::Flags::flag_6 | GameCommands::Flags::flag_3, *placementArgs))
+            if (GameCommands::doCommand(*placementArgs, GameCommands::Flags::apply | GameCommands::Flags::flag_6 | GameCommands::Flags::flag_3) != GameCommands::FAILURE)
             {
                 _ghostLandTrackAndDirection = placementArgs->trackAndDirection;
                 _ghostVehiclePos = placementArgs->pos;
@@ -3897,7 +3897,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             args.push(head.name);
             args.push(head.ordinalNumber);
             GameCommands::setErrorTitle(StringIds::cant_place_string_id_here);
-            if (GameCommands::do_58(GameCommands::Flags::apply, *placementArgs))
+            if (GameCommands::doCommand(*placementArgs, GameCommands::Flags::apply) != GameCommands::FAILURE)
             {
                 Input::toolCancel();
                 self.callOnMouseUp(Common::widx::tabMain);
@@ -3931,7 +3931,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             args.push(head.name);
             args.push(head.ordinalNumber);
             GameCommands::setErrorTitle(StringIds::cant_place_string_id_here);
-            if (GameCommands::do_62(GameCommands::Flags::apply, *placementArgs))
+            if (GameCommands::doCommand(*placementArgs, GameCommands::Flags::apply) != GameCommands::FAILURE)
             {
                 Input::toolCancel();
                 self.callOnMouseUp(Common::widx::tabMain);
@@ -3966,7 +3966,7 @@ namespace OpenLoco::Ui::Windows::Vehicle
             args.push(head.name);
             args.push(head.ordinalNumber);
             GameCommands::setErrorTitle(StringIds::cant_place_string_id_here);
-            if (GameCommands::do_1(GameCommands::Flags::apply, *placementArgs))
+            if (GameCommands::doCommand(*placementArgs, GameCommands::Flags::apply) != GameCommands::FAILURE)
             {
                 Input::toolCancel();
                 self.callOnMouseUp(Common::widx::tabMain);
