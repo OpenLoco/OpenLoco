@@ -5,7 +5,7 @@ namespace OpenLoco::Map::WaveManager
 {
     void update();
     void reset();
-    void createWave(SurfaceElement& surface, int16_t x, int16_t y, uint8_t waveIndex);
+    void createWave(SurfaceElement& surface, const Map::Pos2& pos);
 
     constexpr uint8_t getWaveIndex(const Map::TilePos2& pos)
     {

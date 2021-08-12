@@ -38,11 +38,16 @@ namespace OpenLoco::Map::WaveManager
         return LocoFixedVector<Wave>(_waves);
     }
 
-    // 0x0046959C
-    void createWave(SurfaceElement& surface, int16_t x, int16_t y, uint8_t waveIndex)
+    // 0x0046956E
+    void createWave(SurfaceElement& surface, const Map::Pos2& pos)
     {
-        auto coord2D = gameToScreen(Pos3(x + 16, y + 16, surface.water() * 16), WindowManager::getCurrentRotation());
-        auto w = WindowManager::findWindowShowing(coord2D);
+        const auto waveIndex = getWaveIndex(pos);
+        if (!_waves[getWaveIndex(pos)].empty())
+        {
+            return;
+        }
+        auto vpPoint = gameToScreen(Pos3(pos.x + 16, pos.y + 16, surface.water() * 16), WindowManager::getCurrentRotation());
+        auto w = WindowManager::findWindowShowing(vpPoint);
         if (w == nullptr)
             return;
 
@@ -53,11 +58,11 @@ namespace OpenLoco::Map::WaveManager
         // Check whether surrounding tiles are water
         for (const auto& offset : _offsets)
         {
-            if (x + offset.x > 0x2FFF)
+            auto searchLoc = pos + offset;
+            if (!Map::validCoords(searchLoc))
                 return;
-            if (y + offset.y > 0x2FFF)
-                return;
-            const auto tile = TileManager::get(x + offset.x, y + offset.y);
+
+            const auto tile = TileManager::get(searchLoc);
             if (tile.isNull())
                 return;
             const auto* nearbySurface = tile.surface();
@@ -67,11 +72,11 @@ namespace OpenLoco::Map::WaveManager
                 return;
         }
 
-        _waves[waveIndex].loc = Map::Pos2(x, y);
+        _waves[waveIndex].loc = pos;
         _waves[waveIndex].frame = 0;
         surface.setFlag6(true);
 
-        ViewportManager::invalidate({ x, y }, surface.water() * 16, surface.water() * 16, ZoomLevel::full);
+        ViewportManager::invalidate(pos, surface.water() * 16, surface.water() * 16, ZoomLevel::full);
     }
 
     // 0x004C56F6

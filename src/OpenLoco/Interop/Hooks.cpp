@@ -794,15 +794,13 @@ void OpenLoco::Interop::registerHooks()
 
     // Part of 0x004691FA
     registerHook(
-        0x0046959C,
+        0x0046956E,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             registers backup = regs;
-            int16_t x = regs.eax;
-            uint8_t i = regs.ebx / 6;
-            int16_t y = regs.ecx;
+            Map::Pos2 pos(regs.ax, regs.cx);
             Map::SurfaceElement* surface = X86Pointer<Map::SurfaceElement>(regs.esi);
 
-            WaveManager::createWave(*surface, x, y, i);
+            WaveManager::createWave(*surface, pos);
 
             regs = backup;
             return 0;
