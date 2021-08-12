@@ -500,6 +500,7 @@ namespace OpenLoco::Input
                 catch (const std::exception&)
                 {
                     Windows::showError(StringIds::screenshot_failed);
+                    Ui::showMessageBox("Exception:", "screenshot_failed");
                 }
             }
         }

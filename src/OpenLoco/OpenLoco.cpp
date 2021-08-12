@@ -918,6 +918,7 @@ namespace OpenLoco
         catch (const std::exception& e)
         {
             std::fprintf(stderr, "Unable to clean autosaves: %s\n", e.what());
+            Ui::showMessageBox("Exception", e.what());
         }
     }
 
@@ -953,6 +954,7 @@ namespace OpenLoco
         catch (const std::exception& e)
         {
             std::fprintf(stderr, "Unable to autosave game: %s\n", e.what());
+            Ui::showMessageBox("Unable to Autosave:", e.what());
         }
     }
 
@@ -1189,9 +1191,10 @@ namespace OpenLoco
                 // TODO extra clean up code
             }
         }
-        catch (const std::exception& ex)
+        catch (const std::exception& e)
         {
-            std::cerr << ex.what() << std::endl;
+            std::cerr << e.what() << std::endl;
+            Ui::showMessageBox("Exception", e.what());
         }
     }
 }

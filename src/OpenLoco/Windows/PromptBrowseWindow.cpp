@@ -794,9 +794,12 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                         _newFiles.emplace_back(name, isDirectory);
                     }
                 }
-                catch (const fs::filesystem_error& err)
+                catch (const fs::filesystem_error& e)
                 {
-                    Console::error("Invalid directory or file: %s", err.what());
+                    Console::error("Invalid directory or file: %s", e.what());
+                    Ui::showMessageBox("Exception: ", e.what());
+
+                    
                 }
             }
         }

@@ -111,10 +111,11 @@ namespace OpenLoco::Input
             png_free(png_ptr, palette);
             png_destroy_write_struct(&png_ptr, nullptr);
         }
-        catch (const std::exception&)
+        catch (const std::exception& e)
         {
             png_free(png_ptr, palette);
             png_destroy_write_struct(&png_ptr, nullptr);
+            Ui::showMessageBox("Exception", e.what());   
             throw;
         }
 
