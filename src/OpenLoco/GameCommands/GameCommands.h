@@ -72,7 +72,7 @@ namespace OpenLoco::GameCommands
         vehicleOrderDelete = 36,
         vehicleOrderSkip = 37,
         gc_unk_38 = 38,
-        gc_unk_39 = 39,
+        removeRoad = 39,
         createRoadMod = 40,
         removeRoadMod = 41,
         gc_unk_42 = 42,
@@ -726,6 +726,40 @@ namespace OpenLoco::GameCommands
         regs.di = head;
         return doCommand(GameCommand::vehicleOrderSkip, regs);
     }
+
+    struct RoadRemovalArgs
+    {
+        static constexpr auto command = GameCommand::removeRoad;
+
+        RoadRemovalArgs() = default;
+        explicit RoadRemovalArgs(const registers& regs)
+            : pos(regs.ax, regs.cx, regs.di)
+            , unkDirection(regs.bh & 0x3)
+            , roadId(regs.dl & 0xF)
+            , sequenceIndex(regs.dh & 0x3)
+            , objectId(regs.bp & 0xF)
+        {
+        }
+
+        Map::Pos3 pos;
+        uint8_t unkDirection;
+        uint8_t roadId;
+        uint8_t sequenceIndex;
+        uint8_t objectId;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.ax = pos.x;
+            regs.cx = pos.y;
+            regs.di = pos.z;
+            regs.bh = unkDirection;
+            regs.dl = roadId;
+            regs.dh = sequenceIndex;
+            regs.bp = objectId;
+            return regs;
+        }
+    };
 
     struct RoadModsPlacementArgs
     {

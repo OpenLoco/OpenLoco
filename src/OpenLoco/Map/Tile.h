@@ -318,6 +318,7 @@ namespace OpenLoco::Map
         uint8_t mods() const { return _7 >> 6; }                         // _7u
         uint8_t owner() const { return _7 & 0xF; }                       // _7l
         void setOwner(uint8_t newOwner) { _7 = (_7 & 0xF0) | (newOwner & 0xF); }
+        bool update(const Map::Pos2& loc);
     };
 
     struct IndustryElement : public TileElementBase
