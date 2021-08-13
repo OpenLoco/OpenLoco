@@ -395,8 +395,8 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
     static std::optional<GameCommands::RoadStationPlacementArgs> getRoadStationPlacementArgsFromCursor(const int16_t x, const int16_t y)
     {
-        const auto res = ViewportInteraction::getMapCoordinatesFromPos(x,y,~ViewportInteraction::InteractionItemFlags::roadAndTram);
-        const auto& interaction = res.first; 
+        const auto res = ViewportInteraction::getMapCoordinatesFromPos(x, y, ~ViewportInteraction::InteractionItemFlags::roadAndTram);
+        const auto& interaction = res.first;
         if (interaction.type != ViewportInteraction::InteractionItem::road)
         {
             return std::nullopt;
@@ -442,6 +442,61 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         }
     }
 
+    static std::optional<GameCommands::TrackStationPlacementArgs> getTrackStationPlacementArgsFromCursor(const int16_t x, const int16_t y)
+    {
+        const auto res = ViewportInteraction::getMapCoordinatesFromPos(x, y, ~ViewportInteraction::InteractionItemFlags::track);
+        const auto& interaction = res.first;
+        if (interaction.type != ViewportInteraction::InteractionItem::track)
+        {
+            return std::nullopt;
+        }
+
+        auto* elTrack = reinterpret_cast<const TileElement*>(interaction.object)->asTrack();
+        if (elTrack == nullptr)
+        {
+            return std::nullopt;
+        }
+
+        GameCommands::TrackStationPlacementArgs placementArgs;
+        placementArgs.pos = Map::Pos3(interaction.pos.x, interaction.pos.y, elTrack->baseZ() * 4);
+        placementArgs.rotation = elTrack->unkDirection();
+        placementArgs.trackId = elTrack->trackId();
+        placementArgs.index = elTrack->sequenceIndex();
+        placementArgs.trackObjectId = elTrack->trackObjectId();
+        placementArgs.type = _lastSelectedStationType;
+        return { placementArgs };
+    }
+
+    // 0x004A5390
+    static void onToolDownTrackStation(const int16_t x, const int16_t y)
+    {
+        static loco_global<Ui::Point, 0x0113600C> _113600C;
+        _113600C = Point(x, y);
+        removeConstructionGhosts();
+
+        const auto args = getTrackStationPlacementArgsFromCursor(x, y);
+        if (!args)
+        {
+            return;
+        }
+
+        const auto* trainStationObject = ObjectManager::get<TrainStationObject>(_lastSelectedStationType);
+        auto formatArgs = FormatArguments::common();
+        formatArgs.skip(3 * sizeof(string_id));
+        formatArgs.push(trainStationObject->name);
+        GameCommands::setErrorTitle(StringIds::cant_build_pop3_string);
+
+        if (args->trackObjectId != _trackType)
+        {
+            Error::open(StringIds::null, StringIds::wrong_type_of_track_road);
+            return;
+        }
+        if (GameCommands::doCommand(*args, GameCommands::Flags::apply) != GameCommands::FAILURE)
+        {
+            Audio::playSound(Audio::SoundId::construct, GameCommands::getPosition());
+        }
+    }
+
     // 0x0049E42C
     static void onToolDown(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
     {
@@ -464,7 +519,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         }
         else
         {
-            //track 0x004A5390
+            onToolDownTrackStation(x, y);
         }
     }
 

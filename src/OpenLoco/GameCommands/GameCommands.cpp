@@ -61,7 +61,7 @@ namespace OpenLoco::GameCommands
         { GameCommand::vehicleLocalExpress,          nullptr,                   0x004B694B, true  },
         { GameCommand::createSignal,                 nullptr,                   0x00488BDB, true  },
         { GameCommand::removeSignal,                 nullptr,                   0x004891E4, true  },
-        { GameCommand::gc_unk_15,                    nullptr,                   0x0048BB20, true  },
+        { GameCommand::createTrainStation,           nullptr,                   0x0048BB20, true  },
         { GameCommand::removeTrackStation,           nullptr,                   0x0048C402, true  },
         { GameCommand::createTrackMod,               nullptr,                   0x004A6479, true  },
         { GameCommand::removeTrackMod,               nullptr,                   0x004A668A, true  },
