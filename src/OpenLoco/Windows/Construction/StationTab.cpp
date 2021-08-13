@@ -272,10 +272,10 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         _1135F90 = *pos + TilePos2(1, 1);
 
         constexpr std::array<std::array<TilePos2, 2>, 4> searchArea = {
-            std::array{ TilePos2{ -1, 0 }, TilePos2{ -1, 1 } },
-            std::array{ TilePos2{ 0, 2 }, TilePos2{ 1, 2 } },
-            std::array{ TilePos2{ 2, 0 }, TilePos2{ 2, 1 } },
-            std::array{ TilePos2{ 0, -1 }, TilePos2{ 1, -1 } },
+            std::array<TilePos2, 2>{ TilePos2{ -1, 0 }, TilePos2{ -1, 1 } },
+            std::array<TilePos2, 2>{ TilePos2{ 0, 2 }, TilePos2{ 1, 2 } },
+            std::array<TilePos2, 2>{ TilePos2{ 2, 0 }, TilePos2{ 2, 1 } },
+            std::array<TilePos2, 2>{ TilePos2{ 0, -1 }, TilePos2{ 1, -1 } },
         };
         for (auto side = 0; side < 4; ++side)
         {
@@ -390,7 +390,56 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         formatArgs.skip(3 * sizeof(string_id));
         formatArgs.push(dockObject->name);
         GameCommands::setErrorTitle(StringIds::cant_build_pop3_string);
-        GameCommands::do_60(*args, GameCommands::Flags::apply);
+        GameCommands::doCommand(*args, GameCommands::Flags::apply);
+    }
+
+    static std::optional<GameCommands::RoadStationPlacementArgs> getRoadStationPlacementArgsFromCursor(const int16_t x, const int16_t y)
+    {
+        const auto res = ViewportInteraction::getMapCoordinatesFromPos(x,y,~ViewportInteraction::InteractionItemFlags::roadAndTram);
+        const auto& interaction = res.first; 
+        if (interaction.type != ViewportInteraction::InteractionItem::road)
+        {
+            return std::nullopt;
+        }
+
+        auto* elRoad = reinterpret_cast<const TileElement*>(interaction.object)->asRoad();
+        if (elRoad == nullptr)
+        {
+            return std::nullopt;
+        }
+
+        GameCommands::RoadStationPlacementArgs placementArgs;
+        placementArgs.pos = Map::Pos3(interaction.pos.x, interaction.pos.y, elRoad->baseZ() * 4);
+        placementArgs.rotation = elRoad->unkDirection();
+        placementArgs.roadId = elRoad->roadId();
+        placementArgs.index = elRoad->sequenceIndex();
+        placementArgs.roadObjectId = elRoad->roadObjectId();
+        placementArgs.type = _lastSelectedStationType;
+        return { placementArgs };
+    }
+
+    // 0x004A548F
+    static void onToolDownRoadStation(const int16_t x, const int16_t y)
+    {
+        static loco_global<Ui::Point, 0x0113600C> _113600C;
+        _113600C = Point(x, y);
+        removeConstructionGhosts();
+
+        const auto args = getRoadStationPlacementArgsFromCursor(x, y);
+        if (!args)
+        {
+            return;
+        }
+
+        const auto* roadStationObject = ObjectManager::get<RoadStationObject>(_lastSelectedStationType);
+        auto formatArgs = FormatArguments::common();
+        formatArgs.skip(3 * sizeof(string_id));
+        formatArgs.push(roadStationObject->name);
+        GameCommands::setErrorTitle(StringIds::cant_build_pop3_string);
+        if (GameCommands::doCommand(*args, GameCommands::Flags::apply) != GameCommands::FAILURE)
+        {
+            Audio::playSound(Audio::SoundId::construct, GameCommands::getPosition());
+        }
     }
 
     // 0x0049E42C
@@ -411,7 +460,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         }
         else if (_trackType & (1 << 7))
         {
-            //road 0x004A548F
+            onToolDownRoadStation(x, y);
         }
         else
         {

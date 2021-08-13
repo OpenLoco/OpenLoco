@@ -75,7 +75,7 @@ namespace OpenLoco::GameCommands
         removeRoad = 39,
         createRoadMod = 40,
         removeRoadMod = 41,
-        gc_unk_42 = 42,
+        createRoadStation = 42,
         removeRoadStation = 43,
         createBuilding = 44,
         removeBuilding = 45,
@@ -869,6 +869,42 @@ namespace OpenLoco::GameCommands
         }
     };
 
+    struct RoadStationPlacementArgs
+    {
+        static constexpr auto command = GameCommand::createRoadStation;
+
+        RoadStationPlacementArgs() = default;
+        explicit RoadStationPlacementArgs(const registers& regs)
+            : pos(regs.ax, regs.cx, regs.di)
+            , rotation(regs.bh & 0x3)
+            , roadId(regs.dl & 0xF)
+            , index(regs.dh & 0x3)
+            , roadObjectId(regs.bp)
+            , type(regs.edi >> 16)
+        {
+        }
+
+        Map::Pos3 pos;
+        uint8_t rotation;
+        uint8_t roadId;
+        uint8_t index;
+        uint8_t roadObjectId;
+        uint8_t type;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.ax = pos.x;
+            regs.cx = pos.y;
+            regs.edi = pos.z | (type << 16);
+            regs.bh = rotation;
+            regs.dl = roadId;
+            regs.dh = index;
+            regs.bp = roadObjectId;
+            return regs;
+        }
+    };
+
     struct RoadStationRemovalArgs
     {
         static constexpr auto command = GameCommand::removeRoadStation;
@@ -1194,6 +1230,8 @@ namespace OpenLoco::GameCommands
 
     struct PortPlacementArgs
     {
+        static constexpr auto command = GameCommand::createPort;
+
         PortPlacementArgs() = default;
         explicit PortPlacementArgs(const registers& regs)
             : pos(regs.ax, regs.cx, regs.di)
@@ -1217,13 +1255,6 @@ namespace OpenLoco::GameCommands
             return regs;
         }
     };
-
-    inline bool do_60(const PortPlacementArgs& args, uint8_t flags)
-    {
-        registers regs = registers(args);
-        regs.bl = flags;
-        return doCommand(GameCommand::createPort, regs) != FAILURE;
-    }
 
     struct PortRemovalArgs
     {
