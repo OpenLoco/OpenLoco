@@ -264,21 +264,29 @@ namespace OpenLoco::Ui::Windows::Construction::Station
 
         // count of water on each side of the placement
         // 0x0113608B
-        std::array<uint8_t, 4> _nearbyWaterCount;
-
-        std::fill(std::begin(_nearbyWaterCount), std::end(_nearbyWaterCount), 0);
+        std::array<uint8_t, 4> _nearbyWaterCount = { 0 };
 
         uint8_t directionOfIndustry = 0xFF;
         uint8_t waterHeight = 0;
         _1135F7C = *pos;
         _1135F90 = *pos + TilePos2(1, 1);
-        const auto minSearch = *pos - TilePos2(1, 1);
-        const auto maxSearch = *pos + TilePos2(2, 2);
-        for (auto checkPos = minSearch; checkPos.y <= maxSearch.y; checkPos.y += Map::tile_size)
+
+        constexpr std::array<std::array<TilePos2, 2>, 4> searchArea = {
+            std::array{ TilePos2{ -1, 0 }, TilePos2{ -1, 1 } },
+            std::array{ TilePos2{ 0, 2 }, TilePos2{ 1, 2 } },
+            std::array{ TilePos2{ 2, 0 }, TilePos2{ 2, 1 } },
+            std::array{ TilePos2{ 0, -1 }, TilePos2{ 1, -1 } },
+        };
+        for (auto side = 0; side < 4; ++side)
         {
-            for (checkPos.x = minSearch.x; checkPos.x <= maxSearch.x; checkPos.x += Map::tile_size)
+            for (const auto& offset : searchArea[side])
             {
-                const auto tile = TileManager::get(checkPos);
+                const auto searchPos = offset + *pos;
+                if (!validCoords(searchPos))
+                {
+                    continue;
+                }
+                const auto tile = TileManager::get(searchPos);
                 bool surfaceFound = false;
                 for (auto el : tile)
                 {
@@ -301,14 +309,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
                             continue;
                         }
 
-                        if ((checkPos.x >= _1135F7C->x && checkPos.x <= _1135F90->x) || (checkPos.y >= _1135F7C->y && checkPos.y <= _1135F90->y))
-                        {
-                            // Get the rotation from the port to the industry
-                            const auto diff = checkPos - *_1135F7C - Map::Pos2(16, 16);
-                            const auto yaw = OpenLoco::Vehicles::calculateYaw0FromVector(diff.x, diff.y);
-                            const auto rotation = (yaw / 16) & 0x3;
-                            directionOfIndustry = rotation;
-                        }
+                        directionOfIndustry = side;
                     }
                     const auto* surface = el.asSurface();
                     if (surface == nullptr)
@@ -329,14 +330,7 @@ namespace OpenLoco::Ui::Windows::Construction::Station
                             continue;
                         }
 
-                        if ((checkPos.x >= _1135F7C->x && checkPos.x <= _1135F90->x) || (checkPos.y >= _1135F7C->y && checkPos.y <= _1135F90->y))
-                        {
-                            // Get the rotation from the port to the water
-                            const auto diff = checkPos - *_1135F7C - Map::Pos2(16, 16);
-                            const auto yaw = OpenLoco::Vehicles::calculateYaw0FromVector(diff.x, diff.y);
-                            const auto rotation = ((yaw / 16) + 2) & 0x3;
-                            _nearbyWaterCount[rotation]++;
-                        }
+                        _nearbyWaterCount[(side + 2) & 0x3]++;
                     }
                 }
             }

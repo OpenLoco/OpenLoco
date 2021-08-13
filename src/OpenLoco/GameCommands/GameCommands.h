@@ -1107,6 +1107,8 @@ namespace OpenLoco::GameCommands
 
     struct AirportPlacementArgs
     {
+        static constexpr auto command = GameCommand::createAirport;
+
         AirportPlacementArgs() = default;
         explicit AirportPlacementArgs(const registers regs)
             : pos(regs.ax, regs.cx, regs.di)
