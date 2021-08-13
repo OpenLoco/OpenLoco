@@ -17,14 +17,13 @@ namespace OpenLoco::Map
         if (owner() == CompanyId::neutral || isPlayerCompany(owner()))
             return true;
 
-        if (_525FBC & (1 << roadObjectId()))
+        if (!(_525FBC & (1 << roadObjectId())))
             return true;
 
         if (sequenceIndex())
             return true;
 
-        // Duplicated above; following disassembly for now.
-        if (owner() == CompanyId::neutral)
+        if (mods())
             return true;
 
         if (isGhost() || isFlag5())
@@ -48,14 +47,13 @@ namespace OpenLoco::Map
             if (roadEl->owner() == CompanyId::neutral || isPlayerCompany(roadEl->owner()))
                 continue;
 
-            if (_525FBC & (1 << roadEl->roadObjectId()))
+            if (!(_525FBC & (1 << roadEl->roadObjectId())))
                 continue;
 
             if (roadEl->sequenceIndex())
                 return true;
 
-            // Duplicated above; following disassembly for now.
-            if (roadEl->owner() == CompanyId::neutral)
+            if (mods())
                 return true;
 
             if (roadEl->isGhost() || roadEl->isFlag5())
@@ -66,7 +64,7 @@ namespace OpenLoco::Map
         }
 
         CompanyId_t backup = CompanyManager::updatingCompanyId();
-        CompanyManager::updatingCompanyId(CompanyId::neutral);
+        CompanyManager::updatingCompanyId(owner());
 
         GameCommands::RoadRemovalArgs args;
         args.pos = Map::Pos3(loc.x, loc.y, baseZ() * 4);
@@ -78,6 +76,6 @@ namespace OpenLoco::Map
 
         CompanyManager::updatingCompanyId(backup);
 
-        return true;
+        return false;
     }
 }
