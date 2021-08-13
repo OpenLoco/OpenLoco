@@ -263,7 +263,8 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         }
 
         // count of water on each side of the placement
-        static loco_global<uint8_t[4], 0x00113608B> _nearbyWaterCount;
+        // 0x0113608B
+        std::array<uint8_t, 4> _nearbyWaterCount;
 
         std::fill(std::begin(_nearbyWaterCount), std::end(_nearbyWaterCount), 0);
 
@@ -308,7 +309,6 @@ namespace OpenLoco::Ui::Windows::Construction::Station
                             const auto rotation = (yaw / 16) & 0x3;
                             directionOfIndustry = rotation;
                         }
-                        // store loc calculateYaw0FromVector
                     }
                     const auto* surface = el.asSurface();
                     if (surface == nullptr)
