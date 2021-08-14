@@ -40,7 +40,7 @@ namespace OpenLoco::GameCommands
         vehiclePassSignal = 4,
         vehicleCreate = 5,
         vehicleSell = 6,
-        gc_unk_7 = 7,
+        createTrack = 7,
         gc_unk_8 = 8,
         changeLoan = 9,
         vehicleRename = 10,
@@ -71,7 +71,7 @@ namespace OpenLoco::GameCommands
         vehicleOrderInsert = 35,
         vehicleOrderDelete = 36,
         vehicleOrderSkip = 37,
-        gc_unk_38 = 38,
+        createRoad = 38,
         removeRoad = 39,
         createRoadMod = 40,
         removeRoadMod = 41,
@@ -239,6 +239,42 @@ namespace OpenLoco::GameCommands
         regs.dx = car;
         doCommand(GameCommand::vehicleSell, regs);
     }
+
+    struct TrackPlacementArgs
+    {
+        static constexpr auto command = GameCommand::createTrack;
+
+        TrackPlacementArgs() = default;
+        explicit TrackPlacementArgs(const registers& regs)
+            : pos(regs.ax, regs.cx, regs.di)
+            , rotation(regs.bh & 0x3)
+            , trackId(regs.dh & 0x3F)
+            , mods(regs.di >> 16)
+            , bridge(regs.edx >> 24)
+            , trackObjectId(regs.dl)
+            , unk(regs.edi & 0x800000)
+        {
+        }
+
+        Map::Pos3 pos;
+        uint8_t rotation;
+        uint8_t trackId;
+        uint8_t mods;
+        uint8_t bridge;
+        uint8_t trackObjectId;
+        bool unk;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.eax = pos.x;
+            regs.cx = pos.y;
+            regs.edi = pos.z | (mods << 16) | (unk ? 0x800000 : 0);
+            regs.bh = rotation;
+            regs.edx = trackObjectId | (trackId << 8) | (bridge << 24);
+            return regs;
+        }
+    };
 
     // Change loan
     inline void do_9(currency32_t newLoan)
@@ -726,6 +762,40 @@ namespace OpenLoco::GameCommands
         regs.di = head;
         return doCommand(GameCommand::vehicleOrderSkip, regs);
     }
+
+    struct RoadPlacementArgs
+    {
+        static constexpr auto command = GameCommand::createRoad;
+
+        RoadPlacementArgs() = default;
+        explicit RoadPlacementArgs(const registers& regs)
+            : pos(regs.ax, regs.cx, regs.di)
+            , rotation(regs.bh & 0x3)
+            , roadId(regs.dh & 0xF)
+            , mods(regs.di >> 16)
+            , bridge(regs.edx >> 24)
+            , roadObjectId(regs.dl)
+        {
+        }
+
+        Map::Pos3 pos;
+        uint8_t rotation;
+        uint8_t roadId;
+        uint8_t mods;
+        uint8_t bridge;
+        uint8_t roadObjectId;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.eax = pos.x;
+            regs.cx = pos.y;
+            regs.edi = pos.z | (mods << 16);
+            regs.bh = rotation;
+            regs.edx = roadObjectId | (roadId << 8) | (bridge << 24);
+            return regs;
+        }
+    };
 
     struct RoadRemovalArgs
     {

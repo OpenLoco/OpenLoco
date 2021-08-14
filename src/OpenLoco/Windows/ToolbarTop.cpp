@@ -335,7 +335,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
     // 0x0043A2B0
     static void railroadMenuMouseDown(Window* window, WidgetIndex_t widgetIndex)
     {
-        // Load objects.
+        // Load dropdown objects removing any that are not unlocked.
         registers regs;
         regs.edi = X86Pointer(&available_objects[0]);
         call(0x004A6841, regs);
