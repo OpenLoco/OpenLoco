@@ -33,7 +33,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
 
     static loco_global<uint8_t, 0x009C870C> last_town_option;
 
-    static loco_global<int8_t[18], 0x0050A006> available_objects;
+    static loco_global<uint8_t[18], 0x0050A006> available_objects;
 
     // 0x00439DE4
     void draw(Window* self, Gfx::Context* context)
@@ -199,7 +199,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
 
         // Sanity check: any objects available?
         uint32_t i = 0;
-        while (available_objects[i] != -1 && i < std::size(available_objects))
+        while (available_objects[i] != 0xFF && i < std::size(available_objects))
             i++;
         if (i == 0)
             return;
@@ -208,12 +208,12 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Common
 
         // Add available objects to Dropdown.
         uint16_t highlighted_item = 0;
-        for (i = 0; available_objects[i] != -1 && i < std::size(available_objects); i++)
+        for (i = 0; available_objects[i] != 0xFF && i < std::size(available_objects); i++)
         {
             uint32_t obj_image;
             string_id obj_string_id;
 
-            int objIndex = available_objects[i];
+            auto objIndex = available_objects[i];
             if ((objIndex & (1 << 7)) != 0)
             {
                 auto road = ObjectManager::get<RoadObject>(objIndex & 0x7F);
