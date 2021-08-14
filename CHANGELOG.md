@@ -1,9 +1,10 @@
 21.08+ (???)
 ------------------------------------------------------------------------
+- Fix: [#1108] Road selection not being remembered.
 
 21.08 (2021-08-12)
 ------------------------------------------------------------------------
-- Fix: [#366] People and mail cargo incorrectly delivered to far away stations.
+- Fix: [#366] Original Bug. People and mail cargo incorrectly delivered to far away stations.
 - Fix: [#1035] Incorrect colour selection when building buildings.
 - Fix: [#1070] Crash when naming stations after exhausting natural names.
 - Fix: [#1094] Repeated clicking on construction window not always working.
