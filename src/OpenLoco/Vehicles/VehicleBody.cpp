@@ -230,6 +230,7 @@ namespace OpenLoco::Vehicles
         }
     }
 
+    static uint8_t calculateYaw0FromVector(int16_t xDiff, int16_t yDiff);
     static uint8_t calculateYaw1FromVector(int16_t xDiff, int16_t yDiff);
     static uint8_t calculateYaw2FromVector(int16_t xDiff, int16_t yDiff);
     static uint8_t calculateYaw3FromVector(int16_t xDiff, int16_t yDiff);
@@ -355,7 +356,7 @@ namespace OpenLoco::Vehicles
     }
 
     // 0x004BF52B For yaw of 3 bits
-    uint8_t calculateYaw0FromVector(int16_t xDiff, int16_t yDiff)
+    static uint8_t calculateYaw0FromVector(int16_t xDiff, int16_t yDiff)
     {
         uint32_t i = 0;
 

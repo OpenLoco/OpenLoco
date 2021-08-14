@@ -16,7 +16,6 @@
 #include "../../Objects/TrainStationObject.h"
 #include "../../StationManager.h"
 #include "../../Ui/Dropdown.h"
-#include "../../Vehicles/Vehicle.h"
 #include "../../Widget.h"
 #include "Construction.h"
 

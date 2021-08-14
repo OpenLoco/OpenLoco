@@ -473,7 +473,6 @@ namespace OpenLoco::Vehicles
     static_assert(sizeof(VehicleBody) == 0x60); // Can't use offset_of change this to last field if more found
 
     uint8_t calculateYaw1FromVectorPlane(int16_t xDiff, int16_t yDiff);
-    uint8_t calculateYaw0FromVector(int16_t xDiff, int16_t yDiff);
     uint8_t calculateYaw4FromVector(int16_t x_offset, int16_t y_offset);
 
     struct VehicleBogie : VehicleBase
