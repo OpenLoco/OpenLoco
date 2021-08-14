@@ -1,3 +1,4 @@
+#include "../../Audio/Audio.h"
 #include "../../CompanyManager.h"
 #include "../../GameCommands/GameCommands.h"
 #include "../../Graphics/ImageIds.h"
