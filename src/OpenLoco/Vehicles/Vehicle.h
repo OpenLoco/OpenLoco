@@ -110,8 +110,7 @@ namespace OpenLoco::Vehicles
             }
             constexpr uint8_t id() const { return (_data >> 3) & 0x3F; }
             constexpr uint8_t cardinalDirection() const { return _data & 0x3; }
-            constexpr uint8_t fullDirection() const { return _data & 0x7; }
-            constexpr bool isDiagonal() const { return _data & (1 << 2); }
+            constexpr bool isReversed() const { return _data & (1 << 2); }
             constexpr bool operator==(const _TrackAndDirection other) const { return _data == other._data; }
             constexpr bool operator!=(const _TrackAndDirection other) const { return !(_data == other._data); }
         };
@@ -124,8 +123,8 @@ namespace OpenLoco::Vehicles
             }
             constexpr uint8_t id() const { return (_data >> 3) & 0xF; }
             constexpr uint8_t cardinalDirection() const { return _data & 0x3; }
-            // Used by road and tram vehicles
-            constexpr bool isRightLane() const { return _data & (1 << 2); }
+            // Used by road and tram vehicles to indicate side
+            constexpr bool isReversed() const { return _data & (1 << 2); }
             // Road vehicles are briefly back to front when reaching dead ends
             // Trams can stay back to front
             constexpr bool isBackToFront() const { return _data & (1 << 7); }
