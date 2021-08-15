@@ -82,6 +82,7 @@ namespace OpenLoco::Map
 
         bool isGhost() const { return _flags & ElementFlags::ghost; }
         bool isFlag5() const { return _flags & ElementFlags::flag_5; }
+        bool isFlag6() const { return _flags & ElementFlags::flag_6; }
         void setFlag6(bool state)
         {
             _flags &= ~ElementFlags::flag_6;
@@ -276,8 +277,9 @@ namespace OpenLoco::Map
         bool has_4_80() const { return (_4 & 0x80) != 0; }
         uint8_t trackObjectId() const { return _5 >> 4; }  // _5u
         uint8_t sequenceIndex() const { return _5 & 0xF; } // _5l
-        uint8_t bridge() const { return _6 >> 5; }         // _6u
-        uint8_t owner() const { return _7 & 0xF; }         // _7l
+        bool has_6_10() const { return (_6 & 0x10) != 0; }
+        uint8_t bridge() const { return _6 >> 5; } // _6u
+        uint8_t owner() const { return _7 & 0xF; } // _7l
         void setOwner(uint8_t newOwner) { _7 = (_7 & 0xF0) | (newOwner & 0xF); }
         bool hasMod(uint8_t mod) const { return _7 & (1 << (4 + mod)); } // _7u
         uint8_t mods() const { return _7 >> 4; }                         // _7u

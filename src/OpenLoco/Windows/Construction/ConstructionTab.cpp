@@ -9,6 +9,7 @@
 #include "../../Objects/ObjectManager.h"
 #include "../../Objects/RoadObject.h"
 #include "../../Objects/TrackObject.h"
+#include "../../Station.h"
 #include "../../TrackData.h"
 #include "../../Ui/Dropdown.h"
 #include "../../Widget.h"
@@ -304,13 +305,279 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         activateSelectedConstructionWidgets();
     }
 
+    static loco_global<Map::Pos2[16], 0x00503C6C> _503C6C;
+    struct TrackConnections
+    {
+        uint32_t size;
+        uint16_t data[16];
+        void push_back(uint16_t value)
+        {
+            if (size < (sizeof(data) / sizeof(*data)) - 1)
+            {
+                data[size++] = value;
+                data[size] = 0xFFFF;
+            }
+        }
+    };
+    static_assert(sizeof(TrackConnections) == 0x24);
+    static loco_global<TrackConnections, 0x0113609C> _113609C;
+    static loco_global<uint8_t, 0x0113607D> _113607D;
+    static loco_global<StationId_t, 0x01135FAE> _1135FAE;
+    static loco_global<uint8_t[2], 0x0113601A> _113601A;
+
+    // 0x004A2604
+    static void getTrackConnections(const Map::Pos3& pos, TrackConnections& data, const CompanyId_t company, const uint8_t trackObjectId, const uint16_t trackAndDirection)
+    {
+        const auto nextTrackPos = pos + TrackData::getUnkTrack(trackAndDirection).pos;
+        _1135FAE = StationId::null; // stationId
+        _113607D = 0;
+
+        uint8_t baseZ = nextTrackPos.z / 4;
+        uint8_t nextRotation = TrackData::getUnkTrack(trackAndDirection).rotationEnd;
+
+        const auto tile = Map::TileManager::get(nextTrackPos);
+        for (const auto& el : tile)
+        {
+            auto* elTrack = el.asTrack();
+            if (elTrack == nullptr)
+            {
+                continue;
+            }
+
+            if (elTrack->owner() != company)
+            {
+                continue;
+            }
+
+            if (elTrack->trackObjectId() != trackObjectId)
+            {
+                continue;
+            }
+
+            if ((elTrack->mods() & _113601A[0]) != _113601A[0])
+            {
+                continue;
+            }
+
+            if (elTrack->isGhost() || elTrack->isFlag5())
+            {
+                continue;
+            }
+
+            if (elTrack->sequenceIndex() == 0)
+            {
+                auto trackAndDirection2 = (elTrack->trackId() << 3) | elTrack->unkDirection();
+                if (nextRotation == TrackData::getUnkTrack(trackAndDirection2).rotationBegin)
+                {
+                    const auto& trackPiece = TrackData::getTrackPiece(elTrack->trackId());
+                    if (baseZ == (elTrack->baseZ() - trackPiece[0].z / 4))
+                    {
+                        if (elTrack->has_4_80())
+                        {
+                            trackAndDirection2 |= elTrack->bridge() << 9;
+                            trackAndDirection2 |= (1 << 12);
+                        }
+
+                        if (_113601A[1] != elTrack->mods())
+                        {
+                            trackAndDirection2 |= (1 << 13);
+                        }
+
+                        if (elTrack->hasStationElement())
+                        {
+                            auto* elStation = (reinterpret_cast<TileElement*>(elTrack) + 1)->asStation();
+                            if (elStation == nullptr)
+                            {
+                                continue;
+                            }
+
+                            if (!elStation->isFlag5() && !elStation->isGhost())
+                            {
+                                _1135FAE = elStation->stationId();
+                            }
+                        }
+
+                        if (elTrack->has_6_10())
+                        {
+                            _113607D = 1;
+                        }
+
+                        if (elTrack->hasSignal())
+                        {
+                            auto* elSignal = (reinterpret_cast<TileElement*>(elTrack) + 1)->asSignal();
+                            if (elSignal == nullptr)
+                            {
+                                continue;
+                            }
+
+                            if (!elSignal->isFlag5() && !elSignal->isGhost())
+                            {
+                                trackAndDirection2 |= (1 << 15);
+                            }
+                        }
+                        data.push_back(trackAndDirection2);
+                    }
+                }
+            }
+
+            if (!elTrack->isFlag6())
+            {
+                continue;
+            }
+
+            auto trackAndDirection2 = (elTrack->trackId() << 3) | (1 << 2) | elTrack->unkDirection();
+            if (nextRotation != TrackData::getUnkTrack(trackAndDirection2).rotationBegin)
+            {
+                continue;
+            }
+
+            const auto previousBaseZ = elTrack->baseZ() - (TrackData::getTrackPiece(elTrack->trackId())[elTrack->sequenceIndex()].z + TrackData::getUnkTrack(trackAndDirection2).pos.z) / 4;
+            if (previousBaseZ != baseZ)
+            {
+                continue;
+            }
+
+            if (elTrack->has_4_80())
+            {
+                trackAndDirection2 |= elTrack->bridge() << 9;
+                trackAndDirection2 |= (1 << 12);
+            }
+
+            if (_113601A[1] != elTrack->mods())
+            {
+                trackAndDirection2 |= (1 << 13);
+            }
+
+            if (elTrack->hasStationElement())
+            {
+                auto* elStation = (reinterpret_cast<TileElement*>(elTrack) + 1)->asStation();
+                if (elStation == nullptr)
+                {
+                    continue;
+                }
+
+                if (!elStation->isFlag5() && !elStation->isGhost())
+                {
+                    _1135FAE = elStation->stationId();
+                }
+            }
+
+            if (elTrack->has_6_10())
+            {
+                _113607D = 1;
+            }
+
+            if (elTrack->hasSignal())
+            {
+                auto* elSignal = (reinterpret_cast<TileElement*>(elTrack) + 1)->asSignal();
+                if (elSignal == nullptr)
+                {
+                    continue;
+                }
+
+                if (!elSignal->isFlag5() && !elSignal->isGhost())
+                {
+                    trackAndDirection2 |= (1 << 15);
+                }
+            }
+            data.push_back(trackAndDirection2);
+        }
+    }
+
+    // 0x004A012E
+    static void removeTrack()
+    {
+        _trackCost = 0x80000000;
+        _byte_1136076 = 0;
+        removeConstructionGhosts();
+        if (_constructionHover != 0)
+        {
+            return;
+        }
+
+        Map::Pos3 loc(_x, _y, _constructionZ);
+        uint32_t trackAndDirection = 0;
+
+        if (_constructionRotation < 4)
+        {
+            trackAndDirection = 0;
+        }
+        else if (_constructionRotation < 8)
+        {
+            trackAndDirection = 26 << 3;
+        }
+        else if (_constructionRotation < 12)
+        {
+            trackAndDirection = 27 << 3;
+        }
+        else
+        {
+            trackAndDirection = 1 << 3;
+            loc += _503C6C[_constructionRotation];
+        }
+        trackAndDirection |= (1 << 2) | (_constructionRotation & 0x3);
+        _113601A[0] = 0;
+        _113601A[1] = 0;
+        _113609C->size = 0;
+        getTrackConnections(loc, _113609C, CompanyManager::getControllingId(), _trackType, trackAndDirection);
+
+        if (_113609C->size == 0)
+        {
+            return;
+        }
+
+        const auto trackAndDirection2 = (_113609C->data[_113609C->size - 1] & 0x1FF) ^ (1 << 2);
+        Map::Pos3 loc2(_x, _y, _constructionZ);
+        loc2 -= TrackData::getUnkTrack(trackAndDirection2).pos;
+        if (trackAndDirection2 & (1 << 2))
+        {
+            loc2.z += TrackData::getUnkTrack(trackAndDirection2).pos.z;
+        }
+
+        const auto& trackPiece = TrackData::getTrackPiece(trackAndDirection2 >> 3);
+        const auto i = (trackAndDirection2 & (1 << 2)) ? trackPiece.size() - 1 : 0;
+        loc2.z += trackPiece[i].z;
+
+        GameCommands::TrackRemovalArgs args;
+        args.pos = loc2;
+        args.index = trackPiece[i].index;
+        args.rotation = trackAndDirection2 & 0x3;
+        args.trackId = trackAndDirection2 >> 3;
+        args.trackObjectId = _trackType;
+
+        auto* trackObj = ObjectManager::get<TrackObject>(_trackType);
+        auto formatArgs = FormatArguments::common();
+        formatArgs.skip(3 * sizeof(string_id));
+        formatArgs.push(trackObj->name);
+        GameCommands::setErrorTitle(StringIds::cant_build_pop3_string);
+
+        if (GameCommands::doCommand(args, GameCommands::Flags::apply) != GameCommands::FAILURE)
+        {
+            Map::Pos3 newConstructLoc = Map::Pos3(_x, _y, _constructionZ) - TrackData::getUnkTrack(trackAndDirection2).pos;
+            _x = newConstructLoc.x;
+            _y = newConstructLoc.y;
+            _constructionZ = newConstructLoc.z;
+            _constructionRotation = TrackData::getUnkTrack(trackAndDirection2).rotationBegin;
+            _lastSelectedTrackPiece = 0;
+            _lastSelectedTrackGradient = 0;
+            activateSelectedConstructionWidgets();
+        }
+    }
+
     // 0x004A0121
     static void removeTrack(Window* self, WidgetIndex_t widgetIndex)
     {
-        registers regs;
-        regs.edx = widgetIndex;
-        regs.esi = X86Pointer(self);
-        call(0x004A0121, regs);
+        if (_trackType & (1 << 7))
+        {
+            registers regs;
+            regs.edx = widgetIndex;
+            regs.esi = X86Pointer(self);
+            call(0x004A0121, regs);
+        }
+        else
+        {
+            removeTrack();
+        }
     }
 
     // 0x0049D3F6
