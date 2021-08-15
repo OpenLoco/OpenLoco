@@ -278,7 +278,7 @@ namespace OpenLoco::Ui::Windows::Construction
 
         _lastSelectedBridge = lastBridge;
 
-        if (copyElement->has_4_80())
+        if (copyElement->hasBridge())
         {
             _lastSelectedBridge = copyElement->bridge();
         }
@@ -360,7 +360,7 @@ namespace OpenLoco::Ui::Windows::Construction
             lastBridge = _bridgeList[0];
 
         _lastSelectedBridge = lastBridge;
-        if (copyElement->has_4_80())
+        if (copyElement->hasBridge())
         {
             _lastSelectedBridge = copyElement->bridge();
         }

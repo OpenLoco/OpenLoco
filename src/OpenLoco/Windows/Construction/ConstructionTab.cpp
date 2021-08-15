@@ -322,8 +322,145 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     static_assert(sizeof(TrackConnections) == 0x24);
     static loco_global<TrackConnections, 0x0113609C> _113609C;
     static loco_global<uint8_t, 0x0113607D> _113607D;
+    static loco_global<uint8_t, 0x0112C2EE> _112C2EE;
+    static loco_global<uint8_t, 0x0112C2EE> _112C2ED;
+    static loco_global<uint32_t, 0x00525FC0> _525FC0;
     static loco_global<StationId_t, 0x01135FAE> _1135FAE;
+    static loco_global<StationId_t, 0x01136087> _1136087;
     static loco_global<uint8_t[2], 0x0113601A> _113601A;
+
+    // 0x00478895
+    static void getRoadConnections(const Map::Pos3& pos, TrackConnections& data, const CompanyId_t company, const uint8_t roadObjectId, const uint16_t trackAndDirection)
+    {
+        const auto nextTrackPos = pos + TrackData::getUnkTrack(trackAndDirection).pos;
+        _1135FAE = StationId::null; // stationId
+
+        uint8_t baseZ = nextTrackPos.z / 4;
+        uint8_t nextRotation = TrackData::getUnkTrack(trackAndDirection).rotationEnd;
+        _112C2EE = nextRotation;
+
+        const auto tile = Map::TileManager::get(nextTrackPos);
+        for (const auto& el : tile)
+        {
+            auto* elRoad = el.asRoad();
+            if (elRoad == nullptr)
+            {
+                continue;
+            }
+
+            if (!(_525FC0 & (1 << elRoad->roadObjectId())))
+            {
+                if (elRoad->owner() != company)
+                {
+                    continue;
+                }
+            }
+
+            if (elRoad->roadObjectId() != roadObjectId)
+            {
+                if (roadObjectId != 0xFF)
+                {
+                    continue;
+                }
+                if (!(_525FC0 & (1 << roadObjectId)))
+                {
+                    continue;
+                }
+            }
+
+            if ((elRoad->mods() & _113601A[0]) != _113601A[0])
+            {
+                continue;
+            }
+
+            if (elRoad->isGhost() || elRoad->isFlag5())
+            {
+                continue;
+            }
+
+            if (elRoad->sequenceIndex() == 0)
+            {
+                auto trackAndDirection2 = (elRoad->roadId() << 3) | elRoad->unkDirection();
+                if (nextRotation == TrackData::getUnkRoad(trackAndDirection2).rotationBegin)
+                {
+                    const auto& roadPiece = TrackData::getRoadPiece(elRoad->roadId());
+                    if (baseZ == (elRoad->baseZ() - roadPiece[0].z / 4))
+                    {
+                        if (elRoad->hasBridge())
+                        {
+                            trackAndDirection2 |= elRoad->bridge() << 9;
+                            trackAndDirection2 |= (1 << 12);
+                        }
+
+                        if (_113601A[1] != elRoad->mods())
+                        {
+                            trackAndDirection2 |= (1 << 13);
+                        }
+
+                        if (elRoad->hasStationElement())
+                        {
+                            auto* elStation = tile.roadStation(elRoad->roadId(), elRoad->unkDirection(), elRoad->baseZ());
+                            if (elStation == nullptr)
+                            {
+                                continue;
+                            }
+
+                            if (!elStation->isFlag5() && !elStation->isGhost())
+                            {
+                                _1135FAE = elStation->stationId();
+                                _1136087 = elStation->objectId();
+                            }
+                        }
+
+                        _112C2ED = elRoad->roadObjectId();
+                        data.push_back(trackAndDirection2);
+                    }
+                }
+            }
+
+            if (!elRoad->isFlag6())
+            {
+                continue;
+            }
+
+            auto trackAndDirection2 = (elRoad->roadId() << 3) | (1 << 2) | elRoad->unkDirection();
+            if (nextRotation != TrackData::getUnkRoad(trackAndDirection2).rotationBegin)
+            {
+                continue;
+            }
+            const auto& roadPiece = TrackData::getRoadPiece(elRoad->roadId());
+            if (baseZ != (elRoad->baseZ() - (TrackData::getUnkRoad(trackAndDirection2).pos.z + roadPiece[elRoad->sequenceIndex()].z) / 4))
+            {
+                continue;
+            }
+            if (elRoad->hasBridge())
+            {
+                trackAndDirection2 |= elRoad->bridge() << 9;
+                trackAndDirection2 |= (1 << 12);
+            }
+
+            if (_113601A[1] != elRoad->mods())
+            {
+                trackAndDirection2 |= (1 << 13);
+            }
+
+            if (elRoad->hasStationElement())
+            {
+                auto* elStation = tile.roadStation(elRoad->roadId(), elRoad->unkDirection(), elRoad->baseZ());
+                if (elStation == nullptr)
+                {
+                    continue;
+                }
+
+                if (!elStation->isFlag5() && !elStation->isGhost())
+                {
+                    _1135FAE = elStation->stationId();
+                    _1136087 = elStation->objectId();
+                }
+            }
+            data.push_back(trackAndDirection2);
+        }
+    }
 
     // 0x004A2604
     static void getTrackConnections(const Map::Pos3& pos, TrackConnections& data, const CompanyId_t company, const uint8_t trackObjectId, const uint16_t trackAndDirection)
@@ -372,7 +509,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                     const auto& trackPiece = TrackData::getTrackPiece(elTrack->trackId());
                     if (baseZ == (elTrack->baseZ() - trackPiece[0].z / 4))
                     {
-                        if (elTrack->has_4_80())
+                        if (elTrack->hasBridge())
                         {
                             trackAndDirection2 |= elTrack->bridge() << 9;
                             trackAndDirection2 |= (1 << 12);
@@ -437,7 +574,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 continue;
             }
 
-            if (elTrack->has_4_80())
+            if (elTrack->hasBridge())
             {
                 trackAndDirection2 |= elTrack->bridge() << 9;
                 trackAndDirection2 |= (1 << 12);
