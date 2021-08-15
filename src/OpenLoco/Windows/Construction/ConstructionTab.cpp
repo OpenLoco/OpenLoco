@@ -318,6 +318,10 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 data[size] = 0xFFFF;
             }
         }
+        uint16_t pop_back()
+        {
+            return data[--size];
+        }
     };
     static_assert(sizeof(TrackConnections) == 0x24);
     static loco_global<TrackConnections, 0x0113609C> _113609C;
@@ -701,15 +705,95 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         }
     }
 
+    // 0x004A02F2
+    static void removeRoad()
+    {
+        _trackCost = 0x80000000;
+        _byte_1136076 = 0;
+        removeConstructionGhosts();
+        if (_constructionHover != 0)
+        {
+            return;
+        }
+
+        Map::Pos3 loc(_x, _y, _constructionZ);
+        uint32_t trackAndDirection = (1 << 2) | (_constructionRotation & 0x3);
+        _113601A[0] = 0;
+        _113601A[1] = 0;
+        _113609C->size = 0;
+        getRoadConnections(loc, _113609C, CompanyManager::getControllingId(), _trackType & ~(1 << 7), trackAndDirection);
+
+        if (_113609C->size == 0)
+        {
+            return;
+        }
+
+        for (size_t i = 0; i < _113609C->size; ++i)
+        {
+            // If trackId is zero
+            if ((_113609C->data[i] & 0x1F8) == 0)
+            {
+                std::swap(_113609C->data[0], _113609C->data[i]);
+            }
+        }
+
+        auto* roadObj = ObjectManager::get<RoadObject>(_trackType & ~(1 << 7));
+        if (!(roadObj->flags & Flags12::unk_02))
+        {
+            _113609C->size = 1;
+            _113609C->data[1] = 0xFFFF;
+        }
+
+        uint16_t trackAndDirection2 = 0;
+        while (_113609C->size != 0)
+        {
+            trackAndDirection2 = (_113609C->pop_back() & 0x1FF) ^ (1 << 2);
+            Map::Pos3 loc2(_x, _y, _constructionZ);
+            loc2 -= TrackData::getUnkRoad(trackAndDirection2).pos;
+            if (trackAndDirection2 & (1 << 2))
+            {
+                loc2.z += TrackData::getUnkRoad(trackAndDirection2).pos.z;
+            }
+
+            const auto& roadPiece = TrackData::getRoadPiece(trackAndDirection2 >> 3);
+            const auto i = (trackAndDirection2 & (1 << 2)) ? roadPiece.size() - 1 : 0;
+            loc2.z += roadPiece[i].z;
+
+            GameCommands::RoadRemovalArgs args;
+            args.pos = loc2;
+            args.sequenceIndex = roadPiece[i].index;
+            args.unkDirection = trackAndDirection2 & 0x3;
+            args.roadId = trackAndDirection2 >> 3;
+            args.objectId = _trackType & ~(1 << 7);
+
+            auto* trackObj = ObjectManager::get<RoadObject>(_trackType & ~(1 << 7));
+            auto formatArgs = FormatArguments::common();
+            formatArgs.skip(3 * sizeof(string_id));
+            formatArgs.push(trackObj->name);
+            GameCommands::setErrorTitle(StringIds::cant_build_pop3_string);
+
+            if (GameCommands::doCommand(args, GameCommands::Flags::apply) == GameCommands::FAILURE)
+            {
+                return;
+            }
+        }
+
+        Map::Pos3 newConstructLoc = Map::Pos3(_x, _y, _constructionZ) - TrackData::getUnkRoad(trackAndDirection2).pos;
+        _x = newConstructLoc.x;
+        _y = newConstructLoc.y;
+        _constructionZ = newConstructLoc.z;
+        _constructionRotation = TrackData::getUnkRoad(trackAndDirection2).rotationBegin;
+        _lastSelectedTrackPiece = 0;
+        _lastSelectedTrackGradient = 0;
+        activateSelectedConstructionWidgets();
+    }
+
     // 0x004A0121
     static void removeTrack(Window* self, WidgetIndex_t widgetIndex)
     {
         if (_trackType & (1 << 7))
         {
-            registers regs;
-            regs.edx = widgetIndex;
-            regs.esi = X86Pointer(self);
-            call(0x004A0121, regs);
+            removeRoad();
         }
         else
         {
