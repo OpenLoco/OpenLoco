@@ -4,6 +4,7 @@
 #include "Math/Vector.hpp"
 #include "Objects/IndustryObject.h"
 #include "OpenLoco.h"
+#include "Ui/WindowManager.h"
 
 using namespace OpenLoco::Interop;
 
@@ -14,7 +15,11 @@ namespace OpenLoco::IndustryManager
     // 0x00453214
     void reset()
     {
-        call(0x00453214);
+        for (auto& industry : _industries)
+        {
+            industry.name = StringIds::null;
+        }
+        Ui::Windows::IndustryList::reset();
     }
 
     LocoFixedVector<Industry> industries()

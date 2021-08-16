@@ -310,6 +310,11 @@ namespace OpenLoco::Ui::Windows::Station
         return window;
     }
 
+    void reset()
+    {
+        _lastSelectedStation = StationId::null;
+    }
+
     namespace Cargo
     {
         enum widx

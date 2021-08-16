@@ -24,7 +24,11 @@ namespace OpenLoco::StationManager
     // 0x0048B1D8
     void reset()
     {
-        call(0x0048B1D8);
+        for (auto& station : _stations)
+        {
+            station.name = StringIds::null;
+        }
+        Ui::Windows::Station::reset();
     }
 
     LocoFixedVector<Station> stations()

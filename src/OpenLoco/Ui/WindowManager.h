@@ -167,6 +167,7 @@ namespace OpenLoco::Ui::Windows
     namespace IndustryList
     {
         Window* open();
+        void reset();
     }
 
     namespace KeyboardShortcuts
@@ -280,6 +281,7 @@ namespace OpenLoco::Ui::Windows
     namespace Station
     {
         Window* open(uint16_t id);
+        void reset();
         void showStationCatchment(uint16_t windowNumber);
     }
 
