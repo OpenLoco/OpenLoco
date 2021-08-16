@@ -142,8 +142,12 @@ namespace OpenLoco::StringIds
     constexpr string_id cant_build_signals_here = 140;
     constexpr string_id cant_remove_signal = 141;
 
+    constexpr string_id cant_build_pop3_string = 143;
+
     constexpr string_id menu_underground_view = 145;
     constexpr string_id menu_hide_foreground_tracks_roads = 146;
+
+    constexpr string_id unable_to_cross_or_create_junction_with_string = 156;
 
     constexpr string_id capt_signal = 158;
     constexpr string_id capt_station = 159;

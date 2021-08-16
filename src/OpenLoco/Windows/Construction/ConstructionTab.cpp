@@ -29,6 +29,8 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     static loco_global<uint32_t, 0x00523394> _toolWidgetIndex;
 
     static loco_global<int32_t, 0x00E3F0B8> gCurrentRotation;
+    static loco_global<uint8_t, 0x0112C2E9> _alternateTrackObjectId; // set from GameCommands::createRoad
+    static loco_global<uint8_t[18], 0x0050A006> available_objects;   // toptoolbar
 
     namespace TrackPiece
     {
@@ -131,13 +133,175 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         _pickupDirection = 0;
     }
 
+    // 0x004A18D4
+    static void sub_4A18D4()
+    {
+        if (_alternateTrackObjectId == 0xFF)
+        {
+            return;
+        }
+
+        if ((_alternateTrackObjectId | (1 << 7)) == _trackType)
+        {
+            return;
+        }
+
+        auto* alternativeRoadObj = ObjectManager::get<RoadObject>(_alternateTrackObjectId);
+        if (!(alternativeRoadObj->flags & Flags12::unk_03))
+        {
+            return;
+        }
+        auto* curRoadObj = ObjectManager::get<RoadObject>(_trackType & ~(1 << 7));
+        if (!(curRoadObj->flags & Flags12::unk_03))
+        {
+            return;
+        }
+
+        for (const auto objId : available_objects)
+        {
+            if (objId == 0xFF)
+            {
+                return;
+            }
+
+            if (objId == (_alternateTrackObjectId | (1 << 7)))
+            {
+                _trackType = _alternateTrackObjectId | (1 << 7);
+                Common::sub_4A3A50();
+            }
+        }
+    }
+
+    // 0x0049FA10
+    static void constructRoad()
+    {
+        _trackCost = 0x80000000;
+        _byte_1136076 = 0;
+        _dword_1135F42 = 0x80000000;
+        removeConstructionGhosts();
+        auto roadPiece = getRoadPieceId(_lastSelectedTrackPiece, _lastSelectedTrackGradient, _constructionRotation);
+        if (!roadPiece)
+        {
+            return;
+        }
+        auto* roadObj = ObjectManager::get<RoadObject>(_trackType & ~(1 << 7));
+        auto formatArgs = FormatArguments::common();
+        formatArgs.skip(3 * sizeof(string_id));
+        formatArgs.push(roadObj->name);
+        GameCommands::setErrorTitle(StringIds::cant_build_pop3_string);
+
+        GameCommands::RoadPlacementArgs args;
+        args.pos = Map::Pos3(_x, _y, _constructionZ);
+        args.rotation = roadPiece->rotation;
+        args.roadId = roadPiece->id;
+        args.mods = _lastSelectedMods;
+        args.bridge = _lastSelectedBridge;
+        args.roadObjectId = _trackType & ~(1 << 7);
+
+        _dword_1135F42 = GameCommands::doCommand(args, GameCommands::Flags::apply);
+        if (_dword_1135F42 == GameCommands::FAILURE)
+        {
+            if (GameCommands::getErrorText() != StringIds::unable_to_cross_or_create_junction_with_string
+                || _alternateTrackObjectId == 0xFF)
+            {
+                return;
+            }
+
+            sub_4A18D4();
+            roadPiece = getRoadPieceId(_lastSelectedTrackPiece, _lastSelectedTrackGradient, _constructionRotation);
+            if (!roadPiece)
+            {
+                return;
+            }
+
+            WindowManager::close(WindowType::error);
+            args.pos = Map::Pos3(_x, _y, _constructionZ);
+            args.rotation = roadPiece->rotation;
+            args.roadId = roadPiece->id;
+            args.mods = _lastSelectedMods;
+            args.bridge = _lastSelectedBridge;
+            args.roadObjectId = _trackType & ~(1 << 7);
+
+            _dword_1135F42 = GameCommands::doCommand(args, GameCommands::Flags::apply);
+        }
+
+        if (_dword_1135F42 != GameCommands::FAILURE)
+        {
+            const auto& trackSize = TrackData::getUnkRoad((args.roadId << 3) | (args.rotation & 0x3));
+            const auto newPosition = args.pos + trackSize.pos;
+            _x = newPosition.x;
+            _y = newPosition.y;
+            _constructionZ = newPosition.z;
+            _constructionRotation = trackSize.rotationEnd;
+            _byte_522096 = 0;
+            _byte_1136066 = 0;
+            if (_lastSelectedTrackPiece >= 9)
+            {
+                _lastSelectedTrackPiece = 0;
+            }
+        }
+    }
+
+    // 0x0049F93A
+    static void constructTrack()
+    {
+        _trackCost = 0x80000000;
+        _byte_1136076 = 0;
+        _dword_1135F42 = 0x80000000;
+        removeConstructionGhosts();
+        auto trackPiece = getTrackPieceId(_lastSelectedTrackPiece, _lastSelectedTrackGradient, _constructionRotation);
+        if (!trackPiece)
+        {
+            return;
+        }
+        auto* roadObj = ObjectManager::get<TrackObject>(_trackType);
+        auto formatArgs = FormatArguments::common();
+        formatArgs.skip(3 * sizeof(string_id));
+        formatArgs.push(roadObj->name);
+        GameCommands::setErrorTitle(StringIds::cant_build_pop3_string);
+
+        GameCommands::TrackPlacementArgs args;
+        args.pos = Map::Pos3(_x, _y, _constructionZ);
+        args.rotation = trackPiece->rotation;
+        args.trackId = trackPiece->id;
+        args.mods = _lastSelectedMods;
+        args.bridge = _lastSelectedBridge;
+        args.trackObjectId = _trackType;
+        args.unk = _byte_113607E & (1 << 0);
+
+        _dword_1135F42 = GameCommands::doCommand(args, GameCommands::Flags::apply);
+
+        if (_dword_1135F42 == GameCommands::FAILURE)
+        {
+            return;
+        }
+
+        const auto& trackSize = TrackData::getUnkTrack((args.trackId << 3) | (args.rotation & 0x3));
+        const auto newPosition = args.pos + trackSize.pos;
+        _x = newPosition.x;
+        _y = newPosition.y;
+        _constructionZ = newPosition.z;
+        _constructionRotation = trackSize.rotationEnd;
+        _byte_522096 = 0;
+        _byte_1136066 = 0;
+        if (_lastSelectedTrackPiece >= 9)
+        {
+            _lastSelectedTrackPiece = 0;
+        }
+    }
+
     // 0x0049F92D
     static void constructTrack(Window* self, WidgetIndex_t widgetIndex)
     {
-        registers regs;
-        regs.edx = widgetIndex;
-        regs.esi = X86Pointer(self);
-        call(0x0049F92D, regs);
+        if (_trackType & (1 << 7))
+        {
+            constructRoad();
+        }
+        else
+        {
+            constructTrack();
+        }
+        activateSelectedConstructionWidgets();
     }
 
     // 0x004A0121
