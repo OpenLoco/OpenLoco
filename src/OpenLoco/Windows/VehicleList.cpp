@@ -493,7 +493,7 @@ namespace OpenLoco::Ui::Windows::VehicleList
     static void setTransportTypeTabs(Window* self)
     {
         auto disabledWidgets = self->disabled_widgets >> Widx::tab_trains;
-        auto widget = self->widgets + Widx::tab_trains;
+        auto widget = &self->widgets[Widx::tab_trains];
         auto tabWidth = widget->right - widget->left;
         auto tabX = widget->left;
         for (auto i = 0; i <= Widx::tab_ships - Widx::tab_trains; ++i, ++widget)

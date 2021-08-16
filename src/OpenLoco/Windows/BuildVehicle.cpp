@@ -1285,7 +1285,7 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
     static void setTransportTypeTabs(Ui::Window* window)
     {
         auto disabledWidgets = window->disabled_widgets >> widx::tab_build_new_trains;
-        auto widget = window->widgets + widx::tab_build_new_trains;
+        auto widget = &window->widgets[widx::tab_build_new_trains];
         auto tabWidth = widget->right - widget->left;
         auto tabX = widget->left;
         for (auto i = 0; i <= widx::tab_build_new_ships - widx::tab_build_new_trains; ++i, ++widget)
