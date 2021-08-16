@@ -209,9 +209,9 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         _1135F7C = minPos;
         _1135F90 = maxPos;
         auto maxBaseZ = 0;
-        for (auto checkPos = minPos; checkPos.y < maxPos.y; ++checkPos.y)
+        for (auto checkPos = minPos; checkPos.y <= maxPos.y; ++checkPos.y)
         {
-            for (checkPos.x = minPos.x; checkPos.x < maxPos.x; ++checkPos.x)
+            for (checkPos.x = minPos.x; checkPos.x <= maxPos.x; ++checkPos.x)
             {
                 if (!validCoords(checkPos))
                 {
