@@ -1,11 +1,15 @@
+#include "../../Audio/Audio.h"
 #include "../../CompanyManager.h"
+#include "../../GameCommands/GameCommands.h"
 #include "../../Graphics/ImageIds.h"
+#include "../../Industry.h"
 #include "../../Input.h"
 #include "../../Localisation/FormatArguments.hpp"
 #include "../../Localisation/StringIds.h"
 #include "../../Objects/AirportObject.h"
 #include "../../Objects/CargoObject.h"
 #include "../../Objects/DockObject.h"
+#include "../../Objects/IndustryObject.h"
 #include "../../Objects/ObjectManager.h"
 #include "../../Objects/RoadObject.h"
 #include "../../Objects/RoadStationObject.h"
@@ -167,15 +171,356 @@ namespace OpenLoco::Ui::Windows::Construction::Station
         call(0x0049E421, regs);
     }
 
+    static loco_global<Map::Pos2, 0x001135F7C> _1135F7C;
+    static loco_global<Map::Pos2, 0x001135F80> _1135F90;
+
+    // 0x004A47D9
+    static std::optional<GameCommands::AirportPlacementArgs> getAirportPlacementArgsFromCursor(const int16_t x, const int16_t y)
+    {
+        auto pos = ViewportInteraction::getSurfaceOrWaterLocFromUi({ x, y });
+        if (!pos)
+        {
+            return std::nullopt;
+        }
+
+        GameCommands::AirportPlacementArgs placementArgs;
+        placementArgs.type = _lastSelectedStationType;
+        placementArgs.rotation = _constructionRotation;
+        auto* airportObject = ObjectManager::get<AirportObject>(placementArgs.type);
+        TilePos2 minPos(airportObject->min_x, airportObject->min_y);
+        TilePos2 maxPos(airportObject->max_x, airportObject->max_y);
+
+        minPos = Math::Vector::rotate(minPos, placementArgs.rotation);
+        maxPos = Math::Vector::rotate(maxPos, placementArgs.rotation);
+
+        minPos += *pos;
+        maxPos += *pos;
+
+        if (minPos.x > maxPos.x)
+        {
+            std::swap(minPos.x, maxPos.x);
+        }
+
+        if (minPos.y > maxPos.y)
+        {
+            std::swap(minPos.y, maxPos.y);
+        }
+
+        _1135F7C = minPos;
+        _1135F90 = maxPos;
+        auto maxBaseZ = 0;
+        for (auto checkPos = minPos; checkPos.y <= maxPos.y; ++checkPos.y)
+        {
+            for (checkPos.x = minPos.x; checkPos.x <= maxPos.x; ++checkPos.x)
+            {
+                if (!validCoords(checkPos))
+                {
+                    continue;
+                }
+                const auto tile = TileManager::get(checkPos);
+                const auto* surface = tile.surface();
+                if (surface == nullptr)
+                {
+                    return std::nullopt;
+                }
+
+                const auto baseZ = surface->water() ? surface->water() * 4 : surface->baseZ();
+                maxBaseZ = std::max(maxBaseZ, baseZ);
+            }
+        }
+        placementArgs.pos = Map::Pos3(pos->x, pos->y, maxBaseZ * 4);
+        return { placementArgs };
+    }
+
+    // 0x004A5550
+    static void onToolDownAirport(const int16_t x, const int16_t y)
+    {
+        static loco_global<Ui::Point, 0x0113600C> _113600C;
+        _113600C = Point(x, y);
+        removeConstructionGhosts();
+
+        const auto args = getAirportPlacementArgsFromCursor(x, y);
+        if (!args)
+        {
+            return;
+        }
+
+        const auto* airportObject = ObjectManager::get<AirportObject>(_lastSelectedStationType);
+        auto formatArgs = FormatArguments::common();
+        formatArgs.skip(3 * sizeof(string_id));
+        formatArgs.push(airportObject->name);
+        GameCommands::setErrorTitle(StringIds::cant_build_pop3_string);
+        GameCommands::doCommand(*args, GameCommands::Flags::apply);
+    }
+
+    // 0x004A4903
+    static std::optional<GameCommands::PortPlacementArgs> getDockPlacementArgsFromCursor(const int16_t x, const int16_t y)
+    {
+        auto pos = ViewportInteraction::getSurfaceOrWaterLocFromUi({ x, y });
+        if (!pos)
+        {
+            return std::nullopt;
+        }
+
+        // count of water on each side of the placement
+        // 0x0113608B
+        std::array<uint8_t, 4> _nearbyWaterCount = { 0 };
+
+        uint8_t directionOfIndustry = 0xFF;
+        uint8_t waterHeight = 0;
+        _1135F7C = *pos;
+        _1135F90 = *pos + TilePos2(1, 1);
+
+        constexpr std::array<std::array<TilePos2, 2>, 4> searchArea = {
+            std::array<TilePos2, 2>{ TilePos2{ -1, 0 }, TilePos2{ -1, 1 } },
+            std::array<TilePos2, 2>{ TilePos2{ 0, 2 }, TilePos2{ 1, 2 } },
+            std::array<TilePos2, 2>{ TilePos2{ 2, 0 }, TilePos2{ 2, 1 } },
+            std::array<TilePos2, 2>{ TilePos2{ 0, -1 }, TilePos2{ 1, -1 } },
+        };
+        for (auto side = 0; side < 4; ++side)
+        {
+            for (const auto& offset : searchArea[side])
+            {
+                const auto searchPos = offset + *pos;
+                if (!validCoords(searchPos))
+                {
+                    continue;
+                }
+                const auto tile = TileManager::get(searchPos);
+                bool surfaceFound = false;
+                for (auto el : tile)
+                {
+                    if (surfaceFound)
+                    {
+                        const auto* elIndustry = el.asIndustry();
+                        if (elIndustry == nullptr)
+                        {
+                            continue;
+                        }
+                        if (elIndustry->isGhost())
+                        {
+                            continue;
+                        }
+
+                        auto* industry = elIndustry->industry();
+                        auto* industryObj = industry->object();
+                        if (!(industryObj->flags & IndustryObjectFlags::built_on_water))
+                        {
+                            continue;
+                        }
+
+                        directionOfIndustry = side;
+                    }
+                    const auto* surface = el.asSurface();
+                    if (surface == nullptr)
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        surfaceFound = true;
+
+                        if (!surface->water())
+                        {
+                            continue;
+                        }
+                        waterHeight = surface->water() * 4;
+                        if (waterHeight - 4 == surface->baseZ() && surface->isSlopeDoubleHeight())
+                        {
+                            continue;
+                        }
+
+                        _nearbyWaterCount[(side + 2) & 0x3]++;
+                    }
+                }
+            }
+        }
+
+        if (waterHeight == 0)
+        {
+            return std::nullopt;
+        }
+
+        GameCommands::PortPlacementArgs placementArgs;
+        placementArgs.type = _lastSelectedStationType;
+        placementArgs.pos = Map::Pos3(pos->x, pos->y, waterHeight * 4);
+        if (directionOfIndustry != 0xFF)
+        {
+            placementArgs.rotation = directionOfIndustry;
+        }
+        else
+        {
+            auto res = std::find_if(std::begin(_nearbyWaterCount), std::end(_nearbyWaterCount), [](uint8_t value) { return value >= 2; });
+            if (res != std::end(_nearbyWaterCount))
+            {
+                placementArgs.rotation = std::distance(std::begin(_nearbyWaterCount), res);
+            }
+            else
+            {
+                res = std::find_if(std::begin(_nearbyWaterCount), std::end(_nearbyWaterCount), [](uint8_t value) { return value >= 1; });
+                if (res != std::end(_nearbyWaterCount))
+                {
+                    placementArgs.rotation = std::distance(std::begin(_nearbyWaterCount), res);
+                }
+                else
+                {
+                    static loco_global<uint8_t, 0x00113608A> _113608A; // ai rotation??
+                    placementArgs.rotation = _113608A;
+                }
+            }
+        }
+        return { placementArgs };
+    }
+
+    // 0x004A55AB
+    static void onToolDownDock(const int16_t x, const int16_t y)
+    {
+        static loco_global<Ui::Point, 0x0113600C> _113600C;
+        _113600C = Point(x, y);
+        removeConstructionGhosts();
+
+        const auto args = getDockPlacementArgsFromCursor(x, y);
+        if (!args)
+        {
+            return;
+        }
+
+        const auto* dockObject = ObjectManager::get<DockObject>(_lastSelectedStationType);
+        auto formatArgs = FormatArguments::common();
+        formatArgs.skip(3 * sizeof(string_id));
+        formatArgs.push(dockObject->name);
+        GameCommands::setErrorTitle(StringIds::cant_build_pop3_string);
+        GameCommands::doCommand(*args, GameCommands::Flags::apply);
+    }
+
+    static std::optional<GameCommands::RoadStationPlacementArgs> getRoadStationPlacementArgsFromCursor(const int16_t x, const int16_t y)
+    {
+        const auto res = ViewportInteraction::getMapCoordinatesFromPos(x, y, ~ViewportInteraction::InteractionItemFlags::roadAndTram);
+        const auto& interaction = res.first;
+        if (interaction.type != ViewportInteraction::InteractionItem::road)
+        {
+            return std::nullopt;
+        }
+
+        auto* elRoad = reinterpret_cast<const TileElement*>(interaction.object)->asRoad();
+        if (elRoad == nullptr)
+        {
+            return std::nullopt;
+        }
+
+        GameCommands::RoadStationPlacementArgs placementArgs;
+        placementArgs.pos = Map::Pos3(interaction.pos.x, interaction.pos.y, elRoad->baseZ() * 4);
+        placementArgs.rotation = elRoad->unkDirection();
+        placementArgs.roadId = elRoad->roadId();
+        placementArgs.index = elRoad->sequenceIndex();
+        placementArgs.roadObjectId = elRoad->roadObjectId();
+        placementArgs.type = _lastSelectedStationType;
+        return { placementArgs };
+    }
+
+    // 0x004A548F
+    static void onToolDownRoadStation(const int16_t x, const int16_t y)
+    {
+        static loco_global<Ui::Point, 0x0113600C> _113600C;
+        _113600C = Point(x, y);
+        removeConstructionGhosts();
+
+        const auto args = getRoadStationPlacementArgsFromCursor(x, y);
+        if (!args)
+        {
+            return;
+        }
+
+        const auto* roadStationObject = ObjectManager::get<RoadStationObject>(_lastSelectedStationType);
+        auto formatArgs = FormatArguments::common();
+        formatArgs.skip(3 * sizeof(string_id));
+        formatArgs.push(roadStationObject->name);
+        GameCommands::setErrorTitle(StringIds::cant_build_pop3_string);
+        if (GameCommands::doCommand(*args, GameCommands::Flags::apply) != GameCommands::FAILURE)
+        {
+            Audio::playSound(Audio::SoundId::construct, GameCommands::getPosition());
+        }
+    }
+
+    static std::optional<GameCommands::TrackStationPlacementArgs> getTrackStationPlacementArgsFromCursor(const int16_t x, const int16_t y)
+    {
+        const auto res = ViewportInteraction::getMapCoordinatesFromPos(x, y, ~ViewportInteraction::InteractionItemFlags::track);
+        const auto& interaction = res.first;
+        if (interaction.type != ViewportInteraction::InteractionItem::track)
+        {
+            return std::nullopt;
+        }
+
+        auto* elTrack = reinterpret_cast<const TileElement*>(interaction.object)->asTrack();
+        if (elTrack == nullptr)
+        {
+            return std::nullopt;
+        }
+
+        GameCommands::TrackStationPlacementArgs placementArgs;
+        placementArgs.pos = Map::Pos3(interaction.pos.x, interaction.pos.y, elTrack->baseZ() * 4);
+        placementArgs.rotation = elTrack->unkDirection();
+        placementArgs.trackId = elTrack->trackId();
+        placementArgs.index = elTrack->sequenceIndex();
+        placementArgs.trackObjectId = elTrack->trackObjectId();
+        placementArgs.type = _lastSelectedStationType;
+        return { placementArgs };
+    }
+
+    // 0x004A5390
+    static void onToolDownTrackStation(const int16_t x, const int16_t y)
+    {
+        static loco_global<Ui::Point, 0x0113600C> _113600C;
+        _113600C = Point(x, y);
+        removeConstructionGhosts();
+
+        const auto args = getTrackStationPlacementArgsFromCursor(x, y);
+        if (!args)
+        {
+            return;
+        }
+
+        const auto* trainStationObject = ObjectManager::get<TrainStationObject>(_lastSelectedStationType);
+        auto formatArgs = FormatArguments::common();
+        formatArgs.skip(3 * sizeof(string_id));
+        formatArgs.push(trainStationObject->name);
+        GameCommands::setErrorTitle(StringIds::cant_build_pop3_string);
+
+        if (args->trackObjectId != _trackType)
+        {
+            Error::open(StringIds::null, StringIds::wrong_type_of_track_road);
+            return;
+        }
+        if (GameCommands::doCommand(*args, GameCommands::Flags::apply) != GameCommands::FAILURE)
+        {
+            Audio::playSound(Audio::SoundId::construct, GameCommands::getPosition());
+        }
+    }
+
     // 0x0049E42C
     static void onToolDown(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
     {
-        registers regs;
-        regs.esi = X86Pointer(&self);
-        regs.dx = widgetIndex;
-        regs.ax = x;
-        regs.bx = y;
-        call(0x0049E42C, regs);
+        if (widgetIndex != widx::image)
+        {
+            return;
+        }
+
+        if (_byte_1136063 & (1 << 7))
+        {
+            onToolDownAirport(x, y);
+        }
+        else if (_byte_1136063 & (1 << 6))
+        {
+            onToolDownDock(x, y);
+        }
+        else if (_trackType & (1 << 7))
+        {
+            onToolDownRoadStation(x, y);
+        }
+        else
+        {
+            onToolDownTrackStation(x, y);
+        }
     }
 
     // 0x0049DD39

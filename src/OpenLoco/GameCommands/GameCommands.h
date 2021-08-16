@@ -48,7 +48,7 @@ namespace OpenLoco::GameCommands
         vehicleLocalExpress = 12,
         createSignal = 13,
         removeSignal = 14,
-        gc_unk_15 = 15,
+        createTrainStation = 15,
         removeTrackStation = 16,
         createTrackMod = 17,
         removeTrackMod = 18,
@@ -75,7 +75,7 @@ namespace OpenLoco::GameCommands
         removeRoad = 39,
         createRoadMod = 40,
         removeRoadMod = 41,
-        gc_unk_42 = 42,
+        createRoadStation = 42,
         removeRoadStation = 43,
         createBuilding = 44,
         removeBuilding = 45,
@@ -89,11 +89,11 @@ namespace OpenLoco::GameCommands
         gc_unk_53 = 53,
         buildCompanyHeadquarters = 54,
         removeCompanyHeadquarters = 55,
-        gc_unk_56 = 56,
+        createAirport = 56,
         removeAirport = 57,
         vehiclePlaceAir = 58,
         vehiclePickupAir = 59,
-        gc_unk_60 = 60,
+        createPort = 60,
         removePort = 61,
         vehiclePlaceWater = 62,
         vehiclePickupWater = 63,
@@ -390,6 +390,42 @@ namespace OpenLoco::GameCommands
             regs.dl = trackId;
             regs.dh = index;
             regs.bp = type;
+            return regs;
+        }
+    };
+
+    struct TrackStationPlacementArgs
+    {
+        static constexpr auto command = GameCommand::createTrainStation;
+
+        TrackStationPlacementArgs() = default;
+        explicit TrackStationPlacementArgs(const registers& regs)
+            : pos(regs.ax, regs.cx, regs.di)
+            , rotation(regs.bh & 0x3)
+            , trackId(regs.dl & 0xF)
+            , index(regs.dh & 0x3)
+            , trackObjectId(regs.bp)
+            , type(regs.edi >> 16)
+        {
+        }
+
+        Map::Pos3 pos;
+        uint8_t rotation;
+        uint8_t trackId;
+        uint8_t index;
+        uint8_t trackObjectId;
+        uint8_t type;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.ax = pos.x;
+            regs.cx = pos.y;
+            regs.edi = pos.z | (type << 16);
+            regs.bh = rotation;
+            regs.dl = trackId;
+            regs.dh = index;
+            regs.bp = trackObjectId;
             return regs;
         }
     };
@@ -869,6 +905,42 @@ namespace OpenLoco::GameCommands
         }
     };
 
+    struct RoadStationPlacementArgs
+    {
+        static constexpr auto command = GameCommand::createRoadStation;
+
+        RoadStationPlacementArgs() = default;
+        explicit RoadStationPlacementArgs(const registers& regs)
+            : pos(regs.ax, regs.cx, regs.di)
+            , rotation(regs.bh & 0x3)
+            , roadId(regs.dl & 0xF)
+            , index(regs.dh & 0x3)
+            , roadObjectId(regs.bp)
+            , type(regs.edi >> 16)
+        {
+        }
+
+        Map::Pos3 pos;
+        uint8_t rotation;
+        uint8_t roadId;
+        uint8_t index;
+        uint8_t roadObjectId;
+        uint8_t type;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.ax = pos.x;
+            regs.cx = pos.y;
+            regs.edi = pos.z | (type << 16);
+            regs.bh = rotation;
+            regs.dl = roadId;
+            regs.dh = index;
+            regs.bp = roadObjectId;
+            return regs;
+        }
+    };
+
     struct RoadStationRemovalArgs
     {
         static constexpr auto command = GameCommand::removeRoadStation;
@@ -1105,6 +1177,34 @@ namespace OpenLoco::GameCommands
         }
     };
 
+    struct AirportPlacementArgs
+    {
+        static constexpr auto command = GameCommand::createAirport;
+
+        AirportPlacementArgs() = default;
+        explicit AirportPlacementArgs(const registers regs)
+            : pos(regs.ax, regs.cx, regs.di)
+            , rotation(regs.bh)
+            , type(regs.dl)
+        {
+        }
+
+        Map::Pos3 pos;
+        uint8_t rotation;
+        uint8_t type;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.ax = pos.x;
+            regs.cx = pos.y;
+            regs.di = pos.z;
+            regs.bh = rotation;
+            regs.dl = type;
+            return regs;
+        }
+    };
+
     struct AirportRemovalArgs
     {
         static constexpr auto command = GameCommand::removeAirport;
@@ -1163,6 +1263,34 @@ namespace OpenLoco::GameCommands
         regs.di = head;
         return doCommand(GameCommand::vehiclePickupAir, regs) != FAILURE;
     }
+
+    struct PortPlacementArgs
+    {
+        static constexpr auto command = GameCommand::createPort;
+
+        PortPlacementArgs() = default;
+        explicit PortPlacementArgs(const registers& regs)
+            : pos(regs.ax, regs.cx, regs.di)
+            , rotation(regs.bh)
+            , type(regs.dl)
+        {
+        }
+
+        Map::Pos3 pos;
+        uint8_t rotation;
+        uint8_t type;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.ax = pos.x;
+            regs.cx = pos.y;
+            regs.di = pos.z;
+            regs.bh = rotation;
+            regs.dl = type;
+            return regs;
+        }
+    };
 
     struct PortRemovalArgs
     {
