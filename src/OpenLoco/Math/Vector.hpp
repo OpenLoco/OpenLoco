@@ -96,6 +96,16 @@ namespace OpenLoco::Math::Vector
         {
             return { static_cast<T>(x / rhs), static_cast<T>(y / rhs) };
         }
+
+        constexpr const TVector2 operator<<(const uint8_t rhs) const
+        {
+            return { static_cast<T>(x << rhs), static_cast<T>(y << rhs) };
+        }
+
+        constexpr const TVector2 operator>>(const uint8_t rhs) const
+        {
+            return { static_cast<T>(x >> rhs), static_cast<T>(y >> rhs) };
+        }
     };
 
     template<typename T, T TResolution = 1>

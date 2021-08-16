@@ -114,6 +114,52 @@ namespace OpenLoco::Ui
         int getRotation() const;
         void setRotation(int32_t value);
 
+        struct ScreenToViewport
+        {
+            [[nodiscard]] static Point applyTransform(const Point& uiPoint, const Viewport& vp)
+            {
+                return viewOffsetTransform(scaleTransform(uiOffsetTransform(uiPoint, vp), vp), vp);
+            }
+
+            [[nodiscard]] static Point uiOffsetTransform(const Point& uiPoint, const Viewport& vp)
+            {
+                return uiPoint - Point{ vp.x, vp.y };
+            }
+
+            [[nodiscard]] static Point scaleTransform(const Point& uiPoint, const Viewport& vp)
+            {
+                return uiPoint << vp.zoom;
+            }
+
+            [[nodiscard]] static Point viewOffsetTransform(const Point& point, const Viewport& vp)
+            {
+                return point + Point{ vp.view_x, vp.view_y };
+            }
+        };
+
+        struct ViewportToScreen
+        {
+            [[nodiscard]] static Point applyTransform(const Point& vpPoint, const Viewport& vp)
+            {
+                return uiOffsetTransform(scaleTransform(viewOffsetTransform(vpPoint, vp), vp), vp);
+            }
+
+            [[nodiscard]] static Point uiOffsetTransform(const Point& uiPoint, const Viewport& vp)
+            {
+                return uiPoint + Point{ vp.x, vp.y };
+            }
+
+            [[nodiscard]] static Point scaleTransform(const Point& uiPoint, const Viewport& vp)
+            {
+                return uiPoint >> vp.zoom;
+            }
+
+            [[nodiscard]] static Point viewOffsetTransform(const Point& point, const Viewport& vp)
+            {
+                return point - Point{ vp.view_x, vp.view_y };
+            }
+        };
+
         /**
          * Maps a 2D viewport position to a UI (screen) position.
          */
