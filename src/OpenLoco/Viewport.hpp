@@ -54,6 +54,18 @@ namespace OpenLoco::Ui
         constexpr uint32_t station_names_displayed = 1 << 10;
     }
 
+    struct Viewport;
+
+    namespace ScreenToViewport
+    {
+        [[nodiscard]] constexpr Point applyTransform(const Point& uiPoint, const Viewport& vp);
+    }
+
+    namespace ViewportToScreen
+    {
+        [[nodiscard]] constexpr Point applyTransform(const Point& vpPoint, const Viewport& vp);
+    }
+
     struct Viewport
     {
         int16_t width;       // 0x00
@@ -114,52 +126,6 @@ namespace OpenLoco::Ui
         int getRotation() const;
         void setRotation(int32_t value);
 
-        struct ScreenToViewport
-        {
-            [[nodiscard]] static Point applyTransform(const Point& uiPoint, const Viewport& vp)
-            {
-                return viewOffsetTransform(scaleTransform(uiOffsetTransform(uiPoint, vp), vp), vp);
-            }
-
-            [[nodiscard]] static Point uiOffsetTransform(const Point& uiPoint, const Viewport& vp)
-            {
-                return uiPoint - Point{ vp.x, vp.y };
-            }
-
-            [[nodiscard]] static Point scaleTransform(const Point& uiPoint, const Viewport& vp)
-            {
-                return uiPoint << vp.zoom;
-            }
-
-            [[nodiscard]] static Point viewOffsetTransform(const Point& point, const Viewport& vp)
-            {
-                return point + Point{ vp.view_x, vp.view_y };
-            }
-        };
-
-        struct ViewportToScreen
-        {
-            [[nodiscard]] static Point applyTransform(const Point& vpPoint, const Viewport& vp)
-            {
-                return uiOffsetTransform(scaleTransform(viewOffsetTransform(vpPoint, vp), vp), vp);
-            }
-
-            [[nodiscard]] static Point uiOffsetTransform(const Point& uiPoint, const Viewport& vp)
-            {
-                return uiPoint + Point{ vp.x, vp.y };
-            }
-
-            [[nodiscard]] static Point scaleTransform(const Point& uiPoint, const Viewport& vp)
-            {
-                return uiPoint >> vp.zoom;
-            }
-
-            [[nodiscard]] static Point viewOffsetTransform(const Point& point, const Viewport& vp)
-            {
-                return point - Point{ vp.view_x, vp.view_y };
-            }
-        };
-
         /**
          * Maps a 2D viewport position to a UI (screen) position.
          */
@@ -206,4 +172,50 @@ namespace OpenLoco::Ui
         int16_t saved_view_x;            // 0x2
         int16_t saved_view_y;            // 0x4
     };
+
+    namespace ScreenToViewport
+    {
+        [[nodiscard]] constexpr Point uiOffsetTransform(const Point& uiPoint, const Viewport& vp)
+        {
+            return uiPoint - Point{ vp.x, vp.y };
+        }
+
+        [[nodiscard]] constexpr Point scaleTransform(const Point& uiPoint, const Viewport& vp)
+        {
+            return uiPoint << vp.zoom;
+        }
+
+        [[nodiscard]] constexpr Point viewOffsetTransform(const Point& point, const Viewport& vp)
+        {
+            return point + Point{ vp.view_x, vp.view_y };
+        }
+
+        [[nodiscard]] constexpr Point applyTransform(const Point& uiPoint, const Viewport& vp)
+        {
+            return viewOffsetTransform(scaleTransform(uiOffsetTransform(uiPoint, vp), vp), vp);
+        }
+    }
+
+    namespace ViewportToScreen
+    {
+        [[nodiscard]] constexpr Point uiOffsetTransform(const Point& uiPoint, const Viewport& vp)
+        {
+            return uiPoint + Point{ vp.x, vp.y };
+        }
+
+        [[nodiscard]] constexpr Point scaleTransform(const Point& uiPoint, const Viewport& vp)
+        {
+            return uiPoint >> vp.zoom;
+        }
+
+        [[nodiscard]] constexpr Point viewOffsetTransform(const Point& point, const Viewport& vp)
+        {
+            return point - Point{ vp.view_x, vp.view_y };
+        }
+
+        [[nodiscard]] constexpr Point applyTransform(const Point& vpPoint, const Viewport& vp)
+        {
+            return uiOffsetTransform(scaleTransform(viewOffsetTransform(vpPoint, vp), vp), vp);
+        }
+    }
 }
