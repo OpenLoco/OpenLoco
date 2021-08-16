@@ -314,6 +314,8 @@ namespace OpenLoco::Map
         uint8_t sequenceIndex() const { return _5 & 0x3; } // _5l
         uint8_t bridge() const { return _6 >> 5; }         // _6u
         bool hasStationElement() const { return (_type & 0x80) != 0; }
+        bool hasUnkBit4() const { return _7 & (1 << 4); }
+        bool hasLevelCrossing() const { return _7 & (1 << 5); }
         bool hasMod(uint8_t mod) const { return _7 & (1 << (mod + 6)); } // _7u (bits 6 and 7)
         uint8_t mods() const { return _7 >> 6; }                         // _7u
         uint8_t owner() const { return _7 & 0xF; }                       // _7l
