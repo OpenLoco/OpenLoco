@@ -2100,4 +2100,22 @@ namespace OpenLoco::Input
     {
         _clickRepeatTicks = ticks;
     }
+
+    // 0x00406FEC
+    void enqueueMouseButton(int32_t button)
+    {
+        ((void (*)(int))0x00406FEC)(button);
+    }
+
+    // 0x004C6EE6
+    Input::MouseButton gameGetNextInput(uint32_t* x, int16_t* y)
+    {
+        registers regs;
+        call(0x004c6ee6, regs);
+
+        *x = regs.eax;
+        *y = regs.bx;
+
+        return (Input::MouseButton)regs.cx;
+    }
 }

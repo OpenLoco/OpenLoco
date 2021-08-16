@@ -104,7 +104,6 @@ namespace OpenLoco::Input
     void handleKeyboard();
     void handleMouse(int16_t x, int16_t y, MouseButton button);
     MouseButton getLastKnownButtonState();
-    void enqueueMouseButton(int32_t button);
     void moveMouse(int32_t x, int32_t y, int32_t relX, int32_t relY);
     void sub_407218();
     void sub_407231();
@@ -122,4 +121,7 @@ namespace OpenLoco::Input
     void setTooltipTimeout(uint16_t tooltipTimeout);
 
     void setClickRepeatTicks(uint16_t ticks);
+
+    void enqueueMouseButton(int32_t button);
+    MouseButton gameGetNextInput(uint32_t* x, int16_t* y);
 }
