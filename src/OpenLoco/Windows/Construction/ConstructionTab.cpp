@@ -116,10 +116,19 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     static std::optional<TrackPieceId> getRoadPieceId(uint8_t trackPiece, uint8_t gradient, uint8_t rotation);
     static std::optional<TrackPieceId> getTrackPieceId(uint8_t trackPiece, uint8_t gradient, uint8_t rotation);
 
+    static loco_global<uint8_t, 0x00525FB0> _pickupDirection; // From Vehicle.cpp window
+
     // 0x0049B50C
     void reset()
     {
-        call(0x0049B50C);
+        std::fill(std::begin(_scenarioSignals), std::end(_scenarioSignals), 0xFF);
+        std::fill(std::begin(_scenarioBridges), std::end(_scenarioBridges), 0xFF);
+        std::fill(std::begin(_scenarioTrainStations), std::end(_scenarioTrainStations), 0xFF);
+        std::fill(std::begin(_scenarioTrackMods), std::end(_scenarioTrackMods), 0xFF);
+
+        _lastAirport = 0xFF;
+        _lastShipPort = 0xFF;
+        _pickupDirection = 0;
     }
 
     // 0x0049F92D

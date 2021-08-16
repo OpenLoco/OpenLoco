@@ -570,6 +570,11 @@ namespace OpenLoco::Ui::Windows::IndustryList
         return window;
     }
 
+    void reset()
+    {
+        _lastSelectedIndustry = 0xFF;
+    }
+
     namespace NewIndustries
     {
 
