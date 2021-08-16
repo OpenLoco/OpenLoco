@@ -65,6 +65,7 @@
     <ClCompile Include="Map\BuildingTile.cpp" />
     <ClCompile Include="Map\AnimationManager.cpp" />
     <ClCompile Include="Map\MapGenerator.cpp" />
+    <ClCompile Include="Map\RoadTile.cpp" />
     <ClCompile Include="Map\SurfaceTile.cpp" />
     <ClCompile Include="Map\Tile.cpp" />
     <ClCompile Include="Map\TileManager.cpp" />

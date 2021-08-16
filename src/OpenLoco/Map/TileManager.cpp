@@ -598,8 +598,14 @@ namespace OpenLoco::Map::TileManager
                 call(0x004BD52B, regs);
                 break;
             case ElementType::road:
-                call(0x00477FC2, regs);
+            {
+                auto* elRoad = el.asRoad();
+                if (elRoad != nullptr)
+                    return elRoad->update(loc);
+                else
+                    return false;
                 break;
+            }
             case ElementType::industry:
                 call(0x00456FF7, regs);
                 break;
