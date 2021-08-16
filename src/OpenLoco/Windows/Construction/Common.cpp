@@ -659,11 +659,11 @@ namespace OpenLoco::Ui::Windows::Construction
         bool isPointCloserToNextOrPreviousTile(const Point& point, const Viewport& viewport)
         {
             const auto vpPosNext = gameToScreen(*_nextTile + Map::Pos3(16, 16, 0), viewport.getRotation());
-            const auto uiPosNext = viewport.mapToUi(vpPosNext);
+            const auto uiPosNext = viewport.viewportToScreen(vpPosNext);
             const auto distanceToNext = Math::Vector::manhattanDistance(uiPosNext, point);
 
             const auto vpPosPrevious = gameToScreen(*_previousTile + Map::Pos3(16, 16, 0), viewport.getRotation());
-            const auto uiPosPrevious = viewport.mapToUi(vpPosPrevious);
+            const auto uiPosPrevious = viewport.viewportToScreen(vpPosPrevious);
             const auto distanceToPrevious = Math::Vector::manhattanDistance(uiPosPrevious, point);
 
             return distanceToNext < distanceToPrevious;

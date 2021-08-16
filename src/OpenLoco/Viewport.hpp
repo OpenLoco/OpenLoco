@@ -163,29 +163,27 @@ namespace OpenLoco::Ui
         /**
          * Maps a 2D viewport position to a UI (screen) position.
          */
-        Point mapToUi(const viewport_pos& vpos) const
+        Point viewportToScreen(const viewport_pos& vpos) const
         {
-            auto uiX = x + ((vpos.x - view_x) >> zoom);
-            auto uiY = y + ((vpos.y - view_y) >> zoom);
-            return Point(uiX, uiY);
+            const auto vpPoint = ViewportToScreen::applyTransform({ vpos.x, vpos.y }, *this);
+            return vpPoint;
         }
 
         /**
          * Maps a UI (screen) position to a 2D viewport position.
          */
-        viewport_pos uiToMap(const Point& pos) const
+        viewport_pos screenToViewport(const Point& pos) const
         {
-            int16_t viewport_x = ((pos.x - x) << zoom) + view_x;
-            int16_t viewport_y = ((pos.y - y) << zoom) + view_y;
-            return { viewport_x, viewport_y };
+            const auto vpPoint = ScreenToViewport::applyTransform(pos, *this);
+            return { vpPoint.x, vpPoint.y };
         }
         /**
          * Maps a UI (screen) rectangle to a 2D viewport rectangle.
          */
-        Rect uiToMap(const Rect& rect)
+        Rect screenToViewport(const Rect& rect)
         {
-            auto leftTop = uiToMap(Point(rect.left(), rect.top()));
-            auto rightBottom = uiToMap(Point(rect.right(), rect.bottom()));
+            auto leftTop = screenToViewport(Point(rect.left(), rect.top()));
+            auto rightBottom = screenToViewport(Point(rect.right(), rect.bottom()));
             return Rect::fromLTRB(leftTop.x, leftTop.y, rightBottom.x, rightBottom.y);
         }
 
