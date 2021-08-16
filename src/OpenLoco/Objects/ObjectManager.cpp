@@ -27,7 +27,7 @@ namespace OpenLoco::ObjectManager
         {
         }
     };
-    static_assert(sizeof(ObjectEntry2) == 0x14);
+    assert_struct_size(ObjectEntry2, 0x14);
 
     struct ObjectRepositoryItem
     {

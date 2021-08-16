@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../Core/Optional.hpp"
+#include "../Interop/Interop.hpp"
 #include "../OpenLoco.h"
 #include "../Types.hpp"
 #include "../Ui/Rect.h"
@@ -29,6 +30,7 @@ namespace OpenLoco::Gfx
         Ui::Rect getUiRect() const;
         Ui::Rect getDrawableRect() const;
     };
+    assert_struct_size(Context, 0x10);
 
     Context& screenContext();
 
@@ -48,6 +50,7 @@ namespace OpenLoco::Gfx
         uint16_t flags;   // 0x0C
         int16_t unused;   // 0x0E
     };
+    assert_struct_size(G1Element32, 0x10);
 
     // A version that can be 64-bit when ready...
     struct G1Element
@@ -72,6 +75,8 @@ namespace OpenLoco::Gfx
         {
         }
     };
+
+    assert_struct_size(G1Element, 0x10);
 
 #pragma pack(pop)
     namespace ImageIdFlags

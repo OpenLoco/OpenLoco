@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../Graphics/Colour.h"
+#include "../Interop/Interop.hpp"
 #include "../Localisation/StringManager.h"
 
 namespace OpenLoco
@@ -45,5 +46,5 @@ namespace OpenLoco
         void drawDescription(Gfx::Context& context, const int16_t x, const int16_t y, [[maybe_unused]] const int16_t width) const;
     };
 #pragma pack(pop)
-    static_assert(sizeof(BuildingObject) == 0xAE);
+    assert_struct_size(BuildingObject, 0xAE);
 }
