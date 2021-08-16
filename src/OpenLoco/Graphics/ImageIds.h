@@ -8,6 +8,24 @@ namespace OpenLoco::ImageIds
 {
     constexpr uint32_t null = 0xFFFFFFFF;
 
+    constexpr uint32_t construction_arrow_north = 428;
+    constexpr uint32_t construction_arrow_east = 429;
+    constexpr uint32_t construction_arrow_south = 430;
+    constexpr uint32_t construction_arrow_west = 431;
+    constexpr uint32_t construction_arrow_north2 = 432;
+    constexpr uint32_t construction_arrow_east2 = 433;
+    constexpr uint32_t construction_arrow_south2 = 434;
+    constexpr uint32_t construction_arrow_west2 = 435;
+    constexpr uint32_t construction_arrow_north3 = 436;
+    constexpr uint32_t construction_arrow_east3 = 437;
+    constexpr uint32_t construction_arrow_south3 = 438;
+    constexpr uint32_t construction_arrow_west3 = 439;
+    constexpr uint32_t construction_arrow_north_east = 440;
+    constexpr uint32_t construction_arrow_south_east = 441;
+    constexpr uint32_t construction_arrow_south_west = 442;
+    constexpr uint32_t construction_arrow_north_west = 443;
+
+    constexpr uint32_t blank_tile = 448;
     constexpr uint32_t currency_symbol = 1919;
 
     constexpr uint32_t text_palette = 2169;
