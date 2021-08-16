@@ -1,6 +1,7 @@
 #include "Paint.h"
 #include "../Graphics/Gfx.h"
 #include "../Interop/Interop.hpp"
+#include "../Interop/emu.h"
 #include "../Map/Tile.h"
 #include "../StationManager.h"
 #include "../TownManager.h"
@@ -130,8 +131,8 @@ namespace OpenLoco::Paint
         }
         _quadrantBackIndex = -1;
         _quadrantFrontIndex = 0;
-        _lastPaintString = 0;
-        _paintStringHead = 0;
+        _lastPaintString = nullptr;
+        _paintStringHead = nullptr;
     }
 
     // 0x0045A6CA
@@ -159,6 +160,7 @@ namespace OpenLoco::Paint
     // 0x00461CF8
     static void paintTileElements(PaintSession& session, const Map::Pos2& loc)
     {
+        emu::log();
         registers regs{};
         regs.eax = loc.x;
         regs.ecx = loc.y;
@@ -321,7 +323,7 @@ namespace OpenLoco::Paint
         do
         {
             ps = psNext;
-            psNext = psNext->nextQuadrantPS;
+            psNext = psNext->nextQuadrantPS.get();
             if (psNext == nullptr)
                 return ps;
         } while (quadrantIndex > psNext->quadrantIndex);
@@ -331,7 +333,7 @@ namespace OpenLoco::Paint
         auto* psTemp = ps;
         do
         {
-            ps = ps->nextQuadrantPS;
+            ps = ps->nextQuadrantPS.get();
             if (ps == nullptr)
                 break;
 
@@ -354,7 +356,7 @@ namespace OpenLoco::Paint
         {
             while (true)
             {
-                psNext = ps->nextQuadrantPS;
+                psNext = ps->nextQuadrantPS.get();
                 if (psNext == nullptr)
                     return psCache;
                 if (psNext->quadrantFlags & QuadrantFlags::bigger)
@@ -372,7 +374,7 @@ namespace OpenLoco::Paint
             while (true)
             {
                 ps = psNext;
-                psNext = psNext->nextQuadrantPS;
+                psNext = psNext->nextQuadrantPS.get();
                 if (psNext == nullptr)
                     break;
                 if (psNext->quadrantFlags & QuadrantFlags::bigger)
@@ -387,7 +389,7 @@ namespace OpenLoco::Paint
                 if (compareResult)
                 {
                     ps->nextQuadrantPS = psNext->nextQuadrantPS;
-                    PaintStruct* ps_temp2 = psTemp->nextQuadrantPS;
+                    PaintStruct* ps_temp2 = psTemp->nextQuadrantPS.get();
                     psTemp->nextQuadrantPS = psNext;
                     psNext->nextQuadrantPS = ps_temp2;
                     psNext = ps;
@@ -417,10 +419,10 @@ namespace OpenLoco::Paint
     // 0x0045E7B5
     void PaintSession::arrangeStructs()
     {
-        _paintHead = _nextFreePaintStruct;
-        _nextFreePaintStruct++;
+        _paintHead = _nextFreePaintStruct->get();
+        _nextFreePaintStruct = _nextFreePaintStruct->get() + 1;
 
-        PaintStruct* ps = &(*_paintHead)->basic;
+        PaintStruct* ps = &(_paintHead->get())->basic;
         ps->nextQuadrantPS = nullptr;
 
         uint32_t quadrantIndex = _quadrantBackIndex;
@@ -438,14 +440,14 @@ namespace OpenLoco::Paint
                 do
                 {
                     ps = psNext;
-                    psNext = psNext->nextQuadrantPS;
+                    psNext = psNext->nextQuadrantPS.get();
 
                 } while (psNext != nullptr);
             }
         } while (++quadrantIndex <= _quadrantFrontIndex);
 
         PaintStruct* psCache = arrangeStructsHelper(
-            &(*_paintHead)->basic, _quadrantBackIndex & 0xFFFF, QuadrantFlags::next, currentRotation);
+            &(_paintHead->get())->basic, _quadrantBackIndex & 0xFFFF, QuadrantFlags::next, currentRotation);
 
         quadrantIndex = _quadrantBackIndex;
         while (++quadrantIndex < _quadrantFrontIndex)
@@ -541,7 +543,7 @@ namespace OpenLoco::Paint
     {
         InteractionArg info{};
 
-        for (auto* ps = (*_paintHead)->basic.nextQuadrantPS; ps != nullptr; ps = ps->nextQuadrantPS)
+        for (auto* ps = (_paintHead->get())->basic.nextQuadrantPS.get(); ps != nullptr; ps = ps->nextQuadrantPS.get())
         {
             auto* tempPS = ps;
             auto* nextPS = ps;
@@ -555,10 +557,10 @@ namespace OpenLoco::Paint
                         info = { *ps };
                     }
                 }
-                nextPS = ps->children;
+                nextPS = ps->children.get();
             }
 
-            for (auto* attachedPS = ps->attachedPS; attachedPS != nullptr; attachedPS = attachedPS->next)
+            for (auto* attachedPS = ps->attachedPS.get(); attachedPS != nullptr; attachedPS = attachedPS->next.get())
             {
                 if (isSpriteInteractedWith(getContext(), attachedPS->imageId, { static_cast<int16_t>(attachedPS->x + ps->x), static_cast<int16_t>(attachedPS->y + ps->y) }))
                 {
@@ -584,7 +586,7 @@ namespace OpenLoco::Paint
             return interaction;
         }
 
-        auto rect = (*_context)->getDrawableRect();
+        auto rect = (*_context->get()).getDrawableRect();
 
         for (auto& station : StationManager::stations())
         {
@@ -593,7 +595,7 @@ namespace OpenLoco::Paint
                 continue;
             }
 
-            if (!station.labelFrame.contains(rect, (*_context)->zoom_level))
+            if (!station.labelFrame.contains(rect, (*_context->get()).zoom_level))
             {
                 continue;
             }
@@ -616,11 +618,11 @@ namespace OpenLoco::Paint
             return interaction;
         }
 
-        auto rect = (*_context)->getDrawableRect();
+        auto rect = _context->get()->getDrawableRect();
 
         for (auto& town : TownManager::towns())
         {
-            if (!town.labelFrame.contains(rect, (*_context)->zoom_level))
+            if (!town.labelFrame.contains(rect, (*_context->get()).zoom_level))
             {
                 continue;
             }

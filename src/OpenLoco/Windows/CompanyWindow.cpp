@@ -382,7 +382,7 @@ namespace OpenLoco::Ui::Windows::CompanyWindow
             if (self->viewports[0] != nullptr)
             {
                 Ui::Size proposedDims(self->width - 123, self->height - 59);
-                auto& viewport = self->viewports[0];
+                auto viewport = self->viewports[0].get();
                 if (proposedDims.width != viewport->width || proposedDims.height != viewport->height)
                 {
                     viewport->width = proposedDims.width;

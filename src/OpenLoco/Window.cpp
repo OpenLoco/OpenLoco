@@ -25,7 +25,7 @@ namespace OpenLoco::Ui
     template<typename T>
     static bool isInteropEvent(T e)
     {
-        return (uint32_t)e < 0x004D7000;
+        return (uintptr_t)e < 0x004D7000;
     }
 
     Window::Window(Ui::Point position, Ui::Size size)
@@ -111,10 +111,10 @@ namespace OpenLoco::Ui
     // 0x0045A0B3
     void Window::drawViewports(Gfx::Context* context)
     {
-        if (viewports[0] != nullptr)
+        if (viewports[0].get() != nullptr)
             viewports[0]->render(context);
 
-        if (viewports[1] != nullptr)
+        if (viewports[1].get() != nullptr)
             viewports[1]->render(context);
     }
 
@@ -133,7 +133,7 @@ namespace OpenLoco::Ui
             return std::nullopt;
         }
 
-        Viewport* vp = w->viewports[0];
+        Viewport* vp = w->viewports[0].get();
         if (vp == nullptr)
         {
             return std::nullopt;
@@ -276,7 +276,7 @@ namespace OpenLoco::Ui
     {
         for (int i = 0; i < 2; i++)
         {
-            Viewport* viewport = this->viewports[i];
+            Viewport* viewport = this->viewports[i].get();
             ViewportConfig* config = &this->viewport_configurations[i];
 
             if (viewport == nullptr)
@@ -517,7 +517,7 @@ namespace OpenLoco::Ui
 
         // Get viewport coordinates centring around the tile.
         auto base_height = TileManager::getHeight({ *map_x, *map_y }).landHeight;
-        Viewport* v = this->viewports[0];
+        Viewport* v = this->viewports[0].get();
         const auto dest = v->centre2dCoordinates({ *map_x, *map_y, base_height });
 
         // Rebase mouse position onto centre of window, and compensate for zoom level.
@@ -547,7 +547,7 @@ namespace OpenLoco::Ui
     // 0x004C6827
     void Window::viewportCentreOnTile(const Map::Pos3& loc)
     {
-        auto viewport = this->viewports[0];
+        auto viewport = this->viewports[0].get();
         if (viewport == nullptr)
             return;
 
@@ -583,7 +583,7 @@ namespace OpenLoco::Ui
 
     void Window::viewportCentreMain()
     {
-        if (viewports[0] == nullptr || saved_view.isEmpty())
+        if (viewports[0].get() == nullptr || saved_view.isEmpty())
             return;
 
         auto main = WindowManager::getMainWindow();
@@ -607,7 +607,7 @@ namespace OpenLoco::Ui
     {
         // Get viewport coordinates centring around the tile.
         auto base_height = TileManager::getHeight({ map_x, map_y }).landHeight;
-        Viewport* v = this->viewports[0];
+        Viewport* v = this->viewports[0].get();
         const auto dest = v->centre2dCoordinates({ map_x, map_y, base_height });
 
         // Get mouse position to offset against.
@@ -625,7 +625,7 @@ namespace OpenLoco::Ui
 
     void Window::viewportFocusOnEntity(uint16_t targetEntity)
     {
-        if (viewports[0] == nullptr || saved_view.isEmpty())
+        if (viewports[0].get() == nullptr || saved_view.isEmpty())
             return;
 
         viewport_configurations[0].viewport_target_sprite = targetEntity;
@@ -633,7 +633,7 @@ namespace OpenLoco::Ui
 
     bool Window::viewportIsFocusedOnEntity() const
     {
-        if (viewports[0] == nullptr || saved_view.isEmpty())
+        if (viewports[0].get() == nullptr || saved_view.isEmpty())
             return false;
 
         return viewport_configurations[0].viewport_target_sprite != EntityId::null;
@@ -641,7 +641,7 @@ namespace OpenLoco::Ui
 
     void Window::viewportUnfocusFromEntity()
     {
-        if (viewports[0] == nullptr || saved_view.isEmpty())
+        if (viewports[0].get() == nullptr || saved_view.isEmpty())
             return;
 
         if (viewport_configurations[0].viewport_target_sprite == EntityId::null)
@@ -654,7 +654,7 @@ namespace OpenLoco::Ui
 
     void Window::viewportZoomSet(int8_t zoomLevel, bool toCursor)
     {
-        Viewport* v = this->viewports[0];
+        Viewport* v = this->viewports[0].get();
         ViewportConfig* vc = &this->viewport_configurations[0];
 
         zoomLevel = std::clamp<int8_t>(zoomLevel, 0, 3);
@@ -703,19 +703,19 @@ namespace OpenLoco::Ui
     // 0x0045EFDB
     void Window::viewportZoomIn(bool toCursor)
     {
-        if (this->viewports[0] == nullptr)
+        if (this->viewports[0].get() == nullptr)
             return;
 
-        this->viewportZoomSet(this->viewports[0]->zoom - 1, toCursor);
+        this->viewportZoomSet(this->viewports[0].get()->zoom - 1, toCursor);
     }
 
     // 0x0045F015
     void Window::viewportZoomOut(bool toCursor)
     {
-        if (this->viewports[0] == nullptr)
+        if (this->viewports[0].get() == nullptr)
             return;
 
-        this->viewportZoomSet(this->viewports[0]->zoom + 1, toCursor);
+        this->viewportZoomSet(this->viewports[0].get()->zoom + 1, toCursor);
     }
 
     // 0x0045F04F
@@ -736,9 +736,9 @@ namespace OpenLoco::Ui
 
     void Window::viewportRemove(const uint8_t viewportId)
     {
-        if (viewports[viewportId] != nullptr)
+        if (viewports[viewportId].get() != nullptr)
         {
-            viewports[viewportId]->width = 0;
+            viewports[viewportId].get()->width = 0;
             viewports[viewportId] = nullptr;
         }
     }
@@ -746,7 +746,7 @@ namespace OpenLoco::Ui
     // 0x004421FB
     void Window::viewportFromSavedView(const SavedViewSimple& savedView)
     {
-        auto viewport = viewports[0];
+        auto viewport = viewports[0].get();
         if (viewport != nullptr)
         {
             auto& config = viewport_configurations[0];
@@ -789,16 +789,16 @@ namespace OpenLoco::Ui
         this->x += dx;
         this->y += dy;
 
-        if (this->viewports[0] != nullptr)
+        if (this->viewports[0].get() != nullptr)
         {
-            this->viewports[0]->x += dx;
-            this->viewports[0]->y += dy;
+            this->viewports[0].get()->x += dx;
+            this->viewports[0].get()->y += dy;
         }
 
-        if (this->viewports[1] != nullptr)
+        if (this->viewports[1].get() != nullptr)
         {
-            this->viewports[1]->x += dx;
-            this->viewports[1]->y += dy;
+            this->viewports[1].get()->x += dx;
+            this->viewports[1].get()->y += dy;
         }
 
         this->invalidate();
@@ -839,16 +839,16 @@ namespace OpenLoco::Ui
         this->y += offset.y;
         this->invalidate();
 
-        if (this->viewports[0] != nullptr)
+        if (this->viewports[0].get() != nullptr)
         {
-            this->viewports[0]->x += offset.x;
-            this->viewports[0]->y += offset.y;
+            this->viewports[0].get()->x += offset.x;
+            this->viewports[0].get()->y += offset.y;
         }
 
-        if (this->viewports[1] != nullptr)
+        if (this->viewports[1].get() != nullptr)
         {
-            this->viewports[1]->x += offset.x;
-            this->viewports[1]->y += offset.y;
+            this->viewports[1].get()->x += offset.x;
+            this->viewports[1].get()->y += offset.y;
         }
     }
 
@@ -913,8 +913,7 @@ namespace OpenLoco::Ui
         if (isInteropEvent(event_handlers->on_close))
         {
             registers regs;
-            regs.esi = X86Pointer(this);
-            call((uint32_t)this->event_handlers->on_close, regs);
+            //            call((uint32_t)this->event_handlers->on_close, regs);
             return;
         }
 
@@ -930,7 +929,7 @@ namespace OpenLoco::Ui
         {
             registers regs;
             regs.esi = X86Pointer(this);
-            call((uint32_t)this->event_handlers->on_periodic_update, regs);
+            //            call((uint32_t)this->event_handlers->on_periodic_update, regs);
             return;
         }
 
@@ -1016,7 +1015,7 @@ namespace OpenLoco::Ui
             regs.bx = yPos;
             regs.dx = widget_index;
             regs.esi = X86Pointer(this);
-            call((uint32_t)this->event_handlers->on_tool_down, regs);
+            //            call((uint32_t)this->event_handlers->on_tool_down, regs);
             return;
         }
 
@@ -1035,7 +1034,7 @@ namespace OpenLoco::Ui
             regs.bx = yPos;
             regs.dx = widget_index;
             regs.esi = X86Pointer(this);
-            call((uint32_t)this->event_handlers->toolDragContinue, regs);
+            //            call((uint32_t)this->event_handlers->toolDragContinue, regs);
             return;
         }
 
@@ -1052,7 +1051,7 @@ namespace OpenLoco::Ui
             registers regs;
             regs.dx = widget_index;
             regs.esi = X86Pointer(this);
-            call((uint32_t)this->event_handlers->toolDragEnd, regs);
+            //            call((uint32_t)this->event_handlers->toolDragEnd, regs);
             return;
         }
 
@@ -1069,7 +1068,7 @@ namespace OpenLoco::Ui
             registers regs;
             regs.dx = widget_index;
             regs.esi = X86Pointer(this);
-            call((uint32_t)this->event_handlers->on_tool_abort, regs);
+            //            call((uint32_t)this->event_handlers->on_tool_abort, regs);
             return;
         }
 
@@ -1088,7 +1087,7 @@ namespace OpenLoco::Ui
             regs.cx = yPos;
             regs.edi = (int32_t)fallback;
             regs.esi = X86Pointer(this);
-            call(reinterpret_cast<uint32_t>(this->event_handlers->event_15), regs);
+            //            call(reinterpret_cast<uint32_t>(this->event_handlers->event_15), regs);
 
             *out = regs.bl;
 
@@ -1155,7 +1154,7 @@ namespace OpenLoco::Ui
         {
             registers regs;
             regs.esi = X86Pointer(this);
-            call((uint32_t)event_handlers->on_resize, regs);
+            //            call((uint32_t)event_handlers->on_resize, regs);
             return (Window*)regs.esi;
         }
 
@@ -1174,7 +1173,7 @@ namespace OpenLoco::Ui
             regs.edx = widget_index;
             regs.esi = X86Pointer(this);
             regs.edi = X86Pointer(&this->widgets[widget_index]);
-            call((uint32_t)this->event_handlers->event_03, regs);
+            //            call((uint32_t)this->event_handlers->event_03, regs);
             return;
         }
 
@@ -1192,7 +1191,7 @@ namespace OpenLoco::Ui
             regs.edx = widget_index;
             regs.esi = X86Pointer(this);
             regs.edi = X86Pointer(&this->widgets[widget_index]);
-            call((uint32_t)this->event_handlers->on_mouse_down, regs);
+            //            call((uint32_t)this->event_handlers->on_mouse_down, regs);
             return;
         }
 
@@ -1210,7 +1209,7 @@ namespace OpenLoco::Ui
             regs.ax = item_index;
             regs.edx = widget_index;
             regs.esi = X86Pointer(this);
-            call((uint32_t)this->event_handlers->on_dropdown, regs);
+            //            call((uint32_t)this->event_handlers->on_dropdown, regs);
             return;
         }
 
@@ -1227,7 +1226,7 @@ namespace OpenLoco::Ui
             registers regs;
             regs.eax = scrollIndex;
             regs.esi = X86Pointer(this);
-            call((uint32_t)this->event_handlers->get_scroll_size, regs);
+            //            call((uint32_t)this->event_handlers->get_scroll_size, regs);
             *scrollWidth = regs.cx;
             *scrollHeight = regs.dx;
             return;
@@ -1248,7 +1247,7 @@ namespace OpenLoco::Ui
             regs.esi = X86Pointer(this);
             regs.cx = xPos;
             regs.dx = yPos;
-            call((uint32_t)this->event_handlers->scroll_mouse_down, regs);
+            //            call((uint32_t)this->event_handlers->scroll_mouse_down, regs);
             return;
         }
 
@@ -1267,7 +1266,7 @@ namespace OpenLoco::Ui
             regs.esi = X86Pointer(this);
             regs.cx = xPos;
             regs.dx = yPos;
-            call((uint32_t)this->event_handlers->scroll_mouse_drag, regs);
+            //            call((uint32_t)this->event_handlers->scroll_mouse_drag, regs);
             return;
         }
 
@@ -1286,7 +1285,7 @@ namespace OpenLoco::Ui
             regs.esi = X86Pointer(this);
             regs.cx = xPos;
             regs.dx = yPos;
-            call((uint32_t)this->event_handlers->scroll_mouse_over, regs);
+            //            call((uint32_t)this->event_handlers->scroll_mouse_over, regs);
             return;
         }
 
@@ -1339,7 +1338,7 @@ namespace OpenLoco::Ui
             registers regs;
             regs.ax = widget_index;
             regs.esi = X86Pointer(this);
-            call((int32_t)this->event_handlers->tooltip, regs);
+            //            call((int32_t)this->event_handlers->tooltip, regs);
             auto args = FormatArguments();
             if (regs.ax == (int16_t)StringIds::null)
                 return {};
@@ -1360,7 +1359,7 @@ namespace OpenLoco::Ui
             regs.cx = xPos;
             regs.dx = yPos;
             regs.esi = X86Pointer(this);
-            call(reinterpret_cast<int32_t>(this->event_handlers->on_move), regs);
+            //            call(reinterpret_cast<int32_t>(this->event_handlers->on_move), regs);
         }
         this->event_handlers->on_move(*this, xPos, yPos);
     }
@@ -1374,10 +1373,11 @@ namespace OpenLoco::Ui
         {
             registers regs;
             regs.esi = X86Pointer(this);
-            call((int32_t)this->event_handlers->prepare_draw, regs);
+            //            call((int32_t)this->event_handlers->prepare_draw, regs);
             return;
         }
 
+        auto handlers = event_handlers.get();
         event_handlers->prepare_draw(this);
     }
 
@@ -1391,7 +1391,7 @@ namespace OpenLoco::Ui
             registers regs;
             regs.esi = X86Pointer(this);
             regs.edi = X86Pointer(context);
-            call((int32_t)this->event_handlers->draw, regs);
+            //            call((int32_t)this->event_handlers->draw, regs);
             return;
         }
 
@@ -1409,7 +1409,7 @@ namespace OpenLoco::Ui
             regs.ax = scrollIndex;
             regs.esi = X86Pointer(this);
             regs.edi = X86Pointer(context);
-            call((int32_t)event_handlers->draw_scroll, regs);
+            //            call((int32_t)event_handlers->draw_scroll, regs);
             return;
         }
 
@@ -1449,7 +1449,7 @@ namespace OpenLoco::Ui
         uint8_t scrollviewIndex = 0;
         for (WidgetIndex_t widgetIndex = 0; widgetIndex < 64; widgetIndex++)
         {
-            auto widget = &this->widgets[widgetIndex];
+            auto widget = &this->widgets.get()[widgetIndex];
 
             if (widget->type == WidgetType::end)
             {

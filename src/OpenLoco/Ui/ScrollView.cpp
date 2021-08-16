@@ -190,7 +190,7 @@ namespace OpenLoco::Ui::ScrollView
         *output_y = y;
         *output_scroll_area = ScrollPart::none;
 
-        for (const auto* winWidget = window->widgets; winWidget != widget; winWidget++)
+        for (const auto* winWidget = &window->widgets[0]; winWidget != widget; winWidget++)
         {
             if (winWidget->type == WidgetType::scrollview)
             {

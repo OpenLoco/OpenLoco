@@ -3,6 +3,7 @@
 #include <cstring>
 #include <system_error>
 #ifndef _WIN32
+#include <cinttypes>
 #include <sys/mman.h>
 #include <unistd.h>
 #endif
@@ -41,6 +42,10 @@ using namespace OpenLoco;
 
 #define STUB() Console::logVerbose(__FUNCTION__)
 
+#ifdef __i386__
+namespace compat = std;
+#endif
+
 #ifdef _MSC_VER
 #define STDCALL __stdcall
 #define CDECL __cdecl
@@ -49,6 +54,13 @@ using namespace OpenLoco;
 #define CDECL __attribute__((cdecl))
 #else
 #error Unknown compiler, please define STDCALL and CDECL
+#endif
+
+#ifdef __x86_64__
+#undef STDCALL
+#define STDCALL
+#undef CDECL
+#define CDECL
 #endif
 
 #pragma warning(push)
@@ -86,11 +98,6 @@ static int32_t CDECL audioIsChannelPlaying(int a0)
 }
 
 #ifdef _NO_LOCO_WIN32_
-static void STDCALL fn_40447f()
-{
-    STUB();
-    return;
-}
 
 static void STDCALL fn_404b68(int a0, int a1, int a2, int a3)
 {
@@ -123,7 +130,7 @@ static void CDECL fn_4054a3(const palette_entry_t* palette, int32_t index, int32
 }
 
 FORCE_ALIGN_ARG_POINTER
-static bool STDCALL fn_4054b9()
+static bool STDCALL fn_40726d()
 {
     STUB();
     return true;
@@ -144,18 +151,6 @@ static long STDCALL fn_DirectSoundEnumerateA(void* pDSEnumCallback, void* pConte
 }
 
 static void STDCALL fn_4078be()
-{
-    STUB();
-    return;
-}
-
-static void STDCALL fn_4078fe()
-{
-    STUB();
-    return;
-}
-
-static void STDCALL fn_407b26()
 {
     STUB();
     return;
@@ -186,35 +181,41 @@ static void CDECL fn_4081ad(int32_t wParam)
 
 ///endregion
 
+struct FileWrapper
+{
+    FILE* file;
+    std::string name;
+};
+
 FORCE_ALIGN_ARG_POINTER
-static uint32_t CDECL fn_FileSeekSet(FILE* a0, int32_t distance)
+static uint32_t CDECL fn_FileSeekSet(FileWrapper* a0, int32_t distance)
 {
     Console::logVerbose("seek %d bytes from start", distance);
-    fseek(a0, distance, SEEK_SET);
-    return ftell(a0);
+    fseek(a0->file, distance, SEEK_SET);
+    return ftell(a0->file);
 }
 
 FORCE_ALIGN_ARG_POINTER
-static uint32_t CDECL fn_FileSeekFromCurrent(FILE* a0, int32_t distance)
+static uint32_t CDECL fn_FileSeekFromCurrent(FileWrapper* a0, int32_t distance)
 {
     Console::logVerbose("seek %d bytes from current", distance);
-    fseek(a0, distance, SEEK_CUR);
-    return ftell(a0);
+    fseek(a0->file, distance, SEEK_CUR);
+    return ftell(a0->file);
 }
 
 FORCE_ALIGN_ARG_POINTER
-static uint32_t CDECL fn_FileSeekFromEnd(FILE* a0, int32_t distance)
+static uint32_t CDECL fn_FileSeekFromEnd(FileWrapper* a0, int32_t distance)
 {
     Console::logVerbose("seek %d bytes from end", distance);
-    fseek(a0, distance, SEEK_END);
-    return ftell(a0);
+    fseek(a0->file, distance, SEEK_END);
+    return ftell(a0->file);
 }
 
 FORCE_ALIGN_ARG_POINTER
-static int32_t CDECL fn_FileRead(FILE* a0, char* buffer, int32_t size)
+static int32_t CDECL fn_FileRead(FileWrapper* a0, char* buffer, int32_t size)
 {
-    Console::logVerbose("read %d bytes (%d)", size, fileno(a0));
-    size = fread(buffer, 1, size, a0);
+    Console::logVerbose("read %d bytes (%d)", size, fileno(a0->file));
+    size = fread(buffer, 1, size, a0->file);
 
     return size;
 }
@@ -336,27 +337,25 @@ static void CDECL fn_FindClose(Session* data)
 }
 
 FORCE_ALIGN_ARG_POINTER
-static void* CDECL fn_malloc(uint32_t size)
+static uint32_t CDECL fn_malloc(uint32_t size)
 {
-    return malloc(size);
+    void* pVoid = malloc(size);
+    Console::log("Allocated 0x%X bytes at 0x%" PRIXPTR, size, (uintptr_t)pVoid);
+    return (loco_ptr)pVoid;
 }
 
 FORCE_ALIGN_ARG_POINTER
-static void* CDECL fn_realloc(void* block, uint32_t size)
+static uint32_t CDECL fn_realloc(void* block, uint32_t size)
 {
-    return realloc(block, size);
+    Console::log("Reallocated %" PRIXPTR " to 0x%X bytes", (uintptr_t)block, size);
+    return (loco_ptr)realloc(block, size);
 }
 
+#ifdef _NO_LOCO_WIN32_
 FORCE_ALIGN_ARG_POINTER
 static void CDECL fn_free(void* block)
 {
     return free(block);
-}
-
-#ifdef _NO_LOCO_WIN32_
-static void STDCALL fn_dump(uint32_t address)
-{
-    Console::log("Missing hook: 0x%x", address);
 }
 
 enum
@@ -401,13 +400,15 @@ static bool STDCALL lib_DeleteFileA(char* lpFileName)
 
 FORCE_ALIGN_ARG_POINTER
 static bool STDCALL lib_WriteFile(
-    FILE* hFile,
+    FileWrapper* hFile,
     char* buffer,
     size_t nNumberOfBytesToWrite,
     uint32_t* lpNumberOfBytesWritten,
     uintptr_t lpOverlapped)
 {
-    *lpNumberOfBytesWritten = fwrite(buffer, 1, nNumberOfBytesToWrite, hFile);
+    auto str = std::string(buffer, nNumberOfBytesToWrite);
+    size_t i = fwrite(buffer, 1, nNumberOfBytesToWrite, hFile->file);
+    *lpNumberOfBytesWritten = i;
     Console::logVerbose("WriteFile(%s)", buffer);
 
     return true;
@@ -453,7 +454,10 @@ static int32_t STDCALL lib_CreateFileA(
         return -1;
     }
 
-    return (int32_t)pFILE;
+    auto wrapper = new FileWrapper;
+    wrapper->file = pFILE;
+    wrapper->name = lpFileName;
+    return (loco_ptr)wrapper;
 }
 
 FORCE_ALIGN_ARG_POINTER
@@ -484,9 +488,9 @@ static void* STDCALL lib_CreateMutexA(uintptr_t lmMutexAttributes, bool bInitial
 FORCE_ALIGN_ARG_POINTER
 static bool STDCALL lib_CloseHandle(void* hObject)
 {
-    auto file = (FILE*)hObject;
+    auto file = (FileWrapper*)hObject;
 
-    return fclose(file) == 0;
+    return fclose(file->file) == 0;
 }
 
 FORCE_ALIGN_ARG_POINTER
@@ -504,9 +508,9 @@ static void registerMemoryHooks()
 
     // Hook Locomotion's alloc / free routines so that we don't
     // allocate a block in one module and freeing it in another.
-    writeJmp(0x4d1401, (void*)&fn_malloc);
-    writeJmp(0x4D1B28, (void*)&fn_realloc);
-    writeJmp(0x4D1355, (void*)&fn_free);
+    hookFunction(0x4d1401, CallingConvention::cdecl, 1, (void (*)()) & fn_malloc);
+    hookFunction(0x4D1B28, CallingConvention::cdecl, 2, (void (*)()) & fn_realloc);
+    hookFunction(0x4D1355, CallingConvention::cdecl, 1, (void (*)()) & fn_free);
 }
 
 #ifdef _NO_LOCO_WIN32_
@@ -514,54 +518,53 @@ static void registerNoWin32Hooks()
 {
     using namespace OpenLoco::Interop;
 
-    writeJmp(0x40447f, (void*)&fn_40447f);
-    writeJmp(0x404b68, (void*)&fn_404b68);
-    writeJmp(0x404e8c, (void*)&getNumDSoundDevices);
-    writeJmp(0x4054b9, (void*)&fn_4054b9);
-    writeJmp(0x4064fa, (void*)&fn0);
-    writeJmp(0x4054a3, (void*)&fn_4054a3);
-    writeJmp(0x4072ec, (void*)&fn0);
-    writeJmp(0x4078be, (void*)&fn_4078be);
-    writeJmp(0x4078fe, (void*)&fn_4078fe);
-    writeJmp(0x407b26, (void*)&fn_407b26);
-    writeJmp(0x4080bb, (void*)&fn_4080bb);
-    writeJmp(0x408163, (void*)&fn_408163);
-    writeJmp(0x40817b, (void*)&fn_40817b);
-    writeJmp(0x4081ad, (void*)&fn_4081ad);
-    writeJmp(0x4081c5, (void*)&fn_FileSeekSet);
-    writeJmp(0x4081d8, (void*)&fn_FileSeekFromCurrent);
-    writeJmp(0x4081eb, (void*)&fn_FileSeekFromEnd);
-    writeJmp(0x4081fe, (void*)&fn_FileRead);
-    writeJmp(0x40830e, (void*)&fn_FindFirstFile);
-    writeJmp(0x40831d, (void*)&fn_FindNextFile);
-    writeJmp(0x40832c, (void*)&fn_FindClose);
-    writeJmp(0x4d0fac, (void*)&fn_DirectSoundEnumerateA);
+    hookFunction(0x404b68, CallingConvention::stdcall, 4, (void (*)()) & fn_404b68);
+    hookFunction(0x404e8c, CallingConvention::stdcall, 0, (void (*)()) & getNumDSoundDevices);
+    hookFunction(0x4064fa, CallingConvention::stdcall, 0, (void (*)()) & fn0);
+    hookFunction(0x40726d, CallingConvention::stdcall, 0, (void (*)()) & fn_40726d);
+    hookFunction(0x4054a3, CallingConvention::cdecl, 3, (void (*)()) & fn_4054a3);
+    hookFunction(0x4072ec, CallingConvention::stdcall, 0, (void (*)()) & fn0);
+    hookFunction(0x4078be, CallingConvention::stdcall, 0, (void (*)()) & fn_4078be);
+    hookFunction(0x4080bb, CallingConvention::cdecl, 2, (void (*)()) & fn_4080bb);
+    hookFunction(0x408163, CallingConvention::cdecl, 0, (void (*)()) & fn_408163);
+    hookFunction(0x40817b, CallingConvention::cdecl, 1, (void (*)()) & fn_40817b);
+    hookFunction(0x4081ad, CallingConvention::cdecl, 1, (void (*)()) & fn_4081ad);
+    hookFunction(0x4081c5, CallingConvention::cdecl, 2, (void (*)()) & fn_FileSeekSet);
+    hookFunction(0x4081d8, CallingConvention::cdecl, 2, (void (*)()) & fn_FileSeekFromCurrent);
+    hookFunction(0x4081eb, CallingConvention::cdecl, 2, (void (*)()) & fn_FileSeekFromEnd);
+    hookFunction(0x4081fe, CallingConvention::cdecl, 3, (void (*)()) & fn_FileRead);
+    hookFunction(0x40830e, CallingConvention::cdecl, 2, (void (*)()) & fn_FindFirstFile);
+    hookFunction(0x40831d, CallingConvention::cdecl, 2, (void (*)()) & fn_FindNextFile);
+    hookFunction(0x40832c, CallingConvention::cdecl, 1, (void (*)()) & fn_FindClose);
+    hookFunction(0x4d0fac, CallingConvention::stdcall, 2, (void (*)()) & fn_DirectSoundEnumerateA);
 
     // fill DLL hooks for ease of debugging
-    for (int i = 0x4d7000; i <= 0x4d72d8; i += 4)
+    for (uint32_t address = 0x4d7000; address <= 0x4d72d8; address += 4)
     {
-        hookDump(i, (void*)&fn_dump);
+        hookLibrary(address, [address]() {
+            Console::log("Missing hook: 0x%x", address);
+        });
     }
 
     // dsound.dll
-    hookLib(0x4d7024, (void*)&lib_DirectSoundCreate);
+    hookLibrary(0x4d7024, CallingConvention::stdcall, 3, (void (*)()) & lib_DirectSoundCreate);
 
     // gdi32.dll
-    hookLib(0x4d7078, (void*)&lib_CreateRectRgn);
+    hookLibrary(0x4d7078, CallingConvention::stdcall, 4, (void (*)()) & lib_CreateRectRgn);
 
     // kernel32.dll
-    hookLib(0x4d70e0, (void*)&lib_CreateMutexA);
-    hookLib(0x4d70e4, (void*)&lib_OpenMutexA);
-    hookLib(0x4d70f0, (void*)&lib_WriteFile);
-    hookLib(0x4d70f4, (void*)&lib_DeleteFileA);
-    hookLib(0x4d70f8, (void*)&lib_SetFileAttributesA);
-    hookLib(0x4d70fC, (void*)&lib_CreateFileA);
+    hookLibrary(0x4d70e0, CallingConvention::stdcall, 3, (void (*)()) & lib_CreateMutexA);
+    hookLibrary(0x4d70e4, CallingConvention::stdcall, 3, (void (*)()) & lib_OpenMutexA);
+    hookLibrary(0x4d70f0, CallingConvention::stdcall, 5, (void (*)()) & lib_WriteFile);
+    hookLibrary(0x4d70f4, CallingConvention::stdcall, 1, (void (*)()) & lib_DeleteFileA);
+    hookLibrary(0x4d70f8, CallingConvention::stdcall, 2, (void (*)()) & lib_SetFileAttributesA);
+    hookLibrary(0x4d70fC, CallingConvention::stdcall, 7, (void (*)()) & lib_CreateFileA);
 
     // user32.dll
-    hookLib(0x4d71e8, (void*)&lib_PostQuitMessage);
-    hookLib(0x4d714c, (void*)&lib_CloseHandle);
-    hookLib(0x4d7248, (void*)&lib_GetUpdateRgn);
-    hookLib(0x4d72b0, (void*)&lib_timeGetTime);
+    hookLibrary(0x4d71e8, CallingConvention::stdcall, 1, (void (*)()) & lib_PostQuitMessage);
+    hookLibrary(0x4d714c, CallingConvention::stdcall, 1, (void (*)()) & lib_CloseHandle);
+    hookLibrary(0x4d7248, CallingConvention::stdcall, 3, (void (*)()) & lib_GetUpdateRgn);
+    hookLibrary(0x4d72b0, CallingConvention::stdcall, 0, (void (*)()) & lib_timeGetTime);
 }
 #endif // _NO_LOCO_WIN32_
 
@@ -586,11 +589,11 @@ static void registerAudioHooks()
 {
     using namespace OpenLoco::Interop;
 
-    writeJmp(0x0040194E, (void*)&audioLoadChannel);
-    writeJmp(0x00401999, (void*)&audioPlayChannel);
-    writeJmp(0x00401A05, (void*)&audioStopChannel);
-    writeJmp(0x00401AD3, (void*)&audioSetChannelVolume);
-    writeJmp(0x00401B10, (void*)&audioIsChannelPlaying);
+    hookFunction(0x0040194E, CallingConvention::cdecl, 5, (void (*)()) & audioLoadChannel);
+    hookFunction(0x00401999, CallingConvention::cdecl, 5, (void (*)()) & audioPlayChannel);
+    hookFunction(0x00401A05, CallingConvention::cdecl, 5, (void (*)()) & audioStopChannel);
+    hookFunction(0x00401AD3, CallingConvention::cdecl, 2, (void (*)()) & audioSetChannelVolume);
+    hookFunction(0x00401B10, CallingConvention::cdecl, 1, (void (*)()) & audioIsChannelPlaying);
 
     writeRet(0x0048AB36);
     writeRet(0x00404B40);

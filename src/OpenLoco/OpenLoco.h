@@ -30,6 +30,107 @@ namespace OpenLoco
         constexpr uint16_t pauseOverrideEnabled = 1 << 8; // new in OpenLoco
     }
 
+#pragma pack(push, 1)
+    struct loco_ptr
+    {
+        uintptr_t _ptr;
+        loco_ptr(const void* x)
+        {
+            _ptr = reinterpret_cast<uintptr_t>(x);
+        }
+        loco_ptr(int32_t x)
+        {
+            _ptr = x;
+        }
+        operator int32_t() const
+        {
+            assert(_ptr < UINT32_MAX);
+            return (int32_t)_ptr;
+        }
+        operator uint32_t() const
+        {
+            assert(_ptr < UINT32_MAX);
+            return (uint32_t)_ptr;
+        }
+#ifndef __i386__
+        operator uintptr_t() const
+        {
+            return _ptr;
+        }
+#endif
+    };
+#pragma pack(pop)
+
+    template<typename T>
+    class loco_ptr4
+    {
+    public:
+        uint32_t ptr;
+        loco_ptr4(uint32_t ptr)
+            : ptr(ptr)
+        {
+        }
+        loco_ptr4(T* ptr = nullptr)
+        {
+            assert((uintptr_t)ptr < UINT32_MAX);
+            this->ptr = static_cast<uint32_t>((uintptr_t)ptr);
+        }
+
+        T* get()
+        {
+            return (T*)(uintptr_t)ptr;
+        }
+
+        T* get() const
+        {
+            return (T*)(uintptr_t)ptr;
+        }
+
+        T* operator*() const
+        {
+            return this->get();
+        }
+    };
+
+    template<typename T>
+    class loco_ptr2
+    {
+    public:
+        uint32_t ptr;
+        loco_ptr2(uint32_t ptr)
+            : ptr(ptr)
+        {
+        }
+        loco_ptr2(T* ptr = nullptr)
+        {
+            assert((uintptr_t)ptr < UINT32_MAX);
+            this->ptr = static_cast<uint32_t>((uintptr_t)ptr);
+        }
+
+        T* get()
+        {
+            return (T*)(uintptr_t)ptr;
+        }
+
+        T* get() const
+        {
+            return (T*)(uintptr_t)ptr;
+        }
+
+        T* operator*() const
+        {
+            return this->get();
+        }
+
+        // Not allowed on void. No idea how enable_if is supposed to work.
+        T& operator[](int index)
+        {
+            return get()[index];
+        }
+    };
+
+    static_assert(sizeof(loco_ptr2<int>) == 4);
+
     extern const char version[];
 
     std::string getVersionInfo();
@@ -70,3 +171,12 @@ namespace OpenLoco
 
     void sub_444387();
 }
+
+#ifndef __i386__
+namespace compat
+{
+    void* malloc(size_t size);
+    void free(void* ptr);
+    void* realloc(void* ptr, size_t size);
+}
+#endif

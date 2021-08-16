@@ -242,7 +242,7 @@ namespace OpenLoco::Ui::Windows::Town
 
                 uint16_t newHeight = self->height - 59;
 
-                auto& viewport = self->viewports[0];
+                auto viewport = self->viewports[0].get();
                 if (newWidth != viewport->width || newHeight != viewport->height)
                 {
                     viewport->width = newWidth;

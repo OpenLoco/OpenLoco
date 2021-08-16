@@ -1,9 +1,9 @@
 #ifndef _WIN32
 
+#include "Platform.h"
 #include "../Console.h"
 #include "../Interop/Interop.hpp"
 #include "../OpenLoco.h"
-#include "Platform.h"
 #include <iostream>
 #include <pwd.h>
 #include <time.h>
@@ -22,6 +22,7 @@
 
 int main(int argc, const char** argv)
 {
+    OpenLoco::Interop::emu_init();
     OpenLoco::Interop::loadSections();
     OpenLoco::lpCmdLine((char*)argv[0]);
     OpenLoco::main();

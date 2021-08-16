@@ -99,7 +99,7 @@ namespace OpenLoco::Input
             png_set_IHDR(png_ptr, info_ptr, context.width, context.height, 8, PNG_COLOR_TYPE_PALETTE, PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
             png_write_info(png_ptr, info_ptr);
 
-            uint8_t* data = context.bits;
+            uint8_t* data = context.bits.get();
             for (int y = 0; y < context.height; y++)
             {
                 png_write_row(png_ptr, data);

@@ -189,7 +189,7 @@ namespace OpenLoco::Ui
     // 0x004CF487
     void Widget::drawViewportCentreButton(Gfx::Context* context, const Window* window, const WidgetIndex_t widgetIndex)
     {
-        auto& widget = window->widgets[widgetIndex];
+        auto widget = window->widgets[widgetIndex];
         if (Input::isHovering(window->type, window->number, widgetIndex))
         {
             Gfx::drawRect(*context, widget.left + window->x, widget.top + window->y, widget.width(), widget.height(), 0x2000000 | 54);
@@ -827,7 +827,7 @@ namespace OpenLoco::Ui
             cropped.x = l;
             cropped.pitch += offset;
 
-            cropped.bits += offset;
+            cropped.bits = cropped.bits.get() + offset;
         }
 
         int16_t bp = cropped.x + cropped.width - r;
@@ -844,7 +844,7 @@ namespace OpenLoco::Ui
             cropped.y = t;
 
             int aex = (cropped.pitch + cropped.width) * offset;
-            cropped.bits += aex;
+            cropped.bits = cropped.bits.get() + aex;
         }
 
         bp = cropped.y + cropped.height - b;
@@ -961,7 +961,7 @@ namespace OpenLoco::Ui
     // 0x004CF194
     void Widget::drawTab(Window* w, Gfx::Context* ctx, int32_t imageId, WidgetIndex_t index)
     {
-        auto widget = &w->widgets[index];
+        auto widget = &w->widgets.get()[index];
 
         Ui::Point pos = {};
         pos.x = widget->left + w->x;

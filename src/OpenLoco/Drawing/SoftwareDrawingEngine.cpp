@@ -165,7 +165,7 @@ namespace OpenLoco::Drawing
         windowContext.height = rect.height();
         windowContext.x = rect.left();
         windowContext.y = rect.top();
-        windowContext.bits = screen_info->context.bits + rect.left() + ((screen_info->context.width + screen_info->context.pitch) * rect.top());
+        windowContext.bits = screen_info->context.bits.get() + rect.left() + ((screen_info->context.width + screen_info->context.pitch) * rect.top());
         windowContext.pitch = screen_info->context.width + screen_info->context.pitch - rect.width();
         windowContext.zoom_level = 0;
 

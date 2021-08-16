@@ -43,7 +43,8 @@ namespace OpenLoco::Ui::ViewportManager
 
     static Viewport* initViewport(Ui::Point origin, Ui::Size size, ZoomLevel zoom)
     {
-        auto vp = _viewports.emplace_back(std::make_unique<Viewport>()).get();
+        auto vp = new Viewport();
+        _viewports.emplace_back(std::unique_ptr<Viewport>(vp));
 
         vp->x = origin.x;
         vp->y = origin.y;
@@ -67,7 +68,7 @@ namespace OpenLoco::Ui::ViewportManager
     static void focusViewportOn(Window* w, int index, EntityId_t dx)
     {
         assert(index >= 0 && index < viewportsPerWindow);
-        Viewport* viewport = w->viewports[index];
+        Viewport* viewport = w->viewports[index].get();
 
         w->viewport_configurations[index].viewport_target_sprite = dx;
 
@@ -83,7 +84,7 @@ namespace OpenLoco::Ui::ViewportManager
     static void focusViewportOn(Window* w, int index, Map::Pos3 tile)
     {
         assert(index >= 0 && index < viewportsPerWindow);
-        Viewport* viewport = w->viewports[index];
+        Viewport* viewport = w->viewports[index].get();
 
         w->viewport_configurations[index].viewport_target_sprite = 0xFFFF;
 

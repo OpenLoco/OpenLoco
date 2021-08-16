@@ -20,6 +20,9 @@ namespace OpenLoco
 #elif defined(OPENLOCO_BRANCH)
         OPENLOCO_BRANCH
 #endif
+#if __x86_64__
+                                ",x86-64"
+#endif
 #ifndef NDEBUG
                                 ", DEBUG"
 #endif

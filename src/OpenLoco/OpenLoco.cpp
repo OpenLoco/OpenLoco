@@ -83,7 +83,7 @@ namespace OpenLoco
     loco_global<HINSTANCE, 0x0113E0B4> ghInstance;
     loco_global<LPSTR, 0x00525348> glpCmdLine;
 #else
-    loco_global<char*, 0x00525348> glpCmdLine;
+    loco_global<uint32_t, 0x00525348> glpCmdLine;
 #endif
 
     loco_global<char[256], 0x005060D0> gCDKey;
@@ -130,13 +130,15 @@ namespace OpenLoco
 
     const char* lpCmdLine()
     {
-        return glpCmdLine;
+        return (char*)(uintptr_t)glpCmdLine;
     }
 
 #ifndef _WIN32
     void lpCmdLine(const char* path)
     {
-        glpCmdLine = strdup(path);
+        char* p2 = (char*)malloc(strlen(path) + 1);
+        strcpy(p2, path);
+        glpCmdLine = (uint32_t)(uintptr_t)p2;
     }
 #endif
 
@@ -258,36 +260,28 @@ namespace OpenLoco
 
     static bool sub_4054B9()
     {
+#ifdef _WIN32
         registers regs;
         call(0x004054B9, regs);
         return regs.eax != 0;
+#else
+        return true;
+#endif
     }
 
-#ifdef _NO_LOCO_WIN32_
-    /**
-     * Use this to allocate memory that will be freed in vanilla code or via loco_free.
-     */
-    [[maybe_unused]] static void* malloc(size_t size)
+    static void get_system_info()
     {
-        return ((void* (*)(size_t))0x004D1401)(size);
+#ifdef _WIN32
+        call(0x004078FE);
+#endif
     }
 
-    /**
-     * Use this to reallocate memory that will be freed in vanilla code or via loco_free.
-     */
-    [[maybe_unused]] static void* realloc(void* address, size_t size)
+    static void sub_407B26()
     {
-        return ((void* (*)(void*, size_t))0x004D1B28)(address, size);
+#ifdef _WIN32
+        call(0x00407B26);
+#endif
     }
-
-    /**
-     * Use this to free up memory allocated in vanilla code or via loco_malloc / loco_realloc.
-     */
-    [[maybe_unused]] static void free(void* address)
-    {
-        ((void (*)(void*))0x004D1355)(address);
-    }
-#endif // _NO_LOCO_WIN32_
 
     static void sub_4062D1()
     {
@@ -296,7 +290,9 @@ namespace OpenLoco
 
     static void sub_406417()
     {
+#ifdef __i386__
         ((void (*)())0x00406417)();
+#endif
     }
 
     static void sub_40567E()
@@ -316,15 +312,23 @@ namespace OpenLoco
 
     static bool sub_4034FC(int32_t& a, int32_t& b)
     {
+#ifdef __i386__
         auto result = ((int32_t(*)(int32_t&, int32_t&))(0x004034FC))(a, b);
         return result != 0;
+#else
+        return false;
+#endif
     }
 
     // 0x00407FFD
     static bool isAlreadyRunning(const char* mutexName)
     {
+#ifdef __i386__
         auto result = ((int32_t(*)(const char*))(0x00407FFD))(mutexName);
         return result != 0;
+#else
+        return false;
+#endif
     }
 
     // 0x004BE621
@@ -410,11 +414,18 @@ namespace OpenLoco
         autosaveReset();
     }
 
+    /**
+     * 0x004078BE
+     */
+    static void getSystemTime()
+    {
+    }
+
     static void initialise()
     {
         std::srand(std::time(0));
         addr<0x0050C18C, int32_t>() = addr<0x00525348, int32_t>();
-        call(0x004078BE);
+        getSystemTime();
         call(0x004BF476);
         Environment::resolvePaths();
         Localisation::enumerateLanguages();
@@ -441,7 +452,7 @@ namespace OpenLoco
         initialiseViewports();
         Title::sub_4284C8();
         call(0x004969DA);
-        call(0x0043C88C);
+        Scenario::reset();
         setScreenFlag(ScreenFlags::initialised);
 #ifdef _SHOW_INTRO_
         Intro::state(Intro::State::begin);
@@ -1179,8 +1190,8 @@ namespace OpenLoco
             if (sub_4054B9())
             {
                 Ui::createWindow(cfg.display);
-                call(0x004078FE);
-                call(0x00407B26);
+                get_system_info();
+                //                call(0x00407B26);
                 Ui::initialiseInput();
                 Audio::initialiseDSound();
                 run();

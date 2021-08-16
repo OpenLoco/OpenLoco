@@ -601,9 +601,9 @@ namespace OpenLoco::Ui::Windows::BuildVehicle
                     WindowManager::invalidate(WindowType::topToolbar, 0);
                 }
 
-                auto curViewport = window->viewports[0];
-                window->viewports[0] = 0;
-                if (curViewport != 0)
+                auto curViewport = window->viewports[0].get();
+                window->viewports[0] = nullptr;
+                if (curViewport != nullptr)
                 {
                     curViewport->width = 0;
                 }

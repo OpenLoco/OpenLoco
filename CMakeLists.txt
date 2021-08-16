@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.9)
 cmake_policy(VERSION 3.9)
 
+set(MACOSX_DEPLOYMENT_TARGET "10.14")
+
 set (PROJECT openloco)
 
 # Note: Searching for CCache must be before project() so project() can use CCache too
@@ -18,13 +20,13 @@ if (CCache_FOUND)
     endif (OPENLOCO_USE_CCACHE)
 endif (CCache_FOUND)
 
-project(${PROJECT} CXX)
+project(${PROJECT} C CXX)
 
 if (APPLE)
     # Detection of this variable seems to fail with CMake.
     # Since we only support 32-bit builds at the moment, fix it this way.
     # TODO: find out a proper fix for this.
-    set(CMAKE_SIZEOF_VOID_P 4)
+    # set(CMAKE_SIZEOF_VOID_P 4)
 endif()
 
 if (CMAKE_BINARY_DIR STREQUAL CMAKE_SOURCE_DIR)
@@ -35,6 +37,7 @@ INCLUDE(FindPkgConfig)
 include(CheckCXXCompilerFlag)
 
 option(STRICT "Build with warnings as errors" YES)
+option(I386 "Compile for native x86" ON)
 
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake;${CMAKE_MODULE_PATH}")
 
@@ -110,6 +113,13 @@ set(COMMON_COMPILE_OPTIONS
 set(OBJ_FORMAT "elf32-i386")
 set(LINKER_SCRIPT "ld_script_i386.xc")
 
+if (I386)
+    set(TARGET_M "-m32")
+else ()
+    # Turn off for 64-bit builds for now
+    set(COMMON_COMPILE_OPTIONS "${COMMON_COMPILE_OPTIONS} -Wno-int-to-pointer-cast")
+endif ()
+
 # Handle creating the rct2 text and data files on OS X and Linux
 if (UNIX)
     set(OLOCO_EXE ${CMAKE_CURRENT_SOURCE_DIR}/loco.exe)
@@ -129,7 +139,19 @@ if (UNIX)
     )
     add_custom_target(segfiles DEPENDS ${OLOCO_TEXT} ${OLOCO_DATA})
     if (APPLE)
-        set(LOCO_SEGMENT_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -sectcreate loco_text __text \"${OLOCO_TEXT}\" -sectcreate loco_data __data ${OLOCO_DATA} -segaddr loco_data 0x4d7000 -segprot loco_data rwx rwx -segaddr loco_text 0x401000 -segprot loco_text rwx rwx -segaddr __TEXT 0x2000000 -read_only_relocs suppress")
+        set(LOCO_SEGMENT_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ")
+        set(LOCO_SEGMENT_LINKER_FLAGS "${LOCO_SEGMENT_LINKER_FLAGS} -Xlinker -map -Xlinker \"${CMAKE_BINARY_DIR}/openloco.map\"")
+        set(LOCO_SEGMENT_LINKER_FLAGS "${LOCO_SEGMENT_LINKER_FLAGS} -sectcreate loco_text __text \"${OLOCO_TEXT}\"")
+        set(LOCO_SEGMENT_LINKER_FLAGS "${LOCO_SEGMENT_LINKER_FLAGS} -sectcreate loco_data __data \"${OLOCO_DATA}\"")
+        set(LOCO_SEGMENT_LINKER_FLAGS "${LOCO_SEGMENT_LINKER_FLAGS} -segaddr loco_data 0x4d7000")
+        set(LOCO_SEGMENT_LINKER_FLAGS "${LOCO_SEGMENT_LINKER_FLAGS} -segprot loco_data rwx rwx")
+#        set(LOCO_SEGMENT_LINKER_FLAGS "${LOCO_SEGMENT_LINKER_FLAGS} -segaddr loco_text 0x401000")
+        set(LOCO_SEGMENT_LINKER_FLAGS "${LOCO_SEGMENT_LINKER_FLAGS} -segprot loco_text rwx rwx")
+        set(LOCO_SEGMENT_LINKER_FLAGS "${LOCO_SEGMENT_LINKER_FLAGS} -segaddr __TEXT 0x2000000")
+        set(LOCO_SEGMENT_LINKER_FLAGS "${LOCO_SEGMENT_LINKER_FLAGS} -read_only_relocs suppress")
+        if (NOT I386)
+            set(LOCO_SEGMENT_LINKER_FLAGS "${LOCO_SEGMENT_LINKER_FLAGS} -pagezero_size 10000 -image_base 100000000")
+        endif()
     else ()
         # For Linux we have to use objcopy to wrap regular binaries into a linkable
         # format. We use specific section names which are then referenced in a
@@ -164,8 +186,8 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DDEBUG=${DEBUG_LEVEL}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DDEBUG=${DEBUG_LEVEL}")
 
 # add source files
-file(GLOB_RECURSE OLOCO_SOURCES "src/*.cpp")
-file(GLOB_RECURSE OLOCO_HEADERS "src/*.h" "src/*.hpp")
+file(GLOB_RECURSE OLOCO_SOURCES "src/OpenLoco/*.cpp")
+file(GLOB_RECURSE OLOCO_HEADERS "src/OpenLoco/*.h" "src/OpenLoco/*.hpp")
 
 if (APPLE)
     file(GLOB_RECURSE OLOCO_MM_SOURCES "src/*.mm")
@@ -173,7 +195,6 @@ if (APPLE)
 endif ()
 
 set(PIE_FLAG "-fno-pie")
-set(TARGET_M "-m32")
 
 # Check if a flag exists and add it to the list of compiler (so, not linker) options
 function (ADD_CHECK_CXX_COMPILER_FLAG _CXXFLAGS _CACHE_VAR _FLAG)
@@ -204,6 +225,9 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${TARGET_M} ${COMMON_COMPILE_OPTIONS}")
 set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} ${TARGET_M}")
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${CMAKE_SHARED_LINKER_FLAGS} ${TARGET_M} ${PIE_FLAG}")
 
+add_library(tinyalloc src/tinyalloc/tinyalloc.c)
+target_include_directories(tinyalloc PUBLIC src/tinyalloc/)
+
 find_package(SDL2 REQUIRED)
 if (NOT SDL2_LIBRARIES)
 	if (TARGET SDL2::SDL2-static)
@@ -233,6 +257,10 @@ if (MINGW)
     target_link_libraries(${PROJECT} winmm)
 else ()
     add_executable(${PROJECT} ${OLOCO_SOURCES} ${OLOCO_MM_SOURCES} ${LOCO_SECTIONS})
+    if (NOT I386)
+        find_library(UNICORN unicorn)
+        target_link_libraries(${PROJECT} ${UNICORN})
+    endif ()
     set_target_properties(${PROJECT} PROPERTIES LINK_FLAGS ${LOCO_SEGMENT_LINKER_FLAGS})
 endif ()
 
@@ -240,6 +268,7 @@ target_link_libraries(${PROJECT} ${SDL2_LIBRARIES} ${SDL2_MIXER_LIBRARIES})
 target_link_libraries(${PROJECT} yaml-cpp ${YAML_CPP_LIBRARIES})
 target_link_libraries(${PROJECT} ${PNG_LIBRARIES})
 
+target_link_libraries(${PROJECT} tinyalloc)
 
 if (NOT MINGW)
     add_dependencies(${PROJECT} segfiles)

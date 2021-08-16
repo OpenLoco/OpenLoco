@@ -19,13 +19,13 @@ namespace OpenLoco::Gfx
 
     struct Context
     {
-        uint8_t* bits;       // 0x00
-        int16_t x;           // 0x04
-        int16_t y;           // 0x06
-        int16_t width;       // 0x08
-        int16_t height;      // 0x0A
-        int16_t pitch;       // 0x0C note: this is actually (pitch - width)
-        uint16_t zoom_level; // 0x0E
+        loco_ptr2<uint8_t> bits; // 0x00
+        int16_t x;               // 0x04
+        int16_t y;               // 0x06
+        int16_t width;           // 0x08
+        int16_t height;          // 0x0A
+        int16_t pitch;           // 0x0C note: this is actually (pitch - width)
+        uint16_t zoom_level;     // 0x0E
 
         Ui::Rect getUiRect() const;
         Ui::Rect getDrawableRect() const;
@@ -33,7 +33,6 @@ namespace OpenLoco::Gfx
     assert_struct_size(Context, 0x10);
 
     Context& screenContext();
-
     struct G1Header
     {
         uint32_t num_entries;
@@ -55,7 +54,7 @@ namespace OpenLoco::Gfx
     // A version that can be 64-bit when ready...
     struct G1Element
     {
-        uint8_t* offset = nullptr;
+        loco_ptr2<uint8_t> offset = nullptr;
         int16_t width = 0;
         int16_t height = 0;
         int16_t x_offset = 0;

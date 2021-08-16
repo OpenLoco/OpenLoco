@@ -581,7 +581,7 @@ namespace OpenLoco::Ui::WindowManager
         auto mainWindow = getMainWindow();
         if (mainWindow != nullptr)
         {
-            return mainWindow->viewports[0];
+            return mainWindow->viewports[0].get();
         }
         return nullptr;
     }
@@ -732,7 +732,7 @@ namespace OpenLoco::Ui::WindowManager
             if (w->number != number)
                 continue;
 
-            auto widget = w->widgets[widget_index];
+            auto widget = w->widgets.get()[widget_index];
 
             if (widget.left != -2)
             {
@@ -821,7 +821,7 @@ namespace OpenLoco::Ui::WindowManager
         {
             const auto shiftRight = 20 - w->x;
             w->x = 20;
-            for (auto* vp : w->viewports)
+            for (auto vp : w->viewports)
             {
                 if (vp != nullptr)
                 {
@@ -1145,7 +1145,12 @@ namespace OpenLoco::Ui::WindowManager
     void drawSingle(Gfx::Context* _context, Window* w, int32_t left, int32_t top, int32_t right, int32_t bottom)
     {
         // Copy context so we can crop it
-        auto context = *_context;
+        //        auto context = *_context;
+
+        auto dpi2 = (Gfx::Context*)malloc(sizeof(Gfx::Context));
+        memcpy(dpi2, _context, sizeof(Gfx::Context));
+
+        auto& context = *dpi2;
 
         // Clamp left to 0
         int32_t overflow = left - context.x;
@@ -1156,7 +1161,7 @@ namespace OpenLoco::Ui::WindowManager
             if (context.width <= 0)
                 return;
             context.pitch += overflow;
-            context.bits += overflow;
+            context.bits = context.bits.get() + overflow;
         }
 
         // Clamp width to right
@@ -1177,7 +1182,7 @@ namespace OpenLoco::Ui::WindowManager
             context.height -= overflow;
             if (context.height <= 0)
                 return;
-            context.bits += (context.width + context.pitch) * overflow;
+            context.bits = context.bits.get() + (context.width + context.pitch) * overflow;
         }
 
         // Clamp height to bottom
@@ -1212,6 +1217,8 @@ namespace OpenLoco::Ui::WindowManager
 
         w->callPrepareDraw();
         w->callDraw(&context);
+
+        free(dpi2);
     }
 
     // 0x004CD3D0
@@ -1460,7 +1467,7 @@ namespace OpenLoco::Ui::WindowManager
     {
         int widgetIndex = -1;
         int scrollIndex = -1;
-        for (Widget* widget = window->widgets; widget->type != WidgetType::end; widget++)
+        for (auto widget = window->widgets.get(); widget->type != WidgetType::end; widget++)
         {
             widgetIndex++;
 
@@ -1630,7 +1637,7 @@ namespace OpenLoco::Ui::WindowManager
             if (w->viewports[0] == nullptr)
                 continue;
 
-            auto viewport = w->viewports[0];
+            auto viewport = w->viewports[0].get();
             if (viewport->zoom != 0)
                 continue;
 
@@ -1656,10 +1663,10 @@ namespace OpenLoco::Ui::WindowManager
             if ((w->flags & WindowFlags::transparent) == 0)
                 continue;
 
-            if (viewport == w->viewports[0])
+            if (viewport == w->viewports[0].get())
                 continue;
 
-            if (viewport == w->viewports[1])
+            if (viewport == w->viewports[1].get())
                 continue;
 
             if (viewport->x + viewport->width <= w->x)
@@ -1731,8 +1738,8 @@ namespace OpenLoco::Ui::WindowManager
         height += tmargin + bmargin;
 
         int32_t stride = _bitsContext.width + _bitsContext.pitch;
-        uint8_t* to = _bitsContext.bits + y * stride + x;
-        uint8_t* from = _bitsContext.bits + (y - dy) * stride + x - dx;
+        uint8_t* to = _bitsContext.bits.get() + y * stride + x;
+        uint8_t* from = _bitsContext.bits.get() + (y - dy) * stride + x - dx;
 
         if (dy > 0)
         {
@@ -1764,7 +1771,7 @@ namespace OpenLoco::Ui::WindowManager
         if (window != nullptr)
         {
             // skip current window and non-intersecting windows
-            if (viewport == window->viewports[0] || viewport == window->viewports[1] || viewport->x + viewport->width <= window->x || viewport->x >= window->x + window->width || viewport->y + viewport->height <= window->y || viewport->y >= window->y + window->height)
+            if (viewport == window->viewports[0].get() || viewport == window->viewports[1].get() || viewport->x + viewport->width <= window->x || viewport->x >= window->x + window->width || viewport->y + viewport->height <= window->y || viewport->y >= window->y + window->height)
             {
                 size_t nextWindowIndex = WindowManager::indexOf(window) + 1;
                 auto nextWindow = nextWindowIndex >= count() ? nullptr : get(nextWindowIndex);
@@ -1888,7 +1895,7 @@ namespace OpenLoco::Ui::WindowManager
         if (window == nullptr)
             return;
 
-        auto viewport = window->viewports[0];
+        auto viewport = window->viewports[0].get();
         bool flagsChanged = false;
 
         switch (visibility)
@@ -2038,11 +2045,11 @@ namespace OpenLoco::Ui::Windows
             auto window = WindowManager::getMainWindow();
             if (window != nullptr)
             {
-                if (!(window->viewports[0]->flags & ViewportFlags::gridlines_on_landscape))
+                if (!(window->viewports[0].get()->flags & ViewportFlags::gridlines_on_landscape))
                 {
                     window->invalidate();
                 }
-                window->viewports[0]->flags |= ViewportFlags::gridlines_on_landscape;
+                window->viewports[0].get()->flags |= ViewportFlags::gridlines_on_landscape;
             }
         }
         _gridlinesState++;
@@ -2059,11 +2066,11 @@ namespace OpenLoco::Ui::Windows
                 auto window = WindowManager::getMainWindow();
                 if (window != nullptr)
                 {
-                    if ((window->viewports[0]->flags & ViewportFlags::gridlines_on_landscape) != 0)
+                    if ((window->viewports[0].get()->flags & ViewportFlags::gridlines_on_landscape) != 0)
                     {
                         window->invalidate();
                     }
-                    window->viewports[0]->flags &= ~ViewportFlags::gridlines_on_landscape;
+                    window->viewports[0].get()->flags &= ~ViewportFlags::gridlines_on_landscape;
                 }
             }
         }
@@ -2077,9 +2084,9 @@ namespace OpenLoco::Ui::Windows
             auto mainWindow = WindowManager::getMainWindow();
             if (mainWindow != nullptr)
             {
-                if (!(mainWindow->viewports[0]->flags & ViewportFlags::one_way_direction_arrows))
+                if (!(mainWindow->viewports[0].get()->flags & ViewportFlags::one_way_direction_arrows))
                 {
-                    mainWindow->viewports[0]->flags |= ViewportFlags::one_way_direction_arrows;
+                    mainWindow->viewports[0].get()->flags |= ViewportFlags::one_way_direction_arrows;
                     mainWindow->invalidate();
                 }
             }
@@ -2096,9 +2103,9 @@ namespace OpenLoco::Ui::Windows
             auto mainWindow = WindowManager::getMainWindow();
             if (mainWindow != nullptr)
             {
-                if ((mainWindow->viewports[0]->flags & ViewportFlags::one_way_direction_arrows))
+                if ((mainWindow->viewports[0].get()->flags & ViewportFlags::one_way_direction_arrows))
                 {
-                    mainWindow->viewports[0]->flags &= ~ViewportFlags::one_way_direction_arrows;
+                    mainWindow->viewports[0].get()->flags &= ~ViewportFlags::one_way_direction_arrows;
                     mainWindow->invalidate();
                 }
             }

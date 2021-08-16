@@ -507,9 +507,9 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         drawTabs(self, context);
 
         bool doDefault = true;
-        if (self->object != nullptr)
+        if (self->object.get() != nullptr)
         {
-            auto objectPtr = self->object;
+            auto objectPtr = self->object.get();
             auto var = ObjectManager::ObjectIndexEntry::read(&objectPtr)._header;
             if (var->getType() != ObjectType::townNames && var->getType() != ObjectType::climate)
             {
@@ -547,7 +547,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             return;
 
         {
-            auto objectPtr = self->object;
+            auto objectPtr = self->object.get();
 
             drawPreviewImage(
                 ObjectManager::ObjectIndexEntry::read(&objectPtr)._header,
@@ -565,7 +565,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
             auto buffer = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
 
             *buffer++ = ControlCodes::window_colour_2;
-            auto objectPtr = self->object;
+            auto objectPtr = self->object.get();
 
             strncpy(buffer, ObjectManager::ObjectIndexEntry::read(&objectPtr)._name, 510);
 
@@ -573,7 +573,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
         }
 
         {
-            auto objectPtr = self->object;
+            auto objectPtr = self->object.get();
 
             drawDescription(
                 ObjectManager::ObjectIndexEntry::read(&objectPtr)._header,
@@ -602,7 +602,7 @@ namespace OpenLoco::Ui::Windows::ObjectSelectionWindow
 
             uint8_t textColour = ControlCodes::colour_black;
 
-            auto objectPtr = self.object;
+            auto objectPtr = self.object.get();
             if (objectPtr != nullptr)
             {
                 auto windowObjectName = ObjectManager::ObjectIndexEntry::read(&objectPtr)._name;

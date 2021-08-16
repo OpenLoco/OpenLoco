@@ -46,7 +46,7 @@ namespace OpenLoco::Map
             }
             else
             {
-                auto* unkVariation = buildingObj->variationsArr10[variation()];
+                auto* unkVariation = (uint8_t*)(uintptr_t)buildingObj->variationsArr10[variation()];
                 if (unkVariation[age() + 1] != 0xFF)
                 {
                     newUnk5u = 0;
@@ -57,7 +57,8 @@ namespace OpenLoco::Map
                     auto totalHeight = 3;
                     for (; *unkVariation != 0xFF; unkVariation++)
                     {
-                        totalHeight += buildingObj->varationHeights[*unkVariation];
+                        uint8_t* vars = (uint8_t*)(uintptr_t)buildingObj->varationHeights;
+                        totalHeight += vars[*unkVariation];
                     }
                     Ui::ViewportManager::invalidate(loc, baseZ() * 4, clearZ() * 4, ZoomLevel::quarter);
 

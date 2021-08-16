@@ -237,7 +237,7 @@ namespace OpenLoco::Ui::Windows::CompanyFaceSelection
             const auto width = self->width - self->widgets[widx::scrollview].right - 6;
             auto str = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
             *str++ = ControlCodes::window_colour_2;
-            auto objectPtr = self->object;
+            auto objectPtr = self->object.get();
             strcpy(str, ObjectManager::ObjectIndexEntry::read(&objectPtr)._name);
             Gfx::drawStringCentredClipped(*context, x, y, width, Colour::black, StringIds::buffer_2039);
         }

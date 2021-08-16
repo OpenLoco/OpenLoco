@@ -61,17 +61,17 @@ namespace OpenLoco::Gui
         {
             window->width = uiWidth;
             window->height = uiHeight;
-            if (window->widgets)
+            if (window->widgets.get())
             {
-                window->widgets[0].right = uiWidth;
-                window->widgets[0].bottom = uiHeight;
+                window->widgets.get()[0].right = uiWidth;
+                window->widgets.get()[0].bottom = uiHeight;
             }
-            if (window->viewports[0])
+            if (window->viewports[0].get())
             {
-                window->viewports[0]->width = uiWidth;
-                window->viewports[0]->height = uiHeight;
-                window->viewports[0]->view_width = uiWidth << window->viewports[0]->zoom;
-                window->viewports[0]->view_height = uiHeight << window->viewports[0]->zoom;
+                window->viewports[0].get()->width = uiWidth;
+                window->viewports[0].get()->height = uiHeight;
+                window->viewports[0].get()->view_width = uiWidth << window->viewports[0].get()->zoom;
+                window->viewports[0].get()->view_height = uiHeight << window->viewports[0].get()->zoom;
             }
         }
 

@@ -31,49 +31,71 @@ namespace OpenLoco::ObjectManager
 
     struct ObjectRepositoryItem
     {
-        Object** objects;
-        ObjectEntry2* object_entry_extendeds;
+        loco_ptr2<loco_ptr2<Object>> objects;
+        loco_ptr2<ObjectEntry2> object_entry_extendeds;
     };
     assert_struct_size(ObjectRepositoryItem, 8);
 #pragma pack(pop)
 
+    template<typename T>
+    class Pointer
+    {
+    private:
+        uint32_t _ptr;
+
+    public:
+        Pointer(void* ptr)
+        {
+            _ptr = (uint32_t)(uintptr_t)ptr;
+        }
+
+        operator T*() const { return (T*)(uintptr_t)_ptr; }
+
+        friend bool operator==(Pointer<T>& lhs, void* rhs)
+        {
+            return lhs._ptr == (uint32_t)(uintptr_t)rhs;
+        }
+    };
+
+    assert_struct_size(Pointer<int>, 4);
+
     loco_global<ObjectEntry2[maxObjects], 0x1125A90> objectEntries;
     loco_global<ObjectRepositoryItem[64], 0x4FE0B8> object_repository;
-    loco_global<Object* [maxObjects], 0x0050C3D0> _allObjects;
-    loco_global<InterfaceSkinObject* [1], 0x0050C3D0> _interfaceObjects;
-    loco_global<SoundObject* [128], 0x0050C3D4> _soundObjects;
-    loco_global<CurrencyObject* [1], 0x0050C5D4> _currencyObjects;
-    loco_global<SteamObject* [32], 0x0050C5D8> _steamObjects;
-    loco_global<RockObject* [8], 0x0050C658> _rockObjects;
-    loco_global<WaterObject* [1], 0x0050C678> _waterObjects;
-    loco_global<LandObject* [32], 0x0050C67C> _landObjects;
-    loco_global<TownNamesObject* [1], 0x0050C6FC> _townNamesObjects;
-    loco_global<CargoObject* [32], 0x0050C700> _cargoObjects;
-    loco_global<WallObject* [32], 0x0050C780> _wallObjects;
-    loco_global<TrainSignalObject* [16], 0x0050C800> _trainSignalObjects;
-    loco_global<LevelCrossingObject* [4], 0x0050C840> _levelCrossingObjects;
-    loco_global<StreetLightObject* [1], 0x0050C850> _streetLightObjects;
-    loco_global<TunnelObject* [16], 0x0050C854> _tunnelObjects;
-    loco_global<BridgeObject* [8], 0x0050C894> _bridgeObjects;
-    loco_global<TrainStationObject* [16], 0x0050C8B4> _trainStationObjects;
-    loco_global<TrackExtraObject* [8], 0x0050C8F4> _trackExtraObjects;
-    loco_global<TrackObject* [8], 0x0050C914> _trackObjects;
-    loco_global<RoadStationObject* [16], 0x0050C934> _roadStationObjects;
-    loco_global<RoadExtraObject* [4], 0x0050C974> _roadExtraObjects;
-    loco_global<RoadObject* [8], 0x0050C984> _roadObjects;
-    loco_global<AirportObject* [8], 0x0050C9A4> _airportObjects;
-    loco_global<DockObject* [8], 0x0050C9C4> _dockObjects;
-    loco_global<VehicleObject* [224], 0x0050C9E4> _vehicleObjects;
-    loco_global<TreeObject* [64], 0x0050CD64> _treeObjects;
-    loco_global<SnowObject* [1], 0x0050CE64> _snowObjects;
-    loco_global<ClimateObject* [1], 0x0050CE68> _climateObjects;
-    loco_global<HillShapesObject* [1], 0x0050CE6C> _hillShapeObjects;
-    loco_global<BuildingObject* [128], 0x0050CE70> _buildingObjects;
-    loco_global<ScaffoldingObject* [1], 0x0050D070> _scaffoldingObjects;
-    loco_global<IndustryObject* [16], 0x0050D074> _industryObjects;
-    loco_global<RegionObject* [1], 0x0050D0B4> _regionObjects;
-    loco_global<CompetitorObject* [32], 0x0050D0B8> _competitorObjects;
-    loco_global<ScenarioTextObject* [1], 0x0050D138> _scenarioTextObjects;
+    loco_global<Pointer<Object>[maxObjects], 0x0050C3D0> _allObjects;
+    loco_global<Pointer<InterfaceSkinObject>[1], 0x0050C3D0> _interfaceObjects;
+    loco_global<Pointer<SoundObject>[128], 0x0050C3D4> _soundObjects;
+    loco_global<Pointer<CurrencyObject>[1], 0x0050C5D4> _currencyObjects;
+    loco_global<Pointer<SteamObject>[32], 0x0050C5D8> _steamObjects;
+    loco_global<Pointer<RockObject>[8], 0x0050C658> _rockObjects;
+    loco_global<Pointer<WaterObject>[1], 0x0050C678> _waterObjects;
+    loco_global<Pointer<LandObject>[32], 0x0050C67C> _landObjects;
+    loco_global<Pointer<TownNamesObject>[1], 0x0050C6FC> _townNamesObjects;
+    loco_global<Pointer<CargoObject>[32], 0x0050C700> _cargoObjects;
+    loco_global<Pointer<WallObject>[32], 0x0050C780> _wallObjects;
+    loco_global<Pointer<TrainSignalObject>[16], 0x0050C800> _trainSignalObjects;
+    loco_global<Pointer<LevelCrossingObject>[4], 0x0050C840> _levelCrossingObjects;
+    loco_global<Pointer<StreetLightObject>[1], 0x0050C850> _streetLightObjects;
+    loco_global<Pointer<TunnelObject>[16], 0x0050C854> _tunnelObjects;
+    loco_global<Pointer<BridgeObject>[8], 0x0050C894> _bridgeObjects;
+    loco_global<Pointer<TrainStationObject>[16], 0x0050C8B4> _trainStationObjects;
+    loco_global<Pointer<TrackExtraObject>[8], 0x0050C8F4> _trackExtraObjects;
+    loco_global<Pointer<TrackObject>[8], 0x0050C914> _trackObjects;
+    loco_global<Pointer<RoadStationObject>[16], 0x0050C934> _roadStationObjects;
+    loco_global<Pointer<RoadExtraObject>[4], 0x0050C974> _roadExtraObjects;
+    loco_global<Pointer<RoadObject>[8], 0x0050C984> _roadObjects;
+    loco_global<Pointer<AirportObject>[8], 0x0050C9A4> _airportObjects;
+    loco_global<Pointer<DockObject>[8], 0x0050C9C4> _dockObjects;
+    loco_global<Pointer<VehicleObject>[224], 0x0050C9E4> _vehicleObjects;
+    loco_global<Pointer<TreeObject>[64], 0x0050CD64> _treeObjects;
+    loco_global<Pointer<SnowObject>[1], 0x0050CE64> _snowObjects;
+    loco_global<Pointer<ClimateObject>[1], 0x0050CE68> _climateObjects;
+    loco_global<Pointer<HillShapesObject>[1], 0x0050CE6C> _hillShapeObjects;
+    loco_global<Pointer<BuildingObject>[128], 0x0050CE70> _buildingObjects;
+    loco_global<Pointer<ScaffoldingObject>[1], 0x0050D070> _scaffoldingObjects;
+    loco_global<Pointer<IndustryObject>[16], 0x0050D074> _industryObjects;
+    loco_global<Pointer<RegionObject>[1], 0x0050D0B4> _regionObjects;
+    loco_global<Pointer<CompetitorObject>[32], 0x0050D0B8> _competitorObjects;
+    loco_global<Pointer<ScenarioTextObject>[1], 0x0050D138> _scenarioTextObjects;
 
     loco_global<uint32_t, 0x0050D154> _totalNumImages;
 
@@ -384,7 +406,7 @@ namespace OpenLoco::ObjectManager
         return entry;
     }
 
-    static loco_global<std::byte*, 0x0050D13C> _installedObjectList;
+    static loco_global<Pointer<std::byte>, 0x0050D13C> _installedObjectList;
     static loco_global<uint32_t, 0x0112A110> _installedObjectCount;
 
     uint32_t getNumInstalledObjects()
@@ -394,7 +416,7 @@ namespace OpenLoco::ObjectManager
 
     std::vector<std::pair<uint32_t, ObjectIndexEntry>> getAvailableObjects(ObjectType type)
     {
-        auto ptr = (std::byte*)_installedObjectList;
+        auto ptr = (std::byte*)*_installedObjectList;
         std::vector<std::pair<uint32_t, ObjectIndexEntry>> list;
 
         for (uint32_t i = 0; i < _installedObjectCount; i++)
@@ -445,10 +467,10 @@ namespace OpenLoco::ObjectManager
             auto maxObjectsForType = getMaxObjects(objectType);
             for (size_t i = 0; i < maxObjectsForType; i++)
             {
-                auto obj = typedObjectList.objects[i];
+                auto obj = typedObjectList.objects.get()[i].get();
                 if (obj != nullptr && obj != reinterpret_cast<Object*>(-1))
                 {
-                    const auto& objHeader = typedObjectList.object_entry_extendeds[i];
+                    const auto& objHeader = typedObjectList.object_entry_extendeds.get()[i];
                     if (objHeader.isCustom())
                     {
                         if (header == objHeader)
@@ -600,7 +622,7 @@ namespace OpenLoco::ObjectManager
         size_t index = 0;
         for (; index < getMaxObjects(type); ++index)
         {
-            if (getRepositoryItem(type).objects[index] == reinterpret_cast<Object*>(-1))
+            if (getRepositoryItem(type).objects[index].get() == reinterpret_cast<Object*>(-1))
             {
                 break;
             }

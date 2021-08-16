@@ -426,7 +426,7 @@ namespace OpenLoco::Input
         if (OpenLoco::isTitleMode())
             return;
 
-        auto viewport = main->viewports[0];
+        auto viewport = main->viewports[0].get();
         if (viewport == nullptr)
             return;
 
@@ -472,7 +472,7 @@ namespace OpenLoco::Input
         if (OpenLoco::isTitleMode())
             return;
 
-        auto viewport = main->viewports[0];
+        auto viewport = main->viewports[0].get();
         if (viewport == nullptr)
             return;
 

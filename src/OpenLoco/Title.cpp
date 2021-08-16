@@ -50,7 +50,7 @@ namespace OpenLoco::Title
 
     // Explicit deduction guide (not needed as of C++20)
     template<class... Ts>
-    overloaded(Ts...)->overloaded<Ts...>;
+    overloaded(Ts...) -> overloaded<Ts...>;
 
     static const TitleSequence _titleSequence = {
         MoveStep{ 231, 160 },
@@ -145,7 +145,7 @@ namespace OpenLoco::Title
     }
 
     // 0x00444357
-    static void reset()
+    void reset()
     {
         _sequenceIterator = _titleSequence.begin();
         _waitCounter = 0;
@@ -204,44 +204,47 @@ namespace OpenLoco::Title
                 return;
 
             auto& command = *_sequenceIterator++;
-            stdx::visit(overloaded{
-                            [](WaitStep step) {
-                                // This loop slightly deviates from the original, subtract 1 tick to make up for it.
-                                _waitCounter = step.duration - 1;
-                            },
-                            [](ReloadStep step) {
-                                reload();
-                            },
-                            [](MoveStep step) {
-                                if (addr<0x00525E28, uint32_t>() & 1)
-                                {
-                                    auto pos = Map::Pos2(step) + Map::Pos2(16, 16);
-                                    auto height = Map::TileManager::getHeight(pos);
-                                    auto main = Ui::WindowManager::getMainWindow();
-                                    if (main != nullptr)
-                                    {
-                                        auto pos3d = Map::Pos3(pos.x, pos.y, height.landHeight);
-                                        main->viewportCentreOnTile(pos3d);
-                                        main->flags &= ~Ui::WindowFlags::scrolling_to_location;
-                                        main->viewportsUpdatePosition();
-                                    }
-                                }
-                            },
-                            [](RotateStep step) {
-                                if (addr<0x00525E28, uint32_t>() & 1)
-                                {
-                                    auto main = Ui::WindowManager::getMainWindow();
-                                    if (main != nullptr)
-                                    {
-                                        main->viewportRotateRight();
-                                    }
-                                }
-                            },
-                            [](ResetStep step) {
-                                _sequenceIterator = _titleSequence.begin();
-                            },
-                        },
-                        command);
+            //            std::visit(overloaded{
+            //                           [](WaitStep step) {
+            //                               // This loop slightly deviates from the original, subtract 1 tick to make up for it.
+            //                               _waitCounter = step.duration - 1;
+            //                           },
+            //                           [](ReloadStep step) {
+            //                               loadTitle();
+            //                               Gfx::invalidateScreen();
+            //                               resetScreenAge();
+            //                               addr<0x50C19A, uint16_t>() = 55000;
+            //                           },
+            //                           [](MoveStep step) {
+            //                               if (addr<0x00525E28, uint32_t>() & 1)
+            //                               {
+            //                                   auto pos = Map::map_pos(step) + Map::map_pos(16, 16);
+            //                                   auto height = Map::TileManager::getHeight(pos);
+            //                                   auto main = Ui::WindowManager::getMainWindow();
+            //                                   if (main != nullptr)
+            //                                   {
+            //                                       auto pos3d = Map::map_pos3(pos.x, pos.y, height.landHeight);
+            //                                       main->viewportCentreOnTile(pos3d);
+            //                                       main->flags &= ~Ui::WindowFlags::scrolling_to_location;
+            //                                       main->viewportsUpdatePosition();
+            //                                   }
+            //                               }
+            //                           },
+            //                           [](RotateStep step) {
+            //                               if (addr<0x00525E28, uint32_t>() & 1)
+            //                               {
+            //                                   auto main = Ui::WindowManager::getMainWindow();
+            //                                   if (main != nullptr)
+            //                                   {
+            //                                       main->viewportRotateRight();
+            //                                   }
+            //                               }
+            //                           },
+            //                           [](ResetStep step) {
+            //                               _sequenceIterator = _titleSequence.begin();
+            //                           },
+            //                       },
+            //                       command);
         } while (_waitCounter == 0);
     }
 

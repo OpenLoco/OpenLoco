@@ -2,6 +2,7 @@
 
 #include "../Core/Optional.hpp"
 #include "../Core/Span.hpp"
+#include "../Interop/Interop.hpp"
 #include "../Ui/Types.hpp"
 #include <cstddef>
 #include <cstdint>
@@ -136,7 +137,7 @@ namespace OpenLoco
             return std::memcmp(this, &rhs, sizeof(ObjectHeader)) == 0;
         }
     };
-    static_assert(sizeof(ObjectHeader) == 0x10);
+    assert_struct_size(ObjectHeader, 0x10);
 
     /**
      * Represents an index into the entire loaded object array. Not an index for

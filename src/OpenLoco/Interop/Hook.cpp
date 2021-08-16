@@ -13,6 +13,7 @@
 #include "../Console.h"
 #include "Interop.hpp"
 
+#ifdef __i386__
 namespace OpenLoco::Interop
 {
     static void* _hookTableAddress;
@@ -186,6 +187,7 @@ namespace OpenLoco::Interop
             Console::error("Failed registering hook for 0x%08x. Ran out of hook table space", address);
             return;
         }
+<<<<<<< HEAD
         // Do a few retries here. This can fail on some versions of wine which inexplicably would fail on
         // WriteProcessMemory for specific addresses that we fully own, but skipping over failing entry would work.
         bool done = false;
@@ -196,6 +198,13 @@ namespace OpenLoco::Interop
             uint8_t data[9];
             int32_t i = 0;
             data[i++] = 0xE9; // jmp
+=======
+        int32_t ptr = (loco_ptr)_hookTableAddress;
+        uint32_t hookaddress = ptr + (_hookTableOffset * HOOK_BYTE_COUNT);
+        uint8_t data[9];
+        int32_t i = 0;
+        data[i++] = 0xE9; // jmp
+>>>>>>> f02af53d... WIP
 
             WRITE_ADDRESS_STRICTALIAS(&data[i], hookaddress - address - i - 4);
             i += 4;
@@ -243,12 +252,12 @@ namespace OpenLoco::Interop
 #ifdef _WIN32
             _smallHooks = VirtualAllocEx(GetCurrentProcess(), NULL, size, MEM_COMMIT, PAGE_EXECUTE_READWRITE);
 #else
-            _smallHooks = mmap(NULL, size, PROT_EXEC | PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-            if (_smallHooks == MAP_FAILED)
-            {
-                perror("mmap");
-                exit(1);
-            }
+        _smallHooks = mmap(NULL, size, PROT_EXEC | PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+        if (_smallHooks == MAP_FAILED)
+        {
+            perror("mmap");
+            exit(1);
+        }
 #endif // _WIN32
             _offset = static_cast<uint8_t*>(_smallHooks);
         }
@@ -306,3 +315,4 @@ namespace OpenLoco::Interop
         writeMemory(address, buffer.data(), buffer.size());
     }
 }
+#endif

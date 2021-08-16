@@ -1240,7 +1240,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         if (window == nullptr)
             return;
 
-        auto viewport = window->viewports[0];
+        auto viewport = window->viewports[0].get();
 
         if (viewport == nullptr)
             return;
@@ -1517,7 +1517,7 @@ namespace OpenLoco::Ui::Windows::MapWindow
         if (mainWindow == nullptr)
             return;
 
-        auto viewport = mainWindow->viewports[0];
+        auto viewport = mainWindow->viewports[0].get();
 
         if (viewport == nullptr)
             return;

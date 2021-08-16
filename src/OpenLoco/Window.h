@@ -144,7 +144,7 @@ namespace OpenLoco::Ui
                 void (*scroll_mouse_over)(Ui::Window* window, int16_t x, int16_t y, uint8_t scroll_index);
                 void (*text_input)(Window*, WidgetIndex_t, const char*);
                 void (*viewport_rotate)(Window*);
-                uint32_t event_22;
+                uintptr_t event_22;
                 std::optional<FormatArguments> (*tooltip)(Window*, WidgetIndex_t);
                 Ui::CursorId (*cursor)(Window*, int16_t, int16_t, int16_t, Ui::CursorId);
                 void (*on_move)(Window&, const int16_t x, const int16_t y);
@@ -241,28 +241,84 @@ namespace OpenLoco::Ui
         }
     };
 
+    template<typename T>
+    class loco_ptr3
+    {
+    private:
+        uint32_t _ptr;
+
+    public:
+        loco_ptr3(uintptr_t ptr)
+        {
+            _ptr = ptr;
+        }
+        loco_ptr3(std::nullptr_t aNullptr)
+        {
+            _ptr = 0;
+        }
+
+        loco_ptr3(T* ptr = nullptr)
+        {
+            _ptr = static_cast<uint32_t>((uintptr_t)ptr);
+        }
+
+        T* get()
+        {
+            return (T*)(uintptr_t)_ptr;
+        }
+        T* operator->()
+        {
+            return get();
+        }
+
+        const T* get() const
+        {
+            return (T*)(uintptr_t)_ptr;
+        }
+
+        T& operator[](int index)
+        {
+            return get()[index];
+        }
+
+        const T& operator[](int index) const
+        {
+            return get()[index];
+        }
+
+        bool operator==(const void* other)
+        {
+            return this->get() == other;
+        }
+
+        bool operator!=(const void* other)
+        {
+            return !(*this == other);
+        }
+    };
+
     struct Window
     {
-        WindowEventList* event_handlers;                   // 0x00
-        Ui::Viewport* viewports[2] = { nullptr, nullptr }; // 0x04
-        uint64_t enabled_widgets = 0;                      // 0x0C
-        uint64_t disabled_widgets = 0;                     // 0x14
-        uint64_t activated_widgets = 0;                    // 0x1C
-        uint64_t holdable_widgets = 0;                     // 0x24
-        Widget* widgets;                                   // 0x2C
-        int16_t x;                                         // 0x30
-        int16_t y;                                         // 0x32
-        uint16_t width;                                    // 0x34
-        uint16_t height;                                   // 0x36
-        uint16_t min_width;                                // 0x38
-        uint16_t max_width;                                // 0x3a
-        uint16_t min_height;                               // 0x3c
-        uint16_t max_height;                               // 0x3e
-        WindowNumber_t number = 0;                         // 0x40
-        uint32_t flags;                                    // 0x42
-        ScrollArea scroll_areas[2];                        // 0x46
-        int16_t row_info[1000];                            // 0x6A
-        uint16_t row_count;                                // 0x83A
+        loco_ptr3<WindowEventList> event_handlers;                   // 0x00
+        loco_ptr3<Ui::Viewport> viewports[2] = { nullptr, nullptr }; // 0x04
+        uint64_t enabled_widgets = 0;                                // 0x0C
+        uint64_t disabled_widgets = 0;                               // 0x14
+        uint64_t activated_widgets = 0;                              // 0x1C
+        uint64_t holdable_widgets = 0;                               // 0x24
+        loco_ptr3<Widget> widgets;                                   // 0x2C
+        int16_t x;                                                   // 0x30
+        int16_t y;                                                   // 0x32
+        uint16_t width;                                              // 0x34
+        uint16_t height;                                             // 0x36
+        uint16_t min_width;                                          // 0x38
+        uint16_t max_width;                                          // 0x3a
+        uint16_t min_height;                                         // 0x3c
+        uint16_t max_height;                                         // 0x3e
+        WindowNumber_t number = 0;                                   // 0x40
+        uint32_t flags;                                              // 0x42
+        ScrollArea scroll_areas[2];                                  // 0x46
+        int16_t row_info[1000];                                      // 0x6A
+        uint16_t row_count;                                          // 0x83A
         uint16_t var_83C;
         uint16_t row_height;    // 0x83E
         int16_t row_hover = -1; // 0x840
@@ -277,13 +333,13 @@ namespace OpenLoco::Ui
         uint16_t var_858 = 0;
         union
         {
-            std::byte* object; // 0x85A union
+            loco_ptr2<std::byte> object; // 0x85A union
             struct
             {
                 int16_t var_85A;
                 int16_t var_85C;
             };
-            uintptr_t info;
+            uint32_t info;
         };
         uint8_t pad_85E[0x870 - 0x85E];
         uint16_t current_tab = 0;                  // 0x870

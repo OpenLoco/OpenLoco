@@ -1,6 +1,7 @@
 #pragma once
 #include "../Interop/Interop.hpp"
 #include "../Map/Map.hpp"
+#include "../OpenLoco.h"
 #include "../Types.hpp"
 
 namespace OpenLoco::Map
@@ -41,20 +42,20 @@ namespace OpenLoco::Paint
         int16_t y;     // 0x0A
         uint8_t flags; // 0x0C
         uint8_t pad_0D;
-        AttachedPaintStruct* next; // 0x0E
+        loco_ptr2<AttachedPaintStruct> next; // 0x0E
     };
     assert_struct_size(AttachedPaintStruct, 0x12);
 
     struct PaintStringStruct
     {
-        string_id stringId;      // 0x00
-        PaintStringStruct* next; // 0x02
-        int16_t x;               // 0x06
-        int16_t y;               // 0x08
-        uint16_t args[7];        // 0x0A
+        string_id stringId;                // 0x00
+        loco_ptr2<PaintStringStruct> next; // 0x02
+        int16_t x;                         // 0x06
+        int16_t y;                         // 0x08
+        uint16_t args[7];                  // 0x0A
         uint8_t pad_18[0x1A - 0x18];
-        uint8_t* yOffsets; // 0x1A
-        uint16_t colour;   // 0x1E
+        loco_ptr2<uint8_t> yOffsets; // 0x1A
+        uint16_t colour;             // 0x1E
     };
     assert_struct_size(PaintStringStruct, 0x20);
 
@@ -90,9 +91,9 @@ namespace OpenLoco::Paint
         uint16_t quadrantIndex;     // 0x18
         uint8_t flags;
         uint8_t quadrantFlags;                         // 0x1B
-        AttachedPaintStruct* attachedPS;               // 0x1C
-        PaintStruct* children;                         // 0x20
-        PaintStruct* nextQuadrantPS;                   // 0x24
+        loco_ptr2<AttachedPaintStruct> attachedPS;     // 0x1C
+        loco_ptr2<PaintStruct> children;               // 0x20
+        loco_ptr2<PaintStruct> nextQuadrantPS;         // 0x24
         Ui::ViewportInteraction::InteractionItem type; // 0x28
         uint8_t var_29;
         uint16_t pad_2A;
@@ -100,8 +101,8 @@ namespace OpenLoco::Paint
         coord_t map_y; // 0x2E
         union
         {
-            Map::TileElement* tileElement; // 0x30 (or entity pointer)
-            EntityBase* entity;            // 0x30
+            loco_ptr2<Map::TileElement> tileElement; // 0x30 (or entity pointer)
+            loco_ptr2<EntityBase> entity;            // 0x30
         };
     };
     assert_struct_size(PaintStruct, 0x34);
@@ -125,7 +126,7 @@ namespace OpenLoco::Paint
         [[nodiscard]] Ui::ViewportInteraction::InteractionArg getNormalInteractionInfo(const uint32_t flags);
         [[nodiscard]] Ui::ViewportInteraction::InteractionArg getStationNameInteractionInfo(const uint32_t flags);
         [[nodiscard]] Ui::ViewportInteraction::InteractionArg getTownNameInteractionInfo(const uint32_t flags);
-        Gfx::Context* getContext() { return _context; }
+        Gfx::Context* getContext() { return _context->get(); }
         uint8_t getRotation() { return currentRotation; }
         // TileElement or Entity
         void setCurrentItem(void* item) { _currentItem = item; }
@@ -206,22 +207,22 @@ namespace OpenLoco::Paint
     private:
         void generateTilesAndEntities(GenerationParameters&& p);
 
-        inline static Interop::loco_global<Gfx::Context*, 0x00E0C3E0> _context;
+        inline static Interop::loco_global<loco_ptr2<Gfx::Context>, 0x00E0C3E0> _context;
         inline static Interop::loco_global<PaintEntry[4000], 0x00E0C410> _paintEntries;
         inline static Interop::loco_global<PaintStruct* [1024], 0x00E3F0C0> _quadrants;
         inline static Interop::loco_global<uint32_t, 0x00E400C0> _quadrantBackIndex;
         inline static Interop::loco_global<uint32_t, 0x00E400C4> _quadrantFrontIndex;
-        inline static Interop::loco_global<const void*, 0x00E4F0B4> _currentlyDrawnItem;
-        inline static Interop::loco_global<PaintEntry*, 0x00E0C404> _endOfPaintStructArray;
-        inline static Interop::loco_global<PaintEntry*, 0x00E0C408> _paintHead;
-        inline static Interop::loco_global<PaintEntry*, 0x00E0C40C> _nextFreePaintStruct;
+        inline static Interop::loco_global<loco_ptr4<void>, 0x00E4F0B4> _currentlyDrawnItem;
+        inline static Interop::loco_global<loco_ptr2<PaintEntry>, 0x00E0C404> _endOfPaintStructArray;
+        inline static Interop::loco_global<loco_ptr2<PaintEntry>, 0x00E0C408> _paintHead;
+        inline static Interop::loco_global<loco_ptr2<PaintEntry>, 0x00E0C40C> _nextFreePaintStruct;
         inline static Interop::loco_global<coord_t, 0x00E3F090> _spritePositionX;
         inline static Interop::loco_global<coord_t, 0x00E3F096> _spritePositionY;
-        inline static Interop::loco_global<PaintStruct*, 0x00E40120> _lastPS;
+        inline static Interop::loco_global<loco_ptr2<PaintStruct>, 0x00E40120> _lastPS;
         inline static Interop::loco_global<Ui::ViewportInteraction::InteractionItem, 0x00E3F0AC> _itemType;
-        inline static Interop::loco_global<void*, 0x00E3F0B4> _currentItem;
-        inline static Interop::loco_global<PaintStringStruct*, 0x00E40118> _paintStringHead;
-        inline static Interop::loco_global<PaintStringStruct*, 0x00E4011C> _lastPaintString;
+        inline static Interop::loco_global<loco_ptr4<void>, 0x00E3F0B4> _currentItem;
+        inline static Interop::loco_global<loco_ptr2<PaintStringStruct>, 0x00E40118> _paintStringHead;
+        inline static Interop::loco_global<loco_ptr2<PaintStringStruct>, 0x00E4011C> _lastPaintString;
         inline static Interop::loco_global<Map::Pos2, 0x00E3F0B0> _mapPosition;
         uint8_t currentRotation; // new field set from 0x00E3F0B8 but split out into this struct as seperate item
 

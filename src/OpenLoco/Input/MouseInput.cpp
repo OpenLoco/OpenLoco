@@ -477,10 +477,10 @@ namespace OpenLoco::Input
             case MouseButton::released:
             {
                 // 0x4C735D
-                auto viewport = window->viewports[0];
+                auto viewport = window->viewports[0].get();
                 if (viewport == nullptr)
                 {
-                    viewport = window->viewports[1];
+                    viewport = window->viewports[1].get();
                 }
                 if (viewport == nullptr)
                 {
@@ -768,10 +768,10 @@ namespace OpenLoco::Input
             {
                 // 4C74E4
                 _ticksSinceDragStart += time_since_last_tick;
-                auto vp = window->viewports[0];
+                auto vp = window->viewports[0].get();
                 if (vp == nullptr)
                 {
-                    vp = window->viewports[1];
+                    vp = window->viewports[1].get();
                 }
                 if (vp == nullptr)
                 {

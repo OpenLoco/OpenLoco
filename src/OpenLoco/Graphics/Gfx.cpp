@@ -45,7 +45,7 @@ namespace OpenLoco::Gfx
 
     static loco_global<G1Element[g1_expected_count::disc + g1_count_temporary + g1_count_objects], 0x9E2424> _g1Elements;
 
-    static std::unique_ptr<std::byte[]> _g1Buffer;
+    static std::byte* _g1Buffer;
     static loco_global<uint16_t[147], 0x050B8C8> _paletteToG1Offset;
 
     static loco_global<uint16_t, 0x112C824> _currentFontFlags;
@@ -148,7 +148,7 @@ namespace OpenLoco::Gfx
             auto g1 = getG1Element(*g1Index);
             if (g1 != nullptr)
             {
-                return PaletteMap(g1->offset, g1->height, g1->width);
+                return PaletteMap(g1->offset.get(), g1->height, g1->width);
             }
         }
         return std::nullopt;
@@ -201,8 +201,8 @@ namespace OpenLoco::Gfx
         auto elements = convertElements(elements32);
 
         // Read element data
-        auto elementData = std::make_unique<std::byte[]>(header.total_size);
-        if (!readData(stream, elementData.get(), header.total_size))
+        auto elementData = (std::byte*)malloc(header.total_size);
+        if (!readData(stream, elementData, header.total_size))
         {
             throw std::runtime_error("Reading g1 elements failed.");
         }
@@ -226,10 +226,10 @@ namespace OpenLoco::Gfx
         // Adjust memory offsets
         for (auto& element : elements)
         {
-            element.offset += (uintptr_t)elementData.get();
+            element.offset = element.offset.get() + (uintptr_t)elementData;
         }
 
-        _g1Buffer = std::move(elementData);
+        _g1Buffer = elementData;
         std::copy(elements.begin(), elements.end(), _g1Elements.get());
     }
 
@@ -240,7 +240,7 @@ namespace OpenLoco::Gfx
     {
         int32_t w = context.width / (1 << context.zoom_level);
         int32_t h = context.height / (1 << context.zoom_level);
-        uint8_t* ptr = context.bits;
+        uint8_t* ptr = context.bits.get();
 
         for (int32_t y = 0; y < h; y++)
         {
@@ -554,7 +554,8 @@ namespace OpenLoco::Gfx
     static void setTextColour(int colour)
     {
         auto el = &_g1Elements[ImageIds::text_palette];
-        setTextColours(el->offset[colour * 4 + 0], el->offset[colour * 4 + 1], el->offset[colour * 4 + 2]);
+        auto offset = el->offset.get();
+        setTextColours(offset[colour * 4 + 0], offset[colour * 4 + 1], offset[colour * 4 + 2]);
     }
 
     // 0x00451189
@@ -1386,7 +1387,7 @@ namespace OpenLoco::Gfx
         return ImageIdFlags::translucent | (colour << 19) | image;
     }
 
-    loco_global<uint8_t*, 0x0050B860> _50B860;
+    loco_global<uint32_t, 0x0050B860> _50B860;
     loco_global<uint32_t, 0x00E04324> _E04324;
 
     void drawImageSolid(Gfx::Context* context, int16_t x, int16_t y, uint32_t image, uint8_t palette_index)
@@ -1400,7 +1401,7 @@ namespace OpenLoco::Gfx
 
     void drawImagePaletteSet(Gfx::Context* context, int16_t x, int16_t y, uint32_t image, uint8_t* palette)
     {
-        _50B860 = palette;
+        _50B860 = (uintptr_t)palette;
         _E04324 = 0x20000000;
         registers regs;
         regs.cx = x;
@@ -1417,7 +1418,7 @@ namespace OpenLoco::Gfx
         Ui::Rect intersect = oldRect.intersection(newRect);
         const auto stride = oldRect.size.width + src.pitch;
         const int16_t newPitch = stride - intersect.size.width;
-        auto* newBits = src.bits + (stride * (intersect.origin.y - oldRect.origin.y) + (intersect.origin.x - oldRect.origin.x));
+        auto* newBits = src.bits.get() + (stride * (intersect.origin.y - oldRect.origin.y) + (intersect.origin.x - oldRect.origin.x));
         intersect.origin.x = std::max(0, oldRect.origin.x - newRect.origin.x);
         intersect.origin.y = std::max(0, oldRect.origin.y - newRect.origin.y);
         Gfx::Context newContext{ newBits, static_cast<int16_t>(intersect.origin.x), static_cast<int16_t>(intersect.origin.y), static_cast<int16_t>(intersect.size.width), static_cast<int16_t>(intersect.size.height), newPitch, 0 };
