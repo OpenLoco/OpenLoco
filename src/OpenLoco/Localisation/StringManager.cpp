@@ -1,5 +1,6 @@
 #include "StringManager.h"
 #include "../Config.h"
+#include "../Console.h"
 #include "../Date.h"
 #include "../GameCommands/GameCommands.h"
 #include "../Interop/Interop.hpp"
@@ -550,7 +551,10 @@ namespace OpenLoco::StringManager
             const char* sourceStr = getString(id);
             if (sourceStr == nullptr)
             {
-                throw std::runtime_error("Got a nullptr for string id " + std::to_string(id) + " -- cowardly refusing");
+                sprintf(buffer, "(missing string id: %d)", id);
+                Console::log("formatString: nullptr for string id: %d", id);
+                buffer += strlen(buffer);
+                return buffer;
             }
 
             buffer = formatStringPart(buffer, sourceStr, args);
@@ -586,7 +590,10 @@ namespace OpenLoco::StringManager
         }
         else
         {
-            throw std::out_of_range("formatString: invalid string id: " + std::to_string((uint32_t)id));
+            sprintf(buffer, "(invalid string id: %d)", id);
+            Console::log("formatString: invalid string id: %d", id);
+            buffer += strlen(buffer);
+            return buffer;
         }
     }
 
