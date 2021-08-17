@@ -2107,15 +2107,62 @@ namespace OpenLoco::Input
         ((void (*)(int))0x00406FEC)(button);
     }
 
-    // 0x004C6EE6
-    Input::MouseButton gameGetNextInput(uint32_t* x, int16_t* y)
+    // 0x00407247
+    static MouseButton dequeueMouseInput()
     {
         registers regs;
-        call(0x004c6ee6, regs);
+        call(0x00407247, regs);
+        return MouseButton(regs.eax);
+    }
 
-        *x = regs.eax;
-        *y = regs.bx;
+    // 0x004C6EE6
+    MouseButton gameGetNextInput(uint32_t* x, int16_t* y)
+    {
+        if (!hasFlag(Flags::flag5))
+        {
+            auto button = dequeueMouseInput();
+            if (Tutorial::state() == Tutorial::State::playing)
+            {
+                if (button == MouseButton::released)
+                    button = MouseButton(Tutorial::nextInput());
+                else
+                    Tutorial::stop();
+            }
 
-        return (Input::MouseButton)regs.cx;
+            if (button == MouseButton::released)
+            {
+                // 0x004C6FCE
+                *x = _cursorX2;
+                *y = _cursorY2;
+
+                if (*x != 0x80000000)
+                    return button;
+            }
+            else
+            {
+                if (Tutorial::state() == Tutorial::State::playing)
+                {
+                    // 0x004C6F6C
+                    button = MouseButton(Tutorial::nextInput());
+                    *y = Tutorial::nextInput();
+                    *x = Tutorial::nextInput();
+                }
+            }
+
+            // 0x004C6FE4
+            *x = std::clamp<uint16_t>(*x, 0, Ui::width() - 1);
+            *y = std::clamp<uint16_t>(*x, 0, Ui::height() - 1);
+            return button;
+        }
+        else
+        {
+            registers regs;
+            call(0x004C7014, regs);
+
+            *x = regs.eax;
+            *y = regs.bx;
+
+            return MouseButton(regs.cx);
+        }
     }
 }
