@@ -12,6 +12,7 @@ namespace OpenLoco
     namespace Flags12
     {
         constexpr uint8_t unk_01 = 1 << 1;
+        constexpr uint8_t unk_02 = 1 << 2;
         constexpr uint8_t unk_03 = 1 << 3;
         constexpr uint8_t isRoad = 1 << 6; // If not set this is tram track
     }

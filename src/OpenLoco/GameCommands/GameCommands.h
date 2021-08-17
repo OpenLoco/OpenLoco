@@ -41,7 +41,7 @@ namespace OpenLoco::GameCommands
         vehicleCreate = 5,
         vehicleSell = 6,
         createTrack = 7,
-        gc_unk_8 = 8,
+        removeTrack = 8,
         changeLoan = 9,
         vehicleRename = 10,
         changeStationName = 11,
@@ -272,6 +272,40 @@ namespace OpenLoco::GameCommands
             regs.edi = pos.z | (mods << 16) | (unk ? 0x800000 : 0);
             regs.bh = rotation;
             regs.edx = trackObjectId | (trackId << 8) | (bridge << 24);
+            return regs;
+        }
+    };
+
+    struct TrackRemovalArgs
+    {
+        static constexpr auto command = GameCommand::removeTrack;
+
+        TrackRemovalArgs() = default;
+        explicit TrackRemovalArgs(const registers& regs)
+            : pos(regs.ax, regs.cx, regs.di)
+            , rotation(regs.bh & 0x3)
+            , trackId(regs.dl & 0x3F)
+            , index(regs.dh)
+            , trackObjectId(regs.ebp)
+        {
+        }
+
+        Map::Pos3 pos;
+        uint8_t rotation;
+        uint8_t trackId;
+        uint8_t index;
+        uint8_t trackObjectId;
+
+        explicit operator registers() const
+        {
+            registers regs;
+            regs.eax = pos.x;
+            regs.cx = pos.y;
+            regs.di = pos.z;
+            regs.bh = rotation;
+            regs.dl = trackId;
+            regs.dh = index;
+            regs.ebp = trackObjectId;
             return regs;
         }
     };
