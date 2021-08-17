@@ -377,7 +377,7 @@ namespace OpenLoco::Ui::ViewportInteraction
 
         uint32_t nearestDistance = std::numeric_limits<uint32_t>().max();
         Vehicles::VehicleBase* nearestVehicle = nullptr;
-        auto targetPosition = viewport->uiToMap({ tempX, tempY });
+        auto targetPosition = viewport->screenToViewport({ tempX, tempY });
 
         for (auto v : EntityManager::VehicleList())
         {
@@ -993,7 +993,7 @@ namespace OpenLoco::Ui::ViewportInteraction
                 continue;
 
             chosenV = vp;
-            auto vpPos = vp->uiToMap({ screenPos.x, screenPos.y });
+            auto vpPos = vp->screenToViewport({ screenPos.x, screenPos.y });
             _context1->zoom_level = vp->zoom;
             _context1->x = (0xFFFF << vp->zoom) & vpPos.x;
             _context1->y = (0xFFFF << vp->zoom) & vpPos.y;
@@ -1058,7 +1058,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         const auto minPosition = info.pos;                  // E40128/A
         const auto maxPosition = info.pos + Pos2{ 31, 31 }; // E4012C/E
         auto mapPos = info.pos + Pos2{ 16, 16 };
-        const auto initialVPPos = viewport->uiToMap(screenCoords);
+        const auto initialVPPos = viewport->screenToViewport(screenCoords);
 
         for (int32_t i = 0; i < 5; i++)
         {
@@ -1091,7 +1091,7 @@ namespace OpenLoco::Ui::ViewportInteraction
         const auto minPosition = info.pos;                  // E40128/A
         const auto maxPosition = info.pos + Pos2{ 31, 31 }; // E4012C/E
         auto mapPos = info.pos + Pos2{ 16, 16 };
-        const auto initialVPPos = viewport->uiToMap(screenCoords);
+        const auto initialVPPos = viewport->screenToViewport(screenCoords);
 
         for (int32_t i = 0; i < 5; i++)
         {

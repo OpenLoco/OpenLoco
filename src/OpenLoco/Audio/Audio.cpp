@@ -620,7 +620,7 @@ namespace OpenLoco::Audio
                 }
 
                 volume += calculateVolumeFromViewport(id, loc, *viewport);
-                pan = viewport->mapToUi(vpos).x;
+                pan = viewport->viewportToScreen(vpos).x;
                 if (volume < -10000)
                 {
                     return;

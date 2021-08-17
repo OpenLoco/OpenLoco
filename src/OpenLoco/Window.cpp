@@ -141,7 +141,7 @@ namespace OpenLoco::Ui
 
         if (vp->containsUi(mouse))
         {
-            viewport_pos vpos = vp->uiToMap(mouse);
+            viewport_pos vpos = vp->screenToViewport(mouse);
             Map::Pos2 position = viewportCoordToMapCoord(vpos.x, vpos.y, z, WindowManager::getCurrentRotation());
             if (position.x <= 0x2FFF && position.y <= 0x2FFF)
             {

@@ -33,7 +33,7 @@ namespace OpenLoco::Ui
             return;
         }
         auto intersection = contextRect.intersection(viewRect);
-        paint(context, uiToMap(intersection));
+        paint(context, screenToViewport(intersection));
     }
 
     // 0x0045A1A4
