@@ -118,6 +118,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     static WindowEventList _events;
     static loco_global<uint8_t, 0x009D9D63> _type;
     static loco_global<browse_file_type, 0x009DA284> _fileType;
+    static loco_global<uint8_t, 0x009DA285> _9DA285;
     static loco_global<char[256], 0x009D9D64> _title;
     static loco_global<char[32], 0x009D9E64> _filter;
     static loco_global<char[512], 0x009D9E84> _directory;
@@ -148,7 +149,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     static void processFileForLoadSave(Window* window);
     static void processFileForDelete(Window* self, file_entry& entry);
     static void refreshDirectoryList();
-    static void sub_446E87(Window* self);
+    static void loadFileHeader(Window* self);
     static bool filenameContainsInvalidChars();
 
     // 0x00445AB9
@@ -209,7 +210,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             window->row_height = 11;
             window->var_85A = -1;
 
-            addr<0x009DA285, uint8_t>() = 0;
+            _9DA285 = 0;
 
             auto& widget = window->widgets[widx::text_filename];
             inputSession.calculateTextOffset(widget.width());
@@ -240,6 +241,12 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         return false;
     }
 
+    // 0x00447174
+    static void freeFileHeader()
+    {
+        call(0x00447174);
+    }
+
     // 0x0044647C
     static void onClose(Window*)
     {
@@ -247,7 +254,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         _numFiles = 0;
         _files = (file_entry*)-1;
 
-        call(0x00447174);
+        freeFileHeader();
     }
 
     // 0x004467F6
@@ -342,7 +349,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             return;
 
         self->var_85A = index;
-        sub_446E87(self);
+        loadFileHeader(self);
         self->invalidate();
     }
 
@@ -985,11 +992,37 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     }
 
     // 0x00446E87
-    // TODO: only called by this window -- implement.
-    static void sub_446E87(Window* self)
+    static void loadFileHeader(Window* self)
     {
-        registers regs;
-        regs.esi = X86Pointer(self);
-        call(0x00446E87, regs);
+        freeFileHeader();
+
+        _9DA285 = 0;
+        if (self->var_85A == -1)
+            return;
+
+        file_entry& entry = _files[self->var_85A];
+        if (entry.is_directory())
+            return;
+
+        // Create full path to target file.
+        fs::path path = fs::u8path(&_directory[0]) / std::string(entry.get_name());
+
+        // Append extension to filename.
+        path += getExtensionFromFileType(_fileType);
+
+        // Copy path to buffer.
+        loco_global<char[512], 0x0112CE04> savePath;
+        strncpy(&savePath[0], path.c_str(), 512);
+
+        // Load save game or scenario info.
+        switch (_fileType)
+        {
+            case browse_file_type::saved_game:
+                call(0x00442403);
+                break;
+            case browse_file_type::landscape:
+                call(0x00442AFC);
+                break;
+        }
     }
 }
