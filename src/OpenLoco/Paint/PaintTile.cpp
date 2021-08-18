@@ -159,11 +159,98 @@ namespace OpenLoco::Paint
     // 0x004BAEDA
     static void paintTree(PaintSession& session, Map::TreeElement& elTree)
     {
-        registers regs;
-        regs.esi = X86Pointer(&elTree);
-        regs.ecx = (session.getRotation() + (elTree.data()[0] & 0x3)) & 0x3;
-        regs.dx = elTree.baseZ() * 4;
-        call(0x004BAEDA, regs);
+        _spriteType = 12;
+
+        int id = tile->data()[4];
+        auto treeObj = objectmgr::get<tree_object>(id);
+
+        int _imageId1 = (rotation % treeObj->rotation_count) + (tile->data()[5] & 0b1111) * treeObj->rotation_count;
+        int _imageId2;
+
+        int al = tile->data()[7] & 0b111;
+        int season = tile->data()[7] >> 3;
+
+        int _1136474 = -1;
+
+        if (al != 7)
+        {
+            _1136474 = _50076A[season];
+
+            uint32_t edx = (tile->data()[7] & 0b111) + 1;
+
+            // TODO: Make bool list
+            if (_500770[season] == 1)
+            {
+                season = _50076A[season];
+                edx = (-edx) & 0b111;
+            }
+
+            int altSeason = 0;
+            if ((tile->data()[6] & 0x40) != 0)
+            {
+                altSeason = 1;
+            }
+
+            edx = edx << 26;
+            _imageId2 = edx | (_imageId1 + treeObj->image_ids[altSeason][season]);
+        }
+
+        int _shadowImageId = 0;
+        if ((treeObj->var_08 & 0x80) != 0)
+        {
+            _shadowImageId = 0x41900000 | (treeObj->shadow_image_offset + _imageId1);
+        }
+
+        int ecx = ((tile->data()[0] >> 6) + gCurrentRotation) % 4;
+        int _al = _50074C[ecx].x;
+        int _cl = _50074C[ecx].y;
+
+        int _ah = tile->clear_z() - tile->base_z();
+        _ah = std::min(_ah, 0x20);
+        _ah *= 4;
+
+        int b = 0;
+        if ((tile->data()[6] & 0x40) != 0)
+        {
+            b = 1;
+        }
+
+        _imageId1 = _imageId1 + treeObj->image_ids[b][ecx];
+
+        if (treeObj->var_44 != 0)
+        {
+            // No vanilla object has this property set
+            uint8_t colour = tile->data()[6] & 0x1F; // 5 bits
+            uint32_t marker = 0x20000000 | (colour << 19);
+            _imageId2 = _imageId2 | marker;
+            _imageId1 = _imageId1 | marker;
+        }
+
+        if (tile->is_flag_4())
+        {
+            // construction marker
+            _spriteType = 0;
+            uint32_t marker = _4FFAE8[config::get().var_24];
+            _imageId2 = (_imageId2 & 0x7FFFF) | marker;
+            _imageId1 = (_imageId1 & 0x7FFFF) | marker;
+        }
+
+        _ah -= 3;
+
+        if (_shadowImageId != 0)
+        {
+            if (_E0C3E0->zoom_level <= 1)
+            {
+                AddToPlotList_3(gCurrentRotation, _shadowImageId, _al, _cl, height, 18, 18, 1, _al, _cl, height);
+            }
+        }
+
+        AddToPlotList_3(gCurrentRotation, _imageId1, _al, _cl, height, 2, 2, _ah, _al, _cl, height + 2);
+
+        if (_1136474 != -1)
+        {
+            AddToPlotList_4FD1E0(gCurrentRotation, _imageId2, _al, _cl, height, 2, 2, _ah, _al, _cl, height + 2);
+        }
     }
 
     // 0x004C3D7C
