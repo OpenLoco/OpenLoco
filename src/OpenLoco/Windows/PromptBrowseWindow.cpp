@@ -105,7 +105,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
 
     static Widget widgets[] = {
         makeWidget({ 0, 0 }, { 500, 380 }, WidgetType::frame, WindowColour::primary),
-        makeWidget({ 1, 1 }, { 498, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::buffer_2039),
+        makeWidget({ 1, 1 }, { 498, 13 }, WidgetType::caption_25, WindowColour::primary, StringIds::empty),
         makeWidget({ 485, 2 }, { 13, 13 }, WidgetType::wt_9, WindowColour::primary, ImageIds::close_button, StringIds::tooltip_close_window),
         makeWidget({ 0, 15 }, { 500, 365 }, WidgetType::panel, WindowColour::secondary),
         makeWidget({ 473, 18 }, { 24, 24 }, WidgetType::wt_9, WindowColour::secondary, ImageIds::icon_parent_folder, StringIds::window_browse_parent_folder_tooltip),
@@ -120,7 +120,6 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     static loco_global<browse_file_type, 0x009DA284> _fileType;
     static loco_global<uint8_t, 0x009DA285> _9DA285;
     static loco_global<char[512], 0x009DA084> _displayFolderBuffer;
-    static loco_global<char[256], 0x009D9D64> _title;
     static loco_global<char[32], 0x009D9E64> _filter;
     static loco_global<char[512], 0x009D9E84> _directory;
     static loco_global<char[512], 0x0112CC04> _stringFormatBuffer;
@@ -162,7 +161,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         browse_type type,
         char* szPath,
         const char* filter,
-        const char* title)
+        string_id titleId)
     {
         _events.on_close = onClose;
         _events.on_mouse_up = onMouseUp;
@@ -188,7 +187,6 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         {
             *_fileType = browse_file_type::landscape;
         }
-        Utility::strcpy_safe(_title, title);
         Utility::strcpy_safe(_filter, filter);
 
         Utility::strcpy_safe(_directory, directory.make_preferred().u8string().c_str());
@@ -205,6 +203,8 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         if (window != nullptr)
         {
             window->widgets = widgets;
+            window->widgets[widx::caption].text = titleId;
+
             window->enabled_widgets = (1 << widx::close_button) | (1 << widx::parent_button) | (1 << widx::ok_button);
             window->initScrollWidgets();
 
@@ -365,10 +365,6 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     // 0x00445C8F
     static void prepareDraw(Ui::Window* self)
     {
-        // TODO: replace with a fixed length!
-        char* buffer = (char*)StringManager::getString(StringIds::buffer_2039);
-        strcpy(buffer, _title);
-
         self->widgets[widx::frame].right = self->width - 1;
         self->widgets[widx::frame].bottom = self->height - 1;
 
@@ -921,18 +917,13 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                 char* buffer_2039 = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
                 strncpy(&buffer_2039[0], inputSession.buffer.c_str(), 512);
 
+                // Arguments for description text in ok/cancel window.
                 FormatArguments args{};
                 args.push(StringIds::buffer_2039);
 
-                // Copy window title into title buffer for ok/cancel window.
-                strncpy(&_stringFormatBuffer[0], _title, 256);
-
-                // Formatted string into description buffer for ok/cancel window.
-                loco_global<char[512], 0x0112CE04> descriptionBuffer;
-                StringManager::formatString(&descriptionBuffer[0], StringIds::replace_existing_file_prompt, &args);
-
                 // Ask for confirmation to replace the file.
-                if (!Windows::PromptOkCancel::open(StringIds::replace_existing_file_button))
+                auto titleId = self->widgets[widx::caption].text;
+                if (!Windows::PromptOkCancel::open(titleId, StringIds::replace_existing_file_prompt, args, StringIds::replace_existing_file_button))
                     return;
             }
 
@@ -979,15 +970,9 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         FormatArguments args{};
         args.push(StringIds::buffer_2039);
 
-        // Copy window title into title buffer for ok/cancel window.
-        strncpy(&_stringFormatBuffer[0], _title, 256);
-
-        // Formatted string into description buffer for ok/cancel window.
-        loco_global<char[512], 0x0112CE04> descriptionBuffer;
-        StringManager::formatString(&descriptionBuffer[0], StringIds::delete_file_prompt, &args);
-
         // Ask for confirmation to delete the file.
-        if (!Windows::PromptOkCancel::open(StringIds::delete_file_button))
+        auto titleId = self->widgets[widx::caption].text;
+        if (!Windows::PromptOkCancel::open(titleId, StringIds::delete_file_prompt, args, StringIds::delete_file_button))
             return;
 
         // Actually remove the file..!

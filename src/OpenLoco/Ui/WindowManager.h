@@ -252,13 +252,13 @@ namespace OpenLoco::Ui::Windows
             load = 1,
             save = 2
         };
-        bool open(browse_type type, char* path, const char* filter, const char* title);
+        bool open(browse_type type, char* path, const char* filter, string_id titleId);
         void handleInput(uint32_t charCode, uint32_t keyCode);
     }
 
     namespace PromptOkCancel
     {
-        bool open(string_id okButtonStringId);
+        bool open(string_id captionId, string_id descriptionId, FormatArguments& descriptionArgs, string_id okButtonStringId);
         void handleInput(uint32_t charCode, uint32_t keyCode);
     }
 

@@ -16,20 +16,9 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::PromptOkCancel
 {
-#pragma pack(push, 1)
-    struct text_buffers_t
-    {
-        char title[512];
-        char description[512];
-    };
-#pragma pack(pop)
+    static loco_global<uint8_t, 0x009D1C9A> _result;
 
-    loco_global<string_id, 0x0050AE3A> _ok_button_string_id;
-    loco_global<text_buffers_t*, 0x009D1078> _text_buffers;
-    loco_global<uint8_t, 0x009D1C9A> _result;
-
-    loco_global<char[512], 0x0112CC04> byte_112CC04;
-    loco_global<char[512], 0x0112CE04> byte_112CE04;
+    static char _descriptionBuffer[512];
 
     enum widx
     {
@@ -55,13 +44,8 @@ namespace OpenLoco::Ui::Windows::PromptOkCancel
     // 0x00446F6B
     // eax: okButtonStringId
     // eax: {return}
-    bool open(string_id okButtonStringId)
+    bool open(string_id captionId, string_id descriptionId, FormatArguments& descriptionArgs, string_id okButtonStringId)
     {
-        text_buffers_t buffers;
-        std::memcpy(buffers.title, byte_112CC04, 512);
-        std::memcpy(buffers.description, byte_112CE04, 512);
-        _text_buffers = &buffers;
-
         initEvents();
         auto window = WindowManager::createWindowCentred(
             WindowType::confirmationPrompt,
@@ -73,7 +57,11 @@ namespace OpenLoco::Ui::Windows::PromptOkCancel
             return false;
 
         window->widgets = _widgets;
-        window->widgets[okButton].text = okButtonStringId;
+        window->widgets[widx::caption].text = captionId;
+        window->widgets[widx::okButton].text = okButtonStringId;
+
+        // Prepare description buffer for drawing
+        StringManager::formatString(_descriptionBuffer, descriptionId, &descriptionArgs);
 
         window->enabled_widgets = (1 << widx::closeButton) | (1 << widx::okButton) | (1 << widx::cancelButton);
         window->initScrollWidgets();
@@ -115,9 +103,9 @@ namespace OpenLoco::Ui::Windows::PromptOkCancel
     // 0x00447093
     static void prepareDraw(Window* const self)
     {
-        // Prepare title string for drawing.
+        // Prepare description string for drawing.
         char* buffer_2039 = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
-        strncpy(&buffer_2039[0], (*_text_buffers)->title, 512);
+        strncpy(&buffer_2039[0], _descriptionBuffer, 512);
     }
 
     // 0x004470FD
@@ -141,10 +129,6 @@ namespace OpenLoco::Ui::Windows::PromptOkCancel
     static void draw(Window* const self, Gfx::Context* const context)
     {
         self->draw(context);
-
-        // Prepare description string for drawing.
-        char* buffer_2039 = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
-        strncpy(&buffer_2039[0], (*_text_buffers)->description, 512);
 
         FormatArguments args{};
         args.push(StringIds::buffer_2039);

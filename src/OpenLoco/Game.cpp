@@ -44,15 +44,12 @@ namespace OpenLoco::Game
 
     static bool openBrowsePrompt(string_id titleId, browse_type type, const char* filter)
     {
-        char titleBuffer[256] = {};
-        StringManager::formatString(titleBuffer, std::size(titleBuffer), titleId);
-
         Audio::pauseSound();
         setPauseFlag(1 << 2);
         Gfx::invalidateScreen();
         Gfx::render();
 
-        bool confirm = Ui::Windows::PromptBrowse::open(type, &_savePath[0], filter, titleBuffer);
+        bool confirm = Ui::Windows::PromptBrowse::open(type, &_savePath[0], filter, titleId);
 
         Audio::unpauseSound();
         Ui::processMessagesMini();

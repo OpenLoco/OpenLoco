@@ -680,14 +680,6 @@ void OpenLoco::Interop::registerHooks()
         });
 
     registerHook(
-        0x00446F6B,
-        [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-            auto result = Ui::Windows::PromptOkCancel::open(regs.eax);
-            regs.eax = result ? 1 : 0;
-            return 0;
-        });
-
-    registerHook(
         0x00407231,
         [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
             OpenLoco::Input::sub_407231();
