@@ -10,20 +10,6 @@ namespace OpenLoco
         struct Context;
     }
 
-    const std::array<uint8_t, 11> treeGrowth = { {
-        1,
-        0,
-        1,
-        2,
-        2,
-        3,
-        4,
-        5,
-        6,
-        0,
-        0,
-    } };
-
     namespace TreeObjectFlags
     {
         constexpr uint16_t hasSnowVariation = (1 << 0);
@@ -60,6 +46,7 @@ namespace OpenLoco
         uint16_t var_4A;
 
         void drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const;
+        uint8_t getTreeGrowthDisplayOffset() const;
     };
 #pragma pack(pop)
 }

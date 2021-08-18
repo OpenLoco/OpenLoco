@@ -869,7 +869,7 @@ namespace OpenLoco::Ui::Windows::Terraform
 
         static void drawTreeThumb(TreeObject* treeObj, Gfx::Context* clipped)
         {
-            uint32_t image = treeGrowth[treeObj->growth] * treeObj->num_rotations;
+            uint32_t image = treeObj->getTreeGrowthDisplayOffset() * treeObj->num_rotations;
             auto rotation = (treeObj->num_rotations - 1) & _treeRotation;
             image += rotation;
             image += treeObj->sprites[0][treeObj->season_state];
