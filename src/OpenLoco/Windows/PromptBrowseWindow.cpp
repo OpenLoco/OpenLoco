@@ -122,7 +122,6 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     static loco_global<char[512], 0x009DA084> _displayFolderBuffer;
     static loco_global<char[32], 0x009D9E64> _filter;
     static loco_global<char[512], 0x009D9E84> _directory;
-    static loco_global<char[512], 0x0112CC04> _stringFormatBuffer;
     static loco_global<int16_t, 0x009D1084> _numFiles;
     static loco_global<FileEntry*, 0x0050AEA4> _files;
 
