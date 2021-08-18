@@ -204,7 +204,7 @@ namespace OpenLoco::Scenario
     {
         S5::getOptions().scenarioFlags &= ~(Scenario::flags::landscape_generation_done);
         Ui::WindowManager::invalidate(Ui::WindowType::landscapeGeneration, 0);
-        Scenario::reset();
+        reset();
         S5::getOptions().madeAnyChanges = 0;
         addr<0x00F25374, uint8_t>() = 0;
         Gfx::invalidateScreen();
