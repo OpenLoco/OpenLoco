@@ -246,6 +246,13 @@ namespace OpenLoco::Map
 
     public:
         uint8_t treeObjectId() const { return _4; } // _4
+        uint8_t rotation() const { return _type & 0x03; }
+        uint8_t quadrant() const { return (_type >> 6) & 0x03; } // _0_C0
+        uint8_t unk5l() const { return _5 & 0xF; }
+        uint8_t colour() const { return _6 & 0x1F; } //_6l
+        bool hasSnow() const { return _6 & 0x40; }   //_6_40
+        uint8_t unk7l() const { return _7 & 0x7; }
+        uint8_t season() const { return (_7 >> 3) & 0x7; } // unsure of &0x7
     };
 
     struct WallElement : public TileElementBase

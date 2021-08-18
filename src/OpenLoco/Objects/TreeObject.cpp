@@ -7,10 +7,10 @@ namespace OpenLoco
     // 0x004BE2A2
     void TreeObject::drawPreviewImage(Gfx::Context& context, const int16_t x, const int16_t y) const
     {
-        uint32_t image = treeGrowth[growth] * num_rotations;
+        uint32_t image = getTreeGrowthDisplayOffset() * num_rotations;
         auto rotation = (num_rotations - 1) & 2;
         image += rotation;
-        image += sprites[season_state];
+        image += sprites[0][season_state];
 
         auto colourOptions = colours;
         if (colourOptions != 0)
@@ -30,9 +30,9 @@ namespace OpenLoco
 
         if (flags & TreeObjectFlags::hasSnowVariation)
         {
-            auto snowImage = treeGrowth[growth] * num_rotations;
+            auto snowImage = getTreeGrowthDisplayOffset() * num_rotations;
             snowImage += rotation;
-            snowImage += sprites[season_state + 6];
+            snowImage += sprites[1][season_state];
 
             if (colourOptions != 0)
             {
@@ -51,5 +51,25 @@ namespace OpenLoco
             treePos.x = 28;
         }
         Gfx::drawImage(&context, treePos.x, treePos.y, image);
+    }
+
+    // 0x00500775
+    constexpr std::array<uint8_t, 11> treeGrowth = { {
+        1,
+        0,
+        1,
+        2,
+        2,
+        3,
+        4,
+        5,
+        6,
+        0,
+        0,
+    } };
+
+    uint8_t TreeObject::getTreeGrowthDisplayOffset() const
+    {
+        return treeGrowth[growth];
     }
 }

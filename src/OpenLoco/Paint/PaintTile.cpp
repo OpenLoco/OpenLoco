@@ -5,6 +5,7 @@
 #include "../Map/TileManager.h"
 #include "../Ui.h"
 #include "Paint.h"
+#include "PaintTree.h"
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui::ViewportInteraction;
@@ -154,16 +155,6 @@ namespace OpenLoco::Paint
         regs.ecx = (session.getRotation() + (elBuilding.data()[0] & 0x3)) & 0x3;
         regs.dx = elBuilding.baseZ() * 4;
         call(0x0042C6C4, regs);
-    }
-
-    // 0x004BAEDA
-    static void paintTree(PaintSession& session, Map::TreeElement& elTree)
-    {
-        registers regs;
-        regs.esi = X86Pointer(&elTree);
-        regs.ecx = (session.getRotation() + (elTree.data()[0] & 0x3)) & 0x3;
-        regs.dx = elTree.baseZ() * 4;
-        call(0x004BAEDA, regs);
     }
 
     // 0x004C3D7C

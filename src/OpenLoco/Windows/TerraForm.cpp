@@ -30,7 +30,6 @@ using namespace OpenLoco::GameCommands;
 
 namespace OpenLoco::Ui::Windows::Terraform
 {
-    static loco_global<std::uint8_t[10], 0x00500775> _byte_500775;
     static loco_global<int16_t, 0x0052337A> _dragLastY;
     static loco_global<Ui::WindowType, 0x00523392> _toolWindowType;
     static loco_global<CompanyId_t, 0x00525E3C> _player_company;
@@ -870,10 +869,10 @@ namespace OpenLoco::Ui::Windows::Terraform
 
         static void drawTreeThumb(TreeObject* treeObj, Gfx::Context* clipped)
         {
-            uint32_t image = _byte_500775[treeObj->growth] * treeObj->num_rotations;
+            uint32_t image = treeObj->getTreeGrowthDisplayOffset() * treeObj->num_rotations;
             auto rotation = (treeObj->num_rotations - 1) & _treeRotation;
             image += rotation;
-            image += treeObj->sprites[treeObj->season_state];
+            image += treeObj->sprites[0][treeObj->season_state];
 
             auto colourOptions = treeObj->colours;
             if (colourOptions != 0)

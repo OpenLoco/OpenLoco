@@ -108,6 +108,7 @@
     <ClCompile Include="Paint\PaintEntity.cpp" />
     <ClCompile Include="Paint\PaintMiscEntity.cpp" />
     <ClCompile Include="Paint\PaintTile.cpp" />
+    <ClCompile Include="Paint\PaintTree.cpp" />
     <ClCompile Include="Paint\PaintVehicle.cpp" />
     <ClCompile Include="Platform\Crash.cpp" />
     <ClCompile Include="Platform\Platform.Posix.cpp" />
@@ -315,6 +316,7 @@
     <ClInclude Include="Paint\PaintEntity.h" />
     <ClInclude Include="Paint\PaintMiscEntity.h" />
     <ClInclude Include="Paint\PaintTile.h" />
+    <ClInclude Include="Paint\PaintTree.h" />
     <ClInclude Include="Paint\PaintVehicle.h" />
     <ClInclude Include="Platform/Crash.h" />
     <ClInclude Include="Platform\Platform.h" />

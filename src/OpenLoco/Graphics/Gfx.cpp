@@ -1,4 +1,5 @@
 #include "Gfx.h"
+#include "../Config.h"
 #include "../Console.h"
 #include "../Drawing/SoftwareDrawingEngine.h"
 #include "../Environment.h"
@@ -73,6 +74,19 @@ namespace OpenLoco::Gfx
     Context& screenContext()
     {
         return _screenContext;
+    }
+
+    // 0x004FFAE8
+    uint32_t applyGhostToImage(uint32_t imageId)
+    {
+        if (Config::get().construction_marker)
+        {
+            return Gfx::recolourTranslucent(imageId, PaletteIndex::index_31);
+        }
+        else
+        {
+            return Gfx::recolour(imageId, PaletteIndex::index_2C);
+        }
     }
 
     const PaletteMap& PaletteMap::getDefault()
