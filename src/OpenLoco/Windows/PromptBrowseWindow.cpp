@@ -1041,7 +1041,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
 
         // Copy path to buffer.
         loco_global<char[512], 0x0112CE04> savePath;
-        strncpy(&savePath[0], path.c_str(), 512);
+        strncpy(&savePath[0], path.u8string().c_str(), 512);
 
         // Load save game or scenario info.
         switch (_fileType)
