@@ -224,7 +224,7 @@ namespace OpenLoco::Paint
         return { vpPos };
     }
 
-    void paintTileElementsEndLoop(PaintSession& session, const Map::TileElement& el)
+    static void paintTileElementsEndLoop(PaintSession& session, const Map::TileElement& el)
     {
         if (el.isLast() || el.baseZ() != ((&el) + 1)->baseZ())
         {
