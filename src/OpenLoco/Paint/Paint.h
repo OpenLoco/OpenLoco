@@ -177,7 +177,7 @@ namespace OpenLoco::Paint
         void setUnkVpY(const uint16_t y) { _unkVpPositionY = y; }
         void setSegmentSupportHeight(const uint16_t segments, const uint16_t height, const uint8_t slope);
         void setGeneralSupportHeight(const uint16_t height, const uint8_t slope);
-        void setMaxHeight(const int16_t height) { _maxHeight = height; }
+        void setMaxHeight(const Map::Pos2& loc);
         void set525CF8(const uint16_t segments) { _525CF8 = segments; }
         void set525CF0(const uint8_t newValue) { _525CF0 = newValue; }
         void setF003F6(const uint16_t newValue) { _F003F6 = newValue; }
