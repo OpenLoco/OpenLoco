@@ -50,7 +50,6 @@ namespace OpenLoco::Economy
     // Always 0.
     static loco_global<uint32_t[32], 0x00525EDE> _525EDE;
 
-
     // 0x004375F7
     void buildDeliveredCargoPaymentsTable()
     {
