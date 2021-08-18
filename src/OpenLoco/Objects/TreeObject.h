@@ -33,7 +33,7 @@ namespace OpenLoco
         constexpr uint16_t requiresWater = (1 << 4);
         constexpr uint16_t unk5 = (1 << 5);
         constexpr uint16_t droughtResistant = (1 << 6);
-        constexpr uint16_t unk7 = (1 << 7);
+        constexpr uint16_t hasShadow = (1 << 7);
     }
 
 #pragma pack(push, 1)

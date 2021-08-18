@@ -160,7 +160,7 @@ namespace OpenLoco::Paint
 
     constexpr std::array<uint8_t, 6> _50076A = { 3, 0, 1, 2, 1, 4 };
     constexpr std::array<bool, 6> _500770 = { true, true, false, false, true, true };
-    constexpr std::array<Map::Pos2, 4> _50074C = {
+    constexpr std::array<Map::Pos2, 4> _treeQuadrantOffset = {
         Map::Pos2{ 7, 7 },
         Map::Pos2{ 7, 23 },
         Map::Pos2{ 23, 23 },
@@ -171,16 +171,15 @@ namespace OpenLoco::Paint
     {
         session.setItemType(InteractionItem::tree);
 
-        auto* treeObj = ObjectManager::get<TreeObject>(elTree.treeObjectId());
+        const auto* treeObj = ObjectManager::get<TreeObject>(elTree.treeObjectId());
         const uint8_t viewableRotation = (session.getRotation() + elTree.rotation()) & 0x3;
         const uint32_t treeFrameNum = (viewableRotation % treeObj->num_rotations) + elTree.unk5l() * treeObj->num_rotations;
 
         uint8_t season = elTree.season();
 
-
         const uint8_t altSeason = elTree.hasSnow() ? 1 : 0;
         bool hasImage2 = false;
-        uint32_t _imageId2 = 0;
+        uint32_t imageId2 = 0;
         if (elTree.unk7l() != 7)
         {
             hasImage2 = true;
@@ -189,62 +188,61 @@ namespace OpenLoco::Paint
             season = _50076A[season];
 
             auto image2Season = elTree.season();
-            // TODO: Make bool list
+
             if (!_500770[season])
             {
                 image2Season = season;
                 season = elTree.season();
                 edx = (~edx) & 0b111;
             }
-
-
+            // Unlikely to do anything as no remap flag set
             edx = edx << 26;
-            _imageId2 = edx | (treeFrameNum + treeObj->sprites[altSeason][image2Season]);
+            imageId2 = edx | (treeFrameNum + treeObj->sprites[altSeason][image2Season]);
         }
 
         const auto seasonBaseImageId = treeObj->sprites[altSeason][season];
-        uint32_t _shadowImageId = 0;
-        if (treeObj->flags & TreeObjectFlags::unk7)
+
+        std::optional<uint32_t> shadowImageId = std::nullopt;
+        if (treeObj->flags & TreeObjectFlags::hasShadow)
         {
-            _shadowImageId = Gfx::recolourTranslucent(treeObj->shadowImageOffset + treeFrameNum + seasonBaseImageId, PaletteIndex::index_32);
+            shadowImageId = Gfx::recolourTranslucent(treeObj->shadowImageOffset + treeFrameNum + seasonBaseImageId, PaletteIndex::index_32);
         }
 
-        const int16_t height = elTree.baseZ() * 4;
-        const int ecx = (elTree.unk0u() + session.getRotation()) % 4;
-        const auto imageOffset = Map::Pos3(_50074C[ecx].x, _50074C[ecx].y, height);
+        const uint8_t quadrant = (elTree.quadrant() + session.getRotation()) % 4;
+        const auto imageOffset = Map::Pos3(_treeQuadrantOffset[quadrant].x, _treeQuadrantOffset[quadrant].y, elTree.baseZ() * 4);
 
-        const int16_t boundBoxOffsetZ = std::min(elTree.clearZ() - elTree.baseZ(), 32) * 4 - 3;
+        const int16_t boundBoxSizeZ = std::min(elTree.clearZ() - elTree.baseZ(), 32) * 4 - 3;
 
-        uint32_t _imageId1 = treeFrameNum + seasonBaseImageId;
+        uint32_t imageId1 = treeFrameNum + seasonBaseImageId;
 
         if (treeObj->colours != 0)
         {
             // No vanilla object has this property set
-            uint8_t colour = elTree.colour();
-            _imageId2 = Gfx::recolour(_imageId2, colour);
-            _imageId1 = Gfx::recolour(_imageId1, colour);
+            const uint8_t colour = elTree.colour();
+            imageId2 = Gfx::recolour(imageId2, colour);
+            imageId1 = Gfx::recolour(imageId1, colour);
         }
 
         if (elTree.isGhost())
         {
             session.setItemType(InteractionItem::noInteraction);
-            _imageId2 = Gfx::applyGhostToImage(_imageId2);
-            _imageId1 = Gfx::applyGhostToImage(_imageId1);
+            imageId2 = Gfx::applyGhostToImage(imageId2);
+            imageId1 = Gfx::applyGhostToImage(imageId1);
         }
 
-        if (_shadowImageId != 0)
+        if (shadowImageId)
         {
             if (session.getContext()->zoom_level <= 1)
             {
-                session.addToPlotListAsParent(_shadowImageId, imageOffset, { 18, 18, 1 }, imageOffset);
+                session.addToPlotListAsParent(*shadowImageId, imageOffset, { 18, 18, 1 }, imageOffset);
             }
         }
 
-        session.addToPlotListAsParent(_imageId1, imageOffset, { 2, 2, boundBoxOffsetZ }, imageOffset + Map::Pos3(0, 0, 2));
+        session.addToPlotListAsParent(imageId1, imageOffset, imageOffset + Map::Pos3(0, 0, 2), { 2, 2, boundBoxSizeZ });
 
         if (hasImage2)
         {
-            session.addToPlotList4FD1E0(_imageId2, imageOffset, { 2, 2, boundBoxOffsetZ }, imageOffset + Map::Pos3(0, 0, 2));
+            session.addToPlotList4FD1E0(imageId2, imageOffset, imageOffset + Map::Pos3(0, 0, 2), { 2, 2, boundBoxSizeZ });
         }
     }
 
