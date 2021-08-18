@@ -264,9 +264,9 @@ namespace OpenLoco::Paint
     {
         std::fill(std::begin(_tunnelCounts), std::end(_tunnelCounts), 0);
         _tunnels0[0].height = 0xFF;
-        _tunnels0[1].height = 0xFF;
-        _tunnels0[2].height = 0xFF;
-        _tunnels0[3].height = 0xFF;
+        _tunnels1[0].height = 0xFF;
+        _tunnels2[0].height = 0xFF;
+        _tunnels3[0].height = 0xFF;
     }
 
     struct GenerationParameters
