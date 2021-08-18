@@ -43,16 +43,30 @@ namespace OpenLoco::Economy
     };
 
     static loco_global<uint32_t[32], 0x00525E5E> currencyMultiplicationFactor;
+    static loco_global<currency32_t[32][60], 0x009C68F8> _deliveredCargoPayment;
 
     // NB: This is not used for anything due to a mistake in original inflation calculation
     // looks as if it was meant to be extra precesion for the currencyMultiplicationFactor
     // Always 0.
     static loco_global<uint32_t[32], 0x00525EDE> _525EDE;
 
+
     // 0x004375F7
-    static void sub_4375F7()
+    void buildDeliveredCargoPaymentsTable()
     {
-        call(0x004375F7);
+        for (uint8_t cargoItem = 0; cargoItem < ObjectManager::getMaxObjects(ObjectType::cargo); ++cargoItem)
+        {
+            auto* cargoObj = ObjectManager::get<CargoObject>(cargoItem);
+            if (cargoObj == nullptr)
+            {
+                continue;
+            }
+
+            for (uint16_t numDays = 2; numDays <= 122; ++numDays)
+            {
+                _deliveredCargoPayment[cargoItem][(numDays / 2) - 1] = CompanyManager::calculateDeliveredCargoPayment(cargoItem, 100, 10, numDays);
+            }
+        }
     }
 
     // 0x0046E239
@@ -64,7 +78,7 @@ namespace OpenLoco::Economy
             currencyMultiplicationFactor[i] += (static_cast<uint64_t>(_inflationFactors[i]) * currencyMultiplicationFactor[i]) >> 12;
         }
 
-        sub_4375F7();
+        buildDeliveredCargoPaymentsTable();
         Ui::WindowManager::invalidate(Ui::WindowType::companyList);
         Ui::WindowManager::invalidate(Ui::WindowType::buildVehicle);
         Ui::WindowManager::invalidate(Ui::WindowType::construction);
