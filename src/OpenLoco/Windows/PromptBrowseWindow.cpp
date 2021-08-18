@@ -119,6 +119,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     static loco_global<uint8_t, 0x009D9D63> _type;
     static loco_global<browse_file_type, 0x009DA284> _fileType;
     static loco_global<uint8_t, 0x009DA285> _9DA285;
+    static loco_global<char[512], 0x009DA084> _displayFolderBuffer;
     static loco_global<char[256], 0x009D9D64> _title;
     static loco_global<char[32], 0x009D9E64> _filter;
     static loco_global<char[512], 0x009D9E84> _directory;
@@ -409,11 +410,39 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         self->widgets[widx::parent_button].left = self->width - 26;
         self->widgets[widx::parent_button].right = self->width - 3;
 
-        // Resume the original prepare_draw routine beyond the widget repositioning.
-        registers regs;
-        regs.edi = X86Pointer(buffer);
-        regs.esi = X86Pointer(self);
-        call(0x00445D91, regs);
+        // Get width of the base 'Folder:' string
+        auto args = FormatArguments::common(StringIds::empty);
+        char folderBuffer[256]{};
+        StringManager::formatString(folderBuffer, StringIds::window_browse_folder, &args);
+        Gfx::setCurrentFontSpriteBase(224);
+        const auto folderLabelWidth = Gfx::getStringWidth(folderBuffer);
+
+        // We'll ensure the folder width does not reach the parent button.
+        const uint16_t maxWidth = self->widgets[widx::parent_button].left - folderLabelWidth - 10;
+        strncpy(&_displayFolderBuffer[0], &_directory[0], 512);
+        uint16_t folderWidth = Gfx::getStringWidth(_displayFolderBuffer);
+
+        // If the folder already fits, we're done.
+        if (folderWidth <= maxWidth)
+            return;
+
+        char* relativeDirectory = &_directory[0];
+        do
+        {
+            // If we're omitting part of the folder, prepend ellipses.
+            if (relativeDirectory != &_directory[0])
+                strncpy(&_displayFolderBuffer[0], "...", 512);
+
+            // Seek the next directory separator token.
+            while (*relativeDirectory != '\0' && *relativeDirectory != fs::path::preferred_separator)
+                relativeDirectory++;
+
+            // Use the truncated directory name in the buffer.
+            strncat(&_displayFolderBuffer[0], relativeDirectory, 512);
+
+            // Prepare for the next pass, if needed.
+            relativeDirectory++;
+        } while (Gfx::getStringWidth(_displayFolderBuffer) > maxWidth);
     }
 
     static void setCommonArgsStringptr(const char* buffer)
@@ -432,7 +461,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
 
         window->draw(context);
 
-        auto folder = (const char*)0x9DA084;
+        auto folder = &_displayFolderBuffer[0];
         setCommonArgsStringptr(folder);
         Gfx::drawString_494B3F(*context, window->x + 3, window->y + window->widgets[widx::parent_button].top + 6, 0, StringIds::window_browse_folder, _commonFormatArgs);
 

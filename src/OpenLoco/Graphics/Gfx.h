@@ -246,4 +246,6 @@ namespace OpenLoco::Gfx
     std::optional<Gfx::Context> clipContext(const Gfx::Context& src, const Ui::Rect& newRect);
 
     G1Element* getG1Element(uint32_t id);
+
+    void setCurrentFontSpriteBase(int16_t value);
 }
