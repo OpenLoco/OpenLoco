@@ -167,54 +167,55 @@ namespace OpenLoco::Paint
         Map::Pos2{ 23, 7 },
     };
     // 0x004BAEDA
-    static void paintTree(PaintSession& session, Map::TreeElement& elTree)
+    static void paintTree(PaintSession& session, const Map::TreeElement& elTree)
     {
         session.setItemType(InteractionItem::tree);
 
         auto* treeObj = ObjectManager::get<TreeObject>(elTree.treeObjectId());
         const uint8_t viewableRotation = (session.getRotation() + elTree.rotation()) & 0x3;
-        uint32_t _imageId1 = (viewableRotation % treeObj->num_rotations) + elTree.unk5l() * treeObj->num_rotations;
-        uint32_t _imageId2 = 0;
+        const uint32_t treeFrameNum = (viewableRotation % treeObj->num_rotations) + elTree.unk5l() * treeObj->num_rotations;
 
-        const uint8_t al = elTree.unk7l();
         uint8_t season = elTree.season();
 
-        bool hasImage2 = false;
 
-        if (al != 7)
+        const uint8_t altSeason = elTree.hasSnow() ? 1 : 0;
+        bool hasImage2 = false;
+        uint32_t _imageId2 = 0;
+        if (elTree.unk7l() != 7)
         {
             hasImage2 = true;
 
             uint32_t edx = (elTree.unk7l()) + 1;
+            season = _50076A[season];
 
+            auto image2Season = elTree.season();
             // TODO: Make bool list
-            if (_500770[season])
+            if (!_500770[season])
             {
-                season = _50076A[season];
-                edx = (-edx) & 0b111;
+                image2Season = season;
+                season = elTree.season();
+                edx = (~edx) & 0b111;
             }
 
-            const uint8_t altSeason = elTree.isAltSeason() ? 1 : 0;
 
             edx = edx << 26;
-            _imageId2 = edx | (_imageId1 + treeObj->sprites[altSeason][season]);
+            _imageId2 = edx | (treeFrameNum + treeObj->sprites[altSeason][image2Season]);
         }
 
+        const auto seasonBaseImageId = treeObj->sprites[altSeason][season];
         uint32_t _shadowImageId = 0;
         if (treeObj->flags & TreeObjectFlags::unk7)
         {
-            _shadowImageId = 0x41900000 | (treeObj->shadowImageOffset + _imageId1);
+            _shadowImageId = Gfx::recolourTranslucent(treeObj->shadowImageOffset + treeFrameNum + seasonBaseImageId, PaletteIndex::index_32);
         }
 
         const int16_t height = elTree.baseZ() * 4;
         const int ecx = (elTree.unk0u() + session.getRotation()) % 4;
         const auto imageOffset = Map::Pos3(_50074C[ecx].x, _50074C[ecx].y, height);
 
-        const int16_t boundBoxOffsetZ = std::min(elTree.clearZ() - elTree.baseZ(), 0x20) * 4 - 3;
+        const int16_t boundBoxOffsetZ = std::min(elTree.clearZ() - elTree.baseZ(), 32) * 4 - 3;
 
-        const uint8_t altSeason = elTree.isAltSeason() ? 1 : 0;
-
-        _imageId1 = _imageId1 + treeObj->sprites[altSeason][ecx];
+        uint32_t _imageId1 = treeFrameNum + seasonBaseImageId;
 
         if (treeObj->colours != 0)
         {
@@ -227,8 +228,8 @@ namespace OpenLoco::Paint
         if (elTree.isGhost())
         {
             session.setItemType(InteractionItem::noInteraction);
-            _imageId2 = applyGhostToImage(_imageId2);
-            _imageId1 = applyGhostToImage(_imageId1);
+            _imageId2 = Gfx::applyGhostToImage(_imageId2);
+            _imageId1 = Gfx::applyGhostToImage(_imageId1);
         }
 
         if (_shadowImageId != 0)

@@ -34,19 +34,6 @@ namespace OpenLoco::Paint
         4, 3, 2, 1, 0, 0, 0, 0
     };
 
-    // 0x004FFAE8
-    static uint32_t applyGhostToImage(uint32_t imageId)
-    {
-        if (Config::get().construction_marker)
-        {
-            return Gfx::recolourTranslucent(imageId, PaletteIndex::index_31);
-        }
-        else
-        {
-            return Gfx::recolour(imageId, PaletteIndex::index_2C);
-        }
-    }
-
     // 0x004B0CFC
     static void paintBogie(PaintSession& session, VehicleBogie* bogie)
     {
@@ -100,7 +87,7 @@ namespace OpenLoco::Paint
                 if (bogie->getFlags38() & Flags38::isGhost)
                 {
                     session.setItemType(Ui::ViewportInteraction::InteractionItem::noInteraction);
-                    imageId = applyGhostToImage(imageId);
+                    imageId = Gfx::applyGhostToImage(imageId);
                 }
                 else if (bogie->var_0C & Flags0C::unk_5)
                 {
@@ -146,7 +133,7 @@ namespace OpenLoco::Paint
                 if (bogie->getFlags38() & Flags38::isGhost)
                 {
                     session.setItemType(Ui::ViewportInteraction::InteractionItem::noInteraction);
-                    imageId = applyGhostToImage(imageId);
+                    imageId = Gfx::applyGhostToImage(imageId);
                 }
                 else
                 {
@@ -170,7 +157,7 @@ namespace OpenLoco::Paint
                 if (bogie->getFlags38() & Flags38::isGhost)
                 {
                     session.setItemType(Ui::ViewportInteraction::InteractionItem::noInteraction);
-                    imageId = applyGhostToImage(imageId);
+                    imageId = Gfx::applyGhostToImage(imageId);
                 }
                 else
                 {
@@ -441,7 +428,7 @@ namespace OpenLoco::Paint
         uint32_t imageId = 0;
         if (body->getFlags38() & Flags38::isGhost)
         {
-            imageId = applyGhostToImage(bodyImage);
+            imageId = Gfx::applyGhostToImage(bodyImage);
         }
         else if (body->var_0C & Flags0C::unk_5)
         {

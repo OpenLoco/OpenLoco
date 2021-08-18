@@ -10,7 +10,7 @@ namespace OpenLoco
         uint32_t image = treeGrowth[growth] * num_rotations;
         auto rotation = (num_rotations - 1) & 2;
         image += rotation;
-        image += sprites[season_state];
+        image += sprites[0][season_state];
 
         auto colourOptions = colours;
         if (colourOptions != 0)
@@ -32,7 +32,7 @@ namespace OpenLoco
         {
             auto snowImage = treeGrowth[growth] * num_rotations;
             snowImage += rotation;
-            snowImage += sprites[season_state + 6];
+            snowImage += sprites[1][season_state];
 
             if (colourOptions != 0)
             {
