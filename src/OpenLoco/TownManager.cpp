@@ -150,7 +150,7 @@ namespace OpenLoco::TownManager
         Ui::WindowManager::invalidate(Ui::WindowType::town);
     }
 
-    // 0x00497DC1
+    // 0x00497E52
     std::optional<std::pair<TownId_t, uint8_t>> getClosestTownAndUnk(const Map::Pos2& loc)
     {
         int32_t closestDistance = std::numeric_limits<uint16_t>::max();
