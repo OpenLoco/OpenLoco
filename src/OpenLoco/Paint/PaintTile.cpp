@@ -1,8 +1,10 @@
 #include "PaintTile.h"
+#include "../Config.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/ImageIds.h"
 #include "../Input.h"
 #include "../Map/TileManager.h"
+#include "../Objects/TreeObject.h"
 #include "../Ui.h"
 #include "Paint.h"
 
@@ -156,100 +158,92 @@ namespace OpenLoco::Paint
         call(0x0042C6C4, regs);
     }
 
+    constexpr std::array<uint8_t, 6> _50076A = { 3, 0, 1, 2, 1, 4 };
+    constexpr std::array<bool, 6> _500770 = { true, true, false, false, true, true };
+    constexpr std::array<Map::Pos2, 4> _50074C = {
+        Map::Pos2{ 7, 7 },
+        Map::Pos2{ 7, 23 },
+        Map::Pos2{ 23, 23 },
+        Map::Pos2{ 23, 7 },
+    };
     // 0x004BAEDA
     static void paintTree(PaintSession& session, Map::TreeElement& elTree)
     {
-        _spriteType = 12;
+        session.setItemType(InteractionItem::tree);
 
-        int id = tile->data()[4];
-        auto treeObj = objectmgr::get<tree_object>(id);
+        auto* treeObj = ObjectManager::get<TreeObject>(elTree.treeObjectId());
+        const uint8_t viewableRotation = (session.getRotation() + elTree.rotation()) & 0x3;
+        uint32_t _imageId1 = (viewableRotation % treeObj->num_rotations) + elTree.unk5l() * treeObj->num_rotations;
+        uint32_t _imageId2 = 0;
 
-        int _imageId1 = (rotation % treeObj->rotation_count) + (tile->data()[5] & 0b1111) * treeObj->rotation_count;
-        int _imageId2;
+        const uint8_t al = elTree.unk7l();
+        uint8_t season = elTree.season();
 
-        int al = tile->data()[7] & 0b111;
-        int season = tile->data()[7] >> 3;
-
-        int _1136474 = -1;
+        bool hasImage2 = false;
 
         if (al != 7)
         {
-            _1136474 = _50076A[season];
+            hasImage2 = true;
 
-            uint32_t edx = (tile->data()[7] & 0b111) + 1;
+            uint32_t edx = (elTree.unk7l()) + 1;
 
             // TODO: Make bool list
-            if (_500770[season] == 1)
+            if (_500770[season])
             {
                 season = _50076A[season];
                 edx = (-edx) & 0b111;
             }
 
-            int altSeason = 0;
-            if ((tile->data()[6] & 0x40) != 0)
-            {
-                altSeason = 1;
-            }
+            const uint8_t altSeason = elTree.isAltSeason() ? 1 : 0;
 
             edx = edx << 26;
-            _imageId2 = edx | (_imageId1 + treeObj->image_ids[altSeason][season]);
+            _imageId2 = edx | (_imageId1 + treeObj->sprites[altSeason][season]);
         }
 
-        int _shadowImageId = 0;
-        if ((treeObj->var_08 & 0x80) != 0)
+        uint32_t _shadowImageId = 0;
+        if (treeObj->flags & TreeObjectFlags::unk7)
         {
-            _shadowImageId = 0x41900000 | (treeObj->shadow_image_offset + _imageId1);
+            _shadowImageId = 0x41900000 | (treeObj->shadowImageOffset + _imageId1);
         }
 
-        int ecx = ((tile->data()[0] >> 6) + gCurrentRotation) % 4;
-        int _al = _50074C[ecx].x;
-        int _cl = _50074C[ecx].y;
+        const int16_t height = elTree.baseZ() * 4;
+        const int ecx = (elTree.unk0u() + session.getRotation()) % 4;
+        const auto imageOffset = Map::Pos3(_50074C[ecx].x, _50074C[ecx].y, height);
 
-        int _ah = tile->clear_z() - tile->base_z();
-        _ah = std::min(_ah, 0x20);
-        _ah *= 4;
+        const int16_t boundBoxOffsetZ = std::min(elTree.clearZ() - elTree.baseZ(), 0x20) * 4 - 3;
 
-        int b = 0;
-        if ((tile->data()[6] & 0x40) != 0)
-        {
-            b = 1;
-        }
+        const uint8_t altSeason = elTree.isAltSeason() ? 1 : 0;
 
-        _imageId1 = _imageId1 + treeObj->image_ids[b][ecx];
+        _imageId1 = _imageId1 + treeObj->sprites[altSeason][ecx];
 
-        if (treeObj->var_44 != 0)
+        if (treeObj->colours != 0)
         {
             // No vanilla object has this property set
-            uint8_t colour = tile->data()[6] & 0x1F; // 5 bits
-            uint32_t marker = 0x20000000 | (colour << 19);
-            _imageId2 = _imageId2 | marker;
-            _imageId1 = _imageId1 | marker;
+            uint8_t colour = elTree.colour();
+            _imageId2 = Gfx::recolour(_imageId2, colour);
+            _imageId1 = Gfx::recolour(_imageId1, colour);
         }
 
-        if (tile->is_flag_4())
+        if (elTree.isGhost())
         {
-            // construction marker
-            _spriteType = 0;
-            uint32_t marker = _4FFAE8[config::get().var_24];
-            _imageId2 = (_imageId2 & 0x7FFFF) | marker;
-            _imageId1 = (_imageId1 & 0x7FFFF) | marker;
+            session.setItemType(InteractionItem::noInteraction);
+            _imageId2 = applyGhostToImage(_imageId2);
+            _imageId1 = applyGhostToImage(_imageId1);
         }
-
-        _ah -= 3;
 
         if (_shadowImageId != 0)
         {
-            if (_E0C3E0->zoom_level <= 1)
+            if (session.getContext()->zoom_level <= 1)
             {
-                AddToPlotList_3(gCurrentRotation, _shadowImageId, _al, _cl, height, 18, 18, 1, _al, _cl, height);
+                session.addToPlotListAsParent(_shadowImageId, imageOffset, { 18, 18, 1 }, imageOffset);
             }
         }
 
-        AddToPlotList_3(gCurrentRotation, _imageId1, _al, _cl, height, 2, 2, _ah, _al, _cl, height + 2);
+        session.addToPlotListAsParent(_imageId1, imageOffset, { 2, 2, boundBoxOffsetZ }, imageOffset + Map::Pos3(0, 0, 2));
 
-        if (_1136474 != -1)
+        if (hasImage2)
         {
-            AddToPlotList_4FD1E0(gCurrentRotation, _imageId2, _al, _cl, height, 2, 2, _ah, _al, _cl, height + 2);
+            session.addToPlotList4FD1E0(_imageId2, imageOffset, { 2, 2, boundBoxOffsetZ }, imageOffset + Map::Pos3(0, 0, 2));
         }
     }
 

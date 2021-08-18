@@ -56,6 +56,7 @@ namespace OpenLoco::Paint
     loco_global<int32_t[4], 0x4FD120> _4FD120;
     loco_global<int32_t[4], 0x4FD130> _4FD130;
     loco_global<int32_t[4], 0x4FD140> _4FD140;
+    loco_global<int32_t[4], 0x4FD1E0> _4FD1E0;
     loco_global<int32_t[4], 0x4FD200> _4FD200;
 
     // 0x004FD120
@@ -139,6 +140,26 @@ namespace OpenLoco::Paint
 
         call(_4FD200[currentRotation], regs);
     }
+
+    // 0x004FD1E0
+    void PaintSession::addToPlotList4FD1E0(uint32_t imageId, const Map::Pos3& offset, const Map::Pos3& boundBoxOffset, const Map::Pos3& boundBoxSize)
+    {
+        registers regs;
+        regs.ebx = imageId;
+        regs.al = offset.x;
+        regs.cl = offset.y;
+        regs.dx = offset.z;
+        regs.di = boundBoxSize.x;
+        regs.si = boundBoxSize.y;
+        regs.ah = boundBoxSize.z;
+
+        addr<0xE3F0A0, int16_t>() = boundBoxOffset.x;
+        addr<0xE3F0A2, int16_t>() = boundBoxOffset.y;
+        addr<0xE3F0A4, uint16_t>() = boundBoxOffset.z;
+
+        call(_4FD1E0[currentRotation], regs);
+    }
+
     // 0x0045E779
     void PaintSession::attachToPrevious(uint32_t imageId, const Map::Pos2& offset)
     {
