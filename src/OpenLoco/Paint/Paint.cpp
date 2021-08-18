@@ -7,6 +7,7 @@
 #include "../Ui.h"
 #include "../Ui/WindowManager.h"
 #include "PaintEntity.h"
+#include "PaintTile.h"
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui::ViewportInteraction;
@@ -19,6 +20,37 @@ namespace OpenLoco::Paint
     {
         _spritePositionX = pos.x;
         _spritePositionY = pos.y;
+    }
+    void PaintSession::setMapPosition(const Map::Pos2& pos)
+    {
+        _mapPosition = pos;
+    }
+    void PaintSession::setUnkPosition(const Map::Pos2& pos)
+    {
+        _unkPositionX = pos.x;
+        _unkPositionY = pos.y;
+    }
+    void PaintSession::setVpPosition(const Ui::Point& pos)
+    {
+        _vpPositionX = pos.x;
+        _vpPositionY = pos.y;
+    }
+
+    void PaintSession::resetTileColumn(const Ui::Point& pos)
+    {
+        setVpPosition(pos);
+        _didPassSurface = false;
+        _525CE4[0] = 0xFFFF;
+        _525CF0 = 0;
+        _525CF0 = 0;
+        _525CF8 = 0;
+        _F003F4 = 0;
+        _F003F6 = 0;
+        std::fill(std::begin(_unkSegments), std::end(_unkSegments), 0);
+        std::fill(std::begin(_E400D0), std::end(_E400D0), nullptr);
+        std::fill(std::begin(_E400E4), std::end(_E400E4), nullptr);
+        _112C300 = 0;
+        _112C306 = 0;
     }
 
     loco_global<int32_t[4], 0x4FD120> _4FD120;
@@ -156,22 +188,38 @@ namespace OpenLoco::Paint
             });
     }
 
-    // 0x00461CF8
-    static void paintTileElements(PaintSession& session, const Map::Pos2& loc)
+    const uint16_t segmentOffsets[9] = { Segment::_58, Segment::_5C, Segment::_60, Segment::_64, Segment::_68, Segment::_6C, Segment::_70, Segment::_74, Segment::_78 };
+
+    void PaintSession::setSegmentSupportHeight(const uint16_t segments, const uint16_t height, const uint8_t slope)
     {
-        registers regs{};
-        regs.eax = loc.x;
-        regs.ecx = loc.y;
-        call(0x00461CF8, regs);
+        for (int32_t s = 0; s < 9; s++)
+        {
+            if (segments & segmentOffsets[s])
+            {
+                _supportSegments[s].height = height;
+                if (height != 0xFFFF)
+                {
+                    _supportSegments[s].slope = slope;
+                    _supportSegments[s].var_03 = 0;
+                }
+            }
+        }
     }
 
-    // 0x004617C6
-    static void paintTileElements2(PaintSession& session, const Map::Pos2& loc)
+    void PaintSession::setGeneralSupportHeight(const uint16_t height, const uint8_t slope)
     {
-        registers regs{};
-        regs.eax = loc.x;
-        regs.ecx = loc.y;
-        call(0x004617C6, regs);
+        _support->height = height;
+        _support->slope = slope;
+        _support->var_03 = 0;
+    }
+
+    void PaintSession::resetTunnels()
+    {
+        std::fill(std::begin(_tunnelCounts), std::end(_tunnelCounts), 0);
+        _tunnels0[0].height = 0xFF;
+        _tunnels0[1].height = 0xFF;
+        _tunnels0[2].height = 0xFF;
+        _tunnels0[3].height = 0xFF;
     }
 
     struct GenerationParameters

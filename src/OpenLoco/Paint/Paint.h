@@ -2,6 +2,7 @@
 #include "../Interop/Interop.hpp"
 #include "../Map/Map.hpp"
 #include "../Types.hpp"
+#include "../Ui/Types.hpp"
 
 namespace OpenLoco::Map
 {
@@ -25,6 +26,20 @@ namespace OpenLoco::Gfx
 
 namespace OpenLoco::Paint
 {
+    namespace Segment
+    {
+        constexpr uint16_t _58 = (1 << 0); // TBC: 0
+        constexpr uint16_t _5C = (1 << 1); // TBC: 6
+        constexpr uint16_t _60 = (1 << 2); // TBC: 2
+        constexpr uint16_t _64 = (1 << 3); // TBC: 8
+        constexpr uint16_t _68 = (1 << 4); // TBC: 3
+        constexpr uint16_t _6C = (1 << 5); // TBC: 7
+        constexpr uint16_t _70 = (1 << 6); // TBC: 1
+        constexpr uint16_t _74 = (1 << 7); // TBC: 5
+        constexpr uint16_t _78 = (1 << 8); // TBC: 4
+
+        constexpr uint16_t all = _58 | _5C | _60 | _64 | _68 | _6C | _70 | _74 | _78;
+    }
 
 #pragma pack(push, 1)
     /* size 0x12 */
@@ -113,6 +128,21 @@ namespace OpenLoco::Paint
         PaintStringStruct string;
     };
     assert_struct_size(PaintEntry, 0x34);
+
+    struct SupportHeight
+    {
+        uint16_t height;
+        uint8_t slope;
+        uint8_t var_03; // Used by general support height only
+    };
+    assert_struct_size(SupportHeight, 4);
+
+    struct TunnelEntry
+    {
+        uint8_t height;
+        uint8_t type;
+    };
+    assert_struct_size(TunnelEntry, 2);
 #pragma pack(pop)
     struct GenerationParameters;
 
@@ -127,10 +157,33 @@ namespace OpenLoco::Paint
         [[nodiscard]] Ui::ViewportInteraction::InteractionArg getTownNameInteractionInfo(const uint32_t flags);
         Gfx::Context* getContext() { return _context; }
         uint8_t getRotation() { return currentRotation; }
+        int16_t getMaxHeight() { return _maxHeight; }
+        uint32_t get112C300() { return _112C300; }
+        uint16_t getF003F4() { return _F003F4; }
+        const SupportHeight& getGeneralSupportHeight() { return _support; }
+        uint16_t get525CE4(const uint8_t i) { return _525CE4[i]; }
+        uint16_t get525CF8() { return _525CF8; }
+        Map::Pos2 getUnkPosition()
+        {
+            return Map::Pos2{ _unkPositionX, _unkPositionY };
+        }
         // TileElement or Entity
         void setCurrentItem(void* item) { _currentItem = item; }
         void setItemType(const Ui::ViewportInteraction::InteractionItem type) { _itemType = type; }
         void setEntityPosition(const Map::Pos2& pos);
+        void setMapPosition(const Map::Pos2& pos);
+        void setUnkPosition(const Map::Pos2& pos);
+        void setVpPosition(const Ui::Point& pos);
+        void setUnkVpY(const uint16_t y) { _unkVpPositionY = y; }
+        void setSegmentSupportHeight(const uint16_t segments, const uint16_t height, const uint8_t slope);
+        void setGeneralSupportHeight(const uint16_t height, const uint8_t slope);
+        void setMaxHeight(const int16_t height) { _maxHeight = height; }
+        void set525CF8(const uint16_t segments) { _525CF8 = segments; }
+        void set525CF0(const uint8_t newValue) { _525CF0 = newValue; }
+        void setF003F6(const uint16_t newValue) { _F003F6 = newValue; }
+        void set525CE4(const uint8_t i, const uint16_t newValue) { _525CE4[i] = newValue; }
+        void resetTileColumn(const Ui::Point& pos);
+        void resetTunnels();
 
         /*      
          * @param amount    @<eax>
@@ -206,42 +259,59 @@ namespace OpenLoco::Paint
     private:
         void generateTilesAndEntities(GenerationParameters&& p);
 
+        inline static Interop::loco_global<uint8_t[4], 0x0050C185> _tunnelCounts;
+        inline static Interop::loco_global<TunnelEntry[32], 0x0050C077> _tunnels0;
+        inline static Interop::loco_global<TunnelEntry[32], 0x0050C0BB> _tunnels1;
+        inline static Interop::loco_global<TunnelEntry[32], 0x0050C0FF> _tunnels2;
+        inline static Interop::loco_global<TunnelEntry[32], 0x0050C143> _tunnels3;
+        inline static Interop::loco_global<uint16_t[2], 0x00525CE4> _525CE4;
+        inline static Interop::loco_global<uint8_t, 0x00525CF0> _525CF0;
+        inline static Interop::loco_global<uint16_t, 0x00525CF8> _525CF8;
         inline static Interop::loco_global<Gfx::Context*, 0x00E0C3E0> _context;
-        inline static Interop::loco_global<PaintEntry[4000], 0x00E0C410> _paintEntries;
-        inline static Interop::loco_global<PaintStruct* [1024], 0x00E3F0C0> _quadrants;
-        inline static Interop::loco_global<uint32_t, 0x00E400C0> _quadrantBackIndex;
-        inline static Interop::loco_global<uint32_t, 0x00E400C4> _quadrantFrontIndex;
-        inline static Interop::loco_global<const void*, 0x00E4F0B4> _currentlyDrawnItem;
         inline static Interop::loco_global<PaintEntry*, 0x00E0C404> _endOfPaintStructArray;
         inline static Interop::loco_global<PaintEntry*, 0x00E0C408> _paintHead;
         inline static Interop::loco_global<PaintEntry*, 0x00E0C40C> _nextFreePaintStruct;
+        inline static Interop::loco_global<PaintEntry[4000], 0x00E0C410> _paintEntries;
         inline static Interop::loco_global<coord_t, 0x00E3F090> _spritePositionX;
+        inline static Interop::loco_global<coord_t, 0x00E3F092> _unkPositionX;
+        inline static Interop::loco_global<int16_t, 0x00E3F094> _vpPositionX;
         inline static Interop::loco_global<coord_t, 0x00E3F096> _spritePositionY;
-        inline static Interop::loco_global<PaintStruct*, 0x00E40120> _lastPS;
+        inline static Interop::loco_global<coord_t, 0x00E3F098> _unkPositionY;
+        inline static Interop::loco_global<int16_t, 0x00E3F09A> _vpPositionY;
+        inline static Interop::loco_global<int16_t, 0x00E3F09C> _unkVpPositionY;
+        inline static Interop::loco_global<bool, 0x00E3F09E> _didPassSurface;
         inline static Interop::loco_global<Ui::ViewportInteraction::InteractionItem, 0x00E3F0AC> _itemType;
+        inline static Interop::loco_global<Map::Pos2, 0x00E3F0B0> _mapPosition;
         inline static Interop::loco_global<void*, 0x00E3F0B4> _currentItem;
+        inline static Interop::loco_global<PaintStruct* [1024], 0x00E3F0C0> _quadrants;
+        inline static Interop::loco_global<uint32_t, 0x00E400C0> _quadrantBackIndex;
+        inline static Interop::loco_global<uint32_t, 0x00E400C4> _quadrantFrontIndex;
+        inline static Interop::loco_global<PaintEntry* [2], 0x00E400E4> _E400E4;
+        inline static Interop::loco_global<PaintEntry* [5], 0x00E400D0> _E400D0;
         inline static Interop::loco_global<PaintStringStruct*, 0x00E40118> _paintStringHead;
         inline static Interop::loco_global<PaintStringStruct*, 0x00E4011C> _lastPaintString;
-        inline static Interop::loco_global<Map::Pos2, 0x00E3F0B0> _mapPosition;
+        inline static Interop::loco_global<PaintStruct*, 0x00E40120> _lastPS;
+        inline static Interop::loco_global<const void*, 0x00E4F0B4> _currentlyDrawnItem;
+        inline static Interop::loco_global<int16_t, 0x00F00152> _maxHeight;
+        inline static Interop::loco_global<uint16_t, 0x00F003F4> _F003F4;
+        inline static Interop::loco_global<uint16_t, 0x00F003F6> _F003F6;
+        inline static Interop::loco_global<uint32_t[9], 0x00F003F8> _unkSegments;
+        inline static Interop::loco_global<SupportHeight[9], 0x00F00458> _supportSegments;
+        inline static Interop::loco_global<SupportHeight, 0x00F0047C> _support;
+        inline static Interop::loco_global<int16_t, 0x00F00480> _waterHeight;
+        inline static Interop::loco_global<uint32_t, 0x0112C300> _112C300;
+        inline static Interop::loco_global<uint16_t, 0x0112C306> _112C306;
         uint8_t currentRotation; // new field set from 0x00E3F0B8 but split out into this struct as seperate item
 
         // From OpenRCT2 equivalent fields not found yet or new
         //uint32_t viewFlags;                          // new field might not be needed tbc
         //AttachedPaintStruct* unkF1AD2C;              // no equivalent
-        //support_height supportSegments[9];
-        //support_height support;
         //PaintStruct* woodenSupportsPrependTo;
-        //tunnel_entry leftTunnels[TUNNEL_MAX_COUNT];
-        //uint8_t leftTunnelCount;
-        //tunnel_entry rightTunnels[TUNNEL_MAX_COUNT];
-        //uint8_t rightTunnelCount;
         //uint8_t verticalTunnelHeight;
         //const Map::TileElement* surfaceElement;
         //Map::TileElement* pathElementOnSameHeight;
         //Map::TileElement* trackElementOnSameHeight;
-        //bool didPassSurface;
         //uint8_t unk141E9DB;
-        //uint16_t waterHeight;
         //uint32_t trackColours[4];
     };
 
