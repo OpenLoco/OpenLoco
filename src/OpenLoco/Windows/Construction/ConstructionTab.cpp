@@ -29,6 +29,9 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     static loco_global<uint16_t, 0x00523376> _clickRepeatTicks;
     static loco_global<uint32_t, 0x00523394> _toolWidgetIndex;
 
+    static loco_global<Map::Pos3, 0x00F24942> _constructionArrowPos;
+    static loco_global<uint8_t, 0x00F24948> _constructionArrowDirection;
+
     static loco_global<int32_t, 0x00E3F0B8> gCurrentRotation;
     static loco_global<uint8_t, 0x0112C2E9> _alternateTrackObjectId; // set from GameCommands::createRoad
     static loco_global<uint8_t[18], 0x0050A006> available_objects;   // toptoolbar
@@ -2218,28 +2221,6 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         }
     }
 
-    // 0x0049DC8C
-    static void onToolUpdate(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
-    {
-        registers regs;
-        regs.esi = X86Pointer(&self);
-        regs.dx = widgetIndex;
-        regs.ax = x;
-        regs.bx = y;
-        call(0x0049DC8C, regs);
-    }
-
-    static int16_t getMaxPieceHeight(const std::vector<TrackData::PreviewTrack>& piece)
-    {
-        int16_t maxPieceHeight = 0;
-
-        for (const auto& part : piece)
-        {
-            maxPieceHeight = std::max(maxPieceHeight, part.z);
-        }
-        return maxPieceHeight;
-    }
-
     // 0 if nothing currently selected
     static int16_t getMaxConstructHeightFromExistingSelection()
     {
@@ -2306,7 +2287,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         return std::nullopt;
     }
 
-    static std::optional<std::pair<Map::TilePos2, int16_t>> getConstructionPos(const int16_t x, const int16_t y, const int16_t baseHeight)
+    static std::optional<std::pair<Map::TilePos2, int16_t>> getConstructionPos(const int16_t x, const int16_t y, const int16_t baseHeight = std::numeric_limits<int16_t>::max())
     {
         auto mapPos = ViewportInteraction::getSurfaceOrWaterLocFromUi({ x, y });
 
@@ -2322,6 +2303,103 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         height = std::max(height, tileHeight->waterHeight);
 
         return { std::make_pair(Map::TilePos2(*mapPos), height) };
+    }
+
+    // 0x004A1968
+    static void onToolUpdateTrack(const int16_t x, const int16_t y) {
+        Map::TileManager::mapInvalidateMapSelectionTiles();
+        Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable | Input::MapSelectionFlags::enableConstruct | Input::MapSelectionFlags::unk_02);
+
+        Pos2 constructPos;
+        int16_t constructHeight = 0;
+        const auto junctionRes = tryMakeTrackJunctionAtLoc(x, y);
+        if (junctionRes)
+        {
+            constructPos = junctionRes->first;
+            constructHeight = junctionRes->second;
+
+            _makeJunction = 1;
+        }
+        else
+        {
+            const auto constRes = getConstructionPos(x, y);
+            if (!constRes)
+            {
+                return;
+            }
+            constructPos = constRes->first;
+            constructHeight = constRes->second;
+
+            _makeJunction = 0;
+        }
+
+        Input::setMapSelectionFlags(Input::MapSelectionFlags::enableConstruct | Input::MapSelectionFlags::unk_02);
+        Input::resetMapSelectionFlag(Input::MapSelectionFlags::unk_03);
+
+        _constructionArrowPos = Map::Pos3(constructPos.x, constructPos.y, constructHeight);
+        _constructionArrowDirection = _constructionRotation;
+        _mapSelectedTiles[0] = constructPos;
+        _mapSelectedTiles[1].x = -1;
+
+        auto pieceId = getTrackPieceId(_lastSelectedTrackPiece, _lastSelectedTrackGradient, _constructionRotation);
+        if (!pieceId)
+        {
+            removeConstructionGhosts();
+            Map::TileManager::mapInvalidateMapSelectionTiles();
+            return;
+        }
+        _byte_1136065 = pieceId->id;
+        const auto& trackPieces = TrackData::getTrackPiece(pieceId->id);
+        size_t index = 0;
+        for (const auto& piece : trackPieces)
+        {
+            if (piece.flags & TrackData::PreviewTrackFlags::diagonal)
+            {
+                continue;
+            }
+            _mapSelectedTiles[index++] = constructPos + Math::Vector::rotate(Map::Pos2(piece.x, piece.y), _constructionRotation);
+        }
+        _mapSelectedTiles[index].x = -1;
+
+        if (_makeJunction != 1)
+        {
+            // 0x004A1AFF
+        }
+        // 0x004A1BF1
+    }
+
+    // 0x0049DC8C
+    static void onToolUpdate(Window& self, const WidgetIndex_t widgetIndex, const int16_t x, const int16_t y)
+    {
+        if (widgetIndex != widx::construct)
+        {
+            return;
+        }
+
+        if (_trackType & (1 << 7))
+        {
+            registers regs;
+            regs.esi = X86Pointer(&self);
+            regs.dx = widgetIndex;
+            regs.ax = x;
+            regs.bx = y;
+            call(0x0049DC8C, regs);
+        }
+        else
+        {
+            onToolUpdateTrack(x, y);
+        }
+    }
+
+    static int16_t getMaxPieceHeight(const std::vector<TrackData::PreviewTrack>& piece)
+    {
+        int16_t maxPieceHeight = 0;
+
+        for (const auto& part : piece)
+        {
+            maxPieceHeight = std::max(maxPieceHeight, part.z);
+        }
+        return maxPieceHeight;
     }
 
     template<typename TGetPieceId, typename TTryMakeJunction, typename TGetPiece>
