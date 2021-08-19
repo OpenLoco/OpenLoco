@@ -44,9 +44,7 @@ namespace OpenLoco::Ui::Windows::Construction
     static loco_global<uint16_t, 0x01135FB4> _x;
     static loco_global<uint16_t, 0x01135FB6> _y;
     static loco_global<uint16_t, 0x01135FB8> _constructionZ;
-    static loco_global<uint16_t, 0x01135FBA> _word_1135FBA;
-    static loco_global<uint16_t, 0x01135FBC> _word_1135FBC;
-    static loco_global<uint16_t, 0x01135FBE> _word_1135FBE;
+    static loco_global<Map::Pos3, 0x01135FBA> _ghostTrackPos;
     static loco_global<Map::Pos3, 0x01135FC6> _nextTile;
     static loco_global<uint16_t, 0x01135FCC> _nextTileRotation;
     static loco_global<Map::Pos3, 0x01135FCE> _previousTile;

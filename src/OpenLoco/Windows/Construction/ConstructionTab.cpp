@@ -2305,8 +2305,57 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         return { std::make_pair(Map::TilePos2(*mapPos), height) };
     }
 
+    static void constructionGhostLoop(const Pos3& mapPos, uint32_t maxRetries)
+    {
+        _x = mapPos.x;
+        _y = mapPos.y;
+        _constructionZ = mapPos.z;
+        if (_byte_522096 & (1 << 1))
+        {
+            if (*_ghostTrackPos == mapPos)
+            {
+                return;
+            }
+        }
+        _ghostTrackPos = mapPos;
+
+        auto targetPos = mapPos;
+        while (true)
+        {
+            getTrackPieceId(_lastSelectedTrackPiece, _lastSelectedTrackGradient, _constructionRotation);
+            auto res = placeTrackGhost(args);
+            _trackCost = res;
+            _byte_1136076 = _byte_1136073;
+            sub_4A193B();
+
+            if (_trackCost == 0x80000000)
+            {
+                maxRetries--;
+                if (maxRetries != 0)
+                {
+                    targetPos.z -= 16;
+                    if (targetPos.z >= 0)
+                    {
+                        if (Input::hasKeyModifier(Input::KeyModifier::shift))
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            targetPos.z += 32;
+                            continue;
+                        }
+                    }
+                }
+            }
+            activateSelectedConstructionWidgets();
+            return;
+        }
+    }
+
     // 0x004A1968
-    static void onToolUpdateTrack(const int16_t x, const int16_t y) {
+    static void onToolUpdateTrack(const int16_t x, const int16_t y)
+    {
         Map::TileManager::mapInvalidateMapSelectionTiles();
         Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable | Input::MapSelectionFlags::enableConstruct | Input::MapSelectionFlags::unk_02);
 
@@ -2363,9 +2412,21 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
         if (_makeJunction != 1)
         {
-            // 0x004A1AFF
+            constructHeight = std::max(getMaxConstructHeightFromExistingSelection(), constructHeight);
         }
-        // 0x004A1BF1
+
+        _constructionArrowPos->z = constructHeight - getMaxPieceHeight(trackPieces);
+        constructHeight -= 16;
+        auto maxRetries = 2;
+
+        if (Input::hasKeyModifier(Input::KeyModifier::shift))
+        {
+            maxRetries = 0x80000008;
+            constructHeight -= 16;
+            _constructionArrowPos->z = constructHeight;
+        }
+        constructionGhostLoop({ constructPos.x, constructPos.y, constructHeight }, maxRetries);
+        Map::TileManager::mapInvalidateMapSelectionTiles();
     }
 
     // 0x0049DC8C
