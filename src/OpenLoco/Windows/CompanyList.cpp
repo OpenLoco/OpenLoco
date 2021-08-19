@@ -1212,7 +1212,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
         static WindowEventList events;
 
-        // 0x0043737D
+        // 0x00437591
         static void onResize(Window* self)
         {
             self->setSize(windowSize, windowSize);
