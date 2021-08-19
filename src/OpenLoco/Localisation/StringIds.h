@@ -361,6 +361,7 @@ namespace OpenLoco::StringIds
     constexpr string_id prompt_enter_new_vehicle_name = 376;
     constexpr string_id cant_rename_this_vehicle = 377;
 
+    constexpr string_id bridge_type_unsuitable_for_this_configuration = 382;
     constexpr string_id title_station_name = 383;
     constexpr string_id prompt_type_new_station_name = 384;
     constexpr string_id error_cant_rename_station = 385;

@@ -2305,6 +2305,93 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         return { std::make_pair(Map::TilePos2(*mapPos), height) };
     }
 
+    static int16_t getMaxPieceHeight(const std::vector<TrackData::PreviewTrack>& piece)
+    {
+        int16_t maxPieceHeight = 0;
+
+        for (const auto& part : piece)
+        {
+            maxPieceHeight = std::max(maxPieceHeight, part.z);
+        }
+        return maxPieceHeight;
+    }
+
+    // 0x004A193B
+    static void sub_4A193B()
+    {
+        for (const auto bridgeType : _bridgeList)
+        {
+            if (bridgeType == 0xFF)
+            {
+                return;
+            }
+            if (*_byte_1136075 == bridgeType)
+            {
+                _lastSelectedBridge = bridgeType;
+                return;
+            }
+        }
+    }
+
+    static void removeTrackGhosts()
+    {
+        call(0x004A006C);
+    }
+
+    static loco_global<uint16_t[44], 0x004F8764> _4F8764;
+    // 0x0049FB63
+    static uint32_t placeTrackGhost(const GameCommands::TrackPlacementArgs& args)
+    {
+        removeTrackGhosts();
+        const auto res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::flag_1 | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6);
+        if (res == GameCommands::FAILURE)
+        {
+            if (GameCommands::getErrorText() == StringIds::bridge_type_unsuitable_for_this_configuration)
+            {
+                _byte_113603A = 0;
+                for (const auto bridgeType : _bridgeList)
+                {
+                    if (bridgeType == 0xFF)
+                    {
+                        break;
+                    }
+                    const auto* bridgeObj = ObjectManager::get<BridgeObject>(bridgeType);
+                    if (bridgeObj->disabled_track_cfg & _4F8764[args.trackId])
+                    {
+                        continue;
+                    }
+
+                    if (bridgeType == _lastSelectedBridge)
+                    {
+                        break;
+                    }
+
+                    auto newArgs(args);
+                    newArgs.bridge = bridgeType;
+                    _lastSelectedBridge = bridgeType;
+                    WindowManager::invalidate(WindowType::construction);
+                    return placeTrackGhost(args);
+                }
+            }
+        }
+        else
+        {
+            _ghostRemovalTrackPos = args.pos;
+            _ghostRemovalTrackId = args.trackId;
+            _ghostRemovalTrackObjectId = args.trackObjectId;
+            _ghostRemovalTrackRotation = args.rotation;
+            _byte_522096 = (1 << 1) | *_byte_522096;
+            const auto newViewState = (_byte_1136073 & (1 << 1)) ? WindowManager::ViewportVisibility::undergroundView : WindowManager::ViewportVisibility::overgroundView;
+            WindowManager::viewportSetVisibility(newViewState);
+            if (_lastSelectedTrackGradient != 0)
+            {
+                WindowManager::viewportSetVisibility(WindowManager::ViewportVisibility::heightMarksOnLand);
+            }
+        }
+        _byte_113603A = 0;
+        return res;
+    }
+
     static void constructionGhostLoop(const Pos3& mapPos, uint32_t maxRetries)
     {
         _x = mapPos.x;
@@ -2322,7 +2409,15 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         auto targetPos = mapPos;
         while (true)
         {
-            getTrackPieceId(_lastSelectedTrackPiece, _lastSelectedTrackGradient, _constructionRotation);
+            auto trackId = getTrackPieceId(_lastSelectedTrackPiece, _lastSelectedTrackGradient, _constructionRotation);
+            GameCommands::TrackPlacementArgs args;
+            args.pos = targetPos;
+            args.bridge = _lastSelectedBridge;
+            args.mods = _lastSelectedMods;
+            args.rotation = trackId->rotation;
+            args.trackObjectId = _trackType;
+            args.trackId = trackId->id;
+            args.unk = _byte_113607E & (1 << 0);
             auto res = placeTrackGhost(args);
             _trackCost = res;
             _byte_1136076 = _byte_1136073;
@@ -2450,17 +2545,6 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         {
             onToolUpdateTrack(x, y);
         }
-    }
-
-    static int16_t getMaxPieceHeight(const std::vector<TrackData::PreviewTrack>& piece)
-    {
-        int16_t maxPieceHeight = 0;
-
-        for (const auto& part : piece)
-        {
-            maxPieceHeight = std::max(maxPieceHeight, part.z);
-        }
-        return maxPieceHeight;
     }
 
     template<typename TGetPieceId, typename TTryMakeJunction, typename TGetPiece>

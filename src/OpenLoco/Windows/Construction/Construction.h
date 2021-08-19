@@ -45,6 +45,10 @@ namespace OpenLoco::Ui::Windows::Construction
     static loco_global<uint16_t, 0x01135FB6> _y;
     static loco_global<uint16_t, 0x01135FB8> _constructionZ;
     static loco_global<Map::Pos3, 0x01135FBA> _ghostTrackPos;
+    static loco_global<Map::Pos3, 0x01135FC0> _ghostRemovalTrackPos;
+    static loco_global<uint8_t, 0x0113606A> _ghostRemovalTrackId;
+    static loco_global<uint8_t, 0x01136069> _ghostRemovalTrackRotation;
+    static loco_global<uint8_t, 0x00522093> _ghostRemovalTrackObjectId;
     static loco_global<Map::Pos3, 0x01135FC6> _nextTile;
     static loco_global<uint16_t, 0x01135FCC> _nextTileRotation;
     static loco_global<Map::Pos3, 0x01135FCE> _previousTile;
@@ -84,6 +88,7 @@ namespace OpenLoco::Ui::Windows::Construction
     static loco_global<uint8_t, 0x01136067> _lastSelectedTrackPiece;
     static loco_global<uint8_t, 0x01136068> _lastSelectedTrackGradient;
     static loco_global<uint8_t, 0x0113606E> _lastSelectedTrackModSection;
+    static loco_global<uint8_t, 0x01136072> _byte_1136072;
     static loco_global<uint8_t, 0x01136073> _byte_1136073;
     static loco_global<uint8_t, 0x01136075> _byte_1136075;
     static loco_global<uint8_t, 0x01136076> _byte_1136076;
