@@ -2384,7 +2384,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             _ghostRemovalTrackObjectId = args.trackObjectId;
             _ghostRemovalTrackRotation = args.rotation;
             _byte_522096 = (1 << 1) | *_byte_522096;
-            const auto newViewState = (_byte_1136073 & (1 << 1)) ? WindowManager::ViewportVisibility::undergroundView : WindowManager::ViewportVisibility::overgroundView;
+            const auto newViewState = (_byte_1136072 & (1 << 1)) ? WindowManager::ViewportVisibility::undergroundView : WindowManager::ViewportVisibility::overgroundView;
             WindowManager::viewportSetVisibility(newViewState);
             if (_lastSelectedTrackGradient != 0)
             {
