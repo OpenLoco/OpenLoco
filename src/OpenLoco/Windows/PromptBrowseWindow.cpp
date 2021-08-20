@@ -414,7 +414,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         auto args = FormatArguments::common(StringIds::empty);
         char folderBuffer[256]{};
         StringManager::formatString(folderBuffer, StringIds::window_browse_folder, &args);
-        Gfx::setCurrentFontSpriteBase(224);
+        Gfx::setCurrentFontSpriteBase(Font::medium_bold);
         const auto folderLabelWidth = Gfx::getStringWidth(folderBuffer);
 
         // We'll ensure the folder width does not reach the parent button.
