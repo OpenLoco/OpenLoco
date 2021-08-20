@@ -940,6 +940,22 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         disableUnusedTrackPieces(self, trackObj, disabledWidgets);
     }
 
+    static void setMapSelectedTilesFromPiece(const std::vector<TrackData::PreviewTrack>& pieces, const Map::Pos2& origin, const uint8_t rotation)
+    {
+        size_t i = 0;
+        for (const auto& piece : pieces)
+        {
+            if (piece.flags & Map::TrackData::PreviewTrackFlags::diagonal)
+            {
+                continue;
+            }
+            _mapSelectedTiles[i++] = origin + Math::Vector::rotate(Map::Pos2{ piece.x, piece.y }, rotation);
+        }
+
+        _mapSelectedTiles[i].x = -1;
+        mapInvalidateMapSelectionTiles();
+    }
+
     static void activateSelectedRoadWidgets(Window* window)
     {
         TileManager::mapInvalidateMapSelectionTiles();
@@ -965,28 +981,9 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         }
 
         const auto& roadPiece = Map::TrackData::getRoadPiece(roadId);
-        auto posId = 0;
         rotation &= 3;
 
-        for (const auto& roadPart : roadPiece)
-        {
-            if (roadPart.flags & Map::TrackData::PreviewTrackFlags::diagonal)
-            {
-                continue;
-            }
-
-            Pos2 pos = { roadPart.x, roadPart.y };
-
-            pos = Math::Vector::rotate(pos, rotation);
-
-            pos.x += x;
-            pos.y += y;
-            _mapSelectedTiles[posId] = pos;
-            posId++;
-        }
-
-        _mapSelectedTiles[posId].x = -1;
-        mapInvalidateMapSelectionTiles();
+        setMapSelectedTilesFromPiece(roadPiece, Map::Pos2(x, y), rotation);
         window->holdable_widgets = (1 << widx::construct) | (1 << widx::remove);
 
         auto trackType = _trackType & ~(1 << 7);
@@ -1159,27 +1156,9 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         }
 
         const auto& trackPiece = Map::TrackData::getTrackPiece(trackId);
-        auto posId = 0;
         rotation &= 3;
 
-        for (const auto& trackPart : trackPiece)
-        {
-            if (trackPart.flags & Map::TrackData::PreviewTrackFlags::diagonal)
-            {
-                continue;
-            }
-            Pos2 pos = { trackPart.x, trackPart.y };
-
-            pos = Math::Vector::rotate(pos, rotation);
-
-            pos.x += x;
-            pos.y += y;
-            _mapSelectedTiles[posId] = pos;
-            posId++;
-        }
-
-        _mapSelectedTiles[posId].x = -1;
-        mapInvalidateMapSelectionTiles();
+        setMapSelectedTilesFromPiece(trackPiece, Map::Pos2(x, y), rotation);
         window->holdable_widgets = (1 << widx::construct) | (1 << widx::remove);
 
         auto trackObj = ObjectManager::get<TrackObject>(_trackType);
@@ -2497,16 +2476,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         }
         _byte_1136065 = pieceId->id;
         const auto& trackPieces = TrackData::getTrackPiece(pieceId->id);
-        size_t index = 0;
-        for (const auto& piece : trackPieces)
-        {
-            if (piece.flags & TrackData::PreviewTrackFlags::diagonal)
-            {
-                continue;
-            }
-            _mapSelectedTiles[index++] = constructPos + Math::Vector::rotate(Map::Pos2(piece.x, piece.y), _constructionRotation);
-        }
-        _mapSelectedTiles[index].x = -1;
+        setMapSelectedTilesFromPiece(trackPieces, constructPos, _constructionRotation);
 
         if (_makeJunction != 1)
         {
