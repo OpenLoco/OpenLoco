@@ -2321,6 +2321,8 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     static loco_global<uint16_t[44], 0x004F8764> _4F8764;
+    static loco_global<uint16_t[10], 0x004F8764> _4F7284;
+
     // 0x0049FB63
     static uint32_t placeTrackGhost(const GameCommands::TrackPlacementArgs& args)
     {
@@ -2374,7 +2376,96 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         return res;
     }
 
-    static void constructionGhostLoop(const Pos3& mapPos, uint32_t maxRetries)
+    // 0x0049FC60
+    static uint32_t placeRoadGhost(const GameCommands::RoadPlacementArgs& args)
+    {
+        removeTrackGhosts();
+        const auto res = GameCommands::doCommand(args, GameCommands::Flags::apply | GameCommands::Flags::flag_1 | GameCommands::Flags::flag_3 | GameCommands::Flags::flag_5 | GameCommands::Flags::flag_6);
+        if (res == GameCommands::FAILURE)
+        {
+            if (GameCommands::getErrorText() == StringIds::bridge_type_unsuitable_for_this_configuration)
+            {
+                _byte_113603A = 0;
+                for (const auto bridgeType : _bridgeList)
+                {
+                    if (bridgeType == 0xFF)
+                    {
+                        break;
+                    }
+                    const auto* bridgeObj = ObjectManager::get<BridgeObject>(bridgeType);
+                    if (bridgeObj->disabled_track_cfg & _4F7284[args.roadId])
+                    {
+                        continue;
+                    }
+
+                    if (bridgeType == _lastSelectedBridge)
+                    {
+                        break;
+                    }
+
+                    auto newArgs(args);
+                    newArgs.bridge = bridgeType;
+                    _lastSelectedBridge = bridgeType;
+                    WindowManager::invalidate(WindowType::construction);
+                    return placeRoadGhost(args);
+                }
+            }
+        }
+        else
+        {
+            _ghostRemovalTrackPos = args.pos;
+            _ghostRemovalTrackId = args.roadId;
+            _ghostRemovalTrackObjectId = args.roadObjectId | (1 << 7);
+            _ghostRemovalTrackRotation = args.rotation;
+            _byte_522096 = (1 << 1) | *_byte_522096;
+            const auto newViewState = (_byte_1136072 & (1 << 1)) ? WindowManager::ViewportVisibility::undergroundView : WindowManager::ViewportVisibility::overgroundView;
+            WindowManager::viewportSetVisibility(newViewState);
+            if (_lastSelectedTrackGradient != 0)
+            {
+                WindowManager::viewportSetVisibility(WindowManager::ViewportVisibility::heightMarksOnLand);
+            }
+        }
+        _byte_113603A = 0;
+        return res;
+    }
+
+    static std::optional<GameCommands::TrackPlacementArgs> getTrackPlacementArgs(const Map::Pos3& pos, const uint8_t trackPiece, const uint8_t gradient, const uint8_t rotation)
+    {
+        auto trackId = getTrackPieceId(trackPiece, gradient, rotation);
+        if (!trackId)
+        {
+            return std::nullopt;
+        }
+        GameCommands::TrackPlacementArgs args;
+        args.pos = pos;
+        args.bridge = _lastSelectedBridge;
+        args.mods = _lastSelectedMods;
+        args.rotation = trackId->rotation;
+        args.trackObjectId = _trackType;
+        args.trackId = trackId->id;
+        args.unk = _byte_113607E & (1 << 0);
+        return args;
+    }
+
+    static std::optional<GameCommands::RoadPlacementArgs> getRoadPlacementArgs(const Map::Pos3& pos, const uint8_t trackPiece, const uint8_t gradient, const uint8_t rotation)
+    {
+        auto roadId = getRoadPieceId(trackPiece, gradient, rotation);
+        if (!roadId)
+        {
+            return std::nullopt;
+        }
+        GameCommands::RoadPlacementArgs args;
+        args.pos = pos;
+        args.bridge = _lastSelectedBridge;
+        args.mods = _lastSelectedMods;
+        args.rotation = roadId->rotation;
+        args.roadObjectId = _trackType & ~(1 << 7);
+        args.roadId = roadId->id;
+        return args;
+    }
+
+    template<typename GetPlacementArgsFunc, typename PlaceGhostFunc>
+    static void constructionGhostLoop(const Pos3& mapPos, uint32_t maxRetries, GetPlacementArgsFunc&& getPlacementArgs, PlaceGhostFunc&& placeGhost)
     {
         _x = mapPos.x;
         _y = mapPos.y;
@@ -2388,19 +2479,15 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         }
         _ghostTrackPos = mapPos;
 
-        auto targetPos = mapPos;
+        auto args = getPlacementArgs(mapPos, _lastSelectedTrackPiece, _lastSelectedTrackGradient, _constructionRotation);
+        if (!args)
+        {
+            return;
+        }
         while (true)
         {
-            auto trackId = getTrackPieceId(_lastSelectedTrackPiece, _lastSelectedTrackGradient, _constructionRotation);
-            GameCommands::TrackPlacementArgs args;
-            args.pos = targetPos;
-            args.bridge = _lastSelectedBridge;
-            args.mods = _lastSelectedMods;
-            args.rotation = trackId->rotation;
-            args.trackObjectId = _trackType;
-            args.trackId = trackId->id;
-            args.unk = _byte_113607E & (1 << 0);
-            auto res = placeTrackGhost(args);
+
+            auto res = placeGhost(*args);
             _trackCost = res;
             _byte_1136076 = _byte_1136073;
             sub_4A193B();
@@ -2410,8 +2497,8 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                 maxRetries--;
                 if (maxRetries != 0)
                 {
-                    targetPos.z -= 16;
-                    if (targetPos.z >= 0)
+                    args->pos.z -= 16;
+                    if (args->pos.z >= 0)
                     {
                         if (Input::hasKeyModifier(Input::KeyModifier::shift))
                         {
@@ -2419,7 +2506,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
                         }
                         else
                         {
-                            targetPos.z += 32;
+                            args->pos.z += 32;
                             continue;
                         }
                     }
@@ -2431,14 +2518,15 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
     }
 
     // 0x004A1968
-    static void onToolUpdateTrack(const int16_t x, const int16_t y)
+    template<typename TGetPieceId, typename TTryMakeJunction, typename TGetPiece, typename GetPlacementArgsFunc, typename PlaceGhostFunc>
+    static void onToolUpdateTrack(const int16_t x, const int16_t y, TGetPieceId&& getPieceId, TTryMakeJunction&& tryMakeJunction, TGetPiece&& getPiece, GetPlacementArgsFunc&& getPlacementArgs, PlaceGhostFunc&& placeGhost)
     {
         Map::TileManager::mapInvalidateMapSelectionTiles();
         Input::resetMapSelectionFlag(Input::MapSelectionFlags::enable | Input::MapSelectionFlags::enableConstruct | Input::MapSelectionFlags::unk_02);
 
         Pos2 constructPos;
         int16_t constructHeight = 0;
-        const auto junctionRes = tryMakeTrackJunctionAtLoc(x, y);
+        const auto junctionRes = tryMakeJunction(x, y);
         if (junctionRes)
         {
             constructPos = junctionRes->first;
@@ -2467,7 +2555,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
         _mapSelectedTiles[0] = constructPos;
         _mapSelectedTiles[1].x = -1;
 
-        auto pieceId = getTrackPieceId(_lastSelectedTrackPiece, _lastSelectedTrackGradient, _constructionRotation);
+        auto pieceId = getPieceId(_lastSelectedTrackPiece, _lastSelectedTrackGradient, _constructionRotation);
         if (!pieceId)
         {
             removeConstructionGhosts();
@@ -2475,7 +2563,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             return;
         }
         _byte_1136065 = pieceId->id;
-        const auto& trackPieces = TrackData::getTrackPiece(pieceId->id);
+        const auto& trackPieces = getPiece(pieceId->id);
         setMapSelectedTilesFromPiece(trackPieces, constructPos, _constructionRotation);
 
         if (_makeJunction != 1)
@@ -2493,7 +2581,7 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
             constructHeight -= 16;
             _constructionArrowPos->z = constructHeight;
         }
-        constructionGhostLoop({ constructPos.x, constructPos.y, constructHeight }, maxRetries);
+        constructionGhostLoop({ constructPos.x, constructPos.y, constructHeight }, maxRetries, getPlacementArgs, placeGhost);
         Map::TileManager::mapInvalidateMapSelectionTiles();
     }
 
@@ -2507,16 +2595,11 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
         if (_trackType & (1 << 7))
         {
-            registers regs;
-            regs.esi = X86Pointer(&self);
-            regs.dx = widgetIndex;
-            regs.ax = x;
-            regs.bx = y;
-            call(0x0049DC8C, regs);
+            onToolUpdateTrack(x, y, getRoadPieceId, tryMakeRoadJunctionAtLoc, TrackData::getRoadPiece, getRoadPlacementArgs, placeRoadGhost);
         }
         else
         {
-            onToolUpdateTrack(x, y);
+            onToolUpdateTrack(x, y, getTrackPieceId, tryMakeTrackJunctionAtLoc, TrackData::getTrackPiece, getTrackPlacementArgs, placeTrackGhost);
         }
     }
 
