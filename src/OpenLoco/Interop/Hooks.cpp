@@ -774,7 +774,6 @@ void OpenLoco::Interop::registerHooks()
     Ui::ProgressBar::registerHooks();
     Map::TileManager::registerHooks();
     Map::AnimationManager::registerHooks();
-    Ui::Windows::PromptBrowse::registerHooks();
     Ui::Windows::TextInput::registerHooks();
     Ui::Windows::ToolTip::registerHooks();
     Ui::Windows::Vehicle::registerHooks();

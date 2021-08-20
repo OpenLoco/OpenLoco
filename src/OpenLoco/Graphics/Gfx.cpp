@@ -1451,4 +1451,9 @@ namespace OpenLoco::Gfx
         }
         return nullptr;
     }
+
+    void setCurrentFontSpriteBase(int16_t value)
+    {
+        _currentFontSpriteBase = value;
+    }
 }
