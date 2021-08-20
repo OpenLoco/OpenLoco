@@ -2228,13 +2228,16 @@ namespace OpenLoco::Ui::Windows::Construction::Construction
 
         if (Input::hasMapSelectionFlag(Input::MapSelectionFlags::enableConstruct))
         {
-            auto i = 0;
-            for (auto& tile = _mapSelectedTiles[i]; tile.x != -1; tile = _mapSelectedTiles[++i])
+            for (const auto& tile : _mapSelectedTiles)
             {
+                if (tile.x == -1)
+                {
+                    break;
+                }
                 if (!Map::validCoords(tile))
                     continue;
 
-                const auto tileHeight = getConstructionHeight(_mapSelectedTiles[i]);
+                const auto tileHeight = getConstructionHeight(tile);
                 if (!tileHeight)
                 {
                     continue;
