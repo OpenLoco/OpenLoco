@@ -371,7 +371,6 @@ namespace OpenLoco::S5
         catch (const std::exception& e)
         {
             std::fprintf(stderr, "Unable to save S5: %s\n", e.what());
-            Ui::showMessageBox("Unable to save S5", e.what());
             return false;
         }
     }
