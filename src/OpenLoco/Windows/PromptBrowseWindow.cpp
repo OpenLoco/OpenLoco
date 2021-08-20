@@ -49,7 +49,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     };
 
 #pragma pack(push, 1)
-    struct file_entry
+    struct FileEntry
     {
     private:
         static constexpr uint8_t flag_directory = 1 << 4;
@@ -59,24 +59,24 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         char filename[0x140 - 0x2C]{};
 
     public:
-        file_entry()
+        FileEntry()
         {
         }
 
-        file_entry(const std::string_view& p, bool isDirectory)
+        FileEntry(const std::string_view& p, bool isDirectory)
         {
             p.copy(filename, sizeof(filename) - 1, 0);
             flags = isDirectory ? flag_directory : 0;
         }
 
-        constexpr bool is_directory() const
+        constexpr bool isDirectory() const
         {
             return flags & flag_directory;
         }
 
-        std::string_view get_name() const
+        std::string_view getName() const
         {
-            if (!is_directory())
+            if (!isDirectory())
             {
                 auto end = std::strchr(filename, '.');
                 if (end != nullptr)
@@ -89,7 +89,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     };
 #pragma pack(pop)
 
-    static_assert(sizeof(file_entry) == 0x140);
+    static_assert(sizeof(FileEntry) == 0x140);
 
     enum widx
     {
@@ -125,11 +125,11 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     static loco_global<char[512], 0x009D9E84> _directory;
     static loco_global<char[512], 0x0112CC04> _stringFormatBuffer;
     static loco_global<int16_t, 0x009D1084> _numFiles;
-    static loco_global<file_entry*, 0x0050AEA4> _files;
+    static loco_global<FileEntry*, 0x0050AEA4> _files;
 
     static Ui::TextInput::InputSession inputSession;
 
-    static std::vector<file_entry> _newFiles;
+    static std::vector<FileEntry> _newFiles;
 
     static void onClose(Window* window);
     static void onResize(Window* window);
@@ -148,7 +148,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     static void upOneLevel();
     static void appendDirectory(const char* to_append);
     static void processFileForLoadSave(Window* window);
-    static void processFileForDelete(Window* self, file_entry& entry);
+    static void processFileForDelete(Window* self, FileEntry& entry);
     static void refreshDirectoryList();
     static void loadFileHeader(Window* self);
     static bool filenameContainsInvalidChars();
@@ -253,7 +253,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     {
         _newFiles = {};
         _numFiles = 0;
-        _files = (file_entry*)-1;
+        _files = (FileEntry*)-1;
 
         freeFileHeader();
     }
@@ -308,12 +308,12 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
 
         Audio::playSound(Audio::SoundId::clickDown, self->x + (self->width / 2));
 
-        file_entry entry = _files[index];
+        FileEntry entry = _files[index];
 
         // Clicking a directory, with left mouse button?
-        if (Input::state() == Input::State::scrollLeft && entry.is_directory())
+        if (Input::state() == Input::State::scrollLeft && entry.isDirectory())
         {
-            appendDirectory(entry.get_name().data());
+            appendDirectory(entry.getName().data());
             self->invalidate();
             return;
         }
@@ -322,7 +322,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         if (Input::state() == Input::State::scrollLeft)
         {
             // Copy the selected filename without extension to text input buffer.
-            inputSession.buffer = entry.get_name();
+            inputSession.buffer = entry.getName();
             inputSession.cursorPosition = inputSession.buffer.length();
             self->invalidate();
 
@@ -469,7 +469,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         if (selectedIndex != -1)
         {
             auto& selectedFile = _files[selectedIndex];
-            if (!selectedFile.is_directory())
+            if (!selectedFile.isDirectory())
             {
                 const auto& widget = window->widgets[widx::scrollview];
 
@@ -477,7 +477,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                 auto x = window->x + widget.right + 3;
                 auto y = window->y + 45;
 
-                _nameBuffer = selectedFile.get_name();
+                _nameBuffer = selectedFile.getName();
                 setCommonArgsStringptr(_nameBuffer.c_str());
                 Gfx::drawStringCentredClipped(
                     *context,
@@ -668,14 +668,14 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
 
                 // Draw the folder icon
                 auto x = 1;
-                if (file.is_directory())
+                if (file.isDirectory())
                 {
                     Gfx::drawImage(&context, x, y, ImageIds::icon_folder);
                     x += 14;
                 }
 
                 // Copy name to our work buffer
-                _nameBuffer = file.get_name();
+                _nameBuffer = file.getName();
 
                 // Draw the name
                 setCommonArgsStringptr(_nameBuffer.c_str());
@@ -801,12 +801,12 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             }
         }
 
-        std::sort(_newFiles.begin(), _newFiles.end(), [](const file_entry& a, const file_entry& b) -> bool {
-            if (!a.is_directory() && b.is_directory())
+        std::sort(_newFiles.begin(), _newFiles.end(), [](const FileEntry& a, const FileEntry& b) -> bool {
+            if (!a.isDirectory() && b.isDirectory())
                 return false;
-            if (a.is_directory() && !b.is_directory())
+            if (a.isDirectory() && !b.isDirectory())
                 return true;
-            return a.get_name() < b.get_name();
+            return a.getName() < b.getName();
         });
 
         _numFiles = (int16_t)_newFiles.size();
@@ -986,17 +986,17 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     }
 
     // 0x004466CA
-    static void processFileForDelete(Window* self, file_entry& entry)
+    static void processFileForDelete(Window* self, FileEntry& entry)
     {
         // Create full path to target file.
-        fs::path path = fs::u8path(&_directory[0]) / std::string(entry.get_name());
+        fs::path path = fs::u8path(&_directory[0]) / std::string(entry.getName());
 
         // Append extension to filename.
         path += getExtensionFromFileType(_fileType);
 
         // Copy directory and filename to buffer.
         char* buffer_2039 = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
-        strncpy(&buffer_2039[0], entry.get_name().data(), 512);
+        strncpy(&buffer_2039[0], entry.getName().data(), 512);
 
         FormatArguments args{};
         args.push(StringIds::buffer_2039);
@@ -1029,12 +1029,12 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         if (self->var_85A == -1)
             return;
 
-        file_entry& entry = _files[self->var_85A];
-        if (entry.is_directory())
+        FileEntry& entry = _files[self->var_85A];
+        if (entry.isDirectory())
             return;
 
         // Create full path to target file.
-        fs::path path = fs::u8path(&_directory[0]) / std::string(entry.get_name());
+        fs::path path = fs::u8path(&_directory[0]) / std::string(entry.getName());
 
         // Append extension to filename.
         path += getExtensionFromFileType(_fileType);
