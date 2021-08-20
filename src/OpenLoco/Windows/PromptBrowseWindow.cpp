@@ -854,28 +854,6 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         refreshDirectoryList();
     }
 
-    void registerHooks()
-    {
-        registerHook(
-            0x00445AB9,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                auto result = open(
-                    (browse_type)regs.al,
-                    (char*)regs.ecx,
-                    (const char*)regs.edx,
-                    (const char*)regs.ebx);
-                regs.eax = result ? 1 : 0;
-                return 0;
-            });
-
-        registerHook(
-            0x00446E62,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                appendDirectory((char*)regs.ebp);
-                return 0;
-            });
-    }
-
     // 0x00446F1D
     static bool filenameContainsInvalidChars()
     {
