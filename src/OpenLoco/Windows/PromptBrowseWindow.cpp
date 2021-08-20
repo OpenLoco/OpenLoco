@@ -150,7 +150,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     static void processFileForLoadSave(Window* window);
     static void processFileForDelete(Window* self, FileEntry& entry);
     static void refreshDirectoryList();
-    static void loadFileHeader(Window* self);
+    static void loadFileDetails(Window* self);
     static bool filenameContainsInvalidChars();
 
     // 0x00445AB9
@@ -243,7 +243,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     }
 
     // 0x00447174
-    static void freeFileHeader()
+    static void freeFileDetails()
     {
         call(0x00447174);
     }
@@ -255,7 +255,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         _numFiles = 0;
         _files = (FileEntry*)-1;
 
-        freeFileHeader();
+        freeFileDetails();
     }
 
     // 0x004467F6
@@ -350,7 +350,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             return;
 
         self->var_85A = index;
-        loadFileHeader(self);
+        loadFileDetails(self);
         self->invalidate();
     }
 
@@ -1021,9 +1021,9 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     }
 
     // 0x00446E87
-    static void loadFileHeader(Window* self)
+    static void loadFileDetails(Window* self)
     {
-        freeFileHeader();
+        freeFileDetails();
 
         _9DA285 = 0;
         if (self->var_85A == -1)
