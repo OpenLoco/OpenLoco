@@ -4,6 +4,7 @@
 #include "../Environment.h"
 #include "../Interop/Interop.hpp"
 #include "../Platform/Platform.h"
+#include "../Ui.h"
 #include "../Utility/Yaml.hpp"
 #include "Conversion.h"
 #include "StringIds.h"
@@ -258,6 +259,7 @@ namespace OpenLoco::Localisation
         catch (const std::exception& e)
         {
             std::cerr << e.what() << "\n";
+            Ui::showMessageBox("Exception", e.what());
             return false;
         }
     }

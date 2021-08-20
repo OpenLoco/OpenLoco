@@ -1189,9 +1189,10 @@ namespace OpenLoco
                 // TODO extra clean up code
             }
         }
-        catch (const std::exception& ex)
+        catch (const std::exception& e)
         {
-            std::cerr << ex.what() << std::endl;
+            std::cerr << e.what() << std::endl;
+            Ui::showMessageBox("Exception", e.what());
         }
     }
 }
