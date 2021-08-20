@@ -330,7 +330,7 @@ namespace OpenLoco::Map::TileManager
         }
         catch (const std::bad_alloc&)
         {
-            Ui::showMessageBox("Bad Alloc:", "Bad Allocation, exiting");
+            Ui::showMessageBox("Bad Alloc", "Bad memory allocation, exiting");
             exitWithError(4370, StringIds::null);
             return;
         }
