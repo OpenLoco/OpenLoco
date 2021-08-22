@@ -246,7 +246,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     // 0x004464A1
     static void getScrollSize(Ui::Window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
-        *scrollHeight = window->row_height * _files.size();
+        *scrollHeight = window->row_height * static_cast<uint16_t>(_files.size());
     }
 
     // 0x004464F7
