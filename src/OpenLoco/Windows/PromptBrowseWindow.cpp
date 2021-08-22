@@ -39,57 +39,11 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::PromptBrowse
 {
-    static fs::path getDirectory(const fs::path& path);
-    static std::string getBasename(const fs::path& path);
-
     enum browse_file_type : uint8_t
     {
         saved_game,
         landscape,
     };
-
-#pragma pack(push, 1)
-    struct FileEntry
-    {
-    private:
-        static constexpr uint8_t flag_directory = 1 << 4;
-
-        uint8_t flags{};
-        uint8_t unk_01[0x2C - 0x01]{};
-        char filename[0x140 - 0x2C]{};
-
-    public:
-        FileEntry()
-        {
-        }
-
-        FileEntry(const std::string_view& p, bool isDirectory)
-        {
-            p.copy(filename, sizeof(filename) - 1, 0);
-            flags = isDirectory ? flag_directory : 0;
-        }
-
-        constexpr bool isDirectory() const
-        {
-            return flags & flag_directory;
-        }
-
-        std::string_view getName() const
-        {
-            if (!isDirectory())
-            {
-                auto end = std::strchr(filename, '.');
-                if (end != nullptr)
-                {
-                    return std::string_view(filename, end - filename);
-                }
-            }
-            return filename;
-        }
-    };
-#pragma pack(pop)
-
-    static_assert(sizeof(FileEntry) == 0x140);
 
     enum widx
     {
@@ -125,7 +79,10 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
 
     static Ui::TextInput::InputSession inputSession;
 
-    static std::vector<FileEntry> _files;
+    static std::vector<fs::directory_entry> _files;
+
+    static fs::path getDirectory(const fs::path& path);
+    static std::string getBasename(const fs::path& path);
 
     static void onClose(Window* window);
     static void onResize(Window* window);
@@ -144,7 +101,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     static void upOneLevel();
     static void appendDirectory(const char* to_append);
     static void processFileForLoadSave(Window* window);
-    static void processFileForDelete(Window* self, FileEntry& entry);
+    static void processFileForDelete(Window* self, fs::directory_entry& entry);
     static void refreshDirectoryList();
     static void loadFileDetails(Window* self);
     static bool filenameContainsInvalidChars();
@@ -302,12 +259,12 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
 
         Audio::playSound(Audio::SoundId::clickDown, self->x + (self->width / 2));
 
-        FileEntry entry = _files[index];
+        auto& entry = _files[index];
 
         // Clicking a directory, with left mouse button?
-        if (Input::state() == Input::State::scrollLeft && entry.isDirectory())
+        if (Input::state() == Input::State::scrollLeft && entry.is_directory())
         {
-            appendDirectory(entry.getName().data());
+            appendDirectory(entry.path().stem().u8string().c_str());
             self->invalidate();
             return;
         }
@@ -316,7 +273,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         if (Input::state() == Input::State::scrollLeft)
         {
             // Copy the selected filename without extension to text input buffer.
-            inputSession.buffer = entry.getName();
+            inputSession.buffer = entry.path().stem().u8string();
             inputSession.cursorPosition = inputSession.buffer.length();
             self->invalidate();
 
@@ -447,7 +404,6 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     static void draw(Ui::Window* window, Gfx::Context* context)
     {
         loco_global<char[16], 0x0112C826> _commonFormatArgs;
-        static std::string _nameBuffer;
 
         window->draw(context);
 
@@ -459,7 +415,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         if (selectedIndex != -1)
         {
             auto& selectedFile = _files[selectedIndex];
-            if (!selectedFile.isDirectory())
+            if (!selectedFile.is_directory())
             {
                 const auto& widget = window->widgets[widx::scrollview];
 
@@ -467,8 +423,8 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                 auto x = window->x + widget.right + 3;
                 auto y = window->y + 45;
 
-                _nameBuffer = selectedFile.getName();
-                setCommonArgsStringptr(_nameBuffer.c_str());
+                auto* nameBuffer = selectedFile.path().u8string().c_str();
+                setCommonArgsStringptr(nameBuffer);
                 Gfx::drawStringCentredClipped(
                     *context,
                     x + (width / 2),
@@ -634,8 +590,6 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     {
         loco_global<char[16], 0x0112C826> _commonFormatArgs;
 
-        static std::string _nameBuffer;
-
         // Background
         Gfx::clearSingle(context, Colour::getShade(window.getColour(WindowColour::secondary), 4));
 
@@ -643,7 +597,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         auto i = 0;
         auto y = 0;
         auto lineHeight = window.row_height;
-        for (auto& file : _files)
+        for (auto& entry : _files)
         {
             if (y + lineHeight >= context.y && y <= context.y + context.height)
             {
@@ -657,17 +611,17 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
 
                 // Draw the folder icon
                 auto x = 1;
-                if (file.isDirectory())
+                if (entry.is_directory())
                 {
                     Gfx::drawImage(&context, x, y, ImageIds::icon_folder);
                     x += 14;
                 }
 
                 // Copy name to our work buffer
-                _nameBuffer = file.getName();
+                auto* nameBuffer = entry.path().u8string().c_str();
 
                 // Draw the name
-                setCommonArgsStringptr(_nameBuffer.c_str());
+                setCommonArgsStringptr(nameBuffer);
                 Gfx::drawString_494B3F(context, x, y, 0, stringId, _commonFormatArgs);
             }
             y += lineHeight;
@@ -753,50 +707,45 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         {
             auto drives = platform::getDrives();
             for (auto& drive : drives)
-            {
-                auto name = drive.u8string();
-                _files.emplace_back(name, true);
-            }
+                _files.emplace_back(drive);
         }
         else
         {
-            auto directory = fs::u8path((char*)_directory);
-            if (fs::is_directory(directory))
+            auto directory = fs::u8path(_directory.get());
+            if (!fs::is_directory(directory))
+                return;
+
+            try
             {
-                try
+                for (auto& file : fs::directory_iterator(directory))
                 {
-                    for (auto& f : fs::directory_iterator(directory))
+                    // Only list directories and normal files
+                    if (!(file.is_regular_file() || file.is_directory()))
+                        continue;
+
+                    // Filter files by extension
+                    if (file.is_regular_file())
                     {
-                        bool isDirectory = f.is_directory();
-                        if (f.is_regular_file())
-                        {
-                            auto extension = f.path().extension().u8string();
-                            if (!Utility::iequals(extension, filterExtension))
-                            {
-                                continue;
-                            }
-                        }
-                        else if (!isDirectory) // Only list directories or normal files
-                        {
+                        auto extension = file.path().extension().u8string();
+                        if (!Utility::iequals(extension, filterExtension))
                             continue;
-                        }
-                        auto name = f.path().stem().u8string();
-                        _files.emplace_back(name, isDirectory);
                     }
+
+                    _files.emplace_back(file);
                 }
-                catch (const fs::filesystem_error& err)
-                {
-                    Console::error("Invalid directory or file: %s", err.what());
-                }
+            }
+            catch (const fs::filesystem_error& err)
+            {
+                Console::error("Invalid directory or file: %s", err.what());
             }
         }
 
-        std::sort(_files.begin(), _files.end(), [](const FileEntry& a, const FileEntry& b) -> bool {
-            if (!a.isDirectory() && b.isDirectory())
+        std::sort(_files.begin(), _files.end(), [](const fs::directory_entry& a, const fs::directory_entry& b) -> bool {
+            if (!a.is_directory() && b.is_directory())
                 return false;
-            if (a.isDirectory() && !b.isDirectory())
+            if (a.is_directory() && !b.is_directory())
                 return true;
-            return a.getName() < b.getName();
+            return a.path().stem() < b.path().stem();
         });
     }
 
@@ -946,17 +895,17 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     }
 
     // 0x004466CA
-    static void processFileForDelete(Window* self, FileEntry& entry)
+    static void processFileForDelete(Window* self, fs::directory_entry& entry)
     {
         // Create full path to target file.
-        fs::path path = fs::u8path(&_directory[0]) / std::string(entry.getName());
+        fs::path path = fs::u8path(&_directory[0]) / entry.path().stem();
 
         // Append extension to filename.
         path += getExtensionFromFileType(_fileType);
 
         // Copy directory and filename to buffer.
         char* buffer_2039 = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
-        strncpy(&buffer_2039[0], entry.getName().data(), 512);
+        strncpy(&buffer_2039[0], entry.path().u8string().c_str(), 512);
 
         FormatArguments args{};
         args.push(StringIds::buffer_2039);
@@ -983,12 +932,12 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         if (self->var_85A == -1)
             return;
 
-        FileEntry& entry = _files[self->var_85A];
-        if (entry.isDirectory())
+        auto& entry = _files[self->var_85A];
+        if (entry.is_directory())
             return;
 
         // Create full path to target file.
-        fs::path path = fs::u8path(&_directory[0]) / std::string(entry.getName());
+        auto path = fs::u8path(&_directory[0]) / entry.path().stem();
 
         // Append extension to filename.
         path += getExtensionFromFileType(_fileType);
