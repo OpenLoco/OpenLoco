@@ -122,12 +122,10 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     static loco_global<char[512], 0x009DA084> _displayFolderBuffer;
     static loco_global<char[32], 0x009D9E64> _filter;
     static loco_global<char[512], 0x009D9E84> _directory;
-    static loco_global<int16_t, 0x009D1084> _numFiles;
-    static loco_global<FileEntry*, 0x0050AEA4> _files;
 
     static Ui::TextInput::InputSession inputSession;
 
-    static std::vector<FileEntry> _newFiles;
+    static std::vector<FileEntry> _files;
 
     static void onClose(Window* window);
     static void onResize(Window* window);
@@ -250,10 +248,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     // 0x0044647C
     static void onClose(Window*)
     {
-        _newFiles = {};
-        _numFiles = 0;
-        _files = (FileEntry*)-1;
-
+        _files.clear();
         freeFileDetails();
     }
 
@@ -295,14 +290,14 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     // 0x004464A1
     static void getScrollSize(Ui::Window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight)
     {
-        *scrollHeight = window->row_height * _numFiles;
+        *scrollHeight = window->row_height * _files.size();
     }
 
     // 0x004464F7
     static void onScrollMouseDown(Window* self, int16_t x, int16_t y, uint8_t scrollIndex)
     {
-        auto index = y / self->row_height;
-        if (index >= _numFiles)
+        auto index = size_t(y / self->row_height);
+        if (index >= _files.size())
             return;
 
         Audio::playSound(Audio::SoundId::clickDown, self->x + (self->width / 2));
@@ -342,7 +337,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             return;
 
         auto index = y / self->row_height;
-        if (index >= _numFiles)
+        if (index >= static_cast<uint16_t>(_files.size()))
             return;
 
         if (self->var_85A == index)
@@ -645,14 +640,13 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         Gfx::clearSingle(context, Colour::getShade(window.getColour(WindowColour::secondary), 4));
 
         // Directories / files
+        auto i = 0;
         auto y = 0;
         auto lineHeight = window.row_height;
-        for (auto i = 0; i < _numFiles; i++)
+        for (auto& file : _files)
         {
             if (y + lineHeight >= context.y && y <= context.y + context.height)
             {
-                auto file = _files[i];
-
                 // Draw the row highlight
                 auto stringId = StringIds::black_stringid;
                 if (i == window.var_85A)
@@ -677,6 +671,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                 Gfx::drawString_494B3F(context, x, y, 0, stringId, _commonFormatArgs);
             }
             y += lineHeight;
+            i++;
         }
     }
 
@@ -753,14 +748,14 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             filterExtension = filterExtension.substr(1);
         }
 
-        _newFiles.clear();
+        _files.clear();
         if (_directory[0] == '\0')
         {
             auto drives = platform::getDrives();
             for (auto& drive : drives)
             {
                 auto name = drive.u8string();
-                _newFiles.emplace_back(name, true);
+                _files.emplace_back(name, true);
             }
         }
         else
@@ -786,7 +781,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                             continue;
                         }
                         auto name = f.path().stem().u8string();
-                        _newFiles.emplace_back(name, isDirectory);
+                        _files.emplace_back(name, isDirectory);
                     }
                 }
                 catch (const fs::filesystem_error& err)
@@ -796,16 +791,13 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             }
         }
 
-        std::sort(_newFiles.begin(), _newFiles.end(), [](const FileEntry& a, const FileEntry& b) -> bool {
+        std::sort(_files.begin(), _files.end(), [](const FileEntry& a, const FileEntry& b) -> bool {
             if (!a.isDirectory() && b.isDirectory())
                 return false;
             if (a.isDirectory() && !b.isDirectory())
                 return true;
             return a.getName() < b.getName();
         });
-
-        _numFiles = (int16_t)_newFiles.size();
-        _files = _newFiles.data();
     }
 
     // 0x00446E2F
