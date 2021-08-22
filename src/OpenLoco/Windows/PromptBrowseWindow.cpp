@@ -423,8 +423,8 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                 auto x = window->x + widget.right + 3;
                 auto y = window->y + 45;
 
-                auto* nameBuffer = selectedFile.path().u8string().c_str();
-                setCommonArgsStringptr(nameBuffer);
+                const std::string nameBuffer = selectedFile.path().stem().u8string();
+                setCommonArgsStringptr(nameBuffer.c_str());
                 Gfx::drawStringCentredClipped(
                     *context,
                     x + (width / 2),
@@ -618,10 +618,10 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                 }
 
                 // Copy name to our work buffer
-                auto* nameBuffer = entry.path().u8string().c_str();
+                const std::string nameBuffer = entry.path().stem().u8string();
 
                 // Draw the name
-                setCommonArgsStringptr(nameBuffer);
+                setCommonArgsStringptr(nameBuffer.c_str());
                 Gfx::drawString_494B3F(context, x, y, 0, stringId, _commonFormatArgs);
             }
             y += lineHeight;
