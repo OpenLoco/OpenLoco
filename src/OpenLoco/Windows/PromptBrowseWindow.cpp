@@ -528,17 +528,15 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         else
         {
             // Randomly generated landscape
-            auto imageId = ImageIds::random_map_watermark | (window.getColour(WindowColour::secondary) << 19) | 0x20000000;
+            auto imageId = Gfx::recolour(ImageIds::random_map_watermark, window.getColour(WindowColour::secondary));
             Gfx::drawImage(&context, x, y, imageId);
-            Ui::Point origin = { (int16_t)(x + 64), (int16_t)(y + 60) };
+            auto origin = Ui::Point(x + 64, y + 60);
             Gfx::drawStringCentredWrapped(context, origin, 128, 0, StringIds::randomly_generated_landscape);
         }
     }
 
     static void drawTextInput(Ui::Window* window, Gfx::Context& context, const char* text, int32_t caret, bool showCaret)
     {
-        loco_global<uint8_t[256], 0x001136C99> byte_1136C99;
-
         // Draw text box text
         Ui::Point origin = { 0, 1 };
         {
@@ -562,7 +560,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                 Gfx::drawString_494B3F(context, &origin, 0, StringIds::black_stringid, &args);
 
                 // Draw vertical caret
-                Gfx::drawRect(context, origin.x, origin.y, 1, 9, byte_1136C99[window->getColour(WindowColour::secondary) * 8]);
+                Gfx::drawRect(context, origin.x, origin.y, 1, 9, Colour::getShade(window->getColour(WindowColour::secondary), 9));
             }
         }
     }
