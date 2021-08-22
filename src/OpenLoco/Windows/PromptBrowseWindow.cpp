@@ -844,7 +844,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
 
         // Copy directory and filename to buffer.
         char* buffer_2039 = const_cast<char*>(StringManager::getString(StringIds::buffer_2039));
-        strncpy(&buffer_2039[0], entry.path().u8string().c_str(), 512);
+        strncpy(&buffer_2039[0], entry.path().stem().u8string().c_str(), 512);
 
         FormatArguments args{};
         args.push(StringIds::buffer_2039);
