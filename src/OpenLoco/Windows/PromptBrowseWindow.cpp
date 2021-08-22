@@ -85,20 +85,9 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     static fs::path getDirectory(const fs::path& path);
     static std::string getBasename(const fs::path& path);
 
-    static void onClose(Window* window);
-    static void onResize(Window* window);
-    static void onMouseUp(Ui::Window* window, WidgetIndex_t widgetIndex);
-    static void onUpdate(Ui::Window* window);
-    static void getScrollSize(Ui::Window* window, uint32_t scrollIndex, uint16_t* scrollWidth, uint16_t* scrollHeight);
-    static void onScrollMouseDown(Window* self, int16_t x, int16_t y, uint8_t scroll_index);
-    static void onScrollMouseOver(Window* self, int16_t x, int16_t y, uint8_t scroll_index);
-    static std::optional<FormatArguments> tooltip(Ui::Window* window, WidgetIndex_t widgetIndex);
-    static void prepareDraw(Window* window);
-    static void draw(Ui::Window* window, Gfx::Context* context);
     static void drawSavePreview(Ui::Window& window, Gfx::Context& context, int32_t x, int32_t y, int32_t width, int32_t height, const S5::SaveDetails& saveInfo);
     static void drawLandscapePreview(Ui::Window& window, Gfx::Context& context, int32_t x, int32_t y, int32_t width, int32_t height);
     static void drawTextInput(Ui::Window* window, Gfx::Context& context, const char* text, int32_t caret, bool showCaret);
-    static void drawScroll(Ui::Window& window, Gfx::Context& context, const uint32_t scrollIndex);
     static void upOneLevel();
     static void appendDirectory(const char* to_append);
     static void processFileForLoadSave(Window* window);
@@ -106,6 +95,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     static void refreshDirectoryList();
     static void loadFileDetails(Window* self);
     static bool filenameContainsInvalidChars();
+    static void initEvents();
 
     // 0x00445AB9
     // ecx: path
@@ -118,18 +108,6 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         const char* filter,
         string_id titleId)
     {
-        _events.on_close = onClose;
-        _events.on_mouse_up = onMouseUp;
-        _events.on_resize = onResize;
-        _events.on_update = onUpdate;
-        _events.get_scroll_size = getScrollSize;
-        _events.scroll_mouse_down = onScrollMouseDown;
-        _events.scroll_mouse_over = onScrollMouseOver;
-        _events.tooltip = tooltip;
-        _events.prepare_draw = prepareDraw;
-        _events.draw = draw;
-        _events.draw_scroll = drawScroll;
-
         auto path = fs::u8path(szPath);
         auto directory = getDirectory(path);
         auto baseName = getBasename(path);
@@ -147,6 +125,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         _currentDirectory = directory.make_preferred();
         inputSession = Ui::TextInput::InputSession(baseName);
 
+        initEvents();
         refreshDirectoryList();
 
         auto window = WindowManager::createWindowCentred(
@@ -917,5 +896,20 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                 call(0x00442AFC);
                 break;
         }
+    }
+
+    static void initEvents()
+    {
+        _events.on_close = onClose;
+        _events.on_mouse_up = onMouseUp;
+        _events.on_resize = onResize;
+        _events.on_update = onUpdate;
+        _events.get_scroll_size = getScrollSize;
+        _events.scroll_mouse_down = onScrollMouseDown;
+        _events.scroll_mouse_over = onScrollMouseOver;
+        _events.tooltip = tooltip;
+        _events.prepare_draw = prepareDraw;
+        _events.draw = draw;
+        _events.draw_scroll = drawScroll;
     }
 }
