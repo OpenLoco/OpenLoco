@@ -75,10 +75,11 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     static loco_global<uint8_t, 0x009DA285> _9DA285;
     static loco_global<char[512], 0x009DA084> _displayFolderBuffer;
     static loco_global<char[32], 0x009D9E64> _filter;
-    static loco_global<char[512], 0x009D9E84> _directory;
+    static loco_global<char[512], 0x0112CE04> _savePath;
 
     static Ui::TextInput::InputSession inputSession;
 
+    static fs::path _currentDirectory;
     static std::vector<fs::directory_entry> _files;
 
     static fs::path getDirectory(const fs::path& path);
@@ -143,7 +144,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         }
         Utility::strcpy_safe(_filter, filter);
 
-        Utility::strcpy_safe(_directory, directory.make_preferred().u8string().c_str());
+        _currentDirectory = directory.make_preferred();
         inputSession = Ui::TextInput::InputSession(baseName);
 
         refreshDirectoryList();
@@ -186,12 +187,9 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                     return WindowManager::find(WindowType::fileBrowserPrompt) != nullptr;
                 });
             WindowManager::setCurrentModalType(WindowType::undefined);
-            // TODO: use Utility::strlcpy with the buffer size instead of std::strcpy, if possible
-            std::strcpy(szPath, _directory);
-            if (szPath[0] != '\0')
-            {
-                return true;
-            }
+
+            // TODO: return std::optional instead
+            return _savePath[0] != '\0';
         }
         return false;
     }
@@ -221,7 +219,8 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         switch (widgetIndex)
         {
             case widx::close_button:
-                _directory[0] = '\0';
+                _currentDirectory.clear();
+                _savePath[0] = '\0';
                 WindowManager::close(window);
                 break;
             case widx::parent_button:
@@ -366,18 +365,19 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
 
         // We'll ensure the folder width does not reach the parent button.
         const uint16_t maxWidth = self->widgets[widx::parent_button].left - folderLabelWidth - 10;
-        strncpy(&_displayFolderBuffer[0], &_directory[0], 512);
+        const std::string nameBuffer = _currentDirectory.u8string();
+        strncpy(&_displayFolderBuffer[0], nameBuffer.c_str(), 512);
         uint16_t folderWidth = Gfx::getStringWidth(_displayFolderBuffer);
 
         // If the folder already fits, we're done.
         if (folderWidth <= maxWidth)
             return;
 
-        char* relativeDirectory = &_directory[0];
+        const char* relativeDirectory = nameBuffer.c_str();
         do
         {
             // If we're omitting part of the folder, prepend ellipses.
-            if (relativeDirectory != &_directory[0])
+            if (relativeDirectory != nameBuffer.c_str())
                 strncpy(&_displayFolderBuffer[0], "...", 512);
 
             // Seek the next directory separator token.
@@ -704,7 +704,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         }
 
         _files.clear();
-        if (_directory[0] == '\0')
+        if (_currentDirectory.empty())
         {
             auto drives = platform::getDrives();
             for (auto& drive : drives)
@@ -712,13 +712,12 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         }
         else
         {
-            auto directory = fs::u8path(_directory.get());
-            if (!fs::is_directory(directory))
+            if (!fs::is_directory(_currentDirectory))
                 return;
 
             try
             {
-                for (auto& file : fs::directory_iterator(directory))
+                for (auto& file : fs::directory_iterator(_currentDirectory))
                 {
                     // Only list directories and normal files
                     if (!(file.is_regular_file() || file.is_directory()))
@@ -753,41 +752,14 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     // 0x00446E2F
     static void upOneLevel()
     {
-        char* ptr = _directory;
-        while (*ptr != '\0')
-            ptr++;
-
-        ptr--;
-        if (*ptr == fs::path::preferred_separator)
-            ptr--;
-
-        while (ptr != _directory && *ptr != fs::path::preferred_separator)
-            ptr--;
-
-        if (*ptr == fs::path::preferred_separator)
-            ptr++;
-
-        *ptr = '\0';
-
+        _currentDirectory = _currentDirectory.parent_path().parent_path() / "";
         refreshDirectoryList();
     }
 
     // 0x00446E62
     static void appendDirectory(const char* to_append)
     {
-        char* dst = _directory;
-        while (*dst != '\0')
-            dst++;
-
-        const char* src = to_append;
-        while (*src != '\0')
-        {
-            *dst++ = *src++;
-        }
-
-        *dst++ = fs::path::preferred_separator;
-        *dst = '\0';
-
+        _currentDirectory = _currentDirectory / to_append / "";
         refreshDirectoryList();
     }
 
@@ -837,6 +809,12 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     // 0x00446574
     static void processFileForLoadSave(Window* self)
     {
+        // Create full path to target file.
+        fs::path path = _currentDirectory / inputSession.buffer;
+
+        // Append extension to filename.
+        path += getExtensionFromFileType(_fileType);
+
         if (_type == browse_type::save)
         {
             if (filenameContainsInvalidChars())
@@ -844,12 +822,6 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                 showError(StringIds::error_invalid_filename);
                 return;
             }
-
-            // Create full path to target file.
-            fs::path path = fs::u8path(&_directory[0]) / inputSession.buffer;
-
-            // Append extension to filename.
-            path += getExtensionFromFileType(_fileType);
 
             // Does the file already exist?
             if (fs::exists(path))
@@ -867,26 +839,18 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                 if (!Windows::PromptOkCancel::open(titleId, StringIds::replace_existing_file_prompt, args, StringIds::replace_existing_file_button))
                     return;
             }
+        }
 
-            // Copy directory and filename to buffer.
-            strncpy(&_directory[0], path.u8string().c_str(), std::size(_directory));
-        }
-        else
-        {
-            // Copy scenario path into expected address. Trailing / on directory is assumed.
-            // TODO: refactor to fs::path?
-            strncat(_directory, inputSession.buffer.c_str(), std::size(_directory));
-            strncat(_directory, getExtensionFromFileType(_fileType), std::size(_directory));
-        }
+        // Copy directory and filename to buffer.
+        strncpy(_savePath.get(), path.u8string().c_str(), std::size(_savePath));
 
         // Remember the current path for saved games
         if (_fileType == browse_file_type::saved_game)
         {
-            fs::path currentPath = fs::u8path(&_directory[0]);
-            if (!fs::is_directory(currentPath))
-                Config::getNew().last_save_path = currentPath.parent_path().u8string();
+            if (!fs::is_directory(_currentDirectory))
+                Config::getNew().last_save_path = _currentDirectory.parent_path().u8string();
             else
-                Config::getNew().last_save_path = currentPath.u8string();
+                Config::getNew().last_save_path = _currentDirectory.u8string();
             Config::writeNewConfig();
             Environment::resolvePaths();
         }
@@ -899,9 +863,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     static void processFileForDelete(Window* self, fs::directory_entry& entry)
     {
         // Create full path to target file.
-        fs::path path = fs::u8path(&_directory[0]) / entry.path().stem();
-
-        // Append extension to filename.
+        fs::path path = _currentDirectory / entry.path().stem();
         path += getExtensionFromFileType(_fileType);
 
         // Copy directory and filename to buffer.
@@ -938,14 +900,12 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             return;
 
         // Create full path to target file.
-        auto path = fs::u8path(&_directory[0]) / entry.path().stem();
-
-        // Append extension to filename.
+        auto path = _currentDirectory / entry.path().stem();
         path += getExtensionFromFileType(_fileType);
 
         // Copy path to buffer.
         loco_global<char[512], 0x0112CE04> savePath;
-        strncpy(&savePath[0], path.u8string().c_str(), 512);
+        strncpy(&savePath[0], path.u8string().c_str(), std::size(savePath));
 
         // Load save game or scenario info.
         switch (_fileType)
