@@ -593,8 +593,8 @@ namespace OpenLoco::Ui
         Gfx::fillRect(*context, l + 1, t + 1, r - 1, b - 1, 0x2000000 | 46);
 
         int16_t width = r - l - 4 - 10;
-        int16_t y = t + window->y + 1;
-        int16_t x = l + window->x + 2 + (width / 2);
+        int16_t y = t + 1;
+        int16_t x = l + 2 + (width / 2);
 
         Gfx::drawStringCentredClipped(*context, x, y, width, Colour::white | FormatFlags::textflag_5, text, _commonFormatArgs);
     }
