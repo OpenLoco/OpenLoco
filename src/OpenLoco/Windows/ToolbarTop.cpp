@@ -2,6 +2,7 @@
 #include "../CompanyManager.h"
 #include "../Config.h"
 #include "../Entities/EntityManager.h"
+#include "../Game.h"
 #include "../GameCommands/GameCommands.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/Gfx.h"
@@ -131,14 +132,6 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
         Dropdown::setHighlightedItem(1);
     }
 
-    // 0x00441843
-    static bool saveGameOpen()
-    {
-        registers regs;
-        call(0x00441843, regs);
-        return regs.eax;
-    }
-
     // 0x0043B1C4
     static void prepareSaveGame()
     {
@@ -154,7 +147,7 @@ namespace OpenLoco::Ui::Windows::ToolbarTop::Game
             return;
         }
 
-        if (!saveGameOpen())
+        if (!OpenLoco::Game::saveSaveGameOpen())
         {
             // Cancelled by user
             Gfx::invalidateScreen();
