@@ -447,8 +447,6 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
 
     static void drawSavePreview(Ui::Window& window, Gfx::Context& context, int32_t x, int32_t y, int32_t width, int32_t height, const S5::SaveDetails& saveInfo)
     {
-        loco_global<char[16], 0x0112C826> _commonFormatArgs;
-
         Gfx::fillRectInset(context, x, y, x + width, y + height, window.getColour(WindowColour::secondary), 0x30);
 
         auto imageId = 0;
@@ -882,8 +880,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         path += getExtensionFromFileType(_fileType);
 
         // Copy path to buffer.
-        loco_global<char[512], 0x0112CE04> savePath;
-        strncpy(&savePath[0], path.u8string().c_str(), std::size(savePath));
+        strncpy(_savePath.get(), path.u8string().c_str(), std::size(_savePath));
 
         // Load save game or scenario info.
         switch (_fileType)
