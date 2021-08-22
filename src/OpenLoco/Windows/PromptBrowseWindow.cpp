@@ -557,6 +557,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                 // TODO this should really just be measuring the string
                 const std::string gbuffer = std::string(text, caret);
                 auto args = getStringPtrFormatArgs(gbuffer.c_str());
+                origin = { 0, 1 };
                 Gfx::drawString_494B3F(context, &origin, 0, StringIds::black_stringid, &args);
 
                 // Draw vertical caret
