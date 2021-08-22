@@ -392,24 +392,24 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         } while (Gfx::getStringWidth(_displayFolderBuffer) > maxWidth);
     }
 
-    static void setCommonArgsStringptr(const char* buffer)
+    static FormatArguments getStringPtrFormatArgs(const char* buffer)
     {
-        loco_global<char[16], 0x0112C826> _commonFormatArgs;
-        auto stringptrId = StringIds::stringptr;
-        std::memcpy(_commonFormatArgs, &stringptrId, sizeof(stringptrId));
-        std::memcpy(_commonFormatArgs + 2, &buffer, sizeof(buffer));
+        FormatArguments args = {};
+        args.push(StringIds::stringptr);
+        args.push(buffer);
+        return args;
     }
 
     // 0x00445E38
     static void draw(Ui::Window* window, Gfx::Context* context)
     {
-        loco_global<char[16], 0x0112C826> _commonFormatArgs;
-
         window->draw(context);
 
-        auto folder = &_displayFolderBuffer[0];
-        setCommonArgsStringptr(folder);
-        Gfx::drawString_494B3F(*context, window->x + 3, window->y + window->widgets[widx::parent_button].top + 6, 0, StringIds::window_browse_folder, _commonFormatArgs);
+        {
+            auto folder = &_displayFolderBuffer[0];
+            auto args = getStringPtrFormatArgs(folder);
+            Gfx::drawString_494B3F(*context, window->x + 3, window->y + window->widgets[widx::parent_button].top + 6, 0, StringIds::window_browse_folder, &args);
+        }
 
         auto selectedIndex = window->var_85A;
         if (selectedIndex != -1)
@@ -424,7 +424,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                 auto y = window->y + 45;
 
                 const std::string nameBuffer = selectedFile.path().stem().u8string();
-                setCommonArgsStringptr(nameBuffer.c_str());
+                auto args = getStringPtrFormatArgs(nameBuffer.c_str());
                 Gfx::drawStringCentredClipped(
                     *context,
                     x + (width / 2),
@@ -432,7 +432,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                     width,
                     0,
                     StringIds::wcolour2_stringid,
-                    _commonFormatArgs);
+                    &args);
                 y += 12;
 
                 if (*_fileType == browse_file_type::saved_game)
@@ -490,12 +490,16 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         uint16_t maxWidth = window.width - window.widgets[widx::scrollview].right;
 
         // Company
-        setCommonArgsStringptr(saveInfo.company);
-        y = Gfx::drawString_495224(context, x, y, maxWidth, Colour::black, StringIds::window_browse_company, _commonFormatArgs);
+        {
+            auto args = getStringPtrFormatArgs(saveInfo.company);
+            y = Gfx::drawString_495224(context, x, y, maxWidth, Colour::black, StringIds::window_browse_company, &args);
+        }
 
         // Owner
-        setCommonArgsStringptr(saveInfo.owner);
-        y = Gfx::drawString_495224(context, x, y, maxWidth, Colour::black, StringIds::owner_label, _commonFormatArgs);
+        {
+            auto args = getStringPtrFormatArgs(saveInfo.owner);
+            y = Gfx::drawString_495224(context, x, y, maxWidth, Colour::black, StringIds::owner_label, &args);
+        }
 
         // Date
         y = Gfx::drawString_495224(context, x, y, maxWidth, Colour::black, StringIds::window_browse_date, &saveInfo.date);
@@ -554,14 +558,14 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
 
     static void drawTextInput(Ui::Window* window, Gfx::Context& context, const char* text, int32_t caret, bool showCaret)
     {
-        loco_global<char[16], 0x0112C826> _commonFormatArgs;
         loco_global<uint8_t[256], 0x001136C99> byte_1136C99;
-        static std::string gbuffer;
 
         // Draw text box text
         Ui::Point origin = { 0, 1 };
-        setCommonArgsStringptr(text);
-        Gfx::drawString_494B3F(context, &origin, 0, StringIds::black_stringid, _commonFormatArgs);
+        {
+            auto args = getStringPtrFormatArgs(text);
+            Gfx::drawString_494B3F(context, &origin, 0, StringIds::black_stringid, &args);
+        }
 
         if (showCaret)
         {
@@ -574,10 +578,9 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
             {
                 // Draw text[0:caret] over the top
                 // TODO this should really just be measuring the string
-                gbuffer = std::string_view(text, caret);
-                setCommonArgsStringptr(gbuffer.c_str());
-                origin = { 0, 1 };
-                Gfx::drawString_494B3F(context, &origin, 0, StringIds::black_stringid, _commonFormatArgs);
+                const std::string gbuffer = std::string(text, caret);
+                auto args = getStringPtrFormatArgs(gbuffer.c_str());
+                Gfx::drawString_494B3F(context, &origin, 0, StringIds::black_stringid, &args);
 
                 // Draw vertical caret
                 Gfx::drawRect(context, origin.x, origin.y, 1, 9, byte_1136C99[window->getColour(WindowColour::secondary) * 8]);
@@ -588,8 +591,6 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     // 0x00446314
     static void drawScroll(Ui::Window& window, Gfx::Context& context, const uint32_t scrollIndex)
     {
-        loco_global<char[16], 0x0112C826> _commonFormatArgs;
-
         // Background
         Gfx::clearSingle(context, Colour::getShade(window.getColour(WindowColour::secondary), 4));
 
@@ -621,8 +622,8 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                 const std::string nameBuffer = entry.path().stem().u8string();
 
                 // Draw the name
-                setCommonArgsStringptr(nameBuffer.c_str());
-                Gfx::drawString_494B3F(context, x, y, 0, stringId, _commonFormatArgs);
+                auto args = getStringPtrFormatArgs(nameBuffer.c_str());
+                Gfx::drawString_494B3F(context, x, y, 0, stringId, &args);
             }
             y += lineHeight;
             i++;
