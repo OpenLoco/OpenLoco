@@ -10,13 +10,13 @@ namespace OpenLoco::Map::TileManager
     constexpr size_t maxElements = 0x6C000;
 
     void initialise();
-    stdx::span<TileElement> getElements();
+    std::span<TileElement> getElements();
     TileElement* getElementsEnd();
     TileElement** getElementIndex();
     Tile get(TilePos2 pos);
     Tile get(Pos2 pos);
     Tile get(coord_t x, coord_t y);
-    void setElements(stdx::span<TileElement> elements);
+    void setElements(std::span<TileElement> elements);
     void removeElement(TileElement& element);
     TileHeight getHeight(const Pos2& pos);
     void updateTilePointers();

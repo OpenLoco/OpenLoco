@@ -38,7 +38,7 @@ namespace OpenLoco::Title
     {
     };
 
-    using TitleStep = stdx::variant<WaitStep, ReloadStep, MoveStep, RotateStep, ResetStep>;
+    using TitleStep = std::variant<WaitStep, ReloadStep, MoveStep, RotateStep, ResetStep>;
     using TitleSequence = std::vector<TitleStep>;
 
     // Helper type for using stdx::visit on TitleStep
@@ -204,44 +204,44 @@ namespace OpenLoco::Title
                 return;
 
             auto& command = *_sequenceIterator++;
-            stdx::visit(overloaded{
-                            [](WaitStep step) {
-                                // This loop slightly deviates from the original, subtract 1 tick to make up for it.
-                                _waitCounter = step.duration - 1;
-                            },
-                            [](ReloadStep step) {
-                                reload();
-                            },
-                            [](MoveStep step) {
-                                if (addr<0x00525E28, uint32_t>() & 1)
-                                {
-                                    auto pos = Map::Pos2(step) + Map::Pos2(16, 16);
-                                    auto height = Map::TileManager::getHeight(pos);
-                                    auto main = Ui::WindowManager::getMainWindow();
-                                    if (main != nullptr)
-                                    {
-                                        auto pos3d = Map::Pos3(pos.x, pos.y, height.landHeight);
-                                        main->viewportCentreOnTile(pos3d);
-                                        main->flags &= ~Ui::WindowFlags::scrolling_to_location;
-                                        main->viewportsUpdatePosition();
-                                    }
-                                }
-                            },
-                            [](RotateStep step) {
-                                if (addr<0x00525E28, uint32_t>() & 1)
-                                {
-                                    auto main = Ui::WindowManager::getMainWindow();
-                                    if (main != nullptr)
-                                    {
-                                        main->viewportRotateRight();
-                                    }
-                                }
-                            },
-                            [](ResetStep step) {
-                                _sequenceIterator = _titleSequence.begin();
-                            },
-                        },
-                        command);
+            std::visit(overloaded{
+                           [](WaitStep step) {
+                               // This loop slightly deviates from the original, subtract 1 tick to make up for it.
+                               _waitCounter = step.duration - 1;
+                           },
+                           [](ReloadStep step) {
+                               reload();
+                           },
+                           [](MoveStep step) {
+                               if (addr<0x00525E28, uint32_t>() & 1)
+                               {
+                                   auto pos = Map::Pos2(step) + Map::Pos2(16, 16);
+                                   auto height = Map::TileManager::getHeight(pos);
+                                   auto main = Ui::WindowManager::getMainWindow();
+                                   if (main != nullptr)
+                                   {
+                                       auto pos3d = Map::Pos3(pos.x, pos.y, height.landHeight);
+                                       main->viewportCentreOnTile(pos3d);
+                                       main->flags &= ~Ui::WindowFlags::scrolling_to_location;
+                                       main->viewportsUpdatePosition();
+                                   }
+                               }
+                           },
+                           [](RotateStep step) {
+                               if (addr<0x00525E28, uint32_t>() & 1)
+                               {
+                                   auto main = Ui::WindowManager::getMainWindow();
+                                   if (main != nullptr)
+                                   {
+                                       main->viewportRotateRight();
+                                   }
+                               }
+                           },
+                           [](ResetStep step) {
+                               _sequenceIterator = _titleSequence.begin();
+                           },
+                       },
+                       command);
         } while (_waitCounter == 0);
     }
 

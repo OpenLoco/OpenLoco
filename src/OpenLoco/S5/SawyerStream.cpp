@@ -119,9 +119,9 @@ void FastBuffer::push_back(const uint8_t* src, size_t len)
     _len += len;
 }
 
-stdx::span<uint8_t const> FastBuffer::getSpan() const
+std::span<uint8_t const> FastBuffer::getSpan() const
 {
-    return stdx::span<uint8_t const>(_data, _len);
+    return std::span<uint8_t const>(_data, _len);
 }
 
 SawyerStreamReader::SawyerStreamReader(const fs::path& path)
@@ -130,7 +130,7 @@ SawyerStreamReader::SawyerStreamReader(const fs::path& path)
     _stream.open(path, std::ios::in | std::ios::binary);
 }
 
-stdx::span<uint8_t const> SawyerStreamReader::readChunk()
+std::span<uint8_t const> SawyerStreamReader::readChunk()
 {
     SawyerEncoding encoding;
     read(&encoding, sizeof(encoding));
@@ -198,7 +198,7 @@ void SawyerStreamReader::close()
     _stream.close();
 }
 
-stdx::span<uint8_t const> SawyerStreamReader::decode(SawyerEncoding encoding, stdx::span<uint8_t const> data)
+std::span<uint8_t const> SawyerStreamReader::decode(SawyerEncoding encoding, std::span<uint8_t const> data)
 {
     switch (encoding)
     {
@@ -228,7 +228,7 @@ stdx::span<uint8_t const> SawyerStreamReader::decode(SawyerEncoding encoding, st
     }
 }
 
-void SawyerStreamReader::decodeRunLengthSingle(FastBuffer& buffer, stdx::span<uint8_t const> data)
+void SawyerStreamReader::decodeRunLengthSingle(FastBuffer& buffer, std::span<uint8_t const> data)
 {
     for (size_t i = 0; i < data.size(); i++)
     {
@@ -259,7 +259,7 @@ void SawyerStreamReader::decodeRunLengthSingle(FastBuffer& buffer, stdx::span<ui
     }
 }
 
-void SawyerStreamReader::decodeRunLengthMulti(FastBuffer& buffer, stdx::span<uint8_t const> data)
+void SawyerStreamReader::decodeRunLengthMulti(FastBuffer& buffer, std::span<uint8_t const> data)
 {
     for (size_t i = 0; i < data.size(); i++)
     {
@@ -293,7 +293,7 @@ void SawyerStreamReader::decodeRunLengthMulti(FastBuffer& buffer, stdx::span<uin
     }
 }
 
-void SawyerStreamReader::decodeRotate(FastBuffer& buffer, stdx::span<uint8_t const> data)
+void SawyerStreamReader::decodeRotate(FastBuffer& buffer, std::span<uint8_t const> data)
 {
     uint8_t code = 1;
     for (size_t i = 0; i < data.size(); i++)
@@ -311,7 +311,7 @@ SawyerStreamWriter::SawyerStreamWriter(const fs::path& path)
 
 void SawyerStreamWriter::writeChunk(SawyerEncoding chunkType, const void* data, size_t dataLen)
 {
-    auto encodedData = encode(chunkType, stdx::span(reinterpret_cast<const uint8_t*>(data), dataLen));
+    auto encodedData = encode(chunkType, std::span(reinterpret_cast<const uint8_t*>(data), dataLen));
     write(&chunkType, sizeof(chunkType));
     write(static_cast<uint32_t>(encodedData.size()));
     write(encodedData.data(), encodedData.size());
@@ -337,7 +337,7 @@ void SawyerStreamWriter::close()
     _stream.close();
 }
 
-stdx::span<uint8_t const> SawyerStreamWriter::encode(SawyerEncoding encoding, stdx::span<uint8_t const> data)
+std::span<uint8_t const> SawyerStreamWriter::encode(SawyerEncoding encoding, std::span<uint8_t const> data)
 {
     switch (encoding)
     {
@@ -367,7 +367,7 @@ stdx::span<uint8_t const> SawyerStreamWriter::encode(SawyerEncoding encoding, st
     }
 }
 
-void SawyerStreamWriter::encodeRunLengthSingle(FastBuffer& buffer, stdx::span<uint8_t const> data)
+void SawyerStreamWriter::encodeRunLengthSingle(FastBuffer& buffer, std::span<uint8_t const> data)
 {
     auto src = data.data();
     auto srcEnd = src + data.size();
@@ -415,7 +415,7 @@ void SawyerStreamWriter::encodeRunLengthSingle(FastBuffer& buffer, stdx::span<ui
     }
 }
 
-void SawyerStreamWriter::encodeRunLengthMulti(FastBuffer& buffer, stdx::span<uint8_t const> data)
+void SawyerStreamWriter::encodeRunLengthMulti(FastBuffer& buffer, std::span<uint8_t const> data)
 {
     auto src = data.data();
     auto srcLen = data.size();
@@ -477,7 +477,7 @@ void SawyerStreamWriter::encodeRunLengthMulti(FastBuffer& buffer, stdx::span<uin
     }
 }
 
-void SawyerStreamWriter::encodeRotate(FastBuffer& buffer, stdx::span<uint8_t const> data)
+void SawyerStreamWriter::encodeRotate(FastBuffer& buffer, std::span<uint8_t const> data)
 {
     uint8_t code = 1;
     for (size_t i = 0; i < data.size(); i++)

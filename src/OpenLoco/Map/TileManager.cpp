@@ -32,9 +32,9 @@ namespace OpenLoco::Map::TileManager
         call(0x00461179);
     }
 
-    stdx::span<TileElement> getElements()
+    std::span<TileElement> getElements()
     {
-        return stdx::span<TileElement>(_elements, getElementsEnd());
+        return std::span<TileElement>(_elements, getElementsEnd());
     }
 
     void setMapSelectionArea(const Pos2& locA, const Pos2& locB)
@@ -65,7 +65,7 @@ namespace OpenLoco::Map::TileManager
         return _elementsEnd;
     }
 
-    void setElements(stdx::span<TileElement> elements)
+    void setElements(std::span<TileElement> elements)
     {
         TileElement* dst = _elements;
         std::memset(dst, 0, maxElements * sizeof(TileElement));

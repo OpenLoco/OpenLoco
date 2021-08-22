@@ -300,8 +300,8 @@ namespace OpenLoco::ObjectManager
     ObjectHeader* getHeader(LoadedObjectIndex id);
     std::vector<ObjectHeader> getHeaders();
 
-    LoadObjectsResult loadAll(stdx::span<ObjectHeader> objects);
-    bool tryInstallObject(const ObjectHeader& object, stdx::span<const uint8_t> data);
+    LoadObjectsResult loadAll(std::span<ObjectHeader> objects);
+    bool tryInstallObject(const ObjectHeader& object, std::span<const uint8_t> data);
     void writePackedObjects(SawyerStreamWriter& fs, const std::vector<ObjectHeader>& packedObjects);
 
     void unloadAll();

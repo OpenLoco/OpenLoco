@@ -45,7 +45,7 @@ namespace OpenLoco
         void push_back(uint8_t value);
         void push_back(uint8_t value, size_t len);
         void push_back(const uint8_t* src, size_t len);
-        stdx::span<uint8_t const> getSpan() const;
+        std::span<uint8_t const> getSpan() const;
     };
 
     class SawyerStreamReader
@@ -55,15 +55,15 @@ namespace OpenLoco
         FastBuffer _decodeBuffer;
         FastBuffer _decodeBuffer2;
 
-        stdx::span<uint8_t const> decode(SawyerEncoding encoding, stdx::span<uint8_t const> data);
-        static void decodeRunLengthSingle(FastBuffer& buffer, stdx::span<uint8_t const> data);
-        static void decodeRunLengthMulti(FastBuffer& buffer, stdx::span<uint8_t const> data);
-        static void decodeRotate(FastBuffer& buffer, stdx::span<uint8_t const> data);
+        std::span<uint8_t const> decode(SawyerEncoding encoding, std::span<uint8_t const> data);
+        static void decodeRunLengthSingle(FastBuffer& buffer, std::span<uint8_t const> data);
+        static void decodeRunLengthMulti(FastBuffer& buffer, std::span<uint8_t const> data);
+        static void decodeRotate(FastBuffer& buffer, std::span<uint8_t const> data);
 
     public:
         SawyerStreamReader(const fs::path& path);
 
-        stdx::span<uint8_t const> readChunk();
+        std::span<uint8_t const> readChunk();
         size_t readChunk(void* data, size_t maxDataLen);
         void read(void* data, size_t dataLen);
         bool validateChecksum();
@@ -78,10 +78,10 @@ namespace OpenLoco
         FastBuffer _encodeBuffer;
         FastBuffer _encodeBuffer2;
 
-        stdx::span<uint8_t const> encode(SawyerEncoding encoding, stdx::span<uint8_t const> data);
-        static void encodeRunLengthSingle(FastBuffer& buffer, stdx::span<uint8_t const> data);
-        static void encodeRunLengthMulti(FastBuffer& buffer, stdx::span<uint8_t const> data);
-        static void encodeRotate(FastBuffer& buffer, stdx::span<uint8_t const> data);
+        std::span<uint8_t const> encode(SawyerEncoding encoding, std::span<uint8_t const> data);
+        static void encodeRunLengthSingle(FastBuffer& buffer, std::span<uint8_t const> data);
+        static void encodeRunLengthMulti(FastBuffer& buffer, std::span<uint8_t const> data);
+        static void encodeRotate(FastBuffer& buffer, std::span<uint8_t const> data);
 
     public:
         SawyerStreamWriter(const fs::path& path);

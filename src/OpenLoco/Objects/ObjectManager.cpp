@@ -541,7 +541,7 @@ namespace OpenLoco::ObjectManager
         return std::numeric_limits<LoadedObjectId>::max();
     }
 
-    LoadObjectsResult loadAll(stdx::span<ObjectHeader> objects)
+    LoadObjectsResult loadAll(std::span<ObjectHeader> objects)
     {
         LoadObjectsResult result;
         result.success = true;
@@ -565,7 +565,7 @@ namespace OpenLoco::ObjectManager
     }
 
     // 0x00472754
-    static uint32_t computeChecksum(stdx::span<const uint8_t> data, uint32_t seed)
+    static uint32_t computeChecksum(std::span<const uint8_t> data, uint32_t seed)
     {
         auto checksum = seed;
         for (auto d : data)
@@ -576,16 +576,16 @@ namespace OpenLoco::ObjectManager
     }
 
     // 0x0047270B
-    static bool computeObjectChecksum(const ObjectHeader& object, stdx::span<const uint8_t> data)
+    static bool computeObjectChecksum(const ObjectHeader& object, std::span<const uint8_t> data)
     {
         // Compute the checksum of header and data
 
         // Annoyingly the header you need to only compute the first byte of the flags
-        stdx::span<const uint8_t> headerFlag(reinterpret_cast<const uint8_t*>(&object), 1);
+        std::span<const uint8_t> headerFlag(reinterpret_cast<const uint8_t*>(&object), 1);
         auto checksum = computeChecksum(headerFlag, objectChecksumMagic);
 
         // And then the name
-        stdx::span<const uint8_t> headerName(reinterpret_cast<const uint8_t*>(&object.name), sizeof(ObjectHeader::name));
+        std::span<const uint8_t> headerName(reinterpret_cast<const uint8_t*>(&object.name), sizeof(ObjectHeader::name));
         checksum = computeChecksum(headerName, checksum);
 
         // Finally compute the datas checksum
@@ -594,7 +594,7 @@ namespace OpenLoco::ObjectManager
         return checksum == object.checksum;
     }
 
-    static bool partialLoad(const ObjectHeader& header, stdx::span<uint8_t> objectData)
+    static bool partialLoad(const ObjectHeader& header, std::span<uint8_t> objectData)
     {
         auto type = header.getType();
         size_t index = 0;
@@ -765,7 +765,7 @@ namespace OpenLoco::ObjectManager
     }
 
     // 0x00472687 based on
-    bool tryInstallObject(const ObjectHeader& objectHeader, stdx::span<const uint8_t> data)
+    bool tryInstallObject(const ObjectHeader& objectHeader, std::span<const uint8_t> data)
     {
         unloadAll();
         if (!computeObjectChecksum(objectHeader, data))
@@ -792,7 +792,7 @@ namespace OpenLoco::ObjectManager
         }
 
         // Warning this saves a copy of the objectData pointer and must be unloaded prior to exiting this function
-        if (!partialLoad(objectHeader, stdx::span(objectData, data.size())))
+        if (!partialLoad(objectHeader, std::span(objectData, data.size())))
         {
             return false;
         }
