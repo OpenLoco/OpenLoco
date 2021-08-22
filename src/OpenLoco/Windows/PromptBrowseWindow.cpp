@@ -39,9 +39,9 @@ using namespace OpenLoco::Interop;
 
 namespace OpenLoco::Ui::Windows::PromptBrowse
 {
-    enum browse_file_type : uint8_t
+    enum BrowseFileType : uint8_t
     {
-        saved_game,
+        savedGame,
         landscape,
     };
 
@@ -71,7 +71,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
 
     static WindowEventList _events;
     static loco_global<uint8_t, 0x009D9D63> _type;
-    static loco_global<browse_file_type, 0x009DA284> _fileType;
+    static loco_global<BrowseFileType, 0x009DA284> _fileType;
     static loco_global<uint8_t, 0x009DA285> _9DA285;
     static loco_global<char[512], 0x009DA084> _displayFolderBuffer;
     static loco_global<char[32], 0x009D9E64> _filter;
@@ -115,10 +115,10 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         TextInput::cancel();
 
         *_type = type;
-        *_fileType = browse_file_type::saved_game;
+        *_fileType = BrowseFileType::savedGame;
         if (Utility::iequals(filter, S5::filterSC5))
         {
-            *_fileType = browse_file_type::landscape;
+            *_fileType = BrowseFileType::landscape;
         }
         Utility::strcpy_safe(_filter, filter);
 
@@ -329,7 +329,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         }
 
         self->widgets[widx::scrollview].right = self->width - 259;
-        if (*_fileType != browse_file_type::saved_game)
+        if (*_fileType != BrowseFileType::savedGame)
             self->widgets[widx::scrollview].right += 122;
 
         self->widgets[widx::parent_button].left = self->width - 26;
@@ -414,7 +414,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                     &args);
                 y += 12;
 
-                if (*_fileType == browse_file_type::saved_game)
+                if (*_fileType == BrowseFileType::savedGame)
                 {
                     // Preview image
                     auto saveInfo = *((const S5::SaveDetails**)0x50AEA8);
@@ -423,7 +423,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
                         drawSavePreview(*window, *context, x, y, width, 201, *saveInfo);
                     }
                 }
-                else if (*_fileType == browse_file_type::landscape)
+                else if (*_fileType == BrowseFileType::landscape)
                 {
                     drawLandscapePreview(*window, *context, x, y, width, 129);
                 }
@@ -770,13 +770,13 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         return numNonSpacesProcessed == 0;
     }
 
-    static constexpr const char* getExtensionFromFileType(browse_file_type type)
+    static constexpr const char* getExtensionFromFileType(BrowseFileType type)
     {
         switch (type)
         {
-            case browse_file_type::saved_game:
+            case BrowseFileType::savedGame:
                 return S5::extensionSV5;
-            case browse_file_type::landscape:
+            case BrowseFileType::landscape:
             default:
                 return S5::extensionSC5;
         }
@@ -821,7 +821,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         strncpy(_savePath.get(), path.u8string().c_str(), std::size(_savePath));
 
         // Remember the current path for saved games
-        if (_fileType == browse_file_type::saved_game)
+        if (_fileType == BrowseFileType::savedGame)
         {
             if (!fs::is_directory(_currentDirectory))
                 Config::getNew().last_save_path = _currentDirectory.parent_path().u8string();
@@ -885,10 +885,10 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         // Load save game or scenario info.
         switch (_fileType)
         {
-            case browse_file_type::saved_game:
+            case BrowseFileType::savedGame:
                 call(0x00442403);
                 break;
-            case browse_file_type::landscape:
+            case BrowseFileType::landscape:
                 call(0x00442AFC);
                 break;
         }
