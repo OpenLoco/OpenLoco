@@ -2667,8 +2667,4 @@ namespace OpenLoco::Ui::Windows::Terraform
 
         return false;
     }
-
-    void registerHooks()
-    {
-    }
 }
