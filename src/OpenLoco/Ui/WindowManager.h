@@ -299,7 +299,6 @@ namespace OpenLoco::Ui::Windows
         void openPlantTrees();
         void openBuildWalls();
         bool rotate(Window*);
-        void registerHooks();
     }
 
     namespace TextInput

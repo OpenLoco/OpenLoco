@@ -441,7 +441,7 @@ namespace OpenLoco
         initialiseViewports();
         Title::sub_4284C8();
         call(0x004969DA);
-        call(0x0043C88C);
+        Scenario::reset();
         setScreenFlag(ScreenFlags::initialised);
 #ifdef _SHOW_INTRO_
         Intro::state(Intro::State::begin);
@@ -457,12 +457,6 @@ namespace OpenLoco
     static void sub_428E47()
     {
         call(0x00428E47);
-    }
-
-    // 0x00444387
-    void sub_444387()
-    {
-        call(0x00444387);
     }
 
     // 0x0046E388

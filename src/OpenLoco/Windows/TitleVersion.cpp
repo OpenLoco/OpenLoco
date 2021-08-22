@@ -30,7 +30,6 @@ namespace OpenLoco::Ui::Windows::TitleVersion
             &_events);
         window->widgets = widgets;
 
-        _events.prepare_draw = (void (*)(Ui::Window*))0x0042A035;
         _events.draw = draw;
 
         return window;

@@ -1206,8 +1206,8 @@ namespace OpenLoco::Ui::Windows::Terraform
             events.on_update = Common::onUpdate;
             events.on_tool_update = onToolUpdate;
             events.on_tool_down = onToolDown;
-            events.toolDragContinue = (void (*)(Window&, const WidgetIndex_t, const int16_t, const int16_t))0x004BC682;
-            events.toolDragEnd = (void (*)(Window&, const WidgetIndex_t))0x004BC701;
+            events.toolDragContinue = toolDragContinue;
+            events.toolDragEnd = toolDragEnd;
             events.prepare_draw = prepareDraw;
             events.draw = draw;
         }
@@ -1628,8 +1628,8 @@ namespace OpenLoco::Ui::Windows::Terraform
             events.on_update = Common::onUpdate;
             events.on_tool_update = onToolUpdate;
             events.on_tool_down = onToolDown;
-            events.toolDragContinue = (void (*)(Window&, const WidgetIndex_t, const int16_t, const int16_t))0x004BC9E2;
-            events.toolDragEnd = (void (*)(Window&, const WidgetIndex_t))0x004BCA5D;
+            events.toolDragContinue = toolDragContinue;
+            events.toolDragEnd = toolDragEnd;
             events.prepare_draw = prepareDraw;
             events.draw = draw;
         }
@@ -1908,8 +1908,8 @@ namespace OpenLoco::Ui::Windows::Terraform
             events.on_update = Common::onUpdate;
             events.on_tool_update = onToolUpdate;
             events.on_tool_down = onToolDown;
-            events.toolDragContinue = (void (*)(Window&, const WidgetIndex_t, const int16_t, const int16_t))0x004BCDBF;
-            events.toolDragEnd = (void (*)(Window&, const WidgetIndex_t))0x004BCDE8;
+            events.toolDragContinue = toolDragContinue;
+            events.toolDragEnd = toolDragEnd;
             events.prepare_draw = prepareDraw;
             events.draw = draw;
         }
@@ -2666,62 +2666,5 @@ namespace OpenLoco::Ui::Windows::Terraform
         }
 
         return false;
-    }
-
-    void registerHooks()
-    {
-        registerHook(
-            0x004BC9E2,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                AdjustLand::toolDragContinue((Ui::Window&)regs.esi, (WidgetIndex_t)regs.dx, (int16_t)regs.ax, (int16_t)regs.bx);
-                regs = backup;
-                return 0;
-            });
-
-        registerHook(
-            0x004BCA5D,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                AdjustLand::toolDragEnd((Ui::Window&)regs.esi, (WidgetIndex_t)regs.dx);
-                regs = backup;
-                return 0;
-            });
-
-        registerHook(
-            0x004BCDBF,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                AdjustWater::toolDragContinue((Ui::Window&)regs.esi, (WidgetIndex_t)regs.dx, (int16_t)regs.ax, (int16_t)regs.bx);
-                regs = backup;
-                return 0;
-            });
-
-        registerHook(
-            0x004BCDE8,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                AdjustWater::toolDragEnd((Ui::Window&)regs.esi, (WidgetIndex_t)regs.dx);
-                regs = backup;
-                return 0;
-            });
-
-        registerHook(
-            0x004BC682,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                ClearArea::toolDragContinue((Ui::Window&)regs.esi, (WidgetIndex_t)regs.dx, (int16_t)regs.ax, (int16_t)regs.bx);
-                regs = backup;
-                return 0;
-            });
-
-        registerHook(
-            0x004BC701,
-            [](registers& regs) FORCE_ALIGN_ARG_POINTER -> uint8_t {
-                registers backup = regs;
-                ClearArea::toolDragEnd((Ui::Window&)regs.esi, (WidgetIndex_t)regs.dx);
-                regs = backup;
-                return 0;
-            });
     }
 }

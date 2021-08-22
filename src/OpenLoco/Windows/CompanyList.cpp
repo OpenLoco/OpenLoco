@@ -1,6 +1,7 @@
 #include "../Company.h"
 #include "../CompanyManager.h"
 #include "../Date.h"
+#include "../Economy/Economy.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/ImageIds.h"
 #include "../Input.h"
@@ -1134,24 +1135,6 @@ namespace OpenLoco::Ui::Windows::CompanyList
             Gfx::drawString_494B3F(*context, x, y, Colour::black, StringIds::cargo_transit_time);
         }
 
-        // 0x004375F7
-        static void buildDeliveredCargoPaymentsTable()
-        {
-            for (uint8_t cargoItem = 0; cargoItem < ObjectManager::getMaxObjects(ObjectType::cargo); ++cargoItem)
-            {
-                auto* cargoObj = ObjectManager::get<CargoObject>(cargoItem);
-                if (cargoObj == nullptr)
-                {
-                    continue;
-                }
-
-                for (uint16_t numDays = 2; numDays <= 122; ++numDays)
-                {
-                    _deliveredCargoPayment[cargoItem][(numDays / 2) - 1] = CompanyManager::calculateDeliveredCargoPayment(cargoItem, 100, 10, numDays);
-                }
-            }
-        }
-
         // 0x004379F2
         static void setLegendHover(Window* self, int16_t x, int16_t y)
         {
@@ -1203,7 +1186,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
             self->max_height = windowSize.height;
             self->width = windowSize.width;
             self->height = windowSize.height;
-            buildDeliveredCargoPaymentsTable();
+            Economy::buildDeliveredCargoPaymentsTable();
         }
 
         static void initEvents()
@@ -1229,7 +1212,7 @@ namespace OpenLoco::Ui::Windows::CompanyList
 
         static WindowEventList events;
 
-        // 0x0043737D
+        // 0x00437591
         static void onResize(Window* self)
         {
             self->setSize(windowSize, windowSize);
