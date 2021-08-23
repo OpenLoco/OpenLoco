@@ -89,7 +89,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     static void drawLandscapePreview(Ui::Window& window, Gfx::Context& context, int32_t x, int32_t y, int32_t width, int32_t height);
     static void drawTextInput(Ui::Window* window, Gfx::Context& context, const char* text, int32_t caret, bool showCaret);
     static void upOneLevel();
-    static void appendDirectory(const char* to_append);
+    static void changeDirectory(const fs::path& path);
     static void processFileForLoadSave(Window* window);
     static void processFileForDelete(Window* self, fs::directory_entry& entry);
     static void refreshDirectoryList();
@@ -122,11 +122,10 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         }
         Utility::strcpy_safe(_filter, filter);
 
-        _currentDirectory = directory.make_preferred();
+        changeDirectory(directory.make_preferred());
         inputSession = Ui::TextInput::InputSession(baseName);
 
         initEvents();
-        refreshDirectoryList();
 
         auto window = WindowManager::createWindowCentred(
             WindowType::fileBrowserPrompt,
@@ -242,7 +241,7 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         // Clicking a directory, with left mouse button?
         if (Input::state() == Input::State::scrollLeft && entry.is_directory())
         {
-            appendDirectory(entry.path().stem().u8string().c_str());
+            changeDirectory(entry.path());
             self->invalidate();
             return;
         }
@@ -688,9 +687,6 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
         }
         else
         {
-            if (!fs::is_directory(_currentDirectory))
-                return;
-
             try
             {
                 for (auto& file : fs::directory_iterator(_currentDirectory))
@@ -728,14 +724,13 @@ namespace OpenLoco::Ui::Windows::PromptBrowse
     // 0x00446E2F
     static void upOneLevel()
     {
-        _currentDirectory = _currentDirectory.parent_path().parent_path() / "";
-        refreshDirectoryList();
+        changeDirectory(_currentDirectory.parent_path().parent_path());
     }
 
     // 0x00446E62
-    static void appendDirectory(const char* to_append)
+    static void changeDirectory(const fs::path& newDir)
     {
-        _currentDirectory = _currentDirectory / to_append / "";
+        _currentDirectory = newDir / "";
         refreshDirectoryList();
     }
 
