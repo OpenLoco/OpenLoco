@@ -577,29 +577,6 @@ namespace OpenLoco::Ui
         }
     }
 
-    static int32_t convertSdlScancodeToDirectInput(int32_t scancode)
-    {
-        switch (scancode)
-        {
-            case SDL_SCANCODE_UP: return DIK_UP;
-            case SDL_SCANCODE_LEFT: return DIK_LEFT;
-            case SDL_SCANCODE_RIGHT: return DIK_RIGHT;
-            case SDL_SCANCODE_DOWN: return DIK_DOWN;
-            case SDL_SCANCODE_LSHIFT: return DIK_LSHIFT;
-            case SDL_SCANCODE_RSHIFT: return DIK_RSHIFT;
-            case SDL_SCANCODE_LCTRL: return DIK_LCONTROL;
-            case SDL_SCANCODE_RCTRL: return DIK_RCONTROL;
-            case SDL_SCANCODE_INSERT:
-                return DIK_INSERT;
-
-            // Simulate INSERT for smaller keyboards
-            case SDL_SCANCODE_LALT: return DIK_INSERT;
-            case SDL_SCANCODE_RALT: return DIK_INSERT;
-
-            default: return 0;
-        }
-    }
-
     static int32_t convertSdlKeycodeToWindows(int32_t keyCode)
     {
         switch (keyCode)
@@ -683,11 +660,7 @@ namespace OpenLoco::Ui
                 if (!isDown)
                     continue;
 
-                auto dinputCode = convertSdlScancodeToDirectInput(scanCode);
-                if (dinputCode != 0)
-                {
-                    dst[dinputCode] = 0x80;
-                }
+                dst[scanCode] = 0x80;
             }
             addr<0x005251CC, uint8_t>() = 1;
         }

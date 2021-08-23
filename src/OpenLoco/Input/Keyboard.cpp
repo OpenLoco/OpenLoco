@@ -13,19 +13,10 @@
 #include "../Ui.h"
 #include "../Ui/Screenshot.h"
 #include "../Vehicles/Vehicle.h"
-#include "../Win32.h"
 #include "ShortcutManager.h"
+#include <SDL2/SDL.h>
 #include <cstdint>
 #include <functional>
-
-#ifdef _WIN32
-#ifndef NOMINMAX
-#define NOMINMAX
-#endif
-#define WIN32_LEAN_AND_MEAN
-#include <shlobj.h>
-#include <windows.h>
-#endif
 
 using namespace OpenLoco::Interop;
 using namespace OpenLoco::Ui;
@@ -209,7 +200,7 @@ namespace OpenLoco::Input
     static void cheat()
     {
         // Used to handle INSERT cheat
-        if ((_keyboardState[DIK_INSERT] & 0x80) != 0)
+        if ((_keyboardState[SDL_SCANCODE_INSERT] & 0x80) != 0 || (_keyboardState[SDL_SCANCODE_LALT] & 0x80) != 0 || (_keyboardState[SDL_SCANCODE_RALT] & 0x80) != 0)
         {
             if ((_keyModifier & KeyModifier::cheat) != 0)
             {
@@ -243,19 +234,19 @@ namespace OpenLoco::Input
 
     static void editShortcut(key* k)
     {
-        if (k->keyCode == VK_UP)
+        if (k->keyCode == SDLK_UP)
             return;
-        if (k->keyCode == VK_DOWN)
+        if (k->keyCode == SDLK_DOWN)
             return;
-        if (k->keyCode == VK_LEFT)
+        if (k->keyCode == SDLK_LEFT)
             return;
-        if (k->keyCode == VK_RIGHT)
+        if (k->keyCode == SDLK_RIGHT)
             return;
-        if (k->keyCode == VK_NUMLOCK)
+        if (k->keyCode == SDLK_NUMLOCKCLEAR)
             return;
-        if (k->keyCode == VK_LWIN)
+        if (k->keyCode == SDLK_LGUI)
             return;
-        if (k->keyCode == VK_RWIN)
+        if (k->keyCode == SDLK_RGUI)
             return;
 
         auto& cfg = Config::get();
@@ -291,10 +282,10 @@ namespace OpenLoco::Input
             if (nextKey->keyCode >= 255)
                 continue;
 
-            if (nextKey->keyCode == 0x10) // VK_SHIFT
+            if (nextKey->keyCode == SDLK_LSHIFT || nextKey->keyCode == SDLK_RSHIFT)
                 continue;
 
-            if (nextKey->keyCode == 0x11) // VK_CONTROL
+            if (nextKey->keyCode == SDLK_LCTRL || nextKey->keyCode == SDLK_RCTRL)
                 continue;
 
             if ((_keyModifier & KeyModifier::cheat) != 0)
@@ -450,16 +441,16 @@ namespace OpenLoco::Input
 
         Ui::Point delta = { 0, 0 };
 
-        if (_keyboardState[DIK_LEFT] & 0x80)
+        if (_keyboardState[SDL_SCANCODE_LEFT] & 0x80)
             delta.x -= 8;
 
-        if (_keyboardState[DIK_UP] & 0x80)
+        if (_keyboardState[SDL_SCANCODE_UP] & 0x80)
             delta.y -= 8;
 
-        if (_keyboardState[DIK_DOWN] & 0x80)
+        if (_keyboardState[SDL_SCANCODE_DOWN] & 0x80)
             delta.y += 8;
 
-        if (_keyboardState[DIK_RIGHT] & 0x80)
+        if (_keyboardState[SDL_SCANCODE_RIGHT] & 0x80)
             delta.x += 8;
 
         if (delta.x == 0 && delta.y == 0)
@@ -513,16 +504,16 @@ namespace OpenLoco::Input
             return;
         }
 
-        if (_keyboardState[DIK_LSHIFT] & 0x80)
+        if (_keyboardState[SDL_SCANCODE_LSHIFT] & 0x80)
             _keyModifier |= KeyModifier::shift;
 
-        if (_keyboardState[DIK_RSHIFT] & 0x80)
+        if (_keyboardState[SDL_SCANCODE_RSHIFT] & 0x80)
             _keyModifier |= KeyModifier::shift;
 
-        if (_keyboardState[DIK_LCONTROL] & 0x80)
+        if (_keyboardState[SDL_SCANCODE_LCTRL] & 0x80)
             _keyModifier |= KeyModifier::control;
 
-        if (_keyboardState[DIK_RCONTROL] & 0x80)
+        if (_keyboardState[SDL_SCANCODE_RCTRL] & 0x80)
             _keyModifier |= KeyModifier::control;
 
         keyScroll();
