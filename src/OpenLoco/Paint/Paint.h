@@ -170,6 +170,7 @@ namespace OpenLoco::Paint
         // TileElement or Entity
         void setCurrentItem(void* item) { _currentItem = item; }
         void setItemType(const Ui::ViewportInteraction::InteractionItem type) { _itemType = type; }
+        void setTrackModId(const uint8_t mod) { _trackModId = mod; }
         void setEntityPosition(const Map::Pos2& pos);
         void setMapPosition(const Map::Pos2& pos);
         void setUnkPosition(const Map::Pos2& pos);
@@ -296,6 +297,7 @@ namespace OpenLoco::Paint
         inline static Interop::loco_global<int16_t, 0x00E3F09C> _unkVpPositionY;
         inline static Interop::loco_global<bool, 0x00E3F09E> _didPassSurface;
         inline static Interop::loco_global<Ui::ViewportInteraction::InteractionItem, 0x00E3F0AC> _itemType;
+        inline static Interop::loco_global<uint8_t, 0x00E3F0AD> _trackModId;
         inline static Interop::loco_global<Map::Pos2, 0x00E3F0B0> _mapPosition;
         inline static Interop::loco_global<void*, 0x00E3F0B4> _currentItem;
         inline static Interop::loco_global<PaintStruct* [1024], 0x00E3F0C0> _quadrants;

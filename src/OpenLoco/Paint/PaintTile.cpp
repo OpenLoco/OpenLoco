@@ -1,9 +1,12 @@
 #include "PaintTile.h"
+#include "../CompanyManager.h"
 #include "../Graphics/Colour.h"
 #include "../Graphics/ImageIds.h"
 #include "../Input.h"
 #include "../Map/TileManager.h"
+#include "../Objects/TrainSignalObject.h"
 #include "../Station.h"
+#include "../TrackData.h"
 #include "../Ui.h"
 #include "Paint.h"
 #include "PaintTree.h"
@@ -141,6 +144,42 @@ namespace OpenLoco::Paint
     // 0x0048864C
     static void paintSignal(PaintSession& session, Map::SignalElement& elSignal)
     {
+        if (elSignal.isFlag5())
+        {
+            return;
+        }
+
+        auto* elTrack = (reinterpret_cast<Map::TileElement*>(&elSignal) - 1)->asTrack();
+        if (elTrack == nullptr)
+        {
+            return;
+        }
+        if (elSignal.isGhost()
+            && CompanyManager::getSecondaryPlayerId() != CompanyId::null
+            && elTrack->owner() == CompanyManager::getSecondaryPlayerId())
+        {
+            return;
+        }
+
+        if (session.getContext()->zoom_level > 1)
+        {
+            return;
+        }
+
+        if (elTrack->sequenceIndex() != 0)
+        {
+            if (elSignal.hasLeftSignal())
+            {
+                session.setItemType(InteractionItem::signal);
+                session.setTrackModId(0);
+                auto* signalObj = ObjectManager::get<TrainSignalObject>(elSignal.leftSignalObjectId());
+                const auto& track = Map::TrackData::getUnkTrack(elTrack->trackId()).rotationBegin;
+                Map::Pos3 offset();
+            }
+            else
+            {
+            }
+        }
         registers regs;
         regs.esi = X86Pointer(&elSignal);
         regs.ecx = (session.getRotation() + (elSignal.data()[0] & 0x3)) & 0x3;
